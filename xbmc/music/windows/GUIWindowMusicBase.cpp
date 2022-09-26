@@ -8,11 +8,11 @@
 
 #include "GUIWindowMusicBase.h"
 
-#include "Application.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "music/MusicLibraryQueue.h"
@@ -68,7 +68,6 @@
 
 using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
-using namespace PLAYLIST;
 using namespace MUSIC_GRABBER;
 using namespace MUSIC_INFO;
 using namespace KODI::MESSAGING;
@@ -249,8 +248,8 @@ bool CGUIWindowMusicBase::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
-    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC ||
-        CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC).size() > 0)
+    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_MUSIC ||
+        CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::TYPE_MUSIC).size() > 0)
     {
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_MUSIC_PLAYLIST);
       return true;
@@ -383,16 +382,16 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 void CGUIWindowMusicBase::OnQueueItem(int iItem, bool first)
 {
   // Determine the proper list to queue this element
-  int playlist = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  if (playlist == PLAYLIST_NONE)
-    playlist = g_application.GetAppPlayer().GetPreferredPlaylist();
-  if (playlist == PLAYLIST_NONE)
-    playlist = PLAYLIST_MUSIC;
+  PLAYLIST::Id playlistId = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
+  if (playlistId == PLAYLIST::TYPE_NONE)
+    playlistId = g_application.GetAppPlayer().GetPreferredPlaylist();
+  if (playlistId == PLAYLIST::TYPE_NONE)
+    playlistId = PLAYLIST::TYPE_MUSIC;
 
   // don't re-queue items from playlist window
   if ( iItem < 0 || iItem >= m_vecItems->Size() || GetID() == WINDOW_MUSIC_PLAYLIST) return ;
 
-  int iOldSize=CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size();
+  int iOldSize = CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size();
 
   // add item 2 playlist (make a copy as we alter the queuing state)
   CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
@@ -431,16 +430,18 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem, bool first)
   }
 
   if (first && g_application.GetAppPlayer().IsPlaying())
-    CServiceBroker::GetPlaylistPlayer().Insert(playlist, queuedItems, CServiceBroker::GetPlaylistPlayer().GetCurrentSong()+1);
+    CServiceBroker::GetPlaylistPlayer().Insert(
+        playlistId, queuedItems, CServiceBroker::GetPlaylistPlayer().GetCurrentSong() + 1);
   else
-    CServiceBroker::GetPlaylistPlayer().Add(playlist, queuedItems);
-  if (CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlist).size() && !g_application.GetAppPlayer().IsPlaying())
+    CServiceBroker::GetPlaylistPlayer().Add(playlistId, queuedItems);
+  if (CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size() &&
+      !g_application.GetAppPlayer().IsPlaying())
   {
     if (m_guiState)
       m_guiState->SetPlaylistDirectory("playlistmusic://");
 
     CServiceBroker::GetPlaylistPlayer().Reset();
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
+    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlistId);
     CServiceBroker::GetPlaylistPlayer().Play(iOldSize, ""); // start playing at the first new item
   }
 }
@@ -495,7 +496,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
   {
     if (pItem->IsPlayList())
     {
-      std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(*pItem));
+      std::unique_ptr<PLAYLIST::CPlayList> pPlayList(PLAYLIST::CPlayListFactory::Create(*pItem));
       if (pPlayList)
       {
         // load it
@@ -505,7 +506,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
           return; //hmmm unable to load playlist?
         }
 
-        CPlayList playlist = *pPlayList;
+        PLAYLIST::CPlayList playlist = *pPlayList;
         for (int i = 0; i < playlist.size(); ++i)
         {
           AddItemToPlayList(playlist[i], queuedItems);
@@ -525,7 +526,7 @@ void CGUIWindowMusicBase::AddItemToPlayList(const CFileItemPtr &pItem, CFileItem
     else if (!pItem->IsNFO() && (pItem->IsAudio() || pItem->IsVideo()))
     {
       CFileItemPtr itemCheck = queuedItems.Get(pItem->GetPath());
-      if (!itemCheck || itemCheck->m_lStartOffset != pItem->m_lStartOffset)
+      if (!itemCheck || itemCheck->GetStartOffset() != pItem->GetStartOffset())
       { // add item
         CFileItemPtr item(new CFileItem(*pItem));
         m_musicdatabase.SetPropertiesForFileItem(*item);
@@ -573,6 +574,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
 
     if (!item->IsParentFolder())
     {
+      //! @todo get rid of IsAddonsPath and IsScript check. CanQueue should be enough!
       if (item->CanQueue() && !item->IsAddonsPath() && !item->IsScript())
       {
         buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347); //queue
@@ -819,10 +821,10 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
     URIUtils::RemoveSlashAtEnd(strPlayListDirectory);
     */
 
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST_MUSIC);
+    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(PLAYLIST::TYPE_MUSIC);
     CServiceBroker::GetPlaylistPlayer().Reset();
-    CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST_MUSIC, queuedItems);
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_MUSIC);
+    CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST::TYPE_MUSIC, queuedItems);
+    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_MUSIC);
 
     // play!
     CServiceBroker::GetPlaylistPlayer().Play();
@@ -848,7 +850,7 @@ void CGUIWindowMusicBase::LoadPlayList(const std::string& strPlayList)
 
   // load a playlist like .m3u, .pls
   // first get correct factory to load playlist
-  std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
+  std::unique_ptr<PLAYLIST::CPlayList> pPlayList(PLAYLIST::CPlayListFactory::Create(strPlayList));
   if (pPlayList)
   {
     // load it
@@ -860,7 +862,7 @@ void CGUIWindowMusicBase::LoadPlayList(const std::string& strPlayList)
   }
 
   int iSize = pPlayList->size();
-  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST_MUSIC))
+  if (g_application.ProcessAndStartPlaylist(strPlayList, *pPlayList, PLAYLIST::TYPE_MUSIC))
   {
     if (m_guiState)
       m_guiState->SetPlaylistDirectory("playlistmusic://");
@@ -879,7 +881,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
   // party mode
   if (g_partyModeManager.IsEnabled())
   {
-    CPlayList playlistTemp;
+    PLAYLIST::CPlayList playlistTemp;
     playlistTemp.Add(pItem);
     g_partyModeManager.AddUserSongs(playlistTemp, !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICPLAYER_QUEUEBYDEFAULT));
     return true;
@@ -894,7 +896,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
       OnQueueItem(iItem);
       return true;
     }
-    pItem->SetProperty("playlist_type_hint", PLAYLIST_MUSIC);
+    pItem->SetProperty("playlist_type_hint", PLAYLIST::TYPE_MUSIC);
     CServiceBroker::GetPlaylistPlayer().Play(pItem, player);
     return true;
   }
@@ -1075,11 +1077,9 @@ bool CGUIWindowMusicBase::OnSelect(int iItem)
     if (m_musicdatabase.GetResumeBookmarkForAudioBook(*item, bookmark) && bookmark > 0)
     {
       // find which chapter the bookmark belongs to
-      auto itemIt = std::find_if(
-        m_vecItems->cbegin(),
-        m_vecItems->cend(),
-        [&](const CFileItemPtr& item) { return bookmark < item->m_lEndOffset; }
-      );
+      auto itemIt =
+          std::find_if(m_vecItems->cbegin(), m_vecItems->cend(),
+                       [&](const CFileItemPtr& item) { return bookmark < item->GetEndOffset(); });
 
       if (itemIt != m_vecItems->cend())
       {

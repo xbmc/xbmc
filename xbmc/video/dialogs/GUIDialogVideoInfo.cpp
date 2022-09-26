@@ -30,10 +30,10 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
-#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
+#include "playlists/PlayListTypes.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -733,14 +733,14 @@ void CGUIDialogVideoInfo::Play(bool resume)
     // close our dialog
     Close(true);
     if (resume)
-      m_movieItem->m_lStartOffset = STARTOFFSET_RESUME;
+      m_movieItem->SetStartOffset(STARTOFFSET_RESUME);
     else if (!CGUIWindowVideoBase::ShowResumeMenu(*m_movieItem))
     {
       // The Resume dialog was closed without any choice
       Open();
       return;
     }
-    m_movieItem->SetProperty("playlist_type_hint", PLAYLIST_VIDEO);
+    m_movieItem->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
 
     pWindow->PlayMovie(m_movieItem.get());
   }
@@ -1175,28 +1175,9 @@ void CGUIDialogVideoInfo::OnSetUserrating() const
 
 void CGUIDialogVideoInfo::PlayTrailer()
 {
-  CFileItem item;
-  item.SetPath(m_movieItem->GetVideoInfoTag()->m_strTrailer);
-  *item.GetVideoInfoTag() = *m_movieItem->GetVideoInfoTag();
-  item.GetVideoInfoTag()->m_streamDetails.Reset();
-  item.GetVideoInfoTag()->m_strTitle = StringUtils::Format(
-      "{} ({})", m_movieItem->GetVideoInfoTag()->m_strTitle, g_localizeStrings.Get(20410));
-  item.SetArt(m_movieItem->GetArt());
-  item.GetVideoInfoTag()->m_iDbId = -1;
-  item.GetVideoInfoTag()->m_iFileId = -1;
-
-  // Close the dialog.
   Close(true);
-
-  if (item.IsPlayList())
-  {
-    CFileItemList *l = new CFileItemList; //don't delete,
-    l->Add(std::make_shared<CFileItem>(item));
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, -1, -1, static_cast<void*>(l));
-  }
-  else
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, 0,
-                                               static_cast<void*>(new CFileItem(item)));
+  CGUIMessage msg(GUI_MSG_PLAY_TRAILER, 0, 0, 0, 0, m_movieItem);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 void CGUIDialogVideoInfo::SetLabel(int iControl, const std::string &strLabel)

@@ -8,9 +8,9 @@
 
 #include "WinEventsOSXImpl.h"
 
-#include "AppInboundProtocol.h"
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/AppInboundProtocol.h"
+#include "application/Application.h"
 #include "input/XBMC_keysym.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"

@@ -60,7 +60,7 @@ option(ENABLE_TESTING     "Enable testing support?" ON)
 # Internal Depends - supported on all platforms
 option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
 # use ffmpeg from depends or system
-option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" ON)
+option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 option(ENABLE_INTERNAL_LIBICU "Enable internal libicu?" OFF)
 option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" ON)
 cmake_dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)

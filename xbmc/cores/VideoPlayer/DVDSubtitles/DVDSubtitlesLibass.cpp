@@ -10,7 +10,6 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -292,7 +291,8 @@ ASS_Image* CDVDSubtitlesLibass::RenderImage(double pts,
   {
     ass_set_storage_size(m_renderer, static_cast<int>(opts.sourceWidth),
                          static_cast<int>(opts.sourceHeight));
-    useFrameMargins = opts.marginsMode != MarginsMode::DISABLED;
+    useFrameMargins =
+        opts.marginsMode == MarginsMode::DISABLED || opts.marginsMode == MarginsMode::INSIDE_VIDEO;
   }
   else
   {
@@ -410,11 +410,20 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
     style->Bold = isFontBold * -1;
     style->Italic = isFontItalic * -1;
 
+    //! @todo Libass has a problem with color transparencies when set to:
+    //! PrimaryColour/SecondaryColour/OutlineColour by causing a gap between border
+    //! and text color. As workaround the SecondaryColour must have no transparency
+    //! this will fix just use cases without transparencies, for a full fix will be
+    //! needed in future update libass library having the gap fix.
+
     // Set default subtitles color
     style->PrimaryColour = ConvColor(subStyle->fontColor, subStyle->fontOpacity);
     // Set secondary colour for karaoke
     // left part is filled with PrimaryColour, right one with SecondaryColour
-    style->SecondaryColour = ConvColor(subStyle->fontColor, COLOR_OPACITY_30);
+    //! @bug in libass - force secondary color without transparency otherwise
+    //! cause a visible color gap, we also avoid reusing the same primary
+    //! color otherwise the karaoke effect will not be visible.
+    style->SecondaryColour = ConvColor(COLOR::BLACK);
 
     // Configure the effects
     double lineSpacing = 0.0;

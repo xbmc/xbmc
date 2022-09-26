@@ -8,8 +8,8 @@
 
 #include "JoystickMonitor.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "games/controllers/ControllerIDs.h"
 #include "input/InputManager.h"
 

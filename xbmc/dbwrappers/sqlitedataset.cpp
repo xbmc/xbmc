@@ -651,7 +651,6 @@ SqliteDataset::SqliteDataset() : Dataset()
 {
   haveError = false;
   db = NULL;
-  errmsg = NULL;
   autorefresh = false;
 }
 
@@ -659,7 +658,6 @@ SqliteDataset::SqliteDataset(SqliteDatabase* newDb) : Dataset(newDb)
 {
   haveError = false;
   db = newDb;
-  errmsg = NULL;
   autorefresh = false;
 }
 
@@ -845,6 +843,7 @@ int SqliteDataset::exec(const std::string& sql)
       qry = qry.substr(0, pos);
   }
 
+  char* errmsg;
   if ((res = db->setErr(sqlite3_exec(handle(), qry.c_str(), &callback, &exec_res, &errmsg),
                         qry.c_str())) == SQLITE_OK)
     return res;

@@ -107,7 +107,7 @@ bool CFileExtensionProvider::CanOperateExtension(const std::string& path) const
   // Get file extensions to find addon related to it.
   std::string strExtension = URIUtils::GetExtension(path);
   UnicodeUtils::FoldCase(strExtension);
-  if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
+  if (!strExtension.empty() && CServiceBroker::IsAddonInterfaceUp())
   {
     std::vector<std::unique_ptr<KODI::ADDONS::IAddonSupportCheck>> supportList;
 

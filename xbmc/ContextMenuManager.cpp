@@ -17,6 +17,7 @@
 #include "addons/IAddon.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "favourites/ContextMenus.h"
+#include "messaging/ApplicationMessenger.h"
 #include "music/ContextMenus.h"
 #include "pvr/PVRContextMenus.h"
 #include "utils/log.h"
@@ -230,21 +231,43 @@ bool CONTEXTMENU::ShowFor(const CFileItemPtr& fileItem, const CContextMenuItem& 
   for (auto&& item : contextMenuManager.GetAddonItems(*fileItem, root))
     menuItems.emplace_back(std::move(item));
 
-  if (menuItems.empty())
+  CContextButtons buttons;
+  // compute fileitem property-based contextmenu items
+  {
+    int i = 0;
+    while (fileItem->HasProperty(StringUtils::Format("contextmenulabel({})", i)))
+    {
+      buttons.emplace_back(
+          ~buttons.size(),
+          fileItem->GetProperty(StringUtils::Format("contextmenulabel({})", i)).asString());
+      ++i;
+    }
+  }
+  const int propertyMenuSize = buttons.size();
+
+  if (menuItems.empty() && propertyMenuSize == 0)
     return true;
 
-  CContextButtons buttons;
   buttons.reserve(menuItems.size());
   for (size_t i = 0; i < menuItems.size(); ++i)
     buttons.Add(i, menuItems[i]->GetLabel(*fileItem));
 
   int selected = CGUIDialogContextMenu::Show(buttons);
-  if (selected < 0 || selected >= static_cast<int>(menuItems.size()))
+  if (selected < 0 || selected >= static_cast<int>(buttons.size()))
     return false;
 
-  return menuItems[selected]->IsGroup() ?
-         ShowFor(fileItem, static_cast<const CContextMenuItem&>(*menuItems[selected])) :
-         menuItems[selected]->Execute(fileItem);
+  if (selected < propertyMenuSize)
+  {
+    CServiceBroker::GetAppMessenger()->SendMsg(
+        TMSG_EXECUTE_BUILT_IN, -1, -1, nullptr,
+        fileItem->GetProperty(StringUtils::Format("contextmenuaction({})", selected)).asString());
+    return true;
+  }
+
+  return menuItems[selected - propertyMenuSize]->IsGroup()
+             ? ShowFor(fileItem, static_cast<const CContextMenuItem&>(
+                                     *menuItems[selected - propertyMenuSize]))
+             : menuItems[selected - propertyMenuSize]->Execute(fileItem);
 }
 
 bool CONTEXTMENU::LoopFrom(const IContextMenuItem& menu, const CFileItemPtr& fileItem)

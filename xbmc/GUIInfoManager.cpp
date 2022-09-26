@@ -8,11 +8,11 @@
 
 #include "GUIInfoManager.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "application/Application.h"
 #include "cores/DataCacheCore.h"
 #include "filesystem/File.h"
 #include "guilib/guiinfo/GUIInfo.h"
@@ -22,6 +22,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/info/InfoExpression.h"
 #include "messaging/ApplicationMessenger.h"
+#include "playlists/PlayListTypes.h"
 #include "settings/SkinSettings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
@@ -1994,6 +1995,14 @@ const infomap system_labels[] = {
 ///     @return **True** if 'hide watched items' is selected.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`System.Setting(hideunwatchedepisodethumbs)`</b>,
+///                  \anchor System_Setting_HideUnwatchedEpisodeThumbs
+///                  _boolean_,
+///     @return **True** if 'hide unwatched episode setting is enabled'\, **False** otherwise.
+///     <p><hr>
+///     @skinning_v20 **[New Boolean Condition]** \link System_Setting_HideUnwatchedEpisodeThumbs `System.Setting(hideunwatchedepisodethumbs)`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -3877,14 +3886,14 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @skinning_v20 **[New Infolabel]** \link VideoPlayer_AudioStreamCount `VideoPlayer.AudioStreamCount`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`VideoPlayer.HdrType`</b>,
-///                  \anchor VideoPlayer_HdrType
-///                  _string_,
-///     @return String containing the name of the detected HDR type or empty if not HDR. See \ref StreamHdrType for the list of possible values.
-///     <p><hr>
-///     @skinning_v20 **[New Infolabel]** \link VideoPlayer_HdrType `VideoPlayer.HdrType`\endlink
+///   \table_row3{   <b>`VideoPlayer.HdrType`</b>,
+///                  \anchor VideoPlayer_HdrType
+///                  _string_,
+///     @return String containing the name of the detected HDR type or empty if not HDR. See \ref StreamHdrType for the list of possible values.
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link VideoPlayer_HdrType `VideoPlayer.HdrType`\endlink
 ///     <p>
-///   }
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -6833,13 +6842,13 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_AlbumStatus `ListItem.AlbumStatus`\endlink
 ///   }
-///   \table_row3{   <b>`ListItem.HdrType`</b>,
-///                  \anchor ListItem_HdrType
-///                  _string_,
-///     @return String containing the name of the detected HDR type or empty if not HDR. See \ref StreamHdrType for the list of possible values.
-///     <p><hr>
-///     @skinning_v20 **[New Infolabel]** \link ListItem_HdrType `ListItem.HdrType`\endlink
-///   }
+///   \table_row3{   <b>`ListItem.HdrType`</b>,
+///                  \anchor ListItem_HdrType
+///                  _string_,
+///     @return String containing the name of the detected HDR type or empty if not HDR. See \ref StreamHdrType for the list of possible values.
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link ListItem_HdrType `ListItem.HdrType`\endlink
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -10356,13 +10365,13 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return ret;
         else
         {
-          int playlistid = PLAYLIST_NONE;
+          PLAYLIST::Id playlistid = PLAYLIST::TYPE_NONE;
           if (UnicodeUtils::EqualsNoCase(prop.param(), "video"))
-            playlistid = PLAYLIST_VIDEO;
+            playlistid = PLAYLIST::TYPE_VIDEO;
           else if (UnicodeUtils::EqualsNoCase(prop.param(), "music"))
-            playlistid = PLAYLIST_MUSIC;
+            playlistid = PLAYLIST::TYPE_MUSIC;
 
-          if (playlistid > PLAYLIST_NONE)
+          if (playlistid != PLAYLIST::TYPE_NONE)
             return AddMultiInfo(CGUIInfo(ret, playlistid, 1));
         }
       }
@@ -11302,13 +11311,13 @@ void CGUIInfoManager::ResetCache()
 void CGUIInfoManager::SetCurrentVideoTag(const CVideoInfoTag &tag)
 {
   m_currentFile->SetFromVideoInfoTag(tag);
-  m_currentFile->m_lStartOffset = 0;
+  m_currentFile->SetStartOffset(0);
 }
 
 void CGUIInfoManager::SetCurrentSongTag(const MUSIC_INFO::CMusicInfoTag &tag)
 {
   m_currentFile->SetFromMusicInfoTag(tag);
-  m_currentFile->m_lStartOffset = 0;
+  m_currentFile->SetStartOffset(0);
 }
 
 const MUSIC_INFO::CMusicInfoTag* CGUIInfoManager::GetCurrentSongTag() const

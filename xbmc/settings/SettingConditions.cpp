@@ -8,11 +8,10 @@
 
 #include "SettingConditions.h"
 
-#include "AppParams.h"
 #include "LockType.h"
-#include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
+#include "application/AppParams.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/AndroidFeatures.h"
 #endif // defined(TARGET_ANDROID)
@@ -55,7 +54,7 @@ bool AddonHasSettings(const std::string& condition,
   if (addon->Type() == ADDON::ADDON_SKIN)
     return ((ADDON::CSkinInfo*)addon.get())->HasSkinFile("SkinSettings.xml");
 
-  return addon->HasSettings();
+  return addon->CanHaveAddonOrInstanceSettings();
 }
 
 bool CheckMasterLock(const std::string& condition,
@@ -381,6 +380,9 @@ void CSettingConditions::Initialize()
 #endif
 #ifdef HAS_FILESYSTEM_SMB
   m_simpleConditions.emplace("has_filesystem_smb");
+#endif
+#ifdef HAS_FILESYSTEM_NFS
+  m_simpleConditions.insert("has_filesystem_nfs");
 #endif
 #ifdef HAS_ZEROCONF
   m_simpleConditions.emplace("has_zeroconf");

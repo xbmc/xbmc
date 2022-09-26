@@ -64,7 +64,9 @@ namespace ADDON
   {
     public:
       virtual ~IAddonMgrCallback() = default;
-      virtual bool RequestRestart(const std::string& id, bool datachanged)=0;
+      virtual bool RequestRestart(const std::string& addonId,
+                                  AddonInstanceId instanceId,
+                                  bool datachanged) = 0;
   };
 
   /**
@@ -149,7 +151,7 @@ namespace ADDON
 
     void AddToUpdateableAddons(AddonPtr &pAddon);
     void RemoveFromUpdateableAddons(AddonPtr &pAddon);
-    bool ReloadSettings(const std::string &id);
+    bool ReloadSettings(const std::string& addonId, AddonInstanceId instanceId);
 
     /*! Get addons with available updates */
     std::vector<std::shared_ptr<IAddon>> GetAvailableUpdates() const;
@@ -379,6 +381,26 @@ namespace ADDON
      */
     void PublishEventAutoUpdateStateChanged(const std::string& id);
     void UpdateLastUsed(const std::string& id);
+
+    /*!
+     * \brief Launches event @ref AddonEvent::InstanceAdded
+     *
+     * This is called when a new instance is added in add-on settings.
+     *
+     * \param[in] addonId Add-on id to pass through
+     * \param[in] instanceId Identifier of the add-on instance
+     */
+    void PublishInstanceAdded(const std::string& addonId, AddonInstanceId instanceId);
+
+    /*!
+     * \brief Launches event @ref AddonEvent::InstanceRemoved
+     *
+     * This is called when an instance is removed in add-on settings.
+     *
+     * \param[in] addonId Add-on id to pass through
+     * \param[in] instanceId Identifier of the add-on instance
+     */
+    void PublishInstanceRemoved(const std::string& addonId, AddonInstanceId instanceId);
 
     /*! \brief Load the addon in the given path
      This loads the addon using c-pluff which parses the addon descriptor file.

@@ -9,12 +9,12 @@
 #include "GUIViewStateVideo.h"
 
 #include "FileItem.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "VideoDatabase.h"
 #include "filesystem/Directory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "guilib/WindowIDs.h"
+#include "playlists/PlayListTypes.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
@@ -36,9 +36,9 @@ std::string CGUIViewStateWindowVideo::GetExtensions()
   return CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
 }
 
-int CGUIViewStateWindowVideo::GetPlaylist() const
+PLAYLIST::Id CGUIViewStateWindowVideo::GetPlaylist() const
 {
-  return PLAYLIST_VIDEO;
+  return PLAYLIST::TYPE_VIDEO;
 }
 
 VECSOURCES& CGUIViewStateWindowVideo::GetSources()

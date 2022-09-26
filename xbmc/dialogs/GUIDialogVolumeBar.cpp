@@ -8,8 +8,8 @@
 
 #include "GUIDialogVolumeBar.h"
 
-#include "Application.h"
 #include "IGUIVolumeBarCallback.h"
+#include "application/Application.h"
 #include "input/Key.h"
 
 #include <mutex>

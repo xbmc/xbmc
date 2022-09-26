@@ -8,11 +8,11 @@
 
 #include "WinSystemX11GLContext.h"
 
-#include "Application.h"
 #include "GLContextEGL.h"
 #include "OptionalsReg.h"
 #include "VideoSyncOML.h"
 #include "X11DPMSSupport.h"
+#include "application/Application.h"
 #include "cores/RetroPlayer/process/X11/RPProcessInfoX11.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPRendererOpenGL.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDFactoryCodec.h"

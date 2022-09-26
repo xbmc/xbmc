@@ -102,14 +102,14 @@ bool URIUtils::HasExtension(const std::string& strFileName, const std::string& s
   if (pos == std::string::npos || strFileName[pos] != '.')
     return false;
 
-  const std::string extensionLower = UnicodeUtils::FoldCase(strFileName.substr(pos));
+  const std::string extensionFolded = UnicodeUtils::FoldCase(strFileName.substr(pos));
 
-  const std::vector<std::string> extensionsLower =
-      UnicodeUtils::Split(UnicodeUtils::FoldCase(strExtensions), "|"sv);
+  const std::vector<std::string> extensionFolded =
+      UnicodeUtils::Split(UnicodeUtils::FoldCase(strExtensions), '|');
 
-  for (const auto& ext : extensionsLower)
+  for (const auto& ext : extensionFolded)
   {
-    if (UnicodeUtils::EndsWith(ext, extensionLower))
+    if (UnicodeUtils::EndsWith(ext, extensionFolded))
       return true;
   }
 
@@ -295,7 +295,7 @@ bool URIUtils::HasParentInHostname(const CURL& url)
 {
   return url.IsProtocol("zip") || url.IsProtocol("apk") || url.IsProtocol("bluray") ||
          url.IsProtocol("udf") || url.IsProtocol("iso9660") || url.IsProtocol("xbt") ||
-         (CServiceBroker::IsBinaryAddonCacheUp() &&
+         (CServiceBroker::IsAddonInterfaceUp() &&
           CServiceBroker::GetFileExtensionProvider().EncodedHostName(url.GetProtocol()));
 }
 

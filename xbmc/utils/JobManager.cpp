@@ -34,9 +34,6 @@ CJobWorker::CJobWorker(CJobManager *manager) : CThread("JobWorker")
 
 CJobWorker::~CJobWorker()
 {
-  // while we should already be removed from the job manager, if an exception
-  // occurs during processing that we haven't caught, we may skip over that step.
-  // Thus, before we go out of scope, ensure the job manager knows we're gone.
   m_jobManager->RemoveWorker(this);
   if(!IsAutoDelete())
     StopThread();
@@ -48,7 +45,7 @@ void CJobWorker::Process()
   while (true)
   {
     // request an item from our manager (this call is blocking)
-    CJob *job = m_jobManager->GetNextJob(this);
+    CJob* job = m_jobManager->GetNextJob();
     if (!job)
       break;
 
@@ -358,7 +355,7 @@ int CJobManager::IsProcessing(const std::string &type) const
   return jobsMatched;
 }
 
-CJob *CJobManager::GetNextJob(const CJobWorker *worker)
+CJob* CJobManager::GetNextJob()
 {
   std::unique_lock<CCriticalSection> lock(m_section);
   while (m_running)
@@ -376,12 +373,7 @@ CJob *CJobManager::GetNextJob(const CJobWorker *worker)
   }
   // ensure no jobs have come in during the period after
   // timeout and before we held the lock
-  CJob *job = PopJob();
-  if (job)
-    return job;
-  // have no jobs
-  RemoveWorker(worker);
-  return NULL;
+  return PopJob();
 }
 
 bool CJobManager::OnJobProgress(unsigned int progress, unsigned int total, const CJob *job) const

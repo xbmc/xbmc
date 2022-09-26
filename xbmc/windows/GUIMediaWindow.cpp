@@ -7,19 +7,20 @@
  */
 
 #include "GUIMediaWindow.h"
-#include "Application.h"
-#include "ServiceBroker.h"
-#include "messaging/ApplicationMessenger.h"
+
 #include "ContextMenuManager.h"
 #include "FileItemListModification.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
+#include "application/Application.h"
+#include "messaging/ApplicationMessenger.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/XBMCApp.h"
 #endif
@@ -1121,7 +1122,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
   }
   else if (pItem->IsPlugin() && !pItem->GetProperty("isplayable").asBoolean())
   {
-    bool resume = pItem->m_lStartOffset == STARTOFFSET_RESUME;
+    bool resume = pItem->GetStartOffset() == STARTOFFSET_RESUME;
     return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetPath(), resume);
   }
 #if defined(TARGET_ANDROID)
@@ -1377,11 +1378,12 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
       strHistoryString = pItem->GetLabel() + strPath;
     }
   }
-  else if (pItem->m_lEndOffset>pItem->m_lStartOffset && pItem->m_lStartOffset != -1)
+  else if (pItem->GetEndOffset() > pItem->GetStartOffset() &&
+           pItem->GetStartOffset() != STARTOFFSET_RESUME)
   {
     // Could be a cue item, all items of a cue share the same filename
     // so add the offsets to build the history string
-    strHistoryString = StringUtils::Format("{}{}", pItem->m_lStartOffset, pItem->m_lEndOffset);
+    strHistoryString = StringUtils::Format("{}{}", pItem->GetStartOffset(), pItem->GetEndOffset());
     strHistoryString += pItem->GetPath();
   }
   else
@@ -1482,7 +1484,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
   // Reset Playlistplayer, playback started now does
   // not use the playlistplayer.
   CServiceBroker::GetPlaylistPlayer().Reset();
-  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST_NONE);
+  CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
   CFileItemPtr pItem=m_vecItems->Get(iItem);
 
   CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()));
@@ -1493,8 +1495,8 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
   else
     bResult = g_application.PlayFile(*pItem, player);
 
-  if (pItem->m_lStartOffset == STARTOFFSET_RESUME)
-    pItem->m_lStartOffset = 0;
+  if (pItem->GetStartOffset() == STARTOFFSET_RESUME)
+    pItem->SetStartOffset(0);
 
   return bResult;
 }
@@ -1510,10 +1512,10 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
 bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player)
 {
   //play and add current directory to temporary playlist
-  int iPlaylist = m_guiState->GetPlaylist();
-  if (iPlaylist != PLAYLIST_NONE)
+  PLAYLIST::Id playlistId = m_guiState->GetPlaylist();
+  if (playlistId != PLAYLIST::TYPE_NONE)
   {
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(iPlaylist);
+    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
     CServiceBroker::GetPlaylistPlayer().Reset();
     int mediaToPlay = 0;
 
@@ -1539,11 +1541,11 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::s
         continue;
 
       if (!nItem->IsZIP() && !nItem->IsRAR() && (!nItem->IsDVDFile() || (URIUtils::GetFileName(nItem->GetDynPath()) == mainDVD)))
-        CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, nItem);
+        CServiceBroker::GetPlaylistPlayer().Add(playlistId, nItem);
 
       if (item->IsSamePath(nItem.get()))
       { // item that was clicked
-        mediaToPlay = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).size() - 1;
+        mediaToPlay = CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size() - 1;
       }
     }
 
@@ -1552,15 +1554,16 @@ bool CGUIMediaWindow::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::s
       m_guiState->SetPlaylistDirectory(m_vecItems->GetPath());
 
     // figure out where we start playback
-    if (CServiceBroker::GetPlaylistPlayer().IsShuffled(iPlaylist))
+    if (CServiceBroker::GetPlaylistPlayer().IsShuffled(playlistId))
     {
-      int iIndex = CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).FindOrder(mediaToPlay);
-      CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).Swap(0, iIndex);
+      int iIndex =
+          CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).FindOrder(mediaToPlay);
+      CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).Swap(0, iIndex);
       mediaToPlay = 0;
     }
 
     // play
-    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(iPlaylist);
+    CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlistId);
     CServiceBroker::GetPlaylistPlayer().Play(mediaToPlay, player);
   }
   return true;
@@ -1589,13 +1592,13 @@ void CGUIMediaWindow::UpdateFileList()
   //  set the currently playing item as selected, if its in this directory
   if (m_guiState.get() && m_guiState->IsCurrentPlaylistDirectory(m_vecItems->GetPath()))
   {
-    int iPlaylist=m_guiState->GetPlaylist();
+    PLAYLIST::Id playlistId = m_guiState->GetPlaylist();
     int nSong = CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
     CFileItem playlistItem;
-    if (nSong > -1 && iPlaylist > -1)
-      playlistItem=*CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist)[nSong];
+    if (nSong > -1 && playlistId != PLAYLIST::TYPE_NONE)
+      playlistItem = *CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId)[nSong];
 
-    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(iPlaylist);
+    CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
     CServiceBroker::GetPlaylistPlayer().Reset();
 
     for (int i = 0; i < m_vecItems->Size(); i++)
@@ -1605,11 +1608,12 @@ void CGUIMediaWindow::UpdateFileList()
         continue;
 
       if (!pItem->IsPlayList() && !pItem->IsZIP() && !pItem->IsRAR())
-        CServiceBroker::GetPlaylistPlayer().Add(iPlaylist, pItem);
+        CServiceBroker::GetPlaylistPlayer().Add(playlistId, pItem);
 
       if (pItem->GetPath() == playlistItem.GetPath() &&
-          pItem->m_lStartOffset == playlistItem.m_lStartOffset)
-        CServiceBroker::GetPlaylistPlayer().SetCurrentSong(CServiceBroker::GetPlaylistPlayer().GetPlaylist(iPlaylist).size() - 1);
+          pItem->GetStartOffset() == playlistItem.GetStartOffset())
+        CServiceBroker::GetPlaylistPlayer().SetCurrentSong(
+            CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size() - 1);
     }
   }
 }

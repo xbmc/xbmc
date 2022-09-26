@@ -8,9 +8,9 @@
 
 #include "GUIDialogSeekBar.h"
 
-#include "Application.h"
 #include "GUIInfoManager.h"
 #include "SeekHandler.h"
+#include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 

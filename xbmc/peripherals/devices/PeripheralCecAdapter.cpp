@@ -8,8 +8,8 @@
 
 #include "PeripheralCecAdapter.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -50,6 +50,9 @@ using namespace std::chrono_literals;
 #define LOCALISED_ID_HIBERNATE 13010
 #define LOCALISED_ID_QUIT 13009
 #define LOCALISED_ID_IGNORE 36028
+#define LOCALISED_ID_RECORDING_DEVICE 36051
+#define LOCALISED_ID_PLAYBACK_DEVICE 36052
+#define LOCALISED_ID_TUNER_DEVICE 36053
 
 #define LOCALISED_ID_NONE 231
 
@@ -560,6 +563,8 @@ void CPeripheralCecAdapter::SetMenuLanguage(const char* strLanguage)
     strGuiLanguage = "cs_cz";
   else if (!strcmp(strLanguage, "dan"))
     strGuiLanguage = "da_dk";
+  else if (!strcmp(strLanguage, "deu"))
+    strGuiLanguage = "de_de";
   else if (!strcmp(strLanguage, "dut"))
     strGuiLanguage = "nl_nl";
   else if (!strcmp(strLanguage, "eng"))
@@ -1345,12 +1350,19 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // set the primary device type
   m_configuration.deviceTypes.Clear();
-  int iDeviceType = GetSettingInt("device_type");
-  if (iDeviceType != (int)CEC_DEVICE_TYPE_RECORDING_DEVICE &&
-      iDeviceType != (int)CEC_DEVICE_TYPE_PLAYBACK_DEVICE &&
-      iDeviceType != (int)CEC_DEVICE_TYPE_TUNER)
-    iDeviceType = (int)CEC_DEVICE_TYPE_RECORDING_DEVICE;
-  m_configuration.deviceTypes.Add((cec_device_type)iDeviceType);
+  switch (GetSettingInt("device_type"))
+  {
+    case LOCALISED_ID_PLAYBACK_DEVICE:
+      m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_PLAYBACK_DEVICE);
+      break;
+    case LOCALISED_ID_TUNER_DEVICE:
+      m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_TUNER);
+      break;
+    case LOCALISED_ID_RECORDING_DEVICE:
+    default:
+      m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_RECORDING_DEVICE);
+      break;
+  }
 
   // always try to autodetect the address.
   // when the firmware supports this, it will override the physical address, connected device and

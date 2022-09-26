@@ -1646,7 +1646,6 @@ MysqlDataset::MysqlDataset() : Dataset()
 {
   haveError = false;
   db = NULL;
-  errmsg = NULL;
   autorefresh = false;
 }
 
@@ -1654,14 +1653,11 @@ MysqlDataset::MysqlDataset(MysqlDatabase* newDb) : Dataset(newDb)
 {
   haveError = false;
   db = newDb;
-  errmsg = NULL;
   autorefresh = false;
 }
 
 MysqlDataset::~MysqlDataset()
 {
-  if (errmsg)
-    free(errmsg);
 }
 
 void MysqlDataset::set_autorefresh(bool val)

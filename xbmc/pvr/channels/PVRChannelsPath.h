@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <string>
+#include "addons/IAddon.h"
 
 class CDateTime;
 
@@ -23,7 +23,11 @@ namespace PVR
     explicit CPVRChannelsPath(const std::string& strPath);
     CPVRChannelsPath(bool bRadio, const std::string& strGroupName);
     CPVRChannelsPath(bool bRadio, bool bHidden, const std::string& strGroupName);
-    CPVRChannelsPath(bool bRadio, const std::string& strGroupName, const std::string& strClientID, int iChannelUID);
+    CPVRChannelsPath(bool bRadio,
+                     const std::string& strGroupName,
+                     const std::string& strAddonID,
+                     ADDON::AddonInstanceId instanceID,
+                     int iChannelUID);
 
     operator std::string() const { return m_path; }
     bool operator ==(const CPVRChannelsPath& right) const { return m_path == right.m_path; }
@@ -41,7 +45,8 @@ namespace PVR
     bool IsRadio() const { return m_bRadio; }
 
     const std::string& GetGroupName() const { return m_group; }
-    const std::string& GetClientID() const { return m_clientID; }
+    const std::string& GetAddonID() const { return m_addonID; }
+    ADDON::AddonInstanceId GetInstanceID() const { return m_instanceID; }
     int GetChannelUID() const { return m_iChannelUID; }
 
   private:
@@ -61,7 +66,8 @@ namespace PVR
     bool m_bRadio = false;;
     std::string m_path;
     std::string m_group;
-    std::string m_clientID;
+    std::string m_addonID;
+    ADDON::AddonInstanceId m_instanceID{ADDON::ADDON_SINGLETON_INSTANCE_ID};
     int m_iChannelUID = -1;
   };
 }

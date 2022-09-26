@@ -532,7 +532,6 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
     m_iEpgID = tag.m_iEpgID;
     m_iFlags = tag.m_iFlags;
     m_strSeriesLink = tag.m_strSeriesLink;
-
     m_firstAired = tag.m_firstAired;
     m_iParentalRating = tag.m_iParentalRating;
     m_strParentalRatingCode = tag.m_strParentalRatingCode;

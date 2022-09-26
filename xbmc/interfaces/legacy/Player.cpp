@@ -9,13 +9,13 @@
 #include "Player.h"
 
 #include "AddonUtils.h"
-#include "Application.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ListItem.h"
 #include "PlayList.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "cores/IPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -31,7 +31,7 @@ namespace XBMCAddon
 
     Player::Player()
     {
-      iPlayList = PLAYLIST_MUSIC;
+      iPlayList = PLAYLIST::TYPE_MUSIC;
 
       // now that we're done, register hook me into the system
       if (languageHook)

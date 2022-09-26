@@ -8,17 +8,16 @@
 
 #include "GUIWindowPictures.h"
 
-#include "Application.h"
 #include "Autorun.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIPassword.h"
 #include "GUIWindowSlideShow.h"
 #include "PictureInfoLoader.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
@@ -43,7 +42,6 @@
 #define CONTROL_LABELFILES         12
 
 using namespace XFILE;
-using namespace PLAYLIST;
 using namespace KODI::MESSAGING;
 
 using namespace std::chrono_literals;
@@ -341,7 +339,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   {
     CVariant param;
     param["player"]["speed"] = 1;
-    param["player"]["playerid"] = PLAYLIST_PICTURE;
+    param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay",
                                                        pSlideShow->GetCurrentSlide(), param);
   }
@@ -533,7 +531,7 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
   CLog::Log(LOGDEBUG,
             "CGUIWindowPictures::LoadPlayList()... converting playlist into slideshow: {}",
             strPlayList);
-  std::unique_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
+  std::unique_ptr<PLAYLIST::CPlayList> pPlayList(PLAYLIST::CPlayListFactory::Create(strPlayList));
   if (nullptr != pPlayList)
   {
     if (!pPlayList->Load(strPlayList))
@@ -543,7 +541,7 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
     }
   }
 
-  CPlayList playlist = *pPlayList;
+  PLAYLIST::CPlayList playlist = *pPlayList;
   if (playlist.size() > 0)
   {
     // set up slideshow

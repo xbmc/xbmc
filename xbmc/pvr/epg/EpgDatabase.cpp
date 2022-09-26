@@ -30,6 +30,7 @@ using namespace std::string_view_literals;
 
 namespace
 {
+// clang-format off
 const std::string sqlCreateSavedSearchesTable = "CREATE TABLE savedsearches ("
                                                 "idSearch                  integer primary key,"
                                                 "sTitle                    varchar(255), "
@@ -51,8 +52,10 @@ const std::string sqlCreateSavedSearchesTable = "CREATE TABLE savedsearches ("
                                                 "bIgnoreFutureBroadcasts   bool, "
                                                 "bFreeToAirOnly            bool, "
                                                 "bIgnorePresentTimers      bool, "
-                                                "bIgnorePresentRecordings  bool"
+                                                "bIgnorePresentRecordings  bool,"
+                                                "iChannelGroup             integer"
                                                 ")";
+// clang-format on
 } // unnamed namespace
 
 bool CPVREpgDatabase::Open()
@@ -300,6 +303,12 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
   if (iVersion < 15)
   {
     m_pDS->exec(sqlCreateSavedSearchesTable);
+  }
+
+  if (iVersion < 16)
+  {
+    m_pDS->exec("ALTER TABLE savedsearches ADD iChannelGroup integer;");
+    m_pDS->exec("UPDATE savedsearches SET iChannelGroup = -1");
   }
 }
 
@@ -1296,6 +1305,7 @@ std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::CreateEpgSearchFilter(
     newSearch->SetFreeToAirOnly(m_pDS->fv("bFreeToAirOnly").get_asBool());
     newSearch->SetIgnorePresentTimers(m_pDS->fv("bIgnorePresentTimers").get_asBool());
     newSearch->SetIgnorePresentRecordings(m_pDS->fv("bIgnorePresentRecordings").get_asBool());
+    newSearch->SetChannelGroupID(m_pDS->fv("iChannelGroup").get_asInt());
 
     newSearch->SetChanged(false);
 
@@ -1366,9 +1376,9 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         "iGenreType, bIncludeUnknownGenres, sStartDateTime, sEndDateTime, iMinimumDuration, "
         "iMaximumDuration, bIsRadio, iClientId, iChannelUid, bRemoveDuplicates, "
         "bIgnoreFinishedBroadcasts, bIgnoreFutureBroadcasts, bFreeToAirOnly, bIgnorePresentTimers, "
-        "bIgnorePresentRecordings) "
+        "bIgnorePresentRecordings, iChannelGroup) "
         "VALUES ('%s', '%s', '%s', %i, %i, %i, %i, '%s', '%s', %i, %i, %i, %i, %i, %i, %i, %i, "
-        "%i, %i, %i);",
+        "%i, %i, %i, %i);",
         epgSearch.GetTitle().c_str(),
         epgSearch.GetLastExecutedDateTime().IsValid()
             ? epgSearch.GetLastExecutedDateTime().GetAsDBDateTime().c_str()
@@ -1387,7 +1397,7 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         epgSearch.ShouldIgnoreFinishedBroadcasts() ? 1 : 0,
         epgSearch.ShouldIgnoreFutureBroadcasts() ? 1 : 0, epgSearch.IsFreeToAirOnly() ? 1 : 0,
         epgSearch.ShouldIgnorePresentTimers() ? 1 : 0,
-        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0);
+        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0, epgSearch.GetChannelGroupID());
   else
     strQuery = PrepareSQL(
         "REPLACE INTO savedsearches "
@@ -1395,9 +1405,9 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         "bIsCaseSensitive, iGenreType, bIncludeUnknownGenres, sStartDateTime, sEndDateTime, "
         "iMinimumDuration, iMaximumDuration, bIsRadio, iClientId, iChannelUid, bRemoveDuplicates, "
         "bIgnoreFinishedBroadcasts, bIgnoreFutureBroadcasts, bFreeToAirOnly, bIgnorePresentTimers, "
-        "bIgnorePresentRecordings) "
+        "bIgnorePresentRecordings, iChannelGroup) "
         "VALUES (%i, '%s', '%s', '%s', %i, %i, %i, %i, '%s', '%s', %i, %i, %i, %i, %i, %i, %i, %i, "
-        "%i, %i, %i);",
+        "%i, %i, %i, %i);",
         epgSearch.GetDatabaseId(), epgSearch.GetTitle().c_str(),
         epgSearch.GetLastExecutedDateTime().IsValid()
             ? epgSearch.GetLastExecutedDateTime().GetAsDBDateTime().c_str()
@@ -1416,7 +1426,7 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         epgSearch.ShouldIgnoreFinishedBroadcasts() ? 1 : 0,
         epgSearch.ShouldIgnoreFutureBroadcasts() ? 1 : 0, epgSearch.IsFreeToAirOnly() ? 1 : 0,
         epgSearch.ShouldIgnorePresentTimers() ? 1 : 0,
-        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0);
+        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0, epgSearch.GetChannelGroupID());
 
   bool bReturn = ExecuteQuery(strQuery);
 

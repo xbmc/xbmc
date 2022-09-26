@@ -13,11 +13,11 @@
 
 #include "StereoscopicsManager.h"
 
-#include "Application.h"
 #include "GUIComponent.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"

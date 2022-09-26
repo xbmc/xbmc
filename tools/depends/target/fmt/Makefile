@@ -1,6 +1,7 @@
 -include ../../Makefile.include
 include FMT-VERSION
-DEPS = Makefile FMT-VERSION ../../download-files.include
+DEPS = Makefile FMT-VERSION ../../download-files.include \
+                            001-windows-pdb-symbol-gen.patch
 
 CMAKE_OPTIONS=-DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_EXTENSIONS:BOOL=OFF -DFMT_DOC=OFF -DFMT_INSTALL=ON -DFMT_TEST=OFF
 
@@ -41,6 +42,7 @@ endif
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
+	cd $(PLATFORM); patch -p1 -i ../001-windows-pdb-symbol-gen.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 
 $(LIBDYLIB): $(PLATFORM)

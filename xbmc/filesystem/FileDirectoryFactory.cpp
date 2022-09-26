@@ -67,7 +67,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
   std::string strExtension = URIUtils::GetExtension(url);
   UnicodeUtils::FoldCase(strExtension);
 
-  if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
+  if (!strExtension.empty() && CServiceBroker::IsAddonInterfaceUp())
   {
     /*!
      * Scan here about audiodecoder addons.
@@ -237,7 +237,7 @@ IFileDirectory* CFileDirectoryFactory::Create(const CURL& url, CFileItem* pItem,
 
   if (pItem->IsAudioBook())
   {
-    if (!pItem->HasMusicInfoTag() || pItem->m_lEndOffset <= 0)
+    if (!pItem->HasMusicInfoTag() || pItem->GetEndOffset() <= 0)
     {
       std::unique_ptr<CAudioBookFileDirectory> pDir(new CAudioBookFileDirectory);
       if (pDir->ContainsFiles(url))

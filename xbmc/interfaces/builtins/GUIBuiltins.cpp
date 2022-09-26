@@ -8,9 +8,9 @@
 
 #include "GUIBuiltins.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "filesystem/Directory.h"

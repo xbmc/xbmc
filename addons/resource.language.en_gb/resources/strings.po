@@ -1443,8 +1443,9 @@ msgstr ""
 #. Label of 'Enabled' radiobutton in PVR timer settings dialog
 #. Label of timers state in PVR timer/timer rule window
 #: system/peripherals.xml
-#: xbmc/filesystem/AddonsDirectory.cpp
 #: system/settings/settings.xml
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#305"
@@ -2562,6 +2563,7 @@ msgid "Sort by: {0:s}"
 msgstr ""
 
 #. generic "name" label used in different places
+#: xbmc/addons/settings/AddonSettings.cpp
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
 #: xbmc/view/GUIViewState.cpp
 msgctxt "#551"
@@ -4194,7 +4196,10 @@ msgctxt "#1200"
 msgid "SMB client"
 msgstr ""
 
-#empty string with id 1201
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#1201"
+msgid "NFS Client"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1202"
@@ -4901,28 +4906,74 @@ msgctxt "#10008"
 msgid "Play next"
 msgstr ""
 
-#empty strings from id 10009 to 10010
+#. Header label for add-on configuration removal dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10009"
+msgid "Confirm add-on configuration removal"
+msgstr ""
+
+#. Header label for add-on configuration removal selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10010"
+msgid "Select add-on configuration to remove"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10011"
 msgid "Settings - Videos - Screen calibration"
 msgstr ""
 
-#empty strings from id 10012 to 10015
+#. Header label for add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10012"
+msgid "Add-on configurations and settings"
+msgstr ""
+
+#. Item label used in add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10013"
+msgid "Edit add-on settings"
+msgstr ""
+
+#. Item label used in add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10014"
+msgid "Add add-on configuration"
+msgstr ""
+
+#.Item label used in add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10015"
+msgid "Remove add-on configuration"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10016"
 msgid "Settings - System"
 msgstr ""
 
-#empty string with id 10017
+#. Settings group label
+#: xbmc/addons/settings/AddonSettings.cpp
+msgctxt "#10017"
+msgid "Add-on configuration"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10018"
 msgid "Settings - Service"
 msgstr ""
 
-#empty strings from id 10019 to 10020
+#. Item label for add-on configuration removal dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10019"
+msgid "Do you want to remove the add-on configuration \"{0:s}\"?"
+msgstr ""
+
+#.Item label used in add-on setup selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10020"
+msgid "Edit \"{0:s}\" [{1:s}]"
+msgstr ""
 
 msgctxt "#10021"
 msgid "Settings - TV"
@@ -6264,10 +6315,11 @@ msgstr ""
 #empty strings from id 13102 to 13105
 
 #. generic "disabled" label used in different places
-#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: system/settings/settings.xml
+#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 #: xbmc/addons/GUIWindowAddonBrowser.cpp
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 msgctxt "#13106"
 msgid "Disabled"
 msgstr ""
@@ -6465,6 +6517,7 @@ msgstr ""
 #. generic "unknown" label used in different places
 #: xbmc/GUIInfoManager.cpp
 #: xbmc/LangInfo.cpp
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 #: xbmc/music/MusicDatabase.cpp
 #: xbmc/peripherals/bus/PeripheralBus.cpp
 #: xbmc/peripherals/devices/Peripheral.cpp
@@ -9895,6 +9948,7 @@ msgstr ""
 
 #. generic warning label used at several places
 #: xbmc/addons/AddonSystemSettings.cpp
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 #: xbmc/network/NetworkServices.cpp
 #: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
 #: xbmc/pvr/PVRManager.cpp
@@ -10461,7 +10515,7 @@ msgctxt "#19191"
 msgid "PVR service"
 msgstr ""
 
-#. error message box text stating that none of the available pvr clients does support channel scanning
+#. info message box text stating that none of the available pvr clients does support channel scanning
 #: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
@@ -10972,10 +11026,10 @@ msgctxt "#19278"
 msgid "Recording error"
 msgstr ""
 
-#. pvr settings 'client specific' category label.
+#. pvr settings 'PVR clients' group label.
 #: system/settings/settings.xml
 msgctxt "#19279"
-msgid "Client specific"
+msgid "PVR clients"
 msgstr ""
 
 #. pvr client specific settings 'client specific settings' action control label.
@@ -11379,7 +11433,31 @@ msgctxt "#19344"
 msgid "Do you want to set a reminder for the selected programme or to switch to the current programme?"
 msgstr ""
 
-#empty strings from id 19345 to 19498
+#. settings label to open add-ons manager window with available PVR client add-ons
+#: system/settings/settings.xml
+msgctxt "#19345"
+msgid "PVR client add-ons"
+msgstr ""
+
+#. help text for setting to open add-ons manager window with available PVR client add-ons
+#: system/settings/settings.xml
+msgctxt "#19346"
+msgid "Display and manage available PVR client add-ons."
+msgstr ""
+
+#. info message box text stating that none of the available pvr clients does provide client-specific settings
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19347"
+msgid "None of the active PVR clients provide client-specific settings."
+msgstr ""
+
+#. label for 'by provider' sort method
+#: xbmc/utils/SortUtils.cpp
+msgctxt "#19348"
+msgid "Provider"
+msgstr ""
+
+#empty strings from id 19349 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -18549,7 +18627,13 @@ msgctxt "#36012"
 msgid "Couldn't initialise the CEC adapter. Please check your settings."
 msgstr ""
 
-#empty strings from id 36013 to 36014
+#. CEC adapter setting to set the type of device that libCEC reports to the TV (Recording, Playback or Tuner Device)
+#: system/peripherals.xml
+msgctxt "#36013"
+msgid "CEC client device mode"
+msgstr ""
+
+#empty strings from id 36014 to 36014
 
 #: system/peripherals.xml
 msgctxt "#36015"
@@ -18747,7 +18831,25 @@ msgctxt "#36050"
 msgid "On start"
 msgstr ""
 
-#empty strings from id 36051 to 36097
+#. Item list value of setting with label #36013 "CEC client device mode"
+#: system/peripherals.xml
+msgctxt "#36051"
+msgid "Recording Device"
+msgstr ""
+
+#. Item list value of setting with label #36013 "CEC client device mode"
+#: system/peripherals.xml
+msgctxt "#36052"
+msgid "Playback Device"
+msgstr ""
+
+#. Item list value of setting with label #36013 "CEC client device mode"
+#: system/peripherals.xml
+msgctxt "#36053"
+msgid "Tuner Device"
+msgstr ""
+
+#empty strings from id 36054 to 36097
 
 #. Label of setting "System / Display / Use 10 bit for SDR"
 #: system/settings/settings.xml
@@ -19411,7 +19513,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36211"
-msgid "This category contains the settings for PVR menus and on-screen display (OSD), as well as channel information windows."
+msgid "This category contains the settings for PVR channels and channel groups."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -20229,7 +20331,11 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens not displaying this application are blacked out."
 msgstr ""
 
-#empty string with id 36356
+#. Description of settings category with label #1201 "NFS Client"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#36356"
+msgid "This category contains the settings for how the NFS client is handled."
+msgstr ""
 
 #. Description of setting with label #214 "Video calibration..."
 #: system/settings/settings.xml
@@ -21828,7 +21934,19 @@ msgctxt "#37050"
 msgid "Verbose logging for the [B]WS-Discovery[/B] component"
 msgstr ""
 
-#empty strings from id 37051 to 38010
+#. Setting #37051 NFS Protocol Version"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37051"
+msgid "NFS Protocol Version"
+msgstr ""
+
+#. Description of setting #37051 NFS Protocol Version"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37052"
+msgid "NFS protocol version to use when establishing NFS connections"
+msgstr ""
+
+#empty strings from id 37053 to 38010
 
 #. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml

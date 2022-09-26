@@ -164,6 +164,8 @@ typedef enum
   SortByBPM,
   /// __57__ : Sort by original title             <em>(String: <b><c>OriginalTitle</c></b>)</em>
   SortByOriginalTitle,
+  /// __58__ : Sort by provider                   <em>(String: <b><c>Provider</c></b>)</em>
+  SortByProvider,
 } SortBy;
 ///@}
 

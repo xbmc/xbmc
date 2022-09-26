@@ -8,10 +8,10 @@
 
 #include "PVRGUIActions.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "application/ApplicationEnums.h"
 #include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -25,6 +25,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -539,6 +541,7 @@ namespace PVR
     {
       if (m_pDlgSelect)
       {
+        m_pDlgSelect->Reset();
         m_pDlgSelect->SetMultiSelection(false);
         m_pDlgSelect->SetHeading(CVariant{19086}); // Instant recording action
       }
@@ -1202,7 +1205,7 @@ namespace PVR
       choices.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); // Play from beginning
       int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
       if (choice > 0)
-        item->m_lStartOffset = choice == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0;
+        item->SetStartOffset(choice == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0);
       else
         bPlayIt = false; // context menu cancelled
     }
@@ -1214,12 +1217,12 @@ namespace PVR
     bool bCanResume = !GetResumeLabel(*item).empty();
     if (bCanResume)
     {
-      item->m_lStartOffset = STARTOFFSET_RESUME;
+      item->SetStartOffset(STARTOFFSET_RESUME);
     }
     else
     {
       if (bFallbackToPlay)
-        item->m_lStartOffset = 0;
+        item->SetStartOffset(0);
       else
         return false;
     }
@@ -1307,7 +1310,7 @@ namespace PVR
     if (!bCheckResume || CheckResumeRecording(item))
     {
       CFileItem* itemToPlay = new CFileItem(recording);
-      itemToPlay->m_lStartOffset = item->m_lStartOffset;
+      itemToPlay->SetStartOffset(item->GetStartOffset());
       StartPlayback(itemToPlay, true);
     }
     return true;
@@ -1699,8 +1702,7 @@ namespace PVR
 
   bool CPVRGUIActions::ProcessSettingsMenuHooks()
   {
-    CPVRClientMap clients;
-    CServiceBroker::GetPVRManager().Clients()->GetCreatedClients(clients);
+    const CPVRClientMap clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
 
     std::vector<std::pair<std::shared_ptr<CPVRClient>, CPVRClientMenuHook>> settingsHooks;
     for (const auto& client : clients)
@@ -1711,7 +1713,13 @@ namespace PVR
     }
 
     if (settingsHooks.empty())
+    {
+      HELPERS::ShowOKDialogText(
+          CVariant{19033}, // "Information"
+          CVariant{
+              19347}); // "None of the active PVR clients does provide client-specific settings."
       return true; // no settings hooks, no error
+    }
 
     auto selectedHook = settingsHooks.begin();
 

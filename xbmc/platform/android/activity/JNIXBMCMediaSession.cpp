@@ -9,10 +9,10 @@
 #include "JNIXBMCMediaSession.h"
 
 #include "AndroidKey.h"
-#include "Application.h"
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "XBMCApp.h"
+#include "application/Application.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
 

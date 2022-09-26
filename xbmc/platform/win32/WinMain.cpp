@@ -6,10 +6,10 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "AppParamParser.h"
-#include "AppParams.h"
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
+#include "application/AppParamParser.h"
+#include "application/AppParams.h"
 #include "platform/Environment.h"
 #include "platform/xbmc.h"
 #include "threads/Thread.h"
@@ -23,7 +23,6 @@
 #include <dbghelp.h>
 #include <mmsystem.h>
 #include <shellapi.h>
-
 
 // Minidump creation function
 LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)

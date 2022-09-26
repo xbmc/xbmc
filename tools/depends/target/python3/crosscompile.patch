@@ -18,7 +18,7 @@
  case $MACHDEP in
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -1694,10 +1694,11 @@
+@@ -1695,10 +1695,11 @@
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \

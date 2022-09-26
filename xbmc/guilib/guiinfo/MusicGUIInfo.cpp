@@ -8,13 +8,13 @@
 
 #include "guilib/guiinfo/MusicGUIInfo.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "application/Application.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
@@ -417,14 +417,14 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       value = item->GetProperty(info.GetData3()).asString();
       return true;
     case MUSICPLAYER_PLAYLISTLEN:
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
+      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_MUSIC)
       {
         value = GUIINFO::GetPlaylistLabel(PLAYLIST_LENGTH);
         return true;
       }
       break;
     case MUSICPLAYER_PLAYLISTPOS:
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
+      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_MUSIC)
       {
         value = GUIINFO::GetPlaylistLabel(PLAYLIST_POSITION);
         return true;
@@ -531,14 +531,14 @@ bool CMusicGUIInfo::GetPartyModeLabel(std::string& value, const CGUIInfo &info) 
 bool CMusicGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo &info) const
 {
   const PLAYLIST::CPlayList& playlist =
-      CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC);
+      CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::TYPE_MUSIC);
   if (playlist.size() < 1)
     return false;
 
   int index = info.GetData2();
   if (info.GetData1() == 1)
-  { // relative index (requires current playlist is PLAYLIST_MUSIC)
-    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST_MUSIC)
+  { // relative index (requires current playlist is TYPE_MUSIC)
+    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST::TYPE_MUSIC)
       return false;
 
     index = CServiceBroker::GetPlaylistPlayer().GetNextSong(index);
@@ -627,23 +627,26 @@ bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
       value = UnicodeUtils::EqualsNoCase(info.GetData3(), "files");
       return value; // if no match for this provider, other providers shall be asked.
     case MUSICPLAYER_HASPREVIOUS:
-      // requires current playlist be PLAYLIST_MUSIC
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
+      // requires current playlist be TYPE_MUSIC
+      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_MUSIC)
       {
         value = (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() > 0); // not first song
         return true;
       }
       break;
     case MUSICPLAYER_HASNEXT:
-      // requires current playlist be PLAYLIST_MUSIC
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
+      // requires current playlist be TYPE_MUSIC
+      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_MUSIC)
       {
-        value = (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() < (CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC).size() - 1)); // not last song
+        value = (CServiceBroker::GetPlaylistPlayer().GetCurrentSong() <
+                 (CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::TYPE_MUSIC).size() -
+                  1)); // not last song
         return true;
       }
       break;
     case MUSICPLAYER_PLAYLISTPLAYING:
-      if (g_application.GetAppPlayer().IsPlayingAudio() && CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_MUSIC)
+      if (g_application.GetAppPlayer().IsPlayingAudio() &&
+          CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_MUSIC)
       {
         value = true;
         return true;
@@ -654,14 +657,16 @@ bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
       int index = info.GetData2();
       if (info.GetData1() == 1)
       { // relative index
-        if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST_MUSIC)
+        if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST::TYPE_MUSIC)
         {
           value = false;
           return true;
         }
         index += CServiceBroker::GetPlaylistPlayer().GetCurrentSong();
       }
-      value = (index >= 0 && index < CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_MUSIC).size());
+      value =
+          (index >= 0 &&
+           index < CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::TYPE_MUSIC).size());
       return true;
     }
     case MUSICPLAYER_ISMULTIDISC:

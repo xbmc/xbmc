@@ -26,6 +26,7 @@
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
 #include "utils/FontUtils.h"
+#include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
@@ -519,8 +520,17 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
 
   bool skipCreateStreams = false;
   bool isBluray = pInput->IsStreamType(DVDSTREAM_TYPE_BLURAY);
+
+  // this should never happen. Log it to inform about the error.
+  if (m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams == nullptr)
+  {
+    CLog::LogF(LOGERROR, "Detected number of streams is greater than zero but AVStream array is "
+                         "empty. Please report this bug.");
+  }
+
   // don't re-open mpegts streams with hevc encoding as the params are not correctly detected again
   if (iformat && (strcmp(iformat->name, "mpegts") == 0) && !fileinfo && !isBluray &&
+      m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams != nullptr &&
       m_pFormatContext->streams[0]->codecpar->codec_id != AV_CODEC_ID_HEVC)
   {
     av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
@@ -528,8 +538,9 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
     skipCreateStreams = true;
   }
   else if (!iformat || ((strcmp(iformat->name, "mpegts") != 0) ||
-           ((strcmp(iformat->name, "mpegts") == 0) &&
-            m_pFormatContext->streams[0]->codecpar->codec_id == AV_CODEC_ID_HEVC)))
+                        ((strcmp(iformat->name, "mpegts") == 0) &&
+                         m_pFormatContext->nb_streams > 0 && m_pFormatContext->streams != nullptr &&
+                         m_pFormatContext->streams[0]->codecpar->codec_id == AV_CODEC_ID_HEVC)))
   {
     m_streaminfo = true;
   }
@@ -918,6 +929,19 @@ AVDictionary* CDVDDemuxFFmpeg::GetFFMpegOptionsFromInput()
       urlStream << host << ':' << port;
 
       av_dict_set(&options, "http_proxy", urlStream.str().c_str(), 0);
+    }
+
+    // rtsp options
+    if (url.IsProtocol("rtsp"))
+    {
+      CVariant transportProp{m_pInput->GetProperty("rtsp_transport")};
+      if (!transportProp.isNull() &&
+          (transportProp == "tcp" || transportProp == "udp" || transportProp == "udp_multicast"))
+      {
+        CLog::LogF(LOGDEBUG, "GetFFMpegOptionsFromInput() Forcing rtsp transport protocol to '{}'",
+                   transportProp.asString());
+        av_dict_set(&options, "rtsp_transport", transportProp.asString().c_str(), 0);
+      }
     }
 
     // rtmp options
@@ -1835,7 +1859,23 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       }
     }
     if (langTag)
+    {
       stream->language = std::string(langTag->value, 3);
+      //! @FIXME: Matroska v4 support BCP-47 language code with LanguageIETF element
+      //! that have the priority over the Language element, but this is not currently
+      //! implemented in to ffmpeg library. Since ffmpeg read only the Language element
+      //! all tracks will be identified with same language (of Language element).
+      //! As workaround to allow set the right language code we provide the possibility
+      //! to set the language code in the title field, this allow to kodi to recognize
+      //! the right language and select the right track to be played at playback starts.
+      AVDictionaryEntry* title = av_dict_get(pStream->metadata, "title", NULL, 0);
+      if (title && title->value)
+      {
+        const std::string langCode = g_LangCodeExpander.FindLanguageCodeWithSubtag(title->value);
+        if (!langCode.empty())
+          stream->language = langCode;
+      }
+    }
 
     if (stream->type != STREAM_NONE && pStream->codecpar->extradata && pStream->codecpar->extradata_size > 0)
     {

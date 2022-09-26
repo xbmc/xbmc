@@ -43,7 +43,6 @@
 
 #include "CharsetConverter.h"
 #include "LangInfo.h"
-#include "Util.h"
 #include "utils/log.h"
 
 #include <algorithm>

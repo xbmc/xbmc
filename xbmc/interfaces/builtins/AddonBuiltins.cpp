@@ -8,11 +8,9 @@
 
 #include "AddonBuiltins.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
@@ -21,12 +19,14 @@
 #include "addons/RepositoryUpdater.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
+#include "application/Application.h"
 #include "filesystem/PluginDirectory.h"
 #include "games/tags/GameInfoTag.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "playlists/PlayListTypes.h"
 #include "utils/StringUtils.h"
 #include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
@@ -189,7 +189,7 @@ static int RunAddon(const std::vector<std::string>& params)
       else
         item = CFileItem(addon);
 
-      if (!g_application.PlayMedia(item, "", PLAYLIST_NONE))
+      if (!g_application.PlayMedia(item, "", PLAYLIST::TYPE_NONE))
       {
         CLog::Log(LOGERROR, "RunAddon could not start {}", addonid);
         return false;

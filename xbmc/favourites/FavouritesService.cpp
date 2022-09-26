@@ -284,11 +284,29 @@ std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std:
   else  // assume a media file
   {
     if (item.IsVideoDb() && item.HasVideoInfoTag())
+    {
+      std::string paramPlaylistTypeHint;
+      if (item.HasProperty("playlist_type_hint"))
+      {
+        paramPlaylistTypeHint =
+            ",playlist_type_hint=" + item.GetProperty("playlist_type_hint").asString();
+      }
       execute = StringUtils::Format(
-          "PlayMedia({})", UnicodeUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath));
+          "PlayMedia({}{})", UnicodeUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath),
+          paramPlaylistTypeHint);
+    }
     else if (item.IsMusicDb() && item.HasMusicInfoTag())
-      execute = StringUtils::Format("PlayMedia({})",
-                                    UnicodeUtils::Paramify(item.GetMusicInfoTag()->GetURL()));
+    {
+      std::string paramPlaylistTypeHint;
+      if (item.HasProperty("playlist_type_hint"))
+      {
+        paramPlaylistTypeHint =
+            ",playlist_type_hint=" + item.GetProperty("playlist_type_hint").asString();
+      }
+      execute = StringUtils::Format("PlayMedia({}{})",
+                                    UnicodeUtils::Paramify(item.GetMusicInfoTag()->GetURL()),
+                                    paramPlaylistTypeHint);
+    }
     else if (item.IsPicture())
       execute = StringUtils::Format("ShowPicture({})", UnicodeUtils::Paramify(item.GetPath()));
     else

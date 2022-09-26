@@ -18,7 +18,8 @@
 
 #include <algorithm>
 
-template<class T> void addISetting(const TiXmlNode *node, const T &item, std::vector<T> &items)
+template<class T>
+void addISetting(const TiXmlNode* node, const T& item, std::vector<T>& items, bool toBegin = false)
 {
   if (node != nullptr)
   {
@@ -51,7 +52,10 @@ template<class T> void addISetting(const TiXmlNode *node, const T &item, std::ve
     }
   }
 
-  items.push_back(item);
+  if (!toBegin)
+    items.emplace_back(item);
+  else
+    items.insert(items.begin(), item);
 }
 
 Logger CSettingGroup::s_logger;
@@ -267,7 +271,12 @@ bool CSettingCategory::CanAccess() const
 
 void CSettingCategory::AddGroup(const SettingGroupPtr& group)
 {
-  addISetting(nullptr, group, m_groups);
+  addISetting(nullptr, group, m_groups, false);
+}
+
+void CSettingCategory::AddGroupToFront(const SettingGroupPtr& group)
+{
+  addISetting(nullptr, group, m_groups, true);
 }
 
 void CSettingCategory::AddGroups(const SettingGroupList &groups)

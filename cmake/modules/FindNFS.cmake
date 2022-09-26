@@ -31,11 +31,6 @@ if(NOT LIBNFS_FOUND)
                    -DENABLE_UTILS=OFF
                    -DENABLE_EXAMPLES=OFF)
 
-    # Patch merged upstream. drop when a release > 5.0.1 occurs
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-fix-cmake-build.patch")
-
-    generate_patchcommand("${patches}")
-
     BUILD_DEP_TARGET()
 
     set(NFS_LIBRARY ${${MODULE}_LIBRARY})
@@ -43,7 +38,7 @@ if(NOT LIBNFS_FOUND)
   else()
     # Try pkgconfig based search. Linux may not have a version with cmake config installed
     if(PKG_CONFIG_FOUND)
-      pkg_check_modules(PC_NFS libnfs QUIET)
+      pkg_check_modules(PC_NFS libnfs>=3.0.0 QUIET)
     endif()
 
     find_path(NFS_INCLUDE_DIR nfsc/libnfs.h

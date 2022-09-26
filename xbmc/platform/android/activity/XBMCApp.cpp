@@ -9,9 +9,9 @@
 #include "XBMCApp.h"
 
 #include "AndroidKey.h"
-#include "AppParams.h"
-#include "Application.h"
 #include "CompileInfo.h"
+#include "application/AppParams.h"
+#include "application/Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -63,6 +63,7 @@
 #include <crossguid/guid.hpp>
 #include <dlfcn.h>
 #include <jni.h>
+#include <rapidjson/document.h>
 #include <unistd.h>
 // Audio Engine includes for Factory and interfaces
 #include "GUIInfoManager.h"
@@ -971,9 +972,25 @@ std::vector<androidPackage> CXBMCApp::GetApplications() const
   return m_applications;
 }
 
-// Note intent, dataType, dataURI all default to ""
-bool CXBMCApp::StartActivity(const std::string &package, const std::string &intent, const std::string &dataType, const std::string &dataURI)
+// Note intent, dataType, dataURI, action, category, flags, extras all default to ""
+bool CXBMCApp::StartActivity(const std::string& package,
+                             const std::string& intent,
+                             const std::string& dataType,
+                             const std::string& dataURI,
+                             const std::string& flags,
+                             const std::string& extras,
+                             const std::string& action,
+                             const std::string& category)
 {
+  CLog::LogF(LOGDEBUG, "package: {}", package);
+  CLog::LogF(LOGDEBUG, "intent: {}", intent);
+  CLog::LogF(LOGDEBUG, "dataType: {}", dataType);
+  CLog::LogF(LOGDEBUG, "dataURI: {}", dataURI);
+  CLog::LogF(LOGDEBUG, "flags: {}", flags);
+  CLog::LogF(LOGDEBUG, "extras: {}", extras);
+  CLog::LogF(LOGDEBUG, "action: {}", action);
+  CLog::LogF(LOGDEBUG, "category: {}", category);
+
   CJNIIntent newIntent = intent.empty() ?
     GetPackageManager().getLaunchIntentForPackage(package) :
     CJNIIntent(intent);
@@ -993,11 +1010,59 @@ bool CXBMCApp::StartActivity(const std::string &package, const std::string &inte
     newIntent.setDataAndType(jniURI, dataType);
   }
 
+  if (!action.empty())
+    newIntent.setAction(action);
+
+  if (!category.empty())
+    newIntent.addCategory(category);
+
+  if (!flags.empty())
+  {
+    try
+    {
+      newIntent.setFlags(std::stoi(flags));
+    }
+    catch (const std::exception& e)
+    {
+      CLog::LogF(LOGDEBUG, "Invalid flags given, ignore them");
+    }
+  }
+
+  if (!extras.empty())
+  {
+    rapidjson::Document doc;
+    doc.Parse(extras.c_str());
+    if (!doc.IsArray())
+    {
+      CLog::LogF(LOGDEBUG, "Invalid intent extras format: Needs to be an array");
+      return false;
+    }
+
+    for (auto& e : doc.GetArray())
+    {
+      if (!e.IsObject() || !e.HasMember("type") || !e.HasMember("key") || !e.HasMember("value"))
+      {
+        CLog::LogF(LOGDEBUG, "Invalid intent extras value format");
+        continue;
+      }
+
+      if (e["type"] == "string")
+      {
+        newIntent.putExtra(e["key"].GetString(), e["value"].GetString());
+        CLog::LogF(LOGDEBUG, "Putting extra key: {}, value: {}", e["key"].GetString(),
+                   e["value"].GetString());
+      }
+      else
+        CLog::LogF(LOGDEBUG, "Intent extras data type ({}) not implemented", e["type"].GetString());
+    }
+  }
+
   newIntent.setPackage(package);
   startActivity(newIntent);
   if (xbmc_jnienv()->ExceptionCheck())
   {
-    CLog::Log(LOGERROR, "CXBMCApp::StartActivity - ExceptionOccurred launching {}", package);
+    CLog::LogF(LOGERROR, "ExceptionOccurred launching {}", package);
+    xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
     return false;
   }

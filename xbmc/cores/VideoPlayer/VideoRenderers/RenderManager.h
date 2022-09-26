@@ -48,7 +48,7 @@ protected:
   virtual void UpdateRenderBuffers(int queued, int discard, int free) = 0;
   virtual void UpdateGuiRender(bool gui) = 0;
   virtual void UpdateVideoRender(bool video) = 0;
-  virtual CVideoSettings GetVideoSettings() = 0;
+  virtual CVideoSettings GetVideoSettings() const = 0;
 };
 
 class CRenderManager

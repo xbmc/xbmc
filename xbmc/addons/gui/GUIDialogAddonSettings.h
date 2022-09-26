@@ -44,5 +44,6 @@ protected:
 
 private:
   ADDON::AddonPtr m_addon;
+  ADDON::AddonInstanceId m_instanceId{ADDON::ADDON_SETTINGS_ID};
   bool m_saveToDisk = false;
 };

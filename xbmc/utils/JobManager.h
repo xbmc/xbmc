@@ -327,10 +327,9 @@ protected:
 
   /*!
    \brief Get a new job to process. Blocks until a new job is available, or a timeout has occurred.
-   \param worker a pointer to the current CJobWorker instance requesting a job.
    \sa CJob
    */
-  CJob *GetNextJob(const CJobWorker *worker);
+  CJob* GetNextJob();
 
   /*!
    \brief Callback from CJobWorker after a job has completed.

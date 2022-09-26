@@ -8,12 +8,12 @@
 
 #include "guilib/guiinfo/SystemGUIInfo.h"
 
-#include "AppParams.h"
-#include "Application.h"
 #include "GUIPassword.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "application/AppParams.h"
+#include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -29,6 +29,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
@@ -183,14 +184,23 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
     case SYSTEM_SCREEN_RESOLUTION:
     {
-      RESOLUTION_INFO& resInfo = CDisplaySettings::GetInstance().GetCurrentResolutionInfo();
-      if (CServiceBroker::GetWinSystem()->IsFullScreen())
-        value =
-            StringUtils::Format("{}x{}@{:.2f}Hz - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
-                                resInfo.fRefreshRate, g_localizeStrings.Get(244));
+      const auto winSystem = CServiceBroker::GetWinSystem();
+      if (winSystem)
+      {
+        const RESOLUTION_INFO& resInfo = winSystem->GetGfxContext().GetResInfo();
+
+        if (winSystem->IsFullScreen())
+          value = StringUtils::Format("{}x{} @ {:.2f} Hz - {}", resInfo.iScreenWidth,
+                                      resInfo.iScreenHeight, resInfo.fRefreshRate,
+                                      g_localizeStrings.Get(244));
+        else
+          value = StringUtils::Format("{}x{} - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
+                                      g_localizeStrings.Get(242));
+      }
       else
-        value = StringUtils::Format("{}x{} - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
-                                    g_localizeStrings.Get(242));
+      {
+        value = "";
+      }
       return true;
     }
     case SYSTEM_BUILD_VERSION_SHORT:
@@ -684,6 +694,15 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
           value = CMediaSettings::GetInstance().GetWatchedMode(window->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
           return true;
         }
+      }
+      else if (StringUtils::EqualsNoCase(info.GetData3(), "hideunwatchedepisodethumbs"))
+      {
+        const std::shared_ptr<CSettingList> setting(std::dynamic_pointer_cast<CSettingList>(
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+                CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)));
+        value = setting && !CSettingUtils::FindIntInList(
+                               setting, CSettings::VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE);
+        return true;
       }
       break;
     }

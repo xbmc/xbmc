@@ -18,11 +18,7 @@
 
 CMouseStat::CMouseStat()
 {
-  m_pointerState = MOUSE_STATE_NORMAL;
   SetEnabled();
-  m_speedX = m_speedY = 0;
-  m_maxX = m_maxY = 0;
-  memset(&m_mouseState, 0, sizeof(m_mouseState));
   m_Key = KEY_MOUSE_NOOP;
 }
 
@@ -34,7 +30,7 @@ void CMouseStat::Initialize()
   SetResolution(720, 576, 1, 1);
 }
 
-void CMouseStat::HandleEvent(XBMC_Event& newEvent)
+void CMouseStat::HandleEvent(const XBMC_Event& newEvent)
 {
   // Save the mouse position and the size of the last move
   int dx, dy;
@@ -186,6 +182,8 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
         case HoldAction::DRAG_END:
           m_Key = KEY_MOUSE_DRAG_END;
           break;
+        default:
+          break;
       }
     }
     else if (m_hold[MOUSE_RIGHT_BUTTON] != HoldAction::NONE)
@@ -200,6 +198,8 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
           break;
         case HoldAction::DRAG_END:
           m_Key = KEY_MOUSE_RDRAG_END;
+          break;
+        default:
           break;
       }
     }

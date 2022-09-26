@@ -8,12 +8,12 @@
 
 #include "SkinBuiltins.h"
 
-#include "Application.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogColorPicker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"

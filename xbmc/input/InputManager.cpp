@@ -8,9 +8,6 @@
 
 #include "InputManager.h"
 
-#include "AppInboundProtocol.h"
-#include "AppParamParser.h"
-#include "Application.h"
 #include "ButtonTranslator.h"
 #include "CustomControllerTranslator.h"
 #include "IRTranslator.h"
@@ -20,6 +17,9 @@
 #include "TouchTranslator.h"
 #include "Util.h"
 #include "XBMC_vkeys.h"
+#include "application/AppInboundProtocol.h"
+#include "application/AppParamParser.h"
+#include "application/Application.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControl.h"

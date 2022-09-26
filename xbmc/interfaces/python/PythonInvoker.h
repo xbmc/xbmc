@@ -61,12 +61,10 @@ protected:
 private:
   void initializeModules(const std::map<std::string, PythonModuleInitialization>& modules);
   bool initializeModule(PythonModuleInitialization module);
-  void addPath(const std::string& path); // add path in UTF-8 encoding
   void getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths);
-  bool execute(const std::string& script, const std::vector<std::wstring>& arguments);
+  bool execute(const std::string& script, std::vector<std::wstring>& arguments);
   FILE* PyFile_AsFileWithMode(PyObject* py_file, const char* mode);
 
-  std::string m_pythonPath;
   PyThreadState* m_threadState;
   bool m_stop;
   CEvent m_stoppedEvent;

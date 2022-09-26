@@ -27,6 +27,20 @@ public:
     ENGLISH_NAME
   };
 
+  enum class LANG_LIST
+  {
+    // Standard ISO
+    DEFAULT,
+    // Standard ISO + Language addons
+    INCLUDE_ADDONS,
+    // Standard ISO + User defined
+    // (User defined can override language name of existing codes)
+    INCLUDE_USERDEFINED,
+    // Standard ISO + Language addons + User defined
+    // (User defined can override language name of existing codes)
+    INCLUDE_ADDONS_USERDEFINED,
+  };
+
   void LoadUserCodes(const TiXmlElement* pRootElement);
   void Clear();
 
@@ -102,22 +116,50 @@ public:
   */
   std::string ConvertToISO6392T(const std::string& lang);
 
+  /*
+   * \brief Find a language code with subtag (e.g. zh-tw, zh-Hans) in to a string.
+   *        This function find a limited set of IETF BCP47 specs, so:
+   *        language tag + region subtag, or, language tag + script subtag.
+   *        The language code can be found also if wrapped with round brackets.
+   * \param str The string where find the language code.
+   * \return The language code found in the string, otherwise empty string
+   */
+  static std::string FindLanguageCodeWithSubtag(const std::string& str);
+
 #ifdef TARGET_WINDOWS
   static bool ConvertISO31661Alpha2ToISO31661Alpha3(const std::string& strISO31661Alpha2, std::string& strISO31661Alpha3);
   static bool ConvertWindowsLanguageCodeToISO6392B(const std::string& strWindowsLanguageCode, std::string& strISO6392B);
 #endif
 
-  std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1, bool customNames = false);
-protected:
+  /*
+   * \brief Get the list of language names.
+   * \param format [OPT] The format type.
+   * \param list [OPT] The type of language list to retrieve.
+   * \return The languages
+   */
+  std::vector<std::string> GetLanguageNames(LANGFORMATS format = ISO_639_1,
+                                            LANG_LIST list = LANG_LIST::DEFAULT);
 
-  /** \brief Converts a language code given as a long, see #MAKECODE(a, b, c, d)
-  *          to its string representation.
-  *   \param[in] code The language code given as a long, see #MAKECODE(a, b, c, d).
-  *   \param[out] ret The string representation of the given language code code.
-  */
-  static void CodeToString(long code, std::string& ret);
+protected:
+  /*
+   * \brief Converts a language code given as a long, see #MAKECODE(a, b, c, d)
+   *        to its string representation.
+   * \param[in] code The language code given as a long, see #MAKECODE(a, b, c, d).
+   * \return The string representation of the given language code code.
+   */
+  static std::string CodeToString(long code);
 
   static bool LookupInISO639Tables(const std::string& code, std::string& desc);
+
+  /*
+   * \brief Looks up the language description for given language code
+   *        in to the installed language addons.
+   * \param[in] code The language code for which description is looked for.
+   * \param[out] desc The english language name.
+   * \return true if the language description was found, false otherwise.
+   */
+  static bool LookupInLangAddons(const std::string& code, std::string& desc);
+
   bool LookupInUserMap(const std::string& code, std::string& desc);
 
   /** \brief Looks up the ISO 639-1, ISO 639-2/T, or ISO 639-2/B, whichever it finds first,

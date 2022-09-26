@@ -8,10 +8,10 @@
 
 #include "WinEventsWin10.h"
 
-#include "AppInboundProtocol.h"
-#include "Application.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "application/AppInboundProtocol.h"
+#include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"

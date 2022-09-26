@@ -28,6 +28,7 @@ namespace ADDON
 {
 
 class IAddon;
+class IAddonInstanceHandler;
 
 class CAddonSettings : public CSettingsBase,
                        public CSettingCreator,
@@ -35,7 +36,7 @@ class CAddonSettings : public CSettingsBase,
                        public ISettingCallback
 {
 public:
-  explicit CAddonSettings(const std::shared_ptr<const IAddon>& addon);
+  CAddonSettings(const std::shared_ptr<const IAddon>& addon, AddonInstanceId instanceId);
   ~CAddonSettings() override = default;
 
   // specialization of CSettingsBase
@@ -79,6 +80,7 @@ protected:
   bool InitializeDefinitions() override { return false; }
 
 private:
+  bool AddInstanceSettings();
   bool InitializeDefinitions(const CXBMCTinyXML& doc);
 
   bool ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& version) const;
@@ -184,6 +186,7 @@ private:
   const std::string m_addonId;
   const std::string m_addonPath;
   const std::string m_addonProfile;
+  const AddonInstanceId m_instanceId{ADDON_SETTINGS_ID};
 
   uint32_t m_unidentifiedSettingId;
   int m_unknownSettingLabelId;

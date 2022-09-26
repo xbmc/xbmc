@@ -19,6 +19,7 @@
 #include "utils/UnicodeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "windowing/Resolution.h"
 
 CInputStreamProvider::CInputStreamProvider(const ADDON::AddonInfoPtr& addonInfo,
                                            KODI_HANDLE parentInstance)
@@ -45,7 +46,8 @@ CInputStreamAddon::CInputStreamAddon(const AddonInfoPtr& addonInfo,
                                      IVideoPlayer* player,
                                      const CFileItem& fileitem,
                                      const std::string& instanceId)
-  : IAddonInstanceHandler(ADDON_INSTANCE_INPUTSTREAM, addonInfo, nullptr, instanceId),
+  : IAddonInstanceHandler(
+        ADDON_INSTANCE_INPUTSTREAM, addonInfo, ADDON_INSTANCE_ID_UNUSED, nullptr, instanceId),
     CDVDInputStream(DVDSTREAM_TYPE_ADDON, fileitem),
     m_player(player)
 {
@@ -176,11 +178,7 @@ bool CInputStreamAddon::Open()
   props.m_libFolder = libFolder.c_str();
   props.m_profileFolder = profileFolder.c_str();
 
-  unsigned int videoWidth = 1280;
-  unsigned int videoHeight = 720;
-  if (m_player)
-    m_player->GetVideoResolution(videoWidth, videoHeight);
-  SetVideoResolution(videoWidth, videoHeight);
+  DetectScreenResolution();
 
   bool ret = m_ifc.inputstream->toAddon->open(m_ifc.inputstream, &props);
   if (ret)
@@ -283,6 +281,10 @@ int CInputStreamAddon::GetTime()
 // ITime
 CDVDInputStream::ITimes* CInputStreamAddon::GetITimes()
 {
+  // Check if screen resolution is changed during playback
+  // e.g. window resized and callback to add-on
+  DetectScreenResolution();
+
   if ((m_caps.m_mask & INPUTSTREAM_SUPPORTS_ITIME) == 0)
     return nullptr;
 
@@ -389,7 +391,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
   AVCodec* codec = nullptr;
 
   if (stream->m_streamType != INPUTSTREAM_TYPE_TELETEXT &&
-      stream->m_streamType != INPUTSTREAM_TYPE_RDS)
+      stream->m_streamType != INPUTSTREAM_TYPE_RDS && stream->m_streamType != INPUTSTREAM_TYPE_ID3)
   {
     UnicodeUtils::FoldCase(codecName);
     codec = avcodec_find_decoder_by_name(codecName.c_str());
@@ -498,6 +500,11 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
     CDemuxStreamRadioRDS* rdsStream = new CDemuxStreamRadioRDS();
     demuxStream = rdsStream;
   }
+  else if (stream->m_streamType == INPUTSTREAM_TYPE_ID3)
+  {
+    CDemuxStreamAudioID3* id3Stream = new CDemuxStreamAudioID3();
+    demuxStream = id3Stream;
+  }
   else
     return nullptr;
 
@@ -605,10 +612,14 @@ void CInputStreamAddon::FlushDemux()
     m_ifc.inputstream->toAddon->demux_flush(m_ifc.inputstream);
 }
 
-void CInputStreamAddon::SetVideoResolution(int width, int height)
+void CInputStreamAddon::SetVideoResolution(unsigned int width,
+                                           unsigned int height,
+                                           unsigned int maxWidth,
+                                           unsigned int maxHeight)
 {
   if (m_ifc.inputstream->toAddon->set_video_resolution)
-    m_ifc.inputstream->toAddon->set_video_resolution(m_ifc.inputstream, width, height);
+    m_ifc.inputstream->toAddon->set_video_resolution(m_ifc.inputstream, width, height, maxWidth,
+                                                     maxHeight);
 }
 
 bool CInputStreamAddon::IsRealtime()
@@ -697,8 +708,45 @@ int CInputStreamAddon::ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile)
     return FF_PROFILE_VP9_2;
   case VP9CodecProfile3:
     return FF_PROFILE_VP9_3;
+  case AV1CodecProfileMain:
+    return FF_PROFILE_AV1_MAIN;
+  case AV1CodecProfileHigh:
+    return FF_PROFILE_AV1_HIGH;
+  case AV1CodecProfileProfessional:
+    return FF_PROFILE_AV1_PROFESSIONAL;
   default:
     return FF_PROFILE_UNKNOWN;
+  }
+}
+
+void CInputStreamAddon::DetectScreenResolution()
+{
+  unsigned int videoWidth{1280};
+  unsigned int videoHeight{720};
+  if (m_player)
+  {
+    m_player->GetVideoResolution(videoWidth, videoHeight);
+  }
+  if (m_currentVideoWidth != videoWidth || m_currentVideoHeight != videoHeight)
+  {
+    unsigned int maxWidth{videoWidth};
+    unsigned int maxHeight{videoHeight};
+    // For Adaptive stream technology is needed to know the screen resolution
+    // one parameter used to fit stream resolution to screen resolution.
+    // Currently we provide current GUI resolution, but if Adjust refresh rate
+    // is enabled the GUI resolution is no longer relevant, Adjust refresh rate
+    // will change screen resolution based on whitelist (if any) and only after
+    // that have the video stream in the demuxer, therefore will fail because
+    // the addon has as reference the GUI resolution.
+    // So we have to provide the max resolution info before the playback take place
+    // in order to allow addon to provide in the demuxer the best stream resolution
+    // that can fit the supported screen resolution (changed when playback start).
+    CResolutionUtils::GetMaxAllowedResolution(maxWidth, maxHeight);
+
+    SetVideoResolution(videoWidth, videoHeight, maxWidth, maxHeight);
+
+    m_currentVideoWidth = videoWidth;
+    m_currentVideoHeight = videoHeight;
   }
 }
 

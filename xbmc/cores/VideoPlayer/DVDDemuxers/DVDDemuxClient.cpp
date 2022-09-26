@@ -573,6 +573,30 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     map[stream->uniqueId] = streamRDS;
     toStream = streamRDS;
   }
+  else if (stream->type == STREAM_AUDIO_ID3)
+  {
+    CDemuxStreamAudioID3* source = dynamic_cast<CDemuxStreamAudioID3*>(stream);
+
+    if (!source)
+    {
+      CLog::Log(LOGERROR, "CDVDDemuxClient::RequestStream - invalid audio ID3 stream with id {}",
+                stream->uniqueId);
+      DisposeStreams();
+      return;
+    }
+
+    std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStreamAudioID3>> streamID3;
+    if (currentStream)
+      streamID3 = std::dynamic_pointer_cast<CDemuxStreamClientInternalTpl<CDemuxStreamAudioID3>>(
+          currentStream);
+    if (!streamID3 || streamID3->codec != source->codec)
+    {
+      streamID3 = std::make_shared<CDemuxStreamClientInternalTpl<CDemuxStreamAudioID3>>();
+    }
+
+    map[stream->uniqueId] = streamID3;
+    toStream = streamID3;
+  }
   else
   {
     std::shared_ptr<CDemuxStreamClientInternalTpl<CDemuxStream>> streamGen;
@@ -724,11 +748,11 @@ void CDVDDemuxClient::OpenStream(int id)
   }
 }
 
-void CDVDDemuxClient::SetVideoResolution(int width, int height)
+void CDVDDemuxClient::SetVideoResolution(unsigned int width, unsigned int height)
 {
   if (m_IDemux)
   {
-    m_IDemux->SetVideoResolution(width, height);
+    m_IDemux->SetVideoResolution(width, height, width, height);
   }
 }
 

@@ -397,27 +397,29 @@ namespace PVR
 
     /*!
      * @brief Wait until at least one client is up. Update all data from database and the given PVR clients.
-     * @param knownClients [inout] List of last known active clients.
      * @param stateToCheck Required state of the PVR manager while this method gets called.
      */
-    void UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& knownClients,
-                          ManagerState stateToCheck);
+    void UpdateComponents(ManagerState stateToCheck);
 
     /*!
      * @brief Update all data from database and the given PVR clients.
-     * @param knownClients [inout] List of last known active clients.
      * @param stateToCheck Required state of the PVR manager while this method gets called.
      * @param progressHandler The progress handler to use for showing the different stages.
      * @return True if at least one client is known and successfully loaded, false otherwise.
      */
-    bool UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& knownClients,
-                          ManagerState stateToCheck,
+    bool UpdateComponents(ManagerState stateToCheck,
                           const std::unique_ptr<CPVRGUIProgressHandler>& progressHandler);
 
     /*!
      * @brief Unload all PVR data (recordings, timers, channelgroups).
      */
     void UnloadComponents();
+
+    /*!
+     * @brief Check whether the given client id belongs to a known client.
+     * @return True if the client is known, false otherwise.
+     */
+    bool IsKnownClient(int clientID) const;
 
     /*!
      * @brief Reset all properties.
@@ -450,6 +452,7 @@ namespace PVR
     CPVREpgContainer m_epgContainer; /*!< the epg container */
     //@}
 
+    std::vector<std::shared_ptr<CPVRClient>> m_knownClients; /*!< vector with all known clients */
     std::unique_ptr<CPVRManagerJobQueue> m_pendingUpdates; /*!< vector of pending pvr updates */
     std::shared_ptr<CPVRDatabase> m_database; /*!< the database for all PVR related data */
     mutable CCriticalSection m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */

@@ -8,9 +8,9 @@
 
 #include "Win10App.h"
 
-#include "AppParamParser.h"
-#include "AppParams.h"
-#include "Application.h"
+#include "application/AppParamParser.h"
+#include "application/AppParams.h"
+#include "application/Application.h"
 #include "pch.h"
 #include "platform/Environment.h"
 #include "platform/xbmc.h"

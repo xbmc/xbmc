@@ -8,10 +8,10 @@
 
 #include "SettingsComponent.h"
 
-#include "AppParams.h"
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "application/AppParams.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #ifdef TARGET_DARWIN_EMBEDDED

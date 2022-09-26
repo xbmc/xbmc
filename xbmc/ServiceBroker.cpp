@@ -8,7 +8,7 @@
 
 #include "ServiceBroker.h"
 
-#include "Application.h"
+#include "application/Application.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
@@ -213,7 +213,7 @@ CNetworkBase& CServiceBroker::GetNetwork()
   return g_application.m_ServiceManager->GetNetwork();
 }
 
-bool CServiceBroker::IsBinaryAddonCacheUp()
+bool CServiceBroker::IsAddonInterfaceUp()
 {
   return g_application.m_ServiceManager && g_application.m_ServiceManager->init_level > 1;
 }

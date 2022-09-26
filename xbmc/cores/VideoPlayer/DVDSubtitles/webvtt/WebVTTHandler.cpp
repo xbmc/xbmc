@@ -489,7 +489,7 @@ void CWebVTTHandler::DecodeLine(std::string line, std::vector<subtitleData>* sub
       std::string colorRGB = GetCueCssValue("colorRGB", line);
       if (!colorRGB.empty()) // From CSS Color numeric R,G,B values
       {
-        auto intValues = UnicodeUtils::Split(colorRGB, ","sv);
+        const auto intValues = UnicodeUtils::Split(colorRGB, ","sv);
         uint32_t color = UTILS::COLOR::ConvertIntToRGB(
             std::stoi(intValues[2]), std::stoi(intValues[1]), std::stoi(intValues[0]));
         m_feedCssStyle.m_color = StringUtils::Format("{:6x}", color);
@@ -913,7 +913,7 @@ void CWebVTTHandler::ConvertSubtitle(std::string& text)
 	  {
       CLog::Log(LOGWARNING, "CWebVTTHandler::ConvertSubtitle fullTag is non-ASCII: {}\n", token);
     }
-	  tag.m_token = UnicodeUtils::FoldCase(token);
+	tag.m_token = UnicodeUtils::FoldCase(token);
     tag.m_isClosing = m_tagsRegex.GetMatch(1) == "/";
 
     if (!m_tagsRegex.GetMatch(2).empty())
@@ -1161,8 +1161,8 @@ double CWebVTTHandler::GetTimeFromRegexTS(CRegExp& regex, int indexStart /* = 1 
 {
   int sHours = 0;
   if (!regex.GetMatch(indexStart).empty())
-    sHours = std::stoi(regex.GetMatch(indexStart).c_str());
-  int sMinutes = std::stoi(regex.GetMatch(indexStart + 1).c_str());
-  int sSeconds = std::atof(regex.GetMatch(indexStart + 2).c_str());
+    sHours = std::stoi(regex.GetMatch(indexStart));
+  int sMinutes = std::stoi(regex.GetMatch(indexStart + 1));
+  double sSeconds = std::stod(regex.GetMatch(indexStart + 2));
   return (static_cast<double>(sHours * 3600 + sMinutes * 60) + sSeconds) * DVD_TIME_BASE;
 }

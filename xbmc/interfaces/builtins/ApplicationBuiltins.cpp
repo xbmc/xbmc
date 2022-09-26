@@ -8,8 +8,8 @@
 
 #include "ApplicationBuiltins.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
 #include "filesystem/ZipManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -87,7 +87,7 @@ static int NotifyAll(const std::vector<std::string>& params)
 
 /*! \brief Set volume.
  *  \param params the parameters.
- *  \details params[0] = Volume level.
+ *  \details params[0] = Volume level.
  *           params[1] = "showVolumeBar" to show volume bar (optional).
  */
 static int SetVolume(const std::vector<std::string>& params)

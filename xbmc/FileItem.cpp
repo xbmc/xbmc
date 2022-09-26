@@ -1127,7 +1127,7 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
     return true;
   }
 
-  if (CServiceBroker::IsBinaryAddonCacheUp() &&
+  if (CServiceBroker::IsAddonInterfaceUp() &&
       IsType(CServiceBroker::GetFileExtensionProvider().GetFileFolderExtensions().c_str()) &&
       CServiceBroker::GetFileExtensionProvider().CanOperateExtension(m_strPath))
     return true;
@@ -3951,4 +3951,9 @@ bool CFileItem::GetCurrentResumeTimeAndPartNumber(int64_t& startOffset, int& par
     return true;
   }
   return false;
+}
+
+bool CFileItem::IsResumable() const
+{
+  return (!IsNFO() && !IsPlayList()) || IsType(".strm");
 }
