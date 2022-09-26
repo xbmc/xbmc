@@ -65,12 +65,14 @@ public class Splash extends Activity
   private static final int CheckingPermissionsDone = 10;
   private static final int CheckingPermissionsInfo = 11;
   private static final int CheckExternalStorage = 12;
+  private static final int RecordAudioPermission = 13;
   private static final int DownloadingObb = 90;
   private static final int DownloadObbDone = 91;
   private static final int StartingXBMC = 99;
 
   private static final String TAG = "@APP_NAME@";
 
+  private static final int RECORDAUDIO_RESULT_CODE = 8946;
   private static final int PERMISSION_RESULT_CODE = 8947;
 
   private String mCpuinfo = "";
@@ -127,15 +129,19 @@ public class Splash extends Activity
             @Override
             public void onClick(DialogInterface dialog, int which)
             {
-              mStateMachine.sendEmptyMessage(CheckingPermissions);
+              mStateMachine.sendEmptyMessage(RecordAudioPermission);
             }
           });
           dialog.show();
           break;
-        case CheckingPermissions:
+        case RecordAudioPermission:
           mSplash.mTextView.setText("Asking for permissions...");
           mSplash.mProgress.setVisibility(View.INVISIBLE);
 
+          requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},
+                  RECORDAUDIO_RESULT_CODE);
+          break;
+        case CheckingPermissions:
           if ((Build.VERSION.SDK_INT >= 30) && !isAndroidTV())
           {
             try
@@ -786,9 +792,14 @@ public class Splash extends Activity
         {
           mPermissionOK = true;
         }
+        mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
+        break;
+      }
+      case RECORDAUDIO_RESULT_CODE:
+      {
+        mStateMachine.sendEmptyMessage(CheckingPermissions);
       }
     }
-    mStateMachine.sendEmptyMessage(CheckingPermissionsDone);
   }
 
   @Override
