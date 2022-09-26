@@ -16,6 +16,7 @@ NATIVE= \
   heimdal \
   JsonSchemaBuilder \
   libjpeg-turbo \
+  libicu \
   liblzo2 \
   libpng \
   libtool \

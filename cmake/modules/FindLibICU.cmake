@@ -115,9 +115,11 @@ macro(configure)
       U_NO_DEFAULT_INCLUDE_UTF_HEADERS=1
       UNISTR_FROM_CHAR_EXPLICIT=explicit
       UNISTR_FROM_STRING_EXPLICIT=explicit
-      UCONFIG_NO_LEGACY_CONVERSION=0
+      UCONFIG_NO_LEGACY_CONVERSION=1
       UNISTR_OBJECT_SIZE=256)
 
+  message("BUILD_ENV_VARS: ${BUILD_ENV_VARS}")
+  
   set(ConfigArgs
       --disable-draft
       --disable-extras
@@ -128,7 +130,20 @@ macro(configure)
       --disable-tests
       --enable-tools
       --with-data-packaging=library)
+  message("ConfigArgs: ${ConfigArgs}")
 
+ if(ANDROID)
+    set(library_suffix .so)
+    list(APPEND ConfigArgs --with-library-suffix="${library_suffix}")
+    #list(APPEND CMAKE_C_FLAGS
+    #     -fno-short-wchar
+    #     -fno-short-enums
+    #     -ffunction-sections
+    #     -fdata-sections 
+    #     -fvisibility=hidden)
+    message("ANDROID ConfigArgs: ${ConfigArgs}")   
+  endif()
+  
   if(ENABLE_INTERNAL_LIBICU) # Build our own instead of using system libicu
     set(SYSTEM_ICU OFF)
   else()
@@ -141,6 +156,8 @@ macro(configure)
     list(APPEND ConfigArgs --disable-debug --enable-release)
   endif()
 
+  message("ConfigArgs: ${ConfigArgs}")
+  
   # By default, every function call is renamed with a version suffix to
   # guarantee that you link with same version you compiled with. Complicates
   # finding symbols with IDE, etc. Note that this setting impacts both the
@@ -162,6 +179,9 @@ macro(configure)
     add_compile_definitions(INTERFACE PUBLIC U_DISABLE_RENAMING=1)
   endif()
 
+  message("ConfigArgs: ${ConfigArgs}")
+  message("BUILD_ENV_VARS: ${BUILD_ENV_VARS}")
+  
   if(LIBICU_LIB_TYPE STREQUAL SHARED)
     list(APPEND ConfigArgs --enable-shared)
     list(APPEND BUILD_ENV_VARS ICU_STATIC=NO)
@@ -170,6 +190,8 @@ macro(configure)
     list(APPEND BUILD_ENV_VARS ICU_STATIC=YES)
   endif()
 
+  message("ConfigArgs: ${ConfigArgs}")
+  message("BUILD_ENV_VARS: ${BUILD_ENV_VARS}")
   message("CMAKE_SHARED_LINKER_FLAGS: ${CMAKE_SHARED_LINKER_FLAGS}")
   message("CMAKE_LINKER_FLAGS: ${CMAKE_LINKER_FLAGS}")
   message("CMAKE_EXE_LINKER_FLAGS: ${CMAKE_EXE_LINKER_FLAGS}")
@@ -199,6 +221,7 @@ macro(configure)
   set(LIBICU_OPTIONS
       -DENABLE_CCACHE=${ENABLE_CCACHE} -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
       -DEXTRA_FLAGS=${LIBICU_EXTRA_FLAGS} -DLIBICU_LIB_TYPE=${LIBICU_LIB_TYPE})
+  message("FindLIBICU KODI_DEPENDSBUILD: ${KODI_DEPENDSBUILD}")
   if(KODI_DEPENDSBUILD)
     message("KODI_DEPENDSBUILD")
     set(CROSS_ARGS
@@ -207,6 +230,7 @@ macro(configure)
         -DCROSSCOMPILING=${CMAKE_CROSSCOMPILING}
         -DOS=${OS}
         -DCMAKE_AR=${CMAKE_AR})
+    message("CROSS_ARGS: ${CROSS_ARGS}")
   endif()
 
   if(VERBOSE)
@@ -265,7 +289,7 @@ macro(configure)
   list(APPEND BUILD_ENVIRON_VARS CFLAGS=${CMAKE_C_FLAGS}
        CXX_FLAGS=${CMAKE_CXX_FLAGS} PKG_CONFIG=${PKG_CONFIG_EXECUTABLE}
        LDFLAGS=${LIBICU_SHARED_LINKER_FLAGS})
-  list(APPEND BUILD_ENV_VARS ${icu_config_env})
+  # list(APPEND BUILD_ENV_VARS ${icu_config_env})
 
   if(APPLE)
     set(LIBICU_LDFLAGS "-framework CoreFoundation")
@@ -314,6 +338,10 @@ macro(configure)
         ${ConfigArgs} BUILD_COMMAND) # Runs make to build after the download and
                                      # config.
 
+    cmake_print_variables(CONFIGURE_COMMAND)
+   
+    cmake_print_variables(CMAKE_ARGS)
+    
     # set(BUILD_COMMAND "/usr/bin/bash ls -l
     # ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include")
 

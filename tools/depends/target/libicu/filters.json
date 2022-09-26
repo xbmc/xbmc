@@ -1,0 +1,141 @@
+{
+	"localeFilter": {
+		"filterType": "locale",
+		"includeChildren": "false",
+		"includelist": [
+			"af_ZA",
+			"am_ET",
+			"ar_SA",
+			"ast_ES",
+			"az_AZ",
+			"be_BY",
+			"bg_BG",
+			"bs_BA",
+			"ca_ES",
+			"cs_CZ",
+			"cy_GB",
+			"da_DK",
+			"de_DE",
+			"el_GR",
+			"en_AU",
+			"en_NZ",
+			"en_US",
+			"eo",
+			"es_AR",
+			"es_ES",
+			"es_MX",
+			"et_EE",
+			"eu_ES",
+			"fa_AF",
+			"fa_IR",
+			"fi_FI",
+			"fil",
+			"fo_FO",
+			"fr_CA",
+			"fr_FR",
+			"gl_ES",
+			"he_IL",
+			"hi_IN",
+			"hr_HR",
+			"hu_HU",
+			"hy_AM",
+			"id_ID",
+			"is_IS",
+			"it_IT",
+			"ja_JP",
+			"kn_IN",
+			"ko_KR",
+			"lt_LT",
+			"lv_LV",
+			"mi",
+			"mk_MK",
+			"ml_IN",
+			"mn_MN",
+			"ms_MY",
+			"mt_MT",
+			"my_MM",
+			"nb_NO",
+			"nl_NL",
+			"os_OS",
+			"pl_PL",
+			"pt_BR",
+			"pt_PT",
+			"ro_RO",
+			"ru_RU",
+			"si_LK",
+			"sk_SK",
+			"sl_SI",
+			"sq_AL",
+			"sr_RS",
+			"sr_RS@latin",
+			"sv_SE",
+			"szl",
+			"ta_IN",
+			"te_IN",
+			"tg_TJ",
+			"th_TH",
+			"tr_TR",
+			"uk_UA",
+			"uz_UZ",
+			"vi_VN",
+			"zh_CN",
+			"zh_TW"
+		]
+	},
+	"resourceFilters": [
+		{
+			"categories": [
+				"unit_tree"
+			],
+			"rules": [
+				"-/units",
+				"+/units/digitial",
+				"+/units/duration",
+				"+/units/temperature",
+				"+/units/graphics",
+				"-/unitsNarrow",
+				"+/unitsNarrow/digital",
+				"+/unitsNarrow/duration",
+				"+/unitsNarrow/temperature",
+				"+/unitsNarrow/graphics",
+				"-/unitsShort",
+				"+/unitsShort/digital",
+				"+/unitsShort/duration",
+				"+/unitsShort/temperature",
+				
+				"+/unitsShort/graphics"
+			]
+		},
+		{
+			"categories": [
+				"coll_tree"
+			],
+			"rules": [
+				"-/UCARules",
+				"-/collations/*/Sequence"
+			]
+		},
+		{
+			"categories": [
+				"curr_tree"
+			],
+			"rules": [
+				"-/curr"
+			]
+		}
+	],
+	"featureFilters": {
+		"brkitr_dictionaries": {
+			"filterType": "exclude"
+		},
+		"confusables": {
+		    "filterType": "exclude"
+		 },
+		"conversion_mappings": {
+			"filterType": "exclude"
+		},
+		"zone_supplemental": {
+			"filterType":  "exclude"
+	}
+  }
+}
