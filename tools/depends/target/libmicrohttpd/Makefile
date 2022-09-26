@@ -1,28 +1,28 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile ../../download-files.include
-
-# lib name, version
-LIBNAME=libmicrohttpd
-VERSION=0.9.73
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=473996b087ac6734ab577a1c7681c6c0b0136e04e34e13c3b50fd758358c1516017ad79097e0c57792786f6dd0208834374c09238113efed13bb4be11ef649d3
-include ../../download-files.include
+include ../../Makefile.include LIBMICROHTTPD-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile LIBMICROHTTPD-VERSION ../../download-files.include \
+                                    001-remove-assert.patch
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-shared \
-            --disable-doc --disable-examples --disable-curl \
-            --enable-https
+          ./configure --prefix=$(PREFIX) \
+                      --disable-shared \
+                      --disable-doc \
+                      --disable-examples \
+                      --disable-curl \
+                      --enable-https
+
+ifeq ($(DEBUG_BUILD), yes)
+  CONFIGURE+= --enable-asserts
+endif
 
 LIBDYLIB=$(PLATFORM)/src/microhttpd/.libs/$(LIBNAME).a
 
 all: .installed-$(PLATFORM)
 
-
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../001-remove-assert.patch
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
@@ -38,4 +38,3 @@ clean:
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
-
