@@ -7,22 +7,21 @@
  */
 #include "SkinTimer.h"
 
-#include "interfaces/builtins/Builtins.h"
 #include "interfaces/info/Info.h"
 
 CSkinTimer::CSkinTimer(const std::string& name,
                        const INFO::InfoPtr& startCondition,
                        const INFO::InfoPtr& resetCondition,
                        const INFO::InfoPtr& stopCondition,
-                       const std::string& startAction,
-                       const std::string& stopAction,
+                       const CGUIAction& startActions,
+                       const CGUIAction& stopActions,
                        bool resetOnStart)
   : m_name{name},
     m_startCondition{startCondition},
     m_resetCondition{resetCondition},
     m_stopCondition{stopCondition},
-    m_startAction{startAction},
-    m_stopAction{stopAction},
+    m_startActions{startActions},
+    m_stopActions{stopActions},
     m_resetOnStart{resetOnStart}
 {
 }
@@ -83,16 +82,16 @@ INFO::InfoPtr CSkinTimer::GetStopCondition() const
 
 void CSkinTimer::OnStart()
 {
-  if (!m_startAction.empty())
+  if (m_startActions.HasAnyActions())
   {
-    CBuiltins::GetInstance().Execute(m_startAction);
+    m_startActions.ExecuteActions();
   }
 }
 
 void CSkinTimer::OnStop()
 {
-  if (!m_stopAction.empty())
+  if (m_stopActions.HasAnyActions())
   {
-    CBuiltins::GetInstance().Execute(m_stopAction);
+    m_stopActions.ExecuteActions();
   }
 }

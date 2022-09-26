@@ -121,6 +121,22 @@ but have the timer resetting to 0 seconds if the user provides some input to Kod
 </timer>
 ~~~~~~~~~~~~~
 
+Finer conditional granularity can also be applied to the `onstop` or `onstart` actions. This allows the skinner to create generic timers which respect a 
+limited set of conditions but trigger different actions depending on a condition applied only to the action.
+The following timer plays the trailer of a given item when the user is in the videos window, the item has a trailer, the player is not playing and the
+global idle time is greater than 3 seconds.
+As you can see, the first action (notification) is triggered for any item. The actual playback, on the other hand, will only play if the focused
+item has the label "MyAwesomeMovie".
+
+~~~~~~~~~~~~~{.xml}
+<timer>
+    <name>trailer_autoplay_idle_timer</name>
+    <start reset="true">System.IdleTime(3) + Window.IsVisible(videos) + !Player.HasMedia + !String.IsEmpty(ListItem.Trailer)</start>
+    <onstart>Notification(skintimer try play, $INFO[ListItem.Trailer], 1000)</onstart>
+    <onstart condition="String.IsEqual(ListItem.Label,MyAwesomeMovie)">PlayMedia($INFO[ListItem.Trailer],1,noresume)</onstart>
+</timer>
+~~~~~~~~~~~~~
+
 --------------------------------------------------------------------------------
 \section Skin_Timers_sect3 Available tags
 
@@ -133,8 +149,11 @@ Skin timers have the following available tags:
 | start         | An info bool expression that the skinning engine should use to automatically start the timer <b>(optional)</b>
 | reset         | An info bool expression that the skinning engine should use to automatically reset the timer <b>(optional)</b>
 | stop          | An info bool expression that the skinning engine should use to automatically stop the timer <b>(optional)</b>
-| onstart       | A builtin function that the skinning engine should execute when the timer is started <b>(optional)</b>
-| onstop        | A builtin function that the skinning engine should execute when the timer is stopped <b>(optional)</b>
+| onstart       | A builtin function that the skinning engine should execute when the timer is started <b>(optional)</b><b>(can be repeated)</b>. Supports an additional `"condition"` as element attribute.
+| onstop        | A builtin function that the skinning engine should execute when the timer is stopped <b>(optional)</b><b>(can be repeated)</b>. Supports an additional `"condition"` as element attribute.
+
+@note If multiple onstart or onstop actions exist, their execution is triggered sequentially.
+@note Both onstart and onstop actions support fine-grained conditional granularity by specifying a "condition" attribute (see the examples above).
 
 --------------------------------------------------------------------------------
 \section Skin_Timers_sect4 See also
