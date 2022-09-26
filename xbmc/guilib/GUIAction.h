@@ -16,18 +16,71 @@ class CGUIControl;
 class CGUIListItem; typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 /**
- * Class containing vector of condition->(action/navigation route) pairs and handling its execution.
+ * Class containing vector of condition->(action/navigation route) and handling its execution.
  */
 class CGUIAction
 {
 public:
+  /**
+   * Class which defines an executable action
+   */
+  class CExecutableAction
+  {
+  public:
+    /**
+    * Executable action constructor (without conditional execution)
+    * @param action - The action to be executed
+    */
+    explicit CExecutableAction(const std::string& action);
+    /**
+    * Executable action constructor (providing the condition and the action)
+    * @param condition - The condition that dictates the action execution
+    * @param action - The actual action
+    */
+    CExecutableAction(const std::string& condition, const std::string& action);
+
+    /**
+    * Get the condition of this executable action (may be empty)
+    * @return condition - The condition that dictates the action execution (or an empty string)
+    */
+    std::string GetCondition() const;
+
+    /**
+    * Checks if the executable action has any condition
+    * @return true if the executable action has any condition, else false
+    */
+    bool HasCondition() const;
+
+    /**
+    * Get the action string of this executable action
+    * @return action - The action string
+    */
+    std::string GetAction() const;
+
+    /**
+    * Sets/Replaces the action string of this executable action
+    * @param action - The action string
+    */
+    void SetAction(const std::string& action);
+
+  private:
+    /**
+    * Executable action default constructor
+    */
+    CExecutableAction() = delete;
+    /* The condition that dictates the action execution */
+    std::string m_condition;
+    /* The actual action */
+    std::string m_action;
+  };
+
   CGUIAction() = default;
   explicit CGUIAction(int controlID);
 
   /**
-   * Execute actions (no navigation paths), if action is paired with condition - evaluate condition first
+   * Execute actions (no navigation paths); if action is paired with condition - evaluate condition first
    */
-  bool ExecuteActions(int controlID, int parentID, const CGUIListItemPtr &item = NULL) const;
+  bool ExecuteActions(int controlID, int parentID, const CGUIListItemPtr& item = nullptr) const;
   /**
    * Check if there is any action that meet its condition
    */
@@ -35,7 +88,7 @@ public:
   /**
    * Check if there is any action
    */
-  bool HasAnyActions() const { return m_actions.size() > 0; }
+  bool HasAnyActions() const;
   /**
    * Get navigation route that meet its conditions first
    */
@@ -44,17 +97,20 @@ public:
    * Set navigation route
    */
   void SetNavigation(int id);
+  /**
+   * Configure CGUIAction to send threaded messages
+   */
+  void EnableSendThreadMessageMode();
+  /**
+   * Add an executable action to the CGUIAction container
+   */
+  void Append(const CExecutableAction& action);
+  /**
+   * Prune any executable actions stored in the CGUIAction
+   */
+  void Reset();
+
 private:
-  struct cond_action_pair
-  {
-    std::string condition;
-    std::string action;
-  };
-
-  std::vector<cond_action_pair> m_actions;
+  std::vector<CExecutableAction> m_actions;
   bool m_sendThreadMessages = false;
-
-  typedef std::vector<cond_action_pair>::const_iterator ciActions;
-  typedef std::vector<cond_action_pair>::iterator iActions;
-  friend class CGUIControlFactory; // no need for setters / adders
 };
