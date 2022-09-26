@@ -1,6 +1,6 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -203,6 +203,9 @@
+@@ -211,6 +211,9 @@
  boolean_number(WITH_TURBOJPEG)
  option(WITH_FUZZ "Build fuzz targets" FALSE)
  
@@ -10,7 +10,7 @@
  macro(report_option var desc)
    if(${var})
      message(STATUS "${desc} enabled (${var} = ${${var}})")
-@@ -646,6 +649,7 @@
+@@ -634,6 +637,7 @@
          LINK_FLAGS "${TJMAPFLAG}${TJMAPFILE}")
      endif()
  
@@ -18,7 +18,7 @@
      add_executable(tjunittest tjunittest.c tjutil.c md5/md5.c md5/md5hl.c)
      target_link_libraries(tjunittest turbojpeg)
  
-@@ -657,6 +661,7 @@
+@@ -645,6 +649,7 @@
  
      add_executable(tjexample tjexample.c)
      target_link_libraries(tjexample turbojpeg)
@@ -26,7 +26,7 @@
    endif()
  
    if(ENABLE_STATIC)
-@@ -668,7 +673,7 @@
+@@ -656,7 +661,7 @@
      if(NOT MSVC)
        set_target_properties(turbojpeg-static PROPERTIES OUTPUT_NAME turbojpeg)
      endif()
@@ -35,7 +35,7 @@
      add_executable(tjunittest-static tjunittest.c tjutil.c md5/md5.c
        md5/md5hl.c)
      target_link_libraries(tjunittest-static turbojpeg-static)
-@@ -678,6 +683,7 @@
+@@ -666,6 +671,7 @@
      if(UNIX)
        target_link_libraries(tjbench-static m)
      endif()
@@ -43,7 +43,7 @@
    endif()
  endif()
  
-@@ -692,6 +698,7 @@
+@@ -680,6 +686,7 @@
    set(DJPEG_BMP_SOURCES wrbmp.c wrtarga.c)
  endif()
  
@@ -51,7 +51,7 @@
  if(ENABLE_STATIC)
    add_executable(cjpeg-static cjpeg.c cdjpeg.c rdgif.c rdppm.c rdswitch.c
      ${CJPEG_BMP_SOURCES})
-@@ -711,11 +718,12 @@
+@@ -699,11 +706,12 @@
  add_executable(rdjpgcom rdjpgcom.c)
  
  add_executable(wrjpgcom wrjpgcom.c)
@@ -65,7 +65,7 @@
  
  if(WITH_FUZZ)
    add_subdirectory(fuzz)
-@@ -1431,7 +1439,7 @@
+@@ -1419,7 +1427,7 @@
        DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/tjbenchtest)
    endif()
  endif()
@@ -74,7 +74,7 @@
  
  ###############################################################################
  # INSTALLATION
-@@ -1446,8 +1454,10 @@
+@@ -1434,8 +1442,10 @@
        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
@@ -85,7 +85,7 @@
      if(NOT CMAKE_VERSION VERSION_LESS "3.1" AND MSVC AND
        CMAKE_C_LINKER_SUPPORTS_PDB)
        install(FILES "$<TARGET_PDB_FILE:turbojpeg>"
-@@ -1464,8 +1474,10 @@
+@@ -1452,8 +1462,10 @@
        else()
          set(DIR ${CMAKE_CURRENT_BINARY_DIR})
        endif()
@@ -96,7 +96,7 @@
      endif()
    endif()
    install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/turbojpeg.h
-@@ -1476,6 +1488,7 @@
+@@ -1464,6 +1476,7 @@
    install(TARGETS jpeg-static EXPORT ${CMAKE_PROJECT_NAME}Targets
      INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
@@ -104,7 +104,7 @@
    if(NOT ENABLE_SHARED)
      if(MSVC_IDE OR XCODE)
        set(DIR "${CMAKE_CURRENT_BINARY_DIR}/\${CMAKE_INSTALL_CONFIG_NAME}")
-@@ -1490,8 +1503,11 @@
+@@ -1478,8 +1491,11 @@
        DESTINATION ${CMAKE_INSTALL_BINDIR} RENAME jpegtran${EXE})
    endif()
  endif()
