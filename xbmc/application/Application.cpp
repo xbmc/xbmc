@@ -1519,7 +1519,9 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
                               pMsg->params.size() > 2 ? pMsg->params[2] : "",
                               pMsg->params.size() > 3 ? pMsg->params[3] : "",
                               pMsg->params.size() > 4 ? pMsg->params[4] : "",
-                              pMsg->params.size() > 5 ? pMsg->params[5] : "");
+                              pMsg->params.size() > 5 ? pMsg->params[5] : "",
+                              pMsg->params.size() > 6 ? pMsg->params[6] : "",
+                              pMsg->params.size() > 7 ? pMsg->params[7] : "");
     }
 #endif
   }
