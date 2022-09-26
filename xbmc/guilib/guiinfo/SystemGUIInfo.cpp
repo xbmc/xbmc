@@ -29,6 +29,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
@@ -692,6 +693,15 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
           value = CMediaSettings::GetInstance().GetWatchedMode(window->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
           return true;
         }
+      }
+      else if (StringUtils::EqualsNoCase(info.GetData3(), "hideunwatchedepisodethumbs"))
+      {
+        const std::shared_ptr<CSettingList> setting(std::dynamic_pointer_cast<CSettingList>(
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+                CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)));
+        value = setting && !CSettingUtils::FindIntInList(
+                               setting, CSettings::VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE);
+        return true;
       }
       break;
     }
