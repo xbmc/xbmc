@@ -1,15 +1,8 @@
-include ../../Makefile.include
+include ../../Makefile.include LIBJPEG-TURBO-VERSION ../../download-files.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS = ../../Makefile.include Makefile 01-disable-executables.patch ../../download-files.include
-
-# lib name, version
-LIBNAME=libjpeg-turbo
-VERSION=2.1.1
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-SHA512=9cf61b4677b38e254063248a3fdbe138634d23a35ae8f2ee2661bdb3248b1d0500bd43201b8d9fe66c779d578074fd9ed19bc097ba22e10143530c2a19738673
-include ../../download-files.include
+DEPS = ../../Makefile.include LIBJPEG-TURBO-VERSION  Makefile ../../download-files.include \
+                                01-disable-executables.patch
 
 CMAKE_OPTIONS := -DCMAKE_TOOLCHAIN_FILE= \
                  -DCMAKE_ASM_NASM_COMPILER:FILEPATH=$(NATIVEPREFIX)/bin/nasm \
@@ -23,7 +16,6 @@ CMAKE_OPTIONS := -DCMAKE_TOOLCHAIN_FILE= \
 LIBDYLIB=$(PLATFORM)/build/libjpeg.a
 
 all: .installed-$(PLATFORM)
-
 
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
