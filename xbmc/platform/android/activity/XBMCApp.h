@@ -166,7 +166,8 @@ public:
                             const std::string& flags = std::string(),
                             const std::string& extras = std::string(),
                             const std::string& action = std::string(),
-                            const std::string& category = std::string());
+                            const std::string& category = std::string(),
+                            const std::string& className = std::string());
   std::vector<androidPackage> GetApplications() const;
 
   /*!

@@ -971,7 +971,7 @@ std::vector<androidPackage> CXBMCApp::GetApplications() const
   return m_applications;
 }
 
-// Note intent, dataType, dataURI, action, category, flags, extras all default to ""
+// Note intent, dataType, dataURI, action, category, flags, extras, className all default to ""
 bool CXBMCApp::StartActivity(const std::string& package,
                              const std::string& intent,
                              const std::string& dataType,
@@ -979,7 +979,8 @@ bool CXBMCApp::StartActivity(const std::string& package,
                              const std::string& flags,
                              const std::string& extras,
                              const std::string& action,
-                             const std::string& category)
+                             const std::string& category,
+                             const std::string& className)
 {
   CLog::LogF(LOGDEBUG, "package: {}", package);
   CLog::LogF(LOGDEBUG, "intent: {}", intent);
@@ -989,6 +990,7 @@ bool CXBMCApp::StartActivity(const std::string& package,
   CLog::LogF(LOGDEBUG, "extras: {}", extras);
   CLog::LogF(LOGDEBUG, "action: {}", action);
   CLog::LogF(LOGDEBUG, "category: {}", category);
+  CLog::LogF(LOGDEBUG, "className: {}", className);
 
   CJNIIntent newIntent = intent.empty() ?
     GetPackageManager().getLaunchIntentForPackage(package) :
@@ -1057,6 +1059,9 @@ bool CXBMCApp::StartActivity(const std::string& package,
   }
 
   newIntent.setPackage(package);
+  if (!className.empty())
+    newIntent.setClassName(package, className);
+
   startActivity(newIntent);
   if (xbmc_jnienv()->ExceptionCheck())
   {
