@@ -10,7 +10,6 @@
 
 #include "threads/CriticalSection.h"
 
-#include <iterator>
 #include <map>
 #include <memory>
 #include <mutex>
@@ -104,39 +103,6 @@ class CSignalHandlerList
   CSignalHandlerList& operator=(CSignalHandlerList const& other) = delete;
 
 public:
-  /**
-   * Iterator for iterating through registered signal handlers
-   *
-   * Just wraps the std::map iterator
-   */
-  class iterator : public std::iterator<std::input_iterator_tag, ManagedT const>
-  {
-    typename std::map<RegistrationIdentifierType, ManagedT>::const_iterator m_it;
-
-  public:
-    iterator(typename std::map<RegistrationIdentifierType, ManagedT>::const_iterator it)
-    : m_it{it}
-    {
-    }
-    iterator& operator++()
-    {
-      ++m_it;
-      return *this;
-    }
-    bool operator==(iterator const& right) const
-    {
-      return m_it == right.m_it;
-    }
-    bool operator!=(iterator const& right) const
-    {
-      return !(*this == right);
-    }
-    ManagedT const& operator*()
-    {
-      return m_it->second;
-    }
-  };
-
   CSignalHandlerList()
   : m_data{new Data}
   {}
@@ -163,19 +129,13 @@ public:
     std::unique_lock<CCriticalSection> lock(m_data->m_handlerCriticalSection);
     for (auto const& handler : *this)
     {
-      handler.operator() (std::forward<ArgsT>(args)...);
+      handler.second(std::forward<ArgsT>(args)...);
     }
   }
 
-  iterator begin() const
-  {
-    return iterator(m_data->m_handlers.cbegin());
-  }
+  auto begin() const { return m_data->m_handlers.cbegin(); }
 
-  iterator end() const
-  {
-    return iterator(m_data->m_handlers.cend());
-  }
+  auto end() const { return m_data->m_handlers.cend(); }
 
   /**
    * Get critical section for accessing the handler list
