@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "guilib/GUIAction.h"
 #include "interfaces/info/InfoExpression.h"
 #include "utils/Stopwatch.h"
 
@@ -28,16 +29,16 @@ public:
   * \param startCondition - the boolean info expression to start the timer (may be null)
   * \param resetCondition - the boolean info expression to reset the timer (may be null)
   * \param stopCondition - the boolean info expression to stop the timer (may be null)
-  * \param startAction - the builtin function to execute on timer start (may be empty)
-  * \param stopAction - the builtin function to execute on timer stop (may be empty)
+  * \param startActions - the builtin functions to execute on timer start (actions may be empty)
+  * \param stopActions - the builtin functions to execute on timer stop (actions may be empty)
   * \param resetOnStart - if the timer should be reset when started (i.e. start from zero if true or resumed if false)
   */
   CSkinTimer(const std::string& name,
              const INFO::InfoPtr& startCondition,
              const INFO::InfoPtr& resetCondition,
              const INFO::InfoPtr& stopCondition,
-             const std::string& startAction,
-             const std::string& stopAction,
+             const CGUIAction& startActions,
+             const CGUIAction& stopActions,
              bool resetOnStart);
 
   /*! \brief Default skin timer destructor */
@@ -100,10 +101,10 @@ private:
   INFO::InfoPtr m_resetCondition;
   /*! The info boolean expression that automatically stops the timer if evaluated true */
   INFO::InfoPtr m_stopCondition;
-  /*! The builtin function to be executed when the timer is started */
-  std::string m_startAction;
-  /*! The builtin function to be executed when the timer is stopped */
-  std::string m_stopAction;
+  /*! The builtin functions to be executed when the timer is started */
+  CGUIAction m_startActions;
+  /*! The builtin functions to be executed when the timer is stopped */
+  CGUIAction m_stopActions;
   /*! if the timer should be reset on start (or just resumed) */
   bool m_resetOnStart{false};
 };

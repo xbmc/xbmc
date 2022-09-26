@@ -14,6 +14,11 @@
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 
+namespace
+{
+constexpr int DEFAULT_CONTROL_ID = 0;
+}
+
 CGUIAction::CExecutableAction::CExecutableAction(const std::string& action) : m_action{action}
 {
 }
@@ -47,6 +52,11 @@ void CGUIAction::CExecutableAction::SetAction(const std::string& action)
 CGUIAction::CGUIAction(int controlID)
 {
   SetNavigation(controlID);
+}
+
+bool CGUIAction::ExecuteActions() const
+{
+  return ExecuteActions(DEFAULT_CONTROL_ID, DEFAULT_CONTROL_ID);
 }
 
 bool CGUIAction::ExecuteActions(int controlID, int parentID, const CGUIListItemPtr &item /* = NULL */) const
