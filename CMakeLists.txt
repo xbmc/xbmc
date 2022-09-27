@@ -44,6 +44,7 @@ include(cmake/scripts/common/PathSetup.cmake)
 include(cmake/scripts/common/CompilerSettings.cmake)
 include(ExternalProject)
 include(CMakeDependentOption)
+include(cmake/scripts/common/DependencyOptions.cmake)
 
 # general
 option(VERBOSE            "Enable verbose output?" OFF)
@@ -58,16 +59,21 @@ option(ENABLE_PYTHON      "Enable python support?" ON)
 option(ENABLE_TESTING     "Enable testing support?" ON)
 
 # Internal Depends - supported on all platforms
+
+# These are required enabled for all CI platforms, and recommended for all builds
 option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
+option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" ON)
+
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
-option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" ON)
-cmake_dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
-cmake_dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
-cmake_dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
-cmake_dependent_option(ENABLE_INTERNAL_PCRE "Enable internal pcre?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
-cmake_dependent_option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
-cmake_dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?" OFF "DEFINED USE_INTERNAL_LIBS;NOT USE_INTERNAL_LIBS" ON)
+
+# These are built for all platforms not using system libs or disabled by user
+dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?")
+dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?")
+dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
+dependent_option(ENABLE_INTERNAL_PCRE "Enable internal pcre?")
+dependent_option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?")
+dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?")
 
 # Internal Depends - supported on UNIX platforms
 if(UNIX)
