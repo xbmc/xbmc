@@ -138,158 +138,26 @@ bool CGUIDialogAddonSettings::OnAction(const CAction& action)
 bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
                                            bool saveToDisk /* = true */)
 {
-  if (addon == nullptr)
+  if (!addon)
+  {
+    CLog::LogF(LOGERROR, "No addon given!");
     return false;
+  }
 
   if (!g_passwordManager.CheckMenuLock(WINDOW_ADDON_BROWSER))
     return false;
 
-  bool byNew = false;
-  bool enabled = false;
-  ADDON::AddonInstanceId instanceId = ADDON::ADDON_SETTINGS_ID;
-
   if (addon->SupportsInstanceSettings())
-  {
-    static constexpr int ADDON_SETTINGS = 0;
-    static constexpr int ADD_INSTANCE = 100;
-    static constexpr int REMOVE_INSTANCE = 101;
-    static constexpr int GENERAL_BUTTON_START = ADD_INSTANCE;
+    return ShowForMultipleInstances(addon, saveToDisk);
+  else
+    return ShowForSingleInstance(addon, saveToDisk);
+}
 
-    CGUIDialogSelect* dialog =
-        CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
-            WINDOW_DIALOG_SELECT);
-    if (dialog)
-    {
-      while (true)
-      {
-        const std::vector<ADDON::AddonInstanceId> ids = addon->GetKnownInstanceIds();
-
-        CFileItemList itemsGeneral;
-        CFileItemList itemsInstances;
-
-        dialog->Reset();
-        dialog->SetHeading(10012); // Add-on configurations and settings
-        dialog->SetUseDetails(false);
-
-        {
-          const CFileItemPtr item =
-              std::make_shared<CFileItem>(g_localizeStrings.Get(10014)); // Add add-on configuration
-          item->SetProperty("id", ADD_INSTANCE);
-          itemsGeneral.Add(item);
-        }
-        // Have always minimal 1 available and not allow this button in this case
-        if (ids.size() > 1)
-        {
-          const CFileItemPtr item = std::make_shared<CFileItem>(
-              g_localizeStrings.Get(10015)); // Remove add-on configuration
-          item->SetProperty("id", REMOVE_INSTANCE);
-          itemsGeneral.Add(item);
-        }
-        if (addon->HasSettings(ADDON_SETTINGS_ID))
-        {
-          const CFileItemPtr item =
-              std::make_shared<CFileItem>(g_localizeStrings.Get(10013)); // Edit Add-on settings
-          item->SetProperty("id", ADDON_SETTINGS);
-          itemsGeneral.Add(item);
-        }
-
-        ADDON::AddonInstanceId highestId = 0;
-        for (const auto& id : ids)
-        {
-          std::string name;
-          addon->GetSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, name, id);
-          if (name.empty())
-            name = g_localizeStrings.Get(13205); // Unknown
-
-          bool enabled{false};
-          addon->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, enabled, id);
-
-          const std::string label = StringUtils::Format(
-              g_localizeStrings.Get(10020), name,
-              g_localizeStrings.Get(enabled ? 305 : 13106)); // Edit "config name" [enabled state]
-
-          const CFileItemPtr item = std::make_shared<CFileItem>(label);
-          item->SetProperty("id", id);
-          item->SetProperty("name", name);
-          itemsInstances.Add(item);
-          if (id > highestId)
-            highestId = id;
-        }
-
-        for (auto& it : itemsGeneral)
-          dialog->Add(*it);
-
-        for (auto& it : itemsInstances)
-          dialog->Add(*it);
-
-        dialog->SetButtonFocus(true);
-        dialog->Open();
-
-        if (dialog->IsButtonPressed())
-          return false;
-
-        if (dialog->IsConfirmed())
-        {
-          const CFileItemPtr& item = dialog->GetSelectedFileItem();
-          instanceId = item->GetProperty("id").asInteger();
-          if (instanceId < GENERAL_BUTTON_START)
-          {
-            break;
-          }
-          else if (instanceId == ADD_INSTANCE)
-          {
-            instanceId = highestId + 1;
-            addon->GetSettings(instanceId);
-            addon->UpdateSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, "", instanceId);
-            addon->UpdateSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, true, instanceId);
-            addon->SaveSettings(instanceId);
-            byNew = true;
-            break;
-          }
-          else if (instanceId == REMOVE_INSTANCE)
-          {
-            dialog->Reset();
-            dialog->SetHeading(10010); // Select add-on configuration to remove
-            dialog->SetUseDetails(false);
-            for (auto& it : itemsInstances)
-            {
-              CFileItem item(*it);
-              item.SetLabel((*it).GetProperty("name").asString());
-              dialog->Add(item);
-            }
-            dialog->SetButtonFocus(true);
-            dialog->Open();
-            if (dialog->IsButtonPressed())
-              continue;
-
-            if (dialog->IsConfirmed())
-            {
-              const CFileItemPtr& item = dialog->GetSelectedFileItem();
-              const std::string label = StringUtils::Format(
-                  g_localizeStrings.Get(10019),
-                  item->GetProperty("name")
-                      .asString()); // Do you want to remove the add-on configuration "config name"?
-
-              if (CGUIDialogYesNo::ShowAndGetInput(10009, // Confirm add-on configuration removal
-                                                   label))
-              {
-                instanceId = item->GetProperty("id").asInteger();
-                addon->DeleteInstanceSettings(instanceId);
-                CServiceBroker::GetAddonMgr().PublishInstanceRemoved(addon->ID(), instanceId);
-              }
-
-              return false;
-            }
-          }
-        }
-        else
-          return false;
-      }
-    }
-
-    addon->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, enabled, instanceId);
-  }
-
+bool CGUIDialogAddonSettings::ShowForSingleInstance(
+    const ADDON::AddonPtr& addon,
+    bool saveToDisk,
+    ADDON::AddonInstanceId instanceId /* = ADDON::ADDON_SETTINGS_ID */)
+{
   if (!addon->HasSettings(instanceId))
   {
     // addon does not support settings, inform user
@@ -301,39 +169,201 @@ bool CGUIDialogAddonSettings::ShowForAddon(const ADDON::AddonPtr& addon,
   CGUIDialogAddonSettings* dialog =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogAddonSettings>(
           WINDOW_DIALOG_ADDON_SETTINGS);
-  if (dialog == nullptr)
+  if (!dialog)
+  {
+    CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_ADDON_SETTINGS instance!");
     return false;
+  }
 
   dialog->m_addon = addon;
   dialog->m_instanceId = instanceId;
   dialog->m_saveToDisk = saveToDisk;
+
   dialog->Open();
 
   if (!dialog->IsConfirmed())
   {
-    // Remove instance settings if added by new and not set
-    if (byNew)
-      addon->DeleteInstanceSettings(instanceId);
+    addon->ReloadSettings(instanceId);
     return false;
   }
 
   if (saveToDisk)
-    addon->SaveSettings(dialog->m_instanceId);
+    addon->SaveSettings(instanceId);
 
-  // If added new, publish his add to related places and start the use of new instance
-  if (instanceId != ADDON_SETTINGS_ID)
+  return true;
+}
+
+bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& addon,
+                                                       bool saveToDisk)
+{
+  CGUIDialogSelect* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+          WINDOW_DIALOG_SELECT);
+  if (!dialog)
   {
-    bool enabledNow = false;
-    addon->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, enabledNow, instanceId);
-    if (byNew || enabled != enabledNow)
-    {
-      CServiceBroker::GetAddonMgr().PublishInstanceAdded(addon->ID(), instanceId);
-    }
-    else if (!enabledNow && enabled != enabledNow)
-    {
-      CServiceBroker::GetAddonMgr().PublishInstanceRemoved(addon->ID(), instanceId);
-    }
+    CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT instance!");
+    return false;
   }
+
+  int lastSelected = -1;
+  while (true)
+  {
+    std::vector<ADDON::AddonInstanceId> ids = addon->GetKnownInstanceIds();
+    std::sort(ids.begin(), ids.end(), [](const auto& a, const auto& b) { return a < b; });
+
+    dialog->Reset();
+    dialog->SetHeading(10012); // Add-on configurations and settings
+    dialog->SetUseDetails(false);
+
+    CFileItemList itemsInstances;
+    ADDON::AddonInstanceId highestId = 0;
+    for (const auto& id : ids)
+    {
+      std::string name;
+      addon->GetSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, name, id);
+      if (name.empty())
+        name = g_localizeStrings.Get(13205); // Unknown
+
+      bool enabled = false;
+      addon->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, enabled, id);
+
+      const std::string label = StringUtils::Format(
+          g_localizeStrings.Get(10020), name,
+          g_localizeStrings.Get(enabled ? 305 : 13106)); // Edit "config name" [enabled state]
+
+      const CFileItemPtr item = std::make_shared<CFileItem>(label);
+      item->SetProperty("id", id);
+      item->SetProperty("name", name);
+      itemsInstances.Add(item);
+
+      if (id > highestId)
+        highestId = id;
+    }
+
+    CFileItemList itemsGeneral;
+
+    const ADDON::AddonInstanceId addInstanceId = highestId + 1;
+    const ADDON::AddonInstanceId removeInstanceId = highestId + 2;
+
+    CFileItemPtr item =
+        std::make_shared<CFileItem>(g_localizeStrings.Get(10014)); // Add add-on configuration
+    item->SetProperty("id", addInstanceId);
+    itemsGeneral.Add(item);
+
+    if (ids.size() > 1) // Forbid removal of last instance
+    {
+      item =
+          std::make_shared<CFileItem>(g_localizeStrings.Get(10015)); // Remove add-on configuration
+      item->SetProperty("id", removeInstanceId);
+      itemsGeneral.Add(item);
+    }
+
+    if (addon->HasSettings(ADDON_SETTINGS_ID))
+    {
+      item = std::make_shared<CFileItem>(g_localizeStrings.Get(10013)); // Edit Add-on settings
+      item->SetProperty("id", ADDON_SETTINGS_ID);
+      itemsGeneral.Add(item);
+    }
+
+    for (auto& it : itemsGeneral)
+      dialog->Add(*it);
+
+    for (auto& it : itemsInstances)
+      dialog->Add(*it);
+
+    // Select last selected item, first instance config item or first item
+    if (lastSelected >= 0)
+      dialog->SetSelected(lastSelected);
+    else
+      dialog->SetSelected(itemsInstances.Size() > 0 ? itemsGeneral.Size() : 0);
+
+    dialog->Open();
+
+    if (dialog->IsButtonPressed() || !dialog->IsConfirmed())
+      break;
+
+    lastSelected = dialog->GetSelectedItem();
+
+    item = dialog->GetSelectedFileItem();
+    ADDON::AddonInstanceId instanceId = item->GetProperty("id").asInteger();
+
+    if (instanceId == addInstanceId)
+    {
+      instanceId = highestId + 1;
+
+      addon->GetSettings(instanceId);
+      addon->UpdateSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, "", instanceId);
+      addon->UpdateSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, true, instanceId);
+      addon->SaveSettings(instanceId);
+
+      if (ShowForSingleInstance(addon, saveToDisk, instanceId))
+      {
+        CServiceBroker::GetAddonMgr().PublishInstanceAdded(addon->ID(), instanceId);
+      }
+      else
+      {
+        // Remove instance settings if not succeeded (e.g. dialog cancelled)
+        addon->DeleteInstanceSettings(instanceId);
+      }
+    }
+    else if (instanceId == removeInstanceId)
+    {
+      dialog->Reset();
+      dialog->SetHeading(10010); // Select add-on configuration to remove
+      dialog->SetUseDetails(false);
+
+      for (auto& it : itemsInstances)
+      {
+        CFileItem item(*it);
+        item.SetLabel((*it).GetProperty("name").asString());
+        dialog->Add(item);
+      }
+
+      dialog->SetSelected(0);
+      dialog->Open();
+
+      if (!dialog->IsButtonPressed() && dialog->IsConfirmed())
+      {
+        item = dialog->GetSelectedFileItem();
+        const std::string label = StringUtils::Format(
+            g_localizeStrings.Get(10019),
+            item->GetProperty("name")
+                .asString()); // Do you want to remove the add-on configuration "config name"?
+
+        if (CGUIDialogYesNo::ShowAndGetInput(10009, // Confirm add-on configuration removal
+                                             label))
+        {
+          instanceId = item->GetProperty("id").asInteger();
+          addon->DeleteInstanceSettings(instanceId);
+          CServiceBroker::GetAddonMgr().PublishInstanceRemoved(addon->ID(), instanceId);
+        }
+      }
+    }
+    else
+    {
+      // edit instance settings or edit addon settings selected; open settings dialog
+
+      bool enabled = false;
+      addon->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, enabled, instanceId);
+
+      if (ShowForSingleInstance(addon, saveToDisk, instanceId) && instanceId != ADDON_SETTINGS_ID)
+      {
+        // Publish new/removed instance configuration and start the use of new instance
+        bool enabledNow = false;
+        addon->GetSettingBool(ADDON_SETTING_INSTANCE_ENABLED_VALUE, enabledNow, instanceId);
+        if (enabled != enabledNow)
+        {
+          if (enabledNow)
+            CServiceBroker::GetAddonMgr().PublishInstanceAdded(addon->ID(), instanceId);
+          else
+            CServiceBroker::GetAddonMgr().PublishInstanceRemoved(addon->ID(), instanceId);
+        }
+      }
+    }
+
+    // refresh selection dialog content...
+
+  } // while (true)
 
   return true;
 }
