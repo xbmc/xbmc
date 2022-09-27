@@ -49,9 +49,10 @@ std::string CPVRGUIActionsUtils::GetSelectedItemPath(bool bRadio) const
     CPVRManager& mgr = CServiceBroker::GetPVRManager();
 
     // if preselect playing channel is activated, return the path of the playing channel, if any.
-    const std::shared_ptr<CPVRChannel> playingChannel = mgr.PlaybackState()->GetPlayingChannel();
+    const std::shared_ptr<CPVRChannelGroupMember> playingChannel =
+        mgr.PlaybackState()->GetPlayingChannelGroupMember();
     if (playingChannel && playingChannel->IsRadio() == bRadio)
-      return mgr.Get<PVR::GUI::Channels>().GetChannelGroupMember(playingChannel)->Path();
+      return playingChannel->Path();
 
     const std::shared_ptr<CPVREpgInfoTag> playingTag = mgr.PlaybackState()->GetPlayingEpgTag();
     if (playingTag && playingTag->IsRadio() == bRadio)

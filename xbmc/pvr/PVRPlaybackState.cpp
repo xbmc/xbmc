@@ -375,6 +375,12 @@ std::shared_ptr<CPVRChannel> CPVRPlaybackState::GetPlayingChannel() const
   return m_playingChannel ? m_playingChannel->Channel() : std::shared_ptr<CPVRChannel>();
 }
 
+std::shared_ptr<CPVRChannelGroupMember> CPVRPlaybackState::GetPlayingChannelGroupMember() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_playingChannel;
+}
+
 std::shared_ptr<CPVRRecording> CPVRPlaybackState::GetPlayingRecording() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
