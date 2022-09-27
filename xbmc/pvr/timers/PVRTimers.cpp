@@ -121,6 +121,9 @@ bool CPVRTimers::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>
                         }))
       NotifyTimersEvent();
   }
+
+  // ensure that every timer has its channel set
+  UpdateChannels();
   return true;
 }
 
