@@ -142,7 +142,7 @@ public class Splash extends Activity
                   RECORDAUDIO_RESULT_CODE);
           break;
         case CheckingPermissions:
-          if ((Build.VERSION.SDK_INT >= 30) && !isAndroidTV())
+          if (Build.VERSION.SDK_INT >= 33 || (Build.VERSION.SDK_INT >= 30 && !isAndroidTV()))
           {
             try
             {
@@ -759,7 +759,7 @@ public class Splash extends Activity
   private boolean CheckPermissions()
   {
     boolean retVal = false;
-    if ((Build.VERSION.SDK_INT >= 30) && !isAndroidTV())
+    if (Build.VERSION.SDK_INT >= 33 || (Build.VERSION.SDK_INT >= 30 && !isAndroidTV()))
     {
       if (Environment.isExternalStorageManager())
       {
