@@ -291,7 +291,7 @@ std::vector<AddonInstanceId> CAddonInfo::GetKnownInstanceIds() const
   {
     const std::string startName = "instance-settings-";
     std::string filename = URIUtils::GetFileName(item->GetPath());
-    if (StringUtils::StartsWithNoCase(URIUtils::GetFileName(item->GetPath()), startName))
+    if (UnicodeUtils::StartsWithNoCase(URIUtils::GetFileName(item->GetPath()), startName))
     {
       URIUtils::RemoveExtension(filename);
       const std::string uid = filename.substr(startName.length());

@@ -465,7 +465,7 @@ static int PlayMedia(const std::vector<std::string>& params)
       playOffset = atoi(params[i].substr(11).c_str()) - 1;
       item.SetProperty("playlist_starting_track", playOffset);
     }
-    else if (StringUtils::StartsWithNoCase(params[i], "playlist_type_hint="))
+    else if (UnicodeUtils::StartsWithNoCase(params[i], "playlist_type_hint="))
     {
       // Set the playlist type for the playlist file (e.g. STRM)
       int playlistTypeHint = std::stoi(params[i].substr(19));

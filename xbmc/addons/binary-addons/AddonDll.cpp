@@ -382,7 +382,7 @@ ADDON_STATUS CAddonDll::TransferSettings(AddonInstanceId instanceId)
         {
           for (const auto& setting : group->GetSettings())
           {
-            if (StringUtils::StartsWith(setting->GetId(), ADDON_SETTING_INSTANCE_GROUP))
+            if (UnicodeUtils::StartsWith(setting->GetId(), ADDON_SETTING_INSTANCE_GROUP))
               continue; // skip internal settings
 
             ADDON_STATUS status = ADDON_STATUS_OK;

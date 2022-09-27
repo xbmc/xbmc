@@ -663,8 +663,6 @@ SqliteDataset::SqliteDataset(SqliteDatabase* newDb) : Dataset(newDb)
 
 SqliteDataset::~SqliteDataset()
 {
-  if (errmsg)
-    sqlite3_free(errmsg);
 }
 
 void SqliteDataset::set_autorefresh(bool val)

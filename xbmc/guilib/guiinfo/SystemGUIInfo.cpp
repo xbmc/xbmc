@@ -695,7 +695,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
           return true;
         }
       }
-      else if (StringUtils::EqualsNoCase(info.GetData3(), "hideunwatchedepisodethumbs"))
+      else if (UnicodeUtils::EqualsNoCase(info.GetData3(), "hideunwatchedepisodethumbs"))
       {
         const std::shared_ptr<CSettingList> setting(std::dynamic_pointer_cast<CSettingList>(
             CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(

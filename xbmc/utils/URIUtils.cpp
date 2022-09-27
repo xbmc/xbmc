@@ -104,10 +104,10 @@ bool URIUtils::HasExtension(const std::string& strFileName, const std::string& s
 
   const std::string extensionFolded = UnicodeUtils::FoldCase(strFileName.substr(pos));
 
-  const std::vector<std::string> extensionFolded =
-      UnicodeUtils::Split(UnicodeUtils::FoldCase(strExtensions), '|');
+  const std::vector<std::string> extensionsFolded =
+      UnicodeUtils::Split(UnicodeUtils::FoldCase(strExtensions), "|"sv);
 
-  for (const auto& ext : extensionFolded)
+  for (const auto& ext : extensionsFolded)
   {
     if (UnicodeUtils::EndsWith(ext, extensionFolded))
       return true;

@@ -17,6 +17,8 @@
 #include <algorithm>
 #include <array>
 
+using namespace std::string_view_literals;
+
 #define MAKECODE(a, b, c, d) \
   ((((long)(a)) << 24) | (((long)(b)) << 16) | (((long)(c)) << 8) | (long)(d))
 #define MAKETWOCHARCODE(a, b) ((((long)(a)) << 8) | (long)(b))
@@ -429,9 +431,9 @@ bool CLangCodeExpander::LookupInLangAddons(const std::string& code, std::string&
     return false;
 
   std::string sCode{code};
-  StringUtils::Trim(sCode);
-  StringUtils::ToLower(sCode);
-  StringUtils::Replace(sCode, '-', '_');
+  UnicodeUtils::Trim(sCode);
+  UnicodeUtils::ToLower(sCode);
+  UnicodeUtils::Replace(sCode, "-"sv, "_"sv);
 
   desc = g_langInfo.GetEnglishLanguageName(sCode);
   return !desc.empty();

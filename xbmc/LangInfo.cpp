@@ -654,7 +654,7 @@ void CLangInfo::GetAddonsLanguageCodes(std::map<std::string, std::string>& langu
     const LanguageResourcePtr langAddon =
         std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
     std::string langCode{langAddon->GetLocale().ToShortStringLC()};
-    StringUtils::Replace(langCode, '_', '-');
+    UnicodeUtils::Replace(langCode, "_"sv, "-"sv);
     languages.emplace(langCode, addon->Name());
   }
 }
@@ -684,12 +684,12 @@ std::string CLangInfo::ConvertEnglishNameToAddonLocale(const std::string& langNa
   CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::ADDON_RESOURCE_LANGUAGE);
   for (const auto& addon : addons)
   {
-    if (StringUtils::CompareNoCase(addon->Name(), langName) == 0)
+    if (UnicodeUtils::CompareNoCase(addon->Name(), langName) == 0)
     {
       const LanguageResourcePtr langAddon =
           std::dynamic_pointer_cast<ADDON::CLanguageResource>(addon);
       std::string locale = langAddon->GetLocale().ToShortStringLC();
-      StringUtils::Replace(locale, '_', '-');
+      UnicodeUtils::Replace(locale, "_"sv, "-"sv);
       return locale;
     }
   }
