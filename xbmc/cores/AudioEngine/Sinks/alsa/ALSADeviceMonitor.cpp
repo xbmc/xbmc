@@ -62,10 +62,9 @@ void CALSADeviceMonitor::Start()
     }
 
     const auto eventMonitor = CServiceBroker::GetPlatform().GetService<CFDEventMonitor>();
-    if (eventMonitor)
-      eventMonitor->AddFD(CFDEventMonitor::MonitoredFD(udev_monitor_get_fd(m_udevMonitor), POLLIN,
-                                                       FDEventCallback, m_udevMonitor),
-                          m_fdMonitorId);
+    eventMonitor->AddFD(CFDEventMonitor::MonitoredFD(udev_monitor_get_fd(m_udevMonitor), POLLIN,
+                                                     FDEventCallback, m_udevMonitor),
+                        m_fdMonitorId);
   }
 
   return;
@@ -83,8 +82,7 @@ void CALSADeviceMonitor::Stop()
   if (m_udev)
   {
     const auto eventMonitor = CServiceBroker::GetPlatform().GetService<CFDEventMonitor>();
-    if (eventMonitor)
-      eventMonitor->RemoveFD(m_fdMonitorId);
+    eventMonitor->RemoveFD(m_fdMonitorId);
 
     udev_monitor_unref(m_udevMonitor);
     m_udevMonitor = NULL;
