@@ -27,7 +27,8 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/epg/EpgSearchPath.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "threads/IRunnable.h"
 #include "utils/URIUtils.h"
@@ -262,7 +263,7 @@ bool CGUIWindowPVRSearchBase::OnMessage(CGUIMessage& message)
             }
             else
             {
-              CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(pItem);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(pItem);
             }
             return true;
           }
@@ -273,7 +274,7 @@ bool CGUIWindowPVRSearchBase::OnMessage(CGUIMessage& message)
             return true;
 
           case ACTION_RECORD:
-            CServiceBroker::GetPVRManager().GUIActions()->ToggleTimer(pItem);
+            CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimer(pItem);
             return true;
         }
       }

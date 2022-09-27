@@ -23,7 +23,9 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgContainer.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 
@@ -88,7 +90,8 @@ void CGUIDialogPVRChannelsOSD::OnDeinitWindow(int nextWindowID)
 {
   if (m_group)
   {
-    CServiceBroker::GetPVRManager().GUIActions()->SetSelectedItemPath(m_group->IsRadio(), m_viewControl.GetSelectedItemPath());
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().SetSelectedItemPath(
+        m_group->IsRadio(), m_viewControl.GetSelectedItemPath());
 
     // next OnInitWindow will set the group which is then selected
     m_group.reset();
@@ -105,7 +108,10 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction& action)
     case ACTION_MOUSE_LEFT_CLICK:
     {
       // If direct channel number input is active, select the entered channel.
-      if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
+      if (CServiceBroker::GetPVRManager()
+              .Get<PVR::GUI::Channels>()
+              .GetChannelNumberInputHandler()
+              .CheckInputAndExecuteAction())
         return true;
 
       if (m_viewControl.HasControl(GetFocusedControlID()))
@@ -186,7 +192,8 @@ void CGUIDialogPVRChannelsOSD::Update()
       if (!m_group)
       {
         m_group = group;
-        m_viewControl.SetSelectedItem(pvrMgr.GUIActions()->GetSelectedItemPath(channel->IsRadio()));
+        m_viewControl.SetSelectedItem(
+            pvrMgr.Get<PVR::GUI::Utils>().GetSelectedItemPath(channel->IsRadio()));
         SaveSelectedItemPath(group->GroupID());
       }
     }
@@ -237,7 +244,8 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
     Close();
 
-  CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(itemptr, true /* bCheckResume */);
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+      itemptr, true /* bCheckResume */);
 }
 
 void CGUIDialogPVRChannelsOSD::Notify(const PVREvent& event)

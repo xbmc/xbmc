@@ -32,7 +32,9 @@
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
 #include "pvr/epg/Epg.h"
 #include "pvr/epg/EpgContainer.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -147,7 +149,10 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
             message.GetParam1() == ACTION_MOUSE_LEFT_CLICK)
         {
           // If direct channel number input is active, select the entered channel.
-          if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().CheckInputAndExecuteAction())
+          if (CServiceBroker::GetPVRManager()
+                  .Get<PVR::GUI::Channels>()
+                  .GetChannelNumberInputHandler()
+                  .CheckInputAndExecuteAction())
           {
             bReturn = true;
             break;
@@ -163,13 +168,16 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
            case ACTION_SELECT_ITEM:
            case ACTION_MOUSE_LEFT_CLICK:
            case ACTION_PLAYER_PLAY:
-             CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(m_vecItems->Get(iItem), true);
+             CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+                 m_vecItems->Get(iItem), true);
              break;
            case ACTION_SHOW_INFO:
-             CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(m_vecItems->Get(iItem));
+             CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(
+                 m_vecItems->Get(iItem));
              break;
            case ACTION_DELETE_ITEM:
-             CServiceBroker::GetPVRManager().GUIActions()->HideChannel(m_vecItems->Get(iItem));
+             CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().HideChannel(
+                 m_vecItems->Get(iItem));
              break;
            case ACTION_CONTEXT_MENU:
            case ACTION_MOUSE_RIGHT_CLICK:

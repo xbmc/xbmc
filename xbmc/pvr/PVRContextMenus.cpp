@@ -18,7 +18,10 @@
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/guilib/PVRGUIActionsRecordings.h"
+#include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/recordings/PVRRecordingsPath.h"
@@ -118,7 +121,7 @@ namespace PVR
 
     bool PlayEpgTag::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -135,7 +138,8 @@ namespace PVR
 
     bool PlayRecording::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(item, true /* bCheckResume */);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+          item, true /* bCheckResume */);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -171,9 +175,9 @@ namespace PVR
     bool ShowInformation::Execute(const CFileItemPtr& item) const
     {
       if (item->GetPVRRecordingInfoTag())
-        return CServiceBroker::GetPVRManager().GUIActions()->ShowRecordingInfo(item);
+        return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(item);
 
-      return CServiceBroker::GetPVRManager().GUIActions()->ShowEPGInfo(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -190,7 +194,7 @@ namespace PVR
 
     bool ShowChannelGuide::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->ShowChannelEPG(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowChannelEPG(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -218,7 +222,7 @@ namespace PVR
 
     bool FindSimilar::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->FindSimilar(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -268,10 +272,11 @@ namespace PVR
           channel = item->GetPVRChannelInfoTag();
 
         if (channel)
-          return CServiceBroker::GetPVRManager().GUIActions()->SetRecordingOnChannel(channel, true);
+          return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().SetRecordingOnChannel(
+              channel, true);
       }
 
-      return CServiceBroker::GetPVRManager().GUIActions()->AddTimer(item, false);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(item, false);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -311,11 +316,11 @@ namespace PVR
         const std::shared_ptr<CPVRChannel> channel =
             CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(epgTag);
         if (channel)
-          return CServiceBroker::GetPVRManager().GUIActions()->SetRecordingOnChannel(channel,
-                                                                                     false);
+          return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().SetRecordingOnChannel(
+              channel, false);
       }
 
-      return CServiceBroker::GetPVRManager().GUIActions()->StopRecording(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().StopRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -326,14 +331,14 @@ namespace PVR
       const std::shared_ptr<CPVRRecording> recording(item.GetPVRRecordingInfoTag());
       if (recording && !recording->IsDeleted() && !recording->IsInProgress())
       {
-        return CServiceBroker::GetPVRManager().GUIActions()->CanEditRecording(item);
+        return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().CanEditRecording(item);
       }
       return false;
     }
 
     bool EditRecording::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->EditRecording(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().EditRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -371,7 +376,7 @@ namespace PVR
 
     bool DeleteRecording::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->DeleteRecording(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -388,7 +393,7 @@ namespace PVR
 
     bool UndeleteRecording::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->UndeleteRecording(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().UndeleteRecording(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -405,7 +410,8 @@ namespace PVR
 
     bool DeleteWatchedRecordings::Execute(const std::shared_ptr<CFileItem>& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->DeleteWatchedRecordings(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteWatchedRecordings(
+          item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -424,7 +430,7 @@ namespace PVR
 
     bool AddReminder::Execute(const std::shared_ptr<CFileItem>& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->AddReminder(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddReminder(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -450,7 +456,7 @@ namespace PVR
 
     bool ToggleTimerState::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->ToggleTimerState(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimerState(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -465,7 +471,7 @@ namespace PVR
 
     bool AddTimerRule::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->AddTimerRule(item, true, true);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimerRule(item, true, true);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -498,7 +504,7 @@ namespace PVR
 
     bool EditTimerRule::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->EditTimerRule(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimerRule(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -519,9 +525,10 @@ namespace PVR
 
     bool DeleteTimerRule::Execute(const CFileItemPtr& item) const
     {
-      const std::shared_ptr<CFileItem> parentTimer = CServiceBroker::GetPVRManager().GUIActions()->GetTimerRule(item);
+      auto& timers = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>();
+      const std::shared_ptr<CFileItem> parentTimer = timers.GetTimerRule(item);
       if (parentTimer)
-        return CServiceBroker::GetPVRManager().GUIActions()->DeleteTimerRule(parentTimer);
+        return timers.DeleteTimerRule(parentTimer);
 
       return false;
     }
@@ -558,7 +565,7 @@ namespace PVR
 
     bool EditTimer::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->EditTimer(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimer(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -590,7 +597,7 @@ namespace PVR
 
     bool DeleteTimer::Execute(const CFileItemPtr& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->DeleteTimer(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().DeleteTimer(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -653,7 +660,7 @@ namespace PVR
 
     bool ExecuteSearch::Execute(const std::shared_ptr<CFileItem>& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->ExecuteSavedSearch(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ExecuteSavedSearch(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -666,7 +673,7 @@ namespace PVR
 
     bool EditSearch::Execute(const std::shared_ptr<CFileItem>& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->EditSavedSearch(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().EditSavedSearch(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -679,7 +686,7 @@ namespace PVR
 
     bool RenameSearch::Execute(const std::shared_ptr<CFileItem>& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->RenameSavedSearch(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().RenameSavedSearch(item);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -692,7 +699,7 @@ namespace PVR
 
     bool DeleteSearch::Execute(const std::shared_ptr<CFileItem>& item) const
     {
-      return CServiceBroker::GetPVRManager().GUIActions()->DeleteSavedSearch(item);
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().DeleteSavedSearch(item);
     }
 
   } // namespace CONEXTMENUITEM

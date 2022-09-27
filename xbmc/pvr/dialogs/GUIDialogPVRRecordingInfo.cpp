@@ -12,7 +12,8 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIMessage.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 
 using namespace PVR;
 
@@ -61,7 +62,8 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(const CGUIMessage& message)
     Close();
 
     if (m_recordItem)
-      CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(m_recordItem, true /* check resume */);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+          m_recordItem, true /* check resume */);
 
     bReturn = true;
   }
@@ -78,7 +80,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonFind(const CGUIMessage& message)
     Close();
 
     if (m_recordItem)
-      CServiceBroker::GetPVRManager().GUIActions()->FindSimilar(m_recordItem);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(m_recordItem);
 
     bReturn = true;
   }

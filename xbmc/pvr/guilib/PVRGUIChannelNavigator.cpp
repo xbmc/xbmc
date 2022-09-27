@@ -15,7 +15,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/channels/PVRChannelGroup.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/SystemClock.h"
@@ -192,7 +192,7 @@ namespace PVR
     }
 
     if (item)
-      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, false);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(item, false);
   }
 
   bool CPVRGUIChannelNavigator::IsPreview() const

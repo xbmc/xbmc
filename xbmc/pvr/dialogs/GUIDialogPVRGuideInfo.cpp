@@ -14,7 +14,9 @@
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsEPG.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
@@ -63,14 +65,14 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(const CGUIMessage& message)
     {
       const CFileItemPtr item(new CFileItem(timerTag));
       if (timerTag->IsRecording())
-        bReturn = CServiceBroker::GetPVRManager().GUIActions()->StopRecording(item);
+        bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().StopRecording(item);
       else
-        bReturn = CServiceBroker::GetPVRManager().GUIActions()->DeleteTimer(item);
+        bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().DeleteTimer(item);
     }
     else
     {
       const CFileItemPtr item(new CFileItem(m_progItem));
-      bReturn = CServiceBroker::GetPVRManager().GUIActions()->AddTimer(item, false);
+      bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(item, false);
     }
   }
 
@@ -89,7 +91,8 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonAddTimer(const CGUIMessage& message)
     if (m_progItem && !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_progItem))
     {
       const CFileItemPtr item(new CFileItem(m_progItem));
-      bReturn = CServiceBroker::GetPVRManager().GUIActions()->AddTimerRule(item, true, true);
+      bReturn =
+          CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimerRule(item, true, true);
     }
   }
 
@@ -108,7 +111,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonSetReminder(const CGUIMessage& message
     if (m_progItem && !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(m_progItem))
     {
       const std::shared_ptr<CFileItem> item = std::make_shared<CFileItem>(m_progItem);
-      bReturn = CServiceBroker::GetPVRManager().GUIActions()->AddReminder(item);
+      bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddReminder(item);
     }
   }
 
@@ -130,11 +133,13 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(const CGUIMessage& message)
 
     const CFileItemPtr item(new CFileItem(m_progItem));
     if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
-      CServiceBroker::GetPVRManager().GUIActions()->PlayRecording(item, true /* bCheckResume */);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+          item, true /* bCheckResume */);
     else if (message.GetSenderId() == CONTROL_BTN_PLAY_EPGTAG && m_progItem->IsPlayable())
-      CServiceBroker::GetPVRManager().GUIActions()->PlayEpgTag(item);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(item);
     else
-      CServiceBroker::GetPVRManager().GUIActions()->SwitchToChannel(item, true /* bCheckResume */);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+          item, true /* bCheckResume */);
 
     bReturn = true;
   }
@@ -149,7 +154,8 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonFind(const CGUIMessage& message)
   if (message.GetSenderId() == CONTROL_BTN_FIND)
   {
     Close();
-    return CServiceBroker::GetPVRManager().GUIActions()->FindSimilar(std::make_shared<CFileItem>(m_progItem));
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(
+        std::make_shared<CFileItem>(m_progItem));
   }
 
   return bReturn;

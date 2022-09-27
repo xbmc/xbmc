@@ -39,7 +39,7 @@
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/epg/EpgSearchFilter.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "settings/AdvancedSettings.h"
@@ -175,7 +175,8 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
 
   std::shared_ptr<CPVRChannelGroupMember> groupMember = groupMemberIn;
   if (!groupMember)
-    groupMember = CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*this);
+    groupMember =
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*this);
 
   if (!tag->IconPath().empty())
     SetArt("icon", tag->IconPath());
@@ -3910,7 +3911,7 @@ CFileItem CFileItem::GetItemToPlay() const
   if (HasEPGInfoTag())
   {
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-        CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*this);
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*this);
     if (groupMember)
       return CFileItem(groupMember);
   }

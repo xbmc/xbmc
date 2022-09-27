@@ -25,7 +25,8 @@
 #include "powermanagement/PowerTypes.h"
 #include "profiles/ProfileManager.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/AlarmClock.h"
@@ -400,7 +401,7 @@ void CApplicationPowerHandling::ActivateScreenSaver(bool forceType /*= false */)
     else if (m_appPlayer.IsPlayingVideo() &&
              settings->GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE))
       bUseDim = true;
-    else if (CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan())
+    else if (CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().IsRunningChannelScan())
       bUseDim = true;
 
     if (bUseDim)
@@ -518,7 +519,8 @@ void CApplicationPowerHandling::CheckShutdown()
       CVideoLibraryQueue::GetInstance().IsRunning() ||
       CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(
           WINDOW_DIALOG_PROGRESS) // progress dialog is onscreen
-      || !CServiceBroker::GetPVRManager().GUIActions()->CanSystemPowerdown(false))
+      ||
+      !CServiceBroker::GetPVRManager().Get<PVR::GUI::PowerManagement>().CanSystemPowerdown(false))
   {
     m_shutdownTimer.StartZero();
     return;

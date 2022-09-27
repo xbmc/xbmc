@@ -28,7 +28,7 @@
 #include "pvr/channels/PVRRadioRDSInfoTag.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/epg/EpgSearchFilter.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/providers/PVRProvider.h"
 #include "pvr/providers/PVRProviders.h"
 #include "pvr/recordings/PVRRecording.h"
@@ -471,7 +471,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_CHANNEL_NUMBER:
       {
         const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-            CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*item);
+            CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*item);
         if (groupMember)
         {
           strValue = groupMember->ChannelNumber().FormattedChannelNumber();
@@ -765,7 +765,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case LISTITEM_CHANNEL_NUMBER:
       {
         const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-            CServiceBroker::GetPVRManager().GUIActions()->GetChannelGroupMember(*item);
+            CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*item);
         if (groupMember)
         {
           strValue = groupMember->ChannelNumber().FormattedChannelNumber();
@@ -995,7 +995,10 @@ bool CPVRGUIInfo::GetPVRLabel(const CFileItem* item, const CGUIInfo& info, std::
       CharInfoTotalDiskSpace(strValue);
       return true;
     case PVR_CHANNEL_NUMBER_INPUT:
-      strValue = CServiceBroker::GetPVRManager().GUIActions()->GetChannelNumberInputHandler().GetChannelNumberLabel();
+      strValue = CServiceBroker::GetPVRManager()
+                     .Get<PVR::GUI::Channels>()
+                     .GetChannelNumberInputHandler()
+                     .GetChannelNumberLabel();
       return true;
   }
 
@@ -1525,7 +1528,10 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item, const CGUIInfo
     case PLAYER_IS_CHANNEL_PREVIEW_ACTIVE:
       if (item->IsPVRChannel())
       {
-        if (CServiceBroker::GetPVRManager().GUIActions()->GetChannelNavigator().IsPreviewAndShowInfo())
+        if (CServiceBroker::GetPVRManager()
+                .Get<PVR::GUI::Channels>()
+                .GetChannelNavigator()
+                .IsPreviewAndShowInfo())
         {
           bValue = true;
         }
