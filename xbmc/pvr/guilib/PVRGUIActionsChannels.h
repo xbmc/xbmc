@@ -50,7 +50,7 @@ class CPVRGUIActionsChannels : public IPVRComponent
 {
 public:
   CPVRGUIActionsChannels();
-  virtual ~CPVRGUIActionsChannels() = default;
+  ~CPVRGUIActionsChannels() override = default;
 
   /*!
    * @brief Hide a channel, always showing a confirmation dialog.

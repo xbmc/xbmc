@@ -31,7 +31,7 @@ class CPVRGUIActionsPlayback : public IPVRComponent
 {
 public:
   CPVRGUIActionsPlayback();
-  virtual ~CPVRGUIActionsPlayback() = default;
+  ~CPVRGUIActionsPlayback() override = default;
 
   /*!
    * @brief Get a localized resume play label, if the given item can be resumed.

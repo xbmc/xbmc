@@ -23,7 +23,7 @@ class CPVRGUIActionsPowerManagement : public IPVRComponent
 {
 public:
   CPVRGUIActionsPowerManagement();
-  virtual ~CPVRGUIActionsPowerManagement() = default;
+  ~CPVRGUIActionsPowerManagement() override = default;
 
   /*!
    * @brief Check whether the system Kodi is running on can be powered down
