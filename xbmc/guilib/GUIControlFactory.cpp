@@ -490,22 +490,22 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, in
   return ret;
 }
 
-bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& action)
+bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode,
+                                    const char* strTag,
+                                    CGUIAction& actions)
 {
-  action.m_actions.clear();
+  actions.Reset();
   const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
   while (pElement)
   {
     if (pElement->FirstChild())
     {
-      CGUIAction::cond_action_pair pair;
-      pair.condition = XMLUtils::GetAttribute(pElement, "condition");
-      pair.action = pElement->FirstChild()->Value();
-      action.m_actions.push_back(pair);
+      actions.Append(
+          {XMLUtils::GetAttribute(pElement, "condition"), pElement->FirstChild()->Value()});
     }
     pElement = pElement->NextSiblingElement(strTag);
   }
-  return action.m_actions.size() > 0;
+  return actions.HasAnyActions();
 }
 
 bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect, const CRect &parentRect)
@@ -922,7 +922,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetActions(pControlNode, "ontextchange", textChangeActions);
   GetActions(pControlNode, "onfocus", focusActions);
   GetActions(pControlNode, "onunfocus", unfocusActions);
-  focusActions.m_sendThreadMessages = unfocusActions.m_sendThreadMessages = true;
+  focusActions.EnableSendThreadMessageMode();
+  unfocusActions.EnableSendThreadMessageMode();
   GetActions(pControlNode, "altclick", altclickActions);
 
   std::string infoString;
