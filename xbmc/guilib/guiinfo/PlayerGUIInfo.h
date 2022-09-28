@@ -10,6 +10,7 @@
 
 #include "XBDateTime.h"
 #include "guilib/guiinfo/GUIInfoProvider.h"
+#include "utils/EventStream.h"
 
 #include <atomic>
 #include <memory>
@@ -27,11 +28,21 @@ namespace GUIINFO
 
 class CGUIInfo;
 
+struct PlayerShowInfoChangedEvent
+{
+  explicit PlayerShowInfoChangedEvent(bool showInfo) : m_showInfo(showInfo) {}
+  virtual ~PlayerShowInfoChangedEvent() = default;
+
+  bool m_showInfo{false};
+};
+
 class CPlayerGUIInfo : public CGUIInfoProvider
 {
 public:
   CPlayerGUIInfo();
   ~CPlayerGUIInfo() override;
+
+  CEventStream<PlayerShowInfoChangedEvent>& Events() { return m_events; }
 
   // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
   bool InitCurrentItem(CFileItem *item) override;
@@ -54,6 +65,8 @@ private:
   int GetPlayTime() const;
   int GetPlayTimeRemaining() const;
   float GetSeekPercent() const;
+
+  CEventSource<PlayerShowInfoChangedEvent> m_events;
 
   std::string GetCurrentPlayTime(TIME_FORMAT format) const;
   std::string GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
