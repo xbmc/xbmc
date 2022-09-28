@@ -133,7 +133,11 @@ std::string CPlayerGUIInfo::GetSeekTime(TIME_FORMAT format) const
 
 void CPlayerGUIInfo::SetShowInfo(bool showinfo)
 {
-  m_playerShowInfo = showinfo;
+  if (showinfo != m_playerShowInfo)
+  {
+    m_playerShowInfo = showinfo;
+    m_events.Publish(PlayerShowInfoChangedEvent(m_playerShowInfo));
+  }
 }
 
 bool CPlayerGUIInfo::ToggleShowInfo()

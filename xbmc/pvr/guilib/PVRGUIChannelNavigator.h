@@ -9,8 +9,20 @@
 #pragma once
 
 #include "threads/CriticalSection.h"
+#include "utils/EventStream.h"
 
 #include <memory>
+
+namespace KODI
+{
+namespace GUILIB
+{
+namespace GUIINFO
+{
+struct PlayerShowInfoChangedEvent;
+}
+} // namespace GUILIB
+} // namespace KODI
 
 namespace PVR
 {
@@ -20,12 +32,52 @@ namespace PVR
     INSTANT_OR_DELAYED_SWITCH // switch according to SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT
   };
 
+  struct PVRPreviewAndPlayerShowInfoChangedEvent
+  {
+    explicit PVRPreviewAndPlayerShowInfoChangedEvent(bool previewAndPlayerShowInfo)
+      : m_previewAndPlayerShowInfo(previewAndPlayerShowInfo)
+    {
+    }
+    virtual ~PVRPreviewAndPlayerShowInfoChangedEvent() = default;
+
+    bool m_previewAndPlayerShowInfo{false};
+  };
+
   class CPVRChannelGroupMember;
 
   class CPVRGUIChannelNavigator
   {
   public:
-    virtual ~CPVRGUIChannelNavigator() = default;
+    CPVRGUIChannelNavigator();
+    virtual ~CPVRGUIChannelNavigator();
+
+    /*!
+     * @brief Subscribe to the event stream for changes of channel preview and player show info.
+     * @param owner The subscriber.
+     * @param fn The callback function of the subscriber for the events.
+     */
+    template<typename A>
+    void Subscribe(A* owner, void (A::*fn)(const PVRPreviewAndPlayerShowInfoChangedEvent&))
+    {
+      SubscribeToShowInfoEventStream();
+      m_events.Subscribe(owner, fn);
+    }
+
+    /*!
+     * @brief Unsubscribe from the event stream for changes of channel preview and player show info.
+     * @param obj The subscriber.
+     */
+    template<typename A>
+    void Unsubscribe(A* obj)
+    {
+      m_events.Unsubscribe(obj);
+    }
+
+    /*!
+     * @brief CEventStream callback for player show info flag changes.
+     * @param event The event.
+     */
+    void Notify(const KODI::GUILIB::GUIINFO::PlayerShowInfoChangedEvent& event);
 
     /*!
      * @brief Select the next channel in currently playing channel group, relative to the currently selected channel.
@@ -104,11 +156,24 @@ namespace PVR
      */
     void ShowInfo(bool bForce);
 
+    /*!
+     * @brief Subscribe to the event stream for changes of player show info.
+     */
+    void SubscribeToShowInfoEventStream();
+
+    /*!
+     * @brief Check if property preview and show info value changed, inform subscribers in case.
+     */
+    void CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
+
     mutable CCriticalSection m_critSection;
     std::shared_ptr<CPVRChannelGroupMember> m_playingChannel;
     std::shared_ptr<CPVRChannelGroupMember> m_currentChannel;
     int m_iChannelEntryJobId = -1;
     int m_iChannelInfoJobId = -1;
+    CEventSource<PVRPreviewAndPlayerShowInfoChangedEvent> m_events;
+    bool m_playerShowInfo{false};
+    bool m_previewAndPlayerShowInfo{false};
   };
 
 } // namespace PVR

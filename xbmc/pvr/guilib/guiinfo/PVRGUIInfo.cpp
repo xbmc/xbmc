@@ -128,7 +128,9 @@ void CPVRGUIInfo::Stop()
   StopThread();
 
   auto& mgr = CServiceBroker::GetPVRManager();
-  mgr.Get<PVR::GUI::Channels>().Events().Unsubscribe(this);
+  auto& channels = mgr.Get<PVR::GUI::Channels>();
+  channels.GetChannelNavigator().Unsubscribe(this);
+  channels.Events().Unsubscribe(this);
   mgr.Events().Unsubscribe(this);
 
   CGUIComponent* gui = CServiceBroker::GetGUI();
@@ -151,6 +153,12 @@ void CPVRGUIInfo::Notify(const PVRChannelNumberInputChangedEvent& event)
   m_channelNumberInput = event.m_input;
 }
 
+void CPVRGUIInfo::Notify(const PVRPreviewAndPlayerShowInfoChangedEvent& event)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  m_previewAndPlayerShowInfo = event.m_previewAndPlayerShowInfo;
+}
+
 void CPVRGUIInfo::Process()
 {
   auto toggleIntervalMs = std::chrono::milliseconds(
@@ -159,7 +167,10 @@ void CPVRGUIInfo::Process()
 
   auto& mgr = CServiceBroker::GetPVRManager();
   mgr.Events().Subscribe(this, &CPVRGUIInfo::Notify);
-  mgr.Get<PVR::GUI::Channels>().Events().Subscribe(this, &CPVRGUIInfo::Notify);
+
+  auto& channels = mgr.Get<PVR::GUI::Channels>();
+  channels.Events().Subscribe(this, &CPVRGUIInfo::Notify);
+  channels.GetChannelNavigator().Subscribe(this, &CPVRGUIInfo::Notify);
 
   /* updated on request */
   UpdateTimersCache();
@@ -1588,10 +1599,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item,
     case PLAYER_IS_CHANNEL_PREVIEW_ACTIVE:
       if (item->IsPVRChannel())
       {
-        if (CServiceBroker::GetPVRManager()
-                .Get<PVR::GUI::Channels>()
-                .GetChannelNavigator()
-                .IsPreviewAndShowInfo())
+        if (m_previewAndPlayerShowInfo)
         {
           bValue = true;
         }

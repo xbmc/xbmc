@@ -25,6 +25,7 @@
 
 #include <mutex>
 
+using namespace KODI::GUILIB::GUIINFO;
 using namespace std::chrono_literals;
 
 namespace
@@ -96,9 +97,59 @@ public:
 
 namespace PVR
 {
+CPVRGUIChannelNavigator::CPVRGUIChannelNavigator()
+{
+  // Note: we cannot subscribe to PlayerInfoProvider here, as we're getting constructed
+  // before the info providers. We will subscribe once our first subscriber appears.
+}
+
+CPVRGUIChannelNavigator::~CPVRGUIChannelNavigator()
+{
+  CServiceBroker::GetGUI()
+      ->GetInfoManager()
+      .GetInfoProviders()
+      .GetPlayerInfoProvider()
+      .Events()
+      .Unsubscribe(this);
+}
+
+void CPVRGUIChannelNavigator::SubscribeToShowInfoEventStream()
+{
+  CServiceBroker::GetGUI()
+      ->GetInfoManager()
+      .GetInfoProviders()
+      .GetPlayerInfoProvider()
+      .Events()
+      .Subscribe(this, &CPVRGUIChannelNavigator::Notify);
+}
+
+void CPVRGUIChannelNavigator::CheckAndPublishPreviewAndPlayerShowInfoChangedEvent()
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  const bool currentValue = IsPreview() && m_playerShowInfo;
+  if (m_previewAndPlayerShowInfo != currentValue)
+  {
+    m_previewAndPlayerShowInfo = currentValue;
+
+    // inform subscribers
+    m_events.Publish(PVRPreviewAndPlayerShowInfoChangedEvent(currentValue));
+  }
+}
+
+void CPVRGUIChannelNavigator::Notify(const PlayerShowInfoChangedEvent& event)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  m_playerShowInfo = event.m_showInfo;
+  CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
+}
+
   void CPVRGUIChannelNavigator::SelectNextChannel(ChannelSwitchMode eSwitchMode)
   {
-    if (!CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().GetShowInfo() && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
+    std::unique_lock<CCriticalSection> lock(m_critSection);
+
+    if (!m_playerShowInfo && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
     {
       // show info for current channel on first next channel selection.
       ShowInfo(false);
@@ -112,7 +163,9 @@ namespace PVR
 
   void CPVRGUIChannelNavigator::SelectPreviousChannel(ChannelSwitchMode eSwitchMode)
   {
-    if (!CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().GetShowInfo() && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
+    std::unique_lock<CCriticalSection> lock(m_critSection);
+
+    if (!m_playerShowInfo && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
     {
       // show info for current channel on first previous channel selection.
       ShowInfo(false);
@@ -149,8 +202,11 @@ namespace PVR
     CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(CFileItem(groupMember));
 
     std::unique_lock<CCriticalSection> lock(m_critSection);
+
     m_currentChannel = groupMember;
     ShowInfo(false);
+
+    CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
 
     if (IsPreview() && eSwitchMode == ChannelSwitchMode::INSTANT_OR_DELAYED_SWITCH)
     {
@@ -203,7 +259,8 @@ namespace PVR
 
   bool CPVRGUIChannelNavigator::IsPreviewAndShowInfo() const
   {
-    return IsPreview() && CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().GetShowInfo();
+    std::unique_lock<CCriticalSection> lock(m_critSection);
+    return m_previewAndPlayerShowInfo;
   }
 
   void CPVRGUIChannelNavigator::ShowInfo()
@@ -259,6 +316,8 @@ namespace PVR
         if (m_playingChannel)
           item.reset(new CFileItem(m_playingChannel));
       }
+
+      CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
     }
 
     if (item)
@@ -267,7 +326,9 @@ namespace PVR
 
   void CPVRGUIChannelNavigator::ToggleInfo()
   {
-    if (CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().GetShowInfo())
+    std::unique_lock<CCriticalSection> lock(m_critSection);
+
+    if (m_playerShowInfo)
       HideInfo();
     else
       ShowInfo();
@@ -289,6 +350,8 @@ namespace PVR
         if (m_playingChannel)
           item.reset(new CFileItem(m_playingChannel));
       }
+
+      CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
     }
 
     if (item)
@@ -300,8 +363,11 @@ namespace PVR
   void CPVRGUIChannelNavigator::ClearPlayingChannel()
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
+
     m_playingChannel.reset();
     HideInfo();
+
+    CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
   }
 
 } // namespace PVR
