@@ -28,7 +28,7 @@ class CPVRGUIActionsParentalControl : public IPVRComponent
 {
 public:
   CPVRGUIActionsParentalControl();
-  virtual ~CPVRGUIActionsParentalControl() = default;
+  ~CPVRGUIActionsParentalControl() override = default;
 
   /*!
    * @brief Check if channel is parental locked. Ask for PIN if necessary.

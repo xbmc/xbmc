@@ -20,7 +20,7 @@ class CPVRGUIActionsUtils : public IPVRComponent
 {
 public:
   CPVRGUIActionsUtils() = default;
-  virtual ~CPVRGUIActionsUtils() = default;
+  ~CPVRGUIActionsUtils() override = default;
 
   /*!
      * @brief Process info action for the given item.

@@ -24,7 +24,7 @@ class CPVRGUIActionsTimers : public IPVRComponent
 {
 public:
   CPVRGUIActionsTimers();
-  virtual ~CPVRGUIActionsTimers() = default;
+  ~CPVRGUIActionsTimers() override = default;
 
   /*!
    * @brief Open the timer settings dialog to create a new tv or radio timer.

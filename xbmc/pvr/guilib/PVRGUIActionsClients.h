@@ -16,7 +16,7 @@ class CPVRGUIActionsClients : public IPVRComponent
 {
 public:
   CPVRGUIActionsClients() = default;
-  virtual ~CPVRGUIActionsClients() = default;
+  ~CPVRGUIActionsClients() override = default;
 
   /*!
    * @brief Select and invoke client-specific settings actions

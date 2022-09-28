@@ -22,7 +22,7 @@ class CPVRGUIActionsRecordings : public IPVRComponent
 {
 public:
   CPVRGUIActionsRecordings() = default;
-  virtual ~CPVRGUIActionsRecordings() = default;
+  ~CPVRGUIActionsRecordings() override = default;
 
   /*!
    * @brief Open a dialog with information for a given recording.

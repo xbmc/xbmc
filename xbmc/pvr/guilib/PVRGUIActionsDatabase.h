@@ -16,7 +16,7 @@ class CPVRGUIActionsDatabase : public IPVRComponent
 {
 public:
   CPVRGUIActionsDatabase() = default;
-  virtual ~CPVRGUIActionsDatabase() = default;
+  ~CPVRGUIActionsDatabase() override = default;
 
   /*!
    * @brief Reset the TV database to it's initial state and delete all the data.
