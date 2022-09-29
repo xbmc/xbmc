@@ -59,7 +59,7 @@ case $XBMC_PLATFORM_DIR in
     DEFAULT_NDK_VERSION="21e" # NDK package version (newer API can be inside)
     DEFAULT_NDK_API="21" # Lollipop API level (21) defined in package ./sysroot/usr/include/android/api-level.h
     DEFAULT_XBMC_DEPENDS_ROOT=$WORKSPACE/tools/depends/xbmc-depends
-    DEFAULT_CONFIGURATION="Debug"
+    DEFAULT_CONFIGURATION="RelWithDebInfo"
     ;;
 
   linux)
