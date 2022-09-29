@@ -227,7 +227,7 @@ void CPlayListM3U::Save(const std::string& strFileName) const
     std::string strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
     strLine = StringUtils::Format("{}:{},{}\n", InfoMarker,
-                                  item->GetMusicInfoTag()->GetDuration() / 1000, strDescription);
+                                  item->GetMusicInfoTag()->GetDuration(), strDescription);
     if (file.Write(strLine.c_str(), strLine.size()) != static_cast<ssize_t>(strLine.size()))
       return; // error
     if (item->GetStartOffset() != 0 || item->GetEndOffset() != 0)
