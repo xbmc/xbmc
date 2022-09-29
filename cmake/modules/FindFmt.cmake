@@ -12,11 +12,20 @@
 #
 #   fmt::fmt   - The Fmt library
 
+define_property(TARGET PROPERTY LIB_BUILD
+                       BRIEF_DOCS "This target will be compiling the library"
+                       FULL_DOCS "This target will be compiling the library")
+
+set(FORCE_BUILD OFF)
+
 # If target exists, no need to rerun find
 # Allows a module that may be a dependency for multiple libraries to just be executed
 # once to populate all required variables/targets
-if(NOT TARGET fmt::fmt)
-  if(ENABLE_INTERNAL_FMT)
+if((NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED) AND NOT TARGET fmt)
+
+  # Build if ENABLE_INTERNAL_FMT, or if required version in find_package call is greater 
+  # than already found FMT_VERSION from a previous find_package call
+  if(ENABLE_INTERNAL_FMT OR (Fmt_FIND_REQUIRED AND FMT_VERSION VERSION_LESS Fmt_FIND_VERSION))
 
     include(cmake/scripts/common/ModuleHelpers.cmake)
 
@@ -27,7 +36,16 @@ if(NOT TARGET fmt::fmt)
     # Check for existing FMT. If version >= FMT-VERSION file version, dont build
     find_package(FMT CONFIG QUIET)
 
-    if(FMT_VERSION VERSION_LESS ${${MODULE}_VER})
+    if(Fmt_FIND_VERSION)
+      if(FMT_VERSION VERSION_LESS ${Fmt_FIND_VERSION})
+        set(FORCE_BUILD ON)
+      endif()
+    endif()
+
+    if(${FORCE_BUILD} OR FMT_VERSION VERSION_LESS ${${MODULE}_VER})
+
+      # Set FORCE_BUILD to enable fmt::fmt property that build will occur
+      set(FORCE_BUILD ON)
 
       if(APPLE)
         set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
@@ -88,8 +106,16 @@ if(NOT TARGET fmt::fmt)
     set(FMT_LIBRARIES ${FMT_LIBRARY})
     set(FMT_INCLUDE_DIRS ${FMT_INCLUDE_DIR})
 
+    # Reorder this to allow handling of FMT_FORCE_BUILD and not duplicate in property
     if(NOT TARGET fmt::fmt)
-      add_library(fmt::fmt UNKNOWN IMPORTED)
+      set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP fmt::fmt)
+    endif()
+
+    if(NOT TARGET fmt::fmt OR FORCE_BUILD)
+      if(NOT TARGET fmt::fmt)
+        add_library(fmt::fmt UNKNOWN IMPORTED)
+      endif()
+
       if(FMT_LIBRARY_RELEASE)
         set_target_properties(fmt::fmt PROPERTIES
                                        IMPORTED_CONFIGURATIONS RELEASE
@@ -102,11 +128,19 @@ if(NOT TARGET fmt::fmt)
       endif()
       set_target_properties(fmt::fmt PROPERTIES
                                      INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
+
+      # If a force build is done, let any calling packages know they may want to rebuild
+      if(FORCE_BUILD)
+        set_target_properties(fmt::fmt PROPERTIES LIB_BUILD ON)
+      endif()
     endif()
     if(TARGET fmt)
       add_dependencies(fmt::fmt fmt)
     endif()
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP fmt::fmt)
+  else()
+    if(FMT_FIND_REQUIRED)
+      message(FATAL_ERROR "Fmt lib not found. Maybe use -DENABLE_INTERNAL_FMT=ON")
+    endif()
   endif()
 
   mark_as_advanced(FMT_INCLUDE_DIR FMT_LIBRARY)
