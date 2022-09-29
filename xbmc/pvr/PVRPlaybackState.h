@@ -138,6 +138,12 @@ public:
   std::shared_ptr<CPVRChannel> GetPlayingChannel() const;
 
   /*!
+   * @brief Return the channel group member that is currently playing.
+   * @return The channel group member or nullptr if none is playing.
+   */
+  std::shared_ptr<CPVRChannelGroupMember> GetPlayingChannelGroupMember() const;
+
+  /*!
    * @brief Return the recording that is currently playing.
    * @return The recording or nullptr if none is playing.
    */

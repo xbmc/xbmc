@@ -29,14 +29,16 @@
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/guilib/PVRGUIActionsUtils.h"
+#include "pvr/epg/EpgInfoTag.h"
 #include "pvr/windows/GUIWindowPVRBase.h"
+#include "settings/Settings.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
 #include <algorithm>
 #include <chrono>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -146,6 +148,11 @@ void CPVRChannelSwitchingInputHandler::SwitchToPreviousChannel()
       }
     }
   }
+}
+
+CPVRGUIActionsChannels::CPVRGUIActionsChannels()
+  : m_settings({CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL})
+{
 }
 
 bool CPVRGUIActionsChannels::HideChannel(const std::shared_ptr<CFileItem>& item) const
@@ -330,8 +337,7 @@ void CPVRGUIActionsChannels::OnPlaybackStarted(const CFileItemPtr& item)
   if (groupMember)
   {
     m_channelNavigator.SetPlayingChannel(groupMember);
-    CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().SetSelectedItemPath(
-        groupMember->Channel()->IsRadio(), groupMember->Path());
+    SetSelectedChannelPath(groupMember->Channel()->IsRadio(), groupMember->Path());
   }
 }
 
@@ -341,4 +347,39 @@ void CPVRGUIActionsChannels::OnPlaybackStopped(const CFileItemPtr& item)
   {
     m_channelNavigator.ClearPlayingChannel();
   }
+}
+
+void CPVRGUIActionsChannels::SetSelectedChannelPath(bool bRadio, const std::string& path)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  if (bRadio)
+    m_selectedChannelPathRadio = path;
+  else
+    m_selectedChannelPathTV = path;
+}
+
+std::string CPVRGUIActionsChannels::GetSelectedChannelPath(bool bRadio) const
+{
+  if (m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL))
+  {
+    CPVRManager& mgr = CServiceBroker::GetPVRManager();
+
+    // if preselect playing channel is activated, return the path of the playing channel, if any.
+    const std::shared_ptr<CPVRChannelGroupMember> playingChannel =
+        mgr.PlaybackState()->GetPlayingChannelGroupMember();
+    if (playingChannel && playingChannel->IsRadio() == bRadio)
+      return playingChannel->Path();
+
+    const std::shared_ptr<CPVREpgInfoTag> playingTag = mgr.PlaybackState()->GetPlayingEpgTag();
+    if (playingTag && playingTag->IsRadio() == bRadio)
+    {
+      const std::shared_ptr<CPVRChannel> channel =
+          mgr.ChannelGroups()->GetChannelForEpgTag(playingTag);
+      if (channel)
+        return GetChannelGroupMember(channel)->Path();
+    }
+  }
+
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return bRadio ? m_selectedChannelPathRadio : m_selectedChannelPathTV;
 }

@@ -9,11 +9,8 @@
 #pragma once
 
 #include "pvr/IPVRComponent.h"
-#include "pvr/settings/PVRSettings.h"
-#include "threads/CriticalSection.h"
 
 #include <memory>
-#include <string>
 
 class CFileItem;
 
@@ -22,24 +19,8 @@ namespace PVR
 class CPVRGUIActionsUtils : public IPVRComponent
 {
 public:
-  CPVRGUIActionsUtils();
-  virtual ~CPVRGUIActionsUtils() = default;
-
-  /*!
-     * @brief Get the currently selected item path; used across several windows/dialogs to share
-     * item selection.
-     * @param bRadio True to query the selected path for PVR radio, false for Live TV.
-     * @return the path.
-     */
-  std::string GetSelectedItemPath(bool bRadio) const;
-
-  /*!
-     * @brief Set the currently selected item path; used across several windows/dialogs to share
-     * item selection.
-     * @param bRadio True to set the selected path for PVR radio, false for Live TV.
-     * @param path The new path to set.
-     */
-  void SetSelectedItemPath(bool bRadio, const std::string& path);
+  CPVRGUIActionsUtils() = default;
+  ~CPVRGUIActionsUtils() override = default;
 
   /*!
      * @brief Process info action for the given item.
@@ -50,11 +31,6 @@ public:
 private:
   CPVRGUIActionsUtils(const CPVRGUIActionsUtils&) = delete;
   CPVRGUIActionsUtils const& operator=(CPVRGUIActionsUtils const&) = delete;
-
-  mutable CCriticalSection m_critSection;
-  CPVRSettings m_settings;
-  std::string m_selectedItemPathTV;
-  std::string m_selectedItemPathRadio;
 };
 
 namespace GUI

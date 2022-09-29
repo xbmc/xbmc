@@ -20,7 +20,7 @@ class CPVRGUIActionsEPG : public IPVRComponent
 {
 public:
   CPVRGUIActionsEPG() = default;
-  virtual ~CPVRGUIActionsEPG() = default;
+  ~CPVRGUIActionsEPG() override = default;
 
   /*!
    * @brief Open a dialog with epg information for a given item.

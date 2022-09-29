@@ -11,6 +11,8 @@
 #include "pvr/IPVRComponent.h"
 #include "pvr/PVRChannelNumberInputHandler.h"
 #include "pvr/guilib/PVRGUIChannelNavigator.h"
+#include "pvr/settings/PVRSettings.h"
+#include "threads/CriticalSection.h"
 
 #include <memory>
 #include <string>
@@ -47,8 +49,8 @@ private:
 class CPVRGUIActionsChannels : public IPVRComponent
 {
 public:
-  CPVRGUIActionsChannels() = default;
-  virtual ~CPVRGUIActionsChannels() = default;
+  CPVRGUIActionsChannels();
+  ~CPVRGUIActionsChannels() override = default;
 
   /*!
    * @brief Hide a channel, always showing a confirmation dialog.
@@ -116,6 +118,22 @@ public:
    */
   void OnPlaybackStopped(const std::shared_ptr<CFileItem>& item);
 
+  /*!
+   * @brief Get the currently selected channel item path; used across several windows/dialogs to
+   * share item selection.
+   * @param bRadio True to query the selected path for PVR radio, false for Live TV.
+   * @return the path.
+   */
+  std::string GetSelectedChannelPath(bool bRadio) const;
+
+  /*!
+   * @brief Set the currently selected channel item path; used across several windows/dialogs to
+   * share item selection.
+   * @param bRadio True to set the selected path for PVR radio, false for Live TV.
+   * @param path The new path to set.
+   */
+  void SetSelectedChannelPath(bool bRadio, const std::string& path);
+
 private:
   CPVRGUIActionsChannels(const CPVRGUIActionsChannels&) = delete;
   CPVRGUIActionsChannels const& operator=(CPVRGUIActionsChannels const&) = delete;
@@ -123,6 +141,11 @@ private:
   CPVRChannelSwitchingInputHandler m_channelNumberInputHandler;
   bool m_bChannelScanRunning{false};
   CPVRGUIChannelNavigator m_channelNavigator;
+
+  mutable CCriticalSection m_critSection;
+  CPVRSettings m_settings;
+  std::string m_selectedChannelPathTV;
+  std::string m_selectedChannelPathRadio;
 };
 
 namespace GUI
