@@ -37,6 +37,10 @@ if(ENABLE_INTERNAL_SPDLOG)
     if(WIN32 OR WINDOWS_STORE)
       set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch")
       generate_patchcommand("${patches}")
+
+      set(EXTRA_ARGS -DSPDLOG_WCHAR_SUPPORT=ON
+                     -DSPDLOG_WCHAR_FILENAMES=ON)
+
     endif()
 
     set(SPDLOG_VERSION ${${MODULE}_VER})
@@ -49,7 +53,7 @@ if(ENABLE_INTERNAL_SPDLOG)
                    -DSPDLOG_BUILD_TESTS=OFF
                    -DSPDLOG_BUILD_BENCH=OFF
                    -DSPDLOG_FMT_EXTERNAL=ON
-                   "${EXTRA_ARGS}")
+                   ${EXTRA_ARGS})
 
     BUILD_DEP_TARGET()
 
@@ -91,32 +95,34 @@ if(SPDLOG_FOUND)
   set(SPDLOG_DEFINITIONS -DSPDLOG_FMT_EXTERNAL
                          -DSPDLOG_DEBUG_ON
                          -DSPDLOG_NO_ATOMIC_LEVELS
-                         -DSPDLOG_ENABLE_PATTERN_PADDING)
+                         -DSPDLOG_ENABLE_PATTERN_PADDING
+                         -DSPDLOG_COMPILED_LIB
+                         ${PC_SPDLOG_CFLAGS})
   if(WIN32)
     list(APPEND SPDLOG_DEFINITIONS -DSPDLOG_WCHAR_FILENAMES
                                    -DSPDLOG_WCHAR_TO_UTF8_SUPPORT)
   endif()
 
-  if(NOT TARGET Spdlog::Spdlog)
-    add_library(Spdlog::Spdlog UNKNOWN IMPORTED)
+  if(NOT TARGET spdlog::spdlog)
+    add_library(spdlog::spdlog UNKNOWN IMPORTED)
     if(SPDLOG_LIBRARY_RELEASE)
-      set_target_properties(Spdlog::Spdlog PROPERTIES
+      set_target_properties(spdlog::spdlog PROPERTIES
                                            IMPORTED_CONFIGURATIONS RELEASE
                                            IMPORTED_LOCATION "${SPDLOG_LIBRARY_RELEASE}")
     endif()
     if(SPDLOG_LIBRARY_DEBUG)
-      set_target_properties(Spdlog::Spdlog PROPERTIES
+      set_target_properties(spdlog::spdlog PROPERTIES
                                            IMPORTED_CONFIGURATIONS DEBUG
                                            IMPORTED_LOCATION "${SPDLOG_LIBRARY_DEBUG}")
     endif()
-    set_target_properties(Spdlog::Spdlog PROPERTIES
+    set_target_properties(spdlog::spdlog PROPERTIES
                                          INTERFACE_INCLUDE_DIRECTORIES "${SPDLOG_INCLUDE_DIR}"
                                          INTERFACE_COMPILE_DEFINITIONS "${SPDLOG_DEFINITIONS}")
   endif()
   if(TARGET spdlog)
-    add_dependencies(Spdlog::Spdlog spdlog)
+    add_dependencies(spdlog::spdlog spdlog)
   endif()
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP Spdlog::Spdlog)
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP spdlog::spdlog)
 endif()
 
 mark_as_advanced(SPDLOG_INCLUDE_DIR SPDLOG_LIBRARY)

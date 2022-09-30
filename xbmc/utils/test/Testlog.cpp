@@ -60,17 +60,17 @@ TEST_F(Testlog, Log)
 
   EXPECT_STREQ("\xEF\xBB\xBF", logstring.substr(0, 3).c_str());
 
-  EXPECT_TRUE(regex.RegComp(".*DEBUG <general>: debug log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*(debug|DEBUG) <general>: debug log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*INFO <general>: info log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*(info|INFO) <general>: info log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*WARNING <general>: warning log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*(warning|WARNING) <general>: warning log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*ERROR <general>: error log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*(error|ERROR) <general>: error log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*FATAL <general>: fatal log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*(critical|CRITICAL|fatal|FATAL) <general>: fatal log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
-  EXPECT_TRUE(regex.RegComp(".*OFF <general>: none type log message.*"));
+  EXPECT_TRUE(regex.RegComp(".*(off|OFF) <general>: none type log message.*"));
   EXPECT_GE(regex.RegFind(logstring), 0);
 
   EXPECT_TRUE(XFILE::CFile::Delete(logfile));
