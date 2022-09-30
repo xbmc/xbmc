@@ -26,6 +26,10 @@ android {
             zipAlignEnabled true
             signingConfig signingConfigs.release
         }
+        relwithdebinfo {
+            zipAlignEnabled true
+            signingConfig signingConfigs.release
+        }
         release {
             zipAlignEnabled true
             signingConfig signingConfigs.release
