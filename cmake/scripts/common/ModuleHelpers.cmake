@@ -240,19 +240,15 @@ macro(BUILD_DEP_TARGET)
         unset(${MODULE}_LIBRARY_RELEASE)
       endif()
     else()
-      if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.20")
-        list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=$<IF:$<CONFIG:Debug,RelWithDebInfo>,Debug,Release>")
+      # single config generator (ie Make, Ninja)
+      if(CMAKE_BUILD_TYPE)
+        list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
       else()
-        # single config generator (ie Make, Ninja)
-        if(CMAKE_BUILD_TYPE)
-          list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
-        else()
-          # Multi-config generators (eg VS, Xcode, Ninja Multi-Config) will not have CMAKE_BUILD_TYPE
-          # Use config genex to generate the types
-          # Potential issue if Build type isnt supported by lib project
-          # eg lib supports Debug/Release, however users selects RelWithDebInfo in project
-          list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=$<CONFIG>")
-        endif()
+        # Multi-config generators (eg VS, Xcode, Ninja Multi-Config) will not have CMAKE_BUILD_TYPE
+        # Use config genex to generate the types
+        # Potential issue if Build type isnt supported by lib project
+        # eg lib supports Debug/Release, however users selects RelWithDebInfo in project
+        list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=$<CONFIG>")
       endif()
     endif()
 
