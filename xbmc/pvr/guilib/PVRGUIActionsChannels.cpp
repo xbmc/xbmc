@@ -307,23 +307,37 @@ bool CPVRGUIActionsChannels::StartChannelScan(int clientId)
 std::shared_ptr<CPVRChannelGroupMember> CPVRGUIActionsChannels::GetChannelGroupMember(
     const std::shared_ptr<CPVRChannel>& channel) const
 {
+  if (!channel)
+    return {};
+
   std::shared_ptr<CPVRChannelGroupMember> groupMember;
-  if (channel)
+
+  // first, try whether the channel is contained in the active channel group, except
+  // if a window is active which never uses the active channel group, e.g. Timers window
+  const int activeWindowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+
+  static std::vector<int> windowIDs = {
+      WINDOW_TV_RECORDINGS,    WINDOW_TV_TIMERS,    WINDOW_TV_TIMER_RULES,    WINDOW_TV_SEARCH,
+      WINDOW_RADIO_RECORDINGS, WINDOW_RADIO_TIMERS, WINDOW_RADIO_TIMER_RULES, WINDOW_RADIO_SEARCH,
+  };
+
+  if (std::find(windowIDs.cbegin(), windowIDs.cend(), activeWindowID) == windowIDs.cend())
   {
-    // first, try whether the channel is contained in the active channel group
-    std::shared_ptr<CPVRChannelGroup> group =
+    const std::shared_ptr<CPVRChannelGroup> group =
         CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(channel->IsRadio());
     if (group)
       groupMember = group->GetByUniqueID(channel->StorageId());
-
-    // as fallback, obtain the member from the 'all channels' group
-    if (!groupMember)
-    {
-      group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(channel->IsRadio());
-      if (group)
-        groupMember = group->GetByUniqueID(channel->StorageId());
-    }
   }
+
+  // as fallback, obtain the member from the 'all channels' group
+  if (!groupMember)
+  {
+    const std::shared_ptr<CPVRChannelGroup> group =
+        CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(channel->IsRadio());
+    if (group)
+      groupMember = group->GetByUniqueID(channel->StorageId());
+  }
+
   return groupMember;
 }
 
