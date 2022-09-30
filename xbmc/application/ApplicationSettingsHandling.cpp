@@ -117,7 +117,7 @@ void CApplicationSettingsHandling::OnSettingChanged(const std::shared_ptr<const 
   if (m_powerHandling.OnSettingChanged(*setting))
     return;
 
-  if (m_powerHandling.OnSettingChanged(*setting))
+  if (m_volumeHandling.OnSettingChanged(*setting))
     return;
 
   const std::string& settingId = setting->GetId();
