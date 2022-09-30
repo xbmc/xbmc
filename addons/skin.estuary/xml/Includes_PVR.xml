@@ -186,14 +186,14 @@
 			<left>0</left>
 			<top>55</top>
 			<width>510</width>
-			<height>740</height>
+			<height>855</height>
 			<texture border="40">buttons/dialogbutton-nofo.png</texture>
 		</control>
 		<control type="list" id="$PARAM[list_id]">
 			<left>20</left>
 			<top>75</top>
 			<width>470</width>
-			<height>700</height>
+			<height>815</height>
 			<onup>$PARAM[list_id]</onup>
 			<ondown>$PARAM[list_id]</ondown>
 			<onleft>$PARAM[onleft]</onleft>
@@ -253,7 +253,7 @@
 			<left>495</left>
 			<top>75</top>
 			<width>12</width>
-			<height>700</height>
+			<height>815</height>
 			<onleft>$PARAM[list_id]</onleft>
 			<onright>$PARAM[onright]</onright>
 			<ondown>$PARAM[scrollbar_id]</ondown>
