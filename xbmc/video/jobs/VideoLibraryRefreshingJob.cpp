@@ -35,7 +35,7 @@
 using namespace KODI::MESSAGING;
 using namespace VIDEO;
 
-CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(CFileItemPtr item,
+CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(std::shared_ptr<CFileItem> item,
                                                        bool forceRefresh,
                                                        bool refreshAll,
                                                        bool ignoreNfo /* = false */,
