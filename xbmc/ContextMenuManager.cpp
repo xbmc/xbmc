@@ -10,6 +10,7 @@
 
 #include "ContextMenuItem.h"
 #include "ContextMenus.h"
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/ContextMenuAddon.h"

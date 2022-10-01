@@ -124,13 +124,19 @@ bool CVideoLibraryQueue::CleanLibraryModal(const std::set<int>& paths /* = std::
   return true;
 }
 
-void CVideoLibraryQueue::RefreshItem(CFileItemPtr item, bool ignoreNfo /* = false */, bool forceRefresh /* = true */, bool refreshAll /* = false */, const std::string& searchTitle /* = "" */)
+void CVideoLibraryQueue::RefreshItem(std::shared_ptr<CFileItem> item,
+                                     bool ignoreNfo /* = false */,
+                                     bool forceRefresh /* = true */,
+                                     bool refreshAll /* = false */,
+                                     const std::string& searchTitle /* = "" */)
 {
   AddJob(new CVideoLibraryRefreshingJob(std::move(item), forceRefresh, refreshAll, ignoreNfo,
                                         searchTitle));
 }
 
-bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /* = true */, bool refreshAll /* = false */)
+bool CVideoLibraryQueue::RefreshItemModal(std::shared_ptr<CFileItem> item,
+                                          bool forceRefresh /* = true */,
+                                          bool refreshAll /* = false */)
 {
   // we can't perform a modal item refresh if other jobs are running
   if (IsRunning())
@@ -145,7 +151,7 @@ bool CVideoLibraryQueue::RefreshItemModal(CFileItemPtr item, bool forceRefresh /
   return result;
 }
 
-void CVideoLibraryQueue::MarkAsWatched(const CFileItemPtr &item, bool watched)
+void CVideoLibraryQueue::MarkAsWatched(const std::shared_ptr<CFileItem>& item, bool watched)
 {
   if (item == NULL)
     return;
@@ -153,7 +159,7 @@ void CVideoLibraryQueue::MarkAsWatched(const CFileItemPtr &item, bool watched)
   AddJob(new CVideoLibraryMarkWatchedJob(item, watched));
 }
 
-void CVideoLibraryQueue::ResetResumePoint(const CFileItemPtr& item)
+void CVideoLibraryQueue::ResetResumePoint(const std::shared_ptr<CFileItem>& item)
 {
   if (item == nullptr)
     return;
