@@ -8,6 +8,7 @@
 
 #include "PowerManager.h"
 
+#include "FileItem.h"
 #include "PowerTypes.h"
 #include "ServiceBroker.h"
 #include "application/AppParams.h"

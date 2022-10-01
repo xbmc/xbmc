@@ -8,6 +8,7 @@
 
 #include "JSONRPC.h"
 
+#include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "ServiceDescription.h"

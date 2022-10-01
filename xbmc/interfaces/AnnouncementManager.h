@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "IAnnouncer.h"
 #include "threads/CriticalSection.h"
 #include "threads/Event.h"
@@ -16,8 +15,10 @@
 #include "utils/Variant.h"
 
 #include <list>
+#include <memory>
 #include <vector>
 
+class CFileItem;
 class CVariant;
 
 namespace ANNOUNCEMENT
@@ -65,7 +66,7 @@ namespace ANNOUNCEMENT
     void DoAnnounce(AnnouncementFlag flag,
                     const std::string& sender,
                     const std::string& message,
-                    const CFileItemPtr& item,
+                    const std::shared_ptr<CFileItem>& item,
                     const CVariant& data);
     void DoAnnounce(AnnouncementFlag flag,
                     const std::string& sender,
@@ -77,7 +78,7 @@ namespace ANNOUNCEMENT
       AnnouncementFlag flag;
       std::string sender;
       std::string message;
-      CFileItemPtr item;
+      std::shared_ptr<CFileItem> item;
       CVariant data;
     };
     std::list<CAnnounceData> m_announcementQueue;
