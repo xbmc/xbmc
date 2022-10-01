@@ -1235,7 +1235,7 @@ void CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(VECSOURCES& sources,
   AddItemPathStringToFileBrowserSources(sources, itemDir, g_localizeStrings.Get(36041));
 }
 
-int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
+int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 {
   if (item == nullptr || !item->IsVideoDb() || !item->HasVideoInfoTag() || item->GetVideoInfoTag()->m_iDbId < 0)
     return -1;
@@ -1383,7 +1383,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const CFileItemPtr &item)
 }
 
 //Add change a title's name
-bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
+bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const std::shared_ptr<CFileItem>& pItem)
 {
   if (pItem == nullptr || !pItem->HasVideoInfoTag())
     return false;
@@ -1455,7 +1455,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const CFileItemPtr &pItem)
   return true;
 }
 
-bool CGUIDialogVideoInfo::CanDeleteVideoItem(const CFileItemPtr &item)
+bool CGUIDialogVideoInfo::CanDeleteVideoItem(const std::shared_ptr<CFileItem>& item)
 {
   if (item == nullptr || !item->HasVideoInfoTag())
     return false;
@@ -1474,7 +1474,8 @@ bool CGUIDialogVideoInfo::CanDeleteVideoItem(const CFileItemPtr &item)
           !CVideoDatabaseDirectory::IsAllItem(item->GetPath()));
 }
 
-bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, bool unavailable /* = false */)
+bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const std::shared_ptr<CFileItem>& item,
+                                                      bool unavailable /* = false */)
 {
   if (item == nullptr || !item->HasVideoInfoTag() ||
       !CanDeleteVideoItem(item))
@@ -1577,7 +1578,8 @@ bool CGUIDialogVideoInfo::DeleteVideoItemFromDatabase(const CFileItemPtr &item, 
   return true;
 }
 
-bool CGUIDialogVideoInfo::DeleteVideoItem(const CFileItemPtr &item, bool unavailable /* = false */)
+bool CGUIDialogVideoInfo::DeleteVideoItem(const std::shared_ptr<CFileItem>& item,
+                                          bool unavailable /* = false */)
 {
   if (item == nullptr)
     return false;
@@ -1628,7 +1630,7 @@ bool CGUIDialogVideoInfo::DeleteVideoItem(const CFileItemPtr &item, bool unavail
   return true;
 }
 
-bool CGUIDialogVideoInfo::ManageMovieSets(const CFileItemPtr &item)
+bool CGUIDialogVideoInfo::ManageMovieSets(const std::shared_ptr<CFileItem>& item)
 {
   if (item == nullptr)
     return false;
@@ -1725,7 +1727,8 @@ bool CGUIDialogVideoInfo::GetMoviesForSet(const CFileItem *setItem, CFileItemLis
     return false;
 }
 
-bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem *movieItem, CFileItemPtr &selectedSet)
+bool CGUIDialogVideoInfo::GetSetForMovie(const CFileItem* movieItem,
+                                         std::shared_ptr<CFileItem>& selectedSet)
 {
   if (movieItem == nullptr || !movieItem->HasVideoInfoTag())
     return false;
@@ -1903,7 +1906,7 @@ bool CGUIDialogVideoInfo::GetItemsForTag(const std::string &strHeading, const st
   return items.Size() > 0;
 }
 
-bool CGUIDialogVideoInfo::AddItemsToTag(const CFileItemPtr &tagItem)
+bool CGUIDialogVideoInfo::AddItemsToTag(const std::shared_ptr<CFileItem>& tagItem)
 {
   if (tagItem == nullptr || !tagItem->HasVideoInfoTag())
     return false;
@@ -1936,7 +1939,7 @@ bool CGUIDialogVideoInfo::AddItemsToTag(const CFileItemPtr &tagItem)
   return true;
 }
 
-bool CGUIDialogVideoInfo::RemoveItemsFromTag(const CFileItemPtr &tagItem)
+bool CGUIDialogVideoInfo::RemoveItemsFromTag(const std::shared_ptr<CFileItem>& tagItem)
 {
   if (tagItem == nullptr || !tagItem->HasVideoInfoTag())
     return false;
@@ -1992,7 +1995,8 @@ std::string FindLocalMovieSetArtworkFile(const CFileItemPtr& item, const std::st
 }
 } // namespace
 
-bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const CFileItemPtr &item, const MediaType &type)
+bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item,
+                                                 const MediaType& type)
 {
   if (item == nullptr || !item->HasVideoInfoTag() || type.empty())
     return false;
@@ -2231,7 +2235,7 @@ std::string CGUIDialogVideoInfo::GetLocalizedVideoType(const std::string &strTyp
   return "";
 }
 
-bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
+bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const std::shared_ptr<CFileItem>& pItem)
 {
   // dont allow update while scanning
   if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
@@ -2265,7 +2269,9 @@ bool CGUIDialogVideoInfo::UpdateVideoItemSortTitle(const CFileItemPtr &pItem)
   return database.UpdateVideoSortTitle(iDbId, currentTitle, iType);
 }
 
-bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemove, CVideoDatabase &database)
+bool CGUIDialogVideoInfo::LinkMovieToTvShow(const std::shared_ptr<CFileItem>& item,
+                                            bool bRemove,
+                                            CVideoDatabase& database)
 {
   int dbId = item->GetVideoInfoTag()->m_iDbId;
 
@@ -2329,7 +2335,7 @@ bool CGUIDialogVideoInfo::LinkMovieToTvShow(const CFileItemPtr &item, bool bRemo
   return false;
 }
 
-bool CGUIDialogVideoInfo::OnGetFanart(const CFileItemPtr &videoItem)
+bool CGUIDialogVideoInfo::OnGetFanart(const std::shared_ptr<CFileItem>& videoItem)
 {
   if (videoItem == nullptr || !videoItem->HasVideoInfoTag())
     return false;
