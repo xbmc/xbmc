@@ -23,9 +23,9 @@
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 
-CVideoLibraryMarkWatchedJob::CVideoLibraryMarkWatchedJob(const CFileItemPtr &item, bool mark)
-  : m_item(item),
-    m_mark(mark)
+CVideoLibraryMarkWatchedJob::CVideoLibraryMarkWatchedJob(const std::shared_ptr<CFileItem>& item,
+                                                         bool mark)
+  : m_item(item), m_mark(mark)
 { }
 
 CVideoLibraryMarkWatchedJob::~CVideoLibraryMarkWatchedJob() = default;
