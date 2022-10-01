@@ -18,20 +18,20 @@
 #include <mutex>
 #include <string>
 
+using namespace PVR;
 using namespace std::chrono_literals;
 
-namespace PVR
-{
-
 CPVRChannelNumberInputHandler::CPVRChannelNumberInputHandler()
-: CPVRChannelNumberInputHandler(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRNumericChannelSwitchTimeout, CHANNEL_NUMBER_INPUT_MAX_DIGITS)
+  : CPVRChannelNumberInputHandler(CServiceBroker::GetSettingsComponent()
+                                      ->GetAdvancedSettings()
+                                      ->m_iPVRNumericChannelSwitchTimeout,
+                                  CHANNEL_NUMBER_INPUT_MAX_DIGITS)
 {
 }
 
-CPVRChannelNumberInputHandler::CPVRChannelNumberInputHandler(int iDelay, int iMaxDigits /* = CHANNEL_NUMBER_INPUT_MAX_DIGITS */)
-: m_iDelay(iDelay),
-  m_iMaxDigits(iMaxDigits),
-  m_timer(this)
+CPVRChannelNumberInputHandler::CPVRChannelNumberInputHandler(
+    int iDelay, int iMaxDigits /* = CHANNEL_NUMBER_INPUT_MAX_DIGITS */)
+  : m_iDelay(iDelay), m_iMaxDigits(iMaxDigits), m_timer(this)
 {
 }
 
@@ -188,5 +188,3 @@ void CPVRChannelNumberInputHandler::SetLabel(const std::string& label)
     m_events.Publish(PVRChannelNumberInputChangedEvent(m_label));
   }
 }
-
-} // namespace PVR
