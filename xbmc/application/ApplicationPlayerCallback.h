@@ -8,11 +8,13 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "cores/IPlayerCallback.h"
 #include "threads/Event.h"
 
+#include <memory>
+
 class CApplicationStackHelper;
+class CFileItem;
 
 class CApplicationPlayerCallback : public IPlayerCallback
 {
@@ -37,6 +39,6 @@ public:
 
 protected:
   CApplicationStackHelper& m_stackHelper; //!< Reference to application stack helper
-  CFileItemPtr m_itemCurrentFile; //!< Currently playing file
+  std::shared_ptr<CFileItem> m_itemCurrentFile; //!< Currently playing file
   CEvent m_playerEvent;
 };

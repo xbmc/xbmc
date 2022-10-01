@@ -8,6 +8,7 @@
 
 #include "ApplicationPlayerCallback.h"
 
+#include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"

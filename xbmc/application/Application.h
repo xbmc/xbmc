@@ -52,6 +52,7 @@ namespace ADDON
   class CSkinInfo;
   class IAddon;
   typedef std::shared_ptr<IAddon> AddonPtr;
+  class CAddonInfo;
 }
 
 namespace ANNOUNCEMENT
@@ -243,7 +244,7 @@ protected:
 
   std::unique_ptr<CInertialScrollingHandler> m_pInertialScrollingHandler;
 
-  std::vector<ADDON::AddonInfoPtr>
+  std::vector<std::shared_ptr<ADDON::CAddonInfo>>
       m_incompatibleAddons; /*!< Result of addon migration (incompatible addon infos) */
 
 public:
