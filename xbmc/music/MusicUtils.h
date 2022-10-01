@@ -8,7 +8,14 @@
 
 #pragma once
 
-#include "FileItem.h"
+#include "media/MediaType.h"
+
+#include <memory>
+#include <string>
+#include <vector>
+
+class CFileItem;
+class CFileItemList;
 
 namespace MUSIC_UTILS
 {
@@ -43,7 +50,7 @@ namespace MUSIC_UTILS
   \param strType the type of art e.g. "fanart" or "thumb" etc.
   \param strArt art URL, when empty the entry for that type of art is deleted.
   */
-  void UpdateArtJob(const CFileItemPtr& pItem,
+  void UpdateArtJob(const std::shared_ptr<CFileItem>& pItem,
                     const std::string& strType,
                     const std::string& strArt);
 
@@ -57,7 +64,7 @@ namespace MUSIC_UTILS
 \param pItem pointer to song item being rated
 \param userrating the userrating 0 = no rating, 1 to 10
 */
-  void UpdateSongRatingJob(const CFileItemPtr& pItem, int userrating);
+  void UpdateSongRatingJob(const std::shared_ptr<CFileItem>& pItem, int userrating);
 
   /*! \brief Get the types of art for an artist or album that are to be
   automatically fetched from local files during scanning

@@ -182,7 +182,7 @@ namespace MUSIC_UTILS
     }
   };
 
-  void UpdateArtJob(const CFileItemPtr& pItem,
+  void UpdateArtJob(const std::shared_ptr<CFileItem>& pItem,
                     const std::string& strType,
                     const std::string& strArt)
   {
@@ -338,7 +338,7 @@ namespace MUSIC_UTILS
     return -1;
   }
 
-  void UpdateSongRatingJob(const CFileItemPtr& pItem, int userrating)
+  void UpdateSongRatingJob(const std::shared_ptr<CFileItem>& pItem, int userrating)
   {
     // Asynchronously update the song user rating in music library
     const CMusicInfoTag *tag = pItem->GetMusicInfoTag();
