@@ -8,6 +8,7 @@
 
 #include "ThreadImplLinux.h"
 
+#include "utils/Map.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -26,26 +27,29 @@
 namespace
 {
 
-constexpr std::array<ThreadPriorityStruct, 5> nativeThreadPriorityMap = {{
+constexpr auto nativeThreadPriorityMap = make_map<ThreadPriority, int>({
     {ThreadPriority::LOWEST, -1},
     {ThreadPriority::BELOW_NORMAL, -1},
     {ThreadPriority::NORMAL, 0},
     {ThreadPriority::ABOVE_NORMAL, 1},
     {ThreadPriority::HIGHEST, 1},
-}};
+});
 
-//! @todo: c++20 has constexpr std::find_if
-int ThreadPriorityToNativePriority(const ThreadPriority& priority)
+static_assert(static_cast<size_t>(ThreadPriority::PRIORITY_COUNT) == nativeThreadPriorityMap.size(),
+              "nativeThreadPriorityMap doesn't match the size of ThreadPriority, did you forget to "
+              "add/remove a mapping?");
+
+constexpr int ThreadPriorityToNativePriority(const ThreadPriority& priority)
 {
-  auto it = std::find_if(nativeThreadPriorityMap.cbegin(), nativeThreadPriorityMap.cend(),
-                         [&priority](const auto& map) { return map.priority == priority; });
-
+  const auto it = nativeThreadPriorityMap.find(priority);
   if (it != nativeThreadPriorityMap.cend())
   {
-    return it->nativePriority;
+    return it->second;
   }
-
-  throw std::runtime_error("priority not implemented");
+  else
+  {
+    throw std::range_error("Priority not found");
+  }
 }
 
 #if !defined(TARGET_ANDROID) && (defined(__GLIBC__) || defined(__UCLIBC__))

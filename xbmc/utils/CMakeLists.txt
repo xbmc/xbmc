@@ -134,6 +134,7 @@ set(HEADERS ActorProtocol.h
             Locale.h
             log.h
             logtypes.h
+            Map.h
             MathUtils.h
             MemUtils.h
             Mime.h

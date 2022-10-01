@@ -30,12 +30,13 @@ enum class ThreadPriority
   NORMAL,
   ABOVE_NORMAL,
   HIGHEST,
-};
 
-struct ThreadPriorityStruct
-{
-  ThreadPriority priority;
-  int nativePriority;
+  /*!
+   * \brief Do not use this for priority. It is only needed to count the
+   *        amount of values in the ThreadPriority enum.
+   *
+   */
+  PRIORITY_COUNT,
 };
 
 class IRunnable;
