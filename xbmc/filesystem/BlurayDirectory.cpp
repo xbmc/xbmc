@@ -12,6 +12,7 @@
 #include "LangInfo.h"
 #include "URL.h"
 #include "filesystem/BlurayCallback.h"
+#include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/RegExp.h"
@@ -109,7 +110,8 @@ std::string CBlurayDirectory::GetDiscInfoString(DiscInfo info)
   return "";
 }
 
-CFileItemPtr CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title, const std::string& label)
+std::shared_ptr<CFileItem> CBlurayDirectory::GetTitle(const BLURAY_TITLE_INFO* title,
+                                                      const std::string& label)
 {
   std::string buf;
   std::string chap;
