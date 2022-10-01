@@ -8,6 +8,7 @@
 
 #include "TestBasicEnvironment.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "TestUtils.h"
 #include "application/AppEnvironment.h"
