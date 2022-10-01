@@ -1065,7 +1065,10 @@ JSONRPC_STATUS CAudioLibrary::Clean(const std::string &method, ITransportLayer *
   return ACK;
 }
 
-bool CAudioLibrary::FillFileItem(const std::string &strFilename, CFileItemPtr &item, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
+bool CAudioLibrary::FillFileItem(
+    const std::string& strFilename,
+    std::shared_ptr<CFileItem>& item,
+    const CVariant& parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
   CMusicDatabase musicdatabase;
   if (strFilename.empty())
@@ -1168,7 +1171,8 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   return success;
 }
 
-void CAudioLibrary::FillItemArtistIDs(const std::vector<int>& artistids, CFileItemPtr& item)
+void CAudioLibrary::FillItemArtistIDs(const std::vector<int>& artistids,
+                                      std::shared_ptr<CFileItem>& item)
 {
   // Add artistIds as separate property as not part of CMusicInfoTag
   CVariant artistidObj(CVariant::VariantTypeArray);
@@ -1178,7 +1182,9 @@ void CAudioLibrary::FillItemArtistIDs(const std::vector<int>& artistids, CFileIt
   item->SetProperty("artistid", artistidObj);
 }
 
-void CAudioLibrary::FillAlbumItem(const CAlbum &album, const std::string &path, CFileItemPtr &item)
+void CAudioLibrary::FillAlbumItem(const CAlbum& album,
+                                  const std::string& path,
+                                  std::shared_ptr<CFileItem>& item)
 {
   item = CFileItemPtr(new CFileItem(path, album));
   // Add album artistIds as separate property as not part of CMusicInfoTag

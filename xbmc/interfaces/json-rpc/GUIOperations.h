@@ -9,6 +9,7 @@
 #pragma once
 
 #include "JSONRPC.h"
+#include "rendering/RenderSystemTypes.h"
 
 class CVariant;
 

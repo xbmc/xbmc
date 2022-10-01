@@ -8,9 +8,10 @@
 
 #include "TCPServer.h"
 
-#include "Network.h"
+#include "ServiceBroker.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/json-rpc/JSONRPC.h"
+#include "network/Network.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Variant.h"

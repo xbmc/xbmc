@@ -8,15 +8,14 @@
 
 #pragma once
 
-#include "FileItem.h"
-#include "GUIUserMessages.h"
 #include "IClient.h"
 #include "ITransportLayer.h"
-#include "ServiceBroker.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
+
+#include <map>
+#include <string>
 
 class CVariant;
+class CVideoInfoTag;
 
 namespace JSONRPC
 {
@@ -157,19 +156,8 @@ namespace JSONRPC
   class CJSONRPCUtils
   {
   public:
-    static inline void NotifyItemUpdated()
-    {
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
-      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
-    }
-    static inline void NotifyItemUpdated(const CVideoInfoTag& info,
-                                         const std::map<std::string, std::string>& artwork)
-    {
-      CFileItemPtr msgItem(new CFileItem(info));
-      if (!artwork.empty())
-        msgItem->SetArt(artwork);
-      CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
-      CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
-    }
+    static void NotifyItemUpdated();
+    static void NotifyItemUpdated(const CVideoInfoTag& info,
+                                  const std::map<std::string, std::string>& artwork);
   };
 }

@@ -8,6 +8,7 @@
 
 #include "TextureOperations.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "TextureDatabase.h"

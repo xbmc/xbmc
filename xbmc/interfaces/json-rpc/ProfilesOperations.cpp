@@ -8,6 +8,7 @@
 
 #include "ProfilesOperations.h"
 
+#include "FileItem.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
