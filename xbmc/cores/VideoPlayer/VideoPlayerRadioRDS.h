@@ -9,7 +9,6 @@
 #pragma once
 
 #include "DVDMessageQueue.h"
-#include "FileItem.h"
 #include "IVideoPlayer.h"
 #include "threads/Thread.h"
 #include "utils/Stopwatch.h"
