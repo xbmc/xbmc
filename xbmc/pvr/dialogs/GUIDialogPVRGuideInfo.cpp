@@ -25,17 +25,17 @@
 
 using namespace PVR;
 
-#define CONTROL_BTN_FIND                4
-#define CONTROL_BTN_SWITCH              5
-#define CONTROL_BTN_RECORD              6
-#define CONTROL_BTN_OK                  7
-#define CONTROL_BTN_PLAY_RECORDING      8
-#define CONTROL_BTN_ADD_TIMER           9
-#define CONTROL_BTN_PLAY_EPGTAG        10
-#define CONTROL_BTN_SET_REMINDER       11
+#define CONTROL_BTN_FIND 4
+#define CONTROL_BTN_SWITCH 5
+#define CONTROL_BTN_RECORD 6
+#define CONTROL_BTN_OK 7
+#define CONTROL_BTN_PLAY_RECORDING 8
+#define CONTROL_BTN_ADD_TIMER 9
+#define CONTROL_BTN_PLAY_EPGTAG 10
+#define CONTROL_BTN_SET_REMINDER 11
 
 CGUIDialogPVRGuideInfo::CGUIDialogPVRGuideInfo()
-    : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_INFO, "DialogPVRInfo.xml")
+  : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_INFO, "DialogPVRInfo.xml")
 {
 }
 
@@ -165,13 +165,10 @@ bool CGUIDialogPVRGuideInfo::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-  case GUI_MSG_CLICKED:
-    return OnClickButtonOK(message) ||
-           OnClickButtonRecord(message) ||
-           OnClickButtonPlay(message) ||
-           OnClickButtonFind(message) ||
-           OnClickButtonAddTimer(message) ||
-           OnClickButtonSetReminder(message);
+    case GUI_MSG_CLICKED:
+      return OnClickButtonOK(message) || OnClickButtonRecord(message) ||
+             OnClickButtonPlay(message) || OnClickButtonFind(message) ||
+             OnClickButtonAddTimer(message) || OnClickButtonSetReminder(message);
   }
 
   return CGUIDialog::OnMessage(message);
