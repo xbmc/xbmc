@@ -21,7 +21,7 @@ namespace CONTEXTMENU
 struct CAddonInfo : CStaticContextMenuAction
 {
   CAddonInfo() : CStaticContextMenuAction(19033) {}
-  bool IsVisible(const CFileItem& item) const override { return item.HasAddonInfo(); }
+  bool IsVisible(const CFileItem& item) const override;
   bool Execute(const std::shared_ptr<CFileItem>& item) const override
   {
     return CGUIDialogAddonInfo::ShowForItem(item);

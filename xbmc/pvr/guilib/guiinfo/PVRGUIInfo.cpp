@@ -8,6 +8,7 @@
 
 #include "PVRGUIInfo.h"
 
+#include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"

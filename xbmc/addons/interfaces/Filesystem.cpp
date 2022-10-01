@@ -8,6 +8,7 @@
 
 #include "Filesystem.h"
 
+#include "FileItem.h"
 #include "Util.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "filesystem/CurlFile.h"

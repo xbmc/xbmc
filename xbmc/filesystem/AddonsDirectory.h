@@ -11,6 +11,8 @@
 #include "IDirectory.h"
 #include "addons/AddonManager.h"
 
+class CFileItem;
+class CFileItemList;
 class CURL;
 typedef std::shared_ptr<CFileItem> CFileItemPtr;
 

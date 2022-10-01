@@ -9,7 +9,6 @@
 #pragma once
 
 #include "AddonBuilder.h"
-#include "FileItem.h"
 #include "addons/Addon.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "dbwrappers/Database.h"

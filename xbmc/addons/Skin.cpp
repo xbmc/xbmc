@@ -7,7 +7,9 @@
  */
 
 #include "Skin.h"
+
 #include "AddonManager.h"
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "dialogs/GUIDialogKaiToast.h"

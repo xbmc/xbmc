@@ -10,6 +10,7 @@
 
 #include "ContextMenuItem.h"
 
+class CFileItemList;
 
 namespace CONTEXTMENU
 {

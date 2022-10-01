@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ContextMenuItem.h"
-
+#include "media/MediaType.h"
 
 namespace CONTEXTMENU
 {
