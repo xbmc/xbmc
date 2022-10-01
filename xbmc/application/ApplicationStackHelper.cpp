@@ -8,6 +8,7 @@
 
 #include "ApplicationStackHelper.h"
 
+#include "FileItem.h"
 #include "Util.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "filesystem/StackDirectory.h"

@@ -8,6 +8,7 @@
 
 #include "VideoLibraryRefreshingJob.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "addons/Scraper.h"

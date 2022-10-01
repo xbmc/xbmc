@@ -8,6 +8,7 @@
 
 #include "Autorun.h"
 
+#include "FileItem.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
