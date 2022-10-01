@@ -8,16 +8,20 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "interfaces/IAnnouncer.h"
 #include "utils/logtypes.h"
 
+#include <map>
+#include <memory>
+#include <string>
 #include <utility>
 
 #include <Platinum/Source/Devices/MediaConnect/PltMediaConnect.h>
 
-class CVariant;
+class CFileItem;
+class CFileItemList;
 class CThumbLoader;
+class CVariant;
 class PLT_MediaObject;
 class PLT_HttpRequestContext;
 
@@ -109,7 +113,7 @@ public:
     void UpdateContainer(const std::string& id);
     void PropagateUpdates();
 
-    PLT_MediaObject* Build(const CFileItemPtr& item,
+    PLT_MediaObject* Build(const std::shared_ptr<CFileItem>& item,
                            bool with_count,
                            const PLT_HttpRequestContext& context,
                            NPT_Reference<CThumbLoader>& thumbLoader,
