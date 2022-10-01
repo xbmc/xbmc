@@ -121,7 +121,7 @@ void CRendererVDPAU::ReleaseBuffer(int idx)
   CLinuxRendererGL::ReleaseBuffer(idx);
 }
 
-bool CRendererVDPAU::Supports(ERENDERFEATURE feature)
+bool CRendererVDPAU::Supports(ERENDERFEATURE feature) const
 {
   if(feature == RENDERFEATURE_BRIGHTNESS ||
      feature == RENDERFEATURE_CONTRAST)
@@ -149,7 +149,7 @@ bool CRendererVDPAU::Supports(ERENDERFEATURE feature)
   return false;
 }
 
-bool CRendererVDPAU::Supports(ESCALINGMETHOD method)
+bool CRendererVDPAU::Supports(ESCALINGMETHOD method) const
 {
   if (m_isYuv)
     return CLinuxRendererGL::Supports(method);

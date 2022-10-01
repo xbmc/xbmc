@@ -54,45 +54,46 @@ public:
   void Render(bool clear, uint32_t alpha = 255, bool gui = true);
   void FlushRenderer();
   void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch);
-  float GetRenderAspectRatio();
+  float GetRenderAspectRatio() const;
   void TriggerUpdateResolution();
-  bool IsRenderingVideo();
-  bool IsRenderingGuiLayer();
-  bool IsRenderingVideoLayer();
-  bool Supports(EINTERLACEMETHOD method);
-  EINTERLACEMETHOD GetDeinterlacingMethodDefault();
-  bool Supports(ESCALINGMETHOD method);
-  bool Supports(ERENDERFEATURE feature);
+  bool IsRenderingVideo() const;
+  bool IsRenderingGuiLayer() const;
+  bool IsRenderingVideoLayer() const;
+  bool Supports(EINTERLACEMETHOD method) const;
+  EINTERLACEMETHOD GetDeinterlacingMethodDefault() const;
+  bool Supports(ESCALINGMETHOD method) const;
+  bool Supports(ERENDERFEATURE feature) const;
   unsigned int RenderCaptureAlloc();
   void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags = 0);
   void RenderCaptureRelease(unsigned int captureId);
   bool RenderCaptureGetPixels(unsigned int captureId, unsigned int millis, uint8_t *buffer, unsigned int size);
-  bool IsExternalPlaying();
-  bool IsRemotePlaying();
+  bool IsExternalPlaying() const;
+  bool IsRemotePlaying() const;
 
   // proxy calls
   void AddSubtitle(const std::string& strSubPath);
-  bool CanPause();
-  bool CanSeek();
+  bool CanPause() const;
+  bool CanSeek() const;
   void DoAudioWork();
-  void GetAudioCapabilities(std::vector<int> &audioCaps);
+  void GetAudioCapabilities(std::vector<int>& audioCaps) const;
   int GetAudioStream();
-  int GetAudioStreamCount();
-  void GetAudioStreamInfo(int index, AudioStreamInfo &info);
+  int GetAudioStreamCount() const;
+  void GetAudioStreamInfo(int index, AudioStreamInfo& info) const;
   int GetCacheLevel() const;
   float GetCachePercentage() const;
-  int GetChapterCount();
-  int GetChapter();
-  void GetChapterName(std::string& strChapterName, int chapterIdx=-1);
-  int64_t GetChapterPos(int chapterIdx=-1);
+  int GetChapterCount() const;
+  int GetChapter() const;
+  void GetChapterName(std::string& strChapterName, int chapterIdx = -1) const;
+  int64_t GetChapterPos(int chapterIdx = -1) const;
   float GetPercentage() const;
   std::string GetPlayerState();
   PLAYLIST::Id GetPreferredPlaylist() const;
   int GetSubtitle();
-  void GetSubtitleCapabilities(std::vector<int> &subCaps);
-  int GetSubtitleCount();
-  void GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info);
-  bool GetSubtitleVisible();
+  void GetSubtitleCapabilities(std::vector<int>& subCaps) const;
+  int GetSubtitleCount() const;
+  void GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) const;
+  bool GetSubtitleVisible() const;
+  bool HasTeletextCache() const;
   std::shared_ptr<TextCacheStruct_t> GetTeletextCache();
   int64_t GetTime() const;
   int64_t GetMinTime() const;
@@ -100,11 +101,11 @@ public:
   time_t GetStartTime() const;
   int64_t GetTotalTime() const;
   int GetVideoStream();
-  int GetVideoStreamCount();
-  void GetVideoStreamInfo(int streamId, VideoStreamInfo &info);
+  int GetVideoStreamCount() const;
+  void GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const;
   int GetPrograms(std::vector<ProgramInfo>& programs);
   void SetProgram(int progId);
-  int GetProgramsCount();
+  int GetProgramsCount() const;
   bool HasAudio() const;
 
   /*!
@@ -118,8 +119,8 @@ public:
   bool HasRDS() const;
   bool IsCaching() const;
   bool IsInMenu() const;
-  bool IsPaused();
-  bool IsPausedPlayback();
+  bool IsPaused() const;
+  bool IsPausedPlayback() const;
   bool IsPassthrough() const;
   bool IsPlaying() const;
   bool IsPlayingAudio() const;
@@ -159,19 +160,20 @@ public:
   void SetVideoStream(int iStream);
   void SetVolume(float volume);
   void SetSpeed(float speed);
-  bool SupportsTempo();
+  bool SupportsTempo() const;
 
   CVideoSettings GetVideoSettings() const;
   void SetVideoSettings(CVideoSettings& settings);
 
   CSeekHandler& GetSeekHandler();
+  const CSeekHandler& GetSeekHandler() const;
 
   void SetUpdateStreamDetails();
 
   /*!
    * \copydoc IPlayer::HasGameAgent
    */
-  bool HasGameAgent();
+  bool HasGameAgent() const;
 
 private:
   std::shared_ptr<const IPlayer> GetInternal() const;

@@ -1677,7 +1677,7 @@ void CLinuxRendererGLES::SetTextureFilter(GLenum method)
   }
 }
 
-bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
+bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature) const
 {
   if (feature == RENDERFEATURE_GAMMA ||
       feature == RENDERFEATURE_NOISE ||
@@ -1708,7 +1708,7 @@ bool CLinuxRendererGLES::SupportsMultiPassRendering()
   return true;
 }
 
-bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
+bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method) const
 {
   if(method == VS_SCALINGMETHOD_NEAREST ||
      method == VS_SCALINGMETHOD_LINEAR)

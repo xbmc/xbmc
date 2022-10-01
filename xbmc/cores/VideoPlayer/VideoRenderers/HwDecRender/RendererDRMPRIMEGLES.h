@@ -51,8 +51,8 @@ public:
 
   // Feature support
   bool SupportsMultiPassRendering() override { return false; }
-  bool Supports(ERENDERFEATURE feature) override;
-  bool Supports(ESCALINGMETHOD method) override;
+  bool Supports(ERENDERFEATURE feature) const override;
+  bool Supports(ESCALINGMETHOD method) const override;
 
 private:
   void DrawBlackBars();

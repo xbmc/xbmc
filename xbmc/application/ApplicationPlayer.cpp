@@ -171,35 +171,34 @@ bool CApplicationPlayer::HasPlayer() const
   return player != nullptr;
 }
 
-int CApplicationPlayer::GetChapter()
+int CApplicationPlayer::GetChapter() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->GetChapter();
   else
     return -1;
 }
 
-int CApplicationPlayer::GetChapterCount()
+int CApplicationPlayer::GetChapterCount() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->GetChapterCount();
   else
     return 0;
 }
 
-void CApplicationPlayer::GetChapterName(std::string& strChapterName,
-                                        int chapterIdx)
+void CApplicationPlayer::GetChapterName(std::string& strChapterName, int chapterIdx) const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     player->GetChapterName(strChapterName, chapterIdx);
 }
 
-int64_t CApplicationPlayer::GetChapterPos(int chapterIdx)
+int64_t CApplicationPlayer::GetChapterPos(int chapterIdx) const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->GetChapterPos(chapterIdx);
 
@@ -241,7 +240,7 @@ bool CApplicationPlayer::HasRDS() const
   return (player && player->HasRDS());
 }
 
-bool CApplicationPlayer::IsPaused()
+bool CApplicationPlayer::IsPaused() const
 {
   return (GetPlaySpeed() == 0);
 }
@@ -252,7 +251,7 @@ bool CApplicationPlayer::IsPlaying() const
   return (player && player->IsPlaying());
 }
 
-bool CApplicationPlayer::IsPausedPlayback()
+bool CApplicationPlayer::IsPausedPlayback() const
 {
   return (IsPlaying() && (GetPlaySpeed() == 0));
 }
@@ -320,9 +319,9 @@ bool CApplicationPlayer::IsPassthrough() const
   return (player && player->IsPassthrough());
 }
 
-bool CApplicationPlayer::CanSeek()
+bool CApplicationPlayer::CanSeek() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   return (player && player->CanSeek());
 }
 
@@ -432,9 +431,9 @@ int CApplicationPlayer::GetCacheLevel() const
     return 0;
 }
 
-int CApplicationPlayer::GetSubtitleCount()
+int CApplicationPlayer::GetSubtitleCount() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->GetSubtitleCount();
   else
@@ -473,16 +472,25 @@ int CApplicationPlayer::GetSubtitle()
     return 0;
 }
 
-bool CApplicationPlayer::GetSubtitleVisible()
+bool CApplicationPlayer::GetSubtitleVisible() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
-  return (player && player->GetSubtitleVisible());
+  const std::shared_ptr<const IPlayer> player = GetInternal();
+  return player && player->GetSubtitleVisible();
 }
 
-bool CApplicationPlayer::CanPause()
+bool CApplicationPlayer::CanPause() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   return (player && player->CanPause());
+}
+
+bool CApplicationPlayer::HasTeletextCache() const
+{
+  const std::shared_ptr<const IPlayer> player = GetInternal();
+  if (player)
+    return player->HasTeletextCache();
+  else
+    return false;
 }
 
 std::shared_ptr<TextCacheStruct_t> CApplicationPlayer::GetTeletextCache()
@@ -491,7 +499,7 @@ std::shared_ptr<TextCacheStruct_t> CApplicationPlayer::GetTeletextCache()
   if (player)
     return player->GetTeletextCache();
   else
-    return NULL;
+    return {};
 }
 
 float CApplicationPlayer::GetPercentage() const
@@ -571,16 +579,16 @@ void CApplicationPlayer::OnNothingToQueueNotify()
     player->OnNothingToQueueNotify();
 }
 
-void CApplicationPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo &info)
+void CApplicationPlayer::GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     player->GetVideoStreamInfo(streamId, info);
 }
 
-void CApplicationPlayer::GetAudioStreamInfo(int index, AudioStreamInfo &info)
+void CApplicationPlayer::GetAudioStreamInfo(int index, AudioStreamInfo& info) const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     player->GetAudioStreamInfo(index, info);
 }
@@ -601,10 +609,10 @@ void CApplicationPlayer::SetProgram(int progId)
     player->SetProgram(progId);
 }
 
-int CApplicationPlayer::GetProgramsCount()
+int CApplicationPlayer::GetProgramsCount() const
 {
   int ret = 0;
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     ret = player->GetProgramsCount();
   return ret;
@@ -616,9 +624,9 @@ bool CApplicationPlayer::OnAction(const CAction &action)
   return (player && player->OnAction(action));
 }
 
-int  CApplicationPlayer::GetAudioStreamCount()
+int CApplicationPlayer::GetAudioStreamCount() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->GetAudioStreamCount();
   else
@@ -641,9 +649,9 @@ int CApplicationPlayer::GetVideoStream()
     return 0;
 }
 
-int CApplicationPlayer::GetVideoStreamCount()
+int CApplicationPlayer::GetVideoStreamCount() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->GetVideoStreamCount();
   else
@@ -661,9 +669,9 @@ void CApplicationPlayer::SetAudioStream(int iStream)
   }
 }
 
-void CApplicationPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info)
+void CApplicationPlayer::GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     player->GetSubtitleStreamInfo(index, info);
 }
@@ -757,16 +765,16 @@ void CApplicationPlayer::LoadPage(int p, int sp, unsigned char* buffer)
     player->LoadPage(p, sp, buffer);
 }
 
-void CApplicationPlayer::GetAudioCapabilities(std::vector<int> &audioCaps)
+void CApplicationPlayer::GetAudioCapabilities(std::vector<int>& audioCaps) const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     player->GetAudioCapabilities(audioCaps);
 }
 
-void CApplicationPlayer::GetSubtitleCapabilities(std::vector<int> &subCaps)
+void CApplicationPlayer::GetSubtitleCapabilities(std::vector<int>& subCaps) const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     player->GetSubtitleCapabilities(subCaps);
 }
@@ -814,9 +822,9 @@ float CApplicationPlayer::GetPlayTempo() const
     return 0;
 }
 
-bool CApplicationPlayer::SupportsTempo()
+bool CApplicationPlayer::SupportsTempo() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->SupportsTempo();
   else
@@ -855,9 +863,9 @@ void CApplicationPlayer::SetRenderViewMode(int mode, float zoom, float par, floa
     player->SetRenderViewMode(mode, zoom, par, shift, stretch);
 }
 
-float CApplicationPlayer::GetRenderAspectRatio()
+float CApplicationPlayer::GetRenderAspectRatio() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->GetRenderAspectRatio();
   else
@@ -871,63 +879,63 @@ void CApplicationPlayer::TriggerUpdateResolution()
     player->TriggerUpdateResolution();
 }
 
-bool CApplicationPlayer::IsRenderingVideo()
+bool CApplicationPlayer::IsRenderingVideo() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->IsRenderingVideo();
   else
     return false;
 }
 
-bool CApplicationPlayer::IsRenderingGuiLayer()
+bool CApplicationPlayer::IsRenderingGuiLayer() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return CServiceBroker::GetDataCacheCore().GetGuiRender();
   else
     return false;
 }
 
-bool CApplicationPlayer::IsRenderingVideoLayer()
+bool CApplicationPlayer::IsRenderingVideoLayer() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return CServiceBroker::GetDataCacheCore().GetVideoRender();
   else
     return false;
 }
 
-bool CApplicationPlayer::Supports(EINTERLACEMETHOD method)
+bool CApplicationPlayer::Supports(EINTERLACEMETHOD method) const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->Supports(method);
   else
     return false;
 }
 
-EINTERLACEMETHOD CApplicationPlayer::GetDeinterlacingMethodDefault()
+EINTERLACEMETHOD CApplicationPlayer::GetDeinterlacingMethodDefault() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->GetDeinterlacingMethodDefault();
   else
     return EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
 }
 
-bool CApplicationPlayer::Supports(ESCALINGMETHOD method)
+bool CApplicationPlayer::Supports(ESCALINGMETHOD method) const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->Supports(method);
   else
     return false;
 }
 
-bool CApplicationPlayer::Supports(ERENDERFEATURE feature)
+bool CApplicationPlayer::Supports(ERENDERFEATURE feature) const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->Supports(feature);
   else
@@ -966,9 +974,9 @@ bool CApplicationPlayer::RenderCaptureGetPixels(unsigned int captureId, unsigned
     return false;
 }
 
-bool CApplicationPlayer::IsExternalPlaying()
+bool CApplicationPlayer::IsExternalPlaying() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
   {
     if (player->IsPlaying() && player->m_type == "external")
@@ -977,9 +985,9 @@ bool CApplicationPlayer::IsExternalPlaying()
   return false;
 }
 
-bool CApplicationPlayer::IsRemotePlaying()
+bool CApplicationPlayer::IsRemotePlaying() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
   {
     if (player->IsPlaying() && player->m_type == "remote")
@@ -1012,6 +1020,11 @@ CSeekHandler& CApplicationPlayer::GetSeekHandler()
   return m_seekHandler;
 }
 
+const CSeekHandler& CApplicationPlayer::GetSeekHandler() const
+{
+  return m_seekHandler;
+}
+
 void CApplicationPlayer::SetUpdateStreamDetails()
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -1020,9 +1033,9 @@ void CApplicationPlayer::SetUpdateStreamDetails()
     vp->SetUpdateStreamDetails();
 }
 
-bool CApplicationPlayer::HasGameAgent()
+bool CApplicationPlayer::HasGameAgent() const
 {
-  std::shared_ptr<IPlayer> player = GetInternal();
+  const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
     return player->HasGameAgent();
 

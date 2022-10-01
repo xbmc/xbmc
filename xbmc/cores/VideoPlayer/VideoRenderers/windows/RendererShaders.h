@@ -28,7 +28,7 @@ class CRendererShaders : public CRendererHQ
 public:
   ~CRendererShaders() = default;
 
-  bool Supports(ESCALINGMETHOD method) override;
+  bool Supports(ESCALINGMETHOD method) const override;
   bool Configure(const VideoPicture& picture, float fps, unsigned orientation) override;
 
   static CRendererBase* Create(CVideoSettings& videoSettings);

@@ -210,6 +210,7 @@ public:
   int CountTypeOfSource(StreamType type, StreamSource source) const;
   int CountType(StreamType type) const;
   SelectionStream& Get(StreamType type, int index);
+  const SelectionStream& Get(StreamType type, int index) const;
   bool Get(StreamType type, StreamFlags flag, SelectionStream& out);
   void Clear(StreamType type, StreamSource source);
   int Source(StreamSource source, const std::string& filename);
@@ -255,14 +256,14 @@ public:
   bool HasRDS() const override;
   bool HasID3() const override;
   bool IsPassthrough() const override;
-  bool CanSeek() override;
+  bool CanSeek() const override;
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   bool SeekScene(bool bPlus = true) override;
   void SeekPercentage(float iPercent) override;
   float GetCachePercentage() const override;
 
   void SetDynamicRangeCompression(long drc) override;
-  bool CanPause() override;
+  bool CanPause() const override;
   void SetAVDelay(float fValue = 0.0f) override;
   float GetAVDelay() override;
   bool IsInMenu() const override;
@@ -275,11 +276,11 @@ public:
 
   void SetSubTitleDelay(float fValue = 0.0f) override;
   float GetSubTitleDelay() override;
-  int GetSubtitleCount() override;
+  int GetSubtitleCount() const override;
   int GetSubtitle() override;
-  void GetSubtitleStreamInfo(int index, SubtitleStreamInfo &info) override;
+  void GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) const override;
   void SetSubtitle(int iStream) override;
-  bool GetSubtitleVisible() override;
+  bool GetSubtitleVisible() const override;
   void SetSubtitleVisible(bool bVisible) override;
 
   /*!
@@ -292,37 +293,38 @@ public:
 
   void AddSubtitle(const std::string& strSubPath) override;
 
-  int GetAudioStreamCount() override;
+  int GetAudioStreamCount() const override;
   int GetAudioStream() override;
   void SetAudioStream(int iStream) override;
 
   int GetVideoStream() const override;
   int GetVideoStreamCount() const override;
-  void GetVideoStreamInfo(int streamId, VideoStreamInfo &info) override;
+  void GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const override;
   void SetVideoStream(int iStream) override;
 
   int GetPrograms(std::vector<ProgramInfo>& programs) override;
   void SetProgram(int progId) override;
-  int GetProgramsCount() override;
+  int GetProgramsCount() const override;
 
   std::shared_ptr<TextCacheStruct_t> GetTeletextCache() override;
+  bool HasTeletextCache() const override;
   void LoadPage(int p, int sp, unsigned char* buffer) override;
 
-  int  GetChapterCount() override;
-  int  GetChapter() override;
-  void GetChapterName(std::string& strChapterName, int chapterIdx=-1) override;
-  int64_t GetChapterPos(int chapterIdx=-1) override;
+  int GetChapterCount() const override;
+  int GetChapter() const override;
+  void GetChapterName(std::string& strChapterName, int chapterIdx = -1) const override;
+  int64_t GetChapterPos(int chapterIdx = -1) const override;
   int  SeekChapter(int iChapter) override;
 
   void SeekTime(int64_t iTime) override;
   bool SeekTimeRelative(int64_t iTime) override;
   void SetSpeed(float speed) override;
   void SetTempo(float tempo) override;
-  bool SupportsTempo() override;
+  bool SupportsTempo() const override;
   void FrameAdvance(int frames) override;
   bool OnAction(const CAction &action) override;
 
-  void GetAudioStreamInfo(int index, AudioStreamInfo &info) override;
+  void GetAudioStreamInfo(int index, AudioStreamInfo& info) const override;
 
   std::string GetPlayerState() override;
   bool SetPlayerState(const std::string& state) override;
@@ -331,13 +333,13 @@ public:
   void Render(bool clear, uint32_t alpha = 255, bool gui = true) override;
   void FlushRenderer() override;
   void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch) override;
-  float GetRenderAspectRatio() override;
+  float GetRenderAspectRatio() const override;
   void TriggerUpdateResolution() override;
-  bool IsRenderingVideo() override;
-  bool Supports(EINTERLACEMETHOD method) override;
-  EINTERLACEMETHOD GetDeinterlacingMethodDefault() override;
-  bool Supports(ESCALINGMETHOD method) override;
-  bool Supports(ERENDERFEATURE feature) override;
+  bool IsRenderingVideo() const override;
+  bool Supports(EINTERLACEMETHOD method) const override;
+  EINTERLACEMETHOD GetDeinterlacingMethodDefault() const override;
+  bool Supports(ESCALINGMETHOD method) const override;
+  bool Supports(ERENDERFEATURE feature) const override;
 
   unsigned int RenderCaptureAlloc() override;
   void RenderCapture(unsigned int captureId, unsigned int width, unsigned int height, int flags) override;

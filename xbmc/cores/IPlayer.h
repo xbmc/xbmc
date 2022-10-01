@@ -95,7 +95,7 @@ public:
   virtual void OnNothingToQueueNotify() {}
   virtual bool CloseFile(bool reopen = false) = 0;
   virtual bool IsPlaying() const { return false;}
-  virtual bool CanPause() { return true; }
+  virtual bool CanPause() const { return true; }
   virtual void Pause() = 0;
   virtual bool HasVideo() const = 0;
   virtual bool HasAudio() const = 0;
@@ -103,7 +103,7 @@ public:
   virtual bool HasRDS() const { return false; }
   virtual bool HasID3() const { return false; }
   virtual bool IsPassthrough() const { return false;}
-  virtual bool CanSeek() {return true;}
+  virtual bool CanSeek() const { return true; }
   virtual void Seek(bool bPlus = true, bool bLargeStep = false, bool bChapterOverride = false) = 0;
   virtual bool SeekScene(bool bPlus = true) {return false;}
   virtual void SeekPercentage(float fPercent = 0){}
@@ -117,11 +117,11 @@ public:
 
   virtual void SetSubTitleDelay(float fValue = 0.0f) {}
   virtual float GetSubTitleDelay()    { return 0.0f; }
-  virtual int  GetSubtitleCount()     { return 0; }
+  virtual int GetSubtitleCount() const { return 0; }
   virtual int  GetSubtitle()          { return -1; }
-  virtual void GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) {}
+  virtual void GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) const {}
   virtual void SetSubtitle(int iStream) {}
-  virtual bool GetSubtitleVisible() { return false; }
+  virtual bool GetSubtitleVisible() const { return false; }
   virtual void SetSubtitleVisible(bool bVisible) {}
 
   /*!
@@ -138,27 +138,28 @@ public:
   */
   virtual void AddSubtitle(const std::string& strSubPath) {}
 
-  virtual int  GetAudioStreamCount()  { return 0; }
+  virtual int GetAudioStreamCount() const { return 0; }
   virtual int  GetAudioStream()       { return -1; }
   virtual void SetAudioStream(int iStream) {}
-  virtual void GetAudioStreamInfo(int index, AudioStreamInfo& info) {}
+  virtual void GetAudioStreamInfo(int index, AudioStreamInfo& info) const {}
 
   virtual int GetVideoStream() const { return -1; }
   virtual int GetVideoStreamCount() const { return 0; }
-  virtual void GetVideoStreamInfo(int streamId, VideoStreamInfo &info) {}
+  virtual void GetVideoStreamInfo(int streamId, VideoStreamInfo& info) const {}
   virtual void SetVideoStream(int iStream) {}
 
   virtual int GetPrograms(std::vector<ProgramInfo>& programs) { return 0; }
   virtual void SetProgram(int progId) {}
-  virtual int GetProgramsCount() { return 0; }
+  virtual int GetProgramsCount() const { return 0; }
 
-  virtual std::shared_ptr<TextCacheStruct_t> GetTeletextCache() { return NULL; }
+  virtual bool HasTeletextCache() const { return false; }
+  virtual std::shared_ptr<TextCacheStruct_t> GetTeletextCache() { return nullptr; }
   virtual void LoadPage(int p, int sp, unsigned char* buffer) {}
 
-  virtual int  GetChapterCount()                               { return 0; }
-  virtual int  GetChapter()                                    { return -1; }
-  virtual void GetChapterName(std::string& strChapterName, int chapterIdx = -1) {}
-  virtual int64_t GetChapterPos(int chapterIdx=-1)             { return 0; }
+  virtual int GetChapterCount() const { return 0; }
+  virtual int GetChapter() const { return -1; }
+  virtual void GetChapterName(std::string& strChapterName, int chapterIdx = -1) const {}
+  virtual int64_t GetChapterPos(int chapterIdx = -1) const { return 0; }
   virtual int  SeekChapter(int iChapter)                       { return -1; }
 //  virtual bool GetChapterInfo(int chapter, SChapterInfo &info) { return false; }
 
@@ -187,7 +188,7 @@ public:
   virtual void SetTotalTime(int64_t time) { }
   virtual void SetSpeed(float speed) = 0;
   virtual void SetTempo(float tempo) {}
-  virtual bool SupportsTempo() { return false; }
+  virtual bool SupportsTempo() const { return false; }
   virtual void FrameAdvance(int frames) {}
 
   //Returns true if not playback (paused or stopped being filled)
@@ -210,14 +211,14 @@ public:
   virtual std::string GetPlayerState() { return ""; }
   virtual bool SetPlayerState(const std::string& state) { return false; }
 
-  virtual void GetAudioCapabilities(std::vector<int>& audioCaps)
+  virtual void GetAudioCapabilities(std::vector<int>& audioCaps) const
   {
     audioCaps.assign(1, IPC_AUD_ALL);
   }
   /*!
    \brief define the subtitle capabilities of the player
    */
-  virtual void GetSubtitleCapabilities(std::vector<int>& subCaps)
+  virtual void GetSubtitleCapabilities(std::vector<int>& subCaps) const
   {
     subCaps.assign(1, IPC_SUBS_ALL);
   }
@@ -228,14 +229,17 @@ public:
   virtual void Render(bool clear, uint32_t alpha = 255, bool gui = true) {}
   virtual void FlushRenderer() {}
   virtual void SetRenderViewMode(int mode, float zoom, float par, float shift, bool stretch) {}
-  virtual float GetRenderAspectRatio() { return 1.0; }
+  virtual float GetRenderAspectRatio() const { return 1.0; }
   virtual void TriggerUpdateResolution() {}
-  virtual bool IsRenderingVideo() { return false; }
+  virtual bool IsRenderingVideo() const { return false; }
 
-  virtual bool Supports(EINTERLACEMETHOD method) { return false; }
-  virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() { return EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE; }
-  virtual bool Supports(ESCALINGMETHOD method) { return false; }
-  virtual bool Supports(ERENDERFEATURE feature) { return false; }
+  virtual bool Supports(EINTERLACEMETHOD method) const { return false; }
+  virtual EINTERLACEMETHOD GetDeinterlacingMethodDefault() const
+  {
+    return EINTERLACEMETHOD::VS_INTERLACEMETHOD_NONE;
+  }
+  virtual bool Supports(ESCALINGMETHOD method) const { return false; }
+  virtual bool Supports(ERENDERFEATURE feature) const { return false; }
 
   virtual unsigned int RenderCaptureAlloc() { return 0; }
   virtual void RenderCaptureRelease(unsigned int captureId) {}
@@ -263,7 +267,7 @@ public:
    * \return True if at least one player has an input device attached to the
    * game, false otherwise
    */
-  virtual bool HasGameAgent() { return false; }
+  virtual bool HasGameAgent() const { return false; }
 
   std::string m_name;
   std::string m_type;
