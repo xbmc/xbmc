@@ -8,10 +8,14 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "MediaSource.h"
 #include "guilib/GUIDialog.h"
+#include "media/MediaType.h"
 
+#include <memory>
+
+class CFileItem;
+class CFileItemList;
 class CVideoDatabase;
 
 class CGUIDialogVideoInfo :
@@ -29,28 +33,29 @@ public:
   bool HasUpdatedUserrating() const { return m_hasUpdatedUserrating; }
 
   std::string GetThumbnail() const;
-  CFileItemPtr GetCurrentListItem(int offset = 0) override { return m_movieItem; }
+  std::shared_ptr<CFileItem> GetCurrentListItem(int offset = 0) override { return m_movieItem; }
   const CFileItemList& CurrentDirectory() const { return *m_castList; }
   bool HasListItems() const override { return true; }
 
   static void AddItemPathToFileBrowserSources(VECSOURCES &sources, const CFileItem &item);
 
-  static int ManageVideoItem(const CFileItemPtr &item);
-  static bool UpdateVideoItemTitle(const CFileItemPtr &pItem);
-  static bool CanDeleteVideoItem(const CFileItemPtr &item);
-  static bool DeleteVideoItemFromDatabase(const CFileItemPtr &item, bool unavailable = false);
-  static bool DeleteVideoItem(const CFileItemPtr &item, bool unavailable = false);
+  static int ManageVideoItem(const std::shared_ptr<CFileItem>& item);
+  static bool UpdateVideoItemTitle(const std::shared_ptr<CFileItem>& pItem);
+  static bool CanDeleteVideoItem(const std::shared_ptr<CFileItem>& item);
+  static bool DeleteVideoItemFromDatabase(const std::shared_ptr<CFileItem>& item,
+                                          bool unavailable = false);
+  static bool DeleteVideoItem(const std::shared_ptr<CFileItem>& item, bool unavailable = false);
 
-  static bool ManageMovieSets(const CFileItemPtr &item);
+  static bool ManageMovieSets(const std::shared_ptr<CFileItem>& item);
   static bool GetMoviesForSet(const CFileItem *setItem, CFileItemList &originalMovies, CFileItemList &selectedMovies);
-  static bool GetSetForMovie(const CFileItem *movieItem, CFileItemPtr &selectedSet);
+  static bool GetSetForMovie(const CFileItem* movieItem, std::shared_ptr<CFileItem>& selectedSet);
   static bool SetMovieSet(const CFileItem *movieItem, const CFileItem *selectedSet);
 
   static bool GetItemsForTag(const std::string &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
-  static bool AddItemsToTag(const CFileItemPtr &tagItem);
-  static bool RemoveItemsFromTag(const CFileItemPtr &tagItem);
+  static bool AddItemsToTag(const std::shared_ptr<CFileItem>& tagItem);
+  static bool RemoveItemsFromTag(const std::shared_ptr<CFileItem>& tagItem);
 
-  static bool ManageVideoItemArtwork(const CFileItemPtr &item, const MediaType &type);
+  static bool ManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item, const MediaType& type);
 
   static std::string GetLocalizedVideoType(const std::string &strType);
 
@@ -86,15 +91,17 @@ protected:
   void OnSetUserrating() const;
   void PlayTrailer();
 
-  static bool UpdateVideoItemSortTitle(const CFileItemPtr &pItem);
-  static bool LinkMovieToTvShow(const CFileItemPtr &item, bool bRemove, CVideoDatabase &database);
+  static bool UpdateVideoItemSortTitle(const std::shared_ptr<CFileItem>& pItem);
+  static bool LinkMovieToTvShow(const std::shared_ptr<CFileItem>& item,
+                                bool bRemove,
+                                CVideoDatabase& database);
 
   /*! \brief Pop up a fanart chooser. Does not utilise remote URLs.
    \param videoItem the item to choose fanart for.
    */
-  static bool OnGetFanart(const CFileItemPtr &videoItem);
+  static bool OnGetFanart(const std::shared_ptr<CFileItem>& videoItem);
 
-  CFileItemPtr m_movieItem;
+  std::shared_ptr<CFileItem> m_movieItem;
   CFileItemList *m_castList;
   bool m_bViewReview = false;
   bool m_bRefresh = false;
