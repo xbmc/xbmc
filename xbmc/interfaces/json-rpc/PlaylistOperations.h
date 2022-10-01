@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "FileItemHandler.h"
 #include "JSONRPC.h"
 
+class CFileItemList;
 class CVariant;
 
 namespace PLAYLIST
