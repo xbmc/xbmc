@@ -24,7 +24,8 @@
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
 
-CVideoLibraryResetResumePointJob::CVideoLibraryResetResumePointJob(const CFileItemPtr& item)
+CVideoLibraryResetResumePointJob::CVideoLibraryResetResumePointJob(
+    const std::shared_ptr<CFileItem>& item)
   : m_item(item)
 {
 }
