@@ -311,17 +311,16 @@ public:
 };
 
 CGUIDialogMusicInfo::CGUIDialogMusicInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_MUSIC_INFO, "DialogMusicInfo.xml")
-    , m_item(new CFileItem)
+  : CGUIDialog(WINDOW_DIALOG_MUSIC_INFO, "DialogMusicInfo.xml"),
+    m_albumSongs(new CFileItemList),
+    m_item(new CFileItem),
+    m_artTypeList(new CFileItemList)
 {
-  m_albumSongs = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
-  m_artTypeList.Clear();
 }
 
 CGUIDialogMusicInfo::~CGUIDialogMusicInfo(void)
 {
-  delete m_albumSongs;
 }
 
 bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
@@ -330,9 +329,9 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
   {
   case GUI_MSG_WINDOW_DEINIT:
     {
-      m_artTypeList.Clear();
+      m_artTypeList->Clear();
       // For albums update user rating if it has changed
-      if(!m_bArtistInfo && m_startUserrating != m_item->GetMusicInfoTag()->GetUserrating())
+      if (!m_bArtistInfo && m_startUserrating != m_item->GetMusicInfoTag()->GetUserrating())
       {
         m_hasUpdatedUserrating = true;
 
@@ -514,7 +513,7 @@ void CGUIDialogMusicInfo::Update()
     SET_CONTROL_HIDDEN(CONTROL_ARTISTINFO);
     SET_CONTROL_HIDDEN(CONTROL_USERRATING);
 
-    CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
+    CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs.get());
     OnMessage(message);
 
   }
@@ -523,7 +522,7 @@ void CGUIDialogMusicInfo::Update()
     SET_CONTROL_VISIBLE(CONTROL_ARTISTINFO);
     SET_CONTROL_VISIBLE(CONTROL_USERRATING);
 
-    CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
+    CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs.get());
     OnMessage(message);
 
   }
@@ -716,8 +715,8 @@ void CGUIDialogMusicInfo::AddItemPathToFileBrowserSources(VECSOURCES &sources, c
 
 void CGUIDialogMusicInfo::SetArtTypeList(CFileItemList& artlist)
 {
-  m_artTypeList.Clear();
-  m_artTypeList.Copy(artlist);
+  m_artTypeList->Clear();
+  m_artTypeList->Copy(artlist);
 }
 
 /*
@@ -731,7 +730,7 @@ For each type of art the options are:
 */
 void CGUIDialogMusicInfo::OnGetArt()
 {
-  std::string type = MUSIC_UTILS::ShowSelectArtTypeDialog(m_artTypeList);
+  std::string type = MUSIC_UTILS::ShowSelectArtTypeDialog(*m_artTypeList);
   if (type.empty())
     return; // Cancelled
 
@@ -902,7 +901,7 @@ void CGUIDialogMusicInfo::OnGetArt()
 
     // Update local item and art list with current art
     m_item->SetArt(type, newArt);
-    for (const auto& artitem : m_artTypeList)
+    for (const auto& artitem : *m_artTypeList)
     {
       if (artitem->GetProperty("artType") == type)
       {
