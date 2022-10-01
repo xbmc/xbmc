@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "threads/CriticalSection.h"
+
+class CFileItemList;
 
 typedef enum
 {
