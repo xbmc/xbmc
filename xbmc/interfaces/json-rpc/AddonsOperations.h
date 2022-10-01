@@ -9,11 +9,13 @@
 #pragma once
 
 #include "JSONRPC.h"
-#include "addons/IAddon.h"
+
+#include <memory>
 
 namespace ADDON
 {
 class CAddonDatabase;
+class IAddon;
 }
 
 class CVariant;
@@ -30,7 +32,7 @@ namespace JSONRPC
     static JSONRPC_STATUS ExecuteAddon(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
   private:
-    static void FillDetails(const ADDON::AddonPtr& addon,
+    static void FillDetails(const std::shared_ptr<ADDON::IAddon>& addon,
                             const CVariant& fields,
                             CVariant& result,
                             ADDON::CAddonDatabase& addondb,
