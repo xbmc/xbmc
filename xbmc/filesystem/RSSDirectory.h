@@ -8,8 +8,14 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "IFileDirectory.h"
+#include "XBDateTime.h"
+#include "threads/CriticalSection.h"
+
+#include <map>
+#include <string>
+
+class CFileItemList;
 
 namespace XFILE
 {
