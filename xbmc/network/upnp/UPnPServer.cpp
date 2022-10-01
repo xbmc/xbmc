@@ -257,7 +257,7 @@ NPT_String CUPnPServer::BuildSafeResourceUri(const NPT_HttpUrl &rooturi,
 /*----------------------------------------------------------------------
 |   CUPnPServer::Build
 +---------------------------------------------------------------------*/
-PLT_MediaObject* CUPnPServer::Build(const CFileItemPtr& item,
+PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
                                     bool with_count,
                                     const PLT_HttpRequestContext& context,
                                     NPT_Reference<CThumbLoader>& thumb_loader,
