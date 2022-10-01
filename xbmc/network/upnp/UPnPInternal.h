@@ -8,8 +8,7 @@
 
 #pragma once
 
-#include "FileItem.h"
-
+#include <memory>
 #include <string>
 
 #include <Neptune/Source/Core/NptReferences.h>
@@ -114,10 +113,10 @@ namespace UPNP
                                CUPnPServer*                   upnp_server = NULL,
                                UPnPService                    upnp_service = UPnPServiceNone);
 
-  CFileItemPtr     BuildObject(PLT_MediaObject* entry,
-                               UPnPService      upnp_service = UPnPServiceNone);
+  std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
+                                         UPnPService upnp_service = UPnPServiceNone);
 
   bool             GetResource(const PLT_MediaObject* entry, CFileItem& item);
-  CFileItemPtr     GetFileItem(const NPT_String& uri, const NPT_String& meta);
+  std::shared_ptr<CFileItem> GetFileItem(const NPT_String& uri, const NPT_String& meta);
 }
 
