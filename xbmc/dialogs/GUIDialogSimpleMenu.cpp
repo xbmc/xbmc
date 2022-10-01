@@ -9,6 +9,7 @@
 
 #include "GUIDialogSimpleMenu.h"
 
+#include "FileItem.h"
 #include "GUIDialogSelect.h"
 #include "ServiceBroker.h"
 #include "URL.h"

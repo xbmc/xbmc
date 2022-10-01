@@ -8,10 +8,12 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "filesystem/Directory.h"
 
 #include <string>
+
+class CFileItem;
+class CFileItemList;
 
 class CGUIDialogSimpleMenu
 {
