@@ -26,6 +26,7 @@
 #include <mutex>
 
 using namespace KODI::GUILIB::GUIINFO;
+using namespace PVR;
 using namespace std::chrono_literals;
 
 namespace
@@ -95,8 +96,6 @@ public:
 };
 } // unnamed namespace
 
-namespace PVR
-{
 CPVRGUIChannelNavigator::CPVRGUIChannelNavigator()
 {
   // Note: we cannot subscribe to PlayerInfoProvider here, as we're getting constructed
@@ -145,229 +144,231 @@ void CPVRGUIChannelNavigator::Notify(const PlayerShowInfoChangedEvent& event)
   CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
 }
 
-  void CPVRGUIChannelNavigator::SelectNextChannel(ChannelSwitchMode eSwitchMode)
+void CPVRGUIChannelNavigator::SelectNextChannel(ChannelSwitchMode eSwitchMode)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  if (!m_playerShowInfo && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
   {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-
-    if (!m_playerShowInfo && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
-    {
-      // show info for current channel on first next channel selection.
-      ShowInfo(false);
-      return;
-    }
-
-    const std::shared_ptr<CPVRChannelGroupMember> nextMember = GetNextOrPrevChannel(true);
-    if (nextMember)
-      SelectChannel(nextMember, eSwitchMode);
-  }
-
-  void CPVRGUIChannelNavigator::SelectPreviousChannel(ChannelSwitchMode eSwitchMode)
-  {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-
-    if (!m_playerShowInfo && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
-    {
-      // show info for current channel on first previous channel selection.
-      ShowInfo(false);
-      return;
-    }
-
-    const std::shared_ptr<CPVRChannelGroupMember> prevMember = GetNextOrPrevChannel(false);
-    if (prevMember)
-      SelectChannel(prevMember, eSwitchMode);
-  }
-
-  std::shared_ptr<CPVRChannelGroupMember> CPVRGUIChannelNavigator::GetNextOrPrevChannel(bool bNext)
-  {
-    const bool bPlayingRadio = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio();
-    const bool bPlayingTV = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV();
-
-    if (bPlayingTV || bPlayingRadio)
-    {
-      const std::shared_ptr<CPVRChannelGroup> group =
-          CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(bPlayingRadio);
-      if (group)
-      {
-        std::unique_lock<CCriticalSection> lock(m_critSection);
-        return bNext ? group->GetNextChannelGroupMember(m_currentChannel)
-                     : group->GetPreviousChannelGroupMember(m_currentChannel);
-      }
-    }
-    return {};
-  }
-
-  void CPVRGUIChannelNavigator::SelectChannel(
-      const std::shared_ptr<CPVRChannelGroupMember>& groupMember, ChannelSwitchMode eSwitchMode)
-  {
-    CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(CFileItem(groupMember));
-
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-
-    m_currentChannel = groupMember;
+    // show info for current channel on first next channel selection.
     ShowInfo(false);
-
-    CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
-
-    if (IsPreview() && eSwitchMode == ChannelSwitchMode::INSTANT_OR_DELAYED_SWITCH)
-    {
-      auto timeout =
-          std::chrono::milliseconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-              CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT));
-      if (timeout > 0ms)
-      {
-        // delayed switch
-        if (m_iChannelEntryJobId >= 0)
-          CServiceBroker::GetJobManager()->CancelJob(m_iChannelEntryJobId);
-
-        CPVRChannelEntryTimeoutJob* job = new CPVRChannelEntryTimeoutJob(*this, timeout);
-        m_iChannelEntryJobId =
-            CServiceBroker::GetJobManager()->AddJob(job, dynamic_cast<IJobCallback*>(job));
-      }
-      else
-      {
-        // instant switch
-        SwitchToCurrentChannel();
-      }
-    }
+    return;
   }
 
-  void CPVRGUIChannelNavigator::SwitchToCurrentChannel()
-  {
-    CFileItemPtr item;
+  const std::shared_ptr<CPVRChannelGroupMember> nextMember = GetNextOrPrevChannel(true);
+  if (nextMember)
+    SelectChannel(nextMember, eSwitchMode);
+}
 
+void CPVRGUIChannelNavigator::SelectPreviousChannel(ChannelSwitchMode eSwitchMode)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  if (!m_playerShowInfo && eSwitchMode == ChannelSwitchMode::NO_SWITCH)
+  {
+    // show info for current channel on first previous channel selection.
+    ShowInfo(false);
+    return;
+  }
+
+  const std::shared_ptr<CPVRChannelGroupMember> prevMember = GetNextOrPrevChannel(false);
+  if (prevMember)
+    SelectChannel(prevMember, eSwitchMode);
+}
+
+std::shared_ptr<CPVRChannelGroupMember> CPVRGUIChannelNavigator::GetNextOrPrevChannel(bool bNext)
+{
+  const bool bPlayingRadio = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio();
+  const bool bPlayingTV = CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV();
+
+  if (bPlayingTV || bPlayingRadio)
+  {
+    const std::shared_ptr<CPVRChannelGroup> group =
+        CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(bPlayingRadio);
+    if (group)
     {
       std::unique_lock<CCriticalSection> lock(m_critSection);
-
-      if (m_iChannelEntryJobId >= 0)
-      {
-        CServiceBroker::GetJobManager()->CancelJob(m_iChannelEntryJobId);
-        m_iChannelEntryJobId = -1;
-      }
-
-      item.reset(new CFileItem(m_currentChannel));
+      return bNext ? group->GetNextChannelGroupMember(m_currentChannel)
+                   : group->GetPreviousChannelGroupMember(m_currentChannel);
     }
-
-    if (item)
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(item, false);
   }
+  return {};
+}
 
-  bool CPVRGUIChannelNavigator::IsPreview() const
-  {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-    return m_currentChannel != m_playingChannel;
-  }
+void CPVRGUIChannelNavigator::SelectChannel(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember, ChannelSwitchMode eSwitchMode)
+{
+  CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(CFileItem(groupMember));
 
-  bool CPVRGUIChannelNavigator::IsPreviewAndShowInfo() const
-  {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-    return m_previewAndPlayerShowInfo;
-  }
+  std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  void CPVRGUIChannelNavigator::ShowInfo()
-  {
-    ShowInfo(true);
-  }
+  m_currentChannel = groupMember;
+  ShowInfo(false);
 
-  void CPVRGUIChannelNavigator::ShowInfo(bool bForce)
+  CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
+
+  if (IsPreview() && eSwitchMode == ChannelSwitchMode::INSTANT_OR_DELAYED_SWITCH)
   {
     auto timeout =
-        std::chrono::seconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
-            CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
-
-    if (bForce || timeout > 0s)
+        std::chrono::milliseconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+            CSettings::SETTING_PVRPLAYBACK_CHANNELENTRYTIMEOUT));
+    if (timeout > 0ms)
     {
-      CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(true);
+      // delayed switch
+      if (m_iChannelEntryJobId >= 0)
+        CServiceBroker::GetJobManager()->CancelJob(m_iChannelEntryJobId);
 
-      std::unique_lock<CCriticalSection> lock(m_critSection);
-
-      if (m_iChannelInfoJobId >= 0)
-      {
-        CServiceBroker::GetJobManager()->CancelJob(m_iChannelInfoJobId);
-        m_iChannelInfoJobId = -1;
-      }
-
-      if (!bForce && timeout > 0s)
-      {
-        CPVRChannelInfoTimeoutJob* job = new CPVRChannelInfoTimeoutJob(*this, timeout);
-        m_iChannelInfoJobId =
-            CServiceBroker::GetJobManager()->AddJob(job, dynamic_cast<IJobCallback*>(job));
-      }
+      CPVRChannelEntryTimeoutJob* job = new CPVRChannelEntryTimeoutJob(*this, timeout);
+      m_iChannelEntryJobId =
+          CServiceBroker::GetJobManager()->AddJob(job, dynamic_cast<IJobCallback*>(job));
     }
-  }
-
-  void CPVRGUIChannelNavigator::HideInfo()
-  {
-    CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(false);
-
-    CFileItemPtr item;
-
-    {
-      std::unique_lock<CCriticalSection> lock(m_critSection);
-
-      if (m_iChannelInfoJobId >= 0)
-      {
-        CServiceBroker::GetJobManager()->CancelJob(m_iChannelInfoJobId);
-        m_iChannelInfoJobId = -1;
-      }
-
-      if (m_currentChannel != m_playingChannel)
-      {
-        m_currentChannel = m_playingChannel;
-        if (m_playingChannel)
-          item.reset(new CFileItem(m_playingChannel));
-      }
-
-      CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
-    }
-
-    if (item)
-      CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*item);
-  }
-
-  void CPVRGUIChannelNavigator::ToggleInfo()
-  {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-
-    if (m_playerShowInfo)
-      HideInfo();
     else
-      ShowInfo();
-  }
-
-  void CPVRGUIChannelNavigator::SetPlayingChannel(
-      const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
-  {
-    CFileItemPtr item;
-
-    if (groupMember)
     {
-      std::unique_lock<CCriticalSection> lock(m_critSection);
-
-      m_playingChannel = groupMember;
-      if (m_currentChannel != m_playingChannel)
-      {
-        m_currentChannel = m_playingChannel;
-        if (m_playingChannel)
-          item.reset(new CFileItem(m_playingChannel));
-      }
-
-      CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
+      // instant switch
+      SwitchToCurrentChannel();
     }
-
-    if (item)
-      CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*item);
-
-    ShowInfo(false);
   }
+}
 
-  void CPVRGUIChannelNavigator::ClearPlayingChannel()
+void CPVRGUIChannelNavigator::SwitchToCurrentChannel()
+{
+  CFileItemPtr item;
+
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
 
-    m_playingChannel.reset();
-    HideInfo();
+    if (m_iChannelEntryJobId >= 0)
+    {
+      CServiceBroker::GetJobManager()->CancelJob(m_iChannelEntryJobId);
+      m_iChannelEntryJobId = -1;
+    }
+
+    item.reset(new CFileItem(m_currentChannel));
+  }
+
+  if (item)
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(item, false);
+}
+
+bool CPVRGUIChannelNavigator::IsPreview() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_currentChannel != m_playingChannel;
+}
+
+bool CPVRGUIChannelNavigator::IsPreviewAndShowInfo() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_previewAndPlayerShowInfo;
+}
+
+void CPVRGUIChannelNavigator::ShowInfo()
+{
+  ShowInfo(true);
+}
+
+void CPVRGUIChannelNavigator::ShowInfo(bool bForce)
+{
+  auto timeout = std::chrono::seconds(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+      CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO));
+
+  if (bForce || timeout > 0s)
+  {
+    CServiceBroker::GetGUI()
+        ->GetInfoManager()
+        .GetInfoProviders()
+        .GetPlayerInfoProvider()
+        .SetShowInfo(true);
+
+    std::unique_lock<CCriticalSection> lock(m_critSection);
+
+    if (m_iChannelInfoJobId >= 0)
+    {
+      CServiceBroker::GetJobManager()->CancelJob(m_iChannelInfoJobId);
+      m_iChannelInfoJobId = -1;
+    }
+
+    if (!bForce && timeout > 0s)
+    {
+      CPVRChannelInfoTimeoutJob* job = new CPVRChannelInfoTimeoutJob(*this, timeout);
+      m_iChannelInfoJobId =
+          CServiceBroker::GetJobManager()->AddJob(job, dynamic_cast<IJobCallback*>(job));
+    }
+  }
+}
+
+void CPVRGUIChannelNavigator::HideInfo()
+{
+  CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().SetShowInfo(
+      false);
+
+  CFileItemPtr item;
+
+  {
+    std::unique_lock<CCriticalSection> lock(m_critSection);
+
+    if (m_iChannelInfoJobId >= 0)
+    {
+      CServiceBroker::GetJobManager()->CancelJob(m_iChannelInfoJobId);
+      m_iChannelInfoJobId = -1;
+    }
+
+    if (m_currentChannel != m_playingChannel)
+    {
+      m_currentChannel = m_playingChannel;
+      if (m_playingChannel)
+        item.reset(new CFileItem(m_playingChannel));
+    }
 
     CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
   }
 
-} // namespace PVR
+  if (item)
+    CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*item);
+}
+
+void CPVRGUIChannelNavigator::ToggleInfo()
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  if (m_playerShowInfo)
+    HideInfo();
+  else
+    ShowInfo();
+}
+
+void CPVRGUIChannelNavigator::SetPlayingChannel(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
+{
+  CFileItemPtr item;
+
+  if (groupMember)
+  {
+    std::unique_lock<CCriticalSection> lock(m_critSection);
+
+    m_playingChannel = groupMember;
+    if (m_currentChannel != m_playingChannel)
+    {
+      m_currentChannel = m_playingChannel;
+      if (m_playingChannel)
+        item.reset(new CFileItem(m_playingChannel));
+    }
+
+    CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
+  }
+
+  if (item)
+    CServiceBroker::GetGUI()->GetInfoManager().SetCurrentItem(*item);
+
+  ShowInfo(false);
+}
+
+void CPVRGUIChannelNavigator::ClearPlayingChannel()
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  m_playingChannel.reset();
+  HideInfo();
+
+  CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
+}
