@@ -8,6 +8,7 @@
 
 #include "MusicUtils.h"
 
+#include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"

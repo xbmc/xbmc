@@ -8,6 +8,7 @@
 
 #include "PlayListPlayer.h"
 
+#include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "ServiceBroker.h"

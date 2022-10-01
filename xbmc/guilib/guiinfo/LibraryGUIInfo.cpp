@@ -8,6 +8,7 @@
 
 #include "guilib/guiinfo/LibraryGUIInfo.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"

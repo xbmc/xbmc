@@ -8,6 +8,7 @@
 
 #include "VideoLibrary.h"
 
+#include "FileItem.h"
 #include "PVROperations.h"
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"

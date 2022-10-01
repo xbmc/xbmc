@@ -8,6 +8,7 @@
 
 #include "GUIDialogSubtitles.h"
 
+#include "FileItem.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "URL.h"
