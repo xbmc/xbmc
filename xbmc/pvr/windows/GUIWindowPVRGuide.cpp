@@ -131,7 +131,8 @@ void CGUIWindowPVRGuideBase::OnDeinitWindow(int nextWindowID)
 
   m_bChannelSelectionRestored = false;
 
-  CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GUIDE_CONTROLS);
+  CGUIDialog* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GUIDE_CONTROLS);
   if (dialog && dialog->IsDialogRunning())
   {
     dialog->Close();
@@ -155,10 +156,8 @@ void CGUIWindowPVRGuideBase::StopRefreshTimelineItemsThread()
 
 void CGUIWindowPVRGuideBase::NotifyEvent(const PVREvent& event)
 {
-  if (event == PVREvent::Epg ||
-      event == PVREvent::EpgContainer ||
-      event == PVREvent::ChannelGroupInvalidated ||
-      event == PVREvent::ChannelGroup)
+  if (event == PVREvent::Epg || event == PVREvent::EpgContainer ||
+      event == PVREvent::ChannelGroupInvalidated || event == PVREvent::ChannelGroup)
   {
     m_bRefreshTimelineItems = true;
     // no base class call => do async refresh
@@ -216,7 +215,8 @@ void CGUIWindowPVRGuideBase::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, group ? group->GroupName() : "");
 }
 
-bool CGUIWindowPVRGuideBase::Update(const std::string& strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowPVRGuideBase::Update(const std::string& strDirectory,
+                                    bool updateFilterPath /* = true */)
 {
   if (m_bUpdating)
   {
@@ -289,14 +289,14 @@ bool CGUIWindowPVRGuideBase::ShouldNavigateToGridContainer(int iAction)
 {
   CGUIEPGGridContainer* epgGridContainer = GetGridControl();
   CGUIControl* control = GetControl(CONTROL_LSTCHANNELGROUPS);
-  if (epgGridContainer && control &&
-      GetFocusedControlID() == control->GetID())
+  if (epgGridContainer && control && GetFocusedControlID() == control->GetID())
   {
     int iNavigationId = control->GetAction(iAction).GetNavigation();
     if (iNavigationId > 0)
     {
       control = epgGridContainer;
-      while (control != this) // navigation target could be the grid control or one of its parent controls.
+      while (control !=
+             this) // navigation target could be the grid control or one of its parent controls.
       {
         if (iNavigationId == control->GetID())
         {
@@ -654,7 +654,8 @@ bool CGUIWindowPVRGuideBase::OnContextButtonNavigate(CONTEXT_BUTTON button)
     if (g_SkinInfo->HasSkinFile("DialogPVRGuideControls.xml"))
     {
       // use controls dialog
-      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GUIDE_CONTROLS);
+      CGUIDialog* dialog =
+          CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GUIDE_CONTROLS);
       if (dialog && !dialog->IsDialogRunning())
       {
         dialog->Open();
@@ -823,7 +824,8 @@ bool CGUIWindowPVRGuideBase::Go12HoursForward()
 bool CGUIWindowPVRGuideBase::GotoDate(int deltaHours)
 {
   CGUIEPGGridContainer* epgGridContainer = GetGridControl();
-  epgGridContainer->GoToDate(epgGridContainer->GetSelectedDate() + CDateTimeSpan(0, deltaHours, 0, 0));
+  epgGridContainer->GoToDate(epgGridContainer->GetSelectedDate() +
+                             CDateTimeSpan(0, deltaHours, 0, 0));
   return true;
 }
 
@@ -876,10 +878,10 @@ void CGUIWindowPVRGuideBase::GetChannelNumbers(std::vector<std::string>& channel
 }
 
 CPVRRefreshTimelineItemsThread::CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase* pGuideWindow)
-: CThread("epg-grid-refresh-timeline-items"),
-  m_pGuideWindow(pGuideWindow),
-  m_ready(true),
-  m_done(false)
+  : CThread("epg-grid-refresh-timeline-items"),
+    m_pGuideWindow(pGuideWindow),
+    m_ready(true),
+    m_done(false)
 {
 }
 
@@ -921,7 +923,8 @@ void CPVRRefreshTimelineItemsThread::Process()
 
     if (m_pGuideWindow->RefreshTimelineItems() && !m_bStop)
     {
-      CGUIMessage m(GUI_MSG_REFRESH_LIST, m_pGuideWindow->GetID(), 0, static_cast<int>(PVREvent::Epg));
+      CGUIMessage m(GUI_MSG_REFRESH_LIST, m_pGuideWindow->GetID(), 0,
+                    static_cast<int>(PVREvent::Epg));
       CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
     }
 

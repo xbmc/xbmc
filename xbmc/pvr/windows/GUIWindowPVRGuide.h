@@ -22,106 +22,106 @@ class CGUIMessage;
 
 namespace PVR
 {
-  enum class PVREvent;
+enum class PVREvent;
 
-  class CPVRChannelGroup;
-  class CGUIEPGGridContainer;
-  class CPVRRefreshTimelineItemsThread;
+class CPVRChannelGroup;
+class CGUIEPGGridContainer;
+class CPVRRefreshTimelineItemsThread;
 
-  class CGUIWindowPVRGuideBase : public CGUIWindowPVRBase, public CPVRChannelNumberInputHandler
-  {
-  public:
-    CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string& xmlFile);
-    ~CGUIWindowPVRGuideBase() override;
+class CGUIWindowPVRGuideBase : public CGUIWindowPVRBase, public CPVRChannelNumberInputHandler
+{
+public:
+  CGUIWindowPVRGuideBase(bool bRadio, int id, const std::string& xmlFile);
+  ~CGUIWindowPVRGuideBase() override;
 
-    void OnInitWindow() override;
-    void OnDeinitWindow(int nextWindowID) override;
-    bool OnMessage(CGUIMessage& message) override;
-    bool OnAction(const CAction& action) override;
-    void GetContextButtons(int itemNumber, CContextButtons& buttons) override;
-    bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
-    void UpdateButtons() override;
-    void SetInvalid() override;
-    bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
+  void OnInitWindow() override;
+  void OnDeinitWindow(int nextWindowID) override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction& action) override;
+  void GetContextButtons(int itemNumber, CContextButtons& buttons) override;
+  bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
+  void UpdateButtons() override;
+  void SetInvalid() override;
+  bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
 
-    void NotifyEvent(const PVREvent& event) override;
+  void NotifyEvent(const PVREvent& event) override;
 
-    bool RefreshTimelineItems();
+  bool RefreshTimelineItems();
 
-    // CPVRChannelNumberInputHandler implementation
-    void GetChannelNumbers(std::vector<std::string>& channelNumbers) override;
-    void OnInputDone() override;
+  // CPVRChannelNumberInputHandler implementation
+  void GetChannelNumbers(std::vector<std::string>& channelNumbers) override;
+  void OnInputDone() override;
 
-    bool GotoBegin();
-    bool GotoEnd();
-    bool GotoCurrentProgramme();
-    bool GotoDate(int deltaHours);
-    bool OpenDateSelectionDialog();
-    bool Go12HoursBack();
-    bool Go12HoursForward();
-    bool GotoFirstChannel();
-    bool GotoLastChannel();
-    bool GotoPlayingChannel();
+  bool GotoBegin();
+  bool GotoEnd();
+  bool GotoCurrentProgramme();
+  bool GotoDate(int deltaHours);
+  bool OpenDateSelectionDialog();
+  bool Go12HoursBack();
+  bool Go12HoursForward();
+  bool GotoFirstChannel();
+  bool GotoLastChannel();
+  bool GotoPlayingChannel();
 
-  protected:
-    void UpdateSelectedItemPath() override;
-    std::string GetDirectoryPath() override { return ""; }
-    bool GetDirectory(const std::string& strDirectory, CFileItemList& items) override;
-    void FormatAndSort(CFileItemList& items) override;
-    CFileItemPtr GetCurrentListItem(int offset = 0) override;
+protected:
+  void UpdateSelectedItemPath() override;
+  std::string GetDirectoryPath() override { return ""; }
+  bool GetDirectory(const std::string& strDirectory, CFileItemList& items) override;
+  void FormatAndSort(CFileItemList& items) override;
+  CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
-    void ClearData() override;
+  void ClearData() override;
 
-  private:
-    CGUIEPGGridContainer* GetGridControl();
-    void InitEpgGridControl();
+private:
+  CGUIEPGGridContainer* GetGridControl();
+  void InitEpgGridControl();
 
-    bool OnContextButtonNavigate(CONTEXT_BUTTON button);
+  bool OnContextButtonNavigate(CONTEXT_BUTTON button);
 
-    bool ShouldNavigateToGridContainer(int iAction);
+  bool ShouldNavigateToGridContainer(int iAction);
 
-    void StartRefreshTimelineItemsThread();
-    void StopRefreshTimelineItemsThread();
+  void StartRefreshTimelineItemsThread();
+  void StopRefreshTimelineItemsThread();
 
-    void RefreshView(CGUIMessage& message, bool bInitGridControl);
+  void RefreshView(CGUIMessage& message, bool bInitGridControl);
 
-    int GetCurrentListItemIndex(const std::shared_ptr<CFileItem>& item);
+  int GetCurrentListItemIndex(const std::shared_ptr<CFileItem>& item);
 
-    std::unique_ptr<CPVRRefreshTimelineItemsThread> m_refreshTimelineItemsThread;
-    std::atomic_bool m_bRefreshTimelineItems{false};
-    std::atomic_bool m_bSyncRefreshTimelineItems{false};
+  std::unique_ptr<CPVRRefreshTimelineItemsThread> m_refreshTimelineItemsThread;
+  std::atomic_bool m_bRefreshTimelineItems{false};
+  std::atomic_bool m_bSyncRefreshTimelineItems{false};
 
-    std::shared_ptr<CPVRChannelGroup> m_cachedChannelGroup;
+  std::shared_ptr<CPVRChannelGroup> m_cachedChannelGroup;
 
-    bool m_bChannelSelectionRestored{false};
-  };
+  bool m_bChannelSelectionRestored{false};
+};
 
-  class CGUIWindowPVRTVGuide : public CGUIWindowPVRGuideBase
-  {
-  public:
-    CGUIWindowPVRTVGuide() : CGUIWindowPVRGuideBase(false, WINDOW_TV_GUIDE, "MyPVRGuide.xml") {}
-  };
+class CGUIWindowPVRTVGuide : public CGUIWindowPVRGuideBase
+{
+public:
+  CGUIWindowPVRTVGuide() : CGUIWindowPVRGuideBase(false, WINDOW_TV_GUIDE, "MyPVRGuide.xml") {}
+};
 
-  class CGUIWindowPVRRadioGuide : public CGUIWindowPVRGuideBase
-  {
-  public:
-    CGUIWindowPVRRadioGuide() : CGUIWindowPVRGuideBase(true, WINDOW_RADIO_GUIDE, "MyPVRGuide.xml") {}
-  };
+class CGUIWindowPVRRadioGuide : public CGUIWindowPVRGuideBase
+{
+public:
+  CGUIWindowPVRRadioGuide() : CGUIWindowPVRGuideBase(true, WINDOW_RADIO_GUIDE, "MyPVRGuide.xml") {}
+};
 
-  class CPVRRefreshTimelineItemsThread : public CThread
-  {
-  public:
-    explicit CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase* pGuideWindow);
-    ~CPVRRefreshTimelineItemsThread() override;
+class CPVRRefreshTimelineItemsThread : public CThread
+{
+public:
+  explicit CPVRRefreshTimelineItemsThread(CGUIWindowPVRGuideBase* pGuideWindow);
+  ~CPVRRefreshTimelineItemsThread() override;
 
-    void Process() override;
+  void Process() override;
 
-    void DoRefresh(bool bWait);
-    void Stop();
+  void DoRefresh(bool bWait);
+  void Stop();
 
-  private:
-    CGUIWindowPVRGuideBase* m_pGuideWindow;
-    CEvent m_ready;
-    CEvent m_done;
-  };
-}
+private:
+  CGUIWindowPVRGuideBase* m_pGuideWindow;
+  CEvent m_ready;
+  CEvent m_done;
+};
+} // namespace PVR
