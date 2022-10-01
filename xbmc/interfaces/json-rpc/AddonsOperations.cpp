@@ -265,7 +265,7 @@ static CVariant Serialize(const AddonPtr& addon)
   return variant;
 }
 
-void CAddonsOperations::FillDetails(const AddonPtr& addon,
+void CAddonsOperations::FillDetails(const std::shared_ptr<ADDON::IAddon>& addon,
                                     const CVariant& fields,
                                     CVariant& result,
                                     CAddonDatabase& addondb,
