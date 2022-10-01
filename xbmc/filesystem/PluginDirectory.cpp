@@ -53,16 +53,14 @@ std::string GetOriginalPluginPath(const CFileItem& item)
 }
 } // unnamed namespace
 
-CPluginDirectory::CPluginDirectory() : m_cancelled(false)
+CPluginDirectory::CPluginDirectory()
+  : m_listItems(new CFileItemList), m_fileResult(new CFileItem), m_cancelled(false)
+
 {
-  m_listItems = new CFileItemList;
-  m_fileResult = new CFileItem;
 }
 
 CPluginDirectory::~CPluginDirectory(void)
 {
-  delete m_listItems;
-  delete m_fileResult;
 }
 
 bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
