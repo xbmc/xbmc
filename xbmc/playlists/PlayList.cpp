@@ -8,6 +8,7 @@
 
 #include "PlayList.h"
 
+#include "FileItem.h"
 #include "PlayListFactory.h"
 #include "ServiceBroker.h"
 #include "filesystem/File.h"
@@ -60,7 +61,7 @@ void CPlayList::AnnounceClear()
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnClear", data);
 }
 
-void CPlayList::AnnounceAdd(const CFileItemPtr& item, int pos)
+void CPlayList::AnnounceAdd(const std::shared_ptr<CFileItem>& item, int pos)
 {
   if (m_id == TYPE_NONE)
     return;
@@ -71,7 +72,7 @@ void CPlayList::AnnounceAdd(const CFileItemPtr& item, int pos)
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnAdd", item, data);
 }
 
-void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
+void CPlayList::Add(const std::shared_ptr<CFileItem>& item, int iPosition, int iOrder)
 {
   int iOldSize = size();
   if (iPosition < 0 || iPosition >= iOldSize)
@@ -105,7 +106,7 @@ void CPlayList::Add(const CFileItemPtr &item, int iPosition, int iOrder)
   AnnounceAdd(item, iPosition);
 }
 
-void CPlayList::Add(const CFileItemPtr &item)
+void CPlayList::Add(const std::shared_ptr<CFileItem>& item)
 {
   Add(item, -1, -1);
 }
@@ -153,7 +154,7 @@ void CPlayList::Insert(const CFileItemList& items, int iPosition /* = -1 */)
   }
 }
 
-void CPlayList::Insert(const CFileItemPtr &item, int iPosition /* = -1 */)
+void CPlayList::Insert(const std::shared_ptr<CFileItem>& item, int iPosition /* = -1 */)
 {
   // out of bounds so just add to the end
   int iSize = size();
@@ -227,7 +228,7 @@ int CPlayList::size() const
   return (int)m_vecItems.size();
 }
 
-const CFileItemPtr CPlayList::operator[] (int iItem) const
+const std::shared_ptr<CFileItem> CPlayList::operator[](int iItem) const
 {
   if (iItem < 0 || iItem >= size())
   {
@@ -238,7 +239,7 @@ const CFileItemPtr CPlayList::operator[] (int iItem) const
   return m_vecItems[iItem];
 }
 
-CFileItemPtr CPlayList::operator[] (int iItem)
+std::shared_ptr<CFileItem> CPlayList::operator[](int iItem)
 {
   if (iItem < 0 || iItem >= size())
   {
@@ -503,7 +504,7 @@ void CPlayList::UpdateItem(const CFileItem *item)
   }
 }
 
-const std::string& CPlayList::ResolveURL(const CFileItemPtr &item ) const
+const std::string& CPlayList::ResolveURL(const std::shared_ptr<CFileItem>& item) const
 {
   if (item->IsMusicDb() && item->HasMusicInfoTag())
     return item->GetMusicInfoTag()->GetURL();

@@ -8,13 +8,14 @@
 
 #include "PlayListFactory.h"
 
-#include "PlayListB4S.h"
-#include "PlayListM3U.h"
-#include "PlayListPLS.h"
-#include "PlayListURL.h"
-#include "PlayListWPL.h"
-#include "PlayListXML.h"
-#include "PlayListXSPF.h"
+#include "FileItem.h"
+#include "playlists/PlayListB4S.h"
+#include "playlists/PlayListM3U.h"
+#include "playlists/PlayListPLS.h"
+#include "playlists/PlayListURL.h"
+#include "playlists/PlayListWPL.h"
+#include "playlists/PlayListXML.h"
+#include "playlists/PlayListXSPF.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
