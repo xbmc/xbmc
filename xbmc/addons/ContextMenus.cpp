@@ -9,6 +9,7 @@
 #include "ContextMenus.h"
 
 #include "AddonManager.h"
+#include "FileItem.h"
 #include "Repository.h"
 #include "RepositoryUpdater.h"
 #include "ServiceBroker.h"
@@ -19,6 +20,11 @@ namespace CONTEXTMENU
 {
 
 using namespace ADDON;
+
+bool CAddonInfo::IsVisible(const CFileItem& item) const
+{
+  return item.HasAddonInfo();
+}
 
 bool CAddonSettings::IsVisible(const CFileItem& item) const
 {

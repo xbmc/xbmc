@@ -8,6 +8,7 @@
 
 #include "PeripheralAddon.h"
 
+#include "FileItem.h"
 #include "PeripheralAddonTranslator.h"
 #include "addons/AddonManager.h"
 #include "filesystem/Directory.h"

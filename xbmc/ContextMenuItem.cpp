@@ -7,10 +7,12 @@
  */
 
 #include "ContextMenuItem.h"
+
+#include "FileItem.h"
+#include "GUIInfoManager.h"
 #include "addons/AddonManager.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/IAddon.h"
-#include "GUIInfoManager.h"
 #include "guilib/GUIComponent.h"
 #ifdef HAS_PYTHON
 #include "interfaces/generic/ScriptInvocationManager.h"

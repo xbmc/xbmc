@@ -8,6 +8,7 @@
 
 #include "AddonInfo.h"
 
+#include "FileItem.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
