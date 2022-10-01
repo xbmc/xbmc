@@ -8,6 +8,7 @@
 
 #include "PlayListXML.h"
 
+#include "FileItem.h"
 #include "Util.h"
 #include "filesystem/File.h"
 #include "media/MediaLockState.h"

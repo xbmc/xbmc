@@ -9,6 +9,7 @@
 #include "GUIWindowPictures.h"
 
 #include "Autorun.h"
+#include "FileItem.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIPassword.h"
 #include "GUIWindowSlideShow.h"

@@ -8,6 +8,7 @@
 
 #include "PlayListWPL.h"
 
+#include "FileItem.h"
 #include "Util.h"
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"

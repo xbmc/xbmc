@@ -8,6 +8,7 @@
 
 #include "PlayListB4S.h"
 
+#include "FileItem.h"
 #include "Util.h"
 #include "filesystem/File.h"
 #include "music/tags/MusicInfoTag.h"

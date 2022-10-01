@@ -9,6 +9,7 @@
 #include "GUIMediaWindow.h"
 
 #include "ContextMenuManager.h"
+#include "FileItem.h"
 #include "FileItemListModification.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"

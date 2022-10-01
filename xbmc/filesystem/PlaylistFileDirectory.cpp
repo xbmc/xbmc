@@ -8,8 +8,9 @@
 
 #include "PlaylistFileDirectory.h"
 
-#include "File.h"
+#include "FileItem.h"
 #include "URL.h"
+#include "filesystem/File.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 
