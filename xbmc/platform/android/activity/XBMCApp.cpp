@@ -10,6 +10,7 @@
 
 #include "AndroidKey.h"
 #include "CompileInfo.h"
+#include "FileItem.h"
 #include "application/AppParams.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
