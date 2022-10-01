@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "GUIDialogYesNo.h"
 
 class CGUIDialogPlayEject : public CGUIDialogYesNo
