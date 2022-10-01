@@ -285,8 +285,8 @@ JSONRPC_STATUS CFileOperations::Download(const std::string &method, ITransportLa
 }
 
 bool CFileOperations::FillFileItem(
-    const CFileItemPtr& originalItem,
-    CFileItemPtr& item,
+    const std::shared_ptr<CFileItem>& originalItem,
+    std::shared_ptr<CFileItem>& item,
     const std::string& media /* = "" */,
     const CVariant& parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {

@@ -18,6 +18,7 @@ class CFileItem;
 class CFileItemList;
 class CThumbLoader;
 class CVariant;
+class ISerializable;
 
 namespace JSONRPC
 {
