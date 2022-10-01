@@ -39,7 +39,7 @@ using namespace std::chrono_literals;
 #define MAX_INVALIDATION_FREQUENCY 2000ms // limit to one invalidation per X milliseconds
 
 CGUIDialogPVRChannelsOSD::CGUIDialogPVRChannelsOSD()
-: CGUIDialogPVRItemsViewBase(WINDOW_DIALOG_PVR_OSD_CHANNELS, "DialogPVRChannelsOSD.xml")
+  : CGUIDialogPVRItemsViewBase(WINDOW_DIALOG_PVR_OSD_CHANNELS, "DialogPVRChannelsOSD.xml")
 {
   CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().RegisterChannelNumberInputHandler(this);
 }
@@ -77,7 +77,8 @@ bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
 
 void CGUIDialogPVRChannelsOSD::OnInitWindow()
 {
-  if (!CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV() && !CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio())
+  if (!CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV() &&
+      !CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingRadio())
   {
     Close();
     return;
@@ -131,10 +132,11 @@ bool CGUIDialogPVRChannelsOSD::OnAction(const CAction& action)
       SaveControlStates();
 
       // switch to next or previous group
-      const CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_group->IsRadio());
+      const CPVRChannelGroups* groups =
+          CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_group->IsRadio());
       const std::shared_ptr<CPVRChannelGroup> nextGroup = action.GetID() == ACTION_NEXT_CHANNELGROUP
-                                                        ? groups->GetNextGroup(*m_group)
-                                                        : groups->GetPreviousGroup(*m_group);
+                                                              ? groups->GetNextGroup(*m_group)
+                                                              : groups->GetPreviousGroup(*m_group);
       CServiceBroker::GetPVRManager().PlaybackState()->SetActiveChannelGroup(nextGroup);
       m_group = nextGroup;
       Init();
@@ -243,7 +245,8 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
 
   // Preserve the item before closing self, because this will clear m_vecItems
   const CFileItemPtr itemptr = m_vecItems->Get(item);
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
     Close();
 
   CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
