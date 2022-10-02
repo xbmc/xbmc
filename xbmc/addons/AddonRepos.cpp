@@ -238,9 +238,13 @@ bool CAddonRepos::DoAddonUpdateCheck(const std::shared_ptr<IAddon>& addon,
   {
     if (ORIGIN_SYSTEM != addon->Origin() && !hasOfficialUpdate) // not a system addon
     {
-      // If we didn't find an official update
-      if (IsFromOfficialRepo(addon, CheckAddonPath::YES)) // is an official addon
+
+      // we didn't find an official update.
+      // either version is current or that add-on isn't contained in official repos
+      if (IsFromOfficialRepo(addon, CheckAddonPath::NO))
       {
+
+        // check further if it IS contained in official repos
         if (updateMode == AddonRepoUpdateMode::ANY_REPOSITORY)
         {
           if (!FindAddonAndCheckForUpdate(addon, m_latestPrivateVersions, update))
@@ -287,15 +291,11 @@ bool CAddonRepos::FindAddonAndCheckForUpdate(
     {
       // return addon update
       update = remote->second;
+      return true; // update found
     }
-    else
-    {
-      // addon found, but it's up to date
-      update = nullptr;
-    }
-    return true;
   }
 
+  // either addon wasn't found or it's up to date
   return false;
 }
 
