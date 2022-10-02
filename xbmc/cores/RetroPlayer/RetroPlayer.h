@@ -146,7 +146,7 @@ private:
   CCriticalSection m_mutex;
 
   // File metadata
-  std::shared_ptr<CFileItem> m_fileItem;
+  std::unique_ptr<CFileItem> m_fileItem;
 };
 } // namespace RETRO
 } // namespace KODI

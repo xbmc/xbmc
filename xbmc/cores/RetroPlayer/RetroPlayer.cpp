@@ -59,7 +59,7 @@ using namespace RETRO;
 CRetroPlayer::CRetroPlayer(IPlayerCallback& callback)
   : IPlayer(callback),
     m_gameServices(CServiceBroker::GetGameServices()),
-    m_fileItem(new CFileItem())
+    m_fileItem(std::make_unique<CFileItem>())
 {
   ResetPlayback();
   CServiceBroker::GetWinSystem()->RegisterRenderLoop(this);

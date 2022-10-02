@@ -430,7 +430,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       if (!g_application.GetAppPlayer().IsPlayingGame())
-        throw PlayerException("XBMC is not playing any game file");
+        throw PlayerException("Kodi is not playing any game file");
 
       const KODI::GAME::CGameInfoTag* game =
           CServiceBroker::GetGUI()->GetInfoManager().GetCurrentGameTag();

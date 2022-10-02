@@ -133,10 +133,10 @@ void InfoTagGame::setGameClient(const String& gameClient)
   setGameClientRaw(infoTag, gameClient);
 }
 
-void InfoTagGame::setCaption(const String& gameClient)
+void InfoTagGame::setCaption(const String& caption)
 {
   XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
-  setCaptionRaw(infoTag, gameClient);
+  setCaptionRaw(infoTag, caption);
 }
 
 void InfoTagGame::setTitleRaw(KODI::GAME::CGameInfoTag* infoTag, const String& title)

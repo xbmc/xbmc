@@ -431,6 +431,9 @@ namespace XBMCAddon
       /// Check for playing game.
       ///
       /// @return                    True if kodi is playing a game
+      /// 
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
       ///
       isPlayingGame();
 #else
@@ -649,6 +652,8 @@ namespace XBMCAddon
       /// @throws Exception          If player is not playing a file or current
       ///                            file is not a game file.
       ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
       getGameInfoTag();
 #else
       InfoTagGame* getGameInfoTag();

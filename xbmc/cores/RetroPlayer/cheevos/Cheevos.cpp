@@ -29,15 +29,15 @@ using namespace RETRO;
 namespace
 {
 // API JSON Field names
-constexpr auto SUCCESS = "Success";
-constexpr auto PATCH_DATA = "PatchData";
-constexpr auto GAME_ID = "GameID";
-constexpr auto RICH_PRESENCE = "RichPresencePatch";
-constexpr auto GAME_TITLE = "Title";
-constexpr auto PUBLISHER = "Publisher";
-constexpr auto DEVELOPER = "Developer";
-constexpr auto GENRE = "Genre";
-constexpr auto CONSOLE_NAME = "ConsoleName";
+constexpr std::string_view SUCCESS = "Success";
+constexpr std::string_view PATCH_DATA = "PatchData";
+constexpr std::string_view GAME_ID = "GameID";
+constexpr std::string_view RICH_PRESENCE = "RichPresencePatch";
+constexpr std::string_view GAME_TITLE = "Title";
+constexpr std::string_view PUBLISHER = "Publisher";
+constexpr std::string_view DEVELOPER = "Developer";
+constexpr std::string_view GENRE = "Genre";
+constexpr std::string_view CONSOLE_NAME = "ConsoleName";
 
 constexpr int RESPORNSE_SIZE = 64;
 } // namespace
