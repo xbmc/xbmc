@@ -224,10 +224,15 @@ void CWinSystemAndroid::InitiateModeChange()
                                     "videoscreen.delayrefreshchange") *
                                 100);
 
-  if (delay < 2000ms)
+  if (delay > 0ms && delay < 2000ms)
     delay = 2000ms;
+
   m_dispResetTimer->Stop();
-  m_dispResetTimer->Start(delay);
+  if (delay > 0ms)
+  {
+    CLog::LogF(LOGDEBUG, "Start dispResetTimer with delay: {}", delay);
+    m_dispResetTimer->Start(delay);
+  }
 
   SetHdmiState(false);
 }
