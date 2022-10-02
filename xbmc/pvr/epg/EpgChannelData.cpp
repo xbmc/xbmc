@@ -14,8 +14,7 @@
 using namespace PVR;
 
 CPVREpgChannelData::CPVREpgChannelData(int iClientId, int iUniqueClientChannelId)
-: m_iClientId(iClientId),
-  m_iUniqueClientChannelId(iUniqueClientChannelId)
+  : m_iClientId(iClientId), m_iUniqueClientChannelId(iUniqueClientChannelId)
 {
 }
 
