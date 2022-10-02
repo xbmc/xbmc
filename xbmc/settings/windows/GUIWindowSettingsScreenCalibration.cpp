@@ -9,7 +9,8 @@
 #include "GUIWindowSettingsScreenCalibration.h"
 
 #include "ServiceBroker.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMoverControl.h"
@@ -196,11 +197,13 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       // Get the allowable resolutions that we can calibrate...
       m_Res.clear();
 
-      bool isPlayingVideo{g_application.GetAppPlayer().IsPlayingVideo()};
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      bool isPlayingVideo{appPlayer->IsPlayingVideo()};
       if (isPlayingVideo)
       { // don't allow resolution switching if we are playing a video
 
-        g_application.GetAppPlayer().TriggerUpdateResolution();
+        appPlayer->TriggerUpdateResolution();
 
         m_iCurRes = 0;
         m_Res.push_back(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());

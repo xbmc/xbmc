@@ -19,6 +19,7 @@
 #include "application/Application.h"
 #include "application/ApplicationActionListeners.h"
 #include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
 #include "filesystem/File.h"
 #include "filesystem/PipeFile.h"
@@ -420,10 +421,12 @@ void CAirTunesServer::InformPlayerAboutPlayTimes()
     duration /= m_sampleRate;
     position /= m_sampleRate;
 
-    if (g_application.GetAppPlayer().IsPlaying())
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer->IsPlaying())
     {
-      g_application.GetAppPlayer().SetTime(position * 1000);
-      g_application.GetAppPlayer().SetTotalTime(duration * 1000);
+      appPlayer->SetTime(position * 1000);
+      appPlayer->SetTotalTime(duration * 1000);
 
       // reset play times now that we have informed the player
       m_cachedEndTime = 0;
@@ -439,7 +442,9 @@ void CAirTunesServer::AudioOutputFunctions::audio_set_progress(void *cls, void *
   m_cachedStartTime = start;
   m_cachedCurrentTime = curr;
   m_cachedEndTime = end;
-  if (g_application.GetAppPlayer().IsPlaying())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlaying())
   {
     // player is there - directly inform him about play times
     InformPlayerAboutPlayTimes();

@@ -13,6 +13,8 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "music/MusicLibraryQueue.h"
@@ -216,12 +218,14 @@ bool CGUIWindowMusicBase::OnMessage(CGUIMessage& message)
         // use play button to add folders of items to temp playlist
         else if (iAction == ACTION_PLAYER_PLAY)
         {
+          const auto& components = CServiceBroker::GetAppComponents();
+          const auto appPlayer = components.GetComponent<CApplicationPlayer>();
           // if playback is paused or playback speed != 1, return
-          if (g_application.GetAppPlayer().IsPlayingAudio())
+          if (appPlayer->IsPlayingAudio())
           {
-            if (g_application.GetAppPlayer().IsPausedPlayback())
+            if (appPlayer->IsPausedPlayback())
               return false;
-            if (g_application.GetAppPlayer().GetPlaySpeed() != 1)
+            if (appPlayer->GetPlaySpeed() != 1)
               return false;
           }
 
@@ -380,10 +384,15 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
 /// \param iItem Selected Item in list/thumb control
 void CGUIWindowMusicBase::OnQueueItem(int iItem, bool first)
 {
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
   // Determine the proper list to queue this element
   PLAYLIST::Id playlistId = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
   if (playlistId == PLAYLIST::TYPE_NONE)
-    playlistId = g_application.GetAppPlayer().GetPreferredPlaylist();
+  {
+    playlistId = appPlayer->GetPreferredPlaylist();
+  }
   if (playlistId == PLAYLIST::TYPE_NONE)
     playlistId = PLAYLIST::TYPE_MUSIC;
 
@@ -428,13 +437,12 @@ void CGUIWindowMusicBase::OnQueueItem(int iItem, bool first)
     return;
   }
 
-  if (first && g_application.GetAppPlayer().IsPlaying())
+  if (first && appPlayer->IsPlaying())
     CServiceBroker::GetPlaylistPlayer().Insert(
         playlistId, queuedItems, CServiceBroker::GetPlaylistPlayer().GetCurrentSong() + 1);
   else
     CServiceBroker::GetPlaylistPlayer().Add(playlistId, queuedItems);
-  if (CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size() &&
-      !g_application.GetAppPlayer().IsPlaying())
+  if (CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size() && !appPlayer->IsPlaying())
   {
     if (m_guiState)
       m_guiState->SetPlaylistDirectory("playlistmusic://");

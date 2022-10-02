@@ -9,7 +9,8 @@
 #import "LibInputTouch.h"
 
 #include "ServiceBroker.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "utils/log.h"
@@ -63,14 +64,18 @@
   {
     // single press key, but also detect hold and back to tvos.
     case UIPressTypeMenu:
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
       // menu is special.
       //  a) if at our home view, should return to atv home screen.
       //  b) if not, let it pass to us.
       if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_HOME &&
           !CServiceBroker::GetGUI()->GetWindowManager().HasVisibleModalDialog() &&
-          !g_application.GetAppPlayer().IsPlaying())
+          !appPlayer->IsPlaying())
         handled = NO;
       break;
+    }
 
     // single press keys
     case UIPressTypeSelect:

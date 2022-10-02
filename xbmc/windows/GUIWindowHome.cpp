@@ -9,7 +9,8 @@
 #include "GUIWindowHome.h"
 
 #include "ServiceBroker.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
@@ -41,9 +42,10 @@ CGUIWindowHome::~CGUIWindowHome(void)
 bool CGUIWindowHome::OnAction(const CAction &action)
 {
   static unsigned int min_hold_time = 1000;
-  if (action.GetID() == ACTION_NAV_BACK &&
-      action.GetHoldTime() < min_hold_time &&
-      g_application.GetAppPlayer().IsPlaying())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (action.GetID() == ACTION_NAV_BACK && action.GetHoldTime() < min_hold_time &&
+      appPlayer->IsPlaying())
   {
     CGUIComponent* gui = CServiceBroker::GetGUI();
     if (gui)

@@ -18,10 +18,13 @@
 #include "Util.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "media/MediaLockState.h"
 #include "messaging/helpers/DialogOKHelper.h"
@@ -37,6 +40,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "view/GUIViewState.h"
+
 #define CONTROL_BTNSORTASC          4
 #define CONTROL_LABELFILES         12
 
@@ -312,7 +316,9 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
   CGUIWindowSlideShow *pSlideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
   if (!pSlideShow)
     return false;
-  if (g_application.GetAppPlayer().IsPlayingVideo())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlayingVideo())
     g_application.StopPlaying();
 
   pSlideShow->Reset();
@@ -355,7 +361,9 @@ void CGUIWindowPictures::OnShowPictureRecursive(const std::string& strPath)
   if (pSlideShow)
   {
     // stop any video
-    if (g_application.GetAppPlayer().IsPlayingVideo())
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer->IsPlayingVideo())
       g_application.StopPlaying();
 
     SortDescription sorting = m_guiState->GetSortMethod();
@@ -547,7 +555,9 @@ void CGUIWindowPictures::LoadPlayList(const std::string& strPlayList)
     CGUIWindowSlideShow *pSlideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
     if (!pSlideShow)
       return;
-    if (g_application.GetAppPlayer().IsPlayingVideo())
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer->IsPlayingVideo())
       g_application.StopPlaying();
 
     // convert playlist items into slideshow items

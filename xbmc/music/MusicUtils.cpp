@@ -11,6 +11,8 @@
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -130,7 +132,9 @@ namespace MUSIC_UTILS
       }
 
       // Similarly update the art of the currently playing song so it shows on OSD
-      if (g_application.GetAppPlayer().IsPlayingAudio() && g_application.CurrentFileItem().HasMusicInfoTag())
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      if (appPlayer->IsPlayingAudio() && g_application.CurrentFileItem().HasMusicInfoTag())
       {
         CFileItemPtr songitem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
         if (HasSongExtraArtChanged(songitem, type, itemID, db))

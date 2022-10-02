@@ -12,6 +12,8 @@
 #include "CompileInfo.h"
 #include "application/AppParams.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -295,11 +297,13 @@ void CXBMCApp::onResume()
     m_applications.clear();
   }
 
-  if (m_bResumePlayback && g_application.GetAppPlayer().IsPlaying())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (m_bResumePlayback && appPlayer->IsPlaying())
   {
-    if (g_application.GetAppPlayer().HasVideo())
+    if (appPlayer->HasVideo())
     {
-      if (g_application.GetAppPlayer().IsPaused())
+      if (appPlayer->IsPaused())
         CServiceBroker::GetAppMessenger()->SendMsg(
             TMSG_GUI_ACTION, WINDOW_INVALID, -1,
             static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
@@ -316,11 +320,13 @@ void CXBMCApp::onPause()
   android_printf("%s: ", __PRETTY_FUNCTION__);
   m_bResumePlayback = false;
 
-  if (g_application.GetAppPlayer().IsPlaying())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlaying())
   {
-    if (g_application.GetAppPlayer().HasVideo())
+    if (appPlayer->HasVideo())
     {
-      if (!g_application.GetAppPlayer().IsPaused() && !m_hasReqVisible)
+      if (!appPlayer->IsPaused() && !m_hasReqVisible)
       {
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                    static_cast<void*>(new CAction(ACTION_PAUSE)));
@@ -726,7 +732,9 @@ void CXBMCApp::SetRefreshRate(float rate)
   if (g_application.IsInitialized())
   {
     m_displayChangeEvent.Wait(5000ms);
-    if (m_hdmiSource && g_application.GetAppPlayer().IsPlaying())
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (m_hdmiSource && appPlayer->IsPlaying())
       dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
   }
 }
@@ -754,7 +762,9 @@ void CXBMCApp::SetDisplayMode(int mode, float rate)
   if (g_application.IsInitialized())
   {
     m_displayChangeEvent.Wait(5000ms);
-    if (m_hdmiSource && g_application.GetAppPlayer().IsPlaying())
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (m_hdmiSource && appPlayer->IsPlaying())
       dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
   }
 }
@@ -802,6 +812,8 @@ CRect CXBMCApp::MapRenderToDroid(const CRect& srcRect)
 
 void CXBMCApp::UpdateSessionMetadata()
 {
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
   CJNIMediaMetadataBuilder builder;
   builder
@@ -809,8 +821,7 @@ void CXBMCApp::UpdateSessionMetadata()
                  infoMgr.GetLabel(PLAYER_TITLE, INFO::DEFAULT_CONTEXT))
       .putString(CJNIMediaMetadata::METADATA_KEY_TITLE,
                  infoMgr.GetLabel(PLAYER_TITLE, INFO::DEFAULT_CONTEXT))
-      .putLong(CJNIMediaMetadata::METADATA_KEY_DURATION,
-               g_application.GetAppPlayer().GetTotalTime())
+      .putLong(CJNIMediaMetadata::METADATA_KEY_DURATION, appPlayer->GetTotalTime())
       //      .putString(CJNIMediaMetadata::METADATA_KEY_ART_URI, thumb)
       //      .putString(CJNIMediaMetadata::METADATA_KEY_DISPLAY_ICON_URI, thumb)
       //      .putString(CJNIMediaMetadata::METADATA_KEY_ALBUM_ART_URI, thumb)
@@ -853,18 +864,20 @@ void CXBMCApp::UpdateSessionState()
   int state = CJNIPlaybackState::STATE_NONE;
   int64_t pos = 0;
   float speed = 0.0;
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (m_playback_state != PLAYBACK_STATE_STOPPED)
   {
-    if (g_application.GetAppPlayer().HasVideo())
+    if (appPlayer->HasVideo())
       m_playback_state |= PLAYBACK_STATE_VIDEO;
     else
       m_playback_state &= ~PLAYBACK_STATE_VIDEO;
-    if (g_application.GetAppPlayer().HasAudio())
+    if (appPlayer->HasAudio())
       m_playback_state |= PLAYBACK_STATE_AUDIO;
     else
       m_playback_state &= ~PLAYBACK_STATE_AUDIO;
-    pos = g_application.GetAppPlayer().GetTime();
-    speed = g_application.GetAppPlayer().GetPlaySpeed();
+    pos = appPlayer->GetTime();
+    speed = appPlayer->GetPlaySpeed();
     if (m_playback_state & PLAYBACK_STATE_PLAYING)
       state = CJNIPlaybackState::STATE_PLAYING;
     else
@@ -882,13 +895,15 @@ void CXBMCApp::UpdateSessionState()
 void CXBMCApp::OnPlayBackStarted()
 {
   CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
   m_playback_state = PLAYBACK_STATE_PLAYING;
-  if (g_application.GetAppPlayer().HasVideo())
+  if (appPlayer->HasVideo())
     m_playback_state |= PLAYBACK_STATE_VIDEO;
-  if (g_application.GetAppPlayer().HasAudio())
+  if (appPlayer->HasAudio())
     m_playback_state |= PLAYBACK_STATE_AUDIO;
-  if (!g_application.GetAppPlayer().CanPause())
+  if (!appPlayer->CanPause())
     m_playback_state |= PLAYBACK_STATE_CANNOT_PAUSE;
 
   m_mediaSession->activate(true);
@@ -1250,7 +1265,9 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       // If unplugged headset and playing content then pause or stop playback
       if (!newstate && (m_playback_state & PLAYBACK_STATE_PLAYING))
       {
-        if (g_application.GetAppPlayer().CanPause())
+        const auto& components = CServiceBroker::GetAppComponents();
+        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+        if (appPlayer->CanPause())
         {
           CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                      static_cast<void*>(new CAction(ACTION_PAUSE)));

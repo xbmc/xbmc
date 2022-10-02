@@ -15,6 +15,8 @@
 #include "URL.h"
 #include "Util.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
@@ -34,7 +36,9 @@ using namespace MUSIC_INFO;
 
 bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
 {
-  if (item && (item->IsAudio() || (item->IsInternetStream() && g_application.GetAppPlayer().IsPlayingAudio())))
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (item && (item->IsAudio() || (item->IsInternetStream() && appPlayer->IsPlayingAudio())))
   {
     CLog::Log(LOGDEBUG, "CMusicGUIInfo::InitCurrentItem({})", item->GetPath());
 
@@ -244,9 +248,12 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         break;
       }
       case PLAYER_DURATION:
-        if (!g_application.GetAppPlayer().IsPlayingAudio())
+      {
+        const auto& components = CServiceBroker::GetAppComponents();
+        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+        if (!appPlayer->IsPlayingAudio())
           break;
-        // fall-thru is intended.
+      }
         [[fallthrough]];
       case MUSICPLAYER_DURATION:
       case LISTITEM_DURATION:
@@ -430,7 +437,10 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       }
       break;
     case MUSICPLAYER_COVER:
-      if (g_application.GetAppPlayer().IsPlayingAudio())
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      if (appPlayer->IsPlayingAudio())
       {
         if (fallback)
           *fallback = "DefaultAlbumCover.png";
@@ -438,6 +448,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       }
       break;
+    }
     case MUSICPLAYER_BITRATE:
     {
       int iBitrate = m_audioInfo.bitrate;
@@ -644,13 +655,17 @@ bool CMusicGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
       }
       break;
     case MUSICPLAYER_PLAYLISTPLAYING:
-      if (g_application.GetAppPlayer().IsPlayingAudio() &&
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      if (appPlayer->IsPlayingAudio() &&
           CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_MUSIC)
       {
         value = true;
         return true;
       }
       break;
+    }
     case MUSICPLAYER_EXISTS:
     {
       int index = info.GetData2();

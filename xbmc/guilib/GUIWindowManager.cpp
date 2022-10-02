@@ -19,6 +19,8 @@
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "addons/interfaces/gui/Window.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "events/windows/GUIWindowEventLog.h"
 #include "favourites/GUIDialogFavourites.h"
 #include "input/Key.h"
@@ -938,17 +940,19 @@ bool CGUIWindowManager::SwitchToFullScreen(bool force /* = false */)
   const int activeWindowID = GetActiveWindow();
   int windowID = WINDOW_INVALID;
 
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
   // See if we're playing a game
-  if (activeWindowID != WINDOW_FULLSCREEN_GAME && g_application.GetAppPlayer().IsPlayingGame())
+  if (activeWindowID != WINDOW_FULLSCREEN_GAME && appPlayer->IsPlayingGame())
     windowID = WINDOW_FULLSCREEN_GAME;
 
   // See if we're playing a video
-  else if (activeWindowID != WINDOW_FULLSCREEN_VIDEO &&
-           g_application.GetAppPlayer().IsPlayingVideo())
+  else if (activeWindowID != WINDOW_FULLSCREEN_VIDEO && appPlayer->IsPlayingVideo())
     windowID = WINDOW_FULLSCREEN_VIDEO;
 
   // See if we're playing an audio song
-  if (activeWindowID != WINDOW_VISUALISATION && g_application.GetAppPlayer().IsPlayingAudio())
+  if (activeWindowID != WINDOW_VISUALISATION && appPlayer->IsPlayingAudio())
     windowID = WINDOW_VISUALISATION;
 
   if (windowID != WINDOW_INVALID && (force || windowID != activeWindowID))

@@ -16,6 +16,8 @@
 #include "URL.h"
 #include "Util.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -665,7 +667,10 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem, const std::string &player)
     CGUIWindowSlideShow *pSlideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
     if (!pSlideShow)
       return ;
-    if (g_application.GetAppPlayer().IsPlayingVideo())
+
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer->IsPlayingVideo())
       g_application.StopPlaying();
 
     pSlideShow->Reset();

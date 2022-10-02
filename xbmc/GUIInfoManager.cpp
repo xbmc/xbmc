@@ -12,7 +12,8 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/DataCacheCore.h"
 #include "filesystem/File.h"
 #include "guilib/guiinfo/GUIInfo.h"
@@ -11058,9 +11059,11 @@ void CGUIInfoManager::UpdateAVInfo()
     AudioStreamInfo audio;
     SubtitleStreamInfo subtitle;
 
-    g_application.GetAppPlayer().GetVideoStreamInfo(CURRENT_STREAM, video);
-    g_application.GetAppPlayer().GetAudioStreamInfo(CURRENT_STREAM, audio);
-    g_application.GetAppPlayer().GetSubtitleStreamInfo(CURRENT_STREAM, subtitle);
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    appPlayer->GetVideoStreamInfo(CURRENT_STREAM, video);
+    appPlayer->GetAudioStreamInfo(CURRENT_STREAM, audio);
+    appPlayer->GetSubtitleStreamInfo(CURRENT_STREAM, subtitle);
 
     m_infoProviders.UpdateAVInfo(audio, video, subtitle);
   }

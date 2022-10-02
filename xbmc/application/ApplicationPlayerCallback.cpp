@@ -11,6 +11,7 @@
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationStackHelper.h"
 #include "cores/DataCacheCore.h"
@@ -32,12 +33,8 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 
-CApplicationPlayerCallback::CApplicationPlayerCallback(CApplicationPlayer& appPlayer,
-                                                       CApplicationStackHelper& stackHelper)
-  : m_appPlayer(appPlayer),
-    m_stackHelper(stackHelper),
-    m_itemCurrentFile(new CFileItem),
-    m_playerEvent(true, true)
+CApplicationPlayerCallback::CApplicationPlayerCallback(CApplicationStackHelper& stackHelper)
+  : m_stackHelper(stackHelper), m_itemCurrentFile(new CFileItem), m_playerEvent(true, true)
 {
 }
 
@@ -70,7 +67,10 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   if (file.GetProperty("get_stream_details_from_player").asBoolean() ||
       (hasNoStreamDetails && isBlu_dvd_image_or_stream))
   {
-    m_appPlayer.SetUpdateStreamDetails();
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer)
+      appPlayer->SetUpdateStreamDetails();
   }
 
   if (m_stackHelper.IsPlayingISOStack() || m_stackHelper.IsPlayingRegularStack())
@@ -242,7 +242,10 @@ void CApplicationPlayerCallback::OnPlayBackSeek(int64_t iTime, int64_t seekOffse
   JSONRPC::CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
   JSONRPC::CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  param["player"]["speed"] = (int)m_appPlayer.GetPlaySpeed();
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer)
+    param["player"]["speed"] = static_cast<int>(appPlayer->GetPlaySpeed());
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnSeek",
                                                      m_itemCurrentFile, param);
 
@@ -311,7 +314,10 @@ void CApplicationPlayerCallback::RequestVideoSettings(const CFileItem& fileItem)
     if (!dbs.GetVideoSettings(fileItem, vs))
       vs = CMediaSettings::GetInstance().GetDefaultVideoSettings();
 
-    m_appPlayer.SetVideoSettings(vs);
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer)
+      appPlayer->SetVideoSettings(vs);
 
     dbs.Close();
   }

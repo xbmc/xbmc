@@ -13,6 +13,8 @@
 #include "ServiceBroker.h"
 #include "WindowIDs.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "input/Key.h"
 #include "utils/ColorUtils.h"
 
@@ -27,7 +29,9 @@ CGUIVideoControl::~CGUIVideoControl(void) = default;
 void CGUIVideoControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   //! @todo Proper processing which marks when its actually changed. Just mark always for now.
-  if (g_application.GetAppPlayer().IsRenderingGuiLayer())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsRenderingGuiLayer())
     MarkDirtyRegion();
 
   CGUIControl::Process(currentTime, dirtyregions);
@@ -35,9 +39,11 @@ void CGUIVideoControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
 
 void CGUIVideoControl::Render()
 {
-  if (g_application.GetAppPlayer().IsRenderingVideo())
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsRenderingVideo())
   {
-    if (!g_application.GetAppPlayer().IsPausedPlayback())
+    if (!appPlayer->IsPausedPlayback())
       g_application.ResetScreenSaver();
 
     CServiceBroker::GetWinSystem()->GetGfxContext().SetViewWindow(m_posX, m_posY, m_posX + m_width, m_posY + m_height);
@@ -46,7 +52,7 @@ void CGUIVideoControl::Render()
 
     UTILS::COLOR::Color alpha =
         CServiceBroker::GetWinSystem()->GetGfxContext().MergeAlpha(0xFF000000) >> 24;
-    if (g_application.GetAppPlayer().IsRenderingVideoLayer())
+    if (appPlayer->IsRenderingVideoLayer())
     {
       CRect old = CServiceBroker::GetWinSystem()->GetGfxContext().GetScissors();
       CRect region = GetRenderRegion();
@@ -56,7 +62,7 @@ void CGUIVideoControl::Render()
       CServiceBroker::GetWinSystem()->GetGfxContext().SetScissors(old);
     }
     else
-      g_application.GetAppPlayer().Render(false, alpha);
+      appPlayer->Render(false, alpha);
 
     CServiceBroker::GetWinSystem()->GetGfxContext().RemoveTransform();
   }
@@ -65,15 +71,20 @@ void CGUIVideoControl::Render()
 
 void CGUIVideoControl::RenderEx()
 {
-  if (g_application.GetAppPlayer().IsRenderingVideo())
-    g_application.GetAppPlayer().Render(false, 255, false);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsRenderingVideo())
+    appPlayer->Render(false, 255, false);
 
   CGUIControl::RenderEx();
 }
 
 EVENT_RESULT CGUIVideoControl::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
 {
-  if (!g_application.GetAppPlayer().IsPlayingVideo()) return EVENT_RESULT_UNHANDLED;
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (!appPlayer->IsPlayingVideo())
+    return EVENT_RESULT_UNHANDLED;
   if (event.m_id == ACTION_MOUSE_LEFT_CLICK)
   { // switch to fullscreen
     CGUIMessage message(GUI_MSG_FULLSCREEN, GetID(), GetParentID());

@@ -9,7 +9,8 @@
 #include "PlayerController.h"
 
 #include "ServiceBroker.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/VideoRenderers/OverlayRenderer.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -54,13 +55,16 @@ bool CPlayerController::OnAction(const CAction &action)
   const unsigned int MsgTime = 300;
   const unsigned int DisplTime = 2000;
 
-  if (g_application.GetAppPlayer().IsPlayingVideo())
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  if (appPlayer->IsPlayingVideo())
   {
     switch (action.GetID())
     {
       case ACTION_SHOW_SUBTITLES:
       {
-        if (g_application.GetAppPlayer().GetSubtitleCount() == 0)
+        if (appPlayer->GetSubtitleCount() == 0)
         {
           CGUIDialogKaiToast::QueueNotification(
               CGUIDialogKaiToast::Info, g_localizeStrings.Get(287), g_localizeStrings.Get(10005),
@@ -68,14 +72,14 @@ bool CPlayerController::OnAction(const CAction &action)
           return true;
         }
 
-        bool subsOn = !g_application.GetAppPlayer().GetSubtitleVisible();
-        g_application.GetAppPlayer().SetSubtitleVisible(subsOn);
+        bool subsOn = !appPlayer->GetSubtitleVisible();
+        appPlayer->SetSubtitleVisible(subsOn);
         std::string sub;
         if (subsOn)
         {
           std::string lang;
           SubtitleStreamInfo info;
-          g_application.GetAppPlayer().GetSubtitleStreamInfo(CURRENT_STREAM, info);
+          appPlayer->GetSubtitleStreamInfo(CURRENT_STREAM, info);
           if (!g_LangCodeExpander.Lookup(info.language, lang))
             lang = g_localizeStrings.Get(13205); // Unknown
 
@@ -94,35 +98,35 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_NEXT_SUBTITLE:
       case ACTION_CYCLE_SUBTITLE:
       {
-        if (g_application.GetAppPlayer().GetSubtitleCount() == 0)
+        if (appPlayer->GetSubtitleCount() == 0)
           return true;
 
-        int currentSub = g_application.GetAppPlayer().GetSubtitle();
+        int currentSub = appPlayer->GetSubtitle();
         bool currentSubVisible = true;
 
-        if (g_application.GetAppPlayer().GetSubtitleVisible())
+        if (appPlayer->GetSubtitleVisible())
         {
-          if (++currentSub >= g_application.GetAppPlayer().GetSubtitleCount())
+          if (++currentSub >= appPlayer->GetSubtitleCount())
           {
             currentSub = 0;
             if (action.GetID() == ACTION_NEXT_SUBTITLE)
             {
-              g_application.GetAppPlayer().SetSubtitleVisible(false);
+              appPlayer->SetSubtitleVisible(false);
               currentSubVisible = false;
             }
           }
-          g_application.GetAppPlayer().SetSubtitle(currentSub);
+          appPlayer->SetSubtitle(currentSub);
         }
         else if (action.GetID() == ACTION_NEXT_SUBTITLE)
         {
-          g_application.GetAppPlayer().SetSubtitleVisible(true);
+          appPlayer->SetSubtitleVisible(true);
         }
 
         std::string sub, lang;
         if (currentSubVisible)
         {
           SubtitleStreamInfo info;
-          g_application.GetAppPlayer().GetSubtitleStreamInfo(currentSub, info);
+          appPlayer->GetSubtitleStreamInfo(currentSub, info);
           if (!g_LangCodeExpander.Lookup(info.language, lang))
             lang = g_localizeStrings.Get(13205); // Unknown
 
@@ -140,13 +144,13 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_SUBTITLE_DELAY_MIN:
       {
         float videoSubsDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange;
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
         vs.m_SubtitleDelay -= 0.1f;
         if (vs.m_SubtitleDelay < -videoSubsDelayRange)
           vs.m_SubtitleDelay = -videoSubsDelayRange;
-        g_application.GetAppPlayer().SetSubTitleDelay(vs.m_SubtitleDelay);
+        appPlayer->SetSubTitleDelay(vs.m_SubtitleDelay);
 
-        ShowSlider(action.GetID(), 22006, g_application.GetAppPlayer().GetVideoSettings().m_SubtitleDelay,
+        ShowSlider(action.GetID(), 22006, appPlayer->GetVideoSettings().m_SubtitleDelay,
                    -videoSubsDelayRange, 0.1f, videoSubsDelayRange);
         return true;
       }
@@ -154,13 +158,13 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_SUBTITLE_DELAY_PLUS:
       {
         float videoSubsDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange;
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
         vs.m_SubtitleDelay += 0.1f;
         if (vs.m_SubtitleDelay > videoSubsDelayRange)
           vs.m_SubtitleDelay = videoSubsDelayRange;
-        g_application.GetAppPlayer().SetSubTitleDelay(vs.m_SubtitleDelay);
+        appPlayer->SetSubTitleDelay(vs.m_SubtitleDelay);
 
-        ShowSlider(action.GetID(), 22006, g_application.GetAppPlayer().GetVideoSettings().m_SubtitleDelay,
+        ShowSlider(action.GetID(), 22006, appPlayer->GetVideoSettings().m_SubtitleDelay,
                    -videoSubsDelayRange, 0.1f, videoSubsDelayRange);
         return true;
       }
@@ -168,7 +172,7 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_SUBTITLE_DELAY:
       {
         float videoSubsDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange;
-        ShowSlider(action.GetID(), 22006, g_application.GetAppPlayer().GetVideoSettings().m_SubtitleDelay,
+        ShowSlider(action.GetID(), 22006, appPlayer->GetVideoSettings().m_SubtitleDelay,
                    -videoSubsDelayRange, 0.1f, videoSubsDelayRange, true);
         return true;
       }
@@ -176,7 +180,7 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_AUDIO_DELAY:
       {
         float videoAudioDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange;
-        ShowSlider(action.GetID(), 297, g_application.GetAppPlayer().GetVideoSettings().m_AudioDelay,
+        ShowSlider(action.GetID(), 297, appPlayer->GetVideoSettings().m_AudioDelay,
                    -videoAudioDelayRange, 0.025f, videoAudioDelayRange, true);
         return true;
       }
@@ -184,13 +188,13 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_AUDIO_DELAY_MIN:
       {
         float videoAudioDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange;
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
         vs.m_AudioDelay -= 0.025f;
         if (vs.m_AudioDelay < -videoAudioDelayRange)
           vs.m_AudioDelay = -videoAudioDelayRange;
-        g_application.GetAppPlayer().SetAVDelay(vs.m_AudioDelay);
+        appPlayer->SetAVDelay(vs.m_AudioDelay);
 
-        ShowSlider(action.GetID(), 297, g_application.GetAppPlayer().GetVideoSettings().m_AudioDelay,
+        ShowSlider(action.GetID(), 297, appPlayer->GetVideoSettings().m_AudioDelay,
                    -videoAudioDelayRange, 0.025f, videoAudioDelayRange);
         return true;
       }
@@ -198,32 +202,32 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_AUDIO_DELAY_PLUS:
       {
         float videoAudioDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange;
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
         vs.m_AudioDelay += 0.025f;
         if (vs.m_AudioDelay > videoAudioDelayRange)
           vs.m_AudioDelay = videoAudioDelayRange;
-        g_application.GetAppPlayer().SetAVDelay(vs.m_AudioDelay);
+        appPlayer->SetAVDelay(vs.m_AudioDelay);
 
-        ShowSlider(action.GetID(), 297, g_application.GetAppPlayer().GetVideoSettings().m_AudioDelay,
+        ShowSlider(action.GetID(), 297, appPlayer->GetVideoSettings().m_AudioDelay,
                    -videoAudioDelayRange, 0.025f, videoAudioDelayRange);
         return true;
       }
 
       case ACTION_AUDIO_NEXT_LANGUAGE:
       {
-        if (g_application.GetAppPlayer().GetAudioStreamCount() == 1)
+        if (appPlayer->GetAudioStreamCount() == 1)
           return true;
 
-        int currentAudio = g_application.GetAppPlayer().GetAudioStream();
-        int audioStreamCount = g_application.GetAppPlayer().GetAudioStreamCount();
+        int currentAudio = appPlayer->GetAudioStream();
+        int audioStreamCount = appPlayer->GetAudioStreamCount();
 
         if (++currentAudio >= audioStreamCount)
           currentAudio = 0;
-        g_application.GetAppPlayer().SetAudioStream(currentAudio);    // Set the audio stream to the one selected
+        appPlayer->SetAudioStream(currentAudio); // Set the audio stream to the one selected
         std::string aud;
         std::string lan;
         AudioStreamInfo info;
-        g_application.GetAppPlayer().GetAudioStreamInfo(currentAudio, info);
+        appPlayer->GetAudioStreamInfo(currentAudio, info);
         if (!g_LangCodeExpander.Lookup(info.language, lan))
           lan = g_localizeStrings.Get(13205); // Unknown
         if (info.name.empty())
@@ -238,17 +242,17 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_VIDEO_NEXT_STREAM:
       {
-        if (g_application.GetAppPlayer().GetVideoStreamCount() == 1)
+        if (appPlayer->GetVideoStreamCount() == 1)
           return true;
 
-        int currentVideo = g_application.GetAppPlayer().GetVideoStream();
-        int videoStreamCount = g_application.GetAppPlayer().GetVideoStreamCount();
+        int currentVideo = appPlayer->GetVideoStream();
+        int videoStreamCount = appPlayer->GetVideoStreamCount();
 
         if (++currentVideo >= videoStreamCount)
           currentVideo = 0;
-        g_application.GetAppPlayer().SetVideoStream(currentVideo);
+        appPlayer->SetVideoStream(currentVideo);
         VideoStreamInfo info;
-        g_application.GetAppPlayer().GetVideoStreamInfo(currentVideo, info);
+        appPlayer->GetVideoStreamInfo(currentVideo, info);
         std::string caption = g_localizeStrings.Get(38031);
         caption += StringUtils::Format(" ({}/{})", currentVideo + 1, videoStreamCount);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, caption, info.name, DisplTime, false, MsgTime);
@@ -257,84 +261,78 @@ bool CPlayerController::OnAction(const CAction &action)
 
       case ACTION_ZOOM_IN:
       {
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
         vs.m_CustomZoomAmount += 0.01f;
         if (vs.m_CustomZoomAmount > 2.f)
           vs.m_CustomZoomAmount = 2.f;
         vs.m_ViewMode = ViewModeCustom;
-        g_application.GetAppPlayer().SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
-                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
-                                                   vs.m_CustomNonLinStretch);
+        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
+                                     vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
         ShowSlider(action.GetID(), 216, vs.m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
         return true;
       }
 
       case ACTION_ZOOM_OUT:
       {
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
         vs.m_CustomZoomAmount -= 0.01f;
         if (vs.m_CustomZoomAmount < 0.5f)
           vs.m_CustomZoomAmount = 0.5f;
         vs.m_ViewMode = ViewModeCustom;
-        g_application.GetAppPlayer().SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
-                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
-                                                   vs.m_CustomNonLinStretch);
+        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
+                                     vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
         ShowSlider(action.GetID(), 216, vs.m_CustomZoomAmount, 0.5f, 0.1f, 2.0f);
         return true;
       }
 
       case ACTION_INCREASE_PAR:
       {
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
         vs.m_CustomPixelRatio += 0.01f;
         if (vs.m_CustomPixelRatio > 2.f)
           vs.m_CustomPixelRatio = 2.f;
         vs.m_ViewMode = ViewModeCustom;
-        g_application.GetAppPlayer().SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
-                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
-                                                   vs.m_CustomNonLinStretch);
+        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
+                                     vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
         ShowSlider(action.GetID(), 217, vs.m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
         return true;
       }
 
       case ACTION_DECREASE_PAR:
       {
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
         vs.m_CustomPixelRatio -= 0.01f;
         if (vs.m_CustomPixelRatio < 0.5f)
           vs.m_CustomPixelRatio = 0.5f;
         vs.m_ViewMode = ViewModeCustom;
-        g_application.GetAppPlayer().SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
-                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
-                                                   vs.m_CustomNonLinStretch);
+        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
+                                     vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
         ShowSlider(action.GetID(), 217, vs.m_CustomPixelRatio, 0.5f, 0.1f, 2.0f);
         return true;
       }
 
       case ACTION_VSHIFT_UP:
       {
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
         vs.m_CustomVerticalShift -= 0.01f;
         if (vs.m_CustomVerticalShift < -2.0f)
           vs.m_CustomVerticalShift = -2.0f;
         vs.m_ViewMode = ViewModeCustom;
-        g_application.GetAppPlayer().SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
-                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
-                                                   vs.m_CustomNonLinStretch);
+        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
+                                     vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
         ShowSlider(action.GetID(), 225, vs.m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
         return true;
       }
 
       case ACTION_VSHIFT_DOWN:
       {
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
         vs.m_CustomVerticalShift += 0.01f;
         if (vs.m_CustomVerticalShift > 2.0f)
           vs.m_CustomVerticalShift = 2.0f;
         vs.m_ViewMode = ViewModeCustom;
-        g_application.GetAppPlayer().SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount,
-                                                   vs.m_CustomPixelRatio, vs.m_CustomVerticalShift,
-                                                   vs.m_CustomNonLinStretch);
+        appPlayer->SetRenderViewMode(ViewModeCustom, vs.m_CustomZoomAmount, vs.m_CustomPixelRatio,
+                                     vs.m_CustomVerticalShift, vs.m_CustomNonLinStretch);
         ShowSlider(action.GetID(), 225, vs.m_CustomVerticalShift, -2.0f, 0.1f, 2.0f);
         return true;
       }
@@ -347,7 +345,7 @@ bool CPlayerController::OnAction(const CAction &action)
           return true;
 
         RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
 
         int maxPos = resInfo.Overscan.bottom;
         if (subAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
@@ -361,8 +359,8 @@ bool CPlayerController::OnAction(const CAction &action)
             static_cast<int>(m_movingSpeed.GetUpdatedDistance(ACTION_SUBTITLE_VSHIFT_UP));
         if (vs.m_subtitleVerticalPosition < resInfo.Overscan.top)
           vs.m_subtitleVerticalPosition = resInfo.Overscan.top;
-        g_application.GetAppPlayer().SetSubtitleVerticalPosition(vs.m_subtitleVerticalPosition,
-                                                                 action.GetText() == "save");
+        appPlayer->SetSubtitleVerticalPosition(vs.m_subtitleVerticalPosition,
+                                               action.GetText() == "save");
 
         ShowSlider(action.GetID(), 277, static_cast<float>(vs.m_subtitleVerticalPosition),
                    static_cast<float>(resInfo.Overscan.top), 1.0f, static_cast<float>(maxPos));
@@ -377,7 +375,7 @@ bool CPlayerController::OnAction(const CAction &action)
           return true;
 
         RESOLUTION_INFO resInfo = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
 
         int maxPos = resInfo.Overscan.bottom;
         if (subAlign == SUBTITLES::Align::BOTTOM_OUTSIDE)
@@ -396,8 +394,8 @@ bool CPlayerController::OnAction(const CAction &action)
             static_cast<int>(m_movingSpeed.GetUpdatedDistance(ACTION_SUBTITLE_VSHIFT_DOWN));
         if (vs.m_subtitleVerticalPosition > maxPos)
           vs.m_subtitleVerticalPosition = maxPos;
-        g_application.GetAppPlayer().SetSubtitleVerticalPosition(vs.m_subtitleVerticalPosition,
-                                                                 action.GetText() == "save");
+        appPlayer->SetSubtitleVerticalPosition(vs.m_subtitleVerticalPosition,
+                                               action.GetText() == "save");
 
         ShowSlider(action.GetID(), 277, static_cast<float>(vs.m_subtitleVerticalPosition),
                    static_cast<float>(resInfo.Overscan.top), 1.0f, static_cast<float>(maxPos));
@@ -429,7 +427,7 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_VOLAMP_DOWN:
       {
         // Don't allow change with passthrough audio
-        if (g_application.GetAppPlayer().IsPassthrough())
+        if (appPlayer->IsPassthrough())
         {
           CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning,
                                                 g_localizeStrings.Get(660),
@@ -441,7 +439,7 @@ bool CPlayerController::OnAction(const CAction &action)
         float sliderMax = VOLUME_DRC_MAXIMUM / 100.0f;
         float sliderMin = VOLUME_DRC_MINIMUM / 100.0f;
 
-        CVideoSettings vs = g_application.GetAppPlayer().GetVideoSettings();
+        CVideoSettings vs = appPlayer->GetVideoSettings();
         if (action.GetID() == ACTION_VOLAMP_UP)
           vs.m_VolumeAmplification += 1.0f;
         else
@@ -450,7 +448,7 @@ bool CPlayerController::OnAction(const CAction &action)
         vs.m_VolumeAmplification =
           std::max(std::min(vs.m_VolumeAmplification, sliderMax), sliderMin);
 
-        g_application.GetAppPlayer().SetDynamicRangeCompression((long)(vs.m_VolumeAmplification * 100));
+        appPlayer->SetDynamicRangeCompression((long)(vs.m_VolumeAmplification * 100));
 
         ShowSlider(action.GetID(), 660, vs.m_VolumeAmplification, sliderMin, 1.0f, sliderMax);
         return true;
@@ -460,8 +458,7 @@ bool CPlayerController::OnAction(const CAction &action)
       {
         float sliderMax = VOLUME_DRC_MAXIMUM / 100.0f;
         float sliderMin = VOLUME_DRC_MINIMUM / 100.0f;
-        ShowSlider(action.GetID(), 660,
-                   g_application.GetAppPlayer().GetVideoSettings().m_VolumeAmplification,
+        ShowSlider(action.GetID(), 660, appPlayer->GetVideoSettings().m_VolumeAmplification,
                    sliderMin, 1.0f, sliderMax, true);
         return true;
       }
@@ -469,7 +466,7 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_PLAYER_PROGRAM_SELECT:
       {
         std::vector<ProgramInfo> programs;
-        g_application.GetAppPlayer().GetPrograms(programs);
+        appPlayer->GetPrograms(programs);
         CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
         if (dialog)
         {
@@ -487,7 +484,7 @@ bool CPlayerController::OnAction(const CAction &action)
           dialog->Open();
           idx = dialog->GetSelectedItem();
           if (idx > 0)
-            g_application.GetAppPlayer().SetProgram(programs[idx].id);
+            appPlayer->SetProgram(programs[idx].id);
         }
         return true;
       }
@@ -565,19 +562,22 @@ void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
   else
     slider->SetTextValue(CGUIDialogAudioSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
 
-  if (g_application.GetAppPlayer().HasPlayer())
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  if (appPlayer->HasPlayer())
   {
     if (m_sliderAction == ACTION_AUDIO_DELAY)
     {
-      g_application.GetAppPlayer().SetAVDelay(slider->GetFloatValue());
+      appPlayer->SetAVDelay(slider->GetFloatValue());
     }
     else if (m_sliderAction == ACTION_SUBTITLE_DELAY)
     {
-      g_application.GetAppPlayer().SetSubTitleDelay(slider->GetFloatValue());
+      appPlayer->SetSubTitleDelay(slider->GetFloatValue());
     }
     else if (m_sliderAction == ACTION_VOLAMP)
     {
-      g_application.GetAppPlayer().SetDynamicRangeCompression((long)(slider->GetFloatValue() * 100));
+      appPlayer->SetDynamicRangeCompression((long)(slider->GetFloatValue() * 100));
     }
   }
 }

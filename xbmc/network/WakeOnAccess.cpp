@@ -10,7 +10,8 @@
 
 #include "DNSNameCache.h"
 #include "ServiceBroker.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "filesystem/SpecialProtocol.h"
@@ -525,8 +526,9 @@ bool CWakeOnAccess::WakeUpHost(const WakeUpEntry& server)
   {
     CLog::Log(LOGERROR,"WakeOnAccess failed to send. (Is it blocked by firewall?)");
 
-    if (CServiceBroker::GetAppMessenger()->IsProcessThread() ||
-        !g_application.GetAppPlayer().IsPlaying())
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (CServiceBroker::GetAppMessenger()->IsProcessThread() || !appPlayer->IsPlaying())
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, heading, LOCALIZED(13029));
     return false;
   }

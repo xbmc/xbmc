@@ -12,6 +12,8 @@
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -186,12 +188,15 @@ void QueueRecordings(const std::shared_ptr<CFileItem>& item, bool bPlayNext)
 
   // Determine the proper list to queue this element
   PLAYLIST::Id playlistId = player.GetCurrentPlaylist();
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
   if (playlistId == PLAYLIST::TYPE_NONE)
-    playlistId = g_application.GetAppPlayer().GetPreferredPlaylist();
+    playlistId = appPlayer->GetPreferredPlaylist();
   if (playlistId == PLAYLIST::TYPE_NONE)
     playlistId = PLAYLIST::TYPE_VIDEO;
 
-  if (bPlayNext && g_application.GetAppPlayer().IsPlaying())
+  if (bPlayNext && appPlayer && appPlayer->IsPlaying())
     player.Insert(playlistId, queuedItems, player.GetCurrentSong() + 1);
   else
     player.Add(playlistId, queuedItems);

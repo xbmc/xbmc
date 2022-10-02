@@ -10,6 +10,8 @@
 
 #include "ServiceBroker.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -162,7 +164,9 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
            message == "OnScreensaverActivated" && m_bIsReady)
   {
     // Don't put devices to standby if application is currently playing
-    if (!g_application.GetAppPlayer().IsPlaying() && m_bPowerOffScreensaver)
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (!appPlayer->IsPlaying() && m_bPowerOffScreensaver)
     {
       // only power off when we're the active source
       if (m_cecAdapter->IsLibCECActiveSource())
@@ -640,9 +644,13 @@ void CPeripheralCecAdapter::OnTvStandby(void)
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
       break;
     case LOCALISED_ID_STOP:
-      if (g_application.GetAppPlayer().IsPlaying())
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      if (appPlayer->IsPlaying())
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_STOP);
       break;
+    }
     case LOCALISED_ID_IGNORE:
       break;
     default:
@@ -1207,12 +1215,15 @@ void CPeripheralCecAdapter::CecSourceActivated(void* cbParam,
             ? CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(
                   WINDOW_SLIDESHOW)
             : NULL;
-    bool bPlayingAndDeactivated =
-        activated == 0 && ((pSlideShow && pSlideShow->IsPlaying()) ||
-                           !g_application.GetAppPlayer().IsPausedPlayback());
+
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+    bool bPlayingAndDeactivated = activated == 0 && ((pSlideShow && pSlideShow->IsPlaying()) ||
+                                                     !appPlayer->IsPausedPlayback());
     bool bPausedAndActivated =
         activated == 1 && adapter->m_bPlaybackPaused &&
-        ((pSlideShow && pSlideShow->IsPaused()) || g_application.GetAppPlayer().IsPausedPlayback());
+        ((pSlideShow && pSlideShow->IsPaused()) || (appPlayer && appPlayer->IsPausedPlayback()));
     if (bPlayingAndDeactivated)
       adapter->m_bPlaybackPaused = true;
     else if (bPausedAndActivated)

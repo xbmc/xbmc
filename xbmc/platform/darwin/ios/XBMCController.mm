@@ -13,7 +13,8 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "application/AppInboundProtocol.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIControl.h"
 #include "input/Key.h"
@@ -918,12 +919,16 @@ public:
         break;
       case UIEventSubtypeRemoteControlEndSeekingForward:
       case UIEventSubtypeRemoteControlEndSeekingBackward:
+      {
         // restore to normal playback speed.
-        if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
+        const auto& components = CServiceBroker::GetAppComponents();
+        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+        if (appPlayer->IsPlaying() && !appPlayer->IsPaused())
           CServiceBroker::GetAppMessenger()->SendMsg(
               TMSG_GUI_ACTION, WINDOW_INVALID, -1,
               static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
         break;
+      }
       default:
         LOG(@"unhandled subtype: %zd", receivedEvent.subtype);
         break;
@@ -935,7 +940,9 @@ public:
 - (void)enterBackground
 {
   PRINT_SIGNATURE();
-  if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlaying() && !appPlayer->IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
@@ -962,7 +969,9 @@ public:
 {
   // if we were interrupted, already paused here
   // else if user background us or lock screen, only pause video here, audio keep playing.
-  if (g_application.GetAppPlayer().IsPlayingVideo() && !g_application.GetAppPlayer().IsPaused())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlayingVideo() && !appPlayer->IsPaused())
   {
     m_isPlayingBeforeInactive = YES;
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);

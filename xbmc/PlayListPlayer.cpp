@@ -13,6 +13,8 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/PluginDirectory.h"
 #include "filesystem/VideoDatabaseFile.h"
@@ -637,8 +639,10 @@ void CPlayListPlayer::ReShuffle(Id playlistId, int iPosition)
   // so we shuffle starting at two positions below the current item
   else if (playlistId == m_iCurrentPlayList)
   {
-    if ((g_application.GetAppPlayer().IsPlayingAudio() && playlistId == TYPE_MUSIC) ||
-        (g_application.GetAppPlayer().IsPlayingVideo() && playlistId == TYPE_VIDEO))
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if ((appPlayer->IsPlayingAudio() && playlistId == TYPE_MUSIC) ||
+        (appPlayer->IsPlayingVideo() && playlistId == TYPE_VIDEO))
     {
       GetPlaylist(playlistId).Shuffle(m_iCurrentSong + 2);
     }
@@ -778,9 +782,12 @@ void CPlayListPlayer::AnnouncePropertyChanged(Id playlistId,
                                               const std::string& strProperty,
                                               const CVariant& value)
 {
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
   if (strProperty.empty() || value.isNull() ||
-      (playlistId == TYPE_VIDEO && !g_application.GetAppPlayer().IsPlayingVideo()) ||
-      (playlistId == TYPE_MUSIC && !g_application.GetAppPlayer().IsPlayingAudio()))
+      (playlistId == TYPE_VIDEO && !appPlayer->IsPlayingVideo()) ||
+      (playlistId == TYPE_MUSIC && !appPlayer->IsPlayingAudio()))
     return;
 
   CVariant data;
@@ -797,6 +804,9 @@ int PLAYLIST::CPlayListPlayer::GetMessageMask()
 
 void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg)
 {
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
   switch (pMsg->dwMessage)
   {
   case TMSG_PLAYLISTPLAYER_PLAY:
@@ -989,43 +999,42 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     g_application.WakeUpScreenSaverAndDPMS();
 
     // stop playing file
-    if (g_application.GetAppPlayer().IsPlaying())
+    if (appPlayer->IsPlaying())
       g_application.StopPlaying();
   }
   break;
 
   case TMSG_MEDIA_PAUSE:
-    if (g_application.GetAppPlayer().HasPlayer())
+    if (appPlayer->HasPlayer())
     {
       g_application.ResetScreenSaver();
       g_application.WakeUpScreenSaverAndDPMS();
-      g_application.GetAppPlayer().Pause();
+      appPlayer->Pause();
     }
     break;
 
   case TMSG_MEDIA_UNPAUSE:
-    if (g_application.GetAppPlayer().IsPausedPlayback())
+    if (appPlayer->IsPausedPlayback())
     {
       g_application.ResetScreenSaver();
       g_application.WakeUpScreenSaverAndDPMS();
-      g_application.GetAppPlayer().Pause();
+      appPlayer->Pause();
     }
     break;
 
   case TMSG_MEDIA_PAUSE_IF_PLAYING:
-    if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
+    if (appPlayer->IsPlaying() && !appPlayer->IsPaused())
     {
       g_application.ResetScreenSaver();
       g_application.WakeUpScreenSaverAndDPMS();
-      g_application.GetAppPlayer().Pause();
+      appPlayer->Pause();
     }
     break;
 
   case TMSG_MEDIA_SEEK_TIME:
   {
-    CApplicationPlayer& player = g_application.GetAppPlayer();
-    if (player.IsPlaying() || player.IsPaused())
-      player.SeekTime(pMsg->param3);
+    if (appPlayer->IsPlaying() || appPlayer->IsPaused())
+      appPlayer->SeekTime(pMsg->param3);
 
     break;
   }

@@ -9,6 +9,7 @@
 #include "ApplicationVolumeHandling.h"
 
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "dialogs/GUIDialogVolumeBar.h"
@@ -22,11 +23,6 @@
 #include "utils/XMLUtils.h"
 
 #include <tinyxml.h>
-
-CApplicationVolumeHandling::CApplicationVolumeHandling(CApplicationPlayer& appPlayer)
-  : m_appPlayer(appPlayer)
-{
-}
 
 float CApplicationVolumeHandling::GetVolumePercent() const
 {
@@ -56,9 +52,14 @@ void CApplicationVolumeHandling::VolumeChanged()
   const auto announcementMgr = CServiceBroker::GetAnnouncementManager();
   announcementMgr->Announce(ANNOUNCEMENT::Application, "OnVolumeChanged", data);
 
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   // if player has volume control, set it.
-  m_appPlayer.SetVolume(m_volumeLevel);
-  m_appPlayer.SetMute(m_muted);
+  if (appPlayer)
+  {
+    appPlayer->SetVolume(m_volumeLevel);
+    appPlayer->SetMute(m_muted);
+  }
 }
 
 void CApplicationVolumeHandling::ShowVolumeBar(const CAction* action)

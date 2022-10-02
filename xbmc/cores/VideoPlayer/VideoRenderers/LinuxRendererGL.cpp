@@ -17,7 +17,8 @@
 #include "ServiceBroker.h"
 #include "VideoShaders/VideoFilterShaderGL.h"
 #include "VideoShaders/YUV2RGBShaderGL.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/FFmpeg.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
@@ -1075,7 +1076,9 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
   //having non-linear stretch on breaks the alignment
-  if (g_application.GetAppPlayer().IsInMenu())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsInMenu())
     m_pYUVShader->SetNonLinStretch(1.0);
   else
     m_pYUVShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoNonLinStretchRatio));
@@ -1433,7 +1436,9 @@ void CLinuxRendererGL::RenderFromFBO()
 
   //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
   //having non-linear stretch on breaks the alignment
-  if (g_application.GetAppPlayer().IsInMenu())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsInMenu())
     m_pVideoFilterShader->SetNonLinStretch(1.0);
   else
     m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoNonLinStretchRatio));
@@ -1577,7 +1582,9 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
 
   //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
   //having non-linear stretch on breaks the alignment
-  if (g_application.GetAppPlayer().IsInMenu())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsInMenu())
     m_pVideoFilterShader->SetNonLinStretch(1.0);
   else
     m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoNonLinStretchRatio));

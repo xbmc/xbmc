@@ -16,6 +16,8 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -92,8 +94,11 @@ static int PlayOffset(const std::vector<std::string>& params)
   }
   // play the desired offset
   int pos = atol(strPos.c_str());
+
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   // playlist is already playing
-  if (g_application.GetAppPlayer().IsPlaying())
+  if (appPlayer->IsPlaying())
     CServiceBroker::GetPlaylistPlayer().PlayNext(pos);
   // we start playing the 'other' playlist so we need to use play to initialize the player state
   else
@@ -115,15 +120,18 @@ static int PlayerControl(const std::vector<std::string>& params)
   std::string paramlow(params[0]);
   StringUtils::ToLower(paramlow);
 
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
   if (paramlow ==  "play")
   { // play/pause
     // either resume playing, or pause
-    if (g_application.GetAppPlayer().IsPlaying())
+    if (appPlayer->IsPlaying())
     {
-      if (g_application.GetAppPlayer().GetPlaySpeed() != 1)
-        g_application.GetAppPlayer().SetPlaySpeed(1);
+      if (appPlayer->GetPlaySpeed() != 1)
+        appPlayer->SetPlaySpeed(1);
       else
-        g_application.GetAppPlayer().Pause();
+        appPlayer->Pause();
     }
   }
   else if (paramlow == "stop")
@@ -143,13 +151,13 @@ static int PlayerControl(const std::vector<std::string>& params)
     strFrames = params[0].substr(13);
     StringUtils::TrimRight(strFrames, ")");
     float frames = (float) atof(strFrames.c_str());
-    g_application.GetAppPlayer().FrameAdvance(frames);
+    appPlayer->FrameAdvance(frames);
   }
   else if (paramlow =="rewind" || paramlow == "forward")
   {
-    if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
+    if (appPlayer->IsPlaying() && !appPlayer->IsPaused())
     {
-      float playSpeed = g_application.GetAppPlayer().GetPlaySpeed();
+      float playSpeed = appPlayer->GetPlaySpeed();
 
       if (paramlow == "rewind" && playSpeed == 1) // Enables Rewinding
         playSpeed *= -2;
@@ -167,21 +175,20 @@ static int PlayerControl(const std::vector<std::string>& params)
       if (playSpeed > 32 || playSpeed < -32)
         playSpeed = 1;
 
-      g_application.GetAppPlayer().SetPlaySpeed(playSpeed);
+      appPlayer->SetPlaySpeed(playSpeed);
     }
   }
   else if (paramlow =="tempoup" || paramlow == "tempodown")
   {
-    if (g_application.GetAppPlayer().SupportsTempo() &&
-        g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
+    if (appPlayer->SupportsTempo() && appPlayer->IsPlaying() && !appPlayer->IsPaused())
     {
-      float playTempo = g_application.GetAppPlayer().GetPlayTempo();
+      float playTempo = appPlayer->GetPlayTempo();
       if (paramlow == "tempodown")
           playTempo -= 0.1f;
       else if (paramlow == "tempoup")
           playTempo += 0.1f;
 
-      g_application.GetAppPlayer().SetTempo(playTempo);
+      appPlayer->SetTempo(playTempo);
     }
   }
   else if (StringUtils::StartsWithNoCase(params[0], "tempo"))
@@ -193,14 +200,13 @@ static int PlayerControl(const std::vector<std::string>& params)
                 params[0].substr(6));
     else
     {
-      CApplicationPlayer& player = g_application.GetAppPlayer();
-      if (player.SupportsTempo() && player.IsPlaying() && !player.IsPaused())
+      if (appPlayer->SupportsTempo() && appPlayer->IsPlaying() && !appPlayer->IsPaused())
       {
         std::string strTempo = params[0].substr(6);
         StringUtils::TrimRight(strTempo, ")");
         float playTempo = strtof(strTempo.c_str(), nullptr);
 
-        player.SetTempo(playTempo);
+        appPlayer->SetTempo(playTempo);
       }
     }
   }
@@ -214,23 +220,23 @@ static int PlayerControl(const std::vector<std::string>& params)
   }
   else if (paramlow == "bigskipbackward")
   {
-    if (g_application.GetAppPlayer().IsPlaying())
-      g_application.GetAppPlayer().Seek(false, true);
+    if (appPlayer->IsPlaying())
+      appPlayer->Seek(false, true);
   }
   else if (paramlow == "bigskipforward")
   {
-    if (g_application.GetAppPlayer().IsPlaying())
-      g_application.GetAppPlayer().Seek(true, true);
+    if (appPlayer->IsPlaying())
+      appPlayer->Seek(true, true);
   }
   else if (paramlow == "smallskipbackward")
   {
-    if (g_application.GetAppPlayer().IsPlaying())
-      g_application.GetAppPlayer().Seek(false, false);
+    if (appPlayer->IsPlaying())
+      appPlayer->Seek(false, false);
   }
   else if (paramlow == "smallskipforward")
   {
-    if (g_application.GetAppPlayer().IsPlaying())
-      g_application.GetAppPlayer().Seek(true, false);
+    if (appPlayer->IsPlaying())
+      appPlayer->Seek(true, false);
   }
   else if (StringUtils::StartsWithNoCase(params[0], "seekpercentage"))
   {
@@ -249,14 +255,14 @@ static int PlayerControl(const std::vector<std::string>& params)
       if (offsetpercent < 0 || offsetpercent > 100)
         CLog::Log(LOGERROR, "PlayerControl(seekpercentage(n)) argument, {:f}, must be 0-100",
                   offsetpercent);
-      else if (g_application.GetAppPlayer().IsPlaying())
+      else if (appPlayer->IsPlaying())
         g_application.SeekPercentage(offsetpercent);
     }
   }
   else if (paramlow == "showvideomenu")
   {
-    if( g_application.GetAppPlayer().IsPlaying() )
-      g_application.GetAppPlayer().OnAction(CAction(ACTION_SHOW_VIDEOMENU));
+    if (appPlayer->IsPlaying())
+      appPlayer->OnAction(CAction(ACTION_SHOW_VIDEOMENU));
   }
   else if (StringUtils::StartsWithNoCase(params[0], "partymode"))
   {
@@ -556,8 +562,10 @@ static int PlayWith(const std::vector<std::string>& params)
  */
 static int Seek(const std::vector<std::string>& params)
 {
-  if (g_application.GetAppPlayer().IsPlaying())
-    g_application.GetAppPlayer().GetSeekHandler().SeekSeconds(atoi(params[0].c_str()));
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlaying())
+    appPlayer->GetSeekHandler().SeekSeconds(atoi(params[0].c_str()));
 
   return 0;
 }

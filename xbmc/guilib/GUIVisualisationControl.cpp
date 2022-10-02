@@ -16,6 +16,8 @@
 #include "addons/AddonManager.h"
 #include "addons/Visualization.h"
 #include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAE.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
@@ -140,7 +142,9 @@ bool CGUIVisualisationControl::OnAction(const CAction& action)
 
 void CGUIVisualisationControl::Process(unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
-  if (g_application.GetAppPlayer().IsPlayingAudio())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlayingAudio())
   {
     if (m_bInvalidated)
       FreeResources(true);

@@ -12,7 +12,6 @@
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
 
-class CApplicationPlayer;
 class CApplicationPowerHandling;
 class CApplicationVolumeHandling;
 class CApplicationSkinHandling;
@@ -26,8 +25,7 @@ class CApplicationSettingsHandling : public ISettingCallback,
                                      public ISubSettings
 {
 public:
-  CApplicationSettingsHandling(CApplicationPlayer& appPlayer,
-                               CApplicationPowerHandling& powerHandling,
+  CApplicationSettingsHandling(CApplicationPowerHandling& powerHandling,
                                CApplicationSkinHandling& skinHandling,
                                CApplicationVolumeHandling& volumeHandling);
 
@@ -43,7 +41,6 @@ protected:
                        const char* oldSettingId,
                        const TiXmlNode* oldSettingNode) override;
 
-  CApplicationPlayer& m_appPlayerRef;
   CApplicationPowerHandling& m_powerHandling;
   CApplicationSkinHandling& m_skinHandling;
   CApplicationVolumeHandling& m_volumeHandling;

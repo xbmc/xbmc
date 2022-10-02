@@ -17,7 +17,8 @@
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -509,7 +510,9 @@ std::string CStereoscopicsManager::GetVideoStereoMode() const
 {
   std::string playerMode;
 
-  if (g_application.GetAppPlayer().IsPlaying())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlaying())
     playerMode = CServiceBroker::GetDataCacheCore().GetVideoStereoMode();
 
   return playerMode;

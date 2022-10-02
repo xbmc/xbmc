@@ -10,7 +10,8 @@
 
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cdioSupport.h"
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
@@ -67,7 +68,9 @@ void CDetectDVDMedia::Process()
 
   while (( !m_bStop ))
   {
-    if (g_application.GetAppPlayer().IsPlayingVideo())
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer->IsPlayingVideo())
     {
       CThread::Sleep(10000ms);
     }
