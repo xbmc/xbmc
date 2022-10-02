@@ -223,6 +223,7 @@ bool CDVDAudioCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         m_codec = std::shared_ptr<CJNIMediaCodec>(new CJNIMediaCodec(CJNIMediaCodec::createByCodecName(codecName)));
         if (xbmc_jnienv()->ExceptionCheck())
         {
+          xbmc_jnienv()->ExceptionDescribe();
           xbmc_jnienv()->ExceptionClear();
           m_codec = NULL;
           continue;
@@ -278,6 +279,7 @@ PROCESSDECODER:
       m_codec = std::shared_ptr<CJNIMediaCodec>(new CJNIMediaCodec(CJNIMediaCodec::createDecoderByType(m_mime)));
       if (xbmc_jnienv()->ExceptionCheck())
       {
+        xbmc_jnienv()->ExceptionDescribe();
         xbmc_jnienv()->ExceptionClear();
         CLog::Log(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::Open Failed creating raw decoder");
         return false;
@@ -338,7 +340,10 @@ void CDVDAudioCodecAndroidMediaCodec::Dispose()
     m_codec->release();
     m_codec.reset();
     if (xbmc_jnienv()->ExceptionCheck())
+    {
+      xbmc_jnienv()->ExceptionDescribe();
       xbmc_jnienv()->ExceptionClear();
+    }
   }
 
   if (m_crypto)
@@ -486,6 +491,7 @@ void CDVDAudioCodecAndroidMediaCodec::Reset()
     if (xbmc_jnienv()->ExceptionCheck())
     {
       CLog::Log(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::Reset ExceptionCheck");
+      xbmc_jnienv()->ExceptionDescribe();
       xbmc_jnienv()->ExceptionClear();
     }
   }
@@ -762,5 +768,8 @@ void CDVDAudioCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* med
 
   // clear any jni exceptions
   if (xbmc_jnienv()->ExceptionCheck())
+  {
+    xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
+  }
 }
