@@ -141,7 +141,7 @@ void CPVREpgInfoTag::SetChannelData(const std::shared_ptr<CPVREpgChannelData>& d
     m_channelData.reset(new CPVREpgChannelData);
 }
 
-bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
+bool CPVREpgInfoTag::operator==(const CPVREpgInfoTag& right) const
 {
   if (this == &right)
     return true;
@@ -153,7 +153,7 @@ bool CPVREpgInfoTag::operator ==(const CPVREpgInfoTag& right) const
           m_channelData->ClientId() == right.m_channelData->ClientId());
 }
 
-bool CPVREpgInfoTag::operator !=(const CPVREpgInfoTag& right) const
+bool CPVREpgInfoTag::operator!=(const CPVREpgInfoTag& right) const
 {
   if (this == &right)
     return false;
@@ -370,12 +370,16 @@ const std::string CPVREpgInfoTag::GetCastLabel() const
 
 const std::string CPVREpgInfoTag::GetDirectorsLabel() const
 {
-  return StringUtils::Join(m_directors, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+  return StringUtils::Join(
+      m_directors,
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
 }
 
 const std::string CPVREpgInfoTag::GetWritersLabel() const
 {
-  return StringUtils::Join(m_writers, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
+  return StringUtils::Join(
+      m_writers,
+      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoItemSeparator);
 }
 
 const std::string CPVREpgInfoTag::GetGenresLabel() const
@@ -569,7 +573,8 @@ std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
   std::vector<PVR_EDL_ENTRY> edls;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
+  const std::shared_ptr<CPVRClient> client =
+      CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
 
   if (client && client->GetClientCapabilities().SupportsEpgTagEdl())
     client->GetEpgTagEdl(shared_from_this(), edls);
@@ -593,7 +598,8 @@ bool CPVREpgInfoTag::IsRecordable() const
   bool bIsRecordable = false;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
+  const std::shared_ptr<CPVRClient> client =
+      CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
   if (!client || (client->IsRecordable(shared_from_this(), bIsRecordable) != PVR_ERROR_NO_ERROR))
   {
     // event end time based fallback
@@ -607,7 +613,8 @@ bool CPVREpgInfoTag::IsPlayable() const
   bool bIsPlayable = false;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
+  const std::shared_ptr<CPVRClient> client =
+      CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
   if (!client || (client->IsPlayable(shared_from_this(), bIsPlayable) != PVR_ERROR_NO_ERROR))
   {
     // fallback
@@ -618,7 +625,8 @@ bool CPVREpgInfoTag::IsPlayable() const
 
 bool CPVREpgInfoTag::IsSeries() const
 {
-  if ((m_iFlags & EPG_TAG_FLAG_IS_SERIES) > 0 || SeriesNumber() >= 0 || EpisodeNumber() >= 0 || EpisodePart() >= 0)
+  if ((m_iFlags & EPG_TAG_FLAG_IS_SERIES) > 0 || SeriesNumber() >= 0 || EpisodeNumber() >= 0 ||
+      EpisodePart() >= 0)
     return true;
   else
     return false;
