@@ -141,6 +141,12 @@ namespace PVR
     int UniqueChannelID() const;
 
     /*!
+     * @brief Get the path for the icon of the channel associated with this event.
+     * @return The channel icon path.
+     */
+    std::string ChannelIconPath() const;
+
+    /*!
      * @brief Get the event's start time.
      * @return The start time in UTC.
      */
