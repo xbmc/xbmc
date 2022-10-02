@@ -8,6 +8,7 @@
 
 #include "PlayListM3U.h"
 
+#include "FileItem.h"
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"

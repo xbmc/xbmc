@@ -8,9 +8,13 @@
 
 #pragma once
 
-#include "Directory.h"
-#include "FileItem.h"
+#include "IDirectory.h"
 #include "URL.h"
+
+#include <memory>
+
+class CFileItem;
+class CFileItemList;
 
 typedef struct bluray BLURAY;
 typedef struct bd_title_info BLURAY_TITLE_INFO;
@@ -18,7 +22,7 @@ typedef struct bd_title_info BLURAY_TITLE_INFO;
 namespace XFILE
 {
 
-class CBlurayDirectory: public XFILE::IDirectory
+class CBlurayDirectory : public IDirectory
 {
 public:
   CBlurayDirectory() = default;
@@ -41,7 +45,7 @@ private:
   void         GetRoot  (CFileItemList &items);
   void         GetTitles(bool main, CFileItemList &items);
   std::vector<BLURAY_TITLE_INFO*> GetUserPlaylists();
-  CFileItemPtr GetTitle(const BLURAY_TITLE_INFO* title, const std::string& label);
+  std::shared_ptr<CFileItem> GetTitle(const BLURAY_TITLE_INFO* title, const std::string& label);
   CURL         GetUnderlyingCURL(const CURL& url);
   std::string  HexToString(const uint8_t * buf, int count);
   CURL          m_url;

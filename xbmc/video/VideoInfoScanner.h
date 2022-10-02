@@ -11,6 +11,7 @@
 #include "InfoScanner.h"
 #include "VideoDatabase.h"
 #include "addons/Scraper.h"
+#include "guilib/GUIListItem.h"
 
 #include <set>
 #include <string>

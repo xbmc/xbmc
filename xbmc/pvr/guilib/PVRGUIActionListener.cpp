@@ -8,6 +8,7 @@
 
 #include "PVRGUIActionListener.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "application/ApplicationActionListeners.h"

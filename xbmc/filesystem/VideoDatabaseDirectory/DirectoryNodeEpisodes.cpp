@@ -8,6 +8,7 @@
 
 #include "DirectoryNodeEpisodes.h"
 
+#include "FileItem.h"
 #include "QueryParams.h"
 #include "video/VideoDatabase.h"
 

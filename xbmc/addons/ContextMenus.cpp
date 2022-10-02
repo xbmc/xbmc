@@ -9,6 +9,7 @@
 #include "ContextMenus.h"
 
 #include "AddonManager.h"
+#include "FileItem.h"
 #include "Repository.h"
 #include "RepositoryUpdater.h"
 #include "ServiceBroker.h"
@@ -20,6 +21,11 @@ namespace CONTEXTMENU
 
 using namespace ADDON;
 
+bool CAddonInfo::IsVisible(const CFileItem& item) const
+{
+  return item.HasAddonInfo();
+}
+
 bool CAddonSettings::IsVisible(const CFileItem& item) const
 {
   AddonPtr addon;
@@ -29,7 +35,7 @@ bool CAddonSettings::IsVisible(const CFileItem& item) const
          addon->CanHaveAddonOrInstanceSettings();
 }
 
-bool CAddonSettings::Execute(const CFileItemPtr& item) const
+bool CAddonSettings::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   AddonPtr addon;
   return CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), addon, ADDON_UNKNOWN,
@@ -42,7 +48,7 @@ bool CCheckForUpdates::IsVisible(const CFileItem& item) const
   return item.HasAddonInfo() && item.GetAddonInfo()->Type() == ADDON::ADDON_REPOSITORY;
 }
 
-bool CCheckForUpdates::Execute(const CFileItemPtr& item) const
+bool CCheckForUpdates::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   AddonPtr addon;
   if (item->HasAddonInfo() &&
@@ -63,7 +69,7 @@ bool CEnableAddon::IsVisible(const CFileItem& item) const
       CServiceBroker::GetAddonMgr().CanAddonBeEnabled(item.GetAddonInfo()->ID());
 }
 
-bool CEnableAddon::Execute(const CFileItemPtr& item) const
+bool CEnableAddon::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   // Check user want to enable if lifecycle not normal
   if (!ADDON::GUI::CHelpers::DialogAddonLifecycleUseAsk(item->GetAddonInfo()))
@@ -79,7 +85,7 @@ bool CDisableAddon::IsVisible(const CFileItem& item) const
       CServiceBroker::GetAddonMgr().CanAddonBeDisabled(item.GetAddonInfo()->ID());
 }
 
-bool CDisableAddon::Execute(const CFileItemPtr& item) const
+bool CDisableAddon::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   return CServiceBroker::GetAddonMgr().DisableAddon(item->GetAddonInfo()->ID(),
                                                     AddonDisabledReason::USER);

@@ -8,6 +8,7 @@
 
 #include "PVRManager.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"

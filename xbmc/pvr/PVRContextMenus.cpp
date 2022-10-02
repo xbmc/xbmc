@@ -9,6 +9,7 @@
 #include "PVRContextMenus.h"
 
 #include "ContextMenuItem.h"
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"

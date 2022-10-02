@@ -9,7 +9,6 @@
 #pragma once
 
 #include "AudioDecoder.h"
-#include "FileItem.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/IAudioCallback.h"
 #include "cores/IPlayer.h"
@@ -82,7 +81,7 @@ protected:
 private:
   struct StreamInfo
   {
-    CFileItem m_fileItem;
+    std::unique_ptr<CFileItem> m_fileItem;
     std::unique_ptr<CFileItem> m_nextFileItem;
     CAudioDecoder m_decoder;             /* the stream decoder */
     int64_t m_startOffset;               /* the stream start offset */

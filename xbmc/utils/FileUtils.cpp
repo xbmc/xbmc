@@ -46,7 +46,7 @@ bool CFileUtils::DeleteItem(const std::string &strPath)
   return DeleteItem(item);
 }
 
-bool CFileUtils::DeleteItem(const CFileItemPtr &item)
+bool CFileUtils::DeleteItem(const std::shared_ptr<CFileItem>& item)
 {
   if (!item || item->IsParentFolder())
     return false;

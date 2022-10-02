@@ -8,8 +8,10 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "filesystem/IDirectory.h"
+
+class CFileItemList;
+
 namespace XFILE
 {
 

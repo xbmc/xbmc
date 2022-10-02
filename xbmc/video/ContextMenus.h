@@ -10,6 +10,7 @@
 
 #include "ContextMenuItem.h"
 #include "VideoLibraryQueue.h"
+#include "media/MediaType.h"
 
 namespace CONTEXTMENU
 {

@@ -8,6 +8,7 @@
 
 #include "VideoLibrary.h"
 
+#include "FileItem.h"
 #include "PVROperations.h"
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
@@ -1004,7 +1005,10 @@ JSONRPC_STATUS CVideoLibrary::Clean(const std::string &method, ITransportLayer *
   return ACK;
 }
 
-bool CVideoLibrary::FillFileItem(const std::string &strFilename, CFileItemPtr &item, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
+bool CVideoLibrary::FillFileItem(
+    const std::string& strFilename,
+    std::shared_ptr<CFileItem>& item,
+    const CVariant& parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
   CVideoDatabase videodatabase;
   if (strFilename.empty())

@@ -8,10 +8,12 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "video/jobs/VideoLibraryProgressJob.h"
 
+#include <memory>
 #include <string>
+
+class CFileItem;
 
 /*!
  \brief Video library job implementation for refreshing a single item.
@@ -28,7 +30,11 @@ public:
    \param[in] ignoreNfo Whether or not to ignore local NFO files
    \param[in] searchTitle Title to use for the search (instead of determining it from the item's filename/path)
   */
-  CVideoLibraryRefreshingJob(CFileItemPtr item, bool forceRefresh, bool refreshAll, bool ignoreNfo = false, const std::string& searchTitle = "");
+  CVideoLibraryRefreshingJob(std::shared_ptr<CFileItem> item,
+                             bool forceRefresh,
+                             bool refreshAll,
+                             bool ignoreNfo = false,
+                             const std::string& searchTitle = "");
 
   ~CVideoLibraryRefreshingJob() override;
 
@@ -41,7 +47,7 @@ protected:
   bool Work(CVideoDatabase &db) override;
 
 private:
-  CFileItemPtr m_item;
+  std::shared_ptr<CFileItem> m_item;
   bool m_forceRefresh;
   bool m_refreshAll;
   bool m_ignoreNfo;

@@ -8,12 +8,17 @@
 
 #include "JSONRPC.h"
 
+#include "FileItem.h"
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "ServiceDescription.h"
 #include "TextureDatabase.h"
 #include "addons/Addon.h"
 #include "addons/IAddon.h"
 #include "dbwrappers/DatabaseQuery.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIMessage.h"
+#include "guilib/GUIWindowManager.h"
 #include "input/WindowTranslator.h"
 #include "input/actions/ActionTranslator.h"
 #include "interfaces/AnnouncementManager.h"
@@ -361,4 +366,23 @@ inline void CJSONRPC::BuildResponse(const CVariant& request, JSONRPC_STATUS code
       response["error"]["message"] = "Internal error.";
       break;
   }
+}
+
+void CJSONRPCUtils::NotifyItemUpdated()
+{
+  CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE,
+                      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow());
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
+}
+
+void CJSONRPCUtils::NotifyItemUpdated(const CVideoInfoTag& info,
+                                      const std::map<std::string, std::string>& artwork)
+{
+  CFileItemPtr msgItem(new CFileItem(info));
+  if (!artwork.empty())
+    msgItem->SetArt(artwork);
+  CGUIMessage message(GUI_MSG_NOTIFY_ALL,
+                      CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0,
+                      GUI_MSG_UPDATE_ITEM, 0, msgItem);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
 }

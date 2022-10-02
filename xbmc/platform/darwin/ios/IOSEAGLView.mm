@@ -8,6 +8,7 @@
 
 #import "IOSEAGLView.h"
 
+#include "FileItem.h"
 #import "IOSScreenManager.h"
 #include "ServiceBroker.h"
 #include "Util.h"

@@ -25,35 +25,37 @@ namespace ADDON
 
 namespace PVR
 {
-  class CPVRChannelGroupInternal;
-  class CPVRChannelGroup;
-  class CPVRChannelGroups;
-  class CPVRProvidersContainer;
-  class CPVRClient;
-  class CPVREpg;
-  class CPVRRecordings;
-  class CPVRTimerType;
-  class CPVRTimersContainer;
+class CPVRChannel;
+class CPVRChannelGroupInternal;
+class CPVRChannelGroup;
+class CPVRChannelGroupMember;
+class CPVRChannelGroups;
+class CPVRProvidersContainer;
+class CPVRClient;
+class CPVREpg;
+class CPVRRecordings;
+class CPVRTimerType;
+class CPVRTimersContainer;
 
-  typedef std::map<int, std::shared_ptr<CPVRClient>> CPVRClientMap;
+typedef std::map<int, std::shared_ptr<CPVRClient>> CPVRClientMap;
 
-  /**
+/**
    * Holds generic data about a backend (number of channels etc.)
    */
-  struct SBackend
-  {
-    std::string name;
-    std::string version;
-    std::string host;
-    int numTimers = 0;
-    int numRecordings = 0;
-    int numDeletedRecordings = 0;
-    int numProviders = 0;
-    int numChannelGroups = 0;
-    int numChannels = 0;
-    uint64_t diskUsed = 0;
-    uint64_t diskTotal = 0;
-  };
+struct SBackend
+{
+  std::string name;
+  std::string version;
+  std::string host;
+  int numTimers = 0;
+  int numRecordings = 0;
+  int numDeletedRecordings = 0;
+  int numProviders = 0;
+  int numChannelGroups = 0;
+  int numChannels = 0;
+  uint64_t diskUsed = 0;
+  uint64_t diskTotal = 0;
+};
 
   class CPVRClients : public ADDON::IAddonMgrCallback
   {

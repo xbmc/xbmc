@@ -8,13 +8,14 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "threads/CriticalSection.h"
 #include "utils/JobManager.h"
 
 #include <map>
+#include <memory>
 #include <set>
 
+class CFileItem;
 class CGUIDialogProgressBarHandle;
 class CVideoLibraryJob;
 
@@ -84,7 +85,11 @@ public:
    \param[in] refreshAll Whether to refresh all sub-items (in case of a tvshow)
    \param[in] searchTitle Title to use for the search (instead of determining it from the item's filename/path)
    */
-  void RefreshItem(CFileItemPtr item, bool ignoreNfo = false, bool forceRefresh = true, bool refreshAll = false, const std::string& searchTitle = "");
+  void RefreshItem(std::shared_ptr<CFileItem> item,
+                   bool ignoreNfo = false,
+                   bool forceRefresh = true,
+                   bool refreshAll = false,
+                   const std::string& searchTitle = "");
 
   /*!
    \brief Refreshes the details of the given item with a modal dialog.
@@ -94,7 +99,9 @@ public:
    \param[in] refreshAll Whether to refresh all sub-items (in case of a tvshow)
    \return True if the item has been successfully refreshed, false otherwise.
   */
-  bool RefreshItemModal(CFileItemPtr item, bool forceRefresh = true, bool refreshAll = false);
+  bool RefreshItemModal(std::shared_ptr<CFileItem> item,
+                        bool forceRefresh = true,
+                        bool refreshAll = false);
 
   /*!
    \brief Queue a watched status update job.
@@ -102,14 +109,14 @@ public:
    \param[in] item Item to update watched status for
    \param[in] watched New watched status
    */
-  void MarkAsWatched(const CFileItemPtr &item, bool watched);
+  void MarkAsWatched(const std::shared_ptr<CFileItem>& item, bool watched);
 
   /*!
    \brief Queue a reset resume point job.
 
    \param[in] item Item to reset the resume point for
    */
-  void ResetResumePoint(const CFileItemPtr& item);
+  void ResetResumePoint(const std::shared_ptr<CFileItem>& item);
 
   /*!
    \brief Adds the given job to the queue.

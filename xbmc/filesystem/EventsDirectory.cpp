@@ -9,6 +9,7 @@
 
 #include "EventsDirectory.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "events/EventLog.h"
@@ -52,7 +53,8 @@ bool CEventsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   return true;
 }
 
-CFileItemPtr CEventsDirectory::EventToFileItem(const EventPtr& eventItem)
+std::shared_ptr<CFileItem> CEventsDirectory::EventToFileItem(
+    const std::shared_ptr<const IEvent>& eventItem)
 {
   if (!eventItem)
     return CFileItemPtr();

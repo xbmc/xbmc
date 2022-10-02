@@ -8,6 +8,7 @@
 
 #include "ApplicationSkinHandling.h"
 
+#include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "GUILargeTextureManager.h"
 #include "GUIUserMessages.h"

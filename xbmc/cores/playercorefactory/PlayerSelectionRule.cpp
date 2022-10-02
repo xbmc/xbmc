@@ -8,6 +8,7 @@
 
 #include "PlayerSelectionRule.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "settings/Settings.h"

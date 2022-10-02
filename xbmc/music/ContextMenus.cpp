@@ -8,6 +8,7 @@
 
 #include "ContextMenus.h"
 
+#include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "tags/MusicInfoTag.h"

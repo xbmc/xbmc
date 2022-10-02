@@ -8,6 +8,7 @@
 
 #include "WindowTranslator.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"

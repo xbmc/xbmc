@@ -8,12 +8,14 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "XBDateTime.h"
 #include "utils/ScraperUrl.h"
 
+#include <memory>
 #include <string>
 #include <vector>
+
+class CFileItem;
 
 // single episode information
 namespace VIDEO
@@ -28,7 +30,7 @@ namespace VIDEO
     std::string strTitle;
     CDateTime   cDate;
     CScraperUrl cScraperUrl;
-    CFileItemPtr item;
+    std::shared_ptr<CFileItem> item;
     EPISODE(int Season = -1, int Episode = -1, int Subepisode = 0, bool Folder = false)
     {
       iSeason     = Season;

@@ -43,7 +43,12 @@ using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
 
-bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, const CFileItemPtr &item, CVariant &result, bool &fetchedArt, CThumbLoader *thumbLoader /* = NULL */)
+bool CFileItemHandler::GetField(const std::string& field,
+                                const CVariant& info,
+                                const std::shared_ptr<CFileItem>& item,
+                                CVariant& result,
+                                bool& fetchedArt,
+                                CThumbLoader* thumbLoader /* = NULL */)
 {
   if (result.isMember(field) && !result[field].empty())
     return true;
@@ -254,7 +259,11 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
   return false;
 }
 
-void CFileItemHandler::FillDetails(const ISerializable *info, const CFileItemPtr &item, std::set<std::string> &fields, CVariant &result, CThumbLoader *thumbLoader /* = NULL */)
+void CFileItemHandler::FillDetails(const ISerializable* info,
+                                   const std::shared_ptr<CFileItem>& item,
+                                   std::set<std::string>& fields,
+                                   CVariant& result,
+                                   CThumbLoader* thumbLoader /* = NULL */)
 {
   if (info == NULL || fields.empty())
     return;
@@ -325,7 +334,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
 void CFileItemHandler::HandleFileItem(const char* ID,
                                       bool allowFile,
                                       const char* resultname,
-                                      const CFileItemPtr& item,
+                                      const std::shared_ptr<CFileItem>& item,
                                       const CVariant& parameterObject,
                                       const CVariant& validFields,
                                       CVariant& result,
@@ -346,7 +355,7 @@ void CFileItemHandler::HandleFileItem(const char* ID,
 void CFileItemHandler::HandleFileItem(const char* ID,
                                       bool allowFile,
                                       const char* resultname,
-                                      const CFileItemPtr& item,
+                                      const std::shared_ptr<CFileItem>& item,
                                       const CVariant& parameterObject,
                                       const std::set<std::string>& validFields,
                                       CVariant& result,
