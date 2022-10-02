@@ -14,6 +14,7 @@
 #include "HDRStatus.h"
 #include "LangInfo.h"
 #include "PlayListPlayer.h"
+#include "ServiceManager.h"
 #include "URL.h"
 #include "Util.h"
 #include "addons/AddonInstaller.h"
