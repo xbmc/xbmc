@@ -10,8 +10,8 @@
 
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIAction.h"
 #include "guilib/GUIComponent.h"
-#include "interfaces/builtins/Builtins.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -54,14 +54,7 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
     return;
   }
 
-  INFO::InfoPtr startInfo{nullptr};
-  INFO::InfoPtr resetInfo{nullptr};
-  INFO::InfoPtr stopInfo{nullptr};
   std::string timerName = node->FirstChild("name")->FirstChild()->Value();
-  std::string startAction;
-  std::string stopAction;
-  bool resetOnStart{false};
-
   if (m_timers.count(timerName) > 0)
   {
     CLog::LogF(LOGWARNING,
@@ -70,6 +63,9 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
     return;
   }
 
+  // timer start
+  INFO::InfoPtr startInfo{nullptr};
+  bool resetOnStart{false};
   if (node->FirstChild("start") && node->FirstChild("start")->FirstChild() &&
       !node->FirstChild("start")->FirstChild()->ValueStr().empty())
   {
@@ -82,13 +78,16 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
     }
   }
 
+  // timer reset
+  INFO::InfoPtr resetInfo{nullptr};
   if (node->FirstChild("reset") && node->FirstChild("reset")->FirstChild() &&
       !node->FirstChild("reset")->FirstChild()->ValueStr().empty())
   {
     resetInfo = CServiceBroker::GetGUI()->GetInfoManager().Register(
         node->FirstChild("reset")->FirstChild()->ValueStr());
   }
-
+  // timer stop
+  INFO::InfoPtr stopInfo{nullptr};
   if (node->FirstChild("stop") && node->FirstChild("stop")->FirstChild() &&
       !node->FirstChild("stop")->FirstChild()->ValueStr().empty())
   {
@@ -96,38 +95,42 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
         node->FirstChild("stop")->FirstChild()->ValueStr());
   }
 
-  if (node->FirstChild("onstart") && node->FirstChild("onstart")->FirstChild() &&
-      !node->FirstChild("onstart")->FirstChild()->ValueStr().empty())
+  // process onstart actions
+  CGUIAction startActions;
+  startActions.EnableSendThreadMessageMode();
+  const TiXmlElement* onStartElement = node->FirstChildElement("onstart");
+  while (onStartElement)
   {
-    if (!CBuiltins::GetInstance().HasCommand(node->FirstChild("onstart")->FirstChild()->ValueStr()))
+    if (onStartElement->FirstChild())
     {
-      CLog::LogF(LOGERROR,
-                 "Unknown onstart builtin action {} for timer {}, the action will be ignored",
-                 node->FirstChild("onstart")->FirstChild()->ValueStr(), timerName);
+      const std::string conditionalActionAttribute =
+          onStartElement->Attribute("condition") != nullptr ? onStartElement->Attribute("condition")
+                                                            : "";
+      startActions.Append(CGUIAction::CExecutableAction{conditionalActionAttribute,
+                                                        onStartElement->FirstChild()->Value()});
     }
-    else
-    {
-      startAction = node->FirstChild("onstart")->FirstChild()->ValueStr();
-    }
+    onStartElement = onStartElement->NextSiblingElement("onstart");
   }
 
-  if (node->FirstChild("onstop") && node->FirstChild("onstop")->FirstChild() &&
-      !node->FirstChild("onstop")->FirstChild()->ValueStr().empty())
+  // process onstop actions
+  CGUIAction stopActions;
+  stopActions.EnableSendThreadMessageMode();
+  const TiXmlElement* onStopElement = node->FirstChildElement("onstop");
+  while (onStopElement)
   {
-    if (!CBuiltins::GetInstance().HasCommand(node->FirstChild("onstop")->FirstChild()->ValueStr()))
+    if (onStopElement->FirstChild())
     {
-      CLog::LogF(LOGERROR,
-                 "Unknown onstop builtin action {} for timer {}, the action will be ignored",
-                 node->FirstChild("onstop")->FirstChild()->ValueStr(), timerName);
+      const std::string conditionalActionAttribute =
+          onStopElement->Attribute("condition") != nullptr ? onStopElement->Attribute("condition")
+                                                           : "";
+      stopActions.Append(CGUIAction::CExecutableAction{conditionalActionAttribute,
+                                                       onStopElement->FirstChild()->Value()});
     }
-    else
-    {
-      stopAction = node->FirstChild("onstop")->FirstChild()->ValueStr();
-    }
+    onStopElement = onStopElement->NextSiblingElement("onstop");
   }
 
-  m_timers[timerName] = std::make_unique<CSkinTimer>(
-      CSkinTimer(timerName, startInfo, resetInfo, stopInfo, startAction, stopAction, resetOnStart));
+  m_timers[timerName] = std::make_unique<CSkinTimer>(CSkinTimer(
+      timerName, startInfo, resetInfo, stopInfo, startActions, stopActions, resetOnStart));
 }
 
 bool CSkinTimerManager::TimerIsRunning(const std::string& timer) const
