@@ -9,6 +9,7 @@
 #include "TestBasicEnvironment.h"
 
 #include "ServiceBroker.h"
+#include "ServiceManager.h"
 #include "TestUtils.h"
 #include "application/AppEnvironment.h"
 #include "application/AppParams.h"

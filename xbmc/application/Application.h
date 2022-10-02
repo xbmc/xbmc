@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "ServiceManager.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationEnums.h"
 #include "application/ApplicationPlayerCallback.h"
@@ -17,13 +16,11 @@
 #include "application/ApplicationSkinHandling.h"
 #include "application/ApplicationStackHelper.h"
 #include "application/ApplicationVolumeHandling.h"
-#include "cores/IPlayerCallback.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "guilib/IWindowManagerCallback.h"
 #include "messaging/IMessageTarget.h"
 #include "playlists/PlayListTypes.h"
 #include "threads/SystemClock.h"
-#include "threads/Thread.h"
 #include "utils/GlobalsHandling.h"
 #include "utils/Stopwatch.h"
 #include "windowing/Resolution.h"
@@ -37,16 +34,18 @@
 #include <vector>
 
 class CAction;
+class CAppInboundProtocol;
+class CBookmark;
 class CFileItem;
 class CFileItemList;
+class CGUIComponent;
+class CInertialScrollingHandler;
 class CKey;
 class CSeekHandler;
-class CInertialScrollingHandler;
-class CSplash;
-class CBookmark;
-class CGUIComponent;
-class CAppInboundProtocol;
+class CServiceManager;
 class CSettingsComponent;
+class CSplash;
+class CWinSystemBase;
 
 namespace ADDON
 {

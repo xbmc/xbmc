@@ -9,14 +9,12 @@
 #include "ApplicationPlayer.h"
 
 #include "ServiceBroker.h"
-#include "application/Application.h"
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayer.h"
 #include "cores/VideoPlayer/VideoPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "settings/MediaSettings.h"
 
 #include <mutex>
 
