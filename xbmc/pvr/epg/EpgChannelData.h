@@ -41,6 +41,9 @@ namespace PVR
     const std::string& ChannelName() const;
     void SetChannelName(const std::string& strChannelName);
 
+    const std::string& ChannelIconPath() const;
+    void SetChannelIconPath(const std::string& strChannelIconPath);
+
   private:
     const bool m_bIsRadio = false;
     const int m_iClientId = -1;
@@ -51,5 +54,6 @@ namespace PVR
     bool m_bIsEPGEnabled = true;
     int m_iChannelId = -1;
     std::string m_strChannelName;
+    std::string m_strChannelIconPath;
   };
 }

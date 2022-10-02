@@ -280,6 +280,12 @@ int CPVREpgInfoTag::UniqueChannelID() const
   return m_channelData->UniqueClientChannelId();
 }
 
+std::string CPVREpgInfoTag::ChannelIconPath() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_channelData->ChannelIconPath();
+}
+
 CDateTime CPVREpgInfoTag::StartAsUTC() const
 {
   return m_startTime;
