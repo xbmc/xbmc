@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "playlists/PlayList.h"
 

@@ -11,7 +11,6 @@
 
 #include "AirTunesServer.h"
 
-#include "CompileInfo.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
@@ -25,7 +24,8 @@
 #include "filesystem/PipeFile.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/tags/MusicInfoTag.h"
@@ -33,7 +33,6 @@
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
 #include "network/dacp/dacp.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/EndianSwap.h"

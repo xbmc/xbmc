@@ -10,7 +10,6 @@
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "cores/AudioEngine/AESinkFactory.h"
-#include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"

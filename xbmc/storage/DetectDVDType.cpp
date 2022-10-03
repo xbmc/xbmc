@@ -13,7 +13,6 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "cdioSupport.h"
-#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -25,7 +24,6 @@
 
 #include <mutex>
 
-using namespace XFILE;
 using namespace MEDIA_DETECT;
 using namespace std::chrono_literals;
 

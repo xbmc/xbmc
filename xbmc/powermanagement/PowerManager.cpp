@@ -22,7 +22,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
-#include "interfaces/builtins/Builtins.h"
 #include "network/Network.h"
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
@@ -32,7 +31,6 @@
 #include "settings/lib/SettingsManager.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
-#include "windowing/WinSystem.h"
 
 #include <list>
 #include <memory>
