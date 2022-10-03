@@ -19,6 +19,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>

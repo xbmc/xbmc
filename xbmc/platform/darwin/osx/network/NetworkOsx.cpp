@@ -22,6 +22,7 @@
 #include <net/route.h>
 #include <netinet/if_ether.h>
 #include <sys/sockio.h>
+#include <unistd.h>
 
 CNetworkInterfaceOsx::CNetworkInterfaceOsx(CNetworkPosix* network,
                                            const std::string& interfaceName,

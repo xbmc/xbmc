@@ -22,6 +22,7 @@
 #include <androidjni/AudioManager.h>
 #include <androidjni/AudioTrack.h>
 #include <androidjni/Build.h>
+#include <unistd.h>
 
 // This is an alternative to the linear weighted delay smoothing
 // advantages: only one history value needs to be stored

@@ -13,6 +13,7 @@
 #include "dll_tracker.h"
 #include "dll_util.h"
 #include "filesystem/SpecialProtocol.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <climits>

@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "guilib/GUIAction.h"
 #include "guilib/GUIComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 

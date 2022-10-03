@@ -13,6 +13,8 @@
 #include "settings/SettingsComponent.h"
 #include "test/TestUtils.h"
 
+#include <cmath>
+
 #include <gtest/gtest.h>
 
 using namespace EDL;

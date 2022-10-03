@@ -10,6 +10,7 @@
 #include "DllPaths.h"
 #include "GUIUserMessages.h"
 #include "application/Application.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
