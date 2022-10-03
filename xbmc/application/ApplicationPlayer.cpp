@@ -1050,3 +1050,12 @@ int CApplicationPlayer::GetSubtitleDelay() const
   const auto range = advSettings->m_videoSubsDelayRange;
   return static_cast<int>(0.5f + (delay + range) / (2.f * range) * 100.0f);
 }
+
+int CApplicationPlayer::GetAudioDelay() const
+{
+  // converts audio delay to a percentage
+  const auto& advSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  const auto delay = this->GetVideoSettings().m_AudioDelay;
+  const auto range = advSettings->m_videoAudioDelayRange;
+  return static_cast<int>(0.5f + (delay + range) / (2.f * range) * 100.0f);
+}

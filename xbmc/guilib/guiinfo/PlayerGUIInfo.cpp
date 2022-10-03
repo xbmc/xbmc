@@ -370,9 +370,6 @@ bool CPlayerGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     case PLAYER_VOLUME:
       value = static_cast<int>(g_application.GetVolumePercent());
       return true;
-    case PLAYER_AUDIO_DELAY:
-      value = g_application.GetAudioDelay();
-      return true;
     case PLAYER_PROGRESS:
       value = std::lrintf(g_application.GetPercentage());
       return true;
@@ -385,6 +382,7 @@ bool CPlayerGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     case PLAYER_CACHELEVEL:
     case PLAYER_CHAPTER:
     case PLAYER_CHAPTERCOUNT:
+    case PLAYER_AUDIO_DELAY:
     case PLAYER_SUBTITLE_DELAY:
     {
       const auto& components = CServiceBroker::GetAppComponents();
@@ -402,6 +400,9 @@ bool CPlayerGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
           return true;
         case PLAYER_SUBTITLE_DELAY:
           value = appPlayer->GetSubtitleDelay();
+          return true;
+        case PLAYER_AUDIO_DELAY:
+          value = appPlayer->GetAudioDelay();
           return true;
         default:
           return false;

@@ -3256,19 +3256,6 @@ const CFileItem& CApplication::CurrentUnstackedItem()
     return *m_itemCurrentFile;
 }
 
-int CApplication::GetAudioDelay()
-{
-  // converts audio delay to a percentage
-  const auto appPlayer = GetComponent<CApplicationPlayer>();
-  return int(
-      ((appPlayer->GetVideoSettings().m_AudioDelay +
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange)) /
-          (2 *
-           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange) *
-          100.0f +
-      0.5f);
-}
-
 // Returns the total time in seconds of the current media.  Fractional
 // portions of a second are possible - but not necessarily supported by the
 // player class.  This returns a double to be consistent with GetTime() and
