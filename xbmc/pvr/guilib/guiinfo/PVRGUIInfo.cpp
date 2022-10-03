@@ -767,8 +767,11 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item, const CGUIInf
       case VIDEOPLAYER_CHANNEL_NUMBER:
       case LISTITEM_CHANNEL_NUMBER:
       {
-        const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-            CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*item);
+        auto groupMember = item->GetPVRChannelGroupMemberInfoTag();
+        if (!groupMember)
+          groupMember =
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(
+                  *item);
         if (groupMember)
         {
           strValue = groupMember->ChannelNumber().FormattedChannelNumber();
