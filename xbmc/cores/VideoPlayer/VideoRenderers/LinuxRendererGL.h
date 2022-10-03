@@ -13,15 +13,10 @@
 #include "system_gl.h"
 
 #include "FrameBufferObject.h"
-#include "guilib/Shader.h"
 #include "cores/VideoSettings.h"
-#include "RenderFlags.h"
 #include "RenderInfo.h"
-#include "windowing/GraphicContext.h"
 #include "BaseRenderer.h"
 #include "ColorManager.h"
-#include "threads/Event.h"
-#include "VideoShaders/ShaderFormats.h"
 #include "utils/Geometry.h"
 
 extern "C" {

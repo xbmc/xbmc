@@ -23,7 +23,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/MediaSettings.h"
-#include "utils/log.h"
 
 namespace
 {

@@ -8,14 +8,13 @@
 
 #include "VideoPlayerAudioID3.h"
 
-#include "DVDDemuxers/DVDDemuxUtils.h"
 #include "DVDStreamInfo.h"
 #include "GUIInfoManager.h"
+#include "Interface/DemuxPacket.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "guilib/GUIComponent.h"
 #include "music/tags/MusicInfoTag.h"
-#include "utils/EmbeddedArt.h"
 #include "utils/log.h"
 
 #include <taglib/attachedpictureframe.h>

@@ -11,13 +11,12 @@
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/alsa/ALSADeviceMonitor.h"
+#ifndef HAVE_X11
 #include "cores/AudioEngine/Sinks/alsa/ALSAHControlMonitor.h"
+#endif
 #include "cores/AudioEngine/Utils/AEELDParser.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "platform/Platform.h"
-#include "threads/SingleLock.h"
-#include "utils/MathUtils.h"
-#include "utils/SystemInfo.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 

@@ -9,16 +9,15 @@
 #include "ApplicationOperations.h"
 
 #include "CompileInfo.h"
-#include "GUIInfoManager.h"
 #include "InputOperations.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "utils/log.h"
 
 #include <cmath>
 #include <string.h>

@@ -8,7 +8,6 @@
 
 #include "PAPlayer.h"
 
-#include "CodecFactory.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "Util.h"

@@ -15,7 +15,6 @@
 #include "playlists/PlayListTypes.h"
 #include "threads/CriticalSection.h"
 #include "threads/SystemClock.h"
-#include "windowing/Resolution.h"
 
 #include <memory>
 #include <string>

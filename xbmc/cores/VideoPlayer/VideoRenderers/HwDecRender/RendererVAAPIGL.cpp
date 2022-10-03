@@ -9,10 +9,7 @@
 #include "RendererVAAPIGL.h"
 
 #include "../RenderFactory.h"
-#include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 

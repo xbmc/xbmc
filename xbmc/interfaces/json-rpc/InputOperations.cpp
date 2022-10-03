@@ -15,7 +15,7 @@
 #include "guilib/GUIWindow.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/ButtonTranslator.h"
-#include "input/Key.h"
+#include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/Variant.h"

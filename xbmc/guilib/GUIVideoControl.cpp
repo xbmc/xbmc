@@ -11,7 +11,6 @@
 #include "GUIComponent.h"
 #include "GUIWindowManager.h"
 #include "ServiceBroker.h"
-#include "WindowIDs.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"

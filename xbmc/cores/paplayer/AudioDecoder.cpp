@@ -17,7 +17,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
-#include <math.h>
+#include <cmath>
 #include <mutex>
 
 CAudioDecoder::CAudioDecoder()
@@ -370,7 +370,7 @@ float CAudioDecoder::GetReplayGain(float &peakVal)
     }
   }
   // convert to a gain type
-  float replaygain = pow(10.0f, (replaydB - REPLAY_GAIN_DEFAULT_LEVEL)* 0.05f);
+  float replaygain = std::pow(10.0f, (replaydB - REPLAY_GAIN_DEFAULT_LEVEL) * 0.05f);
 
   CLog::Log(LOGDEBUG,
             "AudioDecoder::GetReplayGain - Final Replaygain applied: {:f}, Track/Album Gain {:f}, "
