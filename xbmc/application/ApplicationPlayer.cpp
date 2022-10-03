@@ -15,6 +15,8 @@
 #include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 
 #include <mutex>
 
@@ -1038,4 +1040,13 @@ bool CApplicationPlayer::HasGameAgent() const
     return player->HasGameAgent();
 
   return false;
+}
+
+int CApplicationPlayer::GetSubtitleDelay() const
+{
+  // converts subtitle delay to a percentage
+  const auto& advSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  const auto delay = this->GetVideoSettings().m_SubtitleDelay;
+  const auto range = advSettings->m_videoSubsDelayRange;
+  return static_cast<int>(0.5f + (delay + range) / (2.f * range) * 100.0f);
 }
