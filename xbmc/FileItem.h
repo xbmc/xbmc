@@ -15,7 +15,6 @@
 
 #include "LockType.h"
 #include "XBDateTime.h"
-#include "addons/IAddon.h"
 #include "guilib/GUIListItem.h"
 #include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
@@ -28,6 +27,11 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+namespace ADDON
+{
+class IAddon;
+}
 
 namespace MUSIC_INFO
 {
