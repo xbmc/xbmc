@@ -3255,6 +3255,7 @@
           <constraints>
             <options>
               <option label="1181">0</option> <!-- PROXY_HTTP -->
+              <option label="1186">5</option> <!-- PROXY_HTTPS -->
               <option label="1182">1</option> <!-- PROXY_SOCKS4 -->
               <option label="1183">2</option> <!-- PROXY_SOCKS4A -->
               <option label="1184">3</option> <!-- PROXY_SOCKS5 -->

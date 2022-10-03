@@ -4188,8 +4188,13 @@ msgctxt "#1185"
 msgid "SOCKS5 with remote DNS resolving"
 msgstr ""
 
-#empty strings from id 1186 to 1199
-#strings 1186 to 1189 reserved for more proxy types
+#: system/settings/settings.xml
+msgctxt "#1186"
+msgid "HTTPS"
+msgstr ""
+
+#empty strings from id 1187 to 1199
+#strings 1187 to 1199 reserved for more proxy types
 
 #: xbmc/settings/win32.xml
 msgctxt "#1200"

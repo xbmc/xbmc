@@ -31,6 +31,7 @@ namespace XFILE
         PROXY_SOCKS4A,
         PROXY_SOCKS5,
         PROXY_SOCKS5_REMOTE,
+        PROXY_HTTPS,
       } ProxyType;
 
     public:
