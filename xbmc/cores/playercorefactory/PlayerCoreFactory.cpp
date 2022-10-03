@@ -24,6 +24,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
+#include "utils/log.h"
 
 #include <mutex>
 #include <sstream>

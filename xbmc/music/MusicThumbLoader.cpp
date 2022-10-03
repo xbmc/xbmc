@@ -13,6 +13,7 @@
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
+#include "utils/StringUtils.h"
 #include "video/VideoThumbLoader.h"
 
 #include <utility>

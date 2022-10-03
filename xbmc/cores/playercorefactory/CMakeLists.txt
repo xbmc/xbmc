@@ -1,4 +1,5 @@
-set(SOURCES PlayerCoreFactory.cpp
+set(SOURCES PlayerCoreConfig.cpp
+            PlayerCoreFactory.cpp
             PlayerSelectionRule.cpp)
 
 set(HEADERS PlayerCoreConfig.h

@@ -9,6 +9,7 @@
 #include "AddonType.h"
 
 #include "addons/addoninfo/AddonInfo.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 namespace ADDON

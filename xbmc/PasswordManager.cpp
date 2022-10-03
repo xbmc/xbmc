@@ -14,6 +14,7 @@
 #include "profiles/ProfileManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 

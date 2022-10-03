@@ -10,6 +10,7 @@
 
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 
 using namespace ADDON;
 using namespace ADDON::GUI;

@@ -8,7 +8,14 @@
 
 #include "AddonExtensions.h"
 
+#include "utils/StringUtils.h"
+
 using namespace ADDON;
+
+bool SExtValue::asBoolean() const
+{
+  return StringUtils::EqualsNoCase(str, "true");
+}
 
 const SExtValue CAddonExtensions::GetValue(const std::string& id) const
 {
