@@ -8,14 +8,20 @@
 
 #pragma once
 
-#include "addons/AddonEvents.h"
-#include "addons/addoninfo/AddonInfo.h"
-#include "settings/AdvancedSettings.h"
+#include "addons/addoninfo/AddonType.h"
+
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace ADDON
 {
   class CAddonMgr;
+  struct AddonEvent;
 }
+
+class CAdvancedSettings;
 
 class CFileExtensionProvider
 {
