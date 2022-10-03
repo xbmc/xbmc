@@ -45,11 +45,8 @@ using namespace std::chrono_literals;
 #define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
 
 curl_proxytype proxyType2CUrlProxyType[] = {
-  CURLPROXY_HTTP,
-  CURLPROXY_SOCKS4,
-  CURLPROXY_SOCKS4A,
-  CURLPROXY_SOCKS5,
-  CURLPROXY_SOCKS5_HOSTNAME,
+    CURLPROXY_HTTP,   CURLPROXY_SOCKS4,          CURLPROXY_SOCKS4A,
+    CURLPROXY_SOCKS5, CURLPROXY_SOCKS5_HOSTNAME, CURLPROXY_HTTPS,
 };
 
 #define FILLBUFFER_OK         0
@@ -1050,6 +1047,8 @@ void CCurlFile::SetProxy(const std::string &type, const std::string &host,
   m_proxytype = CCurlFile::PROXY_HTTP;
   if (type == "http")
     m_proxytype = CCurlFile::PROXY_HTTP;
+  else if (type == "https")
+    m_proxytype = CCurlFile::PROXY_HTTPS;
   else if (type == "socks4")
     m_proxytype = CCurlFile::PROXY_SOCKS4;
   else if (type == "socks4a")
