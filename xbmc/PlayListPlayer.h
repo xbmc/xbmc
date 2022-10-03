@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "ServiceBroker.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "messaging/IMessageTarget.h"
 #include "playlists/PlayListTypes.h"

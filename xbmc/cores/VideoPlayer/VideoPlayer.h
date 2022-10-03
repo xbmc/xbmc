@@ -17,7 +17,6 @@
 #include "VideoPlayerRadioRDS.h"
 #include "VideoPlayerSubtitle.h"
 #include "VideoPlayerTeletext.h"
-#include "VideoPlayerVideo.h"
 #include "cores/IPlayer.h"
 #include "cores/MenuType.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"

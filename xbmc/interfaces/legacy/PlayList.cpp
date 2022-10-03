@@ -9,6 +9,7 @@
 #include "PlayList.h"
 
 #include "PlayListPlayer.h"
+#include "ServiceBroker.h"
 #include "playlists/PlayListFactory.h"
 #include "utils/URIUtils.h"
 

@@ -10,7 +10,6 @@
 
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
-#include "URL.h"
 #include "addons/Skin.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
@@ -18,7 +17,6 @@
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"

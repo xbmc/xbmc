@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "addons/Skin.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
@@ -18,16 +17,15 @@
 #include "application/ApplicationSkinHandling.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#if defined(TARGET_DARWIN_OSX)
 #include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/XMLUtils.h"
+#endif
 
 namespace
 {

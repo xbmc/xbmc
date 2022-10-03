@@ -14,7 +14,6 @@
 #include "StereoscopicsManager.h"
 
 #include "GUIComponent.h"
-#include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "application/ApplicationComponents.h"
@@ -24,7 +23,8 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"

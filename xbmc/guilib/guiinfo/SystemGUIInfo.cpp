@@ -28,7 +28,6 @@
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
