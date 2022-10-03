@@ -20,6 +20,7 @@
 #include "platform/android/activity/XBMCApp.h"
 
 #include <EGL/eglext.h>
+#include <unistd.h>
 
 void CWinSystemAndroidGLESContext::Register()
 {

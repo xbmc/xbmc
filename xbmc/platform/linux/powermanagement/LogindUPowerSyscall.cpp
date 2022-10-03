@@ -9,6 +9,7 @@
 
 #include "LogindUPowerSyscall.h"
 
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <string.h>

@@ -29,6 +29,7 @@
 #include <sstream>
 
 #include <mach-o/dyld.h>
+#include <unistd.h>
 
 #include "PlatformDefs.h"
 

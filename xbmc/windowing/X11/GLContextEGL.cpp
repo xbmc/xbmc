@@ -22,6 +22,7 @@
 #include <mutex>
 
 #include <EGL/eglext.h>
+#include <unistd.h>
 
 #include "system_gl.h"
 

@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "utils/DRMHelpers.h"
 #include "utils/EGLUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <map>

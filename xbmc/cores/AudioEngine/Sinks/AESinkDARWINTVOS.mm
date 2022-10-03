@@ -26,6 +26,7 @@
 
 #import <AVFoundation/AVAudioSession.h>
 #include <AudioToolbox/AudioToolbox.h>
+#include <unistd.h>
 
 using namespace std::chrono_literals;
 

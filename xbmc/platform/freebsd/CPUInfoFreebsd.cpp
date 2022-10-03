@@ -14,6 +14,13 @@
 #include <array>
 #include <vector>
 
+// clang-format off
+/* sys/types.h must be included early, esp. before sysy/systl.h, otherwise:
+   /usr/include/sys/sysctl.h:1117:25: error: unknown type name 'u_int' */
+
+#include <sys/types.h>
+// clang-format on
+
 #if defined(__i386__) || defined(__x86_64__)
 #include <cpuid.h>
 #elif __has_include(<sys/auxv.h>)
@@ -22,7 +29,6 @@
 
 #include <sys/resource.h>
 #include <sys/sysctl.h>
-#include <sys/types.h>
 
 namespace
 {
