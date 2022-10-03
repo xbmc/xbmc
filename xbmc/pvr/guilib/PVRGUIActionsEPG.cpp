@@ -76,7 +76,7 @@ bool CPVRGUIActionsEPG::ShowEPGInfo(const CFileItemPtr& item) const
     return false;
   }
 
-  pDlgInfo->SetProgInfo(epgTag);
+  pDlgInfo->SetProgInfo(std::make_shared<CFileItem>(epgTag));
   pDlgInfo->Open();
   return true;
 }
