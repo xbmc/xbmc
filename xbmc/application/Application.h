@@ -152,7 +152,6 @@ public:
   void ShowAppMigrationMessage();
   void Process() override;
   void ProcessSlow();
-  int GetSubtitleDelay();
   int GetAudioDelay();
   /*!
    \brief Returns the total time in fractional seconds of the currently playing media

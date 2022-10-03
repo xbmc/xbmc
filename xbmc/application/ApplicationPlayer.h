@@ -89,6 +89,7 @@ public:
   float GetPercentage() const;
   std::string GetPlayerState();
   PLAYLIST::Id GetPreferredPlaylist() const;
+  int GetSubtitleDelay() const;
   int GetSubtitle();
   void GetSubtitleCapabilities(std::vector<int>& subCaps) const;
   int GetSubtitleCount() const;

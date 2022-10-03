@@ -3256,19 +3256,6 @@ const CFileItem& CApplication::CurrentUnstackedItem()
     return *m_itemCurrentFile;
 }
 
-int CApplication::GetSubtitleDelay()
-{
-  // converts subtitle delay to a percentage
-  const auto appPlayer = GetComponent<CApplicationPlayer>();
-  return int(
-      ((appPlayer->GetVideoSettings().m_SubtitleDelay +
-        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange)) /
-          (2 *
-           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange) *
-          100.0f +
-      0.5f);
-}
-
 int CApplication::GetAudioDelay()
 {
   // converts audio delay to a percentage
