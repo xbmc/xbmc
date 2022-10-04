@@ -2591,6 +2591,17 @@
           </constraints>
           <control type="spinner" format="string" />
         </setting>
+        <setting id="videoscreen.guisdrpeakluminance" type="integer" label="36097" help="36547">
+        <requirement>HAS_DX</requirement>
+          <dependencies>
+            <dependency type="visible">
+              <condition on="property" name="ishdrdisplay" />
+            </dependency>
+          </dependencies>
+          <level>2</level>
+          <default>60</default>
+          <control type="slider" format="percentage" range="0,100" />
+        </setting>
         <setting id="videoscreen.10bitsurfaces" type="integer" label="36098" help="36578">
         <requirement>HAS_DX</requirement>
           <level>3</level>
