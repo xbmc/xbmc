@@ -164,6 +164,7 @@ set(HEADERS ActorProtocol.h
             SystemInfo.h
             Temperature.h
             TextSearch.h
+            TimeFormat.h
             TimeUtils.h
             TransformMatrix.h
             URIUtils.h

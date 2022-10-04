@@ -644,13 +644,13 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
   CDataCacheCore& data = CServiceBroker::GetDataCacheCore();
   std::vector<std::pair<float, float>> ranges;
 
-  time_t start;
+  std::time_t start;
   int64_t current;
   int64_t min;
   int64_t max;
   data.GetPlayTimes(start, current, min, max);
 
-  time_t duration = max - start * 1000;
+  std::time_t duration = max - start * 1000;
   if (duration > 0)
   {
     switch (iInfo)
@@ -685,7 +685,7 @@ std::string CPlayerGUIInfo::GetContentRanges(int iInfo) const
 }
 
 std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(const CDataCacheCore& data,
-                                                                 time_t duration) const
+                                                                 std::time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
 
@@ -700,7 +700,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(const CDataCach
 }
 
 std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(const CDataCacheCore& data,
-                                                             time_t duration) const
+                                                             std::time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
 
@@ -718,7 +718,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(const CDataCacheCor
 }
 
 std::vector<std::pair<float, float>> CPlayerGUIInfo::GetSceneMarkers(const CDataCacheCore& data,
-                                                                     time_t duration) const
+                                                                     std::time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
 
@@ -736,7 +736,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetSceneMarkers(const CData
 }
 
 std::vector<std::pair<float, float>> CPlayerGUIInfo::GetChapters(const CDataCacheCore& data,
-                                                                 time_t duration) const
+                                                                 std::time_t duration) const
 {
   std::vector<std::pair<float, float>> ranges;
 

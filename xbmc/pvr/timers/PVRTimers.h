@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "pvr/settings/PVRSettings.h"
 #include "threads/Thread.h"
 
@@ -16,6 +15,8 @@
 #include <memory>
 #include <queue>
 #include <vector>
+
+class CDateTime;
 
 namespace PVR
 {

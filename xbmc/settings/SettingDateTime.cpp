@@ -9,6 +9,7 @@
 #include "SettingDateTime.h"
 
 #include "XBDateTime.h"
+#include "utils/TimeUtils.h"
 
 #include <shared_mutex>
 
@@ -39,6 +40,16 @@ bool CSettingDate::CheckValidity(const std::string &value) const
   return CDateTime::FromDBDate(value).IsValid();
 }
 
+CDateTime CSettingDate::GetDate() const
+{
+  return CDateTime::FromDBDate(GetValue());
+}
+
+bool CSettingDate::SetDate(const CDateTime& date)
+{
+  return SetValue(date.GetAsDBDate());
+}
+
 CSettingTime::CSettingTime(const std::string &id, CSettingsManager *settingsManager /* = NULL */)
   : CSettingString(id, settingsManager)
 { }
@@ -64,4 +75,14 @@ bool CSettingTime::CheckValidity(const std::string &value) const
     return false;
 
   return CDateTime::FromDBTime(value).IsValid();
+}
+
+CDateTime CSettingTime::GetTime() const
+{
+  return CDateTime::FromDBTime(GetValue());
+}
+
+bool CSettingTime::SetTime(const CDateTime& time)
+{
+  return SetValue(CTimeUtils::WithoutSeconds(time.GetAsDBTime()));
 }

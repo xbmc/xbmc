@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_epg.h"
 #include "pvr/settings/PVRSettings.h"
 #include "threads/CriticalSection.h"
@@ -23,6 +22,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+class CDateTime;
 
 namespace PVR
 {
