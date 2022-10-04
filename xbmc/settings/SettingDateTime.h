@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "settings/lib/Setting.h"
-#include "utils/TimeUtils.h"
+
+class CDateTime;
 
 class CSettingDate : public CSettingString
 {
@@ -24,8 +24,8 @@ public:
 
   bool CheckValidity(const std::string &value) const override;
 
-  CDateTime GetDate() const { return CDateTime::FromDBDate(GetValue()); }
-  bool SetDate(const CDateTime& date) { return SetValue(date.GetAsDBDate()); }
+  CDateTime GetDate() const;
+  bool SetDate(const CDateTime& date);
 };
 
 class CSettingTime : public CSettingString
@@ -40,6 +40,6 @@ public:
 
   bool CheckValidity(const std::string &value) const override;
 
-  CDateTime GetTime() const { return CDateTime::FromDBTime(GetValue()); }
-  bool SetTime(const CDateTime& time) { return SetValue(CTimeUtils::WithoutSeconds(time.GetAsDBTime())); }
+  CDateTime GetTime() const;
+  bool SetTime(const CDateTime& time);
 };

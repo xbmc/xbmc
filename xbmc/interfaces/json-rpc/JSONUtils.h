@@ -9,7 +9,6 @@
 #pragma once
 
 #include "JSONRPCUtils.h"
-#include "XBDateTime.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/JSONVariantWriter.h"
@@ -20,6 +19,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
+
+class CDateTime;
 
 namespace JSONRPC
 {
@@ -462,27 +463,9 @@ namespace JSONRPC
         stringArray.push_back(it->asString());
     }
 
-    static void SetFromDBDate(const CVariant &jsonDate, CDateTime &date)
-    {
-      if (!jsonDate.isString())
-        return;
+    static void SetFromDBDate(const CVariant& jsonDate, CDateTime& date);
 
-      if (jsonDate.empty())
-        date.Reset();
-      else
-        date.SetFromDBDate(jsonDate.asString());
-    }
-
-    static void SetFromDBDateTime(const CVariant &jsonDate, CDateTime &date)
-    {
-      if (!jsonDate.isString())
-        return;
-
-      if (jsonDate.empty())
-        date.Reset();
-      else
-        date.SetFromDBDateTime(jsonDate.asString());
-    }
+    static void SetFromDBDateTime(const CVariant& jsonDate, CDateTime& date);
 
     static bool GetXspFiltering(const std::string &type, const CVariant &filter, std::string &xsp)
     {

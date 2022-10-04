@@ -8,8 +8,7 @@
 
 #pragma once
 
-#include "XBDateTime.h"
-
+#include <cstring>
 #include <memory>
 #include <string>
 #include <vector>
@@ -22,6 +21,10 @@ namespace XFILE
 }
 class CVariant;
 class IArchivable;
+namespace KODI::TIME
+{
+struct SystemTime;
+}
 
 class CArchive
 {

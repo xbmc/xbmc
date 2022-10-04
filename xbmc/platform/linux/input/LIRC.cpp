@@ -25,6 +25,8 @@
 #include <sys/un.h>
 #include <unistd.h>
 
+#include "PlatformDefs.h"
+
 using namespace std::chrono_literals;
 
 CLirc::CLirc() : CThread("Lirc")

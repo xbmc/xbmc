@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "guilib/DirtyRegion.h"
 #include "guilib/GUIControl.h"
 #include "guilib/GUIListItemLayout.h"
@@ -22,6 +21,7 @@
 #include <utility>
 #include <vector>
 
+class CDateTime;
 class CFileItem;
 class CFileItemList;
 class CGUIListItem;

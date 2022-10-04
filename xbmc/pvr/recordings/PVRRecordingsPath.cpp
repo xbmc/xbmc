@@ -9,6 +9,7 @@
 #include "PVRRecordingsPath.h"
 
 #include "URL.h"
+#include "XBDateTime.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

@@ -11,6 +11,7 @@
 #include "IArchivable.h"
 #include "filesystem/File.h"
 #include "utils/Variant.h"
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>

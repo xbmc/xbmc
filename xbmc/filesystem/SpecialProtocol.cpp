@@ -7,18 +7,21 @@
  */
 
 #include "SpecialProtocol.h"
+
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "windowing/GraphicContext.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
+#include "windowing/GraphicContext.h"
 
 #include <cassert>
+
+#include "PlatformDefs.h"
 #ifdef TARGET_POSIX
 #include <dirent.h>
 #include "utils/StringUtils.h"
