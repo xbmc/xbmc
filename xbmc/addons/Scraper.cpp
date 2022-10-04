@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/settings/AddonSettings.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/Directory.h"

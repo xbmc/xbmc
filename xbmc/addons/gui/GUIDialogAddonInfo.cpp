@@ -20,6 +20,7 @@
 #include "addons/AudioDecoder.h"
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/IAddon.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIHelpers.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -588,8 +589,8 @@ void CGUIDialogAddonInfo::OnUninstall()
   if (CDirectory::Exists(m_localAddon->Profile()))
     removeData = CGUIDialogYesNo::ShowAndGetInput(CVariant{24037}, CVariant{39014});
 
-  CServiceBroker::GetJobManager()->AddJob(new CAddonUnInstallJob(m_localAddon, removeData),
-                                          &CAddonInstaller::GetInstance());
+  CAddonInstaller::GetInstance().UnInstall(m_localAddon, removeData);
+
   Close();
 }
 

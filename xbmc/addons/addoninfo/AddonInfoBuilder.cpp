@@ -10,6 +10,7 @@
 
 #include "CompileInfo.h"
 #include "LangInfo.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -33,6 +34,158 @@ const std::string VALID_ADDON_IDENTIFIER_CHARACTERS = "abcdefghijklmnopqrstuvwxy
 
 namespace ADDON
 {
+
+CAddonInfoBuilder::CFromDB::CFromDB() : m_addonInfo(std::make_shared<CAddonInfo>())
+{
+}
+
+void CAddonInfoBuilder::CFromDB::SetId(std::string id)
+{
+  m_addonInfo->m_id = std::move(id);
+}
+
+void CAddonInfoBuilder::CFromDB::SetName(std::string name)
+{
+  m_addonInfo->m_name = std::move(name);
+}
+
+void CAddonInfoBuilder::CFromDB::SetLicense(std::string license)
+{
+  m_addonInfo->m_license = std::move(license);
+}
+
+void CAddonInfoBuilder::CFromDB::SetSummary(std::string summary)
+{
+  m_addonInfo->m_summary.insert(std::pair<std::string, std::string>("unk", std::move(summary)));
+}
+
+void CAddonInfoBuilder::CFromDB::SetDescription(std::string description)
+{
+  m_addonInfo->m_description.insert(
+      std::pair<std::string, std::string>("unk", std::move(description)));
+}
+
+void CAddonInfoBuilder::CFromDB::SetDisclaimer(std::string disclaimer)
+{
+  m_addonInfo->m_disclaimer.insert(
+      std::pair<std::string, std::string>("unk", std::move(disclaimer)));
+}
+
+void CAddonInfoBuilder::CFromDB::SetAuthor(std::string author)
+{
+  m_addonInfo->m_author = std::move(author);
+}
+
+void CAddonInfoBuilder::CFromDB::SetSource(std::string source)
+{
+  m_addonInfo->m_source = std::move(source);
+}
+
+void CAddonInfoBuilder::CFromDB::SetWebsite(std::string website)
+{
+  m_addonInfo->m_website = std::move(website);
+}
+
+void CAddonInfoBuilder::CFromDB::SetForum(std::string forum)
+{
+  m_addonInfo->m_forum = std::move(forum);
+}
+
+void CAddonInfoBuilder::CFromDB::SetEMail(std::string email)
+{
+  m_addonInfo->m_email = std::move(email);
+}
+
+void CAddonInfoBuilder::CFromDB::SetIcon(std::string icon)
+{
+  m_addonInfo->m_icon = std::move(icon);
+}
+
+void CAddonInfoBuilder::CFromDB::SetArt(const std::string& type, std::string value)
+{
+  m_addonInfo->m_art[type] = std::move(value);
+}
+
+void CAddonInfoBuilder::CFromDB::SetArt(std::map<std::string, std::string> art)
+{
+  m_addonInfo->m_art = std::move(art);
+}
+
+void CAddonInfoBuilder::CFromDB::SetScreenshots(std::vector<std::string> screenshots)
+{
+  m_addonInfo->m_screenshots = std::move(screenshots);
+}
+
+void CAddonInfoBuilder::CFromDB::SetChangelog(std::string changelog)
+{
+  m_addonInfo->m_changelog.insert(std::pair<std::string, std::string>("unk", std::move(changelog)));
+}
+
+void CAddonInfoBuilder::CFromDB::SetLifecycleState(AddonLifecycleState state,
+                                                   std::string description)
+{
+  m_addonInfo->m_lifecycleState = state;
+  m_addonInfo->m_lifecycleStateDescription.emplace("unk", std::move(description));
+}
+
+void CAddonInfoBuilder::CFromDB::SetPath(std::string path)
+{
+  m_addonInfo->m_path = std::move(path);
+}
+
+void CAddonInfoBuilder::CFromDB::SetLibName(std::string libname)
+{
+  m_addonInfo->m_libname = std::move(libname);
+}
+
+void CAddonInfoBuilder::CFromDB::SetVersion(AddonVersion version)
+{
+  m_addonInfo->m_version = std::move(version);
+}
+
+void CAddonInfoBuilder::CFromDB::SetDependencies(std::vector<DependencyInfo> dependencies)
+{
+  m_addonInfo->m_dependencies = std::move(dependencies);
+}
+
+void CAddonInfoBuilder::CFromDB::SetExtrainfo(InfoMap extrainfo)
+{
+  m_addonInfo->m_extrainfo = std::move(extrainfo);
+}
+
+void CAddonInfoBuilder::CFromDB::SetInstallDate(const CDateTime& installDate)
+{
+  m_addonInfo->m_installDate = installDate;
+}
+
+void CAddonInfoBuilder::CFromDB::SetLastUpdated(const CDateTime& lastUpdated)
+{
+  m_addonInfo->m_lastUpdated = lastUpdated;
+}
+
+void CAddonInfoBuilder::CFromDB::SetLastUsed(const CDateTime& lastUsed)
+{
+  m_addonInfo->m_lastUsed = lastUsed;
+}
+
+void CAddonInfoBuilder::CFromDB::SetOrigin(std::string origin)
+{
+  m_addonInfo->m_origin = std::move(origin);
+}
+
+void CAddonInfoBuilder::CFromDB::SetPackageSize(uint64_t size)
+{
+  m_addonInfo->m_packageSize = size;
+}
+
+void CAddonInfoBuilder::CFromDB::SetExtensions(CAddonType addonType)
+{
+  if (!addonType.GetValue("provides").empty())
+    addonType.SetProvides(addonType.GetValue("provides").asString());
+
+  m_addonInfo->m_types.push_back(std::move(addonType));
+  m_addonInfo->m_mainType = addonType.m_type;
+}
 
 AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& id, TYPE type)
 {

@@ -9,6 +9,7 @@
 #include "RepositoryUpdater.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"

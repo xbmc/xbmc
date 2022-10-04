@@ -9,16 +9,19 @@
 #pragma once
 
 #include "ThumbLoader.h"
-#include "addons/Addon.h"
-#include "addons/AddonEvents.h"
 #include "addons/RepositoryUpdater.h"
+#include "addons/addoninfo/AddonType.h"
 #include "windows/GUIMediaWindow.h"
 
 #include <string>
 #include <vector>
 
-class CFileItem;
 class CFileItemList;
+
+namespace ADDON
+{
+struct AddonEvent;
+}
 
 class CGUIWindowAddonBrowser : public CGUIMediaWindow
 {

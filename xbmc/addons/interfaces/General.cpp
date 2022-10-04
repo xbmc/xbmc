@@ -11,6 +11,7 @@
 #include "CompileInfo.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-dev-kit/include/kodi/General.h"
 #include "application/Application.h"

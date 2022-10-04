@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/Skin.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/SettingAddon.h"
 #include "settings/SettingControl.h"

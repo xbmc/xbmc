@@ -8,6 +8,7 @@
 
 #include "AddonVideoCodec.h"
 
+#include "addons/addoninfo/AddonInfo.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"

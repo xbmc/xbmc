@@ -8,6 +8,7 @@
 
 #include "addons/AddonBuilder.h"
 #include "addons/LanguageResource.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 
 #include <gtest/gtest.h>

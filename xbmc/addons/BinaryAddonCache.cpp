@@ -8,6 +8,7 @@
 
 #include "BinaryAddonCache.h"
 
+#include "AddonEvents.h"
 #include "AddonManager.h"
 #include "ServiceBroker.h"
 

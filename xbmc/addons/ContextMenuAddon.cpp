@@ -54,6 +54,8 @@ CContextMenuAddon::CContextMenuAddon(const AddonInfoPtr& addonInfo)
   }
 }
 
+CContextMenuAddon::~CContextMenuAddon() = default;
+
 void CContextMenuAddon::ParseMenu(
     const CAddonExtensions* elem,
     const std::string& parent,

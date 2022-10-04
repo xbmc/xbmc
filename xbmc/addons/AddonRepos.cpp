@@ -16,6 +16,7 @@
 #include "Repository.h"
 #include "RepositoryUpdater.h"
 #include "ServiceBroker.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"

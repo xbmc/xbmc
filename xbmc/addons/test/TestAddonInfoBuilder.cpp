@@ -6,7 +6,9 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
+#include "utils/XBMCTinyXML.h"
 
 #include <set>
 

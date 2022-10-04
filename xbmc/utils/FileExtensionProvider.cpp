@@ -9,10 +9,12 @@
 #include "FileExtensionProvider.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "addons/AudioDecoder.h"
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/ImageDecoder.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"

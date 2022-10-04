@@ -8,6 +8,7 @@
 #pragma once
 
 #include "FileItem.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/VFS.h"
 #include "filesystem/IDirectory.h"
@@ -18,27 +19,28 @@
 
 namespace ADDON
 {
+struct AddonEvent;
 
-  class CVFSEntry;
-  typedef std::shared_ptr<CVFSEntry> VFSEntryPtr;
+class CVFSEntry;
+typedef std::shared_ptr<CVFSEntry> VFSEntryPtr;
 
-  class CVFSAddonCache : public CAddonDllInformer
-  {
-  public:
-    virtual ~CVFSAddonCache();
-    void Init();
-    void Deinit();
-    const std::vector<VFSEntryPtr> GetAddonInstances();
-    VFSEntryPtr GetAddonInstance(const std::string& strId);
+class CVFSAddonCache : public CAddonDllInformer
+{
+public:
+  virtual ~CVFSAddonCache();
+  void Init();
+  void Deinit();
+  const std::vector<VFSEntryPtr> GetAddonInstances();
+  VFSEntryPtr GetAddonInstance(const std::string& strId);
 
-  protected:
-    void Update(const std::string& id);
-    void OnEvent(const AddonEvent& event);
-    bool IsInUse(const std::string& id) override;
+protected:
+  void Update(const std::string& id);
+  void OnEvent(const AddonEvent& event);
+  bool IsInUse(const std::string& id) override;
 
-    CCriticalSection m_critSection;
-    std::vector<VFSEntryPtr> m_addonsInstances;
-  };
+  CCriticalSection m_critSection;
+  std::vector<VFSEntryPtr> m_addonsInstances;
+};
 
   //! \brief A virtual filesystem entry add-on.
   class CVFSEntry : public IAddonInstanceHandler

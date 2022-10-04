@@ -9,9 +9,15 @@
 #include "AddonInstanceHandler.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonVersion.h"
+#include "addons/binary-addons/AddonDll.h"
+#include "addons/binary-addons/BinaryAddonManager.h"
+#include "addons/interfaces/AddonBase.h"
+#include "addons/kodi-dev-kit/include/kodi/AddonBase.h"
 #include "addons/settings/AddonSettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 

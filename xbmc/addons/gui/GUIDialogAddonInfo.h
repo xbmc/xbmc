@@ -8,13 +8,20 @@
 
 #pragma once
 
-#include "addons/IAddon.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "guilib/GUIDialog.h"
 
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
+
+namespace ADDON
+{
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
+
+} // namespace ADDON
 
 enum class Reactivate : bool
 {

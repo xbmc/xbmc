@@ -13,6 +13,7 @@
 #include "WindowInterceptor.h"
 #include "addons/Addon.h"
 #include "addons/Skin.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

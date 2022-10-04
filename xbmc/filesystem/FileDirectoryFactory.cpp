@@ -32,6 +32,7 @@
 #include "addons/AudioDecoder.h"
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/VFSEntry.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "playlists/PlayListFactory.h"
 #include "playlists/SmartPlayList.h"
 #include "utils/StringUtils.h"
