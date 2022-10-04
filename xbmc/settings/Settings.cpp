@@ -366,6 +366,7 @@ constexpr const char* CSettings::SETTING_VIDEOSCREEN_TESTPATTERN;
 constexpr const char* CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE;
 constexpr const char* CSettings::SETTING_VIDEOSCREEN_FRAMEPACKING;
 constexpr const char* CSettings::SETTING_VIDEOSCREEN_10BITSURFACES;
+constexpr const char* CSettings::SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE;
 constexpr const char* CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE;
 constexpr const char* CSettings::SETTING_AUDIOOUTPUT_CHANNELS;
 constexpr const char* CSettings::SETTING_AUDIOOUTPUT_CONFIG;

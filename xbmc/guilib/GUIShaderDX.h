@@ -106,6 +106,7 @@ private:
     DirectX::XMMATRIX wvp;
     float blackLevel;
     float colorRange;
+    float sdrPeakLum;
     int PQ;
   };
 
