@@ -336,6 +336,11 @@ bool CPVRChannel::SetIconPath(const std::string& strIconPath, bool bIsUserSetIco
     return false;
 
   m_iconPath.SetClientImage(strIconPath);
+
+  const std::shared_ptr<CPVREpg> epg = GetEPG();
+  if (epg)
+    epg->GetChannelData()->SetChannelIconPath(strIconPath);
+
   m_bChanged = true;
   m_bIsUserSetIcon = bIsUserSetIcon && !IconPath().empty();
   return true;

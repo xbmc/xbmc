@@ -132,36 +132,27 @@ namespace
   }
 } // unnamed namespace
 
-void CFileItem::FillMusicInfoTag(const std::shared_ptr<CPVRChannelGroupMember>& groupMember,
-                                 const std::shared_ptr<CPVREpgInfoTag>& tag)
+void CFileItem::FillMusicInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
-  if (groupMember && groupMember->Channel()->IsRadio() && !HasMusicInfoTag())
+  CMusicInfoTag* musictag = GetMusicInfoTag(); // create (!) the music tag.
+
+  if (tag)
   {
-    CMusicInfoTag* musictag = GetMusicInfoTag(); // create (!) the music tag.
-
-    if (tag)
-    {
-      musictag->SetTitle(GetEpgTagTitle(tag));
-      musictag->SetGenre(tag->Genre());
-      musictag->SetDuration(tag->GetDuration());
-    }
-    else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                 CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
-    {
-      musictag->SetTitle(g_localizeStrings.Get(19055)); // no information available
-    }
-
-    musictag->SetURL(groupMember->Path());
-    musictag->SetLoaded(true);
+    musictag->SetTitle(GetEpgTagTitle(tag));
+    musictag->SetGenre(tag->Genre());
+    musictag->SetDuration(tag->GetDuration());
+    musictag->SetURL(tag->Path());
   }
+  else if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+               CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+  {
+    musictag->SetTitle(g_localizeStrings.Get(19055)); // no information available
+  }
+
+  musictag->SetLoaded(true);
 }
 
-CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag) : CFileItem(tag, {})
-{
-}
-
-CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
-                     const std::shared_ptr<PVR::CPVRChannelGroupMember>& groupMemberIn)
+CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
   Initialize();
 
@@ -171,21 +162,15 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
   SetLabel(GetEpgTagTitle(tag));
   m_dateTime = tag->StartAsLocalTime();
 
-  std::shared_ptr<CPVRChannelGroupMember> groupMember = groupMemberIn;
-  if (!groupMember)
-    groupMember =
-        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*this);
-
   if (!tag->IconPath().empty())
+  {
     SetArt("icon", tag->IconPath());
+  }
   else
   {
-    std::shared_ptr<CPVRChannel> channel;
-    if (groupMember)
-      channel = groupMember->Channel();
-
-    if (channel && !channel->IconPath().empty())
-      SetArt("icon", channel->IconPath());
+    const std::string iconPath = tag->ChannelIconPath();
+    if (!iconPath.empty())
+      SetArt("icon", iconPath);
     else if (tag->IsRadio())
       SetArt("icon", "DefaultMusicSongs.png");
     else
@@ -195,7 +180,9 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
   // Speedup FillInDefaultIcon()
   SetProperty("icon_never_overlay", true);
 
-  FillMusicInfoTag(groupMember, tag);
+  if (tag->IsRadio() && !HasMusicInfoTag())
+    FillMusicInfoTag(tag);
+
   FillInMimeType(false);
 }
 
@@ -247,10 +234,10 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
   // Speedup FillInDefaultIcon()
   SetProperty("icon_never_overlay", true);
 
-  if (channel->IsRadio())
+  if (channel->IsRadio() && !HasMusicInfoTag())
   {
     const std::shared_ptr<CPVREpgInfoTag> epgNow = channel->GetEPGNow();
-    FillMusicInfoTag(channelGroupMember, epgNow);
+    FillMusicInfoTag(epgNow);
   }
   FillInMimeType(false);
 }
