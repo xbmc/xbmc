@@ -8,6 +8,7 @@
 
 #include "SavestateFlatBuffer.h"
 
+#include "XBDateTime.h"
 #include "savestate_generated.h"
 #include "utils/log.h"
 

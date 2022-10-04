@@ -24,6 +24,7 @@
 #include <EGL/eglext.h>
 #include <unistd.h>
 
+#include "PlatformDefs.h"
 #include "system_gl.h"
 
 #define EGL_NO_CONFIG (EGLConfig)0

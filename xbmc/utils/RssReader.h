@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
 #include "utils/IRssObserver.h"
@@ -17,6 +16,11 @@
 #include <list>
 #include <string>
 #include <vector>
+
+namespace KODI::TIME
+{
+struct SystemTime;
+}
 
 class CRssReader : public CThread
 {

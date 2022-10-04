@@ -8,11 +8,12 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "guilib/guiinfo/GUIInfoProvider.h"
 #include "utils/EventStream.h"
+#include "utils/TimeFormat.h"
 
 #include <atomic>
+#include <ctime>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -76,12 +77,13 @@ private:
 
   std::string GetContentRanges(int iInfo) const;
   std::vector<std::pair<float, float>> GetEditList(const CDataCacheCore& data,
-                                                   time_t duration) const;
-  std::vector<std::pair<float, float>> GetCuts(const CDataCacheCore& data, time_t duration) const;
+                                                   std::time_t duration) const;
+  std::vector<std::pair<float, float>> GetCuts(const CDataCacheCore& data,
+                                               std::time_t duration) const;
   std::vector<std::pair<float, float>> GetSceneMarkers(const CDataCacheCore& data,
-                                                       time_t duration) const;
+                                                       std::time_t duration) const;
   std::vector<std::pair<float, float>> GetChapters(const CDataCacheCore& data,
-                                                   time_t duration) const;
+                                                   std::time_t duration) const;
 };
 
 } // namespace GUIINFO

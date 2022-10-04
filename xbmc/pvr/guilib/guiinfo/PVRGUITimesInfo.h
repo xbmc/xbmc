@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "threads/CriticalSection.h"
+#include "utils/TimeFormat.h"
 
 #include <memory>
 

@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "addons/AddonEvents.h"
 #include "addons/Repository.h"
 #include "settings/lib/ISettingCallback.h"
@@ -17,6 +16,8 @@
 #include "utils/EventStream.h"
 
 #include <vector>
+
+class CDateTime;
 
 namespace ADDON
 {

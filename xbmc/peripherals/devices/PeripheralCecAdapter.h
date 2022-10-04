@@ -37,6 +37,7 @@ public:
 #else
 
 #include "PeripheralHID.h"
+#include "XBDateTime.h"
 #include "interfaces/AnnouncementManager.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"

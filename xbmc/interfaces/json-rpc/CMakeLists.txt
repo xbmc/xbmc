@@ -8,6 +8,7 @@ set(SOURCES AddonsOperations.cpp
             InputOperations.cpp
             JSONRPC.cpp
             JSONServiceDescription.cpp
+            JSONUtils.cpp
             PlayerOperations.cpp
             PlaylistOperations.cpp
             ProfilesOperations.cpp

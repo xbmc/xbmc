@@ -9,11 +9,12 @@
 #pragma once
 
 #include "SavestateTypes.h"
-#include "XBDateTime.h"
 
 #include <stdint.h>
 #include <string>
 #include <vector>
+
+class CDateTime;
 
 namespace KODI
 {

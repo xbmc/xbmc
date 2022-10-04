@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "games/controllers/ControllerTypes.h"
 #include "input/joysticks/interfaces/IInputProvider.h"
 #include "input/keyboard/interfaces/IKeyboardInputProvider.h"
@@ -21,6 +20,7 @@
 #include <vector>
 
 class TiXmlDocument;
+class CDateTime;
 class CSetting;
 class IKeymap;
 
@@ -250,7 +250,7 @@ public:
    *
    * \return The time of last activation, or invalid if unknown/never active
    */
-  virtual CDateTime LastActive() { return CDateTime(); }
+  virtual CDateTime LastActive();
 
   /*!
    * \brief Get the controller profile that best represents this peripheral
