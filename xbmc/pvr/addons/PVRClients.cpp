@@ -9,6 +9,8 @@
 #include "PVRClients.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVREventLogJob.h"

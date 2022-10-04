@@ -9,17 +9,22 @@
 #pragma once
 
 #include "addons/IAddon.h"
-#include "utils/XBMCTinyXML.h"
 
-class TiXmlElement;
-class CAddonCallbacksAddon;
-class CVariant;
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+class CXBMCTinyXML;
 
 namespace ADDON
 {
 
 typedef std::vector<AddonPtr> VECADDONS;
 typedef std::vector<AddonPtr>::iterator IVECADDONS;
+
+class CAddonInfo;
+using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
 
 const char* const ORIGIN_SYSTEM = "b6a50484-93a0-4afb-a01c-8d17e059feda";
 
@@ -42,7 +47,7 @@ public:
    *
    * @return The used main type of addon
    */
-  TYPE MainType() const override { return m_addonInfo->MainType(); }
+  TYPE MainType() const override;
 
   /**
    * @brief To get the on this CAddon class processed addon type
@@ -60,7 +65,7 @@ public:
    * @param[in] type The to checked type identifier
    * @return true in case the wanted type is supported, false if not
    */
-  bool HasType(TYPE type) const override { return m_addonInfo->HasType(type); }
+  bool HasType(TYPE type) const override;
 
   /**
    * @brief To check complete addon (not only this) has a specific type
@@ -70,7 +75,7 @@ public:
    * @param[in] type Type identifier to be checked
    * @return true in case the wanted type is the main type, false if not
    */
-  bool HasMainType(TYPE type) const override { return m_addonInfo->HasType(type, true); }
+  bool HasMainType(TYPE type) const override;
 
   /**
    * @brief The get for given addon type information and extension data
@@ -90,47 +95,36 @@ public:
    * ~~~~~~~~~~~~~
    *
    */
-  const CAddonType* Type(TYPE type) const { return m_addonInfo->Type(type); }
+  const CAddonType* Type(TYPE type) const;
 
-  std::string ID() const override { return m_addonInfo->ID(); }
-  std::string Name() const override { return m_addonInfo->Name(); }
+  std::string ID() const override;
+  std::string Name() const override;
   bool IsInUse() const override { return false; }
-  bool IsBinary() const override { return m_addonInfo->IsBinary(); }
-  AddonVersion Version() const override { return m_addonInfo->Version(); }
-  AddonVersion MinVersion() const override { return m_addonInfo->MinVersion(); }
-  std::string Summary() const override { return m_addonInfo->Summary(); }
-  std::string Description() const override { return m_addonInfo->Description(); }
-  std::string Path() const override { return m_addonInfo->Path(); }
-  std::string Profile() const override { return m_addonInfo->ProfilePath(); }
+  bool IsBinary() const override;
+  AddonVersion Version() const override;
+  AddonVersion MinVersion() const override;
+  std::string Summary() const override;
+  std::string Description() const override;
+  std::string Path() const override;
+  std::string Profile() const override;
   std::string LibPath() const override;
-  std::string Author() const override { return m_addonInfo->Author(); }
-  std::string ChangeLog() const override { return m_addonInfo->ChangeLog(); }
-  std::string Icon() const override { return m_addonInfo->Icon(); }
-  ArtMap Art() const override { return m_addonInfo->Art(); }
-  std::vector<std::string> Screenshots() const override { return m_addonInfo->Screenshots(); }
-  std::string Disclaimer() const override { return m_addonInfo->Disclaimer(); }
-  AddonLifecycleState LifecycleState() const override { return m_addonInfo->LifecycleState(); }
-  std::string LifecycleStateDescription() const override
-  {
-    return m_addonInfo->LifecycleStateDescription();
-  }
-  CDateTime InstallDate() const override { return m_addonInfo->InstallDate(); }
-  CDateTime LastUpdated() const override { return m_addonInfo->LastUpdated(); }
-  CDateTime LastUsed() const override { return m_addonInfo->LastUsed(); }
-  std::string Origin() const override { return m_addonInfo->Origin(); }
-  std::string OriginName() const override { return m_addonInfo->OriginName(); }
-  uint64_t PackageSize() const override { return m_addonInfo->PackageSize(); }
-  const InfoMap& ExtraInfo() const override { return m_addonInfo->ExtraInfo(); }
-  const std::vector<DependencyInfo>& GetDependencies() const override
-  {
-    return m_addonInfo->GetDependencies();
-  }
-
-  std::string FanArt() const override
-  {
-    auto it = m_addonInfo->Art().find("fanart");
-    return it != m_addonInfo->Art().end() ? it->second : "";
-  }
+  std::string Author() const override;
+  std::string ChangeLog() const override;
+  std::string Icon() const override;
+  ArtMap Art() const override;
+  std::vector<std::string> Screenshots() const override;
+  std::string Disclaimer() const override;
+  AddonLifecycleState LifecycleState() const override;
+  std::string LifecycleStateDescription() const override;
+  CDateTime InstallDate() const override;
+  CDateTime LastUpdated() const override;
+  CDateTime LastUsed() const override;
+  std::string Origin() const override;
+  std::string OriginName() const override;
+  uint64_t PackageSize() const override;
+  const InfoMap& ExtraInfo() const override;
+  const std::vector<DependencyInfo>& GetDependencies() const override;
+  std::string FanArt() const override;
 
   /*!
    * \brief Check add-on for support from independent work instances.
@@ -380,10 +374,8 @@ public:
    \param version the version to meet.
    \return true if  min_version <= version <= current_version, false otherwise.
    */
-  bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const override
-  {
-    return m_addonInfo->MeetsVersion(versionMin, version);
-  }
+  bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const override;
+
   bool ReloadSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
   void ResetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;

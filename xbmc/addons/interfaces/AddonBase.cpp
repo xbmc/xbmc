@@ -9,6 +9,8 @@
 #include "AddonBase.h"
 
 #include "GUIUserMessages.h"
+#include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/settings/AddonSettings.h"
@@ -18,6 +20,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/lib/Setting.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 

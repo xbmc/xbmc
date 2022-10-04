@@ -12,6 +12,7 @@
 #include "GUIInfoManager.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/settings/SettingUrlEncodedString.h"

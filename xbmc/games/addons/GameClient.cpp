@@ -17,6 +17,7 @@
 #include "URL.h"
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"

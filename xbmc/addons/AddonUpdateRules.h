@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "addoninfo/AddonInfo.h"
 #include "threads/CriticalSection.h"
 
 #include <map>
@@ -19,6 +18,8 @@ namespace ADDON
 {
 
 class CAddonDatabase;
+
+enum class AddonUpdateRule;
 
 /**
  * Class - CAddonUpdateRules

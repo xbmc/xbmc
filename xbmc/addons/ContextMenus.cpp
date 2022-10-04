@@ -13,6 +13,7 @@
 #include "Repository.h"
 #include "RepositoryUpdater.h"
 #include "ServiceBroker.h"
+#include "addons/gui/GUIDialogAddonInfo.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIHelpers.h"
 
@@ -24,6 +25,11 @@ using namespace ADDON;
 bool CAddonInfo::IsVisible(const CFileItem& item) const
 {
   return item.HasAddonInfo();
+}
+
+bool CAddonInfo::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  return CGUIDialogAddonInfo::ShowForItem(item);
 }
 
 bool CAddonSettings::IsVisible(const CFileItem& item) const

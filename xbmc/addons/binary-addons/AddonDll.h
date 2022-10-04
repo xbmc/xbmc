@@ -8,15 +8,20 @@
 
 #pragma once
 
-#include "BinaryAddonManager.h"
-#include "DllAddon.h"
 #include "addons/Addon.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon_base.h"
 
-// Global addon callback handle classes
-#include "addons/interfaces/AddonBase.h"
+#include <map>
+#include <memory>
+#include <string>
+
+class DllAddon;
 
 namespace ADDON
 {
+
+class CBinaryAddonBase;
+using BinaryAddonBasePtr = std::shared_ptr<CBinaryAddonBase>;
 
 /*!
  * Addon instance handler, used as identify for std::map to find related

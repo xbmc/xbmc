@@ -9,11 +9,9 @@
 #pragma once
 
 #include "IAddon.h"
-#include "addons/kodi-dev-kit/include/kodi/AddonBase.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon_base.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
-
-#include <string>
 
 namespace ADDON
 {
@@ -44,6 +42,4 @@ namespace ADDON
       AddonPtr                  m_addon;
       ADDON_STATUS m_status;
   };
-
-
 }

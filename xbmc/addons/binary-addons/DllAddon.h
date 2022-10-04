@@ -9,7 +9,6 @@
 #pragma once
 
 #include "DynamicDll.h"
-#include "addons/kodi-dev-kit/include/kodi/AddonBase.h"
 
 class DllAddonInterface
 {
@@ -34,4 +33,3 @@ public:
     RESOLVE_METHOD_RENAME_OPTIONAL(ADDON_GetTypeMinVersion, GetAddonTypeMinVersion)
   END_METHOD_RESOLVE()
 };
-

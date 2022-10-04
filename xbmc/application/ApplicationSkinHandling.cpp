@@ -38,6 +38,7 @@
 #include "settings/SkinSettings.h"
 #include "settings/lib/Setting.h"
 #include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 

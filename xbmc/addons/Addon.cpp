@@ -11,10 +11,12 @@
 #include "AddonManager.h"
 #include "RepositoryUpdater.h"
 #include "ServiceBroker.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/settings/AddonSettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
+#include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -39,6 +41,162 @@ namespace ADDON
 CAddon::CAddon(const AddonInfoPtr& addonInfo, TYPE addonType)
   : m_addonInfo(addonInfo), m_type(addonType == ADDON_UNKNOWN ? addonInfo->MainType() : addonType)
 {
+}
+
+TYPE CAddon::MainType() const
+{
+  return m_addonInfo->MainType();
+}
+
+bool CAddon::HasType(TYPE type) const
+{
+  return m_addonInfo->HasType(type);
+}
+
+bool CAddon::HasMainType(TYPE type) const
+{
+  return m_addonInfo->HasType(type, true);
+}
+
+const CAddonType* CAddon::Type(TYPE type) const
+{
+  return m_addonInfo->Type(type);
+}
+
+std::string CAddon::ID() const
+{
+  return m_addonInfo->ID();
+}
+
+std::string CAddon::Name() const
+{
+  return m_addonInfo->Name();
+}
+
+bool CAddon::IsBinary() const
+{
+  return m_addonInfo->IsBinary();
+}
+
+AddonVersion CAddon::Version() const
+{
+  return m_addonInfo->Version();
+}
+
+AddonVersion CAddon::MinVersion() const
+{
+  return m_addonInfo->MinVersion();
+}
+
+std::string CAddon::Summary() const
+{
+  return m_addonInfo->Summary();
+}
+
+std::string CAddon::Description() const
+{
+  return m_addonInfo->Description();
+}
+
+std::string CAddon::Path() const
+{
+  return m_addonInfo->Path();
+}
+
+std::string CAddon::Profile() const
+{
+  return m_addonInfo->ProfilePath();
+}
+
+std::string CAddon::Author() const
+{
+  return m_addonInfo->Author();
+}
+
+std::string CAddon::ChangeLog() const
+{
+  return m_addonInfo->ChangeLog();
+}
+
+std::string CAddon::Icon() const
+{
+  return m_addonInfo->Icon();
+}
+
+ArtMap CAddon::Art() const
+{
+  return m_addonInfo->Art();
+}
+
+std::vector<std::string> CAddon::Screenshots() const
+{
+  return m_addonInfo->Screenshots();
+}
+
+std::string CAddon::Disclaimer() const
+{
+  return m_addonInfo->Disclaimer();
+}
+
+AddonLifecycleState CAddon::LifecycleState() const
+{
+  return m_addonInfo->LifecycleState();
+}
+
+std::string CAddon::LifecycleStateDescription() const
+{
+  return m_addonInfo->LifecycleStateDescription();
+}
+
+CDateTime CAddon::InstallDate() const
+{
+  return m_addonInfo->InstallDate();
+}
+
+CDateTime CAddon::LastUpdated() const
+{
+  return m_addonInfo->LastUpdated();
+}
+
+CDateTime CAddon::LastUsed() const
+{
+  return m_addonInfo->LastUsed();
+}
+
+std::string CAddon::Origin() const
+{
+  return m_addonInfo->Origin();
+}
+
+std::string CAddon::OriginName() const
+{
+  return m_addonInfo->OriginName();
+}
+
+uint64_t CAddon::PackageSize() const
+{
+  return m_addonInfo->PackageSize();
+}
+
+const InfoMap& CAddon::ExtraInfo() const
+{
+  return m_addonInfo->ExtraInfo();
+}
+
+const std::vector<DependencyInfo>& CAddon::GetDependencies() const
+{
+  return m_addonInfo->GetDependencies();
+}
+
+std::string CAddon::FanArt() const
+{
+  auto it = m_addonInfo->Art().find("fanart");
+  return it != m_addonInfo->Art().end() ? it->second : "";
+}
+
+bool CAddon::MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const
+{
+  return m_addonInfo->MeetsVersion(versionMin, version);
 }
 
 /**

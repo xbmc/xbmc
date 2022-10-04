@@ -15,6 +15,7 @@
 #include "TextureDatabase.h"
 #include "addons/Addon.h"
 #include "addons/IAddon.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "dbwrappers/DatabaseQuery.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"

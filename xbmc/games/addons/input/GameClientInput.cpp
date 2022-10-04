@@ -16,6 +16,7 @@
 #include "GameClientPort.h"
 #include "GameClientTopology.h"
 #include "ServiceBroker.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Game.h"
 #include "games/GameServices.h"
 #include "games/addons/GameClient.h"
