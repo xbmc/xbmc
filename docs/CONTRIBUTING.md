@@ -25,7 +25,7 @@ Reviews are a great way to get familiar with the codebase. If you would like to 
 ## Coding guidelines
 * **Follow our [code guidelines](CODE_GUIDELINES.md)**. New code should follow those guidelines even if existing code doesn't. If you're up to it, improve existing code and submit it in separate commits.
 * **Document the code**. You know you're brilliant, but maybe you'd like to understand what you did a year from now. Or, code God forbid, help others... Nope, `// Magic. Do not touch!` does not count as documentation.
-* **Separate code from cosmetics**. Code and cosmetic changes should be in separate commits. It's already hard to review code without added noise. Of course, deleting a **few** trailing spaces does not warrant a separate commit. Use your judgement.
+* **Separate code from cosmetics**. Don't mix code and unrelated cosmetic changes in the same commit. It's already hard to review code without added noise. Of course, deleting a **few** trailing spaces does not warrant a separate commit. Use your judgement. Also, note that the PR build job expects each individual commit to be formatted according to the [`.clang-format`](https://github.com/xbmc/xbmc/blob/master/.clang-format) rules, so if your change touches existing code that needs reformatting to satisfy the current rules, then those would be considered related cosmetic changes that should be included in the same commit.
 * **Test your changes**. Kodi's **[continuous integration system](http://jenkins.kodi.tv/)** builds every PR automatically. Nonetheless, you're expected to test the code on your development platform.
 
 ## Updating your PR

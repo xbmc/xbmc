@@ -60,9 +60,11 @@
 ## 1. Motivation
 When working in a large group, the two most important values are readability and maintainability. We code for other people, not computers. To accomplish these goals, we have created a unified set of code conventions.
 
-Conventions can be bent or broken in the interest of making code more readable and maintainable. However, if you submit a patch that contains excessive style conflicts, you may be asked to improve your code before your pull request is reviewed.
+In the repository root directory, there is a [`.clang-format`](https://github.com/xbmc/xbmc/blob/master/.clang-format) file that implements the rules as specified here. You are encouraged to run [`clang-format`](https://clang.llvm.org/docs/ClangFormat.html) on any newly created files. It is currently not recommended to do so on preexisting files because all the formatting changes will clutter your commits and pull request.
 
-In the repository root directory, there is a `.clang-format` file that implements the rules as specified here. You are encouraged to run `clang-format` on any newly created files. It is currently not recommended to do so on preexisting files because all the formatting changes will clutter your commits and pull request.
+When you create a pull request, the PR build job will run `clang-format` on your commits and provide patches for any parts that don't satisfy the current `.clang-format` rules. You should apply these patches and amend your pull request accordingly.
+
+Conventions can be bent or broken in the interest of making code more readable and maintainable. However, if you submit a patch that contains excessive style conflicts, you may be asked to improve your code before your pull request is reviewed.
 
 **[back to top](#table-of-contents)**
 
@@ -247,8 +249,8 @@ void Test(void);
 ### 3.7. Exceptions to the Formatting Rules For Better Readability
 There are some special situations where vertical alignment and longer lines does greatly aid readability, for example the initialization of some table-like multiple row structures. In these **rare** cases exceptions can be made to the formatting rules on vertical alignment, and the defined line length can be exceeded. 
 
-The layout can be protected from being reformatted when `clang-format` is applied by adding `// clang-format off` and `// clang-format on` statements either side of the lines of code.
-For example
+To prevent the layout from being reformatted, tell `clang-format` to [disable formatting](https://clang.llvm.org/docs/ClangFormatStyleOptions.html#disabling-formatting-on-a-piece-of-code) on that section of code by surrounding it with the special comments `// clang-format off` and `// clang-format on`.
+For example:
 ```
 // clang-format off
 static const CGUIDialogMediaFilter::Filter filterList[] = {
