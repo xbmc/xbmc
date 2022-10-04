@@ -24,6 +24,7 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/SettingSection.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"

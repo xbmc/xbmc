@@ -8,15 +8,20 @@
 
 #pragma once
 
-#include "Addon.h"
 #include "AddonDatabase.h"
 #include "AddonUpdateRules.h"
-#include "Repository.h"
+#include "addons/Addon.h"
+#include "addons/Repository.h"
+#include "addons/addoninfo/AddonType.h"
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
 
 #include <map>
+#include <memory>
 #include <mutex>
+#include <set>
+#include <string>
+#include <vector>
 
 namespace ADDON
 {
@@ -25,6 +30,8 @@ namespace ADDON
   typedef std::map<std::string, AddonInfoPtr> ADDON_INFO_LIST;
 
   const std::string ADDON_PYTHON_EXT           = "*.py";
+
+  enum class AddonDisabledReason;
 
   enum class AllowCheckForUpdates : bool;
 
@@ -52,7 +59,12 @@ namespace ADDON
     CHOICE_NO = false,
   };
 
+  enum class AddonOriginType;
+
+  struct AddonEvent;
   struct CAddonWithUpdate;
+
+  using AddonInfos = std::vector<AddonInfoPtr>;
 
   /**
   * Class - IAddonMgrCallback

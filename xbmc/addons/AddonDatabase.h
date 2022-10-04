@@ -8,16 +8,21 @@
 
 #pragma once
 
-#include "AddonBuilder.h"
-#include "addons/Addon.h"
+#include "XBDateTime.h"
+#include "addons/AddonVersion.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "dbwrappers/Database.h"
 
 #include <string>
 #include <vector>
 
+class CVariant;
+
 namespace ADDON
 {
+
+enum class AddonDisabledReason;
+enum class AddonUpdateRule;
 
 /*!
  * @brief Addon content serializer/deserializer.

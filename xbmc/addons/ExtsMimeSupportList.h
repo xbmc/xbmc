@@ -8,16 +8,22 @@
 
 #pragma once
 
-#include "addons/AddonEvents.h"
-#include "addons/IAddon.h"
 #include "addons/IAddonSupportList.h"
+#include "addons/addoninfo/AddonType.h"
 #include "threads/CriticalSection.h"
 
+#include <map>
+#include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 
 namespace ADDON
 {
 class CAddonMgr;
+class CAddonInfo;
+
+struct AddonEvent;
 }
 
 namespace KODI

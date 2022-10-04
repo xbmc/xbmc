@@ -8,16 +8,27 @@
 
 #pragma once
 
-#include "AddonDll.h"
-#include "addons/AddonVersion.h"
-#include "addons/kodi-dev-kit/include/kodi/AddonBase.h"
+#include "addons/IAddon.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon_base.h"
+#include "addons/kodi-dev-kit/include/kodi/versions.h"
+#include "threads/CriticalSection.h"
 
 #include <memory>
+#include <string>
 
 class CSetting;
 
 namespace ADDON
 {
+
+class CAddonDll;
+using AddonDllPtr = std::shared_ptr<CAddonDll>;
+
+class CAddonInfo;
+using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
+
+class CBinaryAddonBase;
+using BinaryAddonBasePtr = std::shared_ptr<CBinaryAddonBase>;
 
 class IAddonInstanceHandler
 {

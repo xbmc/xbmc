@@ -8,6 +8,8 @@
 
 #include "InputStreamAddon.h"
 
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/VideoCodec.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"

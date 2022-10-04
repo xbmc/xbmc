@@ -97,17 +97,8 @@ public:
   void RegisterButtonMap(CPeripheral* device, KODI::JOYSTICK::IButtonMap* buttonMap);
   void UnregisterButtonMap(KODI::JOYSTICK::IButtonMap* buttonMap);
 
-  static inline bool ProvidesJoysticks(const ADDON::AddonInfoPtr& addonInfo)
-  {
-    return addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_joysticks").asBoolean();
-  }
-
-  static inline bool ProvidesButtonMaps(const ADDON::AddonInfoPtr& addonInfo)
-  {
-    return addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)
-        ->GetValue("@provides_buttonmaps")
-        .asBoolean();
-  }
+  static bool ProvidesJoysticks(const ADDON::AddonInfoPtr& addonInfo);
+  static bool ProvidesButtonMaps(const ADDON::AddonInfoPtr& addonInfo);
 
 private:
   void UnregisterButtonMap(CPeripheral* device);

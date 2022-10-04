@@ -9,6 +9,7 @@
 #pragma once
 
 #include "Addon.h"
+#include "addons/AddonVersion.h"
 #include "utils/Digest.h"
 #include "utils/ProgressJob.h"
 

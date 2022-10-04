@@ -14,6 +14,7 @@
 #include "addons/BinaryAddonCache.h"
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/RepositoryUpdater.h"
+#include "addons/Service.h"
 #include "addons/VFSEntry.h"
 #include "addons/binary-addons/BinaryAddonManager.h"
 #include "cores/DataCacheCore.h"

@@ -11,6 +11,7 @@
 #include "AddonManager.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "utils/StringUtils.h"
 
 #include <utility>

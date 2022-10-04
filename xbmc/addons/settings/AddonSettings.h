@@ -13,15 +13,20 @@
 #include "settings/SettingCreator.h"
 #include "settings/SettingsBase.h"
 #include "settings/lib/ISettingCallback.h"
-#include "settings/lib/SettingDependency.h"
-#include "settings/lib/SettingSection.h"
-#include "utils/logtypes.h"
 
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
+#include <vector>
 
+enum class SettingDependencyOperator;
+
+class CSettingCategory;
+class CSettingGroup;
+class CSettingDependency;
 class CXBMCTinyXML;
+
 struct StringSettingOption;
 
 namespace ADDON

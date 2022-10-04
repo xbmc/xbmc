@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "PeripheralAddonTranslator.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/controllers/Controller.h"
@@ -814,6 +815,16 @@ void CPeripheralAddon::RefreshButtonMaps(const std::string& strDeviceName /* = "
     if (strDeviceName.empty() || strDeviceName == it->first->DeviceName())
       it->second->Load();
   }
+}
+
+bool CPeripheralAddon::ProvidesJoysticks(const ADDON::AddonInfoPtr& addonInfo)
+{
+  return addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_joysticks").asBoolean();
+}
+
+bool CPeripheralAddon::ProvidesButtonMaps(const ADDON::AddonInfoPtr& addonInfo)
+{
+  return addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean();
 }
 
 void CPeripheralAddon::TriggerDeviceScan()

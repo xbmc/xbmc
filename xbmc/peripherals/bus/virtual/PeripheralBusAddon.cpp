@@ -9,7 +9,9 @@
 #include "PeripheralBusAddon.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/PeripheralAddon.h"

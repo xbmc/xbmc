@@ -8,7 +8,9 @@
 #include "ExtsMimeSupportList.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/AudioDecoder.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"

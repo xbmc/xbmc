@@ -14,6 +14,7 @@
 #include "addons/AddonManager.h"
 #include "addons/GameResource.h"
 #include "addons/IAddon.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"

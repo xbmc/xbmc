@@ -10,6 +10,8 @@
 
 #include "settings/lib/Setting.h"
 
+class CSettingsManager;
+
 namespace ADDON
 {
   class CSettingUrlEncodedString : public CSettingString

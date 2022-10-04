@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/binary-addons/AddonDll.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxUtils.h"
 #include "dialogs/GUIDialogKaiToast.h" //! @todo get rid of GUI in core
 #include "events/EventLog.h"
