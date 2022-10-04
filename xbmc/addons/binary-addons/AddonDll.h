@@ -11,7 +11,6 @@
 #include "BinaryAddonManager.h"
 #include "DllAddon.h"
 #include "addons/Addon.h"
-#include "utils/XMLUtils.h"
 
 // Global addon callback handle classes
 #include "addons/interfaces/AddonBase.h"
