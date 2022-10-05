@@ -553,6 +553,6 @@ int CPluginDirectory::GetWatchedMode(int handle, const char *content)
   CPluginDirectory *dir = GetScriptFromHandle(handle);
   if (!dir)
     return WatchedModeAll;
-	return CMediaSettings::GetInstance().GetWatchedMode((!content || !content[0]) ? dir->m_listItems->GetContent() : content);
+  return CMediaSettings::GetInstance().GetWatchedMode((!content || !content[0]) ? dir->m_listItems->GetContent() : content);
 }
 
