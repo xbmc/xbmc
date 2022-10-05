@@ -15,6 +15,7 @@
 #include "cores/AudioEngine/Sinks/pipewire/PipewireNode.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireStream.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <pipewire/keys.h>
