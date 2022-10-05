@@ -422,6 +422,18 @@ struct PlayerControllerState
                                                 GCCONTROLLER_EXTENDED_GAMEPAD_BUTTON::OPTION}];
       }
     }
+    if (@available(iOS 14.0, tvOS 14.0, macOS 11.0, *))
+    {
+      // buttonHome
+      if (gamepad.buttonHome == element)
+      {
+        message = [self setButtonState:static_cast<GCControllerButtonInput*>(element)
+                             withEvent:&newEvent
+                           withMessage:@"Home Button"
+                         withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::EXTENDED,
+                                                      GCCONTROLLER_EXTENDED_GAMEPAD_BUTTON::HOME}];
+      }
+    }
     [cbmanager SetDigitalEvent:newEvent];
 
     //! @todo Debug Purposes only - excessive log spam
