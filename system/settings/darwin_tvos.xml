@@ -71,21 +71,21 @@
         <!-- Siri remote sensitivity -->
         <setting id="input.siriremotehorizontalsensitivity" type="integer" label="34009">
           <level>2</level>
-          <default>400</default>
+          <default>1000</default>
           <constraints>
             <minimum>50</minimum>
             <step>50</step>
-            <maximum>1000</maximum>
+            <maximum>1500</maximum>
           </constraints>
           <control type="spinner" format="integer" delayed="false"/>
         </setting>
         <setting id="input.siriremoteverticalsensitivity" type="integer" label="34010">
           <level>2</level>
-          <default>300</default>
+          <default>550</default>
           <constraints>
             <minimum>50</minimum>
             <step>50</step>
-            <maximum>1000</maximum>
+            <maximum>1500</maximum>
           </constraints>
           <control type="spinner" format="integer" delayed="false"/>
         </setting>
