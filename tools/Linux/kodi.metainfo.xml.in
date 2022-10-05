@@ -124,5 +124,6 @@
         <control>touch</control>
         <control>tv-remote</control>
         <control>gamepad</control>
+        <control>tablet</control>
     </recommends>
 </component>
