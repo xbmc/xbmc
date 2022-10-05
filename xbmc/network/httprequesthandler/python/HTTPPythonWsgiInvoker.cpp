@@ -208,12 +208,12 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   catch (const XBMCAddon::WrongTypeException& e)
   {
     logger->error("failed to prepare WsgiResponse object with wrong type exception: {}",
-                  e.GetMessage());
+                  e.GetExMessage());
     goto cleanup;
   }
   catch (const XbmcCommons::Exception& e)
   {
-    logger->error("failed to prepare WsgiResponse object with exception: {}", e.GetMessage());
+    logger->error("failed to prepare WsgiResponse object with exception: {}", e.GetExMessage());
     goto cleanup;
   }
   catch (...)
@@ -255,12 +255,12 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
     catch (const XBMCAddon::WrongTypeException& e)
     {
       logger->error("failed to parse result iterable object with wrong type exception: {}",
-                    e.GetMessage());
+                    e.GetExMessage());
       goto cleanup;
     }
     catch (const XbmcCommons::Exception& e)
     {
-      logger->error("failed to parse result iterable object with exception: {}", e.GetMessage());
+      logger->error("failed to parse result iterable object with exception: {}", e.GetExMessage());
       goto cleanup;
     }
     catch (...)
