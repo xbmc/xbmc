@@ -220,16 +220,16 @@ void doMethod(Node method, MethodType methodType)
     }
     catch (const XBMCAddon::WrongTypeException& e)
     {
-      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetMessage());
-      PyErr_SetString(PyExc_TypeError, e.GetMessage()); <%
+      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetExMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetExMessage()); <%
       if (!destructor) {  %>
       return NULL; <%
       } %>
     }
     catch (const XbmcCommons::Exception& e)
     {
-      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetMessage());
-      PyErr_SetString(PyExc_RuntimeError, e.GetMessage()); <%
+      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetExMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetExMessage()); <%
       if (!destructor) {  %>
       return NULL; <%
       } %>
@@ -464,14 +464,14 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     }
     catch (const XBMCAddon::WrongTypeException& e)
     {
-      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetMessage());
-      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetExMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetExMessage());
       return NULL;
     }
     catch (const XbmcCommons::Exception& e)
     {
-      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetMessage());
-      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetExMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetExMessage());
       return NULL;
     }
     catch (...)
@@ -498,14 +498,14 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     }
     catch (const XBMCAddon::WrongTypeException& e)
     {
-      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetMessage());
-      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetExMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetExMessage());
       return -1;
     }
     catch (const XbmcCommons::Exception& e)
     {
-      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetMessage());
-      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetExMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetExMessage());
       return -1;
     }
     catch (...)
@@ -563,14 +563,14 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     }
     catch (const XBMCAddon::WrongTypeException& e)
     {
-      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetMessage());
-      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetExMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetExMessage());
       return NULL;
     }
     catch (const XbmcCommons::Exception& e)
     {
-      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetMessage());
-      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetExMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetExMessage());
       return NULL;
     }
     catch (...)
@@ -604,14 +604,14 @@ void doClassMethodInfo(Node clazz, List initTypeCalls)
     }
     catch (const XBMCAddon::WrongTypeException& e)
     {
-      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetMessage());
-      PyErr_SetString(PyExc_TypeError, e.GetMessage());
+      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetExMessage());
+      PyErr_SetString(PyExc_TypeError, e.GetExMessage());
       return NULL;
     }
     catch (const XbmcCommons::Exception& e)
     {
-      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetMessage());
-      PyErr_SetString(PyExc_RuntimeError, e.GetMessage());
+      CLog::Log(LOGERROR,"EXCEPTION: {}",e.GetExMessage());
+      PyErr_SetString(PyExc_RuntimeError, e.GetExMessage());
       return NULL;
     }
     catch (...)

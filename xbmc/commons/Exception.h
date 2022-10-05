@@ -80,7 +80,7 @@ namespace XbmcCommons
 
     virtual void LogThrowMessage(const char* prefix = NULL) const;
 
-    inline virtual const char* GetMessage() const { return message.c_str(); }
+    inline virtual const char* GetExMessage() const { return message.c_str(); }
   };
 
   /**
