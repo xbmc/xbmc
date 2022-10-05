@@ -20,8 +20,6 @@
 #import <Foundation/Foundation.h>
 #import <GameController/GCController.h>
 
-// TODO: replace all `respondsToSelector:` checks with @available after switching to 13 SDK
-
 struct PlayerControllerState
 {
   BOOL dpadLeftPressed;
@@ -229,17 +227,6 @@ struct PlayerControllerState
                            withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO,
                                                         GCCONTROLLER_MICRO_GAMEPAD_BUTTON::X}];
         }
-
-        // buttonMenu
-        else if ([gamepad respondsToSelector:@selector(buttonMenu)] &&
-                 [gamepad performSelector:@selector(buttonMenu)] == element)
-        {
-          message = [self setButtonState:static_cast<GCControllerButtonInput*>(element)
-                               withEvent:&newEvent
-                             withMessage:@"Menu Button"
-                           withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO,
-                                                        GCCONTROLLER_MICRO_GAMEPAD_BUTTON::MENU}];
-        }
         // d-pad
         else if (gamepad.dpad == element)
         {
@@ -247,6 +234,18 @@ struct PlayerControllerState
                           withEvent:&newEvent
                       withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO}
                     withplayerIndex:static_cast<int>(controller.playerIndex)];
+        }
+        if (@available(iOS 13.0, tvOS 13.0, macOS 10.15, *))
+        {
+          // buttonMenu
+          if (gamepad.buttonMenu == element)
+          {
+            message = [self setButtonState:static_cast<GCControllerButtonInput*>(element)
+                                 withEvent:&newEvent
+                               withMessage:@"Menu Button"
+                             withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO,
+                                                          GCCONTROLLER_MICRO_GAMEPAD_BUTTON::MENU}];
+          }
         }
 
         [cbmanager SetDigitalEvent:newEvent];
@@ -348,26 +347,6 @@ struct PlayerControllerState
                        withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::EXTENDED,
                                                     GCCONTROLLER_EXTENDED_GAMEPAD_BUTTON::Y}];
     }
-    // buttonMenu
-    else if ([gamepad respondsToSelector:@selector(buttonMenu)] &&
-             [gamepad performSelector:@selector(buttonMenu)] == element)
-    {
-      message = [self setButtonState:static_cast<GCControllerButtonInput*>(element)
-                           withEvent:&newEvent
-                         withMessage:@"Menu Button"
-                       withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::EXTENDED,
-                                                    GCCONTROLLER_EXTENDED_GAMEPAD_BUTTON::MENU}];
-    }
-    // buttonOptions
-    else if ([gamepad respondsToSelector:@selector(buttonOptions)] &&
-             [gamepad performSelector:@selector(buttonOptions)] == element)
-    {
-      message = [self setButtonState:static_cast<GCControllerButtonInput*>(element)
-                           withEvent:&newEvent
-                         withMessage:@"Option Button"
-                       withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::EXTENDED,
-                                                    GCCONTROLLER_EXTENDED_GAMEPAD_BUTTON::OPTION}];
-    }
     // d-pad
     else if (gamepad.dpad == element)
     {
@@ -419,6 +398,28 @@ struct PlayerControllerState
                    withInputInfo:InputValueInfo{
                                      GCCONTROLLER_TYPE::EXTENDED,
                                      GCCONTROLLER_EXTENDED_GAMEPAD_BUTTON::RIGHTTHUMBSTICKBUTTON}];
+      }
+    }
+    if (@available(iOS 13.0, tvOS 13.0, macOS 10.15, *))
+    {
+      // buttonMenu
+      if (gamepad.buttonMenu == element)
+      {
+        message = [self setButtonState:static_cast<GCControllerButtonInput*>(element)
+                             withEvent:&newEvent
+                           withMessage:@"Menu Button"
+                         withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::EXTENDED,
+                                                      GCCONTROLLER_EXTENDED_GAMEPAD_BUTTON::MENU}];
+      }
+      // buttonOptions
+      else if (gamepad.buttonOptions == element)
+      {
+        message =
+            [self setButtonState:static_cast<GCControllerButtonInput*>(element)
+                       withEvent:&newEvent
+                     withMessage:@"Option Button"
+                   withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::EXTENDED,
+                                                GCCONTROLLER_EXTENDED_GAMEPAD_BUTTON::OPTION}];
       }
     }
     [cbmanager SetDigitalEvent:newEvent];
@@ -563,10 +564,6 @@ struct PlayerControllerState
 
     // Check if optional buttons exist on mapped controller
     // button object is nil if button doesn't exist
-    if ([controller.extendedGamepad respondsToSelector:@selector(buttonOptions)] &&
-        [controller.extendedGamepad performSelector:@selector(buttonOptions)] != nil)
-      ++optionalButtonCount;
-
     if (@available(iOS 12.1, tvOS 12.1, macOS 10.14.1, *))
     {
       if (controller.extendedGamepad.leftThumbstickButton)
@@ -574,6 +571,9 @@ struct PlayerControllerState
       if (controller.extendedGamepad.rightThumbstickButton)
         ++optionalButtonCount;
     }
+    if (@available(iOS 13.0, tvOS 13.0, macOS 10.15, *))
+      if (controller.extendedGamepad.buttonOptions != nil)
+        ++optionalButtonCount;
   }
   return optionalButtonCount;
 }
