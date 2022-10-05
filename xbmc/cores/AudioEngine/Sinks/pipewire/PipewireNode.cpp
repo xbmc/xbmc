@@ -10,6 +10,7 @@
 
 #include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <spa/param/format.h>
