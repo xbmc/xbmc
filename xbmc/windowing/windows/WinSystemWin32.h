@@ -109,6 +109,7 @@ public:
   virtual bool DPIChanged(WORD dpi, RECT windowRect) const;
   bool IsMinimized() const { return m_bMinimized; }
   void SetMinimized(bool minimized);
+  int GetGuiSdrPeakLuminance() const;
 
   // touchscreen support
   typedef BOOL(WINAPI *pGetGestureInfo)(HGESTUREINFO, PGESTUREINFO);

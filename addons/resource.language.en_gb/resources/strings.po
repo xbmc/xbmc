@@ -18854,7 +18854,13 @@ msgctxt "#36053"
 msgid "Tuner Device"
 msgstr ""
 
-#empty strings from id 36054 to 36097
+#empty strings from id 36054 to 36096
+
+#. Label of setting "System / Display / GUI peak luminance in HDR PQ mode"
+#: system/settings/settings.xml
+msgctxt "#36097"
+msgid "GUI peak luminance in HDR PQ mode"
+msgstr ""
 
 #. Label of setting "System / Display / Use 10 bit for SDR"
 #: system/settings/settings.xml
@@ -21081,7 +21087,11 @@ msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr ""
 
-#empty string with id 36547
+#. Description of setting with label #36097 "System / Display / GUI peak luminance in HDR PQ mode"
+#: system/settings/settings.xml
+msgctxt "#36547"
+msgid "Sets the peak luminance level for GUI elements while the display is in HDR PQ mode. This affects all OSD, subtitles and graphics that are SDR in origin."
+msgstr ""
 
 #. Description of setting with label #37021 "Set GUI resolution limit"
 #: system/settings/android.xml

@@ -650,4 +650,11 @@ bool CWinSystemWin10::MessagePump()
   return m_winEvents->MessagePump();
 }
 
+int CWinSystemWin10::GetGuiSdrPeakLuminance() const
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  return settings->GetInt(CSettings::SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE);
+}
+
 #pragma pack(pop)

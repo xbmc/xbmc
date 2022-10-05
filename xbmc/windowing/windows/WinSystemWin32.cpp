@@ -1285,3 +1285,10 @@ RECT CWinSystemWin32::GetVirtualScreenRect()
 
   return rect;
 }
+
+int CWinSystemWin32::GetGuiSdrPeakLuminance() const
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  return settings->GetInt(CSettings::SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE);
+}

@@ -94,6 +94,7 @@ public:
   virtual bool DPIChanged(WORD dpi, RECT windowRect) const;
   bool IsMinimized() const { return m_bMinimized; }
   void SetMinimized(bool minimized) { m_bMinimized = minimized; }
+  int GetGuiSdrPeakLuminance() const;
 
   bool CanDoWindowed() override;
 
