@@ -14,6 +14,8 @@
 #if defined(TARGET_DARWIN_IOS)
 #include "platform/darwin/ios/IOSKeyboardView.h"
 #include "platform/darwin/ios/XBMCController.h"
+
+#import <GameController/GameController.h>
 #define KEYBOARDVIEW_CLASS IOSKeyboardView
 #elif defined(TARGET_DARWIN_TVOS)
 #include "platform/darwin/tvos/TVOSKeyboardView.h"
@@ -124,9 +126,8 @@ void CDarwinEmbedKeyboard::invalidateCallback()
 bool CDarwinEmbedKeyboard::hasExternalKeyboard()
 {
 #if defined(TARGET_DARWIN_IOS)
-  // @todo: use @available after switching to iOS 14 SDK or later
-  if (auto keyboardClassIOS14 = NSClassFromString(@"GCKeyboard"))
-    return [keyboardClassIOS14 performSelector:@selector(coalescedKeyboard)] != nil;
+  if (@available(iOS 14.0, *))
+    return GCKeyboard.coalescedKeyboard != nil;
 
   // https://stackoverflow.com/questions/31991873/how-to-reliably-detect-if-an-external-keyboard-is-connected-on-ios-9
   const auto keyboardClassStr = "UIKeyboardImpl";
