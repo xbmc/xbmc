@@ -44,7 +44,6 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 
 #include <algorithm>
@@ -87,7 +86,7 @@ namespace VIDEO
       if (m_bClean && m_pathsToScan.empty())
       {
         std::set<int> paths;
-        CVideoLibraryQueue::GetInstance().CleanLibrary(paths, false, m_handle);
+        m_database.CleanDatabase(m_handle, paths, false);
 
         if (m_handle)
           m_handle->MarkFinished();
@@ -145,7 +144,7 @@ namespace VIDEO
       if (!bCancelled)
       {
         if (m_bClean)
-          CVideoLibraryQueue::GetInstance().CleanLibrary(m_pathsToClean, false, m_handle);
+          m_database.CleanDatabase(m_handle, m_pathsToClean, false);
         else
         {
           if (m_handle)
