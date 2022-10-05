@@ -8,6 +8,7 @@
 
 #include "WSDiscoveryWin32.h"
 
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include "platform/win32/CharsetConverter.h"

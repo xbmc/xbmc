@@ -8,6 +8,7 @@
 
 #include "StaticProvider.h"
 
+#include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/XMLUtils.h"
 

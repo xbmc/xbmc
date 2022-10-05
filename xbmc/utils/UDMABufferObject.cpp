@@ -12,9 +12,11 @@
 #include "utils/log.h"
 
 #include <drm_fourcc.h>
+#include <fcntl.h>
 #include <linux/udmabuf.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include <unistd.h>
 
 namespace
 {

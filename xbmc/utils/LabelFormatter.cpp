@@ -15,6 +15,7 @@
 #include "URIUtils.h"
 #include "Util.h"
 #include "Variant.h"
+#include "addons/IAddon.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/PictureInfoTag.h"

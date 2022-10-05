@@ -13,6 +13,8 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/X11/WinSystemX11GLContext.h"
 
+#include <unistd.h>
+
 using namespace KODI::WINDOWING::X11;
 
 bool CVideoSyncOML::Setup(PUPDATECLOCK func)

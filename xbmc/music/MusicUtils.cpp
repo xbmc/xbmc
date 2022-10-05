@@ -25,6 +25,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/JobManager.h"
+#include "utils/StringUtils.h"
 
 using namespace MUSIC_INFO;
 using namespace XFILE;

@@ -15,6 +15,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/RegExp.h"
 #include "utils/StreamDetails.h"
+#include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"

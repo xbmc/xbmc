@@ -16,6 +16,7 @@
 
 #include <poll.h>
 #include <sys/eventfd.h>
+#include <unistd.h>
 
 CFDEventMonitor::CFDEventMonitor() :
   CThread("FDEventMonitor")

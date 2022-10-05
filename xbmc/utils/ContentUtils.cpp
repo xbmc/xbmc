@@ -9,6 +9,7 @@
 #include "ContentUtils.h"
 
 #include "FileItem.h"
+#include "utils/StringUtils.h"
 #include "video/VideoInfoTag.h"
 
 namespace

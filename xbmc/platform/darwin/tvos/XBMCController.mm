@@ -42,6 +42,7 @@
 
 #import <AVKit/AVDisplayManager.h>
 #import <AVKit/UIWindow.h>
+#include <unistd.h>
 
 XBMCController* g_xbmcController;
 

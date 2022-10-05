@@ -26,6 +26,7 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"

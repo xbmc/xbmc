@@ -15,6 +15,7 @@
 #include "interfaces/legacy/wsgi/WsgiInputStream.h"
 #include "interfaces/legacy/wsgi/WsgiResponse.h"
 #include "interfaces/python/swig.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 #include <utility>

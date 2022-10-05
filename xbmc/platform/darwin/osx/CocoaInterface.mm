@@ -10,6 +10,7 @@
 #include "CompileInfo.h"
 #import "DllPaths_generated.h"
 #include "ServiceBroker.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 #if defined(HAS_SDL)
 #include "windowing/osx/SDL/WinSystemOSXSDL.h"
