@@ -92,7 +92,7 @@ CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer* CGBMUtils::CGBMDevice::CG
     m_buffers.pop();
   }
 
-  return m_buffers.back().get();
+  return m_buffers.front().get();
 }
 
 CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer::CGBMSurfaceBuffer(gbm_surface* surface)
