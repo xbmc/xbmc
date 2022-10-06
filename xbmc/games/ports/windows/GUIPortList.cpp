@@ -12,6 +12,7 @@
 #include "GUIPortDefines.h"
 #include "GUIPortWindow.h"
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
 #include "games/GameServices.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/input/GameClientInput.h"

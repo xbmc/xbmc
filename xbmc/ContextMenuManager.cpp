@@ -13,6 +13,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "addons/Addon.h"
+#include "addons/AddonEvents.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/ContextMenus.h"
 #include "addons/IAddon.h"

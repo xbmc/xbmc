@@ -8,15 +8,20 @@
 
 #pragma once
 
-#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 
+#include <map>
 #include <memory>
-#include <set>
+#include <string>
+#include <vector>
 
+class CDateTime;
 class TiXmlElement;
 
 namespace ADDON
 {
+
+class AddonVersion;
 
 using AddonInstanceId = uint32_t;
 
@@ -59,8 +64,16 @@ typedef std::shared_ptr<CSkinInfo> SkinPtr;
 class CPluginSource;
 typedef std::shared_ptr<CPluginSource> PluginPtr;
 
+enum class AddonInstanceSupport;
+enum class AddonLifecycleState;
+
 class CAddonMgr;
 class CAddonSettings;
+
+struct DependencyInfo;
+
+using InfoMap = std::map<std::string, std::string>;
+using ArtMap = std::map<std::string, std::string>;
 
 class IAddon : public std::enable_shared_from_this<IAddon>
 {

@@ -8,6 +8,9 @@
 
 #include "BinaryAddonBase.h"
 
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/binary-addons/AddonDll.h"
+#include "addons/binary-addons/AddonInstanceHandler.h"
 #include "utils/log.h"
 
 #include <mutex>

@@ -19,6 +19,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonRepos.h"
 #include "addons/Repository.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
@@ -33,6 +34,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/FileOperationJob.h"
 #include "utils/FileUtils.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
@@ -52,6 +54,91 @@ using namespace std::chrono_literals;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 using KODI::UTILITY::TypedDigest;
+
+namespace
+{
+class CAddonInstallJob : public CFileOperationJob
+{
+public:
+  CAddonInstallJob(const ADDON::AddonPtr& addon,
+                   const ADDON::RepositoryPtr& repo,
+                   AutoUpdateJob isAutoUpdate);
+
+  bool DoWork() override;
+
+  static constexpr const char* TYPE_DOWNLOAD = "DOWNLOAD";
+  static constexpr const char* TYPE_INSTALL = "INSTALL";
+  /*!
+   * \brief Returns the current processing type in the installation job
+   *
+   * \return The current processing type as string, can be \ref TYPE_DOWNLOAD or
+   *         \ref TYPE_INSTALL
+   */
+  const char* GetType() const override { return m_currentType; }
+
+  /*! \brief Find the add-on and its repository for the given add-on ID
+   *  \param addonID ID of the add-on to find
+   *  \param[out] repo the repository to use
+   *  \param[out] addon Add-on with the given add-on ID
+   *  \return True if the add-on and its repository were found, false otherwise.
+   */
+  static bool GetAddon(const std::string& addonID,
+                       ADDON::RepositoryPtr& repo,
+                       ADDON::AddonPtr& addon);
+
+  void SetDependsInstall(DependencyJob dependsInstall) { m_dependsInstall = dependsInstall; }
+  void SetAllowCheckForUpdates(AllowCheckForUpdates allowCheckForUpdates)
+  {
+    m_allowCheckForUpdates = allowCheckForUpdates;
+  };
+
+private:
+  void OnPreInstall();
+  void OnPostInstall();
+  bool Install(const std::string& installFrom,
+               const ADDON::RepositoryPtr& repo = ADDON::RepositoryPtr());
+  bool DownloadPackage(const std::string& path, const std::string& dest);
+
+  bool DoFileOperation(FileAction action,
+                       CFileItemList& items,
+                       const std::string& file,
+                       bool useSameJob = true);
+
+  /*! \brief Queue a notification for addon installation/update failure
+   \param addonID - addon id
+   \param fileName - filename which is shown in case the addon id is unknown
+   \param message - error message to be displayed
+   */
+  void ReportInstallError(const std::string& addonID,
+                          const std::string& fileName,
+                          const std::string& message = "");
+
+  ADDON::AddonPtr m_addon;
+  ADDON::RepositoryPtr m_repo;
+  bool m_isUpdate;
+  AutoUpdateJob m_isAutoUpdate;
+  DependencyJob m_dependsInstall = DependencyJob::CHOICE_NO;
+  AllowCheckForUpdates m_allowCheckForUpdates = AllowCheckForUpdates::CHOICE_YES;
+  const char* m_currentType = TYPE_DOWNLOAD;
+};
+
+class CAddonUnInstallJob : public CFileOperationJob
+{
+public:
+  CAddonUnInstallJob(const ADDON::AddonPtr& addon, bool removeData);
+
+  bool DoWork() override;
+  void SetRecurseOrphaned(RecurseOrphaned recurseOrphaned) { m_recurseOrphaned = recurseOrphaned; };
+
+private:
+  void ClearFavourites();
+
+  ADDON::AddonPtr m_addon;
+  bool m_removeData;
+  RecurseOrphaned m_recurseOrphaned = RecurseOrphaned::CHOICE_YES;
+};
+
+} // unnamed namespace
 
 CAddonInstaller::CAddonInstaller() : m_idle(true)
 { }
@@ -350,6 +437,12 @@ bool CAddonInstaller::InstallFromZip(const std::string &path)
         new CNotificationEvent(24045, StringUtils::Format(g_localizeStrings.Get(24143), path),
                                "special://xbmc/media/icon256x256.png", EventLevel::Error)));
   return false;
+}
+
+bool CAddonInstaller::UnInstall(const AddonPtr& addon, bool removeData)
+{
+  CServiceBroker::GetJobManager()->AddJob(new CAddonUnInstallJob(addon, removeData), this);
+  return true;
 }
 
 bool CAddonInstaller::CheckDependencies(const AddonPtr& addon,

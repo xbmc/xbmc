@@ -14,9 +14,11 @@
 
 #include "InfoScanner.h"
 #include "addons/Scraper.h"
+#include "utils/XBMCTinyXML.h"
 
 #include <string>
 #include <utility>
+#include <vector>
 
 class CNfoFile
 {

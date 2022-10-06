@@ -8,10 +8,11 @@
 
 #pragma once
 
-#include "addons/IAddon.h"
+#include "addons/addoninfo/AddonType.h"
 #include "settings/lib/ISettingCallback.h"
 
-#include <functional>
+#include <map>
+#include <memory>
 #include <string>
 
 namespace ADDON
@@ -26,6 +27,12 @@ enum class AddonRepoUpdateMode
   OFFICIAL_ONLY = 0,
   ANY_REPOSITORY = 1
 };
+
+class CAddonInfo;
+using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
+
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
 
 class CAddonSystemSettings : public ISettingCallback
 {

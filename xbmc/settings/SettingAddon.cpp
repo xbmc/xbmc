@@ -9,6 +9,7 @@
 #include "SettingAddon.h"
 
 #include "addons/Addon.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"

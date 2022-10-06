@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "XBDateTime.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_channels.h" // PVR_CHANNEL_INVALID_UID
 #include "settings/SettingConditions.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
@@ -18,7 +19,6 @@
 #include <string>
 #include <vector>
 
-class CDateTime;
 class CSetting;
 
 struct IntegerSettingOption;

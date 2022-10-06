@@ -8,14 +8,21 @@
 
 #pragma once
 
-#include "Addon.h"
-#include "AddonEvents.h"
+#include "addons/addoninfo/AddonType.h"
 #include "threads/CriticalSection.h"
 
 #include <map>
+#include <memory>
 #include <vector>
 
-namespace ADDON {
+namespace ADDON
+{
+
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
+using VECADDONS = std::vector<AddonPtr>;
+
+struct AddonEvent;
 
 class CBinaryAddonCache
 {
@@ -36,4 +43,4 @@ protected:
   std::multimap<TYPE, VECADDONS> m_addons;
 };
 
-}
+} // namespace ADDON

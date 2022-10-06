@@ -8,19 +8,28 @@
 
 #pragma once
 
-#include "addons/AddonEvents.h"
-#include "addons/Repository.h"
 #include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 #include "threads/Timer.h"
 #include "utils/EventStream.h"
+#include "utils/Job.h"
 
+#include <memory>
 #include <vector>
 
 class CDateTime;
 
 namespace ADDON
 {
+
+class CAddonMgr;
+
+class CRepository;
+using RepositoryPtr = std::shared_ptr<CRepository>;
+
+class CRepositoryUpdateJob;
+
+struct AddonEvent;
 
 class CRepositoryUpdater : private ITimerCallback, private IJobCallback, public ISettingCallback
 {

@@ -16,6 +16,7 @@
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/RepositoryUpdater.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "filesystem/ZipFile.h"

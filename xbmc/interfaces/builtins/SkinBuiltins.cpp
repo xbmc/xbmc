@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "application/Application.h"
 #include "dialogs/GUIDialogColorPicker.h"

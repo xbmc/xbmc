@@ -13,8 +13,10 @@
 // clang-format on
 
 #include "PythonInvoker.h"
+
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
