@@ -29,6 +29,7 @@
 #include "CharsetConverter.h"
 #include "LangInfo.h"
 #include "StringUtils.h"
+#include "XBDateTime.h"
 
 #include <algorithm>
 #include <array>

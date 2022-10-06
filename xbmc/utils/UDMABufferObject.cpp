@@ -18,6 +18,8 @@
 #include <sys/mman.h>
 #include <unistd.h>
 
+#include "PlatformDefs.h"
+
 namespace
 {
 

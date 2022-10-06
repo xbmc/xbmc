@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "XBDateTime.h"
 #include "guilib/GUIDialog.h"
+#include "utils/XTimeUtils.h"
 
 #include <cstdint>
 
