@@ -132,7 +132,9 @@
 
 #include "video/dialogs/GUIDialogTeletext.h"
 #include "dialogs/GUIDialogSlider.h"
+#ifdef HAS_DVD_DRIVE
 #include "dialogs/GUIDialogPlayEject.h"
+#endif
 #include "dialogs/GUIDialogMediaFilter.h"
 #include "video/dialogs/GUIDialogSubtitles.h"
 
@@ -243,7 +245,9 @@ void CGUIWindowManager::CreateWindows()
 
   Add(new CGUIDialogInfoProviderSettings);
 
+#ifdef HAS_DVD_DRIVE
   Add(new CGUIDialogPlayEject);
+#endif
 
   Add(new CGUIDialogPeripherals);
   Add(new CGUIDialogPeripheralSettings);
@@ -399,7 +403,9 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_PVR_GUIDE_CONTROLS);
 
     DestroyWindow(WINDOW_DIALOG_TEXT_VIEWER);
+#ifdef HAS_DVD_DRIVE
     DestroyWindow(WINDOW_DIALOG_PLAY_EJECT);
+#endif
     DestroyWindow(WINDOW_STARTUP_ANIM);
     DestroyWindow(WINDOW_LOGIN_SCREEN);
     DestroyWindow(WINDOW_VISUALISATION);
