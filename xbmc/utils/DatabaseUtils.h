@@ -148,6 +148,7 @@ typedef enum
   FieldAlbumDuration,
   FieldHdrType,
   FieldProvider,
+  FieldUserPreference,
   FieldMax
 } Field;
 

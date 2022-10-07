@@ -9,8 +9,9 @@
 #include "ContextMenus.h"
 
 #include "FileItem.h"
-#include "GUIDialogFavourites.h"
 #include "ServiceBroker.h"
+#include "favourites/FavouritesService.h"
+#include "favourites/GUIWindowFavourites.h"
 #include "utils/URIUtils.h"
 
 
@@ -36,6 +37,30 @@ namespace CONTEXTMENU
     return false;
   }
 
+  bool CMoveUpFavourite::DoExecute(CFileItemList& items,
+                                   const std::shared_ptr<CFileItem>& item) const
+  {
+    return CGUIWindowFavourites::MoveItem(items, *item, -1);
+  }
+
+  bool CMoveUpFavourite::IsVisible(const CFileItem& item) const
+  {
+    return CFavouriteContextMenuAction::IsVisible(item) &&
+           CGUIWindowFavourites::ShouldEnableMoveItems();
+  }
+
+  bool CMoveDownFavourite::DoExecute(CFileItemList& items,
+                                     const std::shared_ptr<CFileItem>& item) const
+  {
+    return CGUIWindowFavourites::MoveItem(items, *item, +1);
+  }
+
+  bool CMoveDownFavourite::IsVisible(const CFileItem& item) const
+  {
+    return CFavouriteContextMenuAction::IsVisible(item) &&
+           CGUIWindowFavourites::ShouldEnableMoveItems();
+  }
+
   bool CRemoveFavourite::DoExecute(CFileItemList& items,
                                    const std::shared_ptr<CFileItem>& item) const
   {
@@ -46,13 +71,13 @@ namespace CONTEXTMENU
 
   bool CRenameFavourite::DoExecute(CFileItemList&, const std::shared_ptr<CFileItem>& item) const
   {
-    return CGUIDialogFavourites::ChooseAndSetNewName(item);
+    return CGUIWindowFavourites::ChooseAndSetNewName(*item);
   }
 
   bool CChooseThumbnailForFavourite::DoExecute(CFileItemList&,
                                                const std::shared_ptr<CFileItem>& item) const
   {
-    return CGUIDialogFavourites::ChooseAndSetNewThumbnail(item);
+    return CGUIWindowFavourites::ChooseAndSetNewThumbnail(*item);
   }
 
 } // namespace CONTEXTMENU

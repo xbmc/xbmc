@@ -23,6 +23,7 @@
 #include "application/ApplicationPlayer.h"
 #include "events/windows/GUIWindowEventLog.h"
 #include "favourites/GUIDialogFavourites.h"
+#include "favourites/GUIWindowFavourites.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
@@ -304,6 +305,8 @@ void CGUIWindowManager::CreateWindows()
 
   Add(new CGUIWindowEventLog);
 
+  Add(new CGUIWindowFavourites);
+
   Add(new GAME::CGUIControllerWindow);
   Add(new GAME::CGUIPortWindow);
   Add(new GAME::CGUIWindowGames);
@@ -449,6 +452,8 @@ bool CGUIWindowManager::DestroyWindows()
     Remove(WINDOW_DIALOG_VOLUME_BAR);
 
     DestroyWindow(WINDOW_EVENT_LOG);
+
+    DestroyWindow(WINDOW_FAVOURITES);
 
     DestroyWindow(WINDOW_DIALOG_PERIPHERALS);
     DestroyWindow(WINDOW_DIALOG_PERIPHERAL_SETTINGS);

@@ -86,7 +86,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout height="list_item_height" condition="!Container.Content(songs) + !Container.Content(addons) + !Container.Content(playlists) + !Container.Content() + !Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies) + !Container.Content(musicvideos) + !Container.Content(videos)">
+					<focusedlayout height="list_item_height" condition="!Container.Content(songs) + !Container.Content(addons) + !Container.Content(playlists) + !Container.Content() + !Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies) + !Container.Content(musicvideos) + !Container.Content(videos)+ !Container.Content(favourites)">
 						<control type="image">
 							<left>0</left>
 							<right>0</right>
@@ -122,7 +122,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="list_item_height" condition="!Container.Content(songs) + !Container.Content(addons) + !Container.Content(playlists) + !Container.Content() + !Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies) + !Container.Content(musicvideos) + !Container.Content(videos)">
+					<itemlayout height="list_item_height" condition="!Container.Content(songs) + !Container.Content(addons) + !Container.Content(playlists) + !Container.Content() + !Container.Content(tvshows) + !Container.Content(seasons) + !Container.Content(episodes) + !Container.Content(movies) + !Container.Content(musicvideos) + !Container.Content(videos) + !Container.Content(favourites)">
 						<control type="image">
 							<left>35</left>
 							<centertop>50%</centertop>
@@ -150,7 +150,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout height="list_item_height" condition="Container.Content(playlists) | Container.Content()">
+					<focusedlayout height="list_item_height" condition="Container.Content(playlists) | Container.Content(favourites) | Container.Content()">
 						<control type="image">
 							<left>0</left>
 							<right>0</right>
@@ -177,7 +177,7 @@
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="list_item_height" condition="Container.Content(playlists) | Container.Content()">
+					<itemlayout height="list_item_height" condition="Container.Content(playlists) | Container.Content(favourites) | Container.Content()">
 						<control type="image">
 							<left>20</left>
 							<top>10</top>

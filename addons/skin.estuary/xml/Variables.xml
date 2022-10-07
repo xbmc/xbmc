@@ -51,6 +51,7 @@
 		<value condition="String.IsEqual(ListItem.DbType,episode) + System.Setting(hideunwatchedepisodethumbs) + Integer.IsEqual(ListItem.Playcount,0) + !String.IsEmpty(Listitem.Art(fanart))">$INFO[Listitem.Art(fanart)]</value>
 		<value condition="String.IsEqual(ListItem.DbType,episode) + System.Setting(hideunwatchedepisodethumbs) + Integer.IsEqual(ListItem.Playcount,0) + String.IsEmpty(Listitem.Art(fanart))">OverlaySpoiler.png</value>
 		<value condition="String.IsEqual(ListItem.DbType,episode) + [ !System.Setting(hideunwatchedepisodethumbs) | Integer.IsGreater(ListItem.Playcount,0) ]">$INFO[Listitem.Art(thumb)]</value>
+		<value condition="Container.Content(favourites) + String.IsEmpty(Listitem.Art(thumb))">DefaultFavourites.png</value>
 		<value>$INFO[ListItem.Art(thumb)]</value>
 	</variable>
 	<variable name="MusicInfoThumbVar">
@@ -100,6 +101,7 @@
 		<value condition="String.IsEqual(listitem.dbtype,artist)">$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:  [/COLOR],[CR]]$INFO[ListItem.Property(Artist_YearsActive),[COLOR button_focus]$LOCALIZE[21898]:  [/COLOR],[CR]]$INFO[ListItem.Property(Artist_Style),[COLOR button_focus]$LOCALIZE[736]:  [/COLOR],[CR]]</value>
 		<value condition="String.IsEqual(listitem.dbtype,album)">$INFO[ListItem.Year,[COLOR button_focus]$LOCALIZE[345]:  [/COLOR],[CR]]$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:  [/COLOR],[CR]]$INFO[ListItem.Property(album_label),[COLOR button_focus]$LOCALIZE[21899]:  [/COLOR],[CR]]$INFO[ListItem.Property(album_style),[COLOR button_focus]$LOCALIZE[736]:  [/COLOR],[CR]]</value>
 		<value condition="String.IsEqual(Listitem.DBType,season) | String.IsEqual(Listitem.DBType,tvshow)">$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:  [/COLOR],[CR]]$INFO[ListItem.Premiered,[COLOR button_focus]$LOCALIZE[20416]:  [/COLOR]]</value>
+		<value condition="Container.Content(favourites)">$INFO[ListItem.Property(favourite.action),[COLOR button_focus]$LOCALIZE[15217]:  [/COLOR],[CR]]$INFO[ListItem.Property(favourite.provider),[COLOR button_focus]$LOCALIZE[15225]:  [/COLOR],[CR]]</value>
 		<value>$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]:  [/COLOR],[CR]]$INFO[ListItem.Director,[COLOR button_focus]$LOCALIZE[20339]:  [/COLOR],[CR]]$INFO[ListItem.Writer,[COLOR button_focus]$LOCALIZE[20417]:  [/COLOR],[CR]]$INFO[ListItem.Premiered,[COLOR button_focus]$LOCALIZE[20416]:  [/COLOR]]</value>
 	</variable>
 	<variable name="ShiftRightTextBoxVar">
@@ -137,6 +139,7 @@
 		<value condition="!String.IsEmpty(ListItem.Plot)">$INFO[ListItem.Plot]</value>
 		<value condition="String.IsEqual(ListItem.DBType,song) + !Window.IsActive(musicplaylist)">$VAR[MusicTrackInfo,[COLOR button_focus]$LOCALIZE[554]: [/COLOR],[CR]]$INFO[ListItem.Artist,[COLOR button_focus]$LOCALIZE[557]: [/COLOR],[CR]]$INFO[listitem.Album,[COLOR button_focus]$LOCALIZE[558]: [/COLOR],[CR]]$VAR[InfoDiscVar,[COLOR button_focus]$LOCALIZE[427]: [/COLOR],[CR]]$INFO[ListItem.Year,[COLOR button_focus]$LOCALIZE[345]: [/COLOR],[CR]]$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]: [/COLOR],[CR]]$INFO[ListItem.Duration,[COLOR button_focus]$LOCALIZE[180]: [/COLOR],[CR]]$INFO[ListItem.Playcount,[COLOR button_focus]$LOCALIZE[567]: [/COLOR],[CR]]$INFO[ListItem.LastPlayed,[COLOR button_focus]$LOCALIZE[568]: [/COLOR],]</value>
 		<value condition="String.IsEqual(ListItem.DBType,song) + Window.IsActive(musicplaylist)">[COLOR button_focus][B]$LOCALIZE[31037]: [/COLOR]$INFO[Container.CurrentItem,,/]$INFO[Container.NumItems][/B][CR]$VAR[MusicTrackInfo,[COLOR button_focus]$LOCALIZE[554]: [/COLOR],[CR]]$INFO[ListItem.Artist,[COLOR button_focus]$LOCALIZE[557]: [/COLOR],[CR]]$INFO[listitem.Album,[COLOR button_focus]$LOCALIZE[558]: [/COLOR],[CR]]$VAR[InfoDiscVar,[COLOR button_focus]$LOCALIZE[427]: [/COLOR],[CR]]$INFO[ListItem.Year,[COLOR button_focus]$LOCALIZE[345]: [/COLOR],[CR]]$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]: [/COLOR],[CR]]$INFO[ListItem.Duration,[COLOR button_focus]$LOCALIZE[180]: [/COLOR],[CR]]$INFO[ListItem.Playcount,[COLOR button_focus]$LOCALIZE[567]: [/COLOR]]</value>
+		<value condition="Container.Content(favourites)">$INFO[ListItem.Property(favourite.action),[COLOR button_focus]$LOCALIZE[15217]: [/COLOR],[CR]]$INFO[ListItem.Property(favourite.provider),[COLOR button_focus]$LOCALIZE[15225]: [/COLOR],[CR]]</value>
 		<value>$INFO[ListItem.Genre,[COLOR button_focus]$LOCALIZE[515]: [/COLOR],[CR]]</value>
 	</variable>
 	<variable name="NowPlayingInfoVar">

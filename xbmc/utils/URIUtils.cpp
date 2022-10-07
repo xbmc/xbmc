@@ -767,6 +767,11 @@ bool URIUtils::IsStack(const std::string& strFile)
   return IsProtocol(strFile, "stack");
 }
 
+bool URIUtils::IsFavourite(const std::string& strFile)
+{
+  return IsProtocol(strFile, "favourites");
+}
+
 bool URIUtils::IsRAR(const std::string& strFile)
 {
   std::string strExtension = GetExtension(strFile);

@@ -21,6 +21,7 @@
 #include "addons/gui/GUIViewStateAddonBrowser.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "events/windows/GUIViewStateEventLog.h"
+#include "favourites/GUIViewStateFavourites.h"
 #include "games/windows/GUIViewStateWindowGames.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -181,6 +182,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
 
   if (windowId == WINDOW_EVENT_LOG)
     return new CGUIViewStateEventLog(items);
+
+  if (windowId == WINDOW_FAVOURITES)
+    return new CGUIViewStateFavourites(items);
 
   //  Use as fallback/default
   return new CGUIViewStateGeneral(items);

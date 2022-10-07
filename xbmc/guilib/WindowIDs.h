@@ -41,6 +41,8 @@
 
 #define WINDOW_EVENT_LOG                  10050
 
+#define WINDOW_FAVOURITES 10060
+
 #define WINDOW_SCREENSAVER_DIM               97
 #define WINDOW_DEBUG_INFO                    98
 #define WINDOW_DIALOG_POINTER             10099
