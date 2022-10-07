@@ -464,7 +464,8 @@ msgctxt "#117"
 msgid "Delete"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/ContextMenus.h
+#: xbmc/favourites/GUIDialogFavourites.cpp
 #: xbmc/pvr/PVRContextMenus.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 #: xbmc/games/dialogs/osd/DialogGameSaves.cpp
@@ -4049,7 +4050,7 @@ msgctxt "#1029"
 msgid "Enter the new label"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/GUIWindowFavourites.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#1030"
 msgid "Browse for image"
@@ -4076,6 +4077,8 @@ msgctxt "#1035"
 msgid "Enable submenu buttons"
 msgstr ""
 
+#: xbmc/addons/Skin.cpp
+#: addons/skin.estuary/xml/MyFavourites.xml
 msgctxt "#1036"
 msgid "Favourites"
 msgstr ""
@@ -5152,7 +5155,14 @@ msgctxt "#10058"
 msgid "Remove tag from library"
 msgstr ""
 
-#empty strings from id 10059 to 10098
+#empty string with id 10059
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10060"
+msgid "Favourites"
+msgstr ""
+
+#empty strings from id 10061 to 10098
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10099"
@@ -6850,12 +6860,14 @@ msgctxt "#13331"
 msgid "Error: Out of memory"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/ContextMenus.h
+#: xbmc/favourites/GUIDialogFavourites.cpp
 msgctxt "#13332"
 msgid "Move up"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/ContextMenus.h
+#: xbmc/favourites/GUIDialogFavourites.cpp
 msgctxt "#13333"
 msgid "Move down"
 msgstr ""
@@ -8594,7 +8606,8 @@ msgctxt "#15014"
 msgid "Keep"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/ContextMenus.h
+#: xbmc/favourites/GUIDialogFavourites.cpp
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15015"
 msgid "Remove"
@@ -8745,7 +8758,62 @@ msgctxt "#15216"
 msgid "Play in party mode"
 msgstr ""
 
-#empty strings from id 15217 to 15299
+#. Label for actions associated with favourites
+#: addons/skin.estuary/xml/Variables.xml
+msgctxt "#15217"
+msgid "Action"
+msgstr ""
+
+#. Label for an action associated with a favourite.
+#: xbmc/Util.cpp
+msgctxt "#15218"
+msgid "Play media"
+msgstr ""
+
+#. Label for an action associated with a favourite
+#: xbmc/Util.cpp
+msgctxt "#15219"
+msgid "Show picture"
+msgstr ""
+
+#. Label for an action associated with a favourite. Placeholder will be filled with the name of the window the favourite's content will be displayed in.
+#: xbmc/favourites/FavouritesService.cpp
+#: xbmc/Util.cpp
+msgctxt "#15220"
+msgid "Show content in \"{}\""
+msgstr ""
+
+#. Label for an action associated with a favourite
+#: xbmc/Util.cpp
+msgctxt "#15221"
+msgid "Execute script"
+msgstr ""
+
+#. Label for an action associated with a favourite
+#: xbmc/Util.cpp
+msgctxt "#15222"
+msgid "Execute Android app"
+msgstr ""
+
+#. Label for an action associated with a favourite
+#: xbmc/Util.cpp
+msgctxt "#15223"
+msgid "Execute add-on"
+msgstr ""
+
+#. Label for an action associated with a favourite
+#: xbmc/Util.cpp
+msgctxt "#15224"
+msgid "Other / Unknown"
+msgstr ""
+
+#. genric label for 'provider'
+#: addons/skin.estuary/xml/Variables.xml
+msgctxt "#15225"
+msgid "Provider"
+msgstr ""
+
+#empty strings from id 15225 to 15299
 
 #: xbmc/windows/GUIMediaWindow.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
@@ -8826,7 +8894,7 @@ msgstr ""
 
 #empty strings from id 16005 to 16007
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/GUIWindowFavourites.cpp
 msgctxt "#16008"
 msgid "Enter new title"
 msgstr ""
@@ -11462,7 +11530,13 @@ msgctxt "#19348"
 msgid "Provider"
 msgstr ""
 
-#empty strings from id 19349 to 19498
+#. label for 'by user preference' sort method
+#: xbmc/utils/SortUtils.cpp
+msgctxt "#19349"
+msgid "User preference"
+msgstr ""
+
+#empty strings from id 19350 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -12171,6 +12245,7 @@ msgid "Remote thumb"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
+#: xbmc/favourites/GUIWindowFavourites.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#20016"
 msgid "Current thumb"
@@ -12184,13 +12259,15 @@ msgid "Local thumb"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
+#: xbmc/favourites/GUIWindowFavourites.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#20018"
 msgid "No thumb"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/ContextMenus.h
+#: xbmc/favourites/GUIDialogFavourites.cpp
 msgctxt "#20019"
 msgid "Choose thumbnail"
 msgstr ""

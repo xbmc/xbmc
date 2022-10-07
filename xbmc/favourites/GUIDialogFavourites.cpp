@@ -9,21 +9,14 @@
 #include "GUIDialogFavourites.h"
 
 #include "ContextMenuManager.h"
-#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "dialogs/GUIDialogFileBrowser.h"
-#include "favourites/FavouritesService.h"
-#include "filesystem/Directory.h"
+#include "favourites/GUIWindowFavourites.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIKeyboardFactory.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
-#include "storage/MediaManager.h"
-#include "utils/Variant.h"
-
-using namespace XFILE;
+#include "input/actions/ActionIDs.h"
 
 #define FAVOURITES_LIST 450
 
@@ -95,7 +88,7 @@ void CGUIDialogFavourites::OnClick(int item)
     return;
 
   CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
-  message.SetStringParam(m_favouritesService.GetExecutePath(*(*m_favourites)[item], GetID()));
+  message.SetStringParam(CUtil::GetExecPath(*(*m_favourites)[item], std::to_string(GetID())));
 
   Close();
 
@@ -116,9 +109,9 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
     choices.Add(1, 13332); // Move up
     choices.Add(2, 13333); // Move down
   }
-  choices.Add(3, 15015); // Remove
+  choices.Add(3, 20019); // Choose thumbnail
   choices.Add(4, 118); // Rename
-  choices.Add(5, 20019); // Choose thumbnail
+  choices.Add(5, 15015); // Remove
 
   CFileItemPtr itemPtr = m_favourites->Get(item);
 
@@ -138,13 +131,13 @@ void CGUIDialogFavourites::OnPopupMenu(int item)
   if (button == 1)
     OnMoveItem(item, -1);
   else if (button == 2)
-    OnMoveItem(item, 1);
+    OnMoveItem(item, +1);
   else if (button == 3)
-    OnDelete(item);
+    OnSetThumb(item);
   else if (button == 4)
     OnRename(item);
   else if (button == 5)
-    OnSetThumb(item);
+    OnDelete(item);
   else if (button >= addonItemOffset)
     CONTEXTMENU::LoopFrom(*addonItems.at(button - addonItemOffset), itemPtr);
 }
@@ -183,7 +176,7 @@ void CGUIDialogFavourites::OnRename(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
 
-  if (ChooseAndSetNewName((*m_favourites)[item]))
+  if (CGUIWindowFavourites::ChooseAndSetNewName(*(*m_favourites)[item]))
   {
     m_favouritesService.Save(*m_favourites);
     UpdateList();
@@ -195,7 +188,7 @@ void CGUIDialogFavourites::OnSetThumb(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
 
-  if (ChooseAndSetNewThumbnail((*m_favourites)[item]))
+  if (CGUIWindowFavourites::ChooseAndSetNewThumbnail(*(*m_favourites)[item]))
   {
     m_favouritesService.Save(*m_favourites);
     UpdateList();
@@ -217,42 +210,4 @@ CFileItemPtr CGUIDialogFavourites::GetCurrentListItem(int offset)
   int item = (currentItem + offset) % m_favourites->Size();
   if (item < 0) item += m_favourites->Size();
   return (*m_favourites)[item];
-}
-
-bool CGUIDialogFavourites::ChooseAndSetNewName(const CFileItemPtr &item)
-{
-  std::string label(item->GetLabel());
-  if (CGUIKeyboardFactory::ShowAndGetInput(label, CVariant{g_localizeStrings.Get(16008)}, false)) // Enter new title
-  {
-    item->SetLabel(label);
-    return true;
-  }
-  return false;
-}
-
-bool CGUIDialogFavourites::ChooseAndSetNewThumbnail(const CFileItemPtr &item)
-{
-  CFileItemList prefilledItems;
-  if (item->HasArt("thumb"))
-  {
-    const CFileItemPtr current(std::make_shared<CFileItem>("thumb://Current", false));
-    current->SetArt("thumb", item->GetArt("thumb"));
-    current->SetLabel(g_localizeStrings.Get(20016)); // Current thumb
-    prefilledItems.Add(current);
-  }
-
-  const CFileItemPtr none(std::make_shared<CFileItem>("thumb://None", false));
-  none->SetArt("icon", item->GetArt("icon"));
-  none->SetLabel(g_localizeStrings.Get(20018)); // No thumb
-  prefilledItems.Add(none);
-
-  std::string thumb;
-  VECSOURCES sources;
-  CServiceBroker::GetMediaManager().GetLocalDrives(sources);
-  if (CGUIDialogFileBrowser::ShowAndGetImage(prefilledItems, sources, g_localizeStrings.Get(1030), thumb)) // Browse for image
-  {
-    item->SetArt("thumb", thumb);
-    return true;
-  }
-  return false;
 }

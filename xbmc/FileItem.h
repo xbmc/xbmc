@@ -234,6 +234,7 @@ public:
   bool IsSmb() const;
   bool IsURL() const;
   bool IsStack() const;
+  bool IsFavourite() const;
   bool IsMultiPath() const;
   bool IsMusicDb() const;
   bool IsVideoDb() const;

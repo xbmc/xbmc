@@ -29,19 +29,20 @@
 #include "platform/android/activity/XBMCApp.h"
 #include "CompileInfo.h"
 #endif
-#include <stdlib.h>
-#include <algorithm>
-#include <array>
-
-#include "addons/VFSEntry.h"
 #include "ServiceBroker.h"
 #include "Util.h"
-#include "filesystem/PVRDirectory.h"
+#include "addons/AddonManager.h"
+#include "addons/VFSEntry.h"
 #include "filesystem/Directory.h"
-#include "filesystem/StackDirectory.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "filesystem/SpecialProtocol.h"
+#include "filesystem/PVRDirectory.h"
 #include "filesystem/RSSDirectory.h"
+#include "filesystem/SpecialProtocol.h"
+#include "filesystem/StackDirectory.h"
+
+#include <algorithm>
+#include <array>
+#include <stdlib.h>
 #ifdef HAS_UPNP
 #include "filesystem/UPnPDirectory.h"
 #endif
@@ -63,6 +64,7 @@
 #include "cores/VideoPlayer/DVDSubtitles/DVDSubtitleTagSami.h"
 #include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
+#include "music/tags/MusicInfoTag.h"
 #include "platform/Environment.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -73,6 +75,7 @@
 #include "utils/FontUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
 #include "utils/TimeUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -1022,6 +1025,160 @@ void CUtil::SplitExecFunction(const std::string &execString, std::string &functi
   StringUtils::Trim(function);
 
   SplitParams(paramString, parameters);
+}
+
+std::string CUtil::GetExecPath(const CFileItem& item, const std::string& contextWindow)
+{
+  // Note: If changing this function, also check whether CUtil::GetExecActionLabelFromPath
+  //       and CUtil::GetExecProviderLabelFromPath must be adjusted as well.
+
+  std::string execute;
+  if (URIUtils::IsProtocol(item.GetPath(), "favourites"))
+  {
+    const CURL url(item.GetPath());
+    execute = CURL::Decode(url.GetHostName());
+  }
+  else if (item.m_bIsFolder &&
+           (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders ||
+            !(item.IsSmartPlayList() || item.IsPlayList())))
+  {
+    if (!contextWindow.empty())
+      execute = StringUtils::Format("ActivateWindow({},{},return)", contextWindow,
+                                    StringUtils::Paramify(item.GetPath()));
+  }
+  //! @todo STRING_CLEANUP
+  else if (item.IsScript() && item.GetPath().size() > 9) // script://<foo>
+    execute = StringUtils::Format("RunScript({})", StringUtils::Paramify(item.GetPath().substr(9)));
+  else if (item.IsAddonsPath() && item.GetPath().size() > 9) // addons://<foo>
+  {
+    CURL url(item.GetPath());
+    if (url.GetHostName() == "install")
+      execute = "InstallFromZip";
+    else
+      execute = StringUtils::Format("RunAddon({})", url.GetFileName());
+  }
+  else if (item.IsAndroidApp() && item.GetPath().size() > 26) // androidapp://sources/apps/<foo>
+    execute = StringUtils::Format("StartAndroidActivity({})",
+                                  StringUtils::Paramify(item.GetPath().substr(26)));
+  else // assume a media file
+  {
+    if (item.IsVideoDb() && item.HasVideoInfoTag())
+    {
+      std::string paramPlaylistTypeHint;
+      if (item.HasProperty("playlist_type_hint"))
+      {
+        paramPlaylistTypeHint =
+            ",playlist_type_hint=" + item.GetProperty("playlist_type_hint").asString();
+      }
+      execute = StringUtils::Format(
+          "PlayMedia({}{})", StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath),
+          paramPlaylistTypeHint);
+    }
+    else if (item.IsMusicDb() && item.HasMusicInfoTag())
+    {
+      std::string paramPlaylistTypeHint;
+      if (item.HasProperty("playlist_type_hint"))
+      {
+        paramPlaylistTypeHint =
+            ",playlist_type_hint=" + item.GetProperty("playlist_type_hint").asString();
+      }
+      execute = StringUtils::Format("PlayMedia({}{})",
+                                    StringUtils::Paramify(item.GetMusicInfoTag()->GetURL()),
+                                    paramPlaylistTypeHint);
+    }
+    else if (item.IsPicture())
+      execute = StringUtils::Format("ShowPicture({})", StringUtils::Paramify(item.GetPath()));
+    else
+      execute = StringUtils::Format("PlayMedia({})", StringUtils::Paramify(item.GetPath()));
+  }
+  return execute;
+}
+
+std::string CUtil::GetExecActionLabelFromPath(const std::string& path)
+{
+  const CURL url(path);
+  const std::string execString = CURL::Decode(url.GetHostName());
+
+  std::string execute;
+  std::vector<std::string> params;
+  CUtil::SplitExecFunction(execString, execute, params);
+  StringUtils::ToLower(execute);
+
+  if (execute == "playmedia")
+    return g_localizeStrings.Get(15218);
+  else if (execute == "showpicture")
+    return g_localizeStrings.Get(15219);
+  else if (execute == "activatewindow")
+  {
+    int windowID = -1;
+    if (!params.empty() && StringUtils::IsInteger(params.front()))
+      windowID = std::atoi(params.front().c_str());
+    return StringUtils::Format(g_localizeStrings.Get(15220), g_localizeStrings.Get(windowID));
+  }
+  else if (execute == "runscript")
+    return g_localizeStrings.Get(15221);
+  else if (execute == "startandroidactivity")
+    return g_localizeStrings.Get(15222);
+  else if (execute == "runaddon")
+    return g_localizeStrings.Get(15223);
+  else
+    return g_localizeStrings.Get(15224); // "Other / unknown"
+}
+
+std::string CUtil::GetExecProviderLabelFromPath(const std::string& path)
+{
+  const CURL url(path);
+  const std::string execString = CURL::Decode(url.GetHostName());
+
+  std::string execute;
+  std::vector<std::string> params;
+  CUtil::SplitExecFunction(execString, execute, params);
+  StringUtils::ToLower(execute);
+
+  std::string provider;
+
+  if (!params.empty())
+  {
+    std::string path;
+    if (execute == "activatewindow")
+    {
+      // path is in param #2
+      path = params[1];
+    }
+    else
+    {
+      // for all others path is in param #1
+      path = params[0];
+    }
+
+    bool pathIsAddonID = false;
+    if (execute == "runscript" || execute == "runaddon")
+    {
+      // for scripts and addons, path contains the add-on ID, for the others
+      // the path contains a URL or a file system path.
+      pathIsAddonID = true;
+    }
+
+    if (!path.empty())
+    {
+      if (pathIsAddonID || URIUtils::IsPlugin(path))
+      {
+        // get the add-on name
+        const std::string plugin = pathIsAddonID ? path : CURL(path).GetHostName();
+
+        ADDON::AddonPtr addon;
+        CServiceBroker::GetAddonMgr().GetAddon(plugin, addon, ADDON::ADDON_UNKNOWN,
+                                               ADDON::OnlyEnabled::CHOICE_NO);
+        if (addon)
+          provider = addon->Name();
+      }
+    }
+  }
+
+  if (provider.empty())
+    provider = CSysInfo::GetAppName();
+
+  return provider;
 }
 
 void CUtil::SplitParams(const std::string &paramString, std::vector<std::string> &parameters)

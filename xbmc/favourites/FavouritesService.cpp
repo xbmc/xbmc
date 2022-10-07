@@ -14,16 +14,13 @@
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
-#include "music/tags/MusicInfoTag.h"
 #include "profiles/ProfileManager.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ContentUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
-#include "video/VideoInfoTag.h"
 
 #include <mutex>
 
@@ -95,9 +92,8 @@ bool IsMediasourceOfFavItemUnlocked(const std::shared_ptr<CFileItem>& item)
 
   return true;
 }
-} // anonymous namespace
 
-static bool LoadFromFile(const std::string& strPath, CFileItemList& items)
+bool LoadFromFile(const std::string& strPath, CFileItemList& items)
 {
   CXBMCTinyXML doc;
   if (!doc.LoadFile(strPath))
@@ -140,8 +136,9 @@ static bool LoadFromFile(const std::string& strPath, CFileItemList& items)
   }
   return true;
 }
+} // unnamed namespace
 
-CFavouritesService::CFavouritesService(std::string userDataFolder)
+CFavouritesService::CFavouritesService(std::string userDataFolder) : m_favourites("favourites://")
 {
   ReInit(std::move(userDataFolder));
 }
@@ -150,16 +147,16 @@ void CFavouritesService::ReInit(std::string userDataFolder)
 {
   m_userDataFolder = std::move(userDataFolder);
   m_favourites.Clear();
+  m_favourites.SetContent("favourites");
 
-  CFileItemList items;
   std::string favourites = "special://xbmc/system/favourites.xml";
-  if(XFILE::CFile::Exists(favourites))
+  if (XFILE::CFile::Exists(favourites))
     LoadFromFile(favourites, m_favourites);
   else
     CLog::Log(LOGDEBUG, "CFavourites::Load - no system favourites found, skipping");
 
   favourites = URIUtils::AddFileToFolder(m_userDataFolder, "favourites.xml");
-  if(XFILE::CFile::Exists(favourites))
+  if (XFILE::CFile::Exists(favourites))
     LoadFromFile(favourites, m_favourites);
   else
     CLog::Log(LOGDEBUG, "CFavourites::Load - no userdata favourites found, skipping");
@@ -211,7 +208,7 @@ std::string CFavouritesService::GetFavouritesUrl(const CFileItem& item, int cont
 {
   CURL url;
   url.SetProtocol("favourites");
-  url.SetHostName(CURL::Encode(GetExecutePath(item, contextWindow)));
+  url.SetHostName(CURL::Encode(CUtil::GetExecPath(item, std::to_string(contextWindow))));
   return url.Get();
 }
 
@@ -246,74 +243,6 @@ bool CFavouritesService::IsFavourited(const CFileItem& item, int contextWindow) 
   return m_favourites.Contains(GetFavouritesUrl(item, contextWindow));
 }
 
-std::string CFavouritesService::GetExecutePath(const CFileItem &item, int contextWindow) const
-{
-  return GetExecutePath(item, std::to_string(contextWindow));
-}
-
-std::string CFavouritesService::GetExecutePath(const CFileItem &item, const std::string &contextWindow) const
-{
-  std::string execute;
-  if (URIUtils::IsProtocol(item.GetPath(), "favourites"))
-  {
-    const CURL url(item.GetPath());
-    execute = CURL::Decode(url.GetHostName());
-  }
-  else if (item.m_bIsFolder && (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders ||
-                                !(item.IsSmartPlayList() || item.IsPlayList())))
-  {
-    if (!contextWindow.empty())
-      execute = StringUtils::Format("ActivateWindow({},{},return)", contextWindow,
-                                    StringUtils::Paramify(item.GetPath()));
-  }
-  //! @todo STRING_CLEANUP
-  else if (item.IsScript() && item.GetPath().size() > 9) // script://<foo>
-    execute = StringUtils::Format("RunScript({})", StringUtils::Paramify(item.GetPath().substr(9)));
-  else if (item.IsAddonsPath() && item.GetPath().size() > 9) // addons://<foo>
-  {
-    CURL url(item.GetPath());
-    if (url.GetHostName() == "install")
-      execute = "installfromzip";
-    else
-      execute = StringUtils::Format("RunAddon({})", url.GetFileName());
-  }
-  else if (item.IsAndroidApp() && item.GetPath().size() > 26) // androidapp://sources/apps/<foo>
-    execute = StringUtils::Format("StartAndroidActivity({})",
-                                  StringUtils::Paramify(item.GetPath().substr(26)));
-  else  // assume a media file
-  {
-    if (item.IsVideoDb() && item.HasVideoInfoTag())
-    {
-      std::string paramPlaylistTypeHint;
-      if (item.HasProperty("playlist_type_hint"))
-      {
-        paramPlaylistTypeHint =
-            ",playlist_type_hint=" + item.GetProperty("playlist_type_hint").asString();
-      }
-      execute = StringUtils::Format(
-          "PlayMedia({}{})", StringUtils::Paramify(item.GetVideoInfoTag()->m_strFileNameAndPath),
-          paramPlaylistTypeHint);
-    }
-    else if (item.IsMusicDb() && item.HasMusicInfoTag())
-    {
-      std::string paramPlaylistTypeHint;
-      if (item.HasProperty("playlist_type_hint"))
-      {
-        paramPlaylistTypeHint =
-            ",playlist_type_hint=" + item.GetProperty("playlist_type_hint").asString();
-      }
-      execute = StringUtils::Format("PlayMedia({}{})",
-                                    StringUtils::Paramify(item.GetMusicInfoTag()->GetURL()),
-                                    paramPlaylistTypeHint);
-    }
-    else if (item.IsPicture())
-      execute = StringUtils::Format("ShowPicture({})", StringUtils::Paramify(item.GetPath()));
-    else
-      execute = StringUtils::Format("PlayMedia({})", StringUtils::Paramify(item.GetPath()));
-  }
-  return execute;
-}
-
 void CFavouritesService::GetAll(CFileItemList& items) const
 {
   std::unique_lock<CCriticalSection> lock(m_criticalSection);
@@ -329,6 +258,14 @@ void CFavouritesService::GetAll(CFileItemList& items) const
       if (IsMediasourceOfFavItemUnlocked(fav))
         items.Add(fav);
     }
+  }
+
+  int index = 0;
+  for (const auto& item : items)
+  {
+    item->SetProperty("favourite.action", CUtil::GetExecActionLabelFromPath(item->GetPath()));
+    item->SetProperty("favourite.provider", CUtil::GetExecProviderLabelFromPath(item->GetPath()));
+    item->SetProperty("favourite.index", index++);
   }
 }
 
