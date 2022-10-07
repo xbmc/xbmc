@@ -998,7 +998,7 @@
 						</item>
 						<item>
 							<label>$LOCALIZE[10134]</label>
-							<onclick>ActivateWindow(favourites)</onclick>
+							<onclick>ActivateWindow(favouritesbrowser)</onclick>
 							<property name="menu_id">$NUMBER[14000]</property>
 							<thumb>icons/sidemenu/favourites.png</thumb>
 							<property name="id">favorites</property>

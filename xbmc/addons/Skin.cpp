@@ -333,6 +333,7 @@ bool CSkinInfo::LoadStartupWindows(const AddonInfoPtr& addonInfo)
   m_startupWindows.emplace_back(WINDOW_FILES, "7");
   m_startupWindows.emplace_back(WINDOW_SETTINGS_MENU, "5");
   m_startupWindows.emplace_back(WINDOW_WEATHER, "8");
+  m_startupWindows.emplace_back(WINDOW_FAVOURITES, "1036");
   return true;
 }
 

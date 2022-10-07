@@ -32,8 +32,6 @@ public:
 
   bool IsFavourited(const CFileItem& item, int contextWindow) const;
   void GetAll(CFileItemList& items) const;
-  std::string GetExecutePath(const CFileItem &item, int contextWindow) const;
-  std::string GetExecutePath(const CFileItem &item, const std::string &contextWindow) const;
   bool AddOrRemove(const CFileItem& item, int contextWindow);
   bool Save(const CFileItemList& items);
 

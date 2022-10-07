@@ -27,9 +27,6 @@ public:
 
   bool HasListItems() const override { return true; }
 
-  static bool ChooseAndSetNewName(const CFileItemPtr &item);
-  static bool ChooseAndSetNewThumbnail(const CFileItemPtr &item);
-
 protected:
   int GetSelectedItem();
   void OnClick(int item);

@@ -159,6 +159,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"mediafilter", WINDOW_DIALOG_MEDIA_FILTER},
     {"addon", WINDOW_ADDON_START},
     {"eventlog", WINDOW_EVENT_LOG},
+    {"favouritesbrowser", WINDOW_FAVOURITES},
     {"tvtimerrules", WINDOW_TV_TIMER_RULES},
     {"radiotimerrules", WINDOW_RADIO_TIMER_RULES},
     {"gameosd", WINDOW_DIALOG_GAME_OSD},

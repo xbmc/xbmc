@@ -80,9 +80,11 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CRemoveResumePoint>(),
       std::make_shared<CONTEXTMENU::CEjectDisk>(),
       std::make_shared<CONTEXTMENU::CEjectDrive>(),
-      std::make_shared<CONTEXTMENU::CRemoveFavourite>(),
-      std::make_shared<CONTEXTMENU::CRenameFavourite>(),
+      std::make_shared<CONTEXTMENU::CMoveUpFavourite>(),
+      std::make_shared<CONTEXTMENU::CMoveDownFavourite>(),
       std::make_shared<CONTEXTMENU::CChooseThumbnailForFavourite>(),
+      std::make_shared<CONTEXTMENU::CRenameFavourite>(),
+      std::make_shared<CONTEXTMENU::CRemoveFavourite>(),
       std::make_shared<CONTEXTMENU::CAddRemoveFavourite>(),
   };
 
