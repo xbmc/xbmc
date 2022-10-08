@@ -3495,6 +3495,11 @@ bool CApplication::ProcessAndStartPlaylist(const std::string& strPlayList,
   return false;
 }
 
+bool CApplication::GetRenderGUI() const
+{
+  return GetComponent<CApplicationPowerHandling>()->GetRenderGUI();
+}
+
 bool CApplication::SetLanguage(const std::string &strLanguage)
 {
   // nothing to be done if the language hasn't changed
