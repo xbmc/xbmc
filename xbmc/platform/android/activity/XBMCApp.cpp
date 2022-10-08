@@ -15,6 +15,7 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIWindowManager.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -415,7 +416,9 @@ void CXBMCApp::onGainFocus()
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
   m_hasFocus = true;
-  g_application.WakeUpScreenSaverAndDPMS();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->WakeUpScreenSaverAndDPMS();
 }
 
 void CXBMCApp::onLostFocus()
@@ -1253,7 +1256,11 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   else if (action == "android.intent.action.DREAMING_STOPPED")
   {
     if (HasFocus())
-      g_application.WakeUpScreenSaverAndDPMS();
+    {
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+      appPower->WakeUpScreenSaverAndDPMS();
+    }
   }
   else if (action == "android.intent.action.HEADSET_PLUG" ||
     action == "android.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED")
@@ -1317,7 +1324,11 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     }
 
     if (HasFocus())
-      g_application.WakeUpScreenSaverAndDPMS();
+    {
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+      appPower->WakeUpScreenSaverAndDPMS();
+    }
   }
   else if (action == "android.intent.action.SCREEN_OFF")
   {
@@ -1734,14 +1745,18 @@ void CXBMCApp::surfaceCreated(CJNISurfaceHolder holder)
   if (!m_firstrun)
     XBMC_SetupDisplay();
 
-  g_application.SetRenderGUI(true);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->SetRenderGUI(true);
 }
 
 void CXBMCApp::surfaceDestroyed(CJNISurfaceHolder holder)
 {
   android_printf("%s: ", __PRETTY_FUNCTION__);
   // If we have exited XBMC, it no longer exists.
-  g_application.SetRenderGUI(false);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->SetRenderGUI(false);
   if (!m_exiting)
     XBMC_DestroyDisplay();
 

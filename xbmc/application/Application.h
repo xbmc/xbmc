@@ -11,7 +11,6 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationEnums.h"
 #include "application/ApplicationPlayerCallback.h"
-#include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSettingsHandling.h"
 #include "application/ApplicationSkinHandling.h"
 #include "application/ApplicationStackHelper.h"
@@ -90,7 +89,6 @@ class CApplication : public IWindowManagerCallback,
                      public KODI::MESSAGING::IMessageTarget,
                      public CApplicationComponents,
                      public CApplicationPlayerCallback,
-                     public CApplicationPowerHandling,
                      public CApplicationSettingsHandling,
                      public CApplicationSkinHandling,
                      public CApplicationVolumeHandling
@@ -185,8 +183,6 @@ public:
   std::string m_strPlayListFile;
 
   bool IsAppFocused() const { return m_AppFocused; }
-
-  bool GetRenderGUI() const override { return m_renderGUI; }
 
   bool SetLanguage(const std::string &strLanguage);
   bool LoadLanguage(bool reload);

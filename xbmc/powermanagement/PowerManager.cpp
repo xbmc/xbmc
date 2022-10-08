@@ -15,6 +15,7 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "application/ApplicationPowerHandling.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "dialogs/GUIDialogBusyNoCancel.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -196,8 +197,10 @@ void CPowerManager::OnSleep()
 
   g_application.StopPlaying();
   CServiceBroker::GetPVRManager().OnSleep();
-  g_application.StopShutdownTimer();
-  g_application.StopScreenSaverTimer();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->StopShutdownTimer();
+  appPower->StopScreenSaverTimer();
   g_application.CloseNetworkShares();
   CServiceBroker::GetActiveAE()->Suspend();
 }
@@ -209,7 +212,9 @@ void CPowerManager::OnWake()
   CServiceBroker::GetNetwork().WaitForNet();
 
   // reset out timers
-  g_application.ResetShutdownTimers();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->ResetShutdownTimers();
 
   CGUIDialogBusyNoCancel* dialog =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusyNoCancel>(
@@ -225,7 +230,7 @@ void CPowerManager::OnWake()
     SetForegroundWindow(g_hWnd);
 #endif
   }
-  g_application.ResetScreenSaver();
+  appPower->ResetScreenSaver();
 #endif
 
   CServiceBroker::GetActiveAE()->Resume();

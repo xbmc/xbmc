@@ -18,6 +18,7 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "application/ApplicationPowerHandling.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -114,13 +115,14 @@ static int PlayOffset(const std::vector<std::string>& params)
  */
 static int PlayerControl(const std::vector<std::string>& params)
 {
-  g_application.ResetScreenSaver();
-  g_application.WakeUpScreenSaverAndDPMS();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->ResetScreenSaver();
+  appPower->WakeUpScreenSaverAndDPMS();
 
   std::string paramlow(params[0]);
   StringUtils::ToLower(paramlow);
 
-  auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
   if (paramlow ==  "play")
@@ -443,8 +445,10 @@ static int PlayMedia(const std::vector<std::string>& params)
     CServiceBroker::GetGUI()->GetWindowManager().PreviousWindow();
 
   // reset screensaver
-  g_application.ResetScreenSaver();
-  g_application.WakeUpScreenSaverAndDPMS();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->ResetScreenSaver();
+  appPower->WakeUpScreenSaverAndDPMS();
 
   // ask if we need to check guisettings to resume
   bool askToResume = true;

@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "application/IApplicationComponent.h"
+
 #ifdef TARGET_WINDOWS
 #include "powermanagement/WinIdleTimer.h"
 #endif
@@ -22,14 +24,17 @@ class IAddon;
 using AddonPtr = std::shared_ptr<IAddon>;
 } // namespace ADDON
 
+class CApplication;
 class CSetting;
 
 /*!
  * \brief Class handling application support for screensavers, dpms and shutdown timers.
  */
 
-class CApplicationPowerHandling
+class CApplicationPowerHandling : public IApplicationComponent
 {
+  friend class CApplication;
+
 public:
   bool IsInScreenSaver() const { return m_screensaverActive; }
   bool IsScreenSaverInhibited() const;
@@ -39,6 +44,7 @@ public:
   void StopScreenSaverTimer();
   std::string ScreensaverIdInUse() const { return m_screensaverIdInUse; }
 
+  bool GetRenderGUI() const { return m_renderGUI; }
   void SetRenderGUI(bool renderGUI);
 
   int GlobalIdleTime();
@@ -47,6 +53,8 @@ public:
 
   void ResetShutdownTimers();
   void StopShutdownTimer();
+
+  void ResetNavigationTimer();
 
   bool IsDPMSActive() const { return m_dpmsIsActive; }
   bool ToggleDPMS(bool manual);

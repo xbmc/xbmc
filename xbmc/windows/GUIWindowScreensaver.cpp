@@ -13,7 +13,8 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/ScreenSaver.h"
-#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
@@ -87,13 +88,17 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
     }
 
     case GUI_MSG_CHECK_LOCK:
+    {
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPower = components.GetComponent<CApplicationPowerHandling>();
       if (!g_passwordManager.IsProfileLockUnlocked())
       {
-        g_application.SetScreenSaverLockFailed();
+        appPower->SetScreenSaverLockFailed();
         return false;
       }
-      g_application.SetScreenSaverUnlocked();
+      appPower->SetScreenSaverUnlocked();
       return true;
+    }
   }
 
   return CGUIWindow::OnMessage(message);
