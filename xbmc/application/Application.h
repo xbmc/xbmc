@@ -184,6 +184,8 @@ public:
 
   bool IsAppFocused() const { return m_AppFocused; }
 
+  bool GetRenderGUI() const override;
+
   bool SetLanguage(const std::string &strLanguage);
   bool LoadLanguage(bool reload);
 
