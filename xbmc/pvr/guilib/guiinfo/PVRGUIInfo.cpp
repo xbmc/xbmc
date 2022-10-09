@@ -490,7 +490,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         return true;
       case VIDEOPLAYER_CHANNEL_NAME:
       case LISTITEM_CHANNEL_NAME:
-        strValue = recording->m_strChannelName;
+        strValue = recording->ChannelName();
         if (strValue.empty())
         {
           if (recording->ProviderName().empty())

@@ -314,7 +314,7 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording& xbmcRecording,
   xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
 
   addonRecording = {};
-  strncpy(addonRecording.strRecordingId, xbmcRecording.m_strRecordingId.c_str(),
+  strncpy(addonRecording.strRecordingId, xbmcRecording.ClientRecordingID().c_str(),
           sizeof(addonRecording.strRecordingId) - 1);
   strncpy(addonRecording.strTitle, xbmcRecording.m_strTitle.c_str(),
           sizeof(addonRecording.strTitle) - 1);
@@ -323,7 +323,7 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording& xbmcRecording,
   addonRecording.iSeriesNumber = xbmcRecording.m_iSeason;
   addonRecording.iEpisodeNumber = xbmcRecording.m_iEpisode;
   addonRecording.iYear = xbmcRecording.GetYear();
-  strncpy(addonRecording.strDirectory, xbmcRecording.m_strDirectory.c_str(),
+  strncpy(addonRecording.strDirectory, xbmcRecording.Directory().c_str(),
           sizeof(addonRecording.strDirectory) - 1);
   strncpy(addonRecording.strPlotOutline, xbmcRecording.m_strPlotOutline.c_str(),
           sizeof(addonRecording.strPlotOutline) - 1);
@@ -331,7 +331,7 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording& xbmcRecording,
           sizeof(addonRecording.strPlot) - 1);
   strncpy(addonRecording.strGenreDescription, xbmcRecording.GetGenresLabel().c_str(),
           sizeof(addonRecording.strGenreDescription) - 1);
-  strncpy(addonRecording.strChannelName, xbmcRecording.m_strChannelName.c_str(),
+  strncpy(addonRecording.strChannelName, xbmcRecording.ChannelName().c_str(),
           sizeof(addonRecording.strChannelName) - 1);
   strncpy(addonRecording.strIconPath, xbmcRecording.ClientIconPath().c_str(),
           sizeof(addonRecording.strIconPath) - 1);
@@ -342,8 +342,8 @@ void CPVRClient::WriteClientRecordingInfo(const CPVRRecording& xbmcRecording,
   addonRecording.recordingTime =
       recTime - CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
   addonRecording.iDuration = xbmcRecording.GetDuration();
-  addonRecording.iPriority = xbmcRecording.m_iPriority;
-  addonRecording.iLifetime = xbmcRecording.m_iLifetime;
+  addonRecording.iPriority = xbmcRecording.Priority();
+  addonRecording.iLifetime = xbmcRecording.LifeTime();
   addonRecording.iGenreType = xbmcRecording.GenreType();
   addonRecording.iGenreSubType = xbmcRecording.GenreSubType();
   addonRecording.iPlayCount = xbmcRecording.GetLocalPlayCount();

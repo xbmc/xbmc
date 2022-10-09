@@ -55,7 +55,7 @@ void CGUIDialogPVRRecordingSettings::SetRecording(const std::shared_ptr<CPVRReco
   // Copy data we need from tag. Do not modify the tag itself until Save()!
   m_strTitle = m_recording->m_strTitle;
   m_iPlayCount = m_recording->GetLocalPlayCount();
-  m_iLifetime = m_recording->m_iLifetime;
+  m_iLifetime = m_recording->LifeTime();
 }
 
 void CGUIDialogPVRRecordingSettings::SetupView()
@@ -182,7 +182,7 @@ bool CGUIDialogPVRRecordingSettings::Save()
   m_recording->SetLocalPlayCount(m_iPlayCount);
 
   // Lifetime
-  m_recording->m_iLifetime = m_iLifetime;
+  m_recording->SetLifeTime(m_iLifetime);
 
   return true;
 }
