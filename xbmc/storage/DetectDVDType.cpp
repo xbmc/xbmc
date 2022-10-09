@@ -64,10 +64,11 @@ void CDetectDVDMedia::Process()
     m_cdio->cdio_destroy(p_cdio);
 #endif
 
-  while (( !m_bStop ))
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  while (!m_bStop)
   {
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
     if (appPlayer->IsPlayingVideo())
     {
       CThread::Sleep(10000ms);
@@ -77,7 +78,7 @@ void CDetectDVDMedia::Process()
       UpdateDvdrom();
       m_bStartup = false;
       CThread::Sleep(2000ms);
-      if ( m_bAutorun )
+      if (m_bAutorun)
       {
         // Media in drive, wait 1.5s more to be sure the device is ready for playback
         CThread::Sleep(1500ms);

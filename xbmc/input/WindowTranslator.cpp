@@ -288,16 +288,11 @@ CWindowTranslator::WindowMapByID CWindowTranslator::CreateWindowMappingByID()
 
 int CWindowTranslator::GetVirtualWindow(int windowId)
 {
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (windowId == WINDOW_FULLSCREEN_VIDEO)
   {
-    // check if we're in a DVD menu
-    if (appPlayer->IsInMenu())
-      return WINDOW_VIDEO_MENU;
-    // special casing for Live TV
-    else if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
+    if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
     {
+      // special casing for Live TV
       if (CServiceBroker::GetPVRManager()
               .Get<PVR::GUI::Channels>()
               .GetChannelNumberInputHandler()
@@ -311,15 +306,24 @@ int CWindowTranslator::GetVirtualWindow(int windowId)
       else
         return WINDOW_FULLSCREEN_LIVETV;
     }
-    // special casing for numeric seek
-    else if (appPlayer && appPlayer->GetSeekHandler().HasTimeCode())
-      return WINDOW_VIDEO_TIME_SEEK;
+    else
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+      // check if we're in a DVD menu
+      if (appPlayer->IsInMenu())
+        return WINDOW_VIDEO_MENU;
+      // special casing for numeric seek
+      else if (appPlayer->GetSeekHandler().HasTimeCode())
+        return WINDOW_VIDEO_TIME_SEEK;
+    }
   }
   else if (windowId == WINDOW_VISUALISATION)
   {
-    // special casing for PVR radio
     if (g_application.CurrentFileItem().HasPVRChannelInfoTag())
     {
+      // special casing for PVR radio
       if (CServiceBroker::GetPVRManager()
               .Get<PVR::GUI::Channels>()
               .GetChannelNumberInputHandler()
@@ -333,9 +337,15 @@ int CWindowTranslator::GetVirtualWindow(int windowId)
       else
         return WINDOW_FULLSCREEN_RADIO;
     }
-    // special casing for numeric seek
-    else if (appPlayer && appPlayer->GetSeekHandler().HasTimeCode())
-      return WINDOW_VIDEO_TIME_SEEK;
+    else
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+      // special casing for numeric seek
+      if (appPlayer->GetSeekHandler().HasTimeCode())
+        return WINDOW_VIDEO_TIME_SEEK;
+    }
   }
 
   return windowId;
