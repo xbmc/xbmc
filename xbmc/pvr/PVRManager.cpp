@@ -113,7 +113,6 @@ public:
     return m_triggerEvent.Wait(std::chrono::milliseconds(milliSeconds));
   }
 
-
 private:
   void AppendJob(CPVRJob* job);
 
@@ -566,7 +565,9 @@ void CPVRManager::Process()
     }
     catch (...)
     {
-      CLog::LogF(LOGERROR, "An error occurred while trying to execute the last PVR update job, trying to recover");
+      CLog::LogF(
+          LOGERROR,
+          "An error occurred while trying to execute the last PVR update job, trying to recover");
       bRestart = true;
     }
 
@@ -597,7 +598,8 @@ bool CPVRManager::SetWakeupCommand()
   if (!m_settings.GetBoolValue(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED))
     return false;
 
-  const std::string strWakeupCommand(m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD));
+  const std::string strWakeupCommand(
+      m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD));
   if (!strWakeupCommand.empty() && m_timers)
   {
     const CDateTime nextEvent = m_timers->GetNextEventTime();
@@ -784,19 +786,19 @@ void CPVRManager::RestartParentalTimer()
 
 bool CPVRManager::IsParentalLocked(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
-  return m_channelGroups &&
-         epgTag &&
-         IsCurrentlyParentalLocked(m_channelGroups->GetByUniqueID(epgTag->UniqueChannelID(), epgTag->ClientID()),
-                                   epgTag->IsParentalLocked());
+  return m_channelGroups && epgTag &&
+         IsCurrentlyParentalLocked(
+             m_channelGroups->GetByUniqueID(epgTag->UniqueChannelID(), epgTag->ClientID()),
+             epgTag->IsParentalLocked());
 }
 
 bool CPVRManager::IsParentalLocked(const std::shared_ptr<CPVRChannel>& channel) const
 {
-  return channel &&
-         IsCurrentlyParentalLocked(channel, channel->IsLocked());
+  return channel && IsCurrentlyParentalLocked(channel, channel->IsLocked());
 }
 
-bool CPVRManager::IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& channel, bool bGenerallyLocked) const
+bool CPVRManager::IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& channel,
+                                            bool bGenerallyLocked) const
 {
   bool bReturn = false;
 
@@ -805,15 +807,15 @@ bool CPVRManager::IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& 
 
   const std::shared_ptr<CPVRChannel> currentChannel = m_playbackState->GetPlayingChannel();
 
-  if (// if channel in question is currently playing it must be currently unlocked.
+  if ( // if channel in question is currently playing it must be currently unlocked.
       (!currentChannel || channel != currentChannel) &&
       // parental control enabled
       m_settings.GetBoolValue(CSettings::SETTING_PVRPARENTAL_ENABLED))
   {
-    float parentalDurationMs = m_settings.GetIntValue(CSettings::SETTING_PVRPARENTAL_DURATION) * 1000.0f;
-    bReturn = m_parentalTimer &&
-        (!m_parentalTimer->IsRunning() ||
-          m_parentalTimer->GetElapsedMilliseconds() > parentalDurationMs);
+    float parentalDurationMs =
+        m_settings.GetIntValue(CSettings::SETTING_PVRPARENTAL_DURATION) * 1000.0f;
+    bReturn = m_parentalTimer && (!m_parentalTimer->IsRunning() ||
+                                  m_parentalTimer->GetElapsedMilliseconds() > parentalDurationMs);
   }
 
   return bReturn;
@@ -847,8 +849,10 @@ void CPVRManager::LocalizationChanged()
   std::unique_lock<CCriticalSection> lock(m_critSection);
   if (IsStarted())
   {
-    static_cast<CPVRChannelGroupInternal *>(m_channelGroups->GetGroupAllRadio().get())->CheckGroupName();
-    static_cast<CPVRChannelGroupInternal *>(m_channelGroups->GetGroupAllTV().get())->CheckGroupName();
+    static_cast<CPVRChannelGroupInternal*>(m_channelGroups->GetGroupAllRadio().get())
+        ->CheckGroupName();
+    static_cast<CPVRChannelGroupInternal*>(m_channelGroups->GetGroupAllTV().get())
+        ->CheckGroupName();
   }
 }
 
@@ -860,16 +864,13 @@ bool CPVRManager::EpgsCreated() const
 
 void CPVRManager::TriggerEpgsCreate()
 {
-  m_pendingUpdates->Append("pvr-create-epgs", [this]() {
-    return CreateChannelEpgs();
-  });
+  m_pendingUpdates->Append("pvr-create-epgs", [this]() { return CreateChannelEpgs(); });
 }
 
 void CPVRManager::TriggerRecordingsSizeInProgressUpdate()
 {
-  m_pendingUpdates->Append("pvr-update-recordings-size", [this]() {
-    return Recordings()->UpdateInProgressSize();
-  });
+  m_pendingUpdates->Append("pvr-update-recordings-size",
+                           [this]() { return Recordings()->UpdateInProgressSize(); });
 }
 
 void CPVRManager::TriggerRecordingsUpdate(int clientId)
