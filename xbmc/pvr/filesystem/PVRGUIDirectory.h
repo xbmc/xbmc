@@ -104,4 +104,4 @@ private:
   const CURL m_url;
 };
 
-}
+} // namespace PVR
