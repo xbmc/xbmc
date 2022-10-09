@@ -285,7 +285,7 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
   if (item.HasPVRChannelInfoTag())
     iClientID = item.GetPVRChannelInfoTag()->ClientID();
   else if (item.HasPVRRecordingInfoTag())
-    iClientID = item.GetPVRRecordingInfoTag()->m_iClientId;
+    iClientID = item.GetPVRRecordingInfoTag()->ClientID();
   else if (item.HasPVRTimerInfoTag())
     iClientID = item.GetPVRTimerInfoTag()->m_iClientId;
   else if (item.HasEPGInfoTag())

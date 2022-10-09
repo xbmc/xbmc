@@ -297,7 +297,8 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
     if (recording->IsRadio() != bRadio)
       continue;
 
-    const std::string strCurrent = recParentPath.GetUnescapedSubDirectoryPath(recording->m_strDirectory);
+    const std::string strCurrent =
+        recParentPath.GetUnescapedSubDirectoryPath(recording->Directory());
     if (strCurrent.empty())
       continue;
 
@@ -401,7 +402,7 @@ bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
       // Omit recordings not matching criteria
       if (recording->IsDeleted() != recPath.IsDeleted() ||
           recording->IsRadio() != recPath.IsRadio() ||
-          !IsDirectoryMember(strDirectory, recording->m_strDirectory, bGrouped))
+          !IsDirectoryMember(strDirectory, recording->Directory(), bGrouped))
         continue;
 
       item = std::make_shared<CFileItem>(recording);

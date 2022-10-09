@@ -405,8 +405,8 @@ void CFileItemHandler::HandleFileItem(const char* ID,
          object[ID] = item->GetPVRChannelInfoTag()->ChannelID();
       else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->DatabaseID() > 0)
         object[ID] = item->GetEPGInfoTag()->DatabaseID();
-      else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_iRecordingId > 0)
-         object[ID] = item->GetPVRRecordingInfoTag()->m_iRecordingId;
+      else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->RecordingID() > 0)
+        object[ID] = item->GetPVRRecordingInfoTag()->RecordingID();
       else if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->m_iTimerId > 0)
          object[ID] = item->GetPVRTimerInfoTag()->m_iTimerId;
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
