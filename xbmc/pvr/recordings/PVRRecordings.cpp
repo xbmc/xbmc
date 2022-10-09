@@ -175,7 +175,8 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path
   return {};
 }
 
-std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId, const std::string& strRecordingId) const
+std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId,
+                                                       const std::string& strRecordingId) const
 {
   std::shared_ptr<CPVRRecording> retVal;
   std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -217,7 +218,8 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
   }
 }
 
-std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(
+    const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
   if (!epgTag)
     return {};
@@ -252,7 +254,8 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(const std::
   return std::shared_ptr<CPVRRecording>();
 }
 
-bool CPVRRecordings::SetRecordingsPlayCount(const std::shared_ptr<CPVRRecording>& recording, int count)
+bool CPVRRecordings::SetRecordingsPlayCount(const std::shared_ptr<CPVRRecording>& recording,
+                                            int count)
 {
   return ChangeRecordingsPlayCount(recording, count);
 }
@@ -262,7 +265,8 @@ bool CPVRRecordings::IncrementRecordingsPlayCount(const std::shared_ptr<CPVRReco
   return ChangeRecordingsPlayCount(recording, INCREMENT_PLAY_COUNT);
 }
 
-bool CPVRRecordings::ChangeRecordingsPlayCount(const std::shared_ptr<CPVRRecording>& recording, int count)
+bool CPVRRecordings::ChangeRecordingsPlayCount(const std::shared_ptr<CPVRRecording>& recording,
+                                               int count)
 {
   if (recording)
   {
