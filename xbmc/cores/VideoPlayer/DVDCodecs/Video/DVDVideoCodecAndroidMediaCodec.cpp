@@ -55,17 +55,6 @@
 #include <androidjni/SurfaceTexture.h>
 #include <androidjni/UUID.h>
 
-static const char* XMEDIAFORMAT_KEY_ROTATION = "rotation-degrees";
-static const char* XMEDIAFORMAT_KEY_SLICE = "slice-height";
-static const char* XMEDIAFORMAT_KEY_CROP_LEFT = "crop-left";
-static const char* XMEDIAFORMAT_KEY_CROP_RIGHT = "crop-right";
-static const char* XMEDIAFORMAT_KEY_CROP_TOP = "crop-top";
-static const char* XMEDIAFORMAT_KEY_CROP_BOTTOM = "crop-bottom";
-static const char* XMEDIAFORMAT_KEY_COLOR_STANDARD = "color-standard";
-static const char* XMEDIAFORMAT_KEY_COLOR_RANGE = "color-range";
-static const char* XMEDIAFORMAT_KEY_COLOR_TRANSFER = "color-transfer";
-static const char* XMEDIAFORMAT_KEY_HDR_STATIC_INFO = "hdr-static-info";
-
 using namespace KODI::MESSAGING;
 
 enum MEDIACODEC_STATES
@@ -1360,7 +1349,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   if (CJNIBase::GetSDKVersion() >= 23 && m_render_surface)
   {
     // Handle rotation
-    mediaformat.setInteger(XMEDIAFORMAT_KEY_ROTATION, m_hints.orientation);
+    mediaformat.setInteger(CJNIMediaFormat::KEY_ROTATION, m_hints.orientation);
     mediaformat.setFeatureEnabled(CJNIMediaCodecInfoCodecCapabilities::FEATURE_TunneledPlayback,
                                   false);
     if (m_needSecureDecoder)
@@ -1371,19 +1360,21 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   if (CJNIBase::GetSDKVersion() >= 24)
   {
     if (m_hints.colorRange != AVCOL_RANGE_UNSPECIFIED)
-      mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_RANGE, m_hints.colorRange);
+      mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_RANGE, m_hints.colorRange);
 
     if (m_hints.colorPrimaries != AVCOL_PRI_UNSPECIFIED)
     {
       switch (m_hints.colorPrimaries)
       {
-      case AVCOL_PRI_BT709:
-        mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_STANDARD, 1);
-        break;
-      case AVCOL_PRI_BT2020:
-        mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_STANDARD, 6);
-        break;
-      default:; // do nothing
+        case AVCOL_PRI_BT709:
+          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
+                                 CJNIMediaFormat::COLOR_STANDARD_BT709);
+          break;
+        case AVCOL_PRI_BT2020:
+          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
+                                 CJNIMediaFormat::COLOR_STANDARD_BT2020);
+          break;
+        default:; // do nothing
       }
     }
 
@@ -1391,19 +1382,23 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
     {
       switch (m_hints.colorTransferCharacteristic)
       {
-      case AVCOL_TRC_LINEAR:
-        mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_TRANSFER, 1); // COLOR_TRANSFER_LINEAR
-        break;
-      case AVCOL_TRC_SMPTE170M:
-        mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_TRANSFER, 3); // COLOR_TRANSFER_SDR_VIDEO
-        break;
-      case AVCOL_TRC_SMPTE2084:
-        mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_TRANSFER, 6); // COLOR_TRANSFER_ST2084
-        break;
-      case AVCOL_TRC_ARIB_STD_B67:
-        mediaformat.setInteger(XMEDIAFORMAT_KEY_COLOR_TRANSFER, 7); // COLOR_TRANSFER_HLG
-        break;
-      default:; // do nothing
+        case AVCOL_TRC_LINEAR:
+          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                                 CJNIMediaFormat::COLOR_TRANSFER_LINEAR);
+          break;
+        case AVCOL_TRC_SMPTE170M:
+          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                                 CJNIMediaFormat::COLOR_TRANSFER_SDR_VIDEO);
+          break;
+        case AVCOL_TRC_SMPTE2084:
+          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                                 CJNIMediaFormat::COLOR_TRANSFER_ST2084);
+          break;
+        case AVCOL_TRC_ARIB_STD_B67:
+          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                                 CJNIMediaFormat::COLOR_TRANSFER_HLG);
+          break;
+        default:; // do nothing
       }
     }
     std::vector<uint8_t> hdr_static_data = GetHDRStaticMetadata();
@@ -1412,7 +1407,7 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
       CJNIByteBuffer bytebuffer = CJNIByteBuffer::allocateDirect(hdr_static_data.size());
       void* dts_ptr = xbmc_jnienv()->GetDirectBufferAddress(bytebuffer.get_raw());
       memcpy(dts_ptr, hdr_static_data.data(), hdr_static_data.size());
-      mediaformat.setByteBuffer(XMEDIAFORMAT_KEY_HDR_STATIC_INFO, bytebuffer);
+      mediaformat.setByteBuffer(CJNIMediaFormat::KEY_HDR_STATIC_INFO, bytebuffer);
     }
   }
 
@@ -1576,25 +1571,32 @@ void CDVDVideoCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat& med
   int crop_right  = 0;
   int crop_bottom = 0;
 
-  if (mediaformat.containsKey("width"))
-    width = mediaformat.getInteger("width");
-  if (mediaformat.containsKey("height"))
-    height = mediaformat.getInteger("height");
-  if (mediaformat.containsKey("stride"))
-    stride = mediaformat.getInteger("stride");
-  if (mediaformat.containsKey(XMEDIAFORMAT_KEY_SLICE))
-    slice_height = mediaformat.getInteger(XMEDIAFORMAT_KEY_SLICE);
-  if (mediaformat.containsKey("color-format"))
-    color_format = mediaformat.getInteger("color-format");
-  if (mediaformat.containsKey(XMEDIAFORMAT_KEY_CROP_LEFT))
-    crop_left = mediaformat.getInteger(XMEDIAFORMAT_KEY_CROP_LEFT);
-  if (mediaformat.containsKey(XMEDIAFORMAT_KEY_CROP_TOP))
-    crop_top = mediaformat.getInteger(XMEDIAFORMAT_KEY_CROP_TOP);
-  if (mediaformat.containsKey(XMEDIAFORMAT_KEY_CROP_RIGHT))
-    crop_right = mediaformat.getInteger(XMEDIAFORMAT_KEY_CROP_RIGHT);
-  if (mediaformat.containsKey(XMEDIAFORMAT_KEY_CROP_BOTTOM))
-    crop_bottom = mediaformat.getInteger(XMEDIAFORMAT_KEY_CROP_BOTTOM);
+  if (mediaformat.containsKey(CJNIMediaFormat::KEY_WIDTH))
+    width = mediaformat.getInteger(CJNIMediaFormat::KEY_WIDTH);
+  if (mediaformat.containsKey(CJNIMediaFormat::KEY_HEIGHT))
+    height = mediaformat.getInteger(CJNIMediaFormat::KEY_HEIGHT);
+  if (mediaformat.containsKey(CJNIMediaFormat::KEY_COLOR_FORMAT))
+    color_format = mediaformat.getInteger(CJNIMediaFormat::KEY_COLOR_FORMAT);
 
+  if (CJNIBase::GetSDKVersion() >= 23)
+  {
+    if (mediaformat.containsKey(CJNIMediaFormat::KEY_STRIDE))
+      stride = mediaformat.getInteger(CJNIMediaFormat::KEY_STRIDE);
+    if (mediaformat.containsKey(CJNIMediaFormat::KEY_SLICE_HEIGHT))
+      slice_height = mediaformat.getInteger(CJNIMediaFormat::KEY_SLICE_HEIGHT);
+  }
+
+  if (CJNIBase::GetSDKVersion() >= 33)
+  {
+    if (mediaformat.containsKey(CJNIMediaFormat::KEY_CROP_LEFT))
+      crop_left = mediaformat.getInteger(CJNIMediaFormat::KEY_CROP_LEFT);
+    if (mediaformat.containsKey(CJNIMediaFormat::KEY_CROP_TOP))
+      crop_top = mediaformat.getInteger(CJNIMediaFormat::KEY_CROP_TOP);
+    if (mediaformat.containsKey(CJNIMediaFormat::KEY_CROP_RIGHT))
+      crop_right = mediaformat.getInteger(CJNIMediaFormat::KEY_CROP_RIGHT);
+    if (mediaformat.containsKey(CJNIMediaFormat::KEY_CROP_BOTTOM))
+      crop_bottom = mediaformat.getInteger(CJNIMediaFormat::KEY_CROP_BOTTOM);
+  }
 
   if (!crop_right)
     crop_right = width-1;
