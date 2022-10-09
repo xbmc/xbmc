@@ -45,10 +45,7 @@ public:
   }
 
   // ITimerCallback implementation
-  void OnTimeout() override
-  {
-    m_state.UpdateLastWatched(m_channel, m_time);
-  }
+  void OnTimeout() override { m_state.UpdateLastWatched(m_channel, m_time); }
 
 private:
   CLastWatchedUpdateTimer() = delete;
@@ -57,7 +54,6 @@ private:
   const std::shared_ptr<CPVRChannelGroupMember> m_channel;
   const CDateTime m_time;
 };
-
 
 CPVRPlaybackState::CPVRPlaybackState() = default;
 
@@ -180,14 +176,17 @@ void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem>& item
       }
     }
 
-    int iLastWatchedDelay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_PVRPLAYBACK_DELAYMARKLASTWATCHED) * 1000;
+    int iLastWatchedDelay = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                                CSettings::SETTING_PVRPLAYBACK_DELAYMARKLASTWATCHED) *
+                            1000;
     if (iLastWatchedDelay > 0)
     {
       // Insert new / replace existing last watched update timer
       if (m_lastWatchedUpdateTimer)
         m_lastWatchedUpdateTimer->Stop(true);
 
-      m_lastWatchedUpdateTimer.reset(new CLastWatchedUpdateTimer(*this, channel, CDateTime::GetUTCDateTime()));
+      m_lastWatchedUpdateTimer.reset(
+          new CLastWatchedUpdateTimer(*this, channel, CDateTime::GetUTCDateTime()));
       m_lastWatchedUpdateTimer->Start(std::chrono::milliseconds(iLastWatchedDelay));
     }
     else
@@ -216,7 +215,8 @@ void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem>& item
 
   if (m_playingClientId != -1)
   {
-    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_playingClientId);
+    const std::shared_ptr<CPVRClient> client =
+        CServiceBroker::GetPVRManager().GetClient(m_playingClientId);
     if (client)
       m_strPlayingClientName = client->GetFriendlyName();
   }
@@ -419,7 +419,8 @@ bool CPVRPlaybackState::IsRecording() const
 bool CPVRPlaybackState::IsRecordingOnPlayingChannel() const
 {
   const std::shared_ptr<CPVRChannel> currentChannel = GetPlayingChannel();
-  return currentChannel && CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*currentChannel);
+  return currentChannel &&
+         CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*currentChannel);
 }
 
 bool CPVRPlaybackState::IsPlayingActiveRecording() const
