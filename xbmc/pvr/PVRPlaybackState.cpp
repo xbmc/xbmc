@@ -199,8 +199,8 @@ void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem>& item
   else if (item->HasPVRRecordingInfoTag())
   {
     m_playingRecording = item->GetPVRRecordingInfoTag();
-    m_playingClientId = m_playingRecording->m_iClientId;
-    m_strPlayingRecordingUniqueId = m_playingRecording->m_strRecordingId;
+    m_playingClientId = m_playingRecording->ClientID();
+    m_strPlayingRecordingUniqueId = m_playingRecording->ClientRecordingID();
   }
   else if (item->HasEPGInfoTag())
   {
@@ -259,7 +259,7 @@ bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem>& item
   }
   else if (item->HasPVRRecordingInfoTag() &&
            item->GetPVRRecordingInfoTag()->ClientID() == m_playingClientId &&
-           item->GetPVRRecordingInfoTag()->m_strRecordingId == m_strPlayingRecordingUniqueId)
+           item->GetPVRRecordingInfoTag()->ClientRecordingID() == m_strPlayingRecordingUniqueId)
   {
     bChanged = true;
     m_playingRecording.reset();
@@ -348,7 +348,7 @@ bool CPVRPlaybackState::IsPlayingRecording(const std::shared_ptr<CPVRRecording>&
   {
     const std::shared_ptr<CPVRRecording> current = GetPlayingRecording();
     if (current && current->ClientID() == recording->ClientID() &&
-        current->m_strRecordingId == recording->m_strRecordingId)
+        current->ClientRecordingID() == recording->ClientRecordingID())
       return true;
   }
 

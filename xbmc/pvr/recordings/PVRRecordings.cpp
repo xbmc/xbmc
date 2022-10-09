@@ -145,9 +145,8 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(unsigned int iId) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const auto it =
-      std::find_if(m_recordings.cbegin(), m_recordings.cend(), [iId](const auto& recording) {
-        return recording.second->m_iRecordingId == iId;
-      });
+      std::find_if(m_recordings.cbegin(), m_recordings.cend(),
+                   [iId](const auto& recording) { return recording.second->RecordingID() == iId; });
   return it != m_recordings.cend() ? (*it).second : std::shared_ptr<CPVRRecording>();
 }
 
@@ -200,7 +199,7 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
       m_bDeletedTVRecordings = true;
   }
 
-  std::shared_ptr<CPVRRecording> existingTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
+  std::shared_ptr<CPVRRecording> existingTag = GetById(tag->ClientID(), tag->ClientRecordingID());
   if (existingTag)
   {
     existingTag->Update(*tag, client);
@@ -209,8 +208,8 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
   else
   {
     tag->UpdateMetadata(GetVideoDatabase(), client);
-    tag->m_iRecordingId = ++m_iLastId;
-    m_recordings.insert({CPVRRecordingUid(tag->m_iClientId, tag->m_strRecordingId), tag});
+    tag->SetRecordingID(++m_iLastId);
+    m_recordings.insert({CPVRRecordingUid(tag->ClientID(), tag->ClientRecordingID()), tag});
     if (tag->IsRadio())
       ++m_iRadioRecordings;
     else
