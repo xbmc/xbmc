@@ -61,8 +61,6 @@ static const char* XMEDIAFORMAT_KEY_CROP_LEFT = "crop-left";
 static const char* XMEDIAFORMAT_KEY_CROP_RIGHT = "crop-right";
 static const char* XMEDIAFORMAT_KEY_CROP_TOP = "crop-top";
 static const char* XMEDIAFORMAT_KEY_CROP_BOTTOM = "crop-bottom";
-static const char* XMEDIAFORMAT_FEATURE_TUNNELED_PLAYBACK = "feature-tunneled-playback";
-static const char* XMEDIAFORMAT_FEATURE_SECURE_PLAYBACK = "feature-secure-playback";
 static const char* XMEDIAFORMAT_KEY_COLOR_STANDARD = "color-standard";
 static const char* XMEDIAFORMAT_KEY_COLOR_RANGE = "color-range";
 static const char* XMEDIAFORMAT_KEY_COLOR_TRANSFER = "color-transfer";
@@ -1363,9 +1361,11 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
   {
     // Handle rotation
     mediaformat.setInteger(XMEDIAFORMAT_KEY_ROTATION, m_hints.orientation);
-    mediaformat.setInteger(XMEDIAFORMAT_FEATURE_TUNNELED_PLAYBACK, 0);
+    mediaformat.setFeatureEnabled(CJNIMediaCodecInfoCodecCapabilities::FEATURE_TunneledPlayback,
+                                  false);
     if (m_needSecureDecoder)
-      mediaformat.setInteger(XMEDIAFORMAT_FEATURE_SECURE_PLAYBACK, 1);
+      mediaformat.setFeatureEnabled(CJNIMediaCodecInfoCodecCapabilities::FEATURE_SecurePlayback,
+                                    true);
   }
 
   if (CJNIBase::GetSDKVersion() >= 24)
