@@ -10,6 +10,9 @@
 
 #include "guilib/guiinfo/GUIInfoProvider.h"
 
+#include <memory>
+
+class CApplicationPlayer;
 class CVideoInfoTag;
 
 namespace KODI
@@ -24,7 +27,7 @@ class CGUIInfo;
 class CVideoGUIInfo : public CGUIInfoProvider
 {
 public:
-  CVideoGUIInfo() = default;
+  CVideoGUIInfo();
   ~CVideoGUIInfo() override = default;
 
   // KODI::GUILIB::GUIINFO::IGUIInfoProvider implementation
@@ -41,6 +44,8 @@ public:
 private:
   int GetPercentPlayed(const CVideoInfoTag* tag) const;
   bool GetPlaylistInfo(std::string& value, const CGUIInfo& info) const;
+
+  const std::shared_ptr<CApplicationPlayer> m_appPlayer;
 };
 
 } // namespace GUIINFO

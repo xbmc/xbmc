@@ -43,6 +43,11 @@
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 
+CVideoGUIInfo::CVideoGUIInfo()
+  : m_appPlayer(CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>())
+{
+}
+
 int CVideoGUIInfo::GetPercentPlayed(const CVideoInfoTag* tag) const
 {
   CBookmark bookmark = tag->GetResumePoint();
@@ -58,9 +63,7 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
   if (item && item->IsVideo())
   {
     // special case where .strm is used to start an audio stream
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    if (item->IsInternetStream() && appPlayer->IsPlayingAudio())
+    if (item->IsInternetStream() && m_appPlayer->IsPlayingAudio())
       return false;
 
     CLog::Log(LOGDEBUG, "CVideoGUIInfo::InitCurrentItem({})", CURL::GetRedacted(item->GetPath()));
@@ -536,10 +539,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       return true;
       break;
     case VIDEOPLAYER_COVER:
-    {
-      const auto& components = CServiceBroker::GetAppComponents();
-      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-      if (appPlayer->IsPlayingVideo())
+      if (m_appPlayer->IsPlayingVideo())
       {
         if (fallback)
           *fallback = "DefaultVideoCover.png";
@@ -548,7 +548,6 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       }
       break;
-    }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // LISTITEM_*
@@ -718,12 +717,9 @@ bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
     // VIDEOPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case VIDEOPLAYER_AUDIOSTREAMCOUNT:
-    {
-      const auto& components = CServiceBroker::GetAppComponents();
-      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-      value = appPlayer->GetAudioStreamCount();
+      value = m_appPlayer->GetAudioStreamCount();
       return true;
-    }
+
     default:
       break;
   }
@@ -735,9 +731,6 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
 {
   if (!gitem->IsFileItem())
     return false;
-
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
   const CFileItem *item = static_cast<const CFileItem*>(gitem);
   const CVideoInfoTag* tag = item->GetVideoInfoTag();
@@ -792,16 +785,16 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
               CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_GAME;
       return true;
     case VIDEOPLAYER_HASMENU:
-      value = appPlayer->GetSupportedMenuType() != MenuType::NONE;
+      value = m_appPlayer->GetSupportedMenuType() != MenuType::NONE;
       return true;
     case VIDEOPLAYER_HASTELETEXT:
-      value = appPlayer->HasTeletextCache();
+      value = m_appPlayer->HasTeletextCache();
       return true;
     case VIDEOPLAYER_HASSUBTITLES:
-      value = appPlayer->GetSubtitleCount() > 0;
+      value = m_appPlayer->GetSubtitleCount() > 0;
       return true;
     case VIDEOPLAYER_SUBTITLESENABLED:
-      value = appPlayer->GetSubtitleVisible();
+      value = m_appPlayer->GetSubtitleVisible();
       return true;
     case VIDEOPLAYER_IS_STEREOSCOPIC:
       value = !CServiceBroker::GetDataCacheCore().GetVideoStereoMode().empty();

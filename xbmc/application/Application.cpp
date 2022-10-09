@@ -2633,7 +2633,6 @@ void CApplication::StopPlaying()
 
 bool CApplication::OnMessage(CGUIMessage& message)
 {
-  const auto appPlayer = GetComponent<CApplicationPlayer>();
   switch (message.GetMessage())
   {
   case GUI_MSG_NOTIFY_ALL:
@@ -2705,7 +2704,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
     {
 #ifdef TARGET_DARWIN_EMBEDDED
       // @TODO move this away to platform code
-      CDarwinUtils::SetScheduling(appPlayer->IsPlayingVideo());
+      CDarwinUtils::SetScheduling(GetComponent<CApplicationPlayer>()->IsPlayingVideo());
 #endif
       PLAYLIST::CPlayList playList = CServiceBroker::GetPlaylistPlayer().GetPlaylist(
           CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
@@ -2745,6 +2744,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
                                                          m_itemCurrentFile, param);
 
       // we don't want a busy dialog when switching channels
+      const auto appPlayer = GetComponent<CApplicationPlayer>();
       if (!m_itemCurrentFile->IsLiveTV() ||
           (!appPlayer->IsPlayingVideo() && !appPlayer->IsPlayingAudio()))
       {
@@ -2768,7 +2768,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
           CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist());
       if (iNext < 0 || iNext >= playlist.size())
       {
-        appPlayer->OnNothingToQueueNotify();
+        GetComponent<CApplicationPlayer>()->OnNothingToQueueNotify();
         return true; // nothing to do
       }
 
@@ -2782,6 +2782,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
       // Don't queue if next media type is different from current one
       bool bNothingToQueue = false;
 
+      const auto appPlayer = GetComponent<CApplicationPlayer>();
       if (!file.IsVideo() && appPlayer->IsPlayingVideo())
         bNothingToQueue = true;
       else if ((!file.IsAudio() || file.IsVideo()) && appPlayer->IsPlayingAudio())
@@ -2863,7 +2864,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
     }
     ResetCurrentItem();
     if (!CServiceBroker::GetPlaylistPlayer().PlayNext(1, true))
-      appPlayer->ClosePlayer();
+      GetComponent<CApplicationPlayer>()->ClosePlayer();
 
     PlaybackCleanup();
 
@@ -2874,7 +2875,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYLISTPLAYER_STOPPED:
     ResetCurrentItem();
-    if (appPlayer->IsPlaying())
+    if (GetComponent<CApplicationPlayer>()->IsPlaying())
       StopPlaying();
     PlaybackCleanup();
     return true;
