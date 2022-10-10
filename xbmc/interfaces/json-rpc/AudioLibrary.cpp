@@ -17,6 +17,7 @@
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbUrl.h"
 #include "music/MusicThumbLoader.h"
 #include "music/Song.h"
 #include "music/tags/MusicInfoTag.h"

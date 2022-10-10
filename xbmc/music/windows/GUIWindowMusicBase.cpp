@@ -18,6 +18,7 @@
 #include "dialogs/GUIDialogMediaSource.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "music/MusicDbUrl.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/dialogs/GUIDialogInfoProviderSettings.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
