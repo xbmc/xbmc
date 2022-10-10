@@ -12,4 +12,4 @@
 
 class CAppParams;
 
-extern "C" int XBMC_Run(bool renderGUI, const std::shared_ptr<CAppParams>& params);
+extern "C" int XBMC_Run(bool renderGUI);
