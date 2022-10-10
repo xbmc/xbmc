@@ -19,6 +19,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbUrl.h"
 #include "video/VideoLibraryQueue.h"
 
 using namespace JSONRPC;
