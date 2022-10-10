@@ -8,12 +8,12 @@
 
 #pragma once
 
-#include "ICodec.h"
-#include "cores/AudioEngine/Utils/AEChannelInfo.h"
 #include "threads/CriticalSection.h"
 #include "utils/RingBuffer.h"
 
+struct AEAudioFormat;
 class CFileItem;
+class ICodec;
 
 #define PACKET_SIZE 3840    // audio packet size - we keep 1 in reserve for gapless playback
                             // using a multiple of 1, 2, 3, 4, 5, 6 to guarantee track alignment
@@ -48,13 +48,7 @@ public:
 
   int ReadSamples(int numsamples);
 
-  bool CanSeek()
-  {
-    if (m_codec)
-      return m_codec->CanSeek();
-    else
-      return false;
-  }
+  bool CanSeek();
   int64_t Seek(int64_t time);
   int64_t TotalTime();
   void SetTotalTime(int64_t time);
@@ -63,7 +57,7 @@ public:
   void SetStatus(int status) { m_status = status; }
 
   AEAudioFormat GetFormat();
-  unsigned int GetChannels() { return GetFormat().m_channelLayout.Count(); }
+  unsigned int GetChannels();
   // Data management
   unsigned int GetDataSize(bool checkPktSize);
   void *GetData(unsigned int samples);
