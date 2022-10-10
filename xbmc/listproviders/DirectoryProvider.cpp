@@ -11,6 +11,7 @@
 #include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"

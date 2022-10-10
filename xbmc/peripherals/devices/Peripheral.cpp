@@ -9,6 +9,7 @@
 #include "Peripheral.h"
 
 #include "Util.h"
+#include "XBDateTime.h"
 #include "filesystem/File.h"
 #include "games/controllers/Controller.h"
 #include "guilib/LocalizeStrings.h"

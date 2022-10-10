@@ -468,7 +468,8 @@ void CPeripheralBusAddon::UnRegisterAddon(const std::string& addonId)
   }
 }
 
-void CPeripheralBusAddon::PromptEnableAddons(const std::vector<ADDON::AddonInfoPtr>& disabledAddons)
+void CPeripheralBusAddon::PromptEnableAddons(
+    const std::vector<std::shared_ptr<ADDON::CAddonInfo>>& disabledAddons)
 {
   using namespace ADDON;
   using namespace MESSAGING::HELPERS;

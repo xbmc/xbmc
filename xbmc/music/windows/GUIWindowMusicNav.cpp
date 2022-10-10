@@ -15,7 +15,6 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/MusicDatabaseDirectory.h"

@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/AddonEvents.h"
+#include "addons/AddonManager.h"
 #include "addons/ContextMenuAddon.h"
 #include "addons/ContextMenus.h"
 #include "addons/IAddon.h"
@@ -222,7 +223,7 @@ ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem, co
   return result;
 }
 
-bool CONTEXTMENU::ShowFor(const CFileItemPtr& fileItem, const CContextMenuItem& root)
+bool CONTEXTMENU::ShowFor(const std::shared_ptr<CFileItem>& fileItem, const CContextMenuItem& root)
 {
   if (!fileItem)
     return false;
@@ -272,7 +273,7 @@ bool CONTEXTMENU::ShowFor(const CFileItemPtr& fileItem, const CContextMenuItem& 
              : menuItems[selected - propertyMenuSize]->Execute(fileItem);
 }
 
-bool CONTEXTMENU::LoopFrom(const IContextMenuItem& menu, const CFileItemPtr& fileItem)
+bool CONTEXTMENU::LoopFrom(const IContextMenuItem& menu, const std::shared_ptr<CFileItem>& fileItem)
 {
   if (!fileItem)
     return false;

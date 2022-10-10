@@ -21,7 +21,7 @@ namespace CONTEXTMENU
     return URIUtils::IsProtocol(item.GetPath(), "favourites");
   }
 
-  bool CFavouriteContextMenuAction::Execute(const CFileItemPtr& item) const
+  bool CFavouriteContextMenuAction::Execute(const std::shared_ptr<CFileItem>& item) const
   {
     CFileItemList items;
     CServiceBroker::GetFavouritesService().GetAll(items);
@@ -36,19 +36,21 @@ namespace CONTEXTMENU
     return false;
   }
 
-  bool CRemoveFavourite::DoExecute(CFileItemList &items, const CFileItemPtr& item) const
+  bool CRemoveFavourite::DoExecute(CFileItemList& items,
+                                   const std::shared_ptr<CFileItem>& item) const
   {
     int iBefore = items.Size();
     items.Remove(item.get());
     return items.Size() == iBefore - 1;
   }
 
-  bool CRenameFavourite::DoExecute(CFileItemList&, const CFileItemPtr& item) const
+  bool CRenameFavourite::DoExecute(CFileItemList&, const std::shared_ptr<CFileItem>& item) const
   {
     return CGUIDialogFavourites::ChooseAndSetNewName(item);
   }
 
-  bool CChooseThumbnailForFavourite::DoExecute(CFileItemList&, const CFileItemPtr& item) const
+  bool CChooseThumbnailForFavourite::DoExecute(CFileItemList&,
+                                               const std::shared_ptr<CFileItem>& item) const
   {
     return CGUIDialogFavourites::ChooseAndSetNewThumbnail(item);
   }
