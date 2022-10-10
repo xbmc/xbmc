@@ -36,13 +36,12 @@
 
 using namespace PVR;
 
-CGUIWindowPVRRecordingsBase::CGUIWindowPVRRecordingsBase(bool bRadio, int id, const std::string& xmlFile) :
-  CGUIWindowPVRBase(bRadio, id, xmlFile),
-  m_bShowDeletedRecordings(false),
-  m_settings({
-    CSettings::SETTING_PVRRECORD_GROUPRECORDINGS,
-    CSettings::SETTING_MYVIDEOS_SELECTACTION
-  })
+CGUIWindowPVRRecordingsBase::CGUIWindowPVRRecordingsBase(bool bRadio,
+                                                         int id,
+                                                         const std::string& xmlFile)
+  : CGUIWindowPVRBase(bRadio, id, xmlFile),
+    m_settings(
+        {CSettings::SETTING_PVRRECORD_GROUPRECORDINGS, CSettings::SETTING_MYVIDEOS_SELECTACTION})
 {
 }
 
@@ -411,4 +410,14 @@ bool CGUIWindowPVRRecordingsBase::GetFilteredItems(const std::string& filter, CF
     items.Remove(0);
 
   return listchanged;
+}
+
+std::string CGUIWindowPVRTVRecordings::GetRootPath() const
+{
+  return CPVRRecordingsPath(m_bShowDeletedRecordings, false);
+}
+
+std::string CGUIWindowPVRRadioRecordings::GetRootPath() const
+{
+  return CPVRRecordingsPath(m_bShowDeletedRecordings, true);
 }

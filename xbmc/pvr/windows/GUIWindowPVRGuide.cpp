@@ -959,3 +959,13 @@ void CPVRRefreshTimelineItemsThread::Process()
   m_ready.Reset();
   m_done.Set();
 }
+
+std::string CGUIWindowPVRTVGuide::GetRootPath() const
+{
+  return "pvr://guide/tv/";
+}
+
+std::string CGUIWindowPVRRadioGuide::GetRootPath() const
+{
+  return "pvr://guide/radio/";
+}
