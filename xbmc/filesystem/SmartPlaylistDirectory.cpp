@@ -23,6 +23,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbUrl.h"
 
 #include <math.h>
 

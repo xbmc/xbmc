@@ -48,6 +48,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "video/VideoDbUrl.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoLibraryQueue.h"
