@@ -15,7 +15,6 @@
 
 #include "Album.h"
 #include "MediaSource.h"
-#include "MusicDbUrl.h"
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
 #include "settings/LibExportSettings.h"
@@ -26,6 +25,7 @@
 
 class CArtist;
 class CFileItem;
+class CMusicDbUrl;
 
 namespace dbiplus
 {
