@@ -214,7 +214,7 @@ bool CPVRGUIActionsRecordings::EditRecording(const CFileItemPtr& item) const
 
   std::shared_ptr<CPVRRecording> origRecording(new CPVRRecording);
   origRecording->Update(*recording,
-                        *CServiceBroker::GetPVRManager().GetClient(recording->m_iClientId));
+                        *CServiceBroker::GetPVRManager().GetClient(recording->ClientID()));
 
   if (!ShowRecordingSettings(recording))
     return false;
@@ -231,7 +231,7 @@ bool CPVRGUIActionsRecordings::EditRecording(const CFileItemPtr& item) const
       CLog::LogF(LOGERROR, "Setting recording playcount failed!");
   }
 
-  if (origRecording->m_iLifetime != recording->m_iLifetime)
+  if (origRecording->LifeTime() != recording->LifeTime())
   {
     if (!AsyncSetRecordingLifetime().Execute(item))
       CLog::LogF(LOGERROR, "Setting recording lifetime failed!");

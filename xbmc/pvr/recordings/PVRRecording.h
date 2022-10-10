@@ -54,22 +54,9 @@ class CPVRRecording final : public CVideoInfoTag
 public:
   static const std::string IMAGE_OWNER_PATTERN;
 
-  int m_iClientId; /*!< ID of the backend */
-  std::string m_strRecordingId; /*!< unique ID of the recording on the client */
-  std::string m_strChannelName; /*!< name of the channel this was recorded from */
-  int m_iPriority; /*!< priority of this recording */
-  int m_iLifetime; /*!< lifetime of this recording */
-  std::string m_strDirectory; /*!< directory of this recording on the client */
-  unsigned m_iRecordingId; /*!< id that won't change while xbmc is running */
-
   CPVRRecording();
   CPVRRecording(const PVR_RECORDING& recording, unsigned int iClientId);
 
-private:
-  CPVRRecording(const CPVRRecording& tag) = delete;
-  CPVRRecording& operator=(const CPVRRecording& other) = delete;
-
-public:
   bool operator==(const CPVRRecording& right) const;
   bool operator!=(const CPVRRecording& right) const;
 
@@ -270,6 +257,54 @@ public:
   int ClientID() const;
 
   /*!
+   * @brief Get the recording ID as upplied by the client
+   * @return the recording identifier
+   */
+  std::string ClientRecordingID() const { return m_strRecordingId; }
+
+  /*!
+   * @brief Get the recording ID as upplied by the client
+   * @return the recording identifier
+   */
+  unsigned int RecordingID() const { return m_iRecordingId; }
+
+  /*!
+   * @brief Set the recording ID
+   * @param recordingId The new identifier
+   */
+  void SetRecordingID(unsigned int recordingId) { m_iRecordingId = recordingId; }
+
+  /*!
+   * @brief Get the directory for this recording
+   * @return the directory
+   */
+  std::string Directory() const { return m_strDirectory; }
+
+  /*!
+   * @brief Get the priority for this recording
+   * @return the priority
+   */
+  int Priority() const { return m_iPriority; }
+
+  /*!
+   * @brief Get the lifetime for this recording
+   * @return the lifetime
+   */
+  int LifeTime() const { return m_iLifetime; }
+
+  /*!
+   * @brief Set the lifetime for this recording
+   * @param lifeTime The lifetime
+   */
+  void SetLifeTime(int lifeTime) { m_iLifetime = lifeTime; }
+
+  /*!
+   * @brief Get the channel name for this recording
+   * @return the channel name
+   */
+  std::string ChannelName() const { return m_strChannelName; }
+
+  /*!
    * @brief Return the icon path as given by the client.
    * @return The path.
    */
@@ -461,7 +496,18 @@ public:
   std::shared_ptr<CPVRProvider> GetProvider() const;
 
 private:
+  CPVRRecording(const CPVRRecording& tag) = delete;
+  CPVRRecording& operator=(const CPVRRecording& other) = delete;
+
   void UpdatePath();
+
+  int m_iClientId; /*!< ID of the backend */
+  std::string m_strRecordingId; /*!< unique ID of the recording on the client */
+  std::string m_strChannelName; /*!< name of the channel this was recorded from */
+  int m_iPriority; /*!< priority of this recording */
+  int m_iLifetime; /*!< lifetime of this recording */
+  std::string m_strDirectory; /*!< directory of this recording on the client */
+  unsigned int m_iRecordingId; /*!< id that won't change while xbmc is running */
 
   CPVRCachedImage m_iconPath; /*!< icon path */
   CPVRCachedImage m_thumbnailPath; /*!< thumbnail path */
