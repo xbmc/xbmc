@@ -18,6 +18,7 @@
 #include <utility>
 #include <vector>
 
+class CApplicationPlayer;
 class CDataCacheCore;
 
 namespace KODI
@@ -57,17 +58,10 @@ public:
   bool ToggleShowInfo();
 
 private:
-  std::unique_ptr<CFileItem> m_currentItem;
-
-  std::atomic_bool m_playerShowTime;
-  std::atomic_bool m_playerShowInfo;
-
   int GetTotalPlayTime() const;
   int GetPlayTime() const;
   int GetPlayTimeRemaining() const;
   float GetSeekPercent() const;
-
-  CEventSource<PlayerShowInfoChangedEvent> m_events;
 
   std::string GetCurrentPlayTime(TIME_FORMAT format) const;
   std::string GetCurrentPlayTimeRemaining(TIME_FORMAT format) const;
@@ -84,6 +78,12 @@ private:
                                                        std::time_t duration) const;
   std::vector<std::pair<float, float>> GetChapters(const CDataCacheCore& data,
                                                    std::time_t duration) const;
+
+  std::unique_ptr<CFileItem> m_currentItem;
+  std::atomic_bool m_playerShowTime{false};
+  std::atomic_bool m_playerShowInfo{false};
+  const std::shared_ptr<CApplicationPlayer> m_appPlayer;
+  CEventSource<PlayerShowInfoChangedEvent> m_events;
 };
 
 } // namespace GUIINFO

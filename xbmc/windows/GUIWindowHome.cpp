@@ -43,16 +43,18 @@ CGUIWindowHome::~CGUIWindowHome(void)
 bool CGUIWindowHome::OnAction(const CAction &action)
 {
   static unsigned int min_hold_time = 1000;
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  if (action.GetID() == ACTION_NAV_BACK && action.GetHoldTime() < min_hold_time &&
-      appPlayer->IsPlaying())
+  if (action.GetID() == ACTION_NAV_BACK && action.GetHoldTime() < min_hold_time)
   {
-    CGUIComponent* gui = CServiceBroker::GetGUI();
-    if (gui)
-      gui->GetWindowManager().SwitchToFullScreen();
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer->IsPlaying())
+    {
+      CGUIComponent* gui = CServiceBroker::GetGUI();
+      if (gui)
+        gui->GetWindowManager().SwitchToFullScreen();
 
-    return true;
+      return true;
+    }
   }
   return CGUIWindow::OnAction(action);
 }
