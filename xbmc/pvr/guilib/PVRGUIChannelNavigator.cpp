@@ -104,12 +104,11 @@ CPVRGUIChannelNavigator::CPVRGUIChannelNavigator()
 
 CPVRGUIChannelNavigator::~CPVRGUIChannelNavigator()
 {
-  CServiceBroker::GetGUI()
-      ->GetInfoManager()
-      .GetInfoProviders()
-      .GetPlayerInfoProvider()
-      .Events()
-      .Unsubscribe(this);
+  const auto gui = CServiceBroker::GetGUI();
+  if (!gui)
+    return;
+
+  gui->GetInfoManager().GetInfoProviders().GetPlayerInfoProvider().Events().Unsubscribe(this);
 }
 
 void CPVRGUIChannelNavigator::SubscribeToShowInfoEventStream()
