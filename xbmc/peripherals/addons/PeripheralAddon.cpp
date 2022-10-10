@@ -10,7 +10,6 @@
 
 #include "FileItem.h"
 #include "PeripheralAddonTranslator.h"
-#include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"

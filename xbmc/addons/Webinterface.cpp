@@ -8,8 +8,6 @@
 
 #include "Webinterface.h"
 
-#include "ServiceBroker.h"
-#include "addons/AddonManager.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
