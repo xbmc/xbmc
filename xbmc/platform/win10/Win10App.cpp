@@ -8,6 +8,7 @@
 
 #include "Win10App.h"
 
+#include "application/AppEnvironment.h"
 #include "application/AppParamParser.h"
 #include "application/AppParams.h"
 #include "application/Application.h"
@@ -92,7 +93,9 @@ void App::Run()
       params->SetStandAlone(true);
 
     // Create and run the app
-    XBMC_Run(true, params);
+    CAppEnvironment::SetUp(params);
+    XBMC_Run(true);
+    CAppEnvironment::TearDown();
   }
 
   WSACleanup();
