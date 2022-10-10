@@ -8,7 +8,6 @@
 
 #include "ScraperParser.h"
 
-#include "addons/AddonManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "RegExp.h"
 #include "HTMLUtil.h"

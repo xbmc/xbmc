@@ -12,8 +12,10 @@
 #include "favourites/FavouritesService.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "input/WindowTranslator.h"
 #include "storage/MediaManager.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 
@@ -29,7 +31,7 @@ namespace CONTEXTMENU
 #endif
   }
 
-  bool CEjectDisk::Execute(const CFileItemPtr& item) const
+  bool CEjectDisk::Execute(const std::shared_ptr<CFileItem>& item) const
   {
 #ifdef HAS_DVD_DRIVE
     CServiceBroker::GetMediaManager().ToggleTray(
@@ -44,7 +46,7 @@ namespace CONTEXTMENU
     return item.IsRemovable() && !item.IsDVD() && !item.IsCDDA();
   }
 
-  bool CEjectDrive::Execute(const CFileItemPtr& item) const
+  bool CEjectDrive::Execute(const std::shared_ptr<CFileItem>& item) const
   {
     return CServiceBroker::GetMediaManager().Eject(item->GetPath());
   }
@@ -94,7 +96,7 @@ bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const
          item.GetPath() == "pvr://search/radio/";
 }
 
-bool CAddRemoveFavourite::Execute(const CFileItemPtr& item) const
+bool CAddRemoveFavourite::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   return CServiceBroker::GetFavouritesService().AddOrRemove(*item.get(), GetTargetWindowID(*item));
 }

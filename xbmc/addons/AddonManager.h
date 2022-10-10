@@ -11,6 +11,7 @@
 #include "AddonDatabase.h"
 #include "AddonUpdateRules.h"
 #include "addons/Addon.h"
+#include "addons/IAddonManagerCallback.h"
 #include "addons/Repository.h"
 #include "addons/addoninfo/AddonType.h"
 #include "threads/CriticalSection.h"
@@ -65,21 +66,6 @@ namespace ADDON
   struct CAddonWithUpdate;
 
   using AddonInfos = std::vector<AddonInfoPtr>;
-
-  /**
-  * Class - IAddonMgrCallback
-  * This callback should be inherited by any class which manages
-  * specific addon types. Could be mostly used for Dll addon types to handle
-  * cleanup before restart/removal
-  */
-  class IAddonMgrCallback
-  {
-    public:
-      virtual ~IAddonMgrCallback() = default;
-      virtual bool RequestRestart(const std::string& addonId,
-                                  AddonInstanceId instanceId,
-                                  bool datachanged) = 0;
-  };
 
   /**
   * Class - CAddonMgr

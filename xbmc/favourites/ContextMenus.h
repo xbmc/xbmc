@@ -10,6 +10,8 @@
 
 #include "ContextMenuItem.h"
 
+#include <memory>
+
 class CFileItemList;
 
 namespace CONTEXTMENU
@@ -20,10 +22,11 @@ class CFavouriteContextMenuAction : public CStaticContextMenuAction
 public:
   explicit CFavouriteContextMenuAction(uint32_t label) : CStaticContextMenuAction(label) {}
   bool IsVisible(const CFileItem& item) const override;
-  bool Execute(const CFileItemPtr& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+
 protected:
   ~CFavouriteContextMenuAction() override = default;
-  virtual bool DoExecute(CFileItemList& items, const CFileItemPtr& item) const = 0;
+  virtual bool DoExecute(CFileItemList& items, const std::shared_ptr<CFileItem>& item) const = 0;
 };
 
 class CRemoveFavourite : public CFavouriteContextMenuAction
@@ -31,7 +34,7 @@ class CRemoveFavourite : public CFavouriteContextMenuAction
 public:
   CRemoveFavourite() : CFavouriteContextMenuAction(15015) {} // Remove
 protected:
-  bool DoExecute(CFileItemList& items, const CFileItemPtr& item) const override;
+  bool DoExecute(CFileItemList& items, const std::shared_ptr<CFileItem>& item) const override;
 };
 
 class CRenameFavourite : public CFavouriteContextMenuAction
@@ -39,7 +42,7 @@ class CRenameFavourite : public CFavouriteContextMenuAction
 public:
   CRenameFavourite() : CFavouriteContextMenuAction(118) {} // Rename
 protected:
-  bool DoExecute(CFileItemList& items, const CFileItemPtr& item) const override;
+  bool DoExecute(CFileItemList& items, const std::shared_ptr<CFileItem>& item) const override;
 };
 
 class CChooseThumbnailForFavourite : public CFavouriteContextMenuAction
@@ -47,7 +50,7 @@ class CChooseThumbnailForFavourite : public CFavouriteContextMenuAction
 public:
   CChooseThumbnailForFavourite() : CFavouriteContextMenuAction(20019) {} // Choose thumbnail
 protected:
-  bool DoExecute(CFileItemList& items, const CFileItemPtr& item) const override;
+  bool DoExecute(CFileItemList& items, const std::shared_ptr<CFileItem>& item) const override;
 };
 
 }

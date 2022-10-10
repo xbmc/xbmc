@@ -8,13 +8,18 @@
 
 #pragma once
 
-#include "addons/AddonManager.h"
 #include "peripherals/PeripheralTypes.h"
 #include "peripherals/bus/PeripheralBus.h"
 
 #include <memory>
 #include <string>
 #include <vector>
+
+namespace ADDON
+{
+struct AddonEvent;
+class CAddonInfo;
+} // namespace ADDON
 
 namespace PERIPHERALS
 {
@@ -80,7 +85,7 @@ private:
   void OnEvent(const ADDON::AddonEvent& event);
   void UnRegisterAddon(const std::string& addonId);
 
-  void PromptEnableAddons(const std::vector<ADDON::AddonInfoPtr>& disabledAddons);
+  void PromptEnableAddons(const std::vector<std::shared_ptr<ADDON::CAddonInfo>>& disabledAddons);
 
   PeripheralAddonVector m_addons;
   PeripheralAddonVector m_failedAddons;

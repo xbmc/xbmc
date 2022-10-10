@@ -30,7 +30,7 @@ bool CMusicInfo::IsVisible(const CFileItem& item) const
          (m_mediaType == MediaTypeAlbum && item.IsVideoDb() && item.HasProperty("album_musicid"));
 }
 
-bool CMusicInfo::Execute(const CFileItemPtr& item) const
+bool CMusicInfo::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   CGUIDialogMusicInfo::ShowFor(item.get());
   return true;

@@ -9,6 +9,7 @@
 #include "GUIDialogContentSettings.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"

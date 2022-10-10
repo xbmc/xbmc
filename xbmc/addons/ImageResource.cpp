@@ -7,9 +7,7 @@
  */
 #include "ImageResource.h"
 
-#include "ServiceBroker.h"
 #include "URL.h"
-#include "addons/AddonManager.h"
 #include "filesystem/File.h"
 #include "filesystem/XbtManager.h"
 #include "utils/StringUtils.h"

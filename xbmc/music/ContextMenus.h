@@ -11,6 +11,8 @@
 #include "ContextMenuItem.h"
 #include "media/MediaType.h"
 
+#include <memory>
+
 namespace CONTEXTMENU
 {
 
@@ -18,7 +20,8 @@ struct CMusicInfo : CStaticContextMenuAction
 {
   explicit CMusicInfo(MediaType mediaType);
   bool IsVisible(const CFileItem& item) const override;
-  bool Execute(const CFileItemPtr& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+
 private:
   const MediaType m_mediaType;
 };

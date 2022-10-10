@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "addons/AddonManager.h"
 #include "addons/VFSEntry.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/GUIComponent.h"
