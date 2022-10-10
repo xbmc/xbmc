@@ -15,6 +15,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "guilib/TextureManager.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbUrl.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Crc32.h"
