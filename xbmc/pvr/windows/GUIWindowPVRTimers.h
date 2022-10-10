@@ -20,6 +20,7 @@ namespace PVR
     CGUIWindowPVRTVTimers();
 
   protected:
+    std::string GetRootPath() const override;
     std::string GetDirectoryPath() override;
   };
 
@@ -29,6 +30,7 @@ namespace PVR
     CGUIWindowPVRRadioTimers();
 
   protected:
+    std::string GetRootPath() const override;
     std::string GetDirectoryPath() override;
   };
 }

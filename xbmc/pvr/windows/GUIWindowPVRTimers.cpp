@@ -19,6 +19,11 @@ CGUIWindowPVRTVTimers::CGUIWindowPVRTVTimers()
 {
 }
 
+std::string CGUIWindowPVRTVTimers::GetRootPath() const
+{
+  return CPVRTimersPath::PATH_TV_TIMERS;
+}
+
 std::string CGUIWindowPVRTVTimers::GetDirectoryPath()
 {
   const std::string basePath(CPVRTimersPath(false, false).GetPath());
@@ -28,6 +33,11 @@ std::string CGUIWindowPVRTVTimers::GetDirectoryPath()
 CGUIWindowPVRRadioTimers::CGUIWindowPVRRadioTimers()
 : CGUIWindowPVRTimersBase(true, WINDOW_RADIO_TIMERS, "MyPVRTimers.xml")
 {
+}
+
+std::string CGUIWindowPVRRadioTimers::GetRootPath() const
+{
+  return CPVRTimersPath::PATH_RADIO_TIMERS;
 }
 
 std::string CGUIWindowPVRRadioTimers::GetDirectoryPath()
