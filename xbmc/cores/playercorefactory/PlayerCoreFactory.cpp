@@ -16,6 +16,7 @@
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "cores/paplayer/PAPlayer.h"
 #include "dialogs/GUIDialogContextMenu.h"
+#include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
