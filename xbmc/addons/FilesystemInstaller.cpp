@@ -9,6 +9,7 @@
 
 #include "FileItem.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/FileOperationJob.h"
 #include "utils/StringUtils.h"

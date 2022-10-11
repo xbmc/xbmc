@@ -8,12 +8,15 @@
 
 #include "Encoder.h"
 
+#include "filesystem/File.h"
 #include "utils/log.h"
 
 #include <string.h>
 #include <utility>
 
 using namespace KODI::CDRIP;
+
+CEncoder::CEncoder() = default;
 
 CEncoder::~CEncoder()
 {
