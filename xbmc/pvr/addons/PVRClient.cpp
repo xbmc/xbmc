@@ -303,64 +303,6 @@ void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup& xbmcGroup,
 }
 
 /*!
- * @brief Copy over recording info from xbmcRecording to addonRecording.
- * @param xbmcRecording The recording on XBMC's side.
- * @param addonRecording The recording on the addon's side.
- */
-void CPVRClient::WriteClientRecordingInfo(const CPVRRecording& xbmcRecording,
-                                          PVR_RECORDING& addonRecording)
-{
-  time_t recTime;
-  xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
-
-  addonRecording = {};
-  strncpy(addonRecording.strRecordingId, xbmcRecording.ClientRecordingID().c_str(),
-          sizeof(addonRecording.strRecordingId) - 1);
-  strncpy(addonRecording.strTitle, xbmcRecording.m_strTitle.c_str(),
-          sizeof(addonRecording.strTitle) - 1);
-  strncpy(addonRecording.strEpisodeName, xbmcRecording.m_strShowTitle.c_str(),
-          sizeof(addonRecording.strEpisodeName) - 1);
-  addonRecording.iSeriesNumber = xbmcRecording.m_iSeason;
-  addonRecording.iEpisodeNumber = xbmcRecording.m_iEpisode;
-  addonRecording.iYear = xbmcRecording.GetYear();
-  strncpy(addonRecording.strDirectory, xbmcRecording.Directory().c_str(),
-          sizeof(addonRecording.strDirectory) - 1);
-  strncpy(addonRecording.strPlotOutline, xbmcRecording.m_strPlotOutline.c_str(),
-          sizeof(addonRecording.strPlotOutline) - 1);
-  strncpy(addonRecording.strPlot, xbmcRecording.m_strPlot.c_str(),
-          sizeof(addonRecording.strPlot) - 1);
-  strncpy(addonRecording.strGenreDescription, xbmcRecording.GetGenresLabel().c_str(),
-          sizeof(addonRecording.strGenreDescription) - 1);
-  strncpy(addonRecording.strChannelName, xbmcRecording.ChannelName().c_str(),
-          sizeof(addonRecording.strChannelName) - 1);
-  strncpy(addonRecording.strIconPath, xbmcRecording.ClientIconPath().c_str(),
-          sizeof(addonRecording.strIconPath) - 1);
-  strncpy(addonRecording.strThumbnailPath, xbmcRecording.ClientThumbnailPath().c_str(),
-          sizeof(addonRecording.strThumbnailPath) - 1);
-  strncpy(addonRecording.strFanartPath, xbmcRecording.ClientFanartPath().c_str(),
-          sizeof(addonRecording.strFanartPath) - 1);
-  addonRecording.recordingTime =
-      recTime - CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
-  addonRecording.iDuration = xbmcRecording.GetDuration();
-  addonRecording.iPriority = xbmcRecording.Priority();
-  addonRecording.iLifetime = xbmcRecording.LifeTime();
-  addonRecording.iGenreType = xbmcRecording.GenreType();
-  addonRecording.iGenreSubType = xbmcRecording.GenreSubType();
-  addonRecording.iPlayCount = xbmcRecording.GetLocalPlayCount();
-  addonRecording.iLastPlayedPosition = lrint(xbmcRecording.GetLocalResumePoint().timeInSeconds);
-  addonRecording.bIsDeleted = xbmcRecording.IsDeleted();
-  addonRecording.iChannelUid = xbmcRecording.ChannelUid();
-  addonRecording.channelType =
-      xbmcRecording.IsRadio() ? PVR_RECORDING_CHANNEL_TYPE_RADIO : PVR_RECORDING_CHANNEL_TYPE_TV;
-  if (xbmcRecording.FirstAired().IsValid())
-    strncpy(addonRecording.strFirstAired, xbmcRecording.FirstAired().GetAsW3CDate().c_str(),
-            sizeof(addonRecording.strFirstAired) - 1);
-  strncpy(addonRecording.strProviderName, xbmcRecording.ProviderName().c_str(),
-          sizeof(addonRecording.strProviderName) - 1);
-  addonRecording.iClientProviderUid = xbmcRecording.ClientProviderUniqueId();
-}
-
-/*!
  * @brief Copy over timer info from xbmcTimer to addonTimer.
  * @param xbmcTimer The timer on XBMC's side.
  * @param addonTimer The timer on the addon's side.
@@ -1014,7 +956,7 @@ PVR_ERROR CPVRClient::DeleteRecording(const CPVRRecording& recording)
       __func__,
       [&recording](const AddonInstance* addon) {
         PVR_RECORDING tag;
-        WriteClientRecordingInfo(recording, tag);
+        recording.FillAddonData(tag);
         return addon->toAddon->DeleteRecording(addon, &tag);
       },
       m_clientCapabilities.SupportsRecordings() && m_clientCapabilities.SupportsRecordingsDelete());
@@ -1026,7 +968,7 @@ PVR_ERROR CPVRClient::UndeleteRecording(const CPVRRecording& recording)
       __func__,
       [&recording](const AddonInstance* addon) {
         PVR_RECORDING tag;
-        WriteClientRecordingInfo(recording, tag);
+        recording.FillAddonData(tag);
         return addon->toAddon->UndeleteRecording(addon, &tag);
       },
       m_clientCapabilities.SupportsRecordingsUndelete());
@@ -1048,7 +990,7 @@ PVR_ERROR CPVRClient::RenameRecording(const CPVRRecording& recording)
       __func__,
       [&recording](const AddonInstance* addon) {
         PVR_RECORDING tag;
-        WriteClientRecordingInfo(recording, tag);
+        recording.FillAddonData(tag);
         return addon->toAddon->RenameRecording(addon, &tag);
       },
       m_clientCapabilities.SupportsRecordings());
@@ -1060,7 +1002,7 @@ PVR_ERROR CPVRClient::SetRecordingLifetime(const CPVRRecording& recording)
       __func__,
       [&recording](const AddonInstance* addon) {
         PVR_RECORDING tag;
-        WriteClientRecordingInfo(recording, tag);
+        recording.FillAddonData(tag);
         return addon->toAddon->SetRecordingLifetime(addon, &tag);
       },
       m_clientCapabilities.SupportsRecordingsLifetimeChange());
@@ -1072,7 +1014,7 @@ PVR_ERROR CPVRClient::SetRecordingPlayCount(const CPVRRecording& recording, int 
       __func__,
       [&recording, count](const AddonInstance* addon) {
         PVR_RECORDING tag;
-        WriteClientRecordingInfo(recording, tag);
+        recording.FillAddonData(tag);
         return addon->toAddon->SetRecordingPlayCount(addon, &tag, count);
       },
       m_clientCapabilities.SupportsRecordingsPlayCount());
@@ -1085,7 +1027,7 @@ PVR_ERROR CPVRClient::SetRecordingLastPlayedPosition(const CPVRRecording& record
       __func__,
       [&recording, lastplayedposition](const AddonInstance* addon) {
         PVR_RECORDING tag;
-        WriteClientRecordingInfo(recording, tag);
+        recording.FillAddonData(tag);
         return addon->toAddon->SetRecordingLastPlayedPosition(addon, &tag, lastplayedposition);
       },
       m_clientCapabilities.SupportsRecordingsLastPlayedPosition());
@@ -1098,7 +1040,7 @@ PVR_ERROR CPVRClient::GetRecordingLastPlayedPosition(const CPVRRecording& record
       __func__,
       [&recording, &iPosition](const AddonInstance* addon) {
         PVR_RECORDING tag;
-        WriteClientRecordingInfo(recording, tag);
+        recording.FillAddonData(tag);
         return addon->toAddon->GetRecordingLastPlayedPosition(addon, &tag, &iPosition);
       },
       m_clientCapabilities.SupportsRecordingsLastPlayedPosition());
@@ -1112,7 +1054,7 @@ PVR_ERROR CPVRClient::GetRecordingEdl(const CPVRRecording& recording,
       __func__,
       [&recording, &edls](const AddonInstance* addon) {
         PVR_RECORDING tag;
-        WriteClientRecordingInfo(recording, tag);
+        recording.FillAddonData(tag);
 
         PVR_EDL_ENTRY edl_array[PVR_ADDON_EDL_LENGTH];
         int size = PVR_ADDON_EDL_LENGTH;
@@ -1134,7 +1076,7 @@ PVR_ERROR CPVRClient::GetRecordingSize(const CPVRRecording& recording, int64_t& 
       __func__,
       [&recording, &sizeInBytes](const AddonInstance* addon) {
         PVR_RECORDING tag;
-        WriteClientRecordingInfo(recording, tag);
+        recording.FillAddonData(tag);
         return addon->toAddon->GetRecordingSize(addon, &tag, &sizeInBytes);
       },
       m_clientCapabilities.SupportsRecordingsSize());
@@ -1328,7 +1270,7 @@ PVR_ERROR CPVRClient::GetRecordingStreamProperties(const std::shared_ptr<CPVRRec
       return PVR_ERROR_NO_ERROR; // no error, but no need to obtain the values from the addon
 
     PVR_RECORDING tag = {};
-    WriteClientRecordingInfo(*recording, tag);
+    recording->FillAddonData(tag);
 
     unsigned int iPropertyCount = STREAM_MAX_PROPERTY_COUNT;
     std::unique_ptr<PVR_NAMED_VALUE[]> properties(new PVR_NAMED_VALUE[iPropertyCount]);
@@ -1511,7 +1453,7 @@ PVR_ERROR CPVRClient::OpenRecordedStream(const std::shared_ptr<CPVRRecording>& r
         CloseRecordedStream();
 
         PVR_RECORDING tag;
-        WriteClientRecordingInfo(*recording, tag);
+        recording->FillAddonData(tag);
         CLog::LogFC(LOGDEBUG, LOGPVR, "Opening stream for recording '{}'", recording->m_strTitle);
         return addon->toAddon->OpenRecordedStream(addon, &tag) ? PVR_ERROR_NO_ERROR
                                                                : PVR_ERROR_NOT_IMPLEMENTED;
@@ -1664,7 +1606,7 @@ PVR_ERROR CPVRClient::CallRecordingMenuHook(const CPVRClientMenuHook& hook,
 {
   return DoAddonCall(__func__, [&hook, &recording, &bDeleted](const AddonInstance* addon) {
     PVR_RECORDING tag;
-    WriteClientRecordingInfo(*recording, tag);
+    recording->FillAddonData(tag);
 
     PVR_MENUHOOK menuHook;
     menuHook.category = bDeleted ? PVR_MENUHOOK_DELETED_RECORDING : PVR_MENUHOOK_RECORDING;

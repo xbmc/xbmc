@@ -809,14 +809,6 @@ private:
                                    PVR_CHANNEL_GROUP& addonGroup);
 
   /*!
-   * @brief Copy over recording info from xbmcRecording to addonRecording.
-   * @param xbmcRecording The recording on XBMC's side.
-   * @param addonRecording The recording on the addon's side.
-   */
-  static void WriteClientRecordingInfo(const CPVRRecording& xbmcRecording,
-                                       PVR_RECORDING& addonRecording);
-
-  /*!
    * @brief Copy over timer info from xbmcTimer to addonTimer.
    * @param xbmcTimer The timer on XBMC's side.
    * @param addonTimer The timer on the addon's side.
