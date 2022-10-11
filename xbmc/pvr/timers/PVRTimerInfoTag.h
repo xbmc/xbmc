@@ -39,6 +39,12 @@ namespace PVR
     bool operator ==(const CPVRTimerInfoTag& right) const;
     bool operator !=(const CPVRTimerInfoTag& right) const;
 
+    /*!
+     * @brief Copy over data to the given PVR_TIMER instance.
+     * @param timer The timer instance to fill.
+     */
+    void FillAddonData(PVR_TIMER& timer) const;
+
     void Serialize(CVariant& value) const override;
 
     void UpdateSummary();
