@@ -235,7 +235,7 @@ bool CFileItemHandler::GetField(const std::string& field,
       return true;
     }
 
-    if (item->HasVideoInfoTag() && item->GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS)
+    if (item->HasVideoInfoTag() && item->GetVideoContentType() == VideoDbContentType::TVSHOWS)
     {
       if (item->GetVideoInfoTag()->m_iSeason < 0 && field == "season")
       {

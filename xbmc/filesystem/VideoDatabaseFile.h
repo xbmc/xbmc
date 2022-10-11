@@ -9,7 +9,10 @@
 #pragma once
 
 #include "filesystem/OverrideFile.h"
-#include "video/VideoDatabase.h"
+
+enum class VideoDbContentType;
+class CVideoInfoTag;
+class CURL;
 
 namespace XFILE
 {
@@ -23,6 +26,6 @@ public:
 
 protected:
   std::string TranslatePath(const CURL& url) override;
-  static VIDEODB_CONTENT_TYPE GetType(const CURL& url);
+  static VideoDbContentType GetType(const CURL& url);
 };
 }
