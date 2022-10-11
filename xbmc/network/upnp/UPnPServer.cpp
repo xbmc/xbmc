@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "UPnPInternal.h"
+#include "URL.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory.h"

@@ -13,7 +13,7 @@
 #include "addons/Scraper.h"
 #include "dbwrappers/Database.h"
 #include "utils/SortUtils.h"
-#include "video/VideoDbUrl.h"
+#include "utils/UrlOptions.h"
 
 #include <memory>
 #include <set>
