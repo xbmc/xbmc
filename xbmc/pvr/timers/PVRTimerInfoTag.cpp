@@ -36,22 +36,24 @@
 
 using namespace PVR;
 
-CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
-  m_strTitle(g_localizeStrings.Get(19056)), // New Timer
-  m_iClientId(CServiceBroker::GetPVRManager().Clients()->GetFirstCreatedClientID()),
-  m_iClientIndex(PVR_TIMER_NO_CLIENT_INDEX),
-  m_iParentClientIndex(PVR_TIMER_NO_PARENT),
-  m_iClientChannelUid(PVR_CHANNEL_INVALID_UID),
-  m_iPriority(DEFAULT_RECORDING_PRIORITY),
-  m_iLifetime(DEFAULT_RECORDING_LIFETIME),
-  m_iPreventDupEpisodes(DEFAULT_RECORDING_DUPLICATEHANDLING),
-  m_bIsRadio(bRadio),
-  m_iMarginStart(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_PVRRECORD_MARGINSTART)),
-  m_iMarginEnd(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_PVRRECORD_MARGINEND)),
-  m_iEpgUid(EPG_TAG_INVALID_UID),
-  m_StartTime(CDateTime::GetUTCDateTime()),
-  m_StopTime(m_StartTime + CDateTimeSpan(0, 2, 0, 0)),
-  m_FirstDay(m_StartTime)
+CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */)
+  : m_strTitle(g_localizeStrings.Get(19056)), // New Timer
+    m_iClientId(CServiceBroker::GetPVRManager().Clients()->GetFirstCreatedClientID()),
+    m_iClientIndex(PVR_TIMER_NO_CLIENT_INDEX),
+    m_iParentClientIndex(PVR_TIMER_NO_PARENT),
+    m_iClientChannelUid(PVR_CHANNEL_INVALID_UID),
+    m_iPriority(DEFAULT_RECORDING_PRIORITY),
+    m_iLifetime(DEFAULT_RECORDING_LIFETIME),
+    m_iPreventDupEpisodes(DEFAULT_RECORDING_DUPLICATEHANDLING),
+    m_bIsRadio(bRadio),
+    m_iMarginStart(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_PVRRECORD_MARGINSTART)),
+    m_iMarginEnd(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_PVRRECORD_MARGINEND)),
+    m_iEpgUid(EPG_TAG_INVALID_UID),
+    m_StartTime(CDateTime::GetUTCDateTime()),
+    m_StopTime(m_StartTime + CDateTimeSpan(0, 2, 0, 0)),
+    m_FirstDay(m_StartTime)
 {
   static const uint64_t iMustHaveAttr = PVR_TIMER_TYPE_IS_MANUAL;
   static const uint64_t iMustNotHaveAttr =
@@ -68,7 +70,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */) :
 
   // fallback to manual one-shot reminder, which is always available
   if (!type)
-    type = CPVRTimerType::CreateFromAttributes(iMustHaveAttr | PVR_TIMER_TYPE_IS_REMINDER, iMustNotHaveAttr, m_iClientId);
+    type = CPVRTimerType::CreateFromAttributes(iMustHaveAttr | PVR_TIMER_TYPE_IS_REMINDER,
+                                               iMustNotHaveAttr, m_iClientId);
 
   if (type)
     SetTimerType(type);
@@ -120,7 +123,9 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
     m_channel(channel)
 {
   if (timer.firstDay)
-    m_FirstDay = CDateTime(timer.firstDay + CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection);
+    m_FirstDay = CDateTime(
+        timer.firstDay +
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection);
   else
     m_FirstDay = CDateTime::GetUTCDateTime();
 
@@ -154,7 +159,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
       else
         iMustNotHave |= PVR_TIMER_TYPE_IS_MANUAL;
 
-      const std::shared_ptr<CPVRTimerType> type = CPVRTimerType::CreateFromAttributes(iMustHave, iMustNotHave, m_iClientId);
+      const std::shared_ptr<CPVRTimerType> type =
+          CPVRTimerType::CreateFromAttributes(iMustHave, iMustNotHave, m_iClientId);
 
       if (type)
         SetTimerType(type);
@@ -182,7 +188,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
   UpdateEpgInfoTag();
 }
 
-bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
+bool CPVRTimerInfoTag::operator==(const CPVRTimerInfoTag& right) const
 {
   bool bChannelsMatch = true;
   if (m_channel && right.m_channel)
@@ -190,37 +196,23 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
   else if (m_channel != right.m_channel)
     bChannelsMatch = false;
 
-  return (bChannelsMatch &&
-          m_iClientIndex == right.m_iClientIndex &&
+  return (bChannelsMatch && m_iClientIndex == right.m_iClientIndex &&
           m_iParentClientIndex == right.m_iParentClientIndex &&
-          m_strSummary == right.m_strSummary &&
-          m_iClientChannelUid == right.m_iClientChannelUid &&
-          m_bIsRadio == right.m_bIsRadio &&
-          m_iPreventDupEpisodes == right.m_iPreventDupEpisodes &&
-          m_iRecordingGroup == right.m_iRecordingGroup &&
-          m_StartTime == right.m_StartTime &&
-          m_StopTime == right.m_StopTime &&
-          m_bStartAnyTime == right.m_bStartAnyTime &&
-          m_bEndAnyTime == right.m_bEndAnyTime &&
-          m_FirstDay == right.m_FirstDay &&
-          m_iWeekdays == right.m_iWeekdays &&
-          m_iPriority == right.m_iPriority &&
-          m_iLifetime == right.m_iLifetime &&
-          m_iMaxRecordings == right.m_iMaxRecordings &&
-          m_strFileNameAndPath == right.m_strFileNameAndPath &&
-          m_strTitle == right.m_strTitle &&
+          m_strSummary == right.m_strSummary && m_iClientChannelUid == right.m_iClientChannelUid &&
+          m_bIsRadio == right.m_bIsRadio && m_iPreventDupEpisodes == right.m_iPreventDupEpisodes &&
+          m_iRecordingGroup == right.m_iRecordingGroup && m_StartTime == right.m_StartTime &&
+          m_StopTime == right.m_StopTime && m_bStartAnyTime == right.m_bStartAnyTime &&
+          m_bEndAnyTime == right.m_bEndAnyTime && m_FirstDay == right.m_FirstDay &&
+          m_iWeekdays == right.m_iWeekdays && m_iPriority == right.m_iPriority &&
+          m_iLifetime == right.m_iLifetime && m_iMaxRecordings == right.m_iMaxRecordings &&
+          m_strFileNameAndPath == right.m_strFileNameAndPath && m_strTitle == right.m_strTitle &&
           m_strEpgSearchString == right.m_strEpgSearchString &&
           m_bFullTextEpgSearch == right.m_bFullTextEpgSearch &&
-          m_strDirectory == right.m_strDirectory &&
-          m_iClientId == right.m_iClientId &&
-          m_iMarginStart == right.m_iMarginStart &&
-          m_iMarginEnd == right.m_iMarginEnd &&
-          m_state == right.m_state &&
-          m_timerType == right.m_timerType &&
-          m_iTimerId == right.m_iTimerId &&
-          m_strSeriesLink == right.m_strSeriesLink &&
-          m_iEpgUid == right.m_iEpgUid &&
-          m_iTVChildTimersActive == right.m_iTVChildTimersActive &&
+          m_strDirectory == right.m_strDirectory && m_iClientId == right.m_iClientId &&
+          m_iMarginStart == right.m_iMarginStart && m_iMarginEnd == right.m_iMarginEnd &&
+          m_state == right.m_state && m_timerType == right.m_timerType &&
+          m_iTimerId == right.m_iTimerId && m_strSeriesLink == right.m_strSeriesLink &&
+          m_iEpgUid == right.m_iEpgUid && m_iTVChildTimersActive == right.m_iTVChildTimersActive &&
           m_iTVChildTimersConflictNOK == right.m_iTVChildTimersConflictNOK &&
           m_iTVChildTimersRecording == right.m_iTVChildTimersRecording &&
           m_iTVChildTimersErrors == right.m_iTVChildTimersErrors &&
@@ -230,7 +222,7 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           m_iRadioChildTimersErrors == right.m_iRadioChildTimersErrors);
 }
 
-bool CPVRTimerInfoTag::operator !=(const CPVRTimerInfoTag& right) const
+bool CPVRTimerInfoTag::operator!=(const CPVRTimerInfoTag& right) const
 {
   return !(*this == right);
 }
@@ -286,7 +278,9 @@ void CPVRTimerInfoTag::Serialize(CVariant& value) const
   value["endtime"] = m_StopTime.IsValid() ? m_StopTime.GetAsDBDateTime() : "";
   value["startanytime"] = m_bStartAnyTime;
   value["endanytime"] = m_bEndAnyTime;
-  value["runtime"] = m_StartTime.IsValid() && m_StopTime.IsValid() ? (m_StopTime - m_StartTime).GetSecondsTotal() : 0;
+  value["runtime"] = m_StartTime.IsValid() && m_StopTime.IsValid()
+                         ? (m_StopTime - m_StartTime).GetSecondsTotal()
+                         : 0;
   value["firstday"] = m_FirstDay.IsValid() ? m_FirstDay.GetAsDBDate() : "";
 
   CVariant weekdays(CVariant::VariantTypeArray);
@@ -317,39 +311,39 @@ void CPVRTimerInfoTag::Serialize(CVariant& value) const
 
   switch (m_state)
   {
-  case PVR_TIMER_STATE_NEW:
-    value["state"] = "new";
-    break;
-  case PVR_TIMER_STATE_SCHEDULED:
-    value["state"] = "scheduled";
-    break;
-  case PVR_TIMER_STATE_RECORDING:
-    value["state"] = "recording";
-    break;
-  case PVR_TIMER_STATE_COMPLETED:
-    value["state"] = "completed";
-    break;
-  case PVR_TIMER_STATE_ABORTED:
-    value["state"] = "aborted";
-    break;
-  case PVR_TIMER_STATE_CANCELLED:
-    value["state"] = "cancelled";
-    break;
-  case PVR_TIMER_STATE_CONFLICT_OK:
-    value["state"] = "conflict_ok";
-    break;
-  case PVR_TIMER_STATE_CONFLICT_NOK:
-    value["state"] = "conflict_notok";
-    break;
-  case PVR_TIMER_STATE_ERROR:
-    value["state"] = "error";
-    break;
-  case PVR_TIMER_STATE_DISABLED:
-    value["state"] = "disabled";
-    break;
-  default:
-    value["state"] = "unknown";
-    break;
+    case PVR_TIMER_STATE_NEW:
+      value["state"] = "new";
+      break;
+    case PVR_TIMER_STATE_SCHEDULED:
+      value["state"] = "scheduled";
+      break;
+    case PVR_TIMER_STATE_RECORDING:
+      value["state"] = "recording";
+      break;
+    case PVR_TIMER_STATE_COMPLETED:
+      value["state"] = "completed";
+      break;
+    case PVR_TIMER_STATE_ABORTED:
+      value["state"] = "aborted";
+      break;
+    case PVR_TIMER_STATE_CANCELLED:
+      value["state"] = "cancelled";
+      break;
+    case PVR_TIMER_STATE_CONFLICT_OK:
+      value["state"] = "conflict_ok";
+      break;
+    case PVR_TIMER_STATE_CONFLICT_NOK:
+      value["state"] = "conflict_notok";
+      break;
+    case PVR_TIMER_STATE_ERROR:
+      value["state"] = "error";
+      break;
+    case PVR_TIMER_STATE_DISABLED:
+      value["state"] = "disabled";
+      break;
+    default:
+      value["state"] = "unknown";
+      break;
   }
 
   value["istimerrule"] = m_timerType->IsTimerRule();
@@ -357,13 +351,13 @@ void CPVRTimerInfoTag::Serialize(CVariant& value) const
   value["isreadonly"] = m_timerType->IsReadOnly();
   value["isreminder"] = m_timerType->IsReminder();
 
-  value["epgsearchstring"]   = m_strEpgSearchString;
+  value["epgsearchstring"] = m_strEpgSearchString;
   value["fulltextepgsearch"] = m_bFullTextEpgSearch;
-  value["recordinggroup"]    = m_iRecordingGroup;
-  value["maxrecordings"]     = m_iMaxRecordings;
-  value["epguid"]            = m_iEpgUid;
+  value["recordinggroup"] = m_iRecordingGroup;
+  value["maxrecordings"] = m_iMaxRecordings;
+  value["epguid"] = m_iEpgUid;
   value["broadcastid"] = m_epgTag ? m_epgTag->DatabaseID() : -1;
-  value["serieslink"]        = m_strSeriesLink;
+  value["serieslink"] = m_strSeriesLink;
 
   value["clientid"] = m_iClientId;
 }
@@ -465,7 +459,8 @@ std::string CPVRTimerInfoTag::GetStatus(bool bRadio) const
       strReturn = g_localizeStrings.Get(19162); // "Recording active"
     else if ((m_iTVChildTimersErrors > 0 && !bRadio) || (m_iRadioChildTimersErrors > 0 && bRadio))
       strReturn = g_localizeStrings.Get(257); // "Error"
-    else if ((m_iTVChildTimersConflictNOK > 0 && !bRadio) || (m_iRadioChildTimersConflictNOK > 0 && bRadio))
+    else if ((m_iTVChildTimersConflictNOK > 0 && !bRadio) ||
+             (m_iRadioChildTimersConflictNOK > 0 && bRadio))
       strReturn = g_localizeStrings.Get(19276); // "Conflict error"
     else if ((m_iTVChildTimersActive > 0 && !bRadio) || (m_iRadioChildTimersActive > 0 && bRadio))
       strReturn = StringUtils::Format(g_localizeStrings.Get(19255),
@@ -499,16 +494,17 @@ void AppendDay(std::string& strReturn, unsigned int iId)
 }
 } // unnamed namespace
 
-std::string CPVRTimerInfoTag::GetWeekdaysString(unsigned int iWeekdays, bool bEpgBased, bool bLongMultiDaysFormat)
+std::string CPVRTimerInfoTag::GetWeekdaysString(unsigned int iWeekdays,
+                                                bool bEpgBased,
+                                                bool bLongMultiDaysFormat)
 {
   std::string strReturn;
 
   if (iWeekdays == PVR_WEEKDAY_NONE)
     return strReturn;
   else if (iWeekdays == PVR_WEEKDAY_ALLDAYS)
-    strReturn = bEpgBased
-              ? g_localizeStrings.Get(807) // "Any day"
-              : g_localizeStrings.Get(808); // "Every day"
+    strReturn = bEpgBased ? g_localizeStrings.Get(807) // "Any day"
+                          : g_localizeStrings.Get(808); // "Every day"
   else if (iWeekdays == PVR_WEEKDAY_MONDAY)
     strReturn = g_localizeStrings.Get(831); // "Mondays"
   else if (iWeekdays == PVR_WEEKDAY_TUESDAY)
@@ -668,7 +664,8 @@ bool CPVRTimerInfoTag::UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
   return true;
 }
 
-bool CPVRTimerInfoTag::UpdateChildState(const std::shared_ptr<CPVRTimerInfoTag>& childTimer, bool bAdd)
+bool CPVRTimerInfoTag::UpdateChildState(const std::shared_ptr<CPVRTimerInfoTag>& childTimer,
+                                        bool bAdd)
 {
   if (!childTimer || childTimer->m_iParentClientIndex != m_iClientIndex)
     return false;
@@ -676,44 +673,44 @@ bool CPVRTimerInfoTag::UpdateChildState(const std::shared_ptr<CPVRTimerInfoTag>&
   int iDelta = bAdd ? +1 : -1;
   switch (childTimer->m_state)
   {
-  case PVR_TIMER_STATE_NEW:
-  case PVR_TIMER_STATE_SCHEDULED:
-  case PVR_TIMER_STATE_CONFLICT_OK:
-    if (childTimer->m_bIsRadio)
-      m_iRadioChildTimersActive += iDelta;
-    else
-      m_iTVChildTimersActive += iDelta;
-    break;
-  case PVR_TIMER_STATE_RECORDING:
-    if (childTimer->m_bIsRadio)
-    {
-      m_iRadioChildTimersActive += iDelta;
-      m_iRadioChildTimersRecording += iDelta;
-    }
-    else
-    {
-      m_iTVChildTimersActive += iDelta;
-      m_iTVChildTimersRecording += iDelta;
-    }
-    break;
-  case PVR_TIMER_STATE_CONFLICT_NOK:
-    if (childTimer->m_bIsRadio)
-      m_iRadioChildTimersConflictNOK += iDelta;
-    else
-      m_iTVChildTimersConflictNOK += iDelta;
-    break;
-  case PVR_TIMER_STATE_ERROR:
-    if (childTimer->m_bIsRadio)
-      m_iRadioChildTimersErrors += iDelta;
-    else
-      m_iTVChildTimersErrors += iDelta;
-    break;
-  case PVR_TIMER_STATE_COMPLETED:
-  case PVR_TIMER_STATE_ABORTED:
-  case PVR_TIMER_STATE_CANCELLED:
-  case PVR_TIMER_STATE_DISABLED:
-    //these are not the child timers we are looking for
-    break;
+    case PVR_TIMER_STATE_NEW:
+    case PVR_TIMER_STATE_SCHEDULED:
+    case PVR_TIMER_STATE_CONFLICT_OK:
+      if (childTimer->m_bIsRadio)
+        m_iRadioChildTimersActive += iDelta;
+      else
+        m_iTVChildTimersActive += iDelta;
+      break;
+    case PVR_TIMER_STATE_RECORDING:
+      if (childTimer->m_bIsRadio)
+      {
+        m_iRadioChildTimersActive += iDelta;
+        m_iRadioChildTimersRecording += iDelta;
+      }
+      else
+      {
+        m_iTVChildTimersActive += iDelta;
+        m_iTVChildTimersRecording += iDelta;
+      }
+      break;
+    case PVR_TIMER_STATE_CONFLICT_NOK:
+      if (childTimer->m_bIsRadio)
+        m_iRadioChildTimersConflictNOK += iDelta;
+      else
+        m_iTVChildTimersConflictNOK += iDelta;
+      break;
+    case PVR_TIMER_STATE_ERROR:
+      if (childTimer->m_bIsRadio)
+        m_iRadioChildTimersErrors += iDelta;
+      else
+        m_iTVChildTimersErrors += iDelta;
+      break;
+    case PVR_TIMER_STATE_COMPLETED:
+    case PVR_TIMER_STATE_ABORTED:
+    case PVR_TIMER_STATE_CANCELLED:
+    case PVR_TIMER_STATE_DISABLED:
+      //these are not the child timers we are looking for
+      break;
   }
   return true;
 }
@@ -758,8 +755,9 @@ std::string CPVRTimerInfoTag::ChannelIcon() const
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateReminderFromDate(
-  const CDateTime& start, int iDuration,
-  const std::shared_ptr<CPVRTimerInfoTag>& parent /* = std::shared_ptr<CPVRTimerInfoTag>() */)
+    const CDateTime& start,
+    int iDuration,
+    const std::shared_ptr<CPVRTimerInfoTag>& parent /* = std::shared_ptr<CPVRTimerInfoTag>() */)
 {
   bool bReadOnly = !!parent; // children of reminder rules are always read-only
   std::shared_ptr<CPVRTimerInfoTag> newTimer =
@@ -775,20 +773,28 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateReminderFromDate(
   return newTimer;
 }
 
-static const time_t INSTANT_TIMER_START = 0; // PVR addon API: special start time value to denote an instant timer
+static const time_t INSTANT_TIMER_START =
+    0; // PVR addon API: special start time value to denote an instant timer
 
-std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateInstantTimerTag(const std::shared_ptr<CPVRChannel>& channel, int iDuration /* = DEFAULT_PVRRECORD_INSTANTRECORDTIME */)
+std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateInstantTimerTag(
+    const std::shared_ptr<CPVRChannel>& channel,
+    int iDuration /* = DEFAULT_PVRRECORD_INSTANTRECORDTIME */)
 {
   return CreateFromDate(channel, CDateTime(INSTANT_TIMER_START), iDuration, false, false);
 }
 
-std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateTimerTag(const std::shared_ptr<CPVRChannel>& channel, const CDateTime& start, int iDuration)
+std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateTimerTag(
+    const std::shared_ptr<CPVRChannel>& channel, const CDateTime& start, int iDuration)
 {
   return CreateFromDate(channel, start, iDuration, false, false);
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
-  const std::shared_ptr<CPVRChannel>& channel, const CDateTime& start, int iDuration, bool bCreateReminder, bool bReadOnly)
+    const std::shared_ptr<CPVRChannel>& channel,
+    const CDateTime& start,
+    int iDuration,
+    bool bCreateReminder,
+    bool bReadOnly)
 {
   if (!channel)
   {
@@ -841,7 +847,8 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
 
     // timertype: manual one-shot timer for given client
     const std::shared_ptr<CPVRTimerType> timerType = CPVRTimerType::CreateFromAttributes(
-      iMustHaveAttribs, PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES, channel->ClientID());
+        iMustHaveAttribs, PVR_TIMER_TYPE_IS_REPEATING | PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES,
+        channel->ClientID());
     if (!timerType)
     {
       CLog::LogF(LOGERROR, "Unable to create one shot manual timer type");
@@ -864,7 +871,8 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
     newTimer->SetStartFromUTC(start);
 
   if (iDuration == DEFAULT_PVRRECORD_INSTANTRECORDTIME)
-    iDuration = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
+    iDuration = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+        CSettings::SETTING_PVRRECORD_INSTANTRECORDTIME);
 
   if (bInstantStart)
   {
@@ -899,8 +907,8 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateReminderFromEpg(
-  const std::shared_ptr<CPVREpgInfoTag>& tag,
-  const std::shared_ptr<CPVRTimerInfoTag>& parent /* = std::shared_ptr<CPVRTimerInfoTag>() */)
+    const std::shared_ptr<CPVREpgInfoTag>& tag,
+    const std::shared_ptr<CPVRTimerInfoTag>& parent /* = std::shared_ptr<CPVRTimerInfoTag>() */)
 {
   bool bReadOnly = !!parent; // children of reminder rules are always read-only
   std::shared_ptr<CPVRTimerInfoTag> newTimer = CreateFromEpg(tag, false, true, bReadOnly);
@@ -917,7 +925,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateReminderFromEpg(
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
-  const std::shared_ptr<CPVREpgInfoTag>& tag, bool bCreateRule /* = false */)
+    const std::shared_ptr<CPVREpgInfoTag>& tag, bool bCreateRule /* = false */)
 {
   return CreateFromEpg(tag, bCreateRule, false, false);
 }
@@ -931,7 +939,8 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
   std::shared_ptr<CPVRTimerInfoTag> newTag(new CPVRTimerInfoTag());
 
   /* check if a valid channel is set */
-  const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
+  const std::shared_ptr<CPVRChannel> channel =
+      CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
   if (!channel)
   {
     CLog::LogF(LOGERROR, "EPG tag has no channel");
@@ -969,10 +978,12 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
 
     if (!tag->SeriesLink().empty())
       timerType = CPVRTimerType::CreateFromAttributes(
-        iMustHaveAttribs | PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE, iMustNotHaveAttribs, channel->ClientID());
+          iMustHaveAttribs | PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE, iMustNotHaveAttribs,
+          channel->ClientID());
     if (!timerType)
       timerType = CPVRTimerType::CreateFromAttributes(
-        iMustHaveAttribs, iMustNotHaveAttribs | PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE, channel->ClientID());
+          iMustHaveAttribs, iMustNotHaveAttribs | PVR_TIMER_TYPE_REQUIRES_EPG_SERIESLINK_ON_CREATE,
+          channel->ClientID());
     if (timerType)
     {
       if (timerType->SupportsEpgTitleMatch())
@@ -999,7 +1010,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
       iMustHaveAttribs |= PVR_TIMER_TYPE_IS_READONLY;
 
     timerType = CPVRTimerType::CreateFromAttributes(
-      iMustHaveAttribs, PVR_TIMER_TYPE_IS_REPEATING | iMustNotHaveAttribs, channel->ClientID());
+        iMustHaveAttribs, PVR_TIMER_TYPE_IS_REPEATING | iMustNotHaveAttribs, channel->ClientID());
   }
 
   if (!timerType)
@@ -1024,55 +1035,52 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromEpg(
 
 namespace
 {
-  #define IsLeapYear(y) ((y % 4 == 0) && (y % 100 != 0 || y % 400 == 0))
+#define IsLeapYear(y) ((y % 4 == 0) && (y % 100 != 0 || y % 400 == 0))
 
-  int days_from_0(int year)
-  {
-    year--;
-    return 365 * year + (year / 400) - (year / 100) + (year / 4);
-  }
-
-  int days_from_1970(int32_t year)
-  {
-    static const int days_from_0_to_1970 = days_from_0(1970);
-    return days_from_0(year) - days_from_0_to_1970;
-  }
-
-  int days_from_1jan(int year, int month, int day)
-  {
-    static const int days[2][12] =
-    {
-      { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 },
-      { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335 }
-    };
-    return days[IsLeapYear(year)][month - 1] + day - 1;
-  }
-
-  time_t mytimegm(struct tm* time)
-  {
-    int year = time->tm_year + 1900;
-    int month = time->tm_mon;
-
-    if (month > 11)
-    {
-      year += month / 12;
-      month %= 12;
-    }
-    else if (month < 0)
-    {
-      int years_diff = (-month + 11) / 12;
-      year -= years_diff;
-      month += 12 * years_diff;
-    }
-
-    month++;
-
-    int day_of_year = days_from_1jan(year, month, time->tm_mday);
-    int days_since_epoch = days_from_1970(year) + day_of_year;
-
-    return 3600 * 24 * days_since_epoch + 3600 * time->tm_hour + 60 * time->tm_min + time->tm_sec;
-  }
+int days_from_0(int year)
+{
+  year--;
+  return 365 * year + (year / 400) - (year / 100) + (year / 4);
 }
+
+int days_from_1970(int32_t year)
+{
+  static const int days_from_0_to_1970 = days_from_0(1970);
+  return days_from_0(year) - days_from_0_to_1970;
+}
+
+int days_from_1jan(int year, int month, int day)
+{
+  static const int days[2][12] = {{0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334},
+                                  {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335}};
+  return days[IsLeapYear(year)][month - 1] + day - 1;
+}
+
+time_t mytimegm(struct tm* time)
+{
+  int year = time->tm_year + 1900;
+  int month = time->tm_mon;
+
+  if (month > 11)
+  {
+    year += month / 12;
+    month %= 12;
+  }
+  else if (month < 0)
+  {
+    int years_diff = (-month + 11) / 12;
+    year -= years_diff;
+    month += 12 * years_diff;
+  }
+
+  month++;
+
+  int day_of_year = days_from_1jan(year, month, time->tm_mday);
+  int days_since_epoch = days_from_1970(year) + day_of_year;
+
+  return 3600 * 24 * days_since_epoch + 3600 * time->tm_hour + 60 * time->tm_min + time->tm_sec;
+}
+} // namespace
 
 CDateTime CPVRTimerInfoTag::ConvertUTCToLocalTime(const CDateTime& utc)
 {
@@ -1212,34 +1220,34 @@ std::string CPVRTimerInfoTag::GetNotificationText() const
 
   switch (m_state)
   {
-  case PVR_TIMER_STATE_ABORTED:
-  case PVR_TIMER_STATE_CANCELLED:
+    case PVR_TIMER_STATE_ABORTED:
+    case PVR_TIMER_STATE_CANCELLED:
       stringID = 19224; // Recording aborted
-    break;
-  case PVR_TIMER_STATE_SCHEDULED:
-    if (IsTimerRule())
-      stringID = 19058; // Timer enabled
-    else
-      stringID = 19225; // Recording scheduled
-    break;
-  case PVR_TIMER_STATE_RECORDING:
-    stringID = 19226; // Recording started
-    break;
-  case PVR_TIMER_STATE_COMPLETED:
-    stringID = 19227; // Recording completed
-    break;
-  case PVR_TIMER_STATE_CONFLICT_OK:
-  case PVR_TIMER_STATE_CONFLICT_NOK:
-    stringID = 19277; // Recording conflict
-    break;
-  case PVR_TIMER_STATE_ERROR:
-    stringID = 19278; // Recording error
-    break;
-  case PVR_TIMER_STATE_DISABLED:
-    stringID = 19057; // Timer disabled
-    break;
-  default:
-    break;
+      break;
+    case PVR_TIMER_STATE_SCHEDULED:
+      if (IsTimerRule())
+        stringID = 19058; // Timer enabled
+      else
+        stringID = 19225; // Recording scheduled
+      break;
+    case PVR_TIMER_STATE_RECORDING:
+      stringID = 19226; // Recording started
+      break;
+    case PVR_TIMER_STATE_COMPLETED:
+      stringID = 19227; // Recording completed
+      break;
+    case PVR_TIMER_STATE_CONFLICT_OK:
+    case PVR_TIMER_STATE_CONFLICT_NOK:
+      stringID = 19277; // Recording conflict
+      break;
+    case PVR_TIMER_STATE_ERROR:
+      stringID = 19278; // Recording error
+      break;
+    case PVR_TIMER_STATE_DISABLED:
+      stringID = 19057; // Timer disabled
+      break;
+    default:
+      break;
   }
 
   if (stringID != 0)
@@ -1256,15 +1264,15 @@ std::string CPVRTimerInfoTag::GetDeletedNotificationText() const
   // The state in this case is the state the timer had when it was last seen
   switch (m_state)
   {
-  case PVR_TIMER_STATE_RECORDING:
-    stringID = 19227; // Recording completed
-    break;
-  case PVR_TIMER_STATE_SCHEDULED:
-  default:
-    if (IsTimerRule())
-      stringID = 828; // Timer rule deleted
-    else
-      stringID = 19228; // Timer deleted
+    case PVR_TIMER_STATE_RECORDING:
+      stringID = 19227; // Recording completed
+      break;
+    case PVR_TIMER_STATE_SCHEDULED:
+    default:
+      if (IsTimerRule())
+        stringID = 828; // Timer rule deleted
+      else
+        stringID = 19228; // Timer deleted
   }
 
   return StringUtils::Format("{}: '{}'", g_localizeStrings.Get(stringID), m_strTitle);
@@ -1292,7 +1300,11 @@ std::shared_ptr<CPVREpgInfoTag> CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* 
     std::shared_ptr<CPVRChannel> channel(m_channel);
     if (!channel)
     {
-      channel = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId);
+      channel = CServiceBroker::GetPVRManager()
+                    .ChannelGroups()
+                    ->Get(m_bIsRadio)
+                    ->GetGroupAll()
+                    ->GetByUniqueID(m_iClientChannelUid, m_iClientId);
 
       std::unique_lock<CCriticalSection> lock(m_critSection);
       m_channel = channel;
@@ -1321,7 +1333,8 @@ std::shared_ptr<CPVREpgInfoTag> CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* 
           if (startTime > 0 && endTime > 0)
           {
             // try to fetch missing epg tag from backend
-            m_epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0), true);
+            m_epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0),
+                                          EndAsUTC() + CDateTimeSpan(0, 0, 2, 0), true);
             if (m_epgTag)
               m_iEpgUid = m_epgTag->UniqueBroadcastID();
           }
@@ -1345,7 +1358,11 @@ std::shared_ptr<CPVRChannel> CPVRTimerInfoTag::Channel() const
 
 std::shared_ptr<CPVRChannel> CPVRTimerInfoTag::UpdateChannel()
 {
-  const std::shared_ptr<CPVRChannel> channel(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetGroupAll()->GetByUniqueID(m_iClientChannelUid, m_iClientId));
+  const std::shared_ptr<CPVRChannel> channel(CServiceBroker::GetPVRManager()
+                                                 .ChannelGroups()
+                                                 ->Get(m_bIsRadio)
+                                                 ->GetGroupAll()
+                                                 ->GetByUniqueID(m_iClientChannelUid, m_iClientId));
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
   m_channel = channel;
