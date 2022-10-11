@@ -11,7 +11,6 @@
 #include "Episode.h"
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
-#include "filesystem/CurlFile.h"
 #include "threads/Thread.h"
 
 #include <string>
@@ -24,6 +23,10 @@ class CGUIDialogProgress;
 namespace ADDON
 {
 class CScraperError;
+}
+namespace XFILE
+{
+class CurlFile;
 }
 
 typedef std::vector<CScraperUrl> MOVIELIST;

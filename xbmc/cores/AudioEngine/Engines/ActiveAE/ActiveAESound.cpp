@@ -6,9 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "cores/AudioEngine/Interfaces/AESound.h"
-#include "ActiveAE.h"
 #include "ActiveAESound.h"
+
+#include "ActiveAE.h"
+#include "cores/AudioEngine/Interfaces/AESound.h"
+#include "filesystem/File.h"
 #include "utils/log.h"
 
 extern "C" {

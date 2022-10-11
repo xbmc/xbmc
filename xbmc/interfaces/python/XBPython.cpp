@@ -17,7 +17,6 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
-#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/legacy/AddonUtils.h"

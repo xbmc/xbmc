@@ -99,4 +99,10 @@ enum FileProperty
   FILE_PROPERTY_EFFECTIVE_URL               /**< Get effective URL for redirected streams  */
 };
 
+class IFileCallback
+{
+public:
+  virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed) = 0;
+  virtual ~IFileCallback() = default;
+};
 }

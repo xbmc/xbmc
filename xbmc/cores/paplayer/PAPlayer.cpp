@@ -9,7 +9,9 @@
 #include "PAPlayer.h"
 
 #include "FileItem.h"
+#include "ICodec.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "Util.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"

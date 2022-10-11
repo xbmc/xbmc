@@ -16,7 +16,6 @@
 #include "URL.h"
 #include "filesystem/BlurayCallback.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/DiscSettings.h"

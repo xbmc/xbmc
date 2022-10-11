@@ -10,6 +10,7 @@
 
 #include "CodecFactory.h"
 #include "FileItem.h"
+#include "ICodec.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
 #include "music/tags/MusicInfoTag.h"
@@ -139,6 +140,11 @@ AEAudioFormat CAudioDecoder::GetFormat()
   if (!m_codec)
     return format;
   return m_codec->m_format;
+}
+
+unsigned int CAudioDecoder::GetChannels()
+{
+  return GetFormat().m_channelLayout.Count();
 }
 
 int64_t CAudioDecoder::Seek(int64_t time)
@@ -326,6 +332,14 @@ int CAudioDecoder::ReadSamples(int numsamples)
     }
   }
   return RET_SLEEP; // nothing to do
+}
+
+bool CAudioDecoder::CanSeek()
+{
+  if (m_codec)
+    return m_codec->CanSeek();
+  else
+    return false;
 }
 
 float CAudioDecoder::GetReplayGain(float &peakVal)

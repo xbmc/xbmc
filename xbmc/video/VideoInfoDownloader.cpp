@@ -9,7 +9,7 @@
 #include "VideoInfoDownloader.h"
 
 #include "dialogs/GUIDialogProgress.h"
-#include "messaging/ApplicationMessenger.h"
+#include "filesystem/CurlFile.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/Variant.h"
 #include "utils/log.h"

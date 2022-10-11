@@ -16,6 +16,7 @@
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
+#include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
