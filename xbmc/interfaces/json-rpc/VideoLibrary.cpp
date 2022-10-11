@@ -104,7 +104,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovieSets(const std::string &method, ITransport
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetSetsNav("videodb://movies/sets/", items, VIDEODB_CONTENT_MOVIES))
+  if (!videodatabase.GetSetsNav("videodb://movies/sets/", items, VideoDbContentType::MOVIES))
     return InternalError;
 
   HandleFileItemList("setid", false, "sets", items, parameterObject, result);
@@ -434,23 +434,23 @@ JSONRPC_STATUS CVideoLibrary::GetGenres(const std::string &method, ITransportLay
 {
   std::string media = parameterObject["type"].asString();
   StringUtils::ToLower(media);
-  int idContent = -1;
+  VideoDbContentType idContent = VideoDbContentType::UNKNOWN;
 
   std::string strPath = "videodb://";
   /* select which video content to get genres from*/
   if (media == MediaTypeMovie)
   {
-    idContent = VIDEODB_CONTENT_MOVIES;
+    idContent = VideoDbContentType::MOVIES;
     strPath += "movies";
   }
   else if (media == MediaTypeTvShow)
   {
-    idContent = VIDEODB_CONTENT_TVSHOWS;
+    idContent = VideoDbContentType::TVSHOWS;
     strPath += "tvshows";
   }
   else if (media == MediaTypeMusicVideo)
   {
-    idContent = VIDEODB_CONTENT_MUSICVIDEOS;
+    idContent = VideoDbContentType::MUSICVIDEOS;
     strPath += "musicvideos";
   }
   strPath += "/genres/";
@@ -475,23 +475,23 @@ JSONRPC_STATUS CVideoLibrary::GetTags(const std::string &method, ITransportLayer
 {
   std::string media = parameterObject["type"].asString();
   StringUtils::ToLower(media);
-  int idContent = -1;
+  VideoDbContentType idContent = VideoDbContentType::UNKNOWN;
 
   std::string strPath = "videodb://";
   /* select which video content to get tags from*/
   if (media == MediaTypeMovie)
   {
-    idContent = VIDEODB_CONTENT_MOVIES;
+    idContent = VideoDbContentType::MOVIES;
     strPath += "movies";
   }
   else if (media == MediaTypeTvShow)
   {
-    idContent = VIDEODB_CONTENT_TVSHOWS;
+    idContent = VideoDbContentType::TVSHOWS;
     strPath += "tvshows";
   }
   else if (media == MediaTypeMusicVideo)
   {
-    idContent = VIDEODB_CONTENT_MUSICVIDEOS;
+    idContent = VideoDbContentType::MUSICVIDEOS;
     strPath += "musicvideos";
   }
   strPath += "/tags/";

@@ -20,7 +20,7 @@ CQueryParams::CQueryParams()
   m_idYear = -1;
   m_idActor = -1;
   m_idDirector = -1;
-  m_idContent = -1;
+  m_idContent = static_cast<long>(VideoDbContentType::UNKNOWN);
   m_idShow = -1;
   m_idSeason = -1;
   m_idEpisode = -1;
@@ -39,11 +39,11 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeN
   {
   case NODE_TYPE_OVERVIEW:
     if (strNodeName == "tvshows")
-      m_idContent = VIDEODB_CONTENT_TVSHOWS;
+      m_idContent = static_cast<long>(VideoDbContentType::TVSHOWS);
     else if (strNodeName == "musicvideos")
-      m_idContent = VIDEODB_CONTENT_MUSICVIDEOS;
+      m_idContent = static_cast<long>(VideoDbContentType::MUSICVIDEOS);
     else
-      m_idContent = VIDEODB_CONTENT_MOVIES;
+      m_idContent = static_cast<long>(VideoDbContentType::MOVIES);
     break;
   case NODE_TYPE_GENRE:
     m_idGenre = idDb;

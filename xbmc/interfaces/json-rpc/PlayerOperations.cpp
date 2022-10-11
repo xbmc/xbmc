@@ -214,23 +214,23 @@ JSONRPC_STATUS CPlayerOperations::GetItem(const std::string &method, ITransportL
         {
           switch (fileItem->GetVideoContentType())
           {
-            case VIDEODB_CONTENT_MOVIES:
+            case VideoDbContentType::MOVIES:
               videodatabase.GetMovieInfo("", *(fileItem->GetVideoInfoTag()),
                                          fileItem->GetVideoInfoTag()->m_iDbId);
               break;
 
-            case VIDEODB_CONTENT_MUSICVIDEOS:
+            case VideoDbContentType::MUSICVIDEOS:
               videodatabase.GetMusicVideoInfo("", *(fileItem->GetVideoInfoTag()),
                                               fileItem->GetVideoInfoTag()->m_iDbId);
               break;
 
-            case VIDEODB_CONTENT_EPISODES:
+            case VideoDbContentType::EPISODES:
               videodatabase.GetEpisodeInfo("", *(fileItem->GetVideoInfoTag()),
                                            fileItem->GetVideoInfoTag()->m_iDbId);
               break;
 
-            case VIDEODB_CONTENT_TVSHOWS:
-            case VIDEODB_CONTENT_MOVIE_SETS:
+            case VideoDbContentType::TVSHOWS:
+            case VideoDbContentType::MOVIE_SETS:
             default:
               break;
           }

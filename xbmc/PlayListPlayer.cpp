@@ -36,6 +36,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
 
 using namespace PLAYLIST;
 using namespace KODI::MESSAGING;
