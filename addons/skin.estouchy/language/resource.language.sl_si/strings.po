@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-08-26 12:27+0000\n"
-"Last-Translator: Matej <mateju@src.gnome.org>\n"
+"PO-Revision-Date: 2022-09-18 09:16+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Slovenian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/sl_si/>\n"
 "Language: sl_si\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 4.14.1\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -82,17 +82,17 @@ msgstr ""
 #. Label to show player info page
 msgctxt "#31018"
 msgid "Player"
-msgstr ""
+msgstr "Predvajalnik"
 
 #. Label to show video decoder name
 msgctxt "#31019"
 msgid "Video decoder"
-msgstr ""
+msgstr "Odkodirnik slike"
 
 #. Label to show the video pixel format
 msgctxt "#31020"
 msgid "Pixel format"
-msgstr ""
+msgstr "Oblika točke"
 
 #. Label to show the system memory usage
 msgctxt "#31021"
@@ -141,7 +141,7 @@ msgstr "NAZAJ"
 
 msgctxt "#31046"
 msgid "Play speed"
-msgstr ""
+msgstr "Hitrost predvajanja"
 
 msgctxt "#31049"
 msgid "End Time"
