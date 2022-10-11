@@ -801,14 +801,6 @@ private:
   bool GetAddonProperties();
 
   /*!
-   * @brief Copy over channel info from xbmcChannel to addonClient.
-   * @param xbmcChannel The channel on XBMC's side.
-   * @param addonChannel The channel on the addon's side.
-   */
-  static void WriteClientChannelInfo(const std::shared_ptr<CPVRChannel>& xbmcChannel,
-                                     PVR_CHANNEL& addonChannel);
-
-  /*!
    * @brief Write the given addon properties to the given properties container.
    * @param properties Pointer to an array of addon properties.
    * @param iPropertyCount The number of properties contained in the addon properties array.
