@@ -39,12 +39,13 @@ namespace PVR
     void OnPrepareFileItems(CFileItemList& items) override;
     bool GetFilteredItems(const std::string& filter, CFileItemList& items) override;
 
+    bool m_bShowDeletedRecordings{false};
+
   private:
     bool OnContextButtonDeleteAll(CFileItem* item, CONTEXT_BUTTON button);
 
     CVideoThumbLoader m_thumbLoader;
     CVideoDatabase m_database;
-    bool m_bShowDeletedRecordings;
     CPVRSettings m_settings;
   };
 
@@ -52,11 +53,13 @@ namespace PVR
   {
   public:
     CGUIWindowPVRTVRecordings() : CGUIWindowPVRRecordingsBase(false, WINDOW_TV_RECORDINGS, "MyPVRRecordings.xml") {}
+    std::string GetRootPath() const override;
   };
 
   class CGUIWindowPVRRadioRecordings : public CGUIWindowPVRRecordingsBase
   {
   public:
     CGUIWindowPVRRadioRecordings() : CGUIWindowPVRRecordingsBase(true, WINDOW_RADIO_RECORDINGS, "MyPVRRecordings.xml") {}
+    std::string GetRootPath() const override;
   };
 }

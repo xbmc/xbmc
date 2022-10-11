@@ -225,22 +225,6 @@ bool CGUIWindowPVRBase::OnAction(const CAction& action)
   return CGUIMediaWindow::OnAction(action);
 }
 
-bool CGUIWindowPVRBase::OnBack(int actionID)
-{
-  if (actionID == ACTION_NAV_BACK)
-  {
-    // don't call CGUIMediaWindow as it will attempt to go to the parent folder which we don't want.
-    if (GetPreviousWindow() != WINDOW_FULLSCREEN_VIDEO)
-    {
-      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_HOME);
-      return true;
-    }
-    else
-      return CGUIWindow::OnBack(actionID);
-  }
-  return CGUIMediaWindow::OnBack(actionID);
-}
-
 bool CGUIWindowPVRBase::ActivatePreviousChannelGroup()
 {
   const std::shared_ptr<CPVRChannelGroup> channelGroup = GetChannelGroup();

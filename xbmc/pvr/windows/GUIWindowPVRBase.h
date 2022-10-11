@@ -62,7 +62,6 @@ namespace PVR
     bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
     void UpdateButtons() override;
     bool OnAction(const CAction& action) override;
-    bool OnBack(int actionID) override;
     void SetInvalid() override;
     bool CanBeActivated() const override;
 
