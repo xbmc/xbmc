@@ -10,9 +10,13 @@
 
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAEBuffer.h"
 #include "cores/AudioEngine/Interfaces/AESound.h"
-#include "filesystem/File.h"
 
 class DllAvUtil;
+
+namespace XFILE
+{
+class CFile;
+}
 
 namespace ActiveAE
 {

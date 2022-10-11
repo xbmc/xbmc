@@ -8,6 +8,8 @@
 
 #include "UDFBlockInput.h"
 
+#include "filesystem/File.h"
+
 #include <mutex>
 
 #include <udfread/udfread.h>
