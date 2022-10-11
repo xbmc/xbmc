@@ -24,8 +24,8 @@
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -1277,7 +1277,7 @@ void CAddonMgr::FindAddons(ADDON_INFO_LIST& addonmap, const std::string& path)
     for (int i = 0; i < items.Size(); ++i)
     {
       std::string path = items[i]->GetPath();
-      if (XFILE::CFile::Exists(path + "addon.xml"))
+      if (CFileUtils::Exists(path + "addon.xml"))
       {
         AddonInfoPtr addonInfo = CAddonInfoBuilder::Generate(path);
         if (addonInfo)

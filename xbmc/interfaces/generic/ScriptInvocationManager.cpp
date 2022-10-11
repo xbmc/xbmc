@@ -8,10 +8,10 @@
 
 #include "ScriptInvocationManager.h"
 
-#include "filesystem/File.h"
 #include "interfaces/generic/ILanguageInvocationHandler.h"
 #include "interfaces/generic/ILanguageInvoker.h"
 #include "interfaces/generic/LanguageInvokerThread.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XTimeUtils.h"
@@ -21,8 +21,6 @@
 #include <mutex>
 #include <utility>
 #include <vector>
-
-using namespace XFILE;
 
 CScriptInvocationManager::~CScriptInvocationManager()
 {
@@ -228,7 +226,7 @@ int CScriptInvocationManager::ExecuteAsync(
   if (script.empty())
     return -1;
 
-  if (!CFile::Exists(script, false))
+  if (!CFileUtils::Exists(script, false))
   {
     CLog::Log(LOGERROR, "{} - Not executing non-existing script {}", __FUNCTION__, script);
     return -1;
@@ -249,7 +247,7 @@ int CScriptInvocationManager::ExecuteAsync(
   if (script.empty() || languageInvoker == NULL)
     return -1;
 
-  if (!CFile::Exists(script, false))
+  if (!CFileUtils::Exists(script, false))
   {
     CLog::Log(LOGERROR, "{} - Not executing non-existing script {}", __FUNCTION__, script);
     return -1;
@@ -302,7 +300,7 @@ int CScriptInvocationManager::ExecuteSync(
   if (script.empty())
     return -1;
 
-  if (!CFile::Exists(script, false))
+  if (!CFileUtils::Exists(script, false))
   {
     CLog::Log(LOGERROR, "{} - Not executing non-existing script {}", __FUNCTION__, script);
     return -1;

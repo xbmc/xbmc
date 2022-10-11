@@ -17,7 +17,6 @@
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
-#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -30,6 +29,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Crc32.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -219,7 +219,7 @@ void CGUIDialogVideoBookmarks::UpdateItem(unsigned int chapterIdx)
     std::string time = StringUtils::Format("chapter://{}/{}", m_filePath, chapterIdx);
     std::string cachefile = CServiceBroker::GetTextureCache()->GetCachedPath(
         CServiceBroker::GetTextureCache()->GetCacheFile(time) + ".jpg");
-    if (XFILE::CFile::Exists(cachefile))
+    if (CFileUtils::Exists(cachefile))
     {
       (*m_vecItems)[itemPos]->SetArt("thumb", cachefile);
     }
@@ -288,7 +288,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     std::string chapterPath = StringUtils::Format("chapter://{}/{}", m_filePath, i);
     std::string cachefile = CServiceBroker::GetTextureCache()->GetCachedPath(
         CServiceBroker::GetTextureCache()->GetCacheFile(chapterPath) + ".jpg");
-    if (XFILE::CFile::Exists(cachefile))
+    if (CFileUtils::Exists(cachefile))
       item->SetArt("thumb", cachefile);
     else if (i > m_jobsStarted && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
     {

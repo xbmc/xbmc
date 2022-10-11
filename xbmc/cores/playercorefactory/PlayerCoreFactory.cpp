@@ -14,15 +14,14 @@
 #include "URL.h"
 #include "cores/IPlayerCallback.h"
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
-#include "cores/paplayer/PAPlayer.h"
 #include "dialogs/GUIDialogContextMenu.h"
-#include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -319,7 +318,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
   std::unique_lock<CCriticalSection> lock(m_section);
 
   CLog::Log(LOGINFO, "Loading player core factory settings from {}.", file);
-  if (!XFILE::CFile::Exists(file))
+  if (!CFileUtils::Exists(file))
   { // tell the user it doesn't exist
     CLog::Log(LOGINFO, "{} does not exist. Skipping.", file);
     return false;

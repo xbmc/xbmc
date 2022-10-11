@@ -8,7 +8,6 @@
 
 #include "SourcesDirectory.h"
 
-#include "File.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -18,6 +17,7 @@
 #include "profiles/ProfileManager.h"
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace XFILE;
@@ -60,7 +60,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       CUtil::GetDVDDriveIcon( pItem->GetPath(), strIcon );
       // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as special://temp/dvdicon.tbn
       std::string strThumb = "special://temp/dvdicon.tbn";
-      if (XFILE::CFile::Exists(strThumb))
+      if (CFileUtils::Exists(strThumb))
         pItem->SetArt("thumb", strThumb);
     }
     else if (URIUtils::IsProtocol(pItem->GetPath(), "addons"))

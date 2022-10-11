@@ -8,8 +8,8 @@
 #include "ImageResource.h"
 
 #include "URL.h"
-#include "filesystem/File.h"
 #include "filesystem/XbtManager.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -59,7 +59,7 @@ bool CImageResource::HasXbt(CURL& xbtUrl) const
 {
   std::string resourcePath = GetResourcePath();
   std::string xbtPath = URIUtils::AddFileToFolder(resourcePath, "Textures.xbt");
-  if (!XFILE::CFile::Exists(xbtPath))
+  if (!CFileUtils::Exists(xbtPath))
     return false;
 
   // translate it into a xbt:// URL

@@ -19,7 +19,6 @@
 #include "addons/BinaryAddonCache.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/GameServices.h"
 #include "games/addons/cheevos/GameClientCheevos.h"
@@ -33,6 +32,7 @@
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -200,7 +200,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
     return false;
 
   // Some cores "succeed" to load the file even if it doesn't exist
-  if (!XFILE::CFile::Exists(file.GetPath()))
+  if (!CFileUtils::Exists(file.GetPath()))
   {
 
     // Failed to play game

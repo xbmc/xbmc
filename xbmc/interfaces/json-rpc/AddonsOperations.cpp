@@ -15,14 +15,13 @@
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
 #include "addons/addoninfo/AddonInfo.h"
-#include "filesystem/File.h"
 #include "messaging/ApplicationMessenger.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
 using namespace ADDON;
-using namespace XFILE;
 
 JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -302,7 +301,7 @@ void CAddonsOperations::FillDetails(const std::shared_ptr<ADDON::IAddon>& addon,
       // holds where the art will be, not whether it exists.
       bool needsRecaching;
       std::string image = CServiceBroker::GetTextureCache()->CheckCachedImage(url, needsRecaching);
-      if (!image.empty() || CFile::Exists(url))
+      if (!image.empty() || CFileUtils::Exists(url))
         object[field] = CTextureUtils::GetWrappedImageURL(url);
       else
         object[field] = "";

@@ -16,7 +16,6 @@
 #include "Util.h"
 #include "VideoLibrary.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "media/MediaLockState.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -169,7 +168,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
 JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string file = parameterObject["file"].asString();
-  if (!CFile::Exists(file))
+  if (!CFileUtils::Exists(file))
     return InvalidParams;
 
   if (!CFileUtils::RemoteAccessAllowed(file))
@@ -225,7 +224,7 @@ JSONRPC_STATUS CFileOperations::SetFileDetails(const std::string &method, ITrans
     return InvalidParams;
 
   std::string file = parameterObject["file"].asString();
-  if (!CFile::Exists(file))
+  if (!CFileUtils::Exists(file))
     return InvalidParams;
 
   if (!CFileUtils::RemoteAccessAllowed(file))
@@ -298,7 +297,7 @@ bool CFileOperations::FillFileItem(
 
   bool status = false;
   std::string strFilename = originalItem->GetPath();
-  if (!strFilename.empty() && (CDirectory::Exists(strFilename) || CFile::Exists(strFilename)))
+  if (!strFilename.empty() && (CDirectory::Exists(strFilename) || CFileUtils::Exists(strFilename)))
   {
     if (media == "video")
       status = CVideoLibrary::FillFileItem(strFilename, item, parameterObject);

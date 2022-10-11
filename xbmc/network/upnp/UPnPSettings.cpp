@@ -9,7 +9,7 @@
 #include "UPnPSettings.h"
 
 #include "ServiceBroker.h"
-#include "filesystem/File.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -23,8 +23,6 @@
 #define XML_MAX_ITEMS     "MaxReturnedItems"
 #define XML_RENDERER_UUID "UUIDRenderer"
 #define XML_RENDERER_PORT "PortRenderer"
-
-using namespace XFILE;
 
 CUPnPSettings::CUPnPSettings() : m_logger(CServiceBroker::GetLogging().GetLogger("CUPnPSettings"))
 {
@@ -53,7 +51,7 @@ bool CUPnPSettings::Load(const std::string &file)
 
   Clear();
 
-  if (!CFile::Exists(file))
+  if (!CFileUtils::Exists(file))
     return false;
 
   CXBMCTinyXML doc;
