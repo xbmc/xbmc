@@ -21,7 +21,6 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
-#include "filesystem/File.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -38,6 +37,7 @@
 #include "threads/SystemClock.h"
 #include "utils/Crc32.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/FileUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
@@ -325,7 +325,7 @@ namespace XBMCAddon
         return;
 
       CGUIComponent* gui = CServiceBroker::GetGUI();
-      if (XFILE::CFile::Exists(filename) && gui)
+      if (CFileUtils::Exists(filename) && gui)
       {
         gui->GetAudioManager().PlayPythonSound(filename,useCached);
       }

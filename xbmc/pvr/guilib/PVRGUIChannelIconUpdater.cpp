@@ -12,7 +12,6 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
@@ -21,6 +20,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -71,7 +71,7 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
       progressHandler->UpdateProgress(channel->ChannelName(), channelIndex++, members.size());
 
       // skip if an icon is already set and exists
-      if (XFILE::CFile::Exists(channel->IconPath()))
+      if (CFileUtils::Exists(channel->IconPath()))
         continue;
 
       // reset icon before searching for a new one

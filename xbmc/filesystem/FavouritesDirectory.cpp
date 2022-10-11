@@ -9,10 +9,11 @@
 #include "FavouritesDirectory.h"
 
 #include "Directory.h"
-#include "File.h"
 #include "ServiceBroker.h"
+#include "URL.h"
 #include "favourites/FavouritesService.h"
 #include "profiles/ProfileManager.h"
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 
 namespace XFILE
@@ -29,12 +30,12 @@ bool CFavouritesDirectory::Exists(const CURL& url)
 {
   if (url.IsProtocol("favourites"))
   {
-    if (XFILE::CFile::Exists("special://xbmc/system/favourites.xml"))
+    if (CFileUtils::Exists("special://xbmc/system/favourites.xml"))
       return true;
 
     const std::string favouritesXml = URIUtils::AddFileToFolder(m_profileManager->GetProfileUserDataFolder(), "favourites.xml");
 
-    return XFILE::CFile::Exists(favouritesXml);
+    return CFileUtils::Exists(favouritesXml);
   }
 
   return XFILE::CDirectory::Exists(url);

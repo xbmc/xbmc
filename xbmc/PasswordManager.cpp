@@ -10,10 +10,10 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "filesystem/File.h"
 #include "profiles/ProfileManager.h"
 #include "profiles/dialogs/GUIDialogLockSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
@@ -143,7 +143,7 @@ void CPasswordManager::Load()
   const std::shared_ptr<CProfileManager> profileManager = CServiceBroker::GetSettingsComponent()->GetProfileManager();
 
   std::string passwordsFile = profileManager->GetUserDataItem("passwords.xml");
-  if (XFILE::CFile::Exists(passwordsFile))
+  if (CFileUtils::Exists(passwordsFile))
   {
     CXBMCTinyXML doc;
     if (!doc.LoadFile(passwordsFile))

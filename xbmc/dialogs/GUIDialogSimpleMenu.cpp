@@ -15,13 +15,13 @@
 #include "URL.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/DiscSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -72,7 +72,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
     CURL url2("udf://");
     url2.SetHostName(item.GetDynPath());
     url2.SetFileName("BDMV/index.bdmv");
-    if (XFILE::CFile::Exists(url2.Get()))
+    if (CFileUtils::Exists(url2.Get()))
     {
       url2.SetFileName("");
 

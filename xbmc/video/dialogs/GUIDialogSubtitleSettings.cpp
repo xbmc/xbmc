@@ -21,7 +21,6 @@
 #include "cores/IPlayer.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -34,6 +33,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/FileUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -160,7 +160,7 @@ std::string CGUIDialogSubtitleSettings::BrowseForSubtitle()
   {
     if (URIUtils::HasExtension(strPath, ".sub"))
     {
-      if (XFILE::CFile::Exists(URIUtils::ReplaceExtension(strPath, ".idx")))
+      if (CFileUtils::Exists(URIUtils::ReplaceExtension(strPath, ".idx")))
         strPath = URIUtils::ReplaceExtension(strPath, ".idx");
     }
 

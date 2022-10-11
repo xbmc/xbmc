@@ -20,7 +20,6 @@
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "filesystem/VideoDatabaseDirectory/QueryParams.h"
 #include "guilib/GUIComponent.h"
@@ -976,7 +975,7 @@ void CGUIDialogVideoInfo::OnGetArt()
         newThumb = localThumb;
       else if (result == "thumb://Embedded")
         newThumb = embeddedArt;
-      else if (CFile::Exists(result))
+      else if (CFileUtils::Exists(result))
         newThumb = result;
       else // none
         newThumb.clear();
@@ -1130,7 +1129,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
     }
     result = m_movieItem->GetVideoInfoTag()->m_fanart.GetImageURL();
   }
-  else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
+  else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFileUtils::Exists(result))
     result.clear();
 
   // set the fanart image
@@ -2109,7 +2108,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     {
       std::string picturePath;
       std::string strThumb = URIUtils::AddFileToFolder(picturePath, "folder.jpg");
-      if (XFILE::CFile::Exists(strThumb))
+      if (CFileUtils::Exists(strThumb))
       {
         CFileItemPtr pItem(new CFileItem(strThumb,false));
         pItem->SetLabel(g_localizeStrings.Get(13514));
@@ -2144,13 +2143,13 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     if (!artistPath.empty())
     {
       strThumb = URIUtils::AddFileToFolder(artistPath, "folder.jpg");
-      existsThumb = CFile::Exists(strThumb);
+      existsThumb = CFileUtils::Exists(strThumb);
     }
     // If not there fall back local to music files (historic location for those album artists with a unique folder)
     if (!existsThumb && !artistOldPath.empty())
     {
       strThumb = URIUtils::AddFileToFolder(artistOldPath, "folder.jpg");
-      existsThumb = CFile::Exists(strThumb);
+      existsThumb = CFileUtils::Exists(strThumb);
     }
 
     if (existsThumb)
@@ -2375,7 +2374,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const std::shared_ptr<CFileItem>& videoIte
       StringUtils::EqualsNoCase(result, "fanart://Current"))
     return false;
 
-  else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFile::Exists(result))
+  else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFileUtils::Exists(result))
     result.clear();
   if (!result.empty() && flip)
     result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");

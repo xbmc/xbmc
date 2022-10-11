@@ -8,19 +8,16 @@
 
 #include "RenderSystemGL.h"
 
-#include "filesystem/File.h"
+#include "ServiceBroker.h"
+#include "URL.h"
 #include "guilib/GUITextureGL.h"
 #include "rendering/MatrixGL.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/DisplaySettings.h"
+#include "utils/FileUtils.h"
 #include "utils/GLUtils.h"
 #include "utils/MathUtils.h"
-#include "utils/StringUtils.h"
-#include "utils/SystemInfo.h"
-#include "utils/TimeUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
-#include "windowing/GraphicContext.h"
+#include "windowing/WinSystem.h"
 
 using namespace std::chrono_literals;
 
@@ -788,7 +785,7 @@ std::string CRenderSystemGL::GetShaderPath(const std::string &filename)
   {
     std::string file = "special://xbmc/system/shaders/GL/4.0/" + filename;
     const CURL pathToUrl(file);
-    if (XFILE::CFile::Exists(pathToUrl))
+    if (CFileUtils::Exists(pathToUrl.Get()))
       return "GL/4.0/";
   }
   if (m_glslMajor >= 2 || (m_glslMajor == 1 && m_glslMinor >= 50))

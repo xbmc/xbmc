@@ -15,12 +15,11 @@
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "TextureCache.h"
+#include "TextureDatabase.h"
 #include "URL.h"
 #include "Util.h"
 #include "addons/Scraper.h"
 #include "favourites/FavouritesService.h"
-#include "filesystem/File.h"
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControlGroupList.h"
@@ -34,6 +33,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -384,7 +384,7 @@ bool CGUIDialogContextMenu::OnContextButton(const std::string &type, const CFile
       }
       // see if there's a local thumb for this item
       std::string folderThumb = item->GetFolderThumb();
-      if (XFILE::CFile::Exists(folderThumb))
+      if (CFileUtils::Exists(folderThumb))
       {
         CFileItemPtr local(new CFileItem("thumb://Local", false));
         local->SetArt("thumb", folderThumb);

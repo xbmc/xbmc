@@ -11,22 +11,19 @@
 #include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
-#include "filesystem/File.h"
 #include "interfaces/builtins/Builtins.h"
-#include "messaging/helpers/DialogHelper.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/FileUtils.h"
 #include "utils/RssReader.h"
 #include "utils/StringUtils.h"
-#include "utils/Variant.h"
 #include "utils/log.h"
 
 #include <mutex>
 #include <utility>
 
-using namespace XFILE;
 using namespace KODI::MESSAGING;
 
 
@@ -100,7 +97,7 @@ bool CRssManager::Load()
   std::unique_lock<CCriticalSection> lock(m_critical);
 
   std::string rssXML = profileManager->GetUserDataItem("RssFeeds.xml");
-  if (!CFile::Exists(rssXML))
+  if (!CFileUtils::Exists(rssXML))
     return false;
 
   CXBMCTinyXML rssDoc;
