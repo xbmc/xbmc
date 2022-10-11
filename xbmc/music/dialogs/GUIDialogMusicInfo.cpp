@@ -13,17 +13,16 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
+#include "URL.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
-#include "filesystem/MusicDatabaseDirectory.h"
+#include "filesystem/MusicDatabaseDirectory/QueryParams.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
-#include "messaging/helpers/DialogHelper.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicLibraryQueue.h"
@@ -32,13 +31,14 @@
 #include "music/dialogs/GUIDialogSongInfo.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
-#include "music/windows/GUIWindowMusicNav.h"
+#include "music/windows/GUIWindowMusicBase.h"
 #include "profiles/ProfileManager.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/FileUtils.h"
 #include "utils/ProgressJob.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -794,7 +794,7 @@ void CGUIDialogMusicInfo::OnGetArt()
     paths.emplace_back(m_album.strPath);
   for (const auto& path : paths)
   {
-    if (!localArt.empty() && CFile::Exists(localArt))
+    if (!localArt.empty() && CFileUtils::Exists(localArt))
       break;
     if (!path.empty())
     {
@@ -823,7 +823,7 @@ void CGUIDialogMusicInfo::OnGetArt()
       }
     }
   }
-  if (!localArt.empty() && CFile::Exists(localArt))
+  if (!localArt.empty() && CFileUtils::Exists(localArt))
   {
     CFileItemPtr item(new CFileItem("Local Art: " + localArt, false));
     item->SetArt("thumb", localArt);
@@ -890,7 +890,7 @@ void CGUIDialogMusicInfo::OnGetArt()
       newArt = m_item->GetArt("thumb");
     else if (StringUtils::StartsWith(result, "Local Art: "))
       newArt = localArt;
-    else if (CFile::Exists(result))
+    else if (CFileUtils::Exists(result))
       newArt = result;
     else // none
       newArt.clear();

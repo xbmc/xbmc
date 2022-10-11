@@ -10,12 +10,10 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "filesystem/File.h"
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "interfaces/json-rpc/JSONServiceDescription.h"
-#include "interfaces/json-rpc/JSONUtils.h"
-#include "network/WebServer.h"
 #include "network/httprequesthandler/HTTPRequestHandlerUtils.h"
+#include "utils/FileUtils.h"
 #include "utils/JSONVariantWriter.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
@@ -138,7 +136,7 @@ bool CHTTPJsonRpcHandler::appendPostData(const char *data, size_t size)
 
 bool CHTTPJsonRpcHandler::CHTTPTransportLayer::PrepareDownload(const char *path, CVariant &details, std::string &protocol)
 {
-  if (!XFILE::CFile::Exists(path))
+  if (!CFileUtils::Exists(path))
     return false;
 
   protocol = "http";

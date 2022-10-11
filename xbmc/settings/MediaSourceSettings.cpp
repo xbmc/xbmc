@@ -11,11 +11,11 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "filesystem/File.h"
 #include "media/MediaLockState.h"
 #include "network/WakeOnAccess.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
@@ -28,8 +28,6 @@
 #define SOURCES_FILE  "sources.xml"
 #define XML_SOURCES   "sources"
 #define XML_SOURCE    "source"
-
-using namespace XFILE;
 
 CMediaSourceSettings::CMediaSourceSettings()
 {
@@ -76,7 +74,7 @@ bool CMediaSourceSettings::Load(const std::string &file)
 {
   Clear();
 
-  if (!CFile::Exists(file))
+  if (!CFileUtils::Exists(file))
     return false;
 
   CLog::Log(LOGINFO, "CMediaSourceSettings: loading media sources from {}", file);

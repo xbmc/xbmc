@@ -15,7 +15,6 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "cores/DataCacheCore.h"
-#include "filesystem/File.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
@@ -26,6 +25,7 @@
 #include "playlists/PlayListTypes.h"
 #include "settings/SkinSettings.h"
 #include "utils/CharsetConverter.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -11016,7 +11016,7 @@ void CGUIInfoManager::SetCurrentItem(const CFileItem &item)
 
 void CGUIInfoManager::SetCurrentAlbumThumb(const std::string &thumbFileName)
 {
-  if (XFILE::CFile::Exists(thumbFileName))
+  if (CFileUtils::Exists(thumbFileName))
     m_currentFile->SetArt("thumb", thumbFileName);
   else
   {

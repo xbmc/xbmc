@@ -16,7 +16,6 @@
 #include "VideoLibrary.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_epg.h" // EPG_TAG_INVALID_UID
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/PictureInfoTag.h"
@@ -28,6 +27,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "utils/FileUtils.h"
 #include "utils/ISerializable.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
@@ -508,7 +508,8 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
   CFileOperations::FillFileItemList(parameterObject, list);
 
   std::string file = parameterObject["file"].asString();
-  if (!file.empty() && (URIUtils::IsURL(file) || (CFile::Exists(file) && !CDirectory::Exists(file))))
+  if (!file.empty() &&
+      (URIUtils::IsURL(file) || (CFileUtils::Exists(file) && !CDirectory::Exists(file))))
   {
     bool added = false;
     for (int index = 0; index < list.Size(); index++)

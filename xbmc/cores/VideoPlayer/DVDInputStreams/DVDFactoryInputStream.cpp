@@ -27,9 +27,9 @@
 #include "addons/AddonManager.h"
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "filesystem/CurlFile.h"
-#include "filesystem/File.h"
 #include "filesystem/IFileTypes.h"
 #include "storage/MediaManager.h"
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 
 
@@ -74,11 +74,11 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
     CURL url("udf://");
     url.SetHostName(file);
     url.SetFileName("BDMV/index.bdmv");
-    if(XFILE::CFile::Exists(url.Get()))
+    if (CFileUtils::Exists(url.Get()))
       return std::shared_ptr<CDVDInputStreamBluray>(new CDVDInputStreamBluray(pPlayer, fileitem));
     url.SetHostName(file);
     url.SetFileName("BDMV/INDEX.BDM");
-    if (XFILE::CFile::Exists(url.Get()))
+    if (CFileUtils::Exists(url.Get()))
       return std::shared_ptr<CDVDInputStreamBluray>(new CDVDInputStreamBluray(pPlayer, fileitem));
 #endif
 
@@ -89,8 +89,8 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   if (file.compare(CServiceBroker::GetMediaManager().TranslateDevicePath("")) == 0)
   {
 #ifdef HAVE_LIBBLURAY
-    if(XFILE::CFile::Exists(URIUtils::AddFileToFolder(file, "BDMV", "index.bdmv"))
-            || XFILE::CFile::Exists(URIUtils::AddFileToFolder(file, "BDMV", "INDEX.BDM")))
+    if (CFileUtils::Exists(URIUtils::AddFileToFolder(file, "BDMV", "index.bdmv")) ||
+        CFileUtils::Exists(URIUtils::AddFileToFolder(file, "BDMV", "INDEX.BDM")))
       return std::shared_ptr<CDVDInputStreamBluray>(new CDVDInputStreamBluray(pPlayer, fileitem));
 #endif
 

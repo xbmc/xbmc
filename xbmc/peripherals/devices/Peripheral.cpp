@@ -10,7 +10,6 @@
 
 #include "Util.h"
 #include "XBDateTime.h"
-#include "filesystem/File.h"
 #include "games/controllers/Controller.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
@@ -21,6 +20,7 @@
 #include "peripherals/bus/PeripheralBus.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "settings/lib/Setting.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -161,7 +161,7 @@ bool CPeripheral::Initialise(void)
         "special://profile/peripheral_data/{}_{}_{}.xml",
         PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId, m_strProductId);
 
-    if (!XFILE::CFile::Exists(m_strSettingsFile))
+    if (!CFileUtils::Exists(m_strSettingsFile))
       m_strSettingsFile = StringUtils::Format(
           "special://profile/peripheral_data/{}_{}_{}_{}.xml",
           PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId, m_strProductId,
