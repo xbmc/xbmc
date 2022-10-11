@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "filesystem/File.h"
+#include "filesystem/IFileTypes.h"
 #include "threads/SystemClock.h"
 #include "threads/Thread.h"
 

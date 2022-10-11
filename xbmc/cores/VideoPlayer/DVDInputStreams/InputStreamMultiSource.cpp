@@ -9,8 +9,6 @@
 #include "InputStreamMultiSource.h"
 
 #include "DVDFactoryInputStream.h"
-#include "filesystem/File.h"
-#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <map>

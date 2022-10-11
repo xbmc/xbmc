@@ -8,12 +8,16 @@
 
 #pragma once
 
-#include "filesystem/File.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
 
 #include <udfread/blockinput.h>
+
+namespace XFILE
+{
+class CFile;
+}
 
 class CUDFBlockInput
 {

@@ -10,7 +10,6 @@
 
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
-#include "filesystem/File.h"
 #include "utils/CharsetConverter.h"
 #include "utils/CharsetDetection.h"
 #include "utils/URIUtils.h"

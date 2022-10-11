@@ -9,12 +9,16 @@
 #pragma once
 
 #include "IEncoder.h"
-#include "filesystem/File.h"
 
 #include <memory>
 #include <stdint.h>
 #include <stdio.h>
 #include <string>
+
+namespace XFILE
+{
+class CFile;
+}
 
 namespace KODI
 {
@@ -26,7 +30,7 @@ constexpr size_t WRITEBUFFER_SIZE = 131072; // 128k buffer
 class CEncoder : public IEncoder
 {
 public:
-  CEncoder() = default;
+  CEncoder();
   virtual ~CEncoder();
 
   bool EncoderInit(const std::string& strFile, int iInChannels, int iInRate, int iInBits);

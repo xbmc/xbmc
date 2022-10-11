@@ -26,6 +26,7 @@
 #include "events/NotificationEvent.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h" // for callback
 #include "guilib/LocalizeStrings.h"
