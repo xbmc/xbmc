@@ -289,55 +289,6 @@ int CPVRClient::GetID() const
 }
 
 /*!
- * @brief Copy over timer info from xbmcTimer to addonTimer.
- * @param xbmcTimer The timer on XBMC's side.
- * @param addonTimer The timer on the addon's side.
- */
-void CPVRClient::WriteClientTimerInfo(const CPVRTimerInfoTag& xbmcTimer, PVR_TIMER& addonTimer)
-{
-  time_t start, end, firstDay;
-  xbmcTimer.StartAsUTC().GetAsTime(start);
-  xbmcTimer.EndAsUTC().GetAsTime(end);
-  xbmcTimer.FirstDayAsUTC().GetAsTime(firstDay);
-  std::shared_ptr<CPVREpgInfoTag> epgTag = xbmcTimer.GetEpgInfoTag();
-
-  int iPVRTimeCorrection =
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
-
-  addonTimer = {};
-  addonTimer.iClientIndex = xbmcTimer.m_iClientIndex;
-  addonTimer.iParentClientIndex = xbmcTimer.m_iParentClientIndex;
-  addonTimer.state = xbmcTimer.m_state;
-  addonTimer.iTimerType = xbmcTimer.GetTimerType()->GetTypeId();
-  addonTimer.iClientChannelUid = xbmcTimer.m_iClientChannelUid;
-  strncpy(addonTimer.strTitle, xbmcTimer.m_strTitle.c_str(), sizeof(addonTimer.strTitle) - 1);
-  strncpy(addonTimer.strEpgSearchString, xbmcTimer.m_strEpgSearchString.c_str(),
-          sizeof(addonTimer.strEpgSearchString) - 1);
-  addonTimer.bFullTextEpgSearch = xbmcTimer.m_bFullTextEpgSearch;
-  strncpy(addonTimer.strDirectory, xbmcTimer.m_strDirectory.c_str(),
-          sizeof(addonTimer.strDirectory) - 1);
-  addonTimer.iPriority = xbmcTimer.m_iPriority;
-  addonTimer.iLifetime = xbmcTimer.m_iLifetime;
-  addonTimer.iMaxRecordings = xbmcTimer.m_iMaxRecordings;
-  addonTimer.iPreventDuplicateEpisodes = xbmcTimer.m_iPreventDupEpisodes;
-  addonTimer.iRecordingGroup = xbmcTimer.m_iRecordingGroup;
-  addonTimer.iWeekdays = xbmcTimer.m_iWeekdays;
-  addonTimer.startTime = start - iPVRTimeCorrection;
-  addonTimer.endTime = end - iPVRTimeCorrection;
-  addonTimer.bStartAnyTime = xbmcTimer.m_bStartAnyTime;
-  addonTimer.bEndAnyTime = xbmcTimer.m_bEndAnyTime;
-  addonTimer.firstDay = firstDay - iPVRTimeCorrection;
-  addonTimer.iEpgUid = epgTag ? epgTag->UniqueBroadcastID() : PVR_TIMER_NO_EPG_UID;
-  strncpy(addonTimer.strSummary, xbmcTimer.m_strSummary.c_str(), sizeof(addonTimer.strSummary) - 1);
-  addonTimer.iMarginStart = xbmcTimer.m_iMarginStart;
-  addonTimer.iMarginEnd = xbmcTimer.m_iMarginEnd;
-  addonTimer.iGenreType = epgTag ? epgTag->GenreType() : 0;
-  addonTimer.iGenreSubType = epgTag ? epgTag->GenreSubType() : 0;
-  strncpy(addonTimer.strSeriesLink, xbmcTimer.SeriesLink().c_str(),
-          sizeof(addonTimer.strSeriesLink) - 1);
-}
-
-/*!
  * @brief Copy over channel info from xbmcChannel to addonClient.
  * @param xbmcChannel The channel on XBMC's side.
  * @param addonChannel The channel on the addon's side.
@@ -1097,7 +1048,7 @@ PVR_ERROR CPVRClient::AddTimer(const CPVRTimerInfoTag& timer)
       __func__,
       [&timer](const AddonInstance* addon) {
         PVR_TIMER tag;
-        WriteClientTimerInfo(timer, tag);
+        timer.FillAddonData(tag);
         return addon->toAddon->AddTimer(addon, &tag);
       },
       m_clientCapabilities.SupportsTimers());
@@ -1109,7 +1060,7 @@ PVR_ERROR CPVRClient::DeleteTimer(const CPVRTimerInfoTag& timer, bool bForce /* 
       __func__,
       [&timer, bForce](const AddonInstance* addon) {
         PVR_TIMER tag;
-        WriteClientTimerInfo(timer, tag);
+        timer.FillAddonData(tag);
         return addon->toAddon->DeleteTimer(addon, &tag, bForce);
       },
       m_clientCapabilities.SupportsTimers());
@@ -1121,7 +1072,7 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag& timer)
       __func__,
       [&timer](const AddonInstance* addon) {
         PVR_TIMER tag;
-        WriteClientTimerInfo(timer, tag);
+        timer.FillAddonData(tag);
         return addon->toAddon->UpdateTimer(addon, &tag);
       },
       m_clientCapabilities.SupportsTimers());
@@ -1608,7 +1559,7 @@ PVR_ERROR CPVRClient::CallTimerMenuHook(const CPVRClientMenuHook& hook,
 {
   return DoAddonCall(__func__, [&hook, &timer](const AddonInstance* addon) {
     PVR_TIMER tag;
-    WriteClientTimerInfo(*timer, tag);
+    timer->FillAddonData(tag);
 
     PVR_MENUHOOK menuHook;
     menuHook.category = PVR_MENUHOOK_TIMER;

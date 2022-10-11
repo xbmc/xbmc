@@ -801,13 +801,6 @@ private:
   bool GetAddonProperties();
 
   /*!
-   * @brief Copy over timer info from xbmcTimer to addonTimer.
-   * @param xbmcTimer The timer on XBMC's side.
-   * @param addonTimer The timer on the addon's side.
-   */
-  static void WriteClientTimerInfo(const CPVRTimerInfoTag& xbmcTimer, PVR_TIMER& addonTimer);
-
-  /*!
    * @brief Copy over channel info from xbmcChannel to addonClient.
    * @param xbmcChannel The channel on XBMC's side.
    * @param addonChannel The channel on the addon's side.
