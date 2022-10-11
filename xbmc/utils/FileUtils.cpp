@@ -10,7 +10,6 @@
 
 #include "CompileInfo.h"
 #include "FileOperationJob.h"
-#include "JobManager.h"
 #include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "URIUtils.h"
@@ -354,4 +353,9 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
   if (! isImage)
     return CFileUtils::RemoteAccessAllowed(decodePath);
   return true;
+}
+
+bool CFileUtils::Exists(const std::string& strFileName, bool bUseCache)
+{
+  return CFile::Exists(strFileName, bUseCache);
 }
