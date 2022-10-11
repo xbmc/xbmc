@@ -20,6 +20,7 @@ public:
   static bool CheckFileAccessAllowed(const std::string &filePath);
   static bool DeleteItem(const std::shared_ptr<CFileItem>& item);
   static bool DeleteItem(const std::string &strPath);
+  static bool Exists(const std::string& strFileName, bool bUseCache = true);
   static bool RenameFile(const std::string &strFile);
   static bool RemoteAccessAllowed(const std::string &strPath);
   static unsigned int LoadFile(const std::string &filename, void* &outputBuffer);
