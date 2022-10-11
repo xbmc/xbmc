@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "addons/AddonManager.h"
+#include "addons/IAddonManagerCallback.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "threads/CriticalSection.h"
 
@@ -18,9 +18,12 @@
 #include <string>
 #include <vector>
 
+class CVariant;
+
 namespace ADDON
 {
   struct AddonEvent;
+  class CAddonInfo;
 }
 
 namespace PVR
@@ -413,10 +416,10 @@ struct SBackend
 
     bool GetAddonsWithStatus(
         const std::string& changedAddonId,
-        std::vector<std::pair<ADDON::AddonInfoPtr, bool>>& addonsWithStatus) const;
+        std::vector<std::pair<std::shared_ptr<ADDON::CAddonInfo>, bool>>& addonsWithStatus) const;
 
     std::vector<std::pair<ADDON::AddonInstanceId, bool>> GetInstanceIdsWithStatus(
-        const ADDON::AddonInfoPtr& addon, bool addonIsEnabled) const;
+        const std::shared_ptr<ADDON::CAddonInfo>& addon, bool addonIsEnabled) const;
 
     /*!
      * @brief Get the client instance for a given client id.

@@ -80,6 +80,7 @@
 #include "ResourceDirectory.h"
 #include "ServiceBroker.h"
 #include "addons/VFSEntry.h"
+#include "utils/StringUtils.h"
 
 using namespace ADDON;
 

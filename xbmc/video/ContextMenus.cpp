@@ -17,6 +17,7 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "playlists/PlayList.h"
 #include "settings/MediaSettings.h"
 #include "utils/URIUtils.h"
@@ -45,7 +46,7 @@ bool CVideoInfo::IsVisible(const CFileItem& item) const
   return item.GetVideoInfoTag()->m_type == m_mediaType;
 }
 
-bool CVideoInfo::Execute(const CFileItemPtr& item) const
+bool CVideoInfo::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   CGUIDialogVideoInfo::ShowFor(*item);
   return true;
@@ -60,7 +61,7 @@ bool CRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
   return CGUIWindowVideoBase::HasResumeItemOffset(&item);
 }
 
-bool CRemoveResumePoint::Execute(const CFileItemPtr& item) const
+bool CRemoveResumePoint::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   CVideoLibraryQueue::GetInstance().ResetResumePoint(item);
   return true;
@@ -86,7 +87,7 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
   return item.GetVideoInfoTag()->GetPlayCount() == 0;
 }
 
-bool CMarkWatched::Execute(const CFileItemPtr& item) const
+bool CMarkWatched::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   CVideoLibraryQueue::GetInstance().MarkAsWatched(item, true);
   return true;
@@ -112,7 +113,7 @@ bool CMarkUnWatched::IsVisible(const CFileItem& item) const
   return item.GetVideoInfoTag()->GetPlayCount() > 0;
 }
 
-bool CMarkUnWatched::Execute(const CFileItemPtr& item) const
+bool CMarkUnWatched::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   CVideoLibraryQueue::GetInstance().MarkAsWatched(item, false);
   return true;
@@ -293,7 +294,7 @@ void SetPathAndPlay(CFileItem& item)
 
 } // unnamed namespace
 
-bool CResume::Execute(const CFileItemPtr& itemIn) const
+bool CResume::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
 #ifdef HAS_DVD_DRIVE
@@ -337,7 +338,7 @@ bool CPlay::IsVisible(const CFileItem& itemIn) const
   return item.IsVideo() || item.IsLiveTV() || item.IsDVD() || item.IsCDDA();
 }
 
-bool CPlay::Execute(const CFileItemPtr& itemIn) const
+bool CPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
 #ifdef HAS_DVD_DRIVE
@@ -359,7 +360,7 @@ bool CQueue::IsVisible(const CFileItem& item) const
   return false; //! @todo implement
 }
 
-bool CQueue::Execute(const CFileItemPtr& item) const
+bool CQueue::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
     return false; // Already queued
@@ -385,7 +386,7 @@ bool CPlayNext::IsVisible(const CFileItem& item) const
   return false; //! @todo implement
 }
 
-bool CPlayNext::Execute(const CFileItemPtr& item) const
+bool CPlayNext::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
     return false; // Already queued
@@ -413,7 +414,7 @@ bool CPlayAndQueue::IsVisible(const CFileItem& item) const
   return false; //! @todo implement
 }
 
-bool CPlayAndQueue::Execute(const CFileItemPtr& item) const
+bool CPlayAndQueue::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
   if (windowId == WINDOW_VIDEO_PLAYLIST)

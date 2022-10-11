@@ -10,7 +10,6 @@
 
 #include "XBDateTime.h"
 #include "addons/AddonBuilder.h"
-#include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "dbwrappers/dataset.h"

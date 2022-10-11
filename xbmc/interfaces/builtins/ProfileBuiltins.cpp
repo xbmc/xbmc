@@ -12,7 +12,6 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "Util.h"
-#include "addons/AddonManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "favourites/FavouritesService.h"
 #include "guilib/GUIComponent.h"

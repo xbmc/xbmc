@@ -8,10 +8,9 @@
 
 #include "ContextMenuAddon.h"
 
-#include "AddonManager.h"
 #include "ContextMenuItem.h"
 #include "ContextMenuManager.h"
-#include "ServiceBroker.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
