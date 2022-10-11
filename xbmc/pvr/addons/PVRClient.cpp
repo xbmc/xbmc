@@ -289,20 +289,6 @@ int CPVRClient::GetID() const
 }
 
 /*!
- * @brief Copy over group info from xbmcGroup to addonGroup.
- * @param xbmcGroup The group on XBMC's side.
- * @param addonGroup The group on the addon's side.
- */
-void CPVRClient::WriteClientGroupInfo(const CPVRChannelGroup& xbmcGroup,
-                                      PVR_CHANNEL_GROUP& addonGroup)
-{
-  addonGroup = {};
-  addonGroup.bIsRadio = xbmcGroup.IsRadio();
-  strncpy(addonGroup.strGroupName, xbmcGroup.GroupName().c_str(),
-          sizeof(addonGroup.strGroupName) - 1);
-}
-
-/*!
  * @brief Copy over timer info from xbmcTimer to addonTimer.
  * @param xbmcTimer The timer on XBMC's side.
  * @param addonTimer The timer on the addon's side.
@@ -878,7 +864,7 @@ PVR_ERROR CPVRClient::GetChannelGroupMembers(
                        handle.dataAddress = &groupMembers;
 
                        PVR_CHANNEL_GROUP tag;
-                       WriteClientGroupInfo(*group, tag);
+                       group->FillAddonData(tag);
                        return addon->toAddon->GetChannelGroupMembers(addon, &handle, &tag);
                      },
                      m_clientCapabilities.SupportsChannelGroups());

@@ -801,14 +801,6 @@ private:
   bool GetAddonProperties();
 
   /*!
-   * @brief Copy over group info from xbmcGroup to addonGroup.
-   * @param xbmcGroup The group on XBMC's side.
-   * @param addonGroup The group on the addon's side.
-   */
-  static void WriteClientGroupInfo(const CPVRChannelGroup& xbmcGroup,
-                                   PVR_CHANNEL_GROUP& addonGroup);
-
-  /*!
    * @brief Copy over timer info from xbmcTimer to addonTimer.
    * @param xbmcTimer The timer on XBMC's side.
    * @param addonTimer The timer on the addon's side.
