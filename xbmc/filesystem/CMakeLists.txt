@@ -114,6 +114,7 @@ set(HEADERS AddonsDirectory.h
             SpecialProtocolFile.h
             StackDirectory.h
             VideoDatabaseDirectory.h
+            VideoDatabaseFile.h
             VirtualDirectory.h
             XbtDirectory.h
             XbtFile.h

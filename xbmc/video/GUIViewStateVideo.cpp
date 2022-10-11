@@ -403,7 +403,7 @@ bool CGUIViewStateWindowVideoNav::AutoPlayNextItem()
 {
   CQueryParams params;
   CVideoDatabaseDirectory::GetQueryParams(m_items.GetPath(),params);
-  if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+  if (static_cast<VideoDbContentType>(params.GetContentType()) == VideoDbContentType::MUSICVIDEOS)
     return CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICPLAYER_AUTOPLAYNEXTITEM);
 
   return CGUIViewStateWindowVideo::AutoPlayNextItem();
