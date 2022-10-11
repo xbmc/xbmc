@@ -60,6 +60,12 @@ public:
   bool operator==(const CPVRRecording& right) const;
   bool operator!=(const CPVRRecording& right) const;
 
+  /*!
+   * @brief Copy over data to the given PVR_RECORDING instance.
+   * @param recording The recording instance to fill.
+   */
+  void FillAddonData(PVR_RECORDING& recording) const;
+
   void Serialize(CVariant& value) const override;
 
   // ISortable implementation
