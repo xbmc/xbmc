@@ -17,46 +17,49 @@ class IContextMenuItem;
 
 namespace PVR
 {
-  enum class PVRContextMenuEventAction
+enum class PVRContextMenuEventAction
+{
+  ADD_ITEM,
+  REMOVE_ITEM
+};
+
+struct PVRContextMenuEvent
+{
+  PVRContextMenuEvent(const PVRContextMenuEventAction& a,
+                      const std::shared_ptr<IContextMenuItem>& i)
+    : action(a), item(i)
   {
-    ADD_ITEM,
-    REMOVE_ITEM
-  };
+  }
 
-  struct PVRContextMenuEvent
-  {
-    PVRContextMenuEvent(const PVRContextMenuEventAction& a, const std::shared_ptr<IContextMenuItem>& i)
-    : action(a), item(i) {}
+  PVRContextMenuEventAction action;
+  std::shared_ptr<IContextMenuItem> item;
+};
 
-    PVRContextMenuEventAction action;
-    std::shared_ptr<IContextMenuItem> item;
-  };
+class CPVRClientMenuHook;
 
-  class CPVRClientMenuHook;
+class CPVRContextMenuManager
+{
+public:
+  static CPVRContextMenuManager& GetInstance();
 
-  class CPVRContextMenuManager
-  {
-  public:
-    static CPVRContextMenuManager& GetInstance();
+  std::vector<std::shared_ptr<IContextMenuItem>> GetMenuItems() const { return m_items; }
 
-    std::vector<std::shared_ptr<IContextMenuItem>> GetMenuItems() const { return m_items; }
+  void AddMenuHook(const CPVRClientMenuHook& hook);
+  void RemoveMenuHook(const CPVRClientMenuHook& hook);
 
-    void AddMenuHook(const CPVRClientMenuHook& hook);
-    void RemoveMenuHook(const CPVRClientMenuHook& hook);
+  /*!
+   * @brief Query the events available for CEventStream
+   */
+  CEventStream<PVRContextMenuEvent>& Events() { return m_events; }
 
-    /*!
-     * @brief Query the events available for CEventStream
-     */
-    CEventStream<PVRContextMenuEvent>& Events() { return m_events; }
+private:
+  CPVRContextMenuManager();
+  CPVRContextMenuManager(const CPVRContextMenuManager&) = delete;
+  CPVRContextMenuManager const& operator=(CPVRContextMenuManager const&) = delete;
+  virtual ~CPVRContextMenuManager() = default;
 
-  private:
-    CPVRContextMenuManager();
-    CPVRContextMenuManager(const CPVRContextMenuManager&) = delete;
-    CPVRContextMenuManager const& operator=(CPVRContextMenuManager const&) = delete;
-    virtual ~CPVRContextMenuManager() = default;
-
-    std::vector<std::shared_ptr<IContextMenuItem>> m_items;
-    CEventSource<PVRContextMenuEvent> m_events;
-  };
+  std::vector<std::shared_ptr<IContextMenuItem>> m_items;
+  CEventSource<PVRContextMenuEvent> m_events;
+};
 
 } // namespace PVR
