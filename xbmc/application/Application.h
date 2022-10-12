@@ -12,7 +12,6 @@
 #include "application/ApplicationEnums.h"
 #include "application/ApplicationPlayerCallback.h"
 #include "application/ApplicationSettingsHandling.h"
-#include "application/ApplicationSkinHandling.h"
 #include "application/ApplicationStackHelper.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "guilib/IMsgTargetCallback.h"
@@ -90,7 +89,6 @@ class CApplication : public IWindowManagerCallback,
                      public CApplicationComponents,
                      public CApplicationPlayerCallback,
                      public CApplicationSettingsHandling,
-                     public CApplicationSkinHandling,
                      public CApplicationVolumeHandling
 {
 friend class CAppInboundProtocol;
@@ -119,7 +117,6 @@ public:
   bool InitWindow(RESOLUTION res = RES_INVALID);
 
   bool Stop(int exitCode);
-  void ReloadSkin(bool confirm = false);
   const std::string& CurrentFile();
   CFileItem& CurrentFileItem();
   std::shared_ptr<CFileItem> CurrentFileItemPtr();
