@@ -291,7 +291,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRTimerInfoTag>& timer)
 
   if (!timer->ChannelIcon().empty())
     SetArt("icon", timer->ChannelIcon());
-  else if (timer->m_bIsRadio)
+  else if (timer->IsRadio())
     SetArt("icon", "DefaultMusicSongs.png");
   else
     SetArt("icon", "DefaultTVShows.png");
