@@ -586,7 +586,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRRecording::GetRecordingTimer() const
 
   for (const auto& timer : recordingTimers)
   {
-    if (timer->m_iClientId == ClientID() && timer->m_iClientChannelUid == ChannelUid())
+    if (timer->ClientID() == ClientID() && timer->ClientChannelUID() == ChannelUid())
     {
       // first, match epg event uids, if available
       if (timer->UniqueBroadcastID() == BroadcastUid() &&
@@ -595,8 +595,8 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRRecording::GetRecordingTimer() const
 
       // alternatively, match start and end times
       const CDateTime timerStart =
-          timer->StartAsUTC() - CDateTimeSpan(0, 0, timer->m_iMarginStart, 0);
-      const CDateTime timerEnd = timer->EndAsUTC() + CDateTimeSpan(0, 0, timer->m_iMarginEnd, 0);
+          timer->StartAsUTC() - CDateTimeSpan(0, 0, timer->MarginStart(), 0);
+      const CDateTime timerEnd = timer->EndAsUTC() + CDateTimeSpan(0, 0, timer->MarginEnd(), 0);
       if (timerStart <= RecordingTimeAsUTC() && timerEnd >= EndTimeAsUTC())
         return timer;
     }

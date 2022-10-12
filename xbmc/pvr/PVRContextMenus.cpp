@@ -440,7 +440,7 @@ namespace PVR
     std::string ToggleTimerState::GetLabel(const CFileItem& item) const
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(item.GetPVRTimerInfoTag());
-      if (timer && timer->m_state != PVR_TIMER_STATE_DISABLED)
+      if (timer && !timer->IsDisabled())
         return g_localizeStrings.Get(844); /* Deactivate */
 
       return g_localizeStrings.Get(843); /* Activate */
@@ -498,7 +498,7 @@ namespace PVR
     {
       const std::shared_ptr<CPVRTimerInfoTag> timer(GetTimerInfoTagFromItem(item));
       if (timer && !URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
-        return timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT;
+        return timer->HasParent();
 
       return false;
     }

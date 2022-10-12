@@ -552,10 +552,10 @@ bool CPVRGUIActionsTimers::ToggleTimerState(const CFileItemPtr& item) const
     return false;
 
   const std::shared_ptr<CPVRTimerInfoTag> timer(item->GetPVRTimerInfoTag());
-  if (timer->m_state == PVR_TIMER_STATE_DISABLED)
-    timer->m_state = PVR_TIMER_STATE_SCHEDULED;
+  if (timer->IsDisabled())
+    timer->SetState(PVR_TIMER_STATE_SCHEDULED);
   else
-    timer->m_state = PVR_TIMER_STATE_DISABLED;
+    timer->SetState(PVR_TIMER_STATE_DISABLED);
 
   if (CServiceBroker::GetPVRManager().Timers()->UpdateTimer(timer))
     return true;
@@ -884,7 +884,7 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
 
   bool bCanRecord = false;
   const std::shared_ptr<CPVRClient> client =
-      CServiceBroker::GetPVRManager().GetClient(timer->m_iClientId);
+      CServiceBroker::GetPVRManager().GetClient(timer->ClientID());
   if (client && client->GetClientCapabilities().SupportsTimers())
   {
     bCanRecord = true;

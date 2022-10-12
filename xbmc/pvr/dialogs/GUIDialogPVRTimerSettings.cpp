@@ -749,7 +749,7 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
   m_typeEntries.clear();
 
   // If timer is read-only or was created by a timer rule, only add current type, for information. Type can't be changed.
-  if (m_timerType->IsReadOnly() || m_timerInfoTag->GetTimerRuleId() != PVR_TIMER_NO_PARENT)
+  if (m_timerType->IsReadOnly() || m_timerInfoTag->HasParent())
   {
     m_typeEntries.insert(std::make_pair(0, m_timerType));
     return;

@@ -1356,7 +1356,7 @@ std::shared_ptr<CPVRChannel> CPVRTimerInfoTag::Channel() const
   return m_channel;
 }
 
-std::shared_ptr<CPVRChannel> CPVRTimerInfoTag::UpdateChannel()
+void CPVRTimerInfoTag::UpdateChannel()
 {
   const std::shared_ptr<CPVRChannel> channel(CServiceBroker::GetPVRManager()
                                                  .ChannelGroups()
@@ -1366,7 +1366,6 @@ std::shared_ptr<CPVRChannel> CPVRTimerInfoTag::UpdateChannel()
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
   m_channel = channel;
-  return m_channel;
 }
 
 const std::string& CPVRTimerInfoTag::Title() const
