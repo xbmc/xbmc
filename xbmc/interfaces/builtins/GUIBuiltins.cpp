@@ -78,6 +78,9 @@ static int ActivateWindow(const std::vector<std::string>& params2)
   if (iWindow != WINDOW_INVALID)
   {
     // compare the given directory param with the current active directory
+    // if no directory is given, and you switch from a video window to another
+    // we retain history, so it makes sense to not switch to the same window in
+    // that case
     bool bIsSameStartFolder = true;
     if (!params.empty())
     {
@@ -86,13 +89,16 @@ static int ActivateWindow(const std::vector<std::string>& params2)
         bIsSameStartFolder = static_cast<CGUIMediaWindow*>(activeWindow)->IsSameStartFolder(params[0]);
     }
 
-    // let the window know it is being replaced
-    if (Replace)
-      params.emplace_back("replace");
-
     // activate window only if window and path differ from the current active window
     if (iWindow != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() || !bIsSameStartFolder)
     {
+      // if the window doesn't change, make sure it knows it's gonna be replaced
+      // this ensures setting the start directory if we switch paths
+      // if we change windows, that's done anyway
+      if (Replace && !params.empty() &&
+          iWindow == CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow())
+        params.emplace_back("replace");
+
       auto& components = CServiceBroker::GetAppComponents();
       const auto appPower = components.GetComponent<CApplicationPowerHandling>();
       appPower->WakeUpScreenSaverAndDPMS();
