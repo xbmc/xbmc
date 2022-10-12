@@ -51,7 +51,7 @@ CDateTime CPVRTimerRuleMatcher::GetNextTimerStart() const
   }
 
   if (m_timerRule->GetTimerType()->SupportsWeekdays() &&
-      m_timerRule->m_iWeekdays != PVR_WEEKDAY_ALLDAYS)
+      m_timerRule->WeekDays() != PVR_WEEKDAY_ALLDAYS)
   {
     bool bMatch = false;
     while (!bMatch)
@@ -60,7 +60,7 @@ CDateTime CPVRTimerRuleMatcher::GetNextTimerStart() const
       if (startWeekday == 0)
         startWeekday = 7;
 
-      bMatch = ((1 << (startWeekday - 1)) & m_timerRule->m_iWeekdays);
+      bMatch = ((1 << (startWeekday - 1)) & m_timerRule->WeekDays());
       if (!bMatch)
         nextStart += oneDay;
     }
@@ -92,13 +92,13 @@ bool CPVRTimerRuleMatcher::MatchSeriesLink(const std::shared_ptr<CPVREpgInfoTag>
 bool CPVRTimerRuleMatcher::MatchChannel(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
   if (m_timerRule->GetTimerType()->SupportsAnyChannel() &&
-      m_timerRule->m_iClientChannelUid == PVR_CHANNEL_INVALID_UID)
+      m_timerRule->ClientChannelUID() == PVR_CHANNEL_INVALID_UID)
     return true; // matches any channel
 
   if (m_timerRule->GetTimerType()->SupportsChannels())
-    return m_timerRule->m_iClientChannelUid != PVR_CHANNEL_INVALID_UID &&
-           epgTag->ClientID() == m_timerRule->m_iClientId &&
-           epgTag->UniqueChannelID() == m_timerRule->m_iClientChannelUid;
+    return m_timerRule->ClientChannelUID() != PVR_CHANNEL_INVALID_UID &&
+           epgTag->ClientID() == m_timerRule->ClientID() &&
+           epgTag->UniqueChannelID() == m_timerRule->ClientChannelUID();
   else
     return true;
 }
@@ -120,8 +120,7 @@ bool CPVRTimerRuleMatcher::MatchStart(const std::shared_ptr<CPVREpgInfoTag>& epg
       return false;
   }
 
-  if (m_timerRule->GetTimerType()->SupportsStartAnyTime() &&
-      m_timerRule->m_bStartAnyTime)
+  if (m_timerRule->GetTimerType()->SupportsStartAnyTime() && m_timerRule->IsStartAnyTime())
     return true; // matches any start time
 
   if (m_timerRule->GetTimerType()->SupportsStartTime())
@@ -139,8 +138,7 @@ bool CPVRTimerRuleMatcher::MatchStart(const std::shared_ptr<CPVREpgInfoTag>& epg
 
 bool CPVRTimerRuleMatcher::MatchEnd(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
-  if (m_timerRule->GetTimerType()->SupportsEndAnyTime() &&
-      m_timerRule->m_bEndAnyTime)
+  if (m_timerRule->GetTimerType()->SupportsEndAnyTime() && m_timerRule->IsEndAnyTime())
     return true; // matches any end time
 
   if (m_timerRule->GetTimerType()->SupportsEndTime())
@@ -160,14 +158,14 @@ bool CPVRTimerRuleMatcher::MatchDayOfWeek(const std::shared_ptr<CPVREpgInfoTag>&
 {
   if (m_timerRule->GetTimerType()->SupportsWeekdays())
   {
-    if (m_timerRule->m_iWeekdays != PVR_WEEKDAY_ALLDAYS)
+    if (m_timerRule->WeekDays() != PVR_WEEKDAY_ALLDAYS)
     {
       const CDateTime startEpgLocal = CPVRTimerInfoTag::ConvertUTCToLocalTime(epgTag->StartAsUTC());
       int startWeekday = startEpgLocal.GetDayOfWeek();
       if (startWeekday == 0)
         startWeekday = 7;
 
-      return ((1 << (startWeekday - 1)) & m_timerRule->m_iWeekdays);
+      return ((1 << (startWeekday - 1)) & m_timerRule->WeekDays());
     }
   }
   return true;
@@ -175,13 +173,12 @@ bool CPVRTimerRuleMatcher::MatchDayOfWeek(const std::shared_ptr<CPVREpgInfoTag>&
 
 bool CPVRTimerRuleMatcher::MatchSearchText(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
-  if (m_timerRule->GetTimerType()->SupportsEpgFulltextMatch() &&
-      m_timerRule->m_bFullTextEpgSearch)
+  if (m_timerRule->GetTimerType()->SupportsEpgFulltextMatch() && m_timerRule->IsFullTextEpgSearch())
   {
     if (!m_textSearch)
     {
       m_textSearch.reset(new CRegExp(true /* case insensitive */));
-      m_textSearch->RegComp(m_timerRule->m_strEpgSearchString);
+      m_textSearch->RegComp(m_timerRule->EpgSearchString());
     }
     return m_textSearch->RegFind(epgTag->Title()) >= 0 ||
            m_textSearch->RegFind(epgTag->EpisodeName()) >= 0 ||
@@ -193,7 +190,7 @@ bool CPVRTimerRuleMatcher::MatchSearchText(const std::shared_ptr<CPVREpgInfoTag>
     if (!m_textSearch)
     {
       m_textSearch.reset(new CRegExp(true /* case insensitive */));
-      m_textSearch->RegComp(m_timerRule->m_strEpgSearchString);
+      m_textSearch->RegComp(m_timerRule->EpgSearchString());
     }
     return m_textSearch->RegFind(epgTag->Title()) >= 0;
   }

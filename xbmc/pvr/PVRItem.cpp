@@ -150,7 +150,7 @@ namespace PVR
     }
     else if (m_item->IsPVRTimer())
     {
-      return m_item->GetPVRTimerInfoTag()->m_bIsRadio;
+      return m_item->GetPVRTimerInfoTag()->IsRadio();
     }
     else if (URIUtils::IsPVR(m_item->GetDynPath()))
     {

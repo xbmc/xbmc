@@ -539,13 +539,12 @@ bool GetTimersRootDirectory(const CPVRTimersPath& path,
 
   for (const auto& timer : timers)
   {
-    if ((bRadio == timer->m_bIsRadio ||
-         (bRules && timer->m_iClientChannelUid == PVR_TIMER_ANY_CHANNEL)) &&
-        (bRules == timer->IsTimerRule()) &&
-        (!bHideDisabled || (timer->m_state != PVR_TIMER_STATE_DISABLED)))
+    if ((bRadio == timer->IsRadio() ||
+         (bRules && timer->ClientChannelUID() == PVR_TIMER_ANY_CHANNEL)) &&
+        (bRules == timer->IsTimerRule()) && (!bHideDisabled || !timer->IsDisabled()))
     {
       const auto item = std::make_shared<CFileItem>(timer);
-      const CPVRTimersPath timersPath(path.GetPath(), timer->m_iClientId, timer->m_iClientIndex);
+      const CPVRTimersPath timersPath(path.GetPath(), timer->ClientID(), timer->ClientIndex());
       item->SetPath(timersPath.GetPath());
       results.Add(item);
     }
@@ -566,12 +565,11 @@ bool GetTimersSubDirectory(const CPVRTimersPath& path,
 
   for (const auto& timer : timers)
   {
-    if ((timer->m_bIsRadio == bRadio) && (timer->m_iParentClientIndex != PVR_TIMER_NO_PARENT) &&
-        (timer->m_iClientId == iClientId) && (timer->m_iParentClientIndex == iParentId) &&
-        (!bHideDisabled || (timer->m_state != PVR_TIMER_STATE_DISABLED)))
+    if ((timer->IsRadio() == bRadio) && timer->HasParent() && (timer->ClientID() == iClientId) &&
+        (timer->ParentClientIndex() == iParentId) && (!bHideDisabled || !timer->IsDisabled()))
     {
       item.reset(new CFileItem(timer));
-      const CPVRTimersPath timersPath(path.GetPath(), timer->m_iClientId, timer->m_iClientIndex);
+      const CPVRTimersPath timersPath(path.GetPath(), timer->ClientID(), timer->ClientIndex());
       item->SetPath(timersPath.GetPath());
       results.Add(item);
     }

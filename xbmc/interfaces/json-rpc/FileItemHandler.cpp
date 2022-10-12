@@ -115,7 +115,7 @@ bool CFileItemHandler::GetField(const std::string& field,
       {
         const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
             CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
-        result[field] = (timer && (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT));
+        result[field] = (timer && timer->HasParent());
         return true;
       }
       else if (field == "hasrecording")
@@ -376,8 +376,8 @@ void CFileItemHandler::HandleFileItem(const char* ID,
           object["file"] = item->GetVideoInfoTag()->GetPath().c_str();
         if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().empty())
           object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
-        if (item->HasPVRTimerInfoTag() && !item->GetPVRTimerInfoTag()->m_strFileNameAndPath.empty())
-          object["file"] = item->GetPVRTimerInfoTag()->m_strFileNameAndPath.c_str();
+        if (item->HasPVRTimerInfoTag() && !item->GetPVRTimerInfoTag()->Path().empty())
+          object["file"] = item->GetPVRTimerInfoTag()->Path().c_str();
 
         if (!object.isMember("file"))
           object["file"] = item->GetDynPath().c_str();
@@ -407,8 +407,8 @@ void CFileItemHandler::HandleFileItem(const char* ID,
         object[ID] = item->GetEPGInfoTag()->DatabaseID();
       else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->RecordingID() > 0)
         object[ID] = item->GetPVRRecordingInfoTag()->RecordingID();
-      else if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->m_iTimerId > 0)
-         object[ID] = item->GetPVRTimerInfoTag()->m_iTimerId;
+      else if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->TimerID() > 0)
+        object[ID] = item->GetPVRTimerInfoTag()->TimerID();
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
         object[ID] = item->GetMusicInfoTag()->GetDatabaseId();
       else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)

@@ -1391,7 +1391,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item,
       {
         const std::shared_ptr<CPVRTimerInfoTag> timer = CPVRItem(item).GetTimerInfoTag();
         if (timer)
-          bValue = timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT;
+          bValue = timer->HasParent();
         return true;
       }
       break;
@@ -1409,7 +1409,7 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item,
       {
         const std::shared_ptr<CPVRTimerInfoTag> timer = CPVRItem(item).GetTimerInfoTag();
         if (timer)
-          bValue = timer->IsReminder() && (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT);
+          bValue = timer->IsReminder() && timer->HasParent();
         return true;
       }
       break;
