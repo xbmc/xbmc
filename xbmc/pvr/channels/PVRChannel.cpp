@@ -83,6 +83,22 @@ CPVRChannel::~CPVRChannel()
   ResetEPG();
 }
 
+void CPVRChannel::FillAddonData(PVR_CHANNEL& channel) const
+{
+  channel = {};
+  channel.iUniqueId = UniqueID();
+  channel.iChannelNumber = ClientChannelNumber().GetChannelNumber();
+  channel.iSubChannelNumber = ClientChannelNumber().GetSubChannelNumber();
+  strncpy(channel.strChannelName, ClientChannelName().c_str(), sizeof(channel.strChannelName) - 1);
+  strncpy(channel.strIconPath, ClientIconPath().c_str(), sizeof(channel.strIconPath) - 1);
+  channel.iEncryptionSystem = EncryptionSystem();
+  channel.bIsRadio = IsRadio();
+  channel.bIsHidden = IsHidden();
+  strncpy(channel.strMimeType, MimeType().c_str(), sizeof(channel.strMimeType) - 1);
+  channel.iClientProviderUid = ClientProviderUid();
+  channel.bHasArchive = HasArchive();
+}
+
 void CPVRChannel::Serialize(CVariant& value) const
 {
   value["channelid"] = m_iChannelId;

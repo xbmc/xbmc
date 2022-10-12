@@ -176,6 +176,52 @@ bool CPVRRecording::operator!=(const CPVRRecording& right) const
   return !(*this == right);
 }
 
+void CPVRRecording::FillAddonData(PVR_RECORDING& recording) const
+{
+  time_t recTime;
+  RecordingTimeAsUTC().GetAsTime(recTime);
+
+  recording = {};
+  strncpy(recording.strRecordingId, ClientRecordingID().c_str(),
+          sizeof(recording.strRecordingId) - 1);
+  strncpy(recording.strTitle, m_strTitle.c_str(), sizeof(recording.strTitle) - 1);
+  strncpy(recording.strEpisodeName, m_strShowTitle.c_str(), sizeof(recording.strEpisodeName) - 1);
+  recording.iSeriesNumber = m_iSeason;
+  recording.iEpisodeNumber = m_iEpisode;
+  recording.iYear = GetYear();
+  strncpy(recording.strDirectory, Directory().c_str(), sizeof(recording.strDirectory) - 1);
+  strncpy(recording.strPlotOutline, m_strPlotOutline.c_str(), sizeof(recording.strPlotOutline) - 1);
+  strncpy(recording.strPlot, m_strPlot.c_str(), sizeof(recording.strPlot) - 1);
+  strncpy(recording.strGenreDescription, GetGenresLabel().c_str(),
+          sizeof(recording.strGenreDescription) - 1);
+  strncpy(recording.strChannelName, ChannelName().c_str(), sizeof(recording.strChannelName) - 1);
+  strncpy(recording.strIconPath, ClientIconPath().c_str(), sizeof(recording.strIconPath) - 1);
+  strncpy(recording.strThumbnailPath, ClientThumbnailPath().c_str(),
+          sizeof(recording.strThumbnailPath) - 1);
+  strncpy(recording.strFanartPath, ClientFanartPath().c_str(), sizeof(recording.strFanartPath) - 1);
+  recording.recordingTime =
+      recTime - CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
+  recording.iDuration = GetDuration();
+  recording.iPriority = Priority();
+  recording.iLifetime = LifeTime();
+  recording.iGenreType = GenreType();
+  recording.iGenreSubType = GenreSubType();
+  recording.iPlayCount = GetLocalPlayCount();
+  recording.iLastPlayedPosition = std::lrint(GetLocalResumePoint().timeInSeconds);
+  recording.bIsDeleted = IsDeleted();
+  recording.iEpgEventId = m_iEpgEventId;
+  recording.iChannelUid = ChannelUid();
+  recording.channelType =
+      IsRadio() ? PVR_RECORDING_CHANNEL_TYPE_RADIO : PVR_RECORDING_CHANNEL_TYPE_TV;
+  if (FirstAired().IsValid())
+    strncpy(recording.strFirstAired, FirstAired().GetAsW3CDate().c_str(),
+            sizeof(recording.strFirstAired) - 1);
+  recording.iFlags = Flags();
+  recording.sizeInBytes = GetSizeInBytes();
+  strncpy(recording.strProviderName, ProviderName().c_str(), sizeof(recording.strProviderName) - 1);
+  recording.iClientProviderUid = ClientProviderUniqueId();
+}
+
 void CPVRRecording::Serialize(CVariant& value) const
 {
   CVideoInfoTag::Serialize(value);

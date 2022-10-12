@@ -801,37 +801,6 @@ private:
   bool GetAddonProperties();
 
   /*!
-   * @brief Copy over group info from xbmcGroup to addonGroup.
-   * @param xbmcGroup The group on XBMC's side.
-   * @param addonGroup The group on the addon's side.
-   */
-  static void WriteClientGroupInfo(const CPVRChannelGroup& xbmcGroup,
-                                   PVR_CHANNEL_GROUP& addonGroup);
-
-  /*!
-   * @brief Copy over recording info from xbmcRecording to addonRecording.
-   * @param xbmcRecording The recording on XBMC's side.
-   * @param addonRecording The recording on the addon's side.
-   */
-  static void WriteClientRecordingInfo(const CPVRRecording& xbmcRecording,
-                                       PVR_RECORDING& addonRecording);
-
-  /*!
-   * @brief Copy over timer info from xbmcTimer to addonTimer.
-   * @param xbmcTimer The timer on XBMC's side.
-   * @param addonTimer The timer on the addon's side.
-   */
-  static void WriteClientTimerInfo(const CPVRTimerInfoTag& xbmcTimer, PVR_TIMER& addonTimer);
-
-  /*!
-   * @brief Copy over channel info from xbmcChannel to addonClient.
-   * @param xbmcChannel The channel on XBMC's side.
-   * @param addonChannel The channel on the addon's side.
-   */
-  static void WriteClientChannelInfo(const std::shared_ptr<CPVRChannel>& xbmcChannel,
-                                     PVR_CHANNEL& addonChannel);
-
-  /*!
    * @brief Write the given addon properties to the given properties container.
    * @param properties Pointer to an array of addon properties.
    * @param iPropertyCount The number of properties contained in the addon properties array.
