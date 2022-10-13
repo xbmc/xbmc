@@ -22,6 +22,7 @@
 #define LEGAL_WIN32_COMPAT    1
 #define LEGAL_FATX            2
 
+class CFileItem;
 class CFileItemList;
 class CURL;
 
@@ -130,6 +131,9 @@ public:
    */
   static void SplitParams(const std::string &paramString, std::vector<std::string> &parameters);
   static void SplitExecFunction(const std::string &execString, std::string &function, std::vector<std::string> &parameters);
+  static std::string GetExecPath(const CFileItem& item, const std::string& contextWindow);
+  static std::string GetExecActionLabelFromPath(const std::string& path);
+  static std::string GetExecProviderLabelFromPath(const std::string& path);
   static int GetMatchingSource(const std::string& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
   static std::string TranslateSpecialSource(const std::string &strSpecial);
   static void DeleteDirectoryCache(const std::string &prefix = "");

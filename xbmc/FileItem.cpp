@@ -810,6 +810,12 @@ void CFileItem::ToSortable(SortItem &sortable, Field field) const
 
   if (m_eventLogEntry)
     m_eventLogEntry->ToSortable(sortable, field);
+
+  if (IsFavourite())
+  {
+    if (field == FieldUserPreference)
+      sortable[FieldUserPreference] = GetProperty("favourite.index").asString();
+  }
 }
 
 void CFileItem::ToSortable(SortItem &sortable, const Fields &fields) const
@@ -1249,6 +1255,11 @@ bool CFileItem::IsStack() const
   return URIUtils::IsStack(m_strPath);
 }
 
+bool CFileItem::IsFavourite() const
+{
+  return URIUtils::IsFavourite(m_strPath);
+}
+
 bool CFileItem::IsPlugin() const
 {
   return URIUtils::IsPlugin(m_strPath);
@@ -1468,6 +1479,10 @@ void CFileItem::FillInDefaultIcon()
       else if ( IsPythonScript() )
       {
         SetArt("icon", "DefaultScript.png");
+      }
+      else if (IsFavourite())
+      {
+        SetArt("icon", "DefaultFavourites.png");
       }
       else
       {

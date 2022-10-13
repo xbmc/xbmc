@@ -29,6 +29,26 @@ protected:
   virtual bool DoExecute(CFileItemList& items, const std::shared_ptr<CFileItem>& item) const = 0;
 };
 
+class CMoveUpFavourite : public CFavouriteContextMenuAction
+{
+public:
+  CMoveUpFavourite() : CFavouriteContextMenuAction(13332) {} // Move up
+  bool IsVisible(const CFileItem& item) const override;
+
+protected:
+  bool DoExecute(CFileItemList& items, const std::shared_ptr<CFileItem>& item) const override;
+};
+
+class CMoveDownFavourite : public CFavouriteContextMenuAction
+{
+public:
+  CMoveDownFavourite() : CFavouriteContextMenuAction(13333) {} // Move down
+  bool IsVisible(const CFileItem& item) const override;
+
+protected:
+  bool DoExecute(CFileItemList& items, const std::shared_ptr<CFileItem>& item) const override;
+};
+
 class CRemoveFavourite : public CFavouriteContextMenuAction
 {
 public:

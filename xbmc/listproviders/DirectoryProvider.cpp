@@ -11,6 +11,7 @@
 #include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "favourites/FavouritesService.h"
@@ -420,7 +421,7 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
     fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
 
   // grab the execute string
-  std::string execute = CServiceBroker::GetFavouritesService().GetExecutePath(fileItem, GetTarget(fileItem));
+  const std::string execute = CUtil::GetExecPath(fileItem, GetTarget(fileItem));
   if (!execute.empty())
   {
     CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
