@@ -76,7 +76,7 @@ bool CPVRGUIActionsTimers::ShowTimerSettings(const std::shared_ptr<CPVRTimerInfo
   return pDlgInfo->IsConfirmed();
 }
 
-bool CPVRGUIActionsTimers::AddReminder(const std::shared_ptr<CFileItem>& item) const
+bool CPVRGUIActionsTimers::AddReminder(const CFileItem& item) const
 {
   const std::shared_ptr<CPVREpgInfoTag> epgTag = CPVRItem(item).GetEpgInfoTag();
   if (!epgTag)
@@ -114,19 +114,19 @@ bool CPVRGUIActionsTimers::AddTimer(bool bRadio) const
   return false;
 }
 
-bool CPVRGUIActionsTimers::AddTimer(const CFileItemPtr& item, bool bShowTimerSettings) const
+bool CPVRGUIActionsTimers::AddTimer(const CFileItem& item, bool bShowTimerSettings) const
 {
   return AddTimer(item, false, bShowTimerSettings, false);
 }
 
-bool CPVRGUIActionsTimers::AddTimerRule(const std::shared_ptr<CFileItem>& item,
+bool CPVRGUIActionsTimers::AddTimerRule(const CFileItem& item,
                                         bool bShowTimerSettings,
                                         bool bFallbackToOneShotTimer) const
 {
   return AddTimer(item, true, bShowTimerSettings, bFallbackToOneShotTimer);
 }
 
-bool CPVRGUIActionsTimers::AddTimer(const std::shared_ptr<CFileItem>& item,
+bool CPVRGUIActionsTimers::AddTimer(const CFileItem& item,
                                     bool bCreateRule,
                                     bool bShowTimerSettings,
                                     bool bFallbackToOneShotTimer) const
@@ -529,9 +529,9 @@ bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChann
   return bReturn;
 }
 
-bool CPVRGUIActionsTimers::ToggleTimer(const CFileItemPtr& item) const
+bool CPVRGUIActionsTimers::ToggleTimer(const CFileItem& item) const
 {
-  if (!item->HasEPGInfoTag())
+  if (!item.HasEPGInfoTag())
     return false;
 
   const std::shared_ptr<CPVRTimerInfoTag> timer(CPVRItem(item).GetTimerInfoTag());
@@ -546,12 +546,12 @@ bool CPVRGUIActionsTimers::ToggleTimer(const CFileItemPtr& item) const
     return AddTimer(item, false);
 }
 
-bool CPVRGUIActionsTimers::ToggleTimerState(const CFileItemPtr& item) const
+bool CPVRGUIActionsTimers::ToggleTimerState(const CFileItem& item) const
 {
-  if (!item->HasPVRTimerInfoTag())
+  if (!item.HasPVRTimerInfoTag())
     return false;
 
-  const std::shared_ptr<CPVRTimerInfoTag> timer(item->GetPVRTimerInfoTag());
+  const std::shared_ptr<CPVRTimerInfoTag> timer = item.GetPVRTimerInfoTag();
   if (timer->IsDisabled())
     timer->SetState(PVR_TIMER_STATE_SCHEDULED);
   else
@@ -567,7 +567,7 @@ bool CPVRGUIActionsTimers::ToggleTimerState(const CFileItemPtr& item) const
   return false;
 }
 
-bool CPVRGUIActionsTimers::EditTimer(const CFileItemPtr& item) const
+bool CPVRGUIActionsTimers::EditTimer(const CFileItem& item) const
 {
   const std::shared_ptr<CPVRTimerInfoTag> timer(CPVRItem(item).GetTimerInfoTag());
   if (!timer)
@@ -613,23 +613,22 @@ bool CPVRGUIActionsTimers::EditTimer(const CFileItemPtr& item) const
   return false;
 }
 
-bool CPVRGUIActionsTimers::EditTimerRule(const CFileItemPtr& item) const
+bool CPVRGUIActionsTimers::EditTimerRule(const CFileItem& item) const
 {
   const std::shared_ptr<CFileItem> parentTimer = GetTimerRule(item);
   if (parentTimer)
-    return EditTimer(parentTimer);
+    return EditTimer(*parentTimer);
 
   return false;
 }
 
-std::shared_ptr<CFileItem> CPVRGUIActionsTimers::GetTimerRule(
-    const std::shared_ptr<CFileItem>& item) const
+std::shared_ptr<CFileItem> CPVRGUIActionsTimers::GetTimerRule(const CFileItem& item) const
 {
   std::shared_ptr<CPVRTimerInfoTag> timer;
-  if (item && item->HasEPGInfoTag())
-    timer = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
-  else if (item && item->HasPVRTimerInfoTag())
-    timer = item->GetPVRTimerInfoTag();
+  if (item.HasEPGInfoTag())
+    timer = CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item.GetEPGInfoTag());
+  else if (item.HasPVRTimerInfoTag())
+    timer = item.GetPVRTimerInfoTag();
 
   if (timer)
   {
@@ -640,17 +639,17 @@ std::shared_ptr<CFileItem> CPVRGUIActionsTimers::GetTimerRule(
   return {};
 }
 
-bool CPVRGUIActionsTimers::DeleteTimer(const CFileItemPtr& item) const
+bool CPVRGUIActionsTimers::DeleteTimer(const CFileItem& item) const
 {
   return DeleteTimer(item, false, false);
 }
 
-bool CPVRGUIActionsTimers::DeleteTimerRule(const CFileItemPtr& item) const
+bool CPVRGUIActionsTimers::DeleteTimerRule(const CFileItem& item) const
 {
   return DeleteTimer(item, false, true);
 }
 
-bool CPVRGUIActionsTimers::DeleteTimer(const CFileItemPtr& item,
+bool CPVRGUIActionsTimers::DeleteTimer(const CFileItem& item,
                                        bool bIsRecording,
                                        bool bDeleteRule) const
 {
@@ -783,7 +782,7 @@ bool CPVRGUIActionsTimers::ConfirmDeleteTimer(const std::shared_ptr<CPVRTimerInf
   return bConfirmed;
 }
 
-bool CPVRGUIActionsTimers::StopRecording(const CFileItemPtr& item) const
+bool CPVRGUIActionsTimers::StopRecording(const CFileItem& item) const
 {
   if (!DeleteTimer(item, true, false))
     return false;
@@ -963,7 +962,7 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
     if (newTimer)
     {
       // schedule recording
-      AddTimer(std::make_shared<CFileItem>(newTimer), false);
+      AddTimer(CFileItem(newTimer), false);
     }
 
     if (bAutoClosed)

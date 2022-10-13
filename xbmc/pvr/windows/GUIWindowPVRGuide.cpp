@@ -458,7 +458,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_RECORD:
-                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimer(pItem);
+                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimer(*pItem);
                   bReturn = true;
                   break;
                 case EPG_SELECT_ACTION_SMART_SELECT:
@@ -480,7 +480,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                     {
                       // future event
                       if (CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(tag))
-                        CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimer(pItem);
+                        CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimer(*pItem);
                       else
                       {
                         bool bCanRecord = true;
@@ -500,7 +500,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                                                          CVariant{iTextID}, CVariant{iNoButtonID},
                                                          CVariant{19165}); // Yes => "Switch"
                         if (ret == HELPERS::DialogResponse::CHOICE_NO)
-                          CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(pItem,
+                          CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(*pItem,
                                                                                            false);
                         else if (ret == HELPERS::DialogResponse::CHOICE_YES)
                           CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
@@ -535,11 +535,11 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_RECORD:
-              CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimer(pItem);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimer(*pItem);
               bReturn = true;
               break;
             case ACTION_PVR_SHOW_TIMER_RULE:
-              CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimerRule(pItem, true,
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimerRule(*pItem, true,
                                                                                    false);
               bReturn = true;
               break;
