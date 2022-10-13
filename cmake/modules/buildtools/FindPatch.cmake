@@ -67,8 +67,16 @@ if(CMAKE_HOST_WIN32 AND NOT PATCH_EXE)
   find_program(PATCH_EXE NAMES patch.exe HINTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/bin REQUIRED)
 endif()
 
+if(PATCH_EXE)
+  execute_process(COMMAND "${PATCH_EXE}" --version
+                  OUTPUT_VARIABLE PATCH_VERSION
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+  string(REGEX MATCH "[^\n]*patch [^\n]*" PATCH_VERSION "${PATCH_VERSION}")
+  string(REGEX REPLACE ".*patch (.*)" "\\1" PATCH_VERSION "${PATCH_VERSION}")
+endif()
+
 include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Patch REQUIRED_VARS PATCH_EXE)
+find_package_handle_standard_args(Patch REQUIRED_VARS PATCH_EXE VERSION_VAR PATCH_VERSION)
 
 if(PATCH_FOUND)
   set(PATCH_EXECUTABLE "${PATCH_EXE}")
