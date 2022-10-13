@@ -135,7 +135,7 @@ bool CPVRGUIActionsPowerManagement::AllLocalBackendsIdle(
       CServiceBroker::GetPVRManager().Timers()->GetActiveRecordings();
   for (const auto& timer : activeRecordings)
   {
-    if (EventOccursOnLocalBackend(std::make_shared<CFileItem>(timer)))
+    if (EventOccursOnLocalBackend(timer))
     {
       causingEvent = timer;
       return false;
@@ -154,7 +154,7 @@ bool CPVRGUIActionsPowerManagement::AllLocalBackendsIdle(
       return false;
     }
 
-    if (EventOccursOnLocalBackend(std::make_shared<CFileItem>(timer)))
+    if (EventOccursOnLocalBackend(timer))
     {
       causingEvent = timer;
       return false;
@@ -164,17 +164,15 @@ bool CPVRGUIActionsPowerManagement::AllLocalBackendsIdle(
 }
 
 bool CPVRGUIActionsPowerManagement::EventOccursOnLocalBackend(
-    const std::shared_ptr<CFileItem>& item) const
+    const std::shared_ptr<CPVRTimerInfoTag>& event) const
 {
-  if (item && item->HasPVRTimerInfoTag())
+  const std::shared_ptr<CPVRClient> client =
+      CServiceBroker::GetPVRManager().GetClient(CFileItem(event));
+  if (client)
   {
-    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
-    if (client)
-    {
-      const std::string hostname = client->GetBackendHostname();
-      if (!hostname.empty() && CServiceBroker::GetNetwork().IsLocalHost(hostname))
-        return true;
-    }
+    const std::string hostname = client->GetBackendHostname();
+    if (!hostname.empty() && CServiceBroker::GetNetwork().IsLocalHost(hostname))
+      return true;
   }
   return false;
 }
