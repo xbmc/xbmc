@@ -237,7 +237,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
               if (message.GetParam1() == ACTION_PLAYER_PLAY)
               {
                 CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-                    item, true /* check resume */);
+                    *item, true /* check resume */);
                 bReturn = true;
               }
               else
@@ -250,12 +250,12 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
                     break;
                   case SELECT_ACTION_PLAY_OR_RESUME:
                     CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-                        item, true /* check resume */);
+                        *item, true /* check resume */);
                     bReturn = true;
                     break;
                   case SELECT_ACTION_RESUME:
                     CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().ResumePlayRecording(
-                        item, true /* fall back to play if no resume possible */);
+                        *item, true /* fall back to play if no resume possible */);
                     bReturn = true;
                     break;
                   case SELECT_ACTION_INFO:
