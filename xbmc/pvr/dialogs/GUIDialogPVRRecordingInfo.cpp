@@ -94,9 +94,9 @@ bool CGUIDialogPVRRecordingInfo::OnInfo(int actionID)
   return true;
 }
 
-void CGUIDialogPVRRecordingInfo::SetRecording(const CFileItem* item)
+void CGUIDialogPVRRecordingInfo::SetRecording(const CFileItem& item)
 {
-  *m_recordItem = *item;
+  m_recordItem = std::make_shared<CFileItem>(item);
 }
 
 CFileItemPtr CGUIDialogPVRRecordingInfo::GetCurrentListItem(int offset)

@@ -177,7 +177,7 @@ bool ShowInformation::IsVisible(const CFileItem& item) const
 bool ShowInformation::Execute(const CFileItemPtr& item) const
 {
   if (item->GetPVRRecordingInfoTag())
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(item);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(*item);
 
   return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(*item);
 }
@@ -340,7 +340,7 @@ bool EditRecording::IsVisible(const CFileItem& item) const
 
 bool EditRecording::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().EditRecording(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().EditRecording(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -378,7 +378,7 @@ bool DeleteRecording::IsVisible(const CFileItem& item) const
 
 bool DeleteRecording::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteRecording(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteRecording(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -395,7 +395,7 @@ bool UndeleteRecording::IsVisible(const CFileItem& item) const
 
 bool UndeleteRecording::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().UndeleteRecording(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().UndeleteRecording(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -412,7 +412,7 @@ bool DeleteWatchedRecordings::IsVisible(const CFileItem& item) const
 
 bool DeleteWatchedRecordings::Execute(const std::shared_ptr<CFileItem>& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteWatchedRecordings(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteWatchedRecordings(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
