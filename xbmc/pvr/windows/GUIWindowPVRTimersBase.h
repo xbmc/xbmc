@@ -29,7 +29,7 @@ namespace PVR
     void UpdateButtons() override;
 
   private:
-    bool ActionShowTimer(const std::shared_ptr<CFileItem>& item);
+    bool ActionShowTimer(const CFileItem& item);
 
     std::shared_ptr<CFileItem> m_currentFileItem;
   };

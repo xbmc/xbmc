@@ -40,7 +40,7 @@ public:
    * creating the timer.
    * @return true, if the timer was created successfully, false otherwise.
    */
-  bool AddTimer(const std::shared_ptr<CFileItem>& item, bool bShowTimerSettings) const;
+  bool AddTimer(const CFileItem& item, bool bShowTimerSettings) const;
 
   /*!
    * @brief Add a timer to the client. Doesn't add the timer to the container. The backend will
@@ -59,7 +59,7 @@ public:
    * timer instead.
    * @return true, if the timer rule was created successfully, false otherwise.
    */
-  bool AddTimerRule(const std::shared_ptr<CFileItem>& item,
+  bool AddTimerRule(const CFileItem& item,
                     bool bShowTimerSettings,
                     bool bFallbackToOneShotTimer) const;
 
@@ -68,49 +68,49 @@ public:
    * @param item containing an epg tag.
    * @return true on success, false otherwise.
    */
-  bool ToggleTimer(const std::shared_ptr<CFileItem>& item) const;
+  bool ToggleTimer(const CFileItem& item) const;
 
   /*!
    * @brief Toggles a given timer's enabled/disabled state.
    * @param item containing a timer.
    * @return true on success, false otherwise.
    */
-  bool ToggleTimerState(const std::shared_ptr<CFileItem>& item) const;
+  bool ToggleTimerState(const CFileItem& item) const;
 
   /*!
    * @brief Open the timer settings dialog to edit an existing timer.
    * @param item containing an epg tag or a timer.
    * @return true on success, false otherwise.
    */
-  bool EditTimer(const std::shared_ptr<CFileItem>& item) const;
+  bool EditTimer(const CFileItem& item) const;
 
   /*!
    * @brief Open the timer settings dialog to edit an existing timer rule.
    * @param item containing an epg tag or a timer.
    * @return true on success, false otherwise.
    */
-  bool EditTimerRule(const std::shared_ptr<CFileItem>& item) const;
+  bool EditTimerRule(const CFileItem& item) const;
 
   /*!
    * @brief Get the timer rule for a given timer
    * @param item containing an item to query the timer rule for. item must be a timer or an epg tag.
    * @return The timer rule item, or nullptr if none was found.
    */
-  std::shared_ptr<CFileItem> GetTimerRule(const std::shared_ptr<CFileItem>& item) const;
+  std::shared_ptr<CFileItem> GetTimerRule(const CFileItem& item) const;
 
   /*!
    * @brief Delete a timer, always showing a confirmation dialog.
    * @param item containing a timer to delete. item must be a timer, an epg tag or a channel.
    * @return true, if the timer was deleted successfully, false otherwise.
    */
-  bool DeleteTimer(const std::shared_ptr<CFileItem>& item) const;
+  bool DeleteTimer(const CFileItem& item) const;
 
   /*!
    * @brief Delete a timer rule, always showing a confirmation dialog.
    * @param item containing a timer rule to delete. item must be a timer, an epg tag or a channel.
    * @return true, if the timer rule was deleted successfully, false otherwise.
    */
-  bool DeleteTimerRule(const std::shared_ptr<CFileItem>& item) const;
+  bool DeleteTimerRule(const CFileItem& item) const;
 
   /*!
    * @brief Toggle recording on the currently playing channel, if any.
@@ -131,14 +131,14 @@ public:
    * @param item containing a recording to stop. item must be a timer, an epg tag or a channel.
    * @return true, if the recording was stopped successfully, false otherwise.
    */
-  bool StopRecording(const std::shared_ptr<CFileItem>& item) const;
+  bool StopRecording(const CFileItem& item) const;
 
   /*!
    * @brief Create a new reminder timer, non-interactive.
    * @param item containing epg data to create a reminder timer for. item must be an epg tag.
    * @return true, if the timer was created successfully, false otherwise.
    */
-  bool AddReminder(const std::shared_ptr<CFileItem>& item) const;
+  bool AddReminder(const CFileItem& item) const;
 
   /*!
    * @brief Announce due reminders, if any.
@@ -167,7 +167,7 @@ private:
    * to create a one-shot timer instead.
    * @return true, if the timer or timer rule was created successfully, false otherwise.
    */
-  bool AddTimer(const std::shared_ptr<CFileItem>& item,
+  bool AddTimer(const CFileItem& item,
                 bool bCreateRule,
                 bool bShowTimerSettings,
                 bool bFallbackToOneShotTimer) const;
@@ -182,9 +182,7 @@ private:
    * created by a rule.
    * @return true, if the timer or timer rule was deleted successfully, false otherwise.
   */
-  bool DeleteTimer(const std::shared_ptr<CFileItem>& item,
-                   bool bIsRecording,
-                   bool bDeleteRule) const;
+  bool DeleteTimer(const CFileItem& item, bool bIsRecording, bool bDeleteRule) const;
 
   /*!
    * @brief Delete a timer or timer rule, showing a confirmation dialog in case a timer currently

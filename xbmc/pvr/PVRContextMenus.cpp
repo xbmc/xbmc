@@ -278,7 +278,7 @@ bool StartRecording::Execute(const CFileItemPtr& item) const
                                                                                            true);
   }
 
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(item, false);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(*item, false);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -322,7 +322,7 @@ bool StopRecording::Execute(const CFileItemPtr& item) const
                                                                                            false);
   }
 
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().StopRecording(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().StopRecording(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -430,7 +430,7 @@ bool AddReminder::IsVisible(const CFileItem& item) const
 
 bool AddReminder::Execute(const std::shared_ptr<CFileItem>& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddReminder(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddReminder(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -457,7 +457,7 @@ bool ToggleTimerState::IsVisible(const CFileItem& item) const
 
 bool ToggleTimerState::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimerState(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimerState(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -472,7 +472,7 @@ bool AddTimerRule::IsVisible(const CFileItem& item) const
 
 bool AddTimerRule::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimerRule(item, true, true);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimerRule(*item, true, true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -506,7 +506,7 @@ bool EditTimerRule::IsVisible(const CFileItem& item) const
 
 bool EditTimerRule::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimerRule(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimerRule(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -529,9 +529,9 @@ bool DeleteTimerRule::IsVisible(const CFileItem& item) const
 bool DeleteTimerRule::Execute(const CFileItemPtr& item) const
 {
   auto& timers = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>();
-  const std::shared_ptr<CFileItem> parentTimer = timers.GetTimerRule(item);
+  const std::shared_ptr<CFileItem> parentTimer = timers.GetTimerRule(*item);
   if (parentTimer)
-    return timers.DeleteTimerRule(parentTimer);
+    return timers.DeleteTimerRule(*parentTimer);
 
   return false;
 }
@@ -569,7 +569,7 @@ bool EditTimer::IsVisible(const CFileItem& item) const
 
 bool EditTimer::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimer(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimer(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -605,7 +605,7 @@ bool DeleteTimer::IsVisible(const CFileItem& item) const
 
 bool DeleteTimer::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().DeleteTimer(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().DeleteTimer(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

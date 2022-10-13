@@ -275,7 +275,7 @@ bool CGUIWindowPVRSearchBase::OnMessage(CGUIMessage& message)
             return true;
 
           case ACTION_RECORD:
-            CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimer(pItem);
+            CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleTimer(*pItem);
             return true;
         }
       }

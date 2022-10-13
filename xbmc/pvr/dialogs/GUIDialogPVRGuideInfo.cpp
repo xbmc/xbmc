@@ -66,15 +66,14 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(const CGUIMessage& message)
         mgr.Timers()->GetTimerForEpgTag(m_progItem->GetEPGInfoTag());
     if (timerTag)
     {
-      const CFileItemPtr item(new CFileItem(timerTag));
       if (timerTag->IsRecording())
-        bReturn = mgr.Get<PVR::GUI::Timers>().StopRecording(item);
+        bReturn = mgr.Get<PVR::GUI::Timers>().StopRecording(CFileItem(timerTag));
       else
-        bReturn = mgr.Get<PVR::GUI::Timers>().DeleteTimer(item);
+        bReturn = mgr.Get<PVR::GUI::Timers>().DeleteTimer(CFileItem(timerTag));
     }
     else
     {
-      bReturn = mgr.Get<PVR::GUI::Timers>().AddTimer(m_progItem, false);
+      bReturn = mgr.Get<PVR::GUI::Timers>().AddTimer(*m_progItem, false);
     }
   }
 
@@ -93,7 +92,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonAddTimer(const CGUIMessage& message)
     auto& mgr = CServiceBroker::GetPVRManager();
     if (m_progItem && !mgr.Timers()->GetTimerForEpgTag(m_progItem->GetEPGInfoTag()))
     {
-      bReturn = mgr.Get<PVR::GUI::Timers>().AddTimerRule(m_progItem, true, true);
+      bReturn = mgr.Get<PVR::GUI::Timers>().AddTimerRule(*m_progItem, true, true);
     }
   }
 
@@ -112,7 +111,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonSetReminder(const CGUIMessage& message
     auto& mgr = CServiceBroker::GetPVRManager();
     if (m_progItem && !mgr.Timers()->GetTimerForEpgTag(m_progItem->GetEPGInfoTag()))
     {
-      bReturn = mgr.Get<PVR::GUI::Timers>().AddReminder(m_progItem);
+      bReturn = mgr.Get<PVR::GUI::Timers>().AddReminder(*m_progItem);
     }
   }
 

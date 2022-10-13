@@ -131,7 +131,7 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
               else
               {
                 m_currentFileItem.reset();
-                ActionShowTimer(item);
+                ActionShowTimer(*item);
               }
               break;
             }
@@ -141,7 +141,7 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
               break;
             case ACTION_DELETE_ITEM:
               CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().DeleteTimer(
-                  m_vecItems->Get(iItem));
+                  *(m_vecItems->Get(iItem)));
               break;
             default:
               bReturn = false;
@@ -184,14 +184,14 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
-bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItemPtr& item)
+bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItem& item)
 {
   bool bReturn = false;
 
   /* Check if "Add timer..." entry is selected, if yes
      create a new timer and open settings dialog, otherwise
      open settings for selected timer entry */
-  if (URIUtils::PathEquals(item->GetPath(), CPVRTimersPath::PATH_ADDTIMER))
+  if (URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
     bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(m_bRadio);
   else
     bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimer(item);
