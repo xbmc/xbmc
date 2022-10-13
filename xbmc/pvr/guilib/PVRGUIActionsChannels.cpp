@@ -180,9 +180,9 @@ void CPVRGUIActionsChannels::Notify(const PVRChannelNumberInputChangedEvent& eve
   m_events.Publish(event);
 }
 
-bool CPVRGUIActionsChannels::HideChannel(const std::shared_ptr<CFileItem>& item) const
+bool CPVRGUIActionsChannels::HideChannel(const CFileItem& item) const
 {
-  const std::shared_ptr<CPVRChannel> channel(item->GetPVRChannelInfoTag());
+  const std::shared_ptr<CPVRChannel> channel = item.GetPVRChannelInfoTag();
 
   if (!channel)
     return false;
@@ -370,9 +370,9 @@ CPVRGUIChannelNavigator& CPVRGUIActionsChannels::GetChannelNavigator()
   return m_channelNavigator;
 }
 
-void CPVRGUIActionsChannels::OnPlaybackStarted(const CFileItemPtr& item)
+void CPVRGUIActionsChannels::OnPlaybackStarted(const CFileItem& item)
 {
-  const std::shared_ptr<CPVRChannelGroupMember> groupMember = GetChannelGroupMember(*item);
+  const std::shared_ptr<CPVRChannelGroupMember> groupMember = GetChannelGroupMember(item);
   if (groupMember)
   {
     m_channelNavigator.SetPlayingChannel(groupMember);
@@ -380,9 +380,9 @@ void CPVRGUIActionsChannels::OnPlaybackStarted(const CFileItemPtr& item)
   }
 }
 
-void CPVRGUIActionsChannels::OnPlaybackStopped(const CFileItemPtr& item)
+void CPVRGUIActionsChannels::OnPlaybackStopped(const CFileItem& item)
 {
-  if (item->HasPVRChannelInfoTag() || item->HasEPGInfoTag())
+  if (item.HasPVRChannelInfoTag() || item.HasEPGInfoTag())
   {
     m_channelNavigator.ClearPlayingChannel();
   }

@@ -44,7 +44,7 @@ void CApplicationPlayerCallback::OnPlayBackEnded()
 {
   CLog::LogF(LOGDEBUG, "CApplicationPlayerCallback::OnPlayBackEnded");
 
-  CServiceBroker::GetPVRManager().OnPlaybackEnded(m_itemCurrentFile);
+  CServiceBroker::GetPVRManager().OnPlaybackEnded(*m_itemCurrentFile);
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = true;
@@ -89,7 +89,7 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
     CServiceBroker::GetJobManager()->PauseJobs();
   }
 
-  CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
+  CServiceBroker::GetPVRManager().OnPlaybackStarted(*m_itemCurrentFile);
   m_stackHelper.OnPlayBackStarted(file);
 
   m_playerEvent.Reset();
@@ -199,7 +199,7 @@ void CApplicationPlayerCallback::OnPlayBackStopped()
 {
   CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStopped");
 
-  CServiceBroker::GetPVRManager().OnPlaybackStopped(m_itemCurrentFile);
+  CServiceBroker::GetPVRManager().OnPlaybackStopped(*m_itemCurrentFile);
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = false;
