@@ -29,8 +29,8 @@
 
 using namespace PVR;
 
-CGUIWindowPVRTimersBase::CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string& xmlFile) :
-  CGUIWindowPVRBase(bRadio, id, xmlFile)
+CGUIWindowPVRTimersBase::CGUIWindowPVRTimersBase(bool bRadio, int id, const std::string& xmlFile)
+  : CGUIWindowPVRBase(bRadio, id, xmlFile)
 {
 }
 
@@ -38,8 +38,7 @@ CGUIWindowPVRTimersBase::~CGUIWindowPVRTimersBase() = default;
 
 bool CGUIWindowPVRTimersBase::OnAction(const CAction& action)
 {
-  if (action.GetID() == ACTION_PARENT_DIR ||
-      action.GetID() == ACTION_NAV_BACK)
+  if (action.GetID() == ACTION_PARENT_DIR || action.GetID() == ACTION_NAV_BACK)
   {
     CPVRTimersPath path(m_vecItems->GetPath());
     if (path.IsValid() && path.IsTimerRule())
@@ -67,14 +66,16 @@ void CGUIWindowPVRTimersBase::OnPrepareFileItems(CFileItemList& items)
   }
 }
 
-bool CGUIWindowPVRTimersBase::Update(const std::string& strDirectory, bool updateFilterPath /* = true */)
+bool CGUIWindowPVRTimersBase::Update(const std::string& strDirectory,
+                                     bool updateFilterPath /* = true */)
 {
   int iOldCount = m_vecItems->GetObjectCount();
   const std::string oldPath = m_vecItems->GetPath();
 
   bool bReturn = CGUIWindowPVRBase::Update(strDirectory);
 
-  if (bReturn && iOldCount > 0 && m_vecItems->GetObjectCount() == 0 && oldPath == m_vecItems->GetPath())
+  if (bReturn && iOldCount > 0 && m_vecItems->GetObjectCount() == 0 &&
+      oldPath == m_vecItems->GetPath())
   {
     /* go to the parent folder if we're in a subdirectory and for instance just deleted the last item */
     const CPVRTimersPath path(m_vecItems->GetPath());
@@ -90,7 +91,9 @@ bool CGUIWindowPVRTimersBase::Update(const std::string& strDirectory, bool updat
 
 void CGUIWindowPVRTimersBase::UpdateButtons()
 {
-  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNHIDEDISABLEDTIMERS, CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS));
+  SET_CONTROL_SELECTED(GetID(), CONTROL_BTNHIDEDISABLEDTIMERS,
+                       CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                           CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS));
 
   CGUIWindowPVRBase::UpdateButtons();
 
@@ -131,7 +134,7 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
               else
               {
                 m_currentFileItem.reset();
-                ActionShowTimer(item);
+                ActionShowTimer(*item);
               }
               break;
             }
@@ -141,7 +144,7 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
               break;
             case ACTION_DELETE_ITEM:
               CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().DeleteTimer(
-                  m_vecItems->Get(iItem));
+                  *(m_vecItems->Get(iItem)));
               break;
             default:
               bReturn = false;
@@ -151,7 +154,8 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
       }
       else if (message.GetSenderId() == CONTROL_BTNHIDEDISABLEDTIMERS)
       {
-        const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+        const std::shared_ptr<CSettings> settings =
+            CServiceBroker::GetSettingsComponent()->GetSettings();
         settings->ToggleBool(CSettings::SETTING_PVRTIMERS_HIDEDISABLEDTIMERS);
         settings->Save();
         Update(GetDirectoryPath());
@@ -184,14 +188,14 @@ bool CGUIWindowPVRTimersBase::OnMessage(CGUIMessage& message)
   return bReturn || CGUIWindowPVRBase::OnMessage(message);
 }
 
-bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItemPtr& item)
+bool CGUIWindowPVRTimersBase::ActionShowTimer(const CFileItem& item)
 {
   bool bReturn = false;
 
   /* Check if "Add timer..." entry is selected, if yes
      create a new timer and open settings dialog, otherwise
      open settings for selected timer entry */
-  if (URIUtils::PathEquals(item->GetPath(), CPVRTimersPath::PATH_ADDTIMER))
+  if (URIUtils::PathEquals(item.GetPath(), CPVRTimersPath::PATH_ADDTIMER))
     bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().AddTimer(m_bRadio);
   else
     bReturn = CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().EditTimer(item);

@@ -18,12 +18,11 @@
 using namespace PVR;
 
 #define CONTROL_BTN_FIND 4
-#define CONTROL_BTN_OK  7
-#define CONTROL_BTN_PLAY_RECORDING  8
+#define CONTROL_BTN_OK 7
+#define CONTROL_BTN_PLAY_RECORDING 8
 
 CGUIDialogPVRRecordingInfo::CGUIDialogPVRRecordingInfo()
-  : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRInfo.xml")
-  , m_recordItem(new CFileItem)
+  : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRInfo.xml"), m_recordItem(new CFileItem)
 {
 }
 
@@ -32,9 +31,7 @@ bool CGUIDialogPVRRecordingInfo::OnMessage(CGUIMessage& message)
   switch (message.GetMessage())
   {
     case GUI_MSG_CLICKED:
-      return OnClickButtonOK(message) ||
-             OnClickButtonPlay(message) ||
-             OnClickButtonFind(message);
+      return OnClickButtonOK(message) || OnClickButtonPlay(message) || OnClickButtonFind(message);
   }
 
   return CGUIDialog::OnMessage(message);
@@ -63,7 +60,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(const CGUIMessage& message)
 
     if (m_recordItem)
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-          m_recordItem, true /* check resume */);
+          *m_recordItem, true /* check resume */);
 
     bReturn = true;
   }
@@ -80,7 +77,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonFind(const CGUIMessage& message)
     Close();
 
     if (m_recordItem)
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(m_recordItem);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(*m_recordItem);
 
     bReturn = true;
   }
@@ -94,9 +91,9 @@ bool CGUIDialogPVRRecordingInfo::OnInfo(int actionID)
   return true;
 }
 
-void CGUIDialogPVRRecordingInfo::SetRecording(const CFileItem* item)
+void CGUIDialogPVRRecordingInfo::SetRecording(const CFileItem& item)
 {
-  *m_recordItem = *item;
+  m_recordItem = std::make_shared<CFileItem>(item);
 }
 
 CFileItemPtr CGUIDialogPVRRecordingInfo::GetCurrentListItem(int offset)

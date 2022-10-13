@@ -11,7 +11,6 @@
 #include "pvr/IPVRComponent.h"
 #include "pvr/settings/PVRSettings.h"
 
-#include <memory>
 #include <string>
 
 class CFileItem;
@@ -48,7 +47,7 @@ public:
    * beginning ig no resume data are available.
    * @return true on success, false otherwise.
    */
-  bool ResumePlayRecording(const std::shared_ptr<CFileItem>& item, bool bFallbackToPlay) const;
+  bool ResumePlayRecording(const CFileItem& item, bool bFallbackToPlay) const;
 
   /*!
    * @brief Play recording.
@@ -56,14 +55,14 @@ public:
    * @param bCheckResume controls resume check.
    * @return true on success, false otherwise.
    */
-  bool PlayRecording(const std::shared_ptr<CFileItem>& item, bool bCheckResume) const;
+  bool PlayRecording(const CFileItem& item, bool bCheckResume) const;
 
   /*!
    * @brief Play EPG tag.
    * @param item containing an epg tag.
    * @return true on success, false otherwise.
    */
-  bool PlayEpgTag(const std::shared_ptr<CFileItem>& item) const;
+  bool PlayEpgTag(const CFileItem& item) const;
 
   /*!
    * @brief Switch channel.
@@ -72,14 +71,14 @@ public:
    * present.
    * @return true on success, false otherwise.
    */
-  bool SwitchToChannel(const std::shared_ptr<CFileItem>& item, bool bCheckResume) const;
+  bool SwitchToChannel(const CFileItem& item, bool bCheckResume) const;
 
   /*!
    * @brief Playback the given file item.
    * @param item containing a channel or a recording.
    * @return True if the item could be played, false otherwise.
    */
-  bool PlayMedia(const std::shared_ptr<CFileItem>& item) const;
+  bool PlayMedia(const CFileItem& item) const;
 
   /*!
    * @brief Start playback of the last played channel, and if there is none, play first channel in
@@ -121,7 +120,7 @@ private:
    * @param item containing a recording or an epg tag.
    * @return true, to play/resume the item, false otherwise.
    */
-  bool CheckResumeRecording(const std::shared_ptr<CFileItem>& item) const;
+  bool CheckResumeRecording(const CFileItem& item) const;
 
   /*!
    * @brief Check "play minimized" settings value and switch to fullscreen if not set.

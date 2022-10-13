@@ -53,7 +53,7 @@ PVR::CGUIWindowPVRSearchBase* GetSearchWindow(bool bRadio)
 }
 } // unnamed namespace
 
-bool CPVRGUIActionsEPG::ShowEPGInfo(const CFileItemPtr& item) const
+bool CPVRGUIActionsEPG::ShowEPGInfo(const CFileItem& item) const
 {
   const std::shared_ptr<CPVRChannel> channel(CPVRItem(item).GetChannel());
   if (channel && CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalLock(
@@ -81,7 +81,7 @@ bool CPVRGUIActionsEPG::ShowEPGInfo(const CFileItemPtr& item) const
   return true;
 }
 
-bool CPVRGUIActionsEPG::ShowChannelEPG(const CFileItemPtr& item) const
+bool CPVRGUIActionsEPG::ShowChannelEPG(const CFileItem& item) const
 {
   const std::shared_ptr<CPVRChannel> channel(CPVRItem(item).GetChannel());
   if (channel && CServiceBroker::GetPVRManager().Get<PVR::GUI::Parental>().CheckParentalLock(
@@ -101,7 +101,7 @@ bool CPVRGUIActionsEPG::ShowChannelEPG(const CFileItemPtr& item) const
   return true;
 }
 
-bool CPVRGUIActionsEPG::FindSimilar(const std::shared_ptr<CFileItem>& item) const
+bool CPVRGUIActionsEPG::FindSimilar(const CFileItem& item) const
 {
   CGUIWindowPVRSearchBase* windowSearch = GetSearchWindow(CPVRItem(item).IsRadio());
   if (!windowSearch)
@@ -136,9 +136,9 @@ bool CPVRGUIActionsEPG::FindSimilar(const std::shared_ptr<CFileItem>& item) cons
   return true;
 };
 
-bool CPVRGUIActionsEPG::ExecuteSavedSearch(const std::shared_ptr<CFileItem>& item)
+bool CPVRGUIActionsEPG::ExecuteSavedSearch(const CFileItem& item)
 {
-  const auto searchFilter = item->GetEPGSearchFilter();
+  const auto searchFilter = item.GetEPGSearchFilter();
 
   if (!searchFilter)
   {
@@ -155,9 +155,9 @@ bool CPVRGUIActionsEPG::ExecuteSavedSearch(const std::shared_ptr<CFileItem>& ite
   return true;
 }
 
-bool CPVRGUIActionsEPG::EditSavedSearch(const std::shared_ptr<CFileItem>& item)
+bool CPVRGUIActionsEPG::EditSavedSearch(const CFileItem& item)
 {
-  const auto searchFilter = item->GetEPGSearchFilter();
+  const auto searchFilter = item.GetEPGSearchFilter();
 
   if (!searchFilter)
   {
@@ -175,9 +175,9 @@ bool CPVRGUIActionsEPG::EditSavedSearch(const std::shared_ptr<CFileItem>& item)
   return true;
 }
 
-bool CPVRGUIActionsEPG::RenameSavedSearch(const std::shared_ptr<CFileItem>& item)
+bool CPVRGUIActionsEPG::RenameSavedSearch(const CFileItem& item)
 {
-  const auto searchFilter = item->GetEPGSearchFilter();
+  const auto searchFilter = item.GetEPGSearchFilter();
 
   if (!searchFilter)
   {
@@ -197,9 +197,9 @@ bool CPVRGUIActionsEPG::RenameSavedSearch(const std::shared_ptr<CFileItem>& item
   return false;
 }
 
-bool CPVRGUIActionsEPG::DeleteSavedSearch(const std::shared_ptr<CFileItem>& item)
+bool CPVRGUIActionsEPG::DeleteSavedSearch(const CFileItem& item)
 {
-  const auto searchFilter = item->GetEPGSearchFilter();
+  const auto searchFilter = item.GetEPGSearchFilter();
 
   if (!searchFilter)
   {
@@ -209,7 +209,7 @@ bool CPVRGUIActionsEPG::DeleteSavedSearch(const std::shared_ptr<CFileItem>& item
 
   if (CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, // "Confirm delete"
                                        CVariant{19338}, // "Delete this saved search?"
-                                       CVariant{""}, CVariant{item->GetLabel()}))
+                                       CVariant{""}, CVariant{item.GetLabel()}))
   {
     return CServiceBroker::GetPVRManager().EpgContainer().DeleteSavedSearch(*searchFilter);
   }

@@ -10,8 +10,6 @@
 
 #include "pvr/IPVRComponent.h"
 
-#include <memory>
-
 class CFileItem;
 
 namespace PVR
@@ -27,14 +25,14 @@ public:
    * @param item containing epg data to show. item must be an epg tag, a channel or a timer.
    * @return true on success, false otherwise.
    */
-  bool ShowEPGInfo(const std::shared_ptr<CFileItem>& item) const;
+  bool ShowEPGInfo(const CFileItem& item) const;
 
   /*!
    * @brief Open a dialog with the epg list for a given item.
    * @param item containing channel info. item must be an epg tag, a channel or a timer.
    * @return true on success, false otherwise.
    */
-  bool ShowChannelEPG(const std::shared_ptr<CFileItem>& item) const;
+  bool ShowChannelEPG(const CFileItem& item) const;
 
   /*!
    * @brief Open a window containing a list of epg tags 'similar' to a given item.
@@ -42,35 +40,35 @@ public:
    * recording.
    * @return true on success, false otherwise.
    */
-  bool FindSimilar(const std::shared_ptr<CFileItem>& item) const;
+  bool FindSimilar(const CFileItem& item) const;
 
   /*!
    * @brief Execute a saved search. Displays result in search window if it is open.
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.
    */
-  bool ExecuteSavedSearch(const std::shared_ptr<CFileItem>& item);
+  bool ExecuteSavedSearch(const CFileItem& item);
 
   /*!
    * @brief Edit a saved search. Opens the search dialog.
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.
    */
-  bool EditSavedSearch(const std::shared_ptr<CFileItem>& item);
+  bool EditSavedSearch(const CFileItem& item);
 
   /*!
    * @brief Rename a saved search. Opens a title input dialog.
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.
    */
-  bool RenameSavedSearch(const std::shared_ptr<CFileItem>& item);
+  bool RenameSavedSearch(const CFileItem& item);
 
   /*!
    * @brief Delete a saved search. Opens confirmation dialog before deleting.
    * @param item The item containing a search filter.
    * @return True on success, false otherwise.
    */
-  bool DeleteSavedSearch(const std::shared_ptr<CFileItem>& item);
+  bool DeleteSavedSearch(const CFileItem& item);
 
 private:
   CPVRGUIActionsEPG(const CPVRGUIActionsEPG&) = delete;
