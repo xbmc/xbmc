@@ -44,59 +44,61 @@ using namespace KODI::MESSAGING;
 
 namespace
 {
-  class AsyncSearchAction : private IRunnable
+class AsyncSearchAction : private IRunnable
+{
+public:
+  AsyncSearchAction() = delete;
+  AsyncSearchAction(CFileItemList* items, CPVREpgSearchFilter* filter)
+    : m_items(items), m_filter(filter)
   {
-  public:
-    AsyncSearchAction() = delete;
-    AsyncSearchAction(CFileItemList* items, CPVREpgSearchFilter* filter) : m_items(items), m_filter(filter) {}
-    bool Execute();
+  }
+  bool Execute();
 
-  private:
-    // IRunnable implementation
-    void Run() override;
+private:
+  // IRunnable implementation
+  void Run() override;
 
-    CFileItemList* m_items;
-    CPVREpgSearchFilter* m_filter;
-  };
+  CFileItemList* m_items;
+  CPVREpgSearchFilter* m_filter;
+};
 
-  bool AsyncSearchAction::Execute()
+bool AsyncSearchAction::Execute()
+{
+  CGUIDialogBusy::Wait(this, 100, false);
+  return true;
+}
+
+void AsyncSearchAction::Run()
+{
+  std::vector<std::shared_ptr<CPVREpgInfoTag>> results =
+      CServiceBroker::GetPVRManager().EpgContainer().GetTags(m_filter->GetEpgSearchData());
+  m_filter->SetEpgSearchDataFiltered();
+
+  // Tags can still contain false positives, for search criteria that cannot be handled via
+  // database. So, run extended search filters on what we got from the database.
+  for (auto it = results.begin(); it != results.end();)
   {
-    CGUIDialogBusy::Wait(this, 100, false);
-    return true;
+    it = results.erase(std::remove_if(results.begin(), results.end(),
+                                      [this](const std::shared_ptr<CPVREpgInfoTag>& entry) {
+                                        return !m_filter->FilterEntry(entry);
+                                      }),
+                       results.end());
   }
 
-  void AsyncSearchAction::Run()
+  if (m_filter->ShouldRemoveDuplicates())
+    m_filter->RemoveDuplicates(results);
+
+  m_filter->SetLastExecutedDateTime(CDateTime::GetUTCDateTime());
+
+  for (const auto& tag : results)
   {
-    std::vector<std::shared_ptr<CPVREpgInfoTag>> results =
-        CServiceBroker::GetPVRManager().EpgContainer().GetTags(m_filter->GetEpgSearchData());
-    m_filter->SetEpgSearchDataFiltered();
-
-    // Tags can still contain false positives, for search criteria that cannot be handled via
-    // database. So, run extended search filters on what we got from the database.
-    for (auto it = results.begin(); it != results.end();)
-    {
-      it = results.erase(std::remove_if(results.begin(), results.end(),
-                                        [this](const std::shared_ptr<CPVREpgInfoTag>& entry) {
-                                          return !m_filter->FilterEntry(entry);
-                                        }),
-                         results.end());
-    }
-
-    if (m_filter->ShouldRemoveDuplicates())
-      m_filter->RemoveDuplicates(results);
-
-    m_filter->SetLastExecutedDateTime(CDateTime::GetUTCDateTime());
-
-    for (const auto& tag : results)
-    {
-      m_items->Add(std::make_shared<CFileItem>(tag));
-    }
+    m_items->Add(std::make_shared<CFileItem>(tag));
   }
+}
 } // unnamed namespace
 
-CGUIWindowPVRSearchBase::CGUIWindowPVRSearchBase(bool bRadio, int id, const std::string& xmlFile) :
-  CGUIWindowPVRBase(bRadio, id, xmlFile),
-  m_bSearchConfirmed(false)
+CGUIWindowPVRSearchBase::CGUIWindowPVRSearchBase(bool bRadio, int id, const std::string& xmlFile)
+  : CGUIWindowPVRBase(bRadio, id, xmlFile), m_bSearchConfirmed(false)
 {
 }
 
@@ -124,7 +126,7 @@ bool CGUIWindowPVRSearchBase::OnContextButton(int itemNumber, CONTEXT_BUTTON but
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
 
   return OnContextButtonClear(pItem.get(), button) ||
-      CGUIMediaWindow::OnContextButton(itemNumber, button);
+         CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
 void CGUIWindowPVRSearchBase::SetItemToSearch(const CFileItem& item)
