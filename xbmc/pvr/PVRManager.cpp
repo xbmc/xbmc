@@ -821,14 +821,14 @@ bool CPVRManager::IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& 
   return bReturn;
 }
 
-void CPVRManager::OnPlaybackStarted(const CFileItemPtr& item)
+void CPVRManager::OnPlaybackStarted(const CFileItem& item)
 {
   m_playbackState->OnPlaybackStarted(item);
   Get<PVR::GUI::Channels>().OnPlaybackStarted(item);
   m_epgContainer.OnPlaybackStarted();
 }
 
-void CPVRManager::OnPlaybackStopped(const CFileItemPtr& item)
+void CPVRManager::OnPlaybackStopped(const CFileItem& item)
 {
   // Playback ended due to user interaction
   if (m_playbackState->OnPlaybackStopped(item))
@@ -838,7 +838,7 @@ void CPVRManager::OnPlaybackStopped(const CFileItemPtr& item)
   m_epgContainer.OnPlaybackStopped();
 }
 
-void CPVRManager::OnPlaybackEnded(const CFileItemPtr& item)
+void CPVRManager::OnPlaybackEnded(const CFileItem& item)
 {
   // Playback ended, but not due to user interaction
   OnPlaybackStopped(item);

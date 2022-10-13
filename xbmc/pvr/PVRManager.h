@@ -230,19 +230,19 @@ public:
    * @brief Inform PVR manager that playback of an item just started.
    * @param item The item that started to play.
    */
-  void OnPlaybackStarted(const std::shared_ptr<CFileItem>& item);
+  void OnPlaybackStarted(const CFileItem& item);
 
   /*!
    * @brief Inform PVR manager that playback of an item was stopped due to user interaction.
    * @param item The item that stopped to play.
    */
-  void OnPlaybackStopped(const std::shared_ptr<CFileItem>& item);
+  void OnPlaybackStopped(const CFileItem& item);
 
   /*!
    * @brief Inform PVR manager that playback of an item has stopped without user interaction.
    * @param item The item that ended to play.
    */
-  void OnPlaybackEnded(const std::shared_ptr<CFileItem>& item);
+  void OnPlaybackEnded(const CFileItem& item);
 
   /*!
    * @brief Let the background thread create epg tags for all channels.

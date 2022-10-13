@@ -139,7 +139,7 @@ void CPVRPlaybackState::Clear()
   m_activeGroupRadio.reset();
 }
 
-void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem>& item)
+void CPVRPlaybackState::OnPlaybackStarted(const CFileItem& item)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -148,9 +148,9 @@ void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem>& item
   m_playingEpgTag.reset();
   ClearData();
 
-  if (item->HasPVRChannelGroupMemberInfoTag())
+  if (item.HasPVRChannelGroupMemberInfoTag())
   {
-    const std::shared_ptr<CPVRChannelGroupMember> channel = item->GetPVRChannelGroupMemberInfoTag();
+    const std::shared_ptr<CPVRChannelGroupMember> channel = item.GetPVRChannelGroupMemberInfoTag();
 
     m_playingChannel = channel;
     m_playingGroupId = m_playingChannel->GroupID();
@@ -195,20 +195,20 @@ void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem>& item
       UpdateLastWatched(channel, CDateTime::GetUTCDateTime());
     }
   }
-  else if (item->HasPVRRecordingInfoTag())
+  else if (item.HasPVRRecordingInfoTag())
   {
-    m_playingRecording = item->GetPVRRecordingInfoTag();
+    m_playingRecording = item.GetPVRRecordingInfoTag();
     m_playingClientId = m_playingRecording->ClientID();
     m_strPlayingRecordingUniqueId = m_playingRecording->ClientRecordingID();
   }
-  else if (item->HasEPGInfoTag())
+  else if (item.HasEPGInfoTag())
   {
-    m_playingEpgTag = item->GetEPGInfoTag();
+    m_playingEpgTag = item.GetEPGInfoTag();
     m_playingClientId = m_playingEpgTag->ClientID();
     m_playingEpgTagChannelUniqueId = m_playingEpgTag->UniqueChannelID();
     m_playingEpgTagUniqueId = m_playingEpgTag->UniqueBroadcastID();
   }
-  else if (item->HasPVRChannelInfoTag())
+  else if (item.HasPVRChannelInfoTag())
   {
     CLog::LogFC(LOGERROR, LOGPVR, "Channel item without channel group member!");
   }
@@ -222,7 +222,7 @@ void CPVRPlaybackState::OnPlaybackStarted(const std::shared_ptr<CFileItem>& item
   }
 }
 
-bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem>& item)
+bool CPVRPlaybackState::OnPlaybackStopped(const CFileItem& item)
 {
   // Playback ended due to user interaction
 
@@ -230,9 +230,9 @@ bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem>& item
 
   bool bChanged = false;
 
-  if (item->HasPVRChannelGroupMemberInfoTag() &&
-      item->GetPVRChannelGroupMemberInfoTag()->Channel()->ClientID() == m_playingClientId &&
-      item->GetPVRChannelGroupMemberInfoTag()->Channel()->UniqueID() == m_playingChannelUniqueId)
+  if (item.HasPVRChannelGroupMemberInfoTag() &&
+      item.GetPVRChannelGroupMemberInfoTag()->Channel()->ClientID() == m_playingClientId &&
+      item.GetPVRChannelGroupMemberInfoTag()->Channel()->UniqueID() == m_playingChannelUniqueId)
   {
     bool bUpdateLastWatched = true;
 
@@ -257,23 +257,23 @@ bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem>& item
     m_playingChannel.reset();
     ClearData();
   }
-  else if (item->HasPVRRecordingInfoTag() &&
-           item->GetPVRRecordingInfoTag()->ClientID() == m_playingClientId &&
-           item->GetPVRRecordingInfoTag()->ClientRecordingID() == m_strPlayingRecordingUniqueId)
+  else if (item.HasPVRRecordingInfoTag() &&
+           item.GetPVRRecordingInfoTag()->ClientID() == m_playingClientId &&
+           item.GetPVRRecordingInfoTag()->ClientRecordingID() == m_strPlayingRecordingUniqueId)
   {
     bChanged = true;
     m_playingRecording.reset();
     ClearData();
   }
-  else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->ClientID() == m_playingClientId &&
-           item->GetEPGInfoTag()->UniqueChannelID() == m_playingEpgTagChannelUniqueId &&
-           item->GetEPGInfoTag()->UniqueBroadcastID() == m_playingEpgTagUniqueId)
+  else if (item.HasEPGInfoTag() && item.GetEPGInfoTag()->ClientID() == m_playingClientId &&
+           item.GetEPGInfoTag()->UniqueChannelID() == m_playingEpgTagChannelUniqueId &&
+           item.GetEPGInfoTag()->UniqueBroadcastID() == m_playingEpgTagUniqueId)
   {
     bChanged = true;
     m_playingEpgTag.reset();
     ClearData();
   }
-  else if (item->HasPVRChannelInfoTag())
+  else if (item.HasPVRChannelInfoTag())
   {
     CLog::LogFC(LOGERROR, LOGPVR, "Channel item without channel group member!");
   }
@@ -281,7 +281,7 @@ bool CPVRPlaybackState::OnPlaybackStopped(const std::shared_ptr<CFileItem>& item
   return bChanged;
 }
 
-void CPVRPlaybackState::OnPlaybackEnded(const std::shared_ptr<CFileItem>& item)
+void CPVRPlaybackState::OnPlaybackEnded(const CFileItem& item)
 {
   // Playback ended, but not due to user interaction
   OnPlaybackStopped(item);

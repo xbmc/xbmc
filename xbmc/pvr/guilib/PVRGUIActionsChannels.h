@@ -81,7 +81,7 @@ public:
    * @param item containing a channel or an epg tag.
    * @return true on success, false otherwise.
    */
-  bool HideChannel(const std::shared_ptr<CFileItem>& item) const;
+  bool HideChannel(const CFileItem& item) const;
 
   /*!
    * @brief Open a selection dialog and start a channel scan on the selected client.
@@ -134,13 +134,13 @@ public:
    * @brief Inform GUI actions that playback of an item just started.
    * @param item The item that started to play.
    */
-  void OnPlaybackStarted(const std::shared_ptr<CFileItem>& item);
+  void OnPlaybackStarted(const CFileItem& item);
 
   /*!
    * @brief Inform GUI actions that playback of an item was stopped due to user interaction.
    * @param item The item that stopped to play.
    */
-  void OnPlaybackStopped(const std::shared_ptr<CFileItem>& item);
+  void OnPlaybackStopped(const CFileItem& item);
 
   /*!
    * @brief Get the currently selected channel item path; used across several windows/dialogs to
