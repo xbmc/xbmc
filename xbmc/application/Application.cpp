@@ -2259,8 +2259,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
   }
   else if (item.IsPVR())
   {
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(
-        CFileItemPtr(new CFileItem(item)));
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(item);
   }
 
   CURL path(item.GetPath());

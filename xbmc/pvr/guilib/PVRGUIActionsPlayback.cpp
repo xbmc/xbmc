@@ -72,10 +72,10 @@ std::string CPVRGUIActionsPlayback::GetResumeLabel(const CFileItem& item) const
   return resumeString;
 }
 
-bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItemPtr& item) const
+bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItem& item) const
 {
   bool bPlayIt(true);
-  std::string resumeString(GetResumeLabel(*item));
+  std::string resumeString(GetResumeLabel(item));
   if (!resumeString.empty())
   {
     CContextButtons choices;
@@ -83,25 +83,25 @@ bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItemPtr& item) cons
     choices.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); // Play from beginning
     int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
     if (choice > 0)
-      item->SetStartOffset(choice == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0);
+      const_cast<CFileItem*>(&item)->SetStartOffset(
+          choice == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0);
     else
       bPlayIt = false; // context menu cancelled
   }
   return bPlayIt;
 }
 
-bool CPVRGUIActionsPlayback::ResumePlayRecording(const CFileItemPtr& item,
-                                                 bool bFallbackToPlay) const
+bool CPVRGUIActionsPlayback::ResumePlayRecording(const CFileItem& item, bool bFallbackToPlay) const
 {
-  bool bCanResume = !GetResumeLabel(*item).empty();
+  bool bCanResume = !GetResumeLabel(item).empty();
   if (bCanResume)
   {
-    item->SetStartOffset(STARTOFFSET_RESUME);
+    const_cast<CFileItem*>(&item)->SetStartOffset(STARTOFFSET_RESUME);
   }
   else
   {
     if (bFallbackToPlay)
-      item->SetStartOffset(0);
+      const_cast<CFileItem*>(&item)->SetStartOffset(0);
     else
       return false;
   }
@@ -174,7 +174,7 @@ void CPVRGUIActionsPlayback::StartPlayback(CFileItem* item,
   CheckAndSwitchToFullscreen(bFullscreen);
 }
 
-bool CPVRGUIActionsPlayback::PlayRecording(const CFileItemPtr& item, bool bCheckResume) const
+bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckResume) const
 {
   const std::shared_ptr<CPVRRecording> recording(CPVRItem(item).GetRecording());
   if (!recording)
@@ -191,13 +191,13 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItemPtr& item, bool bCheck
   if (!bCheckResume || CheckResumeRecording(item))
   {
     CFileItem* itemToPlay = new CFileItem(recording);
-    itemToPlay->SetStartOffset(item->GetStartOffset());
+    itemToPlay->SetStartOffset(item.GetStartOffset());
     StartPlayback(itemToPlay, true);
   }
   return true;
 }
 
-bool CPVRGUIActionsPlayback::PlayEpgTag(const CFileItemPtr& item) const
+bool CPVRGUIActionsPlayback::PlayEpgTag(const CFileItem& item) const
 {
   const std::shared_ptr<CPVREpgInfoTag> epgTag(CPVRItem(item).GetEpgInfoTag());
   if (!epgTag)
@@ -224,7 +224,7 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(const CFileItemPtr& item) const
   if (props.EPGPlaybackAsLive())
   {
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*item);
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(item);
     if (!groupMember)
       return false;
 
@@ -239,9 +239,9 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(const CFileItemPtr& item) const
   return true;
 }
 
-bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItemPtr& item, bool bCheckResume) const
+bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item, bool bCheckResume) const
 {
-  if (item->m_bIsFolder)
+  if (item.m_bIsFolder)
     return false;
 
   std::shared_ptr<CPVRRecording> recording;
@@ -292,10 +292,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItemPtr& item, bool bChe
         return false;
 
       if (bPlayRecording)
-      {
-        const CFileItemPtr recordingItem(new CFileItem(recording));
-        return PlayRecording(recordingItem, bCheckResume);
-      }
+        return PlayRecording(CFileItem(recording), bCheckResume);
     }
 
     bool bFullscreen;
@@ -316,7 +313,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItemPtr& item, bool bChe
         break;
     }
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(*item);
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(item);
     if (!groupMember)
       return false;
 
@@ -384,7 +381,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(PlaybackType type) const
   // if we have a last played channel, start playback
   if (groupMember)
   {
-    return SwitchToChannel(std::make_shared<CFileItem>(groupMember), true);
+    return SwitchToChannel(CFileItem(groupMember), true);
   }
   else
   {
@@ -398,7 +395,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(PlaybackType type) const
           channelGroup->GetMembers();
       if (!groupMembers.empty())
       {
-        return SwitchToChannel(std::make_shared<CFileItem>(*groupMembers.begin()), true);
+        return SwitchToChannel(CFileItem(*groupMembers.begin()), true);
       }
     }
   }
@@ -446,35 +443,35 @@ bool CPVRGUIActionsPlayback::PlayChannelOnStartup() const
 
   CLog::Log(LOGINFO, "PVR is starting playback of channel '{}'",
             groupMember->Channel()->ChannelName());
-  return SwitchToChannel(std::make_shared<CFileItem>(groupMember), true);
+  return SwitchToChannel(CFileItem(groupMember), true);
 }
 
-bool CPVRGUIActionsPlayback::PlayMedia(const CFileItemPtr& item) const
+bool CPVRGUIActionsPlayback::PlayMedia(const CFileItem& item) const
 {
-  CFileItemPtr pvrItem(item);
-  if (URIUtils::IsPVRChannel(item->GetPath()) && !item->HasPVRChannelInfoTag())
+  std::unique_ptr<CFileItem> pvrItem = std::make_unique<CFileItem>(item);
+  if (URIUtils::IsPVRChannel(item.GetPath()) && !item.HasPVRChannelInfoTag())
   {
     const std::shared_ptr<CPVRChannelGroupMember> groupMember =
         CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelGroupMemberByPath(
-            item->GetPath());
+            item.GetPath());
     if (groupMember)
-      pvrItem = std::make_shared<CFileItem>(groupMember);
+      pvrItem = std::make_unique<CFileItem>(groupMember);
   }
-  else if (URIUtils::IsPVRRecording(item->GetPath()) && !item->HasPVRRecordingInfoTag())
-    pvrItem = std::make_shared<CFileItem>(
-        CServiceBroker::GetPVRManager().Recordings()->GetByPath(item->GetPath()));
+  else if (URIUtils::IsPVRRecording(item.GetPath()) && !item.HasPVRRecordingInfoTag())
+    pvrItem = std::make_unique<CFileItem>(
+        CServiceBroker::GetPVRManager().Recordings()->GetByPath(item.GetPath()));
 
   bool bCheckResume = true;
-  if (item->HasProperty("check_resume"))
-    bCheckResume = item->GetProperty("check_resume").asBoolean();
+  if (item.HasProperty("check_resume"))
+    bCheckResume = item.GetProperty("check_resume").asBoolean();
 
   if (pvrItem && pvrItem->HasPVRChannelInfoTag())
   {
-    return SwitchToChannel(pvrItem, bCheckResume);
+    return SwitchToChannel(*pvrItem, bCheckResume);
   }
   else if (pvrItem && pvrItem->HasPVRRecordingInfoTag())
   {
-    return PlayRecording(pvrItem, bCheckResume);
+    return PlayRecording(*pvrItem, bCheckResume);
   }
 
   return false;
