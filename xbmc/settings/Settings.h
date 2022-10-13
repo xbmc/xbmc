@@ -274,9 +274,9 @@ public:
   static constexpr auto SETTING_MUSICPLAYER_SEEKSTEPS = "musicplayer.seeksteps";
   static constexpr auto SETTING_MUSICPLAYER_SEEKDELAY = "musicplayer.seekdelay";
   static constexpr auto SETTING_MUSICPLAYER_REPLAYGAINTYPE = "musicplayer.replaygaintype";
-  static constexpr auto SETTING_MUSICPLAYER_REPLAYGAINPREAMP = "musicplayer.replaygainpreamp";
+  static constexpr auto SETTING_MUSICPLAYER_REPLAYGAINPREAMP = "musicplayer.replaygainpreampdb";
   static constexpr auto SETTING_MUSICPLAYER_REPLAYGAINNOGAINPREAMP =
-      "musicplayer.replaygainnogainpreamp";
+      "musicplayer.replaygainnogainpreampdb";
   static constexpr auto SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING =
       "musicplayer.replaygainavoidclipping";
   static constexpr auto SETTING_MUSICPLAYER_CROSSFADE = "musicplayer.crossfade";

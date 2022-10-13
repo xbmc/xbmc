@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "music/tags/ReplayGain.h"
+
 class CAction;
 class CSetting;
 class CSettings;
@@ -23,10 +25,10 @@ public:
   // times per second (saves doing settings lookup)
   struct ReplayGainSettings
   {
-    int iPreAmp;
-    int iNoGainPreAmp;
-    int iType;
-    bool bAvoidClipping;
+    float m_preAmp = 0.0f;
+    float m_noGainPreAmp = 0.0f;
+    ReplayGain::Type m_type = ReplayGain::NONE;
+    bool m_avoidClipping = false;
   };
 
   float GetVolumePercent() const;

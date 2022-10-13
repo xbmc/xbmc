@@ -2997,12 +2997,12 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#641"
-msgid "Files with ReplayGain information"
+msgid "Preamp for files with ReplayGain information"
 msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#642"
-msgid "Files without ReplayGain information"
+msgid "Preamp for files without ReplayGain information"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -19813,16 +19813,16 @@ msgctxt "#36267"
 msgid "Read the ReplayGain information encoded in your audio files by a program such as MP3Gain and normalise the sound levels accordingly."
 msgstr ""
 
-#. Description of setting with label #641 "Files with ReplayGain information"
+#. Description of setting with label #641 "Preamplification level to use for files with encoded ReplayGain information"
 #: system/settings/settings.xml
 msgctxt "#36268"
-msgid "Reference volume (PreAmp level) to use for files with encoded ReplayGain information. Default is 89dB as per standard. Change with caution."
+msgid "Preamplification level to use for files with encoded ReplayGain information."
 msgstr ""
 
-#. Description of setting with label #642 "PreAmp Level - Non ReplayGained files"
+#. Description of setting with label #642 "Preamplification level to use for files without encoded ReplayGain information"
 #: system/settings/settings.xml
 msgctxt "#36269"
-msgid "Reference volume (PreAmp level) to use for files without encoded ReplayGain information. Default is 89dB as per standard. Change with caution."
+msgid "Preamplification level to use for files without encoded ReplayGain information."
 msgstr ""
 
 #. Description of setting with label #643 "Avoid clipping protection on ReplayGained files"
@@ -23277,4 +23277,9 @@ msgstr ""
 #: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
 msgctxt "#39189"
 msgid "Available only with manual subtitle position"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39190"
+msgid "{0:.1f} dB"
 msgstr ""
