@@ -10,8 +10,6 @@
 
 #include "pvr/IPVRComponent.h"
 
-#include <memory>
-
 class CFileItem;
 
 namespace PVR
@@ -26,7 +24,7 @@ public:
      * @brief Process info action for the given item.
      * @param item The item.
      */
-  bool OnInfo(const std::shared_ptr<CFileItem>& item);
+  bool OnInfo(const CFileItem& item);
 
 private:
   CPVRGUIActionsUtils(const CPVRGUIActionsUtils&) = delete;
