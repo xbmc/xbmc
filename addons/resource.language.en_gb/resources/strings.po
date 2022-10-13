@@ -16215,7 +16215,10 @@ msgctxt "#24162"
 msgid "Use Kodi virtual keyboard"
 msgstr ""
 
-#empty string with id 24163
+#: system/settings/darwin_tvos.xml
+msgctxt "#24163"
+msgid "The higher the value, the more sensitive the pan gesture"
+msgstr ""
 
 #. Header text for yes/no dialog about enable of broken add-on
 #: xbmc/addons/gui/GUIHelpers.cpp
