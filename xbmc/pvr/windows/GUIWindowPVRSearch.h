@@ -38,14 +38,14 @@ namespace PVR
      * @brief set the item to search similar events for.
      * @param item the epg event to search similar events for.
      */
-    void SetItemToSearch(const CFileItemPtr& item);
+    void SetItemToSearch(const CFileItem& item);
 
     /*!
      * @brief Open the search dialog for the given search filter item.
      * @param item the epg search filter.
      * @return The result of the dialog
      */
-    CGUIDialogPVRGuideSearch::Result OpenDialogSearch(const std::shared_ptr<CFileItem>& item);
+    CGUIDialogPVRGuideSearch::Result OpenDialogSearch(const CFileItem& item);
 
   protected:
     void OnPrepareFileItems(CFileItemList& items) override;
