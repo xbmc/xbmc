@@ -78,7 +78,14 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
   m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
   m_channels = 0;
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+  av_channel_layout_uninit(&m_pCodecContext->ch_layout);
+  m_pCodecContext->ch_layout.order = AV_CHANNEL_ORDER_NATIVE;
+  m_pCodecContext->ch_layout.nb_channels = hints.channels;
+#else
   m_pCodecContext->channels = hints.channels;
+#endif
   m_hint_layout = hints.channellayout;
   m_pCodecContext->sample_rate = hints.samplerate;
   m_pCodecContext->block_align = hints.blockalign;
@@ -261,12 +268,18 @@ int CDVDAudioCodecFFmpeg::GetData(uint8_t** dst)
     m_format.m_frameSize = m_format.m_channelLayout.Count() *
                            CAEUtil::DataFormatToBits(m_format.m_dataFormat) >> 3;
 
-    int planes = av_sample_fmt_is_planar(m_pCodecContext->sample_fmt) ? m_pFrame->channels : 1;
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+    int channels = m_pFrame->ch_layout.nb_channels;
+#else
+    int channels = m_pFrame->channels;
+#endif
+    int planes = av_sample_fmt_is_planar(m_pCodecContext->sample_fmt) ? channels : 1;
+
     for (int i=0; i<planes; i++)
       dst[i] = m_pFrame->extended_data[i];
 
-    return m_pFrame->nb_samples * m_pFrame->channels *
-           av_get_bytes_per_sample(m_pCodecContext->sample_fmt);
+    return m_pFrame->nb_samples * channels * av_get_bytes_per_sample(m_pCodecContext->sample_fmt);
   }
 
   return 0;
@@ -280,7 +293,12 @@ void CDVDAudioCodecFFmpeg::Reset()
 
 int CDVDAudioCodecFFmpeg::GetChannels()
 {
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+  return m_pCodecContext->ch_layout.nb_channels;
+#else
   return m_pCodecContext->channels;
+#endif
 }
 
 int CDVDAudioCodecFFmpeg::GetSampleRate()
@@ -347,28 +365,44 @@ static unsigned count_bits(int64_t value)
 
 void CDVDAudioCodecFFmpeg::BuildChannelMap()
 {
-  if (m_channels == m_pCodecContext->channels && m_layout == m_pCodecContext->channel_layout)
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+  int codecChannels = m_pCodecContext->ch_layout.nb_channels;
+  uint64_t codecChannelLayout = m_pCodecContext->ch_layout.u.mask;
+#else
+  int codecChannels = m_pCodecContext->channels;
+  uint64_t codecChannelLayout = m_pCodecContext->channel_layout;
+#endif
+  if (m_channels == codecChannels && m_layout == codecChannelLayout)
     return; //nothing to do here
 
-  m_channels = m_pCodecContext->channels;
-  m_layout   = m_pCodecContext->channel_layout;
+  m_channels = codecChannels;
+  m_layout = codecChannelLayout;
 
   int64_t layout;
 
-  int bits = count_bits(m_pCodecContext->channel_layout);
-  if (bits == m_pCodecContext->channels)
-    layout = m_pCodecContext->channel_layout;
+  int bits = count_bits(codecChannelLayout);
+  if (bits == codecChannels)
+    layout = codecChannelLayout;
   else
   {
     CLog::Log(LOGINFO,
               "CDVDAudioCodecFFmpeg::GetChannelMap - FFmpeg reported {} channels, but the layout "
               "contains {} - trying hints",
-              m_pCodecContext->channels, bits);
-    if (static_cast<int>(count_bits(m_hint_layout)) == m_pCodecContext->channels)
+              codecChannels, bits);
+    if (static_cast<int>(count_bits(m_hint_layout)) == codecChannels)
       layout = m_hint_layout;
     else
     {
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+      AVChannelLayout def_layout = {};
+      av_channel_layout_default(&def_layout, codecChannels);
+      layout = def_layout.u.mask;
+      av_channel_layout_uninit(&def_layout);
+#else
       layout = av_get_default_channel_layout(m_pCodecContext->channels);
+#endif
       CLog::Log(LOGINFO, "Using default layout...");
     }
   }
@@ -394,7 +428,7 @@ void CDVDAudioCodecFFmpeg::BuildChannelMap()
   if (layout & AV_CH_TOP_BACK_CENTER      ) m_channelLayout += AE_CH_BC  ;
   if (layout & AV_CH_TOP_BACK_RIGHT       ) m_channelLayout += AE_CH_BR  ;
 
-  m_channels = m_pCodecContext->channels;
+  m_channels = codecChannels;
 }
 
 CAEChannelInfo CDVDAudioCodecFFmpeg::GetChannelMap()
