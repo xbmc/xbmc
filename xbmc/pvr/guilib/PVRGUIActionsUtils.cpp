@@ -16,19 +16,19 @@
 
 namespace PVR
 {
-bool CPVRGUIActionsUtils::OnInfo(const std::shared_ptr<CFileItem>& item)
+bool CPVRGUIActionsUtils::OnInfo(const CFileItem& item)
 {
-  if (item->HasPVRRecordingInfoTag())
+  if (item.HasPVRRecordingInfoTag())
   {
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(*item);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(item);
   }
-  else if (item->HasPVRChannelInfoTag() || item->HasPVRTimerInfoTag())
+  else if (item.HasPVRChannelInfoTag() || item.HasPVRTimerInfoTag())
   {
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(*item);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(item);
   }
-  else if (item->HasEPGSearchFilter())
+  else if (item.HasEPGSearchFilter())
   {
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().EditSavedSearch(*item);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().EditSavedSearch(item);
   }
   return false;
 }

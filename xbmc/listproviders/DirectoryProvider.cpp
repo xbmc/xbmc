@@ -442,7 +442,7 @@ bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
   }
   else if (fileItem->IsPVR())
   {
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().OnInfo(fileItem);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().OnInfo(*fileItem);
   }
   else if (fileItem->HasVideoInfoTag())
   {
