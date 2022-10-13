@@ -68,10 +68,7 @@ if(CMAKE_HOST_WIN32 AND NOT PATCH_EXE)
 endif()
 
 include(FindPackageHandleStandardArgs)
-
-set(FPHSA_NAME_MISMATCHED 1) # Suppress warnings, see https://cmake.org/cmake/help/v3.17/module/FindPackageHandleStandardArgs.html
-find_package_handle_standard_args(PATCH REQUIRED_VARS PATCH_EXE)
-unset(FPHSA_NAME_MISMATCHED)
+find_package_handle_standard_args(Patch REQUIRED_VARS PATCH_EXE)
 
 if(PATCH_FOUND)
   set(PATCH_EXECUTABLE "${PATCH_EXE}")
