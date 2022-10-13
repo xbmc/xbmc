@@ -69,23 +69,23 @@
           </dependencies>
         </setting>
         <!-- Siri remote sensitivity -->
-        <setting id="input.siriremotehorizontalsensitivity" type="integer" label="34009">
+        <setting id="input.siriremotehorizontalsensitivity" type="integer" label="34009" help="24163">
           <level>2</level>
-          <default>1000</default>
+          <default>500</default>
           <constraints>
             <minimum>50</minimum>
             <step>50</step>
-            <maximum>1500</maximum>
+            <maximum>1450</maximum>
           </constraints>
           <control type="spinner" format="integer" delayed="false"/>
         </setting>
-        <setting id="input.siriremoteverticalsensitivity" type="integer" label="34010">
+        <setting id="input.siriremoteverticalsensitivity" type="integer" label="34010" help="24163">
           <level>2</level>
-          <default>550</default>
+          <default>650</default>
           <constraints>
             <minimum>50</minimum>
             <step>50</step>
-            <maximum>1500</maximum>
+            <maximum>1450</maximum>
           </constraints>
           <control type="spinner" format="integer" delayed="false"/>
         </setting>
