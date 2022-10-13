@@ -260,7 +260,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
                     break;
                   case SELECT_ACTION_INFO:
                     CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(
-                        item);
+                        *item);
                     bReturn = true;
                     break;
                   default:
@@ -276,11 +276,11 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
               bReturn = true;
               break;
             case ACTION_SHOW_INFO:
-              CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(item);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(*item);
               bReturn = true;
               break;
             case ACTION_DELETE_ITEM:
-              CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteRecording(item);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().DeleteRecording(*item);
               bReturn = true;
               break;
             default:

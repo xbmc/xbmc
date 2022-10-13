@@ -42,7 +42,7 @@ namespace
 class AsyncRecordingAction : private IRunnable
 {
 public:
-  bool Execute(const CFileItemPtr& item);
+  bool Execute(const CFileItem& item);
 
 protected:
   AsyncRecordingAction() = default;
@@ -52,15 +52,15 @@ private:
   void Run() override;
 
   // the worker function
-  virtual bool DoRun(const CFileItemPtr& item) = 0;
+  virtual bool DoRun(const std::shared_ptr<CFileItem>& item) = 0;
 
-  CFileItemPtr m_item;
+  std::shared_ptr<CFileItem> m_item;
   bool m_bSuccess = false;
 };
 
-bool AsyncRecordingAction::Execute(const CFileItemPtr& item)
+bool AsyncRecordingAction::Execute(const CFileItem& item)
 {
-  m_item = item;
+  m_item = std::make_shared<CFileItem>(item);
   CGUIDialogBusy::Wait(this, 100, false);
   return m_bSuccess;
 }
@@ -154,7 +154,7 @@ private:
 class AsyncSetRecordingPlayCount : public AsyncRecordingAction
 {
 private:
-  bool DoRun(const CFileItemPtr& item) override
+  bool DoRun(const std::shared_ptr<CFileItem>& item) override
   {
     const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
     if (client)
@@ -170,7 +170,7 @@ private:
 class AsyncSetRecordingLifetime : public AsyncRecordingAction
 {
 private:
-  bool DoRun(const CFileItemPtr& item) override
+  bool DoRun(const std::shared_ptr<CFileItem>& item) override
   {
     const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
     if (client)
@@ -181,9 +181,9 @@ private:
 
 } // unnamed namespace
 
-bool CPVRGUIActionsRecordings::ShowRecordingInfo(const CFileItemPtr& item) const
+bool CPVRGUIActionsRecordings::ShowRecordingInfo(const CFileItem& item) const
 {
-  if (!item->IsPVRRecording())
+  if (!item.IsPVRRecording())
   {
     CLog::LogF(LOGERROR, "No recording!");
     return false;
@@ -198,12 +198,12 @@ bool CPVRGUIActionsRecordings::ShowRecordingInfo(const CFileItemPtr& item) const
     return false;
   }
 
-  pDlgInfo->SetRecording(item.get());
+  pDlgInfo->SetRecording(item);
   pDlgInfo->Open();
   return true;
 }
 
-bool CPVRGUIActionsRecordings::EditRecording(const CFileItemPtr& item) const
+bool CPVRGUIActionsRecordings::EditRecording(const CFileItem& item) const
 {
   const std::shared_ptr<CPVRRecording> recording = CPVRItem(item).GetRecording();
   if (!recording)
@@ -245,9 +245,9 @@ bool CPVRGUIActionsRecordings::CanEditRecording(const CFileItem& item) const
   return CGUIDialogPVRRecordingSettings::CanEditRecording(item);
 }
 
-bool CPVRGUIActionsRecordings::DeleteRecording(const CFileItemPtr& item) const
+bool CPVRGUIActionsRecordings::DeleteRecording(const CFileItem& item) const
 {
-  if ((!item->IsPVRRecording() && !item->m_bIsFolder) || item->IsParentFolder())
+  if ((!item.IsPVRRecording() && !item.m_bIsFolder) || item.IsParentFolder())
     return false;
 
   if (!ConfirmDeleteRecording(item))
@@ -265,22 +265,22 @@ bool CPVRGUIActionsRecordings::DeleteRecording(const CFileItemPtr& item) const
   return true;
 }
 
-bool CPVRGUIActionsRecordings::ConfirmDeleteRecording(const CFileItemPtr& item) const
+bool CPVRGUIActionsRecordings::ConfirmDeleteRecording(const CFileItem& item) const
 {
   return CGUIDialogYesNo::ShowAndGetInput(
       CVariant{122}, // "Confirm delete"
-      item->m_bIsFolder
+      item.m_bIsFolder
           ? CVariant{19113} // "Delete all recordings in this folder?"
-          : item->GetPVRRecordingInfoTag()->IsDeleted()
+          : item.GetPVRRecordingInfoTag()->IsDeleted()
                 ? CVariant{19294}
                 // "Remove this deleted recording from trash? This operation cannot be reverted."
                 : CVariant{19112}, // "Delete this recording?"
-      CVariant{""}, CVariant{item->GetLabel()});
+      CVariant{""}, CVariant{item.GetLabel()});
 }
 
-bool CPVRGUIActionsRecordings::DeleteWatchedRecordings(const std::shared_ptr<CFileItem>& item) const
+bool CPVRGUIActionsRecordings::DeleteWatchedRecordings(const CFileItem& item) const
 {
-  if (!item->m_bIsFolder || item->IsParentFolder())
+  if (!item.m_bIsFolder || item.IsParentFolder())
     return false;
 
   if (!ConfirmDeleteWatchedRecordings(item))
@@ -298,13 +298,12 @@ bool CPVRGUIActionsRecordings::DeleteWatchedRecordings(const std::shared_ptr<CFi
   return true;
 }
 
-bool CPVRGUIActionsRecordings::ConfirmDeleteWatchedRecordings(
-    const std::shared_ptr<CFileItem>& item) const
+bool CPVRGUIActionsRecordings::ConfirmDeleteWatchedRecordings(const CFileItem& item) const
 {
   return CGUIDialogYesNo::ShowAndGetInput(
       CVariant{122}, // "Confirm delete"
       CVariant{19328}, // "Delete all watched recordings in this folder?"
-      CVariant{""}, CVariant{item->GetLabel()});
+      CVariant{""}, CVariant{item.GetLabel()});
 }
 
 bool CPVRGUIActionsRecordings::DeleteAllRecordingsFromTrash() const
@@ -312,7 +311,7 @@ bool CPVRGUIActionsRecordings::DeleteAllRecordingsFromTrash() const
   if (!ConfirmDeleteAllRecordingsFromTrash())
     return false;
 
-  if (!AsyncEmptyRecordingsTrash().Execute(CFileItemPtr()))
+  if (!AsyncEmptyRecordingsTrash().Execute({}))
     return false;
 
   return true;
@@ -326,9 +325,9 @@ bool CPVRGUIActionsRecordings::ConfirmDeleteAllRecordingsFromTrash() const
           19293}); // "Remove all deleted recordings from trash? This operation cannot be reverted."
 }
 
-bool CPVRGUIActionsRecordings::UndeleteRecording(const CFileItemPtr& item) const
+bool CPVRGUIActionsRecordings::UndeleteRecording(const CFileItem& item) const
 {
-  if (!item->IsDeletedPVRRecording())
+  if (!item.IsDeletedPVRRecording())
     return false;
 
   if (!AsyncUndeleteRecording().Execute(item))
