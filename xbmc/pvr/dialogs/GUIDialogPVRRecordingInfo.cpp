@@ -18,12 +18,11 @@
 using namespace PVR;
 
 #define CONTROL_BTN_FIND 4
-#define CONTROL_BTN_OK  7
-#define CONTROL_BTN_PLAY_RECORDING  8
+#define CONTROL_BTN_OK 7
+#define CONTROL_BTN_PLAY_RECORDING 8
 
 CGUIDialogPVRRecordingInfo::CGUIDialogPVRRecordingInfo()
-  : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRInfo.xml")
-  , m_recordItem(new CFileItem)
+  : CGUIDialog(WINDOW_DIALOG_PVR_RECORDING_INFO, "DialogPVRInfo.xml"), m_recordItem(new CFileItem)
 {
 }
 
@@ -32,9 +31,7 @@ bool CGUIDialogPVRRecordingInfo::OnMessage(CGUIMessage& message)
   switch (message.GetMessage())
   {
     case GUI_MSG_CLICKED:
-      return OnClickButtonOK(message) ||
-             OnClickButtonPlay(message) ||
-             OnClickButtonFind(message);
+      return OnClickButtonOK(message) || OnClickButtonPlay(message) || OnClickButtonFind(message);
   }
 
   return CGUIDialog::OnMessage(message);
