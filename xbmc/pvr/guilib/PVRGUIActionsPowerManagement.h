@@ -40,7 +40,7 @@ private:
   CPVRGUIActionsPowerManagement const& operator=(CPVRGUIActionsPowerManagement const&) = delete;
 
   bool AllLocalBackendsIdle(std::shared_ptr<CPVRTimerInfoTag>& causingEvent) const;
-  bool EventOccursOnLocalBackend(const std::shared_ptr<CFileItem>& item) const;
+  bool EventOccursOnLocalBackend(const std::shared_ptr<CPVRTimerInfoTag>& event) const;
   bool IsNextEventWithinBackendIdleTime() const;
 
   CPVRSettings m_settings;
