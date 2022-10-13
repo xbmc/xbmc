@@ -1235,8 +1235,16 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     else if (stream->type == STREAM_AUDIO)
     {
       CDemuxStreamAudioFFmpeg* audiostream = dynamic_cast<CDemuxStreamAudioFFmpeg*>(stream);
-      if (audiostream && (audiostream->iChannels != m_pFormatContext->streams[pPacket->iStreamId]->codecpar->channels ||
-          audiostream->iSampleRate != m_pFormatContext->streams[pPacket->iStreamId]->codecpar->sample_rate))
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+      int codecparChannels =
+          m_pFormatContext->streams[pPacket->iStreamId]->codecpar->ch_layout.nb_channels;
+#else
+      int codecparChannels = m_pFormatContext->streams[pPacket->iStreamId]->codecpar->channels;
+#endif
+      if (audiostream && (audiostream->iChannels != codecparChannels ||
+                          audiostream->iSampleRate !=
+                              m_pFormatContext->streams[pPacket->iStreamId]->codecpar->sample_rate))
       {
         // content has changed
         stream = AddStream(pPacket->iStreamId);
@@ -1418,6 +1426,7 @@ void CDVDDemuxFFmpeg::UpdateCurrentPTS()
   if (idx >= 0)
   {
     AVStream* stream = m_pFormatContext->streams[idx];
+
 #if LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 17, 100)
     if (stream && m_pkt.pkt.dts != (int64_t)AV_NOPTS_VALUE)
     {
@@ -1639,16 +1648,28 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
       {
         CDemuxStreamAudioFFmpeg* st = new CDemuxStreamAudioFFmpeg(pStream);
         stream = st;
-        st->iChannels = pStream->codecpar->channels;
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+        int codecparChannels = pStream->codecpar->ch_layout.nb_channels;
+        int codecparChannelLayout = pStream->codecpar->ch_layout.u.mask;
+#else
+        int codecparChannels = pStream->codecpar->channels;
+        int codecparChannelLayout = pStream->codecpar->channel_layout;
+#endif
+        st->iChannels = codecparChannels;
+        st->iChannelLayout = codecparChannelLayout;
         st->iSampleRate = pStream->codecpar->sample_rate;
         st->iBlockAlign = pStream->codecpar->block_align;
         st->iBitRate = static_cast<int>(pStream->codecpar->bit_rate);
         st->iBitsPerSample = pStream->codecpar->bits_per_raw_sample;
-        st->iChannelLayout = pStream->codecpar->channel_layout;
         char buf[32] = {};
         // https://github.com/FFmpeg/FFmpeg/blob/6ccc3989d15/doc/APIchanges#L50-L53
-#if LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 24, 100)
-        av_channel_layout_describe(st->iChannelLayout, buf, sizeof(buf));
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+        AVChannelLayout layout = {};
+        av_channel_layout_from_mask(&layout, st->iChannelLayout);
+        av_channel_layout_describe(&layout, buf, sizeof(buf));
+        av_channel_layout_uninit(&layout);
 #else
         av_get_channel_layout_string(buf, 31, st->iChannels, st->iChannelLayout);
 #endif
@@ -2195,8 +2216,13 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
     if (m_pFormatContext->streams[idx]->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
     {
       CDemuxStreamAudioFFmpeg* audiostream = dynamic_cast<CDemuxStreamAudioFFmpeg*>(stream);
-      if (audiostream &&
-          m_pFormatContext->streams[idx]->codecpar->channels != audiostream->iChannels)
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+      int codecparChannels = m_pFormatContext->streams[idx]->codecpar->ch_layout.nb_channels;
+#else
+      int codecparChannels = m_pFormatContext->streams[idx]->codecpar->channels;
+#endif
+      if (audiostream && codecparChannels != audiostream->iChannels)
       {
         return true;
       }

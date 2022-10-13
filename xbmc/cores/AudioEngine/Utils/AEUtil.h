@@ -13,7 +13,10 @@
 #include <math.h>
 
 extern "C" {
+#include <libavcodec/version.h>
+#include <libavutil/channel_layout.h>
 #include <libavutil/samplefmt.h>
+#include <libavutil/version.h>
 }
 
 // AV sync options
@@ -171,6 +174,10 @@ public:
   static uint64_t GetAVChannelLayout(const CAEChannelInfo &info);
   static CAEChannelInfo GetAEChannelLayout(uint64_t layout);
   static AVSampleFormat GetAVSampleFormat(AEDataFormat format);
-  static uint64_t GetAVChannel(enum AEChannel aechannel);
+  static uint64_t GetAVChannelMask(enum AEChannel aechannel);
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+  static enum AVChannel GetAVChannel(enum AEChannel aechannel);
+#endif
   static int GetAVChannelIndex(enum AEChannel aechannel, uint64_t layout);
 };

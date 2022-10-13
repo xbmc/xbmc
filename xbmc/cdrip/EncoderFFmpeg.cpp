@@ -94,8 +94,14 @@ bool CEncoderFFmpeg::Init()
 
     /* Set the basic encoder parameters.
      * The input file's sample rate is used to avoid a sample rate conversion. */
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+    av_channel_layout_uninit(&m_codecCtx->ch_layout);
+    av_channel_layout_default(&m_codecCtx->ch_layout, m_iInChannels);
+#else
     m_codecCtx->channels = m_iInChannels;
     m_codecCtx->channel_layout = av_get_default_channel_layout(m_iInChannels);
+#endif
     m_codecCtx->sample_rate = m_iInSampleRate;
     m_codecCtx->sample_fmt = codec->sample_fmts[0];
     m_codecCtx->bit_rate = bitrate;
@@ -140,7 +146,14 @@ bool CEncoderFFmpeg::Init()
 
     m_bufferFrame->nb_samples = m_codecCtx->frame_size;
     m_bufferFrame->format = m_inFormat;
+
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+    av_channel_layout_uninit(&m_bufferFrame->ch_layout);
+    av_channel_layout_copy(&m_bufferFrame->ch_layout, &m_codecCtx->ch_layout);
+#else
     m_bufferFrame->channel_layout = m_codecCtx->channel_layout;
+#endif
     m_bufferFrame->sample_rate = m_codecCtx->sample_rate;
 
     err = av_frame_get_buffer(m_bufferFrame, 0);
@@ -152,10 +165,18 @@ bool CEncoderFFmpeg::Init()
 
     if (m_needConversion)
     {
+#if LIBSWRESAMPLE_BUILD >= AV_VERSION_INT(4, 7, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+      int ret = swr_alloc_set_opts2(&m_swrCtx, &m_codecCtx->ch_layout, m_outFormat,
+                                    m_codecCtx->sample_rate, &m_codecCtx->ch_layout, m_inFormat,
+                                    m_codecCtx->sample_rate, 0, nullptr);
+      if (ret || swr_init(m_swrCtx) < 0)
+#else
       m_swrCtx = swr_alloc_set_opts(nullptr, m_codecCtx->channel_layout, m_outFormat,
                                     m_codecCtx->sample_rate, m_codecCtx->channel_layout, m_inFormat,
                                     m_codecCtx->sample_rate, 0, nullptr);
       if (!m_swrCtx || swr_init(m_swrCtx) < 0)
+#endif
         throw FFMpegException("Failed to initialize the resampler");
 
       m_resampledBufferSize =
@@ -167,7 +188,13 @@ bool CEncoderFFmpeg::Init()
 
       m_resampledFrame->nb_samples = m_neededFrames;
       m_resampledFrame->format = m_outFormat;
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+      av_channel_layout_uninit(&m_resampledFrame->ch_layout);
+      av_channel_layout_copy(&m_resampledFrame->ch_layout, &m_codecCtx->ch_layout);
+#else
       m_resampledFrame->channel_layout = m_codecCtx->channel_layout;
+#endif
       m_resampledFrame->sample_rate = m_codecCtx->sample_rate;
 
       err = av_frame_get_buffer(m_resampledFrame, 0);
@@ -203,11 +230,23 @@ bool CEncoderFFmpeg::Init()
     CLog::Log(LOGERROR, "CEncoderFFmpeg::{} - {}", __func__, caught.what());
 
     av_freep(&m_buffer);
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+    av_channel_layout_uninit(&m_bufferFrame->ch_layout);
+#endif
     av_frame_free(&m_bufferFrame);
     swr_free(&m_swrCtx);
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+    av_channel_layout_uninit(&m_resampledFrame->ch_layout);
+#endif
     av_frame_free(&m_resampledFrame);
     av_freep(&m_resampledBuffer);
     av_free(m_bcBuffer);
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+    av_channel_layout_uninit(&m_codecCtx->ch_layout);
+#endif
     avcodec_free_context(&m_codecCtx);
     if (m_formatCtx)
     {
@@ -351,8 +390,16 @@ bool CEncoderFFmpeg::Close()
 
     /* Flush if needed */
     av_freep(&m_buffer);
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+    av_channel_layout_uninit(&m_bufferFrame->ch_layout);
+#endif
     av_frame_free(&m_bufferFrame);
     swr_free(&m_swrCtx);
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+    av_channel_layout_uninit(&m_resampledFrame->ch_layout);
+#endif
     av_frame_free(&m_resampledFrame);
     av_freep(&m_resampledBuffer);
     m_needConversion = false;
@@ -364,6 +411,10 @@ bool CEncoderFFmpeg::Close()
 
     /* cleanup */
     av_free(m_bcBuffer);
+#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
+    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
+    av_channel_layout_uninit(&m_codecCtx->ch_layout);
+#endif
     avcodec_free_context(&m_codecCtx);
     av_freep(&m_formatCtx->pb);
     avformat_free_context(m_formatCtx);
