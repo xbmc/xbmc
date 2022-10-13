@@ -25,7 +25,7 @@ namespace PVR
     bool HasListItems() const override { return true; }
     CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
-    void SetRecording(const CFileItem* item);
+    void SetRecording(const CFileItem& item);
 
   private:
     bool OnClickButtonFind(const CGUIMessage& message);

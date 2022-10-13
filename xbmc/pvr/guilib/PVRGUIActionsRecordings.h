@@ -29,14 +29,14 @@ public:
    * @param item containing a recording.
    * @return true on success, false otherwise.
    */
-  bool ShowRecordingInfo(const std::shared_ptr<CFileItem>& item) const;
+  bool ShowRecordingInfo(const CFileItem& item) const;
 
   /*!
    * @brief Open the recording settings dialog to edit a recording.
    * @param item containing the recording to edit.
    * @return true on success, false otherwise.
    */
-  bool EditRecording(const std::shared_ptr<CFileItem>& item) const;
+  bool EditRecording(const CFileItem& item) const;
 
   /*!
    * @brief Check if any recording settings can be edited.
@@ -50,7 +50,7 @@ public:
    * @param item containing a recording to delete.
    * @return true, if the recording was deleted successfully, false otherwise.
    */
-  bool DeleteRecording(const std::shared_ptr<CFileItem>& item) const;
+  bool DeleteRecording(const CFileItem& item) const;
 
   /*!
    * @brief Delete all watched recordings contained in the given folder, always showing a
@@ -58,7 +58,7 @@ public:
    * @param item containing a recording folder containing the items to delete.
    * @return true, if the recordings were deleted successfully, false otherwise.
    */
-  bool DeleteWatchedRecordings(const std::shared_ptr<CFileItem>& item) const;
+  bool DeleteWatchedRecordings(const CFileItem& item) const;
 
   /*!
    * @brief Delete all recordings from trash, always showing a confirmation dialog.
@@ -71,7 +71,7 @@ public:
    * @param item containing a recording to undelete.
    * @return true, if the recording was undeleted successfully, false otherwise.
    */
-  bool UndeleteRecording(const std::shared_ptr<CFileItem>& item) const;
+  bool UndeleteRecording(const CFileItem& item) const;
 
 private:
   CPVRGUIActionsRecordings(const CPVRGUIActionsRecordings&) = delete;
@@ -82,14 +82,14 @@ private:
    * @param item the recording to delete.
    * @return true, to proceed with delete, false otherwise.
    */
-  bool ConfirmDeleteRecording(const std::shared_ptr<CFileItem>& item) const;
+  bool ConfirmDeleteRecording(const CFileItem& item) const;
 
   /*!
    * @brief Open a dialog to confirm delete all watched recordings contained in the given folder.
    * @param item containing a recording folder containing the items to delete.
    * @return true, to proceed with delete, false otherwise.
    */
-  bool ConfirmDeleteWatchedRecordings(const std::shared_ptr<CFileItem>& item) const;
+  bool ConfirmDeleteWatchedRecordings(const CFileItem& item) const;
 
   /*!
    * @brief Open a dialog to confirm to permanently remove all deleted recordings.

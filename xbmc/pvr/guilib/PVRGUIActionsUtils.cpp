@@ -20,7 +20,7 @@ bool CPVRGUIActionsUtils::OnInfo(const std::shared_ptr<CFileItem>& item)
 {
   if (item->HasPVRRecordingInfoTag())
   {
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(item);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(*item);
   }
   else if (item->HasPVRChannelInfoTag() || item->HasPVRTimerInfoTag())
   {
