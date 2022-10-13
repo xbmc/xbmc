@@ -92,7 +92,8 @@ void CPVRGUIActionListener::OnPVRManagerEvent(const PVREvent& event)
 ChannelSwitchMode CPVRGUIActionListener::GetChannelSwitchMode(int iAction)
 {
   if ((iAction == ACTION_MOVE_UP || iAction == ACTION_MOVE_DOWN) &&
-      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH))
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_PVRPLAYBACK_CONFIRMCHANNELSWITCH))
     return ChannelSwitchMode::NO_SWITCH;
 
   return ChannelSwitchMode::INSTANT_OR_DELAYED_SWITCH;
@@ -159,11 +160,13 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
       if (!bIsPlayingPVR)
         return false;
 
-      if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_FULLSCREEN_VIDEO) || CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_VISUALISATION))
+      if (CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_FULLSCREEN_VIDEO) ||
+          CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(WINDOW_VISUALISATION))
       {
         // do not consume action if a python modal is the top most dialog
         // as a python modal can't return that it consumed the action.
-        if (CServiceBroker::GetGUI()->GetWindowManager().IsPythonWindow(CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog()))
+        if (CServiceBroker::GetGUI()->GetWindowManager().IsPythonWindow(
+                CServiceBroker::GetGUI()->GetWindowManager().GetTopmostModalDialog()))
           return false;
 
         char cCharacter;
@@ -173,7 +176,8 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
         }
         else
         {
-          int iRemote = bIsJumpSMS ? action.GetID() - (ACTION_JUMP_SMS2 - REMOTE_2) : action.GetID();
+          int iRemote =
+              bIsJumpSMS ? action.GetID() - (ACTION_JUMP_SMS2 - REMOTE_2) : action.GetID();
           cCharacter = static_cast<char>(iRemote - REMOTE_0) + '0';
         }
         CServiceBroker::GetPVRManager()
@@ -317,15 +321,21 @@ void CPVRGUIActionListener::OnSettingChanged(const std::shared_ptr<const CSettin
   const std::string& settingId = setting->GetId();
   if (settingId == CSettings::SETTING_PVRPARENTAL_ENABLED)
   {
-    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue() && CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_PVRPARENTAL_PIN).empty())
+    if (std::static_pointer_cast<const CSettingBool>(setting)->GetValue() &&
+        CServiceBroker::GetSettingsComponent()
+            ->GetSettings()
+            ->GetString(CSettings::SETTING_PVRPARENTAL_PIN)
+            .empty())
     {
       std::string newPassword = "";
       // password set... save it
       if (CGUIDialogNumeric::ShowAndVerifyNewPassword(newPassword))
-        CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_PVRPARENTAL_PIN, newPassword);
+        CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
+            CSettings::SETTING_PVRPARENTAL_PIN, newPassword);
       // password not set... disable parental
       else
-        std::static_pointer_cast<CSettingBool>(std::const_pointer_cast<CSetting>(setting))->SetValue(false);
+        std::static_pointer_cast<CSettingBool>(std::const_pointer_cast<CSetting>(setting))
+            ->SetValue(false);
     }
   }
   else if (settingId == CSettings::SETTING_EPG_PAST_DAYSTODISPLAY)
@@ -358,7 +368,8 @@ void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
+      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(
+          WINDOW_DIALOG_PVR_CLIENT_PRIORITIES);
       if (dialog)
       {
         dialog->Open();
@@ -370,7 +381,8 @@ void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
+      CGUIDialog* dialog =
+          CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_CHANNEL_MANAGER);
       if (dialog)
         dialog->Open();
     }
@@ -379,7 +391,8 @@ void CPVRGUIActionListener::OnSettingAction(const std::shared_ptr<const CSetting
   {
     if (CServiceBroker::GetPVRManager().IsStarted())
     {
-      CGUIDialog* dialog = CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
+      CGUIDialog* dialog =
+          CServiceBroker::GetGUI()->GetWindowManager().GetDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER);
       if (dialog)
         dialog->Open();
     }
