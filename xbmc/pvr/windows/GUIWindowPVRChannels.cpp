@@ -201,7 +201,7 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
               break;
             case ACTION_DELETE_ITEM:
               CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().HideChannel(
-                  m_vecItems->Get(iItem));
+                  *(m_vecItems->Get(iItem)));
               break;
             case ACTION_CONTEXT_MENU:
             case ACTION_MOUSE_RIGHT_CLICK:
