@@ -238,19 +238,20 @@ void CGUIDialogPVRChannelsOSD::RestoreControlStates()
   }
 }
 
-void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
+void CGUIDialogPVRChannelsOSD::GotoChannel(int iItem)
 {
-  if (item < 0 || item >= m_vecItems->Size())
+  if (iItem < 0 || iItem >= m_vecItems->Size())
     return;
 
   // Preserve the item before closing self, because this will clear m_vecItems
-  const CFileItemPtr itemptr = m_vecItems->Get(item);
+  const std::shared_ptr<CFileItem> item = m_vecItems->Get(iItem);
+
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH))
     Close();
 
   CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-      itemptr, true /* bCheckResume */);
+      *item, true /* bCheckResume */);
 }
 
 void CGUIDialogPVRChannelsOSD::Notify(const PVREvent& event)

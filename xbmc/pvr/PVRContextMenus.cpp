@@ -122,7 +122,7 @@ bool PlayEpgTag::IsVisible(const CFileItem& item) const
 
 bool PlayEpgTag::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,7 @@ bool PlayRecording::IsVisible(const CFileItem& item) const
 bool PlayRecording::Execute(const CFileItemPtr& item) const
 {
   return CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-      item, true /* bCheckResume */);
+      *item, true /* bCheckResume */);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -63,7 +63,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(const CGUIMessage& message)
 
     if (m_recordItem)
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-          m_recordItem, true /* check resume */);
+          *m_recordItem, true /* check resume */);
 
     bReturn = true;
   }

@@ -132,17 +132,20 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(const CGUIMessage& message)
   {
     Close();
 
-    if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-          m_progItem, true /* bCheckResume */);
-    else if (message.GetSenderId() == CONTROL_BTN_PLAY_EPGTAG &&
-             m_progItem->GetEPGInfoTag()->IsPlayable())
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(m_progItem);
-    else
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-          m_progItem, true /* bCheckResume */);
+    if (m_progItem)
+    {
+      if (message.GetSenderId() == CONTROL_BTN_PLAY_RECORDING)
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+            *m_progItem, true /* bCheckResume */);
+      else if (message.GetSenderId() == CONTROL_BTN_PLAY_EPGTAG &&
+               m_progItem->GetEPGInfoTag()->IsPlayable())
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayEpgTag(*m_progItem);
+      else
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
+            *m_progItem, true /* bCheckResume */);
 
-    bReturn = true;
+      bReturn = true;
+    }
   }
 
   return bReturn;

@@ -290,7 +290,7 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
         return false;
 
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().SwitchToChannel(
-          std::make_shared<CFileItem>(groupMember), false);
+          CFileItem(groupMember), false);
       return true;
     }
 
