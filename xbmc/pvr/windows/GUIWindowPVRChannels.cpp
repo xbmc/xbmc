@@ -197,7 +197,7 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
               break;
             case ACTION_SHOW_INFO:
               CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(
-                  m_vecItems->Get(iItem));
+                  *(m_vecItems->Get(iItem)));
               break;
             case ACTION_DELETE_ITEM:
               CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().HideChannel(

@@ -95,7 +95,7 @@ void CGUIDialogPVRItemsViewBase::ShowInfo(int itemIdx)
   if (!item)
     return;
 
-  CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(item);
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(*item);
 }
 
 bool CGUIDialogPVRItemsViewBase::ContextMenu(int itemIdx)
