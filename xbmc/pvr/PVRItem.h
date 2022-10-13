@@ -24,6 +24,7 @@ class CPVRItem
 public:
   explicit CPVRItem(const std::shared_ptr<CFileItem>& item) : m_item(item.get()) {}
   explicit CPVRItem(const CFileItem* item) : m_item(item) {}
+  explicit CPVRItem(const CFileItem& item) : m_item(&item) {}
 
   std::shared_ptr<CPVREpgInfoTag> GetEpgInfoTag() const;
   std::shared_ptr<CPVREpgInfoTag> GetNextEpgInfoTag() const;

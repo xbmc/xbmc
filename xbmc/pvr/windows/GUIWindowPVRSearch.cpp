@@ -127,16 +127,16 @@ bool CGUIWindowPVRSearchBase::OnContextButton(int itemNumber, CONTEXT_BUTTON but
       CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
-void CGUIWindowPVRSearchBase::SetItemToSearch(const CFileItemPtr& item)
+void CGUIWindowPVRSearchBase::SetItemToSearch(const CFileItem& item)
 {
-  if (item->HasEPGSearchFilter())
+  if (item.HasEPGSearchFilter())
   {
-    SetSearchFilter(item->GetEPGSearchFilter());
+    SetSearchFilter(item.GetEPGSearchFilter());
   }
-  else if (item->IsUsablePVRRecording())
+  else if (item.IsUsablePVRRecording())
   {
     SetSearchFilter(std::make_shared<CPVREpgSearchFilter>(m_bRadio));
-    m_searchfilter->SetSearchPhrase(item->GetPVRRecordingInfoTag()->m_strTitle);
+    m_searchfilter->SetSearchPhrase(item.GetPVRRecordingInfoTag()->m_strTitle);
   }
   else
   {
@@ -256,7 +256,7 @@ bool CGUIWindowPVRSearchBase::OnMessage(CGUIMessage& message)
 
             if (bIsSavedSearch)
             {
-              OpenDialogSearch(pItem);
+              OpenDialogSearch(*pItem);
             }
             else if (pItem->GetPath() == CPVREpgSearchPath::PATH_SEARCH_DIALOG)
             {
@@ -264,7 +264,7 @@ bool CGUIWindowPVRSearchBase::OnMessage(CGUIMessage& message)
             }
             else
             {
-              CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(pItem);
+              CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(*pItem);
             }
             return true;
           }
@@ -402,10 +402,9 @@ bool CGUIWindowPVRSearchBase::OnContextButtonClear(CFileItem* item, CONTEXT_BUTT
   return bReturn;
 }
 
-CGUIDialogPVRGuideSearch::Result CGUIWindowPVRSearchBase::OpenDialogSearch(
-    const std::shared_ptr<CFileItem>& item)
+CGUIDialogPVRGuideSearch::Result CGUIWindowPVRSearchBase::OpenDialogSearch(const CFileItem& item)
 {
-  const auto searchFilter = item->GetEPGSearchFilter();
+  const auto searchFilter = item.GetEPGSearchFilter();
   if (!searchFilter)
     return CGUIDialogPVRGuideSearch::Result::CANCEL;
 

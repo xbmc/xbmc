@@ -80,7 +80,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonFind(const CGUIMessage& message)
     Close();
 
     if (m_recordItem)
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(m_recordItem);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(*m_recordItem);
 
     bReturn = true;
   }

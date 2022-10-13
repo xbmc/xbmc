@@ -179,7 +179,7 @@ bool ShowInformation::Execute(const CFileItemPtr& item) const
   if (item->GetPVRRecordingInfoTag())
     return CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(item);
 
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -196,7 +196,7 @@ bool ShowChannelGuide::IsVisible(const CFileItem& item) const
 
 bool ShowChannelGuide::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowChannelEPG(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowChannelEPG(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -224,7 +224,7 @@ bool FindSimilar::IsVisible(const CFileItem& item) const
 
 bool FindSimilar::Execute(const CFileItemPtr& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -671,7 +671,7 @@ bool ExecuteSearch::IsVisible(const CFileItem& item) const
 
 bool ExecuteSearch::Execute(const std::shared_ptr<CFileItem>& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ExecuteSavedSearch(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ExecuteSavedSearch(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -684,7 +684,7 @@ bool EditSearch::IsVisible(const CFileItem& item) const
 
 bool EditSearch::Execute(const std::shared_ptr<CFileItem>& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().EditSavedSearch(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().EditSavedSearch(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -697,7 +697,7 @@ bool RenameSearch::IsVisible(const CFileItem& item) const
 
 bool RenameSearch::Execute(const std::shared_ptr<CFileItem>& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().RenameSavedSearch(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().RenameSavedSearch(*item);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -710,7 +710,7 @@ bool DeleteSearch::IsVisible(const CFileItem& item) const
 
 bool DeleteSearch::Execute(const std::shared_ptr<CFileItem>& item) const
 {
-  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().DeleteSavedSearch(item);
+  return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().DeleteSavedSearch(*item);
 }
 
 } // namespace CONTEXTMENUITEM

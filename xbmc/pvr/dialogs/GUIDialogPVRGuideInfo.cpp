@@ -155,7 +155,8 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonFind(const CGUIMessage& message)
   if (message.GetSenderId() == CONTROL_BTN_FIND)
   {
     Close();
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(m_progItem);
+    if (m_progItem)
+      return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().FindSimilar(*m_progItem);
   }
 
   return bReturn;

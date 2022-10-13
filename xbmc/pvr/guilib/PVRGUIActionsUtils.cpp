@@ -24,11 +24,11 @@ bool CPVRGUIActionsUtils::OnInfo(const std::shared_ptr<CFileItem>& item)
   }
   else if (item->HasPVRChannelInfoTag() || item->HasPVRTimerInfoTag())
   {
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(item);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().ShowEPGInfo(*item);
   }
   else if (item->HasEPGSearchFilter())
   {
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().EditSavedSearch(item);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::EPG>().EditSavedSearch(*item);
   }
   return false;
 }
