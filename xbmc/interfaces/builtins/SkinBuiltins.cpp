@@ -13,6 +13,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationSkinHandling.h"

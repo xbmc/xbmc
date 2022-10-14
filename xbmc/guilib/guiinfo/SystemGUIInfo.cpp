@@ -13,6 +13,7 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/AppParams.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"

@@ -15,6 +15,7 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"

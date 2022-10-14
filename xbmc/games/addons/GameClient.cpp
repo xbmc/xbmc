@@ -18,6 +18,7 @@
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/GameServices.h"

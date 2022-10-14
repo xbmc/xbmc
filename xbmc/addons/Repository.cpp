@@ -17,6 +17,7 @@
 #include "addons/AddonManager.h"
 #include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "filesystem/ZipFile.h"
@@ -105,7 +106,8 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo)
 {
   DirList dirs;
   AddonVersion version;
-  AddonInfoPtr addonver = CServiceBroker::GetAddonMgr().GetAddonInfo("xbmc.addon");
+  AddonInfoPtr addonver =
+      CServiceBroker::GetAddonMgr().GetAddonInfo("xbmc.addon", AddonType::ADDON_UNKNOWN);
   if (addonver)
     version = addonver->Version();
 

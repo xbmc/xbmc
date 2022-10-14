@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/File.h"
 #include "music/Album.h"
 #include "music/Artist.h"

@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "addons/addoninfo/AddonType.h"
-
 #include <map>
 #include <memory>
 #include <string>
@@ -66,6 +64,7 @@ typedef std::shared_ptr<CPluginSource> PluginPtr;
 
 enum class AddonInstanceSupport;
 enum class AddonLifecycleState;
+enum class AddonType;
 
 class CAddonMgr;
 class CAddonSettings;

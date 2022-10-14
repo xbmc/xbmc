@@ -15,6 +15,7 @@
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
 #include "addons/PluginSource.h"
+#include "addons/addoninfo/AddonType.h"
 #include "interfaces/generic/RunningScriptObserver.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/MediaSettings.h"

@@ -8,6 +8,7 @@
 
 #include "Webinterface.h"
 
+#include "addons/addoninfo/AddonType.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"

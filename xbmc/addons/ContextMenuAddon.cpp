@@ -10,6 +10,7 @@
 
 #include "ContextMenuItem.h"
 #include "ContextMenuManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"

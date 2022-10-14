@@ -11,6 +11,7 @@
 #include "ControllerDefinitions.h"
 #include "ControllerLayout.h"
 #include "URL.h"
+#include "addons/addoninfo/AddonType.h"
 #include "games/controllers/input/PhysicalTopology.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"

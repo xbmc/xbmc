@@ -13,6 +13,7 @@
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "dbwrappers/Database.h"
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -23,6 +24,8 @@ namespace ADDON
 
 enum class AddonDisabledReason;
 enum class AddonUpdateRule;
+
+class CAddonExtensions;
 
 /*!
  * @brief Addon content serializer/deserializer.

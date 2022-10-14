@@ -12,6 +12,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Webinterface.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"

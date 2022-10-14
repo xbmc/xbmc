@@ -7,9 +7,10 @@
  */
 #include "FontResource.h"
 
-#include "AddonManager.h"
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/SpecialProtocol.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
@@ -18,6 +19,11 @@
 
 namespace ADDON
 {
+
+CFontResource::CFontResource(const AddonInfoPtr& addonInfo)
+  : CResource(addonInfo, AddonType::ADDON_RESOURCE_FONT)
+{
+}
 
 void CFontResource::OnPostInstall(bool update, bool modal)
 {

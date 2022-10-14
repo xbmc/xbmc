@@ -17,6 +17,7 @@
 #include "TagLoaderTagLib.h"
 #include "addons/AudioDecoder.h"
 #include "addons/ExtsMimeSupportList.h"
+#include "addons/addoninfo/AddonType.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 

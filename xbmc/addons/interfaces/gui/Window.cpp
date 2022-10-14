@@ -15,6 +15,7 @@
 #include "Window.h"
 #include "addons/Skin.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "application/Application.h"
 #include "controls/Rendering.h"

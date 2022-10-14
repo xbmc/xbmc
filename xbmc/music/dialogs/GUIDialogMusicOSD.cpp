@@ -10,6 +10,7 @@
 
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

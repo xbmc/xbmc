@@ -8,6 +8,7 @@
 #include "ImageResource.h"
 
 #include "URL.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/XbtManager.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"

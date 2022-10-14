@@ -8,6 +8,8 @@
 
 #include "GameResource.h"
 
+#include "addons/addoninfo/AddonType.h"
+
 #include <utility>
 
 using namespace ADDON;

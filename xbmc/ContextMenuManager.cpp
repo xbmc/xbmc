@@ -18,11 +18,13 @@
 #include "addons/ContextMenuAddon.h"
 #include "addons/ContextMenus.h"
 #include "addons/IAddon.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "favourites/ContextMenus.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/ContextMenus.h"
 #include "pvr/PVRContextMenus.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "video/ContextMenus.h"
 

@@ -12,6 +12,7 @@
 #include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVREventLogJob.h"
@@ -447,7 +448,8 @@ std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
 
   for (const auto& client : clientMap)
   {
-    const auto& addonInfo = CServiceBroker::GetAddonMgr().GetAddonInfo(client.second->ID());
+    const auto& addonInfo =
+        CServiceBroker::GetAddonMgr().GetAddonInfo(client.second->ID(), AddonType::ADDON_PVRDLL);
 
     if (addonInfo)
     {

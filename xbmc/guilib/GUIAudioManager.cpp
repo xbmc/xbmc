@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
+#include "addons/addoninfo/AddonType.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "filesystem/Directory.h"
 #include "input/Key.h"

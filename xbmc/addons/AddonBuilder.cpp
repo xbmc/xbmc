@@ -22,6 +22,7 @@
 #include "addons/UISoundsResource.h"
 #include "addons/Webinterface.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "games/addons/GameClient.h"
 #include "games/controllers/Controller.h"
 #include "pvr/addons/PVRClient.h"
