@@ -11,6 +11,7 @@
 #include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/AudioDecoder.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
@@ -71,7 +72,7 @@ void CExtsMimeSupportList::Update(const std::string& id)
   }
 
   // Create and init the new addon instance
-  std::shared_ptr<CAddonInfo> addonInfo = m_addonMgr.GetAddonInfo(id);
+  std::shared_ptr<CAddonInfo> addonInfo = m_addonMgr.GetAddonInfo(id, AddonType::ADDON_UNKNOWN);
   if (addonInfo && !m_addonMgr.IsAddonDisabled(id))
   {
     if (addonInfo->HasType(AddonType::ADDON_AUDIODECODER) ||

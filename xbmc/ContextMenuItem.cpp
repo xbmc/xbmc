@@ -12,6 +12,7 @@
 #include "GUIInfoManager.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/LocalizeStrings.h"
 #ifdef HAS_PYTHON

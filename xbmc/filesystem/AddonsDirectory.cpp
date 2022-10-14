@@ -19,6 +19,7 @@
 #include "addons/PluginSource.h"
 #include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "games/GameUtils.h"
 #include "games/addons/GameClient.h"
 #include "guilib/LocalizeStrings.h"

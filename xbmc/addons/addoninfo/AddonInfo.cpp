@@ -13,8 +13,10 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 #include <algorithm>
@@ -191,8 +193,7 @@ bool CAddonInfo::HasType(AddonType type, bool mainOnly /*= false*/) const
           ProvidesSubContent(type, mainOnly ? m_mainType : AddonType::ADDON_UNKNOWN));
 }
 
-bool CAddonInfo::ProvidesSubContent(AddonType content,
-                                    AddonType mainType /*= AddonType::ADDON_UNKNOWN*/) const
+bool CAddonInfo::ProvidesSubContent(AddonType content, AddonType mainType) const
 {
   if (content == AddonType::ADDON_UNKNOWN)
     return false;

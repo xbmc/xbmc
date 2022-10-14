@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "addons/addoninfo/AddonType.h"
 #include "threads/CriticalSection.h"
 
 #include <map>
@@ -17,6 +16,8 @@
 
 namespace ADDON
 {
+
+enum class AddonType;
 
 class IAddon;
 using AddonPtr = std::shared_ptr<IAddon>;

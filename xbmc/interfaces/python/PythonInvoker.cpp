@@ -17,6 +17,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"

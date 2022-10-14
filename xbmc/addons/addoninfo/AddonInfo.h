@@ -10,7 +10,6 @@
 
 #include "XBDateTime.h"
 #include "addons/AddonVersion.h"
-#include "addons/addoninfo/AddonType.h"
 
 #include <map>
 #include <memory>
@@ -22,8 +21,11 @@
 namespace ADDON
 {
 
+enum class AddonType;
+
 class CAddonBuilder;
 class CAddonInfo;
+class CAddonType;
 typedef std::shared_ptr<CAddonInfo> AddonInfoPtr;
 typedef std::vector<AddonInfoPtr> AddonInfos;
 
@@ -198,7 +200,7 @@ public:
    */
   const CAddonType* Type(AddonType type) const;
 
-  bool ProvidesSubContent(AddonType content, AddonType mainType = AddonType::ADDON_UNKNOWN) const;
+  bool ProvidesSubContent(AddonType content, AddonType mainType) const;
   bool ProvidesSeveralSubContents() const;
 
   const AddonVersion& Version() const { return m_version; }
@@ -262,7 +264,7 @@ private:
   friend class CAddonInfoBuilder;
 
   std::string m_id;
-  AddonType m_mainType{AddonType::ADDON_UNKNOWN};
+  AddonType m_mainType{};
   std::vector<CAddonType> m_types;
 
   AddonVersion m_version;

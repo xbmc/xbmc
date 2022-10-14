@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayerCallback.h"
 #include "cores/RetroPlayer/cheevos/Cheevos.h"

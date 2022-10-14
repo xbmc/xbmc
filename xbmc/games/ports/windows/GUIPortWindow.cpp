@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
+#include "addons/addoninfo/AddonType.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
 #include "games/addons/GameClient.h"

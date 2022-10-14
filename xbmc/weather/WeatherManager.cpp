@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "WeatherJob.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"

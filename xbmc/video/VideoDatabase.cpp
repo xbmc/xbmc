@@ -18,6 +18,7 @@
 #include "VideoInfoScanner.h"
 #include "XBDateTime.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dbwrappers/dataset.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -60,8 +61,8 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <vector>
 #include <unordered_set>
+#include <vector>
 
 using namespace dbiplus;
 using namespace XFILE;

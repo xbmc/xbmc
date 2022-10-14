@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "Addon.h"
+#include "addons/Addon.h"
 
 #include <memory>
 #include <vector>
@@ -17,6 +17,7 @@ class CContextMenuItem;
 
 namespace ADDON
 {
+class CAddonExtensions;
 class CAddonInfo;
 using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
 

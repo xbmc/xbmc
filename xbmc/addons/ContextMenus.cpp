@@ -8,11 +8,12 @@
 
 #include "ContextMenus.h"
 
-#include "AddonManager.h"
 #include "FileItem.h"
-#include "Repository.h"
-#include "RepositoryUpdater.h"
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
+#include "addons/Repository.h"
+#include "addons/RepositoryUpdater.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIHelpers.h"

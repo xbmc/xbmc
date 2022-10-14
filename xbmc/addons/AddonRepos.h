@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "AddonDatabase.h"
+#include "addons/AddonDatabase.h"
 
 #include <map>
 #include <memory>

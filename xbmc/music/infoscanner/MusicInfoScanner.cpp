@@ -20,6 +20,7 @@
 #include "Util.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Scraper.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"

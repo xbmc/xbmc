@@ -14,6 +14,7 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/CDDADirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"

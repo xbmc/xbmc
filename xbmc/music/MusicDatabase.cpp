@@ -22,6 +22,7 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Scraper.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/audiodecoder.h"
 #include "dbwrappers/dataset.h"
 #include "dialogs/GUIDialogKaiToast.h"

@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "IAddon.h"
+#include "addons/IAddon.h"
 
 #include <string>
 

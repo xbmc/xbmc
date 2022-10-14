@@ -7,7 +7,8 @@
  */
 #include "Service.h"
 
-#include "AddonManager.h"
+#include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -17,6 +18,10 @@
 
 namespace ADDON
 {
+
+CService::CService(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonType::ADDON_SERVICE)
+{
+}
 
 CServiceAddonManager::CServiceAddonManager(CAddonMgr& addonMgr) :
     m_addonMgr(addonMgr)

@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/ScreenSaver.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIComponent.h"

@@ -8,10 +8,11 @@
 
 #include "Addon.h"
 
-#include "AddonManager.h"
-#include "RepositoryUpdater.h"
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
+#include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/settings/AddonSettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"

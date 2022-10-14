@@ -15,11 +15,13 @@
 #include "addons/GameResource.h"
 #include "addons/IAddon.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 

@@ -8,12 +8,11 @@
 
 #pragma once
 
-#include "AddonDatabase.h"
-#include "AddonUpdateRules.h"
 #include "addons/Addon.h"
+#include "addons/AddonDatabase.h"
+#include "addons/AddonUpdateRules.h"
 #include "addons/IAddonManagerCallback.h"
 #include "addons/Repository.h"
-#include "addons/addoninfo/AddonType.h"
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
 
@@ -26,6 +25,8 @@
 
 namespace ADDON
 {
+enum class AddonType;
+
 typedef std::map<AddonType, VECADDONS> MAPADDONS;
 typedef std::map<AddonType, VECADDONS>::iterator IMAPADDONS;
 typedef std::map<std::string, AddonInfoPtr> ADDON_INFO_LIST;
@@ -497,8 +498,7 @@ public:
                              AddonType type,
                              AddonDisabledReason disabledReason) const;
 
-  const AddonInfoPtr GetAddonInfo(const std::string& id,
-                                  AddonType type = AddonType::ADDON_UNKNOWN) const;
+  const AddonInfoPtr GetAddonInfo(const std::string& id, AddonType type) const;
 
   /*!
      * @brief Get the path where temporary add-on files are stored

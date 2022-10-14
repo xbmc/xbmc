@@ -20,6 +20,7 @@
 #include "addons/AddonSystemSettings.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
+#include "addons/addoninfo/AddonType.h"
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -807,7 +808,7 @@ void CAddonMgr::UpdateLastUsed(const std::string& id)
     {
       std::unique_lock<CCriticalSection> lock(m_critSection);
       m_database.SetLastUsed(id, time);
-      auto addonInfo = GetAddonInfo(id);
+      auto addonInfo = GetAddonInfo(id, AddonType::ADDON_UNKNOWN);
       if (addonInfo)
         addonInfo->SetLastUsed(time);
     }
@@ -1131,7 +1132,7 @@ bool CAddonMgr::IsCompatible(const AddonInfoPtr& addonInfo) const
       if (StringUtils::StartsWith(dependency.id, "xbmc.") ||
           StringUtils::StartsWith(dependency.id, "kodi."))
       {
-        AddonInfoPtr addonInfo = GetAddonInfo(dependency.id);
+        AddonInfoPtr addonInfo = GetAddonInfo(dependency.id, AddonType::ADDON_UNKNOWN);
         if (!addonInfo || !addonInfo->MeetsVersion(dependency.versionMin, dependency.version))
           return false;
       }
@@ -1261,8 +1262,7 @@ bool CAddonMgr::GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos,
   return !addonInfos.empty();
 }
 
-const AddonInfoPtr CAddonMgr::GetAddonInfo(const std::string& id,
-                                           AddonType type /*= AddonType::ADDON_UNKNOWN*/) const
+const AddonInfoPtr CAddonMgr::GetAddonInfo(const std::string& id, AddonType type) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -1339,7 +1339,7 @@ bool CAddonMgr::SetAddonOrigin(const std::string& addonId, const std::string& re
     m_database.SetLastUpdated(addonId, CDateTime::GetCurrentDateTime());
 
   // If available in manager update
-  const AddonInfoPtr info = GetAddonInfo(addonId);
+  const AddonInfoPtr info = GetAddonInfo(addonId, AddonType::ADDON_UNKNOWN);
   if (info)
     m_database.GetInstallData(info);
   return true;
