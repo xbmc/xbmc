@@ -11,7 +11,6 @@
 #include "addons/Addon.h"
 #include "addons/AddonVersion.h"
 #include "utils/Digest.h"
-#include "utils/ProgressJob.h"
 
 #include <memory>
 #include <string>
@@ -72,19 +71,6 @@ private:
   DirList m_dirs;
 };
 
-  typedef std::shared_ptr<CRepository> RepositoryPtr;
-
-
-  class CRepositoryUpdateJob : public CProgressJob
-  {
-  public:
-    explicit CRepositoryUpdateJob(const RepositoryPtr& repo);
-    ~CRepositoryUpdateJob() override = default;
-    bool DoWork() override;
-    const RepositoryPtr& GetAddon() const { return m_repo; }
-
-  private:
-    const RepositoryPtr m_repo;
-  };
+typedef std::shared_ptr<CRepository> RepositoryPtr;
 }
 

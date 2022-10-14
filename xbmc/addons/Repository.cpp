@@ -10,7 +10,6 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "TextureDatabase.h"
 #include "URL.h"
 #include "addons/AddonDatabase.h"
 #include "addons/AddonInstaller.h"
@@ -326,73 +325,4 @@ CRepository::DirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& 
   dir.maxversion = AddonVersion{configuration.GetValue("@maxversion").asString()};
 
   return dir;
-}
-
-CRepositoryUpdateJob::CRepositoryUpdateJob(const RepositoryPtr& repo) : m_repo(repo) {}
-
-bool CRepositoryUpdateJob::DoWork()
-{
-  CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[{}] checking for updates.", m_repo->ID());
-  CAddonDatabase database;
-  database.Open();
-
-  std::string oldChecksum;
-  if (database.GetRepoChecksum(m_repo->ID(), oldChecksum) == -1)
-    oldChecksum = "";
-
-  const CAddonDatabase::RepoUpdateData updateData{database.GetRepoUpdateData(m_repo->ID())};
-  if (updateData.lastCheckedVersion != m_repo->Version())
-    oldChecksum = "";
-
-  std::string newChecksum;
-  std::vector<AddonInfoPtr> addons;
-  int recheckAfter;
-  auto status = m_repo->FetchIfChanged(oldChecksum, newChecksum, addons, recheckAfter);
-
-  database.SetRepoUpdateData(
-      m_repo->ID(), CAddonDatabase::RepoUpdateData(
-                        CDateTime::GetCurrentDateTime(), m_repo->Version(),
-                        CDateTime::GetCurrentDateTime() + CDateTimeSpan(0, 0, 0, recheckAfter)));
-
-  MarkFinished();
-
-  if (status == CRepository::STATUS_ERROR)
-    return false;
-
-  if (status == CRepository::STATUS_NOT_MODIFIED)
-  {
-    CLog::Log(LOGDEBUG, "CRepositoryUpdateJob[{}] checksum not changed.", m_repo->ID());
-    return true;
-  }
-
-  //Invalidate art.
-  {
-    CTextureDatabase textureDB;
-    textureDB.Open();
-    textureDB.BeginMultipleExecute();
-
-    for (const auto& addon : addons)
-    {
-      AddonPtr oldAddon;
-      if (CServiceBroker::GetAddonMgr().FindInstallableById(addon->ID(), oldAddon) && oldAddon &&
-          addon->Version() > oldAddon->Version())
-      {
-        if (!oldAddon->Icon().empty() || !oldAddon->Art().empty() || !oldAddon->Screenshots().empty())
-          CLog::Log(LOGDEBUG, "CRepository: invalidating cached art for '{}'", addon->ID());
-
-        if (!oldAddon->Icon().empty())
-          textureDB.InvalidateCachedTexture(oldAddon->Icon());
-
-        for (const auto& path : oldAddon->Screenshots())
-          textureDB.InvalidateCachedTexture(path);
-
-        for (const auto& art : oldAddon->Art())
-          textureDB.InvalidateCachedTexture(art.second);
-      }
-    }
-    textureDB.CommitMultipleExecute();
-  }
-
-  database.UpdateRepositoryContent(m_repo->ID(), m_repo->Version(), newChecksum, addons);
-  return true;
 }
