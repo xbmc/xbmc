@@ -158,7 +158,7 @@ void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const C
     if (CServiceBroker::GetAddonMgr().GetAddon(
             CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
                 CSettings::SETTING_AUDIOCDS_ENCODER),
-            addon, ADDON::ADDON_AUDIOENCODER, ADDON::OnlyEnabled::CHOICE_YES))
+            addon, ADDON::AddonType::ADDON_AUDIOENCODER, ADDON::OnlyEnabled::CHOICE_YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)

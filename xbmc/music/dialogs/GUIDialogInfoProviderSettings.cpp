@@ -62,14 +62,16 @@ bool CGUIDialogInfoProviderSettings::Show()
 
   ADDON::AddonPtr defaultScraper;
   // Get default album scraper (when enabled - can default scraper be disabled??)
-  if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::ADDON_SCRAPER_ALBUMS, defaultScraper))
+  if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::AddonType::ADDON_SCRAPER_ALBUMS,
+                                                           defaultScraper))
   {
     ADDON::ScraperPtr scraper = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
     dialog->SetAlbumScraper(scraper);
   }
 
   // Get default artist scraper
-  if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::ADDON_SCRAPER_ARTISTS, defaultScraper))
+  if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::AddonType::ADDON_SCRAPER_ARTISTS,
+                                                           defaultScraper))
   {
     ADDON::ScraperPtr scraper = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
     dialog->SetArtistScraper(scraper);
@@ -176,12 +178,13 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
       currentScraperId = m_albumscraper->ID();
     std::string selectedAddonId = currentScraperId;
 
-    if (CGUIWindowAddonBrowser::SelectAddonID(ADDON_SCRAPER_ALBUMS, selectedAddonId, false) == 1
-        && selectedAddonId != currentScraperId)
+    if (CGUIWindowAddonBrowser::SelectAddonID(AddonType::ADDON_SCRAPER_ALBUMS, selectedAddonId,
+                                              false) == 1 &&
+        selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON_UNKNOWN,
-                                                 OnlyEnabled::CHOICE_YES))
+      if (CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon,
+                                                 AddonType::ADDON_UNKNOWN, OnlyEnabled::CHOICE_YES))
       {
         m_albumscraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
         SetupView();
@@ -201,12 +204,13 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
       currentScraperId = m_artistscraper->ID();
     std::string selectedAddonId = currentScraperId;
 
-    if (CGUIWindowAddonBrowser::SelectAddonID(ADDON_SCRAPER_ARTISTS, selectedAddonId, false) == 1
-        && selectedAddonId != currentScraperId)
+    if (CGUIWindowAddonBrowser::SelectAddonID(AddonType::ADDON_SCRAPER_ARTISTS, selectedAddonId,
+                                              false) == 1 &&
+        selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon, ADDON_UNKNOWN,
-                                                 OnlyEnabled::CHOICE_YES))
+      if (CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon,
+                                                 AddonType::ADDON_UNKNOWN, OnlyEnabled::CHOICE_YES))
       {
         m_artistscraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);
         SetupView();

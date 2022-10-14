@@ -2266,7 +2266,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
   if (path.GetProtocol() == "game")
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL,
+    if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, AddonType::ADDON_GAMEDLL,
                                                OnlyEnabled::CHOICE_YES))
     {
       CFileItem addonItem(addon);

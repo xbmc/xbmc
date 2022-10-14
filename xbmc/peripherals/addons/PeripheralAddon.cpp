@@ -55,10 +55,12 @@ CPeripheralAddon::CPeripheralAddon(const ADDON::AddonInfoPtr& addonInfo, CPeriph
     m_bSupportsJoystickRumble(false),
     m_bSupportsJoystickPowerOff(false)
 {
-  m_bProvidesJoysticks =
-      addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_joysticks").asBoolean();
-  m_bProvidesButtonMaps =
-      addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean();
+  m_bProvidesJoysticks = addonInfo->Type(ADDON::AddonType::ADDON_PERIPHERALDLL)
+                             ->GetValue("@provides_joysticks")
+                             .asBoolean();
+  m_bProvidesButtonMaps = addonInfo->Type(ADDON::AddonType::ADDON_PERIPHERALDLL)
+                              ->GetValue("@provides_buttonmaps")
+                              .asBoolean();
 
   // Create "C" interface structures, used as own parts to prevent API problems on update
   m_ifc.peripheral = new AddonInstance_Peripheral;
@@ -818,12 +820,16 @@ void CPeripheralAddon::RefreshButtonMaps(const std::string& strDeviceName /* = "
 
 bool CPeripheralAddon::ProvidesJoysticks(const ADDON::AddonInfoPtr& addonInfo)
 {
-  return addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_joysticks").asBoolean();
+  return addonInfo->Type(ADDON::AddonType::ADDON_PERIPHERALDLL)
+      ->GetValue("@provides_joysticks")
+      .asBoolean();
 }
 
 bool CPeripheralAddon::ProvidesButtonMaps(const ADDON::AddonInfoPtr& addonInfo)
 {
-  return addonInfo->Type(ADDON::ADDON_PERIPHERALDLL)->GetValue("@provides_buttonmaps").asBoolean();
+  return addonInfo->Type(ADDON::AddonType::ADDON_PERIPHERALDLL)
+      ->GetValue("@provides_buttonmaps")
+      .asBoolean();
 }
 
 void CPeripheralAddon::TriggerDeviceScan()

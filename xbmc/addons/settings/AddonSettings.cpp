@@ -1145,11 +1145,11 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAddon(const std::string& sett
   // get addon types
   std::string addonTypeStr = XMLUtils::GetAttribute(settingElement, "addontype");
   const auto addonTypesStr = StringUtils::Split(addonTypeStr, ",");
-  std::set<ADDON::TYPE> addonTypes;
+  std::set<AddonType> addonTypes;
   for (auto addonType : addonTypesStr)
   {
     auto type = ADDON::CAddonInfo::TranslateType(StringUtils::Trim(addonType));
-    if (type != ADDON::ADDON_UNKNOWN)
+    if (type != ADDON::AddonType::ADDON_UNKNOWN)
       addonTypes.insert(type);
   }
 

@@ -187,7 +187,7 @@ void CAddonInfoBuilder::CFromDB::SetExtensions(CAddonType addonType)
   m_addonInfo->m_mainType = addonType.m_type;
 }
 
-AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& id, TYPE type)
+AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& id, AddonType type)
 {
   // Check addon identifier for forbidden characters
   // The identifier is used e.g. in URLs so we shouldn't allow just
@@ -545,8 +545,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
     }
     else
     {
-      TYPE type = CAddonInfo::TranslateType(point);
-      if (type == ADDON_UNKNOWN || type >= ADDON_MAX)
+      AddonType type = CAddonInfo::TranslateType(point);
+      if (type == AddonType::ADDON_UNKNOWN || type >= AddonType::ADDON_MAX)
       {
         CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: file '{}' doesn't contain a valid add-on type name ({})", __FUNCTION__, addon->m_path, point);
         return false;
@@ -564,7 +564,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
    */
   if (addon->m_types.empty())
   {
-    CAddonType addonType(ADDON_UNKNOWN);
+    CAddonType addonType(AddonType::ADDON_UNKNOWN);
     addon->m_types.emplace_back(std::move(addonType));
   }
 
@@ -574,16 +574,16 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* 
     addon->AddExtraInfo("provides", addon->m_types[0].GetValue("provides").asString());
 
   // Ensure binary types have a valid library for the platform
-  if (addon->m_mainType == ADDON_VIZ ||
-      addon->m_mainType == ADDON_SCREENSAVER ||
-      addon->m_mainType == ADDON_PVRDLL ||
-      addon->m_mainType == ADDON_AUDIOENCODER ||
-      addon->m_mainType == ADDON_AUDIODECODER ||
-      addon->m_mainType == ADDON_VFS ||
-      addon->m_mainType == ADDON_IMAGEDECODER ||
-      addon->m_mainType == ADDON_INPUTSTREAM ||
-      addon->m_mainType == ADDON_PERIPHERALDLL ||
-      addon->m_mainType == ADDON_GAMEDLL)
+  if (addon->m_mainType == AddonType::ADDON_VIZ ||
+      addon->m_mainType == AddonType::ADDON_SCREENSAVER ||
+      addon->m_mainType == AddonType::ADDON_PVRDLL ||
+      addon->m_mainType == AddonType::ADDON_AUDIOENCODER ||
+      addon->m_mainType == AddonType::ADDON_AUDIODECODER ||
+      addon->m_mainType == AddonType::ADDON_VFS ||
+      addon->m_mainType == AddonType::ADDON_IMAGEDECODER ||
+      addon->m_mainType == AddonType::ADDON_INPUTSTREAM ||
+      addon->m_mainType == AddonType::ADDON_PERIPHERALDLL ||
+      addon->m_mainType == AddonType::ADDON_GAMEDLL)
   {
     if (addon->m_libname.empty())
     {

@@ -18,9 +18,9 @@ class TiXmlElement;
 namespace ADDON
 {
 
-typedef enum
+enum class AddonType
 {
-  ADDON_UNKNOWN,
+  ADDON_UNKNOWN = 0,
   ADDON_VIZ,
   ADDON_SKIN,
   ADDON_PVRDLL,
@@ -69,7 +69,7 @@ typedef enum
   //@}
 
   ADDON_MAX
-} TYPE;
+};
 
 class CAddonInfoBuilder;
 class CAddonDatabaseSerializer;
@@ -77,15 +77,17 @@ class CAddonDatabaseSerializer;
 class CAddonType : public CAddonExtensions
 {
 public:
-  CAddonType(TYPE type = ADDON_UNKNOWN) : m_type(type) {}
+  CAddonType(AddonType type = AddonType::ADDON_UNKNOWN) : m_type(type) {}
 
-  TYPE Type() const { return m_type; }
+  AddonType Type() const { return m_type; }
   std::string LibPath() const;
   const std::string& LibName() const { return m_libname; }
 
-  bool ProvidesSubContent(const TYPE& content) const
+  bool ProvidesSubContent(const AddonType& content) const
   {
-    return content == ADDON_UNKNOWN ? false : m_type == content || m_providedSubContent.count(content) > 0;
+    return content == AddonType::ADDON_UNKNOWN
+               ? false
+               : m_type == content || m_providedSubContent.count(content) > 0;
   }
 
   bool ProvidesSeveralSubContents() const
@@ -105,7 +107,7 @@ public:
    * @param[in] type the provided type
    * @return true if type is one of the dependency types
    */
-  static bool IsDependencyType(TYPE type);
+  static bool IsDependencyType(AddonType type);
 
 private:
   friend class CAddonInfoBuilder;
@@ -113,10 +115,10 @@ private:
 
   void SetProvides(const std::string& content);
 
-  TYPE m_type;
+  AddonType m_type;
   std::string m_path;
   std::string m_libname;
-  std::set<TYPE> m_providedSubContent;
+  std::set<AddonType> m_providedSubContent;
 };
 
 } /* namespace ADDON */

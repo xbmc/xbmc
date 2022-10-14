@@ -38,27 +38,28 @@ using XFILE::CFile;
 namespace ADDON
 {
 
-CAddon::CAddon(const AddonInfoPtr& addonInfo, TYPE addonType)
-  : m_addonInfo(addonInfo), m_type(addonType == ADDON_UNKNOWN ? addonInfo->MainType() : addonType)
+CAddon::CAddon(const AddonInfoPtr& addonInfo, AddonType addonType)
+  : m_addonInfo(addonInfo),
+    m_type(addonType == AddonType::ADDON_UNKNOWN ? addonInfo->MainType() : addonType)
 {
 }
 
-TYPE CAddon::MainType() const
+AddonType CAddon::MainType() const
 {
   return m_addonInfo->MainType();
 }
 
-bool CAddon::HasType(TYPE type) const
+bool CAddon::HasType(AddonType type) const
 {
   return m_addonInfo->HasType(type);
 }
 
-bool CAddon::HasMainType(TYPE type) const
+bool CAddon::HasMainType(AddonType type) const
 {
   return m_addonInfo->HasType(type, true);
 }
 
-const CAddonType* CAddon::Type(TYPE type) const
+const CAddonType* CAddon::Type(AddonType type) const
 {
   return m_addonInfo->Type(type);
 }

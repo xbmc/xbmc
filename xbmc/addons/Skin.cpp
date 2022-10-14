@@ -150,20 +150,19 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
   return true;
 }
 
-CSkinInfo::CSkinInfo(
-    const AddonInfoPtr& addonInfo,
-    const RESOLUTION_INFO& resolution /* = RESOLUTION_INFO() */)
-    : CAddon(addonInfo, ADDON_SKIN),
-      m_defaultRes(resolution),
-      m_effectsSlowDown(1.f),
-      m_debugging(false)
-  {
-    m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
-  }
-
-CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SKIN)
+CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo,
+                     const RESOLUTION_INFO& resolution /* = RESOLUTION_INFO() */)
+  : CAddon(addonInfo, AddonType::ADDON_SKIN),
+    m_defaultRes(resolution),
+    m_effectsSlowDown(1.f),
+    m_debugging(false)
 {
-  for (const auto& values : Type(ADDON_SKIN)->GetValues())
+  m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
+}
+
+CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonType::ADDON_SKIN)
+{
+  for (const auto& values : Type(AddonType::ADDON_SKIN)->GetValues())
   {
     if (values.first != "res")
       continue;
@@ -177,7 +176,7 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SK
 
     std::vector<std::string> fracs = StringUtils::Split(strAspect, ':');
     if (fracs.size() == 2)
-      aspect = (float)(atof(fracs[0].c_str())/atof(fracs[1].c_str()));
+      aspect = (float)(atof(fracs[0].c_str()) / atof(fracs[1].c_str()));
     if (width > 0 && height > 0)
     {
       RESOLUTION_INFO res(width, height, aspect, folder);
@@ -188,11 +187,11 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SK
     }
   }
 
-  m_effectsSlowDown = Type(ADDON_SKIN)->GetValue("@effectslowdown").asFloat();
+  m_effectsSlowDown = Type(AddonType::ADDON_SKIN)->GetValue("@effectslowdown").asFloat();
   if (m_effectsSlowDown == 0.0f)
     m_effectsSlowDown = 1.f;
 
-  m_debugging = Type(ADDON_SKIN)->GetValue("@debugging").asBoolean();
+  m_debugging = Type(AddonType::ADDON_SKIN)->GetValue("@debugging").asBoolean();
 
   m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
   LoadStartupWindows(addonInfo);

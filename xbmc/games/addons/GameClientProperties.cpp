@@ -114,7 +114,7 @@ const char** CGameClientProperties::GetResourceDirectories(void)
     {
       const std::string& strAddonId = it->id;
       AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON_RESOURCE_GAMES,
+      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, AddonType::ADDON_RESOURCE_GAMES,
                                                  OnlyEnabled::CHOICE_YES))
       {
         std::shared_ptr<CGameResource> resource = std::static_pointer_cast<CGameResource>(addon);
@@ -205,7 +205,7 @@ bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS& addons)
   for (const auto& dependency : m_parent.GetDependencies())
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(dependency.id, addon, ADDON_UNKNOWN,
+    if (CServiceBroker::GetAddonMgr().GetAddon(dependency.id, addon, AddonType::ADDON_UNKNOWN,
                                                OnlyEnabled::CHOICE_NO))
     {
       // If add-on is disabled, ask the user to enable it
@@ -230,7 +230,7 @@ bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS& addons)
         }
       }
 
-      if (addon && addon->Type() == ADDON_GAMEDLL)
+      if (addon && addon->Type() == AddonType::ADDON_GAMEDLL)
         ret.emplace_back(std::move(addon));
     }
     else

@@ -53,7 +53,7 @@ bool CContextMenuItem::Execute(const std::shared_ptr<CFileItem>& item) const
     return false;
 
   ADDON::AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(m_addonId, addon, ADDON::ADDON_UNKNOWN,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(m_addonId, addon, ADDON::AddonType::ADDON_UNKNOWN,
                                               ADDON::OnlyEnabled::CHOICE_YES))
     return false;
 

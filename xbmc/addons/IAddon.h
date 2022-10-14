@@ -79,10 +79,10 @@ class IAddon : public std::enable_shared_from_this<IAddon>
 {
 public:
   virtual ~IAddon() = default;
-  virtual TYPE MainType() const = 0;
-  virtual TYPE Type() const = 0;
-  virtual bool HasType(TYPE type) const = 0;
-  virtual bool HasMainType(TYPE type) const = 0;
+  virtual AddonType MainType() const = 0;
+  virtual AddonType Type() const = 0;
+  virtual bool HasType(AddonType type) const = 0;
+  virtual bool HasMainType(AddonType type) const = 0;
   virtual std::string ID() const = 0;
   virtual std::string Name() const = 0;
   virtual bool IsInUse() const = 0;

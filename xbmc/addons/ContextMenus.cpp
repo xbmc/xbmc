@@ -36,30 +36,30 @@ bool CAddonSettings::IsVisible(const CFileItem& item) const
 {
   AddonPtr addon;
   return item.HasAddonInfo() &&
-         CServiceBroker::GetAddonMgr().GetAddon(item.GetAddonInfo()->ID(), addon, ADDON_UNKNOWN,
-                                                OnlyEnabled::CHOICE_NO) &&
+         CServiceBroker::GetAddonMgr().GetAddon(item.GetAddonInfo()->ID(), addon,
+                                                AddonType::ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO) &&
          addon->CanHaveAddonOrInstanceSettings();
 }
 
 bool CAddonSettings::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   AddonPtr addon;
-  return CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), addon, ADDON_UNKNOWN,
-                                                OnlyEnabled::CHOICE_NO) &&
+  return CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), addon,
+                                                AddonType::ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO) &&
          CGUIDialogAddonSettings::ShowForAddon(addon);
 }
 
 bool CCheckForUpdates::IsVisible(const CFileItem& item) const
 {
-  return item.HasAddonInfo() && item.GetAddonInfo()->Type() == ADDON::ADDON_REPOSITORY;
+  return item.HasAddonInfo() && item.GetAddonInfo()->Type() == AddonType::ADDON_REPOSITORY;
 }
 
 bool CCheckForUpdates::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   AddonPtr addon;
   if (item->HasAddonInfo() &&
-      CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), addon, ADDON_REPOSITORY,
-                                             OnlyEnabled::CHOICE_YES))
+      CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), addon,
+                                             AddonType::ADDON_REPOSITORY, OnlyEnabled::CHOICE_YES))
   {
     CServiceBroker::GetRepositoryUpdater().CheckForUpdates(std::static_pointer_cast<CRepository>(addon), true);
     return true;

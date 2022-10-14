@@ -325,7 +325,8 @@ bool Interface_General::is_addon_avilable(void* kodiBase,
   }
 
   AddonPtr addonInfo;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addonInfo, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addonInfo, AddonType::ADDON_UNKNOWN,
+                                              OnlyEnabled::CHOICE_NO))
     return false;
 
   *version = strdup(addonInfo->Version().asString().c_str());

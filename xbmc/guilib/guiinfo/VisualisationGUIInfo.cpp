@@ -54,7 +54,7 @@ bool CVisualisationGUIInfo::GetLabel(std::string& value, const CFileItem *item, 
     {
       ADDON::AddonPtr addon;
       value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
-      if (CServiceBroker::GetAddonMgr().GetAddon(value, addon, ADDON::ADDON_UNKNOWN,
+      if (CServiceBroker::GetAddonMgr().GetAddon(value, addon, ADDON::AddonType::ADDON_UNKNOWN,
                                                  ADDON::OnlyEnabled::CHOICE_YES) &&
           addon)
       {

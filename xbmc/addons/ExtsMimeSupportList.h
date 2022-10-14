@@ -83,7 +83,7 @@ public:
   struct SupportValues
   {
     // Type of stored addon to check on scan
-    ADDON::TYPE m_addonType{ADDON::ADDON_UNKNOWN};
+    ADDON::AddonType m_addonType{ADDON::AddonType::ADDON_UNKNOWN};
 
     // Related addon info class
     std::shared_ptr<ADDON::CAddonInfo> m_addonInfo;
@@ -138,7 +138,7 @@ public:
    * @param[in] select To filter the listed information by type
    * @return List of @ref ADDON::CAddonInfo where support related extension
    */
-  std::vector<std::pair<ADDON::TYPE, std::shared_ptr<ADDON::CAddonInfo>>>
+  std::vector<std::pair<ADDON::AddonType, std::shared_ptr<ADDON::CAddonInfo>>>
   GetExtensionSupportedAddonInfos(const std::string& ext, FilterSelect select);
 
   /*!
@@ -156,7 +156,7 @@ public:
    * @param[in] select To filter the listed information by type
    * @return List of @ref ADDON::CAddonInfo where support related mimetype
    */
-  std::vector<std::pair<ADDON::TYPE, std::shared_ptr<ADDON::CAddonInfo>>>
+  std::vector<std::pair<ADDON::AddonType, std::shared_ptr<ADDON::CAddonInfo>>>
   GetMimetypeSupportedAddonInfos(const std::string& mimetype, FilterSelect select);
 
   /*!
@@ -174,7 +174,7 @@ protected:
   void Update(const std::string& id);
   void OnEvent(const ADDON::AddonEvent& event);
 
-  static SupportValues ScanAddonProperties(ADDON::TYPE type,
+  static SupportValues ScanAddonProperties(ADDON::AddonType type,
                                            const std::shared_ptr<ADDON::CAddonInfo>& addonInfo);
 
   CCriticalSection m_critSection;

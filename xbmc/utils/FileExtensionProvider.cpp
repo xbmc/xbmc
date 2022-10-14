@@ -25,11 +25,8 @@
 using namespace ADDON;
 using namespace KODI::ADDONS;
 
-const std::vector<TYPE> ADDON_TYPES = {
-  ADDON_VFS,
-  ADDON_IMAGEDECODER,
-  ADDON_AUDIODECODER
-};
+const std::vector<AddonType> ADDON_TYPES = {AddonType::ADDON_VFS, AddonType::ADDON_IMAGEDECODER,
+                                            AddonType::ADDON_AUDIODECODER};
 
 CFileExtensionProvider::CFileExtensionProvider(ADDON::CAddonMgr& addonManager)
   : m_advancedSettings(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()),
@@ -56,8 +53,8 @@ std::string CFileExtensionProvider::GetDiscStubExtensions() const
 std::string CFileExtensionProvider::GetMusicExtensions() const
 {
   std::string extensions(m_advancedSettings->m_musicExtensions);
-  extensions += '|' + GetAddonExtensions(ADDON_VFS);
-  extensions += '|' + GetAddonExtensions(ADDON_AUDIODECODER);
+  extensions += '|' + GetAddonExtensions(AddonType::ADDON_VFS);
+  extensions += '|' + GetAddonExtensions(AddonType::ADDON_AUDIODECODER);
 
   return extensions;
 }
@@ -65,8 +62,8 @@ std::string CFileExtensionProvider::GetMusicExtensions() const
 std::string CFileExtensionProvider::GetPictureExtensions() const
 {
   std::string extensions(m_advancedSettings->m_pictureExtensions);
-  extensions += '|' + GetAddonExtensions(ADDON_VFS);
-  extensions += '|' + GetAddonExtensions(ADDON_IMAGEDECODER);
+  extensions += '|' + GetAddonExtensions(AddonType::ADDON_VFS);
+  extensions += '|' + GetAddonExtensions(AddonType::ADDON_IMAGEDECODER);
 
   return extensions;
 }
@@ -74,7 +71,7 @@ std::string CFileExtensionProvider::GetPictureExtensions() const
 std::string CFileExtensionProvider::GetSubtitleExtensions() const
 {
   std::string extensions(m_advancedSettings->m_subtitlesExtensions);
-  extensions += '|' + GetAddonExtensions(ADDON_VFS);
+  extensions += '|' + GetAddonExtensions(AddonType::ADDON_VFS);
 
   return extensions;
 }
@@ -84,17 +81,17 @@ std::string CFileExtensionProvider::GetVideoExtensions() const
   std::string extensions(m_advancedSettings->m_videoExtensions);
   if (!extensions.empty())
     extensions += '|';
-  extensions += GetAddonExtensions(ADDON_VFS);
+  extensions += GetAddonExtensions(AddonType::ADDON_VFS);
 
   return extensions;
 }
 
 std::string CFileExtensionProvider::GetFileFolderExtensions() const
 {
-  std::string extensions(GetAddonFileFolderExtensions(ADDON_VFS));
+  std::string extensions(GetAddonFileFolderExtensions(AddonType::ADDON_VFS));
   if (!extensions.empty())
     extensions += '|';
-  extensions += GetAddonFileFolderExtensions(ADDON_AUDIODECODER);
+  extensions += GetAddonFileFolderExtensions(AddonType::ADDON_AUDIODECODER);
 
   return extensions;
 }
@@ -118,10 +115,10 @@ bool CFileExtensionProvider::CanOperateExtension(const std::string& path) const
     {
       switch (addonInfo.first)
       {
-        case ADDON_AUDIODECODER:
+        case AddonType::ADDON_AUDIODECODER:
           supportList.emplace_back(new CAudioDecoder(addonInfo.second));
           break;
-        case ADDON_IMAGEDECODER:
+        case AddonType::ADDON_IMAGEDECODER:
           supportList.emplace_back(new CImageDecoder(addonInfo.second, ""));
           break;
         default:
@@ -162,7 +159,7 @@ bool CFileExtensionProvider::CanOperateExtension(const std::string& path) const
   return false;
 }
 
-std::string CFileExtensionProvider::GetAddonExtensions(const TYPE &type) const
+std::string CFileExtensionProvider::GetAddonExtensions(AddonType type) const
 {
   auto it = m_addonExtensions.find(type);
   if (it != m_addonExtensions.end())
@@ -171,7 +168,7 @@ std::string CFileExtensionProvider::GetAddonExtensions(const TYPE &type) const
   return "";
 }
 
-std::string CFileExtensionProvider::GetAddonFileFolderExtensions(const TYPE &type) const
+std::string CFileExtensionProvider::GetAddonFileFolderExtensions(AddonType type) const
 {
   auto it = m_addonFileFolderExtensions.find(type);
   if (it != m_addonFileFolderExtensions.end())
@@ -188,12 +185,12 @@ void CFileExtensionProvider::SetAddonExtensions()
   }
 }
 
-void CFileExtensionProvider::SetAddonExtensions(const TYPE& type)
+void CFileExtensionProvider::SetAddonExtensions(AddonType type)
 {
   std::vector<std::string> extensions;
   std::vector<std::string> fileFolderExtensions;
 
-  if (type == ADDON_AUDIODECODER || type == ADDON_IMAGEDECODER)
+  if (type == AddonType::ADDON_AUDIODECODER || type == AddonType::ADDON_IMAGEDECODER)
   {
     auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetSupportedAddonInfos(
         CExtsMimeSupportList::FilterSelect::all);
@@ -210,7 +207,7 @@ void CFileExtensionProvider::SetAddonExtensions(const TYPE& type)
       }
     }
   }
-  else if (type == ADDON_VFS)
+  else if (type == AddonType::ADDON_VFS)
   {
     std::vector<AddonInfoPtr> addonInfos;
     m_addonManager.GetAddonInfos(addonInfos, true, type);

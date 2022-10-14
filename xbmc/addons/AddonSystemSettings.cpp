@@ -28,19 +28,19 @@ namespace ADDON
 
 CAddonSystemSettings::CAddonSystemSettings()
   : m_activeSettings{
-        {ADDON_AUDIOENCODER, CSettings::SETTING_AUDIOCDS_ENCODER},
-        {ADDON_RESOURCE_LANGUAGE, CSettings::SETTING_LOCALE_LANGUAGE},
-        {ADDON_RESOURCE_UISOUNDS, CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN},
-        {ADDON_SCRAPER_ALBUMS, CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER},
-        {ADDON_SCRAPER_ARTISTS, CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER},
-        {ADDON_SCRAPER_MOVIES, CSettings::SETTING_SCRAPERS_MOVIESDEFAULT},
-        {ADDON_SCRAPER_MUSICVIDEOS, CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT},
-        {ADDON_SCRAPER_TVSHOWS, CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT},
-        {ADDON_SCREENSAVER, CSettings::SETTING_SCREENSAVER_MODE},
-        {ADDON_SCRIPT_WEATHER, CSettings::SETTING_WEATHER_ADDON},
-        {ADDON_SKIN, CSettings::SETTING_LOOKANDFEEL_SKIN},
-        {ADDON_WEB_INTERFACE, CSettings::SETTING_SERVICES_WEBSKIN},
-        {ADDON_VIZ, CSettings::SETTING_MUSICPLAYER_VISUALISATION},
+        {AddonType::ADDON_AUDIOENCODER, CSettings::SETTING_AUDIOCDS_ENCODER},
+        {AddonType::ADDON_RESOURCE_LANGUAGE, CSettings::SETTING_LOCALE_LANGUAGE},
+        {AddonType::ADDON_RESOURCE_UISOUNDS, CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN},
+        {AddonType::ADDON_SCRAPER_ALBUMS, CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER},
+        {AddonType::ADDON_SCRAPER_ARTISTS, CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER},
+        {AddonType::ADDON_SCRAPER_MOVIES, CSettings::SETTING_SCRAPERS_MOVIESDEFAULT},
+        {AddonType::ADDON_SCRAPER_MUSICVIDEOS, CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT},
+        {AddonType::ADDON_SCRAPER_TVSHOWS, CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT},
+        {AddonType::ADDON_SCREENSAVER, CSettings::SETTING_SCREENSAVER_MODE},
+        {AddonType::ADDON_SCRIPT_WEATHER, CSettings::SETTING_WEATHER_ADDON},
+        {AddonType::ADDON_SKIN, CSettings::SETTING_LOOKANDFEEL_SKIN},
+        {AddonType::ADDON_WEB_INTERFACE, CSettings::SETTING_SERVICES_WEBSKIN},
+        {AddonType::ADDON_VIZ, CSettings::SETTING_MUSICPLAYER_VISUALISATION},
     }
 {}
 
@@ -94,7 +94,7 @@ void CAddonSystemSettings::OnSettingChanged(const std::shared_ptr<const CSetting
   }
 }
 
-bool CAddonSystemSettings::GetActive(const TYPE& type, AddonPtr& addon)
+bool CAddonSystemSettings::GetActive(AddonType type, AddonPtr& addon)
 {
   auto it = m_activeSettings.find(type);
   if (it != m_activeSettings.end())
@@ -106,7 +106,7 @@ bool CAddonSystemSettings::GetActive(const TYPE& type, AddonPtr& addon)
   return false;
 }
 
-bool CAddonSystemSettings::SetActive(const TYPE& type, const std::string& addonID)
+bool CAddonSystemSettings::SetActive(AddonType type, const std::string& addonID)
 {
   auto it = m_activeSettings.find(type);
   if (it != m_activeSettings.end())

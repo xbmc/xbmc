@@ -89,22 +89,22 @@ CONTENT_TYPE TranslateContent(const std::string &string)
   return CONTENT_NONE;
 }
 
-TYPE ScraperTypeFromContent(const CONTENT_TYPE &content)
+AddonType ScraperTypeFromContent(const CONTENT_TYPE& content)
 {
   switch (content)
   {
   case CONTENT_ALBUMS:
-    return ADDON_SCRAPER_ALBUMS;
+    return AddonType::ADDON_SCRAPER_ALBUMS;
   case CONTENT_ARTISTS:
-    return ADDON_SCRAPER_ARTISTS;
+    return AddonType::ADDON_SCRAPER_ARTISTS;
   case CONTENT_MOVIES:
-    return ADDON_SCRAPER_MOVIES;
+    return AddonType::ADDON_SCRAPER_MOVIES;
   case CONTENT_MUSICVIDEOS:
-    return ADDON_SCRAPER_MUSICVIDEOS;
+    return AddonType::ADDON_SCRAPER_MUSICVIDEOS;
   case CONTENT_TVSHOWS:
-    return ADDON_SCRAPER_TVSHOWS;
+    return AddonType::ADDON_SCRAPER_TVSHOWS;
   default:
-    return ADDON_UNKNOWN;
+    return AddonType::ADDON_UNKNOWN;
   }
 }
 
@@ -120,11 +120,11 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
   throw CScraperError(sTitle, sMessage);
 }
 
-CScraper::CScraper(const AddonInfoPtr& addonInfo, TYPE addonType)
-    : CAddon(addonInfo, addonType)
-    , m_fLoaded(false)
-    , m_requiressettings(false)
-    , m_pathContent(CONTENT_NONE)
+CScraper::CScraper(const AddonInfoPtr& addonInfo, AddonType addonType)
+  : CAddon(addonInfo, addonType),
+    m_fLoaded(false),
+    m_requiressettings(false),
+    m_pathContent(CONTENT_NONE)
 {
   m_requiressettings = addonInfo->Type(addonType)->GetValue("@requiressettings").asBoolean();
 
@@ -135,23 +135,23 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, TYPE addonType)
 
   switch (addonType)
   {
-  case ADDON_SCRAPER_ALBUMS:
-    m_pathContent = CONTENT_ALBUMS;
-    break;
-  case ADDON_SCRAPER_ARTISTS:
-    m_pathContent = CONTENT_ARTISTS;
-    break;
-  case ADDON_SCRAPER_MOVIES:
-    m_pathContent = CONTENT_MOVIES;
-    break;
-  case ADDON_SCRAPER_MUSICVIDEOS:
-    m_pathContent = CONTENT_MUSICVIDEOS;
-    break;
-  case ADDON_SCRAPER_TVSHOWS:
-    m_pathContent = CONTENT_TVSHOWS;
-    break;
-  default:
-    break;
+    case AddonType::ADDON_SCRAPER_ALBUMS:
+      m_pathContent = CONTENT_ALBUMS;
+      break;
+    case AddonType::ADDON_SCRAPER_ARTISTS:
+      m_pathContent = CONTENT_ARTISTS;
+      break;
+    case AddonType::ADDON_SCRAPER_MOVIES:
+      m_pathContent = CONTENT_MOVIES;
+      break;
+    case AddonType::ADDON_SCRAPER_MUSICVIDEOS:
+      m_pathContent = CONTENT_MUSICVIDEOS;
+      break;
+    case AddonType::ADDON_SCRAPER_TVSHOWS:
+      m_pathContent = CONTENT_TVSHOWS;
+      break;
+    default:
+      break;
   }
 
   m_isPython = URIUtils::GetExtension(addonInfo->Type(addonType)->LibPath()) == ".py";
@@ -369,11 +369,11 @@ bool CScraper::Load()
 
       bool bOptional = itr->optional;
 
-      if (CServiceBroker::GetAddonMgr().GetAddon((*itr).id, dep, ADDON::ADDON_UNKNOWN,
+      if (CServiceBroker::GetAddonMgr().GetAddon((*itr).id, dep, AddonType::ADDON_UNKNOWN,
                                                  ADDON::OnlyEnabled::CHOICE_YES))
       {
         CXBMCTinyXML doc;
-        if (dep->Type() == ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
+        if (dep->Type() == AddonType::ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
           m_parser.AddDocument(&doc);
       }
       else

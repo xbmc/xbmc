@@ -17,7 +17,7 @@
 namespace ADDON
 {
 
-const std::vector<TYPE> ADDONS_TO_CACHE = {ADDON_GAMEDLL};
+const std::vector<AddonType> ADDONS_TO_CACHE = {AddonType::ADDON_GAMEDLL};
 
 CBinaryAddonCache::~CBinaryAddonCache()
 {
@@ -35,7 +35,7 @@ void CBinaryAddonCache::Deinit()
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
 }
 
-void CBinaryAddonCache::GetAddons(VECADDONS& addons, const TYPE& type)
+void CBinaryAddonCache::GetAddons(VECADDONS& addons, AddonType type)
 {
   VECADDONS myAddons;
   GetInstalledAddons(myAddons, type);
@@ -47,7 +47,7 @@ void CBinaryAddonCache::GetAddons(VECADDONS& addons, const TYPE& type)
   }
 }
 
-void CBinaryAddonCache::GetDisabledAddons(VECADDONS& addons, const TYPE& type)
+void CBinaryAddonCache::GetDisabledAddons(VECADDONS& addons, AddonType type)
 {
   VECADDONS myAddons;
   GetInstalledAddons(myAddons, type);
@@ -59,7 +59,7 @@ void CBinaryAddonCache::GetDisabledAddons(VECADDONS& addons, const TYPE& type)
   }
 }
 
-void CBinaryAddonCache::GetInstalledAddons(VECADDONS& addons, const TYPE& type)
+void CBinaryAddonCache::GetInstalledAddons(VECADDONS& addons, AddonType type)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   auto it = m_addons.find(type);
@@ -67,7 +67,7 @@ void CBinaryAddonCache::GetInstalledAddons(VECADDONS& addons, const TYPE& type)
     addons = it->second;
 }
 
-AddonPtr CBinaryAddonCache::GetAddonInstance(const std::string& strId, TYPE type)
+AddonPtr CBinaryAddonCache::GetAddonInstance(const std::string& strId, AddonType type)
 {
   AddonPtr addon;
 
@@ -113,7 +113,7 @@ void CBinaryAddonCache::OnEvent(const AddonEvent& event)
 
 void CBinaryAddonCache::Update()
 {
-  using AddonMap = std::multimap<TYPE, VECADDONS>;
+  using AddonMap = std::multimap<AddonType, VECADDONS>;
   AddonMap addonmap;
 
   for (auto &addonType : ADDONS_TO_CACHE)

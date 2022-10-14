@@ -119,7 +119,7 @@ void CGUIPortWindow::OnInitWindow()
     {
       ADDON::AddonPtr addon;
       if (CServiceBroker::GetAddonMgr().GetAddon(gameSettingsHandle->GameClientID(), addon,
-                                                 ADDON::ADDON_GAMEDLL,
+                                                 ADDON::AddonType::ADDON_GAMEDLL,
                                                  ADDON::OnlyEnabled::CHOICE_YES))
         gameClient = std::static_pointer_cast<CGameClient>(addon);
     }

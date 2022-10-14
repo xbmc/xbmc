@@ -39,7 +39,7 @@ CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase
 {
 }
 
-CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType)
+CAddonDll::CAddonDll(const AddonInfoPtr& addonInfo, AddonType addonType)
   : CAddon(addonInfo, addonType),
     m_binaryAddonBase(CServiceBroker::GetBinaryAddonManager().GetRunningAddonBase(addonInfo->ID()))
 {

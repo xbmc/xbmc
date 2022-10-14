@@ -102,7 +102,8 @@ namespace XBMCAddon
       if (!CFileUtils::Exists(strSkinPath))
       {
         std::string str("none");
-        ADDON::AddonInfoPtr addonInfo = std::make_shared<ADDON::CAddonInfo>(str, ADDON::ADDON_SKIN);
+        ADDON::AddonInfoPtr addonInfo =
+            std::make_shared<ADDON::CAddonInfo>(str, ADDON::AddonType::ADDON_SKIN);
         ADDON::CSkinInfo::TranslateResolution(defaultRes, res);
 
         // Check for the matching folder for the skin in the fallback skins folder

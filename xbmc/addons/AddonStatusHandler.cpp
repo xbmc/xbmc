@@ -49,7 +49,7 @@ CAddonStatusHandler::CAddonStatusHandler(const std::string& addonID,
 {
   //! @todo The status handled CAddonStatusHandler by is related to the class, not the instance
   //! having CAddonMgr construct an instance makes no sense
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonID, m_addon, ADDON_UNKNOWN,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonID, m_addon, AddonType::ADDON_UNKNOWN,
                                               OnlyEnabled::CHOICE_YES))
     return;
 
