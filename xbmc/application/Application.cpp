@@ -1757,6 +1757,17 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   }
   break;
 
+  case TMSG_UPDATE_PLAYER_ITEM:
+  {
+    std::unique_ptr<CFileItem> item{static_cast<CFileItem*>(pMsg->lpVoid)};
+    if (item)
+    {
+      m_itemCurrentFile->UpdateInfo(*item);
+      CServiceBroker::GetGUI()->GetInfoManager().UpdateCurrentItem(*m_itemCurrentFile);
+    }
+  }
+  break;
+
   default:
     CLog::Log(LOGERROR, "{}: Unhandled threadmessage sent, {}", __FUNCTION__, msg);
     break;
