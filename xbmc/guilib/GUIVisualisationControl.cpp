@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/Visualization.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"

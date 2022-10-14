@@ -9,6 +9,7 @@
 
 #include "FileItem.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/interfaces/AudioEngine.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "filesystem/File.h"

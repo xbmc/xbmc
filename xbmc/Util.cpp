@@ -33,6 +33,7 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/VFSEntry.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/PVRDirectory.h"

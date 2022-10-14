@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/ImageDecoder.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/FFmpegImage.h"
 #include "utils/Mime.h"
 

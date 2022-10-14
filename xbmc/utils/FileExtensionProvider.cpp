@@ -15,6 +15,7 @@
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/ImageDecoder.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"

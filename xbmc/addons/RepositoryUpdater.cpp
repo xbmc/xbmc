@@ -9,10 +9,13 @@
 #include "RepositoryUpdater.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonDatabase.h"
 #include "addons/AddonEvents.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
+#include "addons/Repository.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/AddonManagementEvent.h"

@@ -9,7 +9,6 @@
 #pragma once
 
 #include "addons/IAddonSupportList.h"
-#include "addons/addoninfo/AddonType.h"
 #include "threads/CriticalSection.h"
 
 #include <map>
@@ -20,6 +19,7 @@
 
 namespace ADDON
 {
+enum class AddonType;
 class CAddonMgr;
 class CAddonInfo;
 
@@ -83,7 +83,7 @@ public:
   struct SupportValues
   {
     // Type of stored addon to check on scan
-    ADDON::AddonType m_addonType{ADDON::AddonType::ADDON_UNKNOWN};
+    ADDON::AddonType m_addonType{};
 
     // Related addon info class
     std::shared_ptr<ADDON::CAddonInfo> m_addonInfo;

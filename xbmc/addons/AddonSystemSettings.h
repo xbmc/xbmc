@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "addons/addoninfo/AddonType.h"
 #include "settings/lib/ISettingCallback.h"
 
 #include <map>
@@ -27,6 +26,8 @@ enum class AddonRepoUpdateMode
   OFFICIAL_ONLY = 0,
   ANY_REPOSITORY = 1
 };
+
+enum class AddonType;
 
 class CAddonInfo;
 using AddonInfoPtr = std::shared_ptr<CAddonInfo>;

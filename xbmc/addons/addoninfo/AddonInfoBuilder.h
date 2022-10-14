@@ -20,6 +20,8 @@ class TiXmlElement;
 namespace ADDON
 {
 
+class CAddonExtensions;
+
 class CAddonInfoBuilder
 {
 public:

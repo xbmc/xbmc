@@ -11,6 +11,11 @@
 #include "addons/IAddon.h"
 #include "settings/lib/Setting.h"
 
+namespace ADDON
+{
+enum class AddonType;
+}
+
 class CSettingAddon : public CSettingString
 {
 public:
@@ -29,5 +34,5 @@ public:
 private:
   void copyaddontype(const CSettingAddon &setting);
 
-  ADDON::AddonType m_addonType{ADDON::AddonType::ADDON_UNKNOWN};
+  ADDON::AddonType m_addonType{};
 };

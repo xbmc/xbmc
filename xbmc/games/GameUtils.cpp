@@ -15,6 +15,7 @@
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/BinaryAddonCache.h"
+#include "addons/addoninfo/AddonType.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "filesystem/SpecialProtocol.h"

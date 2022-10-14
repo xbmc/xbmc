@@ -10,7 +10,6 @@
 
 #include "ThumbLoader.h"
 #include "addons/RepositoryUpdater.h"
-#include "addons/addoninfo/AddonType.h"
 #include "windows/GUIMediaWindow.h"
 
 #include <string>
@@ -20,6 +19,7 @@ class CFileItemList;
 
 namespace ADDON
 {
+enum class AddonType;
 struct AddonEvent;
 }
 

@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "PeripheralAddonTranslator.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "games/controllers/Controller.h"

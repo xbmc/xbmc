@@ -12,6 +12,7 @@
 #include "ControllerIDs.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 
 using namespace KODI;
 using namespace GAME;

@@ -8,7 +8,9 @@
 
 #pragma once
 
-#include "Addon.h"
+#include "addons/Addon.h"
+
+#include <set>
 
 namespace ADDON
 {

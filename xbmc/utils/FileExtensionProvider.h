@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "addons/addoninfo/AddonType.h"
-
 #include <map>
 #include <memory>
 #include <string>
@@ -17,8 +15,9 @@
 
 namespace ADDON
 {
-  class CAddonMgr;
-  struct AddonEvent;
+enum class AddonType;
+class CAddonMgr;
+struct AddonEvent;
 }
 
 class CAdvancedSettings;

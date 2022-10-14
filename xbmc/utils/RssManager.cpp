@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "interfaces/builtins/Builtins.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"

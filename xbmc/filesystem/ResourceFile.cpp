@@ -13,6 +13,7 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/Resource.h"
+#include "addons/addoninfo/AddonType.h"
 
 using namespace ADDON;
 using namespace XFILE;

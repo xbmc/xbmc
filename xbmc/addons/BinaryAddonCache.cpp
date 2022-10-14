@@ -8,9 +8,10 @@
 
 #include "BinaryAddonCache.h"
 
-#include "AddonEvents.h"
-#include "AddonManager.h"
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
+#include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 
 #include <mutex>
 

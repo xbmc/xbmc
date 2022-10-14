@@ -21,6 +21,7 @@
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/IAddon.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIHelpers.h"
 #include "dialogs/GUIDialogSelect.h"

@@ -10,6 +10,7 @@
 
 #include "URL.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "utils/StringUtils.h"
 
 #include <utility>

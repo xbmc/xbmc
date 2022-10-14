@@ -13,6 +13,7 @@
 #include "VideoPlayerCodec.h"
 #include "addons/AudioDecoder.h"
 #include "addons/ExtsMimeSupportList.h"
+#include "addons/addoninfo/AddonType.h"
 #include "utils/StringUtils.h"
 
 using namespace KODI::ADDONS;

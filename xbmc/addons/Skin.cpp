@@ -11,8 +11,8 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogKaiToast.h"
-// fallback for new skin resolution code
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"

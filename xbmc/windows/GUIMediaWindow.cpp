@@ -20,6 +20,7 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/Application.h"
 #include "messaging/ApplicationMessenger.h"
 #if defined(TARGET_ANDROID)

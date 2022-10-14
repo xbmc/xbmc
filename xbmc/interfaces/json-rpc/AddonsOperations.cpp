@@ -15,6 +15,7 @@
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"

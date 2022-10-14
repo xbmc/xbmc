@@ -8,12 +8,11 @@
 
 #pragma once
 
-#include "addons/addoninfo/AddonType.h"
-
 #include <memory>
 
 namespace ADDON
 {
+enum class AddonType;
 
 class IAddon;
 using AddonPtr = std::shared_ptr<IAddon>;

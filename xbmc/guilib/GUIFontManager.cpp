@@ -14,6 +14,7 @@
 #include "addons/AddonManager.h"
 #include "addons/FontResource.h"
 #include "addons/Skin.h"
+#include "addons/addoninfo/AddonType.h"
 #include "windowing/GraphicContext.h"
 
 #include <mutex>

@@ -9,8 +9,9 @@
 
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "Skin.h"
 #include "addons/AddonManager.h"
+#include "addons/Skin.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"

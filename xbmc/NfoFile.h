@@ -20,6 +20,11 @@
 #include <utility>
 #include <vector>
 
+namespace ADDON
+{
+enum class AddonType;
+}
+
 class CNfoFile
 {
 public:
@@ -57,7 +62,7 @@ private:
   std::string m_doc;
   size_t m_headPos = 0;
   ADDON::ScraperPtr m_info;
-  ADDON::AddonType m_type{ADDON::AddonType::ADDON_UNKNOWN};
+  ADDON::AddonType m_type{};
   CScraperUrl m_scurl;
 
   int Load(const std::string&);

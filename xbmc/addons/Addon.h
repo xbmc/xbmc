@@ -20,6 +20,9 @@ class CXBMCTinyXML;
 namespace ADDON
 {
 
+enum class AddonType;
+class CAddonType;
+
 typedef std::vector<AddonPtr> VECADDONS;
 typedef std::vector<AddonPtr>::iterator IVECADDONS;
 

@@ -23,6 +23,7 @@
 #include "addons/Skin.h"
 #include "addons/VFSEntry.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/AppInboundProtocol.h"
 #include "application/AppParams.h"
 #include "application/ApplicationActionListeners.h"
@@ -3012,7 +3013,7 @@ void CApplication::ConfigureAndEnableAddons()
     {
       if (addonMgr.IsAddonDisabledWithReason(addon->ID(), ADDON::AddonDisabledReason::INCOMPATIBLE))
       {
-        auto addonInfo = addonMgr.GetAddonInfo(addon->ID());
+        auto addonInfo = addonMgr.GetAddonInfo(addon->ID(), AddonType::ADDON_UNKNOWN);
         if (addonInfo && addonMgr.IsCompatible(addonInfo))
         {
           CLog::Log(LOGDEBUG, "CApplication::{}: enabling the compatible version of [{}].",
