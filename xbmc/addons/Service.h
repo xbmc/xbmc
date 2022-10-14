@@ -17,7 +17,9 @@ namespace ADDON
   class CService: public CAddon
   {
   public:
-    explicit CService(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SERVICE) {}
+    explicit CService(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonType::ADDON_SERVICE)
+    {
+    }
   };
 
   class CServiceAddonManager

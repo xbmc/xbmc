@@ -39,7 +39,7 @@ bool CGUIDialogMusicOSD::OnMessage(CGUIMessage &message)
       if (iControl == CONTROL_VIS_BUTTON)
       {
         std::string addonID;
-        if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_VIZ, addonID, true) == 1)
+        if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::AddonType::ADDON_VIZ, addonID, true) == 1)
         {
           const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
           settings->SetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION, addonID);

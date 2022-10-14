@@ -65,7 +65,7 @@ void CRepositoryUpdater::OnEvent(const ADDON::AddonEvent& event)
 {
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled))
   {
-    if (m_addonMgr.HasType(event.addonId, ADDON_REPOSITORY))
+    if (m_addonMgr.HasType(event.addonId, AddonType::ADDON_REPOSITORY))
       ScheduleUpdate();
   }
 }
@@ -117,7 +117,7 @@ void CRepositoryUpdater::OnJobComplete(unsigned int jobID, bool success, CJob* j
 bool CRepositoryUpdater::CheckForUpdates(bool showProgress)
 {
   VECADDONS addons;
-  if (m_addonMgr.GetAddons(addons, ADDON_REPOSITORY) && !addons.empty())
+  if (m_addonMgr.GetAddons(addons, AddonType::ADDON_REPOSITORY) && !addons.empty())
   {
     std::unique_lock<CCriticalSection> lock(m_criticalSection);
     for (const auto& addon : addons)
@@ -188,7 +188,7 @@ void CRepositoryUpdater::OnSettingChanged(const std::shared_ptr<const CSetting>&
 CDateTime CRepositoryUpdater::LastUpdated() const
 {
   VECADDONS repos;
-  if (!m_addonMgr.GetAddons(repos, ADDON_REPOSITORY) || repos.empty())
+  if (!m_addonMgr.GetAddons(repos, AddonType::ADDON_REPOSITORY) || repos.empty())
     return CDateTime();
 
   CAddonDatabase db;
@@ -208,7 +208,7 @@ CDateTime CRepositoryUpdater::LastUpdated() const
 CDateTime CRepositoryUpdater::ClosestNextCheck() const
 {
   VECADDONS repos;
-  if (!m_addonMgr.GetAddons(repos, ADDON_REPOSITORY) || repos.empty())
+  if (!m_addonMgr.GetAddons(repos, AddonType::ADDON_REPOSITORY) || repos.empty())
     return CDateTime();
 
   CAddonDatabase db;
@@ -233,7 +233,7 @@ void CRepositoryUpdater::ScheduleUpdate()
   if (CAddonSystemSettings::GetInstance().GetAddonAutoUpdateMode() == AUTO_UPDATES_NEVER)
     return;
 
-  if (!m_addonMgr.HasAddons(ADDON_REPOSITORY))
+  if (!m_addonMgr.HasAddons(AddonType::ADDON_REPOSITORY))
     return;
 
   int delta{1};

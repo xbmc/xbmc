@@ -23,7 +23,7 @@ namespace ADDON
 class CAddonInfoBuilder
 {
 public:
-  static AddonInfoPtr Generate(const std::string& id, TYPE type);
+  static AddonInfoPtr Generate(const std::string& id, AddonType type);
   static AddonInfoPtr Generate(const std::string& addonPath, bool platformCheck = true);
   static AddonInfoPtr Generate(const TiXmlElement* baseElement, const CRepository::DirInfo& repo, bool platformCheck = true);
 

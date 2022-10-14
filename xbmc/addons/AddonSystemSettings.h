@@ -41,8 +41,8 @@ public:
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
-  bool GetActive(const TYPE& type, AddonPtr& addon);
-  bool SetActive(const TYPE& type, const std::string& addonID);
+  bool GetActive(AddonType type, AddonPtr& addon);
+  bool SetActive(AddonType type, const std::string& addonID);
   bool IsActive(const IAddon& addon);
 
   /*!
@@ -72,6 +72,6 @@ private:
   CAddonSystemSettings& operator=(const CAddonSystemSettings&) = delete;
   ~CAddonSystemSettings() override = default;
 
-  const std::map<ADDON::TYPE, std::string> m_activeSettings;
+  const std::map<AddonType, std::string> m_activeSettings;
 };
 };

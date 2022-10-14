@@ -181,7 +181,8 @@ void CPeripheralBusAddon::EnableButtonMapping()
   if (!GetAddonWithButtonMap(dummy))
   {
     std::vector<AddonInfoPtr> disabledAddons;
-    CServiceBroker::GetAddonMgr().GetDisabledAddonInfos(disabledAddons, ADDON_PERIPHERALDLL);
+    CServiceBroker::GetAddonMgr().GetDisabledAddonInfos(disabledAddons,
+                                                        AddonType::ADDON_PERIPHERALDLL);
     if (!disabledAddons.empty())
       PromptEnableAddons(disabledAddons);
   }
@@ -326,12 +327,12 @@ void CPeripheralBusAddon::OnEvent(const ADDON::AddonEvent& event)
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
       typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
   {
-    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::ADDON_PERIPHERALDLL))
+    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::AddonType::ADDON_PERIPHERALDLL))
       UpdateAddons();
   }
   else if (typeid(event) == typeid(ADDON::AddonEvents::Disabled))
   {
-    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::ADDON_PERIPHERALDLL))
+    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::AddonType::ADDON_PERIPHERALDLL))
       UnRegisterAddon(event.addonId);
   }
   else if (typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
@@ -388,7 +389,7 @@ void CPeripheralBusAddon::UpdateAddons(void)
 
   // Get new add-ons
   std::vector<AddonInfoPtr> newAddons;
-  CServiceBroker::GetAddonMgr().GetAddonInfos(newAddons, true, ADDON_PERIPHERALDLL);
+  CServiceBroker::GetAddonMgr().GetAddonInfos(newAddons, true, AddonType::ADDON_PERIPHERALDLL);
   std::transform(newAddons.begin(), newAddons.end(), std::inserter(newIds, newIds.end()),
                  GetAddonID);
 

@@ -140,9 +140,9 @@ class CAddonInfo
 {
 public:
   CAddonInfo() = default;
-  CAddonInfo(std::string id, TYPE type);
+  CAddonInfo(std::string id, AddonType type);
 
-  void SetMainType(TYPE type) { m_mainType = type; }
+  void SetMainType(AddonType type) { m_mainType = type; }
   void SetBinary(bool isBinary) { m_isBinary = isBinary; }
   void SetLibName(const std::string& libname) { m_libname = libname; }
   void SetPath(const std::string& path) { m_path = path; }
@@ -158,7 +158,7 @@ public:
    *
    * @return The used main type of addon
    */
-  TYPE MainType() const { return m_mainType; }
+  AddonType MainType() const { return m_mainType; }
 
   /**
    * @brief To check addon contains a type
@@ -167,7 +167,7 @@ public:
    * @param[in] mainOnly to check only in first defined main addon inside addon.xml
    * @return true in case the wanted type is supported, false if not
    */
-  bool HasType(TYPE type, bool mainOnly = false) const;
+  bool HasType(AddonType type, bool mainOnly = false) const;
 
   /**
    * @brief To get all available types inside the addon
@@ -196,9 +196,9 @@ public:
    * ~~~~~~~~~~~~~
    *
    */
-  const CAddonType* Type(TYPE type) const;
+  const CAddonType* Type(AddonType type) const;
 
-  bool ProvidesSubContent(const TYPE& content, const TYPE& mainType = ADDON_UNKNOWN) const;
+  bool ProvidesSubContent(AddonType content, AddonType mainType = AddonType::ADDON_UNKNOWN) const;
   bool ProvidesSeveralSubContents() const;
 
   const AddonVersion& Version() const { return m_version; }
@@ -251,18 +251,18 @@ public:
     * @brief Utilities to translate add-on parts to his requested part.
     */
   //@{
-  static std::string TranslateType(TYPE type, bool pretty = false);
-  static std::string TranslateIconType(TYPE type);
-  static TYPE TranslateType(const std::string& string);
-  static TYPE TranslateSubContent(const std::string& content);
-  static AddonInstanceSupport InstanceSupportType(TYPE type);
+  static std::string TranslateType(AddonType type, bool pretty = false);
+  static std::string TranslateIconType(AddonType type);
+  static AddonType TranslateType(const std::string& string);
+  static AddonType TranslateSubContent(const std::string& content);
+  static AddonInstanceSupport InstanceSupportType(AddonType type);
   //@}
 
 private:
   friend class CAddonInfoBuilder;
 
   std::string m_id;
-  TYPE m_mainType = ADDON_UNKNOWN;
+  AddonType m_mainType{AddonType::ADDON_UNKNOWN};
   std::vector<CAddonType> m_types;
 
   AddonVersion m_version;

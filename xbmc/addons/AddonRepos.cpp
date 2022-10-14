@@ -444,7 +444,7 @@ bool CAddonRepos::FindDependency(const std::string& dependsId,
   // we got the dependency, so now get a repository-pointer to return
 
   std::shared_ptr<IAddon> tmp;
-  if (!m_addonMgr.GetAddon(dependencyToInstall->Origin(), tmp, ADDON_REPOSITORY,
+  if (!m_addonMgr.GetAddon(dependencyToInstall->Origin(), tmp, AddonType::ADDON_REPOSITORY,
                            OnlyEnabled::CHOICE_YES))
     return false;
 
@@ -453,7 +453,7 @@ bool CAddonRepos::FindDependency(const std::string& dependsId,
   CLog::Log(LOGDEBUG, "ADDONS: found dependency [{}] for install/update from repo [{}]",
             dependencyToInstall->ID(), repoForDep->ID());
 
-  if (dependencyToInstall->HasType(ADDON_REPOSITORY))
+  if (dependencyToInstall->HasType(AddonType::ADDON_REPOSITORY))
   {
     CLog::Log(LOGDEBUG,
               "ADDONS: dependency with id [{}] has type ADDON_REPOSITORY and will not install!",
