@@ -12,7 +12,6 @@
 #include "GUIInfoManager.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
-#include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/LocalizeStrings.h"
 #ifdef HAS_PYTHON
@@ -54,8 +53,7 @@ bool CContextMenuItem::Execute(const std::shared_ptr<CFileItem>& item) const
     return false;
 
   ADDON::AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(m_addonId, addon, ADDON::AddonType::ADDON_UNKNOWN,
-                                              ADDON::OnlyEnabled::CHOICE_YES))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(m_addonId, addon, ADDON::OnlyEnabled::CHOICE_YES))
     return false;
 
   bool reuseLanguageInvoker = false;

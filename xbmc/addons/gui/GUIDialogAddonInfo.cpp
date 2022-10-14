@@ -816,7 +816,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   m_item = std::make_shared<CFileItem>(*item);
   m_localAddon.reset();
   if (CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), m_localAddon,
-                                             AddonType::ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO))
+                                             OnlyEnabled::CHOICE_NO))
   {
     CLog::Log(LOGDEBUG, "{} - Addon with id {} not found locally.", __FUNCTION__,
               item->GetAddonInfo()->ID());
@@ -840,8 +840,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
     std::shared_ptr<IAddon> addonAvailable;
 
     // Find add-on in local installation
-    if (!CServiceBroker::GetAddonMgr().GetAddon(dep.id, addonInstalled, AddonType::ADDON_UNKNOWN,
-                                                OnlyEnabled::CHOICE_YES))
+    if (!CServiceBroker::GetAddonMgr().GetAddon(dep.id, addonInstalled, OnlyEnabled::CHOICE_YES))
     {
       addonInstalled = nullptr;
     }
