@@ -11,7 +11,6 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
-#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -251,7 +250,6 @@ void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSet
     {
       AddonPtr scraperAddon;
       if (CServiceBroker::GetAddonMgr().GetAddon(selectedAddonId, scraperAddon,
-                                                 ADDON::AddonType::ADDON_UNKNOWN,
                                                  ADDON::OnlyEnabled::CHOICE_YES))
       {
         m_scraper = std::dynamic_pointer_cast<CScraper>(scraperAddon);

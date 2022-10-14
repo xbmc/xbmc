@@ -13,7 +13,6 @@
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
-#include "addons/addoninfo/AddonType.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
@@ -149,7 +148,6 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     {
       ADDON::AddonPtr addon;
       if (!CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon,
-                                                  ADDON::AddonType::ADDON_UNKNOWN,
                                                   ADDON::OnlyEnabled::CHOICE_YES))
       {
         return false;
@@ -172,7 +170,6 @@ bool CAddonsGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       if (!info.GetData3().empty())
       {
         bool success = CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon,
-                                                              ADDON::AddonType::ADDON_UNKNOWN,
                                                               ADDON::OnlyEnabled::CHOICE_YES);
         if (!success || !addon)
           break;
@@ -211,7 +208,6 @@ bool CAddonsGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     {
       ADDON::AddonPtr addon;
       if (!CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon,
-                                                  ADDON::AddonType::ADDON_UNKNOWN,
                                                   ADDON::OnlyEnabled::CHOICE_YES))
       {
         return false;
@@ -233,7 +229,6 @@ bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     {
       ADDON::AddonPtr addon;
       if (!CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon,
-                                                  ADDON::AddonType::ADDON_UNKNOWN,
                                                   ADDON::OnlyEnabled::CHOICE_YES))
       {
         return false;
@@ -254,7 +249,6 @@ bool CAddonsGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = false;
       ADDON::AddonPtr addon;
       if (CServiceBroker::GetAddonMgr().GetAddon(info.GetData3(), addon,
-                                                 ADDON::AddonType::ADDON_UNKNOWN,
                                                  ADDON::OnlyEnabled::CHOICE_YES))
         value = !CServiceBroker::GetAddonMgr().IsAddonDisabled(info.GetData3());
       return true;

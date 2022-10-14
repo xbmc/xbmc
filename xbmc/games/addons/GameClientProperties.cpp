@@ -207,8 +207,7 @@ bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS& addons)
   for (const auto& dependency : m_parent.GetDependencies())
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(dependency.id, addon, AddonType::ADDON_UNKNOWN,
-                                               OnlyEnabled::CHOICE_NO))
+    if (CServiceBroker::GetAddonMgr().GetAddon(dependency.id, addon, OnlyEnabled::CHOICE_NO))
     {
       // If add-on is disabled, ask the user to enable it
       if (CServiceBroker::GetAddonMgr().IsAddonDisabled(dependency.id))

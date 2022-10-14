@@ -108,6 +108,14 @@ public:
                 AddonType type,
                 OnlyEnabled onlyEnabled) const;
 
+  /*! \brief Retrieve a specific addon (of no specific type)
+     \param id the id of the addon to retrieve.
+     \param addon[out] the retrieved addon pointer - only use if the function returns true.
+     \param onlyEnabled whether we only want enabled addons - set to false to allow both enabled and disabled addons - defaults to true.
+     \return true if an addon matching the id of any type is available and is enabled (if onlyEnabled is true).
+     */
+  bool GetAddon(const std::string& id, AddonPtr& addon, OnlyEnabled onlyEnabled) const;
+
   bool HasType(const std::string& id, AddonType type);
 
   bool HasAddons(AddonType type);

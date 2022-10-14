@@ -33,7 +33,6 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/VFSEntry.h"
-#include "addons/addoninfo/AddonType.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/PVRDirectory.h"
@@ -1168,8 +1167,7 @@ std::string CUtil::GetExecProviderLabelFromPath(const std::string& path)
         const std::string plugin = pathIsAddonID ? path : CURL(path).GetHostName();
 
         ADDON::AddonPtr addon;
-        CServiceBroker::GetAddonMgr().GetAddon(plugin, addon, ADDON::AddonType::ADDON_UNKNOWN,
-                                               ADDON::OnlyEnabled::CHOICE_NO);
+        CServiceBroker::GetAddonMgr().GetAddon(plugin, addon, ADDON::OnlyEnabled::CHOICE_NO);
         if (addon)
           provider = addon->Name();
       }

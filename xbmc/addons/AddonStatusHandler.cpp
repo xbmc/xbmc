@@ -10,7 +10,6 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
-#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -50,8 +49,7 @@ CAddonStatusHandler::CAddonStatusHandler(const std::string& addonID,
 {
   //! @todo The status handled CAddonStatusHandler by is related to the class, not the instance
   //! having CAddonMgr construct an instance makes no sense
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonID, m_addon, AddonType::ADDON_UNKNOWN,
-                                              OnlyEnabled::CHOICE_YES))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonID, m_addon, OnlyEnabled::CHOICE_YES))
     return;
 
   CLog::Log(LOGINFO,

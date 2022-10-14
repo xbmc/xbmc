@@ -648,6 +648,11 @@ bool CAddonMgr::GetAddon(const std::string& str,
   return false;
 }
 
+bool CAddonMgr::GetAddon(const std::string& str, AddonPtr& addon, OnlyEnabled onlyEnabled) const
+{
+  return GetAddon(str, addon, AddonType::ADDON_UNKNOWN, onlyEnabled);
+}
+
 bool CAddonMgr::HasType(const std::string& id, AddonType type)
 {
   AddonPtr addon;

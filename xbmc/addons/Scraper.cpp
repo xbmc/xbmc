@@ -370,8 +370,7 @@ bool CScraper::Load()
 
       bool bOptional = itr->optional;
 
-      if (CServiceBroker::GetAddonMgr().GetAddon((*itr).id, dep, AddonType::ADDON_UNKNOWN,
-                                                 ADDON::OnlyEnabled::CHOICE_YES))
+      if (CServiceBroker::GetAddonMgr().GetAddon((*itr).id, dep, ADDON::OnlyEnabled::CHOICE_YES))
       {
         CXBMCTinyXML doc;
         if (dep->Type() == AddonType::ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))

@@ -13,7 +13,6 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/Resource.h"
-#include "addons/addoninfo/AddonType.h"
 
 using namespace ADDON;
 using namespace XFILE;
@@ -47,8 +46,7 @@ bool CResourceFile::TranslatePath(const CURL &url, std::string &translatedPath)
     return false;
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, AddonType::ADDON_UNKNOWN,
-                                              OnlyEnabled::CHOICE_YES) ||
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, OnlyEnabled::CHOICE_YES) ||
       addon == NULL)
     return false;
 

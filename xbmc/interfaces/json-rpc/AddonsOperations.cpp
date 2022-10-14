@@ -133,8 +133,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITr
 {
   std::string id = parameterObject["addonid"].asString();
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, AddonType::ADDON_UNKNOWN,
-                                              OnlyEnabled::CHOICE_NO) ||
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, OnlyEnabled::CHOICE_NO) ||
       addon.get() == NULL || addon->Type() <= AddonType::ADDON_UNKNOWN ||
       addon->Type() >= AddonType::ADDON_MAX)
     return InvalidParams;
@@ -149,8 +148,7 @@ JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITr
 {
   std::string id = parameterObject["addonid"].asString();
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, AddonType::ADDON_UNKNOWN,
-                                              OnlyEnabled::CHOICE_NO) ||
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, OnlyEnabled::CHOICE_NO) ||
       addon == nullptr || addon->Type() <= AddonType::ADDON_UNKNOWN ||
       addon->Type() >= AddonType::ADDON_MAX)
     return InvalidParams;
@@ -181,8 +179,7 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
 {
   std::string id = parameterObject["addonid"].asString();
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, AddonType::ADDON_UNKNOWN,
-                                              OnlyEnabled::CHOICE_YES) ||
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, OnlyEnabled::CHOICE_YES) ||
       addon.get() == NULL || addon->Type() < AddonType::ADDON_VIZ ||
       addon->Type() >= AddonType::ADDON_MAX)
     return InvalidParams;

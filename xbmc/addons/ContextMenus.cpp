@@ -38,7 +38,7 @@ bool CAddonSettings::IsVisible(const CFileItem& item) const
   AddonPtr addon;
   return item.HasAddonInfo() &&
          CServiceBroker::GetAddonMgr().GetAddon(item.GetAddonInfo()->ID(), addon,
-                                                AddonType::ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO) &&
+                                                OnlyEnabled::CHOICE_NO) &&
          addon->CanHaveAddonOrInstanceSettings();
 }
 
@@ -46,7 +46,7 @@ bool CAddonSettings::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   AddonPtr addon;
   return CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), addon,
-                                                AddonType::ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO) &&
+                                                OnlyEnabled::CHOICE_NO) &&
          CGUIDialogAddonSettings::ShowForAddon(addon);
 }
 

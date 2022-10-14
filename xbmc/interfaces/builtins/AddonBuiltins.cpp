@@ -72,8 +72,7 @@ static int EnableAddon(const std::vector<std::string>& params)
     return -1;
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::ADDON_UNKNOWN,
-                                              OnlyEnabled::CHOICE_NO))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, OnlyEnabled::CHOICE_NO))
     return -1;
 
   auto response = HELPERS::ShowYesNoDialogLines(CVariant{24076}, CVariant{24135}, CVariant{addon->Name()}, CVariant{24136});
@@ -240,8 +239,7 @@ static int RunScript(const std::vector<std::string>& params)
     AddonPtr addon;
     std::string scriptpath;
     // Test to see if the param is an addon ID
-    if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::ADDON_UNKNOWN,
-                                               OnlyEnabled::CHOICE_YES))
+    if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, OnlyEnabled::CHOICE_YES))
     {
       //Get the correct extension point to run
       if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::ADDON_SCRIPT,
@@ -258,8 +256,7 @@ static int RunScript(const std::vector<std::string>& params)
       else
       {
         // Run a random extension point (old behaviour).
-        if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::ADDON_UNKNOWN,
-                                                   OnlyEnabled::CHOICE_YES))
+        if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, OnlyEnabled::CHOICE_YES))
         {
           scriptpath = addon->LibPath();
           CLog::Log(LOGWARNING,
@@ -335,8 +332,7 @@ static int SetDefaultAddon(const std::vector<std::string>& params)
 static int AddonSettings(const std::vector<std::string>& params)
 {
   AddonPtr addon;
-  if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::ADDON_UNKNOWN,
-                                             OnlyEnabled::CHOICE_YES))
+  if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, OnlyEnabled::CHOICE_YES))
     CGUIDialogAddonSettings::ShowForAddon(addon);
 
   return 0;
@@ -364,8 +360,7 @@ static int StopScript(const std::vector<std::string>& params)
   std::string scriptpath(params[0]);
   // Test to see if the param is an addon ID
   AddonPtr script;
-  if (CServiceBroker::GetAddonMgr().GetAddon(params[0], script, AddonType::ADDON_UNKNOWN,
-                                             OnlyEnabled::CHOICE_YES))
+  if (CServiceBroker::GetAddonMgr().GetAddon(params[0], script, OnlyEnabled::CHOICE_YES))
     scriptpath = script->LibPath();
   CScriptInvocationManager::GetInstance().Stop(scriptpath);
 
