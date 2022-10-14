@@ -84,6 +84,9 @@
 #define TMSG_EVENT                        TMSG_MASK_APPLICATION + 33
 #define TMSG_TOGGLEFLOATONTOP TMSG_MASK_APPLICATION + 34
 
+/// @brief Called from the player when its current item is updated
+#define TMSG_UPDATE_PLAYER_ITEM TMSG_MASK_APPLICATION + 35
+
 #define TMSG_GUI_INFOLABEL                TMSG_MASK_GUIINFOMANAGER + 0
 #define TMSG_GUI_INFOBOOL                 TMSG_MASK_GUIINFOMANAGER + 1
 #define TMSG_UPDATE_CURRENT_ITEM          TMSG_MASK_GUIINFOMANAGER + 2
