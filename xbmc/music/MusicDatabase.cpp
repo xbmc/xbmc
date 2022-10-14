@@ -22,7 +22,6 @@
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Scraper.h"
-#include "addons/addoninfo/AddonType.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/audiodecoder.h"
 #include "dbwrappers/dataset.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -11596,7 +11595,6 @@ bool CMusicDatabase::GetScraper(int id, const CONTENT_TYPE& content, ADDON::Scra
       ADDON::AddonPtr addon;
       if (!scraperUUID.empty() &&
           CServiceBroker::GetAddonMgr().GetAddon(scraperUUID, addon,
-                                                 ADDON::AddonType::ADDON_UNKNOWN,
                                                  ADDON::OnlyEnabled::CHOICE_YES) &&
           addon)
       {

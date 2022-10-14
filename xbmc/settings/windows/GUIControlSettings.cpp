@@ -12,7 +12,6 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
-#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "addons/settings/SettingUrlEncodedString.h"
 #include "dialogs/GUIDialogColorPicker.h"
@@ -1087,7 +1086,6 @@ void CGUIControlButtonSetting::Update(bool fromControl, bool updateDisplayOnly)
             {
               ADDON::AddonPtr addon;
               if (CServiceBroker::GetAddonMgr().GetAddon(addonID, addon,
-                                                         ADDON::AddonType::ADDON_UNKNOWN,
                                                          ADDON::OnlyEnabled::CHOICE_YES))
                 addonNames.push_back(addon->Name());
             }

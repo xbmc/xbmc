@@ -162,7 +162,6 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
       {
         ADDON::AddonPtr addon;
         if (CServiceBroker::GetAddonMgr().GetAddon(save->GameClientID(), addon,
-                                                   ADDON::AddonType::ADDON_UNKNOWN,
                                                    ADDON::OnlyEnabled::CHOICE_YES))
         {
           // Warn the user that continuing with a different game client will

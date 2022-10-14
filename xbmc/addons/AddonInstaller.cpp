@@ -251,8 +251,7 @@ bool CAddonInstaller::InstallModal(const std::string& addonID,
     return false;
 
   // we assume that addons that are enabled don't get to this routine (i.e. that GetAddon() has been called)
-  if (CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, AddonType::ADDON_UNKNOWN,
-                                             OnlyEnabled::CHOICE_NO))
+  if (CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, OnlyEnabled::CHOICE_NO))
     return false; // addon is installed but disabled, and the user has specifically activated something that needs
                   // the addon - should we enable it?
 
@@ -273,8 +272,7 @@ bool CAddonInstaller::InstallModal(const std::string& addonID,
   if (!InstallOrUpdate(addonID, BackgroundJob::CHOICE_NO, ModalJob::CHOICE_YES))
     return false;
 
-  return CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, AddonType::ADDON_UNKNOWN,
-                                                OnlyEnabled::CHOICE_YES);
+  return CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, OnlyEnabled::CHOICE_YES);
 }
 
 
@@ -487,8 +485,8 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
     const AddonVersion& version = it.version;
     bool optional = it.optional;
     AddonPtr dep;
-    const bool haveInstalledAddon = CServiceBroker::GetAddonMgr().GetAddon(
-        addonID, dep, AddonType::ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO);
+    const bool haveInstalledAddon =
+        CServiceBroker::GetAddonMgr().GetAddon(addonID, dep, OnlyEnabled::CHOICE_NO);
     if ((haveInstalledAddon && !dep->MeetsVersion(versionMin, version)) ||
         (!haveInstalledAddon && !optional))
     {
@@ -640,8 +638,7 @@ CAddonInstallJob::CAddonInstallJob(const AddonPtr& addon,
   : m_addon(addon), m_repo(repo), m_isAutoUpdate(isAutoUpdate)
 {
   AddonPtr dummy;
-  m_isUpdate = CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), dummy, AddonType::ADDON_UNKNOWN,
-                                                      OnlyEnabled::CHOICE_NO);
+  m_isUpdate = CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), dummy, OnlyEnabled::CHOICE_NO);
 }
 
 bool CAddonInstallJob::GetAddon(const std::string& addonID, RepositoryPtr& repo,
@@ -811,8 +808,7 @@ bool CAddonInstallJob::DoWork()
   // Load new installed and if successed replace defined m_addon here with new one
   if (!CServiceBroker::GetAddonMgr().LoadAddon(m_addon->ID(), m_addon->Origin(),
                                                m_addon->Version()) ||
-      !CServiceBroker::GetAddonMgr().GetAddon(m_addon->ID(), m_addon, AddonType::ADDON_UNKNOWN,
-                                              OnlyEnabled::CHOICE_YES))
+      !CServiceBroker::GetAddonMgr().GetAddon(m_addon->ID(), m_addon, OnlyEnabled::CHOICE_YES))
   {
     CLog::Log(LOGERROR, "CAddonInstallJob[{}]: failed to reload addon", m_addon->ID());
     return false;
@@ -1064,8 +1060,8 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
       const AddonVersion& version = it->version;
       bool optional = it->optional;
       AddonPtr dependency;
-      const bool haveInstalledAddon = CServiceBroker::GetAddonMgr().GetAddon(
-          addonID, dependency, AddonType::ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO);
+      const bool haveInstalledAddon =
+          CServiceBroker::GetAddonMgr().GetAddon(addonID, dependency, OnlyEnabled::CHOICE_NO);
       if ((haveInstalledAddon && !dependency->MeetsVersion(versionMin, version)) ||
           (!haveInstalledAddon && !optional))
       {
@@ -1182,8 +1178,7 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   if (addon != nullptr)
   {
     AddonPtr addon2;
-    bool success = CServiceBroker::GetAddonMgr().GetAddon(addonID, addon2, AddonType::ADDON_UNKNOWN,
-                                                          OnlyEnabled::CHOICE_YES);
+    bool success = CServiceBroker::GetAddonMgr().GetAddon(addonID, addon2, OnlyEnabled::CHOICE_YES);
     if (msg.empty())
     {
       msg = g_localizeStrings.Get(addon2 != nullptr && success ? 113 : 114);

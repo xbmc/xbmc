@@ -333,8 +333,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
           //check if it's installed
           AddonPtr addon;
           if (!CServiceBroker::GetAddonMgr().GetAddon(items[i]->GetProperty("Addon.ID").asString(),
-                                                      addon, AddonType::ADDON_UNKNOWN,
-                                                      OnlyEnabled::CHOICE_YES))
+                                                      addon, OnlyEnabled::CHOICE_YES))
             items.Remove(i);
         }
       }
