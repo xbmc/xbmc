@@ -967,12 +967,12 @@ void CPeripherals::OnSettingAction(const std::shared_ptr<const CSetting>& settin
   else if (settingId == CSettings::SETTING_INPUT_PERIPHERALLIBRARIES)
   {
     std::string strAddonId;
-    if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_PERIPHERALDLL, strAddonId, false, true,
-                                              true, false, true) == 1 &&
+    if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::AddonType::ADDON_PERIPHERALDLL, strAddonId,
+                                              false, true, true, false, true) == 1 &&
         !strAddonId.empty())
     {
       ADDON::AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON::ADDON_UNKNOWN,
+      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON::AddonType::ADDON_UNKNOWN,
                                                  ADDON::OnlyEnabled::CHOICE_YES))
         CGUIDialogAddonSettings::ShowForAddon(addon);
     }

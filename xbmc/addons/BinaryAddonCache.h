@@ -30,17 +30,17 @@ public:
   virtual ~CBinaryAddonCache();
   void Init();
   void Deinit();
-  void GetAddons(VECADDONS& addons, const TYPE& type);
-  void GetDisabledAddons(VECADDONS& addons, const TYPE& type);
-  void GetInstalledAddons(VECADDONS& addons, const TYPE& type);
-  AddonPtr GetAddonInstance(const std::string& strId, TYPE type);
+  void GetAddons(VECADDONS& addons, AddonType type);
+  void GetDisabledAddons(VECADDONS& addons, AddonType type);
+  void GetInstalledAddons(VECADDONS& addons, AddonType type);
+  AddonPtr GetAddonInstance(const std::string& strId, AddonType type);
 
 protected:
   void Update();
   void OnEvent(const AddonEvent& event);
 
   CCriticalSection m_critSection;
-  std::multimap<TYPE, VECADDONS> m_addons;
+  std::multimap<AddonType, VECADDONS> m_addons;
 };
 
 } // namespace ADDON

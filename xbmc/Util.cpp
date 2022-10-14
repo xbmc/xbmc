@@ -1167,7 +1167,7 @@ std::string CUtil::GetExecProviderLabelFromPath(const std::string& path)
         const std::string plugin = pathIsAddonID ? path : CURL(path).GetHostName();
 
         ADDON::AddonPtr addon;
-        CServiceBroker::GetAddonMgr().GetAddon(plugin, addon, ADDON::ADDON_UNKNOWN,
+        CServiceBroker::GetAddonMgr().GetAddon(plugin, addon, ADDON::AddonType::ADDON_UNKNOWN,
                                                ADDON::OnlyEnabled::CHOICE_NO);
         if (addon)
           provider = addon->Name();

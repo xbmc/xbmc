@@ -26,7 +26,8 @@ CExtsMimeSupportList::CExtsMimeSupportList(CAddonMgr& addonMgr) : m_addonMgr(add
   m_addonMgr.Events().Subscribe(this, &CExtsMimeSupportList::OnEvent);
 
   // Load all available audio decoder addons during Kodi start
-  const std::vector<TYPE> types = {ADDON_AUDIODECODER, ADDON_IMAGEDECODER};
+  const std::vector<AddonType> types = {AddonType::ADDON_AUDIODECODER,
+                                        AddonType::ADDON_IMAGEDECODER};
   const auto addonInfos = m_addonMgr.GetAddonInfos(true, types);
   for (const auto& addonInfo : addonInfos)
     m_supportedList.emplace_back(ScanAddonProperties(addonInfo->MainType(), addonInfo));
@@ -43,8 +44,8 @@ void CExtsMimeSupportList::OnEvent(const AddonEvent& event)
       typeid(event) == typeid(AddonEvents::Disabled) ||
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
-    if (m_addonMgr.HasType(event.addonId, ADDON_AUDIODECODER) ||
-        m_addonMgr.HasType(event.addonId, ADDON_IMAGEDECODER))
+    if (m_addonMgr.HasType(event.addonId, AddonType::ADDON_AUDIODECODER) ||
+        m_addonMgr.HasType(event.addonId, AddonType::ADDON_IMAGEDECODER))
       Update(event.addonId);
   }
   else if (typeid(event) == typeid(AddonEvents::UnInstalled))
@@ -73,7 +74,8 @@ void CExtsMimeSupportList::Update(const std::string& id)
   std::shared_ptr<CAddonInfo> addonInfo = m_addonMgr.GetAddonInfo(id);
   if (addonInfo && !m_addonMgr.IsAddonDisabled(id))
   {
-    if (addonInfo->HasType(ADDON_AUDIODECODER) || addonInfo->HasType(ADDON_IMAGEDECODER))
+    if (addonInfo->HasType(AddonType::ADDON_AUDIODECODER) ||
+        addonInfo->HasType(AddonType::ADDON_IMAGEDECODER))
     {
       SupportValues values = ScanAddonProperties(addonInfo->MainType(), addonInfo);
       {
@@ -85,13 +87,13 @@ void CExtsMimeSupportList::Update(const std::string& id)
 }
 
 CExtsMimeSupportList::SupportValues CExtsMimeSupportList::ScanAddonProperties(
-    ADDON::TYPE type, const std::shared_ptr<CAddonInfo>& addonInfo)
+    AddonType type, const std::shared_ptr<CAddonInfo>& addonInfo)
 {
   SupportValues values;
 
   values.m_addonType = type;
   values.m_addonInfo = addonInfo;
-  if (type == ADDON_AUDIODECODER)
+  if (type == AddonType::ADDON_AUDIODECODER)
   {
     values.m_codecName = addonInfo->Type(type)->GetValue("@name").asString();
     values.m_hasTags = addonInfo->Type(type)->GetValue("@tags").asBoolean();
@@ -195,10 +197,10 @@ bool CExtsMimeSupportList::IsExtensionSupported(const std::string& ext)
   return false;
 }
 
-std::vector<std::pair<ADDON::TYPE, std::shared_ptr<ADDON::CAddonInfo>>> CExtsMimeSupportList::
+std::vector<std::pair<AddonType, std::shared_ptr<ADDON::CAddonInfo>>> CExtsMimeSupportList::
     GetExtensionSupportedAddonInfos(const std::string& ext, FilterSelect select)
 {
-  std::vector<std::pair<ADDON::TYPE, std::shared_ptr<CAddonInfo>>> addonInfos;
+  std::vector<std::pair<AddonType, std::shared_ptr<CAddonInfo>>> addonInfos;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -233,10 +235,10 @@ bool CExtsMimeSupportList::IsMimetypeSupported(const std::string& mimetype)
   return false;
 }
 
-std::vector<std::pair<ADDON::TYPE, std::shared_ptr<CAddonInfo>>> CExtsMimeSupportList::
+std::vector<std::pair<AddonType, std::shared_ptr<CAddonInfo>>> CExtsMimeSupportList::
     GetMimetypeSupportedAddonInfos(const std::string& mimetype, FilterSelect select)
 {
-  std::vector<std::pair<ADDON::TYPE, std::shared_ptr<CAddonInfo>>> addonInfos;
+  std::vector<std::pair<AddonType, std::shared_ptr<CAddonInfo>>> addonInfos;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 

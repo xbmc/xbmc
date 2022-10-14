@@ -80,7 +80,7 @@ std::string NormalizeExtension(const std::string& strExtension)
 // --- CGameClient -------------------------------------------------------------
 
 CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
-  : CAddonDll(addonInfo, ADDON::ADDON_GAMEDLL),
+  : CAddonDll(addonInfo, ADDON::AddonType::ADDON_GAMEDLL),
     m_subsystems(CGameClientSubsystem::CreateSubsystems(*this, *m_ifc.game, m_critSection)),
     m_bSupportsAllExtensions(false),
     m_bIsPlaying(false),
@@ -90,7 +90,8 @@ CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
   using namespace ADDON;
 
   std::vector<std::string> extensions = StringUtils::Split(
-      Type(ADDON_GAMEDLL)->GetValue(GAME_PROPERTY_EXTENSIONS).asString(), EXTENSION_SEPARATOR);
+      Type(AddonType::ADDON_GAMEDLL)->GetValue(GAME_PROPERTY_EXTENSIONS).asString(),
+      EXTENSION_SEPARATOR);
   std::transform(extensions.begin(), extensions.end(),
                  std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
 
@@ -101,9 +102,11 @@ CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
     m_extensions.clear();
   }
 
-  m_bSupportsVFS = addonInfo->Type(ADDON_GAMEDLL)->GetValue(GAME_PROPERTY_SUPPORTS_VFS).asBoolean();
-  m_bSupportsStandalone =
-      addonInfo->Type(ADDON_GAMEDLL)->GetValue(GAME_PROPERTY_SUPPORTS_STANDALONE).asBoolean();
+  m_bSupportsVFS =
+      addonInfo->Type(AddonType::ADDON_GAMEDLL)->GetValue(GAME_PROPERTY_SUPPORTS_VFS).asBoolean();
+  m_bSupportsStandalone = addonInfo->Type(AddonType::ADDON_GAMEDLL)
+                              ->GetValue(GAME_PROPERTY_SUPPORTS_STANDALONE)
+                              .asBoolean();
 }
 
 CGameClient::~CGameClient(void)
@@ -426,7 +429,7 @@ std::string CGameClient::GetMissingResource()
     {
       AddonPtr addon;
       const bool bInstalled = CServiceBroker::GetAddonMgr().GetAddon(
-          strDependencyId, addon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_YES);
+          strDependencyId, addon, AddonType::ADDON_UNKNOWN, OnlyEnabled::CHOICE_YES);
       if (!bInstalled)
       {
         strAddonId = strDependencyId;

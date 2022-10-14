@@ -46,7 +46,7 @@ bool CResourceFile::TranslatePath(const CURL &url, std::string &translatedPath)
     return false;
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON_UNKNOWN,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, AddonType::ADDON_UNKNOWN,
                                               OnlyEnabled::CHOICE_YES) ||
       addon == NULL)
     return false;

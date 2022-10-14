@@ -52,7 +52,7 @@ class CAddonDll : public CAddon
 {
 public:
   CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase);
-  CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType);
+  CAddonDll(const AddonInfoPtr& addonInfo, AddonType addonType);
   ~CAddonDll() override;
 
   // Implementation of IAddon via CAddon

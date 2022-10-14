@@ -80,7 +80,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       const std::string addon = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
           CSettings::SETTING_SCREENSAVER_MODE);
       const ADDON::AddonInfoPtr addonBase =
-          CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::ADDON_SCREENSAVER);
+          CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::AddonType::ADDON_SCREENSAVER);
       if (!addonBase)
         return false;
       m_addon = std::make_unique<KODI::ADDONS::CScreenSaver>(addonBase);

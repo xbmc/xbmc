@@ -53,7 +53,7 @@ CInputStreamAddon::CInputStreamAddon(const AddonInfoPtr& addonInfo,
     m_player(player)
 {
   std::string listitemprops =
-      addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@listitemprops").asString();
+      addonInfo->Type(AddonType::ADDON_INPUTSTREAM)->GetValue("@listitemprops").asString();
   std::string name(addonInfo->ID());
 
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
@@ -91,7 +91,8 @@ bool CInputStreamAddon::Supports(const AddonInfoPtr& addonInfo, const CFileItem&
   std::string protocol = CURL(fileitem.GetDynPath()).GetProtocol();
   if (!protocol.empty())
   {
-    std::string protocols = addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@protocols").asString();
+    std::string protocols =
+        addonInfo->Type(AddonType::ADDON_INPUTSTREAM)->GetValue("@protocols").asString();
     if (!protocols.empty())
     {
       std::vector<std::string> protocolsList = StringUtils::Tokenize(protocols, "|");
@@ -107,7 +108,8 @@ bool CInputStreamAddon::Supports(const AddonInfoPtr& addonInfo, const CFileItem&
   std::string filetype = fileitem.GetURL().GetFileType();
   if (!filetype.empty())
   {
-    std::string extensions = addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@extension").asString();
+    std::string extensions =
+        addonInfo->Type(AddonType::ADDON_INPUTSTREAM)->GetValue("@extension").asString();
     if (!extensions.empty())
     {
       std::vector<std::string> extensionsList = StringUtils::Tokenize(extensions, "|");

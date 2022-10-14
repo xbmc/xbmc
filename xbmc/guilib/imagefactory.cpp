@@ -41,7 +41,7 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
   for (const auto& addonInfo : addonInfos)
   {
     // Check asked and given mime type is supported by only for here allowed imagedecoder addons.
-    if (addonInfo.first != ADDON::ADDON_IMAGEDECODER)
+    if (addonInfo.first != ADDON::AddonType::ADDON_IMAGEDECODER)
       continue;
 
     std::unique_lock<CCriticalSection> lock(m_createSec);

@@ -362,7 +362,7 @@ bool CGUIVisualisationControl::InitVisualization()
   const std::string addon = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
       CSettings::SETTING_MUSICPLAYER_VISUALISATION);
   const ADDON::AddonInfoPtr addonBase =
-      CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::ADDON_VIZ);
+      CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::AddonType::ADDON_VIZ);
   if (!addonBase)
     return false;
 

@@ -36,7 +36,7 @@ void OnPostUnInstall(const AddonPtr& addon);
 class CAddon : public IAddon
 {
 public:
-  explicit CAddon(const AddonInfoPtr& addonInfo, TYPE addonType);
+  explicit CAddon(const AddonInfoPtr& addonInfo, AddonType addonType);
   ~CAddon() override = default;
 
   /**
@@ -47,14 +47,14 @@ public:
    *
    * @return The used main type of addon
    */
-  TYPE MainType() const override;
+  AddonType MainType() const override;
 
   /**
    * @brief To get the on this CAddon class processed addon type
    *
    * @return For this class used addon type
    */
-  TYPE Type() const override { return m_type; }
+  AddonType Type() const override { return m_type; }
 
   /**
    * @brief To check complete addon (not only this) contains a type
@@ -65,7 +65,7 @@ public:
    * @param[in] type The to checked type identifier
    * @return true in case the wanted type is supported, false if not
    */
-  bool HasType(TYPE type) const override;
+  bool HasType(AddonType type) const override;
 
   /**
    * @brief To check complete addon (not only this) has a specific type
@@ -75,7 +75,7 @@ public:
    * @param[in] type Type identifier to be checked
    * @return true in case the wanted type is the main type, false if not
    */
-  bool HasMainType(TYPE type) const override;
+  bool HasMainType(AddonType type) const override;
 
   /**
    * @brief The get for given addon type information and extension data
@@ -95,7 +95,7 @@ public:
    * ~~~~~~~~~~~~~
    *
    */
-  const CAddonType* Type(TYPE type) const;
+  const CAddonType* Type(AddonType type) const;
 
   std::string ID() const override;
   std::string Name() const override;
@@ -486,7 +486,7 @@ private:
   std::shared_ptr<CAddonSettings> FindInstanceSettings(AddonInstanceId id) const;
 
   mutable std::unordered_map<AddonInstanceId, CSettingsData> m_settings;
-  const TYPE m_type;
+  const AddonType m_type;
 };
 
 }; // namespace ADDON

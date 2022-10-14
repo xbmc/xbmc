@@ -21,9 +21,9 @@ public:
 
   enum Content { UNKNOWN, AUDIO, IMAGE, EXECUTABLE, VIDEO, GAME };
 
-  explicit CPluginSource(const AddonInfoPtr& addonInfo, TYPE addonType);
+  explicit CPluginSource(const AddonInfoPtr& addonInfo, AddonType addonType);
 
-  bool HasType(TYPE type) const override;
+  bool HasType(AddonType type) const override;
   bool Provides(const Content& content) const
   {
     return content == UNKNOWN ? false : m_providedContent.count(content) > 0;

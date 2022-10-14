@@ -190,7 +190,7 @@ std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader)
   else
   {
     const AddonInfoPtr addonInfo =
-        CServiceBroker::GetAddonMgr().GetAddonInfo(audioEncoder, ADDON_AUDIOENCODER);
+        CServiceBroker::GetAddonMgr().GetAddonInfo(audioEncoder, AddonType::ADDON_AUDIOENCODER);
     if (addonInfo)
     {
       encoder = std::make_unique<CEncoderAddon>(addonInfo);
