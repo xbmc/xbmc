@@ -489,7 +489,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
     VECADDONS installableAddons;
     if (CServiceBroker::GetAddonMgr().GetInstallableAddons(installableAddons))
     {
-      for (ADDON::IVECADDONS addon = installableAddons.begin(); addon != installableAddons.end();)
+      for (auto addon = installableAddons.begin(); addon != installableAddons.end();)
       {
         AddonPtr pAddon = *addon;
 
@@ -527,14 +527,14 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
   // turn the addons into items
   std::map<std::string, AddonPtr> addonMap;
   CFileItemList items;
-  for (ADDON::IVECADDONS addon = addons.begin(); addon != addons.end(); ++addon)
+  for (const auto& addon : addons)
   {
-    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addon, (*addon)->ID()));
-    item->SetLabel2((*addon)->Summary());
+    const CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(addon, addon->ID()));
+    item->SetLabel2(addon->Summary());
     if (!items.Contains(item->GetPath()))
     {
       items.Add(item);
-      addonMap.insert(std::make_pair(item->GetPath(), *addon));
+      addonMap.insert(std::make_pair(item->GetPath(), addon));
     }
   }
 
