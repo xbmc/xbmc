@@ -23,12 +23,8 @@ namespace ADDON
 enum class AddonType;
 class CAddonType;
 
-using VECADDONS = std::vector<AddonPtr>;
-
 class CAddonInfo;
 using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
-
-const char* const ORIGIN_SYSTEM = "b6a50484-93a0-4afb-a01c-8d17e059feda";
 
 void OnPreInstall(const AddonPtr& addon);
 void OnPostInstall(const AddonPtr& addon, bool update, bool modal);

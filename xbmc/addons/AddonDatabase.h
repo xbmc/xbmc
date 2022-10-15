@@ -27,6 +27,10 @@ enum class AddonUpdateRule;
 
 class CAddonExtensions;
 
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
+using VECADDONS = std::vector<AddonPtr>;
+
 /*!
  * @brief Addon content serializer/deserializer.
  *

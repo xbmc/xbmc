@@ -9,14 +9,19 @@
 #pragma once
 
 #include "GameTypes.h"
-#include "addons/Addon.h"
-#include "addons/IAddon.h"
 
 #include <set>
 #include <string>
 
 class CFileItem;
 class CURL;
+
+namespace ADDON
+{
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
+using VECADDONS = std::vector<AddonPtr>;
+} // namespace ADDON
 
 namespace KODI
 {

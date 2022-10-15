@@ -10,6 +10,7 @@
 
 #include "CompileInfo.h"
 #include "LangInfo.h"
+#include "addons/Repository.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonType.h"
 #include "filesystem/File.h"
@@ -253,6 +254,13 @@ void CAddonInfoBuilder::SetInstallData(const AddonInfoPtr& addon, const CDateTim
   addon->m_lastUpdated = lastUpdated;
   addon->m_lastUsed = lastUsed;
   addon->m_origin = origin;
+}
+
+bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
+                                 const TiXmlElement* element,
+                                 const std::string& addonPath)
+{
+  return ParseXML(addon, element, addonPath, {});
 }
 
 bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
