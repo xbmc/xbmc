@@ -333,7 +333,7 @@ std::vector<std::string> CAddonInstaller::RemoveOrphanedDepsRecursively() const
 }
 
 bool CAddonInstaller::Install(const std::string& addonId,
-                              const AddonVersion& version,
+                              const CAddonVersion& version,
                               const std::string& repoId)
 {
   CLog::Log(LOGDEBUG, "CAddonInstaller: installing '{}' version '{}' from repository '{}'", addonId,
@@ -481,8 +481,8 @@ bool CAddonInstaller::CheckDependencies(const AddonPtr &addon,
   for (const auto& it : addon->GetDependencies())
   {
     const std::string &addonID = it.id;
-    const AddonVersion& versionMin = it.versionMin;
-    const AddonVersion& version = it.version;
+    const CAddonVersion& versionMin = it.versionMin;
+    const CAddonVersion& version = it.version;
     bool optional = it.optional;
     AddonPtr dep;
     const bool haveInstalledAddon =
@@ -623,7 +623,7 @@ int64_t CAddonInstaller::EnumeratePackageFolder(
 
     size += items[i]->m_dwSize;
     std::string pack,dummy;
-    AddonVersion::SplitFileName(pack, dummy, items[i]->GetLabel());
+    CAddonVersion::SplitFileName(pack, dummy, items[i]->GetLabel());
     if (result.find(pack) == result.end())
       result[pack] = std::make_unique<CFileItemList>();
     result[pack]->Add(CFileItemPtr(new CFileItem(*items[i])));
@@ -876,7 +876,7 @@ bool CAddonInstallJob::DoWork()
         // handle add-ons that originate from a repository
 
         // find the latest version for the origin we installed from
-        AddonVersion latestVersion;
+        CAddonVersion latestVersion;
         for (const auto& compatibleVersion : compatibleVersions)
         {
           if (compatibleVersion->Origin() == m_addon->Origin() &&
@@ -908,7 +908,7 @@ bool CAddonInstallJob::DoWork()
         // handle manually installed add-ons
 
         // find the latest version of any origin/repository
-        AddonVersion latestVersion;
+        CAddonVersion latestVersion;
         for (const auto& compatibleVersion : compatibleVersions)
         {
           if (compatibleVersion->Version() > latestVersion)
@@ -1056,8 +1056,8 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
     if (it->id != "xbmc.metadata")
     {
       const std::string &addonID = it->id;
-      const AddonVersion& versionMin = it->versionMin;
-      const AddonVersion& version = it->version;
+      const CAddonVersion& versionMin = it->versionMin;
+      const CAddonVersion& version = it->version;
       bool optional = it->optional;
       AddonPtr dependency;
       const bool haveInstalledAddon =

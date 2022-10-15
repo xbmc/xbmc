@@ -55,7 +55,7 @@ public:
     void SetLifecycleState(AddonLifecycleState state, std::string description);
     void SetPath(std::string path);
     void SetLibName(std::string libname);
-    void SetVersion(AddonVersion version);
+    void SetVersion(CAddonVersion version);
     void SetDependencies(std::vector<DependencyInfo> dependencies);
     void SetExtrainfo(InfoMap extrainfo);
     void SetInstallDate(const CDateTime& installDate);

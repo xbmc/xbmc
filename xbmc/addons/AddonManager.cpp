@@ -669,7 +669,7 @@ bool CAddonMgr::HasType(const std::string& id, AddonType type)
 
 bool CAddonMgr::FindAddon(const std::string& addonId,
                           const std::string& origin,
-                          const AddonVersion& addonVersion)
+                          const CAddonVersion& addonVersion)
 {
   std::map<std::string, std::shared_ptr<CAddonInfo>> installedAddons;
 
@@ -767,7 +767,7 @@ bool CAddonMgr::UnloadAddon(const std::string& addonId)
 
 bool CAddonMgr::LoadAddon(const std::string& addonId,
                           const std::string& origin,
-                          const AddonVersion& addonVersion)
+                          const CAddonVersion& addonVersion)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -1013,7 +1013,7 @@ bool CAddonMgr::IsAddonInstalled(const std::string& ID, const std::string& origi
 
 bool CAddonMgr::IsAddonInstalled(const std::string& ID,
                                  const std::string& origin,
-                                 const AddonVersion& version)
+                                 const CAddonVersion& version)
 {
   AddonPtr tmp;
 

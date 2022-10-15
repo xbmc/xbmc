@@ -28,7 +28,7 @@ enum class AllowCheckForUpdates : bool;
 
 class CAddonDatabase;
 class CAddonUpdateRules;
-class AddonVersion;
+class CAddonVersion;
 class IAddonMgrCallback;
 
 class CAddonInfo;
@@ -197,7 +197,7 @@ public:
      */
   bool FindAddon(const std::string& addonId,
                  const std::string& origin,
-                 const AddonVersion& addonVersion);
+                 const CAddonVersion& addonVersion);
 
   /*!
      * @brief Fills the the provided vector with the list of incompatible
@@ -245,7 +245,7 @@ public:
      */
   bool LoadAddon(const std::string& addonId,
                  const std::string& origin,
-                 const AddonVersion& addonVersion);
+                 const CAddonVersion& addonVersion);
 
   /*! @note: should only be called by AddonInstaller
      *
@@ -312,7 +312,7 @@ public:
      */
   bool IsAddonInstalled(const std::string& ID,
                         const std::string& origin,
-                        const AddonVersion& version);
+                        const CAddonVersion& version);
 
   /* \brief Checks whether an addon can be installed. Broken addons can't be installed.
     \param addon addon to be checked

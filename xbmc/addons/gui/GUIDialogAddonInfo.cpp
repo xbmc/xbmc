@@ -283,8 +283,7 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
 static const std::string LOCAL_CACHE =
     "\\0_local_cache"; // \0 to give it the lowest priority when sorting
 
-
-int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::string>>& versions)
+int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<CAddonVersion, std::string>>& versions)
 {
   auto dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
       WINDOW_DIALOG_SELECT);
@@ -324,8 +323,8 @@ void CGUIDialogAddonInfo::OnUpdate()
   const auto& itemAddonInfo = m_item->GetAddonInfo();
   const std::string& addonId = itemAddonInfo->ID();
   const std::string& origin = m_item->GetProperty("Addon.ValidUpdateOrigin").asString();
-  const AddonVersion& version =
-      static_cast<AddonVersion>(m_item->GetProperty("Addon.ValidUpdateVersion").asString());
+  const CAddonVersion& version =
+      static_cast<CAddonVersion>(m_item->GetProperty("Addon.ValidUpdateVersion").asString());
 
   Close();
   if (!m_depsInstalledWithAvailable.empty() &&
@@ -347,7 +346,7 @@ void CGUIDialogAddonInfo::OnSelectVersion()
   std::vector<std::shared_ptr<IAddon>> compatibleVersions =
       CServiceBroker::GetAddonMgr().GetCompatibleVersions(processAddonId);
 
-  std::vector<std::pair<AddonVersion, std::string>> versions;
+  std::vector<std::pair<CAddonVersion, std::string>> versions;
   versions.reserve(compatibleVersions.size());
 
   for (const auto& compatibleVersion : compatibleVersions)
@@ -364,7 +363,7 @@ void CGUIDialogAddonInfo::OnSelectVersion()
     {
       std::string packageId;
       std::string versionString;
-      if (AddonVersion::SplitFileName(packageId, versionString, items[i]->GetLabel()))
+      if (CAddonVersion::SplitFileName(packageId, versionString, items[i]->GetLabel()))
       {
         if (packageId == processAddonId)
         {
@@ -377,7 +376,7 @@ void CGUIDialogAddonInfo::OnSelectVersion()
             // don't offer locally cached packages that result in an invalid version.
             // usually this happens when the package filename gets malformed on the fs
             // e.g. downloading "http://localhost/a+b.zip" ends up in "a b.zip"
-            const AddonVersion version(versionString);
+            const CAddonVersion version(versionString);
             if (StringUtils::EqualsNoCase(sha256, hash) && !version.empty())
               versions.emplace_back(version, LOCAL_CACHE);
           }
@@ -478,7 +477,7 @@ void CGUIDialogAddonInfo::OnInstall()
   }
 
   const std::string& addonId = itemAddonInfo->ID();
-  const AddonVersion& version = itemAddonInfo->Version();
+  const CAddonVersion& version = itemAddonInfo->Version();
 
   Close();
   if (!m_depsInstalledWithAvailable.empty() &&

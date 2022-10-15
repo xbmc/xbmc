@@ -523,7 +523,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
   demuxStream->language = stream->m_language;
 
   if (thisClass->GetAddonInfo()->DependencyVersion(ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID) >=
-      AddonVersion("2.0.8"))
+      CAddonVersion("2.0.8"))
   {
     demuxStream->codec_fourcc = stream->m_codecFourCC;
   }

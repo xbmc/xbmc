@@ -22,8 +22,8 @@ class CAddonExtensions;
 
 struct RepositoryDirInfo
 {
-  AddonVersion minversion{""};
-  AddonVersion maxversion{""};
+  CAddonVersion minversion{""};
+  CAddonVersion maxversion{""};
   std::string info;
   std::string checksum;
   KODI::UTILITY::CDigest::Type checksumType{KODI::UTILITY::CDigest::Type::INVALID};

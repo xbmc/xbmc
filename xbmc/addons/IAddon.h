@@ -19,7 +19,7 @@ class TiXmlElement;
 namespace ADDON
 {
 
-class AddonVersion;
+class CAddonVersion;
 
 using AddonInstanceId = uint32_t;
 
@@ -86,8 +86,8 @@ public:
   virtual std::string Name() const = 0;
   virtual bool IsInUse() const = 0;
   virtual bool IsBinary() const = 0;
-  virtual AddonVersion Version() const = 0;
-  virtual AddonVersion MinVersion() const = 0;
+  virtual CAddonVersion Version() const = 0;
+  virtual CAddonVersion MinVersion() const = 0;
   virtual std::string Summary() const = 0;
   virtual std::string Description() const = 0;
   virtual std::string Path() const = 0;
@@ -149,8 +149,9 @@ public:
                                 AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual std::shared_ptr<CAddonSettings> GetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual const std::vector<DependencyInfo>& GetDependencies() const = 0;
-  virtual AddonVersion GetDependencyVersion(const std::string& dependencyID) const = 0;
-  virtual bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const = 0;
+  virtual CAddonVersion GetDependencyVersion(const std::string& dependencyID) const = 0;
+  virtual bool MeetsVersion(const CAddonVersion& versionMin,
+                            const CAddonVersion& version) const = 0;
   virtual bool ReloadSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual void ResetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual AddonPtr GetRunningInstance() const = 0;

@@ -335,14 +335,14 @@ bool CAddonDll::DllLoaded(void) const
   return m_pDll != nullptr;
 }
 
-AddonVersion CAddonDll::GetTypeVersionDll(int type) const
+CAddonVersion CAddonDll::GetTypeVersionDll(int type) const
 {
-  return AddonVersion(m_pDll ? m_pDll->GetAddonTypeVersion(type) : nullptr);
+  return CAddonVersion(m_pDll ? m_pDll->GetAddonTypeVersion(type) : nullptr);
 }
 
-AddonVersion CAddonDll::GetTypeMinVersionDll(int type) const
+CAddonVersion CAddonDll::GetTypeMinVersionDll(int type) const
 {
-  return AddonVersion(m_pDll ? m_pDll->GetAddonTypeMinVersion(type) : nullptr);
+  return CAddonVersion(m_pDll ? m_pDll->GetAddonTypeMinVersion(type) : nullptr);
 }
 
 void CAddonDll::SaveSettings(AddonInstanceId id /* = ADDON_SETTINGS_ID */)
@@ -510,11 +510,11 @@ ADDON_STATUS CAddonDll::TransferSettings(AddonInstanceId instanceId)
 bool CAddonDll::CheckAPIVersion(int type)
 {
   /* check the API version */
-  AddonVersion kodiMinVersion(kodi::addon::GetTypeMinVersion(type));
-  AddonVersion addonVersion(m_pDll->GetAddonTypeVersion(type));
-  AddonVersion addonMinVersion = m_pDll->GetAddonTypeMinVersion_available()
-    ? AddonVersion(m_pDll->GetAddonTypeMinVersion(type))
-    : addonVersion;
+  CAddonVersion kodiMinVersion(kodi::addon::GetTypeMinVersion(type));
+  CAddonVersion addonVersion(m_pDll->GetAddonTypeVersion(type));
+  CAddonVersion addonMinVersion = m_pDll->GetAddonTypeMinVersion_available()
+                                      ? CAddonVersion(m_pDll->GetAddonTypeMinVersion(type))
+                                      : addonVersion;
 
   /* Check the global usage from addon
    * if not used from addon, empty version is returned
@@ -526,7 +526,7 @@ bool CAddonDll::CheckAPIVersion(int type)
    * present.
    */
   if (kodiMinVersion > addonVersion ||
-    addonMinVersion > AddonVersion(kodi::addon::GetTypeVersion(type)))
+      addonMinVersion > CAddonVersion(kodi::addon::GetTypeVersion(type)))
   {
     CLog::Log(LOGERROR, "Add-on '{}' is using an incompatible API version for type '{}'. Kodi API min version = '{}/{}', add-on API version '{}/{}'",
       Name(),

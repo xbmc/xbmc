@@ -75,7 +75,7 @@ public:
   std::string Icon() const;
   std::string Path() const;
   std::string Profile() const;
-  AddonVersion Version() const;
+  CAddonVersion Version() const;
 
   ADDON_STATUS CreateInstance();
   void DestroyInstance();

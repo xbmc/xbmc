@@ -104,8 +104,8 @@ public:
   std::string Name() const override;
   bool IsInUse() const override { return false; }
   bool IsBinary() const override;
-  AddonVersion Version() const override;
-  AddonVersion MinVersion() const override;
+  CAddonVersion Version() const override;
+  CAddonVersion MinVersion() const override;
   std::string Summary() const override;
   std::string Description() const override;
   std::string Path() const override;
@@ -371,13 +371,13 @@ public:
    \param dependencyID the addon ID of the dependency.
    \return the version this addon requires.
    */
-  AddonVersion GetDependencyVersion(const std::string& dependencyID) const override;
+  CAddonVersion GetDependencyVersion(const std::string& dependencyID) const override;
 
   /*! \brief return whether or not this addon satisfies the given version requirements
    \param version the version to meet.
    \return true if  min_version <= version <= current_version, false otherwise.
    */
-  bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const override;
+  bool MeetsVersion(const CAddonVersion& versionMin, const CAddonVersion& version) const override;
 
   bool ReloadSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 

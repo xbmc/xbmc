@@ -80,12 +80,12 @@ bool CAddon::IsBinary() const
   return m_addonInfo->IsBinary();
 }
 
-AddonVersion CAddon::Version() const
+CAddonVersion CAddon::Version() const
 {
   return m_addonInfo->Version();
 }
 
-AddonVersion CAddon::MinVersion() const
+CAddonVersion CAddon::MinVersion() const
 {
   return m_addonInfo->MinVersion();
 }
@@ -196,7 +196,7 @@ std::string CAddon::FanArt() const
   return it != m_addonInfo->Art().end() ? it->second : "";
 }
 
-bool CAddon::MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const
+bool CAddon::MeetsVersion(const CAddonVersion& versionMin, const CAddonVersion& version) const
 {
   return m_addonInfo->MeetsVersion(versionMin, version);
 }
@@ -649,7 +649,7 @@ std::string CAddon::LibPath() const
   return URIUtils::AddFileToFolder(m_addonInfo->Path(), libName);
 }
 
-AddonVersion CAddon::GetDependencyVersion(const std::string& dependencyID) const
+CAddonVersion CAddon::GetDependencyVersion(const std::string& dependencyID) const
 {
   return m_addonInfo->DependencyVersion(dependencyID);
 }

@@ -108,11 +108,11 @@ enum class AddonLifecycleState
 struct DependencyInfo
 {
   std::string id;
-  AddonVersion versionMin, version;
+  CAddonVersion versionMin, version;
   bool optional;
   DependencyInfo(std::string id,
-                 const AddonVersion& versionMin,
-                 const AddonVersion& version,
+                 const CAddonVersion& versionMin,
+                 const CAddonVersion& version,
                  bool optional)
     : id(std::move(id)),
       versionMin(versionMin.empty() ? version : versionMin),
@@ -203,11 +203,11 @@ public:
   bool ProvidesSubContent(AddonType content, AddonType mainType) const;
   bool ProvidesSeveralSubContents() const;
 
-  const AddonVersion& Version() const { return m_version; }
-  const AddonVersion& MinVersion() const { return m_minversion; }
+  const CAddonVersion& Version() const { return m_version; }
+  const CAddonVersion& MinVersion() const { return m_minversion; }
   bool IsBinary() const { return m_isBinary; }
-  const AddonVersion& DependencyMinVersion(const std::string& dependencyID) const;
-  const AddonVersion& DependencyVersion(const std::string& dependencyID) const;
+  const CAddonVersion& DependencyMinVersion(const std::string& dependencyID) const;
+  const CAddonVersion& DependencyVersion(const std::string& dependencyID) const;
   const std::string& Name() const { return m_name; }
   const std::string& License() const { return m_license; }
   const std::string& Summary() const { return GetTranslatedText(m_summary); }
@@ -236,7 +236,7 @@ public:
 
   const InfoMap& ExtraInfo() const { return m_extrainfo; }
 
-  bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const;
+  bool MeetsVersion(const CAddonVersion& versionMin, const CAddonVersion& version) const;
   uint64_t PackageSize() const { return m_packageSize; }
   CDateTime InstallDate() const { return m_installDate; }
   CDateTime LastUpdated() const { return m_lastUpdated; }
@@ -267,8 +267,8 @@ private:
   AddonType m_mainType{};
   std::vector<CAddonType> m_types;
 
-  AddonVersion m_version;
-  AddonVersion m_minversion;
+  CAddonVersion m_version;
+  CAddonVersion m_minversion;
   bool m_isBinary = false;
   std::string m_name;
   std::string m_license;
