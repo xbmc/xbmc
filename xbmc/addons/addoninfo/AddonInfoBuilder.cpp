@@ -138,7 +138,7 @@ void CAddonInfoBuilder::CFromDB::SetLibName(std::string libname)
   m_addonInfo->m_libname = std::move(libname);
 }
 
-void CAddonInfoBuilder::CFromDB::SetVersion(AddonVersion version)
+void CAddonInfoBuilder::CFromDB::SetVersion(CAddonVersion version)
 {
   m_addonInfo->m_version = std::move(version);
 }
@@ -292,7 +292,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
   addon->m_author = StringUtils::CreateFromCString(element->Attribute("provider-name"));
 
   const std::string version = StringUtils::CreateFromCString(element->Attribute("version"));
-  addon->m_version = AddonVersion(version);
+  addon->m_version = CAddonVersion(version);
 
   if (addon->m_id.empty() || addon->m_version.empty())
   {
@@ -321,7 +321,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
   if (backwards)
   {
     const std::string minVersion = StringUtils::CreateFromCString(backwards->Attribute("abi"));
-    addon->m_minversion = AddonVersion(minVersion);
+    addon->m_minversion = CAddonVersion(minVersion);
   }
 
   /*
@@ -344,8 +344,8 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
         bool optional = false;
         child->QueryBoolAttribute("optional", &optional);
 
-        addon->m_dependencies.emplace_back(child->Attribute("addon"), AddonVersion(minVersion),
-                                           AddonVersion(version), optional);
+        addon->m_dependencies.emplace_back(child->Attribute("addon"), CAddonVersion(minVersion),
+                                           CAddonVersion(version), optional);
       }
     }
   }

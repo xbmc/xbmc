@@ -215,12 +215,12 @@ bool CAddonInfo::ProvidesSeveralSubContents() const
   return contents > 0 ? true : false;
 }
 
-bool CAddonInfo::MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const
+bool CAddonInfo::MeetsVersion(const CAddonVersion& versionMin, const CAddonVersion& version) const
 {
   return !(versionMin > m_version || version < m_minversion);
 }
 
-const AddonVersion& CAddonInfo::DependencyMinVersion(const std::string& dependencyID) const
+const CAddonVersion& CAddonInfo::DependencyMinVersion(const std::string& dependencyID) const
 {
   auto it = std::find_if(m_dependencies.begin(), m_dependencies.end(),
                          [&](const DependencyInfo& other) { return other.id == dependencyID; });
@@ -228,18 +228,18 @@ const AddonVersion& CAddonInfo::DependencyMinVersion(const std::string& dependen
   if (it != m_dependencies.end())
     return it->versionMin;
 
-  static AddonVersion emptyVersion;
+  static CAddonVersion emptyVersion;
   return emptyVersion;
 }
 
-const AddonVersion& CAddonInfo::DependencyVersion(const std::string& dependencyID) const
+const CAddonVersion& CAddonInfo::DependencyVersion(const std::string& dependencyID) const
 {
   auto it = std::find_if(m_dependencies.begin(), m_dependencies.end(), [&](const DependencyInfo& other) { return other.id == dependencyID; });
 
   if (it != m_dependencies.end())
     return it->version;
 
-  static AddonVersion emptyVersion;
+  static CAddonVersion emptyVersion;
   return emptyVersion;
 }
 

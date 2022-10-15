@@ -104,9 +104,9 @@ std::string IAddonInstanceHandler::Profile() const
   return m_addon ? m_addon->Profile() : "";
 }
 
-AddonVersion IAddonInstanceHandler::Version() const
+CAddonVersion IAddonInstanceHandler::Version() const
 {
-  return m_addon ? m_addon->Version() : AddonVersion();
+  return m_addon ? m_addon->Version() : CAddonVersion();
 }
 
 ADDON_STATUS IAddonInstanceHandler::CreateInstance()

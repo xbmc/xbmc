@@ -18,7 +18,7 @@
 namespace ADDON
 {
 
-class AddonVersion;
+class CAddonVersion;
 class CAddonMgr;
 class CRepository;
 class IAddon;

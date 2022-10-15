@@ -103,7 +103,7 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo)
   : CAddon(addonInfo, AddonType::ADDON_REPOSITORY)
 {
   RepositoryDirList dirs;
-  AddonVersion version;
+  CAddonVersion version;
   AddonInfoPtr addonver =
       CServiceBroker::GetAddonMgr().GetAddonInfo("xbmc.addon", AddonType::ADDON_UNKNOWN);
   if (addonver)
@@ -320,8 +320,8 @@ RepositoryDirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& con
     }
   }
 
-  dir.minversion = AddonVersion{configuration.GetValue("@minversion").asString()};
-  dir.maxversion = AddonVersion{configuration.GetValue("@maxversion").asString()};
+  dir.minversion = CAddonVersion{configuration.GetValue("@minversion").asString()};
+  dir.maxversion = CAddonVersion{configuration.GetValue("@maxversion").asString()};
 
   return dir;
 }
