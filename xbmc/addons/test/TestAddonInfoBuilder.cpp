@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "addons/Repository.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "addons/addoninfo/AddonType.h"
