@@ -105,7 +105,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   // remove library addons
   for (int index = 0; index < (int)addons.size(); index++)
   {
-    PluginPtr plugin;
+    std::shared_ptr<CPluginSource> plugin;
     if (content != CPluginSource::UNKNOWN)
       plugin = std::dynamic_pointer_cast<CPluginSource>(addons.at(index));
 

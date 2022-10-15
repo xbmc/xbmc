@@ -56,7 +56,7 @@ CApplicationSkinHandling::CApplicationSkinHandling(IMsgTargetCallback* msgCb,
 
 bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
 {
-  ADDON::SkinPtr skin;
+  std::shared_ptr<ADDON::CSkinInfo> skin;
   {
     ADDON::AddonPtr addon;
     if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON::AddonType::ADDON_SKIN,
