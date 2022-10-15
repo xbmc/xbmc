@@ -9,6 +9,7 @@
 #include "HTTPWebinterfaceAddonsHandler.h"
 
 #include "ServiceBroker.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
 #include "network/WebServer.h"

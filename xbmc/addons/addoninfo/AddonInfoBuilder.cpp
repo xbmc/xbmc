@@ -229,7 +229,9 @@ AddonInfoPtr CAddonInfoBuilder::Generate(const std::string& addonPath, bool plat
   return nullptr;
 }
 
-AddonInfoPtr CAddonInfoBuilder::Generate(const TiXmlElement* baseElement, const CRepository::DirInfo& repo, bool platformCheck /*= true*/)
+AddonInfoPtr CAddonInfoBuilder::Generate(const TiXmlElement* baseElement,
+                                         const RepositoryDirInfo& repo,
+                                         bool platformCheck /*= true*/)
 {
   AddonInfoPtr addon = std::make_shared<CAddonInfo>();
   if (!ParseXML(addon, baseElement, repo.datadir, repo))
@@ -253,7 +255,10 @@ void CAddonInfoBuilder::SetInstallData(const AddonInfoPtr& addon, const CDateTim
   addon->m_origin = origin;
 }
 
-bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon, const TiXmlElement* element, const std::string& addonPath, const CRepository::DirInfo& repo)
+bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
+                                 const TiXmlElement* element,
+                                 const std::string& addonPath,
+                                 const RepositoryDirInfo& repo)
 {
   /*
    * Following values currently not set from creator:
