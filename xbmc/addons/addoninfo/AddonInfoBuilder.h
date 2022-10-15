@@ -8,19 +8,30 @@
 
 #pragma once
 
-#include "addons/Repository.h"
+#include "addons/IAddon.h"
 
 #include <map>
+#include <memory>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
+class CDateTime;
 class TiXmlElement;
 
 namespace ADDON
 {
+enum class AddonLifecycleState;
+enum class AddonType;
 
 class CAddonExtensions;
+class CAddonType;
+
+struct DependencyInfo;
+struct RepositoryDirInfo;
+
+class CAddonInfo;
+using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
 
 class CAddonInfoBuilder
 {
@@ -82,8 +93,11 @@ public:
 private:
   static bool ParseXML(const AddonInfoPtr& addon,
                        const TiXmlElement* element,
+                       const std::string& addonPath);
+  static bool ParseXML(const AddonInfoPtr& addon,
+                       const TiXmlElement* element,
                        const std::string& addonPath,
-                       const RepositoryDirInfo& repo = {});
+                       const RepositoryDirInfo& repo);
   static bool ParseXMLTypes(CAddonType& addonType,
                             const AddonInfoPtr& info,
                             const TiXmlElement* child);

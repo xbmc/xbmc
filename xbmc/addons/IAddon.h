@@ -18,8 +18,15 @@ class TiXmlElement;
 
 namespace ADDON
 {
+enum class AddonInstanceSupport;
+enum class AddonLifecycleState;
+enum class AddonType;
 
+class CAddonMgr;
+class CAddonSettings;
 class CAddonVersion;
+
+struct DependencyInfo;
 
 using AddonInstanceId = uint32_t;
 
@@ -53,23 +60,20 @@ constexpr AddonInstanceId ADDON_INSTANCE_ID_UNUSED = ADDON_SINGLETON_INSTANCE_ID
  */
 constexpr AddonInstanceId ADDON_SETTINGS_ID = ADDON_SINGLETON_INSTANCE_ID;
 
+constexpr char const* ORIGIN_SYSTEM = "b6a50484-93a0-4afb-a01c-8d17e059feda";
+
 class IAddon;
 typedef std::shared_ptr<IAddon> AddonPtr;
+typedef std::vector<AddonPtr> VECADDONS;
+
 class CInstanceVisualization;
 typedef std::shared_ptr<CInstanceVisualization> VizPtr;
+
 class CSkinInfo;
 typedef std::shared_ptr<CSkinInfo> SkinPtr;
+
 class CPluginSource;
 typedef std::shared_ptr<CPluginSource> PluginPtr;
-
-enum class AddonInstanceSupport;
-enum class AddonLifecycleState;
-enum class AddonType;
-
-class CAddonMgr;
-class CAddonSettings;
-
-struct DependencyInfo;
 
 using InfoMap = std::map<std::string, std::string>;
 using ArtMap = std::map<std::string, std::string>;
