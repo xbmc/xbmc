@@ -22,6 +22,8 @@ extern "C" {
 #include <libpostproc/postprocess.h>
 }
 
+#include <tuple>
+
 // https://github.com/FFmpeg/FFmpeg/blob/56450a0ee4/doc/APIchanges#L18-L26
 #if LIBAVFORMAT_BUILD >= AV_VERSION_INT(59, 0, 100)
 #define FFMPEG_FMT_CONST const
@@ -77,3 +79,6 @@ public:
   int level;
 };
 
+std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt,
+                                             const AVCodecParserContext* parserCtx,
+                                             AVCodecContext* codecCtx);

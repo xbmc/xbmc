@@ -14,9 +14,8 @@
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/log.h"
 
+#include <tuple>
 #include <utility>
-
-#define FF_MAX_EXTRADATA_SIZE ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE)
 
 class CDemuxStreamClientInternal
 {
@@ -150,17 +149,26 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
     stream->m_context->time_base.den = DVD_TIME_BASE;
   }
 
-  if (stream->m_parser_split && stream->m_parser->parser->split)
+  if (stream->m_parser_split && stream->m_parser && stream->m_parser->parser)
   {
-    int len = stream->m_parser->parser->split(stream->m_context, pkt->pData, pkt->iSize);
-    if (len > 0 && len < FF_MAX_EXTRADATA_SIZE)
+    AVPacket* avpkt = av_packet_alloc();
+    if (!avpkt)
+    {
+      CLog::LogF(LOGERROR, "av_packet_alloc failed: {}", strerror(errno));
+      return false;
+    }
+
+    avpkt->data = pkt->pData;
+    avpkt->size = pkt->iSize;
+    avpkt->dts = avpkt->pts = AV_NOPTS_VALUE;
+
+    auto [retExtraData, len] = GetPacketExtradata(avpkt, stream->m_parser, stream->m_context);
+    if (len > 0)
     {
       st->changes++;
       st->disabled = false;
       st->ExtraSize = len;
-      st->ExtraData = std::make_unique<uint8_t[]>(len + AV_INPUT_BUFFER_PADDING_SIZE);
-      memcpy(st->ExtraData.get(), pkt->pData, len);
-      memset(st->ExtraData.get() + len, 0, AV_INPUT_BUFFER_PADDING_SIZE);
+      st->ExtraData = std::unique_ptr<uint8_t[]>(retExtraData);
       stream->m_parser_split = false;
       change = true;
       CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - split extradata");
@@ -168,21 +176,12 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
       // Allow ffmpeg to transport codec information to stream->m_context
       if (!avcodec_open2(stream->m_context, stream->m_context->codec, nullptr))
       {
-        AVPacket* avpkt = av_packet_alloc();
-        if (!avpkt)
-        {
-          CLog::Log(LOGERROR, "CDVDDemuxClient::{} - av_packet_alloc failed: {}", __FUNCTION__,
-                    strerror(errno));
-          return false;
-        }
-        avpkt->data = pkt->pData;
-        avpkt->size = pkt->iSize;
-        avpkt->dts = avpkt->pts = AV_NOPTS_VALUE;
         avcodec_send_packet(stream->m_context, avpkt);
         avcodec_close(stream->m_context);
-        av_packet_free(&avpkt);
       }
     }
+
+    av_packet_free(&avpkt);
   }
 
   uint8_t *outbuf = nullptr;
