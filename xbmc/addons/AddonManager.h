@@ -8,11 +8,6 @@
 
 #pragma once
 
-#include "addons/Addon.h"
-#include "addons/AddonDatabase.h"
-#include "addons/AddonUpdateRules.h"
-#include "addons/IAddonManagerCallback.h"
-#include "addons/Repository.h"
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
 
@@ -25,17 +20,31 @@
 
 namespace ADDON
 {
-enum class AddonType;
-
-typedef std::map<AddonType, VECADDONS> MAPADDONS;
-typedef std::map<AddonType, VECADDONS>::iterator IMAPADDONS;
-typedef std::map<std::string, AddonInfoPtr> ADDON_INFO_LIST;
-
-const std::string ADDON_PYTHON_EXT = "*.py";
-
 enum class AddonDisabledReason;
-
+enum class AddonOriginType;
+enum class AddonType;
+enum class AddonUpdateRule;
 enum class AllowCheckForUpdates : bool;
+
+class CAddonDatabase;
+class CAddonUpdateRules;
+class AddonVersion;
+class IAddonMgrCallback;
+
+class CAddonInfo;
+using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
+using ADDON_INFO_LIST = std::map<std::string, AddonInfoPtr>;
+
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
+using VECADDONS = std::vector<AddonPtr>;
+
+struct AddonEvent;
+struct CAddonWithUpdate;
+struct DependencyInfo;
+struct RepositoryDirInfo;
+
+using AddonInstanceId = uint32_t;
 
 enum class AddonCheckType : bool
 {
@@ -61,13 +70,6 @@ enum class CheckIncompatible : bool
   CHOICE_NO = false,
 };
 
-enum class AddonOriginType;
-
-struct AddonEvent;
-struct CAddonWithUpdate;
-
-using AddonInfos = std::vector<AddonInfoPtr>;
-
 /**
   * Class - CAddonMgr
   * Holds references to all addons, enabled or
@@ -85,7 +87,7 @@ public:
   bool Init();
   void DeInit();
 
-  CAddonMgr() = default;
+  CAddonMgr();
   CAddonMgr(const CAddonMgr&) = delete;
   virtual ~CAddonMgr();
 
@@ -457,7 +459,7 @@ public:
      *                 match them. Default is for all types.
      * @return true if the list contains entries
      */
-  bool GetAddonInfos(AddonInfos& addonInfos, bool onlyEnabled, AddonType type) const;
+  bool GetAddonInfos(std::vector<AddonInfoPtr>& addonInfos, bool onlyEnabled, AddonType type) const;
 
   /*!
      * @brief Get a list of add-on's with info's for the on system available
@@ -570,7 +572,7 @@ public:
      * Currently listed call sources:
      * - @ref CRepository::FetchIndex
      */
-  bool AddonsFromRepoXML(const CRepository::DirInfo& repo,
+  bool AddonsFromRepoXML(const RepositoryDirInfo& repo,
                          const std::string& xml,
                          std::vector<AddonInfoPtr>& addons);
 
@@ -673,8 +675,8 @@ private:
   std::map<std::string, AddonDisabledReason> m_disabled;
   static std::map<AddonType, IAddonMgrCallback*> m_managers;
   mutable CCriticalSection m_critSection;
-  CAddonDatabase m_database;
-  CAddonUpdateRules m_updateRules;
+  std::unique_ptr<CAddonDatabase> m_database;
+  std::unique_ptr<CAddonUpdateRules> m_updateRules;
   CEventSource<AddonEvent> m_events;
   CBlockingEventSource<AddonEvent> m_unloadEvents;
   std::set<std::string> m_systemAddons;
