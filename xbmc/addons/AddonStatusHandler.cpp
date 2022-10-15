@@ -9,6 +9,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/IAddonManagerCallback.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "dialogs/GUIDialogKaiToast.h"

@@ -14,10 +14,12 @@
 #include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/AddonBuilder.h"
+#include "addons/AddonDatabase.h"
 #include "addons/AddonEvents.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonRepos.h"
 #include "addons/AddonSystemSettings.h"
+#include "addons/AddonUpdateRules.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
 #include "addons/addoninfo/AddonType.h"
@@ -81,6 +83,12 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
   return true;
 }
 
+CAddonMgr::CAddonMgr()
+  : m_database(std::make_unique<CAddonDatabase>()),
+    m_updateRules(std::make_unique<CAddonUpdateRules>())
+{
+}
+
 CAddonMgr::~CAddonMgr()
 {
   DeInit();
@@ -120,7 +128,7 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  if (!m_database.Open())
+  if (!m_database->Open())
     CLog::Log(LOGFATAL, "ADDONS: Failed to open database");
 
   FindAddons();
@@ -141,7 +149,7 @@ bool CAddonMgr::Init()
 
 void CAddonMgr::DeInit()
 {
-  m_database.Close();
+  m_database->Close();
 
   /* If temporary directory was used from add-on, delete it */
   if (XFILE::CDirectory::Exists(m_tempAddonBasePath))
@@ -677,19 +685,19 @@ bool CAddonMgr::FindAddon(const std::string& addonId,
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  m_database.GetInstallData(it->second);
+  m_database->GetInstallData(it->second);
   CLog::Log(LOGINFO, "CAddonMgr::{}: {} v{} installed", __FUNCTION__, addonId,
             addonVersion.asString());
 
   m_installedAddons[addonId] = it->second; // insert/replace entry
-  m_database.AddInstalledAddon(it->second, origin);
+  m_database->AddInstalledAddon(it->second, origin);
 
   // Reload caches
   std::map<std::string, AddonDisabledReason> tmpDisabled;
-  m_database.GetDisabled(tmpDisabled);
+  m_database->GetDisabled(tmpDisabled);
   m_disabled = std::move(tmpDisabled);
 
-  m_updateRules.RefreshRulesMap(m_database);
+  m_updateRules->RefreshRulesMap(*m_database);
   return true;
 }
 
@@ -710,10 +718,10 @@ bool CAddonMgr::FindAddons()
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // Sync with db
-  m_database.SyncInstalled(installed, m_systemAddons, m_optionalSystemAddons);
+  m_database->SyncInstalled(installed, m_systemAddons, m_optionalSystemAddons);
   for (const auto& addon : installedAddons)
   {
-    m_database.GetInstallData(addon.second);
+    m_database->GetInstallData(addon.second);
     CLog::Log(LOGINFO, "CAddonMgr::{}: {} v{} installed", __FUNCTION__, addon.second->ID(),
               addon.second->Version().asString());
   }
@@ -722,10 +730,10 @@ bool CAddonMgr::FindAddons()
 
   // Reload caches
   std::map<std::string, AddonDisabledReason> tmpDisabled;
-  m_database.GetDisabled(tmpDisabled);
+  m_database->GetDisabled(tmpDisabled);
   m_disabled = std::move(tmpDisabled);
 
-  m_updateRules.RefreshRulesMap(m_database);
+  m_updateRules->RefreshRulesMap(*m_database);
 
   return true;
 }
@@ -812,7 +820,7 @@ void CAddonMgr::UpdateLastUsed(const std::string& id)
   CServiceBroker::GetJobManager()->Submit([this, id, time]() {
     {
       std::unique_lock<CCriticalSection> lock(m_critSection);
-      m_database.SetLastUsed(id, time);
+      m_database->SetLastUsed(id, time);
       auto addonInfo = GetAddonInfo(id, AddonType::ADDON_UNKNOWN);
       if (addonInfo)
         addonInfo->SetLastUsed(time);
@@ -846,7 +854,7 @@ bool CAddonMgr::DisableAddon(const std::string& id, AddonDisabledReason disabled
     return false;
   if (m_disabled.find(id) != m_disabled.end())
     return true; //already disabled
-  if (!m_database.DisableAddon(id, disabledReason))
+  if (!m_database->DisableAddon(id, disabledReason))
     return false;
   if (!m_disabled.emplace(id, disabledReason).second)
     return false;
@@ -870,7 +878,7 @@ bool CAddonMgr::UpdateDisabledReason(const std::string& id, AddonDisabledReason 
   std::unique_lock<CCriticalSection> lock(m_critSection);
   if (!IsAddonDisabled(id))
     return false;
-  if (!m_database.DisableAddon(id, newDisabledReason))
+  if (!m_database->DisableAddon(id, newDisabledReason))
     return false;
 
   m_disabled[id] = newDisabledReason;
@@ -904,7 +912,7 @@ bool CAddonMgr::EnableSingle(const std::string& id)
     return false;
   }
 
-  if (!m_database.EnableAddon(id))
+  if (!m_database->EnableAddon(id))
     return false;
   m_disabled.erase(id);
 
@@ -1071,22 +1079,22 @@ bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &add
 
 bool CAddonMgr::AddUpdateRuleToList(const std::string& id, AddonUpdateRule updateRule)
 {
-  return m_updateRules.AddUpdateRuleToList(m_database, id, updateRule);
+  return m_updateRules->AddUpdateRuleToList(*m_database, id, updateRule);
 }
 
 bool CAddonMgr::RemoveAllUpdateRulesFromList(const std::string& id)
 {
-  return m_updateRules.RemoveAllUpdateRulesFromList(m_database, id);
+  return m_updateRules->RemoveAllUpdateRulesFromList(*m_database, id);
 }
 
 bool CAddonMgr::RemoveUpdateRuleFromList(const std::string& id, AddonUpdateRule updateRule)
 {
-  return m_updateRules.RemoveUpdateRuleFromList(m_database, id, updateRule);
+  return m_updateRules->RemoveUpdateRuleFromList(*m_database, id, updateRule);
 }
 
 bool CAddonMgr::IsAutoUpdateable(const std::string& id) const
 {
-  return m_updateRules.IsAutoUpdateable(id);
+  return m_updateRules->IsAutoUpdateable(id);
 }
 
 void CAddonMgr::PublishEventAutoUpdateStateChanged(const std::string& id)
@@ -1339,18 +1347,18 @@ bool CAddonMgr::SetAddonOrigin(const std::string& addonId, const std::string& re
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  m_database.SetOrigin(addonId, repoAddonId);
+  m_database->SetOrigin(addonId, repoAddonId);
   if (isUpdate)
-    m_database.SetLastUpdated(addonId, CDateTime::GetCurrentDateTime());
+    m_database->SetLastUpdated(addonId, CDateTime::GetCurrentDateTime());
 
   // If available in manager update
   const AddonInfoPtr info = GetAddonInfo(addonId, AddonType::ADDON_UNKNOWN);
   if (info)
-    m_database.GetInstallData(info);
+    m_database->GetInstallData(info);
   return true;
 }
 
-bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo,
+bool CAddonMgr::AddonsFromRepoXML(const RepositoryDirInfo& repo,
                                   const std::string& xml,
                                   std::vector<AddonInfoPtr>& addons)
 {

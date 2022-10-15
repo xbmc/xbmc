@@ -27,7 +27,9 @@ class CAddonInfoBuilder
 public:
   static AddonInfoPtr Generate(const std::string& id, AddonType type);
   static AddonInfoPtr Generate(const std::string& addonPath, bool platformCheck = true);
-  static AddonInfoPtr Generate(const TiXmlElement* baseElement, const CRepository::DirInfo& repo, bool platformCheck = true);
+  static AddonInfoPtr Generate(const TiXmlElement* baseElement,
+                               const RepositoryDirInfo& repo,
+                               bool platformCheck = true);
 
   class CFromDB
   {
@@ -78,7 +80,10 @@ public:
   //@}
 
 private:
-  static bool ParseXML(const AddonInfoPtr& addon, const TiXmlElement* element, const std::string& addonPath, const CRepository::DirInfo& repo = {});
+  static bool ParseXML(const AddonInfoPtr& addon,
+                       const TiXmlElement* element,
+                       const std::string& addonPath,
+                       const RepositoryDirInfo& repo = {});
   static bool ParseXMLTypes(CAddonType& addonType,
                             const AddonInfoPtr& info,
                             const TiXmlElement* child);

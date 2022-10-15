@@ -76,7 +76,7 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_Repo)
   EXPECT_TRUE(doc.Parse(addonXML));
   ASSERT_NE(nullptr, doc.RootElement());
 
-  CRepository::DirInfo repo;
+  RepositoryDirInfo repo;
   AddonInfoPtr addon = CAddonInfoBuilder::Generate(doc.RootElement(), repo);
   ASSERT_NE(nullptr, addon);
   EXPECT_EQ(addon->ID(), "metadata.blablabla.org");

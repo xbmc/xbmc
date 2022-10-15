@@ -20,23 +20,23 @@ namespace ADDON
 {
 class CAddonExtensions;
 
+struct RepositoryDirInfo
+{
+  AddonVersion minversion{""};
+  AddonVersion maxversion{""};
+  std::string info;
+  std::string checksum;
+  KODI::UTILITY::CDigest::Type checksumType{KODI::UTILITY::CDigest::Type::INVALID};
+  std::string datadir;
+  std::string artdir;
+  KODI::UTILITY::CDigest::Type hashType{KODI::UTILITY::CDigest::Type::INVALID};
+};
+
+typedef std::vector<RepositoryDirInfo> RepositoryDirList;
+
 class CRepository : public CAddon
 {
 public:
-  struct DirInfo
-  {
-    AddonVersion minversion{""};
-    AddonVersion maxversion{""};
-    std::string info;
-    std::string checksum;
-    KODI::UTILITY::CDigest::Type checksumType{KODI::UTILITY::CDigest::Type::INVALID};
-    std::string datadir;
-    std::string artdir;
-    KODI::UTILITY::CDigest::Type hashType{KODI::UTILITY::CDigest::Type::INVALID};
-  };
-
-  typedef std::vector<DirInfo> DirList;
-
   explicit CRepository(const AddonInfoPtr& addonInfo);
 
   enum FetchStatus
@@ -62,13 +62,13 @@ private:
   static bool FetchChecksum(const std::string& url,
                             std::string& checksum,
                             int& recheckAfter) noexcept;
-  static bool FetchIndex(const DirInfo& repo,
+  static bool FetchIndex(const RepositoryDirInfo& repo,
                          std::string const& digest,
                          std::vector<AddonInfoPtr>& addons) noexcept;
 
-  static DirInfo ParseDirConfiguration(const CAddonExtensions& configuration);
+  static RepositoryDirInfo ParseDirConfiguration(const CAddonExtensions& configuration);
 
-  DirList m_dirs;
+  RepositoryDirList m_dirs;
 };
 
 typedef std::shared_ptr<CRepository> RepositoryPtr;
