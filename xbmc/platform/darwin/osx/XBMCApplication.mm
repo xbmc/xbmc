@@ -10,6 +10,7 @@
 #import "XBMCApplication.h"
 
 #include "ServiceBroker.h"
+#include "application/AppEnvironment.h"
 #include "application/AppInboundProtocol.h"
 #include "application/AppParamParser.h"
 #include "messaging/ApplicationMessenger.h"
@@ -120,7 +121,9 @@ static NSMenu* setupWindowMenu()
   CAppParamParser appParamParser;
   appParamParser.Parse((const char**)gArgv, (int)gArgc);
 
-  XBMC_Run(true, appParamParser.GetAppParams());
+  CAppEnvironment::SetUp(appParamParser.GetAppParams());
+  XBMC_Run(true);
+  CAppEnvironment::TearDown();
 
   std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
   if (appPort)

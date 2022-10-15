@@ -168,6 +168,10 @@ bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
   m_mediaManager.reset(new CMediaManager());
   m_mediaManager->Initialize();
 
+#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+  m_DetectDVDType = std::make_unique<MEDIA_DETECT::CDetectDVDMedia>();
+#endif
+
 #if defined(HAS_FILESYSTEM_SMB)
   m_WSDiscovery = WSDiscovery::IWSDiscovery::GetInstance();
 #endif
@@ -185,7 +189,6 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
 #if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGINFO, "[Media Detection] starting service for optical media detection");
-  m_DetectDVDType = std::make_unique<MEDIA_DETECT::CDetectDVDMedia>();
   m_DetectDVDType->Create(false);
 #endif
 
