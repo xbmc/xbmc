@@ -40,7 +40,7 @@ using AddonPtr = std::shared_ptr<IAddon>;
 using VECADDONS = std::vector<AddonPtr>;
 
 struct AddonEvent;
-struct CAddonWithUpdate;
+struct AddonWithUpdate;
 struct DependencyInfo;
 struct RepositoryDirInfo;
 
@@ -583,7 +583,7 @@ public:
      *        available updates and stores them into map.
      * \return map of outdated addons with their update
      */
-  std::map<std::string, CAddonWithUpdate> GetAddonsWithAvailableUpdate() const;
+  std::map<std::string, AddonWithUpdate> GetAddonsWithAvailableUpdate() const;
 
   /*!
      * \brief Retrieves list of compatible addon versions of all origins

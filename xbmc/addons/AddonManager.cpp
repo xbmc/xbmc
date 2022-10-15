@@ -270,13 +270,13 @@ std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdatesOrOutdatedAdd
   return result;
 }
 
-std::map<std::string, CAddonWithUpdate> CAddonMgr::GetAddonsWithAvailableUpdate() const
+std::map<std::string, AddonWithUpdate> CAddonMgr::GetAddonsWithAvailableUpdate() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   auto start = std::chrono::steady_clock::now();
 
   std::vector<std::shared_ptr<IAddon>> installed;
-  std::map<std::string, CAddonWithUpdate> result;
+  std::map<std::string, AddonWithUpdate> result;
   CAddonRepos addonRepos;
 
   if (addonRepos.IsValid())
