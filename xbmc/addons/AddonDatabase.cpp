@@ -110,7 +110,7 @@ CVariant CAddonDatabaseSerializer::SerializeExtensions(const CAddonExtensions& a
 }
 
 void CAddonDatabaseSerializer::DeserializeMetadata(const std::string& document,
-                                                   CAddonInfoBuilder::CFromDB& builder)
+                                                   CAddonInfoBuilderFromDB& builder)
 {
   CVariant variant;
   if (!CJSONVariantParser::Parse(document, variant))
@@ -547,7 +547,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
 
     while (!m_pDS->eof())
     {
-      CAddonInfoBuilder::CFromDB builder;
+      CAddonInfoBuilderFromDB builder;
       builder.SetId(addonId);
       builder.SetVersion(CAddonVersion(m_pDS->fv("version").get_asString()));
       builder.SetName(m_pDS->fv("name").get_asString());
@@ -625,7 +625,7 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
     if (m_pDS2->eof())
       return false;
 
-    CAddonInfoBuilder::CFromDB builder;
+    CAddonInfoBuilderFromDB builder;
     builder.SetId(m_pDS2->fv("addonID").get_asString());
     builder.SetOrigin(m_pDS2->fv("origin").get_asString());
     builder.SetVersion(CAddonVersion(m_pDS2->fv("version").get_asString()));
@@ -716,7 +716,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
       std::string addonId = m_pDS->fv("addonID").get_asString();
       CAddonVersion version(m_pDS->fv("version").get_asString());
 
-      CAddonInfoBuilder::CFromDB builder;
+      CAddonInfoBuilderFromDB builder;
       builder.SetId(addonId);
       builder.SetVersion(version);
       builder.SetName(m_pDS->fv("name").get_asString());

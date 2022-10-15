@@ -111,6 +111,7 @@ public:
 
 private:
   friend class CAddonInfoBuilder;
+  friend class CAddonInfoBuilderFromDB;
   friend class CAddonDatabaseSerializer;
 
   void SetProvides(const std::string& content);

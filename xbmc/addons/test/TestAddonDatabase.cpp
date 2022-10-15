@@ -49,7 +49,7 @@ protected:
 
   void CreateAddon(std::vector<AddonInfoPtr>& addons, std::string id, const std::string& version)
   {
-    CAddonInfoBuilder::CFromDB builder;
+    CAddonInfoBuilderFromDB builder;
     builder.SetId(std::move(id));
     builder.SetVersion(CAddonVersion(version));
     addons.push_back(builder.get());
