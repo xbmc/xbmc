@@ -17,6 +17,7 @@
 #include <vector>
 
 class CVariant;
+enum class VideoDbContentType;
 
 namespace dbiplus
 {
@@ -167,7 +168,7 @@ typedef std::vector<DatabaseResult> DatabaseResults;
 class DatabaseUtils
 {
 public:
-  static MediaType MediaTypeFromVideoContentType(int videoContentType);
+  static MediaType MediaTypeFromVideoContentType(VideoDbContentType videoContentType);
 
   static std::string GetField(Field field, const MediaType &mediaType, DatabaseQueryPart queryPart);
   static int GetField(Field field, const MediaType &mediaType);

@@ -11,6 +11,8 @@
 #include "URL.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoDatabase.h"
+#include "video/VideoInfoTag.h"
 
 using namespace XFILE;
 
@@ -33,8 +35,8 @@ CVideoInfoTag CVideoDatabaseFile::GetVideoTag(const CURL& url)
     return tag;
   long idDb = atol(strFileName.c_str());
 
-  VIDEODB_CONTENT_TYPE type = GetType(url);
-  if (type == VIDEODB_CONTENT_UNKNOWN)
+  VideoDbContentType type = GetType(url);
+  if (type == VideoDbContentType::UNKNOWN)
     return tag;
 
   CVideoDatabase videoDatabase;
@@ -46,26 +48,26 @@ CVideoInfoTag CVideoDatabaseFile::GetVideoTag(const CURL& url)
   return tag;
 }
 
-VIDEODB_CONTENT_TYPE CVideoDatabaseFile::GetType(const CURL& url)
+VideoDbContentType CVideoDatabaseFile::GetType(const CURL& url)
 {
   std::string strPath = URIUtils::GetDirectory(url.Get());
   if (strPath.empty())
-    return VIDEODB_CONTENT_UNKNOWN;
+    return VideoDbContentType::UNKNOWN;
 
   std::vector<std::string> pathElem = StringUtils::Split(strPath, "/");
   if (pathElem.size() == 0)
-    return VIDEODB_CONTENT_UNKNOWN;
+    return VideoDbContentType::UNKNOWN;
 
   std::string itemType = pathElem.at(2);
-  VIDEODB_CONTENT_TYPE type;
+  VideoDbContentType type;
   if (itemType == "movies" || itemType == "recentlyaddedmovies")
-    type = VIDEODB_CONTENT_MOVIES;
+    type = VideoDbContentType::MOVIES;
   else if (itemType == "episodes" || itemType == "recentlyaddedepisodes" || itemType == "inprogresstvshows" || itemType == "tvshows")
-    type = VIDEODB_CONTENT_EPISODES;
+    type = VideoDbContentType::EPISODES;
   else if (itemType == "musicvideos" || itemType == "recentlyaddedmusicvideos")
-    type = VIDEODB_CONTENT_MUSICVIDEOS;
+    type = VideoDbContentType::MUSICVIDEOS;
   else
-    type = VIDEODB_CONTENT_UNKNOWN;
+    type = VideoDbContentType::UNKNOWN;
 
   return type;
 }
@@ -82,8 +84,8 @@ std::string CVideoDatabaseFile::TranslatePath(const CURL& url)
     return "";
   long idDb = atol(strFileName.c_str());
 
-  VIDEODB_CONTENT_TYPE type = GetType(url);
-  if (type == VIDEODB_CONTENT_UNKNOWN)
+  VideoDbContentType type = GetType(url);
+  if (type == VideoDbContentType::UNKNOWN)
     return "";
 
   CVideoDatabase videoDatabase;
