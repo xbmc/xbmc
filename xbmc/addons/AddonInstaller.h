@@ -22,7 +22,7 @@ class CFileItemList;
 namespace ADDON
 {
 
-class AddonVersion;
+class CAddonVersion;
 
 class CAddonDatabase;
 
@@ -147,7 +147,7 @@ public:
 
    /*! Install an addon with a specific version and repository */
   bool Install(const std::string& addonId,
-               const ADDON::AddonVersion& version,
+               const ADDON::CAddonVersion& version,
                const std::string& repoId);
 
   /*! Uninstall an addon, remove addon data if requested */

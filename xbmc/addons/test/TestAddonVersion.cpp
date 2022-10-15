@@ -36,23 +36,23 @@ public:
   {
   }
 
-  AddonVersion v1_0;
-  AddonVersion v1_00;
-  AddonVersion v1_0_0;
-  AddonVersion v1_1;
-  AddonVersion v1_01;
-  AddonVersion v1_0_1;
-  AddonVersion e1_v1_0_0;
-  AddonVersion e1_v1_0_1;
-  AddonVersion e2_v1_0_0;
-  AddonVersion e1_v1_0_0_r1;
-  AddonVersion e1_v1_0_1_r1;
-  AddonVersion e1_v1_0_0_r2;
-  AddonVersion v1_0_0_beta;
-  AddonVersion v1_0_0_alpha;
-  AddonVersion v1_0_0_alpha2;
-  AddonVersion v1_0_0_alpha3;
-  AddonVersion v1_0_0_alpha10;
+  CAddonVersion v1_0;
+  CAddonVersion v1_00;
+  CAddonVersion v1_0_0;
+  CAddonVersion v1_1;
+  CAddonVersion v1_01;
+  CAddonVersion v1_0_1;
+  CAddonVersion e1_v1_0_0;
+  CAddonVersion e1_v1_0_1;
+  CAddonVersion e2_v1_0_0;
+  CAddonVersion e1_v1_0_0_r1;
+  CAddonVersion e1_v1_0_1_r1;
+  CAddonVersion e1_v1_0_0_r2;
+  CAddonVersion v1_0_0_beta;
+  CAddonVersion v1_0_0_alpha;
+  CAddonVersion v1_0_0_alpha2;
+  CAddonVersion v1_0_0_alpha3;
+  CAddonVersion v1_0_0_alpha10;
 };
 
 TEST_F(TestAddonVersion, Constructor)
@@ -149,23 +149,23 @@ TEST_F(TestAddonVersion, asString)
 
 TEST_F(TestAddonVersion, Equals)
 {
-  EXPECT_EQ(v1_0, AddonVersion("1.0"));
-  EXPECT_EQ(v1_00, AddonVersion("1.00"));
-  EXPECT_EQ(v1_0_0, AddonVersion("1.0.0"));
-  EXPECT_EQ(v1_1, AddonVersion("1.1"));
-  EXPECT_EQ(v1_01, AddonVersion("1.01"));
-  EXPECT_EQ(v1_0_1, AddonVersion("1.0.1"));
-  EXPECT_EQ(e1_v1_0_0, AddonVersion("1:1.0.0"));
-  EXPECT_EQ(e1_v1_0_1, AddonVersion("1:1.0.1"));
-  EXPECT_EQ(e2_v1_0_0, AddonVersion("2:1.0.0"));
-  EXPECT_EQ(e1_v1_0_0_r1, AddonVersion("1:1.0.0-1"));
-  EXPECT_EQ(e1_v1_0_1_r1, AddonVersion("1:1.0.1-1"));
-  EXPECT_EQ(e1_v1_0_0_r2, AddonVersion("1:1.0.0-2"));
-  EXPECT_EQ(v1_0_0_beta, AddonVersion("1.0.0~beta"));
-  EXPECT_EQ(v1_0_0_alpha, AddonVersion("1.0.0~alpha"));
-  EXPECT_EQ(v1_0_0_alpha2, AddonVersion("1.0.0~alpha2"));
-  EXPECT_EQ(v1_0_0_alpha3, AddonVersion("1.0.0~alpha3"));
-  EXPECT_EQ(v1_0_0_alpha10, AddonVersion("1.0.0~alpha10"));
+  EXPECT_EQ(v1_0, CAddonVersion("1.0"));
+  EXPECT_EQ(v1_00, CAddonVersion("1.00"));
+  EXPECT_EQ(v1_0_0, CAddonVersion("1.0.0"));
+  EXPECT_EQ(v1_1, CAddonVersion("1.1"));
+  EXPECT_EQ(v1_01, CAddonVersion("1.01"));
+  EXPECT_EQ(v1_0_1, CAddonVersion("1.0.1"));
+  EXPECT_EQ(e1_v1_0_0, CAddonVersion("1:1.0.0"));
+  EXPECT_EQ(e1_v1_0_1, CAddonVersion("1:1.0.1"));
+  EXPECT_EQ(e2_v1_0_0, CAddonVersion("2:1.0.0"));
+  EXPECT_EQ(e1_v1_0_0_r1, CAddonVersion("1:1.0.0-1"));
+  EXPECT_EQ(e1_v1_0_1_r1, CAddonVersion("1:1.0.1-1"));
+  EXPECT_EQ(e1_v1_0_0_r2, CAddonVersion("1:1.0.0-2"));
+  EXPECT_EQ(v1_0_0_beta, CAddonVersion("1.0.0~beta"));
+  EXPECT_EQ(v1_0_0_alpha, CAddonVersion("1.0.0~alpha"));
+  EXPECT_EQ(v1_0_0_alpha2, CAddonVersion("1.0.0~alpha2"));
+  EXPECT_EQ(v1_0_0_alpha3, CAddonVersion("1.0.0~alpha3"));
+  EXPECT_EQ(v1_0_0_alpha10, CAddonVersion("1.0.0~alpha10"));
 }
 
 TEST_F(TestAddonVersion, LessThan)
@@ -243,15 +243,15 @@ TEST_F(TestAddonVersion, LessThan)
   // script.module.foo-1.0.0+matrix.1 for upstream module foo (1.0.0) for matrix.
   // In summary, 1.0.0 or 1.0.0+leia.1 must be < than 1.0.0+matrix.1
   // tests below assure this won't get broken inadvertently
-  EXPECT_LT(AddonVersion("1.0.0"), AddonVersion("1.0.0+matrix.1"));
-  EXPECT_LT(AddonVersion("1.0.0+leia.1"), AddonVersion("1.0.0+matrix.1"));
-  EXPECT_LT(AddonVersion("1.0.0+matrix.1"), AddonVersion("1.0.0+matrix.2"));
-  EXPECT_LT(AddonVersion("1.0.0+matrix.1"), AddonVersion("1.0.1+matrix.1"));
-  EXPECT_LT(AddonVersion("1.0.0+matrix.1"), AddonVersion("1.1.0+matrix.1"));
-  EXPECT_LT(AddonVersion("1.0.0+matrix.1"), AddonVersion("2.0.0+matrix.1"));
-  EXPECT_LT(AddonVersion("1.0.0+matrix.1"), AddonVersion("1.0.0.1"));
-  EXPECT_LT(AddonVersion("1.0.0+Leia.1"), AddonVersion("1.0.0+matrix.1"));
-  EXPECT_LT(AddonVersion("1.0.0+leia.1"), AddonVersion("1.0.0+Matrix.1"));
+  EXPECT_LT(CAddonVersion("1.0.0"), CAddonVersion("1.0.0+matrix.1"));
+  EXPECT_LT(CAddonVersion("1.0.0+leia.1"), CAddonVersion("1.0.0+matrix.1"));
+  EXPECT_LT(CAddonVersion("1.0.0+matrix.1"), CAddonVersion("1.0.0+matrix.2"));
+  EXPECT_LT(CAddonVersion("1.0.0+matrix.1"), CAddonVersion("1.0.1+matrix.1"));
+  EXPECT_LT(CAddonVersion("1.0.0+matrix.1"), CAddonVersion("1.1.0+matrix.1"));
+  EXPECT_LT(CAddonVersion("1.0.0+matrix.1"), CAddonVersion("2.0.0+matrix.1"));
+  EXPECT_LT(CAddonVersion("1.0.0+matrix.1"), CAddonVersion("1.0.0.1"));
+  EXPECT_LT(CAddonVersion("1.0.0+Leia.1"), CAddonVersion("1.0.0+matrix.1"));
+  EXPECT_LT(CAddonVersion("1.0.0+leia.1"), CAddonVersion("1.0.0+Matrix.1"));
 }
 
 TEST_F(TestAddonVersion, Equivalent)
@@ -267,5 +267,5 @@ TEST_F(TestAddonVersion, Equivalent)
   EXPECT_TRUE(v1_01 == v1_1);
   
   // pep-0440/local-version-identifiers
-  EXPECT_TRUE(AddonVersion("1.0.0+leia.1") == AddonVersion("1.0.0+Leia.1"));
+  EXPECT_TRUE(CAddonVersion("1.0.0+leia.1") == CAddonVersion("1.0.0+Leia.1"));
 }

@@ -131,7 +131,7 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_DBEntry)
 {
   CAddonInfoBuilder::CFromDB builder;
   builder.SetId("video.blablabla.org");
-  builder.SetVersion(AddonVersion("1.2.3"));
+  builder.SetVersion(CAddonVersion("1.2.3"));
   CAddonType addonType(AddonType::ADDON_PLUGIN);
   addonType.Insert("provides", "video audio");
   builder.SetExtensions(addonType);

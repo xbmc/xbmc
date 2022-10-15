@@ -72,7 +72,7 @@ public:
    * @note This should only be called if the associated dll is loaded.
    * Otherwise use @ref CAddonInfo::DependencyVersion(...)
    */
-  AddonVersion GetTypeVersionDll(int type) const;
+  CAddonVersion GetTypeVersionDll(int type) const;
 
   /*!
    * @brief Get api min version of moduleType type
@@ -83,7 +83,7 @@ public:
    * @note This should only be called if the associated dll is loaded.
    * Otherwise use @ref CAddonInfo::DependencyMinVersion(...)
    */
-  AddonVersion GetTypeMinVersionDll(int type) const;
+  CAddonVersion GetTypeMinVersionDll(int type) const;
 
   /*!
    * @brief Function to create a addon instance class
