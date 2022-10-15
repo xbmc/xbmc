@@ -66,15 +66,6 @@ class IAddon;
 typedef std::shared_ptr<IAddon> AddonPtr;
 typedef std::vector<AddonPtr> VECADDONS;
 
-class CInstanceVisualization;
-typedef std::shared_ptr<CInstanceVisualization> VizPtr;
-
-class CSkinInfo;
-typedef std::shared_ptr<CSkinInfo> SkinPtr;
-
-class CPluginSource;
-typedef std::shared_ptr<CPluginSource> PluginPtr;
-
 using InfoMap = std::map<std::string, std::string>;
 using ArtMap = std::map<std::string, std::string>;
 

@@ -1160,7 +1160,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
       AddonPtr addon;
       if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, OnlyEnabled::CHOICE_YES))
       {
-        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
+        const auto plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
         if (plugin && plugin->Provides(CPluginSource::AUDIO))
         {
           CFileItemList items;
