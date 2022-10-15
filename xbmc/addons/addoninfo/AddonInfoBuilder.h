@@ -42,46 +42,6 @@ public:
                                const RepositoryDirInfo& repo,
                                bool platformCheck = true);
 
-  class CFromDB
-  {
-  public:
-    CFromDB();
-
-    void SetId(std::string id);
-    void SetName(std::string name);
-    void SetLicense(std::string license);
-    void SetSummary(std::string summary);
-    void SetDescription(std::string description);
-    void SetDisclaimer(std::string disclaimer);
-    void SetAuthor(std::string author);
-    void SetSource(std::string source);
-    void SetWebsite(std::string website);
-    void SetForum(std::string forum);
-    void SetEMail(std::string email);
-    void SetIcon(std::string icon);
-    void SetArt(const std::string& type, std::string value);
-    void SetArt(std::map<std::string, std::string> art);
-    void SetScreenshots(std::vector<std::string> screenshots);
-    void SetChangelog(std::string changelog);
-    void SetLifecycleState(AddonLifecycleState state, std::string description);
-    void SetPath(std::string path);
-    void SetLibName(std::string libname);
-    void SetVersion(CAddonVersion version);
-    void SetDependencies(std::vector<DependencyInfo> dependencies);
-    void SetExtrainfo(InfoMap extrainfo);
-    void SetInstallDate(const CDateTime& installDate);
-    void SetLastUpdated(const CDateTime& lastUpdated);
-    void SetLastUsed(const CDateTime& lastUsed);
-    void SetOrigin(std::string origin);
-    void SetPackageSize(uint64_t size);
-    void SetExtensions(CAddonType addonType);
-
-    const AddonInfoPtr& get() { return m_addonInfo; }
-
-  private:
-    AddonInfoPtr m_addonInfo;
-  };
-
   /*!
     * @brief Parts used from CAddonDatabase
     */
@@ -107,4 +67,43 @@ private:
   static bool PlatformSupportsAddon(const AddonInfoPtr& addon);
 };
 
+class CAddonInfoBuilderFromDB
+{
+public:
+  CAddonInfoBuilderFromDB();
+
+  void SetId(std::string id);
+  void SetName(std::string name);
+  void SetLicense(std::string license);
+  void SetSummary(std::string summary);
+  void SetDescription(std::string description);
+  void SetDisclaimer(std::string disclaimer);
+  void SetAuthor(std::string author);
+  void SetSource(std::string source);
+  void SetWebsite(std::string website);
+  void SetForum(std::string forum);
+  void SetEMail(std::string email);
+  void SetIcon(std::string icon);
+  void SetArt(const std::string& type, std::string value);
+  void SetArt(std::map<std::string, std::string> art);
+  void SetScreenshots(std::vector<std::string> screenshots);
+  void SetChangelog(std::string changelog);
+  void SetLifecycleState(AddonLifecycleState state, std::string description);
+  void SetPath(std::string path);
+  void SetLibName(std::string libname);
+  void SetVersion(CAddonVersion version);
+  void SetDependencies(std::vector<DependencyInfo> dependencies);
+  void SetExtrainfo(InfoMap extrainfo);
+  void SetInstallDate(const CDateTime& installDate);
+  void SetLastUpdated(const CDateTime& lastUpdated);
+  void SetLastUsed(const CDateTime& lastUsed);
+  void SetOrigin(std::string origin);
+  void SetPackageSize(uint64_t size);
+  void SetExtensions(CAddonType addonType);
+
+  const AddonInfoPtr& get() { return m_addonInfo; }
+
+private:
+  AddonInfoPtr m_addonInfo;
+};
 }

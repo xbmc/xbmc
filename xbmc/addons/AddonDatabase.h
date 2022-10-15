@@ -10,9 +10,10 @@
 
 #include "XBDateTime.h"
 #include "addons/AddonVersion.h"
-#include "addons/addoninfo/AddonInfoBuilder.h"
 #include "dbwrappers/Database.h"
 
+#include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -26,6 +27,10 @@ enum class AddonDisabledReason;
 enum class AddonUpdateRule;
 
 class CAddonExtensions;
+class CAddonInfoBuilderFromDB;
+
+class CAddonInfo;
+using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
 
 class IAddon;
 using AddonPtr = std::shared_ptr<IAddon>;
@@ -46,7 +51,7 @@ class CAddonDatabaseSerializer
 
 public:
   static std::string SerializeMetadata(const CAddonInfo& addon);
-  static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::CFromDB& builder);
+  static void DeserializeMetadata(const std::string& document, CAddonInfoBuilderFromDB& builder);
 
 private:
   static CVariant SerializeExtensions(const CAddonExtensions& addonType);

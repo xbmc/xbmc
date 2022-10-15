@@ -130,7 +130,7 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_Repo)
 
 TEST_F(TestAddonInfoBuilder, TestGenerate_DBEntry)
 {
-  CAddonInfoBuilder::CFromDB builder;
+  CAddonInfoBuilderFromDB builder;
   builder.SetId("video.blablabla.org");
   builder.SetVersion(CAddonVersion("1.2.3"));
   CAddonType addonType(AddonType::ADDON_PLUGIN);

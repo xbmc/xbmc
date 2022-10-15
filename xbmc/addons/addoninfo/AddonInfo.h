@@ -262,6 +262,7 @@ public:
 
 private:
   friend class CAddonInfoBuilder;
+  friend class CAddonInfoBuilderFromDB;
 
   std::string m_id;
   AddonType m_mainType{};

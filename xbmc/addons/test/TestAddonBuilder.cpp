@@ -33,7 +33,7 @@ TEST_F(TestAddonBuilder, ShouldBuildDependencyAddons)
   std::vector<DependencyInfo> deps;
   deps.emplace_back("a", CAddonVersion("1.0.0"), CAddonVersion("1.0.10"), false);
 
-  CAddonInfoBuilder::CFromDB builder;
+  CAddonInfoBuilderFromDB builder;
   builder.SetId("aa");
   builder.SetDependencies(deps);
   CAddonType addonType(AddonType::ADDON_UNKNOWN);
@@ -44,7 +44,7 @@ TEST_F(TestAddonBuilder, ShouldBuildDependencyAddons)
 
 TEST_F(TestAddonBuilder, ShouldReturnDerivedType)
 {
-  CAddonInfoBuilder::CFromDB builder;
+  CAddonInfoBuilderFromDB builder;
   builder.SetId("aa");
   CAddonType addonType(AddonType::ADDON_RESOURCE_LANGUAGE);
   builder.SetExtensions(addonType);
