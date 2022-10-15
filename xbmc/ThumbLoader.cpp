@@ -11,9 +11,7 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
-#include "filesystem/File.h"
-
-using namespace XFILE;
+#include "utils/FileUtils.h"
 
 CThumbLoader::CThumbLoader() :
   CBackgroundInfoLoader()
@@ -114,13 +112,13 @@ std::string CProgramThumbLoader::GetLocalThumb(const CFileItem &item)
   if (item.m_bIsFolder)
   {
     std::string folderThumb = item.GetFolderThumb();
-    if (CFile::Exists(folderThumb))
+    if (CFileUtils::Exists(folderThumb))
       return folderThumb;
   }
   else
   {
     std::string fileThumb(item.GetTBNFile());
-    if (CFile::Exists(fileThumb))
+    if (CFileUtils::Exists(fileThumb))
       return fileThumb;
   }
   return "";

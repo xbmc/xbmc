@@ -16,6 +16,7 @@
 #include "NfoFile.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
+#include "URL.h"
 #include "Util.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Scraper.h"
@@ -26,7 +27,6 @@
 #include "events/EventLog.h"
 #include "events/MediaLibraryEvent.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/MusicDatabaseDirectory/DirectoryNode.h"
 #include "filesystem/SmartPlaylistDirectory.h"
@@ -45,6 +45,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -1486,7 +1487,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
   std::string strNfo = URIUtils::AddFileToFolder(path, "album.nfo");
   CInfoScanner::INFO_TYPE result = CInfoScanner::NO_NFO;
   CNfoFile nfoReader;
-  existsNFO = XFILE::CFile::Exists(strNfo);
+  existsNFO = CFileUtils::Exists(strNfo);
   // When on GUI ask user if they want to ignore nfo and refresh from Internet
   if (existsNFO && pDialog && CGUIDialogYesNo::ShowAndGetInput(10523, 20446))
   {
@@ -1753,7 +1754,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
   if (artistpathfound)
   {
     strNfo = URIUtils::AddFileToFolder(path, "artist.nfo");
-    existsNFO = XFILE::CFile::Exists(strNfo);
+    existsNFO = CFileUtils::Exists(strNfo);
   }
 
   // If not there fall back local to music files (historic location for those album artists with a unique folder)
@@ -1763,7 +1764,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
     if (artistpathfound)
     {
       strNfo = URIUtils::AddFileToFolder(path, "artist.nfo");
-      existsNFO = XFILE::CFile::Exists(strNfo);
+      existsNFO = CFileUtils::Exists(strNfo);
     }
     else
       CLog::Log(LOGDEBUG, "{} not have path, nfo file not possible", artist.strArtist);

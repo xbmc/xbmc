@@ -14,7 +14,6 @@
 #include "dialogs/GUIDialogKaiToast.h"
 // fallback for new skin resolution code
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -27,6 +26,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "threads/Timer.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -261,7 +261,7 @@ std::string CSkinInfo::GetSkinPath(const std::string& strFile, RESOLUTION_INFO *
   *res = *std::min_element(m_resolutions.begin(), m_resolutions.end(), closestRes(target));
 
   std::string strPath = URIUtils::AddFileToFolder(strPathToUse, res->strMode, strFile);
-  if (CFile::Exists(strPath))
+  if (CFileUtils::Exists(strPath))
     return strPath;
 
   // use the default resolution
@@ -272,7 +272,7 @@ std::string CSkinInfo::GetSkinPath(const std::string& strFile, RESOLUTION_INFO *
 
 bool CSkinInfo::HasSkinFile(const std::string &strFile) const
 {
-  return CFile::Exists(GetSkinPath(strFile));
+  return CFileUtils::Exists(GetSkinPath(strFile));
 }
 
 void CSkinInfo::LoadIncludes()

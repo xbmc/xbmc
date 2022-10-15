@@ -16,7 +16,6 @@
 #include "Util.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogFileBrowser.h"
-#include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -29,8 +28,7 @@
 #include "settings/MediaSourceSettings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
-
-using namespace XFILE;
+#include "utils/FileUtils.h"
 
 #define CONTROL_BTN_REFRESH       6
 #define CONTROL_USERRATING        7
@@ -373,7 +371,7 @@ void CGUIDialogSongInfo::OnGetArt()
       CFileItem item(m_song->GetMusicInfoTag()->GetURL(), false);
       localThumb = item.GetUserMusicThumb(true);
     }
-    if (CFile::Exists(localThumb))
+    if (CFileUtils::Exists(localThumb))
     {
       CFileItemPtr item(new CFileItem("thumb://Local", false));
       item->SetArt("thumb", localThumb);
@@ -431,7 +429,7 @@ void CGUIDialogSongInfo::OnGetArt()
       newArt = localThumb;
 //    else if (result == "thumb://Embedded")
 //      newArt = embeddedArt;
-    else if (CFile::Exists(result))
+    else if (CFileUtils::Exists(result))
       newArt = result;
     else // none
       newArt.clear();

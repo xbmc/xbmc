@@ -9,7 +9,6 @@
 #include "LibraryDirectory.h"
 
 #include "Directory.h"
-#include "File.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "SmartPlaylistDirectory.h"
@@ -18,6 +17,7 @@
 #include "guilib/TextureManager.h"
 #include "playlists/SmartPlayList.h"
 #include "profiles/ProfileManager.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XMLUtils.h"
@@ -134,7 +134,7 @@ bool CLibraryDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 
 TiXmlElement *CLibraryDirectory::LoadXML(const std::string &xmlFile)
 {
-  if (!CFile::Exists(xmlFile))
+  if (!CFileUtils::Exists(xmlFile))
     return nullptr;
 
   if (!m_doc.LoadFile(xmlFile))
@@ -175,7 +175,7 @@ std::string CLibraryDirectory::GetNode(const CURL& url)
   std::string xmlNode = libDir;
   URIUtils::RemoveSlashAtEnd(xmlNode);
 
-  if (CFile::Exists(xmlNode))
+  if (CFileUtils::Exists(xmlNode))
     return xmlNode;
 
   return "";
