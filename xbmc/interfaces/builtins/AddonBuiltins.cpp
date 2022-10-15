@@ -122,7 +122,7 @@ static int RunAddon(const std::vector<std::string>& params)
     if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::ADDON_PLUGIN,
                                                OnlyEnabled::CHOICE_YES))
     {
-      PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
+      const auto plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
       std::string urlParameters;
       std::vector<std::string> parameters;
       if (params.size() == 2 &&

@@ -590,7 +590,7 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
     if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, AddonType::ADDON_PLUGIN,
                                                OnlyEnabled::CHOICE_YES))
     {
-      PluginPtr plugin = std::static_pointer_cast<CPluginSource>(addon);
+      const auto plugin = std::static_pointer_cast<CPluginSource>(addon);
       if (plugin->Provides(CPluginSource::AUDIO))
         m_playlist = PLAYLIST::TYPE_MUSIC;
       if (plugin->Provides(CPluginSource::VIDEO))
