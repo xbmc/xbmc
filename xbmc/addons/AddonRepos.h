@@ -33,7 +33,7 @@ enum class CheckAddonPath
 /**
  * Struct - CAddonWithUpdate
  */
-struct CAddonWithUpdate
+struct AddonWithUpdate
 {
   std::shared_ptr<IAddon> m_installed;
   std::shared_ptr<IAddon> m_update;
@@ -72,7 +72,7 @@ public:
    * \param[out] addonsWithUpdate target map
    */
   void BuildAddonsWithUpdateList(const std::vector<std::shared_ptr<IAddon>>& installed,
-                                 std::map<std::string, CAddonWithUpdate>& addonsWithUpdate) const;
+                                 std::map<std::string, AddonWithUpdate>& addonsWithUpdate) const;
 
   /*!
    * \brief Checks if the origin-repository of a given addon is defined as official repo
