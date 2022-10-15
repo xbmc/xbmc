@@ -23,8 +23,7 @@ namespace ADDON
 enum class AddonType;
 class CAddonType;
 
-typedef std::vector<AddonPtr> VECADDONS;
-typedef std::vector<AddonPtr>::iterator IVECADDONS;
+using VECADDONS = std::vector<AddonPtr>;
 
 class CAddonInfo;
 using AddonInfoPtr = std::shared_ptr<CAddonInfo>;

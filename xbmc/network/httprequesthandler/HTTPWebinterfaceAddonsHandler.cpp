@@ -34,8 +34,8 @@ MHD_RESULT CHTTPWebinterfaceAddonsHandler::HandleRequest()
     return MHD_YES;
   }
 
-  for (ADDON::IVECADDONS addon = addons.begin(); addon != addons.end(); ++addon)
-    m_responseData += "<li><a href=/addons/" + (*addon)->ID() + "/>" + (*addon)->Name() + "</a></li>\n";
+  for (const auto& addon : addons)
+    m_responseData += "<li><a href=/addons/" + addon->ID() + "/>" + addon->Name() + "</a></li>\n";
 
   m_responseData += "</ul>\n</body></html>";
 
