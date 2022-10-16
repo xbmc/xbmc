@@ -71,7 +71,11 @@ bool CCharsetDetection::DetectXmlEncoding(const char* const xmlContent, const si
   /* try to read encoding from XML declaration */
   if (GetXmlEncodingFromDeclaration(xmlContent, contentLength, detectedEncoding))
   {
-    StringUtils::ToUpper(detectedEncoding);
+    // It would be cleaner to use FoldCase (FoldCaseUpper is unstandard), but it
+    // would require everything compared against "detectedEncoding" to be changed to
+    // lower case. Not a big change, but add some risk.
+
+    detectedEncoding = StringUtils::FoldCaseUpper(detectedEncoding);
 
     /* make some safety checks */
     if (detectedEncoding == "UTF-8")
@@ -113,7 +117,7 @@ bool CCharsetDetection::DetectXmlEncoding(const char* const xmlContent, const si
 
   /* found encoding in converted XML declaration, we know correct endianness and number of bytes per char */
   /* make some safety checks */
-  StringUtils::ToUpper(declaredEncoding);
+  declaredEncoding = StringUtils::FoldCaseUpper(declaredEncoding);
   if (declaredEncoding == guessedEncoding)
     return true;
 

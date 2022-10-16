@@ -48,8 +48,7 @@ TEST(TestLocale, LanguageLocale)
 TEST(TestLocale, LanguageTerritoryLocale)
 {
   const std::string strLocale = LanguageCodeEnglish + TerritorySeparator + TerritoryCodeBritain;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
+  std::string strLocaleLC = StringUtils::FoldCase(strLocale);
 
   CLocale locale(LanguageCodeEnglish, TerritoryCodeBritain);
   ASSERT_TRUE(locale.IsValid());
@@ -66,8 +65,7 @@ TEST(TestLocale, LanguageTerritoryLocale)
 TEST(TestLocale, LanguageCodesetLocale)
 {
   const std::string strLocale = LanguageCodeEnglish + CodesetSeparator + CodesetUtf8;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
+  std::string strLocaleLC = StringUtils::FoldCase(strLocale);
 
   CLocale locale(LanguageCodeEnglish, "", CodesetUtf8);
   ASSERT_TRUE(locale.IsValid());
@@ -84,8 +82,7 @@ TEST(TestLocale, LanguageCodesetLocale)
 TEST(TestLocale, LanguageModifierLocale)
 {
   const std::string strLocale = LanguageCodeEnglish + ModifierSeparator + ModifierLatin;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
+  std::string strLocaleLC = StringUtils::FoldCase(strLocale);
 
   CLocale locale(LanguageCodeEnglish, "", "", ModifierLatin);
   ASSERT_TRUE(locale.IsValid());
@@ -102,11 +99,9 @@ TEST(TestLocale, LanguageModifierLocale)
 TEST(TestLocale, LanguageTerritoryCodesetLocale)
 {
   const std::string strLocaleShort = LanguageCodeEnglish + TerritorySeparator + TerritoryCodeBritain;
-  std::string strLocaleShortLC = strLocaleShort;
-  StringUtils::ToLower(strLocaleShortLC);
+  std::string strLocaleShortLC = StringUtils::FoldCase(strLocaleShort);
   const std::string strLocale = strLocaleShort + CodesetSeparator + CodesetUtf8;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
+  std::string strLocaleLC = StringUtils::FoldCase(strLocale);
 
   CLocale locale(LanguageCodeEnglish, TerritoryCodeBritain, CodesetUtf8);
   ASSERT_TRUE(locale.IsValid());
@@ -123,11 +118,9 @@ TEST(TestLocale, LanguageTerritoryCodesetLocale)
 TEST(TestLocale, LanguageTerritoryModifierLocale)
 {
   const std::string strLocaleShort = LanguageCodeEnglish + TerritorySeparator + TerritoryCodeBritain;
-  std::string strLocaleShortLC = strLocaleShort;
-  StringUtils::ToLower(strLocaleShortLC);
+  std::string strLocaleShortLC = StringUtils::FoldCase(strLocaleShort);
   const std::string strLocale = strLocaleShort + ModifierSeparator + ModifierLatin;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
+  std::string strLocaleLC = StringUtils::FoldCase(strLocale);
 
   CLocale locale(LanguageCodeEnglish, TerritoryCodeBritain, "", ModifierLatin);
   ASSERT_TRUE(locale.IsValid());
@@ -144,11 +137,9 @@ TEST(TestLocale, LanguageTerritoryModifierLocale)
 TEST(TestLocale, LanguageTerritoryCodesetModifierLocale)
 {
   const std::string strLocaleShort = LanguageCodeEnglish + TerritorySeparator + TerritoryCodeBritain;
-  std::string strLocaleShortLC = strLocaleShort;
-  StringUtils::ToLower(strLocaleShortLC);
+  std::string strLocaleShortLC = StringUtils::FoldCase(strLocaleShort);
   const std::string strLocale = strLocaleShort + CodesetSeparator + CodesetUtf8 + ModifierSeparator + ModifierLatin;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
+  std::string strLocaleLC = StringUtils::FoldCase(strLocale);
 
   CLocale locale(LanguageCodeEnglish, TerritoryCodeBritain, CodesetUtf8, ModifierLatin);
   ASSERT_TRUE(locale.IsValid());
@@ -165,11 +156,9 @@ TEST(TestLocale, LanguageTerritoryCodesetModifierLocale)
 TEST(TestLocale, FullStringLocale)
 {
   const std::string strLocaleShort = LanguageCodeEnglish + TerritorySeparator + TerritoryCodeBritain;
-  std::string strLocaleShortLC = strLocaleShort;
-  StringUtils::ToLower(strLocaleShortLC);
+  std::string strLocaleShortLC = StringUtils::FoldCase(strLocaleShort);
   const std::string strLocale = strLocaleShort + CodesetSeparator + CodesetUtf8 + ModifierSeparator + ModifierLatin;
-  std::string strLocaleLC = strLocale;
-  StringUtils::ToLower(strLocaleLC);
+  std::string strLocaleLC = StringUtils::FoldCase(strLocale);
 
   CLocale locale(strLocale);
   ASSERT_TRUE(locale.IsValid());

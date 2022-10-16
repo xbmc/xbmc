@@ -9,6 +9,9 @@
 #include "utils/StringUtils.h"
 
 #include <algorithm>
+#include <codecvt>
+#include <string>
+#include <string_view>
 
 #include <gtest/gtest.h>
 enum class ECG
@@ -36,6 +39,22 @@ enum EN
   D
 };
 }
+
+namespace TestStringUtils
+{
+
+// These represent the SAME Unicode character. Certain operations can
+// change the number of code-units or even codepoints (Unicode 32-bit chars)
+// required to represent what is commonly considered a character.  Normalization
+// (which C++ does not have) can reorder and change the length of such
+// characters.
+const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1[] = {"\x6f\xcc\x82\xcc\xa3\x00"};
+// const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_2[] = {"\x6f\xcc\xa3\xcc\x82\x00"};
+// const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_3[] = {"\xc3\xb4\xcc\xa3\x00"};
+// const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_4[] = {"\xe1\xbb\x8d\xcc\x82\x00"};
+const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5[] = {"\xe1\xbb\x99\x00"};
+} // namespace TestStringUtils
+
 TEST(TestStringUtils, Format)
 {
   std::string refstr = "test 25 2.7 ff FF";
@@ -82,7 +101,8 @@ TEST(TestStringUtils, ToUpper)
   std::string refstr = "TEST";
 
   std::string varstr = "TeSt";
-  StringUtils::ToUpper(varstr);
+  // Won't need explicit string_view after removing old api
+  varstr = StringUtils::ToUpper(std::string_view(varstr));
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
@@ -91,7 +111,7 @@ TEST(TestStringUtils, ToLower)
   std::string refstr = "test";
 
   std::string varstr = "TeSt";
-  StringUtils::ToLower(varstr);
+  varstr = StringUtils::ToLower(std::string_view(varstr));
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
@@ -128,6 +148,258 @@ TEST(TestStringUtils, ToCapitalize)
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
+TEST(TestStringUtils, FoldCase)
+{
+  // Test case adapated from ICU FoldCase test. The
+  // results are different, but good enough.
+
+  std::string s1 = "I İ i ı"; // All four Turkic variants of 'i'
+  std::string s2 = "i İ i ı"; // We are in trouble if lower(I) != i
+  int result; // or upper(i) != I
+
+  s1 = StringUtils::FoldCase(s1);
+  s2 = StringUtils::FoldCase(s2);
+  //std::cout << "Turkic folded s1: " << s1 << std::endl;
+  //std::cout << "Turkic folded s2: " << s2 << std::endl;
+  result = s1.compare(s2);
+  EXPECT_EQ(result, 0);
+
+  std::string I = "I";
+  std::string I_DOT = "İ";
+  std::string I_DOT_I_DOT = "İİ";
+  std::string i = "i";
+  std::string ii = "ii";
+  std::string i_DOTLESS = "ı";
+  std::string i_DOTLESS_i_DOTTLESS = "ıı";
+  std::string i_COMBINING_DOUBLE_DOT = "i̇";
+
+  // (at least these) Characters outside of ASCII left alone
+
+  s1 = I + I_DOT + i + i_DOTLESS + i_COMBINING_DOUBLE_DOT;
+  s2 = i + I_DOT + i + i_DOTLESS + i_COMBINING_DOUBLE_DOT;
+  s1 = StringUtils::FoldCase(s1);
+  s2 = StringUtils::FoldCase(s2);
+  //std::cout << "Turkic folded s1: " << s1 << std::endl;
+  //std::cout << "Turkic folded s2: " << s2 << std::endl;
+  result = s1.compare(s2);
+  EXPECT_EQ(result, 0);
+
+  s1 = "ABCÇDEFGĞHIJKLMNOÖPRSŞTUÜVYZ";
+  s2 = "abcÇdefgĞhijklmnoÖprsŞtuÜvyz";
+
+  //std::cout << "Turkic orig s1: " << s1 << std::endl;
+  //std::cout << "Turkic orig s2: " << s2 << std::endl;
+
+  s1 = StringUtils::FoldCase(s1);
+  s2 = StringUtils::FoldCase(s2);
+  //std::cout << "Turkic folded s1: " << s1 << std::endl;
+  //std::cout << "Turkic folded s2: " << s2 << std::endl;
+
+  result = s1.compare(s2);
+  EXPECT_EQ(result, 0);
+}
+
+TEST(TestStringUtils, FoldCaseW)
+{
+  // Test case adapated from ICU FoldCase test. The
+  // results are different, but good enough. The main thing is that
+  // all known 'keys' which are toLowered/toUppered before lookup
+  // in table (or other caseless comparison) are ASCII. Therefore,
+  // things will work okay for such keys of the case fold does not
+  // change the case of ASCII chars in a manner inconsistent with
+  // what is considered normal (in English). (Turkish is one such
+  // trouble making locale).
+  //
+  // To guard against the possibility of some keys containing some
+  // non-ASCII characters, a local insensitive case-fold is much
+  // preferred.
+
+  std::wstring s1 = L"I İ i ı";
+  std::wstring s2 = L"i İ i ı";
+  int result;
+
+  s1 = StringUtils::FoldCase(s1);
+  s2 = StringUtils::FoldCase(s2);
+  std::cout << "Turkic folded s1: " << StringUtils::WStringToUTF8(s1) << std::endl;
+  std::cout << "Turkic folded s2: " << StringUtils::WStringToUTF8(s2) << std::endl;
+  result = s1.compare(s2);
+  EXPECT_EQ(result, 0);
+
+  std::wstring I = L"I";
+  std::wstring I_DOT = L"İ";
+  std::wstring I_DOT_I_DOT = L"İİ";
+  std::wstring i = L"i";
+  std::wstring ii = L"ii";
+  std::wstring i_DOTLESS = L"ı";
+  std::wstring i_DOTLESS_i_DOTTLESS = L"ıı";
+  std::wstring i_COMBINING_DOUBLE_DOT = L"i̇";
+
+  // (at least these) Characters outside of ASCII left alone
+
+  s1 = I + I_DOT + i + i_DOTLESS + i_COMBINING_DOUBLE_DOT;
+  s2 = i + I_DOT + i + i_DOTLESS + i_COMBINING_DOUBLE_DOT;
+  s1 = StringUtils::FoldCase(s1);
+  s2 = StringUtils::FoldCase(s2);
+  std::cout << "Turkic folded s1: " << StringUtils::WStringToUTF8(s1) << std::endl;
+  std::cout << "Turkic folded s2: " << StringUtils::WStringToUTF8(s2) << std::endl;
+  result = s1.compare(s2);
+  EXPECT_EQ(result, 0);
+
+  s1 = L"ABCÇDEFGĞHIJKLMNOÖPRSŞTUÜVYZ";
+  s2 = L"abcÇdefgĞhijklmnoÖprsŞtuÜvyz";
+
+  //std::cout << "Turkic orig s1: " << s1 << std::endl;
+  //std::cout << "Turkic orig s2: " << s2 << std::endl;
+
+  s1 = StringUtils::FoldCase(s1);
+  s2 = StringUtils::FoldCase(s2);
+  std::cout << "Turkic folded s1: " << StringUtils::WStringToUTF8(s1) << std::endl;
+  std::cout << "Turkic folded s2: " << StringUtils::WStringToUTF8(s2) << std::endl;
+
+  result = s1.compare(s2);
+  EXPECT_EQ(result, 0);
+}
+
+TEST(TestStringUtils, FoldCase_W)
+{
+  std::wstring w_s1 = StringUtils::UTF8ToWString(
+      std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
+  std::wstring w_s2 = StringUtils::UTF8ToWString(
+      std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
+
+  w_s1 = StringUtils::FoldCase(w_s1);
+  w_s2 = StringUtils::FoldCase(w_s2);
+  int32_t result = w_s1.compare(w_s2);
+  EXPECT_NE(result, 0);
+
+  w_s1 = StringUtils::UTF8ToWString(
+      std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
+  w_s2 = StringUtils::UTF8ToWString(
+      std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
+  w_s1 = StringUtils::FoldCase(w_s1);
+  w_s2 = StringUtils::FoldCase(w_s2);
+  std::cout << "Turkic folded w_s1: " << StringUtils::WStringToUTF8(w_s1) << std::endl;
+  std::cout << "Turkic folded w_s2: " << StringUtils::WStringToUTF8(w_s2) << std::endl;
+  result = w_s1.compare(w_s2);
+  EXPECT_NE(result, 0);
+
+  std::string s1 = "I İ i ı";
+  std::string s2 = "i İ i ı";
+  std::cout << "Turkic orig s1: " << s1 << std::endl;
+  std::cout << "Turkic orig s2: " << s2 << std::endl;
+
+  w_s1 = StringUtils::UTF8ToWString(s1);
+  w_s2 = StringUtils::UTF8ToWString(s2);
+  w_s1 = StringUtils::FoldCase(w_s1);
+  w_s2 = StringUtils::FoldCase(w_s2);
+  std::cout << "Turkic folded w_s1: " << StringUtils::WStringToUTF8(w_s1) << std::endl;
+  std::cout << "Turkic folded w_s2: " << StringUtils::WStringToUTF8(w_s2) << std::endl;
+  result = w_s1.compare(w_s2);
+  EXPECT_EQ(result, 0);
+
+  std::string I = "I";
+  std::string I_DOT = "İ";
+  std::string I_DOT_I_DOT = "İİ";
+  std::string i = "i";
+  std::string ii = "ii";
+  std::string i_DOTLESS = "ı";
+  std::string i_DOTLESS_i_DOTTLESS = "ıı";
+  std::string i_COMBINING_DOUBLE_DOT = "i̇";
+
+  s1 = I + I_DOT + i + i_DOTLESS + i_COMBINING_DOUBLE_DOT;
+  s2 = i + I_DOT + i + i_DOTLESS + i_COMBINING_DOUBLE_DOT;
+
+  std::cout << "Turkic orig s1: " << s1 << std::endl;
+  std::cout << "Turkic orig s2: " << s2 << std::endl;
+
+  w_s1 = StringUtils::UTF8ToWString(s1);
+  w_s2 = StringUtils::UTF8ToWString(s2);
+  w_s1 = StringUtils::FoldCase(w_s1);
+  w_s2 = StringUtils::FoldCase(w_s2);
+  std::cout << "Turkic folded w_s1: " << StringUtils::WStringToUTF8(w_s1) << std::endl;
+  std::cout << "Turkic folded w_s2: " << StringUtils::WStringToUTF8(w_s2) << std::endl;
+  result = w_s1.compare(w_s2);
+
+  EXPECT_EQ(result, 0);
+
+  s1 = "ABCÇDEFGĞHIJKLMNOÖPRSŞTUÜVYZ";
+  s2 = "abcçdefgğhijklmnoöprsştuüvyz";
+
+  std::cout << "Turkic orig s1: " << s1 << std::endl;
+  std::cout << "Turkic orig s2: " << s2 << std::endl;
+
+  w_s1 = StringUtils::UTF8ToWString(s1);
+  w_s2 = StringUtils::UTF8ToWString(s2);
+  w_s1 = StringUtils::FoldCase(w_s1);
+  w_s2 = StringUtils::FoldCase(w_s2);
+  std::cout << "Turkic folded w_s1: " << StringUtils::WStringToUTF8(w_s1) << std::endl;
+  std::cout << "Turkic folded w_s2: " << StringUtils::WStringToUTF8(w_s2) << std::endl;
+  result = w_s1.compare(w_s2);
+  EXPECT_EQ(result, 0);
+}
+
+TEST(TestStringUtils, FoldCaseUpper)
+{
+  // Test case adapated from ICU FoldCase test. The
+  // Test case adapated from ICU FoldCase test. The
+  // results are different, but good enough. The main thing is that
+  // all known 'keys' which are toLowered/toUppered before lookup
+  // in table (or other caseless comparison) are ASCII. Therefore,
+  // things will work okay for such keys of the case fold does not
+  // change the case of ASCII chars in a manner inconsistent with
+  // what is considered normal (in English). (Turkish is one such
+  // trouble making locale).
+  //
+  // To guard against the possibility of some keys containing some
+  // non-ASCII characters, a local insensitive case-fold is much
+  // preferred.
+
+  std::string s1 = "I İ İ i ı";
+  std::string s2 = "I İ İ I ı";
+  int result;
+
+  s1 = StringUtils::FoldCaseUpper(s1);
+  s2 = StringUtils::FoldCaseUpper(s2);
+  std::cout << "Turkic folded s1: " << s1 << std::endl;
+  std::cout << "Turkic folded s2: " << s2 << std::endl;
+  result = s1.compare(s2);
+  EXPECT_EQ(result, 0);
+
+  std::string I = "I";
+  std::string I_DOT = "İ";
+  std::string I_DOT_I_DOT = "İİ";
+  std::string i = "i";
+  std::string ii = "ii";
+  std::string i_DOTLESS = "ı";
+  std::string i_DOTLESS_i_DOTTLESS = "ıı";
+  std::string i_COMBINING_DOUBLE_DOT = "i̇";
+
+  // (at least these) Characters outside of en_GB left alone
+
+  s1 = I + I_DOT + i + i_DOTLESS + i_COMBINING_DOUBLE_DOT;
+  s2 = I + I_DOT + I + i_DOTLESS + i_COMBINING_DOUBLE_DOT;
+  s1 = StringUtils::FoldCaseUpper(s1);
+  s2 = StringUtils::FoldCaseUpper(s2);
+  //std::cout << "Turkic folded s1: " << s1 << std::endl;
+  //std::cout << "Turkic folded s2: " << s2 << std::endl;
+  result = s1.compare(s2);
+  EXPECT_EQ(result, 0);
+
+  s1 = "AbCÇDEFGĞHIJKLMNOÖPRSŞTUÜVYz";
+  s2 = "aBcÇdefgĞhijklmnoÖprsŞtuÜvyZ";
+
+  //std::cout << "Turkic orig s1: " << s1 << std::endl;
+  //std::cout << "Turkic orig s2: " << s2 << std::endl;
+
+  s1 = StringUtils::FoldCaseUpper(s1);
+  s2 = StringUtils::FoldCaseUpper(s2);
+  //std::cout << "Turkic folded s1: " << s1 << std::endl;
+  //std::cout << "Turkic folded s2: " << s2 << std::endl;
+
+  result = s1.compare(s2);
+  EXPECT_EQ(result, 0);
+}
+
 TEST(TestStringUtils, EqualsNoCase)
 {
   std::string refstr = "TeSt";
@@ -138,7 +410,8 @@ TEST(TestStringUtils, EqualsNoCase)
 
 TEST(TestStringUtils, Left)
 {
-  std::string refstr, varstr;
+  std::string refstr;
+  std::string varstr;
   std::string origstr = "test";
 
   refstr = "";
@@ -156,7 +429,8 @@ TEST(TestStringUtils, Left)
 
 TEST(TestStringUtils, Mid)
 {
-  std::string refstr, varstr;
+  std::string refstr;
+  std::string varstr;
   std::string origstr = "test";
 
   refstr = "";
@@ -186,7 +460,8 @@ TEST(TestStringUtils, Mid)
 
 TEST(TestStringUtils, Right)
 {
-  std::string refstr, varstr;
+  std::string refstr;
+  std::string varstr;
   std::string origstr = "test";
 
   refstr = "";
@@ -278,7 +553,8 @@ TEST(TestStringUtils, EndsWith)
 
 TEST(TestStringUtils, Join)
 {
-  std::string refstr, varstr;
+  std::string refstr;
+  std::string varstr;
   std::vector<std::string> strarray;
 
   strarray.emplace_back("a");
@@ -349,7 +625,8 @@ TEST(TestStringUtils, FindNumber)
 
 TEST(TestStringUtils, AlphaNumericCompare)
 {
-  int64_t ref, var;
+  int64_t ref;
+  int64_t var;
 
   ref = 0;
   var = StringUtils::AlphaNumericCompare(L"123abc", L"abc123");
@@ -374,7 +651,8 @@ TEST(TestStringUtils, TimeStringToSeconds)
 
 TEST(TestStringUtils, RemoveCRLF)
 {
-  std::string refstr, varstr;
+  std::string refstr;
+  std::string varstr;
 
   refstr = "test\r\nstring\nblah blah";
   varstr = "test\r\nstring\nblah blah\n";
@@ -384,7 +662,8 @@ TEST(TestStringUtils, RemoveCRLF)
 
 TEST(TestStringUtils, utf8_strlen)
 {
-  size_t ref, var;
+  size_t ref;
+  size_t var;
 
   ref = 9;
   var = StringUtils::utf8_strlen("ｔｅｓｔ＿ＵＴＦ８");
@@ -393,11 +672,12 @@ TEST(TestStringUtils, utf8_strlen)
 
 TEST(TestStringUtils, SecondsToTimeString)
 {
-  std::string ref, var;
+  std::string refstr;
+  std::string varstr;
 
-  ref = "21:30:55";
-  var = StringUtils::SecondsToTimeString(77455);
-  EXPECT_STREQ(ref.c_str(), var.c_str());
+  refstr = "21:30:55";
+  varstr = StringUtils::SecondsToTimeString(77455);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
 TEST(TestStringUtils, IsNaturalNumber)
@@ -432,7 +712,8 @@ TEST(TestStringUtils, IsInteger)
 
 TEST(TestStringUtils, SizeToString)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "2.00 GB";
   var = StringUtils::SizeToString(2147483647);
@@ -450,7 +731,8 @@ TEST(TestStringUtils, EmptyString)
 
 TEST(TestStringUtils, FindWords)
 {
-  size_t ref, var;
+  size_t ref;
+  size_t var;
 
   ref = 5;
   var = StringUtils::FindWords("test string", "string");
@@ -472,7 +754,8 @@ TEST(TestStringUtils, FindWords)
 
 TEST(TestStringUtils, FindWords_NonAscii)
 {
-  size_t ref, var;
+  size_t ref;
+  size_t var;
 
   ref = 6;
   var = StringUtils::FindWords("我的视频", "视频");
@@ -488,7 +771,8 @@ TEST(TestStringUtils, FindWords_NonAscii)
 
 TEST(TestStringUtils, FindEndBracket)
 {
-  int ref, var;
+  size_t ref;
+  size_t var;
 
   ref = 11;
   var = StringUtils::FindEndBracket("atest testbb test", 'a', 'b');
@@ -497,7 +781,8 @@ TEST(TestStringUtils, FindEndBracket)
 
 TEST(TestStringUtils, DateStringToYYYYMMDD)
 {
-  int ref, var;
+  size_t ref;
+  size_t var;
 
   ref = 20120706;
   var = StringUtils::DateStringToYYYYMMDD("2012-07-06");
@@ -506,7 +791,8 @@ TEST(TestStringUtils, DateStringToYYYYMMDD)
 
 TEST(TestStringUtils, WordToDigits)
 {
-  std::string ref, var;
+  std::string ref;
+  std::string var;
 
   ref = "8378 787464";
   var = "test string";
@@ -526,7 +812,8 @@ TEST(TestStringUtils, ValidateUUID)
 
 TEST(TestStringUtils, CompareFuzzy)
 {
-  double ref, var;
+  double ref;
+  double var;
 
   ref = 6.25;
   var = StringUtils::CompareFuzzy("test string", "string test");
@@ -535,8 +822,11 @@ TEST(TestStringUtils, CompareFuzzy)
 
 TEST(TestStringUtils, FindBestMatch)
 {
-  double refdouble, vardouble;
-  int refint, varint;
+  double refdouble;
+  double vardouble;
+  int refint;
+  int varint;
+
   std::vector<std::string> strarray;
 
   refint = 3;

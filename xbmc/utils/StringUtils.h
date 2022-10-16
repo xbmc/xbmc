@@ -19,13 +19,14 @@
 //
 //------------------------------------------------------------------------
 
+#include "LangInfo.h"
+
+#include <locale>
+#include <sstream>
 #include <stdarg.h>
 #include <stdint.h>
 #include <string>
 #include <vector>
-#include <sstream>
-#include <locale>
-
 // workaround for broken [[deprecated]] in coverity
 #if defined(__COVERITY__)
 #undef FMT_DEPRECATED
@@ -68,6 +69,28 @@ constexpr auto EnumToInt(T&& arg) noexcept
 
 class StringUtils
 {
+private:
+  // TODO: Replace getFOLD_LOCALE and related code to use FoldCase algorithm for
+  // caseless compares prior to completion of this PR.
+
+  static std::locale getFOLD_LOCALE()
+  {
+    static std::locale FOLD_LOCALE;
+    static bool initialized;
+
+    if (&FOLD_LOCALE == (void*)0)
+    {
+      initialized = false;
+    }
+    if (!initialized)
+    {
+      std::locale x = std::locale("en_GB.UTF8");
+      FOLD_LOCALE = x;
+      initialized = true;
+    }
+    return FOLD_LOCALE;
+  }
+
 public:
   /*! \brief Get a formatted string similar to sprintf
 
@@ -90,14 +113,194 @@ public:
 
   static std::string FormatV(PRINTF_FORMAT_STRING const char *fmt, va_list args);
   static std::wstring FormatV(PRINTF_FORMAT_STRING const wchar_t *fmt, va_list args);
-  static std::string ToUpper(const std::string& str);
-  static std::wstring ToUpper(const std::wstring& str);
+
+  /*!
+      * \brief Converts a string to Upper case according to locale.
+      *
+      * TODO: This is the new signature for ToUpper(string_view...). Other signatures to be
+      * removed or at least deprecated once the calls have all been changed by this PR.
+      * This API is more efficient, simpler and complies with coding guidelines.
+      *
+      * Note: This is a simplistic upper-case function which assumes that the string length
+      *       does not change during case change.
+      *
+      * \param str string to change case
+      * \param locale influences case changing rules
+      * \return Upper Case version of str
+      */
+  static std::string ToUpper(std::string_view str,
+                             std::locale locale = g_langInfo.GetSystemLocale());
+
+  /*!
+      * \brief Converts a wstring to Upper case according to locale.
+      *
+      * TODO: This is the new signature for ToUpper(wstring_view...). Other signatures to be
+      * removed or at least deprecated once the calls have all been changed by this PR.
+      * This API is more efficient, simpler and complies with coding guidelines.
+      *
+      * Note: In keeping with past Kodi behavior, this implementation ignores the given locale
+      *       and utilizes the locale agnostic tables "unicode_lowers" and "unicode_uppers".
+      *       This has several NEGATIVE effects:
+      *       - Behavior is different from standard toLower, which only changes the case
+      *         of characters in the locale
+      *       - Behaves differently than string toLower.
+      *       - Only converts a SUBSET of characters in the locale, depending upon how
+      *         many are defined in the tables. This is because the tables only defines
+      *         characters which can unambiguously be converted to the the same character
+      *         in ALL locales.
+      * Note: This is a simplistic upper-case function which assumes that the string length
+      *       does not change during case change.
+      *
+      * \param str string to change case
+      * \param locale influences case changing rules
+      * \return Upper Case version of str
+      */
+  static std::wstring ToUpper(std::wstring_view str,
+                              std::locale locale = g_langInfo.GetSystemLocale());
+
+  // TODO: Remove non-string_view apis
+  // These methods kept until all usages have been switched to string_view version.
+
+  // These two could conflict with the string_view version, so disabled
+  // (delete later).
+
+  // static std::string ToUpper(const std::string& str);
+  // static std::wstring ToUpper(const std::wstring& str);
   static void ToUpper(std::string &str);
   static void ToUpper(std::wstring &str);
-  static std::string ToLower(const std::string& str);
-  static std::wstring ToLower(const std::wstring& str);
+
+  // Conflict with string_view version
+  // static std::string ToLower(const std::string& str);
+  // static std::wstring ToLower(const std::wstring& str);
   static void ToLower(std::string &str);
   static void ToLower(std::wstring &str);
+
+  static std::wstring UTF8ToWString(std::string_view str);
+  static std::string WStringToUTF8(std::wstring_view str);
+
+  /*!
+    * \brief Converts a string to Lower case according to locale.
+    *
+    * Note: This is a simplistic lower-case function which assumes that the string length
+    *       does not change during case change.
+    *
+    * \param str string to change case
+    * \param locale influences case changing rules
+    * \return Lower Case version of str
+    */
+  static std::string ToLower(std::string_view str,
+                             std::locale locale = g_langInfo.GetSystemLocale());
+
+  /*!
+    * \brief Converts a wstring to Lower case according to locale.
+    *
+    * Note: This is a simplistic lower-case function which assumes that the string length
+    *       does not change during case change.
+    *
+    * \param str string to change case on
+    * \param locale influences case changing rules
+    * \return Lower Case version of str
+    */
+  static std::wstring ToLower(std::wstring_view str,
+                              std::locale locale = g_langInfo.GetSystemLocale());
+
+private:
+  /*!
+   *  \brief Backend to FoldCase operations using u32string
+   *
+   */
+  static std::u32string FoldCase(std::u32string_view str);
+
+public:
+  /*!
+    *  \brief Folds the case of a string using a simple algorithm.
+    *
+    * This is similar to ToLower, but is meant to 'normalize' a string for use as a
+    * unique-id. Essentially, all characters with case are changed to lower case.
+    * Further, in some cases unimportant accent info is also removed. Locale is
+    * ignored. Character case mapping tables derived from ICU4C are used to implement
+    * this.
+    *
+    * Results are consistent with wstring_view by both converting to u32string for
+    * the fold operation.
+    *
+    * This API does NOT implement "Full case folding" which requires a
+    * more advanced library, such as ICU4C.
+    *
+    * \param str string to fold
+    * \return Case folded version of str (all lower-case)
+    */
+
+  static std::string FoldCase(std::string_view str);
+
+  /*!
+   *  \brief Folds the case of a string using a simple algorithm.
+   *
+   * This is similar to ToLower, but is meant to 'normalize' a string for use as a
+   * unique-id. Essentially, all characters with case are changed to lower case.
+   * Further, in some cases unimportant accent info is also removed. Locale is
+   * ignored. Character case mapping tables derived from ICU4C are used to implement
+   * this.
+   *
+   * Results are consistent with wstring_view by both converting to u32string for
+   * the fold operation.
+   *
+   * This API does NOT implement "Full case folding" which requires a
+   * more advanced library, such as ICU4C.
+   *
+   * \param str string to fold
+   * \return Case folded version of str (all lower-case)
+   */
+  static std::wstring FoldCase(std::wstring_view str);
+
+private:
+  /*!
+   *  \brief Backend to FoldCaseUpper operations using u32string
+   *
+   */
+  static std::u32string FoldCaseUpper(std::u32string_view str);
+
+public:
+  /*!
+   *  \brief Folds the case of a string using a simple algorithm.
+   *
+   * This is similar to ToUpper, but is meant to 'normalize' a wstring for use as a
+   * unique-id. Essentially, all characters with case are changed to upper case.
+   * Further, in some cases unimportant accent info is also removed. Locale is
+   * ignored. Character case mapping tables derived from ICU4C are used to implement
+   * this.
+   *
+   * Results are consistent with wstring_view by both converting to u32string for
+   * the fold operation.
+   *
+   * This API does NOT implement "Full case folding" which requires a
+   * more advanced library, such as ICU4C.
+   *
+   * \param str string to fold
+   * \return Case folded version of str (all lower-case)
+   */
+  static std::wstring FoldCaseUpper(std::wstring_view str);
+
+  /*!
+   *  \brief Folds the case of a string using a simple algorithm.
+   *
+   * This is similar to ToUpper, but is meant to 'normalize' a string for use as a
+   * unique-id. Essentially, all characters with case are changed to upper case.
+   * Further, in some cases unimportant accent info is also removed. Locale is
+   * ignored. Character case mapping tables derived from ICU4C are used to implement
+   * this.
+   *
+   * Results are consistent with wstring_view by both converting to u32string for
+   * the fold operation.
+   *
+   * This API does NOT implement "Full case folding" which requires a
+   * more advanced library, such as ICU4C.
+   *
+   * \param str string to fold
+   * \return Case folded version of str (all lower-case)
+   */
+  static std::string FoldCaseUpper(std::string_view str);
+
   static void ToCapitalize(std::string &str);
   static void ToCapitalize(std::wstring &str);
   static bool EqualsNoCase(const std::string &str1, const std::string &str2);
@@ -414,6 +617,43 @@ private:
    * avoid including LangInfo.h from this header.
    */
   static const std::locale& GetOriginalLocale() noexcept;
+
+public:
+  /*!
+   * \brief detects when a string contains non-ASCII to aide in debugging or error reporting
+   *
+   * \param str String to be examined for non-ASCII
+   * \return true if non-ASCII characters found, otherwise false
+   */
+  inline static bool ContainsNonAscii(std::string_view str)
+  {
+    for (size_t i = 0; i < str.length(); i++)
+    {
+      if (not isascii(str[i]))
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /*!
+   * \brief detects when a wstring contains non-ASCII to aide in debugging or error reporting
+   *
+   * \param str String to be examined for non-ASCII
+   * \return true if non-ASCII characters found, otherwise false
+   */
+  inline static bool ContainsNonAscii(std::wstring_view str)
+  {
+    for (size_t i = 0; i < str.length(); i++)
+    {
+      if (not isascii(str[i]))
+      {
+        return true;
+      }
+    }
+    return false;
+  }
 };
 
 struct sortstringbyname

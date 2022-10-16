@@ -95,9 +95,7 @@ std::string CLocale::ToStringLC() const
   if (!m_valid)
     return "";
 
-  std::string locale = ToString();
-  StringUtils::ToLower(locale);
-
+  std::string locale = StringUtils::FoldCase(ToString());
   return locale;
 }
 
@@ -119,8 +117,7 @@ std::string CLocale::ToShortStringLC() const
   if (!m_valid)
     return "";
 
-  std::string locale = ToShortString();
-  StringUtils::ToLower(locale);
+  std::string locale = StringUtils::FoldCase(ToShortString());
 
   return locale;
 }
@@ -239,14 +236,12 @@ bool CLocale::ParseLocale(const std::string &locale, std::string &language, std:
   pos = tmp.find('_');
   if (pos != std::string::npos)
   {
-    territory = tmp.substr(pos + 1);
-    StringUtils::ToUpper(territory);
+    territory = StringUtils::FoldCaseUpper(tmp.substr(pos + 1));
     tmp = tmp.substr(0, pos);
   }
 
   // what remains is the language
-  language = tmp;
-  StringUtils::ToLower(language);
+  language = StringUtils::FoldCase(tmp);
 
   return CheckValidity(language, territory, codeset, modifier);
 }
@@ -256,8 +251,8 @@ void CLocale::Initialize()
   m_valid = CheckValidity(m_language, m_territory, m_codeset, m_modifier);
   if (m_valid)
   {
-    StringUtils::ToLower(m_language);
-    StringUtils::ToUpper(m_territory);
+    m_language = StringUtils::FoldCase(m_language);
+    m_territory = StringUtils::FoldCaseUpper(m_territory);
   }
 }
 

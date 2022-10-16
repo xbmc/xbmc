@@ -523,7 +523,7 @@ std::string CMime::GetMimeType(const std::string &extension)
   size_t posNotPoint = ext.find_first_not_of('.');
   if (posNotPoint != std::string::npos && posNotPoint > 0)
     ext = extension.substr(posNotPoint);
-  transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+  ext = StringUtils::FoldCase(ext);
 
   std::map<std::string, std::string>::const_iterator it = m_mimetypes.find(ext);
   if (it != m_mimetypes.end())
@@ -693,8 +693,8 @@ bool CMime::parseMimeType(const std::string& mimeType, std::string& type, std::s
     return false;
   }
 
-  StringUtils::ToLower(type);
-  StringUtils::ToLower(subtype);
+  type = StringUtils::FoldCase(type);
+  subtype = StringUtils::FoldCase(subtype);
 
   return true;
 }
