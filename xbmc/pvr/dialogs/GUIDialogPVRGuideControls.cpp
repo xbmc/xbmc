@@ -8,6 +8,8 @@
 
 #include "GUIDialogPVRGuideControls.h"
 
+using namespace PVR;
+
 CGUIDialogPVRGuideControls::CGUIDialogPVRGuideControls()
   : CGUIDialog(WINDOW_DIALOG_PVR_GUIDE_CONTROLS, "DialogPVRGuideControls.xml")
 {
