@@ -841,8 +841,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       m_proxyport = s->GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT);
       m_proxyuser = s->GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
       m_proxypassword = s->GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
-      CLog::Log(LOGDEBUG, "CCurlFile::{} - <{}> Using proxy {}, type {}", __FUNCTION__,
-                url2.GetRedacted(), m_proxyhost, proxyType2CUrlProxyType[m_proxytype]);
+      CLog::LogFC(LOGDEBUG, LOGCURL, "<{}> Using proxy {}, type {}", url2.GetRedacted(),
+                  m_proxyhost, proxyType2CUrlProxyType[m_proxytype]);
     }
 
     // get username and password
@@ -913,20 +913,18 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           if (name.length() > 0 && name[0] == '!')
           {
             SetRequestHeader(it.first.substr(1), value);
-            CLog::Log(LOGDEBUG,
-                      "CCurlFile::{} - <{}> Adding custom header option '{}: ***********'",
-                      __FUNCTION__, url2.GetRedacted(), it.first.substr(1));
+            CLog::LogFC(LOGDEBUG, LOGCURL, "<{}> Adding custom header option '{}: ***********'",
+                        url2.GetRedacted(), it.first.substr(1));
           }
           else
           {
             SetRequestHeader(it.first, value);
             if (name == "authorization")
-              CLog::Log(LOGDEBUG,
-                        "CCurlFile::{} - <{}> Adding custom header option '{}: ***********'",
-                        __FUNCTION__, url2.GetRedacted(), it.first);
+              CLog::LogFC(LOGDEBUG, LOGCURL, "<{}> Adding custom header option '{}: ***********'",
+                          url2.GetRedacted(), it.first);
             else
-              CLog::Log(LOGDEBUG, "CCurlFile::{} - <{}> Adding custom header option '{}: {}'",
-                        __FUNCTION__, url2.GetRedacted(), it.first, value);
+              CLog::LogFC(LOGDEBUG, LOGCURL, "<{}> Adding custom header option '{}: {}'",
+                          url2.GetRedacted(), it.first, value);
           }
         }
       }
