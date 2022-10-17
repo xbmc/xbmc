@@ -43,6 +43,13 @@ struct CSongInfo : CMusicInfo
   CSongInfo() : CMusicInfo(MediaTypeSong) {}
 };
 
+struct CMusicBrowse : CStaticContextMenuAction
+{
+  CMusicBrowse() : CStaticContextMenuAction(37015) {} // Browse into
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
 struct CMusicPlay : CStaticContextMenuAction
 {
   CMusicPlay() : CStaticContextMenuAction(208) {} // Play

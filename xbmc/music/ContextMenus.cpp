@@ -9,6 +9,7 @@
 #include "ContextMenus.h"
 
 #include "FileItem.h"
+#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -35,6 +36,27 @@ bool CMusicInfo::IsVisible(const CFileItem& item) const
 bool CMusicInfo::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   CGUIDialogMusicInfo::ShowFor(item.get());
+  return true;
+}
+
+bool CMusicBrowse::IsVisible(const CFileItem& item) const
+{
+  return item.m_bIsFolder && MUSIC_UTILS::IsItemPlayable(item);
+}
+
+bool CMusicBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  auto& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
+  if (windowMgr.GetActiveWindow() == WINDOW_MUSIC_NAV)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_MUSIC_NAV, 0, GUI_MSG_UPDATE);
+    msg.SetStringParam(item->GetPath());
+    windowMgr.SendMessage(msg);
+  }
+  else
+  {
+    windowMgr.ActivateWindow(WINDOW_MUSIC_NAV, {item->GetPath(), "return"});
+  }
   return true;
 }
 
