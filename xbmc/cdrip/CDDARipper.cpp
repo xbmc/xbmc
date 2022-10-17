@@ -292,9 +292,9 @@ std::string CCDDARipper::GetTrackName(CFileItem* item)
   const std::string encoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
       CSettings::SETTING_AUDIOCDS_ENCODER);
   const AddonInfoPtr addonInfo =
-      CServiceBroker::GetAddonMgr().GetAddonInfo(encoder, AddonType::ADDON_AUDIOENCODER);
+      CServiceBroker::GetAddonMgr().GetAddonInfo(encoder, AddonType::AUDIOENCODER);
   if (addonInfo)
-    track += addonInfo->Type(AddonType::ADDON_AUDIOENCODER)->GetValue("@extension").asString();
+    track += addonInfo->Type(AddonType::AUDIOENCODER)->GetValue("@extension").asString();
 
   return track;
 }

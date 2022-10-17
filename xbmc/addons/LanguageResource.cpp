@@ -29,15 +29,15 @@ namespace ADDON
 {
 
 CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
-  : CResource(addonInfo, AddonType::ADDON_RESOURCE_LANGUAGE)
+  : CResource(addonInfo, AddonType::RESOURCE_LANGUAGE)
 {
   // parse <extension> attributes
   m_locale =
-      CLocale::FromString(Type(AddonType::ADDON_RESOURCE_LANGUAGE)->GetValue("@locale").asString());
+      CLocale::FromString(Type(AddonType::RESOURCE_LANGUAGE)->GetValue("@locale").asString());
 
   // parse <charsets>
   const CAddonExtensions* charsetsElement =
-      Type(AddonType::ADDON_RESOURCE_LANGUAGE)->GetElement("charsets");
+      Type(AddonType::RESOURCE_LANGUAGE)->GetElement("charsets");
   if (charsetsElement != nullptr)
   {
     m_charsetGui = charsetsElement->GetValue("gui").asString();
@@ -46,7 +46,7 @@ CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
   }
 
   // parse <dvd>
-  const CAddonExtensions* dvdElement = Type(AddonType::ADDON_RESOURCE_LANGUAGE)->GetElement("dvd");
+  const CAddonExtensions* dvdElement = Type(AddonType::RESOURCE_LANGUAGE)->GetElement("dvd");
   if (dvdElement != nullptr)
   {
     m_dvdLanguageMenu = dvdElement->GetValue("menu").asString();
@@ -63,7 +63,7 @@ CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
 
   // parse <sorttokens>
   const CAddonExtensions* sorttokensElement =
-      Type(AddonType::ADDON_RESOURCE_LANGUAGE)->GetElement("sorttokens");
+      Type(AddonType::RESOURCE_LANGUAGE)->GetElement("sorttokens");
   if (sorttokensElement != nullptr)
   {
     /* First loop goes around rows e.g.
@@ -140,7 +140,7 @@ bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::strin
   std::string addonId = GetAddonId(locale);
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, AddonType::ADDON_RESOURCE_LANGUAGE,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, AddonType::RESOURCE_LANGUAGE,
                                               OnlyEnabled::CHOICE_YES))
     return false;
 

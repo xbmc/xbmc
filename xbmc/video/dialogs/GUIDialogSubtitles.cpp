@@ -262,7 +262,7 @@ void CGUIDialogSubtitles::FillServices()
   ClearServices();
 
   VECADDONS addons;
-  CServiceBroker::GetAddonMgr().GetAddons(addons, AddonType::ADDON_SUBTITLE_MODULE);
+  CServiceBroker::GetAddonMgr().GetAddons(addons, AddonType::SUBTITLE_MODULE);
 
   if (addons.empty())
   {
@@ -447,7 +447,7 @@ void CGUIDialogSubtitles::OnSubtitleServiceContextMenu(int itemIdx)
     {
       AddonPtr addon;
       if (CServiceBroker::GetAddonMgr().GetAddon(service->GetProperty("Addon.ID").asString(), addon,
-                                                 AddonType::ADDON_SUBTITLE_MODULE,
+                                                 AddonType::SUBTITLE_MODULE,
                                                  OnlyEnabled::CHOICE_YES))
       {
         CGUIDialogAddonSettings::ShowForAddon(addon);

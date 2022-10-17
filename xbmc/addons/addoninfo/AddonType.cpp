@@ -15,9 +15,9 @@
 namespace ADDON
 {
 static const std::set<AddonType> dependencyTypes = {
-    AddonType::ADDON_SCRAPER_LIBRARY,
-    AddonType::ADDON_SCRIPT_LIBRARY,
-    AddonType::ADDON_SCRIPT_MODULE,
+    AddonType::SCRAPER_LIBRARY,
+    AddonType::SCRIPT_LIBRARY,
+    AddonType::SCRIPT_MODULE,
 };
 } /* namespace ADDON */
 
@@ -47,7 +47,7 @@ void CAddonType::SetProvides(const std::string& content)
     for (const auto& provide : StringUtils::Split(content, ' '))
     {
       AddonType content = CAddonInfo::TranslateSubContent(provide);
-      if (content != AddonType::ADDON_UNKNOWN)
+      if (content != AddonType::UNKNOWN)
         m_providedSubContent.insert(content);
     }
   }

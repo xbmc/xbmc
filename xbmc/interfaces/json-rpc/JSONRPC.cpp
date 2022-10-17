@@ -44,8 +44,8 @@ void CJSONRPC::Initialize()
 
   // Add some types/enums at runtime
   std::vector<std::string> enumList;
-  for (int addonType = static_cast<int>(ADDON::AddonType::ADDON_UNKNOWN);
-       addonType < static_cast<int>(ADDON::AddonType::ADDON_MAX); addonType++)
+  for (int addonType = static_cast<int>(ADDON::AddonType::UNKNOWN);
+       addonType < static_cast<int>(ADDON::AddonType::MAX_TYPES); addonType++)
     enumList.push_back(
         ADDON::CAddonInfo::TranslateType(static_cast<ADDON::AddonType>(addonType), false));
   CJSONServiceDescription::AddEnum("Addon.Types", enumList);

@@ -2267,7 +2267,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
   if (path.GetProtocol() == "game")
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, AddonType::ADDON_GAMEDLL,
+    if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, AddonType::GAMEDLL,
                                                OnlyEnabled::CHOICE_YES))
     {
       CFileItem addonItem(addon);
@@ -3013,7 +3013,7 @@ void CApplication::ConfigureAndEnableAddons()
     {
       if (addonMgr.IsAddonDisabledWithReason(addon->ID(), ADDON::AddonDisabledReason::INCOMPATIBLE))
       {
-        auto addonInfo = addonMgr.GetAddonInfo(addon->ID(), AddonType::ADDON_UNKNOWN);
+        auto addonInfo = addonMgr.GetAddonInfo(addon->ID(), AddonType::UNKNOWN);
         if (addonInfo && addonMgr.IsCompatible(addonInfo))
         {
           CLog::Log(LOGDEBUG, "CApplication::{}: enabling the compatible version of [{}].",

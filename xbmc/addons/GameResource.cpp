@@ -15,6 +15,6 @@
 using namespace ADDON;
 
 CGameResource::CGameResource(const AddonInfoPtr& addonInfo)
-  : CResource(addonInfo, AddonType::ADDON_RESOURCE_GAMES)
+  : CResource(addonInfo, AddonType::RESOURCE_GAMES)
 {
 }

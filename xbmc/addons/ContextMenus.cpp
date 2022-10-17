@@ -52,7 +52,7 @@ bool CAddonSettings::Execute(const std::shared_ptr<CFileItem>& item) const
 
 bool CCheckForUpdates::IsVisible(const CFileItem& item) const
 {
-  return item.HasAddonInfo() && item.GetAddonInfo()->Type() == AddonType::ADDON_REPOSITORY;
+  return item.HasAddonInfo() && item.GetAddonInfo()->Type() == AddonType::REPOSITORY;
 }
 
 bool CCheckForUpdates::Execute(const std::shared_ptr<CFileItem>& item) const
@@ -60,7 +60,7 @@ bool CCheckForUpdates::Execute(const std::shared_ptr<CFileItem>& item) const
   AddonPtr addon;
   if (item->HasAddonInfo() &&
       CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), addon,
-                                             AddonType::ADDON_REPOSITORY, OnlyEnabled::CHOICE_YES))
+                                             AddonType::REPOSITORY, OnlyEnabled::CHOICE_YES))
   {
     CServiceBroker::GetRepositoryUpdater().CheckForUpdates(std::static_pointer_cast<CRepository>(addon), true);
     return true;

@@ -33,30 +33,30 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   CVariant installed = parameterObject["installed"];
 
   // ignore the "content" parameter if the type is specified but not a plugin or script
-  if (addonType != AddonType::ADDON_UNKNOWN && addonType != AddonType::ADDON_PLUGIN &&
-      addonType != AddonType::ADDON_SCRIPT)
+  if (addonType != AddonType::UNKNOWN && addonType != AddonType::PLUGIN &&
+      addonType != AddonType::SCRIPT)
     content = CPluginSource::UNKNOWN;
 
-  if (addonType >= AddonType::ADDON_VIDEO && addonType <= AddonType::ADDON_EXECUTABLE)
+  if (addonType >= AddonType::VIDEO && addonType <= AddonType::EXECUTABLE)
   {
-    addonTypes.push_back(AddonType::ADDON_PLUGIN);
-    addonTypes.push_back(AddonType::ADDON_SCRIPT);
+    addonTypes.push_back(AddonType::PLUGIN);
+    addonTypes.push_back(AddonType::SCRIPT);
 
     switch (addonType)
     {
-      case AddonType::ADDON_VIDEO:
+      case AddonType::VIDEO:
         content = CPluginSource::VIDEO;
         break;
-      case AddonType::ADDON_AUDIO:
+      case AddonType::AUDIO:
         content = CPluginSource::AUDIO;
         break;
-      case AddonType::ADDON_IMAGE:
+      case AddonType::IMAGE:
         content = CPluginSource::IMAGE;
         break;
-      case AddonType::ADDON_GAME:
+      case AddonType::GAME:
         content = CPluginSource::GAME;
         break;
-      case AddonType::ADDON_EXECUTABLE:
+      case AddonType::EXECUTABLE:
         content = CPluginSource::EXECUTABLE;
         break;
       default:
@@ -70,7 +70,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   for (const auto& typeIt : addonTypes)
   {
     VECADDONS typeAddons;
-    if (typeIt == AddonType::ADDON_UNKNOWN)
+    if (typeIt == AddonType::UNKNOWN)
     {
       if (!enabled.isBoolean()) //All
       {
@@ -109,8 +109,8 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
     if (content != CPluginSource::UNKNOWN)
       plugin = std::dynamic_pointer_cast<CPluginSource>(addons.at(index));
 
-    if ((addons.at(index)->Type() <= AddonType::ADDON_UNKNOWN ||
-         addons.at(index)->Type() >= AddonType::ADDON_MAX) ||
+    if ((addons.at(index)->Type() <= AddonType::UNKNOWN ||
+         addons.at(index)->Type() >= AddonType::MAX_TYPES) ||
         ((content != CPluginSource::UNKNOWN && plugin == NULL) ||
          (plugin != NULL && !plugin->Provides(content))))
     {
@@ -134,8 +134,8 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITr
   std::string id = parameterObject["addonid"].asString();
   AddonPtr addon;
   if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, OnlyEnabled::CHOICE_NO) ||
-      addon.get() == NULL || addon->Type() <= AddonType::ADDON_UNKNOWN ||
-      addon->Type() >= AddonType::ADDON_MAX)
+      addon.get() == NULL || addon->Type() <= AddonType::UNKNOWN ||
+      addon->Type() >= AddonType::MAX_TYPES)
     return InvalidParams;
 
   CAddonDatabase addondb;
@@ -149,8 +149,8 @@ JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITr
   std::string id = parameterObject["addonid"].asString();
   AddonPtr addon;
   if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, OnlyEnabled::CHOICE_NO) ||
-      addon == nullptr || addon->Type() <= AddonType::ADDON_UNKNOWN ||
-      addon->Type() >= AddonType::ADDON_MAX)
+      addon == nullptr || addon->Type() <= AddonType::UNKNOWN ||
+      addon->Type() >= AddonType::MAX_TYPES)
     return InvalidParams;
 
   bool disabled = false;
@@ -180,8 +180,8 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
   std::string id = parameterObject["addonid"].asString();
   AddonPtr addon;
   if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, OnlyEnabled::CHOICE_YES) ||
-      addon.get() == NULL || addon->Type() < AddonType::ADDON_VIZ ||
-      addon->Type() >= AddonType::ADDON_MAX)
+      addon.get() == NULL || addon->Type() < AddonType::VISUALIZATION ||
+      addon->Type() >= AddonType::MAX_TYPES)
     return InvalidParams;
 
   std::string argv;

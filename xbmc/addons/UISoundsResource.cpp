@@ -20,7 +20,7 @@ namespace ADDON
 {
 
 CUISoundsResource::CUISoundsResource(const AddonInfoPtr& addonInfo)
-  : CResource(addonInfo, AddonType::ADDON_RESOURCE_UISOUNDS)
+  : CResource(addonInfo, AddonType::RESOURCE_UISOUNDS)
 {
 }
 
