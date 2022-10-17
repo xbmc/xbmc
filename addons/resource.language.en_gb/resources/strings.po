@@ -951,6 +951,8 @@ msgstr ""
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
 #: xbmc/games/windows/GUIWindowGames.cpp
+#: xbmc/music/ContextMenus.h
+#: xbmc/music/MusicUtils.cpp
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: system/settings/settings.xml
@@ -4907,7 +4909,7 @@ msgctxt "#10007"
 msgid "System information"
 msgstr ""
 
-#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: xbmc/music/ContextMenus.h
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#10008"
@@ -6919,6 +6921,7 @@ msgid "Movie information"
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/music/ContextMenus.h
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#13347"
@@ -21847,7 +21850,7 @@ msgctxt "#37014"
 msgid "Last used profile"
 msgstr ""
 
-#: xbmc/Windows/GUIMediaWindow.cpp
+#: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#37015"
 msgid "Browse into"
 msgstr ""
