@@ -53,7 +53,7 @@ int CHTTPWebinterfaceHandler::ResolveUrl(const std::string &url, std::string &pa
     if (URIUtils::GetFileName(path).empty())
     {
       // determine the actual file path using the default entry point
-      if (addon != NULL && addon->Type() == ADDON::AddonType::ADDON_WEB_INTERFACE)
+      if (addon != NULL && addon->Type() == ADDON::AddonType::WEB_INTERFACE)
         path = std::dynamic_pointer_cast<ADDON::CWebinterface>(addon)->GetEntryPoint(path);
     }
     else
@@ -97,7 +97,7 @@ bool CHTTPWebinterfaceHandler::ResolveAddon(const std::string &url, ADDON::Addon
 
     addonPath = addon->Path();
     if (addon->Type() !=
-        ADDON::AddonType::ADDON_WEB_INTERFACE) // No need to append /htdocs for web interfaces
+        ADDON::AddonType::WEB_INTERFACE) // No need to append /htdocs for web interfaces
       addonPath = URIUtils::AddFileToFolder(addonPath, "/htdocs/");
 
     // remove /addons/<addon-id> from the path
@@ -106,8 +106,8 @@ bool CHTTPWebinterfaceHandler::ResolveAddon(const std::string &url, ADDON::Addon
     // determine the path within the addon
     path = StringUtils::Join(components, WEBSERVER_DIRECTORY_SEPARATOR);
   }
-  else if (!ADDON::CAddonSystemSettings::GetInstance().GetActive(
-               ADDON::AddonType::ADDON_WEB_INTERFACE, addon) ||
+  else if (!ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::AddonType::WEB_INTERFACE,
+                                                                 addon) ||
            addon == NULL)
     return false;
 
@@ -115,7 +115,7 @@ bool CHTTPWebinterfaceHandler::ResolveAddon(const std::string &url, ADDON::Addon
   addonPath = addon->Path();
 
   // add /htdocs/ to the addon's path if it's not a webinterface
-  if (addon->Type() != ADDON::AddonType::ADDON_WEB_INTERFACE)
+  if (addon->Type() != ADDON::AddonType::WEB_INTERFACE)
     addonPath = URIUtils::AddFileToFolder(addonPath, "/htdocs/");
 
   // append the path within the addon to the path of the addon

@@ -85,7 +85,7 @@ static int SetAddon(const std::vector<std::string>& params)
   for (unsigned int i = 1 ; i < params.size() ; i++)
   {
     ADDON::AddonType type = CAddonInfo::TranslateType(params[i]);
-    if (type != AddonType::ADDON_UNKNOWN)
+    if (type != AddonType::UNKNOWN)
       types.push_back(type);
   }
   std::string result;
@@ -232,7 +232,7 @@ static int SetFile(const std::vector<std::string>& params)
   std::string strMask = (params.size() > 1) ? params[1] : "";
   StringUtils::ToLower(strMask);
   ADDON::AddonType type;
-  if ((type = CAddonInfo::TranslateType(strMask)) != AddonType::ADDON_UNKNOWN)
+  if ((type = CAddonInfo::TranslateType(strMask)) != AddonType::UNKNOWN)
   {
     CURL url;
     url.SetProtocol("addons");
@@ -243,7 +243,7 @@ static int SetFile(const std::vector<std::string>& params)
     StringUtils::ToLower(content);
     url.SetPassword(content);
     std::string strMask;
-    if (type == AddonType::ADDON_SCRIPT)
+    if (type == AddonType::SCRIPT)
       strMask = ".py";
     std::string replace;
     if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, CAddonInfo::TranslateType(type, true), replace, true, true, true))

@@ -454,7 +454,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
   // get rid of any invalid addon types
   std::vector<AddonType> validTypes(types.size());
   std::copy_if(types.begin(), types.end(), validTypes.begin(),
-               [](AddonType type) { return type != AddonType::ADDON_UNKNOWN; });
+               [](AddonType type) { return type != AddonType::UNKNOWN; });
 
   if (validTypes.empty())
     return -1;
@@ -467,15 +467,15 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
          ++type)
     {
       VECADDONS typeAddons;
-      if (*type == AddonType::ADDON_AUDIO)
+      if (*type == AddonType::AUDIO)
         CAddonsDirectory::GetScriptsAndPlugins("audio", typeAddons);
-      else if (*type == AddonType::ADDON_EXECUTABLE)
+      else if (*type == AddonType::EXECUTABLE)
         CAddonsDirectory::GetScriptsAndPlugins("executable", typeAddons);
-      else if (*type == AddonType::ADDON_IMAGE)
+      else if (*type == AddonType::IMAGE)
         CAddonsDirectory::GetScriptsAndPlugins("image", typeAddons);
-      else if (*type == AddonType::ADDON_VIDEO)
+      else if (*type == AddonType::VIDEO)
         CAddonsDirectory::GetScriptsAndPlugins("video", typeAddons);
-      else if (*type == AddonType::ADDON_GAME)
+      else if (*type == AddonType::GAME)
         CAddonsDirectory::GetScriptsAndPlugins("game", typeAddons);
       else
         CServiceBroker::GetAddonMgr().GetAddons(typeAddons, *type);

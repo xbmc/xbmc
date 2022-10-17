@@ -59,7 +59,7 @@ bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
   std::shared_ptr<ADDON::CSkinInfo> skin;
   {
     ADDON::AddonPtr addon;
-    if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON::AddonType::ADDON_SKIN,
+    if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON::AddonType::SKIN,
                                                 ADDON::OnlyEnabled::CHOICE_YES))
       return false;
     skin = std::static_pointer_cast<ADDON::CSkinInfo>(addon);

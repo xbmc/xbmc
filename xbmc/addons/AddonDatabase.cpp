@@ -557,7 +557,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
       builder.SetChangelog(m_pDS->fv("news").get_asString());
       builder.SetOrigin(m_pDS->fv("repoID").get_asString());
 
-      auto addon = CAddonBuilder::Generate(builder.get(), AddonType::ADDON_UNKNOWN);
+      auto addon = CAddonBuilder::Generate(builder.get(), AddonType::UNKNOWN);
       if (addon)
         addons.push_back(std::move(addon));
       else
@@ -634,7 +634,7 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
     builder.SetDescription(m_pDS2->fv("description").get_asString());
     CAddonDatabaseSerializer::DeserializeMetadata(m_pDS2->fv("metadata").get_asString(), builder);
 
-    addon = CAddonBuilder::Generate(builder.get(), AddonType::ADDON_UNKNOWN);
+    addon = CAddonBuilder::Generate(builder.get(), AddonType::UNKNOWN);
     return addon != nullptr;
 
   }
@@ -725,7 +725,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
       builder.SetOrigin(m_pDS->fv("repoID").get_asString());
       CAddonDatabaseSerializer::DeserializeMetadata(m_pDS->fv("metadata").get_asString(), builder);
 
-      auto addon = CAddonBuilder::Generate(builder.get(), AddonType::ADDON_UNKNOWN);
+      auto addon = CAddonBuilder::Generate(builder.get(), AddonType::UNKNOWN);
       if (addon)
       {
         result.emplace_back(std::move(addon));
@@ -974,8 +974,8 @@ bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
     {
       AddonPtr addon;
       GetAddon(m_pDS->fv("id").get_asInt(), addon);
-      if (static_cast<int>(addon->Type()) >= static_cast<int>(AddonType::ADDON_UNKNOWN) + 1 &&
-          static_cast<int>(addon->Type()) < static_cast<int>(AddonType::ADDON_SCRAPER_LIBRARY))
+      if (static_cast<int>(addon->Type()) >= static_cast<int>(AddonType::UNKNOWN) + 1 &&
+          static_cast<int>(addon->Type()) < static_cast<int>(AddonType::SCRAPER_LIBRARY))
         addons.push_back(addon);
       m_pDS->next();
     }

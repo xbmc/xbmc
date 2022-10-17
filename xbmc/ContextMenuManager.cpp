@@ -100,7 +100,7 @@ void CContextMenuManager::Init()
 void CContextMenuManager::ReloadAddonItems()
 {
   VECADDONS addons;
-  m_addonMgr.GetAddons(addons, AddonType::ADDON_CONTEXT_ITEM);
+  m_addonMgr.GetAddons(addons, AddonType::CONTEXTMENU_ITEM);
 
   std::vector<CContextMenuItem> addonItems;
   for (const auto& addon : addons)
@@ -130,7 +130,7 @@ void CContextMenuManager::OnEvent(const ADDON::AddonEvent& event)
   else if (typeid(event) == typeid(AddonEvents::Enabled))
   {
     AddonPtr addon;
-    if (m_addonMgr.GetAddon(event.addonId, addon, AddonType::ADDON_CONTEXT_ITEM,
+    if (m_addonMgr.GetAddon(event.addonId, addon, AddonType::CONTEXTMENU_ITEM,
                             OnlyEnabled::CHOICE_YES))
     {
       std::unique_lock<CCriticalSection> lock(m_criticalSection);
@@ -146,7 +146,7 @@ void CContextMenuManager::OnEvent(const ADDON::AddonEvent& event)
   }
   else if (typeid(event) == typeid(AddonEvents::Disabled))
   {
-    if (m_addonMgr.HasType(event.addonId, AddonType::ADDON_CONTEXT_ITEM))
+    if (m_addonMgr.HasType(event.addonId, AddonType::CONTEXTMENU_ITEM))
     {
       ReloadAddonItems();
     }

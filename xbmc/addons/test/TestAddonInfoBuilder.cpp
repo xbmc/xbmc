@@ -57,18 +57,18 @@ protected:
 
 TEST_F(TestAddonInfoBuilder, ShouldFailWhenIdIsNotSet)
 {
-  AddonInfoPtr addon = CAddonInfoBuilder::Generate("", AddonType::ADDON_UNKNOWN);
+  AddonInfoPtr addon = CAddonInfoBuilder::Generate("", AddonType::UNKNOWN);
   EXPECT_EQ(nullptr, addon);
 }
 
 TEST_F(TestAddonInfoBuilder, TestGenerate_Id_Type)
 {
-  AddonInfoPtr addon = CAddonInfoBuilder::Generate("foo.baz", AddonType::ADDON_VIZ);
+  AddonInfoPtr addon = CAddonInfoBuilder::Generate("foo.baz", AddonType::VISUALIZATION);
   EXPECT_NE(nullptr, addon);
   EXPECT_EQ(addon->ID(), "foo.baz");
-  EXPECT_EQ(addon->MainType(), AddonType::ADDON_VIZ);
-  EXPECT_TRUE(addon->HasType(AddonType::ADDON_VIZ));
-  EXPECT_FALSE(addon->HasType(AddonType::ADDON_SCREENSAVER));
+  EXPECT_EQ(addon->MainType(), AddonType::VISUALIZATION);
+  EXPECT_TRUE(addon->HasType(AddonType::VISUALIZATION));
+  EXPECT_FALSE(addon->HasType(AddonType::SCREENSAVER));
 }
 
 TEST_F(TestAddonInfoBuilder, TestGenerate_Repo)
@@ -82,14 +82,14 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_Repo)
   ASSERT_NE(nullptr, addon);
   EXPECT_EQ(addon->ID(), "metadata.blablabla.org");
 
-  EXPECT_EQ(addon->MainType(), AddonType::ADDON_SCRAPER_MOVIES);
-  EXPECT_TRUE(addon->HasType(AddonType::ADDON_SCRAPER_MOVIES));
-  EXPECT_EQ(addon->Type(AddonType::ADDON_SCRAPER_MOVIES)->LibName(), "blablabla.xml");
-  EXPECT_EQ(addon->Type(AddonType::ADDON_SCRAPER_MOVIES)->GetValue("@language").asString(), "en");
+  EXPECT_EQ(addon->MainType(), AddonType::SCRAPER_MOVIES);
+  EXPECT_TRUE(addon->HasType(AddonType::SCRAPER_MOVIES));
+  EXPECT_EQ(addon->Type(AddonType::SCRAPER_MOVIES)->LibName(), "blablabla.xml");
+  EXPECT_EQ(addon->Type(AddonType::SCRAPER_MOVIES)->GetValue("@language").asString(), "en");
 
-  EXPECT_TRUE(addon->HasType(AddonType::ADDON_SCRIPT_MODULE));
-  EXPECT_EQ(addon->Type(AddonType::ADDON_SCRIPT_MODULE)->LibName(), "lib.so");
-  EXPECT_FALSE(addon->HasType(AddonType::ADDON_SCRAPER_ARTISTS));
+  EXPECT_TRUE(addon->HasType(AddonType::SCRIPT_MODULE));
+  EXPECT_EQ(addon->Type(AddonType::SCRIPT_MODULE)->LibName(), "lib.so");
+  EXPECT_FALSE(addon->HasType(AddonType::SCRAPER_ARTISTS));
 
   EXPECT_EQ(addon->Name(), "The Bla Bla Bla Addon");
   EXPECT_EQ(addon->Author(), "Team Kodi");
@@ -133,7 +133,7 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_DBEntry)
   CAddonInfoBuilderFromDB builder;
   builder.SetId("video.blablabla.org");
   builder.SetVersion(CAddonVersion("1.2.3"));
-  CAddonType addonType(AddonType::ADDON_PLUGIN);
+  CAddonType addonType(AddonType::PLUGIN);
   addonType.Insert("provides", "video audio");
   builder.SetExtensions(addonType);
   builder.SetName("The Bla Bla Bla Addon");
@@ -154,11 +154,11 @@ TEST_F(TestAddonInfoBuilder, TestGenerate_DBEntry)
   ASSERT_NE(nullptr, addon);
   EXPECT_EQ(addon->ID(), "video.blablabla.org");
 
-  EXPECT_EQ(addon->MainType(), AddonType::ADDON_PLUGIN);
-  EXPECT_TRUE(addon->HasType(AddonType::ADDON_PLUGIN));
-  EXPECT_TRUE(addon->HasType(AddonType::ADDON_VIDEO));
-  EXPECT_TRUE(addon->HasType(AddonType::ADDON_AUDIO));
-  EXPECT_FALSE(addon->HasType(AddonType::ADDON_GAME));
+  EXPECT_EQ(addon->MainType(), AddonType::PLUGIN);
+  EXPECT_TRUE(addon->HasType(AddonType::PLUGIN));
+  EXPECT_TRUE(addon->HasType(AddonType::VIDEO));
+  EXPECT_TRUE(addon->HasType(AddonType::AUDIO));
+  EXPECT_FALSE(addon->HasType(AddonType::GAME));
 
   EXPECT_EQ(addon->Name(), "The Bla Bla Bla Addon");
   EXPECT_EQ(addon->Author(), "Team Kodi");

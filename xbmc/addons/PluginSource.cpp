@@ -53,7 +53,7 @@ void CPluginSource::SetProvides(const std::string &content)
         m_providedContent.insert(content);
     }
   }
-  if (Type() == AddonType::ADDON_SCRIPT && m_providedContent.empty())
+  if (Type() == AddonType::SCRIPT && m_providedContent.empty())
     m_providedContent.insert(EXECUTABLE);
 }
 
@@ -75,12 +75,11 @@ CPluginSource::Content CPluginSource::Translate(const std::string &content)
 
 bool CPluginSource::HasType(AddonType type) const
 {
-  return ((type == AddonType::ADDON_VIDEO && Provides(VIDEO)) ||
-          (type == AddonType::ADDON_AUDIO && Provides(AUDIO)) ||
-          (type == AddonType::ADDON_IMAGE && Provides(IMAGE)) ||
-          (type == AddonType::ADDON_GAME && Provides(GAME)) ||
-          (type == AddonType::ADDON_EXECUTABLE && Provides(EXECUTABLE)) ||
-          (type == CAddon::Type()));
+  return ((type == AddonType::VIDEO && Provides(VIDEO)) ||
+          (type == AddonType::AUDIO && Provides(AUDIO)) ||
+          (type == AddonType::IMAGE && Provides(IMAGE)) ||
+          (type == AddonType::GAME && Provides(GAME)) ||
+          (type == AddonType::EXECUTABLE && Provides(EXECUTABLE)) || (type == CAddon::Type()));
 }
 
 } /*namespace ADDON*/

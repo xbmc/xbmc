@@ -558,7 +558,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
     else
     {
       AddonType type = CAddonInfo::TranslateType(point);
-      if (type == AddonType::ADDON_UNKNOWN || type >= AddonType::ADDON_MAX)
+      if (type == AddonType::UNKNOWN || type >= AddonType::MAX_TYPES)
       {
         CLog::Log(LOGERROR, "CAddonInfoBuilder::{}: file '{}' doesn't contain a valid add-on type name ({})", __FUNCTION__, addon->m_path, point);
         return false;
@@ -576,7 +576,7 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
    */
   if (addon->m_types.empty())
   {
-    CAddonType addonType(AddonType::ADDON_UNKNOWN);
+    CAddonType addonType(AddonType::UNKNOWN);
     addon->m_types.emplace_back(std::move(addonType));
   }
 
@@ -586,16 +586,12 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
     addon->AddExtraInfo("provides", addon->m_types[0].GetValue("provides").asString());
 
   // Ensure binary types have a valid library for the platform
-  if (addon->m_mainType == AddonType::ADDON_VIZ ||
-      addon->m_mainType == AddonType::ADDON_SCREENSAVER ||
-      addon->m_mainType == AddonType::ADDON_PVRDLL ||
-      addon->m_mainType == AddonType::ADDON_AUDIOENCODER ||
-      addon->m_mainType == AddonType::ADDON_AUDIODECODER ||
-      addon->m_mainType == AddonType::ADDON_VFS ||
-      addon->m_mainType == AddonType::ADDON_IMAGEDECODER ||
-      addon->m_mainType == AddonType::ADDON_INPUTSTREAM ||
-      addon->m_mainType == AddonType::ADDON_PERIPHERALDLL ||
-      addon->m_mainType == AddonType::ADDON_GAMEDLL)
+  if (addon->m_mainType == AddonType::VISUALIZATION ||
+      addon->m_mainType == AddonType::SCREENSAVER || addon->m_mainType == AddonType::PVRDLL ||
+      addon->m_mainType == AddonType::AUDIOENCODER ||
+      addon->m_mainType == AddonType::AUDIODECODER || addon->m_mainType == AddonType::VFS ||
+      addon->m_mainType == AddonType::IMAGEDECODER || addon->m_mainType == AddonType::INPUTSTREAM ||
+      addon->m_mainType == AddonType::PERIPHERALDLL || addon->m_mainType == AddonType::GAMEDLL)
   {
     if (addon->m_libname.empty())
     {

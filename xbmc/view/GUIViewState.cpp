@@ -587,7 +587,7 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   {
     CURL url(items.GetPath());
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, AddonType::ADDON_PLUGIN,
+    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, AddonType::PLUGIN,
                                                OnlyEnabled::CHOICE_YES))
     {
       const auto plugin = std::static_pointer_cast<CPluginSource>(addon);

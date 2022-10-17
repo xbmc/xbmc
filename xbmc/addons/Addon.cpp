@@ -41,7 +41,7 @@ namespace ADDON
 
 CAddon::CAddon(const AddonInfoPtr& addonInfo, AddonType addonType)
   : m_addonInfo(addonInfo),
-    m_type(addonType == AddonType::ADDON_UNKNOWN ? addonInfo->MainType() : addonType)
+    m_type(addonType == AddonType::UNKNOWN ? addonInfo->MainType() : addonType)
 {
 }
 

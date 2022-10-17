@@ -95,17 +95,17 @@ AddonType ScraperTypeFromContent(const CONTENT_TYPE& content)
   switch (content)
   {
   case CONTENT_ALBUMS:
-    return AddonType::ADDON_SCRAPER_ALBUMS;
+    return AddonType::SCRAPER_ALBUMS;
   case CONTENT_ARTISTS:
-    return AddonType::ADDON_SCRAPER_ARTISTS;
+    return AddonType::SCRAPER_ARTISTS;
   case CONTENT_MOVIES:
-    return AddonType::ADDON_SCRAPER_MOVIES;
+    return AddonType::SCRAPER_MOVIES;
   case CONTENT_MUSICVIDEOS:
-    return AddonType::ADDON_SCRAPER_MUSICVIDEOS;
+    return AddonType::SCRAPER_MUSICVIDEOS;
   case CONTENT_TVSHOWS:
-    return AddonType::ADDON_SCRAPER_TVSHOWS;
+    return AddonType::SCRAPER_TVSHOWS;
   default:
-    return AddonType::ADDON_UNKNOWN;
+    return AddonType::UNKNOWN;
   }
 }
 
@@ -136,19 +136,19 @@ CScraper::CScraper(const AddonInfoPtr& addonInfo, AddonType addonType)
 
   switch (addonType)
   {
-    case AddonType::ADDON_SCRAPER_ALBUMS:
+    case AddonType::SCRAPER_ALBUMS:
       m_pathContent = CONTENT_ALBUMS;
       break;
-    case AddonType::ADDON_SCRAPER_ARTISTS:
+    case AddonType::SCRAPER_ARTISTS:
       m_pathContent = CONTENT_ARTISTS;
       break;
-    case AddonType::ADDON_SCRAPER_MOVIES:
+    case AddonType::SCRAPER_MOVIES:
       m_pathContent = CONTENT_MOVIES;
       break;
-    case AddonType::ADDON_SCRAPER_MUSICVIDEOS:
+    case AddonType::SCRAPER_MUSICVIDEOS:
       m_pathContent = CONTENT_MUSICVIDEOS;
       break;
-    case AddonType::ADDON_SCRAPER_TVSHOWS:
+    case AddonType::SCRAPER_TVSHOWS:
       m_pathContent = CONTENT_TVSHOWS;
       break;
     default:
@@ -373,7 +373,7 @@ bool CScraper::Load()
       if (CServiceBroker::GetAddonMgr().GetAddon((*itr).id, dep, ADDON::OnlyEnabled::CHOICE_YES))
       {
         CXBMCTinyXML doc;
-        if (dep->Type() == AddonType::ADDON_SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
+        if (dep->Type() == AddonType::SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
           m_parser.AddDocument(&doc);
       }
       else

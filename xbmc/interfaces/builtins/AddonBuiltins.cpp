@@ -119,7 +119,7 @@ static int RunAddon(const std::vector<std::string>& params)
     const std::string& addonid = params[0];
 
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::ADDON_PLUGIN,
+    if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::PLUGIN,
                                                OnlyEnabled::CHOICE_YES))
     {
       const auto plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
@@ -162,13 +162,13 @@ static int RunAddon(const std::vector<std::string>& params)
         cmd = StringUtils::Format("RunPlugin({})", StringUtils::Join(params, ","));
       CBuiltins::GetInstance().Execute(cmd);
     }
-    else if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::ADDON_SCRIPT,
+    else if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::SCRIPT,
                                                     OnlyEnabled::CHOICE_YES) ||
-             CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::ADDON_SCRIPT_WEATHER,
+             CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::SCRIPT_WEATHER,
                                                     OnlyEnabled::CHOICE_YES) ||
-             CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::ADDON_SCRIPT_LYRICS,
+             CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::SCRIPT_LYRICS,
                                                     OnlyEnabled::CHOICE_YES) ||
-             CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::ADDON_SCRIPT_LIBRARY,
+             CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::SCRIPT_LIBRARY,
                                                     OnlyEnabled::CHOICE_YES))
     {
       // Pass the script name (addonid) and all the parameters
@@ -176,7 +176,7 @@ static int RunAddon(const std::vector<std::string>& params)
       CBuiltins::GetInstance().Execute(
           StringUtils::Format("RunScript({})", StringUtils::Join(params, ",")));
     }
-    else if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::ADDON_GAMEDLL,
+    else if (CServiceBroker::GetAddonMgr().GetAddon(addonid, addon, AddonType::GAMEDLL,
                                                     OnlyEnabled::CHOICE_YES))
     {
       CFileItem item;
@@ -242,13 +242,13 @@ static int RunScript(const std::vector<std::string>& params)
     if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, OnlyEnabled::CHOICE_YES))
     {
       //Get the correct extension point to run
-      if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::ADDON_SCRIPT,
+      if (CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::SCRIPT,
                                                  OnlyEnabled::CHOICE_YES) ||
-          CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::ADDON_SCRIPT_WEATHER,
+          CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::SCRIPT_WEATHER,
                                                  OnlyEnabled::CHOICE_YES) ||
-          CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::ADDON_SCRIPT_LYRICS,
+          CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::SCRIPT_LYRICS,
                                                  OnlyEnabled::CHOICE_YES) ||
-          CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::ADDON_SCRIPT_LIBRARY,
+          CServiceBroker::GetAddonMgr().GetAddon(params[0], addon, AddonType::SCRIPT_LIBRARY,
                                                  OnlyEnabled::CHOICE_YES))
       {
         scriptpath = addon->LibPath();
@@ -295,7 +295,7 @@ static int OpenDefaultSettings(const std::vector<std::string>& params)
   if (CAddonSystemSettings::GetInstance().GetActive(type, addon))
   {
     bool changed = CGUIDialogAddonSettings::ShowForAddon(addon);
-    if (type == AddonType::ADDON_VIZ && changed)
+    if (type == AddonType::VISUALIZATION && changed)
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
   }
 
@@ -311,14 +311,13 @@ static int SetDefaultAddon(const std::vector<std::string>& params)
   std::string addonID;
   AddonType type = CAddonInfo::TranslateType(params[0]);
   bool allowNone = false;
-  if (type == AddonType::ADDON_VIZ)
+  if (type == AddonType::VISUALIZATION)
     allowNone = true;
 
-  if (type != AddonType::ADDON_UNKNOWN &&
-      CGUIWindowAddonBrowser::SelectAddonID(type, addonID, allowNone))
+  if (type != AddonType::UNKNOWN && CGUIWindowAddonBrowser::SelectAddonID(type, addonID, allowNone))
   {
     CAddonSystemSettings::GetInstance().SetActive(type, addonID);
-    if (type == AddonType::ADDON_VIZ)
+    if (type == AddonType::VISUALIZATION)
       CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_VISUALISATION_RELOAD, 0, 0);
   }
 

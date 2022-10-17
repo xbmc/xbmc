@@ -25,7 +25,7 @@ protected:
 
 TEST_F(TestAddonBuilder, ShouldFailWhenEmpty)
 {
-  EXPECT_EQ(nullptr, CAddonBuilder::Generate(nullptr, AddonType::ADDON_UNKNOWN));
+  EXPECT_EQ(nullptr, CAddonBuilder::Generate(nullptr, AddonType::UNKNOWN));
 }
 
 TEST_F(TestAddonBuilder, ShouldBuildDependencyAddons)
@@ -36,9 +36,9 @@ TEST_F(TestAddonBuilder, ShouldBuildDependencyAddons)
   CAddonInfoBuilderFromDB builder;
   builder.SetId("aa");
   builder.SetDependencies(deps);
-  CAddonType addonType(AddonType::ADDON_UNKNOWN);
+  CAddonType addonType(AddonType::UNKNOWN);
   builder.SetExtensions(addonType);
-  AddonPtr addon = CAddonBuilder::Generate(builder.get(), AddonType::ADDON_UNKNOWN);
+  AddonPtr addon = CAddonBuilder::Generate(builder.get(), AddonType::UNKNOWN);
   EXPECT_EQ(deps, addon->GetDependencies());
 }
 
@@ -46,9 +46,9 @@ TEST_F(TestAddonBuilder, ShouldReturnDerivedType)
 {
   CAddonInfoBuilderFromDB builder;
   builder.SetId("aa");
-  CAddonType addonType(AddonType::ADDON_RESOURCE_LANGUAGE);
+  CAddonType addonType(AddonType::RESOURCE_LANGUAGE);
   builder.SetExtensions(addonType);
   auto addon = std::dynamic_pointer_cast<CLanguageResource>(
-      CAddonBuilder::Generate(builder.get(), AddonType::ADDON_UNKNOWN));
+      CAddonBuilder::Generate(builder.get(), AddonType::UNKNOWN));
   EXPECT_NE(nullptr, addon);
 }
