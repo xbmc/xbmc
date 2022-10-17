@@ -13,6 +13,8 @@
 
 #include <memory>
 
+class CFileItem;
+
 namespace CONTEXTMENU
 {
 
@@ -41,4 +43,25 @@ struct CSongInfo : CMusicInfo
   CSongInfo() : CMusicInfo(MediaTypeSong) {}
 };
 
-}
+struct CMusicPlay : CStaticContextMenuAction
+{
+  CMusicPlay() : CStaticContextMenuAction(208) {} // Play
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
+struct CMusicPlayNext : CStaticContextMenuAction
+{
+  CMusicPlayNext() : CStaticContextMenuAction(10008) {} // Play next
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
+struct CMusicQueue : CStaticContextMenuAction
+{
+  CMusicQueue() : CStaticContextMenuAction(13347) {} // Queue item
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
+} // namespace CONTEXTMENU

@@ -9,14 +9,16 @@
 #include "ContextMenus.h"
 
 #include "FileItem.h"
+#include "ServiceBroker.h"
+#include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "music/MusicUtils.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
 #include "tags/MusicInfoTag.h"
 
 #include <utility>
 
-namespace CONTEXTMENU
-{
+using namespace CONTEXTMENU;
 
 CMusicInfo::CMusicInfo(MediaType mediaType)
   : CStaticContextMenuAction(19033), m_mediaType(std::move(mediaType))
@@ -36,4 +38,35 @@ bool CMusicInfo::Execute(const std::shared_ptr<CFileItem>& item) const
   return true;
 }
 
+bool CMusicPlay::IsVisible(const CFileItem& item) const
+{
+  return MUSIC_UTILS::IsItemPlayable(item);
+}
+
+bool CMusicPlay::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  MUSIC_UTILS::PlayItem(item);
+  return true;
+}
+
+bool CMusicPlayNext::IsVisible(const CFileItem& item) const
+{
+  return MUSIC_UTILS::IsItemPlayable(item);
+}
+
+bool CMusicPlayNext::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  MUSIC_UTILS::QueueItem(item, MUSIC_UTILS::QueuePosition::POSITION_BEGIN);
+  return true;
+}
+
+bool CMusicQueue::IsVisible(const CFileItem& item) const
+{
+  return MUSIC_UTILS::IsItemPlayable(item);
+}
+
+bool CMusicQueue::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  MUSIC_UTILS::QueueItem(item, MUSIC_UTILS::QueuePosition::POSITION_END);
+  return true;
 }
