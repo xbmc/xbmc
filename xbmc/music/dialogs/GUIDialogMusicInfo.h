@@ -62,6 +62,7 @@ protected:
   void OnArtistInfo(int id);
   void OnSetUserrating() const;
   void SetUserrating(int userrating) const;
+  void OnPlayItem(const std::shared_ptr<CFileItem>& item);
 
   CAlbum m_album;
   CArtist m_artist;

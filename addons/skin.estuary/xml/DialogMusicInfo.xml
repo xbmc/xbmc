@@ -360,22 +360,6 @@
 					<align>center</align>
 					<itemgap>-15</itemgap>
 					<orientation>horizontal</orientation>
-					<control type="radiobutton" id="155">
-						<include content="VideoInfoButtonsCommon">
-							<param name="icon" value="icons/infodialogs/play.png" />
-						</include>
-						<label>$LOCALIZE[208]</label>
-						<onup>130</onup>
-						<onleft>12</onleft>
-						<onright>120</onright>
-						<onclick condition="String.IsEmpty(ListItem.DBID)">PlayMedia($INFO[ListItem.FilenameAndPath])</onclick>
-						<onclick condition="System.AddonIsEnabled(script.playalbum) + String.IsEqual(ListItem.DBType,album)">RunScript(script.playalbum,albumid=$INFO[ListItem.DBID])</onclick>
-						<onclick condition="System.AddonIsEnabled(script.playalbum) + String.IsEqual(ListItem.DBType,song)">RunScript(script.playalbum,songid=$INFO[ListItem.DBID])</onclick>
-						<onclick condition="System.AddonIsEnabled(script.playalbum)">Action(close)</onclick>
-						<onclick condition="System.HasAddon(script.playalbum) + !System.AddonIsEnabled(script.playalbum) + !String.IsEmpty(ListItem.DBID)">EnableAddon(script.playalbum)</onclick>
-						<onclick condition="!System.HasAddon(script.playalbum) + !String.IsEmpty(ListItem.DBID)">InstallAddon(script.playalbum)</onclick>
-						<visible>!String.IsEqual(ListItem.DBType,artist)</visible>
-					</control>
 					<control type="group" id="420">
 						<width>264</width>
 						<visible>String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)</visible>
@@ -418,6 +402,11 @@
 						<onclick>ActivateWindow(1104)</onclick>
 						<visible>String.IsEqual(ListItem.DBType,artist) | String.IsEqual(ListItem.DBType,album)</visible>
 					</control>
+					<include content="InfoDialogButton">
+						<param name="id" value="8" />
+						<param name="icon" value="icons/infodialogs/play.png" />
+						<param name="label" value="$LOCALIZE[208]" />
+					</include>
 					<include content="InfoDialogButton">
 						<param name="id" value="6" />
 						<param name="icon" value="icons/infodialogs/update.png" />

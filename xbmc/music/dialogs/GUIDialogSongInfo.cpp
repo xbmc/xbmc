@@ -32,6 +32,7 @@
 
 #define CONTROL_BTN_REFRESH       6
 #define CONTROL_USERRATING        7
+#define CONTROL_BTN_PLAY 8
 #define CONTROL_BTN_GET_THUMB     10
 #define CONTROL_ALBUMINFO         12
 
@@ -183,6 +184,12 @@ bool CGUIDialogSongInfo::OnMessage(CGUIMessage& message)
           return true;
         }
       }
+      else if (iControl == CONTROL_BTN_PLAY)
+      {
+        OnPlaySong(m_song);
+        return true;
+      }
+      return false;
     }
     break;
   }
@@ -245,6 +252,7 @@ void CGUIDialogSongInfo::OnInitWindow()
   SET_CONTROL_LABEL(CONTROL_USERRATING, 38023);
   SET_CONTROL_LABEL(CONTROL_BTN_GET_THUMB, 13511);
   SET_CONTROL_LABEL(CONTROL_ALBUMINFO, 10523);
+  SET_CONTROL_LABEL(CONTROL_BTN_PLAY, 208);
 
   CGUIDialog::OnInitWindow();
 }
@@ -506,5 +514,10 @@ void CGUIDialogSongInfo::ShowFor(CFileItem* pItem)
       }
     }
   }
+}
 
+void CGUIDialogSongInfo::OnPlaySong(const std::shared_ptr<CFileItem>& item)
+{
+  Close(true);
+  MUSIC_UTILS::PlayItem(item);
 }
