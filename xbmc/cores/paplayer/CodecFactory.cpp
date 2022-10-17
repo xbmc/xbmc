@@ -28,7 +28,7 @@ ICodec* CodecFactory::CreateCodec(const CURL& urlFile)
   for (const auto& addonInfo : addonInfos)
   {
     // Check asked and given extension is supported by only for here allowed audiodecoder addons.
-    if (addonInfo.first == ADDON::AddonType::ADDON_AUDIODECODER)
+    if (addonInfo.first == ADDON::AddonType::AUDIODECODER)
     {
       std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
       if (!result->CreateDecoder())
@@ -54,7 +54,7 @@ ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filec
     for (const auto& addonInfo : addonInfos)
     {
       // Check asked and given mime type is supported by only for here allowed audiodecoder addons.
-      if (addonInfo.first == ADDON::AddonType::ADDON_AUDIODECODER)
+      if (addonInfo.first == ADDON::AddonType::AUDIODECODER)
       {
         std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
         if (!result->CreateDecoder() && result->SupportsFile(file.GetPath()))

@@ -614,7 +614,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = true;
       return true;
     case SYSTEM_HAS_PVR_ADDON:
-      value = CServiceBroker::GetAddonMgr().HasAddons(ADDON::AddonType::ADDON_PVRDLL);
+      value = CServiceBroker::GetAddonMgr().HasAddons(ADDON::AddonType::PVRDLL);
       return true;
     case SYSTEM_HAS_CMS:
 #if defined(HAS_GL) || defined(HAS_DX)

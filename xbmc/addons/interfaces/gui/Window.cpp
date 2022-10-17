@@ -139,7 +139,7 @@ KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
   {
     std::string str("none");
     ADDON::AddonInfoPtr addonInfo =
-        std::make_shared<ADDON::CAddonInfo>(str, ADDON::AddonType::ADDON_SKIN);
+        std::make_shared<ADDON::CAddonInfo>(str, ADDON::AddonType::SKIN);
 
     // Check for the matching folder for the skin in the fallback skins folder
     std::string fallbackPath = URIUtils::AddFileToFolder(addon->Path(), "resources", "skins");

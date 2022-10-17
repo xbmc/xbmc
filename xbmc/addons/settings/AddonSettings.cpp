@@ -1150,7 +1150,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAddon(const std::string& sett
   for (auto addonType : addonTypesStr)
   {
     auto type = ADDON::CAddonInfo::TranslateType(StringUtils::Trim(addonType));
-    if (type != ADDON::AddonType::ADDON_UNKNOWN)
+    if (type != ADDON::AddonType::UNKNOWN)
       addonTypes.insert(type);
   }
 

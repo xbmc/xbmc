@@ -59,7 +59,7 @@ void CVFSAddonCache::Init()
 
   // Load all available VFS addons during Kodi start
   std::vector<AddonInfoPtr> addonInfos;
-  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, AddonType::ADDON_VFS);
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true, AddonType::VFS);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& addonInfo : addonInfos)
@@ -118,7 +118,7 @@ void CVFSAddonCache::OnEvent(const AddonEvent& event)
       typeid(event) == typeid(AddonEvents::Disabled) ||
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
-    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, AddonType::ADDON_VFS))
+    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, AddonType::VFS))
       Update(event.addonId);
   }
   else if (typeid(event) == typeid(AddonEvents::UnInstalled))
@@ -158,7 +158,7 @@ void CVFSAddonCache::Update(const std::string& id)
   }
 
   // Create and init the new VFS addon instance
-  AddonInfoPtr addonInfo = CServiceBroker::GetAddonMgr().GetAddonInfo(id, AddonType::ADDON_VFS);
+  AddonInfoPtr addonInfo = CServiceBroker::GetAddonMgr().GetAddonInfo(id, AddonType::VFS);
   if (addonInfo && !CServiceBroker::GetAddonMgr().IsAddonDisabled(id))
   {
     VFSEntryPtr vfs = std::make_shared<CVFSEntry>(addonInfo);
@@ -206,33 +206,29 @@ class CVFSURLWrapper
 };
 
 CVFSEntry::ProtocolInfo::ProtocolInfo(const AddonInfoPtr& addonInfo)
-  : supportPath(addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@supportPath").asBoolean()),
-    supportUsername(
-        addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@supportUsername").asBoolean()),
-    supportPassword(
-        addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@supportPassword").asBoolean()),
-    supportPort(addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@supportPort").asBoolean()),
-    supportBrowsing(
-        addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@supportBrowsing").asBoolean()),
-    supportWrite(addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@supportWrite").asBoolean()),
-    defaultPort(addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@defaultPort").asInteger()),
-    type(addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@protocols").asString()),
-    label(addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@label").asInteger())
+  : supportPath(addonInfo->Type(AddonType::VFS)->GetValue("@supportPath").asBoolean()),
+    supportUsername(addonInfo->Type(AddonType::VFS)->GetValue("@supportUsername").asBoolean()),
+    supportPassword(addonInfo->Type(AddonType::VFS)->GetValue("@supportPassword").asBoolean()),
+    supportPort(addonInfo->Type(AddonType::VFS)->GetValue("@supportPort").asBoolean()),
+    supportBrowsing(addonInfo->Type(AddonType::VFS)->GetValue("@supportBrowsing").asBoolean()),
+    supportWrite(addonInfo->Type(AddonType::VFS)->GetValue("@supportWrite").asBoolean()),
+    defaultPort(addonInfo->Type(AddonType::VFS)->GetValue("@defaultPort").asInteger()),
+    type(addonInfo->Type(AddonType::VFS)->GetValue("@protocols").asString()),
+    label(addonInfo->Type(AddonType::VFS)->GetValue("@label").asInteger())
 {
 }
 
 CVFSEntry::CVFSEntry(const AddonInfoPtr& addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_VFS, addonInfo),
-    m_protocols(addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@protocols").asString()),
-    m_extensions(addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@extensions").asString()),
-    m_zeroconf(addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@zeroconf").asString()),
-    m_files(addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@files").asBoolean()),
-    m_directories(addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@directories").asBoolean()),
-    m_filedirectories(
-        addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@filedirectories").asBoolean()),
+    m_protocols(addonInfo->Type(AddonType::VFS)->GetValue("@protocols").asString()),
+    m_extensions(addonInfo->Type(AddonType::VFS)->GetValue("@extensions").asString()),
+    m_zeroconf(addonInfo->Type(AddonType::VFS)->GetValue("@zeroconf").asString()),
+    m_files(addonInfo->Type(AddonType::VFS)->GetValue("@files").asBoolean()),
+    m_directories(addonInfo->Type(AddonType::VFS)->GetValue("@directories").asBoolean()),
+    m_filedirectories(addonInfo->Type(AddonType::VFS)->GetValue("@filedirectories").asBoolean()),
     m_protocolInfo(addonInfo)
 {
-  if (!addonInfo->Type(AddonType::ADDON_VFS)->GetValue("@supportDialog").asBoolean())
+  if (!addonInfo->Type(AddonType::VFS)->GetValue("@supportDialog").asBoolean())
     m_protocolInfo.type.clear();
 
   // Create "C" interface structures, used as own parts to prevent API problems on update

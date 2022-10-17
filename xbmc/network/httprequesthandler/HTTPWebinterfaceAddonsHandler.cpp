@@ -25,7 +25,7 @@ MHD_RESULT CHTTPWebinterfaceAddonsHandler::HandleRequest()
 {
   m_responseData = ADDON_HEADER;
   ADDON::VECADDONS addons;
-  if (!CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::AddonType::ADDON_WEB_INTERFACE) ||
+  if (!CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::AddonType::WEB_INTERFACE) ||
       addons.empty())
   {
     m_response.type = HTTPError;

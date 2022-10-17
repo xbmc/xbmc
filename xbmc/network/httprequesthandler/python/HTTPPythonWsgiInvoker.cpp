@@ -117,9 +117,8 @@ HTTPPythonRequest* CHTTPPythonWsgiInvoker::GetRequest()
 
 void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, PyObject* moduleDict)
 {
-  if (m_request == NULL || m_addon == NULL ||
-      m_addon->Type() != ADDON::AddonType::ADDON_WEB_INTERFACE || fp == NULL || script.empty() ||
-      moduleDict == NULL)
+  if (m_request == NULL || m_addon == NULL || m_addon->Type() != ADDON::AddonType::WEB_INTERFACE ||
+      fp == NULL || script.empty() || moduleDict == NULL)
     return;
 
   auto logger = CServiceBroker::GetLogging().GetLogger(

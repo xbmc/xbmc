@@ -40,7 +40,7 @@ bool CGameUtils::FillInGameClient(CFileItem& item, std::string& savestatePath)
   if (item.GetGameInfoTag()->GetGameClient().empty())
   {
     // If the fileitem is an add-on, fall back to that
-    if (item.HasAddonInfo() && item.GetAddonInfo()->Type() == AddonType::ADDON_GAMEDLL)
+    if (item.HasAddonInfo() && item.GetAddonInfo()->Type() == AddonType::GAMEDLL)
     {
       item.GetGameInfoTag()->SetGameClient(item.GetAddonInfo()->ID());
     }
@@ -127,7 +127,7 @@ void CGameUtils::GetGameClients(const CFileItem& file,
   // Get local candidates
   VECADDONS localAddons;
   CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(localAddons, AddonType::ADDON_GAMEDLL);
+  addonCache.GetAddons(localAddons, AddonType::GAMEDLL);
 
   bool bVfs = false;
   GetGameClients(localAddons, translatedUrl, candidates, bVfs);
@@ -135,7 +135,7 @@ void CGameUtils::GetGameClients(const CFileItem& file,
 
   // Get remote candidates
   VECADDONS remoteAddons;
-  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(remoteAddons, AddonType::ADDON_GAMEDLL))
+  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(remoteAddons, AddonType::GAMEDLL))
   {
     GetGameClients(remoteAddons, translatedUrl, installable, bVfs);
     bHasVfsGameClient |= bVfs;
@@ -209,7 +209,7 @@ bool CGameUtils::HasGameExtension(const std::string& path)
   // Look for a game client that supports this extension
   VECADDONS gameClients;
   CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetInstalledAddons(gameClients, AddonType::ADDON_GAMEDLL);
+  addonCache.GetInstalledAddons(gameClients, AddonType::GAMEDLL);
   for (auto& gameClient : gameClients)
   {
     GameClientPtr gc(std::static_pointer_cast<CGameClient>(gameClient));
@@ -219,7 +219,7 @@ bool CGameUtils::HasGameExtension(const std::string& path)
 
   // Check remote add-ons
   gameClients.clear();
-  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(gameClients, AddonType::ADDON_GAMEDLL))
+  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(gameClients, AddonType::GAMEDLL))
   {
     for (auto& gameClient : gameClients)
     {
@@ -240,7 +240,7 @@ std::set<std::string> CGameUtils::GetGameExtensions()
 
   VECADDONS gameClients;
   CBinaryAddonCache& addonCache = CServiceBroker::GetBinaryAddonCache();
-  addonCache.GetAddons(gameClients, AddonType::ADDON_GAMEDLL);
+  addonCache.GetAddons(gameClients, AddonType::GAMEDLL);
   for (auto& gameClient : gameClients)
   {
     GameClientPtr gc(std::static_pointer_cast<CGameClient>(gameClient));
@@ -249,7 +249,7 @@ std::set<std::string> CGameUtils::GetGameExtensions()
 
   // Check remote add-ons
   gameClients.clear();
-  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(gameClients, AddonType::ADDON_GAMEDLL))
+  if (CServiceBroker::GetAddonMgr().GetInstallableAddons(gameClients, AddonType::GAMEDLL))
   {
     for (auto& gameClient : gameClients)
     {
@@ -267,13 +267,13 @@ bool CGameUtils::IsStandaloneGame(const ADDON::AddonPtr& addon)
 
   switch (addon->Type())
   {
-    case AddonType::ADDON_GAMEDLL:
+    case AddonType::GAMEDLL:
     {
       return std::static_pointer_cast<GAME::CGameClient>(addon)->SupportsStandalone();
     }
-    case AddonType::ADDON_SCRIPT:
+    case AddonType::SCRIPT:
     {
-      return addon->HasType(AddonType::ADDON_GAME);
+      return addon->HasType(AddonType::GAME);
     }
     default:
       break;

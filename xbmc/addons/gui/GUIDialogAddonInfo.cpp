@@ -305,8 +305,8 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<CAddonVersion, std:
       item.SetArt("icon", "DefaultAddonRepository.png");
       dialog->Add(item);
     }
-    else if (CServiceBroker::GetAddonMgr().GetAddon(
-                 versionInfo.second, repo, AddonType::ADDON_REPOSITORY, OnlyEnabled::CHOICE_YES))
+    else if (CServiceBroker::GetAddonMgr().GetAddon(versionInfo.second, repo, AddonType::REPOSITORY,
+                                                    OnlyEnabled::CHOICE_YES))
     {
       item.SetLabel2(repo->Name());
       item.SetArt("icon", repo->Icon());
@@ -508,14 +508,14 @@ void CGUIDialogAddonInfo::OnSelect()
 
 bool CGUIDialogAddonInfo::CanOpen() const
 {
-  return m_localAddon && m_localAddon->Type() == AddonType::ADDON_PLUGIN;
+  return m_localAddon && m_localAddon->Type() == AddonType::PLUGIN;
 }
 
 bool CGUIDialogAddonInfo::CanRun() const
 {
   if (m_localAddon)
   {
-    if (m_localAddon->Type() == AddonType::ADDON_SCRIPT)
+    if (m_localAddon->Type() == AddonType::SCRIPT)
       return true;
 
     if (GAME::CGameUtils::IsStandaloneGame(m_localAddon))
@@ -527,19 +527,19 @@ bool CGUIDialogAddonInfo::CanRun() const
 
 bool CGUIDialogAddonInfo::CanUse() const
 {
-  return m_localAddon && (m_localAddon->Type() == AddonType::ADDON_SKIN ||
-                          m_localAddon->Type() == AddonType::ADDON_SCREENSAVER ||
-                          m_localAddon->Type() == AddonType::ADDON_VIZ ||
-                          m_localAddon->Type() == AddonType::ADDON_SCRIPT_WEATHER ||
-                          m_localAddon->Type() == AddonType::ADDON_RESOURCE_LANGUAGE ||
-                          m_localAddon->Type() == AddonType::ADDON_RESOURCE_UISOUNDS ||
-                          m_localAddon->Type() == AddonType::ADDON_AUDIOENCODER);
+  return m_localAddon && (m_localAddon->Type() == AddonType::SKIN ||
+                          m_localAddon->Type() == AddonType::SCREENSAVER ||
+                          m_localAddon->Type() == AddonType::VISUALIZATION ||
+                          m_localAddon->Type() == AddonType::SCRIPT_WEATHER ||
+                          m_localAddon->Type() == AddonType::RESOURCE_LANGUAGE ||
+                          m_localAddon->Type() == AddonType::RESOURCE_UISOUNDS ||
+                          m_localAddon->Type() == AddonType::AUDIOENCODER);
 }
 
 bool CGUIDialogAddonInfo::CanShowSupportList() const
 {
-  return m_localAddon && (m_localAddon->Type() == AddonType::ADDON_AUDIODECODER ||
-                          m_localAddon->Type() == AddonType::ADDON_IMAGEDECODER);
+  return m_localAddon && (m_localAddon->Type() == AddonType::AUDIODECODER ||
+                          m_localAddon->Type() == AddonType::IMAGEDECODER);
 }
 
 bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
@@ -680,7 +680,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
           }
 
           if (entryPoint == EntryPoint::SHOW_DEPENDENCIES ||
-              infoAddon->MainType() != AddonType::ADDON_SCRIPT_MODULE ||
+              infoAddon->MainType() != AddonType::SCRIPT_MODULE ||
               !CAddonRepos::IsFromOfficialRepo(infoAddon, CheckAddonPath::CHOICE_NO))
           {
             item->SetLabel2(StringUtils::Format(
@@ -858,7 +858,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
       // - dependencies are unavailable (for informational purposes) OR
       // - the dependency is not a script/module                     OR
       // - the script/module is not available at an official repo
-      if (!addonAvailable || addonAvailable->MainType() != AddonType::ADDON_SCRIPT_MODULE ||
+      if (!addonAvailable || addonAvailable->MainType() != AddonType::SCRIPT_MODULE ||
           !CAddonRepos::IsFromOfficialRepo(addonAvailable, CheckAddonPath::CHOICE_NO))
       {
         m_showDepDialogOnInstall = true;
@@ -902,7 +902,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
 
               if (depA && depB && depA->MainType() != depB->MainType())
               {
-                return depA->MainType() != AddonType::ADDON_SCRIPT_MODULE;
+                return depA->MainType() != AddonType::SCRIPT_MODULE;
               }
 
               // 4. finally order by addon-id

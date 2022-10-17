@@ -179,7 +179,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
       !CheckFont(strPath, "special://xbmc/media/Fonts", file))
   {
     VECADDONS addons;
-    CServiceBroker::GetAddonMgr().GetAddons(addons, AddonType::ADDON_RESOURCE_FONT);
+    CServiceBroker::GetAddonMgr().GetAddons(addons, AddonType::RESOURCE_FONT);
     for (auto& it : addons)
     {
       std::shared_ptr<CFontResource> font(std::static_pointer_cast<CFontResource>(it));

@@ -140,7 +140,7 @@ bool CPictureInfoTag::Load(const std::string &path)
         strExtension, CExtsMimeSupportList::FilterSelect::all);
     for (const auto& addonInfo : addonInfos)
     {
-      if (addonInfo.first != ADDON::AddonType::ADDON_IMAGEDECODER)
+      if (addonInfo.first != ADDON::AddonType::IMAGEDECODER)
         continue;
 
       std::unique_ptr<CImageDecoder> result = std::make_unique<CImageDecoder>(addonInfo.second, "");

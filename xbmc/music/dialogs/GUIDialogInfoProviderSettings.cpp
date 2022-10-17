@@ -63,7 +63,7 @@ bool CGUIDialogInfoProviderSettings::Show()
 
   ADDON::AddonPtr defaultScraper;
   // Get default album scraper (when enabled - can default scraper be disabled??)
-  if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::AddonType::ADDON_SCRAPER_ALBUMS,
+  if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::AddonType::SCRAPER_ALBUMS,
                                                            defaultScraper))
   {
     ADDON::ScraperPtr scraper = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
@@ -71,7 +71,7 @@ bool CGUIDialogInfoProviderSettings::Show()
   }
 
   // Get default artist scraper
-  if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::AddonType::ADDON_SCRAPER_ARTISTS,
+  if (ADDON::CAddonSystemSettings::GetInstance().GetActive(ADDON::AddonType::SCRAPER_ARTISTS,
                                                            defaultScraper))
   {
     ADDON::ScraperPtr scraper = std::dynamic_pointer_cast<ADDON::CScraper>(defaultScraper);
@@ -179,8 +179,8 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
       currentScraperId = m_albumscraper->ID();
     std::string selectedAddonId = currentScraperId;
 
-    if (CGUIWindowAddonBrowser::SelectAddonID(AddonType::ADDON_SCRAPER_ALBUMS, selectedAddonId,
-                                              false) == 1 &&
+    if (CGUIWindowAddonBrowser::SelectAddonID(AddonType::SCRAPER_ALBUMS, selectedAddonId, false) ==
+            1 &&
         selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;
@@ -205,8 +205,8 @@ void CGUIDialogInfoProviderSettings::OnSettingAction(const std::shared_ptr<const
       currentScraperId = m_artistscraper->ID();
     std::string selectedAddonId = currentScraperId;
 
-    if (CGUIWindowAddonBrowser::SelectAddonID(AddonType::ADDON_SCRAPER_ARTISTS, selectedAddonId,
-                                              false) == 1 &&
+    if (CGUIWindowAddonBrowser::SelectAddonID(AddonType::SCRAPER_ARTISTS, selectedAddonId, false) ==
+            1 &&
         selectedAddonId != currentScraperId)
     {
       AddonPtr scraperAddon;

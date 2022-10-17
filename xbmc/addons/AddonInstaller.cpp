@@ -346,7 +346,7 @@ bool CAddonInstaller::Install(const std::string& addonId,
     return false;
 
   AddonPtr repo;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(repoId, repo, AddonType::ADDON_REPOSITORY,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(repoId, repo, AddonType::REPOSITORY,
                                               OnlyEnabled::CHOICE_YES))
     return false;
 
@@ -648,7 +648,7 @@ bool CAddonInstallJob::GetAddon(const std::string& addonID, RepositoryPtr& repo,
     return false;
 
   AddonPtr tmp;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->Origin(), tmp, AddonType::ADDON_REPOSITORY,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->Origin(), tmp, AddonType::REPOSITORY,
                                               OnlyEnabled::CHOICE_YES))
     return false;
 
@@ -827,7 +827,7 @@ bool CAddonInstallJob::DoWork()
   {
     origin = ORIGIN_SYSTEM; // keep system add-on origin as ORIGIN_SYSTEM
   }
-  else if (m_addon->HasMainType(AddonType::ADDON_REPOSITORY))
+  else if (m_addon->HasMainType(AddonType::REPOSITORY))
   {
     origin = m_addon->ID(); // use own id as origin if repository
 
@@ -1024,7 +1024,7 @@ bool CAddonInstallJob::Install(const std::string &installFrom, const RepositoryP
 {
   const auto& deps = m_addon->GetDependencies();
 
-  if (!deps.empty() && m_addon->HasType(AddonType::ADDON_REPOSITORY))
+  if (!deps.empty() && m_addon->HasType(AddonType::REPOSITORY))
   {
     bool notSystemAddon = std::none_of(deps.begin(), deps.end(), [](const DependencyInfo& dep) {
       return CServiceBroker::GetAddonMgr().IsSystemAddon(dep.id);

@@ -49,7 +49,7 @@ void CControllerInstaller::Process()
 
   ADDON::VECADDONS installableAddons;
   CServiceBroker::GetAddonMgr().GetInstallableAddons(installableAddons,
-                                                     ADDON::AddonType::ADDON_GAME_CONTROLLER);
+                                                     ADDON::AddonType::GAME_CONTROLLER);
   if (installableAddons.empty())
   {
     // "Controller profiles"

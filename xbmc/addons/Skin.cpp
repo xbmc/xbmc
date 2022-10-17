@@ -152,7 +152,7 @@ bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
 
 CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo,
                      const RESOLUTION_INFO& resolution /* = RESOLUTION_INFO() */)
-  : CAddon(addonInfo, AddonType::ADDON_SKIN),
+  : CAddon(addonInfo, AddonType::SKIN),
     m_defaultRes(resolution),
     m_effectsSlowDown(1.f),
     m_debugging(false)
@@ -160,9 +160,9 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo,
   m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
 }
 
-CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonType::ADDON_SKIN)
+CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonType::SKIN)
 {
-  for (const auto& values : Type(AddonType::ADDON_SKIN)->GetValues())
+  for (const auto& values : Type(AddonType::SKIN)->GetValues())
   {
     if (values.first != "res")
       continue;
@@ -187,11 +187,11 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonTyp
     }
   }
 
-  m_effectsSlowDown = Type(AddonType::ADDON_SKIN)->GetValue("@effectslowdown").asFloat();
+  m_effectsSlowDown = Type(AddonType::SKIN)->GetValue("@effectslowdown").asFloat();
   if (m_effectsSlowDown == 0.0f)
     m_effectsSlowDown = 1.f;
 
-  m_debugging = Type(AddonType::ADDON_SKIN)->GetValue("@debugging").asBoolean();
+  m_debugging = Type(AddonType::SKIN)->GetValue("@debugging").asBoolean();
 
   m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
   LoadStartupWindows(addonInfo);

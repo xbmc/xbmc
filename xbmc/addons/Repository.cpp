@@ -99,17 +99,16 @@ CRepository::ResolveResult CRepository::ResolvePathAndHash(const AddonPtr& addon
   return {location, hash};
 }
 
-CRepository::CRepository(const AddonInfoPtr& addonInfo)
-  : CAddon(addonInfo, AddonType::ADDON_REPOSITORY)
+CRepository::CRepository(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonType::REPOSITORY)
 {
   RepositoryDirList dirs;
   CAddonVersion version;
   AddonInfoPtr addonver =
-      CServiceBroker::GetAddonMgr().GetAddonInfo("xbmc.addon", AddonType::ADDON_UNKNOWN);
+      CServiceBroker::GetAddonMgr().GetAddonInfo("xbmc.addon", AddonType::UNKNOWN);
   if (addonver)
     version = addonver->Version();
 
-  for (const auto& element : Type(AddonType::ADDON_REPOSITORY)->GetElements("dir"))
+  for (const auto& element : Type(AddonType::REPOSITORY)->GetElements("dir"))
   {
     RepositoryDirInfo dir = ParseDirConfiguration(element.second);
     if ((dir.minversion.empty() || version >= dir.minversion) &&
@@ -120,7 +119,7 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo)
   // old (dharma compatible) way of defining the addon repository structure, is no longer supported
   // we error out so the user knows how to migrate. The <dir> way is supported since gotham.
   //! @todo remove if block completely in v21
-  if (!Type(AddonType::ADDON_REPOSITORY)->GetValue("info").empty())
+  if (!Type(AddonType::REPOSITORY)->GetValue("info").empty())
   {
     CLog::Log(LOGERROR,
               "Repository add-on {} uses old schema definition for the repository extension point! "

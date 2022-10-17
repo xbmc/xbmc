@@ -114,8 +114,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   {
     CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't play game, no game client was passed!");
   }
-  else if (!CServiceBroker::GetAddonMgr().GetAddon(gameClientId, addon,
-                                                   ADDON::AddonType::ADDON_GAMEDLL,
+  else if (!CServiceBroker::GetAddonMgr().GetAddon(gameClientId, addon, ADDON::AddonType::GAMEDLL,
                                                    ADDON::OnlyEnabled::CHOICE_YES))
   {
     CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't find add-on {} for game file!", gameClientId);

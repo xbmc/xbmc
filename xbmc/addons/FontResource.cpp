@@ -21,7 +21,7 @@ namespace ADDON
 {
 
 CFontResource::CFontResource(const AddonInfoPtr& addonInfo)
-  : CResource(addonInfo, AddonType::ADDON_RESOURCE_FONT)
+  : CResource(addonInfo, AddonType::RESOURCE_FONT)
 {
 }
 

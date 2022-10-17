@@ -27,8 +27,7 @@ CExtsMimeSupportList::CExtsMimeSupportList(CAddonMgr& addonMgr) : m_addonMgr(add
   m_addonMgr.Events().Subscribe(this, &CExtsMimeSupportList::OnEvent);
 
   // Load all available audio decoder addons during Kodi start
-  const std::vector<AddonType> types = {AddonType::ADDON_AUDIODECODER,
-                                        AddonType::ADDON_IMAGEDECODER};
+  const std::vector<AddonType> types = {AddonType::AUDIODECODER, AddonType::IMAGEDECODER};
   const auto addonInfos = m_addonMgr.GetAddonInfos(true, types);
   for (const auto& addonInfo : addonInfos)
     m_supportedList.emplace_back(ScanAddonProperties(addonInfo->MainType(), addonInfo));
@@ -45,8 +44,8 @@ void CExtsMimeSupportList::OnEvent(const AddonEvent& event)
       typeid(event) == typeid(AddonEvents::Disabled) ||
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
-    if (m_addonMgr.HasType(event.addonId, AddonType::ADDON_AUDIODECODER) ||
-        m_addonMgr.HasType(event.addonId, AddonType::ADDON_IMAGEDECODER))
+    if (m_addonMgr.HasType(event.addonId, AddonType::AUDIODECODER) ||
+        m_addonMgr.HasType(event.addonId, AddonType::IMAGEDECODER))
       Update(event.addonId);
   }
   else if (typeid(event) == typeid(AddonEvents::UnInstalled))
@@ -72,11 +71,10 @@ void CExtsMimeSupportList::Update(const std::string& id)
   }
 
   // Create and init the new addon instance
-  std::shared_ptr<CAddonInfo> addonInfo = m_addonMgr.GetAddonInfo(id, AddonType::ADDON_UNKNOWN);
+  std::shared_ptr<CAddonInfo> addonInfo = m_addonMgr.GetAddonInfo(id, AddonType::UNKNOWN);
   if (addonInfo && !m_addonMgr.IsAddonDisabled(id))
   {
-    if (addonInfo->HasType(AddonType::ADDON_AUDIODECODER) ||
-        addonInfo->HasType(AddonType::ADDON_IMAGEDECODER))
+    if (addonInfo->HasType(AddonType::AUDIODECODER) || addonInfo->HasType(AddonType::IMAGEDECODER))
     {
       SupportValues values = ScanAddonProperties(addonInfo->MainType(), addonInfo);
       {
@@ -94,7 +92,7 @@ CExtsMimeSupportList::SupportValues CExtsMimeSupportList::ScanAddonProperties(
 
   values.m_addonType = type;
   values.m_addonInfo = addonInfo;
-  if (type == AddonType::ADDON_AUDIODECODER)
+  if (type == AddonType::AUDIODECODER)
   {
     values.m_codecName = addonInfo->Type(type)->GetValue("@name").asString();
     values.m_hasTags = addonInfo->Type(type)->GetValue("@tags").asBoolean();

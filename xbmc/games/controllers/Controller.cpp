@@ -56,7 +56,7 @@ struct FeatureTypeEqual
 const ControllerPtr CController::EmptyPtr;
 
 CController::CController(const ADDON::AddonInfoPtr& addonInfo)
-  : CAddon(addonInfo, ADDON::AddonType::ADDON_GAME_CONTROLLER), m_layout(new CControllerLayout)
+  : CAddon(addonInfo, ADDON::AddonType::GAME_CONTROLLER), m_layout(new CControllerLayout)
 {
 }
 

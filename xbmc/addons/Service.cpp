@@ -19,7 +19,7 @@
 namespace ADDON
 {
 
-CService::CService(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonType::ADDON_SERVICE)
+CService::CService(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonType::SERVICE)
 {
 }
 
@@ -57,7 +57,7 @@ void CServiceAddonManager::Start()
   m_addonMgr.Events().Subscribe(this, &CServiceAddonManager::OnEvent);
   m_addonMgr.UnloadEvents().Subscribe(this, &CServiceAddonManager::OnEvent);
   VECADDONS addons;
-  if (m_addonMgr.GetAddons(addons, AddonType::ADDON_SERVICE))
+  if (m_addonMgr.GetAddons(addons, AddonType::SERVICE))
   {
     for (const auto& addon : addons)
     {
@@ -69,7 +69,7 @@ void CServiceAddonManager::Start()
 void CServiceAddonManager::Start(const std::string& addonId)
 {
   AddonPtr addon;
-  if (m_addonMgr.GetAddon(addonId, addon, AddonType::ADDON_SERVICE, OnlyEnabled::CHOICE_YES))
+  if (m_addonMgr.GetAddon(addonId, addon, AddonType::SERVICE, OnlyEnabled::CHOICE_YES))
   {
     Start(addon);
   }

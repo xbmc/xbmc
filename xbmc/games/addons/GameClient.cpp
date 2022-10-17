@@ -81,7 +81,7 @@ std::string NormalizeExtension(const std::string& strExtension)
 // --- CGameClient -------------------------------------------------------------
 
 CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
-  : CAddonDll(addonInfo, ADDON::AddonType::ADDON_GAMEDLL),
+  : CAddonDll(addonInfo, ADDON::AddonType::GAMEDLL),
     m_subsystems(CGameClientSubsystem::CreateSubsystems(*this, *m_ifc.game, m_critSection)),
     m_bSupportsAllExtensions(false),
     m_bIsPlaying(false),
@@ -91,8 +91,7 @@ CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
   using namespace ADDON;
 
   std::vector<std::string> extensions = StringUtils::Split(
-      Type(AddonType::ADDON_GAMEDLL)->GetValue(GAME_PROPERTY_EXTENSIONS).asString(),
-      EXTENSION_SEPARATOR);
+      Type(AddonType::GAMEDLL)->GetValue(GAME_PROPERTY_EXTENSIONS).asString(), EXTENSION_SEPARATOR);
   std::transform(extensions.begin(), extensions.end(),
                  std::inserter(m_extensions, m_extensions.begin()), NormalizeExtension);
 
@@ -104,10 +103,9 @@ CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
   }
 
   m_bSupportsVFS =
-      addonInfo->Type(AddonType::ADDON_GAMEDLL)->GetValue(GAME_PROPERTY_SUPPORTS_VFS).asBoolean();
-  m_bSupportsStandalone = addonInfo->Type(AddonType::ADDON_GAMEDLL)
-                              ->GetValue(GAME_PROPERTY_SUPPORTS_STANDALONE)
-                              .asBoolean();
+      addonInfo->Type(AddonType::GAMEDLL)->GetValue(GAME_PROPERTY_SUPPORTS_VFS).asBoolean();
+  m_bSupportsStandalone =
+      addonInfo->Type(AddonType::GAMEDLL)->GetValue(GAME_PROPERTY_SUPPORTS_STANDALONE).asBoolean();
 }
 
 CGameClient::~CGameClient(void)
