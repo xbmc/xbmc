@@ -88,6 +88,7 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CRenameFavourite>(),
       std::make_shared<CONTEXTMENU::CRemoveFavourite>(),
       std::make_shared<CONTEXTMENU::CAddRemoveFavourite>(),
+      std::make_shared<CONTEXTMENU::CMusicBrowse>(),
       std::make_shared<CONTEXTMENU::CMusicPlay>(),
       std::make_shared<CONTEXTMENU::CMusicPlayNext>(),
       std::make_shared<CONTEXTMENU::CMusicQueue>(),
