@@ -16,7 +16,6 @@ extern "C" {
 #include <libavfilter/avfilter.h>
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
-#include <libavutil/version.h>
 #include <libswresample/swresample.h>
 }
 
@@ -173,10 +172,7 @@ void CActiveAEFilter::CloseFilter()
 
   if (m_pOutFrame)
   {
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
     av_channel_layout_uninit(&m_pOutFrame->ch_layout);
-#endif
     av_frame_free(&m_pOutFrame);
   }
 
@@ -212,17 +208,9 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
     if (!frame)
       return -1;
 
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
     av_channel_layout_uninit(&frame->ch_layout);
     av_channel_layout_from_mask(&frame->ch_layout, m_channelLayout);
     int channels = frame->ch_layout.nb_channels;
-#else
-    int channels = av_get_channel_layout_nb_channels(m_channelLayout);
-
-    frame->channel_layout = m_channelLayout;
-    frame->channels = channels;
-#endif
     frame->sample_rate = m_sampleRate;
     frame->nb_samples = src_samples;
     frame->format = m_sampleFormat;
@@ -238,10 +226,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
                              src_buffer[0], src_bufsize, 16);
     if (result < 0)
     {
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
       av_channel_layout_uninit(&frame->ch_layout);
-#endif
       av_frame_free(&frame);
       CLog::Log(LOGERROR, "CActiveAEFilter::ProcessFilter - avcodec_fill_audio_frame failed");
       m_filterEof = true;
@@ -249,10 +234,7 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
     }
 
     result = av_buffersrc_write_frame(m_pFilterCtxIn, frame);
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
     av_channel_layout_uninit(&frame->ch_layout);
-#endif
     av_frame_free(&frame);
     if (result < 0)
     {
@@ -306,13 +288,8 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
     {
       av_frame_unref(m_pOutFrame);
       m_pOutFrame->format = m_sampleFormat;
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
       av_channel_layout_uninit(&m_pOutFrame->ch_layout);
       av_channel_layout_from_mask(&m_pOutFrame->ch_layout, m_channelLayout);
-#else
-      m_pOutFrame->channel_layout = m_channelLayout;
-#endif
       m_pOutFrame->sample_rate = m_sampleRate;
       result = swr_convert_frame(m_pConvertCtx, m_pOutFrame, m_pConvertFrame);
       av_frame_unref(m_pConvertFrame);
@@ -330,15 +307,10 @@ int CActiveAEFilter::ProcessFilter(uint8_t **dst_buffer, int dst_samples, uint8_
 
   if (m_hasData)
   {
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
     AVChannelLayout layout = {};
     av_channel_layout_from_mask(&layout, m_channelLayout);
     int channels = layout.nb_channels;
     av_channel_layout_uninit(&layout);
-#else
-    int channels = av_get_channel_layout_nb_channels(m_channelLayout);
-#endif
     int planes = av_sample_fmt_is_planar(m_sampleFormat) ? channels : 1;
     int samples = std::min(dst_samples, m_pOutFrame->nb_samples - m_sampleOffset);
     int bytes = samples * av_get_bytes_per_sample(m_sampleFormat) * channels / planes;

@@ -22,7 +22,6 @@ using namespace ActiveAE;
 #include "cores/AudioEngine/Utils/AEStreamData.h"
 #include "cores/AudioEngine/Utils/AEStreamInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
-#include "cores/FFmpeg.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
@@ -3005,8 +3004,8 @@ IAE::SoundPtr CActiveAE::MakeSound(const std::string& file)
   AVFormatContext *fmt_ctx = nullptr;
   AVCodecContext *dec_ctx = nullptr;
   AVIOContext *io_ctx;
-  FFMPEG_FMT_CONST AVInputFormat* io_fmt = nullptr;
-  FFMPEG_FMT_CONST AVCodec* dec = nullptr;
+  const AVInputFormat* io_fmt = nullptr;
+  const AVCodec* dec = nullptr;
   SampleConfig config;
 
   // No custom deleter until sound is registered
@@ -3058,14 +3057,8 @@ IAE::SoundPtr CActiveAE::MakeSound(const std::string& file)
       AVCodecID codecId = fmt_ctx->streams[0]->codecpar->codec_id;
       dec = avcodec_find_decoder(codecId);
       config.sample_rate = fmt_ctx->streams[0]->codecpar->sample_rate;
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
       config.channels = fmt_ctx->streams[0]->codecpar->ch_layout.nb_channels;
       config.channel_layout = fmt_ctx->streams[0]->codecpar->ch_layout.u.mask;
-#else
-      config.channels = fmt_ctx->streams[0]->codecpar->channels;
-      config.channel_layout = fmt_ctx->streams[0]->codecpar->channel_layout;
-#endif
     }
   }
   if (dec == nullptr)
@@ -3081,8 +3074,6 @@ IAE::SoundPtr CActiveAE::MakeSound(const std::string& file)
 
   dec_ctx = avcodec_alloc_context3(dec);
   dec_ctx->sample_rate = config.sample_rate;
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
   AVChannelLayout layout = {};
   if (!config.channel_layout)
     av_channel_layout_default(&layout, config.channels);
@@ -3091,12 +3082,6 @@ IAE::SoundPtr CActiveAE::MakeSound(const std::string& file)
   config.channel_layout = layout.u.mask;
   av_channel_layout_copy(&dec_ctx->ch_layout, &layout);
   av_channel_layout_uninit(&layout);
-#else
-  dec_ctx->channels = config.channels;
-  if (!config.channel_layout)
-    config.channel_layout = av_get_default_channel_layout(config.channels);
-  dec_ctx->channel_layout = config.channel_layout;
-#endif
 
   AVPacket* avpkt = av_packet_alloc();
   if (!avpkt)
@@ -3163,10 +3148,7 @@ IAE::SoundPtr CActiveAE::MakeSound(const std::string& file)
 
   av_packet_free(&avpkt);
   av_frame_free(&decoded_frame);
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
   av_channel_layout_uninit(&dec_ctx->ch_layout);
-#endif
   avcodec_free_context(&dec_ctx);
   avformat_close_input(&fmt_ctx);
   if (io_ctx)

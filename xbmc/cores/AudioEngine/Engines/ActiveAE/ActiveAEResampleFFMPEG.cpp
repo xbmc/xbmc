@@ -11,10 +11,8 @@
 #include "utils/log.h"
 
 extern "C" {
-#include <libavcodec/version.h>
 #include <libavutil/channel_layout.h>
 #include <libavutil/opt.h>
-#include <libavutil/version.h>
 #include <libswresample/swresample.h>
 }
 
@@ -51,32 +49,20 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig, SampleConfig srcConfi
     m_doesResample = true;
 
   if (m_dst_chan_layout == 0)
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
   {
     AVChannelLayout layout = {};
     av_channel_layout_default(&layout, m_dst_channels);
     m_dst_chan_layout = layout.u.mask;
     av_channel_layout_uninit(&layout);
   }
-#else
-    m_dst_chan_layout = av_get_default_channel_layout(m_dst_channels);
-#endif
   if (m_src_chan_layout == 0)
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
   {
     AVChannelLayout layout = {};
     av_channel_layout_default(&layout, m_src_channels);
     m_src_chan_layout = layout.u.mask;
     av_channel_layout_uninit(&layout);
   }
-#else
-    m_src_chan_layout = av_get_default_channel_layout(m_src_channels);
-#endif
 
-#if LIBSWRESAMPLE_BUILD >= AV_VERSION_INT(4, 7, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
   AVChannelLayout dstChLayout = {};
   AVChannelLayout srcChLayout = {};
 
@@ -87,13 +73,6 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig, SampleConfig srcConfi
                                 m_src_fmt, m_src_rate, 0, NULL);
 
   if (ret)
-#else
-  m_pContext = swr_alloc_set_opts(NULL, m_dst_chan_layout, m_dst_fmt, m_dst_rate,
-                                                        m_src_chan_layout, m_src_fmt, m_src_rate,
-                                                        0, NULL);
-
-  if (!m_pContext)
-#endif
   {
     CLog::Log(LOGERROR, "CActiveAEResampleFFMPEG::Init - create context failed");
     return false;
@@ -162,19 +141,11 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig, SampleConfig srcConfi
   else if (upmix && m_src_channels == 2 && m_dst_channels > 2)
   {
     memset(m_rematrix, 0, sizeof(m_rematrix));
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
     av_channel_layout_uninit(&dstChLayout);
     av_channel_layout_from_mask(&dstChLayout, m_dst_chan_layout);
-#endif
     for (int out=0; out<m_dst_channels; out++)
     {
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
       AVChannel outChan = av_channel_layout_channel_from_index(&dstChLayout, out);
-#else
-      uint64_t outChan = av_channel_layout_extract_channel(m_dst_chan_layout, out);
-#endif
       switch (outChan)
       {
         case AV_CH_FRONT_LEFT:
@@ -200,10 +171,7 @@ bool CActiveAEResampleFFMPEG::Init(SampleConfig dstConfig, SampleConfig srcConfi
       }
     }
 
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
     av_channel_layout_uninit(&dstChLayout);
-#endif
 
     if (swr_set_matrix(m_pContext, (const double*)m_rematrix, AE_CH_MAX) < 0)
     {
