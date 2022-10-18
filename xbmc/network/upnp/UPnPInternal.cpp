@@ -30,6 +30,8 @@
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
+#include <array>
+#include <string_view>
 
 #include <Platinum/Source/Platinum/Platinum.h>
 
@@ -38,6 +40,24 @@ using namespace XFILE;
 
 namespace UPNP
 {
+
+// the original version of content type here,eg: text/srt,which was defined 10 years ago (year 2013,commit 56519bec #L1158-L1161 )
+// is not a standard mime type. according to the specs of UPNP
+// http://upnp.org/specs/av/UPnP-av-ConnectionManager-v3-Service.pdf chapter "A.1.1 ProtocolInfo Definition"
+// "The <contentFormat> part for HTTP GET is described by a MIME type RFC https://www.ietf.org/rfc/rfc1341.txt"
+// all the pre-defined "text/*" MIME by IANA is here https://www.iana.org/assignments/media-types/media-types.xhtml#text
+// there is not any subtitle MIME for now (year 2022), we used to use text/srt|ssa|sub|idx, but,
+// kodi support SUP subtitle now, and SUP subtitle is not really a text(see below), to keep it
+// compatible, we suggest only to match the extension
+//
+// main purpose of this array is to share supported real subtitle formats when kodi act as a UPNP
+// server or UPNP/DLNA media render
+constexpr std::array<std::string_view, 9> SupportedSubFormats = {
+    "txt", "srt", "ssa", "ass", "sub", "smi", "vtt",
+    // "sup" subtitle is not a real TEXT,
+    // and there is no real STD subtitle RFC of DLNA,
+    // so we only match the extension of the "fake" content type
+    "sup", "idx"};
 
 /*----------------------------------------------------------------------
 |  GetClientQuirks
@@ -660,10 +680,12 @@ BuildObject(CFileItem&                    item,
             std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
             /* Hardcoded check for extension is not the best way, but it can't be allowed to pass all
                subtitle extension (ex. rar or zip). There are the most popular extensions support by UPnP devices.*/
-            if (ext == "txt" || ext == "srt" || ext == "ssa" || ext == "ass" || ext == "sub" ||
-                ext == "smi" || ext == "vtt" || ext == "sup")
+            for (std::string_view type : SupportedSubFormats)
             {
+              if (type == ext)
+              {
                 subtitles.push_back(filenames[i]);
+              }
             }
         }
 
@@ -1150,22 +1172,23 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
   }
 
   // look for subtitles
-  unsigned subs = 0;
+  unsigned subIdx = 0;
+
   for(unsigned r = 0; r < entry->m_Resources.GetItemCount(); r++)
   {
     const PLT_MediaItemResource& res  = entry->m_Resources[r];
     const PLT_ProtocolInfo&      info = res.m_ProtocolInfo;
-    static const char* allowed[] = { "text/srt"
-      , "text/ssa"
-      , "text/sub"
-      , "text/idx" };
-    for(const char* const type : allowed)
+
+    for (std::string_view type : SupportedSubFormats)
     {
-      if(info.Match(PLT_ProtocolInfo("*", "*", type, "*")))
+      if (type == info.GetContentType().Split("/").GetLastItem()->GetChars())
       {
-        std::string prop = StringUtils::Format("subtitle:{}", ++subs);
+        ++subIdx;
+        logger->info("adding subtitle: #{}, type '{}', URI '{}'", subIdx, type,
+                     res.m_Uri.GetChars());
+
+        std::string prop = StringUtils::Format("subtitle:{}", subIdx);
         item.SetProperty(prop, (const char*)res.m_Uri);
-        break;
       }
     }
   }
