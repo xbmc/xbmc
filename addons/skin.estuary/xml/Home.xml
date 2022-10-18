@@ -192,6 +192,8 @@
 							<param name="widget_target" value="music"/>
 							<param name="list_id" value="7100"/>
 							<param name="fallback_icon" value="DefaultMusicAlbums.png"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="$VAR[AlbumOnClickActionVar]"/>
 						</include>
 						<include content="WidgetListSquare" condition="Library.HasContent(music)">
 							<param name="content_path" value="musicdb://recentlyaddedalbums/"/>
@@ -199,6 +201,8 @@
 							<param name="widget_target" value="music"/>
 							<param name="list_id" value="7200"/>
 							<param name="fallback_icon" value="DefaultMusicAlbums.png"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="$VAR[AlbumOnClickActionVar]"/>
 						</include>
 						<include content="WidgetListSquare" condition="Library.HasContent(music)">
 							<param name="content_path" value="special://skin/playlists/random_albums.xsp"/>
@@ -206,6 +210,8 @@
 							<param name="widget_target" value="music"/>
 							<param name="list_id" value="7300"/>
 							<param name="fallback_icon" value="DefaultMusicAlbums.png"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="$VAR[AlbumOnClickActionVar]"/>
 						</include>
 						<include content="WidgetListSquare" condition="Library.HasContent(music)">
 							<param name="content_path" value="special://skin/playlists/random_artists.xsp"/>
@@ -220,6 +226,8 @@
 							<param name="widget_target" value="music"/>
 							<param name="list_id" value="7500"/>
 							<param name="fallback_icon" value="DefaultMusicAlbums.png"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="$VAR[AlbumOnClickActionVar]"/>
 						</include>
 						<include content="WidgetListSquare" condition="Library.HasContent(music)">
 							<param name="content_path" value="special://skin/playlists/mostplayed_albums.xsp"/>
@@ -229,6 +237,8 @@
 							<param name="fallback_icon" value="DefaultMusicAlbums.png"/>
 							<param name="sortby" value="playcount"/>
 							<param name="sortorder" value="descending"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="$VAR[AlbumOnClickActionVar]"/>
 						</include>
 					</control>
 					<include content="ImageWidget" condition="!Library.HasContent(music)">
