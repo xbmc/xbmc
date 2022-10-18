@@ -65,7 +65,7 @@ CVideoTagLoaderFFmpeg::CVideoTagLoaderFFmpeg(const CFileItem& item,
   if (m_file->IoControl(IOCTRL_SEEK_POSSIBLE, nullptr) != 1)
     m_ioctx->seekable = 0;
 
-  FFMPEG_FMT_CONST AVInputFormat* iformat = nullptr;
+  const AVInputFormat* iformat = nullptr;
   av_probe_input_buffer(m_ioctx, &iformat, m_item.GetPath().c_str(), nullptr, 0, 0);
   if (avformat_open_input(&m_fctx, m_item.GetPath().c_str(), iformat, nullptr) < 0)
   {
