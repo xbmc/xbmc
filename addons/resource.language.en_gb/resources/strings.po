@@ -22363,8 +22363,20 @@ msgctxt "#38081"
 msgid "Release status"
 msgstr ""
 
-#empty strings from id 38082 to 38099
-#strings 38082 to 38099 reserved for music library
+#. Displayed in a toast notification when music items are added to a playlist
+#: xbmc/music/MusicUtils.cpp
+msgctxt "#38082"
+msgid "Added to end of playlist"
+msgstr ""
+
+#. Displayed in a toast notification when music items are added to a playlist to play next
+#: xbmc/music/MusicUtils.cpp
+msgctxt "#38083"
+msgid "Added to playlist to play next"
+msgstr ""
+
+#empty strings from id 38084 to 38099
+#strings 38084 to 38099 reserved for music library
 
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml
