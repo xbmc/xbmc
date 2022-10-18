@@ -548,41 +548,12 @@ AVSampleFormat CAEUtil::GetAVSampleFormat(AEDataFormat format)
 
 uint64_t CAEUtil::GetAVChannelMask(enum AEChannel aechannel)
 {
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
   enum AVChannel ch = GetAVChannel(aechannel);
   if (ch == AV_CHAN_NONE)
     return 0;
   return (1ULL << ch);
-#else
-  switch (aechannel)
-  {
-  case AE_CH_FL:   return AV_CH_FRONT_LEFT;
-  case AE_CH_FR:   return AV_CH_FRONT_RIGHT;
-  case AE_CH_FC:   return AV_CH_FRONT_CENTER;
-  case AE_CH_LFE:  return AV_CH_LOW_FREQUENCY;
-  case AE_CH_BL:   return AV_CH_BACK_LEFT;
-  case AE_CH_BR:   return AV_CH_BACK_RIGHT;
-  case AE_CH_FLOC: return AV_CH_FRONT_LEFT_OF_CENTER;
-  case AE_CH_FROC: return AV_CH_FRONT_RIGHT_OF_CENTER;
-  case AE_CH_BC:   return AV_CH_BACK_CENTER;
-  case AE_CH_SL:   return AV_CH_SIDE_LEFT;
-  case AE_CH_SR:   return AV_CH_SIDE_RIGHT;
-  case AE_CH_TC:   return AV_CH_TOP_CENTER;
-  case AE_CH_TFL:  return AV_CH_TOP_FRONT_LEFT;
-  case AE_CH_TFC:  return AV_CH_TOP_FRONT_CENTER;
-  case AE_CH_TFR:  return AV_CH_TOP_FRONT_RIGHT;
-  case AE_CH_TBL:  return AV_CH_TOP_BACK_LEFT;
-  case AE_CH_TBC:  return AV_CH_TOP_BACK_CENTER;
-  case AE_CH_TBR:  return AV_CH_TOP_BACK_RIGHT;
-  default:
-    return 0;
-  }
-#endif
 }
 
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
 enum AVChannel CAEUtil::GetAVChannel(enum AEChannel aechannel)
 {
   switch (aechannel)
@@ -627,18 +598,12 @@ enum AVChannel CAEUtil::GetAVChannel(enum AEChannel aechannel)
       return AV_CHAN_NONE;
   }
 }
-#endif
 
 int CAEUtil::GetAVChannelIndex(enum AEChannel aechannel, uint64_t layout)
 {
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(59, 37, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(57, 28, 100)
   AVChannelLayout ch_layout = {};
   av_channel_layout_from_mask(&ch_layout, layout);
   int idx = av_channel_layout_index_from_channel(&ch_layout, GetAVChannel(aechannel));
   av_channel_layout_uninit(&ch_layout);
   return idx;
-#else
-  return av_get_channel_layout_channel_index(layout, GetAVChannelMask(aechannel));
-#endif
 }

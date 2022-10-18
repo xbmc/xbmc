@@ -1260,15 +1260,9 @@ void CDecoder::ReturnRenderPicture(CVaapiRenderPicture *renderPic)
 IHardwareDecoder* CDecoder::Create(CDVDStreamInfo &hint, CProcessInfo &processInfo, AVPixelFormat fmt)
 {
   // https://github.com/FFmpeg/FFmpeg/blob/56450a0ee4fdda160f4039fc2ae33edfd27765c9/doc/APIchanges#L18-L26
-#if LIBAVUTIL_BUILD >= AV_VERSION_INT(55, 8, 0)
-#define PIX_FMT_VAAPI AV_PIX_FMT_VAAPI
-#else
-#define PIX_FMT_VAAPI AV_PIX_FMT_VAAPI_VLD
-#endif
-  if (fmt == PIX_FMT_VAAPI &&
+  if (fmt == AV_PIX_FMT_VAAPI &&
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(SETTING_VIDEOPLAYER_USEVAAPI))
     return new VAAPI::CDecoder(processInfo);
-#undef PIX_FMT_VAAPI
 
   return nullptr;
 }

@@ -24,13 +24,6 @@ extern "C" {
 
 #include <tuple>
 
-// https://github.com/FFmpeg/FFmpeg/blob/56450a0ee4/doc/APIchanges#L18-L26
-#if LIBAVFORMAT_BUILD >= AV_VERSION_INT(59, 0, 100)
-#define FFMPEG_FMT_CONST const
-#else
-#define FFMPEG_FMT_CONST
-#endif
-
 namespace FFMPEG_HELP_TOOLS
 {
 

@@ -147,7 +147,6 @@ std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt,
   uint8_t* extraData = nullptr;
   int extraDataSize = 0;
 
-#if LIBAVFORMAT_BUILD >= AV_VERSION_INT(59, 0, 100)
   /* extract_extradata bitstream filter is implemented only
    * for certain codecs, as noted in discussion of PR#21248
    */
@@ -258,28 +257,6 @@ std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt,
 
   av_bsf_free(&bsf);
   av_packet_free(&dstPkt);
-#else
-  if (codecCtx && parserCtx && parserCtx->parser && parserCtx->parser->split)
-    extraDataSize = parserCtx->parser->split(codecCtx, pkt->data, pkt->size);
-
-  if (extraDataSize <= 0 || extraDataSize >= FF_MAX_EXTRADATA_SIZE)
-  {
-    CLog::LogF(LOGDEBUG, "fetched extradata of weird size {}", extraDataSize);
-    return std::make_tuple(nullptr, 0);
-  }
-
-  extraData = static_cast<uint8_t*>(av_malloc(extraDataSize + AV_INPUT_BUFFER_PADDING_SIZE));
-  if (!extraData)
-  {
-    CLog::LogF(LOGERROR, "failed to allocate {} bytes for extradata", extraDataSize);
-    return std::make_tuple(nullptr, 0);
-  }
-
-  CLog::LogF(LOGDEBUG, "fetching extradata, extradata_size({})", extraDataSize);
-
-  memcpy(extraData, pkt->data, extraDataSize);
-  memset(extraData + extraDataSize, 0, AV_INPUT_BUFFER_PADDING_SIZE);
-#endif
 
   return std::make_tuple(extraData, extraDataSize);
 }

@@ -329,7 +329,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_hints = hints;
   m_options = options;
 
-  FFMPEG_FMT_CONST AVCodec* pCodec = nullptr;
+  const AVCodec* pCodec = nullptr;
 
   m_iOrientation = hints.orientation;
 
@@ -1052,9 +1052,6 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   AVFrameSideData* sd;
 
   // https://github.com/FFmpeg/FFmpeg/blob/991d417692/doc/APIchanges#L18-L20
-  // basilgello: AV_VIDEO_ENC_PARAMS_MPEG2 is introduced in 4.4!
-#if LIBAVCODEC_BUILD >= AV_VERSION_INT(58, 134, 100) && \
-    LIBAVUTIL_BUILD >= AV_VERSION_INT(56, 45, 100)
   sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_VIDEO_ENC_PARAMS);
   if (sd)
   {
@@ -1076,28 +1073,6 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
       }
     }
   }
-#else
-  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_QP_TABLE_PROPERTIES);
-  if (sd)
-  {
-    struct qp_properties
-    {
-      int stride;
-      int type;
-    };
-
-    auto qp = reinterpret_cast<qp_properties*>(sd->data);
-
-    sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_QP_TABLE_DATA);
-    if (sd && sd->buf && qp)
-    {
-      // this seems wrong but it's what ffmpeg does internally
-      pVideoPicture->qp_table = reinterpret_cast<int8_t*>(sd->buf->data);
-      pVideoPicture->qstride = qp->stride;
-      pVideoPicture->qscale_type = qp->type;
-    }
-  }
-#endif
 
   pVideoPicture->pict_type = m_pFrame->pict_type;
 
