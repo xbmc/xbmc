@@ -17,6 +17,7 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MusicDatabaseDirectory.h"
@@ -24,6 +25,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "media/MediaType.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicDbUrl.h"
 #include "music/tags/MusicInfoTag.h"
@@ -560,6 +562,21 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
   }
 }
 
+void ShowToastNotification(const CFileItem& item, int titleId)
+{
+  const std::string localizedMediaType =
+      CMediaTypes::GetCapitalLocalization(item.GetMusicInfoTag()->GetType());
+
+  std::string title = item.GetMusicInfoTag()->GetTitle();
+  if (title.empty())
+    title = item.GetLabel();
+
+  const std::string message =
+      localizedMediaType.empty() ? title : localizedMediaType + ": " + title;
+
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(titleId),
+                                        message);
+}
 } // unnamed namespace
 
 namespace MUSIC_UTILS
@@ -651,6 +668,8 @@ void QueueItem(const std::shared_ptr<CFileItem>& itemIn, QueuePosition pos)
   else
     player.Add(playlistId, queuedItems);
 
+  bool playbackStarted = false;
+
   if (!appPlayer->IsPlaying() && player.GetPlaylist(playlistId).size())
   {
     const int winID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
@@ -664,6 +683,16 @@ void QueueItem(const std::shared_ptr<CFileItem>& itemIn, QueuePosition pos)
     player.Reset();
     player.SetCurrentPlaylist(playlistId);
     player.Play(oldSize, ""); // start playing at the first new item
+
+    playbackStarted = true;
+  }
+
+  if (!playbackStarted)
+  {
+    if (pos == QueuePosition::POSITION_END)
+      ShowToastNotification(*item, 38082); // Added to end of playlist
+    else
+      ShowToastNotification(*item, 38083); // Added to playlist to play next
   }
 }
 
