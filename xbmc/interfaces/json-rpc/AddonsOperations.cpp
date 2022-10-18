@@ -15,6 +15,7 @@
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -25,41 +26,41 @@ using namespace ADDON;
 
 JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  std::vector<TYPE> addonTypes;
-  TYPE addonType = CAddonInfo::TranslateType(parameterObject["type"].asString());
+  std::vector<AddonType> addonTypes;
+  AddonType addonType = CAddonInfo::TranslateType(parameterObject["type"].asString());
   CPluginSource::Content content = CPluginSource::Translate(parameterObject["content"].asString());
   CVariant enabled = parameterObject["enabled"];
   CVariant installed = parameterObject["installed"];
 
   // ignore the "content" parameter if the type is specified but not a plugin or script
-  if (addonType != ADDON_UNKNOWN && addonType != ADDON_PLUGIN && addonType != ADDON_SCRIPT)
+  if (addonType != AddonType::UNKNOWN && addonType != AddonType::PLUGIN &&
+      addonType != AddonType::SCRIPT)
     content = CPluginSource::UNKNOWN;
 
-  if (addonType >= ADDON_VIDEO && addonType <= ADDON_EXECUTABLE)
+  if (addonType >= AddonType::VIDEO && addonType <= AddonType::EXECUTABLE)
   {
-    addonTypes.push_back(ADDON_PLUGIN);
-    addonTypes.push_back(ADDON_SCRIPT);
+    addonTypes.push_back(AddonType::PLUGIN);
+    addonTypes.push_back(AddonType::SCRIPT);
 
     switch (addonType)
     {
-    case ADDON_VIDEO:
-      content = CPluginSource::VIDEO;
-      break;
-    case ADDON_AUDIO:
-      content = CPluginSource::AUDIO;
-      break;
-    case ADDON_IMAGE:
-      content = CPluginSource::IMAGE;
-      break;
-    case ADDON_GAME:
-      content = CPluginSource::GAME;
-      break;
-    case ADDON_EXECUTABLE:
-      content = CPluginSource::EXECUTABLE;
-      break;
-
-    default:
-      break;
+      case AddonType::VIDEO:
+        content = CPluginSource::VIDEO;
+        break;
+      case AddonType::AUDIO:
+        content = CPluginSource::AUDIO;
+        break;
+      case AddonType::IMAGE:
+        content = CPluginSource::IMAGE;
+        break;
+      case AddonType::GAME:
+        content = CPluginSource::GAME;
+        break;
+      case AddonType::EXECUTABLE:
+        content = CPluginSource::EXECUTABLE;
+        break;
+      default:
+        break;
     }
   }
   else
@@ -69,7 +70,7 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   for (const auto& typeIt : addonTypes)
   {
     VECADDONS typeAddons;
-    if (typeIt == ADDON_UNKNOWN)
+    if (typeIt == AddonType::UNKNOWN)
     {
       if (!enabled.isBoolean()) //All
       {
@@ -104,12 +105,14 @@ JSONRPC_STATUS CAddonsOperations::GetAddons(const std::string &method, ITranspor
   // remove library addons
   for (int index = 0; index < (int)addons.size(); index++)
   {
-    PluginPtr plugin;
+    std::shared_ptr<CPluginSource> plugin;
     if (content != CPluginSource::UNKNOWN)
       plugin = std::dynamic_pointer_cast<CPluginSource>(addons.at(index));
 
-    if ((addons.at(index)->Type() <= ADDON_UNKNOWN || addons.at(index)->Type() >= ADDON_MAX) ||
-       ((content != CPluginSource::UNKNOWN && plugin == NULL) || (plugin != NULL && !plugin->Provides(content))))
+    if ((addons.at(index)->Type() <= AddonType::UNKNOWN ||
+         addons.at(index)->Type() >= AddonType::MAX_TYPES) ||
+        ((content != CPluginSource::UNKNOWN && plugin == NULL) ||
+         (plugin != NULL && !plugin->Provides(content))))
     {
       addons.erase(addons.begin() + index);
       index--;
@@ -130,9 +133,9 @@ JSONRPC_STATUS CAddonsOperations::GetAddonDetails(const std::string &method, ITr
 {
   std::string id = parameterObject["addonid"].asString();
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, ADDON::ADDON_UNKNOWN,
-                                              OnlyEnabled::CHOICE_NO) ||
-      addon.get() == NULL || addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, OnlyEnabled::CHOICE_NO) ||
+      addon.get() == NULL || addon->Type() <= AddonType::UNKNOWN ||
+      addon->Type() >= AddonType::MAX_TYPES)
     return InvalidParams;
 
   CAddonDatabase addondb;
@@ -145,9 +148,9 @@ JSONRPC_STATUS CAddonsOperations::SetAddonEnabled(const std::string &method, ITr
 {
   std::string id = parameterObject["addonid"].asString();
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, ADDON::ADDON_UNKNOWN,
-                                              OnlyEnabled::CHOICE_NO) ||
-      addon == nullptr || addon->Type() <= ADDON_UNKNOWN || addon->Type() >= ADDON_MAX)
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, OnlyEnabled::CHOICE_NO) ||
+      addon == nullptr || addon->Type() <= AddonType::UNKNOWN ||
+      addon->Type() >= AddonType::MAX_TYPES)
     return InvalidParams;
 
   bool disabled = false;
@@ -176,8 +179,9 @@ JSONRPC_STATUS CAddonsOperations::ExecuteAddon(const std::string &method, ITrans
 {
   std::string id = parameterObject["addonid"].asString();
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_YES) ||
-      addon.get() == NULL || addon->Type() < ADDON_VIZ || addon->Type() >= ADDON_MAX)
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addon, OnlyEnabled::CHOICE_YES) ||
+      addon.get() == NULL || addon->Type() < AddonType::VISUALIZATION ||
+      addon->Type() >= AddonType::MAX_TYPES)
     return InvalidParams;
 
   std::string argv;

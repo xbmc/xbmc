@@ -10,6 +10,7 @@
 
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIVisualisationControl.h"
@@ -54,8 +55,7 @@ bool CVisualisationGUIInfo::GetLabel(std::string& value, const CFileItem *item, 
     {
       ADDON::AddonPtr addon;
       value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION);
-      if (CServiceBroker::GetAddonMgr().GetAddon(value, addon, ADDON::ADDON_UNKNOWN,
-                                                 ADDON::OnlyEnabled::CHOICE_YES) &&
+      if (CServiceBroker::GetAddonMgr().GetAddon(value, addon, ADDON::OnlyEnabled::CHOICE_YES) &&
           addon)
       {
         value = addon->Name();

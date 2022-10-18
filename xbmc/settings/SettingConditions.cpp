@@ -11,6 +11,7 @@
 #include "LockType.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/AppParams.h"
 #if defined(TARGET_ANDROID)
 #include "platform/android/activity/AndroidFeatures.h"
@@ -50,7 +51,7 @@ bool AddonHasSettings(const std::string& condition,
       addon == NULL)
     return false;
 
-  if (addon->Type() == ADDON::ADDON_SKIN)
+  if (addon->Type() == ADDON::AddonType::SKIN)
     return ((ADDON::CSkinInfo*)addon.get())->HasSkinFile("SkinSettings.xml");
 
   return addon->CanHaveAddonOrInstanceSettings();
@@ -77,7 +78,7 @@ bool HasPeripheralLibraries(const std::string& condition,
                             const SettingConstPtr& setting,
                             void* data)
 {
-  return CServiceBroker::GetAddonMgr().HasInstalledAddons(ADDON::ADDON_PERIPHERALDLL);
+  return CServiceBroker::GetAddonMgr().HasInstalledAddons(ADDON::AddonType::PERIPHERALDLL);
 }
 
 bool HasRumbleFeature(const std::string& condition,

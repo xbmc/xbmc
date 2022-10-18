@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayerCallback.h"
 #include "cores/RetroPlayer/cheevos/Cheevos.h"
@@ -113,7 +114,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   {
     CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't play game, no game client was passed!");
   }
-  else if (!CServiceBroker::GetAddonMgr().GetAddon(gameClientId, addon, ADDON::ADDON_GAMEDLL,
+  else if (!CServiceBroker::GetAddonMgr().GetAddon(gameClientId, addon, ADDON::AddonType::GAMEDLL,
                                                    ADDON::OnlyEnabled::CHOICE_YES))
   {
     CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't find add-on {} for game file!", gameClientId);
@@ -159,8 +160,8 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
       if (save->GameClientID() != m_gameClient->ID())
       {
         ADDON::AddonPtr addon;
-        if (CServiceBroker::GetAddonMgr().GetAddon(
-                save->GameClientID(), addon, ADDON::ADDON_UNKNOWN, ADDON::OnlyEnabled::CHOICE_YES))
+        if (CServiceBroker::GetAddonMgr().GetAddon(save->GameClientID(), addon,
+                                                   ADDON::OnlyEnabled::CHOICE_YES))
         {
           // Warn the user that continuing with a different game client will
           // overwrite the save

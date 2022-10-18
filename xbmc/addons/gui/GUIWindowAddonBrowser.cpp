@@ -18,7 +18,9 @@
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/AddonSystemSettings.h"
+#include "addons/IAddon.h"
 #include "addons/RepositoryUpdater.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -331,8 +333,7 @@ bool CGUIWindowAddonBrowser::GetDirectory(const std::string& strDirectory, CFile
           //check if it's installed
           AddonPtr addon;
           if (!CServiceBroker::GetAddonMgr().GetAddon(items[i]->GetProperty("Addon.ID").asString(),
-                                                      addon, ADDON_UNKNOWN,
-                                                      OnlyEnabled::CHOICE_YES))
+                                                      addon, OnlyEnabled::CHOICE_YES))
             items.Remove(i);
         }
       }
@@ -378,7 +379,7 @@ bool CGUIWindowAddonBrowser::Update(const std::string& strDirectory,
   return true;
 }
 
-int CGUIWindowAddonBrowser::SelectAddonID(TYPE type,
+int CGUIWindowAddonBrowser::SelectAddonID(AddonType type,
                                           std::string& addonID,
                                           bool showNone /* = false */,
                                           bool showDetails /* = true */,
@@ -386,13 +387,13 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type,
                                           bool showInstallable /*= false */,
                                           bool showMore /* = true */)
 {
-  std::vector<ADDON::TYPE> types;
+  std::vector<AddonType> types;
   types.push_back(type);
   return SelectAddonID(types, addonID, showNone, showDetails, showInstalled, showInstallable,
                        showMore);
 }
 
-int CGUIWindowAddonBrowser::SelectAddonID(ADDON::TYPE type,
+int CGUIWindowAddonBrowser::SelectAddonID(AddonType type,
                                           std::vector<std::string>& addonIDs,
                                           bool showNone /* = false */,
                                           bool showDetails /* = true */,
@@ -401,13 +402,13 @@ int CGUIWindowAddonBrowser::SelectAddonID(ADDON::TYPE type,
                                           bool showInstallable /* = false */,
                                           bool showMore /* = true */)
 {
-  std::vector<ADDON::TYPE> types;
+  std::vector<AddonType> types;
   types.push_back(type);
   return SelectAddonID(types, addonIDs, showNone, showDetails, multipleSelection, showInstalled,
                        showInstallable, showMore);
 }
 
-int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
+int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
                                           std::string& addonID,
                                           bool showNone /* = false */,
                                           bool showDetails /* = true */,
@@ -427,7 +428,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
   return retval;
 }
 
-int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
+int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<AddonType>& types,
                                           std::vector<std::string>& addonIDs,
                                           bool showNone /* = false */,
                                           bool showDetails /* = true */,
@@ -451,9 +452,9 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
     return -1;
 
   // get rid of any invalid addon types
-  std::vector<ADDON::TYPE> validTypes(types.size());
+  std::vector<AddonType> validTypes(types.size());
   std::copy_if(types.begin(), types.end(), validTypes.begin(),
-               [](ADDON::TYPE type) { return type != ADDON_UNKNOWN; });
+               [](AddonType type) { return type != AddonType::UNKNOWN; });
 
   if (validTypes.empty())
     return -1;
@@ -462,19 +463,19 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
   VECADDONS addons;
   if (showInstalled)
   {
-    for (std::vector<ADDON::TYPE>::const_iterator type = validTypes.begin();
-         type != validTypes.end(); ++type)
+    for (std::vector<AddonType>::const_iterator type = validTypes.begin(); type != validTypes.end();
+         ++type)
     {
       VECADDONS typeAddons;
-      if (*type == ADDON_AUDIO)
+      if (*type == AddonType::AUDIO)
         CAddonsDirectory::GetScriptsAndPlugins("audio", typeAddons);
-      else if (*type == ADDON_EXECUTABLE)
+      else if (*type == AddonType::EXECUTABLE)
         CAddonsDirectory::GetScriptsAndPlugins("executable", typeAddons);
-      else if (*type == ADDON_IMAGE)
+      else if (*type == AddonType::IMAGE)
         CAddonsDirectory::GetScriptsAndPlugins("image", typeAddons);
-      else if (*type == ADDON_VIDEO)
+      else if (*type == AddonType::VIDEO)
         CAddonsDirectory::GetScriptsAndPlugins("video", typeAddons);
-      else if (*type == ADDON_GAME)
+      else if (*type == AddonType::GAME)
         CAddonsDirectory::GetScriptsAndPlugins("game", typeAddons);
       else
         CServiceBroker::GetAddonMgr().GetAddons(typeAddons, *type);
@@ -488,13 +489,13 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
     VECADDONS installableAddons;
     if (CServiceBroker::GetAddonMgr().GetInstallableAddons(installableAddons))
     {
-      for (ADDON::IVECADDONS addon = installableAddons.begin(); addon != installableAddons.end();)
+      for (auto addon = installableAddons.begin(); addon != installableAddons.end();)
       {
         AddonPtr pAddon = *addon;
 
         // check if the addon matches one of the provided addon types
         bool matchesType = false;
-        for (std::vector<ADDON::TYPE>::const_iterator type = validTypes.begin();
+        for (std::vector<AddonType>::const_iterator type = validTypes.begin();
              type != validTypes.end(); ++type)
         {
           if (pAddon->HasType(*type))
@@ -526,14 +527,14 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
   // turn the addons into items
   std::map<std::string, AddonPtr> addonMap;
   CFileItemList items;
-  for (ADDON::IVECADDONS addon = addons.begin(); addon != addons.end(); ++addon)
+  for (const auto& addon : addons)
   {
-    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*addon, (*addon)->ID()));
-    item->SetLabel2((*addon)->Summary());
+    const CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(addon, addon->ID()));
+    item->SetLabel2(addon->Summary());
     if (!items.Contains(item->GetPath()))
     {
       items.Add(item);
-      addonMap.insert(std::make_pair(item->GetPath(), *addon));
+      addonMap.insert(std::make_pair(item->GetPath(), addon));
     }
   }
 
@@ -541,7 +542,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(const std::vector<ADDON::TYPE>& types,
     return -1;
 
   std::string heading;
-  for (std::vector<ADDON::TYPE>::const_iterator type = validTypes.begin(); type != validTypes.end();
+  for (std::vector<AddonType>::const_iterator type = validTypes.begin(); type != validTypes.end();
        ++type)
   {
     if (!heading.empty())

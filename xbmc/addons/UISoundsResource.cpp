@@ -8,6 +8,7 @@
 #include "UISoundsResource.h"
 
 #include "ServiceBroker.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIAudioManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -17,6 +18,11 @@
 
 namespace ADDON
 {
+
+CUISoundsResource::CUISoundsResource(const AddonInfoPtr& addonInfo)
+  : CResource(addonInfo, AddonType::RESOURCE_UISOUNDS)
+{
+}
 
 bool CUISoundsResource::IsAllowed(const std::string& file) const
 {

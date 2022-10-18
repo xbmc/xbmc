@@ -16,7 +16,9 @@
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonVersion.h"
 #include "addons/Skin.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogButtonMenu.h"
@@ -37,6 +39,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/SkinSettings.h"
 #include "settings/lib/Setting.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -53,10 +56,10 @@ CApplicationSkinHandling::CApplicationSkinHandling(IMsgTargetCallback* msgCb,
 
 bool CApplicationSkinHandling::LoadSkin(const std::string& skinID)
 {
-  ADDON::SkinPtr skin;
+  std::shared_ptr<ADDON::CSkinInfo> skin;
   {
     ADDON::AddonPtr addon;
-    if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON::ADDON_SKIN,
+    if (!CServiceBroker::GetAddonMgr().GetAddon(skinID, addon, ADDON::AddonType::SKIN,
                                                 ADDON::OnlyEnabled::CHOICE_YES))
       return false;
     skin = std::static_pointer_cast<ADDON::CSkinInfo>(addon);

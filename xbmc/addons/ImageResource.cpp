@@ -8,6 +8,7 @@
 #include "ImageResource.h"
 
 #include "URL.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/XbtManager.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -17,9 +18,9 @@ namespace ADDON
 {
 
 CImageResource::CImageResource(const AddonInfoPtr& addonInfo)
-  : CResource(addonInfo, ADDON_RESOURCE_IMAGES)
+  : CResource(addonInfo, AddonType::RESOURCE_IMAGES)
 {
-  m_type = Type(ADDON_RESOURCE_IMAGES)->GetValue("@type").asString();
+  m_type = Type(AddonType::RESOURCE_IMAGES)->GetValue("@type").asString();
 }
 
 void CImageResource::OnPreUnInstall()

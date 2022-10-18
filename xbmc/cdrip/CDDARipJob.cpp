@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
@@ -190,7 +191,7 @@ std::unique_ptr<CEncoder> CCDDARipJob::SetupEncoder(CFile& reader)
   else
   {
     const AddonInfoPtr addonInfo =
-        CServiceBroker::GetAddonMgr().GetAddonInfo(audioEncoder, ADDON_AUDIOENCODER);
+        CServiceBroker::GetAddonMgr().GetAddonInfo(audioEncoder, AddonType::AUDIOENCODER);
     if (addonInfo)
     {
       encoder = std::make_unique<CEncoderAddon>(addonInfo);

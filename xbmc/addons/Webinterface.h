@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "Addon.h"
+#include "addons/Addon.h"
 
 #define WEBINTERFACE_DEFAULT_ENTRY_POINT  "index.html"
 

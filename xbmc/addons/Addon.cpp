@@ -8,10 +8,11 @@
 
 #include "Addon.h"
 
-#include "AddonManager.h"
-#include "RepositoryUpdater.h"
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
+#include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/settings/AddonSettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -38,27 +39,28 @@ using XFILE::CFile;
 namespace ADDON
 {
 
-CAddon::CAddon(const AddonInfoPtr& addonInfo, TYPE addonType)
-  : m_addonInfo(addonInfo), m_type(addonType == ADDON_UNKNOWN ? addonInfo->MainType() : addonType)
+CAddon::CAddon(const AddonInfoPtr& addonInfo, AddonType addonType)
+  : m_addonInfo(addonInfo),
+    m_type(addonType == AddonType::UNKNOWN ? addonInfo->MainType() : addonType)
 {
 }
 
-TYPE CAddon::MainType() const
+AddonType CAddon::MainType() const
 {
   return m_addonInfo->MainType();
 }
 
-bool CAddon::HasType(TYPE type) const
+bool CAddon::HasType(AddonType type) const
 {
   return m_addonInfo->HasType(type);
 }
 
-bool CAddon::HasMainType(TYPE type) const
+bool CAddon::HasMainType(AddonType type) const
 {
   return m_addonInfo->HasType(type, true);
 }
 
-const CAddonType* CAddon::Type(TYPE type) const
+const CAddonType* CAddon::Type(AddonType type) const
 {
   return m_addonInfo->Type(type);
 }
@@ -78,12 +80,12 @@ bool CAddon::IsBinary() const
   return m_addonInfo->IsBinary();
 }
 
-AddonVersion CAddon::Version() const
+CAddonVersion CAddon::Version() const
 {
   return m_addonInfo->Version();
 }
 
-AddonVersion CAddon::MinVersion() const
+CAddonVersion CAddon::MinVersion() const
 {
   return m_addonInfo->MinVersion();
 }
@@ -194,7 +196,7 @@ std::string CAddon::FanArt() const
   return it != m_addonInfo->Art().end() ? it->second : "";
 }
 
-bool CAddon::MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const
+bool CAddon::MeetsVersion(const CAddonVersion& versionMin, const CAddonVersion& version) const
 {
   return m_addonInfo->MeetsVersion(versionMin, version);
 }
@@ -647,7 +649,7 @@ std::string CAddon::LibPath() const
   return URIUtils::AddFileToFolder(m_addonInfo->Path(), libName);
 }
 
-AddonVersion CAddon::GetDependencyVersion(const std::string& dependencyID) const
+CAddonVersion CAddon::GetDependencyVersion(const std::string& dependencyID) const
 {
   return m_addonInfo->DependencyVersion(dependencyID);
 }

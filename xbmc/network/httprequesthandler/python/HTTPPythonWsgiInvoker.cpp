@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Webinterface.h"
+#include "addons/addoninfo/AddonType.h"
 #include "interfaces/legacy/wsgi/WsgiErrorStream.h"
 #include "interfaces/legacy/wsgi/WsgiInputStream.h"
 #include "interfaces/legacy/wsgi/WsgiResponse.h"
@@ -116,7 +117,7 @@ HTTPPythonRequest* CHTTPPythonWsgiInvoker::GetRequest()
 
 void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, PyObject* moduleDict)
 {
-  if (m_request == NULL || m_addon == NULL || m_addon->Type() != ADDON::ADDON_WEB_INTERFACE ||
+  if (m_request == NULL || m_addon == NULL || m_addon->Type() != ADDON::AddonType::WEB_INTERFACE ||
       fp == NULL || script.empty() || moduleDict == NULL)
     return;
 

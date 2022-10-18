@@ -16,6 +16,7 @@
 #include "addons/Addon.h"
 #include "addons/IAddon.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dbwrappers/DatabaseQuery.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
@@ -43,8 +44,10 @@ void CJSONRPC::Initialize()
 
   // Add some types/enums at runtime
   std::vector<std::string> enumList;
-  for (int addonType = ADDON::ADDON_UNKNOWN; addonType < ADDON::ADDON_MAX; addonType++)
-    enumList.push_back(ADDON::CAddonInfo::TranslateType(static_cast<ADDON::TYPE>(addonType), false));
+  for (int addonType = static_cast<int>(ADDON::AddonType::UNKNOWN);
+       addonType < static_cast<int>(ADDON::AddonType::MAX_TYPES); addonType++)
+    enumList.push_back(
+        ADDON::CAddonInfo::TranslateType(static_cast<ADDON::AddonType>(addonType), false));
   CJSONServiceDescription::AddEnum("Addon.Types", enumList);
 
   enumList.clear();

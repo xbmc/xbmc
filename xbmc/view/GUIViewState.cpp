@@ -18,6 +18,7 @@
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIViewStateAddonBrowser.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "events/windows/GUIViewStateEventLog.h"
@@ -586,10 +587,10 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   {
     CURL url(items.GetPath());
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
+    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, AddonType::PLUGIN,
                                                OnlyEnabled::CHOICE_YES))
     {
-      PluginPtr plugin = std::static_pointer_cast<CPluginSource>(addon);
+      const auto plugin = std::static_pointer_cast<CPluginSource>(addon);
       if (plugin->Provides(CPluginSource::AUDIO))
         m_playlist = PLAYLIST::TYPE_MUSIC;
       if (plugin->Provides(CPluginSource::VIDEO))

@@ -39,19 +39,19 @@ protected:
     std::vector<AddonInfoPtr> addons;
     CreateAddon(addons, "foo.bar", "1.0.0");
     database.SetRepoUpdateData("repository.a", {});
-    database.UpdateRepositoryContent("repository.a", AddonVersion("1.0.0"), "test", addons);
+    database.UpdateRepositoryContent("repository.a", CAddonVersion("1.0.0"), "test", addons);
 
     addons.clear();
     CreateAddon(addons, "foo.baz", "1.1.0");
     database.SetRepoUpdateData("repository.b", {});
-    database.UpdateRepositoryContent("repository.b", AddonVersion("1.0.0"), "test", addons);
+    database.UpdateRepositoryContent("repository.b", CAddonVersion("1.0.0"), "test", addons);
   }
 
   void CreateAddon(std::vector<AddonInfoPtr>& addons, std::string id, const std::string& version)
   {
-    CAddonInfoBuilder::CFromDB builder;
+    CAddonInfoBuilderFromDB builder;
     builder.SetId(std::move(id));
-    builder.SetVersion(AddonVersion(version));
+    builder.SetVersion(CAddonVersion(version));
     addons.push_back(builder.get());
   }
 

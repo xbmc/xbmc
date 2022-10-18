@@ -13,6 +13,7 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/AppParams.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
@@ -613,7 +614,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = true;
       return true;
     case SYSTEM_HAS_PVR_ADDON:
-      value = CServiceBroker::GetAddonMgr().HasAddons(ADDON::ADDON_PVRDLL);
+      value = CServiceBroker::GetAddonMgr().HasAddons(ADDON::AddonType::PVRDLL);
       return true;
     case SYSTEM_HAS_CMS:
 #if defined(HAS_GL) || defined(HAS_DX)

@@ -12,14 +12,17 @@
 #include "FileItem.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "addons/Addon.h"
 #include "addons/AddonBuilder.h"
+#include "addons/AddonDatabase.h"
 #include "addons/AddonEvents.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonRepos.h"
 #include "addons/AddonSystemSettings.h"
+#include "addons/AddonUpdateRules.h"
+#include "addons/IAddon.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
+#include "addons/addoninfo/AddonType.h"
 #include "events/AddonManagementEvent.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
@@ -47,7 +50,7 @@ namespace ADDON
  *
  */
 
-std::map<TYPE, IAddonMgrCallback*> CAddonMgr::m_managers;
+std::map<AddonType, IAddonMgrCallback*> CAddonMgr::m_managers;
 
 static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& optional)
 {
@@ -80,12 +83,18 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
   return true;
 }
 
+CAddonMgr::CAddonMgr()
+  : m_database(std::make_unique<CAddonDatabase>()),
+    m_updateRules(std::make_unique<CAddonUpdateRules>())
+{
+}
+
 CAddonMgr::~CAddonMgr()
 {
   DeInit();
 }
 
-IAddonMgrCallback* CAddonMgr::GetCallbackForType(TYPE type)
+IAddonMgrCallback* CAddonMgr::GetCallbackForType(AddonType type)
 {
   if (m_managers.find(type) == m_managers.end())
     return nullptr;
@@ -93,7 +102,7 @@ IAddonMgrCallback* CAddonMgr::GetCallbackForType(TYPE type)
     return m_managers[type];
 }
 
-bool CAddonMgr::RegisterAddonMgrCallback(const TYPE type, IAddonMgrCallback* cb)
+bool CAddonMgr::RegisterAddonMgrCallback(AddonType type, IAddonMgrCallback* cb)
 {
   if (cb == nullptr)
     return false;
@@ -104,7 +113,7 @@ bool CAddonMgr::RegisterAddonMgrCallback(const TYPE type, IAddonMgrCallback* cb)
   return true;
 }
 
-void CAddonMgr::UnregisterAddonMgrCallback(TYPE type)
+void CAddonMgr::UnregisterAddonMgrCallback(AddonType type)
 {
   m_managers.erase(type);
 }
@@ -119,7 +128,7 @@ bool CAddonMgr::Init()
     return false;
   }
 
-  if (!m_database.Open())
+  if (!m_database->Open())
     CLog::Log(LOGFATAL, "ADDONS: Failed to open database");
 
   FindAddons();
@@ -128,7 +137,7 @@ bool CAddonMgr::Init()
   for (const auto& id : m_systemAddons)
   {
     AddonPtr addon;
-    if (!GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_YES))
+    if (!GetAddon(id, addon, AddonType::UNKNOWN, OnlyEnabled::CHOICE_YES))
     {
       CLog::Log(LOGFATAL, "addon '{}' not installed or not enabled.", id);
       return false;
@@ -140,14 +149,14 @@ bool CAddonMgr::Init()
 
 void CAddonMgr::DeInit()
 {
-  m_database.Close();
+  m_database->Close();
 
   /* If temporary directory was used from add-on, delete it */
   if (XFILE::CDirectory::Exists(m_tempAddonBasePath))
     XFILE::CDirectory::RemoveRecursive(CSpecialProtocol::TranslatePath(m_tempAddonBasePath));
 }
 
-bool CAddonMgr::HasAddons(const TYPE &type)
+bool CAddonMgr::HasAddons(AddonType type)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -159,7 +168,7 @@ bool CAddonMgr::HasAddons(const TYPE &type)
   return false;
 }
 
-bool CAddonMgr::HasInstalledAddons(const TYPE &type)
+bool CAddonMgr::HasInstalledAddons(AddonType type)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -261,13 +270,13 @@ std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetAvailableUpdatesOrOutdatedAdd
   return result;
 }
 
-std::map<std::string, CAddonWithUpdate> CAddonMgr::GetAddonsWithAvailableUpdate() const
+std::map<std::string, AddonWithUpdate> CAddonMgr::GetAddonsWithAvailableUpdate() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   auto start = std::chrono::steady_clock::now();
 
   std::vector<std::shared_ptr<IAddon>> installed;
-  std::map<std::string, CAddonWithUpdate> result;
+  std::map<std::string, AddonWithUpdate> result;
   CAddonRepos addonRepos;
 
   if (addonRepos.IsValid())
@@ -310,7 +319,7 @@ bool CAddonMgr::HasAvailableUpdates()
 std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetOrphanedDependencies() const
 {
   std::vector<std::shared_ptr<IAddon>> allAddons;
-  GetAddonsInternal(ADDON_UNKNOWN, allAddons, OnlyEnabled::CHOICE_YES,
+  GetAddonsInternal(AddonType::UNKNOWN, allAddons, OnlyEnabled::CHOICE_YES,
                     CheckIncompatible::CHOICE_YES);
 
   std::vector<std::shared_ptr<IAddon>> orphanedDependencies;
@@ -343,38 +352,38 @@ bool CAddonMgr::IsOrphaned(const std::shared_ptr<IAddon>& addon,
 
 bool CAddonMgr::GetAddonsForUpdate(VECADDONS& addons) const
 {
-  return GetAddonsInternal(ADDON_UNKNOWN, addons, OnlyEnabled::CHOICE_YES,
+  return GetAddonsInternal(AddonType::UNKNOWN, addons, OnlyEnabled::CHOICE_YES,
                            CheckIncompatible::CHOICE_YES);
 }
 
 bool CAddonMgr::GetAddons(VECADDONS& addons) const
 {
-  return GetAddonsInternal(ADDON_UNKNOWN, addons, OnlyEnabled::CHOICE_YES,
+  return GetAddonsInternal(AddonType::UNKNOWN, addons, OnlyEnabled::CHOICE_YES,
                            CheckIncompatible::CHOICE_NO);
 }
 
-bool CAddonMgr::GetAddons(VECADDONS& addons, const TYPE& type)
+bool CAddonMgr::GetAddons(VECADDONS& addons, AddonType type)
 {
   return GetAddonsInternal(type, addons, OnlyEnabled::CHOICE_YES, CheckIncompatible::CHOICE_NO);
 }
 
 bool CAddonMgr::GetInstalledAddons(VECADDONS& addons)
 {
-  return GetAddonsInternal(ADDON_UNKNOWN, addons, OnlyEnabled::CHOICE_NO,
+  return GetAddonsInternal(AddonType::UNKNOWN, addons, OnlyEnabled::CHOICE_NO,
                            CheckIncompatible::CHOICE_NO);
 }
 
-bool CAddonMgr::GetInstalledAddons(VECADDONS& addons, const TYPE& type)
+bool CAddonMgr::GetInstalledAddons(VECADDONS& addons, AddonType type)
 {
   return GetAddonsInternal(type, addons, OnlyEnabled::CHOICE_NO, CheckIncompatible::CHOICE_NO);
 }
 
 bool CAddonMgr::GetDisabledAddons(VECADDONS& addons)
 {
-  return CAddonMgr::GetDisabledAddons(addons, ADDON_UNKNOWN);
+  return CAddonMgr::GetDisabledAddons(addons, AddonType::UNKNOWN);
 }
 
-bool CAddonMgr::GetDisabledAddons(VECADDONS& addons, const TYPE& type)
+bool CAddonMgr::GetDisabledAddons(VECADDONS& addons, AddonType type)
 {
   VECADDONS all;
   if (GetInstalledAddons(all, type))
@@ -388,10 +397,10 @@ bool CAddonMgr::GetDisabledAddons(VECADDONS& addons, const TYPE& type)
 
 bool CAddonMgr::GetInstallableAddons(VECADDONS& addons)
 {
-  return GetInstallableAddons(addons, ADDON_UNKNOWN);
+  return GetInstallableAddons(addons, AddonType::UNKNOWN);
 }
 
-bool CAddonMgr::GetInstallableAddons(VECADDONS& addons, const TYPE &type)
+bool CAddonMgr::GetInstallableAddons(VECADDONS& addons, AddonType type)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   CAddonRepos addonRepos;
@@ -410,7 +419,7 @@ bool CAddonMgr::GetInstallableAddons(VECADDONS& addons, const TYPE &type)
       bool bErase = false;
 
       // check if the addon matches the provided addon type
-      if (type != ADDON::ADDON_UNKNOWN && addon->Type() != type && !addon->HasType(type))
+      if (type != AddonType::UNKNOWN && addon->Type() != type && !addon->HasType(type))
         bErase = true;
 
       if (!this->CanAddonBeInstalled(addon))
@@ -434,7 +443,7 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result
 
   // check for an update if addon is installed already
 
-  if (GetAddon(addonId, addonToUpdate, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO))
+  if (GetAddon(addonId, addonToUpdate, AddonType::UNKNOWN, OnlyEnabled::CHOICE_NO))
   {
     if (addonRepos.DoAddonUpdateCheck(addonToUpdate, result))
       return true;
@@ -451,7 +460,7 @@ bool CAddonMgr::FindInstallableById(const std::string& addonId, AddonPtr& result
   return addonRepos.GetLatestAddonVersionFromAllRepos(addonId, result);
 }
 
-bool CAddonMgr::GetAddonsInternal(const TYPE& type,
+bool CAddonMgr::GetAddonsInternal(AddonType type,
                                   VECADDONS& addons,
                                   OnlyEnabled onlyEnabled,
                                   CheckIncompatible checkIncompatible) const
@@ -460,7 +469,7 @@ bool CAddonMgr::GetAddonsInternal(const TYPE& type,
 
   for (const auto& addonInfo : m_installedAddons)
   {
-    if (type != ADDON_UNKNOWN && !addonInfo.second->HasType(type))
+    if (type != AddonType::UNKNOWN && !addonInfo.second->HasType(type))
       continue;
 
     if (onlyEnabled == OnlyEnabled::CHOICE_YES &&
@@ -472,7 +481,7 @@ bool CAddonMgr::GetAddonsInternal(const TYPE& type,
 
     //FIXME: hack for skipping special dependency addons (xbmc.python etc.).
     //Will break if any extension point is added to them
-    if (addonInfo.second->MainType() == ADDON_UNKNOWN)
+    if (addonInfo.second->MainType() == AddonType::UNKNOWN)
       continue;
 
     AddonPtr addon = CAddonBuilder::Generate(addonInfo.second, type);
@@ -496,9 +505,9 @@ bool CAddonMgr::GetIncompatibleEnabledAddonInfos(std::vector<AddonInfoPtr>& inco
 bool CAddonMgr::GetIncompatibleAddonInfos(std::vector<AddonInfoPtr>& incompatible,
                                           bool includeDisabled) const
 {
-  GetAddonInfos(incompatible, true, ADDON_UNKNOWN);
+  GetAddonInfos(incompatible, true, AddonType::UNKNOWN);
   if (includeDisabled)
-    GetDisabledAddonInfos(incompatible, ADDON_UNKNOWN, AddonDisabledReason::INCOMPATIBLE);
+    GetDisabledAddonInfos(incompatible, AddonType::UNKNOWN, AddonDisabledReason::INCOMPATIBLE);
   incompatible.erase(std::remove_if(incompatible.begin(), incompatible.end(),
                                     [this](const AddonInfoPtr& a) { return IsCompatible(a); }),
                      incompatible.end());
@@ -621,7 +630,7 @@ void CAddonMgr::InstallAddonUpdates(VECADDONS& updates,
 
 bool CAddonMgr::GetAddon(const std::string& str,
                          AddonPtr& addon,
-                         const TYPE& type,
+                         AddonType type,
                          OnlyEnabled onlyEnabled) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -646,7 +655,12 @@ bool CAddonMgr::GetAddon(const std::string& str,
   return false;
 }
 
-bool CAddonMgr::HasType(const std::string &id, const TYPE &type)
+bool CAddonMgr::GetAddon(const std::string& str, AddonPtr& addon, OnlyEnabled onlyEnabled) const
+{
+  return GetAddon(str, addon, AddonType::UNKNOWN, onlyEnabled);
+}
+
+bool CAddonMgr::HasType(const std::string& id, AddonType type)
 {
   AddonPtr addon;
   return GetAddon(id, addon, type, OnlyEnabled::CHOICE_NO);
@@ -654,7 +668,7 @@ bool CAddonMgr::HasType(const std::string &id, const TYPE &type)
 
 bool CAddonMgr::FindAddon(const std::string& addonId,
                           const std::string& origin,
-                          const AddonVersion& addonVersion)
+                          const CAddonVersion& addonVersion)
 {
   std::map<std::string, std::shared_ptr<CAddonInfo>> installedAddons;
 
@@ -670,19 +684,19 @@ bool CAddonMgr::FindAddon(const std::string& addonId,
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  m_database.GetInstallData(it->second);
+  m_database->GetInstallData(it->second);
   CLog::Log(LOGINFO, "CAddonMgr::{}: {} v{} installed", __FUNCTION__, addonId,
             addonVersion.asString());
 
   m_installedAddons[addonId] = it->second; // insert/replace entry
-  m_database.AddInstalledAddon(it->second, origin);
+  m_database->AddInstalledAddon(it->second, origin);
 
   // Reload caches
   std::map<std::string, AddonDisabledReason> tmpDisabled;
-  m_database.GetDisabled(tmpDisabled);
+  m_database->GetDisabled(tmpDisabled);
   m_disabled = std::move(tmpDisabled);
 
-  m_updateRules.RefreshRulesMap(m_database);
+  m_updateRules->RefreshRulesMap(*m_database);
   return true;
 }
 
@@ -703,10 +717,10 @@ bool CAddonMgr::FindAddons()
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   // Sync with db
-  m_database.SyncInstalled(installed, m_systemAddons, m_optionalSystemAddons);
+  m_database->SyncInstalled(installed, m_systemAddons, m_optionalSystemAddons);
   for (const auto& addon : installedAddons)
   {
-    m_database.GetInstallData(addon.second);
+    m_database->GetInstallData(addon.second);
     CLog::Log(LOGINFO, "CAddonMgr::{}: {} v{} installed", __FUNCTION__, addon.second->ID(),
               addon.second->Version().asString());
   }
@@ -715,10 +729,10 @@ bool CAddonMgr::FindAddons()
 
   // Reload caches
   std::map<std::string, AddonDisabledReason> tmpDisabled;
-  m_database.GetDisabled(tmpDisabled);
+  m_database->GetDisabled(tmpDisabled);
   m_disabled = std::move(tmpDisabled);
 
-  m_updateRules.RefreshRulesMap(m_database);
+  m_updateRules->RefreshRulesMap(*m_database);
 
   return true;
 }
@@ -732,7 +746,7 @@ bool CAddonMgr::UnloadAddon(const std::string& addonId)
 
   AddonPtr localAddon;
   // can't unload an binary addon that is in use
-  if (GetAddon(addonId, localAddon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO) &&
+  if (GetAddon(addonId, localAddon, AddonType::UNKNOWN, OnlyEnabled::CHOICE_NO) &&
       localAddon->IsBinary() && localAddon->IsInUse())
   {
     CLog::Log(LOGERROR, "CAddonMgr::{}: could not unload binary add-on {}, as is in use", __func__,
@@ -752,12 +766,12 @@ bool CAddonMgr::UnloadAddon(const std::string& addonId)
 
 bool CAddonMgr::LoadAddon(const std::string& addonId,
                           const std::string& origin,
-                          const AddonVersion& addonVersion)
+                          const CAddonVersion& addonVersion)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   AddonPtr addon;
-  if (GetAddon(addonId, addon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO))
+  if (GetAddon(addonId, addon, AddonType::UNKNOWN, OnlyEnabled::CHOICE_NO))
   {
     return true;
   }
@@ -768,7 +782,7 @@ bool CAddonMgr::LoadAddon(const std::string& addonId,
     return false;
   }
 
-  if (!GetAddon(addonId, addon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO))
+  if (!GetAddon(addonId, addon, AddonType::UNKNOWN, OnlyEnabled::CHOICE_NO))
   {
     CLog::Log(LOGERROR, "CAddonMgr: could not load add-on {}. No add-on with that ID is installed.",
               addonId);
@@ -805,8 +819,8 @@ void CAddonMgr::UpdateLastUsed(const std::string& id)
   CServiceBroker::GetJobManager()->Submit([this, id, time]() {
     {
       std::unique_lock<CCriticalSection> lock(m_critSection);
-      m_database.SetLastUsed(id, time);
-      auto addonInfo = GetAddonInfo(id);
+      m_database->SetLastUsed(id, time);
+      auto addonInfo = GetAddonInfo(id, AddonType::UNKNOWN);
       if (addonInfo)
         addonInfo->SetLastUsed(time);
     }
@@ -820,7 +834,7 @@ static void ResolveDependencies(const std::string& addonId, std::vector<std::str
     return;
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON_UNKNOWN,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, AddonType::UNKNOWN,
                                               OnlyEnabled::CHOICE_NO))
     missing.push_back(addonId);
   else
@@ -839,7 +853,7 @@ bool CAddonMgr::DisableAddon(const std::string& id, AddonDisabledReason disabled
     return false;
   if (m_disabled.find(id) != m_disabled.end())
     return true; //already disabled
-  if (!m_database.DisableAddon(id, disabledReason))
+  if (!m_database->DisableAddon(id, disabledReason))
     return false;
   if (!m_disabled.emplace(id, disabledReason).second)
     return false;
@@ -847,7 +861,7 @@ bool CAddonMgr::DisableAddon(const std::string& id, AddonDisabledReason disabled
   //success
   CLog::Log(LOGDEBUG, "CAddonMgr: {} disabled", id);
   AddonPtr addon;
-  if (GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO) && addon != nullptr)
+  if (GetAddon(id, addon, AddonType::UNKNOWN, OnlyEnabled::CHOICE_NO) && addon != nullptr)
   {
     auto eventLog = CServiceBroker::GetEventLog();
     if (eventLog)
@@ -863,7 +877,7 @@ bool CAddonMgr::UpdateDisabledReason(const std::string& id, AddonDisabledReason 
   std::unique_lock<CCriticalSection> lock(m_critSection);
   if (!IsAddonDisabled(id))
     return false;
-  if (!m_database.DisableAddon(id, newDisabledReason))
+  if (!m_database->DisableAddon(id, newDisabledReason))
     return false;
 
   m_disabled[id] = newDisabledReason;
@@ -882,7 +896,7 @@ bool CAddonMgr::EnableSingle(const std::string& id)
     return true; //already enabled
 
   AddonPtr addon;
-  if (!GetAddon(id, addon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO) || addon == nullptr)
+  if (!GetAddon(id, addon, AddonType::UNKNOWN, OnlyEnabled::CHOICE_NO) || addon == nullptr)
     return false;
 
   auto eventLog = CServiceBroker::GetEventLog();
@@ -897,12 +911,12 @@ bool CAddonMgr::EnableSingle(const std::string& id)
     return false;
   }
 
-  if (!m_database.EnableAddon(id))
+  if (!m_database->EnableAddon(id))
     return false;
   m_disabled.erase(id);
 
   // If enabling a repo add-on without an origin, set its origin to its own id
-  if (addon->HasType(ADDON_REPOSITORY) && addon->Origin().empty())
+  if (addon->HasType(AddonType::REPOSITORY) && addon->Origin().empty())
     SetAddonOrigin(id, id, false);
 
   if (eventLog)
@@ -957,7 +971,7 @@ bool CAddonMgr::CanAddonBeDisabled(const std::string& ID)
 
   AddonPtr localAddon;
   // can't disable an addon that isn't installed
-  if (!GetAddon(ID, localAddon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO))
+  if (!GetAddon(ID, localAddon, AddonType::UNKNOWN, OnlyEnabled::CHOICE_NO))
     return false;
 
   // can't disable an addon that is in use
@@ -975,14 +989,14 @@ bool CAddonMgr::CanAddonBeEnabled(const std::string& id)
 bool CAddonMgr::IsAddonInstalled(const std::string& ID)
 {
   AddonPtr tmp;
-  return GetAddon(ID, tmp, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO);
+  return GetAddon(ID, tmp, AddonType::UNKNOWN, OnlyEnabled::CHOICE_NO);
 }
 
 bool CAddonMgr::IsAddonInstalled(const std::string& ID, const std::string& origin) const
 {
   AddonPtr tmp;
 
-  if (GetAddon(ID, tmp, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO) && tmp)
+  if (GetAddon(ID, tmp, AddonType::UNKNOWN, OnlyEnabled::CHOICE_NO) && tmp)
   {
     if (tmp->Origin() == ORIGIN_SYSTEM)
     {
@@ -998,11 +1012,11 @@ bool CAddonMgr::IsAddonInstalled(const std::string& ID, const std::string& origi
 
 bool CAddonMgr::IsAddonInstalled(const std::string& ID,
                                  const std::string& origin,
-                                 const AddonVersion& version)
+                                 const CAddonVersion& version)
 {
   AddonPtr tmp;
 
-  if (GetAddon(ID, tmp, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO) && tmp)
+  if (GetAddon(ID, tmp, AddonType::UNKNOWN, OnlyEnabled::CHOICE_NO) && tmp)
   {
     if (tmp->Origin() == ORIGIN_SYSTEM)
     {
@@ -1057,29 +1071,29 @@ bool CAddonMgr::LoadAddonDescription(const std::string &directory, AddonPtr &add
 {
   auto addonInfo = CAddonInfoBuilder::Generate(directory);
   if (addonInfo)
-    addon = CAddonBuilder::Generate(addonInfo, ADDON_UNKNOWN);
+    addon = CAddonBuilder::Generate(addonInfo, AddonType::UNKNOWN);
 
   return addon != nullptr;
 }
 
 bool CAddonMgr::AddUpdateRuleToList(const std::string& id, AddonUpdateRule updateRule)
 {
-  return m_updateRules.AddUpdateRuleToList(m_database, id, updateRule);
+  return m_updateRules->AddUpdateRuleToList(*m_database, id, updateRule);
 }
 
 bool CAddonMgr::RemoveAllUpdateRulesFromList(const std::string& id)
 {
-  return m_updateRules.RemoveAllUpdateRulesFromList(m_database, id);
+  return m_updateRules->RemoveAllUpdateRulesFromList(*m_database, id);
 }
 
 bool CAddonMgr::RemoveUpdateRuleFromList(const std::string& id, AddonUpdateRule updateRule)
 {
-  return m_updateRules.RemoveUpdateRuleFromList(m_database, id, updateRule);
+  return m_updateRules->RemoveUpdateRuleFromList(*m_database, id, updateRule);
 }
 
 bool CAddonMgr::IsAutoUpdateable(const std::string& id) const
 {
-  return m_updateRules.IsAutoUpdateable(id);
+  return m_updateRules->IsAutoUpdateable(id);
 }
 
 void CAddonMgr::PublishEventAutoUpdateStateChanged(const std::string& id)
@@ -1109,7 +1123,8 @@ bool CAddonMgr::IsCompatible(const IAddon& addon) const
           StringUtils::StartsWith(dependency.id, "kodi."))
       {
         AddonPtr addon;
-        bool haveAddon = GetAddon(dependency.id, addon, ADDON_UNKNOWN, OnlyEnabled::CHOICE_YES);
+        bool haveAddon =
+            GetAddon(dependency.id, addon, AddonType::UNKNOWN, OnlyEnabled::CHOICE_YES);
         if (!haveAddon || !addon->MeetsVersion(dependency.versionMin, dependency.version))
           return false;
       }
@@ -1129,7 +1144,7 @@ bool CAddonMgr::IsCompatible(const AddonInfoPtr& addonInfo) const
       if (StringUtils::StartsWith(dependency.id, "xbmc.") ||
           StringUtils::StartsWith(dependency.id, "kodi."))
       {
-        AddonInfoPtr addonInfo = GetAddonInfo(dependency.id);
+        AddonInfoPtr addonInfo = GetAddonInfo(dependency.id, AddonType::UNKNOWN);
         if (!addonInfo || !addonInfo->MeetsVersion(dependency.versionMin, dependency.version))
           return false;
       }
@@ -1144,7 +1159,7 @@ std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id,
   std::vector<DependencyInfo> added;
   AddonPtr root_addon;
   if (!FindInstallableById(id, root_addon) &&
-      !GetAddon(id, root_addon, ADDON_UNKNOWN, static_cast<OnlyEnabled>(onlyEnabledRootAddon)))
+      !GetAddon(id, root_addon, AddonType::UNKNOWN, static_cast<OnlyEnabled>(onlyEnabledRootAddon)))
   {
     return added;
   }
@@ -1187,17 +1202,17 @@ std::vector<DependencyInfo> CAddonMgr::GetDepsRecursive(const std::string& id,
   return added;
 }
 
-bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, bool onlyEnabled, TYPE type) const
+bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, bool onlyEnabled, AddonType type) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  bool forUnknown = type == ADDON_UNKNOWN;
+  bool forUnknown = type == AddonType::UNKNOWN;
   for (auto& info : m_installedAddons)
   {
     if (onlyEnabled && m_disabled.find(info.first) != m_disabled.end())
       continue;
 
-    if (info.second->MainType() != ADDON_UNKNOWN && (forUnknown || info.second->HasType(type)))
+    if (info.second->MainType() != AddonType::UNKNOWN && (forUnknown || info.second->HasType(type)))
       addonInfos.push_back(info.second);
   }
 
@@ -1205,7 +1220,7 @@ bool CAddonMgr::GetAddonInfos(AddonInfos& addonInfos, bool onlyEnabled, TYPE typ
 }
 
 std::vector<AddonInfoPtr> CAddonMgr::GetAddonInfos(bool onlyEnabled,
-                                                   const std::vector<TYPE>& types) const
+                                                   const std::vector<AddonType>& types) const
 {
   std::vector<AddonInfoPtr> infos;
   if (types.empty())
@@ -1218,11 +1233,11 @@ std::vector<AddonInfoPtr> CAddonMgr::GetAddonInfos(bool onlyEnabled,
     if (onlyEnabled && m_disabled.find(info.first) != m_disabled.end())
       continue;
 
-    if (info.second->MainType() == ADDON_UNKNOWN)
+    if (info.second->MainType() == AddonType::UNKNOWN)
       continue;
 
     const auto it = std::find_if(types.begin(), types.end(),
-                                 [info](TYPE t) { return info.second->HasType(t); });
+                                 [info](AddonType t) { return info.second->HasType(t); });
     if (it != types.end())
       infos.emplace_back(info.second);
   }
@@ -1230,25 +1245,26 @@ std::vector<AddonInfoPtr> CAddonMgr::GetAddonInfos(bool onlyEnabled,
   return infos;
 }
 
-bool CAddonMgr::GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos, TYPE type) const
+bool CAddonMgr::GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos, AddonType type) const
 {
   return GetDisabledAddonInfos(addonInfos, type, AddonDisabledReason::NONE);
 }
 
 bool CAddonMgr::GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos,
-                                      TYPE type,
+                                      AddonType type,
                                       AddonDisabledReason disabledReason) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  bool forUnknown = type == ADDON_UNKNOWN;
+  bool forUnknown = type == AddonType::UNKNOWN;
   for (const auto& info : m_installedAddons)
   {
     const auto disabledAddon = m_disabled.find(info.first);
     if (disabledAddon == m_disabled.end())
       continue;
 
-    if (info.second->MainType() != ADDON_UNKNOWN && (forUnknown || info.second->HasType(type)) &&
+    if (info.second->MainType() != AddonType::UNKNOWN &&
+        (forUnknown || info.second->HasType(type)) &&
         (disabledReason == AddonDisabledReason::NONE || disabledReason == disabledAddon->second))
       addonInfos.emplace_back(info.second);
   }
@@ -1256,14 +1272,13 @@ bool CAddonMgr::GetDisabledAddonInfos(std::vector<AddonInfoPtr>& addonInfos,
   return !addonInfos.empty();
 }
 
-const AddonInfoPtr CAddonMgr::GetAddonInfo(const std::string& id,
-                                           TYPE type /*= ADDON_UNKNOWN*/) const
+const AddonInfoPtr CAddonMgr::GetAddonInfo(const std::string& id, AddonType type) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   auto addon = m_installedAddons.find(id);
   if (addon != m_installedAddons.end())
-    if ((type == ADDON_UNKNOWN || addon->second->HasType(type)))
+    if ((type == AddonType::UNKNOWN || addon->second->HasType(type)))
       return addon->second;
 
   return nullptr;
@@ -1329,18 +1344,18 @@ bool CAddonMgr::SetAddonOrigin(const std::string& addonId, const std::string& re
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  m_database.SetOrigin(addonId, repoAddonId);
+  m_database->SetOrigin(addonId, repoAddonId);
   if (isUpdate)
-    m_database.SetLastUpdated(addonId, CDateTime::GetCurrentDateTime());
+    m_database->SetLastUpdated(addonId, CDateTime::GetCurrentDateTime());
 
   // If available in manager update
-  const AddonInfoPtr info = GetAddonInfo(addonId);
+  const AddonInfoPtr info = GetAddonInfo(addonId, AddonType::UNKNOWN);
   if (info)
-    m_database.GetInstallData(info);
+    m_database->GetInstallData(info);
   return true;
 }
 
-bool CAddonMgr::AddonsFromRepoXML(const CRepository::DirInfo& repo,
+bool CAddonMgr::AddonsFromRepoXML(const RepositoryDirInfo& repo,
                                   const std::string& xml,
                                   std::vector<AddonInfoPtr>& addons)
 {

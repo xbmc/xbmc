@@ -8,15 +8,16 @@
 
 #include "AddonRepos.h"
 
-#include "Addon.h"
-#include "AddonManager.h"
-#include "AddonRepoInfo.h"
-#include "AddonSystemSettings.h"
 #include "CompileInfo.h"
-#include "Repository.h"
-#include "RepositoryUpdater.h"
 #include "ServiceBroker.h"
+#include "addons/Addon.h"
+#include "addons/AddonManager.h"
+#include "addons/AddonRepoInfo.h"
+#include "addons/AddonSystemSettings.h"
+#include "addons/Repository.h"
+#include "addons/RepositoryUpdater.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -200,7 +201,7 @@ void CAddonRepos::BuildUpdateOrOutdatedList(const std::vector<std::shared_ptr<IA
 
 void CAddonRepos::BuildAddonsWithUpdateList(
     const std::vector<std::shared_ptr<IAddon>>& installed,
-    std::map<std::string, CAddonWithUpdate>& addonsWithUpdate) const
+    std::map<std::string, AddonWithUpdate>& addonsWithUpdate) const
 {
   std::shared_ptr<IAddon> update;
 
@@ -444,7 +445,7 @@ bool CAddonRepos::FindDependency(const std::string& dependsId,
   // we got the dependency, so now get a repository-pointer to return
 
   std::shared_ptr<IAddon> tmp;
-  if (!m_addonMgr.GetAddon(dependencyToInstall->Origin(), tmp, ADDON_REPOSITORY,
+  if (!m_addonMgr.GetAddon(dependencyToInstall->Origin(), tmp, AddonType::REPOSITORY,
                            OnlyEnabled::CHOICE_YES))
     return false;
 
@@ -453,7 +454,7 @@ bool CAddonRepos::FindDependency(const std::string& dependsId,
   CLog::Log(LOGDEBUG, "ADDONS: found dependency [{}] for install/update from repo [{}]",
             dependencyToInstall->ID(), repoForDep->ID());
 
-  if (dependencyToInstall->HasType(ADDON_REPOSITORY))
+  if (dependencyToInstall->HasType(AddonType::REPOSITORY))
   {
     CLog::Log(LOGDEBUG,
               "ADDONS: dependency with id [{}] has type ADDON_REPOSITORY and will not install!",

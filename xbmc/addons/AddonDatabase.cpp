@@ -12,6 +12,7 @@
 #include "addons/AddonBuilder.h"
 #include "addons/addoninfo/AddonInfo.h"
 #include "addons/addoninfo/AddonInfoBuilder.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dbwrappers/dataset.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/JSONVariantParser.h"
@@ -109,7 +110,7 @@ CVariant CAddonDatabaseSerializer::SerializeExtensions(const CAddonExtensions& a
 }
 
 void CAddonDatabaseSerializer::DeserializeMetadata(const std::string& document,
-                                                   CAddonInfoBuilder::CFromDB& builder)
+                                                   CAddonInfoBuilderFromDB& builder)
 {
   CVariant variant;
   if (!CJSONVariantParser::Parse(document, variant))
@@ -144,8 +145,8 @@ void CAddonDatabaseSerializer::DeserializeMetadata(const std::string& document,
     std::vector<DependencyInfo> deps;
     for (auto it = variant["dependencies"].begin_array(); it != variant["dependencies"].end_array(); ++it)
     {
-      deps.emplace_back((*it)["addonId"].asString(), AddonVersion((*it)["minversion"].asString()),
-                        AddonVersion((*it)["version"].asString()), (*it)["optional"].asBoolean());
+      deps.emplace_back((*it)["addonId"].asString(), CAddonVersion((*it)["minversion"].asString()),
+                        CAddonVersion((*it)["version"].asString()), (*it)["optional"].asBoolean());
     }
     builder.SetDependencies(std::move(deps));
   }
@@ -546,9 +547,9 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
 
     while (!m_pDS->eof())
     {
-      CAddonInfoBuilder::CFromDB builder;
+      CAddonInfoBuilderFromDB builder;
       builder.SetId(addonId);
-      builder.SetVersion(AddonVersion(m_pDS->fv("version").get_asString()));
+      builder.SetVersion(CAddonVersion(m_pDS->fv("version").get_asString()));
       builder.SetName(m_pDS->fv("name").get_asString());
       builder.SetSummary(m_pDS->fv("summary").get_asString());
       builder.SetDescription(m_pDS->fv("description").get_asString());
@@ -556,7 +557,7 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
       builder.SetChangelog(m_pDS->fv("news").get_asString());
       builder.SetOrigin(m_pDS->fv("repoID").get_asString());
 
-      auto addon = CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN);
+      auto addon = CAddonBuilder::Generate(builder.get(), AddonType::UNKNOWN);
       if (addon)
         addons.push_back(std::move(addon));
       else
@@ -574,7 +575,10 @@ bool CAddonDatabase::FindByAddonId(const std::string& addonId, ADDON::VECADDONS&
   return false;
 }
 
-bool CAddonDatabase::GetAddon(const std::string& addonID, const AddonVersion& version, const std::string& repoId, AddonPtr& addon)
+bool CAddonDatabase::GetAddon(const std::string& addonID,
+                              const CAddonVersion& version,
+                              const std::string& repoId,
+                              AddonPtr& addon)
 {
   try
   {
@@ -621,16 +625,16 @@ bool CAddonDatabase::GetAddon(int id, AddonPtr &addon)
     if (m_pDS2->eof())
       return false;
 
-    CAddonInfoBuilder::CFromDB builder;
+    CAddonInfoBuilderFromDB builder;
     builder.SetId(m_pDS2->fv("addonID").get_asString());
     builder.SetOrigin(m_pDS2->fv("origin").get_asString());
-    builder.SetVersion(AddonVersion(m_pDS2->fv("version").get_asString()));
+    builder.SetVersion(CAddonVersion(m_pDS2->fv("version").get_asString()));
     builder.SetName(m_pDS2->fv("name").get_asString());
     builder.SetSummary(m_pDS2->fv("summary").get_asString());
     builder.SetDescription(m_pDS2->fv("description").get_asString());
     CAddonDatabaseSerializer::DeserializeMetadata(m_pDS2->fv("metadata").get_asString(), builder);
 
-    addon = CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN);
+    addon = CAddonBuilder::Generate(builder.get(), AddonType::UNKNOWN);
     return addon != nullptr;
 
   }
@@ -710,9 +714,9 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
     while (!m_pDS->eof())
     {
       std::string addonId = m_pDS->fv("addonID").get_asString();
-      AddonVersion version(m_pDS->fv("version").get_asString());
+      CAddonVersion version(m_pDS->fv("version").get_asString());
 
-      CAddonInfoBuilder::CFromDB builder;
+      CAddonInfoBuilderFromDB builder;
       builder.SetId(addonId);
       builder.SetVersion(version);
       builder.SetName(m_pDS->fv("name").get_asString());
@@ -721,7 +725,7 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
       builder.SetOrigin(m_pDS->fv("repoID").get_asString());
       CAddonDatabaseSerializer::DeserializeMetadata(m_pDS->fv("metadata").get_asString(), builder);
 
-      auto addon = CAddonBuilder::Generate(builder.get(), ADDON_UNKNOWN);
+      auto addon = CAddonBuilder::Generate(builder.get(), AddonType::UNKNOWN);
       if (addon)
       {
         result.emplace_back(std::move(addon));
@@ -804,7 +808,7 @@ int CAddonDatabase::GetRepositoryId(const std::string& addonId)
 }
 
 bool CAddonDatabase::UpdateRepositoryContent(const std::string& repository,
-                                             const AddonVersion& version,
+                                             const CAddonVersion& version,
                                              const std::string& checksum,
                                              const std::vector<AddonInfoPtr>& addons)
 {
@@ -893,7 +897,7 @@ CAddonDatabase::RepoUpdateData CAddonDatabase::GetRepoUpdateData(const std::stri
       if (!m_pDS->eof())
       {
         result.lastCheckedAt.SetFromDBDateTime(m_pDS->fv("lastcheck").get_asString());
-        result.lastCheckedVersion = AddonVersion(m_pDS->fv("version").get_asString());
+        result.lastCheckedVersion = CAddonVersion(m_pDS->fv("version").get_asString());
         result.nextCheckAt.SetFromDBDateTime(m_pDS->fv("nextcheck").get_asString());
       }
     }
@@ -970,7 +974,8 @@ bool CAddonDatabase::Search(const std::string& search, VECADDONS& addons)
     {
       AddonPtr addon;
       GetAddon(m_pDS->fv("id").get_asInt(), addon);
-      if (addon->Type() >= ADDON_UNKNOWN+1 && addon->Type() < ADDON_SCRAPER_LIBRARY)
+      if (static_cast<int>(addon->Type()) >= static_cast<int>(AddonType::UNKNOWN) + 1 &&
+          static_cast<int>(addon->Type()) < static_cast<int>(AddonType::SCRAPER_LIBRARY))
         addons.push_back(addon);
       m_pDS->next();
     }

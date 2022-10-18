@@ -12,6 +12,7 @@
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonVersion.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-dev-kit/include/kodi/General.h"
 #include "application/ApplicationComponents.h"
@@ -325,7 +326,7 @@ bool Interface_General::is_addon_avilable(void* kodiBase,
   }
 
   AddonPtr addonInfo;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addonInfo, ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(id, addonInfo, OnlyEnabled::CHOICE_NO))
     return false;
 
   *version = strdup(addonInfo->Version().asString().c_str());

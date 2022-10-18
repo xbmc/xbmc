@@ -21,6 +21,7 @@
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/IAddon.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIHelpers.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -282,8 +283,7 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
 static const std::string LOCAL_CACHE =
     "\\0_local_cache"; // \0 to give it the lowest priority when sorting
 
-
-int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::string>>& versions)
+int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<CAddonVersion, std::string>>& versions)
 {
   auto dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
       WINDOW_DIALOG_SELECT);
@@ -305,7 +305,7 @@ int CGUIDialogAddonInfo::AskForVersion(std::vector<std::pair<AddonVersion, std::
       item.SetArt("icon", "DefaultAddonRepository.png");
       dialog->Add(item);
     }
-    else if (CServiceBroker::GetAddonMgr().GetAddon(versionInfo.second, repo, ADDON_REPOSITORY,
+    else if (CServiceBroker::GetAddonMgr().GetAddon(versionInfo.second, repo, AddonType::REPOSITORY,
                                                     OnlyEnabled::CHOICE_YES))
     {
       item.SetLabel2(repo->Name());
@@ -323,8 +323,8 @@ void CGUIDialogAddonInfo::OnUpdate()
   const auto& itemAddonInfo = m_item->GetAddonInfo();
   const std::string& addonId = itemAddonInfo->ID();
   const std::string& origin = m_item->GetProperty("Addon.ValidUpdateOrigin").asString();
-  const AddonVersion& version =
-      static_cast<AddonVersion>(m_item->GetProperty("Addon.ValidUpdateVersion").asString());
+  const CAddonVersion& version =
+      static_cast<CAddonVersion>(m_item->GetProperty("Addon.ValidUpdateVersion").asString());
 
   Close();
   if (!m_depsInstalledWithAvailable.empty() &&
@@ -346,7 +346,7 @@ void CGUIDialogAddonInfo::OnSelectVersion()
   std::vector<std::shared_ptr<IAddon>> compatibleVersions =
       CServiceBroker::GetAddonMgr().GetCompatibleVersions(processAddonId);
 
-  std::vector<std::pair<AddonVersion, std::string>> versions;
+  std::vector<std::pair<CAddonVersion, std::string>> versions;
   versions.reserve(compatibleVersions.size());
 
   for (const auto& compatibleVersion : compatibleVersions)
@@ -363,7 +363,7 @@ void CGUIDialogAddonInfo::OnSelectVersion()
     {
       std::string packageId;
       std::string versionString;
-      if (AddonVersion::SplitFileName(packageId, versionString, items[i]->GetLabel()))
+      if (CAddonVersion::SplitFileName(packageId, versionString, items[i]->GetLabel()))
       {
         if (packageId == processAddonId)
         {
@@ -376,7 +376,7 @@ void CGUIDialogAddonInfo::OnSelectVersion()
             // don't offer locally cached packages that result in an invalid version.
             // usually this happens when the package filename gets malformed on the fs
             // e.g. downloading "http://localhost/a+b.zip" ends up in "a b.zip"
-            const AddonVersion version(versionString);
+            const CAddonVersion version(versionString);
             if (StringUtils::EqualsNoCase(sha256, hash) && !version.empty())
               versions.emplace_back(version, LOCAL_CACHE);
           }
@@ -477,7 +477,7 @@ void CGUIDialogAddonInfo::OnInstall()
   }
 
   const std::string& addonId = itemAddonInfo->ID();
-  const AddonVersion& version = itemAddonInfo->Version();
+  const CAddonVersion& version = itemAddonInfo->Version();
 
   Close();
   if (!m_depsInstalledWithAvailable.empty() &&
@@ -508,14 +508,14 @@ void CGUIDialogAddonInfo::OnSelect()
 
 bool CGUIDialogAddonInfo::CanOpen() const
 {
-  return m_localAddon && m_localAddon->Type() == ADDON_PLUGIN;
+  return m_localAddon && m_localAddon->Type() == AddonType::PLUGIN;
 }
 
 bool CGUIDialogAddonInfo::CanRun() const
 {
   if (m_localAddon)
   {
-    if (m_localAddon->Type() == ADDON_SCRIPT)
+    if (m_localAddon->Type() == AddonType::SCRIPT)
       return true;
 
     if (GAME::CGameUtils::IsStandaloneGame(m_localAddon))
@@ -527,18 +527,19 @@ bool CGUIDialogAddonInfo::CanRun() const
 
 bool CGUIDialogAddonInfo::CanUse() const
 {
-  return m_localAddon &&
-         (m_localAddon->Type() == ADDON_SKIN || m_localAddon->Type() == ADDON_SCREENSAVER ||
-          m_localAddon->Type() == ADDON_VIZ || m_localAddon->Type() == ADDON_SCRIPT_WEATHER ||
-          m_localAddon->Type() == ADDON_RESOURCE_LANGUAGE ||
-          m_localAddon->Type() == ADDON_RESOURCE_UISOUNDS ||
-          m_localAddon->Type() == ADDON_AUDIOENCODER);
+  return m_localAddon && (m_localAddon->Type() == AddonType::SKIN ||
+                          m_localAddon->Type() == AddonType::SCREENSAVER ||
+                          m_localAddon->Type() == AddonType::VISUALIZATION ||
+                          m_localAddon->Type() == AddonType::SCRIPT_WEATHER ||
+                          m_localAddon->Type() == AddonType::RESOURCE_LANGUAGE ||
+                          m_localAddon->Type() == AddonType::RESOURCE_UISOUNDS ||
+                          m_localAddon->Type() == AddonType::AUDIOENCODER);
 }
 
 bool CGUIDialogAddonInfo::CanShowSupportList() const
 {
-  return m_localAddon &&
-         (m_localAddon->Type() == ADDON_AUDIODECODER || m_localAddon->Type() == ADDON_IMAGEDECODER);
+  return m_localAddon && (m_localAddon->Type() == AddonType::AUDIODECODER ||
+                          m_localAddon->Type() == AddonType::IMAGEDECODER);
 }
 
 bool CGUIDialogAddonInfo::PromptIfDependency(int heading, int line2)
@@ -679,7 +680,7 @@ bool CGUIDialogAddonInfo::ShowDependencyList(Reactivate reactivate, EntryPoint e
           }
 
           if (entryPoint == EntryPoint::SHOW_DEPENDENCIES ||
-              infoAddon->MainType() != ADDON_SCRIPT_MODULE ||
+              infoAddon->MainType() != AddonType::SCRIPT_MODULE ||
               !CAddonRepos::IsFromOfficialRepo(infoAddon, CheckAddonPath::CHOICE_NO))
           {
             item->SetLabel2(StringUtils::Format(
@@ -814,7 +815,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   m_item = std::make_shared<CFileItem>(*item);
   m_localAddon.reset();
   if (CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), m_localAddon,
-                                             ADDON_UNKNOWN, OnlyEnabled::CHOICE_NO))
+                                             OnlyEnabled::CHOICE_NO))
   {
     CLog::Log(LOGDEBUG, "{} - Addon with id {} not found locally.", __FUNCTION__,
               item->GetAddonInfo()->ID());
@@ -838,8 +839,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
     std::shared_ptr<IAddon> addonAvailable;
 
     // Find add-on in local installation
-    if (!CServiceBroker::GetAddonMgr().GetAddon(dep.id, addonInstalled, ADDON_UNKNOWN,
-                                                OnlyEnabled::CHOICE_YES))
+    if (!CServiceBroker::GetAddonMgr().GetAddon(dep.id, addonInstalled, OnlyEnabled::CHOICE_YES))
     {
       addonInstalled = nullptr;
     }
@@ -858,7 +858,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
       // - dependencies are unavailable (for informational purposes) OR
       // - the dependency is not a script/module                     OR
       // - the script/module is not available at an official repo
-      if (!addonAvailable || addonAvailable->MainType() != ADDON_SCRIPT_MODULE ||
+      if (!addonAvailable || addonAvailable->MainType() != AddonType::SCRIPT_MODULE ||
           !CAddonRepos::IsFromOfficialRepo(addonAvailable, CheckAddonPath::CHOICE_NO))
       {
         m_showDepDialogOnInstall = true;
@@ -902,7 +902,7 @@ void CGUIDialogAddonInfo::BuildDependencyList()
 
               if (depA && depB && depA->MainType() != depB->MainType())
               {
-                return depA->MainType() != ADDON_SCRIPT_MODULE;
+                return depA->MainType() != AddonType::SCRIPT_MODULE;
               }
 
               // 4. finally order by addon-id

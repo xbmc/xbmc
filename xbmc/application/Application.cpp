@@ -23,6 +23,7 @@
 #include "addons/Skin.h"
 #include "addons/VFSEntry.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/AppInboundProtocol.h"
 #include "application/AppParams.h"
 #include "application/ApplicationActionListeners.h"
@@ -2266,7 +2267,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
   if (path.GetProtocol() == "game")
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, ADDON_GAMEDLL,
+    if (CServiceBroker::GetAddonMgr().GetAddon(path.GetHostName(), addon, AddonType::GAMEDLL,
                                                OnlyEnabled::CHOICE_YES))
     {
       CFileItem addonItem(addon);
@@ -3012,7 +3013,7 @@ void CApplication::ConfigureAndEnableAddons()
     {
       if (addonMgr.IsAddonDisabledWithReason(addon->ID(), ADDON::AddonDisabledReason::INCOMPATIBLE))
       {
-        auto addonInfo = addonMgr.GetAddonInfo(addon->ID());
+        auto addonInfo = addonMgr.GetAddonInfo(addon->ID(), AddonType::UNKNOWN);
         if (addonInfo && addonMgr.IsCompatible(addonInfo))
         {
           CLog::Log(LOGDEBUG, "CApplication::{}: enabling the compatible version of [{}].",

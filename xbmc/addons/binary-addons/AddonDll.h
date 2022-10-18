@@ -52,7 +52,7 @@ class CAddonDll : public CAddon
 {
 public:
   CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase);
-  CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType);
+  CAddonDll(const AddonInfoPtr& addonInfo, AddonType addonType);
   ~CAddonDll() override;
 
   // Implementation of IAddon via CAddon
@@ -72,7 +72,7 @@ public:
    * @note This should only be called if the associated dll is loaded.
    * Otherwise use @ref CAddonInfo::DependencyVersion(...)
    */
-  AddonVersion GetTypeVersionDll(int type) const;
+  CAddonVersion GetTypeVersionDll(int type) const;
 
   /*!
    * @brief Get api min version of moduleType type
@@ -83,7 +83,7 @@ public:
    * @note This should only be called if the associated dll is loaded.
    * Otherwise use @ref CAddonInfo::DependencyMinVersion(...)
    */
-  AddonVersion GetTypeMinVersionDll(int type) const;
+  CAddonVersion GetTypeMinVersionDll(int type) const;
 
   /*!
    * @brief Function to create a addon instance class

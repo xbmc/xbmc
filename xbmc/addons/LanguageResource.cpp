@@ -9,8 +9,9 @@
 
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "Skin.h"
 #include "addons/AddonManager.h"
+#include "addons/Skin.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "settings/Settings.h"
@@ -28,13 +29,15 @@ namespace ADDON
 {
 
 CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
-  : CResource(addonInfo, ADDON_RESOURCE_LANGUAGE)
+  : CResource(addonInfo, AddonType::RESOURCE_LANGUAGE)
 {
   // parse <extension> attributes
-  m_locale = CLocale::FromString(Type(ADDON_RESOURCE_LANGUAGE)->GetValue("@locale").asString());
+  m_locale =
+      CLocale::FromString(Type(AddonType::RESOURCE_LANGUAGE)->GetValue("@locale").asString());
 
   // parse <charsets>
-  const CAddonExtensions* charsetsElement = Type(ADDON_RESOURCE_LANGUAGE)->GetElement("charsets");
+  const CAddonExtensions* charsetsElement =
+      Type(AddonType::RESOURCE_LANGUAGE)->GetElement("charsets");
   if (charsetsElement != nullptr)
   {
     m_charsetGui = charsetsElement->GetValue("gui").asString();
@@ -43,7 +46,7 @@ CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
   }
 
   // parse <dvd>
-  const CAddonExtensions* dvdElement = Type(ADDON_RESOURCE_LANGUAGE)->GetElement("dvd");
+  const CAddonExtensions* dvdElement = Type(AddonType::RESOURCE_LANGUAGE)->GetElement("dvd");
   if (dvdElement != nullptr)
   {
     m_dvdLanguageMenu = dvdElement->GetValue("menu").asString();
@@ -59,7 +62,8 @@ CLanguageResource::CLanguageResource(const AddonInfoPtr& addonInfo)
     m_dvdLanguageSubtitle = m_locale.GetLanguageCode();
 
   // parse <sorttokens>
-  const CAddonExtensions* sorttokensElement = Type(ADDON_RESOURCE_LANGUAGE)->GetElement("sorttokens");
+  const CAddonExtensions* sorttokensElement =
+      Type(AddonType::RESOURCE_LANGUAGE)->GetElement("sorttokens");
   if (sorttokensElement != nullptr)
   {
     /* First loop goes around rows e.g.
@@ -136,7 +140,7 @@ bool CLanguageResource::FindLegacyLanguage(const std::string &locale, std::strin
   std::string addonId = GetAddonId(locale);
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON_RESOURCE_LANGUAGE,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, AddonType::RESOURCE_LANGUAGE,
                                               OnlyEnabled::CHOICE_YES))
     return false;
 

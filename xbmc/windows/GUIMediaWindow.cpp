@@ -20,6 +20,7 @@
 #include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/Application.h"
 #include "messaging/ApplicationMessenger.h"
 #if defined(TARGET_ANDROID)
@@ -1053,7 +1054,7 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     // execute the script
     CURL url(pItem->GetPath());
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_SCRIPT,
+    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, AddonType::SCRIPT,
                                                OnlyEnabled::CHOICE_YES))
     {
       if (!CScriptInvocationManager::GetInstance().Stop(addon->LibPath()))
@@ -1157,10 +1158,9 @@ bool CGUIMediaWindow::OnClick(int iItem, const std::string &player)
     {
       CURL url(m_vecItems->GetPath());
       AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_UNKNOWN,
-                                                 OnlyEnabled::CHOICE_YES))
+      if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, OnlyEnabled::CHOICE_YES))
       {
-        PluginPtr plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
+        const auto plugin = std::dynamic_pointer_cast<CPluginSource>(addon);
         if (plugin && plugin->Provides(CPluginSource::AUDIO))
         {
           CFileItemList items;

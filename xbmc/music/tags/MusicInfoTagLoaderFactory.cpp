@@ -17,6 +17,7 @@
 #include "TagLoaderTagLib.h"
 #include "addons/AudioDecoder.h"
 #include "addons/ExtsMimeSupportList.h"
+#include "addons/addoninfo/AddonType.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -47,7 +48,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
       "." + strExtension, CExtsMimeSupportList::FilterSelect::hasTags);
   for (const auto& addonInfo : addonInfos)
   {
-    if (addonInfo.first == ADDON::ADDON_AUDIODECODER)
+    if (addonInfo.first == ADDON::AddonType::AUDIODECODER)
     {
       std::unique_ptr<CAudioDecoder> result = std::make_unique<CAudioDecoder>(addonInfo.second);
       if (!result->CreateDecoder() && result->SupportsFile(item.GetPath()))

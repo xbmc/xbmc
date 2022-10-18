@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
@@ -158,7 +159,7 @@ void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const C
     if (CServiceBroker::GetAddonMgr().GetAddon(
             CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
                 CSettings::SETTING_AUDIOCDS_ENCODER),
-            addon, ADDON::ADDON_AUDIOENCODER, ADDON::OnlyEnabled::CHOICE_YES))
+            addon, ADDON::AddonType::AUDIOENCODER, ADDON::OnlyEnabled::CHOICE_YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)

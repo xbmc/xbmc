@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/Visualization.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
@@ -362,7 +363,7 @@ bool CGUIVisualisationControl::InitVisualization()
   const std::string addon = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
       CSettings::SETTING_MUSICPLAYER_VISUALISATION);
   const ADDON::AddonInfoPtr addonBase =
-      CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::ADDON_VIZ);
+      CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::AddonType::VISUALIZATION);
   if (!addonBase)
     return false;
 

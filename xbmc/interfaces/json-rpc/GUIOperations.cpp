@@ -11,6 +11,8 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/IAddon.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
@@ -143,7 +145,8 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVa
   {
     std::string skinId = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     AddonPtr addon;
-    if (!CServiceBroker::GetAddonMgr().GetAddon(skinId, addon, ADDON_SKIN, OnlyEnabled::CHOICE_YES))
+    if (!CServiceBroker::GetAddonMgr().GetAddon(skinId, addon, AddonType::SKIN,
+                                                OnlyEnabled::CHOICE_YES))
       return InternalError;
 
     result["id"] = skinId;

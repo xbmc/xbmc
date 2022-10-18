@@ -8,6 +8,7 @@
 
 #include "Webinterface.h"
 
+#include "addons/addoninfo/AddonType.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -15,12 +16,12 @@
 using namespace ADDON;
 
 CWebinterface::CWebinterface(const AddonInfoPtr& addonInfo)
-  : CAddon(addonInfo, ADDON_WEB_INTERFACE),
+  : CAddon(addonInfo, AddonType::WEB_INTERFACE),
     m_type(WebinterfaceTypeStatic),
     m_entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT)
 {
   // determine the type of the webinterface
-  std::string webinterfaceType = Type(ADDON_WEB_INTERFACE)->GetValue("@type").asString();
+  std::string webinterfaceType = Type(AddonType::WEB_INTERFACE)->GetValue("@type").asString();
   if (StringUtils::EqualsNoCase(webinterfaceType, "wsgi"))
     m_type = WebinterfaceTypeWsgi;
   else if (!webinterfaceType.empty() && !StringUtils::EqualsNoCase(webinterfaceType, "static") && !StringUtils::EqualsNoCase(webinterfaceType, "html"))
@@ -29,7 +30,7 @@ CWebinterface::CWebinterface(const AddonInfoPtr& addonInfo)
               ID(), webinterfaceType);
 
   // determine the entry point of the webinterface
-  std::string entry = Type(ADDON_WEB_INTERFACE)->GetValue("@entry").asString();
+  std::string entry = Type(AddonType::WEB_INTERFACE)->GetValue("@entry").asString();
   if (!entry.empty())
     m_entryPoint = entry;
 }

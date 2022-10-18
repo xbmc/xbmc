@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "IAddon.h"
+#include "addons/IAddon.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon_base.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"

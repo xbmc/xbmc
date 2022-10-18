@@ -10,9 +10,11 @@
 
 #include "XBDateTime.h"
 #include "addons/AddonVersion.h"
-#include "addons/addoninfo/AddonInfoBuilder.h"
 #include "dbwrappers/Database.h"
 
+#include <map>
+#include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -23,6 +25,16 @@ namespace ADDON
 
 enum class AddonDisabledReason;
 enum class AddonUpdateRule;
+
+class CAddonExtensions;
+class CAddonInfoBuilderFromDB;
+
+class CAddonInfo;
+using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
+
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
+using VECADDONS = std::vector<AddonPtr>;
 
 /*!
  * @brief Addon content serializer/deserializer.
@@ -39,7 +51,7 @@ class CAddonDatabaseSerializer
 
 public:
   static std::string SerializeMetadata(const CAddonInfo& addon);
-  static void DeserializeMetadata(const std::string& document, CAddonInfoBuilder::CFromDB& builder);
+  static void DeserializeMetadata(const std::string& document, CAddonInfoBuilderFromDB& builder);
 
 private:
   static CVariant SerializeExtensions(const CAddonExtensions& addonType);
@@ -54,7 +66,10 @@ public:
   bool Open() override;
 
   /*! \brief Get an addon with a specific version and repository. */
-  bool GetAddon(const std::string& addonID, const ADDON::AddonVersion& version, const std::string& repoId, ADDON::AddonPtr& addon);
+  bool GetAddon(const std::string& addonID,
+                const ADDON::CAddonVersion& version,
+                const std::string& repoId,
+                ADDON::AddonPtr& addon);
 
   /*! Get the addon IDs that have been set to disabled */
   bool GetDisabled(std::map<std::string, ADDON::AddonDisabledReason>& addons);
@@ -63,7 +78,7 @@ public:
   bool FindByAddonId(const std::string& addonId, ADDON::VECADDONS& addons) const;
 
   bool UpdateRepositoryContent(const std::string& repositoryId,
-                               const ADDON::AddonVersion& version,
+                               const ADDON::CAddonVersion& version,
                                const std::string& checksum,
                                const std::vector<AddonInfoPtr>& addons);
 
@@ -84,14 +99,14 @@ public:
     /*! \brief last time the repo was checked, or invalid CDateTime if never checked */
     CDateTime lastCheckedAt;
     /*! \brief last version of the repo add-on that was checked, or empty if never checked */
-    ADDON::AddonVersion lastCheckedVersion{""};
+    ADDON::CAddonVersion lastCheckedVersion{""};
     /*! \brief next time the repo should be checked, or invalid CDateTime if unknown */
     CDateTime nextCheckAt;
 
     RepoUpdateData() = default;
 
     RepoUpdateData(const CDateTime& lastCheckedAt,
-                   const ADDON::AddonVersion& lastCheckedVersion,
+                   const ADDON::CAddonVersion& lastCheckedVersion,
                    const CDateTime& nextCheckAt)
       : lastCheckedAt{lastCheckedAt},
         lastCheckedVersion{lastCheckedVersion},

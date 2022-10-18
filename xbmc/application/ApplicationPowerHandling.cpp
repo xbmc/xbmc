@@ -10,7 +10,9 @@
 
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
@@ -420,7 +422,7 @@ void CApplicationPowerHandling::ActivateScreenSaver(bool forceType /*= false */)
     return;
   }
   else if (CServiceBroker::GetAddonMgr().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver,
-                                                  ADDON::ADDON_SCREENSAVER,
+                                                  ADDON::AddonType::SCREENSAVER,
                                                   ADDON::OnlyEnabled::CHOICE_YES))
   {
     std::string libPath = m_pythonScreenSaver->LibPath();
@@ -586,7 +588,7 @@ bool CApplicationPowerHandling::OnSettingAction(const CSetting& setting)
     if (CServiceBroker::GetAddonMgr().GetAddon(
             CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
                 CSettings::SETTING_SCREENSAVER_MODE),
-            addon, ADDON::ADDON_SCREENSAVER, ADDON::OnlyEnabled::CHOICE_YES))
+            addon, ADDON::AddonType::SCREENSAVER, ADDON::OnlyEnabled::CHOICE_YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else

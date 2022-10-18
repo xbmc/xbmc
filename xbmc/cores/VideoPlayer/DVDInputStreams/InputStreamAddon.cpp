@@ -9,6 +9,7 @@
 #include "InputStreamAddon.h"
 
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/VideoCodec.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemux.h"
@@ -53,7 +54,7 @@ CInputStreamAddon::CInputStreamAddon(const AddonInfoPtr& addonInfo,
     m_player(player)
 {
   std::string listitemprops =
-      addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@listitemprops").asString();
+      addonInfo->Type(AddonType::INPUTSTREAM)->GetValue("@listitemprops").asString();
   std::string name(addonInfo->ID());
 
   m_fileItemProps = StringUtils::Tokenize(listitemprops, "|");
@@ -91,7 +92,8 @@ bool CInputStreamAddon::Supports(const AddonInfoPtr& addonInfo, const CFileItem&
   std::string protocol = CURL(fileitem.GetDynPath()).GetProtocol();
   if (!protocol.empty())
   {
-    std::string protocols = addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@protocols").asString();
+    std::string protocols =
+        addonInfo->Type(AddonType::INPUTSTREAM)->GetValue("@protocols").asString();
     if (!protocols.empty())
     {
       std::vector<std::string> protocolsList = StringUtils::Tokenize(protocols, "|");
@@ -107,7 +109,8 @@ bool CInputStreamAddon::Supports(const AddonInfoPtr& addonInfo, const CFileItem&
   std::string filetype = fileitem.GetURL().GetFileType();
   if (!filetype.empty())
   {
-    std::string extensions = addonInfo->Type(ADDON_INPUTSTREAM)->GetValue("@extension").asString();
+    std::string extensions =
+        addonInfo->Type(AddonType::INPUTSTREAM)->GetValue("@extension").asString();
     if (!extensions.empty())
     {
       std::vector<std::string> extensionsList = StringUtils::Tokenize(extensions, "|");
@@ -520,7 +523,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
   demuxStream->language = stream->m_language;
 
   if (thisClass->GetAddonInfo()->DependencyVersion(ADDON_INSTANCE_VERSION_INPUTSTREAM_XML_ID) >=
-      AddonVersion("2.0.8"))
+      CAddonVersion("2.0.8"))
   {
     demuxStream->codec_fourcc = stream->m_codecFourCC;
   }

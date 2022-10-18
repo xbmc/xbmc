@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "addons/addoninfo/AddonType.h"
-
 #include <map>
 #include <memory>
 #include <string>
@@ -20,8 +18,15 @@ class TiXmlElement;
 
 namespace ADDON
 {
+enum class AddonInstanceSupport;
+enum class AddonLifecycleState;
+enum class AddonType;
 
-class AddonVersion;
+class CAddonMgr;
+class CAddonSettings;
+class CAddonVersion;
+
+struct DependencyInfo;
 
 using AddonInstanceId = uint32_t;
 
@@ -55,22 +60,11 @@ constexpr AddonInstanceId ADDON_INSTANCE_ID_UNUSED = ADDON_SINGLETON_INSTANCE_ID
  */
 constexpr AddonInstanceId ADDON_SETTINGS_ID = ADDON_SINGLETON_INSTANCE_ID;
 
+constexpr char const* ORIGIN_SYSTEM = "b6a50484-93a0-4afb-a01c-8d17e059feda";
+
 class IAddon;
 typedef std::shared_ptr<IAddon> AddonPtr;
-class CInstanceVisualization;
-typedef std::shared_ptr<CInstanceVisualization> VizPtr;
-class CSkinInfo;
-typedef std::shared_ptr<CSkinInfo> SkinPtr;
-class CPluginSource;
-typedef std::shared_ptr<CPluginSource> PluginPtr;
-
-enum class AddonInstanceSupport;
-enum class AddonLifecycleState;
-
-class CAddonMgr;
-class CAddonSettings;
-
-struct DependencyInfo;
+typedef std::vector<AddonPtr> VECADDONS;
 
 using InfoMap = std::map<std::string, std::string>;
 using ArtMap = std::map<std::string, std::string>;
@@ -79,16 +73,16 @@ class IAddon : public std::enable_shared_from_this<IAddon>
 {
 public:
   virtual ~IAddon() = default;
-  virtual TYPE MainType() const = 0;
-  virtual TYPE Type() const = 0;
-  virtual bool HasType(TYPE type) const = 0;
-  virtual bool HasMainType(TYPE type) const = 0;
+  virtual AddonType MainType() const = 0;
+  virtual AddonType Type() const = 0;
+  virtual bool HasType(AddonType type) const = 0;
+  virtual bool HasMainType(AddonType type) const = 0;
   virtual std::string ID() const = 0;
   virtual std::string Name() const = 0;
   virtual bool IsInUse() const = 0;
   virtual bool IsBinary() const = 0;
-  virtual AddonVersion Version() const = 0;
-  virtual AddonVersion MinVersion() const = 0;
+  virtual CAddonVersion Version() const = 0;
+  virtual CAddonVersion MinVersion() const = 0;
   virtual std::string Summary() const = 0;
   virtual std::string Description() const = 0;
   virtual std::string Path() const = 0;
@@ -150,8 +144,9 @@ public:
                                 AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual std::shared_ptr<CAddonSettings> GetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual const std::vector<DependencyInfo>& GetDependencies() const = 0;
-  virtual AddonVersion GetDependencyVersion(const std::string& dependencyID) const = 0;
-  virtual bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const = 0;
+  virtual CAddonVersion GetDependencyVersion(const std::string& dependencyID) const = 0;
+  virtual bool MeetsVersion(const CAddonVersion& versionMin,
+                            const CAddonVersion& version) const = 0;
   virtual bool ReloadSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual void ResetSettings(AddonInstanceId id = ADDON_SETTINGS_ID) = 0;
   virtual AddonPtr GetRunningInstance() const = 0;

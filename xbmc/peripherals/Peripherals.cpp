@@ -12,6 +12,7 @@
 #include "EventScanner.h"
 #include "addons/AddonButtonMap.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "bus/PeripheralBus.h"
@@ -967,13 +968,12 @@ void CPeripherals::OnSettingAction(const std::shared_ptr<const CSetting>& settin
   else if (settingId == CSettings::SETTING_INPUT_PERIPHERALLIBRARIES)
   {
     std::string strAddonId;
-    if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_PERIPHERALDLL, strAddonId, false, true,
-                                              true, false, true) == 1 &&
+    if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::AddonType::PERIPHERALDLL, strAddonId, false,
+                                              true, true, false, true) == 1 &&
         !strAddonId.empty())
     {
       ADDON::AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON::ADDON_UNKNOWN,
-                                                 ADDON::OnlyEnabled::CHOICE_YES))
+      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON::OnlyEnabled::CHOICE_YES))
         CGUIDialogAddonSettings::ShowForAddon(addon);
     }
   }

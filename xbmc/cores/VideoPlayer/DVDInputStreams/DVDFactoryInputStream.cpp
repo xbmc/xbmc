@@ -25,6 +25,7 @@
 #include "URL.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/IFileTypes.h"
@@ -51,7 +52,8 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   }
 
   std::vector<AddonInfoPtr> addonInfos;
-  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true /*enabled only*/, ADDON_INPUTSTREAM);
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, true /*enabled only*/,
+                                              AddonType::INPUTSTREAM);
   for (const auto& addonInfo : addonInfos)
   {
     if (CInputStreamAddon::Supports(addonInfo, fileitem))

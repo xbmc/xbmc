@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
@@ -206,7 +207,7 @@ void CGUIControllerWindow::OnEvent(const ADDON::AddonEvent& event)
       typeid(event) == typeid(AddonEvents::UnInstalled) ||
       typeid(event) == typeid(AddonEvents::ReInstalled))
   {
-    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON_GAME_CONTROLLER))
+    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, AddonType::GAME_CONTROLLER))
     {
       UpdateButtons();
     }
@@ -223,7 +224,7 @@ void CGUIControllerWindow::OnInitWindow(void)
     {
       ADDON::AddonPtr addon;
       if (CServiceBroker::GetAddonMgr().GetAddon(gameSettingsHandle->GameClientID(), addon,
-                                                 ADDON::ADDON_GAMEDLL,
+                                                 ADDON::AddonType::GAMEDLL,
                                                  ADDON::OnlyEnabled::CHOICE_YES))
         gameClient = std::static_pointer_cast<CGameClient>(addon);
     }
@@ -326,9 +327,9 @@ void CGUIControllerWindow::UpdateButtons(void)
   }
   else
   {
-    const bool bEnable =
-        CServiceBroker::GetAddonMgr().GetInstallableAddons(addons, ADDON::ADDON_GAME_CONTROLLER) &&
-        !addons.empty();
+    const bool bEnable = CServiceBroker::GetAddonMgr().GetInstallableAddons(
+                             addons, ADDON::AddonType::GAME_CONTROLLER) &&
+                         !addons.empty();
     CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_MORE, bEnable);
     CONTROL_ENABLE_ON_CONDITION(CONTROL_GET_ALL, bEnable);
   }
@@ -337,8 +338,8 @@ void CGUIControllerWindow::UpdateButtons(void)
 void CGUIControllerWindow::GetMoreControllers(void)
 {
   std::string strAddonId;
-  if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::ADDON_GAME_CONTROLLER, strAddonId, false, true,
-                                            false, true, false) < 0)
+  if (CGUIWindowAddonBrowser::SelectAddonID(ADDON::AddonType::GAME_CONTROLLER, strAddonId, false,
+                                            true, false, true, false) < 0)
   {
     // "Controller profiles"
     // "All available controller profiles are installed."

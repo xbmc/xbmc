@@ -12,6 +12,7 @@
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIComponent.h"
@@ -394,7 +395,7 @@ void CGUIWindowPVRBase::SetInvalid()
 bool CGUIWindowPVRBase::CanBeActivated() const
 {
   // check if there is at least one enabled PVR add-on
-  if (!CServiceBroker::GetAddonMgr().HasAddons(ADDON::ADDON_PVRDLL))
+  if (!CServiceBroker::GetAddonMgr().HasAddons(ADDON::AddonType::PVRDLL))
   {
     HELPERS::ShowOKDialogText(CVariant{19296}, CVariant{19272}); // No PVR add-on enabled, You need a tuner, backend software...
     return false;

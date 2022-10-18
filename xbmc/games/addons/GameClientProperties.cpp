@@ -15,11 +15,13 @@
 #include "addons/GameResource.h"
 #include "addons/IAddon.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "utils/StringUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
 
@@ -114,7 +116,7 @@ const char** CGameClientProperties::GetResourceDirectories(void)
     {
       const std::string& strAddonId = it->id;
       AddonPtr addon;
-      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, ADDON_RESOURCE_GAMES,
+      if (CServiceBroker::GetAddonMgr().GetAddon(strAddonId, addon, AddonType::RESOURCE_GAMES,
                                                  OnlyEnabled::CHOICE_YES))
       {
         std::shared_ptr<CGameResource> resource = std::static_pointer_cast<CGameResource>(addon);
@@ -205,8 +207,7 @@ bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS& addons)
   for (const auto& dependency : m_parent.GetDependencies())
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(dependency.id, addon, ADDON_UNKNOWN,
-                                               OnlyEnabled::CHOICE_NO))
+    if (CServiceBroker::GetAddonMgr().GetAddon(dependency.id, addon, OnlyEnabled::CHOICE_NO))
     {
       // If add-on is disabled, ask the user to enable it
       if (CServiceBroker::GetAddonMgr().IsAddonDisabled(dependency.id))
@@ -230,7 +231,7 @@ bool CGameClientProperties::GetProxyAddons(ADDON::VECADDONS& addons)
         }
       }
 
-      if (addon && addon->Type() == ADDON_GAMEDLL)
+      if (addon && addon->Type() == AddonType::GAMEDLL)
         ret.emplace_back(std::move(addon));
     }
     else

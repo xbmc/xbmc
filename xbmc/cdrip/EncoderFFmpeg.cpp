@@ -9,9 +9,11 @@
 #include "EncoderFFmpeg.h"
 
 #include "ServiceBroker.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -42,8 +44,8 @@ bool CEncoderFFmpeg::Init()
     ADDON::AddonPtr addon;
     const std::string addonId = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
         CSettings::SETTING_AUDIOCDS_ENCODER);
-    bool success = CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON::ADDON_UNKNOWN,
-                                                          ADDON::OnlyEnabled::CHOICE_YES);
+    bool success =
+        CServiceBroker::GetAddonMgr().GetAddon(addonId, addon, ADDON::OnlyEnabled::CHOICE_YES);
     int bitrate;
     if (success && addon)
     {

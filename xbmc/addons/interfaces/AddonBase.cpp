@@ -11,6 +11,7 @@
 #include "GUIUserMessages.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "addons/settings/AddonSettings.h"
@@ -21,6 +22,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/lib/Setting.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
@@ -317,8 +319,7 @@ bool Interface_Base::open_settings_dialog(const KODI_ADDON_BACKEND_HDL hdl)
 
   // show settings dialog
   AddonPtr addonInfo;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo, ADDON_UNKNOWN,
-                                              OnlyEnabled::CHOICE_YES))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(addon->ID(), addonInfo, OnlyEnabled::CHOICE_YES))
   {
     CLog::Log(LOGERROR, "Interface_Base::{} - Could not get addon information for '{}'", __func__,
               addon->ID());

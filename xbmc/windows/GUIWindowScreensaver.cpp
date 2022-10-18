@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/ScreenSaver.h"
+#include "addons/addoninfo/AddonType.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIComponent.h"
@@ -80,7 +81,7 @@ bool CGUIWindowScreensaver::OnMessage(CGUIMessage& message)
       const std::string addon = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
           CSettings::SETTING_SCREENSAVER_MODE);
       const ADDON::AddonInfoPtr addonBase =
-          CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::ADDON_SCREENSAVER);
+          CServiceBroker::GetAddonMgr().GetAddonInfo(addon, ADDON::AddonType::SCREENSAVER);
       if (!addonBase)
         return false;
       m_addon = std::make_unique<KODI::ADDONS::CScreenSaver>(addonBase);

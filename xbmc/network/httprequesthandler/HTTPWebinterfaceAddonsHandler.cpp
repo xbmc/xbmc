@@ -9,7 +9,9 @@
 #include "HTTPWebinterfaceAddonsHandler.h"
 
 #include "ServiceBroker.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "network/WebServer.h"
 
 #define ADDON_HEADER      "<html><head><title>Add-on List</title></head><body>\n<h1>Available web interfaces:</h1>\n<ul>\n"
@@ -23,7 +25,8 @@ MHD_RESULT CHTTPWebinterfaceAddonsHandler::HandleRequest()
 {
   m_responseData = ADDON_HEADER;
   ADDON::VECADDONS addons;
-  if (!CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::ADDON_WEB_INTERFACE) || addons.empty())
+  if (!CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON::AddonType::WEB_INTERFACE) ||
+      addons.empty())
   {
     m_response.type = HTTPError;
     m_response.status = MHD_HTTP_INTERNAL_SERVER_ERROR;
@@ -31,8 +34,8 @@ MHD_RESULT CHTTPWebinterfaceAddonsHandler::HandleRequest()
     return MHD_YES;
   }
 
-  for (ADDON::IVECADDONS addon = addons.begin(); addon != addons.end(); ++addon)
-    m_responseData += "<li><a href=/addons/" + (*addon)->ID() + "/>" + (*addon)->Name() + "</a></li>\n";
+  for (const auto& addon : addons)
+    m_responseData += "<li><a href=/addons/" + addon->ID() + "/>" + addon->Name() + "</a></li>\n";
 
   m_responseData += "</ul>\n</body></html>";
 

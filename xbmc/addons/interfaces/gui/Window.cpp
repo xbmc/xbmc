@@ -15,6 +15,7 @@
 #include "Window.h"
 #include "addons/Skin.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/binary-addons/AddonDll.h"
 #include "application/Application.h"
 #include "controls/Rendering.h"
@@ -137,7 +138,8 @@ KODI_GUI_WINDOW_HANDLE Interface_GUIWindow::create(KODI_HANDLE kodiBase,
   if (!CFileUtils::Exists(strSkinPath))
   {
     std::string str("none");
-    ADDON::AddonInfoPtr addonInfo = std::make_shared<ADDON::CAddonInfo>(str, ADDON::ADDON_SKIN);
+    ADDON::AddonInfoPtr addonInfo =
+        std::make_shared<ADDON::CAddonInfo>(str, ADDON::AddonType::SKIN);
 
     // Check for the matching folder for the skin in the fallback skins folder
     std::string fallbackPath = URIUtils::AddFileToFolder(addon->Path(), "resources", "skins");

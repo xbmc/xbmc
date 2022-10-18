@@ -12,6 +12,7 @@
 #include "ControllerIDs.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 
 using namespace KODI;
 using namespace GAME;
@@ -25,7 +26,7 @@ ControllerPtr CControllerManager::GetController(const std::string& controllerId)
   if (!cachedController && m_failedControllers.find(controllerId) == m_failedControllers.end())
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(controllerId, addon, ADDON_GAME_CONTROLLER,
+    if (CServiceBroker::GetAddonMgr().GetAddon(controllerId, addon, AddonType::GAME_CONTROLLER,
                                                OnlyEnabled::CHOICE_NO))
       cachedController = LoadController(addon);
   }
@@ -55,7 +56,7 @@ ControllerVector CControllerManager::GetControllers()
   ControllerVector controllers;
 
   VECADDONS addons;
-  if (CServiceBroker::GetAddonMgr().GetInstalledAddons(addons, ADDON_GAME_CONTROLLER))
+  if (CServiceBroker::GetAddonMgr().GetInstalledAddons(addons, AddonType::GAME_CONTROLLER))
   {
     for (auto& addon : addons)
     {

@@ -12,6 +12,7 @@
 #include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pvr/PVREventLogJob.h"
@@ -37,14 +38,14 @@ using namespace PVR;
 
 CPVRClients::CPVRClients()
 {
-  CServiceBroker::GetAddonMgr().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
+  CServiceBroker::GetAddonMgr().RegisterAddonMgrCallback(AddonType::PVRDLL, this);
   CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CPVRClients::OnAddonEvent);
 }
 
 CPVRClients::~CPVRClients()
 {
   CServiceBroker::GetAddonMgr().Events().Unsubscribe(this);
-  CServiceBroker::GetAddonMgr().UnregisterAddonMgrCallback(ADDON_PVRDLL);
+  CServiceBroker::GetAddonMgr().UnregisterAddonMgrCallback(AddonType::PVRDLL);
 
   for (const auto& client : m_clientMap)
   {
@@ -263,7 +264,7 @@ void CPVRClients::OnAddonEvent(const AddonEvent& event)
     // update addons
     const std::string addonId = event.addonId;
     const ADDON::AddonInstanceId instanceId = event.instanceId;
-    if (CServiceBroker::GetAddonMgr().HasType(addonId, ADDON_PVRDLL))
+    if (CServiceBroker::GetAddonMgr().HasType(addonId, AddonType::PVRDLL))
     {
       CServiceBroker::GetJobManager()->Submit([this, addonId, instanceId] {
         UpdateClients(addonId, instanceId);
@@ -347,7 +348,7 @@ std::vector<CVariant> CPVRClients::GetClientProviderInfos() const
 {
   std::vector<AddonInfoPtr> addonInfos;
   // Get enabled and disabled PVR client addon infos
-  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, false, ADDON_PVRDLL);
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addonInfos, false, AddonType::PVRDLL);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -391,7 +392,7 @@ PVR_ERROR CPVRClients::GetCallableClients(CPVRClientMap& clientsReady,
   clientsNotReady.clear();
 
   std::vector<AddonInfoPtr> addons;
-  CServiceBroker::GetAddonMgr().GetAddonInfos(addons, true, ADDON::ADDON_PVRDLL);
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addons, true, AddonType::PVRDLL);
 
   for (const auto& addon : addons)
   {
@@ -447,7 +448,8 @@ std::vector<CVariant> CPVRClients::GetEnabledClientInfos() const
 
   for (const auto& client : clientMap)
   {
-    const auto& addonInfo = CServiceBroker::GetAddonMgr().GetAddonInfo(client.second->ID());
+    const auto& addonInfo =
+        CServiceBroker::GetAddonMgr().GetAddonInfo(client.second->ID(), AddonType::PVRDLL);
 
     if (addonInfo)
     {
@@ -502,7 +504,7 @@ bool CPVRClients::GetAddonsWithStatus(
     std::vector<std::pair<AddonInfoPtr, bool>>& addonsWithStatus) const
 {
   std::vector<AddonInfoPtr> addons;
-  CServiceBroker::GetAddonMgr().GetAddonInfos(addons, false, ADDON_PVRDLL);
+  CServiceBroker::GetAddonMgr().GetAddonInfos(addons, false, AddonType::PVRDLL);
 
   if (addons.empty())
     return false;

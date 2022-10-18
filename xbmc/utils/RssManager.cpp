@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "interfaces/builtins/Builtins.h"
 #include "profiles/ProfileManager.h"
 #include "settings/Settings.h"
@@ -62,7 +63,7 @@ void CRssManager::OnSettingAction(const std::shared_ptr<const CSetting>& setting
   if (settingId == CSettings::SETTING_LOOKANDFEEL_RSSEDIT)
   {
     ADDON::AddonPtr addon;
-    if (!CServiceBroker::GetAddonMgr().GetAddon("script.rss.editor", addon, ADDON::ADDON_UNKNOWN,
+    if (!CServiceBroker::GetAddonMgr().GetAddon("script.rss.editor", addon,
                                                 ADDON::OnlyEnabled::CHOICE_YES))
     {
       if (!ADDON::CAddonInstaller::GetInstance().InstallModal(

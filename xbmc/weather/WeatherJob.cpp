@@ -11,7 +11,9 @@
 #include "GUIUserMessages.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
+#include "XBDateTime.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -55,7 +57,7 @@ bool CWeatherJob::DoWork()
   if (!CServiceBroker::GetAddonMgr().GetAddon(
           CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
               CSettings::SETTING_WEATHER_ADDON),
-          addon, ADDON_SCRIPT_WEATHER, OnlyEnabled::CHOICE_YES))
+          addon, AddonType::SCRIPT_WEATHER, OnlyEnabled::CHOICE_YES))
     return false;
 
   // initialize our sys.argv variables

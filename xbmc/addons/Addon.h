@@ -20,13 +20,11 @@ class CXBMCTinyXML;
 namespace ADDON
 {
 
-typedef std::vector<AddonPtr> VECADDONS;
-typedef std::vector<AddonPtr>::iterator IVECADDONS;
+enum class AddonType;
+class CAddonType;
 
 class CAddonInfo;
 using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
-
-const char* const ORIGIN_SYSTEM = "b6a50484-93a0-4afb-a01c-8d17e059feda";
 
 void OnPreInstall(const AddonPtr& addon);
 void OnPostInstall(const AddonPtr& addon, bool update, bool modal);
@@ -36,7 +34,7 @@ void OnPostUnInstall(const AddonPtr& addon);
 class CAddon : public IAddon
 {
 public:
-  explicit CAddon(const AddonInfoPtr& addonInfo, TYPE addonType);
+  explicit CAddon(const AddonInfoPtr& addonInfo, AddonType addonType);
   ~CAddon() override = default;
 
   /**
@@ -47,14 +45,14 @@ public:
    *
    * @return The used main type of addon
    */
-  TYPE MainType() const override;
+  AddonType MainType() const override;
 
   /**
    * @brief To get the on this CAddon class processed addon type
    *
    * @return For this class used addon type
    */
-  TYPE Type() const override { return m_type; }
+  AddonType Type() const override { return m_type; }
 
   /**
    * @brief To check complete addon (not only this) contains a type
@@ -65,7 +63,7 @@ public:
    * @param[in] type The to checked type identifier
    * @return true in case the wanted type is supported, false if not
    */
-  bool HasType(TYPE type) const override;
+  bool HasType(AddonType type) const override;
 
   /**
    * @brief To check complete addon (not only this) has a specific type
@@ -75,7 +73,7 @@ public:
    * @param[in] type Type identifier to be checked
    * @return true in case the wanted type is the main type, false if not
    */
-  bool HasMainType(TYPE type) const override;
+  bool HasMainType(AddonType type) const override;
 
   /**
    * @brief The get for given addon type information and extension data
@@ -95,14 +93,14 @@ public:
    * ~~~~~~~~~~~~~
    *
    */
-  const CAddonType* Type(TYPE type) const;
+  const CAddonType* Type(AddonType type) const;
 
   std::string ID() const override;
   std::string Name() const override;
   bool IsInUse() const override { return false; }
   bool IsBinary() const override;
-  AddonVersion Version() const override;
-  AddonVersion MinVersion() const override;
+  CAddonVersion Version() const override;
+  CAddonVersion MinVersion() const override;
   std::string Summary() const override;
   std::string Description() const override;
   std::string Path() const override;
@@ -368,13 +366,13 @@ public:
    \param dependencyID the addon ID of the dependency.
    \return the version this addon requires.
    */
-  AddonVersion GetDependencyVersion(const std::string& dependencyID) const override;
+  CAddonVersion GetDependencyVersion(const std::string& dependencyID) const override;
 
   /*! \brief return whether or not this addon satisfies the given version requirements
    \param version the version to meet.
    \return true if  min_version <= version <= current_version, false otherwise.
    */
-  bool MeetsVersion(const AddonVersion& versionMin, const AddonVersion& version) const override;
+  bool MeetsVersion(const CAddonVersion& versionMin, const CAddonVersion& version) const override;
 
   bool ReloadSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
@@ -486,7 +484,7 @@ private:
   std::shared_ptr<CAddonSettings> FindInstanceSettings(AddonInstanceId id) const;
 
   mutable std::unordered_map<AddonInstanceId, CSettingsData> m_settings;
-  const TYPE m_type;
+  const AddonType m_type;
 };
 
 }; // namespace ADDON
