@@ -783,6 +783,7 @@ const std::vector<int64_t> CEdl::GetCutMarkers() const
 const std::vector<int64_t> CEdl::GetSceneMarkers() const
 {
   std::vector<int64_t> sceneMarkers;
+  sceneMarkers.reserve(m_vecSceneMarkers.size());
   for (const int& scene : m_vecSceneMarkers)
   {
     sceneMarkers.emplace_back(GetTimeWithoutCuts(scene));
