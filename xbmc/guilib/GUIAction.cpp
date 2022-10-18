@@ -109,12 +109,12 @@ void CGUIAction::SetNavigation(int id)
   if (id == 0)
     return;
 
-  const std::string strId = std::to_string(id);
+  std::string strId = std::to_string(id);
   for (auto &i : m_actions)
   {
     if (StringUtils::IsInteger(i.GetAction()) && !i.HasCondition())
     {
-      i.SetAction(std::move(strId));
+      i.SetAction(strId);
       return;
     }
   }
