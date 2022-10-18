@@ -949,6 +949,8 @@ msgstr ""
 
 #. generic "play" (some sort of media) label used in different places
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
 #: xbmc/games/windows/GUIWindowGames.cpp
 #: xbmc/music/ContextMenus.h
@@ -21850,6 +21852,8 @@ msgctxt "#37014"
 msgid "Last used profile"
 msgstr ""
 
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/music/ContextMenus.h
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#37015"
