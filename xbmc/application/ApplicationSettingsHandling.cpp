@@ -39,12 +39,6 @@ bool IsPlaying(const std::string& condition,
 }
 } // namespace
 
-CApplicationSettingsHandling::CApplicationSettingsHandling(
-    CApplicationVolumeHandling& volumeHandling)
-  : m_volumeHandling(volumeHandling)
-{
-}
-
 void CApplicationSettingsHandling::RegisterSettings()
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -119,7 +113,8 @@ void CApplicationSettingsHandling::OnSettingChanged(const std::shared_ptr<const 
   if (appSkin->OnSettingChanged(*setting))
     return;
 
-  if (m_volumeHandling.OnSettingChanged(*setting))
+  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+  if (appVolume->OnSettingChanged(*setting))
     return;
 
   const auto appPower = components.GetComponent<CApplicationPowerHandling>();
@@ -206,10 +201,14 @@ bool CApplicationSettingsHandling::OnSettingUpdate(const std::shared_ptr<CSettin
 
 bool CApplicationSettingsHandling::Load(const TiXmlNode* settings)
 {
-  return m_volumeHandling.Load(settings);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+  return appVolume->Load(settings);
 }
 
 bool CApplicationSettingsHandling::Save(TiXmlNode* settings) const
 {
-  return m_volumeHandling.Save(settings);
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+  return appVolume->Save(settings);
 }

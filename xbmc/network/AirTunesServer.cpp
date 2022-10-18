@@ -15,10 +15,10 @@
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "application/Application.h"
 #include "application/ApplicationActionListeners.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "application/ApplicationVolumeHandling.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
 #include "filesystem/File.h"
 #include "filesystem/PipeFile.h"
@@ -496,7 +496,11 @@ void  CAirTunesServer::AudioOutputFunctions::audio_set_volume(void *cls, void *s
   CAirPlayServer::backupVolume();
 #endif
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
-    g_application.SetVolume(volPercent, false);//non-percent volume 0.0-1.0
+  {
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetVolume(volPercent, false); //non-percent volume 0.0-1.0
+  }
 }
 
 void  CAirTunesServer::AudioOutputFunctions::audio_process(void *cls, void *session, const void *buffer, int buflen)
