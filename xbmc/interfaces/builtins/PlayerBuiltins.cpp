@@ -22,6 +22,7 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "playlists/PlayList.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
@@ -420,23 +421,10 @@ static int PlayDVD(const std::vector<std::string>& params)
   return 0;
 }
 
-/*! \brief Start playback of media.
- *  \param params The parameters.
- *  \details params[0] = URL to media to play (optional).
- *           params[1,...] = "isdir" if media is a directory (optional).
- *           params[1,...] = "1" to start playback in fullscreen (optional).
- *           params[1,...] = "resume" to force resuming (optional).
- *           params[1,...] = "noresume" to force not resuming (optional).
- *           params[1,...] = "playoffset=<offset>" to start playback from a given position in a playlist (optional).
- *           params[1,...] = "playlist_type_hint=<id>" to set the playlist type if a playlist file (e.g. STRM) is played (optional),
- *                           for <id> value refer to PLAYLIST::TYPE_MUSIC / PLAYLIST::TYPE_VIDEO values, if not set will fallback to music playlist.
- */
-static int PlayMedia(const std::vector<std::string>& params)
+namespace
 {
-  CFileItem item(params[0], false);
-  if (URIUtils::HasSlashAtEnd(params[0]))
-    item.m_bIsFolder = true;
-
+int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
+{
   // restore to previous window if needed
   if( CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW ||
       CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_VIDEO ||
@@ -450,9 +438,13 @@ static int PlayMedia(const std::vector<std::string>& params)
   appPower->ResetScreenSaver();
   appPower->WakeUpScreenSaverAndDPMS();
 
+  CFileItem item(params[0], URIUtils::HasSlashAtEnd(params[0], true));
+
   // ask if we need to check guisettings to resume
   bool askToResume = true;
   int playOffset = 0;
+  bool hasPlayOffset = false;
+  bool playNext = true;
   for (unsigned int i = 1 ; i < params.size() ; i++)
   {
     if (StringUtils::EqualsNoCase(params[i], "isdir"))
@@ -470,15 +462,22 @@ static int PlayMedia(const std::vector<std::string>& params)
       // force the item to start at the beginning (m_lStartOffset is initialized to 0)
       askToResume = false;
     }
-    else if (StringUtils::StartsWithNoCase(params[i], "playoffset=")) {
+    else if (StringUtils::StartsWithNoCase(params[i], "playoffset="))
+    {
       playOffset = atoi(params[i].substr(11).c_str()) - 1;
       item.SetProperty("playlist_starting_track", playOffset);
+      hasPlayOffset = true;
     }
     else if (StringUtils::StartsWithNoCase(params[i], "playlist_type_hint="))
     {
       // Set the playlist type for the playlist file (e.g. STRM)
       int playlistTypeHint = std::stoi(params[i].substr(19));
       item.SetProperty("playlist_type_hint", playlistTypeHint);
+    }
+    else if (StringUtils::EqualsNoCase(params[i], "playnext"))
+    {
+      // If app player is currently playing, the queued media shall be played next.
+      playNext = true;
     }
   }
 
@@ -490,14 +489,13 @@ static int PlayMedia(const std::vector<std::string>& params)
     if ( CGUIWindowVideoBase::ShowResumeMenu(item) == false )
       return false;
   }
+
   if (item.m_bIsFolder || item.IsPlayList())
   {
     CFileItemList items;
-    std::string extensions = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions() + "|" + CServiceBroker::GetFileExtensionProvider().GetMusicExtensions();
-    if (item.IsPlayList())
-      CUtil::GetRecursiveListing(item.GetPath(), items, extensions, XFILE::DIR_FLAG_DEFAULTS);
-    else
-      XFILE::CDirectory::GetDirectory(item.GetPath(), items, extensions, XFILE::DIR_FLAG_DEFAULTS);
+    auto& provider = CServiceBroker::GetFileExtensionProvider();
+    const std::string exts = provider.GetVideoExtensions() + "|" + provider.GetMusicExtensions();
+    CUtil::GetRecursiveListing(item.GetPath(), items, exts, XFILE::DIR_FLAG_DEFAULTS);
 
     if (!items.IsEmpty()) // fall through on non expandable playlist
     {
@@ -534,20 +532,92 @@ static int PlayMedia(const std::vector<std::string>& params)
         }
       }
 
-      CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
-      CServiceBroker::GetPlaylistPlayer().Add(playlistId, items);
-      CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlistId);
-      CServiceBroker::GetPlaylistPlayer().Play(playOffset, "");
+      auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+
+      // Play vs. Queue (+Play)
+      if (forcePlay)
+      {
+        playlistPlayer.ClearPlaylist(playlistId);
+        playlistPlayer.Reset();
+        playlistPlayer.Add(playlistId, items);
+        playlistPlayer.SetCurrentPlaylist(playlistId);
+        playlistPlayer.Play(playOffset, "");
+      }
+      else
+      {
+        const int oldSize = playlistPlayer.GetPlaylist(playlistId).size();
+
+        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+        if (playNext)
+        {
+          if (appPlayer->IsPlaying())
+            playlistPlayer.Insert(playlistId, items, playlistPlayer.GetCurrentSong() + 1);
+          else
+            playlistPlayer.Add(playlistId, items);
+        }
+        else
+        {
+          playlistPlayer.Add(playlistId, items);
+        }
+
+        if (items.Size() && !appPlayer->IsPlaying())
+        {
+          playlistPlayer.SetCurrentPlaylist(playlistId);
+          playlistPlayer.Play(hasPlayOffset ? playOffset : oldSize, "");
+        }
+      }
+
       return 0;
     }
   }
-  if ((item.IsAudio() || item.IsVideo()) && !item.IsSmartPlayList())
-    CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
-  else
-    g_application.PlayMedia(item, "", PLAYLIST::TYPE_NONE);
+
+  if (forcePlay)
+  {
+    if ((item.IsAudio() || item.IsVideo()) && !item.IsSmartPlayList())
+      CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
+    else
+      g_application.PlayMedia(item, "", PLAYLIST::TYPE_NONE);
+  }
 
   return 0;
 }
+
+/*! \brief Start playback of media.
+ *  \param params The parameters.
+ *  \details params[0] = URL to media to play (optional).
+ *           params[1,...] = "isdir" if media is a directory (optional).
+ *           params[1,...] = "1" to start playback in fullscreen (optional).
+ *           params[1,...] = "resume" to force resuming (optional).
+ *           params[1,...] = "noresume" to force not resuming (optional).
+ *           params[1,...] = "playoffset=<offset>" to start playback from a given position in a playlist (optional).
+ *           params[1,...] = "playlist_type_hint=<id>" to set the playlist type if a playlist file (e.g. STRM) is played (optional),
+ *                           for <id> value refer to PLAYLIST::TYPE_MUSIC / PLAYLIST::TYPE_VIDEO values, if not set will fallback to music playlist.
+ */
+int PlayMedia(const std::vector<std::string>& params)
+{
+  return PlayOrQueueMedia(params, true);
+}
+
+/*! \brief Queue media in the video or music playlist, according to type of media items. If both audio and video items are contained, queue to video
+ *  playlist. Start playback at requested position if player is not playing.
+ *  \param params The parameters.
+ *  \details params[0] = URL of media to queue.
+ *           params[1,...] = "isdir" if media is a directory (optional).
+ *           params[1,...] = "1" to start playback in fullscreen (optional).
+ *           params[1,...] = "resume" to force resuming (optional).
+ *           params[1,...] = "noresume" to force not resuming (optional).
+ *           params[1,...] = "playoffset=<offset>" to start playback from a given position in a playlist (optional).
+ *           params[1,...] = "playlist_type_hint=<id>" to set the playlist type if a playlist file (e.g. STRM) is played (optional),
+ *                           for <id> value refer to PLAYLIST::TYPE_MUSIC / PLAYLIST::TYPE_VIDEO values, if not set will fallback to music playlist.
+ *           params[1,...] = "playnext" if player is currently playing, to play the media right after the currently playing item. If player is not
+ *                           playing, append media to current playlist (optional).
+ */
+int QueueMedia(const std::vector<std::string>& params)
+{
+  return PlayOrQueueMedia(params, false);
+}
+
+} // unnamed namespace
 
 /*! \brief Start playback with a given playback core.
  *  \param params The parameters.
@@ -699,6 +769,26 @@ static int SubtitleShiftDown(const std::vector<std::string>& params)
 ///     playing media. A negative value will seek backward and a positive value forward.
 ///     @param[in] seconds               Number of seconds to seek.
 ///   }
+///   \table_row2_l{
+///     <b>`QueueMedia(media[\,isdir][\,1][\,playnext]\,[playoffset=xx])`</b>
+///     \anchor Builtin_QueueMedia,
+///     Queues the given media. This can be a playlist\, music\, or video file\, directory\,
+///     plugin or an Url. The optional parameter "\,isdir" can be used for playing
+///     a directory. "\,1" will start the media without switching to fullscreen.
+///     If media is a playlist\, you can use playoffset=xx where xx is
+///     the position to start playback from.
+///     @param[in] media                 URL of media to queue.
+///     @param[in] isdir                 Set "isdir" if media is a directory (optional).
+///     @param[in] 1                     Set "1" to start playback without switching to fullscreen (optional).
+///     @param[in] resume                Set "resume" to force resuming (optional).
+///     @param[in] noresume              Set "noresume" to force not resuming (optional).
+///     @param[in] playeroffset          Set "playoffset=<offset>" to start playback from a given position in a playlist (optional).
+///     @param[in] playnext              Set "playnext" to play the media right after the currently playing item, if player is currently
+///     playing. If player is not playing, append media to current playlist (optional).
+///     <p><hr>
+///     @skinning_v20 **[New builtin]** \link Builtin_QueueMedia `QueueMedia(media[\,isdir][\,1][\,playnext]\,[playoffset=xx])`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 
@@ -712,6 +802,7 @@ CBuiltins::CommandMap CPlayerBuiltins::GetOperations() const
            {"playlist.playoffset", {"Start playing from a particular offset in the playlist", 1, PlayOffset}},
            {"playercontrol",       {"Control the music or video player", 1, PlayerControl}},
            {"playmedia",           {"Play the specified media file (or playlist)", 1, PlayMedia}},
+           {"queuemedia",          {"Queue the specified media in video or music playlist", 1, QueueMedia}},
            {"playwith",            {"Play the selected item with the specified core", 1, PlayWith}},
            {"seek",                {"Performs a seek in seconds on the current playing media file", 1, Seek}},
            {"subtitleshiftup",     {"Shift up the subtitle position", 0, SubtitleShiftUp}},

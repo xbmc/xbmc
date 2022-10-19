@@ -183,11 +183,15 @@
 	<variable name="AlbumOnClickActionLabel2Var">
 		<value condition="Skin.HasSetting(album_onclick_browse)">$LOCALIZE[37015]</value>
 		<value condition="Skin.HasSetting(album_onclick_play)">$LOCALIZE[208]</value>
+		<value condition="Skin.HasSetting(album_onclick_playnext)">$LOCALIZE[10008]</value>
+		<value condition="Skin.HasSetting(album_onclick_queue)">$LOCALIZE[13347]</value>
 		<value>$LOCALIZE[37015]</value>
 	</variable>
 	<variable name="AlbumOnClickActionVar">
 		<value condition="Skin.HasSetting(album_onclick_browse)">ActivateWindow(music,musicdb://albums/$INFO[ListItem.DBID]/,return)</value>
 		<value condition="Skin.HasSetting(album_onclick_play)">PlayMedia(musicdb://albums/$INFO[ListItem.DBID]/)</value>
+		<value condition="Skin.HasSetting(album_onclick_playnext)">QueueMedia(musicdb://albums/$INFO[ListItem.DBID]/,playnext)</value>
+		<value condition="Skin.HasSetting(album_onclick_queue)">QueueMedia(musicdb://albums/$INFO[ListItem.DBID]/)</value>
 		<value>ActivateWindow(music,musicdb://albums/$INFO[ListItem.DBID]/,return)</value>
 	</variable>
 	<variable name="AddonLifecycleType">
