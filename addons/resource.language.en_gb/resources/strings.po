@@ -4911,6 +4911,8 @@ msgctxt "#10007"
 msgid "System information"
 msgstr ""
 
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/music/ContextMenus.h
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
@@ -6922,6 +6924,8 @@ msgctxt "#13346"
 msgid "Movie information"
 msgstr ""
 
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: system/settings/settings.xml
 #: xbmc/music/ContextMenus.h
 #: xbmc/video/ContextMenus.cpp
