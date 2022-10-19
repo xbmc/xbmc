@@ -198,7 +198,7 @@
 				<control type="button" id="625">
 					<label>- $LOCALIZE[31174]</label>
 					<include>DefaultSettingButton</include>
-					<onclick>Skin.SelectBool(31174, 37015|album_onclick_browse, 208|album_onclick_play)</onclick>
+					<onclick>Skin.SelectBool(31174, 37015|album_onclick_browse, 208|album_onclick_play, 10008|album_onclick_playnext, 13347|album_onclick_queue)</onclick>
 					<label2>$VAR[AlbumOnClickActionLabel2Var]</label2>
 					<enable>!Skin.HasSetting(HomeMenuNoMusicButton)</enable>
 				</control>
