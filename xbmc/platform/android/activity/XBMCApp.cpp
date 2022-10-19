@@ -1020,8 +1020,13 @@ bool CXBMCApp::StartActivity(const std::string& package,
     GetPackageManager().getLaunchIntentForPackage(package) :
     CJNIIntent(intent);
 
-  if (!newIntent && CJNIBuild::SDK_INT >= 21)
-    newIntent = GetPackageManager().getLeanbackLaunchIntentForPackage(package);
+  if (intent.empty() && GetPackageManager().hasSystemFeature("android.software.leanback"))
+  {
+    CJNIIntent leanbackIntent = GetPackageManager().getLeanbackLaunchIntentForPackage(package);
+    if (leanbackIntent)
+      newIntent = leanbackIntent;
+  }
+
   if (!newIntent)
     return false;
 
