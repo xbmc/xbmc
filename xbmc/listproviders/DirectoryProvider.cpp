@@ -14,6 +14,7 @@
 #include "addons/AddonManager.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "favourites/FavouritesService.h"
+#include "favourites/FavouritesURL.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -28,6 +29,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/ExecString.h"
 #include "utils/JobManager.h"
+#include "utils/PlayerUtils.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -408,6 +410,21 @@ std::string CDirectoryProvider::GetTarget(const CFileItem& item) const
   return target;
 }
 
+namespace
+{
+bool ExecuteAction(const std::string& execute)
+{
+  if (!execute.empty())
+  {
+    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
+    message.SetStringParam(execute);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
+    return true;
+  }
+  return false;
+}
+} // namespace
+
 bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
 {
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
@@ -420,16 +437,40 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
   if (fileItem.HasProperty("node.target_url"))
     fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
 
-  // grab the execute string
-  const std::string execute = CExecString(fileItem, GetTarget(fileItem)).GetExecString();
-  if (!execute.empty())
+  // grab and execute the execute string
+  return ExecuteAction(CExecString(fileItem, GetTarget(fileItem)).GetExecString());
+}
+
+bool CDirectoryProvider::OnPlay(const CGUIListItemPtr& item)
+{
+  CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
+
+  if (fileItem.IsFavourite())
   {
-    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
-    message.SetStringParam(execute);
-    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
-    return true;
+    // Resolve the favourite
+    const CFavouritesURL url(fileItem.GetPath());
+    if (url.IsValid())
+    {
+      CFileItem targetItem(url.GetTarget(), url.IsDir());
+      fileItem = targetItem;
+    }
   }
-  return false;
+
+  if (CPlayerUtils::IsItemPlayable(fileItem))
+  {
+    CExecString exec(fileItem, {});
+    if (exec.GetFunction() == "playmedia")
+    {
+      return ExecuteAction(exec.GetExecString());
+    }
+    else
+    {
+      // build and execute a playmedia execute string
+      exec = CExecString("PlayMedia", {StringUtils::Paramify(fileItem.GetPath())});
+      return ExecuteAction(exec.GetExecString());
+    }
+  }
+  return true;
 }
 
 bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)

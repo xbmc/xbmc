@@ -418,6 +418,18 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
 
     return false;
 
+  case ACTION_PLAYER_PLAY:
+    if (m_listProvider)
+    {
+      const size_t selected = GetSelectedItem();
+      if (selected >= 0 && selected < m_items.size())
+      {
+        if (m_listProvider->OnPlay(m_items[selected]))
+          return true;
+      }
+    }
+    break;
+
   case ACTION_FIRST_PAGE:
     SelectItem(0);
     return true;
