@@ -442,6 +442,7 @@
   auto translation = [sender translationInView:sender.view];
   auto velocity = [sender velocityInView:sender.view];
   auto direction = [self getPanDirection:velocity];
+  const auto maxSensitivity = 1500;
 
   switch (sender.state)
   {
@@ -458,7 +459,7 @@
         case UIPanGestureRecognizerDirectionUp:
         {
           if (fabs(m_lastGesturePoint.y - translation.y) >
-              g_xbmcController.inputHandler.inputSettings.siriRemoteVerticalSensitivity)
+              maxSensitivity - g_xbmcController.inputHandler.inputSettings.siriRemoteVerticalSensitivity)
           {
             CLog::Log(LOGDEBUG, "Input: Siri remote pan up (id: 23)");
             keyId = 23;
@@ -468,7 +469,7 @@
         case UIPanGestureRecognizerDirectionDown:
         {
           if (fabs(m_lastGesturePoint.y - translation.y) >
-              g_xbmcController.inputHandler.inputSettings.siriRemoteVerticalSensitivity)
+              maxSensitivity - g_xbmcController.inputHandler.inputSettings.siriRemoteVerticalSensitivity)
           {
             CLog::Log(LOGDEBUG, "Input: Siri remote pan down (id: 24)");
             keyId = 24;
@@ -478,7 +479,7 @@
         case UIPanGestureRecognizerDirectionLeft:
         {
           if (fabs(m_lastGesturePoint.x - translation.x) >
-              g_xbmcController.inputHandler.inputSettings.siriRemoteHorizontalSensitivity)
+              maxSensitivity - g_xbmcController.inputHandler.inputSettings.siriRemoteHorizontalSensitivity)
           {
             CLog::Log(LOGDEBUG, "Input: Siri remote pan left (id: 25)");
             keyId = 25;
@@ -488,7 +489,7 @@
         case UIPanGestureRecognizerDirectionRight:
         {
           if (fabs(m_lastGesturePoint.x - translation.x) >
-              g_xbmcController.inputHandler.inputSettings.siriRemoteHorizontalSensitivity)
+              maxSensitivity - g_xbmcController.inputHandler.inputSettings.siriRemoteHorizontalSensitivity)
           {
             CLog::Log(LOGDEBUG, "Input: Siri remote pan right (id: 26)");
             keyId = 26;
