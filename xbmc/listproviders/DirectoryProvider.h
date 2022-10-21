@@ -64,6 +64,7 @@ public:
   void Fetch(std::vector<CGUIListItemPtr> &items) override;
   void Reset() override;
   bool OnClick(const CGUIListItemPtr &item) override;
+  bool OnPlay(const CGUIListItemPtr& item) override;
   bool OnInfo(const CGUIListItemPtr &item) override;
   bool OnContextMenu(const CGUIListItemPtr &item) override;
   bool IsUpdating() const override;

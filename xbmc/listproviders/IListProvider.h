@@ -75,6 +75,12 @@ public:
    */
   virtual bool OnClick(const CGUIListItemPtr &item)=0;
 
+  /*! \brief Play event on an item.
+   \param item the item to play.
+   \return true if the event was handled, false otherwise.
+   */
+  virtual bool OnPlay(const CGUIListItemPtr& item) { return false; }
+
   /*! \brief Open the info dialog for an item provided by this IListProvider.
    \param item the item that was clicked.
    \return true if the dialog was shown, false otherwise.

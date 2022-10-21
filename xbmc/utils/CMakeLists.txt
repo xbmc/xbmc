@@ -46,6 +46,7 @@ set(SOURCES ActorProtocol.cpp
             MovingSpeed.cpp
             Observer.cpp
             POUtils.cpp
+            PlayerUtils.cpp
             RecentlyAddedJob.cpp
             RegExp.cpp
             rfft.cpp
@@ -144,6 +145,7 @@ set(HEADERS ActorProtocol.h
             Observer.h
             params_check_macros.h
             POUtils.h
+            PlayerUtils.h
             ProgressJob.h
             RecentlyAddedJob.h
             RegExp.h
