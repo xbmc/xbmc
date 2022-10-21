@@ -202,6 +202,7 @@ std::vector<CDemuxStream*> CInputStreamPVRBase::GetStreams() const
 {
   std::vector<CDemuxStream*> streams;
 
+  streams.reserve(m_streamMap.size());
   for (const auto& st : m_streamMap)
     streams.emplace_back(st.second.get());
 

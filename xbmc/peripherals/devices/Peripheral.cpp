@@ -202,6 +202,7 @@ bool CPeripheral::IsMultiFunctional(void) const
 std::vector<std::shared_ptr<CSetting>> CPeripheral::GetSettings(void) const
 {
   std::vector<PeripheralDeviceSetting> tmpSettings;
+  tmpSettings.reserve(m_settings.size());
   for (const auto& it : m_settings)
     tmpSettings.push_back(it.second);
   sort(tmpSettings.begin(), tmpSettings.end(), SortBySettingsOrder());
