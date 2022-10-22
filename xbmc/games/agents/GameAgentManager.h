@@ -39,7 +39,16 @@ class CGameClient;
 class CGameClientJoystick;
 
 /*!
- * \brief Class to manage ports opened by game clients
+ * \brief Class to manage game-playing agents for a running game client
+ *
+ * Currently, port mapping is controller-based and does not take into account
+ * the human belonging to the controller. In the future, humans and possibly
+ * bots will be managed here.
+ *
+ * To map ports to controllers, a list of controllers is retrieved in
+ * ProcessJoysticks(). After expired controllers are removed, the port mapping
+ * occurs in the static function MapJoysticks(). The strategy is to simply
+ * sort controllers by heuristics and greedily assign to game ports.
  */
 class CGameAgentManager : public Observable,
                           public Observer,
@@ -78,6 +87,13 @@ private:
   void ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
   void ProcessKeyboard();
   void ProcessMouse();
+
+  // Internal helpers
+  void UpdateExpiredJoysticks(const PERIPHERALS::PeripheralVector& joysticks,
+                              PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
+  void UpdateConnectedJoysticks(const PERIPHERALS::PeripheralVector& joysticks,
+                                const PortMap& newPortMap,
+                                PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
 
   // Static functionals
   static PortMap MapJoysticks(const PERIPHERALS::PeripheralVector& peripheralJoysticks,
