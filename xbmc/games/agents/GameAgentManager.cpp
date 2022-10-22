@@ -144,92 +144,15 @@ void CGameAgentManager::ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputH
   PERIPHERALS::PeripheralVector joysticks;
   m_peripheralManager.GetPeripheralsWithFeature(joysticks, PERIPHERALS::FEATURE_JOYSTICK);
 
-  PortMap portMapCopy = m_portMap;
-
   // Update expired joysticks
-  for (const auto& [inputProvider, joystick] : portMapCopy)
-  {
-    // Structured binding cannot be captured, so make a copy
-    JOYSTICK::IInputProvider* const inputProviderCopy = inputProvider;
-
-    // Search peripheral vector for input provider
-    auto it2 = std::find_if(joysticks.begin(), joysticks.end(),
-                            [inputProviderCopy](const PERIPHERALS::PeripheralPtr& joystick) {
-                              // Upcast peripheral to input interface
-                              JOYSTICK::IInputProvider* peripheralInput = joystick.get();
-
-                              // Compare
-                              return inputProviderCopy == peripheralInput;
-                            });
-
-    // If peripheral wasn't found, then it was disconnected
-    const bool bDisconnected = (it2 == joysticks.end());
-
-    // Erase joystick from port map if its peripheral becomes disconnected
-    if (bDisconnected)
-    {
-      // Must use nullptr because peripheral has likely fallen out of scope,
-      // destroying the object
-      joystick->UnregisterInput(nullptr);
-
-      if (!inputHandlingLock)
-        inputHandlingLock = CServiceBroker::GetPeripherals().RegisterEventLock();
-      m_portMap.erase(inputProvider);
-
-      SetChanged(true);
-    }
-  }
+  UpdateExpiredJoysticks(joysticks, inputHandlingLock);
 
   // Perform the port mapping
   PortMap newPortMap = MapJoysticks(joysticks, m_gameClient->Input().GetJoystickMap(),
                                     m_gameClient->Input().GetPlayerLimit());
 
   // Update connected joysticks
-  for (auto& peripheralJoystick : joysticks)
-  {
-    // Upcast peripheral to input interface
-    JOYSTICK::IInputProvider* inputProvider = peripheralJoystick.get();
-
-    // Get connection states
-    auto itConnectedPort = newPortMap.find(inputProvider);
-    auto itDisconnectedPort = m_portMap.find(inputProvider);
-
-    // Get possibly connected joystick
-    std::shared_ptr<CGameClientJoystick> newJoystick;
-    if (itConnectedPort != newPortMap.end())
-      newJoystick = itConnectedPort->second;
-
-    // Get possibly disconnected joystick
-    std::shared_ptr<CGameClientJoystick> oldJoystick;
-    if (itDisconnectedPort != m_portMap.end())
-      oldJoystick = itDisconnectedPort->second;
-
-    // Check for a change in joysticks
-    if (oldJoystick != newJoystick)
-    {
-      // Unregister old input handler
-      if (oldJoystick != nullptr)
-      {
-        oldJoystick->UnregisterInput(inputProvider);
-
-        if (!inputHandlingLock)
-          inputHandlingLock = CServiceBroker::GetPeripherals().RegisterEventLock();
-        m_portMap.erase(itDisconnectedPort);
-
-        SetChanged(true);
-      }
-
-      // Register new handler
-      if (newJoystick != nullptr)
-      {
-        newJoystick->RegisterInput(inputProvider);
-
-        m_portMap[inputProvider] = std::move(newJoystick);
-
-        SetChanged(true);
-      }
-    }
-  }
+  UpdateConnectedJoysticks(joysticks, newPortMap, inputHandlingLock);
 }
 
 void CGameAgentManager::ProcessKeyboard()
@@ -274,6 +197,97 @@ void CGameAgentManager::ProcessMouse()
       m_gameClient->Input().OpenMouse(it->GetActiveController().GetController(), mouse);
 
       SetChanged(true);
+    }
+  }
+}
+
+void CGameAgentManager::UpdateExpiredJoysticks(const PERIPHERALS::PeripheralVector& joysticks,
+                                               PERIPHERALS::EventLockHandlePtr& inputHandlingLock)
+{
+  // Make a copy - expired joysticks are removed from m_portMap
+  PortMap portMapCopy = m_portMap;
+
+  for (const auto& [inputProvider, joystick] : portMapCopy)
+  {
+    // Structured binding cannot be captured, so make a copy
+    JOYSTICK::IInputProvider* const inputProviderCopy = inputProvider;
+
+    // Search peripheral vector for input provider
+    auto it2 = std::find_if(joysticks.begin(), joysticks.end(),
+                            [inputProviderCopy](const PERIPHERALS::PeripheralPtr& joystick) {
+                              // Upcast peripheral to input interface
+                              JOYSTICK::IInputProvider* peripheralInput = joystick.get();
+
+                              // Compare
+                              return inputProviderCopy == peripheralInput;
+                            });
+
+    // If peripheral wasn't found, then it was disconnected
+    const bool bDisconnected = (it2 == joysticks.end());
+
+    // Erase joystick from port map if its peripheral becomes disconnected
+    if (bDisconnected)
+    {
+      // Must use nullptr because peripheral has likely fallen out of scope,
+      // destroying the object
+      joystick->UnregisterInput(nullptr);
+
+      if (!inputHandlingLock)
+        inputHandlingLock = CServiceBroker::GetPeripherals().RegisterEventLock();
+      m_portMap.erase(inputProvider);
+
+      SetChanged(true);
+    }
+  }
+}
+
+void CGameAgentManager::UpdateConnectedJoysticks(const PERIPHERALS::PeripheralVector& joysticks,
+                                                 const PortMap& newPortMap,
+                                                 PERIPHERALS::EventLockHandlePtr& inputHandlingLock)
+{
+  for (auto& peripheralJoystick : joysticks)
+  {
+    // Upcast peripheral to input interface
+    JOYSTICK::IInputProvider* inputProvider = peripheralJoystick.get();
+
+    // Get connection states
+    auto itConnectedPort = newPortMap.find(inputProvider);
+    auto itDisconnectedPort = m_portMap.find(inputProvider);
+
+    // Get possibly connected joystick
+    std::shared_ptr<CGameClientJoystick> newJoystick;
+    if (itConnectedPort != newPortMap.end())
+      newJoystick = itConnectedPort->second;
+
+    // Get possibly disconnected joystick
+    std::shared_ptr<CGameClientJoystick> oldJoystick;
+    if (itDisconnectedPort != m_portMap.end())
+      oldJoystick = itDisconnectedPort->second;
+
+    // Check for a change in joysticks
+    if (oldJoystick != newJoystick)
+    {
+      // Unregister old input handler
+      if (oldJoystick != nullptr)
+      {
+        oldJoystick->UnregisterInput(inputProvider);
+
+        if (!inputHandlingLock)
+          inputHandlingLock = CServiceBroker::GetPeripherals().RegisterEventLock();
+        m_portMap.erase(itDisconnectedPort);
+
+        SetChanged(true);
+      }
+
+      // Register new handler
+      if (newJoystick != nullptr)
+      {
+        newJoystick->RegisterInput(inputProvider);
+
+        m_portMap[inputProvider] = std::move(newJoystick);
+
+        SetChanged(true);
+      }
     }
   }
 }
