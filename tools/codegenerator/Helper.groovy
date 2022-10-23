@@ -22,7 +22,6 @@ import groovy.xml.XmlUtil
 import org.apache.commons.lang.StringEscapeUtils
 
 import groovy.text.SimpleTemplateEngine
-import groovy.text.SimpleTemplateEngine
 import java.util.regex.Pattern
 
 /**

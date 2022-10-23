@@ -18,7 +18,6 @@
  *
  */
 
-import groovy.util.Node
 import groovy.text.SimpleTemplateEngine
 import groovy.xml.XmlUtil
 
