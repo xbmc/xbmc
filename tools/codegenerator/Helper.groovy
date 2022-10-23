@@ -18,6 +18,7 @@
  *
  */
 
+import groovy.xml.XmlParser
 import groovy.xml.XmlUtil
 import org.apache.commons.lang.StringEscapeUtils
 
