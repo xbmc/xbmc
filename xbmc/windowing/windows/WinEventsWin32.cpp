@@ -575,10 +575,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_DISPLAYCHANGE:
     {
       CLog::LogFC(LOGDEBUG, LOGWINDOWING, "display change event");
+      if (DX::Windowing()->IsTogglingHDR() || DX::Windowing()->IsAlteringWindow())
+        return (0);
+
       const auto& components = CServiceBroker::GetAppComponents();
       const auto appPower = components.GetComponent<CApplicationPowerHandling>();
-      if (appPower->GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() &&
-          GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)
+      if (appPower->GetRenderGUI() && GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)
       {
         DX::Windowing()->UpdateResolutions();
       }
@@ -852,6 +854,16 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           }
           break;
         }
+      }
+      break;
+    }
+    case WM_TIMER:
+    {
+      if (wParam == ID_TIMER_HDR)
+      {
+        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "finish toggling HDR event");
+        DX::Windowing()->SetTogglingHDR(false);
+        KillTimer(hWnd, wParam);
       }
       break;
     }
