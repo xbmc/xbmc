@@ -556,7 +556,10 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     }
     case WM_DISPLAYCHANGE:
       CLog::LogFC(LOGDEBUG, LOGWINDOWING, "display change event");
-      if (g_application.GetRenderGUI() && !DX::Windowing()->IsAlteringWindow() && GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)
+      if (DX::Windowing()->IsTogglingHDR() || DX::Windowing()->IsAlteringWindow())
+        return (0);
+
+      if (g_application.GetRenderGUI() && GET_X_LPARAM(lParam) > 0 && GET_Y_LPARAM(lParam) > 0)
       {
         DX::Windowing()->UpdateResolutions();
       }
@@ -797,6 +800,16 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case BONJOUR_BROWSER_EVENT:
       CZeroconfBrowser::GetInstance()->ProcessResults();
       break;
+    case WM_TIMER:
+    {
+      if (wParam == ID_TIMER_HDR)
+      {
+        CLog::LogFC(LOGDEBUG, LOGWINDOWING, "finish toggling HDR event");
+        DX::Windowing()->SetTogglingHDR(false);
+        KillTimer(hWnd, wParam);
+      }
+      break;
+    }
     default:;
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
