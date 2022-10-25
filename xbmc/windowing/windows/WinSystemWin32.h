@@ -19,6 +19,7 @@ static const DWORD WINDOWED_STYLE = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
 static const DWORD WINDOWED_EX_STYLE = NULL;
 static const DWORD FULLSCREEN_WINDOW_STYLE = WS_POPUP | WS_SYSMENU | WS_CLIPCHILDREN;
 static const DWORD FULLSCREEN_WINDOW_EX_STYLE = WS_EX_APPWINDOW;
+static const UINT ID_TIMER_HDR = 34U;
 
 /* Controls the way the window appears and behaves. */
 enum WINDOW_STATE
@@ -107,6 +108,8 @@ public:
   HWND GetHwnd() const { return m_hWnd; }
   bool IsAlteringWindow() const { return m_IsAlteringWindow; }
   void SetAlteringWindow(bool altering) { m_IsAlteringWindow = altering; }
+  bool IsTogglingHDR() const { return m_IsTogglingHDR; }
+  void SetTogglingHDR(bool toggling);
   virtual bool DPIChanged(WORD dpi, RECT windowRect) const;
   bool IsMinimized() const { return m_bMinimized; }
   void SetMinimized(bool minimized) { m_bMinimized = minimized; }
@@ -174,6 +177,7 @@ protected:
   HICON m_hIcon;
   bool m_ValidWindowedPosition;
   bool m_IsAlteringWindow;
+  bool m_IsTogglingHDR{false};
 
   CCriticalSection m_resourceSection;
   std::vector<IDispResource*> m_resources;
