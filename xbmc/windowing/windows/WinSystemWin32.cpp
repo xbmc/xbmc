@@ -1276,6 +1276,14 @@ bool CWinSystemWin32::MessagePump()
   return m_winEvents->MessagePump();
 }
 
+void CWinSystemWin32::SetTogglingHDR(bool toggling)
+{
+  if (toggling)
+    SetTimer(m_hWnd, ID_TIMER_HDR, 6000U, nullptr);
+
+  m_IsTogglingHDR = toggling;
+}
+
 RECT CWinSystemWin32::GetVirtualScreenRect()
 {
   RECT rect = {};
