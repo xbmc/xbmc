@@ -50,6 +50,7 @@ using namespace KODI::MESSAGING;
 
 #define CONTROL_BTN_REFRESH      6
 #define CONTROL_USERRATING       7
+#define CONTROL_BTN_PLAY 8
 #define CONTROL_BTN_GET_THUMB   10
 #define CONTROL_ARTISTINFO      12
 
@@ -407,6 +408,29 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
           }
         }
       }
+      else if (iControl == CONTROL_BTN_PLAY)
+      {
+        if (m_album.idAlbum >= 0)
+        {
+          // Play album
+          const std::string path = StringUtils::Format("musicdb://albums/{}", m_album.idAlbum);
+          OnPlayItem(std::make_shared<CFileItem>(path, m_album));
+          return true;
+        }
+        else
+        {
+          CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
+          CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+          const int iItem = msg.GetParam1();
+          if (iItem >= 0 && iItem < m_albumSongs->Size())
+          {
+            // Play selected song
+            OnPlayItem(m_albumSongs->Get(iItem));
+            return true;
+          }
+        }
+        return false;
+      }
     }
     break;
   }
@@ -552,11 +576,13 @@ void CGUIDialogMusicInfo::OnInitWindow()
   SET_CONTROL_LABEL(CONTROL_USERRATING, 38023);
   SET_CONTROL_LABEL(CONTROL_BTN_GET_THUMB, 13511);
   SET_CONTROL_LABEL(CONTROL_ARTISTINFO, 21891);
+  SET_CONTROL_LABEL(CONTROL_BTN_PLAY, 208);
 
   if (m_bArtistInfo)
   {
     SET_CONTROL_HIDDEN(CONTROL_ARTISTINFO);
     SET_CONTROL_HIDDEN(CONTROL_USERRATING);
+    SET_CONTROL_HIDDEN(CONTROL_BTN_PLAY);
   }
   CGUIDialog::OnInitWindow();
 }
@@ -1008,4 +1034,10 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
         }
       }
     }
+}
+
+void CGUIDialogMusicInfo::OnPlayItem(const std::shared_ptr<CFileItem>& item)
+{
+  Close(true);
+  MUSIC_UTILS::PlayItem(item);
 }

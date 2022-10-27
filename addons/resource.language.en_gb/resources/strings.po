@@ -949,8 +949,12 @@ msgstr ""
 
 #. generic "play" (some sort of media) label used in different places
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
 #: xbmc/games/windows/GUIWindowGames.cpp
+#: xbmc/music/ContextMenus.h
+#: xbmc/music/MusicUtils.cpp
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: system/settings/settings.xml
@@ -4907,7 +4911,9 @@ msgctxt "#10007"
 msgid "System information"
 msgstr ""
 
-#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/music/ContextMenus.h
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#10008"
@@ -6918,7 +6924,10 @@ msgctxt "#13346"
 msgid "Movie information"
 msgstr ""
 
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: system/settings/settings.xml
+#: xbmc/music/ContextMenus.h
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#13347"
@@ -21847,7 +21856,10 @@ msgctxt "#37014"
 msgid "Last used profile"
 msgstr ""
 
-#: xbmc/Windows/GUIMediaWindow.cpp
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/music/ContextMenus.h
+#: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#37015"
 msgid "Browse into"
 msgstr ""
@@ -22360,8 +22372,20 @@ msgctxt "#38081"
 msgid "Release status"
 msgstr ""
 
-#empty strings from id 38082 to 38099
-#strings 38082 to 38099 reserved for music library
+#. Displayed in a toast notification when music items are added to a playlist
+#: xbmc/music/MusicUtils.cpp
+msgctxt "#38082"
+msgid "Added to end of playlist"
+msgstr ""
+
+#. Displayed in a toast notification when music items are added to a playlist to play next
+#: xbmc/music/MusicUtils.cpp
+msgctxt "#38083"
+msgid "Added to playlist to play next"
+msgstr ""
+
+#empty strings from id 38084 to 38099
+#strings 38084 to 38099 reserved for music library
 
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml
