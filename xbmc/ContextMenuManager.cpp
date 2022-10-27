@@ -65,6 +65,10 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CPlayAndQueue>(),
       std::make_shared<CONTEXTMENU::CPlayNext>(),
       std::make_shared<CONTEXTMENU::CQueue>(),
+      std::make_shared<CONTEXTMENU::CMusicBrowse>(),
+      std::make_shared<CONTEXTMENU::CMusicPlay>(),
+      std::make_shared<CONTEXTMENU::CMusicPlayNext>(),
+      std::make_shared<CONTEXTMENU::CMusicQueue>(),
       std::make_shared<CONTEXTMENU::CAddonInfo>(),
       std::make_shared<CONTEXTMENU::CEnableAddon>(),
       std::make_shared<CONTEXTMENU::CDisableAddon>(),
@@ -88,10 +92,6 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CRenameFavourite>(),
       std::make_shared<CONTEXTMENU::CRemoveFavourite>(),
       std::make_shared<CONTEXTMENU::CAddRemoveFavourite>(),
-      std::make_shared<CONTEXTMENU::CMusicBrowse>(),
-      std::make_shared<CONTEXTMENU::CMusicPlay>(),
-      std::make_shared<CONTEXTMENU::CMusicPlayNext>(),
-      std::make_shared<CONTEXTMENU::CMusicQueue>(),
   };
 
   ReloadAddonItems();
