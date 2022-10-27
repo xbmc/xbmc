@@ -19,9 +19,9 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
-#include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "music/MusicUtils.h"
 #include "playlists/PlayList.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
@@ -31,13 +31,12 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
-#include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/PlayerController.h"
+#include "video/VideoUtils.h"
 #include "video/windows/GUIWindowVideoBase.h"
-#include "view/GUIViewState.h"
 
 #include <math.h>
 
@@ -423,6 +422,16 @@ static int PlayDVD(const std::vector<std::string>& params)
 
 namespace
 {
+void GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems)
+{
+  if (VIDEO_UTILS::IsItemPlayable(*item))
+    VIDEO_UTILS::GetItemsForPlayList(item, queuedItems);
+  else if (MUSIC_UTILS::IsItemPlayable(*item))
+    MUSIC_UTILS::GetItemsForPlayList(item, queuedItems);
+  else
+    CLog::LogF(LOGERROR, "Unable to get playlist items for {}", item->GetPath());
+}
+
 int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 {
   // restore to previous window if needed
@@ -497,28 +506,20 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
   if (item.m_bIsFolder || item.IsPlayList())
   {
     CFileItemList items;
-    auto& provider = CServiceBroker::GetFileExtensionProvider();
-    const std::string exts = provider.GetVideoExtensions() + "|" + provider.GetMusicExtensions();
-    CUtil::GetRecursiveListing(item.GetPath(), items, exts, XFILE::DIR_FLAG_DEFAULTS);
-
+    GetItemsForPlayList(std::make_shared<CFileItem>(item), items);
     if (!items.IsEmpty()) // fall through on non expandable playlist
     {
-      bool containsMusic = false, containsVideo = false;
-      for (int i = 0; i < items.Size(); i++)
+      bool containsMusic = false;
+      bool containsVideo = false;
+      for (const auto& i : items)
       {
-        bool isVideo = items[i]->IsVideo();
+        const bool isVideo = i->IsVideo();
         containsMusic |= !isVideo;
         containsVideo |= isVideo;
 
         if (containsMusic && containsVideo)
           break;
       }
-
-      std::unique_ptr<CGUIViewState> state(CGUIViewState::GetViewState(containsVideo ? WINDOW_VIDEO_NAV : WINDOW_MUSIC_NAV, items));
-      if (state)
-        items.Sort(state->GetSortMethod());
-      else
-        items.Sort(SortByLabel, SortOrderAscending);
 
       PLAYLIST::Id playlistId = containsVideo ? PLAYLIST::TYPE_VIDEO : PLAYLIST::TYPE_MUSIC;
       // Mixed playlist item played by music player, mixed content folder has music removed
@@ -567,7 +568,12 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
         if (items.Size() && !appPlayer->IsPlaying())
         {
           playlistPlayer.SetCurrentPlaylist(playlistId);
-          playlistPlayer.Play(hasPlayOffset ? playOffset : oldSize, "");
+
+          if (containsMusic)
+          {
+            // video does not auto play on queue like music
+            playlistPlayer.Play(hasPlayOffset ? playOffset : oldSize, "");
+          }
         }
       }
 

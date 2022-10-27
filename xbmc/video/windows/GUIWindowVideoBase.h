@@ -115,8 +115,6 @@ protected:
 
   bool ShowIMDB(CFileItemPtr item, const ADDON::ScraperPtr& content, bool fromDB);
 
-  void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
-
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
   int GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &info, VIDEO::SScanSettings& settings);
