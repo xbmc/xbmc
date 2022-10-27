@@ -428,6 +428,9 @@
 //! Used to queue an item to the next position in the playlist
 #define ACTION_QUEUE_ITEM_NEXT 251
 
+//! Turn subtitles on/off. Can be used in videoFullScreen.xml window id=2005
+#define ACTION_DOWNLOAD_SUBTITLES 252
+
 #define ACTION_HDR_TOGGLE 260 //!< Toggle display HDR on/off
 
 #define ACTION_CYCLE_TONEMAP_METHOD 261 //!< Switch to next tonemap method

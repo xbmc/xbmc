@@ -15,6 +15,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogSlider.h"
+#include "dialogs/GUIDialogSubtitles.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUISliderControl.h"
 #include "guilib/GUIWindowManager.h"
@@ -77,6 +78,17 @@ bool CPlayerController::OnAction(const CAction &action)
           sub = g_localizeStrings.Get(1223);
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
                                               g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);
+        return true;
+      }
+
+      case ACTION_DOWNLOAD_SUBTITLES:
+      {
+        CGUIDialogSubtitles *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSubtitles>(WINDOW_DIALOG_SUBTITLES);
+        if (dialog)
+        {
+          dialog->Open();
+        }
+
         return true;
       }
 
