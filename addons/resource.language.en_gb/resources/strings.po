@@ -4915,7 +4915,6 @@ msgstr ""
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/music/ContextMenus.h
 #: xbmc/video/ContextMenus.cpp
-#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#10008"
 msgid "Play next"
 msgstr ""
@@ -6929,7 +6928,6 @@ msgstr ""
 #: system/settings/settings.xml
 #: xbmc/music/ContextMenus.h
 #: xbmc/video/ContextMenus.cpp
-#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#13347"
 msgid "Queue item"
 msgstr ""
