@@ -117,8 +117,8 @@ CPVRRecordingsPath::CPVRRecordingsPath(bool bDeleted, bool bRadio,
 
   m_directoryPath = StringUtils::Format("{}{}{}{}{}", strDirectoryN, strTitleN, strSeasonEpisodeN,
                                         strYearN, strSubtitleN);
-  m_params = StringUtils::Format(", TV{}, {}, {}.pvr", strChannelNameN.c_str(),
-                                 recordingTime.GetAsSaveString().c_str(), strId.c_str());
+  m_params = StringUtils::Format(", TV{}, {}, {}.pvr", strChannelNameN,
+                                 recordingTime.GetAsSaveString(), strId);
   m_path = StringUtils::Format("pvr://recordings/{}/{}/{}{}", bRadio ? "radio" : "tv",
                                bDeleted ? "deleted" : "active", m_directoryPath, m_params);
 }
@@ -182,6 +182,7 @@ void CPVRRecordingsPath::AppendSegment(const std::string& strSegment)
     m_directoryPath.push_back('/');
 
   m_directoryPath += strVarSegment;
+  m_directoryPath.push_back('/');
 
   size_t paramStart = m_path.find(", TV");
   if (paramStart == std::string::npos)
@@ -191,6 +192,7 @@ void CPVRRecordingsPath::AppendSegment(const std::string& strSegment)
 
     // append the segment
     m_path += strVarSegment;
+    m_path.push_back('/');
   }
   else
   {
