@@ -70,10 +70,14 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
     if (item->HasPVRRecordingInfoTag() &&
         CServiceBroker::GetPVRManager().Recordings()->MarkWatched(item->GetPVRRecordingInfoTag(), m_mark))
     {
+      CDateTime newLastPlayed;
       if (m_mark)
-        db.IncrementPlayCount(*item);
+        newLastPlayed = db.IncrementPlayCount(*item);
       else
-        db.SetPlayCount(*item, 0);
+        newLastPlayed = db.SetPlayCount(*item, 0);
+
+      if (newLastPlayed.IsValid())
+        item->GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
 
       continue;
     }
@@ -97,10 +101,14 @@ bool CVideoLibraryMarkWatchedJob::Work(CVideoDatabase &db)
     // With both mark as watched and unwatched we want the resume bookmarks to be reset
     db.ClearBookMarksOfFile(path, CBookmark::RESUME);
 
+    CDateTime newLastPlayed;
     if (m_mark)
-      db.IncrementPlayCount(*item);
+      newLastPlayed = db.IncrementPlayCount(*item);
     else
-      db.SetPlayCount(*item, 0);
+      newLastPlayed = db.SetPlayCount(*item, 0);
+
+    if (newLastPlayed.IsValid() && item->HasVideoInfoTag())
+      item->GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
   }
 
   db.CommitTransaction();
