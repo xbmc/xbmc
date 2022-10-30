@@ -430,21 +430,24 @@ public:
   int AddNewEpisode(int idShow, CVideoInfoTag& details);
 
   // editing functions
-  /*! \brief Set the playcount of an item
+  /*! \brief Set the playcount of an item, update last played time
    Sets the playcount and last played date to a given value
    \param item CFileItem to set the playcount for
    \param count The playcount to set.
-   \param date The date the file was last viewed (does not denote the video was watched to completion).  If empty we current datetime (if count > 0) or never viewed (if count = 0).
+   \param date The date the file was last viewed (does not denote the video was watched to completion).
+   If empty we use current datetime (if count > 0) or never viewed (if count = 0).
+   \return on success, the new last played time set, invalid datetime otherwise.
    \sa GetPlayCount, IncrementPlayCount, UpdateLastPlayed
    */
-  void SetPlayCount(const CFileItem &item, int count, const CDateTime &date = CDateTime());
+  CDateTime SetPlayCount(const CFileItem& item, int count, const CDateTime& date = CDateTime());
 
   /*! \brief Increment the playcount of an item
    Increments the playcount and updates the last played date
    \param item CFileItem to increment the playcount for
+   \return on success, the new last played time set, invalid datetime otherwise.
    \sa GetPlayCount, SetPlayCount, GetPlayCounts
    */
-  void IncrementPlayCount(const CFileItem &item);
+  CDateTime IncrementPlayCount(const CFileItem& item);
 
   /*! \brief Get the playcount of an item
    \param item CFileItem to get the playcount for
@@ -470,9 +473,10 @@ public:
   /*! \brief Update the last played time of an item
    Updates the last played date
    \param item CFileItem to update the last played time for
+   \return on success, the last played time set, invalid datetime otherwise.
    \sa GetPlayCount, SetPlayCount, IncrementPlayCount, GetPlayCounts
    */
-  void UpdateLastPlayed(const CFileItem &item);
+  CDateTime UpdateLastPlayed(const CFileItem& item);
 
   /*! \brief Get the playcount and resume point of a list of items
    Note that if the resume point is already set on an item, it won't be overridden.

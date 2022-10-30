@@ -98,14 +98,18 @@ void CSaveFileState::DoWork(CFileItem& item,
                         redactPath);
 
               // consider this item as played
-              videodatabase.IncrementPlayCount(item);
-              item.GetVideoInfoTag()->IncrementPlayCount();
+              const CDateTime newLastPlayed = videodatabase.IncrementPlayCount(item);
 
               item.SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
               updateListing = true;
 
               if (item.HasVideoInfoTag())
               {
+                item.GetVideoInfoTag()->IncrementPlayCount();
+
+                if (newLastPlayed.IsValid())
+                  item.GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
+
                 CVariant data;
                 data["id"] = item.GetVideoInfoTag()->m_iDbId;
                 data["type"] = item.GetVideoInfoTag()->m_type;
@@ -115,7 +119,12 @@ void CSaveFileState::DoWork(CFileItem& item,
             }
           }
           else
-            videodatabase.UpdateLastPlayed(item);
+          {
+            const CDateTime newLastPlayed = videodatabase.UpdateLastPlayed(item);
+
+            if (item.HasVideoInfoTag() && newLastPlayed.IsValid())
+              item.GetVideoInfoTag()->m_lastPlayed = newLastPlayed;
+          }
 
           if (!item.HasVideoInfoTag() ||
               item.GetVideoInfoTag()->GetResumePoint().timeInSeconds != bookmark.timeInSeconds)
