@@ -120,12 +120,12 @@ Dataset::~Dataset()
   delete edit_object;
 }
 
-void Dataset::setSqlParams(const char* sqlFrmt, sqlType t, ...)
+void Dataset::setSqlParams(sqlType t, const char* sqlFrmt, ...)
 {
   va_list ap;
   char sqlCmd[DB_BUFF_MAX + 1];
 
-  va_start(ap, t);
+  va_start(ap, sqlFrmt);
 #ifndef TARGET_POSIX
   _vsnprintf(sqlCmd, DB_BUFF_MAX - 1, sqlFrmt, ap);
 #else
