@@ -11,7 +11,7 @@ diff --git a/configure b/configure
 index da457705d1..e3a8f45ff4 100755
 --- a/configure
 +++ b/configure
-@@ -5440,6 +5440,8 @@ case $target_os in
+@@ -5566,6 +5566,8 @@ case $target_os in
          enabled shared && ! enabled small && test_cmd $windres --version && enable gnu_windres
          enabled x86_32 && check_ldflags -Wl,--large-address-aware
          shlibdir_default="$bindir_default"
@@ -20,7 +20,7 @@ index da457705d1..e3a8f45ff4 100755
          SLIBPREF=""
          SLIBSUF=".dll"
          SLIBNAME_WITH_VERSION='$(SLIBPREF)$(FULLNAME)-$(LIBVERSION)$(SLIBSUF)'
-@@ -5489,6 +5491,8 @@ case $target_os in
+@@ -5615,6 +5617,8 @@ case $target_os in
          fi
          enabled x86_32 && check_ldflags -LARGEADDRESSAWARE
          shlibdir_default="$bindir_default"
