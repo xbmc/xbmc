@@ -422,6 +422,8 @@ void CPVRRecording::UpdateMetadata(CVideoDatabase& db, const CPVRClient& client)
       CVideoInfoTag::SetResumePoint(resumePoint);
   }
 
+  m_lastPlayed = db.GetLastPlayed(m_strFileNameAndPath);
+
   m_bGotMetaData = true;
 }
 

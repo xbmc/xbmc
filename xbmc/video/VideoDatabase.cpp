@@ -6025,6 +6025,42 @@ int CVideoDatabase::GetPlayCount(const CFileItem &item)
   return GetPlayCount(GetFileId(item));
 }
 
+CDateTime CVideoDatabase::GetLastPlayed(int iFileId)
+{
+  if (iFileId < 0)
+    return {}; // not in db, so not watched
+
+  try
+  {
+    // error!
+    if (nullptr == m_pDB)
+      return {};
+    if (nullptr == m_pDS)
+      return {};
+
+    std::string strSQL = PrepareSQL("select lastPlayed from files WHERE idFile=%i", iFileId);
+    CDateTime lastPlayed;
+    if (m_pDS->query(strSQL))
+    {
+      // there should only ever be one row returned
+      if (m_pDS->num_rows() == 1)
+        lastPlayed.SetFromDBDateTime(m_pDS->fv(0).get_asString());
+      m_pDS->close();
+    }
+    return lastPlayed;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
+  }
+  return {};
+}
+
+CDateTime CVideoDatabase::GetLastPlayed(const std::string& strFilenameAndPath)
+{
+  return GetLastPlayed(GetFileId(strFilenameAndPath));
+}
+
 void CVideoDatabase::UpdateFanart(const CFileItem& item, VideoDbContentType type)
 {
   if (nullptr == m_pDB)

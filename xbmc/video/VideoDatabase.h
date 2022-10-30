@@ -460,6 +460,13 @@ public:
    */
   int GetPlayCount(const std::string& strFilenameAndPath);
 
+  /*! \brief Get the last played time of a filename and path
+   \param strFilenameAndPath filename and path to get the last played time for
+   \return the last played time of the item, or an invalid CDateTime on error
+   \sa UpdateLastPlayed
+   */
+  CDateTime GetLastPlayed(const std::string& strFilenameAndPath);
+
   /*! \brief Update the last played time of an item
    Updates the last played date
    \param item CFileItem to update the last played time for
@@ -1096,6 +1103,13 @@ private:
    \sa SetPlayCount, IncrementPlayCount, GetPlayCounts
    */
   int GetPlayCount(int iFileId);
+
+  /*! \brief Get the last played time of a filename and path
+   \param iFileId file id to get the playcount for
+   \return the last played time of the item, or an invalid CDateTime on error
+   \sa UpdateLastPlayed
+   */
+  CDateTime GetLastPlayed(int iFileId);
 
   int GetMinSchemaVersion() const override { return 75; }
   int GetSchemaVersion() const override;
