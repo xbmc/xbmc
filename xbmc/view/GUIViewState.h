@@ -41,6 +41,8 @@ public:
   int GetSortOrderLabel() const;
   void GetSortMethodLabelMasks(LABEL_MASKS& masks) const;
 
+  std::vector<SortDescription> GetSortDescriptions() const;
+
   SortOrder SetNextSortOrder();
   SortOrder GetSortOrder() const;
 

@@ -462,52 +462,6 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem, bool first)
   m_viewControl.SetSelectedItem(iItem + 1);
 }
 
-void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int64_t& startoffset, int& partNumber)
-{
-  // do not resume Live TV and 'deleted' items (e.g. trashed pvr recordings)
-  if (item->IsLiveTV() || item->IsDeleted())
-    return;
-
-  startoffset = 0;
-  partNumber = 0;
-
-  if (item->IsResumable())
-  {
-    if (item->GetCurrentResumeTimeAndPartNumber(startoffset, partNumber))
-    {
-      startoffset = CUtil::ConvertSecsToMilliSecs(startoffset);
-    }
-    else
-    {
-      CBookmark bookmark;
-      std::string strPath = item->GetPath();
-      if ((item->IsVideoDb() || item->IsDVD()) && item->HasVideoInfoTag())
-        strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
-
-      CVideoDatabase db;
-      if (!db.Open())
-      {
-        CLog::Log(LOGERROR, "{} - Cannot open VideoDatabase", __FUNCTION__);
-        return;
-      }
-      if (db.GetResumeBookMark(strPath, bookmark))
-      {
-        startoffset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
-        partNumber = bookmark.partNumber;
-      }
-      db.Close();
-    }
-  }
-}
-
-bool CGUIWindowVideoBase::HasResumeItemOffset(const CFileItem *item)
-{
-  int64_t startoffset = 0;
-  int partNumber = 0;
-  GetResumeItemOffset(item, startoffset, partNumber);
-  return startoffset > 0;
-}
-
 bool CGUIWindowVideoBase::OnClick(int iItem, const std::string &player)
 {
   return CGUIMediaWindow::OnClick(iItem, player);
@@ -586,6 +540,11 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string&
     return true;
   case SELECT_ACTION_RESUME:
     item->SetStartOffset(STARTOFFSET_RESUME);
+    if (item->m_bIsFolder)
+    {
+      PlayItem(iItem, player);
+      return true;
+    }
     break;
   case SELECT_ACTION_PLAYPART:
     if (!OnPlayStackPart(iItem))
@@ -595,6 +554,12 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string&
     OnQueueItem(iItem);
     return true;
   case SELECT_ACTION_PLAY:
+    if (item->m_bIsFolder)
+    {
+      PlayItem(iItem, player);
+      return true;
+    }
+    break;
   default:
     break;
   }
@@ -672,29 +637,35 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem, const std::string &player)
 
 std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
 {
-  std::string resumeString;
-  int64_t startOffset = 0;
-  int startPart = 0;
-  GetResumeItemOffset(&item, startOffset, startPart);
-  if (startOffset > 0)
+  const VIDEO_UTILS::ResumeInformation resumeInfo = VIDEO_UTILS::GetItemResumeInformation(item);
+  if (resumeInfo.isResumable)
   {
-    resumeString =
-        StringUtils::Format(g_localizeStrings.Get(12022),
-                            StringUtils::SecondsToTimeString(
-                                static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(startOffset)),
-                                TIME_FORMAT_HH_MM_SS));
-    if (startPart > 0)
+    if (item.m_bIsFolder)
     {
-      std::string partString = StringUtils::Format(g_localizeStrings.Get(23051), startPart);
-      resumeString += " (" + partString + ")";
+      return g_localizeStrings.Get(13362); // Continue watching
+    }
+    else if (resumeInfo.startOffset > 0)
+    {
+      std::string resumeString = StringUtils::Format(
+          g_localizeStrings.Get(12022),
+          StringUtils::SecondsToTimeString(
+              static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(resumeInfo.startOffset)),
+              TIME_FORMAT_HH_MM_SS));
+      if (resumeInfo.partNumber > 0)
+      {
+        const std::string partString =
+            StringUtils::Format(g_localizeStrings.Get(23051), resumeInfo.partNumber);
+        resumeString += " (" + partString + ")";
+      }
+      return resumeString;
     }
   }
-  return resumeString;
+  return {};
 }
 
 bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
 {
-  if (!item.m_bIsFolder && !item.IsPVR())
+  if (!item.IsLiveTV())
   {
     std::string resumeString = GetResumeString(item);
     if (!resumeString.empty())
@@ -717,13 +688,6 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem, const std::string &player)
   if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->m_bIsFolder)
-  {
-    // resuming directories isn't supported yet. play.
-    PlayItem(iItem, player);
-    return true;
-  }
-
   std::string resumeString = GetResumeString(*item);
 
   if (!resumeString.empty())
@@ -735,6 +699,13 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem, const std::string &player)
     if (value < 0)
       return true;
     return OnFileAction(iItem, value, player);
+  }
+
+  if (item->m_bIsFolder)
+  {
+    // resuming directories isn't fully supported yet. play all of its content.
+    PlayItem(iItem, player);
+    return true;
   }
 
   return OnFileAction(iItem, SELECT_ACTION_PLAY, player);
@@ -870,9 +841,10 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
         int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
         if (value == SELECT_ACTION_RESUME)
         {
-          int64_t startOffset{0};
-          GetResumeItemOffset(parts[selectedFile].get(), startOffset, stack->m_lStartPartNumber);
-          stack->SetStartOffset(startOffset);
+          const VIDEO_UTILS::ResumeInformation resumeInfo =
+              VIDEO_UTILS::GetItemResumeInformation(*parts[selectedFile]);
+          stack->SetStartOffset(resumeInfo.startOffset);
+          stack->m_lStartPartNumber = resumeInfo.partNumber;
         }
         else if (value != SELECT_ACTION_PLAY)
           return false; // if not selected PLAY, then we changed our mind so return
