@@ -40,6 +40,8 @@ if((NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED) AND NOT TARGET fmt)
       if(FMT_VERSION VERSION_LESS ${Fmt_FIND_VERSION})
         set(FORCE_BUILD ON)
       endif()
+    else()
+      set(FORCE_BUILD ON)
     endif()
 
     if(${FORCE_BUILD} OR FMT_VERSION VERSION_LESS ${${MODULE}_VER})
