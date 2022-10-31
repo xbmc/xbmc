@@ -2,8 +2,10 @@ include ../../Makefile.include PYTHON3-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.include \
                                  apple.patch \
                                  crosscompile.patch \
-                                 android.patch \
                                  darwin_embedded.patch \
+                                 10-android-modules.patch \
+                                 10-linux-modules.patch \
+                                 10-osx-modules.patch \
                                  modules.setup
 
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
@@ -15,8 +17,17 @@ ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
                     ac_cv_func_setpriority=no ac_cv_func_sendfile=no ac_cv_header_sched_h=no \
                     ac_cv_func_posix_spawn=no ac_cv_func_posix_spawnp=no \
                     ac_cv_func_forkpty=no ac_cv_lib_util_forkpty=no \
-                    ac_cv_func_getgroups=no
+                    ac_cv_func_getgroups=no \
+                    ac_cv_func_system=no
   endif
+  # required for _localemodule
+  EXTRA_CONFIGURE+= ac_cv_lib_intl_textdomain=yes
+  # uses SDK ffi
+  EXTRA_CONFIGURE+= --with-system-ffi
+endif
+
+ifeq ($(OS),android)
+  LDFLAGS+= -liconv
 endif
 
 ifeq ($(OS), linux)
@@ -30,8 +41,13 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
                       --disable-framework \
                       --without-pymalloc \
                       --enable-ipv6 \
+                      --with-build-python=$(NATIVEPREFIX)/bin/python3 \
+                      --with-system-expat=yes \
+                      --disable-test-modules \
+                      MODULE_BUILDTYPE=static \
                       $(EXTRA_CONFIGURE)
 
+export LDFLAGS
 
 LIBDYLIB=$(PLATFORM)/libpython$(PYTHON_VERSION).a
 
@@ -41,35 +57,31 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../crosscompile.patch
-	cd $(PLATFORM); patch -p1 -i ../android.patch
 	cd $(PLATFORM); patch -p1 -i ../apple.patch
 ifeq ($(OS),darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../darwin_embedded.patch
 endif
 	cp modules.setup $(PLATFORM)/Modules/Setup
 
-#Add -liconv as needed, and add the _scproxy module for darwin
-#  disable locale altogether for Android
 ifeq ($(OS),android)
-	cd $(PLATFORM); sed -ie 's|_locale -DPy_BUILD_CORE_BUILTIN _localemodule.c -lintl \$$(LINK_ICONV)|#_locale -DPy_BUILD_CORE_BUILTIN _localemodule.c -lintl \$$(LINK_ICONV)|' Modules/Setup
+	cd $(PLATFORM); patch -p1 -i ../10-android-modules.patch
 endif
 ifeq ($(OS),linux)
-	# _posixshmem module requires librt for linux for SHM_OPEN/SHM_UNLINK
-	cd $(PLATFORM); sed -ie 's|# -lrt # _posixshmem|-lrt # _posixshmem|' Modules/Setup
+	cd $(PLATFORM); patch -p1 -i ../10-linux-modules.patch
 endif
 ifeq ($(OS),osx)
-	cd $(PLATFORM); sed -ie 's|\$$(OSX_SCPROXY)|_scproxy \$$(srcdir)/Modules/_scproxy.c -framework SystemConfiguration -framework CoreFoundation|' Modules/Setup
+	cd $(PLATFORM); patch -p1 -i ../10-osx-modules.patch
 endif
 
 	cd $(PLATFORM); $(AUTORECONF)
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python3 CROSS_COMPILE_TARGET=yes libpython$(PYTHON_VERSION).a
+	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) CROSS_COMPILE_TARGET=yes libpython$(PYTHON_VERSION).a
 	touch $@
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) PYTHON_FOR_BUILD=$(NATIVEPREFIX)/bin/python3 CROSS_COMPILE_TARGET=yes install
+	$(MAKE) -C $(PLATFORM) $(HOSTPLATFORM) CROSS_COMPILE_TARGET=yes install
 	find $(PREFIX)/lib/python$(PYTHON_VERSION) -type f -name "*.pyc" -delete
 	touch $(LIBDYLIB)
 	touch $@

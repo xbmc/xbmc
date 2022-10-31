@@ -1,22 +1,22 @@
 --- a/setup.py
 +++ b/setup.py
-@@ -414,6 +414,19 @@
+@@ -414,6 +414,8 @@
          if _cmd_exists(os.environ.get("PKG_CONFIG", "pkg-config")):
              pkg_config = _pkg_config
  
-+        compiler = os.environ.get('CC')
-+        args = {}
-+        # unfortunately, distutils doesn't let us provide separate C and C++
-+        # compilers
-+        if compiler is not None:
-+            ccshared = os.environ.get('CCSHARED') or ''
-+            cflags = os.environ.get('CFLAGS') or ''
-+            args['compiler_so'] = compiler + ' ' + ccshared + ' ' + cflags
-+        self.compiler.set_executables(**args)
-+
-+        self.compiler.include_dirs.clear()
-+        self.compiler.include_dirs.append(os.environ.get('PYTHONXINCLUDE'))
++        self.compiler.include_dirs = [os.environ["PYTHONXINCLUDE"]]
 +
          #
          # add configured kits
          for root_name, lib_name in dict(
+@@ -471,8 +473,8 @@
+                 for d in os.environ[k].split(os.path.pathsep):
+                     _add_directory(library_dirs, d)
+ 
+-        _add_directory(library_dirs, os.path.join(sys.prefix, "lib"))
+-        _add_directory(include_dirs, os.path.join(sys.prefix, "include"))
++        #_add_directory(library_dirs, os.path.join(sys.prefix, "lib"))
++        #_add_directory(include_dirs, os.path.join(sys.prefix, "include"))
+ 
+         #
+         # add platform directories
