@@ -52,7 +52,7 @@ bool CVideoInfo::Execute(const std::shared_ptr<CFileItem>& item) const
   return true;
 }
 
-bool CRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
+bool CVideoRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
 {
   CFileItem item(itemIn.GetItemToPlay());
   if (item.IsDeleted()) // e.g. trashed pvr recording
@@ -61,13 +61,13 @@ bool CRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
   return CGUIWindowVideoBase::HasResumeItemOffset(&item);
 }
 
-bool CRemoveResumePoint::Execute(const std::shared_ptr<CFileItem>& item) const
+bool CVideoRemoveResumePoint::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   CVideoLibraryQueue::GetInstance().ResetResumePoint(item);
   return true;
 }
 
-bool CMarkWatched::IsVisible(const CFileItem& item) const
+bool CVideoMarkWatched::IsVisible(const CFileItem& item) const
 {
   if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
@@ -87,13 +87,13 @@ bool CMarkWatched::IsVisible(const CFileItem& item) const
   return item.GetVideoInfoTag()->GetPlayCount() == 0;
 }
 
-bool CMarkWatched::Execute(const std::shared_ptr<CFileItem>& item) const
+bool CVideoMarkWatched::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   CVideoLibraryQueue::GetInstance().MarkAsWatched(item, true);
   return true;
 }
 
-bool CMarkUnWatched::IsVisible(const CFileItem& item) const
+bool CVideoMarkUnWatched::IsVisible(const CFileItem& item) const
 {
   if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
@@ -113,18 +113,18 @@ bool CMarkUnWatched::IsVisible(const CFileItem& item) const
   return item.GetVideoInfoTag()->GetPlayCount() > 0;
 }
 
-bool CMarkUnWatched::Execute(const std::shared_ptr<CFileItem>& item) const
+bool CVideoMarkUnWatched::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   CVideoLibraryQueue::GetInstance().MarkAsWatched(item, false);
   return true;
 }
 
-std::string CResume::GetLabel(const CFileItem& item) const
+std::string CVideoResume::GetLabel(const CFileItem& item) const
 {
   return CGUIWindowVideoBase::GetResumeString(item.GetItemToPlay());
 }
 
-bool CResume::IsVisible(const CFileItem& itemIn) const
+bool CVideoResume::IsVisible(const CFileItem& itemIn) const
 {
   CFileItem item(itemIn.GetItemToPlay());
   if (item.IsDeleted()) // e.g. trashed pvr recording
@@ -294,7 +294,7 @@ void SetPathAndPlay(CFileItem& item)
 
 } // unnamed namespace
 
-bool CResume::Execute(const std::shared_ptr<CFileItem>& itemIn) const
+bool CVideoResume::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
 #ifdef HAS_DVD_DRIVE
@@ -307,7 +307,7 @@ bool CResume::Execute(const std::shared_ptr<CFileItem>& itemIn) const
   return true;
 };
 
-std::string CPlay::GetLabel(const CFileItem& itemIn) const
+std::string CVideoPlay::GetLabel(const CFileItem& itemIn) const
 {
   CFileItem item(itemIn.GetItemToPlay());
   if (item.IsLiveTV())
@@ -317,7 +317,7 @@ std::string CPlay::GetLabel(const CFileItem& itemIn) const
   return g_localizeStrings.Get(208); // Play
 }
 
-bool CPlay::IsVisible(const CFileItem& itemIn) const
+bool CVideoPlay::IsVisible(const CFileItem& itemIn) const
 {
   CFileItem item(itemIn.GetItemToPlay());
   if (item.IsDeleted()) // e.g. trashed pvr recording
@@ -338,7 +338,7 @@ bool CPlay::IsVisible(const CFileItem& itemIn) const
   return item.IsVideo() || item.IsLiveTV() || item.IsDVD() || item.IsCDDA();
 }
 
-bool CPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
+bool CVideoPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
 #ifdef HAS_DVD_DRIVE
@@ -349,7 +349,7 @@ bool CPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
   return true;
 };
 
-bool CQueue::IsVisible(const CFileItem& item) const
+bool CVideoQueue::IsVisible(const CFileItem& item) const
 {
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
     return false; // Already queued
@@ -360,7 +360,7 @@ bool CQueue::IsVisible(const CFileItem& item) const
   return false; //! @todo implement
 }
 
-bool CQueue::Execute(const std::shared_ptr<CFileItem>& item) const
+bool CVideoQueue::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
     return false; // Already queued
@@ -375,7 +375,7 @@ bool CQueue::Execute(const std::shared_ptr<CFileItem>& item) const
   return true; //! @todo implement
 };
 
-bool CPlayNext::IsVisible(const CFileItem& item) const
+bool CVideoPlayNext::IsVisible(const CFileItem& item) const
 {
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
     return false; // Already queued
@@ -386,7 +386,7 @@ bool CPlayNext::IsVisible(const CFileItem& item) const
   return false; //! @todo implement
 }
 
-bool CPlayNext::Execute(const std::shared_ptr<CFileItem>& item) const
+bool CVideoPlayNext::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
     return false; // Already queued
@@ -401,7 +401,7 @@ bool CPlayNext::Execute(const std::shared_ptr<CFileItem>& item) const
   return true; //! @todo implement
 };
 
-bool CPlayAndQueue::IsVisible(const CFileItem& item) const
+bool CVideoPlayAndQueue::IsVisible(const CFileItem& item) const
 {
   const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
   if (windowId == WINDOW_VIDEO_PLAYLIST)
@@ -414,7 +414,7 @@ bool CPlayAndQueue::IsVisible(const CFileItem& item) const
   return false; //! @todo implement
 }
 
-bool CPlayAndQueue::Execute(const std::shared_ptr<CFileItem>& item) const
+bool CVideoPlayAndQueue::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
   if (windowId == WINDOW_VIDEO_PLAYLIST)
