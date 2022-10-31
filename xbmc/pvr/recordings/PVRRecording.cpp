@@ -112,7 +112,8 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
 
   SetGenre(recording.iGenreType, recording.iGenreSubType, recording.strGenreDescription);
   CVideoInfoTag::SetPlayCount(recording.iPlayCount);
-  CVideoInfoTag::SetResumePoint(recording.iLastPlayedPosition, recording.iDuration, "");
+  if (recording.iLastPlayedPosition > 0 && recording.iDuration > recording.iLastPlayedPosition)
+    CVideoInfoTag::SetResumePoint(recording.iLastPlayedPosition, recording.iDuration, "");
   SetDuration(recording.iDuration);
 
   //  As the channel a recording was done on (probably long time ago) might no longer be
@@ -377,6 +378,7 @@ CBookmark CPVRRecording::GetResumePoint() const
     {
       CBookmark resumePoint(CVideoInfoTag::GetResumePoint());
       resumePoint.timeInSeconds = pos;
+      resumePoint.totalTimeInSeconds = (pos == 0) ? 0 : m_duration;
       CPVRRecording* pThis = const_cast<CPVRRecording*>(this);
       pThis->CVideoInfoTag::SetResumePoint(resumePoint);
     }
