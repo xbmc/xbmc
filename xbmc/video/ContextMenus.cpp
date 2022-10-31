@@ -122,6 +122,39 @@ bool CVideoMarkUnWatched::Execute(const std::shared_ptr<CFileItem>& item) const
   return true;
 }
 
+bool CVideoBrowse::IsVisible(const CFileItem& item) const
+{
+  if (item.IsFileFolder(EFILEFOLDER_MASK_ONBROWSE))
+    return false; // handled by CMediaWindow
+
+  return item.m_bIsFolder && VIDEO_UTILS::IsItemPlayable(item);
+}
+
+bool CVideoBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  int target = WINDOW_INVALID;
+  if (URIUtils::IsPVRRadioRecordingFileOrFolder(item->GetPath()))
+    target = WINDOW_RADIO_RECORDINGS;
+  else if (URIUtils::IsPVRTVRecordingFileOrFolder(item->GetPath()))
+    target = WINDOW_TV_RECORDINGS;
+  else
+    target = WINDOW_VIDEO_NAV;
+
+  auto& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
+
+  if (target == windowMgr.GetActiveWindow())
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, target, 0, GUI_MSG_UPDATE);
+    msg.SetStringParam(item->GetPath());
+    windowMgr.SendMessage(msg);
+  }
+  else
+  {
+    windowMgr.ActivateWindow(target, {item->GetPath(), "return"});
+  }
+  return true;
+}
+
 std::string CVideoResume::GetLabel(const CFileItem& item) const
 {
   return CGUIWindowVideoBase::GetResumeString(item.GetItemToPlay());
