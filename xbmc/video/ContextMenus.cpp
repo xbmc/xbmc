@@ -61,7 +61,8 @@ bool CVideoRemoveResumePoint::IsVisible(const CFileItem& itemIn) const
   if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
 
-  return CGUIWindowVideoBase::HasResumeItemOffset(&item);
+  // Folders don't have a resume point
+  return !item.m_bIsFolder && VIDEO_UTILS::GetItemResumeInformation(item).isResumable;
 }
 
 bool CVideoRemoveResumePoint::Execute(const std::shared_ptr<CFileItem>& item) const
@@ -166,7 +167,7 @@ bool CVideoResume::IsVisible(const CFileItem& itemIn) const
   if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
 
-  return CGUIWindowVideoBase::HasResumeItemOffset(&item);
+  return VIDEO_UTILS::GetItemResumeInformation(item).isResumable;
 }
 
 namespace
@@ -294,7 +295,7 @@ std::string CVideoPlay::GetLabel(const CFileItem& itemIn) const
   CFileItem item(itemIn.GetItemToPlay());
   if (item.IsLiveTV())
     return g_localizeStrings.Get(19000); // Switch to channel
-  if (CGUIWindowVideoBase::HasResumeItemOffset(&item))
+  if (VIDEO_UTILS::GetItemResumeInformation(item).isResumable)
     return g_localizeStrings.Get(12021); // Play from beginning
   return g_localizeStrings.Get(208); // Play
 }

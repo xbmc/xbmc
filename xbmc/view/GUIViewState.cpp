@@ -284,6 +284,16 @@ void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
   masks.m_strLabel2Folder.clear();
 }
 
+std::vector<SortDescription> CGUIViewState::GetSortDescriptions() const
+{
+  std::vector<SortDescription> descriptions;
+  for (const auto& desc : m_sortMethods)
+  {
+    descriptions.emplace_back(desc.m_sortDescription);
+  }
+  return descriptions;
+}
+
 void CGUIViewState::AddSortMethod(SortBy sortBy, int buttonLabel, const LABEL_MASKS &labelMasks, SortAttribute sortAttributes /* = SortAttributeNone */, SortOrder sortOrder /* = SortOrderNone */)
 {
   AddSortMethod(sortBy, sortAttributes, buttonLabel, labelMasks, sortOrder);

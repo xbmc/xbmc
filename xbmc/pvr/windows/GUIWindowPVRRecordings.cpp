@@ -28,6 +28,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
+#include "video/VideoUtils.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include <memory>
@@ -235,18 +236,23 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
                 break;
               }
 
-              if (item->m_bIsFolder)
+              if (!item->IsParentFolder() && message.GetParam1() == ACTION_PLAYER_PLAY)
+              {
+                if (item->m_bIsFolder)
+                {
+                  if (CGUIWindowVideoNav::ShowResumeMenu(*item))
+                    VIDEO_UTILS::PlayItem(item);
+                }
+                else
+                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+                      *item, true /* check resume */);
+
+                bReturn = true;
+              }
+              else if (item->m_bIsFolder)
               {
                 // recording folders and ".." folders in subfolders are handled by base class.
                 bReturn = false;
-                break;
-              }
-
-              if (message.GetParam1() == ACTION_PLAYER_PLAY)
-              {
-                CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-                    *item, true /* check resume */);
-                bReturn = true;
               }
               else
               {
