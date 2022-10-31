@@ -41,6 +41,9 @@ bool CMusicInfo::Execute(const std::shared_ptr<CFileItem>& item) const
 
 bool CMusicBrowse::IsVisible(const CFileItem& item) const
 {
+  if (item.IsFileFolder(EFILEFOLDER_MASK_ONBROWSE))
+    return false; // handled by CMediaWindow
+
   return item.m_bIsFolder && MUSIC_UTILS::IsItemPlayable(item);
 }
 
@@ -73,6 +76,9 @@ bool CMusicPlay::Execute(const std::shared_ptr<CFileItem>& item) const
 
 bool CMusicPlayNext::IsVisible(const CFileItem& item) const
 {
+  if (!item.CanQueue())
+    return false;
+
   return MUSIC_UTILS::IsItemPlayable(item);
 }
 
@@ -84,6 +90,9 @@ bool CMusicPlayNext::Execute(const std::shared_ptr<CFileItem>& item) const
 
 bool CMusicQueue::IsVisible(const CFileItem& item) const
 {
+  if (!item.CanQueue())
+    return false;
+
   return MUSIC_UTILS::IsItemPlayable(item);
 }
 

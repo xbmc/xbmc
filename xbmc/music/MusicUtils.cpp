@@ -718,27 +718,39 @@ bool IsItemPlayable(const CFileItem& item)
   if (item.IsPVR() || item.IsPlugin() || item.IsScript() || item.IsAddonsPath())
     return false;
 
-  // Check for right window
-  const int winID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-  if (winID != WINDOW_MUSIC_NAV && winID != WINDOW_HOME)
+  // Exclude special items
+  if (StringUtils::StartsWithNoCase(item.GetPath(), "newsmartplaylist://") ||
+      StringUtils::StartsWithNoCase(item.GetPath(), "newplaylist://"))
     return false;
 
-  if (item.m_bIsFolder)
+  // Exclude unwanted windows
+  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_PLAYLIST)
+    return false;
+
+  if (item.m_bIsFolder &&
+      (item.IsMusicDb() || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/")))
   {
     // Exclude top level nodes - eg can't play 'genres' just a specific genre etc
     const XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE node =
         XFILE::CMusicDatabaseDirectory::GetDirectoryParentType(item.GetPath());
     if (node == XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE_OVERVIEW)
       return false;
+
+    return true;
   }
 
-  if (item.HasMusicInfoTag() && item.CanQueue() && !item.IsParentFolder())
+  if (item.HasMusicInfoTag() && item.CanQueue())
     return true;
   else if (item.IsPlayList() && item.IsAudio())
     return true;
-  else if (!item.m_bIsShareOrDrive && item.m_bIsFolder && !item.IsParentFolder())
+  else if (!item.m_bIsFolder && item.IsAudio())
     return true;
-
+  else if (!item.m_bIsShareOrDrive && item.m_bIsFolder)
+  {
+    // Not a music-specific folder (just file:// or nfs://). Allow play if context is Music window.
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_NAV)
+      return true;
+  }
   return false;
 }
 
