@@ -137,18 +137,23 @@ static int AEChannelMapToAUDIOTRACKChannelMask(CAEChannelInfo info)
   // According to CEA-861-D only RR and RL are defined
   // Therefore we let Android decide about the 5.1 mapping
   // For 8 channel layouts including one LFE channel
-  // we leave the same decision to Android
-  if (info.Count() == 6 && info.HasChannel(AE_CH_LFE))
-    return CJNIAudioFormat::CHANNEL_OUT_5POINT1;
+  // we leave the same decision to Android version
+  // below 11
+  if (CJNIBase::GetSDKVersion() < 30)
+  {
+    if (info.Count() == 6 && info.HasChannel(AE_CH_LFE))
+      return CJNIAudioFormat::CHANNEL_OUT_5POINT1;
 
-  if (info.Count() == 8 && info.HasChannel(AE_CH_LFE))
-    return CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND;
+    if (info.Count() == 8 && info.HasChannel(AE_CH_LFE))
+      return CJNIAudioFormat::CHANNEL_OUT_7POINT1_SURROUND;
+  }
 
   int atMask = 0;
 
   for (unsigned int i = 0; i < info.Count(); i++)
     atMask |= AEChannelToAUDIOTRACKChannel(info[i]);
 
+  CLog::Log(LOGINFO, "AESinkAUDIOTRACK - Custom channelMask in use: {:#08x}", atMask);
   return atMask;
 }
 
