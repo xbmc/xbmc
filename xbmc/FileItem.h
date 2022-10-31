@@ -517,8 +517,15 @@ public:
   // finds a matching local trailer file
   std::string FindTrailer() const;
 
-  virtual bool LoadMusicTag();
-  virtual bool LoadGameTag();
+  bool LoadMusicTag();
+  bool LoadGameTag();
+
+  /*! \brief Load detailed data for an item constructed with only a path and a folder flag
+   Fills item's video info tag, sets item properties.
+
+   \return true on success, false otherwise.
+   */
+  bool LoadDetails();
 
   /* Returns the content type of this item if known */
   const std::string& GetMimeType() const { return m_mimetype; }
