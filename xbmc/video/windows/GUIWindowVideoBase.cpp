@@ -597,10 +597,7 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int64_t& st
     }
     else
     {
-      CBookmark bookmark;
-      std::string strPath = item->GetPath();
-      if ((item->IsVideoDb() || item->IsDVD()) && item->HasVideoInfoTag())
-        strPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
+      // Obtain the resume bookmark from video db...
 
       CVideoDatabase db;
       if (!db.Open())
@@ -608,12 +605,55 @@ void CGUIWindowVideoBase::GetResumeItemOffset(const CFileItem *item, int64_t& st
         CLog::Log(LOGERROR, "{} - Cannot open VideoDatabase", __FUNCTION__);
         return;
       }
-      if (db.GetResumeBookMark(strPath, bookmark))
+
+      std::string path = item->GetPath();
+      if (item->IsVideoDb() || item->IsDVD())
+      {
+        if (item->HasVideoInfoTag())
+        {
+          path = item->GetVideoInfoTag()->m_strFileNameAndPath;
+        }
+        else if (item->IsVideoDb())
+        {
+          // Obtain fileNamAndPath from video db
+          VIDEODATABASEDIRECTORY::CQueryParams params;
+          VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(item->GetPath(), params);
+
+          long id = -1;
+          VideoDbContentType content_type;
+          if ((id = params.GetMovieId()) >= 0)
+            content_type = VideoDbContentType::MOVIES;
+          else if ((id = params.GetEpisodeId()) >= 0)
+            content_type = VideoDbContentType::EPISODES;
+          else if ((id = params.GetMVideoId()) >= 0)
+            content_type = VideoDbContentType::MUSICVIDEOS;
+          else
+          {
+            CLog::Log(LOGERROR, "{} - Cannot obtain video content type", __FUNCTION__);
+            db.Close();
+            return;
+          }
+
+          db.GetFilePathById(static_cast<int>(id), path, content_type);
+        }
+        else
+        {
+          // DVD
+          CLog::Log(LOGERROR, "{} - Cannot obtain bookmark for DVD", __FUNCTION__);
+          db.Close();
+          return;
+        }
+      }
+
+      CBookmark bookmark;
+      db.GetResumeBookMark(path, bookmark);
+      db.Close();
+
+      if (bookmark.IsSet())
       {
         startoffset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
         partNumber = bookmark.partNumber;
       }
-      db.Close();
     }
   }
 }
@@ -704,6 +744,11 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string&
     return true;
   case SELECT_ACTION_RESUME:
     item->SetStartOffset(STARTOFFSET_RESUME);
+    if (item->m_bIsFolder)
+    {
+      PlayItem(iItem, player);
+      return true;
+    }
     break;
   case SELECT_ACTION_PLAYPART:
     if (!OnPlayStackPart(iItem))
@@ -713,6 +758,12 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string&
     OnQueueItem(iItem);
     return true;
   case SELECT_ACTION_PLAY:
+    if (item->m_bIsFolder)
+    {
+      PlayItem(iItem, player);
+      return true;
+    }
+    break;
   default:
     break;
   }
@@ -788,23 +839,125 @@ void CGUIWindowVideoBase::OnRestartItem(int iItem, const std::string &player)
   CGUIMediaWindow::OnClick(iItem, player);
 }
 
+namespace
+{
+bool HasInProgressVideo(const std::string& path, CVideoDatabase& db)
+{
+  //! @todo this function is really very expensive and should be optimized (at db level).
+
+  CFileItemList items;
+  CUtil::GetRecursiveListing(path, items, {}, XFILE::DIR_FLAG_DEFAULTS);
+
+  if (items.IsEmpty())
+    return false;
+
+  for (const auto& item : items)
+  {
+    const auto videoTag = item->GetVideoInfoTag();
+    if (!item->HasVideoInfoTag())
+      continue;
+
+    if (videoTag->GetPlayCount() > 0)
+      continue;
+
+    // get resume point
+    CBookmark bookmark(videoTag->GetResumePoint());
+    if (!bookmark.IsSet() && db.GetResumeBookMark(videoTag->m_strFileNameAndPath, bookmark))
+      videoTag->SetResumePoint(bookmark);
+
+    if (bookmark.IsSet())
+      return true;
+  }
+
+  return false;
+}
+} // unnamed namespace
+
 std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
 {
   std::string resumeString;
-  int64_t startOffset = 0;
-  int startPart = 0;
-  GetResumeItemOffset(&item, startOffset, startPart);
-  if (startOffset > 0)
+  if (item.m_bIsFolder)
   {
-    resumeString =
-        StringUtils::Format(g_localizeStrings.Get(12022),
-                            StringUtils::SecondsToTimeString(
-                                static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(startOffset)),
-                                TIME_FORMAT_HH_MM_SS));
-    if (startPart > 0)
+    bool hasInProgressVideo = false;
+
+    CFileItem folderItem(item);
+    if ((!folderItem.HasProperty("watchedepisodes") || // season/show
+         (folderItem.GetProperty("watchedepisodes").asInteger() == 0)) &&
+        (!folderItem.HasProperty("watched") || // movie set
+         (folderItem.GetProperty("watched").asInteger() == 0)))
     {
-      std::string partString = StringUtils::Format(g_localizeStrings.Get(23051), startPart);
-      resumeString += " (" + partString + ")";
+      CVideoDatabase db;
+      if (db.Open())
+      {
+        if (!folderItem.HasProperty("watchedepisodes") && !folderItem.HasProperty("watched"))
+        {
+          VIDEODATABASEDIRECTORY::CQueryParams params;
+          VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(item.GetPath(), params);
+
+          if (params.GetTvShowId() >= 0)
+          {
+            if (params.GetSeason() >= 0)
+            {
+              const int idSeason = db.GetSeasonId(static_cast<int>(params.GetTvShowId()),
+                                                  static_cast<int>(params.GetSeason()));
+              if (idSeason >= 0)
+              {
+                CVideoInfoTag details;
+                db.GetSeasonInfo(idSeason, details, &folderItem);
+              }
+            }
+            else
+            {
+              CVideoInfoTag details;
+              db.GetTvShowInfo(item.GetPath(), details, static_cast<int>(params.GetTvShowId()),
+                               &folderItem);
+            }
+          }
+          else if (params.GetSetId() >= 0)
+          {
+            CVideoInfoTag details;
+            db.GetSetInfo(static_cast<int>(params.GetSetId()), details, &folderItem);
+          }
+        }
+
+        // no episodes/movies watched completely, but there could be some or more we have
+        // started watching
+        if ((folderItem.HasProperty("watchedepisodes") && // season/show
+             folderItem.GetProperty("watchedepisodes").asInteger() == 0) ||
+            (folderItem.HasProperty("watched") && // movie set
+             folderItem.GetProperty("watched").asInteger() == 0))
+          hasInProgressVideo = HasInProgressVideo(item.GetPath(), db);
+
+        db.Close();
+      }
+    }
+
+    if (hasInProgressVideo ||
+        (folderItem.GetProperty("watchedepisodes").asInteger() > 0 &&
+         folderItem.GetProperty("unwatchedepisodes").asInteger() > 0) ||
+        (folderItem.GetProperty("watched").asInteger() > 0 &&
+         folderItem.GetProperty("unwatched").asInteger() > 0))
+    {
+      resumeString = g_localizeStrings.Get(13362); // Continue watching
+    }
+  }
+  else
+  {
+    int64_t startOffset = 0;
+    int startPart = 0;
+    GetResumeItemOffset(&item, startOffset, startPart);
+    if (startOffset > 0)
+    {
+      resumeString =
+          StringUtils::Format(g_localizeStrings.Get(12022),
+                              StringUtils::SecondsToTimeString(
+                                  static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(startOffset)),
+                                  TIME_FORMAT_HH_MM_SS));
+      if (startPart > 0)
+      {
+        std::string partString = StringUtils::Format(g_localizeStrings.Get(23051), startPart);
+        resumeString += " (" + partString + ")";
+      }
     }
   }
   return resumeString;
@@ -812,7 +965,7 @@ std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
 
 bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
 {
-  if (!item.m_bIsFolder && !item.IsPVR())
+  if (!item.IsLiveTV())
   {
     std::string resumeString = GetResumeString(item);
     if (!resumeString.empty())
@@ -835,13 +988,6 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem, const std::string &player)
   if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  if (item->m_bIsFolder)
-  {
-    // resuming directories isn't supported yet. play.
-    PlayItem(iItem, player);
-    return true;
-  }
-
   std::string resumeString = GetResumeString(*item);
 
   if (!resumeString.empty())
@@ -853,6 +999,13 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem, const std::string &player)
     if (value < 0)
       return true;
     return OnFileAction(iItem, value, player);
+  }
+
+  if (item->m_bIsFolder)
+  {
+    // resuming directories isn't fully supported yet. play all of its content.
+    PlayItem(iItem, player);
+    return true;
   }
 
   return OnFileAction(iItem, SELECT_ACTION_PLAY, player);
