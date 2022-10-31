@@ -365,6 +365,8 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
 
 bool CPVRGUIDirectory::GetRecordingsDirectory(CFileItemList& results) const
 {
+  results.SetContent("recordings");
+
   bool bGrouped = false;
   const std::vector<std::shared_ptr<CPVRRecording>> recordings =
       CServiceBroker::GetPVRManager().Recordings()->GetAll();
