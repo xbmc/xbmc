@@ -458,9 +458,12 @@ bool CPVRGUIActionsPlayback::PlayMedia(const CFileItem& item) const
       pvrItem = std::make_unique<CFileItem>(groupMember);
   }
   else if (URIUtils::IsPVRRecording(item.GetPath()) && !item.HasPVRRecordingInfoTag())
-    pvrItem = std::make_unique<CFileItem>(
-        CServiceBroker::GetPVRManager().Recordings()->GetByPath(item.GetPath()));
-
+  {
+    const std::shared_ptr<CPVRRecording> recording =
+        CServiceBroker::GetPVRManager().Recordings()->GetByPath(item.GetPath());
+    if (recording)
+      pvrItem = std::make_unique<CFileItem>(recording);
+  }
   bool bCheckResume = true;
   if (item.HasProperty("check_resume"))
     bCheckResume = item.GetProperty("check_resume").asBoolean();
