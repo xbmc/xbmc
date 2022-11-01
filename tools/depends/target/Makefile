@@ -11,7 +11,7 @@ DEPENDS = \
   dav1d \
   expat \
   ffmpeg \
-  fontconfig \ 
+  fontconfig \
   freetype2 \
   freetype2-noharfbuzz \
   fribidi \
