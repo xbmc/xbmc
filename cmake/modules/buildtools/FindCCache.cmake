@@ -22,13 +22,14 @@ find_package_handle_standard_args(CCache REQUIRED_VARS CCACHE_PROGRAM
 
 if(CCACHE_FOUND)
   # Supports Unix Makefiles, Ninja and Xcode
-  set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}" PARENT_SCOPE)
-  set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}" PARENT_SCOPE)
+  file(WRITE "${CMAKE_BINARY_DIR}/launch" "#!/bin/sh\nCCACHE_SLOPPINESS=\"pch_defines,time_macros\" exec ${CCACHE_PROGRAM} \"$@\"\n")
+  execute_process(COMMAND chmod +x "${CMAKE_BINARY_DIR}/launch")
+  set(CMAKE_CXX_COMPILER_LAUNCHER "${CMAKE_BINARY_DIR}/launch" PARENT_SCOPE)
+  set(CMAKE_C_COMPILER_LAUNCHER "${CMAKE_BINARY_DIR}/launch" PARENT_SCOPE)
 
-  file(WRITE "${CMAKE_BINARY_DIR}/launch-c" "#!/bin/sh\nexec \"${CCACHE_PROGRAM}\" \"${CMAKE_C_COMPILER}\" \"$@\"\n")
-  file(WRITE "${CMAKE_BINARY_DIR}/launch-cxx" "#!/bin/sh\nexec \"${CCACHE_PROGRAM}\" \"${CMAKE_CXX_COMPILER}\" \"$@\"\n")
+  file(WRITE "${CMAKE_BINARY_DIR}/launch-c" "#!/bin/sh\nCCACHE_SLOPPINESS=\"pch_defines,time_macros\" exec \"${CCACHE_PROGRAM}\" \"${CMAKE_C_COMPILER}\" \"$@\"\n")
+  file(WRITE "${CMAKE_BINARY_DIR}/launch-cxx" "#!/bin/sh\nCCACHE_SLOPPINESS=\"pch_defines,time_macros\" exec \"${CCACHE_PROGRAM}\" \"${CMAKE_CXX_COMPILER}\" \"$@\"\n")
   execute_process(COMMAND chmod +x "${CMAKE_BINARY_DIR}/launch-c" "${CMAKE_BINARY_DIR}/launch-cxx")
-
   set(CMAKE_XCODE_ATTRIBUTE_CC "${CMAKE_BINARY_DIR}/launch-c" PARENT_SCOPE)
   set(CMAKE_XCODE_ATTRIBUTE_CXX "${CMAKE_BINARY_DIR}/launch-cxx" PARENT_SCOPE)
   set(CMAKE_XCODE_ATTRIBUTE_LD "${CMAKE_BINARY_DIR}/launch-c" PARENT_SCOPE)
