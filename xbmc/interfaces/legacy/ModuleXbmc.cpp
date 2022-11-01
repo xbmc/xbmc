@@ -36,6 +36,7 @@
 #include "storage/discs/IDiscDriveHandler.h"
 #include "threads/SystemClock.h"
 #include "utils/Crc32.h"
+#include "utils/ExecString.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/LangCodeExpander.h"
@@ -95,10 +96,13 @@ namespace XBMCAddon
       // builtins is no anarchy
       // enforce some rules here
       // DialogBusy must not be activated, it is modal dialog
-      std::string execute;
-      std::vector<std::string> params;
-      CUtil::SplitExecFunction(function, execute, params);
-      StringUtils::ToLower(execute);
+      const CExecString exec(function);
+      if (!exec.IsValid())
+        return;
+
+      const std::string execute = exec.GetFunction();
+      const std::vector<std::string> params = exec.GetParams();
+
       if (StringUtils::EqualsNoCase(execute, "activatewindow") ||
           StringUtils::EqualsNoCase(execute, "closedialog"))
       {

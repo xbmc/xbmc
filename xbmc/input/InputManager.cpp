@@ -14,7 +14,6 @@
 #include "KeymapEnvironment.h"
 #include "ServiceBroker.h"
 #include "TouchTranslator.h"
-#include "Util.h"
 #include "XBMC_vkeys.h"
 #include "application/AppInboundProtocol.h"
 #include "application/Application.h"
@@ -36,6 +35,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/ExecString.h"
 #include "utils/Geometry.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -681,23 +681,24 @@ bool CInputManager::AlwaysProcess(const CAction& action)
   // check if this button is mapped to a built-in function
   if (!action.GetName().empty())
   {
-    std::string builtInFunction;
-    std::vector<std::string> params;
-    CUtil::SplitExecFunction(action.GetName(), builtInFunction, params);
-    StringUtils::ToLower(builtInFunction);
-
-    // should this button be handled normally or just cancel the screensaver?
-    if (builtInFunction == "powerdown" || builtInFunction == "reboot" ||
-        builtInFunction == "restart" || builtInFunction == "restartapp" ||
-        builtInFunction == "suspend" || builtInFunction == "hibernate" ||
-        builtInFunction == "quit" || builtInFunction == "shutdown" ||
-        builtInFunction == "volumeup" || builtInFunction == "volumedown" ||
-        builtInFunction == "mute" || builtInFunction == "RunAppleScript" ||
-        builtInFunction == "RunAddon" || builtInFunction == "RunPlugin" ||
-        builtInFunction == "RunScript" || builtInFunction == "System.Exec" ||
-        builtInFunction == "System.ExecWait")
+    const CExecString exec(action.GetName());
+    if (exec.IsValid())
     {
-      return true;
+      const std::string builtInFunction = exec.GetFunction();
+
+      // should this button be handled normally or just cancel the screensaver?
+      if (builtInFunction == "powerdown" || builtInFunction == "reboot" ||
+          builtInFunction == "restart" || builtInFunction == "restartapp" ||
+          builtInFunction == "suspend" || builtInFunction == "hibernate" ||
+          builtInFunction == "quit" || builtInFunction == "shutdown" ||
+          builtInFunction == "volumeup" || builtInFunction == "volumedown" ||
+          builtInFunction == "mute" || builtInFunction == "RunAppleScript" ||
+          builtInFunction == "RunAddon" || builtInFunction == "RunPlugin" ||
+          builtInFunction == "RunScript" || builtInFunction == "System.Exec" ||
+          builtInFunction == "System.ExecWait")
+      {
+        return true;
+      }
     }
   }
 

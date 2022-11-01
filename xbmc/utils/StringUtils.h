@@ -355,6 +355,15 @@ public:
    */
   static std::string Paramify(const std::string &param);
 
+  /*! \brief Unescapes the given string.
+
+   Unescapes backslashes and double-quotes and removes double-quotes around the whole string.
+
+   \param param String to unescape/deparamify
+   \return Unescaped/Deparamified string
+   */
+  static std::string DeParamify(const std::string& param);
+
   /*! \brief Split a string by the specified delimiters.
    Splits a string using one or more delimiting characters, ignoring empty tokens.
    Differs from Split() in two ways:

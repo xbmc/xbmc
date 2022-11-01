@@ -11,7 +11,6 @@
 #include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "addons/AddonManager.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "favourites/FavouritesService.h"
@@ -27,6 +26,7 @@
 #include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/ExecString.h"
 #include "utils/JobManager.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
@@ -421,7 +421,7 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
     fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
 
   // grab the execute string
-  const std::string execute = CUtil::GetExecPath(fileItem, GetTarget(fileItem));
+  const std::string execute = CExecString(fileItem, GetTarget(fileItem)).GetExecString();
   if (!execute.empty())
   {
     CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);

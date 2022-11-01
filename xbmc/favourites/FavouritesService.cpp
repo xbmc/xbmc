@@ -11,13 +11,12 @@
 #include "FileItem.h"
 #include "GUIPassword.h"
 #include "ServiceBroker.h"
-#include "URL.h"
 #include "Util.h"
+#include "favourites/FavouritesURL.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ContentUtils.h"
 #include "utils/FileUtils.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
@@ -34,19 +33,11 @@ bool IsMediasourceOfFavItemUnlocked(const std::shared_ptr<CFileItem>& item)
     return true;
   }
 
-  std::string execString = CURL::Decode(item->GetPath());
-  std::string execute;
-  std::vector<std::string> params;
-
-  CUtil::SplitExecFunction(execString, execute, params);
-
-  FavAction favAction;
-  if (StringUtils::EqualsNoCase(execute, "Favourites://PlayMedia"))
-    favAction = FavAction::PLAYMEDIA;
-  else if (StringUtils::EqualsNoCase(execute, "Favourites://ShowPicture"))
-    favAction = FavAction::SHOWPICTURE;
-  else
+  if (!item->IsFavourite())
+  {
+    CLog::Log(LOGERROR, "{}: Wrong item passed (not a favourite).", __func__);
     return true;
+  }
 
   const auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent)
@@ -62,10 +53,22 @@ bool IsMediasourceOfFavItemUnlocked(const std::shared_ptr<CFileItem>& item)
     return true;
   }
 
-  bool isFolder{false};
-  CFileItem itemToCheck(params[0], isFolder);
+  const CFavouritesURL url(item->GetPath());
+  if (!url.IsValid())
+  {
+    CLog::Log(LOGERROR, "{}: Invalid exec string (syntax error).", __func__);
+    return true;
+  }
 
-  if (favAction == FavAction::PLAYMEDIA)
+  const CFavouritesURL::Action action = url.GetAction();
+
+  if (action != CFavouritesURL::Action::PLAY_MEDIA &&
+      action != CFavouritesURL::Action::SHOW_PICTURE)
+    return true;
+
+  const CFileItem itemToCheck(url.GetTarget(), url.IsDir());
+
+  if (action == CFavouritesURL::Action::PLAY_MEDIA)
   {
     if (itemToCheck.IsVideo())
     {
@@ -82,7 +85,7 @@ bool IsMediasourceOfFavItemUnlocked(const std::shared_ptr<CFileItem>& item)
       return false;
     }
   }
-  else if (favAction == FavAction::SHOWPICTURE && itemToCheck.IsPicture())
+  else if (action == CFavouritesURL::Action::SHOW_PICTURE && itemToCheck.IsPicture())
   {
     if (!profileManager->GetCurrentProfile().picturesLocked())
       return g_passwordManager.IsMediaFileUnlocked("pictures", itemToCheck.GetPath());
@@ -119,10 +122,8 @@ bool LoadFromFile(const std::string& strPath, CFileItemList& items)
     const char *thumb = favourite->Attribute("thumb");
     if (name && favourite->FirstChild())
     {
-      CURL url;
-      url.SetProtocol("favourites");
-      url.SetHostName(CURL::Encode(favourite->FirstChild()->Value()));
-      const std::string favURL(url.Get());
+      const std::string favURL(
+          CFavouritesURL(CExecString(favourite->FirstChild()->Value())).GetURL());
       if (!items.Contains(favURL))
       {
         const CFileItemPtr item(std::make_shared<CFileItem>(name));
@@ -177,8 +178,7 @@ bool CFavouritesService::Persist()
     if (item->HasArt("thumb"))
       favNode.SetAttribute("thumb", item->GetArt("thumb").c_str());
 
-    const CURL url(item->GetPath());
-    TiXmlText execute(CURL::Decode(url.GetHostName()));
+    TiXmlText execute(CFavouritesURL(item->GetPath()).GetExecString());
     favNode.InsertEndChild(execute);
     rootNode->InsertEndChild(favNode);
   }
@@ -206,10 +206,7 @@ void CFavouritesService::OnUpdated()
 
 std::string CFavouritesService::GetFavouritesUrl(const CFileItem& item, int contextWindow) const
 {
-  CURL url;
-  url.SetProtocol("favourites");
-  url.SetHostName(CURL::Encode(CUtil::GetExecPath(item, std::to_string(contextWindow))));
-  return url.Get();
+  return CFavouritesURL(item, contextWindow).GetURL();
 }
 
 bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
@@ -263,8 +260,9 @@ void CFavouritesService::GetAll(CFileItemList& items) const
   int index = 0;
   for (const auto& item : items)
   {
-    item->SetProperty("favourite.action", CUtil::GetExecActionLabelFromPath(item->GetPath()));
-    item->SetProperty("favourite.provider", CUtil::GetExecProviderLabelFromPath(item->GetPath()));
+    const CFavouritesURL favURL(item->GetPath());
+    item->SetProperty("favourite.action", favURL.GetActionLabel());
+    item->SetProperty("favourite.provider", favURL.GetProviderLabel());
     item->SetProperty("favourite.index", index++);
   }
 }
