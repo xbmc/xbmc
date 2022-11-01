@@ -15,12 +15,6 @@
 #include <string>
 #include <vector>
 
-enum class FavAction : int
-{
-  PLAYMEDIA,
-  SHOWPICTURE,
-};
-
 class CFavouritesService
 {
 public:

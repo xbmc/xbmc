@@ -8782,44 +8782,43 @@ msgid "Action"
 msgstr ""
 
 #. Label for an action associated with a favourite.
-#: xbmc/Util.cpp
+#: xbmc/favourites/FavouritesURL.cpp
 msgctxt "#15218"
 msgid "Play media"
 msgstr ""
 
 #. Label for an action associated with a favourite
-#: xbmc/Util.cpp
+#: xbmc/favourites/FavouritesURL.cpp
 msgctxt "#15219"
 msgid "Show picture"
 msgstr ""
 
 #. Label for an action associated with a favourite. Placeholder will be filled with the name of the window the favourite's content will be displayed in.
-#: xbmc/favourites/FavouritesService.cpp
-#: xbmc/Util.cpp
+#: xbmc/favourites/FavouritesURL.cpp
 msgctxt "#15220"
 msgid "Show content in \"{}\""
 msgstr ""
 
 #. Label for an action associated with a favourite
-#: xbmc/Util.cpp
+#: xbmc/favourites/FavouritesURL.cpp
 msgctxt "#15221"
 msgid "Execute script"
 msgstr ""
 
 #. Label for an action associated with a favourite
-#: xbmc/Util.cpp
+#: xbmc/favourites/FavouritesURL.cpp
 msgctxt "#15222"
 msgid "Execute Android app"
 msgstr ""
 
 #. Label for an action associated with a favourite
-#: xbmc/Util.cpp
+#: xbmc/favourites/FavouritesURL.cpp
 msgctxt "#15223"
 msgid "Execute add-on"
 msgstr ""
 
 #. Label for an action associated with a favourite
-#: xbmc/Util.cpp
+#: xbmc/favourites/FavouritesURL.cpp
 msgctxt "#15224"
 msgid "Other / Unknown"
 msgstr ""

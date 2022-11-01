@@ -10,8 +10,8 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "favourites/FavouritesURL.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
@@ -45,7 +45,7 @@ bool CGUIWindowFavourites::OnSelect(int item)
     return false;
 
   CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
-  message.SetStringParam(CUtil::GetExecPath(*(*m_vecItems)[item], std::to_string(GetID())));
+  message.SetStringParam(CFavouritesURL(*(*m_vecItems)[item], GetID()).GetExecString());
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
 
   return true;

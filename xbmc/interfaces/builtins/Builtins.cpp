@@ -11,26 +11,25 @@
 #include "ApplicationBuiltins.h"
 #include "CECBuiltins.h"
 #include "GUIBuiltins.h"
-#include "GUIControlBuiltins.h"
 #include "GUIContainerBuiltins.h"
+#include "GUIControlBuiltins.h"
 #include "LibraryBuiltins.h"
 #include "OpticalBuiltins.h"
+#include "PVRBuiltins.h"
 #include "PictureBuiltins.h"
 #include "PlayerBuiltins.h"
 #include "ProfileBuiltins.h"
-#include "PVRBuiltins.h"
+#include "ServiceBroker.h"
 #include "SkinBuiltins.h"
 #include "SystemBuiltins.h"
 #include "WeatherBuiltins.h"
-
-#include "ServiceBroker.h"
 #include "input/InputManager.h"
 #include "powermanagement/PowerTypes.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "Util.h"
-#include "utils/log.h"
+#include "utils/ExecString.h"
 #include "utils/StringUtils.h"
+#include "utils/log.h"
 
 #if defined(TARGET_ANDROID)
 #include "AndroidBuiltins.h"
@@ -76,10 +75,12 @@ CBuiltins& CBuiltins::GetInstance()
 
 bool CBuiltins::HasCommand(const std::string& execString)
 {
-  std::string function;
-  std::vector<std::string> parameters;
-  CUtil::SplitExecFunction(execString, function, parameters);
-  StringUtils::ToLower(function);
+  const CExecString exec(execString);
+  if (!exec.IsValid())
+    return false;
+
+  const std::string function = exec.GetFunction();
+  const std::vector<std::string> parameters = exec.GetParams();
 
   if (CServiceBroker::GetInputManager().HasBuiltin(function))
     return true;
@@ -96,10 +97,11 @@ bool CBuiltins::HasCommand(const std::string& execString)
 
 bool CBuiltins::IsSystemPowerdownCommand(const std::string& execString)
 {
-  std::string execute;
-  std::vector<std::string> params;
-  CUtil::SplitExecFunction(execString, execute, params);
-  StringUtils::ToLower(execute);
+  const CExecString exec(execString);
+  if (!exec.IsValid())
+    return false;
+
+  const std::string execute = exec.GetFunction();
 
   // Check if action is resulting in system powerdown.
   if (execute == "reboot"    ||
@@ -142,10 +144,12 @@ void CBuiltins::GetHelp(std::string &help)
 
 int CBuiltins::Execute(const std::string& execString)
 {
-  std::string execute;
-  std::vector<std::string> params;
-  CUtil::SplitExecFunction(execString, execute, params);
-  StringUtils::ToLower(execute);
+  const CExecString exec(execString);
+  if (!exec.IsValid())
+    return -1;
+
+  const std::string execute = exec.GetFunction();
+  const std::vector<std::string> params = exec.GetParams();
 
   const auto& it = m_command.find(execute);
   if (it != m_command.end())
