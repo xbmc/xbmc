@@ -9,9 +9,8 @@
 #include "FavouritesOperations.h"
 
 #include "ServiceBroker.h"
-#include "URL.h"
-#include "Util.h"
 #include "favourites/FavouritesService.h"
+#include "favourites/FavouritesURL.h"
 #include "guilib/WindowIDs.h"
 #include "input/WindowTranslator.h"
 #include "utils/StringUtils.h"
@@ -42,56 +41,45 @@ JSONRPC_STATUS CFavouritesOperations::GetFavourites(const std::string &method, I
     CVariant object;
     CFileItemPtr item = favourites.Get(i);
 
-    std::string function;
-    std::vector<std::string> parameters;
-
-    //FIXME: this path is internal to the favourites system and should not be parsed and exposed
-    CURL url(item->GetPath());
-    std::string internalPath = CURL::Decode(url.GetHostName());
-
-    CUtil::SplitExecFunction(internalPath, function, parameters);
-    if (parameters.empty())
+    const CFavouritesURL url(item->GetPath());
+    if (!url.IsValid())
       continue;
+
+    const CFavouritesURL::Action function = url.GetAction();
 
     object["title"] = item->GetLabel();
     if (fields.find("thumbnail") !=  fields.end())
       object["thumbnail"] = item->GetArt("thumb");
 
-    if (StringUtils::EqualsNoCase(function, "ActivateWindow"))
+    if (function == CFavouritesURL::Action::ACTIVATE_WINDOW)
     {
       object["type"] = "window";
       if (fields.find("window") != fields.end())
       {
-        if (StringUtils::IsNaturalNumber(parameters[0]))
-          object["window"] = CWindowTranslator::TranslateWindow(strtol(parameters[0].c_str(), NULL, 10));
-        else
-          object["window"] = parameters[0];
+        object["window"] = CWindowTranslator::TranslateWindow(url.GetWindowID());
       }
       if (fields.find("windowparameter") != fields.end())
       {
-        if (parameters.size() > 1)
-          object["windowparameter"] = parameters[1];
-        else
-          object["windowparameter"] = "";
+        object["windowparameter"] = url.GetTarget();
       }
     }
-    else if (StringUtils::EqualsNoCase(function, "PlayMedia"))
+    else if (function == CFavouritesURL::Action::PLAY_MEDIA)
     {
       object["type"] = "media";
       if (fields.find("path") !=  fields.end())
-        object["path"] = parameters[0];
+        object["path"] = url.GetTarget();
     }
-    else if (StringUtils::EqualsNoCase(function, "RunScript"))
+    else if (function == CFavouritesURL::Action::RUN_SCRIPT)
     {
       object["type"] = "script";
       if (fields.find("path") !=  fields.end())
-        object["path"] = parameters[0];
+        object["path"] = url.GetTarget();
     }
-    else if (StringUtils::EqualsNoCase(function, "StartAndroidActivity"))
+    else if (function == CFavouritesURL::Action::START_ANDROID_ACTIVITY)
     {
       object["type"] = "androidapp";
       if (fields.find("path") !=  fields.end())
-        object["path"] = parameters[0];
+        object["path"] = url.GetTarget();
     }
     else
       object["type"] = "unknown";

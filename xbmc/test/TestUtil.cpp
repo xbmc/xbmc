@@ -46,47 +46,6 @@ TEST(TestUtil, MakeLegalPath)
   EXPECT_EQ(CUtil::MakeLegalPath(path), "smb://foo/bar_/");
 }
 
-TEST(TestUtil, SplitExec)
-{
-  std::string function;
-  std::vector<std::string> params;
-  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\test\\foo\")", function, params);
-  EXPECT_EQ(function,  "ActivateWindow");
-  EXPECT_EQ(params.size(), 2U);
-  EXPECT_EQ(params[0], "Video");
-  EXPECT_EQ(params[1], "C:\\test\\foo");
-  params.clear();
-  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\test\\foo\\\")", function, params);
-  EXPECT_EQ(function,  "ActivateWindow");
-  EXPECT_EQ(params.size(), 2U);
-  EXPECT_EQ(params[0], "Video");
-  EXPECT_EQ(params[1], "C:\\test\\foo");
-  params.clear();
-  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\\\test\\\\foo\\\\\")", function, params);
-  EXPECT_EQ(function,  "ActivateWindow");
-  EXPECT_EQ(params.size(), 2U);
-  EXPECT_EQ(params[0], "Video");
-  EXPECT_EQ(params[1], "C:\\test\\foo\\");
-  params.clear();
-  CUtil::SplitExecFunction("ActivateWindow(Video, \"C:\\\\\\\\test\\\\\\foo\\\\\")", function, params);
-  EXPECT_EQ(function,  "ActivateWindow");
-  EXPECT_EQ(params.size(), 2U);
-  EXPECT_EQ(params[0], "Video");
-  EXPECT_EQ(params[1], "C:\\\\test\\\\foo\\");
-  params.clear();
-  CUtil::SplitExecFunction("SetProperty(Foo,\"\")", function, params);
-  EXPECT_EQ(function,  "SetProperty");
-  EXPECT_EQ(params.size(), 2U);
-  EXPECT_EQ(params[0], "Foo");
-  EXPECT_EQ(params[1], "");
-  params.clear();
-  CUtil::SplitExecFunction("SetProperty(foo,ba(\"ba black )\",sheep))", function, params);
-  EXPECT_EQ(function,  "SetProperty");
-  EXPECT_EQ(params.size(), 2U);
-  EXPECT_EQ(params[0], "foo");
-  EXPECT_EQ(params[1], "ba(\"ba black )\",sheep)");
-}
-
 TEST(TestUtil, MakeShortenPath)
 {
   std::string result;
