@@ -1,16 +1,22 @@
-#/bin/bash
+#!/bin/bash
 
-releaseversion=${VERSION:-"19.0"}
+releaseversion=${VERSION:-"AUTO"}
 epoch=${EPOCH:-"2"}
 gitrev=${GITREV:-"$(git log -1 --pretty=format:"%h")"}
 tag=${TAG:-${gitrev}}
 tagrev=${tagrev:-"0"}
-dists=${DISTS:-"groovy focal bionic"}
-#debuildopts="--no-lintian -d"
+dists=${DISTS:-"kinetic jammy focal bionic"}
 gpgkey=${GPG_KEY:-"jenkins (jenkins build bot) <jenkins@kodi.tv>"}
 ppa=${PPA:-"nightly"}
-debianrepo=${DEBIAN:-"https://github.com/xbmc/xbmc-packaging"}
+debianrepo="${DEBIAN:-"https://github.com/xbmc/xbmc-packaging"}"
 debianbranch=${DEBIANBRANCH:-"Matrix"}
+
+if [ "$releaseversion" = "AUTO" ]; then
+  majorversion="$(awk '/VERSION_MAJOR/ {print $2}' version.txt)"
+  minorversion="$(awk '/VERSION_MINOR/ {print $2}' version.txt)"
+  releaseversion="${majorversion}.${minorversion}"
+fi
+
 version="${releaseversion}+git$(date '+%Y%m%d.%H%M')-${tag}"
 debversion="${epoch}:${version}"
 origtarball="kodi_${version}.orig.tar.gz"
@@ -23,7 +29,8 @@ declare -A PPAS=(
     ["wsnipex-stable"]='ppa:wsnipex/kodi-stable'
 )
 
-[ -d debian ] && rm -rf debian
+# clean up before creating the source tarball
+git clean -xfd
 
 # set build info
 date '+%Y%m%d' > BUILDDATE
@@ -35,9 +42,9 @@ wget -O - ${debianrepo}/archive/${debianbranch}.tar.gz | tar xzv --strip-compone
 
 # add tarballs for internal ffmpeg, libdvd
 tools/depends/target/ffmpeg/autobuild.sh -d || { echo "Error downloading ffmpeg"; exit 2; }
-make -C tools/depends/target/libdvdnav download GITREV="" || { echo "Error downloading libdvdnav"; exit 2; }
-make -C tools/depends/target/libdvdread download GITREV="" || { echo "Error downloading libdvdread"; exit 2; }
-make -C tools/depends/target/libdvdcss download GITREV="" || { echo "Error downloading libdvdcss"; exit 2; }
+make -C tools/depends/target/libdvdnav download || { echo "Error downloading libdvdnav"; exit 2; }
+make -C tools/depends/target/libdvdread download || { echo "Error downloading libdvdread"; exit 2; }
+make -C tools/depends/target/libdvdcss download || { echo "Error downloading libdvdcss"; exit 2; }
 make -C tools/depends/target/dav1d download || { echo "Error downloading dav1d"; exit 2; }
 
 # create orig tarball if needed
