@@ -166,9 +166,10 @@ void CMusicDatabaseDirectory::ClearDirectoryCache(const std::string& strDirector
 
 bool CMusicDatabaseDirectory::IsAllItem(const std::string& strDirectory)
 {
-  //Last query parameter, ignoring any appended options, is -1
+  //Last query parameter, ignoring any appended options, is -1 or -2
   CURL url(strDirectory);
-  if (StringUtils::EndsWith(url.GetWithoutOptions(), "/-1/"))
+  if (StringUtils::EndsWith(url.GetWithoutOptions(), "/-1/") || // any albumid
+      StringUtils::EndsWith(url.GetWithoutOptions(), "/-1/-2/")) // any albumid + flattened
     return true;
   return false;
 }
