@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "favourites/FavouritesService.h"
 #include "windows/GUIMediaWindow.h"
 
 class CFileItem;
@@ -17,7 +18,7 @@ class CGUIWindowFavourites : public CGUIMediaWindow
 {
 public:
   CGUIWindowFavourites();
-  ~CGUIWindowFavourites() override = default;
+  ~CGUIWindowFavourites() override;
 
   static bool ChooseAndSetNewName(CFileItem& item);
   static bool ChooseAndSetNewThumbnail(CFileItem& item);
@@ -28,7 +29,10 @@ protected:
   std::string GetRootPath() const override { return "favourites://"; }
 
   bool OnSelect(int item) override;
-  bool OnPopupMenu(int iItem) override;
+  bool OnMessage(CGUIMessage& message) override;
 
   bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
+
+private:
+  void OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event);
 };
