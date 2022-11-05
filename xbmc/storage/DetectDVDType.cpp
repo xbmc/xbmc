@@ -8,24 +8,22 @@
 
 #include "DetectDVDType.h"
 
+#include "GUIUserMessages.h"
+#include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cdioSupport.h"
-#include "filesystem/File.h"
+#include "guilib/GUIComponent.h"
+#include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
+#include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <mutex>
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "GUIUserMessages.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
-#include "Application.h"
-#include "ServiceBroker.h"
-#include "storage/MediaManager.h"
 
-
-using namespace XFILE;
 using namespace MEDIA_DETECT;
 using namespace std::chrono_literals;
 
@@ -66,9 +64,12 @@ void CDetectDVDMedia::Process()
     m_cdio->cdio_destroy(p_cdio);
 #endif
 
-  while (( !m_bStop ))
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+  while (!m_bStop)
   {
-    if (g_application.GetAppPlayer().IsPlayingVideo())
+    if (appPlayer->IsPlayingVideo())
     {
       CThread::Sleep(10000ms);
     }
@@ -77,7 +78,7 @@ void CDetectDVDMedia::Process()
       UpdateDvdrom();
       m_bStartup = false;
       CThread::Sleep(2000ms);
-      if ( m_bAutorun )
+      if (m_bAutorun)
       {
         // Media in drive, wait 1.5s more to be sure the device is ready for playback
         CThread::Sleep(1500ms);

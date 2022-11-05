@@ -8,12 +8,15 @@
 
 #include "SkinBuiltins.h"
 
-#include "Application.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationSkinHandling.h"
 #include "dialogs/GUIDialogColorPicker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
@@ -38,8 +41,9 @@ using namespace ADDON;
 static int ReloadSkin(const std::vector<std::string>& params)
 {
   //  Reload the skin
-  g_application.ReloadSkin(!params.empty() &&
-                           StringUtils::EqualsNoCase(params[0], "confirm"));
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appSkin = components.GetComponent<CApplicationSkinHandling>();
+  appSkin->ReloadSkin(!params.empty() && StringUtils::EqualsNoCase(params[0], "confirm"));
 
   return 0;
 }
@@ -49,7 +53,9 @@ static int ReloadSkin(const std::vector<std::string>& params)
  */
 static int UnloadSkin(const std::vector<std::string>& params)
 {
-  g_application.UnloadSkin();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appSkin = components.GetComponent<CApplicationSkinHandling>();
+  appSkin->UnloadSkin();
 
   return 0;
 }
@@ -75,11 +81,11 @@ static int ToggleSetting(const std::vector<std::string>& params)
 static int SetAddon(const std::vector<std::string>& params)
 {
   int string = CSkinSettings::GetInstance().TranslateString(params[0]);
-  std::vector<ADDON::TYPE> types;
+  std::vector<ADDON::AddonType> types;
   for (unsigned int i = 1 ; i < params.size() ; i++)
   {
-    ADDON::TYPE type = CAddonInfo::TranslateType(params[i]);
-    if (type != ADDON_UNKNOWN)
+    ADDON::AddonType type = CAddonInfo::TranslateType(params[i]);
+    if (type != AddonType::UNKNOWN)
       types.push_back(type);
   }
   std::string result;
@@ -225,8 +231,8 @@ static int SetFile(const std::vector<std::string>& params)
   // as contenttype string see IAddon.h & ADDON::TranslateXX
   std::string strMask = (params.size() > 1) ? params[1] : "";
   StringUtils::ToLower(strMask);
-  ADDON::TYPE type;
-  if ((type = CAddonInfo::TranslateType(strMask)) != ADDON_UNKNOWN)
+  ADDON::AddonType type;
+  if ((type = CAddonInfo::TranslateType(strMask)) != AddonType::UNKNOWN)
   {
     CURL url;
     url.SetProtocol("addons");
@@ -237,7 +243,7 @@ static int SetFile(const std::vector<std::string>& params)
     StringUtils::ToLower(content);
     url.SetPassword(content);
     std::string strMask;
-    if (type == ADDON_SCRIPT)
+    if (type == AddonType::SCRIPT)
       strMask = ".py";
     std::string replace;
     if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, CAddonInfo::TranslateType(type, true), replace, true, true, true))
@@ -420,7 +426,9 @@ static int SetTheme(const std::vector<std::string>& params)
   if (StringUtils::EqualsNoCase(colorTheme, "Textures.xml"))
     colorTheme = "defaults.xml";
   settings->SetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS, colorTheme);
-  g_application.ReloadSkin();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appSkin = components.GetComponent<CApplicationSkinHandling>();
+  appSkin->ReloadSkin();
 
   return 0;
 }

@@ -8,12 +8,14 @@
 
 #include "PlayerSelectionRule.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/RegExp.h"
 #include "utils/StreamDetails.h"
+#include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"

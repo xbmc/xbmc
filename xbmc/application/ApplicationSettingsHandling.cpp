@@ -8,25 +8,25 @@
 
 #include "ApplicationSettingsHandling.h"
 
-#include "ApplicationPlayer.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "addons/Skin.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "application/ApplicationPowerHandling.h"
 #include "application/ApplicationSkinHandling.h"
 #include "application/ApplicationVolumeHandling.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#if defined(TARGET_DARWIN_OSX)
 #include "utils/StringUtils.h"
-#include "utils/URIUtils.h"
-#include "utils/XMLUtils.h"
+#endif
 
 namespace
 {
@@ -38,18 +38,6 @@ bool IsPlaying(const std::string& condition,
   return data ? static_cast<CApplicationPlayer*>(data)->IsPlaying() : false;
 }
 } // namespace
-
-CApplicationSettingsHandling::CApplicationSettingsHandling(
-    CApplicationPlayer& appPlayer,
-    CApplicationPowerHandling& powerHandling,
-    CApplicationSkinHandling& skinHandling,
-    CApplicationVolumeHandling& volumeHandling)
-  : m_appPlayerRef(appPlayer),
-    m_powerHandling(powerHandling),
-    m_skinHandling(skinHandling),
-    m_volumeHandling(volumeHandling)
-{
-}
 
 void CApplicationSettingsHandling::RegisterSettings()
 {
@@ -84,12 +72,17 @@ void CApplicationSettingsHandling::RegisterSettings()
                                        CSettings::SETTING_SOURCE_PICTURES,
                                        CSettings::SETTING_VIDEOSCREEN_FAKEFULLSCREEN});
 
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (!appPlayer)
+    return;
+
   settingsMgr->RegisterCallback(
-      &m_appPlayerRef.GetSeekHandler(),
+      &appPlayer->GetSeekHandler(),
       {CSettings::SETTING_VIDEOPLAYER_SEEKDELAY, CSettings::SETTING_VIDEOPLAYER_SEEKSTEPS,
        CSettings::SETTING_MUSICPLAYER_SEEKDELAY, CSettings::SETTING_MUSICPLAYER_SEEKSTEPS});
 
-  settingsMgr->AddDynamicCondition("isplaying", IsPlaying, &m_appPlayerRef);
+  settingsMgr->AddDynamicCondition("isplaying", IsPlaying, appPlayer.get());
 
   settings->RegisterSubSettings(this);
 }
@@ -98,10 +91,14 @@ void CApplicationSettingsHandling::UnregisterSettings()
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   CSettingsManager* settingsMgr = settings->GetSettingsManager();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (!appPlayer)
+    return;
 
   settings->UnregisterSubSettings(this);
   settingsMgr->RemoveDynamicCondition("isplaying");
-  settingsMgr->UnregisterCallback(&m_appPlayerRef.GetSeekHandler());
+  settingsMgr->UnregisterCallback(&appPlayer->GetSeekHandler());
   settingsMgr->UnregisterCallback(this);
   settingsMgr->UnregisterSettingsHandler(this);
 }
@@ -111,13 +108,17 @@ void CApplicationSettingsHandling::OnSettingChanged(const std::shared_ptr<const 
   if (!setting)
     return;
 
-  if (m_skinHandling.OnSettingChanged(*setting))
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appSkin = components.GetComponent<CApplicationSkinHandling>();
+  if (appSkin->OnSettingChanged(*setting))
     return;
 
-  if (m_powerHandling.OnSettingChanged(*setting))
+  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+  if (appVolume->OnSettingChanged(*setting))
     return;
 
-  if (m_powerHandling.OnSettingChanged(*setting))
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  if (appPower->OnSettingChanged(*setting))
     return;
 
   const std::string& settingId = setting->GetId();
@@ -139,7 +140,9 @@ void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const C
   if (!setting)
     return;
 
-  if (m_powerHandling.OnSettingAction(*setting))
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  if (appPower->OnSettingAction(*setting))
     return;
 
   const std::string& settingId = setting->GetId();
@@ -151,7 +154,7 @@ void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const C
     if (CServiceBroker::GetAddonMgr().GetAddon(
             CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
                 CSettings::SETTING_AUDIOCDS_ENCODER),
-            addon, ADDON::ADDON_AUDIOENCODER, ADDON::OnlyEnabled::CHOICE_YES))
+            addon, ADDON::AddonType::AUDIOENCODER, ADDON::OnlyEnabled::CHOICE_YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_GUICALIBRATION)
@@ -198,10 +201,14 @@ bool CApplicationSettingsHandling::OnSettingUpdate(const std::shared_ptr<CSettin
 
 bool CApplicationSettingsHandling::Load(const TiXmlNode* settings)
 {
-  return m_volumeHandling.Load(settings);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+  return appVolume->Load(settings);
 }
 
 bool CApplicationSettingsHandling::Save(TiXmlNode* settings) const
 {
-  return m_volumeHandling.Save(settings);
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+  return appVolume->Save(settings);
 }

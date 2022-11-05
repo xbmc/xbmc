@@ -192,6 +192,7 @@ public:
   static constexpr auto SETTING_PVRMANAGER_GROUPMANAGER = "pvrmanager.groupmanager";
   static constexpr auto SETTING_PVRMANAGER_CHANNELSCAN = "pvrmanager.channelscan";
   static constexpr auto SETTING_PVRMANAGER_RESETDB = "pvrmanager.resetdb";
+  static constexpr auto SETTING_PVRMANAGER_ADDONS = "pvrmanager.addons";
   static constexpr auto SETTING_PVRMENU_DISPLAYCHANNELINFO = "pvrmenu.displaychannelinfo";
   static constexpr auto SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH = "pvrmenu.closechannelosdonswitch";
   static constexpr auto SETTING_PVRMENU_ICONPATH = "pvrmenu.iconpath";
@@ -364,6 +365,7 @@ public:
   static constexpr auto SETTING_VIDEOSCREEN_LIMITEDRANGE = "videoscreen.limitedrange";
   static constexpr auto SETTING_VIDEOSCREEN_FRAMEPACKING = "videoscreen.framepacking";
   static constexpr auto SETTING_VIDEOSCREEN_10BITSURFACES = "videoscreen.10bitsurfaces";
+  static constexpr auto SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE = "videoscreen.guisdrpeakluminance";
   static constexpr auto SETTING_AUDIOOUTPUT_AUDIODEVICE = "audiooutput.audiodevice";
   static constexpr auto SETTING_AUDIOOUTPUT_CHANNELS = "audiooutput.channels";
   static constexpr auto SETTING_AUDIOOUTPUT_CONFIG = "audiooutput.config";

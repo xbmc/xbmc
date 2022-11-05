@@ -8,12 +8,10 @@
 
 #pragma once
 
-#include "IAddon.h"
-#include "addons/kodi-dev-kit/include/kodi/AddonBase.h"
+#include "addons/IAddon.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon_base.h"
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
-
-#include <string>
 
 namespace ADDON
 {
@@ -27,7 +25,10 @@ namespace ADDON
   class CAddonStatusHandler : private CThread
   {
     public:
-      CAddonStatusHandler(const std::string &addonID, ADDON_STATUS status, std::string message, bool sameThread = true);
+      CAddonStatusHandler(const std::string& addonID,
+                          AddonInstanceId instanceId,
+                          ADDON_STATUS status,
+                          bool sameThread = true);
       ~CAddonStatusHandler() override;
 
       /* Thread handling */
@@ -37,10 +38,8 @@ namespace ADDON
 
     private:
       static CCriticalSection   m_critSection;
+      const uint32_t m_instanceId;
       AddonPtr                  m_addon;
-      ADDON_STATUS              m_status;
-      std::string               m_message;
+      ADDON_STATUS m_status;
   };
-
-
 }

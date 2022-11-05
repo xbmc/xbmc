@@ -644,7 +644,8 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
 
   // remove the rule for the field of the filter we want to retrieve items for
   CSmartPlaylist tmpFilter = *m_filter;
-  for (CDatabaseQueryRules::iterator rule = tmpFilter.m_ruleCombination.m_rules.begin(); rule != tmpFilter.m_ruleCombination.m_rules.end(); rule++)
+  for (CDatabaseQueryRules::iterator rule = tmpFilter.m_ruleCombination.m_rules.begin();
+       rule != tmpFilter.m_ruleCombination.m_rules.end(); ++rule)
   {
     if ((*rule)->m_field == filter.field)
     {
@@ -663,13 +664,13 @@ int CGUIDialogMediaFilter::GetItems(const Filter &filter, std::vector<std::strin
     CDatabase::Filter dbfilter;
     dbfilter.where = tmpFilter.GetWhereClause(videodb, playlists);
 
-    VIDEODB_CONTENT_TYPE type = VIDEODB_CONTENT_MOVIES;
+    VideoDbContentType type = VideoDbContentType::MOVIES;
     if (m_mediaType == "tvshows")
-      type = VIDEODB_CONTENT_TVSHOWS;
+      type = VideoDbContentType::TVSHOWS;
     else if (m_mediaType == "episodes")
-      type = VIDEODB_CONTENT_EPISODES;
+      type = VideoDbContentType::EPISODES;
     else if (m_mediaType == "musicvideos")
-      type = VIDEODB_CONTENT_MUSICVIDEOS;
+      type = VideoDbContentType::MUSICVIDEOS;
 
     if (filter.field == FieldGenre)
       videodb.GetGenresNav(m_dbUrl->ToString(), selectItems, type, dbfilter, countOnly);
@@ -740,7 +741,8 @@ CSmartPlaylistRule* CGUIDialogMediaFilter::AddRule(Field field, CDatabaseQueryRu
 
 void CGUIDialogMediaFilter::DeleteRule(Field field)
 {
-  for (CDatabaseQueryRules::iterator rule = m_filter->m_ruleCombination.m_rules.begin(); rule != m_filter->m_ruleCombination.m_rules.end(); rule++)
+  for (CDatabaseQueryRules::iterator rule = m_filter->m_ruleCombination.m_rules.begin();
+       rule != m_filter->m_ruleCombination.m_rules.end(); ++rule)
   {
     if ((*rule)->m_field == field)
     {

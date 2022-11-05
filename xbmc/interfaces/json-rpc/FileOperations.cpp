@@ -16,7 +16,6 @@
 #include "Util.h"
 #include "VideoLibrary.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "media/MediaLockState.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSourceSettings.h"
@@ -144,7 +143,8 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
       param["properties"] = CVariant(CVariant::VariantTypeArray);
 
     bool hasFileField = false;
-    for (CVariant::const_iterator_array itr = param["properties"].begin_array(); itr != param["properties"].end_array(); itr++)
+    for (CVariant::const_iterator_array itr = param["properties"].begin_array();
+         itr != param["properties"].end_array(); ++itr)
     {
       if (itr->asString().compare("file") == 0)
       {
@@ -168,7 +168,7 @@ JSONRPC_STATUS CFileOperations::GetDirectory(const std::string &method, ITranspo
 JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   std::string file = parameterObject["file"].asString();
-  if (!CFile::Exists(file))
+  if (!CFileUtils::Exists(file))
     return InvalidParams;
 
   if (!CFileUtils::RemoteAccessAllowed(file))
@@ -197,7 +197,8 @@ JSONRPC_STATUS CFileOperations::GetFileDetails(const std::string &method, ITrans
     param["properties"] = CVariant(CVariant::VariantTypeArray);
 
   bool hasFileField = false;
-  for (CVariant::const_iterator_array itr = param["properties"].begin_array(); itr != param["properties"].end_array(); itr++)
+  for (CVariant::const_iterator_array itr = param["properties"].begin_array();
+       itr != param["properties"].end_array(); ++itr)
   {
     if (itr->asString().compare("file") == 0)
     {
@@ -223,7 +224,7 @@ JSONRPC_STATUS CFileOperations::SetFileDetails(const std::string &method, ITrans
     return InvalidParams;
 
   std::string file = parameterObject["file"].asString();
-  if (!CFile::Exists(file))
+  if (!CFileUtils::Exists(file))
     return InvalidParams;
 
   if (!CFileUtils::RemoteAccessAllowed(file))
@@ -283,8 +284,8 @@ JSONRPC_STATUS CFileOperations::Download(const std::string &method, ITransportLa
 }
 
 bool CFileOperations::FillFileItem(
-    const CFileItemPtr& originalItem,
-    CFileItemPtr& item,
+    const std::shared_ptr<CFileItem>& originalItem,
+    std::shared_ptr<CFileItem>& item,
     const std::string& media /* = "" */,
     const CVariant& parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
@@ -296,7 +297,7 @@ bool CFileOperations::FillFileItem(
 
   bool status = false;
   std::string strFilename = originalItem->GetPath();
-  if (!strFilename.empty() && (CDirectory::Exists(strFilename) || CFile::Exists(strFilename)))
+  if (!strFilename.empty() && (CDirectory::Exists(strFilename) || CFileUtils::Exists(strFilename)))
   {
     if (media == "video")
       status = CVideoLibrary::FillFileItem(strFilename, item, parameterObject);

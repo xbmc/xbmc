@@ -65,7 +65,7 @@ protected:
 
   CAndroidUtils *m_android;
 
-  EGLDisplay m_nativeDisplay;
+  EGLDisplay m_nativeDisplay = EGL_NO_DISPLAY;
   std::shared_ptr<CNativeWindow> m_nativeWindow;
 
   int m_displayWidth;

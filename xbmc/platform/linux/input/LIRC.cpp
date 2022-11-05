@@ -8,8 +8,8 @@
 
 #include "LIRC.h"
 
-#include "AppInboundProtocol.h"
 #include "ServiceBroker.h"
+#include "application/AppInboundProtocol.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -23,6 +23,9 @@
 #include <lirc/lirc_client.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <unistd.h>
+
+#include "PlatformDefs.h"
 
 using namespace std::chrono_literals;
 

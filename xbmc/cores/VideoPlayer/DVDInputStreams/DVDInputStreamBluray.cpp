@@ -16,7 +16,6 @@
 #include "URL.h"
 #include "filesystem/BlurayCallback.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/DiscSettings.h"
@@ -332,7 +331,7 @@ bool CDVDInputStreamBluray::Open()
     m_navmode = false;
     m_titleInfo = GetTitleLongest();
   }
-  else if (resumable && m_item.m_lStartOffset == STARTOFFSET_RESUME)
+  else if (resumable && m_item.GetStartOffset() == STARTOFFSET_RESUME)
   {
     // resuming a bluray for which we have a saved state - the playlist will be open later on SetState
     m_navmode = false;
@@ -485,6 +484,11 @@ void CDVDInputStreamBluray::ProcessEvent() {
 
     if (pid == 0)
       m_player->OnDiscNavResult(static_cast<void*>(&pid), BD_EVENT_STILL);
+    break;
+
+  case BD_EVENT_DISCONTINUITY:
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray - BD_EVENT_DISCONTINUITY");
+    m_hold = HOLD_STILL;
     break;
 
     /* playback position */

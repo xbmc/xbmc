@@ -8,12 +8,10 @@
 
 #pragma once
 
-#include "addons/Addon.h"
-#include "addons/Repository.h"
 #include "threads/Event.h"
-#include "utils/FileOperationJob.h"
-#include "utils/Stopwatch.h"
+#include "utils/Job.h"
 
+#include <map>
 #include <memory>
 #include <string>
 #include <utility>
@@ -24,7 +22,16 @@ class CFileItemList;
 namespace ADDON
 {
 
+class CAddonVersion;
+
 class CAddonDatabase;
+
+class CRepository;
+using RepositoryPtr = std::shared_ptr<CRepository>;
+
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
+using VECADDONS = std::vector<AddonPtr>;
 
 enum class BackgroundJob : bool
 {
@@ -140,8 +147,11 @@ public:
 
    /*! Install an addon with a specific version and repository */
   bool Install(const std::string& addonId,
-               const ADDON::AddonVersion& version,
+               const ADDON::CAddonVersion& version,
                const std::string& repoId);
+
+  /*! Uninstall an addon, remove addon data if requested */
+  bool UnInstall(const ADDON::AddonPtr& addon, bool removeData);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
   Iterates through the addon's dependencies, checking they're installed or installable.
@@ -150,7 +160,7 @@ public:
   \param database the database instance to update. Defaults to NULL.
   \return true if dependencies are available, false otherwise.
   */
-  bool CheckDependencies(const ADDON::AddonPtr &addon, CAddonDatabase *database = NULL);
+  bool CheckDependencies(const ADDON::AddonPtr& addon, CAddonDatabase* database = nullptr);
 
   /*! \brief Check whether dependencies of an addon exist or are installable.
    Iterates through the addon's dependencies, checking they're installed or installable.
@@ -160,7 +170,9 @@ public:
    \param database the database instance to update. Defaults to NULL.
    \return true if dependencies are available, false otherwise.
    */
-  bool CheckDependencies(const ADDON::AddonPtr &addon, std::pair<std::string, std::string> &failedDep, CAddonDatabase *database = NULL);
+  bool CheckDependencies(const ADDON::AddonPtr& addon,
+                         std::pair<std::string, std::string>& failedDep,
+                         CAddonDatabase* database = nullptr);
 
   /*! \brief Check if an installation job for a given add-on is already queued up
    *  \param ID The ID of the add-on
@@ -227,79 +239,6 @@ private:
   mutable CCriticalSection m_critSection;
   JobMap m_downloadJobs;
   CEvent m_idle;
-};
-
-class CAddonInstallJob : public CFileOperationJob
-{
-public:
-  CAddonInstallJob(const ADDON::AddonPtr& addon,
-                   const ADDON::RepositoryPtr& repo,
-                   AutoUpdateJob isAutoUpdate);
-
-  bool DoWork() override;
-
-  static constexpr const char* TYPE_DOWNLOAD = "DOWNLOAD";
-  static constexpr const char* TYPE_INSTALL = "INSTALL";
-  /*!
-   * \brief Returns the current processing type in the installation job
-   *
-   * \return The current processing type as string, can be \ref TYPE_DOWNLOAD or
-   *         \ref TYPE_INSTALL
-   */
-  const char* GetType() const override { return m_currentType; }
-
-  /*! \brief Find the add-on and its repository for the given add-on ID
-   *  \param addonID ID of the add-on to find
-   *  \param[out] repo the repository to use
-   *  \param[out] addon Add-on with the given add-on ID
-   *  \return True if the add-on and its repository were found, false otherwise.
-   */
-  static bool GetAddon(const std::string& addonID, ADDON::RepositoryPtr& repo, ADDON::AddonPtr& addon);
-
-  void SetDependsInstall(DependencyJob dependsInstall) { m_dependsInstall = dependsInstall; }
-  void SetAllowCheckForUpdates(AllowCheckForUpdates allowCheckForUpdates)
-  {
-    m_allowCheckForUpdates = allowCheckForUpdates;
-  };
-
-private:
-  void OnPreInstall();
-  void OnPostInstall();
-  bool Install(const std::string &installFrom, const ADDON::RepositoryPtr& repo = ADDON::RepositoryPtr());
-  bool DownloadPackage(const std::string &path, const std::string &dest);
-
-  bool DoFileOperation(FileAction action, CFileItemList &items, const std::string &file, bool useSameJob = true);
-
-  /*! \brief Queue a notification for addon installation/update failure
-   \param addonID - addon id
-   \param fileName - filename which is shown in case the addon id is unknown
-   \param message - error message to be displayed
-   */
-  void ReportInstallError(const std::string& addonID, const std::string& fileName, const std::string& message = "");
-
-  ADDON::AddonPtr m_addon;
-  ADDON::RepositoryPtr m_repo;
-  bool m_isUpdate;
-  AutoUpdateJob m_isAutoUpdate;
-  DependencyJob m_dependsInstall = DependencyJob::CHOICE_NO;
-  AllowCheckForUpdates m_allowCheckForUpdates = AllowCheckForUpdates::CHOICE_YES;
-  const char* m_currentType = TYPE_DOWNLOAD;
-};
-
-class CAddonUnInstallJob : public CFileOperationJob
-{
-public:
-  CAddonUnInstallJob(const ADDON::AddonPtr &addon, bool removeData);
-
-  bool DoWork() override;
-  void SetRecurseOrphaned(RecurseOrphaned recurseOrphaned) { m_recurseOrphaned = recurseOrphaned; };
-
-private:
-  void ClearFavourites();
-
-  ADDON::AddonPtr m_addon;
-  bool m_removeData;
-  RecurseOrphaned m_recurseOrphaned = RecurseOrphaned::CHOICE_YES;
 };
 
 }; // namespace ADDON

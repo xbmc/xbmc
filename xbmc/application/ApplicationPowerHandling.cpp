@@ -8,15 +8,19 @@
 
 #include "ApplicationPowerHandling.h"
 
-#include "ApplicationPlayer.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "addons/Addon.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "messaging/ApplicationMessenger.h"
@@ -25,18 +29,14 @@
 #include "powermanagement/PowerTypes.h"
 #include "profiles/ProfileManager.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsPowerManagement.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/AlarmClock.h"
 #include "utils/log.h"
 #include "video/VideoLibraryQueue.h"
 #include "windowing/WinSystem.h"
-
-CApplicationPowerHandling::CApplicationPowerHandling(CApplicationPlayer& appPlayer)
-  : m_appPlayer(appPlayer)
-{
-}
 
 void CApplicationPowerHandling::ResetScreenSaver()
 {
@@ -58,6 +58,11 @@ void CApplicationPowerHandling::ResetSystemIdleTimer()
 {
   // reset system idle timer
   m_idleTimer.StartZero();
+}
+
+void CApplicationPowerHandling::ResetNavigationTimer()
+{
+  m_navigationTimer.StartZero();
 }
 
 void CApplicationPowerHandling::SetRenderGUI(bool renderGUI)
@@ -290,11 +295,13 @@ void CApplicationPowerHandling::CheckScreenSaverAndDPMS()
     haveIdleActivity = true;
 
   // Are we playing a video and it is not paused?
-  if (m_appPlayer.IsPlayingVideo() && !m_appPlayer.IsPaused())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer && appPlayer->IsPlayingVideo() && !appPlayer->IsPaused())
     haveIdleActivity = true;
 
   // Are we playing some music in fullscreen vis?
-  else if (m_appPlayer.IsPlayingAudio() &&
+  else if (appPlayer && appPlayer->IsPlayingAudio() &&
            CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION &&
            !CServiceBroker::GetSettingsComponent()
                 ->GetSettings()
@@ -368,7 +375,9 @@ void CApplicationPowerHandling::CheckScreenSaverAndDPMS()
 void CApplicationPowerHandling::ActivateScreenSaver(bool forceType /*= false */)
 {
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  if (m_appPlayer.IsPlayingAudio() &&
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer && appPlayer->IsPlayingAudio() &&
       settings->GetBool(CSettings::SETTING_SCREENSAVER_USEMUSICVISINSTEAD) &&
       !settings->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty())
   { // just activate the visualisation if user toggled the usemusicvisinstead option
@@ -397,10 +406,10 @@ void CApplicationPowerHandling::ActivateScreenSaver(bool forceType /*= false */)
     bool bUseDim = false;
     if (CServiceBroker::GetGUI()->GetWindowManager().HasModalDialog(true))
       bUseDim = true;
-    else if (m_appPlayer.IsPlayingVideo() &&
+    else if (appPlayer && appPlayer->IsPlayingVideo() &&
              settings->GetBool(CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE))
       bUseDim = true;
-    else if (CServiceBroker::GetPVRManager().GUIActions()->IsRunningChannelScan())
+    else if (CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().IsRunningChannelScan())
       bUseDim = true;
 
     if (bUseDim)
@@ -413,7 +422,7 @@ void CApplicationPowerHandling::ActivateScreenSaver(bool forceType /*= false */)
     return;
   }
   else if (CServiceBroker::GetAddonMgr().GetAddon(m_screensaverIdInUse, m_pythonScreenSaver,
-                                                  ADDON::ADDON_SCREENSAVER,
+                                                  ADDON::AddonType::SCREENSAVER,
                                                   ADDON::OnlyEnabled::CHOICE_YES))
   {
     std::string libPath = m_pythonScreenSaver->LibPath();
@@ -512,13 +521,19 @@ void CApplicationPowerHandling::HandleShutdownMessage()
 void CApplicationPowerHandling::CheckShutdown()
 {
   // first check if we should reset the timer
-  if (m_bInhibitIdleShutdown || m_appPlayer.IsPlaying() ||
-      m_appPlayer.IsPausedPlayback() // is something playing?
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (!appPlayer)
+    return;
+
+  if (m_bInhibitIdleShutdown || appPlayer->IsPlaying() ||
+      appPlayer->IsPausedPlayback() // is something playing?
       || CMusicLibraryQueue::GetInstance().IsRunning() ||
       CVideoLibraryQueue::GetInstance().IsRunning() ||
       CServiceBroker::GetGUI()->GetWindowManager().IsWindowActive(
           WINDOW_DIALOG_PROGRESS) // progress dialog is onscreen
-      || !CServiceBroker::GetPVRManager().GUIActions()->CanSystemPowerdown(false))
+      ||
+      !CServiceBroker::GetPVRManager().Get<PVR::GUI::PowerManagement>().CanSystemPowerdown(false))
   {
     m_shutdownTimer.StartZero();
     return;
@@ -573,7 +588,7 @@ bool CApplicationPowerHandling::OnSettingAction(const CSetting& setting)
     if (CServiceBroker::GetAddonMgr().GetAddon(
             CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
                 CSettings::SETTING_SCREENSAVER_MODE),
-            addon, ADDON::ADDON_SCREENSAVER, ADDON::OnlyEnabled::CHOICE_YES))
+            addon, ADDON::AddonType::SCREENSAVER, ADDON::OnlyEnabled::CHOICE_YES))
       CGUIDialogAddonSettings::ShowForAddon(addon);
   }
   else

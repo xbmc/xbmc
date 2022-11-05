@@ -36,7 +36,7 @@ protected:
   void DeleteTexture(int index) override;
   bool CreateTexture(int index) override;
 
-  CVOpenGLESTextureCacheRef m_textureCache;
+  CVOpenGLESTextureCacheRef m_textureCache = nullptr;
   struct CRenderBuffer
   {
     CVOpenGLESTextureRef m_textureY;

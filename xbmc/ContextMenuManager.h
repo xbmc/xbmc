@@ -9,10 +9,17 @@
 #pragma once
 
 #include "ContextMenuItem.h"
-#include "addons/ContextMenuAddon.h"
+#include "threads/CriticalSection.h"
 
+#include <memory>
 #include <utility>
 #include <vector>
+
+namespace ADDON
+{
+struct AddonEvent;
+class CAddonMgr;
+} // namespace ADDON
 
 namespace PVR
 {
@@ -63,10 +70,11 @@ namespace CONTEXTMENU
   /*!
    * Starts the context menu loop for a file item.
    * */
-  bool ShowFor(const CFileItemPtr& fileItem, const CContextMenuItem& root=CContextMenuManager::MAIN);
+bool ShowFor(const std::shared_ptr<CFileItem>& fileItem,
+             const CContextMenuItem& root = CContextMenuManager::MAIN);
 
-  /*!
+/*!
    * Shortcut for continuing the context menu loop from an existing menu item.
    */
-  bool LoopFrom(const IContextMenuItem& menu, const CFileItemPtr& fileItem);
+bool LoopFrom(const IContextMenuItem& menu, const std::shared_ptr<CFileItem>& fileItem);
 }

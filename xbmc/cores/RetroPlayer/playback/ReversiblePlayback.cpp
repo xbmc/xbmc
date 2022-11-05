@@ -9,6 +9,8 @@
 #include "ReversiblePlayback.h"
 
 #include "ServiceBroker.h"
+#include "XBDateTime.h"
+#include "addons/AddonVersion.h"
 #include "cores/RetroPlayer/cheevos/Cheevos.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"

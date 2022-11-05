@@ -11,6 +11,8 @@
 #include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "Util.h"
+#include "addons/AddonManager.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
 #include "favourites/FavouritesService.h"
 #include "filesystem/Directory.h"
@@ -22,7 +24,7 @@
 #include "pictures/PictureThumbLoader.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRThumbLoader.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/JobManager.h"
@@ -419,7 +421,7 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
     fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
 
   // grab the execute string
-  std::string execute = CServiceBroker::GetFavouritesService().GetExecutePath(fileItem, GetTarget(fileItem));
+  const std::string execute = CUtil::GetExecPath(fileItem, GetTarget(fileItem));
   if (!execute.empty())
   {
     CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
@@ -440,7 +442,7 @@ bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
   }
   else if (fileItem->IsPVR())
   {
-    return CServiceBroker::GetPVRManager().GUIActions()->OnInfo(fileItem);
+    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().OnInfo(*fileItem);
   }
   else if (fileItem->HasVideoInfoTag())
   {

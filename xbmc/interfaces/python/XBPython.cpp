@@ -17,7 +17,6 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
-#include "filesystem/File.h"
 #include "filesystem/SpecialProtocol.h"
 #include "interfaces/AnnouncementManager.h"
 #include "interfaces/legacy/AddonUtils.h"
@@ -33,7 +32,6 @@
 
 #ifdef TARGET_WINDOWS
 #include "platform/Environment.h"
-#include "utils/SystemInfo.h"
 #endif
 
 #include <algorithm>
@@ -492,17 +490,13 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
                 CSpecialProtocol::TranslatePath("special://frameworks"));
     }
 #elif defined(TARGET_WINDOWS)
-    // because the third party build of python is compiled with vs2008 we need
-    // a hack to set the PYTHONPATH
-    std::string buf;
-    buf = "PYTHONPATH=" + CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib");
-    CEnvironment::putenv(buf);
-    buf = "PYTHONOPTIMIZE=1";
-    CEnvironment::putenv(buf);
 
 #ifdef TARGET_WINDOWS_STORE
+#ifdef _DEBUG
+    CEnvironment::putenv("PYTHONCASEOK=1");
+#endif
     CEnvironment::putenv("OS=win10");
-#else
+#else // TARGET_WINDOWS_DESKTOP
     CEnvironment::putenv("OS=win32");
 #endif
 
@@ -511,10 +505,17 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
                            pythonHomeW);
     Py_SetPythonHome(pythonHomeW.c_str());
 
-#ifdef _DEBUG
-    if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
-      CEnvironment::putenv("PYTHONCASEOK=1");
-#endif
+    std::string pythonPath = CSpecialProtocol::TranslatePath("special://xbmc/system/python/DLLs");
+    pythonPath += ";";
+    pythonPath += CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib");
+    pythonPath += ";";
+    pythonPath += CSpecialProtocol::TranslatePath("special://xbmc/system/python/Lib/site-packages");
+    std::wstring pythonPathW;
+    CCharsetConverter::utf8ToW(pythonPath, pythonPathW);
+
+    Py_SetPath(pythonPathW.c_str());
+
+    Py_OptimizeFlag = 1;
 #endif
 
     Py_Initialize();
@@ -530,10 +531,6 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
     // Acquire GIL if thread doesn't currently hold.
     if (!PyGILState_Check())
       PyEval_RestoreThread((PyThreadState*)m_mainThreadState);
-
-    const wchar_t* python_argv[1] = {L""};
-    //! @bug libpython isn't const correct
-    PySys_SetArgv(1, const_cast<wchar_t**>(python_argv));
 
     if (!(m_mainThreadState = PyThreadState_Get()))
       CLog::Log(LOGERROR, "Python threadstate is NULL.");

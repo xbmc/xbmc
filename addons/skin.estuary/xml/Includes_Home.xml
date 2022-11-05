@@ -213,6 +213,7 @@
 		<param name="sortorder">ascending</param>
 		<param name="widget_limit">15</param>
 		<param name="fallback_icon">DefaultAudio.png</param>
+		<param name="onclick_condition">false</param>
 		<definition>
 			<include content="CategoryLabel">
 				<param name="label">$PARAM[widget_header]</param>
@@ -229,6 +230,7 @@
 				<top>120</top>
 				<right>0</right>
 				<height>500</height>
+				<onclick condition="$PARAM[onclick_condition]">$PARAM[onclick_action]</onclick>
 				<include content="WidgetListCommon">
 					<param name="list_id" value="$PARAM[list_id]"/>
 				</include>

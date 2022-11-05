@@ -10,12 +10,12 @@
 
 #include "CompileInfo.h"
 #include "FileOperationJob.h"
-#include "JobManager.h"
 #include "ServiceBroker.h"
 #include "StringUtils.h"
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
+#include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
@@ -46,7 +46,7 @@ bool CFileUtils::DeleteItem(const std::string &strPath)
   return DeleteItem(item);
 }
 
-bool CFileUtils::DeleteItem(const CFileItemPtr &item)
+bool CFileUtils::DeleteItem(const std::shared_ptr<CFileItem>& item)
 {
   if (!item || item->IsParentFolder())
     return false;
@@ -353,4 +353,9 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
   if (! isImage)
     return CFileUtils::RemoteAccessAllowed(decodePath);
   return true;
+}
+
+bool CFileUtils::Exists(const std::string& strFileName, bool bUseCache)
+{
+  return CFile::Exists(strFileName, bUseCache);
 }

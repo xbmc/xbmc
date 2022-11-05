@@ -15,7 +15,6 @@
 
 #include "LockType.h"
 #include "XBDateTime.h"
-#include "addons/IAddon.h"
 #include "guilib/GUIListItem.h"
 #include "threads/CriticalSection.h"
 #include "utils/IArchivable.h"
@@ -28,6 +27,13 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+enum class VideoDbContentType;
+
+namespace ADDON
+{
+class IAddon;
+}
 
 namespace MUSIC_INFO
 {
@@ -113,8 +119,6 @@ public:
   explicit CFileItem(const MUSIC_INFO::CMusicInfoTag& music);
   explicit CFileItem(const CVideoInfoTag& movie);
   explicit CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
-  CFileItem(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag,
-            const std::shared_ptr<PVR::CPVRChannelGroupMember>& groupMember);
   explicit CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRChannelGroupMember>& channelGroupMember);
   explicit CFileItem(const std::shared_ptr<PVR::CPVRRecording>& record);
@@ -232,6 +236,7 @@ public:
   bool IsSmb() const;
   bool IsURL() const;
   bool IsStack() const;
+  bool IsFavourite() const;
   bool IsMultiPath() const;
   bool IsMusicDb() const;
   bool IsVideoDb() const;
@@ -261,7 +266,7 @@ public:
   void FillInDefaultIcon();
   void SetFileSizeLabel();
   void SetLabel(const std::string &strLabel) override;
-  int GetVideoContentType() const; /* return VIDEODB_CONTENT_TYPE, but don't want to include videodb in this header */
+  VideoDbContentType GetVideoContentType() const;
   bool IsLabelPreformatted() const { return m_bLabelPreformatted; }
   void SetLabelPreformatted(bool bYesNo) { m_bLabelPreformatted=bYesNo; }
   bool SortsOnTop() const { return m_specialSort == SortSpecialOnTop; }
@@ -361,6 +366,38 @@ public:
    \return True if the item has a resume point set, false otherwise.
    */
   bool GetCurrentResumeTimeAndPartNumber(int64_t& startOffset, int& partNumber) const;
+
+  /*!
+   * \brief Test if this item type can be resumed.
+   * \return True if this item can be resumed, false otherwise.
+   */
+  bool IsResumable() const;
+
+  /*!
+   * \brief Get the offset where start the playback.
+   * \return The offset value as ms.
+   *         Can return also special value -1, see define STARTOFFSET_RESUME.
+   */
+  int64_t GetStartOffset() const { return m_lStartOffset; }
+
+  /*!
+   * \brief Set the offset where start the playback.
+   * \param offset Set the offset value as ms,
+                   or the special value STARTOFFSET_RESUME.
+   */
+  void SetStartOffset(const int64_t offset) { m_lStartOffset = offset; }
+
+  /*!
+   * \brief Get the end offset.
+   * \return The offset value as ms.
+   */
+  int64_t GetEndOffset() const { return m_lEndOffset; }
+
+  /*!
+   * \brief Set the end offset.
+   * \param offset Set the offset as ms.
+   */
+  void SetEndOffset(const int64_t offset) { m_lEndOffset = offset; }
 
   inline bool HasPictureInfoTag() const
   {
@@ -573,9 +610,7 @@ public:
   std::string m_strTitle;
   int m_iprogramCount;
   int m_idepth;
-  int64_t m_lStartOffset;
   int m_lStartPartNumber;
-  int64_t m_lEndOffset;
   LockType m_iLockMode;
   std::string m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
@@ -599,10 +634,9 @@ private:
   CBookmark GetResumePoint() const;
 
   /*!
-   \brief If given channel is radio, fill item's music tag from given epg tag and channel info.
+   \brief Fill item's music tag from given epg tag.
    */
-  void FillMusicInfoTag(const std::shared_ptr<PVR::CPVRChannelGroupMember>& groupMember,
-                        const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
+  void FillMusicInfoTag(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
 
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;
@@ -626,6 +660,8 @@ private:
   KODI::GAME::CGameInfoTag* m_gameInfoTag;
   EventPtr m_eventLogEntry;
   bool m_bIsAlbum;
+  int64_t m_lStartOffset;
+  int64_t m_lEndOffset;
 
   CCueDocumentPtr m_cueDocument;
 };
@@ -653,12 +689,6 @@ typedef std::vector< CFileItemPtr >::iterator IVECFILEITEMS;
   \sa CFileItem
   */
 typedef std::map<std::string, CFileItemPtr > MAPFILEITEMS;
-
-/*!
-  \brief Iterator for MAPFILEITEMS
-  \sa MAPFILEITEMS
-  */
-typedef std::map<std::string, CFileItemPtr >::iterator IMAPFILEITEMS;
 
 /*!
   \brief Pair for MAPFILEITEMS
@@ -693,11 +723,9 @@ public:
   void AddFront(const CFileItemPtr &pItem, int itemPosition);
   void Remove(CFileItem* pItem);
   void Remove(int iItem);
-  CFileItemPtr Get(int iItem);
-  const CFileItemPtr Get(int iItem) const;
+  CFileItemPtr Get(int iItem) const;
   const VECFILEITEMS& GetList() const { return m_items; }
-  CFileItemPtr Get(const std::string& strPath);
-  const CFileItemPtr Get(const std::string& strPath) const;
+  CFileItemPtr Get(const std::string& strPath) const;
   int Size() const;
   bool IsEmpty() const;
   void Append(const CFileItemList& itemlist);

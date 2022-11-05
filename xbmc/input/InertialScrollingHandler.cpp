@@ -8,14 +8,16 @@
 
 #include "InertialScrollingHandler.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "utils/TimeUtils.h"
-#include "utils/log.h"
 #include "windowing/WinSystem.h"
 
 #include <cmath>
@@ -51,7 +53,10 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
   // reset screensaver during pan
   if (action->GetID() == ACTION_GESTURE_PAN)
   {
-    g_application.ResetScreenSaver();
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+    if (appPower)
+      appPower->ResetScreenSaver();
     if (!m_bScrolling)
     {
       m_panPoints.emplace_back(CTimeUtils::GetFrameTime(),
@@ -81,8 +86,10 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
     m_bScrolling = false;
     // wakeup screensaver on pan begin
-    g_application.ResetScreenSaver();
-    g_application.WakeUpScreenSaverAndDPMS();
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+    appPower->ResetScreenSaver();
+    appPower->WakeUpScreenSaverAndDPMS();
   }
   else if (action->GetID() == ACTION_GESTURE_END &&
            !m_panPoints.empty()) // do we need to animate inertial scrolling?

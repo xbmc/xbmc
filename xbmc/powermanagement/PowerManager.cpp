@@ -8,10 +8,15 @@
 
 #include "PowerManager.h"
 
-#include "AppParams.h"
-#include "Application.h"
+#include "FileItem.h"
 #include "PowerTypes.h"
 #include "ServiceBroker.h"
+#include "application/AppParams.h"
+#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
+#include "application/ApplicationPowerHandling.h"
+#include "application/ApplicationStackHelper.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "dialogs/GUIDialogBusyNoCancel.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -19,7 +24,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
-#include "interfaces/builtins/Builtins.h"
 #include "network/Network.h"
 #include "pvr/PVRManager.h"
 #include "settings/Settings.h"
@@ -29,7 +33,6 @@
 #include "settings/lib/SettingsManager.h"
 #include "utils/log.h"
 #include "weather/WeatherManager.h"
-#include "windowing/WinSystem.h"
 
 #include <list>
 #include <memory>
@@ -38,9 +41,8 @@
 extern HWND g_hWnd;
 #endif
 
-CPowerManager::CPowerManager()
+CPowerManager::CPowerManager() : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings())
 {
-  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_settings->GetSettingsManager()->RegisterSettingOptionsFiller("shutdownstates", SettingOptionsShutdownStatesFiller);
 }
 
@@ -196,8 +198,10 @@ void CPowerManager::OnSleep()
 
   g_application.StopPlaying();
   CServiceBroker::GetPVRManager().OnSleep();
-  g_application.StopShutdownTimer();
-  g_application.StopScreenSaverTimer();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->StopShutdownTimer();
+  appPower->StopScreenSaverTimer();
   g_application.CloseNetworkShares();
   CServiceBroker::GetActiveAE()->Suspend();
 }
@@ -209,7 +213,9 @@ void CPowerManager::OnWake()
   CServiceBroker::GetNetwork().WaitForNet();
 
   // reset out timers
-  g_application.ResetShutdownTimers();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->ResetShutdownTimers();
 
   CGUIDialogBusyNoCancel* dialog =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogBusyNoCancel>(
@@ -225,7 +231,7 @@ void CPowerManager::OnWake()
     SetForegroundWindow(g_hWnd);
 #endif
   }
-  g_application.ResetScreenSaver();
+  appPower->ResetScreenSaver();
 #endif
 
   CServiceBroker::GetActiveAE()->Resume();
@@ -248,23 +254,27 @@ void CPowerManager::OnLowBattery()
 
 void CPowerManager::StorePlayerState()
 {
-  CApplicationPlayer &appPlayer = g_application.GetAppPlayer();
-  if (appPlayer.IsPlaying())
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlaying())
   {
-    m_lastUsedPlayer = appPlayer.GetCurrentPlayer();
+    m_lastUsedPlayer = appPlayer->GetCurrentPlayer();
     m_lastPlayedFileItem.reset(new CFileItem(g_application.CurrentFileItem()));
     // set the actual offset instead of store and load it from database
-    m_lastPlayedFileItem->m_lStartOffset = appPlayer.GetTime();
+    m_lastPlayedFileItem->SetStartOffset(appPlayer->GetTime());
     // in case of regular stack, correct the start offset by adding current part start time
-    if (g_application.GetAppStackHelper().IsPlayingRegularStack())
-      m_lastPlayedFileItem->m_lStartOffset += g_application.GetAppStackHelper().GetCurrentStackPartStartTimeMs();
+    const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
+    if (stackHelper->IsPlayingRegularStack())
+      m_lastPlayedFileItem->SetStartOffset(m_lastPlayedFileItem->GetStartOffset() +
+                                           stackHelper->GetCurrentStackPartStartTimeMs());
     // in case of iso stack, keep track of part number
-    m_lastPlayedFileItem->m_lStartPartNumber = g_application.GetAppStackHelper().IsPlayingISOStack() ? g_application.GetAppStackHelper().GetCurrentPartNumber() + 1 : 1;
+    m_lastPlayedFileItem->m_lStartPartNumber =
+        stackHelper->IsPlayingISOStack() ? stackHelper->GetCurrentPartNumber() + 1 : 1;
     // for iso and iso stacks, keep track of playerstate
-    m_lastPlayedFileItem->SetProperty("savedplayerstate", appPlayer.GetPlayerState());
+    m_lastPlayedFileItem->SetProperty("savedplayerstate", appPlayer->GetPlayerState());
     CLog::Log(LOGDEBUG,
               "CPowerManager::StorePlayerState - store last played item (startOffset: {} ms)",
-              m_lastPlayedFileItem->m_lStartOffset);
+              m_lastPlayedFileItem->GetStartOffset());
   }
   else
   {
@@ -280,7 +290,7 @@ void CPowerManager::RestorePlayerState()
 
   CLog::Log(LOGDEBUG,
             "CPowerManager::RestorePlayerState - resume last played item (startOffset: {} ms)",
-            m_lastPlayedFileItem->m_lStartOffset);
+            m_lastPlayedFileItem->GetStartOffset());
   g_application.PlayFile(*m_lastPlayedFileItem, m_lastUsedPlayer);
 }
 

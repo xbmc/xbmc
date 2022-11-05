@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "WeatherJob.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIDialogAddonSettings.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -177,7 +178,7 @@ void CWeatherManager::OnSettingAction(const std::shared_ptr<const CSetting>& set
     if (CServiceBroker::GetAddonMgr().GetAddon(
             CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
                 CSettings::SETTING_WEATHER_ADDON),
-            addon, ADDON_SCRIPT_WEATHER, OnlyEnabled::CHOICE_YES) &&
+            addon, AddonType::SCRIPT_WEATHER, OnlyEnabled::CHOICE_YES) &&
         addon != NULL)
     { //! @todo maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
       CGUIDialogAddonSettings::ShowForAddon(addon);

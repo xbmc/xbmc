@@ -66,10 +66,10 @@ namespace OVERLAY {
       POSITION_RELATIVE
     } m_pos;
 
-    float m_x;
-    float m_y;
-    float m_width;
-    float m_height;
+    float m_x{0};
+    float m_y{0};
+    float m_width{1.0f};
+    float m_height{1.0f};
     float m_source_width{0}; // Video source width resolution used to calculate aspect ratio
     float m_source_height{0}; // Video source height resolution used to calculate aspect ratio
 
@@ -167,18 +167,30 @@ namespace OVERLAY {
      */
     void LoadSettings();
 
+    enum PositonResInfoState
+    {
+      POSRESINFO_UNSET = -1,
+      POSRESINFO_SAVE_CHANGES = -2,
+    };
+
     CCriticalSection m_section;
     std::vector<SElement> m_buffers[NUM_BUFFERS];
     std::map<unsigned int, COverlay*> m_textureCache;
     static unsigned int m_textureid;
-    CRect m_rv, m_rs, m_rd;
+    CRect m_rv; // Frame size
+    CRect m_rs; // Source size
+    CRect m_rd; // Video size, may be influenced by video settings (e.g. zoom)
     std::string m_stereomode;
-    int m_subtitlePosition{0}; // Current subtitle position
-    int m_subtitlePosResInfo{-1}; // Current subtitle position from resolution info
+    // Current subtitle position
+    int m_subtitlePosition{0};
+    // Current subtitle position from resolution info,
+    // or PositonResInfoState enum values for deferred processing
+    int m_subtitlePosResInfo{POSRESINFO_UNSET};
     int m_subtitleVerticalMargin{0};
     bool m_saveSubtitlePosition{false}; // To save subtitle position permanently
     KODI::SUBTITLES::HorizontalAlign m_subtitleHorizontalAlign{
         KODI::SUBTITLES::HorizontalAlign::CENTER};
+    KODI::SUBTITLES::Align m_subtitleAlign{KODI::SUBTITLES::Align::BOTTOM_OUTSIDE};
 
     std::shared_ptr<struct KODI::SUBTITLES::STYLE::style> m_overlayStyle;
     std::atomic<bool> m_isSettingsChanged{false};

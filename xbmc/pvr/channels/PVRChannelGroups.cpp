@@ -13,6 +13,7 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClient.h"
+#include "pvr/addons/PVRClientUID.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
@@ -135,8 +136,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroups::GetChannelGroupMember
     const std::shared_ptr<CPVRChannelGroup> group = GetByName(path.GetGroupName());
     if (group)
       return group->GetByUniqueID(
-          {CServiceBroker::GetPVRManager().Clients()->GetClientId(path.GetClientID()),
-           path.GetChannelUID()});
+          {CPVRClientUID(path.GetAddonID(), path.GetInstanceID()).GetUID(), path.GetChannelUID()});
   }
 
   return {};

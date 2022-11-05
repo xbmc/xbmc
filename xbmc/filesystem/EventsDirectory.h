@@ -8,8 +8,13 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "filesystem/IDirectory.h"
+
+#include <memory>
+
+class CFileItem;
+class CFileItemList;
+class IEvent;
 
 #define PROPERTY_EVENT_IDENTIFIER  "Event.ID"
 #define PROPERTY_EVENT_LEVEL       "Event.Level"
@@ -29,6 +34,7 @@ namespace XFILE
     bool Exists(const CURL& url) override { return true; }
     bool AllowAll() const override { return true; }
 
-    static CFileItemPtr EventToFileItem(const EventPtr& activity);
+    static std::shared_ptr<CFileItem> EventToFileItem(
+        const std::shared_ptr<const IEvent>& activity);
   };
 }

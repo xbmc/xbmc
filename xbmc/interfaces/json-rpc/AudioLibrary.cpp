@@ -17,6 +17,7 @@
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbUrl.h"
 #include "music/MusicThumbLoader.h"
 #include "music/Song.h"
 #include "music/tags/MusicInfoTag.h"
@@ -38,7 +39,7 @@ JSONRPC_STATUS CAudioLibrary::GetProperties(const std::string &method, ITranspor
   CMusicDatabase musicdatabase;
   // Make db connection once if one or more properties needs db access
   for (CVariant::const_iterator_array it = parameterObject["properties"].begin_array();
-       it != parameterObject["properties"].end_array(); it++)
+       it != parameterObject["properties"].end_array(); ++it)
   {
     std::string propertyName = it->asString();
     if (propertyName == "librarylastupdated" || propertyName == "librarylastcleaned" ||
@@ -54,7 +55,8 @@ JSONRPC_STATUS CAudioLibrary::GetProperties(const std::string &method, ITranspor
     }
   }
 
-  for (CVariant::const_iterator_array it = parameterObject["properties"].begin_array(); it != parameterObject["properties"].end_array(); it++)
+  for (CVariant::const_iterator_array it = parameterObject["properties"].begin_array();
+       it != parameterObject["properties"].end_array(); ++it)
   {
     std::string propertyName = it->asString();
     CVariant property;
@@ -150,7 +152,7 @@ JSONRPC_STATUS CAudioLibrary::GetArtists(const std::string &method, ITransportLa
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
     for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
-      field != parameterObject["properties"].end_array(); field++)
+         field != parameterObject["properties"].end_array(); ++field)
       fields.insert(field->asString());
   }
 
@@ -251,7 +253,7 @@ JSONRPC_STATUS CAudioLibrary::GetAlbums(const std::string &method, ITransportLay
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
     for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
-         field != parameterObject["properties"].end_array(); field++)
+         field != parameterObject["properties"].end_array(); ++field)
       fields.insert(field->asString());
   }
 
@@ -401,7 +403,7 @@ JSONRPC_STATUS CAudioLibrary::GetSongs(const std::string &method, ITransportLaye
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
     for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
-      field != parameterObject["properties"].end_array(); field++)
+         field != parameterObject["properties"].end_array(); ++field)
       fields.insert(field->asString());
   }
 
@@ -790,7 +792,7 @@ JSONRPC_STATUS CAudioLibrary::SetArtistDetails(const std::string &method, ITrans
 
     std::set<std::string> removedArtwork;
     CVariant art = parameterObject["art"];
-    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
+    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); ++artIt)
     {
       if (artIt->second.isString() && !artIt->second.asString().empty())
         artist.art[artIt->first] = CTextureUtils::UnwrapImageURL(artIt->second.asString());
@@ -896,7 +898,7 @@ JSONRPC_STATUS CAudioLibrary::SetAlbumDetails(const std::string &method, ITransp
 
     std::set<std::string> removedArtwork;
     CVariant art = parameterObject["art"];
-    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
+    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); ++artIt)
     {
       if (artIt->second.isString() && !artIt->second.asString().empty())
         album.art[artIt->first] = CTextureUtils::UnwrapImageURL(artIt->second.asString());
@@ -1000,7 +1002,7 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
 
     std::set<std::string> removedArtwork;
     CVariant art = parameterObject["art"];
-    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
+    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); ++artIt)
     {
       if (artIt->second.isString() && !artIt->second.asString().empty())
         artwork[artIt->first] = CTextureUtils::UnwrapImageURL(artIt->second.asString());
@@ -1064,7 +1066,10 @@ JSONRPC_STATUS CAudioLibrary::Clean(const std::string &method, ITransportLayer *
   return ACK;
 }
 
-bool CAudioLibrary::FillFileItem(const std::string &strFilename, CFileItemPtr &item, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
+bool CAudioLibrary::FillFileItem(
+    const std::string& strFilename,
+    std::shared_ptr<CFileItem>& item,
+    const CVariant& parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
   CMusicDatabase musicdatabase;
   if (strFilename.empty())
@@ -1167,7 +1172,8 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   return success;
 }
 
-void CAudioLibrary::FillItemArtistIDs(const std::vector<int>& artistids, CFileItemPtr& item)
+void CAudioLibrary::FillItemArtistIDs(const std::vector<int>& artistids,
+                                      std::shared_ptr<CFileItem>& item)
 {
   // Add artistIds as separate property as not part of CMusicInfoTag
   CVariant artistidObj(CVariant::VariantTypeArray);
@@ -1177,7 +1183,9 @@ void CAudioLibrary::FillItemArtistIDs(const std::vector<int>& artistids, CFileIt
   item->SetProperty("artistid", artistidObj);
 }
 
-void CAudioLibrary::FillAlbumItem(const CAlbum &album, const std::string &path, CFileItemPtr &item)
+void CAudioLibrary::FillAlbumItem(const CAlbum& album,
+                                  const std::string& path,
+                                  std::shared_ptr<CFileItem>& item)
 {
   item = CFileItemPtr(new CFileItem(path, album));
   // Add album artistIds as separate property as not part of CMusicInfoTag
@@ -1346,7 +1354,8 @@ bool CAudioLibrary::CheckForAdditionalProperties(const CVariant &properties, con
     return false;
 
   std::set<std::string> checkingProperties = checkProperties;
-  for (CVariant::const_iterator_array itr = properties.begin_array(); itr != properties.end_array() && !checkingProperties.empty(); itr++)
+  for (CVariant::const_iterator_array itr = properties.begin_array();
+       itr != properties.end_array() && !checkingProperties.empty(); ++itr)
   {
     if (!itr->isString())
       continue;

@@ -12,9 +12,12 @@
 #include "JSONRPC.h"
 #include "utils/DatabaseUtils.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
+class CFileItem;
+class CFileItemList;
 class CVideoDatabase;
 class CVariant;
 
@@ -69,7 +72,10 @@ namespace JSONRPC
     static JSONRPC_STATUS Export(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Clean(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
-    static bool FillFileItem(const std::string &strFilename, CFileItemPtr &item, const CVariant &parameterObject = CVariant(CVariant::VariantTypeArray));
+    static bool FillFileItem(
+        const std::string& strFilename,
+        std::shared_ptr<CFileItem>& item,
+        const CVariant& parameterObject = CVariant(CVariant::VariantTypeArray));
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
     static void UpdateResumePoint(const CVariant &parameterObject, CVideoInfoTag &details, CVideoDatabase &videodatabase);
 

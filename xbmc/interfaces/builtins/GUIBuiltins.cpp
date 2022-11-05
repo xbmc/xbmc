@@ -8,9 +8,10 @@
 
 #include "GUIBuiltins.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "filesystem/Directory.h"
@@ -18,8 +19,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/StereoscopicsManager.h"
-#include "input/ButtonTranslator.h"
 #include "input/WindowTranslator.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
@@ -76,6 +78,9 @@ static int ActivateWindow(const std::vector<std::string>& params2)
   if (iWindow != WINDOW_INVALID)
   {
     // compare the given directory param with the current active directory
+    // if no directory is given, and you switch from a video window to another
+    // we retain history, so it makes sense to not switch to the same window in
+    // that case
     bool bIsSameStartFolder = true;
     if (!params.empty())
     {
@@ -84,14 +89,19 @@ static int ActivateWindow(const std::vector<std::string>& params2)
         bIsSameStartFolder = static_cast<CGUIMediaWindow*>(activeWindow)->IsSameStartFolder(params[0]);
     }
 
-    // let the window know it is being replaced
-    if (Replace)
-      params.emplace_back("replace");
-
     // activate window only if window and path differ from the current active window
     if (iWindow != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() || !bIsSameStartFolder)
     {
-      g_application.WakeUpScreenSaverAndDPMS();
+      // if the window doesn't change, make sure it knows it's gonna be replaced
+      // this ensures setting the start directory if we switch paths
+      // if we change windows, that's done anyway
+      if (Replace && !params.empty() &&
+          iWindow == CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow())
+        params.emplace_back("replace");
+
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+      appPower->WakeUpScreenSaverAndDPMS();
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(iWindow, params, Replace);
       return 0;
     }
@@ -126,7 +136,9 @@ static int ActivateAndFocus(const std::vector<std::string>& params)
     if (iWindow != CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow())
     {
       // disable the screensaver
-      g_application.WakeUpScreenSaverAndDPMS();
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+      appPower->WakeUpScreenSaverAndDPMS();
       CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(iWindow, {}, Replace);
 
       unsigned int iPtr = 1;

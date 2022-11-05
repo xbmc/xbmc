@@ -14,22 +14,22 @@
 
 using namespace MUSIC_GRABBER;
 
-CMusicAlbumInfo::CMusicAlbumInfo(const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL):
-  m_strTitle2(strAlbumInfo)
+CMusicAlbumInfo::CMusicAlbumInfo(const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL)
+  : m_strTitle2(strAlbumInfo), m_albumURL(strAlbumURL)
 {
-  m_albumURL = strAlbumURL;
   m_relevance = -1;
   m_bLoaded = false;
 }
 
-CMusicAlbumInfo::CMusicAlbumInfo(const std::string& strAlbum, const std::string& strArtist,
-  const std::string& strAlbumInfo, const CScraperUrl& strAlbumURL)
+CMusicAlbumInfo::CMusicAlbumInfo(const std::string& strAlbum,
+                                 const std::string& strArtist,
+                                 const std::string& strAlbumInfo,
+                                 const CScraperUrl& strAlbumURL)
+  : m_strTitle2(strAlbumInfo), m_albumURL(strAlbumURL)
 {
   m_album.strAlbum = strAlbum;
   //Just setting artist desc, not populating album artist credits.
   m_album.strArtistDesc = strArtist;
-  m_strTitle2 = strAlbumInfo;
-  m_albumURL = strAlbumURL;
   m_relevance = -1;
   m_bLoaded = false;
 }

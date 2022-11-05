@@ -8,12 +8,14 @@
 
 #import "platform/darwin/tvos/XBMCController.h"
 
-#include "AppEnvironment.h"
-#include "AppParams.h"
-#include "Application.h"
 #include "CompileInfo.h"
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "application/AppEnvironment.h"
+#include "application/AppParams.h"
+#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -42,6 +44,7 @@
 
 #import <AVKit/AVDisplayManager.h>
 #import <AVKit/UIWindow.h>
+#include <unistd.h>
 
 XBMCController* g_xbmcController;
 
@@ -287,13 +290,17 @@ XBMCController* g_xbmcController;
 - (void)pauseAnimation
 {
   m_pause = YES;
-  g_application.SetRenderGUI(false);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->SetRenderGUI(false);
 }
 
 - (void)resumeAnimation
 {
   m_pause = NO;
-  g_application.SetRenderGUI(true);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->SetRenderGUI(true);
 }
 
 - (void)startAnimation
@@ -358,7 +365,9 @@ XBMCController* g_xbmcController;
       // start up with gui enabled
       status = KODI_Run(true);
       // we exited or died.
-      g_application.SetRenderGUI(false);
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+      appPower->SetRenderGUI(false);
     }
     catch (...)
     {

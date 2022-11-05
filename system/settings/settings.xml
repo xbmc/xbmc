@@ -505,7 +505,7 @@
       <group id="1" label="39186">
         <setting id="subtitles.align" type="integer" label="21460" help="36192">
           <level>2</level>
-          <default>1</default> <!-- Align::BOTTOM_INSIDE -->
+          <default>2</default> <!-- Align::BOTTOM_OUTSIDE -->
           <constraints>
             <options>
               <option label="21461">0</option> <!-- Align::MANUAL -->
@@ -527,7 +527,7 @@
         </setting>
         <setting id="subtitles.fontsize" type="integer" label="289" help="36186">
           <level>3</level>
-          <default>42</default>
+          <default>42</default> <!-- in pixels -->
           <constraints>
             <minimum>12</minimum>
             <step>2</step>
@@ -563,7 +563,7 @@
         </setting>
         <setting id="subtitles.bordersize" type="integer" label="39159">
           <level>3</level>
-          <default>30</default>
+          <default>25</default>
           <dependencies>
             <dependency type="enable" setting="subtitles.backgroundtype" operator="!is">2</dependency>
           </dependencies>
@@ -662,16 +662,18 @@
         </setting>
         <setting id="subtitles.marginvertical" type="number" label="39182" help="39183">
           <level>3</level>
-          <default>7.75</default>
+          <default>4.95</default>
           <constraints>
             <minimum>0</minimum>
-            <step>0.25</step>
+            <step>0.05</step>
             <maximum>50</maximum>
           </constraints>
           <dependencies>
             <dependency type="enable" on="property" operator="!is" name="isplaying" />
           </dependencies>
-          <control type="slider" format="percentage"/>
+          <control type="slider" format="percentage">
+            <format>{:.2f} %</format>
+          </control>
         </setting>
         <setting id="subtitles.overridefonts" type="boolean" label="21368" help="36190">
           <level>3</level>
@@ -1545,12 +1547,32 @@
   </section>
   <section id="pvr" label="14204" help="36201">
     <category id="pvrmanager" label="128" help="36202">
-      <group id="1" label="14301">
-        <setting id="pvrmanager.preselectplayingchannel" type="boolean" label="19269" help="36214">
+      <group id="1" label="19279">
+        <setting id="pvrmanager.addons" type="action" label="19345" help="19346">
           <level>1</level>
-          <default>false</default>
-          <control type="toggle" />
+          <control type="button" format="action" />
         </setting>
+        <setting id="pvrclient.menuhook" type="action" label="19280" help="36252">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
+        <setting id="pvrmanager.clientpriorities" type="action" label="19240" help="36210">
+          <level>2</level>
+          <dependencies>
+            <dependency type="visible" on="property" name="pvrsettingvisible" setting="pvrmanager.clientpriorities" operator="is">true</dependency>
+          </dependencies>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+      <group id="2" label="14303">
+        <setting id="pvrmanager.resetdb" type="action" label="19185" help="36209">
+          <level>1</level>
+          <control type="button" format="action" />
+        </setting>
+      </group>
+    </category>
+    <category id="pvrmenu" label="14301" help="36211">
+      <group id="1" label="128">
         <setting id="pvrmanager.syncchannelgroups" type="boolean" label="19221" help="36204">
           <level>1</level>
           <default>true</default>
@@ -1591,13 +1613,6 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
-        <setting id="pvrmanager.clientpriorities" type="action" label="19240" help="36210">
-          <level>2</level>
-          <dependencies>
-            <dependency type="visible" on="property" name="pvrsettingvisible" setting="pvrmanager.clientpriorities" operator="is">true</dependency>
-          </dependencies>
-          <control type="button" format="action" />
-        </setting>
         <setting id="pvrmanager.channelmanager" type="action" label="19199" help="36207">
           <level>1</level>
           <control type="button" format="action" />
@@ -1609,31 +1624,6 @@
         <setting id="pvrmanager.channelscan" type="action" label="19117" help="36208">
           <level>1</level>
           <control type="button" format="action" />
-        </setting>
-        <setting id="pvrmanager.resetdb" type="action" label="19185" help="36209">
-          <level>1</level>
-          <control type="button" format="action" />
-        </setting>
-      </group>
-    </category>
-    <category id="pvrmenu" label="19181" help="36211">
-      <group id="1" label="14301">
-        <setting id="pvrmenu.displaychannelinfo" type="integer" label="19178" help="36212">
-          <level>2</level>
-          <default>5</default>
-          <constraints>
-            <minimum label="351">0</minimum>
-            <step>1</step>
-            <maximum>15</maximum>
-          </constraints>
-          <control type="spinner" format="string">
-            <formatlabel>14045</formatlabel>
-          </control>
-        </setting>
-        <setting id="pvrmenu.closechannelosdonswitch" type="boolean" label="19303" help="36235">
-          <level>2</level>
-          <default>true</default>
-          <control type="toggle" />
         </setting>
       </group>
       <group id="2" label="14302">
@@ -1649,7 +1639,7 @@
           </control>
         </setting>
         <setting id="pvrmenu.searchicons" type="action" label="19167" help="36217">
-          <level>1</level>
+          <level>2</level>
           <dependencies>
             <dependency type="enable">
               <and>
@@ -1746,7 +1736,24 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
-        <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
+        <setting id="pvrmanager.preselectplayingchannel" type="boolean" label="19269" help="36214">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="pvrmenu.displaychannelinfo" type="integer" label="19178" help="36212">
+          <level>2</level>
+          <default>5</default>
+          <constraints>
+            <minimum label="351">0</minimum>
+            <step>1</step>
+            <maximum>15</maximum>
+          </constraints>
+          <control type="spinner" format="string">
+            <formatlabel>14045</formatlabel>
+          </control>
+        </setting>
+        <setting id="pvrmenu.closechannelosdonswitch" type="boolean" label="19303" help="36235">
           <level>2</level>
           <default>true</default>
           <control type="toggle" />
@@ -1779,6 +1786,11 @@
           <control type="spinner" format="string">
             <formatlabel>14045</formatlabel>
           </control>
+        </setting>
+        <setting id="pvrplayback.signalquality" type="boolean" label="19037" help="36229">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
         </setting>
         <setting id="pvrplayback.fps" type="integer" label="19108" help="36261">
           <level>0</level>
@@ -2010,12 +2022,6 @@
       </group>
     </category>
     <category id="pvrclient" label="19279" help="36251">
-      <group id="1" label="128">
-        <setting id="pvrclient.menuhook" type="action" label="19280" help="36252">
-          <level>1</level>
-          <control type="button" format="action" />
-        </setting>
-      </group>
     </category>
     <category id="pvrtimers" label="" help="">
       <group id="1">
@@ -2375,6 +2381,21 @@
         </setting>
       </group>
     </category>
+    <category id="nfs" label="1201" help="36356">
+      <requirement>HAS_FILESYSTEM_NFS</requirement>
+      <group id="1" label="16000">
+        <setting id="nfs.version" type="integer" label="37051" help="37052">
+          <level>2</level>
+          <default>3</default>
+          <constraints>
+            <minimum>3</minimum>
+            <step>1</step>
+            <maximum>4</maximum>
+          </constraints>
+          <control type="spinner" format="integer" />
+        </setting>
+      </group>
+    </category>
     <category id="weather" label="8" help="36316">
       <group id="1" label="16000">
         <setting id="weather.currentlocation" type="integer" label="0" help="36317">
@@ -2569,6 +2590,17 @@
             <options>refreshchangedelays</options>
           </constraints>
           <control type="spinner" format="string" />
+        </setting>
+        <setting id="videoscreen.guisdrpeakluminance" type="integer" label="36097" help="36547">
+        <requirement>HAS_DX</requirement>
+          <dependencies>
+            <dependency type="visible">
+              <condition on="property" name="ishdrdisplay" />
+            </dependency>
+          </dependencies>
+          <level>2</level>
+          <default>60</default>
+          <control type="slider" format="percentage" range="0,100" />
         </setting>
         <setting id="videoscreen.10bitsurfaces" type="integer" label="36098" help="36578">
         <requirement>HAS_DX</requirement>
@@ -3234,6 +3266,7 @@
           <constraints>
             <options>
               <option label="1181">0</option> <!-- PROXY_HTTP -->
+              <option label="1186">5</option> <!-- PROXY_HTTPS -->
               <option label="1182">1</option> <!-- PROXY_SOCKS4 -->
               <option label="1183">2</option> <!-- PROXY_SOCKS4A -->
               <option label="1184">3</option> <!-- PROXY_SOCKS5 -->

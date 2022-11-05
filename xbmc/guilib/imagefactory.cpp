@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/ImageDecoder.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/FFmpegImage.h"
 #include "utils/Mime.h"
 
@@ -41,7 +42,7 @@ IImage* ImageFactory::CreateLoaderFromMimeType(const std::string& strMimeType)
   for (const auto& addonInfo : addonInfos)
   {
     // Check asked and given mime type is supported by only for here allowed imagedecoder addons.
-    if (addonInfo.first != ADDON::ADDON_IMAGEDECODER)
+    if (addonInfo.first != ADDON::AddonType::IMAGEDECODER)
       continue;
 
     std::unique_lock<CCriticalSection> lock(m_createSec);

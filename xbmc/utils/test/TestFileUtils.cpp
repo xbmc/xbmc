@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "FileItem.h"
 #include "filesystem/File.h"
 #include "test/TestUtils.h"
 #include "utils/FileUtils.h"

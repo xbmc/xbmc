@@ -42,7 +42,7 @@ public:
   std::string GetStreamCodecName(int iStreamId) override;
   void EnableStream(int id, bool enable) override;
   void OpenStream(int id) override;
-  void SetVideoResolution(int width, int height) override;
+  void SetVideoResolution(unsigned int width, unsigned int height) override;
 
 protected:
   void RequestStreams();

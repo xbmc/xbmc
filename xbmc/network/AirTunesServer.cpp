@@ -11,18 +11,21 @@
 
 #include "AirTunesServer.h"
 
-#include "Application.h"
-#include "CompileInfo.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "application/ApplicationActionListeners.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
+#include "application/ApplicationVolumeHandling.h"
 #include "cores/VideoPlayer/DVDDemuxers/DVDDemuxBXA.h"
 #include "filesystem/File.h"
 #include "filesystem/PipeFile.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "music/tags/MusicInfoTag.h"
@@ -30,7 +33,6 @@
 #include "network/Zeroconf.h"
 #include "network/ZeroconfBrowser.h"
 #include "network/dacp/dacp.h"
-#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/EndianSwap.h"
@@ -418,10 +420,12 @@ void CAirTunesServer::InformPlayerAboutPlayTimes()
     duration /= m_sampleRate;
     position /= m_sampleRate;
 
-    if (g_application.GetAppPlayer().IsPlaying())
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer->IsPlaying())
     {
-      g_application.GetAppPlayer().SetTime(position * 1000);
-      g_application.GetAppPlayer().SetTotalTime(duration * 1000);
+      appPlayer->SetTime(position * 1000);
+      appPlayer->SetTotalTime(duration * 1000);
 
       // reset play times now that we have informed the player
       m_cachedEndTime = 0;
@@ -437,7 +441,9 @@ void CAirTunesServer::AudioOutputFunctions::audio_set_progress(void *cls, void *
   m_cachedStartTime = start;
   m_cachedCurrentTime = curr;
   m_cachedEndTime = end;
-  if (g_application.GetAppPlayer().IsPlaying())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlaying())
   {
     // player is there - directly inform him about play times
     InformPlayerAboutPlayTimes();
@@ -490,7 +496,11 @@ void  CAirTunesServer::AudioOutputFunctions::audio_set_volume(void *cls, void *s
   CAirPlayServer::backupVolume();
 #endif
   if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
-    g_application.SetVolume(volPercent, false);//non-percent volume 0.0-1.0
+  {
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetVolume(volPercent, false); //non-percent volume 0.0-1.0
+  }
 }
 
 void  CAirTunesServer::AudioOutputFunctions::audio_process(void *cls, void *session, const void *buffer, int buflen)
@@ -670,16 +680,19 @@ CAirTunesServer::~CAirTunesServer()
 
 void CAirTunesServer::RegisterActionListener(bool doRegister)
 {
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appListener = components.GetComponent<CApplicationActionListeners>();
+
   if (doRegister)
   {
     CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
-    g_application.RegisterActionListener(this);
+    appListener->RegisterActionListener(this);
     ServerInstance->Create();
   }
   else
   {
     CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
-    g_application.UnregisterActionListener(this);
+    appListener->UnregisterActionListener(this);
     ServerInstance->StopThread(true);
   }
 }

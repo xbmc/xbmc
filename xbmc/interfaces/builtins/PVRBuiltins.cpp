@@ -8,15 +8,18 @@
 
 #include "PVRBuiltins.h"
 
-#include "Application.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsTimers.h"
 #include "pvr/windows/GUIWindowPVRGuide.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -39,7 +42,7 @@ static int SearchMissingIcons(const std::vector<std::string>& params)
  */
 static int ToggleRecordPlayingChannel(const std::vector<std::string>& params)
 {
-  CServiceBroker::GetPVRManager().GUIActions()->ToggleRecordingOnPlayingChannel();
+  CServiceBroker::GetPVRManager().Get<PVR::GUI::Timers>().ToggleRecordingOnPlayingChannel();
   return 0;
 }
 
@@ -49,6 +52,9 @@ static int ToggleRecordPlayingChannel(const std::vector<std::string>& params)
  */
 static int SeekPercentage(const std::vector<std::string>& params)
 {
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
   if (params.empty())
   {
     CLog::Log(LOGERROR,"PVR.SeekPercentage(n) - No argument given");
@@ -61,7 +67,7 @@ static int SeekPercentage(const std::vector<std::string>& params)
       CLog::Log(LOGERROR, "PVR.SeekPercentage(n) - Invalid argument ({:f}), must be in range 0-100",
                 fTimeshiftPercentage);
     }
-    else if (g_application.GetAppPlayer().IsPlaying())
+    else if (appPlayer->IsPlaying())
     {
       CGUIInfoManager& infoMgr = CServiceBroker::GetGUI()->GetInfoManager();
 

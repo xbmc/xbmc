@@ -6,12 +6,13 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "Application.h"
+#include "CompileInfo.h"
 #include "DllPaths.h"
 #include "GUIUserMessages.h"
-#include "utils/log.h"
+#include "application/Application.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "CompileInfo.h"
+#include "utils/log.h"
 
 #if defined(TARGET_DARWIN_EMBEDDED)
   #import <Foundation/Foundation.h>
@@ -28,6 +29,7 @@
 
 #include <mutex>
 
+#include "PlatformDefs.h"
 
 // platform strings are based on http://theiphonewiki.com/wiki/Models
 const char* CDarwinUtils::getIosPlatformString(void)

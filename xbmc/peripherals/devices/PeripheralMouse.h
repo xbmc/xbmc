@@ -9,6 +9,7 @@
 #pragma once
 
 #include "Peripheral.h"
+#include "XBDateTime.h"
 #include "input/mouse/interfaces/IMouseDriverHandler.h"
 #include "threads/CriticalSection.h"
 

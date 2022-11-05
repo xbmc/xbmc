@@ -9,9 +9,15 @@
 #include "AddonInstanceHandler.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonVersion.h"
+#include "addons/binary-addons/AddonDll.h"
+#include "addons/binary-addons/BinaryAddonManager.h"
+#include "addons/interfaces/AddonBase.h"
+#include "addons/kodi-dev-kit/include/kodi/AddonBase.h"
 #include "addons/settings/AddonSettings.h"
 #include "filesystem/Directory.h"
 #include "filesystem/SpecialProtocol.h"
+#include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
@@ -22,20 +28,22 @@ namespace ADDON
 
 CCriticalSection IAddonInstanceHandler::m_cdSec;
 
-IAddonInstanceHandler::IAddonInstanceHandler(ADDON_TYPE type,
-                                             const AddonInfoPtr& addonInfo,
-                                             KODI_HANDLE parentInstance /* = nullptr*/,
-                                             const std::string& instanceID /* = ""*/)
-  : m_type(type), m_parentInstance(parentInstance), m_addonInfo(addonInfo)
+IAddonInstanceHandler::IAddonInstanceHandler(
+    ADDON_TYPE type,
+    const AddonInfoPtr& addonInfo,
+    AddonInstanceId instanceId /* = ADDON_INSTANCE_ID_UNUSED */,
+    KODI_HANDLE parentInstance /* = nullptr*/,
+    const std::string& uniqueWorkID /* = ""*/)
+  : m_type(type), m_instanceId(instanceId), m_parentInstance(parentInstance), m_addonInfo(addonInfo)
 {
   // if no special instance ID is given generate one from class pointer (is
   // faster as unique id and also safe enough for them).
-  m_instanceId = !instanceID.empty() ? instanceID : StringUtils::Format("{}", fmt::ptr(this));
+  m_uniqueWorkID = !uniqueWorkID.empty() ? uniqueWorkID : StringUtils::Format("{}", fmt::ptr(this));
   m_addonBase = CServiceBroker::GetBinaryAddonManager().GetAddonBase(addonInfo, this, m_addon);
 
   KODI_ADDON_INSTANCE_INFO* info = new KODI_ADDON_INSTANCE_INFO();
-  info->number = 0;
-  info->id = m_instanceId.c_str();
+  info->number = m_instanceId; // @todo change within next big API change to "instance_id"
+  info->id = m_uniqueWorkID.c_str(); // @todo change within next big API change to "unique_work_id"
   info->version = kodi::addon::GetTypeVersion(m_type);
   info->type = m_type;
   info->kodi = this;
@@ -96,9 +104,9 @@ std::string IAddonInstanceHandler::Profile() const
   return m_addon ? m_addon->Profile() : "";
 }
 
-AddonVersion IAddonInstanceHandler::Version() const
+CAddonVersion IAddonInstanceHandler::Version() const
 {
-  return m_addon ? m_addon->Version() : AddonVersion();
+  return m_addon ? m_addon->Version() : CAddonVersion();
 }
 
 ADDON_STATUS IAddonInstanceHandler::CreateInstance()
@@ -127,14 +135,14 @@ void IAddonInstanceHandler::DestroyInstance()
 
 std::shared_ptr<CSetting> IAddonInstanceHandler::GetSetting(const std::string& setting)
 {
-  if (!m_addon->HasSettings())
+  if (!m_addon->HasSettings(m_instanceId))
   {
     CLog::Log(LOGERROR, "IAddonInstanceHandler::{} - couldn't get settings for add-on '{}'",
               __func__, Name());
     return nullptr;
   }
 
-  auto value = m_addon->GetSettings()->GetSetting(setting);
+  auto value = m_addon->GetSettings(m_instanceId)->GetSetting(setting);
   if (value == nullptr)
   {
     CLog::Log(LOGERROR, "IAddonInstanceHandler::{} - can't find setting '{}' in '{}'", __func__,
@@ -274,17 +282,17 @@ bool IAddonInstanceHandler::set_instance_setting_bool(const KODI_ADDON_INSTANCE_
   if (!instance || !id)
     return false;
 
-  if (Interface_Base::UpdateSettingInActiveDialog(instance->m_addon.get(), id,
-                                                  value ? "true" : "false"))
+  if (Interface_Base::UpdateSettingInActiveDialog(instance->m_addon.get(), instance->m_instanceId,
+                                                  id, value ? "true" : "false"))
     return true;
 
-  if (!instance->m_addon->UpdateSettingBool(id, value))
+  if (!instance->m_addon->UpdateSettingBool(id, value, instance->m_instanceId))
   {
     CLog::Log(LOGERROR, "IAddonInstanceHandler::{} - invalid setting type", __func__);
     return false;
   }
 
-  instance->m_addon->SaveSettings();
+  instance->m_addon->SaveSettings(instance->m_instanceId);
 
   return true;
 }
@@ -302,17 +310,17 @@ bool IAddonInstanceHandler::set_instance_setting_int(const KODI_ADDON_INSTANCE_B
     return false;
   }
 
-  if (Interface_Base::UpdateSettingInActiveDialog(instance->m_addon.get(), id,
-                                                  std::to_string(value)))
+  if (Interface_Base::UpdateSettingInActiveDialog(instance->m_addon.get(), instance->m_instanceId,
+                                                  id, std::to_string(value)))
     return true;
 
-  if (!instance->m_addon->UpdateSettingInt(id, value))
+  if (!instance->m_addon->UpdateSettingInt(id, value, instance->m_instanceId))
   {
     CLog::Log(LOGERROR, "IAddonInstanceHandler::{} - invalid setting type", __func__);
     return false;
   }
 
-  instance->m_addon->SaveSettings();
+  instance->m_addon->SaveSettings(instance->m_instanceId);
 
   return true;
 }
@@ -330,17 +338,18 @@ bool IAddonInstanceHandler::set_instance_setting_float(const KODI_ADDON_INSTANCE
     return false;
   }
 
-  if (Interface_Base::UpdateSettingInActiveDialog(instance->m_addon.get(), id,
-                                                  StringUtils::Format("{:f}", value)))
+  if (Interface_Base::UpdateSettingInActiveDialog(instance->m_addon.get(), instance->m_instanceId,
+                                                  id, StringUtils::Format("{:f}", value)))
     return true;
 
-  if (!instance->m_addon->UpdateSettingNumber(id, static_cast<double>(value)))
+  if (!instance->m_addon->UpdateSettingNumber(id, static_cast<double>(value),
+                                              instance->m_instanceId))
   {
     CLog::Log(LOGERROR, "IAddonInstanceHandler::{} - invalid setting type", __func__);
     return false;
   }
 
-  instance->m_addon->SaveSettings();
+  instance->m_addon->SaveSettings(instance->m_instanceId);
 
   return true;
 }
@@ -359,16 +368,17 @@ bool IAddonInstanceHandler::set_instance_setting_string(const KODI_ADDON_INSTANC
     return false;
   }
 
-  if (Interface_Base::UpdateSettingInActiveDialog(instance->m_addon.get(), id, value))
+  if (Interface_Base::UpdateSettingInActiveDialog(instance->m_addon.get(), instance->m_instanceId,
+                                                  id, value))
     return true;
 
-  if (!instance->m_addon->UpdateSettingString(id, value))
+  if (!instance->m_addon->UpdateSettingString(id, value, instance->m_instanceId))
   {
     CLog::Log(LOGERROR, "IAddonInstanceHandler::{} - invalid setting type", __func__);
     return false;
   }
 
-  instance->m_addon->SaveSettings();
+  instance->m_addon->SaveSettings(instance->m_instanceId);
 
   return true;
 }

@@ -9,8 +9,9 @@
 #include "ContextMenus.h"
 
 #include "FileItem.h"
-#include "GUIDialogFavourites.h"
 #include "ServiceBroker.h"
+#include "favourites/FavouritesService.h"
+#include "favourites/GUIWindowFavourites.h"
 #include "utils/URIUtils.h"
 
 
@@ -21,7 +22,7 @@ namespace CONTEXTMENU
     return URIUtils::IsProtocol(item.GetPath(), "favourites");
   }
 
-  bool CFavouriteContextMenuAction::Execute(const CFileItemPtr& item) const
+  bool CFavouriteContextMenuAction::Execute(const std::shared_ptr<CFileItem>& item) const
   {
     CFileItemList items;
     CServiceBroker::GetFavouritesService().GetAll(items);
@@ -36,21 +37,47 @@ namespace CONTEXTMENU
     return false;
   }
 
-  bool CRemoveFavourite::DoExecute(CFileItemList &items, const CFileItemPtr& item) const
+  bool CMoveUpFavourite::DoExecute(CFileItemList& items,
+                                   const std::shared_ptr<CFileItem>& item) const
+  {
+    return CGUIWindowFavourites::MoveItem(items, *item, -1);
+  }
+
+  bool CMoveUpFavourite::IsVisible(const CFileItem& item) const
+  {
+    return CFavouriteContextMenuAction::IsVisible(item) &&
+           CGUIWindowFavourites::ShouldEnableMoveItems();
+  }
+
+  bool CMoveDownFavourite::DoExecute(CFileItemList& items,
+                                     const std::shared_ptr<CFileItem>& item) const
+  {
+    return CGUIWindowFavourites::MoveItem(items, *item, +1);
+  }
+
+  bool CMoveDownFavourite::IsVisible(const CFileItem& item) const
+  {
+    return CFavouriteContextMenuAction::IsVisible(item) &&
+           CGUIWindowFavourites::ShouldEnableMoveItems();
+  }
+
+  bool CRemoveFavourite::DoExecute(CFileItemList& items,
+                                   const std::shared_ptr<CFileItem>& item) const
   {
     int iBefore = items.Size();
     items.Remove(item.get());
     return items.Size() == iBefore - 1;
   }
 
-  bool CRenameFavourite::DoExecute(CFileItemList&, const CFileItemPtr& item) const
+  bool CRenameFavourite::DoExecute(CFileItemList&, const std::shared_ptr<CFileItem>& item) const
   {
-    return CGUIDialogFavourites::ChooseAndSetNewName(item);
+    return CGUIWindowFavourites::ChooseAndSetNewName(*item);
   }
 
-  bool CChooseThumbnailForFavourite::DoExecute(CFileItemList&, const CFileItemPtr& item) const
+  bool CChooseThumbnailForFavourite::DoExecute(CFileItemList&,
+                                               const std::shared_ptr<CFileItem>& item) const
   {
-    return CGUIDialogFavourites::ChooseAndSetNewThumbnail(item);
+    return CGUIWindowFavourites::ChooseAndSetNewThumbnail(*item);
   }
 
 } // namespace CONTEXTMENU

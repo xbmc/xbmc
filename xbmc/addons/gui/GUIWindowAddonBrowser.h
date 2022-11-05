@@ -9,16 +9,19 @@
 #pragma once
 
 #include "ThumbLoader.h"
-#include "addons/Addon.h"
-#include "addons/AddonEvents.h"
 #include "addons/RepositoryUpdater.h"
 #include "windows/GUIMediaWindow.h"
 
 #include <string>
 #include <vector>
 
-class CFileItem;
 class CFileItemList;
+
+namespace ADDON
+{
+enum class AddonType;
+struct AddonEvent;
+}
 
 class CGUIWindowAddonBrowser : public CGUIMediaWindow
 {
@@ -42,14 +45,14 @@ public:
    *         "Get More" was chosen, 0 if the selection process was cancelled or -1
    *         if an error occurred or
    */
-  static int SelectAddonID(ADDON::TYPE type,
+  static int SelectAddonID(ADDON::AddonType type,
                            std::string& addonID,
                            bool showNone = false,
                            bool showDetails = true,
                            bool showInstalled = true,
                            bool showInstallable = false,
                            bool showMore = true);
-  static int SelectAddonID(const std::vector<ADDON::TYPE>& types,
+  static int SelectAddonID(const std::vector<ADDON::AddonType>& types,
                            std::string& addonID,
                            bool showNone = false,
                            bool showDetails = true,
@@ -73,7 +76,7 @@ public:
    *         "Get More" was chosen, 0 if the selection process was cancelled or -1
    *         if an error occurred or
    */
-  static int SelectAddonID(ADDON::TYPE type,
+  static int SelectAddonID(ADDON::AddonType type,
                            std::vector<std::string>& addonIDs,
                            bool showNone = false,
                            bool showDetails = true,
@@ -81,7 +84,7 @@ public:
                            bool showInstalled = true,
                            bool showInstallable = false,
                            bool showMore = true);
-  static int SelectAddonID(const std::vector<ADDON::TYPE>& types,
+  static int SelectAddonID(const std::vector<ADDON::AddonType>& types,
                            std::vector<std::string>& addonIDs,
                            bool showNone = false,
                            bool showDetails = true,

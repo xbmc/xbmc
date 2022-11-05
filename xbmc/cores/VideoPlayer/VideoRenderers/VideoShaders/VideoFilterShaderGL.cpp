@@ -30,11 +30,8 @@ BaseVideoFilterShader::BaseVideoFilterShader()
 {
   m_width = 1;
   m_height = 1;
-  m_hStepXY = 0;
   m_stepX = 0;
   m_stepY = 0;
-  m_sourceTexUnit = 0;
-  m_hSourceTex = 0;
   m_stretch = 0.0f;
 
   VertexShader()->LoadSource("gl_videofilter_vertex.glsl");
@@ -54,7 +51,6 @@ BaseVideoFilterShader::~BaseVideoFilterShader()
 ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool stretch, GLSLOutput *output)
 {
   m_method = method;
-  m_kernelTex1 = 0;
 
   std::string shadername;
   std::string defines;
@@ -103,7 +99,9 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
     defines += m_glslOutput->GetDefines();
   }
 
-  CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using {} defines:\n{}", shadername, defines);
+  CLog::Log(LOGDEBUG, "GL: using scaling method: {}", m_method);
+  CLog::Log(LOGDEBUG, "GL: using shader: {}", shadername);
+
   PixelShader()->LoadSource(shadername, defines);
   PixelShader()->AppendSource("gl_output.glsl");
 }

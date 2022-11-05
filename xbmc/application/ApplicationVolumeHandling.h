@@ -8,8 +8,10 @@
 
 #pragma once
 
+#include "application/IApplicationComponent.h"
+
 class CAction;
-class CApplicationPlayer;
+class CApplication;
 class CSetting;
 class CSettings;
 class TiXmlNode;
@@ -17,8 +19,10 @@ class TiXmlNode;
 /*!
  * \brief Class handling application support for audio volume management.
  */
-class CApplicationVolumeHandling
+class CApplicationVolumeHandling : public IApplicationComponent
 {
+  friend class CApplication;
+
 public:
   // replay gain settings struct for quick access by the player multiple
   // times per second (saves doing settings lookup)
@@ -29,8 +33,6 @@ public:
     int iType;
     bool bAvoidClipping;
   };
-
-  explicit CApplicationVolumeHandling(CApplicationPlayer& appPlayer);
 
   float GetVolumePercent() const;
   float GetVolumeRatio() const;
@@ -63,7 +65,6 @@ protected:
 
   void VolumeChanged();
 
-  CApplicationPlayer& m_appPlayer; //!< Reference to application player
   bool m_muted = false;
   float m_volumeLevel = VOLUME_MAXIMUM;
   ReplayGainSettings m_replayGainSettings;

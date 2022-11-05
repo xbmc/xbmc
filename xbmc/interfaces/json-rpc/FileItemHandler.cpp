@@ -16,7 +16,6 @@
 #include "VideoLibrary.h"
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_epg.h" // EPG_TAG_INVALID_UID
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
 #include "pictures/PictureInfoTag.h"
@@ -28,6 +27,7 @@
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
+#include "utils/FileUtils.h"
 #include "utils/ISerializable.h"
 #include "utils/SortUtils.h"
 #include "utils/URIUtils.h"
@@ -43,7 +43,12 @@ using namespace MUSIC_INFO;
 using namespace JSONRPC;
 using namespace XFILE;
 
-bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, const CFileItemPtr &item, CVariant &result, bool &fetchedArt, CThumbLoader *thumbLoader /* = NULL */)
+bool CFileItemHandler::GetField(const std::string& field,
+                                const CVariant& info,
+                                const std::shared_ptr<CFileItem>& item,
+                                CVariant& result,
+                                bool& fetchedArt,
+                                CThumbLoader* thumbLoader /* = NULL */)
 {
   if (result.isMember(field) && !result[field].empty())
     return true;
@@ -110,7 +115,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       {
         const std::shared_ptr<PVR::CPVRTimerInfoTag> timer =
             CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(item->GetEPGInfoTag());
-        result[field] = (timer && (timer->GetTimerRuleId() != PVR_TIMER_NO_PARENT));
+        result[field] = (timer && timer->HasParent());
         return true;
       }
       else if (field == "hasrecording")
@@ -230,7 +235,7 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
       return true;
     }
 
-    if (item->HasVideoInfoTag() && item->GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS)
+    if (item->HasVideoInfoTag() && item->GetVideoContentType() == VideoDbContentType::TVSHOWS)
     {
       if (item->GetVideoInfoTag()->m_iSeason < 0 && field == "season")
       {
@@ -254,7 +259,11 @@ bool CFileItemHandler::GetField(const std::string &field, const CVariant &info, 
   return false;
 }
 
-void CFileItemHandler::FillDetails(const ISerializable *info, const CFileItemPtr &item, std::set<std::string> &fields, CVariant &result, CThumbLoader *thumbLoader /* = NULL */)
+void CFileItemHandler::FillDetails(const ISerializable* info,
+                                   const std::shared_ptr<CFileItem>& item,
+                                   std::set<std::string>& fields,
+                                   CVariant& result,
+                                   CThumbLoader* thumbLoader /* = NULL */)
 {
   if (info == NULL || fields.empty())
     return;
@@ -307,7 +316,8 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   std::set<std::string> fields;
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
-    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array(); field != parameterObject["properties"].end_array(); field++)
+    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
+         field != parameterObject["properties"].end_array(); ++field)
       fields.insert(field->asString());
   }
 
@@ -324,7 +334,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
 void CFileItemHandler::HandleFileItem(const char* ID,
                                       bool allowFile,
                                       const char* resultname,
-                                      const CFileItemPtr& item,
+                                      const std::shared_ptr<CFileItem>& item,
                                       const CVariant& parameterObject,
                                       const CVariant& validFields,
                                       CVariant& result,
@@ -334,7 +344,8 @@ void CFileItemHandler::HandleFileItem(const char* ID,
   std::set<std::string> fields;
   if (parameterObject.isMember("properties") && parameterObject["properties"].isArray())
   {
-    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array(); field != parameterObject["properties"].end_array(); field++)
+    for (CVariant::const_iterator_array field = parameterObject["properties"].begin_array();
+         field != parameterObject["properties"].end_array(); ++field)
       fields.insert(field->asString());
   }
 
@@ -344,7 +355,7 @@ void CFileItemHandler::HandleFileItem(const char* ID,
 void CFileItemHandler::HandleFileItem(const char* ID,
                                       bool allowFile,
                                       const char* resultname,
-                                      const CFileItemPtr& item,
+                                      const std::shared_ptr<CFileItem>& item,
                                       const CVariant& parameterObject,
                                       const std::set<std::string>& validFields,
                                       CVariant& result,
@@ -365,8 +376,8 @@ void CFileItemHandler::HandleFileItem(const char* ID,
           object["file"] = item->GetVideoInfoTag()->GetPath().c_str();
         if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().empty())
           object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
-        if (item->HasPVRTimerInfoTag() && !item->GetPVRTimerInfoTag()->m_strFileNameAndPath.empty())
-          object["file"] = item->GetPVRTimerInfoTag()->m_strFileNameAndPath.c_str();
+        if (item->HasPVRTimerInfoTag() && !item->GetPVRTimerInfoTag()->Path().empty())
+          object["file"] = item->GetPVRTimerInfoTag()->Path().c_str();
 
         if (!object.isMember("file"))
           object["file"] = item->GetDynPath().c_str();
@@ -394,10 +405,10 @@ void CFileItemHandler::HandleFileItem(const char* ID,
          object[ID] = item->GetPVRChannelInfoTag()->ChannelID();
       else if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->DatabaseID() > 0)
         object[ID] = item->GetEPGInfoTag()->DatabaseID();
-      else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->m_iRecordingId > 0)
-         object[ID] = item->GetPVRRecordingInfoTag()->m_iRecordingId;
-      else if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->m_iTimerId > 0)
-         object[ID] = item->GetPVRTimerInfoTag()->m_iTimerId;
+      else if (item->HasPVRRecordingInfoTag() && item->GetPVRRecordingInfoTag()->RecordingID() > 0)
+        object[ID] = item->GetPVRRecordingInfoTag()->RecordingID();
+      else if (item->HasPVRTimerInfoTag() && item->GetPVRTimerInfoTag()->TimerID() > 0)
+        object[ID] = item->GetPVRTimerInfoTag()->TimerID();
       else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
         object[ID] = item->GetMusicInfoTag()->GetDatabaseId();
       else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
@@ -497,7 +508,8 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
   CFileOperations::FillFileItemList(parameterObject, list);
 
   std::string file = parameterObject["file"].asString();
-  if (!file.empty() && (URIUtils::IsURL(file) || (CFile::Exists(file) && !CDirectory::Exists(file))))
+  if (!file.empty() &&
+      (URIUtils::IsURL(file) || (CFileUtils::Exists(file) && !CDirectory::Exists(file))))
   {
     bool added = false;
     for (int index = 0; index < list.Size(); index++)

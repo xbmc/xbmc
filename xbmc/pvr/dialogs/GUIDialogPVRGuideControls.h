@@ -10,9 +10,12 @@
 
 #include "guilib/GUIDialog.h"
 
+namespace PVR
+{
 class CGUIDialogPVRGuideControls : public CGUIDialog
 {
 public:
   CGUIDialogPVRGuideControls();
   ~CGUIDialogPVRGuideControls() override;
 };
+} // namespace PVR

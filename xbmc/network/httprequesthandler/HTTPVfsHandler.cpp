@@ -12,11 +12,10 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
-#include "filesystem/File.h"
 #include "media/MediaLockState.h"
-#include "network/WebServer.h"
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 
 CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
@@ -29,7 +28,7 @@ CHTTPVfsHandler::CHTTPVfsHandler(const HTTPRequest &request)
   {
     file = m_request.pathUrl.substr(5);
 
-    if (XFILE::CFile::Exists(file))
+    if (CFileUtils::Exists(file))
     {
       bool accessible = false;
       if (file.substr(0, 8) == "image://")

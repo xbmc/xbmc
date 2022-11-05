@@ -39,6 +39,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoDbUrl.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
@@ -497,7 +498,8 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         items.SetContent("countries");
       else if (node == NODE_TYPE_ACTOR)
       {
-        if (params.GetContentType() == VIDEODB_CONTENT_MUSICVIDEOS)
+        if (static_cast<VideoDbContentType>(params.GetContentType()) ==
+            VideoDbContentType::MUSICVIDEOS)
           items.SetContent("artists");
         else
           items.SetContent("actors");

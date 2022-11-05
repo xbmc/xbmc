@@ -51,20 +51,20 @@ public:
    * @brief Inform that playback of an item just started.
    * @param item The item that started to play.
    */
-  void OnPlaybackStarted(const std::shared_ptr<CFileItem>& item);
+  void OnPlaybackStarted(const CFileItem& item);
 
   /*!
    * @brief Inform that playback of an item was stopped due to user interaction.
    * @param item The item that stopped to play.
    * @return True, if the state has changed, false otherwise
    */
-  bool OnPlaybackStopped(const std::shared_ptr<CFileItem>& item);
+  bool OnPlaybackStopped(const CFileItem& item);
 
   /*!
    * @brief Inform that playback of an item has stopped without user interaction.
    * @param item The item that ended to play.
    */
-  void OnPlaybackEnded(const std::shared_ptr<CFileItem>& item);
+  void OnPlaybackEnded(const CFileItem& item);
 
   /*!
    * @brief Check if a TV channel, radio channel or recording is playing.
@@ -136,6 +136,12 @@ public:
    * @return The channel or nullptr if none is playing.
    */
   std::shared_ptr<CPVRChannel> GetPlayingChannel() const;
+
+  /*!
+   * @brief Return the channel group member that is currently playing.
+   * @return The channel group member or nullptr if none is playing.
+   */
+  std::shared_ptr<CPVRChannelGroupMember> GetPlayingChannelGroupMember() const;
 
   /*!
    * @brief Return the recording that is currently playing.

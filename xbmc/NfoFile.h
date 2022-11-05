@@ -14,9 +14,16 @@
 
 #include "InfoScanner.h"
 #include "addons/Scraper.h"
+#include "utils/XBMCTinyXML.h"
 
 #include <string>
 #include <utility>
+#include <vector>
+
+namespace ADDON
+{
+enum class AddonType;
+}
 
 class CNfoFile
 {
@@ -48,14 +55,14 @@ public:
   static int Scrape(ADDON::ScraperPtr& scraper, CScraperUrl& url,
                     const std::string& content);
 
-  static std::vector<ADDON::ScraperPtr> GetScrapers(ADDON::TYPE type,
+  static std::vector<ADDON::ScraperPtr> GetScrapers(ADDON::AddonType type,
                                                     const ADDON::ScraperPtr& selectedScraper);
 
 private:
   std::string m_doc;
   size_t m_headPos = 0;
   ADDON::ScraperPtr m_info;
-  ADDON::TYPE m_type = ADDON::ADDON_UNKNOWN;
+  ADDON::AddonType m_type{};
   CScraperUrl m_scurl;
 
   int Load(const std::string&);

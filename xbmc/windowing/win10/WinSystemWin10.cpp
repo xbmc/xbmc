@@ -8,9 +8,9 @@
 
 #include "WinSystemWin10.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "WinEventsWin10.h"
+#include "application/Application.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/AESinkWASAPI.h"
 #include "cores/AudioEngine/Sinks/AESinkXAudio.h"
@@ -648,6 +648,13 @@ WINDOW_STATE CWinSystemWin10::GetState(bool fullScreen) const
 bool CWinSystemWin10::MessagePump()
 {
   return m_winEvents->MessagePump();
+}
+
+int CWinSystemWin10::GetGuiSdrPeakLuminance() const
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  return settings->GetInt(CSettings::SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE);
 }
 
 #pragma pack(pop)

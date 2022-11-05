@@ -11,6 +11,9 @@
 #include "ServiceBroker.h"
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
+#include "addons/IAddon.h"
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -19,27 +22,27 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
-
 
 namespace ADDON
 {
 
 CAddonSystemSettings::CAddonSystemSettings()
   : m_activeSettings{
-        {ADDON_AUDIOENCODER, CSettings::SETTING_AUDIOCDS_ENCODER},
-        {ADDON_RESOURCE_LANGUAGE, CSettings::SETTING_LOCALE_LANGUAGE},
-        {ADDON_RESOURCE_UISOUNDS, CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN},
-        {ADDON_SCRAPER_ALBUMS, CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER},
-        {ADDON_SCRAPER_ARTISTS, CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER},
-        {ADDON_SCRAPER_MOVIES, CSettings::SETTING_SCRAPERS_MOVIESDEFAULT},
-        {ADDON_SCRAPER_MUSICVIDEOS, CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT},
-        {ADDON_SCRAPER_TVSHOWS, CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT},
-        {ADDON_SCREENSAVER, CSettings::SETTING_SCREENSAVER_MODE},
-        {ADDON_SCRIPT_WEATHER, CSettings::SETTING_WEATHER_ADDON},
-        {ADDON_SKIN, CSettings::SETTING_LOOKANDFEEL_SKIN},
-        {ADDON_WEB_INTERFACE, CSettings::SETTING_SERVICES_WEBSKIN},
-        {ADDON_VIZ, CSettings::SETTING_MUSICPLAYER_VISUALISATION},
+        {AddonType::AUDIOENCODER, CSettings::SETTING_AUDIOCDS_ENCODER},
+        {AddonType::RESOURCE_LANGUAGE, CSettings::SETTING_LOCALE_LANGUAGE},
+        {AddonType::RESOURCE_UISOUNDS, CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN},
+        {AddonType::SCRAPER_ALBUMS, CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER},
+        {AddonType::SCRAPER_ARTISTS, CSettings::SETTING_MUSICLIBRARY_ARTISTSSCRAPER},
+        {AddonType::SCRAPER_MOVIES, CSettings::SETTING_SCRAPERS_MOVIESDEFAULT},
+        {AddonType::SCRAPER_MUSICVIDEOS, CSettings::SETTING_SCRAPERS_MUSICVIDEOSDEFAULT},
+        {AddonType::SCRAPER_TVSHOWS, CSettings::SETTING_SCRAPERS_TVSHOWSDEFAULT},
+        {AddonType::SCREENSAVER, CSettings::SETTING_SCREENSAVER_MODE},
+        {AddonType::SCRIPT_WEATHER, CSettings::SETTING_WEATHER_ADDON},
+        {AddonType::SKIN, CSettings::SETTING_LOOKANDFEEL_SKIN},
+        {AddonType::WEB_INTERFACE, CSettings::SETTING_SERVICES_WEBSKIN},
+        {AddonType::VISUALIZATION, CSettings::SETTING_MUSICPLAYER_VISUALISATION},
     }
 {}
 
@@ -93,7 +96,7 @@ void CAddonSystemSettings::OnSettingChanged(const std::shared_ptr<const CSetting
   }
 }
 
-bool CAddonSystemSettings::GetActive(const TYPE& type, AddonPtr& addon)
+bool CAddonSystemSettings::GetActive(AddonType type, AddonPtr& addon)
 {
   auto it = m_activeSettings.find(type);
   if (it != m_activeSettings.end())
@@ -105,7 +108,7 @@ bool CAddonSystemSettings::GetActive(const TYPE& type, AddonPtr& addon)
   return false;
 }
 
-bool CAddonSystemSettings::SetActive(const TYPE& type, const std::string& addonID)
+bool CAddonSystemSettings::SetActive(AddonType type, const std::string& addonID)
 {
   auto it = m_activeSettings.find(type);
   if (it != m_activeSettings.end())

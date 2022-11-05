@@ -8,7 +8,6 @@
 
 #include "GUIWindowManager.h"
 
-#include "Application.h"
 #include "GUIAudioManager.h"
 #include "GUIDialog.h"
 #include "GUIInfoManager.h"
@@ -19,9 +18,14 @@
 #include "addons/Skin.h"
 #include "addons/gui/GUIWindowAddonBrowser.h"
 #include "addons/interfaces/gui/Window.h"
+#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "events/windows/GUIWindowEventLog.h"
 #include "favourites/GUIDialogFavourites.h"
-#include "input/Key.h"
+#include "favourites/GUIWindowFavourites.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "music/dialogs/GUIDialogInfoProviderSettings.h"
@@ -108,7 +112,6 @@
 #include "video/dialogs/GUIDialogVideoSettings.h"
 
 /* PVR related include Files */
-#include "pvr/PVRManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelGuide.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
@@ -130,7 +133,9 @@
 
 #include "video/dialogs/GUIDialogTeletext.h"
 #include "dialogs/GUIDialogSlider.h"
+#ifdef HAS_DVD_DRIVE
 #include "dialogs/GUIDialogPlayEject.h"
+#endif
 #include "dialogs/GUIDialogMediaFilter.h"
 #include "video/dialogs/GUIDialogSubtitles.h"
 
@@ -241,7 +246,9 @@ void CGUIWindowManager::CreateWindows()
 
   Add(new CGUIDialogInfoProviderSettings);
 
+#ifdef HAS_DVD_DRIVE
   Add(new CGUIDialogPlayEject);
+#endif
 
   Add(new CGUIDialogPeripherals);
   Add(new CGUIDialogPeripheralSettings);
@@ -297,6 +304,8 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIWindowSplash);
 
   Add(new CGUIWindowEventLog);
+
+  Add(new CGUIWindowFavourites);
 
   Add(new GAME::CGUIControllerWindow);
   Add(new GAME::CGUIPortWindow);
@@ -397,7 +406,9 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_DIALOG_PVR_GUIDE_CONTROLS);
 
     DestroyWindow(WINDOW_DIALOG_TEXT_VIEWER);
+#ifdef HAS_DVD_DRIVE
     DestroyWindow(WINDOW_DIALOG_PLAY_EJECT);
+#endif
     DestroyWindow(WINDOW_STARTUP_ANIM);
     DestroyWindow(WINDOW_LOGIN_SCREEN);
     DestroyWindow(WINDOW_VISUALISATION);
@@ -441,6 +452,8 @@ bool CGUIWindowManager::DestroyWindows()
     Remove(WINDOW_DIALOG_VOLUME_BAR);
 
     DestroyWindow(WINDOW_EVENT_LOG);
+
+    DestroyWindow(WINDOW_FAVOURITES);
 
     DestroyWindow(WINDOW_DIALOG_PERIPHERALS);
     DestroyWindow(WINDOW_DIALOG_PERIPHERAL_SETTINGS);
@@ -938,17 +951,19 @@ bool CGUIWindowManager::SwitchToFullScreen(bool force /* = false */)
   const int activeWindowID = GetActiveWindow();
   int windowID = WINDOW_INVALID;
 
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
   // See if we're playing a game
-  if (activeWindowID != WINDOW_FULLSCREEN_GAME && g_application.GetAppPlayer().IsPlayingGame())
+  if (activeWindowID != WINDOW_FULLSCREEN_GAME && appPlayer->IsPlayingGame())
     windowID = WINDOW_FULLSCREEN_GAME;
 
   // See if we're playing a video
-  else if (activeWindowID != WINDOW_FULLSCREEN_VIDEO &&
-           g_application.GetAppPlayer().IsPlayingVideo())
+  else if (activeWindowID != WINDOW_FULLSCREEN_VIDEO && appPlayer->IsPlayingVideo())
     windowID = WINDOW_FULLSCREEN_VIDEO;
 
   // See if we're playing an audio song
-  if (activeWindowID != WINDOW_VISUALISATION && g_application.GetAppPlayer().IsPlayingAudio())
+  if (activeWindowID != WINDOW_VISUALISATION && appPlayer->IsPlayingAudio())
     windowID = WINDOW_VISUALISATION;
 
   if (windowID != WINDOW_INVALID && (force || windowID != activeWindowID))

@@ -9,6 +9,8 @@
 #include "SettingAddon.h"
 
 #include "addons/Addon.h"
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -58,7 +60,7 @@ bool CSettingAddon::Deserialize(const TiXmlNode *node, bool update /* = false */
     if (XMLUtils::GetString(constraints, "addontype", strAddonType) && !strAddonType.empty())
     {
       m_addonType = ADDON::CAddonInfo::TranslateType(strAddonType);
-      if (m_addonType != ADDON::ADDON_UNKNOWN)
+      if (m_addonType != ADDON::AddonType::UNKNOWN)
         ok = true;
     }
   }

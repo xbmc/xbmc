@@ -80,6 +80,7 @@
 #include "ResourceDirectory.h"
 #include "ServiceBroker.h"
 #include "addons/VFSEntry.h"
+#include "utils/StringUtils.h"
 
 using namespace ADDON;
 
@@ -101,7 +102,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (pDir)
     return pDir;
 
-  if (!url.GetProtocol().empty() && CServiceBroker::IsBinaryAddonCacheUp())
+  if (!url.GetProtocol().empty() && CServiceBroker::IsAddonInterfaceUp())
   {
     for (const auto& vfsAddon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     {

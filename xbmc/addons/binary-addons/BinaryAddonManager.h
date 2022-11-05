@@ -8,15 +8,21 @@
 
 #pragma once
 
-#include "addons/AddonManager.h"
 #include "threads/CriticalSection.h"
 
 #include <map>
+#include <memory>
 
 namespace ADDON
 {
 
   class IAddonInstanceHandler;
+
+  class IAddon;
+  using AddonPtr = std::shared_ptr<IAddon>;
+
+  class CAddonInfo;
+  using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
 
   class CAddonDll;
   typedef std::shared_ptr<CAddonDll> AddonDllPtr;

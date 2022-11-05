@@ -92,30 +92,23 @@ bool URIUtils::HasExtension(const std::string& strFileName, const std::string& s
 {
   if (IsURL(strFileName))
   {
-    CURL url(strFileName);
+    const CURL url(strFileName);
     return HasExtension(url.GetFileName(), strExtensions);
   }
 
-  // Search backwards so that '.' can be used as a search terminator.
-  std::string::const_reverse_iterator itExtensions = strExtensions.rbegin();
-  while (itExtensions != strExtensions.rend())
+  const size_t pos = strFileName.find_last_of("./\\");
+  if (pos == std::string::npos || strFileName[pos] != '.')
+    return false;
+
+  const std::string extensionLower = StringUtils::ToLower(strFileName.substr(pos));
+
+  const std::vector<std::string> extensionsLower =
+      StringUtils::Split(StringUtils::ToLower(strExtensions), '|');
+
+  for (const auto& ext : extensionsLower)
   {
-    // Iterate backwards over strFileName until we hit a '.' or a mismatch
-    for (std::string::const_reverse_iterator itFileName = strFileName.rbegin();
-         itFileName != strFileName.rend() && itExtensions != strExtensions.rend() &&
-         tolower(*itFileName) == *itExtensions;
-         ++itFileName, ++itExtensions)
-    {
-      if (*itExtensions == '.')
-        return true; // Match
-    }
-
-    // No match. Look for more extensions to try.
-    while (itExtensions != strExtensions.rend() && *itExtensions != '|')
-      ++itExtensions;
-
-    while (itExtensions != strExtensions.rend() && *itExtensions == '|')
-      ++itExtensions;
+    if (StringUtils::EndsWith(ext, extensionLower))
+      return true;
   }
 
   return false;
@@ -284,7 +277,7 @@ bool URIUtils::HasParentInHostname(const CURL& url)
 {
   return url.IsProtocol("zip") || url.IsProtocol("apk") || url.IsProtocol("bluray") ||
          url.IsProtocol("udf") || url.IsProtocol("iso9660") || url.IsProtocol("xbt") ||
-         (CServiceBroker::IsBinaryAddonCacheUp() &&
+         (CServiceBroker::IsAddonInterfaceUp() &&
           CServiceBroker::GetFileExtensionProvider().EncodedHostName(url.GetProtocol()));
 }
 
@@ -774,6 +767,11 @@ bool URIUtils::IsStack(const std::string& strFile)
   return IsProtocol(strFile, "stack");
 }
 
+bool URIUtils::IsFavourite(const std::string& strFile)
+{
+  return IsProtocol(strFile, "favourites");
+}
+
 bool URIUtils::IsRAR(const std::string& strFile)
 {
   std::string strExtension = GetExtension(strFile);
@@ -1025,7 +1023,7 @@ bool URIUtils::IsInternetStream(const CURL& url, bool bStrictCheck /* = false */
     return true;
 
   // Check for true internetstreams
-  std::string protocol = url.GetProtocol();
+  const std::string& protocol = url.GetProtocol();
   if (CURL::IsProtocolEqual(protocol, "http") || CURL::IsProtocolEqual(protocol, "https") ||
       CURL::IsProtocolEqual(protocol, "tcp") || CURL::IsProtocolEqual(protocol, "udp") ||
       CURL::IsProtocolEqual(protocol, "rtp") || CURL::IsProtocolEqual(protocol, "sdp") ||

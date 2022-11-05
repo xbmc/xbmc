@@ -6,8 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "AppEnvironment.h"
-#include "Application.h"
+#include "application/Application.h"
 #include "platform/MessagePrinter.h"
 
 #ifdef TARGET_WINDOWS_DESKTOP
@@ -20,11 +19,9 @@
 #include "platform/android/activity/XBMCApp.h"
 #endif
 
-extern "C" int XBMC_Run(bool renderGUI, const std::shared_ptr<CAppParams>& params)
+extern "C" int XBMC_Run(bool renderGUI)
 {
   int status = -1;
-
-  CAppEnvironment::SetUp(params);
 
   if (!g_application.Create())
   {
@@ -77,8 +74,6 @@ extern "C" int XBMC_Run(bool renderGUI, const std::shared_ptr<CAppParams>& param
 #if defined(TARGET_ANDROID)
   CXBMCApp::Get().Deinitialize();
 #endif
-
-  CAppEnvironment::TearDown();
 
   return status;
 }

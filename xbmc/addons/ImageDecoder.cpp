@@ -9,6 +9,7 @@
 
 #include "guilib/TextureFormats.h"
 #include "pictures/PictureInfoTag.h"
+#include "utils/StringUtils.h"
 
 using namespace ADDON;
 using namespace KODI::ADDONS;

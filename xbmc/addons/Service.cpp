@@ -7,7 +7,8 @@
  */
 #include "Service.h"
 
-#include "AddonManager.h"
+#include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -17,6 +18,10 @@
 
 namespace ADDON
 {
+
+CService::CService(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonType::SERVICE)
+{
+}
 
 CServiceAddonManager::CServiceAddonManager(CAddonMgr& addonMgr) :
     m_addonMgr(addonMgr)
@@ -33,17 +38,17 @@ void CServiceAddonManager::OnEvent(const ADDON::AddonEvent& event)
 {
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled))
   {
-    Start(event.id);
+    Start(event.addonId);
   }
   else if (typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
   {
-    Stop(event.id);
-    Start(event.id);
+    Stop(event.addonId);
+    Start(event.addonId);
   }
   else if (typeid(event) == typeid(ADDON::AddonEvents::Disabled) ||
            typeid(event) == typeid(ADDON::AddonEvents::Unload))
   {
-    Stop(event.id);
+    Stop(event.addonId);
   }
 }
 
@@ -52,7 +57,7 @@ void CServiceAddonManager::Start()
   m_addonMgr.Events().Subscribe(this, &CServiceAddonManager::OnEvent);
   m_addonMgr.UnloadEvents().Subscribe(this, &CServiceAddonManager::OnEvent);
   VECADDONS addons;
-  if (m_addonMgr.GetAddons(addons, ADDON_SERVICE))
+  if (m_addonMgr.GetAddons(addons, AddonType::SERVICE))
   {
     for (const auto& addon : addons)
     {
@@ -64,7 +69,7 @@ void CServiceAddonManager::Start()
 void CServiceAddonManager::Start(const std::string& addonId)
 {
   AddonPtr addon;
-  if (m_addonMgr.GetAddon(addonId, addon, ADDON_SERVICE, OnlyEnabled::CHOICE_YES))
+  if (m_addonMgr.GetAddon(addonId, addon, AddonType::SERVICE, OnlyEnabled::CHOICE_YES))
   {
     Start(addon);
   }

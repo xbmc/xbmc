@@ -1,0 +1,32 @@
+--- a/lib/Crypto/Util/_raw_api.py
++++ b/lib/Crypto/Util/_raw_api.py
+@@ -200,8 +203,8 @@
+     _c_ssize_t = ctypes.c_ssize_t
+ 
+     _PyBUF_SIMPLE = 0
+-    _PyObject_GetBuffer = ctypes.pythonapi.PyObject_GetBuffer
+-    _PyBuffer_Release = ctypes.pythonapi.PyBuffer_Release
++    #_PyObject_GetBuffer = ctypes.pythonapi.PyObject_GetBuffer
++    #_PyBuffer_Release = ctypes.pythonapi.PyBuffer_Release
+     _py_object = ctypes.py_object
+     _c_ssize_p = ctypes.POINTER(_c_ssize_t)
+ 
+@@ -229,15 +230,9 @@
+     def c_uint8_ptr(data):
+         if byte_string(data) or isinstance(data, _Array):
+             return data
+-        elif isinstance(data, _buffer_type):
+-            obj = _py_object(data)
+-            buf = _Py_buffer()
+-            _PyObject_GetBuffer(obj, byref(buf), _PyBUF_SIMPLE)
+-            try:
+-                buffer_type = ctypes.c_ubyte * buf.len
+-                return buffer_type.from_address(buf.buf)
+-            finally:
+-                _PyBuffer_Release(byref(buf))
++        elif isinstance(data, bytearray):
++            local_type = c_ubyte * len(data)
++            return local_type.from_buffer(data)
+         else:
+             raise TypeError("Object type %s cannot be passed to C code" % type(data))
+ 

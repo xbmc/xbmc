@@ -13,17 +13,18 @@
 
 #include "StereoscopicsManager.h"
 
-#include "Application.h"
 #include "GUIComponent.h"
-#include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
@@ -85,11 +86,9 @@ static const struct StereoModeMap StringToGuiModeMap[] =
   {}
 };
 
-
 CStereoscopicsManager::CStereoscopicsManager()
+  : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings())
 {
-  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
   m_stereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
   m_lastStereoModeSetByUser = RENDER_STEREO_MODE_UNDEFINED;
 
@@ -511,7 +510,9 @@ std::string CStereoscopicsManager::GetVideoStereoMode() const
 {
   std::string playerMode;
 
-  if (g_application.GetAppPlayer().IsPlaying())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlaying())
     playerMode = CServiceBroker::GetDataCacheCore().GetVideoStereoMode();
 
   return playerMode;

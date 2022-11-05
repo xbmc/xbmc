@@ -8,9 +8,12 @@
 
 #include "GUIWindowScreensaverDim.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/IAddon.h"
+#include "addons/addoninfo/AddonType.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "guilib/GUITexture.h"
 #include "utils/ColorUtils.h"
 #include "windowing/GraphicContext.h"
@@ -26,19 +29,21 @@ CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
 
 void CGUIWindowScreensaverDim::UpdateVisibility()
 {
-  if (g_application.IsInScreenSaver())
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  if (appPower->IsInScreenSaver())
   {
     if (m_visible)
       return;
 
-    std::string usedId = g_application.ScreensaverIdInUse();
+    std::string usedId = appPower->ScreensaverIdInUse();
     if  (usedId == "screensaver.xbmc.builtin.dim" ||
          usedId == "screensaver.xbmc.builtin.black")
     {
       m_visible = true;
       ADDON::AddonPtr info;
-      bool success = CServiceBroker::GetAddonMgr().GetAddon(usedId, info, ADDON::ADDON_SCREENSAVER,
-                                                            ADDON::OnlyEnabled::CHOICE_YES);
+      bool success = CServiceBroker::GetAddonMgr().GetAddon(
+          usedId, info, ADDON::AddonType::SCREENSAVER, ADDON::OnlyEnabled::CHOICE_YES);
       if (success && info && !info->GetSetting("level").empty())
         m_newDimLevel = 100.0f - (float)atof(info->GetSetting("level").c_str());
       else

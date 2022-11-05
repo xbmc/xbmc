@@ -43,6 +43,12 @@ protected:
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
 private:
+  static bool ShowForSingleInstance(const ADDON::AddonPtr& addon,
+                                    bool saveToDisk,
+                                    ADDON::AddonInstanceId instanceId = ADDON::ADDON_SETTINGS_ID);
+  static bool ShowForMultipleInstances(const ADDON::AddonPtr& addon, bool saveToDisk);
+
   ADDON::AddonPtr m_addon;
+  ADDON::AddonInstanceId m_instanceId{ADDON::ADDON_SETTINGS_ID};
   bool m_saveToDisk = false;
 };

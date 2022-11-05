@@ -7,6 +7,9 @@
 
 #include "AudioDecoder.h"
 
+#include "FileItem.h"
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/interfaces/AudioEngine.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "filesystem/File.h"
@@ -22,9 +25,9 @@ using namespace KODI::ADDONS;
 CAudioDecoder::CAudioDecoder(const AddonInfoPtr& addonInfo)
   : IAddonInstanceHandler(ADDON_INSTANCE_AUDIODECODER, addonInfo)
 {
-  m_CodecName = addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@name").asString();
+  m_CodecName = addonInfo->Type(AddonType::AUDIODECODER)->GetValue("@name").asString();
   m_strExt = m_CodecName + KODI_ADDON_AUDIODECODER_TRACK_EXT;
-  m_hasTags = addonInfo->Type(ADDON_AUDIODECODER)->GetValue("@tags").asBoolean();
+  m_hasTags = addonInfo->Type(AddonType::AUDIODECODER)->GetValue("@tags").asBoolean();
 
   // Create all interface parts independent to make API changes easier if
   // something is added

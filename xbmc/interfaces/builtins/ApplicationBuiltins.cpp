@@ -8,16 +8,18 @@
 
 #include "ApplicationBuiltins.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
+#include "application/ApplicationVolumeHandling.h"
 #include "filesystem/ZipManager.h"
+#include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/FileOperationJob.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -56,7 +58,9 @@ static int Extract(const std::vector<std::string>& params)
  */
 static int Mute(const std::vector<std::string>& params)
 {
-  g_application.ToggleMute();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+  appVolume->ToggleMute();
 
   return 0;
 }
@@ -86,18 +90,20 @@ static int NotifyAll(const std::vector<std::string>& params)
 
 /*! \brief Set volume.
  *  \param params the parameters.
- *  \details params[0] = Volume level.
+ *  \details params[0] = Volume level.
  *           params[1] = "showVolumeBar" to show volume bar (optional).
  */
 static int SetVolume(const std::vector<std::string>& params)
 {
-  float oldVolume = g_application.GetVolumePercent();
-  float volume = (float)strtod(params[0].c_str(), nullptr);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+  float oldVolume = appVolume->GetVolumePercent();
+  float volume = static_cast<float>(strtod(params[0].c_str(), nullptr));
 
-  g_application.SetVolume(volume);
-  if(oldVolume != volume)
+  appVolume->SetVolume(volume);
+  if (oldVolume != volume)
   {
-    if(params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))
+    if (params.size() > 1 && StringUtils::EqualsNoCase(params[1], "showVolumeBar"))
     {
       CServiceBroker::GetAppMessenger()->PostMsg(
           TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
@@ -124,7 +130,9 @@ static int ToggleDebug(const std::vector<std::string>& params)
  */
 static int ToggleDPMS(const std::vector<std::string>& params)
 {
-  g_application.ToggleDPMS(true);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->ToggleDPMS(true);
 
   return 0;
 }

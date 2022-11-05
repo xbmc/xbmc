@@ -8,8 +8,8 @@
 
 #pragma once
 
-#include "Addon.h"
-#include "AddonEvents.h"
+#include "addons/Addon.h"
+#include "addons/AddonEvents.h"
 #include "threads/CriticalSection.h"
 
 namespace ADDON
@@ -17,7 +17,7 @@ namespace ADDON
   class CService: public CAddon
   {
   public:
-    explicit CService(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, ADDON_SERVICE) {}
+    explicit CService(const AddonInfoPtr& addonInfo);
   };
 
   class CServiceAddonManager

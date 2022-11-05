@@ -37,8 +37,8 @@ public:
   bool IsGuiLayer() override { return false; }
 
   // Feature support
-  bool Supports(ESCALINGMETHOD method) override { return false; }
-  bool Supports(ERENDERFEATURE feature) override;
+  bool Supports(ESCALINGMETHOD method) const override { return false; }
+  bool Supports(ERENDERFEATURE feature) const override;
 
 protected:
   void ReorderDrawPoints() override;

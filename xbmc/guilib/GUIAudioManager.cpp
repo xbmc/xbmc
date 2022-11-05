@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "addons/Skin.h"
+#include "addons/addoninfo/AddonType.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
 #include "filesystem/Directory.h"
 #include "input/Key.h"
@@ -27,9 +28,8 @@
 #include <mutex>
 
 CGUIAudioManager::CGUIAudioManager()
+  : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings())
 {
-  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
   m_bEnabled = false;
 
   m_settings->RegisterCallback(this, {CSettings::SETTING_LOOKANDFEEL_SOUNDSKIN,
@@ -211,7 +211,7 @@ std::string GetSoundSkinPath()
     return "";
 
   ADDON::AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(value, addon, ADDON::ADDON_RESOURCE_UISOUNDS,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(value, addon, ADDON::AddonType::RESOURCE_UISOUNDS,
                                               ADDON::OnlyEnabled::CHOICE_YES))
   {
     CLog::Log(LOGINFO, "Unknown sounds addon '{}'. Setting default sounds.", value);

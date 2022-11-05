@@ -6,10 +6,11 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "AppParamParser.h"
-#include "AppParams.h"
 #include "CompileInfo.h"
 #include "ServiceBroker.h"
+#include "application/AppEnvironment.h"
+#include "application/AppParamParser.h"
+#include "application/AppParams.h"
 #include "platform/Environment.h"
 #include "platform/xbmc.h"
 #include "threads/Thread.h"
@@ -23,7 +24,6 @@
 #include <dbghelp.h>
 #include <mmsystem.h>
 #include <shellapi.h>
-
 
 // Minidump creation function
 LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)
@@ -113,8 +113,12 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
   SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX);
 #endif
 
+  CAppEnvironment::SetUp(params);
+
   // Create and run the app
-  int status = XBMC_Run(true, params);
+  int status = XBMC_Run(true);
+
+  CAppEnvironment::TearDown();
 
   for (int i = 0; i < argc; ++i)
     delete[] argv[i];

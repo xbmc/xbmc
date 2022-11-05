@@ -18,9 +18,11 @@
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
+#include "addons/addoninfo/AddonType.h"
 #include "addons/gui/GUIViewStateAddonBrowser.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "events/windows/GUIViewStateEventLog.h"
+#include "favourites/GUIViewStateFavourites.h"
 #include "games/windows/GUIViewStateWindowGames.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -182,6 +184,9 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (windowId == WINDOW_EVENT_LOG)
     return new CGUIViewStateEventLog(items);
 
+  if (windowId == WINDOW_FAVOURITES)
+    return new CGUIViewStateFavourites(items);
+
   //  Use as fallback/default
   return new CGUIViewStateGeneral(items);
 }
@@ -190,7 +195,7 @@ CGUIViewState::CGUIViewState(const CFileItemList& items) : m_items(items)
 {
   m_currentViewAsControl = 0;
   m_currentSortMethod = 0;
-  m_playlist = PLAYLIST_NONE;
+  m_playlist = PLAYLIST::TYPE_NONE;
 }
 
 CGUIViewState::~CGUIViewState() = default;
@@ -403,7 +408,7 @@ bool CGUIViewState::DisableAddSourceButtons()
   return true;
 }
 
-int CGUIViewState::GetPlaylist() const
+PLAYLIST::Id CGUIViewState::GetPlaylist() const
 {
   return m_playlist;
 }
@@ -481,7 +486,7 @@ void CGUIViewState::SetSortOrder(SortOrder sortOrder)
 
 bool CGUIViewState::AutoPlayNextVideoItem() const
 {
-  if (GetPlaylist() != PLAYLIST_VIDEO)
+  if (GetPlaylist() != PLAYLIST::TYPE_VIDEO)
     return false;
 
   int settingValue(-1);
@@ -582,14 +587,14 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   {
     CURL url(items.GetPath());
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
+    if (CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, AddonType::PLUGIN,
                                                OnlyEnabled::CHOICE_YES))
     {
-      PluginPtr plugin = std::static_pointer_cast<CPluginSource>(addon);
+      const auto plugin = std::static_pointer_cast<CPluginSource>(addon);
       if (plugin->Provides(CPluginSource::AUDIO))
-        m_playlist = PLAYLIST_MUSIC;
+        m_playlist = PLAYLIST::TYPE_MUSIC;
       if (plugin->Provides(CPluginSource::VIDEO))
-        m_playlist = PLAYLIST_VIDEO;
+        m_playlist = PLAYLIST::TYPE_VIDEO;
     }
   }
 

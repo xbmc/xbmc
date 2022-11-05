@@ -210,10 +210,10 @@ protected:
 
   /*!
    \brief Prepare the XML for load
-   \param pRootElement the original XML element
+   \param rootElement the original XML element
    \return the prepared XML (resolved includes, constants and expression)
    */
-  virtual std::unique_ptr<TiXmlElement> Prepare(TiXmlElement *pRootElement);
+  virtual std::unique_ptr<TiXmlElement> Prepare(const std::unique_ptr<TiXmlElement>& rootElement);
 
   /*!
    \brief Check if window needs a (re)load. The window need to be (re)loaded when window is not loaded or include conditions values were changed
@@ -273,7 +273,10 @@ protected:
   CGUIAction m_loadActions;
   CGUIAction m_unloadActions;
 
-  TiXmlElement* m_windowXMLRootElement;
+  /*! \brief window root xml definition after resolving any skin includes.
+    Stored to avoid parsing the XML every time the window is loaded.
+   */
+  std::unique_ptr<TiXmlElement> m_windowXMLRootElement;
 
   bool m_manualRunActions;
 

@@ -11,10 +11,12 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/Webinterface.h"
+#include "addons/addoninfo/AddonType.h"
 #include "interfaces/legacy/wsgi/WsgiErrorStream.h"
 #include "interfaces/legacy/wsgi/WsgiInputStream.h"
 #include "interfaces/legacy/wsgi/WsgiResponse.h"
 #include "interfaces/python/swig.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 #include <utility>
@@ -115,7 +117,7 @@ HTTPPythonRequest* CHTTPPythonWsgiInvoker::GetRequest()
 
 void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, PyObject* moduleDict)
 {
-  if (m_request == NULL || m_addon == NULL || m_addon->Type() != ADDON::ADDON_WEB_INTERFACE ||
+  if (m_request == NULL || m_addon == NULL || m_addon->Type() != ADDON::AddonType::WEB_INTERFACE ||
       fp == NULL || script.empty() || moduleDict == NULL)
     return;
 
@@ -207,12 +209,12 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
   catch (const XBMCAddon::WrongTypeException& e)
   {
     logger->error("failed to prepare WsgiResponse object with wrong type exception: {}",
-                  e.GetMessage());
+                  e.GetExMessage());
     goto cleanup;
   }
   catch (const XbmcCommons::Exception& e)
   {
-    logger->error("failed to prepare WsgiResponse object with exception: {}", e.GetMessage());
+    logger->error("failed to prepare WsgiResponse object with exception: {}", e.GetExMessage());
     goto cleanup;
   }
   catch (...)
@@ -254,12 +256,12 @@ void CHTTPPythonWsgiInvoker::executeScript(FILE* fp, const std::string& script, 
     catch (const XBMCAddon::WrongTypeException& e)
     {
       logger->error("failed to parse result iterable object with wrong type exception: {}",
-                    e.GetMessage());
+                    e.GetExMessage());
       goto cleanup;
     }
     catch (const XbmcCommons::Exception& e)
     {
-      logger->error("failed to parse result iterable object with exception: {}", e.GetMessage());
+      logger->error("failed to parse result iterable object with exception: {}", e.GetExMessage());
       goto cleanup;
     }
     catch (...)

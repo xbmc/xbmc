@@ -164,6 +164,12 @@ typedef enum
   SortByBPM,
   /// __57__ : Sort by original title             <em>(String: <b><c>OriginalTitle</c></b>)</em>
   SortByOriginalTitle,
+  /// __58__ : Sort by provider                   <em>(String: <b><c>Provider</c></b>)</em>
+  /// @skinning_v20 <b>SortByProvider</b> New sort method added.
+  SortByProvider,
+  /// __59__ : Sort by user preference            <em>(String: <b><c>UserPreference</c></b>)</em>
+  /// @skinning_v20 <b>SortByUserPreference</b> New sort method added.
+  SortByUserPreference,
 } SortBy;
 ///@}
 

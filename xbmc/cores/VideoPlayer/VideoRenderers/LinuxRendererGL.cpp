@@ -11,29 +11,26 @@
 
 #include "LinuxRendererGL.h"
 
-#include "Application.h"
 #include "RenderCapture.h"
 #include "RenderCaptureGL.h"
 #include "RenderFactory.h"
 #include "ServiceBroker.h"
 #include "VideoShaders/VideoFilterShaderGL.h"
 #include "VideoShaders/YUV2RGBShaderGL.h"
-#include "cores/FFmpeg.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/IPlayer.h"
-#include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
-#include "guilib/LocalizeStrings.h"
-#include "guilib/Texture.h"
+#include "cores/VideoPlayer/VideoRenderers/RenderFlags.h"
 #include "rendering/MatrixGL.h"
 #include "rendering/gl/RenderSystemGL.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
-#include "settings/MediaSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/GLUtils.h"
-#include "utils/StringUtils.h"
 #include "utils/log.h"
+#include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
 #include <locale.h>
@@ -112,8 +109,6 @@ bool CLinuxRendererGL::Register()
 
 CLinuxRendererGL::CLinuxRendererGL()
 {
-  m_textureTarget = GL_TEXTURE_2D;
-
   m_iFlags = 0;
   m_format = AV_PIX_FMT_NONE;
 
@@ -742,7 +737,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     CLog::Log(LOGWARNING,
               "CLinuxRendererGL::UpdateVideoFilter - chosen scaling method {}, is not supported by "
               "renderer",
-              (int)m_scalingMethod);
+              m_scalingMethod);
     m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
 
@@ -1083,7 +1078,9 @@ void CLinuxRendererGL::RenderSinglePass(int index, int field)
 
   //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
   //having non-linear stretch on breaks the alignment
-  if (g_application.GetAppPlayer().IsInMenu())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsInMenu())
     m_pYUVShader->SetNonLinStretch(1.0);
   else
     m_pYUVShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoNonLinStretchRatio));
@@ -1441,7 +1438,9 @@ void CLinuxRendererGL::RenderFromFBO()
 
   //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
   //having non-linear stretch on breaks the alignment
-  if (g_application.GetAppPlayer().IsInMenu())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsInMenu())
     m_pVideoFilterShader->SetNonLinStretch(1.0);
   else
     m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoNonLinStretchRatio));
@@ -1585,7 +1584,9 @@ void CLinuxRendererGL::RenderRGB(int index, int field)
 
   //disable non-linear stretch when a dvd menu is shown, parts of the menu are rendered through the overlay renderer
   //having non-linear stretch on breaks the alignment
-  if (g_application.GetAppPlayer().IsInMenu())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsInMenu())
     m_pVideoFilterShader->SetNonLinStretch(1.0);
   else
     m_pVideoFilterShader->SetNonLinStretch(pow(CDisplaySettings::GetInstance().GetPixelRatio(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoNonLinStretchRatio));
@@ -2545,7 +2546,7 @@ void CLinuxRendererGL::SetTextureFilter(GLenum method)
   }
 }
 
-bool CLinuxRendererGL::Supports(ERENDERFEATURE feature)
+bool CLinuxRendererGL::Supports(ERENDERFEATURE feature) const
 {
   if (feature == RENDERFEATURE_STRETCH ||
       feature == RENDERFEATURE_NONLINSTRETCH ||
@@ -2567,7 +2568,7 @@ bool CLinuxRendererGL::SupportsMultiPassRendering()
   return m_renderSystem->IsExtSupported("GL_EXT_framebuffer_object");
 }
 
-bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
+bool CLinuxRendererGL::Supports(ESCALINGMETHOD method) const
 {
   //nearest neighbor doesn't work on YUY2 and UYVY
   if (method == VS_SCALINGMETHOD_NEAREST &&

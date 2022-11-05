@@ -7,11 +7,13 @@
  */
 
 #include "ContextMenuItem.h"
-#include "addons/AddonManager.h"
-#include "addons/ContextMenuAddon.h"
-#include "addons/IAddon.h"
+
+#include "FileItem.h"
 #include "GUIInfoManager.h"
+#include "addons/AddonManager.h"
+#include "addons/IAddon.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/LocalizeStrings.h"
 #ifdef HAS_PYTHON
 #include "interfaces/generic/ScriptInvocationManager.h"
 #include "interfaces/python/ContextItemAddonInvoker.h"
@@ -19,6 +21,11 @@
 #endif
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
+
+std::string CStaticContextMenuAction::GetLabel(const CFileItem& item) const
+{
+  return g_localizeStrings.Get(m_label);
+}
 
 bool CContextMenuItem::IsVisible(const CFileItem& item) const
 {
@@ -40,14 +47,13 @@ bool CContextMenuItem::IsGroup() const
   return !m_groupId.empty();
 }
 
-bool CContextMenuItem::Execute(const CFileItemPtr& item) const
+bool CContextMenuItem::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   if (!item || m_library.empty() || IsGroup())
     return false;
 
   ADDON::AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(m_addonId, addon, ADDON::ADDON_UNKNOWN,
-                                              ADDON::OnlyEnabled::CHOICE_YES))
+  if (!CServiceBroker::GetAddonMgr().GetAddon(m_addonId, addon, ADDON::OnlyEnabled::CHOICE_YES))
     return false;
 
   bool reuseLanguageInvoker = false;

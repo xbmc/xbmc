@@ -10,9 +10,10 @@
 
 #include "FileItem.h"
 #include "NfoFile.h"
+#include "URL.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -35,7 +36,7 @@ CVideoTagLoaderNFO::CVideoTagLoaderNFO(const CFileItem& item,
 
 bool CVideoTagLoaderNFO::HasInfo() const
 {
-  return !m_path.empty() && CFile::Exists(m_path);
+  return !m_path.empty() && CFileUtils::Exists(m_path);
 }
 
 CInfoScanner::INFO_TYPE CVideoTagLoaderNFO::Load(CVideoInfoTag& tag,
@@ -112,7 +113,7 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     if (movieFolder && !item.IsStack())
     { // looking up by folder name - movie.nfo takes priority - but not for stacked items (handled below)
       nfoFile = URIUtils::AddFileToFolder(strPath, "movie.nfo");
-      if (CFile::Exists(nfoFile))
+      if (CFileUtils::Exists(nfoFile))
         return nfoFile;
     }
 
@@ -144,7 +145,7 @@ std::string CVideoTagLoaderNFO::FindNFO(const CFileItem& item,
     }
 
     // test file existence
-    if (!nfoFile.empty() && !CFile::Exists(nfoFile))
+    if (!nfoFile.empty() && !CFileUtils::Exists(nfoFile))
       nfoFile.clear();
 
     if (nfoFile.empty()) // final attempt - strip off any cd1 folders

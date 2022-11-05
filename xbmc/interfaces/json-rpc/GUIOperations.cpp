@@ -8,10 +8,12 @@
 
 #include "GUIOperations.h"
 
-#include "Application.h"
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/IAddon.h"
+#include "addons/addoninfo/AddonType.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -52,7 +54,8 @@ JSONRPC_STATUS CGUIOperations::ActivateWindow(const std::string &method, ITransp
   if (iWindow != WINDOW_INVALID)
   {
     std::vector<std::string> params;
-    for (CVariant::const_iterator_array param = parameterObject["parameters"].begin_array(); param != parameterObject["parameters"].end_array(); param++)
+    for (CVariant::const_iterator_array param = parameterObject["parameters"].begin_array();
+         param != parameterObject["parameters"].end_array(); ++param)
     {
       if (param->isString() && !param->empty())
         params.push_back(param->asString());
@@ -142,7 +145,8 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const std::string &property, CVa
   {
     std::string skinId = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     AddonPtr addon;
-    if (!CServiceBroker::GetAddonMgr().GetAddon(skinId, addon, ADDON_SKIN, OnlyEnabled::CHOICE_YES))
+    if (!CServiceBroker::GetAddonMgr().GetAddon(skinId, addon, AddonType::SKIN,
+                                                OnlyEnabled::CHOICE_YES))
       return InternalError;
 
     result["id"] = skinId;

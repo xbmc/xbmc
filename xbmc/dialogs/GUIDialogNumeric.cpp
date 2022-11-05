@@ -9,6 +9,7 @@
 #include "GUIDialogNumeric.h"
 
 #include "ServiceBroker.h"
+#include "XBDateTime.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIWindowManager.h"

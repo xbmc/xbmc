@@ -8,8 +8,10 @@
 
 #include "VideoLibraryRefreshingJob.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
+#include "URL.h"
 #include "addons/Scraper.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -35,7 +37,7 @@
 using namespace KODI::MESSAGING;
 using namespace VIDEO;
 
-CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(CFileItemPtr item,
+CVideoLibraryRefreshingJob::CVideoLibraryRefreshingJob(std::shared_ptr<CFileItem> item,
                                                        bool forceRefresh,
                                                        bool refreshAll,
                                                        bool ignoreNfo /* = false */,

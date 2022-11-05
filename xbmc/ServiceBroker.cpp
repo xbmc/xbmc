@@ -8,7 +8,8 @@
 
 #include "ServiceBroker.h"
 
-#include "Application.h"
+#include "ServiceManager.h"
+#include "application/Application.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
@@ -213,7 +214,7 @@ CNetworkBase& CServiceBroker::GetNetwork()
   return g_application.m_ServiceManager->GetNetwork();
 }
 
-bool CServiceBroker::IsBinaryAddonCacheUp()
+bool CServiceBroker::IsAddonInterfaceUp()
 {
   return g_application.m_ServiceManager && g_application.m_ServiceManager->init_level > 1;
 }
@@ -281,6 +282,11 @@ CEventLog* CServiceBroker::GetEventLog()
 CMediaManager& CServiceBroker::GetMediaManager()
 {
   return g_application.m_ServiceManager->GetMediaManager();
+}
+
+CApplicationComponents& CServiceBroker::GetAppComponents()
+{
+  return g_application;
 }
 
 CGUIComponent* CServiceBroker::GetGUI()

@@ -8,6 +8,7 @@
 
 #include "PlayListM3U.h"
 
+#include "FileItem.h"
 #include "URL.h"
 #include "Util.h"
 #include "filesystem/File.h"
@@ -166,10 +167,10 @@ bool CPlayListM3U::Load(const std::string& strFileName)
         newItem->SetPath(strFileName);
         if (iStartOffset != 0 || iEndOffset != 0)
         {
-          newItem->m_lStartOffset = iStartOffset;
+          newItem->SetStartOffset(iStartOffset);
           newItem->m_lStartPartNumber = 1;
           newItem->SetProperty("item_start", iStartOffset);
-          newItem->m_lEndOffset = iEndOffset;
+          newItem->SetEndOffset(iEndOffset);
           // Prevent load message from file and override offset set here
           newItem->GetMusicInfoTag()->SetLoaded();
           newItem->GetMusicInfoTag()->SetTitle(strInfo);
@@ -227,13 +228,13 @@ void CPlayListM3U::Save(const std::string& strFileName) const
     std::string strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
     strLine = StringUtils::Format("{}:{},{}\n", InfoMarker,
-                                  item->GetMusicInfoTag()->GetDuration() / 1000, strDescription);
+                                  item->GetMusicInfoTag()->GetDuration(), strDescription);
     if (file.Write(strLine.c_str(), strLine.size()) != static_cast<ssize_t>(strLine.size()))
       return; // error
-    if (item->m_lStartOffset != 0 || item->m_lEndOffset != 0)
+    if (item->GetStartOffset() != 0 || item->GetEndOffset() != 0)
     {
-      strLine =
-          StringUtils::Format("{}:{},{}\n", OffsetMarker, item->m_lStartOffset, item->m_lEndOffset);
+      strLine = StringUtils::Format("{}:{},{}\n", OffsetMarker, item->GetStartOffset(),
+                                    item->GetEndOffset());
       file.Write(strLine.c_str(),strLine.size());
     }
     std::string strFileName = ResolveURL(item);

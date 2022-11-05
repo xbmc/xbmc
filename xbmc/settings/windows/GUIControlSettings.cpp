@@ -1085,7 +1085,7 @@ void CGUIControlButtonSetting::Update(bool fromControl, bool updateDisplayOnly)
             for (const auto& addonID : addonIDs)
             {
               ADDON::AddonPtr addon;
-              if (CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, ADDON::ADDON_UNKNOWN,
+              if (CServiceBroker::GetAddonMgr().GetAddon(addonID, addon,
                                                          ADDON::OnlyEnabled::CHOICE_YES))
                 addonNames.push_back(addon->Name());
             }

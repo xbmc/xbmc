@@ -12,6 +12,8 @@
 #include "guilib/GUIDialog.h"
 #include "threads/Event.h"
 
+#include <memory>
+
 class CGUIDialogSongInfo :
       public CGUIDialog
 {
@@ -39,6 +41,7 @@ protected:
   void OnGetArt();
   void SetUserrating(int userrating);
   void OnSetUserrating();
+  void OnPlaySong(const std::shared_ptr<CFileItem>& item);
 
   CFileItemPtr m_song;
   CFileItemList m_artTypeList;

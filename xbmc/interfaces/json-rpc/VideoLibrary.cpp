@@ -8,6 +8,7 @@
 
 #include "VideoLibrary.h"
 
+#include "FileItem.h"
 #include "PVROperations.h"
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
@@ -18,6 +19,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoDbUrl.h"
 #include "video/VideoLibraryQueue.h"
 
 using namespace JSONRPC;
@@ -102,7 +104,7 @@ JSONRPC_STATUS CVideoLibrary::GetMovieSets(const std::string &method, ITransport
     return InternalError;
 
   CFileItemList items;
-  if (!videodatabase.GetSetsNav("videodb://movies/sets/", items, VIDEODB_CONTENT_MOVIES))
+  if (!videodatabase.GetSetsNav("videodb://movies/sets/", items, VideoDbContentType::MOVIES))
     return InternalError;
 
   HandleFileItemList("setid", false, "sets", items, parameterObject, result);
@@ -432,23 +434,23 @@ JSONRPC_STATUS CVideoLibrary::GetGenres(const std::string &method, ITransportLay
 {
   std::string media = parameterObject["type"].asString();
   StringUtils::ToLower(media);
-  int idContent = -1;
+  VideoDbContentType idContent = VideoDbContentType::UNKNOWN;
 
   std::string strPath = "videodb://";
   /* select which video content to get genres from*/
   if (media == MediaTypeMovie)
   {
-    idContent = VIDEODB_CONTENT_MOVIES;
+    idContent = VideoDbContentType::MOVIES;
     strPath += "movies";
   }
   else if (media == MediaTypeTvShow)
   {
-    idContent = VIDEODB_CONTENT_TVSHOWS;
+    idContent = VideoDbContentType::TVSHOWS;
     strPath += "tvshows";
   }
   else if (media == MediaTypeMusicVideo)
   {
-    idContent = VIDEODB_CONTENT_MUSICVIDEOS;
+    idContent = VideoDbContentType::MUSICVIDEOS;
     strPath += "musicvideos";
   }
   strPath += "/genres/";
@@ -473,23 +475,23 @@ JSONRPC_STATUS CVideoLibrary::GetTags(const std::string &method, ITransportLayer
 {
   std::string media = parameterObject["type"].asString();
   StringUtils::ToLower(media);
-  int idContent = -1;
+  VideoDbContentType idContent = VideoDbContentType::UNKNOWN;
 
   std::string strPath = "videodb://";
   /* select which video content to get tags from*/
   if (media == MediaTypeMovie)
   {
-    idContent = VIDEODB_CONTENT_MOVIES;
+    idContent = VideoDbContentType::MOVIES;
     strPath += "movies";
   }
   else if (media == MediaTypeTvShow)
   {
-    idContent = VIDEODB_CONTENT_TVSHOWS;
+    idContent = VideoDbContentType::TVSHOWS;
     strPath += "tvshows";
   }
   else if (media == MediaTypeMusicVideo)
   {
-    idContent = VIDEODB_CONTENT_MUSICVIDEOS;
+    idContent = VideoDbContentType::MUSICVIDEOS;
     strPath += "musicvideos";
   }
   strPath += "/tags/";
@@ -1004,7 +1006,10 @@ JSONRPC_STATUS CVideoLibrary::Clean(const std::string &method, ITransportLayer *
   return ACK;
 }
 
-bool CVideoLibrary::FillFileItem(const std::string &strFilename, CFileItemPtr &item, const CVariant &parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
+bool CVideoLibrary::FillFileItem(
+    const std::string& strFilename,
+    std::shared_ptr<CFileItem>& item,
+    const CVariant& parameterObject /* = CVariant(CVariant::VariantTypeArray) */)
 {
   CVideoDatabase videodatabase;
   if (strFilename.empty())
@@ -1109,7 +1114,7 @@ int CVideoLibrary::GetDetailsFromJsonParameters(const CVariant& parameterObject)
   const CVariant& properties = parameterObject["properties"];
   int details = VideoDbDetailsNone;
   for (CVariant::const_iterator_array itr = properties.begin_array(); itr != properties.end_array();
-       itr++)
+       ++itr)
   {
     std::string propertyValue = itr->asString();
     if (propertyValue == "cast")
@@ -1233,7 +1238,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "ratings"))
   {
     CVariant ratings = parameterObject["ratings"];
-    for (CVariant::const_iterator_map rIt = ratings.begin_map(); rIt != ratings.end_map(); rIt++)
+    for (CVariant::const_iterator_map rIt = ratings.begin_map(); rIt != ratings.end_map(); ++rIt)
     {
       if (rIt->second.isObject() && ParameterNotNull(rIt->second, "rating"))
       {
@@ -1269,7 +1274,8 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "uniqueid"))
   {
     CVariant uniqueids = parameterObject["uniqueid"];
-    for (CVariant::const_iterator_map idIt = uniqueids.begin_map(); idIt != uniqueids.end_map(); idIt++)
+    for (CVariant::const_iterator_map idIt = uniqueids.begin_map(); idIt != uniqueids.end_map();
+         ++idIt)
     {
       if (idIt->second.isString() && !idIt->second.asString().empty())
       {
@@ -1356,7 +1362,7 @@ void CVideoLibrary::UpdateVideoTag(const CVariant &parameterObject, CVideoInfoTa
   if (ParameterNotNull(parameterObject, "art"))
   {
     CVariant art = parameterObject["art"];
-    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); artIt++)
+    for (CVariant::const_iterator_map artIt = art.begin_map(); artIt != art.end_map(); ++artIt)
     {
       if (artIt->second.isString() && !artIt->second.asString().empty())
       {

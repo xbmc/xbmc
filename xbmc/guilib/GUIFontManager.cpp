@@ -14,6 +14,7 @@
 #include "addons/AddonManager.h"
 #include "addons/FontResource.h"
 #include "addons/Skin.h"
+#include "addons/addoninfo/AddonType.h"
 #include "windowing/GraphicContext.h"
 
 #include <mutex>
@@ -25,11 +26,10 @@
 #include "GUIFont.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "Util.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
+#include "utils/FileUtils.h"
 #include "utils/FontUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -51,7 +51,7 @@ constexpr const char* XML_FONTCACHE_FILENAME = "fontcache.xml";
 
 bool LoadXMLData(const std::string& filepath, CXBMCTinyXML& xmlDoc)
 {
-  if (!XFILE::CFile::Exists(filepath))
+  if (!CFileUtils::Exists(filepath))
   {
     CLog::LogF(LOGDEBUG, "Couldn't load '{}' the file don't exists", filepath);
     return false;
@@ -111,7 +111,7 @@ void GUIFontManager::RescaleFontSizeAndAspect(CGraphicContext& context,
 
 static bool CheckFont(std::string& strPath, const std::string& newPath, const std::string& filename)
 {
-  if (!XFILE::CFile::Exists(strPath))
+  if (!CFileUtils::Exists(strPath))
   {
     strPath = URIUtils::AddFileToFolder(newPath, filename);
 #ifdef TARGET_POSIX
@@ -179,7 +179,7 @@ CGUIFont* GUIFontManager::LoadTTF(const std::string& strFontName,
       !CheckFont(strPath, "special://xbmc/media/Fonts", file))
   {
     VECADDONS addons;
-    CServiceBroker::GetAddonMgr().GetAddons(addons, ADDON_RESOURCE_FONT);
+    CServiceBroker::GetAddonMgr().GetAddons(addons, AddonType::RESOURCE_FONT);
     for (auto& it : addons)
     {
       std::shared_ptr<CFontResource> font(std::static_pointer_cast<CFontResource>(it));

@@ -10,7 +10,6 @@
 
 #include "File.h"
 
-#include "Application.h"
 #include "Directory.h"
 #include "DirectoryCache.h"
 #include "FileCache.h"
@@ -18,7 +17,8 @@
 #include "IFile.h"
 #include "PasswordManager.h"
 #include "ServiceBroker.h"
-#include "Util.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "commons/Exception.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -127,9 +127,11 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
     CStopWatch timer;
     timer.StartZero();
     float start = 0.0f;
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPower = components.GetComponent<CApplicationPowerHandling>();
     while (true)
     {
-      g_application.ResetScreenSaver();
+      appPower->ResetScreenSaver();
 
       iRead = file.Read(buffer.data(), buffer.size());
       if (iRead == 0) break;

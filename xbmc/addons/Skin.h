@@ -14,6 +14,7 @@
 #include "windowing/GraphicContext.h" // needed for the RESOLUTION members
 
 #include <map>
+#include <memory>
 #include <set>
 #include <utility>
 #include <vector>
@@ -124,7 +125,9 @@ public:
    \param baseDir [in] If non-empty, the given directory is searched instead of the skin's directory.  Defaults to empty.
    \return path to the XML file
    */
-  std::string GetSkinPath(const std::string& file, RESOLUTION_INFO *res = NULL, const std::string& baseDir = "") const;
+  std::string GetSkinPath(const std::string& file,
+                          RESOLUTION_INFO* res = nullptr,
+                          const std::string& baseDir = "") const;
 
   /*! \brief Return whether skin debugging is enabled
    \return true if skin debugging (set via <debugging>true</debugging> in addon.xml) is enabled.
@@ -151,7 +154,8 @@ public:
    */
   static bool TranslateResolution(const std::string &name, RESOLUTION_INFO &res);
 
-  void ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = NULL);
+  void ResolveIncludes(TiXmlElement* node,
+                       std::map<INFO::InfoPtr, bool>* xmlIncludeConditions = nullptr);
 
   float GetEffectsSlowdown() const { return m_effectsSlowDown; }
 
@@ -175,7 +179,7 @@ public:
 
   /*! \brief Starts evaluating timers
    */
-  void StartTimerEvaluation();
+  void ProcessTimers();
 
   /*! \brief Called when unloading a skin, allows to cleanup specific
    * skin resources.
@@ -204,8 +208,8 @@ public:
 
   /*! \brief Don't handle skin settings like normal addon settings
    */
-  bool HasSettings() override { return false; }
-  bool HasUserSettings() override { return false; }
+  bool HasSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override { return false; }
+  bool HasUserSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override { return false; }
 
   int TranslateString(const std::string &setting);
   const std::string& GetString(int setting) const;
@@ -262,10 +266,11 @@ protected:
 
   static CSkinSettingPtr ParseSetting(const TiXmlElement* element);
 
-  bool SettingsInitialized() const override;
-  bool SettingsLoaded() const override;
-  bool SettingsFromXML(const CXBMCTinyXML &doc, bool loadDefaults = false) override;
-  bool SettingsToXML(CXBMCTinyXML &doc) const override;
+  bool SettingsLoaded(AddonInstanceId id = ADDON_SETTINGS_ID) const override;
+  bool SettingsFromXML(const CXBMCTinyXML& doc,
+                       bool loadDefaults,
+                       AddonInstanceId id = ADDON_SETTINGS_ID) override;
+  bool SettingsToXML(CXBMCTinyXML& doc, AddonInstanceId id = ADDON_SETTINGS_ID) const override;
 
   RESOLUTION_INFO m_defaultRes;
   std::vector<RESOLUTION_INFO> m_resolutions;

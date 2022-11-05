@@ -186,14 +186,14 @@
 			<left>0</left>
 			<top>55</top>
 			<width>510</width>
-			<height>740</height>
+			<height>855</height>
 			<texture border="40">buttons/dialogbutton-nofo.png</texture>
 		</control>
 		<control type="list" id="$PARAM[list_id]">
 			<left>20</left>
 			<top>75</top>
 			<width>470</width>
-			<height>700</height>
+			<height>815</height>
 			<onup>$PARAM[list_id]</onup>
 			<ondown>$PARAM[list_id]</ondown>
 			<onleft>$PARAM[onleft]</onleft>
@@ -253,7 +253,7 @@
 			<left>495</left>
 			<top>75</top>
 			<width>12</width>
-			<height>700</height>
+			<height>815</height>
 			<onleft>$PARAM[list_id]</onleft>
 			<onright>$PARAM[onright]</onright>
 			<ondown>$PARAM[scrollbar_id]</ondown>
@@ -267,7 +267,7 @@
 			<visible>!Player.ChannelPreviewActive</visible>
 			<control type="group">
 				<visible>Player.SeekEnabled | VideoPlayer.HasEPG</visible>
-				<visible>Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | !String.IsEmpty(PVR.ChannelNumberInput) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide)</visible>
+				<visible>Player.ShowInfo | Window.IsActive(fullscreeninfo) | Player.ShowTime | Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo) | !String.IsEmpty(Player.SeekNumeric) | Window.IsActive(pvrosdchannels) | Window.IsActive(pvrchannelguide) | !String.IsEmpty(PVR.ChannelNumberInput)</visible>
 				<control type="label">
 					<top>22</top>
 					<right>20</right>
@@ -338,6 +338,26 @@
 		<control type="group">
 			<animation effect="fade" time="400">VisibleChange</animation>
 			<visible>Player.ChannelPreviewActive</visible>
+			<control type="label">
+				<top>22</top>
+				<right>20</right>
+				<width>400</width>
+				<height>50</height>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<label>$INFO[VideoPlayer.EndTime]</label>
+			</control>
+			<control type="label">
+				<top>22</top>
+				<left>20</left>
+				<width>400</width>
+				<height>50</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<label>$INFO[VideoPlayer.StartTime]</label>
+			</control>
 			<control type="progress">
 				<left>0</left>
 				<top>70</top>

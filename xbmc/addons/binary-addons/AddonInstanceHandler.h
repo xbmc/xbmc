@@ -8,28 +8,66 @@
 
 #pragma once
 
-#include "AddonDll.h"
-#include "addons/AddonVersion.h"
-#include "addons/kodi-dev-kit/include/kodi/AddonBase.h"
+#include "addons/IAddon.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon_base.h"
+#include "addons/kodi-dev-kit/include/kodi/versions.h"
+#include "threads/CriticalSection.h"
 
 #include <memory>
+#include <string>
 
 class CSetting;
 
 namespace ADDON
 {
 
+class CAddonDll;
+using AddonDllPtr = std::shared_ptr<CAddonDll>;
+
+class CAddonInfo;
+using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
+
+class CBinaryAddonBase;
+using BinaryAddonBasePtr = std::shared_ptr<CBinaryAddonBase>;
+
 class IAddonInstanceHandler
 {
 public:
+  /**
+   * @brief Class constructor for handling add-on instance processes, allowing
+   * an add-on to handle multiple work simultaneously and independently.
+   *
+   * @param[in] type The associated add-on type which is processed in the running
+   *                 instance.
+   * @param[in] addonInfo Class for querying available add-on information (e.g.
+   *                      content declared in addon.xml).
+   * @param[in] parentInstance *[opt]* Above running add-on instance which starts this
+   *                           instance. Used to have the associated class for
+   *                           work to open in the add-on.\n\n
+   *                           **Currently used values:**
+   * | Parent | Target | Description
+   * |--------|--------|-------------
+   * | @ref kodi::addon::CInstanceInputStream | @ref kodi::addon::CInstanceVideoCodec | In order to be able to access the overlying input stream instance in the video codec created by Kodi on the add-on.
+   * @param[in] uniqueWorkID *[opt]* Identification value intended to pass any special
+   *                         values to the instance to be opened.
+   *                         If not used, the IAddonInstanceHandler class pointer
+   *                         is used as a string.\n\n
+   *                         **Currently used values:**
+   * | Add-on instance type | Description
+   * |----------------------|---------------------
+   * | @ref kodi::addon::CInstanceInputStream "Inputstream" | To transfer special values to inputstream using the property @ref STREAM_PROPERTY_INPUTSTREAM_INSTANCE_ID from external space, for example PVR add-on which also supports inputstream can exchange special values with it, e.g. select the necessary add-on processing class, since it is not known at the start what is being executed ( live TV, radio, recordings...) and add-on may use different classes.
+   * | All other | The used class pointer of Kodi's @ref IAddonInstanceHandler is used as a value to have an individually different value.
+   */
   IAddonInstanceHandler(ADDON_TYPE type,
                         const AddonInfoPtr& addonInfo,
+                        AddonInstanceId instanceId = ADDON_INSTANCE_ID_UNUSED,
                         KODI_HANDLE parentInstance = nullptr,
-                        const std::string& instanceID = "");
+                        const std::string& uniqueWorkID = "");
   virtual ~IAddonInstanceHandler();
 
   ADDON_TYPE UsedType() const { return m_type; }
-  const std::string& InstanceID() { return m_instanceId; }
+  AddonInstanceId InstanceId() const { return m_instanceId; }
+  const std::string& UniqueWorkID() { return m_uniqueWorkID; }
 
   std::string ID() const;
   std::string Name() const;
@@ -37,7 +75,7 @@ public:
   std::string Icon() const;
   std::string Path() const;
   std::string Profile() const;
-  AddonVersion Version() const;
+  CAddonVersion Version() const;
 
   ADDON_STATUS CreateInstance();
   void DestroyInstance();
@@ -84,8 +122,9 @@ private:
                                           const char* id,
                                           const char* value);
 
-  ADDON_TYPE m_type;
-  std::string m_instanceId;
+  const ADDON_TYPE m_type;
+  const AddonInstanceId m_instanceId;
+  std::string m_uniqueWorkID;
   KODI_HANDLE m_parentInstance;
   AddonInfoPtr m_addonInfo;
   BinaryAddonBasePtr m_addonBase;

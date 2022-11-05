@@ -47,7 +47,8 @@ enum StreamType
   STREAM_DATA, // data stream
   STREAM_SUBTITLE, // subtitle stream
   STREAM_TELETEXT, // Teletext data stream
-  STREAM_RADIO_RDS // Radio RDS data stream
+  STREAM_RADIO_RDS, // Radio RDS data stream
+  STREAM_AUDIO_ID3 // Audio ID3 data stream
 };
 
 enum StreamSource
@@ -74,7 +75,6 @@ public:
     uniqueId = 0;
     dvdNavId = 0;
     demuxerId = -1;
-    codec = (AVCodecID)0; // AV_CODEC_ID_NONE
     codec_fourcc = 0;
     profile = FF_PROFILE_UNKNOWN;
     level = FF_LEVEL_UNKNOWN;
@@ -96,7 +96,7 @@ public:
   int uniqueId; // unique stream id
   int dvdNavId;
   int64_t demuxerId; // id of the associated demuxer
-  AVCodecID codec;
+  AVCodecID codec = AV_CODEC_ID_NONE;
   unsigned int codec_fourcc; // if available
   int profile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
   int level; // encoder level of the stream reported by the decoder. used to qualify hw decoders.
@@ -198,6 +198,12 @@ public:
   {
     type = STREAM_TELETEXT;
   }
+};
+
+class CDemuxStreamAudioID3 : public CDemuxStream
+{
+public:
+  CDemuxStreamAudioID3() : CDemuxStream() { type = STREAM_AUDIO_ID3; }
 };
 
 class CDemuxStreamRadioRDS : public CDemuxStream
@@ -349,7 +355,7 @@ public:
    * sets desired width / height for video stream
    * adaptive demuxers like DASH can use this to choose best fitting video stream
    */
-  virtual void SetVideoResolution(int width, int height) {}
+  virtual void SetVideoResolution(unsigned int width, unsigned int height) {}
 
   /*
   * return the id of the demuxer

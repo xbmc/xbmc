@@ -22,19 +22,17 @@
 #include <mutex>
 
 #include <EGL/eglext.h>
+#include <unistd.h>
 
+#include "PlatformDefs.h"
 #include "system_gl.h"
 
 #define EGL_NO_CONFIG (EGLConfig)0
 
-CGLContextEGL::CGLContextEGL(Display *dpy, EGLint renderingApi) : CGLContext(dpy)
+CGLContextEGL::CGLContextEGL(Display* dpy, EGLint renderingApi)
+  : CGLContext(dpy), m_renderingApi(renderingApi)
 {
   m_extPrefix = "EGL_";
-  m_renderingApi = renderingApi;
-
-  m_eglDisplay = EGL_NO_DISPLAY;
-  m_eglSurface = EGL_NO_SURFACE;
-  m_eglContext = EGL_NO_CONTEXT;
   m_eglConfig = EGL_NO_CONFIG;
 
   m_eglGetPlatformDisplayEXT = (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");

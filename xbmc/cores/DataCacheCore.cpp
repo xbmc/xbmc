@@ -21,7 +21,6 @@ CDataCacheCore::CDataCacheCore() :
   m_renderInfo {},
   m_stateInfo {}
 {
-  m_hasAVInfoChanges = false;
 }
 
 CDataCacheCore::~CDataCacheCore() = default;

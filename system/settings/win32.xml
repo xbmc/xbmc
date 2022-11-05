@@ -1,3 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <settings version="1">
+  <section id="interface" label="14206" help="38102">
+    <category id="window" label="0" help="36135">
+      <visible>false</visible>
+      <group id="1">
+        <setting id="window.top" type="integer" label="0" help="36136">
+          <level>4</level>
+          <default>0</default>
+        </setting>
+        <setting id="window.left" type="integer" label="0" help="36136">
+          <level>4</level>
+          <default>0</default>
+        </setting>
+      </group>
+    </category>
+  </section>
 </settings>

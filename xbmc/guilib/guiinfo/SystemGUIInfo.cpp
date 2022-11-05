@@ -8,12 +8,15 @@
 
 #include "guilib/guiinfo/SystemGUIInfo.h"
 
-#include "AppParams.h"
-#include "Application.h"
+#include "FileItem.h"
 #include "GUIPassword.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
+#include "application/AppParams.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -27,8 +30,8 @@
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/DisplaySettings.h"
 #include "settings/MediaSettings.h"
+#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
@@ -182,14 +185,23 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
     case SYSTEM_SCREEN_RESOLUTION:
     {
-      RESOLUTION_INFO& resInfo = CDisplaySettings::GetInstance().GetCurrentResolutionInfo();
-      if (CServiceBroker::GetWinSystem()->IsFullScreen())
-        value =
-            StringUtils::Format("{}x{}@{:.2f}Hz - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
-                                resInfo.fRefreshRate, g_localizeStrings.Get(244));
+      const auto winSystem = CServiceBroker::GetWinSystem();
+      if (winSystem)
+      {
+        const RESOLUTION_INFO& resInfo = winSystem->GetGfxContext().GetResInfo();
+
+        if (winSystem->IsFullScreen())
+          value = StringUtils::Format("{}x{} @ {:.2f} Hz - {}", resInfo.iScreenWidth,
+                                      resInfo.iScreenHeight, resInfo.fRefreshRate,
+                                      g_localizeStrings.Get(244));
+        else
+          value = StringUtils::Format("{}x{} - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
+                                      g_localizeStrings.Get(242));
+      }
       else
-        value = StringUtils::Format("{}x{} - {}", resInfo.iScreenWidth, resInfo.iScreenHeight,
-                                    g_localizeStrings.Get(242));
+      {
+        value = "";
+      }
       return true;
     }
     case SYSTEM_BUILD_VERSION_SHORT:
@@ -567,14 +579,34 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = CServiceBroker::GetPowerManager().CanReboot();
       return true;
     case SYSTEM_SCREENSAVER_ACTIVE:
-      value = g_application.IsInScreenSaver();
-      return true;
     case SYSTEM_IS_SCREENSAVER_INHIBITED:
-      value = g_application.IsScreenSaverInhibited();
-      return true;
     case SYSTEM_DPMS_ACTIVE:
-      value = g_application.IsDPMSActive();
-      return true;
+    case SYSTEM_IDLE_SHUTDOWN_INHIBITED:
+    case SYSTEM_IDLE_TIME:
+    {
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+      switch (info.m_info)
+      {
+        case SYSTEM_SCREENSAVER_ACTIVE:
+          value = appPower->IsInScreenSaver();
+          return true;
+        case SYSTEM_IS_SCREENSAVER_INHIBITED:
+          value = appPower->IsScreenSaverInhibited();
+          return true;
+        case SYSTEM_DPMS_ACTIVE:
+          value = appPower->IsDPMSActive();
+          return true;
+        case SYSTEM_IDLE_SHUTDOWN_INHIBITED:
+          value = appPower->IsIdleShutdownInhibited();
+          return true;
+        case SYSTEM_IDLE_TIME:
+          value = appPower->GlobalIdleTime() >= static_cast<int>(info.GetData1());
+          return true;
+        default:
+          return false;
+      }
+    }
     case SYSTEM_HASLOCKS:
       value = CServiceBroker::GetSettingsComponent()->GetProfileManager()->GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
       return true;
@@ -582,7 +614,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = true;
       return true;
     case SYSTEM_HAS_PVR_ADDON:
-      value = CServiceBroker::GetAddonMgr().HasAddons(ADDON::ADDON_PVRDLL);
+      value = CServiceBroker::GetAddonMgr().HasAddons(ADDON::AddonType::PVRDLL);
       return true;
     case SYSTEM_HAS_CMS:
 #if defined(HAS_GL) || defined(HAS_DX)
@@ -599,9 +631,6 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
     case SYSTEM_ISSTANDALONE:
       value = CServiceBroker::GetAppParams()->IsStandAlone();
-      return true;
-    case SYSTEM_IDLE_SHUTDOWN_INHIBITED:
-      value = g_application.IsIdleShutdownInhibited();
       return true;
     case SYSTEM_HAS_SHUTDOWN:
       value = (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME) > 0);
@@ -621,9 +650,6 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = g_sysinfo.HasInternet();
       return true;
     }
-    case SYSTEM_IDLE_TIME:
-      value = g_application.GlobalIdleTime() >= static_cast<int>(info.GetData1());
-      return true;
     case SYSTEM_HAS_CORE_ID:
       value = CServiceBroker::GetCPUInfo()->HasCoreId(info.GetData1());
       return true;
@@ -683,6 +709,15 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
           value = CMediaSettings::GetInstance().GetWatchedMode(window->CurrentDirectory().GetContent()) == WatchedModeUnwatched;
           return true;
         }
+      }
+      else if (StringUtils::EqualsNoCase(info.GetData3(), "hideunwatchedepisodethumbs"))
+      {
+        const std::shared_ptr<CSettingList> setting(std::dynamic_pointer_cast<CSettingList>(
+            CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+                CSettings::SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS)));
+        value = setting && !CSettingUtils::FindIntInList(
+                               setting, CSettings::VIDEOLIBRARY_THUMB_SHOW_UNWATCHED_EPISODE);
+        return true;
       }
       break;
     }

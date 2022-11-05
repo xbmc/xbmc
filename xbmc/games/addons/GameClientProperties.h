@@ -8,7 +8,6 @@
 
 #pragma once
 
-#include "addons/Addon.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Game.h"
 #include "games/GameTypes.h"
 
@@ -16,6 +15,13 @@
 #include <vector>
 
 struct AddonProps_Game;
+
+namespace ADDON
+{
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
+using VECADDONS = std::vector<AddonPtr>;
+} // namespace ADDON
 
 namespace KODI
 {

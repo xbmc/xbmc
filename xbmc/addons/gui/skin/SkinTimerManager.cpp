@@ -10,8 +10,9 @@
 
 #include "GUIInfoManager.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIAction.h"
 #include "guilib/GUIComponent.h"
-#include "interfaces/builtins/Builtins.h"
+#include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
@@ -19,19 +20,6 @@
 #include <mutex>
 
 using namespace std::chrono_literals;
-
-CSkinTimerManager::CSkinTimerManager() : CThread("SkinTimers")
-{
-}
-
-void CSkinTimerManager::Start()
-{
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
-  if (!m_timers.empty())
-  {
-    Create();
-  }
-}
 
 void CSkinTimerManager::LoadTimers(const std::string& path)
 {
@@ -51,7 +39,6 @@ void CSkinTimerManager::LoadTimers(const std::string& path)
   }
 
   const TiXmlElement* timerNode = root->FirstChildElement("timer");
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   while (timerNode)
   {
     LoadTimerInternal(timerNode);
@@ -68,14 +55,7 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
     return;
   }
 
-  INFO::InfoPtr startInfo{nullptr};
-  INFO::InfoPtr resetInfo{nullptr};
-  INFO::InfoPtr stopInfo{nullptr};
   std::string timerName = node->FirstChild("name")->FirstChild()->Value();
-  std::string startAction;
-  std::string stopAction;
-  bool resetOnStart{false};
-
   if (m_timers.count(timerName) > 0)
   {
     CLog::LogF(LOGWARNING,
@@ -84,6 +64,9 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
     return;
   }
 
+  // timer start
+  INFO::InfoPtr startInfo{nullptr};
+  bool resetOnStart{false};
   if (node->FirstChild("start") && node->FirstChild("start")->FirstChild() &&
       !node->FirstChild("start")->FirstChild()->ValueStr().empty())
   {
@@ -96,13 +79,16 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
     }
   }
 
+  // timer reset
+  INFO::InfoPtr resetInfo{nullptr};
   if (node->FirstChild("reset") && node->FirstChild("reset")->FirstChild() &&
       !node->FirstChild("reset")->FirstChild()->ValueStr().empty())
   {
     resetInfo = CServiceBroker::GetGUI()->GetInfoManager().Register(
         node->FirstChild("reset")->FirstChild()->ValueStr());
   }
-
+  // timer stop
+  INFO::InfoPtr stopInfo{nullptr};
   if (node->FirstChild("stop") && node->FirstChild("stop")->FirstChild() &&
       !node->FirstChild("stop")->FirstChild()->ValueStr().empty())
   {
@@ -110,43 +96,46 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
         node->FirstChild("stop")->FirstChild()->ValueStr());
   }
 
-  if (node->FirstChild("onstart") && node->FirstChild("onstart")->FirstChild() &&
-      !node->FirstChild("onstart")->FirstChild()->ValueStr().empty())
+  // process onstart actions
+  CGUIAction startActions;
+  startActions.EnableSendThreadMessageMode();
+  const TiXmlElement* onStartElement = node->FirstChildElement("onstart");
+  while (onStartElement)
   {
-    if (!CBuiltins::GetInstance().HasCommand(node->FirstChild("onstart")->FirstChild()->ValueStr()))
+    if (onStartElement->FirstChild())
     {
-      CLog::LogF(LOGERROR,
-                 "Unknown onstart builtin action {} for timer {}, the action will be ignored",
-                 node->FirstChild("onstart")->FirstChild()->ValueStr(), timerName);
+      const std::string conditionalActionAttribute =
+          onStartElement->Attribute("condition") != nullptr ? onStartElement->Attribute("condition")
+                                                            : "";
+      startActions.Append(CGUIAction::CExecutableAction{conditionalActionAttribute,
+                                                        onStartElement->FirstChild()->Value()});
     }
-    else
-    {
-      startAction = node->FirstChild("onstart")->FirstChild()->ValueStr();
-    }
+    onStartElement = onStartElement->NextSiblingElement("onstart");
   }
 
-  if (node->FirstChild("onstop") && node->FirstChild("onstop")->FirstChild() &&
-      !node->FirstChild("onstop")->FirstChild()->ValueStr().empty())
+  // process onstop actions
+  CGUIAction stopActions;
+  stopActions.EnableSendThreadMessageMode();
+  const TiXmlElement* onStopElement = node->FirstChildElement("onstop");
+  while (onStopElement)
   {
-    if (!CBuiltins::GetInstance().HasCommand(node->FirstChild("onstop")->FirstChild()->ValueStr()))
+    if (onStopElement->FirstChild())
     {
-      CLog::LogF(LOGERROR,
-                 "Unknown onstop builtin action {} for timer {}, the action will be ignored",
-                 node->FirstChild("onstop")->FirstChild()->ValueStr(), timerName);
+      const std::string conditionalActionAttribute =
+          onStopElement->Attribute("condition") != nullptr ? onStopElement->Attribute("condition")
+                                                           : "";
+      stopActions.Append(CGUIAction::CExecutableAction{conditionalActionAttribute,
+                                                       onStopElement->FirstChild()->Value()});
     }
-    else
-    {
-      stopAction = node->FirstChild("onstop")->FirstChild()->ValueStr();
-    }
+    onStopElement = onStopElement->NextSiblingElement("onstop");
   }
 
-  m_timers[timerName] = std::make_unique<CSkinTimer>(
-      CSkinTimer(timerName, startInfo, resetInfo, stopInfo, startAction, stopAction, resetOnStart));
+  m_timers[timerName] = std::make_unique<CSkinTimer>(CSkinTimer(
+      timerName, startInfo, resetInfo, stopInfo, startActions, stopActions, resetOnStart));
 }
 
 bool CSkinTimerManager::TimerIsRunning(const std::string& timer) const
 {
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   if (m_timers.count(timer) == 0)
   {
     CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
@@ -157,7 +146,6 @@ bool CSkinTimerManager::TimerIsRunning(const std::string& timer) const
 
 float CSkinTimerManager::GetTimerElapsedSeconds(const std::string& timer) const
 {
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   if (m_timers.count(timer) == 0)
   {
     CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
@@ -168,7 +156,6 @@ float CSkinTimerManager::GetTimerElapsedSeconds(const std::string& timer) const
 
 void CSkinTimerManager::TimerStart(const std::string& timer) const
 {
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   if (m_timers.count(timer) == 0)
   {
     CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
@@ -179,7 +166,6 @@ void CSkinTimerManager::TimerStart(const std::string& timer) const
 
 void CSkinTimerManager::TimerStop(const std::string& timer) const
 {
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   if (m_timers.count(timer) == 0)
   {
     CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
@@ -190,14 +176,11 @@ void CSkinTimerManager::TimerStop(const std::string& timer) const
 
 void CSkinTimerManager::Stop()
 {
-  StopThread();
-
   // skintimers, as infomanager clients register info conditions/expressions in the infomanager.
   // The infomanager is linked to skins, being initialized or cleared when
   // skins are loaded (or unloaded). All the registered boolean conditions from
   // skin timers will end up being removed when the skin is unloaded. However, to
   // self-contain this component unregister them all here.
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
   for (auto const& [key, val] : m_timers)
   {
     const std::unique_ptr<CSkinTimer>::pointer timer = val.get();
@@ -217,33 +200,22 @@ void CSkinTimerManager::Stop()
   m_timers.clear();
 }
 
-void CSkinTimerManager::StopThread(bool bWait /*= true*/)
-{
-  std::unique_lock<CCriticalSection> lock(m_timerCriticalSection);
-  m_bStop = true;
-  CThread::StopThread(bWait);
-}
-
 void CSkinTimerManager::Process()
 {
-  while (!m_bStop)
+  for (const auto& [key, val] : m_timers)
   {
-    for (auto const& [key, val] : m_timers)
+    const std::unique_ptr<CSkinTimer>::pointer timer = val.get();
+    if (!timer->IsRunning() && timer->VerifyStartCondition())
     {
-      const std::unique_ptr<CSkinTimer>::pointer timer = val.get();
-      if (!timer->IsRunning() && timer->VerifyStartCondition())
-      {
-        timer->Start();
-      }
-      else if (timer->IsRunning() && timer->VerifyStopCondition())
-      {
-        timer->Stop();
-      }
-      if (timer->GetElapsedSeconds() > 0 && timer->VerifyResetCondition())
-      {
-        timer->Reset();
-      }
+      timer->Start();
     }
-    Sleep(500ms);
+    else if (timer->IsRunning() && timer->VerifyStopCondition())
+    {
+      timer->Stop();
+    }
+    if (timer->GetElapsedSeconds() > 0 && timer->VerifyResetCondition())
+    {
+      timer->Reset();
+    }
   }
 }

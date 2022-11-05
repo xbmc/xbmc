@@ -8,11 +8,14 @@
 
 #include "guilib/guiinfo/VideoGUIInfo.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
+#include "Util.h"
+#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/DataCacheCore.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "guilib/GUIComponent.h"
@@ -40,6 +43,11 @@
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 
+CVideoGUIInfo::CVideoGUIInfo()
+  : m_appPlayer(CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>())
+{
+}
+
 int CVideoGUIInfo::GetPercentPlayed(const CVideoInfoTag* tag) const
 {
   CBookmark bookmark = tag->GetResumePoint();
@@ -55,7 +63,7 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
   if (item && item->IsVideo())
   {
     // special case where .strm is used to start an audio stream
-    if (item->IsInternetStream() && g_application.GetAppPlayer().IsPlayingAudio())
+    if (item->IsInternetStream() && m_appPlayer->IsPlayingAudio())
       return false;
 
     CLog::Log(LOGDEBUG, "CVideoGUIInfo::InitCurrentItem({})", CURL::GetRedacted(item->GetPath()));
@@ -507,14 +515,14 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
     // VIDEOPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case VIDEOPLAYER_PLAYLISTLEN:
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO)
+      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_VIDEO)
       {
         value = GUIINFO::GetPlaylistLabel(PLAYLIST_LENGTH);
         return true;
       }
       break;
     case VIDEOPLAYER_PLAYLISTPOS:
-      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST_VIDEO)
+      if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() == PLAYLIST::TYPE_VIDEO)
       {
         value = GUIINFO::GetPlaylistLabel(PLAYLIST_POSITION);
         return true;
@@ -531,7 +539,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       return true;
       break;
     case VIDEOPLAYER_COVER:
-      if (g_application.GetAppPlayer().IsPlayingVideo())
+      if (m_appPlayer->IsPlayingVideo())
       {
         if (fallback)
           *fallback = "DefaultVideoCover.png";
@@ -606,14 +614,14 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
 bool CVideoGUIInfo::GetPlaylistInfo(std::string& value, const CGUIInfo& info) const
 {
   const PLAYLIST::CPlayList& playlist =
-      CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST_VIDEO);
+      CServiceBroker::GetPlaylistPlayer().GetPlaylist(PLAYLIST::TYPE_VIDEO);
   if (playlist.size() < 1)
     return false;
 
   int index = info.GetData2();
   if (info.GetData1() == 1)
-  { // relative index (requires current playlist is PLAYLIST_VIDEO)
-    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST_VIDEO)
+  { // relative index (requires current playlist is TYPE_VIDEO)
+    if (CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist() != PLAYLIST::TYPE_VIDEO)
       return false;
 
     index = CServiceBroker::GetPlaylistPlayer().GetNextSong(index);
@@ -709,8 +717,9 @@ bool CVideoGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWin
     // VIDEOPLAYER_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case VIDEOPLAYER_AUDIOSTREAMCOUNT:
-      value = g_application.GetAppPlayer().GetAudioStreamCount();
+      value = m_appPlayer->GetAudioStreamCount();
       return true;
+
     default:
       break;
   }
@@ -776,20 +785,16 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
               CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_FULLSCREEN_GAME;
       return true;
     case VIDEOPLAYER_HASMENU:
-      value = g_application.GetAppPlayer().GetSupportedMenuType() != MenuType::NONE;
+      value = m_appPlayer->GetSupportedMenuType() != MenuType::NONE;
       return true;
     case VIDEOPLAYER_HASTELETEXT:
-      if (g_application.GetAppPlayer().GetTeletextCache())
-      {
-        value = true;
-        return true;
-      }
-      break;
+      value = m_appPlayer->HasTeletextCache();
+      return true;
     case VIDEOPLAYER_HASSUBTITLES:
-      value = g_application.GetAppPlayer().GetSubtitleCount() > 0;
+      value = m_appPlayer->GetSubtitleCount() > 0;
       return true;
     case VIDEOPLAYER_SUBTITLESENABLED:
-      value = g_application.GetAppPlayer().GetSubtitleVisible();
+      value = m_appPlayer->GetSubtitleVisible();
       return true;
     case VIDEOPLAYER_IS_STEREOSCOPIC:
       value = !CServiceBroker::GetDataCacheCore().GetVideoStereoMode().empty();

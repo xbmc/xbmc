@@ -67,6 +67,30 @@ function(get_versionfile_data)
   endif()
 endfunction()
 
+# Parse and set Version from VERSION dependency file
+# Used for retrieving version numbers for dependency libs to allow setting
+# a required version for find_package call
+# On return:
+#   LIB_MODULENAME_VER will be set to parent scope (eg LIB_FMT_VER)
+function(get_libversion_data module libtype)
+
+  # Dependency path
+  set(LIB_MODULE_PATH "${CMAKE_SOURCE_DIR}/tools/depends/${libtype}/${module}")
+  string(TOUPPER ${module} MOD_UPPER)
+
+  if(NOT EXISTS "${LIB_MODULE_PATH}/${MOD_UPPER}-VERSION")
+    MESSAGE(FATAL_ERROR "${MOD_UPPER}-VERSION does not exist at ${LIB_MODULE_PATH}.")
+  else()
+    set(${MOD_UPPER}_FILE "${LIB_MODULE_PATH}/${MOD_UPPER}-VERSION")
+  endif()
+
+  file(STRINGS ${${MOD_UPPER}_FILE} ${MOD_UPPER}_VER REGEX "^[ \t]*VERSION=")
+
+  string(REGEX REPLACE ".*VERSION=([^ \t]*).*" "\\1" ${MOD_UPPER}_VER "${${MOD_UPPER}_VER}")
+
+  set(LIB_${MOD_UPPER}_VER ${${MOD_UPPER}_VER} PARENT_SCOPE)
+endfunction()
+
 # Function to loop through list of patch files (full path)
 # Sets to a PATCH_COMMAND variable and set to parent scope (caller)
 # Used to test windows line endings and set appropriate patch commands
@@ -216,19 +240,15 @@ macro(BUILD_DEP_TARGET)
         unset(${MODULE}_LIBRARY_RELEASE)
       endif()
     else()
-      if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.20")
-        list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=$<IF:$<CONFIG:Debug,RelWithDebInfo>,Debug,Release>")
+      # single config generator (ie Make, Ninja)
+      if(CMAKE_BUILD_TYPE)
+        list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
       else()
-        # single config generator (ie Make, Ninja)
-        if(CMAKE_BUILD_TYPE)
-          list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
-        else()
-          # Multi-config generators (eg VS, Xcode, Ninja Multi-Config) will not have CMAKE_BUILD_TYPE
-          # Use config genex to generate the types
-          # Potential issue if Build type isnt supported by lib project
-          # eg lib supports Debug/Release, however users selects RelWithDebInfo in project
-          list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=$<CONFIG>")
-        endif()
+        # Multi-config generators (eg VS, Xcode, Ninja Multi-Config) will not have CMAKE_BUILD_TYPE
+        # Use config genex to generate the types
+        # Potential issue if Build type isnt supported by lib project
+        # eg lib supports Debug/Release, however users selects RelWithDebInfo in project
+        list(APPEND CMAKE_ARGS "-DCMAKE_BUILD_TYPE=$<CONFIG>")
       endif()
     endif()
 

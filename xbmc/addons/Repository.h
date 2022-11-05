@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "Addon.h"
+#include "addons/Addon.h"
+#include "addons/AddonVersion.h"
 #include "utils/Digest.h"
-#include "utils/ProgressJob.h"
 
 #include <memory>
 #include <string>
@@ -18,70 +18,59 @@
 
 namespace ADDON
 {
-  class CRepository : public CAddon
+class CAddonExtensions;
+
+struct RepositoryDirInfo
+{
+  CAddonVersion minversion{""};
+  CAddonVersion maxversion{""};
+  std::string info;
+  std::string checksum;
+  KODI::UTILITY::CDigest::Type checksumType{KODI::UTILITY::CDigest::Type::INVALID};
+  std::string datadir;
+  std::string artdir;
+  KODI::UTILITY::CDigest::Type hashType{KODI::UTILITY::CDigest::Type::INVALID};
+};
+
+typedef std::vector<RepositoryDirInfo> RepositoryDirList;
+
+class CRepository : public CAddon
+{
+public:
+  explicit CRepository(const AddonInfoPtr& addonInfo);
+
+  enum FetchStatus
   {
-  public:
-    struct DirInfo
-    {
-      AddonVersion minversion{""};
-      AddonVersion maxversion{""};
-      std::string info;
-      std::string checksum;
-      KODI::UTILITY::CDigest::Type checksumType{KODI::UTILITY::CDigest::Type::INVALID};
-      std::string datadir;
-      std::string artdir;
-      KODI::UTILITY::CDigest::Type hashType{KODI::UTILITY::CDigest::Type::INVALID};
-    };
-
-    typedef std::vector<DirInfo> DirList;
-
-    explicit CRepository(const AddonInfoPtr& addonInfo);
-
-    enum FetchStatus
-    {
-      STATUS_OK,
-      STATUS_NOT_MODIFIED,
-      STATUS_ERROR
-    };
-
-    FetchStatus FetchIfChanged(const std::string& oldChecksum,
-                               std::string& checksum,
-                               std::vector<AddonInfoPtr>& addons,
-                               int& recheckAfter) const;
-
-    struct ResolveResult
-    {
-      std::string location;
-      KODI::UTILITY::TypedDigest digest;
-    };
-    ResolveResult ResolvePathAndHash(AddonPtr const& addon) const;
-
-  private:
-    static bool FetchChecksum(const std::string& url,
-                              std::string& checksum,
-                              int& recheckAfter) noexcept;
-    static bool FetchIndex(const DirInfo& repo,
-                           std::string const& digest,
-                           std::vector<AddonInfoPtr>& addons) noexcept;
-
-    static DirInfo ParseDirConfiguration(const CAddonExtensions& configuration);
-
-    DirList m_dirs;
+    STATUS_OK,
+    STATUS_NOT_MODIFIED,
+    STATUS_ERROR
   };
 
-  typedef std::shared_ptr<CRepository> RepositoryPtr;
+  FetchStatus FetchIfChanged(const std::string& oldChecksum,
+                             std::string& checksum,
+                             std::vector<AddonInfoPtr>& addons,
+                             int& recheckAfter) const;
 
-
-  class CRepositoryUpdateJob : public CProgressJob
+  struct ResolveResult
   {
-  public:
-    explicit CRepositoryUpdateJob(const RepositoryPtr& repo);
-    ~CRepositoryUpdateJob() override = default;
-    bool DoWork() override;
-    const RepositoryPtr& GetAddon() const { return m_repo; }
-
-  private:
-    const RepositoryPtr m_repo;
+    std::string location;
+    KODI::UTILITY::TypedDigest digest;
   };
+  ResolveResult ResolvePathAndHash(AddonPtr const& addon) const;
+
+private:
+  static bool FetchChecksum(const std::string& url,
+                            std::string& checksum,
+                            int& recheckAfter) noexcept;
+  static bool FetchIndex(const RepositoryDirInfo& repo,
+                         std::string const& digest,
+                         std::vector<AddonInfoPtr>& addons) noexcept;
+
+  static RepositoryDirInfo ParseDirConfiguration(const CAddonExtensions& configuration);
+
+  RepositoryDirList m_dirs;
+};
+
+typedef std::shared_ptr<CRepository> RepositoryPtr;
 }
 

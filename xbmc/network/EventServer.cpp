@@ -8,13 +8,12 @@
 
 #include "EventServer.h"
 
-#include "Application.h"
 #include "EventClient.h"
 #include "EventPacket.h"
 #include "ServiceBroker.h"
 #include "Socket.h"
-#include "Util.h"
 #include "Zeroconf.h"
+#include "application/Application.h"
 #include "guilib/GUIAudioManager.h"
 #include "input/Key.h"
 #include "input/actions/ActionTranslator.h"
@@ -41,7 +40,6 @@ std::unique_ptr<CEventServer> CEventServer::m_pInstance;
 CEventServer::CEventServer() : CThread("EventServer")
 {
   m_bStop         = false;
-  m_bRunning      = false;
   m_bRefreshSettings = false;
 
   // default timeout in ms for receiving a single packet

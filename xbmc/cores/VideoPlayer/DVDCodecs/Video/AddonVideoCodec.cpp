@@ -8,6 +8,7 @@
 
 #include "AddonVideoCodec.h"
 
+#include "addons/addoninfo/AddonInfo.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/DVDCodecs/DVDCodecs.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
@@ -19,7 +20,8 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
                                    ADDON::AddonInfoPtr& addonInfo,
                                    KODI_HANDLE parentInstance)
   : CDVDVideoCodec(processInfo),
-    IAddonInstanceHandler(ADDON_INSTANCE_VIDEOCODEC, addonInfo, parentInstance),
+    IAddonInstanceHandler(
+        ADDON_INSTANCE_VIDEOCODEC, addonInfo, ADDON::ADDON_INSTANCE_ID_UNUSED, parentInstance),
     m_codecFlags(0),
     m_displayAspect(0.0f)
 {
@@ -112,6 +114,26 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
       break;
     case FF_PROFILE_VP9_3:
       initData.codecProfile = STREAMCODEC_PROFILE::VP9CodecProfile3;
+      break;
+    default:
+      return false;
+    }
+    break;
+  case AV_CODEC_ID_AV1:
+    initData.codec = VIDEOCODEC_AV1;
+    switch (hints.profile)
+    {
+    case FF_PROFILE_UNKNOWN:
+      initData.codecProfile = STREAMCODEC_PROFILE::CodecProfileUnknown;
+      break;
+    case FF_PROFILE_AV1_MAIN:
+      initData.codecProfile = STREAMCODEC_PROFILE::AV1CodecProfileMain;
+      break;
+    case FF_PROFILE_AV1_HIGH:
+      initData.codecProfile = STREAMCODEC_PROFILE::AV1CodecProfileHigh;
+      break;
+    case FF_PROFILE_AV1_PROFESSIONAL:
+      initData.codecProfile = STREAMCODEC_PROFILE::AV1CodecProfileProfessional;
       break;
     default:
       return false;

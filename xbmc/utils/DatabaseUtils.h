@@ -17,6 +17,7 @@
 #include <vector>
 
 class CVariant;
+enum class VideoDbContentType;
 
 namespace dbiplus
 {
@@ -24,16 +25,17 @@ namespace dbiplus
   class field_value;
 }
 
-typedef enum {
+typedef enum
+{
   // special fields used during sorting
   FieldUnknown = -1,
   FieldNone = 0,
-  FieldSort,        // used to store the string to use for sorting
+  FieldSort, // used to store the string to use for sorting
   FieldSortSpecial, // whether the item needs special handling (0 = no, 1 = sort on top, 2 = sort on bottom)
   FieldLabel,
   FieldFolder,
   FieldMediaType,
-  FieldRow,         // the row number in a dataset
+  FieldRow, // the row number in a dataset
 
   // special fields not retrieved from the database
   FieldSize,
@@ -146,6 +148,8 @@ typedef enum {
   FieldAlbumStatus,
   FieldAlbumDuration,
   FieldHdrType,
+  FieldProvider,
+  FieldUserPreference,
   FieldMax
 } Field;
 
@@ -164,7 +168,7 @@ typedef std::vector<DatabaseResult> DatabaseResults;
 class DatabaseUtils
 {
 public:
-  static MediaType MediaTypeFromVideoContentType(int videoContentType);
+  static MediaType MediaTypeFromVideoContentType(VideoDbContentType videoContentType);
 
   static std::string GetField(Field field, const MediaType &mediaType, DatabaseQueryPart queryPart);
   static int GetField(Field field, const MediaType &mediaType);

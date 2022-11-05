@@ -14,6 +14,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonType.h"
 #include "cores/DataCacheCore.h"
 #include "cores/IPlayerCallback.h"
 #include "cores/RetroPlayer/cheevos/Cheevos.h"
@@ -41,9 +42,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
-#include "settings/MediaSettings.h"
 #include "utils/JobManager.h"
-#include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
@@ -115,7 +114,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   {
     CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't play game, no game client was passed!");
   }
-  else if (!CServiceBroker::GetAddonMgr().GetAddon(gameClientId, addon, ADDON::ADDON_GAMEDLL,
+  else if (!CServiceBroker::GetAddonMgr().GetAddon(gameClientId, addon, ADDON::AddonType::GAMEDLL,
                                                    ADDON::OnlyEnabled::CHOICE_YES))
   {
     CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Can't find add-on {} for game file!", gameClientId);
@@ -161,8 +160,8 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
       if (save->GameClientID() != m_gameClient->ID())
       {
         ADDON::AddonPtr addon;
-        if (CServiceBroker::GetAddonMgr().GetAddon(
-                save->GameClientID(), addon, ADDON::ADDON_UNKNOWN, ADDON::OnlyEnabled::CHOICE_YES))
+        if (CServiceBroker::GetAddonMgr().GetAddon(save->GameClientID(), addon,
+                                                   ADDON::OnlyEnabled::CHOICE_YES))
         {
           // Warn the user that continuing with a different game client will
           // overwrite the save
@@ -262,7 +261,7 @@ bool CRetroPlayer::IsPlaying() const
   return false;
 }
 
-bool CRetroPlayer::CanPause()
+bool CRetroPlayer::CanPause() const
 {
   return m_playback->CanPause();
 }
@@ -282,7 +281,7 @@ void CRetroPlayer::Pause()
   SetSpeed(speed);
 }
 
-bool CRetroPlayer::CanSeek()
+bool CRetroPlayer::CanSeek() const
 {
   return m_playback->CanSeek();
 }
@@ -331,7 +330,7 @@ void CRetroPlayer::SeekPercentage(float fPercent /* = 0 */)
     SeekTime(static_cast<int64_t>(totalTime * fPercent / 100.0f));
 }
 
-float CRetroPlayer::GetCachePercentage()
+float CRetroPlayer::GetCachePercentage() const
 {
   const float cacheMs = static_cast<float>(m_playback->GetCacheTimeMs());
   const float totalMs = static_cast<float>(m_playback->GetTotalTimeMs());
@@ -483,12 +482,12 @@ void CRetroPlayer::Render(bool clear, uint32_t alpha /* = 255 */, bool gui /* = 
   // Performed by callbacks
 }
 
-bool CRetroPlayer::IsRenderingVideo()
+bool CRetroPlayer::IsRenderingVideo() const
 {
   return true;
 }
 
-bool CRetroPlayer::HasGameAgent()
+bool CRetroPlayer::HasGameAgent() const
 {
   if (m_gameClient)
     return m_gameClient->Input().HasAgent();

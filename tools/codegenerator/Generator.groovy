@@ -18,8 +18,8 @@
  *
  */
 
-import groovy.util.Node
 import groovy.text.SimpleTemplateEngine
+import groovy.xml.XmlParser
 import groovy.xml.XmlUtil
 
 import Helper

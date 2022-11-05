@@ -8,6 +8,7 @@
 
 #include "DRMConnector.h"
 
+#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include <map>

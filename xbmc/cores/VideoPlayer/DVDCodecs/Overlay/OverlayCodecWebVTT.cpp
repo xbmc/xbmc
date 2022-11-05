@@ -78,6 +78,8 @@ OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
   const char* data = reinterpret_cast<const char*>(pPacket->pData);
   std::vector<subtitleData> subtitleList;
 
+  m_webvttHandler.Reset();
+
   SubtitlePacketExtraData sideData;
   if (GetSubtitlePacketExtraData(pPacket, sideData))
   {

@@ -35,10 +35,8 @@ class CDelayedMessage : public CThread
 };
 
 CDelayedMessage::CDelayedMessage(const ThreadMessage& msg, unsigned int delay)
-  : CThread("DelayedMessage")
+  : CThread("DelayedMessage"), m_msg(msg)
 {
-  m_msg = msg;
-
   m_delay = delay;
 }
 

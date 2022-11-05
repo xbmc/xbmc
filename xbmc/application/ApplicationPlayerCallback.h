@@ -8,17 +8,18 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "cores/IPlayerCallback.h"
 #include "threads/Event.h"
 
-class CApplicationPlayer;
+#include <memory>
+
 class CApplicationStackHelper;
+class CFileItem;
 
 class CApplicationPlayerCallback : public IPlayerCallback
 {
 public:
-  CApplicationPlayerCallback(CApplicationPlayer& appPlayer, CApplicationStackHelper& stackHelper);
+  CApplicationPlayerCallback();
 
   void OnPlayBackEnded() override;
   void OnPlayBackStarted(const CFileItem& file) override;
@@ -34,11 +35,9 @@ public:
   void OnAVChange() override;
   void OnAVStarted(const CFileItem& file) override;
   void RequestVideoSettings(const CFileItem& fileItem) override;
-  void StoreVideoSettings(const CFileItem& fileItem, CVideoSettings vs) override;
+  void StoreVideoSettings(const CFileItem& fileItem, const CVideoSettings& vs) override;
 
 protected:
-  CApplicationPlayer& m_appPlayer; //!< Reference to application player
-  CApplicationStackHelper& m_stackHelper; //!< Reference to application stack helper
-  CFileItemPtr m_itemCurrentFile; //!< Currently playing file
+  std::shared_ptr<CFileItem> m_itemCurrentFile; //!< Currently playing file
   CEvent m_playerEvent;
 };

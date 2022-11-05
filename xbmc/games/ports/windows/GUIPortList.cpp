@@ -12,6 +12,7 @@
 #include "GUIPortDefines.h"
 #include "GUIPortWindow.h"
 #include "ServiceBroker.h"
+#include "addons/AddonManager.h"
 #include "games/GameServices.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/input/GameClientInput.h"
@@ -169,7 +170,7 @@ void CGUIPortList::OnEvent(const ADDON::AddonEvent& event)
   {
     using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
-    msg.SetStringParam(event.id);
+    msg.SetStringParam(event.addonId);
     CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
   }
 }

@@ -90,6 +90,7 @@ set(HEADERS ActorProtocol.h
             CharsetDetection.h
             CPUInfo.h
             ColorUtils.h
+            ComponentContainer.h
             ContentUtils.h
             Crc32.h
             CSSUtils.h
@@ -133,6 +134,7 @@ set(HEADERS ActorProtocol.h
             Locale.h
             log.h
             logtypes.h
+            Map.h
             MathUtils.h
             MemUtils.h
             Mime.h
@@ -162,6 +164,7 @@ set(HEADERS ActorProtocol.h
             SystemInfo.h
             Temperature.h
             TextSearch.h
+            TimeFormat.h
             TimeUtils.h
             TransformMatrix.h
             URIUtils.h

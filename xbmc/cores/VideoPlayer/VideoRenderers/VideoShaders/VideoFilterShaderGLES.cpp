@@ -28,21 +28,11 @@ BaseVideoFilterShader::BaseVideoFilterShader()
 {
   m_width = 1;
   m_height = 1;
-  m_hStepXY = 0;
   m_stepX = 0;
   m_stepY = 0;
-  m_sourceTexUnit = 0;
-  m_hSourceTex = 0;
-
-  m_hVertex = -1;
-  m_hcoord = -1;
-  m_hProj = -1;
-  m_hModel = -1;
-  m_hAlpha = -1;
 
   m_proj = nullptr;
   m_model = nullptr;
-  m_alpha = -1;
 
   VertexShader()->LoadSource("gles_videofilter.vert");
 
@@ -69,8 +59,6 @@ bool BaseVideoFilterShader::OnEnabled()
 ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
 {
   m_method = method;
-  m_kernelTex1 = 0;
-  m_hKernTex = -1;
 
   std::string shadername;
   std::string defines;
@@ -111,7 +99,9 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method)
     m_internalformat = GL_RGBA;
   }
 
-  CLog::Log(LOGDEBUG, "GL: ConvolutionFilterShader: using {} defines:\n{}", shadername, defines);
+  CLog::Log(LOGDEBUG, "GLES: using scaling method: {}", m_method);
+  CLog::Log(LOGDEBUG, "GLES: using shader: {}", shadername);
+
   PixelShader()->LoadSource(shadername, defines);
 }
 

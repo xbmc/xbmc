@@ -17,6 +17,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 #include <cstring>
@@ -293,4 +294,9 @@ void CLog::SetComponentLogLevel(const std::vector<CVariant>& components)
 
     m_componentLogLevels |= static_cast<uint32_t>(component.asInteger());
   }
+}
+
+void CLog::FormatLineBreaks(std::string& message)
+{
+  StringUtils::Replace(message, "\n", "\n                                                   ");
 }

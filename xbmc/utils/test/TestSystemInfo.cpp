@@ -17,6 +17,8 @@
 
 #include <gtest/gtest.h>
 
+#include "PlatformDefs.h"
+
 class TestSystemInfo : public testing::Test
 {
 protected:

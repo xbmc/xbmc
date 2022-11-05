@@ -13,7 +13,6 @@
 \brief
 */
 
-#include "PlayListPlayer.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicInfoLoader.h"
 #include "music/MusicThumbLoader.h"
@@ -71,8 +70,7 @@ protected:
 
   bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
   virtual void OnRetrieveMusicInfo(CFileItemList& items);
-  void OnPrepareFileItems(CFileItemList &items) override;
-  void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
+  void OnPrepareFileItems(CFileItemList& items) override;
   void OnRipCD();
   std::string GetStartFolder(const std::string &dir) override;
   void OnItemLoaded(CFileItem* pItem) override {}

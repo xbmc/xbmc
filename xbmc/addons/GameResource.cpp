@@ -8,11 +8,13 @@
 
 #include "GameResource.h"
 
+#include "addons/addoninfo/AddonType.h"
+
 #include <utility>
 
 using namespace ADDON;
 
-CGameResource::CGameResource(const AddonInfoPtr& addonInfo) :
-  CResource(addonInfo, ADDON_RESOURCE_GAMES)
+CGameResource::CGameResource(const AddonInfoPtr& addonInfo)
+  : CResource(addonInfo, AddonType::RESOURCE_GAMES)
 {
 }

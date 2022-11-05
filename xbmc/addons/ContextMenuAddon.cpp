@@ -8,10 +8,10 @@
 
 #include "ContextMenuAddon.h"
 
-#include "AddonManager.h"
 #include "ContextMenuItem.h"
 #include "ContextMenuManager.h"
-#include "ServiceBroker.h"
+#include "addons/addoninfo/AddonType.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
@@ -21,9 +21,9 @@ namespace ADDON
 {
 
 CContextMenuAddon::CContextMenuAddon(const AddonInfoPtr& addonInfo)
-    : CAddon(addonInfo, ADDON_CONTEXT_ITEM)
+  : CAddon(addonInfo, AddonType::CONTEXTMENU_ITEM)
 {
-  const CAddonExtensions* menu = Type(ADDON_CONTEXT_ITEM)->GetElement("menu");
+  const CAddonExtensions* menu = Type(AddonType::CONTEXTMENU_ITEM)->GetElement("menu");
   if (menu)
   {
     int tmp = 0;
@@ -32,7 +32,7 @@ CContextMenuAddon::CContextMenuAddon(const AddonInfoPtr& addonInfo)
   else
   {
     //backwards compatibility. add first item definition
-    const CAddonExtensions* elem = Type(ADDON_CONTEXT_ITEM)->GetElement("item");
+    const CAddonExtensions* elem = Type(AddonType::CONTEXTMENU_ITEM)->GetElement("item");
     if (elem)
     {
       std::string visCondition = elem->GetValue("visible").asString();
@@ -46,13 +46,17 @@ CContextMenuAddon::CContextMenuAddon(const AddonInfoPtr& addonInfo)
       if (StringUtils::IsNaturalNumber(label))
         label = g_localizeStrings.GetAddonString(ID(), atoi(label.c_str()));
 
-      CContextMenuItem menuItem = CContextMenuItem::CreateItem(label, parent,
-          URIUtils::AddFileToFolder(Path(), Type(ADDON_CONTEXT_ITEM)->LibName()), visCondition, ID());
+      CContextMenuItem menuItem = CContextMenuItem::CreateItem(
+          label, parent,
+          URIUtils::AddFileToFolder(Path(), Type(AddonType::CONTEXTMENU_ITEM)->LibName()),
+          visCondition, ID());
 
       m_items.push_back(menuItem);
     }
   }
 }
+
+CContextMenuAddon::~CContextMenuAddon() = default;
 
 void CContextMenuAddon::ParseMenu(
     const CAddonExtensions* elem,

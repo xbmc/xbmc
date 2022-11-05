@@ -15,7 +15,6 @@
 #include "TextureCache.h"
 #include "URL.h"
 #include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -23,6 +22,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoThumbLoader.h"
 
@@ -134,7 +134,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
   if (pItem->IsCBR() || pItem->IsCBZ())
   {
     std::string strTBN(URIUtils::ReplaceExtension(pItem->GetPath(),".tbn"));
-    if (CFile::Exists(strTBN))
+    if (CFileUtils::Exists(strTBN))
     {
       db.SetTextureForPath(pItem->GetPath(), "thumb", strTBN);
       CServiceBroker::GetTextureCache()->BackgroundCacheImage(strTBN);
@@ -161,7 +161,7 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
     if (pItem->IsMultiPath())
       pathToUrl = CURL(CMultiPathDirectory::GetFirstPath(pItem->GetPath()));
     thumb = URIUtils::AddFileToFolder(pathToUrl.Get(), thumb);
-    if (CFile::Exists(thumb))
+    if (CFileUtils::Exists(thumb))
     {
       db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
       CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumb);

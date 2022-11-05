@@ -145,9 +145,8 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(unsigned int iId) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const auto it =
-      std::find_if(m_recordings.cbegin(), m_recordings.cend(), [iId](const auto& recording) {
-        return recording.second->m_iRecordingId == iId;
-      });
+      std::find_if(m_recordings.cbegin(), m_recordings.cend(),
+                   [iId](const auto& recording) { return recording.second->RecordingID() == iId; });
   return it != m_recordings.cend() ? (*it).second : std::shared_ptr<CPVRRecording>();
 }
 
@@ -176,7 +175,8 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetByPath(const std::string& path
   return {};
 }
 
-std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId, const std::string& strRecordingId) const
+std::shared_ptr<CPVRRecording> CPVRRecordings::GetById(int iClientId,
+                                                       const std::string& strRecordingId) const
 {
   std::shared_ptr<CPVRRecording> retVal;
   std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -200,7 +200,7 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
       m_bDeletedTVRecordings = true;
   }
 
-  std::shared_ptr<CPVRRecording> existingTag = GetById(tag->m_iClientId, tag->m_strRecordingId);
+  std::shared_ptr<CPVRRecording> existingTag = GetById(tag->ClientID(), tag->ClientRecordingID());
   if (existingTag)
   {
     existingTag->Update(*tag, client);
@@ -209,8 +209,8 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
   else
   {
     tag->UpdateMetadata(GetVideoDatabase(), client);
-    tag->m_iRecordingId = ++m_iLastId;
-    m_recordings.insert({CPVRRecordingUid(tag->m_iClientId, tag->m_strRecordingId), tag});
+    tag->SetRecordingID(++m_iLastId);
+    m_recordings.insert({CPVRRecordingUid(tag->ClientID(), tag->ClientRecordingID()), tag});
     if (tag->IsRadio())
       ++m_iRadioRecordings;
     else
@@ -218,7 +218,8 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
   }
 }
 
-std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(
+    const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
   if (!epgTag)
     return {};
@@ -253,7 +254,8 @@ std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(const std::
   return std::shared_ptr<CPVRRecording>();
 }
 
-bool CPVRRecordings::SetRecordingsPlayCount(const std::shared_ptr<CPVRRecording>& recording, int count)
+bool CPVRRecordings::SetRecordingsPlayCount(const std::shared_ptr<CPVRRecording>& recording,
+                                            int count)
 {
   return ChangeRecordingsPlayCount(recording, count);
 }
@@ -263,7 +265,8 @@ bool CPVRRecordings::IncrementRecordingsPlayCount(const std::shared_ptr<CPVRReco
   return ChangeRecordingsPlayCount(recording, INCREMENT_PLAY_COUNT);
 }
 
-bool CPVRRecordings::ChangeRecordingsPlayCount(const std::shared_ptr<CPVRRecording>& recording, int count)
+bool CPVRRecordings::ChangeRecordingsPlayCount(const std::shared_ptr<CPVRRecording>& recording,
+                                               int count)
 {
   if (recording)
   {

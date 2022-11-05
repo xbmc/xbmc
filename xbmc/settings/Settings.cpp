@@ -8,13 +8,12 @@
 
 #include "Settings.h"
 
-#include "AppParams.h"
 #include "Autorun.h"
 #include "GUIPassword.h"
 #include "LangInfo.h"
-#include "Util.h"
 #include "addons/AddonSystemSettings.h"
 #include "addons/Skin.h"
+#include "application/AppParams.h"
 #include "cores/VideoPlayer/VideoRenderers/BaseRenderer.h"
 #include "filesystem/File.h"
 #include "guilib/GUIFontManager.h"
@@ -211,6 +210,7 @@ constexpr const char* CSettings::SETTING_PVRMANAGER_CHANNELMANAGER;
 constexpr const char* CSettings::SETTING_PVRMANAGER_GROUPMANAGER;
 constexpr const char* CSettings::SETTING_PVRMANAGER_CHANNELSCAN;
 constexpr const char* CSettings::SETTING_PVRMANAGER_RESETDB;
+constexpr const char* CSettings::SETTING_PVRMANAGER_ADDONS;
 constexpr const char* CSettings::SETTING_PVRMENU_DISPLAYCHANNELINFO;
 constexpr const char* CSettings::SETTING_PVRMENU_CLOSECHANNELOSDONSWITCH;
 constexpr const char* CSettings::SETTING_PVRMENU_ICONPATH;
@@ -366,6 +366,7 @@ constexpr const char* CSettings::SETTING_VIDEOSCREEN_TESTPATTERN;
 constexpr const char* CSettings::SETTING_VIDEOSCREEN_LIMITEDRANGE;
 constexpr const char* CSettings::SETTING_VIDEOSCREEN_FRAMEPACKING;
 constexpr const char* CSettings::SETTING_VIDEOSCREEN_10BITSURFACES;
+constexpr const char* CSettings::SETTING_VIDEOSCREEN_GUISDRPEAKLUMINANCE;
 constexpr const char* CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE;
 constexpr const char* CSettings::SETTING_AUDIOOUTPUT_CHANNELS;
 constexpr const char* CSettings::SETTING_AUDIOOUTPUT_CONFIG;

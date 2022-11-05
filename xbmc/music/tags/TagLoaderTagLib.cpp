@@ -207,13 +207,13 @@ bool CTagLoaderTagLib::ParseTag(ASF::Tag *asf, EmbeddedArt *art, CMusicInfoTag& 
     {}
     else if (it->first == "WM/BeatsPerMinute")
       tag.SetBPM(atoi(it->second.front().toString().toCString(true)));
-    else if (it->first == "replaygain_track_gain")
+    else if (it->first == "replaygain_track_gain" || it->first == "REPLAYGAIN_TRACK_GAIN")
       replayGainInfo.ParseGain(ReplayGain::TRACK, it->second.front().toString().toCString(true));
-    else if (it->first == "replaygain_album_gain")
+    else if (it->first == "replaygain_album_gain" || it->first == "REPLAYGAIN_ALBUM_GAIN")
       replayGainInfo.ParseGain(ReplayGain::ALBUM, it->second.front().toString().toCString(true));
-    else if (it->first == "replaygain_track_peak")
+    else if (it->first == "replaygain_track_peak" || it->first == "REPLAYGAIN_TRACK_PEAK")
       replayGainInfo.ParsePeak(ReplayGain::TRACK, it->second.front().toString().toCString(true));
-    else if (it->first == "replaygain_album_peak")
+    else if (it->first == "replaygain_album_peak" || it->first == "REPLAYGAIN_ALBUM_PEAK")
       replayGainInfo.ParsePeak(ReplayGain::ALBUM, it->second.front().toString().toCString(true));
     else if (it->first == "WM/Picture")
     { // picture
@@ -894,13 +894,17 @@ bool CTagLoaderTagLib::ParseTag(MP4::Tag *mp4, EmbeddedArt *art, CMusicInfoTag& 
       tag.SetReleaseDate(it->second.toStringList().front().to8Bit(true));
     else if (it->first == "----:com.apple.iTunes:originaldate")
       tag.SetOriginalDate(it->second.toStringList().front().to8Bit(true));
-    else if (it->first == "----:com.apple.iTunes:replaygain_track_gain")
+    else if (it->first == "----:com.apple.iTunes:replaygain_track_gain" ||
+             it->first == "----:com.apple.iTunes:REPLAYGAIN_TRACK_GAIN")
       replayGainInfo.ParseGain(ReplayGain::TRACK, it->second.toStringList().front().toCString());
-    else if (it->first == "----:com.apple.iTunes:replaygain_album_gain")
+    else if (it->first == "----:com.apple.iTunes:replaygain_album_gain" ||
+             it->first == "----:com.apple.iTunes:REPLAYGAIN_ALBUM_GAIN")
       replayGainInfo.ParseGain(ReplayGain::ALBUM, it->second.toStringList().front().toCString());
-    else if (it->first == "----:com.apple.iTunes:replaygain_track_peak")
+    else if (it->first == "----:com.apple.iTunes:replaygain_track_peak" ||
+             it->first == "----:com.apple.iTunes:REPLAYGAIN_TRACK_PEAK")
       replayGainInfo.ParsePeak(ReplayGain::TRACK, it->second.toStringList().front().toCString());
-    else if (it->first == "----:com.apple.iTunes:replaygain_album_peak")
+    else if (it->first == "----:com.apple.iTunes:replaygain_album_peak" ||
+             it->first == "----:com.apple.iTunes:REPLAYGAIN_ALBUM_PEAK")
       replayGainInfo.ParsePeak(ReplayGain::ALBUM, it->second.toStringList().front().toCString());
     else if (it->first == "----:com.apple.iTunes:MusicBrainz Artist Id")
       tag.SetMusicBrainzArtistID(SplitMBID(StringListToVectorString(it->second.toStringList())));

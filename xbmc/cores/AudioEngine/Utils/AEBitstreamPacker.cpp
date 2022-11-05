@@ -12,6 +12,7 @@
 #include "AEStreamInfo.h"
 #include "utils/log.h"
 
+#include <array>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>

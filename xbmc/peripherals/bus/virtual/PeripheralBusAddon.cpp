@@ -9,7 +9,10 @@
 #include "PeripheralBusAddon.h"
 
 #include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/addons/PeripheralAddon.h"
@@ -179,7 +182,7 @@ void CPeripheralBusAddon::EnableButtonMapping()
   if (!GetAddonWithButtonMap(dummy))
   {
     std::vector<AddonInfoPtr> disabledAddons;
-    CServiceBroker::GetAddonMgr().GetDisabledAddonInfos(disabledAddons, ADDON_PERIPHERALDLL);
+    CServiceBroker::GetAddonMgr().GetDisabledAddonInfos(disabledAddons, AddonType::PERIPHERALDLL);
     if (!disabledAddons.empty())
       PromptEnableAddons(disabledAddons);
   }
@@ -324,17 +327,17 @@ void CPeripheralBusAddon::OnEvent(const ADDON::AddonEvent& event)
   if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) ||
       typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
   {
-    if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON::ADDON_PERIPHERALDLL))
+    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::AddonType::PERIPHERALDLL))
       UpdateAddons();
   }
   else if (typeid(event) == typeid(ADDON::AddonEvents::Disabled))
   {
-    if (CServiceBroker::GetAddonMgr().HasType(event.id, ADDON::ADDON_PERIPHERALDLL))
-      UnRegisterAddon(event.id);
+    if (CServiceBroker::GetAddonMgr().HasType(event.addonId, ADDON::AddonType::PERIPHERALDLL))
+      UnRegisterAddon(event.addonId);
   }
   else if (typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
-    UnRegisterAddon(event.id);
+    UnRegisterAddon(event.addonId);
   }
 }
 
@@ -386,7 +389,7 @@ void CPeripheralBusAddon::UpdateAddons(void)
 
   // Get new add-ons
   std::vector<AddonInfoPtr> newAddons;
-  CServiceBroker::GetAddonMgr().GetAddonInfos(newAddons, true, ADDON_PERIPHERALDLL);
+  CServiceBroker::GetAddonMgr().GetAddonInfos(newAddons, true, AddonType::PERIPHERALDLL);
   std::transform(newAddons.begin(), newAddons.end(), std::inserter(newIds, newIds.end()),
                  GetAddonID);
 
@@ -466,7 +469,8 @@ void CPeripheralBusAddon::UnRegisterAddon(const std::string& addonId)
   }
 }
 
-void CPeripheralBusAddon::PromptEnableAddons(const std::vector<ADDON::AddonInfoPtr>& disabledAddons)
+void CPeripheralBusAddon::PromptEnableAddons(
+    const std::vector<std::shared_ptr<ADDON::CAddonInfo>>& disabledAddons)
 {
   using namespace ADDON;
   using namespace MESSAGING::HELPERS;

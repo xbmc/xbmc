@@ -8,15 +8,17 @@
 
 #include "GUIWindowSettingsScreenCalibration.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMoverControl.h"
 #include "guilib/GUIResizeControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -195,10 +197,14 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 
       // Get the allowable resolutions that we can calibrate...
       m_Res.clear();
-      if (g_application.GetAppPlayer().IsPlayingVideo())
+
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      bool isPlayingVideo{appPlayer->IsPlayingVideo()};
+      if (isPlayingVideo)
       { // don't allow resolution switching if we are playing a video
 
-        g_application.GetAppPlayer().TriggerUpdateResolution();
+        appPlayer->TriggerUpdateResolution();
 
         m_iCurRes = 0;
         m_Res.push_back(CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution());
@@ -214,6 +220,12 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
 
       // Setup the first control
       m_iControl = CONTROL_TOP_LEFT;
+
+      m_isSubtitleBarEnabled =
+          !(CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetAlignment() !=
+                SUBTITLES::Align::MANUAL &&
+            isPlayingVideo);
+
       ResetControls();
       return true;
     }
@@ -316,9 +328,9 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
   RESOLUTION_INFO info =
       CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(m_Res[m_iCurRes]);
 
-  m_subtitleVerticalMargin =
-      info.iHeight / 100 *
-      CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc();
+  m_subtitleVerticalMargin = static_cast<int>(
+      static_cast<float>(info.iHeight) / 100 *
+      CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetVerticalMarginPerc());
 
   if (pControl)
   {
@@ -367,6 +379,7 @@ void CGUIWindowSettingsScreenCalibration::ResetControls()
                               m_subtitleVerticalMargin);
     pControl->SetLocation(0, info.iSubtitles + m_subtitlesHalfSpace - m_subtitleVerticalMargin,
                           false);
+    pControl->SetEnabled(m_isSubtitleBarEnabled);
   }
   // The pixel ratio control
   CGUIResizeControl* pResize = dynamic_cast<CGUIResizeControl*>(GetControl(CONTROL_PIXEL_RATIO));
@@ -475,12 +488,21 @@ bool CGUIWindowSettingsScreenCalibration::UpdateFromControl(int iControl)
 
         case CONTROL_SUBTITLES:
         {
-          info.iSubtitles =
-              pControl->GetYLocation() - m_subtitlesHalfSpace + m_subtitleVerticalMargin;
-          labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(277),
-                                                 g_localizeStrings.Get(278));
-          labelValue = StringUtils::Format(g_localizeStrings.Get(39184), info.iSubtitles,
-                                           info.iSubtitles - m_subtitleVerticalMargin);
+          if (m_isSubtitleBarEnabled)
+          {
+            info.iSubtitles =
+                pControl->GetYLocation() - m_subtitlesHalfSpace + m_subtitleVerticalMargin;
+
+            labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(277),
+                                                   g_localizeStrings.Get(278));
+            labelValue = StringUtils::Format(g_localizeStrings.Get(39184), info.iSubtitles,
+                                             info.iSubtitles - m_subtitleVerticalMargin);
+          }
+          else
+          {
+            labelDescription = StringUtils::Format("[B]{}[/B][CR]{}", g_localizeStrings.Get(277),
+                                                   g_localizeStrings.Get(39189));
+          }
         }
         break;
 

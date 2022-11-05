@@ -27,7 +27,7 @@ private:
   int m_flagtrycwd;         // 0 if cwd is definitely pointless, 1 otherwise
   int m_flagtryretr;        // 0 if retr is definitely pointless, 1 otherwise
   uint64_t m_size;              // number of octets
-  time_t m_time;            // modification time
+  time_t m_time = 0; // modification time
   void setTime(const std::string& str); // Method used to set m_time from a string
   int getDayOfWeek(int month, int date, int year); // Method to get day of week
 };

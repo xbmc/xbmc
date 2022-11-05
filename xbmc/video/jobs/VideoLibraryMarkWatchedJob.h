@@ -8,8 +8,11 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "video/jobs/VideoLibraryJob.h"
+
+#include <memory>
+
+class CFileItem;
 
 /*!
  \brief Video library job implementation for marking items as watched/unwatched.
@@ -23,7 +26,7 @@ public:
    \param[in] item Item to be marked as watched/unwatched
    \param[in] mark Whether to mark the item as watched or unwatched
   */
-  CVideoLibraryMarkWatchedJob(const CFileItemPtr &item, bool mark);
+  CVideoLibraryMarkWatchedJob(const std::shared_ptr<CFileItem>& item, bool mark);
   ~CVideoLibraryMarkWatchedJob() override;
 
   const char *GetType() const override { return "CVideoLibraryMarkWatchedJob"; }
@@ -33,6 +36,6 @@ protected:
   bool Work(CVideoDatabase &db) override;
 
 private:
-  CFileItemPtr m_item;
+  std::shared_ptr<CFileItem> m_item;
   bool m_mark;
 };

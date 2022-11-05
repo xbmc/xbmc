@@ -9,9 +9,13 @@
 #pragma once
 
 #include "AddonClass.h"
-#include "Application.h"
 #include "Exception.h"
+#include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "commons/Buffer.h"
+
+#include <climits>
 
 namespace XBMCAddon
 {
@@ -48,7 +52,9 @@ namespace XBMCAddon
       }
       inline ~RenderCapture() override
       {
-        g_application.GetAppPlayer().RenderCaptureRelease(m_captureId);
+        auto& components = CServiceBroker::GetAppComponents();
+        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+        appPlayer->RenderCaptureRelease(m_captureId);
         delete [] m_buffer;
       }
 
@@ -94,7 +100,12 @@ namespace XBMCAddon
       ///
       getAspectRatio();
 #else
-      inline float getAspectRatio() { return g_application.GetAppPlayer().GetRenderAspectRatio(); }
+      inline float getAspectRatio()
+      {
+        const auto& components = CServiceBroker::GetAppComponents();
+        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+        return appPlayer->GetRenderAspectRatio();
+      }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -163,23 +174,29 @@ namespace XBMCAddon
       inline void capture(int width, int height)
 #endif
       {
+        auto& components = CServiceBroker::GetAppComponents();
+        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
         if (m_buffer)
         {
-          g_application.GetAppPlayer().RenderCaptureRelease(m_captureId);
+          appPlayer->RenderCaptureRelease(m_captureId);
           delete [] m_buffer;
         }
-        m_captureId = g_application.GetAppPlayer().RenderCaptureAlloc();
+        m_captureId = appPlayer->RenderCaptureAlloc();
         m_width = width;
         m_height = height;
         m_buffer = new uint8_t[m_width*m_height*4];
-        g_application.GetAppPlayer().RenderCapture(m_captureId, m_width, m_height, CAPTUREFLAG_CONTINUOUS);
+        appPlayer->RenderCapture(m_captureId, m_width, m_height, CAPTUREFLAG_CONTINUOUS);
       }
 
 // hide these from swig
 #ifndef SWIG
       inline bool GetPixels(unsigned int msec)
       {
-        return g_application.GetAppPlayer().RenderCaptureGetPixels(m_captureId, msec, m_buffer, m_width*m_height*4);
+        auto& components = CServiceBroker::GetAppComponents();
+        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+        return appPlayer->RenderCaptureGetPixels(m_captureId, msec, m_buffer,
+                                                 m_width * m_height * 4);
       }
 #endif
 

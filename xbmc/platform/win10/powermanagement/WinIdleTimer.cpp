@@ -7,7 +7,9 @@
  */
 #include "powermanagement/WinIdleTimer.h"
 
-#include "Application.h"
+#include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 
 #include <winrt/Windows.System.Display.h>
 
@@ -18,7 +20,9 @@ using namespace winrt::Windows::UI::Core;
 void CWinIdleTimer::StartZero()
 {
   static DisplayRequest displayRequest = nullptr;
-  if (!g_application.IsDPMSActive())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  if (!appPower->IsDPMSActive())
   {
     if (!displayRequest)
     {

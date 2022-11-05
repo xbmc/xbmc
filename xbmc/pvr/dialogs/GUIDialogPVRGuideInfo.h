@@ -16,31 +16,29 @@ class CGUIMessage;
 
 namespace PVR
 {
-  class CPVREpgInfoTag;
+class CGUIDialogPVRGuideInfo : public CGUIDialog
+{
+public:
+  CGUIDialogPVRGuideInfo();
+  ~CGUIDialogPVRGuideInfo() override;
+  bool OnMessage(CGUIMessage& message) override;
+  bool OnInfo(int actionID) override;
+  bool HasListItems() const override { return true; }
+  CFileItemPtr GetCurrentListItem(int offset = 0) override;
 
-  class CGUIDialogPVRGuideInfo : public CGUIDialog
-  {
-  public:
-    CGUIDialogPVRGuideInfo();
-    ~CGUIDialogPVRGuideInfo() override;
-    bool OnMessage(CGUIMessage& message) override;
-    bool OnInfo(int actionID) override;
-    bool HasListItems() const override { return true; }
-    CFileItemPtr GetCurrentListItem(int offset = 0) override;
+  void SetProgInfo(const std::shared_ptr<CFileItem>& item);
 
-    void SetProgInfo(const std::shared_ptr<CPVREpgInfoTag>& tag);
+protected:
+  void OnInitWindow() override;
 
-  protected:
-    void OnInitWindow() override;
+private:
+  bool OnClickButtonOK(const CGUIMessage& message);
+  bool OnClickButtonRecord(const CGUIMessage& message);
+  bool OnClickButtonPlay(const CGUIMessage& message);
+  bool OnClickButtonFind(const CGUIMessage& message);
+  bool OnClickButtonAddTimer(const CGUIMessage& message);
+  bool OnClickButtonSetReminder(const CGUIMessage& message);
 
-  private:
-    bool OnClickButtonOK(const CGUIMessage& message);
-    bool OnClickButtonRecord(const CGUIMessage& message);
-    bool OnClickButtonPlay(const CGUIMessage& message);
-    bool OnClickButtonFind(const CGUIMessage& message);
-    bool OnClickButtonAddTimer(const CGUIMessage& message);
-    bool OnClickButtonSetReminder(const CGUIMessage& message);
-
-    std::shared_ptr<CPVREpgInfoTag> m_progItem;
-  };
-}
+  std::shared_ptr<CFileItem> m_progItem;
+};
+} // namespace PVR

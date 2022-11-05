@@ -1,0 +1,11 @@
+--- a/Modules/Setup
++++ b/Modules/Setup
+@@ -270,7 +270,7 @@
+ 
+ # macOS specific module, needs SystemConfiguration and CoreFoundation framework
+ # _scproxy _scproxy.c
+-$(OSX_SCPROXY)
++_scproxy _scproxy.c -framework SystemConfiguration -framework CoreFoundation
+ 
+ # Examples
+ 

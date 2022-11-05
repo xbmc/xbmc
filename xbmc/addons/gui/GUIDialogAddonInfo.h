@@ -8,13 +8,20 @@
 
 #pragma once
 
-#include "addons/IAddon.h"
+#include "addons/addoninfo/AddonInfo.h"
 #include "guilib/GUIDialog.h"
 
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
+
+namespace ADDON
+{
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
+
+} // namespace ADDON
 
 enum class Reactivate : bool
 {
@@ -88,7 +95,7 @@ private:
   void OnSettings();
   void OnSelect();
   void OnToggleAutoUpdates();
-  int AskForVersion(std::vector<std::pair<ADDON::AddonVersion, std::string>>& versions);
+  int AskForVersion(std::vector<std::pair<ADDON::CAddonVersion, std::string>>& versions);
 
   /*!
    * @brief Returns true if current addon can be opened (i.e is a plugin)

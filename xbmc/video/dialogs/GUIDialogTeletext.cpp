@@ -8,9 +8,11 @@
 
 #include "GUIDialogTeletext.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUITexture.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/Texture.h"
@@ -22,9 +24,8 @@
 static int teletextFadeAmount = 0;
 
 CGUIDialogTeletext::CGUIDialogTeletext()
-    : CGUIDialog(WINDOW_DIALOG_OSD_TELETEXT, "")
+  : CGUIDialog(WINDOW_DIALOG_OSD_TELETEXT, ""), m_pTxtTexture(nullptr)
 {
-  m_pTxtTexture = NULL;
   m_renderOrder = RENDER_ORDER_DIALOG_TELETEXT;
 }
 
@@ -53,7 +54,9 @@ bool CGUIDialogTeletext::OnMessage(CGUIMessage& message)
   if (message.GetMessage() == GUI_MSG_WINDOW_INIT)
   {
     /* Do not open if no teletext is available */
-    if (!g_application.GetAppPlayer().GetTeletextCache())
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (!appPlayer->HasTeletextCache())
     {
       Close();
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(23049), "", 1500, false);

@@ -8,19 +8,18 @@
 
 #include "AdvancedSettings.h"
 
-#include "AppParams.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "filesystem/File.h"
+#include "URL.h"
+#include "application/AppParams.h"
 #include "filesystem/SpecialProtocol.h"
 #include "network/DNSNameCache.h"
 #include "profiles/ProfileManager.h"
-#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
-#include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
+#include "utils/FileUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -36,7 +35,6 @@
 #include <vector>
 
 using namespace ADDON;
-using namespace XFILE;
 
 CAdvancedSettings::CAdvancedSettings()
 {
@@ -484,7 +482,7 @@ bool CAdvancedSettings::Load(const CProfileManager &profileManager)
 void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 {
   CXBMCTinyXML advancedXML;
-  if (!CFile::Exists(file))
+  if (!CFileUtils::Exists(file))
   {
     CLog::Log(LOGINFO, "No settings file to load ({})", file);
     return;

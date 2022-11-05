@@ -11,13 +11,12 @@
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/alsa/ALSADeviceMonitor.h"
+#ifndef HAVE_X11
 #include "cores/AudioEngine/Sinks/alsa/ALSAHControlMonitor.h"
+#endif
 #include "cores/AudioEngine/Utils/AEELDParser.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 #include "platform/Platform.h"
-#include "threads/SingleLock.h"
-#include "utils/MathUtils.h"
-#include "utils/SystemInfo.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -1100,8 +1099,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 {
 #if defined(HAVE_LIBUDEV)
   const auto deviceMonitor = CServiceBroker::GetPlatform().GetService<CALSADeviceMonitor>();
-  if (deviceMonitor)
-    deviceMonitor->Start();
+  deviceMonitor->Start();
 #endif
 
   /* ensure that ALSA has been initialized */
@@ -1119,8 +1117,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
 #if !defined(HAVE_X11)
   const auto controlMonitor = CServiceBroker::GetPlatform().GetService<CALSAHControlMonitor>();
-  if (controlMonitor)
-    controlMonitor->Clear();
+  controlMonitor->Clear();
 #endif
 
   /* Always enumerate the default device.
@@ -1204,8 +1201,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
   snd_device_name_free_hint(hints);
 
 #if !defined(HAVE_X11)
-  if (controlMonitor)
-    controlMonitor->Start();
+  controlMonitor->Start();
 #endif
 
   /* set the displayname for default device */
@@ -1241,7 +1237,7 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
       if (baseName == "sysdefault" && cardsWithSurround.find(card) != cardsWithSurround.end())
         iter = list.erase(iter);
       else
-        iter++;
+        ++iter;
     }
   }
 
@@ -1419,8 +1415,7 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
             /* add ELD to monitoring */
             const auto controlMonitor =
                 CServiceBroker::GetPlatform().GetService<CALSAHControlMonitor>();
-            if (controlMonitor)
-              controlMonitor->Add(strHwName, SND_CTL_ELEM_IFACE_PCM, dev, "ELD");
+            controlMonitor->Add(strHwName, SND_CTL_ELEM_IFACE_PCM, dev, "ELD");
 #endif
 
             if (!GetELD(hctl, dev, info, badHDMI))
@@ -1674,13 +1669,11 @@ void CAESinkALSA::Cleanup()
 {
 #if HAVE_LIBUDEV
   const auto deviceMonitor = CServiceBroker::GetPlatform().GetService<CALSADeviceMonitor>();
-  if (deviceMonitor)
-    deviceMonitor->Stop();
+  deviceMonitor->Stop();
 #endif
 
 #if !defined(HAVE_X11)
   const auto controlMonitor = CServiceBroker::GetPlatform().GetService<CALSAHControlMonitor>();
-  if (controlMonitor)
-    controlMonitor->Clear();
+  controlMonitor->Clear();
 #endif
 }

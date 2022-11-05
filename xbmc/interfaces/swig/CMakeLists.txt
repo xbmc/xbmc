@@ -1,5 +1,7 @@
 function(generate_file file)
-  set(classpath ${GROOVY_DIR}/groovy-all-${GROOVY_VER}.jar
+  set(classpath ${GROOVY_DIR}/groovy-${GROOVY_VER}.jar
+                ${GROOVY_DIR}/groovy-xml-${GROOVY_VER}.jar
+                ${GROOVY_DIR}/groovy-templates-${GROOVY_VER}.jar
                 ${GROOVY_DIR}/commons-lang-${COMMONS_VER}.jar
                 ${CMAKE_SOURCE_DIR}/tools/codegenerator
                 ${CMAKE_CURRENT_SOURCE_DIR}/../python)
@@ -42,7 +44,7 @@ set(INPUTS AddonModuleXbmcaddon.i
            AddonModuleXbmcwsgi.i)
 
 set(GROOVY_DIR ${CMAKE_SOURCE_DIR}/tools/codegenerator/groovy)
-set(GROOVY_VER 2.4.4)
+set(GROOVY_VER 4.0.6)
 set(COMMONS_VER 2.6)
 
 foreach(INPUT IN LISTS INPUTS)

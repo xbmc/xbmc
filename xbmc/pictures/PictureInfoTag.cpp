@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/ExtsMimeSupportList.h"
 #include "addons/ImageDecoder.h"
+#include "addons/addoninfo/AddonType.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "utils/Archive.h"
 #include "utils/CharsetConverter.h"
@@ -132,14 +133,14 @@ bool CPictureInfoTag::Load(const std::string &path)
   // Get file extensions to find addon related to it.
   std::string strExtension = URIUtils::GetExtension(path);
   StringUtils::ToLower(strExtension);
-  if (!strExtension.empty() && CServiceBroker::IsBinaryAddonCacheUp())
+  if (!strExtension.empty() && CServiceBroker::IsAddonInterfaceUp())
   {
     // Load via available image decoder addons
     auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetExtensionSupportedAddonInfos(
         strExtension, CExtsMimeSupportList::FilterSelect::all);
     for (const auto& addonInfo : addonInfos)
     {
-      if (addonInfo.first != ADDON::ADDON_IMAGEDECODER)
+      if (addonInfo.first != ADDON::AddonType::IMAGEDECODER)
         continue;
 
       std::unique_ptr<CImageDecoder> result = std::make_unique<CImageDecoder>(addonInfo.second, "");

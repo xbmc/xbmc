@@ -41,6 +41,8 @@
 
 #define WINDOW_EVENT_LOG                  10050
 
+#define WINDOW_FAVOURITES 10060
+
 #define WINDOW_SCREENSAVER_DIM               97
 #define WINDOW_DEBUG_INFO                    98
 #define WINDOW_DIALOG_POINTER             10099
@@ -81,7 +83,9 @@
 #define WINDOW_DIALOG_SLIDER              10145
 #define WINDOW_DIALOG_ADDON_INFO          10146
 #define WINDOW_DIALOG_TEXT_VIEWER         10147
+#ifdef HAS_DVD_DRIVE
 #define WINDOW_DIALOG_PLAY_EJECT          10148
+#endif
 #define WINDOW_DIALOG_PERIPHERALS         10149
 #define WINDOW_DIALOG_PERIPHERAL_SETTINGS 10150
 #define WINDOW_DIALOG_EXT_PROGRESS        10151

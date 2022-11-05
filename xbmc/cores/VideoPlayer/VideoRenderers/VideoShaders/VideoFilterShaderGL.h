@@ -56,13 +56,13 @@ protected:
   float m_stepY;
   float m_stretch;
   GLfloat m_alpha;
-  GLint m_sourceTexUnit;
+  GLint m_sourceTexUnit = 0;
   const GLfloat* m_proj = nullptr;
   const GLfloat* m_model = nullptr;
 
   // shader attribute handles
-  GLint m_hSourceTex;
-  GLint m_hStepXY;
+  GLint m_hSourceTex = 0;
+  GLint m_hStepXY = 0;
   GLint m_hStretch = -1;
   GLint m_hAlpha = -1;
   GLint m_hVertex = -1;
@@ -85,7 +85,7 @@ protected:
 
   protected:
     // kernel textures
-    GLuint m_kernelTex1;
+    GLuint m_kernelTex1 = 0;
 
     // shader handles to kernel textures
     GLint m_hKernTex;

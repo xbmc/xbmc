@@ -8,16 +8,20 @@
 
 #pragma once
 
-#include "BinaryAddonManager.h"
-#include "DllAddon.h"
 #include "addons/Addon.h"
-#include "utils/XMLUtils.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon_base.h"
 
-// Global addon callback handle classes
-#include "addons/interfaces/AddonBase.h"
+#include <map>
+#include <memory>
+#include <string>
+
+class DllAddon;
 
 namespace ADDON
 {
+
+class CBinaryAddonBase;
+using BinaryAddonBasePtr = std::shared_ptr<CBinaryAddonBase>;
 
 /*!
  * Addon instance handler, used as identify for std::map to find related
@@ -48,14 +52,14 @@ class CAddonDll : public CAddon
 {
 public:
   CAddonDll(const AddonInfoPtr& addonInfo, BinaryAddonBasePtr addonBase);
-  CAddonDll(const AddonInfoPtr& addonInfo, TYPE addonType);
+  CAddonDll(const AddonInfoPtr& addonInfo, AddonType addonType);
   ~CAddonDll() override;
 
   // Implementation of IAddon via CAddon
   std::string LibPath() const override;
 
   // addon settings
-  void SaveSettings() override;
+  void SaveSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
   bool DllLoaded(void) const;
 
@@ -68,7 +72,7 @@ public:
    * @note This should only be called if the associated dll is loaded.
    * Otherwise use @ref CAddonInfo::DependencyVersion(...)
    */
-  AddonVersion GetTypeVersionDll(int type) const;
+  CAddonVersion GetTypeVersionDll(int type) const;
 
   /*!
    * @brief Get api min version of moduleType type
@@ -79,7 +83,7 @@ public:
    * @note This should only be called if the associated dll is loaded.
    * Otherwise use @ref CAddonInfo::DependencyMinVersion(...)
    */
-  AddonVersion GetTypeMinVersionDll(int type) const;
+  CAddonVersion GetTypeMinVersionDll(int type) const;
 
   /*!
    * @brief Function to create a addon instance class
@@ -145,7 +149,7 @@ private:
   std::map<ADDON_INSTANCE_HANDLER, KODI_ADDON_INSTANCE_STRUCT*> m_usedInstances;
   CAddonDllInformer* m_informer = nullptr;
 
-  virtual ADDON_STATUS TransferSettings();
+  virtual ADDON_STATUS TransferSettings(AddonInstanceId instanceId);
 
   /*!
    * This structure, which is fixed to the addon headers, makes use of the at

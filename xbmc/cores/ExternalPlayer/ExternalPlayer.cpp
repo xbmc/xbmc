@@ -6,27 +6,30 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "threads/SystemClock.h"
-#include "CompileInfo.h"
 #include "ExternalPlayer.h"
-#include "windowing/WinSystem.h"
+
+#include "CompileInfo.h"
+#include "FileItem.h"
+#include "ServiceBroker.h"
+#include "URL.h"
+#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
+#include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogOK.h"
+#include "filesystem/MusicDatabaseFile.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
-#include "Application.h"
-#include "filesystem/MusicDatabaseFile.h"
-#include "FileItem.h"
+#include "threads/SystemClock.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "URL.h"
+#include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
-#include "utils/Variant.h"
 #include "video/Bookmark.h"
-#include "ServiceBroker.h"
-#include "cores/AudioEngine/Interfaces/AE.h"
-#include "cores/DataCacheCore.h"
+#include "windowing/WinSystem.h"
 #if defined(TARGET_WINDOWS)
   #include "utils/CharsetConverter.h"
   #include <Windows.h>
@@ -388,8 +391,10 @@ void CExternalPlayer::Process()
   }
 
   // We don't want to come back to an active screensaver
-  g_application.ResetScreenSaver();
-  g_application.WakeUpScreenSaverAndDPMS();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  appPower->ResetScreenSaver();
+  appPower->WakeUpScreenSaverAndDPMS();
 
   if (!ret || (m_playOneStackItem && g_application.CurrentFileItem().IsStack()))
     m_callback.OnPlayBackStopped();
@@ -497,7 +502,7 @@ bool CExternalPlayer::HasAudio() const
   return false;
 }
 
-bool CExternalPlayer::CanSeek()
+bool CExternalPlayer::CanSeek() const
 {
   return false;
 }
@@ -536,11 +541,6 @@ void CExternalPlayer::SetSpeed(float speed)
 {
   m_speed = speed;
   CDataCacheCore::GetInstance().SetSpeed(1.0, speed);
-}
-
-std::string CExternalPlayer::GetPlayerState()
-{
-  return "";
 }
 
 bool CExternalPlayer::SetPlayerState(const std::string& state)

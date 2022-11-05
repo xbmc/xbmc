@@ -8,9 +8,11 @@
 
 #import "LibInputRemote.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #import "windowing/tvos/WinSystemTVOS.h"
 
@@ -144,12 +146,16 @@ NSTimeInterval REPEATED_KEYPRESS_PAUSE_S = 0.05;
       break;
     case UIEventSubtypeRemoteControlEndSeekingForward:
     case UIEventSubtypeRemoteControlEndSeekingBackward:
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
       // restore to normal playback speed.
-      if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
+      if (appPlayer->IsPlaying() && !appPlayer->IsPaused())
         CServiceBroker::GetAppMessenger()->PostMsg(
             TMSG_GUI_ACTION, WINDOW_INVALID, -1,
             static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
       break;
+    }
     default:
       break;
   }

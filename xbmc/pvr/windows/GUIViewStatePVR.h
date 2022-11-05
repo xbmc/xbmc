@@ -14,62 +14,65 @@ class CFileItemList;
 
 namespace PVR
 {
-  class CGUIViewStatePVR : public CGUIViewState
+class CGUIViewStatePVR : public CGUIViewState
+{
+public:
+  CGUIViewStatePVR(const int windowId, const CFileItemList& items) : CGUIViewState(items)
   {
-  public:
-    CGUIViewStatePVR(const int windowId, const CFileItemList& items) : CGUIViewState(items) { m_windowId = windowId; }
+    m_windowId = windowId;
+  }
 
-  protected:
-    bool HideParentDirItems() override { return true; }
+protected:
+  bool HideParentDirItems() override { return true; }
 
-    int m_windowId;
-  };
+  int m_windowId;
+};
 
-  class CGUIViewStateWindowPVRChannels : public CGUIViewStatePVR
-  {
-  public:
-    CGUIViewStateWindowPVRChannels(const int windowId, const CFileItemList& items);
+class CGUIViewStateWindowPVRChannels : public CGUIViewStatePVR
+{
+public:
+  CGUIViewStateWindowPVRChannels(const int windowId, const CFileItemList& items);
 
-  protected:
-    void SaveViewState() override;
-  };
+protected:
+  void SaveViewState() override;
+};
 
-  class CGUIViewStateWindowPVRRecordings : public CGUIViewStatePVR
-  {
-  public:
-    CGUIViewStateWindowPVRRecordings(const int windowId, const CFileItemList& items);
+class CGUIViewStateWindowPVRRecordings : public CGUIViewStatePVR
+{
+public:
+  CGUIViewStateWindowPVRRecordings(const int windowId, const CFileItemList& items);
 
-  protected:
-    void SaveViewState() override;
-    bool HideParentDirItems() override;
-  };
+protected:
+  void SaveViewState() override;
+  bool HideParentDirItems() override;
+};
 
-  class CGUIViewStateWindowPVRGuide : public CGUIViewStatePVR
-  {
-  public:
-    CGUIViewStateWindowPVRGuide(const int windowId, const CFileItemList& items);
+class CGUIViewStateWindowPVRGuide : public CGUIViewStatePVR
+{
+public:
+  CGUIViewStateWindowPVRGuide(const int windowId, const CFileItemList& items);
 
-  protected:
-    void SaveViewState() override;
-  };
+protected:
+  void SaveViewState() override;
+};
 
-  class CGUIViewStateWindowPVRTimers : public CGUIViewStatePVR
-  {
-  public:
-    CGUIViewStateWindowPVRTimers(const int windowId, const CFileItemList& items);
+class CGUIViewStateWindowPVRTimers : public CGUIViewStatePVR
+{
+public:
+  CGUIViewStateWindowPVRTimers(const int windowId, const CFileItemList& items);
 
-  protected:
-    void SaveViewState() override;
-    bool HideParentDirItems() override;
-  };
+protected:
+  void SaveViewState() override;
+  bool HideParentDirItems() override;
+};
 
-  class CGUIViewStateWindowPVRSearch : public CGUIViewStatePVR
-  {
-  public:
-    CGUIViewStateWindowPVRSearch(const int windowId, const CFileItemList& items);
+class CGUIViewStateWindowPVRSearch : public CGUIViewStatePVR
+{
+public:
+  CGUIViewStateWindowPVRSearch(const int windowId, const CFileItemList& items);
 
-  protected:
-    void SaveViewState() override;
-    bool HideParentDirItems() override;
-  };
-}
+protected:
+  void SaveViewState() override;
+  bool HideParentDirItems() override;
+};
+} // namespace PVR

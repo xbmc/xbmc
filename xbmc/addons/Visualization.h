@@ -11,21 +11,23 @@
 #include "addons/binary-addons/AddonInstanceHandler.h"
 #include "addons/kodi-dev-kit/include/kodi/addon-instance/Visualization.h"
 
-namespace ADDON
+namespace KODI
+{
+namespace ADDONS
 {
 
-class CVisualization : public IAddonInstanceHandler
+class CVisualization : public ADDON::IAddonInstanceHandler
 {
 public:
-  CVisualization(const AddonInfoPtr& addonInfo, float x, float y, float w, float h);
+  CVisualization(const ADDON::AddonInfoPtr& addonInfo, float x, float y, float w, float h);
   ~CVisualization() override;
 
   bool Start(int channels, int samplesPerSec, int bitsPerSample, const std::string& songName);
   void Stop();
-  void AudioData(const float* audioData, int audioDataLength, float *freqData, int freqDataLength);
+  void AudioData(const float* audioData, int audioDataLength);
   bool IsDirty();
   void Render();
-  void GetInfo(VIS_INFO *info);
+  int GetSyncDelay();
   bool NextPreset();
   bool PrevPreset();
   bool LoadPreset(int select);
@@ -33,22 +35,25 @@ public:
   bool LockPreset();
   bool RatePreset(bool plus_minus);
   bool UpdateAlbumart(const char* albumart);
-  bool UpdateTrack(const VIS_TRACK* track);
+  bool UpdateTrack(const KODI_ADDON_VISUALIZATION_TRACK* track);
   bool HasPresets();
   bool GetPresetList(std::vector<std::string>& vecpresets);
   int GetActivePreset();
   std::string GetActivePresetName();
   bool IsLocked();
 
-private:
-  std::string m_name; /*!< To add-on sended name */
-  std::string m_presetsPath; /*!< To add-on sended preset path */
-  std::string m_profilePath; /*!< To add-on sended profile path */
-  std::vector<std::string> m_presets; /*!< cached preset list */
+  // Addon callback functions
+  void GetProperties(struct KODI_ADDON_VISUALIZATION_PROPS* props);
+  void TransferPreset(const std::string& preset);
+  void ClearPresets();
 
-  // Static function to transfer data from add-on to kodi
-  static void transfer_preset(void* kodiInstance, const char* preset);
-  static void clear_presets(void* kodiInstance);
+private:
+  const int m_x;
+  const int m_y;
+  const int m_width;
+  const int m_height;
+  std::vector<std::string> m_presets; /*!< cached preset list */
 };
 
-} /* namespace ADDON */
+} // namespace ADDONS
+} // namespace KODI

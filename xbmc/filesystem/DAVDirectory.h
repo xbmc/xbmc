@@ -8,9 +8,11 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "IDirectory.h"
-#include "utils/XBMCTinyXML.h"
+
+class CFileItem;
+class CFileItemList;
+class TiXmlElement;
 
 namespace XFILE
 {

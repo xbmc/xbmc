@@ -52,7 +52,7 @@ typedef std::shared_ptr<CScraper> ScraperPtr;
 
 std::string TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
 CONTENT_TYPE TranslateContent(const std::string &string);
-TYPE ScraperTypeFromContent(const CONTENT_TYPE &content);
+AddonType ScraperTypeFromContent(const CONTENT_TYPE& content);
 
 // thrown as exception to signal abort or show error dialog
 class CScraperError
@@ -75,7 +75,7 @@ private:
 class CScraper : public CAddon
 {
 public:
-  explicit CScraper(const AddonInfoPtr& addonInfo, TYPE addonType);
+  explicit CScraper(const AddonInfoPtr& addonInfo, AddonType addonType);
 
   /*! \brief Set the scraper settings for a particular path from an XML string
    Loads the default and user settings (if not already loaded) and, if the given XML string is non-empty,
@@ -158,13 +158,13 @@ private:
 
   bool Load();
   std::vector<std::string> Run(const std::string& function,
-                              const CScraperUrl& url,
-                              XFILE::CCurlFile& http,
-                              const std::vector<std::string>* extras = NULL);
+                               const CScraperUrl& url,
+                               XFILE::CCurlFile& http,
+                               const std::vector<std::string>* extras = nullptr);
   std::vector<std::string> RunNoThrow(const std::string& function,
-                              const CScraperUrl& url,
-                              XFILE::CCurlFile& http,
-                              const std::vector<std::string>* extras = NULL);
+                                      const CScraperUrl& url,
+                                      XFILE::CCurlFile& http,
+                                      const std::vector<std::string>* extras = nullptr);
   std::string InternalRun(const std::string& function,
                          const CScraperUrl& url,
                          XFILE::CCurlFile& http,

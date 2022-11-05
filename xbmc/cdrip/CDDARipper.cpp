@@ -13,11 +13,14 @@
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "addons/AddonManager.h"
+#include "addons/addoninfo/AddonInfo.h"
+#include "addons/addoninfo/AddonType.h"
 #include "filesystem/CDDADirectory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicDbUrl.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/infoscanner/MusicInfoScanner.h"
 #include "music/tags/MusicInfoTag.h"
@@ -289,9 +292,9 @@ std::string CCDDARipper::GetTrackName(CFileItem* item)
   const std::string encoder = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
       CSettings::SETTING_AUDIOCDS_ENCODER);
   const AddonInfoPtr addonInfo =
-      CServiceBroker::GetAddonMgr().GetAddonInfo(encoder, ADDON_AUDIOENCODER);
+      CServiceBroker::GetAddonMgr().GetAddonInfo(encoder, AddonType::AUDIOENCODER);
   if (addonInfo)
-    track += addonInfo->Type(ADDON_AUDIOENCODER)->GetValue("@extension").asString();
+    track += addonInfo->Type(AddonType::AUDIOENCODER)->GetValue("@extension").asString();
 
   return track;
 }

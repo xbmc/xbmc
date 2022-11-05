@@ -11,7 +11,6 @@
 #include "File.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "Util.h"
 #include "filesystem/SpecialProtocol.h"
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
@@ -46,11 +45,8 @@ using namespace std::chrono_literals;
 #define FITS_INT(a) (((a) <= INT_MAX) && ((a) >= INT_MIN))
 
 curl_proxytype proxyType2CUrlProxyType[] = {
-  CURLPROXY_HTTP,
-  CURLPROXY_SOCKS4,
-  CURLPROXY_SOCKS4A,
-  CURLPROXY_SOCKS5,
-  CURLPROXY_SOCKS5_HOSTNAME,
+    CURLPROXY_HTTP,   CURLPROXY_SOCKS4,          CURLPROXY_SOCKS4A,
+    CURLPROXY_SOCKS5, CURLPROXY_SOCKS5_HOSTNAME, CURLPROXY_HTTPS,
 };
 
 #define FILLBUFFER_OK         0
@@ -87,7 +83,7 @@ extern "C" int debug_callback(CURL_HANDLE *handle, curl_infotype info, char *out
   while (it != vecLines.end())
   {
     CLog::Log(LOGDEBUG, "Curl::Debug - {}{}", infotype, (*it));
-    it++;
+    ++it;
   }
   return 0;
 }
@@ -427,16 +423,9 @@ CCurlFile::CCurlFile()
   m_connecttimeout = 0;
   m_redirectlimit = 5;
   m_lowspeedtime = 0;
-  m_ftpauth = "";
-  m_ftpport = "";
   m_ftppasvip = false;
   m_bufferSize = 32768;
-  m_postdata = "";
   m_postdataset = false;
-  m_username = "";
-  m_password = "";
-  m_httpauth = "";
-  m_cipherlist = "";
   m_state = new CReadState();
   m_oldState = NULL;
   m_skipshout = false;
@@ -798,7 +787,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     //! @todo create a tokenizer that doesn't skip empty's
     StringUtils::Tokenize(filename, array, "/");
     filename.clear();
-    for(std::vector<std::string>::iterator it = array.begin(); it != array.end(); it++)
+    for (std::vector<std::string>::iterator it = array.begin(); it != array.end(); ++it)
     {
       if(it != array.begin())
         filename += "/";
@@ -852,8 +841,8 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       m_proxyport = s->GetInt(CSettings::SETTING_NETWORK_HTTPPROXYPORT);
       m_proxyuser = s->GetString(CSettings::SETTING_NETWORK_HTTPPROXYUSERNAME);
       m_proxypassword = s->GetString(CSettings::SETTING_NETWORK_HTTPPROXYPASSWORD);
-      CLog::Log(LOGDEBUG, "CCurlFile::{} - <{}> Using proxy {}, type {}", __FUNCTION__,
-                url2.GetRedacted(), m_proxyhost, proxyType2CUrlProxyType[m_proxytype]);
+      CLog::LogFC(LOGDEBUG, LOGCURL, "<{}> Using proxy {}, type {}", url2.GetRedacted(),
+                  m_proxyhost, proxyType2CUrlProxyType[m_proxytype]);
     }
 
     // get username and password
@@ -924,20 +913,18 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
           if (name.length() > 0 && name[0] == '!')
           {
             SetRequestHeader(it.first.substr(1), value);
-            CLog::Log(LOGDEBUG,
-                      "CCurlFile::{} - <{}> Adding custom header option '{}: ***********'",
-                      __FUNCTION__, url2.GetRedacted(), it.first.substr(1));
+            CLog::LogFC(LOGDEBUG, LOGCURL, "<{}> Adding custom header option '{}: ***********'",
+                        url2.GetRedacted(), it.first.substr(1));
           }
           else
           {
             SetRequestHeader(it.first, value);
             if (name == "authorization")
-              CLog::Log(LOGDEBUG,
-                        "CCurlFile::{} - <{}> Adding custom header option '{}: ***********'",
-                        __FUNCTION__, url2.GetRedacted(), it.first);
+              CLog::LogFC(LOGDEBUG, LOGCURL, "<{}> Adding custom header option '{}: ***********'",
+                          url2.GetRedacted(), it.first);
             else
-              CLog::Log(LOGDEBUG, "CCurlFile::{} - <{}> Adding custom header option '{}: {}'",
-                        __FUNCTION__, url2.GetRedacted(), it.first, value);
+              CLog::LogFC(LOGDEBUG, LOGCURL, "<{}> Adding custom header option '{}: {}'",
+                          url2.GetRedacted(), it.first, value);
           }
         }
       }
@@ -1058,6 +1045,8 @@ void CCurlFile::SetProxy(const std::string &type, const std::string &host,
   m_proxytype = CCurlFile::PROXY_HTTP;
   if (type == "http")
     m_proxytype = CCurlFile::PROXY_HTTP;
+  else if (type == "https")
+    m_proxytype = CCurlFile::PROXY_HTTPS;
   else if (type == "socks4")
     m_proxytype = CCurlFile::PROXY_SOCKS4;
   else if (type == "socks4a")

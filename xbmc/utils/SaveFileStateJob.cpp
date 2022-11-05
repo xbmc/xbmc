@@ -8,7 +8,6 @@
 
 #include "SaveFileStateJob.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -16,6 +15,8 @@
 #include "URIUtils.h"
 #include "URL.h"
 #include "Util.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationStackHelper.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -165,9 +166,10 @@ void CSaveFileState::DoWork(CFileItem& item,
 
           // Could be part of an ISO stack. In this case the bookmark is saved onto the part.
           // In order to properly update the list, we need to refresh the stack's resume point
-          const CApplicationStackHelper& stackHelper = g_application.GetAppStackHelper();
-          if (stackHelper.HasRegisteredStack(item) &&
-              stackHelper.GetRegisteredStackTotalTimeMs(item) == 0)
+          const auto& components = CServiceBroker::GetAppComponents();
+          const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
+          if (stackHelper->HasRegisteredStack(item) &&
+              stackHelper->GetRegisteredStackTotalTimeMs(item) == 0)
             videodatabase.GetResumePoint(*(msgItem->GetVideoInfoTag()));
 
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, msgItem);
@@ -215,7 +217,8 @@ void CSaveFileState::DoWork(CFileItem& item,
       if (item.IsAudioBook())
       {
         musicdatabase.Open();
-        musicdatabase.SetResumeBookmarkForAudioBook(item, item.m_lStartOffset + CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds));
+        musicdatabase.SetResumeBookmarkForAudioBook(
+            item, item.GetStartOffset() + CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds));
         musicdatabase.Close();
       }
     }

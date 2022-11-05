@@ -8,10 +8,13 @@
 
 #pragma once
 
-#include "addons/IAddon.h"
+#include <memory>
 
 namespace ADDON
 {
+
+class IAddon;
+
 namespace GUI
 {
 
@@ -28,10 +31,10 @@ public:
    * @note The dialog is currently displayed for @ref AddonLifecycleState::BROKEN
    * and @ref AddonLifecycleState::DEPRECATED.
    *
-   * @param[in] addonInfo Information class of the add-on to be checked
+   * @param[in] addon Class of the add-on to be checked
    * @return True if user activation is desired, false if not
    */
-  static bool DialogAddonLifecycleUseAsk(const std::shared_ptr<const IAddon>& addonInfo);
+  static bool DialogAddonLifecycleUseAsk(const std::shared_ptr<const IAddon>& addon);
 };
 
 } /* namespace GUI */

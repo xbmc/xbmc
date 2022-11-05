@@ -7,7 +7,6 @@
  */
 #include "UPnPRenderer.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
@@ -18,16 +17,20 @@
 #include "UPnP.h"
 #include "UPnPInternal.h"
 #include "URL.h"
+#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
+#include "application/ApplicationVolumeHandling.h"
 #include "filesystem/SpecialProtocol.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "pictures/GUIWindowSlideShow.h"
-#include "pictures/PictureInfoTag.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -317,60 +320,70 @@ CUPnPRenderer::UpdateState()
         return;
 
     avt->SetStateVariable("TransportStatus", "OK");
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer->IsPlaying() || appPlayer->IsPausedPlayback())
+    {
+      avt->SetStateVariable("NumberOfTracks", "1");
+      avt->SetStateVariable("CurrentTrack", "1");
 
-    if (g_application.GetAppPlayer().IsPlaying() || g_application.GetAppPlayer().IsPausedPlayback()) {
-        avt->SetStateVariable("NumberOfTracks", "1");
-        avt->SetStateVariable("CurrentTrack", "1");
+      // get elapsed time
+      std::string buffer = StringUtils::SecondsToTimeString(std::lrint(g_application.GetTime()),
+                                                            TIME_FORMAT_HH_MM_SS);
+      avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
+      avt->SetStateVariable("AbsoluteTimePosition", buffer.c_str());
 
-        // get elapsed time
-        std::string buffer = StringUtils::SecondsToTimeString(std::lrint(g_application.GetTime()), TIME_FORMAT_HH_MM_SS);
-        avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
-        avt->SetStateVariable("AbsoluteTimePosition", buffer.c_str());
-
-        // get duration
-        buffer = StringUtils::SecondsToTimeString(std::lrint(g_application.GetTotalTime()), TIME_FORMAT_HH_MM_SS);
-        if (buffer.length() > 0) {
-          avt->SetStateVariable("CurrentTrackDuration", buffer.c_str());
-          avt->SetStateVariable("CurrentMediaDuration", buffer.c_str());
-        } else {
-          avt->SetStateVariable("CurrentTrackDuration", "00:00:00");
-          avt->SetStateVariable("CurrentMediaDuration", "00:00:00");
-        }
-
-    } else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
-        avt->SetStateVariable("TransportState", "PLAYING");
-
-        const std::string filePath = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
-            SLIDESHOW_FILE_PATH, INFO::DEFAULT_CONTEXT);
-        avt->SetStateVariable("AVTransportURI" , filePath.c_str());
-        avt->SetStateVariable("CurrentTrackURI", filePath.c_str());
-        avt->SetStateVariable("TransportPlaySpeed", "1");
-
-        CGUIWindowSlideShow *slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-        if (slideshow)
-        {
-          std::string index;
-          index = std::to_string(slideshow->NumSlides());
-          avt->SetStateVariable("NumberOfTracks", index.c_str());
-          index = std::to_string(slideshow->CurrentSlide());
-          avt->SetStateVariable("CurrentTrack", index.c_str());
-
-        }
-
-        avt->SetStateVariable("CurrentTrackMetadata", "");
-        avt->SetStateVariable("AVTransportURIMetaData", "");
-
-    } else {
-        avt->SetStateVariable("TransportState", "STOPPED");
-        avt->SetStateVariable("TransportPlaySpeed", "1");
-        avt->SetStateVariable("NumberOfTracks", "0");
-        avt->SetStateVariable("CurrentTrack", "0");
-        avt->SetStateVariable("RelativeTimePosition", "00:00:00");
-        avt->SetStateVariable("AbsoluteTimePosition", "00:00:00");
+      // get duration
+      buffer = StringUtils::SecondsToTimeString(std::lrint(g_application.GetTotalTime()),
+                                                TIME_FORMAT_HH_MM_SS);
+      if (buffer.length() > 0)
+      {
+        avt->SetStateVariable("CurrentTrackDuration", buffer.c_str());
+        avt->SetStateVariable("CurrentMediaDuration", buffer.c_str());
+      }
+      else
+      {
         avt->SetStateVariable("CurrentTrackDuration", "00:00:00");
         avt->SetStateVariable("CurrentMediaDuration", "00:00:00");
-        avt->SetStateVariable("NextAVTransportURI", "");
-        avt->SetStateVariable("NextAVTransportURIMetaData", "");
+      }
+    }
+    else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW)
+    {
+      avt->SetStateVariable("TransportState", "PLAYING");
+
+      const std::string filePath = CServiceBroker::GetGUI()->GetInfoManager().GetLabel(
+          SLIDESHOW_FILE_PATH, INFO::DEFAULT_CONTEXT);
+      avt->SetStateVariable("AVTransportURI", filePath.c_str());
+      avt->SetStateVariable("CurrentTrackURI", filePath.c_str());
+      avt->SetStateVariable("TransportPlaySpeed", "1");
+
+      CGUIWindowSlideShow* slideshow =
+          CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(
+              WINDOW_SLIDESHOW);
+      if (slideshow)
+      {
+        std::string index;
+        index = std::to_string(slideshow->NumSlides());
+        avt->SetStateVariable("NumberOfTracks", index.c_str());
+        index = std::to_string(slideshow->CurrentSlide());
+        avt->SetStateVariable("CurrentTrack", index.c_str());
+      }
+
+      avt->SetStateVariable("CurrentTrackMetadata", "");
+      avt->SetStateVariable("AVTransportURIMetaData", "");
+    }
+    else
+    {
+      avt->SetStateVariable("TransportState", "STOPPED");
+      avt->SetStateVariable("TransportPlaySpeed", "1");
+      avt->SetStateVariable("NumberOfTracks", "0");
+      avt->SetStateVariable("CurrentTrack", "0");
+      avt->SetStateVariable("RelativeTimePosition", "00:00:00");
+      avt->SetStateVariable("AbsoluteTimePosition", "00:00:00");
+      avt->SetStateVariable("CurrentTrackDuration", "00:00:00");
+      avt->SetStateVariable("CurrentMediaDuration", "00:00:00");
+      avt->SetStateVariable("NextAVTransportURI", "");
+      avt->SetStateVariable("NextAVTransportURIMetaData", "");
     }
 }
 
@@ -477,8 +490,14 @@ CUPnPRenderer::OnPause(PLT_ActionReference& action)
       CServiceBroker::GetAppMessenger()->SendMsg(
           TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
           static_cast<void*>(new CAction(ACTION_NEXT_PICTURE)));
-    } else if (!g_application.GetAppPlayer().IsPausedPlayback())
-      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
+    }
+    else
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      if (!appPlayer->IsPausedPlayback())
+        CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
+    }
     return NPT_SUCCESS;
 }
 
@@ -488,21 +507,27 @@ CUPnPRenderer::OnPause(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnPlay(PLT_ActionReference& action)
 {
-    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
-        return NPT_SUCCESS;
-    } else if (g_application.GetAppPlayer().IsPausedPlayback()) {
-      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
-    } else if (!g_application.GetAppPlayer().IsPlaying()) {
-        NPT_String uri, meta;
-        PLT_Service* service;
-        // look for value set previously by SetAVTransportURI
-        NPT_CHECK_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
-        NPT_CHECK_SEVERE(service->GetStateVariableValue("AVTransportURI", uri));
-        NPT_CHECK_SEVERE(service->GetStateVariableValue("AVTransportURIMetaData", meta));
+  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW)
+    return NPT_SUCCESS;
 
-        // if not set, use the current file being played
-        PlayMedia(uri, meta);
-    }
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPausedPlayback())
+  {
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
+  }
+  else if (appPlayer && !appPlayer->IsPlaying())
+  {
+    NPT_String uri, meta;
+    PLT_Service* service;
+    // look for value set previously by SetAVTransportURI
+    NPT_CHECK_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
+    NPT_CHECK_SEVERE(service->GetStateVariableValue("AVTransportURI", uri));
+    NPT_CHECK_SEVERE(service->GetStateVariableValue("AVTransportURIMetaData", meta));
+
+    // if not set, use the current file being played
+    PlayMedia(uri, meta);
+  }
     return NPT_SUCCESS;
 }
 
@@ -553,17 +578,21 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
 
     // if not playing already, just keep around uri & metadata
     // and wait for play command
-    if (!g_application.GetAppPlayer().IsPlaying() && CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW) {
-        service->SetStateVariable("TransportState", "STOPPED");
-        service->SetStateVariable("TransportStatus", "OK");
-        service->SetStateVariable("TransportPlaySpeed", "1");
-        service->SetStateVariable("AVTransportURI", uri);
-        service->SetStateVariable("AVTransportURIMetaData", meta);
-        service->SetStateVariable("NextAVTransportURI", "");
-        service->SetStateVariable("NextAVTransportURIMetaData", "");
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (!appPlayer->IsPlaying() &&
+        CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_SLIDESHOW)
+    {
+      service->SetStateVariable("TransportState", "STOPPED");
+      service->SetStateVariable("TransportStatus", "OK");
+      service->SetStateVariable("TransportPlaySpeed", "1");
+      service->SetStateVariable("AVTransportURI", uri);
+      service->SetStateVariable("AVTransportURIMetaData", meta);
+      service->SetStateVariable("NextAVTransportURI", "");
+      service->SetStateVariable("NextAVTransportURIMetaData", "");
 
-        NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
-        return NPT_SUCCESS;
+      NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
+      return NPT_SUCCESS;
     }
 
     return PlayMedia(uri, meta, action.AsPointer());
@@ -587,20 +616,23 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
         return NPT_FAILURE;
     }
 
-    if (g_application.GetAppPlayer().IsPlaying()) {
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer->IsPlaying())
+    {
 
-        int playlist = PLAYLIST_MUSIC;
-        if(item->IsVideo())
-          playlist = PLAYLIST_VIDEO;
+      PLAYLIST::Id playlistId = PLAYLIST::TYPE_MUSIC;
+      if (item->IsVideo())
+        playlistId = PLAYLIST::TYPE_VIDEO;
 
-        {
-          std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
-          CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlist);
-          CServiceBroker::GetPlaylistPlayer().Add(playlist, item);
+      {
+        std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
+        CServiceBroker::GetPlaylistPlayer().ClearPlaylist(playlistId);
+        CServiceBroker::GetPlaylistPlayer().Add(playlistId, item);
 
-          CServiceBroker::GetPlaylistPlayer().SetCurrentSong(-1);
-          CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlist);
-        }
+        CServiceBroker::GetPlaylistPlayer().SetCurrentSong(-1);
+        CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(playlistId);
+      }
 
         CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
         CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -612,12 +644,15 @@ CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
         NPT_CHECK_SEVERE(action->SetArgumentsOutFromStateVariable());
 
         return NPT_SUCCESS;
-
-  } else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW) {
-        return NPT_FAILURE;
-  } else {
-        return NPT_FAILURE;
-  }
+    }
+    else if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_SLIDESHOW)
+    {
+      return NPT_FAILURE;
+    }
+    else
+    {
+      return NPT_FAILURE;
+    }
 }
 
 /*----------------------------------------------------------------------
@@ -672,7 +707,9 @@ CUPnPRenderer::OnSetVolume(PLT_ActionReference& action)
 {
     NPT_String volume;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredVolume", volume));
-    g_application.SetVolume((float)strtod((const char*)volume, NULL));
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetVolume((float)strtod((const char*)volume, NULL));
     return NPT_SUCCESS;
 }
 
@@ -684,8 +721,10 @@ CUPnPRenderer::OnSetMute(PLT_ActionReference& action)
 {
     NPT_String mute;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredMute",mute));
-    if((mute == "1") ^ g_application.IsMuted())
-        g_application.ToggleMute();
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    if ((mute == "1") ^ appVolume->IsMuted())
+      appVolume->ToggleMute();
     return NPT_SUCCESS;
 }
 
@@ -695,18 +734,22 @@ CUPnPRenderer::OnSetMute(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnSeek(PLT_ActionReference& action)
 {
-    if (!g_application.GetAppPlayer().IsPlaying()) return NPT_ERROR_INVALID_STATE;
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (!appPlayer->IsPlaying())
+    return NPT_ERROR_INVALID_STATE;
 
-    NPT_String unit, target;
-    NPT_CHECK_SEVERE(action->GetArgumentValue("Unit", unit));
-    NPT_CHECK_SEVERE(action->GetArgumentValue("Target", target));
+  NPT_String unit, target;
+  NPT_CHECK_SEVERE(action->GetArgumentValue("Unit", unit));
+  NPT_CHECK_SEVERE(action->GetArgumentValue("Target", target));
 
-    if (!unit.Compare("REL_TIME")) {
-        // converts target to seconds
-        NPT_UInt32 seconds;
-        NPT_CHECK_SEVERE(PLT_Didl::ParseTimeStamp(target, seconds));
-        g_application.SeekTime(seconds);
-    }
+  if (!unit.Compare("REL_TIME"))
+  {
+    // converts target to seconds
+    NPT_UInt32 seconds;
+    NPT_CHECK_SEVERE(PLT_Didl::ParseTimeStamp(target, seconds));
+    g_application.SeekTime(seconds);
+  }
 
     return NPT_SUCCESS;
 }

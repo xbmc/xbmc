@@ -8,10 +8,12 @@
 
 #include "PVRManager.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "pvr/PVRComponentRegistration.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClient.h"
@@ -22,7 +24,8 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
-#include "pvr/guilib/PVRGUIActions.h"
+#include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/guilib/PVRGUIChannelIconUpdater.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "pvr/guilib/guiinfo/PVRGUIInfo.h"
@@ -110,7 +113,6 @@ public:
     return m_triggerEvent.Wait(std::chrono::milliseconds(milliSeconds));
   }
 
-
 private:
   void AppendJob(CPVRJob* job);
 
@@ -195,7 +197,7 @@ CPVRManager::CPVRManager()
     m_timers(new CPVRTimers),
     m_addons(new CPVRClients),
     m_guiInfo(new CPVRGUIInfo),
-    m_guiActions(new CPVRGUIActions),
+    m_components(new CPVRComponentRegistration),
     m_epgContainer(m_events),
     m_pendingUpdates(new CPVRManagerJobQueue),
     m_database(new CPVRDatabase),
@@ -282,9 +284,9 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
   if (item.HasPVRChannelInfoTag())
     iClientID = item.GetPVRChannelInfoTag()->ClientID();
   else if (item.HasPVRRecordingInfoTag())
-    iClientID = item.GetPVRRecordingInfoTag()->m_iClientId;
+    iClientID = item.GetPVRRecordingInfoTag()->ClientID();
   else if (item.HasPVRTimerInfoTag())
-    iClientID = item.GetPVRTimerInfoTag()->m_iClientId;
+    iClientID = item.GetPVRTimerInfoTag()->ClientID();
   else if (item.HasEPGInfoTag())
     iClientID = item.GetEPGInfoTag()->ClientID();
   else if (URIUtils::IsPVRChannel(item.GetPath()))
@@ -304,17 +306,7 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
 
 std::shared_ptr<CPVRClient> CPVRManager::GetClient(int iClientId) const
 {
-  std::shared_ptr<CPVRClient> client;
-  if (iClientId != PVR_INVALID_CLIENT_ID)
-    m_addons->GetCreatedClient(iClientId, client);
-
-  return client;
-}
-
-std::shared_ptr<CPVRGUIActions> CPVRManager::GUIActions() const
-{
-  // note: m_guiActions is const (only set/reset in ctor/dtor). no need for a lock here.
-  return m_guiActions;
+  return m_addons->GetCreatedClient(iClientId);
 }
 
 std::shared_ptr<CPVRPlaybackState> CPVRManager::PlaybackState() const
@@ -359,6 +351,7 @@ void CPVRManager::ResetProperties()
   m_timers.reset(new CPVRTimers);
   m_guiInfo.reset(new CPVRGUIInfo);
   m_parentalTimer.reset(new CStopWatch);
+  m_knownClients.clear();
 }
 
 void CPVRManager::Init()
@@ -502,8 +495,7 @@ void CPVRManager::Process()
   }
 
   // Wait for at least one client to come up and load/update data
-  std::vector<std::shared_ptr<CPVRClient>> knownClients;
-  UpdateComponents(knownClients, ManagerState::STATE_STARTING);
+  UpdateComponents(ManagerState::STATE_STARTING);
 
   if (!IsInitialising())
   {
@@ -531,7 +523,7 @@ void CPVRManager::Process()
   while (IsStarted() && m_addons->HasCreatedClients() && !bRestart)
   {
     // In case any new client connected, load from db and fetch data update from new client(s)
-    UpdateComponents(knownClients, ManagerState::STATE_STARTED);
+    UpdateComponents(ManagerState::STATE_STARTED);
 
     if (cachedImagesCleanupTimeout.IsTimePast())
     {
@@ -573,7 +565,9 @@ void CPVRManager::Process()
     }
     catch (...)
     {
-      CLog::LogF(LOGERROR, "An error occurred while trying to execute the last PVR update job, trying to recover");
+      CLog::LogF(
+          LOGERROR,
+          "An error occurred while trying to execute the last PVR update job, trying to recover");
       bRestart = true;
     }
 
@@ -604,7 +598,8 @@ bool CPVRManager::SetWakeupCommand()
   if (!m_settings.GetBoolValue(CSettings::SETTING_PVRPOWERMANAGEMENT_ENABLED))
     return false;
 
-  const std::string strWakeupCommand(m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD));
+  const std::string strWakeupCommand(
+      m_settings.GetStringValue(CSettings::SETTING_PVRPOWERMANAGEMENT_SETWAKEUPCMD));
   if (!strWakeupCommand.empty() && m_timers)
   {
     const CDateTime nextEvent = m_timers->GetNextEventTime();
@@ -661,16 +656,15 @@ void CPVRManager::OnWake()
   TriggerTimersUpdate();
 }
 
-void CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& knownClients,
-                                   ManagerState stateToCheck)
+void CPVRManager::UpdateComponents(ManagerState stateToCheck)
 {
   XbmcThreads::EndTime<> progressTimeout(30s);
   std::unique_ptr<CPVRGUIProgressHandler> progressHandler(
       new CPVRGUIProgressHandler(g_localizeStrings.Get(19235))); // PVR manager is starting up
 
   // Wait for at least one client to come up and load/update data
-  while (!UpdateComponents(knownClients, stateToCheck, progressHandler) &&
-         m_addons->HasCreatedClients() && (stateToCheck == GetState()))
+  while (!UpdateComponents(stateToCheck, progressHandler) && m_addons->HasCreatedClients() &&
+         (stateToCheck == GetState()))
   {
     CThread::Sleep(1000ms);
 
@@ -679,17 +673,15 @@ void CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& kno
   }
 }
 
-bool CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& knownClients,
-                                   ManagerState stateToCheck,
+bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
                                    const std::unique_ptr<CPVRGUIProgressHandler>& progressHandler)
 {
   // find clients which appeared since last check and update them
-  CPVRClientMap clientMap;
-  m_addons->GetCreatedClients(clientMap);
+  const CPVRClientMap clientMap = m_addons->GetCreatedClients();
   if (clientMap.empty())
   {
     CLog::LogFC(LOGDEBUG, LOGPVR, "All created PVR clients gone!");
-    knownClients.clear(); // start over
+    m_knownClients.clear(); // start over
     return false;
   }
 
@@ -704,12 +696,9 @@ bool CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& kno
       continue;
     }
 
-    if (knownClients.empty() || std::none_of(knownClients.cbegin(), knownClients.cend(),
-                                             [&entry](const std::shared_ptr<CPVRClient>& client) {
-                                               return client->GetID() == entry.first;
-                                             }))
+    if (!IsKnownClient(entry.first))
     {
-      knownClients.emplace_back(entry.second);
+      m_knownClients.emplace_back(entry.second);
       newClients.emplace_back(entry.second);
 
       CLog::LogFC(LOGDEBUG, LOGPVR, "Adding new PVR client '{}' to list of known clients",
@@ -718,7 +707,7 @@ bool CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& kno
   }
 
   if (newClients.empty())
-    return !knownClients.empty();
+    return !m_knownClients.empty();
 
   // Load all channels and groups
   if (progressHandler)
@@ -727,14 +716,14 @@ bool CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& kno
   if (!m_providers->Update(newClients) || (stateToCheck != GetState()))
   {
     CLog::LogF(LOGERROR, "Failed to load PVR providers.");
-    knownClients.clear(); // start over
+    m_knownClients.clear(); // start over
     return false;
   }
 
   if (!m_channelGroups->Update(newClients) || (stateToCheck != GetState()))
   {
     CLog::LogF(LOGERROR, "Failed to load PVR channels / groups.");
-    knownClients.clear(); // start over
+    m_knownClients.clear(); // start over
     return false;
   }
 
@@ -747,7 +736,7 @@ bool CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& kno
   if (!m_timers->Update(newClients) || (stateToCheck != GetState()))
   {
     CLog::LogF(LOGERROR, "Failed to load PVR timers.");
-    knownClients.clear(); // start over
+    m_knownClients.clear(); // start over
     return false;
   }
 
@@ -758,7 +747,7 @@ bool CPVRManager::UpdateComponents(std::vector<std::shared_ptr<CPVRClient>>& kno
   if (!m_recordings->Update(newClients) || (stateToCheck != GetState()))
   {
     CLog::LogF(LOGERROR, "Failed to load PVR recordings.");
-    knownClients.clear(); // start over
+    m_knownClients.clear(); // start over
     return false;
   }
 
@@ -774,12 +763,18 @@ void CPVRManager::UnloadComponents()
   m_epgContainer.Unload();
 }
 
+bool CPVRManager::IsKnownClient(int clientID) const
+{
+  return std::any_of(m_knownClients.cbegin(), m_knownClients.cend(),
+                     [clientID](const auto& client) { return client->GetID() == clientID; });
+}
+
 void CPVRManager::TriggerPlayChannelOnStartup()
 {
   if (IsStarted())
   {
     CServiceBroker::GetJobManager()->Submit(
-        [this] { return GUIActions()->PlayChannelOnStartup(); });
+        [this] { return Get<PVR::GUI::Playback>().PlayChannelOnStartup(); });
   }
 }
 
@@ -791,19 +786,19 @@ void CPVRManager::RestartParentalTimer()
 
 bool CPVRManager::IsParentalLocked(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
 {
-  return m_channelGroups &&
-         epgTag &&
-         IsCurrentlyParentalLocked(m_channelGroups->GetByUniqueID(epgTag->UniqueChannelID(), epgTag->ClientID()),
-                                   epgTag->IsParentalLocked());
+  return m_channelGroups && epgTag &&
+         IsCurrentlyParentalLocked(
+             m_channelGroups->GetByUniqueID(epgTag->UniqueChannelID(), epgTag->ClientID()),
+             epgTag->IsParentalLocked());
 }
 
 bool CPVRManager::IsParentalLocked(const std::shared_ptr<CPVRChannel>& channel) const
 {
-  return channel &&
-         IsCurrentlyParentalLocked(channel, channel->IsLocked());
+  return channel && IsCurrentlyParentalLocked(channel, channel->IsLocked());
 }
 
-bool CPVRManager::IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& channel, bool bGenerallyLocked) const
+bool CPVRManager::IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& channel,
+                                            bool bGenerallyLocked) const
 {
   bool bReturn = false;
 
@@ -812,38 +807,38 @@ bool CPVRManager::IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& 
 
   const std::shared_ptr<CPVRChannel> currentChannel = m_playbackState->GetPlayingChannel();
 
-  if (// if channel in question is currently playing it must be currently unlocked.
+  if ( // if channel in question is currently playing it must be currently unlocked.
       (!currentChannel || channel != currentChannel) &&
       // parental control enabled
       m_settings.GetBoolValue(CSettings::SETTING_PVRPARENTAL_ENABLED))
   {
-    float parentalDurationMs = m_settings.GetIntValue(CSettings::SETTING_PVRPARENTAL_DURATION) * 1000.0f;
-    bReturn = m_parentalTimer &&
-        (!m_parentalTimer->IsRunning() ||
-          m_parentalTimer->GetElapsedMilliseconds() > parentalDurationMs);
+    float parentalDurationMs =
+        m_settings.GetIntValue(CSettings::SETTING_PVRPARENTAL_DURATION) * 1000.0f;
+    bReturn = m_parentalTimer && (!m_parentalTimer->IsRunning() ||
+                                  m_parentalTimer->GetElapsedMilliseconds() > parentalDurationMs);
   }
 
   return bReturn;
 }
 
-void CPVRManager::OnPlaybackStarted(const CFileItemPtr& item)
+void CPVRManager::OnPlaybackStarted(const CFileItem& item)
 {
   m_playbackState->OnPlaybackStarted(item);
-  m_guiActions->OnPlaybackStarted(item);
+  Get<PVR::GUI::Channels>().OnPlaybackStarted(item);
   m_epgContainer.OnPlaybackStarted();
 }
 
-void CPVRManager::OnPlaybackStopped(const CFileItemPtr& item)
+void CPVRManager::OnPlaybackStopped(const CFileItem& item)
 {
   // Playback ended due to user interaction
   if (m_playbackState->OnPlaybackStopped(item))
     PublishEvent(PVREvent::ChannelPlaybackStopped);
 
-  m_guiActions->OnPlaybackStopped(item);
+  Get<PVR::GUI::Channels>().OnPlaybackStopped(item);
   m_epgContainer.OnPlaybackStopped();
 }
 
-void CPVRManager::OnPlaybackEnded(const CFileItemPtr& item)
+void CPVRManager::OnPlaybackEnded(const CFileItem& item)
 {
   // Playback ended, but not due to user interaction
   OnPlaybackStopped(item);
@@ -854,8 +849,10 @@ void CPVRManager::LocalizationChanged()
   std::unique_lock<CCriticalSection> lock(m_critSection);
   if (IsStarted())
   {
-    static_cast<CPVRChannelGroupInternal *>(m_channelGroups->GetGroupAllRadio().get())->CheckGroupName();
-    static_cast<CPVRChannelGroupInternal *>(m_channelGroups->GetGroupAllTV().get())->CheckGroupName();
+    static_cast<CPVRChannelGroupInternal*>(m_channelGroups->GetGroupAllRadio().get())
+        ->CheckGroupName();
+    static_cast<CPVRChannelGroupInternal*>(m_channelGroups->GetGroupAllTV().get())
+        ->CheckGroupName();
   }
 }
 
@@ -867,21 +864,21 @@ bool CPVRManager::EpgsCreated() const
 
 void CPVRManager::TriggerEpgsCreate()
 {
-  m_pendingUpdates->Append("pvr-create-epgs", [this]() {
-    return CreateChannelEpgs();
-  });
+  m_pendingUpdates->Append("pvr-create-epgs", [this]() { return CreateChannelEpgs(); });
 }
 
 void CPVRManager::TriggerRecordingsSizeInProgressUpdate()
 {
-  m_pendingUpdates->Append("pvr-update-recordings-size", [this]() {
-    return Recordings()->UpdateInProgressSize();
-  });
+  m_pendingUpdates->Append("pvr-update-recordings-size",
+                           [this]() { return Recordings()->UpdateInProgressSize(); });
 }
 
 void CPVRManager::TriggerRecordingsUpdate(int clientId)
 {
   m_pendingUpdates->Append("pvr-update-recordings-" + std::to_string(clientId), [this, clientId]() {
+    if (!IsKnownClient(clientId))
+      return;
+
     const std::shared_ptr<CPVRClient> client = GetClient(clientId);
     if (client)
       Recordings()->UpdateFromClients({client});
@@ -897,6 +894,9 @@ void CPVRManager::TriggerRecordingsUpdate()
 void CPVRManager::TriggerTimersUpdate(int clientId)
 {
   m_pendingUpdates->Append("pvr-update-timers-" + std::to_string(clientId), [this, clientId]() {
+    if (!IsKnownClient(clientId))
+      return;
+
     const std::shared_ptr<CPVRClient> client = GetClient(clientId);
     if (client)
       Timers()->UpdateFromClients({client});
@@ -912,6 +912,9 @@ void CPVRManager::TriggerProvidersUpdate(int clientId)
 {
   m_pendingUpdates->Append("pvr-update-channel-providers-" + std::to_string(clientId),
                            [this, clientId]() {
+                             if (!IsKnownClient(clientId))
+                               return;
+
                              const std::shared_ptr<CPVRClient> client = GetClient(clientId);
                              if (client)
                                Providers()->UpdateFromClients({client});
@@ -927,6 +930,9 @@ void CPVRManager::TriggerProvidersUpdate()
 void CPVRManager::TriggerChannelsUpdate(int clientId)
 {
   m_pendingUpdates->Append("pvr-update-channels-" + std::to_string(clientId), [this, clientId]() {
+    if (!IsKnownClient(clientId))
+      return;
+
     const std::shared_ptr<CPVRClient> client = GetClient(clientId);
     if (client)
       ChannelGroups()->UpdateFromClients({client}, true);
@@ -943,6 +949,9 @@ void CPVRManager::TriggerChannelGroupsUpdate(int clientId)
 {
   m_pendingUpdates->Append("pvr-update-channelgroups-" + std::to_string(clientId),
                            [this, clientId]() {
+                             if (!IsKnownClient(clientId))
+                               return;
+
                              const std::shared_ptr<CPVRClient> client = GetClient(clientId);
                              if (client)
                                ChannelGroups()->UpdateFromClients({client}, false);

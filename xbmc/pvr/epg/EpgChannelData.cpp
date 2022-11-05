@@ -14,8 +14,7 @@
 using namespace PVR;
 
 CPVREpgChannelData::CPVREpgChannelData(int iClientId, int iUniqueClientChannelId)
-: m_iClientId(iClientId),
-  m_iUniqueClientChannelId(iUniqueClientChannelId)
+  : m_iClientId(iClientId), m_iUniqueClientChannelId(iUniqueClientChannelId)
 {
 }
 
@@ -27,7 +26,8 @@ CPVREpgChannelData::CPVREpgChannelData(const CPVRChannel& channel)
     m_bIsLocked(channel.IsLocked()),
     m_bIsEPGEnabled(channel.EPGEnabled()),
     m_iChannelId(channel.ChannelID()),
-    m_strChannelName(channel.ChannelName())
+    m_strChannelName(channel.ChannelName()),
+    m_strChannelIconPath(channel.IconPath())
 {
 }
 
@@ -94,4 +94,14 @@ const std::string& CPVREpgChannelData::ChannelName() const
 void CPVREpgChannelData::SetChannelName(const std::string& strChannelName)
 {
   m_strChannelName = strChannelName;
+}
+
+const std::string& CPVREpgChannelData::ChannelIconPath() const
+{
+  return m_strChannelIconPath;
+}
+
+void CPVREpgChannelData::SetChannelIconPath(const std::string& strChannelIconPath)
+{
+  m_strChannelIconPath = strChannelIconPath;
 }

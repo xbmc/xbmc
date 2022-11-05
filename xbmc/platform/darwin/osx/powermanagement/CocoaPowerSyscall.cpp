@@ -9,19 +9,20 @@
 // defined in PlatformDefs.h but I don't want to include that here
 typedef unsigned char BYTE;
 
-#include "utils/log.h"
-#include "utils/SystemInfo.h"
-#include "Application.h"
-#include "powermanagement/PowerManager.h"
-#include "ServiceBroker.h"
 #include "CocoaPowerSyscall.h"
 
-  #include <IOKit/pwr_mgt/IOPMLib.h>
-  #include <IOKit/ps/IOPowerSources.h>
-  #include <IOKit/ps/IOPSKeys.h>
-  #include <ApplicationServices/ApplicationServices.h>
+#include "ServiceBroker.h"
+#include "application/Application.h"
+#include "powermanagement/PowerManager.h"
+#include "utils/SystemInfo.h"
+#include "utils/log.h"
 
 #include "platform/darwin/osx/CocoaInterface.h"
+
+#include <ApplicationServices/ApplicationServices.h>
+#include <IOKit/ps/IOPSKeys.h>
+#include <IOKit/ps/IOPowerSources.h>
+#include <IOKit/pwr_mgt/IOPMLib.h>
 
 IPowerSyscall* CCocoaPowerSyscall::CreateInstance()
 {
@@ -73,7 +74,6 @@ CCocoaPowerSyscall::CCocoaPowerSyscall()
   m_HasBattery = -1;
   m_BatteryPercent = 100;
   m_SentBatteryMessage = false;
-  m_power_source = NULL;
   CreateOSPowerCallBacks();
 }
 

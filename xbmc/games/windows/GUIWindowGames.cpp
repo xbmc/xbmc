@@ -8,22 +8,22 @@
 
 #include "GUIWindowGames.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIPassword.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
+#include "application/Application.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogMediaSource.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "games/addons/GameClient.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/WindowIDs.h"
+#include "input/actions/ActionIDs.h"
 #include "media/MediaLockState.h"
+#include "playlists/PlayListTypes.h"
 #include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -336,5 +336,5 @@ void CGUIWindowGames::OnItemInfo(int itemNumber)
 bool CGUIWindowGames::PlayGame(const CFileItem& item)
 {
   CFileItem itemCopy(item);
-  return g_application.PlayMedia(itemCopy, "", PLAYLIST_NONE);
+  return g_application.PlayMedia(itemCopy, "", PLAYLIST::TYPE_NONE);
 }

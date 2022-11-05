@@ -15,7 +15,11 @@
 #include "windowing/gbm/WinSystemGbmEGLContext.h"
 
 #include <drm_fourcc.h>
+#include <fcntl.h>
 #include <sys/mman.h>
+#include <unistd.h>
+
+#include "PlatformDefs.h"
 
 using namespace KODI::WINDOWING::GBM;
 

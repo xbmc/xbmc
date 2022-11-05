@@ -8,27 +8,28 @@
 
 #include "GUIWindowSlideShow.h"
 
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIDialogPictureInfo.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "URL.h"
+#include "application/Application.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
+#include "application/ApplicationPowerHandling.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUILabelControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/Texture.h"
-#include "guilib/TextureManager.h"
 #include "input/Key.h"
 #include "interfaces/AnnouncementManager.h"
-#include "messaging/ApplicationMessenger.h"
 #include "pictures/GUIViewStatePictures.h"
 #include "pictures/PictureThumbLoader.h"
+#include "playlists/PlayListTypes.h"
 #include "rendering/RenderSystem.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -156,7 +157,7 @@ void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)
 {
   CVariant param;
   param["player"]["speed"] = m_bSlideShow && !m_bPause ? 1 : 0;
-  param["player"]["playerid"] = PLAYLIST_PICTURE;
+  param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay", item, param);
 }
 
@@ -164,14 +165,14 @@ void CGUIWindowSlideShow::AnnouncePlayerPause(const CFileItemPtr& item)
 {
   CVariant param;
   param["player"]["speed"] = 0;
-  param["player"]["playerid"] = PLAYLIST_PICTURE;
+  param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPause", item, param);
 }
 
 void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
 {
   CVariant param;
-  param["player"]["playerid"] = PLAYLIST_PICTURE;
+  param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
   param["end"] = true;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop", item, param);
 }
@@ -179,14 +180,14 @@ void CGUIWindowSlideShow::AnnouncePlayerStop(const CFileItemPtr& item)
 void CGUIWindowSlideShow::AnnouncePlaylistClear()
 {
   CVariant data;
-  data["playlistid"] = PLAYLIST_PICTURE;
+  data["playlistid"] = PLAYLIST::TYPE_PICTURE;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnClear", data);
 }
 
 void CGUIWindowSlideShow::AnnouncePlaylistAdd(const CFileItemPtr& item, int pos)
 {
   CVariant data;
-  data["playlistid"] = PLAYLIST_PICTURE;
+  data["playlistid"] = PLAYLIST::TYPE_PICTURE;
   data["position"] = pos;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Playlist, "OnAdd", item, data);
 }
@@ -197,7 +198,7 @@ void CGUIWindowSlideShow::AnnouncePropertyChanged(const std::string &strProperty
     return;
 
   CVariant data;
-  data["player"]["playerid"] = PLAYLIST_PICTURE;
+  data["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
   data["property"][strProperty] = value;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPropertyChanged",
                                                      data);
@@ -377,8 +378,10 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
 
   // reset the screensaver if we're in a slideshow
   // (unless we are the screensaver!)
-  if (m_bSlideShow && !m_bPause && !g_application.IsInScreenSaver())
-    g_application.ResetScreenSaver();
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+  if (m_bSlideShow && !m_bPause && !appPower->IsInScreenSaver())
+    appPower->ResetScreenSaver();
   int iSlides = m_slides.size();
   if (!iSlides)
     return;
@@ -545,6 +548,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     }
   }
 
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
   // render the next image
   if (m_Image[m_iCurrentPic].DrawNextImage())
   {
@@ -554,8 +559,8 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     }
     else if (m_Image[1 - m_iCurrentPic].IsLoaded())
     {
-      if (g_application.GetAppPlayer().IsPlayingVideo())
-        g_application.GetAppPlayer().ClosePlayer();
+      if (appPlayer->IsPlayingVideo())
+        appPlayer->ClosePlayer();
       m_bPlayingVideo = false;
       m_iVideoSlide = -1;
 
@@ -631,8 +636,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
     CServiceBroker::GetGUI()->GetInfoManager().GetInfoProviders().GetPicturesInfoProvider().SetCurrentSlide(m_slides.at(m_iCurrentSlide).get());
 
   RenderPause();
-  if (m_slides.at(m_iCurrentSlide)->IsVideo() &&
-      g_application.GetAppPlayer().IsRenderingGuiLayer())
+  if (m_slides.at(m_iCurrentSlide)->IsVideo() && appPlayer && appPlayer->IsRenderingGuiLayer())
   {
     MarkDirtyRegion();
   }
@@ -653,7 +657,10 @@ void CGUIWindowSlideShow::Render()
     gfxCtx.SetViewWindow(0, 0, m_coordsRes.iWidth, m_coordsRes.iHeight);
     gfxCtx.SetRenderingResolution(gfxCtx.GetVideoResolution(), false);
 
-    if (g_application.GetAppPlayer().IsRenderingVideoLayer())
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+    if (appPlayer->IsRenderingVideoLayer())
     {
       const CRect old = gfxCtx.GetScissors();
       CRect region = GetRenderRegion();
@@ -662,10 +669,10 @@ void CGUIWindowSlideShow::Render()
       gfxCtx.Clear(0);
       gfxCtx.SetScissors(old);
     }
-    else
+    else if (appPlayer)
     {
       const UTILS::COLOR::Color alpha = gfxCtx.MergeAlpha(0xff000000) >> 24;
-      g_application.GetAppPlayer().Render(false, alpha);
+      appPlayer->Render(false, alpha);
     }
 
     gfxCtx.SetRenderingResolution(m_coordsRes, m_needsScaling);
@@ -686,7 +693,11 @@ void CGUIWindowSlideShow::Render()
 void CGUIWindowSlideShow::RenderEx()
 {
   if (m_slides.at(m_iCurrentSlide)->IsVideo())
-    g_application.GetAppPlayer().Render(false, 255, false);
+  {
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    appPlayer->Render(false, 255, false);
+  }
 
   CGUIWindow::RenderEx();
 }
@@ -797,12 +808,16 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     }
     break;
   case ACTION_STOP:
+  {
     if (m_slides.size())
       AnnouncePlayerStop(m_slides.at(m_iCurrentSlide));
-    if (g_application.GetAppPlayer().IsPlayingVideo())
-      g_application.GetAppPlayer().ClosePlayer();
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (appPlayer->IsPlayingVideo())
+      appPlayer->ClosePlayer();
     Close();
     break;
+  }
 
   case ACTION_NEXT_PICTURE:
       ShowNext();
@@ -1247,7 +1262,9 @@ void CGUIWindowSlideShow::RunSlideShow(const std::string &strPath,
                                        const std::string &strExtensions)
 {
   // stop any video
-  if (g_application.GetAppPlayer().IsPlayingVideo())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->IsPlayingVideo())
     g_application.StopPlaying();
 
   AddFromPath(strPath, bRecursive, method, order, sortAttributes, strExtensions);
@@ -1273,7 +1290,7 @@ void CGUIWindowSlideShow::RunSlideShow(const std::string &strPath,
   {
     CVariant param;
     param["player"]["speed"] = 0;
-    param["player"]["playerid"] = PLAYLIST_PICTURE;
+    param["player"]["playerid"] = PLAYLIST::TYPE_PICTURE;
     CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPlay",
                                                        GetCurrentSlide(), param);
   }
@@ -1326,7 +1343,7 @@ void CGUIWindowSlideShow::GetCheckedSize(float width, float height, int &maxWidt
 std::string CGUIWindowSlideShow::GetPicturePath(CFileItem *item)
 {
   bool isVideo = item->IsVideo();
-  std::string picturePath = item->GetPath();
+  std::string picturePath = item->GetDynPath();
   if (isVideo)
   {
     picturePath = item->GetArt("thumb");

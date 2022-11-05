@@ -32,13 +32,6 @@ namespace XFILE
 
 class IFile;
 
-class IFileCallback
-{
-public:
-  virtual bool OnFileCallback(void* pContext, int ipercent, float avgSpeed) = 0;
-  virtual ~IFileCallback() = default;
-};
-
 class CFileStreamBuffer;
 
 class CFile

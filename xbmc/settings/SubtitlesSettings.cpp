@@ -8,15 +8,12 @@
 
 #include "SubtitlesSettings.h"
 
-#include "FileItem.h"
-#include "filesystem/Directory.h"
-#include "filesystem/File.h"
 #include "guilib/GUIFontManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
+#include "utils/FileUtils.h"
 #include "utils/FontUtils.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 
 using namespace KODI;
@@ -168,14 +165,6 @@ float CSubtitlesSettings::GetVerticalMarginPerc()
 {
   // We return the vertical margin as percentage
   // to fit the current screen resolution
-  const Align subAlign{GetAlignment()};
-
-  // If the user has set the alignment type to keep the subtitle text
-  // inside the black bars, we override user vertical margin
-  // to try avoid go off the black bars
-  if (subAlign == Align::BOTTOM_OUTSIDE || subAlign == Align::TOP_OUTSIDE)
-    return MARGIN_VERTICAL_BLACKBARS;
-
   return static_cast<float>(m_settings->GetNumber(CSettings::SETTING_SUBTITLES_MARGINVERTICAL));
 }
 
@@ -187,7 +176,7 @@ void CSubtitlesSettings::SettingOptionsSubtitleFontsFiller(const SettingConstPtr
   // From application system fonts folder we add the default font only
   std::string defaultFontPath =
       URIUtils::AddFileToFolder("special://xbmc/media/Fonts/", UTILS::FONT::FONT_DEFAULT_FILENAME);
-  if (XFILE::CFile::Exists(defaultFontPath))
+  if (CFileUtils::Exists(defaultFontPath))
   {
     std::string familyName = UTILS::FONT::GetFontFamily(defaultFontPath);
     if (!familyName.empty())

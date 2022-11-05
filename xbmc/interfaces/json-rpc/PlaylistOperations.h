@@ -8,11 +8,16 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "FileItemHandler.h"
 #include "JSONRPC.h"
 
+class CFileItemList;
 class CVariant;
+
+namespace PLAYLIST
+{
+using Id = int;
+} // namespace PLAYLIST
 
 namespace JSONRPC
 {
@@ -29,9 +34,13 @@ namespace JSONRPC
     static JSONRPC_STATUS Clear(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Swap(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
   private:
-    static int GetPlaylist(const CVariant &playlist);
-    static JSONRPC_STATUS GetPropertyValue(int playlist, const std::string &property, CVariant &result);
-    static bool CheckMediaParameter(int playlist, const CVariant &itemObject);
-    static bool HandleItemsParameter(int playlistid, const CVariant &itemParam, CFileItemList &items);
+    static PLAYLIST::Id GetPlaylist(const CVariant& playlist);
+    static JSONRPC_STATUS GetPropertyValue(PLAYLIST::Id playlistId,
+                                           const std::string& property,
+                                           CVariant& result);
+    static bool CheckMediaParameter(PLAYLIST::Id playlistId, const CVariant& itemObject);
+    static bool HandleItemsParameter(PLAYLIST::Id playlistId,
+                                     const CVariant& itemParam,
+                                     CFileItemList& items);
   };
 }

@@ -8,9 +8,9 @@
 
 #include "LibInputKeyboard.h"
 
-#include "AppInboundProtocol.h"
 #include "LibInputSettings.h"
 #include "ServiceBroker.h"
+#include "application/AppInboundProtocol.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"

@@ -424,3 +424,51 @@ void CResolutionUtils::PrintWhitelist()
     CLog::Log(LOGDEBUG, "[WHITELIST] whitelisted modes:{}", modeStr);
   }
 }
+
+void CResolutionUtils::GetMaxAllowedResolution(unsigned int& width, unsigned int& height)
+{
+  if (!CServiceBroker::GetWinSystem()->GetGfxContext().IsFullScreenRoot())
+    return;
+
+  std::vector<RESOLUTION_INFO> resList;
+
+  auto indexList = CServiceBroker::GetSettingsComponent()->GetSettings()->GetList(
+      CSettings::SETTING_VIDEOSCREEN_WHITELIST);
+
+  unsigned int maxWidth{0};
+  unsigned int maxHeight{0};
+
+  if (!indexList.empty())
+  {
+    for (const auto& mode : indexList)
+    {
+      RESOLUTION res = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
+      RESOLUTION_INFO resInfo{CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res)};
+      if (static_cast<unsigned int>(resInfo.iWidth) > maxWidth &&
+          static_cast<unsigned int>(resInfo.iHeight) > maxHeight)
+      {
+        maxWidth = static_cast<unsigned int>(resInfo.iWidth);
+        maxHeight = static_cast<unsigned int>(resInfo.iHeight);
+      }
+    }
+  }
+  else
+  {
+    std::vector<RESOLUTION> resList;
+    CServiceBroker::GetWinSystem()->GetGfxContext().GetAllowedResolutions(resList);
+
+    for (const auto& res : resList)
+    {
+      RESOLUTION_INFO resInfo{CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res)};
+      if (static_cast<unsigned int>(resInfo.iWidth) > maxWidth &&
+          static_cast<unsigned int>(resInfo.iHeight) > maxHeight)
+      {
+        maxWidth = static_cast<unsigned int>(resInfo.iWidth);
+        maxHeight = static_cast<unsigned int>(resInfo.iHeight);
+      }
+    }
+  }
+
+  width = maxWidth;
+  height = maxHeight;
+}

@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "addons/AddonManager.h"
 #include "addons/VFSEntry.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "guilib/GUIComponent.h"
@@ -439,7 +438,7 @@ void CGUIDialogNetworkSetup::UpdateAvailableProtocols()
   m_protocols.emplace_back(Protocol{true, true, true, false, true, 0, "smb", 20171, ""});
 #endif
   // protocols from vfs addon next
-  if (CServiceBroker::IsBinaryAddonCacheUp())
+  if (CServiceBroker::IsAddonInterfaceUp())
   {
     for (const auto& addon : CServiceBroker::GetVFSAddonCache().GetAddonInstances())
     {

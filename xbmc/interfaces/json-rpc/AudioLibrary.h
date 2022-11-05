@@ -11,10 +11,14 @@
 #include "FileItemHandler.h"
 #include "JSONRPC.h"
 
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
 
+class CAlbum;
+class CFileitem;
+class CFileitemList;
 class CMusicDatabase;
 class CVariant;
 
@@ -49,7 +53,10 @@ namespace JSONRPC
     static JSONRPC_STATUS Export(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Clean(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
-    static bool FillFileItem(const std::string &strFilename, CFileItemPtr &item, const CVariant &parameterObject = CVariant(CVariant::VariantTypeArray));
+    static bool FillFileItem(
+        const std::string& strFilename,
+        std::shared_ptr<CFileItem>& item,
+        const CVariant& parameterObject = CVariant(CVariant::VariantTypeArray));
     static bool FillFileItemList(const CVariant &parameterObject, CFileItemList &list);
 
     static JSONRPC_STATUS GetAdditionalDetails(const CVariant &parameterObject, CFileItemList &items);
@@ -64,8 +71,11 @@ namespace JSONRPC
                                                    CMusicDatabase& musicdatabase);
 
   private:
-    static void FillAlbumItem(const CAlbum &album, const std::string &path, CFileItemPtr &item);
-    static void FillItemArtistIDs(const std::vector<int>& artistids, CFileItemPtr& item);
+    static void FillAlbumItem(const CAlbum& album,
+                              const std::string& path,
+                              std::shared_ptr<CFileItem>& item);
+    static void FillItemArtistIDs(const std::vector<int>& artistids,
+                                  std::shared_ptr<CFileItem>& item);
 
     static bool CheckForAdditionalProperties(const CVariant &properties, const std::set<std::string> &checkProperties, std::set<std::string> &foundProperties);
   };

@@ -306,16 +306,6 @@ CUPnPDirectory::GetDirectory(const CURL& url, CFileItemList &items)
                 continue;
             }
 
-            // never show empty containers in media views
-            if((*entry)->IsContainer()) {
-                if( (audio || video || image)
-                 && ((PLT_MediaContainer*)(*entry))->m_ChildrenCount == 0) {
-                    ++entry;
-                    continue;
-                }
-            }
-
-
             // keep count of classes
             classes[(*entry)->m_ObjectClass.type]++;
             CFileItemPtr pItem = BuildObject(*entry, UPnPClient);

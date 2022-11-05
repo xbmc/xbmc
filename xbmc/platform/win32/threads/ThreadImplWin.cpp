@@ -8,6 +8,7 @@
 
 #include "ThreadImplWin.h"
 
+#include "utils/Map.h"
 #include "utils/log.h"
 
 #include "platform/win32/WIN32Util.h"
@@ -21,26 +22,29 @@
 namespace
 {
 
-constexpr std::array<ThreadPriorityStruct, 5> nativeThreadPriorityMap = {{
+constexpr auto nativeThreadPriorityMap = make_map<ThreadPriority, int>({
     {ThreadPriority::LOWEST, THREAD_PRIORITY_IDLE},
     {ThreadPriority::BELOW_NORMAL, THREAD_PRIORITY_BELOW_NORMAL},
     {ThreadPriority::NORMAL, THREAD_PRIORITY_NORMAL},
     {ThreadPriority::ABOVE_NORMAL, THREAD_PRIORITY_ABOVE_NORMAL},
     {ThreadPriority::HIGHEST, THREAD_PRIORITY_HIGHEST},
-}};
+});
 
-//! @todo: c++20 has constexpr std::find_if
-int ThreadPriorityToNativePriority(const ThreadPriority& priority)
+static_assert(static_cast<size_t>(ThreadPriority::PRIORITY_COUNT) == nativeThreadPriorityMap.size(),
+              "nativeThreadPriorityMap doesn't match the size of ThreadPriority, did you forget to "
+              "add/remove a mapping?");
+
+constexpr int ThreadPriorityToNativePriority(const ThreadPriority& priority)
 {
-  auto it = std::find_if(nativeThreadPriorityMap.cbegin(), nativeThreadPriorityMap.cend(),
-                         [&priority](const auto& map) { return map.priority == priority; });
-
+  const auto it = nativeThreadPriorityMap.find(priority);
   if (it != nativeThreadPriorityMap.cend())
   {
-    return it->nativePriority;
+    return it->second;
   }
-
-  throw std::runtime_error("priority not implemented");
+  else
+  {
+    throw std::range_error("Priority not found");
+  }
 }
 
 } // namespace

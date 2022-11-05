@@ -201,22 +201,36 @@ namespace XBMCAddon
 
     // ============================================================
     // ============================================================
-    ControlButton::ControlButton(long x, long y, long width, long height, const String& label,
-                                 const char* focusTexture, const char* noFocusTexture,
-                                 long _textOffsetX, long _textOffsetY,
-                                 long alignment, const char* font, const char* _textColor,
-                                 const char* _disabledColor, long angle,
-                                 const char* _shadowColor, const char* _focusedColor) :
-      textOffsetX(_textOffsetX), textOffsetY(_textOffsetY),
-      align(alignment), strFont("font13"), textColor(0xffffffff), disabledColor(0x60ffffff),
-      iAngle(angle), focusedColor(0xffffffff)
+    ControlButton::ControlButton(long x,
+                                 long y,
+                                 long width,
+                                 long height,
+                                 const String& label,
+                                 const char* focusTexture,
+                                 const char* noFocusTexture,
+                                 long _textOffsetX,
+                                 long _textOffsetY,
+                                 long alignment,
+                                 const char* font,
+                                 const char* _textColor,
+                                 const char* _disabledColor,
+                                 long angle,
+                                 const char* _shadowColor,
+                                 const char* _focusedColor)
+      : textOffsetX(_textOffsetX),
+        textOffsetY(_textOffsetY),
+        align(alignment),
+        strFont("font13"),
+        textColor(0xffffffff),
+        disabledColor(0x60ffffff),
+        iAngle(angle),
+        focusedColor(0xffffffff),
+        strText(label)
     {
       dwPosX = x;
       dwPosY = y;
       dwWidth = width;
       dwHeight = height;
-
-      strText = label;
 
       // if texture is supplied use it, else get default ones
       strTextureFocus = focusTexture ? focusTexture :

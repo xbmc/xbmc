@@ -11,19 +11,17 @@
 #include "ServiceBroker.h"
 #include "TextureDatabase.h"
 #include "ThumbLoader.h"
-#include "UPnP.h"
 #include "UPnPServer.h"
 #include "URL.h"
 #include "Util.h"
-#include "filesystem/File.h"
 #include "filesystem/MusicDatabaseDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
-#include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "settings/lib/Setting.h"
 #include "utils/ContentUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
@@ -32,6 +30,8 @@
 #include "video/VideoInfoTag.h"
 
 #include <algorithm>
+#include <array>
+#include <string_view>
 
 #include <Platinum/Source/Platinum/Platinum.h>
 
@@ -40,6 +40,24 @@ using namespace XFILE;
 
 namespace UPNP
 {
+
+// the original version of content type here,eg: text/srt,which was defined 10 years ago (year 2013,commit 56519bec #L1158-L1161 )
+// is not a standard mime type. according to the specs of UPNP
+// http://upnp.org/specs/av/UPnP-av-ConnectionManager-v3-Service.pdf chapter "A.1.1 ProtocolInfo Definition"
+// "The <contentFormat> part for HTTP GET is described by a MIME type RFC https://www.ietf.org/rfc/rfc1341.txt"
+// all the pre-defined "text/*" MIME by IANA is here https://www.iana.org/assignments/media-types/media-types.xhtml#text
+// there is not any subtitle MIME for now (year 2022), we used to use text/srt|ssa|sub|idx, but,
+// kodi support SUP subtitle now, and SUP subtitle is not really a text(see below), to keep it
+// compatible, we suggest only to match the extension
+//
+// main purpose of this array is to share supported real subtitle formats when kodi act as a UPNP
+// server or UPNP/DLNA media render
+constexpr std::array<std::string_view, 9> SupportedSubFormats = {
+    "txt", "srt", "ssa", "ass", "sub", "smi", "vtt",
+    // "sup" subtitle is not a real TEXT,
+    // and there is no real STD subtitle RFC of DLNA,
+    // so we only match the extension of the "fake" content type
+    "sup", "idx"};
 
 /*----------------------------------------------------------------------
 |  GetClientQuirks
@@ -336,7 +354,8 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
     for (unsigned int index = 0; index < tag.m_genre.size(); index++)
       object.m_Affiliation.genres.Add(tag.m_genre.at(index).c_str());
 
-    for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
+    for (CVideoInfoTag::iCast it = tag.m_cast.begin(); it != tag.m_cast.end(); ++it)
+    {
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
     }
 
@@ -608,19 +627,22 @@ BuildObject(CFileItem&                    item,
         thumb = ContentUtils::GetPreferredArtImage(item);
 
         if (!thumb.empty()) {
-            PLT_AlbumArtInfo art;
-            art.uri = upnp_server->BuildSafeResourceUri(
-                rooturi,
-                (*ips.GetFirstItem()).ToString(),
-                CTextureUtils::GetWrappedImageURL(thumb).c_str());
-
-            // Set DLNA profileID by extension, defaulting to JPEG.
-            if (URIUtils::HasExtension(thumb, ".png")) {
-                art.dlna_profile = "PNG_TN";
-            } else {
-                art.dlna_profile = "JPEG_TN";
-            }
-            object->m_ExtraInfo.album_arts.Add(art);
+          PLT_AlbumArtInfo art;
+          // Set DLNA profileID by extension, defaulting to JPEG.
+          if (URIUtils::HasExtension(thumb, ".png"))
+          {
+            art.dlna_profile = "PNG_TN";
+          }
+          else
+          {
+            art.dlna_profile = "JPEG_TN";
+          }
+          // append /thumb to the safe resource uri to avoid clients flagging the item with
+          // the incorrect mimetype (derived from the file extension)
+          art.uri = upnp_server->BuildSafeResourceUri(
+              rooturi, (*ips.GetFirstItem()).ToString(),
+              std::string(CTextureUtils::GetWrappedImageURL(thumb) + "/thumb").c_str());
+          object->m_ExtraInfo.album_arts.Add(art);
         }
 
         for (const auto& itArtwork : item.GetArt())
@@ -658,10 +680,12 @@ BuildObject(CFileItem&                    item,
             std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
             /* Hardcoded check for extension is not the best way, but it can't be allowed to pass all
                subtitle extension (ex. rar or zip). There are the most popular extensions support by UPnP devices.*/
-            if (ext == "txt" || ext == "srt" || ext == "ssa" || ext == "ass" || ext == "sub" ||
-                ext == "smi" || ext == "vtt" || ext == "sup")
+            for (std::string_view type : SupportedSubFormats)
             {
+              if (type == ext)
+              {
                 subtitles.push_back(filenames[i]);
+              }
             }
         }
 
@@ -945,8 +969,8 @@ PopulateTagFromObject(CVideoInfoTag&         tag,
     return NPT_SUCCESS;
 }
 
-CFileItemPtr BuildObject(PLT_MediaObject* entry,
-                         UPnPService      upnp_service /* = UPnPServiceNone */)
+std::shared_ptr<CFileItem> BuildObject(PLT_MediaObject* entry,
+                                       UPnPService upnp_service /* = UPnPServiceNone */)
 {
   NPT_String ObjectClass = entry->m_ObjectClass.type.ToLowercase();
 
@@ -1014,8 +1038,8 @@ CFileItemPtr BuildObject(PLT_MediaObject* entry,
         UPNP::PopulateTagFromObject(*pItem->GetMusicInfoTag(), *entry, res, upnp_service);
 
     } else if(image) {
-        //CPictureInfoTag* tag = pItem->GetPictureInfoTag();
-
+      //! @todo fill pictureinfotag?
+      GetResource(entry, *pItem);
     }
   }
 
@@ -1137,34 +1161,41 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
     if (resource.m_ProtocolInfo.GetContentType().Compare("application/octet-stream") != 0) {
       item.SetMimeType((const char*)resource.m_ProtocolInfo.GetContentType());
     }
+
+    // if this is an image fill the thumb of the item
+    if (StringUtils::StartsWithNoCase(resource.m_ProtocolInfo.GetContentType(), "image"))
+    {
+      item.SetArt("thumb", std::string(resource.m_Uri));
+    }
   } else {
     logger->error("invalid protocol info '{}'", (const char*)(resource.m_ProtocolInfo.ToString()));
   }
 
   // look for subtitles
-  unsigned subs = 0;
+  unsigned subIdx = 0;
+
   for(unsigned r = 0; r < entry->m_Resources.GetItemCount(); r++)
   {
     const PLT_MediaItemResource& res  = entry->m_Resources[r];
     const PLT_ProtocolInfo&      info = res.m_ProtocolInfo;
-    static const char* allowed[] = { "text/srt"
-      , "text/ssa"
-      , "text/sub"
-      , "text/idx" };
-    for(const char* const type : allowed)
+
+    for (std::string_view type : SupportedSubFormats)
     {
-      if(info.Match(PLT_ProtocolInfo("*", "*", type, "*")))
+      if (type == info.GetContentType().Split("/").GetLastItem()->GetChars())
       {
-        std::string prop = StringUtils::Format("subtitle:{}", ++subs);
+        ++subIdx;
+        logger->info("adding subtitle: #{}, type '{}', URI '{}'", subIdx, type,
+                     res.m_Uri.GetChars());
+
+        std::string prop = StringUtils::Format("subtitle:{}", subIdx);
         item.SetProperty(prop, (const char*)res.m_Uri);
-        break;
       }
     }
   }
   return true;
 }
 
-CFileItemPtr GetFileItem(const NPT_String& uri, const NPT_String& meta)
+std::shared_ptr<CFileItem> GetFileItem(const NPT_String& uri, const NPT_String& meta)
 {
     PLT_MediaObjectListReference list;
     PLT_MediaObject*             object = NULL;

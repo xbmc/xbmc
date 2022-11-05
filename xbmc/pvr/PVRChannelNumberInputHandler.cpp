@@ -18,20 +18,20 @@
 #include <mutex>
 #include <string>
 
+using namespace PVR;
 using namespace std::chrono_literals;
 
-namespace PVR
-{
-
 CPVRChannelNumberInputHandler::CPVRChannelNumberInputHandler()
-: CPVRChannelNumberInputHandler(CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRNumericChannelSwitchTimeout, CHANNEL_NUMBER_INPUT_MAX_DIGITS)
+  : CPVRChannelNumberInputHandler(CServiceBroker::GetSettingsComponent()
+                                      ->GetAdvancedSettings()
+                                      ->m_iPVRNumericChannelSwitchTimeout,
+                                  CHANNEL_NUMBER_INPUT_MAX_DIGITS)
 {
 }
 
-CPVRChannelNumberInputHandler::CPVRChannelNumberInputHandler(int iDelay, int iMaxDigits /* = CHANNEL_NUMBER_INPUT_MAX_DIGITS */)
-: m_iDelay(iDelay),
-  m_iMaxDigits(iMaxDigits),
-  m_timer(this)
+CPVRChannelNumberInputHandler::CPVRChannelNumberInputHandler(
+    int iDelay, int iMaxDigits /* = CHANNEL_NUMBER_INPUT_MAX_DIGITS */)
+  : m_iDelay(iDelay), m_iMaxDigits(iMaxDigits), m_timer(this)
 {
 }
 
@@ -40,7 +40,7 @@ void CPVRChannelNumberInputHandler::OnTimeout()
   if (m_inputBuffer.empty())
   {
     std::unique_lock<CCriticalSection> lock(m_mutex);
-    m_label.erase();
+    SetLabel("");
   }
   else
   {
@@ -54,7 +54,7 @@ void CPVRChannelNumberInputHandler::OnTimeout()
 
     // ... display the label for another .5 secs if we stopped the timer before regular timeout.
     if (m_timer.IsRunning())
-      m_label.erase();
+      SetLabel("");
     else
       m_timer.Start(500ms);
   }
@@ -62,7 +62,7 @@ void CPVRChannelNumberInputHandler::OnTimeout()
 
 void CPVRChannelNumberInputHandler::ExecuteAction()
 {
-  m_timer.Stop();
+  m_timer.Stop(true /* wait until worker thread ended */);
   OnTimeout();
 }
 
@@ -99,7 +99,7 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(char cCharacter
   if (m_inputBuffer.size() == static_cast<size_t>(m_iMaxDigits))
   {
     m_inputBuffer.erase(m_inputBuffer.begin());
-    m_label = m_inputBuffer;
+    SetLabel(m_inputBuffer);
   }
   else if (m_inputBuffer.empty())
   {
@@ -110,7 +110,7 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(char cCharacter
   }
 
   m_inputBuffer.append(&cCharacter, 1);
-  m_label = m_inputBuffer;
+  SetLabel(m_inputBuffer);
 
   for (auto it = m_sortedChannelNumbers.begin(); it != m_sortedChannelNumbers.end();)
   {
@@ -127,7 +127,7 @@ void CPVRChannelNumberInputHandler::AppendChannelNumberCharacter(char cCharacter
 
       // no alternatives; complete the number and fire immediately
       m_inputBuffer = channel;
-      m_label = m_inputBuffer;
+      SetLabel(m_inputBuffer);
       ExecuteAction();
       return;
     }
@@ -177,4 +177,14 @@ std::string CPVRChannelNumberInputHandler::GetChannelNumberLabel() const
   return m_label;
 }
 
-} // namespace PVR
+void CPVRChannelNumberInputHandler::SetLabel(const std::string& label)
+{
+  std::unique_lock<CCriticalSection> lock(m_mutex);
+  if (label != m_label)
+  {
+    m_label = label;
+
+    // inform subscribers
+    m_events.Publish(PVRChannelNumberInputChangedEvent(m_label));
+  }
+}

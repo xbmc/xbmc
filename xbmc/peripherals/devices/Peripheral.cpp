@@ -9,7 +9,7 @@
 #include "Peripheral.h"
 
 #include "Util.h"
-#include "filesystem/File.h"
+#include "XBDateTime.h"
 #include "games/controllers/Controller.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
@@ -20,6 +20,7 @@
 #include "peripherals/bus/PeripheralBus.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
 #include "settings/lib/Setting.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
@@ -160,7 +161,7 @@ bool CPeripheral::Initialise(void)
         "special://profile/peripheral_data/{}_{}_{}.xml",
         PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId, m_strProductId);
 
-    if (!XFILE::CFile::Exists(m_strSettingsFile))
+    if (!CFileUtils::Exists(m_strSettingsFile))
       m_strSettingsFile = StringUtils::Format(
           "special://profile/peripheral_data/{}_{}_{}_{}.xml",
           PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId, m_strProductId,
@@ -201,6 +202,7 @@ bool CPeripheral::IsMultiFunctional(void) const
 std::vector<std::shared_ptr<CSetting>> CPeripheral::GetSettings(void) const
 {
   std::vector<PeripheralDeviceSetting> tmpSettings;
+  tmpSettings.reserve(m_settings.size());
   for (const auto& it : m_settings)
     tmpSettings.push_back(it.second);
   sort(tmpSettings.begin(), tmpSettings.end(), SortBySettingsOrder());
@@ -710,4 +712,9 @@ bool CPeripheral::operator==(const PeripheralScanResult& right) const
 bool CPeripheral::operator!=(const PeripheralScanResult& right) const
 {
   return !(*this == right);
+}
+
+CDateTime CPeripheral::LastActive()
+{
+  return CDateTime();
 }

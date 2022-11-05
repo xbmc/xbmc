@@ -8,10 +8,10 @@
 
 #pragma once
 
-#include "addons/IAddon.h"
 #include "settings/lib/ISettingCallback.h"
 
-#include <functional>
+#include <map>
+#include <memory>
 #include <string>
 
 namespace ADDON
@@ -27,6 +27,14 @@ enum class AddonRepoUpdateMode
   ANY_REPOSITORY = 1
 };
 
+enum class AddonType;
+
+class CAddonInfo;
+using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
+
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
+
 class CAddonSystemSettings : public ISettingCallback
 {
 public:
@@ -34,8 +42,8 @@ public:
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
-  bool GetActive(const TYPE& type, AddonPtr& addon);
-  bool SetActive(const TYPE& type, const std::string& addonID);
+  bool GetActive(AddonType type, AddonPtr& addon);
+  bool SetActive(AddonType type, const std::string& addonID);
   bool IsActive(const IAddon& addon);
 
   /*!
@@ -65,6 +73,6 @@ private:
   CAddonSystemSettings& operator=(const CAddonSystemSettings&) = delete;
   ~CAddonSystemSettings() override = default;
 
-  const std::map<ADDON::TYPE, std::string> m_activeSettings;
+  const std::map<AddonType, std::string> m_activeSettings;
 };
 };

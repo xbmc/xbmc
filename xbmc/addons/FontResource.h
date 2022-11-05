@@ -17,7 +17,7 @@ namespace ADDON
 class CFontResource : public CResource
 {
 public:
-  explicit CFontResource(const AddonInfoPtr& addonInfo) : CResource(addonInfo, ADDON_RESOURCE_FONT) {}
+  explicit CFontResource(const AddonInfoPtr& addonInfo);
 
   //! \brief Check whether file is allowed or not (no filters here).
   bool IsAllowed(const std::string& file) const override { return true; }

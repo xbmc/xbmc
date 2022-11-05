@@ -8,11 +8,14 @@
 
 #include "ApplicationPlayerCallback.h"
 
-#include "ApplicationPlayer.h"
-#include "ApplicationStackHelper.h"
+#include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "PlayListPlayer.h"
 #include "ServiceBroker.h"
+#include "URL.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
+#include "application/ApplicationStackHelper.h"
 #include "cores/DataCacheCore.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
@@ -32,12 +35,8 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 
-CApplicationPlayerCallback::CApplicationPlayerCallback(CApplicationPlayer& appPlayer,
-                                                       CApplicationStackHelper& stackHelper)
-  : m_appPlayer(appPlayer),
-    m_stackHelper(stackHelper),
-    m_itemCurrentFile(new CFileItem),
-    m_playerEvent(true, true)
+CApplicationPlayerCallback::CApplicationPlayerCallback()
+  : m_itemCurrentFile(new CFileItem), m_playerEvent(true, true)
 {
 }
 
@@ -45,7 +44,7 @@ void CApplicationPlayerCallback::OnPlayBackEnded()
 {
   CLog::LogF(LOGDEBUG, "CApplicationPlayerCallback::OnPlayBackEnded");
 
-  CServiceBroker::GetPVRManager().OnPlaybackEnded(m_itemCurrentFile);
+  CServiceBroker::GetPVRManager().OnPlaybackEnded(*m_itemCurrentFile);
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = true;
@@ -70,11 +69,15 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   if (file.GetProperty("get_stream_details_from_player").asBoolean() ||
       (hasNoStreamDetails && isBlu_dvd_image_or_stream))
   {
-    m_appPlayer.SetUpdateStreamDetails();
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    appPlayer->SetUpdateStreamDetails();
   }
 
-  if (m_stackHelper.IsPlayingISOStack() || m_stackHelper.IsPlayingRegularStack())
-    m_itemCurrentFile.reset(new CFileItem(*m_stackHelper.GetRegisteredStack(file)));
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
+  if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
+    m_itemCurrentFile.reset(new CFileItem(*stackHelper->GetRegisteredStack(file)));
   else
     m_itemCurrentFile.reset(new CFileItem(file));
 
@@ -87,8 +90,8 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
     CServiceBroker::GetJobManager()->PauseJobs();
   }
 
-  CServiceBroker::GetPVRManager().OnPlaybackStarted(m_itemCurrentFile);
-  m_stackHelper.OnPlayBackStarted(file);
+  CServiceBroker::GetPVRManager().OnPlaybackStarted(*m_itemCurrentFile);
+  stackHelper->OnPlayBackStarted(file);
 
   m_playerEvent.Reset();
 
@@ -99,7 +102,10 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
 void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
                                                    const CBookmark& bookmarkParam)
 {
-  std::unique_lock<CCriticalSection> lock(m_stackHelper.m_critSection);
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
+
+  std::unique_lock<CCriticalSection> lock(stackHelper->m_critSection);
 
   CFileItem fileItem(file);
   CBookmark bookmark = bookmarkParam;
@@ -111,16 +117,16 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   if (bookmark.timeInSeconds == 0.0)
     return;
 
-  if (m_stackHelper.GetRegisteredStack(fileItem) != nullptr &&
-      m_stackHelper.GetRegisteredStackTotalTimeMs(fileItem) > 0)
+  if (stackHelper->GetRegisteredStack(fileItem) != nullptr &&
+      stackHelper->GetRegisteredStackTotalTimeMs(fileItem) > 0)
   {
     // regular stack case: we have to save the bookmark on the stack
-    fileItem = *m_stackHelper.GetRegisteredStack(file);
+    fileItem = *stackHelper->GetRegisteredStack(file);
     // the bookmark coming from the player is only relative to the current part, thus needs to be corrected with these attributes (start time will be 0 for non-stackparts)
-    bookmark.timeInSeconds += m_stackHelper.GetRegisteredStackPartStartTimeMs(file) / 1000.0;
-    if (m_stackHelper.GetRegisteredStackTotalTimeMs(file) > 0)
-      bookmark.totalTimeInSeconds = m_stackHelper.GetRegisteredStackTotalTimeMs(file) / 1000.0;
-    bookmark.partNumber = m_stackHelper.GetRegisteredStackPartNumber(file);
+    bookmark.timeInSeconds += stackHelper->GetRegisteredStackPartStartTimeMs(file) / 1000.0;
+    if (stackHelper->GetRegisteredStackTotalTimeMs(file) > 0)
+      bookmark.totalTimeInSeconds = stackHelper->GetRegisteredStackTotalTimeMs(file) / 1000.0;
+    bookmark.partNumber = stackHelper->GetRegisteredStackPartNumber(file);
   }
 
   percent = bookmark.timeInSeconds / bookmark.totalTimeInSeconds * 100;
@@ -146,7 +152,7 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   else if (bookmark.timeInSeconds > advancedSettings->m_videoIgnoreSecondsAtStart)
   {
     resumeBookmark = bookmark;
-    if (m_stackHelper.GetRegisteredStack(file) != nullptr)
+    if (stackHelper->GetRegisteredStack(file) != nullptr)
     {
       // also update video info tag with total time
       fileItem.GetVideoInfoTag()->m_streamDetails.SetVideoDuration(
@@ -197,7 +203,7 @@ void CApplicationPlayerCallback::OnPlayBackStopped()
 {
   CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStopped");
 
-  CServiceBroker::GetPVRManager().OnPlaybackStopped(m_itemCurrentFile);
+  CServiceBroker::GetPVRManager().OnPlaybackStopped(*m_itemCurrentFile);
 
   CVariant data(CVariant::VariantTypeObject);
   data["end"] = false;
@@ -242,7 +248,9 @@ void CApplicationPlayerCallback::OnPlayBackSeek(int64_t iTime, int64_t seekOffse
   JSONRPC::CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
   JSONRPC::CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);
   param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  param["player"]["speed"] = (int)m_appPlayer.GetPlaySpeed();
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  param["player"]["speed"] = static_cast<int>(appPlayer->GetPlaySpeed());
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnSeek",
                                                      m_itemCurrentFile, param);
 
@@ -311,13 +319,16 @@ void CApplicationPlayerCallback::RequestVideoSettings(const CFileItem& fileItem)
     if (!dbs.GetVideoSettings(fileItem, vs))
       vs = CMediaSettings::GetInstance().GetDefaultVideoSettings();
 
-    m_appPlayer.SetVideoSettings(vs);
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    appPlayer->SetVideoSettings(vs);
 
     dbs.Close();
   }
 }
 
-void CApplicationPlayerCallback::StoreVideoSettings(const CFileItem& fileItem, CVideoSettings vs)
+void CApplicationPlayerCallback::StoreVideoSettings(const CFileItem& fileItem,
+                                                    const CVideoSettings& vs)
 {
   CVideoDatabase dbs;
   if (dbs.Open())

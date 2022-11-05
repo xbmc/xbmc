@@ -1,14 +1,14 @@
 /*!
 
 \page Skin_Timers Skin Timers
-\brief **Programatic time-based objects for Skins**
+\brief **Programatic time-based resources for Skins**
 
 \tableofcontents
 
 --------------------------------------------------------------------------------
 \section Skin_Timers_sect1 Description
 
-Skin timers are skin objects that are dependent on time and can be fully controlled from skins either using
+Skin timers are skin resources that are dependent on time and can be fully controlled from skins either using
 \link page_List_of_built_in_functions **Builtin functions**\endlink or
 \link modules__infolabels_boolean_conditions **Infolabels and Boolean conditions**\endlink. One can see them
 as stopwatches that can be activated and deactivated automatically depending on the value of info expressions or simply activated/deactivated
@@ -49,8 +49,8 @@ The following example illustrates the simplest possible skin timer. This timer i
 
 This timer can be controlled from your skin by executing the \link Builtin_SkinStartTimer `Skin.TimerStart(mymanualtimer)` builtin\endlink or
 \link Builtin_SkinStopTimer `Skin.TimerStop(mymanualtimer)` builtin\endlink. You can define the visibility of skin elements based on the internal
-properties of the timer, such as the fact that the timer is active/running using \link Skin_TimerIsRunning `Skin.TimerIsRunning(mymanualtimer)` builtin\endlink
-or depending on the elapsed time (e.g. 5 seconds) using \link Skin_TimerElapsedSecs Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(mymanualtimer),5)\endlink.
+properties of the timer, such as the fact that the timer is active/running using \link Skin_TimerIsRunning `Skin.TimerIsRunning(mymanualtimer)` info\endlink
+or depending on the elapsed time (e.g. 5 seconds) using the \link Skin_TimerElapsedSecs Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(mymanualtimer),5) info\endlink.
 
 The following timer is a variation of the previous timer but with the added ability of being automatically stopped by the skinning engine after a maximum of elapsed
 5 seconds without having to issue the `Skin.TimerStop(mymanualtimer)` builtin:
@@ -121,6 +121,22 @@ but have the timer resetting to 0 seconds if the user provides some input to Kod
 </timer>
 ~~~~~~~~~~~~~
 
+Finer conditional granularity can also be applied to the `onstop` or `onstart` actions. This allows the skinner to create generic timers which respect a 
+limited set of conditions but trigger different actions depending on a condition applied only to the action.
+The following timer plays the trailer of a given item when the user is in the videos window, the item has a trailer, the player is not playing and the
+global idle time is greater than 3 seconds.
+As you can see, the first action (notification) is triggered for any item. The actual playback, on the other hand, will only play if the focused
+item has the label "MyAwesomeMovie".
+
+~~~~~~~~~~~~~{.xml}
+<timer>
+    <name>trailer_autoplay_idle_timer</name>
+    <start reset="true">System.IdleTime(3) + Window.IsVisible(videos) + !Player.HasMedia + !String.IsEmpty(ListItem.Trailer)</start>
+    <onstart>Notification(skintimer try play, $INFO[ListItem.Trailer], 1000)</onstart>
+    <onstart condition="String.IsEqual(ListItem.Label,MyAwesomeMovie)">PlayMedia($INFO[ListItem.Trailer],1,noresume)</onstart>
+</timer>
+~~~~~~~~~~~~~
+
 --------------------------------------------------------------------------------
 \section Skin_Timers_sect3 Available tags
 
@@ -133,8 +149,11 @@ Skin timers have the following available tags:
 | start         | An info bool expression that the skinning engine should use to automatically start the timer <b>(optional)</b>
 | reset         | An info bool expression that the skinning engine should use to automatically reset the timer <b>(optional)</b>
 | stop          | An info bool expression that the skinning engine should use to automatically stop the timer <b>(optional)</b>
-| onstart       | A builtin function that the skinning engine should execute when the timer is started <b>(optional)</b>
-| onstop        | A builtin function that the skinning engine should execute when the timer is stopped <b>(optional)</b>
+| onstart       | A builtin function that the skinning engine should execute when the timer is started <b>(optional)</b><b>(can be repeated)</b>. Supports an additional `"condition"` as element attribute.
+| onstop        | A builtin function that the skinning engine should execute when the timer is stopped <b>(optional)</b><b>(can be repeated)</b>. Supports an additional `"condition"` as element attribute.
+
+@note If multiple onstart or onstop actions exist, their execution is triggered sequentially.
+@note Both onstart and onstop actions support fine-grained conditional granularity by specifying a "condition" attribute (see the examples above).
 
 --------------------------------------------------------------------------------
 \section Skin_Timers_sect4 See also

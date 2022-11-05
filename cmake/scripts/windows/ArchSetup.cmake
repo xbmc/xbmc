@@ -10,7 +10,7 @@ endif()
 # -------- Host Settings ---------
 
 set(_gentoolset ${CMAKE_GENERATOR_TOOLSET})
-string(REPLACE "host=" "" HOSTTOOLSET ${_gentoolset})
+string(REPLACE "host=" "" HOSTTOOLSET "${_gentoolset}")
 unset(_gentoolset)
 
 # -------- Architecture settings ---------

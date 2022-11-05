@@ -8,16 +8,22 @@
 
 #pragma once
 
-#include "IAddon.h"
-#include "Service.h"
+#include <memory>
 
 namespace ADDON
 {
+enum class AddonType;
+
+class IAddon;
+using AddonPtr = std::shared_ptr<IAddon>;
+
+class CAddonInfo;
+using AddonInfoPtr = std::shared_ptr<CAddonInfo>;
 
 class CAddonBuilder
 {
 public:
-  static AddonPtr Generate(const AddonInfoPtr& info, TYPE type);
+  static AddonPtr Generate(const AddonInfoPtr& info, AddonType type);
 };
 
-};
+} // namespace ADDON

@@ -8,13 +8,14 @@
 
 #pragma once
 
-#include "FileItem.h"
 #include "MediaSource.h"
 #include "guilib/GUIDialog.h"
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "music/Song.h"
 #include "threads/Event.h"
+
+#include <memory>
 
 class CFileItem;
 class CFileItemList;
@@ -61,6 +62,7 @@ protected:
   void OnArtistInfo(int id);
   void OnSetUserrating() const;
   void SetUserrating(int userrating) const;
+  void OnPlayItem(const std::shared_ptr<CFileItem>& item);
 
   CAlbum m_album;
   CArtist m_artist;
@@ -70,9 +72,9 @@ protected:
   bool m_bArtistInfo = false;
   bool m_cancelled = false;
   bool m_scraperAddInfo = false;
-  CFileItemList* m_albumSongs;
-  CFileItemPtr m_item;
-  CFileItemList m_artTypeList;
+  std::unique_ptr<CFileItemList> m_albumSongs;
+  std::shared_ptr<CFileItem> m_item;
+  std::unique_ptr<CFileItemList> m_artTypeList;
   CEvent m_event;
   std::string m_fallbackartpath;
 };

@@ -6,8 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
-#ifndef C_API_ADDONINSTANCE_IMAGE_DECODER_H
-#define C_API_ADDONINSTANCE_IMAGE_DECODER_H
+#ifndef C_API_ADDONINSTANCE_IMAGEDECODER_H
+#define C_API_ADDONINSTANCE_IMAGEDECODER_H
 
 #include "../addon_base.h"
 
@@ -16,7 +16,7 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-  typedef void* KODI_ADDON_IMAGEDECODER_HDL;
+  typedef KODI_ADDON_INSTANCE_HDL KODI_ADDON_IMAGEDECODER_HDL;
 
   //============================================================================
   /// @defgroup cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_FMT enum ADDON_IMG_FMT
@@ -371,21 +371,21 @@ extern "C"
     int width;
     int height;
     float distance;
-    ADDON_IMG_ORIENTATION orientation;
-    ADDON_IMG_COLOR color;
-    ADDON_IMG_METERING_MODE metering_mode;
+    enum ADDON_IMG_ORIENTATION orientation;
+    enum ADDON_IMG_COLOR color;
+    enum ADDON_IMG_METERING_MODE metering_mode;
     float exposure_time;
     float exposure_bias;
-    ADDON_IMG_EXPOSURE_PROGRAM exposure_program;
-    ADDON_IMG_EXPOSURE_MODE exposure_mode;
+    enum ADDON_IMG_EXPOSURE_PROGRAM exposure_program;
+    enum ADDON_IMG_EXPOSURE_MODE exposure_mode;
     time_t time_created;
     float aperture_f_number;
-    ADDON_IMG_FLASH_TYPE flash_used;
+    enum ADDON_IMG_FLASH_TYPE flash_used;
     int focal_length;
     int focal_length_in_35mm_format;
     float digital_zoom_ratio;
     float iso_speed;
-    ADDON_IMG_LIGHT_SOURCE light_source;
+    enum ADDON_IMG_LIGHT_SOURCE light_source;
 
     bool gps_info_present;
     char latitude_ref;
@@ -447,4 +447,4 @@ extern "C"
 } /* extern "C" */
 #endif /* __cplusplus */
 
-#endif /* !C_API_ADDONINSTANCE_IMAGE_DECODER_H */
+#endif /* !C_API_ADDONINSTANCE_IMAGEDECODER_H */

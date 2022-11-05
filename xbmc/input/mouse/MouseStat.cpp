@@ -18,11 +18,7 @@
 
 CMouseStat::CMouseStat()
 {
-  m_pointerState = MOUSE_STATE_NORMAL;
   SetEnabled();
-  m_speedX = m_speedY = 0;
-  m_maxX = m_maxY = 0;
-  memset(&m_mouseState, 0, sizeof(m_mouseState));
   m_Key = KEY_MOUSE_NOOP;
 }
 
@@ -34,7 +30,7 @@ void CMouseStat::Initialize()
   SetResolution(720, 576, 1, 1);
 }
 
-void CMouseStat::HandleEvent(XBMC_Event& newEvent)
+void CMouseStat::HandleEvent(const XBMC_Event& newEvent)
 {
   // Save the mouse position and the size of the last move
   int dx, dy;
@@ -111,7 +107,7 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
     bClick[i] = false;
     bLongClick[i] = false;
     bDoubleClick[i] = false;
-    bHold[i] = 0;
+    m_hold[i] = HoldAction::NONE;
 
     // CButtonState::Update does the hard work of checking the button state
     // and spotting drags, doubleclicks etc
@@ -132,15 +128,15 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
         bNothingDown = false;
         break;
       case CButtonState::MB_DRAG_START:
-        bHold[i] = CButtonState::MB_DRAG_START;
+        m_hold[i] = HoldAction::DRAG_START;
         bNothingDown = false;
         break;
       case CButtonState::MB_DRAG:
-        bHold[i] = CButtonState::MB_DRAG;
+        m_hold[i] = HoldAction::DRAG;
         bNothingDown = false;
         break;
       case CButtonState::MB_DRAG_END:
-        bHold[i] = CButtonState::MB_DRAG_END;
+        m_hold[i] = HoldAction::DRAG_END;
         bNothingDown = false;
         break;
       default:
@@ -172,34 +168,38 @@ void CMouseStat::HandleEvent(XBMC_Event& newEvent)
 
   if (m_Key == KEY_MOUSE_NOOP)
   {
-    // The bHold array is set to the drag action
-    if (bHold[MOUSE_LEFT_BUTTON] != 0)
+    // The m_hold array is set to the drag action
+    if (m_hold[MOUSE_LEFT_BUTTON] != HoldAction::NONE)
     {
-      switch (bHold[MOUSE_LEFT_BUTTON])
+      switch (m_hold[MOUSE_LEFT_BUTTON])
       {
-        case CButtonState::MB_DRAG:
+        case HoldAction::DRAG:
           m_Key = KEY_MOUSE_DRAG;
           break;
-        case CButtonState::MB_DRAG_START:
+        case HoldAction::DRAG_START:
           m_Key = KEY_MOUSE_DRAG_START;
           break;
-        case CButtonState::MB_DRAG_END:
+        case HoldAction::DRAG_END:
           m_Key = KEY_MOUSE_DRAG_END;
+          break;
+        default:
           break;
       }
     }
-    else if (bHold[MOUSE_RIGHT_BUTTON] != 0)
+    else if (m_hold[MOUSE_RIGHT_BUTTON] != HoldAction::NONE)
     {
-      switch (bHold[MOUSE_RIGHT_BUTTON])
+      switch (m_hold[MOUSE_RIGHT_BUTTON])
       {
-        case CButtonState::MB_DRAG:
+        case HoldAction::DRAG:
           m_Key = KEY_MOUSE_RDRAG;
           break;
-        case CButtonState::MB_DRAG_START:
+        case HoldAction::DRAG_START:
           m_Key = KEY_MOUSE_RDRAG_START;
           break;
-        case CButtonState::MB_DRAG_END:
+        case HoldAction::DRAG_END:
           m_Key = KEY_MOUSE_RDRAG_END;
+          break;
+        default:
           break;
       }
     }
@@ -280,14 +280,14 @@ uint32_t CMouseStat::GetKey() const
   return m_Key;
 }
 
-int CMouseStat::GetHold(int ButtonID) const
+HoldAction CMouseStat::GetHold(int ButtonID) const
 {
   switch (ButtonID)
   {
     case MOUSE_LEFT_BUTTON:
-      return bHold[MOUSE_LEFT_BUTTON];
+      return m_hold[MOUSE_LEFT_BUTTON];
   }
-  return false;
+  return HoldAction::NONE;
 }
 
 CMouseStat::CButtonState::CButtonState()

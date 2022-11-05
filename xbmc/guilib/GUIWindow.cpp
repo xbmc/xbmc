@@ -54,7 +54,6 @@ CGUIWindow::CGUIWindow(int id, const std::string &xmlFile)
   m_manualRunActions = false;
   m_exclusiveMouseControl = 0;
   m_clearBackground = 0xff000000; // opaque black -> always clear
-  m_windowXMLRootElement = nullptr;
   m_menuControlID = 0;
   m_menuLastFocusedControlID = 0;
   m_custom = false;
@@ -62,7 +61,6 @@ CGUIWindow::CGUIWindow(int id, const std::string &xmlFile)
 
 CGUIWindow::~CGUIWindow()
 {
-  delete m_windowXMLRootElement;
 }
 
 bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
@@ -145,7 +143,7 @@ bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLower
     }
 
     // store XML for further processing if window's load type is LOAD_EVERY_TIME or a reload is needed
-    m_windowXMLRootElement = static_cast<TiXmlElement*>(xmlDoc.RootElement()->Clone());
+    m_windowXMLRootElement.reset(static_cast<TiXmlElement*>(xmlDoc.RootElement()->Clone()));
   }
   else
     CLog::Log(LOGDEBUG, "Using already stored xml root node for {}", strPath);
@@ -153,13 +151,13 @@ bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLower
   return Load(Prepare(m_windowXMLRootElement).get());
 }
 
-std::unique_ptr<TiXmlElement> CGUIWindow::Prepare(TiXmlElement *pRootElement)
+std::unique_ptr<TiXmlElement> CGUIWindow::Prepare(const std::unique_ptr<TiXmlElement>& rootElement)
 {
-  if (!pRootElement)
+  if (!rootElement)
     return nullptr;
 
-  // clone the root element as we will manipulate it
-  auto preparedRoot = std::unique_ptr<TiXmlElement>(static_cast<TiXmlElement*>(pRootElement->Clone()));
+  // copy the root element as we will manipulate it
+  auto preparedRoot = std::make_unique<TiXmlElement>(*rootElement);
 
   // Resolve any includes, constants, expressions that may be present
   // and save include's conditions to the given map
@@ -792,8 +790,7 @@ void CGUIWindow::FreeResources(bool forceUnload /*= false */)
   if (m_loadType == LOAD_EVERY_TIME || forceUnload) ClearAll();
   if (forceUnload)
   {
-    delete m_windowXMLRootElement;
-    m_windowXMLRootElement = nullptr;
+    m_windowXMLRootElement.reset();
     m_xmlIncludeConditions.clear();
   }
 }

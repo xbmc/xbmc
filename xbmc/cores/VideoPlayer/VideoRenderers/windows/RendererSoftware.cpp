@@ -64,7 +64,7 @@ bool CRendererSoftware::Configure(const VideoPicture& picture, float fps, unsign
   return false;
 }
 
-bool CRendererSoftware::Supports(ESCALINGMETHOD method)
+bool CRendererSoftware::Supports(ESCALINGMETHOD method) const
 {
   return method == VS_SCALINGMETHOD_AUTO
     || method == VS_SCALINGMETHOD_LINEAR;

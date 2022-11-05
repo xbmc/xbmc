@@ -464,7 +464,8 @@ msgctxt "#117"
 msgid "Delete"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/ContextMenus.h
+#: xbmc/favourites/GUIDialogFavourites.cpp
 #: xbmc/pvr/PVRContextMenus.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
 #: xbmc/games/dialogs/osd/DialogGameSaves.cpp
@@ -948,8 +949,12 @@ msgstr ""
 
 #. generic "play" (some sort of media) label used in different places
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
 #: xbmc/games/windows/GUIWindowGames.cpp
+#: xbmc/music/ContextMenus.h
+#: xbmc/music/MusicUtils.cpp
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: system/settings/settings.xml
@@ -1443,8 +1448,9 @@ msgstr ""
 #. Label of 'Enabled' radiobutton in PVR timer settings dialog
 #. Label of timers state in PVR timer/timer rule window
 #: system/peripherals.xml
-#: xbmc/filesystem/AddonsDirectory.cpp
 #: system/settings/settings.xml
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+#: xbmc/filesystem/AddonsDirectory.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRTimerSettings.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 msgctxt "#305"
@@ -2562,6 +2568,7 @@ msgid "Sort by: {0:s}"
 msgstr ""
 
 #. generic "name" label used in different places
+#: xbmc/addons/settings/AddonSettings.cpp
 #: xbmc/pvr/windows/GUIViewStatePVR.cpp
 #: xbmc/view/GUIViewState.cpp
 msgctxt "#551"
@@ -4047,7 +4054,7 @@ msgctxt "#1029"
 msgid "Enter the new label"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/GUIWindowFavourites.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#1030"
 msgid "Browse for image"
@@ -4074,6 +4081,8 @@ msgctxt "#1035"
 msgid "Enable submenu buttons"
 msgstr ""
 
+#: xbmc/addons/Skin.cpp
+#: addons/skin.estuary/xml/MyFavourites.xml
 msgctxt "#1036"
 msgid "Favourites"
 msgstr ""
@@ -4186,15 +4195,23 @@ msgctxt "#1185"
 msgid "SOCKS5 with remote DNS resolving"
 msgstr ""
 
-#empty strings from id 1186 to 1199
-#strings 1186 to 1189 reserved for more proxy types
+#: system/settings/settings.xml
+msgctxt "#1186"
+msgid "HTTPS"
+msgstr ""
+
+#empty strings from id 1187 to 1199
+#strings 1187 to 1199 reserved for more proxy types
 
 #: xbmc/settings/win32.xml
 msgctxt "#1200"
 msgid "SMB client"
 msgstr ""
 
-#empty string with id 1201
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#1201"
+msgid "NFS Client"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#1202"
@@ -4894,35 +4911,83 @@ msgctxt "#10007"
 msgid "System information"
 msgstr ""
 
-#: xbmc/music/windows/GUIWindowMusicBase.cpp
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/music/ContextMenus.h
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#10008"
 msgid "Play next"
 msgstr ""
 
-#empty strings from id 10009 to 10010
+#. Header label for add-on configuration removal dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10009"
+msgid "Confirm add-on configuration removal"
+msgstr ""
+
+#. Header label for add-on configuration removal selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10010"
+msgid "Select add-on configuration to remove"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10011"
 msgid "Settings - Videos - Screen calibration"
 msgstr ""
 
-#empty strings from id 10012 to 10015
+#. Header label for add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10012"
+msgid "Add-on configurations and settings"
+msgstr ""
+
+#. Item label used in add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10013"
+msgid "Edit add-on settings"
+msgstr ""
+
+#. Item label used in add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10014"
+msgid "Add add-on configuration"
+msgstr ""
+
+#.Item label used in add-on configuration selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10015"
+msgid "Remove add-on configuration"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10016"
 msgid "Settings - System"
 msgstr ""
 
-#empty string with id 10017
+#. Settings group label
+#: xbmc/addons/settings/AddonSettings.cpp
+msgctxt "#10017"
+msgid "Add-on configuration"
+msgstr ""
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10018"
 msgid "Settings - Service"
 msgstr ""
 
-#empty strings from id 10019 to 10020
+#. Item label for add-on configuration removal dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10019"
+msgid "Do you want to remove the add-on configuration \"{0:s}\"?"
+msgstr ""
+
+#.Item label used in add-on setup selection dialog
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
+msgctxt "#10020"
+msgid "Edit \"{0:s}\" [{1:s}]"
+msgstr ""
 
 msgctxt "#10021"
 msgid "Settings - TV"
@@ -5096,7 +5161,14 @@ msgctxt "#10058"
 msgid "Remove tag from library"
 msgstr ""
 
-#empty strings from id 10059 to 10098
+#empty string with id 10059
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#10060"
+msgid "Favourites"
+msgstr ""
+
+#empty strings from id 10061 to 10098
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#10099"
@@ -6264,10 +6336,11 @@ msgstr ""
 #empty strings from id 13102 to 13105
 
 #. generic "disabled" label used in different places
-#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: system/settings/settings.xml
+#: xbmc/peripherals/bus/PeripheralBus.cpp
 #: xbmc/pvr/timers/PVRTimerInfoTag.cpp
 #: xbmc/addons/GUIWindowAddonBrowser.cpp
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 msgctxt "#13106"
 msgid "Disabled"
 msgstr ""
@@ -6465,6 +6538,7 @@ msgstr ""
 #. generic "unknown" label used in different places
 #: xbmc/GUIInfoManager.cpp
 #: xbmc/LangInfo.cpp
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 #: xbmc/music/MusicDatabase.cpp
 #: xbmc/peripherals/bus/PeripheralBus.cpp
 #: xbmc/peripherals/devices/Peripheral.cpp
@@ -6792,12 +6866,14 @@ msgctxt "#13331"
 msgid "Error: Out of memory"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/ContextMenus.h
+#: xbmc/favourites/GUIDialogFavourites.cpp
 msgctxt "#13332"
 msgid "Move up"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/ContextMenus.h
+#: xbmc/favourites/GUIDialogFavourites.cpp
 msgctxt "#13333"
 msgid "Move down"
 msgstr ""
@@ -6848,7 +6924,10 @@ msgctxt "#13346"
 msgid "Movie information"
 msgstr ""
 
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: system/settings/settings.xml
+#: xbmc/music/ContextMenus.h
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#13347"
@@ -8536,7 +8615,8 @@ msgctxt "#15014"
 msgid "Keep"
 msgstr ""
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/ContextMenus.h
+#: xbmc/favourites/GUIDialogFavourites.cpp
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#15015"
 msgid "Remove"
@@ -8687,7 +8767,62 @@ msgctxt "#15216"
 msgid "Play in party mode"
 msgstr ""
 
-#empty strings from id 15217 to 15299
+#. Label for actions associated with favourites
+#: addons/skin.estuary/xml/Variables.xml
+msgctxt "#15217"
+msgid "Action"
+msgstr ""
+
+#. Label for an action associated with a favourite.
+#: xbmc/Util.cpp
+msgctxt "#15218"
+msgid "Play media"
+msgstr ""
+
+#. Label for an action associated with a favourite
+#: xbmc/Util.cpp
+msgctxt "#15219"
+msgid "Show picture"
+msgstr ""
+
+#. Label for an action associated with a favourite. Placeholder will be filled with the name of the window the favourite's content will be displayed in.
+#: xbmc/favourites/FavouritesService.cpp
+#: xbmc/Util.cpp
+msgctxt "#15220"
+msgid "Show content in \"{}\""
+msgstr ""
+
+#. Label for an action associated with a favourite
+#: xbmc/Util.cpp
+msgctxt "#15221"
+msgid "Execute script"
+msgstr ""
+
+#. Label for an action associated with a favourite
+#: xbmc/Util.cpp
+msgctxt "#15222"
+msgid "Execute Android app"
+msgstr ""
+
+#. Label for an action associated with a favourite
+#: xbmc/Util.cpp
+msgctxt "#15223"
+msgid "Execute add-on"
+msgstr ""
+
+#. Label for an action associated with a favourite
+#: xbmc/Util.cpp
+msgctxt "#15224"
+msgid "Other / Unknown"
+msgstr ""
+
+#. genric label for 'provider'
+#: addons/skin.estuary/xml/Variables.xml
+msgctxt "#15225"
+msgid "Provider"
+msgstr ""
+
+#empty strings from id 15225 to 15299
 
 #: xbmc/windows/GUIMediaWindow.cpp
 #: xbmc/windows/GUIWindowFileManager.cpp
@@ -8768,7 +8903,7 @@ msgstr ""
 
 #empty strings from id 16005 to 16007
 
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/GUIWindowFavourites.cpp
 msgctxt "#16008"
 msgid "Enter new title"
 msgstr ""
@@ -9895,6 +10030,7 @@ msgstr ""
 
 #. generic warning label used at several places
 #: xbmc/addons/AddonSystemSettings.cpp
+#: xbmc/addons/gui/GUIDialogAddonSettings.cpp
 #: xbmc/network/NetworkServices.cpp
 #: xbmc/pvr/channels/PVRChannelGroupInternal.cpp
 #: xbmc/pvr/PVRManager.cpp
@@ -10461,7 +10597,7 @@ msgctxt "#19191"
 msgid "PVR service"
 msgstr ""
 
-#. error message box text stating that none of the available pvr clients does support channel scanning
+#. info message box text stating that none of the available pvr clients does support channel scanning
 #: xbmc/pvr/PVRGUIActions.cpp
 msgctxt "#19192"
 msgid "None of the connected PVR backends supports scanning for channels."
@@ -10972,10 +11108,10 @@ msgctxt "#19278"
 msgid "Recording error"
 msgstr ""
 
-#. pvr settings 'client specific' category label.
+#. pvr settings 'PVR clients' group label.
 #: system/settings/settings.xml
 msgctxt "#19279"
-msgid "Client specific"
+msgid "PVR clients"
 msgstr ""
 
 #. pvr client specific settings 'client specific settings' action control label.
@@ -11379,7 +11515,37 @@ msgctxt "#19344"
 msgid "Do you want to set a reminder for the selected programme or to switch to the current programme?"
 msgstr ""
 
-#empty strings from id 19345 to 19498
+#. settings label to open add-ons manager window with available PVR client add-ons
+#: system/settings/settings.xml
+msgctxt "#19345"
+msgid "PVR client add-ons"
+msgstr ""
+
+#. help text for setting to open add-ons manager window with available PVR client add-ons
+#: system/settings/settings.xml
+msgctxt "#19346"
+msgid "Display and manage available PVR client add-ons."
+msgstr ""
+
+#. info message box text stating that none of the available pvr clients does provide client-specific settings
+#: xbmc/pvr/PVRGUIActions.cpp
+msgctxt "#19347"
+msgid "None of the active PVR clients provide client-specific settings."
+msgstr ""
+
+#. label for 'by provider' sort method
+#: xbmc/utils/SortUtils.cpp
+msgctxt "#19348"
+msgid "Provider"
+msgstr ""
+
+#. label for 'by user preference' sort method
+#: xbmc/utils/SortUtils.cpp
+msgctxt "#19349"
+msgid "User preference"
+msgstr ""
+
+#empty strings from id 19350 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -12088,6 +12254,7 @@ msgid "Remote thumb"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
+#: xbmc/favourites/GUIWindowFavourites.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#20016"
 msgid "Current thumb"
@@ -12101,13 +12268,15 @@ msgid "Local thumb"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
+#: xbmc/favourites/GUIWindowFavourites.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#20018"
 msgid "No thumb"
 msgstr ""
 
 #: xbmc/dialogs/GUIDialogContextMenu.cpp
-#: xbmc/dialogs/GUIDialogFavourites.cpp
+#: xbmc/favourites/ContextMenus.h
+#: xbmc/favourites/GUIDialogFavourites.cpp
 msgctxt "#20019"
 msgid "Choose thumbnail"
 msgstr ""
@@ -14480,7 +14649,7 @@ msgstr ""
 #. Item list value of setting with label #21460 "Subtitle position on screen"
 #: system/settings/settings.xml
 msgctxt "#21463"
-msgid "Below video"
+msgid "Bottom of screen"
 msgstr ""
 
 #. Item list value of setting with label #21460 "Subtitle position on screen"
@@ -14492,7 +14661,7 @@ msgstr ""
 #. Item list value of setting with label #21460 "Subtitle position on screen"
 #: system/settings/settings.xml
 msgctxt "#21465"
-msgid "Above video"
+msgid "Top of screen"
 msgstr ""
 
 #. Description of setting with label #21416 "Select first unwatched TV show season/episode"
@@ -16055,7 +16224,10 @@ msgctxt "#24162"
 msgid "Use Kodi virtual keyboard"
 msgstr ""
 
-#empty string with id 24163
+#: system/settings/darwin_tvos.xml
+msgctxt "#24163"
+msgid "The higher the value, the more sensitive the pan gesture"
+msgstr ""
 
 #. Header text for yes/no dialog about enable of broken add-on
 #: xbmc/addons/gui/GUIHelpers.cpp
@@ -18549,7 +18721,13 @@ msgctxt "#36012"
 msgid "Couldn't initialise the CEC adapter. Please check your settings."
 msgstr ""
 
-#empty strings from id 36013 to 36014
+#. CEC adapter setting to set the type of device that libCEC reports to the TV (Recording, Playback or Tuner Device)
+#: system/peripherals.xml
+msgctxt "#36013"
+msgid "CEC client device mode"
+msgstr ""
+
+#empty strings from id 36014 to 36014
 
 #: system/peripherals.xml
 msgctxt "#36015"
@@ -18747,7 +18925,31 @@ msgctxt "#36050"
 msgid "On start"
 msgstr ""
 
-#empty strings from id 36051 to 36097
+#. Item list value of setting with label #36013 "CEC client device mode"
+#: system/peripherals.xml
+msgctxt "#36051"
+msgid "Recording Device"
+msgstr ""
+
+#. Item list value of setting with label #36013 "CEC client device mode"
+#: system/peripherals.xml
+msgctxt "#36052"
+msgid "Playback Device"
+msgstr ""
+
+#. Item list value of setting with label #36013 "CEC client device mode"
+#: system/peripherals.xml
+msgctxt "#36053"
+msgid "Tuner Device"
+msgstr ""
+
+#empty strings from id 36054 to 36096
+
+#. Label of setting "System / Display / GUI peak luminance in HDR PQ mode"
+#: system/settings/settings.xml
+msgctxt "#36097"
+msgid "GUI peak luminance in HDR PQ mode"
+msgstr ""
 
 #. Label of setting "System / Display / Use 10 bit for SDR"
 #: system/settings/settings.xml
@@ -19312,7 +19514,7 @@ msgstr ""
 #. Description of setting with label #21460 "Subtitle location on screen"
 #: system/settings/settings.xml
 msgctxt "#36192"
-msgid "Location of subtitles on the screen. [Below] / [Above video] When possible the subtitles will be positioned inside the black bars (depends on video encoding). Please note that some forced positions in the subtitles cannot be changed."
+msgid "Location of subtitles on the screen. [Bottom of video] / [Top of video] When possible the subtitles will be positioned within the video area (depends on video encoding). Please note that some forced positions in the subtitles cannot be changed."
 msgstr ""
 
 #. Description of settings category with label #14087 "DVDs"
@@ -19411,7 +19613,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36211"
-msgid "This category contains the settings for PVR menus and on-screen display (OSD), as well as channel information windows."
+msgid "This category contains the settings for PVR channels and channel groups."
 msgstr ""
 
 #: system/settings/settings.xml
@@ -20229,7 +20431,11 @@ msgctxt "#36355"
 msgid "In a multi-screen configuration, the screens not displaying this application are blacked out."
 msgstr ""
 
-#empty string with id 36356
+#. Description of settings category with label #1201 "NFS Client"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#36356"
+msgid "This category contains the settings for how the NFS client is handled."
+msgstr ""
 
 #. Description of setting with label #214 "Video calibration..."
 #: system/settings/settings.xml
@@ -20970,7 +21176,11 @@ msgctxt "#36546"
 msgid "Sets the visual depth of subtitles for stereoscopic 3D videos. The higher the value, the closer the subtitles will appear to the viewer."
 msgstr ""
 
-#empty string with id 36547
+#. Description of setting with label #36097 "System / Display / GUI peak luminance in HDR PQ mode"
+#: system/settings/settings.xml
+msgctxt "#36547"
+msgid "Sets the peak luminance level for GUI elements while the display is in HDR PQ mode. This affects all OSD, subtitles and graphics that are SDR in origin."
+msgstr ""
 
 #. Description of setting with label #37021 "Set GUI resolution limit"
 #: system/settings/android.xml
@@ -21646,7 +21856,10 @@ msgctxt "#37014"
 msgid "Last used profile"
 msgstr ""
 
-#: xbmc/Windows/GUIMediaWindow.cpp
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/music/ContextMenus.h
+#: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#37015"
 msgid "Browse into"
 msgstr ""
@@ -21828,7 +22041,19 @@ msgctxt "#37050"
 msgid "Verbose logging for the [B]WS-Discovery[/B] component"
 msgstr ""
 
-#empty strings from id 37051 to 38010
+#. Setting #37051 NFS Protocol Version"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37051"
+msgid "NFS Protocol Version"
+msgstr ""
+
+#. Description of setting #37051 NFS Protocol Version"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37052"
+msgid "NFS protocol version to use when establishing NFS connections"
+msgstr ""
+
+#empty strings from id 37053 to 38010
 
 #. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml
@@ -22147,8 +22372,20 @@ msgctxt "#38081"
 msgid "Release status"
 msgstr ""
 
-#empty strings from id 38082 to 38099
-#strings 38082 to 38099 reserved for music library
+#. Displayed in a toast notification when music items are added to a playlist
+#: xbmc/music/MusicUtils.cpp
+msgctxt "#38082"
+msgid "Added to end of playlist"
+msgstr ""
+
+#. Displayed in a toast notification when music items are added to a playlist to play next
+#: xbmc/music/MusicUtils.cpp
+msgctxt "#38083"
+msgid "Added to playlist to play next"
+msgstr ""
+
+#empty strings from id 38084 to 38099
+#strings 38084 to 38099 reserved for music library
 
 #. Description of section #14200 "Player""
 #: system/settings/settings.xml
@@ -23153,4 +23390,10 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#39188"
 msgid "No background"
+msgstr ""
+
+#. Window screen calibration: calibration by using the subtitle bar
+#: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
+msgctxt "#39189"
+msgid "Available only with manual subtitle position"
 msgstr ""

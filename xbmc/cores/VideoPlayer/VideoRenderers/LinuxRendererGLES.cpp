@@ -8,13 +8,13 @@
 
 #include "LinuxRendererGLES.h"
 
-#include "Application.h"
 #include "RenderCapture.h"
 #include "RenderCaptureGLES.h"
 #include "RenderFactory.h"
 #include "ServiceBroker.h"
 #include "VideoShaders/VideoFilterShaderGLES.h"
 #include "VideoShaders/YUV2RGBShaderGLES.h"
+#include "application/Application.h"
 #include "cores/IPlayer.h"
 #include "guilib/Texture.h"
 #include "rendering/MatrixGL.h"
@@ -36,7 +36,6 @@ using namespace Shaders::GLES;
 
 CLinuxRendererGLES::CLinuxRendererGLES()
 {
-  m_textureTarget = GL_TEXTURE_2D;
   m_format = AV_PIX_FMT_NONE;
 
   m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
@@ -533,7 +532,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     CLog::Log(LOGWARNING,
               "CLinuxRendererGLES::UpdateVideoFilter - chosen scaling method {}, is not supported "
               "by renderer",
-              static_cast<int>(m_scalingMethod));
+              m_scalingMethod);
     m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   }
 
@@ -1678,7 +1677,7 @@ void CLinuxRendererGLES::SetTextureFilter(GLenum method)
   }
 }
 
-bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature)
+bool CLinuxRendererGLES::Supports(ERENDERFEATURE feature) const
 {
   if (feature == RENDERFEATURE_GAMMA ||
       feature == RENDERFEATURE_NOISE ||
@@ -1709,7 +1708,7 @@ bool CLinuxRendererGLES::SupportsMultiPassRendering()
   return true;
 }
 
-bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
+bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method) const
 {
   if(method == VS_SCALINGMETHOD_NEAREST ||
      method == VS_SCALINGMETHOD_LINEAR)

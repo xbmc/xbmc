@@ -15,6 +15,7 @@
 #include "addons/AddonManager.h"
 #include "addons/IAddon.h"
 #include "addons/PluginSource.h"
+#include "addons/addoninfo/AddonType.h"
 #include "interfaces/generic/RunningScriptObserver.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/Settings.h"
@@ -53,16 +54,14 @@ std::string GetOriginalPluginPath(const CFileItem& item)
 }
 } // unnamed namespace
 
-CPluginDirectory::CPluginDirectory() : m_cancelled(false)
+CPluginDirectory::CPluginDirectory()
+  : m_listItems(new CFileItemList), m_fileResult(new CFileItem), m_cancelled(false)
+
 {
-  m_listItems = new CFileItemList;
-  m_fileResult = new CFileItem;
 }
 
 CPluginDirectory::~CPluginDirectory(void)
 {
-  delete m_listItems;
-  delete m_fileResult;
 }
 
 bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
@@ -71,9 +70,9 @@ bool CPluginDirectory::StartScript(const std::string& strPath, bool resume)
 
   ADDON::AddonPtr addon;
   // try the plugin type first, and if not found, try an unknown type
-  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, AddonType::PLUGIN,
                                               OnlyEnabled::CHOICE_YES) &&
-      !CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_UNKNOWN,
+      !CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, AddonType::UNKNOWN,
                                               OnlyEnabled::CHOICE_YES) &&
       !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), addon,
                                                    InstallModalPrompt::CHOICE_YES))
@@ -116,7 +115,7 @@ bool CPluginDirectory::GetResolvedPluginResult(CFileItem& resultItem)
     // to avoid deadlocks (plugin:// paths can resolve to plugin:// paths)
     for (unsigned int i = 0; URIUtils::IsPlugin(lastResolvedPath) && i < maxPluginResolutions; ++i)
     {
-      bool resume = resultItem.m_lStartOffset == STARTOFFSET_RESUME;
+      bool resume = resultItem.GetStartOffset() == STARTOFFSET_RESUME;
 
       // we modify the item so that it becomes a real URL
       if (!XFILE::CPluginDirectory::GetPluginResult(lastResolvedPath, resultItem, resume) ||
@@ -157,7 +156,8 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath, CFileItem &re
       resultItem.MergeInfo(*newDir.m_fileResult);
 
     if (newDir.m_fileResult->HasVideoInfoTag() && newDir.m_fileResult->GetVideoInfoTag()->GetResumePoint().IsSet())
-      resultItem.m_lStartOffset = STARTOFFSET_RESUME; // resume point set in the resume item, so force resume
+      resultItem.SetStartOffset(
+          STARTOFFSET_RESUME); // resume point set in the resume item, so force resume
   }
 
   return success;
@@ -427,7 +427,7 @@ bool CPluginDirectory::RunScriptWithParams(const std::string& strPath, bool resu
     return false;
 
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, AddonType::PLUGIN,
                                               OnlyEnabled::CHOICE_YES) &&
       !CAddonInstaller::GetInstance().InstallModal(url.GetHostName(), addon,
                                                    InstallModalPrompt::CHOICE_YES))
@@ -512,7 +512,7 @@ bool CPluginDirectory::IsMediaLibraryScanningAllowed(const std::string& content,
   if (url.GetHostName().empty())
     return false;
   AddonPtr addon;
-  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, ADDON_PLUGIN,
+  if (!CServiceBroker::GetAddonMgr().GetAddon(url.GetHostName(), addon, AddonType::PLUGIN,
                                               OnlyEnabled::CHOICE_YES))
   {
     CLog::Log(LOGERROR, "Unable to find plugin {}", url.GetHostName());

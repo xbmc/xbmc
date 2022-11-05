@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "network/DNSNameCache.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -50,6 +51,8 @@ constexpr auto CONTEXT_TIMEOUT = 6min;
 constexpr auto KEEP_ALIVE_TIMEOUT = 3min;
 
 constexpr auto IDLE_TIMEOUT = 3min;
+
+constexpr auto SETTING_NFS_VERSION = "nfs.version";
 
 } // namespace
 
@@ -214,7 +217,20 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, std::string &exp
   //refresh exportlist if empty or hostname change
   if(m_exportList.empty() || !StringUtils::EqualsNoCase(url.GetHostName(), m_hostName))
   {
-    m_exportList = GetExportList(url);
+    const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+    if (!settingsComponent)
+      return false;
+
+    const auto settings = settingsComponent->GetSettings();
+    if (!settings)
+      return false;
+
+    const int nfsVersion = settings->GetInt(SETTING_NFS_VERSION);
+
+    if (nfsVersion == 4)
+      m_exportList = {"/"};
+    else
+      m_exportList = GetExportList(url);
   }
 
   return splitUrlIntoExportAndPath(url, exportPath, relativePath, m_exportList);
@@ -484,12 +500,36 @@ void CNfsConnection::AddIdleConnection()
 
 void CNfsConnection::setOptions(struct nfs_context* context)
 {
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  const auto advancedSettings = settingsComponent->GetAdvancedSettings();
+  if (!advancedSettings)
+    return;
+
 #ifdef HAS_NFS_SET_TIMEOUT
-  uint32_t timeout = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_nfsTimeout;
+  uint32_t timeout = advancedSettings->m_nfsTimeout;
   nfs_set_timeout(context, timeout > 0 ? timeout * 1000 : -1);
 #endif
-  int retries = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_nfsRetries;
+  int retries = advancedSettings->m_nfsRetries;
   nfs_set_autoreconnect(context, retries);
+
+  const auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  const int nfsVersion = settings->GetInt(SETTING_NFS_VERSION);
+
+  int ret = nfs_set_version(context, nfsVersion);
+  if (ret != 0)
+  {
+    CLog::Log(LOGERROR, "NFS: Failed to set nfs version: {} ({})", nfsVersion,
+              nfs_get_error(context));
+    return;
+  }
+
+  CLog::Log(LOGDEBUG, "NFS: version: {}", nfsVersion);
 }
 
 CNfsConnection gNfsConnection;

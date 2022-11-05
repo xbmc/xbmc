@@ -140,7 +140,7 @@ void CSkinSettings::Clear()
   m_settings.clear();
 }
 
-void CSkinSettings::MigrateSettings(const ADDON::SkinPtr& skin)
+void CSkinSettings::MigrateSettings(const std::shared_ptr<ADDON::CSkinInfo>& skin)
 {
   if (skin == nullptr)
     return;

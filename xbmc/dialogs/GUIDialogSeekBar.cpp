@@ -8,13 +8,15 @@
 
 #include "GUIDialogSeekBar.h"
 
-#include "Application.h"
 #include "GUIInfoManager.h"
 #include "SeekHandler.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "guilib/GUIComponent.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 
-#include <math.h>
+#include <cmath>
 
 #define POPUP_SEEK_PROGRESS           401
 #define POPUP_SEEK_EPG_EVENT_PROGRESS 402
@@ -30,7 +32,7 @@ CGUIDialogSeekBar::~CGUIDialogSeekBar(void) = default;
 
 bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
 {
-  switch ( message.GetMessage() )
+  switch (message.GetMessage())
   {
   case GUI_MSG_WINDOW_INIT:
   case GUI_MSG_WINDOW_DEINIT:
@@ -50,7 +52,9 @@ bool CGUIDialogSeekBar::OnMessage(CGUIMessage& message)
 
 void CGUIDialogSeekBar::FrameMove()
 {
-  if (!g_application.GetAppPlayer().HasPlayer())
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (!appPlayer->HasPlayer())
   {
     Close(true);
     return;
@@ -77,7 +81,9 @@ int CGUIDialogSeekBar::GetProgress() const
 
   int progress = 0;
 
-  if (g_application.GetAppPlayer().GetSeekHandler().GetSeekSize() != 0)
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (appPlayer->GetSeekHandler().GetSeekSize() != 0)
     infoMgr.GetInt(progress, PLAYER_SEEKBAR, INFO::DEFAULT_CONTEXT);
   else
     infoMgr.GetInt(progress, PLAYER_PROGRESS, INFO::DEFAULT_CONTEXT);
@@ -92,7 +98,9 @@ int CGUIDialogSeekBar::GetEpgEventProgress() const
   int progress = 0;
   infoMgr.GetInt(progress, PVR_EPG_EVENT_PROGRESS, INFO::DEFAULT_CONTEXT);
 
-  int seekSize = g_application.GetAppPlayer().GetSeekHandler().GetSeekSize();
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  int seekSize = appPlayer->GetSeekHandler().GetSeekSize();
   if (seekSize != 0)
   {
     int total = 0;

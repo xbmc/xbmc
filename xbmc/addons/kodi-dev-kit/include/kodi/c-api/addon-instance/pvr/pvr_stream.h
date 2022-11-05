@@ -78,6 +78,9 @@ extern "C"
     /// @brief To identify @ref cpp_kodi_addon_pvr_Defs_Stream_PVRStreamProperties as Radio RDS.
     PVR_CODEC_TYPE_RDS,
 
+    /// @brief To identify @ref cpp_kodi_addon_pvr_Defs_Stream_PVRStreamProperties as Audio ID3 tags.
+    PVR_CODEC_TYPE_ID3,
+
     PVR_CODEC_TYPE_NB
   } PVR_CODEC_TYPE;
   ///@}

@@ -8,18 +8,17 @@
 
 #include "ApplicationOperations.h"
 
-#include "Application.h"
 #include "CompileInfo.h"
-#include "GUIInfoManager.h"
 #include "InputOperations.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
-#include "Util.h"
-#include "input/Key.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationVolumeHandling.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
-#include "utils/log.h"
 
 #include <cmath>
 #include <string.h>
@@ -50,10 +49,12 @@ JSONRPC_STATUS CApplicationOperations::SetVolume(const std::string &method, ITra
   bool up = false;
   if (parameterObject["volume"].isInteger())
   {
-    int oldVolume = (int)g_application.GetVolumePercent();
-    int volume = (int)parameterObject["volume"].asInteger();
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    int oldVolume = static_cast<int>(appVolume->GetVolumePercent());
+    int volume = static_cast<int>(parameterObject["volume"].asInteger());
 
-    g_application.SetVolume((float)volume, true);
+    appVolume->SetVolume(static_cast<float>(volume), true);
 
     up = oldVolume < volume;
   }
@@ -88,8 +89,12 @@ JSONRPC_STATUS CApplicationOperations::SetVolume(const std::string &method, ITra
 
 JSONRPC_STATUS CApplicationOperations::SetMute(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if ((parameterObject["mute"].isString() && parameterObject["mute"].asString().compare("toggle") == 0) ||
-      (parameterObject["mute"].isBoolean() && parameterObject["mute"].asBoolean() != g_application.IsMuted()))
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+  if ((parameterObject["mute"].isString() &&
+       parameterObject["mute"].asString().compare("toggle") == 0) ||
+      (parameterObject["mute"].isBoolean() &&
+       parameterObject["mute"].asBoolean() != appVolume->IsMuted()))
     CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                                static_cast<void*>(new CAction(ACTION_MUTE)));
   else if (!parameterObject["mute"].isBoolean() && !parameterObject["mute"].isString())
@@ -106,10 +111,15 @@ JSONRPC_STATUS CApplicationOperations::Quit(const std::string &method, ITranspor
 
 JSONRPC_STATUS CApplicationOperations::GetPropertyValue(const std::string &property, CVariant &result)
 {
-  if (property == "volume")
-    result = static_cast<int>(std::lroundf(g_application.GetVolumePercent()));
-  else if (property == "muted")
-    result = g_application.IsMuted();
+  if (property == "volume" || property == "muted")
+  {
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    if (property == "volume")
+      result = static_cast<int>(std::lroundf(appVolume->GetVolumePercent()));
+    else if (property == "muted")
+      result = appVolume->IsMuted();
+  }
   else if (property == "name")
     result = CCompileInfo::GetAppName();
   else if (property == "version")

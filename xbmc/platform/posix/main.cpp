@@ -13,8 +13,9 @@
 #endif
 #endif
 
-#include "AppParamParser.h"
 #include "PlatformPosix.h"
+#include "application/AppEnvironment.h"
+#include "application/AppParamParser.h"
 #include "platform/xbmc.h"
 
 #if defined(TARGET_LINUX) || defined(TARGET_FREEBSD)
@@ -66,5 +67,9 @@ int main(int argc, char* argv[])
 #endif
   appParamParser.Parse(argv, argc);
 
-  return XBMC_Run(true, appParamParser.GetAppParams());
+  CAppEnvironment::SetUp(appParamParser.GetAppParams());
+  int status = XBMC_Run(true);
+  CAppEnvironment::TearDown();
+
+  return status;
 }

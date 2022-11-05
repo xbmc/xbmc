@@ -8,13 +8,18 @@
 
 #include "PeripheralCecAdapter.h"
 
-#include "Application.h"
 #include "ServiceBroker.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationEnums.h"
+#include "application/ApplicationPlayer.h"
+#include "application/ApplicationPowerHandling.h"
+#include "application/ApplicationVolumeHandling.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "input/remote/IRRemote.h"
 #include "messaging/ApplicationMessenger.h"
 #include "pictures/GUIWindowSlideShow.h"
@@ -50,6 +55,9 @@ using namespace std::chrono_literals;
 #define LOCALISED_ID_HIBERNATE 13010
 #define LOCALISED_ID_QUIT 13009
 #define LOCALISED_ID_IGNORE 36028
+#define LOCALISED_ID_RECORDING_DEVICE 36051
+#define LOCALISED_ID_PLAYBACK_DEVICE 36052
+#define LOCALISED_ID_TUNER_DEVICE 36053
 
 #define LOCALISED_ID_NONE 231
 
@@ -159,7 +167,9 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
            message == "OnScreensaverActivated" && m_bIsReady)
   {
     // Don't put devices to standby if application is currently playing
-    if (!g_application.GetAppPlayer().IsPlaying() && m_bPowerOffScreensaver)
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+    if (!appPlayer->IsPlaying() && m_bPowerOffScreensaver)
     {
       // only power off when we're the active source
       if (m_cecAdapter->IsLibCECActiveSource())
@@ -560,6 +570,8 @@ void CPeripheralCecAdapter::SetMenuLanguage(const char* strLanguage)
     strGuiLanguage = "cs_cz";
   else if (!strcmp(strLanguage, "dan"))
     strGuiLanguage = "da_dk";
+  else if (!strcmp(strLanguage, "deu"))
+    strGuiLanguage = "de_de";
   else if (!strcmp(strLanguage, "dut"))
     strGuiLanguage = "nl_nl";
   else if (!strcmp(strLanguage, "eng"))
@@ -635,9 +647,13 @@ void CPeripheralCecAdapter::OnTvStandby(void)
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PAUSE_IF_PLAYING);
       break;
     case LOCALISED_ID_STOP:
-      if (g_application.GetAppPlayer().IsPlaying())
+    {
+      const auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      if (appPlayer->IsPlaying())
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_STOP);
       break;
+    }
     case LOCALISED_ID_IGNORE:
       break;
     default:
@@ -1191,7 +1207,11 @@ void CPeripheralCecAdapter::CecSourceActivated(void* cbParam,
 
   // wake up the screensaver, so the user doesn't switch to a black screen
   if (activated == 1)
-    g_application.WakeUpScreenSaverAndDPMS();
+  {
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+    appPower->WakeUpScreenSaverAndDPMS();
+  }
 
   if (adapter->GetSettingInt("pause_or_stop_playback_on_deactivate") != LOCALISED_ID_NONE)
   {
@@ -1202,12 +1222,15 @@ void CPeripheralCecAdapter::CecSourceActivated(void* cbParam,
             ? CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(
                   WINDOW_SLIDESHOW)
             : NULL;
-    bool bPlayingAndDeactivated =
-        activated == 0 && ((pSlideShow && pSlideShow->IsPlaying()) ||
-                           !g_application.GetAppPlayer().IsPausedPlayback());
+
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+
+    bool bPlayingAndDeactivated = activated == 0 && ((pSlideShow && pSlideShow->IsPlaying()) ||
+                                                     !appPlayer->IsPausedPlayback());
     bool bPausedAndActivated =
         activated == 1 && adapter->m_bPlaybackPaused &&
-        ((pSlideShow && pSlideShow->IsPaused()) || g_application.GetAppPlayer().IsPausedPlayback());
+        ((pSlideShow && pSlideShow->IsPaused()) || (appPlayer && appPlayer->IsPausedPlayback()));
     if (bPlayingAndDeactivated)
       adapter->m_bPlaybackPaused = true;
     else if (bPausedAndActivated)
@@ -1345,12 +1368,19 @@ void CPeripheralCecAdapter::SetConfigurationFromSettings(void)
 
   // set the primary device type
   m_configuration.deviceTypes.Clear();
-  int iDeviceType = GetSettingInt("device_type");
-  if (iDeviceType != (int)CEC_DEVICE_TYPE_RECORDING_DEVICE &&
-      iDeviceType != (int)CEC_DEVICE_TYPE_PLAYBACK_DEVICE &&
-      iDeviceType != (int)CEC_DEVICE_TYPE_TUNER)
-    iDeviceType = (int)CEC_DEVICE_TYPE_RECORDING_DEVICE;
-  m_configuration.deviceTypes.Add((cec_device_type)iDeviceType);
+  switch (GetSettingInt("device_type"))
+  {
+    case LOCALISED_ID_PLAYBACK_DEVICE:
+      m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_PLAYBACK_DEVICE);
+      break;
+    case LOCALISED_ID_TUNER_DEVICE:
+      m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_TUNER);
+      break;
+    case LOCALISED_ID_RECORDING_DEVICE:
+    default:
+      m_configuration.deviceTypes.Add(CEC_DEVICE_TYPE_RECORDING_DEVICE);
+      break;
+  }
 
   // always try to autodetect the address.
   // when the firmware supports this, it will override the physical address, connected device and
@@ -1590,8 +1620,10 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
 
     // set amp present
     m_adapter->SetAudioSystemConnected(true);
-    g_application.SetMute(false);
-    g_application.SetVolume(CApplicationVolumeHandling::VOLUME_MAXIMUM, false);
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetMute(false);
+    appVolume->SetVolume(CApplicationVolumeHandling::VOLUME_MAXIMUM, false);
   }
   else
   {

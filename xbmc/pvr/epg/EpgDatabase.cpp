@@ -16,6 +16,7 @@
 #include "pvr/epg/EpgSearchFilter.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <memory>
@@ -28,6 +29,7 @@ using namespace PVR;
 
 namespace
 {
+// clang-format off
 const std::string sqlCreateSavedSearchesTable = "CREATE TABLE savedsearches ("
                                                 "idSearch                  integer primary key,"
                                                 "sTitle                    varchar(255), "
@@ -49,8 +51,10 @@ const std::string sqlCreateSavedSearchesTable = "CREATE TABLE savedsearches ("
                                                 "bIgnoreFutureBroadcasts   bool, "
                                                 "bFreeToAirOnly            bool, "
                                                 "bIgnorePresentTimers      bool, "
-                                                "bIgnorePresentRecordings  bool"
+                                                "bIgnorePresentRecordings  bool,"
+                                                "iChannelGroup             integer"
                                                 ")";
+// clang-format on
 } // unnamed namespace
 
 bool CPVREpgDatabase::Open()
@@ -299,6 +303,12 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec(sqlCreateSavedSearchesTable);
   }
+
+  if (iVersion < 16)
+  {
+    m_pDS->exec("ALTER TABLE savedsearches ADD iChannelGroup integer;");
+    m_pDS->exec("UPDATE savedsearches SET iChannelGroup = -1");
+  }
 }
 
 bool CPVREpgDatabase::DeleteEpg()
@@ -426,9 +436,9 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     newTag->m_iFlags = m_pDS->fv("iFlags").get_asInt();
     newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString();
     newTag->m_strParentalRatingCode = m_pDS->fv("sParentalRatingCode").get_asString();
-    newTag->SetGenre(m_pDS->fv("iGenreType").get_asInt(), m_pDS->fv("iGenreSubType").get_asInt(),
-                     m_pDS->fv("sGenre").get_asString().c_str());
-    newTag->UpdatePath();
+    newTag->m_iGenreType = m_pDS->fv("iGenreType").get_asInt();
+    newTag->m_iGenreSubType = m_pDS->fv("iGenreSubType").get_asInt();
+    newTag->m_strGenreDescription = m_pDS->fv("sGenre").get_asString();
 
     return newTag;
   }
@@ -1193,9 +1203,6 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
   int iBroadcastId = tag.DatabaseID();
   std::string strQuery;
 
-  /* Only store the genre string when needed */
-  std::string strGenre = (tag.GenreType() == EPG_GENRE_USE_STRING || tag.GenreSubType() == EPG_GENRE_USE_STRING) ? tag.DeTokenize(tag.Genre()) : "";
-
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (iBroadcastId < 0)
@@ -1215,7 +1222,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
         tag.DeTokenize(tag.Directors()).c_str(), tag.DeTokenize(tag.Writers()).c_str(), tag.Year(),
         tag.IMDBNumber().c_str(), tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),
-        strGenre.c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
+        tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
         tag.UniqueBroadcastID());
@@ -1237,7 +1244,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
         tag.DeTokenize(tag.Directors()).c_str(), tag.DeTokenize(tag.Writers()).c_str(), tag.Year(),
         tag.IMDBNumber().c_str(), tag.ClientIconPath().c_str(), tag.GenreType(), tag.GenreSubType(),
-        strGenre.c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
+        tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId);
@@ -1297,6 +1304,7 @@ std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::CreateEpgSearchFilter(
     newSearch->SetFreeToAirOnly(m_pDS->fv("bFreeToAirOnly").get_asBool());
     newSearch->SetIgnorePresentTimers(m_pDS->fv("bIgnorePresentTimers").get_asBool());
     newSearch->SetIgnorePresentRecordings(m_pDS->fv("bIgnorePresentRecordings").get_asBool());
+    newSearch->SetChannelGroupID(m_pDS->fv("iChannelGroup").get_asInt());
 
     newSearch->SetChanged(false);
 
@@ -1367,9 +1375,9 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         "iGenreType, bIncludeUnknownGenres, sStartDateTime, sEndDateTime, iMinimumDuration, "
         "iMaximumDuration, bIsRadio, iClientId, iChannelUid, bRemoveDuplicates, "
         "bIgnoreFinishedBroadcasts, bIgnoreFutureBroadcasts, bFreeToAirOnly, bIgnorePresentTimers, "
-        "bIgnorePresentRecordings) "
+        "bIgnorePresentRecordings, iChannelGroup) "
         "VALUES ('%s', '%s', '%s', %i, %i, %i, %i, '%s', '%s', %i, %i, %i, %i, %i, %i, %i, %i, "
-        "%i, %i, %i);",
+        "%i, %i, %i, %i);",
         epgSearch.GetTitle().c_str(),
         epgSearch.GetLastExecutedDateTime().IsValid()
             ? epgSearch.GetLastExecutedDateTime().GetAsDBDateTime().c_str()
@@ -1388,7 +1396,7 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         epgSearch.ShouldIgnoreFinishedBroadcasts() ? 1 : 0,
         epgSearch.ShouldIgnoreFutureBroadcasts() ? 1 : 0, epgSearch.IsFreeToAirOnly() ? 1 : 0,
         epgSearch.ShouldIgnorePresentTimers() ? 1 : 0,
-        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0);
+        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0, epgSearch.GetChannelGroupID());
   else
     strQuery = PrepareSQL(
         "REPLACE INTO savedsearches "
@@ -1396,9 +1404,9 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         "bIsCaseSensitive, iGenreType, bIncludeUnknownGenres, sStartDateTime, sEndDateTime, "
         "iMinimumDuration, iMaximumDuration, bIsRadio, iClientId, iChannelUid, bRemoveDuplicates, "
         "bIgnoreFinishedBroadcasts, bIgnoreFutureBroadcasts, bFreeToAirOnly, bIgnorePresentTimers, "
-        "bIgnorePresentRecordings) "
+        "bIgnorePresentRecordings, iChannelGroup) "
         "VALUES (%i, '%s', '%s', '%s', %i, %i, %i, %i, '%s', '%s', %i, %i, %i, %i, %i, %i, %i, %i, "
-        "%i, %i, %i);",
+        "%i, %i, %i, %i);",
         epgSearch.GetDatabaseId(), epgSearch.GetTitle().c_str(),
         epgSearch.GetLastExecutedDateTime().IsValid()
             ? epgSearch.GetLastExecutedDateTime().GetAsDBDateTime().c_str()
@@ -1417,7 +1425,7 @@ bool CPVREpgDatabase::Persist(CPVREpgSearchFilter& epgSearch)
         epgSearch.ShouldIgnoreFinishedBroadcasts() ? 1 : 0,
         epgSearch.ShouldIgnoreFutureBroadcasts() ? 1 : 0, epgSearch.IsFreeToAirOnly() ? 1 : 0,
         epgSearch.ShouldIgnorePresentTimers() ? 1 : 0,
-        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0);
+        epgSearch.ShouldIgnorePresentRecordings() ? 1 : 0, epgSearch.GetChannelGroupID());
 
   bool bReturn = ExecuteQuery(strQuery);
 

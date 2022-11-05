@@ -9,10 +9,7 @@
 #include "RendererVAAPIGL.h"
 
 #include "../RenderFactory.h"
-#include "cores/VideoPlayer/DVDCodecs/DVDCodecUtils.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/VAAPI.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/Settings.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 
@@ -138,12 +135,12 @@ bool CRendererVAAPIGL::ConfigChanged(const VideoPicture& picture)
   return false;
 }
 
-bool CRendererVAAPIGL::Supports(ERENDERFEATURE feature)
+bool CRendererVAAPIGL::Supports(ERENDERFEATURE feature) const
 {
   return CLinuxRendererGL::Supports(feature);
 }
 
-bool CRendererVAAPIGL::Supports(ESCALINGMETHOD method)
+bool CRendererVAAPIGL::Supports(ESCALINGMETHOD method) const
 {
   return CLinuxRendererGL::Supports(method);
 }

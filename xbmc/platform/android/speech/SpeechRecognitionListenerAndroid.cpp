@@ -79,6 +79,7 @@ void CSpeechRecognitionListenerAndroid::onResults(CJNIBundle bundle)
         bundle.getStringArrayList(CJNISpeechRecognizer::RESULTS_RECOGNITION);
 
     std::vector<std::string> results;
+    results.reserve(r.size());
     for (int i = 0; i < r.size(); ++i)
       results.emplace_back(r.get(i));
 

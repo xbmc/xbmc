@@ -1,7 +1,16 @@
 set(SOURCES GUIEPGGridContainer.cpp
             GUIEPGGridContainerModel.cpp
             PVRGUIActionListener.cpp
-            PVRGUIActions.cpp
+            PVRGUIActionsChannels.cpp
+            PVRGUIActionsClients.cpp
+            PVRGUIActionsDatabase.cpp
+            PVRGUIActionsEPG.cpp
+            PVRGUIActionsUtils.cpp
+            PVRGUIActionsParentalControl.cpp
+            PVRGUIActionsPlayback.cpp
+            PVRGUIActionsPowerManagement.cpp
+            PVRGUIActionsRecordings.cpp
+            PVRGUIActionsTimers.cpp
             PVRGUIChannelIconUpdater.cpp
             PVRGUIChannelNavigator.cpp
             PVRGUIProgressHandler.cpp)
@@ -9,7 +18,16 @@ set(SOURCES GUIEPGGridContainer.cpp
 set(HEADERS GUIEPGGridContainer.h
             GUIEPGGridContainerModel.h
             PVRGUIActionListener.h
-            PVRGUIActions.h
+            PVRGUIActionsChannels.h
+            PVRGUIActionsClients.h
+            PVRGUIActionsDatabase.h
+            PVRGUIActionsEPG.h
+            PVRGUIActionsUtils.h
+            PVRGUIActionsParentalControl.h
+            PVRGUIActionsPlayback.h
+            PVRGUIActionsPowerManagement.h
+            PVRGUIActionsRecordings.h
+            PVRGUIActionsTimers.h
             PVRGUIChannelIconUpdater.h
             PVRGUIChannelNavigator.h
             PVRGUIProgressHandler.h)

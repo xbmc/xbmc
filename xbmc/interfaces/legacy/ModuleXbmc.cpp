@@ -11,17 +11,16 @@
 #include "ModuleXbmc.h"
 
 #include "AddonUtils.h"
-#include "Application.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "LangInfo.h"
 #include "LanguageHook.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "aojsonrpc.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPowerHandling.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
-#include "filesystem/File.h"
 #include "guilib/GUIAudioManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
@@ -30,6 +29,7 @@
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
 #include "network/NetworkServices.h"
+#include "playlists/PlayListTypes.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "storage/MediaManager.h"
@@ -37,6 +37,7 @@
 #include "threads/SystemClock.h"
 #include "utils/Crc32.h"
 #include "utils/FileExtensionProvider.h"
+#include "utils/FileUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
@@ -324,7 +325,7 @@ namespace XBMCAddon
         return;
 
       CGUIComponent* gui = CServiceBroker::GetGUI();
-      if (XFILE::CFile::Exists(filename) && gui)
+      if (CFileUtils::Exists(filename) && gui)
       {
         gui->GetAudioManager().PlayPythonSound(filename,useCached);
       }
@@ -369,7 +370,9 @@ namespace XBMCAddon
     int getGlobalIdleTime()
     {
       XBMC_TRACE;
-      return g_application.GlobalIdleTime();
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+      return appPower->GlobalIdleTime();
     }
 
     String getCacheThumbName(const String& path)
@@ -552,8 +555,14 @@ namespace XBMCAddon
       return CNetworkServices::ES_ZEROCONF;
     }
 
-    int getPLAYLIST_MUSIC() { return PLAYLIST_MUSIC; }
-    int getPLAYLIST_VIDEO() { return PLAYLIST_VIDEO; }
+    int getPLAYLIST_MUSIC()
+    {
+      return PLAYLIST::TYPE_MUSIC;
+    }
+    int getPLAYLIST_VIDEO()
+    {
+      return PLAYLIST::TYPE_VIDEO;
+    }
     int getTRAY_OPEN()
     {
       return static_cast<int>(TrayState::OPEN);

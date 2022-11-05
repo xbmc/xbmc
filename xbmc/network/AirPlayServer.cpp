@@ -11,19 +11,20 @@
 
 #include "AirPlayServer.h"
 
-#include "Application.h"
-#include "CompileInfo.h"
 #include "FileItem.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "cores/IPlayer.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
+#include "application/ApplicationVolumeHandling.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
-#include "input/Key.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
+#include "playlists/PlayListTypes.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
@@ -176,7 +177,7 @@ void CAirPlayServer::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     {
       bool shouldRestoreVolume = true;
       if (data.isMember("player") && data["player"].isMember("playerid"))
-        shouldRestoreVolume = (data["player"]["playerid"] != PLAYLIST_PICTURE);
+        shouldRestoreVolume = (data["player"]["playerid"] != PLAYLIST::TYPE_PICTURE);
 
       if (shouldRestoreVolume)
         restoreVolume();
@@ -735,16 +736,24 @@ void CAirPlayServer::backupVolume()
   std::unique_lock<CCriticalSection> lock(ServerInstanceLock);
 
   if (ServerInstance && ServerInstance->m_origVolume == -1)
-    ServerInstance->m_origVolume = (int)g_application.GetVolumePercent();
+  {
+    const auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    ServerInstance->m_origVolume = static_cast<int>(appVolume->GetVolumePercent());
+  }
 }
 
 void CAirPlayServer::restoreVolume()
 {
   std::unique_lock<CCriticalSection> lock(ServerInstanceLock);
 
-  if (ServerInstance && ServerInstance->m_origVolume != -1 && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
+  const auto& settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (ServerInstance && ServerInstance->m_origVolume != -1 &&
+      settings->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
   {
-    g_application.SetVolume((float)ServerInstance->m_origVolume);
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+    appVolume->SetVolume(static_cast<float>(ServerInstance->m_origVolume));
     ServerInstance->m_origVolume = -1;
   }
 }
@@ -771,6 +780,9 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
   std::string authorization = m_httpParser->getValue("authorization") ? m_httpParser->getValue("authorization") : "";
   std::string photoAction = m_httpParser->getValue("x-apple-assetaction") ? m_httpParser->getValue("x-apple-assetaction") : "";
   std::string photoCacheId = m_httpParser->getValue("x-apple-assetkey") ? m_httpParser->getValue("x-apple-assetkey") : "";
+
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
   int status = AIRPLAY_STATUS_OK;
   bool needAuth = false;
@@ -814,14 +826,14 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       }
       else if (rate == 0)
       {
-        if (g_application.GetAppPlayer().IsPlaying() && !g_application.GetAppPlayer().IsPaused())
+        if (appPlayer->IsPlaying() && !appPlayer->IsPaused())
         {
           CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
         }
       }
       else
       {
-        if (g_application.GetAppPlayer().IsPausedPlayback())
+        if (appPlayer->IsPausedPlayback())
         {
           CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
         }
@@ -845,12 +857,16 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       }
       else if (volume >= 0 && volume <= 1)
       {
-        float oldVolume = g_application.GetVolumePercent();
+        auto& components = CServiceBroker::GetAppComponents();
+        const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
+        float oldVolume = appVolume->GetVolumePercent();
         volume *= 100;
-        if(oldVolume != volume && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
+        const auto& settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+        if (oldVolume != volume &&
+            settings->GetBool(CSettings::SETTING_SERVICES_AIRPLAYVOLUMECONTROL))
         {
           backupVolume();
-          g_application.SetVolume(volume);
+          appVolume->SetVolume(volume);
           CServiceBroker::GetAppMessenger()->PostMsg(
               TMSG_VOLUME_SHOW, oldVolume < volume ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN);
         }
@@ -977,7 +993,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
       if (!startPlayback)
       {
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_MEDIA_PAUSE);
-        g_application.GetAppPlayer().SeekPercentage(position * 100.0f);
+        appPlayer->SeekPercentage(position * 100.0f);
       }
     }
   }
@@ -994,12 +1010,12 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     {
       CLog::Log(LOGDEBUG, "AIRPLAY: got GET request {}", uri);
 
-      if (g_application.GetAppPlayer().GetTotalTime())
+      if (appPlayer->GetTotalTime())
       {
-        float position = ((float) g_application.GetAppPlayer().GetTime()) / 1000;
-        responseBody = StringUtils::Format(
-            "duration: {:.6f}\r\nposition: {:.6f}\r\n",
-            (float)g_application.GetAppPlayer().GetTotalTime() / 1000, position);
+        float position = static_cast<float>(appPlayer->GetTime()) / 1000;
+        responseBody =
+            StringUtils::Format("duration: {:.6f}\r\nposition: {:.6f}\r\n",
+                                static_cast<float>(appPlayer->GetTotalTime()) / 1000, position);
       }
       else
       {
@@ -1010,10 +1026,10 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     {
       const char* found = strstr(queryString.c_str(), "position=");
 
-      if (found && g_application.GetAppPlayer().HasPlayer())
+      if (found && appPlayer->HasPlayer())
       {
         int64_t position = (int64_t) (atof(found + strlen("position=")) * 1000.0);
-        g_application.GetAppPlayer().SeekTime(position);
+        appPlayer->SeekTime(position);
         CLog::Log(LOGDEBUG, "AIRPLAY: got POST request {} with pos {}", uri, position);
       }
     }
@@ -1132,20 +1148,20 @@ int CAirPlayServer::CTCPClient::ProcessRequest( std::string& responseHeader,
     {
       status = AIRPLAY_STATUS_NEED_AUTH;
     }
-    else if (g_application.GetAppPlayer().HasPlayer())
+    else if (appPlayer->HasPlayer())
     {
-      if (g_application.GetAppPlayer().GetTotalTime())
+      if (appPlayer->GetTotalTime())
       {
-        position = ((float) g_application.GetAppPlayer().GetTime()) / 1000;
-        duration = ((float) g_application.GetAppPlayer().GetTotalTime()) / 1000;
-        playing = !g_application.GetAppPlayer().IsPaused();
-        cachePosition = position + (duration * g_application.GetAppPlayer().GetCachePercentage() / 100.0f);
+        position = static_cast<float>(appPlayer->GetTime()) / 1000;
+        duration = static_cast<float>(appPlayer->GetTotalTime()) / 1000;
+        playing = !appPlayer->IsPaused();
+        cachePosition = position + (duration * appPlayer->GetCachePercentage() / 100.0f);
       }
 
       responseBody = StringUtils::Format(PLAYBACK_INFO, duration, cachePosition, position, (playing ? 1 : 0), duration);
       responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
 
-      if (g_application.GetAppPlayer().IsCaching())
+      if (appPlayer->IsCaching())
       {
         CAirPlayServer::ServerInstance->AnnounceToClients(EVENT_LOADING);
       }

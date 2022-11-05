@@ -9,7 +9,9 @@
 
 #include "PlayListXSPF.h"
 
+#include "FileItem.h"
 #include "URL.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
