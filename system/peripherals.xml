@@ -52,7 +52,7 @@
     <setting key="keymap" value="wetek-play" label="35007" configurable="0" />
   </peripheral>
 
-  <peripheral vendor_product="2252:1037,2017:1688,2017:1689" bus="usb" name="OSMC RF Remote" mapTo="hid">
+  <peripheral vendor_product="2252:1037,2017:1688,2017:1689,2017:1690" bus="usb" name="OSMC RF Remote" mapTo="hid">
      <setting key="do_not_use_custom_keymap" type="bool" value="0" label="35009" order="1"/>
      <setting key="keymap" value="osmc" label="35007" configurable="1"/>
   </peripheral>
