@@ -159,6 +159,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVREpgInfoTag>& tag)
   m_bIsFolder = false;
   m_epgInfoTag = tag;
   m_strPath = tag->Path();
+  m_bCanQueue = false;
   SetLabel(GetEpgTagTitle(tag));
   m_dateTime = tag->StartAsLocalTime();
 
@@ -193,6 +194,7 @@ CFileItem::CFileItem(const std::shared_ptr<PVR::CPVREpgSearchFilter>& filter)
   m_bIsFolder = true;
   m_epgSearchFilter = filter;
   m_strPath = filter->GetPath();
+  m_bCanQueue = false;
   SetLabel(filter->GetTitle());
 
   const CDateTime lastExec = filter->GetLastExecutedDateTime();
@@ -217,7 +219,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
 
   m_strPath = channelGroupMember->Path();
   m_bIsFolder = false;
-
+  m_bCanQueue = false;
   SetLabel(channel->ChannelName());
 
   if (!channel->IconPath().empty())
@@ -252,6 +254,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
   SetLabel(record->m_strTitle);
   m_dateTime = record->RecordingTimeAsLocalTime();
   m_dwSize = record->GetSizeInBytes();
+  m_bCanQueue = true;
 
   // Set art
   if (!record->IconPath().empty())
@@ -288,6 +291,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRTimerInfoTag>& timer)
   m_strPath = timer->Path();
   SetLabel(timer->Title());
   m_dateTime = timer->StartAsLocalTime();
+  m_bCanQueue = false;
 
   if (!timer->ChannelIcon().empty())
     SetArt("icon", timer->ChannelIcon());
