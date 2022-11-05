@@ -130,6 +130,18 @@ void CTextureCache::BackgroundCacheImage(const std::string &url)
   AddJob(new CTextureCacheJob(path, details.hash));
 }
 
+bool CTextureCache::StartCacheImage(const std::string& image)
+{
+  std::unique_lock<CCriticalSection> lock(m_processingSection);
+  std::set<std::string>::iterator i = m_processinglist.find(image);
+  if (i == m_processinglist.end())
+  {
+    m_processinglist.insert(image);
+    return true;
+  }
+  return false;
+}
+
 std::string CTextureCache::CacheImage(const std::string& image,
                                       std::unique_ptr<CTexture>* texture /*= nullptr*/,
                                       CTextureDetails* details /*= nullptr*/)
@@ -304,26 +316,6 @@ void CTextureCache::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   if (strcmp(job->GetType(), kJobTypeCacheImage) == 0)
     OnCachingComplete(success, static_cast<CTextureCacheJob*>(job));
   return CJobQueue::OnJobComplete(jobID, success, job);
-}
-
-void CTextureCache::OnJobProgress(unsigned int jobID, unsigned int progress, unsigned int total, const CJob *job)
-{
-  if (strcmp(job->GetType(), kJobTypeCacheImage) == 0 && !progress)
-  { // check our processing list
-    {
-      std::unique_lock<CCriticalSection> lock(m_processingSection);
-      const CTextureCacheJob *cacheJob = static_cast<const CTextureCacheJob*>(job);
-      std::set<std::string>::iterator i = m_processinglist.find(cacheJob->m_url);
-      if (i == m_processinglist.end())
-      {
-        m_processinglist.insert(cacheJob->m_url);
-        return;
-      }
-    }
-    CancelJob(job);
-  }
-  else
-    CJobQueue::OnJobProgress(jobID, progress, total, job);
 }
 
 bool CTextureCache::Export(const std::string &image, const std::string &destination, bool overwrite)
