@@ -4,8 +4,9 @@
 #
 # This will define the following variables:
 #
-# FLATBUFFERS_FOUND - system has FlatBuffers compiler and headers
+# FLATBUFFERS_FLATC_EXECUTABLE_FOUND - system has FlatBuffers compiler
 # FLATBUFFERS_FLATC_EXECUTABLE - the flatc compiler executable
+# FLATBUFFERS_FLATC_VERSION - the flatc compiler version
 #
 # and the following imported targets:
 #
@@ -13,15 +14,24 @@
 
 include(cmake/scripts/common/ModuleHelpers.cmake)
 
-set(MODULE_LC flatbuffers)
-
-SETUP_BUILD_VARS()
-
 # Check for existing FLATC.
 find_program(FLATBUFFERS_FLATC_EXECUTABLE NAMES flatc
                                           HINTS ${NATIVEPREFIX}/bin)
 
-if(NOT FLATBUFFERS_FLATC_EXECUTABLE)
+if(FLATBUFFERS_FLATC_EXECUTABLE)
+  execute_process(COMMAND "${FLATBUFFERS_FLATC_EXECUTABLE}" --version
+                  OUTPUT_VARIABLE FLATBUFFERS_FLATC_VERSION
+                  OUTPUT_STRIP_TRAILING_WHITESPACE)
+  string(REGEX MATCH "[^\n]* version [^\n]*" FLATBUFFERS_FLATC_VERSION "${FLATBUFFERS_FLATC_VERSION}")
+  string(REGEX REPLACE ".* version (.*)" "\\1" FLATBUFFERS_FLATC_VERSION "${FLATBUFFERS_FLATC_VERSION}")
+
+else()
+
+  set(MODULE_LC flatbuffers)
+  # Duplicate URL may exist from FindFlatbuffers.cmake
+  # unset otherwise it thinks we are providing a local file location and incorrect concatenation happens
+  unset(FLATBUFFERS_URL)
+  SETUP_BUILD_VARS()
 
   # Override build type detection and always build as release
   set(FLATBUFFERS_BUILD_TYPE Release)
@@ -57,6 +67,7 @@ if(NOT FLATBUFFERS_FLATC_EXECUTABLE)
 
   set(BUILD_NAME flatc)
   set(BUILD_BYPRODUCTS ${FLATBUFFERS_FLATC_EXECUTABLE})
+  set(FLATBUFFERS_FLATC_VERSION ${FLATBUFFERS_VER})
 
   BUILD_DEP_TARGET()
 endif()
@@ -64,7 +75,7 @@ endif()
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(FlatC
                                   REQUIRED_VARS FLATBUFFERS_FLATC_EXECUTABLE
-                                  VERSION_VAR FLATBUFFERS_VER)
+                                  VERSION_VAR FLATBUFFERS_FLATC_VERSION)
 
 if(FLATC_FOUND)
 
