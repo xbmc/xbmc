@@ -727,6 +727,24 @@ bool IsItemPlayable(const CFileItem& item)
   if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_PLAYLIST)
     return false;
 
+  // Include playlists located at one of the possible music playlist locations
+  if (item.IsPlayList())
+  {
+    if (StringUtils::StartsWithNoCase(item.GetPath(), "special://musicplaylists/") ||
+        StringUtils::StartsWithNoCase(item.GetPath(), "special://profile/playlists/music/"))
+      return true;
+
+    // Has user changed default playlists location and the list is located there?
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    std::string path = settings->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH);
+    StringUtils::TrimRight(path, "/");
+    if (StringUtils::StartsWith(item.GetPath(), StringUtils::Format("{}/music/", path)))
+      return true;
+
+    // Unknown location. Type cannot be determined.
+    return false;
+  }
+
   if (item.m_bIsFolder &&
       (item.IsMusicDb() || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/")))
   {
@@ -740,8 +758,6 @@ bool IsItemPlayable(const CFileItem& item)
   }
 
   if (item.HasMusicInfoTag() && item.CanQueue())
-    return true;
-  else if (item.IsPlayList() && item.IsAudio())
     return true;
   else if (!item.m_bIsFolder && item.IsAudio())
     return true;
