@@ -21,6 +21,8 @@ configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/gradle/wrapper/gradle
                ${CMAKE_BINARY_DIR}/tools/android/packaging/gradle/wrapper/gradle-wrapper.jar COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/gradle/wrapper/gradle-wrapper.properties
                ${CMAKE_BINARY_DIR}/tools/android/packaging/gradle/wrapper/gradle-wrapper.properties COPYONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/android/packaging/xbmc/jni/Android.mk
+               ${CMAKE_BINARY_DIR}/tools/android/packaging/xbmc/jni/Android.mk COPYONLY)
 file(WRITE ${CMAKE_BINARY_DIR}/tools/depends/Makefile.include
      "$(PREFIX)/lib/${APP_NAME_LC}/lib${APP_NAME_LC}.so: ;\n")
 
