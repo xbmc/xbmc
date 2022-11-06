@@ -399,7 +399,7 @@ void CGUIWindowVideoPlaylist::SavePlayList()
   {
     // need 2 rename it
     strNewFileName = CUtil::MakeLegalFileName(strNewFileName);
-    strNewFileName += ".m3u";
+    strNewFileName += ".m3u8";
     std::string strPath = URIUtils::AddFileToFolder(
       CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_SYSTEM_PLAYLISTSPATH),
       "video",
