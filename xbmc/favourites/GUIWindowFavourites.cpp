@@ -16,6 +16,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "messaging/ApplicationMessenger.h"
 #include "storage/MediaManager.h"
 #include "view/GUIViewState.h"
 
@@ -23,6 +24,19 @@ CGUIWindowFavourites::CGUIWindowFavourites()
   : CGUIMediaWindow(WINDOW_FAVOURITES, "MyFavourites.xml")
 {
   m_loadType = KEEP_IN_MEMORY;
+  CServiceBroker::GetFavouritesService().Events().Subscribe(
+      this, &CGUIWindowFavourites::OnFavouritesEvent);
+}
+
+CGUIWindowFavourites::~CGUIWindowFavourites()
+{
+  CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
+}
+
+void CGUIWindowFavourites::OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event)
+{
+  CGUIMessage m(GUI_MSG_REFRESH_LIST, GetID(), 0, 0);
+  CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
 }
 
 bool CGUIWindowFavourites::OnSelect(int item)
@@ -37,9 +51,33 @@ bool CGUIWindowFavourites::OnSelect(int item)
   return true;
 }
 
-bool CGUIWindowFavourites::OnPopupMenu(int item)
+bool CGUIWindowFavourites::OnMessage(CGUIMessage& message)
 {
-  return CGUIMediaWindow::OnPopupMenu(item) && Refresh(true);
+  bool ret = false;
+
+  switch (message.GetMessage())
+  {
+    case GUI_MSG_REFRESH_LIST:
+    {
+      const int size = m_vecItems->Size();
+      int selected = m_viewControl.GetSelectedItem();
+      if (m_vecItems->Size() > 0 && selected == size - 1)
+        --selected; // remove of last item, select the new last item after refresh
+
+      Refresh(true);
+
+      if (m_vecItems->Size() < size)
+      {
+        // item removed. select item after the removed item
+        m_viewControl.SetSelectedItem(selected);
+      }
+
+      ret = true;
+      break;
+    }
+  }
+
+  return ret || CGUIMediaWindow::OnMessage(message);
 }
 
 bool CGUIWindowFavourites::Update(const std::string& strDirectory,
