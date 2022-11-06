@@ -20,7 +20,6 @@ rem noprompt to avoid all prompts
 rem nobinaryaddons to skip building binary addons
 rem sh to use sh shell instead rxvt
 CLS
-COLOR 1B
 TITLE %APP_NAME% for Windows Build Script
 rem ----PURPOSE----
 rem - Create a working application build with a single click
@@ -171,8 +170,7 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
     IF EXIST error.log del error.log > NUL
   )
 
-  rem restore color and title, some scripts mess these up
-  COLOR 1B
+  rem restore title, some scripts mess these up
   TITLE %APP_NAME% for Windows Build Script
 
   IF EXIST exclude.txt del exclude.txt > NUL
