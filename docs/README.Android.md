@@ -368,11 +368,11 @@ Enable CheckJNI (**before** starting the Kodi):
 adb shell setprop debug.checkjni 1
 ```
 
-**NOTE:** These commands assume that current directory is `tools/android/packaging` and that the proper SDK/NDK paths are set.
+**NOTE:** These commands assume that current directory is `$HOME/kodi-build/tools/android/packaging` and that the proper SDK/NDK paths are set.
 
-GDB can be used to debug, though the support is rather primitive. Rather than using gdb directly, you will need to use ndk-gdb which wraps it. Do **not** trust the `-p/--project` switches, as they do not work. Instead you will need to `cd` to `tools/android/packaging/xbmc` and execute it from there.
+GDB can be used to debug, though the support is rather primitive. Rather than using `gdb` directly, you will need to use `ndk-gdb` which wraps it. You can use the `-p/--project` switches or instead you will need to `cd` to `$HOME/kodi-build/tools/android/packaging/xbmc` and execute it from there.
 ```
- ndk-gdb --start --delay=0
+ ndk-gdb --verbose
 ```
 
 This will open the installed version of Kodi and break. The warnings can be ignored as we have the appropriate paths already setup.
