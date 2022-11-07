@@ -6993,13 +6993,7 @@ msgctxt "#13361"
 msgid "Enable voice"
 msgstr ""
 
-#. label for resume context menu item for video folders (like a TV show or a single season of a TV show)
-#: xbmc/video/windows/GUIWindowVideoBase.cpp
-msgctxt "#13362"
-msgid "Continue watching"
-msgstr ""
-
-#empty strings from id 13363 to 13374
+#empty strings from id 13362 to 13374
 
 msgctxt "#13375"
 msgid "Enable device"
