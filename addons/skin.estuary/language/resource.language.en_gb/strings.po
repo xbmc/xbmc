@@ -844,7 +844,19 @@ msgctxt "#31174"
 msgid "Default select action for albums on the home screen"
 msgstr ""
 
-#empty strings from id 31175 to 31599
+#: /xml/SkinSettings.xml
+#. Setting to control what happens when clicking a TV show on the home screen
+msgctxt "#31175"
+msgid "Default select action for TV shows on the home screen"
+msgstr ""
+
+#: /xml/SkinSettings.xml
+#. Setting to control what happens when clicking a movie set on the home screen
+msgctxt "#31176"
+msgid "Default select action for movie sets on the home screen"
+msgstr ""
+
+#empty strings from id 31177 to 31599
 
 #: /xml/DialogPlayerProcessInfo.xml
 #. Label to show the video codec name
