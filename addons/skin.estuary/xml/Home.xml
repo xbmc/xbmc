@@ -96,6 +96,8 @@
 							<param name="widget_target" value="videos"/>
 							<param name="sortby" value="random"/>
 							<param name="list_id" value="5600"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="$VAR[MovieSetOnClickActionVar]"/>
 						</include>
 					</control>
 					<include content="ImageWidget" condition="!Library.HasContent(movies)">
@@ -131,6 +133,8 @@
 							<param name="widget_header" value="$LOCALIZE[626]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6100"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="$VAR[TVShowOnClickActionVar]"/>
 						</include>
 						<include content="WidgetListEpisodes" condition="Library.HasContent(tvshows)">
 							<param name="content_path" value="special://skin/playlists/recent_unwatched_episodes.xsp"/>
@@ -143,6 +147,8 @@
 							<param name="widget_header" value="$LOCALIZE[31122]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="6300"/>
+							<param name="onclick_condition" value="true"/>
+							<param name="onclick_action" value="$VAR[TVShowOnClickActionVar]"/>
 						</include>
 						<include content="WidgetListCategories" condition="Library.HasContent(tvshows)">
 							<param name="content_path" value="videodb://tvshows/genres/"/>
