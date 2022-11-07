@@ -167,6 +167,13 @@
 					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
 					<enable>!Skin.HasSetting(HomeMenuNoMovieButton)</enable>
 				</control>
+				<control type="button" id="627">
+					<label>- $LOCALIZE[31176]</label>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.SelectBool(31176, 37015|movieset_onclick_browse, 13362|movieset_onclick_continuewatching, 12021|movieset_onclick_playfrombeginning, 10008|movieset_onclick_playnext, 13347|movieset_onclick_queue)</onclick>
+					<label2>$VAR[MovieSetOnClickActionLabel2Var]</label2>
+					<enable>!Skin.HasSetting(HomeMenuNoMovieButton)</enable>
+				</control>
 				<control type="radiobutton" id="612">
 					<label>$LOCALIZE[20343]</label>
 					<include>DefaultSettingButton</include>
@@ -179,6 +186,13 @@
 					<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=video,return)</onclick>
 					<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
 					<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+					<enable>!Skin.HasSetting(HomeMenuNoTVShowButton)</enable>
+				</control>
+				<control type="button" id="626">
+					<label>- $LOCALIZE[31175]</label>
+					<include>DefaultSettingButton</include>
+					<onclick>Skin.SelectBool(31175, 37015|tvshow_onclick_browse, 13362|tvshow_onclick_continuewatching, 12021|tvshow_onclick_playfrombeginning, 10008|tvshow_onclick_playnext, 13347|tvshow_onclick_queue)</onclick>
+					<label2>$VAR[TVShowOnClickActionLabel2Var]</label2>
 					<enable>!Skin.HasSetting(HomeMenuNoTVShowButton)</enable>
 				</control>
 				<control type="radiobutton" id="613">
