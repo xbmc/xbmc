@@ -2138,19 +2138,6 @@ bool CVideoDatabase::GetTvShowInfo(const std::string& strPath, CVideoInfoTag& de
 
 bool CVideoDatabase::GetSeasonInfo(int idSeason, CVideoInfoTag& details, bool allDetails /* = true */)
 {
-  if (allDetails)
-  {
-    CFileItem dummy; // only interested in the tag data...
-    return GetSeasonInfo(idSeason, details, &dummy);
-  }
-  else
-  {
-    return GetSeasonInfo(idSeason, details, nullptr);
-  }
-}
-
-bool CVideoDatabase::GetSeasonInfo(int idSeason, CVideoInfoTag& details, CFileItem* item)
-{
   if (idSeason < 0)
     return false;
 
@@ -2166,7 +2153,7 @@ bool CVideoDatabase::GetSeasonInfo(int idSeason, CVideoInfoTag& details, CFileIt
     if (m_pDS->num_rows() != 1)
       return false;
 
-    if (item)
+    if (allDetails)
     {
       int idShow = m_pDS->fv(1).get_asInt();
 
@@ -2188,7 +2175,6 @@ bool CVideoDatabase::GetSeasonInfo(int idSeason, CVideoInfoTag& details, CFileIt
         if (season->HasVideoInfoTag() && season->GetVideoInfoTag()->m_iDbId == idSeason && season->GetVideoInfoTag()->m_iIdShow == idShow)
         {
           details = *season->GetVideoInfoTag();
-          *item = *season;
           return true;
         }
       }
@@ -2297,7 +2283,7 @@ bool CVideoDatabase::GetMusicVideoInfo(const std::string& strFilenameAndPath, CV
   return false;
 }
 
-bool CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details, CFileItem* item /* = nullptr */)
+bool CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details)
 {
   try
   {
@@ -2313,8 +2299,6 @@ bool CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details, CFileItem* it
       return false;
 
     details = *(items[0]->GetVideoInfoTag());
-    if (item)
-      *item = *items[0];
     return !details.IsEmpty();
   }
   catch (...)
@@ -3838,7 +3822,7 @@ void CVideoDatabase::GetDetailsFromDB(const dbiplus::sql_record* const record, i
   }
 }
 
-bool CVideoDatabase::GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType type, int id)
+CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VideoDbContentType type, int id)
 {
   CVideoInfoTag details;
   details.Reset();
@@ -3849,7 +3833,7 @@ bool CVideoDatabase::GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType t
       GetMovieInfo("", details, id);
       break;
     case VideoDbContentType::TVSHOWS:
-      GetTvShowInfo("", details, id, &item);
+      GetTvShowInfo("", details, id);
       break;
     case VideoDbContentType::EPISODES:
       GetEpisodeInfo("", details, id);
@@ -3858,20 +3842,10 @@ bool CVideoDatabase::GetDetailsByTypeAndId(CFileItem& item, VideoDbContentType t
       GetMusicVideoInfo("", details, id);
       break;
     default:
-      return false;
+      break;
   }
 
-  item.SetFromVideoInfoTag(details);
-  return true;
-}
-
-CVideoInfoTag CVideoDatabase::GetDetailsByTypeAndId(VideoDbContentType type, int id)
-{
-  CFileItem item;
-  if (GetDetailsByTypeAndId(item, type, id))
-    return CVideoInfoTag(*item.GetVideoInfoTag());
-
-  return {};
+  return details;
 }
 
 bool CVideoDatabase::GetStreamDetails(CFileItem& item)

@@ -493,13 +493,9 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
   if (!item.m_bIsFolder && item.IsPlugin())
     item.SetProperty("IsPlayable", true);
 
-  // Here, the item instance has only the path and the folder flag. We need some
-  // extended item properties to process resume successfully. Load them.
-  item.LoadDetails();
-
-  if (askToResume)
+  if (askToResume == true)
   {
-    if (!CGUIWindowVideoBase::ShowResumeMenu(item))
+    if (CGUIWindowVideoBase::ShowResumeMenu(item) == false)
       return false;
   }
 
@@ -583,13 +579,6 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 
   if (forcePlay)
   {
-    if (item.HasVideoInfoTag() && item.GetStartOffset() == STARTOFFSET_RESUME)
-    {
-      const CBookmark bookmark = item.GetVideoInfoTag()->GetResumePoint();
-      if (bookmark.IsSet())
-        item.SetStartOffset(CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds));
-    }
-
     if ((item.IsAudio() || item.IsVideo()) && !item.IsSmartPlayList())
       CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
     else

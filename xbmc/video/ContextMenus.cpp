@@ -166,7 +166,7 @@ bool CVideoResume::IsVisible(const CFileItem& itemIn) const
   if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
 
-  return !CGUIWindowVideoBase::GetResumeString(item).empty();
+  return CGUIWindowVideoBase::HasResumeItemOffset(&item);
 }
 
 namespace
@@ -294,7 +294,7 @@ std::string CVideoPlay::GetLabel(const CFileItem& itemIn) const
   CFileItem item(itemIn.GetItemToPlay());
   if (item.IsLiveTV())
     return g_localizeStrings.Get(19000); // Switch to channel
-  if (!CGUIWindowVideoBase::GetResumeString(item).empty())
+  if (CGUIWindowVideoBase::HasResumeItemOffset(&item))
     return g_localizeStrings.Get(12021); // Play from beginning
   return g_localizeStrings.Get(208); // Play
 }
