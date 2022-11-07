@@ -125,10 +125,6 @@ libs: $(PREFIX)/lib/@APP_NAME_LC@/lib@APP_NAME_LC@.so
 	cp -fp xbmc/obj/local/$(CPU)/*.so xbmc/lib/$(CPU)/
 	$(STRIP) --strip-unneeded xbmc/lib/$(CPU)/*.so
 	(test -s $(STLLIB) && install -p $(STLLIB) ./xbmc/lib/$(CPU)/) || true
-	install -p $(GDBPATH) ./xbmc/lib/$(CPU)/gdbserver
-	echo "set solib-search-path ./obj/local/$(CPU)" > ./xbmc/lib/$(CPU)/gdb.setup
-	echo "directory $(TOOLCHAIN)/sysroot/usr/include $(NDKROOT)/sources/android/native_app_glue" \
-             "$(NDKROOT)/sources/cxx-stl/gnu-libstdc++/$(GCC_VERSION)/include $(CORE_SOURCE_DIR)  $(PREFIX)/include jni" >> ./xbmc/lib/$(CPU)/gdb.setup
 
 java: res
 	mkdir -p xbmc/java/$(APP_PACKAGE_DIR) xbmc/obj
