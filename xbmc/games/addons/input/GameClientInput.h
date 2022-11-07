@@ -69,7 +69,7 @@ public:
   bool SupportsKeyboard() const;
   bool SupportsMouse() const;
   int GetPlayerLimit() const;
-  bool ConnectController(const std::string& portAddress, ControllerPtr controller);
+  bool ConnectController(const std::string& portAddress, const ControllerPtr& controller);
   bool DisconnectController(const std::string& portAddress);
   void SavePorts();
   void ResetPorts();
@@ -79,12 +79,12 @@ public:
   void CloseJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
 
   // Keyboard functions
-  bool OpenKeyboard(const ControllerPtr& controller, PERIPHERALS::PeripheralPtr keyboard);
+  bool OpenKeyboard(const ControllerPtr& controller, const PERIPHERALS::PeripheralPtr& keyboard);
   bool IsKeyboardOpen() const;
   void CloseKeyboard();
 
   // Mouse functions
-  bool OpenMouse(const ControllerPtr& controller, PERIPHERALS::PeripheralPtr mouse);
+  bool OpenMouse(const ControllerPtr& controller, const PERIPHERALS::PeripheralPtr& mouse);
   bool IsMouseOpen() const;
   void CloseMouse();
 
