@@ -69,6 +69,13 @@ struct CVideoMarkUnWatched : CStaticContextMenuAction
   bool Execute(const std::shared_ptr<CFileItem>& item) const override;
 };
 
+struct CVideoBrowse : CStaticContextMenuAction
+{
+  CVideoBrowse() : CStaticContextMenuAction(37015) {} // Browse into
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
 struct CVideoResume : IContextMenuItem
 {
   std::string GetLabel(const CFileItem& item) const override;
