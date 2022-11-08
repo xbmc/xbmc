@@ -444,6 +444,54 @@ private:
   CMusicDatabase m_musicDatabase;
 };
 
+SortDescription GetSortDescription(const CGUIViewState& state, const CFileItemList& items)
+{
+  SortDescription sortDescTrackNumber;
+
+  auto sortDescriptions = state.GetSortDescriptions();
+  for (auto& sortDescription : sortDescriptions)
+  {
+    if (sortDescription.sortBy == SortByTrackNumber)
+    {
+      // check whether at least one item has actually a track number set
+      for (const auto& item : items)
+      {
+        if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetTrackNumber() > 0)
+        {
+          // First choice for folders containing a single album
+          sortDescTrackNumber = sortDescription;
+          sortDescTrackNumber.sortOrder = SortOrderAscending;
+          break; // leave items loop. we can still find ByArtistThenYear. so, no return here.
+        }
+      }
+    }
+    else if (sortDescription.sortBy == SortByArtistThenYear)
+    {
+      // check whether songs from at least two different albums are in the list
+      int lastAlbumId = -1;
+      for (const auto& item : items)
+      {
+        if (item->HasMusicInfoTag())
+        {
+          const auto tag = item->GetMusicInfoTag();
+          if (lastAlbumId != -1 && tag->GetAlbumId() != lastAlbumId)
+          {
+            // First choice for folders containing multiple albums
+            sortDescription.sortOrder = SortOrderAscending;
+            return sortDescription;
+          }
+          lastAlbumId = tag->GetAlbumId();
+        }
+      }
+    }
+  }
+
+  if (sortDescTrackNumber.sortBy != SortByNone)
+    return sortDescTrackNumber;
+  else
+    return state.GetSortMethod(); // last resort
+}
+
 void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileItem>& item)
 {
   if (item->IsParentFolder() || !item->CanQueue() || item->IsRAR() || item->IsZIP())
@@ -505,10 +553,12 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
           fileFormatter.FormatLabels(i.get());
       }
 
-      if (items.GetSortMethod() == SortByLabel)
+      const SortDescription sortDesc = GetSortDescription(*state, items);
+
+      if (sortDesc.sortBy == SortByLabel)
         items.ClearSortState();
 
-      items.Sort(state->GetSortMethod());
+      items.Sort(sortDesc);
     }
 
     for (const auto& i : items)
