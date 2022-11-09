@@ -17,7 +17,7 @@ else()
     set(LIBDVD_TARGET_DIR dlls)
   endif()
   copy_file_to_buildtree(${DEPENDS_PATH}/bin/libdvdnav.dll DIRECTORY ${LIBDVD_TARGET_DIR})
-  add_dependencies(export-files LibDvdNav::LibDvdNav)
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP LibDvdNav::LibDvdNav)
 endif()
 
 set(LIBDVD_INCLUDE_DIRS ${LIBDVDREAD_INCLUDE_DIR} ${LIBDVDNAV_INCLUDE_DIR})
