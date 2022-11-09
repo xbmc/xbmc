@@ -132,11 +132,11 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   copy %base_dir%\privacy-policy.txt BUILD_WIN32\application > NUL
   copy %base_dir%\known_issues.txt BUILD_WIN32\application > NUL
 
-  xcopy %WORKSPACE%\addons BUILD_WIN32\application\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
-  xcopy %WORKSPACE%\*.dll BUILD_WIN32\application /Q /I /Y > NUL
-  xcopy %WORKSPACE%\libbluray-*.jar BUILD_WIN32\application /Q /I /Y > NUL
-  xcopy %WORKSPACE%\system BUILD_WIN32\application\system /E /Q /I /Y /EXCLUDE:exclude.txt+exclude_dll.txt  > NUL
-  xcopy %WORKSPACE%\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
+  xcopy %WORKSPACE%\%buildconfig%\addons BUILD_WIN32\application\addons /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
+  xcopy %WORKSPACE%\%buildconfig%\*.dll BUILD_WIN32\application /Q /I /Y > NUL
+  xcopy %WORKSPACE%\%buildconfig%\libbluray-*.jar BUILD_WIN32\application /Q /I /Y > NUL
+  xcopy %WORKSPACE%\%buildconfig%\system BUILD_WIN32\application\system /E /Q /I /Y /EXCLUDE:exclude.txt+exclude_dll.txt  > NUL
+  xcopy %WORKSPACE%\%buildconfig%\media BUILD_WIN32\application\media /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
 
   REM create AppxManifest.xml
   @PowerShell "(GC .\AppxManifest.xml.in)|%%{$_" ^

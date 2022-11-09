@@ -1,1 +1,1 @@
-project/BuildDependencies/win10-${ARCH}/bin/*.dll dlls
+project/BuildDependencies/win10-${ARCH}/bin/*.dll .

@@ -8,16 +8,19 @@
 #   xbt is added to ${XBT_FILES}
 function(pack_xbt input output)
   file(GLOB_RECURSE MEDIA_FILES ${input}/*)
+
   get_filename_component(dir ${output} DIRECTORY)
-  add_custom_command(OUTPUT  ${output}
-                     COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}
-                     COMMAND TexturePacker::TexturePacker::Executable
-                     ARGS    -input ${input}
-                             -output ${output}
-                             -dupecheck
-                     DEPENDS ${MEDIA_FILES})
-  list(APPEND XBT_FILES ${output})
-  set(XBT_FILES ${XBT_FILES} PARENT_SCOPE)
+  if(${CORE_SYSTEM_NAME} MATCHES "windows")
+    string(REPLACE "${CMAKE_BINARY_DIR}" "\$\{BUNDLEDIR\}" dir ${dir})
+    string(REPLACE "${CMAKE_BINARY_DIR}" "\$\{BUNDLEDIR\}" output ${output})
+  endif()
+
+  file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
+"execute_process(COMMAND \"${CMAKE_COMMAND}\" -E make_directory ${dir})
+execute_process(COMMAND \$\{TEXTUREPACKER_EXECUTABLE\} -input ${input} -output ${output} -dupecheck)\n")
+
+    list(APPEND XBT_FILES ${output})
+    set(XBT_FILES ${XBT_FILES} PARENT_SCOPE)
 endfunction()
 
 # Add a skin to installation list, mirroring it in build tree, packing textures
@@ -32,7 +35,7 @@ function(copy_skin_to_buildtree skin)
   foreach(file ${FILES})
     copy_file_to_buildtree(${file})
   endforeach()
-  file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${dest}/media)
+
   string(REPLACE "${CMAKE_SOURCE_DIR}/" "" dest ${skin})
   pack_xbt(${skin}/media ${CMAKE_BINARY_DIR}/${dest}/media/Textures.xbt)
 
