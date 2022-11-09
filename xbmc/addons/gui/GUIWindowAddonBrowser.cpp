@@ -206,18 +206,14 @@ void CGUIWindowAddonBrowser::InstallFromZip()
   }
   else
   {
-    if (ShowYesNoDialogText(19098, 36637) == DialogResponse::CHOICE_YES)
+    // pop up filebrowser to grab an installed folder
+    VECSOURCES shares = *CMediaSourceSettings::GetInstance().GetSources("files");
+    CServiceBroker::GetMediaManager().GetLocalDrives(shares);
+    CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
+    std::string path;
+    if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041), path))
     {
-      // pop up filebrowser to grab an installed folder
-      VECSOURCES shares = *CMediaSourceSettings::GetInstance().GetSources("files");
-      CServiceBroker::GetMediaManager().GetLocalDrives(shares);
-      CServiceBroker::GetMediaManager().GetNetworkLocations(shares);
-      std::string path;
-      if (CGUIDialogFileBrowser::ShowAndGetFile(shares, "*.zip", g_localizeStrings.Get(24041),
-                                                path))
-      {
-        CAddonInstaller::GetInstance().InstallFromZip(path);
-      }
+      CAddonInstaller::GetInstance().InstallFromZip(path);
     }
   }
 }
