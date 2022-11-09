@@ -115,9 +115,9 @@ macro(winstore_append_props target)
   set(DEBUG_DLLS zlibd.dll)
   foreach(_dll ${DEBUG_DLLS})
     if (DEBUG_DLLS_EXCLUDE)
-      list(APPEND DEBUG_DLLS_EXCLUDE "\;$(BuildRootPath)/dlls/${_dll}")
+      list(APPEND DEBUG_DLLS_EXCLUDE "\;$(BuildRootPath)/${_dll}")
     else()
-      list(APPEND DEBUG_DLLS_EXCLUDE "$(BuildRootPath)/dlls/${_dll}")
+      list(APPEND DEBUG_DLLS_EXCLUDE "$(BuildRootPath)/${_dll}")
     endif()
     string(CONCAT DEBUG_DLLS_LINKAGE_PROPS "${DEBUG_DLLS_LINKAGE_PROPS}"
     "  <ItemGroup Label=\"Binaries\">\n"
@@ -127,7 +127,7 @@ macro(winstore_append_props target)
     "  </ItemGroup>\n")
   endforeach(_dll DEBUG_DLLS)
 
-  add_deployment_content_group($(BuildRootPath)/dlls "" *.dll "${DEBUG_DLLS_EXCLUDE}")
+  add_deployment_content_group($(BuildRootPath) "" *.dll "${DEBUG_DLLS_EXCLUDE}")
   add_deployment_content_group($(BuildRootPath)/system system **/* "$(BuildRootPath)/**/shaders/**")
   add_deployment_content_group($(BuildRootPath)/system/shaders system/shaders **/*.fx "")
   add_deployment_content_group($(BuildRootPath)/media media **/* "")
@@ -158,7 +158,7 @@ macro(winstore_append_props target)
     "  <ImportGroup Label=\"PropertySheets\" />\n"
     "  <PropertyGroup Label=\"APP_DLLS\">\n"
     "    <BinPath>${DEPENDENCIES_DIR_NATIVE}\\bin</BinPath>\n"
-    "    <BuildRootPath>${CMAKE_CURRENT_BINARY_DIR_NATIVE}</BuildRootPath>\n"
+    "    <BuildRootPath>${CMAKE_CURRENT_BINARY_DIR_NATIVE}\\$(Configuration)</BuildRootPath>\n"
     "    <BinaryAddonsPath>${BINARY_ADDONS_DIR_NATIVE}</BinaryAddonsPath>\n"
     "  </PropertyGroup>\n"
     "${DEBUG_DLLS_LINKAGE_PROPS}"

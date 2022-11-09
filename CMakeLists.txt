@@ -139,6 +139,9 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
+# Clean any existing generated build dir cmake files
+file(REMOVE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
+file(REMOVE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/GeneratedPackSkins.cmake)
 
 foreach(depspec ${PLATFORM_REQUIRED_DEPS})
   # We need to specify ENABLE_${PLATFORM_REQUIRED_DEPS} in order for the
@@ -267,7 +270,6 @@ endif()
 
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
-                          ${ADDON_XML_OUTPUTS}
                    COMMAND ${CMAKE_COMMAND} -DCORE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
                                             -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                                             -DCORE_PLATFORM_NAME_LC="${CORE_PLATFORM_NAME_LC}"
@@ -282,10 +284,8 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -DPYTHON_VERSION=${PYTHON_VERSION}
                                             -Dprefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
                                             -DKODI_WEBSERVER_EXTRA_WHITELIST="${KODI_WEBSERVER_EXTRA_WHITELIST}"
-                                            -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateVersionedFiles.cmake
+                                            -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateCompileInfo.cmake
                    DEPENDS ${CMAKE_SOURCE_DIR}/version.txt
-                           export-files
-                           ${ADDON_XML_DEPENDS}
                            ${CMAKE_SOURCE_DIR}/xbmc/CompileInfo.cpp.in)
 list(APPEND install_data ${ADDON_INSTALL_DATA})
 add_library(compileinfo OBJECT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp)
@@ -327,18 +327,9 @@ copy_files_from_filelist_to_buildtree(${CMAKE_SOURCE_DIR}/cmake/installdata/comm
 list(APPEND SKINS "${CMAKE_SOURCE_DIR}/addons/skin.estuary\;${CMAKE_SOURCE_DIR}")
 list(APPEND SKINS "${CMAKE_SOURCE_DIR}/addons/skin.estouchy\;${CMAKE_SOURCE_DIR}")
 
-# These are skins that are copied into place from the source tree
-foreach(skin ${SKINS})
-  list(GET skin 0 dir)
-  list(GET skin 1 relative)
-  copy_skin_to_buildtree(${dir} ${relative})
-endforeach()
-
-add_custom_target(pack-skins ALL
-                  DEPENDS TexturePacker::TexturePacker::Executable export-files ${XBT_FILES})
-set_target_properties(pack-skins PROPERTIES FOLDER "Build Utilities")
-
-file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
+if(NOT ${CORE_SYSTEM_NAME} MATCHES "windows")
+  file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
+endif()
 
 set(LIBCEC_SONAME "${CEC_SONAME}")
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL android AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
@@ -408,10 +399,55 @@ else()
   # Related to https://stackoverflow.com/questions/46307266/including-objects-to-a-shared-library-from-a-c-archive-a
   set_target_properties(${APP_NAME_LC} PROPERTIES LINK_FLAGS "-Wl,-Bsymbolic")
 endif()
-add_dependencies(${APP_NAME_LC} ${APP_NAME_LC}-libraries export-files pack-skins)
+add_dependencies(${APP_NAME_LC} ${APP_NAME_LC}-libraries)
+
 whole_archive(_MAIN_LIBRARIES ${FSTRCMP_LIBRARY} ${core_DEPENDS})
 target_link_libraries(${APP_NAME_LC} ${_MAIN_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS})
 unset(_MAIN_LIBRARIES)
+
+if(${CORE_SYSTEM_NAME} MATCHES "windows")
+  set(_bundle_dir $<TARGET_FILE_DIR:${APP_NAME_LC}>)
+else()
+  set(_bundle_dir ${CMAKE_BINARY_DIR})
+endif()
+
+# These are skins that are copied into place from the source tree
+foreach(skin ${SKINS})
+  list(GET skin 0 dir)
+  list(GET skin 1 relative)
+  copy_skin_to_buildtree(${dir} ${relative})
+endforeach()
+
+# Generate system addons
+add_custom_target(gen_system_addons
+                    COMMAND ${CMAKE_COMMAND} -DCORE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+                                             -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
+                                             -DCORE_PLATFORM_NAME_LC="${CORE_PLATFORM_NAME_LC}"
+                                             -DCORE_BUILD_DIR=${CORE_BUILD_DIR}
+                                             -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}
+                                             -DBUNDLEDIR=${_bundle_dir}
+                                             -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateSystemAddons.cmake
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+# Pack skins and copy to correct build dir (MultiConfig Generator aware)
+add_custom_target(gen_skin_pack
+                    COMMAND ${CMAKE_COMMAND} -DBUNDLEDIR=${_bundle_dir}
+                                             -DTEXTUREPACKER_EXECUTABLE=$<TARGET_FILE:TexturePacker::TexturePacker::Executable>
+                                             -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+# Packaging target. This generates system addon, xbt creation, copy files to build tree
+add_custom_target(generate-packaging ALL
+                  DEPENDS TexturePacker::TexturePacker::Executable export-files gen_skin_pack gen_system_addons ${XBT_FILES})
+# Make sure we build any libs before we look to export-files.
+# We may need to export some shared libs/data (eg Python)
+add_dependencies(export-files ${GLOBAL_TARGET_DEPS})
+
+# Add to lib${APP_NAME_LC} solely for Win UWP. msix building doesnt seem to pick up the
+# generated buildtree if we do it later. Other platforms dont care when this happens.
+add_dependencies(lib${APP_NAME_LC} generate-packaging)
+
+set_target_properties(generate-packaging PROPERTIES FOLDER "Build Utilities")
 
 if(WIN32)
   set_target_properties(${APP_NAME_LC} PROPERTIES WIN32_EXECUTABLE ON)
@@ -450,7 +486,7 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
   unset(_TEST_LIBRARIES)
 
   if (ENABLE_INTERNAL_GTEST)
-    add_dependencies(${APP_NAME_LC}-test ${APP_NAME_LC}-libraries export-files gtest)
+    add_dependencies(${APP_NAME_LC}-test ${APP_NAME_LC}-libraries generate-packaging gtest)
   endif()
 
   # Enable unit-test related targets
