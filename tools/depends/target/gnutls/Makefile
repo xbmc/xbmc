@@ -26,6 +26,8 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	cd $(PLATFORM); patch -p1 -i ../add-dl-as-private-lib.patch
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
 	cd $(PLATFORM); patch -p1 -i ../01-macos-clang-accel.patch
+else ifeq ($(findstring aarch64, $(HOST)), aarch64)
+	cd $(PLATFORM); patch -p1 -i ../01-macos-clang-accel.patch
 endif
 	cd $(PLATFORM); patch -p1 -i ../03-support-correct-cisdigit.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
