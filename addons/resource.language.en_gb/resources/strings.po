@@ -21674,11 +21674,7 @@ msgctxt "#36636"
 msgid "You must first enter a password before web server authentication can be enabled."
 msgstr ""
 
-#. Text in confirm dialog when installing addon from zip
-#: xbmc/addons/GUIWindowAddonBrowser.cpp
-msgctxt "#36637"
-msgid "Note that add-ons installed from zip (excluding served repositories) will not auto-update and must be manually updated. Would you like to proceed?"
-msgstr ""
+#empty string with id 36637
 
 #. Menuitem at "Settings -> System -> Add-ons"
 #: ./system/settings/settings.xml
