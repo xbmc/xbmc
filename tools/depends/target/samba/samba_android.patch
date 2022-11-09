@@ -9,40 +9,6 @@
  	/* On Linux we lose the ability to dump core when we change our user
  	 * ID. We know how to dump core safely, so let's make sure we have our
  	 * dumpable flag set.
---- a/source/lib/iconv.c
-+++ b/source/lib/iconv.c
-@@ -20,7 +20,10 @@
- */
- 
- #include "includes.h"
--
-+#if defined(ANDROID)
-+#include <stdint.h>
-+#include <asm/byteorder.h>
-+#endif
- /*
-  * We have to use strcasecmp here as the character conversions
-  * haven't been initialised yet. JRA.
-@@ -489,6 +492,19 @@
- 	return 0;
- }
- 
-+#if defined(ANDROID)
-+void swab(const void *from, void*to, ssize_t n)
-+{
-+  ssize_t i;
-+
-+  if (n < 0)
-+    return;
-+
-+  for (i = 0; i < (n/2)*2; i += 2)
-+    *((uint16_t*)to+i) = __arch__swab16(*((uint16_t*)from+i));
-+}
-+#endif
-+
- static size_t iconv_swab(void *cd, const char **inbuf, size_t *inbytesleft,
- 			 char **outbuf, size_t *outbytesleft)
- {
 --- a/source/lib/replace/system/passwd.h
 +++ b/source/lib/replace/system/passwd.h
 @@ -62,6 +62,8 @@
