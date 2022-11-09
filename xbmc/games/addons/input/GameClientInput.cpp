@@ -294,7 +294,8 @@ int CGameClientInput::GetPlayerLimit() const
   return m_topology->GetPlayerLimit();
 }
 
-bool CGameClientInput::ConnectController(const std::string& portAddress, ControllerPtr controller)
+bool CGameClientInput::ConnectController(const std::string& portAddress,
+                                         const ControllerPtr& controller)
 {
   // Validate parameters
   if (portAddress.empty() || !controller)
@@ -435,7 +436,7 @@ bool CGameClientInput::HasAgent() const
 }
 
 bool CGameClientInput::OpenKeyboard(const ControllerPtr& controller,
-                                    PERIPHERALS::PeripheralPtr keyboard)
+                                    const PERIPHERALS::PeripheralPtr& keyboard)
 {
   using namespace JOYSTICK;
 
@@ -503,7 +504,8 @@ void CGameClientInput::CloseKeyboard()
   }
 }
 
-bool CGameClientInput::OpenMouse(const ControllerPtr& controller, PERIPHERALS::PeripheralPtr mouse)
+bool CGameClientInput::OpenMouse(const ControllerPtr& controller,
+                                 const PERIPHERALS::PeripheralPtr& mouse)
 {
   using namespace JOYSTICK;
 
