@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2022-07-14 08:23+0000\n"
 "Last-Translator: queeup <queeup@zoho.com>\n"
@@ -663,6 +663,11 @@ msgstr "Video OSD'sini otomatik olarak kapat"
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
 msgstr "Video OSD otomatik kapanma süresi (saniye)"
+
+#. Setting to control what happens when clicking a music album on the home screen
+msgctxt "#31174"
+msgid "Default select action for albums on the home screen"
+msgstr ""
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name

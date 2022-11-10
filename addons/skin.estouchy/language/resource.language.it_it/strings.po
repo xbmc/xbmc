@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-08-30 07:20+0000\n"
+"PO-Revision-Date: 2022-10-26 22:57+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/it_it/>\n"
 "Language: it_it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14\n"
+"X-Generator: Weblate 4.14.1\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -67,7 +67,7 @@ msgstr "Episodi"
 
 msgctxt "#31015"
 msgid "Player info"
-msgstr "Informazioni player"
+msgstr "Informazioni lettore"
 
 msgctxt "#31016"
 msgid "Albums"
@@ -91,7 +91,7 @@ msgstr "Decoder Video"
 #. Label to show the video pixel format
 msgctxt "#31020"
 msgid "Pixel format"
-msgstr "Formato Pixel"
+msgstr "Formato pixel"
 
 #. Label to show the system memory usage
 msgctxt "#31021"
@@ -116,15 +116,15 @@ msgstr "Aggiornato:"
 
 msgctxt "#31040"
 msgid "Select + X"
-msgstr "Select + X"
+msgstr "Seleziona + X"
 
 msgctxt "#31041"
 msgid "Select + B"
-msgstr "Select + B"
+msgstr "Seleziona + B"
 
 msgctxt "#31042"
 msgid "Select + Start"
-msgstr "Select + Start"
+msgstr "Seleziona + Start"
 
 msgctxt "#31043"
 msgid "PAUSED"
@@ -132,11 +132,11 @@ msgstr "IN PAUSA"
 
 msgctxt "#31044"
 msgid "FAST FORWARD"
-msgstr "AVANZ. VELOCE"
+msgstr "AVANTI VELOCE"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "RIAVV. VELOCE"
+msgstr "RIAVVOLGIMENTO"
 
 msgctxt "#31046"
 msgid "Play speed"
@@ -180,7 +180,7 @@ msgstr "Indietro"
 
 msgctxt "#31201"
 msgid "Location"
-msgstr "Località"
+msgstr "Posizione"
 
 msgctxt "#31202"
 msgid "View"
@@ -188,7 +188,7 @@ msgstr "Visualizza"
 
 msgctxt "#31300"
 msgid "Current Temp"
-msgstr "Temperatura attuale"
+msgstr "Temp attuale"
 
 msgctxt "#31301"
 msgid "Last Updated"
@@ -200,15 +200,15 @@ msgstr "Fornitore dei dati"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
-msgstr "Memoria Sistema usata:"
+msgstr "Memoria di sistema utilizzata:"
 
 msgctxt "#31320"
 msgid "Last Logged In"
-msgstr "Ultimo Login"
+msgstr "Ultimo accesso"
 
 msgctxt "#31322"
 msgid "Aired"
-msgstr "Trasmessa"
+msgstr "In onda"
 
 msgctxt "#31355"
 msgid "Video Menu"
@@ -272,7 +272,7 @@ msgstr "Scegli il tuo profilo utente di Kodi[CR]per fare il login e continuare"
 
 msgctxt "#31548"
 msgid "Home menu"
-msgstr "Menù Home"
+msgstr "Menu Home"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
@@ -292,7 +292,7 @@ msgstr "SINCRONIZZA"
 
 msgctxt "#31553"
 msgid "Use Custom Background"
-msgstr "Usa Sfondo Personalizzato"
+msgstr "Usa sfondo personalizzato"
 
 msgctxt "#31554"
 msgid "Background:"
@@ -304,7 +304,7 @@ msgstr "Configura impostazioni TV · Modifica info schermo intero · Gestisci im
 
 msgctxt "#31556"
 msgid "Live TV"
-msgstr "TV"
+msgstr "Live TV"
 
 msgctxt "#31557"
 msgid "Hide video background"
@@ -316,7 +316,7 @@ msgstr "Nascondi sfondo visualizzazione"
 
 msgctxt "#31559"
 msgid "Channel settings"
-msgstr "Impostazioni Canali"
+msgstr "Impostazioni canali"
 
 msgctxt "#31560"
 msgid "Available groups"
@@ -340,7 +340,7 @@ msgstr "Mostra nascosti"
 
 msgctxt "#31565"
 msgid "Show deleted"
-msgstr "Mostra cancellati"
+msgstr "Mostra eliminati"
 
 # empty strings from id 31566 to 31599
 #. Label to show the video codec name

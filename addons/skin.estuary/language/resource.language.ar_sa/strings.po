@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2022-06-28 16:24+0000\n"
 "Last-Translator: psp2111-ADSLGATE <psp100000@hotmail.com>\n"
@@ -675,6 +675,11 @@ msgstr "إغلاق واجهة الفيديو تلقائيا"
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
 msgstr "وقت إغلاق واجهة الفيديو (ثواني)"
+
+#. Setting to control what happens when clicking a music album on the home screen
+msgctxt "#31174"
+msgid "Default select action for albums on the home screen"
+msgstr ""
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
