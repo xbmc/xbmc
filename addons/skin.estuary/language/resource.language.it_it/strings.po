@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-10-03 06:52+0000\n"
+"PO-Revision-Date: 2022-11-09 16:21+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/it_it/>\n"
 "Language: it_it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.14.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -51,7 +51,7 @@ msgstr "Cambia modalità"
 
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr "Guarda in 2D"
+msgstr "Guarda come 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
@@ -71,7 +71,7 @@ msgstr "Scarica icone"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr "Film in corso"
+msgstr "Film non terminati"
 
 msgctxt "#31011"
 msgid "Most played albums"
@@ -199,7 +199,7 @@ msgstr "Produttore fotocamera"
 
 msgctxt "#31042"
 msgid "Playlist options"
-msgstr "Opzioni Playlist"
+msgstr "Opzioni playlist"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
@@ -239,7 +239,7 @@ msgstr "Premi [B]Destra[/B] per avanzare per fotogramma"
 
 msgctxt "#31056"
 msgid "Go to playlist"
-msgstr "Vai alla Playlist"
+msgstr "Vai alla playlist"
 
 msgctxt "#31057"
 msgid "Show login screen on startup"
@@ -259,7 +259,7 @@ msgstr "Seleziona + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
-msgstr "Elementi menu principale"
+msgstr "Voci menu principale"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
@@ -271,11 +271,11 @@ msgstr "Sezioni"
 
 msgctxt "#31065"
 msgid "Video playlist"
-msgstr "Playlist Video"
+msgstr "Playlist video"
 
 msgctxt "#31066"
 msgid "Music playlist"
-msgstr "Playlist Musicale"
+msgstr "Playlist musica"
 
 msgctxt "#31067"
 msgid "Event log"
@@ -319,11 +319,11 @@ msgstr "Termina alle"
 
 msgctxt "#31082"
 msgid "Lyrics add-on"
-msgstr "Add-on Testi"
+msgstr "Add-on testi"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "Impostazioni add-on Testi"
+msgstr "Impostazioni add-on testi"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
@@ -335,7 +335,7 @@ msgstr "Gruppi disponibili"
 
 msgctxt "#31092"
 msgid "Video menu"
-msgstr "Menu Video"
+msgstr "Menu video"
 
 msgctxt "#31093"
 msgid "Show weather info in top bar"
@@ -347,11 +347,11 @@ msgstr "Usa animazioni scorrimento"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
-msgstr "Sottotitolo locale disponibile"
+msgstr "Sottotitoli locali disponibili"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "Opzioni Canali"
+msgstr "Opzioni canali"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
@@ -383,7 +383,7 @@ msgstr "Inserisci qui il testo..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "La tua Libreria è attualmente vuota. Per riempirla con i tuoi file multimediali personali, entra nella sezione \"File\", aggiungi una sorgente multimediale e configurala. Dopo che la sorgente sarà stata aggiunta e indicizzata potrai sfogliare la tua Libreria."
+msgstr "La tua libreria è attualmente vuota. Per riempirla con i tuoi file multimediali personali, entra nella sezione \"File\", aggiungi una sorgente multimediale e configurala. Dopo che la sorgente sarà stata aggiunta e indicizzata potrai sfogliare la tua Libreria."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -408,7 +408,7 @@ msgstr "Vedi le tue immagini personali o scarica uno dei tanti Add-On immagini d
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
-msgstr "Attiva/disattiva l'audio"
+msgstr "Attiva/disattiva flusso audio"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -515,7 +515,7 @@ msgstr "Lettore"
 #. Label to show video decoder name
 msgctxt "#31139"
 msgid "Video decoder"
-msgstr "Decoder Video"
+msgstr "Decoder video"
 
 #. Label to show the video pixel format
 msgctxt "#31140"
@@ -564,11 +564,11 @@ msgstr "Origine"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
-msgstr "Video Musicali non visti"
+msgstr "Video musicali non visti"
 
 msgctxt "#31152"
 msgid "Random music videos"
-msgstr "Video Musicali casuali"
+msgstr "Video musicali casuali"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
@@ -663,6 +663,11 @@ msgstr "Chiudi automaticamente l'OSD video"
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
 msgstr "Tempo di chiusura automatica OSD video (secondi)"
+
+#. Setting to control what happens when clicking a music album on the home screen
+msgctxt "#31174"
+msgid "Default select action for albums on the home screen"
+msgstr "Azione di selezione predefinita per gli album nella schermata iniziale"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name

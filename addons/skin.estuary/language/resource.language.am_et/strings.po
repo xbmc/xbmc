@@ -670,6 +670,11 @@ msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
 msgstr ""
 
+#. Setting to control what happens when clicking a music album on the home screen
+msgctxt "#31174"
+msgid "Default select action for albums on the home screen"
+msgstr ""
+
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
 msgctxt "#31600"
