@@ -109,6 +109,7 @@ function(add_bundle_file file destination relative)
     file(REMOVE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/BundleFiles.cmake)
     add_custom_target(bundle_files COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/BundleFiles.cmake)
     add_dependencies(bundle bundle_files)
+    add_dependencies(bundle_files ${APP_NAME_LC})
   endif()
 
   string(REPLACE "${relative}/" "" outfile ${file})
