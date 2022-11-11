@@ -35,7 +35,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
     return false;
 
   CRegExp regLine(true);
-  if (!regLine.RegComp("<SYNC START=\"?([0-9]+)\"?>(.+)"))
+  if (!regLine.RegComp("<SYNC START=\"?([0-9]+)\"?>(.+)?"))
     return false;
   CRegExp regClassID(true);
   if (!regClassID.RegComp("<P Class=\"?([\\w\\d]+)\"?>"))
