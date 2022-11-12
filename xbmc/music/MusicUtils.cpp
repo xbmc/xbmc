@@ -564,12 +564,19 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
 
 void ShowToastNotification(const CFileItem& item, int titleId)
 {
-  const std::string localizedMediaType =
-      CMediaTypes::GetCapitalLocalization(item.GetMusicInfoTag()->GetType());
+  std::string localizedMediaType;
+  std::string title;
 
-  std::string title = item.GetMusicInfoTag()->GetTitle();
+  if (item.HasMusicInfoTag())
+  {
+    localizedMediaType = CMediaTypes::GetCapitalLocalization(item.GetMusicInfoTag()->GetType());
+    title = item.GetMusicInfoTag()->GetTitle();
+  }
+
   if (title.empty())
     title = item.GetLabel();
+  if (title.empty())
+    return; // no meaningful toast possible.
 
   const std::string message =
       localizedMediaType.empty() ? title : localizedMediaType + ": " + title;
