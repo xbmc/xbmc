@@ -3,7 +3,7 @@
 //
 // Direct3D 11 Effects Stream Out Decl Parser
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
@@ -108,7 +108,6 @@ protected:
     HRESULT Parse( _In_ uint32_t Stream, _In_z_ LPCSTR pString )
     {
         HRESULT hr = S_OK;
-        LPSTR pSemantic = nullptr;
 
         m_pError[0] = 0;
 
@@ -123,7 +122,7 @@ protected:
         VN( m_SemanticString[Stream] = new char[len + 1] );
         strcpy_s( m_SemanticString[Stream], len + 1, pString );
 
-        pSemantic = m_SemanticString[Stream];
+        LPSTR pSemantic = m_SemanticString[Stream];
 
         while( true )
         {
@@ -246,8 +245,7 @@ lExit:
         _Analysis_assume_( ppSemantic && *ppSemantic );
 
         HRESULT hr = S_OK;
-        LPSTR pColon = strchr( *ppSemantic, ':' );
-        int outputSlot = 0;
+        LPSTR pColon = strchr( *ppSemantic, ':' ); 
 
         if( pColon == nullptr )
             return S_OK;
@@ -260,7 +258,7 @@ lExit:
         }
 
         *pColon = '\0';
-        outputSlot = atoi(*ppSemantic);
+        int outputSlot = atoi( *ppSemantic );
         if( outputSlot < 0 || outputSlot > 255 )
         {
             strcpy_s( m_pError, MAX_ERROR_SIZE,

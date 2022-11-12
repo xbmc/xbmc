@@ -3,7 +3,7 @@
 //
 // Direct3D 11 Effects implementation for helper data structures
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
@@ -261,7 +261,7 @@ CDataBlockStore::CDataBlockStore() noexcept :
     m_Offset(0),
     m_IsAligned(false)
 {
-#if _DEBUG
+#ifdef _DEBUG
     m_cAllocations = 0;
 #endif
 }
@@ -332,7 +332,7 @@ void* CDataBlockStore::Allocate(_In_ uint32_t bufferSize)
 {
     void *pRetValue = nullptr;
 
-#if _DEBUG
+#ifdef _DEBUG
     m_cAllocations++;
 #endif
 
