@@ -29,6 +29,7 @@ protected:
   std::string GetRootPath() const override { return "favourites://"; }
 
   bool OnSelect(int item) override;
+  bool OnAction(const CAction& action) override;
   bool OnMessage(CGUIMessage& message) override;
 
   bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;

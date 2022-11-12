@@ -16,8 +16,12 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
 #include "storage/MediaManager.h"
+#include "utils/PlayerUtils.h"
+#include "utils/StringUtils.h"
 #include "view/GUIViewState.h"
 
 CGUIWindowFavourites::CGUIWindowFavourites()
@@ -39,16 +43,61 @@ void CGUIWindowFavourites::OnFavouritesEvent(const CFavouritesService::Favourite
   CServiceBroker::GetAppMessenger()->SendGUIMessage(m);
 }
 
+namespace
+{
+bool ExecuteAction(const std::string& execute)
+{
+  if (!execute.empty())
+  {
+    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
+    message.SetStringParam(execute);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
+    return true;
+  }
+  return false;
+}
+} // namespace
+
 bool CGUIWindowFavourites::OnSelect(int item)
 {
   if (item < 0 || item >= m_vecItems->Size())
     return false;
 
-  CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
-  message.SetStringParam(CFavouritesURL(*(*m_vecItems)[item], GetID()).GetExecString());
-  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
+  return ExecuteAction(CFavouritesURL(*(*m_vecItems)[item], GetID()).GetExecString());
+}
 
-  return true;
+bool CGUIWindowFavourites::OnAction(const CAction& action)
+{
+  if (action.GetID() == ACTION_PLAYER_PLAY)
+  {
+    const int selectedItem = m_viewControl.GetSelectedItem();
+    if (selectedItem < 0 || selectedItem >= m_vecItems->Size())
+      return false;
+
+    // Resolve the favourite
+    const CFavouritesURL favURL((*m_vecItems)[selectedItem]->GetPath());
+    if (!favURL.IsValid())
+      return false;
+
+    const auto item = std::make_shared<CFileItem>(favURL.GetTarget(), favURL.IsDir());
+    if (CPlayerUtils::IsItemPlayable(*item))
+    {
+      CFavouritesURL target(*item, {});
+      if (target.GetAction() == CFavouritesURL::Action::PLAY_MEDIA)
+      {
+        return ExecuteAction(target.GetExecString());
+      }
+      else
+      {
+        // build and execute a playmedia execute string
+        target = CFavouritesURL(CFavouritesURL::Action::PLAY_MEDIA,
+                                {StringUtils::Paramify(item->GetPath())});
+        return ExecuteAction(target.GetExecString());
+      }
+    }
+    return false;
+  }
+  return CGUIMediaWindow::OnAction(action);
 }
 
 bool CGUIWindowFavourites::OnMessage(CGUIMessage& message)
