@@ -3,7 +3,7 @@
 //
 // Direct3D 11 Effect Types & APIs Header
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
@@ -11,7 +11,7 @@
 
 #pragma once
 
-#define D3DX11_EFFECTS_VERSION 1126
+#define D3DX11_EFFECTS_VERSION 1128
 
 #if defined(_XBOX_ONE) && defined(_TITLE)
 #include <d3d11_x.h>

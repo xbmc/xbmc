@@ -3,7 +3,7 @@
 //
 // Effect API entry point
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
@@ -128,8 +128,6 @@ HRESULT WINAPI D3DX11CreateEffectFromFile( LPCWSTR pFileName, UINT FXFlags, ID3D
 
     std::unique_ptr<uint8_t[]> fileData;
     uint32_t size;
-    int result = 0;
-    CHAR* pstrName = nullptr;
     HRESULT hr = LoadBinaryFromFile( pFileName, fileData, size );
     if ( FAILED(hr) )
         return hr;
@@ -142,8 +140,7 @@ HRESULT WINAPI D3DX11CreateEffectFromFile( LPCWSTR pFileName, UINT FXFlags, ID3D
 
     // Create debug object name from input filename
     CHAR strFileA[MAX_PATH];
-    result = WideCharToMultiByte(CP_ACP, WC_NO_BEST_FIT_CHARS, pFileName, -1, strFileA, MAX_PATH,
-                                 nullptr, FALSE);
+    int result = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, pFileName, -1, strFileA, MAX_PATH, nullptr, FALSE );
     if ( !result )
     {
         DPF(0, "Failed to load effect file due to WC to MB conversion failure: %ls", pFileName);
@@ -151,7 +148,7 @@ HRESULT WINAPI D3DX11CreateEffectFromFile( LPCWSTR pFileName, UINT FXFlags, ID3D
         goto lExit;
     }
 
-    pstrName = strrchr(strFileA, '\\');
+    const CHAR* pstrName = strrchr( strFileA, '\\' );
     if (!pstrName)
     {
         pstrName = strFileA;
@@ -229,8 +226,6 @@ HRESULT D3DX11CompileEffectFromFile( LPCWSTR pFileName,
     }
 
     ID3DBlob *blob = nullptr;
-    CHAR* pstrName = nullptr;
-    int result = 0;
 
 #if (D3D_COMPILER_VERSION >= 46) && ( !defined(WINAPI_FAMILY) || ( (WINAPI_FAMILY != WINAPI_FAMILY_APP) && (WINAPI_FAMILY != WINAPI_FAMILY_PHONE_APP) ) )
 
@@ -254,15 +249,14 @@ HRESULT D3DX11CompileEffectFromFile( LPCWSTR pFileName,
 
     // Create debug object name from input filename
     CHAR strFileA[MAX_PATH];
-    result = WideCharToMultiByte(CP_ACP, WC_NO_BEST_FIT_CHARS, pFileName, -1, strFileA, MAX_PATH,
-                                 nullptr, FALSE);
+    int result = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, pFileName, -1, strFileA, MAX_PATH, nullptr, FALSE );
     if ( !result )
     {
         DPF(0, "Failed to load effect file due to WC to MB conversion failure: %ls", pFileName);
         return E_FAIL;
     }
 
-    pstrName = strrchr(strFileA, '\\');
+    const CHAR* pstrName = strrchr( strFileA, '\\' );
     if (!pstrName)
     {
         pstrName = strFileA;
@@ -296,8 +290,7 @@ HRESULT D3DX11CompileEffectFromFile( LPCWSTR pFileName,
 #if (D3D_COMPILER_VERSION >= 46) && ( !defined(WINAPI_FAMILY) || ( (WINAPI_FAMILY != WINAPI_FAMILY_APP) && (WINAPI_FAMILY != WINAPI_FAMILY_PHONE_APP) ) )
     // Create debug object name from input filename
     CHAR strFileA[MAX_PATH];
-    result = WideCharToMultiByte(CP_ACP, WC_NO_BEST_FIT_CHARS, pFileName, -1, strFileA, MAX_PATH,
-                                 nullptr, FALSE);
+    int result = WideCharToMultiByte( CP_ACP, WC_NO_BEST_FIT_CHARS, pFileName, -1, strFileA, MAX_PATH, nullptr, FALSE );
     if ( !result  )
     {
         DPF(0, "Failed to load effect file due to WC to MB conversion failure: %ls", pFileName);
@@ -305,7 +298,7 @@ HRESULT D3DX11CompileEffectFromFile( LPCWSTR pFileName,
         goto lExit;
     }
 
-    pstrName = strrchr(strFileA, '\\');
+    const CHAR* pstrName = strrchr( strFileA, '\\' );
     if (!pstrName)
     {
         pstrName = strFileA;

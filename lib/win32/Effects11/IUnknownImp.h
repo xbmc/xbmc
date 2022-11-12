@@ -6,7 +6,7 @@
 // Lifetime for most Effects objects is based on the the lifetime of the master
 // effect, so the reference count is not used.
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568

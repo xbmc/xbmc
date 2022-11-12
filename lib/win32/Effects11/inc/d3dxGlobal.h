@@ -3,7 +3,7 @@
 //
 // Direct3D 11 Effects helper defines and data structures
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
@@ -70,13 +70,6 @@ using namespace D3DX11Debug;
 #define VNASSERT(x)   {           if (!(x))       { __BREAK_ON_FAIL; assert(!#x); hr = E_OUTOFMEMORY; goto lExit; } }
 
 #define D3DX11FLTASSIGN(a,b)    { *reinterpret_cast< UINT32* >(&(a)) = *reinterpret_cast< UINT32* >(&(b)); }
-
-#ifdef _DEBUG
-extern void __cdecl D3DXDebugPrintf(UINT lvl, _In_z_ _Printf_format_string_ LPCSTR szFormat, ...);
-#define DPF D3DXDebugPrintf
-#else
-#define DPF
-#endif
 
 // Preferred data alignment -- must be a power of 2!
 static const uint32_t c_DataAlignment = sizeof(UINT_PTR);
@@ -204,14 +197,14 @@ public:
     HRESULT m_hLastError;
 
     CEffectVector<T>() noexcept :
-        m_hLastError(S_OK),
+#if _DEBUG
+        m_pCastData(nullptr),
+#endif
         m_pData(nullptr),
         m_CurSize(0),
-        m_MaxSize(0)
+        m_MaxSize(0),
+        m_hLastError(S_OK)
     {
-#if _DEBUG
-        m_pCastData = nullptr;
-#endif // _DEBUG
     }
 
     ~CEffectVector<T>()
@@ -433,45 +426,44 @@ lExit:
 //////////////////////////////////////////////////////////////////////////
 // CEffectVectorOwner - implements a vector of ptrs to objects. The vector owns the objects.
 //////////////////////////////////////////////////////////////////////////
-template<class T>
-class CEffectVectorOwner : public CEffectVector<typename T*>
+template<class T> class CEffectVectorOwner : public CEffectVector<T*>
 {
 public:
     ~CEffectVectorOwner<T>()
     {
         Clear();
 
-        for (size_t i = 0; i < this->m_CurSize; i++)
-          SAFE_DELETE(((T**)this->m_pData)[i]);
+        for (size_t i=0; i<m_CurSize; i++)
+            SAFE_DELETE(((T**)m_pData)[i]);
 
-        SAFE_DELETE_ARRAY(this->m_pData);
+        SAFE_DELETE_ARRAY(m_pData);
     }
 
     void Clear()
     {
         Empty();
-        SAFE_DELETE_ARRAY(this->m_pData);
-        this->m_MaxSize = 0;
+        SAFE_DELETE_ARRAY(m_pData);
+        m_MaxSize = 0;
     }
 
     void Empty()
     {
         // manually invoke destructor on all elements
-        for (size_t i = 0; i < this->m_CurSize; ++i)
+        for (size_t i = 0; i < m_CurSize; ++ i)
         {
-          SAFE_DELETE(((T**)this->m_pData)[i]);
+            SAFE_DELETE(((T**)m_pData)[i]);
         }
-        this->m_CurSize = 0;
-        this->m_hLastError = S_OK;
+        m_CurSize = 0;
+        m_hLastError = S_OK;
     }
 
     void Delete(_In_ uint32_t index)
     {
-      assert(index < this->m_CurSize);
+        assert(index < m_CurSize);
 
-      SAFE_DELETE(((T**)this->m_pData)[index]);
+        SAFE_DELETE(((T**)m_pData)[index]);
 
-      CEffectVector<T*>::Delete(index);
+        CEffectVector<T*>::Delete(index);
     }
 };
 
@@ -1255,9 +1247,9 @@ public:
 
     void Cleanup()
     {
-      this->CleanArray();
-      this->m_NumHashSlots = 0;
-      this->m_NumEntries = 0;
+        CleanArray();
+        m_NumHashSlots = 0;
+        m_NumEntries = 0;
     }
 
     ~CEffectHashTableWithPrivateHeap()
@@ -1279,21 +1271,18 @@ public:
 
         assert(m_pPrivateHeap);
         _Analysis_assume_(m_pPrivateHeap);
-        assert(this->m_NumHashSlots > 0);
+        assert(m_NumHashSlots > 0);
 
-        using HashEntry = typename CEffectHashTable<T, pfnIsEqual>::SHashEntry;
+        SHashEntry *pHashEntry;
+        uint32_t index = Hash % m_NumHashSlots;
 
-        HashEntry* pHashEntry;
-        uint32_t index = Hash % this->m_NumHashSlots;
-
-
-        VN(pHashEntry = new (*this->m_pPrivateHeap) HashEntry);
-        pHashEntry->pNext = this->m_rgpHashEntries[index];
+        VN( pHashEntry = new(*m_pPrivateHeap) SHashEntry );
+        pHashEntry->pNext = m_rgpHashEntries[index];
         pHashEntry->Data = Data;
         pHashEntry->Hash = Hash;
-        this->m_rgpHashEntries[index] = pHashEntry;
+        m_rgpHashEntries[index] = pHashEntry;
 
-        ++this->m_NumEntries;
+        ++ m_NumEntries;
 
 lExit:
         return hr;

@@ -3,7 +3,7 @@
 //
 //  Direct3D 11 Effects Header for ID3DX11Effect Implementation
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
@@ -13,9 +13,6 @@
 
 #include "EffectBinaryFormat.h"
 #include "IUnknownImp.h"
-#include "d3dxGlobal.h"
-
-#include <cassert>
 
 #ifdef _DEBUG
 extern void __cdecl D3DXDebugPrintf(UINT lvl, _In_z_ _Printf_format_string_ LPCSTR szFormat, ...);
@@ -724,10 +721,14 @@ struct SVariable
     char                    *pSemantic;
     uint32_t                ExplicitBindPoint;
 
-    SVariable() noexcept
+    SVariable() noexcept :
+        Data{},
+        pMemberData(nullptr),
+        pType(nullptr),
+        pName(nullptr),
+        pSemantic(nullptr),
+        ExplicitBindPoint(uint32_t(-1))
     {
-        ZeroMemory(this, sizeof(*this));
-        ExplicitBindPoint = uint32_t(-1);
     }
 };
 
