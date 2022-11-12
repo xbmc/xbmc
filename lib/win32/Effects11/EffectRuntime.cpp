@@ -5,7 +5,7 @@
 // These functions are expected to be called at high frequency
 // (when applying a pass).
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
@@ -640,7 +640,7 @@ void CEffect::IncrementTimer()
     m_LocalTimer++;
 
 #if !defined(_M_X64) && !defined(_M_ARM64)
-#if _DEBUG
+#ifdef _DEBUG
     if (m_LocalTimer > g_TimerRolloverCount)
     {
         DPF(0, "Rolling over timer (current time: %zu, rollover cap: %u).", m_LocalTimer, g_TimerRolloverCount);
