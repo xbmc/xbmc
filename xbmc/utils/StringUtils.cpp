@@ -1791,6 +1791,26 @@ std::string StringUtils::Paramify(const std::string &param)
   return "\"" + result + "\"";
 }
 
+std::string StringUtils::DeParamify(const std::string& param)
+{
+  std::string result = param;
+
+  // remove double quotes around the whole string
+  if (StringUtils::StartsWith(result, "\"") && StringUtils::EndsWith(result, "\""))
+  {
+    result.erase(0, 1);
+    result.pop_back();
+
+    // unescape double quotes
+    StringUtils::Replace(result, "\\\"", "\"");
+
+    // unescape backspaces
+    StringUtils::Replace(result, "\\\\", "\\");
+  }
+
+  return result;
+}
+
 std::vector<std::string> StringUtils::Tokenize(const std::string &input, const std::string &delimiters)
 {
   std::vector<std::string> tokens;

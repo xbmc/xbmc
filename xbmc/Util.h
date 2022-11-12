@@ -129,11 +129,7 @@ public:
    \param paramString the string to break up
    \param parameters the returned parameters
    */
-  static void SplitParams(const std::string &paramString, std::vector<std::string> &parameters);
-  static void SplitExecFunction(const std::string &execString, std::string &function, std::vector<std::string> &parameters);
-  static std::string GetExecPath(const CFileItem& item, const std::string& contextWindow);
-  static std::string GetExecActionLabelFromPath(const std::string& path);
-  static std::string GetExecProviderLabelFromPath(const std::string& path);
+  static void SplitParams(const std::string& paramString, std::vector<std::string>& parameters);
   static int GetMatchingSource(const std::string& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
   static std::string TranslateSpecialSource(const std::string &strSpecial);
   static void DeleteDirectoryCache(const std::string &prefix = "");

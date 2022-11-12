@@ -10,8 +10,8 @@
 
 #include "ContextMenuManager.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "dialogs/GUIDialogContextMenu.h"
+#include "favourites/FavouritesURL.h"
 #include "favourites/GUIWindowFavourites.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
@@ -88,7 +88,7 @@ void CGUIDialogFavourites::OnClick(int item)
     return;
 
   CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
-  message.SetStringParam(CUtil::GetExecPath(*(*m_favourites)[item], std::to_string(GetID())));
+  message.SetStringParam(CFavouritesURL(*(*m_favourites)[item], GetID()).GetExecString());
 
   Close();
 
