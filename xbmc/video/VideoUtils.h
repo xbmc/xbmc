@@ -52,4 +52,18 @@ bool GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& 
  */
 bool IsItemPlayable(const CFileItem& item);
 
+struct ResumeInformation
+{
+  bool isResumable{false}; // the playback of the item can be resumed
+  int64_t startOffset{0}; // a start offset
+  int partNumber{0}; // a part number
+};
+
+/*!
+ \brief Check whether playback of the given item can be resumed, get detailed information.
+ \param item The item to retrieve information for
+ \return The resume information.
+ */
+ResumeInformation GetItemResumeInformation(const CFileItem& item);
+
 } // namespace VIDEO_UTILS

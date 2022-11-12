@@ -449,6 +449,10 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 
   CFileItem item(params[0], URIUtils::HasSlashAtEnd(params[0], true));
 
+  // at this point the item instance has only the path and the folder flag set. We
+  // need some extended item properties to process resume successfully. Load them.
+  item.LoadDetails();
+
   // ask if we need to check guisettings to resume
   bool askToResume = true;
   int playOffset = 0;
@@ -462,13 +466,18 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
       CMediaSettings::GetInstance().SetMediaStartWindowed(true);
     else if (StringUtils::EqualsNoCase(params[i], "resume"))
     {
-      // force the item to resume (if applicable) (see CApplication::PlayMedia)
-      item.SetStartOffset(STARTOFFSET_RESUME);
+      // force the item to resume (if applicable)
+      if (VIDEO_UTILS::GetItemResumeInformation(item).isResumable)
+        item.SetStartOffset(STARTOFFSET_RESUME);
+      else
+        item.SetStartOffset(0);
+
       askToResume = false;
     }
     else if (StringUtils::EqualsNoCase(params[i], "noresume"))
     {
-      // force the item to start at the beginning (m_lStartOffset is initialized to 0)
+      // force the item to start at the beginning
+      item.SetStartOffset(0);
       askToResume = false;
     }
     else if (StringUtils::StartsWithNoCase(params[i], "playoffset="))
@@ -579,6 +588,13 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 
   if (forcePlay)
   {
+    if (item.HasVideoInfoTag() && item.GetStartOffset() == STARTOFFSET_RESUME)
+    {
+      const CBookmark bookmark = item.GetVideoInfoTag()->GetResumePoint();
+      if (bookmark.IsSet())
+        item.SetStartOffset(CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds));
+    }
+
     if ((item.IsAudio() || item.IsVideo()) && !item.IsSmartPlayList())
       CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
     else

@@ -5717,6 +5717,8 @@ msgstr ""
 #empty strings from id 12015 to 12020
 
 #. Label of various controls for starting playback from the beginning
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
 #: xbmc/Autorun.cpp
 #: xbmc/pvr/PVRContextMenus.cpp
 #: xbmc/pvr/PVRGUIActions.cpp
@@ -6993,7 +6995,15 @@ msgctxt "#13361"
 msgid "Enable voice"
 msgstr ""
 
-#empty strings from id 13362 to 13374
+#. label for resume context menu item for video folders (like a TV show or a single season of a TV show)
+#: addons/skin.estuary/xml/SkinSettings.xml
+#: addons/skin.estuary/xml/Variables.xml
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
+msgctxt "#13362"
+msgid "Continue watching"
+msgstr ""
+
+#empty strings from id 13363 to 13374
 
 msgctxt "#13375"
 msgid "Enable device"
