@@ -47,9 +47,6 @@ const char* CWinSystemWin32::SETTING_WINDOW_LEFT = "window.left";
 
 CWinSystemWin32::CWinSystemWin32()
   : CWinSystemBase()
-  , PtrGetGestureInfo(nullptr)
-  , PtrSetGestureConfig(nullptr)
-  , PtrCloseGestureInfoHandle(nullptr)
   , m_hWnd(nullptr)
   , m_hMonitor(nullptr)
   , m_hInstance(nullptr)
@@ -123,15 +120,6 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
   m_hInstance = static_cast<HINSTANCE>(GetModuleHandle(nullptr));
   if(m_hInstance == nullptr)
     CLog::LogF(LOGDEBUG, " GetModuleHandle failed with {}", GetLastError());
-
-  // Load Win32 procs if available
-  HMODULE hUser32 = GetModuleHandle(L"user32");
-  if (hUser32)
-  {
-    PtrGetGestureInfo = reinterpret_cast<pGetGestureInfo>(GetProcAddress(hUser32, "GetGestureInfo"));
-    PtrSetGestureConfig = reinterpret_cast<pSetGestureConfig>(GetProcAddress(hUser32, "SetGestureConfig"));
-    PtrCloseGestureInfoHandle = reinterpret_cast<pCloseGestureInfoHandle>(GetProcAddress(hUser32, "CloseGestureInfoHandle"));
-  }
 
   UpdateStates(fullScreen);
   // initialize the state
