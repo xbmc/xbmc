@@ -46,8 +46,8 @@ else
 fi
 
 if [[ $win10 = "no" ]]; then
-  export _WIN32_WINNT=0x0600
-  export NTDDI_VERSION=0x06000000
+  export _WIN32_WINNT=_WIN32_WINNT_WINBLUE
+  export NTDDI_VERSION=NTDDI_WINBLUE
 elif [[ $win10 = "yes" ]]; then
   TRIPLET=win10-$TRIPLET
 fi
