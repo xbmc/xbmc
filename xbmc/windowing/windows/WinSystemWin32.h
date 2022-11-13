@@ -114,14 +114,6 @@ public:
   void SetMinimized(bool minimized);
   int GetGuiSdrPeakLuminance() const;
 
-  // touchscreen support
-  typedef BOOL(WINAPI *pGetGestureInfo)(HGESTUREINFO, PGESTUREINFO);
-  typedef BOOL(WINAPI *pSetGestureConfig)(HWND, DWORD, UINT, PGESTURECONFIG, UINT);
-  typedef BOOL(WINAPI *pCloseGestureInfoHandle)(HGESTUREINFO);
-  pGetGestureInfo         PtrGetGestureInfo;
-  pSetGestureConfig       PtrSetGestureConfig;
-  pCloseGestureInfoHandle PtrCloseGestureInfoHandle;
-
   void SetSizeMoveMode(bool mode) { m_bSizeMoveEnabled = mode; }
   bool IsInSizeMoveMode() const { return m_bSizeMoveEnabled; }
 

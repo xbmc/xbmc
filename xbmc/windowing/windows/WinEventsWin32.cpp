@@ -931,18 +931,14 @@ void CWinEventsWin32::OnGestureNotify(HWND hWnd, LPARAM lParam)
     gc[1].dwBlock = gc[1].dwWant ^ 0x01;
     gc[2].dwBlock = gc[2].dwWant ^ 0x1F;
   }
-  if (DX::Windowing()->PtrSetGestureConfig)
-    DX::Windowing()->PtrSetGestureConfig(hWnd, 0, 5, gc, sizeof(GESTURECONFIG));
+  SetGestureConfig(hWnd, 0, 5, gc, sizeof(GESTURECONFIG));
 }
 
 void CWinEventsWin32::OnGesture(HWND hWnd, LPARAM lParam)
 {
-  if (!DX::Windowing()->PtrGetGestureInfo)
-    return;
-
   GESTUREINFO gi = {};
   gi.cbSize = sizeof(gi);
-  DX::Windowing()->PtrGetGestureInfo(reinterpret_cast<HGESTUREINFO>(lParam), &gi);
+  GetGestureInfo(reinterpret_cast<HGESTUREINFO>(lParam), &gi);
 
   // convert to window coordinates
   POINT point = { gi.ptsLocation.x, gi.ptsLocation.y };
@@ -1045,6 +1041,5 @@ void CWinEventsWin32::OnGesture(HWND hWnd, LPARAM lParam)
     // You have encountered an unknown gesture
     break;
   }
-  if(DX::Windowing()->PtrCloseGestureInfoHandle)
-    DX::Windowing()->PtrCloseGestureInfoHandle(reinterpret_cast<HGESTUREINFO>(lParam));
+  CloseGestureInfoHandle(reinterpret_cast<HGESTUREINFO>(lParam));
 }
