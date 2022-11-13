@@ -1225,7 +1225,8 @@ namespace VIDEO
         int offset = 0;
 
         // we want "long circuit" OR below so that both offsets are evaluated
-        while (((regexp2pos = reg2.RegFind(remainder.c_str() + offset)) > -1) | ((regexppos = reg.RegFind(remainder.c_str() + offset)) > -1))
+        while (static_cast<int>((regexp2pos = reg2.RegFind(remainder.c_str() + offset)) > -1) |
+               static_cast<int>((regexppos = reg.RegFind(remainder.c_str() + offset)) > -1))
         {
           if (((regexppos <= regexp2pos) && regexppos != -1) ||
              (regexppos >= 0 && regexp2pos == -1))
