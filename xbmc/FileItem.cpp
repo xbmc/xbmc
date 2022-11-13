@@ -1898,7 +1898,12 @@ void CFileItem::SetFromAlbum(const CAlbum &album)
   m_bIsFolder = true;
   m_strLabel2 = album.GetAlbumArtistString();
   GetMusicInfoTag()->SetAlbum(album);
-  SetArt(album.art);
+
+  if (album.art.empty())
+    SetArt("icon", "DefaultAlbumCover.png");
+  else
+    SetArt(album.art);
+
   m_bIsAlbum = true;
   CMusicDatabase::SetPropertiesFromAlbum(*this,album);
   FillInMimeType(false);
