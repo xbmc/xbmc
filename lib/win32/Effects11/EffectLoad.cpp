@@ -3,7 +3,7 @@
 //
 // Direct3D Effects file loading code
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
@@ -184,8 +184,8 @@ inline HRESULT VerifyPointer(uint32_t oBase, uint32_t dwSize, uint32_t dwMaxSize
 
 CEffectHeap::CEffectHeap() noexcept :
     m_pData(nullptr),
-    m_dwSize(0),
-    m_dwBufferSize(0)
+    m_dwBufferSize(0),
+    m_dwSize(0)
 {
 }
 
@@ -788,7 +788,6 @@ HRESULT CEffectLoader::LoadEffect(CEffect *pEffect, const void *pEffectBuffer, u
     HRESULT hr = S_OK;
     uint32_t  i, varSize, cMemberDataBlocks;
     CCheckedDword chkVariables = 0;
-    uint32_t oStructured = 0;
 
     // Used for cloning
     m_pvOldMemberInterfaces = nullptr;
@@ -876,7 +875,7 @@ HRESULT CEffectLoader::LoadEffect(CEffect *pEffect, const void *pEffectBuffer, u
     VN( m_pEffect->m_pRenderTargetViews = PRIVATENEW SRenderTargetView[m_pHeader->cRenderTargetViews] );
     VN( m_pEffect->m_pDepthStencilViews = PRIVATENEW SDepthStencilView[m_pHeader->cDepthStencilViews] );
 
-    oStructured = m_pHeader->cbUnstructured + sizeof(SBinaryHeader5);
+    uint32_t oStructured = m_pHeader->cbUnstructured + sizeof(SBinaryHeader5);
     VHD( m_msStructured.Seek(oStructured), "Invalid pEffectBuffer: Missing structured data block." );
     VH( m_msUnstructured.SetData(m_pData + sizeof(SBinaryHeader5), oStructured - sizeof(SBinaryHeader5)) );
 
@@ -995,8 +994,7 @@ HRESULT CEffectLoader::LoadTypeAndAddToPool(SType **ppType, uint32_t  dwOffset)
     uint8_t *pHashBuffer;
     uint32_t  hash;
     SVariable *pTempMembers = nullptr;
-    uint32_t cElements = 0;
-
+    
     m_HashBuffer.Empty();
 
     VHD( m_msUnstructured.ReadAtOffset(dwOffset, sizeof(SBinaryType), (void**) &psType), "Invalid pEffectBuffer: cannot read type." );
@@ -1008,7 +1006,7 @@ HRESULT CEffectLoader::LoadTypeAndAddToPool(SType **ppType, uint32_t  dwOffset)
     temporaryType.PackedSize = psType->PackedSize;
 
     // sanity check elements, size, stride, etc.
-    cElements = std::max<uint32_t>(1, temporaryType.Elements);
+    uint32_t  cElements = std::max<uint32_t>(1, temporaryType.Elements);
     VBD( cElements * temporaryType.Stride == AlignToPowerOf2(temporaryType.TotalSize, SType::c_RegisterSize), "Invalid pEffectBuffer: invalid type size." );
     VBD( temporaryType.Stride % SType::c_RegisterSize == 0, "Invalid pEffectBuffer: invalid type stride." );
     VBD( temporaryType.PackedSize <= temporaryType.TotalSize && temporaryType.PackedSize % cElements == 0, "Invalid pEffectBuffer: invalid type packed size." );
@@ -1018,7 +1016,7 @@ HRESULT CEffectLoader::LoadTypeAndAddToPool(SType **ppType, uint32_t  dwOffset)
     case EVT_Object:
         VHD( m_msUnstructured.Read((void**) &pObjectType, sizeof(uint32_t)), "Invalid pEffectBuffer: cannot read object type." );
         temporaryType.ObjectType = *pObjectType;
-        VBD( temporaryType.VarType > EOT_Invalid && temporaryType.VarType < EOT_Count, "Invalid pEffectBuffer: invalid object type." );
+        VBD( temporaryType.VarType > EVT_Invalid && temporaryType.VarType < EVT_Count, "Invalid pEffectBuffer: invalid object type." );
         
         VN( pHashBuffer = m_HashBuffer.AddRange(sizeof(temporaryType.VarType) + sizeof(temporaryType.Elements) + 
             sizeof(temporaryType.pTypeName) + sizeof(temporaryType.ObjectType)) );
@@ -2556,9 +2554,7 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
 
     SRange *pRange = nullptr;
     CEffectVector<SConstantBuffer*> vTBuffers;
-    uint32_t NumInterfaces = 0;
-    uint32_t CurInterfaceParameter = 0;
-
+    
     //////////////////////////////////////////////////////////////////////////
     // Step 1: iterate through the resource binding structures and build
     // an "optimized" list of all of the dependencies
@@ -2797,7 +2793,8 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
     // Step 2: iterate through the interfaces and build
     // an "optimized" list of all of the dependencies
 
-    NumInterfaces = pShaderBlock->pReflectionData->pReflection->GetNumInterfaceSlots();
+    uint32_t NumInterfaces = pShaderBlock->pReflectionData->pReflection->GetNumInterfaceSlots();
+    uint32_t CurInterfaceParameter = 0;
     if( NumInterfaces > 0 )
     {
         assert( ShaderDesc.ConstantBuffers > 0 );

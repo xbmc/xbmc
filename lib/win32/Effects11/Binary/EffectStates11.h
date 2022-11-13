@@ -5,7 +5,7 @@
 // This file defines properties of states which can appear in
 // state blocks and pass blocks.
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/p/?LinkId=271568
