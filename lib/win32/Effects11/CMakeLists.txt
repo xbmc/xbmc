@@ -15,7 +15,6 @@ target_compile_options(effects11 PRIVATE "/permissive")
 
 if(CORE_SYSTEM_NAME STREQUAL windowsstore)
   target_compile_definitions(effects11 PRIVATE
-    _WIN7_PLATFORM_UPDATE
     WIN32
     _WINDOWS
     _LIB
@@ -25,12 +24,10 @@ if(CORE_SYSTEM_NAME STREQUAL windowsstore)
   )
 else()
 target_compile_definitions(effects11 PRIVATE
-  _WIN7_PLATFORM_UPDATE
   WIN32
   _WINDOWS
   _LIB
   D3DXFX_LARGEADDRESS_HANDLE
-  _WIN32_WINNT=0x0601
   _CRT_STDIO_ARBITRARY_WIDE_SPECIFIERS
 )
 endif()

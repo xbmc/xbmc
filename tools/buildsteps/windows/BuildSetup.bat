@@ -78,7 +78,6 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
 
   set EXE="%WORKSPACE%\%buildconfig%\%APP_NAME%.exe"
   set PDB="%WORKSPACE%\%buildconfig%\%APP_NAME%.pdb"
-  set D3D="%WORKSPACE%\D3DCompile*.DLL"
 
   POPD
   ECHO Done!
@@ -128,7 +127,6 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   md BUILD_WIN32\application
 
   xcopy %EXE% BUILD_WIN32\application > NUL
-  xcopy %D3D% BUILD_WIN32\application > NUL
   xcopy %base_dir%\userdata BUILD_WIN32\application\userdata /E /Q /I /Y /EXCLUDE:exclude.txt > NUL
   copy %base_dir%\LICENSE.md BUILD_WIN32\application > NUL
   copy %base_dir%\privacy-policy.txt BUILD_WIN32\application > NUL
