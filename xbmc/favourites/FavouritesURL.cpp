@@ -42,7 +42,6 @@ std::string GetActionString(CFavouritesURL::Action action)
     case CFavouritesURL::Action::START_ANDROID_ACTIVITY:
       return "startandroidactivity";
     default:
-      CLog::LogF(LOGERROR, "Unsupported action");
       return {};
   }
 }
@@ -62,10 +61,7 @@ CFavouritesURL::Action GetActionId(const std::string& actionString)
   else if (actionString == "startandroidactivity")
     return CFavouritesURL::Action::START_ANDROID_ACTIVITY;
   else
-  {
-    CLog::LogF(LOGERROR, "Unsupported action");
     return CFavouritesURL::Action::UNKNOWN;
-  }
 }
 } // namespace
 
@@ -178,13 +174,12 @@ bool CFavouritesURL::Parse(CFavouritesURL::Action action, const std::vector<std:
       m_actionLabel = g_localizeStrings.Get(15222); // Execute Android app
       break;
     default:
-      CLog::LogF(LOGWARNING, "Unsupported action, treating as playmedia(param[0])");
       if (params.empty())
       {
         CLog::LogF(LOGERROR, "Missing parameter");
         return false;
       }
-      m_action = CFavouritesURL::Action::PLAY_MEDIA;
+      m_action = CFavouritesURL::Action::UNKNOWN;
       m_target = StringUtils::DeParamify(params[0]);
       m_actionLabel = g_localizeStrings.Get(15224); // Other / Unknown
       break;
