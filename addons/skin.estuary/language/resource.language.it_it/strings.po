@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-11-09 16:21+0000\n"
-"Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
+"PO-Revision-Date: 2022-11-13 16:23+0000\n"
+"Last-Translator: Stefano Gottardo <gottardo.stefano.83@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/it_it/>\n"
 "Language: it_it\n"
 "MIME-Version: 1.0\n"
@@ -19,11 +19,11 @@ msgstr ""
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
-msgstr "Skin Estuary da phil65 e Piers. (Skin predefinita di Kodi)"
+msgstr "Skin Estuary di phil65. (Skin predefinita di Kodi)"
 
 msgctxt "Addon Description"
 msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
-msgstr "Estuary è la skin predefinita di Kodi 17.0 e successivi. Cerca di essere facile da capire e usare per i nuovi utenti di Kodi."
+msgstr "Estuary è la skin predefinita di Kodi 17.0 e successivi. Cerca di essere facile da capire e da usare per chi si avvicina per la prima volta a Kodi."
 
 msgctxt "Addon Disclaimer"
 msgid "Estuary is the default skin for Kodi, removing it may cause issues"
@@ -51,7 +51,7 @@ msgstr "Cambia modalità"
 
 msgctxt "#31005"
 msgid "Watch as 2D"
-msgstr "Guarda come 2D"
+msgstr "Guarda in 2D"
 
 msgctxt "#31006"
 msgid "Random movies"
@@ -668,6 +668,16 @@ msgstr "Tempo di chiusura automatica OSD video (secondi)"
 msgctxt "#31174"
 msgid "Default select action for albums on the home screen"
 msgstr "Azione di selezione predefinita per gli album nella schermata iniziale"
+
+#. Setting to control what happens when clicking a TV show on the home screen
+msgctxt "#31175"
+msgid "Default select action for TV shows on the home screen"
+msgstr "Azione di selezione predefinita per i programmi TV nella schermata iniziale"
+
+#. Setting to control what happens when clicking a movie set on the home screen
+msgctxt "#31176"
+msgid "Default select action for movie sets on the home screen"
+msgstr "Azione di selezione predefinita per i set cinematografici nella schermata iniziale"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
