@@ -154,9 +154,7 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
 
   while ((len = pSrcPacket->iSize - p) > 3)
   {
-    uint8_t* buf = pSrcPacket->pData + p;
-    bool validCaption = (buf[0] & 0x04) > 0;
-    if (validCaption)
+    if ((startcode & 0xffffff00) == 0x00000100)
     {
       if (m_codec == AV_CODEC_ID_MPEG2VIDEO)
       {
@@ -165,11 +163,13 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
         {
           if (len > 4)
           {
+            uint8_t *buf = pSrcPacket->pData + p;
             picType = (buf[1] & 0x38) >> 3;
           }
         }
         else if (scode == 0xb2) // user data
         {
+          uint8_t *buf = pSrcPacket->pData + p;
           if (len >= 6 &&
             buf[0] == 'G' && buf[1] == 'A' && buf[2] == '9' && buf[3] == '4' &&
             buf[4] == 3 && (buf[5] & 0x40))
@@ -231,6 +231,7 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
         // slice data comes after SEI
         if (scode >= 1 && scode <= 5)
         {
+          uint8_t *buf = pSrcPacket->pData + p;
           CBitstream bs(buf, len * 8);
           bs.readGolombUE();
           int sliceType = bs.readGolombUE();
@@ -249,6 +250,7 @@ DemuxPacket* CDVDDemuxCC::Read(DemuxPacket *pSrcPacket)
         }
         if (scode == 0x06) // SEI
         {
+          uint8_t *buf = pSrcPacket->pData + p;
           if (len >= 12 &&
             buf[3] == 0 && buf[4] == 49 &&
             buf[5] == 'G' && buf[6] == 'A' && buf[7] == '9' && buf[8] == '4' && buf[9] == 3)
