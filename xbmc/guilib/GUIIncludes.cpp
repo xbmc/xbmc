@@ -414,11 +414,17 @@ void CGUIIncludes::ResolveIncludes(TiXmlElement *node, std::map<INFO::InfoPtr, b
     const char *condition = include->Attribute("condition");
     if (condition)
     {
-      INFO::InfoPtr conditionID = CServiceBroker::GetGUI()->GetInfoManager().Register(ResolveExpressions(condition));
-      bool value = conditionID->Get(INFO::DEFAULT_CONTEXT);
+      INFO::InfoPtr conditionID =
+          CServiceBroker::GetGUI()->GetInfoManager().Register(ResolveExpressions(condition));
+      bool value = false;
 
-      if (xmlIncludeConditions)
-        xmlIncludeConditions->insert(std::make_pair(conditionID, value));
+      if (conditionID)
+      {
+        value = conditionID->Get(INFO::DEFAULT_CONTEXT);
+
+        if (xmlIncludeConditions)
+          xmlIncludeConditions->insert(std::make_pair(conditionID, value));
+      }
 
       if (!value)
       {
