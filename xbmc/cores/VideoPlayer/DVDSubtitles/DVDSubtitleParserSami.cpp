@@ -35,7 +35,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
     return false;
 
   CRegExp regLine(true);
-  if (!regLine.RegComp("<SYNC START=\"?([0-9]+)\"?>(.+)"))
+  if (!regLine.RegComp("<SYNC START=\"?([0-9]+)\"?>(.+)?"))
     return false;
   CRegExp regClassID(true);
   if (!regClassID.RegComp("<P Class=\"?([\\w\\d]+)\"?>"))
@@ -48,7 +48,9 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
   CDVDSubtitleTagSami TagConv;
   if (!TagConv.Init())
     return false;
+
   TagConv.LoadHead(m_pStream.get());
+
   // If there are more languages contained in a file,
   // try getting the language class ID that matches the language name
   // specified in the filename
@@ -71,7 +73,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
     }
   }
 
-  const char* langClassID = NULL;
+  const char* langClassID{nullptr};
   if (!strClassID.empty())
   {
     StringUtils::ToLower(strClassID);
@@ -100,17 +102,25 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
     int pos = regLine.RegFind(line);
     if (pos > -1) // Sync tag found
     {
-      double currStartTime = (double)atoi(regLine.GetMatch(1).c_str());
+      double currStartTime = static_cast<double>(std::atoi(regLine.GetMatch(1).c_str()));
       double currPTSStartTime = currStartTime * DVD_TIME_BASE / 1000;
-      std::string text = regLine.GetMatch(2);
 
       // We set the duration for the previous line (Event) by using the current start time
       ChangeSubtitleStopTime(prevSubId, currPTSStartTime);
 
       // We try to get text after Sync tag (if exists)
-      TagConv.ConvertLine(text, langClassID);
-      TagConv.CloseTag(text);
-      prevSubId = AddSubtitle(text, currPTSStartTime, currPTSStartTime + defaultDuration);
+      std::string text = regLine.GetMatch(2);
+      if (text.empty())
+      {
+        prevSubId = NO_SUBTITLE_ID;
+      }
+      else
+      {
+        TagConv.ConvertLine(text, langClassID);
+        TagConv.CloseTag(text);
+        prevSubId = AddSubtitle(text, currPTSStartTime, currPTSStartTime + defaultDuration);
+      }
+
       lastPTSStartTime = currPTSStartTime;
     }
     else
@@ -120,6 +130,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
       // but they have to match the current language Class ID (if set)
       if (!strClassID.empty() && strClassID != lastLangClassID)
         continue;
+
       std::string text(line);
       TagConv.ConvertLine(text, langClassID);
       TagConv.CloseTag(text);
