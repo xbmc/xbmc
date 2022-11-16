@@ -2264,6 +2264,9 @@ void CTeletextDecoder::RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, 
 
   /* render char */
   sbitbuffer = m_sBit->buffer;
+  if (!sbitbuffer)
+    return;
+
   unsigned char localbuffer[1000]; // should be enough to store one character-bitmap...
   // add diacritical marks
   if (Attribute->diacrit)
