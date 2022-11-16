@@ -394,7 +394,7 @@ unsigned int CGUITextBox::GetRows() const
 
 int CGUITextBox::GetNumPages() const
 {
-  return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
+  return m_itemsPerPage > 0 ? (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage : 0;
 }
 
 int CGUITextBox::GetCurrentPage() const
