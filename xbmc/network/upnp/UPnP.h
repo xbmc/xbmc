@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+
 #include <string>
 
 class NPT_LogHandler;
@@ -85,7 +87,9 @@ private:
     CUPnPRenderer* CreateRenderer(int port = 0);
     CUPnPServer*   CreateServer(int port = 0);
 
-public:
+    CCriticalSection m_lockMediaBrowser;
+
+  public:
     PLT_SyncMediaBrowser*       m_MediaBrowser;
     PLT_MediaController*        m_MediaController;
 
