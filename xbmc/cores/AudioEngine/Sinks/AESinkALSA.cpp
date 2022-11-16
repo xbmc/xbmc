@@ -1368,7 +1368,10 @@ void CAESinkALSA::EnumerateDevice(AEDeviceInfoList &list, const std::string &dev
     /* "HDA NVidia", "HDA Intel", "HDA ATI HDMI", "SB Live! 24-bit External", ... */
     char *cardName;
     if (snd_card_get_name(cardNr, &cardName) == 0)
+    {
       info.m_displayName = cardName;
+      free(cardName);
+    }
 
     if (info.m_deviceType == AE_DEVTYPE_HDMI && info.m_displayName.size() > 5 &&
         info.m_displayName.substr(info.m_displayName.size()-5) == " HDMI")
