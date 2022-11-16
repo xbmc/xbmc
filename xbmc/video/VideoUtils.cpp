@@ -649,10 +649,11 @@ ResumeInformation GetNonFolderItemResumeInformation(const CFileItem& item)
 
 ResumeInformation GetItemResumeInformation(const CFileItem& item)
 {
-  if (item.m_bIsFolder)
-    return GetFolderItemResumeInformation(item);
-  else
-    return GetNonFolderItemResumeInformation(item);
+  ResumeInformation info = GetNonFolderItemResumeInformation(item);
+  if (info.isResumable)
+    return info;
+
+  return GetFolderItemResumeInformation(item);
 }
 
 } // namespace VIDEO_UTILS
