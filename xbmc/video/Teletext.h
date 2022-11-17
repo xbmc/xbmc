@@ -55,6 +55,7 @@ private:
   void PageInput(int Number);
   void GetNextPageOne(bool up);
   void GetNextSubPage(int offset);
+  bool IsSubtitlePage(int pageNumber) const;
   void SwitchZoomMode();
   void SwitchTranspMode();
   void SwitchHintMode();
