@@ -1165,7 +1165,7 @@ void CTeletextDecoder::RenderPage()
         if (c == NULL)
           return;
 
-        c = {};
+        *c = {};
         m_RenderInfo.SubtitleCache[j] = c;
       }
       c->Valid = true;
