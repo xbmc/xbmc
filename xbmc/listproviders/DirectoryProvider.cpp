@@ -451,6 +451,10 @@ bool CDirectoryProvider::OnPlay(const CGUIListItemPtr& item)
     const CFavouritesURL url(fileItem.GetPath());
     if (url.IsValid())
     {
+      // If action is playmedia, just play it
+      if (url.GetAction() == CFavouritesURL::Action::PLAY_MEDIA)
+        return ExecuteAction(url.GetExecString());
+
       CFileItem targetItem(url.GetTarget(), url.IsDir());
       fileItem = targetItem;
     }
