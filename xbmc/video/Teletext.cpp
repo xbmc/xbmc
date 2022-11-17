@@ -1292,16 +1292,37 @@ void CTeletextDecoder::RenderPage()
         }
       }
 
-      /* Update on every changed second */
-      if (m_txtCache->TimeString[7] != prevTimeSec)
+      if (!IsSubtitlePage(m_txtCache->Page))
       {
-        prevTimeSec = m_txtCache->TimeString[7];
+        /* Update on every changed second */
+        if (m_txtCache->TimeString[7] != prevTimeSec)
+        {
+          prevTimeSec = m_txtCache->TimeString[7];
+          m_updateTexture = true;
+        }
+      }
+      else
+      {
         m_updateTexture = true;
       }
     }
     DoFlashing(StartRow);
     m_txtCache->NationalSubset = national_subset_bak;
   }
+}
+
+bool CTeletextDecoder::IsSubtitlePage(int pageNumber) const
+{
+  if (!m_txtCache)
+    return false;
+
+  for (const auto subPage : m_txtCache->SubtitlePages)
+  {
+    if (subPage.page == pageNumber)
+      return true;
+  }
+
+  return false;
 }
 
 void CTeletextDecoder::DoFlashing(int startrow)
