@@ -44,3 +44,4 @@
 #define LOGEPG        (1 << (LOGMASKBIT + 16))
 #define LOGANNOUNCE   (1 << (LOGMASKBIT + 17))
 #define LOGWSDISCOVERY (1 << (LOGMASKBIT + 18))
+#define LOGADDONS (1 << (LOGMASKBIT + 19))
