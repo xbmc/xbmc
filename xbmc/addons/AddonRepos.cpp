@@ -126,7 +126,7 @@ bool CAddonRepos::LoadAddonsFromDatabase(const std::string& addonId,
 
   for (const auto& repo : m_addonsByRepoMap)
   {
-    CLog::Log(LOGDEBUG, "ADDONS: {} - {} addon(s) loaded", repo.first, repo.second.size());
+    CLog::LogFC(LOGDEBUG, LOGADDONS, "{} - {} addon(s) loaded", repo.first, repo.second.size());
 
     const auto& addonsPerRepo = repo.second;
 
@@ -187,9 +187,8 @@ void CAddonRepos::BuildUpdateOrOutdatedList(const std::vector<std::shared_ptr<IA
 {
   std::shared_ptr<IAddon> update;
 
-  CLog::Log(LOGDEBUG, "CAddonRepos::{}: Building {} list from installed add-ons", __func__,
-            addonCheckType == AddonCheckType::OUTDATED_ADDONS ? "outdated" : "update");
-
+  CLog::LogFC(LOGDEBUG, LOGADDONS, "Building {} list from installed add-ons",
+              addonCheckType == AddonCheckType::OUTDATED_ADDONS ? "outdated" : "update");
   for (const auto& addon : installed)
   {
     if (DoAddonUpdateCheck(addon, update))
@@ -205,10 +204,8 @@ void CAddonRepos::BuildAddonsWithUpdateList(
 {
   std::shared_ptr<IAddon> update;
 
-  CLog::Log(LOGDEBUG,
-            "CAddonRepos::{}: Building combined addons-with-update map from installed add-ons",
-            __func__);
-
+  CLog::LogFC(LOGDEBUG, LOGADDONS,
+              "Building combined addons-with-update map from installed add-ons");
   for (const auto& addon : installed)
   {
     if (DoAddonUpdateCheck(addon, update))
@@ -221,8 +218,8 @@ void CAddonRepos::BuildAddonsWithUpdateList(
 bool CAddonRepos::DoAddonUpdateCheck(const std::shared_ptr<IAddon>& addon,
                                      std::shared_ptr<IAddon>& update) const
 {
-  CLog::Log(LOGDEBUG, "ADDONS: update check: addonID = {} / Origin = {} / Version = {}",
-            addon->ID(), addon->Origin(), addon->Version().asString());
+  CLog::LogFC(LOGDEBUG, LOGADDONS, "update check: addonID = {} / Origin = {} / Version = {}",
+              addon->ID(), addon->Origin(), addon->Version().asString());
 
   update.reset();
 
@@ -268,8 +265,8 @@ bool CAddonRepos::DoAddonUpdateCheck(const std::shared_ptr<IAddon>& addon,
 
   if (update != nullptr)
   {
-    CLog::Log(LOGDEBUG, "ADDONS: -- found -->: addonID = {} / Origin = {} / Version = {}",
-              update->ID(), update->Origin(), update->Version().asString());
+    CLog::LogFC(LOGDEBUG, LOGADDONS, "-- found -->: addonID = {} / Origin = {} / Version = {}",
+                update->ID(), update->Origin(), update->Version().asString());
     return true;
   }
 
@@ -451,14 +448,14 @@ bool CAddonRepos::FindDependency(const std::string& dependsId,
 
   repoForDep = std::static_pointer_cast<CRepository>(tmp);
 
-  CLog::Log(LOGDEBUG, "ADDONS: found dependency [{}] for install/update from repo [{}]",
-            dependencyToInstall->ID(), repoForDep->ID());
+  CLog::LogFC(LOGDEBUG, LOGADDONS, "found dependency [{}] for install/update from repo [{}]",
+              dependencyToInstall->ID(), repoForDep->ID());
 
   if (dependencyToInstall->HasType(AddonType::REPOSITORY))
   {
-    CLog::Log(LOGDEBUG,
-              "ADDONS: dependency with id [{}] has type ADDON_REPOSITORY and will not install!",
-              dependencyToInstall->ID());
+    CLog::LogFC(LOGDEBUG, LOGADDONS,
+                "dependency with id [{}] has type ADDON_REPOSITORY and will not install!",
+                dependencyToInstall->ID());
 
     return false;
   }
