@@ -22,6 +22,8 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+using namespace std::chrono_literals;
+
 static inline void SDL_memset4(uint32_t* dst, uint32_t val, size_t len)
 {
   for (; len > 0; --len)
@@ -1338,7 +1340,9 @@ void CTeletextDecoder::DoFlashing(int startrow)
   /* Flashing */
   TextPageAttr_t flashattr;
   char flashchar;
-  long flashphase = std::chrono::steady_clock::now().time_since_epoch().count() % 1000;
+  std::chrono::milliseconds flashphase = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                             std::chrono::steady_clock::now().time_since_epoch()) %
+                                         1000;
 
   int srow = startrow;
   int erow = 24;
@@ -1370,25 +1374,37 @@ void CTeletextDecoder::DoFlashing(int startrow)
         switch (flashattr.flashing &0x1c) // Flash Rate
         {
           case 0x00 :  // 1 Hz
-            if (flashphase>500) doflash = true;
+            if (flashphase > 500ms)
+              doflash = true;
             break;
           case 0x04 :  // 2 Hz  Phase 1
-            if (flashphase<250) doflash = true;
+            if (flashphase < 250ms)
+              doflash = true;
             break;
           case 0x08 :  // 2 Hz  Phase 2
-            if (flashphase>=250 && flashphase<500) doflash = true;
+            if (flashphase >= 250ms && flashphase < 500ms)
+              doflash = true;
             break;
           case 0x0c :  // 2 Hz  Phase 3
-            if (flashphase>=500 && flashphase<750) doflash = true;
+            if (flashphase >= 500ms && flashphase < 750ms)
+              doflash = true;
             break;
           case 0x10 :  // incremental flash
             incflash++;
             if (incflash>3) incflash = 1;
             switch (incflash)
             {
-              case 1: if (flashphase<250) doflash = true; break;
-              case 2: if (flashphase>=250 && flashphase<500) doflash = true;break;
-              case 3: if (flashphase>=500 && flashphase<750) doflash = true;
+              case 1:
+                if (flashphase < 250ms)
+                  doflash = true;
+                break;
+              case 2:
+                if (flashphase >= 250ms && flashphase < 500ms)
+                  doflash = true;
+                break;
+              case 3:
+                if (flashphase >= 500ms && flashphase < 750ms)
+                  doflash = true;
             }
             break;
           case 0x14 :  // decremental flash
@@ -1396,9 +1412,17 @@ void CTeletextDecoder::DoFlashing(int startrow)
             if (decflash<1) decflash = 3;
             switch (decflash)
             {
-              case 1: if (flashphase<250) doflash = true; break;
-              case 2: if (flashphase>=250 && flashphase<500) doflash = true;break;
-              case 3: if (flashphase>=500 && flashphase<750) doflash = true;
+              case 1:
+                if (flashphase < 250ms)
+                  doflash = true;
+                break;
+              case 2:
+                if (flashphase >= 250ms && flashphase < 500ms)
+                  doflash = true;
+                break;
+              case 3:
+                if (flashphase >= 500ms && flashphase < 750ms)
+                  doflash = true;
             }
             break;
 
