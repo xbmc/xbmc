@@ -13,6 +13,11 @@ include ../../download-files.include
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) --disable-enca
 
+ifeq ($(OS),android)
+  # Fontconfig uses clang and not clang++, therefore we need the explicit stdc++ link to solve issue #22069 affecting only Android 5.x
+  export LDFLAGS+= -lstdc++
+endif
+
 LIBDYLIB=$(PLATFORM)/$(LIBNAME)/.libs/$(LIBNAME).a
 
 all: .installed-$(PLATFORM)
