@@ -421,8 +421,8 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_PLAYER_PLAY:
     if (m_listProvider)
     {
-      const size_t selected = GetSelectedItem();
-      if (selected >= 0 && selected < m_items.size())
+      const int selected = GetSelectedItem();
+      if (selected >= 0 && selected < static_cast<int>(m_items.size()))
       {
         if (m_listProvider->OnPlay(m_items[selected]))
           return true;
