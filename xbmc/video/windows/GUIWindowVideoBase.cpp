@@ -640,11 +640,7 @@ std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
   const VIDEO_UTILS::ResumeInformation resumeInfo = VIDEO_UTILS::GetItemResumeInformation(item);
   if (resumeInfo.isResumable)
   {
-    if (item.m_bIsFolder)
-    {
-      return g_localizeStrings.Get(13362); // Continue watching
-    }
-    else if (resumeInfo.startOffset > 0)
+    if (resumeInfo.startOffset > 0)
     {
       std::string resumeString = StringUtils::Format(
           g_localizeStrings.Get(12022),
@@ -658,6 +654,10 @@ std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
         resumeString += " (" + partString + ")";
       }
       return resumeString;
+    }
+    else
+    {
+      return g_localizeStrings.Get(13362); // Continue watching
     }
   }
   return {};
