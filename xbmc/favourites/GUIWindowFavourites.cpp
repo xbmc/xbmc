@@ -74,11 +74,15 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
     if (selectedItem < 0 || selectedItem >= m_vecItems->Size())
       return false;
 
-    // Resolve the favourite
     const CFavouritesURL favURL((*m_vecItems)[selectedItem]->GetPath());
     if (!favURL.IsValid())
       return false;
 
+    // If action is playmedia, just play it
+    if (favURL.GetAction() == CFavouritesURL::Action::PLAY_MEDIA)
+      return ExecuteAction(favURL.GetExecString());
+
+    // Resolve and check the target
     const auto item = std::make_shared<CFileItem>(favURL.GetTarget(), favURL.IsDir());
     if (CPlayerUtils::IsItemPlayable(*item))
     {
