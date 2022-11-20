@@ -845,6 +845,8 @@ bool CWinSystemX11::SetWindow(int width, int height, bool fullscreen, const std:
                             class_hints);
       XFree(class_hints);
       XFree(wm_hints);
+      XFree(iconName.value);
+      XFree(windowName.value);
 
       // register interest in the delete window message
       Atom wmDeleteMessage = XInternAtom(m_dpy, "WM_DELETE_WINDOW", False);
