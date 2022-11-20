@@ -5,9 +5,10 @@
 # This will define the following variables:
 #
 # FLATBUFFERS_FOUND - system has FlatBuffers compiler and headers
-# FLATBUFFERS_FLATC_EXECUTABLE - the flatc compiler executable
 # FLATBUFFERS_INCLUDE_DIRS - the FlatFuffers include directory
 # FLATBUFFERS_MESSAGES_INCLUDE_DIR - the directory for generated headers
+
+find_package(FlatC REQUIRED)
 
 if(ENABLE_INTERNAL_FLATBUFFERS)
   include(cmake/scripts/common/ModuleHelpers.cmake)
