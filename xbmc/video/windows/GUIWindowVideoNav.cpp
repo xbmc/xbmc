@@ -862,6 +862,17 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   }
 }
 
+bool CGUIWindowVideoNav::OnPopupMenu(int iItem)
+{
+  if (iItem >= 0 && iItem < m_vecItems->Size())
+  {
+    const auto item = m_vecItems->Get(iItem);
+    item->SetProperty("CheckAutoPlayNextItem", true);
+  }
+
+  return CGUIWindowVideoBase::OnPopupMenu(iItem);
+}
+
 bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
   CFileItemPtr item;

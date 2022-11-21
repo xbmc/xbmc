@@ -25,6 +25,7 @@
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "settings/MediaSettings.h"
+#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
@@ -287,11 +288,88 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
   }
 }
 
+std::string GetVideoDbItemPath(const CFileItem& item)
+{
+  std::string path = item.GetPath();
+  if (!URIUtils::IsVideoDb(path))
+    path = item.GetProperty("original_listitem_url").asString();
+
+  if (URIUtils::IsVideoDb(path))
+    return path;
+
+  return {};
+}
+
+void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
+                              const std::shared_ptr<CFileItem>& itemToPlay)
+{
+  // recursively add items to list
+  CFileItemList queuedItems;
+  VIDEO_UTILS::GetItemsForPlayList(itemToQueue, queuedItems);
+
+  auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+  playlistPlayer.ClearPlaylist(PLAYLIST::TYPE_VIDEO);
+  playlistPlayer.Reset();
+  playlistPlayer.Add(PLAYLIST::TYPE_VIDEO, queuedItems);
+
+  // figure out where to start playback
+  PLAYLIST::CPlayList& playList = playlistPlayer.GetPlaylist(PLAYLIST::TYPE_VIDEO);
+  int pos = 0;
+  if (itemToPlay)
+  {
+    for (const std::shared_ptr<CFileItem>& queuedItem : queuedItems)
+    {
+      if (queuedItem->IsSamePath(itemToPlay.get()))
+        break;
+
+      pos++;
+    }
+  }
+
+  if (playlistPlayer.IsShuffled(PLAYLIST::TYPE_VIDEO))
+  {
+    playList.Swap(0, playList.FindOrder(pos));
+    pos = 0;
+  }
+
+  playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
+  playlistPlayer.Play(pos, "");
+}
+
 } // unnamed namespace
 
 namespace VIDEO_UTILS
 {
-void PlayItem(const std::shared_ptr<CFileItem>& itemIn)
+bool IsAutoPlayNextItem(const CFileItem& item)
+{
+  if (!item.HasVideoInfoTag())
+    return false;
+
+  return IsAutoPlayNextItem(item.GetVideoInfoTag()->m_type);
+}
+
+bool IsAutoPlayNextItem(const std::string& content)
+{
+  int settingValue = CSettings::SETTING_AUTOPLAYNEXT_UNCATEGORIZED;
+  if (content == MediaTypeMovie)
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_MOVIES;
+  else if (content == MediaTypeEpisode)
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_EPISODES;
+  else if (content == MediaTypeMusicVideo)
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_MUSICVIDEOS;
+  else if (content == MediaTypeTvShow)
+    settingValue = CSettings::SETTING_AUTOPLAYNEXT_TVSHOWS;
+
+  const auto setting = std::dynamic_pointer_cast<CSettingList>(
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+          CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM));
+
+  return setting && CSettingUtils::FindIntInList(setting, settingValue);
+}
+
+void PlayItem(
+    const std::shared_ptr<CFileItem>& itemIn,
+    ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_VIDEO */)
 {
   auto item = itemIn;
 
@@ -306,21 +384,45 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn)
 
   if (item->m_bIsFolder && !item->IsPlugin())
   {
-    // recursively add items to list
-    CFileItemList queuedItems;
-    GetItemsForPlayList(item, queuedItems);
-
-    auto& player = CServiceBroker::GetPlaylistPlayer();
-    player.ClearPlaylist(PLAYLIST::TYPE_VIDEO);
-    player.Reset();
-    player.Add(PLAYLIST::TYPE_VIDEO, queuedItems);
-    player.SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
-    player.Play();
+    AddItemToPlayListAndPlay(item, nullptr);
   }
   else if (item->HasVideoInfoTag())
   {
-    // single item, play it
-    CServiceBroker::GetPlaylistPlayer().Play(item, "");
+    if (mode == ContentUtils::PlayMode::PLAY_FROM_HERE ||
+        (mode == ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM && IsAutoPlayNextItem(*item)))
+    {
+      // Add item and all its siblings to the playlist and play. Prefer videodb path if available,
+      // because it provides more information than just a plain file system path for example.
+      std::string parentPath = item->GetProperty("ParentPath").asString();
+      if (parentPath.empty())
+      {
+        std::string path = GetVideoDbItemPath(*item);
+        if (path.empty())
+          path = item->GetPath();
+
+        URIUtils::GetParentPath(path, parentPath);
+
+        if (parentPath.empty())
+        {
+          CLog::LogF(LOGERROR, "Unable to obtain parent path for '{}'", item->GetPath());
+          return;
+        }
+      }
+
+      const auto parentItem = std::make_shared<CFileItem>(parentPath, true);
+      if (item->GetStartOffset() == STARTOFFSET_RESUME)
+        parentItem->SetStartOffset(STARTOFFSET_RESUME);
+
+      AddItemToPlayListAndPlay(parentItem, item);
+    }
+    else // mode == PlayMode::PLAY_ONLY_THIS
+    {
+      // single item, play it
+      auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+      playlistPlayer.Reset();
+      playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
+      playlistPlayer.Play(item, "");
+    }
   }
 }
 

@@ -30,6 +30,7 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction& action) override;
   void GetContextButtons(int itemNumber, CContextButtons& buttons) override;
+  bool OnPopupMenu(int iItem) override;
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   bool Update(const std::string& strDirectory, bool updateFilterPath = true) override;
   void UpdateButtons() override;
