@@ -10,23 +10,15 @@
 
 #include "Autorun.h"
 #include "GUIUserMessages.h"
-#include "PlayListPlayer.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
-#include "application/ApplicationComponents.h"
-#include "application/ApplicationPlayer.h"
-#include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "playlists/PlayList.h"
-#include "settings/MediaSettings.h"
-#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/windows/GUIWindowVideoBase.h"
-#include "view/GUIViewState.h"
 
 #include <utility>
 
@@ -178,89 +170,6 @@ bool CVideoResume::IsVisible(const CFileItem& itemIn) const
 
 namespace
 {
-
-void AddRecordingsToPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems)
-{
-  if (item->m_bIsFolder)
-  {
-    CFileItemList items;
-    XFILE::CDirectory::GetDirectory(item->GetPath(), items, "", XFILE::DIR_FLAG_DEFAULTS);
-
-    const int watchedMode = CMediaSettings::GetInstance().GetWatchedMode("recordings");
-    const bool unwatchedOnly = watchedMode == WatchedModeUnwatched;
-    const bool watchedOnly = watchedMode == WatchedModeWatched;
-    for (const auto& currItem : items)
-    {
-      if (currItem->HasVideoInfoTag() &&
-          ((unwatchedOnly && currItem->GetVideoInfoTag()->GetPlayCount() > 0) ||
-           (watchedOnly && currItem->GetVideoInfoTag()->GetPlayCount() <= 0)))
-        continue;
-
-      AddRecordingsToPlayList(currItem, queuedItems);
-    }
-  }
-  else
-  {
-    queuedItems.Add(item);
-  }
-}
-
-void AddRecordingsToPlayListAndSort(const std::shared_ptr<CFileItem>& item,
-                                    CFileItemList& queuedItems)
-{
-  queuedItems.SetPath(item->GetPath());
-  AddRecordingsToPlayList(item, queuedItems);
-
-  if (!queuedItems.IsEmpty())
-  {
-    const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-    if (windowId == WINDOW_TV_RECORDINGS || windowId == WINDOW_RADIO_RECORDINGS)
-    {
-      std::unique_ptr<CGUIViewState> viewState(CGUIViewState::GetViewState(windowId, queuedItems));
-      if (viewState)
-        queuedItems.Sort(viewState->GetSortMethod());
-    }
-  }
-}
-
-void PlayAndQueueRecordings(const std::shared_ptr<CFileItem>& item, int windowId)
-{
-  const std::shared_ptr<CFileItem> parentFolderItem =
-      std::make_shared<CFileItem>(URIUtils::GetParentPath(item->GetPath()), true);
-
-  // add all items of given item's directory to a temporary playlist, start playback of given item
-  CFileItemList queuedItems;
-  AddRecordingsToPlayListAndSort(parentFolderItem, queuedItems);
-
-  PLAYLIST::CPlayListPlayer& player = CServiceBroker::GetPlaylistPlayer();
-
-  player.ClearPlaylist(PLAYLIST::TYPE_VIDEO);
-  player.Reset();
-  player.Add(PLAYLIST::TYPE_VIDEO, queuedItems);
-
-  // figure out where to start playback
-  PLAYLIST::CPlayList& playList = player.GetPlaylist(PLAYLIST::TYPE_VIDEO);
-  int itemToPlay = 0;
-
-  for (int i = 0; i < queuedItems.Size(); ++i)
-  {
-    if (item->IsSamePath(queuedItems.Get(i).get()))
-    {
-      itemToPlay = i;
-      break;
-    }
-  }
-
-  if (player.IsShuffled(PLAYLIST::TYPE_VIDEO))
-  {
-    playList.Swap(0, playList.FindOrder(itemToPlay));
-    itemToPlay = 0;
-  }
-
-  player.SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
-  player.Play(itemToPlay, "");
-}
-
 void SetPathAndPlay(CFileItem& item)
 {
   if (!item.m_bIsFolder && item.IsVideoDb())
@@ -276,11 +185,14 @@ void SetPathAndPlay(CFileItem& item)
   }
   else
   {
+    const ContentUtils::PlayMode mode = item.GetProperty("CheckAutoPlayNextItem").asBoolean()
+                                            ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
+                                            : ContentUtils::PlayMode::PLAY_ONLY_THIS;
+    VIDEO_UTILS::PlayItem(std::make_shared<CFileItem>(item), mode);
+
     item.SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
-    VIDEO_UTILS::PlayItem(std::make_shared<CFileItem>(item));
   }
 }
-
 } // unnamed namespace
 
 bool CVideoResume::Execute(const std::shared_ptr<CFileItem>& itemIn) const
@@ -388,6 +300,14 @@ bool CVideoPlayNext::Execute(const std::shared_ptr<CFileItem>& item) const
   return true;
 };
 
+std::string CVideoPlayAndQueue::GetLabel(const CFileItem& item) const
+{
+  if (VIDEO_UTILS::IsAutoPlayNextItem(item))
+    return g_localizeStrings.Get(13434); // Play only this
+  else
+    return g_localizeStrings.Get(13412); // Play from here
+}
+
 bool CVideoPlayAndQueue::IsVisible(const CFileItem& item) const
 {
   const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
@@ -410,8 +330,10 @@ bool CVideoPlayAndQueue::Execute(const std::shared_ptr<CFileItem>& item) const
   if ((windowId == WINDOW_TV_RECORDINGS || windowId == WINDOW_RADIO_RECORDINGS) &&
       item->IsUsablePVRRecording())
   {
-    // recursively add items located in the same folder as item to play list, starting with item
-    PlayAndQueueRecordings(item, windowId);
+    const ContentUtils::PlayMode mode = VIDEO_UTILS::IsAutoPlayNextItem(*item)
+                                            ? ContentUtils::PlayMode::PLAY_ONLY_THIS
+                                            : ContentUtils::PlayMode::PLAY_FROM_HERE;
+    VIDEO_UTILS::PlayItem(item, mode);
     return true;
   }
 

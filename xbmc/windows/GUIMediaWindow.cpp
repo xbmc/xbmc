@@ -1746,6 +1746,8 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   if (!item)
     return false;
 
+  item->SetProperty("ParentPath", m_vecItems->GetPath());
+
   CContextButtons buttons;
 
   //Add items from plugin
