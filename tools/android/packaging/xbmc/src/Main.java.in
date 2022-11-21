@@ -171,21 +171,14 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
           {
             public void run()
             {
-              if (android.os.Build.VERSION.SDK_INT >= 19)
-              {
-                // Immersive mode
-
-                // Constants from API > 17
-                final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
-
-                mDecorView.setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                                | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-              }
+              // Immersive mode
+              mDecorView.setSystemUiVisibility(
+                      View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                              | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                              | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                              | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                              | View.SYSTEM_UI_FLAG_FULLSCREEN
+                              | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
             }
           });
         }
@@ -225,22 +218,15 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   {
     super.onResume();
 
-    if (android.os.Build.VERSION.SDK_INT >= 19)
-    {
-      // Immersive mode
-
-      // Constants from API > 17
-      final int API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY = 0x00001000;
-
-      mDecorView.setSystemUiVisibility(
-              View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                      | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                      | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                      | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                      | View.SYSTEM_UI_FLAG_FULLSCREEN
-                      | API_SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-    }
-
+    // Immersive mode
+    mDecorView.setSystemUiVisibility(
+          View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                  | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                  | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                  | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                  | View.SYSTEM_UI_FLAG_FULLSCREEN
+                  | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+  
     // New intent ?
     for (final DelayedIntent delayedIntent : mDelayedIntents)
     {
