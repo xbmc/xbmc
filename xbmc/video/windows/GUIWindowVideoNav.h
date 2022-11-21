@@ -53,6 +53,7 @@ protected:
   virtual void PlayItem(int iItem);
   void OnDeleteItem(const CFileItemPtr& pItem) override;
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  bool OnPopupMenu(int iItem) override;
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   bool OnAddMediaSource() override;
   bool OnClick(int iItem, const std::string &player = "") override;

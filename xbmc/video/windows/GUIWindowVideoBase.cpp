@@ -41,7 +41,6 @@
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
-#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/dialogs/GUIDialogContentSettings.h"
@@ -76,11 +75,6 @@ using namespace KODI::MESSAGING;
 
 #define PROPERTY_GROUP_BY           "group.by"
 #define PROPERTY_GROUP_MIXED        "group.mixed"
-
-static constexpr int SETTING_AUTOPLAYNEXT_MUSICVIDEOS = 0;
-static constexpr int SETTING_AUTOPLAYNEXT_EPISODES = 2;
-static constexpr int SETTING_AUTOPLAYNEXT_MOVIES = 3;
-static constexpr int SETTING_AUTOPLAYNEXT_UNCATEGORIZED = 4;
 
 CGUIWindowVideoBase::CGUIWindowVideoBase(int id, const std::string &xmlFile)
     : CGUIMediaWindow(id, xmlFile.c_str())
@@ -871,25 +865,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
           (!item->HasProperty("IsPlayable") || item->GetProperty("IsPlayable").asBoolean()) &&
           m_vecItems->Size() > 1 && itemNumber < m_vecItems->Size() - 1)
       {
-        int settingValue = SETTING_AUTOPLAYNEXT_UNCATEGORIZED;
-
-        if (item->IsVideoDb() && item->HasVideoInfoTag())
-        {
-          const std::string mediaType = item->GetVideoInfoTag()->m_type;
-
-          if (mediaType == MediaTypeMusicVideo)
-            settingValue = SETTING_AUTOPLAYNEXT_MUSICVIDEOS;
-          else if (mediaType == MediaTypeEpisode)
-            settingValue = SETTING_AUTOPLAYNEXT_EPISODES;
-          else if (mediaType == MediaTypeMovie)
-            settingValue = SETTING_AUTOPLAYNEXT_MOVIES;
-        }
-
-        const auto setting = std::dynamic_pointer_cast<CSettingList>(
-                   CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
-                   CSettings::SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM));
-
-        if (setting && CSettingUtils::FindIntInList(setting, settingValue))
+        if (VIDEO_UTILS::IsAutoPlayNextItem(*item))
           buttons.Add(CONTEXT_BUTTON_PLAY_ONLY_THIS, 13434);
         else
           buttons.Add(CONTEXT_BUTTON_PLAY_AND_QUEUE, 13412);

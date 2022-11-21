@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "Util.h"
 #include "application/ApplicationEnums.h"
 #include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -41,6 +42,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoUtils.h"
 
 #include <memory>
 #include <string>
@@ -57,19 +59,30 @@ CPVRGUIActionsPlayback::CPVRGUIActionsPlayback()
 
 std::string CPVRGUIActionsPlayback::GetResumeLabel(const CFileItem& item) const
 {
-  std::string resumeString;
-
-  const std::shared_ptr<CPVRRecording> recording(
-      CPVRItem(CFileItemPtr(new CFileItem(item))).GetRecording());
-  if (recording && !recording->IsDeleted())
+  const VIDEO_UTILS::ResumeInformation resumeInfo = VIDEO_UTILS::GetItemResumeInformation(item);
+  if (resumeInfo.isResumable)
   {
-    int positionInSeconds = lrint(recording->GetResumePoint().timeInSeconds);
-    if (positionInSeconds > 0)
-      resumeString = StringUtils::Format(
+    if (resumeInfo.startOffset > 0)
+    {
+      std::string resumeString = StringUtils::Format(
           g_localizeStrings.Get(12022),
-          StringUtils::SecondsToTimeString(positionInSeconds, TIME_FORMAT_HH_MM_SS));
+          StringUtils::SecondsToTimeString(
+              static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(resumeInfo.startOffset)),
+              TIME_FORMAT_HH_MM_SS));
+      if (resumeInfo.partNumber > 0)
+      {
+        const std::string partString =
+            StringUtils::Format(g_localizeStrings.Get(23051), resumeInfo.partNumber);
+        resumeString += " (" + partString + ")";
+      }
+      return resumeString;
+    }
+    else
+    {
+      return g_localizeStrings.Get(13362); // Continue watching
+    }
   }
-  return resumeString;
+  return {};
 }
 
 bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItem& item) const
@@ -190,9 +203,65 @@ bool CPVRGUIActionsPlayback::PlayRecording(const CFileItem& item, bool bCheckRes
 
   if (!bCheckResume || CheckResumeRecording(item))
   {
-    CFileItem* itemToPlay = new CFileItem(recording);
-    itemToPlay->SetStartOffset(item.GetStartOffset());
-    StartPlayback(itemToPlay, true);
+    if (!item.m_bIsFolder && VIDEO_UTILS::IsAutoPlayNextItem(item))
+    {
+      // recursively add items located in the same folder as item to play list, starting with item
+      std::string parentPath = item.GetProperty("ParentPath").asString();
+      if (parentPath.empty())
+        URIUtils::GetParentPath(item.GetPath(), parentPath);
+
+      if (parentPath.empty())
+      {
+        CLog::LogF(LOGERROR, "Unable to obtain parent path for '{}'", item.GetPath());
+        return false;
+      }
+
+      const auto parentItem = std::make_shared<CFileItem>(parentPath, true);
+      if (item.GetStartOffset() == STARTOFFSET_RESUME)
+        parentItem->SetStartOffset(STARTOFFSET_RESUME);
+
+      auto queuedItems = std::make_unique<CFileItemList>();
+      VIDEO_UTILS::GetItemsForPlayList(parentItem, *queuedItems);
+
+      // figure out where to start playback
+      int pos = 0;
+      for (const std::shared_ptr<CFileItem>& queuedItem : *queuedItems)
+      {
+        if (queuedItem->IsSamePath(&item))
+          break;
+
+        pos++;
+      }
+
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, pos, -1,
+                                                 static_cast<void*>(queuedItems.release()));
+      CheckAndSwitchToFullscreen(true);
+    }
+    else
+    {
+      CFileItem* itemToPlay = new CFileItem(recording);
+      itemToPlay->SetStartOffset(item.GetStartOffset());
+      StartPlayback(itemToPlay, true);
+    }
+  }
+  return true;
+}
+
+bool CPVRGUIActionsPlayback::PlayRecordingFolder(const CFileItem& item, bool bCheckResume) const
+{
+  if (!item.m_bIsFolder)
+    return false;
+
+  if (!bCheckResume || CheckResumeRecording(item))
+  {
+    // recursively add items to list
+    const auto itemToQueue = std::make_shared<CFileItem>(item);
+    auto queuedItems = std::make_unique<CFileItemList>();
+    VIDEO_UTILS::GetItemsForPlayList(itemToQueue, *queuedItems);
+
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MEDIA_PLAY, 0, -1,
+                                               static_cast<void*>(queuedItems.release()));
+    CheckAndSwitchToFullscreen(true);
   }
   return true;
 }
