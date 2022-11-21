@@ -22,6 +22,8 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <harfbuzz/hb-ft.h>
+
 using namespace std::chrono_literals;
 
 static inline void SDL_memset4(uint32_t* dst, uint32_t val, size_t len)
@@ -2293,7 +2295,36 @@ void CTeletextDecoder::RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, 
   else
     xfactor = 1;
 
-  if (!(glyph = FT_Get_Char_Index(m_Face, alphachar)))
+  // Check if the alphanumeric char has diacritical marks (or results from composing chars) or
+  // on the other hand it is just a simple alphanumeric char
+  if (!Attribute->diacrit)
+  {
+    Char = alphachar;
+  }
+  else
+  {
+    if ((national_subset_local == NAT_SC) || (national_subset_local == NAT_RB) ||
+        (national_subset_local == NAT_UA))
+      Char = G2table[1][0x20 + Attribute->diacrit];
+    else if (national_subset_local == NAT_GR)
+      Char = G2table[2][0x20 + Attribute->diacrit];
+    else if (national_subset_local == NAT_HB)
+      Char = G2table[3][0x20 + Attribute->diacrit];
+    else if (national_subset_local == NAT_AR)
+      Char = G2table[4][0x20 + Attribute->diacrit];
+    else
+      Char = G2table[0][0x20 + Attribute->diacrit];
+
+    // use harfbuzz to combine the diacritical mark with the alphanumeric char
+    // fallback to the alphanumeric char if composition fails
+    hb_unicode_funcs_t* ufuncs = hb_unicode_funcs_get_default();
+    hb_codepoint_t composedChar;
+    const hb_bool_t isComposed = hb_unicode_compose(ufuncs, alphachar, Char, &composedChar);
+    Char = isComposed ? composedChar : alphachar;
+  }
+
+  /* render char */
+  if (!(glyph = FT_Get_Char_Index(m_Face, Char)))
   {
     CLog::Log(LOGERROR, "{}:  <FT_Get_Char_Index for Char {:x} \"{}\" failed", __FUNCTION__,
               alphachar, alphachar);
@@ -2310,42 +2341,7 @@ void CTeletextDecoder::RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, 
     return;
   }
 
-  /* render char */
   sbitbuffer = m_sBit->buffer;
-  unsigned char localbuffer[1000]; // should be enough to store one character-bitmap...
-  // add diacritical marks
-  if (Attribute->diacrit)
-  {
-    FTC_SBit sbit_diacrit;
-
-    if ((national_subset_local == NAT_SC) || (national_subset_local == NAT_RB) || (national_subset_local == NAT_UA))
-      Char = G2table[1][0x20+ Attribute->diacrit];
-    else if (national_subset_local == NAT_GR)
-      Char = G2table[2][0x20+ Attribute->diacrit];
-    else if (national_subset_local == NAT_HB)
-      Char = G2table[3][0x20+ Attribute->diacrit];
-    else if (national_subset_local == NAT_AR)
-      Char = G2table[4][0x20+ Attribute->diacrit];
-    else
-      Char = G2table[0][0x20+ Attribute->diacrit];
-    if ((glyph = FT_Get_Char_Index(m_Face, Char)))
-    {
-      if (FTC_SBitCache_Lookup(m_Cache, &m_TypeTTF, glyph, &sbit_diacrit, &m_anode) == 0)
-      {
-        sbitbuffer = localbuffer;
-        memcpy(sbitbuffer,m_sBit->buffer,m_sBit->pitch*m_sBit->height);
-
-        for (Row = 0; Row < m_sBit->height; Row++)
-        {
-          for (Pitch = 0; Pitch < m_sBit->pitch; Pitch++)
-          {
-            if (sbit_diacrit->pitch > Pitch && sbit_diacrit->height > Row)
-              sbitbuffer[Row*m_sBit->pitch+Pitch] |= sbit_diacrit->buffer[Row*m_sBit->pitch+Pitch];
-          }
-        }
-      }
-    }
-  }
 
   int backupTTFshiftY = m_RenderInfo.TTFShiftY;
   if (national_subset_local == NAT_AR)
