@@ -782,7 +782,7 @@ public class XBMCJsonRPC
       //detailsIntent.putExtra(MovieDetailsActivity.MOVIE, movie);
       //detailsIntent.putExtra(MovieDetailsActivity.NOTIFICATION_ID, id);
 
-      return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+      return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     } catch (Exception e)
     {
       e.printStackTrace();
@@ -798,7 +798,7 @@ public class XBMCJsonRPC
       detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
       detailsIntent.setData(Uri.parse("videodb://tvshows/titles/" + tvshow.get("tvshowid").getAsString() + "/"));
 
-      return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+      return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     } catch (Exception e)
     {
       e.printStackTrace();
@@ -814,7 +814,7 @@ public class XBMCJsonRPC
       detailsIntent.setAction(Intent.ACTION_GET_CONTENT);
       detailsIntent.setData(Uri.parse("musicdb://albums/" + album.get("albumid").getAsString() + "/"));
 
-      return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+      return PendingIntent.getActivity(ctx, 0, detailsIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     } catch (Exception e)
     {
       e.printStackTrace();
