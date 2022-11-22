@@ -104,7 +104,7 @@ unsigned int CFileAndroidApp::ReadIcon(unsigned char** lpBuf, unsigned int* widt
                        ? env->FindClass("android/graphics/drawable/AdaptiveIconDrawable")
                        : nullptr;
 
-  if (CJNIBuild::SDK_INT >= 15 && m_icon)
+  if (m_icon)
   {
     CJNIResources res = CJNIContext::GetPackageManager().getResourcesForApplication(m_packageName);
     if (res)
