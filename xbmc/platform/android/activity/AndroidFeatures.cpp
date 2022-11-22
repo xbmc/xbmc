@@ -25,38 +25,6 @@ bool CAndroidFeatures::HasNeon()
   return false;
 }
 
-int CAndroidFeatures::GetVersion()
-{
-  static int version = -1;
-
-  if (version == -1)
-  {
-    version = 0;
-
-    JNIEnv *jenv = xbmc_jnienv();
-
-    jclass jcOsBuild = jenv->FindClass("android/os/Build$VERSION");
-    if (jcOsBuild == NULL)
-    {
-      CLog::Log(LOGERROR, "{}: Error getting class android.os.Build.VERSION", __PRETTY_FUNCTION__);
-      return version;
-    }
-
-    jint iSdkVersion = jenv->GetStaticIntField(jcOsBuild, jenv->GetStaticFieldID(jcOsBuild, "SDK_INT", "I"));
-    CLog::Log(LOGDEBUG, "{}: android.os.Build.VERSION {}", __PRETTY_FUNCTION__, (int)iSdkVersion);
-
-    // <= 10 Gingerbread
-    // <= 13 Honeycomb
-    // <= 15 IceCreamSandwich
-    //       JellyBean
-    // <= 19 KitKat
-    version = iSdkVersion;
-
-    jenv->DeleteLocalRef(jcOsBuild);
-  }
-  return version;
-}
-
 int CAndroidFeatures::GetCPUCount()
 {
   static int count = -1;
