@@ -76,6 +76,9 @@ bool CVideoMarkWatched::IsVisible(const CFileItem& item) const
   if (item.IsDeleted()) // e.g. trashed pvr recording
     return false;
 
+  if (item.m_bIsFolder && item.IsPlugin()) // we cannot manage plugin folder's watched state
+    return false;
+
   if (item.m_bIsFolder) // Only allow video db content, video and recording folders to be updated recursively
   {
     if (item.HasVideoInfoTag())
@@ -100,6 +103,9 @@ bool CVideoMarkWatched::Execute(const std::shared_ptr<CFileItem>& item) const
 bool CVideoMarkUnWatched::IsVisible(const CFileItem& item) const
 {
   if (item.IsDeleted()) // e.g. trashed pvr recording
+    return false;
+
+  if (item.m_bIsFolder && item.IsPlugin()) // we cannot manage plugin folder's watched state
     return false;
 
   if (item.m_bIsFolder) // Only allow video db content, video and recording folders to be updated recursively
