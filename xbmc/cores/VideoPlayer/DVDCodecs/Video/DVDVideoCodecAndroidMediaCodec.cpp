@@ -32,7 +32,6 @@
 #include "utils/log.h"
 #include "windowing/android/AndroidUtils.h"
 
-#include "platform/android/activity/AndroidFeatures.h"
 #include "platform/android/activity/JNIXBMCSurfaceTextureOnFrameAvailableListener.h"
 #include "platform/android/activity/XBMCApp.h"
 

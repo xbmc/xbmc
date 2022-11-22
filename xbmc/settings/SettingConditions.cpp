@@ -13,9 +13,6 @@
 #include "addons/Skin.h"
 #include "addons/addoninfo/AddonType.h"
 #include "application/AppParams.h"
-#if defined(TARGET_ANDROID)
-#include "platform/android/activity/AndroidFeatures.h"
-#endif // defined(TARGET_ANDROID)
 #include "cores/AudioEngine/Engines/ActiveAE/ActiveAESettings.h"
 #include "ServiceBroker.h"
 #include "GUIPassword.h"
