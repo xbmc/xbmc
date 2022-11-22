@@ -23400,3 +23400,18 @@ msgstr ""
 msgctxt "#39189"
 msgid "Available only with manual subtitle position"
 msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39190"
+msgid "Adjust display refresh rate mode"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39191"
+msgid "Whitelist"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39192"
+msgid "Auto"
+msgstr ""

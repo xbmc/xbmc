@@ -59,6 +59,7 @@ public:
 
   CHDRCapabilities GetDisplayHDRCapabilities() const override;
 
+  void SetRefreshRate(double refreshRate) override;
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
   void OnTimeout() override;

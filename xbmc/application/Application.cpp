@@ -1592,6 +1592,11 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(static_cast<RESOLUTION>(pMsg->param1), pMsg->param2 == 1);
     break;
 
+  case TMSG_SETVIDEOREFRESHRATE:
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoRefreshRate(
+        static_cast<double>(std::stod(pMsg->strParam)));
+    break;
+
   case TMSG_TOGGLEFULLSCREEN:
     CServiceBroker::GetWinSystem()->GetGfxContext().ToggleFullScreen();
     appPlayer->TriggerUpdateResolution();

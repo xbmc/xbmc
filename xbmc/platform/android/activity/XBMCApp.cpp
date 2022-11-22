@@ -160,6 +160,19 @@ int32_t CNativeWindow::GetHeight() const
   return -1;
 }
 
+int32_t CNativeWindow::SetFrameRate(float fps) const
+{
+  if (m_window) {
+    CLog::LogF(LOGDEBUG, "Calling ANativeWindow_setFrameRateWithChangeStrategy: {}", fps);
+    return ANativeWindow_setFrameRateWithChangeStrategy(
+        m_window, fps,
+        ANativeWindow_FrameRateCompatibility::ANATIVEWINDOW_FRAME_RATE_COMPATIBILITY_FIXED_SOURCE,
+        ANativeWindow_ChangeFrameRateStrategy::ANATIVEWINDOW_CHANGE_FRAME_RATE_ALWAYS);
+  }
+
+  return -1;
+}
+
 std::unique_ptr<CXBMCApp> CXBMCApp::m_appinstance;
 
 CXBMCApp::CXBMCApp(ANativeActivity* nativeActivity, IInputHandler& inputHandler)
@@ -1771,4 +1784,10 @@ void CXBMCApp::surfaceDestroyed(CJNISurfaceHolder holder)
     XBMC_DestroyDisplay();
 
   m_window.reset();
+}
+
+void CXBMCApp::SetFrameRate(float rate)
+{
+  if (m_window)
+    m_window->SetFrameRate(rate);
 }

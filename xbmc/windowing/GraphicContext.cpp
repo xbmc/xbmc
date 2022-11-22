@@ -1009,3 +1009,22 @@ void CGraphicContext::SetFPS(float fps)
 {
   m_fFPSOverride = fps;
 }
+
+// call SetVideoResolutionInternal and ensure its done from mainthread
+void CGraphicContext::SetVideoRefreshRate(double refreshRate)
+{
+  if (CServiceBroker::GetAppMessenger()->IsProcessThread())
+  {
+    SetVideoRefreshRateInternal(refreshRate);
+  }
+  else
+  {
+    CServiceBroker::GetAppMessenger()->SendMsg(TMSG_SETVIDEOREFRESHRATE, 0, 0, nullptr,
+                                               std::to_string(refreshRate));
+  }
+}
+
+void CGraphicContext::SetVideoRefreshRateInternal(double refreshRate)
+{
+  CServiceBroker::GetWinSystem()->SetRefreshRate(refreshRate);
+}

@@ -327,3 +327,8 @@ CHDRCapabilities CWinSystemAndroid::GetDisplayHDRCapabilities() const
 {
   return CAndroidUtils::GetDisplayHDRCapabilities();
 }
+
+void CWinSystemAndroid::SetRefreshRate(double refreshRate)
+{
+  CAndroidUtils::SetRefreshRate(refreshRate);
+}

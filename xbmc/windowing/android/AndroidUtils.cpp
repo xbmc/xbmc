@@ -438,3 +438,8 @@ bool CAndroidUtils::SupportsMediaCodecMimeType(const std::string& mimeType)
 
   return false;
 }
+
+void CAndroidUtils::SetRefreshRate(double refreshRate)
+{
+  CXBMCApp::Get().SetFrameRate(refreshRate);
+}

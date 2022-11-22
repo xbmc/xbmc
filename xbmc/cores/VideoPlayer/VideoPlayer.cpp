@@ -3744,9 +3744,21 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
     {
       double framerate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
-      RESOLUTION res = CResolutionUtils::ChooseBestResolution(static_cast<float>(framerate), hint.width, hint.height, !hint.stereo_mode.empty());
-      CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
-      m_renderManager.TriggerUpdateResolution(framerate, hint.width, hint.height, hint.stereo_mode);
+      if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE_MODE) == ADJUST_REFRESHRATE_MODE_WHITELIST)
+      {
+        CLog::Log(LOGDEBUG, "CVideoPlayer::OpenVideoStream - Switch to optimal display mode using whitelist");
+        RESOLUTION res = CResolutionUtils::ChooseBestResolution(static_cast<float>(framerate), hint.width, hint.height, !hint.stereo_mode.empty());
+        CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
+        m_renderManager.TriggerUpdateResolution(framerate, hint.width, hint.height, hint.stereo_mode);
+      }
+      else
+      {
+        CLog::Log(LOGDEBUG,
+                  "CVideoPlayer::OpenVideoStream - Switch to optimal display mode determined by "
+                  "OS, framerate: {}",
+                  framerate);
+        CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoRefreshRate(framerate);
+      }
     }
   }
 

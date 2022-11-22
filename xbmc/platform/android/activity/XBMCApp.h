@@ -70,6 +70,7 @@ public:
   bool SetBuffersGeometry(int width, int height, int format);
   int32_t GetWidth() const;
   int32_t GetHeight() const;
+  int32_t SetFrameRate(float fps) const;
 
 private:
   explicit CNativeWindow(ANativeWindow* window);
@@ -183,6 +184,7 @@ public:
   static void SetSystemVolume(float percent);
 
   void SetRefreshRate(float rate);
+  void SetFrameRate(float rate);
   void SetDisplayMode(int mode, float rate);
   int GetDPI() const;
 

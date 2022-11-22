@@ -60,6 +60,17 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="videoplayer.adjustrefreshratemode" type="integer" label="39190" help="36166">
+          <level>1</level>
+          <default>0</default>
+          <constraints>
+            <options>
+              <option label="39191">0</option> <!-- ADJUST_REFRESHRATE_WHITELIST -->
+              <option label="39192">1</option> <!-- ADJUST_REFRESHRATE_AUTO -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="videoplayer.usedisplayasclock" type="boolean" label="13510" help="36166">
           <level>1</level>
           <default>false</default>

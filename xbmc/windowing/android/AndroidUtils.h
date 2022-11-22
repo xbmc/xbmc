@@ -46,7 +46,7 @@ public:
 
   static std::vector<int> GetDisplaySupportedHdrTypes();
   static CHDRCapabilities GetDisplayHDRCapabilities();
-
+  static void SetRefreshRate(double refreshRate);
 protected:
   mutable int m_width;
   mutable int m_height;
