@@ -495,6 +495,9 @@ bool HasInProgressVideo(const std::string& path, CVideoDatabase& db)
 
 ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
 {
+  if (!item.m_bIsFolder)
+    return {};
+
   bool hasInProgressVideo = false;
 
   CFileItem folderItem(item);
@@ -637,7 +640,7 @@ ResumeInformation GetNonFolderItemResumeInformation(const CFileItem& item)
 
     if (bookmark.IsSet())
     {
-      resumeInfo.isResumable = true;
+      resumeInfo.isResumable = bookmark.IsPartWay();
       resumeInfo.startOffset = CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds);
       resumeInfo.partNumber = static_cast<int>(bookmark.partNumber);
     }
