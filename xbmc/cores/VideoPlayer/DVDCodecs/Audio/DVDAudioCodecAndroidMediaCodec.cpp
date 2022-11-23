@@ -26,8 +26,6 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#include "platform/android/activity/AndroidFeatures.h"
-
 #include <cassert>
 #include <stdexcept>
 
