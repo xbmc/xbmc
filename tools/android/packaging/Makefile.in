@@ -129,9 +129,12 @@ java: res
 	@cp -R xbmc/src/* xbmc/java/$(APP_PACKAGE_DIR)/
 
 package: libs python java
-	@echo "Gradle build and sign..."
+	@echo "\nGradle build and sign APK..."
 	ANDROID_HOME=$(SDKROOT) ./gradlew assemble$(BUILD_TYPE)
 	@cp xbmc/build/outputs/apk/$(BUILD_TYPE_LC)/xbmc-$(BUILD_TYPE_LC).apk $(CMAKE_SOURCE_DIR)/@APP_NAME_LC@app-$(CPU)-$(BUILD_TYPE_LC).apk
+	@echo "\nGradle build and sign AAB..."
+	ANDROID_HOME=$(SDKROOT) ./gradlew bundle$(BUILD_TYPE)
+	@cp xbmc/build/outputs/bundle/$(BUILD_TYPE_LC)/xbmc-$(BUILD_TYPE_LC).aab $(CMAKE_SOURCE_DIR)/@APP_NAME_LC@app-$(CPU)-$(BUILD_TYPE_LC).aab
 
 $(PREFIX)/lib/xbmc/lib@APP_NAME_LC@.so: $(SRCLIBS)
 	$(MAKE) -C ../../depends/target/xbmc
