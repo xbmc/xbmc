@@ -12,6 +12,7 @@
 #include "cores/RetroPlayer/RetroPlayerTypes.h"
 #include "threads/CriticalSection.h"
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -34,7 +35,7 @@ class IRenderBufferPool;
 /*!
  * \brief Process info factory
  */
-using CreateRPProcessControl = CRPProcessInfo* (*)();
+using CreateRPProcessControl = std::function<CRPProcessInfo*()>;
 
 /*!
  * \brief Rendering factory
