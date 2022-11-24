@@ -15,9 +15,9 @@ CRPProcessInfoOSX::CRPProcessInfoOSX() : CRPProcessInfo("macOS")
 {
 }
 
-CRPProcessInfo* CRPProcessInfoOSX::Create()
+std::unique_ptr<CRPProcessInfo> CRPProcessInfoOSX::Create()
 {
-  return new CRPProcessInfoOSX();
+  return std::make_unique<CRPProcessInfoOSX>();
 }
 
 void CRPProcessInfoOSX::Register()

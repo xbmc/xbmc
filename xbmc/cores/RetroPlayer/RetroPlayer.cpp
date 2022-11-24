@@ -86,7 +86,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
   // Check if we should open in standalone mode
   const bool bStandalone = fileCopy.GetPath().empty();
 
-  m_processInfo.reset(CRPProcessInfo::CreateInstance());
+  m_processInfo = CRPProcessInfo::CreateInstance();
   if (!m_processInfo)
   {
     CLog::Log(LOGERROR, "RetroPlayer[PLAYER]: Failed to create - no process info registered");

@@ -15,9 +15,9 @@ CRPProcessInfoGbm::CRPProcessInfoGbm() : CRPProcessInfo("GBM")
 {
 }
 
-CRPProcessInfo* CRPProcessInfoGbm::Create()
+std::unique_ptr<CRPProcessInfo> CRPProcessInfoGbm::Create()
 {
-  return new CRPProcessInfoGbm();
+  return std::make_unique<CRPProcessInfoGbm>();
 }
 
 void CRPProcessInfoGbm::Register()

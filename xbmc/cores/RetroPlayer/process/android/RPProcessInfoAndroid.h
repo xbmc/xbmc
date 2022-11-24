@@ -19,7 +19,7 @@ class CRPProcessInfoAndroid : public CRPProcessInfo
 public:
   CRPProcessInfoAndroid();
 
-  static CRPProcessInfo* Create();
+  static std::unique_ptr<CRPProcessInfo> Create();
   static void Register();
 };
 } // namespace RETRO
