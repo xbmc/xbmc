@@ -17,9 +17,9 @@ CRPProcessInfoWin::CRPProcessInfoWin() : CRPProcessInfo("Windows")
 {
 }
 
-CRPProcessInfo* CRPProcessInfoWin::Create()
+std::unique_ptr<CRPProcessInfo> CRPProcessInfoWin::Create()
 {
-  return new CRPProcessInfoWin();
+  return std::make_unique<CRPProcessInfoWin>();
 }
 
 void CRPProcessInfoWin::Register()

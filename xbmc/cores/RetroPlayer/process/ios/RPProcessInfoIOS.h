@@ -21,7 +21,7 @@ class CRPProcessInfoIOS : public CRPProcessInfo
 public:
   CRPProcessInfoIOS();
 
-  static CRPProcessInfo* Create();
+  static std::unique_ptr<CRPProcessInfo> Create();
   static void Register();
 };
 } // namespace RETRO
