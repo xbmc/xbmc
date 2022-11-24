@@ -19,7 +19,7 @@ class CRPProcessInfoX11 : public CRPProcessInfo
 public:
   CRPProcessInfoX11();
 
-  static CRPProcessInfo* Create();
+  static std::unique_ptr<CRPProcessInfo> Create();
   static void Register();
 };
 } // namespace RETRO
