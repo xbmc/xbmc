@@ -248,7 +248,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmc_videostreamdetail
-      /// @brief \python_func{ xbmc.VideoStreamDetail([width, height, aspect, duration, codec, stereoMode, language, hdrType]) }
+      /// @brief \python_func{ xbmc.VideoStreamDetail([width, height, aspect, duration, codec, stereomode, language, hdrtype]) }
       /// Creates a single video stream details class for a video item wrapped by InfoTagVideo.
       ///
       /// @param width              [opt] integer - Width of the video stream in pixel.
@@ -256,9 +256,9 @@ namespace XBMCAddon
       /// @param aspect             [opt] float - Aspect ratio of the video stream.
       /// @param duration           [opt] integer - Duration of the video stream in seconds.
       /// @param codec              [opt] string - Codec of the video stream.
-      /// @param stereoMode         [opt] string - Stereo mode of the video stream.
+      /// @param stereomode         [opt] string - Stereo mode of the video stream.
       /// @param language           [opt] string - Language of the video stream.
-      /// @param hdrType            [opt] string - HDR type of the video stream.
+      /// @param hdrtype            [opt] string - HDR type of the video stream.
       ///                           The following types are supported:
       ///                           dolbyvision, hdr10, hlg
       ///
@@ -280,9 +280,9 @@ namespace XBMCAddon
                                  float aspect = 0.0f,
                                  int duration = 0,
                                  const String& codec = emptyString,
-                                 const String& stereoMode = emptyString,
+                                 const String& stereomode = emptyString,
                                  const String& language = emptyString,
-                                 const String& hdrType = emptyString);
+                                 const String& hdrtype = emptyString);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -509,10 +509,10 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmc_videostreamdetail
-      /// @brief \python_func{ setStereoMode(stereoMode) }
+      /// @brief \python_func{ setStereoMode(stereomode) }
       /// Set the stereo mode of the video stream.
       ///
-      /// @param stereoMode         string - Stereo mode of the video stream.
+      /// @param stereomode         string - Stereo mode of the video stream.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -520,7 +520,7 @@ namespace XBMCAddon
       ///
       setStereoMode(...);
 #else
-      void setStereoMode(const String& stereoMode) { m_stereoMode = stereoMode; }
+      void setStereoMode(const String& stereomode) { m_stereoMode = stereomode; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -546,7 +546,7 @@ namespace XBMCAddon
       /// @brief \python_func{ setHDRType(hdrtype) }
       /// Set the HDR type of the stream.
       ///
-      /// @param hdrType           string - HDR type of the stream.
+      /// @param hdrtype           string - HDR type of the stream.
       ///                          The following types are supported:
       ///                          dolbyvision, hdr10, hlg
       ///
@@ -555,7 +555,7 @@ namespace XBMCAddon
       ///
       setHDRType(...);
 #else
-      void setHDRType(const String& hdrType) { m_hdrType = hdrType; }
+      void setHDRType(const String& hdrtype) { m_hdrType = hdrtype; }
 #endif
 
 #ifndef SWIG
