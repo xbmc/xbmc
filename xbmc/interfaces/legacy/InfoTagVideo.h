@@ -1648,7 +1648,7 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       /// @python_v20 New function added.
       ///
-      setSortEpisode(...);
+      getResumeTimeTotal(...);
 #else
       double getResumeTimeTotal();
 #endif
