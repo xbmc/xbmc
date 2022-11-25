@@ -64,8 +64,8 @@ elif action == 'getdetails':
         tags.setDateAdded('2016-01-01')
         tags.setPremiered('2015-01-01')
         tags.setShowLinks(['Demo show 1'])
-        tags.setRatings({'imdb': (9, 100000), 'themoviedb': (8.9, 1000)}, defaultRating='imdb')
-        tags.setUniqueIDs({'imdb': 'tt8938399', 'tmdb': '9837493'}, defaultUniqueID='imdb')
+        tags.setRatings({'imdb': (9, 100000), 'themoviedb': (8.9, 1000)}, defaultrating='imdb')
+        tags.setUniqueIDs({'imdb': 'tt8938399', 'tmdb': '9837493'}, defaultuniqueid='imdb')
         tags.setCast([xbmc.Actor('spiff', 'himself', order=2, thumbnail='/home/akva/Pictures/fish.jpg'),
                       xbmc.Actor('monkey', 'orange', order=1, thumbnail='/home/akva/Pictures/coffee.jpg')])
         tags.addAvailableArtwork('DefaultBackFanart.png', 'banner')
