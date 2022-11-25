@@ -64,8 +64,8 @@ elif action == 'getdetails':
         tags.setTvShowStatus('Cancelled')
         tags.setEpisodeGuide('/path/to/show/guide')
         tags.setTagLine('Family / Mom <3')
-        tags.setRatings({'imdb': (9, 100000), 'tvdb': (8.9, 1000)}, defaultRating='imdb')
-        tags.setUniqueIDs({'imdb': 'tt8938399', 'tmdb': '9837493'}, defaultUniqueID='tvdb')
+        tags.setRatings({'imdb': (9, 100000), 'tvdb': (8.9, 1000)}, defaultrating='imdb')
+        tags.setUniqueIDs({'imdb': 'tt8938399', 'tmdb': '9837493'}, defaultuniqueid='tvdb')
         tags.addSeason(1, 'Beautiful')
         tags.addSeason(2, 'Sun')
         tags.setCast([xbmc.Actor('spiff', 'himself', order=2, thumbnail='/home/akva/Pictures/fish.jpg'),
@@ -125,8 +125,8 @@ elif action == 'getepisodedetails':
         tags.setPremiered('2015-01-01')
         tags.setFirstAired('2007-01-01')
         tags.setTagLine('Family / Dad <3')
-        tags.setRatings({'imdb': (9, 100000), 'tvdb': (8.9, 1000)}, defaultRating='imdb')
-        tags.setUniqueIDs({'tvdb': '3894', 'imdb': 'tt384940'}, defaultUniqueID='tvdb')
+        tags.setRatings({'imdb': (9, 100000), 'tvdb': (8.9, 1000)}, defaultrating='imdb')
+        tags.setUniqueIDs({'tvdb': '3894', 'imdb': 'tt384940'}, defaultuniqueid='tvdb')
         tags.addSeason(1, 'Beautiful')
         tags.addSeason(2, 'Sun')
         tags.setCast([xbmc.Actor('spiff', 'himself', order=2, thumbnail='/home/akva/Pictures/fish.jpg'),
@@ -163,8 +163,8 @@ elif action == 'getepisodedetails':
         tags.setPremiered('2015-01-01')
         tags.setFirstAired('2007-01-01')
         tags.setTagLine('Something / Else')
-        tags.setRatings({'imdb': (7, 25457), 'tvdb': (8.1, 5478)}, defaultRating='imdb')
-        tags.setUniqueIDs({'tvdb': '3894', 'imdb': 'tt384940'}, defaultUniqueID='tvdb')
+        tags.setRatings({'imdb': (7, 25457), 'tvdb': (8.1, 5478)}, defaultrating='imdb')
+        tags.setUniqueIDs({'tvdb': '3894', 'imdb': 'tt384940'}, defaultuniqueid='tvdb')
         tags.addSeason(1, 'Beautiful')
         tags.addSeason(2, 'Sun')
         tags.setCast([xbmc.Actor('spiff', 'himself', order=2, thumbnail='/home/akva/Pictures/fish.jpg'),
