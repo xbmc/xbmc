@@ -561,30 +561,15 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSe
 
 bool CGUIDialogPVRTimerSettings::Validate()
 {
-  bool bStartAnyTime = m_bStartAnyTime;
-  bool bEndAnyTime = m_bEndAnyTime;
-
-  if (!m_timerType->SupportsStartAnyTime() ||
-      !m_timerType->IsEpgBased()) // Start anytime toggle is not displayed
-    bStartAnyTime = false; // Assume start time change needs checking for
-
-  if (!m_timerType->SupportsEndAnyTime() ||
-      !m_timerType->IsEpgBased()) // End anytime toggle is not displayed
-    bEndAnyTime = false; // Assume end time change needs checking for
-
-  // Begin and end time
-  if (!bStartAnyTime && !bEndAnyTime)
+  // When timer has a start and end time, compare them but only when it's
+  // not a timer rule, since those only have times not dates
+  if (!m_timerType->IsTimerRule() && !m_bStartAnyTime && !m_bEndAnyTime &&
+      m_timerType->SupportsStartTime() && m_timerType->SupportsEndTime() &&
+      m_endLocalTime < m_startLocalTime)
   {
-    // Not in the set of having neither or both of start clock entry and
-    // end clock entry while also being a timer rule
-    if (!(m_timerType->SupportsStartTime() == m_timerType->SupportsEndTime() &&
-          m_timerType->IsTimerRule()) &&
-        m_endLocalTime < m_startLocalTime)
-    {
-      HELPERS::ShowOKDialogText(CVariant{19065}, // "Timer settings"
-                                CVariant{19072}); // In order to add/update a timer
-      return false;
-    }
+    HELPERS::ShowOKDialogText(CVariant{19065}, // "Timer settings"
+                              CVariant{19072}); // In order to add/update a timer
+    return false;
   }
 
   return true;
