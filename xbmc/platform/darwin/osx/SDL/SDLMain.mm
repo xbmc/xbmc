@@ -180,12 +180,12 @@ static void setupWindowMenu(void)
   if ([window level] == NSFloatingWindowLevel)
   {
     [window setLevel:NSNormalWindowLevel];
-    [sender setState:NSOffState];
+    [sender setState:NSControlStateValueOff];
   }
   else
   {
     [window setLevel:NSFloatingWindowLevel];
-    [sender setState:NSOnState];
+    [sender setState:NSControlStateValueOn];
   }
 }
 
