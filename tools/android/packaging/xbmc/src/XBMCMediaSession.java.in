@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.media.MediaMetadata;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
+import android.os.Build;
 import android.util.Log;
 
 /**
@@ -118,7 +119,9 @@ public class XBMCMediaSession
   {
     Log.d(TAG, "XBMCMediaSession init");
     this.mSession = new MediaSession(Main.MainActivity, "XBMC_session");
-    this.mSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+    if (Build.VERSION.SDK_INT < 26) {
+      this.mSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+    }
 
     Main.MainActivity.runOnUiThread(new Runnable()
     {
