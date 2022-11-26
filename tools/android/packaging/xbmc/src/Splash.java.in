@@ -537,7 +537,11 @@ public class Splash extends Activity
     AlertDialog.Builder builder = new AlertDialog.Builder(act);
     builder.setTitle(title);
     builder.setIcon(android.R.drawable.ic_dialog_alert);
-    builder.setMessage(Html.fromHtml(message));
+    if (Build.VERSION.SDK_INT >= 24) {
+      builder.setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_LEGACY));
+    } else {
+      builder.setMessage(Html.fromHtml(message));
+    }
     builder.setPositiveButton("Exit",
             new DialogInterface.OnClickListener()
             {
