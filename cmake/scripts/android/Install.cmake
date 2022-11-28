@@ -109,6 +109,7 @@ function(add_bundle_file file destination relative)
     file(REMOVE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/BundleFiles.cmake)
     add_custom_target(bundle_files COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/BundleFiles.cmake)
     add_dependencies(bundle bundle_files)
+    add_dependencies(bundle_files ${APP_NAME_LC})
   endif()
 
   string(REPLACE "${relative}/" "" outfile ${file})
@@ -151,7 +152,7 @@ if(CPU MATCHES i686)
 endif()
 foreach(target apk obb apk-obb apk-clean)
   add_custom_target(${target}
-      COMMAND env PATH=${NATIVEPREFIX}/bin:$ENV{PATH} ${CMAKE_MAKE_PROGRAM}
+      COMMAND env PATH=${NATIVEPREFIX}/bin:$ENV{PATH} ${CMAKE_MAKE_PROGRAM} -j1
               -C ${CMAKE_BINARY_DIR}/tools/android/packaging
               CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
               CC=${CMAKE_C_COMPILER}
