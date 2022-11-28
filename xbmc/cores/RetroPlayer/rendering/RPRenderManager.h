@@ -101,6 +101,14 @@ public:
                 unsigned int orientationDegCW);
   void Flush();
 
+  // Hardware rendering functions
+  //! @todo These are only examples pulled from the history of the OpenGL
+  //! effort and the required redesign will probably remove or change these
+  //! functions.
+  bool Create(unsigned int width, unsigned int height);
+  uintptr_t GetCurrentFramebuffer(unsigned int width, unsigned int height);
+  void RenderFrame();
+
   // Functions called from the player
   void SetSpeed(double speed);
 

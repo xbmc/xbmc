@@ -265,6 +265,35 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
   }
 }
 
+bool CRPRenderManager::Create(unsigned int width, unsigned int height)
+{
+  //! @todo
+  return false;
+}
+
+uintptr_t CRPRenderManager::GetCurrentFramebuffer(unsigned int width, unsigned int height)
+{
+  for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
+  {
+    if (!bufferPool->HasVisibleRenderer())
+      continue;
+
+    IRenderBuffer* renderBuffer = bufferPool->GetBuffer(width, height);
+    if (renderBuffer != nullptr)
+    {
+      m_pendingBuffers.emplace_back(renderBuffer);
+      return renderBuffer->GetCurrentFramebuffer();
+    }
+  }
+
+  return 0;
+}
+
+void CRPRenderManager::RenderFrame()
+{
+  //! @todo
+}
+
 void CRPRenderManager::SetSpeed(double speed)
 {
   m_speed = speed;
