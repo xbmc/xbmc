@@ -10,6 +10,7 @@
 
 #include "IRetroPlayerStream.h"
 #include "RetroPlayerAudio.h"
+#include "RetroPlayerRendering.h"
 #include "RetroPlayerVideo.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 
@@ -45,7 +46,7 @@ StreamPtr CRPStreamManager::CreateStream(StreamType streamType)
     }
     case StreamType::HW_BUFFER:
     {
-      // return StreamPtr(new CRetroPlayerHardware(m_renderManager, m_processInfo)); //! @todo
+      return StreamPtr(new CRetroPlayerRendering(m_renderManager, m_processInfo));
     }
     default:
       break;
