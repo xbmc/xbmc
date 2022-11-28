@@ -16,6 +16,7 @@ cd $WORKSPACE
 #e.x. xbmc-20130314-8c2fb31-Frodo-x86_64.apk
 UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-x86_64"
 mv kodiapp-x86_64-*.apk $UPLOAD_FILENAME.apk
+mv kodiapp-x86_64-*.aab $UPLOAD_FILENAME.aab
 if [ -f *.obb ]
 then
   mv *.obb $UPLOAD_FILENAME.obb

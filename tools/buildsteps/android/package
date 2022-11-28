@@ -16,6 +16,7 @@ cd $WORKSPACE
 #e.x. xbmc-20130314-8c2fb31-Frodo-armeabi-v7a.apk
 UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-armeabi-v7a"
 mv kodiapp-armeabi-*.apk $UPLOAD_FILENAME.apk
+mv kodiapp-armeabi-*.aab $UPLOAD_FILENAME.aab
 if [ -f *.obb ]
 then
   mv *.obb $UPLOAD_FILENAME.obb
