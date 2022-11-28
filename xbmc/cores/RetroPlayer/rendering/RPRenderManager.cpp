@@ -265,6 +265,60 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
   }
 }
 
+void CRPRenderManager::RenderFrame()
+{
+  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+
+  for (auto renderBuffer : m_renderBuffers)
+    renderBuffer->Release();
+
+  m_renderBuffers = std::move(m_pendingBuffers);
+}
+
+uintptr_t CRPRenderManager::GetCurrentFramebuffer(unsigned int width, unsigned int height)
+{
+  std::vector<IRenderBuffer*> renderBuffers;
+  for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
+  {
+    if (!bufferPool->HasVisibleRenderer())
+      continue;
+
+    IRenderBuffer* renderBuffer = bufferPool->GetBuffer(width, height);
+    if (renderBuffer != nullptr)
+    {
+      m_pendingBuffers.emplace_back(renderBuffer);
+      return renderBuffer->GetCurrentFramebuffer();
+    }
+  }
+
+  return 0;
+}
+
+bool CRPRenderManager::Create(unsigned int width, unsigned int height)
+{
+  std::shared_ptr<CRPBaseRenderer> renderer = GetRendererForSettings(nullptr);
+  if (!renderer)
+    return false;
+
+  renderer->Configure(m_format);
+
+  std::vector<IRenderBuffer*> renderBuffers;
+  for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
+  {
+    if (!bufferPool->HasVisibleRenderer())
+      continue;
+
+    IRenderBuffer* renderBuffer = bufferPool->GetBuffer(width, height);
+    if (renderBuffer != nullptr)
+    {
+      renderBuffer->Release();
+      return true;
+    }
+  }
+
+  return false;
+}
+
 void CRPRenderManager::SetSpeed(double speed)
 {
   m_speed = speed;
