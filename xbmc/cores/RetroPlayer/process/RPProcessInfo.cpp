@@ -90,21 +90,7 @@ CRPProcessInfo* CRPProcessInfo::CreateInstance()
 
 void CRPProcessInfo::RegisterProcessControl(CreateRPProcessControl createFunc)
 {
-  std::unique_ptr<CRPProcessInfo> processInfo(createFunc());
-
-  std::unique_lock<CCriticalSection> lock(m_createSection);
-
-  if (processInfo)
-  {
-    CLog::Log(LOGINFO, "RetroPlayer[PROCESS]: Registering process control for {}",
-              processInfo->GetPlatformName());
-    m_processControl = createFunc;
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "RetroPlayer[PROCESS]: Failed to register process control");
-    m_processControl = nullptr;
-  }
+  m_processControl = createFunc;
 }
 
 void CRPProcessInfo::RegisterRendererFactory(IRendererFactory* factory)
