@@ -11,7 +11,7 @@
 using namespace KODI;
 using namespace RETRO;
 
-CRPProcessInfoWayland::CRPProcessInfoWayland() : CRPProcessInfo("Wayland")
+CRPProcessInfoWayland::CRPProcessInfoWayland() : CRPProcessInfoEGL("Wayland")
 {
 }
 
