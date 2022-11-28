@@ -11,6 +11,7 @@
 #include "IRetroPlayerStream.h"
 #include "RetroPlayerAudio.h"
 #include "RetroPlayerVideo.h"
+#include "cores/RetroPlayer/process/RPProcessInfo.h"
 
 using namespace KODI;
 using namespace RETRO;
@@ -62,4 +63,9 @@ void CRPStreamManager::CloseStream(StreamPtr stream)
 
     stream->CloseStream();
   }
+}
+
+HwProcedureAddress CRPStreamManager::GetHwProcedureAddress(const char* symbol)
+{
+  return m_processInfo.GetHwProcedureAddress(symbol);
 }
