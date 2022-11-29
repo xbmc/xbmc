@@ -30,10 +30,12 @@
 #include "LangInfo.h"
 #include "StringUtils.h"
 #include "XBDateTime.h"
+#include "utils/log.h"
 
 #include <algorithm>
 #include <array>
 #include <assert.h>
+#include <codecvt>
 #include <functional>
 #include <inttypes.h>
 #include <iomanip>
@@ -53,8 +55,14 @@
 
 #define FORMAT_BLOCK_SIZE 512 // # of bytes for initial allocation for printf
 
+using namespace std::string_literals;
+
 namespace
 {
+static bool FAIL_ON_ERROR = false;
+static const std::string CONVERSION_ERROR("Conversion error");
+static const std::wstring WIDE_CONVERSION_ERROR(L"Conversion error- wide");
+static const std::u32string U32_CONVERSION_ERROR(U"Conversion error- U32");
 /*!
  * \brief Converts a string to a number of a specified type, by using istringstream.
  * \param str The string to convert
@@ -76,12 +84,955 @@ static constexpr const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-
 /* empty string for use in returns by ref */
 const std::string StringUtils::Empty = "";
 
-//	Copyright (c) Leigh Brasington 2012.  All rights reserved.
-//  This code may be used and reproduced without written permission.
-//  http://www.leighb.com/tounicupper.htm
+namespace
+{
+// TODO: Is it best to move everything that should go in anonymous namespace together,
+//       or leave some of it where it is (functions that logically fit where they are)?
 //
-//	The tables were constructed from
-//	http://publib.boulder.ibm.com/infocenter/iseries/v7r1m0/index.jsp?topic=%2Fnls%2Frbagslowtoupmaptable.htm
+
+/* Case folding tables are derived from Unicode Inc.
+ * Data file, CaseFolding.txt (CaseFolding-14.0.0.txt, 2021-03-08). Copyright follows below.
+ *
+ * These tables provide for "simple case folding" that is not locale sensitive. They do NOT
+ * support "Full Case Folding" which can fold single characters into multiple, or multiple
+ * into single, etc. CaseFolding.txt can be found in the ICUC4 source directory:
+ * icu/source/data/unidata.
+ *
+ * The home-grown tool to produce the case folding tables can be found in
+ * xbmc/utils/unicode_tools. They are built and run by hand with the table data
+ * pasted and formatted here. This only needs to be done if an error or an update
+ * to CaseFolding.txt occurs.
+ *
+ * TODO: The following license agreement will be moved to the appropriate location
+ * once that has been worked out.
+ *
+ * Terms of use:
+ *
+ * UNICODE, INC. LICENSE AGREEMENT - DATA FILES AND SOFTWARE
+ *
+ * See Terms of Use <https://www.unicode.org/copyright.html>
+ * for definitions of Unicode Inc.’s Data Files and Software.
+ *
+ * NOTICE TO USER: Carefully read the following legal agreement.
+ * BY DOWNLOADING, INSTALLING, COPYING OR OTHERWISE USING UNICODE INC.'S
+ * DATA FILES ("DATA FILES"), AND/OR SOFTWARE ("SOFTWARE"),
+ * YOU UNEQUIVOCALLY ACCEPT, AND AGREE TO BE BOUND BY, ALL OF THE
+ * TERMS AND CONDITIONS OF THIS AGREEMENT.
+ * IF YOU DO NOT AGREE, DO NOT DOWNLOAD, INSTALL, COPY, DISTRIBUTE OR USE
+ * THE DATA FILES OR SOFTWARE.
+ *
+ * COPYRIGHT AND PERMISSION NOTICE
+ *
+ * Copyright © 1991-2022 Unicode, Inc. All rights reserved.
+ * Distributed under the Terms of Use in https://www.unicode.org/copyright.html.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of the Unicode data files and any associated documentation
+ * (the "Data Files") or Unicode software and any associated documentation
+ * (the "Software") to deal in the Data Files or Software
+ * without restriction, including without limitation the rights to use,
+ * copy, modify, merge, publish, distribute, and/or sell copies of
+ * the Data Files or Software, and to permit persons to whom the Data Files
+ * or Software are furnished to do so, provided that either
+ * (a) this copyright and permission notice appear with all copies
+ * of the Data Files or Software, or
+ * (b) this copyright and permission notice appear in associated
+ * Documentation.
+ *
+ * THE DATA FILES AND SOFTWARE ARE PROVIDED "AS IS", WITHOUT WARRANTY OF
+ * ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT OF THIRD PARTY RIGHTS.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR HOLDERS INCLUDED IN THIS
+ * NOTICE BE LIABLE FOR ANY CLAIM, OR ANY SPECIAL INDIRECT OR CONSEQUENTIAL
+ * DAMAGES, OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+ * DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER
+ * TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ * PERFORMANCE OF THE DATA FILES OR SOFTWARE.
+ *
+ * Except as contained in this notice, the name of a copyright holder
+ * shall not be used in advertising or otherwise to promote the sale,
+ * use or other dealings in these Data Files or Software without prior
+ * written authorization of the copyright holder.
+ */
+
+// The tables below are logically indexed by the 32-bit Unicode value of the
+// character which is to be case folded. The value found in the table is
+// the case folded value, or 0 if no such value exists.
+//
+// A char32_t contains a 32-bit Unicode codepoint, although only 24 bits is
+// used. The array FOLDCASE_INDEX is indexed by the upper 16-bits of the
+// the 24-bit codepoint, yielding a pointer to another table indexed by
+// the lower 8-bits of the codepoint (FOLDCASE_0x0001, etc.) to get the lower-case equivalent
+// for the original codepoint (see FoldCaseChar, below).
+//
+// Specifically, FOLDCASE_0x...[0] contains the number of elements in the
+// array. This helps reduce the size of the table. All other non-zero elements
+// contain the upper-case Unicode value for a fold-case codepoint. This
+// means that "A", 0x041, the FoldCase value can be found by:
+//
+//   high_bytes = 0x41 >> 8; => 0
+//   char32_t* table = FOLDCASE_INDEX[high_bytes]; => address of FOLDCASE_0000
+//   uint16_t low_byte = c & 0xFF; => 0x41
+//   char32_t foldedChar = table[low_byte + 1]; => 0x61 'a'
+//
+// clang-format off
+
+static const char32_t FOLDCASE_0x00000[] =
+{
+ U'\x000df',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00061',  U'\x00062',  U'\x00063',  U'\x00064',  U'\x00065',
+ U'\x00066',  U'\x00067',  U'\x00068',  U'\x00069',  U'\x0006a',  U'\x0006b',  U'\x0006c',
+ U'\x0006d',  U'\x0006e',  U'\x0006f',  U'\x00070',  U'\x00071',  U'\x00072',  U'\x00073',
+ U'\x00074',  U'\x00075',  U'\x00076',  U'\x00077',  U'\x00078',  U'\x00079',  U'\x0007a',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x003bc',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x000e0',  U'\x000e1',  U'\x000e2',  U'\x000e3',
+ U'\x000e4',  U'\x000e5',  U'\x000e6',  U'\x000e7',  U'\x000e8',  U'\x000e9',  U'\x000ea',
+ U'\x000eb',  U'\x000ec',  U'\x000ed',  U'\x000ee',  U'\x000ef',  U'\x000f0',  U'\x000f1',
+ U'\x000f2',  U'\x000f3',  U'\x000f4',  U'\x000f5',  U'\x000f6',  U'\x00000',  U'\x000f8',
+ U'\x000f9',  U'\x000fa',  U'\x000fb',  U'\x000fc',  U'\x000fd',  U'\x000fe'
+};
+
+static const char32_t FOLDCASE_0x00001[] =
+{
+ U'\x000ff',
+ U'\x00101',  U'\x00000',  U'\x00103',  U'\x00000',  U'\x00105',  U'\x00000',  U'\x00107',
+ U'\x00000',  U'\x00109',  U'\x00000',  U'\x0010b',  U'\x00000',  U'\x0010d',  U'\x00000',
+ U'\x0010f',  U'\x00000',  U'\x00111',  U'\x00000',  U'\x00113',  U'\x00000',  U'\x00115',
+ U'\x00000',  U'\x00117',  U'\x00000',  U'\x00119',  U'\x00000',  U'\x0011b',  U'\x00000',
+ U'\x0011d',  U'\x00000',  U'\x0011f',  U'\x00000',  U'\x00121',  U'\x00000',  U'\x00123',
+ U'\x00000',  U'\x00125',  U'\x00000',  U'\x00127',  U'\x00000',  U'\x00129',  U'\x00000',
+ U'\x0012b',  U'\x00000',  U'\x0012d',  U'\x00000',  U'\x0012f',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00133',  U'\x00000',  U'\x00135',  U'\x00000',  U'\x00137',  U'\x00000',
+ U'\x00000',  U'\x0013a',  U'\x00000',  U'\x0013c',  U'\x00000',  U'\x0013e',  U'\x00000',
+ U'\x00140',  U'\x00000',  U'\x00142',  U'\x00000',  U'\x00144',  U'\x00000',  U'\x00146',
+ U'\x00000',  U'\x00148',  U'\x00000',  U'\x00000',  U'\x0014b',  U'\x00000',  U'\x0014d',
+ U'\x00000',  U'\x0014f',  U'\x00000',  U'\x00151',  U'\x00000',  U'\x00153',  U'\x00000',
+ U'\x00155',  U'\x00000',  U'\x00157',  U'\x00000',  U'\x00159',  U'\x00000',  U'\x0015b',
+ U'\x00000',  U'\x0015d',  U'\x00000',  U'\x0015f',  U'\x00000',  U'\x00161',  U'\x00000',
+ U'\x00163',  U'\x00000',  U'\x00165',  U'\x00000',  U'\x00167',  U'\x00000',  U'\x00169',
+ U'\x00000',  U'\x0016b',  U'\x00000',  U'\x0016d',  U'\x00000',  U'\x0016f',  U'\x00000',
+ U'\x00171',  U'\x00000',  U'\x00173',  U'\x00000',  U'\x00175',  U'\x00000',  U'\x00177',
+ U'\x00000',  U'\x000ff',  U'\x0017a',  U'\x00000',  U'\x0017c',  U'\x00000',  U'\x0017e',
+ U'\x00000',  U'\x00073',  U'\x00000',  U'\x00253',  U'\x00183',  U'\x00000',  U'\x00185',
+ U'\x00000',  U'\x00254',  U'\x00188',  U'\x00000',  U'\x00256',  U'\x00257',  U'\x0018c',
+ U'\x00000',  U'\x00000',  U'\x001dd',  U'\x00259',  U'\x0025b',  U'\x00192',  U'\x00000',
+ U'\x00260',  U'\x00263',  U'\x00000',  U'\x00269',  U'\x00268',  U'\x00199',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x0026f',  U'\x00272',  U'\x00000',  U'\x00275',  U'\x001a1',
+ U'\x00000',  U'\x001a3',  U'\x00000',  U'\x001a5',  U'\x00000',  U'\x00280',  U'\x001a8',
+ U'\x00000',  U'\x00283',  U'\x00000',  U'\x00000',  U'\x001ad',  U'\x00000',  U'\x00288',
+ U'\x001b0',  U'\x00000',  U'\x0028a',  U'\x0028b',  U'\x001b4',  U'\x00000',  U'\x001b6',
+ U'\x00000',  U'\x00292',  U'\x001b9',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x001bd',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x001c6',  U'\x001c6',  U'\x00000',  U'\x001c9',  U'\x001c9',  U'\x00000',  U'\x001cc',
+ U'\x001cc',  U'\x00000',  U'\x001ce',  U'\x00000',  U'\x001d0',  U'\x00000',  U'\x001d2',
+ U'\x00000',  U'\x001d4',  U'\x00000',  U'\x001d6',  U'\x00000',  U'\x001d8',  U'\x00000',
+ U'\x001da',  U'\x00000',  U'\x001dc',  U'\x00000',  U'\x00000',  U'\x001df',  U'\x00000',
+ U'\x001e1',  U'\x00000',  U'\x001e3',  U'\x00000',  U'\x001e5',  U'\x00000',  U'\x001e7',
+ U'\x00000',  U'\x001e9',  U'\x00000',  U'\x001eb',  U'\x00000',  U'\x001ed',  U'\x00000',
+ U'\x001ef',  U'\x00000',  U'\x00000',  U'\x001f3',  U'\x001f3',  U'\x00000',  U'\x001f5',
+ U'\x00000',  U'\x00195',  U'\x001bf',  U'\x001f9',  U'\x00000',  U'\x001fb',  U'\x00000',
+ U'\x001fd',  U'\x00000',  U'\x001ff'
+};
+
+static const char32_t FOLDCASE_0x00002[] =
+{
+ U'\x0004f',
+ U'\x00201',  U'\x00000',  U'\x00203',  U'\x00000',  U'\x00205',  U'\x00000',  U'\x00207',
+ U'\x00000',  U'\x00209',  U'\x00000',  U'\x0020b',  U'\x00000',  U'\x0020d',  U'\x00000',
+ U'\x0020f',  U'\x00000',  U'\x00211',  U'\x00000',  U'\x00213',  U'\x00000',  U'\x00215',
+ U'\x00000',  U'\x00217',  U'\x00000',  U'\x00219',  U'\x00000',  U'\x0021b',  U'\x00000',
+ U'\x0021d',  U'\x00000',  U'\x0021f',  U'\x00000',  U'\x0019e',  U'\x00000',  U'\x00223',
+ U'\x00000',  U'\x00225',  U'\x00000',  U'\x00227',  U'\x00000',  U'\x00229',  U'\x00000',
+ U'\x0022b',  U'\x00000',  U'\x0022d',  U'\x00000',  U'\x0022f',  U'\x00000',  U'\x00231',
+ U'\x00000',  U'\x00233',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x02c65',  U'\x0023c',  U'\x00000',  U'\x0019a',  U'\x02c66',
+ U'\x00000',  U'\x00000',  U'\x00242',  U'\x00000',  U'\x00180',  U'\x00289',  U'\x0028c',
+ U'\x00247',  U'\x00000',  U'\x00249',  U'\x00000',  U'\x0024b',  U'\x00000',  U'\x0024d',
+ U'\x00000',  U'\x0024f'
+};
+
+static const char32_t FOLDCASE_0x00003[] =
+{
+ U'\x00100',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x003b9',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00371',  U'\x00000',  U'\x00373',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00377',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x003f3',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x003ac',  U'\x00000',  U'\x003ad',  U'\x003ae',  U'\x003af',  U'\x00000',
+ U'\x003cc',  U'\x00000',  U'\x003cd',  U'\x003ce',  U'\x00000',  U'\x003b1',  U'\x003b2',
+ U'\x003b3',  U'\x003b4',  U'\x003b5',  U'\x003b6',  U'\x003b7',  U'\x003b8',  U'\x003b9',
+ U'\x003ba',  U'\x003bb',  U'\x003bc',  U'\x003bd',  U'\x003be',  U'\x003bf',  U'\x003c0',
+ U'\x003c1',  U'\x00000',  U'\x003c3',  U'\x003c4',  U'\x003c5',  U'\x003c6',  U'\x003c7',
+ U'\x003c8',  U'\x003c9',  U'\x003ca',  U'\x003cb',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x003c3',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x003d7',  U'\x003b2',  U'\x003b8',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x003c6',  U'\x003c0',  U'\x00000',  U'\x003d9',
+ U'\x00000',  U'\x003db',  U'\x00000',  U'\x003dd',  U'\x00000',  U'\x003df',  U'\x00000',
+ U'\x003e1',  U'\x00000',  U'\x003e3',  U'\x00000',  U'\x003e5',  U'\x00000',  U'\x003e7',
+ U'\x00000',  U'\x003e9',  U'\x00000',  U'\x003eb',  U'\x00000',  U'\x003ed',  U'\x00000',
+ U'\x003ef',  U'\x00000',  U'\x003ba',  U'\x003c1',  U'\x00000',  U'\x00000',  U'\x003b8',
+ U'\x003b5',  U'\x00000',  U'\x003f8',  U'\x00000',  U'\x003f2',  U'\x003fb',  U'\x00000',
+ U'\x00000',  U'\x0037b',  U'\x0037c',  U'\x0037d'
+};
+
+static const char32_t FOLDCASE_0x00004[] =
+{
+ U'\x000ff',
+ U'\x00450',  U'\x00451',  U'\x00452',  U'\x00453',  U'\x00454',  U'\x00455',  U'\x00456',
+ U'\x00457',  U'\x00458',  U'\x00459',  U'\x0045a',  U'\x0045b',  U'\x0045c',  U'\x0045d',
+ U'\x0045e',  U'\x0045f',  U'\x00430',  U'\x00431',  U'\x00432',  U'\x00433',  U'\x00434',
+ U'\x00435',  U'\x00436',  U'\x00437',  U'\x00438',  U'\x00439',  U'\x0043a',  U'\x0043b',
+ U'\x0043c',  U'\x0043d',  U'\x0043e',  U'\x0043f',  U'\x00440',  U'\x00441',  U'\x00442',
+ U'\x00443',  U'\x00444',  U'\x00445',  U'\x00446',  U'\x00447',  U'\x00448',  U'\x00449',
+ U'\x0044a',  U'\x0044b',  U'\x0044c',  U'\x0044d',  U'\x0044e',  U'\x0044f',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00461',  U'\x00000',
+ U'\x00463',  U'\x00000',  U'\x00465',  U'\x00000',  U'\x00467',  U'\x00000',  U'\x00469',
+ U'\x00000',  U'\x0046b',  U'\x00000',  U'\x0046d',  U'\x00000',  U'\x0046f',  U'\x00000',
+ U'\x00471',  U'\x00000',  U'\x00473',  U'\x00000',  U'\x00475',  U'\x00000',  U'\x00477',
+ U'\x00000',  U'\x00479',  U'\x00000',  U'\x0047b',  U'\x00000',  U'\x0047d',  U'\x00000',
+ U'\x0047f',  U'\x00000',  U'\x00481',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0048b',  U'\x00000',
+ U'\x0048d',  U'\x00000',  U'\x0048f',  U'\x00000',  U'\x00491',  U'\x00000',  U'\x00493',
+ U'\x00000',  U'\x00495',  U'\x00000',  U'\x00497',  U'\x00000',  U'\x00499',  U'\x00000',
+ U'\x0049b',  U'\x00000',  U'\x0049d',  U'\x00000',  U'\x0049f',  U'\x00000',  U'\x004a1',
+ U'\x00000',  U'\x004a3',  U'\x00000',  U'\x004a5',  U'\x00000',  U'\x004a7',  U'\x00000',
+ U'\x004a9',  U'\x00000',  U'\x004ab',  U'\x00000',  U'\x004ad',  U'\x00000',  U'\x004af',
+ U'\x00000',  U'\x004b1',  U'\x00000',  U'\x004b3',  U'\x00000',  U'\x004b5',  U'\x00000',
+ U'\x004b7',  U'\x00000',  U'\x004b9',  U'\x00000',  U'\x004bb',  U'\x00000',  U'\x004bd',
+ U'\x00000',  U'\x004bf',  U'\x00000',  U'\x004cf',  U'\x004c2',  U'\x00000',  U'\x004c4',
+ U'\x00000',  U'\x004c6',  U'\x00000',  U'\x004c8',  U'\x00000',  U'\x004ca',  U'\x00000',
+ U'\x004cc',  U'\x00000',  U'\x004ce',  U'\x00000',  U'\x00000',  U'\x004d1',  U'\x00000',
+ U'\x004d3',  U'\x00000',  U'\x004d5',  U'\x00000',  U'\x004d7',  U'\x00000',  U'\x004d9',
+ U'\x00000',  U'\x004db',  U'\x00000',  U'\x004dd',  U'\x00000',  U'\x004df',  U'\x00000',
+ U'\x004e1',  U'\x00000',  U'\x004e3',  U'\x00000',  U'\x004e5',  U'\x00000',  U'\x004e7',
+ U'\x00000',  U'\x004e9',  U'\x00000',  U'\x004eb',  U'\x00000',  U'\x004ed',  U'\x00000',
+ U'\x004ef',  U'\x00000',  U'\x004f1',  U'\x00000',  U'\x004f3',  U'\x00000',  U'\x004f5',
+ U'\x00000',  U'\x004f7',  U'\x00000',  U'\x004f9',  U'\x00000',  U'\x004fb',  U'\x00000',
+ U'\x004fd',  U'\x00000',  U'\x004ff'
+};
+
+static const char32_t FOLDCASE_0x00005[] =
+{
+ U'\x00057',
+ U'\x00501',  U'\x00000',  U'\x00503',  U'\x00000',  U'\x00505',  U'\x00000',  U'\x00507',
+ U'\x00000',  U'\x00509',  U'\x00000',  U'\x0050b',  U'\x00000',  U'\x0050d',  U'\x00000',
+ U'\x0050f',  U'\x00000',  U'\x00511',  U'\x00000',  U'\x00513',  U'\x00000',  U'\x00515',
+ U'\x00000',  U'\x00517',  U'\x00000',  U'\x00519',  U'\x00000',  U'\x0051b',  U'\x00000',
+ U'\x0051d',  U'\x00000',  U'\x0051f',  U'\x00000',  U'\x00521',  U'\x00000',  U'\x00523',
+ U'\x00000',  U'\x00525',  U'\x00000',  U'\x00527',  U'\x00000',  U'\x00529',  U'\x00000',
+ U'\x0052b',  U'\x00000',  U'\x0052d',  U'\x00000',  U'\x0052f',  U'\x00000',  U'\x00000',
+ U'\x00561',  U'\x00562',  U'\x00563',  U'\x00564',  U'\x00565',  U'\x00566',  U'\x00567',
+ U'\x00568',  U'\x00569',  U'\x0056a',  U'\x0056b',  U'\x0056c',  U'\x0056d',  U'\x0056e',
+ U'\x0056f',  U'\x00570',  U'\x00571',  U'\x00572',  U'\x00573',  U'\x00574',  U'\x00575',
+ U'\x00576',  U'\x00577',  U'\x00578',  U'\x00579',  U'\x0057a',  U'\x0057b',  U'\x0057c',
+ U'\x0057d',  U'\x0057e',  U'\x0057f',  U'\x00580',  U'\x00581',  U'\x00582',  U'\x00583',
+ U'\x00584',  U'\x00585',  U'\x00586'
+};
+
+static const char32_t FOLDCASE_0x00010[] =
+{
+ U'\x000ce',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02d00',
+ U'\x02d01',  U'\x02d02',  U'\x02d03',  U'\x02d04',  U'\x02d05',  U'\x02d06',  U'\x02d07',
+ U'\x02d08',  U'\x02d09',  U'\x02d0a',  U'\x02d0b',  U'\x02d0c',  U'\x02d0d',  U'\x02d0e',
+ U'\x02d0f',  U'\x02d10',  U'\x02d11',  U'\x02d12',  U'\x02d13',  U'\x02d14',  U'\x02d15',
+ U'\x02d16',  U'\x02d17',  U'\x02d18',  U'\x02d19',  U'\x02d1a',  U'\x02d1b',  U'\x02d1c',
+ U'\x02d1d',  U'\x02d1e',  U'\x02d1f',  U'\x02d20',  U'\x02d21',  U'\x02d22',  U'\x02d23',
+ U'\x02d24',  U'\x02d25',  U'\x00000',  U'\x02d27',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x02d2d'
+};
+
+static const char32_t FOLDCASE_0x00013[] =
+{
+ U'\x000fe',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x013f0',  U'\x013f1',  U'\x013f2',  U'\x013f3',
+ U'\x013f4',  U'\x013f5'
+};
+
+static const char32_t FOLDCASE_0x0001c[] =
+{
+ U'\x000c0',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00432',  U'\x00434',  U'\x0043e',  U'\x00441',  U'\x00442',
+ U'\x00442',  U'\x0044a',  U'\x00463',  U'\x0a64b',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x010d0',  U'\x010d1',  U'\x010d2',
+ U'\x010d3',  U'\x010d4',  U'\x010d5',  U'\x010d6',  U'\x010d7',  U'\x010d8',  U'\x010d9',
+ U'\x010da',  U'\x010db',  U'\x010dc',  U'\x010dd',  U'\x010de',  U'\x010df',  U'\x010e0',
+ U'\x010e1',  U'\x010e2',  U'\x010e3',  U'\x010e4',  U'\x010e5',  U'\x010e6',  U'\x010e7',
+ U'\x010e8',  U'\x010e9',  U'\x010ea',  U'\x010eb',  U'\x010ec',  U'\x010ed',  U'\x010ee',
+ U'\x010ef',  U'\x010f0',  U'\x010f1',  U'\x010f2',  U'\x010f3',  U'\x010f4',  U'\x010f5',
+ U'\x010f6',  U'\x010f7',  U'\x010f8',  U'\x010f9',  U'\x010fa',  U'\x00000',  U'\x00000',
+ U'\x010fd',  U'\x010fe',  U'\x010ff'
+};
+
+static const char32_t FOLDCASE_0x0001e[] =
+{
+ U'\x000ff',
+ U'\x01e01',  U'\x00000',  U'\x01e03',  U'\x00000',  U'\x01e05',  U'\x00000',  U'\x01e07',
+ U'\x00000',  U'\x01e09',  U'\x00000',  U'\x01e0b',  U'\x00000',  U'\x01e0d',  U'\x00000',
+ U'\x01e0f',  U'\x00000',  U'\x01e11',  U'\x00000',  U'\x01e13',  U'\x00000',  U'\x01e15',
+ U'\x00000',  U'\x01e17',  U'\x00000',  U'\x01e19',  U'\x00000',  U'\x01e1b',  U'\x00000',
+ U'\x01e1d',  U'\x00000',  U'\x01e1f',  U'\x00000',  U'\x01e21',  U'\x00000',  U'\x01e23',
+ U'\x00000',  U'\x01e25',  U'\x00000',  U'\x01e27',  U'\x00000',  U'\x01e29',  U'\x00000',
+ U'\x01e2b',  U'\x00000',  U'\x01e2d',  U'\x00000',  U'\x01e2f',  U'\x00000',  U'\x01e31',
+ U'\x00000',  U'\x01e33',  U'\x00000',  U'\x01e35',  U'\x00000',  U'\x01e37',  U'\x00000',
+ U'\x01e39',  U'\x00000',  U'\x01e3b',  U'\x00000',  U'\x01e3d',  U'\x00000',  U'\x01e3f',
+ U'\x00000',  U'\x01e41',  U'\x00000',  U'\x01e43',  U'\x00000',  U'\x01e45',  U'\x00000',
+ U'\x01e47',  U'\x00000',  U'\x01e49',  U'\x00000',  U'\x01e4b',  U'\x00000',  U'\x01e4d',
+ U'\x00000',  U'\x01e4f',  U'\x00000',  U'\x01e51',  U'\x00000',  U'\x01e53',  U'\x00000',
+ U'\x01e55',  U'\x00000',  U'\x01e57',  U'\x00000',  U'\x01e59',  U'\x00000',  U'\x01e5b',
+ U'\x00000',  U'\x01e5d',  U'\x00000',  U'\x01e5f',  U'\x00000',  U'\x01e61',  U'\x00000',
+ U'\x01e63',  U'\x00000',  U'\x01e65',  U'\x00000',  U'\x01e67',  U'\x00000',  U'\x01e69',
+ U'\x00000',  U'\x01e6b',  U'\x00000',  U'\x01e6d',  U'\x00000',  U'\x01e6f',  U'\x00000',
+ U'\x01e71',  U'\x00000',  U'\x01e73',  U'\x00000',  U'\x01e75',  U'\x00000',  U'\x01e77',
+ U'\x00000',  U'\x01e79',  U'\x00000',  U'\x01e7b',  U'\x00000',  U'\x01e7d',  U'\x00000',
+ U'\x01e7f',  U'\x00000',  U'\x01e81',  U'\x00000',  U'\x01e83',  U'\x00000',  U'\x01e85',
+ U'\x00000',  U'\x01e87',  U'\x00000',  U'\x01e89',  U'\x00000',  U'\x01e8b',  U'\x00000',
+ U'\x01e8d',  U'\x00000',  U'\x01e8f',  U'\x00000',  U'\x01e91',  U'\x00000',  U'\x01e93',
+ U'\x00000',  U'\x01e95',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x01e61',  U'\x00000',  U'\x00000',  U'\x000df',  U'\x00000',  U'\x01ea1',
+ U'\x00000',  U'\x01ea3',  U'\x00000',  U'\x01ea5',  U'\x00000',  U'\x01ea7',  U'\x00000',
+ U'\x01ea9',  U'\x00000',  U'\x01eab',  U'\x00000',  U'\x01ead',  U'\x00000',  U'\x01eaf',
+ U'\x00000',  U'\x01eb1',  U'\x00000',  U'\x01eb3',  U'\x00000',  U'\x01eb5',  U'\x00000',
+ U'\x01eb7',  U'\x00000',  U'\x01eb9',  U'\x00000',  U'\x01ebb',  U'\x00000',  U'\x01ebd',
+ U'\x00000',  U'\x01ebf',  U'\x00000',  U'\x01ec1',  U'\x00000',  U'\x01ec3',  U'\x00000',
+ U'\x01ec5',  U'\x00000',  U'\x01ec7',  U'\x00000',  U'\x01ec9',  U'\x00000',  U'\x01ecb',
+ U'\x00000',  U'\x01ecd',  U'\x00000',  U'\x01ecf',  U'\x00000',  U'\x01ed1',  U'\x00000',
+ U'\x01ed3',  U'\x00000',  U'\x01ed5',  U'\x00000',  U'\x01ed7',  U'\x00000',  U'\x01ed9',
+ U'\x00000',  U'\x01edb',  U'\x00000',  U'\x01edd',  U'\x00000',  U'\x01edf',  U'\x00000',
+ U'\x01ee1',  U'\x00000',  U'\x01ee3',  U'\x00000',  U'\x01ee5',  U'\x00000',  U'\x01ee7',
+ U'\x00000',  U'\x01ee9',  U'\x00000',  U'\x01eeb',  U'\x00000',  U'\x01eed',  U'\x00000',
+ U'\x01eef',  U'\x00000',  U'\x01ef1',  U'\x00000',  U'\x01ef3',  U'\x00000',  U'\x01ef5',
+ U'\x00000',  U'\x01ef7',  U'\x00000',  U'\x01ef9',  U'\x00000',  U'\x01efb',  U'\x00000',
+ U'\x01efd',  U'\x00000',  U'\x01eff'
+};
+
+static const char32_t FOLDCASE_0x0001f[] =
+{
+ U'\x000fd',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x01f00',  U'\x01f01',  U'\x01f02',  U'\x01f03',  U'\x01f04',  U'\x01f05',
+ U'\x01f06',  U'\x01f07',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f10',  U'\x01f11',  U'\x01f12',  U'\x01f13',
+ U'\x01f14',  U'\x01f15',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f20',  U'\x01f21',
+ U'\x01f22',  U'\x01f23',  U'\x01f24',  U'\x01f25',  U'\x01f26',  U'\x01f27',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x01f30',  U'\x01f31',  U'\x01f32',  U'\x01f33',  U'\x01f34',  U'\x01f35',  U'\x01f36',
+ U'\x01f37',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x01f40',  U'\x01f41',  U'\x01f42',  U'\x01f43',  U'\x01f44',
+ U'\x01f45',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f51',  U'\x00000',
+ U'\x01f53',  U'\x00000',  U'\x01f55',  U'\x00000',  U'\x01f57',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f60',
+ U'\x01f61',  U'\x01f62',  U'\x01f63',  U'\x01f64',  U'\x01f65',  U'\x01f66',  U'\x01f67',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f80',  U'\x01f81',  U'\x01f82',  U'\x01f83',
+ U'\x01f84',  U'\x01f85',  U'\x01f86',  U'\x01f87',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f90',  U'\x01f91',
+ U'\x01f92',  U'\x01f93',  U'\x01f94',  U'\x01f95',  U'\x01f96',  U'\x01f97',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x01fa0',  U'\x01fa1',  U'\x01fa2',  U'\x01fa3',  U'\x01fa4',  U'\x01fa5',  U'\x01fa6',
+ U'\x01fa7',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x01fb0',  U'\x01fb1',  U'\x01f70',  U'\x01f71',  U'\x01fb3',
+ U'\x00000',  U'\x003b9',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f72',  U'\x01f73',  U'\x01f74',
+ U'\x01f75',  U'\x01fc3',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01fd0',
+ U'\x01fd1',  U'\x01f76',  U'\x01f77',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x01fe0',  U'\x01fe1',  U'\x01f7a',  U'\x01f7b',  U'\x01fe5',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f78',  U'\x01f79',  U'\x01f7c',  U'\x01f7d',
+ U'\x01ff3'
+};
+
+static const char32_t FOLDCASE_0x00021[] =
+{
+ U'\x00084',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x003c9',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x0006b',  U'\x000e5',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x0214e',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02170',  U'\x02171',
+ U'\x02172',  U'\x02173',  U'\x02174',  U'\x02175',  U'\x02176',  U'\x02177',  U'\x02178',
+ U'\x02179',  U'\x0217a',  U'\x0217b',  U'\x0217c',  U'\x0217d',  U'\x0217e',  U'\x0217f',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02184'
+};
+
+static const char32_t FOLDCASE_0x00024[] =
+{
+ U'\x000d0',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x024d0',  U'\x024d1',  U'\x024d2',  U'\x024d3',  U'\x024d4',  U'\x024d5',  U'\x024d6',
+ U'\x024d7',  U'\x024d8',  U'\x024d9',  U'\x024da',  U'\x024db',  U'\x024dc',  U'\x024dd',
+ U'\x024de',  U'\x024df',  U'\x024e0',  U'\x024e1',  U'\x024e2',  U'\x024e3',  U'\x024e4',
+ U'\x024e5',  U'\x024e6',  U'\x024e7',  U'\x024e8',  U'\x024e9'
+};
+
+static const char32_t FOLDCASE_0x0002c[] =
+{
+ U'\x000f3',
+ U'\x02c30',  U'\x02c31',  U'\x02c32',  U'\x02c33',  U'\x02c34',  U'\x02c35',  U'\x02c36',
+ U'\x02c37',  U'\x02c38',  U'\x02c39',  U'\x02c3a',  U'\x02c3b',  U'\x02c3c',  U'\x02c3d',
+ U'\x02c3e',  U'\x02c3f',  U'\x02c40',  U'\x02c41',  U'\x02c42',  U'\x02c43',  U'\x02c44',
+ U'\x02c45',  U'\x02c46',  U'\x02c47',  U'\x02c48',  U'\x02c49',  U'\x02c4a',  U'\x02c4b',
+ U'\x02c4c',  U'\x02c4d',  U'\x02c4e',  U'\x02c4f',  U'\x02c50',  U'\x02c51',  U'\x02c52',
+ U'\x02c53',  U'\x02c54',  U'\x02c55',  U'\x02c56',  U'\x02c57',  U'\x02c58',  U'\x02c59',
+ U'\x02c5a',  U'\x02c5b',  U'\x02c5c',  U'\x02c5d',  U'\x02c5e',  U'\x02c5f',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02c61',  U'\x00000',
+ U'\x0026b',  U'\x01d7d',  U'\x0027d',  U'\x00000',  U'\x00000',  U'\x02c68',  U'\x00000',
+ U'\x02c6a',  U'\x00000',  U'\x02c6c',  U'\x00000',  U'\x00251',  U'\x00271',  U'\x00250',
+ U'\x00252',  U'\x00000',  U'\x02c73',  U'\x00000',  U'\x00000',  U'\x02c76',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x0023f',  U'\x00240',  U'\x02c81',  U'\x00000',  U'\x02c83',  U'\x00000',  U'\x02c85',
+ U'\x00000',  U'\x02c87',  U'\x00000',  U'\x02c89',  U'\x00000',  U'\x02c8b',  U'\x00000',
+ U'\x02c8d',  U'\x00000',  U'\x02c8f',  U'\x00000',  U'\x02c91',  U'\x00000',  U'\x02c93',
+ U'\x00000',  U'\x02c95',  U'\x00000',  U'\x02c97',  U'\x00000',  U'\x02c99',  U'\x00000',
+ U'\x02c9b',  U'\x00000',  U'\x02c9d',  U'\x00000',  U'\x02c9f',  U'\x00000',  U'\x02ca1',
+ U'\x00000',  U'\x02ca3',  U'\x00000',  U'\x02ca5',  U'\x00000',  U'\x02ca7',  U'\x00000',
+ U'\x02ca9',  U'\x00000',  U'\x02cab',  U'\x00000',  U'\x02cad',  U'\x00000',  U'\x02caf',
+ U'\x00000',  U'\x02cb1',  U'\x00000',  U'\x02cb3',  U'\x00000',  U'\x02cb5',  U'\x00000',
+ U'\x02cb7',  U'\x00000',  U'\x02cb9',  U'\x00000',  U'\x02cbb',  U'\x00000',  U'\x02cbd',
+ U'\x00000',  U'\x02cbf',  U'\x00000',  U'\x02cc1',  U'\x00000',  U'\x02cc3',  U'\x00000',
+ U'\x02cc5',  U'\x00000',  U'\x02cc7',  U'\x00000',  U'\x02cc9',  U'\x00000',  U'\x02ccb',
+ U'\x00000',  U'\x02ccd',  U'\x00000',  U'\x02ccf',  U'\x00000',  U'\x02cd1',  U'\x00000',
+ U'\x02cd3',  U'\x00000',  U'\x02cd5',  U'\x00000',  U'\x02cd7',  U'\x00000',  U'\x02cd9',
+ U'\x00000',  U'\x02cdb',  U'\x00000',  U'\x02cdd',  U'\x00000',  U'\x02cdf',  U'\x00000',
+ U'\x02ce1',  U'\x00000',  U'\x02ce3',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02cec',  U'\x00000',  U'\x02cee',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02cf3'
+};
+
+static const char32_t FOLDCASE_0x000a6[] =
+{
+ U'\x0009b',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x0a641',  U'\x00000',  U'\x0a643',  U'\x00000',  U'\x0a645',  U'\x00000',
+ U'\x0a647',  U'\x00000',  U'\x0a649',  U'\x00000',  U'\x0a64b',  U'\x00000',  U'\x0a64d',
+ U'\x00000',  U'\x0a64f',  U'\x00000',  U'\x0a651',  U'\x00000',  U'\x0a653',  U'\x00000',
+ U'\x0a655',  U'\x00000',  U'\x0a657',  U'\x00000',  U'\x0a659',  U'\x00000',  U'\x0a65b',
+ U'\x00000',  U'\x0a65d',  U'\x00000',  U'\x0a65f',  U'\x00000',  U'\x0a661',  U'\x00000',
+ U'\x0a663',  U'\x00000',  U'\x0a665',  U'\x00000',  U'\x0a667',  U'\x00000',  U'\x0a669',
+ U'\x00000',  U'\x0a66b',  U'\x00000',  U'\x0a66d',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x0a681',  U'\x00000',  U'\x0a683',  U'\x00000',  U'\x0a685',
+ U'\x00000',  U'\x0a687',  U'\x00000',  U'\x0a689',  U'\x00000',  U'\x0a68b',  U'\x00000',
+ U'\x0a68d',  U'\x00000',  U'\x0a68f',  U'\x00000',  U'\x0a691',  U'\x00000',  U'\x0a693',
+ U'\x00000',  U'\x0a695',  U'\x00000',  U'\x0a697',  U'\x00000',  U'\x0a699',  U'\x00000',
+ U'\x0a69b'
+};
+
+static const char32_t FOLDCASE_0x000a7[] =
+{
+ U'\x000f6',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a723',
+ U'\x00000',  U'\x0a725',  U'\x00000',  U'\x0a727',  U'\x00000',  U'\x0a729',  U'\x00000',
+ U'\x0a72b',  U'\x00000',  U'\x0a72d',  U'\x00000',  U'\x0a72f',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x0a733',  U'\x00000',  U'\x0a735',  U'\x00000',  U'\x0a737',  U'\x00000',
+ U'\x0a739',  U'\x00000',  U'\x0a73b',  U'\x00000',  U'\x0a73d',  U'\x00000',  U'\x0a73f',
+ U'\x00000',  U'\x0a741',  U'\x00000',  U'\x0a743',  U'\x00000',  U'\x0a745',  U'\x00000',
+ U'\x0a747',  U'\x00000',  U'\x0a749',  U'\x00000',  U'\x0a74b',  U'\x00000',  U'\x0a74d',
+ U'\x00000',  U'\x0a74f',  U'\x00000',  U'\x0a751',  U'\x00000',  U'\x0a753',  U'\x00000',
+ U'\x0a755',  U'\x00000',  U'\x0a757',  U'\x00000',  U'\x0a759',  U'\x00000',  U'\x0a75b',
+ U'\x00000',  U'\x0a75d',  U'\x00000',  U'\x0a75f',  U'\x00000',  U'\x0a761',  U'\x00000',
+ U'\x0a763',  U'\x00000',  U'\x0a765',  U'\x00000',  U'\x0a767',  U'\x00000',  U'\x0a769',
+ U'\x00000',  U'\x0a76b',  U'\x00000',  U'\x0a76d',  U'\x00000',  U'\x0a76f',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x0a77a',  U'\x00000',  U'\x0a77c',  U'\x00000',  U'\x01d79',
+ U'\x0a77f',  U'\x00000',  U'\x0a781',  U'\x00000',  U'\x0a783',  U'\x00000',  U'\x0a785',
+ U'\x00000',  U'\x0a787',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a78c',
+ U'\x00000',  U'\x00265',  U'\x00000',  U'\x00000',  U'\x0a791',  U'\x00000',  U'\x0a793',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a797',  U'\x00000',  U'\x0a799',  U'\x00000',
+ U'\x0a79b',  U'\x00000',  U'\x0a79d',  U'\x00000',  U'\x0a79f',  U'\x00000',  U'\x0a7a1',
+ U'\x00000',  U'\x0a7a3',  U'\x00000',  U'\x0a7a5',  U'\x00000',  U'\x0a7a7',  U'\x00000',
+ U'\x0a7a9',  U'\x00000',  U'\x00266',  U'\x0025c',  U'\x00261',  U'\x0026c',  U'\x0026a',
+ U'\x00000',  U'\x0029e',  U'\x00287',  U'\x0029d',  U'\x0ab53',  U'\x0a7b5',  U'\x00000',
+ U'\x0a7b7',  U'\x00000',  U'\x0a7b9',  U'\x00000',  U'\x0a7bb',  U'\x00000',  U'\x0a7bd',
+ U'\x00000',  U'\x0a7bf',  U'\x00000',  U'\x0a7c1',  U'\x00000',  U'\x0a7c3',  U'\x00000',
+ U'\x0a794',  U'\x00282',  U'\x01d8e',  U'\x0a7c8',  U'\x00000',  U'\x0a7ca',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a7d1',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a7d7',  U'\x00000',  U'\x0a7d9',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x0a7f6'
+};
+
+static const char32_t FOLDCASE_0x000ab[] =
+{
+ U'\x000c0',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x013a0',  U'\x013a1',  U'\x013a2',  U'\x013a3',  U'\x013a4',  U'\x013a5',  U'\x013a6',
+ U'\x013a7',  U'\x013a8',  U'\x013a9',  U'\x013aa',  U'\x013ab',  U'\x013ac',  U'\x013ad',
+ U'\x013ae',  U'\x013af',  U'\x013b0',  U'\x013b1',  U'\x013b2',  U'\x013b3',  U'\x013b4',
+ U'\x013b5',  U'\x013b6',  U'\x013b7',  U'\x013b8',  U'\x013b9',  U'\x013ba',  U'\x013bb',
+ U'\x013bc',  U'\x013bd',  U'\x013be',  U'\x013bf',  U'\x013c0',  U'\x013c1',  U'\x013c2',
+ U'\x013c3',  U'\x013c4',  U'\x013c5',  U'\x013c6',  U'\x013c7',  U'\x013c8',  U'\x013c9',
+ U'\x013ca',  U'\x013cb',  U'\x013cc',  U'\x013cd',  U'\x013ce',  U'\x013cf',  U'\x013d0',
+ U'\x013d1',  U'\x013d2',  U'\x013d3',  U'\x013d4',  U'\x013d5',  U'\x013d6',  U'\x013d7',
+ U'\x013d8',  U'\x013d9',  U'\x013da',  U'\x013db',  U'\x013dc',  U'\x013dd',  U'\x013de',
+ U'\x013df',  U'\x013e0',  U'\x013e1',  U'\x013e2',  U'\x013e3',  U'\x013e4',  U'\x013e5',
+ U'\x013e6',  U'\x013e7',  U'\x013e8',  U'\x013e9',  U'\x013ea',  U'\x013eb',  U'\x013ec',
+ U'\x013ed',  U'\x013ee',  U'\x013ef'
+};
+
+static const char32_t FOLDCASE_0x000ff[] =
+{
+ U'\x0003b',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0ff41',  U'\x0ff42',
+ U'\x0ff43',  U'\x0ff44',  U'\x0ff45',  U'\x0ff46',  U'\x0ff47',  U'\x0ff48',  U'\x0ff49',
+ U'\x0ff4a',  U'\x0ff4b',  U'\x0ff4c',  U'\x0ff4d',  U'\x0ff4e',  U'\x0ff4f',  U'\x0ff50',
+ U'\x0ff51',  U'\x0ff52',  U'\x0ff53',  U'\x0ff54',  U'\x0ff55',  U'\x0ff56',  U'\x0ff57',
+ U'\x0ff58',  U'\x0ff59',  U'\x0ff5a'
+};
+
+static const char32_t FOLDCASE_0x00104[] =
+{
+ U'\x000d4',
+ U'\x10428',  U'\x10429',  U'\x1042a',  U'\x1042b',  U'\x1042c',  U'\x1042d',  U'\x1042e',
+ U'\x1042f',  U'\x10430',  U'\x10431',  U'\x10432',  U'\x10433',  U'\x10434',  U'\x10435',
+ U'\x10436',  U'\x10437',  U'\x10438',  U'\x10439',  U'\x1043a',  U'\x1043b',  U'\x1043c',
+ U'\x1043d',  U'\x1043e',  U'\x1043f',  U'\x10440',  U'\x10441',  U'\x10442',  U'\x10443',
+ U'\x10444',  U'\x10445',  U'\x10446',  U'\x10447',  U'\x10448',  U'\x10449',  U'\x1044a',
+ U'\x1044b',  U'\x1044c',  U'\x1044d',  U'\x1044e',  U'\x1044f',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x104d8',  U'\x104d9',  U'\x104da',  U'\x104db',  U'\x104dc',  U'\x104dd',
+ U'\x104de',  U'\x104df',  U'\x104e0',  U'\x104e1',  U'\x104e2',  U'\x104e3',  U'\x104e4',
+ U'\x104e5',  U'\x104e6',  U'\x104e7',  U'\x104e8',  U'\x104e9',  U'\x104ea',  U'\x104eb',
+ U'\x104ec',  U'\x104ed',  U'\x104ee',  U'\x104ef',  U'\x104f0',  U'\x104f1',  U'\x104f2',
+ U'\x104f3',  U'\x104f4',  U'\x104f5',  U'\x104f6',  U'\x104f7',  U'\x104f8',  U'\x104f9',
+ U'\x104fa',  U'\x104fb'
+};
+
+static const char32_t FOLDCASE_0x00105[] =
+{
+ U'\x00096',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x10597',  U'\x10598',  U'\x10599',  U'\x1059a',  U'\x1059b',  U'\x1059c',  U'\x1059d',
+ U'\x1059e',  U'\x1059f',  U'\x105a0',  U'\x105a1',  U'\x00000',  U'\x105a3',  U'\x105a4',
+ U'\x105a5',  U'\x105a6',  U'\x105a7',  U'\x105a8',  U'\x105a9',  U'\x105aa',  U'\x105ab',
+ U'\x105ac',  U'\x105ad',  U'\x105ae',  U'\x105af',  U'\x105b0',  U'\x105b1',  U'\x00000',
+ U'\x105b3',  U'\x105b4',  U'\x105b5',  U'\x105b6',  U'\x105b7',  U'\x105b8',  U'\x105b9',
+ U'\x00000',  U'\x105bb',  U'\x105bc'
+};
+
+static const char32_t FOLDCASE_0x0010c[] =
+{
+ U'\x000b3',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x10cc0',  U'\x10cc1',  U'\x10cc2',  U'\x10cc3',  U'\x10cc4',
+ U'\x10cc5',  U'\x10cc6',  U'\x10cc7',  U'\x10cc8',  U'\x10cc9',  U'\x10cca',  U'\x10ccb',
+ U'\x10ccc',  U'\x10ccd',  U'\x10cce',  U'\x10ccf',  U'\x10cd0',  U'\x10cd1',  U'\x10cd2',
+ U'\x10cd3',  U'\x10cd4',  U'\x10cd5',  U'\x10cd6',  U'\x10cd7',  U'\x10cd8',  U'\x10cd9',
+ U'\x10cda',  U'\x10cdb',  U'\x10cdc',  U'\x10cdd',  U'\x10cde',  U'\x10cdf',  U'\x10ce0',
+ U'\x10ce1',  U'\x10ce2',  U'\x10ce3',  U'\x10ce4',  U'\x10ce5',  U'\x10ce6',  U'\x10ce7',
+ U'\x10ce8',  U'\x10ce9',  U'\x10cea',  U'\x10ceb',  U'\x10cec',  U'\x10ced',  U'\x10cee',
+ U'\x10cef',  U'\x10cf0',  U'\x10cf1',  U'\x10cf2'
+};
+
+static const char32_t FOLDCASE_0x00118[] =
+{
+ U'\x000c0',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x118c0',
+ U'\x118c1',  U'\x118c2',  U'\x118c3',  U'\x118c4',  U'\x118c5',  U'\x118c6',  U'\x118c7',
+ U'\x118c8',  U'\x118c9',  U'\x118ca',  U'\x118cb',  U'\x118cc',  U'\x118cd',  U'\x118ce',
+ U'\x118cf',  U'\x118d0',  U'\x118d1',  U'\x118d2',  U'\x118d3',  U'\x118d4',  U'\x118d5',
+ U'\x118d6',  U'\x118d7',  U'\x118d8',  U'\x118d9',  U'\x118da',  U'\x118db',  U'\x118dc',
+ U'\x118dd',  U'\x118de',  U'\x118df'
+};
+
+static const char32_t FOLDCASE_0x0016e[] =
+{
+ U'\x00060',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+ U'\x00000',  U'\x16e60',  U'\x16e61',  U'\x16e62',  U'\x16e63',  U'\x16e64',  U'\x16e65',
+ U'\x16e66',  U'\x16e67',  U'\x16e68',  U'\x16e69',  U'\x16e6a',  U'\x16e6b',  U'\x16e6c',
+ U'\x16e6d',  U'\x16e6e',  U'\x16e6f',  U'\x16e70',  U'\x16e71',  U'\x16e72',  U'\x16e73',
+ U'\x16e74',  U'\x16e75',  U'\x16e76',  U'\x16e77',  U'\x16e78',  U'\x16e79',  U'\x16e7a',
+ U'\x16e7b',  U'\x16e7c',  U'\x16e7d',  U'\x16e7e',  U'\x16e7f'
+};
+
+static const char32_t FOLDCASE_0x001e9[] =
+{
+ U'\x00022',
+ U'\x1e922',  U'\x1e923',  U'\x1e924',  U'\x1e925',  U'\x1e926',  U'\x1e927',  U'\x1e928',
+ U'\x1e929',  U'\x1e92a',  U'\x1e92b',  U'\x1e92c',  U'\x1e92d',  U'\x1e92e',  U'\x1e92f',
+ U'\x1e930',  U'\x1e931',  U'\x1e932',  U'\x1e933',  U'\x1e934',  U'\x1e935',  U'\x1e936',
+ U'\x1e937',  U'\x1e938',  U'\x1e939',  U'\x1e93a',  U'\x1e93b',  U'\x1e93c',  U'\x1e93d',
+ U'\x1e93e',  U'\x1e93f',  U'\x1e940',  U'\x1e941',  U'\x1e942',  U'\x1e943'
+};
+
+static const char32_t* FOLDCASE_INDEX [] =
+{
+ FOLDCASE_0x00000,  FOLDCASE_0x00001,  FOLDCASE_0x00002,  FOLDCASE_0x00003,  FOLDCASE_0x00004,  FOLDCASE_0x00005,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  FOLDCASE_0x00010,  0x0,
+ 0x0,  FOLDCASE_0x00013,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  FOLDCASE_0x0001c,  0x0,
+ FOLDCASE_0x0001e,  FOLDCASE_0x0001f,  0x0,  FOLDCASE_0x00021,  0x0,  0x0,
+ FOLDCASE_0x00024,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  FOLDCASE_0x0002c,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  FOLDCASE_0x000a6,  FOLDCASE_0x000a7,
+ 0x0,  0x0,  0x0,  FOLDCASE_0x000ab,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  FOLDCASE_0x000ff,  0x0,  0x0,
+ 0x0,  0x0,  FOLDCASE_0x00104,  FOLDCASE_0x00105,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  FOLDCASE_0x0010c,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  FOLDCASE_0x00118,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ FOLDCASE_0x0016e,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
+ 0x0,  0x0,  0x0,  FOLDCASE_0x001e9
+};
+
+// clang-format on
+
+// clang-format off
+
+// TODO: These tables to be removed after wstring versions of ToUpper/ToLower no
+// longer depend upon them (once foldcase changes complete).
 
 static constexpr wchar_t unicode_lowers[] = {
   (wchar_t)0x0061, (wchar_t)0x0062, (wchar_t)0x0063, (wchar_t)0x0064, (wchar_t)0x0065, (wchar_t)0x0066, (wchar_t)0x0067, (wchar_t)0x0068, (wchar_t)0x0069,
@@ -237,6 +1188,11 @@ static const wchar_t unicode_uppers[] = {
   (wchar_t)0xFF32, (wchar_t)0xFF33, (wchar_t)0xFF34, (wchar_t)0xFF35, (wchar_t)0xFF36, (wchar_t)0xFF37, (wchar_t)0xFF38, (wchar_t)0xFF39, (wchar_t)0xFF3A
 };
 
+std::string ToHex(const std::wstring_view in);
+
+std::string ToHex(const std::u32string_view in);
+
+} // namespace
 
 std::string StringUtils::FormatV(const char *fmt, va_list args)
 {
@@ -327,14 +1283,241 @@ std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
   return L"";
 }
 
+//
+// --------------  Unicode encoding converters --------------
+//
+// There are two ways to convert between the Unicode encodings:
+// iconv or C++ wstring_convert
+//
+// iconv
+//   - handles all of the conversions that we need
+//   - on error can either ignore bad code-units or truncate
+//     converted string
+//   - could modify CharsetConverter to substitute bad code-units
+//     with 'replacement character' UxFFFD, which would preserve
+//     more of the string
+//   - likely more consistent behavior than wstring_convert
+//   - CharsetConverter is not available for use before StringUtils
+//     is called. Either need means to detect when CharsetConverter
+//     is ready, or need to initialize it sooner.
+//
+// wstring_convert
+//   - c++ built-in
+//   - does not support wstring to/from char32_t
+//   - on error can either throw exception or return 'bad value' string
+//   - some conversions are in 'limbo': deprecated, but no
+//     replacement defined.
+//
+
+std::string StringUtils::ToUtf8(const std::u32string_view str)
+{
+  bool useIconv = g_charsetConverter.isInitialized();
+  if (useIconv)
+  {
+    std::u32string strTmp(str);
+    std::string utf8Str;
+    g_charsetConverter.utf32ToUtf8(strTmp, utf8Str, FAIL_ON_ERROR); // omit bad chars
+    return utf8Str;
+  }
+  else
+  {
+    // Alternative to iconv, which may not be initialized prior to
+    // the need for it here.
+
+    // No workaround to codecvt_utf8 destructor needed, as is case for
+    // std::codecvt
+
+    // A Conversion error results in std::range_error exception,
+    // but a number of unassigned, etc. codepoints don't throw exception.
+    // Mileage may vary by platform.
+
+    std::wstring_convert<std::codecvt_utf8<char32_t>, char32_t> conv;
+    std::string result;
+    try
+    {
+      result = conv.to_bytes(str.data(), str.data() + str.length());
+    }
+    catch ( std::range_error& e )
+    {
+      std::string asHex = ToHex(str);
+      CLog::Log(LOGWARNING, "Conversion error converting from u32string to utf8: {}", asHex);
+      result = CONVERSION_ERROR; // It is difficult to salvage what does convert
+    }
+    return result;
+  }
+}
+
+std::string StringUtils::ToUtf8(const std::wstring_view str)
+{
+  bool useIconv = g_charsetConverter.isInitialized();
+  if (useIconv)
+  {
+    const std::wstring strTmp(str);
+    std::string utf8Str;
+    g_charsetConverter.wToUTF8(strTmp, utf8Str, FAIL_ON_ERROR); // Omit bad chars
+    return utf8Str;
+  }
+  else
+  {
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> conv;
+    std::string result;
+    try
+    {
+      // A Conversion error results in std::range_error exception,
+      // but a number of unassigned, etc. codepoints don't throw exception.
+      // Mileage may vary by platform.
+
+      result = conv.to_bytes(str.data(), str.data() + str.length());
+    }
+    catch ( std::range_error& e )
+    {
+      CLog::Log(LOGWARNING, "Conversion error converting from wstring to utf8: {}", ToHex(str));
+      result = CONVERSION_ERROR; // It is difficult to salvage what does convert
+    }
+    return result;
+  }
+}
+
+std::u32string StringUtils::ToUtf32(const std::string_view str)
+{
+  bool useIconv = g_charsetConverter.isInitialized();
+  if (useIconv)
+  {
+    const std::string strTmp(str);
+    std::u32string utf32Str;
+    g_charsetConverter.utf8ToUtf32(strTmp, utf32Str, FAIL_ON_ERROR); // Omit bad chars
+    return utf32Str;
+  }
+  else
+  {
+    // Alternative to iconv
+    // There are some string operations that occur prior to iconv being initialized.
+    // One such case is CPosixTimezone::CPosixTimezone which calls StringUtils::sortstringbyname
+
+    // Will NOT compile on C++20, but no simple replacement, given that CharsetConverter
+    // may not be initialized. Could call iconv directly.
+
+    struct destructible_codecvt : public std::codecvt<char32_t, char, std::mbstate_t> {
+      using std::codecvt<char32_t, char, std::mbstate_t>::codecvt;
+      ~destructible_codecvt() = default;
+    };
+    std::wstring_convert<destructible_codecvt, char32_t> utf32_converter;
+    std::u32string result;
+    try
+    {
+      // A Conversion error results in std::range_error exception,
+      // but a number of unassigned, etc. codepoints don't throw exception.
+      // Mileage may vary by platform.
+      result = utf32_converter.from_bytes(str.data(), str.data() + str.length());
+    }
+    catch ( std::range_error& e )
+    {
+      CLog::Log(LOGWARNING, "Conversion error converting from string to u32string: {}", str);
+      result = U32_CONVERSION_ERROR; // It is difficult to salvage what does convert
+    }
+    return result;
+  }
+}
+
+std::u32string StringUtils::ToUtf32(const std::wstring_view str)
+{
+  const std::wstring strTmp(str);
+  std::u32string utf32Str;
+  g_charsetConverter.wToUtf32(strTmp, utf32Str, FAIL_ON_ERROR); // Omit bad chars
+  return utf32Str;
+}
+
+std::wstring StringUtils::ToWString(const std::string_view str)
+{
+  bool useIconv = g_charsetConverter.isInitialized();
+  if (useIconv)
+  {
+    const std::string strTmp(str);
+    std::wstring wStr;
+    g_charsetConverter.utf8ToW(strTmp, wStr, FAIL_ON_ERROR); // Omit bad chars
+    return wStr;
+  }
+  else
+  {
+    // Alternative to iconv, which may not be initialized prior to the need
+    // here.
+
+    // Note that unlike codecvt, codecvt_utf8 has public destructor,
+    // so no special code needed.
+
+    std::wstring_convert<std::codecvt_utf8<wchar_t>> conv; // (CONVERSION_ERROR, WIDE_CONVERSION_ERROR);
+    std::wstring result;
+    try
+    {
+      // A Conversion error results in std::range_error exception,
+      // but a number of unassigned, etc. codepoints don't throw exception.
+      // Mileage may vary by platform.
+
+      result = conv.from_bytes(str.data(), str.data() + str.length());
+    }
+    catch ( std::range_error& e )
+    {
+      CLog::Log(LOGWARNING, "Conversion error converting from utf8 to wstring: {}", str);
+      result = WIDE_CONVERSION_ERROR;
+    }
+    return result;
+  }
+}
+
+std::wstring StringUtils::ToWString(const std::u32string_view str)
+{
+  const std::u32string strTmp(str);
+  std::wstring wStr;
+  g_charsetConverter.utf32ToW(strTmp, wStr, FAIL_ON_ERROR); // Omit bad chars
+  return wStr;
+}
+
+namespace
+{
+// TODO: Move FoldCaseChar to Anonymous namespace
+
+/*!
+ * \brief Folds the case of the given Unicode (32-bit) character
+ *
+ * Performs "simple" case folding using data from Unicode Inc.'s ICUC4 (License near top of file).
+ * Read the description preceding the tables (FOLDCASE_0000) or
+ * from the API documentation for FoldCase.
+ */
+static constexpr char32_t MAX_FOLD_HIGH_BYTES = (sizeof(FOLDCASE_INDEX) / sizeof(char32_t *)) - 1;
+
+inline char32_t FoldCaseChar(const char32_t c)
+{
+  const char32_t high_bytes = c >> 8; // DF  -> 0
+  if (high_bytes > MAX_FOLD_HIGH_BYTES)
+    return c;
+
+  const char32_t* table = FOLDCASE_INDEX[high_bytes];
+  if (table == 0)
+    return c;
+
+  const uint16_t low_byte = c & 0xFF; // DF
+  // First table entry is # entries.
+  // Entries are in table[1...n + 1], NOT [0..n]
+  if (low_byte >= table[0])
+    return c;
+
+  const char32_t foldedChar = table[low_byte + 1];
+  if (foldedChar == 0)
+    return c;
+
+  return foldedChar;
+}
+
 int compareWchar (const void* a, const void* b)
 {
-  if (*(const wchar_t*)a <  *(const wchar_t*)b)
+  if (*(const wchar_t*)a < *(const wchar_t*)b)
     return -1;
-  else if (*(const wchar_t*)a >  *(const wchar_t*)b)
+  else if (*(const wchar_t*)a > *(const wchar_t*)b)
     return 1;
   return 0;
 }
+
+// TODO: To be removed when ToLower(wstring) is reworked (after CaseFold)
 
 wchar_t tolowerUnicode(const wchar_t& c)
 {
@@ -344,6 +1527,8 @@ wchar_t tolowerUnicode(const wchar_t& c)
 
   return c;
 }
+
+// TODO: To be removed when ToLower(wstring) is reworked (after CaseFold)
 
 wchar_t toupperUnicode(const wchar_t& c)
 {
@@ -359,6 +1544,7 @@ void transformString(const Str& input, Str& output, Fn fn)
 {
   std::transform(input.begin(), input.end(), output.begin(), fn);
 }
+} // namespace
 
 std::string StringUtils::ToUpper(const std::string& str)
 {
@@ -406,6 +1592,101 @@ void StringUtils::ToLower(std::string &str)
 void StringUtils::ToLower(std::wstring &str)
 {
   transformString(str, str, tolowerUnicode);
+}
+
+std::u32string StringUtils::FoldCase(const std::u32string_view str)
+{
+  // Common code to do actual case folding
+  //
+  // In the multi-lingual world, FoldCase is used instead of ToLower to 'normalize'
+  // unique-ids, such as property ids, map keys, etc. In the good-'ol days of ASCII
+  // ToLower was fine, but when you have ToLower changing behavior depending upon
+  // the current locale, you have a disaster. For the curious, look up "Turkish-I"
+  // problem.
+  //
+  // FoldCase is designed to transform strings so that unimportant differences
+  // (letter case, some accents, etc.) are neutralized by monocasing, etc..
+  // Full case folding goes further and converts strings into a canonical
+  // form (ex: German sharfes-S (looks like a script B) is converted to
+  // to "ss").
+  //
+  // The FoldCase here does not support full case folding, but as long as key ids
+  // are not too exotic, then this FoldCase should be fine. (A library, 
+  // such as ICUC4 is required for more advanced Folding).
+  //
+  // Even though Kodi appears to have fairly well behaved unique-ids, it is
+  // very easy to create bad ones and they can be hard to detect.
+  //  - The "Turkish-I" problem caught everyone by surprise. No one knew
+  //    that in a few Turkic locales, changing the case of "i" caused a non-Latin
+  //    "i" to appear (I think a "dotless 'i', but maybe a dotted 'I'). The
+  //    problem prevented Kodi from starting at all.
+  //  - As I write this, there are at least five instances where a translated
+  //    value for a device name ("keyboard," etc.) is used as the unique-id.
+  //    This was only found by detecting non-ASCII ids AND setting locale to
+  //    Russian. The problem might be benign, but a lot of testing or
+  //    research is required to be sure.
+  //  - Python addons face the same problem. This code does NOT address
+  //    that issue.
+  //
+  // The FoldCase here is based on character data from ICU4C. (The library
+  // and data are constantly changing. The current version is from 2021.)
+  // The data is in UTF32 format. Since C++ string functions, such as
+  // tolower(char) only examines one byte at a time (for UTF8),
+  // it is unable to properly process multi-byte characters. Similarly
+  // for UTF16, multi-UTF16 code-unit characters are not properly
+  // processed (fortunately there are far fewer characters longer than
+  // 16-bits than for 8-bit ones). For this reason, both versions of
+  // FoldCase (UTF8 and wstring) converts its argument to utf32 to
+  // perform the fold and then back to the original UTF8, wstring,
+  // etc. after the fold.
+  //
+  if (str.length() == 0)
+    return std::u32string(str);
+
+  // This FoldCase doesn't change string length; more sophisticated libs,
+  // such as ICU can.
+
+  std::u32string result;
+  for (auto i = str.begin(); i != str.end(); i++)
+  {
+    char32_t fold_c = FoldCaseChar(*i);
+    result.push_back(fold_c);
+  }
+  return result;
+}
+
+std::wstring StringUtils::FoldCase(const std::wstring_view str)
+{
+  if (str.length() == 0)
+    return std::wstring(str);
+
+  // TODO: Consider performance impact and improvements:
+  //       1- Creating string_view signatures for CharacterConverter
+  //       2- If desperate, use char32_t[] so malloc is not used
+
+  // It may be possible for this to be called prior to g_charsetConverter being initialized.
+  // If so, need to seek alternative solution.
+
+  std::u32string_view s32;
+  const std::wstring strTmp{str};
+  std::u32string utf32Str;
+  // g_charsetConverter.wToUtf32(strTmp, utf32Str);
+  utf32Str = StringUtils::ToUtf32(str);
+  s32 = std::u32string_view(utf32Str);
+  std::u32string foldedStr = StringUtils::FoldCase(s32);
+  std::wstring result = StringUtils::ToWString(foldedStr);
+
+  return result;
+}
+
+std::string StringUtils::FoldCase(const std::string_view str)
+{
+  // To get same behavior and better accuracy as the wstring version, convert to utf32string.
+
+  std::u32string utf32Str = StringUtils::ToUtf32(str);
+  std::u32string foldedStr = StringUtils::FoldCase(utf32Str);
+  std::string result = StringUtils::ToUtf8(foldedStr);
+  return result;
 }
 
 void StringUtils::ToCapitalize(std::string &str)
@@ -518,12 +1799,14 @@ std::string& StringUtils::Trim(std::string &str, const char* const chars)
   return TrimRight(str, chars);
 }
 
+namespace {
 // hack to check only first byte of UTF-8 character
 // without this hack "TrimX" functions failed on Win32 and OS X with UTF-8 strings
 static int isspace_c(char c)
 {
   return (c & 0x80) == 0 && ::isspace(c);
 }
+} // namespace
 
 std::string& StringUtils::TrimLeft(std::string &str)
 {
@@ -822,6 +2105,9 @@ int StringUtils::FindNumber(const std::string& strInput, const std::string &strF
   return numfound;
 }
 
+namespace {
+// TODO: Move plane maps  to Anonymous namespace
+
 // Plane maps for MySQL utf8_general_ci (now known as utf8mb3_general_ci) collation
 // Derived from https://github.com/MariaDB/server/blob/10.5/strings/ctype-utf8.c
 
@@ -1076,6 +2362,7 @@ static wchar_t GetCollationWeight(const wchar_t& r)
     return r;
   return static_cast<wchar_t>(plane[r & 0xFF]);
 }
+} // namespace
 
 // Compares separately the numeric and alphabetic parts of a wide string.
 // returns negative if left < right, positive if left > right
@@ -1085,10 +2372,14 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
 {
   const wchar_t *l = left;
   const wchar_t *r = right;
-  const wchar_t *ld, *rd;
-  wchar_t lc, rc;
-  int64_t lnum, rnum;
-  bool lsym, rsym;
+  const wchar_t* ld;
+  const wchar_t* rd;
+  wchar_t lc;
+  wchar_t rc;
+  int64_t lnum;
+  int64_t rnum;
+  bool lsym;
+  bool rsym;
   while (*l != 0 && *r != 0)
   {
     // check if we have a numerical value
@@ -1191,6 +2482,10 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
   return 0; // files are the same
 }
 
+namespace
+{
+// TODO: Move to Anonymous namespace
+
 /*
   Convert the UTF8 character to which z points into a 31-bit Unicode point.
   Return how many bytes (0 to 3) of UTF8 data encode the character.
@@ -1235,6 +2530,7 @@ static uint32_t UTF8ToUnicode(const unsigned char* z, int nKey, unsigned char& b
   }
   return c;
 }
+} // namespace
 
 /*
   SQLite collating function, see sqlite3_create_collation
@@ -1258,11 +2554,15 @@ int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, 
   //Not a binary match, so process character at a time
   const unsigned char* zA = static_cast<const unsigned char*>(pKey1);
   const unsigned char* zB = static_cast<const unsigned char*>(pKey2);
-  wchar_t lc, rc;
+  wchar_t lc;
+  wchar_t rc;
   unsigned char bytes;
-  int64_t lnum, rnum;
-  bool lsym, rsym;
-  int ld, rd;
+  int64_t lnum;
+  int64_t rnum;
+  bool lsym;
+  bool rsym;
+  int ld;
+  int rd;
   int i = 0;
   int j = 0;
   // Looping Unicode point at a time through potentially 1 to 4 multi-byte encoded UTF8 data
@@ -1479,7 +2779,8 @@ std::string StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
 
 bool StringUtils::IsNaturalNumber(const std::string& str)
 {
-  size_t i = 0, n = 0;
+  size_t i = 0;
+  size_t n = 0;
   // allow whitespace,digits,whitespace
   while (i < str.size() && isspace((unsigned char) str[i]))
     i++;
@@ -1494,7 +2795,8 @@ bool StringUtils::IsNaturalNumber(const std::string& str)
 
 bool StringUtils::IsInteger(const std::string& str)
 {
-  size_t i = 0, n = 0;
+  size_t i = 0;
+  size_t n = 0;
   // allow whitespace,-,digits,whitespace
   while (i < str.size() && isspace((unsigned char) str[i]))
     i++;
@@ -1598,6 +2900,64 @@ std::string StringUtils::ToHexadecimal(const std::string& in)
   return ss.str();
 }
 
+namespace
+{
+// TODO: Move to Anonymous namespace
+
+/*!
+ * \brief Convert wstring to hex primarily for debugging purposes.
+ *
+ * Note: does not reorder hex for endian-ness
+ *
+ * \param in wstring to be rendered as hex
+ *
+ * \return Each character in 'in' represented in hex, separated by space
+ *
+ */
+
+std::string ToHex(const std::wstring_view in)
+{
+  int width = sizeof(wchar_t) * 2; // Can vary
+  std::string gap;
+  std::ostringstream ss;
+  ss << std::noshowbase; // manually show 0x (due to 0 omitting it)
+  ss << std::internal;
+  ss << std::setfill('0');
+  for (unsigned char ch : in)
+  {
+    ss << std::setw(width) << std::hex << static_cast<unsigned long>(ch) << gap;
+    gap = " "s;
+  }
+  return ss.str();
+}
+
+/*!
+ * \brief Convert u32string to hex primarily for debugging purposes.
+ *
+ * Note: does not reorder hex for endian-ness
+ *
+ * \param in u32string to be rendered as hex
+ *
+ * \return Each character in 'in' represented in hex, separated by space
+ *
+ */
+
+std::string ToHex(const std::u32string_view in)
+{
+  int width = sizeof(char32_t) * 2; // Can vary
+  std::string gap;
+  std::ostringstream ss;
+  ss << std::noshowbase; // manually show 0x (due to 0 omitting it)
+  ss << std::internal;
+  ss << std::setfill('0');
+  for (unsigned char ch : in)
+  {
+    ss << std::setw(width) << std::hex << static_cast<unsigned long>(ch) << gap;
+    gap = " "s;
+  }
+  return ss.str();
+}
+
 // return -1 if not, else return the utf8 char length.
 int IsUTF8Letter(const unsigned char *str)
 {
@@ -1627,6 +2987,7 @@ int IsUTF8Letter(const unsigned char *str)
     return 2;
   return -1;
 }
+} // namespace
 
 size_t StringUtils::FindWords(const char *str, const char *wordLowerCase)
 {

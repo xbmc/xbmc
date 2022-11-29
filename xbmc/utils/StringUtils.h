@@ -19,12 +19,13 @@
 //
 //------------------------------------------------------------------------
 
+#include <locale>
+#include <sstream>
 #include <stdarg.h>
 #include <stdint.h>
 #include <string>
+#include <string_view>
 #include <vector>
-#include <sstream>
-#include <locale>
 
 // workaround for broken [[deprecated]] in coverity
 #if defined(__COVERITY__)
@@ -37,6 +38,14 @@
 #include <fmt/format.h>
 #if FMT_VERSION >= 80000
 #include <fmt/xchar.h>
+#endif
+
+#ifdef _MSC_VER
+#define WARN_UNUSED_RESULT
+#elif defined(__GNUC__) || defined(__clang__)
+#define WARN_UNUSED_RESULT __attribute__((warn_unused_result))
+#else
+#define WARN_UNUSED_RESULT
 #endif
 
 /*! \brief  C-processor Token stringification
@@ -70,11 +79,12 @@ class StringUtils
 {
 public:
   /*! \brief Get a formatted string similar to sprintf
+   *
+   * \param fmt Format of the resulting string
+   * \param ... variable number of value type arguments
+   * \return Formatted string
+   */
 
-  \param fmt Format of the resulting string
-  \param ... variable number of value type arguments
-  \return Formatted string
-  */
   template<typename... Args>
   static std::string Format(const std::string& fmt, Args&&... args)
   {
@@ -90,6 +100,56 @@ public:
 
   static std::string FormatV(PRINTF_FORMAT_STRING const char *fmt, va_list args);
   static std::wstring FormatV(PRINTF_FORMAT_STRING const wchar_t *fmt, va_list args);
+
+  /*!
+   * \brief Converts a u32string_view to a string
+   *
+   * Note: Used by StringUtils because CharSetConverter may not be initialized
+   *       before it is needed.
+   *
+   * \param str a u32string_view in UTF32 format to be converted to a string in
+   *        UTF8 format
+   * \return a string containing the result
+   */
+  static std::string ToUtf8(const std::u32string_view str);
+
+  /*!
+   * \brief Converts a wstring_view to a string
+   *
+   * Note: Used by StringUtils because CharSetConverter may not be initialized
+   *       before it is needed.
+   *
+   * \param str a wstring_view in a variant of UTF-32 or UTF-16 (Windows)
+   *            format to be converted to string in UTF-8
+   * \return a string containing the result
+   */
+  static std::string ToUtf8(const std::wstring_view str);
+
+  /*!
+   * \brief Converts a string_view to a u32string
+   *
+   * Note: Used by StringUtils because CharSetConverter may not be initialized
+   *       before it is needed.
+   *
+   * \param str a string_view in UTF8 format to be converted to a u32string
+   * \return a u32string containing the result
+   */
+  static std::u32string ToUtf32(const std::string_view utf8_string);
+
+  static std::u32string ToUtf32(const std::wstring_view utf8_string);
+
+  /*!
+   * \brief Converts a string_view to a wstring
+   *
+   * Note: Used by StringUtils because CharSetConverter may not be initialized
+   *       before it is needed.
+   *
+   * \param str a string_view in UTF8 format to be converted to wstring
+   * \return a wstring containing the result
+   */
+  static std::wstring ToWString(const std::string_view str);
+  static std::wstring ToWString(const std::u32string_view str);
+
   static std::string ToUpper(const std::string& str);
   static std::wstring ToUpper(const std::wstring& str);
   static void ToUpper(std::string &str);
@@ -98,12 +158,79 @@ public:
   static std::wstring ToLower(const std::wstring& str);
   static void ToLower(std::string &str);
   static void ToLower(std::wstring &str);
+
+public: // private:
+  /*!
+   *  \brief Folds the case of a string using a simple algorithm.
+   *
+   * Backend for FoldCase operations. The underlying tables use 32-bit Unicode
+   * codepoints.
+   *
+   * This is similar to ToLower, but is meant to 'normalize' a string for use as a
+   * unique-id. Essentially, most characters with case are changed to lower case.
+   * Further, in some cases unimportant accent info is also removed. Locale is
+   * ignored. Character case mapping tables derived from ICU4C are used to implement
+   * this.
+   *
+   * Results are consistent with wstring_view by both converting to u32string for
+   * the fold operation.
+   *
+   * This API does NOT implement "Full case folding" which requires a
+   * more advanced library, such as ICU4C.
+   *
+   * \param str u32string to fold
+   * \return Case folded version of str (all lower-case)
+   */
+  static std::u32string FoldCase(const std::u32string_view str) WARN_UNUSED_RESULT;
+
+public:
+  /*!
+   *  \brief Folds the case of a string using a simple algorithm.
+   *
+   * This is similar to ToLower, but is meant to 'normalize' a string for use as a
+   * unique-id. Essentially, most characters with case are changed to lower case.
+   * Further, in some cases unimportant accent info is also removed. Locale is
+   * ignored. Character case mapping tables derived from ICU4C are used to implement
+   * this.
+   *
+   * Results are consistent with wstring_view by both converting to u32string for
+   * the fold operation.
+   *
+   * This API does NOT implement "Full case folding" which requires a
+   * more advanced library, such as ICU4C.
+   *
+   * \param str string to fold
+   * \return Case folded version of str (all lower-case)
+   */
+
+  static std::string FoldCase(const std::string_view str) WARN_UNUSED_RESULT;
+
+  /*!
+   *  \brief Folds the case of a string using a simple algorithm.
+   *
+   * This is similar to ToLower, but is meant to 'normalize' a string for use as a
+   * unique-id. Essentially, most  characters with case are changed to lower case.
+   * Further, in some cases unimportant accent info is also removed. Locale is
+   * ignored. Character case mapping tables derived from ICU4C are used to implement
+   * this.
+   *
+   * Results are consistent with wstring_view by both converting to u32string for
+   * the fold operation.
+   *
+   * This API does NOT implement "Full case folding" which requires a
+   * more advanced library, such as ICU4C.
+   *
+   * \param str string to fold
+   * \return Case folded version of str (all lower-case)
+   */
+  static std::wstring FoldCase(const std::wstring_view str) WARN_UNUSED_RESULT;
+
   static void ToCapitalize(std::string &str);
   static void ToCapitalize(std::wstring &str);
   static bool EqualsNoCase(const std::string &str1, const std::string &str2);
   static bool EqualsNoCase(const std::string &str1, const char *s2);
   static bool EqualsNoCase(const char *s1, const char *s2);
-  static int CompareNoCase(const std::string& str1, const std::string& str2, size_t n = 0);
+  static int CompareNoCase(const std::string& str1, const std::string& str2, const size_t n = 0);
   static int CompareNoCase(const char* s1, const char* s2, size_t n = 0);
   static int ReturnDigits(const std::string &str);
   static std::string Left(const std::string &str, size_t count);

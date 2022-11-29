@@ -31,6 +31,14 @@ public:
 
   static void clear();
 
+  // TODO: Need this to prevent trying to use before initialized. Otherwise
+  //       segfaults occur due to m_stdConversion having null values.
+  //       Could be made more robust, or eliminated if initialization
+  //       sped up. There is no obvious reason why it takes so long to initialize
+  //       array.
+
+  static bool isInitialized();
+
   /**
    * Convert UTF-8 string to UTF-32 string.
    * No RTL logical-visual transformation is performed.

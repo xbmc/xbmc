@@ -291,6 +291,19 @@ public:
 const int CCharsetConverter::m_Utf8CharMinSize = 1;
 const int CCharsetConverter::m_Utf8CharMaxSize = 4;
 
+// TODO: Need this to prevent trying to use before initialized. Otherwise
+//       segfaults occur due to m_stdConversion having null values
+
+bool CCharsetConverter::isInitialized()
+{
+  CConverterType converter = CCharsetConverter::CInnerConverter::m_stdConversion[0];
+  return converter.GetSourceCharset().length() > 0;
+}
+
+// TODO: Need to guarantee that this is initialized very early.
+//       Currently StringUtils calls CharsetConverter about 4,500 times during startup
+//       before this array is initialized.
+
 // clang-format off
 CConverterType CCharsetConverter::CInnerConverter::m_stdConversion[NumberOfStdConversionTypes] = /* keep it in sync with enum StdConversionType */
 {
@@ -325,6 +338,8 @@ bool CCharsetConverter::CInnerConverter::stdConvert(StdConversionType convertTyp
 
   if (convertType < 0 || convertType >= NumberOfStdConversionTypes)
     return false;
+
+  // TODO: Should exit gracefully if m_stdConversion is not initialized
 
   CConverterType& convType = m_stdConversion[convertType];
   std::unique_lock<CCriticalSection> converterLock(convType);
@@ -641,12 +656,16 @@ void CCharsetConverter::reset(void)
 
 void CCharsetConverter::resetSystemCharset(void)
 {
+  // TODO: Verify that m_stdConversion instance exists (may not have yet initialized)
+
   CInnerConverter::m_stdConversion[Utf8ToSystem].Reset();
   CInnerConverter::m_stdConversion[SystemToUtf8].Reset();
 }
 
 void CCharsetConverter::resetUserCharset(void)
 {
+  // TODO: Verify that m_stdConversion instance exists (may not have yet initialized)
+
   CInnerConverter::m_stdConversion[UserCharsetToUtf8].Reset();
   CInnerConverter::m_stdConversion[UserCharsetToUtf8].Reset();
   CInnerConverter::m_stdConversion[Utf32ToUserCharset].Reset();
@@ -655,6 +674,8 @@ void CCharsetConverter::resetUserCharset(void)
 
 void CCharsetConverter::resetSubtitleCharset(void)
 {
+  // TODO: Verify that m_stdConversion instance exists (may not have yet initialized)
+
   CInnerConverter::m_stdConversion[SubtitleCharsetToUtf8].Reset();
 }
 
