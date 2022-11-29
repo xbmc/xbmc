@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Addons\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: 2014-05-30 17:00+8\n"
-"PO-Revision-Date: 2022-11-08 18:15+0000\n"
+"PO-Revision-Date: 2022-11-09 20:25+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-game/game-controller-keyboard/it_it/>\n"
 "Language: it_it\n"
@@ -264,11 +264,11 @@ msgstr "Ctrl destro"
 
 msgctxt "#30059"
 msgid "Left Shift"
-msgstr "Tasto maiuscolo di sinistra"
+msgstr "Tasto maiuscolo sinistro"
 
 msgctxt "#30060"
 msgid "Right Shift"
-msgstr "Tasto maiuscolo di destra"
+msgstr "Tasto maiuscolo destro"
 
 msgctxt "#30061"
 msgid "Caps Lock"
@@ -332,7 +332,7 @@ msgstr "Pausa"
 
 msgctxt "#30076"
 msgid "Insert"
-msgstr ""
+msgstr "Inserisci"
 
 msgctxt "#30077"
 msgid "Home"
@@ -452,19 +452,19 @@ msgstr "F15"
 
 msgctxt "#30106"
 msgid "Left Meta"
-msgstr ""
+msgstr "Meta sinistra"
 
 msgctxt "#30107"
 msgid "Right Meta"
-msgstr ""
+msgstr "Meta destra"
 
 msgctxt "#30108"
 msgid "Left Super"
-msgstr ""
+msgstr "Sinistra super"
 
 msgctxt "#30109"
 msgid "Right Super"
-msgstr ""
+msgstr "Destra super"
 
 msgctxt "#30110"
 msgid "!"
@@ -552,7 +552,7 @@ msgstr "Modalità"
 
 msgctxt "#30131"
 msgid "Compose"
-msgstr ""
+msgstr "Componi"
 
 msgctxt "#30132"
 msgid "Help"
@@ -560,11 +560,11 @@ msgstr "Aiuto"
 
 msgctxt "#30133"
 msgid "SysReq"
-msgstr ""
+msgstr "Richiesta sistema"
 
 msgctxt "#30134"
 msgid "Break"
-msgstr "Break"
+msgstr "Interrompi"
 
 msgctxt "#30135"
 msgid "Menu"
@@ -572,7 +572,7 @@ msgstr "Menu"
 
 msgctxt "#30136"
 msgid "Power"
-msgstr ""
+msgstr "Accendi"
 
 msgctxt "#30137"
 msgid "€"
