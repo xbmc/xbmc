@@ -111,16 +111,16 @@ public:
   bool DoesNormalize();
   void ForceResampler(bool force);
   bool HasWork();
-  CActiveAEBufferPool *GetResampleBuffers();
-  CActiveAEBufferPool *GetAtempoBuffers();
+  std::unique_ptr<CActiveAEBufferPool> GetResampleBuffers();
+  std::unique_ptr<CActiveAEBufferPool> GetAtempoBuffers();
 
   AEAudioFormat m_inputFormat;
   std::deque<CSampleBuffer*> m_outputSamples;
   std::deque<CSampleBuffer*> m_inputSamples;
 
 protected:
-  CActiveAEBufferPoolResample *m_resampleBuffers;
-  CActiveAEBufferPoolAtempo *m_atempoBuffers;
+  std::unique_ptr<CActiveAEBufferPoolResample> m_resampleBuffers;
+  std::unique_ptr<CActiveAEBufferPoolAtempo> m_atempoBuffers;
 
 private:
   CActiveAEStreamBuffers(const CActiveAEStreamBuffers&) = delete;
@@ -213,7 +213,7 @@ protected:
   std::chrono::milliseconds m_errorInterval{1000};
 
   // only accessed by engine
-  CActiveAEBufferPool *m_inputBuffers;
+  std::unique_ptr<CActiveAEBufferPool> m_inputBuffers;
   CActiveAEStreamBuffers *m_processingBuffers;
   std::deque<CSampleBuffer*> m_processingSamples;
   CActiveAEDataProtocol *m_streamPort;

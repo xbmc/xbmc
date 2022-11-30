@@ -17,6 +17,7 @@
 #include "threads/Thread.h"
 
 #include <list>
+#include <memory>
 #include <queue>
 #include <string>
 #include <utility>
@@ -368,15 +369,16 @@ protected:
   std::unique_ptr<CActiveAESettings> m_settingsHandler;
 
   // buffers
-  CActiveAEBufferPoolResample *m_sinkBuffers;
-  CActiveAEBufferPoolResample *m_vizBuffers;
-  CActiveAEBufferPool *m_vizBuffersInput;
-  CActiveAEBufferPool *m_silenceBuffers;  // needed to drive gui sounds if we have no streams
-  CActiveAEBufferPool *m_encoderBuffers;
+  std::unique_ptr<CActiveAEBufferPoolResample> m_sinkBuffers;
+  std::unique_ptr<CActiveAEBufferPoolResample> m_vizBuffers;
+  std::unique_ptr<CActiveAEBufferPool> m_vizBuffersInput;
+  std::unique_ptr<CActiveAEBufferPool>
+      m_silenceBuffers; // needed to drive gui sounds if we have no streams
+  std::unique_ptr<CActiveAEBufferPool> m_encoderBuffers;
 
   // streams
   std::list<CActiveAEStream*> m_streams;
-  std::list<CActiveAEBufferPool*> m_discardBufferPools;
+  std::list<std::unique_ptr<CActiveAEBufferPool>> m_discardBufferPools;
   unsigned int m_streamIdGen;
 
   // gui sounds
