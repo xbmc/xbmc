@@ -282,6 +282,21 @@ CActiveAE::~CActiveAE()
 {
   m_settingsHandler.reset();
 
+  if (m_sinkBuffers)
+    delete m_sinkBuffers;
+
+  if (m_silenceBuffers)
+    delete m_silenceBuffers;
+
+  if (m_encoderBuffers)
+    delete m_encoderBuffers;
+
+  if (m_vizBuffers)
+    delete m_vizBuffers;
+
+  if (m_vizBuffersInput)
+    delete m_vizBuffersInput;
+
   Dispose();
 }
 
