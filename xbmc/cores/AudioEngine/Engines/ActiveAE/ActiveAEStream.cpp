@@ -595,14 +595,13 @@ CActiveAEStreamBuffers::CActiveAEStreamBuffers(const AEAudioFormat& inputFormat,
                                                AEQuality quality)
   : m_inputFormat(inputFormat)
 {
-  m_resampleBuffers = new CActiveAEBufferPoolResample(inputFormat, outputFormat, quality);
-  m_atempoBuffers = new CActiveAEBufferPoolAtempo(outputFormat);
+  m_resampleBuffers =
+      std::make_unique<CActiveAEBufferPoolResample>(inputFormat, outputFormat, quality);
+  m_atempoBuffers = std::make_unique<CActiveAEBufferPoolAtempo>(outputFormat);
 }
 
 CActiveAEStreamBuffers::~CActiveAEStreamBuffers()
 {
-  delete m_resampleBuffers;
-  delete m_atempoBuffers;
 }
 
 bool CActiveAEStreamBuffers::HasInputLevel(int level)
@@ -764,18 +763,14 @@ void CActiveAEStreamBuffers::ForceResampler(bool force)
   m_resampleBuffers->ForceResampler(force);
 }
 
-CActiveAEBufferPool* CActiveAEStreamBuffers::GetResampleBuffers()
+std::unique_ptr<CActiveAEBufferPool> CActiveAEStreamBuffers::GetResampleBuffers()
 {
-  CActiveAEBufferPool *ret = m_resampleBuffers;
-  m_resampleBuffers = nullptr;
-  return ret;
+  return std::move(m_resampleBuffers);
 }
 
-CActiveAEBufferPool* CActiveAEStreamBuffers::GetAtempoBuffers()
+std::unique_ptr<CActiveAEBufferPool> CActiveAEStreamBuffers::GetAtempoBuffers()
 {
-  CActiveAEBufferPool *ret = m_atempoBuffers;
-  m_atempoBuffers = nullptr;
-  return ret;
+  return std::move(m_atempoBuffers);
 }
 
 bool CActiveAEStreamBuffers::HasWork()
