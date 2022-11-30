@@ -41,6 +41,14 @@ public:
    * \brief The prior frame is being shown
    */
   virtual void RewindEvent() = 0;
+
+  /*!
+   * \brief Called when the game loop has ended
+   *
+   * This gives implementers a chance to release resources or execute final
+   * actions once the thread finishes processing frames.
+   */
+  virtual void EndEvent() = 0;
 };
 
 /*!
