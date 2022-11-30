@@ -65,6 +65,7 @@ public:
   // implementation of IGameLoopCallback
   void FrameEvent() override;
   void RewindEvent() override;
+  void EndEvent() override;
 
   // implementation of Observer
   void Notify(const Observable& obs, const ObservableMessage msg) override;
