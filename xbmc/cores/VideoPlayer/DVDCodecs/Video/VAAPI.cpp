@@ -728,10 +728,12 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
     return false;
   }
 
-  AVBufferRef *deviceRef =  av_hwdevice_ctx_alloc(AV_HWDEVICE_TYPE_VAAPI);
-  AVHWDeviceContext *deviceCtx = (AVHWDeviceContext*)deviceRef->data;
+  m_deviceRef = std::unique_ptr<AVBufferRef, AVBufferRefDeleter>(
+      av_hwdevice_ctx_alloc(AV_HWDEVICE_TYPE_VAAPI), AVBufferRefDeleter());
+
+  AVHWDeviceContext* deviceCtx = (AVHWDeviceContext*)m_deviceRef->data;
   AVVAAPIDeviceContext *vaapiDeviceCtx = (AVVAAPIDeviceContext*)deviceCtx->hwctx;
-  AVBufferRef *framesRef = av_hwframe_ctx_alloc(deviceRef);
+  AVBufferRef* framesRef = av_hwframe_ctx_alloc(m_deviceRef.get());
   AVHWFramesContext *framesCtx = (AVHWFramesContext*)framesRef->data;
   AVVAAPIFramesContext *vaapiFramesCtx = (AVVAAPIFramesContext*)framesCtx->hwctx;
 
@@ -762,6 +764,8 @@ void CDecoder::Close()
   std::unique_lock<CCriticalSection> lock(m_DecoderSection);
 
   FiniVAAPIOutput();
+
+  m_deviceRef.reset();
 
   if (m_vaapiConfig.context)
     m_vaapiConfig.context->Release(this);
@@ -1300,6 +1304,11 @@ void CDecoder::Register(IVaapiWinSystem *winSystem, bool deepColor)
 
     setting->SetVisible(true);
   }
+}
+
+void CDecoder::AVBufferRefDeleter::operator()(AVBufferRef* p) const
+{
+  av_buffer_unref(&p);
 }
 
 //-----------------------------------------------------------------------------
