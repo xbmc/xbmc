@@ -81,6 +81,16 @@ CRPRendererGuiTexture::CRPRendererGuiTexture(const CRenderSettings& renderSettin
                                              std::shared_ptr<IRenderBufferPool> bufferPool)
   : CRPBaseRenderer(renderSettings, context, std::move(bufferPool))
 {
+#if defined(HAS_GL)
+  KODI::UTILS::GL::GLGenVertexArrays(1, &m_vao);
+#endif
+}
+
+CRPRendererGuiTexture::~CRPRendererGuiTexture()
+{
+#if defined(HAS_GL)
+  KODI::UTILS::GL::GLDeleteVertexArrays(1, &m_vao);
+#endif
 }
 
 bool CRPRendererGuiTexture::Supports(RENDERFEATURE feature) const
@@ -185,6 +195,8 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
   GLint tex0Loc = m_context.GUIShaderGetCoord0();
   GLint uniColLoc = m_context.GUIShaderGetUniCol();
 
+  KODI::UTILS::GL::GLBindVertexArray(m_vao);
+
   glGenBuffers(1, &vertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
@@ -226,6 +238,8 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
   glDeleteBuffers(1, &vertexVBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   glDeleteBuffers(1, &indexVBO);
+
+  KODI::UTILS::GL::GLBindVertexArray(0);
 
   m_context.DisableGUIShader();
 

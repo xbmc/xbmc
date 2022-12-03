@@ -50,8 +50,8 @@ CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings& renderSettings,
   m_clearColour = m_context.UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
   // Set up main screen VAO/VBOs
-  glGenVertexArrays(1, &m_mainVAO);
-  glBindVertexArray(m_mainVAO);
+  KODI::UTILS::GL::GLGenVertexArrays(1, &m_mainVAO);
+  KODI::UTILS::GL::GLBindVertexArray(m_mainVAO);
 
   glGenBuffers(1, &m_mainVertexVBO);
   glGenBuffers(1, &m_mainIndexVBO);
@@ -71,8 +71,8 @@ CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings& renderSettings,
                         reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
 
   // Set up black bars VAO/VBO
-  glGenVertexArrays(1, &m_blackbarsVAO);
-  glBindVertexArray(m_blackbarsVAO);
+  KODI::UTILS::GL::GLGenVertexArrays(1, &m_blackbarsVAO);
+  KODI::UTILS::GL::GLBindVertexArray(m_blackbarsVAO);
 
   glGenBuffers(1, &m_blackbarsVertexVBO);
   glBindBuffer(GL_ARRAY_BUFFER, m_blackbarsVertexVBO);
@@ -85,7 +85,7 @@ CRPRendererOpenGL::CRPRendererOpenGL(const CRenderSettings& renderSettings,
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(Svertex), 0);
 
   // Unbind everything just to be safe
-  glBindVertexArray(0);
+  KODI::UTILS::GL::GLBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
@@ -96,8 +96,8 @@ CRPRendererOpenGL::~CRPRendererOpenGL()
   glDeleteBuffers(1, &m_mainVertexVBO);
   glDeleteBuffers(1, &m_blackbarsVertexVBO);
 
-  glDeleteVertexArrays(1, &m_mainVAO);
-  glDeleteVertexArrays(1, &m_blackbarsVAO);
+  KODI::UTILS::GL::GLDeleteVertexArrays(1, &m_mainVAO);
+  KODI::UTILS::GL::GLDeleteVertexArrays(1, &m_blackbarsVAO);
 }
 
 void CRPRendererOpenGL::RenderInternal(bool clear, uint8_t alpha)
@@ -248,7 +248,7 @@ void CRPRendererOpenGL::DrawBlackBars()
     count += 6;
   }
 
-  glBindVertexArray(m_blackbarsVAO);
+  KODI::UTILS::GL::GLBindVertexArray(m_blackbarsVAO);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_blackbarsVertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(Svertex) * count, &vertices[0], GL_STATIC_DRAW);
@@ -256,7 +256,7 @@ void CRPRendererOpenGL::DrawBlackBars()
   glDrawArrays(GL_TRIANGLES, 0, count);
 
   // Unbind VAO/VBO just to be safe
-  glBindVertexArray(0);
+  KODI::UTILS::GL::GLBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   m_context.DisableGUIShader();
@@ -316,7 +316,7 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   vertex[1].u1 = vertex[2].u1 = rect.x2;
   vertex[2].v1 = vertex[3].v1 = rect.y2;
 
-  glBindVertexArray(m_mainVAO);
+  KODI::UTILS::GL::GLBindVertexArray(m_mainVAO);
 
   glBindBuffer(GL_ARRAY_BUFFER, m_mainVertexVBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex) * 4, &vertex[0], GL_STATIC_DRAW);
@@ -330,7 +330,7 @@ void CRPRendererOpenGL::Render(uint8_t alpha)
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
 
   // Unbind VAO/VBO just to be safe
-  glBindVertexArray(0);
+  KODI::UTILS::GL::GLBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
   m_context.DisableGUIShader();

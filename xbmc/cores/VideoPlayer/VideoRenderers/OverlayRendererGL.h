@@ -33,6 +33,8 @@ namespace OVERLAY {
 
     void Render(SRenderState& state) override;
 
+    GLuint m_vao;
+
     GLuint m_texture = 0;
     float  m_u;
     float  m_v;
@@ -57,6 +59,7 @@ namespace OVERLAY {
 
     std::vector<VERTEX> m_vertex;
 
+    GLuint m_vao;
     GLuint m_texture = 0;
     float m_u;
     float m_v;
