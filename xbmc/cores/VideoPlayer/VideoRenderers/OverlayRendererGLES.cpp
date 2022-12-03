@@ -7,9 +7,9 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "OverlayRendererGL.h"
+#include "OverlayRendererGLES.h"
 
-#include "LinuxRendererGL.h"
+#include "LinuxRendererGLES.h"
 #include "OverlayRenderer.h"
 #include "OverlayRendererUtil.h"
 #include "RenderManager.h"
@@ -18,7 +18,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySSA.h"
 #include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlaySpu.h"
 #include "rendering/MatrixGL.h"
-#include "rendering/gl/RenderSystemGL.h"
+#include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GLUtils.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
@@ -26,59 +26,118 @@
 
 #include <cmath>
 
+// GLES2.0 cant do CLAMP, but can do CLAMP_TO_EDGE.
+#define GL_CLAMP GL_CLAMP_TO_EDGE
+
 #define USE_PREMULTIPLIED_ALPHA 1
 
 using namespace OVERLAY;
 
-static void LoadTexture(GLenum target
-                      , GLsizei width, GLsizei height, GLsizei stride
-                      , GLfloat* u, GLfloat* v
-                      , bool alpha, const GLvoid* pixels)
+static void LoadTexture(GLenum target,
+                        GLsizei width,
+                        GLsizei height,
+                        GLsizei stride,
+                        GLfloat* u,
+                        GLfloat* v,
+                        bool alpha,
+                        const GLvoid* pixels)
 {
-  int width2  = width;
+  int width2 = width;
   int height2 = height;
-  char *pixelVector = NULL;
-  const GLvoid *pixelData = pixels;
+  char* pixelVector = NULL;
+  const GLvoid* pixelData = pixels;
 
-  GLenum internalFormat = alpha ? GL_RED : GL_RGBA;
-  GLenum externalFormat = alpha ? GL_RED : GL_BGRA;
+  GLenum internalFormat = alpha ? GL_ALPHA : GL_RGBA;
+  GLenum externalFormat = alpha ? GL_ALPHA : GL_RGBA;
 
   int bytesPerPixel = KODI::UTILS::GL::glFormatElementByteCount(externalFormat);
 
-  glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / bytesPerPixel);
+  bool bgraSupported = false;
+  CRenderSystemGLES* renderSystem =
+      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+
+  if (!alpha)
+  {
+    if (renderSystem->IsExtSupported("GL_EXT_texture_format_BGRA8888") ||
+        renderSystem->IsExtSupported("GL_IMG_texture_format_BGRA8888"))
+    {
+      bgraSupported = true;
+      internalFormat = externalFormat = GL_BGRA_EXT;
+    }
+    else if (renderSystem->IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
+    {
+      // Apple's implementation does not conform to spec. Instead, they require
+      // differing format/internalformat, more like GL.
+      bgraSupported = true;
+      externalFormat = GL_BGRA_EXT;
+    }
+  }
+
+  int bytesPerLine = bytesPerPixel * width;
+
+  if (!alpha && !bgraSupported)
+  {
+    pixelVector = (char*)malloc(bytesPerLine * height);
+
+    const char* src = (const char*)pixels;
+    char* dst = pixelVector;
+    for (int y = 0; y < height; ++y)
+    {
+      src = (const char*)pixels + y * stride;
+      dst = pixelVector + y * bytesPerLine;
+
+      for (GLsizei i = 0; i < width; i++, src += 4, dst += 4)
+      {
+        dst[0] = src[2];
+        dst[1] = src[1];
+        dst[2] = src[0];
+        dst[3] = src[3];
+      }
+    }
+
+    pixelData = pixelVector;
+    stride = width;
+  }
+  /** OpenGL ES does not support strided texture input. Make a copy without stride **/
+  else if (stride != bytesPerLine)
+  {
+    pixelVector = (char*)malloc(bytesPerLine * height);
+
+    const char* src = (const char*)pixels;
+    char* dst = pixelVector;
+    for (int y = 0; y < height; ++y)
+    {
+      memcpy(dst, src, bytesPerLine);
+      src += stride;
+      dst += bytesPerLine;
+    }
+
+    pixelData = pixelVector;
+    stride = bytesPerLine;
+  }
 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-  glTexImage2D   (target, 0, internalFormat
-                , width2, height2, 0
-                , externalFormat, GL_UNSIGNED_BYTE, NULL);
+  glTexImage2D(target, 0, internalFormat, width2, height2, 0, externalFormat, GL_UNSIGNED_BYTE,
+               NULL);
 
-  glTexSubImage2D(target, 0
-                , 0, 0, width, height
-                , externalFormat, GL_UNSIGNED_BYTE
-                , pixelData);
+  glTexSubImage2D(target, 0, 0, 0, width, height, externalFormat, GL_UNSIGNED_BYTE, pixelData);
 
-  if(height < height2)
-    glTexSubImage2D( target, 0
-                   , 0, height, width, 1
-                   , externalFormat, GL_UNSIGNED_BYTE
-                   , (const unsigned char*)pixelData + stride * (height-1));
+  if (height < height2)
+    glTexSubImage2D(target, 0, 0, height, width, 1, externalFormat, GL_UNSIGNED_BYTE,
+                    (const unsigned char*)pixelData + stride * (height - 1));
 
-  if(width  < width2)
-    glTexSubImage2D( target, 0
-                   , width, 0, 1, height
-                   , externalFormat, GL_UNSIGNED_BYTE
-                   , (const unsigned char*)pixelData + bytesPerPixel * (width-1));
-
-  glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+  if (width < width2)
+    glTexSubImage2D(target, 0, width, 0, 1, height, externalFormat, GL_UNSIGNED_BYTE,
+                    (const unsigned char*)pixelData + bytesPerPixel * (width - 1));
 
   free(pixelVector);
 
-  *u = (GLfloat)width  / width2;
+  *u = (GLfloat)width / width2;
   *v = (GLfloat)height / height2;
 }
 
-COverlayTextureGL::COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource)
+COverlayTextureGLES::COverlayTextureGLES(const CDVDOverlayImage& o, CRect& rSource)
 {
   glGenTextures(1, &m_texture);
   glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -145,7 +204,7 @@ COverlayTextureGL::COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource)
   }
 }
 
-COverlayTextureGL::COverlayTextureGL(const CDVDOverlaySpu& o)
+COverlayTextureGLES::COverlayTextureGLES(const CDVDOverlaySpu& o)
 {
   int min_x, max_x, min_y, max_y;
   std::vector<uint32_t> rgba(o.width * o.height);
@@ -174,14 +233,14 @@ COverlayTextureGL::COverlayTextureGL(const CDVDOverlaySpu& o)
   m_pma = !!USE_PREMULTIPLIED_ALPHA;
 }
 
-COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
+COverlayGlyphGLES::COverlayGlyphGLES(ASS_Image* images, float width, float height)
 {
-  m_width  = 1.0;
+  m_width = 1.0;
   m_height = 1.0;
   m_align = ALIGN_SCREEN;
-  m_pos    = POSITION_RELATIVE;
-  m_x      = 0.0f;
-  m_y      = 0.0f;
+  m_pos = POSITION_RELATIVE;
+  m_x = 0.0f;
+  m_y = 0.0f;
 
   SQuads quads;
   if (!convert_quad(images, quads, static_cast<int>(width)))
@@ -192,7 +251,6 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
 
   LoadTexture(GL_TEXTURE_2D, quads.size_x, quads.size_y, quads.size_x, &m_u, &m_v, true,
               quads.texture.data());
-
 
   float scale_u = m_u / quads.size_x;
   float scale_v = m_v / quads.size_y;
@@ -207,7 +265,7 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
 
   for (size_t i = 0; i < quads.quad.size(); i++)
   {
-    for(int s = 0; s < 4; s++)
+    for (int s = 0; s < 4; s++)
     {
       vt[s].a = vs->a;
       vt[s].r = vs->r;
@@ -248,12 +306,12 @@ COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-COverlayGlyphGL::~COverlayGlyphGL()
+COverlayGlyphGLES::~COverlayGlyphGLES()
 {
   glDeleteTextures(1, &m_texture);
 }
 
-void COverlayGlyphGL::Render(SRenderState& state)
+void COverlayGlyphGLES::Render(SRenderState& state)
 {
   if ((m_texture == 0) || (m_vertex.size() == 0))
     return;
@@ -273,38 +331,36 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glMatrixModview->Scalef(state.width, state.height, 1.0f);
   glMatrixModview.Load();
 
-  CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
-  renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
-  GLint posLoc  = renderSystem->ShaderGetPos();
-  GLint colLoc  = renderSystem->ShaderGetCol();
-  GLint tex0Loc = renderSystem->ShaderGetCoord0();
+  CRenderSystemGLES* renderSystem =
+      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
+  GLint posLoc = renderSystem->GUIShaderGetPos();
+  GLint colLoc = renderSystem->GUIShaderGetCol();
+  GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
 
+  // stack object until VBOs will be used
   std::vector<VERTEX> vecVertices(6 * m_vertex.size() / 4);
   VERTEX* vertices = vecVertices.data();
 
   for (size_t i = 0; i < m_vertex.size(); i += 4)
   {
     *vertices++ = m_vertex[i];
-    *vertices++ = m_vertex[i+1];
-    *vertices++ = m_vertex[i+2];
+    *vertices++ = m_vertex[i + 1];
+    *vertices++ = m_vertex[i + 2];
 
-    *vertices++ = m_vertex[i+1];
-    *vertices++ = m_vertex[i+3];
-    *vertices++ = m_vertex[i+2];
+    *vertices++ = m_vertex[i + 1];
+    *vertices++ = m_vertex[i + 3];
+    *vertices++ = m_vertex[i + 2];
   }
-  GLuint VertexVBO;
 
-  glGenBuffers(1, &VertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(VERTEX) * vecVertices.size(), vecVertices.data(),
-               GL_STATIC_DRAW);
+  vertices = vecVertices.data();
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(VERTEX),
-                        reinterpret_cast<const GLvoid*>(offsetof(VERTEX, x)));
+                        (char*)vertices + offsetof(VERTEX, x));
   glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(VERTEX),
-                        reinterpret_cast<const GLvoid*>(offsetof(VERTEX, r)));
+                        (char*)vertices + offsetof(VERTEX, r));
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(VERTEX),
-                        reinterpret_cast<const GLvoid*>(offsetof(VERTEX, u)));
+                        (char*)vertices + offsetof(VERTEX, u));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);
@@ -316,10 +372,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &VertexVBO);
-
-  renderSystem->DisableShader();
+  renderSystem->DisableGUIShader();
 
   glMatrixModview.PopLoad();
 
@@ -328,18 +381,17 @@ void COverlayGlyphGL::Render(SRenderState& state)
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-
-COverlayTextureGL::~COverlayTextureGL()
+COverlayTextureGLES::~COverlayTextureGLES()
 {
   glDeleteTextures(1, &m_texture);
 }
 
-void COverlayTextureGL::Render(SRenderState& state)
+void COverlayTextureGLES::Render(SRenderState& state)
 {
   glEnable(GL_BLEND);
 
   glBindTexture(GL_TEXTURE_2D, m_texture);
-  if(m_pma)
+  if (m_pma)
     glBlendFuncSeparate(GL_ONE, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
   else
     glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -364,88 +416,51 @@ void COverlayTextureGL::Render(SRenderState& state)
     float top = state.y;
     float bottom = state.y + state.height;
     float left = state.x;
-    float right   = state.x + state.width;
+    float right = state.x + state.width;
 
     rd.SetRect(left, top, right, bottom);
   }
 
-  CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
-
-  int glslMajor, glslMinor;
-  renderSystem->GetGLSLVersion(glslMajor, glslMinor);
-  if (glslMajor >= 2 || (glslMajor == 1 && glslMinor >= 50))
-    renderSystem->EnableShader(ShaderMethodGL::SM_TEXTURE_LIM);
-  else
-    renderSystem->EnableShader(ShaderMethodGL::SM_TEXTURE);
-
-  GLint posLoc = renderSystem->ShaderGetPos();
-  GLint tex0Loc = renderSystem->ShaderGetCoord0();
-  GLint uniColLoc = renderSystem->ShaderGetUniCol();
+  CRenderSystemGLES* renderSystem =
+      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE);
+  GLint posLoc = renderSystem->GUIShaderGetPos();
+  GLint colLoc = renderSystem->GUIShaderGetCol();
+  GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
+  GLint uniColLoc = renderSystem->GUIShaderGetUniCol();
 
   GLfloat col[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+  GLfloat ver[4][2];
+  GLfloat tex[4][2];
+  GLubyte idx[4] = {0, 1, 3, 2}; //determines order of triangle strip
 
-  struct PackedVertex
-  {
-    float x, y, z;
-    float u1, v1;
-  } vertex[4];
-  GLubyte idx[4] = {0, 1, 3, 2};  //determines order of the vertices
-  GLuint vertexVBO;
-  GLuint indexVBO;
-
-  glUniform4f(uniColLoc,(col[0]), (col[1]), (col[2]), (col[3]));
-
-  // Setup vertex position values
-  vertex[0].x = rd.x1;
-  vertex[0].y = rd.y1;
-  vertex[0].z = 0;
-  vertex[0].u1 = 0.0f;
-  vertex[0].v1 = 0.0;
-
-  vertex[1].x = rd.x2;
-  vertex[1].y = rd.y1;
-  vertex[1].z = 0;
-  vertex[1].u1 = m_u;
-  vertex[1].v1 = 0.0f;
-
-  vertex[2].x = rd.x2;
-  vertex[2].y = rd.y2;
-  vertex[2].z = 0;
-  vertex[2].u1 = m_u;
-  vertex[2].v1 = m_v;
-
-  vertex[3].x = rd.x1;
-  vertex[3].y = rd.y2;
-  vertex[3].z = 0;
-  vertex[3].u1 = 0.0f;
-  vertex[3].v1 = m_v;
-
-  glGenBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(PackedVertex)*4, &vertex[0], GL_STATIC_DRAW);
-
-  glVertexAttribPointer(posLoc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, x)));
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, sizeof(PackedVertex),
-                        reinterpret_cast<const GLvoid*>(offsetof(PackedVertex, u1)));
+  glVertexAttribPointer(posLoc, 2, GL_FLOAT, 0, 0, ver);
+  glVertexAttribPointer(colLoc, 4, GL_FLOAT, 0, 0, col);
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
 
   glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
 
-  glGenBuffers(1, &indexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte)*4, idx, GL_STATIC_DRAW);
+  glUniform4f(uniColLoc, (col[0]), (col[1]), (col[2]), (col[3]));
+  // Setup vertex position values
+  ver[0][0] = ver[3][0] = rd.x1;
+  ver[0][1] = ver[1][1] = rd.y1;
+  ver[1][0] = ver[2][0] = rd.x2;
+  ver[2][1] = ver[3][1] = rd.y2;
 
-  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, 0);
+  // Setup texture coordinates
+  tex[0][0] = tex[0][1] = tex[1][1] = tex[3][0] = 0.0f;
+  tex[1][0] = tex[2][0] = m_u;
+  tex[2][1] = tex[3][1] = m_v;
+
+  glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
   glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &vertexVBO);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glDeleteBuffers(1, &indexVBO);
 
-  renderSystem->DisableShader();
+  renderSystem->DisableGUIShader();
 
   glDisable(GL_BLEND);
 
