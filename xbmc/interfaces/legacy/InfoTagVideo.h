@@ -248,7 +248,7 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmc_videostreamdetail
-      /// @brief \python_func{ xbmc.VideoStreamDetail([width, height, aspect, duration, codec, stereoMode, language, hdrType]) }
+      /// @brief \python_func{ xbmc.VideoStreamDetail([width, height, aspect, duration, codec, stereomode, language, hdrtype]) }
       /// Creates a single video stream details class for a video item wrapped by InfoTagVideo.
       ///
       /// @param width              [opt] integer - Width of the video stream in pixel.
@@ -256,9 +256,9 @@ namespace XBMCAddon
       /// @param aspect             [opt] float - Aspect ratio of the video stream.
       /// @param duration           [opt] integer - Duration of the video stream in seconds.
       /// @param codec              [opt] string - Codec of the video stream.
-      /// @param stereoMode         [opt] string - Stereo mode of the video stream.
+      /// @param stereomode         [opt] string - Stereo mode of the video stream.
       /// @param language           [opt] string - Language of the video stream.
-      /// @param hdrType            [opt] string - HDR type of the video stream.
+      /// @param hdrtype            [opt] string - HDR type of the video stream.
       ///                           The following types are supported:
       ///                           dolbyvision, hdr10, hlg
       ///
@@ -280,9 +280,9 @@ namespace XBMCAddon
                                  float aspect = 0.0f,
                                  int duration = 0,
                                  const String& codec = emptyString,
-                                 const String& stereoMode = emptyString,
+                                 const String& stereomode = emptyString,
                                  const String& language = emptyString,
-                                 const String& hdrType = emptyString);
+                                 const String& hdrtype = emptyString);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -509,10 +509,10 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmc_videostreamdetail
-      /// @brief \python_func{ setStereoMode(stereoMode) }
+      /// @brief \python_func{ setStereoMode(stereomode) }
       /// Set the stereo mode of the video stream.
       ///
-      /// @param stereoMode         string - Stereo mode of the video stream.
+      /// @param stereomode         string - Stereo mode of the video stream.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -520,7 +520,7 @@ namespace XBMCAddon
       ///
       setStereoMode(...);
 #else
-      void setStereoMode(const String& stereoMode) { m_stereoMode = stereoMode; }
+      void setStereoMode(const String& stereomode) { m_stereoMode = stereomode; }
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -546,7 +546,7 @@ namespace XBMCAddon
       /// @brief \python_func{ setHDRType(hdrtype) }
       /// Set the HDR type of the stream.
       ///
-      /// @param hdrType           string - HDR type of the stream.
+      /// @param hdrtype           string - HDR type of the stream.
       ///                          The following types are supported:
       ///                          dolbyvision, hdr10, hlg
       ///
@@ -555,7 +555,7 @@ namespace XBMCAddon
       ///
       setHDRType(...);
 #else
-      void setHDRType(const String& hdrType) { m_hdrType = hdrType; }
+      void setHDRType(const String& hdrtype) { m_hdrType = hdrtype; }
 #endif
 
 #ifndef SWIG
@@ -1648,7 +1648,7 @@ namespace XBMCAddon
       ///-----------------------------------------------------------------------
       /// @python_v20 New function added.
       ///
-      setSortEpisode(...);
+      getResumeTimeTotal(...);
 #else
       double getResumeTimeTotal();
 #endif
@@ -1683,14 +1683,14 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setUniqueID(uniqueID, [type], [isDefault]) }
+      /// @brief \python_func{ setUniqueID(uniqueid, [type], [isdefault]) }
       /// Set the given unique ID.
       /// A unique ID is an identifier used by a (online) video database used to
       /// identify a video in its database.
       ///
-      /// @param uniqueID           string - value of the unique ID.
+      /// @param uniqueid           string - value of the unique ID.
       /// @param type               [opt] string - type / label of the unique ID.
-      /// @param isDefault          [opt] bool - whether the given unique ID is the default unique ID.
+      /// @param isdefault          [opt] bool - whether the given unique ID is the default unique ID.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -1698,19 +1698,19 @@ namespace XBMCAddon
       ///
       setUniqueID(...);
 #else
-      void setUniqueID(const String& uniqueID, const String& type = "", bool isDefault = false);
+      void setUniqueID(const String& uniqueid, const String& type = "", bool isdefault = false);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setUniqueIDs(values, defaultUniqueID) }
+      /// @brief \python_func{ setUniqueIDs(values, defaultuniqueid) }
       /// Set the given unique IDs.
       /// A unique ID is an identifier used by a (online) video database used to
       /// identify a video in its database.
       ///
       /// @param values             dictionary - pairs of `{ 'label': 'value' }`.
-      /// @param defaultUniqueID    [opt] string - the name of default uniqueID.
+      /// @param defaultuniqueid    [opt] string - the name of default uniqueID.
       ///
       ///  - Some example values (any string possible):
       ///  | Label         | Type                                              |
@@ -1728,16 +1728,16 @@ namespace XBMCAddon
       setUniqueIDs(...);
 #else
       void setUniqueIDs(const std::map<String, String>& uniqueIDs,
-                        const String& defaultUniqueID = "");
+                        const String& defaultuniqueid = "");
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setDbId(dbId) }
+      /// @brief \python_func{ setDbId(dbid) }
       /// Set the database identifier of the video item.
       ///
-      /// @param dbId               integer - Database identifier.
+      /// @param dbid               integer - Database identifier.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -1745,7 +1745,7 @@ namespace XBMCAddon
       ///
       setDbId(...);
 #else
-      void setDbId(int dbId);
+      void setDbId(int dbid);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -1802,10 +1802,10 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setSortEpisode(sortEpisode) }
+      /// @brief \python_func{ setSortEpisode(sortepisode) }
       /// Set the episode sort number of the episode.
       ///
-      /// @param sortEpisode        integer - Episode sort number.
+      /// @param sortepisode        integer - Episode sort number.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -1813,16 +1813,16 @@ namespace XBMCAddon
       ///
       setSortEpisode(...);
 #else
-      void setSortEpisode(int sortEpisode);
+      void setSortEpisode(int sortepisode);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setSortSeason(sortSeason) }
+      /// @brief \python_func{ setSortSeason(sortseason) }
       /// Set the season sort number of the season.
       ///
-      /// @param sortSeason         integer - Season sort number.
+      /// @param sortseason         integer - Season sort number.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -1830,16 +1830,16 @@ namespace XBMCAddon
       ///
       setSortSeason(...);
 #else
-      void setSortSeason(int sortSeason);
+      void setSortSeason(int sortseason);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setEpisodeGuide(episodeGuide) }
+      /// @brief \python_func{ setEpisodeGuide(episodeguide) }
       /// Set the episode guide of the video item.
       ///
-      /// @param episodeGuide       string - Episode guide.
+      /// @param episodeguide       string - Episode guide.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -1847,7 +1847,7 @@ namespace XBMCAddon
       ///
       setEpisodeGuide(...);
 #else
-      void setEpisodeGuide(const String& episodeGuide);
+      void setEpisodeGuide(const String& episodeguide);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -1870,10 +1870,10 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setSetId(setId) }
+      /// @brief \python_func{ setSetId(setid) }
       /// Set the movie set identifier of the video item.
       ///
-      /// @param setId              integer - Set identifier.
+      /// @param setid              integer - Set identifier.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -1881,16 +1881,16 @@ namespace XBMCAddon
       ///
       setSetId(...);
 #else
-      void setSetId(int setId);
+      void setSetId(int setid);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setTrackNumber(trackNumber) }
+      /// @brief \python_func{ setTrackNumber(tracknumber) }
       /// Set the track number of the music video item.
       ///
-      /// @param trackNumber        integer - Track number.
+      /// @param tracknumber        integer - Track number.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -1898,19 +1898,19 @@ namespace XBMCAddon
       ///
       setTrackNumber(...);
 #else
-      void setTrackNumber(int trackNumber);
+      void setTrackNumber(int tracknumber);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setRating(rating, [votes], [type], [isDefault]) }
+      /// @brief \python_func{ setRating(rating, [votes], [type], [isdefault]) }
       /// Set the rating of the video item.
       ///
       /// @param rating             float - Rating number.
       /// @param votes              integer - Number of votes.
       /// @param type               string - Type of the rating.
-      /// @param isDefault          bool - Whether the rating is the default or not.
+      /// @param isdefault          bool - Whether the rating is the default or not.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -1918,17 +1918,17 @@ namespace XBMCAddon
       ///
       setRating(...);
 #else
-      void setRating(float rating, int votes = 0, const String& type = "", bool isDefault = false);
+      void setRating(float rating, int votes = 0, const String& type = "", bool isdefault = false);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setRatings(ratings, [defaultRating]) }
+      /// @brief \python_func{ setRatings(ratings, [defaultrating]) }
       /// Set the ratings of the video item.
       ///
       /// @param ratings            dictionary - `{ 'type': (rating, votes) }`.
-      /// @param defaultRating      string - Type / Label of the default rating.
+      /// @param defaultrating      string - Type / Label of the default rating.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -1937,16 +1937,16 @@ namespace XBMCAddon
       setRatings(...);
 #else
       void setRatings(const std::map<String, Tuple<float, int>>& ratings,
-                      const String& defaultRating = "");
+                      const String& defaultrating = "");
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setUserRating(userRating) }
+      /// @brief \python_func{ setUserRating(userrating) }
       /// Set the user rating of the video item.
       ///
-      /// @param userRating         integer - User rating.
+      /// @param userrating         integer - User rating.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -1954,7 +1954,7 @@ namespace XBMCAddon
       ///
       setUserRating(...);
 #else
-      void setUserRating(int userRating);
+      void setUserRating(int userrating);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -2011,10 +2011,10 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setPlotOutline(plotOutline) }
+      /// @brief \python_func{ setPlotOutline(plotoutline) }
       /// Set the plot outline of the video item.
       ///
-      /// @param plotOutline        string - Plot outline.
+      /// @param plotoutline        string - Plot outline.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2022,7 +2022,7 @@ namespace XBMCAddon
       ///
       setPlotOutline(...);
 #else
-      void setPlotOutline(const String& plotOutline);
+      void setPlotOutline(const String& plotoutline);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -2045,10 +2045,10 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setOriginalTitle(originalTitle) }
+      /// @brief \python_func{ setOriginalTitle(originaltitle) }
       /// Set the original title of the video item.
       ///
-      /// @param originalTitle      string - Original title.
+      /// @param originaltitle      string - Original title.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2056,16 +2056,16 @@ namespace XBMCAddon
       ///
       setOriginalTitle(...);
 #else
-      void setOriginalTitle(const String& originalTitle);
+      void setOriginalTitle(const String& originaltitle);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setSortTitle(sortTitle) }
+      /// @brief \python_func{ setSortTitle(sorttitle) }
       /// Set the sort title of the video item.
       ///
-      /// @param sortTitle          string - Sort title.
+      /// @param sorttitle          string - Sort title.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2073,16 +2073,16 @@ namespace XBMCAddon
       ///
       setSortTitle(...);
 #else
-      void setSortTitle(const String& sortTitle);
+      void setSortTitle(const String& sorttitle);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setTagLine(tagLine) }
+      /// @brief \python_func{ setTagLine(tagline) }
       /// Set the tagline of the video item.
       ///
-      /// @param tagLine            string - Tagline.
+      /// @param tagline            string - Tagline.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2090,16 +2090,16 @@ namespace XBMCAddon
       ///
       setTagLine(...);
 #else
-      void setTagLine(const String& tagLine);
+      void setTagLine(const String& tagline);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setTvShowTitle(tvshowTitle) }
+      /// @brief \python_func{ setTvShowTitle(tvshowtitle) }
       /// Set the TV show title of the video item.
       ///
-      /// @param tvshowTitle        string - TV show title.
+      /// @param tvshowtitle        string - TV show title.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2107,16 +2107,16 @@ namespace XBMCAddon
       ///
       setTvShowTitle(...);
 #else
-      void setTvShowTitle(const String& tvshowTitle);
+      void setTvShowTitle(const String& tvshowtitle);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setTvShowStatus(tvshowStatus) }
+      /// @brief \python_func{ setTvShowStatus(tvshowstatus) }
       /// Set the TV show status of the video item.
       ///
-      /// @param tvshowStatus       string - TV show status.
+      /// @param status             string - TV show status.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2124,7 +2124,7 @@ namespace XBMCAddon
       ///
       setTvShowStatus(...);
 #else
-      void setTvShowStatus(const String& tvshowStatus);
+      void setTvShowStatus(const String& status);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -2266,10 +2266,10 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setSetOverview(setOverview) }
+      /// @brief \python_func{ setSetOverview(setoverview) }
       /// Set the movie set overview of the video item.
       ///
-      /// @param setOverview        string - Movie set overview.
+      /// @param setoverview        string - Movie set overview.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2277,7 +2277,7 @@ namespace XBMCAddon
       ///
       setSetOverview(...);
 #else
-      void setSetOverview(const String& setOverview);
+      void setSetOverview(const String& setoverview);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -2300,10 +2300,10 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setProductionCode(const String& productionCode) }
+      /// @brief \python_func{ setProductionCode(const String& productioncode) }
       /// Set the production code of the video item.
       ///
-      /// @param productionCode     string - Production code.
+      /// @param productioncode     string - Production code.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2311,16 +2311,16 @@ namespace XBMCAddon
       ///
       setProductionCode(...);
 #else
-      void setProductionCode(const String& productionCode);
+      void setProductionCode(const String& productioncode);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setFirstAired(firstAired) }
+      /// @brief \python_func{ setFirstAired(firstaired) }
       /// Set the first aired date of the video item.
       ///
-      /// @param firstAired         string - First aired date.
+      /// @param firstaired         string - First aired date.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2328,16 +2328,16 @@ namespace XBMCAddon
       ///
       setFirstAired(...);
 #else
-      void setFirstAired(const String& firstAired);
+      void setFirstAired(const String& firstaired);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setLastPlayed(lastPlayed) }
+      /// @brief \python_func{ setLastPlayed(lastplayed) }
       /// Set the last played date of the video item.
       ///
-      /// @param lastPlayed         string - Last played date (YYYY-MM-DD HH:MM:SS).
+      /// @param lastplayed         string - Last played date (YYYY-MM-DD HH:MM:SS).
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2345,7 +2345,7 @@ namespace XBMCAddon
       ///
       setLastPlayed(...);
 #else
-      void setLastPlayed(const String& lastPlayed);
+      void setLastPlayed(const String& lastplayed);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -2419,10 +2419,10 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setFilenameAndPath(filenameAndPath) }
+      /// @brief \python_func{ setFilenameAndPath(filenameandpath) }
       /// Set the filename and path of the video item.
       ///
-      /// @param filenameAndPath   string - Filename and path.
+      /// @param filenameandpath   string - Filename and path.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2430,16 +2430,16 @@ namespace XBMCAddon
       ///
       setFilenameAndPath(...);
 #else
-      void setFilenameAndPath(const String& filenameAndPath);
+      void setFilenameAndPath(const String& filenameandpath);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setIMDBNumber(imdbNumber) }
+      /// @brief \python_func{ setIMDBNumber(imdbnumber) }
       /// Set the IMDb number of the video item.
       ///
-      /// @param imdbNumber         string - IMDb number.
+      /// @param imdbnumber         string - IMDb number.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2447,16 +2447,16 @@ namespace XBMCAddon
       ///
       setIMDBNumber(...);
 #else
-      void setIMDBNumber(const String& imdbNumber);
+      void setIMDBNumber(const String& imdbnumber);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setDateAdded(dateAdded) }
+      /// @brief \python_func{ setDateAdded(dateadded) }
       /// Set the date added of the video item.
       ///
-      /// @param dateAdded          string - Date added (YYYY-MM-DD HH:MM:SS).
+      /// @param dateadded          string - Date added (YYYY-MM-DD HH:MM:SS).
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2464,16 +2464,16 @@ namespace XBMCAddon
       ///
       setDateAdded(...);
 #else
-      void setDateAdded(const String& dateAdded);
+      void setDateAdded(const String& dateadded);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setMediaType(mediaType) }
+      /// @brief \python_func{ setMediaType(mediatype) }
       /// Set the media type of the video item.
       ///
-      /// @param mediaType          string - Media type.
+      /// @param mediatype          string - Media type.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2481,16 +2481,16 @@ namespace XBMCAddon
       ///
       setMediaType(...);
 #else
-      void setMediaType(const String& mediaType);
+      void setMediaType(const String& mediatype);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setShowLinks(showLinks) }
+      /// @brief \python_func{ setShowLinks(showlinks) }
       /// Set the TV show links of the movie.
       ///
-      /// @param showLinks          list - TV show links.
+      /// @param showlinks          list - TV show links.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2498,7 +2498,7 @@ namespace XBMCAddon
       ///
       setShowLinks(...);
 #else
-      void setShowLinks(std::vector<String> showLinks);
+      void setShowLinks(std::vector<String> showlinks);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -2538,11 +2538,11 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ setResumePoint(time, [totalTime]) }
+      /// @brief \python_func{ setResumePoint(time, [totaltime]) }
       /// Set the resume point of the video item.
       ///
       /// @param time               float - Resume point in seconds.
-      /// @param totalTime          float - Total duration in seconds.
+      /// @param totaltime          float - Total duration in seconds.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2550,7 +2550,7 @@ namespace XBMCAddon
       ///
       setResumePoint(...);
 #else
-      void setResumePoint(double time, double totalTime = 0.0);
+      void setResumePoint(double time, double totaltime = 0.0);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -2583,10 +2583,10 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagVideo
-      /// @brief \python_func{ addSeasons(namedSeasons) }
+      /// @brief \python_func{ addSeasons(namedseasons) }
       /// Add named seasons to the TV show.
       ///
-      /// @param namedSeasons       list - `[ (season, name) ]`.
+      /// @param namedseasons       list - `[ (season, name) ]`.
       ///
       ///
       ///-----------------------------------------------------------------------
@@ -2594,7 +2594,7 @@ namespace XBMCAddon
       ///
       addSeasons(...);
 #else
-      void addSeasons(const std::vector<Tuple<int, std::string>>& namedSeasons);
+      void addSeasons(const std::vector<Tuple<int, std::string>>& namedseasons);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -2655,7 +2655,7 @@ namespace XBMCAddon
       /// Add an image to available artworks (needed for video scrapers)
       ///
       /// @param url            string - image path url
-      /// @param art_type       string - image type
+      /// @param arttype       string - image type
       /// @param preview        [opt] string - image preview path url
       /// @param referrer       [opt] string - referrer url
       /// @param cache          [opt] string - filename in cache
@@ -2677,7 +2677,7 @@ namespace XBMCAddon
       addAvailableArtwork(...);
 #else
       void addAvailableArtwork(const std::string& url,
-        const std::string& art_type = "",
+        const std::string& arttype = "",
         const std::string& preview = "",
         const std::string& referrer = "",
         const std::string& cache = "",
