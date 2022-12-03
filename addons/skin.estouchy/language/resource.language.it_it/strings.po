@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-10-26 22:57+0000\n"
+"PO-Revision-Date: 2022-11-20 20:10+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/it_it/>\n"
 "Language: it_it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.14.2\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -86,7 +86,7 @@ msgstr "Lettore"
 #. Label to show video decoder name
 msgctxt "#31019"
 msgid "Video decoder"
-msgstr "Decoder Video"
+msgstr "Decoder video"
 
 #. Label to show the video pixel format
 msgctxt "#31020"
@@ -96,7 +96,7 @@ msgstr "Formato pixel"
 #. Label to show the system memory usage
 msgctxt "#31021"
 msgid "System memory usage"
-msgstr "Utilizzo memoria sistema"
+msgstr "Utilizzo memoria di sistema"
 
 msgctxt "#31024"
 msgid "Page"
@@ -104,7 +104,7 @@ msgstr "Pagina"
 
 msgctxt "#31030"
 msgid "Info List"
-msgstr "Lista informazioni"
+msgstr "Elenco informazioni"
 
 msgctxt "#31038"
 msgid "Login"
@@ -136,7 +136,7 @@ msgstr "AVANTI VELOCE"
 
 msgctxt "#31045"
 msgid "REWIND"
-msgstr "RIAVVOLGIMENTO"
+msgstr "INDIETRO VELOCE"
 
 msgctxt "#31046"
 msgid "Play speed"
@@ -168,7 +168,7 @@ msgstr "Chiudi playlist"
 
 msgctxt "#31058"
 msgid "System music files"
-msgstr "File musicali di sistema"
+msgstr "Suoni di sistema"
 
 msgctxt "#31059"
 msgid "Current playlist"
@@ -212,7 +212,7 @@ msgstr "In onda"
 
 msgctxt "#31355"
 msgid "Video Menu"
-msgstr "Menu Video"
+msgstr "Menu video"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
@@ -236,7 +236,7 @@ msgstr "Cambia la skin · Imposta lingua e regione · Cambia le impostazioni di 
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
-msgstr "Configura e gestisci i servizi di condivisione contenuti · Configura e gestisci il servizio meteo"
+msgstr "Configura e gestisci i servizi di condivisione multimediale · Configura e gestisci il servizio meteo"
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
@@ -244,15 +244,15 @@ msgstr "Configura il display · Configura l'audio · Configura l'accesso a inter
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Gestisci i tuoi Add-on installati · Sfoglia e installa Add-on da kodi.tv · Modifica impostazioni Add-on"
+msgstr "Gestisci i tuoi add-on installati · Sfoglia e installa add-on da kodi.tv · Modifica impostazioni add-on"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
-msgstr "Configura le azioni che possono essere usate durante la riproduzione · Configura la riproduzione del contenuto multimediale"
+msgstr "Configura le azioni che possono essere usate durante la riproduzione · Configura la riproduzione dei contenuti multimediali"
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr "Configura sorgenti libreria · Mostra contenuto visualizzato nelle liste · Configura navigazione liste libreria"
+msgstr "Configura sorgenti libreria · Mostra contenuto visualizzato negli elenchi · Configura navigazione elenchi libreria"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
@@ -268,7 +268,7 @@ msgstr "Mostra informazioni sul sistema · Statistiche hardware · Controlla dis
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Scegli il tuo profilo utente di Kodi[CR]per fare il login e continuare"
+msgstr "Seleziona il tuo profilo utente Kodi[CR]per fare il login e continuare"
 
 msgctxt "#31548"
 msgid "Home menu"
@@ -276,7 +276,7 @@ msgstr "Menu Home"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr "Add-on Home"
+msgstr "Home add-on"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -284,7 +284,7 @@ msgstr "Sfondi"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Scorciatoia Add-on"
+msgstr "Scorciatoie add-on"
 
 msgctxt "#31552"
 msgid "SYNC"
@@ -391,7 +391,7 @@ msgstr "Velocità di rendering del sistema"
 #. Label to show the system CPU usage
 msgctxt "#31609"
 msgid "System CPU usage"
-msgstr "Utilizzo CPU del sistema"
+msgstr "Utilizzo CPU di sistema"
 
 #. Label to show the media (metadata) info page
 msgctxt "#31610"
