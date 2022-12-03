@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2022-11-19 12:00+0000\n"
+"Last-Translator: GregSKR <gregnet@free.fr>\n"
 "Language-Team: French (France) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/fr_fr/>\n"
 "Language: fr_fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.14.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -647,37 +647,37 @@ msgstr "Paramètres relatifs aux illustrations."
 #. Label for OSD settings category
 msgctxt "#31170"
 msgid "On screen display"
-msgstr ""
+msgstr "Affichage à l'écran (OSD)"
 
 #. Helper text for the label of OSD settings category
 msgctxt "#31171"
 msgid "On screen display (OSD) related settings"
-msgstr ""
+msgstr "Réglages de l'affichage à l'écran (OSD)"
 
 #. Setting Automatically close video OSD
 msgctxt "#31172"
 msgid "Automatically close video OSD"
-msgstr ""
+msgstr "Fermer automatiquement l'OSD vidéo"
 
 #. Setting auto close time for video osd
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr ""
+msgstr "Délai de fermeture auto de l'OSD vidéo (secondes)"
 
 #. Setting to control what happens when clicking a music album on the home screen
 msgctxt "#31174"
 msgid "Default select action for albums on the home screen"
-msgstr ""
+msgstr "Action par défaut lors de la sélection des albums sur l'écran d'accueil"
 
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr ""
+msgstr "Action par défaut lors de la sélection des séries TV sur l'écran d'accueil"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
-msgstr ""
+msgstr "Action par défaut lors de la sélection des sagas sur l'écran d'accueil"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
@@ -698,7 +698,7 @@ msgstr "Ratio d'aspect vidéo"
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr ""
+msgstr "Débit Vidéo"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
@@ -713,7 +713,7 @@ msgstr "Chaînes audio"
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr ""
+msgstr "Débit Audio"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
@@ -723,7 +723,7 @@ msgstr "Résolution de l'écran"
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr ""
+msgstr "Vitesse de rendu système"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
