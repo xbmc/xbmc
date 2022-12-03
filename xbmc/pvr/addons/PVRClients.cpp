@@ -856,7 +856,8 @@ void CPVRClients::ConnectionStateChange(CPVRClient* client,
 
   // Notify user.
   CServiceBroker::GetJobManager()->AddJob(
-      new CPVREventLogJob(bNotify, bError, client->Name(), strMsg, client->Icon()), nullptr);
+      new CPVREventLogJob(bNotify, bError, client->GetFriendlyName(), strMsg, client->Icon()),
+      nullptr);
 }
 
 namespace
