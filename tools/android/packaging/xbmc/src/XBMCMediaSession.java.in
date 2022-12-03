@@ -153,7 +153,7 @@ public class XBMCMediaSession
   private void updateIntent(Intent intent)
   {
     PendingIntent pi = PendingIntent.getActivity(Main.MainActivity, 99 /*request code*/,
-            intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     mSession.setSessionActivity(pi);
   }
 
