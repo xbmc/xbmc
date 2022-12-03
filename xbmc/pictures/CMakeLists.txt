@@ -24,4 +24,19 @@ set(HEADERS GUIDialogPictureInfo.h
             PictureThumbLoader.h
             SlideShowPicture.h)
 
+if(OPENGL_FOUND)
+  list(APPEND SOURCES SlideShowPictureGL.cpp)
+  list(APPEND HEADERS SlideShowPictureGL.h)
+endif()
+
+if(OPENGLES_FOUND)
+  list(APPEND SOURCES SlideShowPictureGLES.cpp)
+  list(APPEND HEADERS SlideShowPictureGLES.h)
+endif()
+
+if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
+  list(APPEND SOURCES SlideShowPictureDX.cpp)
+  list(APPEND HEADERS SlideShowPictureDX.h)
+endif()
+
 core_add_library(pictures)
