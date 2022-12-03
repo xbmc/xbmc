@@ -23,9 +23,13 @@
 #include "windowing/GraphicContext.h"
 
 #include <mutex>
-#if defined(HAS_GL) || defined(HAS_GLES)
+#if defined(HAS_GL)
 #include "OverlayRendererGL.h"
-#elif defined(HAS_DX)
+#endif
+#if defined(HAS_GLES)
+#include "OverlayRendererGLES.h"
+#endif
+#if defined(HAS_DX)
 #include "OverlayRendererDX.h"
 #endif
 
@@ -534,9 +538,13 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
   }
 
   std::shared_ptr<COverlay> overlay = NULL;
-#if defined(HAS_GL) || defined(HAS_GLES)
+#if defined(HAS_GL)
   overlay = std::make_shared<COverlayGlyphGL>(images, rOpts.frameWidth, rOpts.frameHeight);
-#elif defined(HAS_DX)
+#endif
+#if defined(HAS_GLES)
+  overlay = std::make_shared<COverlayGlyphGLES>(images, rOpts.frameWidth, rOpts.frameHeight);
+#endif
+#if defined(HAS_DX)
   overlay = std::make_shared<COverlayQuadsDX>(images, rOpts.frameWidth, rOpts.frameHeight);
 #endif
 
@@ -581,12 +589,19 @@ std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay& o, double pts)
     return r;
   }
 
-#if defined(HAS_GL) || defined(HAS_GLES)
+#if defined(HAS_GL)
   if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
     r = std::make_shared<COverlayTextureGL>(static_cast<CDVDOverlayImage&>(o), m_rs);
   else if (o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
     r = std::make_shared<COverlayTextureGL>(static_cast<CDVDOverlaySpu&>(o));
-#elif defined(HAS_DX)
+#endif
+#if defined(HAS_GLES)
+  if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
+    r = std::make_shared<COverlayTextureGLES>(static_cast<CDVDOverlayImage&>(o), m_rs);
+  else if (o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
+    r = std::make_shared<COverlayTextureGLES>(static_cast<CDVDOverlaySpu&>(o));
+#endif
+#if defined(HAS_DX)
   if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
     r = std::make_shared<COverlayImageDX>(static_cast<CDVDOverlayImage&>(o), m_rs);
   else if (o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
