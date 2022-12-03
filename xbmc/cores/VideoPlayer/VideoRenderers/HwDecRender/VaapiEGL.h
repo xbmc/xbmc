@@ -8,27 +8,18 @@
 
 #pragma once
 
-#include <array>
-
-#if defined(HAS_GL)
-// always define GL_GLEXT_PROTOTYPES before include gl headers
-#if !defined(GL_GLEXT_PROTOTYPES)
-#define GL_GLEXT_PROTOTYPES
-#endif
-#include <GL/gl.h>
-#elif defined(HAS_GLES)
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#include <GLES3/gl3.h>
-#endif
-
-#include "system_egl.h"
 #include "utils/Geometry.h"
 
 #include "platform/posix/utils/FileHandle.h"
 
-#include <EGL/eglext.h>
+#include <array>
+
 #include <va/va.h>
+
+#include "system_egl.h"
+#include "system_gl.h"
+
+#include <EGL/eglext.h>
 
 namespace VAAPI
 {
