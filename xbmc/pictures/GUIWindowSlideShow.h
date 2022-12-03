@@ -143,7 +143,7 @@ private:
 
   std::vector<CFileItemPtr> m_slides;
 
-  CSlideShowPic m_Image[2];
+  std::unique_ptr<CSlideShowPic> m_Image[2];
 
   int m_iCurrentPic;
   // background loader
