@@ -89,6 +89,7 @@
 - (void)windowDidEndLiveResize:(NSNotification*)notification
 {
   m_resizeState = false;
+  [self windowDidResize:notification];
 }
 
 - (void)windowDidResize:(NSNotification*)aNotification
