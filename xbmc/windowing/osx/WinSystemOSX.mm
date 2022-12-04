@@ -648,14 +648,8 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
     [appWindow makeKeyWindow];
   }];
 
-  // for native fullscreen we always want to set the
-  // same windowed flags
-  NSUInteger windowStyleMask;
-  if (fullScreen)
-    windowStyleMask = NSWindowStyleMaskBorderless;
-  else
-    windowStyleMask = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable |
-                      NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable;
+  const NSUInteger windowStyleMask = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable |
+                                     NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable;
 
   if (m_appWindow == nullptr)
   {
