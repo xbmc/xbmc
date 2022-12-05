@@ -1057,7 +1057,7 @@ extern "C"
     {
       if (pFile->GetPosition() < pFile->GetLength())
       {
-        bool bRead = pFile->ReadString(pszString, num);
+        bool bRead = pFile->ReadString(pszString, num - 1);
         if (bRead)
         {
           return pszString;
