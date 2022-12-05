@@ -115,10 +115,14 @@ void CDVDOverlayContainer::Flush()
   std::unique_lock<CCriticalSection> lock(*this);
 
   // Flush only the overlays marked as flushable
-  m_overlays.erase(
-      std::remove_if(m_overlays.begin(), m_overlays.end(),
-                     [](CDVDOverlay* ov) { return ov->IsOverlayContainerFlushable(); }),
-      m_overlays.end());
+  m_overlays.erase(std::remove_if(m_overlays.begin(), m_overlays.end(),
+                                  [](CDVDOverlay* ov) {
+                                    bool isFlushable = ov->IsOverlayContainerFlushable();
+                                    if (isFlushable)
+                                      ov->Release();
+                                    return isFlushable;
+                                  }),
+                   m_overlays.end());
 }
 
 void CDVDOverlayContainer::Clear()
