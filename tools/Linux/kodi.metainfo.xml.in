@@ -78,6 +78,7 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2022-12-10" version="20.0rc1-Nexus" type="development"><url>https://kodi.tv/article/kodi-nexus-rc-1/</url></release>
         <release date="2022-11-08" version="20.0b1-Nexus" type="development"><url>https://kodi.tv/article/kodi-nexus-beta-1/</url></release>
         <release date="2022-09-08" version="20.0a3-Nexus" type="development"><url>https://kodi.tv/article/kodi-nexus-alpha-3/</url></release>
         <release date="2022-07-09" version="20.0a2-Nexus" type="development"><url>https://kodi.tv/article/kodi-nexus-alpha-2/</url></release>
