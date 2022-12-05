@@ -72,6 +72,16 @@ public:
    *         or undetectable error occur, -1 in case of any explicit error
    */
   ssize_t Read(void* bufPtr, size_t bufSize);
+  /**
+   * Attempt to read a line up to iLineLength bytes from currently opened file into
+   * szLine. If a newline is read, it is stored into the buffer. A terminating null
+   * byte is stored after the last character in the buffer, therefore szLine has to
+   * be at least of length iLineLength + 1.
+   * @param szLine      pointer to string buffer
+   * @param iLineLength size of the buffer - 1
+   * @return True if any bytes were read and stored in szLine, False if no bytes
+   *         are available to read (end of file was reached) or error occur
+   */
   bool ReadString(char *szLine, int iLineLength);
   /**
    * Attempt to write bufSize bytes from buffer bufPtr into currently opened file.
