@@ -9,6 +9,7 @@
 #pragma once
 
 #include "media/MediaType.h"
+#include "utils/ContentUtils.h"
 
 #include <memory>
 #include <string>
@@ -80,12 +81,20 @@ std::vector<std::string> GetArtTypesToScan(const MediaType& mediaType);
   */
 bool IsValidArtType(const std::string& potentialArtType);
 
+/*! \brief Check whether auto play next item is set for the given item.
+  \param item [in] the item to check
+  \return True if auto play next item is active, false otherwise.
+  */
+bool IsAutoPlayNextItem(const CFileItem& item);
+
 /*! \brief Start playback of the given item. If the item is a folder, build a playlist with
   all items contained in the folder and start playback of the playlist. If item is a single music
   item, start playback directly, without adding it to the music playlist first.
   \param item [in] the item to play
+  \param mode [in] queue all successors and play them after item
   */
-void PlayItem(const std::shared_ptr<CFileItem>& item);
+void PlayItem(const std::shared_ptr<CFileItem>& item,
+              ContentUtils::PlayMode mode = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM);
 
 enum class QueuePosition
 {
