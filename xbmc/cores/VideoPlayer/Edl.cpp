@@ -108,7 +108,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
   int iLine = 0;
   std::string strBuffer;
   strBuffer.resize(1024);
-  while (edlFile.ReadString(&strBuffer[0], 1024))
+  while (edlFile.ReadString(&strBuffer[0], 1023))
   {
     // Log any errors from previous run in the loop
     if (bError)
