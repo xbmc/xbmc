@@ -702,7 +702,6 @@ void CXBMCApp::SetDisplayModeCallback(void* modeVariant)
 {
   CVariant* modeV = static_cast<CVariant*>(modeVariant);
   int mode = (*modeV)["mode"].asInteger();
-  float rate = (*modeV)["rate"].asFloat();
   delete modeV;
 
   CJNIWindow window = getWindow();
@@ -712,7 +711,6 @@ void CXBMCApp::SetDisplayModeCallback(void* modeVariant)
     if (params.getpreferredDisplayModeId() != mode)
     {
       params.setpreferredDisplayModeId(mode);
-      params.setpreferredRefreshRate(rate);
       window.setAttributes(params);
       return;
     }
@@ -764,7 +762,6 @@ void CXBMCApp::SetDisplayMode(int mode, float rate)
   m_displayChangeEvent.Reset();
   std::map<std::string, CVariant> vmap;
   vmap["mode"] = mode;
-  vmap["rate"] = rate;
   m_refreshRate = rate;
   CVariant *variant = new CVariant(vmap);
   runNativeOnUiThread(SetDisplayModeCallback, variant);
