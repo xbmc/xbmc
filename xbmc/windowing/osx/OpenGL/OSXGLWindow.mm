@@ -144,12 +144,12 @@
     return;
 
   // if osx is the issuer of the toggle
-  // call XBMCs toggle function
+  // call Kodi's toggle function
   if (!winSystem->GetFullscreenWillToggle())
   {
     // indicate that we are toggling
     // flag will be reset in SetFullscreen once its
-    // called from XBMCs gui thread
+    // called from Kodi's gui thread
     winSystem->SetFullscreenWillToggle(true);
 
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
@@ -157,7 +157,7 @@
   else
   {
     // in this case we are just called because
-    // of xbmc did a toggle - just reset the flag
+    // of Kodi did a toggle - just reset the flag
     // we don't need to do anything else
     winSystem->SetFullscreenWillToggle(false);
   }
@@ -170,19 +170,19 @@
     return;
 
   // if osx is the issuer of the toggle
-  // call XBMCs toggle function
+  // call Kodi's toggle function
   if (!winSystem->GetFullscreenWillToggle())
   {
     // indicate that we are toggling
     // flag will be reset in SetFullscreen once its
-    // called from XBMCs gui thread
+    // called from Kodi's gui thread
     winSystem->SetFullscreenWillToggle(true);
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
   }
   else
   {
     // in this case we are just called because
-    // of xbmc did a toggle - just reset the flag
+    // of Kodi did a toggle - just reset the flag
     // we don't need to do anything else
     winSystem->SetFullscreenWillToggle(false);
   }
