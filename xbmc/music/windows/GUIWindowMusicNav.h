@@ -33,6 +33,7 @@ protected:
   void PlayItem(int iItem) override;
   void OnWindowLoaded() override;
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  bool OnPopupMenu(int iItem) override;
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   bool OnClick(int iItem, const std::string &player = "") override;
   std::string GetStartFolder(const std::string &url) override;
