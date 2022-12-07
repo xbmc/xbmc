@@ -2102,7 +2102,8 @@ namespace VIDEO
       if (!show.m_strPath.empty())
       {
         CDirectory::GetDirectory(show.m_strPath, items, extensions,
-          DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
+                                 DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE |
+                                     DIR_FLAG_NO_FILE_INFO);
       }
       extensions.erase(std::remove(extensions.begin(), extensions.end(), '.'), extensions.end());
       CRegExp reg;
