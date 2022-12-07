@@ -510,6 +510,14 @@ protected:
 
   static bool m_capGeneral;
   static bool m_capDeepColor;
+
+private:
+  struct AVBufferRefDeleter
+  {
+    void operator()(AVBufferRef* p) const;
+  };
+
+  std::unique_ptr<AVBufferRef, AVBufferRefDeleter> m_deviceRef;
 };
 
 //-----------------------------------------------------------------------------
