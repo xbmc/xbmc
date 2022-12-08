@@ -100,20 +100,32 @@
     int width = static_cast<int>(rect.size.width);
     int height = static_cast<int>(rect.size.height);
 
+    XBMC_Event newEvent = {};
+
     if (!CServiceBroker::GetWinSystem()->IsFullScreen())
     {
       RESOLUTION res_index = RES_DESKTOP;
       if ((width == CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iWidth) &&
           (height == CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iHeight))
         return;
+
+      newEvent.type = XBMC_VIDEORESIZE;
     }
-    XBMC_Event newEvent = {};
-    newEvent.type = XBMC_VIDEORESIZE;
+    else
+    {
+      // macos may trigger a resize/rescale event just after Kodi has entered fullscreen
+      // (from windowDidEndLiveResize). Kodi needs to rescale the UI - use a different event
+      // type since XBMC_VIDEORESIZE is supposed to only be used in windowed mode
+      newEvent.type = XBMC_FULLSCREEN_UPDATE;
+      newEvent.move.x = -1;
+      newEvent.move.y = -1;
+    }
+
     newEvent.resize.w = width;
     newEvent.resize.h = height;
 
     // check for valid sizes cause in some cases
-    // we are hit during fullscreen transition from osx
+    // we are hit during fullscreen transition from macos
     // and might be technically "zero" sized
     if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
     {
@@ -121,7 +133,6 @@
       if (appPort)
         appPort->OnEvent(newEvent);
     }
-    //CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
   }
 }
 
