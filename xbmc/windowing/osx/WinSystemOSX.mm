@@ -668,7 +668,6 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
       NSString* title = [NSString stringWithUTF8String:m_name.c_str()];
       appWindow.backgroundColor = NSColor.blackColor;
       appWindow.title = title;
-      [appWindow setOneShot:NO];
 
       NSWindowCollectionBehavior behavior = appWindow.collectionBehavior;
       behavior |= NSWindowCollectionBehaviorFullScreenPrimary;
@@ -1215,7 +1214,8 @@ void CWinSystemOSX::EnableVSync(bool enable)
 {
   // OpenGL Flush synchronised with vertical retrace
   GLint swapInterval = enable ? 1 : 0;
-  [NSOpenGLContext.currentContext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
+  [NSOpenGLContext.currentContext setValues:&swapInterval
+                               forParameter:NSOpenGLContextParameterSwapInterval];
 }
 
 std::unique_ptr<CVideoSync> CWinSystemOSX::GetVideoSync(void* clock)
