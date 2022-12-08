@@ -694,14 +694,6 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
   [NSAnimationContext endGrouping];
 
-  if (fullScreen)
-  {
-    m_fullscreenWillToggle = true;
-    [appWindow performSelectorOnMainThread:@selector(toggleFullScreen:)
-                                withObject:nil
-                             waitUntilDone:YES];
-  }
-
   // get screen refreshrate - this is needed
   // when we startup in windowed mode and don't run through SetFullScreen
   int dummy;
