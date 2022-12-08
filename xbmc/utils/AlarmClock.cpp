@@ -31,8 +31,7 @@ CAlarmClock::~CAlarmClock() = default;
 void CAlarmClock::Start(const std::string& strName, float n_secs, const std::string& strCommand, bool bSilent /* false */, bool bLoop /* false */)
 {
   // make lower case so that lookups are case-insensitive
-  std::string lowerName(strName);
-  StringUtils::ToLower(lowerName);
+  std::string lowerName = StringUtils::FoldCase(strName);
   Stop(lowerName);
   SAlarmClockEvent event;
   event.m_fSecs = static_cast<double>(n_secs);
@@ -82,8 +81,7 @@ void CAlarmClock::Stop(const std::string& strName, bool bSilent /* false */)
 {
   std::unique_lock<CCriticalSection> lock(m_events);
 
-  std::string lowerName(strName);
-  StringUtils::ToLower(lowerName);          // lookup as lowercase only
+  std::string lowerName = StringUtils::FoldCase(strName);
   std::map<std::string,SAlarmClockEvent>::iterator iter = m_event.find(lowerName);
 
   if (iter == m_event.end())

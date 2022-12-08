@@ -19,13 +19,13 @@
 //
 //------------------------------------------------------------------------
 
+#include <locale>
+#include <sstream>
 #include <stdarg.h>
 #include <stdint.h>
 #include <string>
 #include <string_view>
 #include <vector>
-#include <sstream>
-#include <locale>
 
 // workaround for broken [[deprecated]] in coverity
 #if defined(__COVERITY__)

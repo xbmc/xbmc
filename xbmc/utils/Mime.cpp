@@ -693,8 +693,8 @@ bool CMime::parseMimeType(const std::string& mimeType, std::string& type, std::s
     return false;
   }
 
-  StringUtils::ToLower(type);
-  StringUtils::ToLower(subtype);
+  type = StringUtils::FoldCase(type);
+  subtype = StringUtils::FoldCase(subtype);
 
   return true;
 }

@@ -1946,7 +1946,8 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
   return 0; // files are the same
 }
 
-namespace {
+namespace
+{
 // TODO: Move to Anonymous namespace
 
 /*
@@ -2363,7 +2364,8 @@ std::string StringUtils::ToHexadecimal(const std::string& in)
   return ss.str();
 }
 
-namespace {
+namespace
+{
 // TODO: Move to Anonymous namespace
 
 // return -1 if not, else return the utf8 char length.

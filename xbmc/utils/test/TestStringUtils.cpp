@@ -6,13 +6,14 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/StringUtils.h"
 #include "TestStringUtils.h"
 
+#include "utils/StringUtils.h"
+
 #include <algorithm>
+#include <cstdint>
 #include <locale>
 #include <string_view>
-#include <cstdint>
 
 #include <gtest/gtest.h>
 
@@ -55,19 +56,19 @@ enum EN
 // Additional testing will need to be done to correct for that difference.
 //
 // -----------------------------------------------------------------------------
-namespace TestStringUtils {
+namespace TestStringUtils
+{
 //
 // These represent the SAME Unicode character. Certain operations can
 // change the number of code-units or even codepoints (Unicode 32-bit chars)
 // required to represent what is commonly considered a character.  Normalization
-// (which C++ does not have) can reorder and change the length of such 
-// characters. 
+// (which C++ does not have) can reorder and change the length of such
+// characters.
 const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1[] = {"\x6f\xcc\x82\xcc\xa3\x00"};
 // const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_2[] = {"\x6f\xcc\xa3\xcc\x82\x00"};
 // const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_3[] = {"\xc3\xb4\xcc\xa3\x00"};
 // const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_4[] = {"\xe1\xbb\x8d\xcc\x82\x00"};
 const char UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5[] = {"\xe1\xbb\x99\x00"};
-
 
 //      u"óóßChloë" // German "Sharp-S" ß is (mostly) equivalent to ss (lower case).
 //                     Lower case of two SS characters can either be ss or ß,
@@ -81,7 +82,7 @@ const char* UTF8_GERMAN_UPPER = {"\xc3\x93\xc3\x93\x53\x53\x43\x48\x4c\x4f\xc3\x
 // óóßchloë
 const char* UTF8_GERMAN_LOWER_SS = {"\xc3\xb3\xc3\xb3\x73\x73\x63\x68\x6c\x6f\xc3\xab"};
 // u"óósschloë";
-}
+} // namespace TestStringUtils
 
 TEST(TestStringUtils, Format)
 {
@@ -232,9 +233,9 @@ TEST(TestStringUtils, Validate_FoldCase_Data)
     {
       if (c_folded_char32 != verify_folded_char32)
       {
-        FAIL() << "FoldCase returns different result than tables for 0x"
-            << std::hex << c << " " << c_utf8 << " at idx " << idx
-            << " folded: 0x" << std::hex << c_folded_char32 << " " << verify_folded_utf8;
+        FAIL() << "FoldCase returns different result than tables for 0x" << std::hex << c << " "
+               << c_utf8 << " at idx " << idx << " folded: 0x" << std::hex << c_folded_char32 << " "
+               << verify_folded_utf8;
         idx++;
         continue;
       }
@@ -246,15 +247,15 @@ TEST(TestStringUtils, Validate_FoldCase_Data)
     }
     else if (c_folded != c_utf8)
     {
-      FAIL() << "FoldCase entry found in built tables that is not present in Original"
-          << std::hex << c << " " << c_utf8 << " at idx " << idx;
+      FAIL() << "FoldCase entry found in built tables that is not present in Original" << std::hex
+             << c << " " << c_utf8 << " at idx " << idx;
     }
   }
   if (idx != (sizeof(UnicodeFoldLowerTable) / 4))
   {
     FAIL() << "Failed, did not exhaust unicode_fold_upper maxChar: " << maxChar
-        << " FoldsFound: " << FoldsFound << " expected folds: "
-        << sizeof(UnicodeFoldLowerTable) / 4;
+           << " FoldsFound: " << FoldsFound
+           << " expected folds: " << sizeof(UnicodeFoldLowerTable) / 4;
   }
 }
 
@@ -272,8 +273,9 @@ TEST(TestStringUtils, FoldCase)
   result = StringUtils::FoldCase(input);
   EXPECT_EQ(result, "a"s);
 
-  input =                "What a WaIsT Of Time1234567890-=!@#$%^&*()\"_+QWERTYUIOP{}|qwertyuiop[];':\\<M>?/.,";
-  std::string expected = "what a waist of time1234567890-=!@#$%^&*()\"_+qwertyuiop{}|qwertyuiop[];':\\<m>?/.,";
+  input = "What a WaIsT Of Time1234567890-=!@#$%^&*()\"_+QWERTYUIOP{}|qwertyuiop[];':\\<M>?/.,";
+  std::string expected =
+      "what a waist of time1234567890-=!@#$%^&*()\"_+qwertyuiop{}|qwertyuiop[];':\\<m>?/.,";
 
   result = StringUtils::FoldCase(input);
   EXPECT_EQ(result, expected);
@@ -378,7 +380,6 @@ TEST(TestStringUtils, FoldCase)
 
   s1 = "𞥃"s;
   EXPECT_EQ(StringUtils::FoldCase(s1), result1);
-
 }
 
 TEST(TestStringUtils, FoldCase_W)
@@ -388,10 +389,10 @@ TEST(TestStringUtils, FoldCase_W)
 
   bool PrintResults = false;
 
-  std::wstring w_s1 = StringUtils::ToWString(
-      std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
-  std::wstring w_s2 = StringUtils::ToWString(
-      std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
+  std::wstring w_s1 =
+      StringUtils::ToWString(std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
+  std::wstring w_s2 =
+      StringUtils::ToWString(std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
 
   w_s1 = StringUtils::FoldCase(w_s1);
   w_s2 = StringUtils::FoldCase(w_s2);
@@ -496,14 +497,13 @@ TEST(TestStringUtils, EqualsNoCase)
   EXPECT_TRUE(StringUtils::EqualsNoCase("abcd\0", "ABCD\0a")); // sv));
 }
 
-
 TEST(TestStringUtils, CompareNoCase)
 {
   std::string left;
   std::string right;
   int expectedResult{0};
 
-  left =  "abciI123ABC "s;
+  left = "abciI123ABC "s;
   right = "ABCIi123abc "s;
   expectedResult = 0;
   EXPECT_EQ(StringUtils::CompareNoCase(left, right), expectedResult);
@@ -541,7 +541,7 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
   std::string right; // Don't use string_view!
   int expectedResult;
 
-  left =  "abciI123ABC ";
+  left = "abciI123ABC ";
   left = left.substr(0, 5); // Limits string to 5 code-units (bytes)
   right = "ABCIi123abc ";
   right = right.substr(0, 5); // Not very exciting
@@ -592,7 +592,7 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
 
   // This implementation will NOT FoldCase "ß" to "ss"
 
-  left = TestStringUtils::UTF8_GERMAN_UPPER;   // ÓÓSSCHLOË
+  left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   right = TestStringUtils::UTF8_GERMAN_SAMPLE; // óóßChloë
 
   // TODO:
@@ -601,7 +601,7 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
 
   EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0);
 
-  left = {TestStringUtils::UTF8_GERMAN_UPPER, 4};   // ÓÓSSCHLOË byte 4 = end of 2nd Ó
+  left = {TestStringUtils::UTF8_GERMAN_UPPER, 4}; // ÓÓSSCHLOË byte 4 = end of 2nd Ó
   right = {TestStringUtils::UTF8_GERMAN_SAMPLE, 4}; // óóßChloë  byte 4 = end of 2nd ó
 
   // TODO:
@@ -652,7 +652,7 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
   // Single byte comparison results in < 0
   // Unicode codepoint comparision results in > 0
 
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0 );
+  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0);
 
   // At least this fold case recognizes these as equivalent by converting
   // to u32string. Comparison with UTF8 would fail.
@@ -841,8 +841,8 @@ TEST(TestStringUtils, StartsWithNoCase)
   EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, "TesT"));
   EXPECT_FALSE(StringUtils::StartsWithNoCase(refstr, "Te st"));
   EXPECT_FALSE(StringUtils::StartsWithNoCase(refstr, "test "));
-  EXPECT_TRUE(StringUtils::StartsWithNoCase(
-      refstr, "test\0")); // Embedded null terminates string operation
+  EXPECT_TRUE(
+      StringUtils::StartsWithNoCase(refstr, "test\0")); // Embedded null terminates string operation
 
   p = "tEs";
   EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, p));

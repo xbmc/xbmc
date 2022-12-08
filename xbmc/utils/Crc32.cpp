@@ -103,8 +103,7 @@ uint32_t Crc32::Compute(const std::string& strValue)
 
 uint32_t Crc32::ComputeFromLowerCase(const std::string& strValue)
 {
-  std::string strLower = strValue;
-  StringUtils::ToLower(strLower);
+  std::string strLower = StringUtils::FoldCase(strValue);
   return Compute(strLower);
 }
 
