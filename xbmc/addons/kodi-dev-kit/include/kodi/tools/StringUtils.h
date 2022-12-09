@@ -910,6 +910,9 @@ public:
   /// EXPECT_STREQ(refstr.c_str(), varstr.c_str());
   /// ~~~~~~~~~~~~~
   ///
+
+  // TODO: Unicode make some of the ToLower & FoldCase changes from utils/StringUtils here.
+
   inline static void ToLower(std::string& str)
   {
     transform(str.begin(), str.end(), str.begin(), ::tolower);

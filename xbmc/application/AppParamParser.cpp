@@ -82,8 +82,7 @@ void CAppParamParser::DisplayVersion()
 
 void CAppParamParser::DisplayHelp()
 {
-  std::string lcAppName = CSysInfo::GetAppName();
-  StringUtils::ToLower(lcAppName);
+  std::string lcAppName = StringUtils::FoldCase(CSysInfo::GetAppName());
 
   std::cout << StringUtils::Format(helpText, lcAppName, CSysInfo::GetAppName());
 }

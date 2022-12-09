@@ -507,11 +507,10 @@ void Interface_GUIWindow::set_property(KODI_HANDLE kodiBase,
     return;
   }
 
-  std::string lowerKey = key;
-  StringUtils::ToLower(lowerKey);
+  std::string foldedKey = StringUtils::FoldCase(key);
 
   Interface_GUIGeneral::lock();
-  pAddonWindow->SetProperty(lowerKey, value);
+  pAddonWindow->SetProperty(foldedKey, value);
   Interface_GUIGeneral::unlock();
 }
 
@@ -532,11 +531,10 @@ void Interface_GUIWindow::set_property_int(KODI_HANDLE kodiBase,
     return;
   }
 
-  std::string lowerKey = key;
-  StringUtils::ToLower(lowerKey);
+  std::string foldedKey = StringUtils::FoldCase(key);
 
   Interface_GUIGeneral::lock();
-  pAddonWindow->SetProperty(lowerKey, value);
+  pAddonWindow->SetProperty(foldedKey, value);
   Interface_GUIGeneral::unlock();
 }
 
@@ -557,11 +555,10 @@ void Interface_GUIWindow::set_property_bool(KODI_HANDLE kodiBase,
     return;
   }
 
-  std::string lowerKey = key;
-  StringUtils::ToLower(lowerKey);
+  std::string foldedKey = StringUtils::FoldCase(key);
 
   Interface_GUIGeneral::lock();
-  pAddonWindow->SetProperty(lowerKey, value);
+  pAddonWindow->SetProperty(foldedKey, value);
   Interface_GUIGeneral::unlock();
 }
 
@@ -582,11 +579,10 @@ void Interface_GUIWindow::set_property_double(KODI_HANDLE kodiBase,
     return;
   }
 
-  std::string lowerKey = key;
-  StringUtils::ToLower(lowerKey);
+  std::string foldedKey = StringUtils::FoldCase(key);
 
   Interface_GUIGeneral::lock();
-  pAddonWindow->SetProperty(lowerKey, value);
+  pAddonWindow->SetProperty(foldedKey, value);
   Interface_GUIGeneral::unlock();
 }
 
@@ -606,11 +602,10 @@ char* Interface_GUIWindow::get_property(KODI_HANDLE kodiBase,
     return nullptr;
   }
 
-  std::string lowerKey = key;
-  StringUtils::ToLower(lowerKey);
+  std::string foldedKey = StringUtils::FoldCase(key);
 
   Interface_GUIGeneral::lock();
-  std::string value = pAddonWindow->GetProperty(lowerKey).asString();
+  std::string value = pAddonWindow->GetProperty(foldedKey).asString();
   Interface_GUIGeneral::unlock();
 
   return strdup(value.c_str());
@@ -632,11 +627,10 @@ int Interface_GUIWindow::get_property_int(KODI_HANDLE kodiBase,
     return -1;
   }
 
-  std::string lowerKey = key;
-  StringUtils::ToLower(lowerKey);
+  std::string foldedKey = StringUtils::FoldCase(key);
 
   Interface_GUIGeneral::lock();
-  int value = static_cast<int>(pAddonWindow->GetProperty(lowerKey).asInteger());
+  int value = static_cast<int>(pAddonWindow->GetProperty(foldedKey).asInteger());
   Interface_GUIGeneral::unlock();
 
   return value;
@@ -658,11 +652,10 @@ bool Interface_GUIWindow::get_property_bool(KODI_HANDLE kodiBase,
     return false;
   }
 
-  std::string lowerKey = key;
-  StringUtils::ToLower(lowerKey);
+  std::string foldedKey = StringUtils::FoldCase(key);
 
   Interface_GUIGeneral::lock();
-  bool value = pAddonWindow->GetProperty(lowerKey).asBoolean();
+  bool value = pAddonWindow->GetProperty(foldedKey).asBoolean();
   Interface_GUIGeneral::unlock();
 
   return value;
@@ -684,11 +677,10 @@ double Interface_GUIWindow::get_property_double(KODI_HANDLE kodiBase,
     return 0.0;
   }
 
-  std::string lowerKey = key;
-  StringUtils::ToLower(lowerKey);
+  std::string foldedKey = StringUtils::FoldCase(key);
 
   Interface_GUIGeneral::lock();
-  double value = pAddonWindow->GetProperty(lowerKey).asDouble();
+  double value = pAddonWindow->GetProperty(foldedKey).asDouble();
   Interface_GUIGeneral::unlock();
 
   return value;
@@ -728,11 +720,10 @@ void Interface_GUIWindow::clear_property(KODI_HANDLE kodiBase,
     return;
   }
 
-  std::string lowerKey = key;
-  StringUtils::ToLower(lowerKey);
+  std::string foldedKey = StringUtils::FoldCase(key);
 
   Interface_GUIGeneral::lock();
-  pAddonWindow->SetProperty(lowerKey, "");
+  pAddonWindow->SetProperty(foldedKey, "");
   Interface_GUIGeneral::unlock();
 }
 //@}
