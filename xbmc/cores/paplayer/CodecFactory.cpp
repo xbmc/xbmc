@@ -20,8 +20,7 @@ using namespace KODI::ADDONS;
 
 ICodec* CodecFactory::CreateCodec(const CURL& urlFile)
 {
-  std::string fileType = urlFile.GetFileType();
-  StringUtils::ToLower(fileType);
+  std::string fileType = StringUtils::FoldCase(urlFile.GetFileType());
 
   auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetExtensionSupportedAddonInfos(
       "." + fileType, CExtsMimeSupportList::FilterSelect::all);
@@ -45,8 +44,7 @@ ICodec* CodecFactory::CreateCodec(const CURL& urlFile)
 ICodec* CodecFactory::CreateCodecDemux(const CFileItem& file, unsigned int filecache)
 {
   CURL urlFile(file.GetDynPath());
-  std::string content = file.GetMimeType();
-  StringUtils::ToLower(content);
+  std::string content = StringUtils::FoldCase(file.GetMimeType());
   if (!content.empty())
   {
     auto addonInfos = CServiceBroker::GetExtsMimeSupportList().GetMimetypeSupportedAddonInfos(
