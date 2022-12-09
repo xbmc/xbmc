@@ -576,6 +576,9 @@ const char* Dataset::fieldName(int n)
     return NULL;
 }
 
+// TODO: Obeys rules of current "C" locale. Does not properly lower case of
+//       multi-bypte characters. Need to investigate if this is adequate.
+
 char* Dataset::str_toLower(char* s)
 {
   for (char* p = s; *p; p++)

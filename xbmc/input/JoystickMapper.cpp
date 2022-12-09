@@ -117,8 +117,7 @@ bool CJoystickMapper::DeserializeButton(const TiXmlElement* pButton,
 
     if (szAction != nullptr)
     {
-      feature = szButton;
-      StringUtils::ToLower(feature);
+      feature = StringUtils::FoldCase(szButton);
       actionStr = szAction;
     }
   }

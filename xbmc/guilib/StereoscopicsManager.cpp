@@ -352,10 +352,8 @@ std::string CStereoscopicsManager::NormalizeStereoMode(const std::string &mode)
 
 CAction CStereoscopicsManager::ConvertActionCommandToAction(const std::string &command, const std::string &parameter)
 {
-  std::string cmd = command;
-  std::string para = parameter;
-  StringUtils::ToLower(cmd);
-  StringUtils::ToLower(para);
+  std::string cmd = StringUtils::FoldCase(command);
+  std::string para = StringUtils::FoldCase(parameter);
   if (cmd == "setstereomode")
   {
     int actionId = -1;

@@ -200,11 +200,9 @@ bool CGameUtils::HasGameExtension(const std::string& path)
   std::string filename = CURL(path).GetFileNameWithoutPath();
 
   // Get the file extension
-  std::string extension = URIUtils::GetExtension(filename);
+  std::string extension = StringUtils::FoldCase(URIUtils::GetExtension(filename));
   if (extension.empty())
     return false;
-
-  StringUtils::ToLower(extension);
 
   // Look for a game client that supports this extension
   VECADDONS gameClients;

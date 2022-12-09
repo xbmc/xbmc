@@ -96,9 +96,8 @@ bool CGUIWindow::Load(const std::string& strFileName, bool bContainsPath)
   else
   {
     // FIXME: strLowerPath needs to eventually go since resToUse can get incorrectly overridden
-    std::string strFileNameLower = strFileName;
-    StringUtils::ToLower(strFileNameLower);
-    strLowerPath =  g_SkinInfo->GetSkinPath(strFileNameLower, &m_coordsRes);
+    std::string strFileNameFolded = StringUtils::FoldCase(strFileName);
+    strLowerPath = g_SkinInfo->GetSkinPath(strFileNameFolded, &m_coordsRes);
     strPath = g_SkinInfo->GetSkinPath(strFileName, &m_coordsRes);
   }
 
@@ -124,8 +123,7 @@ bool CGUIWindow::LoadXML(const std::string &strPath, const std::string &strLower
   if (!m_windowXMLRootElement)
   {
     CXBMCTinyXML xmlDoc;
-    std::string strPathLower = strPath;
-    StringUtils::ToLower(strPathLower);
+    std::string strPathLower = StringUtils::FoldCase(strPath);
     if (!xmlDoc.LoadFile(strPath) && !xmlDoc.LoadFile(strPathLower) && !xmlDoc.LoadFile(strLowerPath))
     {
       CLog::Log(LOGERROR, "Unable to load window XML: {}. Line {}\n{}", strPath, xmlDoc.ErrorRow(),
