@@ -100,14 +100,14 @@ bool URIUtils::HasExtension(const std::string& strFileName, const std::string& s
   if (pos == std::string::npos || strFileName[pos] != '.')
     return false;
 
-  const std::string extensionLower = StringUtils::FoldCase(strFileName.substr(pos));
+  const std::string extensionFolded = StringUtils::FoldCase(strFileName.substr(pos));
 
-  const std::vector<std::string> extensionsLower =
+  const std::vector<std::string> extensionsFolded =
       StringUtils::Split(StringUtils::FoldCase(strExtensions), '|');
 
-  for (const auto& ext : extensionsLower)
+  for (const auto& ext : extensionsFolded)
   {
-    if (StringUtils::EndsWith(ext, extensionLower))
+    if (StringUtils::EndsWith(ext, extensionFolded))
       return true;
   }
 

@@ -35,7 +35,6 @@ TEST_F(Testlog, Log)
   CRegExp regex;
 
   std::string appName = StringUtils::FoldCase(CCompileInfo::GetAppName());
-  StringUtils::ToLower(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
   CServiceBroker::GetLogging().Initialize(
       CSpecialProtocol::TranslatePath("special://temp/").c_str());
