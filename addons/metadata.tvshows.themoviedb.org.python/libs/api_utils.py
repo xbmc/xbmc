@@ -35,11 +35,12 @@ HEADERS = {}
 
 
 def set_headers(headers):
+    # type: (Dict) -> None
     HEADERS.update(headers)
 
 
-def load_info(url, params=None, default=None, resp_type = 'json', verboselog=False):
-    # type: (Text, Optional[Dict[Text, Union[Text, List[Text]]]]) -> Union[dict, list]
+def load_info(url, params=None, default=None, resp_type='json', verboselog=False):
+    # type: (Text, Dict, Text, Text, bool) -> Optional[Text]
     """
     Load info from external api
 
@@ -57,14 +58,20 @@ def load_info(url, params=None, default=None, resp_type = 'json', verboselog=Fal
         response = urlopen(req)
     except URLError as e:
         if hasattr(e, 'reason'):
-            logger.debug('failed to reach the remote site\nReason: {}'.format(e.reason))
+            logger.debug(
+                'failed to reach the remote site\nReason: {}'.format(e.reason))
         elif hasattr(e, 'code'):
-            logger.debug('remote site unable to fulfill the request\nError code: {}'.format(e.code))
+            logger.debug(
+                'remote site unable to fulfill the request\nError code: {}'.format(e.code))
         response = None
     if response is None:
         resp = default
     elif resp_type.lower() == 'json':
-        resp = json.loads(response.read().decode('utf-8'))
+        try:
+            resp = json.loads(response.read().decode('utf-8'))
+        except json.decoder.JSONDecodeError:
+            logger.debug('remote site sent back bad JSON')
+            resp = default
     else:
         resp = response.read().decode('utf-8')
     if verboselog:

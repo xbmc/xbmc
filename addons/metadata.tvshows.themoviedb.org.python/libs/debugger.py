@@ -90,10 +90,12 @@ def debug_exception(logger_func=logger.error):
         yield
     except Exception as exc:
         frame_info = inspect.trace(5)[-1]
-        logger_func('*** Unhandled exception detected: {} {} ***'.format(type(exc), exc))
+        logger_func(
+            '*** Unhandled exception detected: {} {} ***'.format(type(exc), exc))
         logger_func('*** Start diagnostic info ***')
         logger_func('System info: {0}'.format(uname()))
-        logger_func('OS info: {0}'.format(xbmc.getInfoLabel('System.OSVersionInfo')))
+        logger_func('OS info: {0}'.format(
+            xbmc.getInfoLabel('System.OSVersionInfo')))
         logger_func('Kodi version: {0}'.format(
             xbmc.getInfoLabel('System.BuildVersion')))
         logger_func('File: {0}'.format(frame_info[1]))
@@ -105,7 +107,9 @@ def debug_exception(logger_func=logger.error):
                 else:
                     context += '{0}: {1}'.format(str(i).rjust(5), line)
         logger_func('Code context:\n' + context)
-        logger_func('Global variables:\n' + _format_vars(frame_info[0].f_globals))
-        logger_func('Local variables:\n' + _format_vars(frame_info[0].f_locals))
+        logger_func('Global variables:\n' +
+                    _format_vars(frame_info[0].f_globals))
+        logger_func('Local variables:\n' +
+                    _format_vars(frame_info[0].f_locals))
         logger_func('**** End diagnostic info ****')
         raise exc
