@@ -37,6 +37,7 @@
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
+using namespace std::literals;
 
 namespace UPNP
 {
@@ -675,17 +676,20 @@ BuildObject(CFileItem&                    item,
         std::string ext;
         for (unsigned int i = 0; i < filenames.size(); i++)
         {
-            ext = URIUtils::GetExtension(filenames[i]).c_str();
+          ext = StringUtils::FoldCase(URIUtils::GetExtension(filenames[i]));
+          if (ext.length() > 0)
             ext = ext.substr(1);
-            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
-            /* Hardcoded check for extension is not the best way, but it can't be allowed to pass all
+          else
+            ext = StringUtils::Empty;
+
+          /* Hardcoded check for extension is not the best way, but it can't be allowed to pass all
                subtitle extension (ex. rar or zip). There are the most popular extensions support by UPnP devices.*/
-            for (std::string_view type : SupportedSubFormats)
+          for (std::string_view type : SupportedSubFormats)
+          {
+            if (type == ext)
             {
-              if (type == ext)
-              {
-                subtitles.push_back(filenames[i]);
-              }
+              subtitles.push_back(filenames[i]);
+            }
             }
         }
 
@@ -740,9 +744,11 @@ BuildObject(CFileItem&                    item,
             protocolInfo = protInfo.GetProtocol() + ":" + protInfo.GetMask() + ":smi/caption:" + protInfo.GetExtra();
             upnp_server->AddSafeResourceUri(object, rooturi, ips, NPT_String(subtitlePath.c_str()), protocolInfo);
 
-            ext = URIUtils::GetExtension(subtitlePath).c_str();
-            ext = ext.substr(1);
-            std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+            ext = StringUtils::FoldCase(URIUtils::GetExtension(subtitlePath));
+            if (ext.length() > 0)
+              ext = ext.substr(1);
+            else
+              ext = StringUtils::Empty;
 
             NPT_String subtitle_uri = object->m_Resources[object->m_Resources.GetItemCount() - 1].m_Uri;
 

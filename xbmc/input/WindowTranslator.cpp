@@ -215,8 +215,6 @@ int CWindowTranslator::TranslateWindow(const std::string& window)
   if (strWindow.empty())
     return WINDOW_INVALID;
 
-  StringUtils::ToLower(strWindow);
-
   // Eliminate .xml
   if (StringUtils::EndsWith(strWindow, ".xml"))
     strWindow = strWindow.substr(0, strWindow.size() - 4);

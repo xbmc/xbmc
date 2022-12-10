@@ -58,8 +58,7 @@ void CHTTPFileHandler::SetFile(const std::string& file, int responseStatus)
   if (m_response.type == HTTPFileDownload)
   {
     // determine the content type
-    std::string ext = URIUtils::GetExtension(m_url);
-    StringUtils::ToLower(ext);
+    std::string ext = StringUtils::FoldCase(URIUtils::GetExtension(m_url));
     m_response.contentType = CMime::GetMimeType(ext);
 
     // determine the last modified date
