@@ -93,59 +93,44 @@ size_t DisplayBitsPerPixelForMode(CGDisplayModeRef mode)
   return bitsPerPixel;
 }
 
+#pragma mark - GetDisplay
+
+CGDirectDisplayID GetDisplayID(NSUInteger screen_index)
+{
+  CGDirectDisplayID displayArray[MAX_DISPLAYS];
+  CGDisplayCount numDisplays;
+
+  // Get the list of displays.
+  CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
+  if (screen_index >= 0 && screen_index < static_cast<NSUInteger>(numDisplays))
+    return displayArray[screen_index];
+  else
+    return displayArray[0];
+}
+
 #pragma mark - GetScreenName
 
-NSString* screenNameForDisplay(CGDirectDisplayID displayID)
+NSString* screenNameForDisplay(NSUInteger screenIdx)
 {
   NSString* screenName;
-  @autoreleasepool
+
+  if (screenIdx <= NSScreen.screens.count - 1)
   {
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-    // No real replacement of CGDisplayIOServicePort
-    // Stackoverflow links to https://github.com/glfw/glfw/pull/192 as a possible replacement
-    // disable warning for now
-    NSDictionary* deviceInfo = (__bridge_transfer NSDictionary*)IODisplayCreateInfoDictionary(
-        CGDisplayIOServicePort(displayID), kIODisplayOnlyPreferredName);
-
-#pragma GCC diagnostic pop
-
-    NSDictionary* localizedNames =
-        [deviceInfo objectForKey:[NSString stringWithUTF8String:kDisplayProductName]];
-
-    if ([localizedNames count] > 0)
-    {
-      screenName = [localizedNames objectForKey:[[localizedNames allKeys] objectAtIndex:0]];
-    }
+    screenName = NSScreen.screens[screenIdx].localizedName;
   }
 
+  const CGDirectDisplayID dispId = GetDisplayID(screenIdx);
   if (screenName == nil)
   {
-    screenName = [[NSString alloc] initWithFormat:@"%i", displayID];
+    screenName = [[NSString alloc] initWithFormat:@"%u", dispId];
   }
   else
   {
     // ensure screen name is unique by appending displayid
-    screenName = [screenName stringByAppendingFormat:@" (%@)", [@(displayID) stringValue]];
+    screenName = [screenName stringByAppendingFormat:@" (%@)", [@(dispId) stringValue]];
   }
 
   return screenName;
-}
-
-#pragma mark - GetDisplay
-
-CGDirectDisplayID GetDisplayID(int screen_index)
-{
-  CGDirectDisplayID displayArray[MAX_DISPLAYS];
-  uint32_t numDisplays;
-
-  // Get the list of displays.
-  CGGetActiveDisplayList(MAX_DISPLAYS, displayArray, &numDisplays);
-  if (screen_index >= 0 && screen_index < static_cast<int>(numDisplays))
-    return (displayArray[screen_index]);
-  else
-    return (displayArray[0]);
 }
 
 CGDirectDisplayID GetDisplayIDFromScreen(NSScreen* screen)
@@ -171,23 +156,21 @@ int GetDisplayIndex(CGDirectDisplayID display)
   return -1;
 }
 
-int GetDisplayIndex(const std::string& dispName)
+NSUInteger GetDisplayIndex(const std::string& dispName)
 {
-  int ret = 0;
+  NSUInteger ret = 0;
 
   // Add full screen settings for additional monitors
-  int numDisplays = NSScreen.screens.count;
-
-  for (int disp = 0; disp < numDisplays; disp++)
+  const NSUInteger numDisplays = NSScreen.screens.count;
+  for (NSUInteger disp = 0; disp <= numDisplays - 1; disp++)
   {
-    NSString* name = screenNameForDisplay(GetDisplayID(disp));
+    NSString* name = screenNameForDisplay(disp);
     if (name.UTF8String == dispName)
     {
       ret = disp;
       break;
     }
   }
-
   return ret;
 }
 
@@ -229,9 +212,9 @@ CFArrayRef GetAllDisplayModes(CGDirectDisplayID display)
 
 // try to find mode that matches the desired size, refreshrate
 // non interlaced, nonstretched, safe for hardware
-CGDisplayModeRef GetMode(int width, int height, double refreshrate, int screenIdx)
+CGDisplayModeRef GetMode(int width, int height, double refreshrate, NSUInteger screenIdx)
 {
-  if (screenIdx >= (signed)[[NSScreen screens] count])
+  if (screenIdx >= [[NSScreen screens] count])
     return nullptr;
 
   bool stretched;
@@ -339,19 +322,18 @@ CGDisplayModeRef BestMatchForMode(CGDirectDisplayID display,
 
 #pragma mark - Blank Displays
 
-void BlankOtherDisplays(int screen_index)
+void BlankOtherDisplays(NSUInteger screen_index)
 {
-  int i;
-  int numDisplays = [[NSScreen screens] count];
+  const NSUInteger numDisplays = NSScreen.screens.count;
 
   // zero out blankingWindows for debugging
-  for (i = 0; i < MAX_DISPLAYS; i++)
+  for (NSUInteger i = 0; i < MAX_DISPLAYS; i++)
   {
     blankingWindows[i] = 0;
   }
 
   // Blank.
-  for (i = 0; i < numDisplays; i++)
+  for (NSUInteger i = 0; i < numDisplays; i++)
   {
     if (i != screen_index)
     {
@@ -569,7 +551,7 @@ void CWinSystemOSX::AnnounceOnResetDevice()
   double currentFps = m_refreshRate;
   int w = 0;
   int h = 0;
-  int currentScreenIdx = m_lastDisplayNr;
+  const NSUInteger currentScreenIdx = m_lastDisplayNr;
   // ensure that graphics context knows about the current refreshrate before
   // doing the callbacks
   GetScreenResolution(&w, &h, &currentFps, currentScreenIdx);
@@ -787,12 +769,13 @@ bool CWinSystemOSX::Hide()
 
 NSRect CWinSystemOSX::GetWindowDimensions()
 {
+  NSRect frame;
   if (m_appWindow)
   {
     NSWindow* win = (NSWindow*)m_appWindow;
-    NSRect frame = win.contentView.frame;
-    return frame;
+    frame = win.contentView.frame;
   }
+  return frame;
 }
 
 #pragma mark - Resize Window
@@ -856,9 +839,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  //  if (m_lastDisplayNr == -1)
-  //    m_lastDisplayNr = res.iScreen;
-
   __block NSWindow* window = m_appWindow;
 
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
@@ -919,8 +899,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     UnblankDisplays();
   }
 
-  //DisplayFadeFromBlack(fade_token, needtoshowme);
-
   m_fullscreenWillToggle = true;
   // toggle cocoa fullscreen mode
   if ([m_appWindow respondsToSelector:@selector(toggleFullScreen:)])
@@ -944,10 +922,11 @@ void CWinSystemOSX::UpdateResolutions()
   int h;
   double fps;
 
-  int dispIdx = GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-      CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  const NSUInteger dispIdx =
+      GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+          CSettings::SETTING_VIDEOSCREEN_MONITOR));
   GetScreenResolution(&w, &h, &fps, dispIdx);
-  NSString* dispName = screenNameForDisplay(GetDisplayID(dispIdx));
+  const NSString* dispName = screenNameForDisplay(dispIdx);
   UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP),
                           dispName.UTF8String, w, h, fps, 0);
 
@@ -959,7 +938,7 @@ void CWinSystemOSX::UpdateResolutions()
   CDisplaySettings::GetInstance().ApplyCalibrations();
 }
 
-void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps, int screenIdx)
+void CWinSystemOSX::GetScreenResolution(int* w, int* h, double* fps, unsigned long screenIdx)
 {
   CGDirectDisplayID display_id = (CGDirectDisplayID)GetDisplayID(screenIdx);
   CGDisplayModeRef mode = CGDisplayCopyDisplayMode(display_id);
@@ -980,11 +959,12 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate)
 {
   CGDisplayModeRef dispMode = nullptr;
 
-  int screenIdx = GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-      CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  const NSUInteger screenIdx =
+      GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+          CSettings::SETTING_VIDEOSCREEN_MONITOR));
 
   // Figure out the screen size. (default to main screen)
-  CGDirectDisplayID display_id = GetDisplayID(screenIdx);
+  const CGDirectDisplayID display_id = GetDisplayID(screenIdx);
 
   // find mode that matches the desired size, refreshrate
   // non interlaced, nonstretched, safe for hardware
@@ -1032,10 +1012,11 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate)
 
 void CWinSystemOSX::FillInVideoModes()
 {
-  int dispIdx = GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-      CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  const NSUInteger dispIdx =
+      GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+          CSettings::SETTING_VIDEOSCREEN_MONITOR));
 
-  for (int disp = 0; disp < static_cast<int>(NSScreen.screens.count); disp++)
+  for (NSUInteger disp = 0; disp <= NSScreen.screens.count - 1; disp++)
   {
     bool stretched;
     bool interlaced;
@@ -1045,7 +1026,7 @@ void CWinSystemOSX::FillInVideoModes()
     RESOLUTION_INFO res;
 
     CFArrayRef displayModes = GetAllDisplayModes(GetDisplayID(disp));
-    NSString* dispName = screenNameForDisplay(GetDisplayID(disp));
+    const NSString* dispName = screenNameForDisplay(disp);
 
     CLog::LogF(LOGINFO, "Display {} has name {}", disp, [dispName UTF8String]);
 
@@ -1159,7 +1140,7 @@ void CWinSystemOSX::WindowChangedScreen()
   // user has moved the window to a
   // different screen
   NSOpenGLContext* context = [NSOpenGLContext currentContext];
-  m_lastDisplayNr = -1;
+  m_lastDisplayNr = 0;
 
   // if we are here the user dragged the window to a different
   // screen and we return the screen of the window
@@ -1178,8 +1159,6 @@ void CWinSystemOSX::WindowChangedScreen()
       }
     }
   }
-  if (m_lastDisplayNr == -1)
-    m_lastDisplayNr = 0; // default to main screen
 }
 
 CGLContextObj CWinSystemOSX::GetCGLContextObj()
@@ -1230,11 +1209,10 @@ std::vector<std::string> CWinSystemOSX::GetConnectedOutputs()
   std::vector<std::string> outputs;
   outputs.push_back("Default");
 
-  int numDisplays = [[NSScreen screens] count];
-
-  for (int disp = 0; disp < numDisplays; disp++)
+  const NSUInteger numDisplays = NSScreen.screens.count;
+  for (NSUInteger disp = 0; disp <= numDisplays - 1; disp++)
   {
-    NSString* dispName = screenNameForDisplay(GetDisplayID(disp));
+    NSString* dispName = screenNameForDisplay(disp);
     outputs.push_back(dispName.UTF8String);
   }
 
