@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "threads/CriticalSection.h"
+
 #include <chrono>
 #include <string>
 
@@ -422,6 +424,9 @@ typedef struct TextCacheStruct_t
   unsigned short *ColorTable;
 
   std::string      line30;
+
+  // TODO: We should get rid of this public mutex. Here are the details: https://github.com/xbmc/xbmc/pull/22226
+  CCriticalSection m_critSection;
 } TextCacheStruct_t;
 
 /* struct for all Information needed for Page Rendering */

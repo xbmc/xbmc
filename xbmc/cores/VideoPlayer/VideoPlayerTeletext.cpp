@@ -140,7 +140,7 @@ void CDVDTeletextData::CloseStream(bool bWaitForBuffers)
 
 void CDVDTeletextData::ResetTeletextCache()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_TXTCache->m_critSection);
 
   /* Reset Data structures */
   for (auto& pages : m_TXTCache->astCachetable)
@@ -248,7 +248,7 @@ void CDVDTeletextData::Process()
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
     {
-      std::unique_lock<CCriticalSection> lock(m_critSection);
+      std::unique_lock<CCriticalSection> lock(m_TXTCache->m_critSection);
 
       DemuxPacket* pPacket = std::static_pointer_cast<CDVDMsgDemuxerPacket>(pMsg)->GetPacket();
       uint8_t *Datai       = pPacket->pData;
@@ -709,7 +709,7 @@ void CDVDTeletextData::Decode_p2829(unsigned char *vtxt_row, TextExtData_t **ptE
 
 void CDVDTeletextData::SavePage(int p, int sp, unsigned char* buffer)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_TXTCache->m_critSection);
   TextCachedPage_t* pg = m_TXTCache->astCachetable[p][sp];
   if (!pg)
   {
@@ -722,7 +722,7 @@ void CDVDTeletextData::SavePage(int p, int sp, unsigned char* buffer)
 
 void CDVDTeletextData::LoadPage(int p, int sp, unsigned char* buffer)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_TXTCache->m_critSection);
   TextCachedPage_t* pg = m_TXTCache->astCachetable[p][sp];
   if (!pg)
   {
@@ -735,7 +735,7 @@ void CDVDTeletextData::LoadPage(int p, int sp, unsigned char* buffer)
 
 void CDVDTeletextData::ErasePage(int magazine)
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  std::unique_lock<CCriticalSection> lock(m_TXTCache->m_critSection);
   TextCachedPage_t* pg = m_TXTCache->astCachetable[m_TXTCache->CurrentPage[magazine]][m_TXTCache->CurrentSubPage[magazine]];
   if (pg)
   {
