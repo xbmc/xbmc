@@ -33,7 +33,8 @@ ADDON = Addon()
 
 
 class logger:
-    log_message_prefix = '[{} ({})]: '.format(ADDON_ID, ADDON.getAddonInfo('version'))
+    log_message_prefix = '[{} ({})]: '.format(
+        ADDON_ID, ADDON.getAddonInfo('version'))
 
     @staticmethod
     def log(message, level=xbmc.LOGDEBUG):
