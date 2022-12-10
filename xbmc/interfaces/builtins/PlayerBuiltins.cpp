@@ -506,6 +506,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
   {
     if (CGUIWindowVideoBase::ShowResumeMenu(item) == false)
       return false;
+    item.SetProperty("check_resume", false);
   }
 
   if (item.m_bIsFolder || item.IsPlayList())
