@@ -113,21 +113,46 @@ CGDirectDisplayID GetDisplayID(NSUInteger screen_index)
 NSString* screenNameForDisplay(NSUInteger screenIdx)
 {
   NSString* screenName;
+  const CGDirectDisplayID displayID = GetDisplayID(screenIdx);
 
-  if (screenIdx <= NSScreen.screens.count - 1)
+  if (@available(macOS 10.15, *))
   {
-    screenName = NSScreen.screens[screenIdx].localizedName;
+    screenName = [NSScreen.screens objectAtIndex:screenIdx].localizedName;
+  }
+  else
+  {
+    //! TODO: Remove when 10.15 is the minimal target
+    @autoreleasepool
+    {
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+      // No real replacement of CGDisplayIOServicePort
+      // Stackoverflow links to https://github.com/glfw/glfw/pull/192 as a possible replacement
+      // disable warning for now
+      NSDictionary* deviceInfo = (__bridge_transfer NSDictionary*)IODisplayCreateInfoDictionary(
+          CGDisplayIOServicePort(displayID), kIODisplayOnlyPreferredName);
+
+#pragma GCC diagnostic pop
+
+      NSDictionary* localizedNames =
+          [deviceInfo objectForKey:[NSString stringWithUTF8String:kDisplayProductName]];
+
+      if ([localizedNames count] > 0)
+      {
+        screenName = [localizedNames objectForKey:[[localizedNames allKeys] objectAtIndex:0]];
+      }
+    }
   }
 
-  const CGDirectDisplayID dispId = GetDisplayID(screenIdx);
   if (screenName == nil)
   {
-    screenName = [[NSString alloc] initWithFormat:@"%u", dispId];
+    screenName = [[NSString alloc] initWithFormat:@"%u", displayID];
   }
   else
   {
     // ensure screen name is unique by appending displayid
-    screenName = [screenName stringByAppendingFormat:@" (%@)", [@(dispId) stringValue]];
+    screenName = [screenName stringByAppendingFormat:@" (%@)", [@(displayID) stringValue]];
   }
 
   return screenName;
@@ -769,7 +794,7 @@ bool CWinSystemOSX::Hide()
 
 NSRect CWinSystemOSX::GetWindowDimensions()
 {
-  NSRect frame;
+  NSRect frame = NSZeroRect;
   if (m_appWindow)
   {
     NSWindow* win = (NSWindow*)m_appWindow;
@@ -926,7 +951,7 @@ void CWinSystemOSX::UpdateResolutions()
       GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
           CSettings::SETTING_VIDEOSCREEN_MONITOR));
   GetScreenResolution(&w, &h, &fps, dispIdx);
-  const NSString* dispName = screenNameForDisplay(dispIdx);
+  NSString* const dispName = screenNameForDisplay(dispIdx);
   UpdateDesktopResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP),
                           dispName.UTF8String, w, h, fps, 0);
 
@@ -1026,7 +1051,7 @@ void CWinSystemOSX::FillInVideoModes()
     RESOLUTION_INFO res;
 
     CFArrayRef displayModes = GetAllDisplayModes(GetDisplayID(disp));
-    const NSString* dispName = screenNameForDisplay(disp);
+    NSString* const dispName = screenNameForDisplay(disp);
 
     CLog::LogF(LOGINFO, "Display {} has name {}", disp, [dispName UTF8String]);
 
@@ -1210,10 +1235,13 @@ std::vector<std::string> CWinSystemOSX::GetConnectedOutputs()
   outputs.push_back("Default");
 
   const NSUInteger numDisplays = NSScreen.screens.count;
-  for (NSUInteger disp = 0; disp <= numDisplays - 1; disp++)
+  if (numDisplays > 0)
   {
-    NSString* dispName = screenNameForDisplay(disp);
-    outputs.push_back(dispName.UTF8String);
+    for (NSUInteger disp = 0; disp <= numDisplays - 1; disp++)
+    {
+      NSString* const dispName = screenNameForDisplay(disp);
+      outputs.push_back(dispName.UTF8String);
+    }
   }
 
   return outputs;
@@ -1256,28 +1284,4 @@ std::string CWinSystemOSX::GetClipboardText()
 
 void CWinSystemOSX::ShowOSMouse(bool show)
 {
-}
-
-#pragma mark - Unused
-
-CGDisplayFadeReservationToken DisplayFadeToBlack(bool fade)
-{
-  // Fade to black to hide resolution-switching flicker and garbage.
-  CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
-  if (CGAcquireDisplayFadeReservation(5, &fade_token) == kCGErrorSuccess && fade)
-    CGDisplayFade(fade_token, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0.0, 0.0, 0.0,
-                  TRUE);
-
-  return (fade_token);
-}
-
-void DisplayFadeFromBlack(CGDisplayFadeReservationToken fade_token, bool fade)
-{
-  if (fade_token != kCGDisplayFadeReservationInvalidToken)
-  {
-    if (fade)
-      CGDisplayFade(fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0,
-                    0.0, FALSE);
-    CGReleaseDisplayFadeReservation(fade_token);
-  }
 }
