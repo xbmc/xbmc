@@ -21,10 +21,8 @@
 from __future__ import absolute_import, unicode_literals
 
 from . import api_utils, settings
-from .utils import logger
 try:
     from typing import Text, Optional, Union, List, Dict, Any  # pylint: disable=unused-import
-    InfoType = Dict[Text, Any]  # pylint: disable=invalid-name
 except ImportError:
     pass
 
@@ -43,6 +41,15 @@ EP_URL = SHOW_URL + '/seasons/{}/episodes/{}/ratings'
 
 
 def get_details(imdb_id, season=None, episode=None):
+    # type: (Text, Text, Text) -> Dict
+    """
+    get the Trakt ratings
+
+    :param imdb_id:
+    :param season:
+    :param episode:
+    :return: trackt ratings
+    """
     result = {}
     if season and episode:
         url = EP_URL.format(imdb_id, season, episode)
@@ -50,8 +57,9 @@ def get_details(imdb_id, season=None, episode=None):
     else:
         url = SHOW_URL.format(imdb_id)
         params = {'extended': 'full'}
-    resp = api_utils.load_info(url, params=params, default={}, verboselog=settings.VERBOSELOG)
-    rating =resp.get('rating')
+    resp = api_utils.load_info(
+        url, params=params, default={}, verboselog=settings.VERBOSELOG)
+    rating = resp.get('rating')
     votes = resp.get('votes')
     if votes and rating:
         result['ratings'] = {'trakt': {'votes': votes, 'rating': rating}}

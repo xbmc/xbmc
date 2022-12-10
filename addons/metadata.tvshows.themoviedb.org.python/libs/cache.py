@@ -22,8 +22,10 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import os, pickle
-import xbmc, xbmcvfs
+import os
+import pickle
+import xbmc
+import xbmcvfs
 
 from .utils import ADDON, logger
 
@@ -31,7 +33,6 @@ try:
     from typing import Optional, Text, Dict, Any  # pylint: disable=unused-import
 except ImportError:
     pass
-
 
 
 def _get_cache_directory():  # pylint: disable=missing-docstring

@@ -1,3 +1,77 @@
+1.6.0
+change to use new JSON based episodeguide format to handle multiple providers
+fixes for last minute changes to new Nexus Python bindings
+
+1.5.6
+fix for scraper ignoring NFO files with TVDB artwork URL
+
+1.5.5
+fix for cast order in episode lists
+remove use of depreciated logos categorization
+filter out SVG artwork
+updated language files
+
+1.5.4
+unreleased
+
+1.5.3
+fix to properly parse NFO file for show ID
+
+1.5.2
+added episode runtime from TMDb API
+updated language files
+
+1.5.1
+added two language options to the settings (kn-IN and te-IN)
+updated language files
+added additional error catching for bad JSON from API
+added typing for all calls
+
+1.5.0
+Nexus only updates to use new VideoInfoTag setters
+general code cleanup
+updated language files
+
+1.4.10
+updates to image reduction algorithm to better deal with shows with lots of seasons
+
+1.4.9
+fix to fallback to English trailer if no trailer found in selected language
+
+1.4.8
+changed IMDB parsing to use JSON from application/ld+json section instead of HTML
+updated language files
+
+1.4.7
+fix for shows with large number of images causing SQL error when using mySQL/MariaDB
+
+1.4.6
+fix IMDB HTML scrape to work with new IMDB site
+language updates
+
+1.4.5
+fix settings file to show correct default for studio and country storage
+
+1.4.4
+fix so studios get added even if there is no country
+change the default setting so that studio and country are stored separately
+
+1.4.3
+fix for crash if episode group has a season with no episodes
+
+1.4.2
+fix for crash if Kodi calls the scraper without passing the source settings
+change so that old TVDB XML scraper episodeguide URL will work to get new episodeguide from TMDb
+
+1.4.1
+fix for crash if TMDb returns no TV show results when using external ID in parsing nfo file
+
+1.4.0
+TV show trailers from YouTube now included in metadata (with option to turn it off)
+option to select which YouTube addon is used to play trailers
+scraper now parses IDs from TVDB and IMDB URLs for identifying shows
+(thanks to tielis for these contributions)
+
 1.3.14
 fix for named seasons in NFO files being ignored
 
