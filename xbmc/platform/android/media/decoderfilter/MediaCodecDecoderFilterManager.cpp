@@ -54,8 +54,7 @@ CMediaCodecDecoderFilterManager::CMediaCodecDecoderFilterManager()
       if (!StringUtils::CompareNoCase(*ptr, codecname, strlen(*ptr)))
         flags = 0;
     }
-    std::string tmp(codecname);
-    StringUtils::ToLower(tmp);
+    std::string tmp = StringUtils::FoldCase(codecname);
     int minheight = 0;
     if (tmp.find("mpeg4") != std::string::npos)
       minheight = 720;

@@ -110,11 +110,10 @@ bool CPlayListPLS::Load(const std::string &strFile)
     size_t iPosEqual = strLine.find('=');
     if (iPosEqual != std::string::npos)
     {
-      std::string strLeft = strLine.substr(0, iPosEqual);
+      std::string strLeft = StringUtils::FoldCase(strLine.substr(0, iPosEqual));
+      strLeft = StringUtils::TrimLeft(strLeft);
       iPosEqual++;
       std::string strValue = strLine.substr(iPosEqual);
-      StringUtils::ToLower(strLeft);
-      StringUtils::TrimLeft(strLeft);
 
       if (strLeft == "numberofentries")
       {
@@ -308,9 +307,7 @@ bool CPlayListASX::LoadData(std::istream& stream)
     // lowercase every element
     TiXmlNode *pNode = pRootElement;
     TiXmlNode *pChild = NULL;
-    std::string value;
-    value = pNode->Value();
-    StringUtils::ToLower(value);
+    std::string value = StringUtils::FoldCase(pNode->Value());
     pNode->SetValue(value);
     while(pNode)
     {
@@ -319,15 +316,13 @@ bool CPlayListASX::LoadData(std::istream& stream)
       {
         if (pChild->Type() == TiXmlNode::TINYXML_ELEMENT)
         {
-          value = pChild->Value();
-          StringUtils::ToLower(value);
+          value = StringUtils::FoldCase(pChild->Value());
           pChild->SetValue(value);
 
           TiXmlAttribute* pAttr = pChild->ToElement()->FirstAttribute();
           while(pAttr)
           {
-            value = pAttr->Name();
-            StringUtils::ToLower(value);
+            value = StringUtils::FoldCase(pAttr->Name());
             pAttr->SetName(value);
             pAttr = pAttr->Next();
           }

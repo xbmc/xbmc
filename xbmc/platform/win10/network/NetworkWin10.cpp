@@ -217,6 +217,10 @@ void CNetworkWin10::queryInterfaceList()
 
   struct ci_less
   {
+    // TODO: This does NOT look case-less compare. This looks like C compare,
+    // which uses current C locale setting. After verifying, change to
+    // FoldCase
+
     // case-independent (ci) compare_less
     struct nocase_compare
     {
