@@ -1184,11 +1184,13 @@ void CWinSystemOSX::WindowChangedScreen()
 
 CGLContextObj CWinSystemOSX::GetCGLContextObj()
 {
-  CGLContextObj cglcontex = nullptr;
+  __block CGLContextObj cglcontex = nullptr;
   if (m_appWindow)
   {
-    OSXGLView* contentView = m_appWindow.contentView;
-    cglcontex = contentView.getGLContext.CGLContextObj;
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      OSXGLView* contentView = m_appWindow.contentView;
+      cglcontex = contentView.getGLContext.CGLContextObj;
+    });
   }
 
   return cglcontex;
