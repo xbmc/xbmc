@@ -54,7 +54,6 @@ private:
 
   int m_speed;
   std::shared_ptr<TextCacheStruct_t> m_TXTCache = std::make_shared<TextCacheStruct_t>();
-  CCriticalSection m_critSection;
   CDVDMessageQueue m_messageQueue;
 };
 
