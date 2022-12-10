@@ -39,6 +39,10 @@ private:
   struct ci_less
   {
     // case-independent (ci) compare_less binary function
+
+    // TODO: Unicode. This is NOT a FoldCase. Behavior depends upon
+    // locale used. (Just like NetworkWin10.cpp)
+
     struct nocase_compare
     {
       bool operator() (const unsigned char& c1, const unsigned char& c2) const {
