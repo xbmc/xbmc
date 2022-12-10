@@ -296,8 +296,7 @@ bool CJSONRPC::HandleMethodCall(const CVariant& request, CVariant& response, ITr
   {
     isNotification = !request.isMember("id");
 
-    std::string methodName = request["method"].asString();
-    StringUtils::ToLower(methodName);
+    std::string methodName = StringUtils::FoldCase(request["method"].asString());
 
     JSONRPC::MethodCall method;
     CVariant params;

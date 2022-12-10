@@ -432,8 +432,7 @@ JSONRPC_STATUS CVideoLibrary::GetInProgressTVShows(const std::string &method, IT
 
 JSONRPC_STATUS CVideoLibrary::GetGenres(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  std::string media = parameterObject["type"].asString();
-  StringUtils::ToLower(media);
+  std::string media = StringUtils::FoldCase(parameterObject["type"].asString());
   VideoDbContentType idContent = VideoDbContentType::UNKNOWN;
 
   std::string strPath = "videodb://";
@@ -473,8 +472,7 @@ JSONRPC_STATUS CVideoLibrary::GetGenres(const std::string &method, ITransportLay
 
 JSONRPC_STATUS CVideoLibrary::GetTags(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  std::string media = parameterObject["type"].asString();
-  StringUtils::ToLower(media);
+  std::string media = StringUtils::FoldCase(parameterObject["type"].asString());
   VideoDbContentType idContent = VideoDbContentType::UNKNOWN;
 
   std::string strPath = "videodb://";
@@ -569,8 +567,7 @@ JSONRPC_STATUS CVideoLibrary::GetAvailableArt(const std::string& method, ITransp
   if (mediaID == -1)
     return InternalError;
 
-  std::string artType = parameterObject["arttype"].asString();
-  StringUtils::ToLower(artType);
+  std::string artType = StringUtils::FoldCase(parameterObject["arttype"].asString());
 
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

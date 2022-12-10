@@ -715,9 +715,7 @@ JSONRPC_STATUS CAudioLibrary::GetAvailableArt(const std::string& method, ITransp
   if (mediaID == -1)
     return InternalError;
 
-  std::string artType = parameterObject["arttype"].asString();
-  StringUtils::ToLower(artType);
-
+  std::string artType = StringUtils::FoldCase(parameterObject["arttype"].asString());
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;

@@ -64,8 +64,7 @@ static int PlayOffset(const std::vector<std::string>& params)
   // playlist.playoffset(offset)
   // playlist.playoffset(music|video,offset)
   std::string strPos = params[0];
-  std::string paramlow(params[0]);
-  StringUtils::ToLower(paramlow);
+  std::string paramlow = StringUtils::FoldCase(params[0]);
   if (params.size() > 1)
   {
     // ignore any other parameters if present
@@ -120,8 +119,7 @@ static int PlayerControl(const std::vector<std::string>& params)
   appPower->ResetScreenSaver();
   appPower->WakeUpScreenSaverAndDPMS();
 
-  std::string paramlow(params[0]);
-  StringUtils::ToLower(paramlow);
+  std::string paramlow = StringUtils::FoldCase(params[0]);
 
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
 
@@ -329,9 +327,7 @@ static int PlayerControl(const std::vector<std::string>& params)
     PLAYLIST::RepeatState prevRepeatState =
         CServiceBroker::GetPlaylistPlayer().GetRepeat(playlistId);
 
-    std::string paramlow(params[0]);
-    StringUtils::ToLower(paramlow);
-
+    std::string paramlow = StringUtils::FoldCase(params[0]);
     PLAYLIST::RepeatState repeatState;
     if (paramlow == "repeatall")
       repeatState = PLAYLIST::RepeatState::ALL;
