@@ -870,6 +870,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_lastDisplayNr = GetDisplayIndex(settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
   m_nWidth = res.iWidth;
   m_nHeight = res.iHeight;
+  const bool fullScreenState = m_bFullScreen;
   m_bFullScreen = fullScreen;
 
   //handle resolution/refreshrate switching early here
@@ -924,12 +925,14 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     UnblankDisplays();
   }
 
-  m_fullscreenWillToggle = true;
   // toggle cocoa fullscreen mode
-  if ([m_appWindow respondsToSelector:@selector(toggleFullScreen:)])
+  if (fullScreenState != m_bFullScreen)
+  {
+    m_fullscreenWillToggle = true;
     [m_appWindow performSelectorOnMainThread:@selector(toggleFullScreen:)
                                   withObject:nil
                                waitUntilDone:YES];
+  }
 
   ResizeWindow(m_nWidth, m_nHeight, -1, -1);
 
