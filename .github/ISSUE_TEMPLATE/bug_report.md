@@ -71,7 +71,7 @@ Used Operating system:
  - [ ] iOS
  - [ ] tvOS
  - [ ] Linux
- - [ ] OSX
+ - [ ] macOS
  - [ ] Windows
  - [ ] Windows UWP
 
