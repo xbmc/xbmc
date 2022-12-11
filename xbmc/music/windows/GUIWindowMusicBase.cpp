@@ -989,7 +989,7 @@ void CGUIWindowMusicBase::OnInitWindow()
 
 std::string CGUIWindowMusicBase::GetStartFolder(const std::string &dir)
 {
-  std::string lower(dir); StringUtils::ToLower(lower);
+  std::string lower = StringUtils::FoldCase(dir);
   if (lower == "plugins" || lower == "addons")
     return "addons://sources/audio/";
   else if (lower == "$playlists" || lower == "playlists")
