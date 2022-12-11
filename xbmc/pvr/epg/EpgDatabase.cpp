@@ -27,36 +27,6 @@
 using namespace dbiplus;
 using namespace PVR;
 
-namespace
-{
-// clang-format off
-const std::string sqlCreateSavedSearchesTable = "CREATE TABLE savedsearches ("
-                                                "idSearch                  integer primary key,"
-                                                "sTitle                    varchar(255), "
-                                                "sLastExecutedDateTime     varchar(20), "
-                                                "sSearchTerm               varchar(255), "
-                                                "bSearchInDescription      bool, "
-                                                "iGenreType                integer, "
-                                                "sStartDateTime            varchar(20), "
-                                                "sEndDateTime              varchar(20), "
-                                                "bIsCaseSensitive          bool, "
-                                                "iMinimumDuration          integer, "
-                                                "iMaximumDuration          integer, "
-                                                "bIsRadio                  bool, "
-                                                "iClientId                 integer, "
-                                                "iChannelUid               integer, "
-                                                "bIncludeUnknownGenres     bool, "
-                                                "bRemoveDuplicates         bool, "
-                                                "bIgnoreFinishedBroadcasts bool, "
-                                                "bIgnoreFutureBroadcasts   bool, "
-                                                "bFreeToAirOnly            bool, "
-                                                "bIgnorePresentTimers      bool, "
-                                                "bIgnorePresentRecordings  bool,"
-                                                "iChannelGroup             integer"
-                                                ")";
-// clang-format on
-} // unnamed namespace
-
 bool CPVREpgDatabase::Open()
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -137,7 +107,30 @@ void CPVREpgDatabase::CreateTables()
   );
 
   CLog::LogFC(LOGDEBUG, LOGEPG, "Creating table 'savedsearches'");
-  m_pDS->exec(sqlCreateSavedSearchesTable);
+  m_pDS->exec("CREATE TABLE savedsearches ("
+              "idSearch                  integer primary key,"
+              "sTitle                    varchar(255), "
+              "sLastExecutedDateTime     varchar(20), "
+              "sSearchTerm               varchar(255), "
+              "bSearchInDescription      bool, "
+              "iGenreType                integer, "
+              "sStartDateTime            varchar(20), "
+              "sEndDateTime              varchar(20), "
+              "bIsCaseSensitive          bool, "
+              "iMinimumDuration          integer, "
+              "iMaximumDuration          integer, "
+              "bIsRadio                  bool, "
+              "iClientId                 integer, "
+              "iChannelUid               integer, "
+              "bIncludeUnknownGenres     bool, "
+              "bRemoveDuplicates         bool, "
+              "bIgnoreFinishedBroadcasts bool, "
+              "bIgnoreFutureBroadcasts   bool, "
+              "bFreeToAirOnly            bool, "
+              "bIgnorePresentTimers      bool, "
+              "bIgnorePresentRecordings  bool,"
+              "iChannelGroup             integer"
+              ")");
 }
 
 void CPVREpgDatabase::CreateAnalytics()
@@ -301,7 +294,29 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 15)
   {
-    m_pDS->exec(sqlCreateSavedSearchesTable);
+    m_pDS->exec("CREATE TABLE savedsearches ("
+                "idSearch                  integer primary key,"
+                "sTitle                    varchar(255), "
+                "sLastExecutedDateTime     varchar(20), "
+                "sSearchTerm               varchar(255), "
+                "bSearchInDescription      bool, "
+                "iGenreType                integer, "
+                "sStartDateTime            varchar(20), "
+                "sEndDateTime              varchar(20), "
+                "bIsCaseSensitive          bool, "
+                "iMinimumDuration          integer, "
+                "iMaximumDuration          integer, "
+                "bIsRadio                  bool, "
+                "iClientId                 integer, "
+                "iChannelUid               integer, "
+                "bIncludeUnknownGenres     bool, "
+                "bRemoveDuplicates         bool, "
+                "bIgnoreFinishedBroadcasts bool, "
+                "bIgnoreFutureBroadcasts   bool, "
+                "bFreeToAirOnly            bool, "
+                "bIgnorePresentTimers      bool, "
+                "bIgnorePresentRecordings  bool"
+                ")");
   }
 
   if (iVersion < 16)
