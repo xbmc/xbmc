@@ -462,7 +462,10 @@ bool CPVRGUIActionsPlayback::PlayMedia(const CFileItem& item) const
     const std::shared_ptr<CPVRRecording> recording =
         CServiceBroker::GetPVRManager().Recordings()->GetByPath(item.GetPath());
     if (recording)
+    {
       pvrItem = std::make_unique<CFileItem>(recording);
+      pvrItem->SetStartOffset(item.GetStartOffset());
+    }
   }
   bool bCheckResume = true;
   if (item.HasProperty("check_resume"))
