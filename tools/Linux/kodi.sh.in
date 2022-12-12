@@ -180,10 +180,10 @@ do
   CHILD=$!
   wait "${CHILD}"
   RET=$?
-  if [ $(( $RET == 65 )) = "1" ]
+  if [ $RET -eq 65 ]
   then # User requested to restart app
     LOOP=1
-  elif [ $(( ($RET >= 131 && $RET <= 136) || $RET == 139 )) = "1" ]
+  elif [ $RET -ge 131 ] && [ $RET -le 136 ] || [ $RET -eq 139 ]
   then # Crashed with core dump
     print_crash_report
   fi
