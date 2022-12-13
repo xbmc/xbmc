@@ -82,6 +82,7 @@ bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME* buffer)
     for (int i = 0; i < layer->nb_planes; i++)
     {
       planes[i].fd = descriptor->objects[layer->planes[i].object_index].fd;
+      planes[i].modifier = descriptor->objects[layer->planes[i].object_index].format_modifier;
       planes[i].offset = layer->planes[i].offset;
       planes[i].pitch = layer->planes[i].pitch;
     }
