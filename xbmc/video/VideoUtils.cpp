@@ -410,6 +410,9 @@ bool IsItemPlayable(const CFileItem& item)
   // Include playlists located at one of the possible video/mixed playlist locations
   if (item.IsPlayList())
   {
+    if (StringUtils::StartsWithNoCase(item.GetMimeType(), "video/"))
+      return true;
+
     if (StringUtils::StartsWithNoCase(item.GetPath(), "special://videoplaylists/") ||
         StringUtils::StartsWithNoCase(item.GetPath(), "special://profile/playlists/video/") ||
         StringUtils::StartsWithNoCase(item.GetPath(), "special://profile/playlists/mixed/"))
