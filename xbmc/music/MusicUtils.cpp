@@ -787,6 +787,9 @@ bool IsItemPlayable(const CFileItem& item)
   // Include playlists located at one of the possible music playlist locations
   if (item.IsPlayList())
   {
+    if (StringUtils::StartsWithNoCase(item.GetMimeType(), "audio/"))
+      return true;
+
     if (StringUtils::StartsWithNoCase(item.GetPath(), "special://musicplaylists/") ||
         StringUtils::StartsWithNoCase(item.GetPath(), "special://profile/playlists/music/"))
       return true;
