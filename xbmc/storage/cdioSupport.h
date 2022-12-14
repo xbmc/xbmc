@@ -105,7 +105,9 @@ enum class CdioTrayStatus
   CLOSED,
   /* The MMC tray state is reported open */
   OPEN,
-  /* Driver error */
+  /* The MMC tray status operation is not supported */
+  UNKNOWN,
+  /* Generic driver error */
   DRIVER_ERROR
 };
 
