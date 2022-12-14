@@ -3,7 +3,6 @@ DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.incl
                                  apple.patch \
                                  crosscompile.patch \
                                  darwin_embedded.patch \
-                                 01-fix-memleak-PR99301.patch \
                                  10-android-modules.patch \
                                  10-linux-modules.patch \
                                  10-osx-modules.patch \
@@ -57,9 +56,6 @@ all: .installed-$(PLATFORM)
 $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-# Temp patch to resolve https://github.com/python/cpython/issues/99205
-# Remove in 3.11.1+ bump
-	cd $(PLATFORM); patch -p1 -i ../01-fix-memleak-PR99301.patch
 	cd $(PLATFORM); patch -p1 -i ../crosscompile.patch
 	cd $(PLATFORM); patch -p1 -i ../apple.patch
 ifeq ($(OS),darwin_embedded)

@@ -28,7 +28,7 @@
    # On QNX 6.3.2, defining _XOPEN_SOURCE prevents netdb.h from
    # defining NI_NUMERICHOST.
    QNX/6.3.2)
-@@ -2909,7 +2909,7 @@
+@@ -2947,7 +2947,7 @@
        	  return 1;
        }
      }
