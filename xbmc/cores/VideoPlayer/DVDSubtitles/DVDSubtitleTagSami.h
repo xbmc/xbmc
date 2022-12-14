@@ -32,6 +32,7 @@ public:
     m_flag[FLAG_BOLD] = false;
     m_flag[FLAG_ITALIC] = false;
     m_flag[FLAG_UNDERLINE] = false;
+    m_flag[FLAG_STRIKETHROUGH] = false;
     m_flag[FLAG_COLOR] = false;
     m_flag[FLAG_LANGUAGE] = false; //set to true when classID != lang
   }
