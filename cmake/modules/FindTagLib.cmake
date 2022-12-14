@@ -25,6 +25,10 @@ if(ENABLE_INTERNAL_TAGLIB)
   if(WIN32 OR WINDOWS_STORE)
     set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-cmake-pdb-debug.patch")
     generate_patchcommand("${patches}")
+
+    if(WINDOWS_STORE)
+      set(EXTRA_ARGS -DPLATFORM_WINRT=ON)
+    endif()
   endif()
 
   # Debug postfix only used for windows
@@ -33,7 +37,10 @@ if(ENABLE_INTERNAL_TAGLIB)
   endif()
 
   set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
-                 -DBUILD_BINDINGS=OFF)
+                 -DBUILD_EXAMPLES=OFF
+                 -DBUILD_TESTING=OFF
+                 -DBUILD_BINDINGS=OFF
+                 ${EXTRA_ARGS})
 
   BUILD_DEP_TARGET()
 
