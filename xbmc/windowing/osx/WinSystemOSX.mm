@@ -668,6 +668,17 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
       NSString* title = [NSString stringWithUTF8String:m_name.c_str()];
       appWindow.backgroundColor = NSColor.blackColor;
       appWindow.title = title;
+      //! TODO: Remove me if minimum version is bumped to 10_14
+      if (![NSProcessInfo.processInfo
+              isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){.majorVersion = 10,
+                                                                         .minorVersion = 14,
+                                                                         .patchVersion = 0}])
+      {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+        [appWindow setOneShot:NO];
+#pragma GCC diagnostic pop
+      }
 
       NSWindowCollectionBehavior behavior = appWindow.collectionBehavior;
       behavior |= NSWindowCollectionBehaviorFullScreenPrimary;
