@@ -368,20 +368,23 @@ bool CDRMUtils::OpenDrm(bool needConnector)
 
     PrintDrmDeviceInfo(device);
 
-    const char* renderPath = drmGetRenderDeviceNameFromFd(m_fd);
+    m_renderDevicePath = std::unique_ptr<const char, StrdupDeleter>(
+        drmGetRenderDeviceNameFromFd(m_fd), StrdupDeleter());
 
-    if (!renderPath)
-      renderPath = drmGetDeviceNameFromFd2(m_fd);
+    if (!m_renderDevicePath.get())
+      m_renderDevicePath = std::unique_ptr<const char, StrdupDeleter>(drmGetDeviceNameFromFd2(m_fd),
+                                                                      StrdupDeleter());
 
-    if (!renderPath)
-      renderPath = drmGetDeviceNameFromFd(m_fd);
+    if (!m_renderDevicePath.get())
+      m_renderDevicePath =
+          std::unique_ptr<const char, StrdupDeleter>(drmGetDeviceNameFromFd(m_fd), StrdupDeleter());
 
-    if (renderPath)
+    if (m_renderDevicePath.get())
     {
-      m_renderDevicePath = renderPath;
-      m_renderFd = open(renderPath, O_RDWR | O_CLOEXEC);
+      m_renderFd = open(m_renderDevicePath.get(), O_RDWR | O_CLOEXEC);
       if (m_renderFd != 0)
-        CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened render node: {}", __FUNCTION__, renderPath);
+        CLog::Log(LOGDEBUG, "CDRMUtils::{} - opened render node: {}", __FUNCTION__,
+                  m_renderDevicePath.get());
     }
 
     drmFreeDevices(devices.data(), devices.size());
