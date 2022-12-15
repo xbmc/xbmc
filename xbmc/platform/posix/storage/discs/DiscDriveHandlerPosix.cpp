@@ -45,6 +45,7 @@ DriveState CDiscDriveHandlerPosix::GetDriveState(const std::string& devicePath)
   switch (status)
   {
     case CdioTrayStatus::CLOSED:
+    case CdioTrayStatus::UNKNOWN:
       driveStatus = DriveState::CLOSED_MEDIA_UNDEFINED;
       break;
 
