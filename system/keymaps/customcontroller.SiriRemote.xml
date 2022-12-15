@@ -57,6 +57,8 @@
       <!-- Siri remote pan down                     --> <button id="24">Down</button>
       <!-- Siri remote pan left                     --> <button id="25">Left</button>
       <!-- Siri remote pan right                    --> <button id="26">Right</button>
+      <!-- Apple TV remote iPhone/iPad channel up   --> <button id="27">ChannelUp</button>
+      <!-- Apple TV remote iPhone/iPad channel down --> <button id="28">ChannelDown</button>
     </customcontroller>
   </global>
   <Home>
