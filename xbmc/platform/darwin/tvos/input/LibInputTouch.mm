@@ -80,6 +80,8 @@
     // single press keys
     case UIPressTypeSelect:
     case UIPressTypePlayPause:
+    case UIPressTypePageUp:
+    case UIPressTypePageDown:
       break;
 
     // auto-repeat keys
@@ -162,6 +164,23 @@
   menuRecognizer.allowedPressTypes = @[ @(UIPressTypeMenu) ];
   menuRecognizer.delegate = self;
   [g_xbmcController.glView addGestureRecognizer:menuRecognizer];
+
+  if (@available(tvOS 14.3, *)) {
+    auto pageUpTypes = @[ @(UIPressTypePageUp) ];
+    auto pageUpRecognizer =
+        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pageUpPressed:)];
+    pageUpRecognizer.allowedPressTypes = pageUpTypes;
+    pageUpRecognizer.delegate = self;
+    [g_xbmcController.glView addGestureRecognizer:pageUpRecognizer];
+
+    auto pageDownTypes = @[ @(UIPressTypePageDown) ];
+    auto pageDownRecognizer =
+        [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pageDownPressed:)];
+    pageDownRecognizer.allowedPressTypes = pageDownTypes;
+    pageDownRecognizer.delegate = self;
+    [g_xbmcController.glView addGestureRecognizer:pageDownRecognizer];
+  }
+
 
   auto playPauseTypes = @[ @(UIPressTypePlayPause) ];
   auto playPauseRecognizer =
@@ -250,6 +269,34 @@
     case UIGestureRecognizerStateEnded:
       CLog::Log(LOGDEBUG, "Input: Siri remote select press (id: 5)");
       [g_xbmcController.inputHandler sendButtonPressed:5];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
+      break;
+    default:
+      break;
+  }
+}
+
+- (void)pageUpPressed:(UITapGestureRecognizer*)sender
+{
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "Input: Siri remote page up press (id: 27)");
+      [g_xbmcController.inputHandler sendButtonPressed:27];
+      [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
+      break;
+    default:
+      break;
+  }
+}
+
+- (void)pageDownPressed:(UITapGestureRecognizer*)sender
+{
+  switch (sender.state)
+  {
+    case UIGestureRecognizerStateEnded:
+      CLog::Log(LOGDEBUG, "Input: Siri remote page down press (id: 28)");
+      [g_xbmcController.inputHandler sendButtonPressed:28];
       [g_xbmcController.inputHandler.inputRemote startSiriRemoteIdleTimer];
       break;
     default:
