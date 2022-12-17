@@ -91,7 +91,7 @@ public:
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
 
-  void GetScreenResolution(int* w, int* h, double* fps, int screenIdx);
+  void GetScreenResolution(int* w, int* h, double* fps, unsigned long screenIdx);
   void EnableVSync(bool enable);
   bool SwitchToVideoMode(int width, int height, double refreshrate);
   void FillInVideoModes();
@@ -107,7 +107,7 @@ protected:
   NSWindow* m_appWindow;
   OSXGLView* m_glView;
   bool m_movedToOtherScreen;
-  int m_lastDisplayNr;
+  unsigned long m_lastDisplayNr;
   double m_refreshRate;
 
   CCriticalSection m_resourceSection;
