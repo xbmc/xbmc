@@ -695,72 +695,77 @@ PVR_ERROR CPVRClients::GetChannelGroupMembers(
 std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChannelScan() const
 {
   std::vector<std::shared_ptr<CPVRClient>> possibleScanClients;
-  ForCreatedClients(__FUNCTION__, [&possibleScanClients](const std::shared_ptr<CPVRClient>& client) {
-    if (client->GetClientCapabilities().SupportsChannelScan())
+
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  for (const auto& entry : m_clientMap)
+  {
+    const auto& client = entry.second;
+    if (client->ReadyToUse() && !client->IgnoreClient() &&
+        client->GetClientCapabilities().SupportsChannelScan())
       possibleScanClients.emplace_back(client);
-    return PVR_ERROR_NO_ERROR;
-  });
+  }
+
   return possibleScanClients;
 }
 
 std::vector<std::shared_ptr<CPVRClient>> CPVRClients::GetClientsSupportingChannelSettings(bool bRadio) const
 {
   std::vector<std::shared_ptr<CPVRClient>> possibleSettingsClients;
-  ForCreatedClients(__FUNCTION__, [bRadio, &possibleSettingsClients](const std::shared_ptr<CPVRClient>& client) {
-    const CPVRClientCapabilities& caps = client->GetClientCapabilities();
-    if (caps.SupportsChannelSettings() &&
-        ((bRadio && caps.SupportsRadio()) || (!bRadio && caps.SupportsTV())))
-      possibleSettingsClients.emplace_back(client);
-    return PVR_ERROR_NO_ERROR;
-  });
+
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  for (const auto& entry : m_clientMap)
+  {
+    const auto& client = entry.second;
+    if (client->ReadyToUse() && !client->IgnoreClient())
+    {
+      const CPVRClientCapabilities& caps = client->GetClientCapabilities();
+      if (caps.SupportsChannelSettings() &&
+          ((bRadio && caps.SupportsRadio()) || (!bRadio && caps.SupportsTV())))
+        possibleSettingsClients.emplace_back(client);
+    }
+  }
+
   return possibleSettingsClients;
 }
 
 bool CPVRClients::AnyClientSupportingRecordingsSize() const
 {
-  std::vector<std::shared_ptr<CPVRClient>> recordingSizeClients;
-  ForCreatedClients(__FUNCTION__, [&recordingSizeClients](const std::shared_ptr<CPVRClient>& client) {
-    if (client->GetClientCapabilities().SupportsRecordingsSize())
-      recordingSizeClients.emplace_back(client);
-    return PVR_ERROR_NO_ERROR;
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
+    const auto& client = entry.second;
+    return client->ReadyToUse() && !client->IgnoreClient() &&
+           client->GetClientCapabilities().SupportsRecordingsSize();
   });
-  return recordingSizeClients.size() != 0;
 }
 
 bool CPVRClients::AnyClientSupportingEPG() const
 {
-  bool bHaveSupportingClient = false;
-  ForCreatedClients(__FUNCTION__,
-                    [&bHaveSupportingClient](const std::shared_ptr<CPVRClient>& client) {
-                      if (client->GetClientCapabilities().SupportsEPG())
-                        bHaveSupportingClient = true;
-                      return PVR_ERROR_NO_ERROR;
-                    });
-  return bHaveSupportingClient;
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
+    const auto& client = entry.second;
+    return client->ReadyToUse() && !client->IgnoreClient() &&
+           client->GetClientCapabilities().SupportsEPG();
+  });
 }
 
 bool CPVRClients::AnyClientSupportingRecordings() const
 {
-  bool bHaveSupportingClient = false;
-  ForCreatedClients(__FUNCTION__,
-                    [&bHaveSupportingClient](const std::shared_ptr<CPVRClient>& client) {
-                      if (client->GetClientCapabilities().SupportsRecordings())
-                        bHaveSupportingClient = true;
-                      return PVR_ERROR_NO_ERROR;
-                    });
-  return bHaveSupportingClient;
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
+    const auto& client = entry.second;
+    return client->ReadyToUse() && !client->IgnoreClient() &&
+           client->GetClientCapabilities().SupportsRecordings();
+  });
 }
 
 bool CPVRClients::AnyClientSupportingRecordingsDelete() const
 {
-  bool bHaveSupportingClient = false;
-  ForCreatedClients(__FUNCTION__,
-                    [&bHaveSupportingClient](const std::shared_ptr<CPVRClient>& client) {
-                      if (client->GetClientCapabilities().SupportsRecordingsDelete())
-                        bHaveSupportingClient = true;
-                      return PVR_ERROR_NO_ERROR;
-                    });
-  return bHaveSupportingClient;
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return std::any_of(m_clientMap.cbegin(), m_clientMap.cend(), [](const auto& entry) {
+    const auto& client = entry.second;
+    return client->ReadyToUse() && !client->IgnoreClient() &&
+           client->GetClientCapabilities().SupportsRecordingsDelete();
+  });
 }
 
 void CPVRClients::OnSystemSleep()
