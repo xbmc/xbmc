@@ -179,7 +179,7 @@ bool CPlayerController::OnAction(const CAction &action)
       {
         float videoAudioDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange;
         ShowSlider(action.GetID(), 297, appPlayer->GetVideoSettings().m_AudioDelay,
-                   -videoAudioDelayRange, 0.025f, videoAudioDelayRange, true);
+                   -videoAudioDelayRange, AUDIO_DELAY_STEP, videoAudioDelayRange, true);
         return true;
       }
 
@@ -187,13 +187,13 @@ bool CPlayerController::OnAction(const CAction &action)
       {
         float videoAudioDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange;
         CVideoSettings vs = appPlayer->GetVideoSettings();
-        vs.m_AudioDelay -= 0.025f;
+        vs.m_AudioDelay -= AUDIO_DELAY_STEP;
         if (vs.m_AudioDelay < -videoAudioDelayRange)
           vs.m_AudioDelay = -videoAudioDelayRange;
         appPlayer->SetAVDelay(vs.m_AudioDelay);
 
         ShowSlider(action.GetID(), 297, appPlayer->GetVideoSettings().m_AudioDelay,
-                   -videoAudioDelayRange, 0.025f, videoAudioDelayRange);
+                   -videoAudioDelayRange, AUDIO_DELAY_STEP, videoAudioDelayRange);
         return true;
       }
 
@@ -201,13 +201,13 @@ bool CPlayerController::OnAction(const CAction &action)
       {
         float videoAudioDelayRange = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange;
         CVideoSettings vs = appPlayer->GetVideoSettings();
-        vs.m_AudioDelay += 0.025f;
+        vs.m_AudioDelay += AUDIO_DELAY_STEP;
         if (vs.m_AudioDelay > videoAudioDelayRange)
           vs.m_AudioDelay = videoAudioDelayRange;
         appPlayer->SetAVDelay(vs.m_AudioDelay);
 
         ShowSlider(action.GetID(), 297, appPlayer->GetVideoSettings().m_AudioDelay,
-                   -videoAudioDelayRange, 0.025f, videoAudioDelayRange);
+                   -videoAudioDelayRange, AUDIO_DELAY_STEP, videoAudioDelayRange);
         return true;
       }
 
@@ -558,7 +558,8 @@ void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
           m_sliderAction == ACTION_VOLAMP)
     slider->SetTextValue(CGUIDialogAudioSettings::FormatDecibel(slider->GetFloatValue()));
   else
-    slider->SetTextValue(CGUIDialogAudioSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
+    slider->SetTextValue(
+        CGUIDialogAudioSettings::FormatDelay(slider->GetFloatValue(), AUDIO_DELAY_STEP));
 
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
