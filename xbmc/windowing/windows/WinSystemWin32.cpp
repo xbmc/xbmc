@@ -47,10 +47,6 @@ const char* CWinSystemWin32::SETTING_WINDOW_LEFT = "window.left";
 
 CWinSystemWin32::CWinSystemWin32()
   : CWinSystemBase()
-  , PtrGetGestureInfo(nullptr)
-  , PtrSetGestureConfig(nullptr)
-  , PtrCloseGestureInfoHandle(nullptr)
-  , PtrEnableNonClientDpiScaling(nullptr)
   , m_hWnd(nullptr)
   , m_hMonitor(nullptr)
   , m_hInstance(nullptr)
@@ -124,17 +120,6 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
   m_hInstance = static_cast<HINSTANCE>(GetModuleHandle(nullptr));
   if(m_hInstance == nullptr)
     CLog::LogF(LOGDEBUG, " GetModuleHandle failed with {}", GetLastError());
-
-  // Load Win32 procs if available
-  HMODULE hUser32 = GetModuleHandle(L"user32");
-  if (hUser32)
-  {
-    PtrGetGestureInfo = reinterpret_cast<pGetGestureInfo>(GetProcAddress(hUser32, "GetGestureInfo"));
-    PtrSetGestureConfig = reinterpret_cast<pSetGestureConfig>(GetProcAddress(hUser32, "SetGestureConfig"));
-    PtrCloseGestureInfoHandle = reinterpret_cast<pCloseGestureInfoHandle>(GetProcAddress(hUser32, "CloseGestureInfoHandle"));
-    // if available, enable automatic DPI scaling of the non-client area portions of the window.
-    PtrEnableNonClientDpiScaling = reinterpret_cast<pEnableNonClientDpiScaling>(GetProcAddress(hUser32, "EnableNonClientDpiScaling"));
-  }
 
   UpdateStates(fullScreen);
   // initialize the state
@@ -888,8 +873,7 @@ bool CWinSystemWin32::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
     bool bResChanged = false;
 
     // Windows 8 refresh rate workaround for 24.0, 48.0 and 60.0 Hz
-    if ( CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin8)
-      && (res.fRefreshRate == 24.0 || res.fRefreshRate == 48.0 || res.fRefreshRate == 60.0))
+    if (res.fRefreshRate == 24.0 || res.fRefreshRate == 48.0 || res.fRefreshRate == 60.0)
     {
       CLog::LogF(LOGDEBUG, "Using Windows 8+ workaround for refresh rate {} Hz",
                  static_cast<int>(res.fRefreshRate));
