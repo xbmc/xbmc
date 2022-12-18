@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.provider.Settings;
 import android.text.Html;
@@ -106,6 +107,7 @@ public class Splash extends Activity
 
     StateMachine(Splash a)
     {
+      super(Looper.myLooper());
       this.mSplash = a;
     }
 
