@@ -23031,7 +23031,12 @@ msgctxt "#39123"
 msgid "Artwork"
 msgstr ""
 
-#empty string with id 39124
+#. Label for component level debug logging setting
+#: xbmc/utils/log.cpp
+msgctxt "#39124"
+msgid "Verbose logging for the [B]Add-ons[/B] component"
+msgstr ""
+
 
 #: system/settings/settings.xml
 msgctxt "#39125"

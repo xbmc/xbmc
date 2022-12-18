@@ -214,6 +214,7 @@ void CLog::SettingOptionsLoggingComponentsFiller(const SettingConstPtr& setting,
   list.emplace_back(g_localizeStrings.Get(685), LOGPVR);
   list.emplace_back(g_localizeStrings.Get(686), LOGEPG);
   list.emplace_back(g_localizeStrings.Get(39117), LOGANNOUNCE);
+  list.emplace_back(g_localizeStrings.Get(39124), LOGADDONS);
 #ifdef HAS_DBUS
   list.emplace_back(g_localizeStrings.Get(674), LOGDBUS);
 #endif
