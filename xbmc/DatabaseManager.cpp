@@ -166,10 +166,29 @@ bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
               version, db.GetSchemaVersion());
     bool success = true;
     db.BeginTransaction();
+
     try
     {
-      // drop old analytics, update table(s), recreate analytics, update version
+      // drop old analytics
       db.DropAnalytics();
+    }
+    catch (...)
+    {
+      success = false;
+    }
+    if (!success)
+    {
+      CLog::Log(LOGERROR, "Exception droping old analytics from {}", dbName);
+      db.RollbackTransaction();
+      return false;
+    }
+
+    db.CommitTransaction();
+    db.BeginTransaction();
+
+    try
+    {
+      // update table(s), recreate analytics, update version
       db.UpdateTables(version);
       db.CreateAnalytics();
       db.UpdateVersionNumber();
