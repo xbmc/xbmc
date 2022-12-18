@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.View;
@@ -32,7 +33,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   private XBMCJsonRPC mJsonRPC = null;
   private View mDecorView = null;
   private RelativeLayout mVideoLayout = null;
-  private Handler handler = new Handler();
+  private Handler handler = new Handler(Looper.myLooper());
 
   private class DelayedIntent
   {
