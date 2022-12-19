@@ -13,7 +13,11 @@
 #include "threads/CriticalSection.h"
 
 #include <EGL/eglext.h>
+#ifdef HAVE_EGLEXTANGLE
+#include <EGL/eglext_angle.h>
+#else
 #include <EGL/eglextchromium.h>
+#endif
 #include <X11/Xutil.h>
 
 class CGLContextEGL : public CGLContext
