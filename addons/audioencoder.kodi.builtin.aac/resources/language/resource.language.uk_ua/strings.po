@@ -7,23 +7,23 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-08-21 08:21+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2022-12-12 07:26+0000\n"
+"Last-Translator: Andrii Horpenko <andrii.horpenko@gmail.com>\n"
 "Language-Team: Ukrainian <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-aac/uk_ua/>\n"
 "Language: uk_ua\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.7.2\n"
+"X-Generator: Weblate 4.14.2\n"
 
 msgctxt "Addon Summary"
 msgid "AAC Audio Encoder"
-msgstr ""
+msgstr "Кодувальник аудіо AAC"
 
 msgctxt "Addon Description"
 msgid "AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio."
-msgstr ""
+msgstr "AAC - це набір кодеків, призначених для забезпечення кращого стиснення, ніж MP3, і є поліпшеними версіями аудіо MPEG."
 
 #. Bitrate to use on for compression
 #: resources/settings.xml
@@ -35,7 +35,7 @@ msgstr "Бітрейт"
 #: resources/settings.xml
 msgctxt "#30001"
 msgid "Select which bitrate to use for the AAC audio encoder for audio compression."
-msgstr ""
+msgstr "Виберіть, який бітрейт використовувати для аудіокодера AAC для стиснення звуку."
 
 #. Value format for with bitrate edited field
 #: resources/settings.xml
