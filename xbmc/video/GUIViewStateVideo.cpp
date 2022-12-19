@@ -590,3 +590,29 @@ void CGUIViewStateVideoEpisodes::SaveViewState()
   SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV, CViewStateSettings::GetInstance().Get("videonavepisodes"));
 }
 
+CGUIViewStateVideoPlaylist::CGUIViewStateVideoPlaylist(const CFileItemList& items)
+  : CGUIViewStateWindowVideo(items)
+{
+  SortAttribute sortAttributes = SortAttributeNone;
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
+    sortAttributes = SortAttributeIgnoreArticle;
+
+  AddSortMethod(SortByLabel, sortAttributes, 551,
+                LABEL_MASKS("%L", "%I", "%L", "")); // Label, Size | Label, empty
+  AddSortMethod(SortBySize, 553, LABEL_MASKS("%L", "%I", "%L", "%I")); // Label, Size | Label, Size
+  AddSortMethod(SortByDate, 552, LABEL_MASKS("%L", "%J", "%L", "%J")); // Label, Date | Label, Date
+  AddSortMethod(SortByFile, 561, LABEL_MASKS("%L", "%I", "%L", "")); // Label, Size | Label, empty
+
+  const CViewState* viewState = CViewStateSettings::GetInstance().Get("videofiles");
+  SetSortMethod(viewState->m_sortDescription);
+  SetViewAsControl(viewState->m_viewMode);
+  SetSortOrder(viewState->m_sortDescription.sortOrder);
+
+  LoadViewState(items.GetPath(), WINDOW_VIDEO_NAV);
+}
+
+void CGUIViewStateVideoPlaylist::SaveViewState()
+{
+  SaveViewToDb(m_items.GetPath(), WINDOW_VIDEO_NAV);
+}

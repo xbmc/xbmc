@@ -1164,6 +1164,8 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   }
   CLog::Log(LOGDEBUG, "%s %s", __FUNCTION__, CURL::GetRedacted(item.GetPath()).c_str());
 
+  item.SetProperty("playlist_type_hint", PLAYLIST_VIDEO);
+
   PlayMovie(&item, player);
 
   return true;

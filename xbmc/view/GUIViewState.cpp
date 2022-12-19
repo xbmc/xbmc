@@ -101,7 +101,13 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
     return new CGUIViewStateLibrary(items);
 
   if (items.IsPlayList())
-    return new CGUIViewStateMusicPlaylist(items);
+  {
+    // Playlists (like .strm) can be music or video type
+    if (windowId == WINDOW_VIDEO_NAV)
+      return new CGUIViewStateVideoPlaylist(items);
+    else
+      return new CGUIViewStateMusicPlaylist(items);
+  }
 
   if (items.GetPath() == "special://musicplaylists/")
     return new CGUIViewStateWindowMusicNav(items);

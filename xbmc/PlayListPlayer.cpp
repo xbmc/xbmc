@@ -258,13 +258,23 @@ bool CPlayListPlayer::PlaySongId(int songId)
 bool CPlayListPlayer::Play(const CFileItemPtr& pItem, const std::string& player)
 {
   int playlist;
-  if (pItem->IsAudio())
+  bool isVideo{pItem->IsVideo()};
+  bool isAudio{pItem->IsAudio()};
+  if (isVideo && isAudio && pItem->HasProperty("playlist_type_hint"))
+  {
+    // If an extension is set in both audio / video lists (e.g. playlist .strm),
+    // is not possible detect the type of playlist then we rely on the hint
+    playlist = pItem->GetProperty("playlist_type_hint").asInteger32(PLAYLIST_NONE);
+  }
+  else if (isAudio)
     playlist = PLAYLIST_MUSIC;
-  else if (pItem->IsVideo())
+  else if (isVideo)
     playlist = PLAYLIST_VIDEO;
   else
   {
-    CLog::Log(LOGWARNING,"Playlist Player: ListItem type must be audio or video, use ListItem::setInfo to specify!");
+    CLog::Log(
+        LOGWARNING,
+        "Playlist Player: ListItem type must be audio or video, use ListItem::setInfo to specify!");
     return false;
   }
 
