@@ -241,7 +241,7 @@ struct CVaapiProcessedPicture
   AVFrame *frame;
   int id;
   CPostproc *source = nullptr;
-  bool crop;
+  bool crop = false;
 };
 
 class CVaapiRenderPicture : public CVideoBuffer
