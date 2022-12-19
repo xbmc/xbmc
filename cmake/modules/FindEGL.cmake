@@ -9,6 +9,7 @@
 # EGL_INCLUDE_DIRS - the EGL include directory
 # EGL_LIBRARIES - the EGL libraries
 # EGL_DEFINITIONS - the EGL definitions
+# HAVE_EGLEXTANGLE - if eglext_angle.h exists else use eglextchromium.h
 #
 # and the following imported targets::
 #
@@ -35,6 +36,11 @@ if(EGL_FOUND)
   set(EGL_LIBRARIES ${EGL_LIBRARY})
   set(EGL_INCLUDE_DIRS ${EGL_INCLUDE_DIR})
   set(EGL_DEFINITIONS -DHAS_EGL=1)
+  include(CheckIncludeFiles)
+  check_include_files("EGL/egl.h;EGL/eglext.h;EGL/eglext_angle.h" HAVE_EGLEXTANGLE)
+  if(HAVE_EGLEXTANGLE)
+    list(APPEND EGL_DEFINITIONS "-DHAVE_EGLEXTANGLE=1")
+  endif()
 
   if(NOT TARGET EGL::EGL)
     add_library(EGL::EGL UNKNOWN IMPORTED)
