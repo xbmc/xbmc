@@ -640,6 +640,7 @@ void CGraphicContext::SetResInfo(RESOLUTION res, const RESOLUTION_INFO& info)
   curr.Overscan   = info.Overscan;
   curr.iSubtitles = info.iSubtitles;
   curr.fPixelRatio = info.fPixelRatio;
+  curr.guiInsets = info.guiInsets;
 
   if(info.dwFlags & D3DPRESENTFLAG_MODE3DSBS)
   {
