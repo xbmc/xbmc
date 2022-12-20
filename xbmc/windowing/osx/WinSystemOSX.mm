@@ -902,6 +902,26 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // remove frame origin offset of original display
     pScreen.frame.origin = NSZeroPoint;
 
+    // Update safeareainsets (display may have a notch)
+    //! @TODO update code block once minimal SDK version is bumped to at least 12.0 (remove NSInvocation and selector)
+    auto safeAreaInsetsSelector = @selector(safeAreaInsets);
+    if ([pScreen respondsToSelector:safeAreaInsetsSelector])
+    {
+      NSEdgeInsets insets;
+      NSMethodSignature* safeAreaSignature =
+          [pScreen methodSignatureForSelector:safeAreaInsetsSelector];
+      NSInvocation* safeAreaInvocation =
+          [NSInvocation invocationWithMethodSignature:safeAreaSignature];
+      [safeAreaInvocation setSelector:safeAreaInsetsSelector];
+      [safeAreaInvocation invokeWithTarget:pScreen];
+      [safeAreaInvocation getReturnValue:&insets];
+
+      RESOLUTION currentRes = m_gfxContext->GetVideoResolution();
+      RESOLUTION_INFO resInfo = m_gfxContext->GetResInfo(currentRes);
+      resInfo.guiInsets = EdgeInsets(insets.right, insets.bottom, insets.left, insets.top);
+      m_gfxContext->SetResInfo(currentRes, resInfo);
+    }
+
     dispatch_sync(dispatch_get_main_queue(), ^{
       [window.contentView setFrameSize:NSMakeSize(m_nWidth, m_nHeight)];
       window.title = @"";
