@@ -9,6 +9,7 @@
 #include "CoreAudioHardware.h"
 
 #include "cores/AudioEngine/Sinks/darwin/CoreAudioHelpers.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include "platform/darwin/DarwinUtils.h"
@@ -116,9 +117,8 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
   if (!searchName.length())
     return deviceId;
 
-  std::string searchNameLowerCase = searchName;
-  std::transform(searchNameLowerCase.begin(), searchNameLowerCase.end(), searchNameLowerCase.begin(), ::tolower );
-  if (searchNameLowerCase.compare("default") == 0)
+  std::string searchNameFolded = StringUtils::FoldCase(searchName);
+  if (searchNameFolded.compare("default") == 0)
   {
     AudioDeviceID defaultDevice = GetDefaultOutputDevice();
     CLog::Log(LOGDEBUG,
@@ -168,9 +168,8 @@ AudioDeviceID CCoreAudioHardware::FindAudioDevice(const std::string &searchName)
   {
     CCoreAudioDevice device;
     device.Open((pDevices[dev]));
-    deviceName = device.GetName();
-    std::transform( deviceName.begin(), deviceName.end(), deviceName.begin(), ::tolower );
-    if (searchNameLowerCase.compare(deviceName) == 0)
+    deviceName = StringUtils::FoldCase(device.GetName());
+    if (searchNameFolded.compare(deviceName) == 0)
       deviceId = pDevices[dev];
     if (deviceId)
       break;

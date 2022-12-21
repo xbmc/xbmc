@@ -878,9 +878,8 @@ bool CAESinkXAudio::IsUSBDevice()
     return ret;
   hr = pProperty->GetValue(PKEY_Device_EnumeratorName, &varName);
 
-  std::string str = localWideToUtf(varName.pwszVal);
-  StringUtils::ToUpper(str);
-  ret = (str == "USB");
+  std::string str = StringUtils::FoldCase(localWideToUtf(varName.pwszVal));
+  ret = (str == "usb");
   PropVariantClear(&varName);
   if (pProperty)
     pProperty->Release();

@@ -44,8 +44,7 @@ AEAudioFormat VideoPlayerCodec::GetFormat()
 
 void VideoPlayerCodec::SetContentType(const std::string &strContent)
 {
-  m_strContentType = strContent;
-  StringUtils::ToLower(m_strContentType);
+  m_strContentType = StringUtils::FoldCase(strContent);
 }
 
 void  VideoPlayerCodec::SetPassthroughStreamType(CAEStreamInfo::DataType streamType)

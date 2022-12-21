@@ -36,9 +36,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
   if (!regClassID.RegComp("<P Class=\"?([\\w\\d]+)\"?>"))
     return false;
 
-  std::string strFileName;
-  std::string strClassID;
-  strFileName = StringUtils::ToLower(URIUtils::GetFileName(m_filename));
+  std::string strFileName = StringUtils::FoldCase(URIUtils::GetFileName(m_filename));
 
   CDVDSubtitleTagSami TagConv;
   if (!TagConv.Init())
@@ -49,29 +47,29 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
   // If there are more languages contained in a file,
   // try getting the language class ID that matches the language name
   // specified in the filename
+
+  std::string strClassID{};
   if (TagConv.m_Langclass.size() >= 2)
   {
     for (unsigned int i = 0; i < TagConv.m_Langclass.size(); i++)
     {
-      std::string langName = TagConv.m_Langclass[i].Name;
-      StringUtils::ToLower(langName);
+      std::string langName = StringUtils::FoldCase(TagConv.m_Langclass[i].Name);
       if (strFileName.find(langName) != std::string::npos)
       {
-        strClassID = TagConv.m_Langclass[i].ID;
+        strClassID = StringUtils::FoldCase(TagConv.m_Langclass[i].ID);
         break;
       }
     }
     // No language specified or found, try to select the first class ID
     if (strClassID.empty() && !(TagConv.m_Langclass.empty()))
     {
-      strClassID = TagConv.m_Langclass[0].ID;
+      strClassID = StringUtils::FoldCase(TagConv.m_Langclass[0].ID);
     }
   }
 
   const char* langClassID{nullptr};
   if (!strClassID.empty())
   {
-    StringUtils::ToLower(strClassID);
     langClassID = strClassID.c_str();
   }
 
@@ -90,8 +88,7 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
     // Find the language Class ID in current line (if exist)
     if (regClassID.RegFind(line) > -1)
     {
-      lastLangClassID = regClassID.GetMatch(1);
-      StringUtils::ToLower(lastLangClassID);
+      lastLangClassID = StringUtils::FoldCase(regClassID.GetMatch(1));
     }
 
     int pos = regLine.RegFind(line);

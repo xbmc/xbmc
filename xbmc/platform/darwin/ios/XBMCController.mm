@@ -77,8 +77,7 @@ public:
     if (!setting || setting->GetId() != CSettings::SETTING_DEBUG_SHARE_LOG)
       return;
 
-    auto lowerAppName = std::string{CCompileInfo::GetAppName()};
-    StringUtils::ToLower(lowerAppName);
+    auto lowerAppName = StringUtils::FoldCase(CCompileInfo::GetAppName());
     auto path = URIUtils::AddFileToFolder(CSpecialProtocol::TranslatePath("special://logpath/"),
                                           lowerAppName + ".log");
 

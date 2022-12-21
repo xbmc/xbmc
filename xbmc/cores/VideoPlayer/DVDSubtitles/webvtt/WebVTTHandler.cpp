@@ -903,11 +903,11 @@ void CWebVTTHandler::ConvertSubtitle(std::string& text)
   while ((pos = m_tagsRegex.RegFind(text, pos)) >= 0)
   {
     tagToken tag;
-    tag.m_token = StringUtils::ToLower(m_tagsRegex.GetMatch(0));
+    tag.m_token = StringUtils::FoldCase(m_tagsRegex.GetMatch(0));
     tag.m_isClosing = m_tagsRegex.GetMatch(1) == "/";
     if (!m_tagsRegex.GetMatch(2).empty())
       tag.m_timestampTag = tag.m_token;
-    tag.m_tag = StringUtils::ToLower(m_tagsRegex.GetMatch(3));
+    tag.m_tag = StringUtils::FoldCase(m_tagsRegex.GetMatch(3));
     tag.m_classes = StringUtils::Split(m_tagsRegex.GetMatch(4).erase(0, 1), ".");
     tag.m_annotation = m_tagsRegex.GetMatch(5);
 

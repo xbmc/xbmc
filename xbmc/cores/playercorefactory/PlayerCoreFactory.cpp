@@ -371,8 +371,9 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     {
       std::string name = XMLUtils::GetAttribute(pPlayer, "name");
       std::string type = XMLUtils::GetAttribute(pPlayer, "type");
-      if (type.empty()) type = name;
-      StringUtils::ToLower(type);
+      if (type.empty())
+        type = name;
+      type = StringUtils::FoldCase(type);
 
       std::string internaltype;
       if (type == "videoplayer")

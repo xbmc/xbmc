@@ -606,8 +606,7 @@ bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)
   bool found = false;
   bool forceRaw = false;
 
-  std::string devicelower = device;
-  StringUtils::ToLower(devicelower);
+  std::string devicelower = StringUtils::FoldCase(device);
   for (size_t i = 0; i < m_devices.size(); i++)
   {
     if (devicelower.find(m_devices[i].m_deviceName) != std::string::npos)
