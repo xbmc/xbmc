@@ -209,8 +209,7 @@ bool XMLUtils::GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& 
 {
   const TiXmlNode* pNode = pRootNode->FirstChild(strTag );
   if (!pNode || !pNode->FirstChild()) return false;
-  std::string strEnabled = pNode->FirstChild()->ValueStr();
-  StringUtils::ToLower(strEnabled);
+  std::string strEnabled = StringUtils::FoldCase(pNode->FirstChild()->ValueStr());
   if (strEnabled == "off" || strEnabled == "no" || strEnabled == "disabled" || strEnabled == "false" || strEnabled == "0" )
     bBoolValue = false;
   else

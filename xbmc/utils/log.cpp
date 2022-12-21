@@ -101,8 +101,7 @@ void CLog::Initialize(const std::string& path)
     return;
 
   // put together the path to the log file(s)
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
+  std::string appName = StringUtils::FoldCase(CCompileInfo::GetAppName());
   const std::string filePathBase = URIUtils::AddFileToFolder(path, appName);
   const std::string filePath = filePathBase + LogFileExtension;
   const std::string oldFilePath = filePathBase + ".old" + LogFileExtension;

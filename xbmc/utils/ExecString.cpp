@@ -166,7 +166,7 @@ bool CExecString::Parse(const std::string& execString)
   SplitExecFunction(m_execString, m_function, m_params);
 
   // Keep original function case in execstring, lowercase it in function
-  StringUtils::ToLower(m_function);
+  m_function = StringUtils::FoldCase(m_function);
   return true;
 }
 
@@ -240,5 +240,5 @@ void CExecString::SetExecString()
     m_execString = StringUtils::Format("{}({})", m_function, StringUtils::Join(m_params, ","));
 
   // Keep original function case in execstring, lowercase it in function
-  StringUtils::ToLower(m_function);
+  m_function = StringUtils::FoldCase(m_function);
 }
