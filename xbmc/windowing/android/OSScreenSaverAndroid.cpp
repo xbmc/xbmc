@@ -12,10 +12,10 @@
 
 void COSScreenSaverAndroid::Inhibit()
 {
-  CXBMCApp::Get().EnableWakeLock(true);
+  CXBMCApp::Get().KeepScreenOn(true);
 }
 
 void COSScreenSaverAndroid::Uninhibit()
 {
-  CXBMCApp::Get().EnableWakeLock(false);
+  CXBMCApp::Get().KeepScreenOn(false);
 }
