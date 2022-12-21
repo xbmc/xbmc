@@ -293,7 +293,7 @@ bool CActionTranslator::TranslateString(std::string strAction, unsigned int& act
   if (strAction.empty())
     return false;
 
-  StringUtils::ToLower(strAction);
+  strAction = StringUtils::FoldCase(strAction);
 
   auto it = ActionMappings.find(strAction);
   if (it != ActionMappings.end())

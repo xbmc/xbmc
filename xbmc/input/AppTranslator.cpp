@@ -53,8 +53,7 @@ static const std::map<ActionName, CommandID> AppCommands = {
 uint32_t CAppTranslator::TranslateAppCommand(const std::string& szButton)
 {
 #ifdef TARGET_WINDOWS
-  std::string strAppCommand = szButton;
-  StringUtils::ToLower(strAppCommand);
+  std::string strAppCommand = StringUtils::FoldCase(szButton);
 
   auto it = AppCommands.find(strAppCommand);
   if (it != AppCommands.end())

@@ -810,8 +810,7 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
     m_ftpauth.clear();
     if (url2.HasProtocolOption("auth"))
     {
-      m_ftpauth = url2.GetProtocolOption("auth");
-      StringUtils::ToLower(m_ftpauth);
+      m_ftpauth = StringUtils::FoldCase(url2.GetProtocolOption("auth"));
       if(m_ftpauth.empty())
         m_ftpauth = "any";
     }
@@ -863,14 +862,12 @@ void CCurlFile::ParseAndCorrectUrl(CURL &url2)
       // set xbmc headers
       for (const auto& it : options)
       {
-        std::string name = it.first;
-        StringUtils::ToLower(name);
+        std::string name = StringUtils::FoldCase(it.first);
         const std::string& value = it.second;
 
         if (name == "auth")
         {
-          m_httpauth = value;
-          StringUtils::ToLower(m_httpauth);
+          m_httpauth = StringUtils::FoldCase(value);
           if(m_httpauth.empty())
             m_httpauth = "any";
         }

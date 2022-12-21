@@ -213,11 +213,9 @@ void CWindowTranslator::GetWindows(std::vector<std::string>& windowList)
 
 int CWindowTranslator::TranslateWindow(const std::string& window)
 {
-  std::string strWindow(window);
+  std::string strWindow = StringUtils::FoldCase(window);
   if (strWindow.empty())
     return WINDOW_INVALID;
-
-  StringUtils::ToLower(strWindow);
 
   // Eliminate .xml
   if (StringUtils::EndsWith(strWindow, ".xml"))

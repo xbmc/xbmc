@@ -63,12 +63,10 @@ namespace
  */
 std::string NormalizeExtension(const std::string& strExtension)
 {
-  std::string ext = strExtension;
+  std::string ext = StringUtils::FoldCase(strExtension); // Foldcase won't touch wildcard
 
   if (!ext.empty() && ext != EXTENSION_WILDCARD)
   {
-    StringUtils::ToLower(ext);
-
     if (ext[0] != '.')
       ext.insert(0, ".");
   }

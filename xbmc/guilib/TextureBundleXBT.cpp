@@ -253,7 +253,7 @@ void CTextureBundleXBT::SetThemeBundle(bool themeBundle)
 std::string CTextureBundleXBT::Normalize(std::string name)
 {
   StringUtils::Trim(name);
-  StringUtils::ToLower(name);
+  name = StringUtils::FoldCase(name);
   StringUtils::Replace(name, '\\', '/');
 
   return name;

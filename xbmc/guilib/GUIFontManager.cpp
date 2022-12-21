@@ -507,9 +507,11 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
 
     if (!fontName.empty() && URIUtils::HasExtension(fileName, ".ttf"))
     {
-      //! @todo Why do we tolower() this shit?
-      std::string strFontFileName = fileName;
-      StringUtils::ToLower(strFontFileName);
+      //! @todo Why do we FoldCase() this shit?
+      // Probably to 1) handle OS's with case insensitive file system
+      // 2) Consistency (avoids problems with sloppy case in filenaming).
+      // Would be better to centralize case handling for filesystem peculiarities.
+      std::string strFontFileName = StringUtils::FoldCase(fileName);
       LoadTTF(fontName, strFontFileName, textColor, shadowColor, iSize, iStyle, false, lineSpacing,
               aspect);
     }

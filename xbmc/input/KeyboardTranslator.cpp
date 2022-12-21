@@ -49,7 +49,7 @@ uint32_t CKeyboardTranslator::TranslateButton(const TiXmlElement* pButton)
   std::string strMod;
   if (pButton->QueryValueAttribute("mod", &strMod) == TIXML_SUCCESS)
   {
-    StringUtils::ToLower(strMod);
+    strMod = StringUtils::FoldCase(strMod);
 
     std::vector<std::string> modArray = StringUtils::Split(strMod, ",");
     for (auto substr : modArray)

@@ -49,11 +49,10 @@ void CIRTranslator::Load(const std::string& irMapName)
 
 bool CIRTranslator::LoadIRMap(const std::string& irMapPath)
 {
-  std::string remoteMapTag = URIUtils::GetFileName(irMapPath);
+  std::string remoteMapTag = StringUtils::FoldCase(URIUtils::GetFileName(irMapPath));
   size_t lastindex = remoteMapTag.find_last_of('.');
   if (lastindex != std::string::npos)
     remoteMapTag.resize(lastindex);
-  StringUtils::ToLower(remoteMapTag);
 
   // Load our xml file, and fill up our mapping tables
   CXBMCTinyXML xmlDoc;
@@ -158,7 +157,7 @@ uint32_t CIRTranslator::TranslateString(std::string strButton)
 
   uint32_t buttonCode = 0;
 
-  StringUtils::ToLower(strButton);
+  strButton = StringUtils::FoldCase(strButton);
 
   if (strButton == "left")
     buttonCode = XINPUT_IR_REMOTE_LEFT;

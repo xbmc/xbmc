@@ -160,7 +160,11 @@ std::string CDirectoryHistory::preparePath(const std::string &strDirectory, bool
 {
   std::string strDir = strDirectory;
   if (tolower)
-    StringUtils::ToLower(strDir);
+    // Using FoldCase instead of ToLower because ToLower will change case differently
+    // depending upon the current locale, which doesn't seem like a good idea for file
+    // names.
+
+    strDir = StringUtils::FoldCase(strDir);
 
   URIUtils::RemoveSlashAtEnd(strDir);
 
