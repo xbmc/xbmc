@@ -392,13 +392,11 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
   if (!thisClass || !stream)
     return nullptr;
 
-  std::string codecName(stream->m_codecName);
   const AVCodec* codec = nullptr;
-
   if (stream->m_streamType != INPUTSTREAM_TYPE_TELETEXT &&
       stream->m_streamType != INPUTSTREAM_TYPE_RDS && stream->m_streamType != INPUTSTREAM_TYPE_ID3)
   {
-    StringUtils::ToLower(codecName);
+    std::string codecName = StringUtils::FoldCase(stream->m_codecName);
     codec = avcodec_find_decoder_by_name(codecName.c_str());
     if (!codec)
       return nullptr;

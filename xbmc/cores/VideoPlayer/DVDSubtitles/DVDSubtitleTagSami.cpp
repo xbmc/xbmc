@@ -44,8 +44,7 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
   while ((pos = m_tags->RegFind(strUTF8.c_str(), pos)) >= 0)
   {
     // Parser for SubRip/SAMI Tags
-    std::string fullTag = m_tags->GetMatch(0);
-    StringUtils::ToLower(fullTag);
+    std::string fullTag = StringUtils::FoldCase(m_tags->GetMatch(0));
     strUTF8.erase(pos, fullTag.length());
     if (fullTag == "<b>")
     {
@@ -150,7 +149,7 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
       while ((pos2 = m_tagOptions->RegFind(fullTag.c_str(), pos2)) >= 0)
       {
         std::string tagOptionName = m_tagOptions->GetMatch(1);
-        std::string tagOptionValue = StringUtils::ToLower(m_tagOptions->GetMatch(2));
+        std::string tagOptionValue = StringUtils::FoldCase(m_tagOptions->GetMatch(2));
         pos2 += static_cast<int>(tagOptionName.length() + tagOptionValue.length());
         if (tagOptionName == "class")
         {
