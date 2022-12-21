@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-11-25 22:40+0000\n"
+"PO-Revision-Date: 2022-12-12 07:26+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/it_it/>\n"
 "Language: it_it\n"
@@ -39,7 +39,7 @@ msgstr "Cerca..."
 
 msgctxt "#31002"
 msgid "Show media fanart as background"
-msgstr "Mostra fanart dei media come sfondo"
+msgstr "Mostra Fanart dei media come sfondo"
 
 msgctxt "#31003"
 msgid "Cinema mode"
@@ -146,7 +146,7 @@ msgstr "Prossimo in onda"
 
 msgctxt "#31028"
 msgid "Show fanart"
-msgstr "Mostra fanart"
+msgstr "Mostra Fanart"
 
 msgctxt "#31029"
 msgid "Last logged in"
@@ -187,7 +187,7 @@ msgstr "Traccia selezionata"
 
 msgctxt "#31038"
 msgid "Rewind"
-msgstr "Indietro"
+msgstr "Indietro veloce"
 
 msgctxt "#31039"
 msgid "Fast forward"
@@ -263,7 +263,7 @@ msgstr "Voci menu principale"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Scegli pacchetto fanart meteo"
+msgstr "Scegli pacchetto Fanart meteo"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -323,7 +323,7 @@ msgstr "Add-on testi"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "Impostazioni add-on testi"
+msgstr "Impostazioni Add-on testi"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
@@ -432,11 +432,11 @@ msgstr "Modifica nodi"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Entra a sfogliare gli add-on"
+msgstr "Entra a sfogliare gli Add-on"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Non è ancora stato installato nessun add-on. Visita il nostro browser degli add-on per sfogliare la nostra collezione e migliorare la tua esperienza su Kodi."
+msgstr "Non è ancora stato installato nessun Add-on. Visita il nostro browser degli Add-on per sfogliare la nostra collezione e migliorare la tua esperienza su Kodi."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
@@ -480,7 +480,7 @@ msgstr "Impostazioni relative al menu principale: Configura la schermata home se
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Scegli pacchetto fanart skin"
+msgstr "Scegli pacchetto Fanart skin"
 
 msgctxt "#31132"
 msgid "Select Program"
@@ -532,15 +532,15 @@ msgstr "Velocità di riproduzione"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Non hai ancora impostato il PVR. Per poter usare il PVR, scegli un add-on Client PVR e configuralo. Visita http://kodi.wiki/view/PVR per saperne di più."
+msgstr "Non hai ancora impostato il PVR. Per poter usare il PVR, scegli un Add-on Client PVR e configuralo. Visita http://kodi.wiki/view/PVR per saperne di più."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "Entra a sfogliare gli add-on"
+msgstr "Entra a sfogliare gli Add-on"
 
 msgctxt "#31145"
 msgid "Search add-ons"
-msgstr "Cerca add-on"
+msgstr "Cerca Add-on"
 
 msgctxt "#31146"
 msgid "In cinemas"
@@ -556,7 +556,7 @@ msgstr "Categorie"
 
 msgctxt "#31149"
 msgid "Select genre fanart pack"
-msgstr "Scegli pacchetto fanart per genere"
+msgstr "Scegli pacchetto Fanart per genere"
 
 msgctxt "#31150"
 msgid "Origin"
@@ -572,7 +572,7 @@ msgstr "Video musicali casuali"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Non hai nessun add-on di questo tipo installato. Apri il browser add-on per scaricare gli add-on creati dalla nostra community."
+msgstr "Non hai nessun Add-on di questo tipo installato. Apri il browser Add-on per scaricare gli Add-on creati dalla nostra community."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
@@ -608,7 +608,7 @@ msgstr "Tastierino numerico"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Gioca ai tuoi giochi personali o scarica uno dei tanti add-on di giochi dal repository ufficiale."
+msgstr "Gioca ai tuoi giochi personali o scarica uno dei tanti Add-on di giochi dal repository ufficiale."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
@@ -672,7 +672,7 @@ msgstr "Azione di selezione predefinita per gli album nella schermata iniziale"
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr "Azione di selezione predefinita per le serie TV nella schermata iniziale"
+msgstr "Azione di selezione predefinita per le Serie TV nella schermata iniziale"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
