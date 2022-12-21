@@ -128,7 +128,7 @@ std::string CLanguageResource::GetAddonId(const std::string& locale)
   if (!StringUtils::StartsWith(addonId, LANGUAGE_ADDON_PREFIX))
     addonId = LANGUAGE_ADDON_PREFIX + locale;
 
-  StringUtils::ToLower(addonId);
+  addonId = StringUtils::FoldCase(addonId);
   return addonId;
 }
 

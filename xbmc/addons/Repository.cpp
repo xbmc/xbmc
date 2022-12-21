@@ -303,8 +303,7 @@ RepositoryDirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& con
     dir.artdir = dir.datadir;
   }
 
-  std::string hashStr = configuration.GetValue("hashes").asString();
-  StringUtils::ToLower(hashStr);
+  std::string hashStr = StringUtils::FoldCase(configuration.GetValue("hashes").asString());
   if (hashStr == "true")
   {
     // Deprecated alias

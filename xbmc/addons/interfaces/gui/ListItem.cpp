@@ -330,11 +330,10 @@ void Interface_GUIListItem::set_property(KODI_HANDLE kodiBase,
     return;
   }
 
-  std::string lowerKey = key;
-  StringUtils::ToLower(lowerKey);
+  std::string foldedKey = StringUtils::FoldCase(key);
 
   Interface_GUIGeneral::lock();
-  item->get()->SetProperty(lowerKey, CVariant(value));
+  item->get()->SetProperty(foldedKey, CVariant(value));
   Interface_GUIGeneral::unlock();
 }
 
@@ -361,11 +360,10 @@ char* Interface_GUIListItem::get_property(KODI_HANDLE kodiBase,
     return nullptr;
   }
 
-  std::string lowerKey = key;
-  StringUtils::ToLower(lowerKey);
+  std::string foldedKey = StringUtils::FoldCase(key);
 
   Interface_GUIGeneral::lock();
-  char* ret = strdup(item->get()->GetProperty(lowerKey).asString().c_str());
+  char* ret = strdup(item->get()->GetProperty(foldedKey).asString().c_str());
   Interface_GUIGeneral::unlock();
 
   return ret;
