@@ -1365,18 +1365,14 @@ double CUtil::AlbumRelevance(const std::string& strAlbumTemp1, const std::string
   // case-insensitive fuzzy string comparison on the album and artist for relevance
   // weighting is identical, both album and artist are 50% of the total relevance
   // a missing artist means the maximum relevance can only be 0.50
-  std::string strAlbumTemp = strAlbumTemp1;
-  StringUtils::ToLower(strAlbumTemp);
-  std::string strAlbum = strAlbum1;
-  StringUtils::ToLower(strAlbum);
+  std::string strAlbumTemp = StringUtils::FoldCase(strAlbumTemp1);
+  std::string strAlbum = StringUtils::FoldCase(strAlbum1);
   double fAlbumPercentage = fstrcmp(strAlbumTemp.c_str(), strAlbum.c_str());
   double fArtistPercentage = 0.0;
   if (!strArtist1.empty())
   {
-    std::string strArtistTemp = strArtistTemp1;
-    StringUtils::ToLower(strArtistTemp);
-    std::string strArtist = strArtist1;
-    StringUtils::ToLower(strArtist);
+    std::string strArtistTemp = StringUtils::FoldCase(strArtistTemp1);
+    std::string strArtist = StringUtils::FoldCase(strArtist1);
     fArtistPercentage = fstrcmp(strArtistTemp.c_str(), strArtist.c_str());
   }
   double fRelevance = fAlbumPercentage * 0.5 + fArtistPercentage * 0.5;
@@ -1753,8 +1749,7 @@ std::string CUtil::ResolveExecutablePath()
   strExecutablePath = CXBMCApp::getApplicationInfo().nativeLibraryDir;
 
   std::string appName = CCompileInfo::GetAppName();
-  std::string libName = "lib" + appName + ".so";
-  StringUtils::ToLower(libName);
+  std::string libName = StringUtils::FoldCase("lib" + appName + ".so");
   strExecutablePath += "/" + libName;
 #else
   /* Get our PID and build the name of the link in /proc */
@@ -2070,8 +2065,7 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
     for (auto it = tokens.rbegin(); it != tokens.rend(); ++it)
     {
       // try to recognize a flag
-      std::string flag_tmp(*it);
-      StringUtils::ToLower(flag_tmp);
+      std::string flag_tmp = StringUtils::FoldCase(*it);
       if (!flag_tmp.compare("none"))
       {
         info.flag |= StreamFlags::FLAG_NONE;

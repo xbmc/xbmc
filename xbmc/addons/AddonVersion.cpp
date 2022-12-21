@@ -29,9 +29,8 @@ namespace ADDON
 {
 CAddonVersion::CAddonVersion(const std::string& version)
   : mEpoch(0), mUpstream(version.empty() ? "0.0.0" : [&version] {
-      auto versionLowerCase = std::string(version);
-      StringUtils::ToLower(versionLowerCase);
-      return versionLowerCase;
+      auto versionFoldCase = StringUtils::FoldCase(version);
+      return versionFoldCase;
     }())
 {
   size_t pos = mUpstream.find(':');

@@ -967,10 +967,8 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
           scurlMovie.ParseAndAppendUrl(pxeLink);
 
         // calculate the relevance of this hit
-        std::string sCompareTitle = scurlMovie.GetTitle();
-        StringUtils::ToLower(sCompareTitle);
-        std::string sMatchTitle = sTitle;
-        StringUtils::ToLower(sMatchTitle);
+        std::string sCompareTitle = StringUtils::FoldCase(scurlMovie.GetTitle());
+        std::string sMatchTitle = StringUtils::FoldCase(sTitle);
 
         /*
          * Identify the best match by performing a fuzzy string compare on the search term and
