@@ -10,15 +10,12 @@
 #include "XBDateTime.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/legacy/ModuleXbmc.h" //Needed to test getRegion()
+#include "utils/DateLib.h"
 
 #include <array>
 #include <chrono>
 #include <iostream>
 
-#define USE_OS_TZDB 1
-#define HAS_REMOTE_API 0
-#include <date/date.h>
-#include <date/tz.h>
 #include <gtest/gtest.h>
 
 class TestDateTime : public testing::Test

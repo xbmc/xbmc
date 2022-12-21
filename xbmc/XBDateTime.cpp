@@ -11,17 +11,11 @@
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/Archive.h"
+#include "utils/DateLib.h"
 #include "utils/StringUtils.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
 #include <cstdlib>
-
-#define USE_OS_TZDB 1
-#define HAS_REMOTE_API 0
-#include <date/date.h>
-#include <date/iso_week.h>
-#include <date/tz.h>
 
 static const char *MONTH_NAMES[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
