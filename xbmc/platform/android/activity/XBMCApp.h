@@ -35,7 +35,6 @@
 #include <androidjni/View.h>
 
 // forward declares
-class CJNIWakeLock;
 class CAESinkAUDIOTRACK;
 class CVariant;
 class IInputDeviceCallbacks;
@@ -156,7 +155,7 @@ public:
   static int android_printf(const char *format, ...);
 
   int GetBatteryLevel() const;
-  bool EnableWakeLock(bool on);
+  void KeepScreenOn(bool on);
   bool HasFocus() const { return m_hasFocus; }
 
   static bool StartActivity(const std::string& package,
@@ -247,13 +246,13 @@ private:
   void SetupEnv();
   static void SetRefreshRateCallback(void* rateVariant);
   static void SetDisplayModeCallback(void* modeVariant);
+  static void KeepScreenOnCallback(void* onVariant);
 
   static void RegisterDisplayListenerCallback(void*);
   void UnregisterDisplayListener();
 
   ANativeActivity* m_activity{nullptr};
   IInputHandler& m_inputHandler;
-  std::unique_ptr<CJNIWakeLock> m_wakeLock;
   int m_batteryLevel{0};
   bool m_hasFocus{false};
   bool m_headsetPlugged{false};
