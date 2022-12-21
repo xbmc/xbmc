@@ -100,14 +100,14 @@ bool URIUtils::HasExtension(const std::string& strFileName, const std::string& s
   if (pos == std::string::npos || strFileName[pos] != '.')
     return false;
 
-  const std::string extensionLower = StringUtils::ToLower(strFileName.substr(pos));
+  const std::string extensionFolded = StringUtils::FoldCase(strFileName.substr(pos));
 
-  const std::vector<std::string> extensionsLower =
-      StringUtils::Split(StringUtils::ToLower(strExtensions), '|');
+  const std::vector<std::string> extensionsFolded =
+      StringUtils::Split(StringUtils::FoldCase(strExtensions), '|');
 
-  for (const auto& ext : extensionsLower)
+  for (const auto& ext : extensionsFolded)
   {
-    if (StringUtils::EndsWith(ext, extensionLower))
+    if (StringUtils::EndsWith(ext, extensionFolded))
       return true;
   }
 
@@ -129,8 +129,7 @@ void URIUtils::RemoveExtension(std::string& strFileName)
   size_t period = strFileName.find_last_of("./\\");
   if (period != std::string::npos && strFileName[period] == '.')
   {
-    std::string strExtension = strFileName.substr(period);
-    StringUtils::ToLower(strExtension);
+    std::string strExtension = StringUtils::FoldCase(strFileName.substr(period));
     strExtension += "|";
 
     std::string strFileMask;
@@ -738,8 +737,7 @@ bool URIUtils::IsHD(const std::string& strFileName)
 
 bool URIUtils::IsDVD(const std::string& strFile)
 {
-  std::string strFileLow = strFile;
-  StringUtils::ToLower(strFileLow);
+  std::string strFileLow = StringUtils::FoldCase(strFile);
   if (strFileLow.find("video_ts.ifo") != std::string::npos && IsOnDVD(strFile))
     return true;
 

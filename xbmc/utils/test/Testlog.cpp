@@ -34,8 +34,7 @@ TEST_F(Testlog, Log)
   XFILE::CFile file;
   CRegExp regex;
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
+  std::string appName = StringUtils::FoldCase(CCompileInfo::GetAppName());
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
   CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://temp/"));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
@@ -79,8 +78,7 @@ TEST_F(Testlog, SetLogLevel)
 {
   std::string logfile;
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
+  std::string appName = StringUtils::FoldCase(CCompileInfo::GetAppName());
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
   CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://temp/"));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));

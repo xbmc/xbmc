@@ -68,8 +68,10 @@ std::string CDigest::TypeToString(Type type)
 
 CDigest::Type CDigest::TypeFromString(std::string const& type)
 {
-  std::string typeLower{type};
-  StringUtils::ToLower(typeLower);
+  // TODO: This looks odd. typeLower is not used. Probably meant to replace "type" with
+  // "typeLower" in comparisons.
+
+  std::string typeLower = StringUtils::FoldCase(type);
   if (type == "md5")
   {
     return Type::MD5;
