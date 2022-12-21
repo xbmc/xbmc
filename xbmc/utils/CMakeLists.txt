@@ -100,6 +100,7 @@ set(HEADERS ActorProtocol.h
             Crc32.h
             CSSUtils.h
             DatabaseUtils.h
+            DateLib.h
             Digest.h
             DiscsUtils.h
             EndianSwap.h

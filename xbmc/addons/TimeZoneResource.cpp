@@ -8,10 +8,9 @@
 #include "TimeZoneResource.h"
 
 #include "addons/addoninfo/AddonType.h"
+#include "utils/DateLib.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-
-#include <date/tz.h>
 
 namespace ADDON
 {
@@ -33,7 +32,9 @@ bool CTimeZoneResource::IsInUse() const
 
 void CTimeZoneResource::OnPostInstall(bool update, bool modal)
 {
+#if defined(DATE_INTERNAL_TZDATA)
   date::reload_tzdb();
+#endif
 }
 
 } // namespace ADDON

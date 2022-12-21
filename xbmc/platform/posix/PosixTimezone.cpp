@@ -16,17 +16,13 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
+#include "utils/DateLib.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 
 #include <climits>
 #include <cstdlib>
 #include <ctime>
-
-#define USE_OS_TZDB 0
-#define HAS_REMOTE_API 0
-
-#include <date/tz.h>
 
 #include "PlatformDefs.h"
 
