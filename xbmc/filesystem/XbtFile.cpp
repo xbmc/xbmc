@@ -353,8 +353,9 @@ bool CXbtFile::GetReaderAndFile(const CURL& url, CXBTFReaderPtr& reader, CXBTFFi
   xbtUrl.SetOptions("");
 
   // CXBTFReader stores all filenames in lower case
-  std::string fileName = xbtUrl.GetFileName();
-  StringUtils::ToLower(fileName);
+  // Using FoldCase because it behaves the same independent of Locale
+
+  std::string fileName = StringUtils::FoldCase(xbtUrl.GetFileName());
 
   return reader->Get(fileName, file);
 }

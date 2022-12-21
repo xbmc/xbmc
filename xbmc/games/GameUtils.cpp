@@ -144,13 +144,7 @@ void CGameUtils::GetGameClients(const CFileItem& file,
   // Sort by name
   //! @todo Move to presentation code
   auto SortByName = [](const GameClientPtr& lhs, const GameClientPtr& rhs) {
-    std::string lhsName = lhs->Name();
-    std::string rhsName = rhs->Name();
-
-    StringUtils::ToLower(lhsName);
-    StringUtils::ToLower(rhsName);
-
-    return lhsName < rhsName;
+    return StringUtils::CompareNoCase(lhs->Name(), rhs->Name());
   };
 
   std::sort(candidates.begin(), candidates.end(), SortByName);
@@ -200,11 +194,9 @@ bool CGameUtils::HasGameExtension(const std::string& path)
   std::string filename = CURL(path).GetFileNameWithoutPath();
 
   // Get the file extension
-  std::string extension = URIUtils::GetExtension(filename);
+  std::string extension = StringUtils::FoldCase(URIUtils::GetExtension(filename));
   if (extension.empty())
     return false;
-
-  StringUtils::ToLower(extension);
 
   // Look for a game client that supports this extension
   VECADDONS gameClients;
