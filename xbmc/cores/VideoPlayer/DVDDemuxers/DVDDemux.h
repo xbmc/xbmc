@@ -82,14 +82,14 @@ public:
     source = STREAM_SOURCE_NONE;
     iDuration = 0;
     pPrivate = NULL;
-    ExtraData = NULL;
     ExtraSize = 0;
     disabled = false;
     changes = 0;
     flags = StreamFlags::FLAG_NONE;
   }
 
-  virtual ~CDemuxStream() { delete[] ExtraData; }
+  virtual ~CDemuxStream() = default;
+  CDemuxStream(CDemuxStream&&) = default;
 
   virtual std::string GetStreamName();
 
@@ -105,7 +105,7 @@ public:
 
   int iDuration; // in mseconds
   void* pPrivate; // private pointer for the demuxer
-  uint8_t* ExtraData; // extra data for codec to use
+  std::unique_ptr<uint8_t[]> ExtraData; // extra data for codec to use
   unsigned int ExtraSize; // size of extra data
 
   StreamFlags flags;
