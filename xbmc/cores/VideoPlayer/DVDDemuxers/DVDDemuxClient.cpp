@@ -154,14 +154,12 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
     int len = stream->m_parser->parser->split(stream->m_context, pkt->pData, pkt->iSize);
     if (len > 0 && len < FF_MAX_EXTRADATA_SIZE)
     {
-      if (st->ExtraData)
-        delete[] st->ExtraData;
       st->changes++;
       st->disabled = false;
       st->ExtraSize = len;
-      st->ExtraData = new uint8_t[len+AV_INPUT_BUFFER_PADDING_SIZE];
-      memcpy(st->ExtraData, pkt->pData, len);
-      memset(st->ExtraData + len, 0 , AV_INPUT_BUFFER_PADDING_SIZE);
+      st->ExtraData = std::make_unique<uint8_t[]>(len + AV_INPUT_BUFFER_PADDING_SIZE);
+      memcpy(st->ExtraData.get(), pkt->pData, len);
+      memset(st->ExtraData.get() + len, 0, AV_INPUT_BUFFER_PADDING_SIZE);
       stream->m_parser_split = false;
       change = true;
       CLog::Log(LOGDEBUG, "CDVDDemuxClient::ParsePacket - split extradata");
@@ -435,8 +433,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     streamAudio->iBitsPerSample  = source->iBitsPerSample;
     if (source->ExtraSize > 0 && source->ExtraData)
     {
-      delete[] streamAudio->ExtraData;
-      streamAudio->ExtraData = new uint8_t[source->ExtraSize];
+      streamAudio->ExtraData = std::make_unique<uint8_t[]>(source->ExtraSize);
       streamAudio->ExtraSize = source->ExtraSize;
       for (unsigned int j=0; j<source->ExtraSize; j++)
         streamAudio->ExtraData[j] = source->ExtraData[j];
@@ -476,8 +473,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     streamVideo->iBitRate = source->iBitRate;
     if (source->ExtraSize > 0 && source->ExtraData)
     {
-      delete[] streamVideo->ExtraData;
-      streamVideo->ExtraData = new uint8_t[source->ExtraSize];
+      streamVideo->ExtraData = std::make_unique<uint8_t[]>(source->ExtraSize);
       streamVideo->ExtraSize = source->ExtraSize;
       for (unsigned int j=0; j<source->ExtraSize; j++)
         streamVideo->ExtraData[j] = source->ExtraData[j];
@@ -519,8 +515,7 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
 
     if (source->ExtraSize == 4)
     {
-      delete[] streamSubtitle->ExtraData;
-      streamSubtitle->ExtraData = new uint8_t[4];
+      streamSubtitle->ExtraData = std::make_unique<uint8_t[]>(4);
       streamSubtitle->ExtraSize = 4;
       for (int j=0; j<4; j++)
         streamSubtitle->ExtraData[j] = source->ExtraData[j];

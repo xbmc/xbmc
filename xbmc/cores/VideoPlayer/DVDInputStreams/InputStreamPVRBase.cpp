@@ -322,7 +322,7 @@ void CInputStreamPVRBase::UpdateStreamMap()
 
       if (stream.iSubtitleInfo)
       {
-        streamSubtitle->ExtraData = new uint8_t[4];
+        streamSubtitle->ExtraData = std::make_unique<uint8_t[]>(4);
         streamSubtitle->ExtraSize = 4;
         streamSubtitle->ExtraData[0] = (stream.iSubtitleInfo >> 8) & 0xff;
         streamSubtitle->ExtraData[1] = (stream.iSubtitleInfo >> 0) & 0xff;
