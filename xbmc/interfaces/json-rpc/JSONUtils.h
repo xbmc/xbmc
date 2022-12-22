@@ -81,10 +81,8 @@ namespace JSONRPC
 
     static bool ParseSorting(const CVariant &parameterObject, SortBy &sortBy, SortOrder &sortOrder, SortAttribute &sortAttributes)
     {
-      std::string method = parameterObject["sort"]["method"].asString();
-      std::string order = parameterObject["sort"]["order"].asString();
-      StringUtils::ToLower(method);
-      StringUtils::ToLower(order);
+      std::string method = StringUtils::FoldCase(parameterObject["sort"]["method"].asString());
+      std::string order = StringUtils::FoldCase(parameterObject["sort"]["order"].asString());
 
       // parse the sort attributes
       sortAttributes = SortAttributeNone;

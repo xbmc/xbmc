@@ -118,9 +118,7 @@ int EpgGridControl(const std::vector<std::string>& params)
     return 0;
   }
 
-  std::string param(params[0]);
-  StringUtils::ToLower(param);
-
+  std::string param = StringUtils::FoldCase(params[0]);
   if (param == "firstprogramme")
   {
     guideWindow->GotoBegin();

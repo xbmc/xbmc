@@ -741,7 +741,7 @@ void CMusicInfoScanner::FileItemsToAlbums(CFileItemList& items, VECALBUMS& album
         !songsByAlbumName.first.empty() && (isCompilation || !tracksOverlap); // 1+2b+2a
     if (artists.size() == 1)
     {
-      std::string artist = artists.begin()->first; StringUtils::ToLower(artist);
+      std::string artist = artists.begin()->first;
       if (!StringUtils::EqualsNoCase(artist, "various") &&
         !StringUtils::EqualsNoCase(artist, "various artists") &&
         !StringUtils::EqualsNoCase(artist, various)) // 3a
@@ -2193,7 +2193,7 @@ bool CMusicInfoScanner::AddLocalArtwork(std::map<std::string, std::string>& art,
     // Strip media name
     if (!mediaName.empty() && StringUtils::StartsWith(strCandidate, mediaName))
       strCandidate.erase(0, mediaName.length());
-    StringUtils::ToLower(strCandidate);
+    strCandidate = StringUtils::FoldCase(strCandidate);
     // Skip files already used as "thumb"
     // Typically folder.jpg but can be from multiple confgurable file names
     if (std::find(thumbs.begin(), thumbs.end(), strCandidate) != thumbs.end())

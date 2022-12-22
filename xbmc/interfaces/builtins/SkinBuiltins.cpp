@@ -234,7 +234,7 @@ static int SetFile(const std::vector<std::string>& params)
   // if browsing for addons, required param[1] is addontype string, with optional param[2]
   // as contenttype string see IAddon.h & ADDON::TranslateXX
   std::string strMask = (params.size() > 1) ? params[1] : "";
-  StringUtils::ToLower(strMask);
+  strMask = StringUtils::FoldCase(strMask);
   ADDON::AddonType type;
   if ((type = CAddonInfo::TranslateType(strMask)) != AddonType::UNKNOWN)
   {
@@ -244,7 +244,7 @@ static int SetFile(const std::vector<std::string>& params)
     url.SetFileName(strMask+"/");
     localShares.clear();
     std::string content = (params.size() > 2) ? params[2] : "";
-    StringUtils::ToLower(content);
+    content = StringUtils::FoldCase(content);
     url.SetPassword(content);
     std::string strMask;
     if (type == AddonType::SCRIPT)

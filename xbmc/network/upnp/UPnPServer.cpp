@@ -436,12 +436,14 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
     if (object) {
         // remap Root virtualpath://upnproot/ to id "0"
         const NPT_String encodedRootObjectId = EncodeObjectId("virtualpath://upnproot/");
-        if (StringUtils::EqualsNoCase(object->m_ObjectID, encodedRootObjectId))
-            object->m_ObjectID = EncodeObjectId("0");
+        if (StringUtils::EqualsNoCase((const char*)object->m_ObjectID,
+                                      (const char*)encodedRootObjectId))
+          object->m_ObjectID = EncodeObjectId("0");
 
         // remap Parent Root virtualpath://upnproot/ to id "0"
-        if (StringUtils::EqualsNoCase(object->m_ParentID, encodedRootObjectId))
-            object->m_ParentID = EncodeObjectId("0");
+        if (StringUtils::EqualsNoCase((const char*)object->m_ParentID,
+                                      (const char*)encodedRootObjectId))
+          object->m_ParentID = EncodeObjectId("0");
     }
 
     return object;

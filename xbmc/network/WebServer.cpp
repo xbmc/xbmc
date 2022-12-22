@@ -811,8 +811,7 @@ MHD_RESULT CWebServer::CreateFileDownloadResponse(
   std::string mimeType = responseDetails.contentType;
   if (mimeType.empty())
   {
-    std::string ext = URIUtils::GetExtension(filePath);
-    StringUtils::ToLower(ext);
+    std::string ext = StringUtils::FoldCase(URIUtils::GetExtension(filePath));
     mimeType = CreateMimeTypeFromExtension(ext.c_str());
   }
 

@@ -867,8 +867,7 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   //##########################################################
   // Send the Hello message
   std::string version = CSysInfo::GetVersion();
-  std::string lcAppName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(lcAppName);
+  std::string lcAppName = StringUtils::FoldCase(CCompileInfo::GetAppName());
   if (version.find(' ') != std::string::npos)
     version.resize(version.find(' '));
   std::string strGreeting = "cddb hello " + lcAppName + " kodi.tv " + CCompileInfo::GetAppName() + " " + version;

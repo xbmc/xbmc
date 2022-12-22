@@ -1391,8 +1391,7 @@ int CMusicDatabase::AddAlbum(const std::string& strAlbum,
                           "AND strMusicBrainzAlbumID IS NULL",
                           strArtist.c_str(), strAlbum.c_str());
     m_pDS->query(strSQL);
-    std::string strCheckFlag = strType;
-    StringUtils::ToLower(strCheckFlag);
+    std::string strCheckFlag = StringUtils::FoldCase(strType);
     if (strCheckFlag.find("boxset") != std::string::npos) //boxset flagged in album type
       bBoxedSet = true;
     if (m_pDS->num_rows() == 0)

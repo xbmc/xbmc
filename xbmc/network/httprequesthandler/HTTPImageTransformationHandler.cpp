@@ -60,8 +60,7 @@ CHTTPImageTransformationHandler::CHTTPImageTransformationHandler(const HTTPReque
   m_response.status = MHD_HTTP_OK;
 
   // determine the content type
-  std::string ext = URIUtils::GetExtension(pathToUrl.GetHostName());
-  StringUtils::ToLower(ext);
+  std::string ext = StringUtils::FoldCase(URIUtils::GetExtension(pathToUrl.GetHostName()));
   m_response.contentType = CMime::GetMimeType(ext);
 
   //! @todo determine the maximum age

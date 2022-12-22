@@ -921,7 +921,7 @@ void CGUIWindowMusicNav::AddSearchFolder()
 
 std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
 {
-  std::string lower(dir); StringUtils::ToLower(lower);
+  std::string lower = StringUtils::FoldCase(dir);
   if (lower == "genres")
     return "musicdb://genres/";
   else if (lower == "artists")

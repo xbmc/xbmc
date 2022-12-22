@@ -37,8 +37,7 @@ IMusicInfoTagLoader* CMusicInfoTagLoaderFactory::CreateLoader(const CFileItem& i
   if (item.IsMusicDb())
     return new CMusicInfoTagLoaderDatabase();
 
-  std::string strExtension = URIUtils::GetExtension(item.GetPath());
-  StringUtils::ToLower(strExtension);
+  std::string strExtension = StringUtils::FoldCase(URIUtils::GetExtension(item.GetPath()));
   StringUtils::TrimLeft(strExtension, ".");
 
   if (strExtension.empty())
