@@ -1498,7 +1498,7 @@ void CAdvancedSettings::MigrateOldArtSettings()
       std::vector<std::string> thumbs2;
       for (auto& it : thumbs1)
       {
-        StringUtils::ToLower(it);
+        it = StringUtils::FoldCase(it);
         if (std::find(thumbs2.begin(), thumbs2.end(), it) == thumbs2.end())
           thumbs2.emplace_back(it);
       }
