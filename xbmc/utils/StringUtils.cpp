@@ -1947,6 +1947,8 @@ bool StringUtils::StartsWith(const char *s1, const char *s2)
   return true;
 }
 
+// TODO: Force build. Remove
+
 bool StringUtils::StartsWithNoCase(const std::string &str1, const std::string &str2)
 {
   return StartsWithNoCase(str1.c_str(), str2.c_str());

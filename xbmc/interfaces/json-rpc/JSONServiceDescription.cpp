@@ -1253,8 +1253,7 @@ JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::CJsonSchemaPropertiesMap() :
 void JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::add(
     const JSONSchemaTypeDefinitionPtr& property)
 {
-  std::string name = property->name;
-  StringUtils::ToLower(name);
+  std::string name = StringUtils::FoldCase(property->name);
   m_propertiesmap[name] = property;
 }
 
@@ -1815,7 +1814,7 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
 
     if (filterByType == "method")
     {
-      StringUtils::ToLower(name);
+      name = StringUtils::FoldCase(name);
 
       CJsonRpcMethodMap::JsonRpcMethodIterator methodIterator = m_actionMap.find(name);
       if (methodIterator != m_actionMap.end() &&
@@ -1827,7 +1826,7 @@ JSONRPC_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer 
     else if (filterByType == "namespace")
     {
       // append a . delimiter to make sure we check for a namespace
-      StringUtils::ToLower(name);
+      name = StringUtils::FoldCase(name);
       name.append(".");
 
       CJsonRpcMethodMap::JsonRpcMethodIterator methodIterator;
@@ -2132,8 +2131,7 @@ void CJSONServiceDescription::CJsonRpcMethodMap::clear()
 
 void CJSONServiceDescription::CJsonRpcMethodMap::add(const JsonRpcMethod &method)
 {
-  std::string name = method.name;
-  StringUtils::ToLower(name);
+  std::string name = StringUtils::FoldCase(method.name);
   m_actionmap[name] = method;
 }
 

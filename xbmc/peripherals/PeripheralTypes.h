@@ -145,30 +145,29 @@ public:
 
   static PeripheralType GetTypeFromString(const std::string& strType)
   {
-    std::string strTypeLowerCase(strType);
-    StringUtils::ToLower(strTypeLowerCase);
+    std::string strTypeFoldCase = StringUtils::FoldCase(strType);
 
-    if (strTypeLowerCase == "bluetooth")
+    if (strTypeFoldCase == "bluetooth")
       return PERIPHERAL_BLUETOOTH;
-    else if (strTypeLowerCase == "cec")
+    else if (strTypeFoldCase == "cec")
       return PERIPHERAL_CEC;
-    else if (strTypeLowerCase == "disk")
+    else if (strTypeFoldCase == "disk")
       return PERIPHERAL_DISK;
-    else if (strTypeLowerCase == "hid")
+    else if (strTypeFoldCase == "hid")
       return PERIPHERAL_HID;
-    else if (strTypeLowerCase == "nic")
+    else if (strTypeFoldCase == "nic")
       return PERIPHERAL_NIC;
-    else if (strTypeLowerCase == "nyxboard")
+    else if (strTypeFoldCase == "nyxboard")
       return PERIPHERAL_NYXBOARD;
-    else if (strTypeLowerCase == "tuner")
+    else if (strTypeFoldCase == "tuner")
       return PERIPHERAL_TUNER;
-    else if (strTypeLowerCase == "imon")
+    else if (strTypeFoldCase == "imon")
       return PERIPHERAL_IMON;
-    else if (strTypeLowerCase == "joystick")
+    else if (strTypeFoldCase == "joystick")
       return PERIPHERAL_JOYSTICK;
-    else if (strTypeLowerCase == "keyboard")
+    else if (strTypeFoldCase == "keyboard")
       return PERIPHERAL_KEYBOARD;
-    else if (strTypeLowerCase == "mouse")
+    else if (strTypeFoldCase == "mouse")
       return PERIPHERAL_MOUSE;
 
     return PERIPHERAL_UNKNOWN;
@@ -203,26 +202,25 @@ public:
 
   static PeripheralBusType GetBusTypeFromString(const std::string& strType)
   {
-    std::string strTypeLowerCase(strType);
-    StringUtils::ToLower(strTypeLowerCase);
+    std::string strTypeFoldCase = StringUtils::FoldCase(strType);
 
-    if (strTypeLowerCase == "usb")
+    if (strTypeFoldCase == "usb")
       return PERIPHERAL_BUS_USB;
-    else if (strTypeLowerCase == "pci")
+    else if (strTypeFoldCase == "pci")
       return PERIPHERAL_BUS_PCI;
-    else if (strTypeLowerCase == "cec")
+    else if (strTypeFoldCase == "cec")
       return PERIPHERAL_BUS_CEC;
-    else if (strTypeLowerCase == "addon")
+    else if (strTypeFoldCase == "addon")
       return PERIPHERAL_BUS_ADDON;
 #ifdef TARGET_ANDROID
-    else if (strTypeLowerCase == "android")
+    else if (strTypeFoldCase == "android")
       return PERIPHERAL_BUS_ANDROID;
 #endif
 #if defined(TARGET_DARWIN)
-    else if (strTypeLowerCase == "darwin_gccontroller")
+    else if (strTypeFoldCase == "darwin_gccontroller")
       return PERIPHERAL_BUS_GCCONTROLLER;
 #endif
-    else if (strTypeLowerCase == "application")
+    else if (strTypeFoldCase == "application")
       return PERIPHERAL_BUS_APPLICATION;
 
     return PERIPHERAL_BUS_UNKNOWN;
@@ -266,32 +264,31 @@ public:
 
   static PeripheralFeature GetFeatureTypeFromString(const std::string& strType)
   {
-    std::string strTypeLowerCase(strType);
-    StringUtils::ToLower(strTypeLowerCase);
+    std::string strTypeFoldCase = StringUtils::FoldCase(strType);
 
-    if (strTypeLowerCase == "hid")
+    if (strTypeFoldCase == "hid")
       return FEATURE_HID;
-    else if (strTypeLowerCase == "cec")
+    else if (strTypeFoldCase == "cec")
       return FEATURE_CEC;
-    else if (strTypeLowerCase == "disk")
+    else if (strTypeFoldCase == "disk")
       return FEATURE_DISK;
-    else if (strTypeLowerCase == "nyxboard")
+    else if (strTypeFoldCase == "nyxboard")
       return FEATURE_NYXBOARD;
-    else if (strTypeLowerCase == "bluetooth")
+    else if (strTypeFoldCase == "bluetooth")
       return FEATURE_BLUETOOTH;
-    else if (strTypeLowerCase == "tuner")
+    else if (strTypeFoldCase == "tuner")
       return FEATURE_TUNER;
-    else if (strTypeLowerCase == "imon")
+    else if (strTypeFoldCase == "imon")
       return FEATURE_IMON;
-    else if (strTypeLowerCase == "joystick")
+    else if (strTypeFoldCase == "joystick")
       return FEATURE_JOYSTICK;
-    else if (strTypeLowerCase == "rumble")
+    else if (strTypeFoldCase == "rumble")
       return FEATURE_RUMBLE;
-    else if (strTypeLowerCase == "poweroff")
+    else if (strTypeFoldCase == "poweroff")
       return FEATURE_POWER_OFF;
-    else if (strTypeLowerCase == "keyboard")
+    else if (strTypeFoldCase == "keyboard")
       return FEATURE_KEYBOARD;
-    else if (strTypeLowerCase == "mouse")
+    else if (strTypeFoldCase == "mouse")
       return FEATURE_MOUSE;
 
     return FEATURE_UNKNOWN;

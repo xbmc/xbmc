@@ -1024,8 +1024,7 @@ std::vector<std::string> CTagLoaderTagLib::SplitMBID(const std::vector<std::stri
   // Picard, and other taggers use a heap of different separators.  We use a regexp to detect
   // MBIDs to make sure we hit them all...
   std::vector<std::string> ret;
-  std::string value = values[0];
-  StringUtils::ToLower(value);
+  std::string value = StringUtils::FoldCase(values[0]);
   CRegExp reg;
   if (reg.RegComp("([[:xdigit:]]{8}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{4}-[[:xdigit:]]{12})"))
   {
@@ -1188,17 +1187,16 @@ void CTagLoaderTagLib::AddArtistInstrument(CMusicInfoTag &tag, const std::vector
 
 bool CTagLoaderTagLib::Load(const std::string& strFileName, CMusicInfoTag& tag, const std::string& fallbackFileExtension, EmbeddedArt *art /* = NULL */)
 {
-  std::string strExtension = URIUtils::GetExtension(strFileName);
+  std::string strExtension = StringUtils::FoldCase(URIUtils::GetExtension(strFileName));
   StringUtils::TrimLeft(strExtension, ".");
 
   if (strExtension.empty())
   {
-    strExtension = fallbackFileExtension;
+    strExtension = StringUtils::FoldCase(fallbackFileExtension);
     if (strExtension.empty())
       return false;
   }
 
-  StringUtils::ToLower(strExtension);
   TagLibVFSStream*           stream = new TagLibVFSStream(strFileName, true);
   if (!stream)
   {
