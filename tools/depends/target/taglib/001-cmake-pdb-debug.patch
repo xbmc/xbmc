@@ -12,11 +12,12 @@
  # Read version information from file taglib/toolkit/taglib.h into variables
 --- a/taglib/CMakeLists.txt
 +++ b/taglib/CMakeLists.txt
-@@ -341,6 +341,12 @@
+@@ -341,6 +341,13 @@
    target_link_libraries(tag ${ZLIB_LIBRARIES})
  endif()
  
 +if(MSVC)
++  target_compile_options(tag PRIVATE "/MP")
 +  set_target_properties(tag PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} COMPILE_PDB_NAME tag COMPILE_PDB_NAME_DEBUG tagd)
 +  install(FILES ${PROJECT_BINARY_DIR}/RelWithDebInfo/tag.pdb DESTINATION lib CONFIGURATIONS RelWithDebInfo)
 +  install(FILES ${PROJECT_BINARY_DIR}/Debug/tagd.pdb DESTINATION lib CONFIGURATIONS Debug)
