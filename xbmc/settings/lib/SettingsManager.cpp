@@ -552,7 +552,7 @@ SettingSectionPtr CSettingsManager::GetSection(std::string section) const
   if (section.empty())
     return nullptr;
 
-  StringUtils::ToLower(section);
+  section = StringUtils::FoldCase(section);
 
   auto sectionIt = m_sections.find(section);
   if (sectionIt != m_sections.end())
@@ -1438,18 +1438,18 @@ void CSettingsManager::ResolveSettingDependencies(const Setting& setting)
 
 CSettingsManager::SettingMap::const_iterator CSettingsManager::FindSetting(std::string settingId) const
 {
-  StringUtils::ToLower(settingId);
+  settingId = StringUtils::FoldCase(settingId);
   return m_settings.find(settingId);
 }
 
 CSettingsManager::SettingMap::iterator CSettingsManager::FindSetting(std::string settingId)
 {
-  StringUtils::ToLower(settingId);
+  settingId = StringUtils::FoldCase(settingId);
   return m_settings.find(settingId);
 }
 
 std::pair<CSettingsManager::SettingMap::iterator, bool> CSettingsManager::InsertSetting(std::string settingId, const Setting& setting)
 {
-  StringUtils::ToLower(settingId);
+  settingId = StringUtils::FoldCase(settingId);
   return m_settings.insert(std::make_pair(settingId, setting));
 }

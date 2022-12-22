@@ -23,10 +23,12 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
 #include "guilib/DispResource.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
+#include "utils/StringUtils.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WindowSystemFactory.h"
 
 #include <mutex>
+#include <string_view>
 #include <vector>
 
 #include <X11/Xlib.h>
@@ -264,10 +266,9 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   std::string gpuvendor;
   const char* vend = (const char*) glGetString(GL_VENDOR);
   if (vend)
-    gpuvendor = vend;
-  std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
-  bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
-  bool isIntel = (gpuvendor.compare(0, 5, "intel") == 0);
+    gpuvendor = StringUtils::FoldCase(std::string_view(vend));
+  bool isNvidia = StringUtils::StartsWith(gpuvendor, "nvidia");
+  bool isIntel = StringUtils::StartsWith(gpuvendor, "intel");
   std::string gli = (getenv("KODI_GL_INTERFACE") != nullptr) ? getenv("KODI_GL_INTERFACE") : "";
 
   if (gli != "GLX")

@@ -1353,7 +1353,7 @@ void CGUIWindowVideoBase::OnSearch()
   if (!CGUIKeyboardFactory::ShowAndGetInput(strSearch, CVariant{g_localizeStrings.Get(16017)}, false))
     return ;
 
-  StringUtils::ToLower(strSearch);
+  strSearch = StringUtils::FoldCase(strSearch);
   if (m_dlgProgress)
   {
     m_dlgProgress->SetHeading(CVariant{194});
@@ -1482,7 +1482,7 @@ void CGUIWindowVideoBase::OnScan(const std::string& strPath, bool scanAll)
 
 std::string CGUIWindowVideoBase::GetStartFolder(const std::string &dir)
 {
-  std::string lower(dir); StringUtils::ToLower(lower);
+  std::string lower = StringUtils::FoldCase(dir);
   if (lower == "$playlists" || lower == "playlists")
     return "special://videoplaylists/";
   else if (lower == "plugins" || lower == "addons")

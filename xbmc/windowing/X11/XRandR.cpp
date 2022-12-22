@@ -62,8 +62,7 @@ bool CXRandR::Query(bool force, bool ignoreoff)
 bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
 {
   std::string cmd;
-  std::string appname = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appname);
+  std::string appname = StringUtils::FoldCase(CCompileInfo::GetAppName());
   if (getenv("KODI_BIN_HOME"))
   {
     cmd  = getenv("KODI_BIN_HOME");
@@ -153,9 +152,7 @@ bool CXRandR::TurnOffOutput(const std::string& name)
     return false;
 
   std::string cmd;
-  std::string appname = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appname);
-
+  std::string appname = StringUtils::FoldCase(CCompileInfo::GetAppName());
   if (getenv("KODI_BIN_HOME"))
   {
     cmd  = getenv("KODI_BIN_HOME");
@@ -327,8 +324,7 @@ bool CXRandR::SetMode(const XOutput& output, const XMode& mode)
 
   m_currentOutput = outputFound.name;
   m_currentMode = modeFound.id;
-  std::string appname = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appname);
+  std::string appname = StringUtils::FoldCase(CCompileInfo::GetAppName());
   char cmd[255];
 
   if (getenv("KODI_BIN_HOME"))
@@ -422,9 +418,7 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
     StringUtils::Trim(name);
     strModeLine = modeline->FirstChild()->Value();
     StringUtils::Trim(strModeLine);
-    std::string appname = CCompileInfo::GetAppName();
-    StringUtils::ToLower(appname);
-
+    std::string appname = StringUtils::FoldCase(CCompileInfo::GetAppName());
     if (getenv("KODI_BIN_HOME"))
     {
       snprintf(cmd, sizeof(cmd), "%s/%s-xrandr --newmode \"%s\" %s > /dev/null 2>&1", getenv("KODI_BIN_HOME"),

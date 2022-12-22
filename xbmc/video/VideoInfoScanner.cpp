@@ -1548,7 +1548,7 @@ namespace VIDEO
       if (matchesFilename)
         candidate.erase(0, baseFilename.length());
       URIUtils::RemoveExtension(candidate);
-      StringUtils::ToLower(candidate);
+      candidate = StringUtils::FoldCase(candidate);
 
       // move 'folder' to thumb / poster / banner based on aspect ratio
       // if such artwork doesn't already exist
@@ -1892,14 +1892,13 @@ namespace VIDEO
             {
               title = guide->strTitle;
             }
-            StringUtils::ToLower(title);
+            title = StringUtils::FoldCase(title);
             guide->cScraperUrl.SetTitle(title);
             titles.push_back(title);
           }
 
           double matchscore;
-          std::string loweredTitle(file->strTitle);
-          StringUtils::ToLower(loweredTitle);
+          std::string loweredTitle = StringUtils::FoldCase(file->strTitle);
           int index = StringUtils::FindBestMatch(loweredTitle, titles, matchscore);
           if (index >= 0 && matchscore >= minscore)
           {

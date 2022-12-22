@@ -1407,7 +1407,7 @@ void CGUIMediaWindow::GetDirectoryHistoryString(const CFileItem* pItem, std::str
     strHistoryString = RemoveParameterFromPath(strHistoryString, "filter");
 
   URIUtils::RemoveSlashAtEnd(strHistoryString);
-  StringUtils::ToLower(strHistoryString);
+  strHistoryString = StringUtils::FoldCase(strHistoryString);
 }
 
 /*!
@@ -2037,9 +2037,8 @@ bool CGUIMediaWindow::GetFilteredItems(const std::string &filter, CFileItemList 
   if (m_canFilterAdvanced)
     result = GetAdvanceFilteredItems(items);
 
-  std::string trimmedFilter(filter);
+  std::string trimmedFilter = StringUtils::FoldCase(filter);
   StringUtils::TrimLeft(trimmedFilter);
-  StringUtils::ToLower(trimmedFilter);
 
   if (trimmedFilter.empty())
     return result;
@@ -2097,9 +2096,8 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items)
   std::map<std::string, CFileItemPtr> lookup;
   for (int j = 0; j < resultItems.Size(); j++)
   {
-    std::string itemPath = CURL(resultItems[j]->GetPath()).GetWithoutOptions();
-    StringUtils::ToLower(itemPath);
-
+    std::string itemPath =
+        StringUtils::FoldCase(CURL(resultItems[j]->GetPath()).GetWithoutOptions());
     lookup[itemPath] = resultItems[j];
   }
 
@@ -2118,8 +2116,7 @@ bool CGUIMediaWindow::GetAdvanceFilteredItems(CFileItemList &items)
     // check if the item is part of the resultItems list
     // by comparing their paths (but ignoring any special
     // options because they differ from filter to filter)
-    std::string path = CURL(item->GetPath()).GetWithoutOptions();
-    StringUtils::ToLower(path);
+    std::string path = StringUtils::FoldCase(CURL(item->GetPath()).GetWithoutOptions());
 
     std::map<std::string, CFileItemPtr>::iterator itItem = lookup.find(path);
     if (itItem != lookup.end())

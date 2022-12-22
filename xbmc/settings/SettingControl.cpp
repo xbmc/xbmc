@@ -98,9 +98,7 @@ bool CSettingControlSpinner::SetFormat(const std::string &format)
       !StringUtils::EqualsNoCase(format, "number"))
     return false;
 
-  m_format = format;
-  StringUtils::ToLower(m_format);
-
+  m_format = StringUtils::FoldCase(format);
   return true;
 }
 
@@ -126,9 +124,7 @@ bool CSettingControlEdit::SetFormat(const std::string &format)
       !StringUtils::EqualsNoCase(format, "urlencoded"))
     return false;
 
-  m_format = format;
-  StringUtils::ToLower(m_format);
-
+  m_format = StringUtils::FoldCase(format);
   return true;
 }
 
@@ -223,8 +219,7 @@ bool CSettingControlButton::SetFormat(const std::string &format)
       !StringUtils::EqualsNoCase(format, "time"))
     return false;
 
-  m_format = format;
-  StringUtils::ToLower(m_format);
+  m_format = StringUtils::FoldCase(format);
 
   return true;
 }
@@ -248,8 +243,7 @@ bool CSettingControlList::SetFormat(const std::string &format)
       !StringUtils::EqualsNoCase(format, "integer"))
     return false;
 
-  m_format = format;
-  StringUtils::ToLower(m_format);
+  m_format = StringUtils::FoldCase(format);
 
   return true;
 }
@@ -280,8 +274,7 @@ bool CSettingControlSlider::SetFormat(const std::string &format)
       !StringUtils::EqualsNoCase(format, "number"))
     return false;
 
-  m_format = format;
-  StringUtils::ToLower(m_format);
+  m_format = StringUtils::FoldCase(format);
   m_formatString = GetDefaultFormatString();
 
   return true;
@@ -342,9 +335,7 @@ bool CSettingControlRange::SetFormat(const std::string &format)
   else
     return false;
 
-  m_format = format;
-  StringUtils::ToLower(m_format);
-
+  m_format = StringUtils::FoldCase(format);
   return true;
 }
 
