@@ -419,6 +419,33 @@ std::wstring StringUtils::ToWstring(const std::u32string_view str)
 
 namespace
 {
+static int FoldAndCompare(const std::u32string_view str1, const std::u32string_view str2)
+{
+  // FoldAndEquals is faster for equality checks.
+
+  size_t length = std::min(str1.length(), str2.length());
+  for (size_t i = 0; i < length; i++)
+  {
+    char32_t fold_c1 = FoldCaseChar(str1[i]);
+    char32_t fold_c2 = FoldCaseChar(str2[i]);
+
+    if (fold_c1 != fold_c2)
+    {
+      if (fold_c1 < fold_c2)
+        return -1;
+      else
+        return 1;
+    }
+  }
+  // Break a tie using length
+
+  if (str1.length() < str2.length())
+    return -1;
+  if (str2.length() < str1.length())
+    return 1;
+
+  return 0;
+}
 
 int compareWchar(const void* a, const void* b)
 {
@@ -591,6 +618,64 @@ std::string StringUtils::FoldCase(const std::string_view str)
   return result;
 }
 
+bool StringUtils::FoldAndCompareStart(const std::u32string_view str1,
+                                      const std::u32string_view str2)
+{
+  if (str1.length() < str2.length())
+    return false;
+
+  for (size_t i = 0; i < str2.length(); i++)
+  {
+    char32_t fold_c1 = FoldCaseChar(str1[i]);
+    char32_t fold_c2 = FoldCaseChar(str2[i]);
+    if (fold_c1 != fold_c2)
+      return false;
+  }
+  return true;
+}
+
+bool StringUtils::FoldAndCompareEnd(const std::u32string_view str1, const std::u32string_view str2)
+{
+  if (str1.length() < str2.length())
+    return false;
+
+  if (str2.length() == 0)
+    return true;
+
+  size_t str1_delta = str1.length() - str2.length();
+  size_t i = str2.length();
+  while (i > 0)
+  {
+    i--;
+    char32_t fold_c1 = FoldCaseChar(str1[i + str1_delta]);
+    char32_t fold_c2 = FoldCaseChar(str2[i]);
+    if (fold_c1 != fold_c2)
+      return false;
+  }
+  return true;
+}
+
+bool StringUtils::FoldAndEquals(const std::u32string_view str1, const std::u32string_view str2)
+{
+  // A bit faster than FoldCompareAndCompare because it can immediately return if lengths
+  // not the same. Simple FoldCase does not change codepoint length.
+  //
+  // Embedded NULLS can occur. Does NOT consider NULLS string terminators (doing so would
+  // require string scan for NULLs to determine length, etc.).
+
+  if (str1.length() != str2.length())
+    return false;
+
+  for (size_t i = 0; i < str1.length(); i++)
+  {
+    char32_t fold_c1 = FoldCaseChar(str1[i]);
+    char32_t fold_c2 = FoldCaseChar(str2[i]);
+    if (fold_c1 != fold_c2)
+      return false;
+  }
+  return true;
+}
+
 void StringUtils::ToCapitalize(std::string& str)
 {
   std::wstring wstr = StringUtils::ToWstring(str);
@@ -627,58 +712,75 @@ bool StringUtils::Equals(const std::string_view str1, const std::string_view str
   return str1 == str2; // Binary compare not lexicographic
 }
 
-bool StringUtils::EqualsNoCase(const std::string& str1, const std::string& str2)
+bool StringUtils::EqualsNoCase(const std::string_view str1, const std::string_view str2)
 {
-  // before we do the char-by-char comparison, first compare sizes of both strings.
-  // This led to a 33% improvement in benchmarking on average. (size() just returns a member of std::string)
-  if (str1.size() != str2.size())
-    return false;
-  return EqualsNoCase(str1.c_str(), str2.c_str());
+  // FoldCase both strings and then compare the string. Slower than a byte at a time,
+  // but more accurate for multi-byte characters. Does not impact char32_t length,
+  // like some Unicode libs do, such as ICUC4. UTF-8 length CAN change during folding.
+  //
+  // Using Utf32 (Unicode code points) is most accurate, so case fold and
+  // compare in that form.
+
+  std::u32string utf32Str1 = StringUtils::ToUtf32(str1);
+  std::u32string utf32Str2 = StringUtils::ToUtf32(str2);
+
+  return StringUtils::FoldAndEquals(utf32Str1, utf32Str2);
 }
 
-bool StringUtils::EqualsNoCase(const std::string& str1, const char* s2)
+int StringUtils::CompareNoCase(const std::string_view str1,
+                               const std::string_view str2,
+                               const size_t n /* = 0 */)
 {
-  return EqualsNoCase(str1.c_str(), s2);
+  // n is the maximum number of Unicode codepoints (for practical purposes
+  // equivalent to characters).
+  //
+  // Much better to avoid using n by using "StartsWith or EndsWith, etc.
+  //
+  // Using Utf32 (Unicode code points) is most accurate, so case fold and
+  // compare in that form.
+  //
+
+  // Convert to codepoints
+
+  std::u32string utf32Str1 = StringUtils::ToUtf32(str1);
+  std::u32string utf32Str2 = StringUtils::ToUtf32(str2);
+
+  if (n > 0 and n < utf32Str1.length())
+    utf32Str1 = utf32Str1.substr(0, n);
+
+  if (n > 0 and n < utf32Str2.length())
+    utf32Str2 = utf32Str2.substr(0, n);
+
+  int result = FoldAndCompare(utf32Str1, utf32Str2);
+  return result;
 }
 
-bool StringUtils::EqualsNoCase(const char* s1, const char* s2)
+int StringUtils::CompareNoCase(const std::wstring_view str1,
+                               const std::wstring_view str2,
+                               const size_t n /* = 0 */)
 {
-  char c2; // we need only one char outside the loop
-  do
-  {
-    const char c1 = *s1++; // const local variable should help compiler to optimize
-    c2 = *s2++;
-    if (c1 != c2 &&
-        ::tolower(c1) !=
-            ::tolower(
-                c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
-      return false;
-  } while (c2 != '\0'); // At this point, we know c1 == c2, so there's no need to test them both.
-  return true;
-}
+  // n is the maximum number of Unicode codepoints (for practical purposes
+  // equivalent to characters).
+  //
+  // Much better to avoid using n by using "StartsWith or EndsWith, etc.
+  //
+  // Using Utf32 (Unicode code points) is most accurate, so case fold and
+  // compare in that form.
+  //
 
-int StringUtils::CompareNoCase(const std::string& str1, const std::string& str2, size_t n /* = 0 */)
-{
-  return CompareNoCase(str1.c_str(), str2.c_str(), n);
-}
+  // Convert to codepoints
 
-int StringUtils::CompareNoCase(const char* s1, const char* s2, size_t n /* = 0 */)
-{
-  char c2; // we need only one char outside the loop
-  size_t index = 0;
-  do
-  {
-    const char c1 = *s1++; // const local variable should help compiler to optimize
-    c2 = *s2++;
-    index++;
-    if (c1 != c2 &&
-        ::tolower(c1) !=
-            ::tolower(
-                c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
-      return ::tolower(c1) - ::tolower(c2);
-  } while (c2 != '\0' &&
-           index != n); // At this point, we know c1 == c2, so there's no need to test them both.
-  return 0;
+  std::u32string utf32Str1 = StringUtils::ToUtf32(str1);
+  std::u32string utf32Str2 = StringUtils::ToUtf32(str2);
+
+  if (n > 0 and n < utf32Str1.length())
+    utf32Str1 = utf32Str1.substr(0, n);
+
+  if (n > 0 and n < utf32Str2.length())
+    utf32Str2 = utf32Str2.substr(0, n);
+
+  int result = FoldAndCompare(utf32Str1, utf32Str2);
+  return result;
 }
 
 std::string StringUtils::Left(const std::string& str, size_t count)
@@ -847,95 +949,53 @@ int StringUtils::Replace(std::wstring& str, const std::wstring& oldStr, const st
   return replacedChars;
 }
 
-bool StringUtils::StartsWith(const std::string& str1, const std::string& str2)
+bool StringUtils::StartsWith(const std::string_view str1, const std::string_view str2)
 {
-  return str1.compare(0, str2.size(), str2) == 0;
+  return str1.substr(0, str2.size()) == str2; // Binary compare
 }
 
-bool StringUtils::StartsWith(const std::string& str1, const char* s2)
+bool StringUtils::StartsWithNoCase(const std::string_view str1, const std::string_view str2)
 {
-  return StartsWith(str1.c_str(), s2);
+  // FoldCase both strings and then compare the string. Slower than a byte at a time,
+  // but more accurate for multi-byte characters. In "full case folding" (which
+  // is not done here) the length of strings in Unicode codepoints can change.
+  // Here, a less advanced algorithm is used which does not change the number
+  // of 32-bit Unicode codepoints in a string. HOWEVER, the length in UTF-8
+  // BYTES can change. Therefore it is not correct to compare raw UTF8 lengths.
+
+  // Using Utf32 (Unicode code points) is most accurate, so case fold and
+  // compare are in that form.
+
+  std::u32string utf32Str1 = StringUtils::ToUtf32(str1);
+  std::u32string utf32Str2 = StringUtils::ToUtf32(str2);
+  bool result = StringUtils::FoldAndCompareStart(utf32Str1, utf32Str2);
+  return result;
 }
 
-bool StringUtils::StartsWith(const char* s1, const char* s2)
+bool StringUtils::EndsWith(const std::string_view str1, const std::string_view str2)
 {
-  while (*s2 != '\0')
-  {
-    if (*s1 != *s2)
-      return false;
-    s1++;
-    s2++;
-  }
-  return true;
-}
+  // No character conversion required
 
-bool StringUtils::StartsWithNoCase(const std::string& str1, const std::string& str2)
-{
-  return StartsWithNoCase(str1.c_str(), str2.c_str());
-}
-
-bool StringUtils::StartsWithNoCase(const std::string& str1, const char* s2)
-{
-  return StartsWithNoCase(str1.c_str(), s2);
-}
-
-bool StringUtils::StartsWithNoCase(const char* s1, const char* s2)
-{
-  while (*s2 != '\0')
-  {
-    if (::tolower(*s1) != ::tolower(*s2))
-      return false;
-    s1++;
-    s2++;
-  }
-  return true;
-}
-
-bool StringUtils::EndsWith(const std::string& str1, const std::string& str2)
-{
   if (str1.size() < str2.size())
     return false;
-  return str1.compare(str1.size() - str2.size(), str2.size(), str2) == 0;
+  return str1.substr(str1.size() - str2.size(), str2.size()) == str2; // Binary compare
 }
 
-bool StringUtils::EndsWith(const std::string& str1, const char* s2)
+bool StringUtils::EndsWithNoCase(const std::string_view str1, const std::string_view str2)
 {
-  size_t len2 = strlen(s2);
-  if (str1.size() < len2)
-    return false;
-  return str1.compare(str1.size() - len2, len2, s2) == 0;
-}
+  // FoldCase both strings and then compare the end of str1 for str2.
+  // Slower than a byte at a time, but more accurate for multi-byte characters. In "full case
+  // folding" (which is not done here) the length of strings can change during folding. It still
+  // may be possible for length to change, but at least for now, assume that it does not.
+  //
+  // Using Utf32 (Unicode code points) is most accurate, so case fold and
+  // compare in that form.
+  //
 
-bool StringUtils::EndsWithNoCase(const std::string& str1, const std::string& str2)
-{
-  if (str1.size() < str2.size())
-    return false;
-  const char* s1 = str1.c_str() + str1.size() - str2.size();
-  const char* s2 = str2.c_str();
-  while (*s2 != '\0')
-  {
-    if (::tolower(*s1) != ::tolower(*s2))
-      return false;
-    s1++;
-    s2++;
-  }
-  return true;
-}
-
-bool StringUtils::EndsWithNoCase(const std::string& str1, const char* s2)
-{
-  size_t len2 = strlen(s2);
-  if (str1.size() < len2)
-    return false;
-  const char* s1 = str1.c_str() + str1.size() - len2;
-  while (*s2 != '\0')
-  {
-    if (::tolower(*s1) != ::tolower(*s2))
-      return false;
-    s1++;
-    s2++;
-  }
-  return true;
+  std::u32string utf32Str1 = StringUtils::ToUtf32(str1);
+  std::u32string utf32Str2 = StringUtils::ToUtf32(str2);
+  bool result = StringUtils::FoldAndCompareEnd(utf32Str1, utf32Str2);
+  return result;
 }
 
 std::vector<std::string> StringUtils::Split(const std::string& input,

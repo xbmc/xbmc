@@ -221,15 +221,16 @@ void CNetworkWin10::queryInterfaceList()
     // case-independent (ci) compare_less
     struct nocase_compare
     {
-      bool operator() (const unsigned int& c1, const unsigned int& c2) const {
-        return tolower(c1) < tolower(c2);
+      bool operator()(const std::wstring& s1, const std::wstring& s2) const
+      {
+        return StringUtils::CompareNoCase(s1, s2) < 0;
       }
     };
-    bool operator()(const std::wstring & s1, const std::wstring & s2) const {
-      return std::lexicographical_compare
-      (s1.begin(), s1.end(),
-       s2.begin(), s2.end(),
-       nocase_compare());
+    bool operator()(const std::wstring& s1, const std::wstring& s2) const
+    {
+      std::wstring left = StringUtils::FoldCase(s1);
+      std::wstring right = StringUtils::FoldCase(s2);
+      return std::lexicographical_compare(left.begin(), left.end(), right.begin(), right.end());
     }
   };
 

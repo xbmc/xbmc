@@ -89,10 +89,12 @@ CSeatSelection::CSeatSelection(CConnection& connection, wayland::seat_t const& s
       // Match MIME type by priority: Find first preferred MIME type that is in the
       // set of offered types
       // Charset is not case-sensitive in MIME type spec, so match case-insensitively
-      auto mimeIt = std::find_first_of(MIME_TYPES_PREFERENCE.cbegin(), MIME_TYPES_PREFERENCE.cend(),
-                                       m_mimeTypeOffers.cbegin(), m_mimeTypeOffers.cend(),
-                                       // static_cast needed for overload resolution
-                                       static_cast<bool (*)(std::string const&, std::string const&)> (&StringUtils::EqualsNoCase));
+      auto mimeIt =
+          std::find_first_of(MIME_TYPES_PREFERENCE.cbegin(), MIME_TYPES_PREFERENCE.cend(),
+                             m_mimeTypeOffers.cbegin(), m_mimeTypeOffers.cend(),
+                             // static_cast needed for overload resolution
+                             static_cast<bool (*)(std::string_view const, std::string_view const)>(
+                                 &StringUtils::EqualsNoCase));
       if (mimeIt != MIME_TYPES_PREFERENCE.cend())
       {
         m_matchedMimeType = *mimeIt;
