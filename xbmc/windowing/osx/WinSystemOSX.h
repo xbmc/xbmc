@@ -91,7 +91,7 @@ public:
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
 
-  void GetScreenResolution(int* w, int* h, double* fps, unsigned long screenIdx);
+  void GetScreenResolution(size_t* w, size_t* h, double* fps, unsigned long screenIdx);
   void EnableVSync(bool enable);
   bool SwitchToVideoMode(int width, int height, double refreshrate);
   void FillInVideoModes();
