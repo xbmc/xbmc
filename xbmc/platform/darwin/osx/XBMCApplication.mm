@@ -30,36 +30,6 @@ static int gArgc;
 static char** gArgv;
 static BOOL gCalledAppMainline = FALSE;
 
-// Create a window menu
-static NSMenu* setupWindowMenu()
-{
-  NSMenu* windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
-
-  // "Full/Windowed Toggle" item
-  NSMenuItem* menuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle"
-                                                    action:@selector(fullScreenToggle:)
-                                             keyEquivalent:@"f"];
-  // this is just for display purposes, key handling is in CWinEventsOSX::ProcessOSXShortcuts()
-  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand | NSEventModifierFlagControl;
-  [windowMenu addItem:menuItem];
-
-  // "Full/Windowed Toggle" item
-  menuItem = [[NSMenuItem alloc] initWithTitle:@"Float on Top"
-                                        action:@selector(floatOnTopToggle:)
-                                 keyEquivalent:@"t"];
-  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
-  [windowMenu addItem:menuItem];
-
-  // "Minimize" item
-  menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize"
-                                        action:@selector(performMiniaturize:)
-                                 keyEquivalent:@"m"];
-  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
-  [windowMenu addItem:menuItem];
-
-  return windowMenu;
-}
-
 // The main class of the application, the application's delegate
 @implementation XBMCDelegate
 
@@ -157,23 +127,6 @@ static NSMenu* setupWindowMenu()
                                                  keyEquivalent:@"q"];
   [appMenu addItem:quitMenuItem];
   [menuBarItem setSubmenu:appMenu];
-
-  // Window Menu
-  NSMenuItem* windowMenuItem = [menubar addItemWithTitle:@"" action:nil keyEquivalent:@""];
-  NSMenu* windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
-  [menubar setSubmenu:windowMenu forItem:windowMenuItem];
-  NSMenuItem* fullscreenMenuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle"
-                                                              action:@selector(fullScreenToggle:)
-                                                       keyEquivalent:@"f"];
-  fullscreenMenuItem.keyEquivalentModifierMask =
-      NSEventModifierFlagCommand | NSEventModifierFlagControl;
-  [windowMenu addItem:fullscreenMenuItem];
-  [windowMenu addItemWithTitle:@"Float on Top"
-                        action:@selector(floatOnTopToggle:)
-                 keyEquivalent:@"t"];
-  [windowMenu addItemWithTitle:@"Minimize"
-                        action:@selector(performMiniaturize:)
-                 keyEquivalent:@"m"];
 }
 
 // Called after the internal event loop has started running.
@@ -341,7 +294,7 @@ static NSMenu* setupWindowMenu()
 
 - (NSMenu*)applicationDockMenu:(NSApplication*)sender
 {
-  return setupWindowMenu();
+  return nil;
 }
 
 @end
