@@ -172,12 +172,7 @@ struct SortLanguage
 {
   bool operator()(const StringSettingOption &left, const StringSettingOption &right) const
   {
-    std::string strLeft = left.label;
-    std::string strRight = right.label;
-    StringUtils::ToLower(strLeft);
-    StringUtils::ToLower(strRight);
-
-    return strLeft.compare(strRight) < 0;
+    return StringUtils::CompareNoCase(left.label, right.label) < 0;
   }
 };
 

@@ -132,7 +132,6 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
       {
         std::string strTmp = StringUtils::FoldCase(deviceProperty);
 
-        StringUtils::ToLower(strTmp);
         size_t posVid, posPid;
         if (((posVid=strTmp.find("\\vid_")) != std::string::npos || (posVid=strTmp.find("&vid_")) != std::string::npos) &&
               ((posPid=strTmp.find("\\pid_")) != std::string::npos || (posPid=strTmp.find("&pid_")) != std::string::npos))

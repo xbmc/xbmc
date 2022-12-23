@@ -217,6 +217,15 @@ void CNetworkWin10::queryInterfaceList()
 
   struct ci_less
   {
+    // TODO: Unicode- This does NOT look case-less compare. This looks like C compare,
+    // which uses current C locale setting. After verifying, change to
+    // FoldCase. Verify that an "InterfaceList" must be ASCII. It looks
+    // like Windows is supporting IDNS, which might impact interface names.
+    // No idea how common this is.
+    //
+    // Even if ASCII, probably should explicitly use 'C' locale for tolower,
+    // just so that it sticks out.
+
     // case-independent (ci) compare_less
     struct nocase_compare
     {

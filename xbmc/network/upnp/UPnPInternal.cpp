@@ -1173,9 +1173,10 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
     }
 
     // if this is an image fill the thumb of the item
+    // NPT converts to std::string but not std::string_view
 
-    std::string tmp(resource.m_ProtocolInfo.GetContentType());
-    if (StringUtils::StartsWithNoCase(tmp, "image"))
+    if (StringUtils::StartsWithNoCase(std::string_view{resource.m_ProtocolInfo.GetContentType()},
+                                      "image"))
     {
       item.SetArt("thumb", std::string(resource.m_Uri));
     }

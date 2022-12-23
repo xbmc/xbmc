@@ -9,6 +9,7 @@
 #pragma once
 
 #include "WeatherManager.h"
+#include "utils/StringUtils.h"
 
 #include <map>
 #include <string>
@@ -38,18 +39,13 @@ private:
 
   struct ci_less
   {
-    // case-independent (ci) compare_less binary function
-    struct nocase_compare
+    // May be able to use existing code IFF values are all ASCII and C Locale
+    // is used for tolower. But for simplicity, consistency and more bullet-proof
+    // solution it is recoded here to use FoldCase via CompareNoCase.
+
+    bool operator()(const std::string_view s1, const std::string_view s2) const
     {
-      bool operator() (const unsigned char& c1, const unsigned char& c2) const {
-        return tolower(c1) < tolower(c2);
-      }
-    };
-    bool operator()(const std::string & s1, const std::string & s2) const {
-      return std::lexicographical_compare
-      (s1.begin(), s1.end(),
-        s2.begin(), s2.end(),
-        nocase_compare());
+      return StringUtils::CompareNoCase(s1, s2) < 0;
     }
   };
 

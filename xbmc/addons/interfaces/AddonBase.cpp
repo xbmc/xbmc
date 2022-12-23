@@ -33,6 +33,8 @@
 #include "Network.h"
 #include "gui/General.h"
 
+using namespace std::literals;
+
 namespace ADDON
 {
 
@@ -271,31 +273,32 @@ char* Interface_Base::get_addon_info(const KODI_ADDON_BACKEND_HDL hdl, const cha
   }
 
   std::string str;
-  if (StringUtils::CompareNoCase(id, "author") == 0)
+  std::string_view idSv{id};
+  if (StringUtils::EqualsNoCase(idSv, "author"sv))
     str = addon->Author();
-  else if (StringUtils::CompareNoCase(id, "changelog") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "changelog"sv))
     str = addon->ChangeLog();
-  else if (StringUtils::CompareNoCase(id, "description") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "description"sv))
     str = addon->Description();
-  else if (StringUtils::CompareNoCase(id, "disclaimer") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "disclaimer"sv))
     str = addon->Disclaimer();
-  else if (StringUtils::CompareNoCase(id, "fanart") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "fanart"sv))
     str = addon->FanArt();
-  else if (StringUtils::CompareNoCase(id, "icon") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "icon"sv))
     str = addon->Icon();
-  else if (StringUtils::CompareNoCase(id, "id") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "id"sv))
     str = addon->ID();
-  else if (StringUtils::CompareNoCase(id, "name") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "name"sv))
     str = addon->Name();
-  else if (StringUtils::CompareNoCase(id, "path") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "path"sv))
     str = addon->Path();
-  else if (StringUtils::CompareNoCase(id, "profile") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "profile"sv))
     str = addon->Profile();
-  else if (StringUtils::CompareNoCase(id, "summary") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "summary"sv))
     str = addon->Summary();
-  else if (StringUtils::CompareNoCase(id, "type") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "type"sv))
     str = ADDON::CAddonInfo::TranslateType(addon->Type());
-  else if (StringUtils::CompareNoCase(id, "version") == 0)
+  else if (StringUtils::EqualsNoCase(idSv, "version"sv))
     str = addon->Version().asString();
   else
   {

@@ -159,7 +159,7 @@ public:
   static void ToLower(std::string &str);
   static void ToLower(std::wstring &str);
 
-public: // private:
+private:
   /*!
    *  \brief Folds the case of a string using a simple algorithm.
    *
@@ -225,13 +225,194 @@ public:
    */
   static std::wstring FoldCase(const std::wstring_view str) WARN_UNUSED_RESULT;
 
+private:
+  /*!
+   *  \brief Folds and compares two u32strings
+   *
+   * By Folding and comparing characters one at a time the performance should be a bit
+   * better than Folding both strings and then comparing. Note that these functions take
+   * strings that have already been converted to u32string.
+   *
+   * Compares the codepoint values of each Unicode character in each string until
+   * there is a difference, or when all codepoints have been compared.
+   *
+   * Note: Embedded NULLS are treated as ordinary characters, not as string terminators
+   *
+   * TODO: Revisit this behavior
+   *
+   * Used by CompareNoCase
+   *
+   * \param str1 u32string to fold and compare
+   * \param str2 u32string to fold and compare
+   * \return 0 if both folded strings are identical
+   *         -1 if the first difference is a codepoint in folded str1 which is numerically less
+   *            than folded str2 OR if they compare equal, but str1 is shorter.
+   *         1  if the first difference is a codepoint in folded str1 which is numerically greater
+   *            than folded str2 OR if they compare equal, but str2 is shorter.
+   */
+
+  static int FoldAndCompare(const std::u32string_view str1, const std::u32string_view str2);
+
+  /*!
+    * \brief Folds and compares two u32strings from the leftmost end. str2 determines the
+    *        maximum number of Unicode codepoints (characters) compared.
+    *
+    * By Folding and comparing characters one at a time the performance should be a bit
+    * better than Folding both strings and then comparing. Note that these functions take
+    * strings that have already been converted to u32string.
+    *
+    * Used by StartsWithNoCase
+    *
+    * \param str1 u32string to fold and compare
+    * \param str2 u32string to fold and compare
+    * \return true if str1 has at least as many codepoints as str2 and that the leftmost codepoints
+    *         of str1 match str2
+    *         false otherwise
+    */
+  static bool FoldAndCompareStart(const std::u32string_view str1, const std::u32string_view str2);
+
+  /*!
+   * \brief Folds and compares two u32strings from the rightmost end. str2 determines the
+   *        maximum number of Unicode codepoints (characters) compared.
+   *
+   * By Folding and comparing characters one at a time the performance should be a bit
+   * better than Folding both strings and then comparing. Note that these functions take
+   * strings that have already been converted to u32string.
+   *
+   * Used by EndsWithNoCase
+   *
+   * \param str1 u32string to fold and compare
+   * \param str2 u32string to fold and compare
+   * \return true if str1 has at least as many codepoints as str2 and that the rightmost codepoints
+   *         of str1 match str2
+   *         false otherwise
+   */
+  static bool FoldAndCompareEnd(const std::u32string_view str1, const std::u32string_view str2);
+
+  /*!
+    *  \brief Determines if two strings are equal when folded, or not
+    *
+    * Nearly identical to FoldAndCompare, except that unequal lengths will return
+    * false.
+    *
+    * Compares the codepoint values of each Unicode character in each string until
+    * there is a difference, or when all codepoints have been compared.
+    *
+    * Note: Embedded NULLS are treated as ordinary characters, not as string terminators
+    *
+    * TODO: Revisit this behavior
+    *
+    * Used by EqualsNoCase
+    *
+    * \param str1 u32string to fold and compare
+    * \param str2 u32string to fold and compare
+    * \return true if both folded strings are identical,
+    *         false otherwise
+    */
+  static bool FoldAndEquals(const std::u32string_view str1, const std::u32string_view str2);
+
+public:
   static void ToCapitalize(std::string &str);
   static void ToCapitalize(std::wstring &str);
-  static bool EqualsNoCase(const std::string &str1, const std::string &str2);
-  static bool EqualsNoCase(const std::string &str1, const char *s2);
-  static bool EqualsNoCase(const char *s1, const char *s2);
-  static int CompareNoCase(const std::string& str1, const std::string& str2, const size_t n = 0);
-  static int CompareNoCase(const char* s1, const char* s2, size_t n = 0);
+
+  /*!
+    * \brief Determines if two strings are the same.
+    *
+    * A bit faster than Compare since length check can be done before compare.
+    * Also compare does not require any conversion.
+    *
+    * \param str1 one of the strings to compare
+    * \param str2 one of the strings to compare
+    * \return true if both strings are identical, otherwise false
+    */
+  static bool Equals(const std::string_view str1, const std::string_view str2);
+
+  /*!
+   * \brief Determines if two strings are the same, after case folding each.
+   *
+   * Logically equivalent to Equals(FoldCase(str1), FoldCase(str2))
+   *
+   * \param str1 one of the strings to compare
+   * \param str2 one of the strings to compare
+   * \return true if both strings compare after case folding, otherwise false
+   */
+
+  static bool EqualsNoCase(const std::string_view str1, const std::string_view str2);
+
+  // TODO: Remove this note
+  //       None of these signatures are needed; replaced by string_view version.
+
+  // static bool EqualsNoCase(const std::string &str1, const std::string &str2);
+  // static bool EqualsNoCase(const std::string &str1, const char *s2);
+  // static bool EqualsNoCase(const char *s1, const char *s2);
+  // static int CompareNoCase(const std::string& str1, const std::string& str2, size_t n = 0);
+  // static int CompareNoCase(const char* s1, const char* s2, size_t n = 0);
+
+  /*!
+   * \brief Compares two strings using codepoint order. Locale does not matter.
+   *
+   * DO NOT USE for collation
+   *
+   * Best to use StartsWith or EndsWith than to specify 'n' since n can
+   * be difficult to calculate using multi-byte characters.
+   *
+   * Equals is faster
+   *
+   * \param str1 one of the strings to compare
+   * \param str2 one of the strings to compare
+   * \param n maximum number of Unicode codepoints to compare.
+   *
+   * \return The result of bitwise character comparison:
+   *      < 0 if the characters str1 are bitwise less than the characters in str2,
+   *          OR if the str1 is shorter than str2, but compare equal until the end of str1
+   *      = 0 if str1 contains the same characters as str2,
+   *      > 0 if the characters in str1 are bitwise greater than the characters in str2
+   *          OR if str2 is shorter than str1, but compare equal until the end of str2
+   *
+   * Note: Between one and four UTF8 code units may be required to
+   *       represent a single Unicode codepoint (for practical
+   *       purposes a character).
+   */
+  // TODO: Change the calls that use 'n' argument to use StartsWith and EndsWith. Faster
+  //       since only equality is checked, not ordering. Equality check does not require
+  //       character conversion.
+  static int Compare(const std::string_view str1, const std::string_view str2, const size_t n = 0);
+
+  /*!
+   * \brief Compares two strings, ignoring case, using codepoint order.
+   * Locale does not matter.
+   *
+   * DO NOT USE for collation
+   *
+   * Best to use StartsWithNoCase or EndsWithNoCase than to specify 'n' since n can
+   * be difficult to calculate using multi-byte characters.
+   *
+   * \param str1 one of the strings to compare
+   * \param str2 one of the strings to compare
+   * \param n maximum number of Unicode codepoints to compare.
+   *
+   * \return The result of bitwise character comparison of the folded characters:
+   *      < 0 if the folded characters str1 are bitwise less than the folded characters in str2,
+   *          OR if the str1 is shorter than str2, but compare equal until the end of str1
+   *      = 0 if str1 contains the same folded characters as str2,
+   *      > 0 if the folded characters in str1 are bitwise greater than the folded characters in str2
+   *          OR if str2 is shorter than str1, but compare equal until the end of str2
+   *
+   * Note: Between one and four UTF8 code units may be required to
+   *       represent a single Unicode codepoint (for practical
+   *       purposes a character).
+   *
+   */
+  // TODO: The VAST majority of uses can be changed to use EqualsNoCase, which is faster
+  //       since no conversion to Unicode is required. Further, if string length is fixed,
+  //       then a simple length check is all that is needed.
+  //
+  // TODO: For all of the cases that use 'n' they should change to StartsWithNoCase or EndsWithNoCase
+  //       because they will be faster and less error-prone.
+  static int CompareNoCase(const std::string_view str1,
+                           const std::string_view str2,
+                           const size_t n = 0);
+
   static int ReturnDigits(const std::string &str);
   static std::string Left(const std::string &str, size_t count);
   static std::string Mid(const std::string &str, size_t first, size_t count = std::string::npos);
@@ -246,16 +427,70 @@ public:
   static int Replace(std::string &str, char oldChar, char newChar);
   static int Replace(std::string &str, const std::string &oldStr, const std::string &newStr);
   static int Replace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr);
-  static bool StartsWith(const std::string &str1, const std::string &str2);
-  static bool StartsWith(const std::string &str1, const char *s2);
-  static bool StartsWith(const char *s1, const char *s2);
-  static bool StartsWithNoCase(const std::string &str1, const std::string &str2);
-  static bool StartsWithNoCase(const std::string &str1, const char *s2);
-  static bool StartsWithNoCase(const char *s1, const char *s2);
-  static bool EndsWith(const std::string &str1, const std::string &str2);
-  static bool EndsWith(const std::string &str1, const char *s2);
-  static bool EndsWithNoCase(const std::string &str1, const std::string &str2);
-  static bool EndsWithNoCase(const std::string &str1, const char *s2);
+
+  /*!
+   * \brief Determines if a string begins with another string
+   *
+   * Note: No character conversions required
+   *
+   * \param str1 string to be searched
+   * \param str2 string to find at beginning of str1
+   * \return true if str1 starts with str2, otherwise false
+   */
+  static bool StartsWith(const std::string_view str1, const std::string_view str2);
+
+  // TODO: APIs to be eliminated; replaced by string_view versions
+  //
+  // static bool StartsWith(const std::string &str1, const std::string &str2);
+  // static bool StartsWith(std::string_view str1, const char *s2);
+  // static bool StartsWith(const char *s1, const char *s2);
+  // static bool StartsWithNoCase(const std::string &str1, const std::string &str2);
+  // static bool StartsWithNoCase(const std::string &str1, const char *s2);
+  // static bool StartsWithNoCase(const char *s1, const char *s2);
+  // static bool EndsWith(const std::string &str1, const std::string &str2);
+  // static bool EndsWith(const std::string &str1, const char *s2);
+  // static bool EndsWithNoCase(const std::string &str1, const std::string &str2);
+  // static bool EndsWithNoCase(const std::string &str1, const char *s2);
+
+  /*!
+   * \brief Determines if a string begins with another string, ignoring case
+   *
+   * Equivalent to StartsWith(FoldCase(str1), FoldCase(str2))
+   *
+   * \param str1 string to be searched
+   * \param str2 string to find at beginning of str1
+   * \return true if folded str1 starts with folded str2, otherwise false
+   */
+  static bool StartsWithNoCase(const std::string_view str1, const std::string_view str2);
+
+  // TODO: Remove no longer needed signatures
+  //       In only one place in the code, where NPT_String was being passed, was an explicit
+  //       conversion to string_view required.
+  //
+  // static bool StartsWithNoCase(const std::string &str1, const std::string &str2);
+  // static bool StartsWithNoCase(const std::string &str1, const char *s2);
+  // static bool StartsWithNoCase(const char *s1, const char *s2);
+
+  // Changed EndsWith APIs to be the same as EndsWithNoCase
+  /*!
+   * \brief Determines if a string ends with another string
+   *
+   * Note: no character conversion required
+   *
+   * \param str1 string to be searched
+   * \param str2 string to find at end of str1
+   * \return true if str1 ends with str2, otherwise false
+   */
+  static bool EndsWith(const std::string_view str1, const std::string_view str2);
+
+  /*!
+   *  \brief Determines if a string ends with another string while ignoring case
+   *
+   * \param str1 string to be searched
+   * \param str2 string to find at end of str1
+   * \return true if str1 ends with str2, otherwise false
+   */
+  static bool EndsWithNoCase(const std::string_view str1, const std::string_view str2);
 
   template<typename CONTAINER>
   static std::string Join(const CONTAINER &strings, const std::string& delimiter)
@@ -450,6 +685,7 @@ public:
    * example: "abc\n" -> "6162630a"
    */
   static std::string ToHexadecimal(const std::string& in);
+
   /*! \brief Format the string with locale separators.
 
   Format the string with locale separators.
@@ -550,6 +786,43 @@ private:
    * avoid including LangInfo.h from this header.
    */
   static const std::locale& GetOriginalLocale() noexcept;
+
+public:
+  /*!
+   * \brief detects when a string contains non-ASCII to aide in debugging or error reporting
+   *
+   * \param str String to be examined for non-ASCII
+   * \return true if non-ASCII characters found, otherwise false
+   */
+  inline static bool ContainsNonAscii(std::string_view str)
+  {
+    for (size_t i = 0; i < str.length(); i++)
+    {
+      if (not isascii(str[i]))
+      {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /*!
+   * \brief detects when a wstring contains non-ASCII to aide in debugging or error reporting
+   *
+   * \param str String to be examined for non-ASCII
+   * \return true if non-ASCII characters found, otherwise false
+   */
+  inline static bool ContainsNonAscii(std::wstring_view str)
+  {
+    for (size_t i = 0; i < str.length(); i++)
+    {
+      if (not isascii(str[i]))
+      {
+        return true;
+      }
+    }
+    return false;
+  }
 };
 
 struct sortstringbyname

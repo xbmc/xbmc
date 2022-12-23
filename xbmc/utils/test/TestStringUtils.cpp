@@ -890,28 +890,69 @@ TEST(TestStringUtils, FoldCase_W)
   EXPECT_EQ(result, 0);
 }
 
+TEST(TestStringUtils, Equals)
+{
+  std::string refstr = "TeSt";
+  std::string_view refstrView = "TeSt";
+  EXPECT_TRUE(StringUtils::Equals(refstr, "TeSt"));
+  EXPECT_FALSE(StringUtils::Equals(refstr, "tEsT"sv));
+  EXPECT_FALSE(StringUtils::Equals(refstrView, "TeSt "));
+  EXPECT_TRUE(StringUtils::Equals(refstrView, "TeSt"sv));
+  EXPECT_FALSE(StringUtils::Equals(refstr, "TeStTeStTeStTeSt"s));
+  EXPECT_FALSE(StringUtils::Equals(refstr, R"(TeStTeStTeStTeStx)"));
+
+  std::string TeSt{"TeSt"};
+  std::string tEsT{"tEsT"};
+
+  std::string_view TestArrayS = "TestArray"sv;
+  std::string_view TestArray2S = "TestArray2"sv;
+  std::string_view TestArray3S = "TestArRaY"sv;
+
+  const char* TestArray = TestArrayS.data();
+  const char* TestArray2 = TestArray2S.data();
+  const char* TestArray3 = TestArray3S.data();
+
+  EXPECT_FALSE(StringUtils::Equals(TestArray, TestArray2));
+  EXPECT_FALSE(StringUtils::Equals(TestArray, TestArray3));
+
+  EXPECT_TRUE(StringUtils::Equals("TeSt", "TeSt"));
+  EXPECT_FALSE(StringUtils::Equals(TeSt, tEsT));
+
+  EXPECT_TRUE(StringUtils::Equals(StringUtils::Empty, StringUtils::Empty));
+  EXPECT_FALSE(StringUtils::Equals(StringUtils::Empty, "x"));
+  EXPECT_FALSE(StringUtils::Equals("x", StringUtils::Empty));
+
+  // Equals can handle embedded nulls, but you have to be careful
+  // how you enter them. Ex: "abcd\0"  "ABCD\0"sv One has null, the other
+  // is terminated at null.
+
+  EXPECT_FALSE(StringUtils::Equals("abcd\0", "ABCD\0"sv));
+  EXPECT_TRUE(StringUtils::Equals("abcd\0a", "abcd\0a"));
+  EXPECT_FALSE(StringUtils::Equals("abcd\0x", "ABCD\0y"sv));
+  EXPECT_FALSE(StringUtils::Equals("abcd\0", "ABCD\0a"sv));
+}
+
 TEST(TestStringUtils, EqualsNoCase)
 {
   std::string refstr = "TeSt";
-  std::string refstrView = "TeSt"; // TODO: Change to string_view after API changed
-
+  std::string_view refstrView{"TeSt"};
   EXPECT_TRUE(StringUtils::EqualsNoCase(refstr, "TeSt"));
-  EXPECT_TRUE(StringUtils::EqualsNoCase(refstr, "tEsT")); // sv));
+  EXPECT_TRUE(StringUtils::EqualsNoCase(refstr, "tEsT"sv));
   EXPECT_FALSE(StringUtils::EqualsNoCase(refstrView, "TeSt "));
-  EXPECT_FALSE(StringUtils::EqualsNoCase(refstrView, "TeSt    x")); // sv));
+  EXPECT_FALSE(StringUtils::EqualsNoCase(refstrView, "TeSt    x"sv));
   EXPECT_FALSE(StringUtils::EqualsNoCase(refstr, "TeStTeStTeStTeSt"s));
   EXPECT_FALSE(StringUtils::EqualsNoCase(refstr, R"(TeStTeStTeStTeStx)"));
 
   std::string TeSt{"TeSt"};
   std::string tEsT{"tEsT"};
 
-  std::string TestArrayS = "TestArray"s;
-  std::string TestArray2S = "TestArray2"s;
-  std::string TestArray3S = "TestArRaY"s;
+  std::string_view TestArrayS = "TestArray"sv;
+  std::string_view TestArray2S = "TestArray2"sv;
+  std::string_view TestArray3S = "TestArRaY"sv;
 
-  const char* TestArray = TestArrayS.c_str();
-  const char* TestArray2 = TestArray2S.c_str();
-  const char* TestArray3 = TestArray3S.c_str();
+  const char* TestArray = TestArrayS.data();
+  const char* TestArray2 = TestArray2S.data();
+  const char* TestArray3 = TestArray3S.data();
 
   EXPECT_FALSE(StringUtils::EqualsNoCase(TestArray, TestArray2));
   EXPECT_TRUE(StringUtils::EqualsNoCase(TestArray, TestArray3));
@@ -932,24 +973,10 @@ TEST(TestStringUtils, EqualsNoCase)
   // how you enter them. Ex: "abcd\0"  "ABCD\0"sv One has null, the other
   // is terminated at null.
 
-  EXPECT_TRUE(StringUtils::EqualsNoCase("abcd\0", "ABCD\0")); //sv));
+  EXPECT_FALSE(StringUtils::EqualsNoCase("abcd\0", "ABCD\0"sv));
   EXPECT_TRUE(StringUtils::EqualsNoCase("abcd\0a", "ABCD\0a"));
-
-  // EqualsNoCase can handle embedded nulls, but you have to be careful
-  // how you enter them. Ex: "abcd\0"  "ABCD\0"sv One has null, the other
-  // is terminated at null.
-
-  // EXPECT_FALSE(StringUtils::EqualsNoCase("abcd\0x", "ABCD\0y")); // sv));
-
-  EXPECT_TRUE(StringUtils::EqualsNoCase("abcd\0x", "ABCD\0y"));
-
-  // EqualsNoCase can handle embedded nulls, but you have to be careful
-  // how you enter them. Ex: "abcd\0"  "ABCD\0"sv One has null, the other
-  // is terminated at null.
-
-  // EXPECT_FALSE(StringUtils::EqualsNoCase("abcd\0", "ABCD\0a")); // sv));
-
-  EXPECT_TRUE(StringUtils::EqualsNoCase("abcd\0", "ABCD\0a")); // sv));
+  EXPECT_FALSE(StringUtils::EqualsNoCase("abcd\0x", "ABCD\0y"sv));
+  EXPECT_FALSE(StringUtils::EqualsNoCase("abcd\0", "ABCD\0a"sv));
 }
 
 TEST(TestStringUtils, CompareNoCase)
@@ -963,31 +990,45 @@ TEST(TestStringUtils, CompareNoCase)
   expectedResult = 0;
   EXPECT_EQ(StringUtils::CompareNoCase(left, right), expectedResult);
 
-  // Since Kodi's simpleFoldCase can not handle characters that
-  // change length when folding, the following fails.
+  // Since Kodi's simple FoldCase can not handle characters that
+  // change length when folding, the following fails to compare equal.
   // German 'ß' is equivalent to 'ss'
 
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   right = TestStringUtils::UTF8_GERMAN_SAMPLE; // óóßChloë
   expectedResult = 1;
 
-  // TODO: Single-byte comparison will fail, while a Unicode (4-byte)
-  // comparision will pass. Change result after changing ToLower to use
-  // Unicode comparison
-
-  // EXPECT_EQ(StringUtils::CompareNoCase(left, right), expectedResult);
-  EXPECT_NE(StringUtils::CompareNoCase(left, right), expectedResult);
+  EXPECT_EQ(StringUtils::CompareNoCase(left, right), -1);
 
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   right = TestStringUtils::UTF8_GERMAN_LOWER_SS; // óósschloë // Does not convert SS to ß
   expectedResult = 0;
 
-  // TODO: Single-byte comparison will fail, while a Unicode (4-byte)
-  // comparision will pass. Change result after changing ToLower to use
-  // Unicode comparison
+  EXPECT_EQ(StringUtils::CompareNoCase(left, right), expectedResult);
 
-  // EXPECT_EQ(StringUtils::CompareNoCase(left, right), expectedResult);
-  EXPECT_NE(StringUtils::CompareNoCase(left, right), expectedResult);
+  left = ""s;
+  right = ""s;
+  expectedResult = 0;
+  EXPECT_EQ(StringUtils::CompareNoCase(left, right), expectedResult);
+
+  EXPECT_EQ(StringUtils::CompareNoCase(StringUtils::Empty, StringUtils::Empty), expectedResult);
+
+  EXPECT_EQ(StringUtils::CompareNoCase("a"sv, "a"s), 0);
+
+  EXPECT_EQ(StringUtils::CompareNoCase("a"sv, StringUtils::Empty), -1);
+
+  EXPECT_EQ(StringUtils::CompareNoCase(StringUtils::Empty, "a"sv), 1);
+
+  EXPECT_EQ(StringUtils::CompareNoCase("a"sv, "b"sv), -1);
+
+  left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
+  right = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
+
+  EXPECT_EQ(StringUtils::CompareNoCase(left, right), 0);
+
+  EXPECT_EQ(StringUtils::CompareNoCase(left, right, 1), 0);
+
+  EXPECT_EQ(StringUtils::CompareNoCase(left, right, 100), 0);
 }
 
 TEST(TestStringUtils, CompareNoCase_Advanced)
@@ -1011,13 +1052,10 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   right = TestStringUtils::UTF8_GERMAN_LOWER_SS; // óósschloë
 
-  // TODO: Once CompareCase API changed to use Foldcase, then rework
-  // test results
-  //
   // Single byte comparison results in < 0
   // Unicode codepoint comparision results in 0
 
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0);
+  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) == 0);
 
   // More interesting guessing the byte length for multibyte characters, eh?
   // These are ALL full-foldcase equivalent (but not simple-foldcase, as is here).
@@ -1049,34 +1087,26 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
 
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   right = TestStringUtils::UTF8_GERMAN_SAMPLE; // óóßChloë
-
-  // TODO:
-  // Single byte comparison results in < 0
-  // Unicode codepoint comparision results in > 0
-
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0);
+  EXPECT_EQ(StringUtils::CompareNoCase(left, right), -1);
 
   left = {TestStringUtils::UTF8_GERMAN_UPPER, 4}; // ÓÓSSCHLOË byte 4 = end of 2nd Ó
   right = {TestStringUtils::UTF8_GERMAN_SAMPLE, 4}; // óóßChloë  byte 4 = end of 2nd ó
 
-  // TODO:
   // Single byte comparison results in < 0 (always will be < 0, due to high-bit
   // set on all start bytes of multi-byte sequence)
-  // Unicode codepoint comparision results in > 0
+  // Unicode codepoint comparision results in == 0
 
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0);
+  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) == 0);
 
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   right = TestStringUtils::UTF8_GERMAN_SAMPLE; // óóßChloë
   expectedResult = 0;
 
   // Compare first two code-points (same result as previous test with limit of 4th byte)
+  // New API redefines the third argument to be the number of code-points ('characters')
+  // instead of bytes.
 
-  // TODO:
-  // Single byte comparison results in < 0
-  // Unicode codepoint comparision results in > 0
-
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right, 2) < 0);
+  EXPECT_TRUE(StringUtils::CompareNoCase(left, right, 2) == 0);
 
   // A full-foldcase would recognize that "ß" and "ss" are equivalent.
   // Attempting here to confirm current behavior.
@@ -1085,15 +1115,9 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
 
   left = {TestStringUtils::UTF8_GERMAN_UPPER, 0, 6}; // ÓÓSSCHLOË
   right = {TestStringUtils::UTF8_GERMAN_SAMPLE, 0, 6}; // óóßChloë
+  EXPECT_EQ(StringUtils::CompareNoCase(left, right), -1);
 
-  // TODO:
-  // Single byte comparison results in < 0
-  // Unicode codepoint comparision results in > 0
-
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0);
-
-  // Limit by number of codepoints if we use utf32string using a rather
-  // inefficient means
+  // Limit by number of codepoints since we use utf32string inside
 
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   std::u32string leftUtf32 = {StringUtils::ToUtf32(left), 0, 4}; // => ÓÓSS
@@ -1102,11 +1126,6 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
   right = TestStringUtils::UTF8_GERMAN_SAMPLE; // óóßChloë
   std::u32string rightUtf32 = {StringUtils::ToUtf32(right), 0, 3}; // => óóß
   right = StringUtils::ToUtf8(rightUtf32);
-
-  // TODO:
-  // Single byte comparison results in < 0
-  // Unicode codepoint comparision results in > 0
-
   EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0);
 
   // Without normalization (beyond the capabilities of this implementation)
@@ -1117,8 +1136,7 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
 
   left = TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1; // 6 bytes
   right = TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5; // 4 bytes
-  expectedResult = 0;
-  EXPECT_NE(StringUtils::CompareNoCase(left, right), expectedResult);
+  EXPECT_EQ(StringUtils::CompareNoCase(left, right), -1);
 
   // Boundary Tests
 
@@ -1129,11 +1147,11 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
 
   left = "";
   right = "ABCIi123abc ";
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0);
+  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) > 0);
 
   left = "abciI123ABC ";
   right = "";
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) > 0);
+  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0);
 
   left = "";
   right = "";
@@ -1260,8 +1278,7 @@ TEST(TestStringUtils, StartsWith)
 {
   std::string refstr = "test";
   std::string input;
-  // std::string_view  p;
-  std::string p;
+  std::string_view p;
 
   EXPECT_FALSE(StringUtils::StartsWith(refstr, "x"));
   EXPECT_TRUE(StringUtils::StartsWith(refstr, "te"));
@@ -1270,7 +1287,7 @@ TEST(TestStringUtils, StartsWith)
   EXPECT_FALSE(StringUtils::StartsWith(refstr, "test "));
   EXPECT_TRUE(StringUtils::StartsWith(refstr, "test\0")); // Embedded null terminates string
 
-  p = "tes"s;
+  p = {"tes"};
   EXPECT_TRUE(StringUtils::StartsWith(refstr, p));
 
   // Boundary
@@ -1291,8 +1308,7 @@ TEST(TestStringUtils, StartsWithNoCase)
 {
   std::string refstr = "test";
   std::string input;
-  //  std::string_view p;
-  std::string p;
+  std::string_view p;
 
   EXPECT_FALSE(StringUtils::StartsWithNoCase(refstr, "x"));
   EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, "Te"));
@@ -1309,14 +1325,14 @@ TEST(TestStringUtils, StartsWithNoCase)
 
   EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, ""));
 
-  p = "";
-  // TODO: Verify Non-empty string begins with empty string.
+  p = ""sv;
+  // Verify Non-empty string begins with empty string.
   EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, p));
   // Same behavior with char * and string
   EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, ""));
 
   input = "";
-  // TODO: Empty string does begin with empty string
+  // Empty string does begin with empty string
   EXPECT_TRUE(StringUtils::StartsWithNoCase(input, ""));
   EXPECT_FALSE(StringUtils::StartsWithNoCase(input, "Four score and seven years ago"));
 
