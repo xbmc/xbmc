@@ -29,6 +29,7 @@ void CRenderUtils::CalculateStretchMode(STRETCHMODE stretchMode,
   switch (stretchMode)
   {
     case STRETCHMODE::Normal:
+    case STRETCHMODE::Zoom:
     {
       switch (rotationDegCCW)
       {
@@ -172,6 +173,56 @@ void CRenderUtils::ClipRect(const CRect& viewRect, CRect& sourceRect, CRect& des
     sourceRect.y1 += (destRect.y1 - original.y1) * scaleY;
     sourceRect.x2 += (destRect.x2 - original.x2) * scaleX;
     sourceRect.y2 += (destRect.y2 - original.y2) * scaleY;
+  }
+}
+
+void CRenderUtils::CropSource(CRect& sourceRect,
+                              unsigned int rotationDegCCW,
+                              float viewWidth,
+                              float viewHeight,
+                              float sourceWidth,
+                              float sourceHeight,
+                              float destWidth,
+                              float destHeight)
+{
+  float reduceX = 0.0f;
+  float reduceY = 0.0f;
+
+  switch (rotationDegCCW)
+  {
+    case 90:
+    case 270:
+    {
+      if (destWidth < viewWidth)
+        reduceX = (1.0f - destWidth / viewWidth);
+
+      if (destHeight < viewHeight)
+        reduceY = (1.0f - destHeight / viewHeight);
+
+      break;
+    }
+    default:
+    {
+      if (destHeight < viewHeight)
+        reduceX = (1.0f - destHeight / viewHeight);
+
+      if (destWidth < viewWidth)
+        reduceY = (1.0f - destWidth / viewWidth);
+
+      break;
+    }
+  }
+
+  if (reduceX > 0.0f)
+  {
+    sourceRect.x1 += sourceRect.Width() * reduceX / 2.0f;
+    sourceRect.x2 = sourceWidth - sourceRect.x1;
+  }
+
+  if (reduceY > 0.0f)
+  {
+    sourceRect.y1 += sourceRect.Height() * reduceY / 2.0f;
+    sourceRect.y2 = sourceHeight - sourceRect.y1;
   }
 }
 

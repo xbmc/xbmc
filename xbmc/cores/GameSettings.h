@@ -48,12 +48,19 @@ enum class STRETCHMODE
    *        on 4K TVs)
    */
   Original,
+
+  /*!
+   * \brief Show the game at its normal aspect ratio but zoom to fill the
+   * viewing area
+   */
+  Zoom,
 };
 
 constexpr const char* STRETCHMODE_NORMAL_ID = "normal";
 constexpr const char* STRETCHMODE_STRETCH_4_3_ID = "4:3";
 constexpr const char* STRETCHMODE_FULLSCREEN_ID = "fullscreen";
 constexpr const char* STRETCHMODE_ORIGINAL_ID = "original";
+constexpr const char* STRETCHMODE_ZOOM_ID = "zoom";
 
 enum class RENDERFEATURE
 {

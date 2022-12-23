@@ -23,6 +23,8 @@ const char* CRetroPlayerUtils::StretchModeToIdentifier(STRETCHMODE stretchMode)
       return STRETCHMODE_FULLSCREEN_ID;
     case STRETCHMODE::Original:
       return STRETCHMODE_ORIGINAL_ID;
+    case STRETCHMODE::Zoom:
+      return STRETCHMODE_ZOOM_ID;
     default:
       break;
   }
@@ -40,6 +42,8 @@ STRETCHMODE CRetroPlayerUtils::IdentifierToStretchMode(const std::string& stretc
     return STRETCHMODE::Fullscreen;
   else if (stretchMode == STRETCHMODE_ORIGINAL_ID)
     return STRETCHMODE::Original;
+  else if (stretchMode == STRETCHMODE_ZOOM_ID)
+    return STRETCHMODE::Zoom;
 
   return STRETCHMODE::Normal;
 }

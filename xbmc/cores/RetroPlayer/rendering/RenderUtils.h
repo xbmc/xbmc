@@ -36,6 +36,15 @@ public:
 
   static void ClipRect(const CRect& viewRect, CRect& sourceRect, CRect& destRect);
 
+  static void CropSource(CRect& sourceRect,
+                         unsigned int rotationDegCCW,
+                         float viewWidth,
+                         float viewHeight,
+                         float sourceWidth,
+                         float sourceHeight,
+                         float destWidth,
+                         float destHeight);
+
   static std::array<CPoint, 4> ReorderDrawPoints(const CRect& destRect,
                                                  unsigned int orientationDegCCW);
 };
