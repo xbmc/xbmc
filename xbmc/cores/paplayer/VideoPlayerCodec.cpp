@@ -351,9 +351,11 @@ int VideoPlayerCodec::ReadPCM(uint8_t* pBuffer, size_t size, size_t* actualsize)
 
   if (!bytes)
   {
-    DemuxPacket* pPacket;
+    DemuxPacket* pPacket = nullptr;
     do
     {
+      if (pPacket)
+        CDVDDemuxUtils::FreeDemuxPacket(pPacket);
       pPacket = m_pDemuxer->Read();
     } while (pPacket && pPacket->iStreamId != m_nAudioStream);
 
