@@ -184,17 +184,33 @@ void CMediaDrmCryptoSession::SetPropertyString(const std::string& name, const st
 // Crypto methods
 Buffer CMediaDrmCryptoSession::Decrypt(const Buffer& cipherKeyId, const Buffer& input, const Buffer& iv)
 {
-  if (m_cryptoSession)
-    return CharVecBuffer(m_cryptoSession->decrypt(CharVecBuffer(cipherKeyId), CharVecBuffer(input), CharVecBuffer(iv)));
+  try
+  {
+    if (m_cryptoSession)
+      return CharVecBuffer(m_cryptoSession->decrypt(CharVecBuffer(cipherKeyId),
+                                                    CharVecBuffer(input), CharVecBuffer(iv)));
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to decrypt, see logcat for details.");
+  }
 
   return Buffer();
 }
 
 Buffer CMediaDrmCryptoSession::Encrypt(const Buffer& cipherKeyId, const Buffer& input, const Buffer& iv)
 {
-  if (m_cryptoSession)
-    return CharVecBuffer(m_cryptoSession->encrypt(CharVecBuffer(cipherKeyId), CharVecBuffer(input), CharVecBuffer(iv)));
-
+  try
+  {
+    if (m_cryptoSession)
+      return CharVecBuffer(m_cryptoSession->encrypt(CharVecBuffer(cipherKeyId),
+                                                    CharVecBuffer(input), CharVecBuffer(iv)));
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Failed to encrypt, see logcat for details.");
+  }
+  
   return Buffer();
 }
 
