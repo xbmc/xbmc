@@ -211,7 +211,11 @@ namespace MathUtils
   template<typename T, std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
   inline T RoundF(const T value, const T multiple)
   {
-    return value - std::fmod(value, multiple);
+    if (multiple == 0)
+      return value;
+
+    return static_cast<T>(std::round(static_cast<double>(value) / static_cast<double>(multiple)) *
+                          static_cast<double>(multiple));
   }
 
 #if 0

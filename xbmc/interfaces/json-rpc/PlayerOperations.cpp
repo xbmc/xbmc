@@ -40,7 +40,12 @@
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
 #include "pvr/recordings/PVRRecordings.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
+#include "settings/MediaSettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "utils/MathUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 
@@ -355,6 +360,76 @@ JSONRPC_STATUS CPlayerOperations::Stop(const std::string &method, ITransportLaye
       SendSlideshowAction(ACTION_STOP);
       return ACK;
 
+    case None:
+    default:
+      return FailedToExecute;
+  }
+}
+
+JSONRPC_STATUS CPlayerOperations::GetAudioDelay(const std::string& method,
+                                                ITransportLayer* transport,
+                                                IClient* client,
+                                                const CVariant& parameterObject,
+                                                CVariant& result)
+{
+  auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  result["offset"] = appPlayer->GetVideoSettings().m_AudioDelay;
+  return OK;
+}
+
+JSONRPC_STATUS CPlayerOperations::SetAudioDelay(const std::string& method,
+                                                ITransportLayer* transport,
+                                                IClient* client,
+                                                const CVariant& parameterObject,
+                                                CVariant& result)
+{
+  switch (GetPlayer(parameterObject["playerid"]))
+  {
+    case Video:
+    {
+      auto& components = CServiceBroker::GetAppComponents();
+      const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+      float videoAudioDelayRange =
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoAudioDelayRange;
+
+      if (parameterObject["offset"].isDouble())
+      {
+        float offset = static_cast<float>(parameterObject["offset"].asDouble());
+        offset = MathUtils::RoundF(offset, AUDIO_DELAY_STEP);
+        if (offset > videoAudioDelayRange)
+          offset = videoAudioDelayRange;
+        else if (offset < -videoAudioDelayRange)
+          offset = -videoAudioDelayRange;
+
+        appPlayer->SetAVDelay(offset);
+      }
+      else if (parameterObject["offset"].isString())
+      {
+        CVideoSettings vs = appPlayer->GetVideoSettings();
+        if (parameterObject["offset"].asString().compare("increment") == 0)
+        {
+          vs.m_AudioDelay += AUDIO_DELAY_STEP;
+          if (vs.m_AudioDelay > videoAudioDelayRange)
+            vs.m_AudioDelay = videoAudioDelayRange;
+          appPlayer->SetAVDelay(vs.m_AudioDelay);
+        }
+        else
+        {
+          vs.m_AudioDelay -= AUDIO_DELAY_STEP;
+          if (vs.m_AudioDelay < -videoAudioDelayRange)
+            vs.m_AudioDelay = -videoAudioDelayRange;
+          appPlayer->SetAVDelay(vs.m_AudioDelay);
+        }
+      }
+      else
+        return InvalidParams;
+
+      result["offset"] = appPlayer->GetVideoSettings().m_AudioDelay;
+      return OK;
+    }
+    case Audio:
+    case Picture:
     case None:
     default:
       return FailedToExecute;
