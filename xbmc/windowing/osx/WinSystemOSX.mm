@@ -152,7 +152,7 @@ NSString* screenNameForDisplay(NSUInteger screenIdx)
   else
   {
     // ensure screen name is unique by appending displayid
-    screenName = [screenName stringByAppendingFormat:@" (%@)", [@(displayID) stringValue]];
+    screenName = [screenName stringByAppendingFormat:@" (%@)", [@(displayID - 1) stringValue]];
   }
 
   return screenName;
@@ -1261,10 +1261,12 @@ std::vector<std::string> CWinSystemOSX::GetConnectedOutputs()
   std::vector<std::string> outputs;
   outputs.push_back("Default");
 
+  // screen 0 is always the "Default" setting, avoid duplicating the available
+  // screens here.
   const NSUInteger numDisplays = NSScreen.screens.count;
-  if (numDisplays > 0)
+  if (numDisplays > 1)
   {
-    for (NSUInteger disp = 0; disp <= numDisplays - 1; disp++)
+    for (NSUInteger disp = 1; disp <= numDisplays - 1; disp++)
     {
       NSString* const dispName = screenNameForDisplay(disp);
       outputs.push_back(dispName.UTF8String);
