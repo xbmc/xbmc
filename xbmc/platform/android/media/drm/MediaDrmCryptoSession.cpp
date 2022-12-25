@@ -170,8 +170,17 @@ void CMediaDrmCryptoSession::RestoreKeys(const std::string& keySetId)
   if (m_mediaDrm && keySetId != m_keySetId)
   {
     m_mediaDrm->restoreKeys(*m_sessionId, std::vector<char>(keySetId.begin(), keySetId.end()));
-    m_hasKeys = true;
-    m_keySetId = keySetId;
+    if (xbmc_jnienv()->ExceptionCheck())
+    {
+      CLog::Log(LOGERROR, "MediaDrm: restoreKeys exception");
+      xbmc_jnienv()->ExceptionDescribe();
+      xbmc_jnienv()->ExceptionClear();
+    }
+    else
+    {
+      m_hasKeys = true;
+      m_keySetId = keySetId;
+    }
   }
 }
 
