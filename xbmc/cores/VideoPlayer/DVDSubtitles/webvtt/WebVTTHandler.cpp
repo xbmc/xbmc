@@ -42,11 +42,11 @@ constexpr char signatureLastChars[] = {'\x0A', '\x0D', '\x20', '\x09'};
 
 constexpr char tagPattern[] = "<(\\/)?([^a-zA-Z >]+)?([^\\d:. >]+)?(\\.[^ >]+)?(?> ([^>]+))?>";
 
-constexpr char cueTimePattern[] = "^(?>(\\d{2}):)?(\\d{2}):(\\d{2}\\.\\d{3})"
+constexpr char cueTimePattern[] = "^(?>(\\d{2,}):)?(\\d{2}):(\\d{2}\\.\\d{3})"
                                   "[ \\t]*-->[ \\t]*"
-                                  "(?>(\\d{2}):)?(\\d{2}):(\\d{2}\\.\\d{3})";
+                                  "(?>(\\d{2,}):)?(\\d{2}):(\\d{2}\\.\\d{3})";
 
-constexpr char timePattern[] = "<(?>(\\d{2}):)?(\\d{2}):(\\d{2}\\.\\d{3})>";
+constexpr char timePattern[] = "<(?>(\\d{2,}):)?(\\d{2}):(\\d{2}\\.\\d{3})>";
 
 // Regex patterns for cue properties
 const std::map<std::string, std::string> cuePropsPatterns = {
