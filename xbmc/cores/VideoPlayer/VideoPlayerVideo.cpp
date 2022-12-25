@@ -15,6 +15,7 @@
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
 #include "utils/log.h"
@@ -732,6 +733,18 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
     // guess next frame pts. iDuration is always valid
     if (m_speed != 0)
       pts += m_picture.iDuration * m_speed / abs(m_speed);
+
+    // ATSC A53 Closed Captions
+    if (m_picture.HasA53SideData() &&
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_SUBTITLES_PARSECAPTIONS))
+    {
+      AVBufferRef* a53SideData = m_picture.ConsumeA53SideData();
+      auto ccData =
+          std::make_unique<CCaptionBlock>(m_picture.pts, a53SideData->data, a53SideData->size);
+      m_picture.ReleaseA53SideData(&a53SideData);
+      m_messageParent.Put(std::make_shared<CDVDMsgSubtitleCCData>(ccData));
+    }
 
     m_outputSate = OutputPicture(&m_picture);
 
