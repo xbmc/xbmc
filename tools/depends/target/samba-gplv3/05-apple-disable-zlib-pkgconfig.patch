@@ -1,6 +1,6 @@
 --- a/wscript
 +++ b/wscript
-@@ -198,7 +198,7 @@
+@@ -191,7 +191,7 @@
  
      conf.CHECK_CFG(package='zlib', minversion='1.2.3',
                     args='--cflags --libs',
