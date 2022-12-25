@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include <sys/stat.h>
 
 extern "C"{
@@ -292,7 +294,7 @@ public:
   CDecoderCC708();
   virtual ~CDecoderCC708();
   void Init(void (*handler)(int service, void *userdata), void *userdata);
-  void Decode(const unsigned char *data, int datalength);
+  void Decode(const std::vector<uint8_t>& data);
   bool m_inited;
   cc708_service_decoder* m_cc708decoders;
   cc_decoder_t *m_cc608decoder;

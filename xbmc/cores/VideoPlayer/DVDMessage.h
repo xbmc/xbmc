@@ -9,6 +9,7 @@
 #pragma once
 
 #include "FileItem.h"
+#include "Interface/CaptionBlock.h"
 #include "cores/IPlayer.h"
 
 #include <atomic>
@@ -65,7 +66,8 @@ public:
 
     // subtitle related messages
     SUBTITLE_CLUTCHANGE,
-    SUBTITLE_ADDFILE
+    SUBTITLE_ADDFILE,
+    SUBTITLE_A53_DATA // ATSC A53 Closed Captions
   };
   // clang-format on
 
@@ -330,4 +332,35 @@ public:
   ~CDVDMsgSubtitleClutChange() override = default;
 
   uint8_t m_data[16][4];
+};
+
+/*!
+ * \brief Message to convey a closed caption data block.
+ *
+ * Usually closed caption data is stored as side data of the video picture. Hence it needs to be
+ * transported from the player video player back to parent, and from there fed into the subtitle
+ * player
+ */
+class CDVDMsgSubtitleCCData : public CDVDMsg
+{
+public:
+  /*!
+  * \brief Create a closed caption transport message
+  *
+  * \param[in] data - the closed caption data to transport
+  */
+  explicit CDVDMsgSubtitleCCData(std::unique_ptr<CCaptionBlock>& data) : CDVDMsg(SUBTITLE_A53_DATA)
+  {
+    m_ccData = std::move(data);
+  }
+
+  /*!
+  * \brief Default destructor
+  */
+  ~CDVDMsgSubtitleCCData() override = default;
+
+  /*!
+  * \brief The closed caption data to store within the message
+  */
+  std::unique_ptr<CCaptionBlock> m_ccData;
 };

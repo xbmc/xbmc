@@ -1107,6 +1107,13 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   else
     pVideoPicture->dts = m_dts;
 
+  // ATSC A53 Closed Captions (side data)
+  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_A53_CC);
+  if (sd)
+  {
+    pVideoPicture->SetA53SideData(sd->buf);
+  }
+
   m_dts = DVD_NOPTS_VALUE;
 
   int64_t bpts = m_pFrame->best_effort_timestamp;

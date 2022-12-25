@@ -1569,35 +1569,6 @@ void CVideoPlayer::Process()
     CheckBetterStream(m_CurrentRadioRDS, pStream);
     CheckBetterStream(m_CurrentAudioID3, pStream);
 
-    // demux video stream
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SUBTITLES_PARSECAPTIONS) && CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
-    {
-      if (m_pCCDemuxer)
-      {
-        bool first = true;
-        while (!m_bAbortRequest)
-        {
-          DemuxPacket *pkt = m_pCCDemuxer->Read(first ? pPacket : NULL);
-          if (!pkt)
-            break;
-
-          first = false;
-          if (m_pCCDemuxer->GetNrOfStreams() != m_SelectionStreams.CountTypeOfSource(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX))
-          {
-            m_SelectionStreams.Clear(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX);
-            m_SelectionStreams.Update(NULL, m_pCCDemuxer.get(), "");
-            UpdateContent();
-            OpenDefaultStreams(false);
-          }
-          CDemuxStream *pSubStream = m_pCCDemuxer->GetStream(pkt->iStreamId);
-          if (pSubStream && m_CurrentSubtitle.id == pkt->iStreamId && m_CurrentSubtitle.source == STREAM_SOURCE_VIDEOMUX)
-            ProcessSubData(pSubStream, pkt);
-          else
-            CDVDDemuxUtils::FreeDemuxPacket(pkt);
-        }
-      }
-    }
-
     if (IsInMenuInternal())
     {
       if (std::shared_ptr<CDVDInputStream::IMenus> menu = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream))
@@ -2885,6 +2856,34 @@ void CVideoPlayer::HandleMessages()
     {
       auto pValue = std::static_pointer_cast<CDVDMsgBool>(pMsg);
       SetSubtitleVisibleInternal(pValue->m_value);
+    }
+    else if (pMsg->IsType(CDVDMsg::SUBTITLE_A53_DATA))
+    {
+      auto sideData = std::static_pointer_cast<CDVDMsgSubtitleCCData>(pMsg);
+      if (m_pCCDemuxer)
+      {
+        while (!m_bAbortRequest)
+        {
+          DemuxPacket* pkt = m_pCCDemuxer->Process(sideData->m_ccData.release());
+          if (!pkt)
+            break;
+
+          if (m_pCCDemuxer->GetNrOfStreams() !=
+              m_SelectionStreams.CountTypeOfSource(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX))
+          {
+            m_SelectionStreams.Clear(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX);
+            m_SelectionStreams.Update(nullptr, m_pCCDemuxer.get(), "");
+            UpdateContent();
+            OpenDefaultStreams(false);
+          }
+          CDemuxStream* pSubStream = m_pCCDemuxer->GetStream(pkt->iStreamId);
+          if (pSubStream && m_CurrentSubtitle.id == pkt->iStreamId &&
+              m_CurrentSubtitle.source == STREAM_SOURCE_VIDEOMUX)
+            ProcessSubData(pSubStream, pkt);
+          else
+            CDVDDemuxUtils::FreeDemuxPacket(pkt);
+        }
+      }
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_PROGRAM))
     {

@@ -42,6 +42,38 @@ public:
   VideoPicture& SetParams(const VideoPicture &pic);
   void Reset(); // reinitialize members, videoBuffer will be released if set!
 
+  /*!
+   * \brief Checks if the video picture has A53 side data (closed captions).
+   *
+   * \return true if the video picture has A53 side data, false otherwise
+  */
+  bool HasA53SideData() const { return m_A53SideData != nullptr; }
+
+  /*!
+   * \brief Gets the A53 side data of the video picture (closed captions)
+   * \return the A53 side data, reseting the value
+  */
+  AVBufferRef* ConsumeA53SideData()
+  {
+    AVBufferRef* sideData = m_A53SideData;
+    m_A53SideData = nullptr;
+    return sideData;
+  }
+
+  /*!
+   * \brief Set the A53 side data on the video picture
+   *
+   * \param[in] sideData the data to store as A53 side data
+  */
+  void SetA53SideData(AVBufferRef* sideData) { m_A53SideData = av_buffer_ref(sideData); }
+
+  /*!
+   * \brief Releases the sidedata data, decreasing its reference count
+   *
+   * \param[in] sideData pointer to the sidedata pointer
+  */
+  void ReleaseA53SideData(AVBufferRef** sideData) const { av_buffer_unref(sideData); }
+
   CVideoBuffer *videoBuffer = nullptr;
 
   double pts; // timestamp in seconds, used in the CVideoPlayer class to keep track of pts
@@ -78,6 +110,7 @@ public:
 private:
   VideoPicture(VideoPicture const&);
   VideoPicture& operator=(VideoPicture const&);
+  AVBufferRef* m_A53SideData;
 };
 
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001
