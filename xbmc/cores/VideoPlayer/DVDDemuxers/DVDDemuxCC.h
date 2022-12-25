@@ -33,7 +33,7 @@ public:
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
 
-  DemuxPacket* Read(DemuxPacket *packet);
+  DemuxPacket* Process(CCaptionBlock* captionBlock);
   static void Handler(int service, void *userdata);
 
 protected:
