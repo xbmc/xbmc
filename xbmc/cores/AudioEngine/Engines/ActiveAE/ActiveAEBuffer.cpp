@@ -468,6 +468,7 @@ CActiveAEBufferPoolAtempo::CActiveAEBufferPoolAtempo(const AEAudioFormat& format
   m_tempo = 1.0;
   m_changeFilter = false;
   m_procSample = nullptr;
+  m_fillPackets = false;
 }
 
 CActiveAEBufferPoolAtempo::~CActiveAEBufferPoolAtempo()
