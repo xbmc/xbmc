@@ -387,8 +387,8 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers,
         if (client)
         {
           job->AddEvent(m_settings.GetBoolValue(CSettings::SETTING_PVRRECORD_TIMERNOTIFICATIONS),
-                        false, // info, no error
-                        client->Name(), entry.second, client->Icon());
+                        EventLevel::Information, // info, no error
+                        client->GetFriendlyName(), entry.second, client->Icon());
         }
       }
 

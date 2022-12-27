@@ -16,14 +16,22 @@
 namespace PVR
 {
 
-CPVREventLogJob::CPVREventLogJob(bool bNotifyUser, bool bError, const std::string& label, const std::string& msg, const std::string& icon)
+CPVREventLogJob::CPVREventLogJob(bool bNotifyUser,
+                                 EventLevel eLevel,
+                                 const std::string& label,
+                                 const std::string& msg,
+                                 const std::string& icon)
 {
-  AddEvent(bNotifyUser, bError, label, msg, icon);
+  AddEvent(bNotifyUser, eLevel, label, msg, icon);
 }
 
-void CPVREventLogJob::AddEvent(bool bNotifyUser, bool bError, const std::string& label, const std::string& msg, const std::string& icon)
+void CPVREventLogJob::AddEvent(bool bNotifyUser,
+                               EventLevel eLevel,
+                               const std::string& label,
+                               const std::string& msg,
+                               const std::string& icon)
 {
-  m_events.emplace_back(Event(bNotifyUser, bError, label, msg, icon));
+  m_events.emplace_back(Event(bNotifyUser, eLevel, label, msg, icon));
 }
 
 bool CPVREventLogJob::DoWork()
@@ -31,15 +39,16 @@ bool CPVREventLogJob::DoWork()
   for (const auto& event : m_events)
   {
     if (event.m_bNotifyUser)
-      CGUIDialogKaiToast::QueueNotification(
-        event.m_bError ? CGUIDialogKaiToast::Error : CGUIDialogKaiToast::Info, event.m_label.c_str(), event.m_msg, 5000, true);
+      CGUIDialogKaiToast::QueueNotification(event.m_eLevel == EventLevel::Error
+                                                ? CGUIDialogKaiToast::Error
+                                                : CGUIDialogKaiToast::Info,
+                                            event.m_label, event.m_msg, 5000, true);
 
     // Write event log entry.
     auto eventLog = CServiceBroker::GetEventLog();
     if (eventLog)
       eventLog->Add(std::make_shared<CNotificationEvent>(event.m_label, event.m_msg, event.m_icon,
-                                                         event.m_bError ? EventLevel::Error
-                                                                        : EventLevel::Information));
+                                                         event.m_eLevel));
   }
   return true;
 }
