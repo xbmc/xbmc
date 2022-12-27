@@ -174,6 +174,7 @@ macro(CLEAR_BUILD_VARS)
   unset(INSTALL_COMMAND)
   unset(BUILD_IN_SOURCE)
   unset(BUILD_BYPRODUCTS)
+  unset(WIN_DISABLE_PROJECT_FLAGS)
 
   # unset all module specific variables to insure clean state between macro calls
   # potentially an issue when a native and a target of the same module exists
@@ -196,6 +197,13 @@ endmacro()
 # BUILD_IN_SOURCE: ALL(optional)
 # BUILD_BYPRODUCTS: ALL(optional)
 #
+# Windows Specific
+# WIN_DISABLE_PROJECT_FLAGS - Set to not use core compiler flags for externalproject_add target
+#                             This removes CMAKE_C_FLAGS CMAKE_CXX_FLAGS CMAKE_EXE_LINKER_FLAGS
+#                             from the externalproject_add target. Primarily used for HOST build
+#                             tools that may have different arch/build requirements to the core app
+#                             target (eg flatc)
+#
 macro(BUILD_DEP_TARGET)
   include(ExternalProject)
 
@@ -215,6 +223,18 @@ macro(BUILD_DEP_TARGET)
                              -DCMAKE_INSTALL_LIBDIR=lib
                              -DPROJECTSOURCE=${PROJECTSOURCE}
                              "-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
+
+    # We dont have a toolchain for windows, so manually add all the cmake
+    # build arguments we may want
+    # We can disable adding them with WIN_DISABLE_PROJECT_FLAGS. This is potentially required
+    # for host build tools (eg flatc) that may be a different arch to the core app
+    if(WIN32 OR WINDOWS_STORE)
+      if(NOT DEFINED WIN_DISABLE_PROJECT_FLAGS)
+        list(APPEND CMAKE_ARGS "-DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} $<$<CONFIG:Debug>:${CMAKE_C_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_C_FLAGS_RELEASE}> ${${MODULE}_C_FLAGS}"
+                               "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} $<$<CONFIG:Debug>:${CMAKE_CXX_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_CXX_FLAGS_RELEASE}> ${${MODULE}_CXX_FLAGS}"
+                               "-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS} $<$<CONFIG:Debug>:${CMAKE_EXE_LINKER_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_EXE_LINKER_FLAGS_RELEASE}> ${${MODULE}_EXE_LINKER_FLAGS}")
+      endif()
+    endif()
 
     if(${MODULE}_INSTALL_PREFIX)
       list(APPEND CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${${MODULE}_INSTALL_PREFIX})
