@@ -397,9 +397,9 @@ struct SBackend
     /*!
      * @brief Notify a change of an addon connection state.
      * @param client The changed client.
-     * @param strConnectionString A human-readable string identifiying the addon.
+     * @param strConnectionString A human-readable string providing additional information.
      * @param newState The new connection state.
-     * @param strMessage A human readable message providing additional information.
+     * @param strMessage A human readable string replacing default state message.
      */
     void ConnectionStateChange(CPVRClient* client,
                                const std::string& strConnectionString,
