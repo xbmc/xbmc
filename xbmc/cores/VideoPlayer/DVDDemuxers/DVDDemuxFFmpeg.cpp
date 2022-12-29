@@ -1880,8 +1880,9 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
     if (stream->type != STREAM_NONE && pStream->codecpar->extradata && pStream->codecpar->extradata_size > 0)
     {
       stream->ExtraSize = pStream->codecpar->extradata_size;
-      stream->ExtraData = new uint8_t[pStream->codecpar->extradata_size];
-      memcpy(stream->ExtraData, pStream->codecpar->extradata, pStream->codecpar->extradata_size);
+      stream->ExtraData = std::make_unique<uint8_t[]>(pStream->codecpar->extradata_size);
+      memcpy(stream->ExtraData.get(), pStream->codecpar->extradata,
+             pStream->codecpar->extradata_size);
     }
 
 #ifdef HAVE_LIBBLURAY
