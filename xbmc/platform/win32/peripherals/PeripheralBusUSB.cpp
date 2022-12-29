@@ -130,7 +130,7 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
 
       if (bDetailResult)
       {
-        std::string strTmp(deviceProperty);
+        std::string strTmp = StringUtils::FoldCase(deviceProperty);
 
         StringUtils::ToLower(strTmp);
         size_t posVid, posPid;

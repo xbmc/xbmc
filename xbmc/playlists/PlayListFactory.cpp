@@ -35,8 +35,7 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
     if (item.GetMimeType().empty())
       const_cast<CFileItem&>(item).FillInMimeType();
 
-    std::string strMimeType = item.GetMimeType();
-    StringUtils::ToLower(strMimeType);
+    std::string strMimeType = StringUtils::FoldCase(item.GetMimeType());
 
     if (strMimeType == "video/x-ms-asf"
     || strMimeType == "video/x-ms-asx"
@@ -68,8 +67,7 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
   std::string path = item.GetDynPath();
 
-  std::string extension = URIUtils::GetExtension(path);
-  StringUtils::ToLower(extension);
+  std::string extension = StringUtils::FoldCase(URIUtils::GetExtension(path));
 
   if (extension == ".m3u" || (extension == ".m3u8" && !item.IsInternetStream()) || extension == ".strm")
     return new CPlayListM3U();
@@ -104,10 +102,9 @@ CPlayList* CPlayListFactory::Create(const CFileItem& item)
 
 bool CPlayListFactory::IsPlaylist(const CFileItem& item)
 {
-  std::string strMimeType = item.GetMimeType();
-  StringUtils::ToLower(strMimeType);
+  std::string strMimeType = StringUtils::FoldCase(item.GetMimeType());
 
-/* These are a bit uncertain
+  /* These are a bit uncertain
   if(strMimeType == "video/x-ms-asf"
   || strMimeType == "video/x-ms-asx"
   || strMimeType == "video/x-ms-wmv"
