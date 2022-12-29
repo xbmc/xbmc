@@ -1591,8 +1591,7 @@ void CXBMCApp::SetupEnv()
   setenv("KODI_ANDROID_LIBS", getApplicationInfo().nativeLibraryDir.c_str(), 0);
   setenv("KODI_ANDROID_APK", getPackageResourcePath().c_str(), 0);
 
-  std::string appName = CCompileInfo::GetAppName();
-  StringUtils::ToLower(appName);
+  std::string appName = StringUtils::FoldCase(CCompileInfo::GetAppName());
   std::string className = CCompileInfo::GetPackage();
 
   std::string cacheDir = getCacheDir().getAbsolutePath();
@@ -1646,8 +1645,7 @@ std::string CXBMCApp::GetFilenameFromIntent(const CJNIIntent &intent)
     CJNIURI data = intent.getData();
     if (!data)
       return ret;
-    std::string scheme = data.getScheme();
-    StringUtils::ToLower(scheme);
+    std::string scheme = StringUtils::FoldCase(data.getScheme());
     if (scheme == "content")
     {
       std::vector<std::string> filePathColumn;
