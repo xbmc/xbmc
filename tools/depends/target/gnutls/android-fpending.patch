@@ -1,0 +1,13 @@
+--- a/src/gl/fpending.c
++++ b/src/gl/fpending.c
+@@ -39,7 +39,9 @@
+ #if defined _IO_EOF_SEEN || defined _IO_ftrylockfile || __GNU_LIBRARY__ == 1
+   /* GNU libc, BeOS, Haiku, Linux libc5 */
+   return fp->_IO_write_ptr - fp->_IO_write_base;
+-#elif defined __sferror || defined __DragonFly__ || defined __ANDROID__
++#elif defined __ANDROID__
++  return fp_->_p - fp_->_bf._base;
++#elif defined __sferror || defined __DragonFly__
+   /* FreeBSD, NetBSD, OpenBSD, DragonFly, Mac OS X, Cygwin < 1.7.34, Minix 3, Android */
+   return fp->_p - fp->_bf._base;
+ #elif defined __EMX__                /* emx+gcc */
