@@ -52,9 +52,13 @@ static const CGFloat INPUT_BOX_HEIGHT = 30;
                                  initWithTarget:m_inputTextField
                                          action:@selector(resignFirstResponder)]];
 
+  auto textBackgroundColor = UIColor.whiteColor;
+  if (@available(iOS 13.0, *))
+    textBackgroundColor = UIColor.systemBackgroundColor;
+
   auto textFieldContainer = [UIView new];
   textFieldContainer.translatesAutoresizingMaskIntoConstraints = NO;
-  textFieldContainer.backgroundColor = UIColor.whiteColor;
+  textFieldContainer.backgroundColor = textBackgroundColor;
   [textFieldContainer addSubview:m_inputTextField];
   [self addSubview:textFieldContainer];
   m_textFieldContainer = textFieldContainer;
