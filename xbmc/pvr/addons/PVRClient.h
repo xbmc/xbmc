@@ -491,7 +491,7 @@ public:
    * @param results The container to store the result in.
    * @return PVR_ERROR_NO_ERROR if the list has been fetched successfully.
    */
-  PVR_ERROR GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results) const;
+  PVR_ERROR GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results);
 
   //@}
   /** @name PVR live stream methods */
@@ -1035,6 +1035,8 @@ private:
       m_ignoreClient; /*!< signals to PVRManager to ignore this client until it has been connected */
   std::vector<std::shared_ptr<CPVRTimerType>>
       m_timertypes; /*!< timer types supported by this backend */
+  std::vector<std::shared_ptr<CPVRTimerType>>
+      m_formattedTimerTypes; /*!< timer types supported by this backend for instance GUI */
   mutable int m_iPriority; /*!< priority of the client */
   mutable bool m_bPriorityFetched;
 

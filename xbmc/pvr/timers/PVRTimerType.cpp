@@ -189,6 +189,25 @@ CPVRTimerType::CPVRTimerType(unsigned int iTypeId,
   InitDescription();
 }
 
+CPVRTimerType::CPVRTimerType(const CPVRTimerType& orig)
+  : m_iClientId(orig.m_iClientId),
+    m_iTypeId(orig.m_iTypeId),
+    m_iAttributes(orig.m_iAttributes),
+    m_strDescription(orig.m_strDescription),
+    m_priorityValues(orig.m_priorityValues),
+    m_iPriorityDefault(orig.m_iPriorityDefault),
+    m_lifetimeValues(orig.m_lifetimeValues),
+    m_iLifetimeDefault(orig.m_iLifetimeDefault),
+    m_maxRecordingsValues(orig.m_maxRecordingsValues),
+    m_iMaxRecordingsDefault(orig.m_iMaxRecordingsDefault),
+    m_preventDupEpisodesValues(orig.m_preventDupEpisodesValues),
+    m_iPreventDupEpisodesDefault(orig.m_iPreventDupEpisodesDefault),
+    m_recordingGroupValues(orig.m_recordingGroupValues),
+    m_iRecordingGroupDefault(orig.m_iRecordingGroupDefault),
+    m_strBackendDescription(orig.m_strBackendDescription)
+{
+}
+
 CPVRTimerType::~CPVRTimerType() = default;
 
 bool CPVRTimerType::operator ==(const CPVRTimerType& right) const
@@ -234,6 +253,7 @@ void CPVRTimerType::InitDescription()
     }
     m_strDescription = g_localizeStrings.Get(id);
   }
+  m_strBackendDescription = m_strDescription;
 
   // add reminder/recording prefix
   int prefixId = (m_iAttributes & PVR_TIMER_TYPE_IS_REMINDER)
@@ -241,6 +261,12 @@ void CPVRTimerType::InitDescription()
     : 825; // Recording: ...
 
   m_strDescription = StringUtils::Format(g_localizeStrings.Get(prefixId), m_strDescription);
+}
+
+void CPVRTimerType::FormatBackendDescription(std::string instanceName)
+{
+  // prefix the GUI display with the instance name instead of Recording:
+  m_strDescription = StringUtils::Format("{0}: {1}", instanceName, m_strBackendDescription);
 }
 
 void CPVRTimerType::InitAttributeValues(const PVR_TIMER_TYPE& type)

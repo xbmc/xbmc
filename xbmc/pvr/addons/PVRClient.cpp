@@ -130,6 +130,7 @@ void CPVRClient::ResetProperties()
   m_strBackendHostname.clear();
   m_menuhooks.reset();
   m_timertypes.clear();
+  m_formattedTimerTypes.clear();
   m_clientCapabilities.clear();
 
   m_ifc.pvr->props->strUserPath = m_strUserPath.c_str();
@@ -1054,10 +1055,53 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag& timer)
       m_clientCapabilities.SupportsTimers());
 }
 
-PVR_ERROR CPVRClient::GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results) const
+PVR_ERROR CPVRClient::GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results)
 {
+  std::string instanceName;
+  const CPVRClientMap clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
+  if (clients.size() > 1)
+  {
+    // when there are multi clients check for multi clients support timers
+    int timerClients(0);
+    for (const auto& client : clients)
+    {
+      if (client.second->GetClientCapabilities().SupportsTimers())
+      {
+        timerClients++;
+        if (timerClients > 1)
+        {
+          // multiple recording clients found identify this timer client.
+          if (Addon()->SupportsInstanceSettings())
+          {
+            Addon()->GetSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, instanceName,
+                                      InstanceId());
+          }
+          if (instanceName.empty())
+          {
+            instanceName = Name();
+          }
+          break;
+        }
+      }
+    }
+  }
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  results = m_timertypes;
+  if (!instanceName.empty())
+  {
+    m_formattedTimerTypes.clear();
+    m_formattedTimerTypes.reserve(m_timertypes.size());
+    for (const auto& timer : m_timertypes)
+    {
+      CPVRTimerType timerType = CPVRTimerType(*timer);
+      timerType.FormatBackendDescription(instanceName);
+      m_formattedTimerTypes.emplace_back(std::make_shared<CPVRTimerType>(timerType));
+    }
+    results = m_formattedTimerTypes;
+  }
+  else
+  {
+    results = m_timertypes;
+  }
   return PVR_ERROR_NO_ERROR;
 }
 

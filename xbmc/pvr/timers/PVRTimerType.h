@@ -65,11 +65,9 @@ namespace PVR
     CPVRTimerType(unsigned int iTypeId,
                   uint64_t iAttributes,
                   const std::string& strDescription = "");
+    CPVRTimerType(const CPVRTimerType& orig);
 
     virtual ~CPVRTimerType();
-
-    CPVRTimerType(const CPVRTimerType& type) = delete;
-    CPVRTimerType& operator=(const CPVRTimerType& orig) = delete;
 
     bool operator ==(const CPVRTimerType& right) const;
     bool operator !=(const CPVRTimerType& right) const;
@@ -384,6 +382,13 @@ namespace PVR
      */
     int GetRecordingGroupDefault() const { return m_iRecordingGroupDefault; }
 
+    /*!
+    * @brief update the strDescription with instance name
+    * @param an instance identifying string
+    * @return the formatted string
+    */
+    void FormatBackendDescription(std::string instanceName);
+
   private:
     void InitDescription();
     void InitAttributeValues(const PVR_TIMER_TYPE& type);
@@ -397,6 +402,7 @@ namespace PVR
     unsigned int m_iTypeId;
     uint64_t m_iAttributes;
     std::string m_strDescription;
+    std::string m_strBackendDescription;
     std::vector< std::pair<std::string, int> > m_priorityValues;
     int m_iPriorityDefault = DEFAULT_RECORDING_PRIORITY;
     std::vector< std::pair<std::string, int> > m_lifetimeValues;
