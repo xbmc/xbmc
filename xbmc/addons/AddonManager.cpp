@@ -319,7 +319,7 @@ bool CAddonMgr::HasAvailableUpdates()
 std::vector<std::shared_ptr<IAddon>> CAddonMgr::GetOrphanedDependencies() const
 {
   std::vector<std::shared_ptr<IAddon>> allAddons;
-  GetAddonsInternal(AddonType::UNKNOWN, allAddons, OnlyEnabled::CHOICE_YES,
+  GetAddonsInternal(AddonType::UNKNOWN, allAddons, OnlyEnabled::CHOICE_NO,
                     CheckIncompatible::CHOICE_YES);
 
   std::vector<std::shared_ptr<IAddon>> orphanedDependencies;
