@@ -5,7 +5,7 @@ DEPS = ../../Makefile.include Makefile TAGLIB-VERSION ../../download-files.inclu
 LIBDYLIB=$(PLATFORM)/build/$(LIBNAME)/$(BYPRODUCT)
 all: .installed-$(PLATFORM)
 
-$(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
+$(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
