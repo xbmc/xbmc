@@ -18,6 +18,7 @@
     !defined(__arc__) && \
     !defined(__arm__) && \
     !defined(__loongarch__) && \
+    !defined(__m68k__) && \
     !defined(__mips__) && \
     !defined(__powerpc__) && \
     !defined(__or1k__) && \

@@ -949,7 +949,7 @@ int CSysInfo::GetKernelBitness(void)
       std::string machine(un.machine);
       if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" ||
           machine == "ppc64" || machine == "ppc64el" || machine == "ppc64le" || machine == "ia64" ||
-          machine == "mips64" || machine == "s390x" || machine == "riscv64")
+          machine == "mips64" || machine == "s390x" || machine == "riscv64" || machine == "sparc64")
         kernelBitness = 64;
       else
         kernelBitness = 32;
@@ -1006,6 +1006,12 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
         kernelCpuFamily = "PowerPC";
       else if (machine.compare(0, 5, "riscv", 5) == 0)
         kernelCpuFamily = "RISC-V";
+      else if (machine.compare(0, 4, "m68k", 4) == 0)
+        kernelCpuFamily = "m68k";
+      else if (machine.compare(0, 3, "sh4", 3) == 0)
+        kernelCpuFamily = "sh4";
+      else if (machine.compare(0, 7, "sparc64", 7) == 0)
+        kernelCpuFamily = "SPARC";
     }
 #endif
     if (kernelCpuFamily.empty())
@@ -1389,6 +1395,12 @@ std::string CSysInfo::GetBuildTargetCpuFamily(void)
   return "PowerPC";
 #elif defined(__riscv)
   return "RISC-V";
+#elif defined(__m68k__)
+  return "m68k";
+#elif defined(__SH4__)
+  return "sh4";
+#elif defined(__sparc__)
+  return "SPARC";
 #else
   return "unknown CPU family";
 #endif
