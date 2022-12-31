@@ -79,5 +79,46 @@ VideoPicture& VideoPicture::SetParams(const VideoPicture &pic)
   return *this;
 }
 
-VideoPicture::VideoPicture(VideoPicture const&) = default;
-VideoPicture& VideoPicture::operator=(VideoPicture const&) = default;
+VideoPicture& VideoPicture::operator=(VideoPicture const& pic)
+{
+  if (this != &pic)
+  {
+    if (videoBuffer)
+      videoBuffer->Release();
+    videoBuffer = pic.videoBuffer;
+    if (videoBuffer)
+      videoBuffer->Acquire();
+
+    pts = pic.pts;
+    dts = pic.dts;
+    iFlags = pic.iFlags;
+    iRepeatPicture = pic.iRepeatPicture;
+    iDuration = pic.iDuration;
+    iFrameType = pic.iFrameType;
+    color_space = pic.color_space;
+    color_range = pic.color_range;
+    chroma_position = pic.chroma_position;
+    color_primaries = pic.color_primaries;
+    color_transfer = pic.color_transfer;
+    colorBits = pic.colorBits;
+    stereoMode = pic.stereoMode;
+
+    iWidth = pic.iWidth;
+    iHeight = pic.iHeight;
+    iDisplayWidth = pic.iDisplayWidth;
+    iDisplayHeight = pic.iDisplayHeight;
+
+    hasDisplayMetadata = pic.hasDisplayMetadata;
+    hasLightMetadata = pic.hasLightMetadata;
+
+    qp_table = pic.qp_table;
+    qstride = pic.qstride;
+    qscale_type = pic.qscale_type;
+    pict_type = pic.pict_type;
+
+    if (pic.HasA53SideData())
+      SetA53SideData(pic.m_A53SideData.get());
+  }
+
+  return *this;
+}
