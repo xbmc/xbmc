@@ -54,6 +54,27 @@
 						<height>110</height>
 						<texture>$VAR[InfoWallThumbVar]</texture>
 						<aspectratio>keep</aspectratio>
+						<visible>!ListItem.Property(PVR.IsRecordingTimer) + !ListItem.Property(PVR.IsRemindingTimer)</visible>
+					</control>
+					<control type="image">
+						<left>27</left>
+						<top>22</top>
+						<width>80</width>
+						<height>80</height>
+						<aspectratio align="top">keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/pvr/timers/recording.png</texture>
+						<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
+					</control>
+					<control type="image">
+						<left>27</left>
+						<top>22</top>
+						<width>80</width>
+						<height>80</height>
+						<aspectratio align="top">keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/pvr/timers/bell.png</texture>
+						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
 					</control>
 					<control type="label">
 						<left>135</left>
@@ -90,6 +111,27 @@
 						<height>110</height>
 						<texture>$VAR[InfoWallThumbVar]</texture>
 						<aspectratio>keep</aspectratio>
+						<visible>!ListItem.Property(PVR.IsRecordingTimer) + !ListItem.Property(PVR.IsRemindingTimer)</visible>
+					</control>
+					<control type="image">
+						<left>27</left>
+						<top>22</top>
+						<width>80</width>
+						<height>80</height>
+						<aspectratio align="top">keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/pvr/timers/recording.png</texture>
+						<visible>ListItem.Property(PVR.IsRecordingTimer)</visible>
+					</control>
+					<control type="image">
+						<left>27</left>
+						<top>22</top>
+						<width>80</width>
+						<height>80</height>
+						<aspectratio align="top">keep</aspectratio>
+						<aligny>center</aligny>
+						<texture>icons/pvr/timers/bell.png</texture>
+						<visible>ListItem.Property(PVR.IsRemindingTimer)</visible>
 					</control>
 					<control type="label">
 						<left>135</left>
