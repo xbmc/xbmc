@@ -697,7 +697,8 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddList(
     StringSettingOptionsFiller filler,
     int heading,
     bool visible /* = true */,
-    int help /* = -1 */)
+    int help /* = -1 */,
+    bool details /* = false */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
       GetSetting(id) != NULL)
@@ -707,7 +708,7 @@ std::shared_ptr<CSettingString> CGUIDialogSettingsManualBase::AddList(
   if (setting == NULL)
     return NULL;
 
-  setting->SetControl(GetListControl("string", false, heading, false));
+  setting->SetControl(GetListControl("string", false, heading, false, nullptr, details));
   setting->SetOptionsFiller(filler, this);
   setSettingDetails(setting, level, visible, help);
 
@@ -724,7 +725,8 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     const TranslatableIntegerSettingOptions& entries,
     int heading,
     bool visible /* = true */,
-    int help /* = -1 */)
+    int help /* = -1 */,
+    bool details /* = false */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
       GetSetting(id) != NULL)
@@ -734,7 +736,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
   if (setting == NULL)
     return NULL;
 
-  setting->SetControl(GetListControl("integer", false, heading, false));
+  setting->SetControl(GetListControl("integer", false, heading, false, nullptr, details));
   setting->SetTranslatableOptions(entries);
   setSettingDetails(setting, level, visible, help);
 
@@ -751,7 +753,8 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     const IntegerSettingOptions& entries,
     int heading,
     bool visible /* = true */,
-    int help /* = -1 */)
+    int help /* = -1 */,
+    bool details /* = false */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
       GetSetting(id) != NULL)
@@ -761,7 +764,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
   if (setting == NULL)
     return NULL;
 
-  setting->SetControl(GetListControl("integer", false, heading, false));
+  setting->SetControl(GetListControl("integer", false, heading, false, nullptr, details));
   setting->SetOptions(entries);
   setSettingDetails(setting, level, visible, help);
 
@@ -778,7 +781,8 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
     IntegerSettingOptionsFiller filler,
     int heading,
     bool visible /* = true */,
-    int help /* = -1 */)
+    int help /* = -1 */,
+    bool details /* = false */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
       GetSetting(id) != NULL)
@@ -788,7 +792,7 @@ std::shared_ptr<CSettingInt> CGUIDialogSettingsManualBase::AddList(
   if (setting == NULL)
     return NULL;
 
-  setting->SetControl(GetListControl("integer", false, heading, false));
+  setting->SetControl(GetListControl("integer", false, heading, false, nullptr, details));
   setting->SetOptionsFiller(filler, this);
   setSettingDetails(setting, level, visible, help);
 
@@ -807,7 +811,8 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     int minimumItems /* = 0 */,
     int maximumItems /* = -1 */,
     bool visible /* = true */,
-    int help /* = -1 */)
+    int help /* = -1 */,
+    bool details /* = false */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
       GetSetting(id) != NULL)
@@ -832,7 +837,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
 
-  setting->SetControl(GetListControl("string", false, heading, true));
+  setting->SetControl(GetListControl("string", false, heading, true, nullptr, details));
   setting->SetMinimumItems(minimumItems);
   setting->SetMaximumItems(maximumItems);
   setSettingDetails(setting, level, visible, help);
@@ -852,7 +857,8 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     int minimumItems /* = 0 */,
     int maximumItems /* = -1 */,
     bool visible /* = true */,
-    int help /* = -1 */)
+    int help /* = -1 */,
+    bool details /* = false */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
       GetSetting(id) != NULL)
@@ -877,7 +883,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
 
-  setting->SetControl(GetListControl("integer", false, heading, true));
+  setting->SetControl(GetListControl("integer", false, heading, true, nullptr, details));
   setting->SetMinimumItems(minimumItems);
   setting->SetMaximumItems(maximumItems);
   setSettingDetails(setting, level, visible, help);
@@ -897,7 +903,8 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     int minimumItems /* = 0 */,
     int maximumItems /* = -1 */,
     bool visible /* = true */,
-    int help /* = -1 */)
+    int help /* = -1 */,
+    bool details /* = false */)
 {
   if (group == NULL || id.empty() || label < 0 || entries.empty() ||
       GetSetting(id) != NULL)
@@ -922,7 +929,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
 
-  setting->SetControl(GetListControl("integer", false, heading, true));
+  setting->SetControl(GetListControl("integer", false, heading, true, nullptr, details));
   setting->SetMinimumItems(minimumItems);
   setting->SetMaximumItems(maximumItems);
   setSettingDetails(setting, level, visible, help);
@@ -943,7 +950,8 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
     int maximumItems /* = -1 */,
     bool visible /* = true */,
     int help /* = -1 */,
-    SettingControlListValueFormatter formatter /* = NULL */)
+    SettingControlListValueFormatter formatter /* = NULL */,
+    bool details /* = false */)
 {
   if (group == NULL || id.empty() || label < 0 || filler == NULL ||
       GetSetting(id) != NULL)
@@ -968,7 +976,7 @@ std::shared_ptr<CSettingList> CGUIDialogSettingsManualBase::AddList(
   // setting the default will also set the actual value on an unchanged setting
   setting->SetDefault(settingValues);
 
-  setting->SetControl(GetListControl("integer", false, heading, true, formatter));
+  setting->SetControl(GetListControl("integer", false, heading, true, formatter, details));
   setting->SetMinimumItems(minimumItems);
   setting->SetMaximumItems(maximumItems);
   setSettingDetails(setting, level, visible, help);
@@ -1550,7 +1558,13 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetSpinnerControl
   return control;
 }
 
-std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetListControl(const std::string &format, bool delayed /* = false */, int heading /* = -1 */, bool multiselect /* = false */,SettingControlListValueFormatter formatter /* = NULL */)
+std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetListControl(
+    const std::string& format,
+    bool delayed /* = false */,
+    int heading /* = -1 */,
+    bool multiselect /* = false */,
+    SettingControlListValueFormatter formatter /* = NULL */,
+    bool details /* = false */)
 {
   std::shared_ptr<CSettingControlList> control = std::make_shared<CSettingControlList>();
   if (!control->SetFormat(format))
@@ -1560,6 +1574,7 @@ std::shared_ptr<ISettingControl> CGUIDialogSettingsManualBase::GetListControl(co
   control->SetHeading(heading);
   control->SetMultiSelect(multiselect);
   control->SetFormatter(formatter);
+  control->SetUseDetails(details);
 
   return control;
 }
