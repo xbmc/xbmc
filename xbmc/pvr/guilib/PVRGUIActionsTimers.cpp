@@ -829,7 +829,7 @@ void AddEventLogEntry(const std::shared_ptr<CPVRTimerInfoTag>& timer, int idEpg,
       CServiceBroker::GetPVRManager().GetClient(timer->GetTimerType()->GetClientId());
   if (client)
   {
-    name = client->Name();
+    name = client->GetFriendlyName();
     icon = client->Icon();
   }
   else
@@ -840,7 +840,7 @@ void AddEventLogEntry(const std::shared_ptr<CPVRTimerInfoTag>& timer, int idEpg,
 
   CPVREventLogJob* job = new CPVREventLogJob;
   job->AddEvent(false, // do not display a toast, only log event
-                false, // info, no error
+                EventLevel::Information, // info, no error
                 name, GetAnnouncerText(timer, idEpg, idNoEpg), icon);
   CServiceBroker::GetJobManager()->AddJob(job, nullptr);
 }

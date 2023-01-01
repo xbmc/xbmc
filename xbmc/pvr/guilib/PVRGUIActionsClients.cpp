@@ -73,7 +73,7 @@ bool CPVRGUIActionsClients::ProcessSettingsMenuHooks()
       if (clients.size() == 1)
         pDialog->Add(hook.second.GetLabel());
       else
-        pDialog->Add(hook.first->GetBackendName() + ": " + hook.second.GetLabel());
+        pDialog->Add(hook.first->GetFriendlyName() + ": " + hook.second.GetLabel());
     }
 
     pDialog->Open();
