@@ -68,12 +68,14 @@ static std::string Localize(std::uint32_t code,
 
 template<typename TValueType>
 static CFileItemPtr GetFileItem(const std::string& label,
+                                const std::string& label2,
                                 const TValueType& value,
                                 const std::vector<std::pair<std::string, CVariant>>& properties,
                                 const std::set<TValueType>& selectedValues)
 {
   CFileItemPtr item(new CFileItem(label));
   item->SetProperty("value", value);
+  item->SetLabel2(label2);
 
   for (const auto& prop : properties)
     item->SetProperty(prop.first, prop.second);
@@ -678,6 +680,7 @@ bool CGUIControlListSetting::OnClick()
     dialog->SetHeading(CVariant{Localize(m_pSetting->GetLabel())});
     dialog->SetItems(options);
     dialog->SetMultiSelection(control->CanMultiSelect());
+    dialog->SetUseDetails(control->UseDetails());
     dialog->Open();
 
     if (!dialog->IsConfirmed())
@@ -897,7 +900,8 @@ bool CGUIControlListSetting::GetIntegerItems(const SettingConstPtr& setting,
 
   // turn them into CFileItems and add them to the item list
   for (const auto& option : options)
-    items.Add(GetFileItem(option.label, option.value, option.properties, selectedValues));
+    items.Add(
+        GetFileItem(option.label, option.label2, option.value, option.properties, selectedValues));
 
   return true;
 }
@@ -914,7 +918,8 @@ bool CGUIControlListSetting::GetStringItems(const SettingConstPtr& setting,
 
   // turn them into CFileItems and add them to the item list
   for (const auto& option : options)
-    items.Add(GetFileItem(option.label, option.value, option.properties, selectedValues));
+    items.Add(
+        GetFileItem(option.label, option.label2, option.value, option.properties, selectedValues));
 
   return true;
 }
