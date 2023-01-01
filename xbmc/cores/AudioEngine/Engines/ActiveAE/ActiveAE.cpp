@@ -257,11 +257,6 @@ CActiveAE::CActiveAE() :
   m_dataPort("OutputDataPort", &m_inMsgEvent, &m_outMsgEvent),
   m_sink(&m_outMsgEvent)
 {
-  m_sinkBuffers = NULL;
-  m_silenceBuffers = NULL;
-  m_encoderBuffers = NULL;
-  m_vizBuffers = NULL;
-  m_vizBuffersInput = NULL;
   m_volume = 1.0;
   m_volumeScaled = 1.0;
   m_aeVolume = 1.0;
@@ -1208,7 +1203,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 
   if (m_silenceBuffers)
   {
-    m_discardBufferPools.push_back(m_silenceBuffers);
+    m_discardBufferPools.push_back(std::move(m_silenceBuffers));
     m_silenceBuffers = NULL;
   }
 
@@ -1224,7 +1219,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     inputFormat.m_dataFormat = AE_FMT_FLOAT;
     inputFormat.m_frameSize = inputFormat.m_channelLayout.Count() *
                               (CAEUtil::DataFormatToBits(inputFormat.m_dataFormat) >> 3);
-    m_silenceBuffers = new CActiveAEBufferPool(inputFormat);
+    m_silenceBuffers = std::make_unique<CActiveAEBufferPool>(inputFormat);
     m_silenceBuffers->Create(MAX_WATER_LEVEL*1000);
     sinkInputFormat = inputFormat;
     m_internalFormat = inputFormat;
@@ -1237,18 +1232,15 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
 
     if (m_encoderBuffers)
     {
-      m_discardBufferPools.push_back(m_encoderBuffers);
-      m_encoderBuffers = NULL;
+      m_discardBufferPools.push_back(std::move(m_encoderBuffers));
     }
     if (m_vizBuffers)
     {
-      m_discardBufferPools.push_back(m_vizBuffers);
-      m_vizBuffers = NULL;
+      m_discardBufferPools.push_back(std::move(m_vizBuffers));
     }
     if (m_vizBuffersInput)
     {
-      m_discardBufferPools.push_back(m_vizBuffersInput);
-      m_vizBuffersInput = NULL;
+      m_discardBufferPools.push_back(std::move(m_vizBuffersInput));
     }
   }
   // resample buffers for streams
@@ -1299,12 +1291,11 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         //! @todo implement
         if (m_encoderBuffers && initSink)
         {
-          m_discardBufferPools.push_back(m_encoderBuffers);
-          m_encoderBuffers = NULL;
+          m_discardBufferPools.push_back(std::move(m_encoderBuffers));
         }
         if (!m_encoderBuffers)
         {
-          m_encoderBuffers = new CActiveAEBufferPool(format);
+          m_encoderBuffers = std::make_unique<CActiveAEBufferPool>(format);
           m_encoderBuffers->Create(MAX_WATER_LEVEL*1000);
         }
       }
@@ -1346,7 +1337,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         (*it)->m_format.m_frames = m_internalFormat.m_frames * ((float)(*it)->m_format.m_sampleRate / m_internalFormat.m_sampleRate);
 
         // create buffer pool
-        (*it)->m_inputBuffers = new CActiveAEBufferPool((*it)->m_format);
+        (*it)->m_inputBuffers = std::make_unique<CActiveAEBufferPool>((*it)->m_format);
         (*it)->m_inputBuffers->Create(MAX_CACHE_LEVEL*1000);
         (*it)->m_streamSpace = (*it)->m_format.m_frameSize * (*it)->m_format.m_frames;
 
@@ -1383,10 +1374,8 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     {
       if (initSink && m_vizBuffers)
       {
-        m_discardBufferPools.push_back(m_vizBuffers);
-        m_vizBuffers = NULL;
-        m_discardBufferPools.push_back(m_vizBuffersInput);
-        m_vizBuffersInput = NULL;
+        m_discardBufferPools.push_back(std::move(m_vizBuffers));
+        m_discardBufferPools.push_back(std::move(m_vizBuffersInput));
       }
       if (!m_vizBuffers && !m_audioCallback.empty())
       {
@@ -1399,11 +1388,12 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
             (static_cast<float>(vizFormat.m_sampleRate) / m_internalFormat.m_sampleRate);
 
         // input buffers
-        m_vizBuffersInput = new CActiveAEBufferPool(m_internalFormat);
+        m_vizBuffersInput = std::make_unique<CActiveAEBufferPool>(m_internalFormat);
         m_vizBuffersInput->Create(2000 + m_stats.GetMaxDelay() * 1000);
 
         // resample buffers
-        m_vizBuffers = new CActiveAEBufferPoolResample(m_internalFormat, vizFormat, m_settings.resampleQuality);
+        m_vizBuffers = std::make_unique<CActiveAEBufferPoolResample>(m_internalFormat, vizFormat,
+                                                                     m_settings.resampleQuality);
         //! @todo use cache of sync + water level
         m_vizBuffers->Create(2000 + m_stats.GetMaxDelay() * 1000, false, false);
         m_vizInitialized = false;
@@ -1411,7 +1401,7 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
     }
 
     // buffers need to sync
-    m_silenceBuffers = new CActiveAEBufferPool(outputFormat);
+    m_silenceBuffers = std::make_unique<CActiveAEBufferPool>(outputFormat);
     m_silenceBuffers->Create(500);
   }
 
@@ -1421,12 +1411,12 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
       !CompareFormat(m_sinkBuffers->m_inputFormat, sinkInputFormat) ||
       m_sinkBuffers->m_format.m_frames != m_sinkFormat.m_frames))
   {
-    m_discardBufferPools.push_back(m_sinkBuffers);
-    m_sinkBuffers = NULL;
+    m_discardBufferPools.push_back(std::move(m_sinkBuffers));
   }
   if (!m_sinkBuffers)
   {
-    m_sinkBuffers = new CActiveAEBufferPoolResample(sinkInputFormat, m_sinkFormat, m_settings.resampleQuality);
+    m_sinkBuffers = std::make_unique<CActiveAEBufferPoolResample>(sinkInputFormat, m_sinkFormat,
+                                                                  m_settings.resampleQuality);
     m_sinkBuffers->Create(MAX_WATER_LEVEL*1000, true, false);
   }
 
@@ -1513,7 +1503,7 @@ void CActiveAE::DiscardStream(CActiveAEStream *stream)
         (*it)->m_processingSamples.pop_front();
       }
       if ((*it)->m_inputBuffers)
-        m_discardBufferPools.push_back((*it)->m_inputBuffers);
+        m_discardBufferPools.push_back(std::move((*it)->m_inputBuffers));
       if ((*it)->m_processingBuffers)
       {
         (*it)->m_processingBuffers->Flush();
@@ -1591,7 +1581,7 @@ void CActiveAE::ClearDiscardedBuffers()
   auto it = m_discardBufferPools.begin();
   while (it != m_discardBufferPools.end())
   {
-    CActiveAEBufferPoolResample *rbuf = dynamic_cast<CActiveAEBufferPoolResample*>(*it);
+    CActiveAEBufferPoolResample* rbuf = dynamic_cast<CActiveAEBufferPoolResample*>((*it).get());
     if (rbuf)
     {
       rbuf->Flush();
@@ -1599,7 +1589,6 @@ void CActiveAE::ClearDiscardedBuffers()
     // if all buffers have returned, we can delete the buffer pool
     if ((*it)->m_allSamples.size() == (*it)->m_freeSamples.size())
     {
-      delete (*it);
       CLog::Log(LOGDEBUG, "CActiveAE::ClearDiscardedBuffers - buffer pool deleted");
       it = m_discardBufferPools.erase(it);
     }
