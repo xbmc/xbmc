@@ -855,7 +855,7 @@ bool CPVRChannelGroup::Renumber(RenumberMode mode /* = NORMAL */)
   for (auto& sortedMember : m_sortedMembers)
   {
     currentClientChannelNumber = sortedMember->ClientChannelNumber();
-    if (!currentClientChannelNumber.IsValid())
+    if (m_allChannelsGroup && !currentClientChannelNumber.IsValid())
       currentClientChannelNumber =
           m_allChannelsGroup->GetClientChannelNumber(sortedMember->Channel());
 
