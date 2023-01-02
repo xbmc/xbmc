@@ -293,7 +293,7 @@ CMediaSource CMediaManager::GetRootAddonTypeSource(const std::string& type) cons
   }
   else if (type == "music")
   {
-    return ComputeRootAddonTypeSource("music", g_localizeStrings.Get(1038),
+    return ComputeRootAddonTypeSource("audio", g_localizeStrings.Get(1038),
                                       "DefaultAddonMusic.png");
   }
   else if (type == "pictures")
