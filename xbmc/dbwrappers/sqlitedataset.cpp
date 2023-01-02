@@ -350,12 +350,13 @@ int SqliteDatabase::connect(bool create)
       active = true;
       return DB_CONNECTION_OK;
     }
-
-    return DB_CONNECTION_NONE;
   }
   catch (const DbErrors&)
   {
   }
+
+  sqlite3_close(conn);
+
   return DB_CONNECTION_NONE;
 }
 
