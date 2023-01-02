@@ -240,7 +240,26 @@ void CGUIDialogPVRTimerSettings::InitializeSettings()
   std::shared_ptr<CSetting> setting = NULL;
 
   // Timer type
-  setting = AddList(group, SETTING_TMR_TYPE, 803, SettingLevel::Basic, 0, TypesFiller, 803);
+  bool useDetails = false;
+  bool foundClientSupportingTimers = false;
+
+  const CPVRClientMap clients = CServiceBroker::GetPVRManager().Clients()->GetCreatedClients();
+  for (const auto& client : clients)
+  {
+    if (client.second->GetClientCapabilities().SupportsTimers())
+    {
+      if (foundClientSupportingTimers)
+      {
+        // found second client supporting timers, use detailed timer type list layout
+        useDetails = true;
+        break;
+      }
+      foundClientSupportingTimers = true;
+    }
+  }
+
+  setting = AddList(group, SETTING_TMR_TYPE, 803, SettingLevel::Basic, 0, TypesFiller, 803, true,
+                    -1, useDetails);
   AddTypeDependentEnableCondition(setting, SETTING_TMR_TYPE);
 
   // Timer enabled/disabled
@@ -888,10 +907,18 @@ void CGUIDialogPVRTimerSettings::TypesFiller(const SettingConstPtr& setting,
     static const std::vector<std::pair<std::string, CVariant>> recordingTimerProps{
         std::make_pair("PVR.IsRecordingTimer", CVariant{true})};
 
+    const auto clients = CServiceBroker::GetPVRManager().Clients();
+
     bool foundCurrent(false);
     for (const auto& typeEntry : pThis->m_typeEntries)
     {
-      list.emplace_back(typeEntry.second->GetDescription(), typeEntry.first,
+      std::string clientName;
+
+      const auto client = clients->GetCreatedClient(typeEntry.second->GetClientId());
+      if (client)
+        clientName = client->GetFriendlyName();
+
+      list.emplace_back(typeEntry.second->GetDescription(), clientName, typeEntry.first,
                         typeEntry.second->IsReminder() ? reminderTimerProps : recordingTimerProps);
 
       if (!foundCurrent && (*(pThis->m_timerType) == *(typeEntry.second)))

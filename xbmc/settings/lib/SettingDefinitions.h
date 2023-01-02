@@ -68,11 +68,16 @@ struct IntegerSettingOption
   IntegerSettingOption(const std::string& _label, int _value)
   : label(_label), value(_value) {}
 
-  IntegerSettingOption(const std::string& _label, int _value,
+  IntegerSettingOption(const std::string& _label,
+                       const std::string& _label2,
+                       int _value,
                        const std::vector<std::pair<std::string, CVariant>>& props)
-  : label(_label), value(_value), properties(props) {}
+    : label(_label), label2(_label2), value(_value), properties(props)
+  {
+  }
 
   std::string label;
+  std::string label2;
   int value = 0;
   std::vector<std::pair<std::string, CVariant>> properties;
 };
@@ -82,11 +87,16 @@ struct StringSettingOption
   StringSettingOption(const std::string& _label, const std::string& _value)
   : label(_label), value(_value) {}
 
-  StringSettingOption(const std::string& _label, const std::string& _value,
+  StringSettingOption(const std::string& _label,
+                      const std::string& _label2,
+                      const std::string& _value,
                       const std::vector<std::pair<std::string, CVariant>>& props)
-  : label(_label), value(_value), properties(props) {}
+    : label(_label), label2(_label2), value(_value), properties(props)
+  {
+  }
 
   std::string label;
+  std::string label2;
   std::string value;
   std::vector<std::pair<std::string, CVariant>> properties;
 };
