@@ -509,6 +509,8 @@ void CPVRManager::Process()
   // Reinit playbackstate
   m_playbackState->ReInit();
 
+  PublishEvent(PVREvent::ChannelGroupsLoaded);
+
   m_guiInfo->Start();
   m_epgContainer.Start();
   m_timers->Start();
@@ -727,7 +729,8 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
     return false;
   }
 
-  PublishEvent(PVREvent::ChannelGroupsLoaded);
+  if (stateToCheck != ManagerState::STATE_STARTING)
+    PublishEvent(PVREvent::ChannelGroupsLoaded);
 
   // Load all timers
   if (progressHandler)
