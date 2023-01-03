@@ -123,7 +123,7 @@ protected:
   int m_state;
   bool m_bStateMachineSelfTrigger;
   std::chrono::milliseconds m_extTimeout;
-  std::chrono::milliseconds m_silenceTimeOut;
+  std::chrono::minutes m_silenceTimeOut{std::chrono::minutes::zero()};
   bool m_extError;
   std::chrono::milliseconds m_extSilenceTimeout;
   bool m_extAppFocused;
