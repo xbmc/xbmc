@@ -31,7 +31,7 @@ public:
   pw_stream* Get() const { return m_stream.get(); }
 
   void AddListener(void* userdata);
-  bool Connect(uint32_t id, spa_audio_info_raw& info);
+  bool Connect(uint32_t id, spa_audio_info_raw& info, const pw_stream_flags& flags);
 
   pw_stream_state GetState();
   void SetActive(bool active);

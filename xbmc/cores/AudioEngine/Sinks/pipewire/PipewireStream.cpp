@@ -45,18 +45,14 @@ void CPipewireStream::AddListener(void* userdata)
   pw_stream_add_listener(m_stream.get(), &m_streamListener, &m_streamEvents, userdata);
 }
 
-bool CPipewireStream::Connect(uint32_t id, spa_audio_info_raw& info)
+bool CPipewireStream::Connect(uint32_t id, spa_audio_info_raw& info, const pw_stream_flags& flags)
 {
   std::array<uint8_t, 1024> buffer;
   auto builder = SPA_POD_BUILDER_INIT(buffer.data(), buffer.size());
   auto params = spa_format_audio_raw_build(&builder, SPA_PARAM_EnumFormat, &info);
 
-  int ret = pw_stream_connect(m_stream.get(), PW_DIRECTION_OUTPUT, id,
-                              static_cast<pw_stream_flags>(PW_STREAM_FLAG_AUTOCONNECT |
-                                                           PW_STREAM_FLAG_INACTIVE |
-                                                           PW_STREAM_FLAG_MAP_BUFFERS),
+  int ret = pw_stream_connect(m_stream.get(), PW_DIRECTION_OUTPUT, id, flags,
                               const_cast<const spa_pod**>(&params), 1);
-
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CPipewireStream: failed to connect stream: {}", spa_strerror(errno));

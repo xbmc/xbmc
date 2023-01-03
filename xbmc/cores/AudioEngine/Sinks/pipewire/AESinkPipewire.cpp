@@ -361,7 +361,10 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   for (size_t index = 0; index < pwChannels.size(); index++)
     info.position[index] = pwChannels[index];
 
-  if (!stream->Connect(id, info))
+  pw_stream_flags flags = static_cast<pw_stream_flags>(
+      PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_INACTIVE | PW_STREAM_FLAG_MAP_BUFFERS);
+
+  if (!stream->Connect(id, info, flags))
   {
     loop->Unlock();
     return false;
