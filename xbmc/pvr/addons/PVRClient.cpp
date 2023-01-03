@@ -125,7 +125,6 @@ void CPVRClient::ResetProperties()
   m_bPriorityFetched = false;
   m_strBackendVersion = DEFAULT_INFO_STRING_VALUE;
   m_strConnectionString = DEFAULT_INFO_STRING_VALUE;
-  m_strFriendlyName = DEFAULT_INFO_STRING_VALUE;
   m_strBackendName = DEFAULT_INFO_STRING_VALUE;
   m_strBackendHostname.clear();
   m_menuhooks.reset();
@@ -243,6 +242,11 @@ void CPVRClient::SetConnectionState(PVR_CONNECTION_STATE state)
     if (!GetAddonProperties())
       CLog::LogF(LOGERROR, "Error reading PVR client properties");
   }
+  else
+  {
+    if (!GetAddonNameStringProperties())
+      CLog::LogF(LOGERROR, "Cannot read PVR client name string properties");
+  }
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -290,11 +294,9 @@ int CPVRClient::GetID() const
 
 bool CPVRClient::GetAddonProperties()
 {
-  char strBackendName[PVR_ADDON_NAME_STRING_LENGTH] = {};
-  char strConnectionString[PVR_ADDON_NAME_STRING_LENGTH] = {};
-  char strBackendVersion[PVR_ADDON_NAME_STRING_LENGTH] = {};
-  char strBackendHostname[PVR_ADDON_NAME_STRING_LENGTH] = {};
-  std::string strFriendlyName;
+  if (!GetAddonNameStringProperties())
+    return false;
+
   PVR_ADDON_CAPABILITIES addonCapabilities = {};
   std::vector<std::shared_ptr<CPVRTimerType>> timerTypes;
 
@@ -309,62 +311,10 @@ bool CPVRClient::GetAddonProperties()
   if (retVal != PVR_ERROR_NO_ERROR)
     return false;
 
-  /* get the name of the backend */
-  retVal = DoAddonCall(
-      __func__,
-      [&strBackendName](const AddonInstance* addon) {
-        return addon->toAddon->GetBackendName(addon, strBackendName, sizeof(strBackendName));
-      },
-      true, false);
-
-  if (retVal != PVR_ERROR_NO_ERROR)
-    return false;
-
-  /* get the connection string */
-  retVal = DoAddonCall(
-      __func__,
-      [&strConnectionString](const AddonInstance* addon) {
-        return addon->toAddon->GetConnectionString(addon, strConnectionString,
-                                                   sizeof(strConnectionString));
-      },
-      true, false);
-
-  if (retVal != PVR_ERROR_NO_ERROR && retVal != PVR_ERROR_NOT_IMPLEMENTED)
-    return false;
-
-  /* display name = backend name:connection string */
-  strFriendlyName = strlen(strConnectionString) == 0 // connection string is optional
-                        ? strBackendName
-                        : StringUtils::Format("{}:{}", strBackendName, strConnectionString);
-
-  /* backend version number */
-  retVal = DoAddonCall(
-      __func__,
-      [&strBackendVersion](const AddonInstance* addon) {
-        return addon->toAddon->GetBackendVersion(addon, strBackendVersion,
-                                                 sizeof(strBackendVersion));
-      },
-      true, false);
-
-  if (retVal != PVR_ERROR_NO_ERROR)
-    return false;
-
-  /* backend hostname */
-  retVal = DoAddonCall(
-      __func__,
-      [&strBackendHostname](const AddonInstance* addon) {
-        return addon->toAddon->GetBackendHostname(addon, strBackendHostname,
-                                                  sizeof(strBackendHostname));
-      },
-      true, false);
-
-  if (retVal != PVR_ERROR_NO_ERROR && retVal != PVR_ERROR_NOT_IMPLEMENTED)
-    return false;
-
   /* timer types */
   retVal = DoAddonCall(
       __func__,
-      [this, strFriendlyName, &addonCapabilities, &timerTypes](const AddonInstance* addon) {
+      [this, &addonCapabilities, &timerTypes](const AddonInstance* addon) {
         std::unique_ptr<PVR_TIMER_TYPE[]> types_array(
             new PVR_TIMER_TYPE[PVR_ADDON_TIMERTYPE_ARRAY_SIZE]);
         int size = PVR_ADDON_TIMERTYPE_ARRAY_SIZE;
@@ -377,7 +327,7 @@ bool CPVRClient::GetAddonProperties()
           CLog::LogF(LOGWARNING,
                      "Add-on {} does not support timer types. It will work, but not benefit from "
                      "the timer features introduced with PVR Addon API 2.0.0",
-                     strFriendlyName);
+                     GetFriendlyName());
 
           // Create standard timer types (mostly) matching the timer functionality available in Isengard.
           // This is for migration only and does not make changes to the addons obsolete. Addons should
@@ -449,15 +399,74 @@ bool CPVRClient::GetAddonProperties()
 
   /* update the members */
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_strBackendName = strBackendName;
-  m_strConnectionString = strConnectionString;
-  m_strFriendlyName = strFriendlyName;
-  m_strBackendVersion = strBackendVersion;
   m_clientCapabilities = addonCapabilities;
-  m_strBackendHostname = strBackendHostname;
   m_timertypes = timerTypes;
 
   return retVal == PVR_ERROR_NO_ERROR;
+}
+
+bool CPVRClient::GetAddonNameStringProperties()
+{
+  char strBackendName[PVR_ADDON_NAME_STRING_LENGTH] = {};
+  char strConnectionString[PVR_ADDON_NAME_STRING_LENGTH] = {};
+  char strBackendVersion[PVR_ADDON_NAME_STRING_LENGTH] = {};
+  char strBackendHostname[PVR_ADDON_NAME_STRING_LENGTH] = {};
+
+  /* get the name of the backend */
+  PVR_ERROR retVal = DoAddonCall(
+      __func__,
+      [&strBackendName](const AddonInstance* addon) {
+        return addon->toAddon->GetBackendName(addon, strBackendName, sizeof(strBackendName));
+      },
+      true, false);
+
+  if (retVal != PVR_ERROR_NO_ERROR)
+    return false;
+
+  /* get the connection string */
+  retVal = DoAddonCall(
+      __func__,
+      [&strConnectionString](const AddonInstance* addon) {
+        return addon->toAddon->GetConnectionString(addon, strConnectionString,
+                                                   sizeof(strConnectionString));
+      },
+      true, false);
+
+  if (retVal != PVR_ERROR_NO_ERROR && retVal != PVR_ERROR_NOT_IMPLEMENTED)
+    return false;
+
+  /* backend version number */
+  retVal = DoAddonCall(
+      __func__,
+      [&strBackendVersion](const AddonInstance* addon) {
+        return addon->toAddon->GetBackendVersion(addon, strBackendVersion,
+                                                 sizeof(strBackendVersion));
+      },
+      true, false);
+
+  if (retVal != PVR_ERROR_NO_ERROR)
+    return false;
+
+  /* backend hostname */
+  retVal = DoAddonCall(
+      __func__,
+      [&strBackendHostname](const AddonInstance* addon) {
+        return addon->toAddon->GetBackendHostname(addon, strBackendHostname,
+                                                  sizeof(strBackendHostname));
+      },
+      true, false);
+
+  if (retVal != PVR_ERROR_NO_ERROR && retVal != PVR_ERROR_NOT_IMPLEMENTED)
+    return false;
+
+  /* update the members */
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  m_strBackendName = strBackendName;
+  m_strConnectionString = strConnectionString;
+  m_strBackendVersion = strBackendVersion;
+  m_strBackendHostname = strBackendHostname;
+
+  return true;
 }
 
 const std::string& CPVRClient::GetBackendName() const
@@ -480,9 +489,17 @@ const std::string& CPVRClient::GetConnectionString() const
   return m_strConnectionString;
 }
 
-const std::string& CPVRClient::GetFriendlyName() const
+const std::string CPVRClient::GetFriendlyName() const
 {
-  return m_strFriendlyName;
+
+  if (Addon()->SupportsInstanceSettings())
+  {
+    std::string instanceName;
+    Addon()->GetSettingString(ADDON_SETTING_INSTANCE_NAME_VALUE, instanceName, InstanceId());
+    if (!instanceName.empty())
+      return StringUtils::Format("{} ({})", Name(), instanceName);
+  }
+  return Name();
 }
 
 PVR_ERROR CPVRClient::GetDriveSpace(uint64_t& iTotal, uint64_t& iUsed)
@@ -1788,8 +1805,8 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
       return;
     }
 
-    const std::string strLine1 =
-        StringUtils::Format(g_localizeStrings.Get(bOnOff ? 19197 : 19198), client->Name());
+    const std::string strLine1 = StringUtils::Format(g_localizeStrings.Get(bOnOff ? 19197 : 19198),
+                                                     client->GetFriendlyName());
     std::string strLine2;
     if (strName)
       strLine2 = strName;
@@ -1801,8 +1818,8 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
                                           false);
     auto eventLog = CServiceBroker::GetEventLog();
     if (eventLog)
-      eventLog->Add(
-          EventPtr(new CNotificationEvent(client->Name(), strLine1, client->Icon(), strLine2)));
+      eventLog->Add(EventPtr(
+          new CNotificationEvent(client->GetFriendlyName(), strLine1, client->Icon(), strLine2)));
 
     CLog::LogFC(LOGDEBUG, LOGPVR, "Recording {} on client '{}'. name='{}' filename='{}'",
                 bOnOff ? "started" : "finished", client->ID(), strName, strFileName);

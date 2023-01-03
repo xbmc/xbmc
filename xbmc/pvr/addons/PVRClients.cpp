@@ -23,6 +23,7 @@
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "utils/JobManager.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -170,10 +171,10 @@ void CPVRClients::UpdateClients(
         {
           CServiceBroker::GetAddonMgr().DisableAddon(client->ID(),
                                                      AddonDisabledReason::PERMANENT_FAILURE);
-          CServiceBroker::GetJobManager()->AddJob(new CPVREventLogJob(true, true, client->Name(),
-                                                                      g_localizeStrings.Get(24070),
-                                                                      client->Icon()),
-                                                  nullptr);
+          CServiceBroker::GetJobManager()->AddJob(
+              new CPVREventLogJob(true, EventLevel::Error, client->Name(),
+                                  g_localizeStrings.Get(24070), client->Icon()),
+              nullptr);
         }
       }
     }
@@ -803,7 +804,7 @@ void CPVRClients::ConnectionStateChange(CPVRClient* client,
     return;
 
   int iMsg = -1;
-  bool bError = true;
+  EventLevel eLevel = EventLevel::Error;
   bool bNotify = true;
 
   switch (newState)
@@ -828,7 +829,7 @@ void CPVRClients::ConnectionStateChange(CPVRClient* client,
       iMsg = 35508; // Access denied
       break;
     case PVR_CONNECTION_STATE_CONNECTED:
-      bError = false;
+      eLevel = EventLevel::Basic;
       iMsg = 36034; // Connection established
       if (client->GetPreviousConnectionState() == PVR_CONNECTION_STATE_UNKNOWN ||
           client->GetPreviousConnectionState() == PVR_CONNECTION_STATE_CONNECTING)
@@ -838,7 +839,7 @@ void CPVRClients::ConnectionStateChange(CPVRClient* client,
       iMsg = 36030; // Connection lost
       break;
     case PVR_CONNECTION_STATE_CONNECTING:
-      bError = false;
+      eLevel = EventLevel::Information;
       iMsg = 35509; // Connecting
       bNotify = false;
       break;
@@ -854,9 +855,12 @@ void CPVRClients::ConnectionStateChange(CPVRClient* client,
   else
     strMsg = g_localizeStrings.Get(iMsg);
 
+  if (!strConnectionString.empty())
+    strMsg = StringUtils::Format("{} ({})", strMsg, strConnectionString);
+
   // Notify user.
   CServiceBroker::GetJobManager()->AddJob(
-      new CPVREventLogJob(bNotify, bError, client->GetFriendlyName(), strMsg, client->Icon()),
+      new CPVREventLogJob(bNotify, eLevel, client->GetFriendlyName(), strMsg, client->Icon()),
       nullptr);
 }
 
