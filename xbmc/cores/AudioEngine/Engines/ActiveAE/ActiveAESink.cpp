@@ -328,7 +328,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           return;
 
         case CSinkControlProtocol::SETSILENCETIMEOUT:
-          m_silenceTimeOut = std::chrono::milliseconds(*reinterpret_cast<int*>(msg->data));
+          m_silenceTimeOut = std::chrono::minutes(*reinterpret_cast<int*>(msg->data));
           return;
 
         case CSinkControlProtocol::SETNOISETYPE:
