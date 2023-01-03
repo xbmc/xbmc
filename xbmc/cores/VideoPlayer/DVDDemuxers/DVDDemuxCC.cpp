@@ -319,7 +319,7 @@ void CDVDDemuxCC::Handler(int service, void *userdata)
     stream.flags = FLAG_HEARING_IMPAIRED;
     stream.codec = AV_CODEC_ID_TEXT;
     stream.uniqueId = service;
-    ctx->m_streams.push_back(stream);
+    ctx->m_streams.push_back(std::move(stream));
 
     streamdata data;
     data.streamIdx = idx;
