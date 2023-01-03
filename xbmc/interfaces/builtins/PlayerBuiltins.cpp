@@ -597,9 +597,16 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
     }
 
     if ((item.IsAudio() || item.IsVideo()) && !item.IsSmartPlayList())
+    {
+      if (!item.HasProperty("playlist_type_hint"))
+        item.SetProperty("playlist_type_hint", PLAYLIST::TYPE_MUSIC);
+
       CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
+    }
     else
+    {
       g_application.PlayMedia(item, "", PLAYLIST::TYPE_NONE);
+    }
   }
 
   return 0;

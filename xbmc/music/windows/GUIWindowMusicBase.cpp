@@ -741,7 +741,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
       OnQueueItem(iItem);
       return true;
     }
-    pItem->SetProperty("playlist_type_hint", PLAYLIST::TYPE_MUSIC);
+    pItem->SetProperty("playlist_type_hint", m_guiState->GetPlaylist());
     CServiceBroker::GetPlaylistPlayer().Play(pItem, player);
     return true;
   }
