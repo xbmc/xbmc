@@ -339,6 +339,8 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
           m_viewControl.SetFocused();
           break;
         }
+        case PVREvent::ManagerStarted:
+          [[fallthrough]];
         case PVREvent::ChannelGroupsInvalidated:
         {
           std::shared_ptr<CPVRChannelGroup> group =
