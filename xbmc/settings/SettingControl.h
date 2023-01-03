@@ -196,12 +196,16 @@ public:
   SettingControlListValueFormatter GetFormatter() const { return m_formatter; }
   void SetFormatter(SettingControlListValueFormatter formatter) { m_formatter = formatter; }
 
+  bool UseDetails() const { return m_useDetails; }
+  void SetUseDetails(bool useDetails) { m_useDetails = useDetails; }
+
 protected:
   int m_heading = -1;
   bool m_multiselect = false;
   bool m_hideValue = false;
   int m_addButtonLabel = -1;
   SettingControlListValueFormatter m_formatter = nullptr;
+  bool m_useDetails{false};
 };
 
 class CSettingControlSlider;
