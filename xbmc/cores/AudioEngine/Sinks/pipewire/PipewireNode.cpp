@@ -153,6 +153,12 @@ void CPipewireNode::Parse(uint32_t type, void* body, uint32_t size)
                     prop->value.type, SPA_POD_CONTENTS(spa_pod_prop, prop), prop->value.size);
                 break;
               }
+              case SPA_FORMAT_AUDIO_iec958Codec:
+              {
+                m_iec958Codecs = ParseArray<spa_audio_iec958_codec>(
+                    prop->value.type, SPA_POD_CONTENTS(spa_pod_prop, prop), prop->value.size);
+                break;
+              }
               default:
                 break;
             }
