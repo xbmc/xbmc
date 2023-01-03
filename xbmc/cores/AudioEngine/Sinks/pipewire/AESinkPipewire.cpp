@@ -448,17 +448,6 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   auto pwChannels = AEChannelMapToPWChannelMap(format.m_channelLayout);
   format.m_channelLayout = PWChannelMapToAEChannelMap(pwChannels);
 
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - rate: {}", __FUNCTION__, format.m_sampleRate);
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - channels: {}", __FUNCTION__, pwChannels.size());
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - format: {}", __FUNCTION__, PWFormatToString(pwFormat));
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - samplesize: {}", __FUNCTION__,
-            PWFormatToSampleSize(pwFormat));
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - framesize: {}", __FUNCTION__,
-            pwChannels.size() * PWFormatToSampleSize(pwFormat));
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - latency: {}/{} ({:.3f}s)", __FUNCTION__, frames,
-            format.m_sampleRate,
-            static_cast<double>(frames) / DEFAULT_LATENCY_DIVIDER / format.m_sampleRate);
-
   std::array<uint8_t, 1024> buffer;
   auto builder = SPA_POD_BUILDER_INIT(buffer.data(), buffer.size());
 
@@ -510,6 +499,17 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
     loop.Unlock();
     return false;
   }
+
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - rate: {}", __FUNCTION__, format.m_sampleRate);
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - channels: {}", __FUNCTION__, pwChannels.size());
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - format: {}", __FUNCTION__, PWFormatToString(pwFormat));
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - samplesize: {}", __FUNCTION__,
+            PWFormatToSampleSize(pwFormat));
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - framesize: {}", __FUNCTION__,
+            pwChannels.size() * PWFormatToSampleSize(pwFormat));
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - latency: {}/{} ({:.3f}s)", __FUNCTION__, frames,
+            format.m_sampleRate,
+            static_cast<double>(frames) / DEFAULT_LATENCY_DIVIDER / format.m_sampleRate);
 
   pw_stream_state state;
   do
