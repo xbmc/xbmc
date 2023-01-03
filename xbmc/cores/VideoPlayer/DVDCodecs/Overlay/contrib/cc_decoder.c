@@ -716,6 +716,11 @@ static void cc_decode_EIA608(cc_decoder_t *dec, uint16_t data)
   uint8_t c1 = data & 0x7f;
   uint8_t c2 = (data >> 8) & 0x7f;
 
+  /* control sequences are often repeated. In this case, we should */
+  /* evaluate it only once. */
+  if (data == dec->lastcode)
+    return;
+
   if (c1 & 0x60)
   {             /* normal character, 0x20 <= c1 <= 0x7f */
     if (dec->style == CC_NOTSET)
@@ -734,71 +739,66 @@ static void cc_decode_EIA608(cc_decoder_t *dec, uint16_t data)
     int channel = (c1 & 0x08) >> 3;
     c1 &= ~0x08;
 
-    /* control sequences are often repeated. In this case, we should */
-    /* evaluate it only once. */
-    if (data != dec->lastcode)
+    if (c2 & 0x40)
+    { /* preamble address code: 0x40 <= c2 <= 0x7f */
+      cc_decode_PAC(dec, channel, c1, c2);
+    }
+    else
     {
-      if (c2 & 0x40)
-      {         /* preamble address code: 0x40 <= c2 <= 0x7f */
-	      cc_decode_PAC(dec, channel, c1, c2);
-      }
-      else
+      switch (c1)
       {
-        switch (c1)
-        {
-          case 0x10: /* extended background attribute code */
-            cc_decode_ext_attribute(dec, channel);
-            break;
+        case 0x10: /* extended background attribute code */
+          cc_decode_ext_attribute(dec, channel);
+          break;
 
-          case 0x11: /* attribute or special character */
-            if (dec->style == CC_NOTSET)
-              return;
+        case 0x11: /* attribute or special character */
+          if (dec->style == CC_NOTSET)
+            return;
 
-            if ((c2 & 0x30) == 0x30)
-            {
-              /* special char: 0x30 <= c2 <= 0x3f  */
-              /*       CCSET_SPECIAL_AMERICAN      */
-              cc_decode_special_char(dec, channel, CCSET_SPECIAL_AMERICAN, c2);
-              if (dec->style == CC_ROLLUP)
-              {
-                ccmem_tobuf(dec);
-              }
-            }
-            else if (c2 & 0x20)
-            {
-              /* midrow attribute: 0x20 <= c2 <= 0x2f */
-              cc_decode_midrow_attr(dec, channel, c2);
-            }
-            break;
-
-          case 0x12: /* CCSET_EXTENDED_SPANISH_FRENCH_MISC */
-            cc_decode_special_char(dec, channel, CCSET_EXTENDED_SPANISH_FRENCH_MISC, c2);
+          if ((c2 & 0x30) == 0x30)
+          {
+            /* special char: 0x30 <= c2 <= 0x3f  */
+            /*       CCSET_SPECIAL_AMERICAN      */
+            cc_decode_special_char(dec, channel, CCSET_SPECIAL_AMERICAN, c2);
             if (dec->style == CC_ROLLUP)
             {
               ccmem_tobuf(dec);
             }
-            break;
+          }
+          else if (c2 & 0x20)
+          {
+            /* midrow attribute: 0x20 <= c2 <= 0x2f */
+            cc_decode_midrow_attr(dec, channel, c2);
+          }
+          break;
 
-          case 0x13: /* CCSET_EXTENDED_PORTUGUESE_GERMAN_DANISH */
-            cc_decode_special_char(dec, channel, CCSET_EXTENDED_PORTUGUESE_GERMAN_DANISH, c2);
-            if (dec->style == CC_ROLLUP)
-            {
-              ccmem_tobuf(dec);
-            }
-            break;
+        case 0x12: /* CCSET_EXTENDED_SPANISH_FRENCH_MISC */
+          cc_decode_special_char(dec, channel, CCSET_EXTENDED_SPANISH_FRENCH_MISC, c2);
+          if (dec->style == CC_ROLLUP)
+          {
+            ccmem_tobuf(dec);
+          }
+          break;
 
-          case 0x14: /* possibly miscellaneous control code */
-            cc_decode_misc_control_code(dec, channel, c2);
-            break;
+        case 0x13: /* CCSET_EXTENDED_PORTUGUESE_GERMAN_DANISH */
+          cc_decode_special_char(dec, channel, CCSET_EXTENDED_PORTUGUESE_GERMAN_DANISH, c2);
+          if (dec->style == CC_ROLLUP)
+          {
+            ccmem_tobuf(dec);
+          }
+          break;
 
-          case 0x17: /* possibly misc. control code TAB offset */
-            /* 0x21 <= c2 <= 0x23 */
-            if (c2 >= 0x21 && c2 <= 0x23)
-            {
-              cc_decode_tab(dec, channel, c2);
-            }
-            break;
-        }
+        case 0x14: /* possibly miscellaneous control code */
+          cc_decode_misc_control_code(dec, channel, c2);
+          break;
+
+        case 0x17: /* possibly misc. control code TAB offset */
+          /* 0x21 <= c2 <= 0x23 */
+          if (c2 >= 0x21 && c2 <= 0x23)
+          {
+            cc_decode_tab(dec, channel, c2);
+          }
+          break;
       }
     }
   }
