@@ -1156,10 +1156,20 @@ void CActiveAESink::SetSilenceTimer()
 {
   if (m_extStreaming)
     m_extSilenceTimeout = XbmcThreads::EndTime<decltype(m_extSilenceTimeout)>::Max();
-  else if (m_extAppFocused)
-    m_extSilenceTimeout = m_silenceTimeOut;
+  else if (m_extAppFocused) // handles no playback/GUI and playback in pause and seek
+  {
+    // only true with AudioTrack RAW + passthrough + TrueHD or EAC3 (DD+)
+    const bool noSilenceOnPause =
+        !m_needIecPack && m_requestedFormat.m_dataFormat == AE_FMT_RAW &&
+        (m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD ||
+         m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_EAC3);
+
+    m_extSilenceTimeout = (noSilenceOnPause) ? 0ms : m_silenceTimeOut;
+  }
   else
+  {
     m_extSilenceTimeout = 0ms;
+  }
 
   m_extSilenceTimer.Set(m_extSilenceTimeout);
 }
