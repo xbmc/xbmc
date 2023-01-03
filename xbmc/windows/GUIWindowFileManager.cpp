@@ -525,6 +525,13 @@ bool CGUIWindowFileManager::Update(int iList, const std::string &strDirectory)
       iItem->SetLabelPreformatted(true);
       m_vecItems[iList]->Add(iItem);
     #endif
+    #ifdef TARGET_ANDROID
+      CFileItemPtr iItem(new CFileItem("special://logpath", true));
+      iItem->SetLabel("Logs");
+      iItem->SetArt("thumb", "DefaultFolder.png");
+      iItem->SetLabelPreformatted(true);
+      m_vecItems[iList]->Add(iItem);
+    #endif
   }
 
   // if we have a .tbn file, use itself as the thumb
