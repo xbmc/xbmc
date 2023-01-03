@@ -878,6 +878,13 @@ void CExifParse::ProcessGpsInfo(
   {
     const unsigned char* DirEntry = DIR_ENTRY_ADDR(DirStart, de);
 
+    // Fix from aosp 34a2564d3268a5ca1472c5076675782fbaf724d6
+    if (DirEntry + 12 > OffsetBase + ExifLength)
+    {
+      ErrNonfatal("GPS info directory goes past end of exif", 0, 0);
+      return;
+    }
+
     unsigned Tag        = Get16(DirEntry, m_MotorolaOrder);
     unsigned Format     = Get16(DirEntry+2, m_MotorolaOrder);
     unsigned Components = (unsigned)Get32(DirEntry+4, m_MotorolaOrder);
