@@ -1422,7 +1422,7 @@ bool CGUIDialogVideoInfo::UpdateVideoItemTitle(const std::shared_ptr<CFileItem>&
   else if (mediaType == MediaTypeSeason)
   {
     database.GetSeasonInfo(iDbId, detail);
-    title = detail.m_strSortTitle;
+    title = detail.m_strSortTitle.empty() ? detail.m_strTitle : detail.m_strSortTitle;
   }
   else if (mediaType == MediaTypeTvShow)
   {
