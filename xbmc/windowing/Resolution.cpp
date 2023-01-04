@@ -444,11 +444,11 @@ void CResolutionUtils::GetMaxAllowedResolution(unsigned int& width, unsigned int
     {
       RESOLUTION res = CDisplaySettings::GetInstance().GetResFromString(mode.asString());
       RESOLUTION_INFO resInfo{CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res)};
-      if (static_cast<unsigned int>(resInfo.iWidth) > maxWidth &&
-          static_cast<unsigned int>(resInfo.iHeight) > maxHeight)
+      if (static_cast<unsigned int>(resInfo.iScreenWidth) > maxWidth &&
+          static_cast<unsigned int>(resInfo.iScreenHeight) > maxHeight)
       {
-        maxWidth = static_cast<unsigned int>(resInfo.iWidth);
-        maxHeight = static_cast<unsigned int>(resInfo.iHeight);
+        maxWidth = static_cast<unsigned int>(resInfo.iScreenWidth);
+        maxHeight = static_cast<unsigned int>(resInfo.iScreenHeight);
       }
     }
   }
@@ -460,11 +460,11 @@ void CResolutionUtils::GetMaxAllowedResolution(unsigned int& width, unsigned int
     for (const auto& res : resList)
     {
       RESOLUTION_INFO resInfo{CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo(res)};
-      if (static_cast<unsigned int>(resInfo.iWidth) > maxWidth &&
-          static_cast<unsigned int>(resInfo.iHeight) > maxHeight)
+      if (static_cast<unsigned int>(resInfo.iScreenWidth) > maxWidth &&
+          static_cast<unsigned int>(resInfo.iScreenHeight) > maxHeight)
       {
-        maxWidth = static_cast<unsigned int>(resInfo.iWidth);
-        maxHeight = static_cast<unsigned int>(resInfo.iHeight);
+        maxWidth = static_cast<unsigned int>(resInfo.iScreenWidth);
+        maxHeight = static_cast<unsigned int>(resInfo.iScreenHeight);
       }
     }
   }
