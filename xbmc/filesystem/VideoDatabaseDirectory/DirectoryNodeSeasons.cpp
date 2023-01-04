@@ -31,22 +31,37 @@ std::string CDirectoryNodeSeasons::GetLocalizedName() const
 {
   switch (GetID())
   {
-  case 0:
-    return g_localizeStrings.Get(20381); // Specials
-  case -1:
-    return g_localizeStrings.Get(20366); // All Seasons
-  case -2:
+    case 0:
+      return g_localizeStrings.Get(20381); // Specials
+    case -1:
+      return g_localizeStrings.Get(20366); // All Seasons
+    case -2:
+    {
+      CDirectoryNode* pParent = GetParent();
+      if (pParent)
+        return pParent->GetLocalizedName();
+      return "";
+    }
+    default:
+      return GetSeasonTitle();
+  }
+}
+
+std::string CDirectoryNodeSeasons::GetSeasonTitle() const
+{
+  std::string season;
+  CVideoDatabase db;
+  if (db.Open())
   {
-    CDirectoryNode *pParent = GetParent();
-    if (pParent)
-      return pParent->GetLocalizedName();
-    return "";
+    CQueryParams params;
+    CollectQueryParams(params);
+
+    season = db.GetTvShowNamedSeasonById(params.GetTvShowId(), params.GetSeason());
   }
-  default:
-    std::string season =
-        StringUtils::Format(g_localizeStrings.Get(20358), GetID()); // Season <season>
-    return season;
-  }
+  if (season.empty())
+    season = StringUtils::Format(g_localizeStrings.Get(20358), GetID()); // Season <n>
+
+  return season;
 }
 
 bool CDirectoryNodeSeasons::GetContent(CFileItemList& items) const

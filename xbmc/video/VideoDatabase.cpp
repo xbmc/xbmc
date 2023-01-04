@@ -4758,6 +4758,12 @@ bool CVideoDatabase::GetTvShowNamedSeasons(int showId, std::map<int, std::string
   return false;
 }
 
+std::string CVideoDatabase::GetTvShowNamedSeasonById(int tvshowId, int seasonId)
+{
+  return GetSingleValue("seasons", "name",
+                        PrepareSQL("season=%i AND idShow=%i", seasonId, tvshowId));
+}
+
 bool CVideoDatabase::GetTvShowSeasonArt(int showId, std::map<int, std::map<std::string, std::string> > &seasonArt)
 {
   try
