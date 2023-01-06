@@ -499,7 +499,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_formatname = "amc-hevc";
 
       bool isDvhe = (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'));
-      bool isDvh1 = (m_hints.codec_tag == MKTAG('d', 'v', 'h', '1'));
+      bool isDvh1 = (m_hints.codec_tag == MKTAG('d', 'v', 'h', '1') ||
+                     m_hints.codec_tag == MKBETAG('d', 'v', 'v', 'C'));
 
       if (isDvhe || isDvh1)
       {

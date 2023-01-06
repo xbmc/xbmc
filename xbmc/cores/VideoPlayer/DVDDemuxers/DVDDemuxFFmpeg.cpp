@@ -1715,6 +1715,9 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         if (!stereoMode.empty())
           st->stereo_mode = stereoMode;
 
+        side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &size);
+        if (size > 0 && side_data)
+          pStream->codecpar->codec_tag = MKBETAG('d', 'v', 'v', 'C');
 
         if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
         {
