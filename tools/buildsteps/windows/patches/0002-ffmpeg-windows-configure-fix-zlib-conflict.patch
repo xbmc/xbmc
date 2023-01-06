@@ -11,16 +11,16 @@ diff --git a/configure b/configure
 index 4b85e881b1..da457705d1 100755
 --- a/configure
 +++ b/configure
-@@ -7627,6 +7627,9 @@ print_config CONFIG_ "$config_files" $CONFIG_LIST       \
+@@ -7825,6 +7825,9 @@ print_config CONFIG_ "$config_files" $CONFIG_LIST       \
+ print_config CONFIG_ "$config_files" $CONFIG_LIST       \
                                       $CONFIG_EXTRA      \
-                                      $ALL_COMPONENTS    \
  
 +echo "#if defined(HAVE_UNISTD_H) && HAVE_UNISTD_H == 0" >> $TMPH
 +echo "#undef HAVE_UNISTD_H" >> $TMPH
 +echo "#endif" >> $TMPH
  echo "#endif /* FFMPEG_CONFIG_H */" >> $TMPH
- echo "endif # FFMPEG_CONFIG_MAK" >> ffbuild/config.mak
  
+ # Do not overwrite an unchanged config.h to avoid superfluous rebuilds.
 -- 
 2.29.2
 

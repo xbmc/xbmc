@@ -88,7 +88,7 @@ void CActiveAEStream::InitRemapper()
   for(unsigned int i=0; i<m_format.m_channelLayout.Count(); i++)
   {
     avLast = avCur;
-    avCur = CAEUtil::GetAVChannel(m_format.m_channelLayout[i]);
+    avCur = CAEUtil::GetAVChannelMask(m_format.m_channelLayout[i]);
     if(avCur < avLast)
     {
       needRemap = true;

@@ -12,6 +12,7 @@
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDStreamInfo.h"
 #include "ServiceBroker.h"
+#include "cores/FFmpeg.h"
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "cores/VideoSettings.h"
@@ -27,12 +28,13 @@
 #include <mutex>
 
 extern "C" {
-#include <libavutil/opt.h>
-#include <libavutil/mastering_display_metadata.h>
 #include <libavfilter/avfilter.h>
 #include <libavfilter/buffersink.h>
 #include <libavfilter/buffersrc.h>
+#include <libavutil/mastering_display_metadata.h>
+#include <libavutil/opt.h>
 #include <libavutil/pixdesc.h>
+#include <libavutil/video_enc_params.h>
 }
 
 #ifndef TARGET_POSIX
@@ -327,7 +329,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_hints = hints;
   m_options = options;
 
-  AVCodec* pCodec = nullptr;
+  const AVCodec* pCodec = nullptr;
 
   m_iOrientation = hints.orientation;
 
@@ -1048,24 +1050,27 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   pVideoPicture->qscale_type = 0;
 
   AVFrameSideData* sd;
-  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_QP_TABLE_PROPERTIES);
+
+  // https://github.com/FFmpeg/FFmpeg/blob/991d417692/doc/APIchanges#L18-L20
+  sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_VIDEO_ENC_PARAMS);
   if (sd)
   {
-    struct qp_properties
-    {
-      int stride;
-      int type;
-    };
+    unsigned int mb_h = (m_pFrame->height + 15) / 16;
+    unsigned int mb_w = (m_pFrame->width + 15) / 16;
+    unsigned int nb_mb = mb_h * mb_w;
+    unsigned int block_idx;
 
-    auto qp = reinterpret_cast<qp_properties*>(sd->data);
-
-    sd = av_frame_get_side_data(m_pFrame, AV_FRAME_DATA_QP_TABLE_DATA);
-    if (sd && sd->buf && qp)
+    auto par = reinterpret_cast<AVVideoEncParams*>(sd->data);
+    if (par->type == AV_VIDEO_ENC_PARAMS_MPEG2 && (par->nb_blocks == 0 || par->nb_blocks == nb_mb))
     {
-      // this seems wrong but it's what ffmpeg does internally
-      pVideoPicture->qp_table = reinterpret_cast<int8_t*>(sd->buf->data);
-      pVideoPicture->qstride = qp->stride;
-      pVideoPicture->qscale_type = qp->type;
+      pVideoPicture->qstride = mb_w;
+      pVideoPicture->qscale_type = par->type;
+      pVideoPicture->qp_table = static_cast<int8_t*>(av_malloc(nb_mb));
+      for (block_idx = 0; block_idx < nb_mb; block_idx++)
+      {
+        AVVideoBlockParams* b = av_video_enc_params_block(par, block_idx);
+        pVideoPicture->qp_table[block_idx] = par->qp + b->delta_qp;
+      }
     }
   }
 

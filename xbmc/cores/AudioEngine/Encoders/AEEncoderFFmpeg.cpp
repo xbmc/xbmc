@@ -10,13 +10,24 @@
 #define DTS_ENCODE_BITRATE 1411200
 
 #include "cores/AudioEngine/Encoders/AEEncoderFFmpeg.h"
-#include "cores/AudioEngine/Utils/AEUtil.h"
+
 #include "ServiceBroker.h"
-#include "utils/log.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
+#include "cores/FFmpeg.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include <string.h>
+#include "utils/log.h"
+
+extern "C"
+{
+#include <libavutil/channel_layout.h>
+}
+
 #include <cassert>
+#include <string.h>
+
+using FFMPEG_HELP_TOOLS::FFMpegErrorToString;
+using FFMPEG_HELP_TOOLS::FFMpegException;
 
 CAEEncoderFFmpeg::CAEEncoderFFmpeg() : m_CodecCtx(NULL), m_SwrCtx(NULL)
 {
@@ -26,6 +37,7 @@ CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
 {
   Reset();
   swr_free(&m_SwrCtx);
+  av_channel_layout_uninit(&m_CodecCtx->ch_layout);
   avcodec_free_context(&m_CodecCtx);
 }
 
@@ -81,7 +93,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
 
   bool ac3 = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_AUDIOOUTPUT_AC3PASSTHROUGH);
 
-  AVCodec *codec = NULL;
+  const AVCodec* codec = nullptr;
 
   /* fallback to ac3 if we support it, we might not have DTS support */
   if (ac3)
@@ -102,7 +114,8 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
 
   m_CodecCtx->bit_rate = m_BitRate;
   m_CodecCtx->sample_rate = format.m_sampleRate;
-  m_CodecCtx->channel_layout = AV_CH_LAYOUT_5POINT1_BACK;
+  av_channel_layout_uninit(&m_CodecCtx->ch_layout);
+  av_channel_layout_from_mask(&m_CodecCtx->ch_layout, AV_CH_LAYOUT_5POINT1_BACK);
 
   /* select a suitable data format */
   if (codec->sample_fmts)
@@ -179,22 +192,28 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
           LOGERROR,
           "CAEEncoderFFmpeg::Initialize - Unable to find a suitable data format for the codec ({})",
           m_CodecName);
+      av_channel_layout_uninit(&m_CodecCtx->ch_layout);
       avcodec_free_context(&m_CodecCtx);
       return false;
     }
   }
 
-  m_CodecCtx->channels = BuildChannelLayout(m_CodecCtx->channel_layout, m_Layout);
+  uint64_t mask = m_CodecCtx->ch_layout.u.mask;
+  av_channel_layout_uninit(&m_CodecCtx->ch_layout);
+  av_channel_layout_from_mask(&m_CodecCtx->ch_layout, mask);
+  m_CodecCtx->ch_layout.nb_channels = BuildChannelLayout(mask, m_Layout);
 
   /* open the codec */
   if (avcodec_open2(m_CodecCtx, codec, NULL))
   {
+    av_channel_layout_uninit(&m_CodecCtx->ch_layout);
     avcodec_free_context(&m_CodecCtx);
     return false;
   }
 
   format.m_frames = m_CodecCtx->frame_size;
-  format.m_frameSize = m_CodecCtx->channels * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
+  int channels = m_CodecCtx->ch_layout.nb_channels;
+  format.m_frameSize = channels * (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3);
   format.m_channelLayout = m_Layout;
 
   m_CurrentFormat = format;
@@ -204,14 +223,14 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format, bool allow_planar_input
 
   if (m_NeedConversion)
   {
-    m_SwrCtx = swr_alloc_set_opts(NULL,
-                      m_CodecCtx->channel_layout, m_CodecCtx->sample_fmt, m_CodecCtx->sample_rate,
-                      m_CodecCtx->channel_layout, AV_SAMPLE_FMT_FLT, m_CodecCtx->sample_rate,
-                      0, NULL);
-    if (!m_SwrCtx || swr_init(m_SwrCtx) < 0)
+    int ret = swr_alloc_set_opts2(&m_SwrCtx, &m_CodecCtx->ch_layout, m_CodecCtx->sample_fmt,
+                                  m_CodecCtx->sample_rate, &m_CodecCtx->ch_layout,
+                                  AV_SAMPLE_FMT_FLT, m_CodecCtx->sample_rate, 0, NULL);
+    if (ret || swr_init(m_SwrCtx) < 0)
     {
       CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Initialize - Failed to initialise resampler.");
       swr_free(&m_SwrCtx);
+      av_channel_layout_uninit(&m_CodecCtx->ch_layout);
       avcodec_free_context(&m_CodecCtx);
       return false;
     }
@@ -242,45 +261,68 @@ unsigned int CAEEncoderFFmpeg::GetFrames()
 
 int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_size)
 {
-  int got_output;
-  AVFrame *frame;
+  int size = 0;
+  int err = AVERROR_UNKNOWN;
+  AVFrame* frame = nullptr;
+  AVPacket* pkt = nullptr;
 
   if (!m_CodecCtx)
-    return 0;
+    return size;
 
-  /* allocate the input frame
-   * sadly, we have to alloc/dealloc it everytime since we have no guarantee the
-   * data argument will be constant over iterated calls and the frame needs to
-   * setup pointers inside data */
-  frame = av_frame_alloc();
-  if (!frame)
-    return 0;
-
-  frame->nb_samples = m_CodecCtx->frame_size;
-  frame->format = m_CodecCtx->sample_fmt;
-  frame->channel_layout = m_CodecCtx->channel_layout;
-  frame->channels = m_CodecCtx->channels;
-
-  avcodec_fill_audio_frame(frame, m_CodecCtx->channels, m_CodecCtx->sample_fmt,
-                    in, in_size, 0);
-
-  /* initialize the output packet */
-  AVPacket* pkt = av_packet_alloc();
-  if (!pkt)
+  try
   {
-    CLog::Log(LOGERROR, "CAEEncoderFFmpeg::{} - av_packet_alloc failed: {}", __FUNCTION__,
-              strerror(errno));
-    av_frame_free(&frame);
-    return 0;
+    /* allocate the input frame and output packet
+     * sadly, we have to alloc/dealloc it everytime since we have no guarantee the
+     * data argument will be constant over iterated calls and the frame needs to
+     * setup pointers inside data */
+    frame = av_frame_alloc();
+    pkt = av_packet_alloc();
+    if (!frame || !pkt)
+      throw FFMpegException(
+          "Failed to allocate \"AVFrame\" or \"AVPacket\" for encoding (error '{}')",
+          strerror(errno));
+
+    frame->nb_samples = m_CodecCtx->frame_size;
+    frame->format = m_CodecCtx->sample_fmt;
+    av_channel_layout_uninit(&frame->ch_layout);
+    av_channel_layout_copy(&frame->ch_layout, &m_CodecCtx->ch_layout);
+    int channelNum = m_CodecCtx->ch_layout.nb_channels;
+
+    avcodec_fill_audio_frame(frame, channelNum, m_CodecCtx->sample_fmt, in, in_size, 0);
+
+    pkt->size = out_size;
+    pkt->data = out;
+
+    /* encode it */
+    err = avcodec_send_frame(m_CodecCtx, frame);
+    if (err < 0)
+      throw FFMpegException("Error sending a frame for encoding (error '{}')",
+                            FFMpegErrorToString(err));
+
+    while (err >= 0)
+    {
+      err = avcodec_receive_packet(m_CodecCtx, pkt);
+      if (err == AVERROR(EAGAIN) || err == AVERROR_EOF)
+      {
+        av_channel_layout_uninit(&frame->ch_layout);
+        av_frame_free(&frame);
+        av_packet_free(&pkt);
+        return (err == AVERROR(EAGAIN)) ? -1 : 0;
+      }
+      else if (err < 0)
+      {
+        throw FFMpegException("Error during encoding (error '{}')", FFMpegErrorToString(err));
+      }
+
+      av_packet_unref(pkt);
+    }
+
+    size = pkt->size;
   }
-
-  pkt->size = out_size;
-  pkt->data = out;
-
-  /* encode it */
-  int ret = avcodec_encode_audio2(m_CodecCtx, pkt, frame, &got_output);
-
-  int size = pkt->size;
+  catch (const FFMpegException& caught)
+  {
+    CLog::Log(LOGERROR, "CAEEncoderFFmpeg::{} - {}", __func__, caught.what());
+  }
 
   /* free temporary data */
   av_frame_free(&frame);
@@ -288,16 +330,9 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
   /* free the packet */
   av_packet_free(&pkt);
 
-  if (ret < 0 || !got_output)
-  {
-    CLog::Log(LOGERROR, "CAEEncoderFFmpeg::Encode - Encoding failed");
-    return 0;
-  }
-
   /* return the number of frames used */
   return size;
 }
-
 
 int CAEEncoderFFmpeg::GetData(uint8_t **data)
 {

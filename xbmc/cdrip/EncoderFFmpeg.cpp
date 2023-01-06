@@ -11,6 +11,7 @@
 #include "ServiceBroker.h"
 #include "addons/Addon.h"
 #include "addons/AddonManager.h"
+#include "cores/FFmpeg.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
@@ -19,23 +20,8 @@
 #include "utils/log.h"
 
 using namespace KODI::CDRIP;
-
-namespace
-{
-
-struct EncoderException : public std::exception
-{
-  std::string s;
-  template<typename... Args>
-  EncoderException(const std::string& fmt, Args&&... args)
-    : s(StringUtils::Format(fmt, std::forward<Args>(args)...))
-  {
-  }
-  ~EncoderException() throw() {} // Updated
-  const char* what() const throw() { return s.c_str(); }
-};
-
-} /* namespace */
+using FFMPEG_HELP_TOOLS::FFMpegErrorToString;
+using FFMPEG_HELP_TOOLS::FFMpegException;
 
 bool CEncoderFFmpeg::Init()
 {
@@ -54,7 +40,7 @@ bool CEncoderFFmpeg::Init()
     }
     else
     {
-      throw EncoderException("Could not get add-on: {}", addonId);
+      throw FFMpegException("Could not get add-on: {}", addonId);
     }
 
     // Hack fix about PTS on generated files.
@@ -66,50 +52,50 @@ bool CEncoderFFmpeg::Init()
     else if (addonId == "audioencoder.kodi.builtin.wma")
       m_samplesCountMultiply = 1000;
     else
-      throw EncoderException("Internal add-on id \"{}\" not known as usable", addonId);
+      throw FFMpegException("Internal add-on id \"{}\" not known as usable", addonId);
 
     const std::string filename = URIUtils::GetFileName(m_strFile);
 
     m_formatCtx = avformat_alloc_context();
     if (!m_formatCtx)
-      throw EncoderException("Could not allocate output format context");
+      throw FFMpegException("Could not allocate output format context");
 
     m_bcBuffer = static_cast<uint8_t*>(av_malloc(BUFFER_SIZE + AV_INPUT_BUFFER_PADDING_SIZE));
     if (!m_bcBuffer)
-      throw EncoderException("Could not allocate buffer");
+      throw FFMpegException("Could not allocate buffer");
 
     m_formatCtx->pb = avio_alloc_context(m_bcBuffer, BUFFER_SIZE, AVIO_FLAG_WRITE, this, nullptr,
                                          avio_write_callback, avio_seek_callback);
     if (!m_formatCtx->pb)
-      throw EncoderException("Failed to allocate ByteIOContext");
+      throw FFMpegException("Failed to allocate ByteIOContext");
 
     /* Guess the desired container format based on the file extension. */
     m_formatCtx->oformat = av_guess_format(nullptr, filename.c_str(), nullptr);
     if (!m_formatCtx->oformat)
-      throw EncoderException("Could not find output file format");
+      throw FFMpegException("Could not find output file format");
 
     m_formatCtx->url = av_strdup(filename.c_str());
     if (!m_formatCtx->url)
-      throw EncoderException("Could not allocate url");
+      throw FFMpegException("Could not allocate url");
 
     /* Find the encoder to be used by its name. */
-    AVCodec* codec = avcodec_find_encoder(m_formatCtx->oformat->audio_codec);
+    const AVCodec* codec = avcodec_find_encoder(m_formatCtx->oformat->audio_codec);
     if (!codec)
-      throw EncoderException("Unable to find a suitable FFmpeg encoder");
+      throw FFMpegException("Unable to find a suitable FFmpeg encoder");
 
     /* Create a new audio stream in the output file container. */
     m_stream = avformat_new_stream(m_formatCtx, nullptr);
     if (!m_stream)
-      throw EncoderException("Failed to allocate AVStream context");
+      throw FFMpegException("Failed to allocate AVStream context");
 
     m_codecCtx = avcodec_alloc_context3(codec);
     if (!m_codecCtx)
-      throw EncoderException("Failed to allocate the encoder context");
+      throw FFMpegException("Failed to allocate the encoder context");
 
     /* Set the basic encoder parameters.
      * The input file's sample rate is used to avoid a sample rate conversion. */
-    m_codecCtx->channels = m_iInChannels;
-    m_codecCtx->channel_layout = av_get_default_channel_layout(m_iInChannels);
+    av_channel_layout_uninit(&m_codecCtx->ch_layout);
+    av_channel_layout_default(&m_codecCtx->ch_layout, m_iInChannels);
     m_codecCtx->sample_rate = m_iInSampleRate;
     m_codecCtx->sample_fmt = codec->sample_fmts[0];
     m_codecCtx->bit_rate = bitrate;
@@ -128,14 +114,14 @@ bool CEncoderFFmpeg::Init()
 
     int err = avcodec_open2(m_codecCtx, codec, nullptr);
     if (err < 0)
-      throw EncoderException("Failed to open the codec {} (error '{}')",
-                             codec->long_name ? codec->long_name : codec->name,
-                             FFmpegErrorToString(err));
+      throw FFMpegException("Failed to open the codec {} (error '{}')",
+                            codec->long_name ? codec->long_name : codec->name,
+                            FFMpegErrorToString(err));
 
     err = avcodec_parameters_from_context(m_stream->codecpar, m_codecCtx);
     if (err < 0)
-      throw EncoderException("Failed to copy encoder parameters to output stream (error '{}')",
-                             FFmpegErrorToString(err));
+      throw FFMpegException("Failed to copy encoder parameters to output stream (error '{}')",
+                            FFMpegErrorToString(err));
 
     m_inFormat = GetInputFormat(m_iInBitsPerSample);
     m_outFormat = m_codecCtx->sample_fmt;
@@ -150,44 +136,48 @@ bool CEncoderFFmpeg::Init()
 
     m_bufferFrame = av_frame_alloc();
     if (!m_bufferFrame || !m_buffer)
-      throw EncoderException("Failed to allocate necessary buffers");
+      throw FFMpegException("Failed to allocate necessary buffers");
 
     m_bufferFrame->nb_samples = m_codecCtx->frame_size;
     m_bufferFrame->format = m_inFormat;
-    m_bufferFrame->channel_layout = m_codecCtx->channel_layout;
+
+    av_channel_layout_uninit(&m_bufferFrame->ch_layout);
+    av_channel_layout_copy(&m_bufferFrame->ch_layout, &m_codecCtx->ch_layout);
+
     m_bufferFrame->sample_rate = m_codecCtx->sample_rate;
 
     err = av_frame_get_buffer(m_bufferFrame, 0);
     if (err < 0)
-      throw EncoderException("Could not allocate output frame samples (error '{}')",
-                             FFmpegErrorToString(err));
+      throw FFMpegException("Could not allocate output frame samples (error '{}')",
+                            FFMpegErrorToString(err));
 
     avcodec_fill_audio_frame(m_bufferFrame, m_iInChannels, m_inFormat, m_buffer, m_neededBytes, 0);
 
     if (m_needConversion)
     {
-      m_swrCtx = swr_alloc_set_opts(nullptr, m_codecCtx->channel_layout, m_outFormat,
-                                    m_codecCtx->sample_rate, m_codecCtx->channel_layout, m_inFormat,
+      int ret = swr_alloc_set_opts2(&m_swrCtx, &m_codecCtx->ch_layout, m_outFormat,
+                                    m_codecCtx->sample_rate, &m_codecCtx->ch_layout, m_inFormat,
                                     m_codecCtx->sample_rate, 0, nullptr);
-      if (!m_swrCtx || swr_init(m_swrCtx) < 0)
-        throw EncoderException("Failed to initialize the resampler");
+      if (ret || swr_init(m_swrCtx) < 0)
+        throw FFMpegException("Failed to initialize the resampler");
 
       m_resampledBufferSize =
           av_samples_get_buffer_size(nullptr, m_iInChannels, m_neededFrames, m_outFormat, 0);
       m_resampledBuffer = static_cast<uint8_t*>(av_malloc(m_resampledBufferSize));
       m_resampledFrame = av_frame_alloc();
       if (!m_resampledBuffer || !m_resampledFrame)
-        throw EncoderException("Failed to allocate a frame for resampling");
+        throw FFMpegException("Failed to allocate a frame for resampling");
 
       m_resampledFrame->nb_samples = m_neededFrames;
       m_resampledFrame->format = m_outFormat;
-      m_resampledFrame->channel_layout = m_codecCtx->channel_layout;
+      av_channel_layout_uninit(&m_resampledFrame->ch_layout);
+      av_channel_layout_copy(&m_resampledFrame->ch_layout, &m_codecCtx->ch_layout);
       m_resampledFrame->sample_rate = m_codecCtx->sample_rate;
 
       err = av_frame_get_buffer(m_resampledFrame, 0);
       if (err < 0)
-        throw EncoderException("Could not allocate output resample frame samples (error '{}')",
-                               FFmpegErrorToString(err));
+        throw FFMpegException("Could not allocate output resample frame samples (error '{}')",
+                              FFMpegErrorToString(err));
 
       avcodec_fill_audio_frame(m_resampledFrame, m_iInChannels, m_outFormat, m_resampledBuffer,
                                m_resampledBufferSize, 0);
@@ -204,7 +194,7 @@ bool CEncoderFFmpeg::Init()
     /* write the header */
     err = avformat_write_header(m_formatCtx, nullptr);
     if (err != 0)
-      throw EncoderException("Failed to write the header (error '{}')", FFmpegErrorToString(err));
+      throw FFMpegException("Failed to write the header (error '{}')", FFMpegErrorToString(err));
 
     CLog::Log(LOGDEBUG, "CEncoderFFmpeg::{} - Successfully initialized with muxer {} and codec {}",
               __func__,
@@ -212,16 +202,19 @@ bool CEncoderFFmpeg::Init()
                                               : m_formatCtx->oformat->name,
               codec->long_name ? codec->long_name : codec->name);
   }
-  catch (EncoderException& caught)
+  catch (const FFMpegException& caught)
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::{} - {}", __func__, caught.what());
 
     av_freep(&m_buffer);
+    av_channel_layout_uninit(&m_bufferFrame->ch_layout);
     av_frame_free(&m_bufferFrame);
     swr_free(&m_swrCtx);
+    av_channel_layout_uninit(&m_resampledFrame->ch_layout);
     av_frame_free(&m_resampledFrame);
     av_freep(&m_resampledBuffer);
     av_free(m_bcBuffer);
+    av_channel_layout_uninit(&m_codecCtx->ch_layout);
     avcodec_free_context(&m_codecCtx);
     if (m_formatCtx)
     {
@@ -299,7 +292,7 @@ bool CEncoderFFmpeg::WriteFrame()
       if (swr_convert(m_swrCtx, m_resampledFrame->data, m_neededFrames,
                       const_cast<const uint8_t**>(m_bufferFrame->extended_data),
                       m_neededFrames) < 0)
-        throw EncoderException("Error resampling audio");
+        throw FFMpegException("Error resampling audio");
 
       frame = m_resampledFrame;
     }
@@ -316,8 +309,8 @@ bool CEncoderFFmpeg::WriteFrame()
     m_bufferSize = 0;
     err = avcodec_send_frame(m_codecCtx, frame);
     if (err < 0)
-      throw EncoderException("Error sending a frame for encoding (error '{}')", __func__,
-                             FFmpegErrorToString(err));
+      throw FFMpegException("Error sending a frame for encoding (error '{}')",
+                            FFMpegErrorToString(err));
 
     while (err >= 0)
     {
@@ -329,19 +322,18 @@ bool CEncoderFFmpeg::WriteFrame()
       }
       else if (err < 0)
       {
-        throw EncoderException("Error during encoding (error '{}')", __func__,
-                               FFmpegErrorToString(err));
+        throw FFMpegException("Error during encoding (error '{}')", FFMpegErrorToString(err));
       }
 
       err = av_write_frame(m_formatCtx, pkt);
       if (err < 0)
-        throw EncoderException("Failed to write the frame data (error '{}')", __func__,
-                               FFmpegErrorToString(err));
+        throw FFMpegException("Failed to write the frame data (error '{}')",
+                              FFMpegErrorToString(err));
 
       av_packet_unref(pkt);
     }
   }
-  catch (EncoderException& caught)
+  catch (const FFMpegException& caught)
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::{} - {}", __func__, caught.what());
   }
@@ -366,8 +358,10 @@ bool CEncoderFFmpeg::Close()
 
     /* Flush if needed */
     av_freep(&m_buffer);
+    av_channel_layout_uninit(&m_bufferFrame->ch_layout);
     av_frame_free(&m_bufferFrame);
     swr_free(&m_swrCtx);
+    av_channel_layout_uninit(&m_resampledFrame->ch_layout);
     av_frame_free(&m_resampledFrame);
     av_freep(&m_resampledBuffer);
     m_needConversion = false;
@@ -379,6 +373,7 @@ bool CEncoderFFmpeg::Close()
 
     /* cleanup */
     av_free(m_bcBuffer);
+    av_channel_layout_uninit(&m_codecCtx->ch_layout);
     avcodec_free_context(&m_codecCtx);
     av_freep(&m_formatCtx->pb);
     avformat_free_context(m_formatCtx);
@@ -400,14 +395,6 @@ AVSampleFormat CEncoderFFmpeg::GetInputFormat(int inBitsPerSample)
     case 32:
       return AV_SAMPLE_FMT_S32;
     default:
-      throw EncoderException("Invalid input bits per sample");
+      throw FFMpegException("Invalid input bits per sample");
   }
-}
-
-std::string CEncoderFFmpeg::FFmpegErrorToString(int err)
-{
-  std::string text;
-  text.reserve(AV_ERROR_MAX_STRING_SIZE);
-  av_strerror(err, text.data(), AV_ERROR_MAX_STRING_SIZE);
-  return text;
 }

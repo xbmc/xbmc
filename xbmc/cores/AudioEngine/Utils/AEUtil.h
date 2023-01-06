@@ -13,6 +13,7 @@
 #include <math.h>
 
 extern "C" {
+#include <libavutil/channel_layout.h>
 #include <libavutil/samplefmt.h>
 }
 
@@ -171,6 +172,7 @@ public:
   static uint64_t GetAVChannelLayout(const CAEChannelInfo &info);
   static CAEChannelInfo GetAEChannelLayout(uint64_t layout);
   static AVSampleFormat GetAVSampleFormat(AEDataFormat format);
-  static uint64_t GetAVChannel(enum AEChannel aechannel);
+  static uint64_t GetAVChannelMask(enum AEChannel aechannel);
+  static enum AVChannel GetAVChannel(enum AEChannel aechannel);
   static int GetAVChannelIndex(enum AEChannel aechannel, uint64_t layout);
 };

@@ -118,6 +118,8 @@ void CDVDVideoPPFFmpeg::Process(VideoPicture* pPicture)
                  m_pMode, m_pContext,
                  pSource->pict_type | pSource->qscale_type ? PP_PICT_TYPE_QP2 : 0);
 
+  // https://github.com/FFmpeg/FFmpeg/blob/991d417692/doc/APIchanges#L18-L20
+  av_free(pSource->qp_table);
 
   pPicture->SetParams(*pSource);
   if (pPicture->videoBuffer)
