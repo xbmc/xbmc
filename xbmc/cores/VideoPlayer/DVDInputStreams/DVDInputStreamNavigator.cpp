@@ -1148,7 +1148,9 @@ bool CDVDInputStreamNavigator::SetAngle(int angle)
   return (status == DVDNAV_STATUS_OK);
 }
 
-bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType)
+bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu& pOverlayPicture,
+                                                    CDVDDemuxSPU* pSPU,
+                                                    int iButtonType)
 {
   int colorAndAlpha[4][4];
   dvdnav_highlight_area_t hl;
@@ -1168,10 +1170,10 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPict
                               m_dll.dvdnav_get_current_nav_pci(m_dvdnav), button, iButtonType, &hl))
   {
     // button cropping information
-    pOverlayPicture->crop_i_x_start = hl.sx;
-    pOverlayPicture->crop_i_x_end = hl.ex;
-    pOverlayPicture->crop_i_y_start = hl.sy;
-    pOverlayPicture->crop_i_y_end = hl.ey;
+    pOverlayPicture.crop_i_x_start = hl.sx;
+    pOverlayPicture.crop_i_x_end = hl.ex;
+    pOverlayPicture.crop_i_y_start = hl.sy;
+    pOverlayPicture.crop_i_y_end = hl.ey;
   }
 
   if (pSPU->m_bHasClut)
@@ -1190,9 +1192,9 @@ bool CDVDInputStreamNavigator::GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPict
 
     for (int i = 0; i < 4; i++)
     {
-      pOverlayPicture->highlight_alpha[i] = colorAndAlpha[i][3];
+      pOverlayPicture.highlight_alpha[i] = colorAndAlpha[i][3];
       for (int j = 0; j < 3; j++)
-        pOverlayPicture->highlight_color[i][j] = colorAndAlpha[i][j];
+        pOverlayPicture.highlight_color[i][j] = colorAndAlpha[i][j];
     }
   }
 
