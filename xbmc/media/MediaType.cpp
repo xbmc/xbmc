@@ -17,10 +17,11 @@ static std::map<std::string, CMediaTypes::MediaTypeInfo> fillDefaultMediaTypes()
 {
   std::map<std::string, CMediaTypes::MediaTypeInfo> mediaTypes;
 
+  // clang-format off
   mediaTypes.insert(std::make_pair(MediaTypeMusic,            CMediaTypes::MediaTypeInfo(MediaTypeMusic,           MediaTypeMusic,               true,  36914, 36915,   249,   249)));
   mediaTypes.insert(std::make_pair(MediaTypeArtist,           CMediaTypes::MediaTypeInfo(MediaTypeArtist,          MediaTypeArtist "s",          true,  36916, 36917,   557,   133)));
   mediaTypes.insert(std::make_pair(MediaTypeAlbum,            CMediaTypes::MediaTypeInfo(MediaTypeAlbum,           MediaTypeAlbum "s",           true,  36918, 36919,   558,   132)));
-  mediaTypes.insert(std::make_pair(MediaTypeSong,             CMediaTypes::MediaTypeInfo(MediaTypeSong,            MediaTypeSong "s",            false, 36920, 36921,   172,   134)));
+  mediaTypes.insert(std::make_pair(MediaTypeSong,             CMediaTypes::MediaTypeInfo(MediaTypeSong,            MediaTypeSong "s",            false, 36920, 36921,   179,   134)));
   mediaTypes.insert(std::make_pair(MediaTypeVideo,            CMediaTypes::MediaTypeInfo(MediaTypeVideo,           MediaTypeVideo "s",           true,  36912, 36913,   291,     3)));
   mediaTypes.insert(std::make_pair(MediaTypeVideoCollection,  CMediaTypes::MediaTypeInfo(MediaTypeVideoCollection, MediaTypeVideoCollection "s", true,  36910, 36911, 20141, 20434)));
   mediaTypes.insert(std::make_pair(MediaTypeMusicVideo,       CMediaTypes::MediaTypeInfo(MediaTypeMusicVideo,      MediaTypeMusicVideo "s",      false, 36908, 36909, 20391, 20389)));
@@ -28,6 +29,7 @@ static std::map<std::string, CMediaTypes::MediaTypeInfo> fillDefaultMediaTypes()
   mediaTypes.insert(std::make_pair(MediaTypeTvShow,           CMediaTypes::MediaTypeInfo(MediaTypeTvShow,          MediaTypeTvShow "s",          true,  36902, 36903, 36902, 36903)));
   mediaTypes.insert(std::make_pair(MediaTypeSeason,           CMediaTypes::MediaTypeInfo(MediaTypeSeason,          MediaTypeSeason "s",          true,  36904, 36905, 20373, 33054)));
   mediaTypes.insert(std::make_pair(MediaTypeEpisode,          CMediaTypes::MediaTypeInfo(MediaTypeEpisode,         MediaTypeEpisode "s",         false, 36906, 36907, 20359, 20360)));
+  // clang-format on
 
   return mediaTypes;
 }
