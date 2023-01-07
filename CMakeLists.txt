@@ -10,6 +10,11 @@ if(POLICY CMP0069)
   cmake_policy(SET CMP0069 NEW)
 endif()
 
+if(POLICY CMP0135)
+  set(CMAKE_POLICY_DEFAULT_CMP0135 NEW)
+  cmake_policy(SET CMP0135 NEW)
+endif()
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules/buildtools)
 if(DEPENDS_DIR)
