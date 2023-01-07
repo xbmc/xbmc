@@ -159,7 +159,7 @@ static void LoadTexture(GLenum target
   *v = (GLfloat)height / height2;
 }
 
-COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o, CRect& rSource)
+COverlayTextureGL::COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource)
 {
   glGenTextures(1, &m_texture);
   glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -169,29 +169,29 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o, CRect& rSource)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  if (o->palette.empty())
+  if (o.palette.empty())
   {
     m_pma = false;
-    uint32_t* rgba = reinterpret_cast<uint32_t*>(o->pixels.data());
-    LoadTexture(GL_TEXTURE_2D, o->width, o->height, o->linesize, &m_u, &m_v, false, rgba);
+    const uint32_t* rgba = reinterpret_cast<const uint32_t*>(o.pixels.data());
+    LoadTexture(GL_TEXTURE_2D, o.width, o.height, o.linesize, &m_u, &m_v, false, rgba);
   }
   else
   {
-    std::vector<uint32_t> rgba(o->width * o->height);
+    std::vector<uint32_t> rgba(o.width * o.height);
     m_pma = !!USE_PREMULTIPLIED_ALPHA;
     convert_rgba(o, m_pma, rgba);
-    LoadTexture(GL_TEXTURE_2D, o->width, o->height, o->width * 4, &m_u, &m_v, false, rgba.data());
+    LoadTexture(GL_TEXTURE_2D, o.width, o.height, o.width * 4, &m_u, &m_v, false, rgba.data());
   }
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
-  if (o->source_width > 0 && o->source_height > 0)
+  if (o.source_width > 0 && o.source_height > 0)
   {
     m_pos = POSITION_RELATIVE;
-    m_x = (0.5f * o->width + o->x) / o->source_width;
-    m_y = (0.5f * o->height + o->y) / o->source_height;
+    m_x = (0.5f * o.width + o.x) / o.source_width;
+    m_y = (0.5f * o.height + o.y) / o.source_height;
 
-    const float subRatio{static_cast<float>(o->source_width) / o->source_height};
+    const float subRatio{static_cast<float>(o.source_width) / o.source_height};
     const float vidRatio{rSource.Width() / rSource.Height()};
 
     // We always consider aligning 4/3 subtitles to the video,
@@ -200,8 +200,8 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o, CRect& rSource)
     if (std::fabs(subRatio - vidRatio) < 0.001f || IsSquareResolution(subRatio))
     {
       m_align = ALIGN_VIDEO;
-      m_width = static_cast<float>(o->width) / o->source_width;
-      m_height = static_cast<float>(o->height) / o->source_height;
+      m_width = static_cast<float>(o.width) / o.source_width;
+      m_height = static_cast<float>(o.height) / o.source_height;
     }
     else
     {
@@ -209,27 +209,27 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlayImage* o, CRect& rSource)
       // Then we cannot align to video otherwise the subtitles will be deformed
       // better align to screen by keeping the aspect-ratio.
       m_align = ALIGN_SCREEN_AR;
-      m_width = static_cast<float>(o->width);
-      m_height = static_cast<float>(o->height);
-      m_source_width = static_cast<float>(o->source_width);
-      m_source_height = static_cast<float>(o->source_height);
+      m_width = static_cast<float>(o.width);
+      m_height = static_cast<float>(o.height);
+      m_source_width = static_cast<float>(o.source_width);
+      m_source_height = static_cast<float>(o.source_height);
     }
   }
   else
   {
     m_align = ALIGN_VIDEO;
     m_pos = POSITION_ABSOLUTE;
-    m_x = static_cast<float>(o->x);
-    m_y = static_cast<float>(o->y);
-    m_width = static_cast<float>(o->width);
-    m_height = static_cast<float>(o->height);
+    m_x = static_cast<float>(o.x);
+    m_y = static_cast<float>(o.y);
+    m_width = static_cast<float>(o.width);
+    m_height = static_cast<float>(o.height);
   }
 }
 
-COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
+COverlayTextureGL::COverlayTextureGL(const CDVDOverlaySpu& o)
 {
   int min_x, max_x, min_y, max_y;
-  std::vector<uint32_t> rgba(o->width * o->height);
+  std::vector<uint32_t> rgba(o.width * o.height);
 
   convert_rgba(o, USE_PREMULTIPLIED_ALPHA, min_x, max_x, min_y, max_y, rgba);
 
@@ -241,15 +241,15 @@ COverlayTextureGL::COverlayTextureGL(CDVDOverlaySpu* o)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  LoadTexture(GL_TEXTURE_2D, max_x - min_x, max_y - min_y, o->width * 4, &m_u, &m_v, false,
-              rgba.data() + min_x + min_y * o->width);
+  LoadTexture(GL_TEXTURE_2D, max_x - min_x, max_y - min_y, o.width * 4, &m_u, &m_v, false,
+              rgba.data() + min_x + min_y * o.width);
 
   glBindTexture(GL_TEXTURE_2D, 0);
 
   m_align = ALIGN_VIDEO;
   m_pos = POSITION_ABSOLUTE;
-  m_x = static_cast<float>(min_x + o->x);
-  m_y = static_cast<float>(min_y + o->y);
+  m_x = static_cast<float>(min_x + o.x);
+  m_y = static_cast<float>(min_y + o.y);
   m_width = static_cast<float>(max_x - min_x);
   m_height = static_cast<float>(max_y - min_y);
   m_pma = !!USE_PREMULTIPLIED_ALPHA;

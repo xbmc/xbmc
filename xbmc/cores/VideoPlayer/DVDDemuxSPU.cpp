@@ -497,7 +497,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
     if (!pSPU->bHasColor)
     {
       CLog::Log(LOGINFO, "{} - no color palette found, using default", __FUNCTION__);
-      FindSubtitleColor(i_border, stats, pSPU.get());
+      FindSubtitleColor(i_border, stats, *pSPU);
     }
 
     // check alpha values, for non forced spu's we use a default value
@@ -532,7 +532,7 @@ std::shared_ptr<CDVDOverlaySpu> CDVDDemuxSPU::ParseRLE(std::shared_ptr<CDVDOverl
   return pSPU;
 }
 
-void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySpu* pSPU)
+void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySpu& pSPU)
 {
   const int COLOR_INNER = 0;
   const int COLOR_SHADE = 1;
@@ -558,7 +558,7 @@ void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySp
 
 
   int nrOfUsedColors = 0;
-  for (int alpha : pSPU->alpha)
+  for (int alpha : pSPU.alpha)
   {
     if (alpha > 0) nrOfUsedColors++;
   }
@@ -573,11 +573,11 @@ void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySp
     // only one color is used, probably the inner color
     for (int i = 0; i < 4; i++) // find the position that is used
     {
-      if (pSPU->alpha[i] > 0)
+      if (pSPU.alpha[i] > 0)
       {
-        pSPU->color[i][0] = custom_subtitle_color[COLOR_INNER][0]; // Y
-        pSPU->color[i][1] = custom_subtitle_color[COLOR_INNER][1]; // Cr ?
-        pSPU->color[i][2] = custom_subtitle_color[COLOR_INNER][2]; // Cb ?
+        pSPU.color[i][0] = custom_subtitle_color[COLOR_INNER][0]; // Y
+        pSPU.color[i][1] = custom_subtitle_color[COLOR_INNER][1]; // Cr ?
+        pSPU.color[i][2] = custom_subtitle_color[COLOR_INNER][2]; // Cb ?
         return;
       }
     }
@@ -591,9 +591,9 @@ void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySp
     {
       int i, i_inner = -1, i_shade = -1;
       // Set the border color, the last color is probably the border color
-      pSPU->color[last_color][0] = custom_subtitle_color[COLOR_BORDER][0];
-      pSPU->color[last_color][1] = custom_subtitle_color[COLOR_BORDER][1];
-      pSPU->color[last_color][2] = custom_subtitle_color[COLOR_BORDER][2];
+      pSPU.color[last_color][0] = custom_subtitle_color[COLOR_BORDER][0];
+      pSPU.color[last_color][1] = custom_subtitle_color[COLOR_BORDER][1];
+      pSPU.color[last_color][2] = custom_subtitle_color[COLOR_BORDER][2];
       stats[last_color] = 0;
 
     // find the inner colors
@@ -626,18 +626,18 @@ void CDVDDemuxSPU::FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySp
     if ( i_inner != -1 )
     {
       // white color
-        pSPU->color[i_inner][0] = custom_subtitle_color[COLOR_INNER][0]; // Y
-        pSPU->color[i_inner][1] = custom_subtitle_color[COLOR_INNER][1]; // Cr ?
-        pSPU->color[i_inner][2] = custom_subtitle_color[COLOR_INNER][2]; // Cb ?
+      pSPU.color[i_inner][1] = custom_subtitle_color[COLOR_INNER][1]; // Cr ?
+      pSPU.color[i_inner][2] = custom_subtitle_color[COLOR_INNER][2]; // Cb ?
+      pSPU.color[i_inner][0] = custom_subtitle_color[COLOR_INNER][0]; // Y
     }
 
     /* Set the anti-aliasing color */
     if ( i_shade != -1 )
     {
       // gray
-        pSPU->color[i_shade][0] = custom_subtitle_color[COLOR_SHADE][0];
-        pSPU->color[i_shade][1] = custom_subtitle_color[COLOR_SHADE][1];
-        pSPU->color[i_shade][2] = custom_subtitle_color[COLOR_SHADE][2];
+      pSPU.color[i_shade][0] = custom_subtitle_color[COLOR_SHADE][0];
+      pSPU.color[i_shade][1] = custom_subtitle_color[COLOR_SHADE][1];
+      pSPU.color[i_shade][2] = custom_subtitle_color[COLOR_SHADE][2];
     }
 
       DebugLog("ParseRLE: using custom palette (border %i, inner %i, shade %i)", last_color, i_inner, i_shade);

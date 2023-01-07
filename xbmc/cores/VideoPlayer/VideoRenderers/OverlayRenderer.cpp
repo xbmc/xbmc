@@ -153,7 +153,7 @@ void CRenderer::Render(int idx)
   {
     if (it->overlay_dvd)
     {
-      std::shared_ptr<COverlay> o = Convert(it->overlay_dvd.get(), it->pts);
+      std::shared_ptr<COverlay> o = Convert(*(it->overlay_dvd), it->pts);
 
       if (o)
         Render(o.get());
@@ -407,7 +407,7 @@ void CRenderer::CreateSubtitlesStyle()
 }
 
 std::shared_ptr<COverlay> CRenderer::ConvertLibass(
-    CDVDOverlayLibass* o,
+    CDVDOverlayLibass& o,
     double pts,
     bool updateStyle,
     const std::shared_ptr<struct SUBTITLES::STYLE::style>& overlayStyle)
@@ -464,7 +464,7 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
   // positions to subtitles type that make use of margins to position text on
   // the screen (e.g. ASS/WebVTT) then we allow to set them when position
   // override setting is enabled only
-  if (o->IsForcedMargins())
+  if (o.IsForcedMargins())
   {
     rOpts.marginsMode = SUBTITLES::STYLE::MarginsMode::DISABLED;
   }
@@ -479,7 +479,7 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
     // default position of the text, different from the other alignment positions
     double posPx = static_cast<double>(m_subtitlePosition - resInfo.Overscan.top);
 
-    int assPlayResY = o->GetLibassHandler()->GetPlayResY();
+    int assPlayResY = o.GetLibassHandler()->GetPlayResY();
     double assVertMargin = static_cast<double>(overlayStyle->marginVertical) *
                            (static_cast<double>(assPlayResY) / 720);
     double vertMarginScaled = assVertMargin / assPlayResY * static_cast<double>(rOpts.frameHeight);
@@ -503,7 +503,7 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
 
   // Set the horizontal text alignment (currently used to improve readability on CC subtitles only)
   // This setting influence style->alignment property
-  if (o->IsTextAlignEnabled())
+  if (o.IsTextAlignEnabled())
   {
     if (m_subtitleHorizontalAlign == SUBTITLES::HorizontalAlign::LEFT)
       rOpts.horizontalAlignment = SUBTITLES::STYLE::HorizontalAlign::LEFT;
@@ -516,18 +516,18 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
   // changes: Detect changes from previously rendered images, if > 0 they are changed
   int changes = 0;
   ASS_Image* images =
-      o->GetLibassHandler()->RenderImage(pts, rOpts, updateStyle, overlayStyle, &changes);
+      o.GetLibassHandler()->RenderImage(pts, rOpts, updateStyle, overlayStyle, &changes);
 
   // If no images not execute the renderer
   if (!images)
     return nullptr;
 
-  if (o->m_textureid)
+  if (o.m_textureid)
   {
     if (changes == 0)
     {
       std::map<unsigned int, std::shared_ptr<COverlay>>::iterator it =
-          m_textureCache.find(o->m_textureid);
+          m_textureCache.find(o.m_textureid);
       if (it != m_textureCache.end())
         return it->second;
     }
@@ -541,19 +541,19 @@ std::shared_ptr<COverlay> CRenderer::ConvertLibass(
 #endif
 
   m_textureCache[m_textureid] = overlay;
-  o->m_textureid = m_textureid;
+  o.m_textureid = m_textureid;
   m_textureid++;
   return overlay;
 }
 
-std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay* o, double pts)
+std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay& o, double pts)
 {
   std::shared_ptr<COverlay> r = NULL;
 
-  if (o->IsOverlayType(DVDOVERLAY_TYPE_TEXT) || o->IsOverlayType(DVDOVERLAY_TYPE_SSA))
+  if (o.IsOverlayType(DVDOVERLAY_TYPE_TEXT) || o.IsOverlayType(DVDOVERLAY_TYPE_SSA))
   {
-    CDVDOverlayLibass* ovAss = static_cast<CDVDOverlayLibass*>(o);
-    if (!ovAss || !ovAss->GetLibassHandler())
+    CDVDOverlayLibass& ovAss = static_cast<CDVDOverlayLibass&>(o);
+    if (!ovAss.GetLibassHandler())
       return nullptr;
     bool updateStyle = !m_overlayStyle || m_isSettingsChanged;
     if (updateStyle)
@@ -568,10 +568,10 @@ std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay* o, double pts)
     if (!r)
       return nullptr;
   }
-  else if (o->m_textureid)
+  else if (o.m_textureid)
   {
     std::map<unsigned int, std::shared_ptr<COverlay>>::iterator it =
-        m_textureCache.find(o->m_textureid);
+        m_textureCache.find(o.m_textureid);
     if (it != m_textureCache.end())
       r = it->second;
   }
@@ -582,19 +582,19 @@ std::shared_ptr<COverlay> CRenderer::Convert(CDVDOverlay* o, double pts)
   }
 
 #if defined(HAS_GL) || defined(HAS_GLES)
-  if (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
-    r = std::make_shared<COverlayTextureGL>(static_cast<CDVDOverlayImage*>(o), m_rs);
-  else if (o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
-    r = std::make_shared<COverlayTextureGL>(static_cast<CDVDOverlaySpu*>(o));
+  if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
+    r = std::make_shared<COverlayTextureGL>(static_cast<CDVDOverlayImage&>(o), m_rs);
+  else if (o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
+    r = std::make_shared<COverlayTextureGL>(static_cast<CDVDOverlaySpu&>(o));
 #elif defined(HAS_DX)
-  if (o->IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
-    r = std::make_shared<COverlayImageDX>(static_cast<CDVDOverlayImage*>(o), m_rs);
-  else if (o->IsOverlayType(DVDOVERLAY_TYPE_SPU))
-    r = std::make_shared<COverlayImageDX>(static_cast<CDVDOverlaySpu*>(o));
+  if (o.IsOverlayType(DVDOVERLAY_TYPE_IMAGE))
+    r = std::make_shared<COverlayImageDX>(static_cast<CDVDOverlayImage&>(o), m_rs);
+  else if (o.IsOverlayType(DVDOVERLAY_TYPE_SPU))
+    r = std::make_shared<COverlayImageDX>(static_cast<CDVDOverlaySpu&>(o));
 #endif
 
   m_textureCache[m_textureid] = r;
-  o->m_textureid = m_textureid;
+  o.m_textureid = m_textureid;
   m_textureid++;
 
   return r;

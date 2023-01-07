@@ -143,7 +143,7 @@ namespace OVERLAY {
     };
 
     void Render(COverlay* o);
-    std::shared_ptr<COverlay> Convert(CDVDOverlay* o, double pts);
+    std::shared_ptr<COverlay> Convert(CDVDOverlay& o, double pts);
     /*!
     * \brief Convert the overlay to a overlay renderer
     * \param o The overlay to convert
@@ -152,7 +152,7 @@ namespace OVERLAY {
     * \return True if success, false if error
     */
     std::shared_ptr<COverlay> ConvertLibass(
-        CDVDOverlayLibass* o,
+        CDVDOverlayLibass& o,
         double pts,
         bool updateStyle,
         const std::shared_ptr<struct KODI::SUBTITLES::STYLE::style>& overlayStyle);

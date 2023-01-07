@@ -165,7 +165,7 @@ void CDVDOverlayContainer::UpdateOverlayInfo(
           (*it) = pOverlaySpu;
         }
 
-        if (pStream->GetCurrentButtonInfo(pOverlaySpu.get(), pSpu, iAction))
+        if (pStream->GetCurrentButtonInfo(*pOverlaySpu, pSpu, iAction))
         {
           pOverlaySpu->m_textureid = 0;
         }
