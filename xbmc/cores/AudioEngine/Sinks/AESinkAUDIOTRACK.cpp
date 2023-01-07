@@ -425,6 +425,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
   }
 
+  bool retried = false;
   while (!m_at_jni)
   {
     CLog::Log(LOGINFO, "Trying to open: samplerate: {}, channelMask: {}, encoding: {}",
@@ -578,6 +579,18 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         {
           atChannelMask = CJNIAudioFormat::CHANNEL_OUT_STEREO;
           CLog::Log(LOGDEBUG, "AESinkAUDIOTRACK - Retrying with a stereo layout");
+          continue;
+        }
+      }
+      else
+      {
+        if (!retried)
+        {
+          retried = true;
+          CLog::Log(LOGWARNING, "AESinkAUDIOTRACK - Unable to open PT device - will retry once");
+          // Seems that some devices don't properly implement pause + flush, which during seek
+          // might open the device too fast - let's retry
+          usleep(200 * 1000);
           continue;
         }
       }
