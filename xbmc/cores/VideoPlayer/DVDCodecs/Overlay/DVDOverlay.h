@@ -56,7 +56,7 @@ public:
 
   virtual ~CDVDOverlay() = default;
 
-  bool IsOverlayType(DVDOverlayType type) { return (m_type == type); }
+  bool IsOverlayType(DVDOverlayType type) const { return (m_type == type); }
 
   /**
    * return a copy to VideoPlayerSubtitle in order to have hw resources cleared
@@ -75,7 +75,7 @@ public:
   /*
    * \brief Return true if the text alignment (left/center/right) is enabled otherwise false.
    */
-  bool IsTextAlignEnabled() { return m_enableTextAlign; }
+  bool IsTextAlignEnabled() const { return m_enableTextAlign; }
 
   /*
    * \brief Allow/Disallow the overlay container to flush the overlay.
@@ -85,7 +85,7 @@ public:
   /*
    * \brief Return true when the overlay container can flush the overlay on flush events.
    */
-  bool IsOverlayContainerFlushable() { return m_overlayContainerFlushable; }
+  bool IsOverlayContainerFlushable() const { return m_overlayContainerFlushable; }
 
   /*
    * \brief Specify if the margins are handled by the subtitle codec/parser.
