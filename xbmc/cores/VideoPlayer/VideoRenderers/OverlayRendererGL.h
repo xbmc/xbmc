@@ -28,8 +28,8 @@ namespace OVERLAY {
      *  \param o The overlay image
      *  \param rSource The video source rect size
      */
-    explicit COverlayTextureGL(CDVDOverlayImage* o, CRect& rSource);
-    explicit COverlayTextureGL(CDVDOverlaySpu* o);
+    explicit COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource);
+    explicit COverlayTextureGL(const CDVDOverlaySpu& o);
     ~COverlayTextureGL() override;
 
     void Render(SRenderState& state) override;

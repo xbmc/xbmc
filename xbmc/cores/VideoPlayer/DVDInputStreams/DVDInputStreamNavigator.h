@@ -80,7 +80,9 @@ public:
 
   int GetCurrentButton() override;
   int GetTotalButtons() override;
-  bool GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
+  bool GetCurrentButtonInfo(CDVDOverlaySpu& pOverlayPicture,
+                            CDVDDemuxSPU* pSPU,
+                            int iButtonType /* 0 = selection, 1 = action (clicked)*/);
 
   /*!
    * \brief Get the supported menu type

@@ -131,7 +131,7 @@ void CDebugRenderer::CRenderer::Render(int idx)
         CreateSubtitlesStyle();
 
       std::shared_ptr<COverlay> o =
-          ConvertLibass(ovAss.get(), it->pts, updateStyle, m_debugOverlayStyle);
+          ConvertLibass(*ovAss, it->pts, updateStyle, m_debugOverlayStyle);
 
       if (o)
         OVERLAY::CRenderer::Render(o.get());

@@ -36,8 +36,8 @@ struct SQuads
   std::vector<SQuad> quad;
 };
 
-void convert_rgba(CDVDOverlayImage* o, bool mergealpha, std::vector<uint32_t>& rgba);
-void convert_rgba(CDVDOverlaySpu* o,
+void convert_rgba(const CDVDOverlayImage& o, bool mergealpha, std::vector<uint32_t>& rgba);
+void convert_rgba(const CDVDOverlaySpu& o,
                   bool mergealpha,
                   int& min_x,
                   int& max_x,
