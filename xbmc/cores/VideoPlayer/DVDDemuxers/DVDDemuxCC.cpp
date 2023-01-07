@@ -99,11 +99,6 @@ void ApplyStyleModifiers(std::string& ccText, const cc_attribute_t& ccAttributes
         ccText);
   }
 }
-
-bool reorder_sort(CCaptionBlock* lhs, CCaptionBlock* rhs)
-{
-  return (lhs->GetPTS() > rhs->GetPTS());
-}
 } // namespace
 
 CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec) : m_codec(codec)
@@ -150,7 +145,7 @@ DemuxPacket* CDVDDemuxCC::Process(CCaptionBlock* captionBlock)
 {
   if (captionBlock)
   {
-    m_ccReorderBuffer.push_back(captionBlock);
+    m_ccTempBuffer.push_back(captionBlock);
   }
 
   if (!m_ccDecoder)
@@ -158,7 +153,6 @@ DemuxPacket* CDVDDemuxCC::Process(CCaptionBlock* captionBlock)
     if (!OpenDecoder())
       return nullptr;
   }
-  std::sort(m_ccReorderBuffer.begin(), m_ccReorderBuffer.end(), reorder_sort);
   DemuxPacket* pPacket = Decode();
   return pPacket;
 }
@@ -230,11 +224,6 @@ void CDVDDemuxCC::Dispose()
   m_streamdata.clear();
   m_ccDecoder.reset();
 
-  while (!m_ccReorderBuffer.empty())
-  {
-    delete m_ccReorderBuffer.back();
-    m_ccReorderBuffer.pop_back();
-  }
   while (!m_ccTempBuffer.empty())
   {
     delete m_ccTempBuffer.back();
@@ -246,10 +235,10 @@ DemuxPacket* CDVDDemuxCC::Decode()
 {
   DemuxPacket *pPacket = NULL;
 
-  while(!m_hasData && !m_ccReorderBuffer.empty())
+  while (!m_hasData && !m_ccTempBuffer.empty())
   {
-    CCaptionBlock *cc = m_ccReorderBuffer.back();
-    m_ccReorderBuffer.pop_back();
+    CCaptionBlock* cc = m_ccTempBuffer.back();
+    m_ccTempBuffer.pop_back();
     m_curPts = cc->GetPTS();
     m_ccDecoder->Decode(cc->GetData());
     delete cc;
