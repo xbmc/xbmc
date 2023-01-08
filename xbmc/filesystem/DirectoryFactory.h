@@ -9,7 +9,8 @@
 #pragma once
 
 #include "IDirectory.h"
-#include "addons/addoninfo/AddonType.h"
+
+#include <any>
 
 namespace XFILE
 {
@@ -35,7 +36,6 @@ namespace XFILE
 class CDirectoryFactory
 {
 public:
-  static IDirectory* Create(const CURL& url,
-                            ADDON::AddonType addonType = ADDON::AddonType::UNKNOWN);
+  static IDirectory* Create(const CURL& url, const std::any& hint = {});
 };
 }

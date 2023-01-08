@@ -54,13 +54,18 @@ std::string GetOriginalPluginPath(const CFileItem& item)
 }
 } // unnamed namespace
 
-CPluginDirectory::CPluginDirectory(ADDON::AddonType addonType)
+CPluginDirectory::CPluginDirectory(const std::any& addonType)
   : m_listItems(new CFileItemList),
     m_fileResult(new CFileItem),
     m_cancelled(false),
-    m_addonType(addonType)
+    m_addonType(AddonType::UNKNOWN)
 
 {
+  auto addonTypePtr = std::any_cast<AddonType>(&addonType);
+  if (addonTypePtr)
+  {
+    m_addonType = *addonTypePtr;
+  }
 }
 
 CPluginDirectory::~CPluginDirectory(void)

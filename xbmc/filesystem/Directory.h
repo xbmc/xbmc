@@ -9,8 +9,8 @@
 #pragma once
 
 #include "IDirectory.h"
-#include "addons/addoninfo/AddonType.h"
 
+#include <any>
 #include <memory>
 #include <string>
 
@@ -31,7 +31,7 @@ public:
   public:
     std::string mask;
     int flags = DIR_FLAG_DEFAULTS;
-    ADDON::AddonType addonType = ADDON::AddonType::UNKNOWN;
+    std::any other;
   };
 
   static bool GetDirectory(const CURL& url

@@ -151,7 +151,7 @@ bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const std::
 bool CDirectory::GetDirectory(const CURL& url, CFileItemList &items, const CHints &hints)
 {
   CURL realURL = URIUtils::SubstitutePath(url);
-  std::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL, hints.addonType));
+  std::shared_ptr<IDirectory> pDirectory(CDirectoryFactory::Create(realURL, hints.other));
   return CDirectory::GetDirectory(url, pDirectory, items, hints);
 }
 
