@@ -51,23 +51,17 @@ VecOverlays* CDVDOverlayContainer::GetOverlays()
   return &m_overlays;
 }
 
-VecOverlaysIter CDVDOverlayContainer::Remove(VecOverlaysIter itOverlay)
+VecOverlays::iterator CDVDOverlayContainer::Remove(VecOverlays::iterator itOverlay)
 {
-  VecOverlaysIter itNext;
-
-  {
-    std::unique_lock<CCriticalSection> lock(*this);
-    itNext = m_overlays.erase(itOverlay);
-  }
-
-  return itNext;
+  std::unique_lock<CCriticalSection> lock(*this);
+  return m_overlays.erase(itOverlay);
 }
 
 void CDVDOverlayContainer::CleanUp(double pts)
 {
   std::unique_lock<CCriticalSection> lock(*this);
 
-  VecOverlaysIter it = m_overlays.begin();
+  auto it = m_overlays.begin();
   while (it != m_overlays.end())
   {
     const std::shared_ptr<CDVDOverlay>& pOverlay = *it;
@@ -86,7 +80,7 @@ void CDVDOverlayContainer::CleanUp(double pts)
     else if (pOverlay->bForced)
     {
       //Check for newer replacements
-      VecOverlaysIter it2 = it;
+      auto it2 = it;
       bool bNewer = false;
       while (!bNewer && ++it2 != m_overlays.end())
       {
@@ -134,7 +128,7 @@ bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
 
   std::unique_lock<CCriticalSection> lock(*this);
 
-  VecOverlaysIter it = m_overlays.begin();
+  auto it = m_overlays.begin();
   while (!result && it != m_overlays.end())
   {
     if ((*it)->IsOverlayType(type)) result = true;
