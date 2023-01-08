@@ -9,6 +9,7 @@
 #include "PipewireStream.h"
 
 #include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
+#include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
 #include "utils/log.h"
 
@@ -23,9 +24,10 @@ namespace SINK
 namespace PIPEWIRE
 {
 
-CPipewireStream::CPipewireStream(pw_core* core) : m_streamEvents(CreateStreamEvents())
+CPipewireStream::CPipewireStream(CPipewireCore& core)
+  : m_core(core), m_streamEvents(CreateStreamEvents())
 {
-  m_stream.reset(pw_stream_new(core, nullptr, pw_properties_new(nullptr, nullptr)));
+  m_stream.reset(pw_stream_new(core.Get(), nullptr, pw_properties_new(nullptr, nullptr)));
   if (!m_stream)
   {
     CLog::Log(LOGERROR, "CPipewireStream: failed to create stream: {}", strerror(errno));
