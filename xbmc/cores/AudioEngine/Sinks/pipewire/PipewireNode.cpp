@@ -9,6 +9,7 @@
 #include "PipewireNode.h"
 
 #include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
+#include "cores/AudioEngine/Sinks/pipewire/PipewireRegistry.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -23,7 +24,7 @@ namespace SINK
 namespace PIPEWIRE
 {
 
-CPipewireNode::CPipewireNode(pw_registry* registry, uint32_t id, const char* type)
+CPipewireNode::CPipewireNode(CPipewireRegistry& registry, uint32_t id, const char* type)
   : CPipewireProxy(registry, id, type, PW_VERSION_NODE), m_nodeEvents(CreateNodeEvents())
 {
 }

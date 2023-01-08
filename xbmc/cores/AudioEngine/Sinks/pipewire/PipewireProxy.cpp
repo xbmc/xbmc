@@ -10,6 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
+#include "cores/AudioEngine/Sinks/pipewire/PipewireRegistry.h"
 #include "utils/log.h"
 
 #include <stdexcept>
@@ -21,13 +22,14 @@ namespace SINK
 namespace PIPEWIRE
 {
 
-CPipewireProxy::CPipewireProxy(pw_registry* registry,
+CPipewireProxy::CPipewireProxy(CPipewireRegistry& registry,
                                uint32_t id,
                                const char* type,
                                uint32_t version)
-  : m_proxyEvents(CreateProxyEvents())
+  : m_registry(registry), m_proxyEvents(CreateProxyEvents())
 {
-  m_proxy.reset(reinterpret_cast<pw_proxy*>(pw_registry_bind(registry, id, type, version, 0)));
+  m_proxy.reset(
+      reinterpret_cast<pw_proxy*>(pw_registry_bind(registry.Get(), id, type, version, 0)));
   if (!m_proxy)
   {
     CLog::Log(LOGERROR, "CPipewireProxy: failed to create proxy: {}", strerror(errno));
