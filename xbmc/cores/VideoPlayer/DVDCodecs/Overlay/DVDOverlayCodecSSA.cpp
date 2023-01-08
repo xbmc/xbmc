@@ -30,28 +30,14 @@ CDVDOverlayCodecSSA::CDVDOverlayCodecSSA()
   m_libass->Configure();
 }
 
-CDVDOverlayCodecSSA::~CDVDOverlayCodecSSA()
-{
-  Dispose();
-}
-
 bool CDVDOverlayCodecSSA::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
 {
   if (hints.codec != AV_CODEC_ID_SSA && hints.codec != AV_CODEC_ID_ASS)
     return false;
 
-  Dispose();
+  m_pOverlay.reset();
 
   return m_libass->DecodeHeader(static_cast<char*>(hints.extradata), hints.extrasize);
-}
-
-void CDVDOverlayCodecSSA::Dispose()
-{
-  if (m_pOverlay)
-  {
-    m_pOverlay->Release();
-    m_pOverlay = nullptr;
-  }
 }
 
 OverlayMessage CDVDOverlayCodecSSA::Decode(DemuxPacket* pPacket)
@@ -111,31 +97,25 @@ OverlayMessage CDVDOverlayCodecSSA::Decode(DemuxPacket* pPacket)
 
 void CDVDOverlayCodecSSA::Reset()
 {
-  Dispose();
   Flush();
 }
 
 void CDVDOverlayCodecSSA::Flush()
 {
-  if (m_pOverlay)
-  {
-    m_pOverlay->Release();
-    m_pOverlay = nullptr;
-  }
-
+  m_pOverlay.reset();
   m_order = 0;
 }
 
-CDVDOverlay* CDVDOverlayCodecSSA::GetOverlay()
+std::shared_ptr<CDVDOverlay> CDVDOverlayCodecSSA::GetOverlay()
 {
   if (m_pOverlay)
     return nullptr;
-  m_pOverlay = new CDVDOverlaySSA(m_libass);
+  m_pOverlay = std::make_shared<CDVDOverlaySSA>(m_libass);
   m_pOverlay->iPTSStartTime = 0;
   m_pOverlay->iPTSStopTime = DVD_NOPTS_VALUE;
   auto overrideStyles{
       CServiceBroker::GetSettingsComponent()->GetSubtitlesSettings()->GetOverrideStyles()};
   m_pOverlay->SetForcedMargins(overrideStyles != SUBTITLES::OverrideStyles::STYLES_POSITIONS &&
                                overrideStyles != SUBTITLES::OverrideStyles::POSITIONS);
-  return m_pOverlay->Acquire();
+  return m_pOverlay;
 }

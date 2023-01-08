@@ -25,7 +25,7 @@ public:
   virtual bool Open(CDVDStreamInfo &hints) = 0;
   virtual void Dispose() = 0;
   virtual void Reset() = 0;
-  virtual CDVDOverlay* Parse(double iPts) = 0;
+  virtual std::shared_ptr<CDVDOverlay> Parse(double iPts) = 0;
   virtual const std::string& GetName() const = 0;
 };
 
@@ -35,9 +35,9 @@ class CDVDSubtitleParserCollection
 public:
   explicit CDVDSubtitleParserCollection(const std::string& strFile) : m_filename(strFile) {}
   ~CDVDSubtitleParserCollection() override = default;
-  CDVDOverlay* Parse(double iPts) override
+  std::shared_ptr<CDVDOverlay> Parse(double iPts) override
   {
-    CDVDOverlay* o = m_collection.Get(iPts);
+    std::shared_ptr<CDVDOverlay> o = m_collection.Get(iPts);
     if(o == NULL)
       return o;
     return o->Clone();

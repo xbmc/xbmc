@@ -24,5 +24,5 @@ public:
 
   ~CDVDOverlaySSA() override = default;
 
-  CDVDOverlaySSA* Clone() override { return new CDVDOverlaySSA(*this); }
+  std::shared_ptr<CDVDOverlay> Clone() override { return std::make_shared<CDVDOverlaySSA>(*this); }
 };

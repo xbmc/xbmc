@@ -10,6 +10,7 @@
 
 #include "DVDCodecs/DVDCodecUtils.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
+#include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "ServiceBroker.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
@@ -24,6 +25,7 @@
 
 #include <iomanip>
 #include <iterator>
+#include <memory>
 #include <mutex>
 #include <numeric>
 #include <sstream>
@@ -820,7 +822,7 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
     //Both forced and subs should check timing
     while (it != pVecOverlays->end())
     {
-      CDVDOverlay* pOverlay = *it++;
+      std::shared_ptr<CDVDOverlay>& pOverlay = *it++;
       if(!pOverlay->bForced && !m_bRenderSubs)
         continue;
 
@@ -829,8 +831,9 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
       if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)))
       {
         if(pOverlay->IsOverlayType(DVDOVERLAY_TYPE_GROUP))
-          overlays.insert(overlays.end(), static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.begin()
-                                        , static_cast<CDVDOverlayGroup*>(pOverlay)->m_overlays.end());
+          overlays.insert(overlays.end(),
+                          static_cast<CDVDOverlayGroup&>(*pOverlay).m_overlays.begin(),
+                          static_cast<CDVDOverlayGroup&>(*pOverlay).m_overlays.end());
         else
           overlays.push_back(pOverlay);
       }
