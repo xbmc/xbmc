@@ -27,6 +27,7 @@
 #endif
 
 #include <math.h>
+#include <stdint.h>
 #include <stdio.h>
 
 #ifndef min
@@ -376,7 +377,7 @@ void CExifParse::ProcessDir(const unsigned char* const DirStart,
       unsigned OffsetVal;
       OffsetVal = (unsigned)Get32(DirEntry+8, m_MotorolaOrder);
       // If its bigger than 4 bytes, the dir entry contains an offset.
-      if (OffsetVal+ByteCount > ExifLength)
+      if (OffsetVal > UINT32_MAX - ByteCount || OffsetVal + ByteCount > ExifLength)
       {
         // Bogus pointer offset and / or bytecount value
         ErrNonfatal("Illegal value pointer for tag %04x", Tag,0);
@@ -787,10 +788,10 @@ bool CExifParse::Process (const unsigned char* const ExifSection, const unsigned
   pos += sizeof(short);
 
   unsigned long FirstOffset = (unsigned)Get32((const void*)pos, m_MotorolaOrder);
-  if (FirstOffset < 8 || FirstOffset > 16)
+  if (FirstOffset < 8 || FirstOffset + 8 >= length)
   {
-    // Usually set to 8, but other values valid too.
-//  CLog::Log(LOGERROR, "ExifParse: suspicious offset of first IFD value");
+    ErrNonfatal("Invalid offset of first IFD value: %u", FirstOffset, 0);
+    return false;
   }
 
 
@@ -878,6 +879,13 @@ void CExifParse::ProcessGpsInfo(
   {
     const unsigned char* DirEntry = DIR_ENTRY_ADDR(DirStart, de);
 
+    // Fix from aosp 34a2564d3268a5ca1472c5076675782fbaf724d6
+    if (DirEntry + 12 > OffsetBase + ExifLength)
+    {
+      ErrNonfatal("GPS info directory goes past end of exif", 0, 0);
+      return;
+    }
+
     unsigned Tag        = Get16(DirEntry, m_MotorolaOrder);
     unsigned Format     = Get16(DirEntry+2, m_MotorolaOrder);
     unsigned Components = (unsigned)Get32(DirEntry+4, m_MotorolaOrder);
@@ -896,7 +904,7 @@ void CExifParse::ProcessGpsInfo(
     {
       unsigned OffsetVal = (unsigned)Get32(DirEntry+8, m_MotorolaOrder);
       // If its bigger than 4 bytes, the dir entry contains an offset.
-      if (OffsetVal+ByteCount > ExifLength)
+      if (OffsetVal > UINT32_MAX - ByteCount || OffsetVal + ByteCount > ExifLength)
       {
         // Bogus pointer offset and / or bytecount value
         ErrNonfatal("Illegal value pointer for tag %04x", Tag,0);
