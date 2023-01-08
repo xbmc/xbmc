@@ -53,7 +53,7 @@ public:
                          int iAction);
 
 private:
-  VecOverlaysIter Remove(VecOverlaysIter itOverlay); // removes a specific overlay
+  VecOverlays::iterator Remove(VecOverlays::iterator itOverlay); // removes a specific overlay
 
   VecOverlays m_overlays;
 };
