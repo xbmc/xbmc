@@ -24,11 +24,12 @@ namespace PIPEWIRE
 {
 
 class CPipewire;
+class CPipewireRegistry;
 
 class CPipewireNode : public CPipewireProxy
 {
 public:
-  explicit CPipewireNode(pw_registry* registry, uint32_t id, const char* type);
+  explicit CPipewireNode(CPipewireRegistry& registry, uint32_t id, const char* type);
   CPipewireNode() = delete;
   ~CPipewireNode() override;
 
