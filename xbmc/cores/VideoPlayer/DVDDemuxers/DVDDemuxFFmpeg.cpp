@@ -40,6 +40,7 @@
 extern "C"
 {
 #include "libavutil/channel_layout.h"
+#include "libavutil/dovi_meta.h"
 #include "libavutil/pixdesc.h"
 }
 
@@ -1715,9 +1716,27 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
         if (!stereoMode.empty())
           st->stereo_mode = stereoMode;
 
-        side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &size);
-        if (size > 0 && side_data)
-          pStream->codecpar->codec_tag = MKBETAG('d', 'v', 'v', 'C');
+        // Add DoVi codec_tag if is missing
+        if (st->hdr_type == StreamHdrType::HDR_TYPE_DOLBYVISION &&
+            pStream->codecpar->codec_tag == 0)
+        {
+          if (m_bMatroska)
+          {
+            side_data = av_stream_get_side_data(pStream, AV_PKT_DATA_DOVI_CONF, &size);
+            if (size > 0 && side_data)
+            {
+              auto dovi = reinterpret_cast<AVDOVIDecoderConfigurationRecord*>(side_data);
+              if (dovi->dv_profile > 7)
+                pStream->codecpar->codec_tag = MKBETAG('d', 'v', 'v', 'C');
+              else
+                pStream->codecpar->codec_tag = MKBETAG('d', 'v', 'c', 'C');
+            }
+          }
+          else if (pStream->codecpar->codec_id == AV_CODEC_ID_HEVC)
+          {
+            pStream->codecpar->codec_tag = MKTAG('d', 'v', 'h', 'e');
+          }
+        }
 
         if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
         {
