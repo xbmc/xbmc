@@ -48,6 +48,7 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
                                       const struct spa_dict* props)
 {
   auto pipewire = reinterpret_cast<CPipewire*>(userdata);
+  auto registry = pipewire->GetRegistry();
 
   if (strcmp(type, PW_TYPE_INTERFACE_Node) == 0)
   {
@@ -66,9 +67,9 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
     if (!desc)
       return;
 
-    auto& globals = pipewire->GetGlobals();
+    auto& globals = registry->GetGlobals();
 
-    globals[id] = std::make_unique<CPipewire::global>();
+    globals[id] = std::make_unique<global>();
     globals[id]->name = std::string(name);
     globals[id]->description = std::string(desc);
     globals[id]->id = id;
@@ -76,7 +77,7 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
     globals[id]->type = std::string(type);
     globals[id]->version = version;
     globals[id]->properties.reset(pw_properties_new_dict(props));
-    globals[id]->proxy = std::make_unique<CPipewireNode>(pipewire->GetRegistry()->Get(), id, type);
+    globals[id]->proxy = std::make_unique<CPipewireNode>(registry->Get(), id, type);
     globals[id]->proxy->AddListener(userdata);
   }
 }
@@ -84,7 +85,8 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
 void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
 {
   auto pipewire = reinterpret_cast<CPipewire*>(userdata);
-  auto& globals = pipewire->GetGlobals();
+  auto registry = pipewire->GetRegistry();
+  auto& globals = registry->GetGlobals();
 
   auto global = globals.find(id);
   if (global != globals.end())
