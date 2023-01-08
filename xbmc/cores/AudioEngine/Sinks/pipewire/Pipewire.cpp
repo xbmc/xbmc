@@ -51,7 +51,7 @@ bool CPipewire::Start()
 {
   m_loop = std::make_unique<CPipewireThreadLoop>();
 
-  m_context = std::make_unique<CPipewireContext>(m_loop->Get());
+  m_context = std::make_unique<CPipewireContext>(*m_loop);
 
   m_loop->Lock();
 
