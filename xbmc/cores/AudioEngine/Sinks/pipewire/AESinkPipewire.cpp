@@ -323,7 +323,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
     id = target->first;
   }
 
-  stream = std::make_shared<PIPEWIRE::CPipewireStream>(core->Get());
+  stream = std::make_shared<PIPEWIRE::CPipewireStream>(*core);
 
   stream->AddListener(pipewire.get());
 
