@@ -50,11 +50,7 @@ void CDebugRenderer::Dispose()
 {
   m_isInitialized = false;
   m_overlayRenderer.Flush();
-  if (m_overlay)
-  {
-    m_overlay->Release();
-    m_overlay = nullptr;
-  }
+  m_overlay.reset();
   if (m_adapter)
   {
     delete m_adapter;
@@ -126,7 +122,7 @@ void CDebugRenderer::CRenderer::Render(int idx)
   {
     if (it->overlay_dvd)
     {
-      CDVDOverlayLibass* ovAss = static_cast<CDVDOverlayLibass*>(it->overlay_dvd);
+      auto ovAss = std::static_pointer_cast<CDVDOverlayLibass>(it->overlay_dvd);
       if (!ovAss || !ovAss->GetLibassHandler())
         continue;
 
@@ -134,10 +130,11 @@ void CDebugRenderer::CRenderer::Render(int idx)
       if (updateStyle)
         CreateSubtitlesStyle();
 
-      COverlay* o = ConvertLibass(ovAss, it->pts, updateStyle, m_debugOverlayStyle);
+      std::shared_ptr<COverlay> o =
+          ConvertLibass(ovAss.get(), it->pts, updateStyle, m_debugOverlayStyle);
 
       if (o)
-        OVERLAY::CRenderer::Render(o);
+        OVERLAY::CRenderer::Render(o.get());
     }
   }
   ReleaseUnused();

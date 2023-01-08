@@ -35,25 +35,10 @@ CDVDOverlayCodecCCText::CDVDOverlayCodecCCText() : CDVDOverlayCodec("CC Text Sub
   m_changePrevStopTime = false;
 }
 
-CDVDOverlayCodecCCText::~CDVDOverlayCodecCCText()
-{
-  Dispose();
-}
-
 bool CDVDOverlayCodecCCText::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
 {
-  Dispose();
-
+  m_pOverlay.reset();
   return Initialize();
-}
-
-void CDVDOverlayCodecCCText::Dispose()
-{
-  if (m_pOverlay)
-  {
-    m_pOverlay->Release();
-    m_pOverlay = nullptr;
-  }
 }
 
 OverlayMessage CDVDOverlayCodecCCText::Decode(DemuxPacket* pPacket)
@@ -135,18 +120,12 @@ void CDVDOverlayCodecCCText::PostProcess(std::string& text)
 
 void CDVDOverlayCodecCCText::Reset()
 {
-  Dispose();
   Flush();
 }
 
 void CDVDOverlayCodecCCText::Flush()
 {
-  if (m_pOverlay)
-  {
-    m_pOverlay->Release();
-    m_pOverlay = nullptr;
-  }
-
+  m_pOverlay.reset();
   m_prevSubId = NO_SUBTITLE_ID;
   m_prevPTSStart = 0.0;
   m_prevText.clear();
@@ -155,11 +134,11 @@ void CDVDOverlayCodecCCText::Flush()
   FlushSubtitles();
 }
 
-CDVDOverlay* CDVDOverlayCodecCCText::GetOverlay()
+std::shared_ptr<CDVDOverlay> CDVDOverlayCodecCCText::GetOverlay()
 {
   if (m_pOverlay)
     return nullptr;
   m_pOverlay = CreateOverlay();
   m_pOverlay->SetTextAlignEnabled(true);
-  return m_pOverlay->Acquire();
+  return m_pOverlay;
 }

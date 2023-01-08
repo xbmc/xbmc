@@ -9,7 +9,7 @@
 #include "DVDSubtitleLineCollection.h"
 
 #include <stddef.h>
-
+#include <utility>
 
 CDVDSubtitleLineCollection::CDVDSubtitleLineCollection()
 {
@@ -25,10 +25,10 @@ CDVDSubtitleLineCollection::~CDVDSubtitleLineCollection()
   Clear();
 }
 
-void CDVDSubtitleLineCollection::Add(CDVDOverlay* pOverlay)
+void CDVDSubtitleLineCollection::Add(std::shared_ptr<CDVDOverlay> pOverlay)
 {
   ListElement* pElement = new ListElement;
-  pElement->pOverlay = pOverlay;
+  pElement->pOverlay = std::move(pOverlay);
   pElement->pNext = NULL;
 
   if (!m_pHead)
@@ -56,17 +56,15 @@ void CDVDSubtitleLineCollection::Sort()
     {
       if (p1->pOverlay->iPTSStartTime > p2->pOverlay->iPTSStartTime)
       {
-        CDVDOverlay* temp = p1->pOverlay;
-        p1->pOverlay = p2->pOverlay;
-        p2->pOverlay = temp;
+        std::swap(p1->pOverlay, p2->pOverlay);
       }
     }
   }
 }
 
-CDVDOverlay* CDVDSubtitleLineCollection::Get(double iPts)
+std::shared_ptr<CDVDOverlay> CDVDSubtitleLineCollection::Get(double iPts)
 {
-  CDVDOverlay* pOverlay = NULL;
+  std::shared_ptr<CDVDOverlay> pOverlay;
 
   if (m_pCurrent)
   {
@@ -100,7 +98,6 @@ void CDVDSubtitleLineCollection::Clear()
     pElement = m_pHead;
     m_pHead = pElement->pNext;
 
-    pElement->pOverlay->Release();
     delete pElement;
   }
 

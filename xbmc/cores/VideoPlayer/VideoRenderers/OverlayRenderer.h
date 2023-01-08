@@ -10,6 +10,7 @@
 #pragma once
 
 #include "BaseRenderer.h"
+#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlay.h"
 #include "cores/VideoPlayer/DVDSubtitles/SubtitlesStyle.h"
 #include "settings/SubtitlesSettings.h"
 #include "threads/CriticalSection.h"
@@ -91,7 +92,7 @@ namespace OVERLAY {
     // Implementation of Observer
     void Notify(const Observable& obs, const ObservableMessage msg) override;
 
-    void AddOverlay(CDVDOverlay* o, double pts, int index);
+    void AddOverlay(std::shared_ptr<CDVDOverlay> o, double pts, int index);
     virtual void Render(int idx);
 
     /*!
@@ -138,11 +139,11 @@ namespace OVERLAY {
         pts = 0.0;
       }
       double pts;
-      CDVDOverlay* overlay_dvd;
+      std::shared_ptr<CDVDOverlay> overlay_dvd;
     };
 
     void Render(COverlay* o);
-    COverlay* Convert(CDVDOverlay* o, double pts);
+    std::shared_ptr<COverlay> Convert(CDVDOverlay* o, double pts);
     /*!
     * \brief Convert the overlay to a overlay renderer
     * \param o The overlay to convert
@@ -150,7 +151,7 @@ namespace OVERLAY {
     * \param subStyle The style to be used, MUST BE SET ONLY at the first call or when user change settings
     * \return True if success, false if error
     */
-    COverlay* ConvertLibass(
+    std::shared_ptr<COverlay> ConvertLibass(
         CDVDOverlayLibass* o,
         double pts,
         bool updateStyle,
@@ -175,7 +176,7 @@ namespace OVERLAY {
 
     CCriticalSection m_section;
     std::vector<SElement> m_buffers[NUM_BUFFERS];
-    std::map<unsigned int, COverlay*> m_textureCache;
+    std::map<unsigned int, std::shared_ptr<COverlay>> m_textureCache;
     static unsigned int m_textureid;
     CRect m_rv; // Frame size
     CRect m_rs; // Source size

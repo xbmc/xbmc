@@ -9,6 +9,7 @@
 #pragma once
 
 #include "SubtitlesStyle.h"
+#include "cores/VideoPlayer/DVDCodecs/Overlay/DVDOverlay.h"
 
 #include <memory>
 #include <string>
@@ -76,7 +77,7 @@ public:
 
   void FlushSubtitles();
 
-  CDVDOverlay* CreateOverlay();
+  std::shared_ptr<CDVDOverlay> CreateOverlay();
 
 protected:
   /*!

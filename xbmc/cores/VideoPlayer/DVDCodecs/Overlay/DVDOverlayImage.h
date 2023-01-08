@@ -62,9 +62,9 @@ public:
 
   ~CDVDOverlayImage() override = default;
 
-  CDVDOverlayImage* Clone() override
+  std::shared_ptr<CDVDOverlay> Clone() override
   {
-    return new CDVDOverlayImage(*this);
+    return std::make_shared<CDVDOverlayImage>(*this);
   }
 
   uint8_t* data_at(int sub_x, int sub_y) const
