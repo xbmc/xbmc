@@ -746,7 +746,7 @@ void CInputStreamAddon::DetectScreenResolution()
     // So we have to provide the max resolution info before the playback take place
     // in order to allow addon to provide in the demuxer the best stream resolution
     // that can fit the supported screen resolution (changed when playback start).
-    CResolutionUtils::GetMaxAllowedResolution(maxWidth, maxHeight);
+    CResolutionUtils::GetMaxAllowedScreenResolution(maxWidth, maxHeight);
 
     SetVideoResolution(videoWidth, videoHeight, maxWidth, maxHeight);
 
