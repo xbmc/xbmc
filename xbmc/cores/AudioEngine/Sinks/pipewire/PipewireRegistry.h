@@ -24,16 +24,21 @@ namespace SINK
 namespace PIPEWIRE
 {
 
+class CPipewireCore;
+
 class CPipewireRegistry
 {
 public:
-  explicit CPipewireRegistry(pw_core* core);
+  explicit CPipewireRegistry(CPipewireCore& core);
   CPipewireRegistry() = delete;
   ~CPipewireRegistry() = default;
 
   pw_registry* Get() const { return m_registry.get(); }
 
+  CPipewireCore& GetCore() const { return m_core; }
+
   void AddListener(void* userdata);
+
   struct PipewirePropertiesDeleter
   {
     void operator()(pw_properties* p) { pw_properties_free(p); }
@@ -63,6 +68,8 @@ private:
   static void OnGlobalRemoved(void* userdata, uint32_t id);
 
   static pw_registry_events CreateRegistryEvents();
+
+  CPipewireCore& m_core;
 
   const pw_registry_events m_registryEvents;
 
