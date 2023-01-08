@@ -111,7 +111,6 @@ protected:
 };
 
 using VecOverlays = std::vector<std::shared_ptr<CDVDOverlay>>;
-using VecOverlaysIter = std::vector<std::shared_ptr<CDVDOverlay>>::iterator;
 
 class CDVDOverlayGroup : public CDVDOverlay
 {
