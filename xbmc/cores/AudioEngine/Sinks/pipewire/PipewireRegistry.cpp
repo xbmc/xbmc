@@ -9,6 +9,7 @@
 #include "PipewireRegistry.h"
 
 #include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
+#include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireNode.h"
 #include "utils/log.h"
 
@@ -25,9 +26,10 @@ namespace SINK
 namespace PIPEWIRE
 {
 
-CPipewireRegistry::CPipewireRegistry(pw_core* core) : m_registryEvents(CreateRegistryEvents())
+CPipewireRegistry::CPipewireRegistry(CPipewireCore& core)
+  : m_core(core), m_registryEvents(CreateRegistryEvents())
 {
-  m_registry.reset(pw_core_get_registry(core, PW_VERSION_REGISTRY, 0));
+  m_registry.reset(pw_core_get_registry(core.Get(), PW_VERSION_REGISTRY, 0));
   if (!m_registry)
   {
     CLog::Log(LOGERROR, "CPipewireRegistry: failed to create registry: {}", strerror(errno));
