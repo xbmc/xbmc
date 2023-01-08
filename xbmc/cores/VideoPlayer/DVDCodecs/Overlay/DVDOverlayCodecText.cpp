@@ -23,11 +23,6 @@ CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle D
   m_pOverlay = nullptr;
 }
 
-CDVDOverlayCodecText::~CDVDOverlayCodecText()
-{
-  Dispose();
-}
-
 bool CDVDOverlayCodecText::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
 {
   if (hints.codec != AV_CODEC_ID_TEXT && hints.codec != AV_CODEC_ID_SSA &&
@@ -36,18 +31,9 @@ bool CDVDOverlayCodecText::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options
 
   m_codecId = hints.codec;
 
-  Dispose();
+  m_pOverlay.reset();
 
   return Initialize();
-}
-
-void CDVDOverlayCodecText::Dispose()
-{
-  if (m_pOverlay)
-  {
-    m_pOverlay->Release();
-    m_pOverlay = nullptr;
-  }
 }
 
 OverlayMessage CDVDOverlayCodecText::Decode(DemuxPacket* pPacket)
@@ -101,25 +87,19 @@ void CDVDOverlayCodecText::PostProcess(std::string& text)
 
 void CDVDOverlayCodecText::Reset()
 {
-  Dispose();
   Flush();
 }
 
 void CDVDOverlayCodecText::Flush()
 {
-  if (m_pOverlay)
-  {
-    m_pOverlay->Release();
-    m_pOverlay = nullptr;
-  }
-
+  m_pOverlay.reset();
   FlushSubtitles();
 }
 
-CDVDOverlay* CDVDOverlayCodecText::GetOverlay()
+std::shared_ptr<CDVDOverlay> CDVDOverlayCodecText::GetOverlay()
 {
   if (m_pOverlay)
     return nullptr;
   m_pOverlay = CreateOverlay();
-  return m_pOverlay->Acquire();
+  return m_pOverlay;
 }

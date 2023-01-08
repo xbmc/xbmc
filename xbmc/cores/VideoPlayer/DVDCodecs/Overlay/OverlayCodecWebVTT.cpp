@@ -26,14 +26,9 @@ COverlayCodecWebVTT::COverlayCodecWebVTT() : CDVDOverlayCodec("WebVTT Subtitle D
   m_pOverlay = nullptr;
 }
 
-COverlayCodecWebVTT::~COverlayCodecWebVTT()
-{
-  Dispose();
-}
-
 bool COverlayCodecWebVTT::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
 {
-  Dispose();
+  m_pOverlay.reset();
 
   if (!Initialize())
     return false;
@@ -59,15 +54,6 @@ bool COverlayCodecWebVTT::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
   }
 
   return true;
-}
-
-void COverlayCodecWebVTT::Dispose()
-{
-  if (m_pOverlay)
-  {
-    m_pOverlay->Release();
-    m_pOverlay = nullptr;
-  }
 }
 
 OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
@@ -147,22 +133,18 @@ void COverlayCodecWebVTT::Flush()
 {
   if (m_allowFlush)
   {
-    if (m_pOverlay)
-    {
-      m_pOverlay->Release();
-      m_pOverlay = nullptr;
-    }
+    m_pOverlay.reset();
     m_previousSubIds.clear();
     FlushSubtitles();
   }
 }
 
-CDVDOverlay* COverlayCodecWebVTT::GetOverlay()
+std::shared_ptr<CDVDOverlay> COverlayCodecWebVTT::GetOverlay()
 {
   if (m_pOverlay)
     return nullptr;
   m_pOverlay = CreateOverlay();
   m_pOverlay->SetOverlayContainerFlushable(m_allowFlush);
   m_pOverlay->SetForcedMargins(m_webvttHandler.IsForcedMargins());
-  return m_pOverlay->Acquire();
+  return m_pOverlay;
 }

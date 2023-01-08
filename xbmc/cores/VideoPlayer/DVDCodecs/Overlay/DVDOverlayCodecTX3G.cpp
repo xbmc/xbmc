@@ -81,28 +81,14 @@ CDVDOverlayCodecTX3G::CDVDOverlayCodecTX3G() : CDVDOverlayCodec("TX3G Subtitle D
 {
 }
 
-CDVDOverlayCodecTX3G::~CDVDOverlayCodecTX3G()
-{
-  Dispose();
-}
-
 bool CDVDOverlayCodecTX3G::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
 {
   if (hints.codec != AV_CODEC_ID_MOV_TEXT)
     return false;
 
-  Dispose();
+  m_pOverlay.reset();
 
   return Initialize();
-}
-
-void CDVDOverlayCodecTX3G::Dispose()
-{
-  if (m_pOverlay)
-  {
-    m_pOverlay->Release();
-    m_pOverlay = nullptr;
-  }
 }
 
 OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
@@ -262,25 +248,19 @@ void CDVDOverlayCodecTX3G::PostProcess(std::string& text)
 
 void CDVDOverlayCodecTX3G::Reset()
 {
-  Dispose();
   Flush();
 }
 
 void CDVDOverlayCodecTX3G::Flush()
 {
-  if (m_pOverlay)
-  {
-    m_pOverlay->Release();
-    m_pOverlay = nullptr;
-  }
-
+  m_pOverlay.reset();
   FlushSubtitles();
 }
 
-CDVDOverlay* CDVDOverlayCodecTX3G::GetOverlay()
+std::shared_ptr<CDVDOverlay> CDVDOverlayCodecTX3G::GetOverlay()
 {
   if (m_pOverlay)
     return nullptr;
   m_pOverlay = CreateOverlay();
-  return m_pOverlay->Acquire();
+  return m_pOverlay;
 }

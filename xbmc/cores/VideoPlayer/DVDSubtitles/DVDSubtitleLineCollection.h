@@ -12,7 +12,7 @@
 
 typedef struct stListElement
 {
-  CDVDOverlay* pOverlay;
+  std::shared_ptr<CDVDOverlay> pOverlay;
   struct stListElement* pNext;
 
 } ListElement;
@@ -26,10 +26,10 @@ public:
   //void Lock()   { EnterCriticalSection(&m_critSection); }
   //void Unlock() { LeaveCriticalSection(&m_critSection); }
 
-  void Add(CDVDOverlay* pSubtitle);
+  void Add(std::shared_ptr<CDVDOverlay> pSubtitle);
   void Sort();
 
-  CDVDOverlay* Get(double iPts = 0LL); // get the first overlay in this fifo
+  std::shared_ptr<CDVDOverlay> Get(double iPts = 0LL); // get the first overlay in this fifo
 
   void Reset();
 
