@@ -19,16 +19,21 @@ namespace SINK
 namespace PIPEWIRE
 {
 
+class CPipewireContext;
+
 class CPipewireCore
 {
 public:
-  explicit CPipewireCore(pw_context* context);
+  explicit CPipewireCore(CPipewireContext& context);
   CPipewireCore() = delete;
   ~CPipewireCore();
 
   pw_core* Get() const { return m_core.get(); }
 
+  CPipewireContext& GetContext() const { return m_context; }
+
   void AddListener(void* userdata);
+
   void Sync();
   int GetSync() const { return m_sync; }
 
@@ -36,6 +41,8 @@ private:
   static void OnCoreDone(void* userdata, uint32_t id, int seq);
 
   static pw_core_events CreateCoreEvents();
+
+  CPipewireContext& m_context;
 
   const pw_core_events m_coreEvents;
 
