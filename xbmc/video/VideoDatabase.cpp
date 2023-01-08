@@ -8251,7 +8251,8 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
 
       AddonPtr addon;
       if (!scraperID.empty() &&
-          CServiceBroker::GetAddonMgr().GetAddon(scraperID, addon, ADDON::OnlyEnabled::CHOICE_YES))
+          CServiceBroker::GetAddonMgr().GetAddon(scraperID, addon, ScraperTypeFromContent(content),
+                                                 ADDON::OnlyEnabled::CHOICE_YES))
       {
         scraper = std::dynamic_pointer_cast<CScraper>(addon);
         if (!scraper)
@@ -8299,7 +8300,8 @@ ScraperPtr CVideoDatabase::GetScraperForPath(const std::string& strPath, SScanSe
           AddonPtr addon;
           if (content != CONTENT_NONE &&
               CServiceBroker::GetAddonMgr().GetAddon(m_pDS->fv("path.strScraper").get_asString(),
-                                                     addon, ADDON::OnlyEnabled::CHOICE_YES))
+                                                     addon, ScraperTypeFromContent(content),
+                                                     ADDON::OnlyEnabled::CHOICE_YES))
           {
             scraper = std::dynamic_pointer_cast<CScraper>(addon);
             scraper->SetPathSettings(content, m_pDS->fv("path.strSettings").get_asString());
@@ -10625,13 +10627,15 @@ void CVideoDatabase::ImportFromXML(const std::string &path)
       { // check the scraper exists, if so store the path
         AddonPtr addon;
         std::string id;
+        CONTENT_TYPE content_type = TranslateContent(content);
         XMLUtils::GetString(path,"scraperpath",id);
-        if (CServiceBroker::GetAddonMgr().GetAddon(id, addon, ADDON::OnlyEnabled::CHOICE_YES))
+        if (CServiceBroker::GetAddonMgr().GetAddon(id, addon, ScraperTypeFromContent(content_type),
+                                                   ADDON::OnlyEnabled::CHOICE_YES))
         {
           SScanSettings settings;
           ScraperPtr scraper = std::dynamic_pointer_cast<CScraper>(addon);
           // FIXME: scraper settings are not exported?
-          scraper->SetPathSettings(TranslateContent(content), "");
+          scraper->SetPathSettings(content_type, "");
           XMLUtils::GetInt(path,"scanrecursive",settings.recurse);
           XMLUtils::GetBoolean(path,"usefoldernames",settings.parent_name);
           SetScraperForPath(strPath,scraper,settings);

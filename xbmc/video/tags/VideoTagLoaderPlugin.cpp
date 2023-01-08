@@ -10,12 +10,15 @@
 
 #include "FileItem.h"
 #include "URL.h"
+#include "filesystem/Directory.h"
 #include "filesystem/PluginDirectory.h"
 
 using namespace XFILE;
 
-CVideoTagLoaderPlugin::CVideoTagLoaderPlugin(const CFileItem& item, bool forceRefresh)
-  : IVideoInfoTagLoader(item, nullptr, false), m_force_refresh(forceRefresh)
+CVideoTagLoaderPlugin::CVideoTagLoaderPlugin(const CFileItem& item,
+                                             bool forceRefresh,
+                                             ADDON::AddonType addonType)
+  : IVideoInfoTagLoader(item, nullptr, false), m_force_refresh(forceRefresh), m_addonType(addonType)
 {
   if (forceRefresh)
     return;
@@ -41,7 +44,7 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderPlugin::Load(CVideoInfoTag& tag, bool, st
     // We cannot obtain all info from setResolvedUrl, because CPluginDirectory::GetPluginResult doesn't copy full art
     CURL url(m_item.GetPath());
     url.SetOption("kodi_action", "refresh_info");
-    CPluginDirectory plugin;
+    CPluginDirectory plugin(m_addonType);
     CFileItemList items;
     if (!plugin.GetDirectory(url, items))
       return CInfoScanner::ERROR_NFO;

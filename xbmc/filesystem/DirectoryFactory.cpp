@@ -92,7 +92,7 @@ using namespace XFILE;
  \return IDirectory object to access the directories on the share.
  \sa IDirectory
  */
-IDirectory* CDirectoryFactory::Create(const CURL& url)
+IDirectory* CDirectoryFactory::Create(const CURL& url, ADDON::AddonType addonType)
 {
   if (!CWakeOnAccess::GetInstance().WakeUpHost(url))
     return NULL;
@@ -139,7 +139,8 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #if defined(HAS_UDFREAD)
   if (url.IsProtocol("udf")) return new CUDFDirectory();
 #endif
-  if (url.IsProtocol("plugin")) return new CPluginDirectory();
+  if (url.IsProtocol("plugin"))
+    return new CPluginDirectory(addonType);
 #if defined(TARGET_ANDROID)
   if (url.IsProtocol("apk")) return new CAPKDirectory();
 #endif

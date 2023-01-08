@@ -20,7 +20,7 @@
 class CVideoTagLoaderPlugin : public VIDEO::IVideoInfoTagLoader
 {
 public:
-  CVideoTagLoaderPlugin(const CFileItem& item, bool forceRefresh);
+  CVideoTagLoaderPlugin(const CFileItem& item, bool forceRefresh, ADDON::AddonType addonType);
 
   ~CVideoTagLoaderPlugin() override = default;
 
@@ -40,4 +40,5 @@ protected:
   std::unique_ptr<CVideoInfoTag> m_tag;
   std::unique_ptr<std::map<std::string, std::string>> m_art;
   bool m_force_refresh;
+  ADDON::AddonType m_addonType;
 };

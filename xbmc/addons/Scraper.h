@@ -139,6 +139,9 @@ public:
     const std::string &sSearch, CArtist &artist);
   bool GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details);
 
+  AddonType MainType() const override { return m_addonType; }
+  AddonType Type() const override { return m_addonType; }
+
 private:
   CScraper(const CScraper &rhs) = delete;
   CScraper& operator=(const CScraper&) = delete;
@@ -176,6 +179,7 @@ private:
   CDateTimeSpan m_persistence;
   CONTENT_TYPE m_pathContent;
   CScraperParser m_parser;
+  ADDON::AddonType m_addonType;
 };
 
 }
