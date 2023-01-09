@@ -167,7 +167,7 @@ CDateTime::CDateTime()
 
 CDateTime::CDateTime(const CDateTime& time) : m_time(time.m_time)
 {
-  m_state=time.m_state;
+  m_state = time.m_state;
 }
 
 CDateTime::CDateTime(const time_t& time)
@@ -217,7 +217,7 @@ CDateTime CDateTime::GetUTCDateTime()
   return CDateTime(std::chrono::system_clock::now());
 }
 
-const CDateTime& CDateTime::operator =(const time_t& right)
+const CDateTime& CDateTime::operator=(const time_t& right)
 {
   Reset();
   m_time += std::chrono::duration<long double>(right);
@@ -226,7 +226,7 @@ const CDateTime& CDateTime::operator =(const time_t& right)
   return *this;
 }
 
-const CDateTime& CDateTime::operator =(const tm& right)
+const CDateTime& CDateTime::operator=(const tm& right)
 {
   Reset();
 
@@ -282,68 +282,68 @@ bool CDateTime::operator !=(const CDateTime& right) const
   return !operator ==(right);
 }
 
-bool CDateTime::operator >(const time_t& right) const
+bool CDateTime::operator>(const time_t& right) const
 {
   return m_time >
          std::chrono::system_clock::from_time_t(0) + std::chrono::duration<long double>(right);
 }
 
-bool CDateTime::operator >=(const time_t& right) const
+bool CDateTime::operator>=(const time_t& right) const
 {
   return operator >(right) || operator ==(right);
 }
 
-bool CDateTime::operator <(const time_t& right) const
+bool CDateTime::operator<(const time_t& right) const
 {
   return m_time <
          std::chrono::system_clock::from_time_t(0) + std::chrono::duration<long double>(right);
 }
 
-bool CDateTime::operator <=(const time_t& right) const
+bool CDateTime::operator<=(const time_t& right) const
 {
   return operator <(right) || operator ==(right);
 }
 
-bool CDateTime::operator ==(const time_t& right) const
+bool CDateTime::operator==(const time_t& right) const
 {
   return m_time ==
          std::chrono::system_clock::from_time_t(0) + std::chrono::duration<long double>(right);
 }
 
-bool CDateTime::operator !=(const time_t& right) const
+bool CDateTime::operator!=(const time_t& right) const
 {
   return !operator ==(right);
 }
 
-bool CDateTime::operator >(const tm& right) const
+bool CDateTime::operator>(const tm& right) const
 {
   CDateTime temp(right);
   return m_time > temp.m_time;
 }
 
-bool CDateTime::operator >=(const tm& right) const
+bool CDateTime::operator>=(const tm& right) const
 {
   return operator >(right) || operator ==(right);
 }
 
-bool CDateTime::operator <(const tm& right) const
+bool CDateTime::operator<(const tm& right) const
 {
   CDateTime temp(right);
   return m_time < temp.m_time;
 }
 
-bool CDateTime::operator <=(const tm& right) const
+bool CDateTime::operator<=(const tm& right) const
 {
   return operator <(right) || operator ==(right);
 }
 
-bool CDateTime::operator ==(const tm& right) const
+bool CDateTime::operator==(const tm& right) const
 {
   CDateTime temp(right);
   return m_time == temp.m_time;
 }
 
-bool CDateTime::operator !=(const tm& right) const
+bool CDateTime::operator!=(const tm& right) const
 {
   return !operator ==(right);
 }
