@@ -44,7 +44,7 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderPlugin::Load(CVideoInfoTag& tag, bool, st
     // We cannot obtain all info from setResolvedUrl, because CPluginDirectory::GetPluginResult doesn't copy full art
     CURL url(m_item.GetPath());
     url.SetOption("kodi_action", "refresh_info");
-    CPluginDirectory plugin(m_addonType);
+    CPluginDirectory plugin(ADDON::CAddonType(m_addonType).ToNumericString());
     CFileItemList items;
     if (!plugin.GetDirectory(url, items))
       return CInfoScanner::ERROR_NFO;

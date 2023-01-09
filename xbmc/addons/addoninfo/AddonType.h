@@ -78,8 +78,10 @@ class CAddonType : public CAddonExtensions
 {
 public:
   CAddonType(AddonType type = AddonType::UNKNOWN) : m_type(type) {}
+  CAddonType(const std::string& type);
 
   AddonType Type() const { return m_type; }
+  std::string ToNumericString() const;
   std::string LibPath() const;
   const std::string& LibName() const { return m_libname; }
 

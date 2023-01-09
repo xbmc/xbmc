@@ -14,7 +14,6 @@
 #include "interfaces/generic/RunningScriptsHandler.h"
 #include "threads/Event.h"
 
-#include <any>
 #include <atomic>
 #include <memory>
 #include <string>
@@ -29,7 +28,7 @@ namespace XFILE
 class CPluginDirectory : public IDirectory, public CRunningScriptsHandler<CPluginDirectory>
 {
 public:
-  CPluginDirectory(const std::any& addonType);
+  CPluginDirectory(const std::string& addonTypeStr);
   ~CPluginDirectory(void) override;
   bool GetDirectory(const CURL& url, CFileItemList& items) override;
   bool AllowAll() const override { return true; }

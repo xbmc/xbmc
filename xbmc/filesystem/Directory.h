@@ -10,7 +10,6 @@
 
 #include "IDirectory.h"
 
-#include <any>
 #include <memory>
 #include <string>
 
@@ -31,7 +30,6 @@ public:
   public:
     std::string mask;
     int flags = DIR_FLAG_DEFAULTS;
-    std::any createHint;
   };
 
   static bool GetDirectory(const CURL& url

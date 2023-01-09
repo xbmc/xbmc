@@ -10,8 +10,6 @@
 
 #include "IDirectory.h"
 
-#include <any>
-
 namespace XFILE
 {
 /*!
@@ -36,6 +34,6 @@ namespace XFILE
 class CDirectoryFactory
 {
 public:
-  static IDirectory* Create(const CURL& url, const std::any& hint = {});
+  static IDirectory* Create(const CURL& url);
 };
 }

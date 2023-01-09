@@ -54,18 +54,12 @@ std::string GetOriginalPluginPath(const CFileItem& item)
 }
 } // unnamed namespace
 
-CPluginDirectory::CPluginDirectory(const std::any& addonType)
+CPluginDirectory::CPluginDirectory(const std::string& addonTypeStr)
   : m_listItems(new CFileItemList),
     m_fileResult(new CFileItem),
     m_cancelled(false),
-    m_addonType(AddonType::UNKNOWN)
-
+    m_addonType(CAddonType(addonTypeStr).Type())
 {
-  auto addonTypePtr = std::any_cast<AddonType>(&addonType);
-  if (addonTypePtr)
-  {
-    m_addonType = *addonTypePtr;
-  }
 }
 
 CPluginDirectory::~CPluginDirectory(void)
@@ -156,7 +150,7 @@ bool CPluginDirectory::GetPluginResult(const std::string& strPath,
                                        ADDON::AddonType addonType)
 {
   CURL url(strPath);
-  CPluginDirectory newDir(addonType);
+  CPluginDirectory newDir(CAddonType(addonType).ToNumericString());
 
   bool success = newDir.StartScript(strPath, resume);
 

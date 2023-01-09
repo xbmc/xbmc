@@ -23,6 +23,30 @@ static const std::set<AddonType> dependencyTypes = {
 
 using namespace ADDON;
 
+CAddonType::CAddonType(const std::string& type) : m_type(AddonType::UNKNOWN)
+{
+  if (!type.empty())
+  {
+    try
+    {
+      auto val = std::stoi(type);
+      if (val >= static_cast<int>(AddonType::UNKNOWN) &&
+          val < static_cast<int>(AddonType::MAX_TYPES))
+      {
+        m_type = static_cast<AddonType>(val);
+      }
+    }
+    catch (std::exception&)
+    {
+    }
+  }
+}
+
+std::string CAddonType::ToNumericString() const
+{
+  return std::to_string(static_cast<int>(m_type));
+}
+
 std::string CAddonType::LibPath() const
 {
   if (m_libname.empty())
