@@ -1135,7 +1135,7 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
     if (lsym && rsym)
     {
       if (lc != rc)
-        return lc - rc;
+        return static_cast<int64_t>(lc) - static_cast<int64_t>(rc);
       else
       { // Same symbol advance to next wchar
         l++;
@@ -1312,7 +1312,7 @@ int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, 
     if (lsym && rsym)
     {
       if (zA[i] != zB[j])
-        return zA[i] - zB[j];
+        return static_cast<int>(zA[i]) - static_cast<int>(zB[j]);
       else
       { // Same symbol advance to next
         i++;
@@ -1345,7 +1345,7 @@ int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, 
     {
       if (!g_langInfo.UseLocaleCollation() || (lc <= 128 && rc <= 128))
         // Compare unicode (having applied accent folding collation to non-ascii chars).
-        return lc - rc;
+        return static_cast<int>(lc) - static_cast<int>(rc);
       else
       {
         // Fetch collation facet from locale to do comparison of wide char although on some
