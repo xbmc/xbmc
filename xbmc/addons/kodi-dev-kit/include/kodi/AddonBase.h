@@ -132,8 +132,6 @@ public:
 
   const CStructHdl& operator=(const CStructHdl& right)
   {
-    assert(&right.m_cStructure);
-
     if (this == &right)
       return *this;
 
