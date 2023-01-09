@@ -158,11 +158,14 @@ bool CWinSystemWayland::InitWindowSystem()
   wayland::set_log_handler([](const std::string& message)
                            { CLog::Log(LOGWARNING, "wayland-client log message: {}", message); });
 
+  CLog::LogF(LOGINFO, "Connecting to Wayland server");
+  m_connection = std::make_unique<CConnection>();
+  if (!m_connection->HasDisplay())
+    return false;
+
   VIDEOPLAYER::CProcessInfoWayland::Register();
   RETRO::CRPProcessInfoWayland::Register();
 
-  CLog::LogF(LOGINFO, "Connecting to Wayland server");
-  m_connection.reset(new CConnection);
   m_registry.reset(new CRegistry{*m_connection});
 
   m_registry->RequestSingleton(m_compositor, 1, 4);

@@ -27,6 +27,7 @@ class CConnection
 public:
   CConnection();
 
+  bool HasDisplay() const;
   wayland::display_t& GetDisplay();
 
 private:
