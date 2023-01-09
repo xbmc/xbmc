@@ -207,7 +207,7 @@ void CScraper::ClearCache()
   {
     CFileItemList items;
     XFILE::CDirectory::CHints hints;
-    hints.other = Type();
+    hints.createHint = Type();
     CDirectory::GetDirectory(strCachePath, items, hints);
     for (int i = 0; i < items.Size(); ++i)
     {
@@ -438,7 +438,7 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
 
     CFileItemList items;
     XFILE::CDirectory::CHints hints;
-    hints.other = Type();
+    hints.createHint = Type();
     if (!XFILE::CDirectory::GetDirectory(str.str(), items, hints))
       return scurlRet;
 
@@ -682,7 +682,7 @@ static std::vector<T> PythonFind(const std::string& ID,
     str << "&" << it.first << "=" << CURL::Encode(it.second);
 
   XFILE::CDirectory::CHints hints;
-  hints.other = addonType;
+  hints.createHint = addonType;
   if (XFILE::CDirectory::GetDirectory(str.str(), items, hints))
   {
     for (const auto& it : items)
@@ -1241,7 +1241,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl 
 
     CFileItemList items;
     XFILE::CDirectory::CHints hints;
-    hints.other = Type();
+    hints.createHint = Type();
     if (!XFILE::CDirectory::GetDirectory(str.str(), items, hints))
       return vcep;
 

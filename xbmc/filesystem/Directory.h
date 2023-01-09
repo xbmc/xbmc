@@ -31,7 +31,7 @@ public:
   public:
     std::string mask;
     int flags = DIR_FLAG_DEFAULTS;
-    std::any other;
+    std::any createHint;
   };
 
   static bool GetDirectory(const CURL& url
