@@ -8,13 +8,28 @@
 
 #include "Connection.h"
 
+#include "utils/log.h"
+
 #include <cassert>
+#include <stdexcept>
 
 using namespace KODI::WINDOWING::WAYLAND;
 
 CConnection::CConnection()
 {
-  m_display.reset(new wayland::display_t);
+  try
+  {
+    m_display = std::make_unique<wayland::display_t>();
+  }
+  catch (const std::exception& err)
+  {
+    CLog::Log(LOGERROR, "Wayland connection error: {}", err.what());
+  }
+}
+
+bool CConnection::HasDisplay() const
+{
+  return static_cast<bool>(m_display);
 }
 
 wayland::display_t& CConnection::GetDisplay()
