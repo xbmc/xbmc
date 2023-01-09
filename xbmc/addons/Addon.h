@@ -468,6 +468,15 @@ protected:
    */
   virtual bool SettingsToXML(CXBMCTinyXML& doc, AddonInstanceId id = ADDON_SETTINGS_ID) const;
 
+  /*!
+   * \brief Set the addon type
+   *
+   * \param[in] type The type of the addon to set
+   *
+   * \sa SetType
+   */
+  virtual void SetType(AddonType type) { m_type = type; }
+
   const AddonInfoPtr m_addonInfo;
 
 private:
@@ -484,7 +493,7 @@ private:
   std::shared_ptr<CAddonSettings> FindInstanceSettings(AddonInstanceId id) const;
 
   mutable std::unordered_map<AddonInstanceId, CSettingsData> m_settings;
-  const AddonType m_type;
+  AddonType m_type;
 };
 
 }; // namespace ADDON
