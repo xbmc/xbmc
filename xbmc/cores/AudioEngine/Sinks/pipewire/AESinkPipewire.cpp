@@ -20,7 +20,9 @@
 #include "utils/log.h"
 
 #include <pipewire/keys.h>
+#include <spa/param/audio/format-utils.h>
 #include <spa/param/audio/raw.h>
+#include <spa/pod/builder.h>
 
 using namespace std::chrono_literals;
 
@@ -361,10 +363,17 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   for (size_t index = 0; index < pwChannels.size(); index++)
     info.position[index] = pwChannels[index];
 
+  std::array<uint8_t, 1024> buffer;
+  auto builder = SPA_POD_BUILDER_INIT(buffer.data(), buffer.size());
+
+  std::vector<const spa_pod*> params;
+
+  params.emplace_back(spa_format_audio_raw_build(&builder, SPA_PARAM_EnumFormat, &info));
+
   pw_stream_flags flags = static_cast<pw_stream_flags>(
       PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_INACTIVE | PW_STREAM_FLAG_MAP_BUFFERS);
 
-  if (!stream->Connect(id, info, flags))
+  if (!stream->Connect(id, params, flags))
   {
     loop->Unlock();
     return false;
