@@ -44,11 +44,11 @@ void CPipewireStream::AddListener(void* userdata)
 }
 
 bool CPipewireStream::Connect(uint32_t id,
+                              const pw_direction& direction,
                               std::vector<const spa_pod*>& params,
                               const pw_stream_flags& flags)
 {
-  int ret = pw_stream_connect(m_stream.get(), PW_DIRECTION_OUTPUT, id, flags, params.data(),
-                              params.size());
+  int ret = pw_stream_connect(m_stream.get(), direction, id, flags, params.data(), params.size());
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CPipewireStream: failed to connect stream: {}", spa_strerror(errno));
