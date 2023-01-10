@@ -9,10 +9,10 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include <pipewire/core.h>
 #include <pipewire/stream.h>
-#include <spa/param/audio/raw.h>
 
 namespace AE
 {
@@ -31,7 +31,7 @@ public:
   pw_stream* Get() const { return m_stream.get(); }
 
   void AddListener(void* userdata);
-  bool Connect(uint32_t id, spa_audio_info_raw& info, const pw_stream_flags& flags);
+  bool Connect(uint32_t id, std::vector<const spa_pod*>& params, const pw_stream_flags& flags);
 
   pw_stream_state GetState();
   void SetActive(bool active);

@@ -14,8 +14,6 @@
 
 #include <stdexcept>
 
-#include <spa/param/audio/format-utils.h>
-#include <spa/pod/builder.h>
 #include <spa/utils/result.h>
 
 namespace AE
@@ -45,14 +43,12 @@ void CPipewireStream::AddListener(void* userdata)
   pw_stream_add_listener(m_stream.get(), &m_streamListener, &m_streamEvents, userdata);
 }
 
-bool CPipewireStream::Connect(uint32_t id, spa_audio_info_raw& info, const pw_stream_flags& flags)
+bool CPipewireStream::Connect(uint32_t id,
+                              std::vector<const spa_pod*>& params,
+                              const pw_stream_flags& flags)
 {
-  std::array<uint8_t, 1024> buffer;
-  auto builder = SPA_POD_BUILDER_INIT(buffer.data(), buffer.size());
-  auto params = spa_format_audio_raw_build(&builder, SPA_PARAM_EnumFormat, &info);
-
-  int ret = pw_stream_connect(m_stream.get(), PW_DIRECTION_OUTPUT, id, flags,
-                              const_cast<const spa_pod**>(&params), 1);
+  int ret = pw_stream_connect(m_stream.get(), PW_DIRECTION_OUTPUT, id, flags, params.data(),
+                              params.size());
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CPipewireStream: failed to connect stream: {}", spa_strerror(errno));
