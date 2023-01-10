@@ -29,13 +29,14 @@ public:
   CHTTPPythonWsgiInvoker(ILanguageInvocationHandler* invocationHandler, HTTPPythonRequest* request);
   ~CHTTPPythonWsgiInvoker() override;
 
+  static void GlobalInitializeModules(void);
+
   // implementations of CHTTPPythonInvoker
   HTTPPythonRequest* GetRequest() override;
 
 protected:
   // overrides of CPythonInvoker
   void executeScript(FILE* fp, const std::string& script, PyObject* moduleDict) override;
-  std::map<std::string, PythonModuleInitialization> getModules() const override;
   const char* getInitializationScript() const override;
 
 private:

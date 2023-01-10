@@ -34,6 +34,10 @@
 #include "platform/Environment.h"
 #endif
 
+#ifdef HAS_WEB_INTERFACE
+#include "network/httprequesthandler/python/HTTPPythonWsgiInvoker.h"
+#endif
+
 #include <algorithm>
 
 // Only required for Py3 < 3.7
@@ -50,6 +54,14 @@ XBPython::~XBPython()
 {
   XBMC_TRACE;
   CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
+
+#if PY_VERSION_HEX >= 0x03070000
+  if (Py_IsInitialized())
+  {
+    PyThreadState_Swap(PyInterpreterState_ThreadHead(PyInterpreterState_Main()));
+    Py_Finalize();
+  }
+#endif
 }
 
 #define LOCK_AND_COPY(type, dest, src) \
@@ -516,6 +528,14 @@ bool XBPython::OnScriptInitialized(ILanguageInvoker* invoker)
     Py_SetPath(pythonPathW.c_str());
 
     Py_OptimizeFlag = 1;
+#endif
+
+    // *::GlobalInitializeModules() functions call PyImport_ExtendInittab(). PyImport_ExtendInittab() should
+    // be called before Py_Initialize() as required by the Python documentation.
+    CAddonPythonInvoker::GlobalInitializeModules();
+
+#ifdef HAS_WEB_INTERFACE
+    CHTTPPythonWsgiInvoker::GlobalInitializeModules();
 #endif
 
     Py_Initialize();
