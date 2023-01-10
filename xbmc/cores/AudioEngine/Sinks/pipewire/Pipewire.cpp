@@ -38,7 +38,6 @@ CPipewire::~CPipewire()
     m_loop->Stop();
   }
 
-  m_stream.reset();
   m_registry.reset();
   m_core.reset();
   m_context.reset();
