@@ -3756,7 +3756,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   if(m_CurrentVideo.id < 0 ||
      m_CurrentVideo.hint != hint)
   {
-    if (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264)
+    if (m_pCCDemuxer)
       m_pCCDemuxer.reset();
 
     if (!player->OpenStream(hint))
@@ -3786,8 +3786,8 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   static_cast<IDVDStreamPlayerVideo*>(player)->SendMessage(
       std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_REQUEST_STATE), 1);
 
-  // open CC demuxer if video is mpeg2
-  if ((hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264) && !m_pCCDemuxer)
+  // open CC demuxer (video may have ATSC a53 side data)
+  if (!m_pCCDemuxer)
   {
     m_pCCDemuxer = std::make_unique<CDVDDemuxCC>(hint.codec);
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_VIDEOMUX);
