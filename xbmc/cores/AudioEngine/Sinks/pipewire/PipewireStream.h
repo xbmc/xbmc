@@ -31,7 +31,10 @@ public:
   pw_stream* Get() const { return m_stream.get(); }
 
   void AddListener(void* userdata);
-  bool Connect(uint32_t id, std::vector<const spa_pod*>& params, const pw_stream_flags& flags);
+  bool Connect(uint32_t id,
+               const pw_direction& direction,
+               std::vector<const spa_pod*>& params,
+               const pw_stream_flags& flags);
 
   pw_stream_state GetState();
   void SetActive(bool active);
