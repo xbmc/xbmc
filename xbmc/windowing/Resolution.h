@@ -62,23 +62,54 @@ struct EdgeInsets
   EdgeInsets(float l, float t, float r, float b);
 };
 
+//! @brief Provide info of a resolution
 struct RESOLUTION_INFO
 {
+  //!< Screen overscan boundary
   OVERSCAN Overscan;
+
+  //!< Edge insets to scale the GUI to prevent the display notch from hiding a part of the GUI
   EdgeInsets guiInsets;
+
+  //!< Specify if it is a fullscreen resolution, otherwise windowed
   bool bFullScreen;
+
+  //!< Width GUI resolution, may differ from the screen value if GUI resolution limit or 3D is set
   int iWidth;
+
+  //!< Height GUI resolution, may differ from the screen value if GUI resolution limit or 3D is set
   int iHeight;
-  int iBlanking; /**< number of pixels of padding between stereoscopic frames */
+
+  //!< Number of pixels of padding between stereoscopic frames
+  int iBlanking;
+
+  //!< Screen width
   int iScreenWidth;
+
+  //!< Screen height
   int iScreenHeight;
+
+  //!< The vertical subtitle baseline position, may be changed by Video calibration
   int iSubtitles;
+
+  //!< Properties of the resolution e.g. interlaced mode
   uint32_t dwFlags;
+
+  //!< Pixel aspect ratio
   float fPixelRatio;
+
+  //!< Refresh rate
   float fRefreshRate;
+
+  //!< Resolution mode description
   std::string strMode;
+
+  //!< Resolution output description
   std::string strOutput;
+
+  //!< Resolution ID
   std::string strId;
+
 public:
   RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const std::string &mode = "");
   float DisplayRatio() const;
@@ -94,11 +125,11 @@ public:
   static void PrintWhitelist();
 
   /*!
-   * \brief Get the max allowed resolution, if fullscreen
+   * \brief Get the max allowed screen resolution, if fullscreen
    * \param width [OUT] Max width resolution
    * \param height [OUT] Max height resolution
    */
-  static void GetMaxAllowedResolution(unsigned int& width, unsigned int& height);
+  static void GetMaxAllowedScreenResolution(unsigned int& width, unsigned int& height);
 
 protected:
   static void FindResolutionFromWhitelist(float fps, int width, int height, bool is3D, RESOLUTION &resolution);
