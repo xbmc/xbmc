@@ -320,7 +320,6 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 {
   auto& core = pipewire->GetCore();
   auto& loop = pipewire->GetThreadLoop();
-  auto& stream = pipewire->GetStream();
 
   loop.Lock();
 
@@ -345,7 +344,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
     id = target->first;
   }
 
-  stream = std::make_shared<PIPEWIRE::CPipewireStream>(core);
+  m_stream = std::make_unique<PIPEWIRE::CPipewireStream>(core);
 
   m_latency = DEFAULT_BUFFER_DURATION;
   uint32_t frames = std::nearbyint(DEFAULT_PERIOD_DURATION.count() * format.m_sampleRate);
@@ -359,7 +358,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
       SPA_DICT_ITEM_INIT(PW_KEY_NODE_LATENCY, fraction.c_str())};
 
   auto properties = SPA_DICT_INIT(items.data(), items.size());
-  stream->UpdateProperties(&properties);
+  m_stream->UpdateProperties(&properties);
 
   auto pwFormat = AEFormatToPWFormat(format.m_dataFormat);
   format.m_dataFormat = PWFormatToAEFormat(pwFormat);
@@ -406,7 +405,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
       static_cast<pw_stream_flags>(PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_INACTIVE |
                                    PW_STREAM_FLAG_MAP_BUFFERS | PW_STREAM_FLAG_DRIVER);
 
-  if (!stream->Connect(id, PW_DIRECTION_OUTPUT, params, flags))
+  if (!m_stream->Connect(id, PW_DIRECTION_OUTPUT, params, flags))
   {
     loop.Unlock();
     return false;
@@ -415,7 +414,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   pw_stream_state state;
   do
   {
-    state = stream->GetState();
+    state = m_stream->GetState();
     if (state == PW_STREAM_STATE_PAUSED)
       break;
 
@@ -446,15 +445,14 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 void CAESinkPipewire::Deinitialize()
 {
   auto& loop = pipewire->GetThreadLoop();
-  auto& stream = pipewire->GetStream();
 
   loop.Lock();
 
-  stream->Flush(false);
+  m_stream->Flush(false);
 
   loop.Unlock();
 
-  stream.reset();
+  m_stream.reset();
 }
 
 double CAESinkPipewire::GetCacheTotal()
@@ -467,17 +465,16 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
   const auto start = std::chrono::steady_clock::now();
 
   auto& loop = pipewire->GetThreadLoop();
-  auto& stream = pipewire->GetStream();
 
   loop.Lock();
 
-  if (stream->GetState() == PW_STREAM_STATE_PAUSED)
-    stream->SetActive(true);
+  if (m_stream->GetState() == PW_STREAM_STATE_PAUSED)
+    m_stream->SetActive(true);
 
   pw_buffer* pwBuffer = nullptr;
   while (!pwBuffer)
   {
-    pwBuffer = stream->DequeueBuffer();
+    pwBuffer = m_stream->DequeueBuffer();
     if (pwBuffer)
       break;
 
@@ -504,11 +501,11 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
   spaData->chunk->stride = m_format.m_frameSize;
   spaData->chunk->size = length;
 
-  stream->QueueBuffer(pwBuffer);
+  m_stream->QueueBuffer(pwBuffer);
 
   do
   {
-    pw_time time = stream->GetTime();
+    pw_time time = m_stream->GetTime();
 
     const std::chrono::duration<double, std::ratio<1>> delay =
         PWTimeToAEDelay(time, m_format.m_sampleRate);
@@ -525,7 +522,7 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
   } while (true);
 
-  stream->TriggerProcess();
+  m_stream->TriggerProcess();
 
   loop.Unlock();
 
@@ -535,13 +532,12 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 void CAESinkPipewire::GetDelay(AEDelayStatus& status)
 {
   auto& loop = pipewire->GetThreadLoop();
-  auto& stream = pipewire->GetStream();
 
   loop.Lock();
 
-  pw_stream_state state = stream->GetState();
+  pw_stream_state state = m_stream->GetState();
 
-  pw_time time = stream->GetTime();
+  pw_time time = m_stream->GetTime();
 
   loop.Unlock();
 
@@ -557,11 +553,10 @@ void CAESinkPipewire::GetDelay(AEDelayStatus& status)
 void CAESinkPipewire::Drain()
 {
   auto& loop = pipewire->GetThreadLoop();
-  auto& stream = pipewire->GetStream();
 
   loop.Lock();
 
-  stream->Flush(true);
+  m_stream->Flush(true);
 
   int ret = loop.Wait(1s);
   if (ret == -ETIMEDOUT)
