@@ -84,45 +84,33 @@ PyObject* PyInit_Module_xbmcvfs(void);
 
 using namespace PythonBindings;
 
-typedef struct
+namespace
 {
-  const char *name;
-  CPythonInvoker::PythonModuleInitialization initialization;
-} PythonModule;
-
-static PythonModule PythonModules[] =
+// clang-format off
+const _inittab PythonModules[] =
   {
     { "xbmcdrm",    PyInit_Module_xbmcdrm    },
     { "xbmcgui",    PyInit_Module_xbmcgui    },
     { "xbmc",       PyInit_Module_xbmc       },
     { "xbmcplugin", PyInit_Module_xbmcplugin },
     { "xbmcaddon",  PyInit_Module_xbmcaddon  },
-    { "xbmcvfs",    PyInit_Module_xbmcvfs    }
+    { "xbmcvfs",    PyInit_Module_xbmcvfs    },
+    { nullptr,      nullptr }
   };
+// clang-format on
+} // namespace
 
 CAddonPythonInvoker::CAddonPythonInvoker(ILanguageInvocationHandler *invocationHandler)
   : CPythonInvoker(invocationHandler)
 {
-  PyImport_AppendInittab("xbmcdrm", PyInit_Module_xbmcdrm);
-  PyImport_AppendInittab("xbmcgui", PyInit_Module_xbmcgui);
-  PyImport_AppendInittab("xbmc", PyInit_Module_xbmc);
-  PyImport_AppendInittab("xbmcplugin", PyInit_Module_xbmcplugin);
-  PyImport_AppendInittab("xbmcaddon", PyInit_Module_xbmcaddon);
-  PyImport_AppendInittab("xbmcvfs", PyInit_Module_xbmcvfs);
 }
 
 CAddonPythonInvoker::~CAddonPythonInvoker() = default;
 
-std::map<std::string, CPythonInvoker::PythonModuleInitialization> CAddonPythonInvoker::getModules() const
+void CAddonPythonInvoker::GlobalInitializeModules(void)
 {
-  static std::map<std::string, PythonModuleInitialization> modules;
-  if (modules.empty())
-  {
-    for (const PythonModule& pythonModule : PythonModules)
-      modules.insert(std::make_pair(pythonModule.name, pythonModule.initialization));
-  }
-
-  return modules;
+  if (PyImport_ExtendInittab(const_cast<_inittab*>(PythonModules)))
+    CLog::Log(LOGWARNING, "CAddonPythonInvoker(): unable to extend inittab");
 }
 
 const char* CAddonPythonInvoker::getInitializationScript() const
