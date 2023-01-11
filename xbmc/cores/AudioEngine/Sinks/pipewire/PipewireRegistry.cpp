@@ -78,7 +78,7 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
     globals[id]->version = version;
     globals[id]->properties.reset(pw_properties_new_dict(props));
     globals[id]->proxy = std::make_unique<CPipewireNode>(*registry, id, type);
-    globals[id]->proxy->AddListener(userdata);
+    globals[id]->proxy->AddListener();
   }
 }
 
