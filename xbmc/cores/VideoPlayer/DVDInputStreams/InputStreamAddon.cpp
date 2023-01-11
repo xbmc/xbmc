@@ -530,7 +530,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
 
   if (stream->m_ExtraData && stream->m_ExtraSize)
   {
-    demuxStream->ExtraData = new uint8_t[stream->m_ExtraSize];
+    demuxStream->ExtraData = std::make_unique<uint8_t[]>(stream->m_ExtraSize);
     demuxStream->ExtraSize = stream->m_ExtraSize;
     for (unsigned int j = 0; j < stream->m_ExtraSize; ++j)
       demuxStream->ExtraData[j] = stream->m_ExtraData[j];

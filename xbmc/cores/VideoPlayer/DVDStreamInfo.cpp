@@ -266,7 +266,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     extradata = malloc(extrasize);
     if (!extradata)
       return;
-    memcpy(extradata, right.ExtraData, extrasize);
+    memcpy(extradata, right.ExtraData.get(), extrasize);
   }
 
   cryptoSession = right.cryptoSession;
