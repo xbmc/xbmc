@@ -34,7 +34,7 @@ public:
 
   CPipewireCore& GetCore() const { return m_core; }
 
-  void AddListener(void* userdata);
+  void AddListener();
   bool Connect(uint32_t id,
                const pw_direction& direction,
                std::vector<const spa_pod*>& params,

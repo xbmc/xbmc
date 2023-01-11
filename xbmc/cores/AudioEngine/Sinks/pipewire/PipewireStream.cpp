@@ -8,7 +8,7 @@
 
 #include "PipewireStream.h"
 
-#include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
+#include "cores/AudioEngine/Sinks/pipewire/PipewireContext.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
 #include "utils/log.h"
@@ -40,9 +40,9 @@ CPipewireStream::~CPipewireStream()
   spa_hook_remove(&m_streamListener);
 }
 
-void CPipewireStream::AddListener(void* userdata)
+void CPipewireStream::AddListener()
 {
-  pw_stream_add_listener(m_stream.get(), &m_streamListener, &m_streamEvents, userdata);
+  pw_stream_add_listener(m_stream.get(), &m_streamListener, &m_streamEvents, this);
 }
 
 bool CPipewireStream::Connect(uint32_t id,
@@ -101,9 +101,8 @@ void CPipewireStream::StateChanged(void* userdata,
                                    enum pw_stream_state state,
                                    const char* error)
 {
-  auto pipewire = reinterpret_cast<CPipewire*>(userdata);
-  auto loop = pipewire->GetThreadLoop();
-  auto stream = pipewire->GetStream();
+  auto stream = reinterpret_cast<CPipewireStream*>(userdata);
+  auto loop = &stream->GetCore().GetContext().GetThreadLoop();
 
   CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream state changed {} -> {}", __FUNCTION__,
             pw_stream_state_as_string(old), pw_stream_state_as_string(state));
@@ -120,17 +119,16 @@ void CPipewireStream::StateChanged(void* userdata,
 
 void CPipewireStream::Process(void* userdata)
 {
-  auto pipewire = reinterpret_cast<CPipewire*>(userdata);
-  auto loop = pipewire->GetThreadLoop();
+  auto stream = reinterpret_cast<CPipewireStream*>(userdata);
+  auto loop = &stream->GetCore().GetContext().GetThreadLoop();
 
   loop->Signal(false);
 }
 
 void CPipewireStream::Drained(void* userdata)
 {
-  auto pipewire = reinterpret_cast<CPipewire*>(userdata);
-  auto loop = pipewire->GetThreadLoop();
-  auto stream = pipewire->GetStream();
+  auto stream = reinterpret_cast<CPipewireStream*>(userdata);
+  auto loop = &stream->GetCore().GetContext().GetThreadLoop();
 
   stream->SetActive(false);
 
