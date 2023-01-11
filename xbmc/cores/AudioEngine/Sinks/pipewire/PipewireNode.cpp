@@ -38,8 +38,6 @@ CPipewireNode::~CPipewireNode()
 void CPipewireNode::AddListener()
 {
   pw_proxy_add_object_listener(m_proxy.get(), &m_objectListener, &m_nodeEvents, this);
-
-  CPipewireProxy::AddListener();
 }
 
 void CPipewireNode::EnumerateFormats()
