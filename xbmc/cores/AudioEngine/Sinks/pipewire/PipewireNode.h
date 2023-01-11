@@ -33,8 +33,6 @@ public:
   CPipewireNode() = delete;
   ~CPipewireNode() override;
 
-  void AddListener();
-
   void EnumerateFormats();
 
   pw_node_info* GetInfo() { return m_info.get(); }

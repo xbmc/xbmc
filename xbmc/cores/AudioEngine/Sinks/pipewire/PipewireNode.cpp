@@ -28,16 +28,12 @@ namespace PIPEWIRE
 CPipewireNode::CPipewireNode(CPipewireRegistry& registry, uint32_t id, const char* type)
   : CPipewireProxy(registry, id, type, PW_VERSION_NODE), m_nodeEvents(CreateNodeEvents())
 {
+  pw_proxy_add_object_listener(m_proxy.get(), &m_objectListener, &m_nodeEvents, this);
 }
 
 CPipewireNode::~CPipewireNode()
 {
   spa_hook_remove(&m_objectListener);
-}
-
-void CPipewireNode::AddListener()
-{
-  pw_proxy_add_object_listener(m_proxy.get(), &m_objectListener, &m_nodeEvents, this);
 }
 
 void CPipewireNode::EnumerateFormats()
