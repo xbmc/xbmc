@@ -51,6 +51,16 @@ namespace JSONRPC
 
     static JSONRPC_STATUS PlayPause(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Stop(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSONRPC_STATUS GetAudioDelay(const std::string& method,
+                                        ITransportLayer* transport,
+                                        IClient* client,
+                                        const CVariant& parameterObject,
+                                        CVariant& result);
+    static JSONRPC_STATUS SetAudioDelay(const std::string& method,
+                                        ITransportLayer* transport,
+                                        IClient* client,
+                                        const CVariant& parameterObject,
+                                        CVariant& result);
     static JSONRPC_STATUS SetSpeed(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSONRPC_STATUS Seek(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 

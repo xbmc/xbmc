@@ -271,6 +271,61 @@
     ],
     "returns": "string"
   },
+  "Player.GetAudioDelay": {
+    "type": "method",
+    "description": "Get the audio delay for the current playback",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "number",
+          "description": "The offset value used in the current playback.",
+          "required": true
+        }
+      }
+    }
+  },
+  "Player.SetAudioDelay": {
+    "type": "method",
+    "description": "Set the audio delay for the current playback",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      {
+        "name": "playerid",
+        "$ref": "Player.Id",
+        "required": true
+      },
+      {
+        "name": "offset",
+        "type": [
+          {
+            "type": "number",
+            "description": "The value should be a multiple of 0.025 in a range of +/-10 (the default range can be overriden by advancedsettings.xml).",
+            "required": true
+          },
+          {
+            "$ref": "Global.IncrementDecrement",
+            "required": true
+          }
+        ],
+        "required": true
+      }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "number",
+          "description": "The offset value used in the current playback.",
+          "required": true
+        }
+      }
+    }
+  },
   "Player.SetSpeed": {
     "type": "method",
     "description": "Set the speed of the current playback",

@@ -57,6 +57,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 
   { "Player.PlayPause",                             CPlayerOperations::PlayPause },
   { "Player.Stop",                                  CPlayerOperations::Stop },
+  { "Player.GetAudioDelay",                         CPlayerOperations::GetAudioDelay },
+  { "Player.SetAudioDelay",                         CPlayerOperations::SetAudioDelay },
   { "Player.SetSpeed",                              CPlayerOperations::SetSpeed },
   { "Player.Seek",                                  CPlayerOperations::Seek },
   { "Player.Move",                                  CPlayerOperations::Move },
