@@ -35,16 +35,13 @@ CPipewireProxy::CPipewireProxy(CPipewireRegistry& registry,
     CLog::Log(LOGERROR, "CPipewireProxy: failed to create proxy: {}", strerror(errno));
     throw std::runtime_error("CPipewireProxy: failed to create proxy");
   }
+
+  pw_proxy_add_listener(m_proxy.get(), &m_proxyListener, &m_proxyEvents, this);
 }
 
 CPipewireProxy::~CPipewireProxy()
 {
   spa_hook_remove(&m_proxyListener);
-}
-
-void CPipewireProxy::AddListener()
-{
-  pw_proxy_add_listener(m_proxy.get(), &m_proxyListener, &m_proxyEvents, this);
 }
 
 void CPipewireProxy::Bound(void* userdata, uint32_t id)

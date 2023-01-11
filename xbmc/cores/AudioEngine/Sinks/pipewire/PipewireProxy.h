@@ -27,8 +27,6 @@ public:
   CPipewireProxy() = delete;
   virtual ~CPipewireProxy();
 
-  virtual void AddListener();
-
   CPipewireRegistry& GetRegistry() const { return m_registry; }
 
 protected:
