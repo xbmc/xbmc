@@ -8,7 +8,8 @@
 
 #include "PipewireNode.h"
 
-#include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
+#include "cores/AudioEngine/Sinks/pipewire/PipewireContext.h"
+#include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireRegistry.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
 #include "utils/StringUtils.h"
@@ -34,13 +35,11 @@ CPipewireNode::~CPipewireNode()
   spa_hook_remove(&m_objectListener);
 }
 
-void CPipewireNode::AddListener(void* userdata)
+void CPipewireNode::AddListener()
 {
-  m_pipewire = reinterpret_cast<CPipewire*>(userdata);
-
   pw_proxy_add_object_listener(m_proxy.get(), &m_objectListener, &m_nodeEvents, this);
 
-  CPipewireProxy::AddListener(userdata);
+  CPipewireProxy::AddListener();
 }
 
 void CPipewireNode::EnumerateFormats()
@@ -186,8 +185,7 @@ void CPipewireNode::Param(void* userdata,
                           const struct spa_pod* param)
 {
   auto node = reinterpret_cast<CPipewireNode*>(userdata);
-  auto pipewire = node->GetPipewire();
-  auto loop = pipewire->GetThreadLoop();
+  auto loop = &node->GetRegistry().GetCore().GetContext().GetThreadLoop();
 
   node->Parse(SPA_POD_TYPE(param), SPA_POD_BODY(param), SPA_POD_BODY_SIZE(param));
 
