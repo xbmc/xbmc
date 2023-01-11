@@ -117,40 +117,40 @@ void CPipewireStream::StateChanged(void* userdata,
                                    enum pw_stream_state state,
                                    const char* error)
 {
-  auto stream = reinterpret_cast<CPipewireStream*>(userdata);
-  auto loop = &stream->GetCore().GetContext().GetThreadLoop();
+  auto& stream = *reinterpret_cast<CPipewireStream*>(userdata);
+  auto& loop = stream.GetCore().GetContext().GetThreadLoop();
 
   CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream state changed {} -> {}", __FUNCTION__,
             pw_stream_state_as_string(old), pw_stream_state_as_string(state));
 
   if (state == PW_STREAM_STATE_STREAMING)
-    CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream node {}", __FUNCTION__, stream->GetNodeId());
+    CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream node {}", __FUNCTION__, stream.GetNodeId());
 
   if (state == PW_STREAM_STATE_ERROR)
     CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream node {} error: {}", __FUNCTION__,
-              stream->GetNodeId(), error);
+              stream.GetNodeId(), error);
 
-  loop->Signal(false);
+  loop.Signal(false);
 }
 
 void CPipewireStream::Process(void* userdata)
 {
-  auto stream = reinterpret_cast<CPipewireStream*>(userdata);
-  auto loop = &stream->GetCore().GetContext().GetThreadLoop();
+  auto& stream = *reinterpret_cast<CPipewireStream*>(userdata);
+  auto& loop = stream.GetCore().GetContext().GetThreadLoop();
 
-  loop->Signal(false);
+  loop.Signal(false);
 }
 
 void CPipewireStream::Drained(void* userdata)
 {
-  auto stream = reinterpret_cast<CPipewireStream*>(userdata);
-  auto loop = &stream->GetCore().GetContext().GetThreadLoop();
+  auto& stream = *reinterpret_cast<CPipewireStream*>(userdata);
+  auto& loop = stream.GetCore().GetContext().GetThreadLoop();
 
-  stream->SetActive(false);
+  stream.SetActive(false);
 
   CLog::Log(LOGDEBUG, "CPipewireStream::{}", __FUNCTION__);
 
-  loop->Signal(false);
+  loop.Signal(false);
 }
 
 pw_stream_events CPipewireStream::CreateStreamEvents()
