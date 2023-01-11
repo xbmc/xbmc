@@ -33,7 +33,7 @@ public:
   CPipewireNode() = delete;
   ~CPipewireNode() override;
 
-  void AddListener() override;
+  void AddListener();
 
   void EnumerateFormats();
 
