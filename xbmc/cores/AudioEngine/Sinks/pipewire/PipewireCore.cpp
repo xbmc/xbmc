@@ -30,16 +30,13 @@ CPipewireCore::CPipewireCore(CPipewireContext& context)
     CLog::Log(LOGERROR, "CPipewireCore: failed to create core: {}", strerror(errno));
     throw std::runtime_error("CPipewireCore: failed to create core");
   }
+
+  pw_core_add_listener(m_core.get(), &m_coreListener, &m_coreEvents, this);
 }
 
 CPipewireCore::~CPipewireCore()
 {
   spa_hook_remove(&m_coreListener);
-}
-
-void CPipewireCore::AddListener()
-{
-  pw_core_add_listener(m_core.get(), &m_coreListener, &m_coreEvents, this);
 }
 
 void CPipewireCore::Sync()
