@@ -283,11 +283,17 @@ std::vector<AddonInstanceId> CAddonInfo::GetKnownInstanceIds() const
   if (!m_supportsInstanceSettings)
     return singletonInstance;
 
+  std::vector<AddonInstanceId> ret;
+
+  if (!XFILE::CDirectory::Exists(StringUtils::Format("special://profile/addon_data/{}/", m_id)))
+  {
+    ret.emplace_back(ADDON_FIRST_INSTANCE_ID);
+    return ret;
+  }
+
   const std::string searchPath = StringUtils::Format("special://profile/addon_data/{}/", m_id);
   CFileItemList items;
   XFILE::CDirectory::GetDirectory(searchPath, items, ".xml", XFILE::DIR_FLAG_NO_FILE_DIRS);
-
-  std::vector<AddonInstanceId> ret;
 
   for (const auto& item : items)
   {
