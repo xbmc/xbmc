@@ -42,9 +42,9 @@ CPipewireProxy::~CPipewireProxy()
   spa_hook_remove(&m_proxyListener);
 }
 
-void CPipewireProxy::AddListener(void* userdata)
+void CPipewireProxy::AddListener()
 {
-  pw_proxy_add_listener(m_proxy.get(), &m_proxyListener, &m_proxyEvents, nullptr);
+  pw_proxy_add_listener(m_proxy.get(), &m_proxyListener, &m_proxyEvents, this);
 }
 
 void CPipewireProxy::Bound(void* userdata, uint32_t id)
