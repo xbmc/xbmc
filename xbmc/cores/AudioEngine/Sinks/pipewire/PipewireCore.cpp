@@ -46,11 +46,11 @@ void CPipewireCore::Sync()
 
 void CPipewireCore::OnCoreDone(void* userdata, uint32_t id, int seq)
 {
-  auto core = reinterpret_cast<CPipewireCore*>(userdata);
-  auto loop = &core->GetContext().GetThreadLoop();
+  auto& core = *reinterpret_cast<CPipewireCore*>(userdata);
+  auto& loop = core.GetContext().GetThreadLoop();
 
-  if (core->GetSync() == seq)
-    loop->Signal(false);
+  if (core.GetSync() == seq)
+    loop.Signal(false);
 }
 
 pw_core_events CPipewireCore::CreateCoreEvents()
