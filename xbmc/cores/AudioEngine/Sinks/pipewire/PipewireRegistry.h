@@ -37,7 +37,7 @@ public:
 
   CPipewireCore& GetCore() const { return m_core; }
 
-  void AddListener(void* userdata);
+  void AddListener();
 
   struct PipewirePropertiesDeleter
   {

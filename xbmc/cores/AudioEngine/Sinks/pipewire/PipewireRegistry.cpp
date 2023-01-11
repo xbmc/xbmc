@@ -8,7 +8,6 @@
 
 #include "PipewireRegistry.h"
 
-#include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireNode.h"
 #include "utils/log.h"
@@ -37,9 +36,9 @@ CPipewireRegistry::CPipewireRegistry(CPipewireCore& core)
   }
 }
 
-void CPipewireRegistry::AddListener(void* userdata)
+void CPipewireRegistry::AddListener()
 {
-  pw_registry_add_listener(m_registry.get(), &m_registryListener, &m_registryEvents, userdata);
+  pw_registry_add_listener(m_registry.get(), &m_registryListener, &m_registryEvents, this);
 }
 
 void CPipewireRegistry::OnGlobalAdded(void* userdata,
@@ -49,8 +48,7 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
                                       uint32_t version,
                                       const struct spa_dict* props)
 {
-  auto pipewire = reinterpret_cast<CPipewire*>(userdata);
-  auto registry = pipewire->GetRegistry();
+  auto registry = reinterpret_cast<CPipewireRegistry*>(userdata);
 
   if (strcmp(type, PW_TYPE_INTERFACE_Node) == 0)
   {
@@ -86,8 +84,7 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
 
 void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
 {
-  auto pipewire = reinterpret_cast<CPipewire*>(userdata);
-  auto registry = pipewire->GetRegistry();
+  auto registry = reinterpret_cast<CPipewireRegistry*>(userdata);
   auto& globals = registry->GetGlobals();
 
   auto global = globals.find(id);
