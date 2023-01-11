@@ -32,7 +32,7 @@ public:
 
   CPipewireContext& GetContext() const { return m_context; }
 
-  void AddListener(void* userdata);
+  void AddListener();
 
   void Sync();
   int GetSync() const { return m_sync; }
