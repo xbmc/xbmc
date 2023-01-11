@@ -5568,7 +5568,7 @@ bool CMusicDatabase::GetAlbumFromSong(int idSong, CAlbum& album)
     if (nullptr == m_pDS)
       return false;
 
-    std::string strSQL = PrepareSQL("SELECT albumview.* FROM song"
+    std::string strSQL = PrepareSQL("SELECT albumview.* FROM song "
                                     "JOIN albumview on song.idAlbum = albumview.idAlbum "
                                     "WHERE song.idSong='%i'",
                                     idSong);
