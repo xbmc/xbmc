@@ -62,7 +62,6 @@ bool CPipewire::Start()
   }
 
   m_core = std::make_unique<CPipewireCore>(*m_context);
-  m_core->AddListener();
 
   m_registry = std::make_unique<CPipewireRegistry>(*m_core);
   m_registry->AddListener();
