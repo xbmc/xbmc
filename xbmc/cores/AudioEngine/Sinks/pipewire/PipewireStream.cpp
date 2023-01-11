@@ -33,16 +33,13 @@ CPipewireStream::CPipewireStream(CPipewireCore& core)
     CLog::Log(LOGERROR, "CPipewireStream: failed to create stream: {}", strerror(errno));
     throw std::runtime_error("CPipewireStream: failed to create stream");
   }
+
+  pw_stream_add_listener(m_stream.get(), &m_streamListener, &m_streamEvents, this);
 }
 
 CPipewireStream::~CPipewireStream()
 {
   spa_hook_remove(&m_streamListener);
-}
-
-void CPipewireStream::AddListener()
-{
-  pw_stream_add_listener(m_stream.get(), &m_streamListener, &m_streamEvents, this);
 }
 
 bool CPipewireStream::Connect(uint32_t id,
