@@ -325,7 +325,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
   stream = std::make_shared<PIPEWIRE::CPipewireStream>(*core);
 
-  stream->AddListener(pipewire.get());
+  stream->AddListener();
 
   m_latency = 20; // ms
   uint32_t frames = std::nearbyint((m_latency * format.m_sampleRate) / 1000.0);
