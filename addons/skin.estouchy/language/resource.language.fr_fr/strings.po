@@ -23,7 +23,7 @@ msgstr "Habillage pour les appareils à écran tactile"
 
 msgctxt "Addon Description"
 msgid "Skin designed to be used on touchscreen devices like tablets and smartphones"
-msgstr "[CR]Habillage conçu pour les appareils à écran tactile comme les tablettes et [CR]les téléphones"
+msgstr "[CR]Habillage conçu pour les appareils à écran tactile comme les tablettes et [CR]les téléphones[CR][CR]Habillage conçu pour les appareils à écran tactile comme les tablettes et [CR]les téléphones"
 
 "Habillage conçu pour les appareils à écran tactile comme les tablettes et "
 "les téléphones"
