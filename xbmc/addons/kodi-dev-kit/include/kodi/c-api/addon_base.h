@@ -251,7 +251,7 @@ extern "C"
 
   typedef int KODI_ADDON_INSTANCE_TYPE;
 
-  struct KODI_ADDON_INSTANCE_INFO
+  typedef struct KODI_ADDON_INSTANCE_INFO
   {
     KODI_ADDON_INSTANCE_TYPE type;
     uint32_t number;
@@ -262,7 +262,7 @@ extern "C"
     bool first_instance;
 
     struct KODI_ADDON_INSTANCE_FUNC_CB* functions;
-  };
+  } KODI_ADDON_INSTANCE_INFO;
 
   typedef struct KODI_ADDON_INSTANCE_STRUCT
   {
