@@ -117,8 +117,6 @@ void CThread::Create(bool bAutoDelete)
         // to be set before anything else is done.
         currentThread = pThread;
 
-        bool autodelete;
-
         if (pThread == nullptr)
         {
           CLog::Log(LOGERROR, "{}, sanity failed. thread is NULL.", __FUNCTION__);
@@ -126,19 +124,17 @@ void CThread::Create(bool bAutoDelete)
           return;
         }
 
-        autodelete = pThread->m_bAutoDelete;
-
         pThread->m_impl = IThreadImpl::CreateThreadImpl(pThread->m_thread->native_handle());
         pThread->m_impl->SetThreadInfo(pThread->m_ThreadName);
 
         CLog::Log(LOGDEBUG, "Thread {} start, auto delete: {}", pThread->m_ThreadName,
-                  (autodelete ? "true" : "false"));
+                  (pThread->m_bAutoDelete ? "true" : "false"));
 
         pThread->m_StartEvent.Set();
 
         pThread->Action();
 
-        if (autodelete)
+        if (pThread->m_bAutoDelete)
         {
           CLog::Log(LOGDEBUG, "Thread {} {} terminating (autodelete)", pThread->m_ThreadName,
                     std::this_thread::get_id());
