@@ -30,7 +30,8 @@ void CommonTests(XbmcThreads::EndTime<T>& endTime)
   EXPECT_EQ(T::zero(), endTime.GetTimeLeft());
 
   endTime.SetInfinite();
-  EXPECT_EQ(T::max(), endTime.GetInitialTimeoutValue());
+  EXPECT_GE(T::max(), endTime.GetInitialTimeoutValue());
+  EXPECT_EQ(XbmcThreads::EndTime<T>::Max(), endTime.GetInitialTimeoutValue());
   endTime.SetExpired();
   EXPECT_EQ(T::zero(), endTime.GetInitialTimeoutValue());
 }
