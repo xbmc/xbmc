@@ -127,6 +127,7 @@ public:
 
   static CLog& GetLogging();
   static void CreateLogging();
+  static bool IsLoggingUp();
   static void DestroyLogging();
 
   static std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> GetAnnouncementManager();
