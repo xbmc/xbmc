@@ -22,6 +22,13 @@
 #include <mutex>
 #include <stdlib.h>
 
+#include <fmt/ostream.h>
+
+template<>
+struct fmt::formatter<std::thread::id> : ostream_formatter
+{
+};
+
 static thread_local CThread* currentThread;
 
 //////////////////////////////////////////////////////////////////////
@@ -122,9 +129,6 @@ void CThread::Create(bool bAutoDelete)
 
         name = pThread->m_ThreadName;
 
-        std::stringstream ss;
-        ss << std::this_thread::get_id();
-        std::string id = ss.str();
         autodelete = pThread->m_bAutoDelete;
 
         pThread->m_impl = IThreadImpl::CreateThreadImpl(pThread->m_thread->native_handle());
@@ -139,12 +143,13 @@ void CThread::Create(bool bAutoDelete)
 
         if (autodelete)
         {
-          CLog::Log(LOGDEBUG, "Thread {} {} terminating (autodelete)", name, id);
+          CLog::Log(LOGDEBUG, "Thread {} {} terminating (autodelete)", name,
+                    std::this_thread::get_id());
           delete pThread;
           pThread = NULL;
         }
         else
-          CLog::Log(LOGDEBUG, "Thread {} {} terminating", name, id);
+          CLog::Log(LOGDEBUG, "Thread {} {} terminating", name, std::this_thread::get_id());
       }
       catch (const std::exception& e)
       {
