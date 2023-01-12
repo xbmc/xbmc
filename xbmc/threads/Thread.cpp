@@ -117,7 +117,6 @@ void CThread::Create(bool bAutoDelete)
         // to be set before anything else is done.
         currentThread = pThread;
 
-        std::string name;
         bool autodelete;
 
         if (pThread == nullptr)
@@ -127,14 +126,12 @@ void CThread::Create(bool bAutoDelete)
           return;
         }
 
-        name = pThread->m_ThreadName;
-
         autodelete = pThread->m_bAutoDelete;
 
         pThread->m_impl = IThreadImpl::CreateThreadImpl(pThread->m_thread->native_handle());
-        pThread->m_impl->SetThreadInfo(name);
+        pThread->m_impl->SetThreadInfo(pThread->m_ThreadName);
 
-        CLog::Log(LOGDEBUG, "Thread {} start, auto delete: {}", name,
+        CLog::Log(LOGDEBUG, "Thread {} start, auto delete: {}", pThread->m_ThreadName,
                   (autodelete ? "true" : "false"));
 
         pThread->m_StartEvent.Set();
@@ -143,13 +140,14 @@ void CThread::Create(bool bAutoDelete)
 
         if (autodelete)
         {
-          CLog::Log(LOGDEBUG, "Thread {} {} terminating (autodelete)", name,
+          CLog::Log(LOGDEBUG, "Thread {} {} terminating (autodelete)", pThread->m_ThreadName,
                     std::this_thread::get_id());
           delete pThread;
           pThread = NULL;
         }
         else
-          CLog::Log(LOGDEBUG, "Thread {} {} terminating", name, std::this_thread::get_id());
+          CLog::Log(LOGDEBUG, "Thread {} {} terminating", pThread->m_ThreadName,
+                    std::this_thread::get_id());
       }
       catch (const std::exception& e)
       {
