@@ -48,7 +48,7 @@ import @APP_PACKAGE@.channels.model.Subscription;
 public class TvUtil
 {
 
-  private static final String TAG = "TvUtil";
+  private static final String TAG = "@APP_NAME@";
   private static final int CHANNEL_JOB_ID = 500;
   private static final int CHANNEL_TRIGGERED_JOB_ID_OFFSET = 1000;
   private static final int CHANNEL_TIMED_JOB_ID_OFFSET = 2000;
@@ -87,7 +87,7 @@ public class TvUtil
         {
           Log.d(
                   TAG,
-                  "Channel already exists. Returning channel "
+                  "TvUtil: Channel already exists. Returning channel "
                           + channel.getId()
                           + " from TV Provider.");
           return channel.getId();
@@ -111,7 +111,7 @@ public class TvUtil
             .setDisplayName(subscription.getName())
             .setAppLinkIntent(playlistIntent);
 
-    Log.d(TAG, "Creating channel: " + subscription.getName());
+    Log.d(TAG, "TvUtil: Creating channel: " + subscription.getName());
     Uri channelUrl = null;
     try
     {
@@ -121,16 +121,16 @@ public class TvUtil
                               TvContractCompat.Channels.CONTENT_URI,
                               builder.build().toContentValues());
     } catch (IllegalArgumentException e) {
-      Log.e(TAG, "Failed to add channel to the tv provider");
+      Log.e(TAG, "TvUtil: Failed to add channel to the tv provider");
       e.printStackTrace();
     }
 
     if (channelUrl == null)
       return 0;
 
-    Log.d(TAG, "channel insert at " + channelUrl);
+    Log.d(TAG, "TvUtil: channel insert at " + channelUrl);
     long channelId = ContentUris.parseId(channelUrl);
-    Log.d(TAG, "channel id " + channelId);
+    Log.d(TAG, "TvUtil: channel id " + channelId);
 
     Bitmap bitmap = convertToBitmap(context, subscription.getChannelLogo());
     ChannelLogoUtils.storeChannelLogo(context, channelId, bitmap);
@@ -208,7 +208,7 @@ public class TvUtil
     builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY);
     builder.setMinimumLatency(10000);
 
-    Log.d(TAG, "Scheduled channel creation.");
+    Log.d(TAG, "TvUtil: Scheduled channel creation.");
     scheduler.schedule(builder.build());
   }
 
@@ -269,7 +269,7 @@ public class TvUtil
     builder.setExtras(bundle);
 
     JobInfo job = builder.build();
-    Log.d(TAG, "scheduleTimedSyncingProgramsForChannel: minperiod=" + job.getMinPeriodMillis());
+    Log.d(TAG, "TvUtil: scheduleTimedSyncingProgramsForChannel: minperiod=" + job.getMinPeriodMillis());
 
     scheduler.schedule(job);
   }

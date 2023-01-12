@@ -10,7 +10,7 @@ import android.util.Log;
 
 public class XBMCProperties
 {
-  private static final String TAG = "@APP_NAME@properties";
+  private static final String TAG = "@APP_NAME@";
 
   private static boolean isInitialized()
   {
@@ -24,7 +24,7 @@ public class XBMCProperties
     File fProp = new File(propfn);
     if (fProp.exists())
     {
-      Log.i(TAG, "Loading " + propfn);
+      Log.i(TAG, "XBMCProperties: Loading " + propfn);
       try
       {
         Properties sysProp = new Properties(System.getProperties());
@@ -34,7 +34,7 @@ public class XBMCProperties
       }
       catch (Exception e)
       {
-        Log.e(TAG, "Error loading " + propfn + " (" + e.getMessage() + ")");
+        Log.e(TAG, "XBMCProperties: Error loading " + propfn + " (" + e.getMessage() + ")");
       }
     }
     System.setProperty("xbmc.proploaded", "yes");

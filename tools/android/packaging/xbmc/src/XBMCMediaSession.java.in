@@ -32,7 +32,7 @@ public class XBMCMediaSession
 
   native boolean _onMediaButtonEvent(Intent intent);
 
-  private static final String TAG = "XBMCMediaSession";
+  private static final String TAG = "@APP_NAME@";
 
   private class XBMCMediaSessionCallback extends MediaSession.Callback
   {
@@ -40,7 +40,7 @@ public class XBMCMediaSession
     @Override
     public void onPlay()
     {
-      Log.d(TAG, "onPlay: ");
+      Log.d(TAG, "XBMCMediaSession.onPlay: ");
       super.onPlay();
       _onPlayRequested();
     }
@@ -48,7 +48,7 @@ public class XBMCMediaSession
     @Override
     public void onPause()
     {
-      Log.d(TAG, "onPause: ");
+      Log.d(TAG, "XBMCMediaSession.onPause: ");
       super.onPause();
       _onPauseRequested();
     }
@@ -56,7 +56,7 @@ public class XBMCMediaSession
     @Override
     public void onSkipToNext()
     {
-      Log.d(TAG, "onSkipToNext: ");
+      Log.d(TAG, "XBMCMediaSession.onSkipToNext: ");
       super.onSkipToNext();
       _onNextRequested();
     }
@@ -64,7 +64,7 @@ public class XBMCMediaSession
     @Override
     public void onSkipToPrevious()
     {
-      Log.d(TAG, "onSkipToPrevious: ");
+      Log.d(TAG, "XBMCMediaSession.onSkipToPrevious: ");
       super.onSkipToPrevious();
       _onPreviousRequested();
     }
@@ -72,7 +72,7 @@ public class XBMCMediaSession
     @Override
     public void onFastForward()
     {
-      Log.d(TAG, "onFastForward: ");
+      Log.d(TAG, "XBMCMediaSession.onFastForward: ");
       super.onFastForward();
       _onForwardRequested();
     }
@@ -80,7 +80,7 @@ public class XBMCMediaSession
     @Override
     public void onRewind()
     {
-      Log.d(TAG, "onRewind: ");
+      Log.d(TAG, "XBMCMediaSession.onRewind: ");
       super.onRewind();
       _onRewindRequested();
     }
@@ -88,7 +88,7 @@ public class XBMCMediaSession
     @Override
     public void onStop()
     {
-      Log.d(TAG, "onStop: ");
+      Log.d(TAG, "XBMCMediaSession.onStop: ");
       super.onStop();
       _onStopRequested();
     }
@@ -96,7 +96,7 @@ public class XBMCMediaSession
     @Override
     public void onSeekTo(long pos)
     {
-      Log.d(TAG, "onSeekTo: ");
+      Log.d(TAG, "XBMCMediaSession.onSeekTo: ");
       super.onSeekTo(pos);
       _onSeekRequested(pos);
     }
@@ -104,7 +104,7 @@ public class XBMCMediaSession
     @Override
     public boolean onMediaButtonEvent(Intent intent)
     {
-      Log.d(TAG, "onMediaButtonEvent: ");
+      Log.d(TAG, "XBMCMediaSession.onMediaButtonEvent: ");
       if (!_onMediaButtonEvent(intent))
         return super.onMediaButtonEvent(intent);
       return true;

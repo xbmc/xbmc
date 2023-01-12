@@ -39,7 +39,7 @@ import java.util.Set;
  */
 public final class SharedPreferencesHelper {
 
-  private static final String TAG = "SharedPreferencesHelper";
+  private static final String TAG = "@APP_NAME@";
 
   private static final String PREFS_NAME = "@APP_PACKAGE@";
   private static final String PREFS_SUBSCRIPTIONS_KEY =
@@ -116,7 +116,7 @@ public final class SharedPreferencesHelper {
         list.add(mGson.fromJson(contactString, clazz));
       }
     } catch (JsonSyntaxException e) {
-      Log.e(TAG, "Could not parse json.", e);
+      Log.e(TAG, "SharedPreferencesHelper: Could not parse json.", e);
       return Collections.emptyList();
     }
     return list;

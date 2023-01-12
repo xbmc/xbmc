@@ -18,7 +18,7 @@ import @APP_PACKAGE@.XBMCProperties;
 
 public class XBMCYTDLContentProvider extends XBMCContentProvider
 {
-  private static String TAG = "@APP_NAME@_YTDL_Provider";
+  private static String TAG = "@APP_NAME@";
 
   public static String AUTHORITY = AUTHORITY_ROOT + ".ytdl";
 
@@ -106,7 +106,7 @@ public class XBMCYTDLContentProvider extends XBMCContentProvider
     }
     catch (IOException e)
     {
-      Log.e(getClass().getSimpleName(), "Exception opening pipe", e);
+      Log.e(TAG, "XBMCYTDLContentProvider: Exception opening pipe", e);
       throw new FileNotFoundException("Could not open pipe for: "
               + uri.toString());
     }
