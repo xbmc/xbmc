@@ -32,10 +32,7 @@ template<typename T>
 class EndTime<T, true>
 {
 public:
-  explicit EndTime(const T duration)
-    : m_startTime(std::chrono::steady_clock::now()), m_totalWaitTime(duration)
-  {
-  }
+  explicit EndTime(const T duration) { Set(duration); }
 
   EndTime() = default;
   EndTime(const EndTime& right) = delete;
