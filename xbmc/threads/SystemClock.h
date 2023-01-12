@@ -81,8 +81,6 @@ public:
 
   void SetInfinite() { m_totalWaitTime = m_max; }
 
-  bool IsInfinite() const { return (m_totalWaitTime == m_max); }
-
   T GetInitialTimeoutValue() const { return m_totalWaitTime; }
 
   std::chrono::steady_clock::time_point GetStartTime() const { return m_startTime; }
