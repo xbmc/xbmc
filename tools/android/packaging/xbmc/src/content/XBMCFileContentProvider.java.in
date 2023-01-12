@@ -18,7 +18,7 @@ import java.util.List;
 
 public class XBMCFileContentProvider extends XBMCContentProvider
 {
-  private static String TAG = "@APP_NAME@_File_Provider";
+  private static String TAG = "@APP_NAME@";
 
   public static final String AUTHORITY = AUTHORITY_ROOT + ".file";
 
@@ -132,7 +132,7 @@ public class XBMCFileContentProvider extends XBMCContentProvider
     }
     catch (IOException e)
     {
-      Log.e(getClass().getSimpleName(), "Exception opening pipe", e);
+      Log.e(TAG, "XBMCFileContentProvider: Exception opening pipe", e);
       throw new FileNotFoundException("Could not open pipe for: "
               + uri.toString());
     }
@@ -177,7 +177,7 @@ public class XBMCFileContentProvider extends XBMCContentProvider
       }
       catch (Exception e)
       {
-        Log.e(getClass().getSimpleName(), "Exception transferring file", e);
+        Log.e(TAG, "XBMCFileContentProvider: Exception transferring file", e);
       }
     }
   }

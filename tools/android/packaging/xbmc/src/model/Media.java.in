@@ -22,9 +22,6 @@ import java.io.Serializable;
  */
 public class Media implements Serializable
 {
-
-  private static final String TAG = "Media";
-
   private long id;
   private String title;
   private String description;

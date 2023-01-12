@@ -60,7 +60,7 @@ public class XBMCJsonRPC
 
   private final static int MAX_ITEMS = 20;
 
-  private static String TAG = "@APP_NAME@json";
+  private static String TAG = "@APP_NAME@";
 
   private String m_xbmc_web_url = "http://localhost:8080";
   private HashSet<Integer> mRecomendationIds = new HashSet<Integer>();
@@ -137,13 +137,13 @@ public class XBMCJsonRPC
     }
     catch (Exception e)
     {
-      Log.e(TAG, "Failed to read JSON");
+      Log.e(TAG, "XBMCJsonRPC: Failed to read JSON");
       e.printStackTrace();
       return null;
     }
     catch (UnsatisfiedLinkError e)
     {
-      Log.e(TAG, "_requestJSON: Not available");
+      Log.e(TAG, "XBMCJsonRPC: _requestJSON: Not available");
       return null;
     }
   }
@@ -163,7 +163,7 @@ public class XBMCJsonRPC
     }
     catch (Exception e)
     {
-      Log.e(TAG, "Failed to parse JSON");
+      Log.e(TAG, "XBMCJsonRPC: Failed to parse JSON");
       e.printStackTrace();
       return null;
     }
@@ -184,7 +184,7 @@ public class XBMCJsonRPC
     }
     catch (Exception e)
     {
-      Log.e(TAG, "Failed to parse JSON");
+      Log.e(TAG, "XBMCJsonRPC: Failed to parse JSON");
       e.printStackTrace();
       return null;
     }
@@ -495,7 +495,7 @@ public class XBMCJsonRPC
               45*60*1000,
               -1
             });
-            Log.d(TAG, "tvshow: " + tvshow.get("title").getAsString() + ", " + tvshow.get("year").getAsInt());
+            Log.d(TAG, "XBMCJsonRPC: tvshow: " + tvshow.get("title").getAsString() + ", " + tvshow.get("year").getAsInt());
             nb_shows++;
             totCount++;
           }

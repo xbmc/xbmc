@@ -26,13 +26,11 @@ import java.io.Serializable;
  */
 public class File implements Serializable
 {
-
   public static final String NAME = "name";
   public static final String CATEGORY = "category";
   public static final String URI = "uri";
   public static final String MEDIATYPE = "mediatype";
   public static final String ID = "id";
-  private static final String TAG = "File";
   private String name;
   private String category;
   private String mediatype;

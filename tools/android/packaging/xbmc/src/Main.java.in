@@ -62,7 +62,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     @Override
     public void run()
     {
-      Log.d(TAG, "Updating recommendations");
+      Log.d(TAG, "Main: Updating recommendations");
       new Thread()
       {
         public void run()
@@ -194,12 +194,12 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
     // Delay until after Resume
     if (mPaused)
     {
-      Log.d("Main", "onNewIntent (delayed)");
+      Log.d(TAG, "Main: onNewIntent (delayed)");
       mDelayedIntents.add(new DelayedIntent(new Intent(intent), 500));
     }
     else
     {
-      Log.d("Main", "onNewIntent (immediate)");
+      Log.d(TAG, "Main: onNewIntent (immediate)");
       _onNewIntent(intent);
     }
   }
@@ -242,7 +242,7 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
           }
           catch (UnsatisfiedLinkError e)
           {
-            Log.e("Main", "Native not registered");
+            Log.e(TAG, "Main: Native not registered");
           }
         }
       }, delayedIntent.mDelay);

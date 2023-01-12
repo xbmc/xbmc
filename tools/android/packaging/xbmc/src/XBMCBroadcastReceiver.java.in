@@ -10,7 +10,7 @@ public class XBMCBroadcastReceiver extends BroadcastReceiver
 {
   native void _onReceive(Intent intent);
 
-  private static final String TAG = "@APP_NAME@Receiver";
+  private static final String TAG = "@APP_NAME@";
 
   @Override
   public void onReceive(Context context, Intent intent)
@@ -35,7 +35,7 @@ public class XBMCBroadcastReceiver extends BroadcastReceiver
       }
       catch (UnsatisfiedLinkError e)
       {
-        Log.e(TAG, "Native not registered");
+        Log.e(TAG, "XBMCBroadcastReceiver: Native not registered");
       }
     }
   }
