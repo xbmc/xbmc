@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-11-05 01:23+0000\n"
-"Last-Translator: vgbsd <vg72i@protonmail.com>\n"
+"PO-Revision-Date: 2022-12-26 02:05+0000\n"
+"Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ru_ru/>\n"
 "Language: ru_ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -134,7 +134,7 @@ msgstr "Выбрать рейтинг для показа мультимедий
 
 msgctxt "#31025"
 msgid "No favourites found. You can add any item from media views to this list by using the context menu."
-msgstr "Список избранного пуст. Вы можете добавить сюда любой медиаконтент с помощью контекстного меню."
+msgstr "Список избранного пуст. Вы можете добавить сюда любые медиаданные с помощью контекстного меню."
 
 msgctxt "#31026"
 msgid "Timeshift"
@@ -203,7 +203,7 @@ msgstr "Параметры плейлиста"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
-msgstr "Установите тип и добавьте правила, чтобы создать смарт-плейлист. Эти плейлисты являются динамическими и включают в себя все элементы из вашей медиатеки, которые подходят к выбранным Вами правилам."
+msgstr "Установите тип и добавьте правила, чтобы создать умный плейлист. Эти плейлисты являются динамическими и включают в себя все элементы из вашей медиатеки, которые подходят по выбранным вами правилам."
 
 msgctxt "#31044"
 msgid "Add group"
@@ -383,7 +383,7 @@ msgstr "Введите текст здесь..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "Ваша библиотека сейчас пуста. Чтобы заполнить её данными войдите в раздел \"Файлы\", добавьте медиаисточник и настройте его. После того как источник будет добавлен и проиндексирован вы сможете просматривать библиотеку."
+msgstr "Ваша медиатека пуста. Чтобы заполнить её вашими медиафайлами, войдите в раздел \"Файлы\", добавьте источник медиа и настройте его. После того как источник будет добавлен и проиндексирован, вы сможете просматривать вашу медиатеку."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
@@ -400,7 +400,7 @@ msgstr "Широкий список"
 
 msgctxt "#31110"
 msgid "Enter files section"
-msgstr "Войти в раздел \"Файлы\""
+msgstr "Войти в раздел «Файлы»"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
@@ -608,7 +608,7 @@ msgstr "Цифровая клавиатура"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Играйте в свои личные игры или загрузить одну из многочисленных надстроек из официального репозитория."
+msgstr "Играйте в свои игры или загрузите игровые дополнения из официального репозитория."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
@@ -672,12 +672,12 @@ msgstr "Выбор действия по умолчанию для альбом�
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr ""
+msgstr "Выбор действия по умолчанию для ТВ-передач на главном экране"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
-msgstr ""
+msgstr "Выбор действия по умолчанию для киноциклов на главном экране"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name

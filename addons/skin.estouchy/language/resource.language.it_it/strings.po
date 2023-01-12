@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-12-18 00:36+0000\n"
+"PO-Revision-Date: 2022-12-29 09:32+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/it_it/>\n"
 "Language: it_it\n"
@@ -160,7 +160,7 @@ msgstr "Apri playlist"
 
 msgctxt "#31056"
 msgid "Save playlist"
-msgstr "Salva playlist"
+msgstr "Salva Playlist"
 
 msgctxt "#31057"
 msgid "Close playlist"
@@ -172,7 +172,7 @@ msgstr "Suoni di sistema"
 
 msgctxt "#31059"
 msgid "Current playlist"
-msgstr "Playlist corrente"
+msgstr "Playlist attuale"
 
 msgctxt "#31200"
 msgid "Back"
@@ -216,7 +216,7 @@ msgstr "Menu video"
 
 msgctxt "#31356"
 msgid "Download Subtitles"
-msgstr "Scarica Sottotitoli"
+msgstr "Scarica sottotitoli"
 
 msgctxt "#31358"
 msgid "Teletext"
@@ -244,7 +244,7 @@ msgstr "Configura il display · Configura l'audio · Configura l'accesso a inter
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
-msgstr "Gestisci i tuoi Add-on installati · Sfoglia e installa Add-on da kodi.tv · Modifica impostazioni Add-on"
+msgstr "Gestisci i tuoi add-on installati · Sfoglia e installa add-on da kodi.tv · Modifica impostazioni add-on"
 
 msgctxt "#31408"
 msgid "Configure actions that can be used during playback · Configure how media content is played"
@@ -276,7 +276,7 @@ msgstr "Menu Home"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr "Home Add-on"
+msgstr "Home add-on"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -284,7 +284,7 @@ msgstr "Sfondi"
 
 msgctxt "#31551"
 msgid "Add-on Shortcut"
-msgstr "Scorciatoie Add-on"
+msgstr "Scorciatoie add-on"
 
 msgctxt "#31552"
 msgid "SYNC"

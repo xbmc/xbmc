@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-12-12 07:26+0000\n"
+"PO-Revision-Date: 2022-12-29 09:32+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/it_it/>\n"
 "Language: it_it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.15\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -323,7 +323,7 @@ msgstr "Add-on testi"
 
 msgctxt "#31083"
 msgid "Lyrics add-on settings"
-msgstr "Impostazioni Add-on testi"
+msgstr "Impostazioni add-on testi"
 
 msgctxt "#31084"
 msgid "Visualisation settings"
@@ -404,7 +404,7 @@ msgstr "Entra a sfogliare i file"
 
 msgctxt "#31111"
 msgid "View your personal pictures or download one of the many image add-ons from the official repository."
-msgstr "Vedi le tue immagini personali o scarica uno dei tanti Add-on immagini dal repository ufficiale."
+msgstr "Vedi le tue immagini personali o scarica uno dei tanti add-on immagini dal repository ufficiale."
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
@@ -432,11 +432,11 @@ msgstr "Modifica nodi"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Entra a sfogliare gli Add-on"
+msgstr "Entra a sfogliare gli add-on"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "Non è ancora stato installato nessun Add-on. Visita il nostro browser degli Add-on per sfogliare la nostra collezione e migliorare la tua esperienza su Kodi."
+msgstr "Non è ancora stato installato nessun add-on. Visita il nostro browser degli add-on per sfogliare la nostra collezione e migliorare la tua esperienza su Kodi."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
@@ -532,15 +532,15 @@ msgstr "Velocità di riproduzione"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Non hai ancora impostato il PVR. Per poter usare il PVR, scegli un Add-on Client PVR e configuralo. Visita http://kodi.wiki/view/PVR per saperne di più."
+msgstr "Non hai ancora impostato il PVR. Per poter usare il PVR, scegli un add-on Client PVR e configuralo. Visita http://kodi.wiki/view/PVR per saperne di più."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
-msgstr "Entra a sfogliare gli Add-on"
+msgstr "Entra a sfogliare gli add-on"
 
 msgctxt "#31145"
 msgid "Search add-ons"
-msgstr "Cerca Add-on"
+msgstr "Cerca add-on"
 
 msgctxt "#31146"
 msgid "In cinemas"
@@ -572,7 +572,7 @@ msgstr "Video musicali casuali"
 
 msgctxt "#31153"
 msgid "You do not have any add-ons of this type installed. Enter the add-on browser to download add-ons created by our community."
-msgstr "Non hai nessun Add-on di questo tipo installato. Apri il browser Add-on per scaricare gli Add-on creati dalla nostra community."
+msgstr "Non hai nessun add-on di questo tipo installato. Apri il browser add-on per scaricare gli add-on creati dalla nostra community."
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
@@ -608,7 +608,7 @@ msgstr "Tastierino numerico"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Gioca ai tuoi giochi personali o scarica uno dei tanti Add-on di giochi dal repository ufficiale."
+msgstr "Gioca ai tuoi giochi personali o scarica uno dei tanti add-on di giochi dal repository ufficiale."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
@@ -672,7 +672,7 @@ msgstr "Azione di selezione predefinita per gli album nella schermata iniziale"
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr "Azione di selezione predefinita per le Serie TV nella schermata iniziale"
+msgstr "Azione di selezione predefinita per le serie TV nella schermata iniziale"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
