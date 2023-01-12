@@ -43,14 +43,14 @@ import @APP_PACKAGE@.model.File;
 public class SyncChannelJobService extends JobService
 {
 
-  private static final String TAG = "RecommendChannelJobSvc";
+  private static final String TAG = "@APP_NAME@";
 
   private SyncChannelTask mSyncChannelTask;
 
   @Override
   public boolean onStartJob(final JobParameters jobParameters)
   {
-    Log.d(TAG, "Starting channel creation job");
+    Log.d(TAG, "SyncChannelJobService: Starting channel creation job");
 
     mSyncChannelTask =
             new SyncChannelTask(getApplicationContext())

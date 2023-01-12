@@ -13,7 +13,7 @@ import android.widget.ListView;
 public class XBMCSearchableActivity extends Activity
 {
 
-  private static final String TAG = "@APP_NAME@Search";
+  private static final String TAG = "@APP_NAME@";
 
   private ListView mListView;
 
@@ -57,7 +57,7 @@ public class XBMCSearchableActivity extends Activity
   private void doAction(Intent origIntent)
   {
     Uri data = origIntent.getData();
-    Log.d(TAG, "LAUNCH: " + data.toString());
+    Log.d(TAG, "XBMCSearchableActivity: LAUNCH: " + data.toString());
 
     Intent newIntent = new Intent(origIntent.getAction(), data);
     newIntent.setDataAndType(data, "video/*");
@@ -69,7 +69,7 @@ public class XBMCSearchableActivity extends Activity
 
   private void handleIntent(Intent intent)
   {
-    Log.d(TAG, "NEW INTENT: " + intent.getAction() + "; DATA=" + intent.getData().toString());
+    Log.d(TAG, "XBMCSearchableActivity: NEW INTENT: " + intent.getAction() + "; DATA=" + intent.getData().toString());
 
     if (Intent.ACTION_SEARCH.equals(intent.getAction()))
     {

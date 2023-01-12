@@ -18,7 +18,7 @@ public class XBMCMainView extends SurfaceView implements SurfaceHolder.Callback
   native void _surfaceCreated(SurfaceHolder holder);
   native void _surfaceDestroyed(SurfaceHolder holder);
 
-  private static final String TAG = "XBMCMainView";
+  private static final String TAG = "@APP_NAME@";
 
   public boolean mIsCreated = false;
 
@@ -29,7 +29,7 @@ public class XBMCMainView extends SurfaceView implements SurfaceHolder.Callback
     getHolder().addCallback(this);
     getHolder().setFormat(PixelFormat.TRANSPARENT);
 
-    Log.d(TAG, "Created");
+    Log.d(TAG, "XBMCMainView: Created");
 }
 
   public XBMCMainView(Context context, AttributeSet attrs, int defStyle)
@@ -39,7 +39,7 @@ public class XBMCMainView extends SurfaceView implements SurfaceHolder.Callback
     getHolder().addCallback(this);
     getHolder().setFormat(PixelFormat.TRANSPARENT);
 
-    Log.d(TAG, "Created");
+    Log.d(TAG, "XBMCMainView: Created");
   }
 
   public XBMCMainView(Context context, AttributeSet attrs)
@@ -50,7 +50,7 @@ public class XBMCMainView extends SurfaceView implements SurfaceHolder.Callback
   @Override
   public void surfaceCreated(SurfaceHolder holder)
   {
-    Log.d(TAG, "Surface Created");
+    Log.d(TAG, "XBMCMainView: Surface Created");
     mIsCreated = true;
     _attach();
     _surfaceCreated(holder);
@@ -63,14 +63,14 @@ public class XBMCMainView extends SurfaceView implements SurfaceHolder.Callback
     if (holder != getHolder())
       return;
 
-    Log.d(TAG, "Surface Changed, format:" + format + ", width:" + width + ", height:" + height);
+    Log.d(TAG, "XBMCMainView: Surface Changed, format:" + format + ", width:" + width + ", height:" + height);
     _surfaceChanged(holder, format, width, height);
   }
 
   @Override
   public void surfaceDestroyed(SurfaceHolder holder)
   {
-    Log.d(TAG, "Surface Destroyed");
+    Log.d(TAG, "XBMCMainView: Surface Destroyed");
     mIsCreated = false;
     _surfaceDestroyed(holder);
   }

@@ -11,7 +11,7 @@ import @APP_PACKAGE@.XBMCJsonRPC;
 
 public class XBMCMediaContentProvider extends XBMCContentProvider
 {
-  private static String TAG = "@APP_NAME@_Media_Provider";
+  private static String TAG = "@APP_NAME@";
 
   public static final String AUTHORITY = AUTHORITY_ROOT + ".media";
   public static final String SUGGEST_PATH = "suggestions";
@@ -64,7 +64,7 @@ public class XBMCMediaContentProvider extends XBMCContentProvider
   public Cursor query(Uri uri, String[] projection, String selection,
           String[] selectionArgs, String sortOrder)
   {
-    Log.d(TAG, "query: " + uri.toString());
+    Log.d(TAG, "XBMCMediaContentProvider.query: " + uri.toString());
 
     switch (URI_MATCHER.match(uri))
     {

@@ -20,7 +20,7 @@ public class XBMCVideoView extends SurfaceView implements
 
   native void _surfaceDestroyed(SurfaceHolder holder);
 
-  private static final String TAG = "XBMCVideoPlayView";
+  private static final String TAG = "@APP_NAME@";
 
   public boolean mIsCreated = false;
   private RelativeLayout mVideoLayout = null;
@@ -92,7 +92,7 @@ public class XBMCVideoView extends SurfaceView implements
     }
     else
     {
-      Log.d(TAG, "getSurface() = " + getHolder().getSurface());
+      Log.d(TAG, "XBMCVideoView.getSurface() = " + getHolder().getSurface());
       return getHolder().getSurface();
     }
   }
@@ -127,7 +127,7 @@ public class XBMCVideoView extends SurfaceView implements
   @Override
   public void surfaceCreated(SurfaceHolder holder)
   {
-    Log.d(TAG, "Created");
+    Log.d(TAG, "XBMCVideoView: Created");
     mIsCreated = true;
     _surfaceCreated(holder);
   }
@@ -141,14 +141,14 @@ public class XBMCVideoView extends SurfaceView implements
 
     _surfaceChanged(holder, format, width, height);
 
-    Log.d(TAG, "Changed, format:" + format + ", width:" + width
+    Log.d(TAG, "XBMCVideoView: Changed, format:" + format + ", width:" + width
             + ", height:" + height);
   }
 
   @Override
   public void surfaceDestroyed(SurfaceHolder holder)
   {
-    Log.d(TAG, "Destroyed");
+    Log.d(TAG, "XBMCVideoView: Destroyed");
     mIsCreated = false;
     _surfaceDestroyed(holder);
   }
