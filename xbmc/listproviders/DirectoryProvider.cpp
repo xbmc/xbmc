@@ -157,7 +157,6 @@ private:
 CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID)
  : IListProvider(parentID),
    m_updateState(OK),
-   m_isAnnounced(false),
    m_jobID(0),
    m_currentLimit(0)
 {
@@ -187,7 +186,6 @@ CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID
 CDirectoryProvider::CDirectoryProvider(const CDirectoryProvider& other)
   : IListProvider(other.m_parentID),
     m_updateState(INVALIDATED),
-    m_isAnnounced(false),
     m_jobID(0),
     m_url(other.m_url),
     m_target(other.m_target),
@@ -364,10 +362,12 @@ void CDirectoryProvider::Reset()
   m_currentSort.sortOrder = SortOrderAscending;
   m_currentLimit = 0;
   m_updateState = OK;
+  lock.unlock();
 
-  if (m_isAnnounced)
+  std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
+  if (m_isSubscribed)
   {
-    m_isAnnounced = false;
+    m_isSubscribed = false;
     CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
     CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
     CServiceBroker::GetRepositoryUpdater().Events().Unsubscribe(this);
@@ -535,10 +535,12 @@ bool CDirectoryProvider::UpdateURL()
     return false;
 
   m_currentUrl = value;
+  lock.unlock();
 
-  if (!m_isAnnounced)
+  std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
+  if (!m_isSubscribed)
   {
-    m_isAnnounced = true;
+    m_isSubscribed = true;
     CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
     CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CDirectoryProvider::OnAddonEvent);
     CServiceBroker::GetRepositoryUpdater().Events().Subscribe(this, &CDirectoryProvider::OnAddonRepositoryEvent);
