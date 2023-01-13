@@ -130,9 +130,9 @@ CRepository::CRepository(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, Addo
   if (m_dirs.empty())
   {
     CLog::Log(LOGERROR,
-              "Repository add-on {} does not have any directory and won't be able to update/serve "
-              "addons! Please fix the addon.xml definition",
-              ID());
+              "Repository add-on {} does not have any directory matching {} and won't be able to "
+              "update/serve addons! Please fix the addon.xml definition",
+              ID(), version.asString());
   }
 
   for (auto const& dir : m_dirs)
