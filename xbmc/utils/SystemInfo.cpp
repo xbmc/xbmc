@@ -1126,6 +1126,8 @@ std::string CSysInfo::GetUserAgent()
   std::string cpuFam(GetBuildTargetCpuFamily());
   if (cpuFam == "x86")
     result += "Intel ";
+  else if (cpuFam == "ARM")
+    result += "ARM ";
   result += "Mac OS X ";
   std::string OSXVersion(GetOsVersion());
   StringUtils::Replace(OSXVersion, '.', '_');
