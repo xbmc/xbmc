@@ -48,7 +48,7 @@ bool CPipewire::Start()
 
   m_context = std::make_unique<CPipewireContext>(*m_loop);
 
-  m_loop->Lock();
+  PIPEWIRE::CLoopLockGuard lock(*m_loop);
 
   if (!m_loop->Start())
   {
@@ -63,9 +63,6 @@ bool CPipewire::Start()
   m_core->Sync();
 
   int ret = m_loop->Wait(5s);
-
-  m_loop->Unlock();
-
   if (ret == -ETIMEDOUT)
   {
     CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - timed out out waiting for synchronization",
