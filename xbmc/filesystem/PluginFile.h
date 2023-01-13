@@ -17,7 +17,13 @@ class CPluginFile : public COverrideFile
 public:
   CPluginFile(void);
   ~CPluginFile(void) override;
+  bool Open(const CURL& url) override;
   bool Exists(const CURL& url) override;
+  int Stat(const CURL& url, struct __stat64* buffer) override;
+  int Stat(struct __stat64* buffer) override;
+  bool OpenForWrite(const CURL& url, bool bOverWrite = false) override;
+  bool Delete(const CURL& url) override;
+  bool Rename(const CURL& url, const CURL& urlnew) override;
 
 protected:
   std::string TranslatePath(const CURL& url) override;
