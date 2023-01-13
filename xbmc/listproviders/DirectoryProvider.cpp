@@ -350,19 +350,20 @@ void CDirectoryProvider::OnFavouritesEvent(const CFavouritesService::FavouritesU
 
 void CDirectoryProvider::Reset()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
-  if (m_jobID)
-    CServiceBroker::GetJobManager()->CancelJob(m_jobID);
-  m_jobID = 0;
-  m_items.clear();
-  m_currentTarget.clear();
-  m_currentUrl.clear();
-  m_itemTypes.clear();
-  m_currentSort.sortBy = SortByNone;
-  m_currentSort.sortOrder = SortOrderAscending;
-  m_currentLimit = 0;
-  m_updateState = OK;
-  lock.unlock();
+  {
+    std::unique_lock<CCriticalSection> lock(m_section);
+    if (m_jobID)
+      CServiceBroker::GetJobManager()->CancelJob(m_jobID);
+    m_jobID = 0;
+    m_items.clear();
+    m_currentTarget.clear();
+    m_currentUrl.clear();
+    m_itemTypes.clear();
+    m_currentSort.sortBy = SortByNone;
+    m_currentSort.sortOrder = SortOrderAscending;
+    m_currentLimit = 0;
+    m_updateState = OK;
+  }
 
   std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
   if (m_isSubscribed)
@@ -529,13 +530,14 @@ bool CDirectoryProvider::IsUpdating() const
 
 bool CDirectoryProvider::UpdateURL()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
-  std::string value(m_url.GetLabel(m_parentID, false));
-  if (value == m_currentUrl)
-    return false;
+  {
+    std::unique_lock<CCriticalSection> lock(m_section);
+    std::string value(m_url.GetLabel(m_parentID, false));
+    if (value == m_currentUrl)
+      return false;
 
-  m_currentUrl = value;
-  lock.unlock();
+    m_currentUrl = value;
+  }
 
   std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
   if (!m_isSubscribed)
