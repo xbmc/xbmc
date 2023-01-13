@@ -498,9 +498,6 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
   size_t length = frames * m_format.m_frameSize;
 
-  if (spaData->maxsize < length)
-    length = spaData->maxsize;
-
   void* buffer = data[0] + offset * m_format.m_frameSize;
 
   std::memcpy(spaData->data, buffer, length);
@@ -534,7 +531,7 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
   loop->Unlock();
 
-  return length / m_format.m_frameSize;
+  return frames;
 }
 
 void CAESinkPipewire::GetDelay(AEDelayStatus& status)
