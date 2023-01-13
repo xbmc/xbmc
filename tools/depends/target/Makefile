@@ -97,7 +97,7 @@ endif
 
 ALSA_LIB=
 ifeq ($(OS),linux)
-  DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev wayland waylandpp wayland-protocols linux-system-x11-libs
+  DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev pipewire wayland waylandpp wayland-protocols linux-system-x11-libs
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
 
@@ -154,6 +154,7 @@ mariadb: openssl $(ICONV) $(ZLIB)
 mesa: libdrm meson-cross-file $(MESA_DEPS)
 nettle: gmp
 openssl: $(ZLIB)
+pipewire: meson-cross-file
 python3: expat gettext libxml2 sqlite3 openssl libffi bzip2 xz $(ICONV)
 pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python3 pythonmodule-setuptools
 pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
