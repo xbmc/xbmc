@@ -15,9 +15,9 @@ CRPProcessInfoX11::CRPProcessInfoX11() : CRPProcessInfo("X11")
 {
 }
 
-CRPProcessInfo* CRPProcessInfoX11::Create()
+std::unique_ptr<CRPProcessInfo> CRPProcessInfoX11::Create()
 {
-  return new CRPProcessInfoX11();
+  return std::make_unique<CRPProcessInfoX11>();
 }
 
 void CRPProcessInfoX11::Register()

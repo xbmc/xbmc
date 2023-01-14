@@ -19,7 +19,7 @@ class CRPProcessInfoWayland : public CRPProcessInfo
 public:
   CRPProcessInfoWayland();
 
-  static CRPProcessInfo* Create();
+  static std::unique_ptr<CRPProcessInfo> Create();
   static void Register();
 };
 } // namespace RETRO

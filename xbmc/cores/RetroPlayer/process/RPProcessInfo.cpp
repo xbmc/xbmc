@@ -64,9 +64,9 @@ CRPProcessInfo::CRPProcessInfo(std::string platformName)
 
 CRPProcessInfo::~CRPProcessInfo() = default;
 
-CRPProcessInfo* CRPProcessInfo::CreateInstance()
+std::unique_ptr<CRPProcessInfo> CRPProcessInfo::CreateInstance()
 {
-  CRPProcessInfo* processInfo = nullptr;
+  std::unique_ptr<CRPProcessInfo> processInfo;
 
   std::unique_lock<CCriticalSection> lock(m_createSection);
 
@@ -74,7 +74,7 @@ CRPProcessInfo* CRPProcessInfo::CreateInstance()
   {
     processInfo = m_processControl();
 
-    if (processInfo != nullptr)
+    if (processInfo)
       CLog::Log(LOGINFO, "RetroPlayer[PROCESS]: Created process info for {}",
                 processInfo->GetPlatformName());
     else

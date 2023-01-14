@@ -15,9 +15,9 @@ CRPProcessInfoIOS::CRPProcessInfoIOS() : CRPProcessInfo("iOS")
 {
 }
 
-CRPProcessInfo* CRPProcessInfoIOS::Create()
+std::unique_ptr<CRPProcessInfo> CRPProcessInfoIOS::Create()
 {
-  return new CRPProcessInfoIOS();
+  return std::make_unique<CRPProcessInfoIOS>();
 }
 
 void CRPProcessInfoIOS::Register()
