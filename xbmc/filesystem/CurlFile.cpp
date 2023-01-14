@@ -1336,9 +1336,9 @@ bool CCurlFile::Exists(const CURL& url)
     long code;
     if(g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_RESPONSE_CODE, &code) == CURLE_OK && code != 404 )
     {
-      if (code == 405)
+      if (code == 405 || code == 501)
       {
-        // If we get a Method Not Allowed response, retry with a GET Request
+        // If we get a Method Not Allowed (405) or Not Implemented (501) response, retry with a GET Request
         g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_NOBODY, 0);
 
         g_curlInterface.easy_setopt(m_state->m_easyHandle, CURLOPT_FILETIME, 1);
