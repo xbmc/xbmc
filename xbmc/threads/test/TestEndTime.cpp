@@ -30,7 +30,8 @@ void CommonTests(XbmcThreads::EndTime<T>& endTime)
   EXPECT_EQ(T::zero(), endTime.GetTimeLeft());
 
   endTime.SetInfinite();
-  EXPECT_EQ(T::max(), endTime.GetInitialTimeoutValue());
+  EXPECT_GE(T::max(), endTime.GetInitialTimeoutValue());
+  EXPECT_EQ(XbmcThreads::EndTime<T>::Max(), endTime.GetInitialTimeoutValue());
   endTime.SetExpired();
   EXPECT_EQ(T::zero(), endTime.GetInitialTimeoutValue());
 }
@@ -57,4 +58,20 @@ TEST(TestEndTime, DoubleMicroSeconds)
   XbmcThreads::EndTime<std::chrono::duration<double, std::micro>> endTime(100ms);
 
   CommonTests(endTime);
+}
+
+TEST(TestEndTime, SteadyClockDuration)
+{
+  XbmcThreads::EndTime<std::chrono::steady_clock::duration> endTime(100ms);
+
+  CommonTests(endTime);
+
+  endTime.SetInfinite();
+  EXPECT_EQ(std::chrono::steady_clock::duration::max(), endTime.GetInitialTimeoutValue());
+
+  endTime.SetExpired();
+  EXPECT_EQ(std::chrono::steady_clock::duration::zero(), endTime.GetInitialTimeoutValue());
+
+  endTime.Set(endTime.Max());
+  EXPECT_EQ(std::chrono::steady_clock::duration::max(), endTime.GetInitialTimeoutValue());
 }

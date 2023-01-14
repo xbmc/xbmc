@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "utils/log.h"
+
 #include <chrono>
 #include <limits>
 #include <thread>
@@ -32,26 +34,32 @@ template<typename T>
 class EndTime<T, true>
 {
 public:
-  explicit EndTime(const T duration)
-    : m_startTime(std::chrono::steady_clock::now()), m_totalWaitTime(duration)
-  {
-  }
+  explicit EndTime(const T duration) { Set(duration); }
 
   EndTime() = default;
   EndTime(const EndTime& right) = delete;
   ~EndTime() = default;
 
+  static constexpr T Max() { return m_max; }
+
   void Set(const T duration)
   {
     m_startTime = std::chrono::steady_clock::now();
-    m_totalWaitTime = duration;
+
+    if (duration > m_max)
+    {
+      m_totalWaitTime = m_max;
+      CLog::Log(LOGWARNING, "duration ({}) greater than max ({}) - duration will be truncated!",
+                duration.count(), m_max.count());
+    }
+    else
+    {
+      m_totalWaitTime = duration;
+    }
   }
 
   bool IsTimePast() const
   {
-    if (m_totalWaitTime == m_infinity)
-      return false;
-
     const auto now = std::chrono::steady_clock::now();
 
     return ((now - m_startTime) >= m_totalWaitTime);
@@ -59,9 +67,6 @@ public:
 
   T GetTimeLeft() const
   {
-    if (m_totalWaitTime == m_infinity)
-      return m_infinity;
-
     const auto now = std::chrono::steady_clock::now();
 
     const auto left = ((m_startTime + m_totalWaitTime) - now);
@@ -74,9 +79,7 @@ public:
 
   void SetExpired() { m_totalWaitTime = T::zero(); }
 
-  void SetInfinite() { m_totalWaitTime = m_infinity; }
-
-  bool IsInfinite() const { return (m_totalWaitTime == m_infinity); }
+  void SetInfinite() { m_totalWaitTime = m_max; }
 
   T GetInitialTimeoutValue() const { return m_totalWaitTime; }
 
@@ -86,7 +89,8 @@ private:
   std::chrono::steady_clock::time_point m_startTime;
   T m_totalWaitTime = T::zero();
 
-  const T m_infinity = T::max();
+  static constexpr T m_max =
+      std::chrono::duration_cast<T>(std::chrono::steady_clock::duration::max());
 };
 
 } // namespace XbmcThreads
