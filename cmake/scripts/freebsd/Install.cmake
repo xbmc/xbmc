@@ -1,1 +1,1 @@
-../linux/Install.cmake
+include(cmake/scripts/linux/Install.cmake)

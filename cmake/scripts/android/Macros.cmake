@@ -1,1 +1,1 @@
-../linux/Macros.cmake
+include(cmake/scripts/linux/Macros.cmake)
