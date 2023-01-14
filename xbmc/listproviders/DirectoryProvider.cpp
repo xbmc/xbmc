@@ -157,7 +157,6 @@ private:
 CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID)
  : IListProvider(parentID),
    m_updateState(OK),
-   m_isAnnounced(false),
    m_jobID(0),
    m_currentLimit(0)
 {
@@ -187,7 +186,6 @@ CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID
 CDirectoryProvider::CDirectoryProvider(const CDirectoryProvider& other)
   : IListProvider(other.m_parentID),
     m_updateState(INVALIDATED),
-    m_isAnnounced(false),
     m_jobID(0),
     m_url(other.m_url),
     m_target(other.m_target),
@@ -352,22 +350,25 @@ void CDirectoryProvider::OnFavouritesEvent(const CFavouritesService::FavouritesU
 
 void CDirectoryProvider::Reset()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
-  if (m_jobID)
-    CServiceBroker::GetJobManager()->CancelJob(m_jobID);
-  m_jobID = 0;
-  m_items.clear();
-  m_currentTarget.clear();
-  m_currentUrl.clear();
-  m_itemTypes.clear();
-  m_currentSort.sortBy = SortByNone;
-  m_currentSort.sortOrder = SortOrderAscending;
-  m_currentLimit = 0;
-  m_updateState = OK;
-
-  if (m_isAnnounced)
   {
-    m_isAnnounced = false;
+    std::unique_lock<CCriticalSection> lock(m_section);
+    if (m_jobID)
+      CServiceBroker::GetJobManager()->CancelJob(m_jobID);
+    m_jobID = 0;
+    m_items.clear();
+    m_currentTarget.clear();
+    m_currentUrl.clear();
+    m_itemTypes.clear();
+    m_currentSort.sortBy = SortByNone;
+    m_currentSort.sortOrder = SortOrderAscending;
+    m_currentLimit = 0;
+    m_updateState = OK;
+  }
+
+  std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
+  if (m_isSubscribed)
+  {
+    m_isSubscribed = false;
     CServiceBroker::GetAnnouncementManager()->RemoveAnnouncer(this);
     CServiceBroker::GetFavouritesService().Events().Unsubscribe(this);
     CServiceBroker::GetRepositoryUpdater().Events().Unsubscribe(this);
@@ -529,16 +530,19 @@ bool CDirectoryProvider::IsUpdating() const
 
 bool CDirectoryProvider::UpdateURL()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
-  std::string value(m_url.GetLabel(m_parentID, false));
-  if (value == m_currentUrl)
-    return false;
-
-  m_currentUrl = value;
-
-  if (!m_isAnnounced)
   {
-    m_isAnnounced = true;
+    std::unique_lock<CCriticalSection> lock(m_section);
+    std::string value(m_url.GetLabel(m_parentID, false));
+    if (value == m_currentUrl)
+      return false;
+
+    m_currentUrl = value;
+  }
+
+  std::unique_lock<CCriticalSection> subscriptionLock(m_subscriptionSection);
+  if (!m_isSubscribed)
+  {
+    m_isSubscribed = true;
     CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
     CServiceBroker::GetAddonMgr().Events().Subscribe(this, &CDirectoryProvider::OnAddonEvent);
     CServiceBroker::GetRepositoryUpdater().Events().Subscribe(this, &CDirectoryProvider::OnAddonRepositoryEvent);
