@@ -60,7 +60,6 @@ enum class PVREvent
   ChannelGroup,
   ChannelGroupInvalidated,
   ChannelGroupsInvalidated,
-  ChannelGroupsLoaded,
 
   // Recording events
   RecordingsInvalidated,
@@ -69,6 +68,9 @@ enum class PVREvent
   AnnounceReminder,
   Timers,
   TimersInvalidated,
+
+  // Client events
+  ClientsInvalidated,
 
   // EPG events
   Epg,
@@ -84,7 +86,7 @@ enum class PVREvent
   // Item events
   CurrentItem,
 
-  // Syetem events
+  // System events
   SystemSleep,
   SystemWake,
 };

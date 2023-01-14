@@ -572,18 +572,19 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
     {
       switch (static_cast<PVREvent>(message.GetParam1()))
       {
-        case PVREvent::ChannelGroupsLoaded:
-          // late init
-          InitChannelGroup();
-          InitEpgGridControl();
+        case PVREvent::ManagerStarted:
+          if (InitChannelGroup())
+            InitEpgGridControl();
           break;
 
         case PVREvent::ChannelGroup:
         case PVREvent::ChannelGroupInvalidated:
+        case PVREvent::ClientsInvalidated:
         case PVREvent::ChannelPlaybackStopped:
         case PVREvent::Epg:
         case PVREvent::EpgContainer:
-          Refresh(true);
+          if (InitChannelGroup())
+            Refresh(true);
           break;
 
         case PVREvent::Timers:

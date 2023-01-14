@@ -682,6 +682,7 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   {
     CLog::LogFC(LOGDEBUG, LOGPVR, "All created PVR clients gone!");
     m_knownClients.clear(); // start over
+    PublishEvent(PVREvent::ClientsInvalidated);
     return false;
   }
 
@@ -717,6 +718,7 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   {
     CLog::LogF(LOGERROR, "Failed to load PVR providers.");
     m_knownClients.clear(); // start over
+    PublishEvent(PVREvent::ClientsInvalidated);
     return false;
   }
 
@@ -724,10 +726,9 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   {
     CLog::LogF(LOGERROR, "Failed to load PVR channels / groups.");
     m_knownClients.clear(); // start over
+    PublishEvent(PVREvent::ClientsInvalidated);
     return false;
   }
-
-  PublishEvent(PVREvent::ChannelGroupsLoaded);
 
   // Load all timers
   if (progressHandler)
@@ -737,6 +738,7 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   {
     CLog::LogF(LOGERROR, "Failed to load PVR timers.");
     m_knownClients.clear(); // start over
+    PublishEvent(PVREvent::ClientsInvalidated);
     return false;
   }
 
@@ -748,9 +750,11 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   {
     CLog::LogF(LOGERROR, "Failed to load PVR recordings.");
     m_knownClients.clear(); // start over
+    PublishEvent(PVREvent::ClientsInvalidated);
     return false;
   }
 
+  PublishEvent(PVREvent::ClientsInvalidated);
   return true;
 }
 
