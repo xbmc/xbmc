@@ -1481,8 +1481,8 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
   // create the stream
   CActiveAEStream *stream;
   stream = new CActiveAEStream(&streamMsg->format, m_streamIdGen++, this);
-  stream->m_streamPort = new CActiveAEDataProtocol("stream",
-                             &stream->m_inMsgEvent, &m_outMsgEvent);
+  stream->m_streamPort =
+      std::make_unique<CActiveAEDataProtocol>("stream", &stream->m_inMsgEvent, &m_outMsgEvent);
 
   // create buffer pool
   stream->m_inputBuffers = NULL; // create in Configure when we know the sink format
@@ -1530,7 +1530,6 @@ void CActiveAE::DiscardStream(CActiveAEStream *stream)
       }
       CLog::Log(LOGDEBUG, "CActiveAE::DiscardStream - audio stream deleted");
       m_stats.RemoveStream((*it)->m_id);
-      delete (*it)->m_streamPort;
       delete (*it);
       it = m_streams.erase(it);
     }
