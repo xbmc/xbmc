@@ -61,7 +61,7 @@ struct AudioSettings
   AEQuality resampleQuality;
   double atempoThreshold;
   bool streamNoise;
-  int silenceTimeout;
+  int silenceTimeoutMinutes;
 };
 
 class CActiveAEControlProtocol : public Protocol

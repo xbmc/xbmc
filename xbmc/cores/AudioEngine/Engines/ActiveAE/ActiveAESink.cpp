@@ -328,7 +328,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           return;
 
         case CSinkControlProtocol::SETSILENCETIMEOUT:
-          m_silenceTimeOut = std::chrono::milliseconds(*reinterpret_cast<int*>(msg->data));
+          m_silenceTimeOut = std::chrono::minutes(*reinterpret_cast<int*>(msg->data));
           return;
 
         case CSinkControlProtocol::SETNOISETYPE:
@@ -1155,7 +1155,7 @@ void CActiveAESink::GenerateNoise()
 void CActiveAESink::SetSilenceTimer()
 {
   if (m_extStreaming)
-    m_extSilenceTimeout = std::chrono::milliseconds::max();
+    m_extSilenceTimeout = XbmcThreads::EndTime<decltype(m_extSilenceTimeout)>::Max();
   else if (m_extAppFocused)
     m_extSilenceTimeout = m_silenceTimeOut;
   else
