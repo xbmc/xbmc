@@ -651,6 +651,11 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     return;
   }
 
+  double ratio = (m_passthrough && m_info.m_wantsIECPassthrough &&
+                  (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD))
+                     ? 2.0
+                     : 1.0;
+
   bool usesAdvancedLogging = CServiceBroker::GetLogging().CanLogComponent(LOGAUDIO);
   // In their infinite wisdom, Google decided to make getPlaybackHeadPosition
   // return a 32bit "int" that you should "interpret as unsigned."  As such,
@@ -665,7 +670,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   // and add head_pos which wrapped around, e.g. 0x0001 0000 0000 -> 0x0001 0000 0004
   m_headPos = (m_headPos & UINT64_UPPER_BYTES) | (uint64_t)head_pos;
 
-  double gone = static_cast<double>(m_headPos) / m_sink_sampleRate;
+  double gone = static_cast<double>(m_headPos) / m_sink_sampleRate / ratio;
 
   // if sink is run dry without buffer time written anymore
   if (gone > m_duration_written)
@@ -717,7 +722,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     }
     m_timestampPos = stamphead;
 
-    double playtime = m_timestampPos / static_cast<double>(m_sink_sampleRate);
+    double playtime = m_timestampPos / static_cast<double>(m_sink_sampleRate) / ratio;
 
     if (usesAdvancedLogging)
     {
