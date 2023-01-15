@@ -293,11 +293,10 @@ inline void CVideoPlayerVideo::FlushMessages()
 }
 
 inline MsgQueueReturnCode CVideoPlayerVideo::GetMessage(std::shared_ptr<CDVDMsg>& pMsg,
-                                                        unsigned int iTimeoutInMilliSeconds,
+                                                        std::chrono::milliseconds timeout,
                                                         int& priority)
 {
-  MsgQueueReturnCode ret =
-      m_messageQueue.Get(pMsg, std::chrono::milliseconds(iTimeoutInMilliSeconds), priority);
+  MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, timeout, priority);
   m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
   return ret;
 }
@@ -321,7 +320,8 @@ void CVideoPlayerVideo::Process()
 
   while (!m_bStop)
   {
-    int iQueueTimeOut = (int)(m_stalled ? frametime : frametime * 10) / 1000;
+    auto timeout = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::duration<double, std::micro>(m_stalled ? frametime : frametime * 10));
     int iPriority = 0;
 
     if (m_syncState == IDVDStreamPlayer::SYNC_WAITSYNC)
@@ -333,11 +333,11 @@ void CVideoPlayerVideo::Process()
     if (onlyPrioMsgs)
     {
       iPriority = 1;
-      iQueueTimeOut = 1;
+      timeout = 1ms;
     }
 
     std::shared_ptr<CDVDMsg> pMsg;
-    MsgQueueReturnCode ret = GetMessage(pMsg, iQueueTimeOut, iPriority);
+    MsgQueueReturnCode ret = GetMessage(pMsg, timeout, iPriority);
 
     onlyPrioMsgs = false;
 
