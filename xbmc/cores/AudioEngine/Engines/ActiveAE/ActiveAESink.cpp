@@ -1125,7 +1125,8 @@ void CActiveAESink::GenerateNoise()
   }
 
   SampleConfig config = m_sampleOfSilence.pkt->config;
-  IAEResample *resampler = CAEResampleFactory::Create(AERESAMPLEFACTORY_QUICK_RESAMPLE);
+  auto resampler =
+      std::unique_ptr<IAEResample>(CAEResampleFactory::Create(AERESAMPLEFACTORY_QUICK_RESAMPLE));
 
   SampleConfig dstConfig, srcConfig;
   dstConfig.channel_layout = config.channel_layout;
@@ -1149,7 +1150,6 @@ void CActiveAESink::GenerateNoise()
                      (uint8_t**)&noise, m_sampleOfSilence.pkt->max_nb_samples, 1.0);
 
   KODI::MEMORY::AlignedFree(noise);
-  delete resampler;
 }
 
 void CActiveAESink::SetSilenceTimer()
