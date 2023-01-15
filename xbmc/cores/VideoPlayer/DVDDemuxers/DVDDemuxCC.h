@@ -10,6 +10,7 @@
 
 #include "DVDDemux.h"
 
+#include <memory>
 #include <vector>
 
 class CCaptionBlock;
@@ -53,6 +54,6 @@ protected:
   double m_curPts;
   std::vector<CCaptionBlock*> m_ccReorderBuffer;
   std::vector<CCaptionBlock*> m_ccTempBuffer;
-  CDecoderCC708 *m_ccDecoder;
+  std::unique_ptr<CDecoderCC708> m_ccDecoder;
   AVCodecID m_codec;
 };

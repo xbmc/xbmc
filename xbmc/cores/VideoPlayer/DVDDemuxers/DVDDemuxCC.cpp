@@ -90,7 +90,6 @@ CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec) : m_codec(codec)
 {
   m_hasData = false;
   m_curPts = 0.0;
-  m_ccDecoder = NULL;
 }
 
 CDVDDemuxCC::~CDVDDemuxCC()
@@ -339,7 +338,7 @@ void CDVDDemuxCC::Handler(int service, void *userdata)
 
 bool CDVDDemuxCC::OpenDecoder()
 {
-  m_ccDecoder = new CDecoderCC708();
+  m_ccDecoder = std::make_unique<CDecoderCC708>();
   m_ccDecoder->Init(Handler, this);
   return true;
 }
@@ -348,8 +347,7 @@ void CDVDDemuxCC::Dispose()
 {
   m_streams.clear();
   m_streamdata.clear();
-  delete m_ccDecoder;
-  m_ccDecoder = NULL;
+  m_ccDecoder.reset();
 
   while (!m_ccReorderBuffer.empty())
   {
