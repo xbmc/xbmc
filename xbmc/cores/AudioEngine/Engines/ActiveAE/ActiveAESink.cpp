@@ -62,8 +62,7 @@ void CActiveAESink::Dispose()
     m_sink.reset();
   }
 
-  delete m_sampleOfSilence.pkt;
-  m_sampleOfSilence.pkt = nullptr;
+  m_sampleOfSilence.pkt.reset();
 
   delete m_packer;
   m_packer = nullptr;
@@ -889,8 +888,7 @@ void CActiveAESink::OpenSink()
   config.sample_rate = m_sinkFormat.m_sampleRate;
 
   // init sample of silence/noise
-  delete m_sampleOfSilence.pkt;
-  m_sampleOfSilence.pkt = new CSoundPacket(config, m_sinkFormat.m_frames);
+  m_sampleOfSilence.pkt = std::make_unique<CSoundPacket>(config, m_sinkFormat.m_frames);
   m_sampleOfSilence.pkt->nb_samples = m_sampleOfSilence.pkt->max_nb_samples;
   if (!passthrough)
     GenerateNoise();
