@@ -42,7 +42,6 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat* format, unsigned int streamid, C
   m_leftoverBuffer = new uint8_t[m_format.m_frameSize];
   m_leftoverBytes = 0;
   m_forceResampler = false;
-  m_remapper = NULL;
   m_remapBuffer = NULL;
   m_streamResampleRatio = 1.0;
   m_streamResampleMode = 0;
@@ -58,7 +57,6 @@ CActiveAEStream::CActiveAEStream(AEAudioFormat* format, unsigned int streamid, C
 CActiveAEStream::~CActiveAEStream()
 {
   delete [] m_leftoverBuffer;
-  delete m_remapper;
   delete m_remapBuffer;
 }
 
@@ -100,7 +98,7 @@ void CActiveAEStream::InitRemapper()
   {
     CLog::Log(LOGDEBUG, "CActiveAEStream::{} - initialize remapper", __FUNCTION__);
 
-    m_remapper = CAEResampleFactory::Create();
+    m_remapper.reset(CAEResampleFactory::Create());
     uint64_t avLayout = CAEUtil::GetAVChannelLayout(m_format.m_channelLayout);
 
     // build layout according to ffmpeg channel order
