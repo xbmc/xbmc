@@ -1125,8 +1125,8 @@ void CActiveAESink::GenerateNoise()
   }
 
   SampleConfig config = m_sampleOfSilence.pkt->config;
-  auto resampler =
-      std::unique_ptr<IAEResample>(CAEResampleFactory::Create(AERESAMPLEFACTORY_QUICK_RESAMPLE));
+  std::unique_ptr<IAEResample> resampler =
+      CAEResampleFactory::Create(AERESAMPLEFACTORY_QUICK_RESAMPLE);
 
   SampleConfig dstConfig, srcConfig;
   dstConfig.channel_layout = config.channel_layout;
