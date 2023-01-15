@@ -206,7 +206,7 @@ protected:
   uint8_t *m_leftoverBuffer;
   int m_leftoverBytes;
   CSampleBuffer *m_currentBuffer;
-  CSoundPacket *m_remapBuffer;
+  std::unique_ptr<CSoundPacket> m_remapBuffer;
   std::unique_ptr<IAEResample> m_remapper;
   double m_lastPts;
   double m_lastPtsJump;
