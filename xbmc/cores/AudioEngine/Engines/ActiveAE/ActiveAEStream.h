@@ -213,7 +213,7 @@ protected:
 
   // only accessed by engine
   std::unique_ptr<CActiveAEBufferPool> m_inputBuffers;
-  CActiveAEStreamBuffers *m_processingBuffers;
+  std::unique_ptr<CActiveAEStreamBuffers> m_processingBuffers;
   std::deque<CSampleBuffer*> m_processingSamples;
   CActiveAEDataProtocol *m_streamPort;
   CEvent m_inMsgEvent;
