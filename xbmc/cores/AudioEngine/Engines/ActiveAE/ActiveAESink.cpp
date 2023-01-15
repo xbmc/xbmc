@@ -38,6 +38,8 @@ CActiveAESink::CActiveAESink(CEvent *inMsgEvent) :
   m_streamNoise = true;
 }
 
+CActiveAESink::~CActiveAESink() = default;
+
 void CActiveAESink::Start()
 {
   if (!IsRunning())
@@ -64,8 +66,7 @@ void CActiveAESink::Dispose()
 
   m_sampleOfSilence.pkt.reset();
 
-  delete m_packer;
-  m_packer = nullptr;
+  m_packer.reset();
 
   CAESinkFactory::Cleanup();
 }
@@ -808,7 +809,7 @@ void CActiveAESink::OpenSink()
     m_needIecPack = NeedIECPacking();
     if (m_needIecPack)
     {
-      m_packer = new CAEBitstreamPacker();
+      m_packer = std::make_unique<CAEBitstreamPacker>();
       m_requestedFormat.m_sampleRate = CAEBitstreamPacker::GetOutputRate(m_requestedFormat.m_streamInfo);
       m_requestedFormat.m_channelLayout = CAEBitstreamPacker::GetOutputChannelMap(m_requestedFormat.m_streamInfo);
     }
