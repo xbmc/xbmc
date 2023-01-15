@@ -296,7 +296,8 @@ inline MsgQueueReturnCode CVideoPlayerVideo::GetMessage(std::shared_ptr<CDVDMsg>
                                                         unsigned int iTimeoutInMilliSeconds,
                                                         int& priority)
 {
-  MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, iTimeoutInMilliSeconds, priority);
+  MsgQueueReturnCode ret =
+      m_messageQueue.Get(pMsg, std::chrono::milliseconds(iTimeoutInMilliSeconds), priority);
   m_processInfo.SetLevelVQ(m_messageQueue.GetLevel());
   return ret;
 }

@@ -49,6 +49,8 @@ using namespace XFILE;
 using namespace PVR;
 using namespace KODI::MESSAGING;
 
+using namespace std::chrono_literals;
+
 /**
  * Universal Encoder Communication Protocol (UECP)
  * List of defined commands
@@ -612,7 +614,7 @@ void CDVDRadioRDSData::Process()
   {
     std::shared_ptr<CDVDMsg> pMsg;
     int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE) ? 1 : 0;
-    MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, 2000, iPriority);
+    MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, 2s, iPriority);
 
     if (ret == MSGQ_TIMEOUT)
     {
