@@ -17,6 +17,7 @@
 #include "threads/Thread.h"
 #include "utils/ActorProtocol.h"
 
+#include <memory>
 #include <utility>
 
 class CAEBitstreamPacker;
@@ -145,7 +146,7 @@ protected:
   std::string m_deviceFriendlyName;
   std::string m_device;
   std::vector<AE::AESinkInfo> m_sinkInfoList;
-  IAESink *m_sink;
+  std::unique_ptr<IAESink> m_sink;
   AEAudioFormat m_sinkFormat, m_requestedFormat;
   CEngineStats *m_stats;
   float m_volume;
