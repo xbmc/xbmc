@@ -13,7 +13,6 @@
 #include <string>
 
 #include <pipewire/core.h>
-#include <pipewire/properties.h>
 
 namespace KODI
 {
@@ -21,7 +20,7 @@ namespace PIPEWIRE
 {
 
 class CPipewireCore;
-class CPipewireNode;
+class CPipewireGlobal;
 
 class CPipewireRegistry
 {
@@ -34,24 +33,7 @@ public:
 
   CPipewireCore& GetCore() const { return m_core; }
 
-  struct PipewirePropertiesDeleter
-  {
-    void operator()(pw_properties* p) { pw_properties_free(p); }
-  };
-
-  struct global
-  {
-    std::string name;
-    std::string description;
-    uint32_t id;
-    uint32_t permissions;
-    std::string type;
-    uint32_t version;
-    std::unique_ptr<pw_properties, PipewirePropertiesDeleter> properties;
-    std::unique_ptr<CPipewireNode> node;
-  };
-
-  std::map<uint32_t, std::unique_ptr<global>>& GetGlobals() { return m_globals; }
+  std::map<uint32_t, std::unique_ptr<CPipewireGlobal>>& GetGlobals() { return m_globals; }
 
 private:
   static void OnGlobalAdded(void* userdata,
@@ -76,7 +58,7 @@ private:
 
   std::unique_ptr<pw_registry, PipewireRegistryDeleter> m_registry;
 
-  std::map<uint32_t, std::unique_ptr<global>> m_globals;
+  std::map<uint32_t, std::unique_ptr<CPipewireGlobal>> m_globals;
 };
 
 } // namespace PIPEWIRE
