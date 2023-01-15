@@ -9,6 +9,7 @@
 #include "PipewireRegistry.h"
 
 #include "PipewireCore.h"
+#include "PipewireGlobal.h"
 #include "PipewireNode.h"
 #include "utils/log.h"
 
@@ -63,17 +64,23 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
   if (!desc)
     return;
 
+  auto properties =
+      std::unique_ptr<pw_properties, PipewirePropertiesDeleter>(pw_properties_new_dict(props));
+
+  auto node = std::make_unique<CPipewireNode>(registry, id, type);
+
   auto& globals = registry.GetGlobals();
 
-  globals[id] = std::make_unique<global>();
-  globals[id]->name = std::string(name);
-  globals[id]->description = std::string(desc);
-  globals[id]->id = id;
-  globals[id]->permissions = permissions;
-  globals[id]->type = std::string(type);
-  globals[id]->version = version;
-  globals[id]->properties.reset(pw_properties_new_dict(props));
-  globals[id]->node = std::make_unique<CPipewireNode>(registry, id, type);
+  globals[id] = std::make_unique<CPipewireGlobal>();
+  globals[id]
+      ->SetName(name)
+      .SetDescription(desc)
+      .SetID(id)
+      .SetPermissions(permissions)
+      .SetType(type)
+      .SetVersion(version)
+      .SetProperties(std::move(properties))
+      .SetNode(std::move(node));
 }
 
 void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
@@ -85,7 +92,7 @@ void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
   if (global != globals.end())
   {
     CLog::Log(LOGDEBUG, "CPipewireRegistry::{} - id={} type={}", __FUNCTION__, id,
-              global->second->type);
+              global->second->GetType());
 
     globals.erase(global);
   }
