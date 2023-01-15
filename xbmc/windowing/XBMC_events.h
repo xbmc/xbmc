@@ -1,10 +1,5 @@
 /*
- *      SDL - Simple DirectMedia Layer
- *  Copyright (C) 1997-2009 Sam Lantinga
- *      Sam Lantinga
- *      slouken@libsdl.org
- *
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2023 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -12,8 +7,6 @@
  */
 
 #pragma once
-
-/* Include file for SDL event handling */
 
 #include "Resolution.h"
 #include "input/XBMC_keyboard.h"
