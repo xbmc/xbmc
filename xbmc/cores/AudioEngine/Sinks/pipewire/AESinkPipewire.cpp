@@ -9,6 +9,7 @@
 #include "AESinkPipewire.h"
 
 #include "CompileInfo.h"
+#include "PipewireGlobal.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
@@ -306,9 +307,10 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   {
     CAEDeviceInfo device;
     device.m_deviceType = AE_DEVTYPE_PCM;
-    device.m_deviceName = global.second->name;
-    device.m_displayName = global.second->description;
-    device.m_displayNameExtra = global.second->description + " (PIPEWIRE)";
+    device.m_deviceName = global.second->GetName();
+    device.m_displayName = global.second->GetDescription();
+    device.m_displayNameExtra =
+        StringUtils::Format("{} (PIPEWIRE)", global.second->GetDescription());
     device.m_wantsIECPassthrough = true;
 
     std::for_each(formatMap.cbegin(), formatMap.cend(),
@@ -317,8 +319,7 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
     std::for_each(defaultSampleRates.cbegin(), defaultSampleRates.cend(),
                   [&device](const auto& rate) { device.m_sampleRates.emplace_back(rate); });
 
-    auto& node = *global.second->node;
-
+    auto& node = global.second->GetNode();
     node.EnumerateFormats();
 
     int ret = loop.Wait(5s);
@@ -381,7 +382,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   else
   {
     auto target = std::find_if(globals.begin(), globals.end(),
-                               [&device](const auto& p) { return device == p.second->name; });
+                               [&device](const auto& p) { return device == p.second->GetName(); });
     if (target == globals.end())
       return false;
 
