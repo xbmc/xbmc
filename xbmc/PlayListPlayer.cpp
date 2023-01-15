@@ -263,21 +263,31 @@ bool CPlayListPlayer::Play(const CFileItemPtr& pItem, const std::string& player)
   Id playlistId;
   bool isVideo{pItem->IsVideo()};
   bool isAudio{pItem->IsAudio()};
-  if (isVideo && isAudio && pItem->HasProperty("playlist_type_hint"))
+
+  if (isAudio && !isVideo)
+    playlistId = TYPE_MUSIC;
+  else if (isVideo && !isAudio)
+    playlistId = TYPE_VIDEO;
+  else if (pItem->HasProperty("playlist_type_hint"))
   {
-    // If an extension is set in both audio / video lists (e.g. playlist .strm),
-    // is not possible detect the type of playlist then we rely on the hint
+    // There are two main cases that can fall here:
+    // - If an extension is set on both audio / video extension lists example .strm
+    //   see GetFileExtensionProvider() -> GetVideoExtensions() / GetAudioExtensions()
+    //   When you play the .strm containing single path, cause that
+    //   IsVideo() and IsAudio() methods both return true
+    //
+    // - When you play a playlist (e.g. .m3u / .strm) containing multiple paths,
+    //   and the path played is generic (e.g.without extension) and have no properties
+    //   to detect the media type, IsVideo() / IsAudio() both return false
+    //
+    // for these cases the type is unknown so we rely on the hint
     playlistId = pItem->GetProperty("playlist_type_hint").asInteger32(TYPE_NONE);
   }
-  else if (isAudio)
-    playlistId = TYPE_MUSIC;
-  else if (isVideo)
-    playlistId = TYPE_VIDEO;
   else
   {
-    CLog::Log(
-        LOGWARNING,
-        "Playlist Player: ListItem type must be audio or video, use ListItem::setInfo to specify!");
+    CLog::LogF(LOGWARNING, "ListItem type must be audio or video type. The type can be specified "
+                           "by using ListItem::getVideoInfoTag or ListItem::getMusicInfoTag, in "
+                           "the case of playlist entries by adding #KODIPROP mimetype value.");
     return false;
   }
 
