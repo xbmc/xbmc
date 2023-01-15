@@ -207,7 +207,7 @@ protected:
   int m_leftoverBytes;
   CSampleBuffer *m_currentBuffer;
   CSoundPacket *m_remapBuffer;
-  IAEResample *m_remapper;
+  std::unique_ptr<IAEResample> m_remapper;
   double m_lastPts;
   double m_lastPtsJump;
   std::chrono::milliseconds m_errorInterval{1000};
