@@ -98,7 +98,7 @@ void CActiveAEStream::InitRemapper()
   {
     CLog::Log(LOGDEBUG, "CActiveAEStream::{} - initialize remapper", __FUNCTION__);
 
-    m_remapper.reset(CAEResampleFactory::Create());
+    m_remapper = CAEResampleFactory::Create();
     uint64_t avLayout = CAEUtil::GetAVChannelLayout(m_format.m_channelLayout);
 
     // build layout according to ffmpeg channel order

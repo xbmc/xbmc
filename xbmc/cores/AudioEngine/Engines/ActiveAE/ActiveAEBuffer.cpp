@@ -170,7 +170,7 @@ bool CActiveAEBufferPoolResample::Create(unsigned int totaltime, bool remap, boo
 
 void CActiveAEBufferPoolResample::ChangeResampler()
 {
-  m_resampler.reset(CAEResampleFactory::Create());
+  m_resampler = CAEResampleFactory::Create();
 
   SampleConfig dstConfig, srcConfig;
   dstConfig.channel_layout = CAEUtil::GetAVChannelLayout(m_format.m_channelLayout);

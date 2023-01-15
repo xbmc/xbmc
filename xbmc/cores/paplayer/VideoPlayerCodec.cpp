@@ -244,7 +244,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     if (m_srcFormat.m_frameSize == 0)
       return false;
 
-    m_pResampler.reset(ActiveAE::CAEResampleFactory::Create());
+    m_pResampler = ActiveAE::CAEResampleFactory::Create();
 
     SampleConfig dstConfig, srcConfig;
     dstConfig.channel_layout = CAEUtil::GetAVChannelLayout(m_srcFormat.m_channelLayout);

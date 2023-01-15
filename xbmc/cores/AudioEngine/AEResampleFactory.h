@@ -27,7 +27,7 @@ enum AEResampleFactoryOptions
 class CAEResampleFactory
 {
 public:
-  static IAEResample *Create(uint32_t flags = 0U);
+  static std::unique_ptr<IAEResample> Create(uint32_t flags = 0U);
 };
 
 }
