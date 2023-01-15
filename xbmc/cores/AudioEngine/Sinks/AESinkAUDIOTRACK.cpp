@@ -910,7 +910,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     // exactly once with the last package for some 100 ms
     double extra_sleep = 0.0;
     if (time_to_add_ms < m_format.m_streamInfo.GetDuration())
-      extra_sleep = (m_format.m_streamInfo.GetDuration() - time_to_add_ms) / 2.0;
+      extra_sleep = (m_format.m_streamInfo.GetDuration() - time_to_add_ms);
 
     // if there is still place, just add it without blocking
     if (m_delay < (m_audiotrackbuffer_sec - (m_format.m_streamInfo.GetDuration() / 1000.0)))
@@ -938,7 +938,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
       double time_should_ms = 1000.0 * written_frames / m_format.m_sampleRate;
       double time_off = time_should_ms - time_to_add_ms;
       if (time_off > 0)
-        usleep(time_off * 500); // sleep half the error away
+        usleep(time_off * 1000); // sleep the error away
     }
   }
 
