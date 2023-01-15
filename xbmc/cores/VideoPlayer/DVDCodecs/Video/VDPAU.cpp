@@ -670,9 +670,8 @@ long CDecoder::Release()
     CLog::Log(LOGINFO, "CVDPAU::Release pre-cleanup");
 
     Message *reply;
-    if (m_vdpauOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::PRECLEANUP,
-                                                   &reply,
-                                                   2000))
+    if (m_vdpauOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::PRECLEANUP, &reply,
+                                                       2s))
     {
       bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
       reply->Release();
@@ -966,11 +965,8 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   m_bufferStats.Reset();
   m_vdpauOutput.Start();
   Message *reply;
-  if (m_vdpauOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::INIT,
-                                                 &reply,
-                                                 2000,
-                                                 &m_vdpauConfig,
-                                                 sizeof(m_vdpauConfig)))
+  if (m_vdpauOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::INIT, &reply, 2s,
+                                                     &m_vdpauConfig, sizeof(m_vdpauConfig)))
   {
     bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
     reply->Release();
@@ -1276,9 +1272,7 @@ void CDecoder::Reset()
     return;
 
   Message *reply;
-  if (m_vdpauOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::FLUSH,
-                                                 &reply,
-                                                 2000))
+  if (m_vdpauOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::FLUSH, &reply, 2s))
   {
     bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
     reply->Release();
@@ -2948,8 +2942,8 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
           }
           Init();
           Message *reply;
-          if (m_mixer.m_controlPort.SendOutMessageSync(CMixerControlProtocol::INIT,
-                                     &reply, 1000, &m_config, sizeof(m_config)))
+          if (m_mixer.m_controlPort.SendOutMessageSync(CMixerControlProtocol::INIT, &reply, 1s,
+                                                       &m_config, sizeof(m_config)))
           {
             if (reply->signal != CMixerControlProtocol::ACC)
               m_vdpError = true;
@@ -3191,9 +3185,7 @@ void COutput::Flush()
   if (m_mixer.IsActive())
   {
     Message *reply;
-    if (m_mixer.m_controlPort.SendOutMessageSync(CMixerControlProtocol::FLUSH,
-                                                 &reply,
-                                                 2000))
+    if (m_mixer.m_controlPort.SendOutMessageSync(CMixerControlProtocol::FLUSH, &reply, 2s))
     {
       reply->Release();
     }

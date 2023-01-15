@@ -404,9 +404,8 @@ void CActiveAEStream::Drain(bool wait)
   m_streamDrained = false;
 
   Message *reply;
-  if (m_streamPort->SendOutMessageSync(CActiveAEDataProtocol::DRAINSTREAM,
-                                       &reply,2000,
-                                       &stream, sizeof(CActiveAEStream*)))
+  if (m_streamPort->SendOutMessageSync(CActiveAEDataProtocol::DRAINSTREAM, &reply, 2s, &stream,
+                                       sizeof(CActiveAEStream*)))
   {
     bool success = reply->signal == CActiveAEDataProtocol::ACC ? true : false;
     reply->Release();
