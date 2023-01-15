@@ -15,6 +15,8 @@
 
 #include <mutex>
 
+using namespace std::chrono_literals;
+
 const uint8_t rev_lut[32] =
 {
   0x00,0x08,0x04,0x0c, /*  upper nibble */
@@ -230,7 +232,7 @@ void CDVDTeletextData::Process()
   {
     std::shared_ptr<CDVDMsg> pMsg;
     int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE) ? 1 : 0;
-    MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, 2000, iPriority);
+    MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, 2s, iPriority);
 
     if (ret == MSGQ_TIMEOUT)
     {
