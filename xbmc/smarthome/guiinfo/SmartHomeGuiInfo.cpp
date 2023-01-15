@@ -11,6 +11,7 @@
 #include "GUIInfoManager.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "smarthome/guiinfo/ILabHUD.h"
 #include "smarthome/guiinfo/IStationHUD.h"
 #include "smarthome/guiinfo/ITrainHUD.h"
 #include "utils/StringUtils.h"
@@ -19,9 +20,10 @@ using namespace KODI;
 using namespace SMART_HOME;
 
 CSmartHomeGuiInfo::CSmartHomeGuiInfo(CGUIInfoManager& infoManager,
+                                     ILabHUD& labHud,
                                      IStationHUD& stationHud,
                                      ITrainHUD& trainHud)
-  : m_infoManager(infoManager), m_stationHud(stationHud), m_trainHud(trainHud)
+  : m_infoManager(infoManager), m_labHud(labHud), m_stationHud(stationHud), m_trainHud(trainHud)
 {
 }
 
@@ -48,6 +50,27 @@ bool CSmartHomeGuiInfo::GetLabel(std::string& value,
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SMARTHOME_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    case SMARTHOME_LAB_CPU:
+    {
+      value = StringUtils::Format("{} %", m_labHud.CPUPercent());
+      return true;
+    }
+    case SMARTHOME_LAB_MEMORY:
+    {
+      value = StringUtils::Format("{} %", m_labHud.MemoryPercent());
+      return true;
+    }
+    case SMARTHOME_LAB_CURRENT:
+    {
+      value = StringUtils::Format("{} mA",
+                                  static_cast<unsigned int>(m_labHud.ShuntCurrent() * 1000.0f));
+      return true;
+    }
+    case SMARTHOME_LAB_IR:
+    {
+      value = StringUtils::Format("{:0.2f} V", m_labHud.IRVoltage());
+      return true;
+    }
     case SMARTHOME_STATION_SUPPLY:
     {
       value = StringUtils::Format("{:.1f} V", m_stationHud.SupplyVoltage());
@@ -110,6 +133,11 @@ bool CSmartHomeGuiInfo::GetBool(bool& value,
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // SMARTHOME_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    case SMARTHOME_HAS_LAB:
+    {
+      value = m_labHud.IsActive();
+      return true;
+    }
     case SMARTHOME_HAS_STATION:
     {
       value = m_stationHud.IsActive();

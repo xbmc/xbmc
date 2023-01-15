@@ -73,6 +73,11 @@ void CRos2::UnregisterImageTopic(const std::string& topic)
   m_node->UnregisterImageTopic(topic);
 }
 
+ILabHUD* CRos2::GetLabHUD() const
+{
+  return m_node->GetLabHUD();
+}
+
 IStationHUD* CRos2::GetStationHUD() const
 {
   return m_node->GetStationHUD();

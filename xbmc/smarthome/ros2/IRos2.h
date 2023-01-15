@@ -15,6 +15,7 @@ namespace KODI
 namespace SMART_HOME
 {
 
+class ILabHUD;
 class IStationHUD;
 class ITrainHUD;
 
@@ -36,6 +37,7 @@ public:
   // GUI interface
   virtual void RegisterImageTopic(const std::string& topic) = 0;
   virtual void UnregisterImageTopic(const std::string& topic) = 0;
+  virtual ILabHUD* GetLabHUD() const = 0;
   virtual IStationHUD* GetStationHUD() const = 0;
   virtual ITrainHUD* GetTrainHUD() const = 0;
 
