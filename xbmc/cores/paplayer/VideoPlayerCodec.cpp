@@ -29,7 +29,6 @@ VideoPlayerCodec::VideoPlayerCodec()
   m_nAudioStream = -1;
   m_nDecodedLen = 0;
   m_bInited = false;
-  m_pResampler = NULL;
   m_needConvert = false;
   m_channels = 0;
 
@@ -245,7 +244,7 @@ bool VideoPlayerCodec::Init(const CFileItem &file, unsigned int filecache)
     if (m_srcFormat.m_frameSize == 0)
       return false;
 
-    m_pResampler = ActiveAE::CAEResampleFactory::Create();
+    m_pResampler.reset(ActiveAE::CAEResampleFactory::Create());
 
     SampleConfig dstConfig, srcConfig;
     dstConfig.channel_layout = CAEUtil::GetAVChannelLayout(m_srcFormat.m_channelLayout);
@@ -296,8 +295,7 @@ void VideoPlayerCodec::DeInit()
 
   m_pAudioCodec.reset();
 
-  delete m_pResampler;
-  m_pResampler = NULL;
+  m_pResampler.reset();
 
   // cleanup format information
   m_TotalTime = 0;
