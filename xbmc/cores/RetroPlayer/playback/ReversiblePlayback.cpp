@@ -224,8 +224,9 @@ bool CReversiblePlayback::LoadSavestate(const std::string& path)
     if (m_gameClient->Deserialize(savestate->GetMemoryData(), memorySize))
     {
       m_totalFrameCount = savestate->TimestampFrames();
-      m_autosavePath = path;
       bSuccess = true;
+      if (savestate->Type() == SAVE_TYPE::AUTO)
+        m_autosavePath = path;
     }
   }
 
