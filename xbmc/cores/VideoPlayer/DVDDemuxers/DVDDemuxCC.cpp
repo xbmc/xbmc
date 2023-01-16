@@ -101,10 +101,9 @@ void ApplyStyleModifiers(std::string& ccText, const cc_attribute_t& ccAttributes
 }
 } // namespace
 
-CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec) : m_codec(codec)
+CDVDDemuxCC::CDVDDemuxCC() : m_hasData{false}, m_curPts{0.0}
+
 {
-  m_hasData = false;
-  m_curPts = 0.0;
 }
 
 CDVDDemuxCC::~CDVDDemuxCC()
