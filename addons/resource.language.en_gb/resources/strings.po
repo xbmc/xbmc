@@ -8878,13 +8878,13 @@ msgstr ""
 #. Label for button in the in-game savestate manager
 #: xbmc/games/dialogs/osd/DialogInGameSaves.cpp
 msgctxt "#15314"
-msgid "Save progress"
+msgid "Save"
 msgstr ""
 
-#. Caption for "Save progress" button in the in-game savestate manager
+#. Caption for "Save" button in the in-game savestate manager
 #: xbmc/games/dialogs/osd/DialogInGameSaves.cpp
 msgctxt "#15315"
-msgid "Save progress to new save file"
+msgid "Save progress to a new save file"
 msgstr ""
 
 #empty strings from id 15316 to 15999
@@ -18301,7 +18301,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#35203"
-msgid "Enable rewind if supported"
+msgid "Enable rewind (if supported)"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18407,7 +18407,7 @@ msgstr ""
 #. Title of the game OSD menu
 #: addons/skin.estuary/xml/GameOSD.xml
 msgctxt "#35221"
-msgid "Game Menu"
+msgid "Menu"
 msgstr ""
 
 #. Label of button in the in-game menu for stopping game playback
@@ -18506,10 +18506,10 @@ msgstr ""
 
 #empty strings from id 35237 to 35248
 
-#. Button to open the saved game manager from the game OSD
+#. Button to open the savestate manager from the game OSD
 #: addons/skin.estuary/xml/GameOSD.xml
 msgctxt "#35249"
-msgid "Saved games"
+msgid "Save / Load"
 msgstr ""
 
 #: xbmc/windows/GUIMediaWindow.cpp
@@ -18529,7 +18529,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#35253"
-msgid "Enable autosave if supported"
+msgid "Enable autosave (if supported)"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -18573,7 +18573,7 @@ msgstr ""
 #. Button for creating a new save state from the select savestate dialog
 #: xbmc/games/dialogs/GUIDialogSelectSavestate.cpp
 msgctxt "#35261"
-msgid "New game"
+msgid "New"
 msgstr ""
 
 #. Help text for RetroAchievements username input setting
