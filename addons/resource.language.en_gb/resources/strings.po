@@ -8875,7 +8875,7 @@ msgctxt "#15313"
 msgid "Login to RetroAchievements"
 msgstr ""
 
-#. Label for button in the in-game savestate manager
+#. Label for button which creates a new savestate in the in-game savestate manager
 #: xbmc/games/dialogs/osd/DialogInGameSaves.cpp
 msgctxt "#15314"
 msgid "Save"
@@ -8887,7 +8887,13 @@ msgctxt "#15315"
 msgid "Save progress to a new save file"
 msgstr ""
 
-#empty strings from id 15316 to 15999
+#. Label for savestates created automatically by "Autosave" function
+#: xbmc/cores/RetroPlayer/playback/ReversiblePlayback.cpp
+msgctxt "#15316"
+msgid "Autosave"
+msgstr ""
+
+#empty strings from id 15317 to 15999
 
 #: system/settings/settings.xml
 msgctxt "#16000"
