@@ -317,8 +317,7 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
     std::for_each(defaultSampleRates.cbegin(), defaultSampleRates.cend(),
                   [&device](const auto& rate) { device.m_sampleRates.emplace_back(rate); });
 
-    auto proxy = global.second->proxy.get();
-    auto node = static_cast<PIPEWIRE::CPipewireNode*>(proxy);
+    auto node = global.second->node.get();
 
     node->EnumerateFormats();
 

@@ -21,7 +21,7 @@ namespace PIPEWIRE
 {
 
 class CPipewireCore;
-class CPipewireProxy;
+class CPipewireNode;
 
 class CPipewireRegistry
 {
@@ -48,7 +48,7 @@ public:
     std::string type;
     uint32_t version;
     std::unique_ptr<pw_properties, PipewirePropertiesDeleter> properties;
-    std::unique_ptr<CPipewireProxy> proxy;
+    std::unique_ptr<CPipewireNode> node;
   };
 
   std::map<uint32_t, std::unique_ptr<global>>& GetGlobals() { return m_globals; }
