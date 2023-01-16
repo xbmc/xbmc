@@ -31,7 +31,7 @@ CDialogInGameSaves::CDialogInGameSaves() : CDialogGameVideoSelect(WINDOW_DIALOG_
 
 std::string CDialogInGameSaves::GetHeading()
 {
-  return g_localizeStrings.Get(35249); // "Saved games"
+  return g_localizeStrings.Get(35249); // "Save / Load"
 }
 
 void CDialogInGameSaves::PreInit()
@@ -40,11 +40,11 @@ void CDialogInGameSaves::PreInit()
 
   InitSavedGames();
 
-  CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(15314)); // "Save progress"
+  CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(15314)); // "Save"
   item->SetArt("icon", "DefaultAddSource.png");
   item->SetPath("");
   item->SetProperty(SAVESTATE_CAPTION,
-                    g_localizeStrings.Get(15315)); // "Save progress to new save file"
+                    g_localizeStrings.Get(15315)); // "Save progress to a new save file"
 
   m_items.AddFront(item, 0);
 }
