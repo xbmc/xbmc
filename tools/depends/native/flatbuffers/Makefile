@@ -5,10 +5,10 @@ DEPS =../../Makefile.include Makefile ../../download-files.include
 
 # lib name, version
 LIBNAME=flatbuffers
-VERSION=2.0.0
+VERSION=23.1.4
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-SHA512=26a06b572c0e4c9685743bd2d2162ac7dcd74b9324624cc3f3ef5b154c0cee7c52a04b77cdc184245d2d6ae38dfdcc4fd66001c318aa8ca001d2bf1d85d66a89
+SHA512=8b3e1b9596a76548faca529fe5070e775be50bfdea079ba4f66014f5a1bfb93f8edd7e56f97363c897d2db8391277a9099a61d14e4298c3669ab7068bbf07865
 include ../../download-files.include
 
 APP=$(PLATFORM)/build-cmake/flatc
