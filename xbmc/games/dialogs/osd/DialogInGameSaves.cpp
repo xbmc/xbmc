@@ -53,9 +53,6 @@ void CDialogInGameSaves::InitSavedGames()
 {
   auto gameSettings = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
 
-  // save current game
-  gameSettings->CreateSavestate(true);
-
   CSavestateDatabase db;
   db.GetSavestatesNav(m_items, gameSettings->GetPlayingGame(), gameSettings->GameClientID());
 
