@@ -31,10 +31,10 @@ public:
 
   bool Start();
 
-  CPipewireThreadLoop* GetThreadLoop() { return m_loop.get(); }
-  CPipewireContext* GetContext() { return m_context.get(); }
-  CPipewireCore* GetCore() { return m_core.get(); }
-  CPipewireRegistry* GetRegistry() { return m_registry.get(); }
+  CPipewireThreadLoop& GetThreadLoop() { return *m_loop; }
+  CPipewireContext& GetContext() { return *m_context; }
+  CPipewireCore& GetCore() { return *m_core; }
+  CPipewireRegistry& GetRegistry() { return *m_registry; }
   std::shared_ptr<CPipewireStream>& GetStream() { return m_stream; }
 
 private:
