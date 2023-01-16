@@ -190,7 +190,7 @@ bool CRetroPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options
     m_cheevos->EnableRichPresence();
 
     // Initialize gameplay
-    CreatePlayback(m_gameServices.GameSettings().AutosaveEnabled(), savestatePath);
+    CreatePlayback(savestatePath);
     RegisterWindowCallbacks();
     m_playbackControl.reset(new CGUIPlaybackControl(*this));
     m_callback.OnPlayBackStarted(fileCopy);
@@ -594,7 +594,7 @@ void CRetroPlayer::OnSpeedChange(double newSpeed)
   m_processInfo->SetSpeed(static_cast<float>(newSpeed));
 }
 
-void CRetroPlayer::CreatePlayback(bool bRestoreState, const std::string& savestatePath)
+void CRetroPlayer::CreatePlayback(const std::string& savestatePath)
 {
   if (m_gameClient->RequiresGameLoop())
   {
@@ -606,7 +606,7 @@ void CRetroPlayer::CreatePlayback(bool bRestoreState, const std::string& savesta
   else
     ResetPlayback();
 
-  if (bRestoreState)
+  if (!savestatePath.empty())
   {
     const bool bStandalone = m_gameClient->GetGamePath().empty();
     if (!bStandalone)
