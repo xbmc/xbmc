@@ -207,25 +207,25 @@
 								<onclick>Play</onclick>
 							</item>
 							<item id="2102">
+								<description>Save / Load button</description>
+								<label>$LOCALIZE[35249]</label>
+								<icon>osd/fullscreen/buttons/saves.png</icon>
+								<onclick>ActivateWindow(InGameSaves)</onclick>
+							</item>
+							<item id="2103">
 								<description>Reset button</description>
 								<label>$LOCALIZE[13007]</label>
 								<icon>osd/fullscreen/buttons/reset.png</icon>
 								<onclick>PlayerControl(Reset)</onclick>
 							</item>
-							<item id="2103">
+							<item id="2104">
 								<description>Stop button</description>
 								<label>$LOCALIZE[35222]</label>
 								<label2>$LOCALIZE[31060]</label2>
 								<icon>osd/fullscreen/buttons/stop.png</icon>
 								<onclick>Stop</onclick>
 							</item>
-							<item id="2107">
-								<description>Saved games button</description>
-								<label>$LOCALIZE[35249]</label>
-								<icon>osd/fullscreen/buttons/saves.png</icon>
-								<onclick>ActivateWindow(InGameSaves)</onclick>
-							</item>
-							<item id="2108">
+							<item id="2105">
 								<description>Settings button</description>
 								<label>$LOCALIZE[5]</label>
 								<icon>osd/fullscreen/buttons/settings.png</icon>
