@@ -94,7 +94,7 @@ private:
   void OnSpeedChange(double newSpeed);
 
   // Playback functions
-  void CreatePlayback(bool bRestoreState, const std::string& savestatePath);
+  void CreatePlayback(const std::string& savestatePath);
   void ResetPlayback();
 
   /*!
