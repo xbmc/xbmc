@@ -19,6 +19,7 @@
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/addons/GameClient.h"
+#include "guilib/LocalizeStrings.h"
 #include "utils/MathUtils.h"
 #include "utils/URIUtils.h"
 
@@ -134,11 +135,16 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave)
 
   std::string caption = m_cheevos->GetRichPresenceEvaluation();
 
-  if (!m_autosavePath.empty())
+  if (autosave)
   {
-    std::unique_ptr<ISavestate> loadedSavestate = CSavestateDatabase::AllocateSavestate();
-    if (m_savestateDatabase->GetSavestate(m_autosavePath, *loadedSavestate))
-      label = loadedSavestate->Label();
+    if (!m_autosavePath.empty())
+    {
+      std::unique_ptr<ISavestate> loadedSavestate = CSavestateDatabase::AllocateSavestate();
+      if (m_savestateDatabase->GetSavestate(m_autosavePath, *loadedSavestate))
+        label = loadedSavestate->Label();
+    }
+    if (label.empty())
+      label = g_localizeStrings.Get(15316); // "Autosave"
   }
 
   const CDateTime nowUTC = CDateTime::GetUTCDateTime();
