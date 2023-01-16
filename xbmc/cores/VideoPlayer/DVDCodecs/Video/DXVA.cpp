@@ -1088,7 +1088,7 @@ static bool HasAMDH264SDiBug(AVCodecContext* avctx)
     return false;
 
   // AMD card has issues with SD H264 interlaced content
-  return (avctx->height <= 576 && avctx->codec_id == AV_CODEC_ID_H264 &&
+  return (avctx->width <= 720 && avctx->height <= 576 && avctx->codec_id == AV_CODEC_ID_H264 &&
           avctx->field_order != AV_FIELD_PROGRESSIVE);
 }
 
