@@ -21,16 +21,20 @@ namespace SINK
 namespace PIPEWIRE
 {
 
+class CPipewireCore;
+
 class CPipewireStream
 {
 public:
-  explicit CPipewireStream(pw_core* core);
+  explicit CPipewireStream(CPipewireCore& core);
   CPipewireStream() = delete;
   ~CPipewireStream();
 
   pw_stream* Get() const { return m_stream.get(); }
 
-  void AddListener(void* userdata);
+  CPipewireCore& GetCore() const { return m_core; }
+
+  void AddListener();
   bool Connect(uint32_t id,
                const pw_direction& direction,
                std::vector<const spa_pod*>& params,
@@ -57,6 +61,8 @@ private:
   static void Drained(void* userdata);
 
   static pw_stream_events CreateStreamEvents();
+
+  CPipewireCore& m_core;
 
   const pw_stream_events m_streamEvents;
 

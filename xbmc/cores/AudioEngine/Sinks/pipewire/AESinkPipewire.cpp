@@ -13,6 +13,7 @@
 #include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireNode.h"
+#include "cores/AudioEngine/Sinks/pipewire/PipewireRegistry.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireStream.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
 #include "utils/Map.h"
@@ -241,7 +242,8 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
 
   list.emplace_back(defaultDevice);
 
-  for (const auto& global : pipewire->GetGlobals())
+  auto registry = pipewire->GetRegistry();
+  for (const auto& global : registry->GetGlobals())
   {
     CAEDeviceInfo device;
     device.m_deviceType = AE_DEVTYPE_PCM;
@@ -300,7 +302,8 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
   loop->Lock();
 
-  auto& globals = pipewire->GetGlobals();
+  auto registry = pipewire->GetRegistry();
+  auto& globals = registry->GetGlobals();
 
   uint32_t id;
   if (device == "Default")
@@ -320,9 +323,9 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
     id = target->first;
   }
 
-  stream = std::make_shared<PIPEWIRE::CPipewireStream>(core->Get());
+  stream = std::make_shared<PIPEWIRE::CPipewireStream>(*core);
 
-  stream->AddListener(pipewire.get());
+  stream->AddListener();
 
   m_latency = 20; // ms
   uint32_t frames = std::nearbyint((m_latency * format.m_sampleRate) / 1000.0);

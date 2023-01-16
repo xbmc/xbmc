@@ -24,15 +24,16 @@ namespace PIPEWIRE
 {
 
 class CPipewire;
+class CPipewireRegistry;
 
 class CPipewireNode : public CPipewireProxy
 {
 public:
-  explicit CPipewireNode(pw_registry* registry, uint32_t id, const char* type);
+  explicit CPipewireNode(CPipewireRegistry& registry, uint32_t id, const char* type);
   CPipewireNode() = delete;
   ~CPipewireNode() override;
 
-  void AddListener(void* userdata) override;
+  void AddListener() override;
 
   void EnumerateFormats();
 
@@ -41,8 +42,6 @@ public:
   std::set<spa_audio_format>& GetFormats() { return m_formats; }
   std::set<spa_audio_channel>& GetChannels() { return m_channels; }
   std::set<uint32_t>& GetRates() { return m_rates; }
-
-  CPipewire* GetPipewire() { return m_pipewire; }
 
 private:
   void Parse(uint32_t type, void* body, uint32_t size);
@@ -71,8 +70,6 @@ private:
   std::set<spa_audio_format> m_formats;
   std::set<spa_audio_channel> m_channels;
   std::set<uint32_t> m_rates;
-
-  CPipewire* m_pipewire;
 };
 
 } // namespace PIPEWIRE

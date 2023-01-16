@@ -51,7 +51,7 @@ bool CPipewire::Start()
 {
   m_loop = std::make_unique<CPipewireThreadLoop>();
 
-  m_context = std::make_unique<CPipewireContext>(m_loop->Get());
+  m_context = std::make_unique<CPipewireContext>(*m_loop);
 
   m_loop->Lock();
 
@@ -61,11 +61,11 @@ bool CPipewire::Start()
     return false;
   }
 
-  m_core = std::make_unique<CPipewireCore>(m_context->Get());
-  m_core->AddListener(this);
+  m_core = std::make_unique<CPipewireCore>(*m_context);
+  m_core->AddListener();
 
-  m_registry = std::make_unique<CPipewireRegistry>(m_core->Get());
-  m_registry->AddListener(this);
+  m_registry = std::make_unique<CPipewireRegistry>(*m_core);
+  m_registry->AddListener();
 
   m_core->Sync();
 

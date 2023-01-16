@@ -19,16 +19,22 @@ namespace SINK
 namespace PIPEWIRE
 {
 
+class CPipewireThreadLoop;
+
 class CPipewireContext
 {
 public:
-  explicit CPipewireContext(pw_loop* loop);
+  explicit CPipewireContext(CPipewireThreadLoop& loop);
   CPipewireContext() = delete;
   ~CPipewireContext() = default;
 
   pw_context* Get() const { return m_context.get(); }
 
+  CPipewireThreadLoop& GetThreadLoop() const { return m_threadLoop; }
+
 private:
+  CPipewireThreadLoop& m_threadLoop;
+
   struct PipewireContextDeleter
   {
     void operator()(pw_context* p) { pw_context_destroy(p); }

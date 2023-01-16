@@ -8,7 +8,7 @@
 
 #include "PipewireRegistry.h"
 
-#include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
+#include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireNode.h"
 #include "utils/log.h"
 
@@ -25,9 +25,10 @@ namespace SINK
 namespace PIPEWIRE
 {
 
-CPipewireRegistry::CPipewireRegistry(pw_core* core) : m_registryEvents(CreateRegistryEvents())
+CPipewireRegistry::CPipewireRegistry(CPipewireCore& core)
+  : m_core(core), m_registryEvents(CreateRegistryEvents())
 {
-  m_registry.reset(pw_core_get_registry(core, PW_VERSION_REGISTRY, 0));
+  m_registry.reset(pw_core_get_registry(core.Get(), PW_VERSION_REGISTRY, 0));
   if (!m_registry)
   {
     CLog::Log(LOGERROR, "CPipewireRegistry: failed to create registry: {}", strerror(errno));
@@ -35,9 +36,9 @@ CPipewireRegistry::CPipewireRegistry(pw_core* core) : m_registryEvents(CreateReg
   }
 }
 
-void CPipewireRegistry::AddListener(void* userdata)
+void CPipewireRegistry::AddListener()
 {
-  pw_registry_add_listener(m_registry.get(), &m_registryListener, &m_registryEvents, userdata);
+  pw_registry_add_listener(m_registry.get(), &m_registryListener, &m_registryEvents, this);
 }
 
 void CPipewireRegistry::OnGlobalAdded(void* userdata,
@@ -47,7 +48,7 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
                                       uint32_t version,
                                       const struct spa_dict* props)
 {
-  auto pipewire = reinterpret_cast<CPipewire*>(userdata);
+  auto registry = reinterpret_cast<CPipewireRegistry*>(userdata);
 
   if (strcmp(type, PW_TYPE_INTERFACE_Node) == 0)
   {
@@ -66,9 +67,9 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
     if (!desc)
       return;
 
-    auto& globals = pipewire->GetGlobals();
+    auto& globals = registry->GetGlobals();
 
-    globals[id] = std::make_unique<CPipewire::global>();
+    globals[id] = std::make_unique<global>();
     globals[id]->name = std::string(name);
     globals[id]->description = std::string(desc);
     globals[id]->id = id;
@@ -76,15 +77,15 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
     globals[id]->type = std::string(type);
     globals[id]->version = version;
     globals[id]->properties.reset(pw_properties_new_dict(props));
-    globals[id]->proxy = std::make_unique<CPipewireNode>(pipewire->GetRegistry()->Get(), id, type);
-    globals[id]->proxy->AddListener(userdata);
+    globals[id]->proxy = std::make_unique<CPipewireNode>(*registry, id, type);
+    globals[id]->proxy->AddListener();
   }
 }
 
 void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
 {
-  auto pipewire = reinterpret_cast<CPipewire*>(userdata);
-  auto& globals = pipewire->GetGlobals();
+  auto registry = reinterpret_cast<CPipewireRegistry*>(userdata);
+  auto& globals = registry->GetGlobals();
 
   auto global = globals.find(id);
   if (global != globals.end())

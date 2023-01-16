@@ -8,6 +8,7 @@
 
 #include "PipewireContext.h"
 
+#include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
 #include "utils/log.h"
 
 #include <stdexcept>
@@ -19,9 +20,9 @@ namespace SINK
 namespace PIPEWIRE
 {
 
-CPipewireContext::CPipewireContext(pw_loop* loop)
+CPipewireContext::CPipewireContext(CPipewireThreadLoop& loop) : m_threadLoop(loop)
 {
-  m_context.reset(pw_context_new(loop, nullptr, 0));
+  m_context.reset(pw_context_new(loop.Get(), nullptr, 0));
   if (!m_context)
   {
     CLog::Log(LOGERROR, "CPipewireContext: failed to create context: {}", strerror(errno));
