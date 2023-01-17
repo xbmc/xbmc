@@ -1569,35 +1569,6 @@ void CVideoPlayer::Process()
     CheckBetterStream(m_CurrentRadioRDS, pStream);
     CheckBetterStream(m_CurrentAudioID3, pStream);
 
-    // demux video stream
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_SUBTITLES_PARSECAPTIONS) && CheckIsCurrent(m_CurrentVideo, pStream, pPacket))
-    {
-      if (m_pCCDemuxer)
-      {
-        bool first = true;
-        while (!m_bAbortRequest)
-        {
-          DemuxPacket *pkt = m_pCCDemuxer->Read(first ? pPacket : NULL);
-          if (!pkt)
-            break;
-
-          first = false;
-          if (m_pCCDemuxer->GetNrOfStreams() != m_SelectionStreams.CountTypeOfSource(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX))
-          {
-            m_SelectionStreams.Clear(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX);
-            m_SelectionStreams.Update(NULL, m_pCCDemuxer.get(), "");
-            UpdateContent();
-            OpenDefaultStreams(false);
-          }
-          CDemuxStream *pSubStream = m_pCCDemuxer->GetStream(pkt->iStreamId);
-          if (pSubStream && m_CurrentSubtitle.id == pkt->iStreamId && m_CurrentSubtitle.source == STREAM_SOURCE_VIDEOMUX)
-            ProcessSubData(pSubStream, pkt);
-          else
-            CDVDDemuxUtils::FreeDemuxPacket(pkt);
-        }
-      }
-    }
-
     if (IsInMenuInternal())
     {
       if (std::shared_ptr<CDVDInputStream::IMenus> menu = std::dynamic_pointer_cast<CDVDInputStream::IMenus>(m_pInputStream))
@@ -2886,6 +2857,34 @@ void CVideoPlayer::HandleMessages()
       auto pValue = std::static_pointer_cast<CDVDMsgBool>(pMsg);
       SetSubtitleVisibleInternal(pValue->m_value);
     }
+    else if (pMsg->IsType(CDVDMsg::SUBTITLE_A53_DATA))
+    {
+      auto sideData = std::static_pointer_cast<CDVDMsgSubtitleCCData>(pMsg);
+      if (m_pCCDemuxer)
+      {
+        while (!m_bAbortRequest)
+        {
+          DemuxPacket* pkt = m_pCCDemuxer->Process(sideData->m_ccData.release());
+          if (!pkt)
+            break;
+
+          if (m_pCCDemuxer->GetNrOfStreams() !=
+              m_SelectionStreams.CountTypeOfSource(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX))
+          {
+            m_SelectionStreams.Clear(STREAM_SUBTITLE, STREAM_SOURCE_VIDEOMUX);
+            m_SelectionStreams.Update(nullptr, m_pCCDemuxer.get(), "");
+            UpdateContent();
+            OpenDefaultStreams(false);
+          }
+          CDemuxStream* pSubStream = m_pCCDemuxer->GetStream(pkt->iStreamId);
+          if (pSubStream && m_CurrentSubtitle.id == pkt->iStreamId &&
+              m_CurrentSubtitle.source == STREAM_SOURCE_VIDEOMUX)
+            ProcessSubData(pSubStream, pkt);
+          else
+            CDVDDemuxUtils::FreeDemuxPacket(pkt);
+        }
+      }
+    }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_PROGRAM))
     {
       auto msg = std::static_pointer_cast<CDVDMsgInt>(pMsg);
@@ -3757,7 +3756,7 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   if(m_CurrentVideo.id < 0 ||
      m_CurrentVideo.hint != hint)
   {
-    if (hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264)
+    if (m_pCCDemuxer)
       m_pCCDemuxer.reset();
 
     if (!player->OpenStream(hint))
@@ -3787,10 +3786,10 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   static_cast<IDVDStreamPlayerVideo*>(player)->SendMessage(
       std::make_shared<CDVDMsg>(CDVDMsg::PLAYER_REQUEST_STATE), 1);
 
-  // open CC demuxer if video is mpeg2
-  if ((hint.codec == AV_CODEC_ID_MPEG2VIDEO || hint.codec == AV_CODEC_ID_H264) && !m_pCCDemuxer)
+  // open CC demuxer (video may have ATSC a53 side data)
+  if (!m_pCCDemuxer)
   {
-    m_pCCDemuxer = std::make_unique<CDVDDemuxCC>(hint.codec);
+    m_pCCDemuxer = std::make_unique<CDVDDemuxCC>();
     m_SelectionStreams.Clear(STREAM_NONE, STREAM_SOURCE_VIDEOMUX);
   }
 
