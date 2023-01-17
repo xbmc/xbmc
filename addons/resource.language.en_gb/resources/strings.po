@@ -23405,3 +23405,8 @@ msgstr ""
 msgctxt "#39189"
 msgid "Available only with manual subtitle position"
 msgstr ""
+
+#: xbmc/playlists/SmartPlaylist.cpp
+msgctxt "#39190"
+msgid "Unique ID"
+msgstr ""

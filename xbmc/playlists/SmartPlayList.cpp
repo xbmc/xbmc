@@ -131,6 +131,7 @@ static const translateField fields[] = {
   { "albumstatus",       FieldAlbumStatus,             CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 false, 38081 },
   { "albumduration",     FieldAlbumDuration,           CDatabaseQueryRule::SECONDS_FIELD,  StringValidation::IsTime,             false, 180 },
   { "hdrtype",           FieldHdrType,                 CDatabaseQueryRule::TEXTIN_FIELD,   NULL,                                 false, 20474 },
+  { "uniqueid_value",    FieldUniqueIdValue,           CDatabaseQueryRule::TEXT_FIELD,     NULL,                                 true,  39190 },
 };
 // clang-format on
 
@@ -415,6 +416,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldLastPlayed);
     fields.push_back(FieldInProgress);
     fields.push_back(FieldTag);
+    fields.push_back(FieldUniqueIdValue);
   }
   else if (type == "episodes")
   {
@@ -443,6 +445,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldMPAA);
     fields.push_back(FieldDateAdded);
     fields.push_back(FieldTag);
+    fields.push_back(FieldUniqueIdValue);
     isVideo = true;
   }
   else if (type == "movies")
@@ -474,6 +477,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldSet);
     fields.push_back(FieldTag);
     fields.push_back(FieldDateAdded);
+    fields.push_back(FieldUniqueIdValue);
     isVideo = true;
   }
   else if (type == "musicvideos")
@@ -495,6 +499,7 @@ std::vector<Field> CSmartPlaylistRule::GetFields(const std::string &type)
     fields.push_back(FieldPlot);
     fields.push_back(FieldTag);
     fields.push_back(FieldDateAdded);
+    fields.push_back(FieldUniqueIdValue);
     isVideo = true;
   }
   if (isVideo)

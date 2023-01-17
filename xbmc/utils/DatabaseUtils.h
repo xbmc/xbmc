@@ -150,6 +150,7 @@ typedef enum
   FieldHdrType,
   FieldProvider,
   FieldUserPreference,
+  FieldUniqueIdValue,
   FieldMax
 } Field;
 

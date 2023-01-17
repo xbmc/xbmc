@@ -171,6 +171,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldLastPlayed) return "musicvideo_view.lastPlayed";
     else if (field == FieldDateAdded) return "musicvideo_view.dateAdded";
     else if (field == FieldUserRating) return "musicvideo_view.userrating";
+    else if (field == FieldUniqueIdValue)
+      return "musicvideo_view.uniqueid_value";
 
     if (!result.empty())
       return result;
@@ -227,6 +229,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldLastPlayed) return "movie_view.lastPlayed";
     else if (field == FieldDateAdded) return "movie_view.dateAdded";
     else if (field == FieldUserRating) return "movie_view.userrating";
+    else if (field == FieldUniqueIdValue)
+      return "movie_view.uniqueid_value";
 
     if (!result.empty())
       return result;
@@ -271,6 +275,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
     else if (field == FieldNumberOfEpisodes) return "tvshow_view.totalCount";
     else if (field == FieldNumberOfWatchedEpisodes) return "tvshow_view.watchedcount";
     else if (field == FieldUserRating) return "tvshow_view.userrating";
+    else if (field == FieldUniqueIdValue)
+      return "tvshow_view.uniqueid_value";
 
     if (!result.empty())
       return result;
@@ -299,6 +305,8 @@ std::string DatabaseUtils::GetField(Field field, const MediaType &mediaType, Dat
       result = StringUtils::Format("episode_view.c{:02}", VIDEODB_ID_EPISODE_EPISODE);
     else if (field == FieldUniqueId)
       result = StringUtils::Format("episode_view.c{:02}", VIDEODB_ID_EPISODE_IDENT_ID);
+    else if (field == FieldUniqueIdValue)
+      return "episode_view.uniqueid_value";
     else if (field == FieldEpisodeNumberSpecialSort)
       result = StringUtils::Format("episode_view.c{:02}", VIDEODB_ID_EPISODE_SORTEPISODE);
     else if (field == FieldSeasonSpecialSort)
