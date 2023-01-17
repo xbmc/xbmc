@@ -458,37 +458,37 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
         case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
         case CAEStreamInfo::STREAM_TYPE_DTSHD:
           // normal frame is max  2012 bytes + 2764 sub frame
-          m_min_buffer_size = 66432; //according to the buffer model of ISO/IEC13818-1
-          m_format.m_frames = m_min_buffer_size;
+          m_min_buffer_size = 8 * (2012 + 2764); //according to the buffer model of ISO/IEC13818-1
+          m_format.m_frames = m_min_buffer_size / 2;
           rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000; // average value
           break;
         case CAEStreamInfo::STREAM_TYPE_DTS_512:
         case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
           // max 2012 bytes
-          // depending on sample rate between 156 ms and 312 ms
-          m_min_buffer_size = 16 * 2012;
-          m_format.m_frames = m_min_buffer_size;
-          rawlength_in_seconds = 16 * m_format.m_streamInfo.GetDuration() / 1000;
+          // depending on sample rate between 80 ms and 160 ms
+          m_min_buffer_size = 8 * 2012;
+          m_format.m_frames = m_min_buffer_size / 4;
+          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000;
           break;
         case CAEStreamInfo::STREAM_TYPE_DTS_1024:
         case CAEStreamInfo::STREAM_TYPE_DTS_2048:
           m_min_buffer_size = 8 * 5462;
-          m_format.m_frames = m_min_buffer_size;
+          m_format.m_frames = m_min_buffer_size / 2;
           rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000;
           break;
         case CAEStreamInfo::STREAM_TYPE_AC3:
            ac3FrameSize = m_format.m_streamInfo.m_ac3FrameSize;
            if (ac3FrameSize == 0)
              ac3FrameSize = 1536; // fallback if not set, e.g. Transcoding
-           m_min_buffer_size = std::max(m_min_buffer_size * 3, ac3FrameSize * 8);
-           m_format.m_frames = m_min_buffer_size;
+           m_min_buffer_size = std::max(m_min_buffer_size * 3, ac3FrameSize * 6);
+           m_format.m_frames = m_min_buffer_size / 3;
            multiplier = m_min_buffer_size / ac3FrameSize; // int division is wanted
            rawlength_in_seconds = multiplier * m_format.m_streamInfo.GetDuration() / 1000;
           break;
           // EAC3 is currently not supported
         case CAEStreamInfo::STREAM_TYPE_EAC3:
           m_min_buffer_size = 2 * 10752; // least common multiple of 1792 and 1536
-          m_format.m_frames = m_min_buffer_size; // needs testing
+          m_format.m_frames = m_min_buffer_size / 4; // needs testing
           rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000;
           break;
         default:
@@ -760,7 +760,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   {
     if (m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PAUSED)
     {
-      delay = m_audiotrackbuffer_sec;
+      delay = m_audiotrackbuffer_sec - m_format.m_streamInfo.GetDuration() / 1000.0;
       if (usesAdvancedLogging)
       {
         CLog::Log(LOGINFO, "Fake delay: {} ms", delay * 1000);
