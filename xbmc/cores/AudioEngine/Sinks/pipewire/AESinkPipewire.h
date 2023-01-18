@@ -11,6 +11,8 @@
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 
+#include <chrono>
+
 namespace AE
 {
 namespace SINK
@@ -41,7 +43,7 @@ public:
 
 private:
   AEAudioFormat m_format;
-  double m_latency;
+  std::chrono::duration<double, std::ratio<1>> m_latency;
 };
 
 } // namespace SINK
