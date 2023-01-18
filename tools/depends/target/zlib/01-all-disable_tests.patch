@@ -1,15 +1,14 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -229,7 +229,7 @@
- #============================================================================
+@@ -194,6 +194,7 @@
  # Example binaries
  #============================================================================
--
+
 +if(ENABLE_TESTS)
  add_executable(example test/example.c)
  target_link_libraries(example zlib)
  add_test(example example)
-@@ -247,3 +247,4 @@
+@@ -211,3 +212,4 @@
      target_link_libraries(minigzip64 zlib)
      set_target_properties(minigzip64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
  endif()

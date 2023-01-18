@@ -1,6 +1,6 @@
 --- a/zconf.h.in
 +++ b/zconf.h.in
-@@ -374,7 +374,11 @@
+@@ -380,7 +380,11 @@
  #endif
  
  #ifndef ZEXTERN
