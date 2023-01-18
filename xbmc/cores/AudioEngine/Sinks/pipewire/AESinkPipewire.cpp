@@ -185,7 +185,7 @@ std::chrono::duration<double, std::ratio<1>> PWTimeToAEDelay(const pw_time& time
 constexpr std::chrono::duration<double, std::ratio<1>> DEFAULT_BUFFER_DURATION = 0.200s;
 constexpr int DEFAULT_PERIODS = 4;
 constexpr std::chrono::duration<double, std::ratio<1>> DEFAULT_PERIOD_DURATION =
-    DEFAULT_BUFFER_DURATION / 4;
+    DEFAULT_BUFFER_DURATION / DEFAULT_PERIODS;
 
 } // namespace
 
