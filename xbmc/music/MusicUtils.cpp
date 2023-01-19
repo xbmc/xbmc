@@ -821,7 +821,7 @@ bool IsItemPlayable(const CFileItem& item)
     return true;
   else if (!item.m_bIsFolder && item.IsAudio())
     return true;
-  else if (!item.m_bIsShareOrDrive && item.m_bIsFolder)
+  else if (item.m_bIsFolder)
   {
     // Not a music-specific folder (just file:// or nfs://). Allow play if context is Music window.
     if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_NAV)
