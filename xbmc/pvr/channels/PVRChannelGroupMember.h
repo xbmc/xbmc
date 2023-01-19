@@ -27,6 +27,10 @@ class CPVRChannelGroupMember : public ISerializable, public ISortable
 public:
   CPVRChannelGroupMember() : m_bNeedsSave(false) {}
 
+  CPVRChannelGroupMember(const std::string& groupName,
+                         int order,
+                         const std::shared_ptr<CPVRChannel>& channel);
+
   CPVRChannelGroupMember(int iGroupID,
                          const std::string& groupName,
                          const std::shared_ptr<CPVRChannel>& channel);

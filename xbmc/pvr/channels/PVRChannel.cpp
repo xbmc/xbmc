@@ -70,6 +70,7 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL& channel, unsigned int iClientId)
     m_strClientChannelName(channel.strChannelName),
     m_strMimeType(channel.strMimeType),
     m_iClientEncryptionSystem(channel.iEncryptionSystem),
+    m_iClientOrder(channel.iOrder),
     m_iClientProviderUid(channel.iClientProviderUid)
 {
   if (m_strChannelName.empty())

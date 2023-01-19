@@ -1673,8 +1673,7 @@ void CPVRClient::cb_transfer_channel_group_member(void* kodiInstance,
       auto* groupMembers =
           static_cast<std::vector<std::shared_ptr<CPVRChannelGroupMember>>*>(handle->dataAddress);
       groupMembers->emplace_back(
-          std::make_shared<CPVRChannelGroupMember>(-1, // real id will be added later
-                                                   member->strGroupName, channel));
+          std::make_shared<CPVRChannelGroupMember>(member->strGroupName, member->iOrder, channel));
     }
   });
 }
