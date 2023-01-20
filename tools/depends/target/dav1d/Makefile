@@ -12,7 +12,7 @@ else
   PREFIX ?= $(ROOT_DIR)/dav1d-install
   BASE_URL ?= http://mirrors.kodi.tv/build-deps/sources
   AUTORECONF := autoreconf
-  RETRIEVE_TOOL := curl -Ls --retry 10 --retry-delay 3 -o $(ARCHIVE)
+  RETRIEVE_TOOL := curl -LsS --create-dirs --retry 10 --retry-connrefused -o
   ARCHIVE_TOOL := tar --strip-components=1 -xf
 
   ifeq ($(PLATFORM),)

@@ -1,6 +1,7 @@
 LIBNAME=libdvdread
 BASE_URL=https://github.com/xbmc/libdvdread
 VERSION=6.1.3-Next-Nexus-Alpha2-2
+FULL_URL=$(BASE_URL)/archive/$(VERSION).tar.gz
 ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
 SHA512=629a41157d07b8ec0ea1fe89ae5ec48f63047472a862782b805c531ae31a0376fc4dc15175f8280c3ef91d7fa977bacebb1b51232640034a34bab2293210fc5e
 BYPRODUCT=libdvdread.a
