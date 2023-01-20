@@ -287,6 +287,7 @@ void CGUIViewState::GetSortMethodLabelMasks(LABEL_MASKS& masks) const
 std::vector<SortDescription> CGUIViewState::GetSortDescriptions() const
 {
   std::vector<SortDescription> descriptions;
+  descriptions.reserve(m_sortMethods.size());
   for (const auto& desc : m_sortMethods)
   {
     descriptions.emplace_back(desc.m_sortDescription);
