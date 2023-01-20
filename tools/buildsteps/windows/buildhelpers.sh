@@ -116,7 +116,7 @@ do_download() {
   if [ ! -d "$LOCALSRCDIR" ]; then
     if [ ! -f /downloads/$ARCHIVE ]; then
       do_print_status "$LIBNAME-$VERSION" "$orange_color" "Downloading"
-      do_wget $BASE_URL/$VERSION.tar.gz $ARCHIVE
+      do_wget $BASE_URL/$ARCHIVE $ARCHIVE
     fi
 
     do_print_status "$LIBNAME-$VERSION" "$blue_color" "Extracting"
@@ -136,19 +136,12 @@ do_download() {
 do_loaddeps() {
   local file="$1"
   LIBNAME=$(grep "LIBNAME=" $file | sed 's/LIBNAME=//g;s/#.*$//g;/^$/d')
-  BASE_URL=$(grep "BASE_URL=" $file | sed 's/BASE_URL=//g;s/#.*$//g;/^$/d')
   VERSION=$(grep "VERSION=" $file | sed 's/VERSION=//g;s/#.*$//g;/^$/d')
-  GITREV=$(git ls-remote $BASE_URL $VERSION | awk '{print substr($1, 1, 10)}')
-  if [[ -z "$GITREV" ]]; then
-    ARCHIVE=$LIBNAME-$(echo "${VERSION}" | sed 's/\//-/g').tar.gz
-  else
-    ARCHIVE=$LIBNAME-$GITREV.tar.gz
-  fi
-  BASE_URL=$BASE_URL/archive
+  ARCHIVE=$LIBNAME-$VERSION.tar.gz
+
+  BASE_URL=http://mirrors.kodi.tv/build-deps/sources
   local libsrcdir=$LIBNAME-$VERSION
-  if [[ ! -z "$GITREV" ]]; then
-    libsrcdir=$LIBNAME-$GITREV
-  fi
+
   LOCALSRCDIR=$LOCALBUILDDIR/src/$libsrcdir
   LIBBUILDDIR=$LOCALBUILDDIR/$LIBNAME-$TRIPLET
 }

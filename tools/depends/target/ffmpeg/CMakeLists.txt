@@ -36,6 +36,7 @@ list(APPEND ffmpeg_conf --disable-doc
                         --enable-postproc
                         --enable-runtime-cpudetect
                         --enable-pthreads
+                        --extra-version="Kodi"
             )
 
 if(CMAKE_C_FLAGS)

@@ -39,18 +39,7 @@ macro(buildFFMPEG)
 
   set(MODULE_LC ffmpeg)
 
-  # We require this due to the odd nature of github URL's compared to our other tarball
-  # mirror system. If User sets FFMPEG_URL, allow get_filename_component in SETUP_BUILD_VARS
-  if(FFMPEG_URL)
-    set(FFMPEG_URL_PROVIDED TRUE)
-  endif()
-
   SETUP_BUILD_VARS()
-
-  if(NOT FFMPEG_URL_PROVIDED)
-    # override FFMPEG_URL due to tar naming when retrieved from github release for ffmpeg
-    set(FFMPEG_URL ${FFMPEG_BASE_URL}/archive/${FFMPEG_VER}.tar.gz)
-  endif()
 
   if(NOT DAV1D_FOUND)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
