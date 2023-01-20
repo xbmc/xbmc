@@ -78,7 +78,7 @@ class CRPProcessInfo
 {
 public:
   static std::unique_ptr<CRPProcessInfo> CreateInstance();
-  static void RegisterProcessControl(CreateRPProcessControl createFunc);
+  static void RegisterProcessControl(const CreateRPProcessControl& createFunc);
   static void RegisterRendererFactory(IRendererFactory* factory);
 
   virtual ~CRPProcessInfo();
