@@ -61,7 +61,7 @@ CAEStreamParser::CAEStreamParser() :
   av_crc_init(m_crcTrueHD, 0, 16, 0x2D, sizeof(m_crcTrueHD));
 }
 
-double CAEStreamInfo::GetDuration(bool paPlayer /*= false*/) const
+double CAEStreamInfo::GetDuration(bool TrueHDHalfDuration /*= false*/) const
 {
   double duration = 0;
   switch (m_type)
@@ -81,7 +81,7 @@ double CAEStreamInfo::GetDuration(bool paPlayer /*= false*/) const
       else
         rate = 176400;
       duration = 3840.0 / rate;
-      if (paPlayer)
+      if (TrueHDHalfDuration)
         duration /= 2;
       break;
     case STREAM_TYPE_DTS_512:
