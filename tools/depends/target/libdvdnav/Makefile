@@ -18,7 +18,7 @@ else
     TARBALLS_LOCATION = $(ROOT_DIR)
     PKGCONFIGPATH = PKG_CONFIG_PATH="$(ROOT_DIR)/../libdvdread/dvdread-install/lib/pkgconfig:$(ROOT_DIR)/../libdvdcss/dvdcss-install/lib/pkgconfig"
     EXTRA_CFLAGS += -I$(ROOT_DIR)/../libdvdread/dvdread-install/include -I$(ROOT_DIR)/../libdvdcss/dvdcss-install/include
-    RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3
+    RETRIEVE_TOOL := curl -LsS --create-dirs --retry 10 --retry-connrefused -o
     ARCHIVE_TOOL := tar --strip-components=1 -xf
   endif
 endif
@@ -33,11 +33,6 @@ endif
 
 include ../../download-files.include
 all: .installed-$(PLATFORM)
-
-download: $(TARBALLS_LOCATION)/$(ARCHIVE)
-
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) -o $(TARBALLS_LOCATION)/$(ARCHIVE) $(BASE_URL)/archive/$(VERSION).tar.gz
 
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
