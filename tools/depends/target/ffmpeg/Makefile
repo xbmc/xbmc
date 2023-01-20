@@ -42,7 +42,6 @@ ifeq ($(OS), android)
 endif
 
 include ../../download-files.include
-download: $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 all: .installed-$(PLATFORM)
 
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
