@@ -41,7 +41,7 @@ BASE_URL=http://mirrors.kodi.tv/build-deps/sources
 ifneq ($(KODI_MIRROR),)
 BASE_URL=$(KODI_MIRROR)/build-deps/sources
 endif
-RETRIEVE_TOOL_FLAGS=-LsS --create-dirs --retry 10 --retry-connrefused -O
+RETRIEVE_TOOL_FLAGS=-LsS --create-dirs --retry 10 --retry-connrefused -o
 ARCHIVE_TOOL_FLAGS=--strip-components=1 -xf
 CONFIG_SUB=@prefix@/@tool_dir@/share/automake-1.16/config.sub
 CONFIG_GUESS=@prefix@/@tool_dir@/share/automake-1.16/config.guess
