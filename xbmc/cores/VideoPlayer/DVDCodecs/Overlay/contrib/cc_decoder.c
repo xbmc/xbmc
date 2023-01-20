@@ -505,12 +505,21 @@ static cc_buffer_t *active_ccbuffer(cc_decoder_t *dec)
   return &mem->channel[mem->channel_no];
 }
 
+static void cc_hide_displayed(cc_decoder_t* dec)
+{
+  for (int i = 0; i < CC_ROWS * CC_COLUMNS + 1; i++)
+  {
+    dec->text[i] = '\0';
+  }
+  dec->callback(0, dec->userdata);
+}
+
 static void cc_swap_buffers(cc_decoder_t *dec)
 {
   cc_memory_t *temp;
 
   /* hide caption in displayed memory */
-  /* cc_hide_displayed(dec); */
+  cc_hide_displayed(dec);
 
   temp = dec->on_buf;
   dec->on_buf = dec->off_buf;
@@ -675,7 +684,7 @@ static void cc_decode_misc_control_code(cc_decoder_t* dec, int channel, uint8_t 
     break;
 
   case 0x2c:             /* EDM - erase displayed memory */
-    /* cc_hide_displayed(dec); */
+    cc_hide_displayed(dec);
     ccmem_clear(dec->on_buf);
     break;
 
