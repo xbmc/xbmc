@@ -88,7 +88,7 @@ std::unique_ptr<CRPProcessInfo> CRPProcessInfo::CreateInstance()
   return processInfo;
 }
 
-void CRPProcessInfo::RegisterProcessControl(CreateRPProcessControl createFunc)
+void CRPProcessInfo::RegisterProcessControl(const CreateRPProcessControl& createFunc)
 {
   m_processControl = createFunc;
 }
