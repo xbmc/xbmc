@@ -100,6 +100,7 @@ public:
   bool HasPassthroughDevice();
   bool SupportsFormat(const std::string &device, AEAudioFormat &format);
   bool DeviceExist(std::string driver, const std::string& device);
+  bool NeedIecPack() const { return m_needIecPack; }
   CSinkControlProtocol m_controlPort;
   CSinkDataProtocol m_dataPort;
 
@@ -150,7 +151,7 @@ protected:
   float m_volume;
   int m_sinkLatency;
   CAEBitstreamPacker *m_packer;
-  bool m_needIecPack;
+  bool m_needIecPack{false};
   bool m_streamNoise;
 };
 

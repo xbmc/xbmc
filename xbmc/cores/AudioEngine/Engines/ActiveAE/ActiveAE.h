@@ -199,6 +199,7 @@ public:
   void SetCurrentSinkFormat(const AEAudioFormat& SinkFormat);
   void SetSinkCacheTotal(float time) { m_sinkCacheTotal = time; }
   void SetSinkLatency(float time) { m_sinkLatency = time; }
+  void SetSinkNeedIec(bool needIEC) { m_sinkNeedIecPack = needIEC; }
   bool IsSuspended();
   AEAudioFormat GetCurrentSinkFormat();
 protected:
@@ -210,6 +211,7 @@ protected:
   bool m_suspended;
   AEAudioFormat m_sinkFormat;
   bool m_pcmOutput;
+  bool m_sinkNeedIecPack{false};
   CCriticalSection m_lock;
   struct StreamStats
   {
