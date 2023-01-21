@@ -507,6 +507,9 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
   m_stream->QueueBuffer(pwBuffer);
 
+  const auto period = std::chrono::duration<double, std::ratio<1>>(static_cast<double>(frames) /
+                                                                   m_format.m_sampleRate);
+
   do
   {
     pw_time time = m_stream->GetTime();
@@ -515,9 +518,6 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
         PWTimeToAEDelay(time, m_format.m_sampleRate);
 
     const auto now = std::chrono::steady_clock::now();
-
-    const auto period = std::chrono::duration<double, std::ratio<1>>(static_cast<double>(frames) /
-                                                                     m_format.m_sampleRate);
 
     if ((delay <= (m_latency - period)) || ((now - start) >= period))
       break;
