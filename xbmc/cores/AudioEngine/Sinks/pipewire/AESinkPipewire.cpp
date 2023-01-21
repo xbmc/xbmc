@@ -399,7 +399,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   // clang-format off
   params.emplace_back(static_cast<const spa_pod*>(spa_pod_builder_add_object(
       &builder, SPA_TYPE_OBJECT_ParamBuffers, SPA_PARAM_Buffers,
-          SPA_PARAM_BUFFERS_buffers, SPA_POD_CHOICE_RANGE_Int(6, 6, 6),
+          SPA_PARAM_BUFFERS_buffers, SPA_POD_CHOICE_RANGE_Int(20, 16, 24),
           SPA_PARAM_BUFFERS_blocks, SPA_POD_Int(1),
           SPA_PARAM_BUFFERS_size, SPA_POD_Int(frames * pwChannels.size() * PWFormatToSampleSize(pwFormat)),
           SPA_PARAM_BUFFERS_stride, SPA_POD_Int(pwChannels.size() * PWFormatToSampleSize(pwFormat)))));
