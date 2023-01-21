@@ -187,6 +187,8 @@ constexpr int DEFAULT_PERIODS = 4;
 constexpr std::chrono::duration<double, std::ratio<1>> DEFAULT_PERIOD_DURATION =
     DEFAULT_BUFFER_DURATION / DEFAULT_PERIODS;
 
+constexpr int DEFAULT_LATENCY_DIVIDER = 3;
+
 } // namespace
 
 namespace AE
@@ -348,7 +350,8 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
   m_latency = DEFAULT_BUFFER_DURATION;
   uint32_t frames = std::nearbyint(DEFAULT_PERIOD_DURATION.count() * format.m_sampleRate);
-  std::string fraction = StringUtils::Format("{}/{}", frames, format.m_sampleRate);
+  std::string fraction =
+      StringUtils::Format("{}/{}", frames / DEFAULT_LATENCY_DIVIDER, format.m_sampleRate);
 
   std::array<spa_dict_item, 5> items = {
       SPA_DICT_ITEM_INIT(PW_KEY_MEDIA_TYPE, "Audio"),
@@ -374,7 +377,8 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - framesize: {}", __FUNCTION__,
             pwChannels.size() * PWFormatToSampleSize(pwFormat));
   CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - latency: {}/{} ({:.3f}s)", __FUNCTION__, frames,
-            format.m_sampleRate, static_cast<double>(frames) / format.m_sampleRate);
+            format.m_sampleRate,
+            static_cast<double>(frames) / DEFAULT_LATENCY_DIVIDER / format.m_sampleRate);
 
   spa_audio_info_raw info{};
   info.format = pwFormat;
