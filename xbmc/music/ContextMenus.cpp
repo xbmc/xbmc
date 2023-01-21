@@ -96,8 +96,34 @@ bool CMusicQueue::IsVisible(const CFileItem& item) const
   return MUSIC_UTILS::IsItemPlayable(item);
 }
 
+namespace
+{
+void SelectNextItem(int windowID)
+{
+  auto& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
+  CGUIWindow* window = windowMgr.GetWindow(windowID);
+  if (window)
+  {
+    const int viewContainerID = window->GetViewContainerID();
+    if (viewContainerID > 0)
+    {
+      CGUIMessage msg1(GUI_MSG_ITEM_SELECTED, windowID, viewContainerID);
+      windowMgr.SendMessage(msg1, windowID);
+
+      CGUIMessage msg2(GUI_MSG_ITEM_SELECT, windowID, viewContainerID, msg1.GetParam1() + 1);
+      windowMgr.SendMessage(msg2, windowID);
+    }
+  }
+}
+} // unnamed namespace
+
 bool CMusicQueue::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   MUSIC_UTILS::QueueItem(item, MUSIC_UTILS::QueuePosition::POSITION_END);
+
+  // Set selection to next item in active window's view.
+  const int windowID = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+  SelectNextItem(windowID);
+
   return true;
 }
