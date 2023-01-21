@@ -519,7 +519,7 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
     const auto now = std::chrono::steady_clock::now();
 
-    if ((delay <= (m_latency - period)) || ((now - start) >= period))
+    if ((delay <= (DEFAULT_BUFFER_DURATION - DEFAULT_PERIOD_DURATION)) || ((now - start) >= period))
       break;
 
     loop.Wait(5ms);
