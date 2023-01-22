@@ -750,12 +750,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   delay += m_hw_delay;
 
-  // stop smoothing if we have the new API available
-  // though normal RAW still is really bad delay wise
-  bool rawPt = m_passthrough && !m_info.m_wantsIECPassthrough;
-  if ((m_hw_delay != 0) && !rawPt)
-    m_linearmovingaverage.clear();
-
+  const bool rawPt = m_passthrough && !m_info.m_wantsIECPassthrough;
   if (rawPt)
   {
     if (m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PAUSED)
