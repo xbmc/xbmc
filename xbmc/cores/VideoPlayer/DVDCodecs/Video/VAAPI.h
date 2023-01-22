@@ -356,7 +356,7 @@ protected:
   CDecoder &m_vaapi;
 
   // extended state variables for state machine
-  int m_extTimeout;
+  std::chrono::milliseconds m_extTimeout = std::chrono::milliseconds::zero();
   /// \brief Whether at least one interlaced frame was encountered in the video stream (indicating that more interlaced frames could potentially follow)
   bool m_seenInterlaced;
   CVaapiConfig m_config;
