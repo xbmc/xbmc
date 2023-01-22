@@ -750,12 +750,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   delay += m_hw_delay;
 
-  // stop smoothing if we have the new API available
-  // though normal RAW still is really bad delay wise
-  bool rawPt = m_passthrough && !m_info.m_wantsIECPassthrough;
-  if ((m_hw_delay != 0) && !rawPt)
-    m_linearmovingaverage.clear();
-
+  const bool rawPt = m_passthrough && !m_info.m_wantsIECPassthrough;
   if (rawPt)
   {
     if (m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PAUSED)
@@ -905,7 +900,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     // exactly once with the last package for some 100 ms
     double extra_sleep = 0.0;
     if (time_to_add_ms < m_format.m_streamInfo.GetDuration())
-      extra_sleep = (m_format.m_streamInfo.GetDuration() - time_to_add_ms);
+      extra_sleep = (m_format.m_streamInfo.GetDuration() - time_to_add_ms) / 2;
 
     // if there is still place, just add it without blocking
     if (m_delay < (m_audiotrackbuffer_sec - (m_format.m_streamInfo.GetDuration() / 1000.0)))
@@ -922,7 +917,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
       double time_should_ms = 1000.0 * written_frames / m_format.m_sampleRate;
       double time_off = time_should_ms - time_to_add_ms;
       if (time_off > 0)
-        usleep(time_off * 1000); // sleep the error away
+        usleep(time_off * 500); // sleep half the error on average away
     }
   }
 
