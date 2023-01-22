@@ -33,10 +33,6 @@ using namespace jni;
 
 using namespace std::chrono_literals;
 
-// those are empirical values while the HD buffer
-// is the max TrueHD package
-const unsigned int MAX_RAW_AUDIO_BUFFER_HD = 61440;
-const unsigned int MAX_RAW_AUDIO_BUFFER = 16384;
 const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 3;
 const uint64_t UINT64_LOWER_BYTES = 0x00000000FFFFFFFF;
 const uint64_t UINT64_UPPER_BYTES = 0xFFFFFFFF00000000;
@@ -448,54 +444,20 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     unsigned int ac3FrameSize = 1;
     if (m_passthrough && !m_info.m_wantsIECPassthrough)
     {
-      switch (m_format.m_streamInfo.m_type)
+      if (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA ||
+          m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD ||
+          m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
       {
-        case CAEStreamInfo::STREAM_TYPE_TRUEHD:
-          m_min_buffer_size = MAX_RAW_AUDIO_BUFFER_HD;
-          m_format.m_frames = m_min_buffer_size;
-          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000; // on average
-          break;
-        case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
-        case CAEStreamInfo::STREAM_TYPE_DTSHD:
-          // normal frame is max  2012 bytes + 2764 sub frame
-          m_min_buffer_size = 66432; //according to the buffer model of ISO/IEC13818-1
-          m_format.m_frames = m_min_buffer_size;
-          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000; // average value
-          break;
-        case CAEStreamInfo::STREAM_TYPE_DTS_512:
-        case CAEStreamInfo::STREAM_TYPE_DTSHD_CORE:
-          // max 2012 bytes
-          // depending on sample rate between 156 ms and 312 ms
-          m_min_buffer_size = 16 * 2012;
-          m_format.m_frames = m_min_buffer_size;
-          rawlength_in_seconds = 16 * m_format.m_streamInfo.GetDuration() / 1000;
-          break;
-        case CAEStreamInfo::STREAM_TYPE_DTS_1024:
-        case CAEStreamInfo::STREAM_TYPE_DTS_2048:
-          m_min_buffer_size = 8 * 5462;
-          m_format.m_frames = m_min_buffer_size;
-          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000;
-          break;
-        case CAEStreamInfo::STREAM_TYPE_AC3:
-           ac3FrameSize = m_format.m_streamInfo.m_ac3FrameSize;
-           if (ac3FrameSize == 0)
-             ac3FrameSize = 1536; // fallback if not set, e.g. Transcoding
-           m_min_buffer_size = std::max(m_min_buffer_size * 3, ac3FrameSize * 8);
-           m_format.m_frames = m_min_buffer_size;
-           multiplier = m_min_buffer_size / ac3FrameSize; // int division is wanted
-           rawlength_in_seconds = multiplier * m_format.m_streamInfo.GetDuration() / 1000;
-          break;
-          // EAC3 is currently not supported
-        case CAEStreamInfo::STREAM_TYPE_EAC3:
-          m_min_buffer_size = 2 * 10752; // least common multiple of 1792 and 1536
-          m_format.m_frames = m_min_buffer_size; // needs testing
-          rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000;
-          break;
-        default:
-          m_min_buffer_size = MAX_RAW_AUDIO_BUFFER;
-          m_format.m_frames = m_min_buffer_size;
-          rawlength_in_seconds = 0.4;
-          break;
+        m_format.m_frames = 30720;
+        m_min_buffer_size = 61440;
+        rawlength_in_seconds = 0.064;
+      }
+      else
+      {
+        // this goes to a Packer - we don't care much
+        m_min_buffer_size *= 8;
+        m_format.m_frames = m_min_buffer_size;
+        rawlength_in_seconds = 0.064;
       }
 
       CLog::Log(LOGDEBUG, "Opening Passthrough RAW Format: {} Sink SampleRate: {}",
