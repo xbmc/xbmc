@@ -426,8 +426,11 @@ bool IsItemPlayable(const CFileItem& item)
         StringUtils::StartsWith(item.GetPath(), StringUtils::Format("{}/mixed/", path)))
       return true;
 
-    // Unknown location. Type cannot be determined.
-    return false;
+    if (!item.m_bIsFolder)
+    {
+      // Unknown location. Type cannot be determined for non-folder items.
+      return false;
+    }
   }
 
   if (item.m_bIsFolder &&
