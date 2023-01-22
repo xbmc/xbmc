@@ -662,6 +662,167 @@ TEST(TestStringUtils, Validate_FoldCase_Data)
   EXPECT_TRUE(passed);
 }
 
+std::wstring ToUpper(const std::wstring_view str,
+                     const std::locale locale = g_langInfo.GetSystemLocale())
+{
+  std::wstring result; // Assumes lengths don't change.
+  if (str.length() == 0)
+    return result;
+
+  for (wchar_t c : str)
+  {
+    result.push_back(std::toupper(c, locale));
+  }
+  return result;
+}
+
+std::wstring ToLower(const std::wstring_view str,
+                     const std::locale locale = g_langInfo.GetSystemLocale())
+{
+  std::wstring result; // Assumes lengths don't change.
+  if (str.length() == 0)
+    return result;
+
+  for (wchar_t c : str)
+  {
+    result.push_back(std::tolower(c, locale));
+  }
+  return result;
+}
+
+TEST(TestStringUtils, Validate_UpperLower_Data)
+{
+  // Validate that Upper and Lower case tables were generated properly.
+  //
+  // Verify that:
+  //
+  // For every character
+  //
+
+  char32_t BAD_CHARS[] = {U'\x0D800', U'\x0D801', U'\x0D802', U'\x0D803', U'\x0D804', U'\x0D805',
+                          U'\xDB7F',  U'\xDB80',  U'\xDBFF',  U'\xDC00',  U'\x0DFFF'};
+
+  std::cout << std::noshowbase // manually show the 0x prefix
+            << std::internal // fill between the prefix and the number
+            << std::setfill('0'); // fill with 0s
+
+  try
+  {
+    CaseMap::loadData();
+
+    // Just to make sure that 'C' locale is not used for cross-check with C++ ToLower/ToUpper
+
+    std::locale testLocale = StringUtils::GetEnglishLocale();
+
+    char32_t y = U'\x0d80045';
+    std::u32string v(1, y);
+    std::wstring x = StringUtils::ToWstring(v);
+    std::u32string lower = StringUtils::ToLower(v, testLocale);
+    std::u32string upper = StringUtils::ToUpper(v, testLocale);
+
+    int idx = 1;
+    for (CaseMap entry : CaseMap::GetCaseMapTable())
+    {
+      char32_t codepoint = entry.codepoint;
+      std::string utf8Codepoint;
+      std::u32string u32Codepoint;
+      if (codepoint == 0)
+        u32Codepoint = std::u32string(0, codepoint); // Want empty string not string with one null
+      else
+        u32Codepoint = std::u32string(1, codepoint);
+
+      std::cout << std::dec << idx++ << " " << entry.print() << std::endl;
+
+      utf8Codepoint = StringUtils::ToUtf8(u32Codepoint);
+      if (StringUtils::ToUtf32(utf8Codepoint) != u32Codepoint)
+      {
+        // Skip if known bad character
+        char32_t* end = BAD_CHARS + (sizeof(BAD_CHARS) / 4);
+        char32_t* position = std::find(BAD_CHARS, end, codepoint);
+
+        // std::cout << " position: " << std::hex << position << " end: " << std::hex << end << std::dec << std::endl;
+        if (position != end)
+        {
+          std::cout << position << end << std::endl;
+          continue;
+        }
+        std::cout << "Bad codepoint: " << std::setw(5) << std::hex << std::noshowbase
+                  << std::internal << std::setfill('0') << codepoint
+                  << " utf8: " << StringUtils::ToHex(utf8Codepoint) << std::dec << std::endl;
+      }
+      std::u32string expectedU32UpperCodepoint;
+      if (entry.upperCaseValue != 0)
+        expectedU32UpperCodepoint = std::u32string(1, entry.upperCaseValue);
+      else
+        expectedU32UpperCodepoint = u32Codepoint;
+
+      std::u32string expectedU32LowerCodepoint;
+      if (entry.lowerCaseValue != 0)
+        expectedU32LowerCodepoint = std::u32string(1, entry.lowerCaseValue);
+      else
+        expectedU32LowerCodepoint = u32Codepoint;
+
+      std::string expectedUtf8UpperCodepoint = StringUtils::ToUtf8(expectedU32UpperCodepoint);
+      std::string expectedUtf8LowerCodepoint = StringUtils::ToUtf8(expectedU32LowerCodepoint);
+      std::wstring expectedWstringUpperCodepoint =
+          StringUtils::ToWstring(expectedU32UpperCodepoint);
+      std::wstring expectedWstringLowerCodepoint =
+          StringUtils::ToWstring(expectedU32LowerCodepoint);
+      std::wstring wstringCodepoint = StringUtils::ToWstring(u32Codepoint);
+
+      std::string utf8LowerCodepoint = StringUtils::ToLower(utf8Codepoint);
+      std::wstring wstringLowerCodepoint = StringUtils::ToLower(wstringCodepoint);
+
+      std::string utf8UpperCodepoint = StringUtils::ToUpper(utf8Codepoint);
+      std::wstring wstringUpperCodepoint = StringUtils::ToUpper(wstringCodepoint);
+
+      std::wstring wstringNativeLowerCodepoint = ToLower(wstringCodepoint, testLocale);
+      std::wstring wstringNativeUpperCodepoint = ToUpper(wstringCodepoint, testLocale);
+
+      std::u32string u32stringLower = StringUtils::ToLower(u32Codepoint);
+      std::u32string u32stringUpper = StringUtils::ToUpper(u32Codepoint);
+
+      // std::cout << "expectedUpper: " << std::hex << expectedWstringUpperCodepoint[0] << " " << expectedUtf8UpperCodepoint << std::endl;
+      // std::cout << "expectedWstringUpper length: " << expectedWstringUpperCodepoint.length() << std::endl;
+      // std::cout << "wstringCodepoint length: " << wstringCodepoint.length() << std::endl;
+      // std::cout << "actual wstringUpper length: " << wstringUpperCodepoint.length() << std::endl;
+
+      // std::cout << "expectedLower: " << std::hex << expectedWstringLowerCodepoint[0] << " " << expectedUtf8LowerCodepoint << std::endl;
+      // std::cout << "expectedWstringLower length: " << expectedWstringLowerCodepoint.length() << std::endl;
+      // std::cout << "wstringCodepoint length: " << wstringCodepoint.length() << std::endl;
+      // std::cout << "actual wstringLower length: " << wstringLowerCodepoint.length() << std::endl;
+
+      // These done by StringUtils u32string ToLower/ToUpper
+
+      EXPECT_EQ(expectedU32UpperCodepoint, u32stringUpper);
+      EXPECT_EQ(expectedU32LowerCodepoint, u32stringLower);
+      EXPECT_EQ(expectedUtf8UpperCodepoint, utf8UpperCodepoint);
+      EXPECT_EQ(expectedUtf8LowerCodepoint, utf8LowerCodepoint);
+
+      EXPECT_EQ(expectedWstringUpperCodepoint, wstringUpperCodepoint);
+      EXPECT_EQ(expectedWstringLowerCodepoint, wstringLowerCodepoint);
+
+      // These done by C++ wstring. if wstring is 32-bits, then should pass.
+      // If on Windows, then wstring is 16-bit, so will fail when multi-codeunit chars are involved.
+
+      EXPECT_EQ(expectedWstringUpperCodepoint, wstringNativeUpperCodepoint);
+      EXPECT_EQ(expectedWstringLowerCodepoint, wstringNativeLowerCodepoint);
+    }
+  }
+
+  catch (const std::bad_array_new_length& gfg)
+  {
+    std::cout << gfg.what() << std::endl;
+  }
+}
+
+// Darwin Unicode version too old to support these
+//#ifdef TARGET_DARWIN
+//  size_t maxIdx = 1193;
+//#else
+//  size_t maxIdx = (sizeof(UnicodeFoldLowerTable) / sizeof(char32_t)) - 1;
+//#endif
+
 TEST(TestStringUtils, BadUnicode)
 {
   // Verify that code doesn't crater on malformed/bad Unicode. Is NOT an exhaustive
@@ -670,6 +831,12 @@ TEST(TestStringUtils, BadUnicode)
   // Unassigned, private use or surrogates
   // Most do not trigger an error in wstring_convert (the Bad_UTF8 ones do).
 
+  // TODO: VERIFY
+
+  std::string_view UTF8_SUBSTITUTE_CHARACTER{"\xef\xbf\xbd"sv};
+  // std::u16string_view UTF16_SUBSTITUTE_CHARACTER{u"\x0fffd"sv};
+  // std::u16string_view UTF16_LE_SUBSTITUTE_CHARACTER{u"�"sv};
+  std::u32string_view CHAR32_T_SUBSTITUTE_CHARACTER{U"\x0fffd"sv}; //U'�'sv};
   static const char32_t BAD_CHARS[] = {
       U'\xFDD0',   U'\xFDEF',  U'\xFFFE',  U'\xFFFF',  U'\x1FFFE', U'\x1FFFF', U'\x2FFFE',
       U'\x2FFFF',  U'\x3FFFE', U'\x3FFFF', U'\x4FFFE', U'\x4FFFF', U'\x5FFFE', U'\x5FFFF',
