@@ -3886,6 +3886,15 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @skinning_v20 **[New Infolabel]** \link VideoPlayer_AudioStreamCount `VideoPlayer.AudioStreamCount`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.VideoStreamCount`</b>,
+///                  \anchor VideoPlayer_VideoStreamCount
+///                  _integer_,
+///     @return The number of video streams of the currently playing video.
+///     @note If the video contains no video streams it returns 0.
+///     <p><hr>
+///     @skinning_v20 **[New Infolabel]** \link VideoPlayer_VideoStreamCount `VideoPlayer.VideoStreamCount`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.HdrType`</b>,
 ///                  \anchor VideoPlayer_HdrType
 ///                  _string_,
@@ -3968,6 +3977,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "uniqueid",         VIDEOPLAYER_UNIQUEID },
                                   { "tvshowdbid",       VIDEOPLAYER_TVSHOWDBID },
                                   { "audiostreamcount", VIDEOPLAYER_AUDIOSTREAMCOUNT },
+                                  { "videostreamcount", VIDEOPLAYER_VIDEOSTREAMCOUNT },
                                   { "hdrtype",          VIDEOPLAYER_HDR_TYPE },
                                   { "art",              VIDEOPLAYER_ART},
 };

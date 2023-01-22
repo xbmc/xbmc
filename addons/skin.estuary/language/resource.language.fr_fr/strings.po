@@ -740,6 +740,14 @@ msgctxt "#31611"
 msgid "System"
 msgstr "Système"
 
+msgctxt "#31612"
+msgid "Tracks selection"
+msgstr "Sélection de pistes"
+
+msgctxt "#31613"
+msgid "Toggle video stream"
+msgstr "Changer de flux vidéo"
+
 #~ msgctxt "#31137"
 #~ msgid "PVR info"
 #~ msgstr "Infos enregistreur vidéo"

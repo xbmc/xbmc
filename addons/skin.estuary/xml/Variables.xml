@@ -338,6 +338,7 @@
 		<value condition="Control.HasFocus(70054) + Playlist.IsRandom">$LOCALIZE[590]: $LOCALIZE[16041]</value>
 		<value condition="Control.HasFocus(70054)">$LOCALIZE[590]: $LOCALIZE[16039]</value>
 		<value condition="Control.HasFocus(70055)">$LOCALIZE[24013]</value>
+		<value condition="Control.HasFocus(70056)">$LOCALIZE[31612]</value>
 	</variable>
 	<variable name="SkinSettingsHelpTextVar">
 		<value condition="Container(9000).HasFocus(1)">$LOCALIZE[31129]</value>
