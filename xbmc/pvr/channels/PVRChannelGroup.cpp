@@ -573,7 +573,7 @@ bool CPVRChannelGroup::UpdateFromClient(const std::shared_ptr<CPVRChannelGroupMe
     }
 
     existingMember->SetClientChannelNumber(channel->ClientChannelNumber());
-    existingMember->SetOrder(channel->ClientOrder());
+    existingMember->SetOrder(groupMember->Order());
 
     if (existingMember->NeedsSave())
     {

@@ -21,6 +21,15 @@
 
 using namespace PVR;
 
+CPVRChannelGroupMember::CPVRChannelGroupMember(const std::string& groupName,
+                                               int order,
+                                               const std::shared_ptr<CPVRChannel>& channel)
+  : m_clientChannelNumber(channel->ClientChannelNumber()), m_iOrder(order)
+{
+  SetChannel(channel);
+  SetGroupName(groupName);
+}
+
 CPVRChannelGroupMember::CPVRChannelGroupMember(int iGroupID,
                                                const std::string& groupName,
                                                const std::shared_ptr<CPVRChannel>& channel)
