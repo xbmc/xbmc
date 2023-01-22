@@ -33,9 +33,8 @@ using namespace jni;
 
 using namespace std::chrono_literals;
 
-// those are empirical values while the HD buffer
-// is the max TrueHD package
-const unsigned int MAX_RAW_AUDIO_BUFFER_HD = 61440;
+// those are empirical values
+const unsigned int MAX_RAW_AUDIO_BUFFER_HD = 32768;
 const unsigned int MAX_RAW_AUDIO_BUFFER = 16384;
 const unsigned int MOVING_AVERAGE_MAX_MEMBERS = 3;
 const uint64_t UINT64_LOWER_BYTES = 0x00000000FFFFFFFF;
@@ -451,8 +450,8 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       switch (m_format.m_streamInfo.m_type)
       {
         case CAEStreamInfo::STREAM_TYPE_TRUEHD:
-          m_min_buffer_size = MAX_RAW_AUDIO_BUFFER_HD;
-          m_format.m_frames = m_min_buffer_size;
+          m_min_buffer_size = std::max(m_min_buffer_size * 2, MAX_RAW_AUDIO_BUFFER_HD);
+          m_format.m_frames = MAX_RAW_AUDIO_BUFFER_HD;
           rawlength_in_seconds = 8 * m_format.m_streamInfo.GetDuration() / 1000; // on average
           break;
         case CAEStreamInfo::STREAM_TYPE_DTSHD_MA:
