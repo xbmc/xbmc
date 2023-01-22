@@ -206,9 +206,7 @@ void CScraper::ClearCache()
   if (CDirectory::Exists(strCachePath))
   {
     CFileItemList items;
-    CURL cacheUrl(strCachePath);
-    cacheUrl.SetOption("addontype", CAddonType(Type()).ToNumericString());
-    CDirectory::GetDirectory(cacheUrl, items, "", DIR_FLAG_DEFAULTS);
+    CDirectory::GetDirectory(strCachePath, items, "", DIR_FLAG_DEFAULTS);
     for (int i = 0; i < items.Size(); ++i)
     {
       // wipe cache
