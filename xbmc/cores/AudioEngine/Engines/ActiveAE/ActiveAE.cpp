@@ -74,7 +74,8 @@ void CEngineStats::GetDelay(AEDelayStatus& status)
   if (m_pcmOutput)
     status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
   else
-    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+    status.delay += static_cast<double>(m_bufferedSamples) *
+                    m_sinkFormat.m_streamInfo.GetDuration(m_sinkNeedIecPack) / 1000;
 }
 
 void CEngineStats::AddStream(unsigned int streamid)
@@ -127,7 +128,8 @@ void CEngineStats::UpdateStream(CActiveAEStream *stream)
         if (m_pcmOutput)
           delay += (float)(*itBuf)->pkt->nb_samples / (*itBuf)->pkt->config.sample_rate;
         else
-          delay += static_cast<float>(m_sinkFormat.m_streamInfo.GetDuration() / 1000.0);
+          delay +=
+              static_cast<float>(m_sinkFormat.m_streamInfo.GetDuration(m_sinkNeedIecPack) / 1000.0);
       }
       str.m_bufferedTime = static_cast<double>(delay);
       stream->m_bufferedTime = 0;
@@ -145,7 +147,8 @@ void CEngineStats::GetDelay(AEDelayStatus& status, CActiveAEStream *stream)
   if (m_pcmOutput)
     status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
   else
-    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+    status.delay += static_cast<double>(m_bufferedSamples) *
+                    m_sinkFormat.m_streamInfo.GetDuration(m_sinkNeedIecPack) / 1000;
 
   for (auto &str : m_streamStats)
   {
@@ -168,7 +171,8 @@ void CEngineStats::GetSyncInfo(CAESyncInfo& info, CActiveAEStream *stream)
   if (m_pcmOutput)
     status.delay += (double)m_bufferedSamples / m_sinkSampleRate;
   else
-    status.delay += (double)m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration() / 1000;
+    status.delay += static_cast<double>(m_bufferedSamples) *
+                    m_sinkFormat.m_streamInfo.GetDuration(m_sinkNeedIecPack) / 1000;
 
   status.delay += static_cast<double>(m_sinkLatency);
 
@@ -224,7 +228,9 @@ float CEngineStats::GetWaterLevel()
   if (m_pcmOutput)
     return static_cast<float>(m_bufferedSamples) / m_sinkSampleRate;
   else
-    return static_cast<float>(m_bufferedSamples * m_sinkFormat.m_streamInfo.GetDuration()) / 1000;
+    return static_cast<float>(m_bufferedSamples *
+                              m_sinkFormat.m_streamInfo.GetDuration(m_sinkNeedIecPack)) /
+           1000;
 }
 
 void CEngineStats::SetSuspended(bool state)
@@ -1822,6 +1828,7 @@ bool CActiveAE::InitSink()
       m_stats.SetSinkCacheTotal(data->cacheTotal);
       m_stats.SetSinkLatency(data->latency);
       m_stats.SetCurrentSinkFormat(m_sinkFormat);
+      m_stats.SetSinkNeedIec(m_sink.NeedIecPack());
     }
     reply->Release();
   }
