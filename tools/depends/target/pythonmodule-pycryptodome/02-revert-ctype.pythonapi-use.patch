@@ -1,6 +1,18 @@
 --- a/lib/Crypto/Util/_raw_api.py
 +++ b/lib/Crypto/Util/_raw_api.py
-@@ -200,8 +203,8 @@
+@@ -170,11 +170,6 @@
+     null_pointer = None
+     cached_architecture = []
+ 
+-    def c_ubyte(c):
+-        if not (0 <= c < 256):
+-            raise OverflowError()
+-        return ctypes.c_ubyte(c)
+-
+     def load_lib(name, cdecl):
+         if not cached_architecture:
+             # platform.architecture() creates a subprocess, so caching the
+@@ -200,8 +195,8 @@
      _c_ssize_t = ctypes.c_ssize_t
  
      _PyBUF_SIMPLE = 0
@@ -11,7 +23,7 @@
      _py_object = ctypes.py_object
      _c_ssize_p = ctypes.POINTER(_c_ssize_t)
  
-@@ -229,15 +230,9 @@
+@@ -229,15 +224,9 @@
      def c_uint8_ptr(data):
          if byte_string(data) or isinstance(data, _Array):
              return data
