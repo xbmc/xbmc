@@ -108,20 +108,21 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
       {
         std::string tagOptionName = m_tagOptions->GetMatch(1);
         std::string tagOptionValue = m_tagOptions->GetMatch(2);
-        std::string colorHex = "FFFFFF";
         pos2 += static_cast<int>(tagOptionName.length() + tagOptionValue.length());
         if (tagOptionName == "color")
         {
           m_flag[FLAG_COLOR] = true;
+          std::string colorHex = "FFFFFF";
+          bool bHex = false;
           if (tagOptionValue[0] == '#' && tagOptionValue.size() >= 7)
           {
+            bHex = true;
             tagOptionValue.erase(0, 1);
             tagOptionValue.erase(6, tagOptionValue.size());
-            colorHex = tagOptionValue;
           }
           else if (tagOptionValue.size() == 6)
           {
-            bool bHex = true;
+            bHex = true;
             for (int i = 0; i < 6; i++)
             {
               char temp = tagOptionValue[i];
@@ -132,11 +133,10 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
                 break;
               }
             }
-            if (bHex)
-              colorHex = tagOptionValue;
           }
-          colorHex =
-              colorHex.substr(4, 2) + tagOptionValue.substr(2, 2) + tagOptionValue.substr(0, 2);
+          if (bHex)
+            colorHex = tagOptionValue.substr(4, 2) + tagOptionValue.substr(2, 2) +
+                       tagOptionValue.substr(0, 2);
           std::string tempColorTag = "{\\c&H" + colorHex + "&}";
           strUTF8.insert(pos, tempColorTag);
           pos += static_cast<int>(tempColorTag.length());
