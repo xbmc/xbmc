@@ -80,7 +80,7 @@ void CDialogInGameSaves::PostExit()
   m_items.Clear();
 }
 
-void CDialogInGameSaves::OnClickAction()
+bool CDialogInGameSaves::OnClickAction()
 {
   if (static_cast<int>(m_focusedItemIndex) < m_items.Size())
   {
@@ -95,5 +95,9 @@ void CDialogInGameSaves::OnClickAction()
       gameSettings->LoadSavestate(savePath);
 
     gameSettings->CloseOSD();
+
+    return true;
   }
+
+  return false;
 }

@@ -29,7 +29,7 @@ protected:
   void OnItemFocus(unsigned int index) override;
   unsigned int GetFocusedItem() const override;
   void PostExit() override;
-  void OnClickAction() override;
+  bool OnClickAction() override;
 
 private:
   void InitSavedGames();

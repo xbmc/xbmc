@@ -52,7 +52,7 @@ protected:
   virtual unsigned int GetFocusedItem() const = 0;
   virtual void PostExit() = 0;
   // override this to do something when an item is selected
-  virtual void OnClickAction() {}
+  virtual bool OnClickAction() { return false; }
 
   void OnDescriptionChange(const std::string& description);
 
