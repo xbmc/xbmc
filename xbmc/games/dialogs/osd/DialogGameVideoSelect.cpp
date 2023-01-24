@@ -85,19 +85,46 @@ bool CDialogGameVideoSelect::OnMessage(CGUIMessage& message)
         if (m_viewControl->HasControl(controlId))
         {
           if (OnClickAction())
-          {
-            // Changed from sending ACTION_SHOW_OSD to closing the dialog
-            Close();
-
             return true;
-          }
         }
       }
-      break;
-    }
-    case GUI_MSG_REFRESH_LIST:
-    {
-      OnRefreshList();
+      else if (actionId == ACTION_CONTEXT_MENU || actionId == ACTION_MOUSE_RIGHT_CLICK)
+      {
+        const int controlId = message.GetSenderId();
+        if (m_viewControl->HasControl(controlId))
+        {
+          if (OnMenuAction())
+            return true;
+        }
+      }
+      else if (actionId == ACTION_CREATE_BOOKMARK)
+      {
+        const int controlId = message.GetSenderId();
+        if (m_viewControl->HasControl(controlId))
+        {
+          if (OnOverwriteAction())
+            return true;
+        }
+      }
+      else if (actionId == ACTION_RENAME_ITEM)
+      {
+        const int controlId = message.GetSenderId();
+        if (m_viewControl->HasControl(controlId))
+        {
+          if (OnRenameAction())
+            return true;
+        }
+      }
+      else if (actionId == ACTION_DELETE_ITEM)
+      {
+        const int controlId = message.GetSenderId();
+        if (m_viewControl->HasControl(controlId))
+        {
+          if (OnDeleteAction())
+            return true;
+        }
+      }
+
       break;
     }
     default:
@@ -170,7 +197,7 @@ void CDialogGameVideoSelect::Update()
   // Empty the list ready for population
   Clear();
 
-  OnRefreshList();
+  RefreshList();
 
   // CServiceBroker::GetWinSystem()->GetGfxContext().Unlock();
 }
@@ -181,7 +208,7 @@ void CDialogGameVideoSelect::Clear()
   m_vecItems->Clear();
 }
 
-void CDialogGameVideoSelect::OnRefreshList()
+void CDialogGameVideoSelect::RefreshList()
 {
   m_vecItems->Clear();
 
@@ -192,6 +219,10 @@ void CDialogGameVideoSelect::OnRefreshList()
   auto focusedIndex = GetFocusedItem();
   m_viewControl->SetSelectedItem(focusedIndex);
   OnItemFocus(focusedIndex);
+
+  // Refresh the panel container
+  CGUIMessage message(GUI_MSG_REFRESH_THUMBS, GetID(), CONTROL_THUMBS);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message, GetID());
 }
 
 void CDialogGameVideoSelect::SaveSettings()

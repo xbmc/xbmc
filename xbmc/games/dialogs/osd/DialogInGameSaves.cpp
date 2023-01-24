@@ -14,7 +14,12 @@
 #include "cores/RetroPlayer/playback/IPlayback.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
+#include "dialogs/GUIDialogContextMenu.h"
+#include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "games/dialogs/DialogGameDefines.h"
+#include "guilib/GUIKeyboardFactory.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
 #include "settings/GameSettings.h"
@@ -25,7 +30,22 @@ using namespace KODI;
 using namespace GAME;
 using namespace RETRO;
 
-CDialogInGameSaves::CDialogInGameSaves() : CDialogGameVideoSelect(WINDOW_DIALOG_IN_GAME_SAVES)
+namespace
+{
+CFileItemPtr CreateNewSaveItem()
+{
+  CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(15314)); // "Save"
+
+  item->SetArt("icon", "DefaultAddSource.png");
+  item->SetProperty(SAVESTATE_CAPTION,
+                    g_localizeStrings.Get(15315)); // "Save progress to a new save file"
+
+  return item;
+}
+} // namespace
+
+CDialogInGameSaves::CDialogInGameSaves()
+  : CDialogGameVideoSelect(WINDOW_DIALOG_IN_GAME_SAVES), m_newSaveItem(CreateNewSaveItem())
 {
 }
 
@@ -36,37 +56,32 @@ std::string CDialogInGameSaves::GetHeading()
 
 void CDialogInGameSaves::PreInit()
 {
-  m_items.Clear();
-
   InitSavedGames();
-
-  CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(15314)); // "Save"
-  item->SetArt("icon", "DefaultAddSource.png");
-  item->SetPath("");
-  item->SetProperty(SAVESTATE_CAPTION,
-                    g_localizeStrings.Get(15315)); // "Save progress to a new save file"
-
-  m_items.AddFront(item, 0);
 }
 
 void CDialogInGameSaves::InitSavedGames()
 {
+  m_savestateItems.Clear();
+
   auto gameSettings = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
 
   CSavestateDatabase db;
-  db.GetSavestatesNav(m_items, gameSettings->GetPlayingGame(), gameSettings->GameClientID());
+  db.GetSavestatesNav(m_savestateItems, gameSettings->GetPlayingGame(),
+                      gameSettings->GameClientID());
 
-  m_items.Sort(SortByDate, SortOrderDescending);
+  m_savestateItems.Sort(SortByDate, SortOrderDescending);
 }
 
 void CDialogInGameSaves::GetItems(CFileItemList& items)
 {
-  std::for_each(m_items.cbegin(), m_items.cend(), [&items](const auto& item) { items.Add(item); });
+  items.Add(m_newSaveItem);
+  std::for_each(m_savestateItems.cbegin(), m_savestateItems.cend(),
+                [&items](const auto& item) { items.Add(item); });
 }
 
 void CDialogInGameSaves::OnItemFocus(unsigned int index)
 {
-  if (static_cast<int>(index) < m_items.Size())
+  if (static_cast<int>(index) < 1 + m_savestateItems.Size())
     m_focusedItemIndex = index;
 }
 
@@ -77,27 +92,237 @@ unsigned int CDialogInGameSaves::GetFocusedItem() const
 
 void CDialogInGameSaves::PostExit()
 {
-  m_items.Clear();
+  m_savestateItems.Clear();
 }
 
 bool CDialogInGameSaves::OnClickAction()
 {
-  if (static_cast<int>(m_focusedItemIndex) < m_items.Size())
+  if (static_cast<int>(m_focusedItemIndex) < 1 + m_savestateItems.Size())
   {
-    auto gameSettings = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
-    std::string savePath = m_items[m_focusedItemIndex]->GetPath();
-
-    if (savePath.empty())
+    if (m_focusedItemIndex <= 0)
     {
-      gameSettings->CreateSavestate(false);
+      OnNewSave();
+      return true;
     }
     else
-      gameSettings->LoadSavestate(savePath);
-
-    gameSettings->CloseOSD();
-
-    return true;
+    {
+      CFileItemPtr focusedItem = m_savestateItems[m_focusedItemIndex - 1];
+      if (focusedItem)
+      {
+        OnLoad(*focusedItem);
+        return true;
+      }
+    }
   }
 
   return false;
+}
+
+bool CDialogInGameSaves::OnMenuAction()
+{
+  // Start at index 1 to account for leading "Save" item
+  if (1 <= m_focusedItemIndex && static_cast<int>(m_focusedItemIndex) < 1 + m_savestateItems.Size())
+  {
+    CFileItemPtr focusedItem = m_savestateItems[m_focusedItemIndex - 1];
+    if (focusedItem)
+    {
+      CContextButtons buttons;
+
+      buttons.Add(0, 13206); // "Overwrite"
+      buttons.Add(1, 118); // "Rename"
+      buttons.Add(2, 117); // "Delete"
+
+      const int index = CGUIDialogContextMenu::Show(buttons);
+
+      if (index == 0)
+        OnOverwrite(*focusedItem);
+      if (index == 1)
+        OnRename(*focusedItem);
+      else if (index == 2)
+        OnDelete(*focusedItem);
+
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool CDialogInGameSaves::OnOverwriteAction()
+{
+  // Start at index 1 to account for leading "Save" item
+  if (1 <= m_focusedItemIndex && static_cast<int>(m_focusedItemIndex) < 1 + m_savestateItems.Size())
+  {
+    CFileItemPtr focusedItem = m_savestateItems[m_focusedItemIndex - 1];
+    if (focusedItem)
+    {
+      OnOverwrite(*focusedItem);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool CDialogInGameSaves::OnRenameAction()
+{
+  // Start at index 1 to account for leading "Save" item
+  if (1 <= m_focusedItemIndex && static_cast<int>(m_focusedItemIndex) < 1 + m_savestateItems.Size())
+  {
+    CFileItemPtr focusedItem = m_savestateItems[m_focusedItemIndex - 1];
+    if (focusedItem)
+    {
+      OnRename(*focusedItem);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool CDialogInGameSaves::OnDeleteAction()
+{
+  // Start at index 1 to account for leading "Save" item
+  if (1 <= m_focusedItemIndex && static_cast<int>(m_focusedItemIndex) < 1 + m_savestateItems.Size())
+  {
+    CFileItemPtr focusedItem = m_savestateItems[m_focusedItemIndex - 1];
+    if (focusedItem)
+    {
+      OnDelete(*focusedItem);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void CDialogInGameSaves::OnNewSave()
+{
+  auto gameSettings = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
+
+  const std::string savestatePath = gameSettings->CreateSavestate(false);
+  if (!savestatePath.empty())
+  {
+    std::unique_ptr<RETRO::ISavestate> savestate = RETRO::CSavestateDatabase::AllocateSavestate();
+    RETRO::CSavestateDatabase db;
+    if (db.GetSavestate(savestatePath, *savestate))
+    {
+      CFileItemPtr item = std::make_unique<CFileItem>();
+      RETRO::CSavestateDatabase::GetSavestateItem(*savestate, savestatePath, *item);
+      item->SetPath(savestatePath);
+
+      m_savestateItems.AddFront(std::move(item), 0);
+
+      RefreshList();
+    }
+  }
+  else
+  {
+    // "Error"
+    // "An unknown error has occurred."
+    CGUIDialogOK::ShowAndGetInput(257, 24071);
+  }
+}
+
+void CDialogInGameSaves::OnLoad(CFileItem& focusedItem)
+{
+  auto gameSettings = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
+
+  // Load savestate
+  if (gameSettings->LoadSavestate(focusedItem.GetPath()))
+  {
+    // Close OSD on successful load
+    gameSettings->CloseOSD();
+  }
+  else
+  {
+    // "Error"
+    // "An unknown error has occurred."
+    CGUIDialogOK::ShowAndGetInput(257, 24071);
+  }
+}
+
+void CDialogInGameSaves::OnOverwrite(CFileItem& focusedItem)
+{
+  std::string savestatePath = focusedItem.GetPath();
+  if (savestatePath.empty())
+    return;
+
+  auto gameSettings = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
+
+  // Update savestate
+  if (gameSettings->UpdateSavestate(savestatePath))
+  {
+    std::unique_ptr<RETRO::ISavestate> savestate = RETRO::CSavestateDatabase::AllocateSavestate();
+    RETRO::CSavestateDatabase db;
+    if (db.GetSavestate(savestatePath, *savestate))
+    {
+      RETRO::CSavestateDatabase::GetSavestateItem(*savestate, savestatePath, focusedItem);
+      m_savestateItems.Sort(SortByDate, SortOrderDescending);
+
+      RefreshList();
+    }
+  }
+  else
+  {
+    // "Error"
+    // "An unknown error has occurred."
+    CGUIDialogOK::ShowAndGetInput(257, 24071);
+  }
+}
+
+void CDialogInGameSaves::OnRename(CFileItem& focusedItem)
+{
+  const std::string& savestatePath = focusedItem.GetPath();
+  if (savestatePath.empty())
+    return;
+
+  RETRO::CSavestateDatabase db;
+
+  std::string label;
+
+  std::unique_ptr<RETRO::ISavestate> savestate = RETRO::CSavestateDatabase::AllocateSavestate();
+  if (db.GetSavestate(savestatePath, *savestate))
+    label = savestate->Label();
+
+  // "Enter new filename"
+  if (CGUIKeyboardFactory::ShowAndGetInput(label, CVariant{g_localizeStrings.Get(16013)}, true) &&
+      label != savestate->Label())
+  {
+    std::unique_ptr<RETRO::ISavestate> newSavestate = db.RenameSavestate(savestatePath, label);
+    if (newSavestate)
+    {
+      RETRO::CSavestateDatabase::GetSavestateItem(*newSavestate, savestatePath, focusedItem);
+
+      RefreshList();
+    }
+    else
+    {
+      // "Error"
+      // "An unknown error has occurred."
+      CGUIDialogOK::ShowAndGetInput(257, 24071);
+    }
+  }
+}
+
+void CDialogInGameSaves::OnDelete(CFileItem& focusedItem)
+{
+  // "Confirm delete"
+  // "Would you like to delete the selected file(s)?[CR]Warning - this action can't be undone!"
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, CVariant{125}))
+  {
+    RETRO::CSavestateDatabase db;
+    if (db.DeleteSavestate(focusedItem.GetPath()))
+    {
+      m_savestateItems.Remove(&focusedItem);
+
+      RefreshList();
+    }
+    else
+    {
+      // "Error"
+      // "An unknown error has occurred."
+      CGUIDialogOK::ShowAndGetInput(257, 24071);
+    }
+  }
 }
