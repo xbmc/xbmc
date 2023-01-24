@@ -34,10 +34,6 @@ protected:
 private:
   void InitSavedGames();
 
-  static void GetProperties(const CFileItem& item,
-                            std::string& videoFilter,
-                            std::string& description);
-
   CFileItemList m_items;
   unsigned int m_focusedItemIndex = false;
 };
