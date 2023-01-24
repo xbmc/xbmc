@@ -43,7 +43,7 @@ public:
   void Refresh() override;
   void FrameMove() override;
   void SetFocused() override;
-  void OnSelect() override;
+  bool OnSelect() override;
   void ResetPorts() override;
 
 private:

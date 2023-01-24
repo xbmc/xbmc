@@ -139,11 +139,16 @@ void CGUIPortList::SetFocused()
   m_viewControl->SetFocused();
 }
 
-void CGUIPortList::OnSelect()
+bool CGUIPortList::OnSelect()
 {
   const int itemIndex = m_viewControl->GetSelectedItem();
   if (itemIndex >= 0)
+  {
     OnItemSelect(static_cast<unsigned int>(itemIndex));
+    return true;
+  }
+
+  return false;
 }
 
 void CGUIPortList::ResetPorts()
