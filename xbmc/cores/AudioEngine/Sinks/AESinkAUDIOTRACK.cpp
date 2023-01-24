@@ -509,18 +509,16 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       m_sink_frameSize = m_format.m_frameSize;
       // aim at 200 ms buffer and 50 ms periods but at least two periods of min_buffer
       // make sure periods are actually not smaller than 32 ms (32, cause 32 * 2 = 64)
-      // but also not bigger than 64 ms
+      // but also lower than 64 ms
       // which is large enough to not cause CPU hogging in case 32 ms periods are used
       m_min_buffer_size *= 2;
       m_audiotrackbuffer_sec =
           static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
 
-      // TrueHD needs a smaller buffer (in duration) to reduce latency
-      // this fixes dropouts since the data arrives in smaller quantities but more constantly
-      const double target_duration =
-          (m_passthrough && m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
-              ? 0.08
-              : 0.15;
+      constexpr double max_time = 0.064;
+      constexpr double min_time = 0.032;
+      constexpr double target_duration = 0.128;
+
       int c = 2;
       while (m_audiotrackbuffer_sec < target_duration)
       {
@@ -533,12 +531,15 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       double period_time =
           static_cast<double>(period_size) / (m_sink_frameSize * m_sink_sampleRate);
 
-      while (period_time > 0.064)
+      // This will result in minimum 32 ms
+      while (period_time >= max_time)
       {
         period_time /= 2;
         period_size /= 2;
       }
-      while (period_time < 0.032)
+      // If the audio track API gave us very low values increase them
+      // In this case the first loop would not have been run at all
+      while (period_time < min_time)
       {
         period_size *= 2;
         period_time *= 2;
@@ -651,6 +652,9 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     return;
   }
 
+  // TrueHD is padded - it has 10 ms payload but a 20 ms frame is used
+  // This has the side effect that the buffer only has half the payload
+  // in it and all delays from the sink need to be divided by two.
   double ratio = (m_passthrough && m_info.m_wantsIECPassthrough &&
                   (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD))
                      ? 2.0
@@ -850,7 +854,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
           }
           else
           {
-            sleep_time = 1000.0 * m_format.m_frames / (m_sink_frameSize * m_format.m_sampleRate);
+            sleep_time = 1000.0 * m_format.m_frames / m_format.m_sampleRate;
             usleep(sleep_time * 1000);
           }
           bool playing = m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PLAYING;
