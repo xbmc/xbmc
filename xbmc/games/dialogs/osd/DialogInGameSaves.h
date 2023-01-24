@@ -11,6 +11,8 @@
 #include "DialogGameVideoSelect.h"
 #include "FileItem.h"
 
+#include <string>
+
 namespace KODI
 {
 namespace GAME
@@ -30,11 +32,22 @@ protected:
   unsigned int GetFocusedItem() const override;
   void PostExit() override;
   bool OnClickAction() override;
+  bool OnMenuAction() override;
+  bool OnOverwriteAction() override;
+  bool OnRenameAction() override;
+  bool OnDeleteAction() override;
+
+  void OnNewSave();
+  void OnLoad(CFileItem& focusedItem);
+  void OnOverwrite(CFileItem& focusedItem);
+  void OnRename(CFileItem& focusedItem);
+  void OnDelete(CFileItem& focusedItem);
 
 private:
   void InitSavedGames();
 
-  CFileItemList m_items;
+  CFileItemList m_savestateItems;
+  const CFileItemPtr m_newSaveItem;
   unsigned int m_focusedItemIndex = false;
 };
 } // namespace GAME
