@@ -81,14 +81,13 @@ bool CDialogGameVideoSelect::OnMessage(CGUIMessage& message)
         const int controlId = message.GetSenderId();
         if (m_viewControl->HasControl(controlId))
         {
-          using namespace MESSAGING;
+          if (OnClickAction())
+          {
+            // Changed from sending ACTION_SHOW_OSD to closing the dialog
+            Close();
 
-          OnClickAction();
-
-          // Changed from sending ACTION_SHOW_OSD to closing the dialog
-          Close();
-
-          return true;
+            return true;
+          }
         }
       }
       break;
