@@ -213,7 +213,6 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   public void onStart()
   {
     super.onStart();
-    mDecorView.setBackgroundColor(Color.TRANSPARENT);
 
     Choreographer.getInstance().removeFrameCallback(this);
     Choreographer.getInstance().postFrameCallback(this);
