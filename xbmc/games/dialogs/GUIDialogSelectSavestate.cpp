@@ -91,7 +91,7 @@ CDialogGameSaves* CGUIDialogSelectSavestate::GetDialog(const std::string& title)
     dialog->Reset();
     dialog->SetHeading(CVariant{title});
     dialog->SetUseDetails(true);
-    dialog->EnableButton(true, 35261); // "New game"
+    dialog->EnableButton(true, 35261); // "New"
   }
 
   return dialog;
