@@ -32,7 +32,7 @@ using namespace GAME;
 namespace
 {
 constexpr int CONTROL_DETAILED_LIST = 6;
-constexpr int CONTROL_DESCRIPTION = 12;
+constexpr int CONTROL_DESCRIPTION = 10812;
 } // namespace
 
 CDialogGameSaves::CDialogGameSaves() : CGUIDialogSelect(WINDOW_DIALOG_GAME_SAVES)
