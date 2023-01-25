@@ -28,9 +28,12 @@
 using namespace KODI;
 using namespace GAME;
 
-#define CONTROL_HEADING 1
-#define CONTROL_THUMBS 11
-#define CONTROL_DESCRIPTION 12
+namespace
+{
+constexpr unsigned int CONTROL_HEADING = 1;
+constexpr unsigned int CONTROL_THUMBS = 10811;
+constexpr unsigned int CONTROL_DESCRIPTION = 10812;
+} // namespace
 
 CDialogGameVideoSelect::CDialogGameVideoSelect(int windowId)
   : CGUIDialog(windowId, "DialogSelect.xml"),
