@@ -13,6 +13,7 @@
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "dialogs/GUIDialogContextMenu.h"
+#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "games/dialogs/DialogGameDefines.h"
 #include "guilib/GUIBaseContainer.h"
@@ -54,8 +55,11 @@ bool CDialogGameSaves::OnMessage(CGUIMessage& message)
           if (selectedItem >= 0 && selectedItem < m_vecList->Size())
           {
             CFileItemPtr item = m_vecList->Get(selectedItem);
-            OnPopupMenu(item);
-            return true;
+            if (item)
+            {
+              OnContextMenu(*item);
+              return true;
+            }
           }
         }
       }
@@ -79,7 +83,8 @@ void CDialogGameSaves::FrameMove()
       if (selectedItem >= 0 && selectedItem < m_vecList->Size())
       {
         CFileItemPtr item = m_vecList->Get(selectedItem);
-        OnFocus(item);
+        if (item)
+          OnFocus(*item);
       }
     }
     else
@@ -99,9 +104,9 @@ std::string CDialogGameSaves::GetSelectedItemPath()
   return "";
 }
 
-void CDialogGameSaves::OnFocus(const CFileItemPtr& item)
+void CDialogGameSaves::OnFocus(const CFileItem& item)
 {
-  const std::string caption = item->GetProperty(SAVESTATE_CAPTION).asString();
+  const std::string caption = item.GetProperty(SAVESTATE_CAPTION).asString();
 
   HandleCaption(caption);
 }
@@ -111,49 +116,80 @@ void CDialogGameSaves::OnFocusLost()
   HandleCaption("");
 }
 
-void CDialogGameSaves::OnPopupMenu(const CFileItemPtr& item)
+void CDialogGameSaves::OnContextMenu(CFileItem& item)
 {
-  const std::string& savePath = item->GetPath();
-
   CContextButtons buttons;
 
   buttons.Add(0, 118); // "Rename"
   buttons.Add(1, 117); // "Delete"
 
-  int index = CGUIDialogContextMenu::Show(buttons);
-  RETRO::CSavestateDatabase db;
+  const int index = CGUIDialogContextMenu::Show(buttons);
 
   if (index == 0)
-  {
-    std::string label;
-    // "Enter new filename"
-    if (CGUIKeyboardFactory::ShowAndGetInput(label, CVariant{g_localizeStrings.Get(16013)}, false))
-    {
-      if (db.RenameSavestate(savePath, label))
-      {
-        std::unique_ptr<RETRO::ISavestate> savestate =
-            RETRO::CSavestateDatabase::AllocateSavestate();
-        db.GetSavestate(savePath, *savestate);
-
-        item->SetLabel(label);
-
-        CDateTime date = CDateTime::FromUTCDateTime(savestate->Created());
-        item->SetLabel2(date.GetAsLocalizedDateTime(false, false));
-
-        item->SetProperty(SAVESTATE_CAPTION, savestate->Caption());
-      }
-    }
-  }
+    OnRename(item);
   else if (index == 1)
-  {
-    if (CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, CVariant{125}))
-    {
-      if (db.DeleteSavestate(savePath))
-        m_vecList->Remove(item.get());
-    }
-  }
+    OnDelete(item);
 
   m_viewControl.SetItems(*m_vecList);
+}
+
+void CDialogGameSaves::OnRename(CFileItem& item)
+{
+  const std::string& savestatePath = item.GetPath();
+
+  // Get savestate properties
+  RETRO::CSavestateDatabase db;
+  std::unique_ptr<RETRO::ISavestate> savestate = RETRO::CSavestateDatabase::AllocateSavestate();
+  db.GetSavestate(savestatePath, *savestate);
+
+  std::string label(savestate->Label());
+
+  // "Enter new filename"
+  if (CGUIKeyboardFactory::ShowAndGetInput(label, CVariant{g_localizeStrings.Get(16013)}, true) &&
+      label != savestate->Label())
+  {
+    std::unique_ptr<RETRO::ISavestate> newSavestate = db.RenameSavestate(savestatePath, label);
+    if (newSavestate)
+    {
+      RETRO::CSavestateDatabase::GetSavestateItem(*newSavestate, savestatePath, item);
+
+      // Refresh thumbnails
+      CGUIMessage message(GUI_MSG_REFRESH_LIST, GetID(), CONTROL_DETAILED_LIST);
+      OnMessage(message);
+    }
+    else
+    {
+      // "Error"
+      // "An unknown error has occurred."
+      CGUIDialogOK::ShowAndGetInput(257, 24071);
+    }
+  }
+}
+
+void CDialogGameSaves::OnDelete(CFileItem& item)
+{
+  // "Confirm delete"
+  // "Would you like to delete the selected file(s)?[CR]Warning - this action can't be undone!"
+  if (CGUIDialogYesNo::ShowAndGetInput(CVariant{122}, CVariant{125}))
+  {
+    const std::string& savestatePath = item.GetPath();
+
+    RETRO::CSavestateDatabase db;
+    if (db.DeleteSavestate(savestatePath))
+    {
+      m_vecList->Remove(&item);
+
+      // Refresh thumbnails
+      CGUIMessage message(GUI_MSG_REFRESH_LIST, GetID(), CONTROL_DETAILED_LIST);
+      OnMessage(message);
+    }
+    else
+    {
+      // "Error"
+      // "An unknown error has occurred."
+      CGUIDialogOK::ShowAndGetInput(257, 24071);
+    }
+  }
 }
 
 void CDialogGameSaves::HandleCaption(const std::string& caption)
