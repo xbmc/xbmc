@@ -346,7 +346,7 @@
 					<param name="label" value="$LOCALIZE[222]" />
 				</include>
 			</control>
-			<control type="label" id="12">
+			<control type="label" id="10812">
 				<description>Caption area</description>
 				<left>14</left>
 				<right>14</right>
@@ -380,7 +380,7 @@
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 			</control>
-			<control type="panel" id="11">
+			<control type="panel" id="10811">
 				<top>30</top>
 				<scrolltime tween="sine">200</scrolltime>
 				<orientation>horizontal</orientation>
@@ -448,12 +448,12 @@
 							<width>444</width>
 							<height>250</height>
 							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-							<visible>Control.HasFocus(11)</visible>
+							<visible>Control.HasFocus(10811)</visible>
 						</control>
 					</control>
 				</focusedlayout>
 			</control>
-			<control type="textbox" id="12">
+			<control type="textbox" id="10812">
 				<description>Description Area</description>
 				<top>410</top>
 				<left>100</left>
@@ -486,7 +486,7 @@
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 			</control>
-			<control type="panel" id="11">
+			<control type="panel" id="10811">
 				<top>30</top>
 				<scrolltime tween="sine">200</scrolltime>
 				<orientation>horizontal</orientation>
@@ -554,7 +554,7 @@
 							<width>444</width>
 							<height>250</height>
 							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-							<visible>Control.HasFocus(11)</visible>
+							<visible>Control.HasFocus(10811)</visible>
 						</control>
 					</control>
 				</focusedlayout>
@@ -581,7 +581,7 @@
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
 			</control>
-			<control type="panel" id="11">
+			<control type="panel" id="10811">
 				<top>30</top>
 				<scrolltime tween="sine">200</scrolltime>
 				<orientation>horizontal</orientation>
@@ -635,12 +635,12 @@
 							<width>444</width>
 							<height>250</height>
 							<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
-							<visible>Control.HasFocus(11)</visible>
+							<visible>Control.HasFocus(10811)</visible>
 						</control>
 					</control>
 				</focusedlayout>
 			</control>
-			<control type="textbox" id="12">
+			<control type="textbox" id="10812">
 				<description>Description Area</description>
 				<top>410</top>
 				<left>100</left>
