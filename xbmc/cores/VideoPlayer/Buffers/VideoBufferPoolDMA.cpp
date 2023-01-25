@@ -123,6 +123,12 @@ uint32_t CVideoBufferPoolDMA::TranslateFormat(AVPixelFormat format)
     case AV_PIX_FMT_YUV420P:
     case AV_PIX_FMT_YUVJ420P:
       return DRM_FORMAT_YUV420;
+    case AV_PIX_FMT_YUV422P:
+    case AV_PIX_FMT_YUVJ422P:
+      return DRM_FORMAT_YUV422;
+    case AV_PIX_FMT_YUV444P:
+    case AV_PIX_FMT_YUVJ444P:
+      return DRM_FORMAT_YUV444;
     default:
       return 0;
   }
