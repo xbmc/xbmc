@@ -40,8 +40,10 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
     void SetBlack(float black) { m_black = black; }
     void SetContrast(float contrast) { m_contrast = contrast; }
     void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
-    void SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
-                            bool hasLightMetadata, AVContentLightMetadata lightMetadata);
+    void SetDisplayMetadata(bool hasDisplayMetadata,
+                            const AVMasteringDisplayMetadata& displayMetadata,
+                            bool hasLightMetadata,
+                            AVContentLightMetadata lightMetadata);
     void SetToneMapParam(float param) { m_toneMappingParam = param; }
     float GetLuminanceValue() const;
 
