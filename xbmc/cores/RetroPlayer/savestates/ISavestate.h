@@ -14,6 +14,11 @@
 #include <string>
 #include <vector>
 
+extern "C"
+{
+#include <libavutil/pixfmt.h>
+}
+
 class CDateTime;
 
 namespace KODI
@@ -100,6 +105,67 @@ public:
   virtual std::string GameClientVersion() const = 0;
   ///}
 
+  /// @name Video stream properties
+  ///{
+  /*!
+   * \brief The pixel format of the video stream
+   */
+  virtual AVPixelFormat GetPixelFormat() const = 0;
+
+  /*!
+   * \brief The nominal width of the video stream, a good guess for subsequent frames
+   */
+  virtual unsigned int GetNominalWidth() const = 0;
+
+  /*!
+   * \brief The nominal height of the video stream, a good guess for subsequent frames
+   */
+  virtual unsigned int GetNominalHeight() const = 0;
+
+  /*!
+   * \brief The maximum width of the video stream, in pixels
+   */
+  virtual unsigned int GetMaxWidth() const = 0;
+
+  /*!
+   * \brief The maximum height of the video stream, in pixels
+   */
+  virtual unsigned int GetMaxHeight() const = 0;
+
+  /*!
+   * \brief The pixel aspect ratio of the video stream
+   */
+  virtual float GetPixelAspectRatio() const = 0;
+  ///}
+
+  /// @name Video frame properties
+  ///{
+  /*!
+   * \brief A pointer to the frame's video data (pixels)
+   */
+  virtual const uint8_t* GetVideoData() const = 0;
+
+  /*!
+   * \brief The size of the frame's video data, in bytes
+   */
+  virtual size_t GetVideoSize() const = 0;
+
+  /*!
+   * \brief The width of the video frame, in pixels
+   */
+  virtual unsigned int GetVideoWidth() const = 0;
+
+  /*!
+   * \brief The height of the video frame, in pixels
+   */
+  virtual unsigned int GetVideoHeight() const = 0;
+
+  /*!
+   * \brief The rotation of the video frame, in degrees counter-clockwise
+   */
+  virtual unsigned int GetRotationDegCCW() const = 0;
+  ///}
+
   /// @name Memory properties
   ///{
   /*!
@@ -113,7 +179,8 @@ public:
   virtual size_t GetMemorySize() const = 0;
   ///}
 
-  // Build flatbuffer by setting individual fields
+  /// @name Builders for setting individual fields
+  ///{
   virtual void SetType(SAVE_TYPE type) = 0;
   virtual void SetSlot(uint8_t slot) = 0;
   virtual void SetLabel(const std::string& label) = 0;
@@ -124,8 +191,19 @@ public:
   virtual void SetTimestampWallClock(double timestampWallClock) = 0;
   virtual void SetGameClientID(const std::string& gameClient) = 0;
   virtual void SetGameClientVersion(const std::string& gameClient) = 0;
+  virtual void SetPixelFormat(AVPixelFormat pixelFormat) = 0;
+  virtual void SetNominalWidth(unsigned int nominalWidth) = 0;
+  virtual void SetNominalHeight(unsigned int nominalHeight) = 0;
+  virtual void SetMaxWidth(unsigned int maxWidth) = 0;
+  virtual void SetMaxHeight(unsigned int maxHeight) = 0;
+  virtual void SetPixelAspectRatio(float pixelAspectRatio) = 0;
+  virtual uint8_t* GetVideoBuffer(size_t size) = 0;
+  virtual void SetVideoWidth(unsigned int videoWidth) = 0;
+  virtual void SetVideoHeight(unsigned int videoHeight) = 0;
+  virtual void SetRotationDegCCW(unsigned int rotationCCW) = 0;
   virtual uint8_t* GetMemoryBuffer(size_t size) = 0;
   virtual void Finalize() = 0;
+  ///}
 
   /*!
    * \brief Take ownership and initialize the flatbuffer with the given vector
