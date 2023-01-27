@@ -2024,12 +2024,19 @@ public:
     line.clear();
     if (!m_file)
       return false;
-    // TODO: Read 1024 chars into buffer. If file position advanced that many
-    // chars, we didn't hit a newline. Otherwise, if file position is 1 or 2
-    // past the number of bytes read, we read (and skipped) a newline sequence.
-    char buffer[1025];
+    // Read 1024 chars into buffer. If file position advanced that many
+    // chars, we didn't hit a newline. Otherwise, we read a newline
+    // or we reached the end of the file.
+    //
+    // The strncpy idiom is used here (C++ allows a simpler implementation):
+    //
+    // char buffer[BUFFER_SIZE];
+    // strncpy(buffer, sourceString, BUFFER_SIZE - 1);
+    // buffer[BUFFER_SIZE - 1] = '\0';
+    //
+    char buffer[1025]{};
     if (CPrivateBase::m_interface->toKodi->kodi_filesystem->read_file_string(
-            CPrivateBase::m_interface->toKodi->kodiBase, m_file, buffer, sizeof(buffer)))
+            CPrivateBase::m_interface->toKodi->kodiBase, m_file, buffer, sizeof(buffer) - 1))
     {
       line = buffer;
       return !line.empty();
