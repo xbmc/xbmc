@@ -52,12 +52,12 @@ public:
   /*!
    * \brief Load a savestate for the current game being played
    *
-   * \param path The path to the created savestate file returned by
+   * \param savestatePath The path to the created savestate file returned by
    * CreateSavestate()
    *
    * \return True if the savestate was loaded successfully, false otherwise
    */
-  bool LoadSavestate(const std::string& path);
+  bool LoadSavestate(const std::string& savestatePath);
 
   /*!
    * \brief Close the in-game OSD

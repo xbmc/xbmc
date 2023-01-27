@@ -147,7 +147,7 @@ protected:
   std::string GameClientID();
   std::string GetPlayingGame();
   std::string CreateSavestate(bool autosave);
-  bool LoadSavestate(const std::string& path);
+  bool LoadSavestate(const std::string& savestatePath);
   void CloseOSD();
 
 private:

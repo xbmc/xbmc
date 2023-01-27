@@ -73,7 +73,7 @@ public:
   std::string GameClientID() const override;
   std::string GetPlayingGame() const override;
   std::string CreateSavestate(bool autosave) override;
-  bool LoadSavestate(const std::string& path) override;
+  bool LoadSavestate(const std::string& savestatePath) override;
   void CloseOSDCallback() override;
 
   // Implementation of IPlaybackCallback
