@@ -25,12 +25,12 @@ CPipewireThreadLoop::CPipewireThreadLoop()
   }
 }
 
-bool CPipewireThreadLoop::Start()
+bool CPipewireThreadLoop::Start() const
 {
   return pw_thread_loop_start(m_mainloop.get()) == 0;
 }
 
-void CPipewireThreadLoop::Stop()
+void CPipewireThreadLoop::Stop() const
 {
   pw_thread_loop_stop(m_mainloop.get());
 }
@@ -45,7 +45,7 @@ void CPipewireThreadLoop::Unlock() const
   pw_thread_loop_unlock(m_mainloop.get());
 }
 
-int CPipewireThreadLoop::Wait(std::chrono::nanoseconds timeout)
+int CPipewireThreadLoop::Wait(std::chrono::nanoseconds timeout) const
 {
   timespec abstime;
   pw_thread_loop_get_time(m_mainloop.get(), &abstime, timeout.count());
@@ -53,7 +53,7 @@ int CPipewireThreadLoop::Wait(std::chrono::nanoseconds timeout)
   return pw_thread_loop_timed_wait_full(m_mainloop.get(), &abstime);
 }
 
-void CPipewireThreadLoop::Signal(bool accept)
+void CPipewireThreadLoop::Signal(bool accept) const
 {
   pw_thread_loop_signal(m_mainloop.get(), accept);
 }

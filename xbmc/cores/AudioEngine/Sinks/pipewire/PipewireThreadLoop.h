@@ -26,14 +26,14 @@ public:
 
   pw_loop* Get() const { return pw_thread_loop_get_loop(m_mainloop.get()); }
 
-  bool Start();
-  void Stop();
+  bool Start() const;
+  void Stop() const;
 
   void Lock() const;
   void Unlock() const;
 
-  int Wait(std::chrono::nanoseconds timeout);
-  void Signal(bool accept);
+  int Wait(std::chrono::nanoseconds timeout) const;
+  void Signal(bool accept) const;
 
 private:
   struct PipewireThreadLoopDeleter
