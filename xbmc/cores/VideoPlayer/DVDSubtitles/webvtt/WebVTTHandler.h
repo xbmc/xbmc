@@ -118,10 +118,11 @@ struct webvttCssStyle
   webvttCssStyle(WebvttSelector selectorType,
                  const std::string& selectorName,
                  const std::string& colorHexRGB)
-    : m_selectorType{selectorType}, m_selectorName{selectorName}
+    : m_selectorType{selectorType},
+      m_selectorName{selectorName},
+      // Color hex values need to be in BGR format
+      m_color(colorHexRGB.substr(4, 2) + colorHexRGB.substr(2, 2) + colorHexRGB.substr(0, 2))
   {
-    // Color hex values need to be in BGR format
-    m_color = colorHexRGB.substr(4, 2) + colorHexRGB.substr(2, 2) + colorHexRGB.substr(0, 2);
   }
 
   WebvttSelector m_selectorType = WebvttSelector::ANY;
