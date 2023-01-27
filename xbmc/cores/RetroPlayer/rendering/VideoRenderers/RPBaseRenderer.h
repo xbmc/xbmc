@@ -67,6 +67,7 @@ public:
   void SetScalingMethod(SCALINGMETHOD method);
   void SetStretchMode(STRETCHMODE stretchMode);
   void SetRenderRotation(unsigned int rotationDegCCW);
+  void SetPixels(const std::string& pixelPath);
 
   // Rendering properties
   bool IsVisible() const;

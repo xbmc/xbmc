@@ -62,6 +62,11 @@ void CRPRenderManager::Deinitialize()
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Deinitializing render manager");
 
+  // Wait for savestate tasks
+  for (std::future<void>& task : m_savestateThreads)
+    task.wait();
+  m_savestateThreads.clear();
+
   for (auto& pixelScalerMap : m_scalers)
   {
     for (auto& pixelScaler : pixelScalerMap.second)
@@ -360,8 +365,22 @@ void CRPRenderManager::RenderControl(bool bClear,
   if (!renderer)
     return;
 
-  // Get a render buffer for the renderer
-  IRenderBuffer* renderBuffer = GetRenderBuffer(renderer->GetBufferPool());
+  IRenderBuffer* renderBuffer = nullptr;
+
+  // Get render buffer for external pixels, if requested
+  const std::string& pixelPath = renderer->GetRenderSettings().VideoSettings().GetPixels();
+  if (!pixelPath.empty())
+  {
+    renderBuffer = GetRenderBufferForSavestate(pixelPath, renderer->GetBufferPool());
+  }
+  else
+  {
+    // Get a render buffer for the renderer
+    renderBuffer = GetRenderBuffer(renderer->GetBufferPool());
+  }
+
+  if (renderBuffer == nullptr)
+    return;
 
   // Set fullscreen
   const bool bWasFullscreen = m_renderContext.IsFullScreenVideo();
@@ -486,6 +505,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRendererForSettings(
     renderer->SetScalingMethod(effectiveRenderSettings.VideoSettings().GetScalingMethod());
     renderer->SetStretchMode(effectiveRenderSettings.VideoSettings().GetRenderStretchMode());
     renderer->SetRenderRotation(effectiveRenderSettings.VideoSettings().GetRenderRotation());
+    renderer->SetPixels(effectiveRenderSettings.VideoSettings().GetPixels());
   }
 
   return renderer;
@@ -578,6 +598,40 @@ IRenderBuffer* CRPRenderManager::GetRenderBuffer(IRenderBufferPool* bufferPool)
   {
     renderBuffer = *it;
     renderBuffer->Acquire();
+  }
+
+  return renderBuffer;
+}
+
+IRenderBuffer* CRPRenderManager::GetRenderBufferForSavestate(const std::string& savestatePath,
+                                                             const IRenderBufferPool* bufferPool)
+{
+  IRenderBuffer* renderBuffer = nullptr;
+
+  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+
+  // Check to see if we have a buffers for the specified path
+  auto it = m_savestateBuffers.find(savestatePath);
+  if (it != m_savestateBuffers.end())
+  {
+    // Get a render buffer belonging to the specified pool
+    const std::vector<IRenderBuffer*>& renderBuffers = it->second;
+
+    auto it2 = std::find_if(
+        renderBuffers.begin(), renderBuffers.end(),
+        [bufferPool](IRenderBuffer* buffer) { return buffer->GetPool() == bufferPool; });
+
+    if (it2 != renderBuffers.end())
+    {
+      renderBuffer = *it2;
+      renderBuffer->Acquire();
+    }
+  }
+  else
+  {
+    // The path isn't loaded, mark it as seen and load asynchronously
+    m_savestateBuffers[savestatePath] = {};
+    LoadVideoFrameAsync(savestatePath);
   }
 
   return renderBuffer;
@@ -699,6 +753,8 @@ CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(
     if (settings->HasRotation())
       effectiveSettings.SetRenderRotation(
           settings->GetSettings().VideoSettings().GetRenderRotation());
+    if (settings->HasPixels())
+      effectiveSettings.SetPixels(settings->GetSettings().VideoSettings().GetPixels());
   }
 
   // Sanitize settings
@@ -917,4 +973,73 @@ void CRPRenderManager::FreeVideoFrame(IRenderBuffer* readableBuffer,
   {
     m_cachedFrame = std::move(cachedFrame);
   }
+}
+
+void CRPRenderManager::LoadVideoFrameAsync(const std::string& savestatePath)
+{
+  // Prune any finished loader threads
+  m_savestateThreads.erase(std::remove_if(m_savestateThreads.begin(), m_savestateThreads.end(),
+                                          [](std::future<void>& task) {
+                                            return task.wait_for(std::chrono::seconds::zero()) ==
+                                                   std::future_status::ready;
+                                          }),
+                           m_savestateThreads.end());
+
+  // Load the video data from the savestate asynchronously
+  std::future<void> task = std::async(
+      std::launch::async, [this, savestatePath]() { LoadVideoFrameSync(savestatePath); });
+
+  m_savestateThreads.emplace_back(std::move(task));
+}
+
+void CRPRenderManager::LoadVideoFrameSync(const std::string& savestatePath)
+{
+  if (!XFILE::CFile::Exists(savestatePath))
+  {
+    CLog::Log(LOGERROR, "Failed to load savestate: doesn't exist at path {}",
+              CURL::GetRedacted(savestatePath));
+    return;
+  }
+
+  std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
+  CSavestateDatabase db;
+  if (!db.GetSavestate(savestatePath, *savestate))
+    return;
+
+  // Load video data
+  const AVPixelFormat format = savestate->GetPixelFormat();
+  const uint8_t* data = savestate->GetVideoData();
+  const size_t size = savestate->GetVideoSize();
+  const unsigned int width = savestate->GetVideoWidth();
+  const unsigned int height = savestate->GetVideoHeight();
+  const unsigned int rotationCCW = savestate->GetRotationDegCCW();
+
+  // Validate parameters
+  if (format == AV_PIX_FMT_NONE || data == nullptr || size == 0 || width == 0 || height == 0)
+  {
+    CLog::Log(LOGERROR, "Invalid video data: format {}, data {}, size {}, width {}, height {}",
+              static_cast<long int>(format), static_cast<const void*>(data), size, width, height);
+    return;
+  }
+
+  // Copy frame to render buffers
+  std::vector<IRenderBuffer*> renderBuffers;
+  for (auto* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
+  {
+    IRenderBuffer* newBuffer = bufferPool->GetBuffer(width, height);
+    if (newBuffer == nullptr)
+    {
+      CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Unable to get render buffer for savestate");
+      continue;
+    }
+
+    CopyFrame(newBuffer, format, data, size, width, height);
+    newBuffer->SetRotation(rotationCCW);
+
+    renderBuffers.emplace_back(newBuffer);
+  }
+
+  // Save render buffers
+  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+  m_savestateBuffers[savestatePath] = std::move(renderBuffers);
 }

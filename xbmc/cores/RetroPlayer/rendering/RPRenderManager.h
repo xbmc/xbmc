@@ -19,6 +19,7 @@ extern "C"
 }
 
 #include <atomic>
+#include <future>
 #include <map>
 #include <memory>
 #include <set>
@@ -157,6 +158,12 @@ private:
   IRenderBuffer* GetRenderBuffer(IRenderBufferPool* bufferPool);
 
   /*!
+   * \brief Get a render buffer containing pixels from the specified savestate
+   */
+  IRenderBuffer* GetRenderBufferForSavestate(const std::string& savestatePath,
+                                             const IRenderBufferPool* bufferPool);
+
+  /*!
    * \brief Create a render buffer for the specified pool from a cached frame
    */
   void CreateRenderBuffer(IRenderBufferPool* bufferPool);
@@ -206,6 +213,8 @@ private:
 
   void GetVideoFrame(IRenderBuffer*& readableBuffer, std::vector<uint8_t>& cachedFrame);
   void FreeVideoFrame(IRenderBuffer* readableBuffer, std::vector<uint8_t> cachedFrame);
+  void LoadVideoFrameAsync(const std::string& savestatePath);
+  void LoadVideoFrameSync(const std::string& savestatePath);
 
   // Construction parameters
   CRPProcessInfo& m_processInfo;
@@ -234,6 +243,7 @@ private:
   unsigned int m_cachedRotationCCW{0};
   std::map<std::string, std::vector<IRenderBuffer*>>
       m_savestateBuffers; // Render buffers for savestates
+  std::vector<std::future<void>> m_savestateThreads;
 
   // State parameters
   enum class RENDER_STATE
