@@ -76,6 +76,7 @@ public:
   std::string CreateSavestate(bool autosave) override;
   bool UpdateSavestate(const std::string& savestatePath) override;
   bool LoadSavestate(const std::string& savestatePath) override;
+  void FreeSavestateResources(const std::string& savestatePath) override;
   void CloseOSDCallback() override;
 
   // Implementation of IPlaybackCallback

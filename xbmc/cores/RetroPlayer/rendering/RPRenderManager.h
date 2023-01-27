@@ -39,6 +39,7 @@ class CRPProcessInfo;
 class IGUIRenderSettings;
 class IRenderBuffer;
 class IRenderBufferPool;
+class ISavestate;
 struct VideoStreamBuffer;
 
 /*!
@@ -76,12 +77,21 @@ public:
    */
   CGUIRenderTargetFactory* GetGUIRenderTargetFactory() { return m_renderControlFactory.get(); }
 
+  // Stream properties, set upon configuration
+  AVPixelFormat GetPixelFormat() const { return m_format; }
+  unsigned int GetNominalWidth() const { return m_nominalWidth; }
+  unsigned int GetNominalHeight() const { return m_nominalHeight; }
+  unsigned int GetMaxWidth() const { return m_maxWidth; }
+  unsigned int GetMaxHeight() const { return m_maxHeight; }
+  float GetPixelAspectRatio() const { return m_pixelAspectRatio; }
+
   // Functions called from game loop
   bool Configure(AVPixelFormat format,
                  unsigned int nominalWidth,
                  unsigned int nominalHeight,
                  unsigned int maxWidth,
-                 unsigned int maxHeight);
+                 unsigned int maxHeight,
+                 float pixelAspectRatio);
   std::vector<VideoStreamBuffer> GetVideoBuffers(unsigned int width, unsigned int height);
   void AddFrame(const uint8_t* data,
                 size_t size,
@@ -110,6 +120,11 @@ public:
 
   // Savestate functions
   void SaveThumbnail(const std::string& thumbnailPath);
+
+  // Savestate functions
+  void CacheVideoFrame(const std::string& savestatePath);
+  void SaveVideoFrame(const std::string& savestatePath, ISavestate& savestate);
+  void ClearVideoFrame(const std::string& savestatePath);
 
 private:
   /*!
@@ -202,8 +217,11 @@ private:
 
   // Stream properties
   AVPixelFormat m_format = AV_PIX_FMT_NONE;
+  unsigned int m_nominalWidth{0};
+  unsigned int m_nominalHeight{0};
   unsigned int m_maxWidth = 0;
   unsigned int m_maxHeight = 0;
+  float m_pixelAspectRatio{1.0f};
 
   // Render resources
   std::set<std::shared_ptr<CRPBaseRenderer>> m_renderers;
@@ -214,6 +232,8 @@ private:
   unsigned int m_cachedWidth = 0;
   unsigned int m_cachedHeight = 0;
   unsigned int m_cachedRotationCCW{0};
+  std::map<std::string, std::vector<IRenderBuffer*>>
+      m_savestateBuffers; // Render buffers for savestates
 
   // State parameters
   enum class RENDER_STATE

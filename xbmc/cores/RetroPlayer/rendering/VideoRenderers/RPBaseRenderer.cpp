@@ -71,6 +71,17 @@ bool CRPBaseRenderer::IsVisible() const
   return m_renderFrameCount <= m_lastRender + VISIBLE_DURATION_FRAME_COUNT;
 }
 
+IRenderBuffer* CRPBaseRenderer::GetRenderBuffer() const
+{
+  if (m_renderBuffer != nullptr)
+  {
+    m_renderBuffer->Acquire();
+    return m_renderBuffer;
+  }
+
+  return nullptr;
+}
+
 void CRPBaseRenderer::SetBuffer(IRenderBuffer* buffer)
 {
   if (m_renderBuffer != buffer)

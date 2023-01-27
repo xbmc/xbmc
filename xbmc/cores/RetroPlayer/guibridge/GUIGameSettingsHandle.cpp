@@ -48,6 +48,11 @@ bool CGUIGameSettingsHandle::LoadSavestate(const std::string& savestatePath)
   return m_renderManager.LoadSavestate(savestatePath);
 }
 
+void CGUIGameSettingsHandle::FreeSavestateResources(const std::string& savestatePath)
+{
+  return m_renderManager.FreeSavestateResources(savestatePath);
+}
+
 void CGUIGameSettingsHandle::CloseOSD()
 {
   m_renderManager.CloseOSD();
