@@ -349,9 +349,9 @@ public:
   *
   * \param[in] data - the closed caption data to transport
   */
-  explicit CDVDMsgSubtitleCCData(std::unique_ptr<CCaptionBlock>& data) : CDVDMsg(SUBTITLE_A53_DATA)
+  explicit CDVDMsgSubtitleCCData(std::unique_ptr<CCaptionBlock>& data)
+    : CDVDMsg(SUBTITLE_A53_DATA), m_ccData(std::move(data))
   {
-    m_ccData = std::move(data);
   }
 
   /*!

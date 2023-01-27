@@ -593,11 +593,11 @@ void CActiveAEStream::RegisterSlave(IAEStream *slave)
 CActiveAEStreamBuffers::CActiveAEStreamBuffers(const AEAudioFormat& inputFormat,
                                                const AEAudioFormat& outputFormat,
                                                AEQuality quality)
-  : m_inputFormat(inputFormat)
+  : m_inputFormat(inputFormat),
+    m_resampleBuffers(
+        std::make_unique<CActiveAEBufferPoolResample>(inputFormat, outputFormat, quality)),
+    m_atempoBuffers(std::make_unique<CActiveAEBufferPoolAtempo>(outputFormat))
 {
-  m_resampleBuffers =
-      std::make_unique<CActiveAEBufferPoolResample>(inputFormat, outputFormat, quality);
-  m_atempoBuffers = std::make_unique<CActiveAEBufferPoolAtempo>(outputFormat);
 }
 
 CActiveAEStreamBuffers::~CActiveAEStreamBuffers()
