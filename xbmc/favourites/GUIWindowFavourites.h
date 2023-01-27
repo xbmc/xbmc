@@ -11,20 +11,11 @@
 #include "favourites/FavouritesService.h"
 #include "windows/GUIMediaWindow.h"
 
-class CFileItem;
-class CFileItemList;
-
 class CGUIWindowFavourites : public CGUIMediaWindow
 {
 public:
   CGUIWindowFavourites();
   ~CGUIWindowFavourites() override;
-
-  static bool ChooseAndSetNewName(CFileItem& item);
-  static bool ChooseAndSetNewThumbnail(CFileItem& item);
-  static bool MoveItem(CFileItemList& items, const std::shared_ptr<CFileItem>& item, int amount);
-  static bool RemoveItem(CFileItemList& items, const std::shared_ptr<CFileItem>& item);
-  static bool ShouldEnableMoveItems();
 
 protected:
   std::string GetRootPath() const override { return "favourites://"; }
