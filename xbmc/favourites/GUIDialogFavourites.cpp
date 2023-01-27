@@ -12,7 +12,7 @@
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "favourites/FavouritesURL.h"
-#include "favourites/GUIWindowFavourites.h"
+#include "favourites/FavouritesUtils.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -176,7 +176,7 @@ void CGUIDialogFavourites::OnRename(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
 
-  if (CGUIWindowFavourites::ChooseAndSetNewName(*(*m_favourites)[item]))
+  if (FAVOURITES_UTILS::ChooseAndSetNewName(*(*m_favourites)[item]))
   {
     m_favouritesService.Save(*m_favourites);
     UpdateList();
@@ -188,7 +188,7 @@ void CGUIDialogFavourites::OnSetThumb(int item)
   if (item < 0 || item >= m_favourites->Size())
     return;
 
-  if (CGUIWindowFavourites::ChooseAndSetNewThumbnail(*(*m_favourites)[item]))
+  if (FAVOURITES_UTILS::ChooseAndSetNewThumbnail(*(*m_favourites)[item]))
   {
     m_favouritesService.Save(*m_favourites);
     UpdateList();
