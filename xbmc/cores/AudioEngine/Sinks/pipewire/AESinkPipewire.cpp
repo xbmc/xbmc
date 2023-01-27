@@ -49,7 +49,8 @@ constexpr std::array<uint32_t, 14> defaultSampleRates = {
 // clang-format on
 
 constexpr auto formatMap = make_map<spa_audio_format, AEDataFormat>(
-    {{SPA_AUDIO_FORMAT_U8, AEDataFormat::AE_FMT_U8},
+    {{SPA_AUDIO_FORMAT_ENCODED, AEDataFormat::AE_FMT_RAW},
+     {SPA_AUDIO_FORMAT_U8, AEDataFormat::AE_FMT_U8},
      {SPA_AUDIO_FORMAT_S16, AEDataFormat::AE_FMT_S16NE},
      {SPA_AUDIO_FORMAT_S24_32, AEDataFormat::AE_FMT_S24NE4},
      {SPA_AUDIO_FORMAT_S32, AEDataFormat::AE_FMT_S32NE},
@@ -63,6 +64,7 @@ constexpr uint8_t PWFormatToSampleSize(spa_audio_format format)
     case SPA_AUDIO_FORMAT_S8:
     case SPA_AUDIO_FORMAT_U8:
       return 1;
+    case SPA_AUDIO_FORMAT_ENCODED:
     case SPA_AUDIO_FORMAT_S16:
       return 2;
     case SPA_AUDIO_FORMAT_S24:
@@ -80,6 +82,8 @@ constexpr std::string_view PWFormatToString(spa_audio_format format)
 {
   switch (format)
   {
+    case SPA_AUDIO_FORMAT_ENCODED:
+      return "encoded";
     case SPA_AUDIO_FORMAT_U8:
       return "u8";
     case SPA_AUDIO_FORMAT_S8:
@@ -165,6 +169,57 @@ CAEChannelInfo PWChannelMapToAEChannelMap(std::vector<spa_audio_channel>& channe
   return channels;
 }
 
+constexpr auto iec958CodecMap = make_map<CAEStreamInfo::DataType, spa_audio_iec958_codec>({
+    {CAEStreamInfo::STREAM_TYPE_DTS_512, SPA_AUDIO_IEC958_CODEC_DTS},
+    {CAEStreamInfo::STREAM_TYPE_DTS_1024, SPA_AUDIO_IEC958_CODEC_DTS},
+    {CAEStreamInfo::STREAM_TYPE_DTS_2048, SPA_AUDIO_IEC958_CODEC_DTS},
+    {CAEStreamInfo::STREAM_TYPE_DTSHD_CORE, SPA_AUDIO_IEC958_CODEC_DTS},
+
+    {CAEStreamInfo::STREAM_TYPE_AC3, SPA_AUDIO_IEC958_CODEC_AC3},
+
+    {CAEStreamInfo::STREAM_TYPE_EAC3, SPA_AUDIO_IEC958_CODEC_EAC3},
+
+    {CAEStreamInfo::STREAM_TYPE_TRUEHD, SPA_AUDIO_IEC958_CODEC_TRUEHD},
+
+    {CAEStreamInfo::STREAM_TYPE_DTSHD, SPA_AUDIO_IEC958_CODEC_DTSHD},
+    {CAEStreamInfo::STREAM_TYPE_DTSHD_MA, SPA_AUDIO_IEC958_CODEC_DTSHD},
+});
+
+constexpr spa_audio_iec958_codec AEStreamInfoDataTypeToPWIEC958Codec(
+    const CAEStreamInfo::DataType& type)
+{
+  const auto it = iec958CodecMap.find(type);
+  if (it != iec958CodecMap.cend())
+    return it->second;
+
+  return SPA_AUDIO_IEC958_CODEC_UNKNOWN;
+}
+
+// constexpr in c++20
+std::vector<CAEStreamInfo::DataType> PWIEC958CodecToAEStreamInfoDataTypeList(
+    const spa_audio_iec958_codec& codec)
+{
+  // clang-format off
+  auto codecMap = std::map<spa_audio_iec958_codec, std::vector<CAEStreamInfo::DataType>>({
+    {SPA_AUDIO_IEC958_CODEC_DTS, {CAEStreamInfo::STREAM_TYPE_DTS_512,
+                                  CAEStreamInfo::STREAM_TYPE_DTS_1024,
+                                  CAEStreamInfo::STREAM_TYPE_DTS_2048,
+                                  CAEStreamInfo::STREAM_TYPE_DTSHD_CORE}},
+    {SPA_AUDIO_IEC958_CODEC_AC3, {CAEStreamInfo::STREAM_TYPE_AC3}},
+    {SPA_AUDIO_IEC958_CODEC_EAC3, {CAEStreamInfo::STREAM_TYPE_EAC3}},
+    {SPA_AUDIO_IEC958_CODEC_TRUEHD, {CAEStreamInfo::STREAM_TYPE_TRUEHD}},
+    {SPA_AUDIO_IEC958_CODEC_DTSHD, {CAEStreamInfo::STREAM_TYPE_DTSHD,
+                                    CAEStreamInfo::STREAM_TYPE_DTSHD_MA}},
+  });
+  // clang-format on
+
+  const auto it = codecMap.find(codec);
+  if (it != codecMap.cend())
+    return it->second;
+
+  return {};
+}
+
 std::chrono::duration<double, std::ratio<1>> PWTimeToAEDelay(const pw_time& time,
                                                              const uint32_t& samplerate)
 {
@@ -185,7 +240,9 @@ std::chrono::duration<double, std::ratio<1>> PWTimeToAEDelay(const pw_time& time
 constexpr std::chrono::duration<double, std::ratio<1>> DEFAULT_BUFFER_DURATION = 0.200s;
 constexpr int DEFAULT_PERIODS = 4;
 constexpr std::chrono::duration<double, std::ratio<1>> DEFAULT_PERIOD_DURATION =
-    DEFAULT_BUFFER_DURATION / 4;
+    DEFAULT_BUFFER_DURATION / DEFAULT_PERIODS;
+
+constexpr int DEFAULT_LATENCY_DIVIDER = 3;
 
 } // namespace
 
@@ -305,6 +362,19 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
         device.m_channels += ch->second;
     }
 
+    for (const auto& iec958Codec : node->GetIEC958Codecs())
+    {
+      auto streamTypes = PWIEC958CodecToAEStreamInfoDataTypeList(iec958Codec);
+      device.m_streamTypes.insert(device.m_streamTypes.end(), streamTypes.begin(),
+                                  streamTypes.end());
+    }
+
+    if (device.m_channels.Count() == 2 && !device.m_streamTypes.empty())
+    {
+      device.m_deviceType = AE_DEVTYPE_IEC958;
+      device.m_dataFormats.emplace_back(AE_FMT_RAW);
+    }
+
     list.emplace_back(device);
   }
 
@@ -344,11 +414,23 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
     id = target->first;
   }
 
+  bool passthrough = (format.m_dataFormat == AE_FMT_RAW);
+
+  if (passthrough)
+  {
+    format.m_channelLayout = AE_CH_LAYOUT_2_0;
+
+    if (format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_DTSHD_MA ||
+        format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD)
+      format.m_channelLayout = AE_CH_LAYOUT_7_1;
+  }
+
   m_stream = std::make_unique<PIPEWIRE::CPipewireStream>(core);
 
   m_latency = DEFAULT_BUFFER_DURATION;
   uint32_t frames = std::nearbyint(DEFAULT_PERIOD_DURATION.count() * format.m_sampleRate);
-  std::string fraction = StringUtils::Format("{}/{}", frames, format.m_sampleRate);
+  std::string fraction =
+      StringUtils::Format("{}/{}", frames / DEFAULT_LATENCY_DIVIDER, format.m_sampleRate);
 
   std::array<spa_dict_item, 5> items = {
       SPA_DICT_ITEM_INIT(PW_KEY_MEDIA_TYPE, "Audio"),
@@ -366,36 +448,15 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   auto pwChannels = AEChannelMapToPWChannelMap(format.m_channelLayout);
   format.m_channelLayout = PWChannelMapToAEChannelMap(pwChannels);
 
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - rate: {}", __FUNCTION__, format.m_sampleRate);
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - channels: {}", __FUNCTION__, pwChannels.size());
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - format: {}", __FUNCTION__, PWFormatToString(pwFormat));
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - samplesize: {}", __FUNCTION__,
-            PWFormatToSampleSize(pwFormat));
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - framesize: {}", __FUNCTION__,
-            pwChannels.size() * PWFormatToSampleSize(pwFormat));
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - latency: {}/{} ({:.3f}s)", __FUNCTION__, frames,
-            format.m_sampleRate, static_cast<double>(frames) / format.m_sampleRate);
-
-  spa_audio_info_raw info{};
-  info.format = pwFormat;
-  info.flags = SPA_AUDIO_FLAG_NONE;
-  info.rate = format.m_sampleRate;
-  info.channels = static_cast<uint32_t>(pwChannels.size());
-
-  for (size_t index = 0; index < pwChannels.size(); index++)
-    info.position[index] = pwChannels[index];
-
   std::array<uint8_t, 1024> buffer;
   auto builder = SPA_POD_BUILDER_INIT(buffer.data(), buffer.size());
 
   std::vector<const spa_pod*> params;
 
-  params.emplace_back(spa_format_audio_raw_build(&builder, SPA_PARAM_EnumFormat, &info));
-
   // clang-format off
   params.emplace_back(static_cast<const spa_pod*>(spa_pod_builder_add_object(
       &builder, SPA_TYPE_OBJECT_ParamBuffers, SPA_PARAM_Buffers,
-          SPA_PARAM_BUFFERS_buffers, SPA_POD_CHOICE_RANGE_Int(6, 6, 6),
+          SPA_PARAM_BUFFERS_buffers, SPA_POD_CHOICE_RANGE_Int(20, 16, 24),
           SPA_PARAM_BUFFERS_blocks, SPA_POD_Int(1),
           SPA_PARAM_BUFFERS_size, SPA_POD_Int(frames * pwChannels.size() * PWFormatToSampleSize(pwFormat)),
           SPA_PARAM_BUFFERS_stride, SPA_POD_Int(pwChannels.size() * PWFormatToSampleSize(pwFormat)))));
@@ -405,11 +466,50 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
       static_cast<pw_stream_flags>(PW_STREAM_FLAG_AUTOCONNECT | PW_STREAM_FLAG_INACTIVE |
                                    PW_STREAM_FLAG_MAP_BUFFERS | PW_STREAM_FLAG_DRIVER);
 
+  if (!passthrough)
+  {
+    spa_audio_info_raw info{};
+    info.format = pwFormat;
+    info.flags = SPA_AUDIO_FLAG_NONE;
+    info.rate = format.m_sampleRate;
+    info.channels = static_cast<uint32_t>(pwChannels.size());
+
+    for (size_t index = 0; index < pwChannels.size(); index++)
+      info.position[index] = pwChannels[index];
+
+    params.emplace_back(spa_format_audio_raw_build(&builder, SPA_PARAM_EnumFormat, &info));
+  }
+
+  if (passthrough)
+  {
+    spa_audio_info_iec958 info{};
+    info.codec = AEStreamInfoDataTypeToPWIEC958Codec(format.m_streamInfo.m_type);
+    info.flags = SPA_AUDIO_FLAG_NONE;
+    info.rate = format.m_sampleRate;
+
+    params.emplace_back(spa_format_audio_iec958_build(&builder, SPA_PARAM_EnumFormat, &info));
+
+    flags = static_cast<pw_stream_flags>(PW_STREAM_FLAG_EXCLUSIVE | static_cast<int>(flags));
+
+    format.m_dataFormat = AE_FMT_S16NE;
+  }
+
   if (!m_stream->Connect(id, PW_DIRECTION_OUTPUT, params, flags))
   {
     loop.Unlock();
     return false;
   }
+
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - rate: {}", __FUNCTION__, format.m_sampleRate);
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - channels: {}", __FUNCTION__, pwChannels.size());
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - format: {}", __FUNCTION__, PWFormatToString(pwFormat));
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - samplesize: {}", __FUNCTION__,
+            PWFormatToSampleSize(pwFormat));
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - framesize: {}", __FUNCTION__,
+            pwChannels.size() * PWFormatToSampleSize(pwFormat));
+  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - latency: {}/{} ({:.3f}s)", __FUNCTION__, frames,
+            format.m_sampleRate,
+            static_cast<double>(frames) / DEFAULT_LATENCY_DIVIDER / format.m_sampleRate);
 
   pw_stream_state state;
   do
@@ -503,6 +603,9 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
   m_stream->QueueBuffer(pwBuffer);
 
+  const auto period = std::chrono::duration<double, std::ratio<1>>(static_cast<double>(frames) /
+                                                                   m_format.m_sampleRate);
+
   do
   {
     pw_time time = m_stream->GetTime();
@@ -512,10 +615,7 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
     const auto now = std::chrono::steady_clock::now();
 
-    const auto period = std::chrono::duration<double, std::ratio<1>>(static_cast<double>(frames) /
-                                                                     m_format.m_sampleRate);
-
-    if ((delay <= (m_latency - period)) || ((now - start) >= period))
+    if ((delay <= (DEFAULT_BUFFER_DURATION - DEFAULT_PERIOD_DURATION)) || ((now - start) >= period))
       break;
 
     loop.Wait(5ms);
