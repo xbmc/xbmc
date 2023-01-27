@@ -526,10 +526,10 @@ std::string CRetroPlayer::CreateSavestate(bool autosave)
   return "";
 }
 
-bool CRetroPlayer::LoadSavestate(const std::string& path)
+bool CRetroPlayer::LoadSavestate(const std::string& savestatePath)
 {
   if (m_playback)
-    return m_playback->LoadSavestate(path);
+    return m_playback->LoadSavestate(savestatePath);
 
   return false;
 }

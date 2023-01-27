@@ -39,7 +39,7 @@ public:
   // Savestates
   virtual std::string CreateSavestate(
       bool autosave) = 0; // Returns the path of savestate on success
-  virtual bool LoadSavestate(const std::string& path) = 0;
+  virtual bool LoadSavestate(const std::string& savestatePath) = 0;
 };
 } // namespace RETRO
 } // namespace KODI
