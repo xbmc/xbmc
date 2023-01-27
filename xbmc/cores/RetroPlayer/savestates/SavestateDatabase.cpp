@@ -182,7 +182,7 @@ void CSavestateDatabase::GetSavestateItem(const ISavestate& savestate,
   item.SetLabel(label);
   item.SetLabel2(label2);
   item.SetPath(savestatePath);
-  item.SetArt("icon", MakeThumbnailPath(savestatePath));
+  item.SetArt("screenshot", MakeThumbnailPath(savestatePath));
   item.SetProperty(SAVESTATE_CAPTION, savestate.Caption());
   item.m_dateTime = dateUTC;
 }
