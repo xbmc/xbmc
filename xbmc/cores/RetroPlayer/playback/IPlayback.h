@@ -38,7 +38,8 @@ public:
 
   // Savestates
   virtual std::string CreateSavestate(
-      bool autosave) = 0; // Returns the path of savestate on success
+      bool autosave,
+      const std::string& savestatePath = "") = 0; // Returns the path of savestate on success
   virtual bool LoadSavestate(const std::string& savestatePath) = 0;
 };
 } // namespace RETRO

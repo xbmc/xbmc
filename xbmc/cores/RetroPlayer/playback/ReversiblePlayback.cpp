@@ -16,6 +16,7 @@
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/memory/DeltaPairMemoryStream.h"
+#include "filesystem/File.h"
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/addons/GameClient.h"
@@ -116,7 +117,8 @@ void CReversiblePlayback::PauseAsync()
   m_gameLoop.PauseAsync();
 }
 
-std::string CReversiblePlayback::CreateSavestate(bool autosave)
+std::string CReversiblePlayback::CreateSavestate(bool autosave,
+                                                 const std::string& savestatePath /* = "" */)
 {
   const size_t memorySize = m_gameClient->SerializeSize();
 
@@ -130,20 +132,25 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave)
     return "";
   }
 
-  std::string label = "";
+  std::string savePath(savestatePath);
+  if (autosave && savePath.empty())
+    savePath = m_autosavePath;
 
-  std::string caption = m_cheevos->GetRichPresenceEvaluation();
+  // Clear autosave path so the next autosave is created in a new slot and
+  // does not overwrite the newly-created manual save
+  if (!autosave && savePath == m_autosavePath)
+    m_autosavePath.clear();
 
-  if (autosave)
+  // Attempt to get existing properties
+  std::unique_ptr<ISavestate> loadedSavestate;
+  if (!savePath.empty() && XFILE::CFile::Exists(savePath))
   {
-    if (!m_autosavePath.empty())
-    {
-      std::unique_ptr<ISavestate> loadedSavestate = CSavestateDatabase::AllocateSavestate();
-      if (m_savestateDatabase->GetSavestate(m_autosavePath, *loadedSavestate))
-        label = loadedSavestate->Label();
-    }
+    loadedSavestate = CSavestateDatabase::AllocateSavestate();
+    if (!m_savestateDatabase->GetSavestate(savePath, *loadedSavestate))
+      loadedSavestate.reset();
   }
 
+  const std::string caption = m_cheevos->GetRichPresenceEvaluation();
   const CDateTime nowUTC = CDateTime::GetUTCDateTime();
   const std::string gameFileName = URIUtils::GetFileName(m_gameClient->GetGamePath());
   const uint64_t timestampFrames = m_totalFrameCount;
@@ -156,7 +163,7 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave)
   std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
 
   savestate->SetType(autosave ? SAVE_TYPE::AUTO : SAVE_TYPE::MANUAL);
-  savestate->SetLabel(label);
+  savestate->SetLabel(loadedSavestate ? loadedSavestate->Label() : "");
   savestate->SetCaption(caption);
   savestate->SetCreated(nowUTC);
   savestate->SetGameFileName(gameFileName);
@@ -182,10 +189,6 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave)
   }
 
   savestate->Finalize();
-
-  std::string savePath;
-  if (autosave)
-    savePath = m_autosavePath;
 
   if (!m_savestateDatabase->AddSavestate(savePath, m_gameClient->GetGamePath(), *savestate))
   {

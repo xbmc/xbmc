@@ -38,6 +38,11 @@ std::string CGUIGameSettingsHandle::CreateSavestate(bool autosave)
   return m_renderManager.CreateSavestate(autosave);
 }
 
+bool CGUIGameSettingsHandle::UpdateSavestate(const std::string& savestatePath)
+{
+  return m_renderManager.UpdateSavestate(savestatePath);
+}
+
 bool CGUIGameSettingsHandle::LoadSavestate(const std::string& savestatePath)
 {
   return m_renderManager.LoadSavestate(savestatePath);

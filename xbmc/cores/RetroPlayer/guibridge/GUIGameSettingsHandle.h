@@ -50,6 +50,16 @@ public:
   std::string CreateSavestate(bool autosave);
 
   /*!
+   * \brief Update a savestate for the current game being played
+   *
+   * \param savestatePath The path to the created savestate file returned by
+   * CreateSavestate()
+   *
+   * \return True if the savestate was updated successfully, false otherwise
+   */
+  bool UpdateSavestate(const std::string& savestatePath);
+
+  /*!
    * \brief Load a savestate for the current game being played
    *
    * \param savestatePath The path to the created savestate file returned by
