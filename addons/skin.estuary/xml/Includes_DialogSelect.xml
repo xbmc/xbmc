@@ -246,7 +246,7 @@
 						<top>7</top>
 						<width>400</width>
 						<height>220</height>
-						<texture>$INFO[ListItem.Icon]</texture>
+						<texture>$INFO[ListItem.Art(screenshot)]</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
@@ -285,7 +285,7 @@
 						<top>7</top>
 						<width>400</width>
 						<height>220</height>
-						<texture>$INFO[ListItem.Icon]</texture>
+						<texture>$INFO[ListItem.Art(screenshot)]</texture>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="label">
@@ -598,6 +598,14 @@
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
+						<control type="image">
+							<width>444</width>
+							<height>250</height>
+							<aspectratio>scale</aspectratio>
+							<texture border="4">$INFO[ListItem.Art(screenshot)]</texture>
+							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordersize>4</bordersize>
+						</control>
 						<control type="label">
 							<top>250</top>
 							<width>444</width>
@@ -619,6 +627,14 @@
 							<height>250</height>
 							<aspectratio>scale</aspectratio>
 							<texture border="4">$INFO[ListItem.Icon]</texture>
+							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+							<bordersize>4</bordersize>
+						</control>
+						<control type="image">
+							<width>444</width>
+							<height>250</height>
+							<aspectratio>scale</aspectratio>
+							<texture border="4">$INFO[ListItem.Art(screenshot)]</texture>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
