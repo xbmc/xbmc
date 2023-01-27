@@ -637,7 +637,7 @@ void CGUIDialogKeyboardGeneric::OnIPAddress()
   else
     start = text.size();
   if (CGUIDialogNumeric::ShowAndGetIPAddress(ip, g_localizeStrings.Get(14068)))
-    SetEditText(text.substr(0, start) + ip.c_str() + text.substr(start + length));
+    SetEditText(text.substr(0, start) + ip + text.substr(start + length));
 }
 
 void CGUIDialogKeyboardGeneric::OnVoiceRecognition()
