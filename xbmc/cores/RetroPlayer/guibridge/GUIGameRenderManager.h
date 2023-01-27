@@ -149,6 +149,7 @@ protected:
   std::string CreateSavestate(bool autosave);
   bool UpdateSavestate(const std::string& savestatePath);
   bool LoadSavestate(const std::string& savestatePath);
+  void FreeSavestateResources(const std::string& savestatePath);
   void CloseOSD();
 
 private:

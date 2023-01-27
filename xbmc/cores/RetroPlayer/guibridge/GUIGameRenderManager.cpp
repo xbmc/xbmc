@@ -251,6 +251,14 @@ bool CGUIGameRenderManager::LoadSavestate(const std::string& savestatePath)
   return false;
 }
 
+void CGUIGameRenderManager::FreeSavestateResources(const std::string& savestatePath)
+{
+  std::unique_lock<CCriticalSection> lock(m_callbackMutex);
+
+  if (m_gameCallback != nullptr)
+    m_gameCallback->FreeSavestateResources(savestatePath);
+}
+
 void CGUIGameRenderManager::CloseOSD()
 {
   std::unique_lock<CCriticalSection> lock(m_callbackMutex);

@@ -19,6 +19,8 @@ const char* CRenderTranslator::TranslatePixelFormat(AVPixelFormat format)
   {
     case AV_PIX_FMT_0RGB32:
       return "0RGB32";
+    case AV_PIX_FMT_RGBA:
+      return "RGBA32";
     case AV_PIX_FMT_RGB565:
       return "RGB565";
     case AV_PIX_FMT_RGB555:
@@ -52,6 +54,7 @@ unsigned int CRenderTranslator::TranslateWidthToBytes(unsigned int width, AVPixe
   switch (format)
   {
     case AV_PIX_FMT_0RGB32:
+    case AV_PIX_FMT_RGBA:
     {
       bpp = sizeof(uint32_t);
       break;

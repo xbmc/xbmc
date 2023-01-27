@@ -167,6 +167,13 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave,
     // Update autosave path
     if (autosave)
       m_autosavePath = savePath;
+  }
+
+  // Capture the current video frame
+  m_renderManager.CacheVideoFrame(savePath);
+
+  {
+    std::unique_lock<CCriticalSection> lock(m_savestateMutex);
 
     // Prune any finished autosave threads
     m_savestateThreads.erase(std::remove_if(m_savestateThreads.begin(), m_savestateThreads.end(),
@@ -242,6 +249,8 @@ void CReversiblePlayback::CommitSavestate(bool autosave,
   savestate->SetTimestampWallClock(timestampWallClock);
   savestate->SetGameClientID(gameClientId);
   savestate->SetGameClientVersion(gameClientVersion);
+
+  m_renderManager.SaveVideoFrame(savePath, *savestate);
 
   savestate->Finalize();
 
