@@ -30,12 +30,13 @@
 #define EGL_NO_CONFIG (EGLConfig)0
 
 CGLContextEGL::CGLContextEGL(Display* dpy, EGLint renderingApi)
-  : CGLContext(dpy), m_renderingApi(renderingApi)
+  : CGLContext(dpy),
+    m_renderingApi(renderingApi),
+    m_eglConfig(EGL_NO_CONFIG),
+    m_eglGetPlatformDisplayEXT(
+        (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT"))
 {
   m_extPrefix = "EGL_";
-  m_eglConfig = EGL_NO_CONFIG;
-
-  m_eglGetPlatformDisplayEXT = (PFNEGLGETPLATFORMDISPLAYEXTPROC)eglGetProcAddress("eglGetPlatformDisplayEXT");
 
   const auto settings = CServiceBroker::GetSettingsComponent();
   if (settings)

@@ -31,11 +31,10 @@
 
 #define PLAYERCOREFACTORY_XML "playercorefactory.xml"
 
-CPlayerCoreFactory::CPlayerCoreFactory(const CProfileManager &profileManager) :
-  m_profileManager(profileManager)
+CPlayerCoreFactory::CPlayerCoreFactory(const CProfileManager& profileManager)
+  : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings()),
+    m_profileManager(profileManager)
 {
-  m_settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
   if (m_settings->IsLoaded())
     OnSettingsLoaded();
 
