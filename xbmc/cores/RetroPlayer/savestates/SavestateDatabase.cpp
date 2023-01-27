@@ -67,7 +67,7 @@ bool CSavestateDatabase::AddSavestate(std::string& savestatePath,
   if (save.Serialize(data, size))
   {
     XFILE::CFile file;
-    if (file.OpenForWrite(path))
+    if (file.OpenForWrite(path, true))
     {
       const ssize_t written = file.Write(data, size);
       if (written == static_cast<ssize_t>(size))
