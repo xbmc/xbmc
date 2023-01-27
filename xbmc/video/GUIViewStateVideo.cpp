@@ -614,14 +614,16 @@ CGUIViewStateVideoPlaylist::CGUIViewStateVideoPlaylist(const CFileItemList& item
           CSettings::SETTING_FILELISTS_IGNORETHEWHENSORTING))
     sortAttributes = SortAttributeIgnoreArticle;
 
+  AddSortMethod(SortByPlaylistOrder, 559, LABEL_MASKS("%L", "")); // Label, empty
   AddSortMethod(SortByLabel, sortAttributes, 551,
                 LABEL_MASKS("%L", "%I", "%L", "")); // Label, Size | Label, empty
   AddSortMethod(SortBySize, 553, LABEL_MASKS("%L", "%I", "%L", "%I")); // Label, Size | Label, Size
   AddSortMethod(SortByDate, 552, LABEL_MASKS("%L", "%J", "%L", "%J")); // Label, Date | Label, Date
   AddSortMethod(SortByFile, 561, LABEL_MASKS("%L", "%I", "%L", "")); // Label, Size | Label, empty
 
+  SetSortMethod(SortByPlaylistOrder);
+
   const CViewState* viewState = CViewStateSettings::GetInstance().Get("videofiles");
-  SetSortMethod(viewState->m_sortDescription);
   SetViewAsControl(viewState->m_viewMode);
   SetSortOrder(viewState->m_sortDescription.sortOrder);
 
