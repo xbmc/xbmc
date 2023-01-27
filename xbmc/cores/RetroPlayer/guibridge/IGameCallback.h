@@ -45,6 +45,15 @@ public:
   virtual std::string CreateSavestate(bool autosave) = 0;
 
   /*!
+   * \brief Updates a savestate with the current game being played
+   *
+   * \param savestate The path to the savestate
+   *
+   * \return True if the savestate was updated, false on error
+   */
+  virtual bool UpdateSavestate(const std::string& savestatePath) = 0;
+
+  /*!
    * \brief Loads a savestate
    *
    * \param savestate The path to the savestate
