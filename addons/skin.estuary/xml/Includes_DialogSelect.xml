@@ -638,6 +638,11 @@
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
 						</control>
+						<control type="gamewindow">
+							<width>444</width>
+							<height>250</height>
+							<pixels>$INFO[ListItem.FilenameAndPath]</pixels>
+						</control>
 						<control type="label">
 							<top>250</top>
 							<width>444</width>
@@ -669,6 +674,11 @@
 							<texture border="4">$INFO[ListItem.Art(screenshot)]</texture>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
+						</control>
+						<control type="gamewindow">
+							<width>444</width>
+							<height>250</height>
+							<pixels>$INFO[ListItem.FilenameAndPath]</pixels>
 						</control>
 						<control type="label">
 							<top>250</top>
