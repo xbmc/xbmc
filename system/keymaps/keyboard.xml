@@ -670,6 +670,14 @@
       <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </Favourites>
+  <FavouritesBrowser>
+    <keyboard>
+      <u>MoveItemUp</u>
+      <d>MoveItemDown</d>
+      <delete>Delete</delete>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
+    </keyboard>
+  </FavouritesBrowser>
   <NumericInput>
     <keyboard>
       <backspace>Close</backspace>

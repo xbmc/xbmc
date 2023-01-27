@@ -22,7 +22,8 @@ public:
 
   static bool ChooseAndSetNewName(CFileItem& item);
   static bool ChooseAndSetNewThumbnail(CFileItem& item);
-  static bool MoveItem(CFileItemList& items, const CFileItem& item, int amount);
+  static bool MoveItem(CFileItemList& items, const std::shared_ptr<CFileItem>& item, int amount);
+  static bool RemoveItem(CFileItemList& items, const std::shared_ptr<CFileItem>& item);
   static bool ShouldEnableMoveItems();
 
 protected:
@@ -36,4 +37,6 @@ protected:
 
 private:
   void OnFavouritesEvent(const CFavouritesService::FavouritesUpdated& event);
+  bool MoveItem(int item, int amount);
+  bool RemoveItem(int item);
 };
