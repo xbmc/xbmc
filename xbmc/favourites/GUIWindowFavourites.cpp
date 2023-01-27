@@ -68,12 +68,12 @@ bool CGUIWindowFavourites::OnSelect(int item)
 
 bool CGUIWindowFavourites::OnAction(const CAction& action)
 {
+  const int selectedItem = m_viewControl.GetSelectedItem();
+  if (selectedItem < 0 || selectedItem >= m_vecItems->Size())
+    return false;
+
   if (action.GetID() == ACTION_PLAYER_PLAY)
   {
-    const int selectedItem = m_viewControl.GetSelectedItem();
-    if (selectedItem < 0 || selectedItem >= m_vecItems->Size())
-      return false;
-
     const CFavouritesURL favURL((*m_vecItems)[selectedItem]->GetPath());
     if (!favURL.IsValid())
       return false;
@@ -101,6 +101,21 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
     }
     return false;
   }
+  else if (action.GetID() == ACTION_MOVE_ITEM_UP)
+  {
+    if (ShouldEnableMoveItems())
+      return MoveItem(selectedItem, -1);
+  }
+  else if (action.GetID() == ACTION_MOVE_ITEM_DOWN)
+  {
+    if (ShouldEnableMoveItems())
+      return MoveItem(selectedItem, +1);
+  }
+  else if (action.GetID() == ACTION_DELETE_ITEM)
+  {
+    return RemoveItem(selectedItem);
+  }
+
   return CGUIMediaWindow::OnAction(action);
 }
 
@@ -183,7 +198,30 @@ bool CGUIWindowFavourites::ChooseAndSetNewThumbnail(CFileItem& item)
   return false;
 }
 
-bool CGUIWindowFavourites::MoveItem(CFileItemList& items, const CFileItem& item, int amount)
+bool CGUIWindowFavourites::MoveItem(int item, int amount)
+{
+  if (item < 0 || item >= m_vecItems->Size() || m_vecItems->Size() < 2 || amount == 0)
+    return false;
+
+  if (MoveItem(*m_vecItems, (*m_vecItems)[item], amount) &&
+      CServiceBroker::GetFavouritesService().Save(*m_vecItems))
+  {
+    int selected = item + amount;
+    if (selected >= m_vecItems->Size())
+      selected = 0;
+    else if (selected < 0)
+      selected = m_vecItems->Size() - 1;
+
+    m_viewControl.SetSelectedItem(selected);
+    return true;
+  }
+
+  return false;
+}
+
+bool CGUIWindowFavourites::MoveItem(CFileItemList& items,
+                                    const std::shared_ptr<CFileItem>& item,
+                                    int amount)
 {
   if (items.Size() < 2 || amount == 0)
     return false;
@@ -193,7 +231,7 @@ bool CGUIWindowFavourites::MoveItem(CFileItemList& items, const CFileItem& item,
   {
     itemPos++;
 
-    if (i->GetPath() == item.GetPath())
+    if (i->GetPath() == item->GetPath())
       break;
   }
 
@@ -202,10 +240,41 @@ bool CGUIWindowFavourites::MoveItem(CFileItemList& items, const CFileItem& item,
 
   int nextItem = (itemPos + amount) % items.Size();
   if (nextItem < 0)
-    nextItem += items.Size();
-
-  items.Swap(itemPos, nextItem);
+  {
+    const auto itemToAdd(item);
+    items.Remove(itemPos);
+    items.Add(itemToAdd);
+  }
+  else if (nextItem == 0)
+  {
+    const auto itemToAdd(item);
+    items.Remove(itemPos);
+    items.AddFront(itemToAdd, 0);
+  }
+  else
+  {
+    items.Swap(itemPos, nextItem);
+  }
   return true;
+}
+
+bool CGUIWindowFavourites::RemoveItem(int item)
+{
+  if (item < 0 || item >= m_vecItems->Size())
+    return false;
+
+  if (RemoveItem(*m_vecItems, (*m_vecItems)[item]) &&
+      CServiceBroker::GetFavouritesService().Save(*m_vecItems))
+    return true;
+
+  return false;
+}
+
+bool CGUIWindowFavourites::RemoveItem(CFileItemList& items, const std::shared_ptr<CFileItem>& item)
+{
+  int iBefore = items.Size();
+  items.Remove(item.get());
+  return items.Size() == iBefore - 1;
 }
 
 bool CGUIWindowFavourites::ShouldEnableMoveItems()
