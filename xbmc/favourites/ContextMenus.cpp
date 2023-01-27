@@ -40,7 +40,7 @@ namespace CONTEXTMENU
   bool CMoveUpFavourite::DoExecute(CFileItemList& items,
                                    const std::shared_ptr<CFileItem>& item) const
   {
-    return CGUIWindowFavourites::MoveItem(items, *item, -1);
+    return CGUIWindowFavourites::MoveItem(items, item, -1);
   }
 
   bool CMoveUpFavourite::IsVisible(const CFileItem& item) const
@@ -52,7 +52,7 @@ namespace CONTEXTMENU
   bool CMoveDownFavourite::DoExecute(CFileItemList& items,
                                      const std::shared_ptr<CFileItem>& item) const
   {
-    return CGUIWindowFavourites::MoveItem(items, *item, +1);
+    return CGUIWindowFavourites::MoveItem(items, item, +1);
   }
 
   bool CMoveDownFavourite::IsVisible(const CFileItem& item) const
@@ -64,9 +64,7 @@ namespace CONTEXTMENU
   bool CRemoveFavourite::DoExecute(CFileItemList& items,
                                    const std::shared_ptr<CFileItem>& item) const
   {
-    int iBefore = items.Size();
-    items.Remove(item.get());
-    return items.Size() == iBefore - 1;
+    return CGUIWindowFavourites::RemoveItem(items, item);
   }
 
   bool CRenameFavourite::DoExecute(CFileItemList&, const std::shared_ptr<CFileItem>& item) const
