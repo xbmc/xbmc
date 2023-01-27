@@ -91,7 +91,7 @@
   </global>
   <Home>
     <customcontroller name="AppleRemote">
-      <button id="6">ActivateWindow(Favourites)</button>
+      <button id="6">ActivateWindow(FavouritesBrowser)</button>
       <button id="8">ActivateWindow(shutdownmenu)</button>
     </customcontroller>
   </Home>
