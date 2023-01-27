@@ -47,7 +47,7 @@ public:
   /*!
    * \brief Updates a savestate with the current game being played
    *
-   * \param savestate The path to the savestate
+   * \param savestatePath The path to the savestate
    *
    * \return True if the savestate was updated, false on error
    */
@@ -56,11 +56,18 @@ public:
   /*!
    * \brief Loads a savestate
    *
-   * \param savestate The path to the savestate
+   * \param savestatePath The path to the savestate
    *
    * \return True if the savestate was loaded, false on error
    */
   virtual bool LoadSavestate(const std::string& savestatePath) = 0;
+
+  /*!
+   * \brief Frees resources allocated to the savestate, such as its video thumbnail
+   *
+   * \param savestatePath The path to the savestate
+   */
+  virtual void FreeSavestateResources(const std::string& savestatePath) = 0;
 
   /*!
    * \brief Closes the OSD

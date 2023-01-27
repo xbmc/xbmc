@@ -70,6 +70,15 @@ public:
   bool LoadSavestate(const std::string& savestatePath);
 
   /*!
+   * \brief Clear the video frame stored for the given statestate
+   *
+   * Useful to reclaim memory if a savestate has been deleted.
+   *
+   * \param savestatePath The path to the savestate file
+   */
+  void FreeSavestateResources(const std::string& savestatePath);
+
+  /*!
    * \brief Close the in-game OSD
    */
   void CloseOSD();

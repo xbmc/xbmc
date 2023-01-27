@@ -11,21 +11,27 @@
 #include "RenderContext.h"
 #include "RenderSettings.h"
 #include "RenderTranslator.h"
+#include "URL.h"
 #include "cores/RetroPlayer/buffers/IRenderBuffer.h"
 #include "cores/RetroPlayer/buffers/IRenderBufferPool.h"
 #include "cores/RetroPlayer/buffers/RenderBufferManager.h"
 #include "cores/RetroPlayer/guibridge/GUIGameSettings.h"
 #include "cores/RetroPlayer/guibridge/GUIRenderTargetFactory.h"
 #include "cores/RetroPlayer/guibridge/IGUIRenderSettings.h"
+#include "cores/RetroPlayer/guicontrols/GUIGameControl.h"
 #include "cores/RetroPlayer/process/RPProcessInfo.h"
 #include "cores/RetroPlayer/rendering/VideoRenderers/RPBaseRenderer.h"
+#include "cores/RetroPlayer/savestates/ISavestate.h"
+#include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "cores/RetroPlayer/streams/RetroPlayerVideo.h"
+#include "filesystem/File.h"
 #include "pictures/Picture.h"
 #include "threads/SingleLock.h"
 #include "utils/ColorUtils.h"
 #include "utils/TransformMatrix.h"
 #include "utils/log.h"
 
+#include <cstring>
 #include <mutex>
 
 extern "C"
@@ -74,6 +80,13 @@ void CRPRenderManager::Deinitialize()
     buffer->Release();
   m_pendingBuffers.clear();
 
+  for (auto& [savestatePath, renderBuffers] : m_savestateBuffers)
+  {
+    for (auto renderBuffer : renderBuffers)
+      renderBuffer->Release();
+  }
+  m_savestateBuffers.clear();
+
   m_renderers.clear();
 
   m_state = RENDER_STATE::UNCONFIGURED;
@@ -83,7 +96,8 @@ bool CRPRenderManager::Configure(AVPixelFormat format,
                                  unsigned int nominalWidth,
                                  unsigned int nominalHeight,
                                  unsigned int maxWidth,
-                                 unsigned int maxHeight)
+                                 unsigned int maxHeight,
+                                 float pixelAspectRatio)
 {
   CLog::Log(LOGINFO, "RetroPlayer[RENDER]: Configuring format {}, nominal {}x{}, max {}x{}",
             CRenderTranslator::TranslatePixelFormat(format), nominalWidth, nominalHeight, maxWidth,
@@ -91,8 +105,11 @@ bool CRPRenderManager::Configure(AVPixelFormat format,
 
   // Immutable parameters
   m_format = format;
+  m_nominalWidth = nominalWidth;
+  m_nominalHeight = nominalHeight;
   m_maxWidth = maxWidth;
   m_maxHeight = maxHeight;
+  m_pixelAspectRatio = pixelAspectRatio;
 
   std::unique_lock<CCriticalSection> lock(m_stateMutex);
 
@@ -215,6 +232,7 @@ void CRPRenderManager::AddFrame(const uint8_t* data,
         m_cachedFrame = std::move(cachedFrame);
         m_cachedWidth = width;
         m_cachedHeight = height;
+        m_cachedRotationCCW = orientationDegCCW;
       }
     }
   }
@@ -764,6 +782,99 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
   }
 
   FreeVideoFrame(renderBuffer, std::move(cachedFrame));
+}
+
+void CRPRenderManager::CacheVideoFrame(const std::string& savestatePath)
+{
+  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+
+  // Get the render buffers for this savestate path
+  std::vector<IRenderBuffer*>& savestateBuffers = m_savestateBuffers[savestatePath];
+
+  // Release old buffers
+  for (IRenderBuffer* renderBuffer : savestateBuffers)
+    renderBuffer->Release();
+
+  // Save buffers
+  savestateBuffers = m_renderBuffers;
+
+  // Acquire new buffers
+  for (IRenderBuffer* renderBuffer : savestateBuffers)
+    renderBuffer->Acquire();
+}
+
+void CRPRenderManager::SaveVideoFrame(const std::string& savestatePath, ISavestate& savestate)
+{
+  // Get a suitable render buffer for capturing the video data, or use the
+  // cached frame if a readable buffer can't be found
+  IRenderBuffer* readableBuffer = nullptr;
+  std::vector<uint8_t> cachedFrame;
+
+  GetVideoFrame(readableBuffer, cachedFrame);
+
+  // Video frame properties
+  AVPixelFormat targetFormat = AV_PIX_FMT_NONE;
+  unsigned int width = 0;
+  unsigned int height = 0;
+  unsigned int rotationCCW = 0;
+  size_t sourceSize = 0;
+  const uint8_t* sourceData = nullptr;
+
+  if (readableBuffer != nullptr)
+  {
+    targetFormat = readableBuffer->GetFormat();
+    width = readableBuffer->GetWidth();
+    height = readableBuffer->GetHeight();
+    rotationCCW = readableBuffer->GetRotation();
+    sourceSize = readableBuffer->GetFrameSize();
+    sourceData = readableBuffer->GetMemory();
+  }
+  else if (!cachedFrame.empty())
+  {
+    targetFormat = m_format;
+    width = m_cachedWidth;
+    height = m_cachedHeight;
+    rotationCCW = m_cachedRotationCCW;
+    sourceSize = m_cachedFrame.size();
+    sourceData = m_cachedFrame.data();
+  }
+
+  if (targetFormat == AV_PIX_FMT_NONE)
+  {
+    CLog::Log(LOGERROR, "Failed to get a video frame for savestate video frame");
+  }
+  else
+  {
+    // Serialize video stream properties
+    savestate.SetPixelFormat(targetFormat);
+    savestate.SetNominalWidth(m_nominalWidth);
+    savestate.SetNominalHeight(m_nominalHeight);
+    savestate.SetMaxWidth(m_maxWidth);
+    savestate.SetMaxHeight(m_maxHeight);
+    savestate.SetPixelAspectRatio(m_pixelAspectRatio);
+
+    // Serialize video frame properties
+    savestate.SetVideoWidth(width);
+    savestate.SetVideoHeight(height);
+    savestate.SetRotationDegCCW(rotationCCW);
+    uint8_t* const targetData = savestate.GetVideoBuffer(sourceSize);
+    std::memcpy(targetData, sourceData, sourceSize);
+  }
+
+  FreeVideoFrame(readableBuffer, std::move(cachedFrame));
+}
+
+void CRPRenderManager::ClearVideoFrame(const std::string& savestatePath)
+{
+  std::unique_lock<CCriticalSection> lock(m_bufferMutex);
+
+  auto it = m_savestateBuffers.find(savestatePath);
+  if (it != m_savestateBuffers.end())
+  {
+    for (auto renderBuffer : it->second)
+      renderBuffer->Release();
+    m_savestateBuffers.erase(it);
+  }
 }
 
 void CRPRenderManager::GetVideoFrame(IRenderBuffer*& readableBuffer,

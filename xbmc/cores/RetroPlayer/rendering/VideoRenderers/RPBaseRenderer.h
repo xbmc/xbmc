@@ -68,7 +68,9 @@ public:
   void SetStretchMode(STRETCHMODE stretchMode);
   void SetRenderRotation(unsigned int rotationDegCCW);
 
+  // Rendering properties
   bool IsVisible() const;
+  IRenderBuffer* GetRenderBuffer() const;
 
 protected:
   // Protected renderer interface

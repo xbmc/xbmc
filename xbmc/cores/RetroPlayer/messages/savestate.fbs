@@ -6,10 +6,12 @@
 //  See LICENSES/README.md for more information.
 //
 
+include "video.fbs";
+
 namespace KODI.RETRO;
 
 // Savestate schema
-// Version 2
+// Version 3
 
 file_identifier "SAV_";
 
@@ -40,6 +42,20 @@ table Savestate {
   // Emulator properties
   emulator_addon_id:string (id: 8);
   emulator_version:string (id: 9); // Semantic version
+
+  // Video stream properties
+  pixel_format:PixelFormat (id: 12);
+  nominal_width:uint16 (id: 13);
+  nominal_height:uint16 (id: 14);
+  max_width:uint16 (id: 15);
+  max_height:uint16 (id: 16);
+  pixel_aspect_ratio:float (id: 17);
+
+  // Video frame properties
+  video_data:[uint8] (id: 18);
+  video_width:uint16 (id: 19);
+  video_height:uint16 (id: 20);
+  rotation_ccw:VideoRotation (id: 21);
 
   // Memory properties
   memory_data:[uint8] (id: 10);
