@@ -231,12 +231,12 @@ std::string CGUIGameRenderManager::CreateSavestate(bool autosave)
   return "";
 }
 
-bool CGUIGameRenderManager::LoadSavestate(const std::string& path)
+bool CGUIGameRenderManager::LoadSavestate(const std::string& savestatePath)
 {
   std::unique_lock<CCriticalSection> lock(m_callbackMutex);
 
   if (m_gameCallback != nullptr)
-    return m_gameCallback->LoadSavestate(path);
+    return m_gameCallback->LoadSavestate(savestatePath);
 
   return false;
 }

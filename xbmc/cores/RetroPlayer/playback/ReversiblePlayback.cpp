@@ -203,7 +203,7 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave)
   return savePath;
 }
 
-bool CReversiblePlayback::LoadSavestate(const std::string& path)
+bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
 {
   const size_t memorySize = m_gameClient->SerializeSize();
 
@@ -214,7 +214,7 @@ bool CReversiblePlayback::LoadSavestate(const std::string& path)
   bool bSuccess = false;
 
   std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
-  if (m_savestateDatabase->GetSavestate(path, *savestate) &&
+  if (m_savestateDatabase->GetSavestate(savestatePath, *savestate) &&
       savestate->GetMemorySize() == memorySize)
   {
     {
@@ -232,7 +232,7 @@ bool CReversiblePlayback::LoadSavestate(const std::string& path)
       m_totalFrameCount = savestate->TimestampFrames();
       bSuccess = true;
       if (savestate->Type() == SAVE_TYPE::AUTO)
-        m_autosavePath = path;
+        m_autosavePath = savestatePath;
     }
   }
 
