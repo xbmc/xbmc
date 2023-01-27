@@ -19,7 +19,7 @@
 <!--    </customcontroller>                                                                       -->
 
 <!-- Note that the action can be a built-in function.                                            -->
-<!--            eg <button id="6">ActivateWindow(Favourites)</button>                            -->
+<!--            eg <button id="6">ActivateWindow(FavouritesBrowser)</button>                     -->
 <!-- would bring up Favourites when the button with the id of 6 is press. In this case, "Menu"   -->
 
 <!--                                                                                             -->
@@ -61,7 +61,7 @@
   </global>
   <Home>
     <customcontroller name="SiriRemote">
-      <button id="6">ActivateWindow(Favourites)</button>
+      <button id="6">ActivateWindow(FavouritesBrowser)</button>
     </customcontroller>
   </Home>
   <FullscreenVideo>

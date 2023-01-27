@@ -29,11 +29,11 @@
   </Global>
   <Home>
     <keyboard>
-      <backspace>ActivateWindow(Favourites)</backspace>
+      <backspace>ActivateWindow(FavouritesBrowser)</backspace>
       <backspace mod="longpress">ActivateWindow(ShutdownMenu)</backspace>
-      <browser_back>ActivateWindow(Favourites)</browser_back>
+      <browser_back>ActivateWindow(FavouritesBrowser)</browser_back>
       <browser_back mod="longpress">ActivateWindow(ShutdownMenu)</browser_back>
-      <escape>ActivateWindow(Favourites)</escape>
+      <escape>ActivateWindow(FavouritesBrowser)</escape>
       <escape mod="longpress">ActivateWindow(ShutdownMenu)</escape>
     </keyboard>
   </Home>
