@@ -132,6 +132,11 @@ void CRPBaseRenderer::SetRenderRotation(unsigned int rotationDegCCW)
   m_renderSettings.VideoSettings().SetRenderRotation(rotationDegCCW);
 }
 
+void CRPBaseRenderer::SetPixels(const std::string& pixelPath)
+{
+  m_renderSettings.VideoSettings().SetPixels(pixelPath);
+}
+
 void CRPBaseRenderer::ManageRenderArea(const IRenderBuffer& renderBuffer)
 {
   // Get texture parameters
