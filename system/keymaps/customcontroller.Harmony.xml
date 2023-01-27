@@ -91,7 +91,7 @@
       <!-- F5			-->  <button id="193">OSD</button>
       <!-- F7			-->  <button id="195">ActivateWindow(Home)</button>
       <!-- F6			-->  <button id="194">ActivateWindow(Programs)</button>
-      <!-- F8			-->  <button id="196">ActivateWindow(favourites)</button>
+      <!-- F8			-->  <button id="196">ActivateWindow(FavouritesBrowser)</button>
       <!-- F9			-->  <button id="173">ShowVideoMenu</button>
       <!-- F10			-->  <button id="174">ShowSubtitles</button>
       <!-- F11			-->  <button id="175">NextSubtitle</button>
