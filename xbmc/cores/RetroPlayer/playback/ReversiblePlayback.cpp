@@ -19,7 +19,6 @@
 #include "games/GameServices.h"
 #include "games/GameSettings.h"
 #include "games/addons/GameClient.h"
-#include "guilib/LocalizeStrings.h"
 #include "utils/MathUtils.h"
 #include "utils/URIUtils.h"
 
@@ -143,8 +142,6 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave)
       if (m_savestateDatabase->GetSavestate(m_autosavePath, *loadedSavestate))
         label = loadedSavestate->Label();
     }
-    if (label.empty())
-      label = g_localizeStrings.Get(15316); // "Autosave"
   }
 
   const CDateTime nowUTC = CDateTime::GetUTCDateTime();
