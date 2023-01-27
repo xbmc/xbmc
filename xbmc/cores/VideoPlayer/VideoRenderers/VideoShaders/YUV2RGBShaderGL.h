@@ -49,8 +49,10 @@ public:
   void SetBlack(float black) { m_black = black; }
   void SetContrast(float contrast) { m_contrast = contrast; }
   void SetNonLinStretch(float stretch) { m_stretch = stretch; }
-  void SetDisplayMetadata(bool hasDisplayMetadata, AVMasteringDisplayMetadata displayMetadata,
-                          bool hasLightMetadata, AVContentLightMetadata lightMetadata);
+  void SetDisplayMetadata(bool hasDisplayMetadata,
+                          const AVMasteringDisplayMetadata& displayMetadata,
+                          bool hasLightMetadata,
+                          AVContentLightMetadata lightMetadata);
   void SetToneMapParam(ETONEMAPMETHOD method, float param);
   float GetLuminanceValue() const;
 
