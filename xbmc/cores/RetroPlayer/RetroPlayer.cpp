@@ -520,7 +520,10 @@ std::string CRetroPlayer::GetPlayingGame() const
 
 std::string CRetroPlayer::CreateSavestate(bool autosave)
 {
-  return m_playback->CreateSavestate(autosave);
+  if (m_playback)
+    return m_playback->CreateSavestate(autosave);
+
+  return "";
 }
 
 bool CRetroPlayer::LoadSavestate(const std::string& path)
