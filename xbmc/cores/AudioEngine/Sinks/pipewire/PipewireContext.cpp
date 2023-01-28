@@ -13,12 +13,8 @@
 
 #include <stdexcept>
 
-namespace AE
-{
-namespace SINK
-{
-namespace PIPEWIRE
-{
+using namespace KODI;
+using namespace PIPEWIRE;
 
 CPipewireContext::CPipewireContext(CPipewireThreadLoop& loop) : m_threadLoop(loop)
 {
@@ -29,7 +25,3 @@ CPipewireContext::CPipewireContext(CPipewireThreadLoop& loop) : m_threadLoop(loo
     throw std::runtime_error("CPipewireContext: failed to create context");
   }
 }
-
-} // namespace PIPEWIRE
-} // namespace SINK
-} // namespace AE

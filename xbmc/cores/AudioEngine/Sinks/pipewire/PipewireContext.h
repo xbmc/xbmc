@@ -12,9 +12,7 @@
 
 #include <pipewire/context.h>
 
-namespace AE
-{
-namespace SINK
+namespace KODI
 {
 namespace PIPEWIRE
 {
@@ -44,5 +42,4 @@ private:
 };
 
 } // namespace PIPEWIRE
-} // namespace SINK
-} // namespace AE
+} // namespace KODI

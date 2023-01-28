@@ -12,12 +12,8 @@
 
 #include <stdexcept>
 
-namespace AE
-{
-namespace SINK
-{
-namespace PIPEWIRE
-{
+using namespace KODI;
+using namespace PIPEWIRE;
 
 CPipewireThreadLoop::CPipewireThreadLoop()
 {
@@ -61,7 +57,3 @@ void CPipewireThreadLoop::Signal(bool accept)
 {
   pw_thread_loop_signal(m_mainloop.get(), accept);
 }
-
-} // namespace PIPEWIRE
-} // namespace SINK
-} // namespace AE

@@ -246,10 +246,8 @@ constexpr int DEFAULT_LATENCY_DIVIDER = 3;
 
 } // namespace
 
-namespace AE
-{
-namespace SINK
-{
+using namespace AE::SINK;
+using namespace KODI;
 
 std::unique_ptr<PIPEWIRE::CPipewire> pipewire;
 
@@ -666,6 +664,3 @@ void CAESinkPipewire::Drain()
 
   loop.Unlock();
 }
-
-} // namespace SINK
-} // namespace AE

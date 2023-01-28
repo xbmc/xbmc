@@ -18,12 +18,8 @@
 #include <pipewire/node.h>
 #include <pipewire/type.h>
 
-namespace AE
-{
-namespace SINK
-{
-namespace PIPEWIRE
-{
+using namespace KODI;
+using namespace PIPEWIRE;
 
 CPipewireRegistry::CPipewireRegistry(CPipewireCore& core)
   : m_core(core), m_registryEvents(CreateRegistryEvents())
@@ -102,7 +98,3 @@ pw_registry_events CPipewireRegistry::CreateRegistryEvents()
 
   return registryEvents;
 }
-
-} // namespace PIPEWIRE
-} // namespace SINK
-} // namespace AE
