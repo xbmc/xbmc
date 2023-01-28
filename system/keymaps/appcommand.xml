@@ -7,7 +7,7 @@
       <browser_refresh/>
       <browser_stop>Stop</browser_stop>
       <browser_search/>
-      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
+      <browser_favorites>ActivateWindow(FavouritesBrowser)</browser_favorites>
       <browser_home>FirstPage</browser_home>
       <volume_mute/>
       <volume_down/>
