@@ -233,7 +233,7 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
                                DIR_FLAG_DEFAULTS);
 
       // Check for cases 1_dir/1_dir/.../file (e.g. by packages where have a extra folder)
-      while (items.Size() == 1 && items[0]->m_bIsFolder)
+      while (items.Size() == 1 && items[0]->m_bIsFolder && items[0]->GetOpticalMediaPath().empty())
       {
         const std::string path = items[0]->GetPath();
         items.Clear();
