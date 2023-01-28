@@ -19,7 +19,7 @@ class CDecoderCC708;
 class CDVDDemuxCC : public CDVDDemux
 {
 public:
-  explicit CDVDDemuxCC();
+  explicit CDVDDemuxCC(AVCodecID codec);
   ~CDVDDemuxCC() override;
 
   bool Reset() override { return true; }
@@ -33,7 +33,7 @@ public:
   std::vector<CDemuxStream*> GetStreams() const override;
   int GetNrOfStreams() const override;
 
-  DemuxPacket* Process(CCaptionBlock* captionBlock);
+  DemuxPacket* Read(DemuxPacket *packet);
   static void Handler(int service, void *userdata);
 
 protected:
@@ -52,6 +52,8 @@ protected:
   std::vector<CDemuxStreamSubtitle> m_streams;
   bool m_hasData;
   double m_curPts;
+  std::vector<CCaptionBlock*> m_ccReorderBuffer;
   std::vector<CCaptionBlock*> m_ccTempBuffer;
   std::unique_ptr<CDecoderCC708> m_ccDecoder;
+  AVCodecID m_codec;
 };
