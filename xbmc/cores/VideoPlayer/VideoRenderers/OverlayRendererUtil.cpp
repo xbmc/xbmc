@@ -34,7 +34,7 @@ static uint32_t build_rgba(int a, int r, int g, int b, bool mergealpha)
 }
 
 #define clamp(x) (x) > 255.0 ? 255 : ((x) < 0.0 ? 0 : (int)(x + 0.5))
-static uint32_t build_rgba(int yuv[3], int alpha, bool mergealpha)
+static uint32_t build_rgba(const int yuv[3], int alpha, bool mergealpha)
 {
   int    a = alpha + ( (alpha << 4) & 0xff );
   double r = 1.164 * (yuv[0] - 16)                          + 1.596 * (yuv[2] - 128);
@@ -44,22 +44,20 @@ static uint32_t build_rgba(int yuv[3], int alpha, bool mergealpha)
 }
 #undef clamp
 
-void convert_rgba(CDVDOverlayImage* o, bool mergealpha, std::vector<uint32_t>& rgba)
+void convert_rgba(const CDVDOverlayImage& o, bool mergealpha, std::vector<uint32_t>& rgba)
 {
   uint32_t palette[256] = {};
-  for (size_t i = 0; i < o->palette.size(); i++)
-    palette[i] = build_rgba((o->palette[i] >> PIXEL_ASHIFT) & 0xff
-                          , (o->palette[i] >> PIXEL_RSHIFT) & 0xff
-                          , (o->palette[i] >> PIXEL_GSHIFT) & 0xff
-                          , (o->palette[i] >> PIXEL_BSHIFT) & 0xff
-                          , mergealpha);
+  for (size_t i = 0; i < o.palette.size(); i++)
+    palette[i] = build_rgba(
+        (o.palette[i] >> PIXEL_ASHIFT) & 0xff, (o.palette[i] >> PIXEL_RSHIFT) & 0xff,
+        (o.palette[i] >> PIXEL_GSHIFT) & 0xff, (o.palette[i] >> PIXEL_BSHIFT) & 0xff, mergealpha);
 
-  for (int row = 0; row < o->height; row++)
-    for (int col = 0; col < o->width; col++)
-      rgba[row * o->width + col] = palette[o->pixels[row * o->linesize + col]];
+  for (int row = 0; row < o.height; row++)
+    for (int col = 0; col < o.width; col++)
+      rgba[row * o.width + col] = palette[o.pixels[row * o.linesize + col]];
 }
 
-void convert_rgba(CDVDOverlaySpu* o,
+void convert_rgba(const CDVDOverlaySpu& o,
                   bool mergealpha,
                   int& min_x,
                   int& max_x,
@@ -70,8 +68,8 @@ void convert_rgba(CDVDOverlaySpu* o,
   uint32_t palette[8];
   for (int i = 0; i < 4; i++)
   {
-    palette[i]   = build_rgba(o->color[i]          , o->alpha[i]          , mergealpha);
-    palette[i+4] = build_rgba(o->highlight_color[i], o->highlight_alpha[i], mergealpha);
+    palette[i] = build_rgba(o.color[i], o.alpha[i], mergealpha);
+    palette[i + 4] = build_rgba(o.highlight_color[i], o.highlight_alpha[i], mergealpha);
   }
 
   uint32_t  color;
@@ -85,25 +83,25 @@ void convert_rgba(CDVDOverlaySpu* o,
     , btn_y_start = 0
     , btn_y_end   = 0;
 
-  if(o->bForced)
+  if (o.bForced)
   {
-    btn_x_start = o->crop_i_x_start - o->x;
-    btn_x_end   = o->crop_i_x_end   - o->x;
-    btn_y_start = o->crop_i_y_start - o->y;
-    btn_y_end   = o->crop_i_y_end   - o->y;
+    btn_x_start = o.crop_i_x_start - o.x;
+    btn_x_end = o.crop_i_x_end - o.x;
+    btn_y_start = o.crop_i_y_start - o.y;
+    btn_y_end = o.crop_i_y_end - o.y;
   }
 
-  min_x = o->width;
+  min_x = o.width;
   max_x = 0;
-  min_y = o->height;
+  min_y = o.height;
   max_y = 0;
 
   trg = rgba.data();
-  src = (uint16_t*)o->result;
+  src = (uint16_t*)o.result;
 
-  for (int y = 0; y < o->height; y++)
+  for (int y = 0; y < o.height; y++)
   {
-    for (int x = 0; x < o->width ; x += len)
+    for (int x = 0; x < o.width; x += len)
     {
       /* Get the RLE part, then draw the line */
       idx = *src & 0x3;
@@ -149,7 +147,7 @@ void convert_rgba(CDVDOverlaySpu* o,
         x   += draw;
       }
     }
-    trg += o->width;
+    trg += o.width;
   }
 
   /* if nothing visible, just output a dummy pixel */

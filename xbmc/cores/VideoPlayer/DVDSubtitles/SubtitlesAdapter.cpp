@@ -75,7 +75,7 @@ void CSubtitlesAdapter::FlushSubtitles()
   m_libass->FlushEvents();
 }
 
-CDVDOverlay* CSubtitlesAdapter::CreateOverlay()
+std::shared_ptr<CDVDOverlay> CSubtitlesAdapter::CreateOverlay()
 {
   // Warning with Libass the overlay does not contain image or text then is not tied to Libass Events
   // any variation of the overlay Start/Stop PTS time will cause problems with the rendering.
@@ -89,7 +89,7 @@ CDVDOverlay* CSubtitlesAdapter::CreateOverlay()
   // - When an overlay disable the renderer, Libass has no possibility to
   //   complete the rendering of text animations (not sure if related to previous problem)
   //   with the result of displaying broken animations on the screen.
-  CDVDOverlayText* overlay = new CDVDOverlayText(m_libass);
+  auto overlay = std::make_shared<CDVDOverlayText>(m_libass);
   overlay->iPTSStartTime = 0.0;
   overlay->iPTSStopTime = DVD_NOPTS_VALUE;
   return overlay;

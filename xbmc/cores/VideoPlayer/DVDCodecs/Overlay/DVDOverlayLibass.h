@@ -24,6 +24,8 @@ public:
 
   CDVDOverlayLibass(const CDVDOverlayLibass& src) : CDVDOverlay(src), m_libass(src.m_libass) {}
 
+  ~CDVDOverlayLibass() override = default;
+
   /*!
   \brief Getter for Libass handler
   \return The Libass handler.

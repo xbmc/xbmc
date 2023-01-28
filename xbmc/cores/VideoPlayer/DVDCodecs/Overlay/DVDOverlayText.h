@@ -24,7 +24,7 @@ public:
 
   ~CDVDOverlayText() override = default;
 
-  CDVDOverlayText* Clone() override { return new CDVDOverlayText(*this); }
+  std::shared_ptr<CDVDOverlay> Clone() override { return std::make_shared<CDVDOverlayText>(*this); }
 
   void SetTextAlignEnabled(bool enable) override { m_enableTextAlign = enable; }
 };

@@ -8,21 +8,19 @@
 
 #include "DVDOverlayContainer.h"
 
+#include "DVDCodecs/Overlay/DVDOverlay.h"
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 
+#include <memory>
 #include <mutex>
-
-CDVDOverlayContainer::CDVDOverlayContainer() = default;
 
 CDVDOverlayContainer::~CDVDOverlayContainer()
 {
   Clear();
 }
 
-void CDVDOverlayContainer::ProcessAndAddOverlayIfValid(CDVDOverlay* pOverlay)
+void CDVDOverlayContainer::ProcessAndAddOverlayIfValid(std::shared_ptr<CDVDOverlay> pOverlay)
 {
-  pOverlay->Acquire();
-
   std::unique_lock<CCriticalSection> lock(*this);
 
   // markup any non ending overlays, to finish
@@ -53,29 +51,20 @@ VecOverlays* CDVDOverlayContainer::GetOverlays()
   return &m_overlays;
 }
 
-VecOverlaysIter CDVDOverlayContainer::Remove(VecOverlaysIter itOverlay)
+VecOverlays::iterator CDVDOverlayContainer::Remove(VecOverlays::iterator itOverlay)
 {
-  VecOverlaysIter itNext;
-  CDVDOverlay* pOverlay = *itOverlay;
-
-  {
-    std::unique_lock<CCriticalSection> lock(*this);
-    itNext = m_overlays.erase(itOverlay);
-  }
-
-  pOverlay->Release();
-
-  return itNext;
+  std::unique_lock<CCriticalSection> lock(*this);
+  return m_overlays.erase(itOverlay);
 }
 
 void CDVDOverlayContainer::CleanUp(double pts)
 {
   std::unique_lock<CCriticalSection> lock(*this);
 
-  VecOverlaysIter it = m_overlays.begin();
+  auto it = m_overlays.begin();
   while (it != m_overlays.end())
   {
-    CDVDOverlay* pOverlay = *it;
+    const std::shared_ptr<CDVDOverlay>& pOverlay = *it;
 
     // never delete forced overlays, they are used in menu's
     // clear takes care of removing them
@@ -91,11 +80,11 @@ void CDVDOverlayContainer::CleanUp(double pts)
     else if (pOverlay->bForced)
     {
       //Check for newer replacements
-      VecOverlaysIter it2 = it;
+      auto it2 = it;
       bool bNewer = false;
       while (!bNewer && ++it2 != m_overlays.end())
       {
-        CDVDOverlay* pOverlay2 = *it2;
+        const std::shared_ptr<CDVDOverlay>& pOverlay2 = *it2;
         if (pOverlay2->bForced && pOverlay2->iPTSStartTime <= pts) bNewer = true;
       }
 
@@ -116,11 +105,8 @@ void CDVDOverlayContainer::Flush()
 
   // Flush only the overlays marked as flushable
   m_overlays.erase(std::remove_if(m_overlays.begin(), m_overlays.end(),
-                                  [](CDVDOverlay* ov) {
-                                    bool isFlushable = ov->IsOverlayContainerFlushable();
-                                    if (isFlushable)
-                                      ov->Release();
-                                    return isFlushable;
+                                  [](const std::shared_ptr<CDVDOverlay>& ov) {
+                                    return ov->IsOverlayContainerFlushable();
                                   }),
                    m_overlays.end());
 }
@@ -128,10 +114,6 @@ void CDVDOverlayContainer::Flush()
 void CDVDOverlayContainer::Clear()
 {
   std::unique_lock<CCriticalSection> lock(*this);
-  for (auto &overlay : m_overlays)
-  {
-    overlay->Release();
-  }
   m_overlays.clear();
 }
 
@@ -146,7 +128,7 @@ bool CDVDOverlayContainer::ContainsOverlayType(DVDOverlayType type)
 
   std::unique_lock<CCriticalSection> lock(*this);
 
-  VecOverlaysIter it = m_overlays.begin();
+  auto it = m_overlays.begin();
   while (!result && it != m_overlays.end())
   {
     if ((*it)->IsOverlayType(type)) result = true;
@@ -171,20 +153,19 @@ void CDVDOverlayContainer::UpdateOverlayInfo(
   {
     if ((*it)->IsOverlayType(DVDOVERLAY_TYPE_SPU))
     {
-      CDVDOverlaySpu* pOverlaySpu = (CDVDOverlaySpu*)(*it);
+      auto pOverlaySpu = std::static_pointer_cast<CDVDOverlaySpu>(*it);
 
       // make sure its a forced (menu) overlay
       // set menu spu color and alpha data if there is a valid menu overlay
       if (pOverlaySpu->bForced)
       {
-        if (pOverlaySpu->Acquire()->Release() > 1)
+        if (pOverlaySpu.use_count() > 1)
         {
-          pOverlaySpu = new CDVDOverlaySpu(*pOverlaySpu);
-          (*it)->Release();
+          pOverlaySpu = std::make_shared<CDVDOverlaySpu>(*pOverlaySpu);
           (*it) = pOverlaySpu;
         }
 
-        if(pStream->GetCurrentButtonInfo(pOverlaySpu, pSpu, iAction))
+        if (pStream->GetCurrentButtonInfo(*pOverlaySpu, pSpu, iAction))
         {
           pOverlaySpu->m_textureid = 0;
         }

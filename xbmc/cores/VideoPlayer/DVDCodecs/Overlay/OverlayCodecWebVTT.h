@@ -21,16 +21,15 @@ class COverlayCodecWebVTT : public CDVDOverlayCodec, private CSubtitlesAdapter
 {
 public:
   COverlayCodecWebVTT();
-  ~COverlayCodecWebVTT() override;
+  ~COverlayCodecWebVTT() override = default;
   bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) override;
   OverlayMessage Decode(DemuxPacket* pPacket) override;
   void Reset() override;
   void Flush() override;
-  CDVDOverlay* GetOverlay() override;
+  std::shared_ptr<CDVDOverlay> GetOverlay() override;
 
 private:
-  void Dispose() override;
-  CDVDOverlay* m_pOverlay;
+  std::shared_ptr<CDVDOverlay> m_pOverlay;
   CWebVTTISOHandler m_webvttHandler;
   bool m_isISOFormat{false};
   bool m_allowFlush{true};

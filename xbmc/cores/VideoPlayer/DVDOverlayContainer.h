@@ -19,7 +19,6 @@ class CDVDDemuxSPU;
 class CDVDOverlayContainer : public CCriticalSection
 {
 public:
-  CDVDOverlayContainer();
   virtual ~CDVDOverlayContainer();
 
   /*!
@@ -34,7 +33,7 @@ public:
   *
   * \param pPicture pointer to the overlay to be evaluated and possibly added to the collection
   */
-  void ProcessAndAddOverlayIfValid(CDVDOverlay* pPicture);
+  void ProcessAndAddOverlayIfValid(std::shared_ptr<CDVDOverlay> pPicture);
 
   VecOverlays* GetOverlays(); // get the first overlay in this fifo
   bool ContainsOverlayType(DVDOverlayType type);
@@ -54,7 +53,7 @@ public:
                          int iAction);
 
 private:
-  VecOverlaysIter Remove(VecOverlaysIter itOverlay); // removes a specific overlay
+  VecOverlays::iterator Remove(VecOverlays::iterator itOverlay); // removes a specific overlay
 
   VecOverlays m_overlays;
 };

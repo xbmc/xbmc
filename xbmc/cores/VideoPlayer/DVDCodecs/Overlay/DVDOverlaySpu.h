@@ -65,6 +65,8 @@ public:
     memcpy(highlight_color, src.highlight_color, sizeof(highlight_color));
   }
 
+  ~CDVDOverlaySpu() override = default;
+
   uint8_t result[2*65536 + 20]; // rle data
   int pTFData; // pointer to top field picture data (needs rle parsing)
   int pBFData; // pointer to bottom field picture data (needs rle parsing)

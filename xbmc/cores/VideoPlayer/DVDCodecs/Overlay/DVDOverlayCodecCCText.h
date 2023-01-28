@@ -18,19 +18,18 @@ class CDVDOverlayCodecCCText : public CDVDOverlayCodec, private CSubtitlesAdapte
 {
 public:
   CDVDOverlayCodecCCText();
-  ~CDVDOverlayCodecCCText() override;
+  ~CDVDOverlayCodecCCText() override = default;
   bool Open(CDVDStreamInfo& hints, CDVDCodecOptions& options) override;
   OverlayMessage Decode(DemuxPacket* pPacket) override;
   void Reset() override;
   void Flush() override;
-  CDVDOverlay* GetOverlay() override;
+  std::shared_ptr<CDVDOverlay> GetOverlay() override;
 
   // Specialization of CSubtitlesAdapter
   void PostProcess(std::string& text) override;
 
 private:
-  void Dispose() override;
-  CDVDOverlay* m_pOverlay;
+  std::shared_ptr<CDVDOverlay> m_pOverlay;
   int m_prevSubId;
   double m_prevPTSStart;
   std::string m_prevText;

@@ -200,29 +200,29 @@ COverlayImageDX::~COverlayImageDX()
 {
 }
 
-COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o, CRect& rSource)
+COverlayImageDX::COverlayImageDX(const CDVDOverlayImage& o, CRect& rSource)
 {
-  if (o->palette.empty())
+  if (o.palette.empty())
   {
     m_pma = false;
-    uint32_t* rgba = reinterpret_cast<uint32_t*>(o->pixels.data());
-    Load(rgba, o->width, o->height, o->linesize);
+    const uint32_t* rgba = reinterpret_cast<const uint32_t*>(o.pixels.data());
+    Load(rgba, o.width, o.height, o.linesize);
   }
   else
   {
-    std::vector<uint32_t> rgba(o->width * o->height);
+    std::vector<uint32_t> rgba(o.width * o.height);
     m_pma = !!USE_PREMULTIPLIED_ALPHA;
     convert_rgba(o, m_pma, rgba);
-    Load(rgba.data(), o->width, o->height, o->width * 4);
+    Load(rgba.data(), o.width, o.height, o.width * 4);
   }
 
-  if (o->source_width > 0 && o->source_height > 0)
+  if (o.source_width > 0 && o.source_height > 0)
   {
     m_pos = POSITION_RELATIVE;
-    m_x = (0.5f * o->width + o->x) / o->source_width;
-    m_y = (0.5f * o->height + o->y) / o->source_height;
+    m_x = (0.5f * o.width + o.x) / o.source_width;
+    m_y = (0.5f * o.height + o.y) / o.source_height;
 
-    const float subRatio{static_cast<float>(o->source_width) / o->source_height};
+    const float subRatio{static_cast<float>(o.source_width) / o.source_height};
     const float vidRatio{rSource.Width() / rSource.Height()};
 
     // We always consider aligning 4/3 subtitles to the video,
@@ -231,8 +231,8 @@ COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o, CRect& rSource)
     if (std::fabs(subRatio - vidRatio) < 0.001f || IsSquareResolution(subRatio))
     {
       m_align = ALIGN_VIDEO;
-      m_width = static_cast<float>(o->width) / o->source_width;
-      m_height = static_cast<float>(o->height) / o->source_height;
+      m_width = static_cast<float>(o.width) / o.source_width;
+      m_height = static_cast<float>(o.height) / o.source_height;
     }
     else
     {
@@ -240,40 +240,40 @@ COverlayImageDX::COverlayImageDX(CDVDOverlayImage* o, CRect& rSource)
       // Then we cannot align to video otherwise the subtitles will be deformed
       // better align to screen by keeping the aspect-ratio.
       m_align = ALIGN_SCREEN_AR;
-      m_width = static_cast<float>(o->width);
-      m_height = static_cast<float>(o->height);
-      m_source_width = static_cast<float>(o->source_width);
-      m_source_height = static_cast<float>(o->source_height);
+      m_width = static_cast<float>(o.width);
+      m_height = static_cast<float>(o.height);
+      m_source_width = static_cast<float>(o.source_width);
+      m_source_height = static_cast<float>(o.source_height);
     }
   }
   else
   {
     m_align = ALIGN_VIDEO;
     m_pos = POSITION_ABSOLUTE;
-    m_x = static_cast<float>(o->x);
-    m_y = static_cast<float>(o->y);
-    m_width = static_cast<float>(o->width);
-    m_height = static_cast<float>(o->height);
+    m_x = static_cast<float>(o.x);
+    m_y = static_cast<float>(o.y);
+    m_width = static_cast<float>(o.width);
+    m_height = static_cast<float>(o.height);
   }
 }
 
-COverlayImageDX::COverlayImageDX(CDVDOverlaySpu* o)
+COverlayImageDX::COverlayImageDX(const CDVDOverlaySpu& o)
 {
   int min_x, max_x, min_y, max_y;
-  std::vector<uint32_t> rgba(o->width * o->height);
+  std::vector<uint32_t> rgba(o.width * o.height);
 
   convert_rgba(o, USE_PREMULTIPLIED_ALPHA, min_x, max_x, min_y, max_y, rgba);
-  Load(rgba.data() + min_x + min_y * o->width, max_x - min_x, max_y - min_y, o->width * 4);
+  Load(rgba.data() + min_x + min_y * o.width, max_x - min_x, max_y - min_y, o.width * 4);
 
   m_align = ALIGN_VIDEO;
   m_pos = POSITION_ABSOLUTE;
-  m_x = static_cast<float>(min_x + o->x);
-  m_y = static_cast<float>(min_y + o->y);
+  m_x = static_cast<float>(min_x + o.x);
+  m_y = static_cast<float>(min_y + o.y);
   m_width = static_cast<float>(max_x - min_x);
   m_height = static_cast<float>(max_y - min_y);
 }
 
-void COverlayImageDX::Load(uint32_t* rgba, int width, int height, int stride)
+void COverlayImageDX::Load(const uint32_t* rgba, int width, int height, int stride)
 {
   float u, v;
   if(!LoadTexture(width

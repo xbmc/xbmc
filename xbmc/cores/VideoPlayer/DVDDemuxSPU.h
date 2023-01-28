@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <stdint.h>
 
 struct AVFrame;
@@ -32,10 +33,12 @@ public:
   CDVDDemuxSPU();
   ~CDVDDemuxSPU();
 
-  CDVDOverlaySpu* AddData(uint8_t* data, int iSize, double pts); // returns a packet from ParsePacket if possible
+  std::shared_ptr<CDVDOverlaySpu> AddData(
+      uint8_t* data, int iSize, double pts); // returns a packet from ParsePacket if possible
 
-  CDVDOverlaySpu* ParseRLE(CDVDOverlaySpu* pSPU, uint8_t* pUnparsedData);
-  static void FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySpu* pSPU);
+  std::shared_ptr<CDVDOverlaySpu> ParseRLE(std::shared_ptr<CDVDOverlaySpu> pSPU,
+                                           uint8_t* pUnparsedData);
+  static void FindSubtitleColor(int last_color, int stats[4], CDVDOverlaySpu& pSPU);
   static bool CanDisplayWithAlphas(const int a[4], const int stats[4]);
 
   void Reset();
@@ -48,7 +51,7 @@ public:
   bool m_bHasClut;
 
 protected:
-  CDVDOverlaySpu* ParsePacket(SPUData* pSPUData);
+  std::shared_ptr<CDVDOverlaySpu> ParsePacket(SPUData* pSPUData);
 
   SPUData m_spuData;
 };
