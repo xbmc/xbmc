@@ -17,12 +17,8 @@
 
 #include <spa/utils/result.h>
 
-namespace AE
-{
-namespace SINK
-{
-namespace PIPEWIRE
-{
+using namespace KODI;
+using namespace PIPEWIRE;
 
 CPipewireStream::CPipewireStream(CPipewireCore& core)
   : m_core(core), m_streamEvents(CreateStreamEvents())
@@ -163,7 +159,3 @@ pw_stream_events CPipewireStream::CreateStreamEvents()
 
   return streamEvents;
 }
-
-} // namespace PIPEWIRE
-} // namespace SINK
-} // namespace AE

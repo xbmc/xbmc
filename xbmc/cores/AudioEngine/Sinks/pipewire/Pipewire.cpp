@@ -18,12 +18,8 @@
 
 using namespace std::chrono_literals;
 
-namespace AE
-{
-namespace SINK
-{
-namespace PIPEWIRE
-{
+using namespace KODI;
+using namespace PIPEWIRE;
 
 CPipewire::CPipewire()
 {
@@ -79,7 +75,3 @@ bool CPipewire::Start()
 
   return true;
 }
-
-} // namespace PIPEWIRE
-} // namespace SINK
-} // namespace AE

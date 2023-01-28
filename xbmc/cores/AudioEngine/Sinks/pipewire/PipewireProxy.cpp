@@ -15,12 +15,8 @@
 
 #include <stdexcept>
 
-namespace AE
-{
-namespace SINK
-{
-namespace PIPEWIRE
-{
+using namespace KODI;
+using namespace PIPEWIRE;
 
 CPipewireProxy::CPipewireProxy(CPipewireRegistry& registry,
                                uint32_t id,
@@ -71,7 +67,3 @@ pw_proxy_events CPipewireProxy::CreateProxyEvents()
 
   return proxyEvents;
 }
-
-} // namespace PIPEWIRE
-} // namespace SINK
-} // namespace AE

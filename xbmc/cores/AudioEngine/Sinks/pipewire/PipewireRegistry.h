@@ -17,9 +17,7 @@
 #include <pipewire/core.h>
 #include <pipewire/properties.h>
 
-namespace AE
-{
-namespace SINK
+namespace KODI
 {
 namespace PIPEWIRE
 {
@@ -83,5 +81,4 @@ private:
 };
 
 } // namespace PIPEWIRE
-} // namespace SINK
-} // namespace AE
+} // namespace KODI
