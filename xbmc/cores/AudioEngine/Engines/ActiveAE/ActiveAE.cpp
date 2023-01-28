@@ -1563,8 +1563,7 @@ void CActiveAE::FlushEngine()
 
   // send message to sink
   Message *reply;
-  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH,
-                                           &reply, 2000))
+  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::FLUSH, &reply, 2s))
   {
     bool success = reply->signal == CSinkControlProtocol::ACC;
     if (!success)
@@ -1794,10 +1793,8 @@ bool CActiveAE::InitSink()
                                       &m_settings.silenceTimeoutMinutes, sizeof(int));
 
   Message *reply;
-  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::CONFIGURE,
-                                                 &reply,
-                                                 5000,
-                                                 &config, sizeof(config)))
+  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::CONFIGURE, &reply, 5s, &config,
+                                              sizeof(config)))
   {
     bool success = reply->signal == CSinkControlProtocol::ACC;
     if (!success)
@@ -1840,9 +1837,7 @@ void CActiveAE::DrainSink()
 {
   // send message to sink
   Message *reply;
-  if (m_sink.m_dataPort.SendOutMessageSync(CSinkDataProtocol::DRAIN,
-                                                 &reply,
-                                                 2000))
+  if (m_sink.m_dataPort.SendOutMessageSync(CSinkDataProtocol::DRAIN, &reply, 2s))
   {
     bool success = reply->signal == CSinkDataProtocol::ACC;
     if (!success)
@@ -1866,9 +1861,7 @@ void CActiveAE::UnconfigureSink()
 {
   // send message to sink
   Message *reply;
-  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::UNCONFIGURE,
-                                                 &reply,
-                                                 2000))
+  if (m_sink.m_controlPort.SendOutMessageSync(CSinkControlProtocol::UNCONFIGURE, &reply, 2s))
   {
     bool success = reply->signal == CSinkControlProtocol::ACC;
     if (!success)
@@ -2666,9 +2659,7 @@ void CActiveAE::Start()
 {
   Create();
   Message *reply;
-  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT,
-                                                 &reply,
-                                                 10000))
+  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT, &reply, 10s))
   {
     bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();
@@ -2859,9 +2850,7 @@ bool CActiveAE::Suspend()
 bool CActiveAE::Resume()
 {
   Message *reply;
-  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT,
-                                                 &reply,
-                                                 5000))
+  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::INIT, &reply, 5s))
   {
     bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();
@@ -2935,9 +2924,7 @@ bool CActiveAE::GetCurrentSinkFormat(AEAudioFormat &SinkFormat)
 void CActiveAE::OnLostDisplay()
 {
   Message *reply;
-  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::DISPLAYLOST,
-                                                 &reply,
-                                                 5000))
+  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::DISPLAYLOST, &reply, 5s))
   {
     bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();
@@ -3322,9 +3309,8 @@ IAE::StreamPtr CActiveAE::MakeStream(AEAudioFormat& audioFormat,
   msg.clock = clock;
 
   Message *reply;
-  if (m_dataPort.SendOutMessageSync(CActiveAEDataProtocol::NEWSTREAM,
-                                    &reply,10000,
-                                    &msg, sizeof(MsgStreamNew)))
+  if (m_dataPort.SendOutMessageSync(CActiveAEDataProtocol::NEWSTREAM, &reply, 10s, &msg,
+                                    sizeof(MsgStreamNew)))
   {
     bool success = reply->signal == CActiveAEControlProtocol::ACC;
     if (success)
@@ -3348,9 +3334,8 @@ bool CActiveAE::FreeStream(IAEStream *stream, bool finish)
   msg.finish = finish;
 
   Message *reply;
-  if (m_dataPort.SendOutMessageSync(CActiveAEDataProtocol::FREESTREAM,
-                                    &reply,1000,
-                                    &msg, sizeof(MsgStreamFree)))
+  if (m_dataPort.SendOutMessageSync(CActiveAEDataProtocol::FREESTREAM, &reply, 1s, &msg,
+                                    sizeof(MsgStreamFree)))
   {
     bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();
@@ -3366,9 +3351,8 @@ bool CActiveAE::FreeStream(IAEStream *stream, bool finish)
 void CActiveAE::FlushStream(CActiveAEStream *stream)
 {
   Message *reply;
-  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::FLUSHSTREAM,
-                                       &reply,1000,
-                                       &stream, sizeof(CActiveAEStream*)))
+  if (m_controlPort.SendOutMessageSync(CActiveAEControlProtocol::FLUSHSTREAM, &reply, 1s, &stream,
+                                       sizeof(CActiveAEStream*)))
   {
     bool success = reply->signal == CActiveAEControlProtocol::ACC;
     reply->Release();

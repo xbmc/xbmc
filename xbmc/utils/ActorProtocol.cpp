@@ -230,8 +230,11 @@ bool Protocol::SendInMessage(int signal, CPayloadWrapBase *payload, Message *out
   return true;
 }
 
-bool Protocol::SendOutMessageSync(
-    int signal, Message** retMsg, int timeout, const void* data /* = NULL */, size_t size /* = 0 */)
+bool Protocol::SendOutMessageSync(int signal,
+                                  Message** retMsg,
+                                  std::chrono::milliseconds timeout,
+                                  const void* data /* = NULL */,
+                                  size_t size /* = 0 */)
 {
   Message *msg = GetMessage();
   msg->isOut = true;
@@ -240,7 +243,7 @@ bool Protocol::SendOutMessageSync(
   msg->event->Reset();
   SendOutMessage(signal, data, size, msg);
 
-  if (!msg->event->Wait(std::chrono::milliseconds(timeout)))
+  if (!msg->event->Wait(timeout))
   {
     const std::unique_lock<CCriticalSection> lock(criticalSection);
     if (msg->replyMessage)
@@ -262,7 +265,10 @@ bool Protocol::SendOutMessageSync(
     return false;
 }
 
-bool Protocol::SendOutMessageSync(int signal, Message **retMsg, int timeout, CPayloadWrapBase *payload)
+bool Protocol::SendOutMessageSync(int signal,
+                                  Message** retMsg,
+                                  std::chrono::milliseconds timeout,
+                                  CPayloadWrapBase* payload)
 {
   Message *msg = GetMessage();
   msg->isOut = true;
@@ -271,7 +277,7 @@ bool Protocol::SendOutMessageSync(int signal, Message **retMsg, int timeout, CPa
   msg->event->Reset();
   SendOutMessage(signal, payload, msg);
 
-  if (!msg->event->Wait(std::chrono::milliseconds(timeout)))
+  if (!msg->event->Wait(timeout))
   {
     const std::unique_lock<CCriticalSection> lock(criticalSection);
     if (msg->replyMessage)

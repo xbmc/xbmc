@@ -794,9 +794,8 @@ long CDecoder::Release()
 
     std::unique_lock<CCriticalSection> lock1(CServiceBroker::GetWinSystem()->GetGfxContext());
     Message *reply;
-    if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::PRECLEANUP,
-                                                   &reply,
-                                                   2000))
+    if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::PRECLEANUP, &reply,
+                                                       2s))
     {
       bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
       reply->Release();
@@ -1093,9 +1092,7 @@ void CDecoder::Reset()
     return;
 
   Message *reply;
-  if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::FLUSH,
-                                                 &reply,
-                                                 2000))
+  if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::FLUSH, &reply, 2s))
   {
     bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
     reply->Release();
@@ -1197,11 +1194,8 @@ bool CDecoder::ConfigVAAPI()
   m_bufferStats.Reset();
   m_vaapiOutput.Start();
   Message *reply;
-  if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::INIT,
-                                                     &reply,
-                                                     2000,
-                                                     &m_vaapiConfig,
-                                                     sizeof(m_vaapiConfig)))
+  if (m_vaapiOutput.m_controlPort.SendOutMessageSync(COutputControlProtocol::INIT, &reply, 2s,
+                                                     &m_vaapiConfig, sizeof(m_vaapiConfig)))
   {
     bool success = reply->signal == COutputControlProtocol::ACC ? true : false;
     if (!success)
