@@ -52,6 +52,7 @@ protected:
   std::vector<CDemuxStreamSubtitle> m_streams;
   bool m_hasData;
   double m_curPts;
+  std::vector<CCaptionBlock*> m_ccReorderBuffer;
   std::vector<CCaptionBlock*> m_ccTempBuffer;
   std::unique_ptr<CDecoderCC708> m_ccDecoder;
   AVCodecID m_codec;
