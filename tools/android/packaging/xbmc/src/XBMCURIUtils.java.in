@@ -6,7 +6,7 @@ public class XBMCURIUtils
 {
   native String _substitutePath(String path);
 
-  private static String TAG = "@APP_NAME@uriutils";
+  private static String TAG = "@APP_NAME@";
 
   public XBMCURIUtils()
   {
@@ -21,7 +21,7 @@ public class XBMCURIUtils
     catch (Exception e)
     {
       e.printStackTrace();
-      Log.e(TAG, "substitutePath: Exception");
+      Log.e(TAG, "XBMCURIUtils.substitutePath: Exception");
       return null;
     }
   }

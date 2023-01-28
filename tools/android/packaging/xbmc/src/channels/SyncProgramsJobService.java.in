@@ -52,21 +52,21 @@ import java.util.List;
 public class SyncProgramsJobService extends JobService
 {
 
-  private static final String TAG = "SyncProgramsJobService";
+  private static final String TAG = "@APP_NAME@";
 
   private SyncProgramsTask mSyncProgramsTask;
 
   @Override
   public boolean onStartJob(final JobParameters jobParameters)
   {
-    Log.d(TAG, "onStartJob(): " + jobParameters);
+    Log.d(TAG, "SyncProgramsJobService.onStartJob(): " + jobParameters);
 
     final long channelId = getChannelId(jobParameters);
     if (channelId == -1L)
     {
       return false;
     }
-    Log.d(TAG, "onStartJob(): Scheduling syncing for programs for channel " + channelId);
+    Log.d(TAG, "SyncProgramsJobService.onStartJob(): Scheduling syncing for programs for channel " + channelId);
 
     mSyncProgramsTask =
             new SyncProgramsTask(getApplicationContext())
@@ -156,7 +156,7 @@ public class SyncProgramsJobService extends JobService
  */
     private void syncPrograms(long channelId, String uri, List<Media> initialMedias)
     {
-      Log.d(TAG, "Sync programs for channel: " + channelId);
+      Log.d(TAG, "SyncProgramsJobService: Sync programs for channel: " + channelId);
       List<Media> medias = new ArrayList<>(initialMedias);
 
       try (Cursor cursor =
@@ -176,14 +176,14 @@ public class SyncProgramsJobService extends JobService
           if (uri.isEmpty())
           {
             // Suggestion channel
-            Log.d(TAG, "Suggestion channel is browsable: " + channelId);
+            Log.d(TAG, "SyncProgramsJobService: Suggestion channel is browsable: " + channelId);
 
             deletePrograms(channelId, medias);
             medias = createPrograms(channelId, jsonrpc.getSuggestions());
           }
           else
           {
-            Log.d(TAG, "Channel is browsable: " + channelId);
+            Log.d(TAG, "SyncProgramsJobService: Channel is browsable: " + channelId);
 
             String xbmcURL = Uri.parse(uri).getFragment();
             List<File> files = jsonrpc.getFiles(xbmcURL);
@@ -213,7 +213,7 @@ public class SyncProgramsJobService extends JobService
         if (programUri != null)
         {
           long programId = ContentUris.parseId(programUri);
-          Log.d(TAG, "Inserted new program: " + programId);
+          Log.d(TAG, "SyncProgramsJobService: Inserted new program: " + programId);
           media.setProgramId(programId);
           mediasAdded.add(media);
         }
@@ -239,7 +239,7 @@ public class SyncProgramsJobService extends JobService
                                 null,
                                 null);
       }
-      Log.d(TAG, "Deleted " + count + " programs for  channel " + channelId);
+      Log.d(TAG, "SyncProgramsJobService: Deleted " + count + " programs for  channel " + channelId);
 
       // Remove our local records to stay in sync with the TV Provider.
       XBMCDatabase.removeMedias(getApplicationContext(), channelId);

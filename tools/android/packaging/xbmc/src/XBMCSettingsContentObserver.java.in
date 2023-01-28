@@ -11,7 +11,7 @@ public class XBMCSettingsContentObserver extends ContentObserver
 {
   native void _onVolumeChanged(int newVolume);
 
-  private static final String TAG = "@APP_NAME_LC@";
+  private static final String TAG = "@APP_NAME@";
 
   int previousVolume;
   Context context;
@@ -39,7 +39,7 @@ public class XBMCSettingsContentObserver extends ContentObserver
   {
     super.onChange(selfChange);
 
-    Log.d(TAG, "Setting changed: " + uri.toString());
+    Log.d(TAG, "XBMCSettingsContentObserver: Setting changed: " + uri.toString());
 
     if (
             uri.compareTo(Uri.parse("content://settings/system/volume_music_speaker")) == 0 ||
@@ -59,7 +59,7 @@ public class XBMCSettingsContentObserver extends ContentObserver
         }
         catch (UnsatisfiedLinkError e)
         {
-          Log.e("XBMCSettingsContentObserver", "Native not registered");
+          Log.e(TAG, "XBMCSettingsContentObserver: Native not registered");
         }
       }
     }
