@@ -31,13 +31,6 @@ class CSetting;
 #define FRAME_TYPE_B     3
 #define FRAME_TYPE_D     4
 
-/*!
- * \brief Deleter for AVBufferRef (ATSC A53 closed captions)
-*/
-struct AVBufferRefDeleter
-{
-  void operator()(AVBufferRef* ref) { av_buffer_unref(&ref); }
-};
 
 // should be entirely filled by all codecs
 struct VideoPicture
@@ -60,9 +53,11 @@ public:
    * \brief Gets the A53 side data of the video picture (closed captions)
    * \return the A53 side data, reseting the value
   */
-  std::unique_ptr<AVBufferRef, AVBufferRefDeleter> GetA53SideData()
+  AVBufferRef* ConsumeA53SideData()
   {
-    return std::move(m_A53SideData);
+    AVBufferRef* sideData = m_A53SideData;
+    m_A53SideData = nullptr;
+    return sideData;
   }
 
   /*!
@@ -70,10 +65,14 @@ public:
    *
    * \param[in] sideData the data to store as A53 side data
   */
-  void SetA53SideData(AVBufferRef* sideData)
-  {
-    m_A53SideData = std::unique_ptr<AVBufferRef, AVBufferRefDeleter>(av_buffer_ref(sideData));
-  }
+  void SetA53SideData(AVBufferRef* sideData) { m_A53SideData = av_buffer_ref(sideData); }
+
+  /*!
+   * \brief Releases the sidedata data, decreasing its reference count
+   *
+   * \param[in] sideData pointer to the sidedata pointer
+  */
+  void ReleaseA53SideData(AVBufferRef** sideData) const { av_buffer_unref(sideData); }
 
   CVideoBuffer *videoBuffer = nullptr;
 
@@ -111,7 +110,7 @@ public:
 private:
   VideoPicture(VideoPicture const&);
   VideoPicture& operator=(VideoPicture const&);
-  std::unique_ptr<AVBufferRef, AVBufferRefDeleter> m_A53SideData;
+  AVBufferRef* m_A53SideData;
 };
 
 #define DVP_FLAG_TOP_FIELD_FIRST    0x00000001
