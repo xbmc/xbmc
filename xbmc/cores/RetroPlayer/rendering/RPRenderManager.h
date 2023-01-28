@@ -114,13 +114,13 @@ private:
   /*!
    * \brief Get or create a renderer compatible with the given render settings
    */
-  std::shared_ptr<CRPBaseRenderer> GetRenderer(const IGUIRenderSettings* renderSettings);
+  std::shared_ptr<CRPBaseRenderer> GetRendererForSettings(const IGUIRenderSettings* renderSettings);
 
   /*!
    * \brief Get or create a renderer for the given buffer pool and render settings
    */
-  std::shared_ptr<CRPBaseRenderer> GetRenderer(IRenderBufferPool* bufferPool,
-                                               const CRenderSettings& renderSettings);
+  std::shared_ptr<CRPBaseRenderer> GetRendererForPool(IRenderBufferPool* bufferPool,
+                                                      const CRenderSettings& renderSettings);
 
   /*!
    * \brief Render a frame using the given renderer
