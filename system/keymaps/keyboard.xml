@@ -114,8 +114,8 @@
       <browser_refresh/>
       <browser_stop/>
       <browser_search/>
-      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
-      <favorites>ActivateWindow(Favourites)</favorites>
+      <browser_favorites>ActivateWindow(FavouritesBrowser)</browser_favorites>
+      <favorites>ActivateWindow(FavouritesBrowser)</favorites>
       <config>ActivateWindow(Settings)</config>
       <browser_home>ActivateWindow(Home)</browser_home>
       <homepage>ActivateWindow(Home)</homepage>
@@ -670,6 +670,14 @@
       <backspace mod="longpress">ActivateWindow(Home)</backspace>
     </keyboard>
   </Favourites>
+  <FavouritesBrowser>
+    <keyboard>
+      <u>MoveItemUp</u>
+      <d>MoveItemDown</d>
+      <delete>Delete</delete>
+      <backspace mod="longpress">ActivateWindow(Home)</backspace>
+    </keyboard>
+  </FavouritesBrowser>
   <NumericInput>
     <keyboard>
       <backspace>Close</backspace>
