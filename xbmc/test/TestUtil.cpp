@@ -10,6 +10,10 @@
 
 #include <gtest/gtest.h>
 
+using ::testing::Test;
+using ::testing::ValuesIn;
+using ::testing::WithParamInterface;
+
 TEST(TestUtil, GetQualifiedFilename)
 {
   std::string file = "../foo";
@@ -85,3 +89,49 @@ TEST(TestUtil, ValidatePath)
   path = "smb:\\\\foo\\\\bar\\";
   EXPECT_EQ(CUtil::ValidatePath(path, true), "smb://foo/bar/");
 }
+
+struct TestUtilCleanStringData
+{
+  std::string input;
+  bool first;
+  std::string expTitle;
+  std::string expTitleYear;
+  std::string expYear;
+};
+
+std::ostream& operator<<(std::ostream& os, const TestUtilCleanStringData& rhs)
+{
+  return os << "(input: " << rhs.input << "; first: " << (rhs.first ? "true" : "false")
+            << "; expTitle: " << rhs.expTitle << "; expTitleYear: " << rhs.expTitleYear
+            << "; expYear: " << rhs.expYear << ")";
+}
+
+class TestUtilCleanString : public Test, public WithParamInterface<TestUtilCleanStringData>
+{
+};
+
+TEST_P(TestUtilCleanString, CleanString)
+{
+  std::string title, titleYear, year;
+  CUtil::CleanString(GetParam().input, title, titleYear, year, true, GetParam().first);
+  EXPECT_EQ(title, GetParam().expTitle);
+  EXPECT_EQ(titleYear, GetParam().expTitleYear);
+  EXPECT_EQ(year, GetParam().expYear);
+}
+const TestUtilCleanStringData values[] = {
+    {"Some.BDRemux.mkv", true, "Some", "Some", ""},
+    {"SomeMovie.2018.UHD.BluRay.2160p.HEVC.TrueHD.Atmos.7.1-BeyondHD", true, "SomeMovie",
+     "SomeMovie (2018)", "2018"},
+    {"SOME_UHD_HDR10+_DV_2022_remux_dub atmos_soundmovie", true, "SOME", "SOME (2022)", "2022"},
+    // no result because of the . and spaces in movie name
+    {"Some Movie.Some Story.2013.BDRemux.1080p", true, "Some Movie.Some Story",
+     "Some Movie.Some Story (2013)", "2013"},
+    {"Movie.Some.Story.2017.2160p.BDRemux.IMAX.HDR.DV.IVA(ENG.RUS).ExKinoRay", true,
+     "Movie Some Story", "Movie Some Story (2017)", "2017"},
+    {"Some.Movie.1954.BDRip.1080p.mkv", true, "Some Movie", "Some Movie (1954)", "1954"},
+    {"Some «Movie».2021.WEB-DL.2160p.HDR.mkv", true, "Some «Movie»", "Some «Movie» (2021)", "2021"},
+    {"Some Movie (2013).mp4", true, "Some Movie", "Some Movie (2013)", "2013"},
+    // no result because of the text (Director Cut), it can also a be a movie translation
+    {"Some (Director Cut).BDRemux.mkv", true, "Some (Director Cut)", "Some (Director Cut)", ""}};
+
+INSTANTIATE_TEST_SUITE_P(URL, TestUtilCleanString, ValuesIn(values));
