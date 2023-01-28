@@ -37,8 +37,7 @@ TEST_F(Testlog, Log)
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  CServiceBroker::GetLogging().Initialize(
-      CSpecialProtocol::TranslatePath("special://temp/").c_str());
+  CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://temp/"));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   CLog::Log(LOGDEBUG, "debug log message");
@@ -83,8 +82,7 @@ TEST_F(Testlog, SetLogLevel)
   std::string appName = CCompileInfo::GetAppName();
   StringUtils::ToLower(appName);
   logfile = CSpecialProtocol::TranslatePath("special://temp/") + appName + ".log";
-  CServiceBroker::GetLogging().Initialize(
-      CSpecialProtocol::TranslatePath("special://temp/").c_str());
+  CServiceBroker::GetLogging().Initialize(CSpecialProtocol::TranslatePath("special://temp/"));
   EXPECT_TRUE(XFILE::CFile::Exists(logfile));
 
   EXPECT_EQ(LOG_LEVEL_DEBUG, CServiceBroker::GetLogging().GetLogLevel());

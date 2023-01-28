@@ -525,13 +525,13 @@ bool CDRMUtils::FindConnector()
                                return connector->GetEncoderId() > 0 && connector->IsConnected() &&
                                       connector->GetName() == connectorName;
                              });
-  }
 
-  if (connector == m_connectors.end())
-  {
-    CLog::Log(LOGDEBUG, "CDRMUtils::{} - failed to find specified connector: {}, trying default",
-              __FUNCTION__, connectorName);
-    connectorName = "Default";
+    if (connector == m_connectors.end())
+    {
+      CLog::Log(LOGDEBUG, "CDRMUtils::{} - failed to find specified connector: {}, trying default",
+                __FUNCTION__, connectorName);
+      connectorName = "Default";
+    }
   }
 
   if (connectorName == "Default")
