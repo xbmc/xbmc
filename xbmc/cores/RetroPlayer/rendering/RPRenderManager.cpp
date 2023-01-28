@@ -287,7 +287,7 @@ void CRPRenderManager::Flush()
 void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRes)
 {
   // Get a renderer for the fullscreen window
-  std::shared_ptr<CRPBaseRenderer> renderer = GetRenderer(nullptr);
+  std::shared_ptr<CRPBaseRenderer> renderer = GetRendererForSettings(nullptr);
   if (!renderer)
     return;
 
@@ -339,7 +339,7 @@ void CRPRenderManager::RenderControl(bool bClear,
                                      const IGUIRenderSettings* renderSettings)
 {
   // Get a renderer for the control
-  std::shared_ptr<CRPBaseRenderer> renderer = GetRenderer(renderSettings);
+  std::shared_ptr<CRPBaseRenderer> renderer = GetRendererForSettings(renderSettings);
   if (!renderer)
     return;
 
@@ -442,7 +442,7 @@ void CRPRenderManager::RenderInternal(const std::shared_ptr<CRPBaseRenderer>& re
   renderer->RenderFrame(bClear, alpha);
 }
 
-std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
+std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRendererForSettings(
     const IGUIRenderSettings* renderSettings)
 {
   std::shared_ptr<CRPBaseRenderer> renderer;
@@ -459,7 +459,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
   // Check renderers in order of buffer pools
   for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
   {
-    renderer = GetRenderer(bufferPool, effectiveRenderSettings);
+    renderer = GetRendererForPool(bufferPool, effectiveRenderSettings);
     if (renderer)
       break;
   }
@@ -474,7 +474,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
   return renderer;
 }
 
-std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
+std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRendererForPool(
     IRenderBufferPool* bufferPool, const CRenderSettings& renderSettings)
 {
   std::shared_ptr<CRPBaseRenderer> renderer;
