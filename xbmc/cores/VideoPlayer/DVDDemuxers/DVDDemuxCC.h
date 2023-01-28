@@ -19,7 +19,7 @@ class CDecoderCC708;
 class CDVDDemuxCC : public CDVDDemux
 {
 public:
-  explicit CDVDDemuxCC();
+  explicit CDVDDemuxCC(AVCodecID codec);
   ~CDVDDemuxCC() override;
 
   bool Reset() override { return true; }
@@ -54,4 +54,5 @@ protected:
   double m_curPts;
   std::vector<CCaptionBlock*> m_ccTempBuffer;
   std::unique_ptr<CDecoderCC708> m_ccDecoder;
+  AVCodecID m_codec;
 };
