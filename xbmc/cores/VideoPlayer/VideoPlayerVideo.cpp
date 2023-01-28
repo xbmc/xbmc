@@ -741,9 +741,10 @@ bool CVideoPlayerVideo::ProcessDecoderOutput(double &frametime, double &pts)
         CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
             CSettings::SETTING_SUBTITLES_PARSECAPTIONS))
     {
-      std::unique_ptr<AVBufferRef, AVBufferRefDeleter> a53SideData = m_picture.GetA53SideData();
+      AVBufferRef* a53SideData = m_picture.ConsumeA53SideData();
       auto ccData =
           std::make_unique<CCaptionBlock>(m_picture.pts, a53SideData->data, a53SideData->size);
+      m_picture.ReleaseA53SideData(&a53SideData);
       m_messageParent.Put(std::make_shared<CDVDMsgSubtitleCCData>(ccData));
     }
 
