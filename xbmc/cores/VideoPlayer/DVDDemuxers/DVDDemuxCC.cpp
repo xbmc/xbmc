@@ -15,8 +15,10 @@
 
 #include <algorithm>
 
-CDVDDemuxCC::CDVDDemuxCC() : m_hasData{false}, m_curPts{0.0}
+CDVDDemuxCC::CDVDDemuxCC(AVCodecID codec) : m_codec(codec)
 {
+  m_hasData = false;
+  m_curPts = 0.0;
 }
 
 CDVDDemuxCC::~CDVDDemuxCC()
