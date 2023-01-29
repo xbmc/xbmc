@@ -22,18 +22,9 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-VideoPlayerCodec::VideoPlayerCodec()
+VideoPlayerCodec::VideoPlayerCodec() : m_processInfo(CProcessInfo::CreateInstance())
 {
   m_CodecName = "VideoPlayer";
-  m_pDemuxer = NULL;
-  m_nAudioStream = -1;
-  m_nDecodedLen = 0;
-  m_bInited = false;
-  m_pResampler = NULL;
-  m_needConvert = false;
-  m_channels = 0;
-
-  m_processInfo.reset(CProcessInfo::CreateInstance());
 }
 
 VideoPlayerCodec::~VideoPlayerCodec()
