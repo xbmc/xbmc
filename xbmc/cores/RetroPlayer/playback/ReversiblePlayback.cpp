@@ -22,6 +22,7 @@
 #include "games/addons/GameClient.h"
 #include "utils/MathUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #include <algorithm>
 #include <mutex>
@@ -214,25 +215,32 @@ bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)
   bool bSuccess = false;
 
   std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
-  if (m_savestateDatabase->GetSavestate(savestatePath, *savestate) &&
-      savestate->GetMemorySize() == memorySize)
+  if (m_savestateDatabase->GetSavestate(savestatePath, *savestate))
   {
+    if (savestate->GetMemorySize() != memorySize)
     {
-      std::unique_lock<CCriticalSection> lock(m_mutex);
-      if (m_memoryStream)
-      {
-        m_memoryStream->SetFrameCounter(savestate->TimestampFrames());
-        std::memcpy(m_memoryStream->BeginFrame(), savestate->GetMemoryData(), memorySize);
-        m_memoryStream->SubmitFrame();
-      }
+      CLog::Log(LOGERROR, "Invalid memory size, got {}, expected {}", memorySize,
+                savestate->GetMemorySize());
     }
-
-    if (m_gameClient->Deserialize(savestate->GetMemoryData(), memorySize))
+    else
     {
-      m_totalFrameCount = savestate->TimestampFrames();
-      bSuccess = true;
-      if (savestate->Type() == SAVE_TYPE::AUTO)
-        m_autosavePath = savestatePath;
+      {
+        std::unique_lock<CCriticalSection> lock(m_mutex);
+        if (m_memoryStream)
+        {
+          m_memoryStream->SetFrameCounter(savestate->TimestampFrames());
+          std::memcpy(m_memoryStream->BeginFrame(), savestate->GetMemoryData(), memorySize);
+          m_memoryStream->SubmitFrame();
+        }
+      }
+
+      if (m_gameClient->Deserialize(savestate->GetMemoryData(), memorySize))
+      {
+        m_totalFrameCount = savestate->TimestampFrames();
+        bSuccess = true;
+        if (savestate->Type() == SAVE_TYPE::AUTO)
+          m_autosavePath = savestatePath;
+      }
     }
   }
 
