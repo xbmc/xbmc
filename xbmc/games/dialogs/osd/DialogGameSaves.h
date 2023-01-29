@@ -36,7 +36,7 @@ private:
   /*!
    * \brief Called every frame with the item being focused
    */
-  void OnFocus(const CFileItemPtr& item);
+  void OnFocus(const CFileItem& item);
 
   /*!
    * \brief Called every frame if no item is focused
@@ -44,9 +44,19 @@ private:
   void OnFocusLost();
 
   /*!
-   * \brief Called when a popup menu is opened for an item
+   * \brief Called when a context menu is opened for an item
    */
-  void OnPopupMenu(const CFileItemPtr& item);
+  void OnContextMenu(CFileItem& item);
+
+  /*!
+  * \brief Called when "Rename" is selected from the context menu
+  */
+  void OnRename(CFileItem& item);
+
+  /*!
+  * \brief Called when "Delete" is selected from the context menu
+  */
+  void OnDelete(CFileItem& item);
 
   /*!
    * \brief Called every frame with the caption to set

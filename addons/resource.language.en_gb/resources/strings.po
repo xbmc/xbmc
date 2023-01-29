@@ -6555,7 +6555,7 @@ msgctxt "#13205"
 msgid "Unknown"
 msgstr ""
 
-#. unused?
+#. Label in the game OSD to overwrite an existing savestate
 msgctxt "#13206"
 msgid "Overwrite"
 msgstr ""

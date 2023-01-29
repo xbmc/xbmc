@@ -40,7 +40,7 @@ private:
   // Actions for port list
   void UpdatePortList();
   void FocusPortList();
-  void OnClickAction();
+  bool OnClickAction();
 
   // Actions for the available buttons
   void ResetPorts();

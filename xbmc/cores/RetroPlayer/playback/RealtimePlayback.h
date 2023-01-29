@@ -31,8 +31,11 @@ public:
   double GetSpeed() const override { return 1.0; }
   void SetSpeed(double speedFactor) override {}
   void PauseAsync() override {}
-  std::string CreateSavestate(bool autosave) override { return ""; }
-  bool LoadSavestate(const std::string& path) override { return false; }
+  std::string CreateSavestate(bool autosave, const std::string& savestatePath = "") override
+  {
+    return "";
+  }
+  bool LoadSavestate(const std::string& savestatePath) override { return false; }
 };
 } // namespace RETRO
 } // namespace KODI

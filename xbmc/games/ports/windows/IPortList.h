@@ -68,6 +68,8 @@ public:
 
   /*!
    * \brief Query the ID of the current control in this list
+   *
+   * \return The control ID, or -1 if no control is currently active
    */
   virtual int GetCurrentControl() = 0;
 
@@ -88,8 +90,10 @@ public:
 
   /*!
    * \brief The port list has been selected
+   *
+   * \brief True if a control was active, false of all controls were inactive
    */
-  virtual void OnSelect() = 0;
+  virtual bool OnSelect() = 0;
 
   /*!
    * \brief Reset the ports to their game add-on's default configuration

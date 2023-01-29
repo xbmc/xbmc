@@ -28,9 +28,12 @@
 using namespace KODI;
 using namespace GAME;
 
-#define CONTROL_HEADING 1
-#define CONTROL_THUMBS 11
-#define CONTROL_DESCRIPTION 12
+namespace
+{
+constexpr unsigned int CONTROL_HEADING = 1;
+constexpr unsigned int CONTROL_THUMBS = 10811;
+constexpr unsigned int CONTROL_DESCRIPTION = 10812;
+} // namespace
 
 CDialogGameVideoSelect::CDialogGameVideoSelect(int windowId)
   : CGUIDialog(windowId, "DialogSelect.xml"),
@@ -81,21 +84,47 @@ bool CDialogGameVideoSelect::OnMessage(CGUIMessage& message)
         const int controlId = message.GetSenderId();
         if (m_viewControl->HasControl(controlId))
         {
-          using namespace MESSAGING;
-
-          OnClickAction();
-
-          // Changed from sending ACTION_SHOW_OSD to closing the dialog
-          Close();
-
-          return true;
+          if (OnClickAction())
+            return true;
         }
       }
-      break;
-    }
-    case GUI_MSG_REFRESH_LIST:
-    {
-      OnRefreshList();
+      else if (actionId == ACTION_CONTEXT_MENU || actionId == ACTION_MOUSE_RIGHT_CLICK)
+      {
+        const int controlId = message.GetSenderId();
+        if (m_viewControl->HasControl(controlId))
+        {
+          if (OnMenuAction())
+            return true;
+        }
+      }
+      else if (actionId == ACTION_CREATE_BOOKMARK)
+      {
+        const int controlId = message.GetSenderId();
+        if (m_viewControl->HasControl(controlId))
+        {
+          if (OnOverwriteAction())
+            return true;
+        }
+      }
+      else if (actionId == ACTION_RENAME_ITEM)
+      {
+        const int controlId = message.GetSenderId();
+        if (m_viewControl->HasControl(controlId))
+        {
+          if (OnRenameAction())
+            return true;
+        }
+      }
+      else if (actionId == ACTION_DELETE_ITEM)
+      {
+        const int controlId = message.GetSenderId();
+        if (m_viewControl->HasControl(controlId))
+        {
+          if (OnDeleteAction())
+            return true;
+        }
+      }
+
       break;
     }
     default:
@@ -168,7 +197,7 @@ void CDialogGameVideoSelect::Update()
   // Empty the list ready for population
   Clear();
 
-  OnRefreshList();
+  RefreshList();
 
   // CServiceBroker::GetWinSystem()->GetGfxContext().Unlock();
 }
@@ -179,7 +208,7 @@ void CDialogGameVideoSelect::Clear()
   m_vecItems->Clear();
 }
 
-void CDialogGameVideoSelect::OnRefreshList()
+void CDialogGameVideoSelect::RefreshList()
 {
   m_vecItems->Clear();
 
@@ -190,6 +219,10 @@ void CDialogGameVideoSelect::OnRefreshList()
   auto focusedIndex = GetFocusedItem();
   m_viewControl->SetSelectedItem(focusedIndex);
   OnItemFocus(focusedIndex);
+
+  // Refresh the panel container
+  CGUIMessage message(GUI_MSG_REFRESH_THUMBS, GetID(), CONTROL_THUMBS);
+  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message, GetID());
 }
 
 void CDialogGameVideoSelect::SaveSettings()
