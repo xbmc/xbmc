@@ -427,7 +427,7 @@ void CFileCache::Process()
       const int64_t forward = m_pCache->WaitForData(0, 0ms);
       if (forward + m_chunkSize >= m_forwardCacheSize)
       {
-        if (m_writeRateActual < m_writeRate)
+        if (m_writeRateActual < m_writeRate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor)
           m_writeRateLowSpeed = m_writeRateActual;
 
         m_bFilling = false;
