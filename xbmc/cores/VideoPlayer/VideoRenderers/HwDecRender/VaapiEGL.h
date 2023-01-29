@@ -13,6 +13,7 @@
 #include "platform/posix/utils/FileHandle.h"
 
 #include <array>
+#include <cstdint>
 
 #include <va/va.h>
 

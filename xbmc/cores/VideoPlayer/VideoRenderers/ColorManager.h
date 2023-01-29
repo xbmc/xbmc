@@ -12,6 +12,7 @@
 #include <lcms2.h>
 #endif
 
+#include <cstdint>
 #include <string>
 
 extern "C"

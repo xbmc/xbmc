@@ -19,6 +19,7 @@
 #include <sys/statfs.h>
 #endif
 
+#include <cstdint>
 #include <cstdlib>
 #include <limits.h>
 #include <string.h>
