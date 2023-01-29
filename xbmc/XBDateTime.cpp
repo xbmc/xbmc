@@ -818,6 +818,7 @@ void CDateTime::GetAsTm(tm& time) const
   KODI::TIME::SystemTime st;
   GetAsSystemTime(st);
 
+  time = {};
   time.tm_year = st.year - 1900;
   time.tm_mon = st.month - 1;
   time.tm_wday = st.dayOfWeek;
@@ -825,6 +826,7 @@ void CDateTime::GetAsTm(tm& time) const
   time.tm_hour = st.hour;
   time.tm_min = st.minute;
   time.tm_sec = st.second;
+  time.tm_isdst = -1;
 
   mktime(&time);
 }
