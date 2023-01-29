@@ -5,7 +5,7 @@ DEPS = ../../Makefile.include Makefile XZ-VERSION ../../download-files.include
 
 export LIBTOOL=builds/unix/libtool
 export PATH:=$(PREFIX)/bin:$(PATH)
-CONFIGURE=./configure --prefix=$(PREFIX)
+CONFIGURE=./configure --prefix=$(PREFIX) --disable-doc
 
 APP=$(PLATFORM)/src/xz/xz
 
