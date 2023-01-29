@@ -488,10 +488,9 @@ protected:
     mutable CCriticalSection m_section;
     CSelectionStreams m_selectionStreams;
     std::vector<ProgramInfo> m_programs;
-    int m_program;
-    int m_videoIndex;
-    int m_audioIndex;
-    int m_subtitleIndex;
+    int m_videoIndex{-1};
+    int m_audioIndex{-1};
+    int m_subtitleIndex{-1};
   } m_content;
 
   int m_playSpeed;
