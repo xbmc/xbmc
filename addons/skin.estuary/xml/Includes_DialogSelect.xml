@@ -251,7 +251,7 @@
 					</control>
 					<control type="label">
 						<left>0</left>
-						<top>240</top>
+						<top>238</top>
 						<right>20</right>
 						<height>20</height>
 						<font>font14</font>
@@ -261,7 +261,7 @@
 					</control>
 					<control type="textbox">
 						<left>0</left>
-						<top>260</top>
+						<top>262</top>
 						<right>20</right>
 						<height>40</height>
 						<font>font10</font>
@@ -290,7 +290,7 @@
 					</control>
 					<control type="label">
 						<left>0</left>
-						<top>240</top>
+						<top>238</top>
 						<right>20</right>
 						<height>20</height>
 						<align>center</align>
@@ -301,7 +301,7 @@
 					</control>
 					<control type="textbox">
 						<left>0</left>
-						<top>260</top>
+						<top>262</top>
 						<right>20</right>
 						<height>40</height>
 						<font>font10</font>
@@ -351,7 +351,7 @@
 				<left>14</left>
 				<right>14</right>
 				<bottom>0</bottom>
-				<height>20</height>
+				<height>16</height>
 				<font>font12</font>
 				<align>left</align>
 				<shadowcolor>text_shadow</shadowcolor>
