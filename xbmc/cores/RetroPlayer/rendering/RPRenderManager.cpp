@@ -716,19 +716,19 @@ void CRPRenderManager::SaveThumbnail(const std::string& path)
   const int stride = CRenderTranslator::TranslateWidthToBytes(width, format);
 
   unsigned int scaleWidth = 400;
-  unsigned int scaleHeigth = 220;
-  CPicture::GetScale(width, height, scaleWidth, scaleHeigth);
+  unsigned int scaleHeight = 220;
+  CPicture::GetScale(width, height, scaleWidth, scaleHeight);
 
   const int bytesPerPixel = 4;
-  std::vector<uint8_t> scaledImage(scaleWidth * scaleHeigth * bytesPerPixel);
+  std::vector<uint8_t> scaledImage(scaleWidth * scaleHeight * bytesPerPixel);
 
   const AVPixelFormat outFormat = AV_PIX_FMT_BGR0;
   const int scaleStride = CRenderTranslator::TranslateWidthToBytes(scaleWidth, outFormat);
 
   if (CPicture::ScaleImage(copiedData.data(), width, height, stride, format, scaledImage.data(),
-                           scaleWidth, scaleHeigth, scaleStride, outFormat))
+                           scaleWidth, scaleHeight, scaleStride, outFormat))
   {
-    CPicture::CreateThumbnailFromSurface(scaledImage.data(), scaleWidth, scaleHeigth, scaleStride,
+    CPicture::CreateThumbnailFromSurface(scaledImage.data(), scaleWidth, scaleHeight, scaleStride,
                                          path);
   }
 }
