@@ -173,7 +173,11 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
           fileFormatter.FormatLabels(i.get());
       }
 
-      const SortDescription sortDesc = GetSortDescription(*state, items);
+      SortDescription sortDesc;
+      if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == viewStateWindowId)
+        sortDesc = state->GetSortMethod();
+      else
+        sortDesc = GetSortDescription(*state, items);
 
       if (sortDesc.sortBy == SortByLabel)
         items.ClearSortState();
