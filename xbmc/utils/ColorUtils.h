@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "utils/Map.h"
+
 #include <cstdint>
 #include <string>
 #include <utility>
@@ -20,18 +22,29 @@ namespace COLOR
 
 typedef uint32_t Color;
 
-constexpr Color BLACK = 0xFF000000;
-constexpr Color LIMITED_BLACK = 0xFF101010;
-constexpr Color BLUE = 0xFF0099FF;
-constexpr Color BRIGHTGREEN = 0xFF00FF00;
-constexpr Color CYAN = 0xFF00FFFF;
-constexpr Color DARKGREY = 0xFF808080;
-constexpr Color GREY = 0xFFC0C0C0;
-constexpr Color LIGHTGREY = 0xFFE5E5E5;
+// Custom colors
+
 constexpr Color NONE = 0x00000000;
+constexpr Color LIMITED_BLACK = 0xFF101010;
+
+// W3C HTML color list
+
 constexpr Color WHITE = 0xFFFFFFFF;
+constexpr Color SILVER = 0xFFC0C0C0;
+constexpr Color GRAY = 0xFF808080;
+constexpr Color BLACK = 0xFF000000;
+constexpr Color RED = 0xFFFF0000;
+constexpr Color MAROON = 0xFF800000;
 constexpr Color YELLOW = 0xFFFFFF00;
-constexpr Color YELLOWGREEN = 0xFFCCFF00;
+constexpr Color OLIVE = 0xFF808000;
+constexpr Color LIME = 0xFF00FF00;
+constexpr Color GREEN = 0xFF008000;
+constexpr Color AQUA = 0xFF00FFFF;
+constexpr Color TEAL = 0xFF008080;
+constexpr Color BLUE = 0xFF0000FF;
+constexpr Color NAVY = 0xFF000080;
+constexpr Color FUCHSIA = 0xFFFF00FF;
+constexpr Color PURPLE = 0xFF800080;
 
 struct ColorInfo
 {
@@ -48,6 +61,24 @@ struct ColorFloats
   float blue;
   float alpha;
 };
+
+//! \brief W3C HTML 16 basic color list
+constexpr auto HTML_BASIC_COLORS = make_map<std::string_view, Color>({{"white", WHITE},
+                                                                      {"silver", SILVER},
+                                                                      {"gray", GRAY},
+                                                                      {"black", BLACK},
+                                                                      {"red", RED},
+                                                                      {"maroon", MAROON},
+                                                                      {"yellow", YELLOW},
+                                                                      {"olive", OLIVE},
+                                                                      {"lime", LIME},
+                                                                      {"green", GREEN},
+                                                                      {"aqua", AQUA},
+                                                                      {"teal", TEAL},
+                                                                      {"blue", BLUE},
+                                                                      {"navy", NAVY},
+                                                                      {"fuchsia", FUCHSIA},
+                                                                      {"purple", PURPLE}});
 
 /*! \brief Change the opacity of a given ARGB color
     \param color The original color
