@@ -8,6 +8,8 @@
 
 #include "ColorUtils.h"
 
+#include "StringUtils.h"
+
 #include <algorithm>
 #include <cmath>
 #include <cstdio>
@@ -140,4 +142,9 @@ ColorFloats UTILS::COLOR::ConvertToFloats(const Color argb)
   c.green = static_cast<float>((argb >> 8) & 0xFF) * (1.0f / 255.0f);
   c.blue = static_cast<float>(argb & 0xFF) * (1.0f / 255.0f);
   return c;
+}
+
+std::string UTILS::COLOR::ConvertoToHexRGB(const Color argb)
+{
+  return StringUtils::Format("{:06X}", argb & ~0xFF000000);
 }
