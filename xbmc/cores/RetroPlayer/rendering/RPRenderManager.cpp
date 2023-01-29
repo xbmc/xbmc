@@ -631,13 +631,13 @@ void CRPRenderManager::CopyFrame(IRenderBuffer* renderBuffer,
     const unsigned int targetStride =
         static_cast<unsigned int>(renderBuffer->GetFrameSize() / renderBuffer->GetHeight());
 
-    if (m_format == renderBuffer->GetFormat())
+    if (format == renderBuffer->GetFormat())
     {
       if (sourceStride == targetStride)
         std::memcpy(target, source, size);
       else
       {
-        const unsigned int widthBytes = CRenderTranslator::TranslateWidthToBytes(width, m_format);
+        const unsigned int widthBytes = CRenderTranslator::TranslateWidthToBytes(width, format);
         if (widthBytes > 0)
         {
           for (unsigned int i = 0; i < height; i++)
