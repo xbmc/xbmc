@@ -52,6 +52,7 @@
       <m>Menu</m>
       <n mod="ctrl">ActivateWindow(PlayerControls)</n>
       <s>ActivateWindow(ShutdownMenu)</s>
+      <s mod="alt">ActivateWindow(Settings)</s>
       <escape>PreviousMenu</escape>
       <escape mod="longpress">Back</escape>
       <i>Info</i>
