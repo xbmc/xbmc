@@ -66,6 +66,8 @@ OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
 
   m_webvttHandler.Reset();
 
+  m_webvttHandler.SetPeriodStart(pPacket->m_ptsOffsetCorrection);
+
   if (m_isISOFormat)
   {
     double prevSubStopTime = 0.0;
