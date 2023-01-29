@@ -217,7 +217,10 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
 
   m_state = state;
   AdjustWindow(true);
-
+  
+  HMENU mnu = GetSystemMenu(hWnd, false);
+  DeleteMenu(mnu, SC_MOVE, MF_BYCOMMAND);
+  
   // Show the window
   ShowWindow( m_hWnd, SW_SHOWDEFAULT );
   UpdateWindow( m_hWnd );
