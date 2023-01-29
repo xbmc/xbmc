@@ -12,6 +12,8 @@
 #include "system_egl.h"
 #include "threads/CriticalSection.h"
 
+#include <cstdint>
+
 #include <EGL/eglext.h>
 #ifdef HAVE_EGLEXTANGLE
 #include <EGL/eglext_angle.h>

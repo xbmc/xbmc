@@ -10,6 +10,7 @@
 
 #include "utils/log.h"
 
+#include <cstdint>
 #include <cstring>
 
 void CCharArrayParser::Reset()
