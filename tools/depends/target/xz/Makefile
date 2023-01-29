@@ -2,9 +2,18 @@ include ../../Makefile.include XZ-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile XZ-VERSION ../../download-files.include
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --disable-assembler --disable-lzmainfo --disable-lzma-links --disable-scripts --disable-doc
+CONFIGURE=./configure --prefix=$(PREFIX) \
+                      --disable-shared \
+                      --disable-assembler \
+                      --disable-xz \
+                      --disable-xzdec \
+                      --disable-lzmadec \
+                      --disable-lzmainfo \
+                      --disable-lzma-links \
+                      --disable-scripts \
+                      --disable-doc
 
-LIBDYLIB=$(PLATFORM)/src/liblzma/liblzma.a
+LIBDYLIB=$(PLATFORM)/src/liblzma/.libs/liblzma.a
 
 all: .installed-$(PLATFORM)
 
