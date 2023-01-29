@@ -416,7 +416,7 @@ extern "C"
   ///@{
 
   //============================================================================
-  /// @brief **Game video stream properties**
+  /// @brief **Game software framebuffer stream properties**
   ///
   /// Used by Kodi to pass the currently required video stream settings to the addon
   ///
@@ -424,7 +424,7 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief **Hardware framebuffer type**
+  /// @brief **Software framebuffer type**
   ///
   typedef struct game_stream_sw_framebuffer_buffer
   {
@@ -435,7 +435,7 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @brief **Video stream packet**
+  /// @brief **Software framebuffer packet**
   ///
   /// This packet contains video stream data passed to Kodi.
   ///
