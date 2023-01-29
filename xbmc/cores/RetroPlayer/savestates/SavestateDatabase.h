@@ -11,6 +11,7 @@
 #include <memory>
 #include <string>
 
+class CDateTime;
 class CFileItem;
 class CFileItemList;
 
@@ -28,7 +29,7 @@ public:
 
   static std::unique_ptr<ISavestate> AllocateSavestate();
 
-  bool AddSavestate(std::string& savestatePath,
+  bool AddSavestate(const std::string& savestatePath,
                     const std::string& gamePath,
                     const ISavestate& save);
 
@@ -49,6 +50,7 @@ public:
 
   bool ClearSavestatesOfGame(const std::string& gamePath, const std::string& gameClient = "");
 
+  static std::string MakeSavestatePath(const std::string& gamePath, const CDateTime& creationTime);
   static std::string MakeThumbnailPath(const std::string& savestatePath);
 
 private:
