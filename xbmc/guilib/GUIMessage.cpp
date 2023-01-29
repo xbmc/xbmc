@@ -139,3 +139,8 @@ size_t CGUIMessage::GetNumStringParams() const
 {
   return m_params.size();
 }
+
+void CGUIMessage::SetItem(CGUIListItemPtr item)
+{
+  m_item = std::move(item);
+}

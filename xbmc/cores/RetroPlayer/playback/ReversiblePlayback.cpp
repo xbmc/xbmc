@@ -12,6 +12,7 @@
 #include "XBDateTime.h"
 #include "addons/AddonVersion.h"
 #include "cores/RetroPlayer/cheevos/Cheevos.h"
+#include "cores/RetroPlayer/guibridge/GUIGameMessenger.h"
 #include "cores/RetroPlayer/rendering/RPRenderManager.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
@@ -35,11 +36,13 @@ using namespace RETRO;
 CReversiblePlayback::CReversiblePlayback(GAME::CGameClient* gameClient,
                                          CRPRenderManager& renderManager,
                                          CCheevos* cheevos,
+                                         CGUIGameMessenger& guiMessenger,
                                          double fps,
                                          size_t serializeSize)
   : m_gameClient(gameClient),
     m_renderManager(renderManager),
     m_cheevos(cheevos),
+    m_guiMessenger(guiMessenger),
     m_gameLoop(this, fps),
     m_savestateDatabase(new CSavestateDatabase),
     m_totalFrameCount(0),
@@ -70,6 +73,11 @@ void CReversiblePlayback::Initialize()
 
 void CReversiblePlayback::Deinitialize()
 {
+  // Wait for autosave tasks
+  for (std::future<void>& task : m_savestateThreads)
+    task.wait();
+  m_savestateThreads.clear();
+
   m_gameLoop.Stop();
 }
 
@@ -133,35 +141,97 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave,
     return "";
   }
 
-  std::string savePath(savestatePath);
-  if (autosave && savePath.empty())
-    savePath = m_autosavePath;
+  // Take a timestamp of the system clock
+  const CDateTime nowUTC = CDateTime::GetUTCDateTime();
 
-  // Clear autosave path so the next autosave is created in a new slot and
-  // does not overwrite the newly-created manual save
-  if (!autosave && savePath == m_autosavePath)
-    m_autosavePath.clear();
+  // Record the frame count
+  const uint64_t timestampFrames = m_totalFrameCount;
+
+  // Get the savestate path
+  std::string savePath(savestatePath);
+  {
+    std::unique_lock<CCriticalSection> lock(m_savestateMutex);
+
+    if (autosave && savePath.empty())
+      savePath = m_autosavePath;
+
+    // Clear autosave path so the next autosave is created in a new slot and
+    // does not overwrite the newly-created manual save
+    if (!autosave && savePath == m_autosavePath)
+      m_autosavePath.clear();
+
+    // If path is still unknown, calculate it now
+    if (savePath.empty())
+      savePath = CSavestateDatabase::MakeSavestatePath(m_gameClient->GetGamePath(), nowUTC);
+
+    // Update autosave path
+    if (autosave)
+      m_autosavePath = savePath;
+
+    // Prune any finished autosave threads
+    m_savestateThreads.erase(std::remove_if(m_savestateThreads.begin(), m_savestateThreads.end(),
+                                            [](std::future<void>& task) {
+                                              return task.wait_for(std::chrono::seconds(0)) ==
+                                                     std::future_status::ready;
+                                            }),
+                             m_savestateThreads.end());
+
+    // Save async to not block game loop
+    std::future<void> task =
+        std::async(std::launch::async, [this, autosave, savePath, nowUTC, timestampFrames]() {
+          CommitSavestate(autosave, savePath, nowUTC, timestampFrames);
+        });
+
+    m_savestateThreads.emplace_back(std::move(task));
+  }
+
+  return savePath;
+}
+
+void CReversiblePlayback::CommitSavestate(bool autosave,
+                                          const std::string& savePath,
+                                          const CDateTime& nowUTC,
+                                          uint64_t timestampFrames)
+{
+  std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
+  std::unique_ptr<ISavestate> loadedSavestate;
+
+  const size_t memorySize = m_gameClient->SerializeSize();
+  uint8_t* const memoryData = savestate->GetMemoryBuffer(memorySize);
+
+  // Copy the savestate memory
+  {
+    std::unique_lock<CCriticalSection> lock(m_mutex);
+    if (m_memoryStream && m_memoryStream->CurrentFrame() != nullptr)
+    {
+      std::memcpy(memoryData, m_memoryStream->CurrentFrame(), memorySize);
+    }
+    else
+    {
+      lock.unlock();
+      if (!m_gameClient->Serialize(memoryData, memorySize))
+        return;
+    }
+  }
 
   // Attempt to get existing properties
-  std::unique_ptr<ISavestate> loadedSavestate;
-  if (!savePath.empty() && XFILE::CFile::Exists(savePath))
   {
-    loadedSavestate = CSavestateDatabase::AllocateSavestate();
-    if (!m_savestateDatabase->GetSavestate(savePath, *loadedSavestate))
-      loadedSavestate.reset();
+    std::unique_lock<CCriticalSection> lock(m_savestateMutex);
+    if (!savePath.empty() && XFILE::CFile::Exists(savePath))
+    {
+      loadedSavestate = CSavestateDatabase::AllocateSavestate();
+      if (!m_savestateDatabase->GetSavestate(savePath, *loadedSavestate))
+        loadedSavestate.reset();
+    }
   }
 
   const std::string caption = m_cheevos->GetRichPresenceEvaluation();
-  const CDateTime nowUTC = CDateTime::GetUTCDateTime();
   const std::string gameFileName = URIUtils::GetFileName(m_gameClient->GetGamePath());
-  const uint64_t timestampFrames = m_totalFrameCount;
   const double timestampWallClock =
-      (m_totalFrameCount /
+      (timestampFrames /
        m_gameClient->GetFrameRate()); //! @todo Accumulate playtime instead of deriving it
   const std::string gameClientId = m_gameClient->ID();
   const std::string gameClientVersion = m_gameClient->Version().asString();
-
-  std::unique_ptr<ISavestate> savestate = CSavestateDatabase::AllocateSavestate();
 
   savestate->SetType(autosave ? SAVE_TYPE::AUTO : SAVE_TYPE::MANUAL);
   savestate->SetLabel(loadedSavestate ? loadedSavestate->Label() : "");
@@ -173,35 +243,22 @@ std::string CReversiblePlayback::CreateSavestate(bool autosave,
   savestate->SetGameClientID(gameClientId);
   savestate->SetGameClientVersion(gameClientVersion);
 
-  uint8_t* memoryData = savestate->GetMemoryBuffer(memorySize);
-
-  {
-    std::unique_lock<CCriticalSection> lock(m_mutex);
-    if (m_memoryStream && m_memoryStream->CurrentFrame() != nullptr)
-    {
-      std::memcpy(memoryData, m_memoryStream->CurrentFrame(), memorySize);
-    }
-    else
-    {
-      lock.unlock();
-      if (!m_gameClient->Serialize(memoryData, memorySize))
-        return "";
-    }
-  }
-
   savestate->Finalize();
 
-  if (!m_savestateDatabase->AddSavestate(savePath, m_gameClient->GetGamePath(), *savestate))
+  bool success;
   {
-    return "";
+    std::unique_lock<CCriticalSection> lock(m_savestateMutex);
+    success = m_savestateDatabase->AddSavestate(savePath, m_gameClient->GetGamePath(), *savestate);
   }
 
-  m_renderManager.SaveThumbnail(m_savestateDatabase->MakeThumbnailPath(savePath));
+  if (success)
+  {
+    std::string thumbnailPath = CSavestateDatabase::MakeThumbnailPath(savePath);
+    m_renderManager.SaveThumbnail(thumbnailPath);
+  }
 
-  if (autosave)
-    m_autosavePath = savePath;
-
-  return savePath;
+  // Notify the GUI that the metadata for this savestate should be refreshed
+  m_guiMessenger.RefreshSavestates(savePath, savestate.get());
 }
 
 bool CReversiblePlayback::LoadSavestate(const std::string& savestatePath)

@@ -13,9 +13,12 @@
 #include "threads/CriticalSection.h"
 #include "utils/Observer.h"
 
+#include <future>
 #include <memory>
 #include <stddef.h>
 #include <stdint.h>
+
+class CDateTime;
 
 namespace KODI
 {
@@ -27,9 +30,10 @@ class CGameClient;
 namespace RETRO
 {
 class CCheevos;
+class CGUIGameMessenger;
+class CRPRenderManager;
 class CSavestateDatabase;
 class IMemoryStream;
-class CRPRenderManager;
 
 class CReversiblePlayback : public IPlayback, public IGameLoopCallback, public Observer
 {
@@ -37,6 +41,7 @@ public:
   CReversiblePlayback(GAME::CGameClient* gameClient,
                       CRPRenderManager& renderManager,
                       CCheevos* cheevos,
+                      CGUIGameMessenger& guiMessenger,
                       double fps,
                       size_t serializeSize);
 
@@ -70,11 +75,16 @@ private:
   void AdvanceFrames(uint64_t frames);
   void UpdatePlaybackStats();
   void UpdateMemoryStream();
+  void CommitSavestate(bool autosave,
+                       const std::string& savePath,
+                       const CDateTime& nowUTC,
+                       uint64_t timestampFrames);
 
   // Construction parameter
   GAME::CGameClient* const m_gameClient;
   CRPRenderManager& m_renderManager;
   CCheevos* const m_cheevos;
+  CGUIGameMessenger& m_guiMessenger;
 
   // Gameplay functionality
   CGameLoop m_gameLoop;
@@ -84,6 +94,8 @@ private:
   // Savestate functionality
   std::unique_ptr<CSavestateDatabase> m_savestateDatabase;
   std::string m_autosavePath{};
+  std::vector<std::future<void>> m_savestateThreads;
+  CCriticalSection m_savestateMutex;
 
   // Playback stats
   uint64_t m_totalFrameCount;
