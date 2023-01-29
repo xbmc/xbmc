@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 
 static constexpr int MP4_BOX_HEADER_SIZE = 8;

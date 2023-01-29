@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <system_error>
 namespace KODI

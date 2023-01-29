@@ -15,6 +15,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 
+#include <cstdint>
 #include <math.h>
 #include <vector>
 
