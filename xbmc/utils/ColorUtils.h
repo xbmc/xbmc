@@ -80,70 +80,81 @@ constexpr auto HTML_BASIC_COLORS = make_map<std::string_view, Color>({{"white", 
                                                                       {"fuchsia", FUCHSIA},
                                                                       {"purple", PURPLE}});
 
-/*! \brief Change the opacity of a given ARGB color
-    \param color The original color
-    \param opacity The opacity value as a float
-    \return the original color with the changed opacity/alpha value
-*/
+/*!
+ * \brief Change the opacity of a given ARGB color
+ * \param color The original color
+ * \param opacity The opacity value as a float
+ * \return the original color with the changed opacity/alpha value
+ */
 Color ChangeOpacity(const Color argb, const float opacity);
 
-/*! \brief Convert given ARGB color to RGBA color value
-    \param color The original color
-    \return the original color converted to RGBA value
-*/
+/*!
+ * \brief Convert given ARGB color to RGBA color value
+ * \param color The original color
+ * \return the original color converted to RGBA value
+ */
 Color ConvertToRGBA(const Color argb);
 
-/*! \brief Convert given RGBA color to ARGB color value
-    \param color The original color
-    \return the original color converted to ARGB value
-*/
+/*!
+ * \brief Convert given RGBA color to ARGB color value
+ * \param color The original color
+ * \return the original color converted to ARGB value
+ */
 Color ConvertToARGB(const Color rgba);
 
-/*! \brief Convert given ARGB color to BGR color value
-    \param color The original color
-    \return the original color converted to BGR value
+/*!
+ * \brief Convert given ARGB color to BGR color value
+ * \param color The original color
+ * \return the original color converted to BGR value
 */
 Color ConvertToBGR(const Color argb);
 
-/*! \brief Convert given hex value to Color value
-    \param hexColor The original hex color
-    \return the original hex color converted to Color value
-*/
+/*!
+ * \brief Convert given hex value to Color value
+ * \param hexColor The original hex color
+ * \return the original hex color converted to Color value
+ */
 Color ConvertHexToColor(const std::string& hexColor);
 
-/*! \brief Convert given RGB int values to RGB color value
-    \param r The red value
-    \param g The green value
-    \param b The blue value
-    \return the color as RGB value
-*/
+/*!
+ * \brief Convert given RGB int values to RGB color value
+ * \param r The red value
+ * \param g The green value
+ * \param b The blue value
+ * \return the color as RGB value
+ */
 Color ConvertIntToRGB(int r, int g, int b);
 
-/*! \brief Create a ColorInfo from an ARGB Color to
-           get additional information of the color
-           and allow to be sorted with a color comparer
-    \param argb The original ARGB color
-    \return the ColorInfo
-*/
+/*!
+ * \brief Create a ColorInfo from an ARGB Color to
+ *        get additional information of the color
+ *        and allow to be sorted with a color comparer
+ * \param argb The original ARGB color
+ * \return the ColorInfo
+ */
 ColorInfo MakeColorInfo(const Color& argb);
 
-/*! \brief Create a ColorInfo from an HEX color value to
-           get additional information of the color
-           and allow to be sorted with a color comparer
-    \param hexColor The original ARGB color
-    \return the ColorInfo
-*/
+/*!
+ * \brief Create a ColorInfo from an HEX color value to
+ *        get additional information of the color
+ *        and allow to be sorted with a color comparer
+ * \param hexColor The original ARGB color
+ * \return the ColorInfo
+ */
 ColorInfo MakeColorInfo(const std::string& hexColor);
 
-/*! \brief Comparer for pair string/ColorInfo to sort colors in a hue scale
-*/
+/*!
+ * \brief Comparer for pair string/ColorInfo to sort colors in a hue scale
+ */
 bool comparePairColorInfo(const std::pair<std::string, ColorInfo>& a,
                           const std::pair<std::string, ColorInfo>& b);
 
-/*! \brief Convert given ARGB color to ColorFloats
-    \param color The original color
-    \return the original color converted to ColorFloats
-*/
+/*!
+ * \brief Convert given ARGB color to ColorFloats
+ * \param color The original color
+ * \return the original color converted to ColorFloats
+ */
 ColorFloats ConvertToFloats(const Color argb);
+
 } // namespace COLOR
 } // namespace UTILS
