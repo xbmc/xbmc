@@ -156,5 +156,12 @@ bool comparePairColorInfo(const std::pair<std::string, ColorInfo>& a,
  */
 ColorFloats ConvertToFloats(const Color argb);
 
+/*!
+ * \brief Convert given ARGB color to hex RGB color value
+ * \param color The original color
+ * \return The original color converted to hex RGB
+ */
+std::string ConvertoToHexRGB(const Color argb);
+
 } // namespace COLOR
 } // namespace UTILS
