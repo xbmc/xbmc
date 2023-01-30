@@ -11,6 +11,4 @@
 		<include condition="Window.IsActive(gamecontrollers)">GameDialogControllers</include>
 		<include condition="Window.IsActive(gameports)">GameDialogPorts</include>
 	</controls>
-	<controls>
-	</controls>
 </window>
