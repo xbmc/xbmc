@@ -484,6 +484,8 @@ int CWin32File::Stat(const CURL& url, struct __stat64* statData)
 
   FindClose(hSearch);
 
+  *statData = {};
+
   /* set st_gid */
   statData->st_gid = 0; // UNIX group ID is always zero on Win32
 
@@ -623,6 +625,8 @@ int CWin32File::Stat(struct __stat64* statData)
 
   if (m_hFile == INVALID_HANDLE_VALUE)
     return -1;
+
+  *statData = {};
 
   /* set st_gid */
   statData->st_gid = 0; // UNIX group ID is always zero on Win32
