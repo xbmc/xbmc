@@ -492,11 +492,6 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
       // grab the next character
       Character* ch = &characters.front();
-      if (ch->m_glyphAndStyle == 0)
-      {
-        characters.pop();
-        continue;
-      }
 
       if ((text[glyph.m_glyphInfo.cluster] & 0xffff) == static_cast<character_t>('\t'))
       {
