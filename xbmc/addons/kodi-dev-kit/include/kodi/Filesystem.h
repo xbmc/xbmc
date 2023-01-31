@@ -135,7 +135,10 @@ public:
   uint32_t GetDeviceId() const { return m_cStructure->deviceId; }
 
   /// @brief Set the file serial number, which distinguishes this file from all other files on the same device.
-  void SetFileSerialNumber(uint64_t fileSerialNumber) { m_cStructure->fileSerialNumber = fileSerialNumber; }
+  void SetFileSerialNumber(uint64_t fileSerialNumber)
+  {
+    m_cStructure->fileSerialNumber = fileSerialNumber;
+  }
 
   /// @brief Get the file serial number, which distinguishes this file from all other files on the same device.
   uint64_t GetFileSerialNumber() const { return m_cStructure->fileSerialNumber; }

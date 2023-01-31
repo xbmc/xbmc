@@ -19,10 +19,7 @@ extern "C"
   typedef struct AddonToKodiFuncTable_kodi_gui_listItem
   {
     KODI_GUI_LISTITEM_HANDLE(*create)
-    (KODI_HANDLE kodiBase,
-     const char* label,
-     const char* label2,
-     const char* path);
+    (KODI_HANDLE kodiBase, const char* label, const char* label2, const char* path);
     void (*destroy)(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle);
 
     char* (*get_label)(KODI_HANDLE kodiBase, KODI_GUI_LISTITEM_HANDLE handle);

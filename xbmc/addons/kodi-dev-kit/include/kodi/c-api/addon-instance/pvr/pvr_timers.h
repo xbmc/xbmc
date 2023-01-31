@@ -36,7 +36,7 @@ extern "C"
   /// values).
   ///
   /// "Null" value for a numeric timer type.
-  #define PVR_TIMER_TYPE_NONE 0
+#define PVR_TIMER_TYPE_NONE 0
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -44,7 +44,7 @@ extern "C"
   /// that a timer has not (yet) a valid client index.
   ///
   /// Timer has not (yet) a valid client index.
-  #define PVR_TIMER_NO_CLIENT_INDEX 0
+#define PVR_TIMER_NO_CLIENT_INDEX 0
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -52,7 +52,7 @@ extern "C"
   /// indicate that a timer has no parent.
   ///
   /// Timer has no parent; it was not scheduled by a repeating timer.
-  #define PVR_TIMER_NO_PARENT PVR_TIMER_NO_CLIENT_INDEX
+#define PVR_TIMER_NO_PARENT PVR_TIMER_NO_CLIENT_INDEX
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -60,7 +60,7 @@ extern "C"
   /// that a timer has no EPG event uid.
   ///
   /// Timer has no EPG event unique identifier.
-  #define PVR_TIMER_NO_EPG_UID EPG_TAG_INVALID_UID
+#define PVR_TIMER_NO_EPG_UID EPG_TAG_INVALID_UID
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -69,19 +69,18 @@ extern "C"
   ///
   /// denotes "any channel", not a specific one.
   ///
-  #define PVR_TIMER_ANY_CHANNEL -1
+#define PVR_TIMER_ANY_CHANNEL -1
   //----------------------------------------------------------------------------
 
   //============================================================================
   /// @brief Value where set in background to inform that related part not used.
   ///
   /// Normally this related parts need not to set by this as it is default.
-  #define PVR_TIMER_VALUE_NOT_AVAILABLE -1
+#define PVR_TIMER_VALUE_NOT_AVAILABLE -1
   //----------------------------------------------------------------------------
 
   ///@}
   //----------------------------------------------------------------------------
-
 
   //============================================================================
   /// @defgroup cpp_kodi_addon_pvr_Defs_Timer_PVR_TIMER_TYPES enum PVR_TIMER_TYPES

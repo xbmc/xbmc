@@ -178,7 +178,7 @@ public:
     m_cStructure->provides_joystick_rumble = providesJoystickRumble;
   }
 
-    /// @brief To get with @ref SetProvidesJoystickRumble changed values.
+  /// @brief To get with @ref SetProvidesJoystickRumble changed values.
   bool GetProvidesJoystickRumble() const { return m_cStructure->provides_joystick_rumble; }
 
   /// @brief Set true if the add-on provides power off about joystick.

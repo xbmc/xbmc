@@ -66,7 +66,7 @@ extern "C"
   ///
   /// Used if recording has no valid season and/or episode info.
   ///
-  #define PVR_RECORDING_INVALID_SERIES_EPISODE EPG_TAG_INVALID_SERIES_EPISODE
+#define PVR_RECORDING_INVALID_SERIES_EPISODE EPG_TAG_INVALID_SERIES_EPISODE
   //----------------------------------------------------------------------------
 
   //============================================================================
@@ -74,7 +74,7 @@ extern "C"
   /// @brief Value where set in background to inform that related part not used.
   ///
   /// Normally this related parts need not to set by this as it is default.
-  #define PVR_RECORDING_VALUE_NOT_AVAILABLE -1
+#define PVR_RECORDING_VALUE_NOT_AVAILABLE -1
   //----------------------------------------------------------------------------
 
   //============================================================================

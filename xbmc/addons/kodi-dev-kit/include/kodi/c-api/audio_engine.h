@@ -179,7 +179,7 @@ extern "C"
     AUDIOENGINE_FMT_S24BE3,
     /// Little Endian signed integer 24 bit (3 bytes)
     AUDIOENGINE_FMT_S24LE3,
-     /// Native Endian signed integer 24 bit (3 bytes)
+    /// Native Endian signed integer 24 bit (3 bytes)
     AUDIOENGINE_FMT_S24NE3,
 
     /// Double floating point

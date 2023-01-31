@@ -217,7 +217,8 @@ public:
       return 0.0f;
 
     const auto now = system_clock::now();
-    return static_cast<float>(duration_cast<milliseconds>(now.time_since_epoch() - (m_endTime - m_timeout)).count());
+    return static_cast<float>(
+        duration_cast<milliseconds>(now.time_since_epoch() - (m_endTime - m_timeout)).count());
   }
   //----------------------------------------------------------------------------
 
