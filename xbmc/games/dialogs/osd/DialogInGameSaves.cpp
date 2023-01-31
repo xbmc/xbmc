@@ -264,7 +264,25 @@ void CDialogInGameSaves::OnNewSave()
     // "Error"
     // "An unknown error has occurred."
     CGUIDialogOK::ShowAndGetInput(257, 24071);
+    return;
   }
+
+  // Create a simulated savestate to update the GUI faster. We will be notified
+  // of the real savestate info via OnMessage() when the savestate creation
+  // completes.
+  auto savestate = RETRO::CSavestateDatabase::AllocateSavestate();
+
+  savestate->SetType(SAVE_TYPE::MANUAL);
+  savestate->SetCreated(CDateTime::GetUTCDateTime());
+
+  savestate->Finalize();
+
+  CFileItemPtr item = std::make_shared<CFileItem>();
+  CSavestateDatabase::GetSavestateItem(*savestate, savestatePath, *item);
+
+  m_savestateItems.AddFront(std::move(item), 0);
+
+  RefreshList();
 }
 
 void CDialogInGameSaves::OnLoad(CFileItem& focusedItem)
