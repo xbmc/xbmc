@@ -6,6 +6,7 @@
 	<controls>
 		<control type="group" id="1">
 			<visible>!Window.IsActive(1101) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation) + !Window.IsActive(InGameSaves)</visible>
+			<include>Visible_Fade</include>
 			<control type="group" id="10">
 				<visible>System.GetBool(gamesgeneral.showosdhelp)</visible>
 				<defaultcontrol always="true">1103</defaultcontrol>
