@@ -206,7 +206,7 @@ private:
   std::set<std::shared_ptr<CRPBaseRenderer>> m_renderers;
   std::vector<IRenderBuffer*> m_pendingBuffers; // Only access from game thread
   std::vector<IRenderBuffer*> m_renderBuffers;
-  std::map<AVPixelFormat, SwsContext*> m_scalers;
+  std::map<AVPixelFormat, std::map<AVPixelFormat, SwsContext*>> m_scalers; // From -> to -> context
   std::vector<uint8_t> m_cachedFrame;
   unsigned int m_cachedWidth = 0;
   unsigned int m_cachedHeight = 0;

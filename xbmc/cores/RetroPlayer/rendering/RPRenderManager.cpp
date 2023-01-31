@@ -55,10 +55,13 @@ void CRPRenderManager::Deinitialize()
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Deinitializing render manager");
 
-  for (auto& pixelScaler : m_scalers)
+  for (auto& pixelScalerMap : m_scalers)
   {
-    if (pixelScaler.second != nullptr)
-      sws_freeContext(pixelScaler.second);
+    for (auto& pixelScaler : pixelScalerMap.second)
+    {
+      if (pixelScaler.second != nullptr)
+        sws_freeContext(pixelScaler.second);
+    }
   }
   m_scalers.clear();
 
@@ -647,7 +650,7 @@ void CRPRenderManager::CopyFrame(IRenderBuffer* renderBuffer,
     }
     else
     {
-      SwsContext*& scalerContext = m_scalers[renderBuffer->GetFormat()];
+      SwsContext*& scalerContext = m_scalers[format][renderBuffer->GetFormat()];
       scalerContext = sws_getCachedContext(
           scalerContext, width, height, format, renderBuffer->GetWidth(), renderBuffer->GetHeight(),
           renderBuffer->GetFormat(), SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
