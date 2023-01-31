@@ -98,7 +98,6 @@ public:
   // videosync
   std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
 
-  bool WindowedMode() const { return m_state != WINDOW_STATE_FULLSCREEN; }
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 
   std::vector<std::string> GetConnectedOutputs() override;
