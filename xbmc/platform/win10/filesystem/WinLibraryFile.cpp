@@ -424,6 +424,8 @@ int CWinLibraryFile::Stat(const StorageFile& file, struct __stat64* statData)
   if (file == nullptr)
     return -1;
 
+  *statData = {};
+
   /* set st_gid */
   statData->st_gid = 0; // UNIX group ID is always zero on Win32
   /* set st_uid */
