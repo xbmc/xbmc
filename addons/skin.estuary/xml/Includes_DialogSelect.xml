@@ -346,7 +346,7 @@
 					<param name="label" value="$LOCALIZE[222]" />
 				</include>
 			</control>
-			<control type="label" id="10812">
+			<control type="label" id="10822">
 				<description>Caption area</description>
 				<left>14</left>
 				<right>14</right>
