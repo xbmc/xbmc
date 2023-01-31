@@ -703,17 +703,17 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
     return;
   }
 
-  const uint8_t* const data = m_renderBuffers[0]->GetMemory();
-  const size_t size = m_renderBuffers[0]->GetFrameSize();
+  const uint8_t* const sourceData = m_renderBuffers[0]->GetMemory();
+  const size_t sourceSize = m_renderBuffers[0]->GetFrameSize();
   const unsigned int width = m_renderBuffers[0]->GetWidth();
   const unsigned int height = m_renderBuffers[0]->GetHeight();
-  const AVPixelFormat format = m_renderBuffers[0]->GetFormat();
+  const AVPixelFormat sourceFormat = m_renderBuffers[0]->GetFormat();
 
-  std::vector<uint8_t> copiedData(data, data + size);
+  std::vector<uint8_t> copiedData(sourceData, sourceData + sourceSize);
 
   m_bufferMutex.unlock();
 
-  const int stride = CRenderTranslator::TranslateWidthToBytes(width, format);
+  const int stride = CRenderTranslator::TranslateWidthToBytes(width, sourceFormat);
 
   unsigned int scaleWidth = 400;
   unsigned int scaleHeight = 220;
@@ -725,8 +725,8 @@ void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
   const AVPixelFormat outFormat = AV_PIX_FMT_BGR0;
   const int scaleStride = CRenderTranslator::TranslateWidthToBytes(scaleWidth, outFormat);
 
-  if (CPicture::ScaleImage(copiedData.data(), width, height, stride, format, scaledImage.data(),
-                           scaleWidth, scaleHeight, scaleStride, outFormat))
+  if (CPicture::ScaleImage(copiedData.data(), width, height, stride, sourceFormat,
+                           scaledImage.data(), scaleWidth, scaleHeight, scaleStride, outFormat))
   {
     CPicture::CreateThumbnailFromSurface(scaledImage.data(), scaleWidth, scaleHeight, scaleStride,
                                          thumbnailPath);
