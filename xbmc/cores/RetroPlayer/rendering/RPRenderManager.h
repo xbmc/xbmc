@@ -108,7 +108,8 @@ public:
   bool SupportsRenderFeature(RENDERFEATURE feature) const override;
   bool SupportsScalingMethod(SCALINGMETHOD method) const override;
 
-  void SaveThumbnail(const std::string& path);
+  // Savestate functions
+  void SaveThumbnail(const std::string& thumbnailPath);
 
 private:
   /*!

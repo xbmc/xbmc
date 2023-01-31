@@ -693,7 +693,7 @@ CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(
   return effectiveSettings;
 }
 
-void CRPRenderManager::SaveThumbnail(const std::string& path)
+void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
 {
   m_bufferMutex.lock();
 
@@ -729,7 +729,7 @@ void CRPRenderManager::SaveThumbnail(const std::string& path)
                            scaleWidth, scaleHeight, scaleStride, outFormat))
   {
     CPicture::CreateThumbnailFromSurface(scaledImage.data(), scaleWidth, scaleHeight, scaleStride,
-                                         path);
+                                         thumbnailPath);
   }
   else
   {
