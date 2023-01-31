@@ -597,6 +597,13 @@ bool CProcessInfo::IsTempoAllowed(float tempo)
   return false;
 }
 
+unsigned int CProcessInfo::GetMaxPassthroughOffSyncDuration() const
+{
+  return CServiceBroker::GetSettingsComponent()
+      ->GetAdvancedSettings()
+      ->m_maxPassthroughOffSyncDuration;
+}
+
 void CProcessInfo::SetLevelVQ(int level)
 {
   m_levelVQ = level;
