@@ -63,6 +63,7 @@ CVideoPlayerAudio::CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent
 
   m_messageQueue.SetMaxDataSize(6 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
+  m_disconAdjustTimeMs = processInfo.GetMaxPassthroughOffSyncDuration();
 }
 
 CVideoPlayerAudio::~CVideoPlayerAudio()
@@ -134,6 +135,9 @@ void CVideoPlayerAudio::OpenStream(CDVDStreamInfo& hints, std::unique_ptr<CDVDAu
     m_synctype = SYNC_RESAMPLE;
   else if (m_processInfo.IsRealtimeStream())
     m_synctype = SYNC_RESAMPLE;
+
+  if (m_synctype == SYNC_DISCON)
+    CLog::LogF(LOGINFO, "Allowing max Out-Of-Sync Value of {} ms", m_disconAdjustTimeMs);
 
   m_prevskipped = false;
 
@@ -523,7 +527,7 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
 
   {
     double syncerror = m_audioSink.GetSyncError();
-    if (m_synctype == SYNC_DISCON && fabs(syncerror) > DVD_MSEC_TO_TIME(10))
+    if (m_synctype == SYNC_DISCON && fabs(syncerror) > DVD_MSEC_TO_TIME(m_disconAdjustTimeMs))
     {
       double correction = m_pClock->ErrorAdjust(syncerror, "CVideoPlayerAudio::OutputPacket");
       if (correction != 0)
