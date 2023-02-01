@@ -220,6 +220,42 @@ void CDialogGameSaves::OnInitWindow()
     CFileItemPtr item = m_vecList->Get(0);
     if (item)
     {
+      const std::string gameClientId = item->GetProperty(SAVESTATE_GAME_CLIENT).asString();
+      if (!gameClientId.empty())
+      {
+        std::string emulatorName;
+        std::string emulatorIcon;
+
+        using namespace ADDON;
+
+        AddonPtr addon;
+        CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
+        if (addonManager.GetAddon(m_currentGameClient, addon, OnlyEnabled::CHOICE_NO))
+        {
+          std::shared_ptr<CGameClient> gameClient = std::dynamic_pointer_cast<CGameClient>(addon);
+          if (gameClient)
+          {
+            m_currentGameClient = gameClient->ID();
+
+            emulatorName = gameClient->GetEmulatorName();
+            emulatorIcon = gameClient->Icon();
+          }
+        }
+
+        if (!emulatorName.empty())
+        {
+          CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), CONTROL_SAVES_EMULATOR_NAME);
+          message.SetLabel(emulatorName);
+          OnMessage(message);
+        }
+        if (!emulatorIcon.empty())
+        {
+          CGUIMessage message(GUI_MSG_SET_FILENAME, GetID(), CONTROL_SAVES_EMULATOR_ICON);
+          message.SetLabel(emulatorIcon);
+          OnMessage(message);
+        }
+      }
+
       const std::string caption = item->GetProperty(SAVESTATE_CAPTION).asString();
       if (!caption.empty())
       {
@@ -327,11 +363,13 @@ void CDialogGameSaves::OnFocus(const CFileItem& item)
   const std::string gameClientId = item.GetProperty(SAVESTATE_GAME_CLIENT).asString();
 
   HandleCaption(caption);
+  HandleGameClient(gameClientId);
 }
 
 void CDialogGameSaves::OnFocusLost()
 {
   HandleCaption("");
+  HandleGameClient("");
 }
 
 void CDialogGameSaves::OnContextMenu(CFileItem& item)
@@ -420,5 +458,47 @@ void CDialogGameSaves::HandleCaption(const std::string& caption)
     CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_SAVES_DESCRIPTION);
     msg.SetLabel(m_currentCaption);
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, GetID());
+  }
+}
+
+void CDialogGameSaves::HandleGameClient(const std::string& gameClientId)
+{
+  if (gameClientId == m_currentGameClient)
+    return;
+
+  m_currentGameClient = gameClientId;
+  if (m_currentGameClient.empty())
+    return;
+
+  // Get game client properties
+  std::shared_ptr<CGameClient> gameClient;
+  std::string emulatorName;
+  std::string iconPath;
+
+  using namespace ADDON;
+
+  AddonPtr addon;
+  CAddonMgr& addonManager = CServiceBroker::GetAddonMgr();
+  if (addonManager.GetAddon(m_currentGameClient, addon, OnlyEnabled::CHOICE_NO))
+    gameClient = std::dynamic_pointer_cast<CGameClient>(addon);
+
+  if (gameClient)
+  {
+    emulatorName = gameClient->GetEmulatorName();
+    iconPath = gameClient->Icon();
+  }
+
+  // Update the GUI elements
+  if (!emulatorName.empty())
+  {
+    CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), CONTROL_SAVES_EMULATOR_NAME);
+    message.SetLabel(emulatorName);
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, GetID());
+  }
+  if (!iconPath.empty())
+  {
+    CGUIMessage message(GUI_MSG_SET_FILENAME, GetID(), CONTROL_SAVES_EMULATOR_ICON);
+    message.SetLabel(iconPath);
+    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, GetID());
   }
 }
