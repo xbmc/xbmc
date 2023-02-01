@@ -10,11 +10,14 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "addons/Addon.h"
+#include "addons/AddonManager.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "games/addons/GameClient.h"
 #include "games/dialogs/DialogGameDefines.h"
 #include "guilib/GUIBaseContainer.h"
 #include "guilib/GUIComponent.h"
@@ -26,11 +29,16 @@
 #include "input/Key.h"
 #include "utils/FileUtils.h"
 #include "utils/Variant.h"
+#include "view/GUIViewControl.h"
+#include "view/ViewState.h"
 
 using namespace KODI;
 using namespace GAME;
 
-CDialogGameSaves::CDialogGameSaves() : CGUIDialogSelect(WINDOW_DIALOG_GAME_SAVES)
+CDialogGameSaves::CDialogGameSaves()
+  : CGUIDialog(WINDOW_DIALOG_GAME_SAVES, "DialogSelect.xml"),
+    m_viewControl(std::make_unique<CGUIViewControl>()),
+    m_vecList(std::make_unique<CFileItemList>())
 {
 }
 
@@ -40,12 +48,35 @@ bool CDialogGameSaves::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_CLICKED:
     {
-      if (m_viewControl.HasControl(CONTROL_SAVES_DETAILED_LIST))
+      const int actionId = message.GetParam1();
+
+      switch (actionId)
       {
-        int action = message.GetParam1();
-        if (action == ACTION_CONTEXT_MENU || action == ACTION_MOUSE_RIGHT_CLICK)
+        case ACTION_SELECT_ITEM:
+        case ACTION_MOUSE_LEFT_CLICK:
         {
-          int selectedItem = m_viewControl.GetSelectedItem();
+          int selectedId = m_viewControl->GetSelectedItem();
+          if (0 <= selectedId && selectedId < m_vecList->Size())
+          {
+            CFileItemPtr item = m_vecList->Get(selectedId);
+            if (item)
+            {
+              for (int i = 0; i < m_vecList->Size(); i++)
+                m_vecList->Get(i)->Select(false);
+
+              item->Select(true);
+
+              OnSelect(*item);
+
+              return true;
+            }
+          }
+          break;
+        }
+        case ACTION_CONTEXT_MENU:
+        case ACTION_MOUSE_RIGHT_CLICK:
+        {
+          int selectedItem = m_viewControl->GetSelectedItem();
           if (selectedItem >= 0 && selectedItem < m_vecList->Size())
           {
             CFileItemPtr item = m_vecList->Get(selectedItem);
@@ -55,15 +86,97 @@ bool CDialogGameSaves::OnMessage(CGUIMessage& message)
               return true;
             }
           }
+          break;
+        }
+        case ACTION_RENAME_ITEM:
+        {
+          const int controlId = message.GetSenderId();
+          if (m_viewControl->HasControl(controlId))
+          {
+            int selectedItem = m_viewControl->GetSelectedItem();
+            if (selectedItem >= 0 && selectedItem < m_vecList->Size())
+            {
+              CFileItemPtr item = m_vecList->Get(selectedItem);
+              if (item)
+              {
+                OnRename(*item);
+                return true;
+              }
+            }
+          }
+          break;
+        }
+        case ACTION_DELETE_ITEM:
+        {
+          const int controlId = message.GetSenderId();
+          if (m_viewControl->HasControl(controlId))
+          {
+            int selectedItem = m_viewControl->GetSelectedItem();
+            if (selectedItem >= 0 && selectedItem < m_vecList->Size())
+            {
+              CFileItemPtr item = m_vecList->Get(selectedItem);
+              if (item)
+              {
+                OnDelete(*item);
+                return true;
+              }
+            }
+          }
+          break;
+        }
+        default:
+          break;
+      }
+
+      const int controlId = message.GetSenderId();
+      switch (controlId)
+      {
+        case CONTROL_SAVES_NEW_BUTTON:
+        {
+          m_bNewPressed = true;
+          Close();
+          break;
+        }
+        case CONTROL_SAVES_CANCEL_BUTTON:
+        {
+          m_selectedItem.reset();
+          m_vecList->Clear();
+          m_bConfirmed = false;
+          Close();
+          break;
+        }
+        default:
+          break;
+      }
+
+      break;
+    }
+
+    case GUI_MSG_SETFOCUS:
+    {
+      const int controlId = message.GetControlId();
+      if (m_viewControl->HasControl(controlId))
+      {
+        if (m_vecList->IsEmpty())
+        {
+          SET_CONTROL_FOCUS(CONTROL_SAVES_NEW_BUTTON, 0);
+          return true;
+        }
+
+        if (m_viewControl->GetCurrentControl() != controlId)
+        {
+          m_viewControl->SetFocused();
+          return true;
         }
       }
       break;
     }
+
     default:
       break;
   }
 
-  return CGUIDialogSelect::OnMessage(message);
+  return CGUIDialog::OnMessage(message);
 }
 
 void CDialogGameSaves::FrameMove()
@@ -73,7 +186,7 @@ void CDialogGameSaves::FrameMove()
   {
     if (itemContainer->HasFocus())
     {
-      int selectedItem = m_viewControl.GetSelectedItem();
+      int selectedItem = m_viewControl->GetSelectedItem();
       if (selectedItem >= 0 && selectedItem < m_vecList->Size())
       {
         CFileItemPtr item = m_vecList->Get(selectedItem);
@@ -87,20 +200,131 @@ void CDialogGameSaves::FrameMove()
     }
   }
 
-  CGUIDialogSelect::FrameMove();
+  CGUIDialog::FrameMove();
+}
+
+void CDialogGameSaves::OnInitWindow()
+{
+  m_viewControl->SetItems(*m_vecList);
+  m_viewControl->SetCurrentView(CONTROL_SAVES_DETAILED_LIST);
+
+  CGUIDialog::OnInitWindow();
+
+  // Select the first item
+  m_viewControl->SetSelectedItem(0);
+
+  // There's a race condition where the item's focus sends the update message
+  // before the window is fully initialized, so explicitly set the info now.
+  if (!m_vecList->IsEmpty())
+  {
+    CFileItemPtr item = m_vecList->Get(0);
+    if (item)
+    {
+      const std::string caption = item->GetProperty(SAVESTATE_CAPTION).asString();
+      if (!caption.empty())
+      {
+        m_currentCaption = caption;
+
+        CGUIMessage message(GUI_MSG_LABEL_SET, GetID(), CONTROL_SAVES_DESCRIPTION);
+        message.SetLabel(m_currentCaption);
+        OnMessage(message);
+      }
+    }
+  }
+}
+
+void CDialogGameSaves::OnDeinitWindow(int nextWindowID)
+{
+  m_viewControl->Clear();
+
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+
+  // Get selected item
+  for (int i = 0; i < m_vecList->Size(); ++i)
+  {
+    CFileItemPtr item = m_vecList->Get(i);
+    if (item->IsSelected())
+    {
+      m_selectedItem = item;
+      break;
+    }
+  }
+
+  m_vecList->Clear();
+}
+
+void CDialogGameSaves::OnWindowLoaded()
+{
+  CGUIDialog::OnWindowLoaded();
+
+  m_viewControl->Reset();
+  m_viewControl->SetParentWindow(GetID());
+  m_viewControl->AddView(GetControl(CONTROL_SAVES_DETAILED_LIST));
+}
+
+void CDialogGameSaves::OnWindowUnload()
+{
+  CGUIDialog::OnWindowUnload();
+  m_viewControl->Reset();
+}
+
+void CDialogGameSaves::Reset()
+{
+  m_bConfirmed = false;
+  m_bNewPressed = false;
+
+  m_vecList->Clear();
+  m_selectedItem.reset();
+}
+
+bool CDialogGameSaves::Open(const std::string& gamePath)
+{
+  CFileItemList items;
+
+  RETRO::CSavestateDatabase db;
+  if (!db.GetSavestatesNav(items, gamePath))
+    return false;
+
+  if (items.IsEmpty())
+    return false;
+
+  items.Sort(SortByDate, SortOrderDescending);
+
+  SetItems(items);
+
+  CGUIDialog::Open();
+
+  return true;
 }
 
 std::string CDialogGameSaves::GetSelectedItemPath()
 {
-  if (m_selectedItem != nullptr)
+  if (m_selectedItem)
     return m_selectedItem->GetPath();
 
   return "";
 }
 
+void CDialogGameSaves::SetItems(const CFileItemList& itemList)
+{
+  m_vecList->Clear();
+
+  // Need to make internal copy of list to be sure dialog is owner of it
+  m_vecList->Copy(itemList);
+
+  m_viewControl->SetItems(*m_vecList);
+}
+
+void CDialogGameSaves::OnSelect(const CFileItem& item)
+{
+  m_bConfirmed = true;
+  Close();
+}
+
 void CDialogGameSaves::OnFocus(const CFileItem& item)
 {
   const std::string caption = item.GetProperty(SAVESTATE_CAPTION).asString();
+  const std::string gameClientId = item.GetProperty(SAVESTATE_GAME_CLIENT).asString();
 
   HandleCaption(caption);
 }
@@ -124,7 +348,7 @@ void CDialogGameSaves::OnContextMenu(CFileItem& item)
   else if (index == 1)
     OnDelete(item);
 
-  m_viewControl.SetItems(*m_vecList);
+  m_viewControl->SetItems(*m_vecList);
 }
 
 void CDialogGameSaves::OnRename(CFileItem& item)
