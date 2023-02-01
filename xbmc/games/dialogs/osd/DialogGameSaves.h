@@ -91,6 +91,11 @@ private:
    */
   void HandleCaption(const std::string& caption);
 
+  /*!
+  * \brief Called every frame with the game client to set
+  */
+  void HandleGameClient(const std::string& gameClientId);
+
   // Dialog parameters
   std::unique_ptr<CGUIViewControl> m_viewControl;
   std::unique_ptr<CFileItemList> m_vecList;
@@ -102,6 +107,7 @@ private:
 
   // State parameters
   std::string m_currentCaption;
+  std::string m_currentGameClient;
 };
 } // namespace GAME
 } // namespace KODI
