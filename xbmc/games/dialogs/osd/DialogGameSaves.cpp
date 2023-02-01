@@ -30,12 +30,6 @@
 using namespace KODI;
 using namespace GAME;
 
-namespace
-{
-constexpr int CONTROL_DETAILED_LIST = 6;
-constexpr int CONTROL_DESCRIPTION = 10812;
-} // namespace
-
 CDialogGameSaves::CDialogGameSaves() : CGUIDialogSelect(WINDOW_DIALOG_GAME_SAVES)
 {
 }
@@ -46,7 +40,7 @@ bool CDialogGameSaves::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_CLICKED:
     {
-      if (m_viewControl.HasControl(CONTROL_DETAILED_LIST))
+      if (m_viewControl.HasControl(CONTROL_SAVES_DETAILED_LIST))
       {
         int action = message.GetParam1();
         if (action == ACTION_CONTEXT_MENU || action == ACTION_MOUSE_RIGHT_CLICK)
@@ -74,7 +68,7 @@ bool CDialogGameSaves::OnMessage(CGUIMessage& message)
 
 void CDialogGameSaves::FrameMove()
 {
-  CGUIControl* itemContainer = GetControl(CONTROL_DETAILED_LIST);
+  CGUIControl* itemContainer = GetControl(CONTROL_SAVES_DETAILED_LIST);
   if (itemContainer != nullptr)
   {
     if (itemContainer->HasFocus())
@@ -154,7 +148,7 @@ void CDialogGameSaves::OnRename(CFileItem& item)
       RETRO::CSavestateDatabase::GetSavestateItem(*newSavestate, savestatePath, item);
 
       // Refresh thumbnails
-      CGUIMessage message(GUI_MSG_REFRESH_LIST, GetID(), CONTROL_DETAILED_LIST);
+      CGUIMessage message(GUI_MSG_REFRESH_LIST, GetID(), CONTROL_SAVES_DETAILED_LIST);
       OnMessage(message);
     }
     else
@@ -180,7 +174,7 @@ void CDialogGameSaves::OnDelete(CFileItem& item)
       m_vecList->Remove(&item);
 
       // Refresh thumbnails
-      CGUIMessage message(GUI_MSG_REFRESH_LIST, GetID(), CONTROL_DETAILED_LIST);
+      CGUIMessage message(GUI_MSG_REFRESH_LIST, GetID(), CONTROL_SAVES_DETAILED_LIST);
       OnMessage(message);
     }
     else
@@ -199,7 +193,7 @@ void CDialogGameSaves::HandleCaption(const std::string& caption)
     m_currentCaption = caption;
 
     // Update the GUI label
-    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_DESCRIPTION);
+    CGUIMessage msg(GUI_MSG_LABEL_SET, GetID(), CONTROL_SAVES_DESCRIPTION);
     msg.SetLabel(m_currentCaption);
     CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg, GetID());
   }
