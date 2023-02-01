@@ -167,9 +167,9 @@ void CGUIPortWindow::FocusPortList()
   m_portList->SetFocused();
 }
 
-void CGUIPortWindow::OnClickAction()
+bool CGUIPortWindow::OnClickAction()
 {
-  m_portList->OnSelect();
+  return m_portList->OnSelect();
 }
 
 void CGUIPortWindow::ResetPorts()

@@ -38,9 +38,14 @@ std::string CGUIGameSettingsHandle::CreateSavestate(bool autosave)
   return m_renderManager.CreateSavestate(autosave);
 }
 
-bool CGUIGameSettingsHandle::LoadSavestate(const std::string& path)
+bool CGUIGameSettingsHandle::UpdateSavestate(const std::string& savestatePath)
 {
-  return m_renderManager.LoadSavestate(path);
+  return m_renderManager.UpdateSavestate(savestatePath);
+}
+
+bool CGUIGameSettingsHandle::LoadSavestate(const std::string& savestatePath)
+{
+  return m_renderManager.LoadSavestate(savestatePath);
 }
 
 void CGUIGameSettingsHandle::CloseOSD()
