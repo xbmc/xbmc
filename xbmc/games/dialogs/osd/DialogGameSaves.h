@@ -8,15 +8,21 @@
 
 #pragma once
 
-#include "dialogs/GUIDialogSelect.h"
+#include "guilib/GUIDialog.h"
 
+#include <memory>
+#include <string>
+
+class CFileItem;
+class CFileItemList;
 class CGUIMessage;
+class CGUIViewControl;
 
 namespace KODI
 {
 namespace GAME
 {
-class CDialogGameSaves : public CGUIDialogSelect
+class CDialogGameSaves : public CGUIDialog
 {
 public:
   CDialogGameSaves();
@@ -28,10 +34,32 @@ public:
   // implementation of CGUIWindow via CGUIDialog
   void FrameMove() override;
 
+  // Player interface
+  void Reset();
+  bool Open(const std::string& gamePath);
+  bool IsConfirmed() const { return m_bConfirmed; }
+  bool IsNewPressed() const { return m_bNewPressed; }
   std::string GetSelectedItemPath();
+
+protected:
+  // implementation of CGUIWIndow via CGUIDialog
+  void OnInitWindow() override;
+  void OnDeinitWindow(int nextWindowID) override;
+  void OnWindowLoaded() override;
+  void OnWindowUnload() override;
 
 private:
   using CGUIControl::OnFocus;
+
+  /*!
+   * \breif Called when opening to set the item list
+   */
+  void SetItems(const CFileItemList& itemList);
+
+  /*!
+   * \brief Called when an item has been selected
+   */
+  void OnSelect(const CFileItem& item);
 
   /*!
    * \brief Called every frame with the item being focused
@@ -62,6 +90,15 @@ private:
    * \brief Called every frame with the caption to set
    */
   void HandleCaption(const std::string& caption);
+
+  // Dialog parameters
+  std::unique_ptr<CGUIViewControl> m_viewControl;
+  std::unique_ptr<CFileItemList> m_vecList;
+  std::shared_ptr<CFileItem> m_selectedItem;
+
+  // Player parameters
+  bool m_bConfirmed{false};
+  bool m_bNewPressed{false};
 
   // State parameters
   std::string m_currentCaption;
