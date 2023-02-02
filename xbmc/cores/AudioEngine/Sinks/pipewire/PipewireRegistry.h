@@ -37,8 +37,6 @@ public:
 
   CPipewireCore& GetCore() const { return m_core; }
 
-  void AddListener();
-
   struct PipewirePropertiesDeleter
   {
     void operator()(pw_properties* p) { pw_properties_free(p); }
