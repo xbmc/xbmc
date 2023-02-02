@@ -34,10 +34,7 @@ CPipewireRegistry::CPipewireRegistry(CPipewireCore& core)
     CLog::Log(LOGERROR, "CPipewireRegistry: failed to create registry: {}", strerror(errno));
     throw std::runtime_error("CPipewireRegistry: failed to create registry");
   }
-}
 
-void CPipewireRegistry::AddListener()
-{
   pw_registry_add_listener(m_registry.get(), &m_registryListener, &m_registryEvents, this);
 }
 
