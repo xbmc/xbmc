@@ -56,7 +56,17 @@ bool CPipewire::Start()
     return false;
   }
 
-  m_core = std::make_unique<CPipewireCore>(*m_context);
+  try
+  {
+    m_core = std::make_unique<CPipewireCore>(*m_context);
+  }
+  catch (std::exception& e)
+  {
+    CLog::Log(LOGERROR, "Pipewire: failed to connect to server");
+    return false;
+  }
+
+  CLog::Log(LOGINFO, "Pipewire: connected to server");
 
   m_registry = std::make_unique<CPipewireRegistry>(*m_core);
 
@@ -82,18 +92,8 @@ std::unique_ptr<CPipewire> CPipewire::Create()
 
   auto pipewire = std::make_unique<PipewireMaker>();
 
-  try
-  {
-    if (!pipewire->Start())
-      return {};
-  }
-  catch (std::exception& e)
-  {
-    CLog::Log(LOGERROR, "Pipewire: failed to connect to server");
+  if (!pipewire->Start())
     return {};
-  }
-
-  CLog::Log(LOGINFO, "Pipewire: connected to server");
 
   return pipewire;
 }
