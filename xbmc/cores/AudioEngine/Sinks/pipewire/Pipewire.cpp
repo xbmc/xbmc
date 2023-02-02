@@ -72,3 +72,28 @@ bool CPipewire::Start()
 
   return true;
 }
+
+std::unique_ptr<CPipewire> CPipewire::Create()
+{
+  struct PipewireMaker : public CPipewire
+  {
+    using CPipewire::CPipewire;
+  };
+
+  auto pipewire = std::make_unique<PipewireMaker>();
+
+  try
+  {
+    if (!pipewire->Start())
+      return {};
+  }
+  catch (std::exception& e)
+  {
+    CLog::Log(LOGERROR, "Pipewire: failed to connect to server");
+    return {};
+  }
+
+  CLog::Log(LOGINFO, "Pipewire: connected to server");
+
+  return pipewire;
+}
