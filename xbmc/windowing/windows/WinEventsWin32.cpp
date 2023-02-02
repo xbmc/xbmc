@@ -867,6 +867,18 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       }
       break;
     }
+    case WM_INITMENU:
+    {
+      HMENU hm = GetSystemMenu(hWnd, FALSE);
+      if (hm)
+      {
+        if (DX::Windowing()->IsFullScreen())
+          EnableMenuItem(hm, SC_MOVE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
+        else
+          EnableMenuItem(hm, SC_MOVE, MF_BYCOMMAND | MF_ENABLED);
+      }
+      break;
+    }
     default:;
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
