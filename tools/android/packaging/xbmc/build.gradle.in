@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+    namespace '@APP_PACKAGE@'
     compileSdkVersion @TARGET_SDK@
     ndkPath "@NDKROOT@"
     defaultConfig {
