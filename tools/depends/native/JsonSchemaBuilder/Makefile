@@ -23,6 +23,8 @@ APPBIN=$(PREFIX)/bin/JsonSchemaBuilder
 
 all: .installed-$(PLATFORM)
 
+download:
+
 $(PLATFORM): $(DEPS)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); cp -a $(SOURCE)/* .
