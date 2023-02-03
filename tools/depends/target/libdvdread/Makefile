@@ -18,6 +18,8 @@ else
     TARBALLS_LOCATION = $(ROOT_DIR)
     PKGCONFIGPATH = PKG_CONFIG_PATH="$(ROOT_DIR)/../libdvdcss/dvdcss-install/lib/pkgconfig"
     EXTRA_CFLAGS += -I$(ROOT_DIR)/../libdvdcss/dvdcss-install/include
+    RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3
+    ARCHIVE_TOOL := tar --strip-components=1 -xf
   endif
 endif
 
@@ -27,9 +29,6 @@ endif
 ifeq ($(OS),darwin_embedded)
   EXTRA_CFLAGS +=  -D__DARWIN__
 endif
-
-RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3
-ARCHIVE_TOOL := tar --strip-components=1 -xf
 
 include ../../download-files.include
 all: .installed-$(PLATFORM)
