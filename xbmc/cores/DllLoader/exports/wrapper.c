@@ -388,6 +388,11 @@ int __wrap_stat(const char *path, struct _stat *buffer)
   return dll_stat(path, buffer);
 }
 
+int __wrap_stat64(const char* path, struct stat64* buffer)
+{
+  return dll_stat64(path, buffer);
+}
+
 int __wrap___xstat(int __ver, const char *__filename, struct stat *__stat_buf)
 {
   return dll_stat(__filename, __stat_buf);
@@ -431,6 +436,11 @@ int __wrap___fxstat(int ver, int fd, struct stat *buf)
 int __wrap_fstat(int fd, struct _stat *buf)
 {
   return dll_fstat(fd, buf);
+}
+
+int __wrap_fstat64(int fd, struct stat64* buf)
+{
+  return dll_fstat64(fd, buf);
 }
 
 int __wrap_setvbuf(FILE *stream, char *buf, int type, size_t size)
