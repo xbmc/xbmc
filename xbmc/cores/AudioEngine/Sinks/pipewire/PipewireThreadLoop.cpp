@@ -35,12 +35,12 @@ void CPipewireThreadLoop::Stop()
   pw_thread_loop_stop(m_mainloop.get());
 }
 
-void CPipewireThreadLoop::Lock()
+void CPipewireThreadLoop::Lock() const
 {
   pw_thread_loop_lock(m_mainloop.get());
 }
 
-void CPipewireThreadLoop::Unlock()
+void CPipewireThreadLoop::Unlock() const
 {
   pw_thread_loop_unlock(m_mainloop.get());
 }
