@@ -12,11 +12,10 @@ else
   ifeq ($(PLATFORM),)
     PLATFORM = native
     TARBALLS_LOCATION = $(ROOT_DIR)
+    RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3
+    ARCHIVE_TOOL := tar --strip-components=1 -xf
   endif
 endif
-
-RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3
-ARCHIVE_TOOL := tar --strip-components=1 -xf
 
 # configuration settings
 config = --prefix=$(PREFIX) --disable-shared --enable-static --with-pic
