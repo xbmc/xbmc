@@ -75,8 +75,7 @@ bool CPipewire::Start()
   int ret = m_loop->Wait(5s);
   if (ret == -ETIMEDOUT)
   {
-    CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - timed out out waiting for synchronization",
-              __FUNCTION__);
+    CLog::Log(LOGDEBUG, "Pipewire: timed out out waiting for synchronization");
     return false;
   }
 
