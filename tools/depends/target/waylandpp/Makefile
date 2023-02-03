@@ -17,7 +17,8 @@ ifeq ($(PLATFORM),)
 	PLATFORM = native
 	TARBALLS_LOCATION = $(ROOT_DIR)
 	BASE_URL := http://mirrors.kodi.tv/build-deps/sources
-	RETRIEVE_TOOL := curl -LsS --create-dirs --retry 10 --retry-connrefused -o
+	RETRIEVE_TOOL := curl
+	RETRIEVE_TOOL_FLAGS := -LsS --create-dirs --retry 10 --retry-connrefused -o
 	ARCHIVE_TOOL := tar --strip-components=1 -xf
 	CMAKE := cmake
 	CMAKE_OPTIONS := -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DBUILD_SCANNER=ON $(CMAKE_OPTIONS)
