@@ -12,9 +12,19 @@ SHA512=72c78d7fcb024393c1d15f2a1856608ae4460ba43cc5bbbb4c29b80508cae6cb822df4638
 include ../../download-files.include
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --without-p11-kit --disable-nls --with-included-unistring \
-                      --with-included-libtasn1 --enable-local-libopts --disable-doc --disable-tests --disable-guile \
-                      --disable-tools $(CONFIGURE_OPTIONS)
+CONFIGURE=./configure --prefix=$(PREFIX) \
+                      --disable-shared \
+                      --without-p11-kit \
+                      --disable-nls \
+                      --with-included-unistring \
+                      --with-included-libtasn1 \
+                      --enable-local-libopts \
+                      --disable-doc \
+                      --disable-tests \
+                      --disable-guile \
+                      --disable-tools \
+                      --without-idn \
+                      $(CONFIGURE_OPTIONS)
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
