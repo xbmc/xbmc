@@ -50,10 +50,17 @@ ifeq ($(OS),linux)
   endif
 endif
 
-.PHONY: $(NATIVE) native
+.PHONY: $(NATIVE) native download $(DOWNLOAD_TARGETS)
 
 all: native
 	@echo "Dependencies built successfully."
+
+DOWNLOAD_TARGETS := $(addprefix download/, $(NATIVE))
+
+$(DOWNLOAD_TARGETS):
+	$(MAKE) -C $(notdir $@) download
+
+download: $(DOWNLOAD_TARGETS)
 
 # Dependency layout for parallel builds
 autoconf-archive: autoconf
