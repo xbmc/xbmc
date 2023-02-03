@@ -29,8 +29,8 @@ public:
   bool Start();
   void Stop();
 
-  void Lock();
-  void Unlock();
+  void Lock() const;
+  void Unlock() const;
 
   int Wait(std::chrono::nanoseconds timeout);
   void Signal(bool accept);
