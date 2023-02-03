@@ -8,7 +8,8 @@ else
   ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
   TARBALLS_LOCATION ?= $(ROOT_DIR)
   BASE_URL ?= http://mirrors.kodi.tv/build-deps/sources
-  RETRIEVE_TOOL := curl -LsS --create-dirs --retry 10 --retry-connrefused -o
+  RETRIEVE_TOOL := curl
+  RETRIEVE_TOOL_FLAGS := -LsS --create-dirs --retry 10 --retry-connrefused -o
   ARCHIVE_TOOL := tar --strip-components=1 -xf
 endif
 
