@@ -32,6 +32,7 @@ else
 export CC CXX CFLAGS CXXFLAGS
 endif
 export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig
+export PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig
 
 LIBDYLIB=$(PLATFORM)/build/va/$(LIBNAME).so
 
