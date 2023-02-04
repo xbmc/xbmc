@@ -11,8 +11,6 @@ ARCHIVE=$(SOURCE).tar.gz
 SHA512=bf1b8a9e69b87547fc65989b9eaff88a442d8b2f01f5446cef960000b093390b1e557536837fbf38bb6d9a4f93e3985ea34c3253f94925b0f571b4606c980832
 include ../../download-files.include
 
-APP=$(PLATFORM)/wayland-scanner++
-
 CMAKE_OPTIONS := -DBUILD_DOCUMENTATION=OFF \
                  -DBUILD_LIBRARIES=OFF \
                  -DBUILD_EXAMPLES=OFF \
@@ -32,10 +30,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); $(NATIVEPREFIX)/bin/cmake $(CMAKE_OPTIONS) ..
 
-$(APP): $(PLATFORM)
+.installed-$(PLATFORM): $(PLATFORM)
 	$(MAKE) -C $(BUILDDIR)
-
-.installed-$(PLATFORM): $(APP)
 	$(MAKE) -C $(BUILDDIR) install
 	touch $@
 
