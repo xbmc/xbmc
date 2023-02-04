@@ -37,7 +37,7 @@ export CC CXX CFLAGS CXXFLAGS
 endif
 export PKG_CONFIG_LIBDIR=$(PREFIX)/lib/pkgconfig
 
-LIBDYLIB=$(PLATFORM)/build/lib/lib$(LIBNAME).a
+LIBDYLIB=$(PLATFORM)/build/src/lib$(LIBNAME).a
 
 all: .installed-$(PLATFORM)
 
