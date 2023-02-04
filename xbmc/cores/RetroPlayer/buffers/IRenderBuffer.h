@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "cores/RetroPlayer/RetroPlayerTypes.h"
+
 extern "C"
 {
 #include <libavutil/pixfmt.h>
@@ -38,6 +40,8 @@ public:
   virtual void Update() {} //! @todo Remove me
   virtual size_t GetFrameSize() const = 0;
   virtual uint8_t* GetMemory() = 0;
+  virtual DataAccess GetMemoryAccess() const = 0;
+  virtual DataAlignment GetMemoryAlignment() const { return DataAlignment::DATA_UNALIGNED; }
   virtual void ReleaseMemory() {}
   virtual bool UploadTexture() = 0;
   virtual void BindToUnit(unsigned int unit) {}
