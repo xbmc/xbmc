@@ -1036,6 +1036,11 @@ namespace XBMCAddon
       align(_alignment)
 
     {
+      dwPosX = x;
+      dwPosY = y;
+      dwWidth = width;
+      dwHeight = height;
+
       strTextureFocus = focusTexture ? focusTexture :
         XBMCAddonUtils::getDefaultImage("edit", "texturefocus");
 
