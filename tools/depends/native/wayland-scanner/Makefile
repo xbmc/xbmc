@@ -14,8 +14,6 @@ include ../../download-files.include
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-libraries --disable-documentation --disable-dtd-validation
 
-APP=$(PLATFORM)/wayland-scanner
-
 all: .installed-$(PLATFORM)
 
 
@@ -24,10 +22,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); $(CONFIGURE)
 
-$(APP): $(PLATFORM)
+.installed-$(PLATFORM): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
-
-.installed-$(PLATFORM): $(APP)
 	$(MAKE) -C $(PLATFORM) install
 	touch $@
 
