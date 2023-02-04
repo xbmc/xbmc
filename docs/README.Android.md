@@ -77,12 +77,12 @@ Kodi CI/CD platforms currently use r21e for build testing and releases, so we re
 ### 3.1. Extract Android SDK and NDK
 Create needed directories:
 ```
-mkdir -p $HOME/android-tools/android-sdk-linux/cmdline-tools
+mkdir -p $HOME/android-tools/android-sdk-linux
 ```
 
 Extract Android SDK:
 ```
-unzip $HOME/Downloads/commandlinetools-linux-6200805_latest.zip -d $HOME/android-tools/android-sdk-linux/cmdline-tools
+unzip $HOME/Downloads/commandlinetools-linux-6200805_latest.zip -d $HOME/android-tools/android-sdk-linux/
 ```
 
 **NOTE:** Since we're using the latest SDK available, filename can change over time. Adapt the `unzip` command accordingly.
@@ -95,7 +95,7 @@ unzip $HOME/Downloads/android-ndk-r21e-linux-x86_64.zip -d $HOME/android-tools
 ### 3.2. Configure Android SDK
 Before Android SDK can be used, you need to accept the licenses and configure it:
 ```
-cd $HOME/android-tools/android-sdk-linux/cmdline-tools/tools/bin
+cd $HOME/android-tools/android-sdk-linux/cmdline-tools/bin
 ./sdkmanager --sdk_root=$(pwd)/../.. --licenses
 ./sdkmanager --sdk_root=$(pwd)/../.. platform-tools
 ./sdkmanager --sdk_root=$(pwd)/../.. "platforms;android-28"
