@@ -12,8 +12,6 @@ include ../../download-files.include
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --with-host-scanner --disable-documentation --disable-dtd-validation
 
-LIBDYLIB=$(PLATFORM)/.libs/libwayland-client.la
-
 all: .installed-$(PLATFORM)
 
 
@@ -22,10 +20,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); $(CONFIGURE)
 
-$(LIBDYLIB): $(PLATFORM)
+.installed-$(PLATFORM): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM)
-
-.installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
 
 	# remove the target wayland scanner from the sysroot. We only want to use the native one
