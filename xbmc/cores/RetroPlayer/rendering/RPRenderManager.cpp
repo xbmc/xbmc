@@ -55,10 +55,13 @@ void CRPRenderManager::Deinitialize()
 {
   CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Deinitializing render manager");
 
-  for (auto& pixelScaler : m_scalers)
+  for (auto& pixelScalerMap : m_scalers)
   {
-    if (pixelScaler.second != nullptr)
-      sws_freeContext(pixelScaler.second);
+    for (auto& pixelScaler : pixelScalerMap.second)
+    {
+      if (pixelScaler.second != nullptr)
+        sws_freeContext(pixelScaler.second);
+    }
   }
   m_scalers.clear();
 
@@ -287,7 +290,7 @@ void CRPRenderManager::Flush()
 void CRPRenderManager::RenderWindow(bool bClear, const RESOLUTION_INFO& coordsRes)
 {
   // Get a renderer for the fullscreen window
-  std::shared_ptr<CRPBaseRenderer> renderer = GetRenderer(nullptr);
+  std::shared_ptr<CRPBaseRenderer> renderer = GetRendererForSettings(nullptr);
   if (!renderer)
     return;
 
@@ -339,7 +342,7 @@ void CRPRenderManager::RenderControl(bool bClear,
                                      const IGUIRenderSettings* renderSettings)
 {
   // Get a renderer for the control
-  std::shared_ptr<CRPBaseRenderer> renderer = GetRenderer(renderSettings);
+  std::shared_ptr<CRPBaseRenderer> renderer = GetRendererForSettings(renderSettings);
   if (!renderer)
     return;
 
@@ -442,7 +445,7 @@ void CRPRenderManager::RenderInternal(const std::shared_ptr<CRPBaseRenderer>& re
   renderer->RenderFrame(bClear, alpha);
 }
 
-std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
+std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRendererForSettings(
     const IGUIRenderSettings* renderSettings)
 {
   std::shared_ptr<CRPBaseRenderer> renderer;
@@ -459,7 +462,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
   // Check renderers in order of buffer pools
   for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
   {
-    renderer = GetRenderer(bufferPool, effectiveRenderSettings);
+    renderer = GetRendererForPool(bufferPool, effectiveRenderSettings);
     if (renderer)
       break;
   }
@@ -474,14 +477,14 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
   return renderer;
 }
 
-std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
+std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRendererForPool(
     IRenderBufferPool* bufferPool, const CRenderSettings& renderSettings)
 {
   std::shared_ptr<CRPBaseRenderer> renderer;
 
   if (!bufferPool->IsCompatible(renderSettings.VideoSettings()))
   {
-    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: buffer pool is not compatible with renderer");
+    CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: buffer pool is not compatible with renderer");
     return renderer;
   }
 
@@ -501,7 +504,7 @@ std::shared_ptr<CRPBaseRenderer> CRPRenderManager::GetRenderer(
   // If buffer pool has no compatible renderers, create one now
   if (!renderer)
   {
-    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating renderer for {}",
+    CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Creating renderer for {}",
               m_processInfo.GetRenderSystemName(bufferPool));
 
     renderer.reset(m_processInfo.CreateRenderer(bufferPool, renderSettings));
@@ -593,7 +596,7 @@ IRenderBuffer* CRPRenderManager::CreateFromCache(std::vector<uint8_t>& cachedFra
 
   if (!ownedFrame.empty())
   {
-    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating render buffer for renderer");
+    CLog::Log(LOGERROR, "RetroPlayer[RENDER]: Creating render buffer for renderer from cache");
 
     IRenderBuffer* renderBuffer = bufferPool->GetBuffer(width, height);
     if (renderBuffer != nullptr)
@@ -631,13 +634,13 @@ void CRPRenderManager::CopyFrame(IRenderBuffer* renderBuffer,
     const unsigned int targetStride =
         static_cast<unsigned int>(renderBuffer->GetFrameSize() / renderBuffer->GetHeight());
 
-    if (m_format == renderBuffer->GetFormat())
+    if (format == renderBuffer->GetFormat())
     {
       if (sourceStride == targetStride)
         std::memcpy(target, source, size);
       else
       {
-        const unsigned int widthBytes = CRenderTranslator::TranslateWidthToBytes(width, m_format);
+        const unsigned int widthBytes = CRenderTranslator::TranslateWidthToBytes(width, format);
         if (widthBytes > 0)
         {
           for (unsigned int i = 0; i < height; i++)
@@ -647,7 +650,7 @@ void CRPRenderManager::CopyFrame(IRenderBuffer* renderBuffer,
     }
     else
     {
-      SwsContext*& scalerContext = m_scalers[renderBuffer->GetFormat()];
+      SwsContext*& scalerContext = m_scalers[format][renderBuffer->GetFormat()];
       scalerContext = sws_getCachedContext(
           scalerContext, width, height, format, renderBuffer->GetWidth(), renderBuffer->GetHeight(),
           renderBuffer->GetFormat(), SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
@@ -693,7 +696,7 @@ CRenderVideoSettings CRPRenderManager::GetEffectiveSettings(
   return effectiveSettings;
 }
 
-void CRPRenderManager::SaveThumbnail(const std::string& path)
+void CRPRenderManager::SaveThumbnail(const std::string& thumbnailPath)
 {
   m_bufferMutex.lock();
 
@@ -703,32 +706,37 @@ void CRPRenderManager::SaveThumbnail(const std::string& path)
     return;
   }
 
-  const uint8_t* const data = m_renderBuffers[0]->GetMemory();
-  const size_t size = m_renderBuffers[0]->GetFrameSize();
+  const uint8_t* const sourceData = m_renderBuffers[0]->GetMemory();
+  const size_t sourceSize = m_renderBuffers[0]->GetFrameSize();
   const unsigned int width = m_renderBuffers[0]->GetWidth();
   const unsigned int height = m_renderBuffers[0]->GetHeight();
-  const AVPixelFormat format = m_renderBuffers[0]->GetFormat();
+  const AVPixelFormat sourceFormat = m_renderBuffers[0]->GetFormat();
 
-  std::vector<uint8_t> copiedData(data, data + size);
+  std::vector<uint8_t> copiedData(sourceData, sourceData + sourceSize);
 
   m_bufferMutex.unlock();
 
-  const int stride = CRenderTranslator::TranslateWidthToBytes(width, format);
+  const int stride = CRenderTranslator::TranslateWidthToBytes(width, sourceFormat);
 
   unsigned int scaleWidth = 400;
-  unsigned int scaleHeigth = 220;
-  CPicture::GetScale(width, height, scaleWidth, scaleHeigth);
+  unsigned int scaleHeight = 220;
+  CPicture::GetScale(width, height, scaleWidth, scaleHeight);
 
   const int bytesPerPixel = 4;
-  std::vector<uint8_t> scaledImage(scaleWidth * scaleHeigth * bytesPerPixel);
+  std::vector<uint8_t> scaledImage(scaleWidth * scaleHeight * bytesPerPixel);
 
   const AVPixelFormat outFormat = AV_PIX_FMT_BGR0;
   const int scaleStride = CRenderTranslator::TranslateWidthToBytes(scaleWidth, outFormat);
 
-  if (CPicture::ScaleImage(copiedData.data(), width, height, stride, format, scaledImage.data(),
-                           scaleWidth, scaleHeigth, scaleStride, outFormat))
+  if (CPicture::ScaleImage(copiedData.data(), width, height, stride, sourceFormat,
+                           scaledImage.data(), scaleWidth, scaleHeight, scaleStride, outFormat))
   {
-    CPicture::CreateThumbnailFromSurface(scaledImage.data(), scaleWidth, scaleHeigth, scaleStride,
-                                         path);
+    CPicture::CreateThumbnailFromSurface(scaledImage.data(), scaleWidth, scaleHeight, scaleStride,
+                                         thumbnailPath);
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "Failed to scale image from size {}x{} to size {}x{}", width, height,
+              scaleWidth, scaleHeight);
   }
 }
