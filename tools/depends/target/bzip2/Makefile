@@ -12,8 +12,6 @@ include ../../download-files.include
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared
 
-LIBDYLIB=$(PLATFORM)/libbz2.a
-
 all: .installed-$(PLATFORM)
 
 
@@ -22,10 +20,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../Makefile.patch
 
-$(LIBDYLIB): $(PLATFORM)
+.installed-$(PLATFORM): $(PLATFORM)
 	$(MAKE) -C $(PLATFORM) PREFIX=$(PREFIX) CC="$(CC)" CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)" AR="$(AR)"
-
-.installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install PREFIX=$(PREFIX)
 	rm $(PREFIX)/bin/bzip2
 	touch $@
