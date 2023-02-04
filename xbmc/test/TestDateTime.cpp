@@ -78,15 +78,46 @@ TEST_F(TestDateTime, TimeTOperators)
 
 TEST_F(TestDateTime, TmOperators)
 {
-  CDateTime dateTime1(1991, 5, 14, 12, 34, 56);
-  CDateTime dateTime2(1991, 5, 14, 12, 34, 57);
+  {
+    CDateTime dateTime1(1991, 5, 14, 12, 34, 56);
 
-  tm t;
-  dateTime2.GetAsTm(t);
+    tm t1;
+    dateTime1.GetAsTm(t1);
 
-  EXPECT_TRUE(dateTime1 < t);
-  EXPECT_FALSE(dateTime1 > t);
-  EXPECT_FALSE(dateTime1 == t);
+    EXPECT_FALSE(dateTime1 < t1);
+    EXPECT_FALSE(dateTime1 > t1);
+    EXPECT_TRUE(dateTime1 == t1);
+
+    CDateTime dateTime2(1991, 5, 14, 12, 34, 57);
+
+    tm t2;
+    dateTime2.GetAsTm(t2);
+
+    EXPECT_TRUE(dateTime1 < t2);
+    EXPECT_FALSE(dateTime1 > t2);
+    EXPECT_FALSE(dateTime1 == t2);
+  }
+
+  // same test but opposite daylight saving
+  {
+    CDateTime dateTime1(1991, 1, 14, 12, 34, 56);
+
+    tm t1;
+    dateTime1.GetAsTm(t1);
+
+    EXPECT_FALSE(dateTime1 < t1);
+    EXPECT_FALSE(dateTime1 > t1);
+    EXPECT_TRUE(dateTime1 == t1);
+
+    CDateTime dateTime2(1991, 1, 14, 12, 34, 57);
+
+    tm t2;
+    dateTime2.GetAsTm(t2);
+
+    EXPECT_TRUE(dateTime1 < t2);
+    EXPECT_FALSE(dateTime1 > t2);
+    EXPECT_FALSE(dateTime1 == t2);
+  }
 }
 
 // no way to test this platform agnostically (for now) so just log it.
@@ -553,13 +584,24 @@ TEST_F(TestDateTime, GetAsTime)
 
 TEST_F(TestDateTime, GetAsTm)
 {
-  CDateTime dateTime;
-  dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
+  {
+    CDateTime dateTime;
+    dateTime.SetDateTime(1991, 05, 14, 12, 34, 56);
 
-  tm time;
-  dateTime.GetAsTm(time);
+    tm time;
+    dateTime.GetAsTm(time);
+    EXPECT_TRUE(dateTime == time);
+  }
 
-  EXPECT_TRUE(dateTime == time);
+  // same test but opposite daylight saving
+  {
+    CDateTime dateTime;
+    dateTime.SetDateTime(1991, 01, 14, 12, 34, 56);
+
+    tm time;
+    dateTime.GetAsTm(time);
+    EXPECT_TRUE(dateTime == time);
+  }
 }
 
 // Disabled pending std::chrono and std::date changes.
