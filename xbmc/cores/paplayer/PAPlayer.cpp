@@ -858,9 +858,8 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, double &freeBufferTime)
         free_space = (double)(si->m_stream->GetSpace() / si->m_bytesPerSample) / si->m_audioFormat.m_sampleRate;
       else
       {
-        const bool isIEC = !m_processInfo->WantsRawPassthrough();
-        free_space = (double)si->m_stream->GetSpace() *
-                     si->m_audioFormat.m_streamInfo.GetDuration(isIEC) / 1000;
+        free_space = static_cast<double>(si->m_stream->GetSpace()) *
+                     si->m_audioFormat.m_streamInfo.GetDuration() / 1000;
       }
 
       freeBufferTime = std::max(freeBufferTime , free_space);
@@ -909,8 +908,7 @@ bool PAPlayer::QueueData(StreamInfo *si)
         CLog::Log(LOGERROR, "PAPlayer::QueueData - unknown error");
         return false;
       }
-      const bool isIEC = !m_processInfo->WantsRawPassthrough();
-      si->m_framesSent += si->m_audioFormat.m_streamInfo.GetDuration(isIEC) / 1000 *
+      si->m_framesSent += si->m_audioFormat.m_streamInfo.GetDuration() / 1000 *
                           si->m_audioFormat.m_streamInfo.m_sampleRate;
     }
   }
