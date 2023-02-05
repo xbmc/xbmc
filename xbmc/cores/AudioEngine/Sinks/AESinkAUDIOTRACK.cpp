@@ -652,14 +652,6 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     return;
   }
 
-  // TrueHD is padded - it has 10 ms payload but a 20 ms frame is used
-  // This has the side effect that the buffer only has half the payload
-  // in it and all delays from the sink need to be divided by two.
-  double ratio = (m_passthrough && m_info.m_wantsIECPassthrough &&
-                  (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD))
-                     ? 2.0
-                     : 1.0;
-
   bool usesAdvancedLogging = CServiceBroker::GetLogging().CanLogComponent(LOGAUDIO);
   // In their infinite wisdom, Google decided to make getPlaybackHeadPosition
   // return a 32bit "int" that you should "interpret as unsigned."  As such,
@@ -674,7 +666,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
   // and add head_pos which wrapped around, e.g. 0x0001 0000 0000 -> 0x0001 0000 0004
   m_headPos = (m_headPos & UINT64_UPPER_BYTES) | (uint64_t)head_pos;
 
-  double gone = static_cast<double>(m_headPos) / m_sink_sampleRate / ratio;
+  double gone = static_cast<double>(m_headPos) / m_sink_sampleRate;
 
   // if sink is run dry without buffer time written anymore
   if (gone > m_duration_written)
@@ -726,7 +718,7 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
     }
     m_timestampPos = stamphead;
 
-    double playtime = m_timestampPos / static_cast<double>(m_sink_sampleRate) / ratio;
+    double playtime = m_timestampPos / static_cast<double>(m_sink_sampleRate);
 
     if (usesAdvancedLogging)
     {
@@ -814,9 +806,6 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   uint8_t *out_buf = buffer;
   int size = frames * m_format.m_frameSize;
 
-  // TrueHD IEC has 12 audio units (half packet and half duration) on CDVDAudioCodecPassthrough
-  double ratio = (m_format.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD) ? 2.0 : 1.0;
-
   // write as many frames of audio as we can fit into our internal buffer.
   int written = 0;
   int loop_written = 0;
@@ -885,7 +874,6 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
       {
         double duration =
             (static_cast<double>(loop_written) / m_format.m_frameSize) / m_format.m_sampleRate;
-        duration /= ratio;
         m_duration_written += duration;
       }
 
