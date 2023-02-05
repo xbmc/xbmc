@@ -727,7 +727,8 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
                 1000.0 * (m_duration_written - playtime), delta / 1000000.0, playtime * 1000,
                 m_duration_written * 1000);
       CLog::Log(LOGINFO, "Head-Position {} Timestamp Position {} Delay-Offset: {} ms", m_headPos,
-                m_timestampPos, 1000.0 * (m_headPos - m_timestampPos) / m_sink_sampleRate);
+                m_timestampPos,
+                1000.0 * (static_cast<int64_t>(m_headPos - m_timestampPos)) / m_sink_sampleRate);
     }
     double hw_delay = m_duration_written - playtime;
     // correct by subtracting above measured delay, if lower delay gets automatically reduced
