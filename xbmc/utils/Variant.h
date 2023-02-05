@@ -87,8 +87,10 @@ public:
   uint64_t asUnsignedInteger(uint64_t fallback = 0u) const;
   uint32_t asUnsignedInteger32(uint32_t fallback = 0u) const;
   bool asBoolean(bool fallback = false) const;
-  std::string asString(const std::string &fallback = "") const;
-  std::wstring asWideString(const std::wstring &fallback = L"") const;
+  std::string asString(const std::string& fallback = "") const&;
+  std::string asString(const std::string& fallback = "") &&;
+  std::wstring asWideString(const std::wstring& fallback = L"") const&;
+  std::wstring asWideString(const std::wstring& fallback = L"") &&;
   double asDouble(double fallback = 0.0) const;
   float asFloat(float fallback = 0.0f) const;
 
