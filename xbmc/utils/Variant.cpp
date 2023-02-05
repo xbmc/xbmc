@@ -501,7 +501,7 @@ bool CVariant::asBoolean(bool fallback) const
   return fallback;
 }
 
-std::string CVariant::asString(const std::string &fallback /* = "" */) const
+std::string CVariant::asString(const std::string& fallback /* = "" */) const&
 {
   switch (m_type)
   {
@@ -522,7 +522,15 @@ std::string CVariant::asString(const std::string &fallback /* = "" */) const
   return fallback;
 }
 
-std::wstring CVariant::asWideString(const std::wstring &fallback /* = L"" */) const
+std::string CVariant::asString(const std::string& fallback /*= ""*/) &&
+{
+  if (m_type == VariantTypeString)
+    return std::move(*m_data.string);
+  else
+    return asString(fallback);
+}
+
+std::wstring CVariant::asWideString(const std::wstring& fallback /* = L"" */) const&
 {
   switch (m_type)
   {
@@ -541,6 +549,14 @@ std::wstring CVariant::asWideString(const std::wstring &fallback /* = L"" */) co
   }
 
   return fallback;
+}
+
+std::wstring CVariant::asWideString(const std::wstring& fallback /*= L""*/) &&
+{
+  if (m_type == VariantTypeWideString)
+    return std::move(*m_data.wstring);
+  else
+    return asWideString(fallback);
 }
 
 CVariant &CVariant::operator[](const std::string &key)
