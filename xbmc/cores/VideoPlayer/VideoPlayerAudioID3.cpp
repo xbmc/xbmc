@@ -27,6 +27,8 @@
 
 using namespace TagLib;
 
+using namespace std::chrono_literals;
+
 CVideoPlayerAudioID3::CVideoPlayerAudioID3(CProcessInfo& processInfo)
   : IDVDStreamPlayer(processInfo), CThread("VideoPlayerAudioID3"), m_messageQueue("id3")
 {
@@ -123,7 +125,7 @@ void CVideoPlayerAudioID3::Process()
   {
     std::shared_ptr<CDVDMsg> pMsg;
     int iPriority = (m_speed == DVD_PLAYSPEED_PAUSE) ? 1 : 0;
-    MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, 2000, iPriority);
+    MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, 2s, iPriority);
 
     // Timeout for ID3 tag data is not a bad thing, so we continue without error
     if (ret == MSGQ_TIMEOUT)

@@ -65,12 +65,12 @@ public:
    * priority,  minimum priority to get, outputs returned packets priority
    */
   MsgQueueReturnCode Get(std::shared_ptr<CDVDMsg>& pMsg,
-                         unsigned int iTimeoutInMilliSeconds,
+                         std::chrono::milliseconds timeout,
                          int& priority);
-  MsgQueueReturnCode Get(std::shared_ptr<CDVDMsg>& pMsg, unsigned int iTimeoutInMilliSeconds)
+  MsgQueueReturnCode Get(std::shared_ptr<CDVDMsg>& pMsg, std::chrono::milliseconds timeout)
   {
     int priority = 0;
-    return Get(pMsg, iTimeoutInMilliSeconds, priority);
+    return Get(pMsg, timeout, priority);
   }
 
   int GetDataSize() const { return m_iDataSize; }

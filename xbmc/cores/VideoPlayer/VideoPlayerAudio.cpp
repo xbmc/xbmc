@@ -229,7 +229,8 @@ void CVideoPlayerAudio::Process()
   while (!m_bStop)
   {
     std::shared_ptr<CDVDMsg> pMsg;
-    int timeout = (int)(1000 * m_audioSink.GetCacheTime());
+    auto timeout = std::chrono::duration_cast<std::chrono::milliseconds>(
+        std::chrono::duration<double, std::ratio<1>>(m_audioSink.GetCacheTime()));
 
     // read next packet and return -1 on error
     int priority = 1;
@@ -249,7 +250,7 @@ void CVideoPlayerAudio::Process()
     if (onlyPrioMsgs)
     {
       priority = 1;
-      timeout = 0;
+      timeout = 0ms;
     }
 
     MsgQueueReturnCode ret = m_messageQueue.Get(pMsg, timeout, priority);
@@ -285,7 +286,7 @@ void CVideoPlayerAudio::Process()
           m_stalled = true;
         }
       }
-      if (timeout == 0)
+      if (timeout == 0ms)
         CThread::Sleep(10ms);
 
       continue;

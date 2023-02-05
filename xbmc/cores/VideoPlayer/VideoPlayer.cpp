@@ -2591,7 +2591,7 @@ void CVideoPlayer::HandleMessages()
 {
   std::shared_ptr<CDVDMsg> pMsg = nullptr;
 
-  while (m_messenger.Get(pMsg, 0) == MSGQ_OK)
+  while (m_messenger.Get(pMsg, 0ms) == MSGQ_OK)
   {
     if (pMsg->IsType(CDVDMsg::PLAYER_OPENFILE) &&
         m_messenger.GetPacketCount(CDVDMsg::PLAYER_OPENFILE) == 0)
