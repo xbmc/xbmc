@@ -31,7 +31,7 @@ public:
     virtual ~CAESinkXAudio();
 
     static void Register();
-    static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
+    static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
 
     bool Initialize (AEAudioFormat &format, std::string &device) override;
     void Deinitialize() override;

@@ -109,14 +109,13 @@ void CAESinkXAudio::Register()
   AE::CAESinkFactory::RegisterSink(reg);
 }
 
-IAESink* CAESinkXAudio::Create(std::string &device, AEAudioFormat &desiredFormat)
+std::unique_ptr<IAESink> CAESinkXAudio::Create(std::string& device, AEAudioFormat& desiredFormat)
 {
-  IAESink *sink = new CAESinkXAudio();
+  auto sink = std::make_unique<CAESinkXAudio>();
   if (sink->Initialize(desiredFormat, device))
     return sink;
 
-  delete sink;
-  return nullptr;
+  return {};
 }
 
 bool CAESinkXAudio::Initialize(AEAudioFormat &format, std::string &device)
