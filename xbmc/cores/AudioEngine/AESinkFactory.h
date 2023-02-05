@@ -11,6 +11,7 @@
 #include "Utils/AEAudioFormat.h"
 #include "Utils/AEDeviceInfo.h"
 
+#include <functional>
 #include <map>
 #include <memory>
 #include <stdint.h>
@@ -28,16 +29,16 @@ struct AESinkInfo
   AEDeviceInfoList m_deviceInfoList;
 };
 
-typedef IAESink* (*CreateSink)(std::string &device, AEAudioFormat &desiredFormat);
-typedef void (*Enumerate)(AEDeviceInfoList &list, bool force);
-typedef void (*Cleanup)();
+using CreateSink = std::function<IAESink*(std::string& device, AEAudioFormat& desiredFormat)>;
+using Enumerate = std::function<void(AEDeviceInfoList& list, bool force)>;
+using Cleanup = std::function<void()>;
 
 struct AESinkRegEntry
 {
   std::string sinkName;
-  CreateSink createFunc = nullptr;
-  Enumerate enumerateFunc = nullptr;
-  Cleanup cleanupFunc = nullptr;
+  CreateSink createFunc;
+  Enumerate enumerateFunc;
+  Cleanup cleanupFunc;
 };
 
 class CAESinkFactory
