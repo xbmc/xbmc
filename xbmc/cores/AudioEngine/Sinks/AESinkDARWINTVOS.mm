@@ -625,14 +625,14 @@ void CAESinkDARWINTVOS::Register()
   AE::CAESinkFactory::RegisterSink(reg);
 }
 
-IAESink* CAESinkDARWINTVOS::Create(std::string& device, AEAudioFormat& desiredFormat)
+std::unique_ptr<IAESink> CAESinkDARWINTVOS::Create(std::string& device,
+                                                   AEAudioFormat& desiredFormat)
 {
-  IAESink* sink = new CAESinkDARWINTVOS();
+  auto sink = std::make_unique<CAESinkDARWINTVOS>();
   if (sink->Initialize(desiredFormat, device))
     return sink;
 
-  delete sink;
-  return nullptr;
+  return {};
 }
 
 bool CAESinkDARWINTVOS::Initialize(AEAudioFormat& format, std::string& device)

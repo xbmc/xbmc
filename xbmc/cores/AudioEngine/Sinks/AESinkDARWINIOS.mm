@@ -598,14 +598,13 @@ void CAESinkDARWINIOS::Register()
   AE::CAESinkFactory::RegisterSink(reg);
 }
 
-IAESink* CAESinkDARWINIOS::Create(std::string &device, AEAudioFormat &desiredFormat)
+std::unique_ptr<IAESink> CAESinkDARWINIOS::Create(std::string& device, AEAudioFormat& desiredFormat)
 {
-  IAESink *sink = new CAESinkDARWINIOS();
+  auto sink = std::make_unique<CAESinkDARWINIOS>();
   if (sink->Initialize(desiredFormat, device))
     return sink;
 
-  delete sink;
-  return nullptr;
+  return {};
 }
 
 bool CAESinkDARWINIOS::Initialize(AEAudioFormat &format, std::string &device)

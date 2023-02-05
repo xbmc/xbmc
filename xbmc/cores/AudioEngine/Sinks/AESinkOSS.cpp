@@ -71,14 +71,13 @@ void CAESinkOSS::Register()
   AE::CAESinkFactory::RegisterSink(entry);
 }
 
-IAESink* CAESinkOSS::Create(std::string &device, AEAudioFormat& desiredFormat)
+std::unique_ptr<IAESink> CAESinkOSS::Create(std::string& device, AEAudioFormat& desiredFormat)
 {
-  IAESink* sink = new CAESinkOSS();
+  auto sink = std::make_unique<CAESinkOSS>();
   if (sink->Initialize(desiredFormat, device))
     return sink;
 
-  delete sink;
-  return nullptr;
+  return {};
 }
 
 std::string CAESinkOSS::GetDeviceUse(const AEAudioFormat& format, const std::string &device)

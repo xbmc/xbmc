@@ -34,7 +34,7 @@ public:
 
   static void Register();
   static void EnumerateDevicesEx(AEDeviceInfoList& list, bool force);
-  static IAESink* Create(std::string& device, AEAudioFormat& desiredFormat);
+  static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
 
   bool Initialize(AEAudioFormat& format, std::string& device) override;
   void Deinitialize() override;

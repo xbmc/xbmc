@@ -70,14 +70,13 @@ void CAESinkWASAPI::Register()
   AE::CAESinkFactory::RegisterSink(reg);
 }
 
-IAESink* CAESinkWASAPI::Create(std::string &device, AEAudioFormat &desiredFormat)
+std::unique_ptr<IAESink> CAESinkWASAPI::Create(std::string& device, AEAudioFormat& desiredFormat)
 {
-  IAESink *sink = new CAESinkWASAPI();
+  auto sink = std::make_unique<CAESinkWASAPI>();
   if (sink->Initialize(desiredFormat, device))
     return sink;
 
-  delete sink;
-  return nullptr;
+  return {};
 }
 
 bool CAESinkWASAPI::Initialize(AEAudioFormat &format, std::string &device)
