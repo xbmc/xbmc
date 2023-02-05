@@ -75,7 +75,7 @@ std::unique_ptr<IAESink> CAESinkFactory::Create(std::string& device, AEAudioForm
     if (driver != reg.second.sinkName)
       continue;
 
-    sink.reset(reg.second.createFunc(tmpDevice, tmpFormat));
+    sink = reg.second.createFunc(tmpDevice, tmpFormat);
     if (sink)
     {
       desiredFormat = tmpFormat;

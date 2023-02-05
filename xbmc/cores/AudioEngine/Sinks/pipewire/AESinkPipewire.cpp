@@ -267,14 +267,13 @@ bool CAESinkPipewire::Register()
   return true;
 }
 
-IAESink* CAESinkPipewire::Create(std::string& device, AEAudioFormat& desiredFormat)
+std::unique_ptr<IAESink> CAESinkPipewire::Create(std::string& device, AEAudioFormat& desiredFormat)
 {
-  IAESink* sink = new CAESinkPipewire();
+  auto sink = std::make_unique<CAESinkPipewire>();
   if (sink->Initialize(desiredFormat, device))
     return sink;
 
-  delete sink;
-  return nullptr;
+  return {};
 }
 
 void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)

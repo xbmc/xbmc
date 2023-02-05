@@ -26,7 +26,7 @@ public:
     virtual ~CAESinkWASAPI();
 
     static void Register();
-    static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
+    static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
     static void EnumerateDevicesEx(AEDeviceInfoList &deviceInfoList, bool force = false);
 
     // IAESink overrides

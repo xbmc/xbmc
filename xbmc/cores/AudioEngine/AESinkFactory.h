@@ -29,7 +29,8 @@ struct AESinkInfo
   AEDeviceInfoList m_deviceInfoList;
 };
 
-using CreateSink = std::function<IAESink*(std::string& device, AEAudioFormat& desiredFormat)>;
+using CreateSink =
+    std::function<std::unique_ptr<IAESink>(std::string& device, AEAudioFormat& desiredFormat)>;
 using Enumerate = std::function<void(AEDeviceInfoList& list, bool force)>;
 using Cleanup = std::function<void()>;
 

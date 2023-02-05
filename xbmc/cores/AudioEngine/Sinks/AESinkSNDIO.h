@@ -25,7 +25,7 @@ public:
   ~CAESinkSNDIO() override;
 
   static void Register();
-  static IAESink* Create(std::string &device, AEAudioFormat &desiredFormat);
+  static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
   static void EnumerateDevicesEx(AEDeviceInfoList &list, bool force = false);
 
   bool Initialize(AEAudioFormat &format, std::string &device) override;
