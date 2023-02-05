@@ -834,7 +834,7 @@ void CActiveAESink::OpenSink()
   // WARNING: this changes format and does not use passthrough
   m_sinkFormat = m_requestedFormat;
   CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - trying to open device {}", device);
-  m_sink.reset(CAESinkFactory::Create(device, m_sinkFormat));
+  m_sink = CAESinkFactory::Create(device, m_sinkFormat);
 
   // try first device in out list
   if (!m_sink && !m_sinkInfoList.empty())
@@ -846,7 +846,7 @@ void CActiveAESink::OpenSink()
       device = driver + ":" + device;
     m_sinkFormat = m_requestedFormat;
     CLog::Log(LOGDEBUG, "CActiveAESink::OpenSink - trying to open device {}", device);
-    m_sink.reset(CAESinkFactory::Create(device, m_sinkFormat));
+    m_sink = CAESinkFactory::Create(device, m_sinkFormat);
   }
 
   if (!m_sink)
