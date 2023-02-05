@@ -12,6 +12,7 @@
 #include "Utils/AEDeviceInfo.h"
 
 #include <map>
+#include <memory>
 #include <stdint.h>
 #include <string>
 #include <vector>
@@ -47,7 +48,7 @@ public:
   static bool HasSinks();
 
   static void ParseDevice(std::string &device, std::string &driver);
-  static IAESink *Create(std::string &device, AEAudioFormat &desiredFormat);
+  static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
   static void EnumerateEx(std::vector<AESinkInfo>& list, bool force, const std::string& driver);
   static void Cleanup();
 
