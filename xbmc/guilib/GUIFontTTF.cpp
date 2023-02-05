@@ -657,6 +657,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
   int lastScriptIndex = -1;
   int lastSetIndex = -1;
 
+  scripts.reserve(text.size());
   for (const auto& character : text)
   {
     scripts.emplace_back(hb_unicode_script(ufuncs, static_cast<wchar_t>(0xffff & character)));
