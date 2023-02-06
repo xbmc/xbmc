@@ -162,7 +162,15 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
     avpkt->size = pkt->iSize;
     avpkt->dts = avpkt->pts = AV_NOPTS_VALUE;
 
-    auto [retExtraData, len] = GetPacketExtradata(avpkt, stream->m_parser, stream->m_context);
+    AVCodecParameters* codecPar = nullptr;
+    int ret = avcodec_parameters_from_context(codecPar, stream->m_context);
+    if (ret < 0)
+    {
+      CLog::LogF(LOGERROR, "avcodec_parameters_from_context failed");
+      return false;
+    }
+
+    auto [retExtraData, len] = GetPacketExtradata(avpkt, codecPar);
     if (len > 0)
     {
       st->changes++;

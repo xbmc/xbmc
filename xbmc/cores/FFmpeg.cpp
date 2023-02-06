@@ -135,9 +135,7 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   buffer.erase(0, start);
 }
 
-std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt,
-                                             const AVCodecParserContext* parserCtx,
-                                             AVCodecContext* codecCtx)
+std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt, const AVCodecParameters* codecPar)
 {
   constexpr int FF_MAX_EXTRADATA_SIZE = ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE);
 
@@ -151,7 +149,7 @@ std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt,
    * for certain codecs, as noted in discussion of PR#21248
    */
 
-  AVCodecID codecId = codecCtx->codec_id;
+  AVCodecID codecId = codecPar->codec_id;
 
   // clang-format off
   if (
@@ -178,7 +176,12 @@ std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt,
   if (ret < 0)
     return std::make_tuple(nullptr, 0);
 
-  bsf->par_in->codec_id = codecId;
+  ret = avcodec_parameters_copy(bsf->par_in, codecPar);
+  if (ret < 0)
+  {
+    av_bsf_free(&bsf);
+    return std::make_tuple(nullptr, 0);
+  }
 
   ret = av_bsf_init(bsf);
   if (ret < 0)
