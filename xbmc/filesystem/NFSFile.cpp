@@ -572,7 +572,6 @@ int64_t CNFSFile::GetLength()
 
 bool CNFSFile::Open(const CURL& url)
 {
-  int ret = 0;
   Close();
   // we can't open files like nfs://file.f or nfs://server/file.f
   // if a file matches the if below return false, it can't exist on a nfs share.
@@ -586,21 +585,34 @@ bool CNFSFile::Open(const CURL& url)
 
   std::unique_lock<CCriticalSection> lock(gNfsConnection);
 
-  if(!gNfsConnection.Connect(url, filename))
-    return false;
-
-  m_pNfsContext = gNfsConnection.GetNfsContext();
-  m_exportPath = gNfsConnection.GetContextMapId();
-
-  ret = nfs_open(m_pNfsContext, filename.c_str(), O_RDONLY, &m_pFileHandle);
-
-  if (ret != 0)
+  auto NfsOpen = [this](const CURL& url, std::string& filename) -> bool
   {
-    CLog::Log(LOGINFO, "CNFSFile::Open: Unable to open file : '{}'  error : '{}'",
-              url.GetFileName(), nfs_get_error(m_pNfsContext));
-    m_pNfsContext = NULL;
-    m_exportPath.clear();
-    return false;
+    if (!gNfsConnection.Connect(url, filename))
+      return false;
+
+    m_pNfsContext = gNfsConnection.GetNfsContext();
+    m_exportPath = gNfsConnection.GetContextMapId();
+
+    return nfs_open(m_pNfsContext, filename.c_str(), O_RDONLY, &m_pFileHandle) == 0;
+  };
+
+  if (!NfsOpen(url, filename))
+  {
+    CLog::Log(LOGERROR,
+              "CNFSFile::Open: Unable to open file - trying again with a new context: error: '{}'",
+              nfs_get_error(m_pNfsContext));
+
+    gNfsConnection.Deinit();
+
+    if (!NfsOpen(url, filename))
+    {
+      CLog::Log(LOGERROR, "CNFSFile::Open: Unable to open file: '{}' error: '{}'",
+                url.GetFileName(), nfs_get_error(m_pNfsContext));
+
+      m_pNfsContext = nullptr;
+      m_exportPath.clear();
+      return false;
+    }
   }
 
   CLog::Log(LOGDEBUG, "CNFSFile::Open - opened {}", url.GetFileName());
