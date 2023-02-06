@@ -580,6 +580,11 @@ void CGUIDialogPVRTimerSettings::OnSettingAction(const std::shared_ptr<const CSe
 
 bool CGUIDialogPVRTimerSettings::Validate()
 {
+  // @todo: Timer rules may have no date (time-only), so we can't check those for now.
+  //        We need to extend the api with additional attributes to properly fix this
+  if (m_timerType->IsTimerRule())
+    return true;
+
   bool bStartAnyTime = m_bStartAnyTime;
   bool bEndAnyTime = m_bEndAnyTime;
 
@@ -594,10 +599,7 @@ bool CGUIDialogPVRTimerSettings::Validate()
   // Begin and end time
   if (!bStartAnyTime && !bEndAnyTime)
   {
-    // Not in the set of having neither or both of start clock entry and
-    // end clock entry while also being a timer rule
-    if (!(m_timerType->SupportsStartTime() == m_timerType->SupportsEndTime() &&
-          m_timerType->IsTimerRule()) &&
+    if (m_timerType->SupportsStartTime() && m_timerType->SupportsEndTime() &&
         m_endLocalTime < m_startLocalTime)
     {
       HELPERS::ShowOKDialogText(CVariant{19065}, // "Timer settings"
