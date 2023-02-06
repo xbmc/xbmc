@@ -73,5 +73,4 @@ public:
 };
 
 std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt,
-                                             const AVCodecParserContext* parserCtx,
-                                             AVCodecContext* codecCtx);
+                                             const AVCodecParameters* codecPar);
