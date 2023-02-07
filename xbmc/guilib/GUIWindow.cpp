@@ -420,8 +420,12 @@ bool CGUIWindow::OnAction(const CAction &action)
   CGUIControl *focusedControl = GetFocusedControl();
   if (focusedControl)
   {
-    if (focusedControl->OnAction(action))
-      return true;
+    while (focusedControl && focusedControl != this)
+    {
+      if (focusedControl->OnAction(action))
+        return true;
+      focusedControl = focusedControl->GetParentControl();
+    }
   }
   else
   {
