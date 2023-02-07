@@ -8,10 +8,11 @@
 
 #include "utils/StringUtils.h"
 
-#include <algorithm>
-#include <cstdint>
+#include <fstream>
+#include <iostream>
 #include <locale>
 #include <string_view>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -46,7 +47,7 @@ enum EN
 // ------------------------------------ NOTE ------------------------------------
 //
 // The ToLower, ToUpper, FoldCase and related tests were rewritten for Unicode (codepoint)
-// comparison and not not for single-byte comparison (as was done prior to these
+// comparison and not for single-byte comparison (as was done prior to these
 // changes). The ToLower/ToUpper API has not yet been changed, so these tests have
 // been modified to pass with current behavior. A TODO note documents each of these.
 //
@@ -54,6 +55,57 @@ enum EN
 // Additional testing will need to be done to correct for that difference.
 //
 // -----------------------------------------------------------------------------
+
+class CaseMap
+{
+  /*
+   * CaseMap is similar to FoldCase. They could be combined into one table.
+   * See StringUtils.cpp for more information.
+   *
+   * The test code here, like Validate_FoldCase, walks through every
+   * Unicode character defined in CaseFolding.txt and confirms that
+   * the StringUtils functions return results consistent with CaseFolding.txt.
+   * Here, CaseMap and related code reads CaseFolding.txt and drives
+   * Validate_UpperLower_Data. This code was derived from
+   * xbmc/utils/unicode_tools/UpperLowerTableGenerator, which creates the
+   * tables used by StringUtils ToUpper/ToLower.
+   */
+public:
+  char32_t codepoint;
+  char32_t upperCaseValue;
+  char32_t lowerCaseValue;
+  char32_t titleCaseValue;
+
+  CaseMap(char32_t p_codepoint,
+          char32_t p_upperCaseValue,
+          char32_t p_lowerCaseValue,
+          char32_t p_titleCaseValue)
+    : codepoint(p_codepoint),
+      upperCaseValue(p_upperCaseValue),
+      lowerCaseValue(p_lowerCaseValue),
+      titleCaseValue(p_titleCaseValue)
+  {
+  }
+
+  CaseMap() : codepoint(0), upperCaseValue(0), lowerCaseValue(0), titleCaseValue(0) {}
+  CaseMap(int p_tableLength)
+    : codepoint(p_tableLength), upperCaseValue(0), lowerCaseValue(0), titleCaseValue(0)
+  {
+  }
+  CaseMap(const CaseMap& o)
+    : codepoint(o.codepoint),
+      upperCaseValue(o.upperCaseValue),
+      lowerCaseValue(o.lowerCaseValue),
+      titleCaseValue(o.titleCaseValue)
+  {
+  }
+
+  std::string print();
+
+  static void loadData();
+  static std::vector<CaseMap> GetCaseMapTable();
+};
+
 namespace TestStringUtils
 {
 //
@@ -82,6 +134,52 @@ const char* UTF8_GERMAN_UPPER = {"\xc3\x93\xc3\x93\x53\x53\x43\x48\x4c\x4f\xc3\x
 const char* UTF8_GERMAN_LOWER_SS = {"\xc3\xb3\xc3\xb3\x73\x73\x63\x68\x6c\x6f\xc3\xab"};
 // u"óósschloë";
 } // namespace TestStringUtils
+
+/*
+static std::locale GetChineseLocale()
+{
+  std::locale ChineseLocale = std::locale("zh_CN.UTF-8");
+
+  return ChineseLocale;
+}
+
+
+static std::locale GetGermanLocale()
+{
+  std::locale GermanLocale = std::locale("de_DE.UTF-8");
+
+  return GermanLocale;
+}
+
+static std::locale GetTurkicLocale()
+{
+  std::locale TurkishLocale = std::locale("tr_TR.UTF-8");
+
+  return TurkishLocale;
+}
+
+
+static std::locale GetUkranianLocale()
+{
+  std::locale UkranianLocale = std::locale("uk_UA.UTF-8");
+
+  return UkranianLocale;
+}
+
+static std::locale GetRussianLocale()
+{
+  std::locale RussianLocale = std::locale("ru_RU.UTF-8");
+
+  return RussianLocale;
+}
+
+static std::locale GetThaiLocale()
+{
+  std::locale ThaiLocale = std::locale("th_TH.UTF-8");
+
+  return ThaiLocale;
+}
+*/
 
 TEST(TestStringUtils, Format)
 {
@@ -129,18 +227,166 @@ TEST(TestStringUtils, ToUpper)
   std::string refstr = "TEST";
 
   std::string varstr = "TeSt";
-  StringUtils::ToUpper(varstr);
+  varstr = StringUtils::ToUpper(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
+
+/*
+//static void ToUpper(std::string& str, const std::locale& locale);
+TEST(TestUnicodeUtils, ToUpper_Boundary)
+{
+  // Chinese appear caselsss
+
+  std::string longChinese{TestUnicodeUtils::UTF8_LONG_CHINESE};
+  UnicodeUtils::ToUpper(longChinese, icu::Locale::getChinese());
+  EXPECT_EQ(UnicodeUtils::Compare(longChinese, TestUnicodeUtils::UTF8_LONG_CHINESE), 0);
+  longChinese = UnicodeUtils::ToLower(longChinese, icu::Locale::getChinese());
+  EXPECT_EQ(UnicodeUtils::Compare(longChinese, TestUnicodeUtils::UTF8_LONG_CHINESE), 0);
+  longChinese = UnicodeUtils::FoldCase(longChinese);
+  EXPECT_EQ(UnicodeUtils::Compare(longChinese, TestUnicodeUtils::UTF8_LONG_CHINESE), 0);
+
+  std::string longThai{TestUnicodeUtils::UTF8_LONG_THAI};
+  UnicodeUtils::ToUpper(longThai, Unicode::GetICULocale("th_TH"));
+
+  const icu::Locale RUSSIAN_LOCALE = Unicode::GetICULocale("ru_RU");
+  const std::string longRussian{TestUnicodeUtils::UTF8_LONG_RUSSIAN};
+  const std::string lowerRussian{TestUnicodeUtils::UTF8_LONG_RUSSIAN_LOWER_CASE};
+  const std::string upperRussian{TestUnicodeUtils::UTF8_LONG_RUSSIAN_UPPER_CASE};
+
+  std::string readWriteString(longRussian);
+  UnicodeUtils::ToUpper(readWriteString, RUSSIAN_LOCALE);
+  EXPECT_EQ(UnicodeUtils::Compare(readWriteString, upperRussian), 0);
+  EXPECT_NE(UnicodeUtils::Compare(readWriteString, longRussian), 0);
+
+  readWriteString = UnicodeUtils::ToLower(readWriteString, RUSSIAN_LOCALE);
+  EXPECT_EQ(UnicodeUtils::Compare(readWriteString, lowerRussian), 0);
+
+  readWriteString = {upperRussian};
+  readWriteString = UnicodeUtils::ToLower(readWriteString, RUSSIAN_LOCALE);
+  EXPECT_EQ(UnicodeUtils::Compare(readWriteString, lowerRussian), 0);
+}
+
+//static void ToUpper(std::string& str, const icu::Locale& locale);
+
+TEST(TestUnicodeUtils, ToUpper_Locale)
+{
+  std::string refstr = "TWITCH";
+  std::string varstr = "Twitch";
+  UnicodeUtils::ToUpper(varstr, getCLocale());
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "ABCÇDEFGĞH IİI JKLMNOÖPRSŞTUÜVYZ";
+  varstr = "abcçdefgğh ıİi jklmnoöprsştuüvyz";
+  UnicodeUtils::ToUpper(varstr, getUSEnglishLocale());
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  // refstr = "ABCÇDEFGĞH IİI JKLMNOÖPRSŞTUÜVYZ";
+  refstr = "ABCÇDEFGĞH Iİİ JKLMNOÖPRSŞTUÜVYZ";
+  varstr = "abcçdefgğh ıİi jklmnoöprsştuüvyz";
+  UnicodeUtils::ToUpper(varstr, getTurkicLocale());
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = "ABCÇDEFGĞH IİI JKLMNOÖPRSŞTUÜVYZ";
+  varstr = "abcçdefgğh ıİi jklmnoöprsştuüvyz";
+  UnicodeUtils::ToUpper(varstr, getUkranianLocale());
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = TestUnicodeUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
+  varstr = TestUnicodeUtils::UTF8_GERMAN_SAMPLE; // óóßChloë
+  UnicodeUtils::ToUpper(varstr, getCLocale());
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  // Lower: óósschloë
+}
+
+//static void ToUpper(std::wstring& str);
+
+TEST(TestUnicodeUtils, ToUpper_w)
+{
+  std::wstring refstr = L"TEST";
+  std::wstring varstr = L"TeSt";
+
+  UnicodeUtils::ToUpper(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  refstr = Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_GERMAN_UPPER)); // ÓÓSSCHLOË
+  varstr = Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_GERMAN_SAMPLE)); // óóßChloë
+  UnicodeUtils::ToUpper(varstr);
+  int32_t cmp = UnicodeUtils::Compare(refstr, varstr);
+  EXPECT_EQ(cmp, 0);
+}
+*/
 
 TEST(TestStringUtils, ToLower)
 {
   std::string refstr = "test";
 
   std::string varstr = "TeSt";
-  StringUtils::ToLower(varstr);
+  varstr = StringUtils::ToLower(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
+
+/*
+TEST(TestUnicodeUtils, ToLower)
+{
+  std::string refstr = "test";
+  std::string varstr = "TeSt";
+
+  varstr = UnicodeUtils::ToLower(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+
+  varstr = TestUnicodeUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
+  refstr = TestUnicodeUtils::UTF8_GERMAN_LOWER_SS; // óósschloë // Does not convert SS to ß
+  varstr = UnicodeUtils::ToLower(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  // Lower: óósschloë
+
+  // ToLower of string with (with sharp-s) should not change it.
+
+  varstr = TestUnicodeUtils::UTF8_GERMAN_SAMPLE; // óóßChloë
+  refstr = TestUnicodeUtils::UTF8_GERMAN_LOWER; // óóßChloë
+  varstr = UnicodeUtils::ToLower(varstr);
+  int32_t cmp = UnicodeUtils::Compare(refstr, varstr);
+  EXPECT_EQ(cmp, 0);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+
+//static void ToLower(std::string& str, const std::locale& locale);
+
+//static void ToLower(std::string& str, const icu::Locale& locale);
+
+/*!
+ * \brief Converts a wstring to Lower case using LangInfo::GetSystemLocale
+ */
+// static void ToLower(std::wstring& str);
+/*
+TEST(TestUnicodeUtils, ToLower_w)
+{
+  std::wstring refstr = L"test";
+  std::wstring varstr = L"TeSt";
+
+  varstr = UnicodeUtils::ToLower(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str()); // Binary compare should work
+
+  varstr = Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_GERMAN_UPPER)); // ÓÓSSCHLOË
+  refstr = Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_GERMAN_LOWER_SS)); // óóßChloë
+  varstr = UnicodeUtils::ToLower(varstr);
+  int32_t cmp = UnicodeUtils::Compare(refstr, varstr);
+  EXPECT_EQ(cmp, 0);
+
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+  // Lower: óósschloë
+
+  // ToLower of string with (with sharp-s) should not change it.
+
+  varstr = Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_GERMAN_SAMPLE)); // óóßChloë
+  refstr = Unicode::UTF8ToWString(std::string(TestUnicodeUtils::UTF8_GERMAN_LOWER)); // óóßchloë
+  varstr = UnicodeUtils::ToLower(varstr);
+  cmp = UnicodeUtils::Compare(refstr, varstr);
+  EXPECT_EQ(cmp, 0);
+
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
+}
+*/
 
 TEST(TestStringUtils, ToCapitalize)
 {
@@ -699,13 +945,17 @@ TEST(TestStringUtils, Validate_UpperLower_Data)
   // For every character
   //
 
+  bool DEBUG_PRINT = false;
+
   char32_t BAD_CHARS[] = {U'\x0D800', U'\x0D801', U'\x0D802', U'\x0D803', U'\x0D804', U'\x0D805',
                           U'\xDB7F',  U'\xDB80',  U'\xDBFF',  U'\xDC00',  U'\x0DFFF'};
 
+  if (DEBUG_PRINT)
+  {
   std::cout << std::noshowbase // manually show the 0x prefix
             << std::internal // fill between the prefix and the number
             << std::setfill('0'); // fill with 0s
-
+  }
   try
   {
     CaseMap::loadData();
@@ -731,7 +981,7 @@ TEST(TestStringUtils, Validate_UpperLower_Data)
       else
         u32Codepoint = std::u32string(1, codepoint);
 
-      std::cout << std::dec << idx++ << " " << entry.print() << std::endl;
+      // std::cout << std::dec << idx++ << " " << entry.print() << std::endl;
 
       utf8Codepoint = StringUtils::ToUtf8(u32Codepoint);
       if (StringUtils::ToUtf32(utf8Codepoint) != u32Codepoint)
@@ -743,12 +993,15 @@ TEST(TestStringUtils, Validate_UpperLower_Data)
         // std::cout << " position: " << std::hex << position << " end: " << std::hex << end << std::dec << std::endl;
         if (position != end)
         {
-          std::cout << position << end << std::endl;
+          //std::cout << position << end << std::endl;
           continue;
         }
+        if (DEBUG_PRINT)
+         {
         std::cout << "Bad codepoint: " << std::setw(5) << std::hex << std::noshowbase
                   << std::internal << std::setfill('0') << codepoint
                   << " utf8: " << StringUtils::ToHex(utf8Codepoint) << std::dec << std::endl;
+         }
       }
       std::u32string expectedU32UpperCodepoint;
       if (entry.upperCaseValue != 0)
@@ -809,7 +1062,6 @@ TEST(TestStringUtils, Validate_UpperLower_Data)
       EXPECT_EQ(expectedWstringLowerCodepoint, wstringNativeLowerCodepoint);
     }
   }
-
   catch (const std::bad_array_new_length& gfg)
   {
     std::cout << gfg.what() << std::endl;
@@ -833,18 +1085,17 @@ TEST(TestStringUtils, BadUnicode)
 
   // TODO: VERIFY
 
-  std::string_view UTF8_SUBSTITUTE_CHARACTER{"\xef\xbf\xbd"sv};
-  // std::u16string_view UTF16_SUBSTITUTE_CHARACTER{u"\x0fffd"sv};
-  // std::u16string_view UTF16_LE_SUBSTITUTE_CHARACTER{u"�"sv};
-  std::u32string_view CHAR32_T_SUBSTITUTE_CHARACTER{U"\x0fffd"sv}; //U'�'sv};
+  static constexpr std::string_view UTF8_SUBSTITUTE_CHARACTER{"\xef\xbf\xbd"sv};
+  static constexpr std::wstring_view WCHAR_T_SUBSTITUTE_CHARACTER{L"\xfffd"sv};
+  static constexpr std::u32string_view CHAR32_T_SUBSTITUTE_CHARACTER{U"\x0000fffd"sv}; //U'�'sv
+
   static const char32_t BAD_CHARS[] = {
-      U'\xFDD0',   U'\xFDEF',  U'\xFFFE',  U'\xFFFF',  U'\x1FFFE', U'\x1FFFF', U'\x2FFFE',
-      U'\x2FFFF',  U'\x3FFFE', U'\x3FFFF', U'\x4FFFE', U'\x4FFFF', U'\x5FFFE', U'\x5FFFF',
-      U'\x6FFFE',  U'\x6FFFF', U'\x7FFFE', U'\x7FFFF', U'\x8FFFE', U'\x8FFFF', U'\x9FFFE',
-      U'\x9FFFF',  U'\xAFFFE', U'\xAFFFF', U'\xBFFFE', U'\xBFFFF', U'\xCFFFE', U'\xCFFFF',
-      U'\xDFFFE',  U'\xDFFFF', U'\xEFFFE', U'\xEFFFF', U'\xFFFFE', U'\xFFFFF', U'\x10FFFE',
-      U'\x10FFFF', U'\x0D800', U'\x0D801', U'\x0D802', U'\x0D803', U'\x0D804', U'\x0D805',
-      U'\x0DFFF'};
+      U'\xFDD0',  U'\xFDEF',  U'\xFFFE',  U'\xFFFF',  U'\x1FFFE',  U'\x1FFFF',
+      U'\x2FFFE', U'\x2FFFF', U'\x3FFFE', U'\x3FFFF', U'\x4FFFE',  U'\x4FFFF',
+      U'\x5FFFE', U'\x5FFFF', U'\x6FFFE', U'\x6FFFF', U'\x7FFFE',  U'\x7FFFF',
+      U'\x8FFFE', U'\x8FFFF', U'\x9FFFE', U'\x9FFFF', U'\xAFFFE',  U'\xAFFFF',
+      U'\xBFFFE', U'\xBFFFF', U'\xCFFFE', U'\xCFFFF', U'\xDFFFE',  U'\xDFFFF',
+      U'\xEFFFE', U'\xEFFFF', U'\xFFFFE', U'\xFFFFF', U'\x10FFFE', U'\x10FFFF'};
 
   for (char32_t c : BAD_CHARS)
   {
@@ -860,6 +1111,29 @@ TEST(TestStringUtils, BadUnicode)
   }
   EXPECT_TRUE(true);
 
+  static const char32_t REPLACED_CHARS[] = {U'\x0D800', U'\x0D801', U'\x0D802', U'\x0D803',
+                                            U'\x0D804', U'\x0D805', U'\xDB7F',  U'\xDB80',
+                                            U'\xDBFF',  U'\xDC00',  U'\x0DFFF'};
+
+  for (char32_t c : REPLACED_CHARS)
+  {
+    std::u32string s(1, c);
+    std::string utf8str = StringUtils::ToUtf8(s);
+    EXPECT_TRUE(StringUtils::Equals(utf8str, UTF8_SUBSTITUTE_CHARACTER));
+
+    // std::cout << "Bad Char: " << std::hex << s[0] << " converted to UTF8: "
+    //     << std::hex << utf8str
+    //    << " expected: " << std::hex << UTF8_SUBSTITUTE_CHARACTER << std::endl;
+
+    std::string folded = StringUtils::FoldCase(utf8str);
+    std::u32string foldedU32 = StringUtils::ToUtf32(folded);
+
+    EXPECT_TRUE(StringUtils::Equals(folded, UTF8_SUBSTITUTE_CHARACTER));
+
+    EXPECT_EQ(foldedU32[0], CHAR32_T_SUBSTITUTE_CHARACTER[0]);
+    // std::cout << "folded: " << folded << " foldedU32: " << std::hex << foldedU32[0] << std::endl;
+  }
+  EXPECT_TRUE(true);
   // More problems should show up with multi-byte utf8 characters missing the
   // first byte.
 
@@ -870,10 +1144,25 @@ TEST(TestStringUtils, BadUnicode)
   {
     // std::cout << std::hex << str[0] << " utf8: " << str << std::endl;
     std::u32string trash = StringUtils::ToUtf32(str);
+    EXPECT_EQ(trash[0], CHAR32_T_SUBSTITUTE_CHARACTER[0]);
+    EXPECT_EQ(trash[0], CHAR32_T_SUBSTITUTE_CHARACTER[0]);
+
     std::string folded = StringUtils::FoldCase(str);
     std::u32string foldedU32 = StringUtils::ToUtf32(folded);
+    EXPECT_TRUE(StringUtils::Equals(folded, UTF8_SUBSTITUTE_CHARACTER));
+    EXPECT_EQ(foldedU32[0], CHAR32_T_SUBSTITUTE_CHARACTER[0]);
 
     // std::cout << "folded: " << folded << " foldedU32: " << std::hex << foldedU32[0] << std::endl;
+
+    // TODO: These are single char tests. Add more advanced tests:
+    // First char in multi-char string bad
+    // Last char in multi-char string bad
+    // Next to last char bad
+    // second char bad
+    // Every other char bad with first and last bad
+    // Every other char bad with second and next to last char bad
+    // Multiple consecutive bad chars at start, end, middle and next to end of string
+    // Include wchar_t
   }
   EXPECT_TRUE(true);
 }
@@ -912,41 +1201,41 @@ TEST(TestStringUtils, FoldCase)
   /*
    * The primary motivator for FoldCase's existence in Kodi: Turkic I....
    *
-    * Behavior of ToLower, ToUpper & FoldCase on the four Turkic I characters. Note that
-    * "Dotless I" is ASCII "I" and "Dotted small I" is ASCII "i". Turkic Locales
-    * cause the Upper/Lower case rules for these four characters to be significantly
-    * different from most languages.
-    *
-    *         Locale                    Unicode                               Unicode
-    *                                  codepoint                          (hex 32-bit codepoint(s))
-    * ToLower  en_US I (Dotless I)       \u0049 -> i (Dotted small I)      \u0069
-    * ToLower  tr_TR I (Dotless I)       \u0049 -> ı (Dotless small I)     \u0131
-    * ToUpper  en_US I (Dotless I)       \u0049 -> I (Dotless I)           \u0049
-    * ToUpper  tr_TR I (Dotless I)       \u0049 -> I (Dotless I)           \u0049
-    * FoldCase  N/A  I (Dotless I)       \u0049 -> i (Dotted small I)      \u0069
-    *
-    * ToLower  en_US i (Dotted small I)  \u0069 -> i (Dotted small I)      \u0069
-    * ToLower  tr_TR i (Dotted small I)  \u0069 -> i (Dotted small I)      \u0069
-    * ToUpper  en_US i (Dotted small I)  \u0069 -> I (Dotted small I)      \u0069
-    * ToUpper  tr_TR i (Dotted small I)  \u0069 -> İ (Dotted I)            \u0130
-    * FoldCase  N/A  i (Dotted small I)  \u0069 -> i (Dotted small I)      \u0069
-    *
-    * ToLower  en_US İ (Dotted I)        \u0130 -> i̇ (Dotted small I)      \u0069
-    * ToLower  tr_TR İ (Dotted I)        \u0130 -> i (Dotted small I)      \u0069
-    * ToUpper  en_US İ (Dotted I)        \u0130 -> İ (Dotted I)            \u0130
-    * ToUpper  tr_TR İ (Dotted I)        \u0130 -> İ (Dotted I)            \u0130
-    * FoldCase  N/A  İ (Dotted I)        \u0130 -> İ (Dotted I)            \u0130
-    *
-    * ToLower  en_US ı (Dotless small I) \u0131 -> ı (Dotless small I)     \u0131
-    * ToLower  tr_TR ı (Dotless small I) \u0131 -> ı (Dotless small I)     \u0131
-    * ToUpper  en_US ı (Dotless small I) \u0131 -> ı (Dotless small I)     \u0131
-    * ToUpper  tr_TR ı (Dotless small I) \u0131 -> I (Dotless I)           \u0049
-    * FoldCase  N/A  ı (Dotless small I) \u0131 -> ı (Dotless small I)     \u0131
-    *
-    *
-    * Note that even with FoldCase, the non-ASCII Turkic "I" characters do NOT get folded to ASCII
-    * "i".
-    */
+   * Behavior of ToLower, ToUpper & FoldCase on the four Turkic I characters. Note that
+   * "Dotless I" is ASCII "I" and "Dotted small I" is ASCII "i". Turkic Locales
+   * cause the Upper/Lower case rules for these four characters to be significantly
+   * different from most languages.
+   *
+   *         Locale                    Unicode                               Unicode
+   *                                  codepoint                          (hex 32-bit codepoint(s))
+   * ToLower  en_US I (Dotless I)       \u0049 -> i (Dotted small I)      \u0069
+   * ToLower  tr_TR I (Dotless I)       \u0049 -> ı (Dotless small I)     \u0131
+   * ToUpper  en_US I (Dotless I)       \u0049 -> I (Dotless I)           \u0049
+   * ToUpper  tr_TR I (Dotless I)       \u0049 -> I (Dotless I)           \u0049
+   * FoldCase  N/A  I (Dotless I)       \u0049 -> i (Dotted small I)      \u0069
+   *
+   * ToLower  en_US i (Dotted small I)  \u0069 -> i (Dotted small I)      \u0069
+   * ToLower  tr_TR i (Dotted small I)  \u0069 -> i (Dotted small I)      \u0069
+   * ToUpper  en_US i (Dotted small I)  \u0069 -> I (Dotted small I)      \u0069
+   * ToUpper  tr_TR i (Dotted small I)  \u0069 -> İ (Dotted I)            \u0130
+   * FoldCase  N/A  i (Dotted small I)  \u0069 -> i (Dotted small I)      \u0069
+   *
+   * ToLower  en_US İ (Dotted I)        \u0130 -> i̇ (Dotted small I)      \u0069
+   * ToLower  tr_TR İ (Dotted I)        \u0130 -> i (Dotted small I)      \u0069
+   * ToUpper  en_US İ (Dotted I)        \u0130 -> İ (Dotted I)            \u0130
+   * ToUpper  tr_TR İ (Dotted I)        \u0130 -> İ (Dotted I)            \u0130
+   * FoldCase  N/A  İ (Dotted I)        \u0130 -> İ (Dotted I)            \u0130
+   *
+   * ToLower  en_US ı (Dotless small I) \u0131 -> ı (Dotless small I)     \u0131
+   * ToLower  tr_TR ı (Dotless small I) \u0131 -> ı (Dotless small I)     \u0131
+   * ToUpper  en_US ı (Dotless small I) \u0131 -> ı (Dotless small I)     \u0131
+   * ToUpper  tr_TR ı (Dotless small I) \u0131 -> I (Dotless I)           \u0049
+   * FoldCase  N/A  ı (Dotless small I) \u0131 -> ı (Dotless small I)     \u0131
+   *
+   *
+   * Note that even with FoldCase, the non-ASCII Turkic "I" characters do NOT get folded to ASCII
+   * "i".
+   */
 
   std::string s1 = "I İ i ı";
   std::string s2 = "i İ i ı";
@@ -991,7 +1280,7 @@ TEST(TestStringUtils, FoldCase)
 
   // Last char in FoldCase table
 
-// Darwin Unicode version too old to support these
+  // Darwin Unicode version too old to support these
 #ifndef TARGET_DARWIN
   s1 = "𞤡"s;
   result1 = "𞥃"s;
@@ -1012,9 +1301,9 @@ TEST(TestStringUtils, FoldCase_W)
   bool PrintResults = false;
 
   std::wstring w_s1 =
-      StringUtils::ToWString(std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
+      StringUtils::ToWstring(std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
   std::wstring w_s2 =
-      StringUtils::ToWString(std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
+      StringUtils::ToWstring(std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
 
   w_s1 = StringUtils::FoldCase(w_s1);
   w_s2 = StringUtils::FoldCase(w_s2);
@@ -1029,8 +1318,8 @@ TEST(TestStringUtils, FoldCase_W)
     std::cout << "Turkic orig s2: " << s2 << std::endl;
   }
 
-  w_s1 = StringUtils::ToWString(s1);
-  w_s2 = StringUtils::ToWString(s2);
+  w_s1 = StringUtils::ToWstring(s1);
+  w_s2 = StringUtils::ToWstring(s2);
   w_s1 = StringUtils::FoldCase(w_s1);
   w_s2 = StringUtils::FoldCase(w_s2);
   if (PrintResults)
@@ -1047,8 +1336,8 @@ TEST(TestStringUtils, FoldCase_W)
   // std::cout << "Turkic orig s1: " << s1 << std::endl;
   // std::cout << "Turkic orig s2: " << s2 << std::endl;
 
-  w_s1 = StringUtils::ToWString(s1);
-  w_s2 = StringUtils::ToWString(s2);
+  w_s1 = StringUtils::ToWstring(s1);
+  w_s2 = StringUtils::ToWstring(s2);
   w_s1 = StringUtils::FoldCase(w_s1);
   w_s2 = StringUtils::FoldCase(w_s2);
   // std::cout << "Turkic folded w_s1: " << StringUtils::ToUtf8(w_s1) << std::endl;
@@ -1869,4 +2158,190 @@ TEST(TestStringUtils, ToHexadecimal)
   EXPECT_STREQ("00", StringUtils::ToHexadecimal(nul).c_str());
   std::string ff{"\xFF", 1};
   EXPECT_STREQ("ff", StringUtils::ToHexadecimal(ff).c_str());
+}
+
+std::string CaseMap::print()
+{
+  std::stringstream ss;
+  std::cout << std::hex << std::noshowbase // manually show the 0x prefix
+            << std::internal // fill between the prefix and the number
+            << std::setfill('0'); // fill with 0s
+
+  if (codepoint > 0x0)
+  {
+    ss << "CaseMap(U'\\x" << std::setw(5) << std::hex << std::noshowbase << std::internal
+       << std::setfill('0') << codepoint << "', "
+       << "U'\\x" << std::setw(5) << std::hex << upperCaseValue << "', "
+       << "U'\\x" << std::setw(5) << std::hex << lowerCaseValue << "', "
+       << "U'\\x" << std::setw(5) << std::hex << titleCaseValue << "')" << std::dec;
+  }
+  else
+  {
+    ss << "CaseMap()";
+  }
+  return ss.str();
+}
+
+std::vector<CaseMap> caseMapTable;
+std::vector<CaseMap> CaseMap::GetCaseMapTable()
+{
+  return caseMapTable;
+}
+
+bool compare(const CaseMap& left, const CaseMap& right)
+{
+  bool less = left.codepoint < right.codepoint;
+
+  return less;
+}
+
+static void addNonLetter(char32_t codepoint)
+{
+  caseMapTable.emplace_back(codepoint); // Just record the codepoint
+}
+
+void CaseMap::loadData()
+{
+
+  std::ios_base::openmode mode = std::ios_base::in;
+
+  std::ifstream ifstream("./UnicodeData.txt", mode);
+  std::string line;
+  std::stringstream ss;
+
+  while (std::getline(ifstream, line))
+  {
+    // Field info from: https://www.unicode.org/L2/L1999/UnicodeData.html#Case%20Mappings
+
+    bool add = false;
+    std::stringstream linestream(line);
+    char32_t codepoint;
+    std::string charCaseCode;
+    char32_t upperCaseValue = 0;
+    char32_t lowerCaseValue = 0;
+    char32_t titleCaseValue = 0;
+
+    std::string tmp;
+    std::getline(linestream, tmp, ';'); // codepoint
+    if (linestream.eof())
+      continue;
+
+    codepoint = static_cast<char32_t>(stoi(tmp, 0, 16));
+
+    std::string ignore;
+    std::getline(linestream, ignore, ';'); // character name
+    if (linestream.eof())
+    {
+      addNonLetter(codepoint);
+      continue;
+    }
+
+    std::getline(linestream, charCaseCode, ';'); // General category
+    //
+    // No-letters can also have case differences, such as 0x345 which is an
+    // "Iota subscript" that becomes what looks like an upper case I.
+    // Ignore this field and pay attention to what is in the
+    // upper, lower and title fields at the end.
+
+    // bool skip = true;
+    // if (charCaseCode == "Lu" || charCaseCode == "Ll" || charCaseCode == "Lt")
+    //   skip = false;
+    // if (skip)
+    // {
+    //   addNonLetter(codepoint);
+    //   continue;
+    // }
+    if (linestream.eof())
+    {
+      addNonLetter(codepoint);
+      continue;
+    }
+    // At field 2, Skip to field 12
+
+    std::getline(linestream, ignore, ';'); // Canonical combining classes
+    if (linestream.eof())
+    {
+      addNonLetter(codepoint);
+      continue;
+    }
+    std::getline(linestream, ignore, ';'); // Bidirectional category
+    if (linestream.eof())
+    {
+      addNonLetter(codepoint);
+      continue;
+    }
+    std::getline(linestream, ignore, ';'); // Character decomposition mapping
+    if (linestream.eof())
+    {
+      addNonLetter(codepoint);
+      continue;
+    }
+    std::getline(linestream, ignore, ';'); // Decimal digit value
+    if (linestream.eof())
+    {
+      addNonLetter(codepoint);
+      continue;
+    }
+    std::getline(linestream, ignore, ';'); // Digit value
+    if (linestream.eof())
+    {
+      addNonLetter(codepoint);
+      continue;
+    }
+    std::getline(linestream, ignore, ';'); // Numeric Value
+    if (linestream.eof())
+    {
+      addNonLetter(codepoint);
+      continue;
+    }
+    std::getline(linestream, ignore, ';'); // Mirrored
+    if (linestream.eof())
+    {
+      addNonLetter(codepoint);
+      continue;
+    }
+    std::getline(linestream, ignore, ';'); // Unicode 1.0 name
+    if (linestream.eof())
+    {
+      addNonLetter(codepoint);
+      continue;
+    }
+    std::getline(linestream, ignore, ';'); // 10646 comment field
+    if (linestream.eof())
+    {
+      addNonLetter(codepoint);
+      continue;
+    }
+    std::getline(linestream, tmp, ';'); // Uppercase mapping
+    if (tmp.length() > 0)
+    {
+      add = true;
+      upperCaseValue = static_cast<char32_t>(stoi(tmp, 0, 16));
+    }
+    std::getline(linestream, tmp, ';'); // lowercase mapping
+    if (tmp.length() > 0)
+    {
+      add = true;
+      lowerCaseValue = static_cast<char32_t>(stoi(tmp, 0, 16));
+    }
+    std::getline(linestream, tmp, ';'); // titlecase mapping
+    if (tmp.length() > 0)
+    {
+      add = true;
+      titleCaseValue = static_cast<char32_t>(stoi(tmp, 0, 16));
+    }
+
+    if (add)
+    {
+      caseMapTable.emplace_back(CaseMap(codepoint, upperCaseValue, lowerCaseValue, titleCaseValue));
+    }
+    else
+    {
+      addNonLetter(codepoint);
+    }
+  }
+
+  // Sort by codepoint
+
+  sort(caseMapTable.begin(), caseMapTable.end(), compare);
 }

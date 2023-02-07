@@ -1958,8 +1958,10 @@ public:
     if (strlen(strCodecName) == 0)
       return retVal;
 
-    std::string strUpperCodecName = strCodecName;
-    StringUtils::ToUpper(strUpperCodecName);
+    // Would be better if codec ids were FoldCased, but using CLocale should
+    // prevent "Turikic "I" problem.
+
+    std::string strUpperCodecName = StringUtils::ToUpper(strCodecName, StringUtils::GetCLocale());
 
     std::map<std::string, PVR_CODEC>::const_iterator it = m_lookup.find(strUpperCodecName);
     if (it != m_lookup.end())
@@ -1982,8 +1984,8 @@ private:
         tmp.codec_type = static_cast<PVR_CODEC_TYPE>(codec->type);
         tmp.codec_id = codec->id;
 
-        std::string strUpperCodecName = codec->name;
-        StringUtils::ToUpper(strUpperCodecName);
+        std::string strUpperCodecName =
+            StringUtils::ToUpper(codec->name, StringUtils::GetCLocale());
 
         m_lookup.insert(std::make_pair(strUpperCodecName, tmp));
       }

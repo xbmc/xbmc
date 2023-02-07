@@ -71,7 +71,7 @@ bool CCharsetDetection::DetectXmlEncoding(const char* const xmlContent, const si
   /* try to read encoding from XML declaration */
   if (GetXmlEncodingFromDeclaration(xmlContent, contentLength, detectedEncoding))
   {
-    StringUtils::ToUpper(detectedEncoding);
+    detectedEncoding = StringUtils::ToUpper(detectedEncoding, StringUtils::GetCLocale());
 
     /* make some safety checks */
     if (detectedEncoding == "UTF-8")
@@ -113,7 +113,7 @@ bool CCharsetDetection::DetectXmlEncoding(const char* const xmlContent, const si
 
   /* found encoding in converted XML declaration, we know correct endianness and number of bytes per char */
   /* make some safety checks */
-  StringUtils::ToUpper(declaredEncoding);
+  declaredEncoding = StringUtils::ToUpper(declaredEncoding, StringUtils::GetCLocale());
   if (declaredEncoding == guessedEncoding)
     return true;
 

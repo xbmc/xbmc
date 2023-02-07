@@ -114,8 +114,7 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
                                strCores, profiling);
 #else
     double dCPU = m_resourceCounter.GetCPUUsage();
-    std::string ucAppName = lcAppName;
-    StringUtils::ToUpper(ucAppName);
+    std::string ucAppName = StringUtils::ToUpper(lcAppName, StringUtils::GetCLocale());
     info = StringUtils::Format("LOG: {}{}.log\n"
                                "MEM: {}/{} KB - FPS: {:2.1f} fps\n"
                                "CPU: {} (CPU-{} {:4.2f}%{})",

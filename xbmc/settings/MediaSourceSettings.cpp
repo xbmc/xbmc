@@ -260,7 +260,7 @@ bool CMediaSourceSettings::AddShare(const std::string &type, const CMediaSource 
     CLog::Log(LOGERROR, "CMediaSourceSettings: unable to add empty path");
     return false;
   }
-  StringUtils::ToUpper(strPath1);
+  strPath1 = StringUtils::ToUpper(strPath1, StringUtils::GetCLocale());
 
   CMediaSource shareToAdd = share;
   if (strPath1.at(0) == '$')

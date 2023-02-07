@@ -32,6 +32,7 @@
 #undef FMT_DEPRECATED
 #define FMT_DEPRECATED
 #endif
+#include "LangInfo.h"
 #include "utils/TimeFormat.h"
 #include "utils/params_check_macros.h"
 
@@ -147,17 +148,104 @@ public:
    * \param str a string_view in UTF8 format to be converted to wstring
    * \return a wstring containing the result
    */
-  static std::wstring ToWString(const std::string_view str);
-  static std::wstring ToWString(const std::u32string_view str);
+  static std::wstring ToWstring(const std::string_view str);
+  static std::wstring ToWstring(const std::u32string_view str);
 
-  static std::string ToUpper(const std::string& str);
-  static std::wstring ToUpper(const std::wstring& str);
-  static void ToUpper(std::string &str);
-  static void ToUpper(std::wstring &str);
-  static std::string ToLower(const std::string& str);
-  static std::wstring ToLower(const std::wstring& str);
-  static void ToLower(std::string &str);
-  static void ToLower(std::wstring &str);
+  /*!
+     * \brief Returns the C Locale, primarily for the use of ToLower/ToUpper.
+     *
+     * The C locale can be very useful for reducing undesirable side effects when
+     * using ToLower/ToUpper for 'id' processing.
+     *
+     * Use FoldCase, if possible, to create caseless keys for Kodi internal use. Otherwise, if a keyword is
+     * ASCII, then specifying the C locale will greatly reduce surprises, such as the "Turkic-I" problem.
+     *
+     * If the keyword can not be constrained to ASCII, then English will likely work (but not guaranteed
+     * for all cases). Beyond that you are own your own.
+     *
+     * \return a cached instance of the Clocale. Caching eliminates the overhead of creating
+     * the locale instance.
+     */
+  static std::locale GetCLocale()
+  {
+    static std::locale C_LOCALE;
+    static bool initialized;
+
+    if (&C_LOCALE == (void*)0)
+    {
+      initialized = false;
+    }
+    if (!initialized)
+    {
+      std::locale x = std::locale("C");
+
+      C_LOCALE = x;
+      initialized = true;
+    }
+    return C_LOCALE;
+  }
+
+  /*!
+     * \brief Returns the en_GB Locale, primarily for the use of ToLower/ToUpper.
+     *
+     * The en_GB locale can be very useful for reducing undesirable side effects when
+     * using ToLower/ToUpper for 'id' processing.
+     *
+     * If neither FoldCase nor the use of the C locale aren't adequate, then using the "en_GB" locale when
+     * 'normalizing' a keyword for internal use may work. It will certainly be better than using the
+     * user's locale, which may cause some nasty surprises, such as the "Turkic-I" problem.
+     *
+     * \return a cached instance of the en_GB.UTF-8 locale. Caching eliminates the overhead of creating
+     * the locale instance.
+     */
+  static std::locale GetEnglishLocale()
+  {
+    static std::locale GBEnglishLocale;
+    static bool EnglishLocaleInitialized;
+
+    if (&GBEnglishLocale == (void*)0)
+    {
+      EnglishLocaleInitialized = false;
+    }
+    if (!EnglishLocaleInitialized)
+    {
+      std::locale x = std::locale("en_GB.UTF-8");
+
+      GBEnglishLocale = x;
+      EnglishLocaleInitialized = true;
+    }
+    return GBEnglishLocale;
+  }
+
+  // private:
+
+  static std::u32string ToUpper(const std::u32string_view str,
+                                const std::locale locale = g_langInfo.GetSystemLocale());
+
+public:
+  static std::string ToUpper(const std::string_view str,
+                             const std::locale locale = g_langInfo.GetSystemLocale())
+      WARN_UNUSED_RESULT;
+  static std::wstring ToUpper(const std::wstring_view str,
+                              const std::locale locale = g_langInfo.GetSystemLocale())
+      WARN_UNUSED_RESULT;
+  // static void ToUpper(std::string &str);
+  // static void ToUpper(std::wstring &str);
+  // static std::string ToLower(const std::string& str);
+  // static std::wstring ToLower(const std::wstring& str);
+
+  // private:
+  static std::u32string ToLower(const std::u32string_view str,
+                                const std::locale locale = g_langInfo.GetSystemLocale())
+      WARN_UNUSED_RESULT;
+
+public:
+  static std::string ToLower(const std::string_view str,
+                             const std::locale locale = g_langInfo.GetSystemLocale())
+      WARN_UNUSED_RESULT;
+  static std::wstring ToLower(const std::wstring_view str,
+                              const std::locale locale = g_langInfo.GetSystemLocale())
+      WARN_UNUSED_RESULT;
 
 private:
   /*!
@@ -685,6 +773,9 @@ public:
    * example: "abc\n" -> "6162630a"
    */
   static std::string ToHexadecimal(const std::string& in);
+  static std::string ToHex(const std::string_view in);
+  static std::string ToHex(const std::wstring_view in);
+  static std::string ToHex(const std::u32string_view in);
 
   /*! \brief Format the string with locale separators.
 
