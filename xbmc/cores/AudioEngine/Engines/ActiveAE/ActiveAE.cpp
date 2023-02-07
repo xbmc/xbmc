@@ -1953,7 +1953,12 @@ bool CActiveAE::RunStages()
     }
   }
 
-  if (m_stats.GetWaterLevel() < (MAX_WATER_LEVEL + 0.0001f) &&
+  // TrueHD is very jumpy, meaning the frames don't come in equidistantly. They are only smoothed
+  // at the end when the IEC packing happens. Therefore adjust earlier.
+  const bool ignoreWL =
+      (m_mode == MODE_RAW && m_sinkFormat.m_streamInfo.m_type == CAEStreamInfo::STREAM_TYPE_TRUEHD);
+
+  if ((m_stats.GetWaterLevel() < (MAX_WATER_LEVEL + 0.0001f) || ignoreWL) &&
       (m_mode != MODE_TRANSCODE || (m_encoderBuffers && !m_encoderBuffers->m_freeSamples.empty())))
   {
     // calculate sync error
