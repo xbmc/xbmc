@@ -970,7 +970,6 @@ TEST(TestStringUtils, Validate_UpperLower_Data)
     std::u32string lower = StringUtils::ToLower(v, testLocale);
     std::u32string upper = StringUtils::ToUpper(v, testLocale);
 
-    int idx = 1;
     for (CaseMap entry : CaseMap::GetCaseMapTable())
     {
       char32_t codepoint = entry.codepoint;
@@ -1068,13 +1067,6 @@ TEST(TestStringUtils, Validate_UpperLower_Data)
   }
 }
 
-// Darwin Unicode version too old to support these
-//#ifdef TARGET_DARWIN
-//  size_t maxIdx = 1193;
-//#else
-//  size_t maxIdx = (sizeof(UnicodeFoldLowerTable) / sizeof(char32_t)) - 1;
-//#endif
-
 TEST(TestStringUtils, BadUnicode)
 {
   // Verify that code doesn't crater on malformed/bad Unicode. Is NOT an exhaustive
@@ -1086,10 +1078,10 @@ TEST(TestStringUtils, BadUnicode)
   // TODO: VERIFY
 
   static constexpr std::string_view UTF8_SUBSTITUTE_CHARACTER{"\xef\xbf\xbd"sv};
-  static constexpr std::wstring_view WCHAR_T_SUBSTITUTE_CHARACTER{L"\xfffd"sv};
+  // static constexpr std::wstring_view WCHAR_T_SUBSTITUTE_CHARACTER{L"\xfffd"sv};
   static constexpr std::u32string_view CHAR32_T_SUBSTITUTE_CHARACTER{U"\x0000fffd"sv}; //U'�'sv
 
-  static const char32_t BAD_CHARS[] = {
+  static const char32_t BAD_CHARS[] {
       U'\xFDD0',  U'\xFDEF',  U'\xFFFE',  U'\xFFFF',  U'\x1FFFE',  U'\x1FFFF',
       U'\x2FFFE', U'\x2FFFF', U'\x3FFFE', U'\x3FFFF', U'\x4FFFE',  U'\x4FFFF',
       U'\x5FFFE', U'\x5FFFF', U'\x6FFFE', U'\x6FFFF', U'\x7FFFE',  U'\x7FFFF',
@@ -1111,9 +1103,9 @@ TEST(TestStringUtils, BadUnicode)
   }
   EXPECT_TRUE(true);
 
-  static const char32_t REPLACED_CHARS[] = {U'\x0D800', U'\x0D801', U'\x0D802', U'\x0D803',
-                                            U'\x0D804', U'\x0D805', U'\xDB7F',  U'\xDB80',
-                                            U'\xDBFF',  U'\xDC00',  U'\x0DFFF'};
+  static const char32_t REPLACED_CHARS[]{U'\x0D800', U'\x0D801', U'\x0D802', U'\x0D803',
+                                         U'\x0D804', U'\x0D805', U'\xDB7F',  U'\xDB80',
+                                         U'\xDBFF',  U'\xDC00',  U'\x0DFFF'};
 
   for (char32_t c : REPLACED_CHARS)
   {
@@ -1137,7 +1129,7 @@ TEST(TestStringUtils, BadUnicode)
   // More problems should show up with multi-byte utf8 characters missing the
   // first byte.
 
-  static const std::string BAD_UTF8[] = {
+  static const std::string BAD_UTF8[]{
       "\xcc"s, "\xb3"s, "\x9f"s, "\xab"s, "\x93", "\x8b",
   };
   for (std::string str : BAD_UTF8)

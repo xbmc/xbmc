@@ -427,16 +427,7 @@ public:
 
   static bool EqualsNoCase(const std::string_view str1, const std::string_view str2);
 
-  // TODO: Remove this note
-  //       None of these signatures are needed; replaced by string_view version.
-
-  // static bool EqualsNoCase(const std::string &str1, const std::string &str2);
-  // static bool EqualsNoCase(const std::string &str1, const char *s2);
-  // static bool EqualsNoCase(const char *s1, const char *s2);
-  // static int CompareNoCase(const std::string& str1, const std::string& str2, size_t n = 0);
-  // static int CompareNoCase(const char* s1, const char* s2, size_t n = 0);
-
-  /*!
+    /*!
    * \brief Compares two strings using codepoint order. Locale does not matter.
    *
    * DO NOT USE for collation
@@ -527,19 +518,6 @@ public:
    */
   static bool StartsWith(const std::string_view str1, const std::string_view str2);
 
-  // TODO: APIs to be eliminated; replaced by string_view versions
-  //
-  // static bool StartsWith(const std::string &str1, const std::string &str2);
-  // static bool StartsWith(std::string_view str1, const char *s2);
-  // static bool StartsWith(const char *s1, const char *s2);
-  // static bool StartsWithNoCase(const std::string &str1, const std::string &str2);
-  // static bool StartsWithNoCase(const std::string &str1, const char *s2);
-  // static bool StartsWithNoCase(const char *s1, const char *s2);
-  // static bool EndsWith(const std::string &str1, const std::string &str2);
-  // static bool EndsWith(const std::string &str1, const char *s2);
-  // static bool EndsWithNoCase(const std::string &str1, const std::string &str2);
-  // static bool EndsWithNoCase(const std::string &str1, const char *s2);
-
   /*!
    * \brief Determines if a string begins with another string, ignoring case
    *
@@ -550,14 +528,6 @@ public:
    * \return true if folded str1 starts with folded str2, otherwise false
    */
   static bool StartsWithNoCase(const std::string_view str1, const std::string_view str2);
-
-  // TODO: Remove no longer needed signatures
-  //       In only one place in the code, where NPT_String was being passed, was an explicit
-  //       conversion to string_view required.
-  //
-  // static bool StartsWithNoCase(const std::string &str1, const std::string &str2);
-  // static bool StartsWithNoCase(const std::string &str1, const char *s2);
-  // static bool StartsWithNoCase(const char *s1, const char *s2);
 
   // Changed EndsWith APIs to be the same as EndsWithNoCase
   /*!
