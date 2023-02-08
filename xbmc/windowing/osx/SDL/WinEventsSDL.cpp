@@ -191,10 +191,9 @@ bool CWinEventsOSX::MessagePump()
 
 bool CWinEventsOSX::ProcessOSXShortcuts(SDL_Event& event)
 {
-  static bool shift = false, cmd = false;
+  static bool cmd = false;
 
   cmd   = !!(SDL_GetModState() & (KMOD_LMETA  | KMOD_RMETA ));
-  shift = !!(SDL_GetModState() & (KMOD_LSHIFT | KMOD_RSHIFT));
 
   if (cmd && event.key.type == SDL_KEYDOWN)
   {

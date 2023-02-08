@@ -538,7 +538,6 @@ CGDisplayModeRef GetMode(int width, int height, double refreshrate, int screenId
   Boolean stretched;
   Boolean interlaced;
   Boolean safeForHardware;
-  Boolean televisionoutput;
   int w, h, bitsperpixel;
   double rate;
   RESOLUTION_INFO res;
@@ -559,7 +558,6 @@ CGDisplayModeRef GetMode(int width, int height, double refreshrate, int screenId
     interlaced = flags & kDisplayModeInterlacedFlag ? true : false;
     bitsperpixel = DisplayBitsPerPixelForMode(displayMode);
     safeForHardware = flags & kDisplayModeSafetyFlags ? true : false;
-    televisionoutput = flags & kDisplayModeTelevisionFlag ? true : false;
     w = CGDisplayModeGetWidth(displayMode);
     h = CGDisplayModeGetHeight(displayMode);
     rate = CGDisplayModeGetRefreshRate(displayMode);
@@ -1359,7 +1357,6 @@ void CWinSystemOSX::FillInVideoModes()
     Boolean stretched;
     Boolean interlaced;
     Boolean safeForHardware;
-    Boolean televisionoutput;
     int w, h, bitsperpixel;
     double refreshrate;
     RESOLUTION_INFO res;
@@ -1381,7 +1378,6 @@ void CWinSystemOSX::FillInVideoModes()
       interlaced = flags & kDisplayModeInterlacedFlag ? true : false;
       bitsperpixel = DisplayBitsPerPixelForMode(displayMode);
       safeForHardware = flags & kDisplayModeSafetyFlags ? true : false;
-      televisionoutput = flags & kDisplayModeTelevisionFlag ? true : false;
 
       if ((bitsperpixel == 32) &&
           (safeForHardware == YES) &&

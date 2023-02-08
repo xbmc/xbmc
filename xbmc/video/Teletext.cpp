@@ -3812,7 +3812,6 @@ int CTeletextDecoder::Eval_Triplet(int iOData, TextCachedPage_t *pstCachedPage,
       {
 
         int c = *pAPx0 + (*endcol == 40 ? *pAPx : 0);  /* current column */
-        int c1 = offset;
         TextPageAttr_t *p = &PageAtrb[offset];
         do
         {
@@ -3842,7 +3841,6 @@ int CTeletextDecoder::Eval_Triplet(int iOData, TextCachedPage_t *pstCachedPage,
           if (bw) p->IgnoreAtBlackBgSubst = 0;
           p++;
           c++;
-          c1++;
         } while (c < *endcol);
       }
       break;
