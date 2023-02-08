@@ -82,4 +82,5 @@ public:
   static void PlatformSyslog();
 
   static VideoDriverInfo GetVideoDriverInfo(const UINT vendorId, const std::wstring& driverDesc);
+  static std::wstring GetDisplayFriendlyName(const std::wstring& GdiDeviceName);
 };

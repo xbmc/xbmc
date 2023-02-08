@@ -1514,3 +1514,63 @@ VideoDriverInfo CWIN32Util::GetVideoDriverInfo(const UINT vendorId, const std::w
 
   return info;
 }
+
+std::wstring CWIN32Util::GetDisplayFriendlyName(const std::wstring& gdiDeviceName)
+{
+#ifdef TARGET_WINDOWS_STORE
+  // Not supported
+  return std::wstring();
+#else
+
+  uint32_t pathCount{};
+  uint32_t modeCount{};
+  std::vector<DISPLAYCONFIG_PATH_INFO> paths;
+  std::vector<DISPLAYCONFIG_MODE_INFO> modes;
+
+  uint32_t flags = QDC_ONLY_ACTIVE_PATHS;
+  LONG result = ERROR_SUCCESS;
+
+  do
+  {
+    if (GetDisplayConfigBufferSizes(flags, &pathCount, &modeCount) != ERROR_SUCCESS)
+      return std::wstring();
+
+    paths.resize(pathCount);
+    modes.resize(modeCount);
+
+    result = QueryDisplayConfig(flags, &pathCount, paths.data(), &modeCount, modes.data(), nullptr);
+  } while (result == ERROR_INSUFFICIENT_BUFFER);
+
+  if (result == ERROR_SUCCESS)
+  {
+    paths.resize(pathCount);
+    modes.resize(modeCount);
+
+    for (const auto& path : paths)
+    {
+      DISPLAYCONFIG_SOURCE_DEVICE_NAME source = {};
+      source.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
+      source.header.size = sizeof(source);
+      source.header.adapterId = path.sourceInfo.adapterId;
+      source.header.id = path.sourceInfo.id;
+
+      if (DisplayConfigGetDeviceInfo(&source.header) == ERROR_SUCCESS)
+      {
+        if (gdiDeviceName == source.viewGdiDeviceName)
+        {
+          DISPLAYCONFIG_TARGET_DEVICE_NAME target = {};
+          target.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME;
+          target.header.size = sizeof(target);
+          target.header.adapterId = path.targetInfo.adapterId;
+          target.header.id = path.targetInfo.id;
+          if (DisplayConfigGetDeviceInfo(&target.header) == ERROR_SUCCESS)
+            return target.monitorFriendlyDeviceName;
+
+          break;
+        }
+      }
+    }
+  }
+  return std::wstring();
+#endif
+}
