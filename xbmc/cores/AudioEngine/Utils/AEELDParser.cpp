@@ -72,8 +72,6 @@ typedef struct
 #define CEA_861_FORMAT_WMAPRO    14
 #define CEA_861_FORMAT_RESERVED2 15
 
-#define rtrim(s) s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end())
-
 void CAEELDParser::Parse(const uint8_t *data, size_t length, CAEDeviceInfo& info)
 {
   ELDHeader header;
@@ -113,7 +111,10 @@ void CAEELDParser::Parse(const uint8_t *data, size_t length, CAEDeviceInfo& info
   if (header.monitor_name_length <= 16)
   {
     header.monitor_name.assign((const char *)(data + 20), header.monitor_name_length);
-    rtrim(header.monitor_name);
+    header.monitor_name.erase(std::find_if(header.monitor_name.rbegin(), header.monitor_name.rend(),
+                                           [](char c) { return !std::isspace(c); })
+                                  .base(),
+                              header.monitor_name.end());
     if (header.monitor_name.length() > 0)
     {
       info.m_displayNameExtra.append(" ");
