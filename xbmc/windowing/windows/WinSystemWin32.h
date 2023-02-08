@@ -68,6 +68,7 @@ struct MONITOR_DETAILS
   std::wstring MonitorNameW;
   std::wstring CardNameW;
   std::wstring DeviceNameW;
+  std::wstring DeviceStringW; // GDI device, for migration of the monitor setting from Kodi < 21
 };
 
 class CIRServerSuite;
