@@ -429,7 +429,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_formatname = "amc-vp8";
       break;
     case AV_CODEC_ID_VP9:
-      switch(hints.profile)
+      switch (m_hints.profile)
       {
         case FF_PROFILE_VP9_0:
           profile = CJNIMediaCodecInfoCodecProfileLevel::VP9Profile0;
@@ -454,8 +454,20 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     case AV_CODEC_ID_AVS:
     case AV_CODEC_ID_CAVS:
     case AV_CODEC_ID_H264:
-      switch(hints.profile)
+      switch (m_hints.profile)
       {
+        case FF_PROFILE_H264_BASELINE:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileBaseline;
+          break;
+        case FF_PROFILE_H264_MAIN:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileMain;
+          break;
+        case FF_PROFILE_H264_EXTENDED:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileExtended;
+          break;
+        case FF_PROFILE_H264_HIGH:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh;
+          break;
         case FF_PROFILE_H264_HIGH_10:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AVCProfileHigh10;
           break;
@@ -489,10 +501,22 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       break;
     case AV_CODEC_ID_HEVC:
     {
-      if (m_hints.profile == FF_PROFILE_HEVC_REXT)
+      switch (m_hints.profile)
       {
-        // No known h/w decoder supporting Hi10P
-        goto FAIL;
+        case FF_PROFILE_HEVC_MAIN:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::HEVCProfileMain;
+          break;
+        case FF_PROFILE_HEVC_MAIN_10:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::HEVCProfileMain10;
+          break;
+        case FF_PROFILE_HEVC_MAIN_STILL_PICTURE:
+          profile = CJNIMediaCodecInfoCodecProfileLevel::HEVCProfileMainStill;
+          break;
+        case FF_PROFILE_HEVC_REXT:
+          // No known h/w decoder supporting Hi10P
+          goto FAIL;
+        default:
+          break;
       }
 
       m_mime = "video/hevc";
@@ -526,6 +550,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         {
           m_mime = "video/dolby-vision";
           m_formatname = isDvhe ? "amc-dvhe" : "amc-dvh1";
+          profile = 0; // not an HEVC profile
         }
       }
 
@@ -598,7 +623,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     }
     case AV_CODEC_ID_AV1:
     {
-      switch (hints.profile)
+      switch (m_hints.profile)
       {
         case FF_PROFILE_AV1_MAIN:
           profile = CJNIMediaCodecInfoCodecProfileLevel::AV1ProfileMain8;
@@ -652,7 +677,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
     CLog::Log(
         LOGINFO,
-        "CDVDVideoCodecAndroidMediaCodec::Open: Secure decoder requested: {} (stream flags: {})",
+        "CDVDVideoCodecAndroidMediaCodec::Open Secure decoder requested: {} (stream flags: {})",
         m_needSecureDecoder ? "true" : "false", m_hints.cryptoSession->flags);
   }
 
@@ -669,7 +694,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     if (!CServiceBroker::GetDecoderFilterManager()->isValid(m_codecname, m_hints))
       continue;
 
-    CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec:{}", m_codecname);
+    CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open Testing codec: {}", m_codecname);
 
     CJNIMediaCodecInfoCodecCapabilities codec_caps = codec_info.getCapabilitiesForType(m_mime);
     if (xbmc_jnienv()->ExceptionCheck())
@@ -690,7 +715,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     }
     else if (codecIsSecure)
     {
-      CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open: skipping insecure decoder while "
+      CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open skipping insecure decoder while "
                          "secure decoding is required");
       continue;
     }
@@ -705,7 +730,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
                          return profileLevel.profile() == profile;
                        }) == profileLevels.cend())
       {
-        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: profile not supported: {}",
+        CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open profile not supported: {}",
                   profile);
         continue;
       }
@@ -748,7 +773,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   }
   if (!m_codec)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec:: Failed to create Android MediaCodec");
+    CLog::Log(LOGERROR,
+              "CDVDVideoCodecAndroidMediaCodec::Open Failed to create Android MediaCodec");
     goto FAIL;
   }
 
@@ -762,7 +788,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
     if (!m_crypto)
     {
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open: MediaCrypto creation failed");
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open MediaCrypto creation failed");
       goto FAIL;
     }
   }
@@ -772,7 +798,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
     m_jnivideoview.reset(CJNIXBMCVideoView::createVideoView(this));
     if (!m_jnivideoview || !m_jnivideoview->waitForSurface(2000))
     {
-      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec: VideoView creation failed!!");
+      CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open VideoView creation failed!!");
       goto FAIL;
     }
   }
@@ -797,10 +823,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   else
     m_invalidPTSValue = 0;
 
-  CLog::Log(LOGINFO,
-            "CDVDVideoCodecAndroidMediaCodec:: "
-            "Open Android MediaCodec {}",
-            m_codecname);
+  CLog::Log(LOGINFO, "CDVDVideoCodecAndroidMediaCodec::Open Using codec: {}", m_codecname);
 
   m_opened = true;
 
