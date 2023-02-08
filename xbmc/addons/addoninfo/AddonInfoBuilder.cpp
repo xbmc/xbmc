@@ -337,10 +337,11 @@ bool CAddonInfoBuilder::ParseXML(const AddonInfoPtr& addon,
    *   <import addon="???" minversion="???" version="???" optional="???"/>
    * </requires>
    */
-  const TiXmlElement* requires = element->FirstChildElement("requires");
-  if (requires)
+  const TiXmlElement* _requires = element->FirstChildElement("requires");
+  if (_requires)
   {
-    for (const TiXmlElement* child = requires->FirstChildElement("import"); child != nullptr; child = child->NextSiblingElement("import"))
+    for (const TiXmlElement* child = _requires->FirstChildElement("import"); child != nullptr;
+         child = child->NextSiblingElement("import"))
     {
       if (child->Attribute("addon"))
       {
