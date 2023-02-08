@@ -159,12 +159,6 @@ static void warning(const char* format, ...)
   va_end(ap);
 }
 
-/* Because fmin requires C99 support */
-static inline double dmin(double x, double y)
-{
-  return x < y ? x : y;
-}
-
 static char* rotation_name(Rotation rotation)
 {
   int i;
