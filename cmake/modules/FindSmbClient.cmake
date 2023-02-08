@@ -14,7 +14,7 @@
 #
 #   SmbClient::SmbClient   - The SmbClient library
 
-if(PKGCONFIG_FOUND)
+if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_SMBCLIENT smbclient QUIET)
 endif()
 
