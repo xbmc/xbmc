@@ -159,12 +159,6 @@ static void warning(const char* format, ...)
   va_end(ap);
 }
 
-/* Because fmin requires C99 support */
-static inline double dmin(double x, double y)
-{
-  return x < y ? x : y;
-}
-
 static char* rotation_name(Rotation rotation)
 {
   int i;
@@ -1646,6 +1640,7 @@ static void get_outputs(void)
     name_t output_name;
     if (!output_info)
       fatal("could not get output 0x%x information\n", res->outputs[o]);
+    init_name(&output_name);
     set_name_xid(&output_name, res->outputs[o]);
     set_name_index(&output_name, o);
     set_name_string(&output_name, output_info->name);

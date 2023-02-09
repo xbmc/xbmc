@@ -130,6 +130,5 @@ private:
   CCriticalSection m_critical;
 
   bool m_modal = false;
-  bool m_exporting = false;
   bool m_cleaning = false;
 };
