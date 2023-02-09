@@ -14,8 +14,6 @@ include ../../download-files.include
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX)
 
-LIBDYLIB=$(PLATFORM)/bin/autoconf
-
 all: .installed-$(PLATFORM)
 
 
@@ -23,11 +21,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 
-$(LIBDYLIB): $(PLATFORM)
+.installed-$(PLATFORM): $(PLATFORM)
 	cd $(PLATFORM); $(CONFIGURE)
-	$(MAKE) -C $(PLATFORM)
-
-.installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(PLATFORM) install
 	touch $@
 
