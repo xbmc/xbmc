@@ -53,7 +53,7 @@ private:
   bool m_bInited;
   bool m_bCanSeek;
 
-  ActiveAE::IAEResample *m_pResampler;
+  std::unique_ptr<ActiveAE::IAEResample> m_pResampler;
   DVDAudioFrame m_audioFrame;
   int m_planes;
   bool m_needConvert;

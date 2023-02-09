@@ -12,9 +12,9 @@
 namespace ActiveAE
 {
 
-IAEResample *CAEResampleFactory::Create(uint32_t flags /* = 0 */)
+std::unique_ptr<IAEResample> CAEResampleFactory::Create(uint32_t flags /* = 0 */)
 {
-  return new CActiveAEResampleFFMPEG();
+  return std::make_unique<CActiveAEResampleFFMPEG>();
 }
 
 }

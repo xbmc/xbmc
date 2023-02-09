@@ -29,7 +29,6 @@ VideoPlayerCodec::VideoPlayerCodec()
   m_nAudioStream = -1;
   m_nDecodedLen = 0;
   m_bInited = false;
-  m_pResampler = NULL;
   m_needConvert = false;
   m_channels = 0;
 
@@ -296,8 +295,7 @@ void VideoPlayerCodec::DeInit()
 
   m_pAudioCodec.reset();
 
-  delete m_pResampler;
-  m_pResampler = NULL;
+  m_pResampler.reset();
 
   // cleanup format information
   m_TotalTime = 0;
