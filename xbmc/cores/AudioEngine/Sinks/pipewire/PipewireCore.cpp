@@ -14,12 +14,8 @@
 
 #include <stdexcept>
 
-namespace AE
-{
-namespace SINK
-{
-namespace PIPEWIRE
-{
+using namespace KODI;
+using namespace PIPEWIRE;
 
 CPipewireCore::CPipewireCore(CPipewireContext& context)
   : m_context(context), m_coreEvents(CreateCoreEvents())
@@ -61,7 +57,3 @@ pw_core_events CPipewireCore::CreateCoreEvents()
 
   return coreEvents;
 }
-
-} // namespace PIPEWIRE
-} // namespace SINK
-} // namespace AE

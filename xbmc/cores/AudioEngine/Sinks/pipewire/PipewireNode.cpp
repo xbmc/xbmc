@@ -18,12 +18,8 @@
 #include <spa/param/format.h>
 #include <spa/pod/iter.h>
 
-namespace AE
-{
-namespace SINK
-{
-namespace PIPEWIRE
-{
+using namespace KODI;
+using namespace PIPEWIRE;
 
 CPipewireNode::CPipewireNode(CPipewireRegistry& registry, uint32_t id, const char* type)
   : CPipewireProxy(registry, id, type, PW_VERSION_NODE), m_nodeEvents(CreateNodeEvents())
@@ -201,7 +197,3 @@ pw_node_events CPipewireNode::CreateNodeEvents()
 
   return nodeEvents;
 }
-
-} // namespace PIPEWIRE
-} // namespace SINK
-} // namespace AE
