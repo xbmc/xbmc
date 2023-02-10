@@ -80,12 +80,12 @@ Create needed directories:
 mkdir -p $HOME/android-tools/android-sdk-linux
 ```
 
-Extract Android SDK:
+Extract Android SDK Command line tools:
 ```
 unzip $HOME/Downloads/commandlinetools-linux-6200805_latest.zip -d $HOME/android-tools/android-sdk-linux/
 ```
 
-**NOTE:** Since we're using the latest SDK available, filename can change over time. Adapt the `unzip` command accordingly.
+**NOTE:** Since we're using the latest SDK Command line tools available, filename can change over time. Adapt the `unzip` command accordingly.
 
 Extract Android NDK:
 ```
@@ -98,8 +98,8 @@ Before Android SDK can be used, you need to accept the licenses and configure it
 cd $HOME/android-tools/android-sdk-linux/cmdline-tools/bin
 ./sdkmanager --sdk_root=$(pwd)/../.. --licenses
 ./sdkmanager --sdk_root=$(pwd)/../.. platform-tools
-./sdkmanager --sdk_root=$(pwd)/../.. "platforms;android-28"
-./sdkmanager --sdk_root=$(pwd)/../.. "build-tools;28.0.3"
+./sdkmanager --sdk_root=$(pwd)/../.. "platforms;android-33"
+./sdkmanager --sdk_root=$(pwd)/../.. "build-tools;30.0.3"
 ```
 
 ### 3.3. Create a key to sign debug APKs
