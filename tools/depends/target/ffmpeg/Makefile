@@ -1,6 +1,7 @@
 include ../../Makefile.include
 include FFMPEG-VERSION ../../download-files.include
-DEPS = ../../Makefile.include FFMPEG-VERSION Makefile ../../download-files.include
+DEPS = ../../Makefile.include FFMPEG-VERSION Makefile ../../download-files.include \
+       01-dv-detection-mkv.patch
 
 BUILD_TYPE = Release
 ifeq ($(DEBUG_BUILD),yes)
@@ -43,6 +44,7 @@ $(PLATFORM): $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE) $(DEPS)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)/build
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../01-dv-detection-mkv.patch
 	cd $(PLATFORM); cp ../CMakeLists.txt ./
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_ARGS) ..
 

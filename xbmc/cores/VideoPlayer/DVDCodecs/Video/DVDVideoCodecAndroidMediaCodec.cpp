@@ -501,6 +501,16 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       bool isDvhe = (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'));
       bool isDvh1 = (m_hints.codec_tag == MKTAG('d', 'v', 'h', '1'));
 
+      // some files don't have dvhe or dvh1 tag set up but have Dolby Vision side data
+      if (!isDvhe && !isDvh1 && m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION)
+      {
+        // page 10, table 2 from https://professional.dolby.com/siteassets/content-creation/dolby-vision-for-content-creators/dolby-vision-streams-within-the-http-live-streaming-format-v2.0-13-november-2018.pdf
+        if (m_hints.codec_tag == MKTAG('h', 'v', 'c', '1'))
+          isDvh1 = true;
+        else
+          isDvhe = true;
+      }
+
       if (isDvhe || isDvh1)
       {
         bool displaySupportsDovi = CAndroidUtils::GetDisplayHDRCapabilities().SupportsDolbyVision();
