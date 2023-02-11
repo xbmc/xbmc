@@ -1,1 +1,1 @@
-binary-addons https://github.com/xbmc/repo-binary-addons.git Nexus
+binary-addons https://github.com/xbmc/repo-binary-addons.git Omega
