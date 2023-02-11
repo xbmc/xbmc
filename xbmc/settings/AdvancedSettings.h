@@ -242,8 +242,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bShoutcastArt;
 
     std::string m_musicThumbs;
-    std::vector<std::string> m_musicArtistExtraArt;
-    std::vector<std::string> m_musicAlbumExtraArt;
 
     int m_iMusicLibraryRecentlyAddedItems;
     int m_iMusicLibraryDateAdded;
@@ -264,12 +262,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_bVideoLibraryUseFastHash;
     bool m_bVideoLibraryImportWatchedState{true};
     bool m_bVideoLibraryImportResumePoint{true};
-    std::vector<std::string> m_videoEpisodeExtraArt;
-    std::vector<std::string> m_videoTvShowExtraArt;
-    std::vector<std::string> m_videoTvSeasonExtraArt;
-    std::vector<std::string> m_videoMovieExtraArt;
-    std::vector<std::string> m_videoMovieSetExtraArt;
-    std::vector<std::string> m_videoMusicVideoExtraArt;
 
     bool m_bVideoScannerIgnoreErrors;
     int m_iVideoLibraryDateAdded;
@@ -387,5 +379,4 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     void Initialize();
     void Clear();
     void SetExtraArtwork(const TiXmlElement* arttypes, std::vector<std::string>& artworkMap);
-    void MigrateOldArtSettings();
 };
