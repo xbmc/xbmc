@@ -64,19 +64,17 @@
 
 - (void)windowDidMove:(NSNotification*)aNotification
 {
-  NSOpenGLContext* context = NSOpenGLContext.currentContext;
-  if (context)
+  if (self.contentView)
   {
-    if (context.view)
+    NSPoint window_origin = [self.contentView frame].origin;
+    XBMC_Event newEvent = {};
+    newEvent.type = XBMC_VIDEOMOVE;
+    newEvent.move.x = window_origin.x;
+    newEvent.move.y = window_origin.y;
+    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+    if (appPort)
     {
-      NSPoint window_origin = [[[context view] window] frame].origin;
-      XBMC_Event newEvent = {};
-      newEvent.type = XBMC_VIDEOMOVE;
-      newEvent.move.x = window_origin.x;
-      newEvent.move.y = window_origin.y;
-      std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
-      if (appPort)
-        appPort->OnEvent(newEvent);
+      appPort->OnEvent(newEvent);
     }
   }
 }
