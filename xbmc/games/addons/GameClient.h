@@ -18,6 +18,7 @@
 #include <set>
 #include <stdint.h>
 #include <string>
+#include <utility>
 
 class CFileItem;
 
@@ -141,6 +142,8 @@ public:
   const std::set<std::string>& GetExtensions() const { return m_extensions; }
   bool SupportsAllExtensions() const { return m_bSupportsAllExtensions; }
   bool IsExtensionValid(const std::string& strExtension) const;
+  const std::string& GetEmulatorName() const { return m_emulatorName; }
+  const std::string& GetPlatforms() const { return m_platforms; }
 
   // Start/stop gameplay
   bool Initialize(void);
@@ -212,6 +215,24 @@ private:
   static bool cb_input_event(KODI_HANDLE kodiInstance, const game_input_event* event);
   //@}
 
+  /*!
+   * \brief Parse the name of a libretro game add-on into its emulator name
+   * and platforms
+   *
+   * \param addonName The name of the add-on, e.g. "Nintendo - SNES / SFC (Snes9x 2002)"
+   *
+   * \return A tuple of two strings:
+   *   - first:  the emulator name, e.g. "Snes9x 2002"
+   *   - second: the platforms, e.g. "Nintendo - SNES / SFC"
+   *
+   * For cores that don't emulate a platform, such as 2048 with the add-on name
+   * "2048", then the emulator name will be the add-on name and platforms
+   * will be empty, e.g.:
+   *   - first:  "2048"
+   *   - second: ""
+   */
+  static std::pair<std::string, std::string> ParseLibretroName(const std::string& addonName);
+
   // Game subsystems
   GameClientSubsystems m_subsystems;
 
@@ -220,7 +241,8 @@ private:
   bool m_bSupportsStandalone;
   std::set<std::string> m_extensions;
   bool m_bSupportsAllExtensions;
-  // GamePlatforms         m_platforms;
+  std::string m_emulatorName;
+  std::string m_platforms;
 
   // Properties of the current playing file
   std::atomic_bool m_bIsPlaying; // True between OpenFile() and CloseFile()
