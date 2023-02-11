@@ -641,6 +641,12 @@ bool CWinSystemOSX::DestroyWindowSystem()
 
 bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
+  // find the screen where the application started the last time. It'd be the default screen if the
+  // screen index is not found/available.
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  m_lastDisplayNr = GetDisplayIndex(settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  NSScreen* screen = [NSScreen.screens objectAtIndex:m_lastDisplayNr];
+
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
   RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW);
@@ -684,6 +690,9 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
       // associate with current window
       [appWindow setContentView:view];
+
+      // set the window to the appropriate screen
+      [appWindow setFrameOrigin:screen.frame.origin];
     });
 
     [view.getGLContext makeCurrentContext];
