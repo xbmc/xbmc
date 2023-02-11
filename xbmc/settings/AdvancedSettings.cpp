@@ -297,8 +297,6 @@ void CAdvancedSettings::Initialize()
   m_bShoutcastArt = true;
 
   m_musicThumbs = "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|cover.jpeg|thumb.jpg|Thumb.jpg|thumb.JPG|Thumb.JPG";
-  m_musicArtistExtraArt = {};
-  m_musicAlbumExtraArt = {};
 
   m_bMusicLibraryAllItemsOnBottom = false;
   m_bMusicLibraryCleanOnUpdate = false;
@@ -318,13 +316,6 @@ void CAdvancedSettings::Initialize()
   m_bVideoLibraryUseFastHash = true;
   m_bVideoScannerIgnoreErrors = false;
   m_iVideoLibraryDateAdded = 1; // prefer mtime over ctime and current time
-
-  m_videoEpisodeExtraArt = {};
-  m_videoTvShowExtraArt = {};
-  m_videoTvSeasonExtraArt = {};
-  m_videoMovieExtraArt = {};
-  m_videoMovieSetExtraArt = {};
-  m_videoMusicVideoExtraArt = {};
 
   m_iEpgUpdateCheckInterval = 300; /* Check every X seconds, if EPG data need to be updated. This does not mean that
                                       every X seconds an EPG update is actually triggered, it's just the interval how
@@ -810,9 +801,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
         separator = separator->NextSibling("separator");
       }
     }
-
-    SetExtraArtwork(pElement->FirstChildElement("artistextraart"), m_musicArtistExtraArt);
-    SetExtraArtwork(pElement->FirstChildElement("albumextraart"), m_musicAlbumExtraArt);
   }
 
   pElement = pRootElement->FirstChildElement("videolibrary");
@@ -826,13 +814,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "importwatchedstate", m_bVideoLibraryImportWatchedState);
     XMLUtils::GetBoolean(pElement, "importresumepoint", m_bVideoLibraryImportResumePoint);
     XMLUtils::GetInt(pElement, "dateadded", m_iVideoLibraryDateAdded);
-
-    SetExtraArtwork(pElement->FirstChildElement("episodeextraart"), m_videoEpisodeExtraArt);
-    SetExtraArtwork(pElement->FirstChildElement("tvshowextraart"), m_videoTvShowExtraArt);
-    SetExtraArtwork(pElement->FirstChildElement("tvseasonextraart"), m_videoTvSeasonExtraArt);
-    SetExtraArtwork(pElement->FirstChildElement("movieextraart"), m_videoMovieExtraArt);
-    SetExtraArtwork(pElement->FirstChildElement("moviesetextraart"), m_videoMovieSetExtraArt);
-    SetExtraArtwork(pElement->FirstChildElement("musicvideoextraart"), m_videoMusicVideoExtraArt);
   }
 
   pElement = pRootElement->FirstChildElement("videoscanner");
@@ -1259,9 +1240,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
 
   // load in the settings overrides
   CServiceBroker::GetSettingsComponent()->GetSettings()->LoadHidden(pRootElement);
-
-  // Migration of old style art options from advanced setting to GUI setting
-  MigrateOldArtSettings();
 }
 
 void CAdvancedSettings::Clear()
@@ -1465,95 +1443,5 @@ void ConvertToWhitelist(const std::vector<std::string>& oldlist, std::vector<CVa
     std::string strFamilyType = it.substr(0, last_index + 1); // "fanart" of "fanart16"
     if (std::find(whitelist.begin(), whitelist.end(), strFamilyType) == whitelist.end())
       whitelist.emplace_back(strFamilyType);
-  }
-}
-
-void CAdvancedSettings::MigrateOldArtSettings()
-{
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  if (!settings->GetBool(CSettings::SETTING_MUSICLIBRARY_ARTSETTINGS_UPDATED))
-  {
-    CLog::Log(LOGINFO, "Migrating old music library artwork settings to new GUI settings");
-    // Convert numeric art type variants into simple art type family entry
-    // e.g. {"banner", "fanart1", "fanart2", "fanart3"... } into { "banner", "fanart"}
-    if (!m_musicArtistExtraArt.empty())
-    {
-      std::vector<CVariant> whitelist;
-      ConvertToWhitelist(m_musicArtistExtraArt, whitelist);
-      settings->SetList(CSettings::SETTING_MUSICLIBRARY_ARTISTART_WHITELIST, whitelist);
-    }
-    if (!m_musicAlbumExtraArt.empty())
-    {
-      std::vector<CVariant> whitelist;
-      ConvertToWhitelist(m_musicAlbumExtraArt, whitelist);
-      settings->SetList(CSettings::SETTING_MUSICLIBRARY_ALBUMART_WHITELIST, whitelist);
-    }
-
-    // Convert value like "folder.jpg|Folder.jpg|folder.JPG|Folder.JPG|cover.jpg|Cover.jpg|
-    // cover.jpeg|thumb.jpg|Thumb.jpg|thumb.JPG|Thumb.JPG" into case-insensitive unique elements
-    // e.g. {"folder.jpg", "cover.jpg", "cover.jpeg", "thumb.jpg"}
-    if (!m_musicThumbs.empty())
-    {
-      std::vector<std::string> thumbs1 = StringUtils::Split(m_musicThumbs, "|");
-      std::vector<std::string> thumbs2;
-      for (auto& it : thumbs1)
-      {
-        StringUtils::ToLower(it);
-        if (std::find(thumbs2.begin(), thumbs2.end(), it) == thumbs2.end())
-          thumbs2.emplace_back(it);
-      }
-      std::vector<CVariant> thumbs;
-      thumbs.reserve(thumbs2.size());
-      for (const auto& it : thumbs2)
-        thumbs.emplace_back(it);
-      settings->SetList(CSettings::SETTING_MUSICLIBRARY_MUSICTHUMBS, thumbs);
-    }
-
-    // Whitelists configured, set artwork level to custom
-    if (!m_musicAlbumExtraArt.empty() || !m_musicArtistExtraArt.empty())
-      settings->SetInt(CSettings::SETTING_MUSICLIBRARY_ARTWORKLEVEL, 2);
-
-    // Flag migration of settings so not done again
-    settings->SetBool(CSettings::SETTING_MUSICLIBRARY_ARTSETTINGS_UPDATED, true);
-  }
-
-  if (!settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_ARTSETTINGS_UPDATED))
-  {
-    CLog::Log(LOGINFO, "Migrating old video library artwork settings to new GUI settings");
-    // Convert numeric art type variants into simple art type family entry
-    // e.g. {"banner", "fanart1", "fanart2", "fanart3"... } into { "banner", "fanart"}
-    if (!m_videoEpisodeExtraArt.empty())
-    {
-      std::vector<CVariant> whitelist;
-      ConvertToWhitelist(m_videoEpisodeExtraArt, whitelist);
-      settings->SetList(CSettings::SETTING_VIDEOLIBRARY_EPISODEART_WHITELIST, whitelist);
-    }
-    if (!m_videoTvShowExtraArt.empty())
-    {
-      std::vector<CVariant> whitelist;
-      ConvertToWhitelist(m_videoTvShowExtraArt, whitelist);
-      settings->SetList(CSettings::SETTING_VIDEOLIBRARY_TVSHOWART_WHITELIST, whitelist);
-    }
-    if (!m_videoMovieExtraArt.empty())
-    {
-      std::vector<CVariant> whitelist;
-      ConvertToWhitelist(m_videoMovieExtraArt, whitelist);
-      settings->SetList(CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST, whitelist);
-    }
-    if (!m_videoMusicVideoExtraArt.empty())
-    {
-      std::vector<CVariant> whitelist;
-      ConvertToWhitelist(m_videoMusicVideoExtraArt, whitelist);
-      settings->SetList(CSettings::SETTING_VIDEOLIBRARY_MUSICVIDEOART_WHITELIST, whitelist);
-    }
-
-    // Whitelists configured, set artwork level to custom
-    if (!m_videoEpisodeExtraArt.empty() || !m_videoTvShowExtraArt.empty()
-        || !m_videoMovieExtraArt.empty() || !m_videoMusicVideoExtraArt.empty())
-      settings->SetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL,
-        CSettings::MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM);
-
-    // Flag migration of settings so not done again
-    settings->SetBool(CSettings::SETTING_VIDEOLIBRARY_ARTSETTINGS_UPDATED, true);
   }
 }

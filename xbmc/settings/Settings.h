@@ -94,8 +94,6 @@ public:
       "videolibrary.episodeartwhitelist";
   static constexpr auto SETTING_VIDEOLIBRARY_MUSICVIDEOART_WHITELIST =
       "videolibrary.musicvideoartwhitelist";
-  static constexpr auto SETTING_VIDEOLIBRARY_ARTSETTINGS_UPDATED =
-      "videolibrary.artsettingsupdated";
   static constexpr auto SETTING_VIDEOLIBRARY_SHOWPERFORMERS =
       "videolibrary.musicvideosallperformers";
   static constexpr auto SETTING_LOCALE_AUDIOLANGUAGE = "locale.audiolanguage";
@@ -253,7 +251,6 @@ public:
       "musiclibrary.artistartwhitelist";
   static constexpr auto SETTING_MUSICLIBRARY_ALBUMART_WHITELIST = "musiclibrary.albumartwhitelist";
   static constexpr auto SETTING_MUSICLIBRARY_MUSICTHUMBS = "musiclibrary.musicthumbs";
-  static constexpr auto SETTING_MUSICLIBRARY_ARTSETTINGS_UPDATED = "musiclibrary.artsettings";
   static constexpr auto SETTING_MUSICLIBRARY_ALBUMSSCRAPER = "musiclibrary.albumsscraper";
   static constexpr auto SETTING_MUSICLIBRARY_ARTISTSSCRAPER = "musiclibrary.artistsscraper";
   static constexpr auto SETTING_MUSICLIBRARY_OVERRIDETAGS = "musiclibrary.overridetags";
