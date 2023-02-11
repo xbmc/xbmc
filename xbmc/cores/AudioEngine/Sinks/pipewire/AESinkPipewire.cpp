@@ -298,7 +298,8 @@ IAESink* CAESinkPipewire::Create(std::string& device, AEAudioFormat& desiredForm
 void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
 {
   auto& loop = pipewire->GetThreadLoop();
-  loop.Lock();
+
+  PIPEWIRE::CLoopLockGuard lock(loop);
 
   CAEDeviceInfo defaultDevice;
   defaultDevice.m_deviceType = AE_DEVTYPE_PCM;
@@ -375,8 +376,6 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
 
     list.emplace_back(device);
   }
-
-  loop.Unlock();
 }
 
 void CAESinkPipewire::Destroy()
@@ -389,7 +388,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   auto& core = pipewire->GetCore();
   auto& loop = pipewire->GetThreadLoop();
 
-  loop.Lock();
+  PIPEWIRE::CLoopLockGuard lock(loop);
 
   auto& registry = pipewire->GetRegistry();
   auto& globals = registry.GetGlobals();
@@ -404,10 +403,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
     auto target = std::find_if(globals.begin(), globals.end(),
                                [&device](const auto& p) { return device == p.second->name; });
     if (target == globals.end())
-    {
-      loop.Unlock();
       return false;
-    }
 
     id = target->first;
   }
@@ -493,10 +489,7 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   }
 
   if (!m_stream->Connect(id, PW_DIRECTION_OUTPUT, params, flags))
-  {
-    loop.Unlock();
     return false;
-  }
 
   CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - rate: {}", __FUNCTION__, format.m_sampleRate);
   CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - channels: {}", __FUNCTION__, pwChannels.size());
@@ -523,7 +516,6 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
     {
       CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - timed out waiting for stream to be paused",
                 __FUNCTION__);
-      loop.Unlock();
       return false;
     }
   } while (state != PW_STREAM_STATE_PAUSED);
@@ -535,8 +527,6 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
 
   m_format = format;
 
-  loop.Unlock();
-
   return true;
 }
 
@@ -544,11 +534,9 @@ void CAESinkPipewire::Deinitialize()
 {
   auto& loop = pipewire->GetThreadLoop();
 
-  loop.Lock();
+  PIPEWIRE::CLoopLockGuard lock(loop);
 
   m_stream->Flush(false);
-
-  loop.Unlock();
 
   m_stream.reset();
 }
@@ -564,7 +552,7 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
   auto& loop = pipewire->GetThreadLoop();
 
-  loop.Lock();
+  PIPEWIRE::CLoopLockGuard lock(loop);
 
   if (m_stream->GetState() == PW_STREAM_STATE_PAUSED)
     m_stream->SetActive(true);
@@ -578,10 +566,7 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
     int ret = loop.Wait(1s);
     if (ret == -ETIMEDOUT)
-    {
-      loop.Unlock();
       return 0;
-    }
   }
 
   pwBuffer->size = frames;
@@ -622,8 +607,6 @@ unsigned int CAESinkPipewire::AddPackets(uint8_t** data, unsigned int frames, un
 
   m_stream->TriggerProcess();
 
-  loop.Unlock();
-
   return frames;
 }
 
@@ -631,13 +614,11 @@ void CAESinkPipewire::GetDelay(AEDelayStatus& status)
 {
   auto& loop = pipewire->GetThreadLoop();
 
-  loop.Lock();
+  PIPEWIRE::CLoopLockGuard lock(loop);
 
   pw_stream_state state = m_stream->GetState();
 
   pw_time time = m_stream->GetTime();
-
-  loop.Unlock();
 
   if (state != PW_STREAM_STATE_STREAMING)
     return;
@@ -652,7 +633,7 @@ void CAESinkPipewire::Drain()
 {
   auto& loop = pipewire->GetThreadLoop();
 
-  loop.Lock();
+  PIPEWIRE::CLoopLockGuard lock(loop);
 
   m_stream->Flush(true);
 
@@ -661,6 +642,4 @@ void CAESinkPipewire::Drain()
   {
     CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - wait timed out, already drained?", __FUNCTION__);
   }
-
-  loop.Unlock();
 }
