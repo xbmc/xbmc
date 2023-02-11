@@ -59,6 +59,7 @@ using namespace WINDOWING;
 using namespace std::chrono_literals;
 
 #define MAX_DISPLAYS 32
+#define DEFAULT_SCREEN_NAME @"Default"
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
 size_t DisplayBitsPerPixelForMode(CGDisplayModeRef mode)
@@ -110,7 +111,7 @@ CGDirectDisplayID GetDisplayID(NSUInteger screen_index)
 
 #pragma mark - GetScreenName
 
-NSString* screenNameForDisplay(NSUInteger screenIdx)
+NSString* GetScreenName(NSUInteger screenIdx)
 {
   NSString* screenName;
   const CGDirectDisplayID displayID = GetDisplayID(screenIdx);
@@ -144,6 +145,19 @@ NSString* screenNameForDisplay(NSUInteger screenIdx)
       }
     }
   }
+  return screenName;
+}
+
+NSString* screenNameForDisplay(NSUInteger screenIdx)
+{
+  // screen id 0 is always called "Default"
+  if (screenIdx == 0)
+  {
+    return DEFAULT_SCREEN_NAME;
+  }
+
+  const CGDirectDisplayID displayID = GetDisplayID(screenIdx);
+  NSString* screenName = GetScreenName(screenIdx);
 
   if (screenName == nil)
   {
@@ -1178,6 +1192,16 @@ void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
 
 void CWinSystemOSX::OnMove(int x, int y)
 {
+  // check if the current screen/monitor settings needs to be updated
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::string storedScreenName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  const std::string currentScreenName = screenNameForDisplay(m_lastDisplayNr).UTF8String;
+  if (storedScreenName != currentScreenName)
+  {
+    CDisplaySettings::GetInstance().SetMonitor(currentScreenName);
+  }
+
+  // check if refresh rate needs to be updated
   static double oldRefreshRate = m_refreshRate;
   Cocoa_CVDisplayLinkUpdate();
 
@@ -1252,7 +1276,7 @@ std::unique_ptr<CVideoSync> CWinSystemOSX::GetVideoSync(void* clock)
 std::vector<std::string> CWinSystemOSX::GetConnectedOutputs()
 {
   std::vector<std::string> outputs;
-  outputs.push_back("Default");
+  outputs.push_back(DEFAULT_SCREEN_NAME.UTF8String);
 
   // screen 0 is always the "Default" setting, avoid duplicating the available
   // screens here.
