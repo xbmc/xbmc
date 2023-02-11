@@ -705,8 +705,20 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
       // associate with current window
       [appWindow setContentView:view];
 
-      // set the window to the appropriate screen
-      [appWindow setFrameOrigin:screen.frame.origin];
+      // set the window to the appropriate screen and screen position
+      if (m_bFullScreen)
+      {
+        [appWindow setFrameOrigin:screen.frame.origin];
+      }
+      else
+      {
+        // if in window mode we center the window on the screen
+        // TODO: we should remember window positions and use that instead, similar to what is currently done for windowsDX
+        NSPoint centerOfTheScreen =
+            NSMakePoint(screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
+                        screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2);
+        [appWindow setFrameOrigin:centerOfTheScreen];
+      }
     });
 
     [view.getGLContext makeCurrentContext];
