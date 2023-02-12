@@ -159,6 +159,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int m_videoIgnoreSecondsAtStart;
     float m_videoIgnorePercentAtEnd;
     float m_audioApplyDrc;
+    unsigned int m_maxPassthroughOffSyncDuration = 10; // when 10 ms off adjust
 
     int   m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
