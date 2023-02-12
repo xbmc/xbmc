@@ -183,6 +183,12 @@ namespace PVR
      */
     bool Get(CPVRProviders& results, const std::vector<std::shared_ptr<CPVRClient>>& clients) const;
 
+    /*!
+     * @brief Get the maximum provider id in the database
+     * @return The maximum provider id in the database
+     */
+    int GetMaxProviderId();
+
     //@}
 
     /*! @name Channel group methods */
