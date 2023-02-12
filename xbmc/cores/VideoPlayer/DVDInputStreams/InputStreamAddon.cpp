@@ -353,7 +353,7 @@ DemuxPacket* CInputStreamAddon::ReadDemux()
   if (!m_ifc.inputstream->toAddon->demux_read)
     return nullptr;
 
-  return static_cast<DemuxPacket*>(m_ifc.inputstream->toAddon->demux_read(m_ifc.inputstream));
+  return reinterpret_cast<DemuxPacket*>(m_ifc.inputstream->toAddon->demux_read(m_ifc.inputstream));
 }
 
 std::vector<CDemuxStream*> CInputStreamAddon::GetStreams() const

@@ -66,11 +66,7 @@ OverlayMessage COverlayCodecWebVTT::Decode(DemuxPacket* pPacket)
 
   m_webvttHandler.Reset();
 
-  SubtitlePacketExtraData sideData;
-  if (GetSubtitlePacketExtraData(pPacket, sideData))
-  {
-    m_webvttHandler.SetPeriodStart(sideData.m_chapterStartTime);
-  }
+  m_webvttHandler.SetPeriodStart(pPacket->m_ptsOffsetCorrection);
 
   if (m_isISOFormat)
   {
