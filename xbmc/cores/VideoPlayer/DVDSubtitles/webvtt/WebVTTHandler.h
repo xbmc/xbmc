@@ -14,6 +14,7 @@
 
 #include <deque>
 #include <map>
+#include <memory>
 #include <stdio.h>
 #include <string>
 #include <string_view>
@@ -209,6 +210,9 @@ private:
   void ConvertAddSubtitle(std::vector<subtitleData>* subList);
   void LoadColors();
   double GetTimeFromRegexTS(CRegExp& regex, int indexStart = 1);
+
+  // Last subtitle data added, must persist and be updated between all demuxer packages
+  std::unique_ptr<subtitleData> m_lastSubtitleData;
 
   std::string m_previousLines[3];
   bool m_overrideStyle{false};
