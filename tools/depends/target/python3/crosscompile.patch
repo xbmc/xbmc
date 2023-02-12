@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -1589,15 +1589,6 @@
+@@ -1625,15 +1625,6 @@
          ARFLAGS="rcs"
  fi
  
@@ -18,7 +18,7 @@
  case $MACHDEP in
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -2227,10 +2227,11 @@
+@@ -2233,10 +2233,11 @@
  # This goes into $(exec_prefix)
  sharedinstall: all
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \

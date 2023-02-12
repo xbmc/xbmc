@@ -1,6 +1,6 @@
 --- a/configure.ac
 +++ b/configure.ac
-@@ -6785,7 +6785,7 @@
+@@ -6827,7 +6827,7 @@
  AS_CASE([$ac_sys_system],
    [AIX], [PY_STDLIB_MOD_SET_NA([_scproxy], [spwd])],
    [VxWorks*], [PY_STDLIB_MOD_SET_NA([_scproxy], [_crypt], [termios], [grp])],
@@ -11,7 +11,7 @@
    [FreeBSD*], [PY_STDLIB_MOD_SET_NA([_scproxy], [spwd])],
 --- a/Lib/os.py
 +++ b/Lib/os.py
-@@ -604,6 +604,7 @@
+@@ -605,6 +605,7 @@
          fullname = path.join(dir, file)
          try:
              exec_func(fullname, *argrest)
