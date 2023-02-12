@@ -507,19 +507,31 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     {
       m_format.m_frameSize = m_format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8);
       m_sink_frameSize = m_format.m_frameSize;
-      // aim at 200 ms buffer and 50 ms periods but at least two periods of min_buffer
+      // aim at max 200 ms buffer and 50 ms periods but at least two periods of min_buffer
       // make sure periods are actually not smaller than 32 ms (32, cause 32 * 2 = 64)
       // but also lower than 64 ms
       // which is large enough to not cause CPU hogging in case 32 ms periods are used
-      m_min_buffer_size *= 2;
       m_audiotrackbuffer_sec =
           static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
-
+      // the period calculation starts
+      // after the buffer division to get even division results
+      int c = 1;
+      if (m_audiotrackbuffer_sec > 0.2)
+      {
+        CLog::Log(LOGWARNING,
+                  "Audiobuffer is already very large {:f} ms - Reducing to a sensible value",
+                  1000.0 * m_audiotrackbuffer_sec);
+        int buffer_frames = m_sink_sampleRate / 5; // 200 ms
+        m_min_buffer_size = buffer_frames * m_sink_frameSize;
+        c = 4; // 50 ms
+      }
+      // update potential new buffertime
+      m_audiotrackbuffer_sec =
+          static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
       constexpr double max_time = 0.064;
       constexpr double min_time = 0.032;
       constexpr double target_duration = 0.128;
 
-      int c = 2;
       while (m_audiotrackbuffer_sec < target_duration)
       {
         m_min_buffer_size += min_buffer;
