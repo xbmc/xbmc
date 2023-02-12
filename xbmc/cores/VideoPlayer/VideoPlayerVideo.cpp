@@ -116,8 +116,11 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
         hint.codec == AV_CODEC_ID_WMV3 ||
         hint.codec == AV_CODEC_ID_VC1 ||
         hint.codec == AV_CODEC_ID_AV1)
-      // clang-format on
+    {
+      CLog::LogF(LOGERROR, "Codec id {} require extradata.", hint.codec);
       return false;
+    }
+    // clang-format on
   }
 
   CLog::Log(LOGINFO, "Creating video codec with codec id: {}", hint.codec);
