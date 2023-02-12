@@ -120,3 +120,9 @@ void CDialogGameStretchMode::PostExit()
 {
   m_stretchModes.clear();
 }
+
+bool CDialogGameStretchMode::OnClickAction()
+{
+  Close();
+  return true;
+}

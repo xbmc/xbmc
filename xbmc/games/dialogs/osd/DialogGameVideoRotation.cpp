@@ -83,6 +83,12 @@ void CDialogGameVideoRotation::PostExit()
   m_rotations.clear();
 }
 
+bool CDialogGameVideoRotation::OnClickAction()
+{
+  Close();
+  return true;
+}
+
 std::string CDialogGameVideoRotation::GetRotationLabel(unsigned int rotationDegCCW)
 {
   switch (rotationDegCCW)
