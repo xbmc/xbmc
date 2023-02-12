@@ -61,10 +61,12 @@ public:
    \brief Gets a label (or image) for a given listitem from the info manager.
    \param item listitem in question.
    \param preferImage caller is specifically wanting an image rather than a label. Defaults to false.
-   \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. Defaults to NULL.
+   \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. Defaults to nullptr.
    \return label (or image).
    */
-  const std::string &GetItemLabel(const CGUIListItem *item, bool preferImage = false, std::string *fallback = NULL) const;
+  const std::string& GetItemLabel(const CGUIListItem* item,
+                                  bool preferImage = false,
+                                  std::string* fallback = nullptr) const;
 
   bool IsConstant() const;
   bool IsEmpty() const;
@@ -112,14 +114,6 @@ public:
   static bool ReplaceSpecialKeywordReferences(std::string &work, const std::string &strKeyword, const StringReplacerFunc &func);
 
 private:
-  void Parse(const std::string &label, int context);
-
-  /*! \brief return (and cache) built label from info portions.
-   \param rebuild whether we need to rebuild the label
-   \sa GetLabel, GetItemLabel
-   */
-  const std::string &CacheLabel(bool rebuild) const;
-
   class CInfoPortion
   {
   public:
@@ -134,10 +128,57 @@ private:
     std::string m_postfix;
   };
 
+  /*! \brief Parse a provided label string into the list of info portions that may compose the label. Info portions mean the portions of complex
+  infolabels along with their composition operations (and, or, etc) or skin variables.
+  The label is also rewritten to resolve localized strings and other dynamic expressions
+   \param label [in, out] the string label in question (e.g. "$LOCALIZE[xxx]")
+   \param infoPortion [in, out]  the list of info portions that may have been parsed from the string
+   \param context the context where the info expressions need to be evaluated (currently window ids)
+  */
+  void Parse(const std::string& label, std::vector<CInfoPortion>& infoPortion, int context);
+
+  /*! \brief return (and cache) built label from info portions.
+   \param rebuild whether we need to rebuild the label
+   \sa GetLabel, GetItemLabel
+   */
+  const std::string& CacheLabel(bool rebuild) const;
+
+  /*! \brief Rebuild a label value, based on the provided already resolved info portions (a localized string, multiple infolabels, etc)
+   \param label[in, out] label value where to store the processed result
+   \param infoPortion the list of info portions 
+   */
+  void RebuildLabel(std::string& label, const std::vector<CInfoPortion>& infoPortion) const;
+
+  /*! \brief Checks if a given label needs to be updated, based on the provided info portions (a localized string, multiple infolabels, etc)
+   \param context the context where the info expressions need to be evaluated (currently window ids)
+   \param preferImages caller is specifically wanting an image rather than a label.
+   \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. This is used by infoproviders to
+   to re-write the fallback label
+   \param infoPortion the list of info portions 
+   \return true if an update is needed, false otherwise
+   */
+  bool LabelNeedsUpdate(int context,
+                        bool preferImages,
+                        std::string* fallback,
+                        const std::vector<CInfoPortion>& infoPortion) const;
+  /*! \brief Checks if a given item label needs to be updated, based on the provided info portions (a localized string, multiple infolabels, etc)
+   \param item listItem in question.
+   \param preferImages caller is specifically wanting an image rather than a label.
+   \param fallback if non-NULL, is set to an alternate value to use should the actual value be not appropriate. This is used by infoproviders to
+   to re-write the fallback label
+   \param infoPortion the list of info portions 
+   \return true if an update is needed, false otherwise
+   */
+  bool ItemLabelNeedsUpdate(const CGUIListItem* item,
+                            bool preferImages,
+                            std::string* fallback,
+                            const std::vector<CInfoPortion>& infoPortion) const;
+
   mutable bool        m_dirty = false;
   mutable std::string m_label;
-  std::string m_fallback;
-  std::vector<CInfoPortion> m_info;
+  mutable std::string m_fallback;
+  std::vector<CInfoPortion> m_infoLabel;
+  std::vector<CInfoPortion> m_infoFallback;
 };
 
 } // namespace GUIINFO
