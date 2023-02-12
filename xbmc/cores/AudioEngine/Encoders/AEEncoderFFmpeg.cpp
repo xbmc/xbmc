@@ -290,39 +290,44 @@ int CAEEncoderFFmpeg::Encode(uint8_t *in, int in_size, uint8_t *out, int out_siz
 
     avcodec_fill_audio_frame(frame, channelNum, m_CodecCtx->sample_fmt, in, in_size, 0);
 
-    pkt->size = out_size;
-    pkt->data = out;
-
     /* encode it */
     err = avcodec_send_frame(m_CodecCtx, frame);
     if (err < 0)
       throw FFMpegException("Error sending a frame for encoding (error '{}')",
                             FFMpegErrorToString(err));
 
-    while (err >= 0)
+    err = avcodec_receive_packet(m_CodecCtx, pkt);
+    //! @TODO: This is a workaround for our current design. The caller should be made
+    // aware of the potential error values to use the ffmpeg API in a proper way, which means
+    // copying with EAGAIN and multiple packet output.
+    // For the current situation there is a relationship implicitely assumed of:
+    // 1 frame in - 1 packet out. This holds true in practice but the API does not guarantee it.
+    if (err >= 0)
     {
-      err = avcodec_receive_packet(m_CodecCtx, pkt);
-      if (err == AVERROR(EAGAIN) || err == AVERROR_EOF)
+      if (pkt->size <= out_size)
       {
-        av_channel_layout_uninit(&frame->ch_layout);
-        av_frame_free(&frame);
-        av_packet_free(&pkt);
-        return (err == AVERROR(EAGAIN)) ? -1 : 0;
+        memset(out, 0, out_size);
+        memcpy(out, pkt->data, pkt->size);
+        size = pkt->size;
       }
-      else if (err < 0)
+      else
       {
-        throw FFMpegException("Error during encoding (error '{}')", FFMpegErrorToString(err));
+        CLog::LogF(LOGERROR, "Encoded pkt size ({}) is bigger than buffer ({})", pkt->size,
+                   out_size);
       }
-
       av_packet_unref(pkt);
     }
-
-    size = pkt->size;
+    else
+    {
+      CLog::LogF(LOGERROR, "Error receiving encoded paket ({})", err);
+    }
   }
   catch (const FFMpegException& caught)
   {
     CLog::Log(LOGERROR, "CAEEncoderFFmpeg::{} - {}", __func__, caught.what());
   }
+
+  av_channel_layout_uninit(&frame->ch_layout);
 
   /* free temporary data */
   av_frame_free(&frame);
