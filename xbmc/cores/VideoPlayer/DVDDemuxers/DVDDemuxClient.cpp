@@ -162,11 +162,12 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
     avpkt->size = pkt->iSize;
     avpkt->dts = avpkt->pts = AV_NOPTS_VALUE;
 
-    AVCodecParameters* codecPar = nullptr;
+    AVCodecParameters* codecPar = avcodec_parameters_alloc();
     int ret = avcodec_parameters_from_context(codecPar, stream->m_context);
     if (ret < 0)
     {
       CLog::LogF(LOGERROR, "avcodec_parameters_from_context failed");
+      avcodec_parameters_free(&codecPar);
       return false;
     }
 
@@ -188,7 +189,7 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
         avcodec_close(stream->m_context);
       }
     }
-
+    avcodec_parameters_free(&codecPar);
     av_packet_free(&avpkt);
   }
 
