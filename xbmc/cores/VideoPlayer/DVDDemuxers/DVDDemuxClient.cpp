@@ -14,7 +14,9 @@
 #include "cores/VideoPlayer/Interface/TimingConstants.h"
 #include "utils/log.h"
 
+#include <memory>
 #include <tuple>
+#include <type_traits>
 #include <utility>
 
 class CDemuxStreamClientInternal
@@ -162,16 +164,17 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
     avpkt->size = pkt->iSize;
     avpkt->dts = avpkt->pts = AV_NOPTS_VALUE;
 
-    AVCodecParameters* codecPar = avcodec_parameters_alloc();
-    int ret = avcodec_parameters_from_context(codecPar, stream->m_context);
+    constexpr auto codecParDeleter = [](AVCodecParameters* p) { avcodec_parameters_free(&p); };
+    auto codecPar = std::unique_ptr<AVCodecParameters, decltype(codecParDeleter)>(
+        avcodec_parameters_alloc(), codecParDeleter);
+    int ret = avcodec_parameters_from_context(codecPar.get(), stream->m_context);
     if (ret < 0)
     {
       CLog::LogF(LOGERROR, "avcodec_parameters_from_context failed");
-      avcodec_parameters_free(&codecPar);
       return false;
     }
 
-    auto [retExtraData, len] = GetPacketExtradata(avpkt, codecPar);
+    auto [retExtraData, len] = GetPacketExtradata(avpkt, codecPar.get());
     if (len > 0)
     {
       st->changes++;
@@ -189,7 +192,6 @@ bool CDVDDemuxClient::ParsePacket(DemuxPacket* pkt)
         avcodec_close(stream->m_context);
       }
     }
-    avcodec_parameters_free(&codecPar);
     av_packet_free(&avpkt);
   }
 
