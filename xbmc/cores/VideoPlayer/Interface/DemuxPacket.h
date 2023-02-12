@@ -40,6 +40,9 @@ extern "C"
 
       cryptoInfo = nullptr;
     }
+
+    //! @brief PTS offset correction applied to the PTS and DTS.
+    double m_ptsOffsetCorrection{0};
   };
 
 #ifdef __cplusplus
