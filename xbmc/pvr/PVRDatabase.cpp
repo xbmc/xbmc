@@ -478,6 +478,14 @@ bool CPVRDatabase::Get(CPVRProviders& results,
   return bReturn;
 }
 
+int CPVRDatabase::GetMaxProviderId()
+{
+  std::string strQuery = PrepareSQL("SELECT max(idProvider) as maxProviderId from providers");
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  return GetSingleValueInt(strQuery);
+}
+
 /********** Channel methods **********/
 
 int CPVRDatabase::Get(bool bRadio,
