@@ -1,4 +1,6 @@
-set(MESSAGES savestate.fbs)
+set(MESSAGES savestate.fbs
+             video.fbs
+)
 
 foreach(_file ${MESSAGES})
   get_filename_component(FLATC_OUTPUT ${_file} NAME_WE)
@@ -16,7 +18,7 @@ endforeach()
 add_custom_target(retroplayer_messages DEPENDS ${FLATC_OUTPUTS})
 set_target_properties(retroplayer_messages PROPERTIES FOLDER "Generated Messages"
                                                       INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR}
-                                                      SOURCES ${FLATC_OUTPUTS})
+                                                      SOURCES "${FLATC_OUTPUTS}")
 
 if(TARGET flatbuffers::flatbuffers)
   add_dependencies(retroplayer_messages flatbuffers::flatbuffers)
