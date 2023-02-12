@@ -1273,6 +1273,9 @@ void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpac
     {
       m_IsTransferPQ = (colorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
 
+      if (m_IsTransferPQ)
+        DX::Windowing()->CacheSystemSdrPeakLuminance();
+
       CLog::LogF(LOGDEBUG, "DXGI SetColorSpace1 success");
     }
     else
