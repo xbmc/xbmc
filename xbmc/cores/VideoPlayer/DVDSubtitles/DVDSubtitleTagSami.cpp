@@ -10,9 +10,53 @@
 
 #include "DVDSubtitleStream.h"
 #include "utils/CharsetConverter.h"
+#include "utils/ColorUtils.h"
 #include "utils/HTMLUtil.h"
 #include "utils/RegExp.h"
 #include "utils/StringUtils.h"
+
+#include <algorithm>
+
+namespace
+{
+
+std::string TranslateColorValue(std::string value)
+{
+  // Get hex color limited to first 6 chars only (e.g. #000000)
+  if (value[0] == '#' && value.size() >= 7)
+    return value.substr(1, 6);
+
+  // Find hex by color name
+  //! @todo: is needed to implement a common way to get color resources
+  //!        in order to find the color name on CSS colors list
+  StringUtils::ToLower(value);
+  const auto itHtmlColor = UTILS::COLOR::HTML_BASIC_COLORS.find(value);
+  if (itHtmlColor != UTILS::COLOR::HTML_BASIC_COLORS.cend())
+    return UTILS::COLOR::ConvertoToHexRGB(itHtmlColor->second);
+
+  // Try validate hex color value
+  if (value.size() == 6)
+  {
+    bool isHex = true;
+    for (size_t i = 0; i < 6; i++)
+    {
+      const char currChar = value[i];
+      if (!(('0' <= currChar && currChar <= '9') || ('a' <= currChar && currChar <= 'f') ||
+            ('A' <= currChar && currChar <= 'F')))
+      {
+        isHex = false;
+        break;
+      }
+    }
+    if (isHex)
+      return value;
+  }
+
+  // Fallback to white
+  return "FFFFFF";
+}
+
+} // unnamed namespace
 
 CDVDSubtitleTagSami::~CDVDSubtitleTagSami()
 {
@@ -108,38 +152,19 @@ void CDVDSubtitleTagSami::ConvertLine(std::string& strUTF8, const char* langClas
       {
         std::string tagOptionName = m_tagOptions->GetMatch(1);
         std::string tagOptionValue = m_tagOptions->GetMatch(2);
-        std::string colorHex = "FFFFFF";
         pos2 += static_cast<int>(tagOptionName.length() + tagOptionValue.length());
         if (tagOptionName == "color")
         {
           m_flag[FLAG_COLOR] = true;
-          if (tagOptionValue[0] == '#' && tagOptionValue.size() >= 7)
-          {
-            tagOptionValue.erase(0, 1);
-            tagOptionValue.erase(6, tagOptionValue.size());
-            colorHex = tagOptionValue;
-          }
-          else if (tagOptionValue.size() == 6)
-          {
-            bool bHex = true;
-            for (int i = 0; i < 6; i++)
-            {
-              char temp = tagOptionValue[i];
-              if (!(('0' <= temp && temp <= '9') || ('a' <= temp && temp <= 'f') ||
-                    ('A' <= temp && temp <= 'F')))
-              {
-                bHex = false;
-                break;
-              }
-            }
-            if (bHex)
-              colorHex = tagOptionValue;
-          }
-          colorHex =
-              colorHex.substr(4, 2) + tagOptionValue.substr(2, 2) + tagOptionValue.substr(0, 2);
-          std::string tempColorTag = "{\\c&H" + colorHex + "&}";
-          strUTF8.insert(pos, tempColorTag);
-          pos += static_cast<int>(tempColorTag.length());
+
+          std::string colorHex = TranslateColorValue(tagOptionValue);
+          // Convert RGB to BGR
+          std::swap(colorHex[0], colorHex[4]);
+          std::swap(colorHex[1], colorHex[5]);
+
+          std::string colorTag = "{\\c&H" + colorHex + "&}";
+          strUTF8.insert(pos, colorTag);
+          pos += static_cast<int>(colorTag.length());
         }
       }
     }
