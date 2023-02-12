@@ -442,7 +442,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     }
 
     m_min_buffer_size = (unsigned int) min_buffer;
-    CLog::Log(LOGDEBUG, "Minimum size we need for stream: {}", m_min_buffer_size);
+    CLog::Log(LOGINFO, "Minimum size we need for stream: {} Bytes", m_min_buffer_size);
     double rawlength_in_seconds = 0.0;
     int multiplier = 1;
     unsigned int ac3FrameSize = 1;
@@ -546,7 +546,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       }
       m_format.m_frames = static_cast<int>(period_size / m_format.m_frameSize);
 
-      CLog::Log(LOGDEBUG,
+      CLog::Log(LOGINFO,
                 "Audiotrack buffer params are: period time = {:.3f} ms, period size = "
                 "{} bytes, num periods = {}",
                 period_time * 1000, period_size, m_min_buffer_size / period_size);
@@ -555,8 +555,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     if (m_passthrough && !m_info.m_wantsIECPassthrough)
       m_audiotrackbuffer_sec = rawlength_in_seconds;
 
-
-    CLog::Log(LOGDEBUG,
+    CLog::Log(LOGINFO,
               "Created Audiotrackbuffer with playing time of {:f} ms min buffer size: {} bytes",
               m_audiotrackbuffer_sec * 1000, m_min_buffer_size);
 
