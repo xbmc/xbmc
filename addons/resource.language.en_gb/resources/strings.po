@@ -18960,7 +18960,13 @@ msgctxt "#36053"
 msgid "Tuner Device"
 msgstr ""
 
-#empty strings from id 36054 to 36096
+#empty strings from id 36054 to 36095
+
+#. Label of setting "System / Display / Use system HDR/SDR brightness balance"
+#: system/settings/settings.xml
+msgctxt "#36096"
+msgid "Use system HDR/SDR brightness balance"
+msgstr ""
 
 #. Label of setting "System / Display / GUI peak luminance in HDR PQ mode"
 #: system/settings/settings.xml
@@ -23414,4 +23420,16 @@ msgstr ""
 #: xbmc/settings/windows/GUIWindowSettingsScreenCalibration.cpp
 msgctxt "#39189"
 msgid "Available only with manual subtitle position"
+msgstr ""
+
+#. Help text for setting "Use system HDR/SDR brightness balance" of label #36096
+#: system/settings/settings.xml
+msgctxt "#39190"
+msgid "[ON] The brightness of the GUI in HDR mode follows the system's setting. This affects all OSD, subtitles and graphics that are SDR in origin.[CR][OFF] Set the max brightness manually."
+msgstr ""
+
+#. System / Display "HDR" settings group label
+#: system/settings/settings.xml
+msgctxt "#39191"
+msgid "HDR"
 msgstr ""
