@@ -27,7 +27,8 @@ bool CGUIDialogSelectSavestate::ShowAndGetSavestate(const std::string& gamePath,
   if (dialog == nullptr)
     return true;
 
-  dialog->Open(gamePath);
+  if (!dialog->Open(gamePath))
+    return true;
 
   if (dialog->IsConfirmed())
   {
