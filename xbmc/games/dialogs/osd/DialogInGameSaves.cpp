@@ -124,7 +124,7 @@ unsigned int CDialogInGameSaves::GetFocusedItem() const
   return m_focusedControl;
 }
 
-void CDialogInGameSaves::OnItemRefresh(const std::string& itemPath, CGUIListItemPtr itemInfo)
+void CDialogInGameSaves::OnItemRefresh(const std::string& itemPath, const CGUIListItemPtr& itemInfo)
 {
   // Turn the message params into a savestate item
   CFileItemPtr item = TranslateMessageItem(itemPath, std::move(itemInfo));
@@ -377,7 +377,7 @@ void CDialogInGameSaves::OnDelete(CFileItem& focusedItem)
 }
 
 CFileItemPtr CDialogInGameSaves::TranslateMessageItem(const std::string& messagePath,
-                                                      CGUIListItemPtr messageItem)
+                                                      const CGUIListItemPtr& messageItem)
 {
   CFileItemPtr item;
 
