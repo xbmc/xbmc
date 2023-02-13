@@ -50,13 +50,10 @@ ifeq ($(OS),linux)
   endif
 endif
 
-.PHONY: $(NATIVE) native download
+.PHONY: $(NATIVE) native
 
 all: native
 	@echo "Dependencies built successfully."
-
-download:
-	@for d in $(NATIVE); do $(MAKE) -C $$d download; done
 
 # Dependency layout for parallel builds
 autoconf-archive: autoconf
