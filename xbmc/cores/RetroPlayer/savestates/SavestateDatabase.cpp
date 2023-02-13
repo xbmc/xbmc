@@ -205,8 +205,7 @@ std::unique_ptr<ISavestate> CSavestateDatabase::RenameSavestate(const std::strin
 
   newSavestate->Finalize();
 
-  std::string path = savestatePath;
-  if (!AddSavestate(path, "", *newSavestate))
+  if (!AddSavestate(savestatePath, "", *newSavestate))
     return {};
 
   return newSavestate;

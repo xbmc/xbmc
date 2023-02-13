@@ -49,7 +49,7 @@ protected:
 
 private:
   void InitSavedGames();
-  void OnItemRefresh(const std::string& itemPath, CGUIListItemPtr itemInfo);
+  void OnItemRefresh(const std::string& itemPath, const CGUIListItemPtr& itemInfo);
 
   /*!
    * \brief Translates the GUI list item received in a GUI message into a
@@ -69,7 +69,7 @@ private:
    *         can be obtained
    */
   static CFileItemPtr TranslateMessageItem(const std::string& messagePath,
-                                           CGUIListItemPtr messageItem);
+                                           const CGUIListItemPtr& messageItem);
 
   CFileItemList m_savestateItems;
   const CFileItemPtr m_newSaveItem;
