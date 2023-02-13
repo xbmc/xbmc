@@ -64,7 +64,7 @@ bool CDialogInGameSaves::OnMessage(CGUIMessage& message)
 
         if (!itemPath.empty())
         {
-          OnItemRefresh(itemPath, std::move(itemInfo));
+          OnItemRefresh(itemPath, itemInfo);
         }
         else
         {
@@ -127,7 +127,7 @@ unsigned int CDialogInGameSaves::GetFocusedItem() const
 void CDialogInGameSaves::OnItemRefresh(const std::string& itemPath, const CGUIListItemPtr& itemInfo)
 {
   // Turn the message params into a savestate item
-  CFileItemPtr item = TranslateMessageItem(itemPath, std::move(itemInfo));
+  CFileItemPtr item = TranslateMessageItem(itemPath, itemInfo);
   if (item)
   {
     // Look up existing savestate by path
@@ -137,9 +137,9 @@ void CDialogInGameSaves::OnItemRefresh(const std::string& itemPath, const CGUILi
 
     // Update savestate or add a new one
     if (it != m_savestateItems.cend())
-      **it = std::move(*item);
+      **it = *item;
     else
-      m_savestateItems.AddFront(std::move(item), 0);
+      m_savestateItems.AddFront(item, 0);
 
     RefreshList();
   }
