@@ -33,7 +33,7 @@ public:
   *
   * \param pPicture pointer to the overlay to be evaluated and possibly added to the collection
   */
-  void ProcessAndAddOverlayIfValid(std::shared_ptr<CDVDOverlay> pPicture);
+  void ProcessAndAddOverlayIfValid(const std::shared_ptr<CDVDOverlay>& pPicture);
 
   VecOverlays* GetOverlays(); // get the first overlay in this fifo
   bool ContainsOverlayType(DVDOverlayType type);

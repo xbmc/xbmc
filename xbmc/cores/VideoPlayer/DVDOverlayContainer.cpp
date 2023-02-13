@@ -19,7 +19,7 @@ CDVDOverlayContainer::~CDVDOverlayContainer()
   Clear();
 }
 
-void CDVDOverlayContainer::ProcessAndAddOverlayIfValid(std::shared_ptr<CDVDOverlay> pOverlay)
+void CDVDOverlayContainer::ProcessAndAddOverlayIfValid(const std::shared_ptr<CDVDOverlay>& pOverlay)
 {
   std::unique_lock<CCriticalSection> lock(*this);
 
