@@ -62,6 +62,8 @@ private:
   double                m_duration_written;
   unsigned int          m_min_buffer_size;
   uint64_t              m_headPos;
+  uint64_t m_headPosOld;
+  uint32_t m_stuckCounter;
   uint64_t m_timestampPos = 0;
   // Moving Average computes the weighted average delay over
   // a fixed size of delay values - current size: 20 values
@@ -87,6 +89,7 @@ private:
   unsigned int       m_sink_sampleRate;
   bool               m_passthrough;
   double             m_audiotrackbuffer_sec;
+  double m_audiotrackbuffer_sec_orig;
   int                m_encoding;
   double m_pause_ms = 0.0;
   double m_delay = 0.0;
