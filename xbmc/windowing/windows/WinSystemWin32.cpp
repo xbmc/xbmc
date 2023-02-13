@@ -469,6 +469,10 @@ void CWinSystemWin32::CenterCursor() const
 
 bool CWinSystemWin32::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
+  // Initialisation not finished, pretend the function succeeded
+  if (!m_hWnd)
+    return true;
+
   CWinSystemWin32::UpdateStates(fullScreen);
   WINDOW_STATE state = GetState(fullScreen);
 
@@ -712,7 +716,11 @@ MONITOR_DETAILS* CWinSystemWin32::GetDisplayDetails(const std::string& name)
     {
       if (nameW[0] == '\\') // name is device name
         return m.DeviceNameW == nameW;
-      return m.MonitorNameW == nameW;
+      else if (m.MonitorNameW == nameW)
+        return true;
+      else if (m.DeviceStringW == nameW)
+        return true;
+      return false;
     });
     if (it != m_displays.end())
       return &(*it);
@@ -821,9 +829,21 @@ void CWinSystemWin32::GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs
       do
       {
         // `Monitor #N`
-        md.MonitorNameW = std::wstring(ddMon.DeviceString) + L" #" + std::to_wstring(num++);
-      }
-      while(std::any_of(outputs.begin(), outputs.end(), [&](MONITOR_DETAILS& m) { return m.MonitorNameW == md.MonitorNameW; }));
+        md.DeviceStringW = std::wstring(ddMon.DeviceString) + L" #" + std::to_wstring(num++);
+      } while (std::any_of(outputs.begin(), outputs.end(), [&](MONITOR_DETAILS& m) {
+        return m.DeviceStringW == md.DeviceStringW;
+      }));
+
+      std::wstring displayName = CWIN32Util::GetDisplayFriendlyName(ddAdapter.DeviceName);
+      if (displayName.empty())
+        displayName = std::wstring(ddMon.DeviceString);
+      num = 1;
+      do
+      {
+        // `Pretty Monitor Name #N`
+        md.MonitorNameW = displayName + L" #" + std::to_wstring(num++);
+      } while (std::any_of(outputs.begin(), outputs.end(),
+                           [&](MONITOR_DETAILS& m) { return m.MonitorNameW == md.MonitorNameW; }));
 
       md.CardNameW = ddAdapter.DeviceString;
       md.DeviceNameW = ddAdapter.DeviceName;
@@ -946,9 +966,14 @@ void CWinSystemWin32::UpdateResolutions()
   CWinSystemBase::UpdateResolutions();
   GetConnectedDisplays(m_displays);
 
-  MONITOR_DETAILS* details = GetDisplayDetails(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  // For the migration of setting videoscreen.monitor from GDI device string to EDID-based name
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  std::string settingsMonitor = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  MONITOR_DETAILS* details = GetDisplayDetails(settingsMonitor);
   if (!details)
     return;
+  if (settingsMonitor != FromW(details->MonitorNameW))
+    CDisplaySettings::GetInstance().SetMonitor(FromW(details->MonitorNameW));
 
   float refreshRate;
   int w = details->ScreenWidth;
