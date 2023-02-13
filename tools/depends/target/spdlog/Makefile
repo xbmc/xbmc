@@ -21,7 +21,7 @@ else
     TARBALLS_LOCATION = $(ROOT_DIR)
     BASE_URL := http://mirrors.kodi.tv/build-deps/sources
     RETRIEVE_TOOL := curl
-    RETRIEVE_TOOL_FLAGS := -LsS --create-dirs --retry 10 --retry-connrefused -o
+    RETRIEVE_TOOL_FLAGS := -Ls --create-dirs -f -O
     ARCHIVE_TOOL := tar
     ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
     CMAKE := cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_PREFIX_PATH=$(PREFIX)
@@ -37,6 +37,8 @@ include ../../download-files.include
 .PHONY: .installed-native
 
 all: .installed-$(PLATFORM)
+
+download: $(TARBALLS_LOCATION)/$(ARCHIVE)
 
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 ifeq ($(PREFIX),)
