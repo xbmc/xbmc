@@ -58,13 +58,15 @@ using namespace MESSAGING;
 using namespace WINDOWING;
 using namespace std::chrono_literals;
 
-#define MAX_DISPLAYS 32
-#define DEFAULT_SCREEN_NAME @"Default"
-
+namespace
+{
+constexpr int MAX_DISPLAYS = 32;
+constexpr const char* DEFAULT_SCREEN_NAME = "Default";
 //! MacOS specific window top position setting
-#define SETTING_WINDOW_TOP @"window.top"
+constexpr const char* SETTING_WINDOW_TOP = "window.top";
 //! MacOS specific window left position setting
-#define SETTING_WINDOW_LEFT @"window.left"
+constexpr const char* SETTING_WINDOW_LEFT = "window.left";
+} // namespace
 
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
@@ -159,7 +161,7 @@ NSString* screenNameForDisplay(NSUInteger screenIdx)
   // screen id 0 is always called "Default"
   if (screenIdx == 0)
   {
-    return DEFAULT_SCREEN_NAME;
+    return @(DEFAULT_SCREEN_NAME);
   }
 
   const CGDirectDisplayID displayID = GetDisplayID(screenIdx);
@@ -719,8 +721,8 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
       else
       {
         // if there are stored window positions use that as the origin point
-        const int top = settings->GetInt(SETTING_WINDOW_TOP.UTF8String);
-        const int left = settings->GetInt(SETTING_WINDOW_LEFT.UTF8String);
+        const int top = settings->GetInt(SETTING_WINDOW_TOP);
+        const int left = settings->GetInt(SETTING_WINDOW_LEFT);
 
         NSPoint windowPos;
         if (top != 0 || left != 0)
@@ -1251,8 +1253,8 @@ void CWinSystemOSX::OnMove(int x, int y)
   if (!m_bFullScreen)
   {
     dispatch_sync(dispatch_get_main_queue(), ^{
-      settings->SetInt(SETTING_WINDOW_LEFT.UTF8String, m_appWindow.frame.origin.x);
-      settings->SetInt(SETTING_WINDOW_TOP.UTF8String, m_appWindow.frame.origin.y);
+      settings->SetInt(SETTING_WINDOW_LEFT, m_appWindow.frame.origin.x);
+      settings->SetInt(SETTING_WINDOW_TOP, m_appWindow.frame.origin.y);
       settings->Save();
     });
   }
@@ -1314,7 +1316,7 @@ std::unique_ptr<CVideoSync> CWinSystemOSX::GetVideoSync(void* clock)
 std::vector<std::string> CWinSystemOSX::GetConnectedOutputs()
 {
   std::vector<std::string> outputs;
-  outputs.push_back(DEFAULT_SCREEN_NAME.UTF8String);
+  outputs.push_back(DEFAULT_SCREEN_NAME);
 
   // screen 0 is always the "Default" setting, avoid duplicating the available
   // screens here.
