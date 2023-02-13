@@ -272,6 +272,8 @@ bool CAddonInstaller::InstallModal(const std::string& addonID,
   if (!InstallOrUpdate(addonID, BackgroundJob::CHOICE_NO, ModalJob::CHOICE_YES))
     return false;
 
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Addons, "OnInstallFinished",
+                                                     addonID);
   return CServiceBroker::GetAddonMgr().GetAddon(addonID, addon, OnlyEnabled::CHOICE_YES);
 }
 
@@ -338,6 +340,8 @@ bool CAddonInstaller::Install(const std::string& addonId,
 {
   CLog::Log(LOGDEBUG, "CAddonInstaller: installing '{}' version '{}' from repository '{}'", addonId,
             version.asString(), repoId);
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Addons, "OnInstallStarted",
+                                                     addonID);
 
   AddonPtr addon;
   CAddonDatabase database;
@@ -1172,6 +1176,8 @@ void CAddonInstallJob::ReportInstallError(const std::string& addonID, const std:
   CServiceBroker::GetAddonMgr().FindInstallableById(addonID, addon);
 
   MarkFinished();
+  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Addons, "OnInstallFailed",
+                                                     addonID);
 
   std::string msg = message;
   EventPtr activity;
