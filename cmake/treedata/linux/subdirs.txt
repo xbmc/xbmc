@@ -13,6 +13,5 @@ xbmc/platform/posix                 platform/posix
 xbmc/platform/posix/filesystem      platform/posix/filesystem
 xbmc/platform/posix/network         platform/posix/network
 xbmc/platform/posix/storage/discs   platform/posix/storage/discs
-xbmc/platform/posix/threads         platform/posix/threads
 xbmc/platform/posix/utils           platform/posix/utils
 xbmc/windowing/linux                windowing/linux
