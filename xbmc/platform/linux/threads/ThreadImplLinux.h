@@ -19,7 +19,7 @@ public:
 
   void SetThreadInfo(const std::string& name) override;
 
-  bool SetPriority(const ThreadPriority& priority) override;
+  bool SetPriority(const ThreadPriority& priority) override { return false; }
 
 private:
   pid_t m_threadID;
