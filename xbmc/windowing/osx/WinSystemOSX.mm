@@ -60,6 +60,12 @@ using namespace std::chrono_literals;
 
 #define MAX_DISPLAYS 32
 #define DEFAULT_SCREEN_NAME @"Default"
+
+//! MacOS specific window top position setting
+#define SETTING_WINDOW_TOP @"window.top"
+//! MacOS specific window left position setting
+#define SETTING_WINDOW_LEFT @"window.left"
+
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
 size_t DisplayBitsPerPixelForMode(CGDisplayModeRef mode)
@@ -712,12 +718,23 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
       }
       else
       {
-        // if in window mode we center the window on the screen
-        // TODO: we should remember window positions and use that instead, similar to what is currently done for windowsDX
-        NSPoint centerOfTheScreen =
-            NSMakePoint(screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
-                        screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2);
-        [appWindow setFrameOrigin:centerOfTheScreen];
+        // if there are stored window positions use that as the origin point
+        const int top = settings->GetInt(SETTING_WINDOW_TOP.UTF8String);
+        const int left = settings->GetInt(SETTING_WINDOW_LEFT.UTF8String);
+
+        NSPoint windowPos;
+        if (top != 0 || left != 0)
+        {
+          windowPos = NSMakePoint(left, top);
+        }
+        else
+        {
+          // otherwise center the window on the screen
+          windowPos =
+              NSMakePoint(screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
+                          screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2);
+        }
+        [appWindow setFrameOrigin:windowPos];
       }
     });
 
@@ -1229,6 +1246,15 @@ void CWinSystemOSX::OnMove(int x, int y)
     NSRect frame = win.contentView.frame;
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_VIDEORESIZE, frame.size.width,
                                                frame.size.height);
+  }
+  // store window position in window mode
+  if (!m_bFullScreen)
+  {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      settings->SetInt(SETTING_WINDOW_LEFT.UTF8String, m_appWindow.frame.origin.x);
+      settings->SetInt(SETTING_WINDOW_TOP.UTF8String, m_appWindow.frame.origin.y);
+      settings->Save();
+    });
   }
 }
 
