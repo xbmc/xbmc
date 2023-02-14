@@ -45,6 +45,8 @@ constexpr Color BLUE = 0xFF0000FF;
 constexpr Color NAVY = 0xFF000080;
 constexpr Color FUCHSIA = 0xFFFF00FF;
 constexpr Color PURPLE = 0xFF800080;
+constexpr Color MAGENTA = 0xFFFF00FF;
+constexpr Color CYAN = 0xFF00FFFF;
 
 struct ColorInfo
 {
