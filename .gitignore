@@ -264,7 +264,7 @@ cmake_install.cmake
 /tools/depends/native/JsonSchemaBuilder/bin/
 /tools/depends/native/TexturePacker/bin/
 /tools/depends/target/ffmpeg/.ffmpeg-installed
-/tools/depends/target/ffmpeg/ffmpeg-*-*.tar.gz
+/tools/depends/target/ffmpeg/ffmpeg-*.tar.gz*
 /tools/depends/target/ffmpeg/ffmpeg-*-*/
 /tools/depends/target/ffmpeg/ffmpeg-install/
 /tools/depends/target/ffmpeg/ffmpeg-release/
