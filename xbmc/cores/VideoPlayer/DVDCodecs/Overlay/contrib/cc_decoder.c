@@ -30,9 +30,6 @@ extern "C" {
 
 #include "cc_decoder.h"
 
-/* colors specified by the EIA 608 standard */
-enum { WHITE, GREEN, BLUE, CYAN, RED, YELLOW, MAGENTA, BLACK };
-
 /* --------------------- misc. EIA 608 definitions -------------------*/
 
 /* mapping from PAC row code to actual CC row */
@@ -419,6 +416,41 @@ static void ccmem_exit(cc_memory_t *buf)
 /*FIXME: anything to deallocate?*/
 }
 
+static void cea608_process_style_modifiers(cc_decoder_t* dec)
+{
+  const int channel_no = dec->on_buf->channel_no;
+  const int row_pos = dec->on_buf->channel[channel_no].rowpos;
+  const cc_row_t current_row = dec->on_buf->channel[channel_no].rows[row_pos];
+  // ANSI CTA-608E:
+  // If, when a displayable character is received, it overwrites an existing PAC
+  // or mid-row code, and there are already characters to the right of the new character,
+  // these existing characters shall assume the same attributes as the new character.
+  // This adoption can result in a whole caption row suddenly changing color,
+  // underline, italics, and/or flash attributes.
+  const int cursor_position = current_row.pos;
+  // default style: white, black background, no italic, no underline
+  cc_attribute_t textattr = {0, 0, WHITE, BLACK};
+  for (int pos = cursor_position; pos >= 0 && pos <= CC_COLUMNS; pos--)
+  {
+    const cc_attribute_t ccAttribute = current_row.cells[pos].attributes;
+    if (ccAttribute.italic > 0)
+    {
+      // italics resets color to white
+      textattr.foreground = WHITE;
+      textattr.italic = 1;
+    }
+    if (ccAttribute.underline > 0)
+    {
+      textattr.underline = 1;
+    }
+    if (ccAttribute.foreground > WHITE && ccAttribute.foreground <= BLACK && textattr.italic == 0)
+    {
+      textattr.foreground = ccAttribute.foreground;
+    }
+  }
+  dec->textattr = textattr;
+}
+
 void ccmem_tobuf(cc_decoder_t *dec)
 {
   cc_buffer_t *buf = &dec->on_buf->channel[dec->on_buf->channel_no];
@@ -488,7 +520,7 @@ void ccmem_tobuf(cc_decoder_t *dec)
       dec->text[dec->textlen++] = '\0';
     }
   }
-
+  cea608_process_style_modifiers(dec);
   dec->callback(0, dec->userdata);
 }
 
