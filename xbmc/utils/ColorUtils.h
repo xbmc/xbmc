@@ -161,7 +161,7 @@ ColorFloats ConvertToFloats(const Color argb);
  * \param color The original color
  * \return The original color converted to hex RGB
  */
-std::string ConvertoToHexRGB(const Color argb);
+std::string ConvertToHexRGB(const Color argb);
 
 } // namespace COLOR
 } // namespace UTILS

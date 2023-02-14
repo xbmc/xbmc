@@ -32,7 +32,7 @@ std::string TranslateColorValue(std::string value)
   StringUtils::ToLower(value);
   const auto itHtmlColor = UTILS::COLOR::HTML_BASIC_COLORS.find(value);
   if (itHtmlColor != UTILS::COLOR::HTML_BASIC_COLORS.cend())
-    return UTILS::COLOR::ConvertoToHexRGB(itHtmlColor->second);
+    return UTILS::COLOR::ConvertToHexRGB(itHtmlColor->second);
 
   // Try validate hex color value
   if (value.size() == 6)
