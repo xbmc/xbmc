@@ -24,6 +24,19 @@
 #define CC_COLUMNS 32
 #define CC_CHANNELS 2
 
+/* colors specified by the EIA 608 standard */
+enum cc_colors
+{
+  WHITE,
+  GREEN,
+  BLUE,
+  CYAN,
+  RED,
+  YELLOW,
+  MAGENTA,
+  BLACK
+};
+
 typedef struct cc_attribute_s {
   uint8_t italic;
   uint8_t underline;
@@ -96,6 +109,7 @@ struct cc_decoder_s
   void(*callback)(int service, void *userdata);
   char text[CC_ROWS*CC_COLUMNS + 1];
   int textlen;
+  cc_attribute_t textattr;
 };
 
 typedef struct cc_decoder_s cc_decoder_t;
