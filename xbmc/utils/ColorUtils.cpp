@@ -144,7 +144,7 @@ ColorFloats UTILS::COLOR::ConvertToFloats(const Color argb)
   return c;
 }
 
-std::string UTILS::COLOR::ConvertoToHexRGB(const Color argb)
+std::string UTILS::COLOR::ConvertToHexRGB(const Color argb)
 {
   return StringUtils::Format("{:06X}", argb & ~0xFF000000);
 }
