@@ -7,7 +7,6 @@ VERSION=0.2.8
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 SHA512=bf1b8a9e69b87547fc65989b9eaff88a442d8b2f01f5446cef960000b093390b1e557536837fbf38bb6d9a4f93e3985ea34c3253f94925b0f571b4606c980832
-include ../../download-files.include
 
 LIBDYLIB=$(PLATFORM)/build/libwayland-client++.so
 
@@ -32,6 +31,7 @@ endif
 CMAKE_OPTIONS := -DBUILD_DOCUMENTATION=OFF -DBUILD_LIBRARIES=ON -DBUILD_SHARED_LIBS=OFF -DBUILD_EXAMPLES=OFF $(CMAKE_OPTIONS)
 BUILDDIR = $(PLATFORM)/build
 
+include ../../download-files.include
 all: .installed-$(PLATFORM)
 
 
