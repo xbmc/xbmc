@@ -19,12 +19,13 @@ void CRenderVideoSettings::Reset()
   m_scalingMethod = SCALINGMETHOD::AUTO;
   m_stretchMode = STRETCHMODE::Normal;
   m_rotationDegCCW = 0;
+  m_pixelPath.clear();
 }
 
 bool CRenderVideoSettings::operator==(const CRenderVideoSettings& rhs) const
 {
   return m_scalingMethod == rhs.m_scalingMethod && m_stretchMode == rhs.m_stretchMode &&
-         m_rotationDegCCW == rhs.m_rotationDegCCW;
+         m_rotationDegCCW == rhs.m_rotationDegCCW && m_pixelPath == rhs.m_pixelPath;
 }
 
 bool CRenderVideoSettings::operator<(const CRenderVideoSettings& rhs) const
@@ -42,6 +43,11 @@ bool CRenderVideoSettings::operator<(const CRenderVideoSettings& rhs) const
   if (m_rotationDegCCW < rhs.m_rotationDegCCW)
     return true;
   if (m_rotationDegCCW > rhs.m_rotationDegCCW)
+    return false;
+
+  if (m_pixelPath < rhs.m_pixelPath)
+    return true;
+  if (m_pixelPath > rhs.m_pixelPath)
     return false;
 
   return false;
@@ -76,4 +82,8 @@ void CRenderVideoSettings::SetVideoFilter(const std::string& videoFilter)
   {
     m_scalingMethod = SCALINGMETHOD::AUTO;
   }
+}
+void CRenderVideoSettings::ResetPixels()
+{
+  m_pixelPath.clear();
 }
