@@ -21,7 +21,7 @@ ifeq ($(PLATFORM),)
 	ARCHIVE_TOOL := tar
 	ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
 	CMAKE := cmake
-	CMAKE_OPTIONS := -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DBUILD_SCANNER=ON $(CMAKE_OPTIONS)
+	CMAKE_OPTIONS := -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_SCANNER=ON $(CMAKE_OPTIONS)
 else
 	# Building as part of depends
 	DEPS += ../../Makefile.include
