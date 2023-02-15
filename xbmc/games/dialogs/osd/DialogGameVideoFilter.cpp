@@ -142,6 +142,12 @@ void CDialogGameVideoFilter::PostExit()
   m_items.Clear();
 }
 
+bool CDialogGameVideoFilter::OnClickAction()
+{
+  Close();
+  return true;
+}
+
 void CDialogGameVideoFilter::GetProperties(const CFileItem& item,
                                            std::string& videoFilter,
                                            std::string& description)
