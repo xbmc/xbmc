@@ -1,20 +1,8 @@
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
--include ../../Makefile.include
-DEPS=Makefile
-
-ifeq ($(NATIVEPREFIX),)
-  PREFIX = $(ROOT_DIR)
-else
-  PREFIX = $(NATIVEPREFIX)
-endif
-
-ifeq ($(NATIVEPLATFORM),)
-  PLATFORM = native
-  EXTRA_CONFIGURE = --enable-static
-else
-  PLATFORM = $(NATIVEPLATFORM)
-  DEPS += ../../Makefile.include
-endif
+include ../../Makefile.include
+PREFIX=$(NATIVEPREFIX)
+PLATFORM=$(NATIVEPLATFORM)
+DEPS =../../Makefile.include Makefile
 
 ifeq ($(NATIVE_OS), linux)
   EXTRA_CONFIGURE = --enable-static
