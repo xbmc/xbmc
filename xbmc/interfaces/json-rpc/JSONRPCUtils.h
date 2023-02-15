@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "FileItem.h"
 #include "IClient.h"
 #include "ITransportLayer.h"
 
@@ -157,6 +158,7 @@ namespace JSONRPC
   {
   public:
     static void NotifyItemUpdated();
+    static void NotifyItemUpdated(const CFileItemPtr& pItem);
     static void NotifyItemUpdated(const CVideoInfoTag& info,
                                   const std::map<std::string, std::string>& artwork);
   };

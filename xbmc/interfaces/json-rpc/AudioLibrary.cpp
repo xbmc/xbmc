@@ -1022,7 +1022,11 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
   if (!musicdatabase.UpdateSong(song, updateartists))
     return InternalError;
 
-  CJSONRPCUtils::NotifyItemUpdated();
+  CFileItemPtr pItem(new CFileItem(song));
+  CMusicThumbLoader loader;
+  loader.FillLibraryArt(*pItem); // get associated art for this item
+
+  CJSONRPCUtils::NotifyItemUpdated(pItem); // tell the gui this item has changed
   return ACK;
 }
 
