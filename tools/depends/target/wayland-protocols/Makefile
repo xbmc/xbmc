@@ -52,6 +52,7 @@ endif
 
 .installed-$(PLATFORM): $(PLATFORM)
 	cd $(PLATFORM)/build; $(NATIVEPREFIX)/bin/ninja -v install
+	mkdir -p $(PREFIX)/lib/pkgconfig
 	ln -sf $(PREFIX)/share/pkgconfig/wayland-protocols.pc $(PREFIX)/lib/pkgconfig/wayland-protocols.pc
 	touch $@
 
