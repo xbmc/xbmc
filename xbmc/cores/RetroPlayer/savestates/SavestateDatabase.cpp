@@ -184,6 +184,7 @@ void CSavestateDatabase::GetSavestateItem(const ISavestate& savestate,
   item.SetPath(savestatePath);
   item.SetArt("screenshot", MakeThumbnailPath(savestatePath));
   item.SetProperty(SAVESTATE_CAPTION, savestate.Caption());
+  item.SetProperty(SAVESTATE_GAME_CLIENT, savestate.GameClientID());
   item.m_dateTime = dateUTC;
 }
 
