@@ -18,6 +18,7 @@ ifeq ($(PLATFORM),)
 	RETRIEVE_TOOL_FLAGS := -LsS --create-dirs --retry 10 --retry-connrefused -o
 	ARCHIVE_TOOL := tar
 	ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
+	AUTORECONF := autoreconf
 else
 	# Building as part of depends
 	DEPS += ../../Makefile.include
