@@ -245,10 +245,10 @@ public:
             NPT_String::Format("<upnp:lastPlaybackPosition>%ld</upnp:lastPlaybackPosition>",
               time)));
 
-          NPT_String curr_value = "<upnp:lastPlayerState>";
+          NPT_String curr_value = "<xbmc:lastPlayerState>";
           PLT_Didl::AppendXmlEscape(curr_value, item.GetVideoInfoTag()->GetResumePoint().playerState.c_str());
           curr_value += "</xbmc:lastPlayerState>";
-          NPT_String new_value = "<upnp:lastPlayerState>";
+          NPT_String new_value = "<xbmc:lastPlayerState>";
           PLT_Didl::AppendXmlEscape(new_value, bookmark.playerState.c_str());
           new_value += "</xbmc:lastPlayerState>";
           values.insert(std::make_pair(curr_value, new_value));
