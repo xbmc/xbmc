@@ -22,7 +22,7 @@ else
     TARBALLS_LOCATION = $(ROOT_DIR)
     HASH_TOOL = sha512sum
     HASH_TOOL_FLAGS = -c --status
-    DAV1D_INSTALL_PREFIX = --prefix $(PREFIX)
+    DAV1D_INSTALL_PREFIX = --prefix $(PREFIX) --libdir $(PREFIX)/lib
     MESON = meson
     NINJA = ninja
   endif
