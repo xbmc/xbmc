@@ -4,6 +4,10 @@ DEPS = Makefile CROSSGUID-VERSION ../../download-files.include \
                                   001-fix-unused-function.patch \
                                   002-disable-Wall-error.patch
 
+CMAKE_OPTIONS=-DCROSSGUID_TESTS=OFF \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DDISABLE_WALL=ON
+
 ifeq ($(CROSS_COMPILING), yes)
   DEPS += ../../Makefile.include
 else
@@ -24,10 +28,6 @@ else
     HASH_TOOL_FLAGS = -c --status
   endif
 endif
-
-CMAKE_OPTIONS=-DCROSSGUID_TESTS=OFF \
-              -DCMAKE_BUILD_TYPE=Release \
-              -DDISABLE_WALL=ON
 
 LIBDYLIB=$(PLATFORM)/$(BYPRODUCT)
 
