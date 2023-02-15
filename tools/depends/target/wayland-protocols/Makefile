@@ -7,7 +7,6 @@ VERSION=1.24
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
 SHA512=4b1122517db56f48a5fafd4bd0cb7f94faef6fdd2d80e6cec17e5a6bafbaf2f5a71b958ed12e6d13965494885c209b2fb6dd8331487b39c6f251e71f1e770a15
-include ../../download-files.include
 
 ifeq ($(PLATFORM),)
 	# Building stand-alone
@@ -36,6 +35,7 @@ CONFIGURE = $(PYTHON) $(MESON) $(NATIVEPREFIX)/bin/meson \
 	--buildtype=$(MESON_BUILD_TYPE) \
 	-Dtests=false
 
+include ../../download-files.include
 all: .installed-$(PLATFORM)
 
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
