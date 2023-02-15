@@ -52,9 +52,10 @@ $(LIBDYLIB): $(PLATFORM)
 
 .installed-$(PLATFORM): $(LIBDYLIB)
 	$(MAKE) -C $(BUILDDIR) install
-
+ifneq ($(PLATFORM), native)
 	# We want to use the native wayland-scanner++
 	ln -sf $(NATIVEPREFIX)/lib/pkgconfig/wayland-scanner++.pc $(PREFIX)/lib/pkgconfig/wayland-scanner++.pc
+endif
 	touch $@
 
 clean:
