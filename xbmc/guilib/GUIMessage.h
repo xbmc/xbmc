@@ -389,6 +389,7 @@ public:
   void SetStringParams(const std::vector<std::string> &params);
   const std::string& GetStringParam(size_t param = 0) const;
   size_t GetNumStringParams() const;
+  void SetItem(CGUIListItemPtr item);
 
 private:
   std::string m_strLabel;

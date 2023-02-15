@@ -10,6 +10,7 @@
 
 #include "DialogGameVideoSelect.h"
 #include "FileItem.h"
+#include "guilib/GUIListItem.h"
 
 #include <string>
 
@@ -22,6 +23,9 @@ class CDialogInGameSaves : public CDialogGameVideoSelect
 public:
   CDialogInGameSaves();
   ~CDialogInGameSaves() override = default;
+
+  // implementation of CGUIControl via CDialogGameVideoSelect
+  bool OnMessage(CGUIMessage& message) override;
 
 protected:
   // implementation of CDialogGameVideoSelect
@@ -45,6 +49,27 @@ protected:
 
 private:
   void InitSavedGames();
+  void OnItemRefresh(const std::string& itemPath, CGUIListItemPtr itemInfo);
+
+  /*!
+   * \brief Translates the GUI list item received in a GUI message into a
+   *        CFileItem with savestate properties
+   *
+   * When a savestate is overwritten, we optimistically populate the GUI list
+   * with a simulated savestate for immediate user feedback. Later (about a
+   * quarter second) a message arrives with the real savestate info.
+   *
+   * \param messagePath The savestate path, pass as the message's string param
+   * \param messageItem The savestate info, if known, or empty if unknown
+   *
+   * If messageItem is empty, the savestate will be loaded from disk, which
+   * is potentially expensive.
+   *
+   * \return A savestate item for the GUI, or empty if no savestate information
+   *         can be obtained
+   */
+  static CFileItemPtr TranslateMessageItem(const std::string& messagePath,
+                                           CGUIListItemPtr messageItem);
 
   CFileItemList m_savestateItems;
   const CFileItemPtr m_newSaveItem;

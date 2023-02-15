@@ -1,4 +1,5 @@
-set(SOURCES GUIGameRenderManager.cpp
+set(SOURCES GUIGameMessenger.cpp
+            GUIGameRenderManager.cpp
             GUIGameSettings.cpp
             GUIGameSettingsHandle.cpp
             GUIGameVideoHandle.cpp
@@ -7,7 +8,8 @@ set(SOURCES GUIGameRenderManager.cpp
             GUIRenderTargetFactory.cpp
 )
 
-set(HEADERS GUIGameRenderManager.h
+set(HEADERS GUIGameMessenger.h
+            GUIGameRenderManager.h
             GUIGameSettings.h
             GUIGameSettingsHandle.h
             GUIGameVideoHandle.h

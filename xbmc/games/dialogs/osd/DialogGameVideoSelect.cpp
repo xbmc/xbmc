@@ -121,6 +121,11 @@ bool CDialogGameVideoSelect::OnMessage(CGUIMessage& message)
 
       break;
     }
+    case GUI_MSG_REFRESH_LIST:
+    {
+      RefreshList();
+      break;
+    }
     default:
       break;
   }
@@ -216,7 +221,7 @@ void CDialogGameVideoSelect::RefreshList()
 
   // Refresh the panel container
   CGUIMessage message(GUI_MSG_REFRESH_THUMBS, GetID(), CONTROL_VIDEO_THUMBS);
-  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message, GetID());
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message, GetID());
 }
 
 void CDialogGameVideoSelect::SaveSettings()
