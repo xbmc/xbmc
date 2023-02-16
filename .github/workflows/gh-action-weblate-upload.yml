@@ -5,7 +5,7 @@ name: Update Weblate translations
 on:
   push:
     branches:
-      - master
+      - Nexus
     paths:
       - "addons/resource.language.en_gb/resources/strings.po"
       - ".github/workflows/gh-action-weblate-upload.yml"
@@ -29,4 +29,4 @@ jobs:
             --form file=@addons/resource.language.en_gb/resources/strings.po \
             --form method=source \
             -H "Authorization: Token $TOKEN" \
-            https://kodi.weblate.cloud/api/translations/kodi-core/kodi-main/en_gb/file/
+            https://kodi.weblate.cloud/api/translations/kodi-core/kodi-main-nexus/en_gb/file/
