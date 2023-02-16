@@ -1196,6 +1196,11 @@ CUPnPServer::OnUpdateObject(PLT_ActionReference&             action,
         if (updatelisting) {
             db.LoadVideoInfo(file_path, tag);
             updated.SetFromVideoInfoTag(tag);
+            //! TODO: we should find a way to avoid obtaining the artwork just to
+            // update the playcount or similar properties. Maybe a flag in the GUI
+            // update message to inform we should only update the playback properties
+            // without touching other parts of the item.
+            CVideoThumbLoader().FillLibraryArt(updated);
         }
 
     } else if (updated.IsMusicDb()) {
