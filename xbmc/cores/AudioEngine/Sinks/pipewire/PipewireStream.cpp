@@ -41,7 +41,7 @@ CPipewireStream::~CPipewireStream()
 bool CPipewireStream::Connect(uint32_t id,
                               const pw_direction& direction,
                               std::vector<const spa_pod*>& params,
-                              const pw_stream_flags& flags)
+                              const pw_stream_flags& flags) const
 {
   int ret = pw_stream_connect(m_stream.get(), direction, id, flags, params.data(), params.size());
   if (ret < 0)
@@ -53,22 +53,22 @@ bool CPipewireStream::Connect(uint32_t id,
   return true;
 }
 
-pw_stream_state CPipewireStream::GetState()
+pw_stream_state CPipewireStream::GetState() const
 {
   return pw_stream_get_state(m_stream.get(), nullptr);
 }
 
-void CPipewireStream::SetActive(bool active)
+void CPipewireStream::SetActive(bool active) const
 {
   pw_stream_set_active(m_stream.get(), active);
 }
 
-pw_buffer* CPipewireStream::DequeueBuffer()
+pw_buffer* CPipewireStream::DequeueBuffer() const
 {
   return pw_stream_dequeue_buffer(m_stream.get());
 }
 
-void CPipewireStream::QueueBuffer(pw_buffer* buffer)
+void CPipewireStream::QueueBuffer(pw_buffer* buffer) const
 {
   pw_stream_queue_buffer(m_stream.get(), buffer);
 }
@@ -85,17 +85,17 @@ bool CPipewireStream::TriggerProcess() const
   return true;
 }
 
-void CPipewireStream::Flush(bool drain)
+void CPipewireStream::Flush(bool drain) const
 {
   pw_stream_flush(m_stream.get(), drain);
 }
 
-uint32_t CPipewireStream::GetNodeId()
+uint32_t CPipewireStream::GetNodeId() const
 {
   return pw_stream_get_node_id(m_stream.get());
 }
 
-void CPipewireStream::UpdateProperties(spa_dict* dict)
+void CPipewireStream::UpdateProperties(spa_dict* dict) const
 {
   pw_stream_update_properties(m_stream.get(), dict);
 }

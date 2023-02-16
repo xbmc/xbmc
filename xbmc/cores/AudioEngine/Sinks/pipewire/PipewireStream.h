@@ -35,21 +35,21 @@ public:
   bool Connect(uint32_t id,
                const pw_direction& direction,
                std::vector<const spa_pod*>& params,
-               const pw_stream_flags& flags);
+               const pw_stream_flags& flags) const;
 
-  pw_stream_state GetState();
-  void SetActive(bool active);
+  pw_stream_state GetState() const;
+  void SetActive(bool active) const;
 
-  pw_buffer* DequeueBuffer();
-  void QueueBuffer(pw_buffer* buffer);
+  pw_buffer* DequeueBuffer() const;
+  void QueueBuffer(pw_buffer* buffer) const;
 
   bool TriggerProcess() const;
 
-  void Flush(bool drain);
+  void Flush(bool drain) const;
 
-  uint32_t GetNodeId();
+  uint32_t GetNodeId() const;
 
-  void UpdateProperties(spa_dict* dict);
+  void UpdateProperties(spa_dict* dict) const;
 
   pw_time GetTime() const;
 
