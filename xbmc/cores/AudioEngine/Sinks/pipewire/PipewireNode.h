@@ -28,7 +28,7 @@ class CPipewireRegistry;
 class CPipewireNode : public CPipewireProxy
 {
 public:
-  explicit CPipewireNode(CPipewireRegistry& registry, uint32_t id, const char* type);
+  CPipewireNode(CPipewireRegistry& registry, uint32_t id, const char* type);
   CPipewireNode() = delete;
   ~CPipewireNode() override;
 
