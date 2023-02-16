@@ -76,6 +76,9 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
     string(APPEND LIBDVDNAV_CFLAGS " -I$<TARGET_PROPERTY:LibDvdRead::LibDvdRead,INTERFACE_INCLUDE_DIRECTORIES> $<TARGET_PROPERTY:LibDvdRead::LibDvdRead,INTERFACE_COMPILE_DEFINITIONS>")
 
     find_program(AUTORECONF autoreconf REQUIRED)
+    if (CMAKE_HOST_SYSTEM_NAME MATCHES "(Free|Net|Open)BSD")
+      find_program(MAKE_EXECUTABLE gmake)
+    endif()
     find_program(MAKE_EXECUTABLE make REQUIRED)
 
     set(CONFIGURE_COMMAND ${AUTORECONF} -vif
