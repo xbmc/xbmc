@@ -47,12 +47,6 @@ endif
 # libc++
 STLLIB=$(TOOLCHAIN)/sysroot/usr/lib/$(HOST)/libc++_shared.so
 
-# check for java 1.8
-JAVA8=$(shell java -version 2>&1 | grep -q '1.8.[0-9]' && echo yes)
-ifeq ($(JAVA8),yes)
-  JAVAC_EXTRA_ARGS = -source 1.7 -target 1.7
-endif
-
 SRCLIBS = $(addprefix $(PREFIX)/lib/,$(OBJS))
 DSTLIBS = $(CPU)/lib/lib@APP_NAME_LC@.so $(addprefix $(CPU)/lib/,$(OBJS)) $(addprefix $(CPU)/lib/,$(PLATFORM_OBJS))
 libs= $(DSTLIBS)
