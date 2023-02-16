@@ -20,7 +20,7 @@
 
 import groovy.xml.XmlParser
 import groovy.xml.XmlUtil
-import org.apache.commons.lang.StringEscapeUtils
+import org.apache.commons.text.StringEscapeUtils
 
 import groovy.text.SimpleTemplateEngine
 import java.util.regex.Pattern
@@ -730,7 +730,7 @@ public class Helper
 
    public static String unescape(Node insertSection) { return unescape(insertSection.@code) }
 
-   public static String unescape(String insertSection) { return StringEscapeUtils.unescapeHtml(insertSection) }
+   public static String unescape(String insertSection) { return StringEscapeUtils.unescapeHtml4(insertSection) }
 
    public static boolean isDirector(Node method)
    {
