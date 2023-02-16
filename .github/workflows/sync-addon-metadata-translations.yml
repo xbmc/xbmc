@@ -2,7 +2,7 @@ name: Sync addon metadata translations
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ Nexus ]
     paths:
       - '**skin.estuary**addon.xml'
       - '**skin.estuary**resource.language.**strings.po'
