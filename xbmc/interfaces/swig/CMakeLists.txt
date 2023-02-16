@@ -2,7 +2,8 @@ function(generate_file file)
   set(classpath ${GROOVY_DIR}/groovy-${GROOVY_VER}.jar
                 ${GROOVY_DIR}/groovy-xml-${GROOVY_VER}.jar
                 ${GROOVY_DIR}/groovy-templates-${GROOVY_VER}.jar
-                ${GROOVY_DIR}/commons-lang-${COMMONS_VER}.jar
+                ${GROOVY_DIR}/commons-lang3-${COMMONS_LANG_VER}.jar
+                ${GROOVY_DIR}/commons-text-${COMMONS_TEXT_VER}.jar
                 ${CMAKE_SOURCE_DIR}/tools/codegenerator
                 ${CMAKE_CURRENT_SOURCE_DIR}/../python)
   if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
@@ -45,7 +46,8 @@ set(INPUTS AddonModuleXbmcaddon.i
 
 set(GROOVY_DIR ${CMAKE_SOURCE_DIR}/tools/codegenerator/groovy)
 set(GROOVY_VER 4.0.6)
-set(COMMONS_VER 2.6)
+set(COMMONS_LANG_VER 3.12.0)
+set(COMMONS_TEXT_VER 1.10.0)
 
 foreach(INPUT IN LISTS INPUTS)
   generate_file(${INPUT})
