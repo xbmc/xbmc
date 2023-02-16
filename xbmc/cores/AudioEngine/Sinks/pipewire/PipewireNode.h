@@ -32,17 +32,17 @@ public:
   CPipewireNode() = delete;
   ~CPipewireNode() override;
 
-  void EnumerateFormats();
+  void EnumerateFormats() const;
 
-  pw_node_info* GetInfo() { return m_info.get(); }
+  pw_node_info* GetInfo() const { return m_info.get(); }
 
-  std::set<spa_audio_format>& GetFormats() { return m_formats; }
-  std::set<spa_audio_channel>& GetChannels() { return m_channels; }
-  std::set<uint32_t>& GetRates() { return m_rates; }
-  std::set<spa_audio_iec958_codec>& GetIEC958Codecs() { return m_iec958Codecs; }
+  std::set<spa_audio_format>& GetFormats() const { return m_formats; }
+  std::set<spa_audio_channel>& GetChannels() const { return m_channels; }
+  std::set<uint32_t>& GetRates() const { return m_rates; }
+  std::set<spa_audio_iec958_codec>& GetIEC958Codecs() const { return m_iec958Codecs; }
 
 private:
-  void Parse(uint32_t type, void* body, uint32_t size);
+  void Parse(uint32_t type, void* body, uint32_t size) const;
 
   static void Info(void* userdata, const struct pw_node_info* info);
   static void Param(void* userdata,
@@ -65,10 +65,10 @@ private:
 
   std::unique_ptr<pw_node_info, PipewireNodeInfoDeleter> m_info;
 
-  std::set<spa_audio_format> m_formats;
-  std::set<spa_audio_channel> m_channels;
-  std::set<uint32_t> m_rates;
-  std::set<spa_audio_iec958_codec> m_iec958Codecs;
+  mutable std::set<spa_audio_format> m_formats;
+  mutable std::set<spa_audio_channel> m_channels;
+  mutable std::set<uint32_t> m_rates;
+  mutable std::set<spa_audio_iec958_codec> m_iec958Codecs;
 };
 
 } // namespace PIPEWIRE

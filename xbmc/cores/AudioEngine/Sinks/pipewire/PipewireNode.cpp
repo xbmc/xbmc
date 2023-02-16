@@ -32,7 +32,7 @@ CPipewireNode::~CPipewireNode()
   spa_hook_remove(&m_objectListener);
 }
 
-void CPipewireNode::EnumerateFormats()
+void CPipewireNode::EnumerateFormats() const
 {
   if (!m_info)
     return;
@@ -112,7 +112,7 @@ static std::set<T> ParseArray(uint32_t type, void* body, uint32_t size)
   }
 }
 
-void CPipewireNode::Parse(uint32_t type, void* body, uint32_t size)
+void CPipewireNode::Parse(uint32_t type, void* body, uint32_t size) const
 {
   switch (type)
   {
