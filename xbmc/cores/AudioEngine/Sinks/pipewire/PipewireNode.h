@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "cores/AudioEngine/Sinks/pipewire/PipewireProxy.h"
+#include "PipewireProxy.h"
 
 #include <memory>
 #include <set>

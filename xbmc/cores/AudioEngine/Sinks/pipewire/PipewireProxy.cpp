@@ -8,9 +8,9 @@
 
 #include "PipewireProxy.h"
 
+#include "PipewireRegistry.h"
 #include "ServiceBroker.h"
 #include "cores/AudioEngine/Interfaces/AE.h"
-#include "cores/AudioEngine/Sinks/pipewire/PipewireRegistry.h"
 #include "utils/log.h"
 
 #include <stdexcept>
