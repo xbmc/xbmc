@@ -442,7 +442,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     }
 
     m_min_buffer_size = (unsigned int) min_buffer;
-    CLog::Log(LOGDEBUG, "Minimum size we need for stream: {}", m_min_buffer_size);
+    CLog::Log(LOGINFO, "Minimum size we need for stream: {} Bytes", m_min_buffer_size);
     double rawlength_in_seconds = 0.0;
     int multiplier = 1;
     unsigned int ac3FrameSize = 1;
@@ -507,19 +507,31 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     {
       m_format.m_frameSize = m_format.m_channelLayout.Count() * (CAEUtil::DataFormatToBits(m_format.m_dataFormat) / 8);
       m_sink_frameSize = m_format.m_frameSize;
-      // aim at 200 ms buffer and 50 ms periods but at least two periods of min_buffer
+      // aim at max 200 ms buffer and 50 ms periods but at least two periods of min_buffer
       // make sure periods are actually not smaller than 32 ms (32, cause 32 * 2 = 64)
       // but also lower than 64 ms
       // which is large enough to not cause CPU hogging in case 32 ms periods are used
-      m_min_buffer_size *= 2;
       m_audiotrackbuffer_sec =
           static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
-
+      // the period calculation starts
+      // after the buffer division to get even division results
+      int c = 1;
+      if (m_audiotrackbuffer_sec > 0.2)
+      {
+        CLog::Log(LOGWARNING,
+                  "Audiobuffer is already very large {:f} ms - Reducing to a sensible value",
+                  1000.0 * m_audiotrackbuffer_sec);
+        int buffer_frames = m_sink_sampleRate / 5; // 200 ms
+        m_min_buffer_size = buffer_frames * m_sink_frameSize;
+        c = 4; // 50 ms
+      }
+      // update potential new buffertime
+      m_audiotrackbuffer_sec =
+          static_cast<double>(m_min_buffer_size) / (m_sink_frameSize * m_sink_sampleRate);
       constexpr double max_time = 0.064;
       constexpr double min_time = 0.032;
       constexpr double target_duration = 0.128;
 
-      int c = 2;
       while (m_audiotrackbuffer_sec < target_duration)
       {
         m_min_buffer_size += min_buffer;
@@ -546,7 +558,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       }
       m_format.m_frames = static_cast<int>(period_size / m_format.m_frameSize);
 
-      CLog::Log(LOGDEBUG,
+      CLog::Log(LOGINFO,
                 "Audiotrack buffer params are: period time = {:.3f} ms, period size = "
                 "{} bytes, num periods = {}",
                 period_time * 1000, period_size, m_min_buffer_size / period_size);
@@ -555,8 +567,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
     if (m_passthrough && !m_info.m_wantsIECPassthrough)
       m_audiotrackbuffer_sec = rawlength_in_seconds;
 
-
-    CLog::Log(LOGDEBUG,
+    CLog::Log(LOGINFO,
               "Created Audiotrackbuffer with playing time of {:f} ms min buffer size: {} bytes",
               m_audiotrackbuffer_sec * 1000, m_min_buffer_size);
 
@@ -799,6 +810,13 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
 {
   if (!IsInitialized())
     return INT_MAX;
+
+  const double max_delay = m_passthrough ? 0.6 : 0.4;
+  if (m_delay > max_delay)
+  {
+    CLog::Log(LOGERROR, "Sink got stuck with large buffer {:f} - reopening", m_delay);
+    return INT_MAX;
+  }
 
   // for debugging only - can be removed if everything is really stable
   uint64_t startTime = CurrentHostCounter();
