@@ -8,8 +8,6 @@
 
 #pragma once
 
-#include "cores/AudioEngine/Sinks/pipewire/PipewireProxy.h"
-
 #include <map>
 #include <memory>
 #include <string>
@@ -23,13 +21,14 @@ namespace PIPEWIRE
 {
 
 class CPipewireCore;
+class CPipewireProxy;
 
 class CPipewireRegistry
 {
 public:
   explicit CPipewireRegistry(CPipewireCore& core);
   CPipewireRegistry() = delete;
-  ~CPipewireRegistry() = default;
+  ~CPipewireRegistry();
 
   pw_registry* Get() const { return m_registry.get(); }
 

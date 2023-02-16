@@ -34,6 +34,8 @@ CPipewireRegistry::CPipewireRegistry(CPipewireCore& core)
   pw_registry_add_listener(m_registry.get(), &m_registryListener, &m_registryEvents, this);
 }
 
+CPipewireRegistry::~CPipewireRegistry() = default;
+
 void CPipewireRegistry::OnGlobalAdded(void* userdata,
                                       uint32_t id,
                                       uint32_t permissions,
