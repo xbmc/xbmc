@@ -28,10 +28,7 @@ public:
   CPipewireRegistry& GetRegistry() const { return m_registry; }
 
 protected:
-  explicit CPipewireProxy(CPipewireRegistry& registry,
-                          uint32_t id,
-                          const char* type,
-                          uint32_t version);
+  CPipewireProxy(CPipewireRegistry& registry, uint32_t id, const char* type, uint32_t version);
 
   struct PipewireProxyDeleter
   {
