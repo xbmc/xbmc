@@ -64,6 +64,9 @@ if(ENABLE_DVDCSS)
                    ${LIBDVD_ADDITIONAL_ARGS})
   else()
     find_program(AUTORECONF autoreconf REQUIRED)
+    if (CMAKE_HOST_SYSTEM_NAME MATCHES "(Free|Net|Open)BSD")
+      find_program(MAKE_EXECUTABLE gmake)
+    endif()
     find_program(MAKE_EXECUTABLE make REQUIRED)
 
     set(CONFIGURE_COMMAND ${AUTORECONF} -vif
