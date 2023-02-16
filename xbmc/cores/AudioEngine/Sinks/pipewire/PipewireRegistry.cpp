@@ -8,8 +8,8 @@
 
 #include "PipewireRegistry.h"
 
-#include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
-#include "cores/AudioEngine/Sinks/pipewire/PipewireNode.h"
+#include "PipewireCore.h"
+#include "PipewireNode.h"
 #include "utils/log.h"
 
 #include <stdexcept>
