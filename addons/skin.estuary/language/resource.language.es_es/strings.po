@@ -7,19 +7,19 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-11-15 09:47+0000\n"
-"Last-Translator: Alfonso Cachero <alfonso.cachero@gmail.com>\n"
+"PO-Revision-Date: 2023-02-15 08:58+0000\n"
+"Last-Translator: José Antonio Alvarado <jalvarado0.eses@gmail.com>\n"
 "Language-Team: Spanish (Spain) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/es_es/>\n"
 "Language: es_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.15.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
-msgstr "Skin Estuary, creado por phil65 and Piers (skin por defecto de Kodi)."
+msgstr "Skin Estuary por phil65. (skin por defecto de Kodi)"
 
 msgctxt "Addon Description"
 msgid "Estuary is the default skin for Kodi 17.0 and above. It attempts to be easy for first time Kodi users to understand and use."
@@ -27,7 +27,7 @@ msgstr "Estuary es el skin por defecto para Kodi 17.0 o superior. Su objetivo es
 
 msgctxt "Addon Disclaimer"
 msgid "Estuary is the default skin for Kodi, removing it may cause issues"
-msgstr "Estuary es el skin por defecto de Kodi. Desinstalarlo puede causar problemas."
+msgstr "Estuary es el skin por defecto de Kodi, quitarlo puede causar problemas"
 
 msgctxt "#31000"
 msgid "Now playing"
@@ -365,7 +365,7 @@ msgstr "Muro de Iconos"
 #. viewtype name
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Mays."
+msgstr "Shift"
 
 #. viewtype name
 msgctxt "#31101"
@@ -408,7 +408,7 @@ msgstr "Vea sus imágenes personales o descargue uno de los múltiples add-ons d
 
 msgctxt "#31112"
 msgid "Toggle audio stream"
-msgstr "Cambiar canal de audio"
+msgstr "Activar canal de audio"
 
 msgctxt "#31113"
 msgid "Search local library"
@@ -432,11 +432,11 @@ msgstr "Editar nodos"
 
 msgctxt "#31118"
 msgid "Enter add-on browser"
-msgstr "Entrar en el navegador de Add-ons"
+msgstr "Entrar en el navegador de add-on"
 
 msgctxt "#31119"
 msgid "You do not have any add-ons installed yet. Visit our add-on browser to browse through our collection and improve your Kodi experience."
-msgstr "No tiene instalado ningún add-on aún. Visite nuestro navegador de add-ons para navegar a través de nuestra colección y mejorar la experiencia de Kodi."
+msgstr "Aún no tienes add-ons instalados. Visite nuestro navegador de add-on para navegar a través de nuestra colección y mejorar la experiencia de Kodi."
 
 msgctxt "#31120"
 msgid "You did not set up a weather provider yet. In order to view weather information, choose a weather provider and set up your location."
@@ -532,7 +532,7 @@ msgstr "Velocidad de reproducción"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Todavía no se ha configurado el PVR. Para usar PVR, elija un Add-on cliente de PVR y configúrelo. Por favor, visite http://kodi.wiki/view/PVR para obtener más información."
+msgstr "Aún no se ha ajustado el PVR. Para usar PVR, elige un add-on de cliente PVR y configúralo. Por favor, visita http://kodi.wiki/view/PVR para obtener más información."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -642,7 +642,7 @@ msgstr "Mostrar carteles en lugar de miniaturas para vídeos musicales"
 #. Description label for skin settings area
 msgctxt "#31169"
 msgid "Artwork related settings."
-msgstr "Ajustes relacionado con ilustraciones"
+msgstr "Ajustes relacionados con el arte."
 
 #. Label for OSD settings category
 msgctxt "#31170"

@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-11-22 21:00+0000\n"
-"Last-Translator: Kai Sommerfeld <kai.sommerfeld@gmx.com>\n"
+"PO-Revision-Date: 2023-02-08 03:30+0000\n"
+"Last-Translator: Kai Sommerfeld <ksooo@users.noreply.kodi.weblate.cloud>\n"
 "Language-Team: German <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/de_de/>\n"
 "Language: de_de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.15.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -97,7 +97,7 @@ msgstr "Zuletzt erstellte Aufnahmen"
 #. home screen channel widget: recently played tv channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31016"
 msgid "Recently played channels"
-msgstr "Zuletzt gesehene Kanäle"
+msgstr "Zuletzt gesehene Sender"
 
 msgctxt "#31017"
 msgid "Rated"
@@ -106,7 +106,7 @@ msgstr "Bewertung"
 #. home screen channel widget: recently played radio channels. (please note that in some non-english languages #31018 and #31016 might not be equal)
 msgctxt "#31018"
 msgid "Recently played channels"
-msgstr "Zuletzt gehörte Kanäle"
+msgstr "Zuletzt gehörte Sender"
 
 msgctxt "#31019"
 msgid "Forecast"
@@ -263,7 +263,7 @@ msgstr "Hauptmenüeinträge"
 
 msgctxt "#31062"
 msgid "Choose weather fanart pack"
-msgstr "Fanart-Sammlung für Wetterbildschirm auswählen"
+msgstr "Fanart-Pack für Wetterbildschirm auswählen"
 
 msgctxt "#31063"
 msgid "Sections"
@@ -351,7 +351,7 @@ msgstr "Lokaler Untertitel verfügbar"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "Kanaleinstellungen"
+msgstr "Sendereinstellungen"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
@@ -456,7 +456,7 @@ msgstr "Filme dieses Regisseurs"
 
 msgctxt "#31125"
 msgid "Press up for actor info"
-msgstr "[B]Hoch[/B] für Darstellerinformationen drücken"
+msgstr "[B]Hoch[/B] für Darstellerinfo drücken"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
@@ -476,11 +476,11 @@ msgstr "Allgemeine Einstellungen, die für den gesamten Skin gelten."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Einstellungen für das Hauptmenü. Der Hauptbildschirm kann gemäß persönlicher Vorlieben angepaßt werden."
+msgstr "Einstellungen für das Hauptmenü. Der Hauptbildschirm kann gemäß persönlicher Vorlieben angepasst werden."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
-msgstr "Fanart-Sammlung für Skin auswählen"
+msgstr "Fanart-Pack für Skin auswählen"
 
 msgctxt "#31132"
 msgid "Select Program"
@@ -532,7 +532,7 @@ msgstr "Wiedergabegeschwindigkeit"
 
 msgctxt "#31143"
 msgid "You did not set up PVR yet. In order to use PVR, choose a PVR client addon and configure it. Please visit http://kodi.wiki/view/PVR to learn more."
-msgstr "Der Personal Video Recorder wurde noch nicht eingerichtet. Um den PVR nutzen zu können, muss ein PVR-Client Addon ausgewählt und konfiguriert werden. Mehr Informationen unter http://kodi.wiki/view/PVR."
+msgstr "Der Personal Video Recorder wurde noch nicht eingerichtet. Um den PVR nutzen zu können, muss ein PVR-Client-Addon ausgewählt und konfiguriert werden. Mehr Informationen unter http://kodi.wiki/view/PVR."
 
 msgctxt "#31144"
 msgid "Enter add-on browser"
@@ -576,7 +576,7 @@ msgstr "Es sind keine passenden Addons installiert. Bitte im Addon-Browser ein p
 
 msgctxt "#31154"
 msgid "Press OK to switch between locations"
-msgstr "[B]OK[/B] zum Umschalten des Ortes drücken"
+msgstr "[B]OK[/B] zum Wechseln des Ortes drücken"
 
 msgctxt "#31155"
 msgid "No bookmarks created yet."
@@ -600,7 +600,7 @@ msgstr "Artwork"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "Medien-Flags anzeigen"
+msgstr "Medienflags anzeigen"
 
 msgctxt "#31161"
 msgid "Numeric pad"
@@ -608,7 +608,7 @@ msgstr "Zifferneingabe"
 
 msgctxt "#31162"
 msgid "Play your personal games or download one of the many game add-ons from the official repository."
-msgstr "Spielen oder eines von vielen Spiele-Addons aus dem offiziellen Repository downloaden."
+msgstr "Eigene Spiele spielen oder eines von vielen Spiele-Addons aus dem offiziellen Repository downloaden."
 
 msgctxt "#31163"
 msgid "Show Fanart background"
@@ -637,7 +637,7 @@ msgstr "Hintergrund animieren"
 #. Label of a setting
 msgctxt "#31168"
 msgid "Show posters instead of thumbs for musicvideos"
-msgstr "Für Musikvideos Poster anstelle von Vorschaulbildern zeigen"
+msgstr "Für Musikvideos Poster anstelle von Vorschaubildern zeigen"
 
 #. Description label for skin settings area
 msgctxt "#31169"
@@ -657,12 +657,12 @@ msgstr "Einstellungen für das Bildschirmmenü (OSD)"
 #. Setting Automatically close video OSD
 msgctxt "#31172"
 msgid "Automatically close video OSD"
-msgstr "Video-OSD automatisch schliessen"
+msgstr "Video-OSD automatisch schließen"
 
 #. Setting auto close time for video osd
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr "Video-OSD automatisch schliessen nach (Sekunden)"
+msgstr "Video-OSD automatisch schließen nach (Sekunden)"
 
 #. Setting to control what happens when clicking a music album on the home screen
 msgctxt "#31174"
