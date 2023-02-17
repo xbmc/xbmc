@@ -45,35 +45,35 @@ void CPipewireRegistry::OnGlobalAdded(void* userdata,
 {
   auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
 
-  if (strcmp(type, PW_TYPE_INTERFACE_Node) == 0)
-  {
-    const char* mediaClass = spa_dict_lookup(props, PW_KEY_MEDIA_CLASS);
-    if (!mediaClass)
-      return;
+  if (strcmp(type, PW_TYPE_INTERFACE_Node) != 0)
+    return;
 
-    if (strcmp(mediaClass, "Audio/Sink") != 0)
-      return;
+  const char* mediaClass = spa_dict_lookup(props, PW_KEY_MEDIA_CLASS);
+  if (!mediaClass)
+    return;
 
-    const char* name = spa_dict_lookup(props, PW_KEY_NODE_NAME);
-    if (!name)
-      return;
+  if (strcmp(mediaClass, "Audio/Sink") != 0)
+    return;
 
-    const char* desc = spa_dict_lookup(props, PW_KEY_NODE_DESCRIPTION);
-    if (!desc)
-      return;
+  const char* name = spa_dict_lookup(props, PW_KEY_NODE_NAME);
+  if (!name)
+    return;
 
-    auto& globals = registry.GetGlobals();
+  const char* desc = spa_dict_lookup(props, PW_KEY_NODE_DESCRIPTION);
+  if (!desc)
+    return;
 
-    globals[id] = std::make_unique<global>();
-    globals[id]->name = std::string(name);
-    globals[id]->description = std::string(desc);
-    globals[id]->id = id;
-    globals[id]->permissions = permissions;
-    globals[id]->type = std::string(type);
-    globals[id]->version = version;
-    globals[id]->properties.reset(pw_properties_new_dict(props));
-    globals[id]->proxy = std::make_unique<CPipewireNode>(registry, id, type);
-  }
+  auto& globals = registry.GetGlobals();
+
+  globals[id] = std::make_unique<global>();
+  globals[id]->name = std::string(name);
+  globals[id]->description = std::string(desc);
+  globals[id]->id = id;
+  globals[id]->permissions = permissions;
+  globals[id]->type = std::string(type);
+  globals[id]->version = version;
+  globals[id]->properties.reset(pw_properties_new_dict(props));
+  globals[id]->proxy = std::make_unique<CPipewireNode>(registry, id, type);
 }
 
 void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
