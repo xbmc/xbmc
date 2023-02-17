@@ -3241,15 +3241,16 @@ std::string CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */, b
         std::string name = strFileName;
         std::string folderThumb1 = folderThumb;
         name.erase(period);
-        ext = strFileName.substr(period);
-        StringUtils::ToUpper(ext);
+        // Difficult to know how to handle the case of a filename from an arbitrary
+        // platform when the file name could be non-ASCII. Strange things can happen.
+        ext = StringUtils::ToUpper(strFileName.substr(period));
         StringUtils::Replace(folderThumb1, strFileName, name + ext);
         if (CFile::Exists(folderThumb1)) // folder.JPG
           return folderThumb1;
 
         folderThumb1 = folderThumb;
-        std::string firstletter = name.substr(0, 1);
-        StringUtils::ToUpper(firstletter);
+        std::string firstletter =
+            StringUtils::ToUpper(name.substr(0, 1), StringUtils::GetCLocale());
         name.replace(0, 1, firstletter);
         StringUtils::Replace(folderThumb1, strFileName, name + ext);
         if (CFile::Exists(folderThumb1)) // Folder.JPG

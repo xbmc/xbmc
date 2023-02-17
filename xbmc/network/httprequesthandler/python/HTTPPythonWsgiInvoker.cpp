@@ -376,8 +376,7 @@ std::map<std::string, std::string> CHTTPPythonWsgiInvoker::createCgiEnvironment(
   // HTTP_<HEADER_NAME>
   for (headerIt = httpRequest->headerValues.begin(); headerIt != httpRequest->headerValues.end(); ++headerIt)
   {
-    std::string headerName = headerIt->first;
-    StringUtils::ToUpper(headerName);
+    std::string headerName = StringUtils::ToUpper(headerIt->first, StringUtils::GetCLocale());
     environment.insert(std::make_pair("HTTP_" + headerName, headerIt->second));
   }
 

@@ -1,4 +1,6 @@
-set(SOURCES TestAlarmClock.cpp
+set(SOURCES OrigStringUtils.cpp
+            OrigTestStringUtils.cpp
+			TestAlarmClock.cpp
             TestAliasShortcutUtils.cpp
             TestArchive.cpp
             TestBase64.cpp
@@ -48,6 +50,7 @@ set(SOURCES TestAlarmClock.cpp
             TestXBMCTinyXML2.cpp
             TestXMLUtils.cpp)
 
-set(HEADERS TestGlobalsHandlingPattern1.h)
+set(HEADERS TestGlobalsHandlingPattern1.h
+            OrigStringUtils.h)
 
 core_add_test_library(utils_test)

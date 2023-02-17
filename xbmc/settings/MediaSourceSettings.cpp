@@ -261,13 +261,12 @@ bool CMediaSourceSettings::AddShare(const std::string& type, const CMediaSource&
     return false;
 
   // translate dir and add to our current shares
-  std::string strPath1 = share.strPath;
+  std::string strPath1 = StringUtils::ToUpper(share.strPath, StringUtils::GetCLocale());
   if (strPath1.empty())
   {
     CLog::Log(LOGERROR, "CMediaSourceSettings: unable to add empty path");
     return false;
   }
-  StringUtils::ToUpper(strPath1);
 
   CMediaSource shareToAdd = share;
   if (strPath1.at(0) == '$')

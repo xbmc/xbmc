@@ -237,8 +237,7 @@ bool CLocale::ParseLocale(const std::string &locale, std::string &language, std:
   pos = tmp.find('_');
   if (pos != std::string::npos)
   {
-    territory = tmp.substr(pos + 1);
-    StringUtils::ToUpper(territory);
+    territory = StringUtils::ToUpper(tmp.substr(pos + 1), StringUtils::GetCLocale());
     tmp.resize(pos);
   }
 
@@ -254,7 +253,7 @@ void CLocale::Initialize()
   if (m_valid)
   {
     m_language = StringUtils::FoldCase(m_language);
-    StringUtils::ToUpper(m_territory);
+    m_territory = StringUtils::ToUpper(m_territory, StringUtils::GetCLocale());
   }
 }
 

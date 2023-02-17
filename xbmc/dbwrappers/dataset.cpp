@@ -576,6 +576,8 @@ const char* Dataset::fieldName(int n)
     return NULL;
 }
 
+// TODO: Rather than implicitly use 'C' locale, make it explicit.
+
 char* Dataset::str_toLower(char* s)
 {
   for (char* p = s; *p; p++)

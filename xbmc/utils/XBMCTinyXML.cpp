@@ -38,7 +38,7 @@ CXBMCTinyXML::CXBMCTinyXML(const std::string& documentName)
 CXBMCTinyXML::CXBMCTinyXML(const std::string& documentName, const std::string& documentCharset)
 : TiXmlDocument(documentName), m_SuggestedCharset(documentCharset)
 {
-  StringUtils::ToUpper(m_SuggestedCharset);
+  m_SuggestedCharset = StringUtils::ToUpper(m_SuggestedCharset, StringUtils::GetCLocale());
 }
 
 bool CXBMCTinyXML::LoadFile(TiXmlEncoding encoding)
@@ -84,7 +84,7 @@ bool CXBMCTinyXML::LoadFile(const std::string& _filename, TiXmlEncoding encoding
 bool CXBMCTinyXML::LoadFile(const std::string& _filename, const std::string& documentCharset)
 {
   m_SuggestedCharset = documentCharset;
-  StringUtils::ToUpper(m_SuggestedCharset);
+  m_SuggestedCharset = StringUtils::ToUpper(m_SuggestedCharset, StringUtils::GetCLocale());
   return LoadFile(_filename, TIXML_ENCODING_UNKNOWN);
 }
 
@@ -122,7 +122,7 @@ bool CXBMCTinyXML::SaveFile(const std::string& filename) const
 bool CXBMCTinyXML::Parse(const std::string& data, const std::string& dataCharset)
 {
   m_SuggestedCharset = dataCharset;
-  StringUtils::ToUpper(m_SuggestedCharset);
+  m_SuggestedCharset = StringUtils::ToUpper(m_SuggestedCharset, StringUtils::GetCLocale());
   return Parse(data, TIXML_ENCODING_UNKNOWN);
 }
 

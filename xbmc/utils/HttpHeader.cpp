@@ -177,11 +177,11 @@ std::string CHttpHeader::GetMimeType(void) const
 
 std::string CHttpHeader::GetCharset(void) const
 {
-  std::string strValue(GetValueRaw("content-type"));
+  std::string strValue(
+      StringUtils::ToUpper(GetValueRaw("content-type"), StringUtils::GetCLocale()));
   if (strValue.empty())
     return strValue;
 
-  StringUtils::ToUpper(strValue);
   const size_t len = strValue.length();
 
   // extract charset value from 'contenttype/contentsubtype;pram1=param1Val ; charset=XXXX\t;param2=param2Val'

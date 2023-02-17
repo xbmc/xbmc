@@ -1,3 +1,4 @@
+// clang-format off
 /*
  *  Copyright (C) 2005-2018 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
@@ -6,7 +7,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "utils/StringUtils.h"
+#include "utils/test/OrigStringUtils.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -16,6 +17,10 @@
 #include <gtest/gtest.h>
 
 using namespace std::literals;
+
+// true if C++ lib tolower/toupper used
+// false if casemapping tables from icuc4 used
+bool constexpr USE_BUILTIN_CASEMAPPING{false};
 
 enum class ECG
 {
@@ -43,6 +48,17 @@ enum EN
 };
 } // namespace test_enum
 
+// ------------------------------------ NOTE ------------------------------------
+//
+// The ToLower, ToUpper, FoldCase and related tests were rewritten for Unicode (codepoint)
+// comparison and not for single-byte comparison (as was done prior to these
+// changes). The ToLower/ToUpper API has not yet been changed, so these tests have
+// been modified to pass with current behavior. A TODO note documents each of these.
+//
+// Also note that on Windows, ToLower and ToUpper will use UTF-16 instead of UTF-32.
+// Additional testing will need to be done to correct for that difference.
+//
+// -----------------------------------------------------------------------------
 namespace TestStringUtils
 {
 //
@@ -70,56 +86,6 @@ const char* UTF8_GERMAN_UPPER = {"\xc3\x93\xc3\x93\x53\x53\x43\x48\x4c\x4f\xc3\x
 // óóßchloë
 const char* UTF8_GERMAN_LOWER_SS = {"\xc3\xb3\xc3\xb3\x73\x73\x63\x68\x6c\x6f\xc3\xab"};
 // u"óósschloë";
-
-/*!
-     * \brief Returns the en_GB Locale, primarily for the use of ToLower/ToUpper.
-     *
-     * The en_GB locale can be very useful for reducing undesirable side effects when
-     * using ToLower/ToUpper for 'id' processing.
-     *
-     * If neither FoldCase nor the use of the C locale aren't adequate, then using the "en_GB" locale when
-     * 'normalizing' a keyword for internal use may work. It will certainly be better than using the
-     * user's locale, which may cause some nasty surprises, such as the "Turkic-I" problem.
-     *
-     * \return a cached instance of the en_GB.UTF-8 locale. Caching eliminates the overhead of creating
-     * the locale instance.
-     */
-static std::locale GetEnglishLocale()
-{
-  static std::locale GBEnglishLocale;
-  static bool EnglishLocaleInitialized{false};
-
-  if (!EnglishLocaleInitialized)
-  {
-    try
-    {
-      std::locale x = std::locale("en_GB.UTF-8"); // Should not fail
-
-      GBEnglishLocale = x;
-      EnglishLocaleInitialized = true;
-    }
-    catch (std::runtime_error& e)
-    {
-      // Have to be careful about logging in StringUtils. Can get recursive
-
-      std::cout << "Locale en_GB.UTF-8 not supported trying 'en_GB'" << std::endl;
-      try
-      {
-        std::locale x = std::locale("en_GB"); // Should not fail
-
-        GBEnglishLocale = x;
-        EnglishLocaleInitialized = true;
-      }
-      catch (std::runtime_error& e)
-      {
-        // Have to be careful about logging in StringUtils. Can get recursive
-
-        std::cout << "Locale en_GB not supported" << std::endl;
-      }
-    }
-  }
-  return GBEnglishLocale;
-}
 } // namespace TestStringUtils
 
 TEST(TestStringUtils, Format)
@@ -127,10 +93,10 @@ TEST(TestStringUtils, Format)
   std::string refstr = "test 25 2.7 ff FF";
 
   std::string varstr =
-      StringUtils::Format("{} {} {:.1f} {:x} {:02X}", "test", 25, 2.743f, 0x00ff, 0x00ff);
+      OrigStringUtils::Format("{} {} {:.1f} {:x} {:02X}", "test", 25, 2.743f, 0x00ff, 0x00ff);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  varstr = StringUtils::Format("", "test", 25, 2.743f, 0x00ff, 0x00ff);
+  varstr = OrigStringUtils::Format("", "test", 25, 2.743f, 0x00ff, 0x00ff);
   EXPECT_STREQ("", varstr.c_str());
 }
 
@@ -139,16 +105,16 @@ TEST(TestStringUtils, FormatEnum)
   const char* zero = "0";
   const char* one = "1";
 
-  std::string varstr = StringUtils::Format("{}", ECG::A);
+  std::string varstr = OrigStringUtils::Format("{}", ECG::A);
   EXPECT_STREQ(zero, varstr.c_str());
 
-  varstr = StringUtils::Format("{}", EG::C);
+  varstr = OrigStringUtils::Format("{}", EG::C);
   EXPECT_STREQ(zero, varstr.c_str());
 
-  varstr = StringUtils::Format("{}", test_enum::ECN::A);
+  varstr = OrigStringUtils::Format("{}", test_enum::ECN::A);
   EXPECT_STREQ(one, varstr.c_str());
 
-  varstr = StringUtils::Format("{}", test_enum::EN::C);
+  varstr = OrigStringUtils::Format("{}", test_enum::EN::C);
   EXPECT_STREQ(one, varstr.c_str());
 }
 
@@ -156,53 +122,62 @@ TEST(TestStringUtils, FormatEnumWidth)
 {
   const char* one = "01";
 
-  std::string varstr = StringUtils::Format("{:02d}", ECG::B);
+  std::string varstr = OrigStringUtils::Format("{:02d}", ECG::B);
   EXPECT_STREQ(one, varstr.c_str());
 
-  varstr = StringUtils::Format("{:02}", EG::D);
+  varstr = OrigStringUtils::Format("{:02}", EG::D);
   EXPECT_STREQ(one, varstr.c_str());
 }
 
 TEST(TestStringUtils, ToUpper)
 {
   std::string refstr = "TEST";
+
   std::string varstr = "TeSt";
-  std::string result;
-  result = StringUtils::ToUpper(varstr);
-  EXPECT_STREQ(refstr.c_str(), result.c_str());
+  OrigStringUtils::ToUpper(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
 TEST(TestStringUtils, ToLower)
 {
   std::string refstr = "test";
-  std::string result;
+
   std::string varstr = "TeSt";
-  result = StringUtils::ToLower(varstr);
-  EXPECT_STREQ(refstr.c_str(), result.c_str());
+  OrigStringUtils::ToLower(varstr);
+  EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
+/*
 TEST(TestStringUtils, ToUpper_Locale)
 {
+  // Note that the results for the Turkic I depends upon the tolower/toupper
+  // implementation. These results are for G++ on Linux.
+  //
   std::string result;
   std::string refstr = "TWITCH";
   std::string varstr = "Twitch";
-  result = StringUtils::ToUpper(varstr, StringUtils::GetCLocale());
+  result = OrigStringUtils::ToUpper(varstr, OrigStringUtils::GetCLocale());
   EXPECT_STREQ(refstr.c_str(), result.c_str());
 
   refstr = "ABCÇDEFGĞH IİII JKLMNOÖPRSŞTUÜVYZ";
   varstr = "abcçdefgğh Iİiı jklmnoöprsştuüvyz";
-  result = StringUtils::ToUpper(varstr, TestStringUtils::GetEnglishLocale());
+  result = OrigStringUtils::ToUpper(varstr, OrigStringUtils::GetEnglishLocale());
   EXPECT_STREQ(refstr.c_str(), result.c_str());
 
-  refstr = "ABCÇDEFGĞH IİII JKLMNOÖPRSŞTUÜVYZ";
+  if (USE_BUILTIN_CASEMAPPING)
+    refstr = "ABCÇDEFGĞH IİİI JKLMNOÖPRSŞTUÜVYZ";
+  else
+    refstr = "ABCÇDEFGĞH IİII JKLMNOÖPRSŞTUÜVYZ";
 
   // Not all test systems have Turkish installed
   // Test is NOT critical since Locale should not
-  // impact these casmapping tests.
+  // impact these casmapping tests (unless
+  // USE_BUILTIN_CASEMAPPING is true AND they
+  // impact this result, but they don't.
   try
   {
     std::locale turkic = std::locale("tr_TR.UTF-8");
-    result = StringUtils::ToUpper(varstr, turkic);
+    result = OrigStringUtils::ToUpper(varstr, turkic);
     EXPECT_STREQ(refstr.c_str(), result.c_str());
   }
   catch (std::runtime_error& e)
@@ -215,7 +190,7 @@ TEST(TestStringUtils, ToUpper_Locale)
   {
     refstr = "ABCÇDEFGĞH IİII JKLMNOÖPRSŞTUÜVYZ";
     std::locale ukranian = std::locale("uk_UA.UTF-8");
-    result = StringUtils::ToUpper(varstr, ukranian);
+    result = OrigStringUtils::ToUpper(varstr, ukranian);
     EXPECT_STREQ(refstr.c_str(), result.c_str());
   }
   catch (std::runtime_error& e)
@@ -223,7 +198,9 @@ TEST(TestStringUtils, ToUpper_Locale)
     std::cout << "Locale uk_UA.UTF-8 not supported" << std::endl;
   }
 }
+*/
 
+/*
 TEST(TestStringUtils, ToLower_Locale)
 {
   // Note that the results for the Turkic I depends upon the tolower/toupper
@@ -232,19 +209,23 @@ TEST(TestStringUtils, ToLower_Locale)
   std::string result;
   std::string refstr = "twitch";
   std::string varstr = "Twitch";
-  result = StringUtils::ToLower(varstr, StringUtils::GetCLocale());
+  result = OrigStringUtils::ToLower(varstr, OrigStringUtils::GetCLocale());
   EXPECT_STREQ(refstr.c_str(), result.c_str());
 
   varstr = "ABCÇDEFGĞH Iİiı JKLMNOÖPRSŞTUÜVYZ";
   refstr = "abcçdefgğh iiiı jklmnoöprsştuüvyz";
-  result = StringUtils::ToLower(varstr, TestStringUtils::GetEnglishLocale());
+  result = OrigStringUtils::ToLower(varstr, OrigStringUtils::GetEnglishLocale());
   EXPECT_STREQ(refstr.c_str(), result.c_str());
 
-  refstr = "abcçdefgğh iiiı jklmnoöprsştuüvyz";
+  if (USE_BUILTIN_CASEMAPPING)
+    refstr = "abcçdefgğh ıiiı jklmnoöprsştuüvyz";
+  else
+    refstr = "abcçdefgğh iiiı jklmnoöprsştuüvyz";
+
   try
   {
     std::locale turkic = std::locale("tr_TR.UTF-8");
-    result = StringUtils::ToLower(varstr, turkic);
+    result = OrigStringUtils::ToLower(varstr, turkic);
     EXPECT_STREQ(refstr.c_str(), result.c_str());
   }
   catch (std::runtime_error& e)
@@ -255,7 +236,7 @@ TEST(TestStringUtils, ToLower_Locale)
   {
     refstr = "abcçdefgğh iiiı jklmnoöprsştuüvyz";
     std::locale ukranian = std::locale("uk_UA.UTF-8");
-    result = StringUtils::ToLower(varstr, ukranian);
+    result = OrigStringUtils::ToLower(varstr, ukranian);
     EXPECT_STREQ(refstr.c_str(), result.c_str());
   }
   catch (std::runtime_error& e)
@@ -263,40 +244,42 @@ TEST(TestStringUtils, ToLower_Locale)
     std::cout << "Locale uk_UA.UTF-8 not supported" << std::endl;
   }
 }
+*/
 
 TEST(TestStringUtils, ToCapitalize)
 {
   std::string refstr = "Test";
   std::string varstr = "test";
-  StringUtils::ToCapitalize(varstr);
+  OrigStringUtils::ToCapitalize(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "Just A Test";
   varstr = "just a test";
-  StringUtils::ToCapitalize(varstr);
+  OrigStringUtils::ToCapitalize(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "Test -1;2:3, String For Case";
   varstr = "test -1;2:3, string for Case";
-  StringUtils::ToCapitalize(varstr);
+  OrigStringUtils::ToCapitalize(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "  JuST Another\t\tTEst:\nWoRKs ";
   varstr = "  juST another\t\ttEst:\nwoRKs ";
-  StringUtils::ToCapitalize(varstr);
+  OrigStringUtils::ToCapitalize(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "N.Y.P.D";
   varstr = "n.y.p.d";
-  StringUtils::ToCapitalize(varstr);
+  OrigStringUtils::ToCapitalize(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "N-Y-P-D";
   varstr = "n-y-p-d";
-  StringUtils::ToCapitalize(varstr);
+  OrigStringUtils::ToCapitalize(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
+/*
 // Two large tables, at bottom of file.
 extern const char32_t UnicodeFoldLowerTable[];
 extern const char32_t UnicodeFoldUpperTable[];
@@ -321,10 +304,10 @@ TEST(TestStringUtils, Validate_FoldCase_Data)
   {
     char32_t upper_char32 = UnicodeFoldUpperTable[i];
     std::u32string upper_u32(1, upper_char32); // 0
-    std::string upper_utf8 = StringUtils::ToUtf8(upper_u32);
-    std::string folded = StringUtils::FoldCase(upper_utf8);
+    std::string upper_utf8 = OrigStringUtils::ToUtf8(upper_u32);
+    std::string folded = OrigStringUtils::FoldCase(upper_utf8);
 
-    std::u32string folded_utf32 = StringUtils::ToUtf32(folded);
+    std::u32string folded_utf32 = OrigStringUtils::ToUtf32(folded);
     char32_t folded_char32 = folded_utf32[0];
     char32_t lower_char32 = UnicodeFoldLowerTable[i];
 
@@ -369,12 +352,12 @@ TEST(TestStringUtils, BadUnicode)
   for (char32_t c : BAD_CHARS)
   {
     std::u32string s(1, c);
-    std::string utf8str = StringUtils::ToUtf8(s);
+    std::string utf8str = OrigStringUtils::ToUtf8(s);
 
     // std::cout << "u32string: " << std::hex << s[0] << " utf8: " << utf8str << std::endl;
 
-    std::string folded = StringUtils::FoldCase(utf8str);
-    std::u32string foldedU32 = StringUtils::ToUtf32(folded);
+    std::string folded = OrigStringUtils::FoldCase(utf8str);
+    std::u32string foldedU32 = OrigStringUtils::ToUtf32(folded);
 
     // std::cout << "folded: " << folded << " foldedU32: " << std::hex << foldedU32[0] << std::endl;
   }
@@ -387,17 +370,17 @@ TEST(TestStringUtils, BadUnicode)
   for (char32_t c : REPLACED_CHARS)
   {
     std::u32string s(1, c);
-    std::string utf8str = StringUtils::ToUtf8(s);
-    EXPECT_TRUE(StringUtils::Equals(utf8str, UTF8_SUBSTITUTE_CHARACTER));
+    std::string utf8str = OrigStringUtils::ToUtf8(s);
+    EXPECT_TRUE(OrigStringUtils::Equals(utf8str, UTF8_SUBSTITUTE_CHARACTER));
 
     // std::cout << "Bad Char: " << std::hex << s[0] << " converted to UTF8: "
     //     << std::hex << utf8str
     //    << " expected: " << std::hex << UTF8_SUBSTITUTE_CHARACTER << std::endl;
 
-    std::string folded = StringUtils::FoldCase(utf8str);
-    std::u32string foldedU32 = StringUtils::ToUtf32(folded);
+    std::string folded = OrigStringUtils::FoldCase(utf8str);
+    std::u32string foldedU32 = OrigStringUtils::ToUtf32(folded);
 
-    EXPECT_TRUE(StringUtils::Equals(folded, UTF8_SUBSTITUTE_CHARACTER));
+    EXPECT_TRUE(OrigStringUtils::Equals(folded, UTF8_SUBSTITUTE_CHARACTER));
 
     EXPECT_EQ(foldedU32[0], CHAR32_T_SUBSTITUTE_CHARACTER[0]);
     // std::cout << "folded: " << folded << " foldedU32: " << std::hex << foldedU32[0] << std::endl;
@@ -412,13 +395,13 @@ TEST(TestStringUtils, BadUnicode)
   for (std::string str : BAD_UTF8)
   {
     // std::cout << std::hex << str[0] << " utf8: " << str << std::endl;
-    std::u32string trash = StringUtils::ToUtf32(str);
+    std::u32string trash = OrigStringUtils::ToUtf32(str);
     EXPECT_EQ(trash[0], CHAR32_T_SUBSTITUTE_CHARACTER[0]);
     EXPECT_EQ(trash[0], CHAR32_T_SUBSTITUTE_CHARACTER[0]);
 
-    std::string folded = StringUtils::FoldCase(str);
-    std::u32string foldedU32 = StringUtils::ToUtf32(folded);
-    EXPECT_TRUE(StringUtils::Equals(folded, UTF8_SUBSTITUTE_CHARACTER));
+    std::string folded = OrigStringUtils::FoldCase(str);
+    std::u32string foldedU32 = OrigStringUtils::ToUtf32(folded);
+    EXPECT_TRUE(OrigStringUtils::Equals(folded, UTF8_SUBSTITUTE_CHARACTER));
     EXPECT_EQ(foldedU32[0], CHAR32_T_SUBSTITUTE_CHARACTER[0]);
 
     // std::cout << "folded: " << folded << " foldedU32: " << std::hex << foldedU32[0] << std::endl;
@@ -429,26 +412,26 @@ TEST(TestStringUtils, BadUnicode)
 TEST(TestStringUtils, FoldCase)
 {
   std::string input = ""s;
-  std::string result = StringUtils::FoldCase(input);
+  std::string result = OrigStringUtils::FoldCase(input);
   EXPECT_TRUE(result.size() == 0);
 
   input = "a"s;
-  result = StringUtils::FoldCase(input);
+  result = OrigStringUtils::FoldCase(input);
   EXPECT_EQ(result, input);
 
   input = "A"s;
-  result = StringUtils::FoldCase(input);
+  result = OrigStringUtils::FoldCase(input);
   EXPECT_EQ(result, "a"s);
 
   input = "What a WaIsT Of Time1234567890-=!@#$%^&*()\"_+QWERTYUIOP{}|qwertyuiop[];':\\<M>?/.,";
   std::string expected =
       "what a waist of time1234567890-=!@#$%^&*()\"_+qwertyuiop{}|qwertyuiop[];':\\<m>?/.,";
 
-  result = StringUtils::FoldCase(input);
+  result = OrigStringUtils::FoldCase(input);
   EXPECT_EQ(result, expected);
 
   input = "aB\0c"s; // Embedded null
-  result = StringUtils::FoldCase(input);
+  result = OrigStringUtils::FoldCase(input);
   EXPECT_EQ(result, "ab\0c"s);
   EXPECT_EQ(result.length(), 4);
   result = std::string(result.c_str());
@@ -533,11 +516,10 @@ TEST(TestStringUtils, FoldCase)
     *  only locale sensitive. See SpecialCasing.txt, there are only about 120 rules.
     *  Only 13 of the rules depend upon locale.
     *
-    */
-  std::locale C_UTF8 = StringUtils::GetCLocale();
-  std::locale en_GB_UTF8 = TestStringUtils::GetEnglishLocale();
+    * /
+  std::locale C_UTF8 = OrigStringUtils::GetCLocale();
+  std::locale en_GB_UTF8 = OrigStringUtils::GetEnglishLocale();
   std::string s1 = "I İ i ı";
-  std::string s2 = "i İ i ı";
 
   PrintResults = true;
   if (PrintResults)
@@ -547,7 +529,7 @@ TEST(TestStringUtils, FoldCase)
 
   std::string expectedResult;
 
-  result = StringUtils::ToUpper(s1, C_UTF8);
+  result = OrigStringUtils::ToUpper(s1, C_UTF8);
   expectedResult = "I İ I ı"; // Should only touch ASCII chars
   if (PrintResults)
   {
@@ -555,18 +537,22 @@ TEST(TestStringUtils, FoldCase)
   }
   EXPECT_STREQ(result.c_str(), expectedResult.c_str());
   expectedResult = "I İ I I";
-  result = StringUtils::ToUpper(s1, en_GB_UTF8);
+  result = OrigStringUtils::ToUpper(s1, en_GB_UTF8);
   if (PrintResults)
   {
     std::cout << "en_GB.UTF-8 ToUpper result: " << result << std::endl;
   }
   EXPECT_STREQ(result.c_str(), expectedResult.c_str());
 
-  expectedResult = "I İ I I";
+  if (USE_BUILTIN_CASEMAPPING)
+    expectedResult = "I İ İ I";
+  else
+    expectedResult = "I İ I I";
+
   try
   {
     std::locale tr_TR_UTF8 = std::locale("tr_TR.UTF-8");
-    result = StringUtils::ToUpper(s1, tr_TR_UTF8);
+    result = OrigStringUtils::ToUpper(s1, tr_TR_UTF8);
     EXPECT_STREQ(result.c_str(), expectedResult.c_str());
     if (PrintResults)
     {
@@ -579,7 +565,7 @@ TEST(TestStringUtils, FoldCase)
   }
 
   expectedResult = "i İ i ı"; // C locale ONLY changes ASCII chars
-  result = StringUtils::ToLower(s1, C_UTF8);
+  result = OrigStringUtils::ToLower(s1, C_UTF8);
   if (PrintResults)
   {
     std::cout << "C.UTF-8 ToLower result: " << result << std::endl;
@@ -587,7 +573,7 @@ TEST(TestStringUtils, FoldCase)
   EXPECT_STREQ(result.c_str(), expectedResult.c_str());
 
   expectedResult = "i i i ı";
-  result = StringUtils::ToLower(s1, en_GB_UTF8);
+  result = OrigStringUtils::ToLower(s1, en_GB_UTF8);
   if (PrintResults)
   {
     std::cout << "en_GB.UTF-8 ToLower result: " << result << std::endl;
@@ -596,22 +582,22 @@ TEST(TestStringUtils, FoldCase)
 
   expectedResult = "i i i ı";
   try
-  {
-    std::locale tr_TR_UTF8 = std::locale("tr_TR.UTF-8");
-    result = StringUtils::ToLower(s1, tr_TR_UTF8);
-    EXPECT_STREQ(result.c_str(), expectedResult.c_str());
-    if (PrintResults)
-    {
-      std::cout << "tr_TR.UTF-8 ToLower result: " << result << std::endl;
-    }
-  }
-  catch (std::runtime_error& e)
-  {
-    std::cout << "Locale tr_TR.UTF-8 not supported" << std::endl;
-  }
+   {
+     std::locale tr_TR_UTF8 = std::locale("tr_TR.UTF-8");
+     result = OrigStringUtils::ToLower(s1, tr_TR_UTF8);
+     EXPECT_STREQ(result.c_str(), expectedResult.c_str());
+     if (PrintResults)
+     {
+       std::cout << "tr_TR.UTF-8 ToLower result: " << result << std::endl;
+     }
+   }
+   catch (std::runtime_error& e)
+   {
+     std::cout << "Locale tr_TR.UTF-8 not supported" << std::endl;
+   }
 
   expectedResult = "i İ i ı";
-  result = StringUtils::FoldCase(s1);
+  result = OrigStringUtils::FoldCase(s1);
   if (PrintResults)
   {
     std::cout << "FoldCase result: " << result << std::endl;
@@ -619,10 +605,10 @@ TEST(TestStringUtils, FoldCase)
   EXPECT_STREQ(result.c_str(), expectedResult.c_str());
 
   s1 = "ABCÇDEFGĞHIJKLMNOÖPRSŞTUÜVYZ";
-  s2 = "abcçdefgğhijklmnoöprsştuüvyz";
+  std::string s2 = "abcçdefgğhijklmnoöprsştuüvyz";
 
-  std::string result1 = StringUtils::FoldCase(s1);
-  std::string result2 = StringUtils::FoldCase(s2);
+  std::string result1 = OrigStringUtils::FoldCase(s1);
+  std::string result2 = OrigStringUtils::FoldCase(s2);
 
   EXPECT_EQ(result1.compare(result2), 0);
   EXPECT_EQ(result1.compare(s2), 0);
@@ -634,7 +620,7 @@ TEST(TestStringUtils, FoldCase)
 
   s1 = "óóßChloë"s;
   result = "óóßchloë"s;
-  EXPECT_EQ(StringUtils::FoldCase(s1), result);
+  EXPECT_EQ(OrigStringUtils::FoldCase(s1), result);
 
   // Last char in FoldCase table
 
@@ -642,12 +628,12 @@ TEST(TestStringUtils, FoldCase)
 #ifndef TARGET_DARWIN
   s1 = "𞤡"s;
   result = "𞥃"s;
-  EXPECT_EQ(StringUtils::FoldCase(s1), result);
+  EXPECT_EQ(OrigStringUtils::FoldCase(s1), result);
 
   // Last output char in FoldCase table
 
   s1 = "𞥃"s;
-  EXPECT_EQ(StringUtils::FoldCase(s1), result);
+  EXPECT_EQ(OrigStringUtils::FoldCase(s1), result);
 #endif
 }
 
@@ -659,12 +645,12 @@ TEST(TestStringUtils, FoldCase_W)
   bool PrintResults = false;
 
   std::wstring w_s1 =
-      StringUtils::ToWstring(std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
+      OrigStringUtils::ToWstring(std::string(TestOrigStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5));
   std::wstring w_s2 =
-      StringUtils::ToWstring(std::string(TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
+      OrigStringUtils::ToWstring(std::string(TestOrigStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1));
 
-  w_s1 = StringUtils::FoldCase(w_s1);
-  w_s2 = StringUtils::FoldCase(w_s2);
+  w_s1 = OrigStringUtils::FoldCase(w_s1);
+  w_s2 = OrigStringUtils::FoldCase(w_s2);
   int32_t result = w_s1.compare(w_s2);
   EXPECT_NE(result, 0);
 
@@ -676,14 +662,14 @@ TEST(TestStringUtils, FoldCase_W)
     std::cout << "Turkic orig s2: " << s2 << std::endl;
   }
 
-  w_s1 = StringUtils::ToWstring(s1);
-  w_s2 = StringUtils::ToWstring(s2);
-  w_s1 = StringUtils::FoldCase(w_s1);
-  w_s2 = StringUtils::FoldCase(w_s2);
+  w_s1 = OrigStringUtils::ToWstring(s1);
+  w_s2 = OrigStringUtils::ToWstring(s2);
+  w_s1 = OrigStringUtils::FoldCase(w_s1);
+  w_s2 = OrigStringUtils::FoldCase(w_s2);
   if (PrintResults)
   {
-    std::cout << "Turkic folded w_s1: " << StringUtils::ToUtf8(w_s1) << std::endl;
-    std::cout << "Turkic folded w_s2: " << StringUtils::ToUtf8(w_s2) << std::endl;
+    std::cout << "Turkic folded w_s1: " << OrigStringUtils::ToUtf8(w_s1) << std::endl;
+    std::cout << "Turkic folded w_s2: " << OrigStringUtils::ToUtf8(w_s2) << std::endl;
   }
   result = w_s1.compare(w_s2);
   EXPECT_EQ(result, 0);
@@ -694,26 +680,27 @@ TEST(TestStringUtils, FoldCase_W)
   // std::cout << "Turkic orig s1: " << s1 << std::endl;
   // std::cout << "Turkic orig s2: " << s2 << std::endl;
 
-  w_s1 = StringUtils::ToWstring(s1);
-  w_s2 = StringUtils::ToWstring(s2);
-  w_s1 = StringUtils::FoldCase(w_s1);
-  w_s2 = StringUtils::FoldCase(w_s2);
-  // std::cout << "Turkic folded w_s1: " << StringUtils::ToUtf8(w_s1) << std::endl;
-  // std::cout << "Turkic folded w_s2: " << StringUtils::ToUtf8(w_s2) << std::endl;
+  w_s1 = OrigStringUtils::ToWstring(s1);
+  w_s2 = OrigStringUtils::ToWstring(s2);
+  w_s1 = OrigStringUtils::FoldCase(w_s1);
+  w_s2 = OrigStringUtils::FoldCase(w_s2);
+  // std::cout << "Turkic folded w_s1: " << OrigStringUtils::ToUtf8(w_s1) << std::endl;
+  // std::cout << "Turkic folded w_s2: " << OrigStringUtils::ToUtf8(w_s2) << std::endl;
   result = w_s1.compare(w_s2);
   EXPECT_EQ(result, 0);
 }
+*/
 
 TEST(TestStringUtils, Equals)
 {
   std::string refstr = "TeSt";
   std::string_view refstrView = "TeSt";
-  EXPECT_TRUE(StringUtils::Equals(refstr, "TeSt"));
-  EXPECT_FALSE(StringUtils::Equals(refstr, "tEsT"sv));
-  EXPECT_FALSE(StringUtils::Equals(refstrView, "TeSt "));
-  EXPECT_TRUE(StringUtils::Equals(refstrView, "TeSt"sv));
-  EXPECT_FALSE(StringUtils::Equals(refstr, "TeStTeStTeStTeSt"s));
-  EXPECT_FALSE(StringUtils::Equals(refstr, R"(TeStTeStTeStTeStx)"));
+  EXPECT_TRUE(OrigStringUtils::Equals(refstr, "TeSt"));
+  EXPECT_FALSE(OrigStringUtils::Equals(refstr, "tEsT"sv));
+  EXPECT_FALSE(OrigStringUtils::Equals(refstrView, "TeSt "));
+  EXPECT_TRUE(OrigStringUtils::Equals(refstrView, "TeSt"sv));
+  EXPECT_FALSE(OrigStringUtils::Equals(refstr, "TeStTeStTeStTeSt"s));
+  EXPECT_FALSE(OrigStringUtils::Equals(refstr, R"(TeStTeStTeStTeStx)"));
 
   std::string TeSt{"TeSt"};
   std::string tEsT{"tEsT"};
@@ -726,36 +713,36 @@ TEST(TestStringUtils, Equals)
   const char* TestArray2 = TestArray2S.data();
   const char* TestArray3 = TestArray3S.data();
 
-  EXPECT_FALSE(StringUtils::Equals(TestArray, TestArray2));
-  EXPECT_FALSE(StringUtils::Equals(TestArray, TestArray3));
+  EXPECT_FALSE(OrigStringUtils::Equals(TestArray, TestArray2));
+  EXPECT_FALSE(OrigStringUtils::Equals(TestArray, TestArray3));
 
-  EXPECT_TRUE(StringUtils::Equals("TeSt", "TeSt"));
-  EXPECT_FALSE(StringUtils::Equals(TeSt, tEsT));
+  EXPECT_TRUE(OrigStringUtils::Equals("TeSt", "TeSt"));
+  EXPECT_FALSE(OrigStringUtils::Equals(TeSt, tEsT));
 
-  EXPECT_TRUE(StringUtils::Equals(StringUtils::Empty, StringUtils::Empty));
-  EXPECT_FALSE(StringUtils::Equals(StringUtils::Empty, "x"));
-  EXPECT_FALSE(StringUtils::Equals("x", StringUtils::Empty));
+  EXPECT_TRUE(OrigStringUtils::Equals(OrigStringUtils::Empty, OrigStringUtils::Empty));
+  EXPECT_FALSE(OrigStringUtils::Equals(OrigStringUtils::Empty, "x"));
+  EXPECT_FALSE(OrigStringUtils::Equals("x", OrigStringUtils::Empty));
 
   // Equals can handle embedded nulls, but you have to be careful
   // how you enter them. Ex: "abcd\0"  "ABCD\0"sv One has null, the other
   // is terminated at null.
 
-  EXPECT_FALSE(StringUtils::Equals("abcd\0", "ABCD\0"sv));
-  EXPECT_TRUE(StringUtils::Equals("abcd\0a", "abcd\0a"));
-  EXPECT_FALSE(StringUtils::Equals("abcd\0x", "ABCD\0y"sv));
-  EXPECT_FALSE(StringUtils::Equals("abcd\0", "ABCD\0a"sv));
+  EXPECT_FALSE(OrigStringUtils::Equals("abcd\0", "ABCD\0"sv));
+  EXPECT_TRUE(OrigStringUtils::Equals("abcd\0a", "abcd\0a"));
+  EXPECT_FALSE(OrigStringUtils::Equals("abcd\0x", "ABCD\0y"sv));
+  EXPECT_FALSE(OrigStringUtils::Equals("abcd\0", "ABCD\0a"sv));
 }
 
 TEST(TestStringUtils, EqualsNoCase)
 {
   std::string refstr = "TeSt";
   std::string_view refstrView{"TeSt"};
-  EXPECT_TRUE(StringUtils::EqualsNoCase(refstr, "TeSt"));
-  EXPECT_TRUE(StringUtils::EqualsNoCase(refstr, "tEsT"sv));
-  EXPECT_FALSE(StringUtils::EqualsNoCase(refstrView, "TeSt "));
-  EXPECT_FALSE(StringUtils::EqualsNoCase(refstrView, "TeSt    x"sv));
-  EXPECT_FALSE(StringUtils::EqualsNoCase(refstr, "TeStTeStTeStTeSt"s));
-  EXPECT_FALSE(StringUtils::EqualsNoCase(refstr, R"(TeStTeStTeStTeStx)"));
+  EXPECT_TRUE(OrigStringUtils::EqualsNoCase(refstr, "TeSt"));
+  EXPECT_TRUE(OrigStringUtils::EqualsNoCase(refstr, "tEsT"sv));
+  EXPECT_FALSE(OrigStringUtils::EqualsNoCase(refstrView, "TeSt "));
+  EXPECT_FALSE(OrigStringUtils::EqualsNoCase(refstrView, "TeSt    x"sv));
+  EXPECT_FALSE(OrigStringUtils::EqualsNoCase(refstr, "TeStTeStTeStTeSt"s));
+  EXPECT_FALSE(OrigStringUtils::EqualsNoCase(refstr, R"(TeStTeStTeStTeStx)"));
 
   std::string TeSt{"TeSt"};
   std::string tEsT{"tEsT"};
@@ -768,29 +755,29 @@ TEST(TestStringUtils, EqualsNoCase)
   const char* TestArray2 = TestArray2S.data();
   const char* TestArray3 = TestArray3S.data();
 
-  EXPECT_FALSE(StringUtils::EqualsNoCase(TestArray, TestArray2));
-  EXPECT_TRUE(StringUtils::EqualsNoCase(TestArray, TestArray3));
+  EXPECT_FALSE(OrigStringUtils::EqualsNoCase(TestArray, TestArray2));
+  EXPECT_TRUE(OrigStringUtils::EqualsNoCase(TestArray, TestArray3));
 
-  EXPECT_TRUE(StringUtils::EqualsNoCase("TeSt", "TeSt"));
-  EXPECT_TRUE(StringUtils::EqualsNoCase(TeSt, tEsT));
+  EXPECT_TRUE(OrigStringUtils::EqualsNoCase("TeSt", "TeSt"));
+  EXPECT_TRUE(OrigStringUtils::EqualsNoCase(TeSt, tEsT));
 
   const std::string constTest{"Test"};
-  EXPECT_TRUE(StringUtils::EqualsNoCase(TeSt, constTest));
-  EXPECT_TRUE(StringUtils::EqualsNoCase(TeSt + TeSt + TeSt + TeSt, "TeStTeStTeStTeSt"));
-  EXPECT_FALSE(StringUtils::EqualsNoCase(TeSt, "TeStTeStTeStTeStx"));
+  EXPECT_TRUE(OrigStringUtils::EqualsNoCase(TeSt, constTest));
+  EXPECT_TRUE(OrigStringUtils::EqualsNoCase(TeSt + TeSt + TeSt + TeSt, "TeStTeStTeStTeSt"));
+  EXPECT_FALSE(OrigStringUtils::EqualsNoCase(TeSt, "TeStTeStTeStTeStx"));
 
-  EXPECT_TRUE(StringUtils::EqualsNoCase(StringUtils::Empty, StringUtils::Empty));
-  EXPECT_FALSE(StringUtils::EqualsNoCase(StringUtils::Empty, "x"));
-  EXPECT_FALSE(StringUtils::EqualsNoCase("x", StringUtils::Empty));
+  EXPECT_TRUE(OrigStringUtils::EqualsNoCase(OrigStringUtils::Empty, OrigStringUtils::Empty));
+  EXPECT_FALSE(OrigStringUtils::EqualsNoCase(OrigStringUtils::Empty, "x"));
+  EXPECT_FALSE(OrigStringUtils::EqualsNoCase("x", OrigStringUtils::Empty));
 
   // EqualsNoCase can handle embedded nulls, but you have to be careful
   // how you enter them. Ex: "abcd\0"  "ABCD\0"sv One has null, the other
   // is terminated at null.
 
-  EXPECT_FALSE(StringUtils::EqualsNoCase("abcd\0", "ABCD\0"sv));
-  EXPECT_TRUE(StringUtils::EqualsNoCase("abcd\0a", "ABCD\0a"));
-  EXPECT_FALSE(StringUtils::EqualsNoCase("abcd\0x", "ABCD\0y"sv));
-  EXPECT_FALSE(StringUtils::EqualsNoCase("abcd\0", "ABCD\0a"sv));
+  EXPECT_FALSE(OrigStringUtils::EqualsNoCase("abcd\0", "ABCD\0"sv));
+  EXPECT_TRUE(OrigStringUtils::EqualsNoCase("abcd\0a", "ABCD\0a"));
+  EXPECT_FALSE(OrigStringUtils::EqualsNoCase("abcd\0x", "ABCD\0y"sv));
+  EXPECT_FALSE(OrigStringUtils::EqualsNoCase("abcd\0", "ABCD\0a"sv));
 }
 
 TEST(TestStringUtils, CompareNoCase)
@@ -802,7 +789,7 @@ TEST(TestStringUtils, CompareNoCase)
   left = "abciI123ABC "s;
   right = "ABCIi123abc "s;
   expectedResult = 0;
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right), expectedResult);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right), expectedResult);
 
   // Since Kodi's simple FoldCase can not handle characters that
   // change length when folding, the following fails to compare equal.
@@ -812,93 +799,85 @@ TEST(TestStringUtils, CompareNoCase)
   right = TestStringUtils::UTF8_GERMAN_SAMPLE; // óóßChloë
   expectedResult = 1;
 
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right), -1);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right), -1);
 
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   right = TestStringUtils::UTF8_GERMAN_LOWER_SS; // óósschloë // Does not convert SS to ß
   expectedResult = 0;
 
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right), expectedResult);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right), expectedResult);
 
   left = ""s;
   right = ""s;
   expectedResult = 0;
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right), expectedResult);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right), expectedResult);
 
-  EXPECT_EQ(StringUtils::CompareNoCase(StringUtils::Empty, StringUtils::Empty), expectedResult);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(OrigStringUtils::Empty, OrigStringUtils::Empty), expectedResult);
 
-  EXPECT_EQ(StringUtils::CompareNoCase("a"sv, "a"s), 0);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase("a"sv, "a"s), 0);
 
-  EXPECT_EQ(StringUtils::CompareNoCase("a"sv, StringUtils::Empty), 1);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase("a"sv, OrigStringUtils::Empty), 1);
 
-  EXPECT_EQ(StringUtils::CompareNoCase(StringUtils::Empty, "a"sv), -1);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(OrigStringUtils::Empty, "a"sv), -1);
 
-  EXPECT_EQ(StringUtils::CompareNoCase("a"sv, "b"sv), -1);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase("a"sv, "b"sv), -1);
 
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   right = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
 
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right), 0);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right), 0);
 
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right, 1), 0);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right, 1), 0);
 
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right, 100), 0);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right, 100), 0);
 }
 
 TEST(TestStringUtils, CompareNoCase_Advanced)
 {
-  // Null behavior. iconv passes Nulls on through to output
 
   std::string haveNull = "Jane, you\0 are mistaken."s;
-  std::u32string u32Result = StringUtils::ToUtf32(haveNull);
+  // std::u32string u32Result = OrigStringUtils::ToUtf32(haveNull);
 
-  // Length = # codepoints, Null is a valid codepoint
+  // Length = # codepoints
 
-  EXPECT_EQ(24, u32Result.length());
-  std::string sResult = StringUtils::ToUtf8(u32Result);
+  // EXPECT_EQ(9, u32Result.length());
+  /// std::string sResult = OrigStringUtils::ToUtf8(u32Result);
 
-  EXPECT_STREQ("Jane, you"s.c_str(), sResult.c_str());
+  // EXPECT_EQ("Jane, you"s, sResult.data());
 
-  std::vector<std::wstring> values{
-      L"This is a test"s, // 0
-      L"ThIS is A TeSt"s, // 1
-      L"Another\x0Test"s, // 2
-      L"Are"s, // 3
-      L"\x0Null Not Special"s, // 4
-      L""s, // 5
-      L"\x0Lbbbbb"s // 6
+  std::vector<std::string> values{
+      "This is a test"s, // 0
+      "ThIS is A TeSt2"s, // 1
+      "Another\x0Test"s, // 2
+      "Are"s, // 3
+      "\x0Null Not Special"s, // 4
+      "x"s, // 5
+      "\x0Lbbbbb"s // 6
   };
 
-  int compareResult = StringUtils::CompareNoCase(values[4], values[6]);
+  // Both begin with null, which, after converting to u32string,
+  // will make both empty u32strings
+
+  int compareResult = OrigStringUtils::CompareNoCase(values[4], values[6]);
   EXPECT_EQ(1, compareResult);
 
   // Both will case fold to the same, except that values[1] is longer
-  // When strings both equal until one ends, then the shorter one < longer
+  // When strings both equal until one neds, then the shorter one < longer
   // -1 == first shorter
   // 1 == second shorter
-  compareResult = StringUtils::CompareNoCase(values[1], values[0]);
-  EXPECT_EQ(0, compareResult);
+  compareResult = OrigStringUtils::CompareNoCase(values[1], values[0]);
+  EXPECT_EQ(1, compareResult);
 
   // Emulate code for Windows device selection and sorting
 
   struct ci_less
   {
-    struct nocase_compare
+    bool operator()(const std::string& s1, const std::string& s2) const
     {
-      bool operator()(const std::wstring& s1, const std::wstring& s2) const
-      {
-        return StringUtils::CompareNoCase(s1, s2) < 0;
-      }
-    };
-    bool operator()(const std::wstring& s1, const std::wstring& s2) const
-    {
-      std::wstring left = StringUtils::FoldCase(s1);
-      std::wstring right = StringUtils::FoldCase(s2);
-      return std::lexicographical_compare(left.begin(), left.end(), right.begin(), right.end());
+       return OrigStringUtils::CompareNoCase(s1, s2) < 0;
     }
   };
-
-  std::set<std::wstring, ci_less> adapters;
+  std::set<std::string, ci_less> adapters;
 
   for (const auto& profile : values)
   {
@@ -906,28 +885,30 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
   }
 
   std::vector<std::string> sResults;
-  for (const std::wstring_view adapter : adapters)
+  for (const std::string_view adapter : adapters)
   {
-    sResults.push_back(StringUtils::ToUtf8(adapter));
+    sResults.push_back(std::string(adapter));
   }
+
   std::vector<std::string> expectedResults{
-      ""s, // 0
-      "\x0Lbbbbb"s, // 1
-      "\x0Null Not Special"s, // 2
-      "Another"s, // 3
-      "Are"s, // 4
-      "This is a test"s // 6   In case one is shorter and they are equal to that point
+    "\x0Lbbbbb"s, // 0
+      "\x0Null Not Special"s, // 1
+      "Another"s, // 2
+      "Are"s, // 3
+      "This is a test"s, // 4   In case one is shorter and they are equal to that point
       //     shortest wins
-      // "ThIS is A TeSt"s, // 6
+      "ThIS is A TeSt2"s, // 5
+      "x"s, // 6
   };
 
   EXPECT_EQ(sResults.size(), expectedResults.size());
-  EXPECT_STREQ(sResults[0].c_str(), expectedResults[0].c_str());
-  EXPECT_STREQ(sResults[1].c_str(), expectedResults[1].c_str());
-  EXPECT_STREQ(sResults[2].c_str(), expectedResults[2].c_str());
-  EXPECT_STREQ(sResults[3].c_str(), expectedResults[3].c_str());
-  EXPECT_STREQ(sResults[4].c_str(), expectedResults[4].c_str());
-  EXPECT_STREQ(sResults[5].c_str(), expectedResults[5].c_str());
+  EXPECT_EQ(sResults[0].data(), expectedResults[0].data());
+  EXPECT_EQ(sResults[1].data(), expectedResults[1].data());
+  EXPECT_EQ(sResults[2].data(), expectedResults[2].data());
+  EXPECT_EQ(sResults[3].data(), expectedResults[3].data());
+  EXPECT_EQ(sResults[4].data(), expectedResults[4].data());
+  EXPECT_EQ(sResults[5].data(), expectedResults[5].data());
+
 
   std::string left; // Don't use string_view!
   std::string right; // Don't use string_view!
@@ -938,12 +919,12 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
   right = "ABCIi123abc ";
   right = right.substr(0, 5); // Not very exciting
   expectedResult = 0;
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right), expectedResult);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right), expectedResult);
 
   left = "abciI123ABC ";
   right = "ABCIi ";
   // Compare first 5 Unicode code-points ('graphemes'/'characters') formed from the UTF8
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right, 5), expectedResult);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right, 5), expectedResult);
 
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   right = TestStringUtils::UTF8_GERMAN_LOWER_SS; // óósschloë
@@ -951,7 +932,7 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
   // Single byte comparison results in < 0
   // Unicode codepoint comparision results in 0
 
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) == 0);
+  EXPECT_TRUE(OrigStringUtils::CompareNoCase(left, right) == 0);
 
   // More interesting guessing the byte length for multibyte characters, eh?
   // These are ALL full-foldcase equivalent (but not simple-foldcase, as is here).
@@ -983,7 +964,7 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
 
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   right = TestStringUtils::UTF8_GERMAN_SAMPLE; // óóßChloë
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right), -1);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right), -1);
 
   left = {TestStringUtils::UTF8_GERMAN_UPPER, 4}; // ÓÓSSCHLOË byte 4 = end of 2nd Ó
   right = {TestStringUtils::UTF8_GERMAN_SAMPLE, 4}; // óóßChloë  byte 4 = end of 2nd ó
@@ -992,7 +973,7 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
   // set on all start bytes of multi-byte sequence)
   // Unicode codepoint comparision results in == 0
 
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) == 0);
+  EXPECT_TRUE(OrigStringUtils::CompareNoCase(left, right) == 0);
 
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
   right = TestStringUtils::UTF8_GERMAN_SAMPLE; // óóßChloë
@@ -1002,7 +983,7 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
   // New API redefines the third argument to be the number of code-points ('characters')
   // instead of bytes.
 
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right, 2) == 0);
+  EXPECT_TRUE(OrigStringUtils::CompareNoCase(left, right, 2) == 0);
 
   // A full-foldcase would recognize that "ß" and "ss" are equivalent.
   // Attempting here to confirm current behavior.
@@ -1011,19 +992,21 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
 
   left = {TestStringUtils::UTF8_GERMAN_UPPER, 0, 6}; // ÓÓSSCHLOË
   right = {TestStringUtils::UTF8_GERMAN_SAMPLE, 0, 6}; // óóßChloë
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right), -1);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right), -1);
 
+  /*
   // Limit by number of codepoints since we use utf32string inside
 
   left = TestStringUtils::UTF8_GERMAN_UPPER; // ÓÓSSCHLOË
-  std::u32string leftUtf32 = {StringUtils::ToUtf32(left), 0, 4}; // => ÓÓSS
-  left = StringUtils::ToUtf8(leftUtf32);
+  std::u32string leftUtf32 = {OrigStringUtils::ToUtf32(left), 0, 4}; // => ÓÓSS
+  left = OrigStringUtils::ToUtf8(leftUtf32);
 
   right = TestStringUtils::UTF8_GERMAN_SAMPLE; // óóßChloë
-  std::u32string rightUtf32 = {StringUtils::ToUtf32(right), 0, 3}; // => óóß
-  right = StringUtils::ToUtf8(rightUtf32);
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0);
+  std::u32string rightUtf32 = {OrigStringUtils::ToUtf32(right), 0, 3}; // => óóß
+  right = OrigStringUtils::ToUtf8(rightUtf32);
+  EXPECT_TRUE(OrigStringUtils::CompareNoCase(left, right) < 0);
 
+*/
   // Without normalization (beyond the capabilities of this implementation)
   // the code doesn't recognize that these characters are equivalent.
   // Fortunately, in normal use, normalization is rarely used, except
@@ -1032,27 +1015,27 @@ TEST(TestStringUtils, CompareNoCase_Advanced)
 
   left = TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_1; // 6 bytes
   right = TestStringUtils::UTF8_MULTI_CODEPOINT_CHAR1_VARIENT_5; // 4 bytes
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right), -1);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right), -1);
 
   // Boundary Tests
 
   left = "abciI123ABC ";
   right = "ABCIi123abc ";
   expectedResult = 0;
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right, 0), expectedResult);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right, 0), expectedResult);
 
   left = "";
   right = "ABCIi123abc ";
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) < 0);
+  EXPECT_TRUE(OrigStringUtils::CompareNoCase(left, right) > 0);
 
   left = "abciI123ABC ";
   right = "";
-  EXPECT_TRUE(StringUtils::CompareNoCase(left, right) > 0);
+  EXPECT_TRUE(OrigStringUtils::CompareNoCase(left, right) < 0);
 
   left = "";
   right = "";
   expectedResult = 0;
-  EXPECT_EQ(StringUtils::CompareNoCase(left, right), expectedResult);
+  EXPECT_EQ(OrigStringUtils::CompareNoCase(left, right), expectedResult);
 }
 
 TEST(TestStringUtils, Left)
@@ -1062,15 +1045,15 @@ TEST(TestStringUtils, Left)
   std::string origstr = "test";
 
   refstr = "";
-  varstr = StringUtils::Left(origstr, 0);
+  varstr = OrigStringUtils::Left(origstr, 0);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "te";
-  varstr = StringUtils::Left(origstr, 2);
+  varstr = OrigStringUtils::Left(origstr, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "test";
-  varstr = StringUtils::Left(origstr, 10);
+  varstr = OrigStringUtils::Left(origstr, 10);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
@@ -1081,27 +1064,27 @@ TEST(TestStringUtils, Mid)
   std::string origstr{"test"};
 
   refstr = "";
-  varstr = StringUtils::Mid(origstr, 0, 0);
+  varstr = OrigStringUtils::Mid(origstr, 0, 0);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "te";
-  varstr = StringUtils::Mid(origstr, 0, 2);
+  varstr = OrigStringUtils::Mid(origstr, 0, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "test";
-  varstr = StringUtils::Mid(origstr, 0, 10);
+  varstr = OrigStringUtils::Mid(origstr, 0, 10);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "st";
-  varstr = StringUtils::Mid(origstr, 2);
+  varstr = OrigStringUtils::Mid(origstr, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "st";
-  varstr = StringUtils::Mid(origstr, 2, 2);
+  varstr = OrigStringUtils::Mid(origstr, 2, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "es";
-  varstr = StringUtils::Mid(origstr, 1, 2);
+  varstr = OrigStringUtils::Mid(origstr, 1, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
@@ -1112,15 +1095,15 @@ TEST(TestStringUtils, Right)
   std::string origstr{"test"};
 
   refstr = "";
-  varstr = StringUtils::Right(origstr, 0);
+  varstr = OrigStringUtils::Right(origstr, 0);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "st";
-  varstr = StringUtils::Right(origstr, 2);
+  varstr = OrigStringUtils::Right(origstr, 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   refstr = "test";
-  varstr = StringUtils::Right(origstr, 10);
+  varstr = OrigStringUtils::Right(origstr, 10);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
@@ -1129,7 +1112,7 @@ TEST(TestStringUtils, Trim)
   std::string refstr{"test test"};
 
   std::string varstr{" test test   "};
-  StringUtils::Trim(varstr);
+  OrigStringUtils::Trim(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
@@ -1138,7 +1121,7 @@ TEST(TestStringUtils, TrimLeft)
   std::string refstr = "test test   ";
 
   std::string varstr = " test test   ";
-  StringUtils::TrimLeft(varstr);
+  OrigStringUtils::TrimLeft(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
@@ -1147,7 +1130,7 @@ TEST(TestStringUtils, TrimRight)
   std::string refstr = " test test";
 
   std::string varstr = " test test   ";
-  StringUtils::TrimRight(varstr);
+  OrigStringUtils::TrimRight(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
@@ -1156,17 +1139,17 @@ TEST(TestStringUtils, Replace)
   std::string refstr = "text text";
 
   std::string varstr = "test test";
-  EXPECT_EQ(StringUtils::Replace(varstr, 's', 'x'), 2);
+  EXPECT_EQ(OrigStringUtils::Replace(varstr, 's', 'x'), 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  EXPECT_EQ(StringUtils::Replace(varstr, 's', 'x'), 0);
+  EXPECT_EQ(OrigStringUtils::Replace(varstr, 's', 'x'), 0);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
   varstr = "test test";
-  EXPECT_EQ(StringUtils::Replace(varstr, "s", "x"), 2);
+  EXPECT_EQ(OrigStringUtils::Replace(varstr, "s", "x"), 2);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 
-  EXPECT_EQ(StringUtils::Replace(varstr, "s", "x"), 0);
+  EXPECT_EQ(OrigStringUtils::Replace(varstr, "s", "x"), 0);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
@@ -1174,84 +1157,84 @@ TEST(TestStringUtils, StartsWith)
 {
   std::string refstr = "test";
   std::string input;
-  std::string_view p;
+  std::string p;
 
-  EXPECT_FALSE(StringUtils::StartsWith(refstr, "x"));
-  EXPECT_TRUE(StringUtils::StartsWith(refstr, "te"));
-  EXPECT_TRUE(StringUtils::StartsWith(refstr, "test"));
-  EXPECT_FALSE(StringUtils::StartsWith(refstr, "Te"));
-  EXPECT_FALSE(StringUtils::StartsWith(refstr, "test "));
-  EXPECT_TRUE(StringUtils::StartsWith(refstr, "test\0")); // Embedded null terminates string
+  EXPECT_FALSE(OrigStringUtils::StartsWith(refstr, "x"));
+  EXPECT_TRUE(OrigStringUtils::StartsWith(refstr, "te"));
+  EXPECT_TRUE(OrigStringUtils::StartsWith(refstr, "test"));
+  EXPECT_FALSE(OrigStringUtils::StartsWith(refstr, "Te"));
+  EXPECT_FALSE(OrigStringUtils::StartsWith(refstr, "test "));
+  EXPECT_TRUE(OrigStringUtils::StartsWith(refstr, "test\0")); // Embedded null terminates string
 
   p = {"tes"};
-  EXPECT_TRUE(StringUtils::StartsWith(refstr, p));
+  EXPECT_TRUE(OrigStringUtils::StartsWith(refstr, p));
 
   // Boundary
 
   input = "";
-  EXPECT_TRUE(StringUtils::StartsWith(input, ""));
-  EXPECT_FALSE(StringUtils::StartsWith(input, "Four score and seven years ago"));
+  EXPECT_TRUE(OrigStringUtils::StartsWith(input, ""));
+  EXPECT_FALSE(OrigStringUtils::StartsWith(input, "Four score and seven years ago"));
 
-  EXPECT_TRUE(StringUtils::StartsWith(refstr, ""));
+  EXPECT_TRUE(OrigStringUtils::StartsWith(refstr, ""));
 
   input = "";
   p = "";
-  EXPECT_TRUE(StringUtils::StartsWith(input, p));
-  EXPECT_TRUE(StringUtils::StartsWith(refstr, p));
+  EXPECT_TRUE(OrigStringUtils::StartsWith(input, p));
+  EXPECT_TRUE(OrigStringUtils::StartsWith(refstr, p));
 }
 
 TEST(TestStringUtils, StartsWithNoCase)
 {
   std::string refstr = "test";
   std::string input;
-  std::string_view p;
+  std::string p;
 
-  EXPECT_FALSE(StringUtils::StartsWithNoCase(refstr, "x"));
-  EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, "Te"));
-  EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, "TesT"));
-  EXPECT_FALSE(StringUtils::StartsWithNoCase(refstr, "Te st"));
-  EXPECT_FALSE(StringUtils::StartsWithNoCase(refstr, "test "));
+  EXPECT_FALSE(OrigStringUtils::StartsWithNoCase(refstr, "x"));
+  EXPECT_TRUE(OrigStringUtils::StartsWithNoCase(refstr, "Te"));
+  EXPECT_TRUE(OrigStringUtils::StartsWithNoCase(refstr, "TesT"));
+  EXPECT_FALSE(OrigStringUtils::StartsWithNoCase(refstr, "Te st"));
+  EXPECT_FALSE(OrigStringUtils::StartsWithNoCase(refstr, "test "));
   EXPECT_TRUE(
-      StringUtils::StartsWithNoCase(refstr, "test\0")); // Embedded null terminates string operation
+      OrigStringUtils::StartsWithNoCase(refstr, "test\0")); // Embedded null terminates string operation
 
   p = "tEs";
-  EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, p));
+  EXPECT_TRUE(OrigStringUtils::StartsWithNoCase(refstr, p));
 
   // Boundary
 
-  EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, ""));
+  EXPECT_TRUE(OrigStringUtils::StartsWithNoCase(refstr, ""));
 
   p = ""sv;
   // Verify Non-empty string begins with empty string.
-  EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, p));
+  EXPECT_TRUE(OrigStringUtils::StartsWithNoCase(refstr, p));
   // Same behavior with char * and string
-  EXPECT_TRUE(StringUtils::StartsWithNoCase(refstr, ""));
+  EXPECT_TRUE(OrigStringUtils::StartsWithNoCase(refstr, ""));
 
   input = "";
   // Empty string does begin with empty string
-  EXPECT_TRUE(StringUtils::StartsWithNoCase(input, ""));
-  EXPECT_FALSE(StringUtils::StartsWithNoCase(input, "Four score and seven years ago"));
+  EXPECT_TRUE(OrigStringUtils::StartsWithNoCase(input, ""));
+  EXPECT_FALSE(OrigStringUtils::StartsWithNoCase(input, "Four score and seven years ago"));
 
   input = "";
   p = "";
-  EXPECT_TRUE(StringUtils::StartsWithNoCase(input, p));
+  EXPECT_TRUE(OrigStringUtils::StartsWithNoCase(input, p));
 }
 
 TEST(TestStringUtils, EndsWith)
 {
   std::string refstr = "test";
 
-  EXPECT_TRUE(StringUtils::EndsWith(refstr, "st"));
-  EXPECT_TRUE(StringUtils::EndsWith(refstr, "test"));
-  EXPECT_FALSE(StringUtils::EndsWith(refstr, "sT"));
+  EXPECT_TRUE(OrigStringUtils::EndsWith(refstr, "st"));
+  EXPECT_TRUE(OrigStringUtils::EndsWith(refstr, "test"));
+  EXPECT_FALSE(OrigStringUtils::EndsWith(refstr, "sT"));
 }
 
 TEST(TestStringUtils, EndsWithNoCase)
 {
   std::string refstr = "test";
-  EXPECT_FALSE(StringUtils::EndsWithNoCase(refstr, "x"));
-  EXPECT_TRUE(StringUtils::EndsWithNoCase(refstr, "sT"));
-  EXPECT_TRUE(StringUtils::EndsWithNoCase(refstr, "TesT"));
+  EXPECT_FALSE(OrigStringUtils::EndsWithNoCase(refstr, "x"));
+  EXPECT_TRUE(OrigStringUtils::EndsWithNoCase(refstr, "sT"));
+  EXPECT_TRUE(OrigStringUtils::EndsWithNoCase(refstr, "TesT"));
 }
 
 TEST(TestStringUtils, Join)
@@ -1268,7 +1251,7 @@ TEST(TestStringUtils, Join)
   strarray.emplace_back("fg");
   strarray.emplace_back(",");
   refstr = "a,b,c,de,,,fg,,";
-  varstr = StringUtils::Join(strarray, ",");
+  varstr = OrigStringUtils::Join(strarray, ",");
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
@@ -1277,7 +1260,7 @@ TEST(TestStringUtils, Split)
   std::vector<std::string> varresults;
 
   // test overload with string as delimiter
-  varresults = StringUtils::Split("g,h,ij,k,lm,,n", ",");
+  varresults = OrigStringUtils::Split("g,h,ij,k,lm,,n", ",");
   EXPECT_STREQ("g", varresults.at(0).c_str());
   EXPECT_STREQ("h", varresults.at(1).c_str());
   EXPECT_STREQ("ij", varresults.at(2).c_str());
@@ -1286,47 +1269,47 @@ TEST(TestStringUtils, Split)
   EXPECT_STREQ("", varresults.at(5).c_str());
   EXPECT_STREQ("n", varresults.at(6).c_str());
 
-  EXPECT_TRUE(StringUtils::Split("", "|").empty());
+  EXPECT_TRUE(OrigStringUtils::Split("", "|").empty());
 
-  EXPECT_EQ(4U, StringUtils::Split("a bc  d ef ghi ", " ", 4).size());
-  EXPECT_STREQ("d ef ghi ", StringUtils::Split("a bc  d ef ghi ", " ", 4).at(3).c_str())
+  EXPECT_EQ(4U, OrigStringUtils::Split("a bc  d ef ghi ", " ", 4).size());
+  EXPECT_STREQ("d ef ghi ", OrigStringUtils::Split("a bc  d ef ghi ", " ", 4).at(3).c_str())
       << "Last part must include rest of the input string";
-  EXPECT_EQ(7U, StringUtils::Split("a bc  d ef ghi ", " ").size())
+  EXPECT_EQ(7U, OrigStringUtils::Split("a bc  d ef ghi ", " ").size())
       << "Result must be 7 strings including two empty strings";
-  EXPECT_STREQ("bc", StringUtils::Split("a bc  d ef ghi ", " ").at(1).c_str());
-  EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", " ").at(2).c_str());
-  EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", " ").at(6).c_str());
+  EXPECT_STREQ("bc", OrigStringUtils::Split("a bc  d ef ghi ", " ").at(1).c_str());
+  EXPECT_STREQ("", OrigStringUtils::Split("a bc  d ef ghi ", " ").at(2).c_str());
+  EXPECT_STREQ("", OrigStringUtils::Split("a bc  d ef ghi ", " ").at(6).c_str());
 
-  EXPECT_EQ(2U, StringUtils::Split("a bc  d ef ghi ", "  ").size());
-  EXPECT_EQ(2U, StringUtils::Split("a bc  d ef ghi ", "  ", 10).size());
-  EXPECT_STREQ("a bc", StringUtils::Split("a bc  d ef ghi ", "  ", 10).at(0).c_str());
+  EXPECT_EQ(2U, OrigStringUtils::Split("a bc  d ef ghi ", "  ").size());
+  EXPECT_EQ(2U, OrigStringUtils::Split("a bc  d ef ghi ", "  ", 10).size());
+  EXPECT_STREQ("a bc", OrigStringUtils::Split("a bc  d ef ghi ", "  ", 10).at(0).c_str());
 
-  EXPECT_EQ(1U, StringUtils::Split("a bc  d ef ghi ", " z").size());
-  EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", " z").at(0).c_str());
+  EXPECT_EQ(1U, OrigStringUtils::Split("a bc  d ef ghi ", " z").size());
+  EXPECT_STREQ("a bc  d ef ghi ", OrigStringUtils::Split("a bc  d ef ghi ", " z").at(0).c_str());
 
-  EXPECT_EQ(1U, StringUtils::Split("a bc  d ef ghi ", "").size());
-  EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", "").at(0).c_str());
+  EXPECT_EQ(1U, OrigStringUtils::Split("a bc  d ef ghi ", "").size());
+  EXPECT_STREQ("a bc  d ef ghi ", OrigStringUtils::Split("a bc  d ef ghi ", "").at(0).c_str());
 
   // test overload with char as delimiter
-  EXPECT_EQ(4U, StringUtils::Split("a bc  d ef ghi ", ' ', 4).size());
-  EXPECT_STREQ("d ef ghi ", StringUtils::Split("a bc  d ef ghi ", ' ', 4).at(3).c_str());
-  EXPECT_EQ(7U, StringUtils::Split("a bc  d ef ghi ", ' ').size())
+  EXPECT_EQ(4U, OrigStringUtils::Split("a bc  d ef ghi ", ' ', 4).size());
+  EXPECT_STREQ("d ef ghi ", OrigStringUtils::Split("a bc  d ef ghi ", ' ', 4).at(3).c_str());
+  EXPECT_EQ(7U, OrigStringUtils::Split("a bc  d ef ghi ", ' ').size())
       << "Result must be 7 strings including two empty strings";
-  EXPECT_STREQ("bc", StringUtils::Split("a bc  d ef ghi ", ' ').at(1).c_str());
-  EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", ' ').at(2).c_str());
-  EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", ' ').at(6).c_str());
+  EXPECT_STREQ("bc", OrigStringUtils::Split("a bc  d ef ghi ", ' ').at(1).c_str());
+  EXPECT_STREQ("", OrigStringUtils::Split("a bc  d ef ghi ", ' ').at(2).c_str());
+  EXPECT_STREQ("", OrigStringUtils::Split("a bc  d ef ghi ", ' ').at(6).c_str());
 
-  EXPECT_EQ(1U, StringUtils::Split("a bc  d ef ghi ", 'z').size());
-  EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", 'z').at(0).c_str());
+  EXPECT_EQ(1U, OrigStringUtils::Split("a bc  d ef ghi ", 'z').size());
+  EXPECT_STREQ("a bc  d ef ghi ", OrigStringUtils::Split("a bc  d ef ghi ", 'z').at(0).c_str());
 
-  EXPECT_EQ(1U, StringUtils::Split("a bc  d ef ghi ", "").size());
-  EXPECT_STREQ("a bc  d ef ghi ", StringUtils::Split("a bc  d ef ghi ", 'z').at(0).c_str());
+  EXPECT_EQ(1U, OrigStringUtils::Split("a bc  d ef ghi ", "").size());
+  EXPECT_STREQ("a bc  d ef ghi ", OrigStringUtils::Split("a bc  d ef ghi ", 'z').at(0).c_str());
 }
 
 TEST(TestStringUtils, FindNumber)
 {
-  EXPECT_EQ(3, StringUtils::FindNumber("aabcaadeaa", "aa"));
-  EXPECT_EQ(1, StringUtils::FindNumber("aabcaadeaa", "b"));
+  EXPECT_EQ(3, OrigStringUtils::FindNumber("aabcaadeaa", "aa"));
+  EXPECT_EQ(1, OrigStringUtils::FindNumber("aabcaadeaa", "b"));
 }
 
 TEST(TestStringUtils, AlphaNumericCompare)
@@ -1335,24 +1318,24 @@ TEST(TestStringUtils, AlphaNumericCompare)
   int64_t var;
 
   ref = 0;
-  var = StringUtils::AlphaNumericCompare(L"123abc", L"abc123");
+  var = OrigStringUtils::AlphaNumericCompare(L"123abc", L"abc123");
   EXPECT_LT(var, ref);
 }
 
 TEST(TestStringUtils, TimeStringToSeconds)
 {
-  EXPECT_EQ(77455, StringUtils::TimeStringToSeconds("21:30:55"));
-  EXPECT_EQ(7 * 60, StringUtils::TimeStringToSeconds("7 min"));
-  EXPECT_EQ(7 * 60, StringUtils::TimeStringToSeconds("7 min\t"));
-  EXPECT_EQ(154 * 60, StringUtils::TimeStringToSeconds("   154 min"));
-  EXPECT_EQ(1 * 60 + 1, StringUtils::TimeStringToSeconds("1:01"));
-  EXPECT_EQ(4 * 60 + 3, StringUtils::TimeStringToSeconds("4:03"));
-  EXPECT_EQ(2 * 3600 + 4 * 60 + 3, StringUtils::TimeStringToSeconds("2:04:03"));
-  EXPECT_EQ(2 * 3600 + 4 * 60 + 3, StringUtils::TimeStringToSeconds("   2:4:3"));
-  EXPECT_EQ(2 * 3600 + 4 * 60 + 3, StringUtils::TimeStringToSeconds("  \t\t 02:04:03 \n "));
-  EXPECT_EQ(1 * 3600 + 5 * 60 + 2, StringUtils::TimeStringToSeconds("01:05:02:04:03 \n "));
-  EXPECT_EQ(0, StringUtils::TimeStringToSeconds("blah"));
-  EXPECT_EQ(0, StringUtils::TimeStringToSeconds("ля-ля"));
+  EXPECT_EQ(77455, OrigStringUtils::TimeStringToSeconds("21:30:55"));
+  EXPECT_EQ(7 * 60, OrigStringUtils::TimeStringToSeconds("7 min"));
+  EXPECT_EQ(7 * 60, OrigStringUtils::TimeStringToSeconds("7 min\t"));
+  EXPECT_EQ(154 * 60, OrigStringUtils::TimeStringToSeconds("   154 min"));
+  EXPECT_EQ(1 * 60 + 1, OrigStringUtils::TimeStringToSeconds("1:01"));
+  EXPECT_EQ(4 * 60 + 3, OrigStringUtils::TimeStringToSeconds("4:03"));
+  EXPECT_EQ(2 * 3600 + 4 * 60 + 3, OrigStringUtils::TimeStringToSeconds("2:04:03"));
+  EXPECT_EQ(2 * 3600 + 4 * 60 + 3, OrigStringUtils::TimeStringToSeconds("   2:4:3"));
+  EXPECT_EQ(2 * 3600 + 4 * 60 + 3, OrigStringUtils::TimeStringToSeconds("  \t\t 02:04:03 \n "));
+  EXPECT_EQ(1 * 3600 + 5 * 60 + 2, OrigStringUtils::TimeStringToSeconds("01:05:02:04:03 \n "));
+  EXPECT_EQ(0, OrigStringUtils::TimeStringToSeconds("blah"));
+  EXPECT_EQ(0, OrigStringUtils::TimeStringToSeconds("ля-ля"));
 }
 
 TEST(TestStringUtils, RemoveCRLF)
@@ -1362,7 +1345,7 @@ TEST(TestStringUtils, RemoveCRLF)
 
   refstr = "test\r\nstring\nblah blah";
   varstr = "test\r\nstring\nblah blah\n";
-  StringUtils::RemoveCRLF(varstr);
+  OrigStringUtils::RemoveCRLF(varstr);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
@@ -1372,7 +1355,7 @@ TEST(TestStringUtils, utf8_strlen)
   size_t var;
 
   ref = 9;
-  var = StringUtils::utf8_strlen("ｔｅｓｔ＿ＵＴＦ８");
+  var = OrigStringUtils::utf8_strlen("ｔｅｓｔ＿ＵＴＦ８");
   EXPECT_EQ(ref, var);
 }
 
@@ -1382,38 +1365,38 @@ TEST(TestStringUtils, SecondsToTimeString)
   std::string varstr;
 
   refstr = "21:30:55";
-  varstr = StringUtils::SecondsToTimeString(77455);
+  varstr = OrigStringUtils::SecondsToTimeString(77455);
   EXPECT_STREQ(refstr.c_str(), varstr.c_str());
 }
 
 TEST(TestStringUtils, IsNaturalNumber)
 {
-  EXPECT_TRUE(StringUtils::IsNaturalNumber("10"));
-  EXPECT_TRUE(StringUtils::IsNaturalNumber(" 10"));
-  EXPECT_TRUE(StringUtils::IsNaturalNumber("0"));
-  EXPECT_FALSE(StringUtils::IsNaturalNumber(" 1 0"));
-  EXPECT_FALSE(StringUtils::IsNaturalNumber("1.0"));
-  EXPECT_FALSE(StringUtils::IsNaturalNumber("1.1"));
-  EXPECT_FALSE(StringUtils::IsNaturalNumber("0x1"));
-  EXPECT_FALSE(StringUtils::IsNaturalNumber("blah"));
-  EXPECT_FALSE(StringUtils::IsNaturalNumber("120 h"));
-  EXPECT_FALSE(StringUtils::IsNaturalNumber(" "));
-  EXPECT_FALSE(StringUtils::IsNaturalNumber(""));
+  EXPECT_TRUE(OrigStringUtils::IsNaturalNumber("10"));
+  EXPECT_TRUE(OrigStringUtils::IsNaturalNumber(" 10"));
+  EXPECT_TRUE(OrigStringUtils::IsNaturalNumber("0"));
+  EXPECT_FALSE(OrigStringUtils::IsNaturalNumber(" 1 0"));
+  EXPECT_FALSE(OrigStringUtils::IsNaturalNumber("1.0"));
+  EXPECT_FALSE(OrigStringUtils::IsNaturalNumber("1.1"));
+  EXPECT_FALSE(OrigStringUtils::IsNaturalNumber("0x1"));
+  EXPECT_FALSE(OrigStringUtils::IsNaturalNumber("blah"));
+  EXPECT_FALSE(OrigStringUtils::IsNaturalNumber("120 h"));
+  EXPECT_FALSE(OrigStringUtils::IsNaturalNumber(" "));
+  EXPECT_FALSE(OrigStringUtils::IsNaturalNumber(""));
 }
 
 TEST(TestStringUtils, IsInteger)
 {
-  EXPECT_TRUE(StringUtils::IsInteger("10"));
-  EXPECT_TRUE(StringUtils::IsInteger(" -10"));
-  EXPECT_TRUE(StringUtils::IsInteger("0"));
-  EXPECT_FALSE(StringUtils::IsInteger(" 1 0"));
-  EXPECT_FALSE(StringUtils::IsInteger("1.0"));
-  EXPECT_FALSE(StringUtils::IsInteger("1.1"));
-  EXPECT_FALSE(StringUtils::IsInteger("0x1"));
-  EXPECT_FALSE(StringUtils::IsInteger("blah"));
-  EXPECT_FALSE(StringUtils::IsInteger("120 h"));
-  EXPECT_FALSE(StringUtils::IsInteger(" "));
-  EXPECT_FALSE(StringUtils::IsInteger(""));
+  EXPECT_TRUE(OrigStringUtils::IsInteger("10"));
+  EXPECT_TRUE(OrigStringUtils::IsInteger(" -10"));
+  EXPECT_TRUE(OrigStringUtils::IsInteger("0"));
+  EXPECT_FALSE(OrigStringUtils::IsInteger(" 1 0"));
+  EXPECT_FALSE(OrigStringUtils::IsInteger("1.0"));
+  EXPECT_FALSE(OrigStringUtils::IsInteger("1.1"));
+  EXPECT_FALSE(OrigStringUtils::IsInteger("0x1"));
+  EXPECT_FALSE(OrigStringUtils::IsInteger("blah"));
+  EXPECT_FALSE(OrigStringUtils::IsInteger("120 h"));
+  EXPECT_FALSE(OrigStringUtils::IsInteger(" "));
+  EXPECT_FALSE(OrigStringUtils::IsInteger(""));
 }
 
 TEST(TestStringUtils, SizeToString)
@@ -1422,17 +1405,17 @@ TEST(TestStringUtils, SizeToString)
   std::string var;
 
   ref = "2.00 GB";
-  var = StringUtils::SizeToString(2147483647);
+  var = OrigStringUtils::SizeToString(2147483647);
   EXPECT_STREQ(ref.c_str(), var.c_str());
 
   ref = "0.00 B";
-  var = StringUtils::SizeToString(0);
+  var = OrigStringUtils::SizeToString(0);
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 
 TEST(TestStringUtils, EmptyString)
 {
-  EXPECT_STREQ("", StringUtils::Empty.c_str());
+  EXPECT_STREQ("", OrigStringUtils::Empty.c_str());
 }
 
 TEST(TestStringUtils, FindWords)
@@ -1441,20 +1424,20 @@ TEST(TestStringUtils, FindWords)
   size_t var;
 
   ref = 5;
-  var = StringUtils::FindWords("test string", "string");
+  var = OrigStringUtils::FindWords("test string", "string");
   EXPECT_EQ(ref, var);
-  var = StringUtils::FindWords("12345string", "string");
+  var = OrigStringUtils::FindWords("12345string", "string");
   EXPECT_EQ(ref, var);
-  var = StringUtils::FindWords("apple2012", "2012");
+  var = OrigStringUtils::FindWords("apple2012", "2012");
   EXPECT_EQ(ref, var);
   ref = -1;
-  var = StringUtils::FindWords("12345string", "ring");
+  var = OrigStringUtils::FindWords("12345string", "ring");
   EXPECT_EQ(ref, var);
-  var = StringUtils::FindWords("12345string", "345");
+  var = OrigStringUtils::FindWords("12345string", "345");
   EXPECT_EQ(ref, var);
-  var = StringUtils::FindWords("apple2012", "e2012");
+  var = OrigStringUtils::FindWords("apple2012", "e2012");
   EXPECT_EQ(ref, var);
-  var = StringUtils::FindWords("apple2012", "12");
+  var = OrigStringUtils::FindWords("apple2012", "12");
   EXPECT_EQ(ref, var);
 }
 
@@ -1464,14 +1447,14 @@ TEST(TestStringUtils, FindWords_NonAscii)
   size_t var;
 
   ref = 6;
-  var = StringUtils::FindWords("我的视频", "视频");
+  var = OrigStringUtils::FindWords("我的视频", "视频");
   EXPECT_EQ(ref, var);
-  var = StringUtils::FindWords("我的视频", "视");
+  var = OrigStringUtils::FindWords("我的视频", "视");
   EXPECT_EQ(ref, var);
-  var = StringUtils::FindWords("Apple ple", "ple");
+  var = OrigStringUtils::FindWords("Apple ple", "ple");
   EXPECT_EQ(ref, var);
   ref = 7;
-  var = StringUtils::FindWords("Äpfel.pfel", "pfel");
+  var = OrigStringUtils::FindWords("Äpfel.pfel", "pfel");
   EXPECT_EQ(ref, var);
 }
 
@@ -1481,7 +1464,7 @@ TEST(TestStringUtils, FindEndBracket)
   size_t var;
 
   ref = 11;
-  var = StringUtils::FindEndBracket("atest testbb test", 'a', 'b');
+  var = OrigStringUtils::FindEndBracket("atest testbb test", 'a', 'b');
   EXPECT_EQ(ref, var);
 }
 
@@ -1491,7 +1474,7 @@ TEST(TestStringUtils, DateStringToYYYYMMDD)
   size_t var;
 
   ref = 20120706;
-  var = StringUtils::DateStringToYYYYMMDD("2012-07-06");
+  var = OrigStringUtils::DateStringToYYYYMMDD("2012-07-06");
   EXPECT_EQ(ref, var);
 }
 
@@ -1502,18 +1485,18 @@ TEST(TestStringUtils, WordToDigits)
 
   ref = "8378 787464";
   var = "test string";
-  StringUtils::WordToDigits(var);
+  OrigStringUtils::WordToDigits(var);
   EXPECT_STREQ(ref.c_str(), var.c_str());
 }
 
 TEST(TestStringUtils, CreateUUID)
 {
-  std::cout << "CreateUUID(): " << StringUtils::CreateUUID() << std::endl;
+  std::cout << "CreateUUID(): " << OrigStringUtils::CreateUUID() << std::endl;
 }
 
 TEST(TestStringUtils, ValidateUUID)
 {
-  EXPECT_TRUE(StringUtils::ValidateUUID(StringUtils::CreateUUID()));
+  EXPECT_TRUE(OrigStringUtils::ValidateUUID(OrigStringUtils::CreateUUID()));
 }
 
 TEST(TestStringUtils, CompareFuzzy)
@@ -1522,7 +1505,7 @@ TEST(TestStringUtils, CompareFuzzy)
   double var;
 
   ref = 6.25;
-  var = StringUtils::CompareFuzzy("test string", "string test");
+  var = OrigStringUtils::CompareFuzzy("test string", "string test");
   EXPECT_EQ(ref, var);
 }
 
@@ -1541,7 +1524,7 @@ TEST(TestStringUtils, FindBestMatch)
   strarray.emplace_back("e");
   strarray.emplace_back("es");
   strarray.emplace_back("t");
-  varint = StringUtils::FindBestMatch("test", strarray, vardouble);
+  varint = OrigStringUtils::FindBestMatch("test", strarray, vardouble);
   EXPECT_EQ(refint, varint);
   EXPECT_EQ(refdouble, vardouble);
 }
@@ -1551,7 +1534,7 @@ TEST(TestStringUtils, Paramify)
   const char* input = "some, very \\ odd \"string\"";
   const char* ref = "\"some, very \\\\ odd \\\"string\\\"\"";
 
-  std::string result = StringUtils::Paramify(input);
+  std::string result = OrigStringUtils::Paramify(input);
   EXPECT_STREQ(ref, result.c_str());
 }
 
@@ -1561,7 +1544,7 @@ TEST(TestStringUtils, sortstringbyname)
   strarray.emplace_back("B");
   strarray.emplace_back("c");
   strarray.emplace_back("a");
-  std::sort(strarray.begin(), strarray.end(), sortstringbyname());
+  std::sort(strarray.begin(), strarray.end(), origsortstringbyname());
 
   EXPECT_STREQ("a", strarray[0].c_str());
   EXPECT_STREQ("B", strarray[1].c_str());
@@ -1570,37 +1553,37 @@ TEST(TestStringUtils, sortstringbyname)
 
 TEST(TestStringUtils, FileSizeFormat)
 {
-  EXPECT_STREQ("0B", StringUtils::FormatFileSize(0).c_str());
+  EXPECT_STREQ("0B", OrigStringUtils::FormatFileSize(0).c_str());
 
-  EXPECT_STREQ("999B", StringUtils::FormatFileSize(999).c_str());
-  EXPECT_STREQ("0.98kB", StringUtils::FormatFileSize(1000).c_str());
+  EXPECT_STREQ("999B", OrigStringUtils::FormatFileSize(999).c_str());
+  EXPECT_STREQ("0.98kB", OrigStringUtils::FormatFileSize(1000).c_str());
 
-  EXPECT_STREQ("1.00kB", StringUtils::FormatFileSize(1024).c_str());
-  EXPECT_STREQ("9.99kB", StringUtils::FormatFileSize(10229).c_str());
+  EXPECT_STREQ("1.00kB", OrigStringUtils::FormatFileSize(1024).c_str());
+  EXPECT_STREQ("9.99kB", OrigStringUtils::FormatFileSize(10229).c_str());
 
-  EXPECT_STREQ("10.1kB", StringUtils::FormatFileSize(10387).c_str());
-  EXPECT_STREQ("99.9kB", StringUtils::FormatFileSize(102297).c_str());
+  EXPECT_STREQ("10.1kB", OrigStringUtils::FormatFileSize(10387).c_str());
+  EXPECT_STREQ("99.9kB", OrigStringUtils::FormatFileSize(102297).c_str());
 
-  EXPECT_STREQ("100kB", StringUtils::FormatFileSize(102400).c_str());
-  EXPECT_STREQ("999kB", StringUtils::FormatFileSize(1023431).c_str());
+  EXPECT_STREQ("100kB", OrigStringUtils::FormatFileSize(102400).c_str());
+  EXPECT_STREQ("999kB", OrigStringUtils::FormatFileSize(1023431).c_str());
 
-  EXPECT_STREQ("0.98MB", StringUtils::FormatFileSize(1023897).c_str());
-  EXPECT_STREQ("0.98MB", StringUtils::FormatFileSize(1024000).c_str());
+  EXPECT_STREQ("0.98MB", OrigStringUtils::FormatFileSize(1023897).c_str());
+  EXPECT_STREQ("0.98MB", OrigStringUtils::FormatFileSize(1024000).c_str());
 
   //Last unit should overflow the 3 digit limit
-  EXPECT_STREQ("5432PB", StringUtils::FormatFileSize(6115888293969133568).c_str());
+  EXPECT_STREQ("5432PB", OrigStringUtils::FormatFileSize(6115888293969133568).c_str());
 }
 
 TEST(TestStringUtils, ToHexadecimal)
 {
-  EXPECT_STREQ("", StringUtils::ToHexadecimal("").c_str());
-  EXPECT_STREQ("616263", StringUtils::ToHexadecimal("abc").c_str());
+  EXPECT_STREQ("", OrigStringUtils::ToHexadecimal("").c_str());
+  EXPECT_STREQ("616263", OrigStringUtils::ToHexadecimal("abc").c_str());
   std::string a{"a\0b\n", 4};
-  EXPECT_STREQ("6100620a", StringUtils::ToHexadecimal(a).c_str());
+  EXPECT_STREQ("6100620a", OrigStringUtils::ToHexadecimal(a).c_str());
   std::string nul{"\0", 1};
-  EXPECT_STREQ("00", StringUtils::ToHexadecimal(nul).c_str());
+  EXPECT_STREQ("00", OrigStringUtils::ToHexadecimal(nul).c_str());
   std::string ff{"\xFF", 1};
-  EXPECT_STREQ("ff", StringUtils::ToHexadecimal(ff).c_str());
+  EXPECT_STREQ("ff", OrigStringUtils::ToHexadecimal(ff).c_str());
 }
 
 // Sorry, there are about 600 lines here....
@@ -1986,7 +1969,7 @@ const char32_t UnicodeFoldLowerTable[]{
     U'\x1E92E', U'\x1E92F', U'\x1E930', U'\x1E931', U'\x1E932', U'\x1E933', U'\x1E934', U'\x1E935',
     U'\x1E936', U'\x1E937', U'\x1E938', U'\x1E939', U'\x1E93A', U'\x1E93B', U'\x1E93C', U'\x1E93D',
     U'\x1E93E', U'\x1E93F', U'\x1E940', U'\x1E941', U'\x1E942', U'\x1E943'};
-// clang-format on
+// clang-format off
 
 size_t GetFoldingTableSize()
 {

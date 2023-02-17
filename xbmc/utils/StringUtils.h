@@ -149,14 +149,142 @@ public:
    */
   static std::wstring ToWstring(const std::u32string_view str);
 
-  static std::string ToUpper(const std::string& str);
-  static std::wstring ToUpper(const std::wstring& str);
-  static void ToUpper(std::string& str);
-  static void ToUpper(std::wstring& str);
-  static std::string ToLower(const std::string& str);
-  static std::wstring ToLower(const std::wstring& str);
-  static void ToLower(std::string& str);
-  static void ToLower(std::wstring& str);
+  /*!
+   * \brief Returns the C Locale, primarily for the use of ToLower/ToUpper.
+   *
+   * The C locale can be very useful for reducing undesirable side effects when
+   * using ToLower/ToUpper for 'id' processing.
+   *
+   * Use FoldCase, if possible, to create caseless keys for Kodi internal use.
+   * Otherwise, if a keyword is ASCII, then specifying the C locale will greatly
+   * reduce surprises, such as the "Turkic-I" problem.
+   *
+   * If the keyword can not be constrained to ASCII, then English will likely work
+   * (but not guaranteed for all cases). Beyond that you are own your own.
+   *
+   * \return a cached instance of the Clocale. Caching eliminates the overhead of creating
+   * the locale instance.
+   */
+  static std::locale GetCLocale();
+
+public:
+  /*
+   *        IMPLEMENTATION NOTES FOR ToUpper, ToLower and FoldCase
+   *
+   * FoldCase
+   *
+   * C++ does not provide a means to do case folding.
+   * This implementation uses case folding tables from ICU4C. For more info
+   * see utils/unicode_tools. This implementation ONLY DOES SIMPLE case folding.
+   * Simple case folding always produces strings of the same byte length
+   * as the unfolded strings. Full case folding can produce strings of
+   * different lengths. For example, the German 'ß' folds to 'ss'. Other,
+   * more complex examples exist. Fortunately, there is not a large
+   * number of these characters and not so likely to occur
+   * in the contexts that folding is used in Kodi, but it would be more
+   * bullet-proof to have full case folding. The implementation here
+   * can easily be modified to use what is provided by ICU4C, should
+   * Kodi incorporate it in the future.
+   *
+   * Case mapping (ToLower/ToUpper)
+   *
+   * C++ provides case mapping via toupper/tolower. Because
+   * toupper/tolower operate on one code-unit at a time, it
+   * works fairly well using UTF-8 with "western" languages based
+   * on the "Latin" alphabet since many of these take up one byte of
+   * UTF-8. However for many other languages, and even Latin-based
+   * ones with accents, more than one-byte of UTF-8 is required
+   * per character (codepoint) and the quality of tolower/toupper
+   * decreases. It is best to use with at least UTF-16 and preferably
+   * UTF-32.
+   *
+   * An alternative UTF-32 implementation is provided here which is based
+   * on case mapping tables from ICU4C, similar to the case folding
+   * tables. An advantage to using this alternative implementation
+   * is that behavior is consistent with case-folding as well as being
+   * consistent across platforms.
+   *
+   * This implementation ONLY DOES SIMPLE case mapping and is
+   * insensitive to Locale (except "C" locale). For the C locale the
+   * native C++ toupper/tolower is used. This is because the "C"
+   * locale only modifies ASCII characters, which is useful in
+   * certain situations.
+   *
+   * At some point the implementation can be changed to support full,
+   * or nearly fully case mapping, or changed to use ICU4C.
+   */
+
+  /*!
+   * \brief Changes lower case letters to upper case.
+   *
+   *        Note: Only simple case mapping is supported
+   *
+   * \param str string to change to upper-case
+   * \param locale Specifies the language rules to follow
+   * \return upper cased string
+   */
+  static std::u32string ToUpper(const std::u32string_view str,
+                                const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
+
+  /*!
+   * \brief Changes lower case letters to upper case.
+   *
+   *        Note: Only simple case mapping is supported
+   *
+   * \param str string to change to upper-case
+   * \param locale Specifies the language rules to follow
+   * \return upper cased string
+   */
+  static std::string ToUpper(const std::string_view str,
+                             const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
+
+  /*!
+   * \brief Changes lower case letters to upper case.
+   *
+   *        Note: Only simple case mapping is supported
+   *
+   * \param str string to change to upper-case
+   * \param locale Specifies the language rules to follow
+   * \return upper cased string
+   */
+  static std::wstring ToUpper(const std::wstring_view str,
+                              const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
+
+  /*!
+   * \brief Changes upper case letters to lower-case case.
+   *
+   *        Note: Only simple case mapping is supported
+   *
+   * \param str string to change to upper-case
+   * \param locale Specifies the language rules to follow
+   * \return lower cased string
+   */
+  static std::u32string ToLower(const std::u32string_view str,
+                                const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
+
+  /*!
+   * \brief Changes upper case letters to lower case.
+   *
+   *        Note: Only simple case mapping is supported
+   *
+   * \param str string to change to lower-case
+   * \param locale Specifies the language rules to follow
+   * \return lower cased string
+   */
+  static std::string ToLower(const std::string_view str,
+                             const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
+
+  /*!
+   * \brief Changes upper case letters to lower case.
+   *
+   *        Note: Only simple case mapping is supported
+   *
+   * \param str string to change to lower-case
+   * \param locale Specifies the language rules to follow
+   * \return lower cased string
+   */
+  static std::wstring ToLower(const std::wstring_view str,
+                              const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
 
 private:
   /*!
@@ -786,6 +914,8 @@ private:
    * avoid including LangInfo.h from this header.
    */
   static const std::locale& GetOriginalLocale() noexcept;
+
+  static const std::locale& GetSystemLocale() noexcept;
 };
 
 struct sortstringbyname

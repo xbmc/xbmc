@@ -11216,7 +11216,9 @@ std::string CGUIInfoManager::GetMultiInfoItemLabel(const CFileItem *item, int co
       {
         std::string letter;
         std::wstring character(1, item->GetSortLabel()[0]);
-        StringUtils::ToUpper(character);
+
+        // Probably indexing by first (ASCII) char
+        character = StringUtils::ToUpper(character, StringUtils::GetCLocale());
         g_charsetConverter.wToUTF8(character, letter);
         return letter;
       }
