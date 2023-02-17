@@ -18,7 +18,7 @@
     <summary lang="ca_ES">Codificador d&apos;àudio WMA</summary>
     <summary lang="cs_CZ">Enkodér zvuku WMA</summary>
     <summary lang="da_DK">WMA Lydindkoder</summary>
-    <summary lang="de_DE">WMA Audio Encoder</summary>
+    <summary lang="de_DE">WMA Audioencoder</summary>
     <summary lang="en_AU">WMA Audio Encoder</summary>
     <summary lang="en_GB">WMA Audio Encoder</summary>
     <summary lang="en_NZ">WMA Audio Encoder</summary>
@@ -48,7 +48,7 @@
     <description lang="ca_ES">Windows Media Audio, el format d&apos;àudio amb pèrdua de Microsoft.</description>
     <description lang="cs_CZ">Windows Media Audio, ztrátový formát zvuku společnosti Microsoft.</description>
     <description lang="da_DK">Windows Media Audio, Microsofts kvalitetstabende lydformat.</description>
-    <description lang="de_DE">Windows Media Audio, Microsofts verlustbehaftetes Audio-Format.</description>
+    <description lang="de_DE">Windows Media Audio, Microsofts verlustbehaftetes Audioformat.</description>
     <description lang="en_AU">Windows Media Audio, Microsoft’s lossy audio format.</description>
     <description lang="en_GB">Windows Media Audio, Microsoft’s lossy audio format.</description>
     <description lang="en_NZ">Windows Media Audio, Microsoft’s lossy audio format.</description>
