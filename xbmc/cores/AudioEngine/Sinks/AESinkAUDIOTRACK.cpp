@@ -516,14 +516,14 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
       // the period calculation starts
       // after the buffer division to get even division results
       int c = 1;
-      if (m_audiotrackbuffer_sec > 0.2)
+      if (m_audiotrackbuffer_sec > 0.25)
       {
         CLog::Log(LOGWARNING,
                   "Audiobuffer is already very large {:f} ms - Reducing to a sensible value",
                   1000.0 * m_audiotrackbuffer_sec);
-        int buffer_frames = m_sink_sampleRate / 5; // 200 ms
+        int buffer_frames = m_sink_sampleRate / 4; // 250 ms
         m_min_buffer_size = buffer_frames * m_sink_frameSize;
-        c = 4; // 50 ms
+        c = 5; // 50 ms
       }
       // update potential new buffertime
       m_audiotrackbuffer_sec =
@@ -811,8 +811,7 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   if (!IsInitialized())
     return INT_MAX;
 
-  const double max_delay = m_passthrough ? 0.6 : 0.4;
-  if (m_delay > max_delay)
+  if (m_delay > 1.0)
   {
     CLog::Log(LOGERROR, "Sink got stuck with large buffer {:f} - reopening", m_delay);
     return INT_MAX;
