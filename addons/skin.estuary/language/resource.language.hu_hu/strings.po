@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-02-26 16:13+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2023-01-29 21:15+0000\n"
+"Last-Translator: Frodo19 <bilbohu@gmail.com>\n"
 "Language-Team: Hungarian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/hu_hu/>\n"
 "Language: hu_hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11\n"
+"X-Generator: Weblate 4.15.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -179,7 +179,7 @@ msgstr "Oldalak"
 
 msgctxt "#31036"
 msgid "items"
-msgstr "elem"
+msgstr "Elemek"
 
 msgctxt "#31037"
 msgid "Selected track"
@@ -199,7 +199,7 @@ msgstr "Fényképezőkép gyártó"
 
 msgctxt "#31042"
 msgid "Playlist options"
-msgstr "Lejátszáslista lehetőségek"
+msgstr "Lejátszási lista lehetőségek"
 
 msgctxt "#31043"
 msgid "Set the type and add rules to create a smart playlist. These playlists are dynamic and include all media items from your database which apply to your chosen rules."
@@ -283,7 +283,7 @@ msgstr "Eseménynapló"
 
 msgctxt "#31068"
 msgid "Choose presets"
-msgstr "Válassz előbeállítást"
+msgstr "Válassz előre beállított értékeket"
 
 msgctxt "#31069"
 msgid "Last Updated"
@@ -360,17 +360,17 @@ msgstr "Válaszd ki a Kodi felhasználói profilod[CR]a belépéshez"
 #. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
-msgstr "IkonFal"
+msgstr "Ikon Fal"
 
 #. viewtype name
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Shift"
+msgstr "Eltolás"
 
 #. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "InfóFal"
+msgstr "Infó Fal"
 
 #. viewtype name
 msgctxt "#31102"
@@ -383,11 +383,11 @@ msgstr "Ide írja a szöveget…"
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
-msgstr "A médiatár jelenleg üres. A saját médiafájlok hozzáadásához, menjen a \"Fájlok\" menüponthoz, adjon hozzá egy médiaforrást és konfigurálja azt. Miután a forrás hozzáadásra és indexelésre került, böngészni fogja tudni a médiatárat."
+msgstr "A médiatár jelenleg üres. A saját médiafájlok hozzáadásához, menjen a \"Fájlok\" menüponthoz, adjon hozzá egy médiaforrást és konfigurálja azt. Miután a forrás hozzáadásra és indexelésre került, böngészni tudja a médiatárat."
 
 msgctxt "#31105"
 msgid "Add video sources and set the appropriate content type in order to populate your video libraries."
-msgstr "Adjon hozzá videóforrásokat és állítsa be a megfelelő tartalomtípust a videótárak kialakításához."
+msgstr "Adjon hozzá videóforrásokat és állítsa be a megfelelő tartalomtípust a médiatárak kialakításához."
 
 msgctxt "#31106"
 msgid "Teletext"
@@ -396,7 +396,7 @@ msgstr "Teletext"
 #. viewtype name
 msgctxt "#31107"
 msgid "WideList"
-msgstr "SzélesLista"
+msgstr "Széles Lista"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -448,7 +448,7 @@ msgstr "Időjárás-szolgáltató beállítása"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
-msgstr "Nem látott TV-sorozatok"
+msgstr "Nem látott Sorozatok"
 
 msgctxt "#31123"
 msgid "Same director"
@@ -460,7 +460,7 @@ msgstr "Nyomja meg a fel gombot a színész információkhoz"
 
 msgctxt "#31126"
 msgid "Press OK to read plot"
-msgstr "Nyomjon OK-t a tartalom elolvasához"
+msgstr "Nyomjon OK-t a tartalom elolvasásához"
 
 msgctxt "#31127"
 msgid "Show icons"
@@ -472,7 +472,7 @@ msgstr "Közreműködők"
 
 msgctxt "#31129"
 msgid "General settings applying to all areas of the skin."
-msgstr "Általános beállítások a felület minden egyes területére vonatkozóan."
+msgstr "Általános beállítások a felszín minden egyes területére vonatkozóan."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
@@ -540,7 +540,7 @@ msgstr "Belépés a kiegészítő böngészőbe"
 
 msgctxt "#31145"
 msgid "Search add-ons"
-msgstr "Bővítmények keresése"
+msgstr "Kiegészítők keresése"
 
 msgctxt "#31146"
 msgid "In cinemas"
@@ -592,7 +592,7 @@ msgstr "Kategóriák szerkesztése"
 
 msgctxt "#31158"
 msgid "Touch mode"
-msgstr "Éríntős mód"
+msgstr "Érintős mód"
 
 msgctxt "#31159"
 msgid "Artwork"
@@ -622,12 +622,12 @@ msgstr "Válassza ki a profil azonosítását"
 #. Label for the kind of profile identification
 msgctxt "#31165"
 msgid "Profile name"
-msgstr "Profil neve"
+msgstr "Profilnév"
 
 #. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
-msgstr "Profil avatar"
+msgstr "Profilkép"
 
 #. Label of a setting
 msgctxt "#31167"
@@ -647,37 +647,37 @@ msgstr "Illusztrációval kapcsolatos beállítások."
 #. Label for OSD settings category
 msgctxt "#31170"
 msgid "On screen display"
-msgstr ""
+msgstr "Képernyőkijelzés"
 
 #. Helper text for the label of OSD settings category
 msgctxt "#31171"
 msgid "On screen display (OSD) related settings"
-msgstr ""
+msgstr "A képernyőn megjelenő (OSD) beállítások"
 
 #. Setting Automatically close video OSD
 msgctxt "#31172"
 msgid "Automatically close video OSD"
-msgstr ""
+msgstr "Videó OSD automatikus bezárása"
 
 #. Setting auto close time for video osd
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr ""
+msgstr "Videó OSD automatikus bezárási ideje (másodperc)"
 
 #. Setting to control what happens when clicking a music album on the home screen
 msgctxt "#31174"
 msgid "Default select action for albums on the home screen"
-msgstr ""
+msgstr "Az albumok alapértelmezett kiválasztási művelete a kezdőképernyőn"
 
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr ""
+msgstr "A Sorozatok alapértelmezett kiválasztási művelete a kezdőképernyőn"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
-msgstr ""
+msgstr "A filmgyűjtemények alapértelmezett kiválasztási művelete a kezdőképernyőn"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
@@ -698,7 +698,7 @@ msgstr "Videó képarány"
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr ""
+msgstr "Video bitráta"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
@@ -713,7 +713,7 @@ msgstr "Hangcsatornák"
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr ""
+msgstr "Audió bitráta"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
@@ -723,7 +723,7 @@ msgstr "Képernyő felbontása"
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr ""
+msgstr "A rendszer renderelési sebessége"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
