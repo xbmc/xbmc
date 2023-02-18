@@ -59,8 +59,7 @@ void CActiveAESink::Dispose()
   {
     m_sink->Drain();
     m_sink->Deinitialize();
-    delete m_sink;
-    m_sink = nullptr;
+    m_sink.reset();
   }
 
   delete m_sampleOfSilence.pkt;
@@ -305,8 +304,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           {
             m_sink->Drain();
             m_sink->Deinitialize();
-            delete m_sink;
-            m_sink = nullptr;
+            m_sink.reset();
           }
           m_state = S_TOP_UNCONFIGURED;
           msg->Reply(CSinkControlProtocol::ACC);
@@ -442,8 +440,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           if (m_extError)
           {
             m_sink->Deinitialize();
-            delete m_sink;
-            m_sink = nullptr;
+            m_sink.reset();
             m_state = S_TOP_CONFIGURED_SUSPEND;
             m_extTimeout = 0ms;
           }
@@ -537,8 +534,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
         {
         case CSinkControlProtocol::TIMEOUT:
           m_sink->Deinitialize();
-          delete m_sink;
-          m_sink = nullptr;
+          m_sink.reset();
           m_state = S_TOP_CONFIGURED_SUSPEND;
           m_extTimeout = 10s;
           return;
@@ -585,8 +581,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           if (m_extError)
           {
             m_sink->Deinitialize();
-            delete m_sink;
-            m_sink = nullptr;
+            m_sink.reset();
             m_state = S_TOP_CONFIGURED_SUSPEND;
           }
           else
@@ -826,8 +821,7 @@ void CActiveAESink::OpenSink()
   {
     m_sink->Drain();
     m_sink->Deinitialize();
-    delete m_sink;
-    m_sink = nullptr;
+    m_sink.reset();
   }
 
   // get the display name of the device

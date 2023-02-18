@@ -974,14 +974,14 @@ void CAESinkAUDIOTRACK::Register()
   AE::CAESinkFactory::RegisterSink(entry);
 }
 
-IAESink* CAESinkAUDIOTRACK::Create(std::string &device, AEAudioFormat& desiredFormat)
+std::unique_ptr<IAESink> CAESinkAUDIOTRACK::Create(std::string& device,
+                                                   AEAudioFormat& desiredFormat)
 {
-  IAESink* sink = new CAESinkAUDIOTRACK();
+  auto sink = std::make_unique<CAESinkAUDIOTRACK>();
   if (sink->Initialize(desiredFormat, device))
     return sink;
 
-  delete sink;
-  return nullptr;
+  return {};
 }
 
 void CAESinkAUDIOTRACK::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)

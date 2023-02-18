@@ -169,14 +169,13 @@ void CAESinkDARWINOSX::Register()
   AE::CAESinkFactory::RegisterSink(reg);
 }
 
-IAESink* CAESinkDARWINOSX::Create(std::string &device, AEAudioFormat &desiredFormat)
+std::unique_ptr<IAESink> CAESinkDARWINOSX::Create(std::string& device, AEAudioFormat& desiredFormat)
 {
-  IAESink *sink = new CAESinkDARWINOSX();
+  auto sink = std::make_unique<CAESinkDARWINOSX>();
   if (sink->Initialize(desiredFormat, device))
     return sink;
 
-  delete sink;
-  return nullptr;
+  return {};
 }
 
 bool CAESinkDARWINOSX::Initialize(AEAudioFormat &format, std::string &device)

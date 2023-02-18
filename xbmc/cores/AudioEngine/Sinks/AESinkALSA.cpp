@@ -109,14 +109,13 @@ void CAESinkALSA::Register()
   AE::CAESinkFactory::RegisterSink(entry);
 }
 
-IAESink* CAESinkALSA::Create(std::string &device, AEAudioFormat& desiredFormat)
+std::unique_ptr<IAESink> CAESinkALSA::Create(std::string& device, AEAudioFormat& desiredFormat)
 {
-  IAESink* sink = new CAESinkALSA();
+  auto sink = std::make_unique<CAESinkALSA>();
   if (sink->Initialize(desiredFormat, device))
     return sink;
 
-  delete sink;
-  return nullptr;
+  return {};
 }
 
 inline CAEChannelInfo CAESinkALSA::GetChannelLayoutRaw(const AEAudioFormat& format)

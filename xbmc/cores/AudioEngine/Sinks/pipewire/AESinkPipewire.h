@@ -33,7 +33,7 @@ public:
   ~CAESinkPipewire() override = default;
 
   static bool Register();
-  static IAESink* Create(std::string& device, AEAudioFormat& desiredFormat);
+  static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
   static void EnumerateDevicesEx(AEDeviceInfoList& list, bool force = false);
   static void Destroy();
 
