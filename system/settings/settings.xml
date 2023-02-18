@@ -2290,11 +2290,20 @@
           </dependencies>
           <control type="toggle" />
         </setting>
-        <setting id="services.useairplaypassword" type="boolean" parent="services.airplay" label="1272" help="36344">
+        <setting id="services.airplayvideosupport" type="boolean" parent="services.airplay" label="1268" help="36549">
+          <level>3</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="services.airplay">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
+        <setting id="services.useairplaypassword" type="boolean" parent="services.airplayvideosupport" label="1272" help="36344">
           <level>1</level>
           <default>false</default>
           <dependencies>
             <dependency type="enable" setting="services.airplay">true</dependency>
+            <dependency type="enable" setting="services.airplayvideosupport">true</dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
@@ -2310,14 +2319,6 @@
           <control type="edit" format="string">
             <hidden>true</hidden>
           </control>
-        </setting>
-        <setting id="services.airplayvideosupport" type="boolean" parent="services.airplay" label="1268" help="36549">
-          <level>3</level>
-          <default>false</default>
-          <dependencies>
-            <dependency type="enable" setting="services.airplay">true</dependency>
-          </dependencies>
-          <control type="toggle" />
         </setting>
       </group>
     </category>
