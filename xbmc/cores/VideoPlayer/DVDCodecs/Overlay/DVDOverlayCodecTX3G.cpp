@@ -168,7 +168,8 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
       // Get the data of each style record
       // Each style is ordered by starting character offset, and the starting
       // offset of one style record shall be greater than or equal to the
-      // ending character offset of the preceding record.
+      // ending character offset of the preceding record,
+      // styles records shall not overlap their character ranges.
       for (int i = 0; i < styleCount; i++)
       {
         if (sampleData.CharsLeft() < 12)
@@ -192,6 +193,10 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
           styleRec.startChar = textLength;
         if (styleRec.endChar > textLength)
           styleRec.endChar = textLength;
+
+        // Skip zero-length style
+        if (styleRec.startChar == styleRec.endChar)
+          continue;
 
         styleRecords.emplace_back(styleRec);
       }
@@ -219,17 +224,21 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
       continue; // ...without incrementing 'charIndex'
     }
 
-    if (styleIndex < styleRecords.size())
+    // Go through styles, a style can end where another one begins
+    while (styleIndex < styleRecords.size())
     {
-      if (styleRecords[styleIndex].endChar == charIndex)
+      if (styleRecords[styleIndex].startChar == charIndex)
+      {
+        ConvertStyleToTags(strUTF8, styleRecords[styleIndex], false);
+        break;
+      }
+      else if (styleRecords[styleIndex].endChar == charIndex)
       {
         ConvertStyleToTags(strUTF8, styleRecords[styleIndex], true);
         styleIndex++;
       }
-      if (styleRecords[styleIndex].startChar == charIndex)
-      {
-        ConvertStyleToTags(strUTF8, styleRecords[styleIndex], false);
-      }
+      else
+        break;
     }
 
     if (*curPos == '{') // erase unsupported tags
