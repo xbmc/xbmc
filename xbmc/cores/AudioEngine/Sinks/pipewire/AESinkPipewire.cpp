@@ -253,27 +253,9 @@ std::unique_ptr<PIPEWIRE::CPipewire> pipewire;
 
 bool CAESinkPipewire::Register()
 {
-  pipewire = std::make_unique<PIPEWIRE::CPipewire>();
-
-  bool success{false};
-
-  try
-  {
-    success = pipewire->Start();
-  }
-  catch (std::exception& e)
-  {
-    success = false;
-  }
-
-  if (!success)
-  {
-    CLog::Log(LOGERROR, "CAESinkPipewire::{} - failed to connect to server", __FUNCTION__);
-    pipewire.reset();
+  pipewire = PIPEWIRE::CPipewire::Create();
+  if (!pipewire)
     return false;
-  }
-
-  CLog::Log(LOGINFO, "CAESinkPipewire::{} - connected to server", __FUNCTION__);
 
   AE::AESinkRegEntry entry;
   entry.sinkName = "PIPEWIRE";
