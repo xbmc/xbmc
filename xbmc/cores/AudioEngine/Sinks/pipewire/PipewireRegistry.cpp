@@ -88,13 +88,14 @@ void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
   auto& registry = *reinterpret_cast<CPipewireRegistry*>(userdata);
   auto& globals = registry.GetGlobals();
 
-  auto global = globals.find(id);
-  if (global != globals.end())
+  auto it = globals.find(id);
+  if (it != globals.end())
   {
+    const auto& [globalId, global] = *it;
     CLog::Log(LOGDEBUG, "CPipewireRegistry::{} - id={} type={}", __FUNCTION__, id,
-              global->second->GetType());
+              global->GetType());
 
-    globals.erase(global);
+    globals.erase(it);
   }
 }
 
