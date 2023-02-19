@@ -20,7 +20,9 @@
 #include <sys\stat.h>
 #endif
 
+#include <charconv>
 #include <string>
+#include <system_error>
 #include <vector>
 
 using namespace ADDON;
@@ -644,7 +646,7 @@ bool CURL::IsFullPath(const std::string &url)
   return false;
 }
 
-std::string CURL::Decode(const std::string& strURLData)
+std::string CURL::Decode(std::string_view strURLData)
 //modified to be more accommodating - if a non hex value follows a % take the characters directly and don't raise an error.
 // However % characters should really be escaped like any other non safe character (www.rfc-editor.org/rfc/rfc1738.txt)
 {
@@ -653,30 +655,30 @@ std::string CURL::Decode(const std::string& strURLData)
   /* result will always be less than source */
   strResult.reserve( strURLData.length() );
 
-  for (unsigned int i = 0; i < strURLData.size(); ++i)
+  const char* const iterEnd = strURLData.data() + strURLData.size();
+  for (const char* iter = strURLData.data(); iter < iterEnd; ++iter)
   {
-    int kar = (unsigned char)strURLData[i];
-    if (kar == '+') strResult += ' ';
-    else if (kar == '%')
+    if (*iter == '+')
+      strResult += ' ';
+    else if (*iter == '%')
     {
-      if (i < strURLData.size() - 2)
+      if (std::distance(iter, iterEnd) >= 3)
       {
-        std::string strTmp;
-        strTmp.assign(strURLData.substr(i + 1, 2));
-        int dec_num=-1;
-        sscanf(strTmp.c_str(), "%x", (unsigned int *)&dec_num);
-        if (dec_num<0 || dec_num>255)
-          strResult += kar;
+        uint8_t dec_num{};
+        const std::from_chars_result res = std::from_chars(iter + 1, iter + 3, dec_num, 16);
+        if (res.ec != std::errc() || res.ptr != iter + 3)
+          strResult += *iter;
         else
         {
           strResult += (char)dec_num;
-          i += 2;
+          iter += 2;
         }
       }
       else
-        strResult += kar;
+        strResult += *iter;
     }
-    else strResult += kar;
+    else
+      strResult += *iter;
   }
 
   return strResult;
