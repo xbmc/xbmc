@@ -351,6 +351,7 @@ int CPosixFile::Stat(const CURL& url, struct __stat64* buffer)
   ret = statx(dirfd, filename.c_str(), flags, mask, &stxbuf);
   if (ret == 0)
   {
+    *buffer = {};
     buffer->st_mtime = stxbuf.stx_mtime.tv_sec; // modification time
     if (stxbuf.stx_btime.tv_sec != 0)
       buffer->st_ctime = stxbuf.stx_btime.tv_sec; // birth (creation) time
