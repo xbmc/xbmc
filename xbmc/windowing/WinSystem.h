@@ -173,8 +173,8 @@ public:
   virtual HDR_STATUS ToggleHDR() { return HDR_STATUS::HDR_UNSUPPORTED; }
   virtual HDR_STATUS GetOSHDRStatus() { return HDR_STATUS::HDR_UNSUPPORTED; }
   virtual CHDRCapabilities GetDisplayHDRCapabilities() const { return {}; }
-
   static const char* SETTING_WINSYSTEM_IS_HDR_DISPLAY;
+  virtual bool HasSystemSdrPeakLuminance() { return false; }
 
   // Gets debug info from video renderer
   virtual DEBUG_INFO_RENDER GetDebugInfo() { return {}; }
