@@ -61,10 +61,12 @@
 					<visible>[Player.ShowInfo | Window.IsActive(fullscreeninfo)] + !Player.ChannelPreviewActive + Window.IsActive(fullscreenvideo)</visible>
 					<animation effect="fade" start="0" end="100" time="200" delay="1000">Visible</animation>
 					<include content="MediaFlag">
-					<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
+						<param name="texture" value="$INFO[VideoPlayer.VideoCodec,flags/videocodec/,.png]" />
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoCodec)" />
 					</include>
 					<include content="MediaFlag">
-					<param name="texture" value="$INFO[VideoPlayer.VideoResolution,flags/videoresolution/,.png]" />
+						<param name="texture" value="$INFO[VideoPlayer.VideoResolution,flags/videoresolution/,.png]" />
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoResolution)" />
 					</include>
 					<include content="MediaFlag">
 						<param name="texture" value="$INFO[VideoPlayer.HdrType,flags/videohdr/,.png]" />
@@ -72,12 +74,15 @@
 					</include>
 					<include content="MediaFlag">
 						<param name="texture" value="$INFO[VideoPlayer.VideoAspect,flags/aspectratio/,.png]" />
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.VideoAspect)" />
 					</include>
 					<include content="MediaFlag">
 						<param name="texture" value="$INFO[VideoPlayer.AudioCodec,flags/audiocodec/,.png]" />
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioCodec)" />
 					</include>
 					<include content="MediaFlag">
 						<param name="texture" value="$INFO[VideoPlayer.AudioChannels,flags/audiochannel/,.png]" />
+						<param name="visible" value="!String.IsEmpty(VideoPlayer.AudioChannels)" />
 					</include>
 				</control>
 				<control type="grouplist">
@@ -97,9 +102,11 @@
 					</include>
 					<include content="MediaFlag">
 						<param name="texture" value="$INFO[MusicPlayer.Codec,flags/audiocodec/,.png]" />
+						<param name="visible" value="!String.IsEmpty(MusicPlayer.Codec)" />
 					</include>
 					<include content="MediaFlag">
 						<param name="texture" value="$INFO[MusicPlayer.Channels,flags/audiochannel/,.png]" />
+						<param name="visible" value="!String.IsEmpty(MusicPlayer.Channels)" />
 					</include>
 					<control type="group">
 						<visible>!String.IsEmpty(MusicPlayer.SampleRate)</visible>
