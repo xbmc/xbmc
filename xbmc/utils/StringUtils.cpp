@@ -71,7 +71,9 @@ T NumberFromSS(std::string_view str, T fallback) noexcept
 }
 } // unnamed namespace
 
-static constexpr const char* ADDON_GUID_RE = "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}(\\}){0,1}$";
+static constexpr const char* ADDON_GUID_RE =
+    "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}"
+    "(\\}){0,1}$";
 
 /* empty string for use in returns by ref */
 const std::string StringUtils::Empty = "";
@@ -83,6 +85,7 @@ const std::string StringUtils::Empty = "";
 //	The tables were constructed from
 //	http://publib.boulder.ibm.com/infocenter/iseries/v7r1m0/index.jsp?topic=%2Fnls%2Frbagslowtoupmaptable.htm
 
+// clang-format off
 static constexpr wchar_t unicode_lowers[] = {
   (wchar_t)0x0061, (wchar_t)0x0062, (wchar_t)0x0063, (wchar_t)0x0064, (wchar_t)0x0065, (wchar_t)0x0066, (wchar_t)0x0067, (wchar_t)0x0068, (wchar_t)0x0069,
   (wchar_t)0x006A, (wchar_t)0x006B, (wchar_t)0x006C, (wchar_t)0x006D, (wchar_t)0x006E, (wchar_t)0x006F, (wchar_t)0x0070, (wchar_t)0x0071, (wchar_t)0x0072,
@@ -236,9 +239,9 @@ static const wchar_t unicode_uppers[] = {
   (wchar_t)0xFF29, (wchar_t)0xFF2A, (wchar_t)0xFF2B, (wchar_t)0xFF2C, (wchar_t)0xFF2D, (wchar_t)0xFF2E, (wchar_t)0xFF2F, (wchar_t)0xFF30, (wchar_t)0xFF31,
   (wchar_t)0xFF32, (wchar_t)0xFF33, (wchar_t)0xFF34, (wchar_t)0xFF35, (wchar_t)0xFF36, (wchar_t)0xFF37, (wchar_t)0xFF38, (wchar_t)0xFF39, (wchar_t)0xFF3A
 };
+// clang-format on
 
-
-std::string StringUtils::FormatV(const char *fmt, va_list args)
+std::string StringUtils::FormatV(const char* fmt, va_list args)
 {
   if (!fmt || !fmt[0])
     return "";
@@ -248,7 +251,7 @@ std::string StringUtils::FormatV(const char *fmt, va_list args)
 
   while (true)
   {
-    char *cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
+    char* cstr = reinterpret_cast<char*>(malloc(sizeof(char) * size));
     if (!cstr)
       return "";
 
@@ -264,11 +267,11 @@ std::string StringUtils::FormatV(const char *fmt, va_list args)
     }
     free(cstr);
 #ifndef TARGET_WINDOWS
-    if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
+    if (nActual > -1) // Exactly what we will need (glibc 2.1)
       size = nActual + 1;
-    else                                // Let's try to double the size (glibc 2.0)
+    else // Let's try to double the size (glibc 2.0)
       size *= 2;
-#else  // TARGET_WINDOWS
+#else // TARGET_WINDOWS
     va_copy(argCopy, args);
     size = _vscprintf(fmt, argCopy);
     va_end(argCopy);
@@ -282,7 +285,7 @@ std::string StringUtils::FormatV(const char *fmt, va_list args)
   return ""; // unreachable
 }
 
-std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
+std::wstring StringUtils::FormatV(const wchar_t* fmt, va_list args)
 {
   if (!fmt || !fmt[0])
     return L"";
@@ -292,7 +295,7 @@ std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
 
   while (true)
   {
-    wchar_t *cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
+    wchar_t* cstr = reinterpret_cast<wchar_t*>(malloc(sizeof(wchar_t) * size));
     if (!cstr)
       return L"";
 
@@ -309,11 +312,11 @@ std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
     free(cstr);
 
 #ifndef TARGET_WINDOWS
-    if (nActual > -1)                   // Exactly what we will need (glibc 2.1)
+    if (nActual > -1) // Exactly what we will need (glibc 2.1)
       size = nActual + 1;
-    else                                // Let's try to double the size (glibc 2.0)
+    else // Let's try to double the size (glibc 2.0)
       size *= 2;
-#else  // TARGET_WINDOWS
+#else // TARGET_WINDOWS
     va_copy(argCopy, args);
     size = _vscwprintf(fmt, argCopy);
     va_end(argCopy);
@@ -327,18 +330,19 @@ std::wstring StringUtils::FormatV(const wchar_t *fmt, va_list args)
   return L"";
 }
 
-int compareWchar (const void* a, const void* b)
+int compareWchar(const void* a, const void* b)
 {
-  if (*(const wchar_t*)a <  *(const wchar_t*)b)
+  if (*(const wchar_t*)a < *(const wchar_t*)b)
     return -1;
-  else if (*(const wchar_t*)a >  *(const wchar_t*)b)
+  else if (*(const wchar_t*)a > *(const wchar_t*)b)
     return 1;
   return 0;
 }
 
 wchar_t tolowerUnicode(const wchar_t& c)
 {
-  wchar_t* p = (wchar_t*) bsearch (&c, unicode_uppers, sizeof(unicode_uppers) / sizeof(wchar_t), sizeof(wchar_t), compareWchar);
+  wchar_t* p = (wchar_t*)bsearch(&c, unicode_uppers, sizeof(unicode_uppers) / sizeof(wchar_t),
+                                 sizeof(wchar_t), compareWchar);
   if (p)
     return *(unicode_lowers + (p - unicode_uppers));
 
@@ -347,7 +351,8 @@ wchar_t tolowerUnicode(const wchar_t& c)
 
 wchar_t toupperUnicode(const wchar_t& c)
 {
-  wchar_t* p = (wchar_t*) bsearch (&c, unicode_lowers, sizeof(unicode_lowers) / sizeof(wchar_t), sizeof(wchar_t), compareWchar);
+  wchar_t* p = (wchar_t*)bsearch(&c, unicode_lowers, sizeof(unicode_lowers) / sizeof(wchar_t),
+                                 sizeof(wchar_t), compareWchar);
   if (p)
     return *(unicode_uppers + (p - unicode_lowers));
 
@@ -374,12 +379,12 @@ std::wstring StringUtils::ToUpper(const std::wstring& str)
   return result;
 }
 
-void StringUtils::ToUpper(std::string &str)
+void StringUtils::ToUpper(std::string& str)
 {
   transformString(str, str, ::toupper);
 }
 
-void StringUtils::ToUpper(std::wstring &str)
+void StringUtils::ToUpper(std::wstring& str)
 {
   transformString(str, str, toupperUnicode);
 }
@@ -398,17 +403,17 @@ std::wstring StringUtils::ToLower(const std::wstring& str)
   return result;
 }
 
-void StringUtils::ToLower(std::string &str)
+void StringUtils::ToLower(std::string& str)
 {
   transformString(str, str, ::tolower);
 }
 
-void StringUtils::ToLower(std::wstring &str)
+void StringUtils::ToLower(std::wstring& str)
 {
   transformString(str, str, tolowerUnicode);
 }
 
-void StringUtils::ToCapitalize(std::string &str)
+void StringUtils::ToCapitalize(std::string& str)
 {
   std::wstring wstr;
   g_charsetConverter.utf8ToW(str, wstr);
@@ -416,7 +421,7 @@ void StringUtils::ToCapitalize(std::string &str)
   g_charsetConverter.wToUTF8(wstr, str);
 }
 
-void StringUtils::ToCapitalize(std::wstring &str)
+void StringUtils::ToCapitalize(std::wstring& str)
 {
   const std::locale& loc = g_langInfo.GetSystemLocale();
   bool isFirstLetter = true;
@@ -433,7 +438,7 @@ void StringUtils::ToCapitalize(std::wstring &str)
   }
 }
 
-bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)
+bool StringUtils::EqualsNoCase(const std::string& str1, const std::string& str2)
 {
   // before we do the char-by-char comparison, first compare sizes of both strings.
   // This led to a 33% improvement in benchmarking on average. (size() just returns a member of std::string)
@@ -442,19 +447,22 @@ bool StringUtils::EqualsNoCase(const std::string &str1, const std::string &str2)
   return EqualsNoCase(str1.c_str(), str2.c_str());
 }
 
-bool StringUtils::EqualsNoCase(const std::string &str1, const char *s2)
+bool StringUtils::EqualsNoCase(const std::string& str1, const char* s2)
 {
   return EqualsNoCase(str1.c_str(), s2);
 }
 
-bool StringUtils::EqualsNoCase(const char *s1, const char *s2)
+bool StringUtils::EqualsNoCase(const char* s1, const char* s2)
 {
   char c2; // we need only one char outside the loop
   do
   {
     const char c1 = *s1++; // const local variable should help compiler to optimize
     c2 = *s2++;
-    if (c1 != c2 && ::tolower(c1) != ::tolower(c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
+    if (c1 != c2 &&
+        ::tolower(c1) !=
+            ::tolower(
+                c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
       return false;
   } while (c2 != '\0'); // At this point, we know c1 == c2, so there's no need to test them both.
   return true;
@@ -474,20 +482,25 @@ int StringUtils::CompareNoCase(const char* s1, const char* s2, size_t n /* = 0 *
     const char c1 = *s1++; // const local variable should help compiler to optimize
     c2 = *s2++;
     index++;
-    if (c1 != c2 && ::tolower(c1) != ::tolower(c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
+    if (c1 != c2 &&
+        ::tolower(c1) !=
+            ::tolower(
+                c2)) // This includes the possibility that one of the characters is the null-terminator, which implies a string mismatch.
       return ::tolower(c1) - ::tolower(c2);
   } while (c2 != '\0' &&
            index != n); // At this point, we know c1 == c2, so there's no need to test them both.
   return 0;
 }
 
-std::string StringUtils::Left(const std::string &str, size_t count)
+std::string StringUtils::Left(const std::string& str, size_t count)
 {
   count = std::max((size_t)0, std::min(count, str.size()));
   return str.substr(0, count);
 }
 
-std::string StringUtils::Mid(const std::string &str, size_t first, size_t count /* = string::npos */)
+std::string StringUtils::Mid(const std::string& str,
+                             size_t first,
+                             size_t count /* = string::npos */)
 {
   if (first + count > str.size())
     count = str.size() - first;
@@ -500,19 +513,19 @@ std::string StringUtils::Mid(const std::string &str, size_t first, size_t count 
   return str.substr(first, count);
 }
 
-std::string StringUtils::Right(const std::string &str, size_t count)
+std::string StringUtils::Right(const std::string& str, size_t count)
 {
   count = std::max((size_t)0, std::min(count, str.size()));
   return str.substr(str.size() - count);
 }
 
-std::string& StringUtils::Trim(std::string &str)
+std::string& StringUtils::Trim(std::string& str)
 {
   TrimLeft(str);
   return TrimRight(str);
 }
 
-std::string& StringUtils::Trim(std::string &str, const char* const chars)
+std::string& StringUtils::Trim(std::string& str, const char* const chars)
 {
   TrimLeft(str, chars);
   return TrimRight(str, chars);
@@ -525,28 +538,28 @@ static int isspace_c(char c)
   return (c & 0x80) == 0 && ::isspace(c);
 }
 
-std::string& StringUtils::TrimLeft(std::string &str)
+std::string& StringUtils::TrimLeft(std::string& str)
 {
   str.erase(str.begin(),
             std::find_if(str.begin(), str.end(), [](char s) { return isspace_c(s) == 0; }));
   return str;
 }
 
-std::string& StringUtils::TrimLeft(std::string &str, const char* const chars)
+std::string& StringUtils::TrimLeft(std::string& str, const char* const chars)
 {
   size_t nidx = str.find_first_not_of(chars);
   str.erase(0, nidx);
   return str;
 }
 
-std::string& StringUtils::TrimRight(std::string &str)
+std::string& StringUtils::TrimRight(std::string& str)
 {
   str.erase(std::find_if(str.rbegin(), str.rend(), [](char s) { return isspace_c(s) == 0; }).base(),
             str.end());
   return str;
 }
 
-std::string& StringUtils::TrimRight(std::string &str, const char* const chars)
+std::string& StringUtils::TrimRight(std::string& str, const char* const chars)
 {
   size_t nidx = str.find_last_not_of(chars);
   str.erase(str.npos == nidx ? 0 : ++nidx);
@@ -568,7 +581,7 @@ std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str)
 {
   std::string::iterator it = str.begin();
   bool onSpace = false;
-  while(it != str.end())
+  while (it != str.end())
   {
     if (*it == '\t')
       *it = ' ';
@@ -591,7 +604,7 @@ std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str)
   return str;
 }
 
-int StringUtils::Replace(std::string &str, char oldChar, char newChar)
+int StringUtils::Replace(std::string& str, char oldChar, char newChar)
 {
   int replacedChars = 0;
   for (std::string::iterator it = str.begin(); it != str.end(); ++it)
@@ -606,7 +619,7 @@ int StringUtils::Replace(std::string &str, char oldChar, char newChar)
   return replacedChars;
 }
 
-int StringUtils::Replace(std::string &str, const std::string &oldStr, const std::string &newStr)
+int StringUtils::Replace(std::string& str, const std::string& oldStr, const std::string& newStr)
 {
   if (oldStr.empty())
     return 0;
@@ -624,7 +637,7 @@ int StringUtils::Replace(std::string &str, const std::string &oldStr, const std:
   return replacedChars;
 }
 
-int StringUtils::Replace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr)
+int StringUtils::Replace(std::wstring& str, const std::wstring& oldStr, const std::wstring& newStr)
 {
   if (oldStr.empty())
     return 0;
@@ -642,17 +655,17 @@ int StringUtils::Replace(std::wstring &str, const std::wstring &oldStr, const st
   return replacedChars;
 }
 
-bool StringUtils::StartsWith(const std::string &str1, const std::string &str2)
+bool StringUtils::StartsWith(const std::string& str1, const std::string& str2)
 {
   return str1.compare(0, str2.size(), str2) == 0;
 }
 
-bool StringUtils::StartsWith(const std::string &str1, const char *s2)
+bool StringUtils::StartsWith(const std::string& str1, const char* s2)
 {
   return StartsWith(str1.c_str(), s2);
 }
 
-bool StringUtils::StartsWith(const char *s1, const char *s2)
+bool StringUtils::StartsWith(const char* s1, const char* s2)
 {
   while (*s2 != '\0')
   {
@@ -664,17 +677,17 @@ bool StringUtils::StartsWith(const char *s1, const char *s2)
   return true;
 }
 
-bool StringUtils::StartsWithNoCase(const std::string &str1, const std::string &str2)
+bool StringUtils::StartsWithNoCase(const std::string& str1, const std::string& str2)
 {
   return StartsWithNoCase(str1.c_str(), str2.c_str());
 }
 
-bool StringUtils::StartsWithNoCase(const std::string &str1, const char *s2)
+bool StringUtils::StartsWithNoCase(const std::string& str1, const char* s2)
 {
   return StartsWithNoCase(str1.c_str(), s2);
 }
 
-bool StringUtils::StartsWithNoCase(const char *s1, const char *s2)
+bool StringUtils::StartsWithNoCase(const char* s1, const char* s2)
 {
   while (*s2 != '\0')
   {
@@ -686,14 +699,14 @@ bool StringUtils::StartsWithNoCase(const char *s1, const char *s2)
   return true;
 }
 
-bool StringUtils::EndsWith(const std::string &str1, const std::string &str2)
+bool StringUtils::EndsWith(const std::string& str1, const std::string& str2)
 {
   if (str1.size() < str2.size())
     return false;
   return str1.compare(str1.size() - str2.size(), str2.size(), str2) == 0;
 }
 
-bool StringUtils::EndsWith(const std::string &str1, const char *s2)
+bool StringUtils::EndsWith(const std::string& str1, const char* s2)
 {
   size_t len2 = strlen(s2);
   if (str1.size() < len2)
@@ -701,12 +714,12 @@ bool StringUtils::EndsWith(const std::string &str1, const char *s2)
   return str1.compare(str1.size() - len2, len2, s2) == 0;
 }
 
-bool StringUtils::EndsWithNoCase(const std::string &str1, const std::string &str2)
+bool StringUtils::EndsWithNoCase(const std::string& str1, const std::string& str2)
 {
   if (str1.size() < str2.size())
     return false;
-  const char *s1 = str1.c_str() + str1.size() - str2.size();
-  const char *s2 = str2.c_str();
+  const char* s1 = str1.c_str() + str1.size() - str2.size();
+  const char* s2 = str2.c_str();
   while (*s2 != '\0')
   {
     if (::tolower(*s1) != ::tolower(*s2))
@@ -717,12 +730,12 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const std::string &str
   return true;
 }
 
-bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
+bool StringUtils::EndsWithNoCase(const std::string& str1, const char* s2)
 {
   size_t len2 = strlen(s2);
   if (str1.size() < len2)
     return false;
-  const char *s1 = str1.c_str() + str1.size() - len2;
+  const char* s1 = str1.c_str() + str1.size() - len2;
   while (*s2 != '\0')
   {
     if (::tolower(*s1) != ::tolower(*s2))
@@ -733,21 +746,26 @@ bool StringUtils::EndsWithNoCase(const std::string &str1, const char *s2)
   return true;
 }
 
-std::vector<std::string> StringUtils::Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings)
+std::vector<std::string> StringUtils::Split(const std::string& input,
+                                            const std::string& delimiter,
+                                            unsigned int iMaxStrings)
 {
   std::vector<std::string> result;
   SplitTo(std::back_inserter(result), input, delimiter, iMaxStrings);
   return result;
 }
 
-std::vector<std::string> StringUtils::Split(const std::string& input, const char delimiter, size_t iMaxStrings)
+std::vector<std::string> StringUtils::Split(const std::string& input,
+                                            const char delimiter,
+                                            size_t iMaxStrings)
 {
   std::vector<std::string> result;
   SplitTo(std::back_inserter(result), input, delimiter, iMaxStrings);
   return result;
 }
 
-std::vector<std::string> StringUtils::Split(const std::string& input, const std::vector<std::string>& delimiters)
+std::vector<std::string> StringUtils::Split(const std::string& input,
+                                            const std::vector<std::string>& delimiters)
 {
   std::vector<std::string> result;
   SplitTo(std::back_inserter(result), input, delimiters);
@@ -792,7 +810,8 @@ std::vector<std::string> StringUtils::SplitMulti(const std::vector<std::string>&
     {
       if (iNew > 0)
       {
-        std::vector<std::string> substrings = StringUtils::Split(results[i], delimiters[di], iNew + 1);
+        std::vector<std::string> substrings =
+            StringUtils::Split(results[i], delimiters[di], iNew + 1);
         iNew = iNew - substrings.size() + 1;
         for (size_t j = 0; j < substrings.size(); j++)
           strings1.push_back(substrings[j]);
@@ -804,13 +823,13 @@ std::vector<std::string> StringUtils::SplitMulti(const std::vector<std::string>&
     iNew = iMaxStrings - results.size();
     strings1.clear();
     if ((iNew <= 0))
-      break;  //Stop trying any more delimiters
+      break; //Stop trying any more delimiters
   }
   return results;
 }
 
 // returns the number of occurrences of strFind in strInput.
-int StringUtils::FindNumber(const std::string& strInput, const std::string &strFind)
+int StringUtils::FindNumber(const std::string& strInput, const std::string& strFind)
 {
   size_t pos = strInput.find(strFind, 0);
   int numfound = 0;
@@ -1083,8 +1102,8 @@ static wchar_t GetCollationWeight(const wchar_t& r)
 // See also the equivalent StringUtils::AlphaNumericCollation() for UFT8 data
 int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* right)
 {
-  const wchar_t *l = left;
-  const wchar_t *r = right;
+  const wchar_t* l = left;
+  const wchar_t* r = right;
   const wchar_t *ld, *rd;
   wchar_t lc, rc;
   int64_t lnum, rnum;
@@ -1178,7 +1197,8 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
           return cmp_res;
       }
     }
-    l++; r++;
+    l++;
+    r++;
   }
   if (*r)
   { // r is longer
@@ -1364,15 +1384,15 @@ int StringUtils::AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, 
   return (nKey1 - nKey2);
 }
 
-int StringUtils::DateStringToYYYYMMDD(const std::string &dateString)
+int StringUtils::DateStringToYYYYMMDD(const std::string& dateString)
 {
   std::vector<std::string> days = StringUtils::Split(dateString, '-');
   if (days.size() == 1)
     return atoi(days[0].c_str());
   else if (days.size() == 2)
-    return atoi(days[0].c_str())*100+atoi(days[1].c_str());
+    return atoi(days[0].c_str()) * 100 + atoi(days[1].c_str());
   else if (days.size() == 3)
-    return atoi(days[0].c_str())*10000+atoi(days[1].c_str())*100+atoi(days[2].c_str());
+    return atoi(days[0].c_str()) * 10000 + atoi(days[1].c_str()) * 100 + atoi(days[2].c_str());
   else
     return -1;
 }
@@ -1411,16 +1431,16 @@ std::string StringUtils::ISODateToLocalizedDate(const std::string& strIsoDate)
       }
       formattedDate = tempdate;
     }
-  // return either just the year or the locally formatted version of the ISO date
+    // return either just the year or the locally formatted version of the ISO date
   }
   return formattedDate;
 }
 
-long StringUtils::TimeStringToSeconds(const std::string &timeString)
+long StringUtils::TimeStringToSeconds(const std::string& timeString)
 {
   std::string strCopy(timeString);
   StringUtils::Trim(strCopy);
-  if(StringUtils::EndsWithNoCase(strCopy, " min"))
+  if (StringUtils::EndsWithNoCase(strCopy, " min"))
   {
     // this is imdb format of "XXX min"
     return 60 * atoi(strCopy.c_str());
@@ -1481,13 +1501,14 @@ bool StringUtils::IsNaturalNumber(const std::string& str)
 {
   size_t i = 0, n = 0;
   // allow whitespace,digits,whitespace
-  while (i < str.size() && isspace((unsigned char) str[i]))
+  while (i < str.size() && isspace((unsigned char)str[i]))
     i++;
-  while (i < str.size() && isdigit((unsigned char) str[i]))
+  while (i < str.size() && isdigit((unsigned char)str[i]))
   {
-    i++; n++;
+    i++;
+    n++;
   }
-  while (i < str.size() && isspace((unsigned char) str[i]))
+  while (i < str.size() && isspace((unsigned char)str[i]))
     i++;
   return i == str.size() && n > 0;
 }
@@ -1496,15 +1517,16 @@ bool StringUtils::IsInteger(const std::string& str)
 {
   size_t i = 0, n = 0;
   // allow whitespace,-,digits,whitespace
-  while (i < str.size() && isspace((unsigned char) str[i]))
+  while (i < str.size() && isspace((unsigned char)str[i]))
     i++;
   if (i < str.size() && str[i] == '-')
     i++;
-  while (i < str.size() && isdigit((unsigned char) str[i]))
+  while (i < str.size() && isdigit((unsigned char)str[i]))
   {
-    i++; n++;
+    i++;
+    n++;
   }
-  while (i < str.size() && isspace((unsigned char) str[i]))
+  while (i < str.size() && isspace((unsigned char)str[i]))
     i++;
   return i == str.size() && n > 0;
 }
@@ -1529,7 +1551,6 @@ int StringUtils::asciixdigitvalue(char chr)
 
   return -1;
 }
-
 
 void StringUtils::RemoveCRLF(std::string& strLine)
 {
@@ -1569,13 +1590,17 @@ std::string StringUtils::BinaryStringToString(const std::string& in)
 {
   std::string out;
   out.reserve(in.size() / 2);
-  for (const char *cur = in.c_str(), *end = cur + in.size(); cur != end; ++cur) {
-    if (*cur == '\\') {
+  for (const char *cur = in.c_str(), *end = cur + in.size(); cur != end; ++cur)
+  {
+    if (*cur == '\\')
+    {
       ++cur;
-      if (cur == end) {
+      if (cur == end)
+      {
         break;
       }
-      if (isdigit(*cur)) {
+      if (isdigit(*cur))
+      {
         char* end;
         unsigned long num = strtol(cur, &end, 10);
         cur = end - 1;
@@ -1592,14 +1617,15 @@ std::string StringUtils::ToHexadecimal(const std::string& in)
 {
   std::ostringstream ss;
   ss << std::hex;
-  for (unsigned char ch : in) {
-    ss << std::setw(2) << std::setfill('0') << static_cast<unsigned long> (ch);
+  for (unsigned char ch : in)
+  {
+    ss << std::setw(2) << std::setfill('0') << static_cast<unsigned long>(ch);
   }
   return ss.str();
 }
 
 // return -1 if not, else return the utf8 char length.
-int IsUTF8Letter(const unsigned char *str)
+int IsUTF8Letter(const unsigned char* str)
 {
   // reference:
   // unicode -> utf8 table: http://www.utf8-chartable.de/
@@ -1622,49 +1648,52 @@ int IsUTF8Letter(const unsigned char *str)
     return 2;
   // check latin extended B table: http://en.wikipedia.org/wiki/Latin_Extended-B
   // and International Phonetic Alphabet: http://en.wikipedia.org/wiki/IPA_Extensions_(Unicode_block)
-  if (((ch == 0xC8 || ch == 0xC9) && ch2 >= 0x80 && ch2 <= 0xBF)
-      || (ch == 0xCA && ch2 >= 0x80 && ch2 <= 0xAF))
+  if (((ch == 0xC8 || ch == 0xC9) && ch2 >= 0x80 && ch2 <= 0xBF) ||
+      (ch == 0xCA && ch2 >= 0x80 && ch2 <= 0xAF))
     return 2;
   return -1;
 }
 
-size_t StringUtils::FindWords(const char *str, const char *wordLowerCase)
+size_t StringUtils::FindWords(const char* str, const char* wordLowerCase)
 {
   // NOTE: This assumes word is lowercase!
-  const unsigned char *s = (const unsigned char *)str;
+  const unsigned char* s = (const unsigned char*)str;
   do
   {
     // start with a compare
-    const unsigned char *c = s;
-    const unsigned char *w = (const unsigned char *)wordLowerCase;
+    const unsigned char* c = s;
+    const unsigned char* w = (const unsigned char*)wordLowerCase;
     bool same = true;
     while (same && *c && *w)
     {
       unsigned char lc = *c++;
       if (lc >= 'A' && lc <= 'Z')
-        lc += 'a'-'A';
+        lc += 'a' - 'A';
 
       if (lc != *w++) // different
         same = false;
     }
-    if (same && *w == 0)  // only the same if word has been exhausted
-      return (const char *)s - str;
+    if (same && *w == 0) // only the same if word has been exhausted
+      return (const char*)s - str;
 
     // otherwise, skip current word (composed by latin letters) or number
     int l;
     if (*s >= '0' && *s <= '9')
     {
       ++s;
-      while (*s >= '0' && *s <= '9') ++s;
+      while (*s >= '0' && *s <= '9')
+        ++s;
     }
     else if ((l = IsUTF8Letter(s)) > 0)
     {
       s += l;
-      while ((l = IsUTF8Letter(s)) > 0) s += l;
+      while ((l = IsUTF8Letter(s)) > 0)
+        s += l;
     }
     else
       ++s;
-    while (*s && *s == ' ') s++;
+    while (*s && *s == ' ')
+      s++;
 
     // and repeat until we're done
   } while (*s);
@@ -1673,7 +1702,7 @@ size_t StringUtils::FindWords(const char *str, const char *wordLowerCase)
 }
 
 // assumes it is called from after the first open bracket is found
-int StringUtils::FindEndBracket(const std::string &str, char opener, char closer, int startPos)
+int StringUtils::FindEndBracket(const std::string& str, char opener, char closer, int startPos)
 {
   int blocks = 1;
   for (unsigned int i = startPos; i < str.size(); i++)
@@ -1691,7 +1720,7 @@ int StringUtils::FindEndBracket(const std::string &str, char opener, char closer
   return (int)std::string::npos;
 }
 
-void StringUtils::WordToDigits(std::string &word)
+void StringUtils::WordToDigits(std::string& word)
 {
   static const char word_to_letter[] = "22233344455566677778889999";
   StringUtils::ToLower(word);
@@ -1700,11 +1729,11 @@ void StringUtils::WordToDigits(std::string &word)
     char letter = word[i];
     if ((letter >= 'a' && letter <= 'z')) // assume contiguous letter range
     {
-      word[i] = word_to_letter[letter-'a'];
+      word[i] = word_to_letter[letter - 'a'];
     }
     else if (letter < '0' || letter > '9') // We want to keep 0-9!
     {
-      word[i] = ' ';  // replace everything else with a space
+      word[i] = ' '; // replace everything else with a space
     }
   }
 }
@@ -1722,30 +1751,34 @@ std::string StringUtils::CreateUUID()
   static GuidGenerator guidGenerator;
   auto guid = guidGenerator.newGuid();
 
-  std::stringstream strGuid; strGuid << guid;
+  std::stringstream strGuid;
+  strGuid << guid;
   return strGuid.str();
 #endif
 }
 
-bool StringUtils::ValidateUUID(const std::string &uuid)
+bool StringUtils::ValidateUUID(const std::string& uuid)
 {
   CRegExp guidRE;
   guidRE.RegComp(ADDON_GUID_RE);
   return (guidRE.RegFind(uuid.c_str()) == 0);
 }
 
-double StringUtils::CompareFuzzy(const std::string &left, const std::string &right)
+double StringUtils::CompareFuzzy(const std::string& left, const std::string& right)
 {
   return (0.5 + fstrcmp(left.c_str(), right.c_str()) * (left.length() + right.length())) / 2.0;
 }
 
-int StringUtils::FindBestMatch(const std::string &str, const std::vector<std::string> &strings, double &matchscore)
+int StringUtils::FindBestMatch(const std::string& str,
+                               const std::vector<std::string>& strings,
+                               double& matchscore)
 {
   int best = -1;
   matchscore = 0;
 
   int i = 0;
-  for (std::vector<std::string>::const_iterator it = strings.begin(); it != strings.end(); ++it, i++)
+  for (std::vector<std::string>::const_iterator it = strings.begin(); it != strings.end();
+       ++it, i++)
   {
     int maxlength = std::max(str.length(), it->length());
     double score = StringUtils::CompareFuzzy(str, *it) / maxlength;
@@ -1758,7 +1791,7 @@ int StringUtils::FindBestMatch(const std::string &str, const std::vector<std::st
   return best;
 }
 
-bool StringUtils::ContainsKeyword(const std::string &str, const std::vector<std::string> &keywords)
+bool StringUtils::ContainsKeyword(const std::string& str, const std::vector<std::string>& keywords)
 {
   for (std::vector<std::string>::const_iterator it = keywords.begin(); it != keywords.end(); ++it)
   {
@@ -1768,7 +1801,7 @@ bool StringUtils::ContainsKeyword(const std::string &str, const std::vector<std:
   return false;
 }
 
-size_t StringUtils::utf8_strlen(const char *s)
+size_t StringUtils::utf8_strlen(const char* s)
 {
   size_t length = 0;
   while (*s)
@@ -1779,7 +1812,7 @@ size_t StringUtils::utf8_strlen(const char *s)
   return length;
 }
 
-std::string StringUtils::Paramify(const std::string &param)
+std::string StringUtils::Paramify(const std::string& param)
 {
   std::string result = param;
   // escape backspaces
@@ -1811,14 +1844,17 @@ std::string StringUtils::DeParamify(const std::string& param)
   return result;
 }
 
-std::vector<std::string> StringUtils::Tokenize(const std::string &input, const std::string &delimiters)
+std::vector<std::string> StringUtils::Tokenize(const std::string& input,
+                                               const std::string& delimiters)
 {
   std::vector<std::string> tokens;
   Tokenize(input, tokens, delimiters);
   return tokens;
 }
 
-void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters)
+void StringUtils::Tokenize(const std::string& input,
+                           std::vector<std::string>& tokens,
+                           const std::string& delimiters)
 {
   tokens.clear();
   // Skip delimiters at beginning.
@@ -1834,14 +1870,16 @@ void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& t
   }
 }
 
-std::vector<std::string> StringUtils::Tokenize(const std::string &input, const char delimiter)
+std::vector<std::string> StringUtils::Tokenize(const std::string& input, const char delimiter)
 {
   std::vector<std::string> tokens;
   Tokenize(input, tokens, delimiter);
   return tokens;
 }
 
-void StringUtils::Tokenize(const std::string& input, std::vector<std::string>& tokens, const char delimiter)
+void StringUtils::Tokenize(const std::string& input,
+                           std::vector<std::string>& tokens,
+                           const char delimiter)
 {
   tokens.clear();
   // Skip delimiters at beginning.

@@ -19,12 +19,12 @@
 //
 //------------------------------------------------------------------------
 
+#include <locale>
+#include <sstream>
 #include <stdarg.h>
 #include <stdint.h>
 #include <string>
 #include <vector>
-#include <sstream>
-#include <locale>
 
 // workaround for broken [[deprecated]] in coverity
 #if defined(__COVERITY__)
@@ -88,50 +88,50 @@ public:
     return ::fmt::format(fmt, EnumToInt(std::forward<Args>(args))...);
   }
 
-  static std::string FormatV(PRINTF_FORMAT_STRING const char *fmt, va_list args);
-  static std::wstring FormatV(PRINTF_FORMAT_STRING const wchar_t *fmt, va_list args);
+  static std::string FormatV(PRINTF_FORMAT_STRING const char* fmt, va_list args);
+  static std::wstring FormatV(PRINTF_FORMAT_STRING const wchar_t* fmt, va_list args);
   static std::string ToUpper(const std::string& str);
   static std::wstring ToUpper(const std::wstring& str);
-  static void ToUpper(std::string &str);
-  static void ToUpper(std::wstring &str);
+  static void ToUpper(std::string& str);
+  static void ToUpper(std::wstring& str);
   static std::string ToLower(const std::string& str);
   static std::wstring ToLower(const std::wstring& str);
-  static void ToLower(std::string &str);
-  static void ToLower(std::wstring &str);
-  static void ToCapitalize(std::string &str);
-  static void ToCapitalize(std::wstring &str);
-  static bool EqualsNoCase(const std::string &str1, const std::string &str2);
-  static bool EqualsNoCase(const std::string &str1, const char *s2);
-  static bool EqualsNoCase(const char *s1, const char *s2);
+  static void ToLower(std::string& str);
+  static void ToLower(std::wstring& str);
+  static void ToCapitalize(std::string& str);
+  static void ToCapitalize(std::wstring& str);
+  static bool EqualsNoCase(const std::string& str1, const std::string& str2);
+  static bool EqualsNoCase(const std::string& str1, const char* s2);
+  static bool EqualsNoCase(const char* s1, const char* s2);
   static int CompareNoCase(const std::string& str1, const std::string& str2, size_t n = 0);
   static int CompareNoCase(const char* s1, const char* s2, size_t n = 0);
-  static int ReturnDigits(const std::string &str);
-  static std::string Left(const std::string &str, size_t count);
-  static std::string Mid(const std::string &str, size_t first, size_t count = std::string::npos);
-  static std::string Right(const std::string &str, size_t count);
-  static std::string& Trim(std::string &str);
-  static std::string& Trim(std::string &str, const char* const chars);
-  static std::string& TrimLeft(std::string &str);
-  static std::string& TrimLeft(std::string &str, const char* const chars);
-  static std::string& TrimRight(std::string &str);
-  static std::string& TrimRight(std::string &str, const char* const chars);
+  static int ReturnDigits(const std::string& str);
+  static std::string Left(const std::string& str, size_t count);
+  static std::string Mid(const std::string& str, size_t first, size_t count = std::string::npos);
+  static std::string Right(const std::string& str, size_t count);
+  static std::string& Trim(std::string& str);
+  static std::string& Trim(std::string& str, const char* const chars);
+  static std::string& TrimLeft(std::string& str);
+  static std::string& TrimLeft(std::string& str, const char* const chars);
+  static std::string& TrimRight(std::string& str);
+  static std::string& TrimRight(std::string& str, const char* const chars);
   static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str);
-  static int Replace(std::string &str, char oldChar, char newChar);
-  static int Replace(std::string &str, const std::string &oldStr, const std::string &newStr);
-  static int Replace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr);
-  static bool StartsWith(const std::string &str1, const std::string &str2);
-  static bool StartsWith(const std::string &str1, const char *s2);
-  static bool StartsWith(const char *s1, const char *s2);
-  static bool StartsWithNoCase(const std::string &str1, const std::string &str2);
-  static bool StartsWithNoCase(const std::string &str1, const char *s2);
-  static bool StartsWithNoCase(const char *s1, const char *s2);
-  static bool EndsWith(const std::string &str1, const std::string &str2);
-  static bool EndsWith(const std::string &str1, const char *s2);
-  static bool EndsWithNoCase(const std::string &str1, const std::string &str2);
-  static bool EndsWithNoCase(const std::string &str1, const char *s2);
+  static int Replace(std::string& str, char oldChar, char newChar);
+  static int Replace(std::string& str, const std::string& oldStr, const std::string& newStr);
+  static int Replace(std::wstring& str, const std::wstring& oldStr, const std::wstring& newStr);
+  static bool StartsWith(const std::string& str1, const std::string& str2);
+  static bool StartsWith(const std::string& str1, const char* s2);
+  static bool StartsWith(const char* s1, const char* s2);
+  static bool StartsWithNoCase(const std::string& str1, const std::string& str2);
+  static bool StartsWithNoCase(const std::string& str1, const char* s2);
+  static bool StartsWithNoCase(const char* s1, const char* s2);
+  static bool EndsWith(const std::string& str1, const std::string& str2);
+  static bool EndsWith(const std::string& str1, const char* s2);
+  static bool EndsWithNoCase(const std::string& str1, const std::string& str2);
+  static bool EndsWithNoCase(const std::string& str1, const char* s2);
 
   template<typename CONTAINER>
-  static std::string Join(const CONTAINER &strings, const std::string& delimiter)
+  static std::string Join(const CONTAINER& strings, const std::string& delimiter)
   {
     std::string result;
     for (const auto& str : strings)
@@ -151,9 +151,14 @@ public:
    \param delimiter Delimiter to be used to split the input string
    \param iMaxStrings (optional) Maximum number of splitted strings
    */
-  static std::vector<std::string> Split(const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0);
-  static std::vector<std::string> Split(const std::string& input, const char delimiter, size_t iMaxStrings = 0);
-  static std::vector<std::string> Split(const std::string& input, const std::vector<std::string> &delimiters);
+  static std::vector<std::string> Split(const std::string& input,
+                                        const std::string& delimiter,
+                                        unsigned int iMaxStrings = 0);
+  static std::vector<std::string> Split(const std::string& input,
+                                        const char delimiter,
+                                        size_t iMaxStrings = 0);
+  static std::vector<std::string> Split(const std::string& input,
+                                        const std::vector<std::string>& delimiters);
   /*! \brief Splits the given input string using the given delimiter into separate strings.
 
    If the given input string is empty nothing will be put into the target iterator.
@@ -166,7 +171,10 @@ public:
    *       that was put there
    */
   template<typename OutputIt>
-  static OutputIt SplitTo(OutputIt d_first, const std::string& input, const std::string& delimiter, unsigned int iMaxStrings = 0)
+  static OutputIt SplitTo(OutputIt d_first,
+                          const std::string& input,
+                          const std::string& delimiter,
+                          unsigned int iMaxStrings = 0)
   {
     OutputIt dest = d_first;
 
@@ -196,12 +204,17 @@ public:
     return dest;
   }
   template<typename OutputIt>
-  static OutputIt SplitTo(OutputIt d_first, const std::string& input, const char delimiter, size_t iMaxStrings = 0)
+  static OutputIt SplitTo(OutputIt d_first,
+                          const std::string& input,
+                          const char delimiter,
+                          size_t iMaxStrings = 0)
   {
     return SplitTo(d_first, input, std::string(1, delimiter), iMaxStrings);
   }
   template<typename OutputIt>
-  static OutputIt SplitTo(OutputIt d_first, const std::string& input, const std::vector<std::string> &delimiters)
+  static OutputIt SplitTo(OutputIt d_first,
+                          const std::string& input,
+                          const std::vector<std::string>& delimiters)
   {
     OutputIt dest = d_first;
     if (input.empty())
@@ -235,17 +248,17 @@ public:
   static std::vector<std::string> SplitMulti(const std::vector<std::string>& input,
                                              const std::vector<std::string>& delimiters,
                                              size_t iMaxStrings = 0);
-  static int FindNumber(const std::string& strInput, const std::string &strFind);
-  static int64_t AlphaNumericCompare(const wchar_t *left, const wchar_t *right);
+  static int FindNumber(const std::string& strInput, const std::string& strFind);
+  static int64_t AlphaNumericCompare(const wchar_t* left, const wchar_t* right);
   static int AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, const void* pKey2);
-  static long TimeStringToSeconds(const std::string &timeString);
+  static long TimeStringToSeconds(const std::string& timeString);
   static void RemoveCRLF(std::string& strLine);
 
   /*! \brief utf8 version of strlen - skips any non-starting bytes in the count, thus returning the number of utf8 characters
    \param s c-string to find the length of.
    \return the number of utf8 characters in the string.
    */
-  static size_t utf8_strlen(const char *s);
+  static size_t utf8_strlen(const char* s);
 
   /*! \brief convert a time in seconds to a string based on the given time format
    \param seconds time in seconds
@@ -296,16 +309,18 @@ public:
   }
   static std::string SizeToString(int64_t size);
   static const std::string Empty;
-  static size_t FindWords(const char *str, const char *wordLowerCase);
-  static int FindEndBracket(const std::string &str, char opener, char closer, int startPos = 0);
-  static int DateStringToYYYYMMDD(const std::string &dateString);
-  static std::string ISODateToLocalizedDate (const std::string& strIsoDate);
-  static void WordToDigits(std::string &word);
+  static size_t FindWords(const char* str, const char* wordLowerCase);
+  static int FindEndBracket(const std::string& str, char opener, char closer, int startPos = 0);
+  static int DateStringToYYYYMMDD(const std::string& dateString);
+  static std::string ISODateToLocalizedDate(const std::string& strIsoDate);
+  static void WordToDigits(std::string& word);
   static std::string CreateUUID();
-  static bool ValidateUUID(const std::string &uuid); // NB only validates syntax
-  static double CompareFuzzy(const std::string &left, const std::string &right);
-  static int FindBestMatch(const std::string &str, const std::vector<std::string> &strings, double &matchscore);
-  static bool ContainsKeyword(const std::string &str, const std::vector<std::string> &keywords);
+  static bool ValidateUUID(const std::string& uuid); // NB only validates syntax
+  static double CompareFuzzy(const std::string& left, const std::string& right);
+  static int FindBestMatch(const std::string& str,
+                           const std::vector<std::string>& strings,
+                           double& matchscore);
+  static bool ContainsKeyword(const std::string& str, const std::vector<std::string>& keywords);
 
   /*! \brief Convert the string of binary chars to the actual string.
 
@@ -353,7 +368,7 @@ public:
    \param param String to escape/paramify
    \return Escaped/Paramified string
    */
-  static std::string Paramify(const std::string &param);
+  static std::string Paramify(const std::string& param);
 
   /*! \brief Unescapes the given string.
 
@@ -372,9 +387,13 @@ public:
    \return a vector of tokens
    */
   static std::vector<std::string> Tokenize(const std::string& input, const std::string& delimiters);
-  static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const std::string& delimiters);
+  static void Tokenize(const std::string& input,
+                       std::vector<std::string>& tokens,
+                       const std::string& delimiters);
   static std::vector<std::string> Tokenize(const std::string& input, const char delimiter);
-  static void Tokenize(const std::string& input, std::vector<std::string>& tokens, const char delimiter);
+  static void Tokenize(const std::string& input,
+                       std::vector<std::string>& tokens,
+                       const char delimiter);
 
   /*!
    * \brief Converts a string to a unsigned int number.

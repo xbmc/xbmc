@@ -35,7 +35,7 @@ enum EN
   C = 1,
   D
 };
-}
+} // namespace test_enum
 TEST(TestStringUtils, Format)
 {
   std::string refstr = "test 25 2.7 ff FF";
@@ -310,8 +310,10 @@ TEST(TestStringUtils, Split)
   EXPECT_TRUE(StringUtils::Split("", "|").empty());
 
   EXPECT_EQ(4U, StringUtils::Split("a bc  d ef ghi ", " ", 4).size());
-  EXPECT_STREQ("d ef ghi ", StringUtils::Split("a bc  d ef ghi ", " ", 4).at(3).c_str()) << "Last part must include rest of the input string";
-  EXPECT_EQ(7U, StringUtils::Split("a bc  d ef ghi ", " ").size()) << "Result must be 7 strings including two empty strings";
+  EXPECT_STREQ("d ef ghi ", StringUtils::Split("a bc  d ef ghi ", " ", 4).at(3).c_str())
+      << "Last part must include rest of the input string";
+  EXPECT_EQ(7U, StringUtils::Split("a bc  d ef ghi ", " ").size())
+      << "Result must be 7 strings including two empty strings";
   EXPECT_STREQ("bc", StringUtils::Split("a bc  d ef ghi ", " ").at(1).c_str());
   EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", " ").at(2).c_str());
   EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", " ").at(6).c_str());
@@ -329,7 +331,8 @@ TEST(TestStringUtils, Split)
   // test overload with char as delimiter
   EXPECT_EQ(4U, StringUtils::Split("a bc  d ef ghi ", ' ', 4).size());
   EXPECT_STREQ("d ef ghi ", StringUtils::Split("a bc  d ef ghi ", ' ', 4).at(3).c_str());
-  EXPECT_EQ(7U, StringUtils::Split("a bc  d ef ghi ", ' ').size()) << "Result must be 7 strings including two empty strings";
+  EXPECT_EQ(7U, StringUtils::Split("a bc  d ef ghi ", ' ').size())
+      << "Result must be 7 strings including two empty strings";
   EXPECT_STREQ("bc", StringUtils::Split("a bc  d ef ghi ", ' ').at(1).c_str());
   EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", ' ').at(2).c_str());
   EXPECT_STREQ("", StringUtils::Split("a bc  d ef ghi ", ' ').at(6).c_str());
@@ -359,15 +362,15 @@ TEST(TestStringUtils, AlphaNumericCompare)
 TEST(TestStringUtils, TimeStringToSeconds)
 {
   EXPECT_EQ(77455, StringUtils::TimeStringToSeconds("21:30:55"));
-  EXPECT_EQ(7*60, StringUtils::TimeStringToSeconds("7 min"));
-  EXPECT_EQ(7*60, StringUtils::TimeStringToSeconds("7 min\t"));
-  EXPECT_EQ(154*60, StringUtils::TimeStringToSeconds("   154 min"));
-  EXPECT_EQ(1*60+1, StringUtils::TimeStringToSeconds("1:01"));
-  EXPECT_EQ(4*60+3, StringUtils::TimeStringToSeconds("4:03"));
-  EXPECT_EQ(2*3600+4*60+3, StringUtils::TimeStringToSeconds("2:04:03"));
-  EXPECT_EQ(2*3600+4*60+3, StringUtils::TimeStringToSeconds("   2:4:3"));
-  EXPECT_EQ(2*3600+4*60+3, StringUtils::TimeStringToSeconds("  \t\t 02:04:03 \n "));
-  EXPECT_EQ(1*3600+5*60+2, StringUtils::TimeStringToSeconds("01:05:02:04:03 \n "));
+  EXPECT_EQ(7 * 60, StringUtils::TimeStringToSeconds("7 min"));
+  EXPECT_EQ(7 * 60, StringUtils::TimeStringToSeconds("7 min\t"));
+  EXPECT_EQ(154 * 60, StringUtils::TimeStringToSeconds("   154 min"));
+  EXPECT_EQ(1 * 60 + 1, StringUtils::TimeStringToSeconds("1:01"));
+  EXPECT_EQ(4 * 60 + 3, StringUtils::TimeStringToSeconds("4:03"));
+  EXPECT_EQ(2 * 3600 + 4 * 60 + 3, StringUtils::TimeStringToSeconds("2:04:03"));
+  EXPECT_EQ(2 * 3600 + 4 * 60 + 3, StringUtils::TimeStringToSeconds("   2:4:3"));
+  EXPECT_EQ(2 * 3600 + 4 * 60 + 3, StringUtils::TimeStringToSeconds("  \t\t 02:04:03 \n "));
+  EXPECT_EQ(1 * 3600 + 5 * 60 + 2, StringUtils::TimeStringToSeconds("01:05:02:04:03 \n "));
   EXPECT_EQ(0, StringUtils::TimeStringToSeconds("blah"));
   EXPECT_EQ(0, StringUtils::TimeStringToSeconds("ля-ля"));
 }
@@ -553,8 +556,8 @@ TEST(TestStringUtils, FindBestMatch)
 
 TEST(TestStringUtils, Paramify)
 {
-  const char *input = "some, very \\ odd \"string\"";
-  const char *ref   = "\"some, very \\\\ odd \\\"string\\\"\"";
+  const char* input = "some, very \\ odd \"string\"";
+  const char* ref = "\"some, very \\\\ odd \\\"string\\\"\"";
 
   std::string result = StringUtils::Paramify(input);
   EXPECT_STREQ(ref, result.c_str());
