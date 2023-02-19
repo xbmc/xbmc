@@ -63,3 +63,7 @@ add_dependencies(python_binding ${GLOBAL_TARGET_DEPS})
 if(CORE_SYSTEM_NAME STREQUAL windowsstore)
   set_target_properties(python_binding PROPERTIES STATIC_LIBRARY_FLAGS "/ignore:4264")
 endif()
+if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
+  set_target_properties(python_binding PROPERTIES
+                        COMPILE_FLAGS -Wno-cast-function-type) # from -Wextra
+endif()
