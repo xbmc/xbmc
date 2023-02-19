@@ -2824,7 +2824,7 @@
         </dependencies>
         <control type="toggle" />
       </setting>
-      <setting id="videoscreen.guisdrpeakluminance" type="integer" label="36097" help="36547">
+      <setting id="videoscreen.guipeakluminance" type="integer" label="36097" help="36547">
         <requirement>HAS_DX</requirement>
         <dependencies>
           <dependency type="visible" on="property" name="ishdrdisplay"/>
@@ -2836,7 +2836,7 @@
           </dependency>
         </dependencies>
         <level>2</level>
-        <default>60</default>
+        <default>40</default>
         <control type="slider" format="percentage" range="0,100" />
       </setting>
       </group>
