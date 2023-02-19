@@ -117,8 +117,6 @@
       // (from windowDidEndLiveResize). Kodi needs to rescale the UI - use a different event
       // type since XBMC_VIDEORESIZE is supposed to only be used in windowed mode
       newEvent.type = XBMC_FULLSCREEN_UPDATE;
-      newEvent.move.x = -1;
-      newEvent.move.y = -1;
     }
 
     newEvent.resize.w = width;
