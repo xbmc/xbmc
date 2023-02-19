@@ -167,17 +167,6 @@ if(NOT MSVC)
     -Wno-unused-parameter # from -Wextra
   )
 
-  if(CMAKE_COMPILER_IS_GNUCXX)
-    add_options(ALL_LANGUAGES ALL_BUILDS
-      -Wno-cast-function-type # from -Wextra
-    )
-  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    add_options(ALL_LANGUAGES ALL_BUILDS
-      -Wno-bad-function-cast
-      -Wno-deprecated
-    )
-  endif()
-
   add_options(CXX ALL_BUILDS
     -Wnon-virtual-dtor
   )
