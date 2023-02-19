@@ -158,7 +158,7 @@ SettingList CSettingGroup::GetSettings(SettingLevel level) const
   SettingList settings;
   for (const auto& setting : m_settings)
   {
-    if (setting->GetLevel() <= level && setting->MeetsRequirements())
+    if (setting->GetLevel() <= level && setting->MeetsRequirements() && setting->IsVisible())
       settings.push_back(setting);
   }
 
