@@ -62,9 +62,15 @@ set(SYSTEM_DEFINES -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DHAS_DX -D__STDC_CONSTANT_M
 # Additional SYSTEM_DEFINES
 list(APPEND SYSTEM_DEFINES -DHAS_WIN32_NETWORK -DHAS_FILESYSTEM_SMB)
 
-# Make sure /FS is set for Visual Studio in order to prevent simultaneous access to pdb files.
+# The /MP option enables /FS by default.
 if(CMAKE_GENERATOR MATCHES "Visual Studio")
-  set(CMAKE_CXX_FLAGS "/permissive- /MP /FS ${CMAKE_CXX_FLAGS}")
+  if(DEFINED ENV{MAXTHREADS})
+    set(MP_FLAG "/MP$ENV{MAXTHREADS}")
+  else()
+    set(MP_FLAG "/MP")
+  endif()
+
+  set(CMAKE_CXX_FLAGS "/permissive- ${MP_FLAG} ${CMAKE_CXX_FLAGS}")
 endif()
 
 # Google Test needs to use shared version of runtime libraries
