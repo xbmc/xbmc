@@ -12,6 +12,7 @@
 
 #include <stdlib.h>
 #include <string>
+#include <string_view>
 
 #ifdef TARGET_WINDOWS
 #undef SetPort // WIN32INCLUDES this is defined as SetPortA in WinSpool.h which is being included _somewhere_
@@ -138,7 +139,7 @@ public:
   bool IsLocalHost() const;
   static bool IsFileOnly(const std::string &url); ///< return true if there are no directories in the url.
   static bool IsFullPath(const std::string &url); ///< return true if the url includes the full path
-  static std::string Decode(const std::string& strURLData);
+  static std::string Decode(std::string_view strURLData);
   static std::string Encode(const std::string& strURLData);
 
   /*! \brief Check whether a URL is a given URL scheme.
