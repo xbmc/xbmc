@@ -28,6 +28,7 @@
 
 #include "LangInfo.h"
 #include "StringUtils.h"
+#include "UnicodeConverter.h"
 #include "XBDateTime.h"
 #include "utils/log.h"
 
@@ -54,14 +55,24 @@
 
 #define FORMAT_BLOCK_SIZE 512 // # of bytes for initial allocation for printf
 
+using namespace std::literals;
+
 static constexpr const char* ADDON_GUID_RE =
     "^(\\{){0,1}[0-9a-fA-F]{8}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{4}\\-[0-9a-fA-F]{12}"
     "(\\}){0,1}$";
 
 /* empty string for use in returns by ref */
-const std::string StringUtils::Empty = "";
+const std::string StringUtils::Empty{""};
+
 namespace
 {
+static constexpr bool FAIL_ON_ERROR{false};
+static constexpr bool SUBSTITUTE_BAD_CHARS{true};
+
+// Unicode Replacement Character, commonly used to substitute for bad
+// or malformed unicode characters.
+static const std::u32string REPLACMENT_CHARACTER{U"\x00FFFD"};
+
 /*!
  * \brief Converts a string to a number of a specified type, by using istringstream.
  * \param str The string to convert
@@ -348,37 +359,62 @@ std::wstring StringUtils::FormatV(const wchar_t* fmt, va_list args)
 //
 // --------------  Unicode encoding converters --------------
 //
-// To keep this commit to a managable size, stub out the conversion
-// functions and fill them in on next commit
+// There are two ways to convert between the Unicode encodings:
+// iconv or C++ wstring_convert
+//
+// iconv
+//   - handles all of the conversions that we need
+//   - on error can ignore bad code-units
+//   - OR truncate converted string
+//   - OR substitute bad code-units with 'replacement character' UxFFFD,
+//     which preserves more of the string
+//   - likely more consistent behavior than wstring_convert
+//
+// wstring_convert
+//   - c++ built-in
+//   - does not support wstring to/from char32_t
+//   - on error can either throw exception or return 'bad value' string
+//   - some conversions are in 'limbo': deprecated, but no
+//     replacement defined.
+//
 
 std::string StringUtils::ToUtf8(const std::u32string_view str)
 {
-  return std::string();
+  std::string utf8Str = CUnicodeConverter::Utf32ToUtf8(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
+  return utf8Str;
 }
 
 std::string StringUtils::ToUtf8(const std::wstring_view str)
 {
-  return std::string();
+  std::string utf8Str = CUnicodeConverter::WToUtf8(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
+  return utf8Str;
 }
 
 std::u32string StringUtils::ToUtf32(const std::string_view str)
 {
-  return std::u32string();
+  std::u32string utf32Str =
+      CUnicodeConverter::Utf8ToUtf32(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
+  return utf32Str;
 }
 
 std::u32string StringUtils::ToUtf32(const std::wstring_view str)
 {
-  return std::u32string();
+  std::u32string utf32Str;
+  utf32Str = CUnicodeConverter::WToUtf32(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
+  return utf32Str;
 }
 
 std::wstring StringUtils::ToWstring(const std::string_view str)
 {
-  return std::wstring();
+  std::wstring wStr = CUnicodeConverter::Utf8ToW(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
+  return wStr;
 }
 
 std::wstring StringUtils::ToWstring(const std::u32string_view str)
 {
-  return std::wstring();
+  std::wstring result;
+  result = CUnicodeConverter::Utf32ToW(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
+  return result;
 }
 
 namespace
@@ -578,6 +614,17 @@ void StringUtils::ToCapitalize(std::wstring& str)
       isFirstLetter = false;
     }
   }
+}
+
+bool StringUtils::Equals(const std::string_view str1, const std::string_view str2)
+{
+  // The Simple Unicode support that is supplied here allows a quick
+  // binary comparison of the two strings without conversion.
+
+  if (str1.length() != str2.length())
+    return false;
+
+  return str1 == str2; // Binary compare not lexicographic
 }
 
 bool StringUtils::EqualsNoCase(const std::string& str1, const std::string& str2)
@@ -1363,8 +1410,6 @@ int64_t StringUtils::AlphaNumericCompare(const wchar_t* left, const wchar_t* rig
 
 namespace
 {
-// TODO: Move to Anonymous namespace
-
 /*
   Convert the UTF8 character to which z points into a 31-bit Unicode point.
   Return how many bytes (0 to 3) of UTF8 data encode the character.
@@ -1379,7 +1424,7 @@ static uint32_t UTF8ToUnicode(const unsigned char* z, int nKey, unsigned char& b
 {
   // Lookup table used decode the first byte of a multi-byte UTF8 character
   // clang-format off
-  static const unsigned char utf8Trans1[] = {
+  static const unsigned char utf8Trans1[] {
     0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
     0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
     0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
@@ -1785,6 +1830,54 @@ std::string StringUtils::ToHexadecimal(const std::string& in)
   return ss.str();
 }
 
+std::string StringUtils::ToHex(const std::string_view in)
+{
+  int width = sizeof(char) * 2;
+  std::string gap;
+  std::ostringstream ss;
+  ss << std::noshowbase; // manually show 0x (due to 0 omitting it)
+  ss << std::internal;
+  ss << std::setfill('0');
+  for (char ch : in)
+  {
+    ss << gap << "0x" << std::setw(width) << std::hex
+       << static_cast<int>(static_cast<unsigned char>(ch));
+    gap = " "s;
+  }
+  return ss.str();
+}
+
+std::string StringUtils::ToHex(const std::wstring_view in)
+{
+  int width = sizeof(wchar_t) * 2;
+  std::string gap;
+  std::ostringstream ss;
+  ss << std::noshowbase; // manually show 0x (due to 0 omitting it)
+  ss << std::internal;
+  ss << std::setfill('0');
+  for (wchar_t ch : in)
+  {
+    ss << gap << std::setw(width) << std::hex << static_cast<unsigned long>(ch);
+    gap = " "s;
+  }
+  return ss.str();
+}
+
+std::string StringUtils::ToHex(const std::u32string_view in)
+{
+  int width = sizeof(char32_t) * 2;
+  std::string gap;
+  std::ostringstream ss;
+  ss << std::noshowbase; // manually show 0x (due to 0 omitting it)
+  ss << std::internal;
+  ss << std::setfill('0');
+  for (char32_t ch : in)
+  {
+    ss << gap << std::setw(width) << std::hex << static_cast<unsigned long>(ch);
+    gap = " "s;
+  }
+  return ss.str();
+}
 namespace
 {
 // return -1 if not, else return the utf8 char length.

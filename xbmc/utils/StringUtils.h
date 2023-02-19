@@ -227,6 +227,19 @@ public:
 
   static void ToCapitalize(std::string& str);
   static void ToCapitalize(std::wstring& str);
+
+  /*!
+   * \brief Determines if two strings are the same.
+   *
+   * A bit faster than Compare since length check can be done before compare.
+   * Also compare does not require any conversion.
+   *
+   * \param str1 one of the strings to compare
+   * \param str2 one of the strings to compare
+   * \return true if both strings are identical, otherwise false
+   */
+  static bool Equals(const std::string_view str1, const std::string_view str2);
+
   static bool EqualsNoCase(const std::string& str1, const std::string& str2);
   static bool EqualsNoCase(const std::string& str1, const char* s2);
   static bool EqualsNoCase(const char* s1, const char* s2);
@@ -458,15 +471,53 @@ public:
   \return Converted string
   */
   static std::string BinaryStringToString(const std::string& in);
-  /**
-   * Convert each character in the string to its hexadecimal
-   * representation and return the concatenated result
+  /*!
+   * \brief Converts a string to Hexadecimal characters without spaces
+   *        or decoration
    *
    * example: "abc\n" -> "6162630a"
+   *
+   * \param in string to be converted
+   *
+   * \return hex string version
    */
   static std::string ToHexadecimal(const std::string& in);
-  /*! \brief Format the string with locale separators.
 
+  /*!
+   * \brief Convert string_view to hex primarily for debugging purposes.
+   *
+   * Note: does not reorder hex for endian-ness
+   *
+   * \param in strin_view to be rendered as hex
+   *
+   * \return Each character in 'in' represented in hex, separated by space
+   */
+  static std::string ToHex(const std::string_view in);
+
+  /*!
+   * \brief Convert wstring_view to hex primarily for debugging purposes.
+   *
+   * Note: does not reorder hex for endian-ness
+   *
+   * \param in wstring_view to be rendered as hex
+   *
+   * \return Each character in 'in' represented in hex, separated by space
+   */
+  static std::string ToHex(const std::wstring_view in);
+
+  /*!
+   * \brief Convert u32string_view to hex primarily for debugging purposes.
+   *
+   * Note: does not reorder hex for endian-ness
+   *
+   * \param in u32string_view to be rendered as hex
+   *
+   * \return Each character in 'in' represented in hex, separated by space
+   *
+   */
+  static std::string ToHex(const std::u32string_view in);
+
+  /*
   Format the string with locale separators.
   For example 10000.57 in en-us is '10,000.57' but in italian is '10.000,57'
 

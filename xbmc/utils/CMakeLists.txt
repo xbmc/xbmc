@@ -68,6 +68,7 @@ set(SOURCES ActorProtocol.cpp
             Temperature.cpp
             TextSearch.cpp
             TimeUtils.cpp
+            UnicodeConverter.cpp
             URIUtils.cpp
             UrlOptions.cpp
             Utf8Utils.cpp
@@ -172,6 +173,7 @@ set(HEADERS ActorProtocol.h
             TimeFormat.h
             TimeUtils.h
             TransformMatrix.h
+            UnicodeConverter.h
             URIUtils.h
             UrlOptions.h
             Utf8Utils.h
