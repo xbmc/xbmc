@@ -703,6 +703,8 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
         m_stampTimer.Set(100ms);
     }
   }
+  if (usesAdvancedLogging)
+    CLog::Log(LOGINFO, "RAW Head-Position {}", m_headPos);
   // check if last value was received less than 2 seconds ago
   if (m_timestamp.get_framePosition() > 0 &&
       (CurrentHostCounter() - m_timestamp.get_nanoTime()) < 2 * 1000 * 1000 * 1000)
