@@ -307,8 +307,7 @@ void CApplication::HandlePortEvents()
       {
         if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen)
         {
-          CServiceBroker::GetWinSystem()->ResizeWindow(newEvent.resize.w, newEvent.resize.h,
-                                                       newEvent.move.x, newEvent.move.y);
+          CServiceBroker::GetWinSystem()->ResizeWindow(newEvent.resize.w, newEvent.resize.h, 0, 0);
         }
         break;
       }
