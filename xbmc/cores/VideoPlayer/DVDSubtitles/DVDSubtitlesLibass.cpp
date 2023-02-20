@@ -35,8 +35,6 @@ constexpr int ASS_BORDER_STYLE_OUTLINE = 1; // Outline + drop shadow
 constexpr int ASS_BORDER_STYLE_BOX = 3; // Box + drop shadow
 constexpr int ASS_BORDER_STYLE_SQUARE_BOX = 4; // Square box + outline
 
-constexpr int ASS_FONT_ENCODING_AUTO = -1;
-
 // Convert RGB/ARGB to RGBA by also applying the opacity value
 COLOR::Color ConvColor(COLOR::Color argbColor, int opacity = 100)
 {
@@ -397,10 +395,6 @@ void CDVDSubtitlesLibass::ApplyStyle(const std::shared_ptr<struct style>& subSty
     // Extra space between characters causes the underlined
     // text line to become more discontinuous (test on LibAss 15.1)
     style->Spacing = 0;
-
-    // Set automatic paragraph direction (not VSFilter-compatible)
-    // to fix wrong RTL text direction when there are unicode chars
-    style->Encoding = ASS_FONT_ENCODING_AUTO;
 
     bool isFontBold =
         (subStyle->fontStyle == FontStyle::BOLD || subStyle->fontStyle == FontStyle::BOLD_ITALIC);
