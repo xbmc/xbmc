@@ -222,7 +222,7 @@ void CPortManager::DeserializeControllers(const TiXmlElement* pPort, ControllerN
       continue;
     }
 
-    std::string controllerId = XMLUtils::GetAttribute(pPort, XML_ATTR_CONTROLLER_ID);
+    std::string controllerId = XMLUtils::GetAttribute(pController, XML_ATTR_CONTROLLER_ID);
 
     auto it = std::find_if(controllers.begin(), controllers.end(),
                            [&controllerId](const CControllerNode& controller) {
