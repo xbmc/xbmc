@@ -98,7 +98,7 @@ CMediaDrmCryptoSession::~CMediaDrmCryptoSession()
 
   CloseSession();
 
-  m_mediaDrm->release();
+  CJNIBase::GetSDKVersion() >= 28 ? m_mediaDrm->close() : m_mediaDrm->release();
   delete m_mediaDrm, m_mediaDrm = nullptr;
 }
 
