@@ -32,5 +32,7 @@
 	<string>@CMAKE_OSX_DEPLOYMENT_TARGET@</string>
 	<key>CFBundleSignature</key>
 	<string>@APP_NAME@</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
 </dict>
 </plist>
