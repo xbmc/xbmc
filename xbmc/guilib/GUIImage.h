@@ -95,6 +95,12 @@ protected:
   unsigned char GetFadeLevel(unsigned int time) const;
   bool ProcessFading(CFadingTexture *texture, unsigned int frameTime, unsigned int currentTime);
 
+  /*!
+   * \brief Update the diffuse color based on the current item infos
+   * \param item the item to for info resolution
+  */
+  void UpdateDiffuseColor(const CGUIListItem* item);
+
   bool m_bDynamicResourceAlloc;
 
   // border + conditional info
