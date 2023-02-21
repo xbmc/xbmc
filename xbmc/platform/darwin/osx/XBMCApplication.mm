@@ -1,5 +1,5 @@
 /*
- *  SDLMain.mm - main entry point for our Cocoa-ized SDL app
+ *  XBMCApplication.mm - main entry point for our Cocoa-ized app
  *  Initial Version: Darrell Walisser <dwaliss1@purdue.edu>
  *  Non-NIB-Code & other changes: Max Horn <max@quendi.de>
  *
@@ -13,21 +13,16 @@
 #include "application/AppEnvironment.h"
 #include "application/AppInboundProtocol.h"
 #include "application/AppParamParser.h"
-#include "messaging/ApplicationMessenger.h"
 #include "platform/xbmc.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #import "windowing/osx/WinSystemOSX.h"
 
 #import "platform/darwin/osx/storage/OSXStorageProvider.h"
 
-#import <Foundation/Foundation.h>
-#import <sys/param.h> /* for MAXPATHLEN */
-#import <unistd.h>
+#import <AppKit/AppKit.h> /* for NSApplicationMain() */
 
 static int gArgc;
-static char** gArgv;
+static const char** gArgv;
 static BOOL gCalledAppMainline = FALSE;
 
 // Create a window menu
@@ -72,66 +67,6 @@ static NSMenu* setupWindowMenu()
            @"SetupWorkingDirectory Failed to cwd");
 }
 
-- (void)stopRunLoop
-{
-  // to get applicationShouldTerminate and
-  // applicationWillTerminate notifications.
-  [NSApplication.sharedApplication terminate:nil];
-  // to flag a stop on next event.
-  [NSApplication.sharedApplication stop:nil];
-
-  //post a NOP event, so the run loop actually stops
-  //see http://www.cocoabuilder.com/archive/cocoa/219842-nsapp-stop.html
-  NSEvent* event = [NSEvent otherEventWithType:NSEventTypeApplicationDefined
-                                      location:NSMakePoint(0, 0)
-                                 modifierFlags:0
-                                     timestamp:0.0
-                                  windowNumber:0
-                                       context:nil
-                                       subtype:0
-                                         data1:0
-                                         data2:0];
-
-  [NSApplication.sharedApplication postEvent:event atStart:true];
-}
-
-// To use Cocoa on secondary POSIX threads, your application must first detach
-// at least one NSThread object, which can immediately exit. Some info says this
-// is not required anymore, who knows ?
-- (void)kickstartMultiThreaded:(id)arg
-{
-  @autoreleasepool
-  {
-    // empty
-  }
-}
-
-- (void)mainLoopThread:(id)arg
-{
-
-#if defined(DEBUG)
-  struct rlimit rlim;
-  rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
-  if (setrlimit(RLIMIT_CORE, &rlim) == -1)
-    CLog::Log(LOGDEBUG, "Failed to set core size limit ({})", strerror(errno));
-#endif
-
-  setlocale(LC_NUMERIC, "C");
-
-  CAppParamParser appParamParser;
-  appParamParser.Parse((const char**)gArgv, (int)gArgc);
-
-  CAppEnvironment::SetUp(appParamParser.GetAppParams());
-  XBMC_Run(true);
-  CAppEnvironment::TearDown();
-
-  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
-  if (appPort)
-    appPort->SetRenderGUI(false);
-
-  [self performSelectorOnMainThread:@selector(stopRunLoop) withObject:nil waitUntilDone:false];
-}
-
 - (void)applicationDidChangeOcclusionState:(NSNotification*)notification
 {
   bool occluded = true;
@@ -140,7 +75,7 @@ static NSMenu* setupWindowMenu()
 
   CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (winSystem)
-    winSystem->SetOcclusionState(occluded);
+    winSystem->SetOcclusionState(occluded); // SHH method body is commented out
 }
 
 - (void)applicationWillFinishLaunching:(NSNotification*)notification
@@ -204,13 +139,41 @@ static NSMenu* setupWindowMenu()
 
   //window.acceptsMouseMovedEvents = TRUE;
   [NSApp activateIgnoringOtherApps:YES];
-  // kick our mainloop into an extra thread
-  [NSThread detachNewThreadSelector:@selector(mainLoopThread:) toTarget:self withObject:nil];
+
+  // kick our mainloop into a separate thread
+
+  auto xbmcThread = [[NSThread alloc] initWithBlock:^{
+    CAppParamParser appParamParser;
+    appParamParser.Parse(gArgv, gArgc);
+    CAppEnvironment::SetUp(appParamParser.GetAppParams());
+    XBMC_Run(true);
+    CAppEnvironment::TearDown();
+  }];
+
+  auto __weak notifier = [NSNotificationCenter defaultCenter];
+  id __block obs = [notifier addObserverForName:NSThreadWillExitNotification
+                                         object:xbmcThread
+                                          queue:[NSOperationQueue mainQueue]
+                                     usingBlock:^(NSNotification* note) {
+                                       [NSApp replyToApplicationShouldTerminate:YES];
+                                       [NSApp terminate:nil];
+                                       [notifier removeObserver:obs];
+                                     }];
+
+  xbmcThread.name = @"XBMCMainThread";
+  [xbmcThread start];
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)sender
 {
-  return NSTerminateNow;
+  auto appPort = CServiceBroker::GetAppPort();
+  if (appPort == nullptr)
+    return NSTerminateNow;
+
+  XBMC_Event quitEvent{.type = XBMC_QUIT};
+  appPort->OnEvent(quitEvent);
+
+  return NSTerminateLater;
 }
 
 - (void)applicationWillTerminate:(NSNotification*)note
@@ -256,7 +219,7 @@ static NSMenu* setupWindowMenu()
   const char* temparg;
   size_t arglen;
   char* arg;
-  char** newargv;
+  const char** newargv;
 
   // app has started, ignore this document.
   if (gCalledAppMainline)
@@ -268,7 +231,7 @@ static NSMenu* setupWindowMenu()
   if (arg == nullptr)
     return FALSE;
 
-  newargv = (char**)realloc(gArgv, sizeof(char*) * (gArgc + 2));
+  newargv = static_cast<const char**>(realloc(gArgv, sizeof(char*) * (gArgc + 2)));
   if (newargv == nullptr)
   {
     free(arg);
@@ -311,14 +274,6 @@ static NSMenu* setupWindowMenu()
   }
 }
 
-// Invoked from the Quit menu item
-- (void)terminate:(id)sender
-{
-  // remove any notification handlers
-  [NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self];
-  [NSNotificationCenter.defaultCenter removeObserver:self];
-}
-
 - (void)fullScreenToggle:(id)sender
 {
 }
@@ -346,15 +301,22 @@ static NSMenu* setupWindowMenu()
 
 @end
 
-int main(int argc, char* argv[])
+int main(int argc, const char* argv[])
 {
+#if defined(_DEBUG) && 0 // SHH enable as needed
+  struct rlimit rlim;
+  rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
+  if (setrlimit(RLIMIT_CORE, &rlim) == -1)
+    CLog::Log(LOGDEBUG, "Failed to set core size limit ({})", strerror(errno));
+#endif
+
   @autoreleasepool
   {
     /* Copy the arguments into a global variable */
     /* This is passed if we are launched by double-clicking */
     if (argc >= 2 && strncmp(argv[1], "-psn", 4) == 0)
     {
-      gArgv = (char**)malloc(sizeof(char*) * 2);
+      gArgv = static_cast<const char**>(malloc(sizeof(char*) * 2));
       gArgv[0] = argv[0];
       gArgv[1] = nullptr;
       gArgc = 1;
@@ -362,26 +324,17 @@ int main(int argc, char* argv[])
     else
     {
       gArgc = argc;
-      gArgv = (char**)malloc(sizeof(char*) * (argc + 1));
+      gArgv = static_cast<const char**>(malloc(sizeof(char*) * (argc + 1)));
       for (int i = 0; i <= argc; i++)
         gArgv[i] = argv[i];
     }
 
-    // Ensure the application object is initialised
-    [NSApplication sharedApplication];
-
     // Make sure we call applicationWillTerminate on SIGTERM
     [NSProcessInfo.processInfo disableSuddenTermination];
 
-    // Set App Delegate
     auto appDelegate = [XBMCDelegate new];
-    NSApp.delegate = appDelegate;
+    [NSApplication sharedApplication].delegate = appDelegate;
 
-    // Set NSApp to show in dock
-    [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-    // Start the main event loop
-    [NSApp run];
-
-    return 1;
+    return NSApplicationMain(argc, argv);
   }
 }
