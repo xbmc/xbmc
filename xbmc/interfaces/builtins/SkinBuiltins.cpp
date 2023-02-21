@@ -420,15 +420,11 @@ static int SetTheme(const std::vector<std::string>& params)
   if (iTheme != -1 && iTheme < (int)vecTheme.size())
     strSkinTheme = vecTheme[iTheme];
 
+  // Because of the way callbacks are implemented, calling  settings->SetString(...)
+  // causes ApplicationSkinHandling::OnSettingChanged(...) to be called.
+  // The ApplicationSkinHandling::OnSettingChanged method will do all the work of
+  // changing to the new theme, including reloading the skin.
   settings->SetString(CSettings::SETTING_LOOKANDFEEL_SKINTHEME, strSkinTheme);
-  // also set the default color theme
-  std::string colorTheme(URIUtils::ReplaceExtension(strSkinTheme, ".xml"));
-  if (StringUtils::EqualsNoCase(colorTheme, "Textures.xml"))
-    colorTheme = "defaults.xml";
-  settings->SetString(CSettings::SETTING_LOOKANDFEEL_SKINCOLORS, colorTheme);
-  auto& components = CServiceBroker::GetAppComponents();
-  const auto appSkin = components.GetComponent<CApplicationSkinHandling>();
-  appSkin->ReloadSkin();
 
   return 0;
 }

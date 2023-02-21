@@ -474,15 +474,24 @@ bool CApplicationSkinHandling::OnSettingChanged(const CSetting& setting)
       std::shared_ptr<CSettingString> skinColorsSetting = std::static_pointer_cast<CSettingString>(
           CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
               CSettings::SETTING_LOOKANDFEEL_SKINCOLORS));
+      std::shared_ptr<CSettingString> skinFontSetting = std::static_pointer_cast<CSettingString>(
+          CServiceBroker::GetSettingsComponent()->GetSettings()->GetSetting(
+              CSettings::SETTING_LOOKANDFEEL_FONT));
       m_ignoreSkinSettingChanges = true;
 
-      // we also need to adjust the skin color setting
-      std::string colorTheme = static_cast<const CSettingString&>(setting).GetValue();
-      URIUtils::RemoveExtension(colorTheme);
-      if (setting.IsDefault() || StringUtils::EqualsNoCase(colorTheme, "Textures"))
+      // we also need to adjust the skin color theme and fontset
+      std::string theme = static_cast<const CSettingString&>(setting).GetValue();
+      if (setting.IsDefault() || StringUtils::EqualsNoCase(theme, "Textures.xbt"))
+      {
         skinColorsSetting->Reset();
+        skinFontSetting->Reset();
+      }
       else
-        skinColorsSetting->SetValue(colorTheme);
+      {
+        URIUtils::RemoveExtension(theme);
+        skinColorsSetting->SetValue(theme);
+        skinFontSetting->SetValue(theme);
+      }
     }
 
     m_ignoreSkinSettingChanges = false;
