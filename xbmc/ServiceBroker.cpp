@@ -57,6 +57,11 @@ void CServiceBroker::CreateLogging()
   g_serviceBroker.m_logging = std::make_unique<CLog>();
 }
 
+bool CServiceBroker::IsLoggingUp()
+{
+  return g_serviceBroker.m_logging ? true : false;
+}
+
 void CServiceBroker::DestroyLogging()
 {
   g_serviceBroker.m_logging.reset();
