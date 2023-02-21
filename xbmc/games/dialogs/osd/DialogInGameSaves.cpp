@@ -13,6 +13,7 @@
 #include "XBDateTime.h"
 #include "cores/RetroPlayer/guibridge/GUIGameRenderManager.h"
 #include "cores/RetroPlayer/guibridge/GUIGameSettingsHandle.h"
+#include "cores/RetroPlayer/guicontrols/GUIGameControl.h"
 #include "cores/RetroPlayer/playback/IPlayback.h"
 #include "cores/RetroPlayer/savestates/ISavestate.h"
 #include "cores/RetroPlayer/savestates/SavestateDatabase.h"
@@ -38,6 +39,8 @@ CFileItemPtr CreateNewSaveItem()
 {
   CFileItemPtr item = std::make_shared<CFileItem>(g_localizeStrings.Get(15314)); // "Save"
 
+  // A nonexistent path ensures a gamewindow control won't render any pixels
+  item->SetPath(NO_PIXEL_DATA);
   item->SetArt("icon", "DefaultAddSource.png");
   item->SetProperty(SAVESTATE_CAPTION,
                     g_localizeStrings.Get(15315)); // "Save progress to a new save file"
@@ -261,7 +264,25 @@ void CDialogInGameSaves::OnNewSave()
     // "Error"
     // "An unknown error has occurred."
     CGUIDialogOK::ShowAndGetInput(257, 24071);
+    return;
   }
+
+  // Create a simulated savestate to update the GUI faster. We will be notified
+  // of the real savestate info via OnMessage() when the savestate creation
+  // completes.
+  auto savestate = RETRO::CSavestateDatabase::AllocateSavestate();
+
+  savestate->SetType(SAVE_TYPE::MANUAL);
+  savestate->SetCreated(CDateTime::GetUTCDateTime());
+
+  savestate->Finalize();
+
+  CFileItemPtr item = std::make_shared<CFileItem>();
+  CSavestateDatabase::GetSavestateItem(*savestate, savestatePath, *item);
+
+  m_savestateItems.AddFront(std::move(item), 0);
+
+  RefreshList();
 }
 
 void CDialogInGameSaves::OnLoad(CFileItem& focusedItem)
@@ -366,6 +387,9 @@ void CDialogInGameSaves::OnDelete(CFileItem& focusedItem)
       m_savestateItems.Remove(&focusedItem);
 
       RefreshList();
+
+      auto gameSettings = CServiceBroker::GetGameRenderManager().RegisterGameSettingsDialog();
+      gameSettings->FreeSavestateResources(focusedItem.GetPath());
     }
     else
     {

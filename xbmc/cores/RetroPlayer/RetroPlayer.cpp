@@ -544,6 +544,12 @@ bool CRetroPlayer::LoadSavestate(const std::string& savestatePath)
   return false;
 }
 
+void CRetroPlayer::FreeSavestateResources(const std::string& savestatePath)
+{
+  if (m_renderManager)
+    m_renderManager->ClearVideoFrame(savestatePath);
+}
+
 void CRetroPlayer::CloseOSDCallback()
 {
   CloseOSD();

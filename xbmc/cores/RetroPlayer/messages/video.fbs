@@ -1,0 +1,43 @@
+//
+//  Copyright (C) 2023 Team Kodi
+//  This file is part of Kodi - https://kodi.tv
+//
+//  SPDX-License-Identifier: MIT
+//  See LICENSES/README.md for more information.
+//
+
+namespace KODI.RETRO;
+
+enum PixelFormat : uint8 {
+  /// @brief Value for unknown pixel formats
+  Unknown,
+
+  /// @brief packed RGBA 8:8:8:8, 32bpp, RGBARGBA...
+  /// This is the preferred format for web compatibility
+  RGBA_8888,
+
+  /// @brief packed RGB 8:8:8, 32bpp, XRGBXRGB... X=unused/undefined
+  XRGB_8888,
+
+  /// @brief packed BGR 8:8:8, 32bpp, BGRXBGRX... X=unused/undefined
+  BGRX_8888,
+
+  /// @brief packed RGB 5:6:5, 16bpp, (msb), 5R 6G 5B(lsb), big-endian
+  RGB_565_BE,
+
+  /// @brief packed RGB 5:6:5, 16bpp, (msb), 5R 6G 5B(lsb), little-endian
+  RGB_565_LE,
+
+  /// @brief packed RGB 5:5:5, 16bpp, (msb)1X 5R 5G 5B(lsb), big-endian, X=unused/undefined
+  RGB_555_BE,
+
+  /// @brief packed RGB 5:5:5, 16bpp, (msb)1X 5R 5G 5B(lsb), little-endian, X=unused/undefined
+  RGB_555_LE,
+}
+
+enum VideoRotation : uint8 {
+  CCW_0,
+  CCW_90,
+  CCW_180,
+  CCW_270,
+}
