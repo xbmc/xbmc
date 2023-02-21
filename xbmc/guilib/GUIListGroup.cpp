@@ -19,6 +19,8 @@ namespace
 const std::set<CGUIControl::GUICONTROLTYPES> supportedTypes = {
     // clang-format off
     CGUIControl::GUICONTROL_BORDEREDIMAGE,
+    CGUIControl::GUICONTROL_GAME,
+    CGUIControl::GUICONTROL_GAMECONTROLLER,
     CGUIControl::GUICONTROL_IMAGE,
     CGUIControl::GUICONTROL_LISTGROUP,
     CGUIControl::GUICONTROL_LISTLABEL,
