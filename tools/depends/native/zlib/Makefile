@@ -5,10 +5,10 @@ DEPS = ../../Makefile.include Makefile visibility.patch ../../download-files.inc
 
 # lib name, version
 LIBNAME=zlib
-VERSION=1.2.11
+VERSION=1.2.13
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=73fd3fff4adeccd4894084c15ddac89890cd10ef105dd5e1835e1e9bbb6a49ff229713bd197d203edfa17c2727700fce65a2a235f07568212d820dca88b528ae
+ARCHIVE=$(SOURCE).tar.xz
+SHA512=9e7ac71a1824855ae526506883e439456b74ac0b811d54e94f6908249ba8719bec4c8d7672903c5280658b26cb6b5e93ecaaafe5cdc2980c760fa196773f0725
 include ../../download-files.include
 # configuration settings
 CONFIGURE= CC="$(CC_FOR_BUILD)" CFLAGS="$(NATIVE_CFLAGS)" ./configure --prefix=$(PREFIX)
