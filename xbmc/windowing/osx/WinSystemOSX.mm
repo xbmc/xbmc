@@ -667,7 +667,11 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   // screen index is not found/available.
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_lastDisplayNr = GetDisplayIndex(settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
-  NSScreen* screen = [NSScreen.screens objectAtIndex:m_lastDisplayNr];
+  NSScreen* screen = nil;
+  if (m_lastDisplayNr < NSScreen.screens.count)
+  {
+    screen = [NSScreen.screens objectAtIndex:m_lastDisplayNr];
+  }
 
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
@@ -714,29 +718,32 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
       [appWindow setContentView:view];
 
       // set the window to the appropriate screen and screen position
-      if (m_bFullScreen)
+      if (screen)
       {
-        [appWindow setFrameOrigin:screen.frame.origin];
-      }
-      else
-      {
-        // if there are stored window positions use that as the origin point
-        const int top = settings->GetInt(SETTING_WINDOW_TOP);
-        const int left = settings->GetInt(SETTING_WINDOW_LEFT);
-
-        NSPoint windowPos;
-        if (top != 0 || left != 0)
+        if (m_bFullScreen)
         {
-          windowPos = NSMakePoint(left, top);
+          [appWindow setFrameOrigin:screen.frame.origin];
         }
         else
         {
-          // otherwise center the window on the screen
-          windowPos =
-              NSMakePoint(screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
-                          screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2);
+          // if there are stored window positions use that as the origin point
+          const int top = settings->GetInt(SETTING_WINDOW_TOP);
+          const int left = settings->GetInt(SETTING_WINDOW_LEFT);
+
+          NSPoint windowPos;
+          if (top != 0 || left != 0)
+          {
+            windowPos = NSMakePoint(left, top);
+          }
+          else
+          {
+            // otherwise center the window on the screen
+            windowPos =
+                NSMakePoint(screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
+                            screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2);
+          }
+          [appWindow setFrameOrigin:windowPos];
         }
-        [appWindow setFrameOrigin:windowPos];
       }
     });
 
