@@ -31,7 +31,7 @@ if(ENABLE_INTERNAL_UDFREAD)
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP udfread)
 else()
   if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_UDFREAD udfread>=1.0.0 QUIET)
+    pkg_search_module(PC_UDFREAD QUIET libudfread>=1.0.0 udfread>=1.0.0)
   endif()
 
   find_path(UDFREAD_INCLUDE_DIR NAMES udfread/udfread.h
