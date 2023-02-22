@@ -60,8 +60,19 @@ void CGUIImage::UpdateVisibility(const CGUIListItem *item)
   AllocateOnDemand();
 }
 
+void CGUIImage::UpdateDiffuseColor(const CGUIListItem* item)
+{
+  if (m_texture->SetDiffuseColor(m_diffuseColor, item))
+  {
+    MarkDirtyRegion();
+  }
+}
+
 void CGUIImage::UpdateInfo(const CGUIListItem *item)
 {
+  // Update the diffuse color. The texture diffuse color may depend on the current item
+  UpdateDiffuseColor(item);
+
   if (m_info.IsConstant())
     return; // nothing to do
 
@@ -155,9 +166,6 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
     if (m_texture->SetAlpha(GetFadeLevel(m_currentFadeTime)))
       MarkDirtyRegion();
   }
-
-  if (m_texture->SetDiffuseColor(m_diffuseColor))
-    MarkDirtyRegion();
 
   if (m_texture->Process(currentTime))
     MarkDirtyRegion();
