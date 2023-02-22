@@ -83,7 +83,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Release OR CMAKE_BUILD_TYPE STREQUAL MinSizeRel)
           set(NJOBS ${USE_LTO})
         endif()
 
-        if(CMAKE_COMPILER_IS_GNUCXX)
+        if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
           # GCC
           # Make sure we strip binaries in Release build
           set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s")
