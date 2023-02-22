@@ -1,6 +1,6 @@
 project(ffmpeg)
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.12)
 
 if(ENABLE_CCACHE AND CCACHE_PROGRAM)
   set(ffmpeg_conf "--cc=${CCACHE_PROGRAM} ${CMAKE_C_COMPILER}"

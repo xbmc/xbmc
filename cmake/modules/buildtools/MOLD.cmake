@@ -1,5 +1,5 @@
 if(ENABLE_MOLD)
-  if(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 12)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL GNU AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 12)
     # GCC < 12 doesn't support -fuse-ld=mold, so we have to use tools prefix path
     # if mold is installed in a non-standard dir, users can set -DMOLD_PREFIX=/path/to/mold_install_prefix
     find_path(MOLD_PREFIX_DIR NAMES ld
