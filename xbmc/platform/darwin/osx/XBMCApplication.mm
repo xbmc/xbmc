@@ -335,6 +335,17 @@ int main(int argc, const char* argv[])
     auto appDelegate = [XBMCDelegate new];
     [NSApplication sharedApplication].delegate = appDelegate;
 
+#if defined(_DEBUG)
+    // HACK: for unbundled apps (e.g. executing kodi.bin directly from xcode) the
+    // default policy is NSApplicationActivationPolicyProhibited (no dock and may not create windows)
+    // since Kodi does not currently support any headless mode force it to regular (the default for bundled)
+    // TODO: If headless is supported in the future or if setting NSApplicationActivationPolicyProhibited is
+    // intentional (e.g. from Info.Plist) this might need to be revisited later.
+    if ([NSApp activationPolicy] == NSApplicationActivationPolicyProhibited)
+    {
+      [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
+    }
+#endif
     return NSApplicationMain(argc, argv);
   }
 }
