@@ -58,7 +58,16 @@ using namespace MESSAGING;
 using namespace WINDOWING;
 using namespace std::chrono_literals;
 
-#define MAX_DISPLAYS 32
+namespace
+{
+constexpr int MAX_DISPLAYS = 32;
+constexpr const char* DEFAULT_SCREEN_NAME = "Default";
+//! MacOS specific window top position setting
+constexpr const char* SETTING_WINDOW_TOP = "window.top";
+//! MacOS specific window left position setting
+constexpr const char* SETTING_WINDOW_LEFT = "window.left";
+} // namespace
+
 static NSWindow* blankingWindows[MAX_DISPLAYS];
 
 size_t DisplayBitsPerPixelForMode(CGDisplayModeRef mode)
@@ -110,7 +119,7 @@ CGDirectDisplayID GetDisplayID(NSUInteger screen_index)
 
 #pragma mark - GetScreenName
 
-NSString* screenNameForDisplay(NSUInteger screenIdx)
+NSString* GetScreenName(NSUInteger screenIdx)
 {
   NSString* screenName;
   const CGDirectDisplayID displayID = GetDisplayID(screenIdx);
@@ -144,6 +153,19 @@ NSString* screenNameForDisplay(NSUInteger screenIdx)
       }
     }
   }
+  return screenName;
+}
+
+NSString* screenNameForDisplay(NSUInteger screenIdx)
+{
+  // screen id 0 is always called "Default"
+  if (screenIdx == 0)
+  {
+    return @(DEFAULT_SCREEN_NAME);
+  }
+
+  const CGDirectDisplayID displayID = GetDisplayID(screenIdx);
+  NSString* screenName = GetScreenName(screenIdx);
 
   if (screenName == nil)
   {
@@ -641,6 +663,16 @@ bool CWinSystemOSX::DestroyWindowSystem()
 
 bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)
 {
+  // find the screen where the application started the last time. It'd be the default screen if the
+  // screen index is not found/available.
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  m_lastDisplayNr = GetDisplayIndex(settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  NSScreen* screen = nil;
+  if (m_lastDisplayNr < NSScreen.screens.count)
+  {
+    screen = [NSScreen.screens objectAtIndex:m_lastDisplayNr];
+  }
+
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
   RESOLUTION_INFO resInfo = CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW);
@@ -684,6 +716,35 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
       // associate with current window
       [appWindow setContentView:view];
+
+      // set the window to the appropriate screen and screen position
+      if (screen)
+      {
+        if (m_bFullScreen)
+        {
+          [appWindow setFrameOrigin:screen.frame.origin];
+        }
+        else
+        {
+          // if there are stored window positions use that as the origin point
+          const int top = settings->GetInt(SETTING_WINDOW_TOP);
+          const int left = settings->GetInt(SETTING_WINDOW_LEFT);
+
+          NSPoint windowPos;
+          if (top != 0 || left != 0)
+          {
+            windowPos = NSMakePoint(left, top);
+          }
+          else
+          {
+            // otherwise center the window on the screen
+            windowPos =
+                NSMakePoint(screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
+                            screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2);
+          }
+          [appWindow setFrameOrigin:windowPos];
+        }
+      }
     });
 
     [view.getGLContext makeCurrentContext];
@@ -1169,6 +1230,16 @@ void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
 
 void CWinSystemOSX::OnMove(int x, int y)
 {
+  // check if the current screen/monitor settings needs to be updated
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::string storedScreenName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  const std::string currentScreenName = screenNameForDisplay(m_lastDisplayNr).UTF8String;
+  if (storedScreenName != currentScreenName)
+  {
+    CDisplaySettings::GetInstance().SetMonitor(currentScreenName);
+  }
+
+  // check if refresh rate needs to be updated
   static double oldRefreshRate = m_refreshRate;
   Cocoa_CVDisplayLinkUpdate();
 
@@ -1180,36 +1251,31 @@ void CWinSystemOSX::OnMove(int x, int y)
     oldRefreshRate = m_refreshRate;
 
     // send a message so that videoresolution (and refreshrate) is changed
-    NSWindow* win = m_appWindow;
-    NSRect frame = win.contentView.frame;
-    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_VIDEORESIZE, frame.size.width,
-                                               frame.size.height);
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      NSWindow* win = m_appWindow;
+      NSRect frame = win.contentView.frame;
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_VIDEORESIZE, frame.size.width,
+                                                 frame.size.height);
+    });
+  }
+  // store window position in window mode
+  if (!m_bFullScreen)
+  {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      settings->SetInt(SETTING_WINDOW_LEFT, m_appWindow.frame.origin.x);
+      settings->SetInt(SETTING_WINDOW_TOP, m_appWindow.frame.origin.y);
+      settings->Save();
+    });
   }
 }
 
 void CWinSystemOSX::WindowChangedScreen()
 {
-  // user has moved the window to a
-  // different screen
-  NSOpenGLContext* context = [NSOpenGLContext currentContext];
-  m_lastDisplayNr = 0;
-
   // if we are here the user dragged the window to a different
   // screen and we return the screen of the window
-  if (context)
+  if (m_appWindow)
   {
-    NSView* view;
-
-    view = context.view;
-    if (view)
-    {
-      NSWindow* window;
-      window = view.window;
-      if (window)
-      {
-        m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen(window.screen));
-      }
-    }
+    m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen(m_appWindow.screen));
   }
 }
 
@@ -1259,7 +1325,7 @@ std::unique_ptr<CVideoSync> CWinSystemOSX::GetVideoSync(void* clock)
 std::vector<std::string> CWinSystemOSX::GetConnectedOutputs()
 {
   std::vector<std::string> outputs;
-  outputs.push_back("Default");
+  outputs.push_back(DEFAULT_SCREEN_NAME);
 
   // screen 0 is always the "Default" setting, avoid duplicating the available
   // screens here.
