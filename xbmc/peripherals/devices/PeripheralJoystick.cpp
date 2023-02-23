@@ -8,6 +8,9 @@
 
 #include "PeripheralJoystick.h"
 
+#include "ServiceBroker.h"
+#include "addons/AddonInstaller.h"
+#include "addons/AddonManager.h"
 #include "application/Application.h"
 #include "games/GameServices.h"
 #include "games/controllers/Controller.h"
@@ -65,6 +68,10 @@ CPeripheralJoystick::~CPeripheralJoystick(void)
   m_appInput.reset();
   m_deadzoneFilter.reset();
   m_buttonMap.reset();
+
+  // Wait for remaining install tasks
+  for (std::future<void>& task : m_installTasks)
+    task.wait();
 }
 
 bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
@@ -95,6 +102,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
         if (m_buttonMap->Load())
         {
           InitializeDeadzoneFiltering(*m_buttonMap);
+          InitializeControllerProfile(*m_buttonMap);
         }
         else
         {
@@ -126,6 +134,54 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
 void CPeripheralJoystick::InitializeDeadzoneFiltering(IButtonMap& buttonMap)
 {
   m_deadzoneFilter.reset(new CDeadzoneFilter(&buttonMap, this));
+}
+
+void CPeripheralJoystick::InitializeControllerProfile(IButtonMap& buttonMap)
+{
+  const std::string controllerId = buttonMap.GetAppearance();
+  if (controllerId.empty())
+    return;
+
+  auto controller = m_manager.GetControllerProfiles().GetController(controllerId);
+  if (controller)
+    CPeripheral::SetControllerProfile(controller);
+  else
+  {
+    std::unique_lock<CCriticalSection> lock(m_controllerInstallMutex);
+
+    // Deposit controller into queue
+    m_controllersToInstall.emplace(controllerId);
+
+    // Clean up finished install tasks
+    m_installTasks.erase(std::remove_if(m_installTasks.begin(), m_installTasks.end(),
+                                        [](std::future<void>& task) {
+                                          return task.wait_for(std::chrono::seconds(0)) ==
+                                                 std::future_status::ready;
+                                        }),
+                         m_installTasks.end());
+
+    // Install controller off-thread
+    std::future<void> installTask = std::async(std::launch::async, [this]() {
+      // Withdraw controller from queue
+      std::string controllerToInstall;
+      {
+        std::unique_lock<CCriticalSection> lock(m_controllerInstallMutex);
+        if (!m_controllersToInstall.empty())
+        {
+          controllerToInstall = m_controllersToInstall.front();
+          m_controllersToInstall.pop();
+        }
+      }
+
+      // Do the install
+      GAME::ControllerPtr controller = InstallAsync(controllerToInstall);
+      if (controller)
+        CPeripheral::SetControllerProfile(controller);
+    });
+
+    // Hold the task to prevent the destructor from completing during an install
+    m_installTasks.emplace_back(std::move(installTask));
+  }
 }
 
 void CPeripheralJoystick::OnUserNotification()
@@ -192,9 +248,36 @@ IKeymap* CPeripheralJoystick::GetKeymap(const std::string& controllerId)
 
 GAME::ControllerPtr CPeripheralJoystick::ControllerProfile() const
 {
-  //! @todo Allow the user to change which controller profile represents their
-  // controller. For now, just use the default.
+  // Button map has the freshest state
+  if (m_buttonMap)
+  {
+    const std::string controllerId = m_buttonMap->GetAppearance();
+    if (!controllerId.empty())
+    {
+      auto controller = m_manager.GetControllerProfiles().GetController(controllerId);
+      if (controller)
+        return controller;
+    }
+  }
+
+  // Fall back to last set controller profile
+  if (m_controllerProfile)
+    return m_controllerProfile;
+
+  // Fall back to default controller
   return m_manager.GetControllerProfiles().GetDefaultController();
+}
+
+void CPeripheralJoystick::SetControllerProfile(const KODI::GAME::ControllerPtr& controller)
+{
+  CPeripheral::SetControllerProfile(controller);
+
+  // Save preference to buttonmap
+  if (m_buttonMap)
+  {
+    if (m_buttonMap->SetAppearance(controller->ID()))
+      m_buttonMap->SaveButtonMap();
+  }
 }
 
 bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
@@ -412,4 +495,43 @@ void CPeripheralJoystick::SetSupportsPowerOff(bool bSupportsPowerOff)
                      m_features.end());
   else if (std::find(m_features.begin(), m_features.end(), FEATURE_POWER_OFF) == m_features.end())
     m_features.push_back(FEATURE_POWER_OFF);
+}
+
+GAME::ControllerPtr CPeripheralJoystick::InstallAsync(const std::string& controllerId)
+{
+  GAME::ControllerPtr controller;
+
+  // Only 1 install at a time. Remaining installs will wake when this one
+  // is done.
+  std::unique_lock<CCriticalSection> lockInstall(m_manager.GetAddonInstallMutex());
+
+  CLog::LogF(LOGDEBUG, "Installing {}", controllerId);
+
+  if (InstallSync(controllerId))
+    controller = m_manager.GetControllerProfiles().GetController(controllerId);
+  else
+    CLog::LogF(LOGERROR, "Failed to install {}", controllerId);
+
+  return controller;
+}
+
+bool CPeripheralJoystick::InstallSync(const std::string& controllerId)
+{
+  // If the addon isn't installed we need to install it
+  bool installed = CServiceBroker::GetAddonMgr().IsAddonInstalled(controllerId);
+  if (!installed)
+  {
+    ADDON::AddonPtr installedAddon;
+    installed = ADDON::CAddonInstaller::GetInstance().InstallModal(
+        controllerId, installedAddon, ADDON::InstallModalPrompt::CHOICE_NO);
+  }
+
+  if (installed)
+  {
+    // Make sure add-on is enabled
+    if (CServiceBroker::GetAddonMgr().IsAddonDisabled(controllerId))
+      CServiceBroker::GetAddonMgr().EnableAddon(controllerId);
+  }
+
+  return installed;
 }
