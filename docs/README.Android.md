@@ -279,6 +279,12 @@ Build a specific group of add-ons:
 ```
 make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons ADDONS="pvr.*"
 ```
+
+Clean-up binary add-ons:
+```
+make -C tools/depends/target/binary-addons clean
+```
+
 For additional information on regular expression usage for ADDONS_TO_BUILD, view ADDONS_TO_BUILD section located at [Kodi add-ons CMake based buildsystem](../cmake/addons/README.md)
 
 **[back to top](#table-of-contents)**
