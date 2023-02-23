@@ -104,7 +104,7 @@ public:
   void SetSupportsPowerOff(bool bSupportsPowerOff); // specialized to update m_features
 
 protected:
-  void InitializeDeadzoneFiltering();
+  void InitializeDeadzoneFiltering(KODI::JOYSTICK::IButtonMap& buttonMap);
 
   void PowerOff();
 
