@@ -81,6 +81,9 @@ void CPeripheralKeyboard::UnregisterKeyboardDriverHandler(
 
 GAME::ControllerPtr CPeripheralKeyboard::ControllerProfile() const
 {
+  if (m_controllerProfile)
+    return m_controllerProfile;
+
   return m_manager.GetControllerProfiles().GetDefaultKeyboard();
 }
 

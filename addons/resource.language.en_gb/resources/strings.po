@@ -2264,6 +2264,7 @@ msgctxt "#479"
 msgid "Skin & language"
 msgstr ""
 
+#: system/peripherals.xml
 #: system/settings/settings.xml
 #: addons/skin.estuary/xml/Includes.xml
 msgctxt "#480"
