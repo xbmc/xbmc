@@ -53,6 +53,8 @@ constexpr auto CONTEXT_TIMEOUT = 60s; // 2/3 parts of lease_time
 constexpr auto KEEP_ALIVE_TIMEOUT = 45s; // half of lease_time
 constexpr auto IDLE_TIMEOUT = 30s; // close fast unused contexts when no active connections
 
+constexpr int NFS4ERR_EXPIRED = -11; // client session expired due idle time greater than lease_time
+
 constexpr auto SETTING_NFS_VERSION = "nfs.version";
 } // unnamed namespace
 
@@ -594,34 +596,34 @@ bool CNFSFile::Open(const CURL& url)
 
   std::unique_lock<CCriticalSection> lock(gNfsConnection);
 
-  auto NfsOpen = [this](const CURL& url, std::string& filename) -> bool
-  {
-    if (!gNfsConnection.Connect(url, filename))
-      return false;
+  if (!gNfsConnection.Connect(url, filename))
+    return false;
 
-    m_pNfsContext = gNfsConnection.GetNfsContext();
-    m_exportPath = gNfsConnection.GetContextMapId();
+  m_pNfsContext = gNfsConnection.GetNfsContext();
+  m_exportPath = gNfsConnection.GetContextMapId();
 
-    return nfs_open(m_pNfsContext, filename.c_str(), O_RDONLY, &m_pFileHandle) == 0;
-  };
+  int ret = nfs_open(m_pNfsContext, filename.c_str(), O_RDONLY, &m_pFileHandle);
 
-  if (!NfsOpen(url, filename))
+  if (ret == NFS4ERR_EXPIRED) // client session expired due no activity/keep alive
   {
     CLog::Log(LOGERROR,
               "CNFSFile::Open: Unable to open file - trying again with a new context: error: '{}'",
               nfs_get_error(m_pNfsContext));
 
     gNfsConnection.Deinit();
+    m_pNfsContext = gNfsConnection.GetNfsContext();
+    m_exportPath = gNfsConnection.GetContextMapId();
+    ret = nfs_open(m_pNfsContext, filename.c_str(), O_RDONLY, &m_pFileHandle);
+  }
 
-    if (!NfsOpen(url, filename))
-    {
-      CLog::Log(LOGERROR, "CNFSFile::Open: Unable to open file: '{}' error: '{}'",
-                url.GetFileName(), nfs_get_error(m_pNfsContext));
+  if (ret != 0)
+  {
+    CLog::Log(LOGERROR, "CNFSFile::Open: Unable to open file: '{}' error: '{}'", url.GetFileName(),
+              nfs_get_error(m_pNfsContext));
 
-      m_pNfsContext = nullptr;
-      m_exportPath.clear();
-      return false;
-    }
+    m_pNfsContext = nullptr;
+    m_exportPath.clear();
+    return false;
   }
 
   CLog::Log(LOGDEBUG, "CNFSFile::Open - opened {}", url.GetFileName());
