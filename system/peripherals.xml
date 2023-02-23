@@ -57,7 +57,7 @@
      <setting key="keymap" value="osmc" label="35007" configurable="1"/>
   </peripheral>
 
-  <peripheral class="joystick" mapTo="joystick">
+  <peripheral class="joystick" name="joystick" mapTo="joystick">
     <setting key="left_stick_deadzone" type="float" label="35078" order="1" value="0.2" min="0.0" step="0.05" max="1.0" />
     <setting key="right_stick_deadzone" type="float" label="35079" order="2" value="0.2" min="0.0" step="0.05" max="1.0" />
   </peripheral>
