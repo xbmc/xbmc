@@ -20,6 +20,7 @@
 #include "peripherals/addons/PeripheralAddon.h"
 #include "peripherals/bus/PeripheralBus.h"
 #include "peripherals/bus/virtual/PeripheralBusAddon.h"
+#include "settings/SettingAddon.h"
 #include "settings/lib/Setting.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
@@ -269,12 +270,21 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
       break;
       case SettingType::String:
       {
-        std::shared_ptr<const CSettingString> mappedSetting =
-            std::static_pointer_cast<const CSettingString>(setting);
-        std::shared_ptr<CSettingString> stringSetting =
-            std::make_shared<CSettingString>(strKey, *mappedSetting);
-        if (stringSetting)
+        if (std::dynamic_pointer_cast<const CSettingAddon>(setting))
         {
+          std::shared_ptr<const CSettingAddon> mappedSetting =
+              std::static_pointer_cast<const CSettingAddon>(setting);
+          std::shared_ptr<CSettingAddon> addonSetting =
+              std::make_shared<CSettingAddon>(strKey, *mappedSetting);
+          addonSetting->SetVisible(mappedSetting->IsVisible());
+          deviceSetting.m_setting = addonSetting;
+        }
+        else
+        {
+          std::shared_ptr<const CSettingString> mappedSetting =
+              std::static_pointer_cast<const CSettingString>(setting);
+          std::shared_ptr<CSettingString> stringSetting =
+              std::make_shared<CSettingString>(strKey, *mappedSetting);
           stringSetting->SetVisible(mappedSetting->IsVisible());
           deviceSetting.m_setting = stringSetting;
         }
