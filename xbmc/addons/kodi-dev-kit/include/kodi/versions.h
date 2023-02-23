@@ -212,7 +212,7 @@ typedef enum ADDON_TYPE
   // Need to change if new global type becomes added!
   ADDON_GLOBAL_MAX = 6,
 
-  /* addon type instances */
+  /* addon instance types */
 
   /// Audio decoder instance, see @ref cpp_kodi_addon_audiodecoder "kodi::addon::CInstanceAudioDecoder"
   ADDON_INSTANCE_AUDIODECODER = 102,
@@ -229,10 +229,10 @@ typedef enum ADDON_TYPE
   /// Peripheral instance, see @ref cpp_kodi_addon_peripheral "kodi::addon::CInstancePeripheral"
   ADDON_INSTANCE_PERIPHERAL = 106,
 
-  /// Game instance, see @ref cpp_kodi_addon_pvr "kodi::addon::CInstancePVRClient"
+  /// PVR client instance, see @ref cpp_kodi_addon_pvr "kodi::addon::CInstancePVRClient"
   ADDON_INSTANCE_PVR = 107,
 
-  /// PVR client instance, see @ref cpp_kodi_addon_screensaver "kodi::addon::CInstanceScreensaver"
+  /// Screen saver instance, see @ref cpp_kodi_addon_screensaver "kodi::addon::CInstanceScreensaver"
   ADDON_INSTANCE_SCREENSAVER = 108,
 
   /// Music visualization instance, see @ref cpp_kodi_addon_visualization "kodi::addon::CInstanceVisualization"
@@ -241,10 +241,10 @@ typedef enum ADDON_TYPE
   /// Virtual Filesystem (VFS) instance, see @ref cpp_kodi_addon_vfs "kodi::addon::CInstanceVFS"
   ADDON_INSTANCE_VFS = 110,
 
-  /// Image Decoder instance, see @ref cpp_kodi_addon_imagedecoder "kodi::addon::CInstanceImageDecoder"
+  /// Image decoder instance, see @ref cpp_kodi_addon_imagedecoder "kodi::addon::CInstanceImageDecoder"
   ADDON_INSTANCE_IMAGEDECODER = 111,
 
-  /// Video Decoder instance, see @ref cpp_kodi_addon_videocodec "kodi::addon::CInstanceVideoCodec"
+  /// Video codec instance, see @ref cpp_kodi_addon_videocodec "kodi::addon::CInstanceVideoCodec"
   ADDON_INSTANCE_VIDEOCODEC = 112,
 } ADDON_TYPE;
 ///@}
