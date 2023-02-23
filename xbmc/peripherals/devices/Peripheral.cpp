@@ -11,6 +11,7 @@
 #include "Util.h"
 #include "XBDateTime.h"
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerLayout.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
 #include "peripherals/Peripherals.h"
@@ -674,8 +675,13 @@ std::string CPeripheral::GetIcon() const
 {
   std::string icon;
 
+  // Try controller profile
+  const GAME::ControllerPtr controller = ControllerProfile();
+  if (controller)
+    icon = controller->Layout().ImagePath();
+
   // Try add-on
-  if (m_busType == PERIPHERAL_BUS_ADDON)
+  if (icon.empty() && m_busType == PERIPHERAL_BUS_ADDON)
   {
     CPeripheralBusAddon* bus = static_cast<CPeripheralBusAddon*>(m_bus);
 
@@ -687,14 +693,6 @@ std::string CPeripheral::GetIcon() const
       if (!addonIcon.empty())
         icon = std::move(addonIcon);
     }
-  }
-
-  // Try controller profile
-  if (icon.empty())
-  {
-    const GAME::ControllerPtr controller = ControllerProfile();
-    if (controller)
-      icon = controller->Icon();
   }
 
   // Fallback
