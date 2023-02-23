@@ -8,9 +8,9 @@
 
 #include "PeripheralMouse.h"
 
-#include "ServiceBroker.h"
 #include "games/GameServices.h"
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerManager.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 
@@ -76,8 +76,7 @@ void CPeripheralMouse::UnregisterMouseDriverHandler(MOUSE::IMouseDriverHandler* 
 
 GAME::ControllerPtr CPeripheralMouse::ControllerProfile() const
 {
-  GAME::CGameServices& gameServices = CServiceBroker::GetGameServices();
-  return gameServices.GetDefaultMouse();
+  return m_manager.GetControllerProfiles().GetDefaultMouse();
 }
 
 bool CPeripheralMouse::OnPosition(int x, int y)
