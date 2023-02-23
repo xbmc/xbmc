@@ -8,9 +8,9 @@
 
 #include "PeripheralKeyboard.h"
 
-#include "ServiceBroker.h"
 #include "games/GameServices.h"
 #include "games/controllers/Controller.h"
+#include "games/controllers/ControllerManager.h"
 #include "input/InputManager.h"
 #include "peripherals/Peripherals.h"
 
@@ -81,8 +81,7 @@ void CPeripheralKeyboard::UnregisterKeyboardDriverHandler(
 
 GAME::ControllerPtr CPeripheralKeyboard::ControllerProfile() const
 {
-  GAME::CGameServices& gameServices = CServiceBroker::GetGameServices();
-  return gameServices.GetDefaultKeyboard();
+  return m_manager.GetControllerProfiles().GetDefaultKeyboard();
 }
 
 bool CPeripheralKeyboard::OnKeyPress(const CKey& key)
