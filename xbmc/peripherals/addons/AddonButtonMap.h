@@ -39,6 +39,10 @@ public:
 
   bool IsEmpty(void) const override;
 
+  std::string GetAppearance() const override;
+
+  bool SetAppearance(const std::string& controllerId) const override;
+
   bool GetFeature(const KODI::JOYSTICK::CDriverPrimitive& primitive,
                   KODI::JOYSTICK::FeatureName& feature) override;
 
@@ -122,12 +126,18 @@ private:
   static JOYSTICK_FEATURE_PRIMITIVE GetPrimitiveIndex(KODI::JOYSTICK::WHEEL_DIRECTION dir);
   static JOYSTICK_FEATURE_PRIMITIVE GetPrimitiveIndex(KODI::JOYSTICK::THROTTLE_DIRECTION dir);
 
+  // Construction parameters
   CPeripheral* const m_device;
-  std::weak_ptr<CPeripheralAddon> m_addon;
+  const std::weak_ptr<CPeripheralAddon> m_addon;
   const std::string m_strControllerId;
+
+  // Button map state
+  std::string m_controllerAppearance;
   FeatureMap m_features;
   DriverMap m_driverMap;
   JoystickPrimitiveVector m_ignoredPrimitives;
+
+  // Synchronization parameters
   mutable CCriticalSection m_mutex;
 };
 } // namespace PERIPHERALS
