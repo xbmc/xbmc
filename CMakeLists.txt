@@ -379,7 +379,13 @@ if(WIN32)
 endif()
 
 # main binary
-if(NOT CORE_SYSTEM_NAME STREQUAL android)
+#SHH: osx doesn't need to be first, for now just simplifying changes.
+# osx: use keyword MACOSX_BUNDLE to add_executable() to embed main executable in app bundle.
+if(CORE_SYSTEM_NAME STREQUAL osx)
+  add_executable(${APP_NAME_LC} MACOSX_BUNDLE ${CORE_MAIN_SOURCE} "${RESOURCES}" ${OTHER_FILES})
+  set_target_properties(${APP_NAME_LC} PROPERTIES ENABLE_EXPORTS ON) #SHH: needed for osx?
+  #SHH: OUTPUT_NAME and ...PLIST are added in a section below along with darwin_embedded
+elseif(NOT CORE_SYSTEM_NAME STREQUAL android)
   if(CORE_SYSTEM_NAME STREQUAL windowsstore)
     winstore_add_target_properties(${APP_NAME_LC})
   endif()
@@ -409,7 +415,7 @@ if(WIN32)
   endif()
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   # Nothing
-elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
+elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded OR CORE_SYSTEM_NAME STREQUAL osx)
   set_target_properties(${APP_NAME_LC} PROPERTIES OUTPUT_NAME ${APP_NAME}
                                                   MACOSX_BUNDLE_INFO_PLIST ${PLATFORM_BUNDLE_INFO_PLIST})
 else()

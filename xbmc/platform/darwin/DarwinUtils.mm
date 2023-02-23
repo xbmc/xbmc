@@ -102,13 +102,17 @@ std::string CDarwinUtils::GetFrameworkPath(bool forPython)
 #if defined(TARGET_DARWIN_EMBEDDED)
     return std::string{mainBundle.privateFrameworksPath.UTF8String};
 #else
-    if ([mainBundle.executablePath containsString:@"Contents"])
+    // SHH: Kodi bundle should use the bundle Frameworks directory for this.
+    // I heard somewhere that Apple signing tools won't sign executable
+    // binaries (including dynamic libraries) that are not in the
+    // "approved" folders.
+    auto frameworks = mainBundle.privateFrameworksPath;
+    // For now, use Libraries. Remove the next line when migrated to Frameworks.
+    frameworks = [[frameworks stringByDeletingLastPathComponent]
+                  stringByAppendingPathComponent:@"Libraries"];
+    if ([NSFileManager.defaultManager fileExistsAtPath:frameworks])
     {
-      // ExecutablePath is <product>.app/Contents/MacOS/<executable>
-      // we should have <product>.app/Contents/Libraries
-      return std::string{[[mainBundle.bundlePath stringByAppendingPathComponent:@"Contents"]
-                             stringByAppendingPathComponent:@"Libraries"]
-                             .UTF8String};
+      return std::string{[frameworks UTF8String]};
     }
 #endif
   }
