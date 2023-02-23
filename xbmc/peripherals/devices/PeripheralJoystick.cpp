@@ -76,7 +76,8 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
     if (feature == FEATURE_JOYSTICK)
     {
       // Ensure an add-on is present to translate input
-      if (!m_manager.GetAddonWithButtonMap(this))
+      PeripheralAddonPtr addon = m_manager.GetAddonWithButtonMap(this);
+      if (!addon)
       {
         CLog::Log(LOGERROR, "CPeripheralJoystick: No button mapping add-on for {}", m_strLocation);
       }
@@ -90,7 +91,17 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
 
       if (bSuccess)
       {
-        InitializeDeadzoneFiltering();
+        m_buttonMap = std::make_unique<CAddonButtonMap>(this, addon, DEFAULT_CONTROLLER_ID);
+        if (m_buttonMap->Load())
+        {
+          InitializeDeadzoneFiltering(*m_buttonMap);
+        }
+        else
+        {
+          CLog::Log(LOGERROR, "CPeripheralJoystick: Failed to load button map for {}",
+                    m_strLocation);
+          m_buttonMap.reset();
+        }
 
         // Give joystick monitor priority over default controller
         m_appInput.reset(
@@ -112,31 +123,9 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
   return bSuccess;
 }
 
-void CPeripheralJoystick::InitializeDeadzoneFiltering()
+void CPeripheralJoystick::InitializeDeadzoneFiltering(IButtonMap& buttonMap)
 {
-  // Get a button map for deadzone filtering
-  PeripheralAddonPtr addon = m_manager.GetAddonWithButtonMap(this);
-  if (addon)
-  {
-    m_buttonMap.reset(new CAddonButtonMap(this, addon, DEFAULT_CONTROLLER_ID));
-    if (m_buttonMap->Load())
-    {
-      m_deadzoneFilter.reset(new CDeadzoneFilter(m_buttonMap.get(), this));
-    }
-    else
-    {
-      CLog::Log(LOGERROR,
-                "CPeripheralJoystick: Failed to load button map for deadzone filtering on {}",
-                m_strLocation);
-      m_buttonMap.reset();
-    }
-  }
-  else
-  {
-    CLog::Log(LOGERROR,
-              "CPeripheralJoystick: Failed to create button map for deadzone filtering on {}",
-              m_strLocation);
-  }
+  m_deadzoneFilter.reset(new CDeadzoneFilter(&buttonMap, this));
 }
 
 void CPeripheralJoystick::OnUserNotification()
