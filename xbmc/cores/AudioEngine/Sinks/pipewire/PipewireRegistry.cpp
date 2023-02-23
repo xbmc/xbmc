@@ -8,8 +8,8 @@
 
 #include "PipewireRegistry.h"
 
-#include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
-#include "cores/AudioEngine/Sinks/pipewire/PipewireNode.h"
+#include "PipewireCore.h"
+#include "PipewireNode.h"
 #include "utils/log.h"
 
 #include <stdexcept>
@@ -33,6 +33,8 @@ CPipewireRegistry::CPipewireRegistry(CPipewireCore& core)
 
   pw_registry_add_listener(m_registry.get(), &m_registryListener, &m_registryEvents, this);
 }
+
+CPipewireRegistry::~CPipewireRegistry() = default;
 
 void CPipewireRegistry::OnGlobalAdded(void* userdata,
                                       uint32_t id,

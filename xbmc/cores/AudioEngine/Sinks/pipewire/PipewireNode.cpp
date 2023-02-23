@@ -8,10 +8,10 @@
 
 #include "PipewireNode.h"
 
-#include "cores/AudioEngine/Sinks/pipewire/PipewireContext.h"
-#include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
-#include "cores/AudioEngine/Sinks/pipewire/PipewireRegistry.h"
-#include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
+#include "PipewireContext.h"
+#include "PipewireCore.h"
+#include "PipewireRegistry.h"
+#include "PipewireThreadLoop.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
