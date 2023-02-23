@@ -8,11 +8,11 @@
 
 #include "PeripheralJoystick.h"
 
-#include "ServiceBroker.h"
 #include "application/Application.h"
 #include "games/GameServices.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerIDs.h"
+#include "games/controllers/ControllerManager.h"
 #include "input/InputManager.h"
 #include "input/joysticks/DeadzoneFilter.h"
 #include "input/joysticks/JoystickMonitor.h"
@@ -205,8 +205,7 @@ GAME::ControllerPtr CPeripheralJoystick::ControllerProfile() const
 {
   //! @todo Allow the user to change which controller profile represents their
   // controller. For now, just use the default.
-  GAME::CGameServices& gameServices = CServiceBroker::GetGameServices();
-  return gameServices.GetDefaultController();
+  return m_manager.GetControllerProfiles().GetDefaultController();
 }
 
 bool CPeripheralJoystick::OnButtonMotion(unsigned int buttonIndex, bool bPressed)
