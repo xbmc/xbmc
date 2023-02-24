@@ -16,22 +16,26 @@
   * [3.5. Vertical alignment](#35-vertical-alignment)
 * [4. Statements](#4-statements)
 * [5. Declarations](#5-declarations)
-  * [5.1. Multiple declarations](#51-multiple-declarations)
-  * [5.2. Pointer and reference types](#52-pointer-and-reference-types)
-  * [5.3. const and other modifiers](#53-const-and-other-modifiers)
-  * [5.4. Initialization](#54-initialization)
+  * [5.1. Declarations](#51-declarations)
+  * [5.2. Multiple declarations](#52-multiple-declarations)
+  * [5.3. Pointer and reference types](#53-pointer-and-reference-types)
+  * [5.4. const and other modifiers](#54-const-and-other-modifiers)
+  * [5.5. Initialization](#55-initialization)
 * [6. Scoping](#6-scoping)
   * [6.1. Namespaces](#61-namespaces)
   * [6.2. Local functions](#62-local-functions)
 * [7. Headers](#7-headers)
+  * [7.1. Header order](#71-header-order)
+  * [7.2. Use C++ wrappers for C headers](#72-use-c-wrappers-for-c-headers) 
 * [8. Naming](#8-naming)
   * [8.1. Namespaces](#81-namespaces)
   * [8.2. Constants](#82-constants)
   * [8.3. Enums](#83-enums)
   * [8.4. Interfaces](#84-interfaces)
   * [8.5. Classes](#85-classes)
-  * [8.6. Methods](#86-methods)
-  * [8.7. Variables](#87-variables)
+  * [8.6. Structs](#86-structs)
+  * [8.7. Methods](#87-methods)
+  * [8.8. Variables](#88-variables)
     * [Member variables](#member-variables)
     * [Global variables](#global-variables)
 * [9. Comments](#9-comments)
@@ -56,6 +60,7 @@
   * [12.8. `goto`](#128goto)
   * [12.9. Macros](#129-macros)
   * [12.10. constexpr](#1210-constexpr)
+  * [12.11. `std::string` vs `std::string_view`](#1211-stdstring-vs-stdstring_view)
 
 ## 1. Motivation
 When working in a large group, the two most important values are readability and maintainability. We code for other people, not computers. To accomplish these goals, we have created a unified set of code conventions.
@@ -126,11 +131,11 @@ public:
 Insert a new line before every:
 * else in an if statement
 * catch in a try statement
-* while in a do statement
 
 #### 3.3.1. if else
-Put the consequent on a new line if not in curly braces anyway. Keep `else if` statements on one line.
+Put the consequent on a new line if not in curly braces anyway. Keep `else if` statements on one line. Do not put a condition and a following statement on a single line.
 
+✅ Good:
 ```cpp
 if (true)
   return;
@@ -145,6 +150,11 @@ else if (false)
 }
 else
   return;
+```
+
+❌ Bad:
+```cpp
+if (true) return;
 ```
 
 #### 3.3.2. switch case
@@ -192,6 +202,13 @@ Control statement keywords have to be separated from opening parentheses by one 
 ```cpp
 while (true);
 for (int i = 0; i < x; i++);
+```
+When conditions are used without parentheses, it is preferable to add a new line, to make the next block of code more readable.
+```cpp
+if (true)
+  return;
+
+if (true)
 ```
 Commas have to be followed by one space.
 ```cpp
@@ -292,7 +309,24 @@ In every `switch` structure, always include a `default` case, unless switching o
 
 ## 5. Declarations
 
-### 5.1. Multiple declarations
+### 5.1. Declarations
+
+Always declare a variable close to its use and not before a block of code that does not use it.
+
+✅ Good:
+```cpp
+int x{3};
+CLog::Log("test: {}", x); // variable used just after its declaration
+```
+
+❌ Bad:
+```cpp
+int x{3}; // variable not immediately used by the next block of code 
+[...many lines of code that do not use variable x...]
+CLog::Log("test: {}", x);
+```
+
+### 5.2. Multiple declarations
 Do not put multiple declarations on a single line. This avoids confusion with differing pointers, references, and initialization values on the same line (cf. [ISO C++ guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#es10-declare-one-name-only-per-declaration)).
 
 ✅ Good:
@@ -306,7 +340,7 @@ char b;
 char* a, b;
 ```
 
-### 5.2. Pointer and reference types
+### 5.3. Pointer and reference types
 Left-align `*` and `&` to the base type they modify.
 
 ✅ Good:
@@ -324,7 +358,7 @@ void test(const std::string &b);
 
 (This is adopted from the HP C++ Coding Guidelines: "The characters * and & are to be written with the type of variables instead of with the name of variables in order to emphasize that they are part of the type definition.")
 
-### 5.3. `const` and other modifiers
+### 5.4. `const` and other modifiers
 Place `const` and similar modifiers in front of the type they modify.
 
 ✅ Good:
@@ -339,31 +373,35 @@ void Test(std::string const& a);
 int const * const someIntPointer;
 ```
 
-### 5.4. Initialization
+### 5.5. Initialization
 
 Make sure that variables are initialized appropriately at declaration or soon afterwards. This is especially important for fundamental type variables that do not have any constructor. Zero-initialize with `{}`.
 
 ✅ Good:
 ```cpp
-int x{};
-int* y{};
-CLog::Log("test: {} {}", x, y);
+int x{3};
+int* y{nullptr};
+bool z = false;
+std::string text; // not primitive
+KindOfStruct theStruct{}; // POD structures or structures with uninitalised members must be initialised with empty brackets
+Log::Log("test: {}, {}, {}", x, y, z);
 ```
 
 ❌ Bad:
 ```cpp
 int x; // used uninitialized
 int* y = nullptr; // default-initialization not using {}
-CLog::Log("test: {} {}", x, y);
+bool z{}; // no value explicitly declared for fundamental type, preferable for better reading
+std::string text{}; // has its default constructor
+Log::Log("test: {}, {}, {}", x, y, z);
 ```
 
-In general, prefer the `{}` initializer syntax over alternatives. This syntax is less ambiguous and disallows narrowing (cf. [ISO C++ guidelines](http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Res-list)).
+We allow variable initialization using any of the C++ forms `{}`, `=` or `()`.
 
-✅ Good:
-```cpp
-int x{5};
-int y{x};
-```
+However, we would like to point out some optional suggestions to follow:
+- Prefer the `{}` form to others, because this permits explicit type checking to avoid unwanted narrowing conversions.
+- Prefer the `{}` form when initializing a class/struct variable.
+- Specify an explicit initialization value, at least for fundamental types.
 
 **[back to top](#table-of-contents)**
 
@@ -384,7 +422,7 @@ namespace
 
 void test();
 
-}
+} // unnamed namespace
 ```
 
 ❌ Bad:
@@ -395,6 +433,7 @@ static void test();
 **[back to top](#table-of-contents)**
 
 ## 7. Headers
+### 7.1. Header order
 Included header files have to be sorted (case sensitive) alphabetically to prevent duplicates and allow better overview, with an empty line clearly separating sections.
 
 Header order has to be:
@@ -447,6 +486,23 @@ class Example
 }
 ```
 
+### 7.2. Use C++ wrappers for C headers
+To use C symbols use C++ wrappers headers, by using the `std` namespace prefix.
+
+✅ Good:
+```cpp
+#include <cstring>
+[...]
+size_t n = std::strlen(str);
+```
+
+❌ Bad:
+```cpp
+#include <string.h> // C header
+[...]
+size_t n = strlen(str); // missing std namespace
+```
+
 **[back to top](#table-of-contents)**
 
 ## 8. Naming
@@ -456,7 +512,7 @@ Use upper case with underscores.
 namespace KODI
 {
 [...]
-}
+} // namespace KODI
 ```
 
 ### 8.2. Constants
@@ -496,14 +552,34 @@ public:
 }
 ```
 
-### 8.6. Methods
-Use PascalCase always, uppercasing the first letter even if the methods are private or protected.
+### 8.6. Structs
+Use PascalCase.
 ```cpp
-void MyDummyClass::DoSomething();
+struct InfoChar
+{
+  bool m_isBold{false};
+}
 ```
 
-### 8.7. Variables
-Use CamelCase. Type prefixing (Systems Hungarian notation) is discouraged.
+### 8.7. Methods
+Use PascalCase always, uppercasing the first letter even if the methods are private or protected.
+Method parameters start with lower case and follow CamelCase style, without type prefixing (Systems Hungarian notation).
+```cpp
+void MyDummyClass::DoSomething(int limitBound);
+```
+
+### 8.8. Variables
+Variables start with lower case and follow CamelCase style. Type prefixing (Systems Hungarian notation) is discouraged.
+
+✅ Good:
+```cpp
+bool isSunYellow{true};
+```
+
+❌ Bad:
+```cpp
+bool bSunYellow{true}; // type prefixing
+```
 
 #### Member variables
 Prefix non-static member variables with `m_`. Prefix static member variables with `ms_`.
@@ -599,16 +675,18 @@ The `Log` function uses the [fmt library](http://fmtlib.net/) for formatting log
 ✅ Good:
 ```cpp
 CLog::Log(LOGDEBUG, "Window size: {}x{}", width, height);
+CLog::LogF(LOGERROR, "An error occurred in window \"{}\"", name); // Use helper function `CLog::LogF` to print also the name of method.
 ```
 
 ❌ Bad:
 ```cpp
 CLog::Log(LOGWARNING, "Window size: %dx%d", width, height); // printf-style format strings are possible, but discouraged; also the message does not warrant the warning level
+CLog::Log(LOGERROR, "{}: An error occurred in window \"{}\"", __FUNCTION__, name); // Do not use __FUNCTION__ macro, use `CLog::LogF` instead.
 printf("Window size: %dx%d", width, height);
 std::cout << "Window size: " << width << "x" << height << std::endl;
 ```
 
-The predefined logging levels are `DEBUG`, `INFO`, `NOTICE`, `WARNING`, `ERROR`, `SEVERE`, and `FATAL`. Use anything `INFO` and above sparingly since it will be written to the log by default. Too many messages will clutter the log and reduce visibility of important information. `DEBUG` messages are only written when debug logging is enabled.
+The predefined logging levels are `DEBUG`, `INFO`, `WARNING`, `ERROR`, and `FATAL`. Use anything `INFO` and above sparingly since it will be written to the log by default. Too many messages will clutter the log and reduce visibility of important information. `DEBUG` messages are only written when debug logging is enabled.
 
 ## 11. Classes
 
@@ -647,7 +725,7 @@ Use default member initialization instead of initializer lists or constructor as
 ```cpp
 class Foo
 {
-  bool bar{false};
+  bool m_fooBar{false};
 };
 ```
 
@@ -660,21 +738,21 @@ A class with any virtual functions should have a destructor that is either publi
 For lines up to [line length](#line-length) everything stays on one line, excluding the braces which must be on the following lines.
 
 ```cpp
-MyClass::CMyClass(bool bBoolArg, int iIntegerArg) : m_bArg(bBoolArg), m_iArg(iIntegerArg)
+MyClass::CMyClass(bool argOne, int argTwo) : m_argOne(argOne), m_argTwo(argTwo)
 {
 }
 ```
 
-For longer lines, break before colon and after comma.
+For longer lines, insert a line break before the colon and/or after the comma.
 
 ```cpp
-MyClass::CMyClass(bool bBoolArg,
-                  int iIntegerArg,
-                  const std::string& strSomeText,
+MyClass::CMyClass(bool argOne,
+                  int argTwo,
+                  const std::string& textArg,
                   const std::shared_ptr<CMyOtherClass>& myOtherClass)
-  : m_bBoolArg(bBoolArg),
-    m_iIntegerArg(iIntegerArg),
-    m_strSomeText(strSomeText),
+  : m_argOne(argOne),
+    m_argTwo(argTwo),
+    m_textArg(textArg),
     m_myOtherClass(myOtherClass)
 {
 }
@@ -688,15 +766,32 @@ For functions that have multiple output values, prefer using a `struct` or `tupl
 ### 12.2. Casts
 New code has to use C++ style casts and not older C style casts. When modifying existing code the developer can choose to update it to C++ style casts or leave as is. Whenever a `dynamic_cast` is used to cast to a pointer type, the result can be `nullptr` and needs to be checked accordingly.
 
+✅ Good:
+```cpp
+char m_dataChar{...};
+uint8_t m_dataInt = static_cast<uint8_t>(m_dataChar);
+```
+
+❌ Bad:
+```cpp
+char m_dataChar{...};
+uint8_t m_dataInt = (uint8_t)m_dataChar;
+```
+
 ### 12.3. `NULL` vs `nullptr`
 Prefer the use of `nullptr` instead of `NULL`. `nullptr` is a typesafe version and as such can't be implicitly converted to `int` or anything else.
 
 ### 12.4. `auto`
 
-Feel free to use `auto` wherever it improves readability, which is not always the case. Good places are iterators or when dealing with containers. Bad places are code that expects a certain type that is not immediately clear from the context.
+Feel free to use `auto` wherever it improves readability, without abusing it when it is not the case.
+- Good places are iterators or types that have multiple sub-levels in a namespace.
+- Bad places are code that expects a certain type that is not immediately clear from the context, or when you declare fundamental types.
 
 ✅ Good:
 ```cpp
+[...]
+constexpr float START_POINT = 5;
+[...]
 auto i = var.begin();
 
 std::vector<CSizeInt> list;
@@ -708,6 +803,9 @@ for (const auto j : list)
 
 ❌ Bad:
 ```cpp
+[...]
+constexpr auto START_POINT = 5; // may cause problems due to wrong type deduced, many auto variables make reading difficult
+[...]
 std::map<std::string, std::vector<int>>::iterator i = var.begin();
 ```
 
@@ -763,5 +861,45 @@ Try to avoid using C macros. In many cases, they can be easily substituted with 
 ### 12.10. `constexpr`
 
 Prefer `constexpr` over `const` for constants when possible. Try to mark functions `constexpr` when reasonable.
+
+### 12.11. `std::string` vs `std::string_view`
+
+Prefer `std::string_view` over `std::string` when reasonable. Good examples are constants or method arguments. In the latter case, it is not required to declare the argument as reference or const, since the data source of string views are immutable by definition. A bad example is when you need a NUL-terminated C string, e.g. to interact with a C API. `std::string_view` does not offer a `c_str()` function like `std::string` does, but if you do not need a C string you can use `data()` to get the raw source of the data.
+
+Main reasons why we prefer `std::string_view` are: execution performance, no memory allocations, substrings can be made without copy, and the possibility to reuse the same data without reallocation.
+
+Avoid using `std::string_view` when you are not sure where the source of data is allocated, or as return value of a method. If not handled properly, the source (storage) of the data may go out of scope. As a consequence, the program enters undefined behavior and may crash, behave strangely, or introduce potential security issues.
+
+✅ Good:
+```cpp
+namespace
+{
+constexpr std::string_view CONSTANT_FOO{"foo-bar"};
+} // unnamed namespace
+
+void CClass::SetText(std::string_view value) 
+{
+  CLog::LogF(LOGDEBUG, "My name is {}", value);
+}
+
+[...]
+SetText(CONSTANT_FOO.substr(0, 3)); // substr returns a modified view of the same string_view, thus without allocations
+```
+
+❌ Bad:
+```cpp
+namespace
+{
+constexpr std::string CONSTANT_FOO{"foo-bar"}; // using string_view will avoid a memory allocation 
+} // unnamed namespace
+
+void CClass::SetText(const std::string& value) // despite being declared as a reference, using string_view will result in a lower overhead in many cases (e.g., when passing a C string literal)
+{
+  CLog::LogF(LOGDEBUG, "My name is {}", value);
+}
+
+[...]
+SetText(CONSTANT_FOO.substr(0, 3)); // using string_view will avoid a memory allocation due to substr
+```
 
 **[back to top](#table-of-contents)**
