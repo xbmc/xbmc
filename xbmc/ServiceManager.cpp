@@ -149,7 +149,7 @@ bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
 
   m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr));
 
-  m_gameControllerManager.reset(new GAME::CControllerManager);
+  m_gameControllerManager = std::make_unique<GAME::CControllerManager>(*m_addonMgr);
   m_inputManager.reset(new CInputManager());
   m_inputManager->InitializeInputs();
 
