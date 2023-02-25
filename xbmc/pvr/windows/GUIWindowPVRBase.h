@@ -112,9 +112,6 @@ namespace PVR
 
     virtual void UpdateSelectedItemPath();
 
-    void RegisterObservers();
-    void UnregisterObservers();
-
     CCriticalSection m_critSection;
     std::string m_channelGroupPath;
     bool m_bRadio;
