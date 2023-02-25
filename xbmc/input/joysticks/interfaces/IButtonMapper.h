@@ -110,15 +110,15 @@ public:
   virtual void OnLateAxis(const IButtonMap* buttonMap, unsigned int axisIndex) = 0;
 
   // Button map callback interface
-  void SetButtonMapCallback(const std::string& deviceName, IButtonMapCallback* callback)
+  void SetButtonMapCallback(const std::string& deviceLocation, IButtonMapCallback* callback)
   {
-    m_callbacks[deviceName] = callback;
+    m_callbacks[deviceLocation] = callback;
   }
   void ResetButtonMapCallbacks(void) { m_callbacks.clear(); }
   std::map<std::string, IButtonMapCallback*>& ButtonMapCallbacks(void) { return m_callbacks; }
 
 private:
-  std::map<std::string, IButtonMapCallback*> m_callbacks;
+  std::map<std::string, IButtonMapCallback*> m_callbacks; // Device location -> callback
 };
 } // namespace JOYSTICK
 } // namespace KODI
