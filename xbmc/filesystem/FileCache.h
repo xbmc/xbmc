@@ -61,6 +61,7 @@ namespace XFILE
     std::string m_sourcePath;
     CEvent m_seekEvent;
     CEvent m_seekEnded;
+    CEvent m_readEvent;
     int64_t m_nSeekResult;
     int64_t m_seekPos;
     int64_t m_readPos;
