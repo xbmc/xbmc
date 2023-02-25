@@ -22,6 +22,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/Base64.h"
 #include "utils/ContentUtils.h"
 #include "utils/LangCodeExpander.h"
 #include "utils/StringUtils.h"
@@ -278,7 +279,7 @@ PopulateObjectFromTag(CMusicInfoTag&         tag,
       object.m_Creator = tag.GetAlbumArtistString().c_str();
     object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
     if(tag.GetDatabaseId() >= 0) {
-      object.m_ReferenceID = NPT_String::Format("musicdb://songs/%i%s", tag.GetDatabaseId(), URIUtils::GetExtension(tag.GetURL()).c_str());
+       object.m_ReferenceID = EncodeObjectId(StringUtils::Format("musicdb://songs/{}{}", tag.GetDatabaseId(), URIUtils::GetExtension(tag.GetURL())));
     }
     if (object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
@@ -314,12 +315,12 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
           object.m_Affiliation.album = tag.m_strAlbum.c_str();
           object.m_Title = tag.m_strTitle.c_str();
           object.m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
-          object.m_ReferenceID = NPT_String::Format("videodb://musicvideos/titles/%i", tag.m_iDbId);
+          object.m_ReferenceID = EncodeObjectId(StringUtils::Format("videodb://musicvideos/titles/{}", tag.m_iDbId));
         } else if (tag.m_type == MediaTypeMovie) {
           object.m_ObjectClass.type = "object.item.videoItem.movie";
           object.m_Title = tag.m_strTitle.c_str();
           object.m_Date = tag.GetPremiered().GetAsW3CDate().c_str();
-          object.m_ReferenceID = NPT_String::Format("videodb://movies/titles/%i", tag.m_iDbId);
+          object.m_ReferenceID = EncodeObjectId(StringUtils::Format("videodb://movies/titles/{}", tag.m_iDbId));
         } else {
           object.m_Recorded.series_title = tag.m_strShowTitle.c_str();
 
@@ -332,7 +333,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
                   object.m_Date = CDateTime(tag.GetYear(), 1, 1, 0, 0, 0).GetAsW3CDate().c_str();
               else
                   object.m_Date = tag.m_premiered.GetAsW3CDate().c_str();
-              object.m_ReferenceID = NPT_String::Format("videodb://tvshows/titles/%i", tag.m_iDbId);
+              object.m_ReferenceID = EncodeObjectId(StringUtils::Format("videodb://tvshows/titles/{}", tag.m_iDbId));
           } else if (tag.m_type == MediaTypeSeason) {
               object.m_ObjectClass.type = "object.container.album.videoAlbum.videoBroadcastSeason";
               object.m_Title = tag.m_strTitle.c_str();
@@ -342,7 +343,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
                   object.m_Date = CDateTime(tag.GetYear(), 1, 1, 0, 0, 0).GetAsW3CDate().c_str();
               else
                   object.m_Date = tag.m_premiered.GetAsW3CDate().c_str();
-              object.m_ReferenceID = NPT_String::Format("videodb://tvshows/titles/%i/%i", tag.m_iIdShow, tag.m_iSeason);
+              object.m_ReferenceID = EncodeObjectId(StringUtils::Format("videodb://tvshows/titles/{}/{}", tag.m_iIdShow, tag.m_iSeason));
           } else {
               object.m_ObjectClass.type = "object.item.videoItem.videoBroadcast";
               object.m_Recorded.program_title  = "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
@@ -351,7 +352,7 @@ PopulateObjectFromTag(CVideoInfoTag&         tag,
               object.m_Recorded.episode_number = tag.m_iEpisode;
               object.m_Recorded.episode_season = tag.m_iSeason;
               object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
-              object.m_ReferenceID = NPT_String::Format("videodb://tvshows/titles/%i/%i/%i", tag.m_iIdShow, tag.m_iSeason, tag.m_iDbId);
+              object.m_ReferenceID = EncodeObjectId(StringUtils::Format("videodb://tvshows/titles/{}/{}/{}", tag.m_iIdShow, tag.m_iSeason, tag.m_iDbId));
               object.m_Date = tag.m_firstAired.GetAsW3CDate().c_str();
           }
         }
@@ -425,7 +426,7 @@ BuildObject(CFileItem&                    item,
   PLT_MediaObject* object = NULL;
   std::string thumb;
 
-  logger->debug("Building didl for object '{}'", item.GetPath());
+  logger->debug("Building didl for plain object '{}' (encoded value: '{}')", item.GetPath(), EncodeObjectId(item.GetPath()).GetChars());
 
   auto settingsComponent = CServiceBroker::GetSettingsComponent();
   if (!settingsComponent)
@@ -456,7 +457,7 @@ BuildObject(CFileItem&                    item,
 
     if (!item.m_bIsFolder) {
         object = new PLT_MediaItem();
-        object->m_ObjectID = item.GetPath().c_str();
+        object->m_ObjectID = EncodeObjectId(item.GetPath());
 
         /* Setup object type */
         if (item.IsMusicDb() || item.IsAudio()) {
@@ -522,14 +523,14 @@ BuildObject(CFileItem&                    item,
 
         // Some upnp clients expect all audio items to have parent root id 4
 #ifdef WMP_ID_MAPPING
-        object->m_ParentID = "4";
+        object->m_ParentID = EncodeObjectId("4");
 #endif
     } else {
         PLT_MediaContainer* container = new PLT_MediaContainer;
         object = container;
 
         /* Assign a title and id for this container */
-        container->m_ObjectID = item.GetPath().c_str();
+        container->m_ObjectID = EncodeObjectId(item.GetPath());
         container->m_ObjectClass.type = "object.container";
         container->m_ChildrenCount = -1;
 
@@ -548,7 +549,7 @@ BuildObject(CFileItem&                    item,
                       }
 #ifdef WMP_ID_MAPPING
                       // Some upnp clients expect all artists to have parent root id 107
-                      container->m_ParentID = "107";
+                      container->m_ParentID = EncodeObjectId("107");
 #endif
                   }
                   break;
@@ -566,7 +567,7 @@ BuildObject(CFileItem&                    item,
                       }
 #ifdef WMP_ID_MAPPING
                       // Some upnp clients expect all albums to have parent root id 7
-                      container->m_ParentID = "7";
+                      container->m_ParentID = EncodeObjectId("7");
 #endif
                   }
                   break;
@@ -620,7 +621,8 @@ BuildObject(CFileItem&                    item,
 
         /* Get the number of children for this container */
         if (with_count && upnp_server) {
-            if (object->m_ObjectID.StartsWith("virtualpath://")) {
+            const NPT_String decodedObjectId = DecodeObjectId(object->m_ObjectID.GetChars());
+            if (StringUtils::StartsWithNoCase(decodedObjectId, "virtualpath://")) {
                 NPT_LargeSize count = 0;
                 NPT_CHECK_LABEL(NPT_File::GetSize(file_path, count), failure);
                 container->m_ChildrenCount = (NPT_Int32)count;
@@ -1239,6 +1241,61 @@ std::shared_ptr<CFileItem> GetFileItem(const NPT_String& uri, const NPT_String& 
         item.reset(new CFileItem((const char*)uri, false));
     }
     return item;
+}
+
+NPT_String EncodeObjectId(const std::string& id)
+{
+  if (id.empty())
+  {
+    CLog::LogF(LOGWARNING, "Failed to encode object id, provided object id is empty");
+    return {};
+  }
+  // we use integers in some special cases like virtualpath://upnproot or whenever clients with
+  // quirks expect to receive integer ids for some parent containers
+  //! @todo all other items except upnproot and -1 (the parent of upnproot) seem to only be enabled
+  // if WMP_ID_MAPPING is defined which doesn't seem to happen anywhere in the code. Consider removing
+  // WMP_ID_MAPPING ifdef blocks in the future and reduce the scope of this comparison by including the
+  // actual used integer ids (0 and -1)
+  if (StringUtils::IsInteger(id))
+  {
+    return id.c_str();
+  }
+
+  return Base64::Encode(id).c_str();
+}
+
+NPT_String DecodeObjectId(const std::string& id)
+{
+  if (id.empty())
+  {
+    CLog::LogF(LOGWARNING, "Failed to decode object id, provided object id is empty");
+    return {};
+  }
+  // we use integers in some special cases like virtualpath://upnproot or whenever clients with
+  // quirks expect to receive integer ids for some parent containers
+  //! @todo all other items except upnproot and -1 (the parent of upnproot) seem to only be enabled
+  // if WMP_ID_MAPPING is defined which doesn't seem to happen anywhere in the code. Consider removing
+  // WMP_ID_MAPPING ifdef blocks in the future and reduce the scope of this comparison by including the
+  // actual used integer ids (0 and -1)
+  if (StringUtils::IsInteger(id))
+  {
+    return id.c_str();
+  }
+  // if the provided object id is a url (contains :// and thus not valid in the base64 dictionary)
+  // we are trying to decode a plain vfs path. In such cases, return the id as is for backward
+  // compatibility with external clients/tools relying on plain vfs paths
+  if (URIUtils::IsURL(id))
+  {
+    return id.c_str();
+  }
+  // otherwise try to decode the path
+  const std::string decodedObjectId = Base64::Decode(id);
+  if (decodedObjectId.empty())
+  {
+    CLog::LogF(LOGERROR, "Failed to decode object id {}, not properly Base64 encoded", decodedObjectId);
+  }
+
+  return decodedObjectId.c_str();
 }
 
 } /* namespace UPNP */
