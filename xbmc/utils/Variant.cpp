@@ -8,8 +8,10 @@
 
 #include "Variant.h"
 
-#include <stdlib.h>
-#include <string.h>
+#include <charconv>
+#include <cstdlib>
+#include <cstring>
+#include <string>
 #include <utility>
 
 #ifndef strtoll
@@ -28,43 +30,35 @@
 #endif // TARGET_WINDOWS
 #endif // strtoll
 
-std::string trimRight(const std::string &str)
+std::string_view trim(std::string_view str)
 {
-  std::string tmp = str;
-  // find_last_not_of will return string::npos (which is defined as -1)
-  // or a value between 0 and size() - 1 => find_last_not_of() + 1 will
-  // always result in a valid index between 0 and size()
-  tmp.erase(tmp.find_last_not_of(" \n\r\t") + 1);
-
-  return tmp;
+  str.remove_prefix(std::min(str.find_first_not_of(" \n\r\t"), str.size()));
+  str.remove_suffix(str.size() - std::min(str.find_last_not_of(" \n\r\t") + 1, str.size()));
+  return str;
 }
 
-std::wstring trimRight(const std::wstring &str)
+std::wstring_view trim(std::wstring_view str)
 {
-  std::wstring tmp = str;
-  // find_last_not_of will return string::npos (which is defined as -1)
-  // or a value between 0 and size() - 1 => find_last_not_of() + 1 will
-  // always result in a valid index between 0 and size()
-  tmp.erase(tmp.find_last_not_of(L" \n\r\t") + 1);
-
-  return tmp;
+  str.remove_prefix(std::min(str.find_first_not_of(L" \n\r\t"), str.size()));
+  str.remove_suffix(str.size() - std::min(str.find_last_not_of(L" \n\r\t") + 1, str.size()));
+  return str;
 }
 
-int64_t str2int64(const std::string &str, int64_t fallback /* = 0 */)
+int64_t str2int64(std::string_view str, int64_t fallback /* = 0 */)
 {
-  char *end = NULL;
-  std::string tmp = trimRight(str);
-  int64_t result = strtoll(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  std::string_view tmp = trim(str);
+  int64_t result{};
+  const std::from_chars_result res = std::from_chars(tmp.data(), tmp.data() + tmp.size(), result);
+  if (res.ec == std::errc())
     return result;
 
   return fallback;
 }
 
-int64_t str2int64(const std::wstring &str, int64_t fallback /* = 0 */)
+int64_t str2int64(std::wstring_view str, int64_t fallback /* = 0 */)
 {
   wchar_t *end = NULL;
-  std::wstring tmp = trimRight(str);
+  std::wstring tmp(trim(str));
   int64_t result = wcstoll(tmp.c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
@@ -72,21 +66,21 @@ int64_t str2int64(const std::wstring &str, int64_t fallback /* = 0 */)
   return fallback;
 }
 
-uint64_t str2uint64(const std::string &str, uint64_t fallback /* = 0 */)
+uint64_t str2uint64(std::string_view str, uint64_t fallback /* = 0 */)
 {
-  char *end = NULL;
-  std::string tmp = trimRight(str);
-  uint64_t result = strtoull(tmp.c_str(), &end, 0);
-  if (end == NULL || *end == '\0')
+  std::string_view tmp = trim(str);
+  uint64_t result{};
+  const std::from_chars_result res = std::from_chars(tmp.data(), tmp.data() + tmp.size(), result);
+  if (res.ec == std::errc())
     return result;
 
   return fallback;
 }
 
-uint64_t str2uint64(const std::wstring &str, uint64_t fallback /* = 0 */)
+uint64_t str2uint64(std::wstring_view str, uint64_t fallback /* = 0 */)
 {
   wchar_t *end = NULL;
-  std::wstring tmp = trimRight(str);
+  std::wstring tmp(trim(str));
   uint64_t result = wcstoull(tmp.c_str(), &end, 0);
   if (end == NULL || *end == '\0')
     return result;
@@ -94,22 +88,37 @@ uint64_t str2uint64(const std::wstring &str, uint64_t fallback /* = 0 */)
   return fallback;
 }
 
-double str2double(const std::string &str, double fallback /* = 0.0 */)
+double str2double(std::string_view str, double fallback /* = 0.0 */)
 {
-  char *end = NULL;
-  std::string tmp = trimRight(str);
-  double result = strtod(tmp.c_str(), &end);
+  std::string_view trimmedStr = trim(str);
+  char cStr[512]; // definitely big enough to hold any floating point number
+  const size_t copySize = std::min(trimmedStr.size(), sizeof(cStr) - 1);
+  std::memcpy(cStr, trimmedStr.data(), copySize);
+  cStr[copySize] = '\0';
+  char* end = nullptr;
+  double result = strtod(cStr, &end);
   if (end == NULL || *end == '\0')
     return result;
+
+  // Use this once std::from_char with double is supported on all platform
+  //std::string_view tmp = trim(str);
+  //double result{};
+  //const std::from_chars_result res = std::from_chars(tmp.data(), tmp.data() + tmp.size(), result);
+  //if (res.ec == std::errc() && res.ptr == tmp.data() + tmp.size())
+  //  return result;
 
   return fallback;
 }
 
-double str2double(const std::wstring &str, double fallback /* = 0.0 */)
+double str2double(std::wstring_view str, double fallback /* = 0.0 */)
 {
-  wchar_t *end = NULL;
-  std::wstring tmp = trimRight(str);
-  double result = wcstod(tmp.c_str(), &end);
+  std::wstring_view trimmedStr = trim(str);
+  wchar_t wcStr[512]; // definitely big enough to hold any floating point number
+  const size_t copySize = std::min(trimmedStr.size(), (sizeof(wcStr) / sizeof(wchar_t)) - 1);
+  std::memcpy(wcStr, trimmedStr.data(), copySize * sizeof(wchar_t));
+  wcStr[copySize] = '\0';
+  wchar_t* end = nullptr;
+  double result = wcstod(wcStr, &end);
   if (end == NULL || *end == '\0')
     return result;
 
@@ -501,7 +510,7 @@ bool CVariant::asBoolean(bool fallback) const
   return fallback;
 }
 
-std::string CVariant::asString(const std::string& fallback /* = "" */) const&
+std::string CVariant::asString(std::string_view fallback /* = "" */) const&
 {
   switch (m_type)
   {
@@ -516,13 +525,13 @@ std::string CVariant::asString(const std::string& fallback /* = "" */) const&
     case VariantTypeDouble:
       return std::to_string(m_data.dvalue);
     default:
-      return fallback;
+      return std::string(fallback);
   }
 
-  return fallback;
+  return std::string(fallback);
 }
 
-std::string CVariant::asString(const std::string& fallback /*= ""*/) &&
+std::string CVariant::asString(std::string_view fallback /*= ""*/) &&
 {
   if (m_type == VariantTypeString)
     return std::move(*m_data.string);
@@ -530,7 +539,7 @@ std::string CVariant::asString(const std::string& fallback /*= ""*/) &&
     return asString(fallback);
 }
 
-std::wstring CVariant::asWideString(const std::wstring& fallback /* = L"" */) const&
+std::wstring CVariant::asWideString(std::wstring_view fallback /* = L"" */) const&
 {
   switch (m_type)
   {
@@ -545,13 +554,13 @@ std::wstring CVariant::asWideString(const std::wstring& fallback /* = L"" */) co
     case VariantTypeDouble:
       return std::to_wstring(m_data.dvalue);
     default:
-      return fallback;
+      return std::wstring(fallback);
   }
 
-  return fallback;
+  return std::wstring(fallback);
 }
 
-std::wstring CVariant::asWideString(const std::wstring& fallback /*= L""*/) &&
+std::wstring CVariant::asWideString(std::wstring_view fallback /*= L""*/) &&
 {
   if (m_type == VariantTypeWideString)
     return std::move(*m_data.wstring);
