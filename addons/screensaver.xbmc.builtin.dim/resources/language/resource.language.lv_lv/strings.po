@@ -5,36 +5,37 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Latvian (Latvia) (http://www.transifex.com/projects/p/kodi-main/language/lv_LV/)\n"
-"Language: lv_LV\n"
+"PO-Revision-Date: 2023-02-18 22:46+0000\n"
+"Last-Translator: Coool (github.com/Coool) <coool@mail.lv>\n"
+"Language-Team: Latvian <https://kodi.weblate.cloud/projects/kodi-core/screensaver-xbmc-builtin-dim/lv_lv/>\n"
+"Language: lv_lv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2;\n"
+"X-Generator: Weblate 4.15.2\n"
 
 msgctxt "Addon Summary"
 msgid "Screensaver that dims your screen"
-msgstr "Ekrānsaudzētājs, kas aptumšo jūsu ekrānu"
+msgstr "Ekrānsaudzētājs, kas pakāpeniski aptumšo ekrānu"
 
 msgctxt "Addon Description"
 msgid "The Dim screensaver is a simple screensaver that will dim (fade out) your screen to a setable value between 20 and 100% ."
-msgstr "Aptumsuma ekrānsaudzētājs ir vienkāršs ekrānsaudzētājs, kas aptumšo (padara tumšāku) jūsu ekrānu līdz uzstādāmai robežai starp 20 un 100%."
+msgstr "Šis ekrānsaudzētājs pakāpeniski aptumšo ekrānu līdz noteiktai vērtībai (no 20% līdz 100%)."
 
 #. Setting name for edit screen dim in percentage (0% = black, 100% = no dim)
 msgctxt "#30000"
 msgid "Brightness level"
-msgstr ""
+msgstr "Spilgtuma līmenis"
 
 #. Setting help text
 msgctxt "#30001"
 msgid "Level in percent of how strongly the screen remains illuminated."
-msgstr ""
+msgstr "Līmenis procentos parāda, cik daudz ekrāns tiks apgaismots."
 
 #. Setting category name
 msgctxt "#30002"
 msgid "Preferences"
-msgstr ""
+msgstr "Iestatījumi"
