@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include <string>
 #include <string_view>
+#include <variant>
 #include <vector>
 #include <wchar.h>
 
@@ -115,7 +116,7 @@ public:
 
   const char *c_str() const;
 
-  void swap(CVariant &rhs);
+  void swap(CVariant& rhs) noexcept;
 
 private:
   typedef std::vector<CVariant> VariantArray;
@@ -150,20 +151,18 @@ public:
 
 private:
   void cleanup();
-  union VariantUnion
-  {
-    int64_t integer;
-    uint64_t unsignedinteger;
-    bool boolean;
-    double dvalue;
-    std::string *string;
-    std::wstring *wstring;
-    VariantArray *array;
-    VariantMap *map;
-  };
 
   VariantType m_type;
-  VariantUnion m_data;
+  std::variant<std::monostate,
+               int64_t,
+               uint64_t,
+               bool,
+               double,
+               std::string,
+               std::wstring,
+               VariantArray,
+               VariantMap>
+      m_data;
 
   static VariantArray EMPTY_ARRAY;
   static VariantMap EMPTY_MAP;
