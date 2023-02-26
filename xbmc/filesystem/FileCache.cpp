@@ -35,7 +35,6 @@
 using namespace XFILE;
 using namespace std::chrono_literals;
 
-
 class CWriteRate
 {
 public:
@@ -52,11 +51,11 @@ public:
     m_stamp = std::chrono::steady_clock::now();
     m_pos   = pos;
 
-     if (bResetAll)
-     {
-       m_size  = 0;
-       m_time = std::chrono::milliseconds(0);
-     }
+    if (bResetAll)
+    {
+      m_size = 0;
+      m_time = std::chrono::milliseconds(0);
+    }
   }
 
   uint32_t Rate(int64_t pos, uint32_t time_bias = 0)
@@ -245,24 +244,28 @@ void CFileCache::Process()
   CWriteRate limiter;
   const size_t totalWriteCache = m_pCache->GetMaxWriteSize(static_cast<size_t>(~0));
   CLog::Log(LOGINFO, "CFileCache::{} - <{}> allocated read buffer: {}/{}", __FUNCTION__,
-    m_sourcePath, m_chunkSize, totalWriteCache);
+            m_sourcePath, m_chunkSize, totalWriteCache);
 
   while (!m_bStop)
   {
     while (!m_bStop)
     {
-      if (m_bFilling) {
+      if (m_bFilling)
+      {
         limiter.Reset(m_pCache->CachedDataEndPos());
         break;
       }
 
-      if (m_stallEvent.Wait(0ms)) {
+      if (m_stallEvent.Wait(0ms))
+      {
         limiter.Reset(m_pCache->CachedDataEndPos());
         m_bFilling = true;
         break;
       }
 
-      size_t targetRate = m_writeRate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor;
+      size_t targetRate =
+          m_writeRate *
+          CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor;
       if (m_pCache->WaitForData(0, 0ms) <= targetRate)
       {
         limiter.Reset(m_pCache->CachedDataEndPos());
@@ -272,9 +275,11 @@ void CFileCache::Process()
       if (limiter.Rate(m_pCache->CachedDataEndPos()) < targetRate)
         break;
 
-      if (!targetRate || m_pCache->WaitForData(0, 0ms) >= totalWriteCache) {
+      if (!targetRate || m_pCache->WaitForData(0, 0ms) >= totalWriteCache)
+      {
         /* Unlikely stall, but still check. */
-        if (m_stallEvent.Wait(0ms)) {
+        if (m_stallEvent.Wait(0ms))
+        {
           m_stallEvent.Set();
           continue;
         }
@@ -282,7 +287,8 @@ void CFileCache::Process()
         m_readEvent.Wait(25ms);
       }
 
-      if (m_seekEvent.Wait(0ms)) {
+      if (m_seekEvent.Wait(0ms))
+      {
         m_seekEvent.Set();
         break;
       }
@@ -298,42 +304,55 @@ void CFileCache::Process()
     {
       m_seekEvent.Reset();
 
-      if (m_seekPossible == 0) {
-        if (m_pCache->CachedDataEndPosIfSeekTo(m_seekPos) == m_seekPos) {
+      if (m_seekPossible == 0)
+      {
+        if (m_pCache->CachedDataEndPosIfSeekTo(m_seekPos) == m_seekPos)
+        {
           m_pCache->Reset(m_seekPos);
           m_nSeekResult = m_seekPos;
-        } else if (m_seekPos > m_pCache->CachedDataEndPos()) {
+        }
+        else if (m_seekPos > m_pCache->CachedDataEndPos())
+        {
           m_pCache->Reset(m_pCache->CachedDataEndPos());
           m_nSeekResult = m_pCache->CachedDataEndPos();
-        } else if (m_seekPos < m_pCache->CachedDataStartPos()) {
+        }
+        else if (m_seekPos < m_pCache->CachedDataStartPos())
+        {
           m_pCache->Reset(m_pCache->CachedDataStartPos());
           m_nSeekResult = m_pCache->CachedDataStartPos();
-        } else {
+        }
+        else
+        {
           m_nSeekResult = -1;
         }
-      } else {
-        if (m_pCache->Reset(m_seekPos)) {
-          CLog::Log(LOGINFO,
-            "CFileCache::{} - <{}> cache completely reset to seek to position {}",
-            __FUNCTION__, m_sourcePath, m_pCache->CachedDataEndPos());
+      }
+      else
+      {
+        if (m_pCache->Reset(m_seekPos))
+        {
+          CLog::Log(LOGINFO, "CFileCache::{} - <{}> cache completely reset to seek to position {}",
+                    __FUNCTION__, m_sourcePath, m_pCache->CachedDataEndPos());
         }
 
         m_nSeekResult = m_source.Seek(m_pCache->CachedDataEndPos(), SEEK_SET);
-        if (m_nSeekResult != m_pCache->CachedDataEndPos()) {
-          CLog::Log(LOGINFO,
-            "CFileCache::{} - <{}> seek failed to position {}",
-             __FUNCTION__, m_sourcePath, m_seekPos);
+        if (m_nSeekResult != m_pCache->CachedDataEndPos())
+        {
+          CLog::Log(LOGINFO, "CFileCache::{} - <{}> seek failed to position {}", __FUNCTION__,
+                    m_sourcePath, m_seekPos);
           m_pCache->Reset(m_source.Seek(0, SEEK_CUR));
           m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
         }
       }
 
-      average.Reset(m_pCache->CachedDataEndPos(), m_pCache->CachedDataEndPos() - m_pCache->CachedDataStartPos() == 0);
+      average.Reset(m_pCache->CachedDataEndPos(),
+                    m_pCache->CachedDataEndPos() - m_pCache->CachedDataStartPos() == 0);
       limiter.Reset(m_pCache->CachedDataEndPos());
       m_bFilling = true;
       m_seekEnded.Set();
       continue;
-    } else if (m_fileSize == m_pCache->CachedDataEndPos()) {
+    }
+    else if (m_fileSize == m_pCache->CachedDataEndPos())
+    {
       m_pCache->EndOfInput();
 
       // The thread event will now also cause the wait of an event to return a false.
@@ -356,15 +375,18 @@ void CFileCache::Process()
     maxSourceRead = m_pCache->GetMaxWriteSize(maxSourceRead);
 
     /* With latency sources it's not worth it to read a couple bytes from the RTT. */
-    if (m_fileSize != 0 && maxSourceRead < m_chunkSize && m_fileSize - m_pCache->CachedDataEndPos() > m_chunkSize) {
+    if (m_fileSize != 0 && maxSourceRead < m_chunkSize &&
+        m_fileSize - m_pCache->CachedDataEndPos() > m_chunkSize)
+    {
       m_readEvent.Wait(100ms);
       continue;
     }
-  
+
     /* Only read from source if there's enough write space in the cache
     * else we may keep disposing data and seeking back on (slow) source
     */
-    if (maxSourceRead < 1) {
+    if (maxSourceRead < 1)
+    {
       continue;
     }
 
@@ -411,9 +433,11 @@ void CFileCache::Process()
                   m_sourcePath);
         m_bStop = true;
         break;
-      } else if (iWrite == 0 && m_readEvent.Wait(100ms)) {
-        CLog::Log(LOGERROR, "CFileCache::{} - <{}> LATENCY writing to cache remaining: {}/{}", __FUNCTION__,
-          m_sourcePath, iTotalWrite, iRead);
+      }
+      else if (iWrite == 0 && m_readEvent.Wait(100ms))
+      {
+        CLog::Log(LOGERROR, "CFileCache::{} - <{}> LATENCY writing to cache remaining: {}/{}",
+                  __FUNCTION__, m_sourcePath, iTotalWrite, iRead);
       }
 
       iTotalWrite += iWrite;
@@ -431,7 +455,7 @@ void CFileCache::Process()
     // avoid uncertainty at start of caching
     m_writeRateActual = average.Rate(m_pCache->CachedDataEndPos(), 1000);
 
-   /* NOTE: We can only reliably test for low speed condition, when the cache is *really*
+    /* NOTE: We can only reliably test for low speed condition, when the cache is *really*
     * filling. This is because as soon as it's full the average-
     * rate will become approximately the current-rate which can flag false
     * low read-rate conditions.
@@ -542,7 +566,8 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
   else if (iWhence != SEEK_SET)
     return -1;
 
-  if (iTarget == m_pCache->CachedDataStartPos()) {
+  if (iTarget == m_pCache->CachedDataStartPos())
+  {
     return iTarget;
   }
 
@@ -558,16 +583,17 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
       return -1;
   }
 
-  if (m_nSeekResult < 0) {
-     CLog::Log(LOGINFO, "CFileCache::{} - <{}> bad seek result {}", __FUNCTION__,
-              m_sourcePath, m_nSeekResult);
+  if (m_nSeekResult < 0)
+  {
+    CLog::Log(LOGINFO, "CFileCache::{} - <{}> bad seek result {}", __FUNCTION__, m_sourcePath,
+              m_nSeekResult);
     return m_nSeekResult;
   }
 
   if (m_seekPossible && m_nSeekResult < iTarget)
   {
-    CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> waiting for position {}", __FUNCTION__,
-              m_sourcePath, iTarget);
+    CLog::Log(LOGDEBUG, "CFileCache::{} - <{}> waiting for position {}", __FUNCTION__, m_sourcePath,
+              iTarget);
     if (m_pCache->WaitForData(static_cast<uint32_t>(iTarget - m_nSeekResult), 10s) <
         iTarget - m_nSeekResult)
     {
@@ -575,7 +601,9 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
                 m_sourcePath);
       return m_nSeekResult;
     }
-  } else if (!m_seekPossible) {
+  }
+  else if (!m_seekPossible)
+  {
     /* could be hours out... no point in having them suffer. */
     return m_nSeekResult;
   }
