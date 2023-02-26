@@ -40,7 +40,7 @@ private:
     return true;
   }
 
-  void PushObject(const CVariant& variant);
+  void PushObject(CVariant variant);
   void PopObject();
 
   CVariant& m_parsedObject;
@@ -147,28 +147,30 @@ bool CJSONVariantParserHandler::EndArray(rapidjson::SizeType elementCount)
   return true;
 }
 
-void CJSONVariantParserHandler::PushObject(const CVariant& variant)
+void CJSONVariantParserHandler::PushObject(CVariant variant)
 {
+  const auto variant_type = variant.type();
+
   if (m_status == PARSE_STATUS::Object)
   {
-    (*m_parse[m_parse.size() - 1])[m_key] = variant;
-    m_parse.push_back(&(*m_parse[m_parse.size() - 1])[m_key]);
+    (*m_parse.back())[m_key] = std::move(variant);
+    m_parse.push_back(&((*m_parse.back())[m_key]));
   }
   else if (m_status == PARSE_STATUS::Array)
   {
     CVariant *temp = m_parse[m_parse.size() - 1];
-    temp->push_back(variant);
+    temp->push_back(std::move(variant));
     m_parse.push_back(&(*temp)[temp->size() - 1]);
   }
   else if (m_parse.empty())
   {
-    m_root = variant;
+    m_root = std::move(variant);
     m_parse.push_back(&m_root);
   }
 
-  if (variant.isObject())
+  if (variant_type == CVariant::VariantTypeObject)
     m_status = PARSE_STATUS::Object;
-  else if (variant.isArray())
+  else if (variant_type == CVariant::VariantTypeArray)
     m_status = PARSE_STATUS::Array;
   else
     m_status = PARSE_STATUS::Variable;
@@ -176,7 +178,8 @@ void CJSONVariantParserHandler::PushObject(const CVariant& variant)
 
 void CJSONVariantParserHandler::PopObject()
 {
-  CVariant *variant = m_parse[m_parse.size() - 1];
+  assert(!m_parse.empty());
+  CVariant* variant = m_parse.back();
   m_parse.pop_back();
 
   if (!m_parse.empty())
