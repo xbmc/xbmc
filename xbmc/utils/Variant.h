@@ -11,15 +11,16 @@
 #include <map>
 #include <stdint.h>
 #include <string>
+#include <string_view>
 #include <vector>
 #include <wchar.h>
 
-int64_t str2int64(const std::string &str, int64_t fallback = 0);
-int64_t str2int64(const std::wstring &str, int64_t fallback = 0);
-uint64_t str2uint64(const std::string &str, uint64_t fallback = 0);
-uint64_t str2uint64(const std::wstring &str, uint64_t fallback = 0);
-double str2double(const std::string &str, double fallback = 0.0);
-double str2double(const std::wstring &str, double fallback = 0.0);
+int64_t str2int64(std::string_view, int64_t fallback = 0);
+int64_t str2int64(std::wstring_view, int64_t fallback = 0);
+uint64_t str2uint64(std::string_view, uint64_t fallback = 0);
+uint64_t str2uint64(std::wstring_view, uint64_t fallback = 0);
+double str2double(std::string_view, double fallback = 0.0);
+double str2double(std::wstring_view, double fallback = 0.0);
 
 #ifdef TARGET_WINDOWS_STORE
 #pragma pack(push)
@@ -87,10 +88,10 @@ public:
   uint64_t asUnsignedInteger(uint64_t fallback = 0u) const;
   uint32_t asUnsignedInteger32(uint32_t fallback = 0u) const;
   bool asBoolean(bool fallback = false) const;
-  std::string asString(const std::string& fallback = "") const&;
-  std::string asString(const std::string& fallback = "") &&;
-  std::wstring asWideString(const std::wstring& fallback = L"") const&;
-  std::wstring asWideString(const std::wstring& fallback = L"") &&;
+  std::string asString(std::string_view = "") const&;
+  std::string asString(std::string_view = "") &&;
+  std::wstring asWideString(std::wstring_view = L"") const&;
+  std::wstring asWideString(std::wstring_view = L"") &&;
   double asDouble(double fallback = 0.0) const;
   float asFloat(float fallback = 0.0f) const;
 
