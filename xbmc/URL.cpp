@@ -21,9 +21,12 @@
 #endif
 
 #include <charconv>
+#include <iterator>
 #include <string>
 #include <system_error>
 #include <vector>
+
+#include <fmt/xchar.h>
 
 using namespace ADDON;
 
@@ -684,23 +687,22 @@ std::string CURL::Decode(std::string_view strURLData)
   return strResult;
 }
 
-std::string CURL::Encode(const std::string& strURLData)
+std::string CURL::Encode(std::string_view strURLData)
 {
   std::string strResult;
 
   /* wonder what a good value is here is, depends on how often it occurs */
   strResult.reserve( strURLData.length() * 2 );
 
-  for (size_t i = 0; i < strURLData.size(); ++i)
+  for (auto kar : strURLData)
   {
-    const char kar = strURLData[i];
-
     // Don't URL encode "-_.!()" according to RFC1738
     //! @todo Update it to "-_.~" after Gotham according to RFC3986
     if (StringUtils::isasciialphanum(kar) || kar == '-' || kar == '.' || kar == '_' || kar == '!' || kar == '(' || kar == ')')
       strResult.push_back(kar);
     else
-      strResult += StringUtils::Format("%{:02x}", (unsigned int)((unsigned char)kar));
+      fmt::format_to(std::back_insert_iterator(strResult), "%{:02x}",
+                     (unsigned int)((unsigned char)kar));
   }
 
   return strResult;
