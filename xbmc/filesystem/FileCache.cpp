@@ -35,6 +35,7 @@
 using namespace XFILE;
 using namespace std::chrono_literals;
 
+
 class CWriteRate
 {
 public:
@@ -51,11 +52,11 @@ public:
     m_stamp = std::chrono::steady_clock::now();
     m_pos   = pos;
 
-    if (bResetAll)
-    {
-      m_size  = 0;
-      m_time = std::chrono::milliseconds(0);
-    }
+     if (bResetAll)
+     {
+       m_size  = 0;
+       m_time = std::chrono::milliseconds(0);
+     }
   }
 
   uint32_t Rate(int64_t pos, uint32_t time_bias = 0)
@@ -79,7 +80,6 @@ private:
   std::chrono::milliseconds m_time;
   int64_t  m_size;
 };
-
 
 CFileCache::CFileCache(const unsigned int flags)
   : CThread("FileCache"),
@@ -209,13 +209,14 @@ bool CFileCache::Open(const CURL& url)
     return false;
   }
 
-  m_writeRate = 1024 * 1024;
+  m_writeRate = m_chunkSize;
   m_writeRateActual = 0;
   m_writeRateLowSpeed = 0;
   m_bFilling = true;
   m_seekEvent.Reset();
   m_seekEnded.Reset();
   m_readEvent.Reset();
+  m_stallEvent.Reset();
 
   CThread::Create(false);
 
@@ -240,27 +241,49 @@ void CFileCache::Process()
     return;
   }
 
-  CWriteRate limiter;
   CWriteRate average;
-  CLog::Log(LOGINFO, "CFileCache::{} - <{}> allocated read buffer: {}", __FUNCTION__,
-    m_sourcePath, m_chunkSize);
+  CWriteRate limiter;
+  const size_t totalWriteCache = m_pCache->GetMaxWriteSize(static_cast<size_t>(~0));
+  CLog::Log(LOGINFO, "CFileCache::{} - <{}> allocated read buffer: {}/{}", __FUNCTION__,
+    m_sourcePath, m_chunkSize, totalWriteCache);
 
   while (!m_bStop)
   {
-    while (!m_bStop && m_writeRate)
+    while (!m_bStop)
     {
-      if (m_pCache->CachedDataEndPos() - m_pCache->CachedDataStartPos() < m_writeRate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor)
-      {
-        limiter.Reset(m_writePos);
+      if (m_bFilling) {
+        limiter.Reset(m_pCache->CachedDataEndPos());
         break;
       }
 
-      if (limiter.Rate(m_pCache->CachedDataEndPos()) < m_writeRate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor)
+      if (m_stallEvent.Wait(0ms)) {
+        limiter.Reset(m_pCache->CachedDataEndPos());
+        m_bFilling = true;
+        break;
+      }
+
+      size_t targetRate = m_writeRate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor;
+      if (m_pCache->WaitForData(0, 0ms) <= targetRate)
+      {
+        limiter.Reset(m_pCache->CachedDataEndPos());
+        break;
+      }
+
+      if (limiter.Rate(m_pCache->CachedDataEndPos()) < targetRate)
         break;
 
-      if (m_readEvent.Wait(100ms)) {
-        if (m_seekEvent.Wait(0ms))
-          m_seekEvent.Set();
+      if (!targetRate || m_pCache->WaitForData(0, 0ms) >= totalWriteCache) {
+        /* Unlikely stall, but still check. */
+        if (m_stallEvent.Wait(0ms)) {
+          m_stallEvent.Set();
+          continue;
+        }
+
+        m_readEvent.Wait(25ms);
+      }
+
+      if (m_seekEvent.Wait(0ms)) {
+        m_seekEvent.Set();
         break;
       }
     }
@@ -331,6 +354,13 @@ void CFileCache::Process()
       maxSourceRead = std::min(maxSourceRead, m_fileSize - m_pCache->CachedDataEndPos());
 
     maxSourceRead = m_pCache->GetMaxWriteSize(maxSourceRead);
+
+    /* With latency sources it's not worth it to read a couple bytes from the RTT. */
+    if (m_fileSize != 0 && maxSourceRead < m_chunkSize && m_fileSize - m_pCache->CachedDataEndPos() > m_chunkSize) {
+      m_readEvent.Wait(100ms);
+      continue;
+    }
+  
     /* Only read from source if there's enough write space in the cache
     * else we may keep disposing data and seeking back on (slow) source
     */
@@ -381,10 +411,9 @@ void CFileCache::Process()
                   m_sourcePath);
         m_bStop = true;
         break;
-      } else if (iWrite == 0 && m_readEvent.Wait(1ms)) {
+      } else if (iWrite == 0 && m_readEvent.Wait(100ms)) {
         CLog::Log(LOGERROR, "CFileCache::{} - <{}> LATENCY writing to cache remaining: {}/{}", __FUNCTION__,
           m_sourcePath, iTotalWrite, iRead);
-        m_readEvent.Set();
       }
 
       iTotalWrite += iWrite;
@@ -397,9 +426,10 @@ void CFileCache::Process()
         break;
       }
     }
+
     // under estimate write rate by a second, to
     // avoid uncertainty at start of caching
-    m_writeRateActual = average.Rate(m_writePos, 1000);
+    m_writeRateActual = average.Rate(m_pCache->CachedDataEndPos(), 1000);
 
    /* NOTE: We can only reliably test for low speed condition, when the cache is *really*
     * filling. This is because as soon as it's full the average-
@@ -467,6 +497,10 @@ retry:
 
   if (iRc == CACHE_RC_WOULD_BLOCK)
   {
+    // this limiter is rubbish and can completely stall out on the cache.
+    // logging an error here would be appropriate, but would likely lead to many reports.
+    m_stallEvent.Set();
+
     // just wait for some data to show up
     iRc = m_pCache->WaitForData(1, 10s);
     if (iRc > 0)

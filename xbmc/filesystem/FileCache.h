@@ -19,7 +19,6 @@
 
 namespace XFILE
 {
-
   class CFileCache : public IFile, public CThread
   {
   public:
@@ -62,10 +61,9 @@ namespace XFILE
     CEvent m_seekEvent;
     CEvent m_seekEnded;
     CEvent m_readEvent;
+    CEvent m_stallEvent;
     int64_t m_nSeekResult;
     int64_t m_seekPos;
-    int64_t m_readPos;
-    int64_t m_writePos;
     unsigned m_chunkSize;
     uint32_t m_writeRate;
     uint32_t m_writeRateActual;
@@ -76,5 +74,4 @@ namespace XFILE
     unsigned int m_flags;
     CCriticalSection m_sync;
   };
-
 }
