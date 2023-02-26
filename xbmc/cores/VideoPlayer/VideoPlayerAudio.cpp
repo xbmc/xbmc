@@ -199,9 +199,13 @@ void CVideoPlayerAudio::UpdatePlayerInfo()
   s << "aq:"     << std::setw(2) << std::min(99,m_messageQueue.GetLevel()) << "%";
   s << ", Kb/s:" << std::fixed << std::setprecision(2) << m_audioStats.GetBitrate() / 1024.0;
 
+  // print a/v discontinuity adjustments counter when audio is not resampled (passthrough mode)
+  if (m_synctype == SYNC_DISCON)
+    s << ", a/v corrections (" << m_disconAdjustTimeMs << "ms): " << m_disconAdjustCounter;
+
   //print the inverse of the resample ratio, since that makes more sense
   //if the resample ratio is 0.5, then we're playing twice as fast
-  if (m_synctype == SYNC_RESAMPLE)
+  else if (m_synctype == SYNC_RESAMPLE)
     s << ", rr:" << std::fixed << std::setprecision(5) << 1.0 / m_audioSink.GetResampleRatio();
 
   SInfo info;
@@ -223,6 +227,19 @@ void CVideoPlayerAudio::Process()
   audioframe.nb_frames = 0;
   audioframe.framesOut = 0;
   m_audioStats.Start();
+  m_disconAdjustCounter = 0;
+
+  // Only enable "learning" if advancedsettings m_maxPassthroughOffSyncDuration
+  // not exists or has it's default 10 ms value, otherwise use advancedsettings value
+  if (m_disconAdjustTimeMs == 10)
+  {
+    m_disconTimer.Set(30s);
+    m_disconLearning = true;
+  }
+  else
+  {
+    m_disconLearning = false;
+  }
 
   bool onlyPrioMsgs = false;
 
@@ -524,15 +541,33 @@ bool CVideoPlayerAudio::ProcessDecoderOutput(DVDAudioFrame &audioframe)
     audioframe.hasDownmix = true;
   }
 
-
+  if (m_synctype == SYNC_DISCON)
   {
     double syncerror = m_audioSink.GetSyncError();
-    if (m_synctype == SYNC_DISCON && fabs(syncerror) > DVD_MSEC_TO_TIME(m_disconAdjustTimeMs))
+
+    if (m_disconLearning)
+    {
+      const double syncErr = std::abs(syncerror);
+      if (syncErr > DVD_MSEC_TO_TIME(m_disconAdjustTimeMs))
+        m_disconAdjustTimeMs = DVD_TIME_TO_MSEC(syncErr);
+      if (m_disconTimer.IsTimePast())
+      {
+        m_disconLearning = false;
+        m_disconAdjustTimeMs = (static_cast<double>(m_disconAdjustTimeMs) * 1.15) + 5.0;
+        if (m_disconAdjustTimeMs > 100) // sanity check
+          m_disconAdjustTimeMs = 100;
+
+        CLog::LogF(LOGINFO, "Changed max allowed Out-Of-Sync value to {} ms due self-learning",
+                   m_disconAdjustTimeMs);
+      }
+    }
+    else if (std::abs(syncerror) > DVD_MSEC_TO_TIME(m_disconAdjustTimeMs))
     {
       double correction = m_pClock->ErrorAdjust(syncerror, "CVideoPlayerAudio::OutputPacket");
       if (correction != 0)
       {
         m_audioSink.SetSyncErrorCorrection(-correction);
+        m_disconAdjustCounter++;
       }
     }
   }
