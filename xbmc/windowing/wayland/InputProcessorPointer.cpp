@@ -12,7 +12,7 @@
 
 #include <cmath>
 
-#include <linux/input-event-codes.h>
+#include <linux/input.h>
 
 using namespace KODI::WINDOWING::WAYLAND;
 
