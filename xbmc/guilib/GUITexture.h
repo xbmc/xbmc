@@ -116,6 +116,12 @@ public:
   const CRect& GetRenderRect() const { return m_vertex; }
   bool IsLazyLoaded() const { return m_info.useLarge; }
 
+  /*!
+   * @brief Get the diffuse color (info color) associated to this texture
+   * @return the infocolor associated to this texture
+  */
+  KODI::GUILIB::GUIINFO::CGUIInfoColor GetDiffuseColor() const { return m_info.diffuseColor; }
+
   bool HitTest(const CPoint& point) const
   {
     return CRect(m_posX, m_posY, m_posX + m_width, m_posY + m_height).PtInRect(point);

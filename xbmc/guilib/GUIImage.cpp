@@ -70,8 +70,9 @@ void CGUIImage::UpdateDiffuseColor(const CGUIListItem* item)
 
 void CGUIImage::UpdateInfo(const CGUIListItem *item)
 {
-  // Update the diffuse color. The texture diffuse color may depend on the current item
-  UpdateDiffuseColor(item);
+  // The texture may also depend on info conditions. Update the diffuse color in that case.
+  if (m_texture->GetDiffuseColor().HasInfo())
+    UpdateDiffuseColor(item);
 
   if (m_info.IsConstant())
     return; // nothing to do
@@ -166,6 +167,9 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
     if (m_texture->SetAlpha(GetFadeLevel(m_currentFadeTime)))
       MarkDirtyRegion();
   }
+
+  if (!m_texture->GetDiffuseColor().HasInfo())
+    UpdateDiffuseColor(nullptr);
 
   if (m_texture->Process(currentTime))
     MarkDirtyRegion();

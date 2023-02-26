@@ -37,6 +37,12 @@ public:
   bool Update(const CGUIListItem* item = nullptr);
   void Parse(const std::string &label, int context);
 
+  /*!
+   * @brief Check if the infocolor has an info condition bound to its color definition (or otherwise, if it's constant color)
+   * @return true if the color depends on an info condition, false otherwise
+  */
+  bool HasInfo() const { return m_info != 0; }
+
 private:
   int m_info = 0;
   UTILS::COLOR::Color m_color;
