@@ -140,7 +140,7 @@ public:
   static bool IsFileOnly(const std::string &url); ///< return true if there are no directories in the url.
   static bool IsFullPath(const std::string &url); ///< return true if the url includes the full path
   static std::string Decode(std::string_view strURLData);
-  static std::string Encode(const std::string& strURLData);
+  static std::string Encode(std::string_view strURLData);
 
   /*! \brief Check whether a URL is a given URL scheme.
    Comparison is case-insensitive as per RFC1738
