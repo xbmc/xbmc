@@ -37,6 +37,55 @@ macro (addon_version dir prefix)
   message(STATUS ${prefix}_VERSION=${${prefix}_VERSION})
 endmacro()
 
+
+# IDEs: Group source files in target in folders (file system hierarchy)
+# Source: http://blog.audio-tk.com/2015/09/01/sorting-source-files-and-projects-in-folders-with-cmake-and-visual-studioxcode/
+# Arguments:
+#   target The target that shall be grouped by folders.
+# Optional Arguments:
+#   RELATIVE allows to specify a different reference folder.
+function(source_group_by_folder target)
+  if(NOT TARGET ${target})
+    message(FATAL_ERROR "There is no target named '${target}'")
+  endif()
+
+  set(SOURCE_GROUP_DELIMITER "/")
+
+  cmake_parse_arguments(arg "" "RELATIVE" "" ${ARGN})
+  if(arg_RELATIVE)
+    set(relative_dir ${arg_RELATIVE})
+  else()
+    set(relative_dir ${CMAKE_CURRENT_SOURCE_DIR})
+  endif()
+
+  get_property(files TARGET ${target} PROPERTY SOURCES)
+  if(files)
+    list(SORT files)
+
+    if(CMAKE_GENERATOR STREQUAL Xcode)
+      set_target_properties(${target} PROPERTIES SOURCES "${files}")
+    endif()
+  endif()
+  foreach(file ${files})
+    if(NOT IS_ABSOLUTE ${file})
+      set(file ${CMAKE_CURRENT_SOURCE_DIR}/${file})
+    endif()
+    file(RELATIVE_PATH relative_file ${relative_dir} ${file})
+    get_filename_component(dir "${relative_file}" DIRECTORY)
+    if(NOT dir STREQUAL "${last_dir}")
+      if(files)
+        source_group("${last_dir}" FILES ${files})
+      endif()
+      set(files "")
+    endif()
+    set(files ${files} ${file})
+    set(last_dir "${dir}")
+  endforeach(file)
+  if(files)
+    source_group("${last_dir}" FILES ${files})
+  endif()
+endfunction()
+
 # Build, link and optionally package an add-on
 macro (build_addon target prefix libs)
   addon_version(${target} ${prefix})
@@ -154,6 +203,9 @@ macro (build_addon target prefix libs)
     endforeach()
 
     add_library(${target} ${${prefix}_SOURCES} ${${prefix}_HEADERS})
+
+    source_group_by_folder(${target})
+
     target_link_libraries(${target} ${${libs}})
     set_target_properties(${target} PROPERTIES VERSION ${${prefix}_VERSION}
                                                SOVERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR}
