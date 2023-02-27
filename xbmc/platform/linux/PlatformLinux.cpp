@@ -114,9 +114,9 @@ bool CPlatformLinux::InitStageOne()
   }
   else
   {
-    if (!OPTIONALS::PulseAudioRegister())
+    if (!OPTIONALS::PipewireRegister())
     {
-      if (!OPTIONALS::PipewireRegister())
+      if (!OPTIONALS::PulseAudioRegister())
       {
         if (!OPTIONALS::ALSARegister())
         {
