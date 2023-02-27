@@ -3,16 +3,35 @@ DEPS =../../Makefile.include Makefile ../../download-files.include
 
 # lib name, version
 LIBNAME=libxkbcommon
-VERSION=0.8.0
+VERSION=1.5.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
-SHA512=ad64baa03685b72e1047f9fdfc95661acf5bace59280a95d3defaca73c91fb77c31ecde00b430726e3521ff90cf8dd93ecbc816c18be0971cb616e00b81cf163
+SHA512=bbba6665f052c04c7450413cc5e2badd6bfd41326b0e4c60e3ec01d730cae695fd34ce2662b8a91ece7a76b974a0ea330f7462dd5d2db148b0d0da26264ced9c
 include ../../download-files.include
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(PREFIX) --disable-shared --enable-static --disable-x11 --disable-docs
+MESON_BUILD_TYPE=release
 
-LIBDYLIB=$(PLATFORM)/.libs/libxkbcommon.la
+ifeq ($(DEBUG_BUILD), yes)
+  MESON_BUILD_TYPE=debug
+endif
+
+# configuration settings
+CONFIGURE = $(NATIVEPREFIX)/bin/python3 $(NATIVEPREFIX)/bin/meson \
+                --buildtype=$(MESON_BUILD_TYPE) \
+                --prefix=$(PREFIX) \
+                -Ddefault_library=static \
+                -Denable-docs=false \
+                -Denable-x11=false \
+                -Denable-wayland=false \
+                -Denable-xkbregistry=false \
+                -Dxkb-config-root=/usr/share/X11/xkb
+
+ifeq ($(CROSS_COMPILING), yes)
+CONFIGURE += --cross-file $(PREFIX)/share/cross-file.meson
+endif
+
+LIBDYLIB=$(PLATFORM)/build/libxkbcommon.a
 
 all: .installed-$(PLATFORM)
 
@@ -20,13 +39,13 @@ all: .installed-$(PLATFORM)
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-	cd $(PLATFORM); $(CONFIGURE)
+	cd $(PLATFORM); $(CONFIGURE) . build
 
 $(LIBDYLIB): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)
+	cd $(PLATFORM)/build; $(NATIVEPREFIX)/bin/ninja -v
 
 .installed-$(PLATFORM): $(LIBDYLIB)
-	$(MAKE) -C $(PLATFORM) install
+	cd $(PLATFORM)/build; $(NATIVEPREFIX)/bin/ninja -v install
 	touch $@
 
 clean:
