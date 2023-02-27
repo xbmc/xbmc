@@ -133,7 +133,7 @@ protected:
   friend class CActiveAE;
   friend class CEngineStats;
   CActiveAEStream(AEAudioFormat *format, unsigned int streamid, CActiveAE *ae);
-  ~CActiveAEStream() override;
+  ~CActiveAEStream() override = default;
   void FadingFinished();
   void IncFreeBuffers();
   void DecFreeBuffers();
@@ -203,10 +203,9 @@ protected:
   IAEStream *m_streamSlave;
   CCriticalSection m_streamLock;
   CCriticalSection m_statsLock;
-  uint8_t *m_leftoverBuffer;
   int m_leftoverBytes;
   CSampleBuffer *m_currentBuffer;
-  CSoundPacket *m_remapBuffer;
+  std::unique_ptr<CSoundPacket> m_remapBuffer;
   std::unique_ptr<IAEResample> m_remapper;
   double m_lastPts;
   double m_lastPtsJump;
@@ -214,9 +213,9 @@ protected:
 
   // only accessed by engine
   std::unique_ptr<CActiveAEBufferPool> m_inputBuffers;
-  CActiveAEStreamBuffers *m_processingBuffers;
+  std::unique_ptr<CActiveAEStreamBuffers> m_processingBuffers;
   std::deque<CSampleBuffer*> m_processingSamples;
-  CActiveAEDataProtocol *m_streamPort;
+  std::unique_ptr<CActiveAEDataProtocol> m_streamPort;
   CEvent m_inMsgEvent;
   bool m_drain;
   bool m_paused;

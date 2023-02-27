@@ -38,6 +38,8 @@ CActiveAESink::CActiveAESink(CEvent *inMsgEvent) :
   m_streamNoise = true;
 }
 
+CActiveAESink::~CActiveAESink() = default;
+
 void CActiveAESink::Start()
 {
   if (!IsRunning())
@@ -62,11 +64,9 @@ void CActiveAESink::Dispose()
     m_sink.reset();
   }
 
-  delete m_sampleOfSilence.pkt;
-  m_sampleOfSilence.pkt = nullptr;
+  m_sampleOfSilence.pkt.reset();
 
-  delete m_packer;
-  m_packer = nullptr;
+  m_packer.reset();
 
   CAESinkFactory::Cleanup();
 }
@@ -809,7 +809,7 @@ void CActiveAESink::OpenSink()
     m_needIecPack = NeedIECPacking();
     if (m_needIecPack)
     {
-      m_packer = new CAEBitstreamPacker();
+      m_packer = std::make_unique<CAEBitstreamPacker>();
       m_requestedFormat.m_sampleRate = CAEBitstreamPacker::GetOutputRate(m_requestedFormat.m_streamInfo);
       m_requestedFormat.m_channelLayout = CAEBitstreamPacker::GetOutputChannelMap(m_requestedFormat.m_streamInfo);
     }
@@ -889,8 +889,7 @@ void CActiveAESink::OpenSink()
   config.sample_rate = m_sinkFormat.m_sampleRate;
 
   // init sample of silence/noise
-  delete m_sampleOfSilence.pkt;
-  m_sampleOfSilence.pkt = new CSoundPacket(config, m_sinkFormat.m_frames);
+  m_sampleOfSilence.pkt = std::make_unique<CSoundPacket>(config, m_sinkFormat.m_frames);
   m_sampleOfSilence.pkt->nb_samples = m_sampleOfSilence.pkt->max_nb_samples;
   if (!passthrough)
     GenerateNoise();
