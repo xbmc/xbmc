@@ -75,32 +75,35 @@ PyObject* PyInit_Module_xbmcwsgi(void);
 
 using namespace PythonBindings;
 
-typedef struct
+namespace
 {
-  const char *name;
-  CPythonInvoker::PythonModuleInitialization initialization;
-} PythonModule;
-
-static PythonModule PythonModules[] =
+// clang-format off
+const _inittab PythonModules[] =
 {
   { "xbmc",           PyInit_Module_xbmc },
   { "xbmcaddon",      PyInit_Module_xbmcaddon },
-  { "xbmcwsgi",       PyInit_Module_xbmcwsgi }
+  { "xbmcwsgi",       PyInit_Module_xbmcwsgi },
+  { nullptr,          nullptr }
 };
+// clang-format on
+} // namespace
 
 CHTTPPythonWsgiInvoker::CHTTPPythonWsgiInvoker(ILanguageInvocationHandler* invocationHandler, HTTPPythonRequest* request)
   : CHTTPPythonInvoker(invocationHandler, request),
     m_wsgiResponse(NULL)
 {
-  PyImport_AppendInittab("xbmc", PyInit_Module_xbmc);
-  PyImport_AppendInittab("xbmcaddon", PyInit_Module_xbmcaddon);
-  PyImport_AppendInittab("xbmcwsgi", PyInit_Module_xbmcwsgi);
 }
 
 CHTTPPythonWsgiInvoker::~CHTTPPythonWsgiInvoker()
 {
   delete m_wsgiResponse;
   m_wsgiResponse = NULL;
+}
+
+void CHTTPPythonWsgiInvoker::GlobalInitializeModules(void)
+{
+  if (PyImport_ExtendInittab(const_cast<_inittab*>(PythonModules)))
+    CLog::Log(LOGWARNING, "CHTTPPythonWsgiInvoker(): unable to extend inittab");
 }
 
 HTTPPythonRequest* CHTTPPythonWsgiInvoker::GetRequest()
@@ -301,18 +304,6 @@ cleanup:
   {
     Py_DECREF(pyModule);
   }
-}
-
-std::map<std::string, CPythonInvoker::PythonModuleInitialization> CHTTPPythonWsgiInvoker::getModules() const
-{
-  static std::map<std::string, PythonModuleInitialization> modules;
-  if (modules.empty())
-  {
-    for (const PythonModule& pythonModule : PythonModules)
-      modules.insert(std::make_pair(pythonModule.name, pythonModule.initialization));
-  }
-
-  return modules;
 }
 
 const char* CHTTPPythonWsgiInvoker::getInitializationScript() const

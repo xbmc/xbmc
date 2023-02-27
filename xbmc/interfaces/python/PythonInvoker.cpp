@@ -64,10 +64,6 @@ extern "C" FILE* fopen_utf8(const char* _Filename, const char* _Mode);
 using namespace XFILE;
 using namespace std::chrono_literals;
 
-#define PythonModulesSize sizeof(PythonModules) / sizeof(PythonModule)
-
-CCriticalSection CPythonInvoker::s_critical;
-
 static const std::string getListOfAddonClassesAsString(
     XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook>& languageHook)
 {
@@ -277,6 +273,7 @@ bool CPythonInvoker::execute(const std::string& script, std::vector<std::wstring
   }
 
   PySys_SetObject("argv", sysArgv);
+  Py_DECREF(sysArgv);
 
   CLog::Log(LOGDEBUG, "CPythonInvoker({}, {}): entering source directory {}", GetId(), m_sourceFile,
             scriptDir);
@@ -570,6 +567,9 @@ void CPythonInvoker::onExecutionDone()
                 "shutting down the Interpreter",
                 GetId(), m_sourceFile);
 
+    // PyErr_Clear() is required to prevent the debug python library to trigger an assert() at the Py_EndInterpreter() level
+    PyErr_Clear();
+
     Py_EndInterpreter(m_threadState);
 
     // If we still have objects left around, produce an error message detailing what's been left behind
@@ -619,10 +619,6 @@ void CPythonInvoker::onExecutionFailed()
 void CPythonInvoker::onInitialization()
 {
   XBMC_TRACE;
-  {
-    GilSafeSingleLock lock(s_critical);
-    initializeModules(getModules());
-  }
 
   // get a possible initialization script
   const char* runscript = getInitializationScript();
@@ -641,15 +637,14 @@ void CPythonInvoker::onPythonModuleInitialization(void* moduleDict)
 
   PyObject* moduleDictionary = (PyObject*)moduleDict;
 
-  PyObject* pyaddonid = PyUnicode_FromString(m_addon->ID().c_str());
-  PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__", pyaddonid);
+  PyDict_SetItemString(moduleDictionary, "__xbmcaddonid__",
+                       PyObjectPtr(PyUnicode_FromString(m_addon->ID().c_str())).get());
 
   ADDON::CAddonVersion version = m_addon->GetDependencyVersion("xbmc.python");
-  PyObject* pyxbmcapiversion = PyUnicode_FromString(version.asString().c_str());
-  PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__", pyxbmcapiversion);
+  PyDict_SetItemString(moduleDictionary, "__xbmcapiversion__",
+                       PyObjectPtr(PyUnicode_FromString(version.asString().c_str())).get());
 
-  PyObject* pyinvokerid = PyLong_FromLong(GetId());
-  PyDict_SetItemString(moduleDictionary, "__xbmcinvokerid__", pyinvokerid);
+  PyDict_SetItemString(moduleDictionary, "__xbmcinvokerid__", PyLong_FromLong(GetId()));
 
   CLog::Log(LOGDEBUG,
             "CPythonInvoker({}, {}): instantiating addon using automatically obtained id of \"{}\" "
@@ -683,25 +678,6 @@ void CPythonInvoker::onError(const std::string& exceptionType /* = "" */,
   }
 }
 
-void CPythonInvoker::initializeModules(
-    const std::map<std::string, PythonModuleInitialization>& modules)
-{
-  for (const auto& module : modules)
-  {
-    if (!initializeModule(module.second))
-      CLog::Log(LOGWARNING, "CPythonInvoker({}, {}): unable to initialize python module \"{}\"",
-                GetId(), m_sourceFile, module.first);
-  }
-}
-
-bool CPythonInvoker::initializeModule(PythonModuleInitialization module)
-{
-  if (module == NULL)
-    return false;
-
-  return module() != nullptr;
-}
-
 void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<std::string>& paths)
 {
   for (const auto& it : addon->GetDependencies())
@@ -720,4 +696,10 @@ void CPythonInvoker::getAddonModuleDeps(const ADDON::AddonPtr& addon, std::set<s
       }
     }
   }
+}
+
+void CPythonInvoker::PyObjectDeleter::operator()(PyObject* p) const
+{
+  assert(Py_REFCNT(p) == 2);
+  Py_DECREF(p);
 }
