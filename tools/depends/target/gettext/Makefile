@@ -3,10 +3,10 @@ DEPS = ../../Makefile.include Makefile ../../download-files.include
 
 # lib name, version
 LIBNAME=gettext
-VERSION=0.21
+VERSION=0.21.1
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
-SHA512=f7e2968651879f8444d43a176a149db9f9411f4a03132a7f3b37c2ed97e3978ae6888169c995c1953cb78943b6e3573811abcbb8661b6631edbbe067b2699ddf
+SHA512=61e93bc9876effd3ca1c4e64ff6ba5bd84b24951ec2cc6f40a0e3248410e60f887552f29ca1f70541fb5524f6a4e8191fed288713c3e280e18922dd5bff1a2c9
 include ../../download-files.include
 
 # configuration settings
