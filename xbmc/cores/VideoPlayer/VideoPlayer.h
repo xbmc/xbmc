@@ -237,6 +237,14 @@ protected:
 // main class
 //------------------------------------------------------------------------------
 
+struct CacheInfo
+{
+  double level;
+  double delay;
+  double offset;
+  bool valid;
+};
+
 class CProcessInfo;
 class CJobQueue;
 
@@ -421,7 +429,7 @@ protected:
   void SetCaching(ECacheState state);
 
   double GetQueueTime();
-  bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
+  CacheInfo GetCachingTimes();
 
   void FlushBuffers(double pts, bool accurate, bool sync);
 
