@@ -88,6 +88,7 @@ struct SPlayerState
   double cache_level;   // current estimated required cache level
   double cache_delay;   // time until cache is expected to reach estimated level
   double cache_offset;  // percentage of file ahead of current position
+  double cache_time; // estimated playback time of current cached bytes
 };
 
 class CDVDInputStream;
@@ -239,9 +240,10 @@ protected:
 
 struct CacheInfo
 {
-  double level;
-  double delay;
-  double offset;
+  double level; // current estimated required cache level
+  double delay; // time until cache is expected to reach estimated level
+  double offset; // percentage of file ahead of current position
+  double time; // estimated playback time of current cached bytes
   bool valid;
 };
 

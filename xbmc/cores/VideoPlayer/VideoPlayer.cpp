@@ -1824,12 +1824,14 @@ CacheInfo CVideoPlayer::GetCachingTimes()
   if (length <= 0 || remain < 0)
     return info;
 
+  double queueTime = GetQueueTime();
   double play_sbp = DVD_MSEC_TO_TIME(m_pDemuxer->GetStreamLength()) / length;
-  double queued = 1000.0 * GetQueueTime() / play_sbp;
+  double queued = 1000.0 * queueTime / play_sbp;
 
   info.delay = 0.0;
   info.level = 0.0;
   info.offset = (cached + queued) / length;
+  info.time = 0.0;
   info.valid = true;
 
   if (currate == 0)
@@ -1840,7 +1842,11 @@ CacheInfo CVideoPlayer::GetCachingTimes()
   double cache_left = cache_sbp * (remain - cached);                 /* time to cache the remaining bytes */
   double cache_need = std::max(0.0, remain - play_left / cache_sbp); /* bytes needed until play_left == cache_left */
 
+  // estimated playback time of current cached bytes
+  double cache_time = (static_cast<double>(cached) / currate) + (queueTime / 1000.0);
+
   info.delay = cache_left - play_left;
+  info.time = cache_time;
 
   if (lowrate > 0)
   {
@@ -3290,9 +3296,13 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
     std::unique_lock<CCriticalSection> lock(m_StateSection);
     if (m_State.cache_bytes >= 0)
     {
-      strBuf += StringUtils::Format(" forward:{} {:2.0f}%",
-                                    StringUtils::SizeToString(m_State.cache_bytes),
-                                    m_State.cache_level * 100);
+      strBuf += StringUtils::Format("forward: {}", StringUtils::SizeToString(m_State.cache_bytes));
+
+      if (m_State.cache_time > 0)
+        strBuf += StringUtils::Format(" {:6.3f}s", m_State.cache_time);
+      else
+        strBuf += StringUtils::Format(" {:2.0f}%", m_State.cache_level * 100);
+
       if (m_playSpeed == 0 || m_caching == CACHESTATE_FULL)
         strBuf += StringUtils::Format(" {} msec", DVD_TIME_TO_MSEC(m_State.cache_delay));
     }
@@ -4914,12 +4924,14 @@ void CVideoPlayer::UpdatePlayState(double timeout)
     state.cache_delay = std::max(0.0, cache.delay);
     state.cache_level = std::max(0.0, std::min(1.0, cache.level));
     state.cache_offset = cache.offset;
+    state.cache_time = cache.time;
   }
   else
   {
     state.cache_delay = 0.0;
     state.cache_level = std::min(1.0, queueTime / 8000.0);
     state.cache_offset = queueTime / state.timeMax;
+    state.cache_time = queueTime / 1000.0;
   }
 
   XFILE::SCacheStatus status;
