@@ -4906,7 +4906,9 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   else
     state.caching = false;
 
+  double queueTime = GetQueueTime();
   CacheInfo cache = GetCachingTimes();
+
   if (cache.valid)
   {
     state.cache_delay = std::max(0.0, cache.delay);
@@ -4916,8 +4918,8 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   else
   {
     state.cache_delay = 0.0;
-    state.cache_level = std::min(1.0, GetQueueTime() / 8000.0);
-    state.cache_offset = GetQueueTime() / state.timeMax;
+    state.cache_level = std::min(1.0, queueTime / 8000.0);
+    state.cache_offset = queueTime / state.timeMax;
   }
 
   XFILE::SCacheStatus status;
@@ -4925,7 +4927,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   {
     state.cache_bytes = status.forward;
     if(state.timeMax)
-      state.cache_bytes += m_pInputStream->GetLength() * (int64_t) (GetQueueTime() / state.timeMax);
+      state.cache_bytes += m_pInputStream->GetLength() * (int64_t)(queueTime / state.timeMax);
   }
   else
     state.cache_bytes = 0;
