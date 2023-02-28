@@ -30,7 +30,8 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
           --disable-symbol-versions \
           --without-json \
           --without-libarchive \
-          --without-regedit
+          --without-regedit \
+          --without-lttng
 
 LIBDYLIB=$(PLATFORM)/bin/default/source3/libsmb/libsmbclient.a
 
