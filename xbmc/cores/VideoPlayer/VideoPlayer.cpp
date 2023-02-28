@@ -1802,14 +1802,16 @@ void CVideoPlayer::ProcessAudioID3Data(CDemuxStream* pStream, DemuxPacket* pPack
   m_VideoPlayerAudioID3->SendMessage(std::make_shared<CDVDMsgDemuxerPacket>(pPacket, drop));
 }
 
-bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
+CacheInfo CVideoPlayer::GetCachingTimes()
 {
+  CacheInfo info{};
+
   if (!m_pInputStream || !m_pDemuxer)
-    return false;
+    return info;
 
   XFILE::SCacheStatus status;
   if (!m_pInputStream->GetCacheStatus(&status))
-    return false;
+    return info;
 
   const uint64_t& cached = status.forward;
   const uint32_t& currate = status.currate;
@@ -1820,34 +1822,42 @@ bool CVideoPlayer::GetCachingTimes(double& level, double& delay, double& offset)
   int64_t remain = length - m_pInputStream->Seek(0, SEEK_CUR);
 
   if (length <= 0 || remain < 0)
-    return false;
+    return info;
 
+  double queueTime = GetQueueTime();
   double play_sbp = DVD_MSEC_TO_TIME(m_pDemuxer->GetStreamLength()) / length;
-  double queued = 1000.0 * GetQueueTime() / play_sbp;
+  double queued = 1000.0 * queueTime / play_sbp;
 
-  delay  = 0.0;
-  level  = 0.0;
-  offset = (cached + queued) / length;
+  info.delay = 0.0;
+  info.level = 0.0;
+  info.offset = (cached + queued) / length;
+  info.time = 0.0;
+  info.valid = true;
 
   if (currate == 0)
-    return true;
+    return info;
 
   double cache_sbp = 1.1 * (double)DVD_TIME_BASE / currate;          /* underestimate by 10 % */
   double play_left = play_sbp  * (remain + queued);                  /* time to play out all remaining bytes */
   double cache_left = cache_sbp * (remain - cached);                 /* time to cache the remaining bytes */
   double cache_need = std::max(0.0, remain - play_left / cache_sbp); /* bytes needed until play_left == cache_left */
 
-  delay = cache_left - play_left;
+  // estimated playback time of current cached bytes
+  double cache_time = (static_cast<double>(cached) / currate) + (queueTime / 1000.0);
+
+  info.delay = cache_left - play_left;
+  info.time = cache_time;
 
   if (lowrate > 0)
   {
+    // buffer is full & our read rate is too low
     CLog::Log(LOGDEBUG, "Readrate {} was too low with {} required", lowrate, maxrate);
-    level = -1.0;                          /* buffer is full & our read rate is too low  */
+    info.level = -1.0;
   }
   else
-    level = (cached + queued) / (cache_need + queued);
+    info.level = (cached + queued) / (cache_need + queued);
 
-  return true;
+  return info;
 }
 
 void CVideoPlayer::HandlePlaySpeed()
@@ -1861,15 +1871,15 @@ void CVideoPlayer::HandlePlaySpeed()
 
   if (m_caching == CACHESTATE_FULL)
   {
-    double level, delay, offset;
-    if (GetCachingTimes(level, delay, offset))
+    CacheInfo cache = GetCachingTimes();
+    if (cache.valid)
     {
-      if (level < 0.0)
+      if (cache.level < 0.0)
       {
         CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(21454), g_localizeStrings.Get(21455));
         SetCaching(CACHESTATE_INIT);
       }
-      if (level >= 1.0)
+      if (cache.level >= 1.0)
         SetCaching(CACHESTATE_INIT);
     }
     else
@@ -3068,8 +3078,8 @@ void CVideoPlayer::SetCaching(ECacheState state)
 {
   if(state == CACHESTATE_FLUSH)
   {
-    double level, delay, offset;
-    if(GetCachingTimes(level, delay, offset))
+    CacheInfo cache = GetCachingTimes();
+    if (cache.valid)
       state = CACHESTATE_FULL;
     else
       state = CACHESTATE_INIT;
@@ -3286,9 +3296,13 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
     std::unique_lock<CCriticalSection> lock(m_StateSection);
     if (m_State.cache_bytes >= 0)
     {
-      strBuf += StringUtils::Format(" forward:{} {:2.0f}%",
-                                    StringUtils::SizeToString(m_State.cache_bytes),
-                                    m_State.cache_level * 100);
+      strBuf += StringUtils::Format("forward: {}", StringUtils::SizeToString(m_State.cache_bytes));
+
+      if (m_State.cache_time > 0)
+        strBuf += StringUtils::Format(" {:6.3f}s", m_State.cache_time);
+      else
+        strBuf += StringUtils::Format(" {:2.0f}%", m_State.cache_level * 100);
+
       if (m_playSpeed == 0 || m_caching == CACHESTATE_FULL)
         strBuf += StringUtils::Format(" {} msec", DVD_TIME_TO_MSEC(m_State.cache_delay));
     }
@@ -4902,18 +4916,22 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   else
     state.caching = false;
 
-  double level, delay, offset;
-  if (GetCachingTimes(level, delay, offset))
+  double queueTime = GetQueueTime();
+  CacheInfo cache = GetCachingTimes();
+
+  if (cache.valid)
   {
-    state.cache_delay = std::max(0.0, delay);
-    state.cache_level = std::max(0.0, std::min(1.0, level));
-    state.cache_offset = offset;
+    state.cache_delay = std::max(0.0, cache.delay);
+    state.cache_level = std::max(0.0, std::min(1.0, cache.level));
+    state.cache_offset = cache.offset;
+    state.cache_time = cache.time;
   }
   else
   {
     state.cache_delay = 0.0;
-    state.cache_level = std::min(1.0, GetQueueTime() / 8000.0);
-    state.cache_offset = GetQueueTime() / state.timeMax;
+    state.cache_level = std::min(1.0, queueTime / 8000.0);
+    state.cache_offset = queueTime / state.timeMax;
+    state.cache_time = queueTime / 1000.0;
   }
 
   XFILE::SCacheStatus status;
@@ -4921,7 +4939,7 @@ void CVideoPlayer::UpdatePlayState(double timeout)
   {
     state.cache_bytes = status.forward;
     if(state.timeMax)
-      state.cache_bytes += m_pInputStream->GetLength() * (int64_t) (GetQueueTime() / state.timeMax);
+      state.cache_bytes += m_pInputStream->GetLength() * (int64_t)(queueTime / state.timeMax);
   }
   else
     state.cache_bytes = 0;

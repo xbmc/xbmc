@@ -88,6 +88,7 @@ struct SPlayerState
   double cache_level;   // current estimated required cache level
   double cache_delay;   // time until cache is expected to reach estimated level
   double cache_offset;  // percentage of file ahead of current position
+  double cache_time; // estimated playback time of current cached bytes
 };
 
 class CDVDInputStream;
@@ -236,6 +237,15 @@ protected:
 //------------------------------------------------------------------------------
 // main class
 //------------------------------------------------------------------------------
+
+struct CacheInfo
+{
+  double level; // current estimated required cache level
+  double delay; // time until cache is expected to reach estimated level
+  double offset; // percentage of file ahead of current position
+  double time; // estimated playback time of current cached bytes
+  bool valid;
+};
 
 class CProcessInfo;
 class CJobQueue;
@@ -421,7 +431,7 @@ protected:
   void SetCaching(ECacheState state);
 
   double GetQueueTime();
-  bool GetCachingTimes(double& play_left, double& cache_left, double& file_offset);
+  CacheInfo GetCachingTimes();
 
   void FlushBuffers(double pts, bool accurate, bool sync);
 
