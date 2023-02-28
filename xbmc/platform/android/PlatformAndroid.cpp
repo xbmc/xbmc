@@ -18,6 +18,7 @@
 #include <stdlib.h>
 
 #include <androidjni/Build.h>
+#include <androidjni/PackageManager.h>
 
 CPlatform* CPlatform::CreateInstance()
 {
@@ -46,8 +47,18 @@ void CPlatformAndroid::PlatformSyslog()
       "Product: {}, Device: {}, Board: {} - Manufacturer: {}, Brand: {}, Model: {}, Hardware: {}",
       CJNIBuild::PRODUCT, CJNIBuild::DEVICE, CJNIBuild::BOARD, CJNIBuild::MANUFACTURER,
       CJNIBuild::BRAND, CJNIBuild::MODEL, CJNIBuild::HARDWARE);
+
   std::string extstorage;
   bool extready = CXBMCApp::GetExternalStorage(extstorage);
-  CLog::Log(LOGINFO, "External storage path = {}; status = {}", extstorage,
-            extready ? "ok" : "nok");
+  CLog::Log(
+      LOGINFO, "External storage path = {}; status = {}; Permissions = {}{}", extstorage,
+      extready ? "ok" : "nok",
+      CJNIContext::checkCallingOrSelfPermission("android.permission.MANAGE_EXTERNAL_STORAGE") ==
+              CJNIPackageManager::PERMISSION_GRANTED
+          ? "MANAGE_EXTERNAL_STORAGE "
+          : "",
+      CJNIContext::checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") ==
+              CJNIPackageManager::PERMISSION_GRANTED
+          ? "WRITE_EXTERNAL_STORAGE"
+          : "");
 }
