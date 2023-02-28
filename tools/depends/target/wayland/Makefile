@@ -3,10 +3,10 @@ DEPS =../../Makefile.include Makefile ../../download-files.include
 
 # lib name, version
 LIBNAME=wayland
-VERSION=1.17.0
+VERSION=1.18.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
-SHA512=c5051aab5ff078b368c196ecfedb33ccd961265bb914845d7ed81de361bb86ae18299575baa6c4eceb0d82cf8b495e8293f31b51d1cbc05d84af0a199ab3f946
+SHA512=e30199e30c2bbd361ee695b4f3f7a4e264f10ed8f46f2c90762b5739fc578ae757dc39aa0258d8fbf0ed418553470bccd4b2730ed9705481cfccdab5de96a8fc
 include ../../download-files.include
 
 # configuration settings
