@@ -12,11 +12,14 @@
 //
 //  File:      StringUtils.h
 //
-//  Purpose:   ATL split string utility
-//  Author:    Paul J. Weiss
+//  Purpose:   String utilities, including those that support Unicode
 //
-//  Modified to support J O'Leary's std::string class by kraqh3d
+//  Authors:   Frank Feuerbacher, Paul J. Weiss and numerous others
 //
+//  Modified:  To support J O'Leary's std::string class by kraqh3d
+//             FoldCase to replace most uses of ToLower
+//             ToLower/ToUpper/FoldCase use UTF-32 for more accurate
+//             and consistent results
 //------------------------------------------------------------------------
 
 #include <locale>
@@ -47,18 +50,20 @@
 #else
 #define WARN_UNUSED_RESULT
 #endif
-/*! \brief  C-processor Token stringification
 
-The following macros can be used to stringify definitions to
-C style strings.
-
-Example:
-
-#define foo 4
-DEF_TO_STR_NAME(foo)  // outputs "foo"
-DEF_TO_STR_VALUE(foo) // outputs "4"
-
-*/
+/*!
+ * \brief  C-processor Token stringification
+ *
+ * The following macros can be used to stringify definitions to
+ * C style strings.
+ *
+ *  Example:
+ *
+ *   #define foo 4
+ *   DEF_TO_STR_NAME(foo)  // outputs "foo"
+ *   DEF_TO_STR_VALUE(foo) // outputs "4"
+ *
+ */
 
 #define DEF_TO_STR_NAME(x) #x
 #define DEF_TO_STR_VALUE(x) DEF_TO_STR_NAME(x)
@@ -78,11 +83,12 @@ class StringUtils
 {
 public:
   /*! \brief Get a formatted string similar to sprintf
+   *
+   * \param fmt Format of the resulting string
+   * \param ... variable number of value type arguments
+   * \return Formatted string
+   */
 
-  \param fmt Format of the resulting string
-  \param ... variable number of value type arguments
-  \return Formatted string
-  */
   template<typename... Args>
   static std::string Format(const std::string& fmt, Args&&... args)
   {
@@ -497,26 +503,71 @@ public:
    *       represent a single Unicode codepoint (for practical
    *       purposes a character).
    */
-  // TODO: The VAST majority of uses can be changed to use EqualsNoCase, which is faster
-  //       since no conversion to Unicode is required. Further, if string length is fixed,
-  //       then a simple length check is all that is needed.
-  //
-  // TODO: For all of the cases that use 'n' they should change to StartsWithNoCase or EndsWithNoCase
-  //       because they will be faster and less error-prone.
-
   static int CompareNoCase(const std::wstring_view str1,
                            const std::wstring_view str2,
                            const size_t n = 0);
+  /*!
+   * \brief Returns the int value of the first series of digits found in the string
+   *
+   *  Ignores any non-digits in string
+   *
+   * \param str to extract number from
+   * \return int value of found string
+   */
   static int ReturnDigits(const std::string& str);
+
+  /*!
+   * \brief gets the leftmost segment of a string
+   *
+   *  NOT MULTIBYTE SAFE
+   *
+   * \param str   string to get segment from
+   * \param count how many bytes to get from leftmost end of str
+   * \return string containing the first count bytes from str,
+   *         or the entire str if count > str.length()
+   */
   static std::string Left(const std::string& str, size_t count);
+
+  /*!
+   * \brief gets a middle segment of a string
+   *
+   *  NOT MULTIBYTE SAFE
+   *
+   * \param str   string to get segment from
+   * \param first byte offset from start of str where segment starts
+   * \param count how many bytes to get from str
+   * \return string containing the segment first .. count bytes from str
+   *         count is automatically reduced if str is not long enough
+   *         An empty string is returned if first > length of str
+   */
   static std::string Mid(const std::string& str, size_t first, size_t count = std::string::npos);
+
+  /*!
+   * \brief gets the rightmost segment of a string
+   *
+   *  NOT MULTIBYTE SAFE
+   *
+   * \param str   string to get segment from
+   * \param count how many bytes to get from rightmost end of str
+   * \return string containing the first count bytes from str,
+   *         or the entire str if count > str.length()
+   */
   static std::string Right(const std::string& str, size_t count);
+
   static std::string& Trim(std::string& str);
   static std::string& Trim(std::string& str, const char* const chars);
   static std::string& TrimLeft(std::string& str);
   static std::string& TrimLeft(std::string& str, const char* const chars);
   static std::string& TrimRight(std::string& str);
   static std::string& TrimRight(std::string& str, const char* const chars);
+
+  /*!
+   * \brief Converts tabs to spaces and then removes duplicate space characters
+   *        from str in-place
+   *
+   * \param str to modify
+   * \return trimmed string, same as str argument.
+   */
   static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str);
   static int Replace(std::string& str, char oldChar, char newChar);
   static int Replace(std::string& str, const std::string& oldStr, const std::string& newStr);
@@ -525,7 +576,7 @@ public:
   /*!
    * \brief Determines if a string begins with another string
    *
-   * Note: No character conversions required
+   *        Note: No character conversions required
    *
    * \param str1 string to be searched
    * \param str2 string to find at beginning of str1
@@ -536,7 +587,7 @@ public:
   /*!
    * \brief Determines if a string begins with another string, ignoring case
    *
-   * Equivalent to StartsWith(FoldCase(str1), FoldCase(str2))
+   *        Equivalent to StartsWith(FoldCase(str1), FoldCase(str2))
    *
    * \param str1 string to be searched
    * \param str2 string to find at beginning of str1
@@ -564,6 +615,14 @@ public:
    */
   static bool EndsWithNoCase(const std::string_view str1, const std::string_view str2);
 
+  /*!
+   *  \brief Builds a string by appending every string from a container,
+   *         separated by a delimiter
+   *
+   * \param strings a container of a number of strings
+   * \param delimiter will separate each member of strings
+   * \return the concatenation of every string in the container, separated by the delimiter
+   */
   template<typename CONTAINER>
   static std::string Join(const CONTAINER& strings, const std::string& delimiter)
   {
@@ -576,14 +635,15 @@ public:
     return result;
   }
 
-  /*! \brief Splits the given input string using the given delimiter into separate strings.
-
-   If the given input string is empty the result will be an empty array (not
-   an array containing an empty string).
-
-   \param input Input string to be split
-   \param delimiter Delimiter to be used to split the input string
-   \param iMaxStrings (optional) Maximum number of splitted strings
+  /*!
+   * \brief Splits the given input string using the given delimiter into separate strings.
+   *
+   * If the given input string is empty the result will be an empty array (not
+   * an array containing an empty string).
+   *
+   * \param input Input string to be split
+   * \param delimiter Delimiter to be used to split the input string
+   * \param iMaxStrings (optional) Maximum number of splitted strings
    */
   static std::vector<std::string> Split(const std::string& input,
                                         const std::string& delimiter,
@@ -593,15 +653,17 @@ public:
                                         size_t iMaxStrings = 0);
   static std::vector<std::string> Split(const std::string& input,
                                         const std::vector<std::string>& delimiters);
-  /*! \brief Splits the given input string using the given delimiter into separate strings.
 
-   If the given input string is empty nothing will be put into the target iterator.
-
-   \param d_first the beginning of the destination range
-   \param input Input string to be split
-   \param delimiter Delimiter to be used to split the input string
-   \param iMaxStrings (optional) Maximum number of splitted strings
-   \return output iterator to the element in the destination range, one past the last element
+  /*!
+   *  \brief Splits the given input string using the given delimiter into separate strings.
+   *
+   * If the given input string is empty nothing will be put into the target iterator.
+   *
+   * \param d_first the beginning of the destination range
+   * \param input Input string to be split
+   * \param delimiter Delimiter to be used to split the input string
+   * \param iMaxStrings (optional) Maximum number of splitted strings
+   * \return output iterator to the element in the destination range, one past the last element
    *       that was put there
    */
   template<typename OutputIt>
@@ -665,20 +727,23 @@ public:
     return SplitTo(dest, str, delimiters[0]);
   }
 
-  /*! \brief Splits the given input strings using the given delimiters into further separate strings.
-
-  If the given input string vector is empty the result will be an empty array (not
-  an array containing an empty string).
-
-  Delimiter strings are applied in order, so once the (optional) maximum number of
-  items is produced no other delimiters are applied. This produces different results
-  to applying all delimiters at once e.g. "a/b#c/d" becomes "a", "b#c", "d" rather
-  than "a", "b", "c/d"
-
-  \param input Input vector of strings each to be split
-  \param delimiters Delimiter strings to be used to split the input strings
-  \param iMaxStrings (optional) Maximum number of resulting split strings
-  */
+  /*! \brief Splits the given input strings using the given delimiters into
+   *         further separate strings.
+   *
+   * If the given input string vector is empty the result will be an empty array (not
+   * an array containing an empty string).
+   *
+   * Delimiter strings are applied in order, so once the (optional) maximum number of
+   * items is produced no other delimiters are applied. This produces different results
+   * to applying all delimiters at once e.g. "a/b#c/d" becomes "a", "b#c", "d" rather
+   * than "a", "b", "c/d"
+   *
+   * \param input Input vector of strings each to be split
+   * \param delimiters Delimiter strings to be used to split the input strings
+   * \param iMaxStrings (optional) Maximum number of resulting split strings
+   *
+   * \return vector of the split strings
+   */
   static std::vector<std::string> SplitMulti(const std::vector<std::string>& input,
                                              const std::vector<std::string>& delimiters,
                                              size_t iMaxStrings = 0);
@@ -687,89 +752,289 @@ public:
   static int AlphaNumericCollation(int nKey1, const void* pKey1, int nKey2, const void* pKey2);
   static long TimeStringToSeconds(const std::string& timeString);
   static void RemoveCRLF(std::string& strLine);
-
-  /*! \brief utf8 version of strlen - skips any non-starting bytes in the count, thus returning the number of utf8 characters
-   \param s c-string to find the length of.
-   \return the number of utf8 characters in the string.
+  /*!
+   * \brief utf8 version of strlen
+   *
+   *       - skips any non-starting bytes in the count, thus returning the
+   *         number of unicode codepoints.
+   *       - it takes between one and four UTF8 code-units (bytes) to
+   *         represent one Unicode code-point
+   *       - a codepoint is NOT a character, although it frequently is.
+   *         a codepoint may be just a graphical element of a character/grapheme
+   *       - Unicode is based on 32-bit (well, 21-bits, but contained in 4 bytes)
+   *         codepoints.
+   *
+   * \param s c-string to find the length of.
+   * \return the number of utf8 characters in the string.
    */
   static size_t utf8_strlen(const char* s);
 
-  /*! \brief convert a time in seconds to a string based on the given time format
-   \param seconds time in seconds
-   \param format the format we want the time in.
-   \return the formatted time
-   \sa TIME_FORMAT
+  /*!
+   *  \brief convert a time in seconds into to a string based on the given time format
+   *
+   *  \param seconds time in seconds
+   *  \param format the format we want the time in.
+   *  \return the formatted time
    */
   static std::string SecondsToTimeString(long seconds, TIME_FORMAT format = TIME_FORMAT_GUESS);
 
   /*! \brief check whether a string is a natural number.
-   Matches [ \t]*[0-9]+[ \t]*
-   \param str the string to check
-   \return true if the string is a natural number, false otherwise.
+   *         Matches [ \t]*[0-9]+[ \t]*
+   *
+   * \param str the string to check
+   * \return true if the string is a natural number, false otherwise.
    */
   static bool IsNaturalNumber(const std::string& str);
 
-  /*! \brief check whether a string is an integer.
-   Matches [ \t]*[\-]*[0-9]+[ \t]*
-   \param str the string to check
-   \return true if the string is an integer, false otherwise.
+  /*!
+   * \brief check whether a string is a natural number.
+   *
+   *        Matches [ \t]*[0-9]+[ \t]*
+   *
+   * \param str the string to check
+   * \return true if the string is a natural number, false otherwise.
    */
   static bool IsInteger(const std::string& str);
 
-  /* The next several isasciiXX and asciiXXvalue functions are locale independent (US-ASCII only),
-   * as opposed to standard ::isXX (::isalpha, ::isdigit...) which are locale dependent.
-   * Next functions get parameter as char and don't need double cast ((int)(unsigned char) is required for standard functions). */
+  /* The next several isasciiXX and asciiXXvalue functions are locale independent
+   * (US-ASCII only), as opposed to standard ::isXX (::isalpha, ::isdigit...)
+   * which are locale dependent.
+   *
+   * Next functions get parameter as char and don't need double cast
+   * ((int)(unsigned char) is required for standard functions).
+   */
+
+  /*!
+   * \brief Determines whether the given character is an ASCII digit or not
+   *
+   * Locale independent, safe to use with UTF-8
+   *
+   * \param chr C-char (byte) to examine
+   * \return true if char matches [0-9], else false
+   */
   inline static bool isasciidigit(char chr) // locale independent
   {
     return chr >= '0' && chr <= '9';
   }
+
+  /*!
+   * \brief Determines whether the given character is an ASCII hexadecimal digit or not
+   *
+   * Locale independent, safe to use with UTF-8
+   *
+   * \param chr C-char (byte) to examine
+   * \return true if char matches [0-9a-fA-F], otherwise false
+   */
   inline static bool isasciixdigit(char chr) // locale independent
   {
     return (chr >= '0' && chr <= '9') || (chr >= 'a' && chr <= 'f') || (chr >= 'A' && chr <= 'F');
   }
+
+  /*!
+   * \brief Converts the given ASCII digit to its numeric value.
+   *
+   *        Locale independent, safe to use with UTF-8
+   *
+   * \param chr a C-char (byte)
+   * \return -1 if ! isasciidigit(chr), otherwise the integer value represented by chr
+   */
   static int asciidigitvalue(char chr); // locale independent
+
+  /*!
+   * \brief Converts the given ASCII hexadecimal digit to its numeric value.
+   *
+   *        Locale independent, safe to use with UTF-8
+   *
+   * \param chr a C-char (byte)
+   * \return -1 if ! isasciixdigit(chr), otherwise the integer value represented by
+   *         hexadecimal digit chr (character case does not matter)
+   */
   static int asciixdigitvalue(char chr); // locale independent
+
+  /*!
+   * \brief Determines whether the given character is an ASCII uppercase letter or not
+   *
+   *        Locale independent, safe to use with UTF-8
+   *
+   * \param chr C-char (byte) to examine
+   * \return true if char matches [A-Z],
+   *        false otherwise
+   */
   inline static bool isasciiuppercaseletter(char chr) // locale independent
   {
     return (chr >= 'A' && chr <= 'Z');
   }
+
+  /*!
+   * \brief Determines whether the given character is an ASCII lowercase letter or not
+   *
+   *        Locale independent, safe to use with UTF-8
+   *
+   * \param chr C-char (byte) to examine
+   * \return true if char matches regex [a-z], otherwise false
+   */
   inline static bool isasciilowercaseletter(char chr) // locale independent
   {
     return (chr >= 'a' && chr <= 'z');
   }
+
+  /*!
+   * \brief Determines whether the given character is an ASCII
+   *        alphanumeric character or not
+   *
+   *        Locale independent, safe to use with UTF-8
+   *
+   * \param chr C-char (byte) to examine
+   * \return true if char matches regex [0-9a-zA-Z], otherwise false
+   */
   inline static bool isasciialphanum(char chr) // locale independent
   {
     return isasciiuppercaseletter(chr) || isasciilowercaseletter(chr) || isasciidigit(chr);
   }
+
+  /*!
+   * \brief converts the given number into a human-friendly string
+   *        representing a size in bytes.
+   *
+   *        The returned string is a power of two:
+   *           2147483647 => "2.00 GB"
+   *
+   * \param size
+   * \return human friendly value for size
+   */
   static std::string SizeToString(int64_t size);
+
   static const std::string Empty;
+
+  /*!
+   * \brief Determines if "word" begins on a boundary in a string
+   *
+   *        Designed to work with ASCII, may work with single-byte
+   *        characters
+   *
+   *        Uses caseless comparison
+   *
+   * \param str string to search
+   * \param wordLowerCase to search for in str
+   * \return true if word found, otherwise false
+   *
+   * Search algorithm:
+   *   If wordLowerCase matches the start of a boundary, then return true
+   *   If there are no more boundaries, then return false
+   *
+   *   The first boundary is the start of str
+   *   Starting at the current boundary, each subsequent boundary is found by
+   *   skipping over one of: all letters or digits, or a single character
+   *   Then skipping over all spaces
+   */
   static size_t FindWords(const char* str, const char* wordLowerCase);
+
+  /*!
+   * \brief Starting at a point after an opening bracket, scans a string
+   *        for it's matching close bracket.
+   *
+   * Note: While the string can be utf-8, the open & close brackets must be ASCII.
+   *
+   * \param str string to scan for 'brackets'
+   * \param opener The 'open-bracket' ASCII character used in the string
+   * \param closer The 'close-bracket' ASCII character used in the string
+   * \param startPos Offset in str, past the open-bracket that the function is to find
+   *        the closing bracket for.
+   *
+   * \return the index of the matching close-bracket, or std::string::npos if not found.
+   */
   static int FindEndBracket(const std::string& str, char opener, char closer, int startPos = 0);
+
+  /*!
+   * \brief Converts a date string into an integer format
+   *
+   * \param dateString to be converted. See note
+   * \return integer format of dateString.
+   *
+   * No validation of dateString is performed. It is assumed to be
+   * in one of the following formats:
+   *    YYYY-DD-MM, YYYY--DD, YYYY
+   *
+   *    Examples:
+   *      1974-10-18 => 19741018
+   *      1974-10    => 197410
+   *      1974       => 1974
+   */
   static int DateStringToYYYYMMDD(const std::string& dateString);
   static std::string ISODateToLocalizedDate(const std::string& strIsoDate);
+
+  /*!
+   * \brief Converts ASCII string to digits using a specialized mapping that
+   *        can not be reversed to the original.
+   *
+   * \param word Converted to digits and spaces in place
+   *
+   * Convert rules:
+   *    lower case all characters
+   *    Digits are left alone
+   *    Non letters are converted to spaces
+   *    letters are converted as follows:
+   *
+   *       abc def ghi jkl mno pqrs tuv wxyz
+   *       222 333 444 555 666 7777 888 9999
+   */
   static void WordToDigits(std::string& word);
   static std::string CreateUUID();
   static bool ValidateUUID(const std::string& uuid); // NB only validates syntax
+
+  /*!
+   * \brief Performs a fuzzy search using "fstrcmp"
+   *
+   *       fstrcmp can work with Unicode/multibyte chars, but requires
+   *       a different call than we make and uses "currently configured locale" to
+   *       to get C_TYPE. Also speaks of using wide chars and not UTF-8 or other
+   *       combinations. More investigation needed.
+   *
+   * \param left
+   * \param right
+   * \return A value of 0 means no match at all. The larger the value the
+   *         stronger the match.
+   */
   static double CompareFuzzy(const std::string& left, const std::string& right);
+
+  /*!
+   * \brief Determines which string from a list most closely matches another string
+   *
+   * Uses CompareFuzzy
+   *
+   * \param str string to find best match for
+   * \param strings list of strings that are compared against str using CompareFuzzy
+   * \param [OUT] matchscore the best matching score is returned
+   * \return Index of the best match found
+   */
   static int FindBestMatch(const std::string& str,
                            const std::vector<std::string>& strings,
                            double& matchscore);
+
+  /*!
+   * \brief Determines if a str is a substring of any of a list of strings
+   *
+   * \param str string to find in list
+   * \param keywords strings to see if str is a substring of
+   * \return true if str is a substring of one of the keywords, else false
+   */
   static bool ContainsKeyword(const std::string& str, const std::vector<std::string>& keywords);
 
-  /*! \brief Convert the string of binary chars to the actual string.
-
-  Convert the string representation of binary chars to the actual string.
-  For example \1\2\3 is converted to a string with binary char \1, \2 and \3
-
-  \param param String to convert
-  \return Converted string
-  */
+  /*!
+   *  \brief Convert the string of binary chars to the actual string.
+   *
+   *         Convert the string representation of binary chars to the actual string.
+   *         For example \1\2\3 is converted to a string with binary char \1, \2 and \3
+   *
+   *  \param param String to convert
+   *  \return Converted string
+   */
   static std::string BinaryStringToString(const std::string& in);
   /*!
    * \brief Converts a string to Hexadecimal characters without spaces
    *        or decoration
    *
-   * example: "abc\n" -> "6162630a"
+   *        example: "abc\n" -> "6162630a"
    *
    * \param in string to be converted
    *
@@ -780,7 +1045,7 @@ public:
   /*!
    * \brief Convert string_view to hex primarily for debugging purposes.
    *
-   * Note: does not reorder hex for endian-ness
+   *        Note: does not reorder hex for endian-ness
    *
    * \param in strin_view to be rendered as hex
    *
@@ -791,7 +1056,7 @@ public:
   /*!
    * \brief Convert wstring_view to hex primarily for debugging purposes.
    *
-   * Note: does not reorder hex for endian-ness
+   *        Note: does not reorder hex for endian-ness
    *
    * \param in wstring_view to be rendered as hex
    *
@@ -802,7 +1067,7 @@ public:
   /*!
    * \brief Convert u32string_view to hex primarily for debugging purposes.
    *
-   * Note: does not reorder hex for endian-ness
+   *        Note: does not reorder hex for endian-ness
    *
    * \param in u32string_view to be rendered as hex
    *
@@ -811,13 +1076,14 @@ public:
    */
   static std::string ToHex(const std::u32string_view in);
 
-  /*
-  Format the string with locale separators.
-  For example 10000.57 in en-us is '10,000.57' but in italian is '10.000,57'
-
-  \param param String to format
-  \return Formatted string
-  */
+  /*!
+   * \brief Formats a string with separators appropriate for the Locale
+   *
+   *        Example 10000.57 in en-us is '10,000.57' but in italian is '10.000,57'
+   *
+   * \param param String to format
+   * \return Formatted string
+   */
   template<typename T>
   static std::string FormatNumber(T num)
   {
@@ -832,31 +1098,39 @@ public:
     return ss.str();
   }
 
-  /*! \brief Escapes the given string to be able to be used as a parameter.
-
-   Escapes backslashes and double-quotes with an additional backslash and
-   adds double-quotes around the whole string.
-
-   \param param String to escape/paramify
-   \return Escaped/Paramified string
+  /*!
+   * \brief Escapes the given string to be able to be used as a parameter.
+   *
+   * Escapes backslashes and double-quotes with an additional backslash and
+   * adds double-quotes around the whole string.
+   *
+   * \param param String to escape/paramify
+   * \return Escaped/Paramified string
    */
   static std::string Paramify(const std::string& param);
 
-  /*! \brief Unescapes the given string.
-
-   Unescapes backslashes and double-quotes and removes double-quotes around the whole string.
-
-   \param param String to unescape/deparamify
-   \return Unescaped/Deparamified string
+  /*!
+   *  \brief Unescapes the given string.
+   *
+   * Unescapes backslashes and double-quotes and removes double-quotes
+   * around the whole string.
+   *
+   * \param param String to unescape/deparamify
+   * \return Unescaped/Deparamified string
    */
   static std::string DeParamify(const std::string& param);
 
-  /*! \brief Split a string by the specified delimiters.
-   Splits a string using one or more delimiting characters, ignoring empty tokens.
-   Differs from Split() in two ways:
-    1. The delimiters are treated as individual characters, rather than a single delimiting string.
-    2. Empty tokens are ignored.
-   \return a vector of tokens
+  /*!
+   * \brief Split a string into tokens by the specified delimiters.
+   *
+   * Splits a string using one or more delimiting characters, ignoring empty tokens.
+   *
+   * Differs from Split() in two ways:
+   *   1. The delimiters are treated as individual characters, rather than a
+   *      single delimiting string.
+   *   2. Empty tokens are ignored.
+   *
+   * \return a vector of tokens
    */
   static std::vector<std::string> Tokenize(const std::string& input, const std::string& delimiters);
   static void Tokenize(const std::string& input,
@@ -868,7 +1142,10 @@ public:
                        const char delimiter);
 
   /*!
-   * \brief Converts a string to a unsigned int number.
+   * \brief Converts a string to a uint32_t number
+   *
+   *        Uses istringstream
+   *
    * \param str The string to convert
    * \param fallback [OPT] The number to return when the conversion fails
    * \return The converted number, otherwise fallback if conversion fails
@@ -876,15 +1153,21 @@ public:
   static uint32_t ToUint32(std::string_view str, uint32_t fallback = 0) noexcept;
 
   /*!
-   * \brief Converts a string to a unsigned long long number.
-   * \param str The string to convert
-   * \param fallback [OPT] The number to return when the conversion fails
+   * \brief Converts a string to a unsigned uint64_t number
+   *
+   *        Uses istringstream
+   *
+   * \param str      string to convert
+   * \param fallback [OPT] number to return when the conversion fails
    * \return The converted number, otherwise fallback if conversion fails
    */
   static uint64_t ToUint64(std::string_view str, uint64_t fallback = 0) noexcept;
 
   /*!
-   * \brief Converts a string to a float number.
+   * \brief Converts a string to a float number
+   *
+   *        Uses istringstream
+   *
    * \param str The string to convert
    * \param fallback [OPT] The number to return when the conversion fails
    * \return The converted number, otherwise fallback if conversion fails
@@ -892,19 +1175,18 @@ public:
   static float ToFloat(std::string_view str, float fallback = 0.0f) noexcept;
 
   /*!
-   * Returns bytes in a human readable format using the smallest unit that will fit `bytes` in at
-   * most three digits. The number of decimals are adjusted with significance such that 'small'
-   * numbers will have more decimals than larger ones.
+   * \brief formats a byte length into a human friendly form
    *
-   * For example: 1024 bytes will be formatted as "1.00kB", 10240 bytes as "10.0kB" and
-   * 102400 bytes as "100kB". See TestStringUtils for more examples.
+   *        Ex: 1024 => "1.00kB", 10240 => "10.0kB" and 102400 => "100kB"
    */
   static std::string FormatFileSize(uint64_t bytes);
 
-  /*! \brief Converts a cstring pointer (const char*) to a std::string.
-             In case nullptr is passed the result is an empty string.
-      \param cstr the const pointer to char
-      \return the resulting std::string or ""
+  /*!
+   * \brief Converts a C-string into a std::string
+   *
+   * \param cstr a pointer to string to convert
+   * \return a c++ string containing a copy of cstr, or an empty string if
+   *         cstr is null
    */
   static std::string CreateFromCString(const char* cstr);
 

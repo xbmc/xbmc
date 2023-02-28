@@ -9,11 +9,14 @@
 //
 //  File:      StringUtils.cpp
 //
-//  Purpose:   ATL split string utility
-//  Author:    Paul J. Weiss
+//  Purpose:   String utilities, including those that support Unicode
 //
-//  Modified to use J O'Leary's std::string class by kraqh3d
+//  Authors:   Frank Feuerbacher, Paul J. Weiss and numerous others
 //
+//  Modified:  To support J O'Leary's std::string class by kraqh3d
+//             FoldCase to replace most uses of ToLower
+//             ToLower/ToUpper/FoldCase use UTF-32 for more accurate
+//             and consistent results
 //------------------------------------------------------------------------
 
 #ifdef HAVE_NEW_CROSSGUID
