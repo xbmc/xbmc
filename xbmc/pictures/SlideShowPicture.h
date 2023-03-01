@@ -111,10 +111,10 @@ private:
   float m_fZoomAmount;
   float m_fZoomLeft;
   float m_fZoomTop;
-  float m_ax[4], m_ay[4];
-  float m_sx[4], m_sy[4];
-  float m_bx[4], m_by[4];
-  float m_ox[4], m_oy[4];
+  float m_ax[4]{}, m_ay[4]{};
+  float m_sx[4]{}, m_sy[4]{};
+  float m_bx[4]{}, m_by[4]{};
+  float m_ox[4]{}, m_oy[4]{};
 
   // transition and display effects
   DISPLAY_EFFECT m_displayEffect = EFFECT_NONE;

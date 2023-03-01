@@ -290,6 +290,7 @@ int CVFSEntry::Stat(const CURL& url, struct __stat64* buffer)
   STAT_STRUCTURE statBuffer = {};
   ret = m_ifc.vfs->toAddon->stat(m_ifc.vfs, &url2.url, &statBuffer);
 
+  *buffer = {};
   buffer->st_dev = statBuffer.deviceId;
   buffer->st_ino = statBuffer.fileSerialNumber;
   buffer->st_size = statBuffer.size;

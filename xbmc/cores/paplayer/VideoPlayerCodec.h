@@ -41,24 +41,24 @@ public:
 private:
   CAEStreamInfo::DataType GetPassthroughStreamType(AVCodecID codecId, int samplerate, int profile);
 
-  CDVDDemux* m_pDemuxer;
+  CDVDDemux* m_pDemuxer{nullptr};
   std::shared_ptr<CDVDInputStream> m_pInputStream;
   std::unique_ptr<CDVDAudioCodec> m_pAudioCodec;
 
   std::string m_strContentType;
   std::string m_strFileName;
-  int m_nAudioStream;
-  size_t m_nDecodedLen;
+  int m_nAudioStream{-1};
+  size_t m_nDecodedLen{0};
 
-  bool m_bInited;
-  bool m_bCanSeek;
+  bool m_bInited{false};
+  bool m_bCanSeek{false};
 
-  ActiveAE::IAEResample *m_pResampler;
-  DVDAudioFrame m_audioFrame;
-  int m_planes;
-  bool m_needConvert;
-  AEAudioFormat m_srcFormat;
-  int m_channels;
+  ActiveAE::IAEResample* m_pResampler{nullptr};
+  DVDAudioFrame m_audioFrame{};
+  int m_planes{0};
+  bool m_needConvert{false};
+  AEAudioFormat m_srcFormat{};
+  int m_channels{0};
 
   std::unique_ptr<CProcessInfo> m_processInfo;
 };
