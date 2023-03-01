@@ -147,11 +147,11 @@ bool CGUIControlGroupList::OnAction(const CAction& action)
       return true;
 
     case ACTION_FIRST_PAGE:
-      ScrollPages(-m_totalSize / Size());
+      MoveTo(GetFirstFocusableControl(), 0.f);
       return true;
 
     case ACTION_LAST_PAGE:
-      ScrollPages(m_totalSize / Size());
+      MoveTo(GetLastFocusableControl(), m_totalSize - Size());
       return true;
   }
   return CGUIControlGroup::OnAction(action);
@@ -174,9 +174,9 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
         if (control->GetControl(message.GetControlId()))
         {
           // find out whether this is the first or last control
-          if (IsFirstFocusableControl(control))
+          if (control == GetFirstFocusableControl())
             ScrollTo(0);
-          else if (IsLastFocusableControl(control))
+          else if (control == GetLastFocusableControl())
             ScrollTo(m_totalSize - Size());
           else if (offset < m_scroller.GetValue())
             ScrollTo(offset);
@@ -506,32 +506,6 @@ bool CGUIControlGroupList::IsControlOnScreen(float pos, const CGUIControl *contr
   return (pos >= m_scroller.GetValue() && pos + Size(control) <= m_scroller.GetValue() + Size());
 }
 
-bool CGUIControlGroupList::IsFirstFocusableControl(const CGUIControl *control) const
-{
-  for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
-  {
-    CGUIControl *child = *it;
-    if (child->IsVisible() && child->CanFocus())
-    { // found first focusable
-      return child == control;
-    }
-  }
-  return false;
-}
-
-bool CGUIControlGroupList::IsLastFocusableControl(const CGUIControl *control) const
-{
-  for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
-  {
-    CGUIControl *child = *it;
-    if (child->IsVisible() && child->CanFocus())
-    { // found first focusable
-      return child == control;
-    }
-  }
-  return false;
-}
-
 void CGUIControlGroupList::CalculateItemGap()
 {
   if (m_alignment & XBFONT_JUSTIFIED)
@@ -718,4 +692,41 @@ void CGUIControlGroupList::ScrollPages(float pages)
   // The GUI_MSG_SETFOCUS message only makes the selection visible
   // Restore the relative position of the selection in the view
   ScrollTo(newOffset);
+}
+
+void CGUIControlGroupList::MoveTo(CGUIControl* control, float offset)
+{
+  CGUIControl* focusedControl = GetFocusedControl();
+
+  if (focusedControl && control)
+  {
+    CGUIMessage message(GUI_MSG_LOSTFOCUS, GetID(), focusedControl->GetID(), control->GetID());
+    focusedControl->OnMessage(message);
+
+    CGUIMessage message2(GUI_MSG_SETFOCUS, GetID(), control->GetID());
+    control->OnMessage(message2);
+  }
+  ScrollTo(offset);
+}
+
+CGUIControl* CGUIControlGroupList::GetFirstFocusableControl() const
+{
+  for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    CGUIControl* child = *it;
+    if (child->CanFocus())
+      return child;
+  }
+  return nullptr;
+}
+
+CGUIControl* CGUIControlGroupList::GetLastFocusableControl() const
+{
+  for (crControls it = m_children.rbegin(); it != m_children.rend(); ++it)
+  {
+    CGUIControl* child = *it;
+    if (child->CanFocus())
+      return child;
+  }
+  return nullptr;
 }
