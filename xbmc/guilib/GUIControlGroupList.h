@@ -58,11 +58,12 @@ public:
 
   // based on grouplist orientation pick one value as minSize;
   void SetMinSize(float minWidth, float minHeight);
+  // shut up warning about hiding an overloaded virtual function
+  using CGUIControlGroup::GetFirstFocusableControl;
+
 protected:
   EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
   bool IsControlOnScreen(float pos, const CGUIControl* control) const;
-  bool IsFirstFocusableControl(const CGUIControl *control) const;
-  bool IsLastFocusableControl(const CGUIControl *control) const;
   void ValidateOffset();
   void CalculateItemGap();
   inline float Size(const CGUIControl *control) const;
@@ -93,6 +94,20 @@ protected:
    *        For example 1 to scroll down/right one page, -0.5 to scroll up/left half a page
    */
   void ScrollPages(float pages);
+  /*!
+   * \brief Change the selected control and scroll to the specified position.
+   * \param control New selected control
+   * \param offset Offset of the top of the visible view
+   */
+  void MoveTo(CGUIControl* control, float offset);
+  /*!
+   * Return the first visible and focusable child control.
+   */
+  CGUIControl* GetFirstFocusableControl() const;
+  /*!
+   * Return the last visible and focusable child control.
+   */
+  CGUIControl* GetLastFocusableControl() const;
 
   float m_itemGap;
   int m_pageControl;
