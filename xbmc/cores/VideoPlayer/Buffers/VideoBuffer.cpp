@@ -8,6 +8,8 @@
 
 #include "VideoBuffer.h"
 
+#include "utils/log.h"
+
 #include <mutex>
 #include <string.h>
 #include <utility>
@@ -201,6 +203,16 @@ void CVideoBufferSysMem::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
   strides[0] = m_image.stride[0];
   strides[1] = m_image.stride[1];
   strides[2] = m_image.stride[2];
+}
+
+void CVideoBufferSysMem::SetPixelFormat(const AVPixelFormat pixFormat)
+{
+  if (pixFormat == AV_PIX_FMT_NONE)
+  {
+    CLog::LogF(LOGERROR, "Pixel format not valid.");
+    return;
+  }
+  m_pixFormat = pixFormat;
 }
 
 void CVideoBufferSysMem::SetDimensions(int width, int height, const int (&strides)[YuvImage::MAX_PLANES])
