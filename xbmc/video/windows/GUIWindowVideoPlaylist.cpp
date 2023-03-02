@@ -25,6 +25,7 @@
 #include "input/actions/ActionIDs.h"
 #include "playlists/PlayListM3U.h"
 #include "settings/MediaSettings.h"
+#include "settings/MediaSourceSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
@@ -52,6 +53,25 @@ CGUIWindowVideoPlaylist::CGUIWindowVideoPlaylist()
 }
 
 CGUIWindowVideoPlaylist::~CGUIWindowVideoPlaylist() = default;
+
+void CGUIWindowVideoPlaylist::OnPrepareFileItems(CFileItemList& items)
+{
+  CGUIWindowVideoBase::OnPrepareFileItems(items);
+
+  if (items.IsEmpty())
+    return;
+
+  if (!items.IsVideoDb() && !items.IsVirtualDirectoryRoot())
+  { // load info from the database
+    std::string label;
+    if (items.GetLabel().empty() &&
+        m_rootDir.IsSource(items.GetPath(), CMediaSourceSettings::GetInstance().GetSources("video"),
+                           &label))
+      items.SetLabel(label);
+    if (!items.IsSourcesPath() && !items.IsLibraryFolder())
+      LoadVideoInfo(items, m_database);
+  }
+}
 
 bool CGUIWindowVideoPlaylist::OnMessage(CGUIMessage& message)
 {
