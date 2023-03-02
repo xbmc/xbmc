@@ -54,6 +54,7 @@ bool CAddonButtonMap::Load(void)
   bool bSuccess = false;
   if (auto addon = m_addon.lock())
   {
+    bSuccess |= addon->GetAppearance(m_device, controllerAppearance);
     bSuccess |= addon->GetFeatures(m_device, m_strControllerId, features);
     bSuccess |= addon->GetIgnoredPrimitives(m_device, ignoredPrimitives);
   }
@@ -102,6 +103,9 @@ std::string CAddonButtonMap::GetAppearance() const
 
 bool CAddonButtonMap::SetAppearance(const std::string& controllerId) const
 {
+  if (auto addon = m_addon.lock())
+    return addon->SetAppearance(m_device, controllerId);
+
   return false;
 }
 
