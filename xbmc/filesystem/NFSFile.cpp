@@ -432,11 +432,20 @@ void CNfsConnection::keepAlive(const std::string& _exportPath, struct nfsfh* _pF
   if (!pContext)// this should normally never happen - paranoia
     pContext = m_pNfsContext;
 
-  CLog::Log(LOGINFO, "NFS: sending keep alive after {} s.",
-            std::chrono::duration_cast<std::chrono::seconds>(KEEP_ALIVE_TIMEOUT).count());
+  CLog::LogF(LOGDEBUG, "sending keep alive after {}s.",
+             std::chrono::duration_cast<std::chrono::seconds>(KEEP_ALIVE_TIMEOUT).count());
+
   std::unique_lock<CCriticalSection> lock(*this);
+
   nfs_lseek(pContext, _pFileHandle, 0, SEEK_CUR, &offset);
-  nfs_read(pContext, _pFileHandle, 32, buffer);
+
+  int bytes = nfs_read(pContext, _pFileHandle, 32, buffer);
+  if (bytes < 0)
+  {
+    CLog::LogF(LOGERROR, "nfs_read - Error ({}, {})", bytes, nfs_get_error(pContext));
+    return;
+  }
+
   nfs_lseek(pContext, _pFileHandle, offset, SEEK_SET, &offset);
 }
 
