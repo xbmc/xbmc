@@ -45,16 +45,16 @@ using namespace std::chrono_literals;
 
 namespace
 {
+// Default "lease_time" on most Linux NFSv4 servers are 90s.
+// See: https://linux-nfs.org/wiki/index.php/NFS_lock_recovery_notes
+// Keep alive interval should be always less than lease_time to avoid client session expires
 
-constexpr auto CONTEXT_TIMEOUT = 6min;
-
-constexpr auto KEEP_ALIVE_TIMEOUT = 3min;
-
-constexpr auto IDLE_TIMEOUT = 3min;
+constexpr auto CONTEXT_TIMEOUT = 60s; // 2/3 parts of lease_time
+constexpr auto KEEP_ALIVE_TIMEOUT = 45s; // half of lease_time
+constexpr auto IDLE_TIMEOUT = 30s; // close fast unused contexts when no active connections
 
 constexpr auto SETTING_NFS_VERSION = "nfs.version";
-
-} // namespace
+} // unnamed namespace
 
 CNfsConnection::CNfsConnection()
   : m_pNfsContext(NULL),
