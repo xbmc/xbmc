@@ -18,7 +18,7 @@
 #include <mutex>
 #include <vector>
 
-#include <linux/input-event-codes.h>
+#include <linux/input.h>
 
 using namespace KODI::UTILS::POSIX;
 using namespace KODI::WINDOWING::WAYLAND;
