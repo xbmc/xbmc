@@ -57,6 +57,10 @@ COutput::COutput(std::uint32_t globalName,
     {
       m_preferredMode = modeIterator;
     }
+#ifdef TARGET_WEBOS
+    // on_done() is never executed on webOS 3.x
+    m_doneHandler();
+#endif
   };
   m_output.on_scale() = [this](std::int32_t scale)
   {
@@ -65,7 +69,9 @@ COutput::COutput(std::uint32_t globalName,
 
   m_output.on_done() = [this]()
   {
+#ifndef TARGET_WEBOS
     m_doneHandler();
+#endif
   };
 }
 
