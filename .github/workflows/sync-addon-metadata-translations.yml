@@ -12,6 +12,8 @@ on:
       - '**audioencoder.kodi.builtin.aac**resource.language.**strings.po'
       - '**audioencoder.kodi.builtin.wma**addon.xml'
       - '**audioencoder.kodi.builtin.wma**resource.language.**strings.po'
+      - '**repository.xbmc.org**addon.xml'
+      - '**repository.xbmc.org**resource.language.**strings.po'
       - '**screensaver.xbmc.builtin.dim**addon.xml'
       - '**screensaver.xbmc.builtin.dim**resource.language.**strings.po'
 
@@ -61,6 +63,7 @@ jobs:
           sync-addon-metadata-translations --path ./skin.estouchy/
           sync-addon-metadata-translations --path ./audioencoder.kodi.builtin.aac/
           sync-addon-metadata-translations --path ./audioencoder.kodi.builtin.wma/
+          sync-addon-metadata-translations --path ./repository.xbmc.org/
           sync-addon-metadata-translations --path ./screensaver.xbmc.builtin.dim/
         working-directory: ./project/addons
 
