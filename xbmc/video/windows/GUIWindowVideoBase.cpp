@@ -26,6 +26,7 @@
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
+#include "filesystem/MultiPathDirectory.h"
 #include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "guilib/GUIComponent.h"
@@ -633,6 +634,110 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
 void CGUIWindowVideoBase::OnRestartItem(int iItem, const std::string &player)
 {
   CGUIMediaWindow::OnClick(iItem, player);
+}
+
+void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
+                                        CVideoDatabase& database,
+                                        bool allowReplaceLabels)
+{
+  //! @todo this could possibly be threaded as per the music info loading,
+  //!       we could also cache the info
+  if (!items.GetContent().empty() && !items.IsPlugin())
+    return; // don't load for listings that have content set and weren't created from plugins
+
+  std::string content = items.GetContent();
+  // determine content only if it isn't set
+  if (content.empty())
+  {
+    content = database.GetContentForPath(items.GetPath());
+    items.SetContent((content.empty() && !items.IsPlugin()) ? "files" : content);
+  }
+
+  /*
+    If we have a matching item in the library, so we can assign the metadata to it. In addition, we can choose
+    * whether the item is stacked down (eg in the case of folders representing a single item)
+    * whether or not we assign the library's labels to the item, or leave the item as is.
+
+    As certain users (read: certain developers) don't want either of these to occur, we compromise by stacking
+    items down only if stacking is available and enabled.
+
+    Similarly, we assign the "clean" library labels to the item only if the "Replace filenames with library titles"
+    setting is enabled.
+    */
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const bool stackItems =
+      items.GetProperty("isstacked").asBoolean() ||
+      (StackingAvailable(items) && settings->GetBool(CSettings::SETTING_MYVIDEOS_STACKVIDEOS));
+  const bool replaceLabels =
+      allowReplaceLabels && settings->GetBool(CSettings::SETTING_MYVIDEOS_REPLACELABELS);
+
+  CFileItemList dbItems;
+  /* NOTE: In the future when GetItemsForPath returns all items regardless of whether they're "in the library"
+           we won't need the fetchedPlayCounts code, and can "simply" do this directly on absence of content. */
+  bool fetchedPlayCounts = false;
+  if (!content.empty())
+  {
+    database.GetItemsForPath(content, items.GetPath(), dbItems);
+    dbItems.SetFastLookup(true);
+  }
+
+  for (int i = 0; i < items.Size(); i++)
+  {
+    CFileItemPtr pItem = items[i];
+    CFileItemPtr match;
+
+    if (pItem->m_bIsFolder && !pItem->IsParentFolder())
+    {
+      // we need this for enabling the right context menu entries, like mark watched / unwatched
+      pItem->SetProperty("IsVideoFolder", true);
+    }
+
+    if (!content
+             .empty()) /* optical media will be stacked down, so it's path won't match the base path */
+    {
+      std::string pathToMatch =
+          pItem->IsOpticalMediaFile() ? pItem->GetLocalMetadataPath() : pItem->GetPath();
+      if (URIUtils::IsMultiPath(pathToMatch))
+        pathToMatch = CMultiPathDirectory::GetFirstPath(pathToMatch);
+      match = dbItems.Get(pathToMatch);
+    }
+    if (match)
+    {
+      pItem->UpdateInfo(*match, replaceLabels);
+
+      if (stackItems)
+      {
+        if (match->m_bIsFolder)
+          pItem->SetPath(match->GetVideoInfoTag()->m_strPath);
+        else
+          pItem->SetPath(match->GetVideoInfoTag()->m_strFileNameAndPath);
+        // if we switch from a file to a folder item it means we really shouldn't be sorting files and
+        // folders separately
+        if (pItem->m_bIsFolder != match->m_bIsFolder)
+        {
+          items.SetSortIgnoreFolders(true);
+          pItem->m_bIsFolder = match->m_bIsFolder;
+        }
+      }
+    }
+    else
+    {
+      /* NOTE: Currently we GetPlayCounts on our items regardless of whether content is set
+                as if content is set, GetItemsForPaths doesn't return anything not in the content tables.
+                This code can be removed once the content tables are always filled */
+      if (!pItem->m_bIsFolder && !fetchedPlayCounts)
+      {
+        database.GetPlayCounts(items.GetPath(), items);
+        fetchedPlayCounts = true;
+      }
+
+      // set the watched overlay
+      if (pItem->IsVideo())
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,
+                               pItem->HasVideoInfoTag() &&
+                                   pItem->GetVideoInfoTag()->GetPlayCount() > 0);
+    }
+  }
 }
 
 std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
