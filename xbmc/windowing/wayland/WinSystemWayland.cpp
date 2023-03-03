@@ -53,12 +53,6 @@
 # include "windowing/linux/OSScreenSaverFreedesktop.h"
 #endif
 
-#ifdef TARGET_WEBOS
-#include "ShellSurfaceWebOSShell.h"
-#include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecStarfish.h"
-#include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererStarfish.h"
-#endif
-
 using namespace KODI::WINDOWING;
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace std::placeholders;
@@ -172,19 +166,11 @@ bool CWinSystemWayland::InitWindowSystem()
   VIDEOPLAYER::CProcessInfoWayland::Register();
   RETRO::CRPProcessInfoWayland::Register();
 
-#ifdef TARGET_WEBOS
-  CDVDVideoCodecStarfish::Register();
-  CRendererStarfish::Register();
-#endif
-
   m_registry.reset(new CRegistry{*m_connection});
 
   m_registry->RequestSingleton(m_compositor, 1, 4);
   m_registry->RequestSingleton(m_shm, 1, 1);
   m_registry->RequestSingleton(m_presentation, 1, 1, false);
-#ifdef TARGET_WEBOS
-  m_registry->RequestSingleton(m_webosForeign, 1, 2);
-#endif
   // version 2 adds done() -> required
   // version 3 adds destructor -> optional
   m_registry->Request<wayland::output_t>(2, 3, std::bind(&CWinSystemWayland::OnOutputAdded, this, _1, _2), std::bind(&CWinSystemWayland::OnOutputRemoved, this, _1));
@@ -316,25 +302,8 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   // Try with this resolution if compositor does not say otherwise
   UpdateSizeVariables({res.iWidth, res.iHeight}, m_scale, m_shellSurfaceState, false);
 
-#ifdef TARGET_WEBOS
-  m_shellSurface.reset(new CShellSurfaceWebOSShell(*this, *m_connection, m_surface, name,
-                                                   std::string(CCompileInfo::GetAppName())));
-#else
   // Use AppName as the desktop file name. This is required to lookup the app icon of the same name.
-  m_shellSurface.reset(CShellSurfaceXdgShell::TryCreate(*this, *m_connection, m_surface, name,
-                                                        std::string(CCompileInfo::GetAppName())));
-  if (!m_shellSurface)
-  {
-    m_shellSurface.reset(CShellSurfaceXdgShellUnstableV6::TryCreate(
-        *this, *m_connection, m_surface, name, std::string(CCompileInfo::GetAppName())));
-  }
-  if (!m_shellSurface)
-  {
-    CLog::LogF(LOGWARNING, "Compositor does not support xdg_shell protocol (stable or unstable v6) - falling back to wl_shell, not all features might work");
-    m_shellSurface.reset(new CShellSurfaceWlShell(*this, *m_connection, m_surface, name,
-                                                  std::string(CCompileInfo::GetAppName())));
-  }
-#endif
+  m_shellSurface.reset(CreateShellSurface(name));
 
   if (fullScreen)
   {
@@ -396,6 +365,26 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   CWinEventsWayland::SetDisplay(&m_connection->GetDisplay());
 
   return true;
+}
+
+IShellSurface* CWinSystemWayland::CreateShellSurface(const std::string& name)
+{
+  IShellSurface* shell = CShellSurfaceXdgShell::TryCreate(*this, *m_connection, m_surface, name,
+                                                          std::string(CCompileInfo::GetAppName()));
+  if (!shell)
+  {
+    shell = CShellSurfaceXdgShellUnstableV6::TryCreate(*this, *m_connection, m_surface, name,
+                                                       std::string(CCompileInfo::GetAppName()));
+  }
+  if (!shell)
+  {
+    CLog::LogF(LOGWARNING, "Compositor does not support xdg_shell protocol (stable or unstable v6) "
+                           "- falling back to wl_shell, not all features might work");
+    shell = new CShellSurfaceWlShell(*this, *m_connection, m_surface, name,
+                                     std::string(CCompileInfo::GetAppName()));
+  }
+
+  return shell;
 }
 
 bool CWinSystemWayland::DestroyWindow()
@@ -1044,18 +1033,6 @@ CWinSystemWayland::SizeUpdateInformation CWinSystemWayland::UpdateSizeVariables(
   {
     CLog::LogF(LOGINFO, "Surface size changed: {}x{} -> {}x{}", oldSurfaceSize.Width(),
                oldSurfaceSize.Height(), m_surfaceSize.Width(), m_surfaceSize.Height());
-
-    if (m_surfaceSize.Area() > 0)
-    {
-      m_exportedSurface = m_webosForeign.export_element(
-          m_surface,
-          static_cast<uint32_t>(wayland::webos_foreign_webos_exported_type::video_object));
-      m_exportedSurface.on_window_id_assigned() = [this](std::string window_id,
-                                                         uint32_t exported_type) {
-        CLog::Log(LOGDEBUG, "Wayland foreign video surface exported {}", window_id);
-        this->m_exportedWindowName = window_id;
-      };
-    }
   }
   if (changes.bufferSizeChanged)
   {
@@ -1597,24 +1574,3 @@ bool CWinSystemWayland::MessagePump()
 {
   return m_winEvents->MessagePump();
 }
-
-#ifdef TARGET_WEBOS
-std::string CWinSystemWayland::GetExportedWindowName()
-{
-  return m_exportedWindowName;
-}
-
-bool CWinSystemWayland::SetExportedWindow(int32_t srcWidth,
-                                          int32_t srcHeight,
-                                          int32_t dstWidth,
-                                          int32_t dstHeight)
-{
-  auto srcRegion = m_compositor.create_region();
-  auto dstRegion = m_compositor.create_region();
-  srcRegion.add(0, 0, srcWidth, srcHeight);
-  dstRegion.add(0, 0, dstWidth, dstHeight);
-  m_exportedSurface.set_exported_window(srcRegion, dstRegion);
-
-  return true;
-}
-#endif

@@ -24,7 +24,7 @@
 #include "utils/JSONVariantWriter.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
-#include "windowing/wayland/WinSystemWayland.h"
+#include "windowing/wayland/WinSystemWaylandWebOS.h"
 
 #include <memory>
 #include <vector>
@@ -183,7 +183,7 @@ bool CDVDVideoCodecStarfish::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   m_starfishMediaAPI->notifyForeground();
 
   auto exportedWindowName =
-      static_cast<KODI::WINDOWING::WAYLAND::CWinSystemWayland*>(CServiceBroker::GetWinSystem())
+      static_cast<KODI::WINDOWING::WAYLAND::CWinSystemWaylandWebOS*>(CServiceBroker::GetWinSystem())
           ->GetExportedWindowName();
 
   payloadArg["mediaTransportType"] = "BUFFERSTREAM";

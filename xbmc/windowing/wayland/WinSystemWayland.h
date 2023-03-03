@@ -32,10 +32,6 @@
 #include <wayland-cursor.hpp>
 #include <wayland-extra-protocols.hpp>
 
-#ifdef TARGET_WEBOS
-#include <wayland-webos-protocols.hpp>
-#endif
-
 class IDispResource;
 
 namespace KODI
@@ -48,7 +44,10 @@ namespace WAYLAND
 class CRegistry;
 class CWindowDecorator;
 
-class CWinSystemWayland : public CWinSystemBase, IInputHandler, IWindowDecorationHandler, IShellSurfaceHandler
+class CWinSystemWayland : public CWinSystemBase,
+                          IInputHandler,
+                          IWindowDecorationHandler,
+                          public IShellSurfaceHandler
 {
 public:
   CWinSystemWayland();
@@ -98,11 +97,6 @@ public:
   // winevents override
   bool MessagePump() override;
 
-#ifdef TARGET_WEBOS
-  std::string GetExportedWindowName();
-  bool SetExportedWindow(int32_t srcWidth, int32_t srcHeight, int32_t dstWidth, int32_t dstHeight);
-#endif
-
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
   CSizeInt GetBufferSize() const
@@ -121,6 +115,7 @@ protected:
   void PrepareFramePresentation();
   void FinishFramePresentation();
   virtual void SetContextSize(CSizeInt size) = 0;
+  virtual IShellSurface* CreateShellSurface(const std::string& name);
 
 private:
   // IInputHandler
@@ -204,14 +199,6 @@ private:
   wayland::presentation_t m_presentation;
 
   std::unique_ptr<IShellSurface> m_shellSurface;
-
-#ifdef TARGET_WEBOS
-  // WebOS foreign surface
-  std::string m_exportedWindowName;
-  wayland::surface_t m_foreignSurface;
-  wayland::webos_exported_t m_exportedSurface;
-  wayland::webos_foreign_t m_webosForeign;
-#endif
 
   // Frame callback handling
   // -----------------------
