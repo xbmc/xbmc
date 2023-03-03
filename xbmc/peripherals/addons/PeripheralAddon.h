@@ -80,6 +80,8 @@ public:
   //@{
   bool GetJoystickProperties(unsigned int index, CPeripheralJoystick& joystick);
   bool HasButtonMaps(void) const { return m_bProvidesButtonMaps; }
+  bool GetAppearance(const CPeripheral* device, std::string& controllerId);
+  bool SetAppearance(const CPeripheral* device, const std::string& controllerId);
   bool GetFeatures(const CPeripheral* device,
                    const std::string& strControllerId,
                    FeatureMap& features);

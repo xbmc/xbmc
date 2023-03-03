@@ -609,13 +609,17 @@ extern "C"
   typedef struct AddonToKodiFuncTable_Peripheral
   {
     KODI_HANDLE kodiInstance;
+
     void (*trigger_scan)(void* kodiInstance);
+
     void (*refresh_button_maps)(void* kodiInstance,
                                 const char* device_name,
                                 const char* controller_id);
+
     unsigned int (*feature_count)(void* kodiInstance,
                                   const char* controller_id,
                                   JOYSTICK_FEATURE_TYPE type);
+
     JOYSTICK_FEATURE_TYPE(*feature_type)
     (void* kodiInstance, const char* controller_id, const char* feature_name);
   } AddonToKodiFuncTable_Peripheral;
@@ -628,20 +632,25 @@ extern "C"
 
     void(__cdecl* get_capabilities)(const struct AddonInstance_Peripheral* addonInstance,
                                     struct PERIPHERAL_CAPABILITIES* capabilities);
+
     PERIPHERAL_ERROR(__cdecl* perform_device_scan)
     (const struct AddonInstance_Peripheral* addonInstance,
      unsigned int* peripheral_count,
      struct PERIPHERAL_INFO** scan_results);
+
     void(__cdecl* free_scan_results)(const struct AddonInstance_Peripheral* addonInstance,
                                      unsigned int peripheral_count,
                                      struct PERIPHERAL_INFO* scan_results);
+
     PERIPHERAL_ERROR(__cdecl* get_events)
     (const struct AddonInstance_Peripheral* addonInstance,
      unsigned int* event_count,
      struct PERIPHERAL_EVENT** events);
+
     void(__cdecl* free_events)(const struct AddonInstance_Peripheral* addonInstance,
                                unsigned int event_count,
                                struct PERIPHERAL_EVENT* events);
+
     bool(__cdecl* send_event)(const struct AddonInstance_Peripheral* addonInstance,
                               const struct PERIPHERAL_EVENT* event);
 
@@ -651,43 +660,65 @@ extern "C"
     (const struct AddonInstance_Peripheral* addonInstance,
      unsigned int index,
      struct JOYSTICK_INFO* info);
+
     void(__cdecl* free_joystick_info)(const struct AddonInstance_Peripheral* addonInstance,
                                       struct JOYSTICK_INFO* info);
+
+    PERIPHERAL_ERROR(__cdecl* get_appearance)
+    (const struct AddonInstance_Peripheral* addonInstance,
+     const struct JOYSTICK_INFO* joystick,
+     char* buffer,
+     unsigned int bufferSize);
+
+    PERIPHERAL_ERROR(__cdecl* set_appearance)
+    (const struct AddonInstance_Peripheral* addonInstance,
+     const struct JOYSTICK_INFO* joystick,
+     const char* controller_id);
+
     PERIPHERAL_ERROR(__cdecl* get_features)
     (const struct AddonInstance_Peripheral* addonInstance,
      const struct JOYSTICK_INFO* joystick,
      const char* controller_id,
      unsigned int* feature_count,
      struct JOYSTICK_FEATURE** features);
+
     void(__cdecl* free_features)(const struct AddonInstance_Peripheral* addonInstance,
                                  unsigned int feature_count,
                                  struct JOYSTICK_FEATURE* features);
+
     PERIPHERAL_ERROR(__cdecl* map_features)
     (const struct AddonInstance_Peripheral* addonInstance,
      const struct JOYSTICK_INFO* joystick,
      const char* controller_id,
      unsigned int feature_count,
      const struct JOYSTICK_FEATURE* features);
+
     PERIPHERAL_ERROR(__cdecl* get_ignored_primitives)
     (const struct AddonInstance_Peripheral* addonInstance,
      const struct JOYSTICK_INFO* joystick,
      unsigned int* feature_count,
      struct JOYSTICK_DRIVER_PRIMITIVE** primitives);
+
     void(__cdecl* free_primitives)(const struct AddonInstance_Peripheral* addonInstance,
                                    unsigned int,
                                    struct JOYSTICK_DRIVER_PRIMITIVE* primitives);
+
     PERIPHERAL_ERROR(__cdecl* set_ignored_primitives)
     (const struct AddonInstance_Peripheral* addonInstance,
      const struct JOYSTICK_INFO* joystick,
      unsigned int primitive_count,
      const struct JOYSTICK_DRIVER_PRIMITIVE* primitives);
+
     void(__cdecl* save_button_map)(const struct AddonInstance_Peripheral* addonInstance,
                                    const struct JOYSTICK_INFO* joystick);
+
     void(__cdecl* revert_button_map)(const struct AddonInstance_Peripheral* addonInstance,
                                      const struct JOYSTICK_INFO* joystick);
+
     void(__cdecl* reset_button_map)(const struct AddonInstance_Peripheral* addonInstance,
                                     const struct JOYSTICK_INFO* joystick,
                                     const char* controller_id);
+
     void(__cdecl* power_off_joystick)(const struct AddonInstance_Peripheral* addonInstance,
                                       unsigned int index);
     ///}
