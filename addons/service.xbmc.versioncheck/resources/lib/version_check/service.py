@@ -47,7 +47,7 @@ if sys.platform.startswith('linux'):
             DISTRIBUTION = ''
 
     else:
-        DISTRIBUTION = platform.linux_distribution(full_distribution_name=0)[0].lower()  # pylint: disable=deprecated-method
+        DISTRIBUTION = platform.linux_distribution(full_distribution_name=0)[0].lower()  # pylint: disable=no-member
 
 if not DISTRIBUTION:
     DISTRIBUTION = platform.uname()[0].lower()

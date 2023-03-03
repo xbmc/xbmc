@@ -5,20 +5,33 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Danish (http://www.transifex.com/projects/p/xbmc-addons/language/da/)\n"
-"Language: da\n"
+"PO-Revision-Date: 2021-10-25 10:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Danish <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/da_dk/>\n"
+"Language: da_dk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.8\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "Kodi Version Check undersøger om du benytter den nyeste version."
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr "Kodi Version Check kan kun undersøge for opdateringer for visse platforme/udgaver, da udgivelserne kan variere mellem dem. For mere information, besøg kodi.tv."
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "Du er velkommen til at bruge dette script. For information, besøg kodi.tv"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
-msgstr "Opdatering anbefales!"
+msgstr "Vi vil gerne anbefale dig at opgradere."
 
 msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
@@ -26,19 +39,19 @@ msgstr "Besøg Kodi.tv for mere information."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr "Ønsker du at fjerne denne advarsel?"
+msgstr "Ønsker du at fjerne denne påmindelse?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
-msgstr "Du kan slå den til/fra i tilføjelses indstillingerne."
+msgstr "Du kan slå den til/fra i add-on-indstillingerne."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
-msgstr "Benyt til pakke manager(apt) til at opgradere."
+msgstr "Benyt din pakkehåndtering (apt) til at opgradere."
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr "Ny version tilgængelig. Ønsker du at opdatere?"
+msgstr "Ny version er tilgængelig. Ønsker du at opdatere?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
@@ -50,7 +63,7 @@ msgstr "Ønsker du at genstarte Kodi for at afslutte opgraderingen?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
-msgstr "Ønsker du at undersøge om repositoriet for ny version?"
+msgstr "Ønsker du at undersøge fjernlageret efter ny version?"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
@@ -62,19 +75,19 @@ msgstr "Generelt"
 
 msgctxt "#32021"
 msgid "Enable Kodi version check?"
-msgstr "Tjek for Kodi-opdateringer?"
+msgstr "Aktiver tjek for opdateringer af Kodi?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
-msgstr "Indtast dit password"
+msgstr "Indtast venligst din adgangskode"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
-msgstr "Linux: Opgrader hele systemet"
+msgstr "Linux: opgrader hele systemet"
 
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
-msgstr "Linux: Opgrader ved brug af apt"
+msgstr "Linux: opgrader ved brug af apt"
 
 #. Used in OK dialog
 msgctxt "#32030"
@@ -103,18 +116,22 @@ msgstr "Du benytter %s, mens %s er tilgængelig."
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
+msgid "It is recommended that you upgrade to a newer version."
 msgstr "Det anbefales at du opdaterer til en nyere version."
 
 # empty strings from id 32036 to 32039
 msgctxt "#32040"
 msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
-msgstr ""
+msgstr "Din version %s af Python-kryptografimodulet er for gammel. Du har mindst brug for version 1.7."
 
 msgctxt "#32041"
 msgid "Please upgrade your operating system."
-msgstr ""
+msgstr "Opgrader venligst dit operativsystem."
 
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
-msgstr ""
+msgstr "For yderligere information, se https://kodi.wiki/view/Linux"
+
+#~ msgctxt "#32035"
+#~ msgid "It is recommended that you to upgrade to a newer version."
+#~ msgstr "Det anbefales at du opdaterer til en nyere version."

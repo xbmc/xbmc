@@ -5,16 +5,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Norwegian (http://www.transifex.com/projects/p/xbmc-addons/language/no/)\n"
-"Language: no\n"
+"PO-Revision-Date: 2021-10-25 10:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Norwegian Bokmål <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/nb_no/>\n"
+"Language: nb_no\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.8\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "Kodi Versjonsettersyn sjekker om du kjører den sist utgitte versjonen."
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr "Kodi Versjonsettersyn støtter kun noen plattformer/distribusjoner fordi utgivelser kan være forskjellige mellom dem. Besøk kodi.tv for mer informasjon."
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "Du har fri tillatelse til å benytte dette skriptet. Besøk kodi.tv for informasjon"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
@@ -22,7 +35,7 @@ msgstr "Vi ønsker å anbefale at du oppgraderer."
 
 msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
-msgstr "Besøk Kodi.tv for mer informasjon"
+msgstr "Besøk Kodi.tv for mer informasjon."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
@@ -62,7 +75,7 @@ msgstr "Generelt"
 
 msgctxt "#32021"
 msgid "Enable Kodi version check?"
-msgstr "Aktiver Kodi versjonsettersyn"
+msgstr "Aktiver Kodi versjonsettersyn?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
@@ -103,7 +116,7 @@ msgstr "Bruker %s mens %s er tilgjengelig."
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
+msgid "It is recommended that you upgrade to a newer version."
 msgstr "Det er anbefalt å oppgradere til en nyere versjon."
 
 # empty strings from id 32036 to 32039
@@ -118,3 +131,7 @@ msgstr ""
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
 msgstr ""
+
+#~ msgctxt "#32035"
+#~ msgid "It is recommended that you to upgrade to a newer version."
+#~ msgstr "Det er anbefalt å oppgradere til en nyere versjon."

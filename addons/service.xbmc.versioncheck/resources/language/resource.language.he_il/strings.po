@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-04-30 09:25+0000\n"
+"PO-Revision-Date: 2021-10-25 10:08+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Hebrew (Israel) <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/he_il/>\n"
 "Language: he_il\n"
@@ -15,7 +15,19 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Weblate 4.6\n"
+"X-Generator: Weblate 4.8\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "בודק גרסת Kodi מוודא אם אתה מריץ את הגרסה הרשמית האחרונה."
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr "בודק גרסת Kodi תומך רק במספר פלטפורמות/הפצות מאחר שסימון הגרסאות שונה בין אחת לשניה. למידע נוסף בקר באתר kodi.tv."
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "תרגיש חופשי להשתמש בסקריפט זה. למידע נוסף בקר ב-kodi.tv"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
@@ -55,7 +67,7 @@ msgstr "התרצה לבדוק האם זמינה גרסה חדשה במאגר?"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr "קיימת גרסה יציבה חדשה של קודי זמינה להורדה"
+msgstr "גרסה יציבה חדשה של Kodi זמינה להורדה."
 
 msgctxt "#32020"
 msgid "General"
@@ -104,18 +116,22 @@ msgstr "שימוש ב%s בעוד %s זמין."
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
+msgid "It is recommended that you upgrade to a newer version."
 msgstr "מומלץ לך לשדרג לגרסה חדשה יותר."
 
 # empty strings from id 32036 to 32039
 msgctxt "#32040"
 msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
-msgstr ""
+msgstr "הגרסה %s של מודול הקריפטוגרפיה של Python היא ישנה מדי. צריך את גרסה 1.7 לפחות."
 
 msgctxt "#32041"
 msgid "Please upgrade your operating system."
-msgstr ""
+msgstr "נא לשדרג את מערכת ההפעלה שלך."
 
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
-msgstr ""
+msgstr "למידע נוסף, כדאי לגשת אל https://kodi.wiki/view/Linux"
+
+#~ msgctxt "#32035"
+#~ msgid "It is recommended that you to upgrade to a newer version."
+#~ msgstr "מומלץ לך לשדרג לגרסה חדשה יותר."

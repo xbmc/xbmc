@@ -28,6 +28,7 @@ is needed. See `Python issue 1322 <https://bugs.python.org/issue1322>`_ for
 more information.
 """
 
+import io
 import os
 import re
 import sys
@@ -1010,7 +1011,7 @@ class LinuxDistribution(object):
             try:
                 cmd = ('lsb_release', '-a')
                 stdout = subprocess.check_output(cmd, stderr=devnull)
-            except OSError:  # Command not found
+            except (OSError, subprocess.CalledProcessError):  # Command not found
                 return {}
         content = stdout.decode(sys.getfilesystemencoding()).splitlines()
         return self._parse_lsb_release_content(content)
@@ -1147,7 +1148,7 @@ class LinuxDistribution(object):
             A dictionary containing all information items.
         """
         try:
-            with open(filepath) as fp:
+            with io.open(filepath, 'r', encoding='utf-8') as fp:
                 # Only parse the first line. For instance, on SLES there
                 # are multiple lines. We don't want them...
                 return self._parse_distro_release_content(fp.readline())
