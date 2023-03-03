@@ -7,27 +7,40 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Esperanto (http://www.transifex.com/projects/p/xbmc-addons/language/eo/)\n"
+"PO-Revision-Date: 2021-05-23 13:29+0000\n"
+"Last-Translator: Jakub Fabijan <animatorzpolski@gmail.com>\n"
+"Language-Team: Esperanto <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/eo/>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.6.2\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr ""
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
-msgstr ""
+msgstr "Ni volus rekomendi al vi ĝisdatigadon."
 
 msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
-msgstr ""
+msgstr "Viziti Kodi.tv por pli da informoj."
 
 # empty strings from id 32003 to 32008
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr ""
+msgstr "Ĉu vi volus forigi ĉi tiun memorigon?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
@@ -39,23 +52,23 @@ msgstr ""
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr ""
+msgstr "Nova versio disponeblas, ĉu vi volas ĝisdatigi nun?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
-msgstr ""
+msgstr "Ĝisdatigo sukcesas"
 
 msgctxt "#32014"
 msgid "Do you want to restart Kodi to finish the upgrade?"
-msgstr ""
+msgstr "Ĉu vi volas restarti na Kodi por fini la ĝisdatigadon?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
-msgstr ""
+msgstr "Ĉu vi volas kontroli la deponejon, ĉu havas novan version?"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr ""
+msgstr "Disponeblas pli nova versio de Kodi."
 
 msgctxt "#32020"
 msgid "General"
@@ -63,11 +76,11 @@ msgstr "Generalo"
 
 msgctxt "#32021"
 msgid "Enable Kodi version check?"
-msgstr ""
+msgstr "Ĉu ŝalti kontroladon de versio de Kodi?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
-msgstr ""
+msgstr "Bonvolu enigi vian pasvorton"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
@@ -81,31 +94,31 @@ msgstr ""
 #. Used in OK dialog
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Nova, stabila versio de Kodi disponeblas."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "Vizitu http://kodi.tv por pli informoj."
 
 #. Used in OK dialog
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Nova, stabila versio de Kodi disponeblas."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "Vizitu http://kodi.tv por pli informoj."
 
 #. For example: "You are using 13.1 prealpha while 13.2 stable is available"
 msgctxt "#32034"
 msgid "Using %s while %s is available."
-msgstr ""
+msgstr "Uzas %s sed %s disponeblas."
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
+msgid "It is recommended that you upgrade to a newer version."
 msgstr ""
 
 # empty strings from id 32036 to 32039
@@ -115,8 +128,8 @@ msgstr ""
 
 msgctxt "#32041"
 msgid "Please upgrade your operating system."
-msgstr ""
+msgstr "Bonvolu ĝisdatigi vian operaciumon."
 
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
-msgstr ""
+msgstr "Por pli informoj, viziti https://kodi.wiki/view/Linux"

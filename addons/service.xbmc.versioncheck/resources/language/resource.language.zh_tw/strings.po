@@ -5,57 +5,70 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Chinese (Traditional) (http://www.transifex.com/projects/p/xbmc-addons/language/zh_TW/)\n"
-"Language: zh_TW\n"
+"PO-Revision-Date: 2021-11-10 20:25+0000\n"
+"Last-Translator: JuenTingShie <t104340042@ntut.org.tw>\n"
+"Language-Team: Chinese (Taiwan) <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/zh_tw/>\n"
+"Language: zh_tw\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.8.1\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "Kodi版本檢查器會檢查您執行中的是否是最新版本。"
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr "由於各發行版之間的差異，Kodi版本檢查器只支援部分平台及版本號。更多資訊請參閱kodi.tv網站。"
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "歡迎使用本腳本，相關資訊請參閱kodi.tv"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
-msgstr ""
+msgstr "我們建議您進行升級。"
 
 msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
-msgstr ""
+msgstr "更多資訊請參閱 Kodi.tv。"
 
 # empty strings from id 32003 to 32008
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr ""
+msgstr "您要移除本提示嗎？"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
-msgstr ""
+msgstr "您可以至附加元件設定中加以啟用或禁用。"
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
-msgstr ""
+msgstr "使用您的封包管理員(apt)來進行更新。"
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr ""
+msgstr "有新的版本，您要現在升級嗎？"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
-msgstr ""
+msgstr "更新成功"
 
 msgctxt "#32014"
 msgid "Do you want to restart Kodi to finish the upgrade?"
-msgstr ""
+msgstr "您要重啟Kodi以完成升級程序嗎？"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
-msgstr ""
+msgstr "您要查詢儲存庫是否有新版本嗎？"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr ""
+msgstr "有較新的穩定版本可供更新。"
 
 msgctxt "#32020"
 msgid "General"
@@ -63,60 +76,64 @@ msgstr "一般設定"
 
 msgctxt "#32021"
 msgid "Enable Kodi version check?"
-msgstr ""
+msgstr "啟用Kodi版本檢查？"
 
 msgctxt "#32022"
 msgid "Please enter your password"
-msgstr ""
+msgstr "請輸入您的密碼"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
-msgstr ""
+msgstr "Linux：完整升級系統"
 
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
-msgstr ""
+msgstr "Linux：使用apt升級"
 
 # empty strings from id 32025 to 32029
 #. Used in OK dialog
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "有新的穩定版Kodi可用。"
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "更多資訊請參閱 http://kodi.tv。"
 
 #. Used in OK dialog
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "有新的穩定版Kodi可用。"
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "更多資訊請參閱 http://kodi.tv。"
 
 #. For example: "You are using 13.1 prealpha while 13.2 stable is available"
 msgctxt "#32034"
 msgid "Using %s while %s is available."
-msgstr ""
+msgstr "%s使用中，%s可供更新。"
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
-msgstr ""
+msgid "It is recommended that you upgrade to a newer version."
+msgstr "建議您更新至較新版本。"
 
 # empty strings from id 32036 to 32039
 msgctxt "#32040"
 msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
-msgstr ""
+msgstr "您的Python加密模組版本%s已太舊，需更新到至少版本1.7。"
 
 msgctxt "#32041"
 msgid "Please upgrade your operating system."
-msgstr ""
+msgstr "請更新您的作業系統。"
 
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
-msgstr ""
+msgstr "更多資訊請參閱 https://kodi.wiki/view/Linux"
+
+#~ msgctxt "#32035"
+#~ msgid "It is recommended that you to upgrade to a newer version."
+#~ msgstr "建議您更新至較新版本。"

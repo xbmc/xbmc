@@ -5,20 +5,33 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Croatian (http://www.transifex.com/projects/p/xbmc-addons/language/hr/)\n"
-"Language: hr\n"
+"PO-Revision-Date: 2022-02-10 11:38+0000\n"
+"Last-Translator: gogogogi <trebelnik2@gmail.com>\n"
+"Language-Team: Croatian <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/hr_hr/>\n"
+"Language: hr_hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.10.1\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "Kodi Version Check provjerava imate li zadnju izdanu inačicu."
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr "Kodi Version Check podržava samo određen broj platformi/distribucija budući da se njihova izdanja međusobno mogu razlikovati. Za više informacija posjetite kodi.tv web stranicu."
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "Slobodno koristite ovu skriptu. Za više informacija posjetite kodi.tv"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
-msgstr "Želimo vam preproučiti nadogradnju."
+msgstr "Preporučujemo vam nadogradnju."
 
 msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
@@ -26,11 +39,11 @@ msgstr "Posjetite Kodi.tv za više informacija."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr "Želite li ukloniti ovog podsjetnika?"
+msgstr "Želite li ukloniti ovaj podsjetnik?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
-msgstr "Možete ga omogućiti/onemogućiti u postavakama dodataka."
+msgstr "Možete ga omogućiti/onemogućiti u postavkama dodatka."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
@@ -38,23 +51,23 @@ msgstr "Koristite svoj upravitelj paketa (apt) za nadogradnju."
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr "Nova inačica je dostupna, želite li ju odmah nadograditi?"
+msgstr "Dostupna je nova inačica, želite li odmah nadograditi?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
-msgstr "Nadogradnja uspješna"
+msgstr "Nadogradnja je uspješna"
 
 msgctxt "#32014"
 msgid "Do you want to restart Kodi to finish the upgrade?"
-msgstr "Želite li ponovno pokrenuti Kodi za dovršetak nadogradnje?"
+msgstr "Želite li ponovno pokrenuti Kodi za završetak nadogradnje?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
-msgstr "Želite li provjeriti repozitorij za novu inačicu?"
+msgstr "Želite li provjeriti dostupnost nove inačice u repozitoriju?"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr "Dostupna je novija stabilna inačica Kodija."
+msgstr "Dostupna je nova stabilna inačica Kodija."
 
 msgctxt "#32020"
 msgid "General"
@@ -62,7 +75,7 @@ msgstr "Općenito"
 
 msgctxt "#32021"
 msgid "Enable Kodi version check?"
-msgstr "Omogući Kodi provjeritelja inačice?"
+msgstr "Omogući Kodi provjeravanje inačice?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
@@ -70,51 +83,55 @@ msgstr "Upišite svoju lozinku"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
-msgstr "Linux: nadogradi cjelokupan sustav"
+msgstr "Linux: Nadogradi cjelokupan sustav"
 
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
-msgstr "Linux: ažurirajte koristeći 'apt'"
+msgstr "Linux: Nadogradi putem apt upravitelja paketa"
 
 #. Used in OK dialog
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
-msgstr "Dostupna je novija stabilna inačica Kodija."
+msgstr "Dostupna je nova stabilna inačica Kodija."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
-msgstr "Posjetite http://kodi.tv za više informacija."
+msgstr "Za više informacija posjetite http://kodi.tv."
 
 #. Used in OK dialog
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr "Dostupna je novija stabilna inačica Kodija."
+msgstr "Dostupna je nova stabilna inačica Kodija."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
-msgstr "Posjetite http://kodi.tv za više informacija."
+msgstr "Za više informacija posjetite http://kodi.tv."
 
 #. For example: "You are using 13.1 prealpha while 13.2 stable is available"
 msgctxt "#32034"
 msgid "Using %s while %s is available."
-msgstr "Koristite %s dok je %s dostupna."
+msgstr "Koristite %s inačicu dok je dostupna %s inačica."
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
-msgstr "Preporučljivo je da nadogradite na noviju inačicu."
+msgid "It is recommended that you upgrade to a newer version."
+msgstr "Preporučljiva je nadogradnja na noviju inačicu."
 
 # empty strings from id 32036 to 32039
 msgctxt "#32040"
 msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
-msgstr ""
+msgstr "Vaša inačica %s Python kriptografskog modula je prestara. Potrebna je najmanje inačica 1.7."
 
 msgctxt "#32041"
 msgid "Please upgrade your operating system."
-msgstr ""
+msgstr "Nadogradite svoj operativni sustav."
 
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
-msgstr ""
+msgstr "Za više informacija, posjetite https://kodi.wiki/view/Linux"
+
+#~ msgctxt "#32035"
+#~ msgid "It is recommended that you to upgrade to a newer version."
+#~ msgstr "Preporučljivo je da nadogradite na noviju inačicu."

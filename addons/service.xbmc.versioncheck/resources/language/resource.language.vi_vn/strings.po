@@ -5,33 +5,46 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Vietnamese (http://www.transifex.com/projects/p/xbmc-addons/language/vi/)\n"
-"Language: vi\n"
+"PO-Revision-Date: 2021-10-25 10:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Vietnamese <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/vi_vn/>\n"
+"Language: vi_vn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.8\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "Kodi Version Check kiểm tra xem bạn có đang chạy phiên bản mới nhất được phát hành hay không."
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr "Kodi Version Check chỉ hỗ trợ một số nền tảng/phân phối vì các bản phát hành có thể khác nhau giữa chúng. Để biết thêm thông tin, hãy truy cập trang web kodi.tv."
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "Hãy sử dụng tập lệnh này. Để biết thêm thông tin, truy cập kodi.tv"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
-msgstr ""
+msgstr "Chúng tôi gợi ý bạn nên nâng cấp."
 
 msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
-msgstr ""
+msgstr "Truy cập Kodi.tv để biết thêm thông tin."
 
 # empty strings from id 32003 to 32008
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr ""
+msgstr "Bạn có muốn xóa lời nhắc này không?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
-msgstr ""
+msgstr "Bạn có thể bật/tắt nó thông qua cài đặt tiện ích."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
@@ -39,23 +52,23 @@ msgstr ""
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr ""
+msgstr "Đã có phiên bản mới, bạn có muốn nâng cấp ngay bây giờ không?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
-msgstr ""
+msgstr "Nâng cấp thàng công"
 
 msgctxt "#32014"
 msgid "Do you want to restart Kodi to finish the upgrade?"
-msgstr ""
+msgstr "Bạn có muốn khởi động lại Kodi để hoàn tất nâng cấp không?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
-msgstr ""
+msgstr "Bạn có muốn kiểm tra kho lưu trữ để tìm phiên bản mới không?"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr ""
+msgstr "Đã có phiên bản Kodi ổn định mới hơn."
 
 msgctxt "#32020"
 msgid "General"
@@ -63,60 +76,64 @@ msgstr "Chung"
 
 msgctxt "#32021"
 msgid "Enable Kodi version check?"
-msgstr ""
+msgstr "Bật kiểm tra phiên bản Kodi?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
-msgstr ""
+msgstr "Vui lòng nhập mật khẩu"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
-msgstr ""
+msgstr "Linux: Nâng cấp hệ thống hoàn chỉnh"
 
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
-msgstr ""
+msgstr "Linux: Nâng cấp bằng apt"
 
 # empty strings from id 32025 to 32029
 #. Used in OK dialog
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Đã có phiên bản ổn định mới của Kodi."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "Truy cập http://kodi.tv để biết thêm thông tin."
 
 #. Used in OK dialog
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Đã có phiên bản ổn định mới của Kodi."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "Truy cập http://kodi.tv để biết thêm thông tin."
 
 #. For example: "You are using 13.1 prealpha while 13.2 stable is available"
 msgctxt "#32034"
 msgid "Using %s while %s is available."
-msgstr ""
+msgstr "Bạn đang sử dụng %s trong khi đã có phiên bản %s."
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
-msgstr ""
+msgid "It is recommended that you upgrade to a newer version."
+msgstr "Bạn nên nâng cấp lên phiên bản mới hơn."
 
 # empty strings from id 32036 to 32039
 msgctxt "#32040"
 msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
-msgstr ""
+msgstr "Phiên bản %s của mô-đun mật mã Python của bạn quá cũ. Bạn cần phiên bản thấp nhất là 1.7."
 
 msgctxt "#32041"
 msgid "Please upgrade your operating system."
-msgstr ""
+msgstr "Vui lòng nâng cấp hệ điều hành của bạn."
 
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
-msgstr ""
+msgstr "Để biết thêm thông tin, hãy xem https://kodi.wiki/view/Linux"
+
+#~ msgctxt "#32035"
+#~ msgid "It is recommended that you to upgrade to a newer version."
+#~ msgstr "Bạn nên nâng cấp lên phiên bản mới hơn."

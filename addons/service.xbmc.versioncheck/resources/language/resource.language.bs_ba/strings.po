@@ -5,118 +5,131 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Bosnian (http://www.transifex.com/projects/p/xbmc-addons/language/bs/)\n"
-"Language: bs\n"
+"PO-Revision-Date: 2022-07-01 07:24+0000\n"
+"Last-Translator: SecularSteve <fairfull.playing@gmail.com>\n"
+"Language-Team: Bosnian (Bosnia and Herzegovina) <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/bs_ba/>\n"
+"Language: bs_ba\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.13\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "Kodi Verzijski Provjerač provjerava imate li najnoviju izdanu verziju."
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr "Kodi Verzijski Provjerač podržava samo određeni broj platformi/distribucija jer njihova izdanja se međusobno mogu razlikovati. Za više informacija posjetite kodi.tv web stranicu."
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "Slobodno koristite ovu skriptu ako želite. Za više informacija posjetite kodi.tv"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
-msgstr ""
+msgstr "Preporučili bi vam da nadogradite."
 
 msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
-msgstr ""
+msgstr "Posjetite Kodi.tv za više informacija."
 
 # empty strings from id 32003 to 32008
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr ""
+msgstr "Želite li ukloniti ovaj podsjetnik?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
-msgstr ""
+msgstr "Možete ga uključiti/isključiti u opcijama za dodatke."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
-msgstr ""
+msgstr "Koristite vaš upravitelj paketa (apt) za nadogradnju."
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr ""
+msgstr "Nova verzija je dostupna, želite li odmah nadograditi?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
-msgstr ""
+msgstr "Nadogradnja je uspješna"
 
 msgctxt "#32014"
 msgid "Do you want to restart Kodi to finish the upgrade?"
-msgstr ""
+msgstr "Želite li ponovo pokrenuti Kodi da bi ste završili nadogradnju?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
-msgstr ""
+msgstr "Želite li provjeriti u repozitoriju je li dostupna nova verzija?"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr ""
+msgstr "Dostupna je nova stabilna verzija Kodija."
 
 msgctxt "#32020"
 msgid "General"
-msgstr "Opšte"
+msgstr "Opće"
 
 msgctxt "#32021"
 msgid "Enable Kodi version check?"
-msgstr ""
+msgstr "Ulključite Kodi Verzijski Provjerač?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
-msgstr ""
+msgstr "Unesite svoju šifru"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
-msgstr ""
+msgstr "Linux: Nadogradite cijeli sistem"
 
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
-msgstr ""
+msgstr "Linux: Nadogradite pomoću apt-a"
 
 # empty strings from id 32025 to 32029
 #. Used in OK dialog
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Nova stabilna verzija Kodija je dostupna."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "Za više informacija posjetite http://kodi.tv."
 
 #. Used in OK dialog
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Nova stabilna verzija Kodija je dostupna."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "Za više informacija posjetite http://kodi.tv."
 
 #. For example: "You are using 13.1 prealpha while 13.2 stable is available"
 msgctxt "#32034"
 msgid "Using %s while %s is available."
-msgstr ""
+msgstr "Koristite %s verziju dok je dostupna %s verzija."
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
-msgstr ""
+msgid "It is recommended that you upgrade to a newer version."
+msgstr "Preporučeno je da nadogradite na noviju verziju."
 
 # empty strings from id 32036 to 32039
 msgctxt "#32040"
 msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
-msgstr ""
+msgstr "Vaša verzija %s Python kriptografskog modula je prestara. Potrebna je najmanje 1.7 verzija."
 
 msgctxt "#32041"
 msgid "Please upgrade your operating system."
-msgstr ""
+msgstr "Molim vas da nadogradite vaš operativni sistem."
 
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
-msgstr ""
+msgstr "Za više informacija, posjetite https://kodi.wiki/view/Linux"
