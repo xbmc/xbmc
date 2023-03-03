@@ -65,6 +65,11 @@ CWinSystemWaylandWebOS::~CWinSystemWaylandWebOS() noexcept
   m_webosRegistry.reset();
 }
 
+bool CWinSystemWaylandWebOS::HasCursor()
+{
+  return false;
+}
+
 std::string CWinSystemWaylandWebOS::GetExportedWindowName()
 {
   return m_exportedWindowName;

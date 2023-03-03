@@ -26,6 +26,7 @@ public:
   IShellSurface* CreateShellSurface(const std::string& name) override;
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
   ~CWinSystemWaylandWebOS() noexcept override;
+  bool HasCursor() override;
 
 private:
   std::unique_ptr<CRegistry> m_webosRegistry;
