@@ -7,27 +7,40 @@ msgstr ""
 "Project-Id-Version: XBMC Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2021-10-09 11:35+0000\n"
+"Last-Translator: Mejans <farga@mejans.fr>\n"
+"Language-Team: Occitan (France) <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/oc_fr/>\n"
 "Language: oc_fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.8\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "Kodi Version Check verifica s’executatz la darrièra version sortida."
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "Siatz liure d’utilizar aqueste script. Per d’informacions consultatz kodi.tv"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
-msgstr ""
+msgstr "Vos volriatz recomandar de metre a nivèl."
 
 msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
-msgstr ""
+msgstr "Consultatz Kodi.tv per mai d’informacions."
 
 # empty strings from id 32003 to 32008
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr ""
+msgstr "Volriatz suprimir aqueste recòrd ?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
@@ -35,19 +48,19 @@ msgstr ""
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
-msgstr ""
+msgstr "Utilizatz vòstre gestionari de paquets (apt) per metre a nivèl."
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr ""
+msgstr "Una nòva version es disponibla, volètz metre a nivèl ara ?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
-msgstr ""
+msgstr "Mesa a nivèl reüssida"
 
 msgctxt "#32014"
 msgid "Do you want to restart Kodi to finish the upgrade?"
-msgstr ""
+msgstr "Volètz reaviar Kodi per acabar la mesa a nivèl ?"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
@@ -55,20 +68,20 @@ msgstr ""
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr ""
+msgstr "I a una version establa mai recenta de Kodi disponibla."
 
 # empty strings from id 32017 to 32019
 msgctxt "#32020"
 msgid "General"
-msgstr ""
+msgstr "General"
 
 msgctxt "#32021"
 msgid "Enable Kodi version check?"
-msgstr ""
+msgstr "Activar la verificacion de version de Kodi ?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
-msgstr ""
+msgstr "Picatz vòstre senhal"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
@@ -106,7 +119,7 @@ msgstr ""
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
+msgid "It is recommended that you upgrade to a newer version."
 msgstr ""
 
 # empty strings from id 32036 to 32039

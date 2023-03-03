@@ -1,0 +1,246 @@
+v0.5.25
+- add Kodi 19.5 release
+- Update translations from Weblate
+
+v0.5.24
+- add Kodi 20 RC1 release
+- Update translations from Weblate
+
+v0.5.23
+- add Kodi 20 Alpha1 release
+- Update translations from Weblate
+
+v0.5.22
+- add Kodi 19.4 release
+- fix potential UnicodeDecodeError in distro |contrib: mvn23|
+- Update translations from Weblate
+
+v0.5.21
+- add Kodi 19.3 release
+- Update translations from Weblate
+
+v0.5.20
+- add Kodi 19.2 release
+- Update translations from Weblate
+
+v0.5.19
+- add Kodi 19.1 release
+
+v0.5.18
+- Update translations from Weblate
+
+v0.5.17
+- Fix-up exception on non linux platforms due to missing variable definition
+
+v0.5.16
+- Bump minimum Kodi version from Gotham to Leia
+
+v0.5.15
+- Fix exec of linux specific code path on windows
+
+v0.5.14
+- add Kodi 19.0 release
+
+v0.5.13
+- add Kodi 19.0 rc1 release
+
+v0.5.12
+- add Kodi 19.0 beta2 release
+
+v0.5.11
+- add Kodi 19.0 beta1 release
+
+v0.5.10
+- add Kodi 19.0 alpha3 release
+
+v0.5.9
+- add Kodi 18.9 release
+- fixup Kodi 19 pre alpha2 translatePath
+
+v0.5.7 - 0.5.8
+- add Kodi 19.0 alpha2 release
+- use xbmcvfs for translatePath for matrix
+- fix platforms where subprocess is not available
+- fix dialogs on Kodi 19
+
+v0.5.6
+- add Kodi 18.8 stable release
+- add Kodi 19.0 alpha1 release
+
+v0.5.5
+- add Kodi 18.7 stable release
+
+v0.5.4
+- include distro package for Python >= v3.8 where platform.linux_distribution is removed
+
+v0.5.3
+- fix exception when distro/platform modules are unavailable
+
+v0.5.2
+- add Kodi 18.6 stable release
+
+v0.5.1
+- add Kodi 18.5 stable release
+- add json schema file for versions.txt
+- fix logic for deciding when to use distro over platform
+
+v0.5.0
+- Python 3 / Kodi 19 ready
+- Update to use SPDX license identifiers
+- Refactor
+- PEP8 and cosmetics
+- pylint 10.00/10
+
+v0.4.6 to v0.4.7
+- Update version list
+
+v0.3.26 to v0.4.5
+- Update version list
+
+v0.3.25
+- fix issue with the older python2.6
+
+v0.3.5 to v0.3.24
+- Update version list
+
+v0.3.14
+- Updated language files from Transifex
+- Cosmetics
+- Update version list
+
+v0.3.12 to 0.3.4
+- Update version list
+
+v0.3.3
+- Updated language files from Transifex
+- Update version list
+
+v0.3.2
+- Don't notify on newer unreleased builds
+
+v0.3.1
+- Don't notify on newer unreleased builds
+
+v0.3.0
+- Update with 14.0 Helix
+
+v0.2.7
+- Fix popup on Kodi 15.0 builds
+
+v0.2.6
+- Update with 14.0 Helix rc 3
+
+v0.2.5
+- Update with 14.0 Helix rc 2
+
+v0.2.4
+- Fix error or unicode
+
+v0.2.3
+- Updated language files from Transifex
+- Update with 14.0 Helix rc 1
+
+v0.2.2
+- New Kodi logo as icon
+- Update with 14.0 Helix beta 4
+- Update with 14.0 Helix beta 5
+
+v0.2.1
+- Updated language files from Transifex
+- Don't exclude OpenELEC any more for version check
+- Update with 14.0 Helix beta 3
+
+v0.2.0
+- Only notify when the available version of Kodi changes, not when add-on is updated
+- Update with 14.0 Helix alpha3
+- Update with 14.0 Helix alpha4
+- Update with 14.0 Helix beta 1
+- Update with 14.0 Helix beta 2
+
+v0.1.24
+- Reworked notification logic
+- Updated with recent builds
+
+v0.1.23
+- Update with 13.2 Gotham
+- Update with 13.2 Gotham rc1
+- Update with 13.2 Gotham beta3
+- Update with 13.2 Gotham beta2
+- Update with 13.2 Gotham beta1
+- Update with 14.0 Helix alpha2
+
+v0.1.22
+- Updated language files from Transifex
+- Update with 13.1 Gotham rc1
+- Update with 13.1 Gotham beta2
+- Update with 13.1 Gotham beta1
+- Update with 13.0 Gotham
+
+v0.1.21
+- Update with 13.0 Gotham rc1
+- Update with 13.0 Gotham beta4
+
+v0.1.20
+- Fix missing apt option for Linux
+- Update with 13.0 Gotham beta3
+- Update with 13.0 Gotham beta2
+- Update with 13.0 Gotham beta1
+
+v0.1.19
+- Added Gotham alpha user notice
+
+v0.1.17
+- Update with 13.0 Gotham alpha11
+
+v0.1.16
+- Update with 12.3 Frodo stable
+
+v0.1.15
+- Add option for linux to disable check through "apt"
+
+v0.1.14
+- Update with 13.0 Gotham alpha10
+
+v0.1.13
+- Update with 13.0 Gotham alpha9
+
+v0.1.12
+- Fix encoding text encoding error for some languages
+- Update language files
+
+v0.1.11
+- Updated language files from Transifex
+- Fix problems with python2.7.5
+- Update with 13.0 Gotham alpha8
+
+v0.1.11
+- Update with 13.0 Gotham alpha7
+
+v0.1.9
+- Update with 13.0 Gotham alpha6
+- Updated language files from Transifex
+
+v0.1.7
+- Update with 13.0 Gotham alpha5
+
+v0.1.7
+- Update with 13.0 Gotham alpha4
+
+v0.1.6
+- Update with 12.2 Frodo stable
+- Added Linux full system upgrade
+
+v0.1.5
+- Update with 13.0 Gotham alpha3
+
+v0.1.4
+- We can now upgrade xbmc on Linux. This works either via polkit or shell wrapper as fallback
+
+v0.1.3
+- Update with 13.0 Gotham alpha2
+
+v0.1.2
+- Add notification for Ubuntu users checking through apt command
+
+v0.1.1
+- Initial version

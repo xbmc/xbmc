@@ -5,20 +5,33 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Dutch (http://www.transifex.com/projects/p/xbmc-addons/language/nl/)\n"
-"Language: nl\n"
+"PO-Revision-Date: 2021-12-14 15:13+0000\n"
+"Last-Translator: Deleted User <noreply+158@weblate.org>\n"
+"Language-Team: Dutch <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/nl_nl/>\n"
+"Language: nl_nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.9.1\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "Kodi versie-check controleert of je de laatst beschikbare versie hebt."
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr "Kodi versie check ondersteunt alleen een aantal platforms/distro`s omdat uitgaven verschillen tussen hen. Voor meer informatie bezoek de kodi.tv website."
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "Gebruik dit script vrijblijvend. Voor meer informatie bezoek kodi.tv"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
-msgstr "We bevelen je aan om te upgraden."
+msgstr "We raden je aan om te upgraden."
 
 msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
@@ -26,7 +39,7 @@ msgstr "Bezoek Kodi.tv voor meer informatie."
 
 msgctxt "#32009"
 msgid "Would you like to remove this reminder?"
-msgstr "Will je deze herinneren verwijderen?"
+msgstr "Will je deze herinnering verwijderen?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
@@ -34,7 +47,7 @@ msgstr "Deze kan je aan/uitzetten in add-on instellingen."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
-msgstr "Gebruik pakket manager(apt) voor upgraden."
+msgstr "Gebruik de pakketmanager(apt) om te upgraden."
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
@@ -54,7 +67,7 @@ msgstr "Wil je de repository controleren op een nieuwe versie?"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr "Er is een nieuwere stabiele Kodi versie beschikbaar."
+msgstr "Er is een nieuwere stabiele versie van Kodi beschikbaar."
 
 msgctxt "#32020"
 msgid "General"
@@ -66,7 +79,7 @@ msgstr "Kodi versiecontrole inschakelen?"
 
 msgctxt "#32022"
 msgid "Please enter your password"
-msgstr "Vul uw wachtwoord in"
+msgstr "Vul je wachtwoord in"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
@@ -103,18 +116,22 @@ msgstr "In gebruik %s terwijl %s beschikbaar is."
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
+msgid "It is recommended that you upgrade to a newer version."
 msgstr "Het is aanbevolen dat je upgrade naar een nieuwere versie."
 
 # empty strings from id 32036 to 32039
 msgctxt "#32040"
 msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
-msgstr ""
+msgstr "Jouw versie %s van de Python cryptografie module is te oud. Je hebt ten minste versie 1.7 nodig."
 
 msgctxt "#32041"
 msgid "Please upgrade your operating system."
-msgstr ""
+msgstr "Update uw besturingssysteem."
 
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
-msgstr ""
+msgstr "Voor meer informatie, kijk op https://kodi.wiki/view/Linux"
+
+#~ msgctxt "#32035"
+#~ msgid "It is recommended that you to upgrade to a newer version."
+#~ msgstr "Het is aanbevolen dat je upgrade naar een nieuwere versie."
