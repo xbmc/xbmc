@@ -27,8 +27,7 @@ bool CWinSystemWaylandEGLContext::InitWindowSystemEGL(EGLint renderableType, EGL
 {
   VIDEOPLAYER::CRendererFactory::ClearRenderer();
   CDVDFactoryCodec::ClearHWAccels();
-
-  if (!CWinSystemWayland::InitWindowSystem())
+  if (!CWinSystemWaylandImpl::InitWindowSystem())
   {
     return false;
   }
@@ -55,7 +54,7 @@ bool CWinSystemWaylandEGLContext::CreateNewWindow(const std::string& name,
                                                   bool fullScreen,
                                                   RESOLUTION_INFO& res)
 {
-  if (!CWinSystemWayland::CreateNewWindow(name, fullScreen, res))
+  if (!CWinSystemWaylandImpl::CreateNewWindow(name, fullScreen, res))
   {
     return false;
   }
@@ -93,14 +92,14 @@ bool CWinSystemWaylandEGLContext::DestroyWindow()
   m_eglContext.DestroySurface();
   m_nativeWindow = {};
 
-  return CWinSystemWayland::DestroyWindow();
+  return CWinSystemWaylandImpl::DestroyWindow();
 }
 
 bool CWinSystemWaylandEGLContext::DestroyWindowSystem()
 {
   m_eglContext.Destroy();
 
-  return CWinSystemWayland::DestroyWindowSystem();
+  return CWinSystemWaylandImpl::DestroyWindowSystem();
 }
 
 CSizeInt CWinSystemWaylandEGLContext::GetNativeWindowAttachedSize()
