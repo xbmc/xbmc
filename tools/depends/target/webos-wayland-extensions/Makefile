@@ -24,6 +24,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	echo 'Version: 1.0.0' >> ${PREFIX}/lib/pkgconfig/wayland-webos-client.pc
 
 	cp $(PLATFORM)/protocol/webos-shell.xml $(PREFIX)/share/wayland-webos
+	cp $(PLATFORM)/protocol/webos-foreign.xml $(PREFIX)/share/wayland-webos
 	touch $@
 
 clean:

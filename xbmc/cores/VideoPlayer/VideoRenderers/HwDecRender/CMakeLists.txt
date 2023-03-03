@@ -62,6 +62,11 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_L
   endif()
 endif()
 
+if(WAYLANDPROTOCOLSWEBOS_FOUND)
+  list(APPEND SOURCES RendererStarfish.cpp)
+  list(APPEND HEADERS RendererStarfish.h)
+endif()
+
 # we might want to build on linux systems
 # with ENABLE_VDPAU=OFF and ENABLE_VAAPI=OFF
 if(SOURCES)
