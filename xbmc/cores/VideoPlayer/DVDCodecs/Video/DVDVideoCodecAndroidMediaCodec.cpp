@@ -1391,8 +1391,25 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
 
   if (CJNIBase::GetSDKVersion() >= 24)
   {
-    if (m_hints.colorRange != AVCOL_RANGE_UNSPECIFIED)
-      mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_RANGE, m_hints.colorRange);
+    switch (m_hints.colorRange)
+    {
+      case AVCOL_RANGE_UNSPECIFIED:
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Color range: "
+                            "AVCOL_RANGE_UNSPECIFIED");
+        break;
+      case AVCOL_RANGE_MPEG:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_RANGE,
+                               CJNIMediaFormat::COLOR_RANGE_LIMITED);
+        break;
+      case AVCOL_RANGE_JPEG:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_RANGE, CJNIMediaFormat::COLOR_RANGE_FULL);
+        break;
+      default:
+        CLog::Log(LOGWARNING,
+                  "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Color range: {}",
+                  m_hints.colorRange);
+        break;
+    }
 
     if (m_hints.colorPrimaries != AVCOL_PRI_UNSPECIFIED)
     {
@@ -1406,7 +1423,12 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
           mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
                                  CJNIMediaFormat::COLOR_STANDARD_BT2020);
           break;
-        default:; // do nothing
+        default:
+          CLog::Log(
+              LOGWARNING,
+              "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Color primaries: {}",
+              m_hints.colorPrimaries);
+          break;
       }
     }
 
@@ -1430,7 +1452,12 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
           mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
                                  CJNIMediaFormat::COLOR_TRANSFER_HLG);
           break;
-        default:; // do nothing
+        default:
+          CLog::Log(LOGWARNING,
+                    "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Transfer "
+                    "characteristic: {}",
+                    m_hints.colorTransferCharacteristic);
+          break;
       }
     }
     std::vector<uint8_t> hdr_static_data = GetHDRStaticMetadata();
