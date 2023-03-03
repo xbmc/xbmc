@@ -2,6 +2,8 @@
 <window type="dialog" id="1101">
 	<defaultcontrol always="true">11000</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
+	<onunload>ClearProperty(settingslist_header,Home)</onunload>
+	<onunload>ClearProperty(settingslist_content,Home)</onunload>
 	<controls>
 		<control type="group">
 			<centerleft>50%</centerleft>
