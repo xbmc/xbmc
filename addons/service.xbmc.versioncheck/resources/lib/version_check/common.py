@@ -100,7 +100,7 @@ def log(txt):
     else:
         if isinstance(txt, str):
             txt = txt.decode('utf-8')
-        message = (u'%s: %s' % (ADDON_NAME, txt)).encode('utf-8')
+        message = (u'%s: %s' % (ADDON_NAME, txt)).encode('utf-8')  # pylint: disable=redundant-u-string-prefix
     xbmc.log(msg=message, level=xbmc.LOGDEBUG)
 
 

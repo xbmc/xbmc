@@ -5,24 +5,37 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Japanese (http://www.transifex.com/projects/p/xbmc-addons/language/ja/)\n"
-"Language: ja\n"
+"PO-Revision-Date: 2021-10-25 10:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Japanese <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/ja_jp/>\n"
+"Language: ja_jp\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.8\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr ""
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr ""
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "このスクリプトをお使いください。詳しくは kodi.tv を参照してください"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
-msgstr ""
+msgstr "アプリのバージョンアップをお勧めします。"
 
 msgctxt "#32002"
 msgid "Visit Kodi.tv for more information."
-msgstr ""
+msgstr "詳しくは Kodi.tv を参照してください。"
 
 # empty strings from id 32003 to 32008
 msgctxt "#32009"
@@ -35,11 +48,11 @@ msgstr ""
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
-msgstr ""
+msgstr "パッケージマネージャ (apt) を使ってアップグレードしてください。"
 
 msgctxt "#32012"
 msgid "A new version is available, do you want to upgrade now?"
-msgstr ""
+msgstr "新しいバージョンがあります。今すぐアップグレードしますか？"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
@@ -47,15 +60,15 @@ msgstr ""
 
 msgctxt "#32014"
 msgid "Do you want to restart Kodi to finish the upgrade?"
-msgstr ""
+msgstr "バージョンアップを完了するには Kodi の再起動が必要です。よろしいですか？"
 
 msgctxt "#32015"
 msgid "Do you want to check the repository for a new version?"
-msgstr ""
+msgstr "新しいバージョンがあるかリポジトリをチェックしますか？"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr ""
+msgstr "Kodi の新しい安定バージョンがあります。"
 
 msgctxt "#32020"
 msgid "General"
@@ -63,11 +76,11 @@ msgstr "一般"
 
 msgctxt "#32021"
 msgid "Enable Kodi version check?"
-msgstr ""
+msgstr "Kodi のバージョンチェックを有効にしますか？"
 
 msgctxt "#32022"
 msgid "Please enter your password"
-msgstr ""
+msgstr "パスワードを入力"
 
 msgctxt "#32023"
 msgid "Linux: Upgrade complete system"
@@ -81,22 +94,22 @@ msgstr ""
 #. Used in OK dialog
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Kodi の新しい安定バージョンがあります。"
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "詳しくは http://kodi.tv を参照してください。"
 
 #. Used in OK dialog
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Kodi の新しい安定バージョンがあります。"
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "詳しくは http://kodi.tv を参照してください。"
 
 #. For example: "You are using 13.1 prealpha while 13.2 stable is available"
 msgctxt "#32034"
@@ -105,8 +118,8 @@ msgstr ""
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
-msgstr ""
+msgid "It is recommended that you upgrade to a newer version."
+msgstr "新しいバージョンへのアップグレードをお勧めします。"
 
 # empty strings from id 32036 to 32039
 msgctxt "#32040"
@@ -115,8 +128,12 @@ msgstr ""
 
 msgctxt "#32041"
 msgid "Please upgrade your operating system."
-msgstr ""
+msgstr "お使いの OS をアップグレードしてください。"
 
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
-msgstr ""
+msgstr "詳しくは https://kodi.wiki/view/Linux を参照してください"
+
+#~ msgctxt "#32035"
+#~ msgid "It is recommended that you to upgrade to a newer version."
+#~ msgstr "新しいバージョンへのアップグレードをお勧めします。"
