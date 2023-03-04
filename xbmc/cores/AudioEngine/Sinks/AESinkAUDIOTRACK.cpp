@@ -319,6 +319,7 @@ bool CAESinkAUDIOTRACK::Initialize(AEAudioFormat &format, std::string &device)
   m_headPos = 0;
   m_timestampPos = 0;
   m_linearmovingaverage.clear();
+  m_pause_ms = 0.0;
   CLog::Log(LOGDEBUG,
             "CAESinkAUDIOTRACK::Initialize requested: sampleRate {}; format: {}; channels: {}",
             format.m_sampleRate, CAEUtil::DataFormatToStr(format.m_dataFormat),
@@ -758,25 +759,33 @@ void CAESinkAUDIOTRACK::GetDelay(AEDelayStatus& status)
 
   delay += m_hw_delay;
 
-  const bool rawPt = m_passthrough && !m_info.m_wantsIECPassthrough;
-  if (rawPt)
-  {
-    if (m_at_jni->getPlayState() == CJNIAudioTrack::PLAYSTATE_PAUSED)
-    {
-      delay = m_audiotrackbuffer_sec;
-      if (usesAdvancedLogging)
-      {
-        CLog::Log(LOGINFO, "Fake delay: {} ms", delay * 1000);
-      }
-    }
-  }
-
   if (usesAdvancedLogging)
   {
     CLog::Log(LOGINFO, "Combined Delay: {} ms", delay * 1000);
   }
   if (delay < 0.0)
     delay = 0.0;
+
+  // the RAW hack for simulating pause bursts should not come
+  // into the way of hw delay
+  if (m_pause_ms > 0.0)
+  {
+    double difference = (m_audiotrackbuffer_sec - delay) * 1000;
+    if (usesAdvancedLogging)
+    {
+      CLog::Log(LOGINFO, "Faking Pause-Bursts in Delay - returning smoothed {} ms Original {} ms",
+                m_audiotrackbuffer_sec * 1000, delay * 1000);
+      CLog::Log(LOGINFO, "Difference: {} ms m_pause_ms {}", difference, m_pause_ms);
+    }
+    // buffer not yet reached
+    if (difference > 0.0)
+      delay = m_audiotrackbuffer_sec;
+    else
+    {
+      CLog::Log(LOGINFO, "Resetting pause bursts as buffer level was reached! (2)");
+      m_pause_ms = 0.0;
+    }
+  }
 
   const double d = GetMovingAverageDelay(delay);
 
@@ -919,6 +928,22 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
     if (m_delay < (m_audiotrackbuffer_sec - (m_format.m_streamInfo.GetDuration() / 1000.0)))
       extra_sleep = 0;
 
+    if (m_pause_ms > 0.0)
+    {
+      extra_sleep = 0;
+      m_pause_ms -= m_format.m_streamInfo.GetDuration();
+      if (m_pause_ms <= 0.0)
+      {
+        m_pause_ms = 0.0;
+        CLog::Log(LOGINFO, "Resetting pause bursts as buffer level was reached! (1)");
+      }
+    }
+    else
+    {
+      if (m_delay > 0.3)
+        extra_sleep *= 2;
+    }
+
     usleep(extra_sleep * 1000);
   }
   else
@@ -946,7 +971,11 @@ void CAESinkAUDIOTRACK::AddPause(unsigned int millis)
   if (m_at_jni->getPlayState() != CJNIAudioTrack::PLAYSTATE_PAUSED)
     m_at_jni->pause();
 
+  // This is a mixture to get it right between
+  // blocking, sleeping roughly and GetDelay smoothing
+  // In short: Shit in, shit out
   usleep(millis * 1000);
+  m_pause_ms += millis;
 }
 
 void CAESinkAUDIOTRACK::Drain()
@@ -966,6 +995,7 @@ void CAESinkAUDIOTRACK::Drain()
   m_timestampPos = 0;
   m_linearmovingaverage.clear();
   m_stampTimer.SetExpired();
+  m_pause_ms = 0.0;
 }
 
 void CAESinkAUDIOTRACK::Register()
