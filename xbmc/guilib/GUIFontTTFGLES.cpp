@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "GUIFontTTFGL.h"
+#include "GUIFontTTFGLES.h"
 
 #include "GUIFont.h"
 #include "GUIFontManager.h"
@@ -15,7 +15,7 @@
 #include "TextureManager.h"
 #include "gui3d.h"
 #include "rendering/MatrixGL.h"
-#include "rendering/gl/RenderSystemGL.h"
+#include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -36,34 +36,29 @@ constexpr size_t ELEMENT_ARRAY_MAX_CHAR_INDEX = 1000;
 
 CGUIFontTTF* CGUIFontTTF::CreateGUIFontTTF(const std::string& fontIdent)
 {
-  return new CGUIFontTTFGL(fontIdent);
+  return new CGUIFontTTFGLES(fontIdent);
 }
 
-CGUIFontTTFGL::CGUIFontTTFGL(const std::string& fontIdent) : CGUIFontTTF(fontIdent)
+CGUIFontTTFGLES::CGUIFontTTFGLES(const std::string& fontIdent) : CGUIFontTTF(fontIdent)
 {
 }
 
-CGUIFontTTFGL::~CGUIFontTTFGL(void)
+CGUIFontTTFGLES::~CGUIFontTTFGLES(void)
 {
   // It's important that all the CGUIFontCacheEntry objects are
-  // destructed before the CGUIFontTTFGL goes out of scope, because
+  // destructed before the CGUIFontTTFGLES goes out of scope, because
   // our virtual methods won't be accessible after this point
   m_dynamicCache.Flush();
   DeleteHardwareTexture();
 }
 
-bool CGUIFontTTFGL::FirstBegin()
+bool CGUIFontTTFGLES::FirstBegin()
 {
-  GLenum pixformat = GL_RED;
-  GLenum internalFormat;
-  unsigned int major, minor;
-  CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
-  renderSystem->GetRenderVersion(major, minor);
-  if (major >= 3)
-    internalFormat = GL_R8;
-  else
-    internalFormat = GL_LUMINANCE;
-  renderSystem->EnableShader(ShaderMethodGL::SM_FONTS);
+  CRenderSystemGLES* renderSystem =
+      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
+  renderSystem->EnableGUIShader(ShaderMethodGLES::SM_FONTS);
+  GLenum pixformat = GL_ALPHA; // deprecated
+  GLenum internalFormat = GL_ALPHA;
 
   if (m_textureStatus == TEXTURE_REALLOCATED)
   {
@@ -115,18 +110,19 @@ bool CGUIFontTTFGL::FirstBegin()
   return true;
 }
 
-void CGUIFontTTFGL::LastEnd()
+void CGUIFontTTFGLES::LastEnd()
 {
   CWinSystemBase* const winSystem = CServiceBroker::GetWinSystem();
   if (!winSystem)
     return;
 
-  CRenderSystemGL* renderSystem = dynamic_cast<CRenderSystemGL*>(CServiceBroker::GetRenderSystem());
+  CRenderSystemGLES* renderSystem =
+      dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
 
-  GLint posLoc = renderSystem->ShaderGetPos();
-  GLint colLoc = renderSystem->ShaderGetCol();
-  GLint tex0Loc = renderSystem->ShaderGetCoord0();
-  GLint modelLoc = renderSystem->ShaderGetModel();
+  GLint posLoc = renderSystem->GUIShaderGetPos();
+  GLint colLoc = renderSystem->GUIShaderGetCol();
+  GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
+  GLint modelLoc = renderSystem->GUIShaderGetModel();
 
   CreateStaticVertexBuffers();
 
@@ -137,10 +133,10 @@ void CGUIFontTTFGL::LastEnd()
 
   if (!m_vertex.empty())
   {
-
     // Deal with vertices that had to use software clipping
     std::vector<SVertex> vecVertices(6 * (m_vertex.size() / 4));
     SVertex* vertices = &vecVertices[0];
+
     for (size_t i = 0; i < m_vertex.size(); i += 4)
     {
       *vertices++ = m_vertex[i];
@@ -151,26 +147,17 @@ void CGUIFontTTFGL::LastEnd()
       *vertices++ = m_vertex[i + 3];
       *vertices++ = m_vertex[i + 2];
     }
+
     vertices = &vecVertices[0];
 
-    GLuint VertexVBO;
-
-    glGenBuffers(1, &VertexVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VertexVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(SVertex) * vecVertices.size(), &vecVertices[0],
-                 GL_STATIC_DRAW);
-
     glVertexAttribPointer(posLoc, 3, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, x)));
+                          reinterpret_cast<char*>(vertices) + offsetof(SVertex, x));
     glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, r)));
+                          reinterpret_cast<char*>(vertices) + offsetof(SVertex, r));
     glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
-                          reinterpret_cast<const GLvoid*>(offsetof(SVertex, u)));
+                          reinterpret_cast<char*>(vertices) + offsetof(SVertex, u));
 
     glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDeleteBuffers(1, &VertexVBO);
   }
 
   if (!m_vertexTrans.empty())
@@ -250,10 +237,10 @@ void CGUIFontTTFGL::LastEnd()
   glDisableVertexAttribArray(colLoc);
   glDisableVertexAttribArray(tex0Loc);
 
-  renderSystem->DisableShader();
+  renderSystem->DisableGUIShader();
 }
 
-CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex>& vertices) const
+CVertexBuffer CGUIFontTTFGLES::CreateVertexBuffer(const std::vector<SVertex>& vertices) const
 {
   assert(vertices.size() % 4 == 0);
   GLuint bufferHandle = 0;
@@ -277,7 +264,7 @@ CVertexBuffer CGUIFontTTFGL::CreateVertexBuffer(const std::vector<SVertex>& vert
   return CVertexBuffer(bufferHandle, vertices.size() / 4, this);
 }
 
-void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer& buffer) const
+void CGUIFontTTFGLES::DestroyVertexBuffer(CVertexBuffer& buffer) const
 {
   if (buffer.bufferHandle != 0)
   {
@@ -287,7 +274,7 @@ void CGUIFontTTFGL::DestroyVertexBuffer(CVertexBuffer& buffer) const
   }
 }
 
-std::unique_ptr<CTexture> CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
+std::unique_ptr<CTexture> CGUIFontTTFGLES::ReallocTexture(unsigned int& newHeight)
 {
   newHeight = CTexture::PadPow2(newHeight);
 
@@ -296,7 +283,7 @@ std::unique_ptr<CTexture> CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
 
   if (!newTexture || !newTexture->GetPixels())
   {
-    CLog::Log(LOGERROR, "GUIFontTTFGL::{}: Error creating new cache texture for size {:f}",
+    CLog::Log(LOGERROR, "GUIFontTTFGLES::{}: Error creating new cache texture for size {:f}",
               __func__, m_height);
     return nullptr;
   }
@@ -306,8 +293,9 @@ std::unique_ptr<CTexture> CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   m_textureWidth = newTexture->GetWidth();
   m_textureScaleX = 1.0f / m_textureWidth;
   if (m_textureHeight < newHeight)
-    CLog::Log(LOGWARNING, "GUIFontTTFGL::{}: allocated new texture with height of {}, requested {}",
-              __func__, m_textureHeight, newHeight);
+    CLog::Log(LOGWARNING,
+              "GUIFontTTFGLES::{}: allocated new texture with height of {}, requested {}", __func__,
+              m_textureHeight, newHeight);
   m_staticCache.Flush();
   m_dynamicCache.Flush();
 
@@ -332,7 +320,7 @@ std::unique_ptr<CTexture> CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   return newTexture;
 }
 
-bool CGUIFontTTFGL::CopyCharToTexture(
+bool CGUIFontTTFGLES::CopyCharToTexture(
     FT_BitmapGlyph bitGlyph, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
 {
   FT_Bitmap bitmap = bitGlyph->bitmap;
@@ -378,7 +366,7 @@ bool CGUIFontTTFGL::CopyCharToTexture(
   return true;
 }
 
-void CGUIFontTTFGL::DeleteHardwareTexture()
+void CGUIFontTTFGLES::DeleteHardwareTexture()
 {
   if (m_textureStatus != TEXTURE_VOID)
   {
@@ -390,7 +378,7 @@ void CGUIFontTTFGL::DeleteHardwareTexture()
   }
 }
 
-void CGUIFontTTFGL::CreateStaticVertexBuffers(void)
+void CGUIFontTTFGLES::CreateStaticVertexBuffers(void)
 {
   if (m_staticVertexBufferCreated)
     return;
@@ -416,7 +404,7 @@ void CGUIFontTTFGL::CreateStaticVertexBuffers(void)
   m_staticVertexBufferCreated = true;
 }
 
-void CGUIFontTTFGL::DestroyStaticVertexBuffers(void)
+void CGUIFontTTFGLES::DestroyStaticVertexBuffers(void)
 {
   if (!m_staticVertexBufferCreated)
     return;
@@ -425,5 +413,5 @@ void CGUIFontTTFGL::DestroyStaticVertexBuffers(void)
   m_staticVertexBufferCreated = false;
 }
 
-GLuint CGUIFontTTFGL::m_elementArrayHandle{0};
-bool CGUIFontTTFGL::m_staticVertexBufferCreated{false};
+GLuint CGUIFontTTFGLES::m_elementArrayHandle{0};
+bool CGUIFontTTFGLES::m_staticVertexBufferCreated{false};

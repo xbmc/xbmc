@@ -18,8 +18,11 @@
 #include "windowing/GraphicContext.h"
 
 #include <mutex>
-#if defined(HAS_GLES) || defined(HAS_GL)
+#if defined(HAS_GL)
 #include "GUIFontTTFGL.h"
+#endif
+#if defined(HAS_GLES)
+#include "GUIFontTTFGLES.h"
 #endif
 #include "FileItem.h"
 #include "GUIControlFactory.h"
@@ -408,8 +411,12 @@ void GUIFontManager::Clear()
   m_vecFontFiles.clear();
   m_vecFontInfo.clear();
 
-#if defined(HAS_GLES) || defined(HAS_GL)
+#if defined(HAS_GL)
   CGUIFontTTFGL::DestroyStaticVertexBuffers();
+#endif
+
+#if defined(HAS_GLES)
+  CGUIFontTTFGLES::DestroyStaticVertexBuffers();
 #endif
 }
 
