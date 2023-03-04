@@ -329,9 +329,21 @@ bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
     }
     m_exportPath = exportPath;
     m_hostName = url.GetHostName();
-    //read chunksize only works after mount
+
+    // read chunksize only works after mount
     m_readChunkSize = nfs_get_readmax(m_pNfsContext);
     m_writeChunkSize = nfs_get_writemax(m_pNfsContext);
+
+    if (m_readChunkSize == 0)
+    {
+      CLog::Log(LOGDEBUG, "NFS Server did not return max read chunksize - Using 128K default");
+      m_readChunkSize = 128 * 1024; // 128K
+    }
+    if (m_writeChunkSize == 0)
+    {
+      CLog::Log(LOGDEBUG, "NFS Server did not return max write chunksize - Using 128K default");
+      m_writeChunkSize = 128 * 1024; // 128K
+    }
 
     if (contextRet == CNfsConnection::ContextStatus::NEW)
     {
