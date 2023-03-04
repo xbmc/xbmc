@@ -111,7 +111,11 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(const CGUIMessage& message)
         CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio);
         if (groups->AddGroup(strGroupName))
         {
-          CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetByName(strGroupName)->SetGroupType(PVR_GROUP_TYPE_USER_DEFINED);
+          CServiceBroker::GetPVRManager()
+              .ChannelGroups()
+              ->Get(m_bIsRadio)
+              ->GetByName(strGroupName)
+              ->SetGroupType(PVR_GROUP_TYPE_LOCAL);
           m_iSelectedChannelGroup = groups->Size() - 1;
           Update();
         }
