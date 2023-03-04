@@ -305,7 +305,7 @@ bool CPVRChannelGroups::UpdateChannelNumbersFromAllChannelsGroup()
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::CreateChannelGroup(
     int iType, const CPVRChannelsPath& path)
 {
-  if (iType == PVR_GROUP_TYPE_INTERNAL)
+  if (iType == PVR_GROUP_TYPE_ALL_CHANNELS)
     return std::make_shared<CPVRChannelGroupInternal>(path);
   else
     return std::make_shared<CPVRChannelGroup>(path, GetGroupAll());
