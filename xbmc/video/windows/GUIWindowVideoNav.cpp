@@ -442,8 +442,6 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
         // the container folder thumb is the parent (i.e. season or show)
         if (itemsSize && (node == NODE_TYPE_EPISODES || node == NODE_TYPE_RECENTLY_ADDED_EPISODES))
         {
-          items.SetContent("episodes");
-
           int seasonID = -1;
           int seasonParam = params.GetSeason();
 
@@ -467,8 +465,6 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
               items.SetArtFallback("thumb", "season.banner");
           }
         }
-        else
-          items.SetContent("seasons");
       }
       else if (node == NODE_TYPE_TITLE_MOVIES ||
                node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
@@ -484,40 +480,7 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
               items.SetArtFallback("thumb", "set.poster");
           }
         }
-        items.SetContent("movies");
       }
-      else if (node == NODE_TYPE_TITLE_TVSHOWS ||
-               node == NODE_TYPE_INPROGRESS_TVSHOWS)
-        items.SetContent("tvshows");
-      else if (node == NODE_TYPE_TITLE_MUSICVIDEOS ||
-               node == NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
-        items.SetContent("musicvideos");
-      else if (node == NODE_TYPE_GENRE)
-        items.SetContent("genres");
-      else if (node == NODE_TYPE_COUNTRY)
-        items.SetContent("countries");
-      else if (node == NODE_TYPE_ACTOR)
-      {
-        if (static_cast<VideoDbContentType>(params.GetContentType()) ==
-            VideoDbContentType::MUSICVIDEOS)
-          items.SetContent("artists");
-        else
-          items.SetContent("actors");
-      }
-      else if (node == NODE_TYPE_DIRECTOR)
-        items.SetContent("directors");
-      else if (node == NODE_TYPE_STUDIO)
-        items.SetContent("studios");
-      else if (node == NODE_TYPE_YEAR)
-        items.SetContent("years");
-      else if (node == NODE_TYPE_MUSICVIDEOS_ALBUM)
-        items.SetContent("albums");
-      else if (node == NODE_TYPE_SETS)
-        items.SetContent("sets");
-      else if (node == NODE_TYPE_TAGS)
-        items.SetContent("tags");
-      else
-        items.SetContent("");
     }
     else if (URIUtils::PathEquals(items.GetPath(), "special://videoplaylists/"))
       items.SetContent("playlists");
