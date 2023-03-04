@@ -17,7 +17,6 @@ class CDVDOverlay;
 class CDVDOverlayImage;
 class CDVDOverlaySpu;
 class CDVDOverlaySSA;
-typedef struct ass_image ASS_Image;
 
 namespace OVERLAY {
 

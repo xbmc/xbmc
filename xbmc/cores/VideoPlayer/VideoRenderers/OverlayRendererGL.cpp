@@ -78,6 +78,11 @@ static void LoadTexture(GLenum target
   *v = (GLfloat)height / height2;
 }
 
+std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlayImage& o, CRect& rSource)
+{
+  return std::make_shared<COverlayTextureGL>(o, rSource);
+}
+
 COverlayTextureGL::COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource)
 {
   glGenTextures(1, &m_texture);
@@ -145,6 +150,11 @@ COverlayTextureGL::COverlayTextureGL(const CDVDOverlayImage& o, CRect& rSource)
   }
 }
 
+std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlaySpu& o)
+{
+  return std::make_shared<COverlayTextureGL>(o);
+}
+
 COverlayTextureGL::COverlayTextureGL(const CDVDOverlaySpu& o)
 {
   int min_x, max_x, min_y, max_y;
@@ -172,6 +182,11 @@ COverlayTextureGL::COverlayTextureGL(const CDVDOverlaySpu& o)
   m_width = static_cast<float>(max_x - min_x);
   m_height = static_cast<float>(max_y - min_y);
   m_pma = !!USE_PREMULTIPLIED_ALPHA;
+}
+
+std::shared_ptr<COverlay> COverlay::Create(ASS_Image* images, float width, float height)
+{
+  return std::make_shared<COverlayGlyphGL>(images, width, height);
 }
 
 COverlayGlyphGL::COverlayGlyphGL(ASS_Image* images, float width, float height)

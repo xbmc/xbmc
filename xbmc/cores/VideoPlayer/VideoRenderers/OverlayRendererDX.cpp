@@ -61,6 +61,11 @@ static bool LoadTexture(int width, int height, int stride
   return true;
 }
 
+std::shared_ptr<COverlay> COverlay::Create(ASS_Image* images, float width, float height)
+{
+  return std::make_shared<COverlayQuadsDX>(images, width, height);
+}
+
 COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, float width, float height)
 {
   m_width  = 1.0;
@@ -196,6 +201,11 @@ void COverlayQuadsDX::Render(SRenderState &state)
   pGUIShader->RestoreBuffers();
 }
 
+std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlayImage& o, CRect& rSource)
+{
+  return std::make_shared<COverlayImageDX>(o, rSource);
+}
+
 COverlayImageDX::~COverlayImageDX()
 {
 }
@@ -255,6 +265,11 @@ COverlayImageDX::COverlayImageDX(const CDVDOverlayImage& o, CRect& rSource)
     m_width = static_cast<float>(o.width);
     m_height = static_cast<float>(o.height);
   }
+}
+
+std::shared_ptr<COverlay> COverlay::Create(const CDVDOverlaySpu& o)
+{
+  return std::make_shared<COverlayImageDX>(o);
 }
 
 COverlayImageDX::COverlayImageDX(const CDVDOverlaySpu& o)
