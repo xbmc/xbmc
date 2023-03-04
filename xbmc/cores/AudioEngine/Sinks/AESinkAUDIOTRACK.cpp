@@ -811,12 +811,6 @@ unsigned int CAESinkAUDIOTRACK::AddPackets(uint8_t **data, unsigned int frames, 
   if (!IsInitialized())
     return INT_MAX;
 
-  if (m_delay > 1.0)
-  {
-    CLog::Log(LOGERROR, "Sink got stuck with large buffer {:f} - reopening", m_delay);
-    return INT_MAX;
-  }
-
   // for debugging only - can be removed if everything is really stable
   uint64_t startTime = CurrentHostCounter();
 
