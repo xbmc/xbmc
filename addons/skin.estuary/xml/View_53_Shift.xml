@@ -123,15 +123,25 @@
 								<aligny>center</aligny>
 							</control>
 						</control>
-						<control type="image">
-							<left>35</left>
-							<top>518</top>
-							<width>32</width>
-							<height>32</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<texture>$VAR[WallWatchedIconVar]</texture>
-						</control>
+						<control type="group">
+							<visible>Listitem.IsCollection | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0) | !Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+							<control type="image">
+								<left>30</left>
+								<top>470</top>
+								<width>80</width>
+								<height>80</height>
+								<texture>overlays/overlay-bg.png</texture>
+							</control>
+							<control type="image">
+								<left>35</left>
+								<top>518</top>
+								<width>32</width>
+								<height>32</height>
+								<align>left</align>
+								<aligny>center</aligny>
+								<texture>$VAR[WallWatchedIconVar]</texture>
+							</control>
+						</control>						
 						<control type="group">
 							<left>158</left>
 							<top>92</top>
@@ -211,14 +221,24 @@
 								<aligny>center</aligny>
 							</control>
 						</control>
-						<control type="image">
-							<left>35</left>
-							<top>518</top>
-							<width>32</width>
-							<height>32</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<texture>$VAR[WallWatchedIconVar]</texture>
+						<control type="group">
+							<visible>Listitem.IsCollection | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0) | !Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+							<control type="image">
+								<left>30</left>
+								<top>470</top>
+								<width>80</width>
+								<height>80</height>
+								<texture>overlays/overlay-bg.png</texture>
+							</control>
+							<control type="image">
+								<left>35</left>
+								<top>518</top>
+								<width>32</width>
+								<height>32</height>
+								<align>left</align>
+								<aligny>center</aligny>
+								<texture>$VAR[WallWatchedIconVar]</texture>
+							</control>
 						</control>
 						<control type="group">
 							<left>158</left>
