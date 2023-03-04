@@ -29,6 +29,60 @@ CVideoDatabaseDirectory::CVideoDatabaseDirectory(void) = default;
 
 CVideoDatabaseDirectory::~CVideoDatabaseDirectory(void) = default;
 
+namespace
+{
+std::string GetChildContentType(const std::unique_ptr<CDirectoryNode>& node)
+{
+  switch (node->GetChildType())
+  {
+    case NODE_TYPE_EPISODES:
+    case NODE_TYPE_RECENTLY_ADDED_EPISODES:
+      return "episodes";
+    case NODE_TYPE_SEASONS:
+      return "seasons";
+    case NODE_TYPE_TITLE_MOVIES:
+    case NODE_TYPE_RECENTLY_ADDED_MOVIES:
+      return "movies";
+    case NODE_TYPE_TITLE_TVSHOWS:
+    case NODE_TYPE_INPROGRESS_TVSHOWS:
+      return "tvshows";
+    case NODE_TYPE_TITLE_MUSICVIDEOS:
+    case NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
+      return "musicvideos";
+    case NODE_TYPE_GENRE:
+      return "genres";
+    case NODE_TYPE_COUNTRY:
+      return "countries";
+    case NODE_TYPE_ACTOR:
+    {
+      CQueryParams params;
+      node->CollectQueryParams(params);
+      if (static_cast<VideoDbContentType>(params.GetContentType()) ==
+          VideoDbContentType::MUSICVIDEOS)
+        return "artists";
+
+      return "actors";
+    }
+    case NODE_TYPE_DIRECTOR:
+      return "directors";
+    case NODE_TYPE_STUDIO:
+      return "studios";
+    case NODE_TYPE_YEAR:
+      return "years";
+    case NODE_TYPE_MUSICVIDEOS_ALBUM:
+      return "albums";
+    case NODE_TYPE_SETS:
+      return "sets";
+    case NODE_TYPE_TAGS:
+      return "tags";
+    default:
+      break;
+  }
+  return {};
+}
+
+} // unnamed namespace
+
 bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items)
 {
   std::string path = CLegacyPathTranslation::TranslateVideoDbPath(url);
@@ -58,6 +112,8 @@ bool CVideoDatabaseDirectory::GetDirectory(const CURL& url, CFileItemList &items
     items.SetLabel(items.GetProperty("customtitle").asString());
   else
     items.SetLabel(pNode->GetLocalizedName());
+
+  items.SetContent(GetChildContentType(pNode));
 
   return bResult;
 }

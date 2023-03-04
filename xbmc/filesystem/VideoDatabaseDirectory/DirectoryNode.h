@@ -66,6 +66,7 @@ namespace XFILE
       bool GetChilds(CFileItemList& items);
       virtual NODE_TYPE GetChildType() const;
       virtual std::string GetLocalizedName() const;
+      void CollectQueryParams(CQueryParams& params) const;
 
       CDirectoryNode* GetParent() const;
 
@@ -76,8 +77,7 @@ namespace XFILE
       CDirectoryNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
       static CDirectoryNode* CreateNode(NODE_TYPE Type, const std::string& strName, CDirectoryNode* pParent);
 
-      void AddOptions(const std::string &options);
-      void CollectQueryParams(CQueryParams& params) const;
+      void AddOptions(const std::string& options);
 
       const std::string& GetName() const;
       int GetID() const;
