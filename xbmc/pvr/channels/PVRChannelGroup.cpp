@@ -137,7 +137,7 @@ void CPVRChannelGroup::Unload()
 
 bool CPVRChannelGroup::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  if (GroupType() == PVR_GROUP_TYPE_USER_DEFINED || !GetSettings()->SyncChannelGroups())
+  if (GroupType() == PVR_GROUP_TYPE_LOCAL || !GetSettings()->SyncChannelGroups())
     return true;
 
   // get the channel group members from the backends.

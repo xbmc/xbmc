@@ -23,9 +23,9 @@ struct PVR_CHANNEL_GROUP;
 
 namespace PVR
 {
-#define PVR_GROUP_TYPE_DEFAULT 0
-#define PVR_GROUP_TYPE_INTERNAL 1
-#define PVR_GROUP_TYPE_USER_DEFINED 2
+static constexpr int PVR_GROUP_TYPE_BACKEND = 0;
+static constexpr int PVR_GROUP_TYPE_ALL_CHANNELS = 1;
+static constexpr int PVR_GROUP_TYPE_LOCAL = 2;
 
 enum class PVREvent;
 
@@ -167,7 +167,7 @@ public:
    * @brief Check if this group is the internal group containing all channels.
    * @return True if it's the internal group, false otherwise.
    */
-  bool IsInternalGroup() const { return m_iGroupType == PVR_GROUP_TYPE_INTERNAL; }
+  bool IsInternalGroup() const { return m_iGroupType == PVR_GROUP_TYPE_ALL_CHANNELS; }
 
   /*!
    * @brief True if this group holds radio channels, false if it holds TV channels.
@@ -487,7 +487,7 @@ protected:
 
   std::shared_ptr<CPVRChannelGroupSettings> GetSettings() const;
 
-  int m_iGroupType = PVR_GROUP_TYPE_DEFAULT; /*!< The type of this group */
+  int m_iGroupType = PVR_GROUP_TYPE_BACKEND; /*!< The type of this group */
   int m_iGroupId = INVALID_GROUP_ID; /*!< The ID of this group in the database */
   bool m_bLoaded = false; /*!< True if this container is loaded, false otherwise */
   bool m_bChanged =
