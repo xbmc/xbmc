@@ -30,16 +30,16 @@ if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
 endif()
 
 if (OPENGL_FOUND OR OPENGLES_FOUND)
-  list(APPEND SOURCES OverlayRendererGL.cpp
-                      FrameBufferObject.cpp)
-  list(APPEND HEADERS OverlayRendererGL.h
-                      FrameBufferObject.h)
+  list(APPEND SOURCES FrameBufferObject.cpp)
+  list(APPEND HEADERS FrameBufferObject.h)
 endif()
 
 if(OPENGL_FOUND)
   list(APPEND SOURCES LinuxRendererGL.cpp
+                      OverlayRendererGL.cpp
                       RenderCaptureGL.cpp)
   list(APPEND HEADERS LinuxRendererGL.h
+                      OverlayRendererGL.h
                       RenderCaptureGL.h)
 endif()
 
@@ -50,8 +50,10 @@ if(OPENGLES_FOUND AND ("android" IN_LIST CORE_PLATFORM_NAME_LC OR
                        "x11" IN_LIST CORE_PLATFORM_NAME_LC OR
                        "wayland" IN_LIST CORE_PLATFORM_NAME_LC))
   list(APPEND SOURCES LinuxRendererGLES.cpp
+                      OverlayRendererGLES.cpp
                       RenderCaptureGLES.cpp)
   list(APPEND HEADERS LinuxRendererGLES.h
+                      OverlayRendererGLES.cpp
                       RenderCaptureGLES.h)
 endif()
 
