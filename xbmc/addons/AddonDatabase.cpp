@@ -687,6 +687,13 @@ bool CAddonDatabase::GetRepositoryContent(const std::string& id, VECADDONS& addo
 
     if (repoIds.empty())
     {
+      if (id.empty())
+      {
+        CLog::Log(LOGDEBUG, "CAddonDatabase: no valid repository, continuing");
+        addons = {};
+        return true;
+      }
+
       CLog::Log(LOGDEBUG, "CAddonDatabase: no valid repository matching '{}'", id);
       return false;
     }
