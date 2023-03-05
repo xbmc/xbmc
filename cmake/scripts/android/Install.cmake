@@ -112,6 +112,18 @@ function(add_bundle_file file destination relative)
     add_dependencies(bundle_files ${APP_NAME_LC})
   endif()
 
+  if(TARGET ${file})
+    # Add support for IMPORTED lib targets
+    # If we need specific properties from other target types later, we can add them
+    # here with some validity checks
+    get_target_property(imploc_file ${file} IMPORTED_LOCATION)
+    if(imploc_file)
+      set(file ${imploc_file})
+    else()
+      return()
+    endif()
+  endif()
+
   string(REPLACE "${relative}/" "" outfile ${file})
   get_filename_component(file ${file} REALPATH)
   get_filename_component(outdir ${outfile} DIRECTORY)
