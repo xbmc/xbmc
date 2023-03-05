@@ -11,7 +11,6 @@
 #include "input/touch/generic/GenericTouchActionHandler.h"
 #include "input/touch/generic/GenericTouchInputHandler.h"
 #include "rendering/dx/DirectXHelper.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/WindowSystemFactory.h"
 
@@ -47,9 +46,6 @@ void CWinSystemWin10DX::PresentRenderImpl(bool rendered)
     m_delayDispReset = false;
     OnDisplayReset();
   }
-
-  if (!rendered)
-    KODI::TIME::Sleep(40ms);
 }
 
 bool CWinSystemWin10DX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)

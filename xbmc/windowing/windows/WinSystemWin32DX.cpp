@@ -14,7 +14,6 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/SystemInfo.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WindowSystemFactory.h"
@@ -80,9 +79,6 @@ void CWinSystemWin32DX::PresentRenderImpl(bool rendered)
     m_delayDispReset = false;
     OnDisplayReset();
   }
-
-  if (!rendered)
-    KODI::TIME::Sleep(40ms);
 }
 
 bool CWinSystemWin32DX::CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res)

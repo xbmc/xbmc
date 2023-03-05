@@ -17,7 +17,6 @@
 #include "utils/FileUtils.h"
 #include "utils/GLUtils.h"
 #include "utils/MathUtils.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/WinSystem.h"
 
@@ -324,9 +323,6 @@ void CRenderSystemGL::PresentRender(bool rendered, bool videoLayer)
     return;
 
   PresentRenderImpl(rendered);
-
-  if (!rendered)
-    KODI::TIME::Sleep(40ms);
 }
 
 void CRenderSystemGL::SetVSync(bool enable)

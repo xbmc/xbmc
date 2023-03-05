@@ -93,6 +93,11 @@ public:
                                         std::vector<StringSettingOption>& list,
                                         std::string& current,
                                         void* data);
+  static void SettingOptionsSleepFrameratesFiller(
+      const std::shared_ptr<const CSetting>& setting,
+      std::vector<IntegerSettingOption>& list,
+      int& current,
+      void* data);
   static void SettingOptionsRefreshChangeDelaysFiller(
       const std::shared_ptr<const CSetting>& setting,
       std::vector<IntegerSettingOption>& list,

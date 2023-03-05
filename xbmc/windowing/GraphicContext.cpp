@@ -25,6 +25,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/log.h"
+#include "utils/XTimeUtils.h"
 
 #include <cassert>
 #include <mutex>
@@ -991,6 +992,26 @@ void CGraphicContext::Flip(bool rendered, bool videoLayer)
     m_stereoMode = m_nextStereoMode;
     SetVideoResolution(GetVideoResolution(), true);
     CServiceBroker::GetGUI()->GetWindowManager().SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_RENDERER_RESET);
+  }
+
+  // if video is rendered to a separate layer, we should not block this thread
+  if (!rendered && !videoLayer)
+  {
+    auto wait = std::chrono::milliseconds(10);
+    int sleepframerate = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.sleepframerate");
+    if (sleepframerate)
+    {
+      // start sleeping only after 60 frames without rendering
+      if (m_iSleepFrames < 60)
+        m_iSleepFrames++;
+      else
+        wait = std::chrono::milliseconds(1000 / sleepframerate);
+    }
+    KODI::TIME::Sleep(wait);
+  }
+  else if (rendered)
+  {
+    m_iSleepFrames = 0;
   }
 }
 

@@ -21,7 +21,6 @@
 #include "utils/DumbBufferObject.h"
 #include "utils/GBMBufferObject.h"
 #include "utils/UDMABufferObject.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/WindowSystemFactory.h"
 
@@ -137,10 +136,6 @@ void CWinSystemGbmGLContext::PresentRender(bool rendered, bool videoLayer)
       for (auto resource : m_resources)
         resource->OnResetDisplay();
     }
-  }
-  else
-  {
-    KODI::TIME::Sleep(10ms);
   }
 }
 

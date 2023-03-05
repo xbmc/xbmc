@@ -7587,9 +7587,21 @@ msgctxt "#13525"
 msgid "When enabled, use the original year of release rather than the album release year (if available)."
 msgstr ""
 
-#empty strings from id 13526 to 13549
+#empty strings from id 13526 to 13546
 
 #: system/settings/settings.xml
+msgctxt "#13547"
+msgid "Limit framerate while sleeping"
+msgstr ""
+
+msgctxt "#13548"
+msgid "Off"
+msgstr ""
+
+msgctxt "#13549"
+msgid "{0:d} FPS"
+msgstr ""
+
 msgctxt "#13550"
 msgid "Delay after change of refresh rate"
 msgstr ""
@@ -20915,7 +20927,11 @@ msgctxt "#36434"
 msgid "If enabled, switch to the channel with the programme to remind when auto-closing the reminder popup."
 msgstr ""
 
-#empty string with id 36435
+#. Description of setting with label #13547 "Limit framerate while sleeping"
+#: system/settings/settings.xml
+msgctxt "#36435"
+msgid "Limit framerate while the interface is not used to use less energy"
+msgstr ""
 
 #. Description for setting #407: "Hardware keyboard layouts"
 #. Setting in System -> Input -> Hardware keyboard layouts

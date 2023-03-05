@@ -720,6 +720,19 @@ void CDisplaySettings::SettingOptionsModesFiller(const std::shared_ptr<const CSe
   std::sort(list.begin(), list.end(), ModeSort);
 }
 
+void CDisplaySettings::SettingOptionsSleepFrameratesFiller(
+    const SettingConstPtr& setting,
+    std::vector<IntegerSettingOption>& list,
+    int& current,
+    void* data)
+{
+  list.emplace_back(g_localizeStrings.Get(13548), 0);
+  for (int i = 1; i < 10; i++)
+    list.emplace_back(StringUtils::Format(g_localizeStrings.Get(13549), i), i);
+  for (int j = 10; j <= 60; j+=5)
+    list.emplace_back(StringUtils::Format(g_localizeStrings.Get(13549), j), j);
+}
+
 void CDisplaySettings::SettingOptionsRefreshChangeDelaysFiller(
     const SettingConstPtr& setting,
     std::vector<IntegerSettingOption>& list,

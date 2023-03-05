@@ -195,6 +195,7 @@ protected:
   bool m_bCalibrating = false;
   RESOLUTION m_Resolution = RES_INVALID;
   float m_fFPSOverride = 0.0f;
+  int m_iSleepFrames = 0;
 
   RESOLUTION_INFO m_windowResolution;
   std::stack<CPoint> m_cameras;

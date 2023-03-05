@@ -16,8 +16,6 @@
 #include "utils/GLUtils.h"
 #include "utils/MathUtils.h"
 #include "utils/SystemInfo.h"
-#include "utils/TimeUtils.h"
-#include "utils/XTimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
@@ -228,10 +226,6 @@ void CRenderSystemGLES::PresentRender(bool rendered, bool videoLayer)
     return;
 
   PresentRenderImpl(rendered);
-
-  // if video is rendered to a separate layer, we should not block this thread
-  if (!rendered && !videoLayer)
-    KODI::TIME::Sleep(40ms);
 }
 
 void CRenderSystemGLES::SetVSync(bool enable)
