@@ -32,6 +32,7 @@ list(APPEND ffmpeg_conf --disable-doc
                         --disable-devices
                         --disable-programs
                         --disable-sdl2
+                        --disable-vulkan
                         --enable-gpl
                         --enable-postproc
                         --enable-runtime-cpudetect
