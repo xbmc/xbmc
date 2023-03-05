@@ -967,13 +967,16 @@ void CWinSystemWin32::UpdateResolutions()
   CWinSystemBase::UpdateResolutions();
   GetConnectedDisplays(m_displays);
 
-  // For the migration of setting videoscreen.monitor from GDI device string to EDID-based name
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   std::string settingsMonitor = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
   MONITOR_DETAILS* details = GetDisplayDetails(settingsMonitor);
   if (!details)
     return;
-  if (settingsMonitor != FromW(details->MonitorNameW))
+  // Migrate the setting to EDID-based name for connected and recognized screens.
+  // Other screens may be temporarily turned off, ignore so they're used once available again
+  if (settingsMonitor != FromW(details->MonitorNameW) &&
+      (settingsMonitor == FromW(details->DeviceStringW) ||
+       settingsMonitor == FromW(details->DeviceNameW)))
     CDisplaySettings::GetInstance().SetMonitor(FromW(details->MonitorNameW));
 
   float refreshRate;
