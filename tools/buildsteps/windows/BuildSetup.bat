@@ -101,11 +101,11 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
   Echo xbmc.old.log>>exclude.txt
   Echo kodi.log>>exclude.txt
   Echo kodi.old.log>>exclude.txt
-  Echo .so>>exclude.txt
-  Echo .h>>exclude.txt
-  Echo .cpp>>exclude.txt
-  Echo .exp>>exclude.txt
-  Echo .lib>>exclude.txt
+  Echo .so\>>exclude.txt
+  Echo .h\>>exclude.txt
+  Echo .cpp\>>exclude.txt
+  Echo .exp\>>exclude.txt
+  Echo .lib\>>exclude.txt
   rem Exclude userdata files
   Echo userdata\advancedsettings.xml>>exclude.txt
   Echo userdata\guisettings.xml>>exclude.txt
@@ -230,11 +230,11 @@ set WORKSPACE=%base_dir%\kodi-build.%TARGET_PLATFORM%
     goto DIE
   )
   copy %PDB% %APP_PDBFILE% > nul
-  POPD
   ECHO ------------------------------------------------------------
   ECHO Done!
   ECHO Setup is located at %CD%\%APP_SETUPFILE%
   ECHO ------------------------------------------------------------
+  POPD
   GOTO END
 
 :MAKE_APPX
