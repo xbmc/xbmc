@@ -106,6 +106,8 @@ bool CAddonRepos::LoadAddonsFromDatabase(const std::string& addonId,
   {
     // load full repository content
     m_addonDb.GetRepositoryContent(m_allAddons);
+    if (m_allAddons.empty())
+      return true;
   }
   else
   {
