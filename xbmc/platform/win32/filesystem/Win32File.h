@@ -40,6 +40,7 @@ namespace XFILE
     virtual bool Exists(const CURL& url);
     virtual int Stat(const CURL& url, struct __stat64* statData);
     virtual int Stat(struct __stat64* statData);
+    virtual int GetChunkSize();
 
   protected:
     explicit CWin32File(bool asSmbFile);
