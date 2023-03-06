@@ -408,7 +408,8 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
   if (!item)
     return false;
 
-  SetChannelGroup(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetByName(item->m_strTitle));
+  SetChannelGroup(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetGroupByPath(
+      item->GetPath()));
 
   return true;
 }

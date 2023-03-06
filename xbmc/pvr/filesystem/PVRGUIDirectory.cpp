@@ -495,7 +495,7 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
         group = CServiceBroker::GetPVRManager()
                     .ChannelGroups()
                     ->Get(path.IsRadio())
-                    ->GetByName(strGroupName);
+                    ->GetByName(strGroupName, path.GetGroupClientID());
       }
 
       if (group)

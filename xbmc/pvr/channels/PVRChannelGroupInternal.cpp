@@ -29,7 +29,8 @@
 using namespace PVR;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio)
-  : CPVRChannelGroup(CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287)), nullptr),
+  : CPVRChannelGroup(
+        CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287), PVR_GROUP_CLIENT_ID_LOCAL), nullptr),
     m_iHiddenChannels(0)
 {
   m_iGroupType = PVR_GROUP_TYPE_ALL_CHANNELS;
@@ -117,7 +118,8 @@ bool CPVRChannelGroupInternal::UpdateFromClients(
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers;
   std::transform(channels.cbegin(), channels.cend(), std::back_inserter(groupMembers),
                  [this](const auto& channel) {
-                   return std::make_shared<CPVRChannelGroupMember>(GroupID(), GroupName(), channel);
+                   return std::make_shared<CPVRChannelGroupMember>(GroupID(), GroupName(),
+                                                                   GetClientID(), channel);
                  });
 
   return UpdateGroupEntries(groupMembers);

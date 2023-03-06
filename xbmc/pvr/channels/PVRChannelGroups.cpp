@@ -76,7 +76,15 @@ bool CPVRChannelGroups::Update(const std::shared_ptr<CPVRChannelGroup>& group,
 
     // try to find the group by name if we didn't find it yet
     if (!updateGroup)
-      updateGroup = GetByName(group->GroupName());
+    {
+      const auto it = std::find_if(m_groups.cbegin(), m_groups.cend(), [&group](const auto& g) {
+        return g->GroupName() == group->GroupName() &&
+               (g->GetClientID() == PVR_GROUP_CLIENT_ID_UNKNOWN ||
+                g->GetClientID() == group->GetClientID());
+      });
+      if (it != m_groups.cend())
+        updateGroup = *it;
+    }
 
     if (updateGroup)
     {
@@ -84,6 +92,7 @@ bool CPVRChannelGroups::Update(const std::shared_ptr<CPVRChannelGroup>& group,
       updateGroup->SetGroupID(group->GroupID());
       updateGroup->SetGroupType(group->GroupType());
       updateGroup->SetPosition(group->GetPosition());
+      updateGroup->SetClientID(group->GetClientID());
 
       // don't override properties we only store locally in our PVR database
       if (!bUpdateFromClient)
@@ -132,7 +141,8 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroups::GetChannelGroupMember
 {
   if (path.IsChannel())
   {
-    const std::shared_ptr<CPVRChannelGroup> group = GetByName(path.GetGroupName());
+    const std::shared_ptr<CPVRChannelGroup> group =
+        GetByName(path.GetGroupName(), path.GetGroupClientID());
     if (group)
       return group->GetByUniqueID(
           {CPVRClientUID(path.GetAddonID(), path.GetInstanceID()).GetUID(), path.GetChannelUID()});
@@ -178,12 +188,14 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetGroupByPath(
   return {};
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetByName(const std::string& strName) const
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetByName(const std::string& strName,
+                                                               int clientID) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const auto it = std::find_if(m_groups.cbegin(), m_groups.cend(), [&strName](const auto& group) {
-    return group->GroupName() == strName;
-  });
+  const auto it =
+      std::find_if(m_groups.cbegin(), m_groups.cend(), [&strName, clientID](const auto& group) {
+        return group->GroupName() == strName && group->GetClientID() == clientID;
+      });
   return (it != m_groups.cend()) ? (*it) : std::shared_ptr<CPVRChannelGroup>();
 }
 
@@ -214,7 +226,7 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
     // get channel groups from the clients
     CServiceBroker::GetPVRManager().Clients()->GetChannelGroups(clients, this,
                                                                 m_failedClientsForChannelGroups);
-    CLog::LogFC(LOGDEBUG, LOGPVR, "{} new user defined {} channel groups fetched from clients",
+    CLog::LogFC(LOGDEBUG, LOGPVR, "{} new {} channel groups fetched from clients",
                 (m_groups.size() - iSize), m_bRadio ? "radio" : "TV");
   }
   else if (!bSyncWithBackends)
@@ -337,8 +349,11 @@ bool CPVRChannelGroups::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRC
   CLog::LogFC(LOGDEBUG, LOGPVR, "Fetched {} {} channels from the database", channels.size(),
               m_bRadio ? "radio" : "TV");
 
-  // load all groups from the database
-  const int iLoaded = database->Get(*this);
+  // load local groups from the database
+  int iLoaded = database->GetLocalGroups(*this);
+
+  // load backend-supplied groups from the database
+  iLoaded += database->Get(*this, clients);
   CLog::LogFC(LOGDEBUG, LOGPVR, "Fetched {} {} groups from the database", iLoaded,
               m_bRadio ? "radio" : "TV");
 
@@ -524,12 +539,13 @@ bool CPVRChannelGroups::AddGroup(const std::string& strName)
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
 
-    // check if there's no group with the same name yet
-    group = GetByName(strName);
+    // check if there's another local group with the same name already
+    group = GetByName(strName, PVR_GROUP_CLIENT_ID_LOCAL);
     if (!group)
     {
       // create a new group
-      group.reset(new CPVRChannelGroup(CPVRChannelsPath(m_bRadio, strName), GetGroupAll()));
+      group.reset(new CPVRChannelGroup(
+          CPVRChannelsPath(m_bRadio, strName, PVR_GROUP_CLIENT_ID_LOCAL), GetGroupAll()));
 
       m_groups.push_back(group);
       bPersist = true;
