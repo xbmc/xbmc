@@ -3,10 +3,10 @@ DEPS = ../../Makefile.include Makefile ../../download-files.include
 
 # lib name, version
 LIBNAME=libasound
-VERSION=1.1.4.1
+VERSION=1.2.8
 SOURCE=alsa-lib-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
-SHA512=7b548c4ee29c4a1230a0edcd5d19219831290f96a214180a6530628acc05278d1348376195287d188f4f44d6be1914391c63994f1b50985c3eee74352da26b0b
+SHA512=865ff05a8f589996f8d63d43a91c961f1b64144f3e1d17c7074b7ac16f25b3fd1c371d46ed63a8cc20fa01e63c76b75f1a9802b56889ae1073854dd050d27688
 include ../../download-files.include
 
 # configuration settings
