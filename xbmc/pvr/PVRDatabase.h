@@ -64,7 +64,7 @@ namespace PVR
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    int GetSchemaVersion() const override { return 40; }
+    int GetSchemaVersion() const override { return 41; }
 
     /*!
      * @brief Get the default sqlite database filename.
@@ -208,11 +208,20 @@ namespace PVR
     bool Delete(const CPVRChannelGroup& group);
 
     /*!
-     * @brief Get the channel groups.
+     * @brief Get all local channel groups.
      * @param results The container to store the results in.
      * @return The number of groups loaded.
      */
-    int Get(CPVRChannelGroups& results) const;
+    int GetLocalGroups(CPVRChannelGroups& results) const;
+
+    /*!
+     * @brief Get client-supplied channel groups.
+     * @param results The container to store the results in.
+     * @param clients The PVR clients the groups should be loaded for. Leave empty for all clients.
+     * @return The number of groups loaded.
+     */
+    int Get(CPVRChannelGroups& results,
+            const std::vector<std::shared_ptr<CPVRClient>>& clients) const;
 
     /*!
      * @brief Get the members of a channel group.
@@ -308,6 +317,8 @@ namespace PVR
      */
     void UpdateTables(int version) override;
     int GetMinSchemaVersion() const override { return 11; }
+
+    int GetGroups(CPVRChannelGroups& results, const std::string& query) const;
 
     bool PersistGroupMembers(const CPVRChannelGroup& group);
 

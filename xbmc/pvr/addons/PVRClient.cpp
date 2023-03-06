@@ -1644,7 +1644,7 @@ void CPVRClient::cb_transfer_channel_group(void* kodiInstance,
     // transfer this entry to the groups container
     CPVRChannelGroups* kodiGroups = static_cast<CPVRChannelGroups*>(handle->dataAddress);
     const auto transferGroup =
-        std::make_shared<CPVRChannelGroup>(*group, kodiGroups->GetGroupAll());
+        std::make_shared<CPVRChannelGroup>(*group, client->GetID(), kodiGroups->GetGroupAll());
     kodiGroups->UpdateFromClient(transferGroup);
   });
 }
@@ -1672,8 +1672,8 @@ void CPVRClient::cb_transfer_channel_group_member(void* kodiInstance,
     {
       auto* groupMembers =
           static_cast<std::vector<std::shared_ptr<CPVRChannelGroupMember>>*>(handle->dataAddress);
-      groupMembers->emplace_back(
-          std::make_shared<CPVRChannelGroupMember>(member->strGroupName, member->iOrder, channel));
+      groupMembers->emplace_back(std::make_shared<CPVRChannelGroupMember>(
+          member->strGroupName, client->GetID(), member->iOrder, channel));
     }
   });
 }

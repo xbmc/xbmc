@@ -114,9 +114,10 @@ public:
   /*!
    * @brief Get a group given its name.
    * @param strName The name.
+   * @param clientID The id of the client of the group to obtain or PVR_GROUP_CLIENT_ID_LOCAL for local groups.
    * @return The group or NULL if it wasn't found.
    */
-  std::shared_ptr<CPVRChannelGroup> GetByName(const std::string& strName) const;
+  std::shared_ptr<CPVRChannelGroup> GetByName(const std::string& strName, int clientID) const;
 
   /*!
    * @brief Get the group that contains all channels.
