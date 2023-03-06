@@ -761,3 +761,11 @@ int CWin32File::Stat(struct __stat64* statData)
 
   return 0;
 }
+
+int CWin32File::GetChunkSize()
+{
+  if (m_smbFile)
+    return 64 * 1024;
+
+  return 0;
+}
