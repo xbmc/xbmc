@@ -27,6 +27,9 @@ static constexpr int PVR_GROUP_TYPE_BACKEND = 0;
 static constexpr int PVR_GROUP_TYPE_ALL_CHANNELS = 1;
 static constexpr int PVR_GROUP_TYPE_LOCAL = 2;
 
+static constexpr int PVR_GROUP_CLIENT_ID_UNKNOWN = -2;
+static constexpr int PVR_GROUP_CLIENT_ID_LOCAL = -1;
+
 enum class PVREvent;
 
 class CPVRChannel;
@@ -61,9 +64,11 @@ public:
   /*!
    * @brief Create a new channel group instance from a channel group provided by an add-on.
    * @param group The channel group provided by the add-on.
+   * @param clientID The id of the client providing the group.
    * @param allChannelsGroup The channel group containing all TV or radio channels.
    */
   CPVRChannelGroup(const PVR_CHANNEL_GROUP& group,
+                   int clientID,
                    const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup);
 
   ~CPVRChannelGroup() override;
@@ -108,6 +113,18 @@ public:
    * @return True on success, false otherwise.
    */
   virtual bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients);
+
+  /*!
+   * @brief Get the identifier of the client that serves this channel group.
+   * @return The identifier or PVR_GROUP_CLIENT_ID_LOCAL for local groups.
+   */
+  int GetClientID() const;
+
+  /*!
+   * @brief Set the identifier of the client that serves this channel group.
+   * @param clientID The identifier; must be PVR_GROUP_CLIENT_ID_LOCAL for local groups.
+   */
+  void SetClientID(int clientID);
 
   /*!
    * @brief Get the path of this group.

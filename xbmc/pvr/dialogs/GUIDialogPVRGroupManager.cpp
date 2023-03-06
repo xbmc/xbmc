@@ -114,7 +114,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(const CGUIMessage& message)
           CServiceBroker::GetPVRManager()
               .ChannelGroups()
               ->Get(m_bIsRadio)
-              ->GetByName(strGroupName)
+              ->GetByName(strGroupName, PVR_GROUP_CLIENT_ID_LOCAL)
               ->SetGroupType(PVR_GROUP_TYPE_LOCAL);
           m_iSelectedChannelGroup = groups->Size() - 1;
           Update();
@@ -458,7 +458,10 @@ void CGUIDialogPVRGroupManager::Update()
 
   /* select a group or select the default group if no group was selected */
   CFileItemPtr pItem = m_channelGroups->Get(m_viewChannelGroups.GetSelectedItem());
-  m_selectedGroup = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->GetByName(pItem->m_strTitle);
+  m_selectedGroup = CServiceBroker::GetPVRManager()
+                        .ChannelGroups()
+                        ->Get(m_bIsRadio)
+                        ->GetGroupByPath(pItem->GetPath());
   if (m_selectedGroup)
   {
     /* set this group in the pvrmanager, so it becomes the selected group in other dialogs too */
