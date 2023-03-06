@@ -45,16 +45,18 @@ using namespace std::chrono_literals;
 
 namespace
 {
+// Default "lease_time" on most Linux NFSv4 servers are 90s.
+// See: https://linux-nfs.org/wiki/index.php/NFS_lock_recovery_notes
+// Keep alive interval should be always less than lease_time to avoid client session expires
 
-constexpr auto CONTEXT_TIMEOUT = 6min;
+constexpr auto CONTEXT_TIMEOUT = 60s; // 2/3 parts of lease_time
+constexpr auto KEEP_ALIVE_TIMEOUT = 45s; // half of lease_time
+constexpr auto IDLE_TIMEOUT = 30s; // close fast unused contexts when no active connections
 
-constexpr auto KEEP_ALIVE_TIMEOUT = 3min;
-
-constexpr auto IDLE_TIMEOUT = 3min;
+constexpr int NFS4ERR_EXPIRED = -11; // client session expired due idle time greater than lease_time
 
 constexpr auto SETTING_NFS_VERSION = "nfs.version";
-
-} // namespace
+} // unnamed namespace
 
 CNfsConnection::CNfsConnection()
   : m_pNfsContext(NULL),
@@ -327,9 +329,21 @@ bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
     }
     m_exportPath = exportPath;
     m_hostName = url.GetHostName();
-    //read chunksize only works after mount
+
+    // read chunksize only works after mount
     m_readChunkSize = nfs_get_readmax(m_pNfsContext);
     m_writeChunkSize = nfs_get_writemax(m_pNfsContext);
+
+    if (m_readChunkSize == 0)
+    {
+      CLog::Log(LOGDEBUG, "NFS Server did not return max read chunksize - Using 128K default");
+      m_readChunkSize = 128 * 1024; // 128K
+    }
+    if (m_writeChunkSize == 0)
+    {
+      CLog::Log(LOGDEBUG, "NFS Server did not return max write chunksize - Using 128K default");
+      m_writeChunkSize = 128 * 1024; // 128K
+    }
 
     if (contextRet == CNfsConnection::ContextStatus::NEW)
     {
@@ -432,11 +446,20 @@ void CNfsConnection::keepAlive(const std::string& _exportPath, struct nfsfh* _pF
   if (!pContext)// this should normally never happen - paranoia
     pContext = m_pNfsContext;
 
-  CLog::Log(LOGINFO, "NFS: sending keep alive after {} s.",
-            std::chrono::duration_cast<std::chrono::seconds>(KEEP_ALIVE_TIMEOUT).count());
+  CLog::LogF(LOGDEBUG, "sending keep alive after {}s.",
+             std::chrono::duration_cast<std::chrono::seconds>(KEEP_ALIVE_TIMEOUT).count());
+
   std::unique_lock<CCriticalSection> lock(*this);
+
   nfs_lseek(pContext, _pFileHandle, 0, SEEK_CUR, &offset);
-  nfs_read(pContext, _pFileHandle, 32, buffer);
+
+  int bytes = nfs_read(pContext, _pFileHandle, 32, buffer);
+  if (bytes < 0)
+  {
+    CLog::LogF(LOGERROR, "nfs_read - Error ({}, {})", bytes, nfs_get_error(pContext));
+    return;
+  }
+
   nfs_lseek(pContext, _pFileHandle, offset, SEEK_SET, &offset);
 }
 
@@ -572,7 +595,6 @@ int64_t CNFSFile::GetLength()
 
 bool CNFSFile::Open(const CURL& url)
 {
-  int ret = 0;
   Close();
   // we can't open files like nfs://file.f or nfs://server/file.f
   // if a file matches the if below return false, it can't exist on a nfs share.
@@ -586,19 +608,32 @@ bool CNFSFile::Open(const CURL& url)
 
   std::unique_lock<CCriticalSection> lock(gNfsConnection);
 
-  if(!gNfsConnection.Connect(url, filename))
+  if (!gNfsConnection.Connect(url, filename))
     return false;
 
   m_pNfsContext = gNfsConnection.GetNfsContext();
   m_exportPath = gNfsConnection.GetContextMapId();
 
-  ret = nfs_open(m_pNfsContext, filename.c_str(), O_RDONLY, &m_pFileHandle);
+  int ret = nfs_open(m_pNfsContext, filename.c_str(), O_RDONLY, &m_pFileHandle);
+
+  if (ret == NFS4ERR_EXPIRED) // client session expired due no activity/keep alive
+  {
+    CLog::Log(LOGERROR,
+              "CNFSFile::Open: Unable to open file - trying again with a new context: error: '{}'",
+              nfs_get_error(m_pNfsContext));
+
+    gNfsConnection.Deinit();
+    m_pNfsContext = gNfsConnection.GetNfsContext();
+    m_exportPath = gNfsConnection.GetContextMapId();
+    ret = nfs_open(m_pNfsContext, filename.c_str(), O_RDONLY, &m_pFileHandle);
+  }
 
   if (ret != 0)
   {
-    CLog::Log(LOGINFO, "CNFSFile::Open: Unable to open file : '{}'  error : '{}'",
-              url.GetFileName(), nfs_get_error(m_pNfsContext));
-    m_pNfsContext = NULL;
+    CLog::Log(LOGERROR, "CNFSFile::Open: Unable to open file: '{}' error: '{}'", url.GetFileName(),
+              nfs_get_error(m_pNfsContext));
+
+    m_pNfsContext = nullptr;
     m_exportPath.clear();
     return false;
   }
