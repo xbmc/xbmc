@@ -16,6 +16,7 @@
 #include <atomic>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
@@ -1042,8 +1043,7 @@ private:
       m_ignoreClient; /*!< signals to PVRManager to ignore this client until it has been connected */
   std::vector<std::shared_ptr<CPVRTimerType>>
       m_timertypes; /*!< timer types supported by this backend */
-  mutable int m_iPriority; /*!< priority of the client */
-  mutable bool m_bPriorityFetched;
+  mutable std::optional<int> m_priority; /*!< priority of the client */
 
   /* cached data */
   std::string m_strBackendName; /*!< the cached backend version */

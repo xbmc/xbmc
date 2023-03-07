@@ -62,7 +62,8 @@ CPVRChannelGroup::~CPVRChannelGroup()
 bool CPVRChannelGroup::operator==(const CPVRChannelGroup& right) const
 {
   return (m_iGroupType == right.m_iGroupType && m_iGroupId == right.m_iGroupId &&
-          m_iPosition == right.m_iPosition && m_path == right.m_path);
+          m_iPosition == right.m_iPosition && m_path == right.m_path &&
+          m_clientPriority == right.m_clientPriority);
 }
 
 bool CPVRChannelGroup::operator!=(const CPVRChannelGroup& right) const
@@ -266,7 +267,20 @@ void CPVRChannelGroup::SortByChannelNumber()
   std::sort(m_sortedMembers.begin(), m_sortedMembers.end(), sortByChannelNumber());
 }
 
-bool CPVRChannelGroup::UpdateClientPriorities()
+void CPVRChannelGroup::UpdateClientPriorities()
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  // Update own priority value
+  m_clientPriority.reset();
+  GetClientPriority();
+
+  // Update group member's value and re-sort members
+  if (UpdateMembersClientPriority())
+    SortAndRenumber();
+}
+
+bool CPVRChannelGroup::UpdateMembersClientPriority()
 {
   const std::shared_ptr<CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
   bool bChanged = false;
@@ -300,6 +314,7 @@ bool CPVRChannelGroup::UpdateClientPriorities()
 }
 
 /********** getters **********/
+
 std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetByUniqueID(
     const std::pair<int, int>& id) const
 {
@@ -760,7 +775,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(
 
   bRemoved = !RemoveDeletedGroupMembers(groupMembers).empty();
   bChanged = AddAndUpdateGroupMembers(groupMembers) || bRemoved;
-  bChanged |= UpdateClientPriorities();
+  bChanged |= UpdateMembersClientPriority();
 
   if (bChanged)
   {
@@ -973,7 +988,7 @@ bool CPVRChannelGroup::IsNew() const
 void CPVRChannelGroup::UseBackendChannelOrderChanged()
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  UpdateClientPriorities();
+  UpdateMembersClientPriority();
   OnSettingChanged();
 }
 
@@ -1227,4 +1242,21 @@ int CPVRChannelGroup::CleanupCachedImages()
   const std::string owner =
       StringUtils::Format(CPVRChannel::IMAGE_OWNER_PATTERN, IsRadio() ? "radio" : "tv");
   return CPVRCachedImages::Cleanup({{owner, ""}}, urlsToCheck);
+}
+
+int CPVRChannelGroup::GetClientPriority() const
+{
+  if (GetClientID() == PVR_GROUP_CLIENT_ID_UNKNOWN)
+    return 0; // not yet fully migrated; try later.
+
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  if (!m_clientPriority.has_value())
+  {
+    const auto client = CServiceBroker::GetPVRManager().GetClient(GetClientID());
+    if (client)
+      m_clientPriority = client->GetPriority();
+    else
+      m_clientPriority = 0;
+  }
+  return *m_clientPriority;
 }

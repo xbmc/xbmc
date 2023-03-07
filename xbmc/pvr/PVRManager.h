@@ -70,6 +70,7 @@ enum class PVREvent
   TimersInvalidated,
 
   // Client events
+  ClientsPrioritiesInvalidated,
   ClientsInvalidated,
 
   // EPG events

@@ -15,6 +15,7 @@
 
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
@@ -471,6 +472,17 @@ public:
    */
   int CleanupCachedImages();
 
+  /*!
+   * @brief Get the priority of the client that provides this group.
+   * @return the priority, as set by the user or 0. Always 0 for non-backend-supplied groups.
+   */
+  int GetClientPriority() const;
+
+  /*!
+   * @brief Update the client priority for this group and all members of this group.
+   */
+  void UpdateClientPriorities();
+
 protected:
   /*!
    * @brief Remove deleted group members from this group.
@@ -498,9 +510,9 @@ protected:
   void SortByChannelNumber();
 
   /*!
-   * @brief Update the priority for all members of all channel groups.
+   * @brief Update the client priority for all members of this group.
    */
-  bool UpdateClientPriorities();
+  bool UpdateMembersClientPriority();
 
   std::shared_ptr<CPVRChannelGroupSettings> GetSettings() const;
 
@@ -561,5 +573,6 @@ private:
   std::shared_ptr<CPVRChannelGroup> m_allChannelsGroup;
   CPVRChannelsPath m_path;
   bool m_bDeleted = false;
+  mutable std::optional<int> m_clientPriority;
 };
 } // namespace PVR
