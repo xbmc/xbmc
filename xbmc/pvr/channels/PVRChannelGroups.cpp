@@ -52,8 +52,20 @@ void CPVRChannelGroups::Unload()
   for (const auto& group : m_groups)
     group->Unload();
 
+  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
+  m_isSubscribed = false;
+
   m_groups.clear();
   m_failedClientsForChannelGroups.clear();
+}
+
+bool CPVRChannelGroups::UpdateFromClient(const std::shared_ptr<CPVRChannelGroup>& group)
+{
+  if (!Update(group, true))
+    return false;
+
+  SortGroups();
+  return true;
 }
 
 bool CPVRChannelGroups::Update(const std::shared_ptr<CPVRChannelGroup>& group,
@@ -109,9 +121,6 @@ bool CPVRChannelGroups::Update(const std::shared_ptr<CPVRChannelGroup>& group,
     }
   }
 
-  // sort groups
-  SortGroups();
-
   // persist changes
   if (bUpdateFromClient)
     return updateGroup->Persist();
@@ -119,21 +128,56 @@ bool CPVRChannelGroups::Update(const std::shared_ptr<CPVRChannelGroup>& group,
   return true;
 }
 
+namespace
+{
+int GetGroupTypePriority(const std::shared_ptr<CPVRChannelGroup>& group)
+{
+  switch (group->GroupType())
+  {
+    case PVR_GROUP_TYPE_ALL_CHANNELS:
+      return 0; // highest
+    case PVR_GROUP_TYPE_LOCAL:
+      return 1;
+    case PVR_GROUP_TYPE_BACKEND:
+      return 2;
+    default:
+      return 3;
+  }
+}
+
+int GetGroupClientPriority(const std::shared_ptr<CPVRChannelGroup>& group)
+{
+  // if no priority was set by the user, use the client id to distinguish between the clients
+  const int priority = group->GetClientPriority();
+  return priority > 0 ? -priority : -group->GetClientID();
+}
+
+} // unnamed namespace
+
 void CPVRChannelGroups::SortGroups()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-
-  // check if one of the group holds a valid sort position
-  const auto it = std::find_if(m_groups.cbegin(), m_groups.cend(),
-                               [](const auto& group) { return (group->GetPosition() > 0); });
-
-  // sort by position if we found a valid sort position
-  if (it != m_groups.cend())
   {
+    std::unique_lock<CCriticalSection> lock(m_critSection);
+
+    // sort by group type, then by client priority, then by position, last by name
     std::sort(m_groups.begin(), m_groups.end(), [](const auto& group1, const auto& group2) {
-      return group1->GetPosition() < group2->GetPosition();
+      if (GetGroupTypePriority(group1) == GetGroupTypePriority(group2))
+      {
+        if (GetGroupClientPriority(group1) == GetGroupClientPriority(group2))
+        {
+          if (group1->GetPosition() == group2->GetPosition())
+          {
+            return group1->GroupName() < group2->GroupName();
+          }
+          return group1->GetPosition() < group2->GetPosition();
+        }
+        return GetGroupClientPriority(group1) < GetGroupClientPriority(group2);
+      }
+      return GetGroupTypePriority(group1) < GetGroupTypePriority(group2);
     });
   }
+
+  CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
 }
 
 std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroups::GetChannelGroupMemberByPath(
@@ -377,6 +421,14 @@ bool CPVRChannelGroups::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRC
       ++it;
   }
 
+  // Register for client priority changes
+  if (!m_isSubscribed)
+  {
+    CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRChannelGroups::OnPVRManagerEvent);
+    m_isSubscribed = true;
+  }
+
+  SortGroups();
   return true;
 }
 
@@ -642,4 +694,24 @@ int CPVRChannelGroups::CleanupCachedImages()
   iCleanedImages += CPVRCachedImages::Cleanup({{"pvr", path}}, urlsToCheck, true);
 
   return iCleanedImages;
+}
+
+void CPVRChannelGroups::OnPVRManagerEvent(const PVR::PVREvent& event)
+{
+  if (event == PVREvent::ClientsPrioritiesInvalidated)
+  {
+    // Update group client priorities
+    std::vector<std::shared_ptr<CPVRChannelGroup>> groups;
+    {
+      std::unique_lock<CCriticalSection> lock(m_critSection);
+      groups = m_groups;
+    }
+
+    for (const auto& group : groups)
+    {
+      group->UpdateClientPriorities();
+    }
+
+    SortGroups();
+  }
 }

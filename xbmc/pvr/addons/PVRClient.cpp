@@ -121,8 +121,7 @@ void CPVRClient::ResetProperties()
   m_connectionState = PVR_CONNECTION_STATE_UNKNOWN;
   m_prevConnectionState = PVR_CONNECTION_STATE_UNKNOWN;
   m_ignoreClient = false;
-  m_iPriority = 0;
-  m_bPriorityFetched = false;
+  m_priority.reset();
   m_strBackendVersion = DEFAULT_INFO_STRING_VALUE;
   m_strConnectionString = DEFAULT_INFO_STRING_VALUE;
   m_strBackendName = DEFAULT_INFO_STRING_VALUE;
@@ -209,7 +208,7 @@ void CPVRClient::Destroy()
 void CPVRClient::Stop()
 {
   m_bBlockAddonCalls = true;
-  m_bPriorityFetched = false;
+  m_priority.reset();
 }
 
 void CPVRClient::Continue()
@@ -1578,26 +1577,25 @@ PVR_ERROR CPVRClient::CallSettingsMenuHook(const CPVRClientMenuHook& hook)
 void CPVRClient::SetPriority(int iPriority)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  if (m_iPriority != iPriority)
+  if (m_priority != iPriority)
   {
-    m_iPriority = iPriority;
+    m_priority = iPriority;
     if (m_iClientId > PVR_INVALID_CLIENT_ID)
     {
       CServiceBroker::GetPVRManager().GetTVDatabase()->Persist(*this);
-      m_bPriorityFetched = true;
     }
+    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ClientsPrioritiesInvalidated);
   }
 }
 
 int CPVRClient::GetPriority() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  if (!m_bPriorityFetched && m_iClientId > PVR_INVALID_CLIENT_ID)
+  if (!m_priority.has_value() && m_iClientId > PVR_INVALID_CLIENT_ID)
   {
-    m_iPriority = CServiceBroker::GetPVRManager().GetTVDatabase()->GetPriority(*this);
-    m_bPriorityFetched = true;
+    m_priority = CServiceBroker::GetPVRManager().GetTVDatabase()->GetPriority(*this);
   }
-  return m_iPriority;
+  return *m_priority;
 }
 
 void CPVRClient::HandleAddonCallback(const char* strFunctionName,

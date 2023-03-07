@@ -18,6 +18,8 @@
 
 namespace PVR
 {
+enum class PVREvent;
+
 class CPVRChannel;
 class CPVRClient;
 
@@ -75,10 +77,7 @@ public:
    * @param group The group to add
    * @return True when updated, false otherwise
    */
-  bool UpdateFromClient(const std::shared_ptr<CPVRChannelGroup>& group)
-  {
-    return Update(group, true);
-  }
+  bool UpdateFromClient(const std::shared_ptr<CPVRChannelGroup>& group);
 
   /*!
    * @brief Get a channel group member given its path
@@ -238,9 +237,12 @@ private:
    */
   bool HasValidDataForClients(const std::vector<std::shared_ptr<CPVRClient>>& clients) const;
 
+  void OnPVRManagerEvent(const PVR::PVREvent& event);
+
   bool m_bRadio{false};
   std::vector<std::shared_ptr<CPVRChannelGroup>> m_groups;
   mutable CCriticalSection m_critSection;
   std::vector<int> m_failedClientsForChannelGroups;
+  bool m_isSubscribed{false};
 };
 } // namespace PVR

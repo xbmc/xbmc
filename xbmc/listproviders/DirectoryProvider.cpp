@@ -336,7 +336,9 @@ void CDirectoryProvider::OnPVRManagerEvent(const PVR::PVREvent& event)
         event == PVR::PVREvent::RecordingsInvalidated ||
         event == PVR::PVREvent::TimersInvalidated ||
         event == PVR::PVREvent::ChannelGroupsInvalidated ||
-        event == PVR::PVREvent::SavedSearchesInvalidated)
+        event == PVR::PVREvent::SavedSearchesInvalidated ||
+        event == PVR::PVREvent::ClientsInvalidated ||
+        event == PVR::PVREvent::ClientsPrioritiesInvalidated)
       m_updateState = INVALIDATED;
   }
 }

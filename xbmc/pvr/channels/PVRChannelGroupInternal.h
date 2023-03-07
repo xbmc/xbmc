@@ -112,5 +112,7 @@ namespace PVR
 
   private:
     void OnPVRManagerEvent(const PVREvent& event);
+
+    bool m_isSubscribed{false};
   };
 }

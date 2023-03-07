@@ -45,6 +45,7 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelsPath& path)
 CPVRChannelGroupInternal::~CPVRChannelGroupInternal()
 {
   CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
+  m_isSubscribed = false;
 }
 
 bool CPVRChannelGroupInternal::LoadFromDatabase(
@@ -66,7 +67,14 @@ bool CPVRChannelGroupInternal::LoadFromDatabase(
     }
 
     UpdateChannelPaths();
-    CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRChannelGroupInternal::OnPVRManagerEvent);
+
+    if (!m_isSubscribed)
+    {
+      CServiceBroker::GetPVRManager().Events().Subscribe(
+          this, &CPVRChannelGroupInternal::OnPVRManagerEvent);
+      m_isSubscribed = true;
+    }
+
     return true;
   }
 
