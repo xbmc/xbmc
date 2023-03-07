@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.keyboard"
         name="IBM Model M Keyboard"
-        version="1.1.26"
+        version="1.1.27"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -10,25 +10,30 @@
             <icon>resources/icon.png</icon>
         </assets>
         <summary lang="da_DK">IBM Model M tastatur</summary>
-        <summary lang="de_DE">IBM Model M Tastatur</summary>
+        <summary lang="de_DE">IBM-Tastatur Model M</summary>
         <summary lang="en_GB">IBM Model M keyboard</summary>
+        <summary lang="es_ES">Teclado IBM modelo M</summary>
         <summary lang="fi_FI">IBM Model M -näppäimistö</summary>
+        <summary lang="fr_FR">Clavier IBM modèle M</summary>
         <summary lang="it_IT">Tastiera IBM modello M</summary>
         <summary lang="ru_RU">Клавиатура IBM Model M</summary>
         <summary lang="zh_CN">IBM M 型键盘</summary>
         <description lang="da_DK">IBM Model M-tastaturet, der blev introduceret i 1984, betragtes som et tidløst og holdbart stykke hardware.</description>
-        <description lang="de_DE">Die 1984 vorgestellte IBM Model M Tastatur ist als zeitlose und langlebige Hardware geschätzt.</description>
+        <description lang="de_DE">Die 1984 vorgestellte IBM-Tastatur Model M ist als zeitlose und langlebige Hardware geschätzt.</description>
         <description lang="en_GB">The IBM Model M keyboard, introduced in 1984, is regarded as a timeless and durable piece of hardware.</description>
+        <description lang="es_ES">El teclado IBM Modelo M, presentado en 1984, se considera una pieza de hardware atemporal y duradera.</description>
         <description lang="fi_FI">Vuonna 1984 esiteltyä IBM Model M -näppäimistöä pidetään ajattomana ja kestävänä laitteena.</description>
+        <description lang="fr_FR">Le clavier IBM Model M, introduit en 1984, est considéré comme un matériel intemporel et durable.</description>
         <description lang="it_IT">La tastiera IBM Model M, introdotta nel 1984, è considerata un componente hardware senza tempo e durevole.</description>
         <description lang="ru_RU">Клавиатура IBM Model M, выпущена в 1984 году, и считаестся долговечным изделием, неподвластным временем.</description>
         <description lang="zh_CN">IBM M 型键盘于1984年推出，被认为是一款经久耐用的硬件。</description>
         <disclaimer lang="da_DK">Kildeangivelse: Wikipedia (wikipedia.org)</disclaimer>
-        <disclaimer lang="de_DE">Bildrechte: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="de_DE">Bildverweis: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="en_GB">Image credit: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="es_ES">Créditos de la imagen: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="es_MX">Créditos de imagen: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="fi_FI">Kuvan lähde: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="fr_FR">Crédit image : Wikipédia (wikipedia.org)</disclaimer>
         <disclaimer lang="it_IT">Credito immagine: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="nl_NL">Bron afbeelding: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="ru_RU">Источник изображения: Wikipedia (wikipedia.org)</disclaimer>
