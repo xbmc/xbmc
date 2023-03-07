@@ -257,9 +257,16 @@ public:
    *
    * \return The controller profile, or empty if unknown
    */
-  virtual KODI::GAME::ControllerPtr ControllerProfile() const
+  virtual KODI::GAME::ControllerPtr ControllerProfile() const { return m_controllerProfile; }
+
+  /*!
+   * \brief Set the controller profile for this peripheral
+   *
+   * \param controller The new controller profile
+   */
+  virtual void SetControllerProfile(const KODI::GAME::ControllerPtr& controller)
   {
-    return KODI::GAME::ControllerPtr{};
+    m_controllerProfile = controller;
   }
 
 protected:
@@ -294,5 +301,6 @@ protected:
   std::map<KODI::MOUSE::IMouseInputHandler*, std::unique_ptr<KODI::MOUSE::IMouseDriverHandler>>
       m_mouseHandlers;
   std::map<KODI::JOYSTICK::IButtonMapper*, std::unique_ptr<CAddonButtonMapping>> m_buttonMappers;
+  KODI::GAME::ControllerPtr m_controllerProfile;
 };
 } // namespace PERIPHERALS

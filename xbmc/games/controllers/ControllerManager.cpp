@@ -10,24 +10,39 @@
 
 #include "Controller.h"
 #include "ControllerIDs.h"
-#include "ServiceBroker.h"
+#include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
+
+#include <mutex>
 
 using namespace KODI;
 using namespace GAME;
 
+CControllerManager::CControllerManager(ADDON::CAddonMgr& addonManager)
+  : m_addonManager(addonManager)
+{
+  m_addonManager.Events().Subscribe(this, &CControllerManager::OnEvent);
+}
+
+CControllerManager::~CControllerManager()
+{
+  m_addonManager.Events().Unsubscribe(this);
+}
+
 ControllerPtr CControllerManager::GetController(const std::string& controllerId)
 {
   using namespace ADDON;
+
+  std::lock_guard<CCriticalSection> lock(m_mutex);
 
   ControllerPtr& cachedController = m_cache[controllerId];
 
   if (!cachedController && m_failedControllers.find(controllerId) == m_failedControllers.end())
   {
     AddonPtr addon;
-    if (CServiceBroker::GetAddonMgr().GetAddon(controllerId, addon, AddonType::GAME_CONTROLLER,
-                                               OnlyEnabled::CHOICE_NO))
+    if (m_addonManager.GetAddon(controllerId, addon, AddonType::GAME_CONTROLLER,
+                                OnlyEnabled::CHOICE_NO))
       cachedController = LoadController(addon);
   }
 
@@ -55,8 +70,10 @@ ControllerVector CControllerManager::GetControllers()
 
   ControllerVector controllers;
 
+  std::lock_guard<CCriticalSection> lock(m_mutex);
+
   VECADDONS addons;
-  if (CServiceBroker::GetAddonMgr().GetInstalledAddons(addons, AddonType::GAME_CONTROLLER))
+  if (m_addonManager.GetInstalledAddons(addons, AddonType::GAME_CONTROLLER))
   {
     for (auto& addon : addons)
     {
@@ -70,6 +87,26 @@ ControllerVector CControllerManager::GetControllers()
   }
 
   return controllers;
+}
+
+void CControllerManager::OnEvent(const ADDON::AddonEvent& event)
+{
+  if (typeid(event) == typeid(ADDON::AddonEvents::Enabled) || // Also called on install
+      typeid(event) == typeid(ADDON::AddonEvents::ReInstalled))
+  {
+    std::lock_guard<CCriticalSection> lock(m_mutex);
+
+    const std::string& addonId = event.addonId;
+
+    // Clear caches for add-on
+    auto it = m_cache.find(addonId);
+    if (it != m_cache.end())
+      m_cache.erase(it);
+
+    auto it2 = m_failedControllers.find(addonId);
+    if (it2 != m_failedControllers.end())
+      m_failedControllers.erase(it2);
+  }
 }
 
 ControllerPtr CControllerManager::LoadController(const ADDON::AddonPtr& addon)

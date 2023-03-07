@@ -46,6 +46,7 @@ std::string CAddonButtonMap::Location(void) const
 
 bool CAddonButtonMap::Load(void)
 {
+  std::string controllerAppearance;
   FeatureMap features;
   DriverMap driverMap;
   PrimitiveVector ignoredPrimitives;
@@ -70,6 +71,7 @@ bool CAddonButtonMap::Load(void)
 
   {
     std::unique_lock<CCriticalSection> lock(m_mutex);
+    m_controllerAppearance = std::move(controllerAppearance);
     m_features = std::move(features);
     m_driverMap = std::move(driverMap);
     m_ignoredPrimitives = CPeripheralAddonTranslator::TranslatePrimitives(ignoredPrimitives);
@@ -89,6 +91,18 @@ bool CAddonButtonMap::IsEmpty(void) const
   std::unique_lock<CCriticalSection> lock(m_mutex);
 
   return m_driverMap.empty();
+}
+
+std::string CAddonButtonMap::GetAppearance() const
+{
+  std::unique_lock<CCriticalSection> lock(m_mutex);
+
+  return m_controllerAppearance;
+}
+
+bool CAddonButtonMap::SetAppearance(const std::string& controllerId) const
+{
+  return false;
 }
 
 bool CAddonButtonMap::GetFeature(const CDriverPrimitive& primitive, FeatureName& feature)
