@@ -1,15 +1,5 @@
-include ../../Makefile.include LIBASS-VERSION ../../download-files.include
-DEPS = ../../Makefile.include Makefile LIBASS-VERSION ../../download-files.include
-
-ifeq ($(OS),android)
-  # Android API Level 21/22 requires explicit link.
-  # This doesnt appear to be required for API Level 23+ (Android 6+)
-  export LDFLAGS+= -lstdc++
-  
-  ifeq ($(CPU),i686)
-    export ASFLAGS+= -DPIC=1
-  endif
-endif
+include ../../Makefile.include LIBUNIBREAK-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile LIBUNIBREAK-VERSION ../../download-files.include
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
