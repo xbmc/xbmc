@@ -12,7 +12,7 @@
 #
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_PIPEWIRE libpipewire-0.3>=0.3.34 QUIET)
+  pkg_check_modules(PC_PIPEWIRE libpipewire-0.3>=0.3.50 QUIET)
   pkg_check_modules(PC_SPA libspa-0.2>=0.2 QUIET)
 endif()
 
