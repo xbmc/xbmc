@@ -142,12 +142,15 @@ BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const
     return m_stats;
 }
 
+// Use value returned by filesystem if is > 1
+// otherwise defaults to 64K
 int CDVDInputStreamFile::GetBlockSize()
 {
-  if(m_pFile)
-    return m_pFile->GetChunkSize();
-  else
-    return 0;
+  int chunk = 0;
+  if (m_pFile)
+    chunk = m_pFile->GetChunkSize();
+
+  return ((chunk > 1) ? chunk : 64 * 1024);
 }
 
 void CDVDInputStreamFile::SetReadRate(uint32_t rate)
