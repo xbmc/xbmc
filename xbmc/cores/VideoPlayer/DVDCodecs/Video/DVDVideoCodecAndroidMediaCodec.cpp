@@ -1411,55 +1411,59 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
         break;
     }
 
-    if (m_hints.colorPrimaries != AVCOL_PRI_UNSPECIFIED)
+    switch (m_hints.colorPrimaries)
     {
-      switch (m_hints.colorPrimaries)
-      {
-        case AVCOL_PRI_BT709:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
-                                 CJNIMediaFormat::COLOR_STANDARD_BT709);
-          break;
-        case AVCOL_PRI_BT2020:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
-                                 CJNIMediaFormat::COLOR_STANDARD_BT2020);
-          break;
-        default:
-          CLog::Log(
-              LOGWARNING,
-              "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Color primaries: {}",
-              m_hints.colorPrimaries);
-          break;
-      }
+      case AVCOL_PRI_UNSPECIFIED:
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Color primaries: "
+                            "AVCOL_PRI_UNSPECIFIED");
+        break;
+      case AVCOL_PRI_BT709:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
+                               CJNIMediaFormat::COLOR_STANDARD_BT709);
+        break;
+      case AVCOL_PRI_BT2020:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
+                               CJNIMediaFormat::COLOR_STANDARD_BT2020);
+        break;
+      default:
+        CLog::Log(
+            LOGWARNING,
+            "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Color primaries: {}",
+            m_hints.colorPrimaries);
+        break;
     }
 
-    if (m_hints.colorTransferCharacteristic != AVCOL_TRC_UNSPECIFIED)
+    switch (m_hints.colorTransferCharacteristic)
     {
-      switch (m_hints.colorTransferCharacteristic)
-      {
-        case AVCOL_TRC_LINEAR:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                                 CJNIMediaFormat::COLOR_TRANSFER_LINEAR);
-          break;
-        case AVCOL_TRC_SMPTE170M:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                                 CJNIMediaFormat::COLOR_TRANSFER_SDR_VIDEO);
-          break;
-        case AVCOL_TRC_SMPTE2084:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                                 CJNIMediaFormat::COLOR_TRANSFER_ST2084);
-          break;
-        case AVCOL_TRC_ARIB_STD_B67:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                                 CJNIMediaFormat::COLOR_TRANSFER_HLG);
-          break;
-        default:
-          CLog::Log(LOGWARNING,
-                    "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Transfer "
-                    "characteristic: {}",
-                    m_hints.colorTransferCharacteristic);
-          break;
-      }
+      case AVCOL_TRC_UNSPECIFIED:
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Transfer "
+                            "characteristic: AVCOL_TRC_UNSPECIFIED");
+        break;
+      case AVCOL_TRC_LINEAR:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                               CJNIMediaFormat::COLOR_TRANSFER_LINEAR);
+        break;
+      case AVCOL_TRC_BT709:
+      case AVCOL_TRC_SMPTE170M:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                               CJNIMediaFormat::COLOR_TRANSFER_SDR_VIDEO);
+        break;
+      case AVCOL_TRC_SMPTE2084:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                               CJNIMediaFormat::COLOR_TRANSFER_ST2084);
+        break;
+      case AVCOL_TRC_ARIB_STD_B67:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                               CJNIMediaFormat::COLOR_TRANSFER_HLG);
+        break;
+      default:
+        CLog::Log(LOGWARNING,
+                  "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Transfer "
+                  "characteristic: {}",
+                  m_hints.colorTransferCharacteristic);
+        break;
     }
+
     std::vector<uint8_t> hdr_static_data = GetHDRStaticMetadata();
     if (!hdr_static_data.empty())
     {
