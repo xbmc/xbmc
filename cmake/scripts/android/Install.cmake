@@ -142,7 +142,6 @@ foreach(library IN LISTS LIBRARY_FILES)
   add_bundle_file(${library} ${libdir}/${APP_NAME_LC} ${CMAKE_BINARY_DIR})
 endforeach()
 
-add_bundle_file(${ASS_LIBRARY} ${libdir} "")
 if(TARGET Shairplay::Shairplay)
   add_bundle_file(Shairplay::Shairplay ${libdir} "")
 endif()
