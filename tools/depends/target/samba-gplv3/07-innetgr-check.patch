@@ -1,0 +1,31 @@
+--- a/lib/util/access.c
++++ b/lib/util/access.c
+@@ -115,7 +115,7 @@ static bool string_match(const char *tok,const char *s)
+ 			return true;
+ 		}
+ 	} else if (tok[0] == '@') { /* netgroup: look it up */
+-#ifdef HAVE_NETGROUP
++#if defined(HAVE_NETGROUP) && defined(HAVE_INNETGR)
+ 		DATA_BLOB tmp;
+ 		char *mydomain = NULL;
+ 		char *hostname = NULL;
+--- a/source3/auth/user_util.c
++++ b/source3/auth/user_util.c
+@@ -135,7 +135,7 @@
+ 
+ bool user_in_netgroup(TALLOC_CTX *ctx, const char *user, const char *ngname)
+ {
+-#ifdef HAVE_NETGROUP
++#if defined(HAVE_NETGROUP) && defined(HAVE_INNETGR)
+ 	char nis_domain_buf[256];
+ 	const char *nis_domain = NULL;
+ 	char *lowercase_user = NULL;
+@@ -180,7 +180,7 @@
+ 		DEBUG(5,("user_in_netgroup: Found\n"));
+ 		return true;
+ 	}
+-#endif /* HAVE_NETGROUP */
++#endif /* HAVE_NETGROUP and HAVE_INNETGR */
+ 	return false;
+ }
+ 
