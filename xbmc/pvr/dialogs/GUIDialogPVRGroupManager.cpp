@@ -198,22 +198,25 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(const CGUIMessage&
   if (m_viewUngroupedChannels.HasControl(iControl)) // list/thumb control
   {
     m_iSelectedUngroupedChannel = m_viewUngroupedChannels.GetSelectedItem();
-    int iAction = message.GetParam1();
-
-    if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+    if (m_selectedGroup->GroupType() != PVR_GROUP_TYPE_BACKEND)
     {
-      if (m_channelGroups->GetFolderCount() == 0)
-      {
-        HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19137});
-      }
-      else if (m_ungroupedChannels->GetFileCount() > 0)
-      {
-        CFileItemPtr pItemChannel = m_ungroupedChannels->Get(m_iSelectedUngroupedChannel);
+      const int actionID = message.GetParam1();
 
-        if (m_selectedGroup->AppendToGroup(pItemChannel->GetPVRChannelInfoTag()))
+      if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
+      {
+        if (m_channelGroups->GetFolderCount() == 0)
         {
-          ClearSelectedGroupsThumbnail();
-          Update();
+          HELPERS::ShowOKDialogText(CVariant{19033}, CVariant{19137});
+        }
+        else if (m_ungroupedChannels->GetFileCount() > 0)
+        {
+          const auto itemChannel = m_ungroupedChannels->Get(m_iSelectedUngroupedChannel);
+
+          if (m_selectedGroup->AppendToGroup(itemChannel->GetPVRChannelInfoTag()))
+          {
+            ClearSelectedGroupsThumbnail();
+            Update();
+          }
         }
       }
     }
@@ -231,16 +234,19 @@ bool CGUIDialogPVRGroupManager::ActionButtonGroupMembers(const CGUIMessage& mess
   if (m_viewGroupMembers.HasControl(iControl)) // list/thumb control
   {
     m_iSelectedGroupMember = m_viewGroupMembers.GetSelectedItem();
-    int iAction = message.GetParam1();
-
-    if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+    if (m_selectedGroup->GroupType() != PVR_GROUP_TYPE_BACKEND)
     {
-      if (m_selectedGroup && m_groupMembers->GetFileCount() > 0)
+      const int actionID = message.GetParam1();
+
+      if (actionID == ACTION_SELECT_ITEM || actionID == ACTION_MOUSE_LEFT_CLICK)
       {
-        CFileItemPtr pItemChannel = m_groupMembers->Get(m_iSelectedGroupMember);
-        m_selectedGroup->RemoveFromGroup(pItemChannel->GetPVRChannelInfoTag());
-        ClearSelectedGroupsThumbnail();
-        Update();
+        if (m_selectedGroup && m_groupMembers->GetFileCount() > 0)
+        {
+          const auto itemChannel = m_groupMembers->Get(m_iSelectedGroupMember);
+          m_selectedGroup->RemoveFromGroup(itemChannel->GetPVRChannelInfoTag());
+          ClearSelectedGroupsThumbnail();
+          Update();
+        }
       }
     }
     bReturn = true;
@@ -469,33 +475,23 @@ void CGUIDialogPVRGroupManager::Update()
     SET_CONTROL_LABEL(CONTROL_CURRENT_GROUP_LABEL, m_selectedGroup->GroupName());
     SET_CONTROL_SELECTED(GetID(), BUTTON_HIDE_GROUP, m_selectedGroup->IsHidden());
 
-    CONTROL_ENABLE_ON_CONDITION(BUTTON_DELGROUP, !m_selectedGroup->IsInternalGroup());
+    const int groupType = m_selectedGroup->GroupType();
 
-    if (m_selectedGroup->IsInternalGroup())
+    CONTROL_ENABLE_ON_CONDITION(BUTTON_DELGROUP, groupType == PVR_GROUP_TYPE_LOCAL);
+    CONTROL_ENABLE_ON_CONDITION(BUTTON_RENAMEGROUP, groupType != PVR_GROUP_TYPE_BACKEND);
+
+    if (groupType == PVR_GROUP_TYPE_ALL_CHANNELS)
     {
-      std::string strNewLabel = StringUtils::Format("{} {}", g_localizeStrings.Get(19022),
-                                                    m_bIsRadio ? g_localizeStrings.Get(19024)
-                                                               : g_localizeStrings.Get(19023));
-      SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, strNewLabel);
+      std::string newLabel = StringUtils::Format("{} {}", g_localizeStrings.Get(19022),
+                                                 m_bIsRadio ? g_localizeStrings.Get(19024)
+                                                            : g_localizeStrings.Get(19023));
+      SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, newLabel);
 
-      strNewLabel = StringUtils::Format("{} {}", g_localizeStrings.Get(19218),
-                                        m_bIsRadio ? g_localizeStrings.Get(19024)
-                                                   : g_localizeStrings.Get(19023));
-      SET_CONTROL_LABEL(CONTROL_IN_GROUP_LABEL, strNewLabel);
-    }
-    else
-    {
-      std::string strNewLabel = g_localizeStrings.Get(19219);
-      SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, strNewLabel);
+      newLabel = StringUtils::Format("{} {}", g_localizeStrings.Get(19218),
+                                     m_bIsRadio ? g_localizeStrings.Get(19024)
+                                                : g_localizeStrings.Get(19023));
+      SET_CONTROL_LABEL(CONTROL_IN_GROUP_LABEL, newLabel);
 
-      strNewLabel =
-          StringUtils::Format("{} {}", g_localizeStrings.Get(19220), m_selectedGroup->GroupName());
-      SET_CONTROL_LABEL(CONTROL_IN_GROUP_LABEL, strNewLabel);
-    }
-
-    // Slightly different handling for "all" group...
-    if (m_selectedGroup->IsInternalGroup())
-    {
       const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
           m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ALL);
       for (const auto& groupMember : groupMembers)
@@ -508,6 +504,13 @@ void CGUIDialogPVRGroupManager::Update()
     }
     else
     {
+      std::string newLabel = g_localizeStrings.Get(19219);
+      SET_CONTROL_LABEL(CONTROL_UNGROUPED_LABEL, newLabel);
+
+      newLabel =
+          StringUtils::Format("{} {}", g_localizeStrings.Get(19220), m_selectedGroup->GroupName());
+      SET_CONTROL_LABEL(CONTROL_IN_GROUP_LABEL, newLabel);
+
       const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
           m_selectedGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
       for (const auto& groupMember : groupMembers)
@@ -515,16 +518,21 @@ void CGUIDialogPVRGroupManager::Update()
         m_groupMembers->Add(std::make_shared<CFileItem>(groupMember));
       }
 
-      /* for the center part, get all channels of the "all" channels group that are not in this group */
-      const std::shared_ptr<CPVRChannelGroup> allGroup = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
-      const std::vector<std::shared_ptr<CPVRChannelGroupMember>> allGroupMembers =
-          allGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
-      for (const auto& groupMember : allGroupMembers)
+      if (groupType != PVR_GROUP_TYPE_BACKEND)
       {
-        if (!m_selectedGroup->IsGroupMember(groupMember->Channel()))
-          m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember));
+        /* for the center part, get all channels of the "all" channels group that are not in this group */
+        const std::shared_ptr<CPVRChannelGroup> allGroup =
+            CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(m_bIsRadio);
+        const std::vector<std::shared_ptr<CPVRChannelGroupMember>> allGroupMembers =
+            allGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
+        for (const auto& groupMember : allGroupMembers)
+        {
+          if (!m_selectedGroup->IsGroupMember(groupMember->Channel()))
+            m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember));
+        }
       }
     }
+
     m_viewGroupMembers.SetItems(*m_groupMembers);
     m_viewGroupMembers.SetSelectedItem(m_iSelectedGroupMember);
 
