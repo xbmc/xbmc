@@ -37,6 +37,9 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
 	cd $(PLATFORM); patch -p1 -i ../01-macos-clang-accel.patch
 endif
+ifeq ($(OS),android)
+	cd $(PLATFORM); patch -p1 -i ../01-macos-clang-accel.patch
+endif
 	cd $(PLATFORM); patch -p1 -i ../03-support-correct-cisdigit.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
