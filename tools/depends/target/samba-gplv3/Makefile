@@ -73,6 +73,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); patch -p1 -i ../04-built-static.patch
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../samba_android.patch
+	cd $(PLATFORM); patch -p1 -i ../07-innetgr-check.patch
 endif
 ifeq ($(OS), darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../no_fork_and_exec.patch
