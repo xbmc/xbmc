@@ -54,7 +54,7 @@
 							<aligny>center</aligny>
 							<font>font27</font>
 							<textcolor>grey</textcolor>
-							<label>$INFO[ListItem.Label]</label>
+							<label>[B]$INFO[ListItem.Label][/B]</label>
 						</control>
 						<control type="image">
 							<width>60</width>
@@ -78,11 +78,22 @@
 						</control>
 						<control type="label">
 							<left>20</left>
+							<top>5</top>
 							<right>70</right>
-							<height>70</height>
+							<height>30</height>
 							<aligny>center</aligny>
-							<font>font27</font>
-							<label>$INFO[ListItem.Label]</label>
+							<font>font12</font>
+							<label>[B]$INFO[ListItem.Label][/B]</label>
+							<scroll>true</scroll>
+						</control>
+						<control type="label">
+							<left>20</left>
+							<top>35</top>
+							<right>70</right>
+							<height>30</height>
+							<font>font10</font>
+							<aligny>center</aligny>
+							<label>[I]$INFO[ListItem.Property(ClientName)][/I]</label>
 							<scroll>true</scroll>
 						</control>
 						<control type="image">
