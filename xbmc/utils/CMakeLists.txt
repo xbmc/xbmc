@@ -41,6 +41,7 @@ set(SOURCES ActorProtocol.cpp
             LangCodeExpander.cpp
             LegacyPathTranslation.cpp
             Locale.cpp
+            LocaleData.cpp
             log.cpp
             Mime.cpp
             MovingSpeed.cpp
@@ -135,6 +136,7 @@ set(HEADERS ActorProtocol.h
             LangCodeExpander.h
             LegacyPathTranslation.h
             Locale.h
+            LocaleData.h
             log.h
             logtypes.h
             Map.h

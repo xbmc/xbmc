@@ -26,7 +26,19 @@ namespace XBMCAddon
 #endif
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
-    //
+    static const String LOCALE_LANGUAGE_ISO_639_1 = "language_iso_639_1";
+    static const String LOCALE_LANGUAGE_ISO_639_2T = "language_iso_639_2T";
+    static const String LOCALE_LANGUAGE_ISO_639_2B = "language_iso_639_2B";
+    static const String LOCALE_COUNTRY_ISO_3166_1_ALPHA_2 = "country_iso_3166_1_alpha_2";
+    static const String LOCALE_COUNTRY_ISO_3166_1_ALPHA_3 = "country_iso_3166_1_alpha_3";
+    static const String LOCALE_CODESET = "codeset";
+    static const String LOCALE_ENGLISH_LANGUAGE_NAME = "english_language_name";
+    static const String LOCALE_AUDIO_LANGUAGE = "audio_language";
+    static const String LOCALE_SUBTITLE_LANGUAGE = "subtitle_language";
+    static const String LOCALE_NAME = "locale_name";
+    static const String LOCALE_GET_ALL_LOCALE_NAMES = "get_all_locale_names";
+    static const String LOCALE_GET_LOCALE_PROPERTIES = "get_local_properties";
+    ///
     /// \defgroup python_xbmc Library - xbmc
     /// @{
     /// @brief **General functions on Kodi.**
@@ -299,21 +311,21 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
     ///
     /// \ingroup python_xbmc
-    /// @brief \python_func{ xbmc.getLanguage([format], [region]) }
+    /// @brief \python_func{ xbmc.getLanguage([format: str], [region: bool) }
     /// Get the active language.
     ///
     /// @param format               [opt] format of the returned language
     ///                             string
     /// | Value             | Description
     /// |------------------:|:-------------------------------------------------|
-    /// | xbmc.ISO_639_1    | Two letter code as defined in ISO 639-1
-    /// | xbmc.ISO_639_2    | Three letter code as defined in ISO 639-2/T or ISO 639-2/B
     /// | xbmc.ENGLISH_NAME | Full language name in English (default)
-    /// @param region               [opt] append the region delimited by "-"
-    ///                             of the language (setting) to the
-    ///                             returned language string
+    /// | xbmc.ISO_639_1    | Two letter language code as defined in ISO 639-1
+    /// | xbmc.ISO_639_2    | Three letter language code as defined in ISO 639-2/T
+    /// @param region        [default False] append the ISO 3166-1 (alpha-1 or alpha-2)
+    ///                             region/country code for the language (setting)
+    ///                             to the returned language string using a "-"
+    ///                             separator
     /// @return                     The active language as a string
-    ///
     ///
     /// ------------------------------------------------------------------------
     /// @python_v13 Added new options **format** and **region**.
@@ -321,13 +333,60 @@ namespace XBMCAddon
     /// **Example:**
     /// ~~~~~~~~~~~~~{.py}
     /// ..
-    /// language = xbmc.getLanguage(xbmc.ENGLISH_NAME)
+    /// Kodi configured with language = "de_DE.UTF-8"
+    /// xbmc.getLanguage(xbmc.ISO_639_2, True)
+    /// returns "de-deu"
     /// ..
     /// ~~~~~~~~~~~~~
     ///
     getLanguage(...);
 #else
     String getLanguage(int format = CLangCodeExpander::ENGLISH_NAME, bool region = false);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmc
+    /// @brief \python_func{ xbmc.getLocaleProperties(list[str]: properties) }
+    /// Get details about Kodi's current system Locale
+    ///
+    /// @param type                  str - use SERVER_* constants
+    /// - Used format of the returned language string
+    /// | Value                                  | Description                                                |
+    /// |---------------------------------------:|------------------------------------------------------------|
+    /// | xbmc.LOCALE_LANGUAGE_ISO_639_1         | Two-letter language code
+    /// | xbmc.LOCALE_LANGUAGE_ISO_639_2B        | Three-letter language code
+    /// | xbmc.LOCALE_LANGUAGE_ISO_639_2T        | Three-letter language code, with some codes for english
+    /// |                                        | names of other languages
+    /// | xbmc.LOCALE_COUNTRY_ISO_3166_1_ALPHA_2 | Two-letter country/region code
+    /// | xbmc.LOCALE_COUNTRY_ISO_3166_1_ALPHA_3 | Three-letter country/region code
+    /// | xbmc.LOCALE_CODESET                    | Codeset for the locale ex: 'UTF-8'
+    /// | xbmc.LOCALE_ENGLISH_LANGUAGE_NAME      | Language name in English
+    /// | xbmc.LOCALE_AUDIO_LANGUAGE             | Preferred Audio Language in 'en_US' form
+    /// | xbmc.LOCALE_SUBTITLE_LANGUAGE          | Preferred Subtitle Language in 'en_US' form
+    /// | xbmc.LOCALE_NAME                       | Name for user configured locale
+    /// | xbmc.LOCALE_GET_ALL_LOCALE_NAMES       | Kodi language addon names
+    /// | xbmc.LOCALE_GET_LOCALE_PROPERTIES      | Properties of language addon
+    ///
+    /// @result list(tuple(str: prop_name, str: prop_value)...)
+    /// @python_v21 New function added.
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// propertyNames: List[str] = (xbmc.LANGUAGE_ISO_639_1, xbmc.COUNTRY_ISO_3166_1_ALPHA_2,
+    ///                                 xbmc.ENGLISH_LANGUAGE_NAME)
+    /// info = List[Tuple[str, str]] = xbmc.getLocaleProperties(propertyNames)
+    ///   With current language as de_BE.UTF-8:
+    ///   [ ["language_iso_639_1", "de"], ["country_iso_3166_1_alpha2", "be"],
+    ///     ["english_language_name", "German"]]
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    getLocaleProperties(...);
+#else
+    std::vector<Tuple<String, String>> getLocaleProperties(std::vector<String>& propertyNames);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS

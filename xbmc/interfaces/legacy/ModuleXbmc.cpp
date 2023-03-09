@@ -40,6 +40,7 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/FileUtils.h"
 #include "utils/LangCodeExpander.h"
+#include "utils/LocaleData.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
@@ -49,6 +50,7 @@
 #include <vector>
 
 using namespace KODI;
+using namespace std::literals;
 
 namespace XBMCAddon
 {
@@ -180,49 +182,161 @@ namespace XBMCAddon
       return CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_LOOKANDFEEL_SKIN);
     }
 
+    std::vector<Tuple<String, String>> getLocaleProperties(std::vector<String>& propertyNames)
+    {
+      // I would have much preferred to return a Dictionary, but I'm not
+      // yet skilled enough to extend swig Dictionary for output
+
+      XBMC_TRACE;
+      std::vector<Tuple<String, String>> result = std::vector<Tuple<String, String>>();
+
+      if (propertyNames.empty())
+        return result;
+
+      std::vector<std::string> propValues = StringUtils::Split(propertyNames[0], ":"s);
+      std::string propertyName = propValues[0];
+      std::string propValue;
+      std::string localeName{};
+      if (propValues.size() > 1)
+        propValue = propValues[1];
+
+      if (propertyName == xbmc::LOCALE_GET_LOCALE_PROPERTIES)
+      {
+        localeName = propValue;
+        propertyNames.erase(propertyNames.begin());
+        Tuple<String, String> entry = Tuple<String, String>(propertyName, localeName);
+
+        result.push_back(entry);
+      }
+      BasicLocaleInfo basicInfo = CLocaleData::GetCLocaleInfoForLocaleName(localeName);
+
+      for (auto propertyName : propertyNames)
+      {
+        bool multipleValues = false;
+        std::vector<std::string> multi_value{};
+        String value;
+        std::string localeName{};
+        if (propertyName == xbmc::LOCALE_GET_LOCALE_PROPERTIES)
+        {
+          localeName = propValue;
+        }
+
+        // Two letter language codes
+        else if (propertyName == xbmc::LOCALE_LANGUAGE_ISO_639_1)
+        {
+          value = CLocaleData::GetISO639_1(basicInfo.GetLanguageCode());
+        }
+        // Three letter language codes
+        else if (propertyName == xbmc::LOCALE_LANGUAGE_ISO_639_2T)
+        {
+          value = CLocaleData::GetISO639_2T(basicInfo.GetLanguageCode());
+        }
+        // Three letter language codes, but with some based on English names
+        else if (propertyName == xbmc::LOCALE_LANGUAGE_ISO_639_2B) // ????
+        {
+          value = CLocaleData::GetISO639_2B(basicInfo.GetLanguageCode());
+        }
+        // Two letter region/country codes
+        else if (propertyName == xbmc::LOCALE_COUNTRY_ISO_3166_1_ALPHA_2)
+        {
+          value = CLocaleData::GetISO3166_1_Alpha2(basicInfo.GetRegionCode());
+        }
+        // Three letter region/country codes
+        else if (propertyName == xbmc::LOCALE_COUNTRY_ISO_3166_1_ALPHA_3)
+        {
+          value = CLocaleData::GetISO3166_1_Alpha3(basicInfo.GetRegionCode());
+        }
+        // Computer friendly Locale Name. In format that this machine
+        // will accept
+
+        else if (propertyName == xbmc::LOCALE_NAME)
+        {
+          // ex: en_GB.UTF-8
+
+          value = CLocaleData::BuildCLocaleName(basicInfo);
+        }
+        else if (propertyName == xbmc::LOCALE_CODESET) //ex: UTF-8
+        {
+          value = basicInfo.GetCodeset();
+        }
+        else if (propertyName == xbmc::LOCALE_ENGLISH_LANGUAGE_NAME) // ex: English
+        {
+          value = basicInfo.GetName();
+        }
+        else if (propertyName == xbmc::LOCALE_AUDIO_LANGUAGE)
+        {
+          std::string audioLang = g_langInfo.GetDVDAudioLanguage(); // ex en
+          value = audioLang;
+        }
+        else if (propertyName == xbmc::LOCALE_SUBTITLE_LANGUAGE) // ex: en
+        {
+          std::string subtitleLang = g_langInfo.GetDVDSubtitleLanguage();
+          value = subtitleLang;
+        }
+        else if (propertyName == xbmc::LOCALE_GET_ALL_LOCALE_NAMES)
+        {
+          multipleValues = true;
+          std::vector<std::string> addonNames = CLocaleData::GetLanguageAddonNames();
+          multi_value.assign(addonNames.begin(), addonNames.end());
+        }
+        if (!multipleValues)
+        {
+          multi_value.push_back(value);
+        }
+        for (auto aValue : multi_value)
+        {
+          Tuple<String, String> entry = Tuple<String, String>(propertyName, aValue);
+          result.push_back(entry);
+        }
+      }
+      return result;
+    }
+
     String getLanguage(int format /* = CLangCodeExpander::ENGLISH_NAME */, bool region /*= false*/)
     {
       XBMC_TRACE;
-      std::string lang = g_langInfo.GetEnglishLanguageName();
-
+      BasicLocaleInfo basicInfo = CLocaleData::GetCLocaleInfoForLocaleName();
       switch (format)
       {
-      case CLangCodeExpander::ENGLISH_NAME:
+        case CLocaleData::ENGLISH_NAME:
         {
+          std::string lang = basicInfo.GetName();
           if (region)
           {
-            std::string region = "-" + g_langInfo.GetCurrentRegion();
-            return (lang += region);
+            std::string regionCode = CLocaleData::GetISO3166_1_Alpha2(basicInfo.GetRegionCode());
+            lang.append("-"sv);
+            lang.append(regionCode);
+            // ex: "German-be"  (region is belgium)
           }
           return lang;
         }
-      case CLangCodeExpander::ISO_639_1:
+        case CLocaleData::ISO_639_1:
         {
-          std::string langCode;
-          g_LangCodeExpander.ConvertToISO6391(lang, langCode);
-          if (region)
+          std::string langCode =
+              CLocaleData::GetISO639_1(basicInfo.GetLanguageCode()); // Ok, English returns en
+
+          // If no ISO639-1 code, don't return anything
+
+          if (!langCode.empty() && region)
           {
-            std::string region = g_langInfo.GetRegionLocale();
-            std::string region2Code;
-            g_LangCodeExpander.ConvertToISO6391(region, region2Code);
-            region2Code = "-" + region2Code;
-            return (langCode += region2Code);
+            std::string regionCode = CLocaleData::GetISO3166_1_Alpha2(basicInfo.GetRegionCode());
+            langCode.append("-"sv);
+            langCode.append(regionCode);
+            // ex: "de-be"  (German language and Belgian region)
           }
           return langCode;
         }
-      case CLangCodeExpander::ISO_639_2:
+        case CLocaleData::ISO_639_2:
         {
-          std::string langCode;
-          g_LangCodeExpander.ConvertToISO6392B(lang, langCode);
+          std::string langCode = CLocaleData::GetISO639_2T(basicInfo.GetLanguageCode());
+          // ex: deu
           if (region)
           {
-            std::string region = g_langInfo.GetRegionLocale();
-            std::string region3Code;
-            g_LangCodeExpander.ConvertToISO6392B(region, region3Code);
-            region3Code = "-" + region3Code;
-            return (langCode += region3Code);
+            std::string regionCode =
+                "-" + CLocaleData::GetISO3166_1_Alpha2(basicInfo.GetRegionCode());
+            langCode.append(regionCode);
+            // ex: deu-be
           }
-
           return langCode;
         }
       default:
