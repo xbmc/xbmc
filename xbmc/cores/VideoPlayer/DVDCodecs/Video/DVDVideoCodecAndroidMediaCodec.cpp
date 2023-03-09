@@ -546,7 +546,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
                   "Display: {}, MediaCodec: {}",
                   displaySupportsDovi, mediaCodecSupportsDovi);
 
-        if (displaySupportsDovi && mediaCodecSupportsDovi)
+        if (mediaCodecSupportsDovi)
         {
           m_mime = "video/dolby-vision";
           m_formatname = isDvhe ? "amc-dvhe" : "amc-dvh1";
