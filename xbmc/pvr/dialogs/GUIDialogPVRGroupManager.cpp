@@ -22,6 +22,7 @@
 #include "messaging/helpers//DialogOKHelper.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
+#include "pvr/addons/PVRClient.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroupMember.h"
 #include "pvr/channels/PVRChannelGroups.h"
@@ -50,6 +51,12 @@ using namespace PVR;
 #define BUTTON_OK                     29
 #define BUTTON_TOGGLE_RADIO_TV        34
 #define BUTTON_RECREATE_GROUP_THUMB   35
+
+namespace
+{
+constexpr const char* PROPERTY_CLIENT_NAME = "ClientName";
+
+} // namespace
 
 CGUIDialogPVRGroupManager::CGUIDialogPVRGroupManager() :
     CGUIDialog(WINDOW_DIALOG_PVR_GROUP_MANAGER, "DialogPVRGroupManager.xml")
@@ -455,6 +462,13 @@ void CGUIDialogPVRGroupManager::Update()
 
   // get the groups list
   CPVRGUIDirectory::GetChannelGroupsDirectory(m_bIsRadio, false, *m_channelGroups);
+
+  for (auto& group : *m_channelGroups)
+  {
+    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*group);
+    if (client)
+      group->SetProperty(PROPERTY_CLIENT_NAME, client->GetFriendlyName());
+  }
 
   // Load group thumbnails
   m_thumbLoader.Load(*m_channelGroups);
