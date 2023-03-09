@@ -23,6 +23,7 @@
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelsPath.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
@@ -294,6 +295,11 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
     const std::shared_ptr<CPVRChannel> channel = m_channelGroups->GetByPath(item.GetPath());
     if (channel)
       iClientID = channel->ClientID();
+  }
+  else if (URIUtils::IsPVRChannelGroup(item.GetPath()))
+  {
+    const CPVRChannelsPath path(item.GetPath());
+    iClientID = path.GetGroupClientID();
   }
   else if (URIUtils::IsPVRRecording(item.GetPath()))
   {
