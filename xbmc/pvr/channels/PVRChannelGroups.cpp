@@ -89,29 +89,40 @@ bool CPVRChannelGroups::Update(const std::shared_ptr<CPVRChannelGroup>& group,
     // try to find the group by name if we didn't find it yet
     if (!updateGroup)
     {
-      const auto it = std::find_if(m_groups.cbegin(), m_groups.cend(), [&group](const auto& g) {
-        return g->GroupName() == group->GroupName() &&
-               (g->GetClientID() == PVR_GROUP_CLIENT_ID_UNKNOWN ||
-                g->GetClientID() == group->GetClientID());
-      });
+      //! @todo If a group was renamed in the backend, no chance to find it here! PVR API should
+      //! be extended by a uuid for channel groups which never must change, not even after rename.
+      const auto it = std::find_if(
+          m_groups.cbegin(), m_groups.cend(), [&group, bUpdateFromClient](const auto& g) {
+            return (bUpdateFromClient ? g->ClientGroupName() == group->ClientGroupName()
+                                      : g->GroupName() == group->GroupName()) &&
+                   (g->GetClientID() == PVR_GROUP_CLIENT_ID_UNKNOWN ||
+                    g->GetClientID() == group->GetClientID());
+          });
       if (it != m_groups.cend())
         updateGroup = *it;
     }
 
     if (updateGroup)
     {
-      updateGroup->SetPath(group->GetPath());
       updateGroup->SetGroupID(group->GroupID());
       updateGroup->SetGroupType(group->GroupType());
       updateGroup->SetPosition(group->GetPosition());
       updateGroup->SetClientID(group->GetClientID());
+      updateGroup->SetClientGroupName(group->ClientGroupName());
 
       // don't override properties we only store locally in our PVR database
       if (!bUpdateFromClient)
       {
+        updateGroup->SetGroupName(group->GroupName());
         updateGroup->SetLastWatched(group->LastWatched());
         updateGroup->SetHidden(group->IsHidden());
         updateGroup->SetLastOpened(group->LastOpened());
+      }
+      else
+      {
+        // only update the group name if the user hasn't changed it manually
+        if (!updateGroup->IsUserSetName())
+          updateGroup->SetGroupName(group->ClientGroupName());
       }
     }
     else

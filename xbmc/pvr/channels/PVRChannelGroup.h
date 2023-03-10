@@ -165,8 +165,21 @@ public:
   /*!
    * @brief Change the name of this group.
    * @param strGroupName The new group name.
+   * @param isUserSetName Whether the name was set by the user.
    */
-  void SetGroupName(const std::string& strGroupName);
+  void SetGroupName(const std::string& strGroupName, bool isUserSetName = false);
+
+  /*!
+   * @brief Set the name this group has on the client.
+   * @param groupName The client group name.
+   */
+  void SetClientGroupName(const std::string& groupName);
+
+  /*!
+   * @brief Check whether the group name was set by the user.
+   * @return True if set by user, false otherwise;
+   */
+  bool IsUserSetName() const { return m_isUserSetName; }
 
   /*!
    * @brief Persist changed or new data.
@@ -243,6 +256,12 @@ public:
    * @return The name of this group.
    */
   std::string GroupName() const;
+
+  /*!
+   * @brief Get the name of this group on the client.
+   * @return The group's name.
+   */
+  std::string ClientGroupName() const;
 
   /*! @name Sort methods
    */
@@ -574,5 +593,7 @@ private:
   CPVRChannelsPath m_path;
   bool m_bDeleted = false;
   mutable std::optional<int> m_clientPriority;
+  bool m_isUserSetName{false};
+  std::string m_clientGroupName;
 };
 } // namespace PVR

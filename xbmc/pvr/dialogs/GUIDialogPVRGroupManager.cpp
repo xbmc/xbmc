@@ -181,12 +181,18 @@ bool CGUIDialogPVRGroupManager::ActionButtonRenameGroup(const CGUIMessage& messa
       return bReturn;
 
     std::string strGroupName(m_selectedGroup->GroupName());
-    if (CGUIKeyboardFactory::ShowAndGetInput(strGroupName, CVariant{g_localizeStrings.Get(19139)}, false))
+    if (CGUIKeyboardFactory::ShowAndGetInput(strGroupName, CVariant{g_localizeStrings.Get(19139)},
+                                             true /* allow empty result */))
     {
+      // if an empty string was given we reset the name to the client-supplied name, if available
+      const bool resetName = strGroupName.empty() && !m_selectedGroup->ClientGroupName().empty();
+      if (resetName)
+        strGroupName = m_selectedGroup->ClientGroupName();
+
       if (!strGroupName.empty())
       {
         ClearSelectedGroupsThumbnail();
-        m_selectedGroup->SetGroupName(strGroupName);
+        m_selectedGroup->SetGroupName(strGroupName, !resetName);
         Update();
       }
     }
@@ -492,7 +498,6 @@ void CGUIDialogPVRGroupManager::Update()
     const int groupType = m_selectedGroup->GroupType();
 
     CONTROL_ENABLE_ON_CONDITION(BUTTON_DELGROUP, groupType == PVR_GROUP_TYPE_LOCAL);
-    CONTROL_ENABLE_ON_CONDITION(BUTTON_RENAMEGROUP, groupType != PVR_GROUP_TYPE_BACKEND);
 
     if (groupType == PVR_GROUP_TYPE_ALL_CHANNELS)
     {
