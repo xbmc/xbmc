@@ -25,6 +25,9 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRPlaybackState.h"
+#include "pvr/PVRThumbLoader.h"
+#include "pvr/addons/PVRClient.h"
+#include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannelGroup.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -393,12 +396,75 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
 
   dialog->Reset();
   dialog->SetHeading(CVariant{g_localizeStrings.Get(19146)});
-  dialog->SetItems(options);
   dialog->SetMultiSelection(false);
-  if (const std::shared_ptr<CPVRChannelGroup> channelGroup = GetChannelGroup())
+
+  auto& pvrMgr = CServiceBroker::GetPVRManager();
+  const bool useDetails = pvrMgr.Clients()->CreatedClientAmount() > 1;
+  dialog->SetUseDetails(useDetails);
+  if (useDetails)
   {
-    dialog->SetSelected(channelGroup->GroupName());
+    std::string selectedName;
+    std::string selectedClient;
+
+    const std::shared_ptr<CPVRChannelGroup> channelGroup = GetChannelGroup();
+    if (channelGroup)
+    {
+      selectedName = channelGroup->GroupName();
+
+      auto client = pvrMgr.GetClient(channelGroup->GetClientID());
+      if (client)
+        selectedClient = client->GetFriendlyName();
+    }
+
+    CPVRThumbLoader loader;
+    int idx = 0;
+    for (auto& group : options)
+    {
+      // set client name as label2
+      const std::shared_ptr<CPVRClient> client = pvrMgr.GetClient(*group);
+      if (client)
+        group->SetLabel2(client->GetFriendlyName());
+
+      // set thumbnail
+      loader.LoadItem(group.get());
+
+      // if not yet done, find and select currently active channel group
+      if (idx >= 0)
+      {
+        if (group->GetLabel() == selectedName && group->GetLabel2() == selectedClient)
+        {
+          dialog->SetSelected(idx);
+          idx = -1; // done
+        }
+        else
+        {
+          idx++;
+        }
+      }
+    }
   }
+  else
+  {
+    const std::shared_ptr<CPVRChannelGroup> channelGroup = GetChannelGroup();
+    if (channelGroup)
+    {
+      int idx = -1;
+      const std::string selectedName = channelGroup->GroupName();
+      for (auto& group : options)
+      {
+        // select currently active channel group
+        if (group->GetLabel() == selectedName)
+        {
+          dialog->SetSelected(idx);
+          break;
+        }
+        idx++;
+      }
+    }
+  }
+
+  dialog->SetItems(options);
+
   dialog->Open();
 
   if (!dialog->IsConfirmed())
@@ -408,8 +474,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
   if (!item)
     return false;
 
-  SetChannelGroup(CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bRadio)->GetGroupByPath(
-      item->GetPath()));
+  SetChannelGroup(pvrMgr.ChannelGroups()->Get(m_bRadio)->GetGroupByPath(item->GetPath()));
 
   return true;
 }
