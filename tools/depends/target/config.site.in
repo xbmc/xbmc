@@ -20,6 +20,7 @@ if test "@platform_os@" = "darwin_embedded" ; then
   export CCAS="--tag CC @prefix@/@tool_dir@/bin/gas-preprocessor.pl @CCACHE@ @CC@ -arch @use_cpu@"
 fi
 
+ASFLAGS="@platform_asflags@"
 CFLAGS="@platform_cflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CFLAGS"
 LDFLAGS="-L@prefix@/@deps_dir@/lib @platform_ldflags@ $LDFLAGS"
 CXXFLAGS="@platform_cxxflags@ @platform_includes@ -isystem @prefix@/@deps_dir@/include $CXXFLAGS"
