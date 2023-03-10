@@ -28,19 +28,6 @@ ifeq ($(KODI_ANDROID_KEY_PASSWORD),)
 export KODI_ANDROID_KEY_PASSWORD:=android
 endif
 
-#this fixes a android ndk fuckup where the paths to
-#prebuilt stuff follow different name schemes for
-#arm and x86
-ifeq ($(findstring x86_64,$(CPU)),x86_64)
-  ARCH=x86_64
-else ifeq ($(findstring x86,$(CPU)),x86)
-  ARCH=x86
-else ifeq ($(findstring arm64,$(CPU)),arm64)
-  ARCH=arm64
-else ifeq ($(findstring arm,$(CPU)),arm)
-  ARCH=arm
-endif
-
 # libc++
 STLLIB=$(TOOLCHAIN)/sysroot/usr/lib/$(HOST)/libc++_shared.so
 
