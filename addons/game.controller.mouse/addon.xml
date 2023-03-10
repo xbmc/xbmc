@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.mouse"
         name="Computer Mouse"
-        version="1.0.19"
+        version="1.0.22"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -10,15 +10,23 @@
             <icon>resources/icon.png</icon>
         </assets>
         <summary lang="da_DK">Computermus</summary>
+        <summary lang="de_DE">Computermaus</summary>
         <summary lang="en_GB">Computer Mouse</summary>
+        <summary lang="es_ES">Ratón de Ordenador</summary>
         <summary lang="fi_FI">Tietokoneen hiiri</summary>
+        <summary lang="fr_FR">Souris d&apos;ordinateur</summary>
         <summary lang="it_IT">Mouse del computer</summary>
+        <summary lang="pl_PL">Mysz komputerowa</summary>
         <summary lang="ru_RU">Компьютерная мышь</summary>
         <summary lang="zh_CN">电脑鼠标</summary>
         <description lang="da_DK">En standardmus med to knapper og et hjul i midten.</description>
+        <description lang="de_DE">Eine Standardmaus mit zwei Tasten und einem Mausrad.</description>
         <description lang="en_GB">A standard mouse with two buttons and a middle wheel.</description>
+        <description lang="es_ES">Un ratón estándar con dos botones y una rueda central.</description>
         <description lang="fi_FI">Tavallinen kahdella painikkeella ja keskirullalla varustettu hiiri.</description>
+        <description lang="fr_FR">Une souris standard avec deux boutons et une molette centrale.</description>
         <description lang="it_IT">Un mouse standard con due pulsanti e una rotellina centrale.</description>
+        <description lang="pl_PL">Standardowa mysz z dwoma przyciskami i środkowym kółkiem.</description>
         <description lang="ru_RU">Стандартная компьютерная мышь с двумя кнопками и с колесом посередине.</description>
         <description lang="zh_CN">带有两个按钮和中间滚轮的标准鼠标。</description>
     </extension>
