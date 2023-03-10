@@ -155,7 +155,7 @@ foreach(lib IN LISTS required_dyload dyload_optional ITEMS Shairplay)
   endif()
 endforeach()
 add_bundle_file(${ASS_LIBRARY} ${libdir} "")
-add_bundle_file(${SHAIRPLAY_LIBRARY} ${libdir} "")
+add_bundle_file(Shairplay::Shairplay ${libdir} "")
 
 # Main targets from Makefile.in
 if(CPU MATCHES i686)
