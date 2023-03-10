@@ -49,7 +49,8 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP& group,
                                    const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup)
   : m_iPosition(group.iPosition),
     m_allChannelsGroup(allChannelsGroup),
-    m_path(group.bIsRadio, group.strGroupName, clientID)
+    m_path(group.bIsRadio, group.strGroupName, clientID),
+    m_clientGroupName(group.strGroupName)
 {
   GetSettings()->RegisterCallback(this);
 }
@@ -63,7 +64,8 @@ bool CPVRChannelGroup::operator==(const CPVRChannelGroup& right) const
 {
   return (m_iGroupType == right.m_iGroupType && m_iGroupId == right.m_iGroupId &&
           m_iPosition == right.m_iPosition && m_path == right.m_path &&
-          m_clientPriority == right.m_clientPriority);
+          m_clientPriority == right.m_clientPriority && m_isUserSetName == right.m_isUserSetName &&
+          m_clientGroupName == right.m_clientGroupName);
 }
 
 bool CPVRChannelGroup::operator!=(const CPVRChannelGroup& right) const
@@ -75,7 +77,7 @@ void CPVRChannelGroup::FillAddonData(PVR_CHANNEL_GROUP& group) const
 {
   group = {};
   group.bIsRadio = IsRadio();
-  strncpy(group.strGroupName, GroupName().c_str(), sizeof(group.strGroupName) - 1);
+  strncpy(group.strGroupName, ClientGroupName().c_str(), sizeof(group.strGroupName) - 1);
   group.iPosition = GetPosition();
 }
 
@@ -1068,12 +1070,42 @@ std::string CPVRChannelGroup::GroupName() const
   return m_path.GetGroupName();
 }
 
-void CPVRChannelGroup::SetGroupName(const std::string& strGroupName)
+void CPVRChannelGroup::SetGroupName(const std::string& strGroupName,
+                                    bool isUserSetName /* = false */)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   if (m_path.GetGroupName() != strGroupName)
   {
+    m_isUserSetName = isUserSetName;
     m_path = CPVRChannelsPath(m_path.IsRadio(), strGroupName, m_path.GetGroupClientID());
+
+    // Update group members, for which group name is part of their path
+    for (auto& member : m_sortedMembers)
+    {
+      member->SetGroupName(strGroupName);
+    }
+
+    if (m_bLoaded)
+    {
+      m_bChanged = true;
+      Persist(); //! @todo why must we persist immediately?
+    }
+  }
+}
+
+std::string CPVRChannelGroup::ClientGroupName() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_clientGroupName;
+}
+
+void CPVRChannelGroup::SetClientGroupName(const std::string& groupName)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  if (m_clientGroupName != groupName)
+  {
+    m_clientGroupName = groupName;
+
     if (m_bLoaded)
     {
       m_bChanged = true;
