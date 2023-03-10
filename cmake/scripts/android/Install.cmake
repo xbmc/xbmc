@@ -137,19 +137,15 @@ foreach(file IN LISTS XBT_FILES install_data)
   add_bundle_file(${CMAKE_BINARY_DIR}/${file} ${datarootdir}/${APP_NAME_LC} ${CMAKE_BINARY_DIR})
 endforeach()
 
+# libdvdnav is currently the only LIBRARY_FILES item remaining for android
 foreach(library IN LISTS LIBRARY_FILES)
   add_bundle_file(${library} ${libdir}/${APP_NAME_LC} ${CMAKE_BINARY_DIR})
 endforeach()
 
-foreach(lib IN LISTS required_dyload dyload_optional ITEMS Shairplay)
-  string(TOUPPER ${lib} lib_up)
-  set(lib_so ${${lib_up}_SONAME})
-  if(lib_so AND EXISTS ${DEPENDS_PATH}/lib/${lib_so})
-    add_bundle_file(${DEPENDS_PATH}/lib/${lib_so} ${libdir} "")
-  endif()
-endforeach()
 add_bundle_file(${ASS_LIBRARY} ${libdir} "")
-add_bundle_file(Shairplay::Shairplay ${libdir} "")
+if(TARGET Shairplay::Shairplay)
+  add_bundle_file(Shairplay::Shairplay ${libdir} "")
+endif()
 
 # Main targets from Makefile.in
 if(CPU MATCHES i686)
