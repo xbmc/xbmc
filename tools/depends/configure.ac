@@ -342,12 +342,14 @@ case $host in
         if test "x$use_cpu" = "xauto"; then
           use_cpu=$host_cpu
         fi
+        platform_asflags="-DPIC"
         meson_cpu="x86"
       ;;
       x86_64*-linux-android*)
         if test "x$use_cpu" = "xauto"; then
           use_cpu=$host_cpu
         fi
+        platform_asflags="-DPIC"
         meson_cpu="x86_64"
       ;;
       *)
@@ -696,6 +698,7 @@ AC_SUBST(use_tarballs)
 AC_SUBST(target_platform)
 AC_SUBST(use_firmware)
 AC_SUBST(cross_compiling)
+AC_SUBST(platform_asflags)
 AC_SUBST(platform_cflags)
 AC_SUBST(platform_cxxflags)
 AC_SUBST(platform_cflags_release)
@@ -843,6 +846,7 @@ echo -e "cpu:\t\t\t $use_cpu"
 echo -e "host:\t\t $use_host"
 echo -e "CC:\t\t $CC"
 echo -e "CXX:\t\t $CXX"
+echo -e "asflags:\t\t $platform_asflags"
 echo -e "cflags:\t\t $platform_cflags"
 echo -e "cxxflags:\t\t $platform_cxxflags"
 echo -e "ldflags:\t\t $platform_ldflags"
