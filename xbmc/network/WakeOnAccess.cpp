@@ -699,7 +699,7 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
   // add from path substitutions ..
   for (const auto& pathPair : advancedSettings->m_pathSubstitutions)
   {
-    CURL url(pathPair.second);
+    CURL url(std::get<1>(pathPair));
     AddHost (url.GetHostName(), hosts);
   }
 

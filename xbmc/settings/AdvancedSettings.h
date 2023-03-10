@@ -11,10 +11,12 @@
 #include "pictures/PictureScalingAlgorithm.h"
 #include "settings/lib/ISettingCallback.h"
 #include "settings/lib/ISettingsHandler.h"
+#include "utils/RegExp.h"
 #include "utils/SortUtils.h"
 
 #include <set>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -218,7 +220,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_trailerMatchRegExps;
     SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
     std::string m_tvshowMultiPartEnumRegExp;
-    typedef std::vector< std::pair<std::string, std::string> > StringMapping;
+    typedef std::vector<std::tuple<std::string, std::string, CRegExp>> StringMapping;
     StringMapping m_pathSubstitutions;
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
     bool m_bScanIRServer;

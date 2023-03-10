@@ -1049,20 +1049,34 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     TiXmlNode* pSubstitute = pPathSubstitution->FirstChildElement("substitute");
     while (pSubstitute)
     {
-      std::string strFrom, strTo;
+      std::string strFrom, strTo, strRegex;
       TiXmlNode* pFrom = pSubstitute->FirstChild("from");
       if (pFrom && !pFrom->NoChildren())
         strFrom = CSpecialProtocol::TranslatePath(pFrom->FirstChild()->Value()).c_str();
       TiXmlNode* pTo = pSubstitute->FirstChild("to");
       if (pTo && !pTo->NoChildren())
         strTo = pTo->FirstChild()->Value();
+      TiXmlNode* pRegex = pSubstitute->FirstChild("regex");
+      if (pRegex && !pRegex->NoChildren())
+        strRegex = pRegex->FirstChild()->Value();
 
       if (!strFrom.empty() && !strTo.empty())
       {
+        CRegExp reg;
+
         CLog::Log(LOGDEBUG,"  Registering substitution pair:");
         CLog::Log(LOGDEBUG, "    From: [{}]", CURL::GetRedacted(strFrom));
         CLog::Log(LOGDEBUG, "    To:   [{}]", CURL::GetRedacted(strTo));
-        m_pathSubstitutions.push_back(std::make_pair(strFrom,strTo));
+        if (!strRegex.empty() && !reg.RegComp(strRegex))
+        {
+          CLog::Log(LOGERROR, "Substitution failed compiling Regex Expression [{}]", strRegex);
+        }
+        else if (reg.IsCompiled())
+        {
+          CLog::Log(LOGDEBUG, "    Regex:   [{}]", reg.GetPattern());
+        }
+
+        m_pathSubstitutions.push_back(std::make_tuple(strFrom, strTo, reg));
       }
       else
       {

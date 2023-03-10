@@ -6,19 +6,21 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "network/Network.h"
 #include "URIUtils.h"
+
 #include "FileItem.h"
+#include "ServiceBroker.h"
+#include "StringUtils.h"
+#include "URL.h"
 #include "filesystem/MultiPathDirectory.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
+#include "network/Network.h"
 #include "pvr/channels/PVRChannelsPath.h"
 #include "settings/AdvancedSettings.h"
-#include "URL.h"
 #include "utils/FileExtensionProvider.h"
-#include "ServiceBroker.h"
-#include "StringUtils.h"
+#include "utils/RegExp.h"
 #include "utils/log.h"
 
 #if defined(TARGET_WINDOWS)
@@ -504,8 +506,14 @@ std::string URIUtils::SubstitutePath(const std::string& strPath, bool reverse /*
 
   for (const auto& pathPair : m_advancedSettings->m_pathSubstitutions)
   {
-    const std::string fromPath = reverse ? pathPair.second : pathPair.first;
-    std::string toPath = reverse ? pathPair.first : pathPair.second;
+    const std::string fromPath = reverse ? std::get<1>(pathPair) : std::get<0>(pathPair);
+    std::string toPath = reverse ? std::get<0>(pathPair) : std::get<1>(pathPair);
+    CRegExp reg = std::get<2>(pathPair);
+
+    if (reg.IsCompiled() && reg.RegFind(strPath) < 0)
+    {
+      continue;
+    }
 
     if (strncmp(strPath.c_str(), fromPath.c_str(), HasSlashAtEnd(fromPath) ? fromPath.size() - 1 : fromPath.size()) == 0)
     {
