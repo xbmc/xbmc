@@ -31,18 +31,19 @@ double str2double(std::wstring_view, double fallback = 0.0);
 class CVariant
 {
 public:
+  // Keep in sync with m_data!
   enum VariantType
   {
+    VariantTypeNull,
+    VariantTypeConstNull,
     VariantTypeInteger,
     VariantTypeUnsignedInteger,
     VariantTypeBoolean,
+    VariantTypeDouble,
     VariantTypeString,
     VariantTypeWideString,
-    VariantTypeDouble,
     VariantTypeArray,
-    VariantTypeObject,
-    VariantTypeNull,
-    VariantTypeConstNull
+    VariantTypeObject
   };
 
   CVariant();
@@ -152,8 +153,18 @@ public:
 private:
   void cleanup();
 
-  VariantType m_type;
-  std::variant<std::monostate,
+  struct Null
+  {
+    bool operator==(const Null&) const { return true; }
+  };
+  struct ConstNull
+  {
+    bool operator==(const ConstNull&) const { return true; }
+  };
+
+  // Keep in sync with VariantType
+  std::variant<Null,
+               ConstNull,
                int64_t,
                uint64_t,
                bool,
