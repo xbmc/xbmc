@@ -13,6 +13,7 @@
 #include <cstring>
 #include <string>
 #include <utility>
+#include <variant>
 
 #ifndef strtoll
 #ifdef TARGET_WINDOWS
@@ -29,6 +30,16 @@
 #endif
 #endif // TARGET_WINDOWS
 #endif // strtoll
+
+// helper type for the visitor
+template<class... Ts>
+struct overloaded : Ts...
+{
+  using Ts::operator()...;
+};
+// explicit deduction guide (not needed as of C++20)
+template<class... Ts>
+overloaded(Ts...) -> overloaded<Ts...>;
 
 std::string_view trim(std::string_view str)
 {
@@ -136,10 +147,14 @@ CVariant::VariantMap CVariant::EMPTY_MAP;
 
 CVariant::CVariant(VariantType type)
 {
-  m_type = type;
-
   switch (type)
   {
+    case VariantTypeNull:
+      m_data = Null{};
+      break;
+    case VariantTypeConstNull:
+      m_data = ConstNull{};
+      break;
     case VariantTypeInteger:
       m_data = int64_t{};
       break;
@@ -164,79 +179,68 @@ CVariant::CVariant(VariantType type)
     case VariantTypeObject:
       m_data = VariantMap{};
       break;
-    default:
-      m_data = std::monostate{};
-      break;
   }
 }
 
-CVariant::CVariant(int integer) : m_type(VariantTypeInteger), m_data(static_cast<int64_t>(integer))
+CVariant::CVariant(int integer) : m_data(static_cast<int64_t>(integer))
 {
 }
 
-CVariant::CVariant(int64_t integer) : m_type(VariantTypeInteger), m_data(integer)
+CVariant::CVariant(int64_t integer) : m_data(integer)
 {
 }
 
-CVariant::CVariant(unsigned int unsignedinteger)
-  : m_type(VariantTypeUnsignedInteger), m_data(static_cast<uint64_t>(unsignedinteger))
+CVariant::CVariant(unsigned int unsignedinteger) : m_data(static_cast<uint64_t>(unsignedinteger))
 {
 }
 
-CVariant::CVariant(uint64_t unsignedinteger)
-  : m_type(VariantTypeUnsignedInteger), m_data(unsignedinteger)
+CVariant::CVariant(uint64_t unsignedinteger) : m_data(unsignedinteger)
 {
 }
 
-CVariant::CVariant(double value) : m_type(VariantTypeDouble), m_data(value)
+CVariant::CVariant(double value) : m_data(value)
 {
 }
 
-CVariant::CVariant(float value) : m_type(VariantTypeDouble), m_data(static_cast<double>(value))
+CVariant::CVariant(float value) : m_data(static_cast<double>(value))
 {
 }
 
-CVariant::CVariant(bool boolean) : m_type(VariantTypeBoolean), m_data(boolean)
+CVariant::CVariant(bool boolean) : m_data(boolean)
 {
 }
 
-CVariant::CVariant(const char* str)
-  : m_type(VariantTypeString), m_data(std::in_place_type<std::string>, str)
+CVariant::CVariant(const char* str) : m_data(std::in_place_type<std::string>, str)
 {
 }
 
 CVariant::CVariant(const char* str, unsigned int length)
-  : m_type(VariantTypeString), m_data(std::in_place_type<std::string>, str, length)
+  : m_data(std::in_place_type<std::string>, str, length)
 {
 }
 
-CVariant::CVariant(const std::string& str)
-  : m_type(VariantTypeString), m_data(std::in_place_type<std::string>, str)
+CVariant::CVariant(const std::string& str) : m_data(std::in_place_type<std::string>, str)
 {
 }
 
-CVariant::CVariant(std::string&& str)
-  : m_type(VariantTypeString), m_data(std::in_place_type<std::string>, std::move(str))
+CVariant::CVariant(std::string&& str) : m_data(std::in_place_type<std::string>, std::move(str))
 {
 }
 
-CVariant::CVariant(const wchar_t* str)
-  : m_type(VariantTypeWideString), m_data(std::in_place_type<std::wstring>, str)
+CVariant::CVariant(const wchar_t* str) : m_data(std::in_place_type<std::wstring>, str)
 {
 }
 
 CVariant::CVariant(const wchar_t* str, unsigned int length)
-  : m_type(VariantTypeWideString), m_data(std::in_place_type<std::wstring>, str, length)
+  : m_data(std::in_place_type<std::wstring>, str, length)
 {
 }
 
-CVariant::CVariant(const std::wstring& str)
-  : m_type(VariantTypeWideString), m_data(std::in_place_type<std::wstring>, str)
+CVariant::CVariant(const std::wstring& str) : m_data(std::in_place_type<std::wstring>, str)
 {
 }
 
-CVariant::CVariant(std::wstring&& str)
-  : m_type(VariantTypeWideString), m_data(std::in_place_type<std::wstring>, std::move(str))
+CVariant::CVariant(std::wstring&& str) : m_data(std::in_place_type<std::wstring>, std::move(str))
 {
 }
 
@@ -247,7 +251,6 @@ CVariant::CVariant(const std::vector<std::string> &strArray)
   for (const auto& item : strArray)
     tmpArray.emplace_back(item);
 
-  m_type = VariantTypeArray;
   m_data = std::move(tmpArray);
 }
 
@@ -257,20 +260,19 @@ CVariant::CVariant(const std::map<std::string, std::string> &strMap)
   for (const auto& elem : strMap)
     tmpMap.emplace(elem.first, CVariant(elem.second));
 
-  m_type = VariantTypeObject;
   m_data = std::move(tmpMap);
 }
 
 CVariant::CVariant(const std::map<std::string, CVariant>& variantMap)
-  : m_type(VariantTypeObject), m_data(std::in_place_type<VariantMap>, variantMap)
+  : m_data(std::in_place_type<VariantMap>, variantMap)
 {
 }
 
-CVariant::CVariant(const CVariant& variant) : m_type(variant.m_type), m_data(variant.m_data)
+CVariant::CVariant(const CVariant& variant) : m_data(variant.m_data)
 {
 }
 
-CVariant::CVariant(CVariant&& rhs) noexcept : m_type(rhs.m_type), m_data(std::move(rhs.m_data))
+CVariant::CVariant(CVariant&& rhs) noexcept : m_data(std::move(rhs.m_data))
 {
 }
 
@@ -281,8 +283,7 @@ CVariant::~CVariant()
 
 void CVariant::cleanup()
 {
-  m_data = std::monostate{};
-  m_type = VariantTypeNull;
+  m_data = Null{};
 }
 
 bool CVariant::isInteger() const
@@ -292,71 +293,63 @@ bool CVariant::isInteger() const
 
 bool CVariant::isSignedInteger() const
 {
-  return m_type == VariantTypeInteger;
+  return std::holds_alternative<int64_t>(m_data);
 }
 
 bool CVariant::isUnsignedInteger() const
 {
-  return m_type == VariantTypeUnsignedInteger;
+  return std::holds_alternative<uint64_t>(m_data);
 }
 
 bool CVariant::isBoolean() const
 {
-  return m_type == VariantTypeBoolean;
+  return std::holds_alternative<bool>(m_data);
 }
 
 bool CVariant::isDouble() const
 {
-  return m_type == VariantTypeDouble;
+  return std::holds_alternative<double>(m_data);
 }
 
 bool CVariant::isString() const
 {
-  return m_type == VariantTypeString;
+  return std::holds_alternative<std::string>(m_data);
 }
 
 bool CVariant::isWideString() const
 {
-  return m_type == VariantTypeWideString;
+  return std::holds_alternative<std::wstring>(m_data);
 }
 
 bool CVariant::isArray() const
 {
-  return m_type == VariantTypeArray;
+  return std::holds_alternative<VariantArray>(m_data);
 }
 
 bool CVariant::isObject() const
 {
-  return m_type == VariantTypeObject;
+  return std::holds_alternative<VariantMap>(m_data);
 }
 
 bool CVariant::isNull() const
 {
-  return m_type == VariantTypeNull || m_type == VariantTypeConstNull;
+  return std::holds_alternative<Null>(m_data) || std::holds_alternative<ConstNull>(m_data);
 }
 
 CVariant::VariantType CVariant::type() const
 {
-  return m_type;
+  return static_cast<VariantType>(m_data.index());
 }
 
 int64_t CVariant::asInteger(int64_t fallback) const
 {
-  switch (m_type)
-  {
-    case VariantTypeInteger:
-      return std::get<int64_t>(m_data);
-    case VariantTypeUnsignedInteger:
-      return static_cast<int64_t>(std::get<uint64_t>(m_data));
-    case VariantTypeDouble:
-      return static_cast<int64_t>(std::get<double>(m_data));
-    case VariantTypeString:
-      return str2int64(std::get<std::string>(m_data), fallback);
-    case VariantTypeWideString:
-      return str2int64(std::get<std::wstring>(m_data), fallback);
-    default:
-      return fallback;
-  }
+  return std::visit(overloaded{[](int64_t i) { return i; },
+                               [](uint64_t u) { return static_cast<int64_t>(u); },
+                               [](double d) { return static_cast<int64_t>(d); },
+                               [=](const std::string& s) { return str2int64(s, fallback); },
+                               [=](const std::wstring& ws) { return str2int64(ws, fallback); },
+                               [=](const auto&) { return fallback; }},
+                    m_data);
 }
 
 int32_t CVariant::asInteger32(int32_t fallback) const
@@ -366,21 +359,13 @@ int32_t CVariant::asInteger32(int32_t fallback) const
 
 uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
 {
-  switch (m_type)
-  {
-    case VariantTypeUnsignedInteger:
-      return std::get<uint64_t>(m_data);
-    case VariantTypeInteger:
-      return static_cast<uint64_t>(std::get<int64_t>(m_data));
-    case VariantTypeDouble:
-      return static_cast<uint64_t>(std::get<double>(m_data));
-    case VariantTypeString:
-      return str2uint64(std::get<std::string>(m_data), fallback);
-    case VariantTypeWideString:
-      return str2uint64(std::get<std::wstring>(m_data), fallback);
-    default:
-      return fallback;
-  }
+  return std::visit(overloaded{[](uint64_t u) { return u; },
+                               [](int64_t i) { return static_cast<uint64_t>(i); },
+                               [](double d) { return static_cast<uint64_t>(d); },
+                               [=](const std::string& s) { return str2uint64(s, fallback); },
+                               [=](const std::wstring& ws) { return str2uint64(ws, fallback); },
+                               [=](const auto&) { return fallback; }},
+                    m_data);
 }
 
 uint32_t CVariant::asUnsignedInteger32(uint32_t fallback) const
@@ -390,231 +375,181 @@ uint32_t CVariant::asUnsignedInteger32(uint32_t fallback) const
 
 double CVariant::asDouble(double fallback) const
 {
-  switch (m_type)
-  {
-    case VariantTypeDouble:
-      return std::get<double>(m_data);
-    case VariantTypeInteger:
-      return static_cast<double>(std::get<int64_t>(m_data));
-    case VariantTypeUnsignedInteger:
-      return static_cast<double>(std::get<uint64_t>(m_data));
-    case VariantTypeString:
-      return str2double(std::get<std::string>(m_data), fallback);
-    case VariantTypeWideString:
-      return str2double(std::get<std::wstring>(m_data), fallback);
-    default:
-      return fallback;
-  }
+  return std::visit(
+      overloaded{
+          [](double d) { return d; }, [](int64_t i) { return static_cast<double>(i); },
+          [](uint64_t u) { return static_cast<double>(u); },
+          [=](const std::string& s) { return static_cast<double>(str2uint64(s, fallback)); },
+          [=](const std::wstring& ws) { return static_cast<double>(str2uint64(ws, fallback)); },
+          [=](const auto&) { return fallback; }},
+      m_data);
 }
 
 float CVariant::asFloat(float fallback) const
 {
-
   return static_cast<float>(asDouble(static_cast<double>(fallback)));
 }
 
 bool CVariant::asBoolean(bool fallback) const
 {
-  switch (m_type)
-  {
-    case VariantTypeBoolean:
-      return std::get<bool>(m_data);
-    case VariantTypeInteger:
-      return (std::get<int64_t>(m_data) != 0);
-    case VariantTypeUnsignedInteger:
-      return (std::get<uint64_t>(m_data) != 0);
-    case VariantTypeDouble:
-      return (std::get<double>(m_data) != 0);
-    case VariantTypeString:
-    {
-      const auto& str = std::get<std::string>(m_data);
-      if (str.empty() || str == "0" || str == "false")
-        return false;
-      return true;
-    }
-    case VariantTypeWideString:
-    {
-      const auto& wstr = std::get<std::wstring>(m_data);
-      if (wstr.empty() || wstr == L"0" || wstr == L"false")
-        return false;
-      return true;
-    }
-    default:
-      return fallback;
-  }
+  return std::visit(
+      overloaded{[](bool b) { return b; }, [](int64_t i) { return i != 0; },
+                 [](uint64_t u) { return u != 0; }, [](double d) { return d != 0; },
+                 [](const std::string& s) { return s.empty() || s == "0" || s == "false"; },
+                 [](const std::wstring& ws) { return ws.empty() || ws == L"0" || ws == L"false"; },
+                 [=](const auto&) { return fallback; }},
+      m_data);
 }
 
 std::string CVariant::asString(std::string_view fallback /* = "" */) const&
 {
-  switch (m_type)
-  {
-    case VariantTypeString:
-      return std::get<std::string>(m_data);
-    case VariantTypeBoolean:
-      return std::get<bool>(m_data) ? "true" : "false";
-    case VariantTypeInteger:
-      return std::to_string(std::get<int64_t>(m_data));
-    case VariantTypeUnsignedInteger:
-      return std::to_string(std::get<uint64_t>(m_data));
-    case VariantTypeDouble:
-      return std::to_string(std::get<double>(m_data));
-    default:
-      return std::string(fallback);
-  }
+  return std::visit(overloaded{[](const std::string& s) { return s; },
+                               [](bool b) { return std::string(b ? "true" : "false"); },
+                               [](int64_t i) { return std::to_string(i); },
+                               [](uint64_t u) { return std::to_string(u); },
+                               [](double d) { return std::to_string(d); },
+                               [=](const auto& a) { return std::string(fallback); }},
+                    m_data);
 }
 
 std::string CVariant::asString(std::string_view fallback /*= ""*/) &&
 {
-  if (m_type == VariantTypeString)
-    return std::move(std::get<std::string>(m_data));
-  else
-    return asString(fallback);
+  return std::visit(overloaded{[](std::string& s) { return std::move(s); },
+                               [&](auto&) { return asString(fallback); }},
+                    m_data);
 }
 
 std::wstring CVariant::asWideString(std::wstring_view fallback /* = L"" */) const&
 {
-  switch (m_type)
-  {
-    case VariantTypeWideString:
-      return std::get<std::wstring>(m_data);
-    case VariantTypeBoolean:
-      return std::get<bool>(m_data) ? L"true" : L"false";
-    case VariantTypeInteger:
-      return std::to_wstring(std::get<int64_t>(m_data));
-    case VariantTypeUnsignedInteger:
-      return std::to_wstring(std::get<uint64_t>(m_data));
-    case VariantTypeDouble:
-      return std::to_wstring(std::get<double>(m_data));
-    default:
-      return std::wstring(fallback);
-  }
+  return std::visit(overloaded{[](const std::wstring& ws) { return ws; },
+                               [](bool b) { return std::wstring(b ? L"true" : L"false"); },
+                               [](int64_t i) { return std::to_wstring(i); },
+                               [](uint64_t u) { return std::to_wstring(u); },
+                               [](double d) { return std::to_wstring(d); },
+                               [=](const auto&) { return std::wstring(fallback); }},
+                    m_data);
 }
 
 std::wstring CVariant::asWideString(std::wstring_view fallback /*= L""*/) &&
 {
-  if (m_type == VariantTypeWideString)
-    return std::move(std::get<std::wstring>(m_data));
-  else
-    return asWideString(fallback);
+  return std::visit(overloaded{[](std::wstring& ws) { return std::move(ws); },
+                               [&](auto&) { return asWideString(fallback); }},
+                    m_data);
 }
 
 CVariant& CVariant::operator[](const std::string& key) &
 {
-  if (m_type == VariantTypeNull)
+  if (type() == VariantTypeNull)
   {
-    m_type = VariantTypeObject;
     m_data = VariantMap{};
   }
 
-  if (m_type == VariantTypeObject)
-    return std::get<VariantMap>(m_data)[key];
-  else
-    return ConstNullVariant;
+  return std::visit(overloaded{[&](VariantMap& m) -> CVariant& { return m[key]; },
+                               [](auto&) -> CVariant& { return ConstNullVariant; }},
+                    m_data);
 }
 
 const CVariant& CVariant::operator[](const std::string& key) const&
 {
-  VariantMap::const_iterator it;
-  if (m_type == VariantTypeObject &&
-      (it = std::get<VariantMap>(m_data).find(key)) != std::get<VariantMap>(m_data).end())
-    return it->second;
-  else
-    return ConstNullVariant;
+  return std::visit(overloaded{[&](const VariantMap& m) -> const CVariant& {
+                                 auto it = m.find(key);
+                                 return it != m.cend() ? it->second : ConstNullVariant;
+                               },
+                               [](const auto&) -> const CVariant& { return ConstNullVariant; }},
+                    m_data);
 }
 
 CVariant CVariant::operator[](const std::string& key) &&
 {
-  if (m_type == VariantTypeObject)
-    return std::move(std::get<VariantMap>(m_data)[key]);
-  else
-    return ConstNullVariant;
+  return std::visit(overloaded{[&](VariantMap& m) -> CVariant {
+                                 auto it = m.find(key);
+                                 return it != m.cend() ? std::move(it->second) : ConstNullVariant;
+                               },
+                               [](auto&) -> CVariant { return ConstNullVariant; }},
+                    m_data);
 }
 
 CVariant& CVariant::operator[](unsigned int position) &
 {
-  if (m_type == VariantTypeArray && size() > position)
-    return std::get<VariantArray>(m_data).at(position);
-  else
-    return ConstNullVariant;
+  return std::visit(overloaded{[&](VariantArray& a) -> CVariant& {
+                                 return a.size() > position ? a[position] : ConstNullVariant;
+                               },
+                               [](auto&) -> CVariant& { return ConstNullVariant; }},
+                    m_data);
 }
 
 const CVariant& CVariant::operator[](unsigned int position) const&
 {
-  if (m_type == VariantTypeArray && size() > position)
-    return std::get<VariantArray>(m_data).at(position);
-  else
-    return ConstNullVariant;
+  return std::visit(overloaded{[&](const VariantArray& a) -> const CVariant& {
+                                 return a.size() > position ? a[position] : ConstNullVariant;
+                               },
+                               [](const auto&) -> const CVariant& { return ConstNullVariant; }},
+                    m_data);
 }
 
 CVariant CVariant::operator[](unsigned int position) &&
 {
-  if (m_type == VariantTypeArray && size() > position)
-    return std::move(std::get<VariantArray>(m_data).at(position));
-  else
-    return ConstNullVariant;
+  return std::visit(overloaded{[&](VariantArray& a) -> CVariant {
+                                 return a.size() > position ? std::move(a[position])
+                                                            : ConstNullVariant;
+                               },
+                               [](auto&) -> CVariant { return ConstNullVariant; }},
+                    m_data);
 }
 
 CVariant &CVariant::operator=(const CVariant &rhs)
 {
-  if (m_type == VariantTypeConstNull || this == &rhs)
+  if (type() == VariantTypeConstNull || this == &rhs)
     return *this;
 
   cleanup();
-
-  m_type = rhs.m_type;
   m_data = rhs.m_data;
-
   return *this;
 }
 
 CVariant& CVariant::operator=(CVariant&& rhs) noexcept
 {
-  if (m_type == VariantTypeConstNull || this == &rhs)
+  if (type() == VariantTypeConstNull || this == &rhs)
     return *this;
 
-  m_type = rhs.m_type;
   m_data = std::move(rhs.m_data);
-
   return *this;
 }
 
 bool CVariant::operator==(const CVariant &rhs) const
 {
-  return m_type == rhs.m_type && m_data == rhs.m_data;
+  return m_data == rhs.m_data;
 }
 
 void CVariant::reserve(size_t length)
 {
-  if (m_type == VariantTypeNull)
+  if (type() == VariantTypeNull)
   {
-    m_type = VariantTypeArray;
     m_data = VariantArray{};
   }
-  if (m_type == VariantTypeArray)
+  if (type() == VariantTypeArray)
     std::get<VariantArray>(m_data).reserve(length);
 }
 
 void CVariant::push_back(const CVariant &variant)
 {
-  if (m_type == VariantTypeNull)
+  if (type() == VariantTypeNull)
   {
-    m_type = VariantTypeArray;
     m_data = VariantArray{};
   }
 
-  if (m_type == VariantTypeArray)
+  if (type() == VariantTypeArray)
     std::get<VariantArray>(m_data).emplace_back(variant);
 }
 
 void CVariant::push_back(CVariant &&variant)
 {
-  if (m_type == VariantTypeNull)
+  if (type() == VariantTypeNull)
   {
-    m_type = VariantTypeArray;
     m_data = VariantArray{};
   }
 
-  if (m_type == VariantTypeArray)
+  if (type() == VariantTypeArray)
     std::get<VariantArray>(m_data).emplace_back(std::move(variant));
 }
 
@@ -630,151 +565,117 @@ void CVariant::append(CVariant&& variant)
 
 const char *CVariant::c_str() const
 {
-  if (m_type == VariantTypeString)
-    return std::get<std::string>(m_data).c_str();
-  else
-    return nullptr;
+  return std::visit(overloaded{[](const std::string& s) { return s.c_str(); },
+                               [](const auto&) -> const char* { return nullptr; }},
+                    m_data);
 }
 
 void CVariant::swap(CVariant& rhs) noexcept
 {
   std::swap(m_data, rhs.m_data);
-  std::swap(m_type, rhs.m_type);
 }
 
 CVariant::iterator_array CVariant::begin_array()
 {
-  if (m_type == VariantTypeArray)
-    return std::get<VariantArray>(m_data).begin();
-  else
-    return EMPTY_ARRAY.begin();
+  return std::visit(overloaded{[](VariantArray& a) { return a.begin(); },
+                               [](auto&) { return EMPTY_ARRAY.begin(); }},
+                    m_data);
 }
 
 CVariant::const_iterator_array CVariant::begin_array() const
 {
-  if (m_type == VariantTypeArray)
-    return std::get<VariantArray>(m_data).cbegin();
-  else
-    return EMPTY_ARRAY.cbegin();
+  return std::visit(overloaded{[](const VariantArray& a) { return a.cbegin(); },
+                               [](const auto&) { return EMPTY_ARRAY.cbegin(); }},
+                    m_data);
 }
 
 CVariant::iterator_array CVariant::end_array()
 {
-  if (m_type == VariantTypeArray)
-    return std::get<VariantArray>(m_data).end();
-  else
-    return EMPTY_ARRAY.end();
+  return std::visit(
+      overloaded{[](VariantArray& a) { return a.end(); }, [](auto&) { return EMPTY_ARRAY.end(); }},
+      m_data);
 }
 
 CVariant::const_iterator_array CVariant::end_array() const
 {
-  if (m_type == VariantTypeArray)
-    return std::get<VariantArray>(m_data).cend();
-  else
-    return EMPTY_ARRAY.cend();
+  return std::visit(overloaded{[](const VariantArray& a) { return a.cend(); },
+                               [](const auto&) { return EMPTY_ARRAY.cend(); }},
+                    m_data);
 }
 
 CVariant::iterator_map CVariant::begin_map()
 {
-  if (m_type == VariantTypeObject)
-    return std::get<VariantMap>(m_data).begin();
-  else
-    return EMPTY_MAP.begin();
+  return std::visit(
+      overloaded{[](VariantMap& a) { return a.begin(); }, [](auto&) { return EMPTY_MAP.begin(); }},
+      m_data);
 }
 
 CVariant::const_iterator_map CVariant::begin_map() const
 {
-  if (m_type == VariantTypeObject)
-    return std::get<VariantMap>(m_data).cbegin();
-  else
-    return EMPTY_MAP.cbegin();
+  return std::visit(overloaded{[](const VariantMap& a) { return a.cbegin(); },
+                               [](const auto&) { return EMPTY_MAP.cbegin(); }},
+                    m_data);
 }
 
 CVariant::iterator_map CVariant::end_map()
 {
-  if (m_type == VariantTypeObject)
-    return std::get<VariantMap>(m_data).end();
-  else
-    return EMPTY_MAP.end();
+  return std::visit(
+      overloaded{[](VariantMap& a) { return a.end(); }, [](auto&) { return EMPTY_MAP.end(); }},
+      m_data);
 }
 
 CVariant::const_iterator_map CVariant::end_map() const
 {
-  if (m_type == VariantTypeObject)
-    return std::get<VariantMap>(m_data).cend();
-  else
-    return EMPTY_MAP.end();
+  return std::visit(overloaded{[](const VariantMap& m) { return m.cend(); },
+                               [](const auto&) { return EMPTY_MAP.cend(); }},
+                    m_data);
 }
 
 unsigned int CVariant::size() const
 {
-  if (m_type == VariantTypeObject)
-    return std::get<VariantMap>(m_data).size();
-  else if (m_type == VariantTypeArray)
-    return std::get<VariantArray>(m_data).size();
-  else if (m_type == VariantTypeString)
-    return std::get<std::string>(m_data).size();
-  else if (m_type == VariantTypeWideString)
-    return std::get<std::wstring>(m_data).size();
-  else
-    return 0;
+  return std::visit(overloaded{[](const VariantMap& m) { return m.size(); },
+                               [](const VariantArray& a) { return a.size(); },
+                               [](const std::string& s) { return s.size(); },
+                               [](const std::wstring& w) { return w.size(); },
+                               [](const auto&) { return std::size_t(0); }},
+                    m_data);
 }
 
 bool CVariant::empty() const
 {
-  if (m_type == VariantTypeObject)
-    return std::get<VariantMap>(m_data).empty();
-  else if (m_type == VariantTypeArray)
-    return std::get<VariantArray>(m_data).empty();
-  else if (m_type == VariantTypeString)
-    return std::get<std::string>(m_data).empty();
-  else if (m_type == VariantTypeWideString)
-    return std::get<std::wstring>(m_data).empty();
-  else if (m_type == VariantTypeNull)
-    return true;
-
-  return false;
+  return std::visit(overloaded{[](const VariantMap& m) { return m.empty(); },
+                               [](const VariantArray& a) { return a.empty(); },
+                               [](const std::string& s) { return s.empty(); },
+                               [](const std::wstring& w) { return w.empty(); },
+                               [](const auto&) { return false; }},
+                    m_data);
 }
 
 void CVariant::clear()
 {
-  if (m_type == VariantTypeObject)
-    std::get<VariantMap>(m_data).clear();
-  else if (m_type == VariantTypeArray)
-    std::get<VariantArray>(m_data).clear();
-  else if (m_type == VariantTypeString)
-    return std::get<std::string>(m_data).clear();
-  else if (m_type == VariantTypeWideString)
-    std::get<std::wstring>(m_data).clear();
+  std::visit(overloaded{[](VariantMap& m) { m.clear(); }, [](VariantArray& a) { a.clear(); },
+                        [](std::string& s) { s.clear(); }, [](std::wstring& w) { w.clear(); },
+                        [](auto&) {}},
+             m_data);
 }
 
 void CVariant::erase(const std::string &key)
 {
-  if (m_type == VariantTypeNull)
-  {
-    m_type = VariantTypeObject;
-    m_data = VariantMap{};
-  }
-  else if (m_type == VariantTypeObject)
-    std::get<VariantMap>(m_data).erase(key);
+  std::visit(overloaded{[&](Null&) { m_data = VariantMap{}; }, [&](VariantMap& m) { m.erase(key); },
+                        [](const auto&) {}},
+             m_data);
 }
 
 void CVariant::erase(unsigned int position)
 {
-  if (m_type == VariantTypeNull)
-  {
-    m_type = VariantTypeArray;
-    m_data = VariantArray{};
-  }
-
-  if (m_type == VariantTypeArray && position < size())
-    std::get<VariantArray>(m_data).erase(std::get<VariantArray>(m_data).begin() + position);
+  std::visit(overloaded{[&](Null&) { m_data = VariantArray{}; },
+                        [=](VariantArray& a) { a.erase(a.begin() + position); }, [](auto&) {}},
+             m_data);
 }
 
 bool CVariant::isMember(const std::string &key) const
 {
-  if (m_type == VariantTypeObject)
-    return std::get<VariantMap>(m_data).find(key) != std::get<VariantMap>(m_data).end();
-
-  return false;
+  return std::visit(overloaded{[&](const VariantMap& m) { return m.find(key) != m.end(); },
+                               [](const auto&) { return false; }},
+                    m_data);
 }
