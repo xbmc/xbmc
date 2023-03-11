@@ -15,6 +15,29 @@
 
 if(PKG_CONFIG_FOUND)
   pkg_check_modules(PC_ASS libass QUIET)
+
+  # Darwin platforms have lib options like -framework CoreServices. pkgconfig return of
+  # PC_ASS_LDFLAGS splits this into a list -framework;CoreServices, and when passed to linker
+  # This then treats them as individual flags and appends -l to CoreServices. eg -framework;-lCoreServices
+  # This causes failures, as -lCoreServices isnt a lib that can be found.
+  # This just formats the list data to append frameworks (eg "-framework CoreServices")
+  if(PC_ASS_LDFLAGS AND "-framework" IN_LIST PC_ASS_LDFLAGS)
+    set(_framework_command OFF)
+    foreach(flag ${PC_ASS_LDFLAGS})
+      if(flag STREQUAL "-framework")
+        set(_framework_command ON)
+        continue()
+      elseif(_framework_command)
+        list(APPEND ASS_LDFLAGS "-framework ${flag}")
+        set(_framework_command OFF)
+      else()
+        list(APPEND ASS_LDFLAGS ${flag})
+      endif()
+    endforeach()
+    unset(_framework_command)
+  else()
+    set(ASS_LDFLAGS ${PC_ASS_LDFLAGS})
+  endif()
 endif()
 
 find_path(ASS_INCLUDE_DIR NAMES ass/ass.h
@@ -30,7 +53,7 @@ find_package_handle_standard_args(ASS
                                   VERSION_VAR ASS_VERSION)
 
 if(ASS_FOUND)
-  set(ASS_LIBRARIES ${ASS_LIBRARY})
+  set(ASS_LIBRARIES ${ASS_LIBRARY} ${ASS_LDFLAGS})
   set(ASS_INCLUDE_DIRS ${ASS_INCLUDE_DIR})
 
   if(NOT TARGET ASS::ASS)
