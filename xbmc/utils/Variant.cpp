@@ -559,7 +559,7 @@ std::wstring CVariant::asWideString(const std::wstring& fallback /*= L""*/) &&
     return asWideString(fallback);
 }
 
-CVariant &CVariant::operator[](const std::string &key)
+CVariant& CVariant::operator[](const std::string& key) &
 {
   if (m_type == VariantTypeNull)
   {
@@ -573,7 +573,7 @@ CVariant &CVariant::operator[](const std::string &key)
     return ConstNullVariant;
 }
 
-const CVariant &CVariant::operator[](const std::string &key) const
+const CVariant& CVariant::operator[](const std::string& key) const&
 {
   VariantMap::const_iterator it;
   if (m_type == VariantTypeObject && (it = m_data.map->find(key)) != m_data.map->end())
@@ -582,7 +582,15 @@ const CVariant &CVariant::operator[](const std::string &key) const
     return ConstNullVariant;
 }
 
-CVariant &CVariant::operator[](unsigned int position)
+CVariant CVariant::operator[](const std::string& key) &&
+{
+  if (m_type == VariantTypeObject)
+    return std::move((*m_data.map)[key]);
+  else
+    return ConstNullVariant;
+}
+
+CVariant& CVariant::operator[](unsigned int position) &
 {
   if (m_type == VariantTypeArray && size() > position)
     return m_data.array->at(position);
@@ -590,10 +598,18 @@ CVariant &CVariant::operator[](unsigned int position)
     return ConstNullVariant;
 }
 
-const CVariant &CVariant::operator[](unsigned int position) const
+const CVariant& CVariant::operator[](unsigned int position) const&
 {
   if (m_type == VariantTypeArray && size() > position)
     return m_data.array->at(position);
+  else
+    return ConstNullVariant;
+}
+
+CVariant CVariant::operator[](unsigned int position) &&
+{
+  if (m_type == VariantTypeArray && size() > position)
+    return std::move(m_data.array->at(position));
   else
     return ConstNullVariant;
 }
