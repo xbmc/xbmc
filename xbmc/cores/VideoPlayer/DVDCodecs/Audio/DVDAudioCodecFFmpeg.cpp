@@ -73,8 +73,10 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = 1;
 
+#if LIBAVCODEC_VERSION_MAJOR < 60
   if (pCodec->capabilities & AV_CODEC_CAP_TRUNCATED)
     m_pCodecContext->flags |= AV_CODEC_FLAG_TRUNCATED;
+#endif
 
   m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
   m_channels = 0;
