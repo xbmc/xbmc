@@ -1605,8 +1605,6 @@ int CDecoder::GetBuffer(AVCodecContext* avctx, AVFrame* pic)
     return -1;
   }
 
-  pic->reordered_opaque = avctx->reordered_opaque;
-
   for (unsigned i = 0; i < 4; i++)
   {
     pic->data[i] = nullptr;
@@ -1622,6 +1620,10 @@ int CDecoder::GetBuffer(AVCodecContext* avctx, AVFrame* pic)
     return -1;
   }
   pic->buf[0] = buffer;
+
+#if LIBAVCODEC_VERSION_MAJOR < 60
+  pic->reordered_opaque = avctx->reordered_opaque;
+#endif
 
   Acquire();
 
