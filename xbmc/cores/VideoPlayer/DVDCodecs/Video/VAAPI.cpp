@@ -867,7 +867,10 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   }
   pic->buf[0] = buffer;
 
+#if LIBAVCODEC_VERSION_MAJOR < 60
   pic->reordered_opaque = avctx->reordered_opaque;
+#endif
+
   va->Acquire();
   return 0;
 }
