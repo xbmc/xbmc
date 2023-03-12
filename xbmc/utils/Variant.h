@@ -64,8 +64,11 @@ public:
   CVariant(const std::wstring &str);
   CVariant(std::wstring &&str);
   CVariant(const std::vector<std::string> &strArray);
+  CVariant(std::vector<std::string>&& strArray);
   CVariant(const std::map<std::string, std::string> &strMap);
+  CVariant(std::map<std::string, std::string>&& strMap);
   CVariant(const std::map<std::string, CVariant> &variantMap);
+  CVariant(std::map<std::string, CVariant>&& variantMap);
   CVariant(const CVariant &variant);
   CVariant(CVariant&& rhs) noexcept;
   ~CVariant();

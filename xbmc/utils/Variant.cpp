@@ -254,6 +254,16 @@ CVariant::CVariant(const std::vector<std::string> &strArray)
   m_data = std::move(tmpArray);
 }
 
+CVariant::CVariant(std::vector<std::string>&& strArray)
+{
+  VariantArray tmpArray;
+  tmpArray.reserve(strArray.size());
+  for (auto& item : strArray)
+    tmpArray.emplace_back(std::move(item));
+
+  m_data = std::move(tmpArray);
+}
+
 CVariant::CVariant(const std::map<std::string, std::string> &strMap)
 {
   VariantMap tmpMap;
@@ -263,8 +273,22 @@ CVariant::CVariant(const std::map<std::string, std::string> &strMap)
   m_data = std::move(tmpMap);
 }
 
+CVariant::CVariant(std::map<std::string, std::string>&& strMap)
+{
+  VariantMap tmpMap;
+  for (auto& elem : strMap)
+    tmpMap.emplace(elem.first, CVariant(std::move(elem.second)));
+
+  m_data = std::move(tmpMap);
+}
+
 CVariant::CVariant(const std::map<std::string, CVariant>& variantMap)
   : m_data(std::in_place_type<VariantMap>, variantMap)
+{
+}
+
+CVariant::CVariant(std::map<std::string, CVariant>&& variantMap)
+  : m_data(std::in_place_type<VariantMap>, std::move(variantMap))
 {
 }
 
