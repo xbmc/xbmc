@@ -62,7 +62,7 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_L
   endif()
 endif()
 
-if(WAYLANDPROTOCOLSWEBOS_FOUND)
+if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
   list(APPEND SOURCES RendererStarfish.cpp)
   list(APPEND HEADERS RendererStarfish.h)
 endif()

@@ -11,6 +11,7 @@
 #include "Connection.h"
 #include "Registry.h"
 #include "ShellSurfaceWebOSShell.h"
+#include "cores/AudioEngine/Sinks/AESinkStarfish.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecStarfish.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererStarfish.h"
 #include "utils/log.h"
@@ -26,6 +27,7 @@ bool CWinSystemWaylandWebOS::InitWindowSystem()
 
   CDVDVideoCodecStarfish::Register();
   CRendererStarfish::Register();
+  CAESinkStarfish::Register();
 
   m_webosRegistry = std::make_unique<CRegistry>(*GetConnection());
   m_webosRegistry->RequestSingleton(m_compositor, 1, 4);

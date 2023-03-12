@@ -41,7 +41,7 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_L
   list(APPEND HEADERS DVDVideoCodecDRMPRIME.h)
 endif()
 
-if(WAYLANDPROTOCOLSWEBOS_FOUND)
+if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
   list(APPEND SOURCES DVDVideoCodecStarfish.cpp)
   list(APPEND HEADERS DVDVideoCodecStarfish.h)
 endif()
