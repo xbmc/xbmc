@@ -38,6 +38,7 @@
 using namespace PVR;
 
 static std::string shortDateFormats[] = {
+    // clang-format off
   // short date formats using "/"
   "DD/MM/YYYY",
   "MM/DD/YYYY",
@@ -53,7 +54,13 @@ static std::string shortDateFormats[] = {
   "DD.M.YYYY",
   "D.M.YYYY",
   "D. M. YYYY",
-  "YYYY.MM.DD"
+  "YYYY.MM.DD",
+  // short date formats with abbreviated month and 2 digit year
+  "D-mmm-YY",
+  "DD-mmm-YY",
+  "D mmm YY",
+  "DD mmm YY",
+    // clang-format on
 };
 
 static std::string longDateFormats[] = {
