@@ -37,8 +37,7 @@
 
 using namespace PVR;
 
-CPVRChannelGroups::CPVRChannelGroups(bool bRadio) :
-    m_bRadio(bRadio)
+CPVRChannelGroups::CPVRChannelGroups(bool bRadio) : m_bRadio(bRadio)
 {
 }
 
@@ -151,7 +150,8 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetById(int iGroupId) const
   return (it != m_groups.cend()) ? (*it) : std::shared_ptr<CPVRChannelGroup>();
 }
 
-std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroups::GetGroupsByChannel(const std::shared_ptr<CPVRChannel>& channel, bool bExcludeHidden /* = false */) const
+std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroups::GetGroupsByChannel(
+    const std::shared_ptr<CPVRChannel>& channel, bool bExcludeHidden /* = false */) const
 {
   std::vector<std::shared_ptr<CPVRChannelGroup>> groups;
 
@@ -163,7 +163,8 @@ std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroups::GetGroupsByCha
   return groups;
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetGroupByPath(const std::string& strInPath) const
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetGroupByPath(
+    const std::string& strInPath) const
 {
   const CPVRChannelsPath path(strInPath);
   if (path.IsChannelGroup())
@@ -266,8 +267,7 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
       emptyGroups.emplace_back(group);
     }
 
-    if (bReturn &&
-        group->IsInternalGroup() &&
+    if (bReturn && group->IsInternalGroup() &&
         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bPVRChannelIconsAutoScan)
     {
       CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons(group);
@@ -428,18 +428,18 @@ GroupMemberPair CPVRChannelGroups::GetLastAndPreviousToLastPlayedChannelGroupMem
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetLastOpenedGroup() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return std::accumulate(
-      m_groups.cbegin(), m_groups.cend(), std::shared_ptr<CPVRChannelGroup>{},
-      [](const std::shared_ptr<CPVRChannelGroup>& last,
-         const std::shared_ptr<CPVRChannelGroup>& group)
-      {
-        return group->LastOpened() > 0 && (!last || group->LastOpened() > last->LastOpened())
-                   ? group
-                   : last;
-      });
+  return std::accumulate(m_groups.cbegin(), m_groups.cend(), std::shared_ptr<CPVRChannelGroup>{},
+                         [](const std::shared_ptr<CPVRChannelGroup>& last,
+                            const std::shared_ptr<CPVRChannelGroup>& group) {
+                           return group->LastOpened() > 0 &&
+                                          (!last || group->LastOpened() > last->LastOpened())
+                                      ? group
+                                      : last;
+                         });
 }
 
-std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroups::GetMembers(bool bExcludeHidden /* = false */) const
+std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroups::GetMembers(
+    bool bExcludeHidden /* = false */) const
 {
   std::vector<std::shared_ptr<CPVRChannelGroup>> groups;
 
@@ -450,13 +450,16 @@ std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroups::GetMembers(boo
   return groups;
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGroup& group) const
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetPreviousGroup(
+    const CPVRChannelGroup& group) const
 {
   {
     bool bReturnNext = false;
 
     std::unique_lock<CCriticalSection> lock(m_critSection);
-    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_reverse_iterator it = m_groups.rbegin(); it != m_groups.rend(); ++it)
+    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_reverse_iterator it =
+             m_groups.rbegin();
+         it != m_groups.rend(); ++it)
     {
       // return this entry
       if (bReturnNext && !(*it)->IsHidden())
@@ -468,7 +471,9 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetPreviousGroup(const CPVR
     }
 
     // no match return last visible group
-    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_reverse_iterator it = m_groups.rbegin(); it != m_groups.rend(); ++it)
+    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_reverse_iterator it =
+             m_groups.rbegin();
+         it != m_groups.rend(); ++it)
     {
       if (!(*it)->IsHidden())
         return *it;
@@ -479,13 +484,15 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetPreviousGroup(const CPVR
   return GetLastGroup();
 }
 
-std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup& group) const
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetNextGroup(
+    const CPVRChannelGroup& group) const
 {
   {
     bool bReturnNext = false;
 
     std::unique_lock<CCriticalSection> lock(m_critSection);
-    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
+    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_iterator it = m_groups.begin();
+         it != m_groups.end(); ++it)
     {
       // return this entry
       if (bReturnNext && !(*it)->IsHidden())
@@ -497,7 +504,8 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetNextGroup(const CPVRChan
     }
 
     // no match return first visible group
-    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_iterator it = m_groups.begin(); it != m_groups.end(); ++it)
+    for (std::vector<std::shared_ptr<CPVRChannelGroup>>::const_iterator it = m_groups.begin();
+         it != m_groups.end(); ++it)
     {
       if (!(*it)->IsHidden())
         return *it;
@@ -589,11 +597,11 @@ bool CPVRChannelGroups::CreateChannelEpgs()
   bool bReturn(false);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (std::vector<std::shared_ptr<CPVRChannelGroup>>::iterator it = m_groups.begin(); it != m_groups.end(); ++it)
+  for (const auto& group : m_groups)
   {
     /* Only create EPGs for the internal groups */
-    if ((*it)->IsInternalGroup())
-      bReturn = (*it)->CreateChannelEpgs();
+    if (group->IsInternalGroup())
+      bReturn = group->CreateChannelEpgs();
   }
   return bReturn;
 }
