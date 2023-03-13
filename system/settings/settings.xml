@@ -3991,6 +3991,15 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="screensaver.disableforaudio" type="boolean" label="39192" help="39193">
+          <level>0</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable" setting="screensaver.mode" operator="!is"></dependency>
+            <dependency type="enable" setting="screensaver.usemusicvisinstead" operator="!is">true</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="screensaver.usedimonpause" type="boolean" label="22014" help="36134">
           <level>1</level>
           <default>true</default>

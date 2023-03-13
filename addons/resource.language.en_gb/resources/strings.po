@@ -23434,3 +23434,14 @@ msgstr ""
 msgctxt "#39191"
 msgid "HDR"
 msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#39192"
+msgid "Disable screensaver when playing audio"
+msgstr ""
+
+#. Description of setting with label #39192 "Disable screensaver when playing audio"
+#: system/settings/settings.xml
+msgctxt "#39193"
+msgid "If music is being played, the screensaver will never be activated"
+msgstr ""

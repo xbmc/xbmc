@@ -378,10 +378,17 @@ void CApplicationPowerHandling::ActivateScreenSaver(bool forceType /*= false */)
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer && appPlayer->IsPlayingAudio() &&
-      settings->GetBool(CSettings::SETTING_SCREENSAVER_USEMUSICVISINSTEAD) &&
-      !settings->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty())
-  { // just activate the visualisation if user toggled the usemusicvisinstead option
-    CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VISUALISATION);
+      // don't activate screensaver if 'use visualization instead'
+      ((settings->GetBool(CSettings::SETTING_SCREENSAVER_USEMUSICVISINSTEAD) &&
+        !settings->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty()) ||
+       // don't activate screensaver if disabled globally for audio
+       (settings->GetBool(CSettings::SETTING_SCREENSAVER_DISABLEFORAUDIO))))
+  {
+    // just activate the visualisation if user toggled the usemusicvisinstead option (and not activated already)
+    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_VISUALISATION)
+    {
+      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VISUALISATION);
+    }
     return;
   }
 
