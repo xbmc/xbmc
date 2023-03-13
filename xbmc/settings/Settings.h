@@ -64,6 +64,7 @@ public:
   static constexpr auto SETTING_SCREENSAVER_PREVIEW = "screensaver.preview";
   static constexpr auto SETTING_SCREENSAVER_TIME = "screensaver.time";
   static constexpr auto SETTING_SCREENSAVER_USEMUSICVISINSTEAD = "screensaver.usemusicvisinstead";
+  static constexpr auto SETTING_SCREENSAVER_DISABLEFORAUDIO = "screensaver.disableforaudio";
   static constexpr auto SETTING_SCREENSAVER_USEDIMONPAUSE = "screensaver.usedimonpause";
   static constexpr auto SETTING_WINDOW_WIDTH = "window.width";
   static constexpr auto SETTING_WINDOW_HEIGHT = "window.height";
