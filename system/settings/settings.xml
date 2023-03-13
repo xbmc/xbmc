@@ -3987,6 +3987,7 @@
           <default>true</default>
           <dependencies>
             <dependency type="enable" setting="screensaver.mode" operator="!is"></dependency>
+            <dependency type="enable" setting="musicplayer.visualisation" operator="!is"></dependency>
           </dependencies>
           <control type="toggle" />
         </setting>
