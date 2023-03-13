@@ -124,7 +124,7 @@ Internal dependencies that are based on cmake upstream (currently crossguid, ffm
 
 **Note:** fstrcmp requires libtool
 
-**[back to top](#table-of-contents)** | **[back to section top](#3-installing-the-required-packages)**
+**[back to top](#table-of-contents)** | **[back to section top](#3-install-the-required-packages)**
 
 ## 4. Build Kodi
 ### 4.1. Configure build
