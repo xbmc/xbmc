@@ -679,6 +679,7 @@ msgid "Free"
 msgstr ""
 
 #: addons/skin.estuary/xml/Includes.xml
+#: system/settings/settings.xml
 msgctxt "#157"
 msgid "Video"
 msgstr ""
