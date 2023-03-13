@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "guilib/TextureFormats.h"
+
 #include <string>
 
 class IImage
@@ -25,6 +27,17 @@ public:
    \return true if the image could be loaded
    */
   virtual bool LoadImageFromMemory(unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height)=0;
+  /*!
+   \brief Check if a Kodi texture format is compatible
+   \param format The format to check
+   \return true if the decoder can write such a texture
+   */
+  virtual bool IsFormatSupported(uint32_t format) { return format == XB_FMT_A8R8G8B8; }
+  /*!
+   \brief Reports to what format the image could be decoded into
+   \return the Kodi texture format closest to the source format
+   */
+  uint32_t GetCompatibleFormat() const { return m_format; }
   /*!
    \brief Decodes the previously loaded image data to the output buffer in 32 bit raw bits
    \param pixels The output buffer
@@ -70,5 +83,5 @@ protected:
   unsigned int m_originalHeight = 0;  ///< original image height before scaling or cropping
   unsigned int m_orientation = 0;
   bool m_hasAlpha = false;
-
+  uint32_t m_format{XB_FMT_A8R8G8B8};
 };

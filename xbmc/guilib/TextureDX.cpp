@@ -191,3 +191,21 @@ void CDXTexture::LoadToGPU()
 void CDXTexture::BindToUnit(unsigned int unit)
 {
 }
+
+bool CDXTexture::IsGPUFormatSupported(uint32_t format)
+{
+  switch (format)
+  {
+    case XB_FMT_A8R8G8B8:
+    case XB_FMT_RGB8:
+    case XB_FMT_R8:
+    case XB_FMT_DXT1:
+    case XB_FMT_DXT3:
+    case XB_FMT_DXT5:
+    case XB_FMT_DXT5_YCoCg:
+      //FIXME: actually return supported compression
+      return true;
+    default:
+      return false;
+  }
+}

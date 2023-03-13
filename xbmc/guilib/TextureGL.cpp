@@ -110,7 +110,50 @@ void CGLTexture::LoadToGPU()
     m_textureWidth = maxSize;
   }
 
+  if (m_format == XB_FMT_A8 || m_format == XB_FMT_L8)
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  else if (m_format == XB_FMT_L8A8)
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+
 #ifndef HAS_GLES
+
+#ifndef GL_RED
+#define GL_RED 0x1903
+#endif
+#ifndef GL_GREEN
+#define GL_GREEN 0x1904
+#endif
+#ifndef GL_RG
+#define GL_RG 0x8227
+#endif
+#ifndef GL_TEXTURE_SWIZZLE_RGBA
+#define GL_TEXTURE_SWIZZLE_RGBA 0x8E46
+#endif
+
+  if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_swizzle"))
+  {
+    if (m_format == XB_FMT_A8)
+    {
+      GLint const swizzle[] = {GL_ONE, GL_ONE, GL_ONE, GL_RED};
+      glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle);
+    }
+    else if (m_format == XB_FMT_L8)
+    {
+      GLint const swizzle[] = {GL_RED, GL_RED, GL_RED, GL_ONE};
+      glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle);
+    }
+    else if (m_format == XB_FMT_L8A8)
+    {
+      GLint const swizzle[] = {GL_RED, GL_RED, GL_RED, GL_GREEN};
+      glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzle);
+    }
+  }
+  else if (m_format == XB_FMT_A8 || m_format == XB_FMT_L8 || m_format == XB_FMT_L8A8)
+  {
+    CLog::Log(LOGERROR, "{} Attempted to upload an unsupported texture", __FUNCTION__);
+    return;
+  }
+
   GLenum format = GL_BGRA;
   GLint numcomponents = GL_RGBA;
 
@@ -129,6 +172,16 @@ void CGLTexture::LoadToGPU()
   case XB_FMT_RGB8:
     format = GL_RGB;
     numcomponents = GL_RGB;
+    break;
+  case XB_FMT_A8:
+  case XB_FMT_L8:
+  case XB_FMT_R8:
+    format = GL_RED;
+    numcomponents = GL_RED;
+    break;
+  case XB_FMT_L8A8:
+    format = GL_RG;
+    numcomponents = GL_RG;
     break;
   case XB_FMT_A8R8G8B8:
   default:
@@ -165,6 +218,9 @@ void CGLTexture::LoadToGPU()
 #ifndef GL_BGRA_EXT
 #define GL_BGRA_EXT 0x80E1
 #endif
+#ifndef GL_RED
+#define GL_RED 0x1903
+#endif
 
   GLint internalformat;
   GLenum pixelformat;
@@ -177,6 +233,21 @@ void CGLTexture::LoadToGPU()
       break;
     case XB_FMT_RGB8:
       internalformat = pixelformat = GL_RGB;
+      break;
+    case XB_FMT_A8:
+      internalformat = pixelformat = GL_ALPHA;
+      break;
+    case XB_FMT_L8:
+      internalformat = pixelformat = GL_LUMINANCE;
+      break;
+    case XB_FMT_R8:
+      if (m_isOglVersion3orNewer)
+        internalformat = pixelformat = GL_RED;
+      else
+        internalformat = pixelformat = GL_LUMINANCE;
+      break;
+    case XB_FMT_L8A8:
+      internalformat = pixelformat = GL_LUMINANCE_ALPHA;
       break;
     case XB_FMT_A8R8G8B8:
       if (CServiceBroker::GetRenderSystem()->IsExtSupported("GL_EXT_texture_format_BGRA8888") ||
@@ -216,6 +287,7 @@ void CGLTexture::LoadToGPU()
   }
 
   m_loadedToGPU = true;
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 }
 
 void CGLTexture::BindToUnit(unsigned int unit)
@@ -224,3 +296,45 @@ void CGLTexture::BindToUnit(unsigned int unit)
   glBindTexture(GL_TEXTURE_2D, m_texture);
 }
 
+bool CGLTexture::IsGPUFormatSupported(const uint32_t format)
+{
+#ifdef HAS_GL
+  switch (format)
+  {
+    case XB_FMT_A8R8G8B8:
+    case XB_FMT_RGB8:
+    case XB_FMT_RGBA8:
+      return true;
+    case XB_FMT_L8:
+    case XB_FMT_A8:
+    case XB_FMT_L8A8:
+      return CServiceBroker::GetRenderSystem()->IsExtSupported("GL_ARB_texture_swizzle");
+    case XB_FMT_DXT1:
+    case XB_FMT_DXT3:
+    case XB_FMT_DXT5:
+    case XB_FMT_DXT5_YCoCg:
+      //FIXME: actually return supported compression
+      return true;
+    default:
+      return false;
+  }
+#else
+  switch (format)
+  {
+    case XB_FMT_A8R8G8B8:
+    case XB_FMT_RGB8:
+    case XB_FMT_RGBA8:
+    case XB_FMT_L8:
+    case XB_FMT_A8:
+    case XB_FMT_L8A8:
+    case XB_FMT_DXT1:
+    case XB_FMT_DXT3:
+    case XB_FMT_DXT5:
+    case XB_FMT_DXT5_YCoCg:
+      //FIXME: actually return supported compression
+      return true;
+    default:
+      return false;
+  }
+#endif
+}

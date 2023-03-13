@@ -300,6 +300,13 @@ AVFrame* CFFmpegImage::ExtractFrame()
   m_originalWidth = m_width;
   m_originalHeight = m_height;
 
+  if (frame->format == AV_PIX_FMT_GRAY8)
+    m_format = XB_FMT_L8;
+  else if (frame->format == AV_PIX_FMT_GRAY8A)
+    m_format = XB_FMT_L8A8;
+  else
+    m_format = XB_FMT_A8R8G8B8;
+
   const AVPixFmtDescriptor* pixDescriptor = av_pix_fmt_desc_get(static_cast<AVPixelFormat>(frame->format));
   if (pixDescriptor && ((pixDescriptor->flags & (AV_PIX_FMT_FLAG_ALPHA | AV_PIX_FMT_FLAG_PAL)) != 0))
     m_hasAlpha = true;
@@ -349,11 +356,42 @@ void CFFmpegImage::FreeIOCtx(AVIOContext** ioctx)
   av_freep(ioctx);
 }
 
-bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsigned int height,
-                          unsigned int pitch, unsigned int format)
+bool CFFmpegImage::IsFormatSupported(uint32_t format)
 {
-  if (m_width == 0 || m_height == 0 || format != XB_FMT_A8R8G8B8)
+  switch (format)
+  {
+    case XB_FMT_A8:
+    case XB_FMT_L8:
+    case XB_FMT_L8A8:
+    case XB_FMT_A8R8G8B8:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool CFFmpegImage::Decode(unsigned char* const pixels,
+                          unsigned int width,
+                          unsigned int height,
+                          unsigned int pitch,
+                          unsigned int textureFormat)
+{
+  if (m_width == 0 || m_height == 0)
     return false;
+
+  AVPixelFormat outputPixelFormat;
+  if (textureFormat == XB_FMT_A8 || textureFormat == XB_FMT_L8)
+    outputPixelFormat = AV_PIX_FMT_GRAY8;
+  else if (textureFormat == XB_FMT_L8A8)
+    outputPixelFormat = AV_PIX_FMT_GRAY8A;
+  else if (textureFormat == XB_FMT_RGB8 || textureFormat == XB_FMT_A8R8G8B8 ||
+           textureFormat == XB_FMT_RGBA8)
+    outputPixelFormat = AV_PIX_FMT_RGB32;
+  else
+  {
+    CLog::Log(LOGERROR, "{} - No valid texture format ({}) passed", __FUNCTION__, textureFormat);
+    return false;
+  }
 
   if (pixels == nullptr)
   {
@@ -367,7 +405,10 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
     return false;
   }
 
-  return DecodeFrame(m_pFrame, width, height, pitch, pixels);
+  bool success = DecodeFrame(m_pFrame, width, height, pitch, pixels, outputPixelFormat);
+  if (textureFormat == XB_FMT_A8)
+    m_hasAlpha = true;
+  return success;
 }
 
 int CFFmpegImage::EncodeFFmpegFrame(AVCodecContext *avctx, AVPacket *pkt, int *got_packet, AVFrame *frame)
@@ -414,7 +455,12 @@ int CFFmpegImage::DecodeFFmpegFrame(AVCodecContext *avctx, AVFrame *frame, int *
   return 0;
 }
 
-bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int height, unsigned int pitch, unsigned char * const pixels)
+bool CFFmpegImage::DecodeFrame(AVFrame* frame,
+                               unsigned int width,
+                               unsigned int height,
+                               unsigned int pitch,
+                               unsigned char* const pixels,
+                               AVPixelFormat outputPixelFormat)
 {
   if (pixels == nullptr)
   {
@@ -430,7 +476,8 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   }
 
   // we align on 16 as the input provided by the Texture also aligns the buffer size to 16
-  int size = av_image_fill_arrays(pictureRGB->data, pictureRGB->linesize, NULL, AV_PIX_FMT_RGB32, width, height, 16);
+  int size = av_image_fill_arrays(pictureRGB->data, pictureRGB->linesize, NULL, outputPixelFormat,
+                                  width, height, 16);
   if (size < 0)
   {
     CLog::LogF(LOGERROR, "Could not allocate AVFrame member with {} x {} pixels", width, height);
@@ -452,7 +499,7 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
   else
   {
     // We need an extra buffer and copy it manually afterwards
-    pictureRGB->format = AV_PIX_FMT_RGB32;
+    pictureRGB->format = outputPixelFormat;
     pictureRGB->width = width;
     pictureRGB->height = height;
     // we copy the data manually later so give a chance to intrinsics (e.g. mmx, neon)
@@ -485,8 +532,9 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
     nHeight = (unsigned int)(nWidth / ratio + 0.5f);
   }
 
-  struct SwsContext* context = sws_getContext(m_originalWidth, m_originalHeight, pixFormat,
-    nWidth, nHeight, AV_PIX_FMT_RGB32, SWS_BICUBIC, NULL, NULL, NULL);
+  struct SwsContext* context =
+      sws_getContext(m_originalWidth, m_originalHeight, pixFormat, nWidth, nHeight,
+                     outputPixelFormat, SWS_BICUBIC, NULL, NULL, NULL);
 
   if (range == AVCOL_RANGE_JPEG)
   {

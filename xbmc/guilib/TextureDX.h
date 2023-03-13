@@ -24,6 +24,7 @@ public:
   void DestroyTextureObject();
   virtual void LoadToGPU();
   void BindToUnit(unsigned int unit);
+  bool IsGPUFormatSupported(const uint32_t format) override;
 
   ID3D11Texture2D* GetTextureObject()
   {

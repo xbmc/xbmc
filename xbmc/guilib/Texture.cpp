@@ -15,6 +15,7 @@
 #include "filesystem/File.h"
 #include "filesystem/ResourceFile.h"
 #include "filesystem/XbtFile.h"
+#include "guilib/TextureFormats.h"
 #include "guilib/iimage.h"
 #include "guilib/imagefactory.h"
 #include "utils/URIUtils.h"
@@ -50,7 +51,7 @@ CTexture::~CTexture()
   m_pixels = NULL;
 }
 
-void CTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
+void CTexture::Allocate(unsigned int width, unsigned int height, unsigned int format, bool scalable)
 {
   m_imageWidth = m_originalWidth = width;
   m_imageHeight = m_originalHeight = height;
@@ -78,7 +79,7 @@ void CTexture::Allocate(unsigned int width, unsigned int height, unsigned int fo
     m_textureWidth = ((m_textureWidth + 3) / 4) * 4;
     m_textureHeight = ((m_textureHeight + 3) / 4) * 4;
   }
-  else
+  else if (scalable)
   {
     // align all textures so that they have an even width
     // in some circumstances when we downsize a thumbnail
@@ -102,9 +103,9 @@ void CTexture::Allocate(unsigned int width, unsigned int height, unsigned int fo
 
   KODI::MEMORY::AlignedFree(m_pixels);
   m_pixels = NULL;
-  if (GetPitch() * GetRows() > 0)
+  if (GetPitch(m_textureWidth, m_format) * GetRows(m_textureHeight, m_format) > 0)
   {
-    size_t size = GetPitch() * GetRows();
+    size_t size = GetPitch(m_textureWidth, m_format) * GetRows(m_textureHeight, m_format);
     m_pixels = static_cast<unsigned char*>(KODI::MEMORY::AlignedMalloc(size, 32));
 
     if (m_pixels == nullptr)
@@ -127,15 +128,18 @@ void CTexture::Update(unsigned int width,
   if (format & XB_FMT_DXT_MASK)
     return;
 
-  Allocate(width, height, format);
+  if (IsGPUFormatSupported(format))
+    Allocate(width, height, format, false);
+  else
+    Allocate(width, height, XB_FMT_A8R8G8B8, false);
 
   if (m_pixels == nullptr)
     return;
 
-  unsigned int srcPitch = pitch ? pitch : GetPitch(width);
-  unsigned int srcRows = GetRows(height);
-  unsigned int dstPitch = GetPitch(m_textureWidth);
-  unsigned int dstRows = GetRows(m_textureHeight);
+  unsigned int srcPitch = pitch ? pitch : GetPitch(width, format);
+  unsigned int srcRows = GetRows(height, format);
+  unsigned int dstPitch = GetPitch(m_textureWidth, format);
+  unsigned int dstRows = GetRows(m_textureHeight, format);
 
   if (srcPitch == dstPitch)
     memcpy(m_pixels, pixels, srcPitch * std::min(srcRows, dstRows));
@@ -150,6 +154,10 @@ void CTexture::Update(unsigned int width,
       dst += dstPitch;
     }
   }
+
+  if (!IsGPUFormatSupported(format))
+    ConvertToBGRA(format);
+
   ClampToEdge();
 
   if (loadToGPU)
@@ -193,7 +201,8 @@ std::unique_ptr<CTexture> CTexture::LoadFromFile(const std::string& texturePath,
                                                  unsigned int idealWidth,
                                                  unsigned int idealHeight,
                                                  bool requirePixels,
-                                                 const std::string& strMimeType)
+                                                 const std::string& strMimeType,
+                                                 unsigned int format)
 {
 #if defined(TARGET_ANDROID)
   CURL url(texturePath);
@@ -217,7 +226,7 @@ std::unique_ptr<CTexture> CTexture::LoadFromFile(const std::string& texturePath,
     }
   }
 #endif
-  std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
+  std::unique_ptr<CTexture> texture = CTexture::CreateTexture(0, 0, format);
   if (texture->LoadFromFileInternal(texturePath, idealWidth, idealHeight, requirePixels, strMimeType))
     return texture;
   return {};
@@ -227,9 +236,10 @@ std::unique_ptr<CTexture> CTexture::LoadFromFileInMemory(unsigned char* buffer,
                                                          size_t bufferSize,
                                                          const std::string& mimeType,
                                                          unsigned int idealWidth,
-                                                         unsigned int idealHeight)
+                                                         unsigned int idealHeight,
+                                                         unsigned int format)
 {
-  std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
+  std::unique_ptr<CTexture> texture = CTexture::CreateTexture(0, 0, format);
   if (texture->LoadFromFileInMem(buffer, bufferSize, mimeType, idealWidth, idealHeight))
     return texture;
   return {};
@@ -336,8 +346,18 @@ bool CTexture::LoadIImage(IImage* pImage,
   {
     if (pImage->Width() > 0 && pImage->Height() > 0)
     {
-      Allocate(pImage->Width(), pImage->Height(), XB_FMT_A8R8G8B8);
-      if (m_pixels != nullptr && pImage->Decode(m_pixels, GetTextureWidth(), GetRows(), GetPitch(), XB_FMT_A8R8G8B8))
+      // if we don't request a specific format, the decoder can suggest a compatible one.
+      if (m_format == XB_FMT_UNKNOWN)
+        m_format = pImage->GetCompatibleFormat();
+      // if the decoder can't write to the texture, fall back to our standard four channel texture
+      else if (!pImage->IsFormatSupported(m_format))
+        m_format = XB_FMT_A8R8G8B8;
+      // if not supported on the GPU, we fall back
+      if (!IsGPUFormatSupported(m_format))
+        m_format = XB_FMT_A8R8G8B8;
+      Allocate(pImage->Width(), pImage->Height(), m_format);
+      if (m_pixels != nullptr &&
+          pImage->Decode(m_pixels, GetTextureWidth(), GetRows(), GetPitch(), m_format))
       {
         if (pImage->Orientation())
           m_orientation = pImage->Orientation() - 1;
@@ -428,7 +448,12 @@ bool CTexture::SwapBlueRed(unsigned char* pixels,
 
 unsigned int CTexture::GetPitch(unsigned int width) const
 {
-  switch (m_format)
+  return GetPitch(width, m_format);
+}
+
+unsigned int CTexture::GetPitch(unsigned int width, unsigned int format) const
+{
+  switch (format)
   {
   case XB_FMT_DXT1:
     return ((width + 3) / 4) * 8;
@@ -436,8 +461,12 @@ unsigned int CTexture::GetPitch(unsigned int width) const
   case XB_FMT_DXT5:
   case XB_FMT_DXT5_YCoCg:
     return ((width + 3) / 4) * 16;
+  case XB_FMT_R8:
   case XB_FMT_A8:
+  case XB_FMT_L8:
     return width;
+  case XB_FMT_L8A8:
+    return width * 2;
   case XB_FMT_RGB8:
     return (((width + 1)* 3 / 4) * 4);
   case XB_FMT_RGBA8:
@@ -449,7 +478,12 @@ unsigned int CTexture::GetPitch(unsigned int width) const
 
 unsigned int CTexture::GetRows(unsigned int height) const
 {
-  switch (m_format)
+  return GetRows(height, m_format);
+}
+
+unsigned int CTexture::GetRows(unsigned int height, unsigned int format) const
+{
+  switch (format)
   {
   case XB_FMT_DXT1:
     return (height + 3) / 4;
@@ -473,7 +507,11 @@ unsigned int CTexture::GetBlockSize() const
   case XB_FMT_DXT5_YCoCg:
     return 16;
   case XB_FMT_A8:
+  case XB_FMT_L8:
+  case XB_FMT_R8:
     return 1;
+  case XB_FMT_L8A8:
+    return 2;
   default:
     return 4;
   }
@@ -484,6 +522,11 @@ bool CTexture::HasAlpha() const
   return m_hasAlpha;
 }
 
+bool CTexture::IsAlphaTexture() const
+{
+  return m_format == XB_FMT_A8;
+}
+
 void CTexture::SetMipmapping()
 {
   m_mipmapping = true;
@@ -492,4 +535,42 @@ void CTexture::SetMipmapping()
 bool CTexture::IsMipmapped() const
 {
   return m_mipmapping;
+}
+
+void CTexture::ConvertToBGRA(uint32_t format)
+{
+  size_t size = GetPitch(m_textureWidth, format) * GetRows(m_textureHeight, format);
+
+  if (format == XB_FMT_A8)
+  {
+    for (int32_t i = size - 1; i >= 0; i--)
+    {
+      m_pixels[i * 4 + 3] = m_pixels[i];
+      m_pixels[i * 4 + 2] = char(0xff);
+      m_pixels[i * 4 + 1] = char(0xff);
+      m_pixels[i * 4] = char(0xff);
+    }
+  }
+  else if (format == XB_FMT_L8)
+  {
+    for (int32_t i = size - 1; i >= 0; i--)
+    {
+      m_pixels[i * 4 + 3] = char(0xff);
+      m_pixels[i * 4 + 2] = m_pixels[i];
+      m_pixels[i * 4 + 1] = m_pixels[i];
+      m_pixels[i * 4] = m_pixels[i];
+    }
+  }
+  else if (format == XB_FMT_L8A8)
+  {
+    for (int32_t i = size / 2 - 1; i >= 0; i--)
+    {
+      m_pixels[i * 4 + 3] = m_pixels[i * 2 + 1];
+      m_pixels[i * 4 + 2] = m_pixels[i * 2];
+      m_pixels[i * 4 + 1] = m_pixels[i * 2];
+      m_pixels[i * 4] = m_pixels[i * 2];
+    }
+  }
+
+  m_format = XB_FMT_A8R8G8B8;
 }

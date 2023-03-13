@@ -297,6 +297,17 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   if (!HasTexture(strTextureName, &strPath, &bundle, &size))
     return emptyTexture;
 
+  unsigned int textureFormat = XB_FMT_UNKNOWN;
+  if (StringUtils::StartsWith(strTextureName, "special://skin/"))
+  {
+    if (strTextureName.find("_alpha.") != std::string::npos)
+      textureFormat = XB_FMT_A8;
+    else if (strTextureName.find("_luma.") != std::string::npos)
+      textureFormat = XB_FMT_L8;
+    else if (strTextureName.find("_lumaalpha.") != std::string::npos)
+      textureFormat = XB_FMT_L8A8;
+  }
+
   if (size) // we found the texture
   {
     for (int i = 0; i < (int)m_vecTextures.size(); ++i)
@@ -393,10 +404,11 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
     auto frame = anim.ReadFrame();
     while (frame)
     {
-      std::unique_ptr<CTexture> glTexture = CTexture::CreateTexture();
+      std::unique_ptr<CTexture> glTexture = CTexture::CreateTexture(0, 0, textureFormat);
       if (glTexture)
       {
-        glTexture->LoadFromMemory(anim.Width(), anim.Height(), frame->GetPitch(), XB_FMT_A8R8G8B8, true, frame->m_pImage);
+        glTexture->LoadFromMemory(anim.Width(), anim.Height(), frame->GetPitch(), textureFormat,
+                                  true, frame->m_pImage);
         maxWidth = std::max(maxWidth, glTexture->GetWidth());
         maxHeight = std::max(maxHeight, glTexture->GetHeight());
         pMap->Add(std::move(glTexture), frame->m_delay);
@@ -436,7 +448,7 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   }
   else
   {
-    pTexture = CTexture::LoadFromFile(strPath);
+    pTexture = CTexture::LoadFromFile(strPath, 0, 0, false, "", textureFormat);
     if (!pTexture)
       return emptyTexture;
     width = pTexture->GetWidth();

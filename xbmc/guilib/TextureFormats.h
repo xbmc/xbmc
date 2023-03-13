@@ -20,5 +20,8 @@
 #define XB_FMT_R8         32 // Single channel, normally used as R,?,?,?
 #define XB_FMT_RGBA8      64
 #define XB_FMT_RGB8      128
+#define XB_FMT_A8        256 // Single channel, used as 1,1,1,A (alpha)
+#define XB_FMT_L8        272 // Single channel, used as L,L,L,1 (luma)
+#define XB_FMT_L8A8      288 // Dual channel, used as L,L,L,A (lumaalpha)
 #define XB_FMT_OPAQUE  65536
 // clang-format on

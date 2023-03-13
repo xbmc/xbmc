@@ -55,7 +55,8 @@ public:
                                                 unsigned int idealWidth = 0,
                                                 unsigned int idealHeight = 0,
                                                 bool requirePixels = false,
-                                                const std::string& strMimeType = "");
+                                                const std::string& strMimeType = "",
+                                                unsigned int format = XB_FMT_A8R8G8B8);
 
   /*! \brief Load a texture from a file in memory
    Loads a texture from a file in memory, restricting in size if needed based on maxHeight and maxWidth.
@@ -71,12 +72,14 @@ public:
                                                         size_t bufferSize,
                                                         const std::string& mimeType,
                                                         unsigned int idealWidth = 0,
-                                                        unsigned int idealHeight = 0);
+                                                        unsigned int idealHeight = 0,
+                                                        unsigned int format = XB_FMT_A8R8G8B8);
 
   bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, const unsigned char* pixels);
   bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette);
 
   bool HasAlpha() const;
+  bool IsAlphaTexture() const;
 
   void SetMipmapping();
   bool IsMipmapped() const;
@@ -91,8 +94,8 @@ public:
   virtual void BindToUnit(unsigned int unit) = 0;
 
   unsigned char* GetPixels() const { return m_pixels; }
-  unsigned int GetPitch() const { return GetPitch(m_textureWidth); }
-  unsigned int GetRows() const { return GetRows(m_textureHeight); }
+  unsigned int GetPitch() const { return GetPitch(m_textureWidth, m_format); }
+  unsigned int GetRows() const { return GetRows(m_textureHeight, m_format); }
   unsigned int GetTextureWidth() const { return m_textureWidth; }
   unsigned int GetTextureHeight() const { return m_textureHeight; }
   unsigned int GetWidth() const { return m_imageWidth; }
@@ -106,11 +109,13 @@ public:
   void SetOrientation(int orientation) { m_orientation = orientation; }
 
   void Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU);
-  void Allocate(unsigned int width, unsigned int height, unsigned int format);
+  void Allocate(unsigned int width, unsigned int height, unsigned int format, bool scalable = true);
   void ClampToEdge();
 
   static unsigned int PadPow2(unsigned int x);
   static bool SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements = 4, unsigned int offset=0);
+
+  virtual bool IsGPUFormatSupported(const uint32_t format) { return format == XB_FMT_A8R8G8B8; }
 
 private:
   // no copy constructor
@@ -123,8 +128,12 @@ protected:
   bool LoadIImage(IImage* pImage, unsigned char* buffer, unsigned int bufSize, unsigned int width, unsigned int height);
   // helpers for computation of texture parameters for compressed textures
   unsigned int GetPitch(unsigned int width) const;
+  unsigned int GetPitch(unsigned int width, unsigned int format) const;
   unsigned int GetRows(unsigned int height) const;
+  unsigned int GetRows(unsigned int height, unsigned int format) const;
   unsigned int GetBlockSize() const;
+
+  void ConvertToBGRA(uint32_t format);
 
   unsigned int m_imageWidth;
   unsigned int m_imageHeight;
