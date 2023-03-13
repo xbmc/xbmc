@@ -31,7 +31,8 @@ bool CWinSystemWaylandWebOS::InitWindowSystem()
 
   m_webosRegistry = std::make_unique<CRegistry>(*GetConnection());
   m_webosRegistry->RequestSingleton(m_compositor, 1, 4);
-  m_webosRegistry->RequestSingleton(m_webosForeign, 1, 2);
+  // available since webOS 5.0
+  m_webosRegistry->RequestSingleton(m_webosForeign, 1, 2, false);
   m_webosRegistry->Bind();
 
   return ok;
@@ -43,14 +44,17 @@ bool CWinSystemWaylandWebOS::CreateNewWindow(const std::string& name,
 {
   auto ok = CWinSystemWayland::CreateNewWindow(name, fullScreen, res);
 
-  m_exportedSurface = m_webosForeign.export_element(
-      GetMainSurface(),
-      static_cast<uint32_t>(wayland::webos_foreign_webos_exported_type::video_object));
-  m_exportedSurface.on_window_id_assigned() = [this](std::string window_id,
-                                                     uint32_t exported_type) {
-    CLog::Log(LOGDEBUG, "Wayland foreign video surface exported {}", window_id);
-    this->m_exportedWindowName = window_id;
-  };
+  if (m_webosForeign)
+  {
+    m_exportedSurface = m_webosForeign.export_element(
+        GetMainSurface(),
+        static_cast<uint32_t>(wayland::webos_foreign_webos_exported_type::video_object));
+    m_exportedSurface.on_window_id_assigned() = [this](std::string window_id,
+                                                       uint32_t exported_type) {
+      CLog::Log(LOGDEBUG, "Wayland foreign video surface exported {}", window_id);
+      this->m_exportedWindowName = window_id;
+    };
+  }
 
   return ok;
 }
@@ -82,13 +86,18 @@ bool CWinSystemWaylandWebOS::SetExportedWindow(int32_t srcWidth,
                                                int32_t dstWidth,
                                                int32_t dstHeight)
 {
-  auto srcRegion = m_compositor.create_region();
-  auto dstRegion = m_compositor.create_region();
-  srcRegion.add(0, 0, srcWidth, srcHeight);
-  dstRegion.add(0, 0, dstWidth, dstHeight);
-  m_exportedSurface.set_exported_window(srcRegion, dstRegion);
+  if (m_webosForeign)
+  {
+    auto srcRegion = m_compositor.create_region();
+    auto dstRegion = m_compositor.create_region();
+    srcRegion.add(0, 0, srcWidth, srcHeight);
+    dstRegion.add(0, 0, dstWidth, dstHeight);
+    m_exportedSurface.set_exported_window(srcRegion, dstRegion);
 
-  return true;
+    return true;
+  }
+
+  return false;
 }
 
 IShellSurface* CWinSystemWaylandWebOS::CreateShellSurface(const std::string& name)
