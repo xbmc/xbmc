@@ -24,6 +24,10 @@ class IDispResource;
 
 namespace KODI
 {
+namespace UTILS
+{
+class CDisplayInfo;
+}
 namespace WINDOWING
 {
 namespace GBM
@@ -33,7 +37,7 @@ class CWinSystemGbm : public CWinSystemBase
 {
 public:
   CWinSystemGbm();
-  ~CWinSystemGbm() override = default;
+  ~CWinSystemGbm() override;
 
   const std::string GetName() override { return "gbm"; }
 
@@ -89,6 +93,8 @@ protected:
 
 private:
   uint32_t m_hdr_blob_id = 0;
+
+  std::unique_ptr<UTILS::CDisplayInfo> m_info;
 };
 
 }
