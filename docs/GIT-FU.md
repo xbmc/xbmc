@@ -310,7 +310,7 @@ Fetch upstream changes and rebase feature branch on top of upstream master branc
 Force push branch to remote origin:
 ![Rebase branch 03](resources/gitfu/rebase_branch_03.png)
 
-**[back to top](#table-of-contents)** | **[back to section top](#8-examples)** | **[back to subsection top](#81-rebase-branch)**
+**[back to top](#table-of-contents)** | **[back to section top](#8-examples-with-nice-screenies)** | **[back to subsection top](#81-rebase-branch)**
 
 ### 8.2. Fix commits
 
@@ -343,7 +343,7 @@ Finally, force push branch to remote origin:
 
 **TIP**: It doesn't matter how many `fixup` commits you have on your feature branch. The only thing that matters is the number of the **first** commit with a `fixup` commit. If you're unsure of how many commits that is, issue `git log --pretty=oneline --abbrev-commit`, count from your **first commit** on the feature branch and use that number instead. In this example, that would be 28, e.g. `git rebase -i --autosquash HEAD~28`. `git` will take care of the rest automagically.
 
-**[back to top](#table-of-contents)** | **[back to section top](#8-examples)** | **[back to subsection top](#82-fix-commits)**
+**[back to top](#table-of-contents)** | **[back to section top](#8-examples-with-nice-screenies)** | **[back to subsection top](#82-fix-commits)**
 
 ## 9. Going pro
 Got this far? Congrats! Now it gets fun!
