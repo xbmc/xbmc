@@ -358,13 +358,16 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
     return true;
   }
 
+  KODI::UTILS::Eotf eotf = DRMPRIME::GetEOTF(*videoPicture);
+
   auto connector = drm->GetConnector();
-  if (connector->SupportsProperty("HDR_OUTPUT_METADATA"))
+  if (connector->SupportsProperty("HDR_OUTPUT_METADATA") && m_info &&
+      m_info->SupportsHDRStaticMetadataType1() && m_info->SupportsEOTF(eotf))
   {
     hdr_output_metadata hdr_metadata = {};
 
     hdr_metadata.metadata_type = DRMPRIME::HDMI_STATIC_METADATA_TYPE1;
-    hdr_metadata.hdmi_metadata_type1.eotf = DRMPRIME::GetEOTF(*videoPicture);
+    hdr_metadata.hdmi_metadata_type1.eotf = static_cast<uint8_t>(eotf);
     hdr_metadata.hdmi_metadata_type1.metadata_type = DRMPRIME::HDMI_STATIC_METADATA_TYPE1;
 
     if (m_hdr_blob_id)
