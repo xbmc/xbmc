@@ -57,7 +57,7 @@
   * [12.5. `for` loops](#125-for-loops)
   * [12.6. Include guards](#126-include-guards)
   * [12.7. Type aliases](#127-type-aliases)
-  * [12.8. `goto`](#128goto)
+  * [12.8. `goto`](#128-goto)
   * [12.9. Macros](#129-macros)
   * [12.10. constexpr](#1210-constexpr)
   * [12.11. `std::string` vs `std::string_view`](#1211-stdstring-vs-stdstring_view)
