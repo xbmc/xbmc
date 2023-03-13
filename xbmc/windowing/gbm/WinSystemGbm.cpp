@@ -21,6 +21,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/DisplayInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -70,6 +71,8 @@ CWinSystemGbm::CWinSystemGbm() :
   m_libinput->Start();
 }
 
+CWinSystemGbm::~CWinSystemGbm() = default;
+
 bool CWinSystemGbm::InitWindowSystem()
 {
   const char* x11 = getenv("DISPLAY");
@@ -103,6 +106,16 @@ bool CWinSystemGbm::InitWindowSystem()
         m_DRM.reset();
         return false;
       }
+    }
+  }
+
+  CDRMConnector* connector = m_DRM->GetConnector();
+  if (connector)
+  {
+    std::vector<uint8_t> edid = connector->GetEDID();
+    if (!edid.empty())
+    {
+      m_info = UTILS::CDisplayInfo::Create(edid);
     }
   }
 
