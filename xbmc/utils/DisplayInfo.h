@@ -14,6 +14,7 @@
 #include <vector>
 
 struct di_info;
+struct di_cta_colorimetry_block;
 struct di_cta_hdr_static_metadata_block;
 
 namespace KODI
@@ -29,6 +30,21 @@ enum class Eotf
   HLG,
 };
 
+enum class Colorimetry
+{
+  DEFAULT,
+  XVYCC_601,
+  XVYCC_709,
+  SYCC_601,
+  OPYCC_601,
+  OPRGB,
+  BT2020_CYCC,
+  BT2020_YCC,
+  BT2020_RGB,
+  ST2113_RGB,
+  ICTCP,
+};
+
 class CDisplayInfo
 {
 public:
@@ -39,6 +55,8 @@ public:
   bool SupportsHDRStaticMetadataType1() const;
 
   bool SupportsEOTF(Eotf eotf) const;
+
+  bool SupportsColorimetry(Colorimetry colorimetry) const;
 
 private:
   explicit CDisplayInfo(const std::vector<uint8_t>& edid);
@@ -57,6 +75,7 @@ private:
   std::string m_make;
   std::string m_model;
 
+  const di_cta_colorimetry_block* m_colorimetry = nullptr;
   const di_cta_hdr_static_metadata_block* m_hdr_static_metadata = nullptr;
 };
 
