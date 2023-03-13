@@ -99,4 +99,4 @@ private:
 
 }
 }
-}
+} // namespace KODI
