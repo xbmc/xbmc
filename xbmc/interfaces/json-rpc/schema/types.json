@@ -766,7 +766,7 @@
                 "showtitle", "cast", "streamdetails", "lastplayed", "fanart",
                 "thumbnail", "file", "resume", "tvshowid", "dateadded",
                 "uniqueid", "art", "specialsortseason", "specialsortepisode", "userrating",
-                "seasonid", "ratings" ]
+                "seasonid", "ratings", "genre" ]
     }
   },
   "Video.Fields.MusicVideo": {
