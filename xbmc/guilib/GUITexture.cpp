@@ -314,21 +314,12 @@ bool CGUITexture::AllocResources()
   // reset our animstate
   ResetAnimState();
 
+  bool useLargeLoader =
+      !CServiceBroker::GetGUI()->GetTextureManager().ShouldLoadImage(m_info.filename);
+
   bool changed = false;
-  bool useLarge = m_info.useLarge || !CServiceBroker::GetGUI()->GetTextureManager().CanLoad(m_info.filename);
-  if (useLarge)
-  { // we want to use the large image loader, but we first check for bundled textures
-    if (!IsAllocated())
-    {
-      CTextureArray texture;
-      texture = CServiceBroker::GetGUI()->GetTextureManager().Load(m_info.filename, true);
-      if (texture.size())
-      {
-        m_isAllocated = NORMAL;
-        m_texture = texture;
-        changed = true;
-      }
-    }
+  if (useLargeLoader)
+  {
     if (m_isAllocated != NORMAL)
     { // use our large image background loader
       CTextureArray texture;
@@ -682,13 +673,6 @@ bool CGUITexture::SetFileName(const std::string& filename)
   // filenames mid-animation
   FreeResources();
   m_info.filename = filename;
-
-  // disable large loader and cache for gifs
-  if (StringUtils::EndsWithNoCase(m_info.filename, ".gif"))
-  {
-    m_info.useLarge = false;
-    SetUseCache(false);
-  }
 
   // Don't allocate resources here as this is done at render time
   return true;

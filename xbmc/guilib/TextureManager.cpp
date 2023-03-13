@@ -241,6 +241,25 @@ bool CGUITextureManager::CanLoad(const std::string &texturePath)
   return URIUtils::IsHD(texturePath);
 }
 
+bool CGUITextureManager::ShouldLoadImage(const std::string& url)
+{
+  if (url.empty())
+    return false;
+
+  // assume this is a relative path to a skin image
+  if (!CURL::IsFullPath(url))
+    return true;
+
+  // this is an absolute path to a skin image
+  if (URIUtils::PathHasParent(url, "special://skin/media", true))
+    return true;
+
+  // this is the only loader built to handle animated .gif and .apng,
+  // but this loader only supports 'local' paths. Otherwise they go through
+  // the LargeTextureManager / async loader, which displays a static image
+  return URIUtils::HasExtension(url, ".gif|.apng") && URIUtils::IsHD(url);
+}
+
 bool CGUITextureManager::HasTexture(const std::string &textureName, std::string *path, int *bundle, int *size)
 {
   std::unique_lock<CCriticalSection> lock(m_section);

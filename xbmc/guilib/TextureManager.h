@@ -101,6 +101,12 @@ public:
 
   bool HasTexture(const std::string &textureName, std::string *path = NULL, int *bundle = NULL, int *size = NULL);
   static bool CanLoad(const std::string &texturePath); ///< Returns true if the texture manager can load this texture
+  /*!
+   * @brief Should this Texture Manager be used to load the given image.
+   *
+   * Basically, this is for skin textures. And local gif files, that was built into this.
+  */
+  static bool ShouldLoadImage(const std::string& url);
   const CTextureArray& Load(const std::string& strTextureName, bool checkBundleOnly = false);
   void ReleaseTexture(const std::string& strTextureName, bool immediately = false);
   void Cleanup();

@@ -37,14 +37,14 @@ bool CImageLoader::DoWork()
   bool needsChecking = false;
   std::string loadPath;
 
-  std::string texturePath = CServiceBroker::GetGUI()->GetTextureManager().GetTexturePath(m_path);
-  if (texturePath.empty())
+  if (m_path.empty())
     return false;
 
-  if (m_use_cache)
-    loadPath = CServiceBroker::GetTextureCache()->CheckCachedImage(texturePath, needsChecking);
+  bool useCache = m_use_cache && CTextureCache::CanCacheImage(m_path);
+  if (useCache)
+    loadPath = CServiceBroker::GetTextureCache()->CheckCachedImage(m_path, needsChecking);
   else
-    loadPath = texturePath;
+    loadPath = m_path;
 
   if (!loadPath.empty())
   {
@@ -63,7 +63,7 @@ bool CImageLoader::DoWork()
     if (m_texture)
     {
       if (needsChecking)
-        CServiceBroker::GetTextureCache()->BackgroundCacheImage(texturePath);
+        CServiceBroker::GetTextureCache()->BackgroundCacheImage(m_path);
 
       return true;
     }
@@ -72,11 +72,11 @@ bool CImageLoader::DoWork()
     CLog::Log(LOGERROR, "{} - Direct texture file loading failed for {}", __FUNCTION__, loadPath);
   }
 
-  if (!m_use_cache)
+  if (!useCache)
     return false; // We're done
 
   // not in our texture cache or it failed to load from it, so try and load directly and then cache the result
-  CServiceBroker::GetTextureCache()->CacheImage(texturePath, &m_texture);
+  CServiceBroker::GetTextureCache()->CacheImage(m_path, &m_texture);
   return (m_texture != NULL);
 }
 

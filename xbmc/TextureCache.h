@@ -142,6 +142,10 @@ public:
    */
   static bool CanCacheImageURL(const CURL &url);
 
+  /*! \brief Check if the texture cache can be used for the image at the given url.
+  */
+  static bool CanCacheImage(const std::string& url);
+
   /*! \brief Add this image to the database
    Thread-safe wrapper of CTextureDatabase::AddCachedTexture
    \param image url of the original image
@@ -162,12 +166,6 @@ private:
   // private construction, and no assignments; use the provided singleton methods
   CTextureCache(const CTextureCache&) = delete;
   CTextureCache const& operator=(CTextureCache const&) = delete;
-
-  /*! \brief Check if the given image is a cached image
-   \param image url of the image
-   \return true if this is a cached image, false otherwise.
-   */
-  bool IsCachedImage(const std::string &image) const;
 
   /*! \brief retrieve the cached version of the given image (if it exists)
    \param image url of the image
