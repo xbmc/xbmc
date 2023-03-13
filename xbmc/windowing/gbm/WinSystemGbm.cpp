@@ -457,3 +457,19 @@ bool CWinSystemGbm::IsHDRDisplay()
   // we have no way to know if the display is actually HDR capable and we blindly set the HDR metadata
   return connector->SupportsProperty("HDR_OUTPUT_METADATA");
 }
+
+CHDRCapabilities CWinSystemGbm::GetDisplayHDRCapabilities() const
+{
+  if (!m_info)
+    return {};
+
+  CHDRCapabilities caps;
+
+  if (m_info->SupportsEOTF(UTILS::Eotf::PQ))
+    caps.SetHDR10();
+
+  if (m_info->SupportsEOTF(UTILS::Eotf::HLG))
+    caps.SetHLG();
+
+  return caps;
+}
