@@ -3982,38 +3982,40 @@
             <formatlabel>14044</formatlabel>
           </control>
         </setting>
-        <setting id="screensaver.usemusicvisinstead" type="boolean" label="13392" help="36133">
-          <level>0</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable" setting="screensaver.mode" operator="!is"></dependency>
-            <dependency type="enable" setting="musicplayer.visualisation" operator="!is"></dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="screensaver.disableforaudio" type="boolean" label="39192" help="39193">
-          <level>0</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable" setting="screensaver.mode" operator="!is"></dependency>
-            <dependency type="enable" setting="screensaver.usemusicvisinstead" operator="!is">true</dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
-        <setting id="screensaver.usedimonpause" type="boolean" label="22014" help="36134">
-          <level>1</level>
-          <default>true</default>
-          <dependencies>
-            <dependency type="enable">
-              <and>
-                <condition setting="screensaver.mode" operator="!is">screensaver.xbmc.builtin.dim</condition>
-                <condition setting="screensaver.mode" operator="!is"></condition>
-              </and>
-            </dependency>
-          </dependencies>
-          <control type="toggle" />
-        </setting>
       </group>
+      <group id="2" label="14221">
+          <setting id="screensaver.disableforaudio" type="boolean" label="39192" help="39193">
+            <level>0</level>
+            <default>true</default>
+            <dependencies>
+              <dependency type="enable" setting="screensaver.mode" operator="!is"></dependency>
+            </dependencies>
+            <control type="toggle" />
+          </setting>
+          <setting id="screensaver.usemusicvisinstead" type="boolean" label="13392" help="36133">
+            <level>0</level>
+            <default>true</default>
+            <dependencies>
+              <dependency type="enable" setting="musicplayer.visualisation" operator="!is"></dependency>
+            </dependencies>
+            <control type="toggle" />
+          </setting>
+        </group>
+        <group id="3" label="157">
+          <setting id="screensaver.usedimonpause" type="boolean" label="22014" help="36134">
+            <level>1</level>
+            <default>true</default>
+            <dependencies>
+              <dependency type="enable">
+                <and>
+                  <condition setting="screensaver.mode" operator="!is">screensaver.xbmc.builtin.dim</condition>
+                  <condition setting="screensaver.mode" operator="!is"></condition>
+                </and>
+              </dependency>
+            </dependencies>
+            <control type="toggle" />
+          </setting>
+        </group>
     </category>
     <category id="masterlock" label="12360" help="36395">
       <access>CheckMasterLock</access>
