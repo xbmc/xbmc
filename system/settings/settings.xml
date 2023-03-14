@@ -3992,14 +3992,6 @@
             </dependencies>
             <control type="toggle" />
           </setting>
-          <setting id="screensaver.usemusicvisinstead" type="boolean" label="13392" help="36133">
-            <level>0</level>
-            <default>true</default>
-            <dependencies>
-              <dependency type="enable" setting="musicplayer.visualisation" operator="!is"></dependency>
-            </dependencies>
-            <control type="toggle" />
-          </setting>
         </group>
         <group id="3" label="157">
           <setting id="screensaver.usedimonpause" type="boolean" label="22014" help="36134">

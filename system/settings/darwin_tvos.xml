@@ -7,9 +7,6 @@
         <setting id="screensaver.mode">
           <default></default>
         </setting>
-        <setting id="screensaver.usemusicvisinstead">
-          <default>false</default>
-        </setting>
         <setting id="screensaver.usedimonpause">
           <default>false</default>
         </setting>

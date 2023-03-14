@@ -98,7 +98,6 @@ constexpr const char* CSettings::SETTING_SCREENSAVER_MODE;
 constexpr const char* CSettings::SETTING_SCREENSAVER_SETTINGS;
 constexpr const char* CSettings::SETTING_SCREENSAVER_PREVIEW;
 constexpr const char* CSettings::SETTING_SCREENSAVER_TIME;
-constexpr const char* CSettings::SETTING_SCREENSAVER_USEMUSICVISINSTEAD;
 constexpr const char* CSettings::SETTING_SCREENSAVER_USEDIMONPAUSE;
 constexpr const char* CSettings::SETTING_WINDOW_WIDTH;
 constexpr const char* CSettings::SETTING_WINDOW_HEIGHT;

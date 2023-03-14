@@ -7083,10 +7083,7 @@ msgctxt "#13391"
 msgid "Eject / Load"
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#13392"
-msgid "Use visualisation if playing audio"
-msgstr ""
+#empty string with id 13392
 
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#13393"
@@ -19186,11 +19183,7 @@ msgctxt "#36132"
 msgid "Preview the selected screensaver."
 msgstr ""
 
-#. Description of setting with label #13392 "Use visualisation if playing audio"
-#: system/settings/settings.xml
-msgctxt "#36133"
-msgid "If music is being played, the selected visualisation will be started instead of displaying the screensaver."
-msgstr ""
+#empty string with id 36133
 
 #. Description of setting with label #22014 "Use dim if paused during video playback"
 #: system/settings/settings.xml
