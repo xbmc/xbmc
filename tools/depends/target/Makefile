@@ -138,7 +138,7 @@ ifeq ($(OS),linux)
   endif
 
   ifneq (,$(findstring gbm,$(TARGET_PLATFORM)))
-    DEPENDS += hwdata
+    DEPENDS += hwdata libdisplay-info
   endif
 endif
 
@@ -164,6 +164,7 @@ libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
 libcec: p8-platform
+libdisplay-info: meson-cross-file hwdata
 libdrm: meson-cross-file
 libevdev: libudev
 libgcrypt: libgpg-error
