@@ -127,6 +127,9 @@ protected:
 
 private:
   void LoadUserFonts();
+  bool LoadFontsFromFile(const std::string& fontsetFilePath,
+                         const std::string& fontSet,
+                         std::string& firstFontset);
 
   mutable CCriticalSection m_critSection;
   std::vector<FontMetadata> m_userFontsCache;
