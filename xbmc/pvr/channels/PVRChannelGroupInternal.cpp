@@ -30,16 +30,16 @@ using namespace PVR;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio)
   : CPVRChannelGroup(
-        CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287), PVR_GROUP_CLIENT_ID_LOCAL), nullptr),
+        CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287), PVR_GROUP_CLIENT_ID_LOCAL),
+        PVR_GROUP_TYPE_ALL_CHANNELS,
+        nullptr),
     m_iHiddenChannels(0)
 {
-  m_iGroupType = PVR_GROUP_TYPE_ALL_CHANNELS;
 }
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelsPath& path)
-  : CPVRChannelGroup(path, nullptr), m_iHiddenChannels(0)
+  : CPVRChannelGroup(path, PVR_GROUP_TYPE_ALL_CHANNELS, nullptr), m_iHiddenChannels(0)
 {
-  m_iGroupType = PVR_GROUP_TYPE_ALL_CHANNELS;
 }
 
 CPVRChannelGroupInternal::~CPVRChannelGroupInternal()

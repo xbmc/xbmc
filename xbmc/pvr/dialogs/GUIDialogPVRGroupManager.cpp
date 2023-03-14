@@ -108,22 +108,18 @@ bool CGUIDialogPVRGroupManager::ActionButtonNewGroup(const CGUIMessage& message)
 
   if (iControl == BUTTON_NEWGROUP)
   {
-    std::string strGroupName = "";
-    /* prompt for a group name */
+    std::string strGroupName;
     if (CGUIKeyboardFactory::ShowAndGetInput(strGroupName, CVariant{g_localizeStrings.Get(19139)}, false))
     {
-      if (strGroupName != "")
+      if (!strGroupName.empty())
       {
-        /* add the group if it doesn't already exist */
-        CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio);
-        if (groups->AddGroup(strGroupName))
+        // add the group if it doesn't already exist
+        auto groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio);
+        const auto group = groups->AddGroup(strGroupName);
+        if (group)
         {
-          CServiceBroker::GetPVRManager()
-              .ChannelGroups()
-              ->Get(m_bIsRadio)
-              ->GetByName(strGroupName, PVR_GROUP_CLIENT_ID_LOCAL)
-              ->SetGroupType(PVR_GROUP_TYPE_LOCAL);
-          m_iSelectedChannelGroup = groups->Size() - 1;
+          m_selectedGroup = group;
+          m_iSelectedChannelGroup = -1; // recalc index in Update()
           Update();
         }
       }
@@ -480,14 +476,24 @@ void CGUIDialogPVRGroupManager::Update()
   m_thumbLoader.Load(*m_channelGroups);
 
   m_viewChannelGroups.SetItems(*m_channelGroups);
-  m_viewChannelGroups.SetSelectedItem(m_iSelectedChannelGroup);
 
-  /* select a group or select the default group if no group was selected */
-  CFileItemPtr pItem = m_channelGroups->Get(m_viewChannelGroups.GetSelectedItem());
-  m_selectedGroup = CServiceBroker::GetPVRManager()
-                        .ChannelGroups()
-                        ->Get(m_bIsRadio)
-                        ->GetGroupByPath(pItem->GetPath());
+  if (m_iSelectedChannelGroup >= 0)
+  {
+    m_viewChannelGroups.SetSelectedItem(m_iSelectedChannelGroup);
+
+    // select a group or select the default group if no group was selected
+    const auto item = m_channelGroups->Get(m_viewChannelGroups.GetSelectedItem());
+    m_selectedGroup = CServiceBroker::GetPVRManager()
+                          .ChannelGroups()
+                          ->Get(m_bIsRadio)
+                          ->GetGroupByPath(item->GetPath());
+  }
+  else if (m_selectedGroup)
+  {
+    m_viewChannelGroups.SetSelectedItem(m_selectedGroup->GetPath());
+    m_iSelectedChannelGroup = m_viewChannelGroups.GetSelectedItem();
+  }
+
   if (m_selectedGroup)
   {
     /* set this group in the pvrmanager, so it becomes the selected group in other dialogs too */
