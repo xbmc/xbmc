@@ -2580,7 +2580,7 @@
           <level>1</level>
           <default>false</default>
           <dependencies>
-            <dependency type="enable" on="property" name="IsFullscreen" />
+            <dependency type="enable" setting="videoscreen.screen" operator="!is">-1</dependency> <!-- DM_WINDOWED -->
           </dependencies>
           <control type="toggle" />
         </setting>
