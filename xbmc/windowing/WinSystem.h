@@ -125,6 +125,12 @@ public:
   unsigned int GetHeight() { return m_nHeight; }
   virtual bool CanDoWindowed() { return true; }
   bool IsFullScreen() { return m_bFullScreen; }
+
+  /*! \brief Check if the windowing system supports moving windows across screens
+    \return true if the windowing system supports moving windows across screens, false otherwise
+  */
+  virtual bool SupportsScreenMove() { return true; }
+
   virtual void UpdateResolutions();
   void SetWindowResolution(int width, int height);
   std::vector<RESOLUTION_WHR> ScreenResolutions(float refreshrate);

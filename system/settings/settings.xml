@@ -2524,6 +2524,9 @@
           <constraints>
             <options>monitors</options>
           </constraints>
+          <dependencies>
+            <dependency type="enable" on="property" name="SupportsScreenMove" />
+          </dependencies>
           <control type="spinner" format="string" delayed="true" />
         </setting>
         <setting id="videoscreen.screen" type="integer" label="240" help="36351">
