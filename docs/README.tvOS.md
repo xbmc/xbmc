@@ -8,22 +8,22 @@ This guide has been tested using Xcode 11.3.1 running on MacOS 10.15.2 (Catalina
 2. **[Prerequisites](#2-prerequisites)**
 3. **[Get the source code](#3-get-the-source-code)**
 4. **[Configure and build tools and dependencies](#4-configure-and-build-tools-and-dependencies)**  
-  4.1. **[Advanced Configure Options](#41-Advanced-Configure-Options)**  
-5. **[Generate Kodi Build files](#5-Generate-Kodi-Build-files)**  
-  5.1. **[Generate XCode Project Files](#51-Generate-Xcode-Project-Files)**  
+  4.1. **[Advanced Configure Options](#41-advanced-configure-options)**  
+5. **[Generate Kodi Build files](#5-generate-kodi-build-files)**  
+  5.1. **[Generate XCode Project Files](#51-generate-xcode-project-files)**  
   5.2. **[Build with Xcode](#62-build)**  
 6. **[Build Kodi](#6-build-kodi)**  
-  6.1. **[Build with Xcode](#61-Build-with-Xcode)**  
-  6.2. **[Build with xcodebuild](#62-Build-with-xcodebuild)**  
-7. **[Packaging to distribute as deb](#7-Packaging-to-distribute-as-deb)**  
-  7.1. **[Package via Xcode](#71-Package-via-Xcode)**  
-  7.2. **[Package via Xcodebuild](#72-Package-via-Xcodebuild)**  
-8. **[Signing](#8-Signing)**  
-  8.1. **[Signing using a developer account](#81-Signing-using-a-developer-account)**  
-  8.2. **[Using iOS App Signer to install](#82-Using-iOS-App-Signer-to-install)**  
-9. **[Install](#9-Install)**  
-  9.1. **[Jailbroken devices](#91-Jailbroken-devices)**  
-  9.2. **[Using Xcode to install](#92-Using-Xcode-to-install)**  
+  6.1. **[Build with Xcode](#61-build-with-xcode)**  
+  6.2. **[Build with xcodebuild](#62-build-with-xcodebuild)**  
+7. **[Packaging to distribute as deb](#7-packaging-to-distribute-as-deb)**  
+  7.1. **[Package via Xcode](#71-package-via-xcode)**  
+  7.2. **[Package via Xcodebuild](#72-package-via-xcodebuild)**  
+8. **[Signing](#8-signing)**  
+  8.1. **[Signing using a developer account](#81-signing-using-a-developer-account)**  
+  8.2. **[Using iOS App Signer to install](#82-using-ios-app-signer-to-install)**  
+9. **[Install](#9-install)**  
+  9.1. **[Jailbroken devices](#91-jailbroken-devices)**  
+  9.2. **[Using Xcode to install](#92-using-xcode-to-install)**  
 
 ## 1. Document conventions
 This guide assumes you are using `terminal`, also known as `console`, `command-line` or simply `cli`. Commands need to be run at the terminal, one at a time and in the provided order.
@@ -186,7 +186,7 @@ make -j$(getconf _NPROCESSORS_ONLN)
 
 ## 5. Generate Kodi Build files
 Before you can use Xcode to build Kodi, the Xcode project has to be generated with CMake. CMake is built as part of the dependencies and doesn't have to be installed separately. A toolchain file is also generated and is used to configure CMake.
-Default behaviour will not build binary addons. To add addons to your build go to **[Add Binary Addons to Project](#52-Add-Binary-Addons-to-Project)**
+Default behaviour will not build binary addons. To add addons to your build go to **[Add Binary Addons to Project](#52-add-binary-addons-to-project)**
 
 ## 5.1. Generate XCode Project Files
 
@@ -220,7 +220,7 @@ PROVISIONING_PROFILE_TOPSHELF - provprofile name for the top shelf
 
 ## 5.2. Add Binary Addons to Project
 
-**TIP:** If you wish to add signing settings automatically, look at **[Generate XCode Project Files](#51-Generate-XCode-Project-Files)** for the additional `CMAKE_EXTRA_ARGUMENTS`
+**TIP:** If you wish to add signing settings automatically, look at **[Generate XCode Project Files](#51-generate-xcode-project-files)** for the additional `CMAKE_EXTRA_ARGUMENTS`
 
 You can find a complete list of available binary add-ons **[here](https://github.com/xbmc/repo-binary-addons)**.
 
@@ -248,13 +248,13 @@ You can also build the binary-addons target via xcodebuild. This will not build 
 ```
 xcodebuild -config "Debug" -target binary-addons
 ```
-**[back to top](#table-of-contents)** | **[back to section top](#5-Generate-Kodi-Build-files)**
+**[back to top](#table-of-contents)** | **[back to section top](#5-generate-kodi-build-files)**
 
 ## 6. Build
 
 ### 6.1. Build with Xcode
 
-Start Xcode, open the Kodi project file created in **[Generate Kodi Build files](#5-Generate-Kodi-Build-files)**
+Start Xcode, open the Kodi project file created in **[Generate Kodi Build files](#5-generate-kodi-build-files)**
 
 **TIP:** (`kodi.xcodeproj`) is located in `$HOME/kodi-build`
 
@@ -281,14 +281,14 @@ This will create a `Kodi.app` file located in `$HOME/kodi-build/build/Debug-appl
 **TIP:** You can specify Release instead of Debug as -config parameter.
 **TIP:** If you build as a release target, the location of the `Kodi.app` will be `$HOME/kodi-build/build/Release-appletvos`
 
-**[back to top](#table-of-contents)** | **[back to section top](#6-Build)**
+**[back to top](#table-of-contents)** | **[back to section top](#6-build)**
 
 ## 7. Packaging to distribute as deb
 CMake generates a target called `deb` which will package Kodi ready for distribution. After Kodi has been built, the target can be triggered by selecting it in Xcode active scheme or manually running
 
 ## 7.1. Package via Xcode
 
-Start Xcode, open the Kodi project file created in **[Generate XCode Project Files](#51-Generate-Project-Files)**
+Start Xcode, open the Kodi project file created in **[Generate XCode Project Files](#51-generate-xcode-project-files)**
 
 **TIP:** (`kodi.xcodeproj`) is located in `$HOME/kodi-build`
 
@@ -312,7 +312,7 @@ xcodebuild -target deb
 
 ## 8. Signing
 
-**TIP:** If your device is jailbroken, you can go direct to **[Installing on Jailbroken Device](#91-Jailbroken-devices)**
+**TIP:** If your device is jailbroken, you can go direct to **[Installing on Jailbroken Device](#91-jailbroken-devices)**
 
 ## 8.1. Signing using a developer account
 
@@ -350,7 +350,7 @@ In that case Kodi will be sandboxed like any other app. All Kodi files are then 
 There are a number of different methods that can be used to install kodi on an AppleTV 4/4K.
 
 ## 9.1. Jailbroken devices
-On jailbroken devices the resulting deb file created from **[Packaging to distribute as deb](#7-Packaging-to-distribute-as-deb)** can be copied to the tvOS device via *ssh/scp* and installed manually. You need to SSH into the tvOS device and issue:
+On jailbroken devices the resulting deb file created from **[Packaging to distribute as deb](#7-packaging-to-distribute-as-deb)** can be copied to the tvOS device via *ssh/scp* and installed manually. You need to SSH into the tvOS device and issue:
 ```
 dpkg -i <name of the deb file>
 ```
@@ -370,7 +370,7 @@ The Apple TV 4K cannot be connected to mac via a cable so the connection must be
   6. Enter the verification code displayed on your AppleTV into the Device window pane for the device and click Connect.
 
 Xcode sets up the Apple TV for wireless debugging and pairs with the device.
-Once your Apple TV has been connected in Xcode, you can deploy either the **[Deb](#7-Packaging-to-distribute-as-deb)** or **[App](#6-Build file)** file.
+Once your Apple TV has been connected in Xcode, you can deploy either the **[Deb](#7-packaging-to-distribute-as-deb)** or **[App](#6-build)** file.
 
   1. Choose Window > Devices and Simulators, then in the window that appears, click Devices.
   2. On your Mac, select the Apple TV in the Devices pane.

@@ -8,12 +8,12 @@ This guide has been tested using Xcode 11.3.1 running on MacOS 10.14.4 (Mojave).
 2. **[Prerequisites](#2-prerequisites)**
 3. **[Get the source code](#3-get-the-source-code)**
 4. **[Configure and build tools and dependencies](#4-configure-and-build-tools-and-dependencies)**  
-  4.1. **[Advanced Configure Options](#41-Advanced-Configure-Options)**  
+  4.1. **[Advanced Configure Options](#41-advanced-configure-options)**  
 5. **[Build binary add-ons](#5-build-binary-add-ons)**  
-  5.1. **[Independent Add-on building](#51-Independent-Add-on-building)**  
-  5.2. **[Xcode project building](#52-Xcode-project-building)**  
+  5.1. **[Independent Add-on building](#51-independent-add-on-building)**  
+  5.2. **[Xcode project building](#52-xcode-project-building)**  
 6. **[Build Kodi](#6-build-kodi)**  
-  6.1. **[Generate Project Files](#61-Generate-Project-Files)**  
+  6.1. **[Generate Project Files](#61-generate-project-files)**  
   6.2. **[Build with Xcode](#62-build)**  
 7. **[Package](#7-package)**
 8. **[Install](#8-install)**
