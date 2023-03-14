@@ -300,13 +300,10 @@ void CApplicationPowerHandling::CheckScreenSaverAndDPMS()
   if (appPlayer && appPlayer->IsPlayingVideo() && !appPlayer->IsPaused())
     haveIdleActivity = true;
 
-  // Are we playing some music in fullscreen vis?
+  // Are we playing audio and screensaver is disabled globally for audio?
   else if (appPlayer && appPlayer->IsPlayingAudio() &&
-           CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION &&
-           !CServiceBroker::GetSettingsComponent()
-                ->GetSettings()
-                ->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION)
-                .empty())
+           CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+               CSettings::SETTING_SCREENSAVER_DISABLEFORAUDIO))
   {
     haveIdleActivity = true;
   }
@@ -377,20 +374,6 @@ void CApplicationPowerHandling::ActivateScreenSaver(bool forceType /*= false */)
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  if (appPlayer && appPlayer->IsPlayingAudio() &&
-      // don't activate screensaver if 'use visualization instead'
-      ((settings->GetBool(CSettings::SETTING_SCREENSAVER_USEMUSICVISINSTEAD) &&
-        !settings->GetString(CSettings::SETTING_MUSICPLAYER_VISUALISATION).empty()) ||
-       // don't activate screensaver if disabled globally for audio
-       (settings->GetBool(CSettings::SETTING_SCREENSAVER_DISABLEFORAUDIO))))
-  {
-    // just activate the visualisation if user toggled the usemusicvisinstead option (and not activated already)
-    if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() != WINDOW_VISUALISATION)
-    {
-      CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_VISUALISATION);
-    }
-    return;
-  }
 
   m_screensaverActive = true;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::GUI, "OnScreensaverActivated");
