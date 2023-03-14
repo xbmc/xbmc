@@ -38,8 +38,9 @@
 using namespace PVR;
 
 CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelsPath& path,
+                                   int groupType,
                                    const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup)
-  : m_allChannelsGroup(allChannelsGroup), m_path(path)
+  : m_iGroupType(groupType), m_allChannelsGroup(allChannelsGroup), m_path(path)
 {
   GetSettings()->RegisterCallback(this);
 }

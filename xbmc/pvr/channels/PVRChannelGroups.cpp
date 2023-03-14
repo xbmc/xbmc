@@ -375,7 +375,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::CreateChannelGroup(
   if (iType == PVR_GROUP_TYPE_ALL_CHANNELS)
     return std::make_shared<CPVRChannelGroupInternal>(path);
   else
-    return std::make_shared<CPVRChannelGroup>(path, GetGroupAll());
+    return std::make_shared<CPVRChannelGroup>(path, iType, GetGroupAll());
 }
 
 bool CPVRChannelGroups::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
@@ -594,7 +594,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetNextGroup(
   return GetFirstGroup();
 }
 
-bool CPVRChannelGroups::AddGroup(const std::string& strName)
+std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::AddGroup(const std::string& strName)
 {
   bool bPersist(false);
   std::shared_ptr<CPVRChannelGroup> group;
@@ -606,11 +606,12 @@ bool CPVRChannelGroups::AddGroup(const std::string& strName)
     group = GetByName(strName, PVR_GROUP_CLIENT_ID_LOCAL);
     if (!group)
     {
-      // create a new group
-      group.reset(new CPVRChannelGroup(
-          CPVRChannelsPath(m_bRadio, strName, PVR_GROUP_CLIENT_ID_LOCAL), GetGroupAll()));
+      // create a new local group
+      group = CreateChannelGroup(PVR_GROUP_TYPE_LOCAL,
+                                 CPVRChannelsPath(m_bRadio, strName, PVR_GROUP_CLIENT_ID_LOCAL));
 
-      m_groups.push_back(group);
+      m_groups.emplace_back(group);
+      SortGroups();
       bPersist = true;
 
       CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ChannelGroupsInvalidated);
@@ -618,7 +619,10 @@ bool CPVRChannelGroups::AddGroup(const std::string& strName)
   }
 
   // persist in the db if a new group was added
-  return bPersist ? group->Persist() : true;
+  if (bPersist)
+    group->Persist();
+
+  return group;
 }
 
 bool CPVRChannelGroups::DeleteGroup(const std::shared_ptr<CPVRChannelGroup>& group)

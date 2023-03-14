@@ -57,9 +57,11 @@ public:
   /*!
    * @brief Create a new channel group instance.
    * @param path The channel group path.
+   * @param groupType The type for the new group, must be one of the PVR_GROUP_TYPE_* values.
    * @param allChannelsGroup The channel group containing all TV or radio channels.
    */
   CPVRChannelGroup(const CPVRChannelsPath& path,
+                   int groupType,
                    const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup);
 
   /*!
