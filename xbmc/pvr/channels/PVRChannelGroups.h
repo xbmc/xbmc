@@ -169,9 +169,9 @@ public:
   /*!
    * @brief Add a group to this container.
    * @param strName The name of the group.
-   * @return True if the group was added, false otherwise.
+   * @return The new group on success, nullptr otherwise.
    */
-  bool AddGroup(const std::string& strName);
+  std::shared_ptr<CPVRChannelGroup> AddGroup(const std::string& strName);
 
   /*!
    * @brief Remove a group from this container and delete it from the database.
