@@ -55,6 +55,11 @@ public:
 
   std::string GetClipboardText() override;
 
+  /*! \brief Check if the windowing system supports moving windows across screens
+   *  \return true if the windowing system supports moving windows across screens, false otherwise
+  */
+  bool SupportsScreenMove() override;
+
   void Register(IDispResource* resource) override;
   void Unregister(IDispResource* resource) override;
 
