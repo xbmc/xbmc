@@ -28,6 +28,8 @@ public:
   CRenderInfo GetRenderInfo() override;
 
   bool IsGuiLayer() override;
+  bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
+  bool Supports(ERENDERFEATURE feature) const override;
 
 protected:
   // textures
@@ -39,4 +41,9 @@ protected:
   // hooks for hw dec renderer
   bool LoadShadersHook() override;
   bool RenderHook(int index) override;
+  void ManageRenderArea() override;
+
+private:
+  CRect m_exportedSourceRect;
+  CRect m_exportedDestRect;
 };
