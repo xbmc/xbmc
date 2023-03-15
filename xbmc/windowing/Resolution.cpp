@@ -71,7 +71,7 @@ float RESOLUTION_INFO::DisplayRatio() const
 RESOLUTION CResolutionUtils::ChooseBestResolution(float fps, int width, int height, bool is3D)
 {
   RESOLUTION res = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
-  float weight;
+  float weight = 0.0f;
 
   if (!FindResolutionFromOverride(fps, width, is3D, res, weight, false)) //find a refreshrate from overrides
   {
