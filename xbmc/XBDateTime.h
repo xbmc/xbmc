@@ -172,6 +172,12 @@ public:
   void GetAsTm(tm& time) const;
   void GetAsTimeStamp(KODI::TIME::FileTime& time) const;
 
+  enum class ReturnFormat : bool
+  {
+    CHOICE_YES = true,
+    CHOICE_NO = false,
+  };
+
   CDateTime GetAsUTCDateTime() const;
   std::string GetAsSaveString() const;
   std::string GetAsDBDateTime() const;
@@ -179,6 +185,7 @@ public:
   std::string GetAsDBTime() const;
   std::string GetAsLocalizedDate(bool longDate=false) const;
   std::string GetAsLocalizedDate(const std::string &strFormat) const;
+  std::string GetAsLocalizedDate(const std::string& strFormat, ReturnFormat returnFormat) const;
   std::string GetAsLocalizedTime(const std::string &format, bool withSeconds=true) const;
   std::string GetAsLocalizedDateTime(bool longDate=false, bool withSeconds=true) const;
   std::string GetAsLocalizedTime(TIME_FORMAT format, bool withSeconds = false) const;
