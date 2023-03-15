@@ -1194,6 +1194,35 @@ void CWinSystemOSX::WindowChangedScreen()
   }
 }
 
+void CWinSystemOSX::NotifyScreenChangeIntention()
+{
+  if (!SupportsScreenMove())
+  {
+    return;
+  }
+
+  // find the future displayId and the screen object
+  const NSUInteger dispIdx =
+      GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+          CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  NSScreen* screen = nil;
+  if (dispIdx < NSScreen.screens.count)
+  {
+    screen = [NSScreen.screens objectAtIndex:dispIdx];
+  }
+  // move the window to the center of the new screen
+  if (dispIdx != m_lastDisplayNr && screen)
+  {
+    NSPoint windowPos =
+        NSMakePoint(screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
+                    screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2);
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      [m_appWindow setFrameOrigin:windowPos];
+    });
+    m_lastDisplayNr = dispIdx;
+  }
+}
+
 CGLContextObj CWinSystemOSX::GetCGLContextObj()
 {
   __block CGLContextObj cglcontex = nullptr;
