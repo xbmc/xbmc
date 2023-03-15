@@ -1,17 +1,14 @@
 set(SOURCES CocoaDPMSSupport.cpp
             OSScreenSaverOSX.cpp
-            VideoSyncOsx.mm)
+            VideoSyncOsx.mm
+            WinEventsOSX.mm
+            WinEventsOSXImpl.mm
+            WinSystemOSX.mm)
 set(HEADERS CocoaDPMSSupport.h
             OSScreenSaverOSX.h
-            VideoSyncOsx.h)
-
-if(NOT SDL_FOUND)
-  list(APPEND SOURCES WinEventsOSX.mm
-                      WinEventsOSXImpl.mm
-                      WinSystemOSX.mm)
-  list(APPEND HEADERS WinEventsOSX.h
-                      WinEventsOSXImpl.h
-                      WinSystemOSX.h)
-endif()
+            WinEventsOSX.h
+            WinEventsOSXImpl.h
+            VideoSyncOsx.h
+            WinSystemOSX.h)
 
 core_add_library(windowing_osx)
