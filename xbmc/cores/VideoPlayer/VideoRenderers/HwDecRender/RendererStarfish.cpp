@@ -14,6 +14,7 @@
 #include "rendering/gles/RenderSystemGLES.h"
 #include "settings/MediaSettings.h"
 #include "utils/log.h"
+#include "windowing/wayland/WinSystemWaylandWebOS.h"
 
 CRendererStarfish::CRendererStarfish()
 {
@@ -31,10 +32,43 @@ CBaseRenderer* CRendererStarfish::Create(CVideoBuffer* buffer)
   return nullptr;
 }
 
+bool CRendererStarfish::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
+{
+  m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
+             GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight) |
+             GetFlagsColorPrimaries(picture.color_primaries) |
+             GetFlagsStereoMode(picture.stereoMode);
+
+  return CLinuxRendererGLES::Configure(picture, fps, orientation);
+}
+
 bool CRendererStarfish::Register()
 {
   VIDEOPLAYER::CRendererFactory::RegisterRenderer("starfish", CRendererStarfish::Create);
   return true;
+}
+
+void CRendererStarfish::ManageRenderArea()
+{
+  CBaseRenderer::ManageRenderArea();
+
+  if ((m_exportedDestRect != m_destRect || m_exportedSourceRect != m_sourceRect) &&
+      !m_sourceRect.IsEmpty() && !m_destRect.IsEmpty())
+  {
+    auto origRect =
+        CRect{0, 0, static_cast<float>(m_sourceWidth), static_cast<float>(m_sourceHeight)};
+    static_cast<KODI::WINDOWING::WAYLAND::CWinSystemWaylandWebOS*>(CServiceBroker::GetWinSystem())
+        ->SetExportedWindow(origRect, m_sourceRect, m_destRect);
+    m_exportedSourceRect = m_sourceRect;
+    m_exportedDestRect = m_destRect;
+  }
+}
+
+bool CRendererStarfish::Supports(ERENDERFEATURE feature) const
+{
+  return (feature == RENDERFEATURE_ZOOM || feature == RENDERFEATURE_STRETCH ||
+          feature == RENDERFEATURE_PIXEL_RATIO || feature == RENDERFEATURE_VERTICAL_SHIFT ||
+          feature == RENDERFEATURE_ROTATION);
 }
 
 void CRendererStarfish::AddVideoPicture(const VideoPicture& picture, int index)
