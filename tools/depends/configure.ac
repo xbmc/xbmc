@@ -102,11 +102,6 @@ AC_ARG_WITH([rendersystem],
   [render system to use])],
   [app_rendersystem=$withval])
 
-AC_ARG_WITH([windowsystem],
-  [AS_HELP_STRING([--with-windowsystem],
-  [Windowing system to use])],
-  [app_winsystem=$withval])
-
 AC_ARG_WITH([target-cflags],
   [AS_HELP_STRING([--with-target-cflags],
   [C compiler flags (target)])],
@@ -462,16 +457,6 @@ case $host in
         fi
 
         target_minver="10.14"
-
-        # check provided window system is valid_sdk
-        # if no window system supplied, default to native.
-        if test -n "$app_winsystem"; then
-          if test "$app_winsystem" != "native" && test "$app_winsystem" != "sdl"; then
-            AC_MSG_ERROR(Window system must be native or sdl)
-          fi
-        else
-          app_winsystem=native
-        fi
       ;;
       aarch64-apple-darwin*)
         MC_CHECK_NOT_CPU([$use_cpu], "*86")
@@ -482,7 +467,6 @@ case $host in
           ;;
           osx)
             target_minver="11.0"
-            app_winsystem=native
           ;;
           *)
             AC_MSG_ERROR(invalid platform for architecture ($host))
@@ -734,7 +718,6 @@ AC_SUBST(host_includes)
 AC_SUBST(host_sysroot)
 AC_SUBST(host_cxxflags)
 AC_SUBST(app_rendersystem)
-AC_SUBST(app_winsystem)
 AC_SUBST(ffmpeg_options)
 
 [

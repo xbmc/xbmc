@@ -6,13 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-#if defined(TARGET_DARWIN_OSX)
-// SDL redefines main as SDL_main
-#ifdef HAS_SDL
-#include <SDL/SDL.h>
-#endif
-#endif
-
 #include "PlatformPosix.h"
 #include "application/AppEnvironment.h"
 #include "application/AppParamParser.h"
