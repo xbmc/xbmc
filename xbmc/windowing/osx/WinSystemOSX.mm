@@ -1380,3 +1380,9 @@ std::string CWinSystemOSX::GetClipboardText()
 void CWinSystemOSX::ShowOSMouse(bool show)
 {
 }
+
+bool CWinSystemOSX::SupportsScreenMove()
+{
+  // macOS doesn't allow programatically moving windows across screens if the window is fullscreen
+  return !m_bFullScreen;
+}

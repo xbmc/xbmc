@@ -2526,6 +2526,7 @@
           </constraints>
           <dependencies>
             <dependency type="enable" on="property" name="SupportsScreenMove" />
+            <dependency type="update" setting="videoscreen.screenmode" />
           </dependencies>
           <control type="spinner" format="string" delayed="true" />
         </setting>
