@@ -178,6 +178,9 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
     png_set_gray_to_rgb(png_ptr);
   }
 
+  if (color_type == PNG_COLOR_TYPE_PALETTE)
+    printf("WARNING: Palette texture might not decode to optimally, please avoid!\n");
+
   // Update the png info struct.
   png_read_update_info(png_ptr, info_ptr);
 

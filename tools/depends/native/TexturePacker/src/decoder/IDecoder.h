@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "guilib/TextureFormats.h"
+
 #include <string>
 #include <vector>
 
@@ -61,6 +63,7 @@ public:
   int height = 0; // height
   int bbp = 0; // bits per pixel
   int pitch = 0; // rowsize in bytes
+  uint32_t format{XB_FMT_A8R8G8B8};
 };
 
 class DecodedFrame
