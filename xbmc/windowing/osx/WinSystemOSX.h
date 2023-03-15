@@ -60,6 +60,12 @@ public:
   */
   bool SupportsScreenMove() override;
 
+  /**
+   * \brief Used to signal the windowing system about the intention of the user to change the main display
+   * \details triggered, for example, when the user manually changes the monitor setting
+  */
+  void NotifyScreenChangeIntention() override;
+
   void Register(IDispResource* resource) override;
   void Unregister(IDispResource* resource) override;
 

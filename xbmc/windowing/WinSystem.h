@@ -109,6 +109,12 @@ public:
   // notifications
   virtual void OnMove(int x, int y) {}
 
+  /**
+   * \brief Used to signal the windowing system about the intention of the user to change the main display
+   * \details triggered, for example, when the user manually changes the monitor setting
+  */
+  virtual void NotifyScreenChangeIntention() {}
+
   // OS System screensaver
   /**
    * Get OS screen saver inhibit implementation if available
