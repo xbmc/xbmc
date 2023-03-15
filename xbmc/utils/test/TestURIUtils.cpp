@@ -298,10 +298,19 @@ TEST_F(TestURIUtils, IsInRAR)
 
 TEST_F(TestURIUtils, IsInternetStream)
 {
-  CURL url1("http://path/to/file");
-  CURL url2("https://path/to/file");
-  EXPECT_TRUE(URIUtils::IsInternetStream(url1));
-  EXPECT_TRUE(URIUtils::IsInternetStream(url2));
+  EXPECT_TRUE(URIUtils::IsInternetStream("http://path/to/file"));
+  EXPECT_TRUE(URIUtils::IsInternetStream("https://path/to/file"));
+  EXPECT_FALSE(URIUtils::IsInternetStream("ftp://path/to/file"));
+  EXPECT_FALSE(URIUtils::IsInternetStream("ftps://path/to/file"));
+  EXPECT_FALSE(URIUtils::IsInternetStream("dav://path/to/file"));
+  EXPECT_FALSE(URIUtils::IsInternetStream("davs://path/to/file"));
+
+  EXPECT_TRUE(URIUtils::IsInternetStream("http://path/to/file", true));
+  EXPECT_TRUE(URIUtils::IsInternetStream("https://path/to/file", true));
+  EXPECT_TRUE(URIUtils::IsInternetStream("ftp://path/to/file", true));
+  EXPECT_TRUE(URIUtils::IsInternetStream("ftps://path/to/file", true));
+  EXPECT_TRUE(URIUtils::IsInternetStream("dav://path/to/file", true));
+  EXPECT_TRUE(URIUtils::IsInternetStream("davs://path/to/file", true));
 }
 
 TEST_F(TestURIUtils, IsInZIP)
