@@ -97,25 +97,41 @@ endif
 
 ALSA_LIB=
 ifeq ($(OS),linux)
-  DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev pipewire wayland waylandpp wayland-protocols linux-system-x11-libs
+  DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev pipewire
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
 
-  ifeq ($(RENDER_SYSTEM),gl)
-    WAYLANDPP_DEPS += linux-system-gl-libs
-    DEPENDS += linux-system-gl-libs
-  else
-    WAYLANDPP_DEPS += mesa
-    DEPENDS += mesa
-  endif
-
-  MESA_DEPS += wayland-protocols wayland linux-system-x11-libs
-
   ifeq ($(CPU),x86_64)
-    LIBVA_DEPS += wayland linux-system-x11-libs
-
     DEPENDS += libva
     LIBVA = libva
+  endif
+
+  ifneq (,$(findstring wayland,$(TARGET_PLATFORM)))
+    DEPENDS += wayland waylandpp wayland-protocols
+    MESA_DEPS += wayland-protocols wayland
+    ifeq ($(CPU),x86_64)
+      LIBVA_DEPS += wayland
+    endif
+
+    ifeq ($(RENDER_SYSTEM),gl)
+      WAYLANDPP_DEPS += linux-system-gl-libs
+    else
+      WAYLANDPP_DEPS += mesa
+    endif
+  endif
+
+  ifneq (,$(findstring x11,$(TARGET_PLATFORM)))
+    DEPENDS += linux-system-x11-libs
+    MESA_DEPS += linux-system-x11-libs
+    ifeq ($(CPU),x86_64)
+      LIBVA_DEPS += linux-system-x11-libs
+    endif
+  endif
+
+  ifeq ($(RENDER_SYSTEM),gl)
+    DEPENDS += linux-system-gl-libs
+  else
+    DEPENDS += mesa
   endif
 endif
 
