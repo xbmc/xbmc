@@ -1048,7 +1048,7 @@ bool URIUtils::IsStreamedFilesystem(const std::string& strPath)
   if (url.IsProtocol("stack"))
     return IsStreamedFilesystem(CStackDirectory::GetFirstStackedFile(strPath));
 
-  if (IsUPnP(strPath) || IsFTP(strPath) || IsHTTP(strPath, true))
+  if (IsUPnP(strPath) || IsFTP(strPath) || IsHTTP(strPath, true) || IsDAV(strPath))
     return true;
 
   //! @todo sftp/ssh special case has to be handled by vfs addon
