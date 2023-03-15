@@ -150,7 +150,7 @@ endif()
 if(CPU MATCHES i686)
   set(CPU x86)
 endif()
-foreach(target apk obb apk-obb apk-clean)
+foreach(target apk apk-clean)
   add_custom_target(${target}
       COMMAND env PATH=${NATIVEPREFIX}/bin:$ENV{PATH} ${CMAKE_MAKE_PROGRAM} -j1
               -C ${CMAKE_BINARY_DIR}/tools/android/packaging
