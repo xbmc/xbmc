@@ -9,6 +9,7 @@
 #include "LangInfo.h"
 #include "XBDateTime.h"
 #include "guilib/LocalizeStrings.h"
+#include "interfaces/legacy/ModuleXbmc.h" //Needed to test getRegion()
 
 #include <array>
 #include <iostream>
@@ -487,6 +488,51 @@ TEST_F(TestDateTime, GetAsLocalized)
   EXPECT_EQ(dateTime3.GetAsLocalizedDate(false), "09-May-91");
   //Test short day name and single digit day number.
   EXPECT_EQ(dateTime3.GetAsLocalizedDate(true), "Thu, 9 May 1991");
+
+  //Test that the Python date formatting string is returned instead
+  //of the actual formatted date string.
+
+  CDateTime dateTime4;
+  dateTime4.SetDateTime(1991, 05, 9, 12, 34, 56); //Need a single digit date
+
+  //Test non zero-padded day and short month name.
+  EXPECT_EQ(
+      dateTime4.GetAsLocalizedDate(std::string("D-mmm-YY"), CDateTime::ReturnFormat::CHOICE_YES),
+      "%-d-%b-%y");
+  //Test NZP day and NZP month.
+  EXPECT_EQ(
+      dateTime4.GetAsLocalizedDate(std::string("D-M-YY"), CDateTime::ReturnFormat::CHOICE_YES),
+      "%-d-%-m-%y");
+
+  g_langInfo.SetShortDateFormat("D/M/YY");
+  g_langInfo.SetLongDateFormat("ddd, D MMMM YYYY");
+
+  //Test getRegion() here because it is directly reliant on GetAsLocalizedDate()
+  //and the windows-specific formatting happens in getRegion().
+#ifdef TARGET_WINDOWS
+  //Windows is handled differently because that's what ModuleXbmc.cpp does.
+  EXPECT_EQ(XBMCAddon::xbmc::getRegion("dateshort"), "%#d/%#m/%y");
+  EXPECT_EQ(XBMCAddon::xbmc::getRegion("datelong"), "%a, %#d %B %Y");
+#else
+  EXPECT_EQ(XBMCAddon::xbmc::getRegion("dateshort"), "%-d/%-m/%y");
+  EXPECT_EQ(XBMCAddon::xbmc::getRegion("datelong"), "%a, %-d %B %Y");
+#endif
+
+  //Test short day name, short month name and 2 digit year.
+  EXPECT_EQ(dateTime4.GetAsLocalizedDate(std::string("ddd, DD-mmm-YY"),
+                                         CDateTime::ReturnFormat::CHOICE_YES),
+            "%a, %d-%b-%y");
+  //Test as above but with 4 digit year.
+  EXPECT_EQ(dateTime4.GetAsLocalizedDate(std::string("ddd, DD-mmm-YYYY"),
+                                         CDateTime::ReturnFormat::CHOICE_YES),
+            "%a, %d-%b-%Y");
+  //Test some 'normal' DMY.
+  EXPECT_EQ(
+      dateTime4.GetAsLocalizedDate(std::string("DD/MM/YYYY"), CDateTime::ReturnFormat::CHOICE_YES),
+      "%d/%m/%Y");
+  EXPECT_EQ(
+      dateTime4.GetAsLocalizedDate(std::string("DD/MM/YY"), CDateTime::ReturnFormat::CHOICE_YES),
+      "%d/%m/%y");
 
   // not possible to use these three
   // EXPECT_EQ(dateTime1.GetAsLocalizedTime(TIME_FORMAT(32)), "");

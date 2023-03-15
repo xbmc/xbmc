@@ -403,50 +403,64 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       std::string result;
+      CDateTime now = CDateTime::GetCurrentDateTime();
 
       if (StringUtils::CompareNoCase(id, "datelong") == 0)
       {
+        result = now.GetAsLocalizedDate(g_langInfo.GetDateFormat(true),
+                                        CDateTime::ReturnFormat::CHOICE_YES);
+      }
+      else if (StringUtils::CompareNoCase(id, "dateshort") == 0)
+      {
+        result = now.GetAsLocalizedDate(g_langInfo.GetDateFormat(false),
+                                        CDateTime::ReturnFormat::CHOICE_YES);
+      }
+      else if (StringUtils::CompareNoCase(id, "tempunit") == 0)
+      {
+        result = g_langInfo.GetTemperatureUnitString();
+      }
+      //TODO - There is a (low) risk that these 'raw' formats could be changed on Windows if they contain a '%-' sequence.
+      else if (StringUtils::CompareNoCase(id, "datelongraw") == 0)
+      {
         result = g_langInfo.GetDateFormat(true);
-        StringUtils::Replace(result, "DDDD", "%A");
-        StringUtils::Replace(result, "MMMM", "%B");
-        StringUtils::Replace(result, "D", "%d");
-        StringUtils::Replace(result, "YYYY", "%Y");
-        }
-        else if (StringUtils::CompareNoCase(id, "dateshort") == 0)
+      }
+      else if (StringUtils::CompareNoCase(id, "dateshortraw") == 0)
+      {
+        result = g_langInfo.GetDateFormat(false);
+      }
+      else if (StringUtils::CompareNoCase(id, "timeraw") == 0)
+      {
+        result = g_langInfo.GetTimeFormat();
+      }
+      else if (StringUtils::CompareNoCase(id, "speedunit") == 0)
+      {
+        result = g_langInfo.GetSpeedUnitString();
+      }
+      else if (StringUtils::CompareNoCase(id, "time") == 0)
+      {
+        result = g_langInfo.GetTimeFormat();
+        if (StringUtils::StartsWith(result, "HH"))
         {
-          result = g_langInfo.GetDateFormat(false);
-          StringUtils::Replace(result, "MM", "%m");
-          StringUtils::Replace(result, "DD", "%d");
-#ifdef TARGET_WINDOWS
-          StringUtils::Replace(result, "M", "%#m");
-          StringUtils::Replace(result, "D", "%#d");
-#else
-          StringUtils::Replace(result, "M", "%-m");
-          StringUtils::Replace(result, "D", "%-d");
-#endif
-          StringUtils::Replace(result, "YYYY", "%Y");
+          StringUtils::Replace(result, "HH", "%H");
         }
-        else if (StringUtils::CompareNoCase(id, "tempunit") == 0)
-          result = g_langInfo.GetTemperatureUnitString();
-        else if (StringUtils::CompareNoCase(id, "speedunit") == 0)
-          result = g_langInfo.GetSpeedUnitString();
-        else if (StringUtils::CompareNoCase(id, "time") == 0)
+        else
         {
-          result = g_langInfo.GetTimeFormat();
-          if (StringUtils::StartsWith(result, "HH"))
-            StringUtils::Replace(result, "HH", "%H");
-          else
-            StringUtils::Replace(result, "H", "%H");
+          StringUtils::Replace(result, "H", "%H");
           StringUtils::Replace(result, "h", "%I");
           StringUtils::Replace(result, "mm", "%M");
           StringUtils::Replace(result, "ss", "%S");
           StringUtils::Replace(result, "xx", "%p");
         }
-        else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
-          result = StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM),
-                                       g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM));
-
-        return result;
+      }
+      else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
+      {
+        result = StringUtils::Format("{}/{}", g_langInfo.GetMeridiemSymbol(MeridiemSymbolAM),
+                                     g_langInfo.GetMeridiemSymbol(MeridiemSymbolPM));
+      }
+#ifdef TARGET_WINDOWS
+      StringUtils::Replace(result, "%-", "%#"); //Convert to Windows format if required.
+#endif
+      return result;
     }
 
     //! @todo Add a mediaType enum
