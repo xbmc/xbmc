@@ -179,7 +179,6 @@ public:
   static constexpr auto SETTING_SCRAPERS_MUSICVIDEOSDEFAULT = "scrapers.musicvideosdefault";
   static constexpr auto SETTING_PVRMANAGER_PRESELECTPLAYINGCHANNEL =
       "pvrmanager.preselectplayingchannel";
-  static constexpr auto SETTING_PVRMANAGER_SYNCCHANNELGROUPS = "pvrmanager.syncchannelgroups";
   static constexpr auto SETTING_PVRMANAGER_BACKENDCHANNELGROUPSORDER =
       "pvrmanager.backendchannelgroupsorder";
   static constexpr auto SETTING_PVRMANAGER_BACKENDCHANNELORDER = "pvrmanager.backendchannelorder";
