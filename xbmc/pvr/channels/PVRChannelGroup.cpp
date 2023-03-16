@@ -143,7 +143,7 @@ void CPVRChannelGroup::Unload()
 
 bool CPVRChannelGroup::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  if (GroupType() == PVR_GROUP_TYPE_LOCAL || !GetSettings()->SyncChannelGroups())
+  if (GroupType() == PVR_GROUP_TYPE_LOCAL)
     return true;
 
   const auto it = std::find_if(clients.cbegin(), clients.cend(), [this](const auto& client) {
@@ -698,8 +698,8 @@ bool CPVRChannelGroup::UpdateChannelNumbersFromAllChannelsGroup()
 
   if (!IsInternalGroup())
   {
-    // If we don't sync channel groups make sure the channel numbers are set from
-    // the all channels group using the non default renumber call before sorting
+    // Make sure the channel numbers are set from the all channels group using the non default
+    // renumber call before sorting.
     if (Renumber(IGNORE_NUMBERING_FROM_ONE) || SortAndRenumber())
       bChanged = true;
   }
@@ -1021,10 +1021,9 @@ void CPVRChannelGroup::OnSettingChanged()
               "Renumbering channel group '{}' to use the backend channel order and/or numbers",
               GroupName());
 
-  // If we don't sync channel groups make sure the channel numbers are set from
-  // the all channels group using the non default renumber call before sorting
-  if (!GetSettings()->SyncChannelGroups())
-    Renumber(IGNORE_NUMBERING_FROM_ONE);
+  // Make sure the channel numbers are set from the all channels group using the non default
+  // renumber call before sorting.
+  Renumber(IGNORE_NUMBERING_FROM_ONE);
 
   const bool bRenumbered = SortAndRenumber();
   Persist();

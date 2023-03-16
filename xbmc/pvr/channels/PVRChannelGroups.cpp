@@ -39,9 +39,7 @@
 using namespace PVR;
 
 CPVRChannelGroups::CPVRChannelGroups(bool bRadio)
-  : m_bRadio(bRadio),
-    m_settings({CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS,
-                CSettings::SETTING_PVRMANAGER_BACKENDCHANNELGROUPSORDER})
+  : m_bRadio(bRadio), m_settings({CSettings::SETTING_PVRMANAGER_BACKENDCHANNELGROUPSORDER})
 {
   m_settings.RegisterCallback(this);
 }
@@ -312,23 +310,17 @@ bool CPVRChannelGroups::HasValidDataForClients(
 bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients,
                                           bool bChannelsOnly /* = false */)
 {
-  bool bSyncWithBackends = m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
-  bool bUpdateAllGroups = !bChannelsOnly && bSyncWithBackends;
   bool bReturn = true;
 
   // sync groups
-  const int iSize = m_groups.size();
-  if (bUpdateAllGroups)
+  const int iSize = static_cast<int>(m_groups.size());
+  if (!bChannelsOnly)
   {
     // get channel groups from the clients
     CServiceBroker::GetPVRManager().Clients()->GetChannelGroups(clients, this,
                                                                 m_failedClientsForChannelGroups);
     CLog::LogFC(LOGDEBUG, LOGPVR, "{} new {} channel groups fetched from clients",
                 (m_groups.size() - iSize), m_bRadio ? "radio" : "TV");
-  }
-  else if (!bSyncWithBackends)
-  {
-    CLog::LogFC(LOGDEBUG, LOGPVR, "'sync channelgroups' is disabled; skipping groups from clients");
   }
 
   // sync channels in groups
@@ -342,9 +334,9 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
 
   for (const auto& group : groups)
   {
-    if (bUpdateAllGroups || group->IsInternalGroup())
+    if (!bChannelsOnly || group->IsInternalGroup())
     {
-      const int iMemberCount = group->Size();
+      const int iMemberCount = static_cast<int>(group->Size());
       if (!group->UpdateFromClients(clients))
       {
         CLog::LogFC(LOGERROR, LOGPVR, "Failed to update channel group '{}'", group->GroupName());
@@ -367,13 +359,6 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
         // could still be changed if same amount of members was removed as was added, but too
         // complicated to calculate just for debug logging
       }
-    }
-
-    // remove empty groups if sync with backend is enabled and we have valid data from all clients
-    if (bSyncWithBackends && group->Size() == 0 && !group->IsInternalGroup() &&
-        HasValidDataForClients(clients) && group->HasValidDataForClients(clients))
-    {
-      emptyGroups.emplace_back(group);
     }
 
     if (bReturn && group->IsInternalGroup() &&

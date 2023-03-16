@@ -10778,11 +10778,7 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr ""
 
-#. pvr settings "sync channel groups with backend(s)" control label
-#: system/settings/settings.xml
-msgctxt "#19221"
-msgid "Synchronise channel groups with backend(s)"
-msgstr ""
+#empty string with id 19221
 
 #: addons/skin.estouchy/xml/Includes.xml
 msgctxt "#19222"
@@ -19600,10 +19596,7 @@ msgctxt "#36203"
 msgid "Enables the \"Personal Video Recorder\" (PVR) features. This requires that at least one PVR add-on is installed."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36204"
-msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
-msgstr ""
+#empty string with id 36204
 
 #: system/settings/settings.xml
 msgctxt "#36205"
