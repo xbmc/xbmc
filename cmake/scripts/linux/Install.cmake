@@ -327,3 +327,7 @@ if(CPACK_GENERATOR)
     message(FATAL_ERROR "DEB Generator: Can't configure CPack to generate Debian packages on non-linux systems.")
   endif()
 endif()
+
+if(CORE_PLATFORM_NAME STREQUAL webos)
+  include(${CMAKE_SOURCE_DIR}/cmake/scripts/webos/Install.cmake)
+endif()
