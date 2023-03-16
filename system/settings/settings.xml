@@ -1578,6 +1578,11 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="pvrmanager.backendchannelgroupsorder" type="boolean" label="19350" help="36435">
+          <level>2</level>
+          <default>true</default>
+          <control type="toggle" />
+        </setting>
         <setting id="pvrmanager.backendchannelorder" type="boolean" label="19231" help="36205">
           <level>2</level>
           <default>true</default>

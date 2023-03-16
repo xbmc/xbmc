@@ -451,8 +451,29 @@ public:
   bool SetHidden(bool bHidden);
   bool IsHidden() const;
 
+  /*!
+   * @brief Get the local position of this group.
+   * @return The local group position.
+   */
   int GetPosition() const;
+
+  /*!
+   * @brief Set the local position of this group.
+   * @param iPosition The new local group position.
+   */
   void SetPosition(int iPosition);
+
+  /*!
+   * @brief Get the position of this group as supplied by the PVR client.
+   * @return The client-supplied group position.
+   */
+  int GetClientPosition() const;
+
+  /*!
+   * @brief Set the client-supplied position of this group.
+   * @param iPosition The new client-supplied group position.
+   */
+  void SetClientPosition(int iPosition);
 
   /*!
    * @brief Check, whether data for a given pvr client are currently valid. For instance, data
@@ -545,7 +566,7 @@ protected:
   time_t m_iLastWatched = 0; /*!< last time group has been watched */
   uint64_t m_iLastOpened = 0; /*!< time in milliseconds from epoch this group was last opened */
   bool m_bHidden = false; /*!< true if this group is hidden, false otherwise */
-  int m_iPosition = 0; /*!< the position of this group within the group list */
+  int m_iPosition = 0; /*!< the local position of this group within the group list */
   std::vector<std::shared_ptr<CPVRChannelGroupMember>>
       m_sortedMembers; /*!< members sorted by channel number */
   std::map<std::pair<int, int>, std::shared_ptr<CPVRChannelGroupMember>>
@@ -597,5 +618,6 @@ private:
   mutable std::optional<int> m_clientPriority;
   bool m_isUserSetName{false};
   std::string m_clientGroupName;
+  int m_iClientPosition{0};
 };
 } // namespace PVR
