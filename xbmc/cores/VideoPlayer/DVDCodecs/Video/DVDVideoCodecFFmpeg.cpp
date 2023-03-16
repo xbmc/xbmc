@@ -1164,8 +1164,9 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
   const AVFilter* outFilter = avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
 
   std::string args = StringUtils::Format(
-      "{}:{}:{}:{}:{}:{}:{}", m_pCodecContext->width, m_pCodecContext->height,
-      m_pCodecContext->pix_fmt, m_pCodecContext->time_base.num ? m_pCodecContext->time_base.num : 1,
+      "video_size={}x{}:pix_fmt={}:time_base={}/{}:pixel_aspect={}/{}", m_pCodecContext->width,
+      m_pCodecContext->height, m_pCodecContext->pix_fmt,
+      m_pCodecContext->time_base.num ? m_pCodecContext->time_base.num : 1,
       m_pCodecContext->time_base.num ? m_pCodecContext->time_base.den : 1,
       m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.num : 1,
       m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.den : 1);
