@@ -160,17 +160,18 @@ void CPVRDatabase::CreateTables()
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'channelgroups'");
   m_pDS->exec("CREATE TABLE channelgroups ("
-              "idGroup        integer primary key, "
-              "bIsRadio       bool, "
-              "iGroupType     integer, "
-              "sName          varchar(64), "
-              "iLastWatched   integer, "
-              "bIsHidden      bool, "
-              "iPosition      integer, "
-              "iLastOpened    bigint unsigned, "
-              "iClientId      integer, "
-              "bIsUserSetName bool, "
-              "sClientName    varchar(64)"
+              "idGroup         integer primary key, "
+              "bIsRadio        bool, "
+              "iGroupType      integer, "
+              "sName           varchar(64), "
+              "iLastWatched    integer, "
+              "bIsHidden       bool, "
+              "iPosition       integer, "
+              "iLastOpened     bigint unsigned, "
+              "iClientId       integer, "
+              "bIsUserSetName  bool, "
+              "sClientName     varchar(64), "
+              "iClientPosition integer"
               ")");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'map_channelgroups_channels'");
@@ -350,6 +351,15 @@ void CPVRDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE channelgroups ADD sClientName varchar(64)");
     m_pDS->exec("UPDATE channelgroups SET sClientName = sName WHERE iGroupType = 0");
     m_pDS->exec("UPDATE channelgroups SET sClientName = '' WHERE iGroupType != 0");
+  }
+
+  if (iVersion < 43)
+  {
+    m_pDS->exec("ALTER TABLE channelgroups ADD iClientPosition integer");
+    m_pDS->exec("UPDATE channelgroups SET iClientPosition = iPosition");
+    // Setup initial local order, not perfect but at least unique across all groups.
+    // Should mostly be the order the groups appeared from backend or were created by user locally.
+    m_pDS->exec("UPDATE channelgroups SET iPosition = idGroup");
   }
 }
 
@@ -706,6 +716,7 @@ int CPVRDatabase::GetGroups(CPVRChannelGroups& results, const std::string& query
         group->m_iLastOpened = static_cast<uint64_t>(m_pDS->fv("iLastOpened").get_asInt64());
         group->m_isUserSetName = m_pDS->fv("bIsUserSetName").get_asBool();
         group->m_clientGroupName = m_pDS->fv("sClientName").get_asString();
+        group->m_iClientPosition = m_pDS->fv("iClientPosition").get_asInt();
         results.Update(group);
 
         CLog::LogFC(LOGDEBUG, LOGPVR, "Group '{}' loaded from PVR database", group->GroupName());
@@ -957,22 +968,22 @@ bool CPVRDatabase::Persist(CPVRChannelGroup& group)
     if (group.IsNew())
       strQuery = PrepareSQL("INSERT INTO channelgroups (bIsRadio, iGroupType, sName, iLastWatched, "
                             "bIsHidden, iPosition, iLastOpened, iClientId, bIsUserSetName, "
-                            "sClientName) VALUES (%i, %i, '%s', "
-                            "%u, %i, %i, %llu, %i, %i, '%s')",
+                            "sClientName, iClientPosition) VALUES (%i, %i, '%s', "
+                            "%u, %i, %i, %llu, %i, %i, '%s', %i)",
                             (group.IsRadio() ? 1 : 0), group.GroupType(), group.GroupName().c_str(),
                             static_cast<unsigned int>(group.LastWatched()), group.IsHidden(),
                             group.GetPosition(), group.LastOpened(), group.GetClientID(),
-                            (group.IsUserSetName() ? 1 : 0), group.ClientGroupName().c_str());
+                            (group.IsUserSetName() ? 1 : 0), group.ClientGroupName().c_str(),
+                            group.GetClientPosition());
     else
       strQuery = PrepareSQL(
           "REPLACE INTO channelgroups (idGroup, bIsRadio, iGroupType, sName, iLastWatched, "
-          "bIsHidden, iPosition, iLastOpened, iClientId, bIsUserSetName, sClientName) VALUES (%i, "
-          "%i, %i, '%s', "
-          "%u, %i, %i, %llu, %i, %i, '%s')",
+          "bIsHidden, iPosition, iLastOpened, iClientId, bIsUserSetName, sClientName, "
+          "iClientPosition) VALUES (%i, %i, %i, '%s', %u, %i, %i, %llu, %i, %i, '%s', %i)",
           group.GroupID(), (group.IsRadio() ? 1 : 0), group.GroupType(), group.GroupName().c_str(),
           static_cast<unsigned int>(group.LastWatched()), group.IsHidden(), group.GetPosition(),
           group.LastOpened(), group.GetClientID(), (group.IsUserSetName() ? 1 : 0),
-          group.ClientGroupName().c_str());
+          group.ClientGroupName().c_str(), group.GetClientPosition());
 
     bReturn = ExecuteQuery(strQuery);
 

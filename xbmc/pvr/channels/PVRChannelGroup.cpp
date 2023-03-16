@@ -48,10 +48,10 @@ CPVRChannelGroup::CPVRChannelGroup(const CPVRChannelsPath& path,
 CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP& group,
                                    int clientID,
                                    const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup)
-  : m_iPosition(group.iPosition),
-    m_allChannelsGroup(allChannelsGroup),
+  : m_allChannelsGroup(allChannelsGroup),
     m_path(group.bIsRadio, group.strGroupName, clientID),
-    m_clientGroupName(group.strGroupName)
+    m_clientGroupName(group.strGroupName),
+    m_iClientPosition(group.iPosition)
 {
   GetSettings()->RegisterCallback(this);
 }
@@ -66,7 +66,8 @@ bool CPVRChannelGroup::operator==(const CPVRChannelGroup& right) const
   return (m_iGroupType == right.m_iGroupType && m_iGroupId == right.m_iGroupId &&
           m_iPosition == right.m_iPosition && m_path == right.m_path &&
           m_clientPriority == right.m_clientPriority && m_isUserSetName == right.m_isUserSetName &&
-          m_clientGroupName == right.m_clientGroupName);
+          m_clientGroupName == right.m_clientGroupName &&
+          m_iClientPosition == right.m_iClientPosition);
 }
 
 bool CPVRChannelGroup::operator!=(const CPVRChannelGroup& right) const
@@ -79,7 +80,7 @@ void CPVRChannelGroup::FillAddonData(PVR_CHANNEL_GROUP& group) const
   group = {};
   group.bIsRadio = IsRadio();
   strncpy(group.strGroupName, ClientGroupName().c_str(), sizeof(group.strGroupName) - 1);
-  group.iPosition = GetPosition();
+  group.iPosition = GetClientPosition();
 }
 
 CCriticalSection CPVRChannelGroup::m_settingsSingletonCritSection;
@@ -1257,6 +1258,24 @@ void CPVRChannelGroup::SetPosition(int iPosition)
   if (m_iPosition != iPosition)
   {
     m_iPosition = iPosition;
+    if (m_bLoaded)
+      m_bChanged = true;
+  }
+}
+
+int CPVRChannelGroup::GetClientPosition() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_iClientPosition;
+}
+
+void CPVRChannelGroup::SetClientPosition(int iPosition)
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+
+  if (m_iClientPosition != iPosition)
+  {
+    m_iClientPosition = iPosition;
     if (m_bLoaded)
       m_bChanged = true;
   }

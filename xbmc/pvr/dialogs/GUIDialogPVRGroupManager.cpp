@@ -10,6 +10,7 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
+#include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -28,6 +29,8 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/filesystem/PVRGUIDirectory.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
 
@@ -84,6 +87,53 @@ void CGUIDialogPVRGroupManager::SetRadio(bool bIsRadio)
 bool CGUIDialogPVRGroupManager::PersistChanges()
 {
   return CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio)->PersistAll();
+}
+
+bool CGUIDialogPVRGroupManager::OnPopupMenu(int itemNumber)
+{
+  // Currently, the only context menu item is "move".
+  if (!m_allowReorder)
+    return false;
+
+  CContextButtons buttons;
+
+  if (itemNumber < 0 || itemNumber >= m_channelGroups->Size())
+    return false;
+
+  const auto item = m_channelGroups->Get(itemNumber);
+  if (!item)
+    return false;
+
+  item->Select(true);
+
+  buttons.Add(CONTEXT_BUTTON_MOVE, 116); // Move
+
+  const int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
+
+  item->Select(false);
+
+  if (choice < 0)
+    return false;
+
+  return OnContextButton(itemNumber, choice);
+}
+
+bool CGUIDialogPVRGroupManager::OnContextButton(int itemNumber, int button)
+{
+  if (itemNumber < 0 || itemNumber >= m_channelGroups->Size())
+    return false;
+
+  const auto item = m_channelGroups->Get(itemNumber);
+  if (!item)
+    return false;
+
+  if (button == CONTEXT_BUTTON_MOVE)
+  {
+    // begin moving item
+    m_movingItem = true;
+    item->Select(true);
+  }
+  return true;
 }
 
 bool CGUIDialogPVRGroupManager::ActionButtonOk(const CGUIMessage& message)
@@ -271,14 +321,44 @@ bool CGUIDialogPVRGroupManager::ActionButtonChannelGroups(const CGUIMessage& mes
 
   if (m_viewChannelGroups.HasControl(iControl)) // list/thumb control
   {
-    int iAction = message.GetParam1();
-
-    if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+    if (!m_movingItem)
     {
-      m_iSelectedChannelGroup = m_viewChannelGroups.GetSelectedItem();
-      Update();
+      const int iAction = message.GetParam1();
+
+      if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
+      {
+        m_iSelectedChannelGroup = m_viewChannelGroups.GetSelectedItem();
+        Update();
+      }
+      else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
+      {
+        m_iSelectedChannelGroup = m_viewChannelGroups.GetSelectedItem();
+        OnPopupMenu(m_iSelectedChannelGroup);
+      }
+      bReturn = true;
     }
-    bReturn = true;
+    else
+    {
+      const auto item = m_channelGroups->Get(m_iSelectedChannelGroup);
+      if (item)
+      {
+        // end moving item
+        item->Select(false);
+        m_movingItem = false;
+
+        // reset group positions
+        auto* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(m_bIsRadio);
+        int pos = 1;
+        for (auto& groupItem : *m_channelGroups)
+        {
+          const auto group = groups->GetGroupByPath(groupItem->GetPath());
+          if (group)
+            group->SetPosition(pos++);
+        }
+        groups->SortGroups();
+        bReturn = true;
+      }
+    }
   }
 
   return bReturn;
@@ -397,10 +477,41 @@ bool CGUIDialogPVRGroupManager::OnActionMove(const CAction& action)
       int iSelected = m_viewChannelGroups.GetSelectedItem();
 
       bReturn = true;
-      if (iSelected != m_iSelectedChannelGroup)
+      if (!m_movingItem)
       {
-        m_iSelectedChannelGroup = iSelected;
-        Update();
+        if (iSelected != m_iSelectedChannelGroup)
+        {
+          if (iSelected != m_iSelectedChannelGroup)
+          {
+            m_iSelectedChannelGroup = iSelected;
+            Update();
+          }
+        }
+      }
+      else
+      {
+        bool moveUp = iActionId == ACTION_PAGE_UP || iActionId == ACTION_MOVE_UP ||
+                      iActionId == ACTION_FIRST_PAGE;
+        unsigned int lines = moveUp ? std::abs(m_iSelectedChannelGroup - iSelected) : 1;
+        bool outOfBounds = moveUp ? m_iSelectedChannelGroup <= 0
+                                  : m_iSelectedChannelGroup >= m_channelGroups->Size() - 1;
+        if (outOfBounds)
+        {
+          moveUp = !moveUp;
+          lines = m_channelGroups->Size() - 1;
+        }
+        for (unsigned int line = 0; line < lines; ++line)
+        {
+          const unsigned int newSelect =
+              moveUp ? m_iSelectedChannelGroup - 1 : m_iSelectedChannelGroup + 1;
+
+          // swap items
+          m_channelGroups->Swap(newSelect, m_iSelectedChannelGroup);
+          m_iSelectedChannelGroup = newSelect;
+        }
+
+        m_viewChannelGroups.SetItems(*m_channelGroups);
+        m_viewChannelGroups.SetSelectedItem(m_iSelectedChannelGroup);
       }
     }
   }
@@ -420,6 +531,12 @@ void CGUIDialogPVRGroupManager::OnInitWindow()
   m_iSelectedUngroupedChannel = 0;
   m_iSelectedGroupMember = 0;
   m_iSelectedChannelGroup = 0;
+  m_movingItem = false;
+
+  // prevent resorting groups if backend group order shall be used
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  m_allowReorder = !settings->GetBool(CSettings::SETTING_PVRMANAGER_BACKENDCHANNELGROUPSORDER);
+
   Update();
 }
 
