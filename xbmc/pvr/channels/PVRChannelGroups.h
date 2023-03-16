@@ -9,6 +9,8 @@
 #pragma once
 
 #include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/settings/PVRSettings.h"
+#include "settings/lib/ISettingCallback.h"
 #include "threads/CriticalSection.h"
 
 #include <memory>
@@ -25,7 +27,7 @@ class CPVRClient;
 
 /** A container class for channel groups */
 
-class CPVRChannelGroups
+class CPVRChannelGroups : public ISettingCallback
 {
 public:
   /*!
@@ -34,6 +36,9 @@ public:
    */
   explicit CPVRChannelGroups(bool bRadio);
   virtual ~CPVRChannelGroups();
+
+  // ISettingCallback implementation
+  void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
 
   /*!
    * @brief Remove all groups from this container.
@@ -226,8 +231,14 @@ public:
    */
   int CleanupCachedImages();
 
-private:
+  /*!
+   * @brief Sort the groups.
+   */
   void SortGroups();
+
+private:
+  void SortGroupsByBackendOrder();
+  void SortGroupsByLocalOrder();
 
   /*!
    * @brief Check, whether data for given pvr clients are currently valid. For instance, data
@@ -244,5 +255,7 @@ private:
   mutable CCriticalSection m_critSection;
   std::vector<int> m_failedClientsForChannelGroups;
   bool m_isSubscribed{false};
+  CPVRSettings m_settings;
+  std::shared_ptr<CPVRChannelGroup> m_allChannelsGroup;
 };
 } // namespace PVR
