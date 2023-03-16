@@ -13,6 +13,11 @@ set(HEADERS AppParamParserLinux.h
             SysfsPath.h
             TimeUtils.h)
 
+if(TARGET_WEBOS)
+  list(APPEND SOURCES AppParamParserWebOS.cpp)
+  list(APPEND HEADERS AppParamParserWebOS.h)
+endif()
+
 if(ALSA_FOUND)
   list(APPEND SOURCES FDEventMonitor.cpp)
   list(APPEND HEADERS FDEventMonitor.h)
