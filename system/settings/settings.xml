@@ -1573,11 +1573,6 @@
     </category>
     <category id="pvrmenu" label="14301" help="36211">
       <group id="1" label="128">
-        <setting id="pvrmanager.syncchannelgroups" type="boolean" label="19221" help="36204">
-          <level>1</level>
-          <default>true</default>
-          <control type="toggle" />
-        </setting>
         <setting id="pvrmanager.backendchannelgroupsorder" type="boolean" label="19350" help="36435">
           <level>2</level>
           <default>true</default>
