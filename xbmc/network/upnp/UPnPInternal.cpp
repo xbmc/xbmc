@@ -59,6 +59,12 @@ constexpr std::array<std::string_view, 9> SupportedSubFormats = {
     // so we only match the extension of the "fake" content type
     "sup", "idx"};
 
+// Map defining extensions for mimetypes not available in Platinum mimetype map
+// or that the application wants to override. These definitions take precedence
+// over all other possible mime type definitions.
+constexpr NPT_HttpFileRequestHandler_DefaultFileTypeMapEntry kodiPlatinumMimeTypeExtensions[] = {
+    {"m2ts", "video/vnd.dlna.mpeg-tts"}};
+
 /*----------------------------------------------------------------------
 |  GetClientQuirks
 +---------------------------------------------------------------------*/
@@ -141,15 +147,32 @@ GetMimeType(const CFileItem& item,
 
     NPT_String mime;
 
-    /* We always use Platinum mime type first
-       as it is defined to map extension to DLNA compliant mime type
-       or custom according to context (who asked for it) */
-    if (!ext.IsEmpty()) {
+    if (!ext.IsEmpty())
+    {
+      /* We look first to our extensions/overrides of libplatinum mimetypes. If not found, fallback to
+         Platinum definitions.
+      */
+      const auto kodiOverrideMimeType = std::find_if(
+          std::begin(kodiPlatinumMimeTypeExtensions), std::end(kodiPlatinumMimeTypeExtensions),
+          [&](const auto& mimeTypeEntry) { return mimeTypeEntry.extension == ext; });
+      if (kodiOverrideMimeType != std::end(kodiPlatinumMimeTypeExtensions))
+      {
+        mime = kodiOverrideMimeType->mime_type;
+      }
+      else
+      {
+        /* Give priority to Platinum mime types as they are defined to map extension to DLNA compliant mime types
+               or custom types according to context (who asked for it)
+        */
         mime = PLT_MimeType::GetMimeTypeFromExtension(ext, context);
-        if (mime == "application/octet-stream") mime = "";
+        if (mime == "application/octet-stream")
+        {
+          mime = "";
+        }
+      }
     }
 
-    /* if Platinum couldn't map it, default to XBMC mapping */
+    /* if Platinum couldn't map it, default to Kodi internal mapping */
     if (mime.IsEmpty()) {
         NPT_String mime = item.GetMimeType().c_str();
         if (mime == "application/octet-stream") mime = "";
