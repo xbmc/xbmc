@@ -22,10 +22,20 @@ if("wayland" IN_LIST CORE_PLATFORM_NAME_LC)
                     "${WAYLANDPP_PROTOCOLS_DIR}/xdg-shell.xml"
                     "${WAYLAND_PROTOCOLS_DIR}/unstable/xdg-shell/xdg-shell-unstable-v6.xml"
                     "${WAYLAND_PROTOCOLS_DIR}/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml")
+
   add_custom_command(OUTPUT "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.cpp"
                      COMMAND "${WAYLANDPP_SCANNER}" ${PROTOCOL_XMLS} "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.cpp"
                      DEPENDS "${WAYLANDPP_SCANNER}" ${PROTOCOL_XMLS}
                      COMMENT "Generating wayland-protocols C++ wrappers")
+
+  if(TARGET_WEBOS)
+    set(WEBOS_PROTOCOL_XMLS "${WAYLANDPROTOCOLSWEBOS_PROTOCOLSDIR}/webos-shell.xml")
+    add_custom_command(OUTPUT "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.cpp"
+                      COMMAND "${WAYLANDPP_SCANNER}" ${WEBOS_PROTOCOL_XMLS} "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.cpp"
+                      DEPENDS "${WAYLANDPP_SCANNER}" ${WEBOS_PROTOCOL_XMLS}
+                      COMMENT "Generating wayland-webos C++ wrappers")
+    add_custom_target(generate-wayland-webos-protocols DEPENDS wayland-webos-protocols.hpp)
+  endif()
 
   # Dummy target for dependencies
   add_custom_target(generate-wayland-extra-protocols DEPENDS wayland-extra-protocols.hpp)

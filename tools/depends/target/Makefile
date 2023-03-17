@@ -81,8 +81,6 @@ ifeq ($(OS),android)
   LIBUUID = libuuid
 endif
 
-DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
-
 ZLIB=
 ifneq ($(HAS_ZLIB),1)
   DEPENDS += zlib
@@ -133,7 +131,16 @@ ifeq ($(OS),linux)
   else
     DEPENDS += mesa
   endif
+
+  ifeq ($(TARGET_PLATFORM),webos)
+    DEPENDS += webos-wayland-extensions
+    EXCLUDED_DEPENDS += dbus libcec linux-system-x11-libs pipewire
+
+    MESA_DEPS := $(filter-out $(EXCLUDED_DEPENDS),$(MESA_DEPS))
+  endif
 endif
+
+DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
 
 .PHONY: $(DEPENDS)
 

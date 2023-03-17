@@ -62,6 +62,15 @@ if(OPENGLES_FOUND)
   list(APPEND SOURCES WinSystemWaylandEGLContextGLES.cpp)
   list(APPEND HEADERS WinSystemWaylandEGLContextGLES.h)
 endif()
+if(TARGET_WEBOS)
+  set_source_files_properties(${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.cpp
+                              ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.hpp
+                              PROPERTIES GENERATED TRUE)
 
+  list(APPEND SOURCES ShellSurfaceWebOSShell.cpp
+                      ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.cpp)
+  list(APPEND HEADERS ShellSurfaceWebOSShell.h
+                      ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.hpp)
+endif()
 
 core_add_library(windowing_WAYLAND)

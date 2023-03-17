@@ -53,6 +53,10 @@
 # include "windowing/linux/OSScreenSaverFreedesktop.h"
 #endif
 
+#ifdef TARGET_WEBOS
+#include "ShellSurfaceWebOSShell.h"
+#endif
+
 using namespace KODI::WINDOWING;
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace std::placeholders;
@@ -302,6 +306,10 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   // Try with this resolution if compositor does not say otherwise
   UpdateSizeVariables({res.iWidth, res.iHeight}, m_scale, m_shellSurfaceState, false);
 
+#ifdef TARGET_WEBOS
+  m_shellSurface.reset(new CShellSurfaceWebOSShell(*this, *m_connection, m_surface, name,
+                                                   std::string(CCompileInfo::GetAppName())));
+#else
   // Use AppName as the desktop file name. This is required to lookup the app icon of the same name.
   m_shellSurface.reset(CShellSurfaceXdgShell::TryCreate(*this, *m_connection, m_surface, name,
                                                         std::string(CCompileInfo::GetAppName())));
@@ -316,6 +324,7 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
     m_shellSurface.reset(new CShellSurfaceWlShell(*this, *m_connection, m_surface, name,
                                                   std::string(CCompileInfo::GetAppName())));
   }
+#endif
 
   if (fullScreen)
   {
