@@ -1,0 +1,16 @@
+#!/bin/bash
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:@PREFIX@/lib
+export WAYLAND_DISPLAY=wayland-0
+if [[ -z "${GST_PLUGIN_SCANNER_1_0}" ]]; then
+  export GST_PLUGIN_SCANNER_1_0='@PREFIX@/libexec/gstreamer-1.0/gst-plugin-scanner'
+else
+  if [ ! -d "${GST_PLUGIN_SCANNER_1_0}" ]; then
+    export GST_PLUGIN_SCANNER_1_0='@PREFIX@/libexec/gstreamer-1.0/gst-plugin-scanner'
+  fi
+fi
+if [ ! -d @PREFIX@/share/X11 ]; then
+  mkdir -p @PREFIX@/share/X11;
+  ln -s /usr/share/X11/xkb @PREFIX@/share/X11
+fi
+./@MAIN_APP@

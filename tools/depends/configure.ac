@@ -129,7 +129,6 @@ AC_ARG_WITH([ffmpeg-options],
   [ffmpeg_options=$withval],
   [ffmpeg_options=default])
 
-
 if test "$use_ccache" = "yes"; then
   AC_CHECK_PROG(HAVE_CCACHE,ccache,"yes","no",)
   if test "x$HAVE_CCACHE" = "xno" ; then
@@ -363,6 +362,21 @@ case $host in
     #android builds are always cross
     cross_compiling="yes"
   ;;
+  arm-webos-linux-gnueabi|arm-starfish-linux-gnueabi)
+    meson_cpu="arm"
+    if test "x$use_cpu" = "xauto"; then
+      use_cpu="armeabi-v7a"
+    fi
+    use_toolchain="${use_toolchain:-/usr}"
+    platform_cflags="-fPIC -DPIC -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
+    platform_cxxflags="$platform_cflags -static-libstdc++"
+    optimize_flags="-Os"
+    platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
+    platform_os="linux"
+    meson_system="linux"
+    target_platform="webos"
+    app_rendersystem="gles"
+  ;;
   arm*-*-linux-gnu*|arm*-*-linux-uclibc*|aarch64*-*-linux-gnu*|aarch*-*-linux-be*)
     case $host in
       arm*-*-linux-gnu*|arm*-*-linux-uclibc*)
@@ -377,9 +391,9 @@ case $host in
     fi
     use_toolchain="${use_toolchain:-/usr}"
     platform_cflags="-fPIC -DPIC"
+    platform_cxxflags="$platform_cflags"
     optimize_flags="-Os"
     platform_ldflags="-Wl,-rpath-link=$prefix/$deps_dir/lib"
-    platform_cxxflags="$platform_cflags"
     platform_os="linux"
     meson_system="linux"
     target_platform="wayland gbm"
@@ -506,6 +520,8 @@ esac
 case $use_platform in
   ios|tvos|macos)
     ;;
+  webos)
+    ;;
   auto)
     ;;
   *)
@@ -524,7 +540,7 @@ case $build in
     fi
 esac
 
-if test "$platform_os" = "android"; then
+if test "$platform_os" = "android" || test "$target_platform" = "webos"; then
   need_libiconv=1
 else
   AC_SEARCH_LIBS([iconv_open],iconv, link_iconv=$ac_cv_search_iconv_open, link_iconv=-liconv; AC_MSG_WARN("No iconv support in toolchain. Will build libiconv."); need_libiconv=1)
@@ -850,6 +866,7 @@ echo -e "asflags:\t\t $platform_asflags"
 echo -e "cflags:\t\t $platform_cflags"
 echo -e "cxxflags:\t\t $platform_cxxflags"
 echo -e "ldflags:\t\t $platform_ldflags"
+echo -e "target_platform:\t $target_platform"
 echo -e "platform_includes:\t $platform_includes"
 echo -e "ffmpeg options:\t $ffmpeg_options"
 echo -e "prefix:\t\t $prefix"

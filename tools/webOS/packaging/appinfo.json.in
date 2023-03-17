@@ -1,0 +1,12 @@
+{
+  "id": "@APP_PACKAGE@",
+  "version": "@VERSION_CODE@",
+  "vendor": "@COMPANY_NAME@",
+  "type": "native",
+  "main": "kodi.sh",
+  "title": "@APP_NAME@",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "noSplashOnLaunch": true,
+  "spinnerOnLaunch": false
+}
