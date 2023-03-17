@@ -17,6 +17,9 @@ ifeq ($(CPU), x86_64)
   MESA_GALLIUM_DRIVERS=iris
 else ifeq ($(CPU), $(filter $(CPU), arm aarch64))
   MESA_GALLIUM_DRIVERS=kmsro,vc4,swrast,panfrost
+endif
+
+ifeq ($(RENDER_SYSTEM),gles)
   MESA_EXTRA=-Dplatforms=wayland
 endif
 
