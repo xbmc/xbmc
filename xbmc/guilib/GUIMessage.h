@@ -365,9 +365,15 @@ class CFileItemList;
 class CGUIMessage final
 {
 public:
-  CGUIMessage(int dwMsg, int senderID, int controlID, int param1 = 0, int param2 = 0);
-  CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, CFileItemList* item);
-  CGUIMessage(int msg, int senderID, int controlID, int param1, int param2, const CGUIListItemPtr &item);
+  CGUIMessage(int dwMsg, int senderID, int controlID, int64_t param1 = 0, int64_t param2 = 0);
+  CGUIMessage(
+      int msg, int senderID, int controlID, int64_t param1, int64_t param2, CFileItemList* item);
+  CGUIMessage(int msg,
+              int senderID,
+              int controlID,
+              int64_t param1,
+              int64_t param2,
+              const CGUIListItemPtr& item);
   CGUIMessage(const CGUIMessage& msg);
   ~CGUIMessage(void);
   CGUIMessage& operator = (const CGUIMessage& msg);
@@ -377,10 +383,12 @@ public:
   void* GetPointer() const;
   CGUIListItemPtr GetItem() const;
   int GetParam1() const;
+  int64_t GetParam1AsI64() const;
   int GetParam2() const;
+  int64_t GetParam2AsI64() const;
   int GetSenderId() const;
-  void SetParam1(int param1);
-  void SetParam2(int param2);
+  void SetParam1(int64_t param1);
+  void SetParam2(int64_t param2);
   void SetPointer(void* pointer);
   void SetLabel(const std::string& strLabel);
   void SetLabel(int iString);               // for convenience - looks up in strings.po
@@ -398,8 +406,8 @@ private:
   int m_controlID;
   int m_message;
   void* m_pointer;
-  int m_param1;
-  int m_param2;
+  int64_t m_param1;
+  int64_t m_param2;
   CGUIListItemPtr m_item;
 
   static std::string empty_string;
