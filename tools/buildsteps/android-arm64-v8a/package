@@ -2,11 +2,7 @@ WORKSPACE=${WORKSPACE:-$( cd $(dirname $0)/../../.. ; pwd -P )}
 XBMC_PLATFORM_DIR=android
 . $WORKSPACE/tools/buildsteps/defaultenv
 
-if [ "x$BUILD_OBB" == "xtrue" ]; then
-  TARGET=apk-obb
-else
-  TARGET=apk
-fi
+TARGET=apk
 
 cd $WORKSPACE/build;make -j$BUILDTHREADS $TARGET
 
@@ -16,7 +12,3 @@ cd $WORKSPACE
 #e.x. xbmc-20130314-8c2fb31-Frodo-arm64-v8a.apk
 UPLOAD_FILENAME="kodi-$(getBuildRevDateStr)-arm64-v8a"
 mv kodiapp-arm64-v8a-*.apk $UPLOAD_FILENAME.apk
-if [ -f *.obb ]
-then
-  mv *.obb $UPLOAD_FILENAME.obb
-fi
