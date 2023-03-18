@@ -15,6 +15,7 @@
     </assets>
     <summary lang="be_BY">Кадавальнік AAC Audio</summary>
     <summary lang="bs_BA">AAC Audio Enkoder</summary>
+    <summary lang="ca_ES">Codificador d&apos;àudio AAC</summary>
     <summary lang="cs_CZ">Enkodér zvuku AAC</summary>
     <summary lang="da_DK">AAC Lydindkoder</summary>
     <summary lang="de_DE">AAC Audioencoder</summary>
@@ -47,6 +48,7 @@
     <summary lang="zh_CN">AAC 音频编码器</summary>
     <description lang="be_BY">AAC - набор кодакаў, распрацаваны для забеспячэння сціскання, лепшага за MP3, і ёсць палепшанымі версіямі аўдыё MPEG.</description>
     <description lang="bs_BA">AAC je skupina kodeka dizajnirana da pruži bolje sabijanje od MP3-a, te su poboljšane verzije MPEG audia.</description>
+    <description lang="ca_ES">AAC és un conjunt de còdecs dissenyats per proporcionar una millor compressió que els MP3 i són versions millorades de l&apos;àudio MPEG.</description>
     <description lang="cs_CZ">AAC je sada kodeků navržených pro lepší kompresi než MP3 a obsahují zlepšení oproti zvuku MPEG.</description>
     <description lang="da_DK">AAC er et sæt codecs designet til at give bedre komprimering end MP3&apos;er og er forbedrede versioner af MPEG-lyd.</description>
     <description lang="de_DE">AAC ist eine Sammlung von Codecs mit einer besseren Komprimierung als MP3. Sie sind verbesserte Versionen von MPEG-Audio.</description>
