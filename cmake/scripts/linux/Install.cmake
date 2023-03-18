@@ -328,6 +328,6 @@ if(CPACK_GENERATOR)
   endif()
 endif()
 
-if(CORE_PLATFORM_NAME STREQUAL webos)
+if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
   include(${CMAKE_SOURCE_DIR}/cmake/scripts/webos/Install.cmake)
 endif()

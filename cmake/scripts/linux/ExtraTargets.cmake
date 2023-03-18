@@ -28,7 +28,7 @@ if("wayland" IN_LIST CORE_PLATFORM_NAME_LC)
                      DEPENDS "${WAYLANDPP_SCANNER}" ${PROTOCOL_XMLS}
                      COMMENT "Generating wayland-protocols C++ wrappers")
 
-  if(CORE_PLATFORM_NAME STREQUAL webos)
+  if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
     include(${CMAKE_SOURCE_DIR}/cmake/scripts/webos/ExtraTargets.cmake)
   endif()
 
