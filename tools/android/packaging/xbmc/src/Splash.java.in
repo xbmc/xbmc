@@ -16,7 +16,6 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -243,15 +244,31 @@ public class Splash extends Activity
 
   private StateMachine mStateMachine = new StateMachine(this);
 
-  private class FillCache extends AsyncTask<Void, Integer, Integer>
+  private class FillCache
   {
-
     private Splash mSplash = null;
     private int mProgressStatus = 0;
+    private ExecutorService executor;
+    private Handler handler;
 
     public FillCache(Splash splash)
     {
-      this.mSplash = splash;
+      mSplash = splash;
+      executor = Executors.newSingleThreadExecutor();
+      handler = new Handler(Looper.getMainLooper());
+    }
+
+    public void execute()
+    {
+      executor.execute(() -> {
+        Integer result = doInBackground();
+        handler.post(() -> onPostExecute(result));
+      });
+    }
+
+    protected void publishProgress(Integer value)
+    {
+      handler.post(() -> onProgressUpdate(value));
     }
 
     void DeleteRecursive(File fileOrDirectory)
@@ -263,8 +280,7 @@ public class Splash extends Activity
       fileOrDirectory.delete();
     }
 
-    @Override
-    protected Integer doInBackground(Void... param)
+    protected Integer doInBackground()
     {
       if (fXbmcHome.exists())
       {
@@ -363,15 +379,14 @@ public class Splash extends Activity
       return 0;
     }
 
-    @Override
-    protected void onProgressUpdate(Integer... values)
+    protected void onProgressUpdate(Integer value)
     {
       switch (mState)
       {
         case Caching:
           mSplash.mTextView.setText("Preparing for first run. Please wait...");
           mSplash.mProgress.setVisibility(View.VISIBLE);
-          mSplash.mProgress.setProgress(values[0]);
+          mSplash.mProgress.setProgress(value);
           break;
         case CachingDone:
           mSplash.mProgress.setVisibility(View.INVISIBLE);
@@ -379,10 +394,8 @@ public class Splash extends Activity
       }
     }
 
-    @Override
     protected void onPostExecute(Integer result)
     {
-      super.onPostExecute(result);
       if (result < 0)
       {
         mState = InError;
