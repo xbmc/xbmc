@@ -356,7 +356,7 @@ void CPVRTimerInfoTag::Serialize(CVariant& value) const
   value["recordinggroup"] = m_iRecordingGroup;
   value["maxrecordings"] = m_iMaxRecordings;
   value["epguid"] = m_iEpgUid;
-  value["broadcastid"] = m_epgTag ? m_epgTag->DatabaseID() : -1;
+  value["broadcastid"] = m_epgTag ? (*m_epgTag)->DatabaseID() : -1;
   value["serieslink"] = m_strSeriesLink;
 
   value["clientid"] = m_iClientId;
@@ -643,7 +643,6 @@ bool CPVRTimerInfoTag::UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
   m_epgTag = tag->m_epgTag;
   m_strSummary = tag->m_strSummary;
   m_channel = tag->m_channel;
-  m_bProbedEpgTag = tag->m_bProbedEpgTag;
 
   m_iTVChildTimersActive = tag->m_iTVChildTimersActive;
   m_iTVChildTimersConflictNOK = tag->m_iTVChildTimersConflictNOK;
@@ -1282,20 +1281,18 @@ void CPVRTimerInfoTag::SetEpgInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   m_epgTag = tag;
-  m_bProbedEpgTag = true;
 }
 
 void CPVRTimerInfoTag::UpdateEpgInfoTag()
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   m_epgTag.reset();
-  m_bProbedEpgTag = false;
   GetEpgInfoTag();
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
 {
-  if (!m_epgTag && !m_bProbedEpgTag && bCreate)
+  if (!m_epgTag.has_value() && bCreate)
   {
     std::shared_ptr<CPVRChannel> channel(m_channel);
     if (!channel)
@@ -1336,14 +1333,18 @@ std::shared_ptr<CPVREpgInfoTag> CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* 
             m_epgTag = epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0),
                                           EndAsUTC() + CDateTimeSpan(0, 0, 2, 0), true);
             if (m_epgTag)
-              m_iEpgUid = m_epgTag->UniqueBroadcastID();
+              m_iEpgUid = (*m_epgTag)->UniqueBroadcastID();
           }
         }
       }
     }
-    m_bProbedEpgTag = true;
+    if (!m_epgTag)
+    {
+      // not an error; the tag might just be to old and is no longer available in cache/at client
+      m_epgTag = nullptr; // enforce has_value().
+    }
   }
-  return m_epgTag;
+  return *m_epgTag;
 }
 
 bool CPVRTimerInfoTag::HasChannel() const

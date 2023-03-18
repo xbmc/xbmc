@@ -14,6 +14,7 @@
 #include "utils/ISerializable.h"
 
 #include <memory>
+#include <optional>
 #include <string>
 
 struct PVR_TIMER;
@@ -636,9 +637,8 @@ private:
   unsigned int m_iRadioChildTimersRecording = 0;
   unsigned int m_iRadioChildTimersErrors = 0;
 
-  mutable std::shared_ptr<CPVREpgInfoTag> m_epgTag; /*!< epg info tag matching m_iEpgUid. */
+  mutable std::optional<std::shared_ptr<CPVREpgInfoTag>>
+      m_epgTag; /*!< epg info tag matching m_iEpgUid. */
   mutable std::shared_ptr<CPVRChannel> m_channel;
-
-  mutable bool m_bProbedEpgTag = false;
 };
 } // namespace PVR
