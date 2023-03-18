@@ -145,12 +145,6 @@ namespace PVR
     std::shared_ptr<CPVRChannelGroupMember> GetLastPlayedChannelGroupMember() const;
 
     /*!
-     * @brief Create EPG tags for channels in all internal channel groups.
-     * @return True if EPG tags were created successfully.
-     */
-    bool CreateChannelEpgs();
-
-    /*!
      * @brief Erase stale texture db entries and image files.
      * @return number of cleaned up images.
      */

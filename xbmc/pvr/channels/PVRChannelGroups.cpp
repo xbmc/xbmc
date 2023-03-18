@@ -699,20 +699,6 @@ bool CPVRChannelGroups::HideGroup(const std::shared_ptr<CPVRChannelGroup>& group
   return bReturn;
 }
 
-bool CPVRChannelGroups::CreateChannelEpgs()
-{
-  bool bReturn(false);
-
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  for (const auto& group : m_groups)
-  {
-    /* Only create EPGs for the internal groups */
-    if (group->IsInternalGroup())
-      bReturn = group->CreateChannelEpgs();
-  }
-  return bReturn;
-}
-
 int CPVRChannelGroups::CleanupCachedImages()
 {
   int iCleanedImages = 0;
