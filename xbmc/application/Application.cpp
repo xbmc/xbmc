@@ -908,8 +908,6 @@ void CApplication::Render()
     {
       hasRendered |= CServiceBroker::GetGUI()->GetWindowManager().Render();
     }
-    // execute post rendering actions (finalize window closing)
-    CServiceBroker::GetGUI()->GetWindowManager().AfterRender();
 
     m_lastRenderTime = std::chrono::steady_clock::now();
   }
@@ -933,6 +931,9 @@ void CApplication::Render()
 
   CServiceBroker::GetWinSystem()->GetGfxContext().Flip(hasRendered,
                                                        appPlayer->IsRenderingVideoLayer());
+
+  if (appPower->GetRenderGUI() && !m_skipGuiRender)
+    CServiceBroker::GetGUI()->GetWindowManager().AfterRender();
 
   CTimeUtils::UpdateFrameTime(hasRendered);
 }

@@ -1297,6 +1297,13 @@ bool CGUIWindowManager::Render()
       hasRendered = true;
     }
   }
+  else if (CServiceBroker::GetWinSystem()->HasDamagedRegionSupport() &&
+           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiHardwareDirtyRegions)
+  {
+    CServiceBroker::GetWinSystem()->SetDamagedRegions(dirtyRegions);
+    RenderPass();
+    hasRendered = true;
+  }
   else
   {
     for (const auto& i : dirtyRegions)

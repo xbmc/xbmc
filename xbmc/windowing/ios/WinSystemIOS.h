@@ -64,6 +64,8 @@ public:
 
   std::vector<std::string> GetConnectedOutputs() override;
 
+  int32_t GetBufferAge() override { return 3; }
+
   bool InitDisplayLink(CVideoSyncIos *syncImpl);
   void DeinitDisplayLink(void);
   void OnAppFocusChange(bool focus);

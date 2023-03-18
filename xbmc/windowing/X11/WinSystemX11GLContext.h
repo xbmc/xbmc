@@ -10,9 +10,11 @@
 
 #include "WinSystemX11.h"
 #include "rendering/gl/RenderSystemGL.h"
-#include "system_egl.h"
+#include "windowing/X11/GLContext.h"
 
 #include <memory>
+
+#include "system_egl.h"
 
 class CGLContext;
 
@@ -44,6 +46,8 @@ public:
   bool DestroyWindow() override;
 
   bool IsExtSupported(const char* extension) const override;
+
+  int32_t GetBufferAge() override { return m_pGLContext->GetBufferAge(); }
 
   // videosync
   std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
