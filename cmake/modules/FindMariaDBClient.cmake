@@ -22,7 +22,7 @@ else()
 endif()
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_MARIADBCLIENT mariadb QUIET)
+  pkg_search_module(PC_MARIADBCLIENT libmariadb mariadb QUIET)
 endif()
 
 
@@ -58,7 +58,7 @@ if(MARIADBCLIENT_FOUND)
   set(MARIADBCLIENT_INCLUDE_DIRS ${MARIADBCLIENT_INCLUDE_DIR})
   set(MARIADBCLIENT_DEFINITIONS -DHAS_MARIADB=1)
 
-  if(CORE_SYSTEM_NAME STREQUAL osx)
+  if(CORE_SYSTEM_NAME STREQUAL osx OR CORE_PLATFORM_NAME STREQUAL webos)
     list(APPEND DEPLIBS "-lgssapi_krb5")
   endif()
 

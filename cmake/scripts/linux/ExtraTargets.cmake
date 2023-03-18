@@ -22,10 +22,15 @@ if("wayland" IN_LIST CORE_PLATFORM_NAME_LC)
                     "${WAYLANDPP_PROTOCOLS_DIR}/xdg-shell.xml"
                     "${WAYLAND_PROTOCOLS_DIR}/unstable/xdg-shell/xdg-shell-unstable-v6.xml"
                     "${WAYLAND_PROTOCOLS_DIR}/unstable/idle-inhibit/idle-inhibit-unstable-v1.xml")
+
   add_custom_command(OUTPUT "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.cpp"
                      COMMAND "${WAYLANDPP_SCANNER}" ${PROTOCOL_XMLS} "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.hpp" "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-extra-protocols.cpp"
                      DEPENDS "${WAYLANDPP_SCANNER}" ${PROTOCOL_XMLS}
                      COMMENT "Generating wayland-protocols C++ wrappers")
+
+  if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
+    include(${CMAKE_SOURCE_DIR}/cmake/scripts/webos/ExtraTargets.cmake)
+  endif()
 
   # Dummy target for dependencies
   add_custom_target(generate-wayland-extra-protocols DEPENDS wayland-extra-protocols.hpp)

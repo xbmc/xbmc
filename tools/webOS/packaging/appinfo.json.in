@@ -1,0 +1,12 @@
+{
+  "id": "@APP_PACKAGE@",
+  "version": "@APP_VERSION_CODE@",
+  "vendor": "@COMPANY_NAME@",
+  "type": "native",
+  "main": "@APP_BINARY@",
+  "title": "@APP_NAME@",
+  "icon": "icon.png",
+  "largeIcon": "largeIcon.png",
+  "splashBackground": "media/splash.jpg",
+  "spinnerOnLaunch": false
+}

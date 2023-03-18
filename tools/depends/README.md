@@ -50,6 +50,9 @@ Paths below are examples. If you want to build Kodi, follow our **[build guides]
 **ARM (codesourcery/lenaro/etc)**
 `./configure --with-toolchain=/opt/toolchains/my-example-toolchain/ --prefix=/opt/xbmc-deps --host=arm-linux-gnueabi --with-rendersystem=gles`
 
+**webos (buildroot-nc4)**
+`./configure --with-toolchain=/opt/toolchains/arm-webos-linux-gnueabi_sdk-buildroot --prefix=/opt/xbmc-deps --host=arm-webos-linux-gnueabi`
+
 **Native**
 `./configure --with-toolchain=/usr --prefix=/opt/xbmc-deps --host=x86_64-linux-gnu --with-rendersystem=gl`
 

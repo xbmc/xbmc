@@ -36,6 +36,10 @@ ifeq ($(OS),osx)
   endif
 endif
 
+ifeq ($(TARGET_PLATFORM),webos)
+  WINDOWSYSTEM=-DCORE_PLATFORM_NAME=webos
+endif
+
 ifeq ($(BUILD_DIR),)
   BUILD_DIR=$(CMAKE_SOURCE_DIR)/build
 endif

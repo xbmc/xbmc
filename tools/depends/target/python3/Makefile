@@ -32,6 +32,10 @@ endif
 
 ifeq ($(OS), linux)
   EXTRA_CONFIGURE=ac_cv_pthread=yes
+  ifeq ($(TARGET_PLATFORM),webos)
+    LDFLAGS+= -liconv
+  endif
+
 endif
 
 # configuration settings
