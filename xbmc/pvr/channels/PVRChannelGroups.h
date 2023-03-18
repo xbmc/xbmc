@@ -194,12 +194,6 @@ public:
   bool HideGroup(const std::shared_ptr<CPVRChannelGroup>& group, bool bHide);
 
   /*!
-   * @brief Create EPG tags for all channels of the internal group.
-   * @return True if EPG tags where created successfully, false if not.
-   */
-  bool CreateChannelEpgs();
-
-  /*!
    * @brief Persist all changes in channel groups.
    * @return True if everything was persisted, false otherwise.
    */

@@ -43,25 +43,18 @@ public:
   CEpgUpdateRequest() : CEpgUpdateRequest(-1, PVR_CHANNEL_INVALID_UID) {}
   CEpgUpdateRequest(int iClientID, int iUniqueChannelID) : m_iClientID(iClientID), m_iUniqueChannelID(iUniqueChannelID) {}
 
-  void Deliver();
+  void Deliver(const std::shared_ptr<CPVREpg>& epg);
+
+  int GetClientID() const { return m_iClientID; }
+  int GetUniqueChannelID() const { return m_iUniqueChannelID; }
 
 private:
   int m_iClientID;
   int m_iUniqueChannelID;
 };
 
-void CEpgUpdateRequest::Deliver()
+void CEpgUpdateRequest::Deliver(const std::shared_ptr<CPVREpg>& epg)
 {
-  const std::shared_ptr<CPVREpg> epg = CServiceBroker::GetPVRManager().EpgContainer().GetByChannelUid(m_iClientID, m_iUniqueChannelID);
-  if (!epg)
-  {
-    CLog::LogF(LOGERROR,
-               "Unable to obtain EPG for client {} and channel {}! Unable to deliver the epg "
-               "update request!",
-               m_iClientID, m_iUniqueChannelID);
-    return;
-  }
-
   epg->ForceUpdate();
 }
 
@@ -71,27 +64,17 @@ public:
   CEpgTagStateChange() = default;
   CEpgTagStateChange(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE eNewState) : m_epgtag(tag), m_state(eNewState) {}
 
-  void Deliver();
+  void Deliver(const std::shared_ptr<CPVREpg>& epg);
+
+  std::shared_ptr<CPVREpgInfoTag> GetTag() const { return m_epgtag; }
 
 private:
   std::shared_ptr<CPVREpgInfoTag> m_epgtag;
   EPG_EVENT_STATE m_state = EPG_EVENT_CREATED;
 };
 
-void CEpgTagStateChange::Deliver()
+void CEpgTagStateChange::Deliver(const std::shared_ptr<CPVREpg>& epg)
 {
-  const CPVREpgContainer& epgContainer = CServiceBroker::GetPVRManager().EpgContainer();
-
-  const std::shared_ptr<CPVREpg> epg = epgContainer.GetByChannelUid(m_epgtag->ClientID(), m_epgtag->UniqueChannelID());
-  if (!epg)
-  {
-    CLog::LogF(LOGERROR,
-               "Unable to obtain EPG for client {} and channel {}! Unable to deliver state change "
-               "for tag '{}'!",
-               m_epgtag->ClientID(), m_epgtag->UniqueChannelID(), m_epgtag->UniqueBroadcastID());
-    return;
-  }
-
   if (m_epgtag->EpgID() < 0)
   {
     // now that we have the epg instance, fully initialize the tag
@@ -169,9 +152,6 @@ void CPVREpgContainer::Stop()
 
 bool CPVREpgContainer::Load()
 {
-  // EPGs must be loaded via PVR Manager -> channel groups -> EPG container to associate the
-  // channels with the right EPG.
-  CServiceBroker::GetPVRManager().TriggerEpgsCreate();
   return true;
 }
 
@@ -343,7 +323,7 @@ void CPVREpgContainer::Process()
     }
 
     /* update the EPG */
-    if (!InterruptUpdate() && bUpdateEpg && CServiceBroker::GetPVRManager().EpgsCreated() && UpdateEPG())
+    if (!InterruptUpdate() && bUpdateEpg && UpdateEPG())
       m_bIsInitialising = false;
 
     /* clean up old entries */
@@ -358,6 +338,7 @@ void CPVREpgContainer::Process()
     while (!m_bStop && !m_bSuspended)
     {
       CEpgUpdateRequest request;
+      std::shared_ptr<CPVREpg> epg;
       {
         std::unique_lock<CCriticalSection> lock(m_updateRequestsLock);
         if (m_updateRequests.empty())
@@ -365,16 +346,23 @@ void CPVREpgContainer::Process()
 
         request = m_updateRequests.front();
         m_updateRequests.pop_front();
+
+        epg = GetByChannelUid(request.GetClientID(), request.GetUniqueChannelID());
+        if (!epg)
+        {
+          // try later; channel might not have been loaded yet
+          m_updateRequests.emplace_back(request);
+          break;
+        }
       }
 
       // do the update
-      request.Deliver();
+      request.Deliver(epg);
     }
 
     /* check for pending EPG tag changes */
 
-    // during Kodi startup, addons may push updates very early, even before EPGs are ready to use.
-    if (!m_bStop && !m_bSuspended && CServiceBroker::GetPVRManager().EpgsCreated())
+    if (!m_bStop && !m_bSuspended)
     {
       unsigned int iProcessed = 0;
       XbmcThreads::EndTime<> processTimeslice(
@@ -383,6 +371,7 @@ void CPVREpgContainer::Process()
       while (!InterruptUpdate())
       {
         CEpgTagStateChange change;
+        std::shared_ptr<CPVREpg> epg;
         {
           std::unique_lock<CCriticalSection> lock(m_epgTagChangesLock);
           if (processTimeslice.IsTimePast() || m_epgTagChanges.empty())
@@ -395,12 +384,20 @@ void CPVREpgContainer::Process()
 
           change = m_epgTagChanges.front();
           m_epgTagChanges.pop_front();
+
+          epg = GetByChannelUid(change.GetTag()->ClientID(), change.GetTag()->UniqueChannelID());
+          if (!epg)
+          {
+            // try later; channel might not have been loaded yet
+            m_epgTagChanges.emplace_back(change);
+            continue;
+          }
         }
 
         iProcessed++;
 
         // deliver the updated tag to the respective epg
-        change.Deliver();
+        change.Deliver(epg);
       }
     }
 
