@@ -341,8 +341,6 @@ void CPVRManager::Clear()
   m_channelGroups.reset();
   m_parentalTimer.reset();
   m_database.reset();
-
-  m_bEpgsCreated = false;
 }
 
 void CPVRManager::ResetProperties()
@@ -658,7 +656,6 @@ void CPVRManager::OnWake()
   TriggerProvidersUpdate();
   TriggerChannelsUpdate();
   TriggerRecordingsUpdate();
-  TriggerEpgsCreate();
   TriggerTimersUpdate();
 }
 
@@ -866,17 +863,6 @@ void CPVRManager::LocalizationChanged()
   }
 }
 
-bool CPVRManager::EpgsCreated() const
-{
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_bEpgsCreated;
-}
-
-void CPVRManager::TriggerEpgsCreate()
-{
-  m_pendingUpdates->Append("pvr-create-epgs", [this]() { return CreateChannelEpgs(); });
-}
-
 void CPVRManager::TriggerRecordingsSizeInProgressUpdate()
 {
   m_pendingUpdates->Append("pvr-update-recordings-size",
@@ -1017,16 +1003,4 @@ void CPVRManager::ConnectionStateChange(CPVRClient* client,
     Clients()->ConnectionStateChange(client, connectString, state, message);
     return true;
   });
-}
-
-bool CPVRManager::CreateChannelEpgs()
-{
-  if (EpgsCreated())
-    return true;
-
-  bool bEpgsCreated = m_channelGroups->CreateChannelEpgs();
-
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_bEpgsCreated = bEpgsCreated;
-  return m_bEpgsCreated;
 }

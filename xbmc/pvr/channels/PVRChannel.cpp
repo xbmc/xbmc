@@ -164,6 +164,9 @@ bool CPVRChannel::CreateEPG()
         m_iEpgId, m_strEPGScraper, std::make_shared<CPVREpgChannelData>(*this));
     if (m_epg)
     {
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Created EPG for {} channel '{}'", IsRadio() ? "radio" : "TV",
+                  m_strChannelName);
+
       if (m_epg->EpgID() != m_iEpgId)
       {
         m_iEpgId = m_epg->EpgID();

@@ -154,13 +154,6 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroupsContainer::
   return channelTV;
 }
 
-bool CPVRChannelGroupsContainer::CreateChannelEpgs()
-{
-  bool bReturn = m_groupsTV->CreateChannelEpgs();
-  bReturn &= m_groupsRadio->CreateChannelEpgs();
-  return bReturn;
-}
-
 int CPVRChannelGroupsContainer::CleanupCachedImages()
 {
   return m_groupsTV->CleanupCachedImages() + m_groupsRadio->CleanupCachedImages();

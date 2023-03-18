@@ -15,8 +15,6 @@
 
 namespace PVR
 {
-enum class PVREvent;
-
 class CPVRChannel;
 class CPVRChannelNumber;
 
@@ -65,13 +63,6 @@ public:
    */
   void CheckGroupName();
 
-  /*!
-   * @brief Create an EPG table for each channel.
-   * @brief bForce Create the tables, even if they already have been created before.
-   * @return True if all tables were created successfully, false otherwise.
-   */
-  bool CreateChannelEpgs(bool bForce = false) override;
-
 protected:
   /*!
    * @brief Remove deleted group members from this group. Delete stale channels.
@@ -108,10 +99,5 @@ protected:
   void UpdateChannelPaths();
 
   size_t m_iHiddenChannels; /*!< the amount of hidden channels in this container */
-
-private:
-  void OnPVRManagerEvent(const PVREvent& event);
-
-  bool m_isSubscribed{false};
 };
 } // namespace PVR

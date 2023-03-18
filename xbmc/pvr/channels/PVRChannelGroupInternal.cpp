@@ -44,8 +44,6 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelsPath& path)
 
 CPVRChannelGroupInternal::~CPVRChannelGroupInternal()
 {
-  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
-  m_isSubscribed = false;
 }
 
 bool CPVRChannelGroupInternal::LoadFromDatabase(
@@ -56,25 +54,10 @@ bool CPVRChannelGroupInternal::LoadFromDatabase(
   {
     for (const auto& groupMember : m_members)
     {
-      const std::shared_ptr<CPVRChannel> channel = groupMember.second->Channel();
-
-      // create the EPG for the channel
-      if (channel->CreateEPG())
-      {
-        CLog::LogFC(LOGDEBUG, LOGPVR, "Created EPG for {} channel '{}'", IsRadio() ? "radio" : "TV",
-                    channel->ChannelName());
-      }
+      groupMember.second->Channel()->CreateEPG();
     }
 
     UpdateChannelPaths();
-
-    if (!m_isSubscribed)
-    {
-      CServiceBroker::GetPVRManager().Events().Subscribe(
-          this, &CPVRChannelGroupInternal::OnPVRManagerEvent);
-      m_isSubscribed = true;
-    }
-
     return true;
   }
 
@@ -84,7 +67,6 @@ bool CPVRChannelGroupInternal::LoadFromDatabase(
 
 void CPVRChannelGroupInternal::Unload()
 {
-  CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
   CPVRChannelGroup::Unload();
 }
 
@@ -232,24 +214,4 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel
 bool CPVRChannelGroupInternal::IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const
 {
   return !channel->IsHidden();
-}
-
-bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
-{
-  if (!CServiceBroker::GetPVRManager().EpgContainer().IsStarted())
-    return false;
-
-  {
-    std::unique_lock<CCriticalSection> lock(m_critSection);
-    for (auto& groupMemberPair : m_members)
-      groupMemberPair.second->Channel()->CreateEPG();
-  }
-
-  return Persist();
-}
-
-void CPVRChannelGroupInternal::OnPVRManagerEvent(const PVR::PVREvent& event)
-{
-  if (event == PVREvent::ManagerStarted)
-    CServiceBroker::GetPVRManager().TriggerEpgsCreate();
 }

@@ -1295,7 +1295,7 @@ void CPVRTimerInfoTag::UpdateEpgInfoTag()
 
 std::shared_ptr<CPVREpgInfoTag> CPVRTimerInfoTag::GetEpgInfoTag(bool bCreate /* = true */) const
 {
-  if (!m_epgTag && !m_bProbedEpgTag && bCreate && CServiceBroker::GetPVRManager().EpgsCreated())
+  if (!m_epgTag && !m_bProbedEpgTag && bCreate)
   {
     std::shared_ptr<CPVRChannel> channel(m_channel);
     if (!channel)
