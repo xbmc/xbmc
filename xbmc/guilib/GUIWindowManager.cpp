@@ -1297,15 +1297,12 @@ bool CGUIWindowManager::Render()
       hasRendered = true;
     }
   }
-  else if (CServiceBroker::GetWinSystem()->HasDamagedRegionSupport() &&
-           CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiHardwareDirtyRegions)
-  {
-    CServiceBroker::GetWinSystem()->SetDamagedRegions(dirtyRegions);
-    RenderPass();
-    hasRendered = true;
-  }
   else
   {
+    if (CServiceBroker::GetWinSystem()->HasDamagedRegionSupport() &&
+        CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiHardwareDirtyRegions)
+      CServiceBroker::GetWinSystem()->SetDamagedRegions(dirtyRegions);
+
     for (const auto& i : dirtyRegions)
     {
       if (i.IsEmpty())
