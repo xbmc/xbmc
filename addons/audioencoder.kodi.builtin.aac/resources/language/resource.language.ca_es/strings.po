@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-08-21 08:21+0000\n"
+"PO-Revision-Date: 2023-03-18 11:34+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Catalan (Spain) <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-aac/ca_es/>\n"
 "Language: ca_es\n"
@@ -15,15 +15,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7.2\n"
+"X-Generator: Weblate 4.15.2\n"
 
 msgctxt "Addon Summary"
 msgid "AAC Audio Encoder"
-msgstr ""
+msgstr "Codificador d'àudio AAC"
 
 msgctxt "Addon Description"
 msgid "AAC is a set of codecs designed to provide better compression than MP3s, and are improved versions of MPEG audio."
-msgstr ""
+msgstr "AAC és un conjunt de còdecs dissenyats per proporcionar una millor compressió que els MP3 i són versions millorades de l'àudio MPEG."
 
 #. Bitrate to use on for compression
 #: resources/settings.xml
@@ -35,10 +35,10 @@ msgstr "Taxa de bits"
 #: resources/settings.xml
 msgctxt "#30001"
 msgid "Select which bitrate to use for the AAC audio encoder for audio compression."
-msgstr ""
+msgstr "Selecciona quina taxa de bits utilitzar per al codificador d'àudio AAC per a la compressió d'àudio."
 
 #. Value format for with bitrate edited field
 #: resources/settings.xml
 msgctxt "#30002"
 msgid "{0:d} kbps"
-msgstr ""
+msgstr "{0:d} kbps"
