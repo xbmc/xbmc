@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-06-08 13:40+0000\n"
+"PO-Revision-Date: 2023-03-18 11:34+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Slovak <https://kodi.weblate.cloud/projects/kodi-core/audioencoder-kodi-builtin-wma/sk_sk/>\n"
 "Language: sk_sk\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.12.2\n"
+"X-Generator: Weblate 4.15.2\n"
 
 msgctxt "Addon Summary"
 msgid "WMA Audio Encoder"
@@ -35,7 +35,7 @@ msgstr "Dátový tok"
 #: resources/settings.xml
 msgctxt "#30001"
 msgid "Select which bitrate to use for the WMA audio encoder for audio compression."
-msgstr "Vyberte bitovú rýchlosť, ktorú má použiť audio kodér WMA na kompresiu zvuku."
+msgstr "Vyberte dátový tok, ktorý má použiť audio kodér WMA na kompresiu zvuku."
 
 #. Value format for with bitrate edited field
 #: resources/settings.xml

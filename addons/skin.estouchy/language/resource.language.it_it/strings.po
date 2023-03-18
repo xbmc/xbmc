@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-02-23 19:23+0000\n"
-"Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
+"PO-Revision-Date: 2023-03-18 11:34+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/it_it/>\n"
 "Language: it_it\n"
 "MIME-Version: 1.0\n"
@@ -43,7 +43,7 @@ msgstr "Opzioni visualizzazione"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Preset visualizzazione"
+msgstr "Preimpostazioni visualizzazione"
 
 msgctxt "#31007"
 msgid "Context Menu"
@@ -55,7 +55,7 @@ msgstr "Caricamento..."
 
 msgctxt "#31011"
 msgid "Recent"
-msgstr "Recente"
+msgstr "Recenti"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -196,7 +196,7 @@ msgstr "Ultimo aggiornamento"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "Fornitore dei dati"
+msgstr "Fornitore dati"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
@@ -268,7 +268,7 @@ msgstr "Mostra informazioni sul sistema · Statistiche hardware · Controlla dis
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Seleziona il tuo profilo utente Kodi[CR]per fare il login e continuare"
+msgstr "Seleziona il tuo profilo utente Kodi[CR]per accedere e continuare"
 
 msgctxt "#31548"
 msgid "Home menu"
