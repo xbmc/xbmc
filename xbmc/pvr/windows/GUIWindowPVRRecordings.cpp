@@ -29,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoUtils.h"
+#include "video/windows/GUIWindowVideoBase.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include <memory>
@@ -385,7 +386,7 @@ void CGUIWindowPVRRecordingsBase::OnPrepareFileItems(CFileItemList& items)
   {
     if (m_database.Open())
     {
-      CGUIWindowVideoNav::LoadVideoInfo(files, m_database, false);
+      CGUIWindowVideoBase::LoadVideoInfo(files, m_database, false);
       m_database.Close();
     }
     m_thumbLoader.Load(files);
