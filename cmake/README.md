@@ -8,11 +8,12 @@ Welcome to Kodi's CMake Based Build System. CMake is a cross-platform tool for g
 * macOS, iOS and tvOS
 * Android
 * FreeBSD
+* webOS
 
 While the legacy build systems typically used in-source builds, it's recommended to use out-of-source builds with CMake. The necessary runtime dependencies such as dlls, skins and configuration files are copied over to the build directory automatically. Instructions are highly dependent on your operating system and target platform but we prepared a set of **[build guides](../docs/README.md)** for your convenience.
 
 ## Build options
-Kodi supports a number of build options that can enable or disable functionality. These options must be set when running CMake with `-DENABLE_<OPTION>=<ON|OFF|AUTO`. The default is `AUTO` which enables the option if a certain dependency is found. For example CEC support is enabled if `libCEC` is available. `ON` forcefully enables the dependency and the CMake run will **fail** if the related dependency is not available. `OFF` will disable the feature.
+Kodi supports a number of build options that can enable or disable functionality. These options must be set when running CMake with `-DENABLE_<OPTION>=<ON|OFF|AUTO>`. The default is `AUTO` which enables the option if a certain dependency is found. For example CEC support is enabled if `libCEC` is available. `ON` forcefully enables the dependency and the CMake run will **fail** if the related dependency is not available. `OFF` will disable the feature.
 
 Example for forcefully enabling VAAPI and disabling VDPAU:
 ```
@@ -32,14 +33,14 @@ To trigger the cmake-based buildsystem the following command must be executed wi
 
 `cmake <path> -G <generator>`
 
-CMake supports multiple generators. See [here] (https://cmake.org/cmake/help/v3.1/manual/cmake-generators.7.html) for a list.
+CMake supports multiple generators. See [here](https://cmake.org/cmake/help/v3.1/manual/cmake-generators.7.html) for a list.
 
 In case of additional options the call might look like this:
 
 cmake `<path>` [-G `<generator>`] \  
       -DCMAKE_BUILD_TYPE=Release \  
       -DARCH_DEFINES="-DTARGET_LINUX" \  
-      -DCMAKE_INSTALL_PREFIX="`<path-to-install-directory`"
+      -DCMAKE_INSTALL_PREFIX="`<path-to-install-directory>`"
 
 ## Tests
 Kodi uses Google Test as its testing framework. Each test file is scanned for tests and these are added to CTest, which is the native test driver for CMake.
@@ -86,7 +87,7 @@ Both methods work only for already existing add-ons. See this **[forum thread](h
 for add-on development and detailed documentation about the add-on build system.
 
 ## Sanitizers
-Clang and GCC support different kinds of sanitizers. To enable a sanitizer, call CMake with the option `-DECM_ENABLE_SANITIZERS=’san1;san2;...'`. For more information about enabling the
+Clang and GCC support different kinds of sanitizers. To enable a sanitizer, call CMake with the option `-DECM_ENABLE_SANITIZERS='san1;san2;...'`. For more information about enabling the
 sanitizers, read the module **[documentation](modules/extra/ECMEnableSanitizers.cmake)**.
 
 It is also recommended to read the sections about sanitizers in the [Clang documentation](http://clang.llvm.org/docs/).
