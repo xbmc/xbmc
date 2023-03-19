@@ -166,8 +166,9 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
     const RECT vsRect = GetVirtualScreenRect();
 
     // we check that window is inside of virtual screen rect (sum of all monitors)
-    if (top != 0 && left != 0 && top > vsRect.top && top + m_nHeight < vsRect.bottom &&
-        left > vsRect.left && left + m_nWidth < vsRect.right)
+    // top 0 left 0 is a special position that centers the window on the screen
+    if ((top != 0 || left != 0) && top >= vsRect.top && top + m_nHeight <= vsRect.bottom &&
+        left >= vsRect.left && left + m_nWidth <= vsRect.right)
     {
       // restore previous window position
       m_nLeft = left;
@@ -186,8 +187,8 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
       int maxClientWidth = (rcWorkArea.right - rcNcArea.right) - (rcWorkArea.left - rcNcArea.left);
       int maxClientHeight = (rcWorkArea.bottom - rcNcArea.bottom) - (rcWorkArea.top - rcNcArea.top);
 
-      m_nWidth = std::min<int>(m_nWidth, maxClientWidth);
-      m_nHeight = std::min<int>(m_nHeight, maxClientHeight);
+      m_nWidth = std::min(m_nWidth, maxClientWidth);
+      m_nHeight = std::min(m_nHeight, maxClientHeight);
       CWinSystemBase::SetWindowResolution(m_nWidth, m_nHeight);
 
       // center window on desktop
@@ -391,8 +392,9 @@ void CWinSystemWin32::AdjustWindow(bool forceResize)
       const RECT vsRect = GetVirtualScreenRect();
 
       // we check that window is inside of virtual screen rect (sum of all monitors)
-      if (top != 0 && left != 0 && top > vsRect.top && top + m_nHeight < vsRect.bottom &&
-          left > vsRect.left && left + m_nWidth < vsRect.right)
+      // top 0 left 0 is a special position that centers the window on the screen
+      if ((top != 0 || left != 0) && top >= vsRect.top && top + m_nHeight <= vsRect.bottom &&
+          left >= vsRect.left && left + m_nWidth <= vsRect.right)
       {
         // restore previous window position
         m_nTop = top;
@@ -413,8 +415,8 @@ void CWinSystemWin32::AdjustWindow(bool forceResize)
         int maxClientHeight =
             (rcWorkArea.bottom - rcNcArea.bottom) - (rcWorkArea.top - rcNcArea.top);
 
-        m_nWidth = std::min<int>(m_nWidth, maxClientWidth);
-        m_nHeight = std::min<int>(m_nHeight, maxClientHeight);
+        m_nWidth = std::min(m_nWidth, maxClientWidth);
+        m_nHeight = std::min(m_nHeight, maxClientHeight);
         CWinSystemBase::SetWindowResolution(m_nWidth, m_nHeight);
 
         // center window on desktop
