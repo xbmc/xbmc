@@ -12,8 +12,8 @@ if(PKG_CONFIG_FOUND)
 endif()
 
 find_path(WAYLAND_PROTOCOLS_WEBOS_PROTOCOLDIR NAMES wayland-webos/webos-shell.xml
-                                              PATHS ${DEPENDS_PATH}/share)   
-                                              
+                                              PATHS ${DEPENDS_PATH}/share)
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(WaylandProtocolsWebOS
                                   REQUIRED_VARS WAYLAND_PROTOCOLS_WEBOS_PROTOCOLDIR
