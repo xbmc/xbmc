@@ -400,7 +400,8 @@ CGUIWindowPVRTVChannels::CGUIWindowPVRTVChannels()
 
 std::string CGUIWindowPVRTVChannels::GetDirectoryPath()
 {
-  return CPVRChannelsPath(false, m_bShowHiddenChannels, GetChannelGroup()->GroupName());
+  return CPVRChannelsPath(false, m_bShowHiddenChannels, GetChannelGroup()->GroupName(),
+                          GetChannelGroup()->GetClientID());
 }
 
 CGUIWindowPVRRadioChannels::CGUIWindowPVRRadioChannels()
@@ -410,5 +411,6 @@ CGUIWindowPVRRadioChannels::CGUIWindowPVRRadioChannels()
 
 std::string CGUIWindowPVRRadioChannels::GetDirectoryPath()
 {
-  return CPVRChannelsPath(true, m_bShowHiddenChannels, GetChannelGroup()->GroupName());
+  return CPVRChannelsPath(true, m_bShowHiddenChannels, GetChannelGroup()->GroupName(),
+                          GetChannelGroup()->GetClientID());
 }

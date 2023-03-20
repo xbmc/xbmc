@@ -29,21 +29,23 @@
 using namespace PVR;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio)
-  : CPVRChannelGroup(CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287)), nullptr),
+  : CPVRChannelGroup(
+        CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287), PVR_GROUP_CLIENT_ID_LOCAL),
+        PVR_GROUP_TYPE_ALL_CHANNELS,
+        nullptr),
     m_iHiddenChannels(0)
 {
-  m_iGroupType = PVR_GROUP_TYPE_INTERNAL;
 }
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelsPath& path)
-  : CPVRChannelGroup(path, nullptr), m_iHiddenChannels(0)
+  : CPVRChannelGroup(path, PVR_GROUP_TYPE_ALL_CHANNELS, nullptr), m_iHiddenChannels(0)
 {
-  m_iGroupType = PVR_GROUP_TYPE_INTERNAL;
 }
 
 CPVRChannelGroupInternal::~CPVRChannelGroupInternal()
 {
   CServiceBroker::GetPVRManager().Events().Unsubscribe(this);
+  m_isSubscribed = false;
 }
 
 bool CPVRChannelGroupInternal::LoadFromDatabase(
@@ -65,7 +67,14 @@ bool CPVRChannelGroupInternal::LoadFromDatabase(
     }
 
     UpdateChannelPaths();
-    CServiceBroker::GetPVRManager().Events().Subscribe(this, &CPVRChannelGroupInternal::OnPVRManagerEvent);
+
+    if (!m_isSubscribed)
+    {
+      CServiceBroker::GetPVRManager().Events().Subscribe(
+          this, &CPVRChannelGroupInternal::OnPVRManagerEvent);
+      m_isSubscribed = true;
+    }
+
     return true;
   }
 
@@ -117,7 +126,8 @@ bool CPVRChannelGroupInternal::UpdateFromClients(
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers;
   std::transform(channels.cbegin(), channels.cend(), std::back_inserter(groupMembers),
                  [this](const auto& channel) {
-                   return std::make_shared<CPVRChannelGroupMember>(GroupID(), GroupName(), channel);
+                   return std::make_shared<CPVRChannelGroupMember>(GroupID(), GroupName(),
+                                                                   GetClientID(), channel);
                  });
 
   return UpdateGroupEntries(groupMembers);

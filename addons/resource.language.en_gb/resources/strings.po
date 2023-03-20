@@ -10778,11 +10778,7 @@ msgctxt "#19220"
 msgid "Channels in"
 msgstr ""
 
-#. pvr settings "sync channel groups with backend(s)" control label
-#: system/settings/settings.xml
-msgctxt "#19221"
-msgid "Synchronise channel groups with backend(s)"
-msgstr ""
+#empty string with id 19221
 
 #: addons/skin.estouchy/xml/Includes.xml
 msgctxt "#19222"
@@ -11557,7 +11553,13 @@ msgctxt "#19349"
 msgid "User preference"
 msgstr ""
 
-#empty strings from id 19350 to 19498
+#. label for PVR settings use backend channel group order control
+#: system/settings/settings.xml
+msgctxt "#19350"
+msgid "Use channel group order from backend(s)"
+msgstr ""
+
+#empty strings from id 19351 to 19498
 
 #. label for epg genre value
 #: xbmc/pvr/epg/Epg.cpp
@@ -19594,10 +19596,7 @@ msgctxt "#36203"
 msgid "Enables the \"Personal Video Recorder\" (PVR) features. This requires that at least one PVR add-on is installed."
 msgstr ""
 
-#: system/settings/settings.xml
-msgctxt "#36204"
-msgid "Import channel groups from the PVR backend (if supported). Will delete user created groups if they're not found on the backend."
-msgstr ""
+#empty string with id 36204
 
 #: system/settings/settings.xml
 msgctxt "#36205"
@@ -20909,7 +20908,10 @@ msgctxt "#36434"
 msgid "If enabled, switch to the channel with the programme to remind when auto-closing the reminder popup."
 msgstr ""
 
-#empty string with id 36435
+#: system/settings/settings.xml
+msgctxt "#36435"
+msgid "Sort channel groups by the order supplied by the backend(s). If enabled, groups cannot be reordered in the Group manager"
+msgstr ""
 
 #. Description for setting #407: "Hardware keyboard layouts"
 #. Setting in System -> Input -> Hardware keyboard layouts

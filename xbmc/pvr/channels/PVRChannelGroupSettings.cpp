@@ -17,13 +17,11 @@
 using namespace PVR;
 
 CPVRChannelGroupSettings::CPVRChannelGroupSettings()
-  : m_settings({CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS,
-                CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER,
+  : m_settings({CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER,
                 CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERS,
                 CSettings::SETTING_PVRMANAGER_USEBACKENDCHANNELNUMBERSALWAYS,
                 CSettings::SETTING_PVRMANAGER_STARTGROUPCHANNELNUMBERSFROMONE})
 {
-  UpdateSyncChannelGroups();
   UpdateUseBackendChannelOrder();
   UpdateUseBackendChannelNumbers();
   UpdateStartGroupChannelNumbersFromOne();
@@ -42,15 +40,7 @@ void CPVRChannelGroupSettings::OnSettingChanged(const std::shared_ptr<const CSet
     return;
 
   const std::string& settingId = setting->GetId();
-  if (settingId == CSettings::CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS)
-  {
-    if (SyncChannelGroups() != UpdateSyncChannelGroups())
-    {
-      for (const auto& callback : m_callbacks)
-        callback->SyncChannelGroupsChanged();
-    }
-  }
-  else if (settingId == CSettings::CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER)
+  if (settingId == CSettings::CSettings::SETTING_PVRMANAGER_BACKENDCHANNELORDER)
   {
     if (UseBackendChannelOrder() != UpdateUseBackendChannelOrder())
     {
@@ -85,12 +75,6 @@ void CPVRChannelGroupSettings::RegisterCallback(IChannelGroupSettingsCallback* c
 void CPVRChannelGroupSettings::UnregisterCallback(IChannelGroupSettingsCallback* callback)
 {
   m_callbacks.erase(callback);
-}
-
-bool CPVRChannelGroupSettings::UpdateSyncChannelGroups()
-{
-  m_bSyncChannelGroups = m_settings.GetBoolValue(CSettings::SETTING_PVRMANAGER_SYNCCHANNELGROUPS);
-  return m_bSyncChannelGroups;
 }
 
 bool CPVRChannelGroupSettings::UpdateUseBackendChannelOrder()
