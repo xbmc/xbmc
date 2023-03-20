@@ -250,10 +250,6 @@ bool CGUITextureManager::ShouldLoadImage(const std::string& url)
   if (!CURL::IsFullPath(url))
     return true;
 
-  // this is an absolute path to a skin image
-  if (URIUtils::PathHasParent(url, "special://skin/media", true))
-    return true;
-
   // this is the only loader built to handle animated .gif and .apng,
   // but this loader only supports 'local' paths. Otherwise they go through
   // the LargeTextureManager / async loader, which displays a static image
