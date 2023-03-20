@@ -297,6 +297,8 @@ public:
   };
   GUICONTROLTYPES GetControlType() const { return ControlType; }
 
+  bool IsControlRenderable();
+
   enum GUIVISIBLE { HIDDEN = 0, DELAYED, VISIBLE };
 
   enum GUISCROLLVALUE { FOCUS = 0, NEVER, ALWAYS };
