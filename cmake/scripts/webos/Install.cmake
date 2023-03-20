@@ -52,13 +52,6 @@ add_custom_target(bundle
   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_BINARY} ${APP_PACKAGE_DIR}
   # webOS 4.9 only
   COMMAND ${CMAKE_COMMAND} -E copy ${TOOLCHAIN}/${HOST}/sysroot/lib/libatomic.so.1 ${APP_PACKAGE_DIR}/lib
-  # webOS 5?
-  COMMAND ${CMAKE_COMMAND} -E copy ${TOOLCHAIN}/${HOST}/sysroot/usr/lib/libgssapi_krb5.so.2 ${APP_PACKAGE_DIR}/lib
-  COMMAND ${CMAKE_COMMAND} -E copy ${TOOLCHAIN}/${HOST}/sysroot/usr/lib/libkrb5.so.3 ${APP_PACKAGE_DIR}/lib
-  COMMAND ${CMAKE_COMMAND} -E copy ${TOOLCHAIN}/${HOST}/sysroot/usr/lib/libkrb5support.so.0 ${APP_PACKAGE_DIR}/lib
-  COMMAND ${CMAKE_COMMAND} -E copy ${TOOLCHAIN}/${HOST}/sysroot/usr/lib/libk5crypto.so.3 ${APP_PACKAGE_DIR}/lib
-  COMMAND ${CMAKE_COMMAND} -E copy ${TOOLCHAIN}/${HOST}/sysroot/usr/lib/libcrypto.so.1.1 ${APP_PACKAGE_DIR}/lib
-  COMMAND ${CMAKE_COMMAND} -E copy ${TOOLCHAIN}/${HOST}/sysroot/usr/lib/libcom_err.so.3 ${APP_PACKAGE_DIR}/lib
   # webOS 7+
   COMMAND ${CMAKE_COMMAND} -E copy ${TOOLCHAIN}/${HOST}/sysroot/lib/libcrypt.so.1 ${APP_PACKAGE_DIR}/lib
   # missing depends libs
