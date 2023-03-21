@@ -46,17 +46,17 @@ public:
   /*!
    * @see CPVRChannelGroup::IsGroupMember
    */
-  bool IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const override;
+  bool IsGroupMember(const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const override;
 
   /*!
    * @see CPVRChannelGroup::AppendToGroup
    */
-  bool AppendToGroup(const std::shared_ptr<CPVRChannel>& channel) override;
+  bool AppendToGroup(const std::shared_ptr<CPVRChannelGroupMember>& groupMember) override;
 
   /*!
    * @see CPVRChannelGroup::RemoveFromGroup
    */
-  bool RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel) override;
+  bool RemoveFromGroup(const std::shared_ptr<CPVRChannelGroupMember>& groupMember) override;
 
   /*!
    * @brief Check whether the group name is still correct after the language setting changed.

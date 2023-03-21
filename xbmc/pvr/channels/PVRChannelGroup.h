@@ -151,18 +151,18 @@ public:
                         const CPVRChannelNumber& channelNumber);
 
   /*!
-   * @brief Remove a channel from this container.
-   * @param channel The channel to remove.
+   * @brief Remove a channel group member from this container.
+   * @param groupMember The channel to remove.
    * @return True if the channel was found and removed, false otherwise.
    */
-  virtual bool RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel);
+  virtual bool RemoveFromGroup(const std::shared_ptr<CPVRChannelGroupMember>& groupMember);
 
   /*!
    * @brief Append a channel to this container.
-   * @param channel The channel to append.
+   * @param groupMember The channel to append.
    * @return True if the channel was appended, false otherwise.
    */
-  virtual bool AppendToGroup(const std::shared_ptr<CPVRChannel>& channel);
+  virtual bool AppendToGroup(const std::shared_ptr<CPVRChannelGroupMember>& groupMember);
 
   /*!
    * @brief Change the name of this group.
@@ -190,11 +190,11 @@ public:
   bool Persist();
 
   /*!
-   * @brief Check whether a channel is in this container.
-   * @param channel The channel to find.
+   * @brief Check whether a channel group member is in this container.
+   * @param grouoMember The channel to find.
    * @return True if the channel was found, false otherwise.
    */
-  virtual bool IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const;
+  virtual bool IsGroupMember(const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const;
 
   /*!
    * @brief Check if this group is the internal group containing all channels.

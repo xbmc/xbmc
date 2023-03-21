@@ -256,19 +256,6 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetById(int iGroupId) const
   return (it != m_groups.cend()) ? (*it) : std::shared_ptr<CPVRChannelGroup>();
 }
 
-std::vector<std::shared_ptr<CPVRChannelGroup>> CPVRChannelGroups::GetGroupsByChannel(
-    const std::shared_ptr<CPVRChannel>& channel, bool bExcludeHidden /* = false */) const
-{
-  std::vector<std::shared_ptr<CPVRChannelGroup>> groups;
-
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  std::copy_if(m_groups.cbegin(), m_groups.cend(), std::back_inserter(groups),
-               [bExcludeHidden, &channel](const auto& group) {
-                 return (!bExcludeHidden || !group->IsHidden()) && group->IsGroupMember(channel);
-               });
-  return groups;
-}
-
 std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::GetGroupByPath(
     const std::string& strInPath) const
 {
