@@ -418,61 +418,6 @@ void UnblankDisplays(void)
   }
 }
 
-#pragma mark - Fade Display
-//! @Todo Look to replace Fade with CABasicAnimation
-static NSWindow* curtainWindow;
-void fadeInDisplay(NSScreen* theScreen, double fadeTime)
-{
-  int fadeSteps = 100;
-  double fadeInterval = (fadeTime / (double)fadeSteps);
-
-  if (curtainWindow != nil)
-  {
-    for (int step = 0; step < fadeSteps; step++)
-    {
-      double fade = 1.0 - (step * fadeInterval);
-      [curtainWindow setAlphaValue:fade];
-
-      NSDate* nextDate = [NSDate dateWithTimeIntervalSinceNow:fadeInterval];
-      [NSRunLoop.currentRunLoop runUntilDate:nextDate];
-    }
-  }
-  [curtainWindow close];
-  curtainWindow = nil;
-}
-
-void fadeOutDisplay(NSScreen* theScreen, double fadeTime)
-{
-  int fadeSteps = 100;
-  double fadeInterval = (fadeTime / (double)fadeSteps);
-
-  [NSCursor hide];
-
-  curtainWindow = [[NSWindow alloc] initWithContentRect:[theScreen frame]
-                                              styleMask:NSWindowStyleMaskBorderless
-                                                backing:NSBackingStoreBuffered
-                                                  defer:YES
-                                                 screen:theScreen];
-
-  [curtainWindow setAlphaValue:0.0];
-  [curtainWindow setBackgroundColor:NSColor.blackColor];
-  [curtainWindow setLevel:NSScreenSaverWindowLevel];
-
-  [curtainWindow makeKeyAndOrderFront:nil];
-  [curtainWindow setFrame:[curtainWindow frameRectForContentRect:[theScreen frame]]
-                  display:YES
-                  animate:NO];
-
-  for (int step = 0; step < fadeSteps; step++)
-  {
-    double fade = step * fadeInterval;
-    [curtainWindow setAlphaValue:fade];
-
-    NSDate* nextDate = [NSDate dateWithTimeIntervalSinceNow:fadeInterval];
-    [NSRunLoop.currentRunLoop runUntilDate:nextDate];
-  }
-}
-
 //---------------------------------------------------------------------------------
 static void DisplayReconfigured(CGDirectDisplayID display,
                                 CGDisplayChangeSummaryFlags flags,
@@ -541,7 +486,6 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_glView = nullptr;
   m_obscured = false;
   m_lastDisplayNr = -1;
-  m_movedToOtherScreen = false;
   m_refreshRate = 0.0;
   m_delayDispReset = false;
 
