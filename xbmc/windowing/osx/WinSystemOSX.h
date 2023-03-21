@@ -72,7 +72,6 @@ public:
   void StartLostDeviceTimer();
   void StopLostDeviceTimer();
 
-  void SetMovedToOtherScreen(bool moved) { m_movedToOtherScreen = moved; }
   int CheckDisplayChanging(uint32_t flags);
   void SetFullscreenWillToggle(bool toggle) { m_fullscreenWillToggle = toggle; }
   bool GetFullscreenWillToggle() { return m_fullscreenWillToggle; }
@@ -106,7 +105,6 @@ protected:
   bool m_obscured;
   NSWindow* m_appWindow;
   OSXGLView* m_glView;
-  bool m_movedToOtherScreen;
   unsigned long m_lastDisplayNr;
   double m_refreshRate;
 
