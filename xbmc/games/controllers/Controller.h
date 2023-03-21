@@ -36,6 +36,9 @@ public:
 
   static const ControllerPtr EmptyPtr;
 
+  // Implementation of IAddon
+  bool CanHaveAddonOrInstanceSettings() override { return true; }
+
   /*!
    * \brief Get all controller features
    *

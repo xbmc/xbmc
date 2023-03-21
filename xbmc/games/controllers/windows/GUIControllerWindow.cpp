@@ -89,6 +89,11 @@ bool CGUIControllerWindow::OnMessage(CGUIMessage& message)
 
   switch (message.GetMessage())
   {
+    case GUI_MSG_WINDOW_INIT:
+    {
+      m_controllerId = message.GetStringParam();
+      break;
+    }
     case GUI_MSG_CLICKED:
     {
       int controlId = message.GetSenderId();
@@ -245,7 +250,7 @@ void CGUIControllerWindow::OnInitWindow(void)
 
   if (!m_controllerList && m_featureList)
   {
-    m_controllerList = new CGUIControllerList(this, m_featureList, m_gameClient);
+    m_controllerList = new CGUIControllerList(this, m_featureList, m_gameClient, m_controllerId);
     if (!m_controllerList->Initialize())
     {
       delete m_controllerList;
