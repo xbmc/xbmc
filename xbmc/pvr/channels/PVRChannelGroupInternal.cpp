@@ -173,35 +173,33 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroupInternal::
   return removedMembers;
 }
 
-bool CPVRChannelGroupInternal::AppendToGroup(const std::shared_ptr<CPVRChannel>& channel)
+bool CPVRChannelGroupInternal::AppendToGroup(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
 {
-  if (IsGroupMember(channel))
+  if (IsGroupMember(groupMember))
     return false;
 
-  const std::shared_ptr<CPVRChannelGroupMember> groupMember = GetByUniqueID(channel->StorageId());
-  if (!groupMember)
-    return false;
-
-  channel->SetHidden(false, true);
+  groupMember->Channel()->SetHidden(false, true);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   if (m_iHiddenChannels > 0)
     m_iHiddenChannels--;
 
-  const unsigned int iChannelNumber = m_members.size() - m_iHiddenChannels;
-  groupMember->SetChannelNumber(CPVRChannelNumber(iChannelNumber, 0));
+  const size_t iChannelNumber = m_members.size() - m_iHiddenChannels;
+  allChannelsGroupMember->SetChannelNumber(CPVRChannelNumber(static_cast<int>(iChannelNumber), 0));
 
   SortAndRenumber();
   return true;
 }
 
-bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel)
+bool CPVRChannelGroupInternal::RemoveFromGroup(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
 {
-  if (!IsGroupMember(channel))
+  if (!IsGroupMember(groupMember))
     return false;
 
-  channel->SetHidden(true, true);
+  groupMember->Channel()->SetHidden(true, true);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -211,7 +209,8 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel
   return true;
 }
 
-bool CPVRChannelGroupInternal::IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const
+bool CPVRChannelGroupInternal::IsGroupMember(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const
 {
-  return !channel->IsHidden();
+  return !groupMember->Channel()->IsHidden();
 }

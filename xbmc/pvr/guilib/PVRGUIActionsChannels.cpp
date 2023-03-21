@@ -182,10 +182,12 @@ void CPVRGUIActionsChannels::Notify(const PVRChannelNumberInputChangedEvent& eve
 
 bool CPVRGUIActionsChannels::HideChannel(const CFileItem& item) const
 {
-  const std::shared_ptr<CPVRChannel> channel = item.GetPVRChannelInfoTag();
+  const auto groupMember = item.GetPVRChannelGroupMemberInfoTag();
 
-  if (!channel)
+  if (!groupMember)
     return false;
+
+  const auto channel = groupMember->Channel();
 
   if (!CGUIDialogYesNo::ShowAndGetInput(
           CVariant{19054}, // "Hide channel"
@@ -196,7 +198,7 @@ bool CPVRGUIActionsChannels::HideChannel(const CFileItem& item) const
   if (!CServiceBroker::GetPVRManager()
            .ChannelGroups()
            ->GetGroupAll(channel->IsRadio())
-           ->RemoveFromGroup(channel))
+           ->RemoveFromGroup(groupMember))
     return false;
 
   CGUIWindowPVRBase* pvrWindow =

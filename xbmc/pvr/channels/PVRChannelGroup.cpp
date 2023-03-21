@@ -794,9 +794,10 @@ bool CPVRChannelGroup::UpdateGroupEntries(
   return bReturn;
 }
 
-bool CPVRChannelGroup::RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel)
+bool CPVRChannelGroup::RemoveFromGroup(const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
 {
   bool bReturn = false;
+  const auto channel = groupMember->Channel();
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -819,46 +820,42 @@ bool CPVRChannelGroup::RemoveFromGroup(const std::shared_ptr<CPVRChannel>& chann
   return bReturn;
 }
 
-bool CPVRChannelGroup::AppendToGroup(const std::shared_ptr<CPVRChannel>& channel)
+bool CPVRChannelGroup::AppendToGroup(const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
 {
   bool bReturn = false;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  if (!CPVRChannelGroup::IsGroupMember(channel))
+  if (!CPVRChannelGroup::IsGroupMember(groupMember))
   {
-    const std::shared_ptr<CPVRChannelGroupMember> allGroupMember =
-        m_allChannelsGroup->GetByUniqueID(channel->StorageId());
+    unsigned int channelNumberMax =
+        std::accumulate(m_sortedMembers.cbegin(), m_sortedMembers.cend(), 0,
+                        [](unsigned int last, const auto& member) {
+                          return (member->ChannelNumber().GetChannelNumber() > last)
+                                     ? member->ChannelNumber().GetChannelNumber()
+                                     : last;
+                        });
 
-    if (allGroupMember)
-    {
-      unsigned int channelNumberMax =
-          std::accumulate(m_sortedMembers.cbegin(), m_sortedMembers.cend(), 0,
-                          [](unsigned int last, const auto& member) {
-                            return (member->ChannelNumber().GetChannelNumber() > last)
-                                       ? member->ChannelNumber().GetChannelNumber()
-                                       : last;
-                          });
+    const auto channel = groupMember->Channel();
+    const auto newMember =
+        std::make_shared<CPVRChannelGroupMember>(GroupID(), GroupName(), GetClientID(), channel);
+    newMember->SetChannelNumber(CPVRChannelNumber(channelNumberMax + 1, 0));
+    newMember->SetClientPriority(groupMember->ClientPriority());
 
-      const auto newMember = std::make_shared<CPVRChannelGroupMember>(
-          GroupID(), GroupName(), GetClientID(), allGroupMember->Channel());
-      newMember->SetChannelNumber(CPVRChannelNumber(channelNumberMax + 1, 0));
-      newMember->SetClientPriority(allGroupMember->ClientPriority());
+    m_sortedMembers.emplace_back(newMember);
+    m_members.emplace(channel->StorageId(), newMember);
 
-      m_sortedMembers.emplace_back(newMember);
-      m_members.emplace(allGroupMember->Channel()->StorageId(), newMember);
-
-      SortAndRenumber();
-      bReturn = true;
-    }
+    SortAndRenumber();
+    bReturn = true;
   }
   return bReturn;
 }
 
-bool CPVRChannelGroup::IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const
+bool CPVRChannelGroup::IsGroupMember(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_members.find(channel->StorageId()) != m_members.end();
+  return m_members.find(groupMember->Channel()->StorageId()) != m_members.end();
 }
 
 bool CPVRChannelGroup::Persist()
@@ -1171,19 +1168,21 @@ bool CPVRChannelGroup::UpdateChannel(const std::pair<int, int>& storageId,
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   /* get the real channel from the group */
-  const std::shared_ptr<CPVRChannel> channel = GetByUniqueID(storageId)->Channel();
-  if (!channel)
+  const std::shared_ptr<CPVRChannelGroupMember> groupMember = GetByUniqueID(storageId);
+  if (!groupMember)
     return false;
+
+  const auto channel = groupMember->Channel();
 
   channel->SetChannelName(strChannelName, true);
   channel->SetHidden(bHidden, bUserSetHidden);
   channel->SetLocked(bParentalLocked);
   channel->SetIconPath(strIconPath, bUserSetIcon);
 
+  //! @todo add other scrapers
   if (iEPGSource == 0)
     channel->SetEPGScraper("client");
 
-  //! @todo add other scrapers
   channel->SetEPGEnabled(bEPGEnabled);
 
   /* set new values in the channel tag */
@@ -1192,7 +1191,7 @@ bool CPVRChannelGroup::UpdateChannel(const std::pair<int, int>& storageId,
     // sort or previous changes will be overwritten
     Sort();
 
-    RemoveFromGroup(channel);
+    RemoveFromGroup(groupMember);
   }
   else if (iChannelNumber > 0)
   {

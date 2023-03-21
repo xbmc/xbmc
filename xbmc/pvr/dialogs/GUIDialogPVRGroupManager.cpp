@@ -271,7 +271,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(const CGUIMessage&
         {
           const auto itemChannel = m_ungroupedChannels->Get(m_iSelectedUngroupedChannel);
 
-          if (m_selectedGroup->AppendToGroup(itemChannel->GetPVRChannelInfoTag()))
+          if (m_selectedGroup->AppendToGroup(itemChannel->GetPVRChannelGroupMemberInfoTag()))
           {
             ClearSelectedGroupsThumbnail();
             Update();
@@ -302,7 +302,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonGroupMembers(const CGUIMessage& mess
         if (m_selectedGroup && m_groupMembers->GetFileCount() > 0)
         {
           const auto itemChannel = m_groupMembers->Get(m_iSelectedGroupMember);
-          m_selectedGroup->RemoveFromGroup(itemChannel->GetPVRChannelInfoTag());
+          m_selectedGroup->RemoveFromGroup(itemChannel->GetPVRChannelGroupMemberInfoTag());
           ClearSelectedGroupsThumbnail();
           Update();
         }
@@ -669,7 +669,7 @@ void CGUIDialogPVRGroupManager::Update()
             allGroup->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE);
         for (const auto& groupMember : allGroupMembers)
         {
-          if (!m_selectedGroup->IsGroupMember(groupMember->Channel()))
+          if (!m_selectedGroup->IsGroupMember(groupMember))
             m_ungroupedChannels->Add(std::make_shared<CFileItem>(groupMember));
         }
       }

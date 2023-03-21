@@ -100,15 +100,6 @@ public:
   std::shared_ptr<CPVRChannelGroup> GetById(int iGroupId) const;
 
   /*!
-   * @brief Get all groups the given channel is a member.
-   * @param channel The channel.
-   * @param bExcludeHidden Whenever to exclude hidden channel groups.
-   * @return A list of groups the channel is a member.
-   */
-  std::vector<std::shared_ptr<CPVRChannelGroup>> GetGroupsByChannel(
-      const std::shared_ptr<CPVRChannel>& channel, bool bExcludeHidden = false) const;
-
-  /*!
    * @brief Get a channel group given its path
    * @param strPath The path to the channel group
    * @return The channel group, or nullptr if not found
