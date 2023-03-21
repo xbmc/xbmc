@@ -633,6 +633,7 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   [NSAnimationContext beginGrouping];
   [NSAnimationContext.currentContext setCompletionHandler:^{
     [appWindow makeKeyWindow];
+    [appWindow makeMainWindow];
   }];
 
   const NSUInteger windowStyleMask = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable |
@@ -812,6 +813,25 @@ NSRect CWinSystemOSX::GetWindowDimensions()
     frame = win.contentView.frame;
   }
   return frame;
+}
+
+#pragma mark - Window level
+
+void CWinSystemOSX::ToggleFloatOnTop()
+{
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    if (!m_appWindow)
+      return;
+
+    if (m_appWindow.level == NSFloatingWindowLevel)
+    {
+      [m_appWindow setLevel:NSNormalWindowLevel];
+    }
+    else
+    {
+      [m_appWindow setLevel:NSFloatingWindowLevel];
+    }
+  });
 }
 
 #pragma mark - Resize Window
