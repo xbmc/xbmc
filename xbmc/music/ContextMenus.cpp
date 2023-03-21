@@ -15,7 +15,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "music/MusicUtils.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
+#include "playlists/PlayListTypes.h"
 #include "tags/MusicInfoTag.h"
+#include "utils/Variant.h"
 
 #include <utility>
 
@@ -70,7 +72,12 @@ bool CMusicPlay::IsVisible(const CFileItem& item) const
 
 bool CMusicPlay::Execute(const std::shared_ptr<CFileItem>& item) const
 {
-  MUSIC_UTILS::PlayItem(item);
+  const ContentUtils::PlayMode mode = item->GetProperty("CheckAutoPlayNextItem").asBoolean()
+                                          ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
+                                          : ContentUtils::PlayMode::PLAY_ONLY_THIS;
+  MUSIC_UTILS::PlayItem(item, mode);
+
+  item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_MUSIC);
   return true;
 }
 

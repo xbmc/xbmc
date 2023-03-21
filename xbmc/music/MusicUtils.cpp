@@ -38,6 +38,7 @@
 #include "utils/FileUtils.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "view/GUIViewState.h"
 
@@ -638,11 +639,70 @@ void ShowToastNotification(const CFileItem& item, int titleId)
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(titleId),
                                         message);
 }
+
+std::string GetMusicDbItemPath(const CFileItem& item)
+{
+  std::string path = item.GetPath();
+  if (!URIUtils::IsMusicDb(path))
+    path = item.GetProperty("original_listitem_url").asString();
+
+  if (URIUtils::IsMusicDb(path))
+    return path;
+
+  return {};
+}
+
+void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
+                              const std::shared_ptr<CFileItem>& itemToPlay)
+{
+  // recursively add items to list
+  CFileItemList queuedItems;
+  MUSIC_UTILS::GetItemsForPlayList(itemToQueue, queuedItems);
+
+  auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+  playlistPlayer.ClearPlaylist(PLAYLIST::TYPE_MUSIC);
+  playlistPlayer.Reset();
+  playlistPlayer.Add(PLAYLIST::TYPE_MUSIC, queuedItems);
+
+  // figure out where to start playback
+  PLAYLIST::CPlayList& playList = playlistPlayer.GetPlaylist(PLAYLIST::TYPE_MUSIC);
+  int pos = 0;
+  if (itemToPlay)
+  {
+    for (const std::shared_ptr<CFileItem>& queuedItem : queuedItems)
+    {
+      if (queuedItem->IsSamePath(itemToPlay.get()))
+        break;
+
+      pos++;
+    }
+  }
+
+  if (playlistPlayer.IsShuffled(PLAYLIST::TYPE_MUSIC))
+  {
+    playList.Swap(0, playList.FindOrder(pos));
+    pos = 0;
+  }
+
+  playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_MUSIC);
+  playlistPlayer.Play(pos, "");
+}
 } // unnamed namespace
 
 namespace MUSIC_UTILS
 {
-void PlayItem(const std::shared_ptr<CFileItem>& itemIn)
+bool IsAutoPlayNextItem(const CFileItem& item)
+{
+  if (!item.HasMusicInfoTag())
+    return false;
+
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  return settings->GetBool(CSettings::SETTING_MUSICPLAYER_AUTOPLAYNEXTITEM) &&
+         !settings->GetBool(CSettings::SETTING_MUSICPLAYER_QUEUEBYDEFAULT);
+}
+
+void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
+              ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */)
 {
   auto item = itemIn;
 
@@ -657,21 +717,45 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn)
 
   if (item->m_bIsFolder)
   {
-    // build a playlist and play it
-    CFileItemList queuedItems;
-    GetItemsForPlayList(item, queuedItems);
-
-    auto& player = CServiceBroker::GetPlaylistPlayer();
-    player.ClearPlaylist(PLAYLIST::TYPE_MUSIC);
-    player.Reset();
-    player.Add(PLAYLIST::TYPE_MUSIC, queuedItems);
-    player.SetCurrentPlaylist(PLAYLIST::TYPE_MUSIC);
-    player.Play();
+    AddItemToPlayListAndPlay(item, nullptr);
   }
   else if (item->HasMusicInfoTag())
   {
-    // song, so just play it
-    CServiceBroker::GetPlaylistPlayer().Play(item, "");
+    if (mode == ContentUtils::PlayMode::PLAY_FROM_HERE ||
+        (mode == ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM && IsAutoPlayNextItem(*item)))
+    {
+      // Add item and all its siblings to the playlist and play. Prefer musicdb path if available,
+      // because it provides more information than just a plain file system path for example.
+      std::string parentPath = item->GetProperty("ParentPath").asString();
+      if (parentPath.empty())
+      {
+        std::string path = GetMusicDbItemPath(*item);
+        if (path.empty())
+          path = item->GetPath();
+
+        URIUtils::GetParentPath(path, parentPath);
+
+        if (parentPath.empty())
+        {
+          CLog::LogF(LOGERROR, "Unable to obtain parent path for '{}'", item->GetPath());
+          return;
+        }
+      }
+
+      const auto parentItem = std::make_shared<CFileItem>(parentPath, true);
+      if (item->GetStartOffset() == STARTOFFSET_RESUME)
+        parentItem->SetStartOffset(STARTOFFSET_RESUME);
+
+      AddItemToPlayListAndPlay(parentItem, item);
+    }
+    else // mode == PlayMode::PLAY_ONLY_THIS
+    {
+      // song, so just play it
+      auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+      playlistPlayer.Reset();
+      playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
+      playlistPlayer.Play(item, "");
+    }
   }
 }
 

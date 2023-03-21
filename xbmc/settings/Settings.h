@@ -474,6 +474,13 @@ public:
   static const int MUSICLIBRARY_ARTWORK_LEVEL_CUSTOM = 2;
   static const int MUSICLIBRARY_ARTWORK_LEVEL_NONE = 3;
 
+  // values for SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM
+  static constexpr int SETTING_AUTOPLAYNEXT_MUSICVIDEOS = 0;
+  static constexpr int SETTING_AUTOPLAYNEXT_TVSHOWS = 1;
+  static constexpr int SETTING_AUTOPLAYNEXT_EPISODES = 2;
+  static constexpr int SETTING_AUTOPLAYNEXT_MOVIES = 3;
+  static constexpr int SETTING_AUTOPLAYNEXT_UNCATEGORIZED = 4;
+
   /*!
    \brief Creates a new settings wrapper around a new settings manager.
 
