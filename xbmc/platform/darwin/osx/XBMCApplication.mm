@@ -13,6 +13,7 @@
 #include "application/AppEnvironment.h"
 #include "application/AppInboundProtocol.h"
 #include "application/AppParamParser.h"
+#include "messaging/ApplicationMessenger.h"
 #include "platform/xbmc.h"
 #include "utils/log.h"
 
@@ -264,6 +265,7 @@ static NSMenu* setupWindowMenu()
 
 - (void)fullScreenToggle:(id)sender
 {
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
 }
 
 - (void)floatOnTopToggle:(id)sender
