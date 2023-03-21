@@ -83,6 +83,9 @@ ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
 	cd $(PLATFORM); patch -p1 -i ../05-apple-disable-zlib-pkgconfig.patch
 	cd $(PLATFORM); patch -p1 -i ../06-apple-fix-st_atim.patch
 endif
+ifeq ($(TARGET_PLATFORM),webos)
+	cd $(PLATFORM); patch -p1 -i ../webos-no-readline.patch
+endif
 	cd $(PLATFORM); $(CONFIGURE)
 
 $(LIBDYLIB): $(PLATFORM)
