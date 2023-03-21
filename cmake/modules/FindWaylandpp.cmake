@@ -34,9 +34,34 @@ find_library(WAYLANDPP_CLIENT_LIBRARY NAMES wayland-client++
 find_library(WAYLANDPP_CURSOR_LIBRARY NAMES wayland-cursor++
                                       PATHS ${PC_WAYLANDPP_LIBRARY_DIRS})
 
-find_library(WAYLANDPP_EGL NAMES wayland-egl++
-                           PATHS ${PC_WAYLANDPP_LIBRARY_DIRS})
+find_library(WAYLANDPP_EGL_LIBRARY NAMES wayland-egl++
+                                   PATHS ${PC_WAYLANDPP_LIBRARY_DIRS})
 
+if(KODI_DEPENDSBUILD)
+  pkg_check_modules(PC_WAYLANDC wayland-client wayland-egl wayland-cursor QUIET)
+
+  if(PREFER_TOOLCHAIN_PATH)
+    set(WAYLAND_SEARCH_PATH ${PREFER_TOOLCHAIN_PATH}
+                            NO_DEFAULT_PATH
+                            PATH_SUFFIXES usr/lib)
+  else()
+    set(WAYLAND_SEARCH_PATH ${PC_WAYLANDC_LIBRARY_DIRS})
+  endif()
+
+  find_library(WAYLANDC_CLIENT_LIBRARY NAMES wayland-client
+                                       PATHS ${WAYLAND_SEARCH_PATH}
+                                       REQUIRED)
+  find_library(WAYLANDC_CURSOR_LIBRARY NAMES wayland-cursor
+                                       PATHS ${WAYLAND_SEARCH_PATH}
+                                       REQUIRED)
+  find_library(WAYLANDC_EGL_LIBRARY NAMES wayland-egl
+                                    PATHS ${WAYLAND_SEARCH_PATH}
+                                    REQUIRED)
+
+  set(WAYLANDPP_STATIC_DEPS ${WAYLANDC_CLIENT_LIBRARY}
+                            ${WAYLANDC_CURSOR_LIBRARY}
+                            ${WAYLANDC_EGL_LIBRARY})
+endif()
 
 # Promote to cache variables so all code can access it
 set(WAYLANDPP_PROTOCOLS_DIR "${PC_WAYLANDPP_PKGDATADIR}/protocols" CACHE INTERNAL "")
@@ -50,7 +75,7 @@ find_package_handle_standard_args(Waylandpp
                                   REQUIRED_VARS WAYLANDPP_INCLUDE_DIR
                                                 WAYLANDPP_CLIENT_LIBRARY
                                                 WAYLANDPP_CURSOR_LIBRARY
-                                                WAYLANDPP_EGL
+                                                WAYLANDPP_EGL_LIBRARY
                                                 WAYLANDPP_SCANNER
                                   VERSION_VAR WAYLANDPP_wayland-client++_VERSION)
 
@@ -58,11 +83,16 @@ if(WAYLANDPP_FOUND)
   set(WAYLANDPP_INCLUDE_DIRS ${WAYLANDPP_INCLUDE_DIR})
   set(WAYLANDPP_LIBRARIES ${WAYLANDPP_CLIENT_LIBRARY}
                           ${WAYLANDPP_CURSOR_LIBRARY}
-                          ${WAYLANDPP_EGL})
+                          ${WAYLANDPP_EGL_LIBRARY}
+                          ${WAYLANDPP_STATIC_DEPS})
   set(WAYLANDPP_DEFINITIONS -DHAVE_WAYLAND=1)
 endif()
 
 mark_as_advanced(WAYLANDPP_INCLUDE_DIR
                  WAYLANDPP_CLIENT_LIBRARY
+                 WAYLANDC_CLIENT_LIBRARY
                  WAYLANDPP_CURSOR_LIBRARY
-                 WAYLANDPP_EGL WAYLANDPP_SCANNER)
+                 WAYLANDC_CURSOR_LIBRARY
+                 WAYLANDPP_EGL_LIBRARY
+                 WAYLANDC_EGL_LIBRARY
+                 WAYLANDPP_SCANNER)
