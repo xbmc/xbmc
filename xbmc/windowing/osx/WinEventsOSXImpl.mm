@@ -138,6 +138,12 @@
   // left command
   if (appleModifier & kCGEventFlagMaskCommand)
     xbmcModifier |= XBMCKMOD_LMETA;
+  // fn/globe
+  if (appleModifier & kCGEventFlagMaskSecondaryFn && !(appleModifier & kCGEventFlagMaskNumericPad))
+  {
+    xbmcModifier |= XBMCKMOD_LMETA;
+    xbmcModifier |= XBMCKMOD_MODE;
+  }
 
   return static_cast<XBMCMod>(xbmcModifier);
 }
@@ -145,6 +151,7 @@
 - (bool)ProcessOSXShortcuts:(XBMC_Event&)event
 {
   const auto cmd = (event.key.keysym.mod & (XBMCKMOD_LMETA | XBMCKMOD_RMETA)) != 0;
+  const auto isFn = (event.key.keysym.mod & XBMCKMOD_MODE) != 0;
   if (cmd && event.type == XBMC_KEYDOWN)
   {
     switch (event.key.keysym.sym)
@@ -158,6 +165,13 @@
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
         return true;
 
+      case XBMCK_f: // FN/Globe-f to toggle fullscreen
+        if (isFn) // avoid cmd-f to toggle fullscreen
+        {
+          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
+          return true;
+        }
+        break;
       case XBMCK_s: // CMD-s to take a screenshot
       {
         CAction* action = new CAction(ACTION_TAKE_SCREENSHOT);
