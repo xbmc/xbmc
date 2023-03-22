@@ -655,7 +655,9 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
       appWindow.title = title;
 
       NSWindowCollectionBehavior behavior = appWindow.collectionBehavior;
-      behavior |= NSWindowCollectionBehaviorFullScreenPrimary;
+      //! @todo actually implement fullscreen tilling and remove NSWindowCollectionBehaviorFullScreenDisallowsTiling
+      behavior |= NSWindowCollectionBehaviorFullScreenPrimary |
+                  NSWindowCollectionBehaviorFullScreenDisallowsTiling;
       [appWindow setCollectionBehavior:behavior];
 
       // associate with current window
