@@ -1,4 +1,8 @@
 # webOS packaging
+find_program(ARES_PACKAGE ares-package PATHS ${TOOLCHAIN}/../CLI ENV WEBOS_CLI_PATH
+                                       PATH_SUFFIXES bin
+                                       REQUIRED)
+
 set(APP_PACKAGE_DIR ${CMAKE_BINARY_DIR}/tools/webOS/packaging)
 
 # Configure files into packaging environment.
@@ -20,16 +24,23 @@ set(WEBOS_ROOTFS ${TOOLCHAIN}/${HOST}/sysroot)
 set(WEBOS_LD_LIBRARY_PATH ${WEBOS_USERLAND_LIBS}:${APP_PACKAGE_DIR}/lib)
 set(VERIFY_EXE ${CMAKE_SOURCE_DIR}/tools/webOS/verify-symbols.sh)
 
-add_custom_command(
-  TARGET ${APP_NAME_LC} POST_BUILD
-  COMMAND bash -c "WEBOS_ROOTFS=${WEBOS_ROOTFS} WEBOS_LD_LIBRARY_PATH=${WEBOS_LD_LIBRARY_PATH} \
-            ${VERIFY_EXE} ${CMAKE_BINARY_DIR}/${APP_BINARY} \
-            | awk '/Missing library:/ { print $3 }'" > missing_libs.txt
-  BYPRODUCTS missing_libs.txt
-  VERBATIM
-)
 
-file(WRITE ${CMAKE_BINARY_DIR}/copy_missing_libs.cmake "
+set(APP_INSTALL_DIRS ${CMAKE_BINARY_DIR}/addons
+                     ${CMAKE_BINARY_DIR}/media
+                     ${CMAKE_BINARY_DIR}/system
+                     ${CMAKE_BINARY_DIR}/userdata)
+set(APP_TOOLCHAIN_FILES ${TOOLCHAIN}/${HOST}/sysroot/lib/libatomic.so.1
+                        ${TOOLCHAIN}/${HOST}/sysroot/lib/libcrypt.so.1)
+
+file(WRITE ${CMAKE_BINARY_DIR}/install.cmake "
+  file(INSTALL ${APP_BINARY} DESTINATION ${APP_PACKAGE_DIR}
+       FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
+  file(INSTALL ${APP_INSTALL_DIRS} DESTINATION ${APP_PACKAGE_DIR})
+  file(CREATE_LINK python${PYTHON_VERSION} python3 SYMBOLIC)
+  file(INSTALL python3 DESTINATION ${APP_PACKAGE_DIR}/lib)
+  file(INSTALL ${DEPENDS_PATH}/lib/python${PYTHON_VERSION} DESTINATION ${APP_PACKAGE_DIR}/lib FOLLOW_SYMLINK_CHAIN)
+  file(INSTALL ${APP_TOOLCHAIN_FILES} DESTINATION ${APP_PACKAGE_DIR}/lib FOLLOW_SYMLINK_CHAIN)
+
   file(STRINGS ${CMAKE_BINARY_DIR}/missing_libs.txt missing_libs)
   foreach(lib IN LISTS missing_libs)
     file(INSTALL ${DEPENDS_PATH}/lib/\$\{lib\} DESTINATION ${APP_PACKAGE_DIR}/lib FOLLOW_SYMLINK_CHAIN)
@@ -38,26 +49,18 @@ file(WRITE ${CMAKE_BINARY_DIR}/copy_missing_libs.cmake "
 
 # Copy files to the location expected by the webOS packaging scripts.
 add_custom_target(bundle
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${APP_PACKAGE_DIR}/lib
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${APP_PACKAGE_DIR}/lib/python3
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${APP_PACKAGE_DIR}/addons
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${APP_PACKAGE_DIR}/media
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${APP_PACKAGE_DIR}/system
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${APP_PACKAGE_DIR}/userdata
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/addons ${APP_PACKAGE_DIR}/addons
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/media ${APP_PACKAGE_DIR}/media
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/system ${APP_PACKAGE_DIR}/system
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/userdata ${APP_PACKAGE_DIR}/userdata
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${DEPENDS_PATH}/lib/python${PYTHON_VERSION} ${APP_PACKAGE_DIR}/lib/python3
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${APP_BINARY} ${APP_PACKAGE_DIR}
-  # webOS 4.9 only
-  COMMAND ${CMAKE_COMMAND} -E copy ${TOOLCHAIN}/${HOST}/sysroot/lib/libatomic.so.1 ${APP_PACKAGE_DIR}/lib
-  # webOS 7+
-  COMMAND ${CMAKE_COMMAND} -E copy ${TOOLCHAIN}/${HOST}/sysroot/lib/libcrypt.so.1 ${APP_PACKAGE_DIR}/lib
-  # missing depends libs
-  COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/copy_missing_libs.cmake
+  DEPENDS ${APP_NAME_LC} ${CMAKE_BINARY_DIR}/missing_libs.txt
+  COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/install.cmake
 )
-add_dependencies(bundle ${APP_NAME_LC})
+
+add_custom_command(
+  OUTPUT ${CMAKE_BINARY_DIR}/missing_libs.txt
+  DEPENDS ${CMAKE_BINARY_DIR}/${APP_BINARY}
+  COMMAND bash -c "WEBOS_ROOTFS=${WEBOS_ROOTFS} WEBOS_LD_LIBRARY_PATH=${WEBOS_LD_LIBRARY_PATH} \
+            ${VERIFY_EXE} ${CMAKE_BINARY_DIR}/${APP_BINARY} \
+            | awk '/Missing library:/ { print $3 }'" > missing_libs.txt
+  VERBATIM
+)
 
 add_custom_target(verify-libs
   DEPENDS bundle ${CMAKE_BINARY_DIR}/missing_libs.txt
@@ -80,7 +83,7 @@ endif()
 
 add_custom_target(ipk
   DEPENDS bundle ${IPK_DEPENDS}
-  COMMAND ares-package ${APP_PACKAGE_DIR}
+  COMMAND ${ARES_PACKAGE} ${APP_PACKAGE_DIR}
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   VERBATIM
 )
