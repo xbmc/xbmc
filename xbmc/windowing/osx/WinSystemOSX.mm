@@ -1148,28 +1148,10 @@ void CWinSystemOSX::SetOcclusionState(bool occluded)
 
 void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
 {
-  if (!(m_bFullScreen && bGaining))
+  if (!(m_bFullScreen && bGaining) || !m_appWindow)
     return;
-  @autoreleasepool
-  {
-    // find the window
-    NSOpenGLContext* context = NSOpenGLContext.currentContext;
-    if (context)
-    {
-      NSView* view;
 
-      view = context.view;
-      if (view)
-      {
-        NSWindow* window;
-        window = view.window;
-        if (window)
-        {
-          [window orderFront:nil];
-        }
-      }
-    }
-  }
+  [static_cast<OSXGLWindow*>(m_appWindow) orderFront:nil];
 }
 
 #pragma mark - Window Move

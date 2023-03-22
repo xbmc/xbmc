@@ -225,6 +225,7 @@
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (winSystem)
   {
+    winSystem->NotifyAppFocusChange(true);
     winSystem->enableInputEvents();
   }
 }
@@ -236,6 +237,7 @@
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (winSystem)
   {
+    winSystem->NotifyAppFocusChange(false);
     winSystem->disableInputEvents();
   }
 }
