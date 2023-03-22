@@ -54,7 +54,7 @@ VS_OUTPUT VS(VS_INPUT In)
   VS_OUTPUT output = (VS_OUTPUT)0;
   output.Position.x =  (In.Position.x / (g_viewPort.x  / 2.0)) - 1;
   output.Position.y = -(In.Position.y / (g_viewPort.y / 2.0)) + 1;
-  output.Position.z = output.Position.z;
+  output.Position.z = 0;
   output.Position.w = 1.0;
   output.TextureY   = In.TextureY;
   output.TextureUV  = In.TextureUV;

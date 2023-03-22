@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2007-2018 Team Kodi
+ *  Copyright (C) 2007-2026 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -58,11 +58,12 @@ bool CWinShader::CreateInputLayout(D3D11_INPUT_ELEMENT_DESC *layout, unsigned nu
   return SUCCEEDED(pDevice->CreateInputLayout(layout, numElements, desc.pIAInputSignature, desc.IAInputSignatureSize, &m_inputLayout));
 }
 
-void CWinShader::SetTarget(CD3DTexture* target)
+void CWinShader::SetTarget(CD3DTexture* target, ID3D11DepthStencilView* dsv)
 {
   m_target = target;
-  if (m_target)
-    DX::DeviceResources::Get()->GetD3DContext()->OMSetRenderTargets(1, target->GetAddressOfRTV(), nullptr);
+  if (m_target != nullptr)
+    DX::DeviceResources::Get()->GetD3DContext()->OMSetRenderTargets(1, target->GetAddressOfRTV(),
+                                                                    dsv);
 }
 
 bool CWinShader::LockVertexBuffer(void **data)
@@ -108,14 +109,21 @@ bool CWinShader::LoadEffect(const std::string& filename, DefinesMap* defines)
   return true;
 }
 
-bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int vertexIndexStep)
+bool CWinShader::Execute(const std::vector<CD3DTexture*>& targets, unsigned int vertexIndexStep)
 {
   ID3D11DeviceContext* pContext = DX::DeviceResources::Get()->GetD3DContext();
-  ComPtr<ID3D11RenderTargetView> oldRT;
+  if (pContext == nullptr)
+  {
+    CLog::LogF(LOGERROR, "unable to retrieve the device context");
+    return false;
+  }
 
-  // The render target will be overridden: save the caller's original RT
-  if (!targets.empty())
-    pContext->OMGetRenderTargets(1, &oldRT, nullptr);
+  ComPtr<ID3D11RenderTargetView> origRTV{};
+  ComPtr<ID3D11DepthStencilView> origDSV{};
+
+  // The current RTV and DSV are modified for the shaders execution. Save them for restoration
+  // after the execution.
+  pContext->OMGetRenderTargets(1, &origRTV, &origDSV);
 
   unsigned cPasses;
   if (!m_effect.Begin(&cPasses, 0))
@@ -135,7 +143,10 @@ bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int 
 
   for (unsigned iPass = 0; iPass < cPasses; iPass++)
   {
-    SetTarget(targets.size() > iPass ? targets.at(iPass) : nullptr);
+    // No depth buffer for intermediate render targets
+    // Set it only for the last pass of the last shader (expected to render to the back buffer)
+    SetTarget(targets.size() > iPass ? targets.at(iPass) : nullptr,
+              (iPass == cPasses - 1) && m_isFinalShader ? origDSV.Get() : nullptr);
     SetStepParams(iPass);
 
     if (!m_effect.BeginPass(iPass))
@@ -154,8 +165,7 @@ bool CWinShader::Execute(const std::vector<CD3DTexture*> &targets, unsigned int 
   if (!m_effect.End())
     CLog::LogF(LOGERROR, "failed to end d3d effect");
 
-  if (oldRT)
-    pContext->OMSetRenderTargets(1, oldRT.GetAddressOf(), nullptr);
+  pContext->OMSetRenderTargets(1, origRTV.GetAddressOf(), origDSV.Get());
 
   return true;
 }

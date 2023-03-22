@@ -140,6 +140,7 @@ void CRPRendererGuiTexture::RenderInternal(bool clear, uint8_t alpha)
     auto dxTexture = static_cast<CDXTexture*>(renderBuffer->GetTexture());
     ID3D11ShaderResourceView* shaderRes = dxTexture->GetShaderResource();
     pGUIShader->SetShaderViews(1, &shaderRes);
+    pGUIShader->SetDepth(-1.f);
     pGUIShader->DrawQuad(vertex[0], vertex[1], vertex[2], vertex[3]);
   }
 
