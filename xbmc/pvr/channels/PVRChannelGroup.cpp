@@ -920,32 +920,27 @@ bool CPVRChannelGroup::Renumber(RenumberMode mode /* = NORMAL */)
   CPVRChannelNumber currentClientChannelNumber;
   for (auto& sortedMember : m_sortedMembers)
   {
+    const auto channel = sortedMember->Channel();
+
     currentClientChannelNumber = sortedMember->ClientChannelNumber();
-    if (m_allChannelsGroup && !currentClientChannelNumber.IsValid())
-      currentClientChannelNumber =
-          m_allChannelsGroup->GetClientChannelNumber(sortedMember->Channel());
+    if (!currentClientChannelNumber.IsValid())
+      currentClientChannelNumber = channel->ClientChannelNumber();
 
     if (bUseBackendChannelNumbers)
     {
       currentChannelNumber = currentClientChannelNumber;
     }
-    else if (sortedMember->Channel()->IsHidden())
+    else if (channel->IsHidden())
     {
       currentChannelNumber = CPVRChannelNumber(0, 0);
     }
     else
     {
-      if (IsInternalGroup())
-      {
+      if (IsInternalGroup() ||
+          (bStartGroupChannelNumbersFromOne && mode != IGNORE_NUMBERING_FROM_ONE))
         currentChannelNumber = CPVRChannelNumber(++iChannelNumber, 0);
-      }
       else
-      {
-        if (bStartGroupChannelNumbersFromOne && mode != IGNORE_NUMBERING_FROM_ONE)
-          currentChannelNumber = CPVRChannelNumber(++iChannelNumber, 0);
-        else
-          currentChannelNumber = m_allChannelsGroup->GetChannelNumber(sortedMember->Channel());
-      }
+        currentChannelNumber = m_allChannelsGroup->GetChannelNumber(channel);
     }
 
     if (sortedMember->ChannelNumber() != currentChannelNumber ||
