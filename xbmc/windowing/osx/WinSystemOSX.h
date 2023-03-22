@@ -55,8 +55,6 @@ public:
   bool Show(bool raise = true) override;
   void OnMove(int x, int y) override;
 
-  void SetOcclusionState(bool occluded);
-
   std::string GetClipboardText() override;
 
   void Register(IDispResource* resource) override;
@@ -95,14 +93,12 @@ protected:
   bool SwitchToVideoMode(int width, int height, double refreshrate);
   void FillInVideoModes();
   bool FlushBuffer();
-  bool IsObscured();
 
   bool DestroyWindowInternal();
 
   std::unique_ptr<CWinEventsOSX> m_winEvents;
 
   std::string m_name;
-  bool m_obscured;
   NSWindow* m_appWindow;
   OSXGLView* m_glView;
   unsigned long m_lastDisplayNr;
