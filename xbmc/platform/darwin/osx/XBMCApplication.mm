@@ -15,7 +15,6 @@
 #include "application/AppParamParser.h"
 #include "platform/xbmc.h"
 #include "utils/log.h"
-#import "windowing/osx/WinSystemOSX.h"
 
 #import "platform/darwin/osx/storage/OSXStorageProvider.h"
 
@@ -65,17 +64,6 @@ static NSMenu* setupWindowMenu()
   auto parentPath = NSBundle.mainBundle.bundlePath.stringByDeletingLastPathComponent;
   NSAssert([NSFileManager.defaultManager changeCurrentDirectoryPath:parentPath],
            @"SetupWorkingDirectory Failed to cwd");
-}
-
-- (void)applicationDidChangeOcclusionState:(NSNotification*)notification
-{
-  bool occluded = true;
-  if (NSApp.occlusionState & NSApplicationOcclusionStateVisible)
-    occluded = false;
-
-  CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  if (winSystem)
-    winSystem->SetOcclusionState(occluded); // SHH method body is commented out
 }
 
 - (void)applicationWillFinishLaunching:(NSNotification*)notification

@@ -484,7 +484,6 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
 {
   m_appWindow = nullptr;
   m_glView = nullptr;
-  m_obscured = false;
   m_lastDisplayNr = -1;
   m_refreshRate = 0.0;
   m_delayDispReset = false;
@@ -1129,21 +1128,6 @@ void CWinSystemOSX::FillInVideoModes()
     }
     CFRelease(displayModes);
   }
-}
-
-#pragma mark - Occlusion
-
-bool CWinSystemOSX::IsObscured()
-{
-  if (m_obscured)
-    CLog::LogF(LOGDEBUG, "Obscured");
-  return m_obscured;
-}
-
-void CWinSystemOSX::SetOcclusionState(bool occluded)
-{
-  //  m_obscured = occluded;
-  //  CLog::LogF(LOGDEBUG, "{}", occluded ? "true":"false");
 }
 
 void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
