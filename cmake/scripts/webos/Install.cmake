@@ -60,7 +60,7 @@ add_custom_target(bundle
 add_dependencies(bundle ${APP_NAME_LC})
 
 add_custom_target(verify-libs
-  DEPENDS bundle
+  DEPENDS bundle ${CMAKE_BINARY_DIR}/missing_libs.txt
   COMMAND echo verifying dynamic library dependencies
   COMMAND env WEBOS_ROOTFS=${WEBOS_ROOTFS} WEBOS_LD_LIBRARY_PATH=${WEBOS_LD_LIBRARY_PATH}
           ${VERIFY_EXE} ${APP_PACKAGE_DIR}/${APP_BINARY}
@@ -68,8 +68,18 @@ add_custom_target(verify-libs
   VERBATIM
 )
 
+if(CMAKE_BUILD_TYPE STREQUAL Release)
+  add_custom_target(strip
+    DEPENDS bundle verify-libs
+    COMMAND find ${APP_PACKAGE_DIR} -iname *.so* -exec ${CMAKE_STRIP} ${APP_PACKAGE_DIR}/${APP_BINARY} {} \;
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    VERBATIM
+  )
+  set(IPK_DEPENDS strip)
+endif()
+
 add_custom_target(ipk
-  DEPENDS verify-libs bundle
+  DEPENDS bundle ${IPK_DEPENDS}
   COMMAND ares-package ${APP_PACKAGE_DIR}
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
   VERBATIM
