@@ -1128,32 +1128,6 @@ void CWinSystemOSX::FillInVideoModes()
   }
 }
 
-void CWinSystemOSX::NotifyAppFocusChange(bool bGaining)
-{
-  if (!(m_bFullScreen && bGaining))
-    return;
-  @autoreleasepool
-  {
-    // find the window
-    NSOpenGLContext* context = NSOpenGLContext.currentContext;
-    if (context)
-    {
-      NSView* view;
-
-      view = context.view;
-      if (view)
-      {
-        NSWindow* window;
-        window = view.window;
-        if (window)
-        {
-          [window orderFront:nil];
-        }
-      }
-    }
-  }
-}
-
 #pragma mark - Window Move
 
 void CWinSystemOSX::OnMove(int x, int y)
