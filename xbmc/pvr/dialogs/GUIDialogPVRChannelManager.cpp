@@ -71,6 +71,7 @@ constexpr const char* LABEL_CHANNEL_DISABLED = "0";
 constexpr const char* PROPERTY_CHANNEL_NUMBER = "Number";
 constexpr const char* PROPERTY_CHANNEL_ENABLED = "ActiveChannel";
 constexpr const char* PROPERTY_CHANNEL_USER_SET_HIDDEN = "UserSetHidden";
+constexpr const char* PROPERTY_CHANNEL_USER_SET_NAME = "UserSetName";
 constexpr const char* PROPERTY_CHANNEL_LOCKED = "ParentalLocked";
 constexpr const char* PROPERTY_CHANNEL_ICON = "Icon";
 constexpr const char* PROPERTY_CHANNEL_CUSTOM_ICON = "UserSetIcon";
@@ -369,9 +370,11 @@ bool CGUIDialogPVRChannelManager::OnClickButtonEditName()
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
-      if (pItem->GetProperty(PROPERTY_CHANNEL_NAME).asString() != msg.GetLabel())
+      std::string label = msg.GetLabel();
+      if (pItem->GetProperty(PROPERTY_CHANNEL_NAME).asString() != label)
       {
-        pItem->SetProperty(PROPERTY_CHANNEL_NAME, msg.GetLabel());
+        pItem->SetProperty(PROPERTY_CHANNEL_NAME, label);
+        pItem->SetProperty(PROPERTY_CHANNEL_USER_SET_NAME, true);
         SetItemChanged(pItem);
       }
       return true;
@@ -822,6 +825,7 @@ void CGUIDialogPVRChannelManager::Update()
 
     channelFile->SetProperty(PROPERTY_CHANNEL_ENABLED, !channel->IsHidden());
     channelFile->SetProperty(PROPERTY_CHANNEL_USER_SET_HIDDEN, channel->IsUserSetHidden());
+    channelFile->SetProperty(PROPERTY_CHANNEL_USER_SET_NAME, channel->IsUserSetName());
     channelFile->SetProperty(PROPERTY_CHANNEL_NAME, channel->ChannelName());
     channelFile->SetProperty(PROPERTY_CHANNEL_EPG_ENABLED, channel->EPGEnabled());
     channelFile->SetProperty(PROPERTY_CHANNEL_ICON, channel->ClientIconPath());
@@ -928,23 +932,48 @@ void CGUIDialogPVRChannelManager::RenameChannel(const CFileItemPtr& pItem)
   }
 }
 
-bool CGUIDialogPVRChannelManager::PersistChannel(const CFileItemPtr& pItem,
-                                                 const std::shared_ptr<CPVRChannelGroup>& group)
+bool CGUIDialogPVRChannelManager::UpdateChannelData(const std::shared_ptr<CFileItem>& pItem,
+                                                    const std::shared_ptr<CPVRChannelGroup>& group)
 {
   if (!pItem || !group)
     return false;
 
-  return group->UpdateChannel(
-      pItem->GetPVRChannelInfoTag()->StorageId(),
-      pItem->GetProperty(PROPERTY_CHANNEL_NAME).asString(),
-      pItem->GetProperty(PROPERTY_CHANNEL_ICON).asString(),
-      static_cast<int>(pItem->GetProperty(PROPERTY_CHANNEL_EPG_SOURCE).asInteger()),
-      m_bAllowRenumber ? pItem->GetProperty(PROPERTY_CHANNEL_NUMBER).asInteger() : 0,
-      !pItem->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean(), // hidden
-      pItem->GetProperty(PROPERTY_CHANNEL_EPG_ENABLED).asBoolean(),
-      pItem->GetProperty(PROPERTY_CHANNEL_LOCKED).asBoolean(),
-      pItem->GetProperty(PROPERTY_CHANNEL_CUSTOM_ICON).asBoolean(),
-      pItem->GetProperty(PROPERTY_CHANNEL_USER_SET_HIDDEN).asBoolean());
+  const auto groupMember = pItem->GetPVRChannelGroupMemberInfoTag();
+
+  if (pItem->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean()) // enabled == not hidden
+  {
+    if (m_bAllowRenumber)
+    {
+      groupMember->SetChannelNumber(CPVRChannelNumber(
+          static_cast<unsigned int>(pItem->GetProperty(PROPERTY_CHANNEL_NUMBER).asInteger()), 0));
+    }
+
+    // make sure the channel is part of the group
+    group->AppendToGroup(groupMember);
+  }
+  else
+  {
+    // remove the hidden channel from the group
+    group->RemoveFromGroup(groupMember);
+  }
+
+  const auto channel = groupMember->Channel();
+
+  channel->SetChannelName(pItem->GetProperty(PROPERTY_CHANNEL_NAME).asString(),
+                          pItem->GetProperty(PROPERTY_CHANNEL_USER_SET_NAME).asBoolean());
+  channel->SetHidden(!pItem->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean(),
+                     pItem->GetProperty(PROPERTY_CHANNEL_USER_SET_HIDDEN).asBoolean());
+  channel->SetLocked(pItem->GetProperty(PROPERTY_CHANNEL_LOCKED).asBoolean());
+  channel->SetIconPath(pItem->GetProperty(PROPERTY_CHANNEL_ICON).asString(),
+                       pItem->GetProperty(PROPERTY_CHANNEL_CUSTOM_ICON).asBoolean());
+
+  //! @todo add other scrapers
+  if (pItem->GetProperty(PROPERTY_CHANNEL_EPG_SOURCE).asInteger() == 0)
+    channel->SetEPGScraper("client");
+
+  channel->SetEPGEnabled(pItem->GetProperty(PROPERTY_CHANNEL_EPG_ENABLED).asBoolean());
+
+  return true;
 }
 
 void CGUIDialogPVRChannelManager::PromptAndSaveList()
@@ -997,7 +1026,20 @@ void CGUIDialogPVRChannelManager::SaveList()
       if (pItem->GetProperty(PROPERTY_CLIENT_SUPPORTS_SETTINGS).asBoolean())
         RenameChannel(pItem);
 
-      if (PersistChannel(pItem, group))
+      if (pItem->GetProperty(PROPERTY_CHANNEL_USER_SET_NAME).asBoolean() &&
+          pItem->GetProperty(PROPERTY_CHANNEL_NAME).asString().empty())
+      {
+        // if the user changes the name manually to an empty string we reset the
+        // userset name flag and change the name to the name from the client
+        pItem->SetProperty(PROPERTY_CHANNEL_USER_SET_NAME, false);
+
+        const std::string newName = pItem->GetPVRChannelInfoTag()->ClientChannelName();
+        pItem->SetProperty(PROPERTY_CHANNEL_NAME, newName);
+        SET_CONTROL_LABEL2(EDIT_NAME, newName);
+      }
+
+      // Write the changes made in this dialog back to the actual channel instance
+      if (UpdateChannelData(pItem, group))
         pItem->SetProperty(PROPERTY_ITEM_CHANGED, false);
     }
 
@@ -1032,6 +1074,8 @@ bool IsItemChanged(const std::shared_ptr<CFileItem>& item)
   return item->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean() == channel->IsHidden() ||
          item->GetProperty(PROPERTY_CHANNEL_USER_SET_HIDDEN).asBoolean() !=
              channel->IsUserSetHidden() ||
+         item->GetProperty(PROPERTY_CHANNEL_USER_SET_NAME).asBoolean() !=
+             channel->IsUserSetName() ||
          item->GetProperty(PROPERTY_CHANNEL_NAME).asString() != channel->ChannelName() ||
          item->GetProperty(PROPERTY_CHANNEL_EPG_ENABLED).asBoolean() != channel->EPGEnabled() ||
          item->GetProperty(PROPERTY_CHANNEL_ICON).asString() != channel->ClientIconPath() ||
