@@ -200,23 +200,6 @@ void CPVRChannelGroup::SetPath(const CPVRChannelsPath& path)
   }
 }
 
-bool CPVRChannelGroup::SetChannelNumber(const std::shared_ptr<CPVRChannel>& channel,
-                                        const CPVRChannelNumber& channelNumber)
-{
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  const auto it =
-      std::find_if(m_sortedMembers.cbegin(), m_sortedMembers.cend(),
-                   [&channel](const auto& member) { return *member->Channel() == *channel; });
-
-  if (it != m_sortedMembers.cend() && (*it)->ChannelNumber() != channelNumber)
-  {
-    (*it)->SetChannelNumber(channelNumber);
-    return true;
-  }
-
-  return false;
-}
-
 /********** sort methods **********/
 
 struct sortByClientChannelNumber
@@ -1147,53 +1130,6 @@ void CPVRChannelGroup::SetLastOpened(uint64_t iLastOpened)
     if (m_bLoaded && database)
       database->UpdateLastOpened(*this);
   }
-}
-
-bool CPVRChannelGroup::UpdateChannel(const std::pair<int, int>& storageId,
-                                     const std::string& strChannelName,
-                                     const std::string& strIconPath,
-                                     int iEPGSource,
-                                     int iChannelNumber,
-                                     bool bHidden,
-                                     bool bEPGEnabled,
-                                     bool bParentalLocked,
-                                     bool bUserSetIcon,
-                                     bool bUserSetHidden)
-{
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-
-  /* get the real channel from the group */
-  const std::shared_ptr<CPVRChannelGroupMember> groupMember = GetByUniqueID(storageId);
-  if (!groupMember)
-    return false;
-
-  const auto channel = groupMember->Channel();
-
-  channel->SetChannelName(strChannelName, true);
-  channel->SetHidden(bHidden, bUserSetHidden);
-  channel->SetLocked(bParentalLocked);
-  channel->SetIconPath(strIconPath, bUserSetIcon);
-
-  //! @todo add other scrapers
-  if (iEPGSource == 0)
-    channel->SetEPGScraper("client");
-
-  channel->SetEPGEnabled(bEPGEnabled);
-
-  /* set new values in the channel tag */
-  if (bHidden)
-  {
-    // sort or previous changes will be overwritten
-    Sort();
-
-    RemoveFromGroup(groupMember);
-  }
-  else if (iChannelNumber > 0)
-  {
-    SetChannelNumber(channel, CPVRChannelNumber(iChannelNumber, 0));
-  }
-
-  return true;
 }
 
 size_t CPVRChannelGroup::Size() const

@@ -142,15 +142,6 @@ public:
   void SetPath(const CPVRChannelsPath& path);
 
   /*!
-   * @brief Change the channelnumber of a group. Used by CGUIDialogPVRChannelManager.
-   * Call SortByChannelNumber() and Renumber() after all changes are done.
-   * @param channel The channel to change the channel number for.
-   * @param channelNumber The new channel number.
-   */
-  bool SetChannelNumber(const std::shared_ptr<CPVRChannel>& channel,
-                        const CPVRChannelNumber& channelNumber);
-
-  /*!
    * @brief Remove a channel group member from this container.
    * @param groupMember The channel to remove.
    * @return True if the channel was found and removed, false otherwise.
@@ -400,31 +391,6 @@ public:
    * @return True if the group was never persisted, false otherwise.
    */
   bool IsNew() const;
-
-  /*!
-   * @brief Update a channel group member with given data.
-   * @param storageId The storage id of the channel.
-   * @param strChannelName The channel name to set.
-   * @param strIconPath The icon path to set.
-   * @param iEPGSource The EPG id.
-   * @param iChannelNumber The channel number to set.
-   * @param bHidden Set/Remove hidden flag for the channel group member identified by storage id.
-   * @param bEPGEnabled Set/Remove EPG enabled flag for the channel group member identified by storage id.
-   * @param bParentalLocked Set/Remove parental locked flag for the channel group member identified by storage id.
-   * @param bUserSetIcon Set/Remove user set icon flag for the channel group member identified by storage id.
-   * @param bUserSetHidden Set/Remove user set hidden flag for the channel group member identified by storage id.
-   * @return True on success, false otherwise.
-   */
-  bool UpdateChannel(const std::pair<int, int>& storageId,
-                     const std::string& strChannelName,
-                     const std::string& strIconPath,
-                     int iEPGSource,
-                     int iChannelNumber,
-                     bool bHidden,
-                     bool bEPGEnabled,
-                     bool bParentalLocked,
-                     bool bUserSetIcon,
-                     bool bUserSetHidden);
 
   /*!
    * @brief Get a channel given the channel number on the client.
