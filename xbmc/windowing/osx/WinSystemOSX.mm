@@ -886,8 +886,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   {
     // switch videomode
     SwitchToVideoMode(res.iWidth, res.iHeight, static_cast<double>(res.fRefreshRate));
-    // hide the OS mouse
-    [NSCursor hide];
   }
 
   dispatch_sync(dispatch_get_main_queue(), ^{
@@ -1309,4 +1307,5 @@ std::string CWinSystemOSX::GetClipboardText()
 
 void CWinSystemOSX::ShowOSMouse(bool show)
 {
+  // do nothing (this is already handled by OSXGLView on mouseEntered and mouseExited)
 }
