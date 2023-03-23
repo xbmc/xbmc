@@ -34,6 +34,10 @@ ifneq ($(PREFIX),)
   ifneq (darwin, $(findstring darwin, $(HOST)))
     INSTALL_PREFIX = $(PREFIX) -DOVERRIDE_PATHS=ON
   endif
+  ifeq ($(TARGET_PLATFORM),webos)
+    INSTALL_PREFIX = $(PREFIX)/addons
+    CMAKE_EXTRA = -DPACKAGE_ZIP=ON
+  endif
 
   CMAKE_EXTRA += -DAUTOCONF_FILES="$(CONFIG_SUB) $(CONFIG_GUESS)"
 endif
