@@ -31,6 +31,7 @@ set(APP_INSTALL_DIRS ${CMAKE_BINARY_DIR}/addons
                      ${CMAKE_BINARY_DIR}/userdata)
 set(APP_TOOLCHAIN_FILES ${TOOLCHAIN}/${HOST}/sysroot/lib/libatomic.so.1
                         ${TOOLCHAIN}/${HOST}/sysroot/lib/libcrypt.so.1)
+set(BIN_ADDONS_DIR ${DEPENDS_PATH}/addons)
 
 file(WRITE ${CMAKE_BINARY_DIR}/install.cmake "
   file(INSTALL ${APP_BINARY} DESTINATION ${APP_PACKAGE_DIR}
@@ -45,6 +46,10 @@ file(WRITE ${CMAKE_BINARY_DIR}/install.cmake "
   foreach(lib IN LISTS missing_libs)
     file(INSTALL ${DEPENDS_PATH}/lib/\$\{lib\} DESTINATION ${APP_PACKAGE_DIR}/lib FOLLOW_SYMLINK_CHAIN)
   endforeach()
+
+  if(EXISTS ${BIN_ADDONS_DIR})
+    file(INSTALL ${BIN_ADDONS_DIR} DESTINATION ${APP_PACKAGE_DIR})
+  endif()
 ")
 
 # Copy files to the location expected by the webOS packaging scripts.
