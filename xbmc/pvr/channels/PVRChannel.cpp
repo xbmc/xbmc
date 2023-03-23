@@ -277,7 +277,7 @@ bool CPVRChannel::SetHidden(bool bIsHidden, bool bIsUserSetHidden /*= false*/)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
-  if (m_bIsHidden != bIsHidden)
+  if (m_bIsHidden != bIsHidden || m_bIsUserSetHidden != bIsUserSetHidden)
   {
     m_bIsHidden = bIsHidden;
     m_bIsUserSetHidden = bIsUserSetHidden;
@@ -375,18 +375,10 @@ bool CPVRChannel::SetChannelName(const std::string& strChannelName, bool bIsUser
                                   m_clientChannelNumber.FormattedChannelNumber());
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  if (m_strChannelName != strName)
+  if (m_strChannelName != strName || m_bIsUserSetName != bIsUserSetName)
   {
     m_strChannelName = strName;
     m_bIsUserSetName = bIsUserSetName;
-
-    /* if the user changes the name manually to an empty string we reset the
-       flag and use the name from the client instead */
-    if (bIsUserSetName && strChannelName.empty())
-    {
-      m_bIsUserSetName = false;
-      m_strChannelName = ClientChannelName();
-    }
 
     const std::shared_ptr<CPVREpg> epg = GetEPG();
     if (epg)
