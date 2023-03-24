@@ -181,6 +181,9 @@ namespace DX
 		return SUCCEEDED(hr);
 	}
 #endif
+
+  const std::string DXGIFormatToString(const DXGI_FORMAT format);
+  const std::string DXGIColorSpaceTypeToString(DXGI_COLOR_SPACE_TYPE type);
 }
 
 #ifdef TARGET_WINDOWS_DESKTOP
