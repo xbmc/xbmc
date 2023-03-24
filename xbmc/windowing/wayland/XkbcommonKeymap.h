@@ -15,6 +15,9 @@
 #include <vector>
 
 #include <xkbcommon/xkbcommon.h>
+#ifdef TARGET_WEBOS
+#include <xkbcommon/xkbcommon-webos-keysyms.h>
+#endif
 
 namespace KODI
 {
