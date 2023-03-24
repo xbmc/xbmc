@@ -11,7 +11,6 @@
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "interfaces/IAnnouncer.h"
 #include "pvr/PVRComponentRegistration.h"
-#include "pvr/epg/EpgContainer.h"
 #include "pvr/guilib/PVRGUIActionListener.h"
 #include "pvr/settings/PVRSettings.h"
 #include "threads/CriticalSection.h"
@@ -42,6 +41,8 @@ class CPVRPlaybackState;
 class CPVRRecording;
 class CPVRRecordings;
 class CPVRTimers;
+class CPVREpgContainer;
+class CPVREpgInfoTag;
 
 enum class PVREvent
 {
@@ -458,7 +459,7 @@ private:
   std::shared_ptr<CPVRClients> m_addons; /*!< pointer to the pvr addon container */
   std::unique_ptr<CPVRGUIInfo> m_guiInfo; /*!< pointer to the guiinfo data */
   std::shared_ptr<CPVRComponentRegistration> m_components; /*!< pointer to the PVR components */
-  CPVREpgContainer m_epgContainer; /*!< the epg container */
+  std::unique_ptr<CPVREpgContainer> m_epgContainer; /*!< the epg container */
   //@}
 
   std::vector<std::shared_ptr<CPVRClient>> m_knownClients; /*!< vector with all known clients */

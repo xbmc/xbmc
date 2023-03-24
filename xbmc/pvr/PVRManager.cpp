@@ -24,6 +24,7 @@
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelsPath.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
@@ -199,7 +200,7 @@ CPVRManager::CPVRManager()
     m_addons(new CPVRClients),
     m_guiInfo(new CPVRGUIInfo),
     m_components(new CPVRComponentRegistration),
-    m_epgContainer(m_events),
+    m_epgContainer(new CPVREpgContainer(m_events)),
     m_pendingUpdates(new CPVRManagerJobQueue),
     m_database(new CPVRDatabase),
     m_parentalTimer(new CStopWatch),
@@ -324,7 +325,7 @@ std::shared_ptr<CPVRPlaybackState> CPVRManager::PlaybackState() const
 CPVREpgContainer& CPVRManager::EpgContainer()
 {
   // note: m_epgContainer is const (only set/reset in ctor/dtor). no need for a lock here.
-  return m_epgContainer;
+  return *m_epgContainer;
 }
 
 void CPVRManager::Clear()
@@ -510,13 +511,13 @@ void CPVRManager::Process()
   }
 
   // Load EPGs from database.
-  m_epgContainer.Load();
+  m_epgContainer->Load();
 
   // Reinit playbackstate
   m_playbackState->ReInit();
 
   m_guiInfo->Start();
-  m_epgContainer.Start();
+  m_epgContainer->Start();
   m_timers->Start();
   m_pendingUpdates->Start();
 
@@ -584,7 +585,7 @@ void CPVRManager::Process()
   m_addons->Stop();
   m_pendingUpdates->Stop();
   m_timers->Stop();
-  m_epgContainer.Stop();
+  m_epgContainer->Stop();
   m_guiInfo->Stop();
 
   SetState(ManagerState::STATE_INTERRUPTED);
@@ -634,16 +635,14 @@ void CPVRManager::OnSleep()
 
   SetWakeupCommand();
 
-  m_epgContainer.OnSystemSleep();
-
+  m_epgContainer->OnSystemSleep();
   m_addons->OnSystemSleep();
 }
 
 void CPVRManager::OnWake()
 {
   m_addons->OnSystemWake();
-
-  m_epgContainer.OnSystemWake();
+  m_epgContainer->OnSystemWake();
 
   PublishEvent(PVREvent::SystemWake);
 
@@ -770,7 +769,7 @@ void CPVRManager::UnloadComponents()
   m_timers->Unload();
   m_channelGroups->Unload();
   m_providers->Unload();
-  m_epgContainer.Unload();
+  m_epgContainer->Unload();
 }
 
 bool CPVRManager::IsKnownClient(int clientID) const
@@ -835,7 +834,7 @@ void CPVRManager::OnPlaybackStarted(const CFileItem& item)
 {
   m_playbackState->OnPlaybackStarted(item);
   Get<PVR::GUI::Channels>().OnPlaybackStarted(item);
-  m_epgContainer.OnPlaybackStarted();
+  m_epgContainer->OnPlaybackStarted();
 }
 
 void CPVRManager::OnPlaybackStopped(const CFileItem& item)
@@ -845,7 +844,7 @@ void CPVRManager::OnPlaybackStopped(const CFileItem& item)
     PublishEvent(PVREvent::ChannelPlaybackStopped);
 
   Get<PVR::GUI::Channels>().OnPlaybackStopped(item);
-  m_epgContainer.OnPlaybackStopped();
+  m_epgContainer->OnPlaybackStopped();
 }
 
 void CPVRManager::OnPlaybackEnded(const CFileItem& item)
