@@ -14,6 +14,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "rendering/dx/DirectXHelper.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/SystemInfo.h"
@@ -370,7 +371,9 @@ void DX::DeviceResources::CreateDeviceResources()
 
   if (FAILED(hr))
   {
-    CLog::LogF(LOGERROR, "unable to create hardware device, trying to create WARP devices then.");
+    CLog::LogF(LOGERROR,
+               "unable to create hardware device, trying to create WARP devices then. Error {}",
+               DX::GetErrorDescription(hr));
     hr = D3D11CreateDevice(
         nullptr,
         D3D_DRIVER_TYPE_WARP, // Create a WARP device instead of a hardware device.
@@ -385,7 +388,8 @@ void DX::DeviceResources::CreateDeviceResources()
     );
     if (FAILED(hr))
     {
-      CLog::LogF(LOGFATAL, "unable to create WARP device. Rendering in not possible.");
+      CLog::LogF(LOGFATAL, "unable to create WARP device. Rendering is not possible. Error {}",
+                 DX::GetErrorDescription(hr));
       CHECK_ERR();
     }
   }
@@ -696,11 +700,37 @@ void DX::DeviceResources::ResizeBuffers()
     std::string flip =
         (swapChainDesc.SwapEffect == DXGI_SWAP_EFFECT_FLIP_DISCARD) ? "discard" : "sequential";
 
-    CLog::LogF(LOGINFO, "{} bit swapchain is used with {} flip {} buffers and {} output", bits,
-               swapChainDesc.BufferCount, flip, m_IsHDROutput ? "HDR" : "SDR");
+    CLog::LogF(LOGINFO,
+               "{} bit swapchain is used with {} flip {} buffers and {} output (format {})", bits,
+               swapChainDesc.BufferCount, flip, m_IsHDROutput ? "HDR" : "SDR",
+               DX::DXGIFormatToString(swapChainDesc.Format));
 
     hr = swapChain.As(&m_swapChain); CHECK_ERR();
     m_stereoEnabled = bHWStereoEnabled;
+
+    if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG))
+    {
+      ComPtr<IDXGISwapChain4> swapChain4;
+      if (SUCCEEDED(m_swapChain.As(&swapChain4)))
+      {
+        UINT colorSpaceSupport = 0;
+        std::string colorSpaces{};
+        for (UINT colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+             colorSpace < DXGI_COLOR_SPACE_YCBCR_STUDIO_G24_TOPLEFT_P2020; colorSpace++)
+        {
+          if (SUCCEEDED(swapChain4->CheckColorSpaceSupport(
+                  static_cast<DXGI_COLOR_SPACE_TYPE>(colorSpace), &colorSpaceSupport)) &&
+              (colorSpaceSupport & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT) ==
+                  DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT)
+          {
+            colorSpaces.append("\n");
+            colorSpaces.append(
+                DX::DXGIColorSpaceTypeToString(static_cast<DXGI_COLOR_SPACE_TYPE>(colorSpace)));
+          }
+        }
+        CLog::LogF(LOGDEBUG, "Color spaces supported by the swap chain:{}", colorSpaces);
+      }
+    }
 
     // Ensure that DXGI does not queue more than one frame at a time. This both reduces latency and
     // ensures that the application will only render after each VSync, minimizing power consumption.
@@ -1276,11 +1306,13 @@ void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpac
       if (m_IsTransferPQ)
         DX::Windowing()->CacheSystemSdrPeakLuminance();
 
-      CLog::LogF(LOGDEBUG, "DXGI SetColorSpace1 success");
+      CLog::LogF(LOGDEBUG, "DXGI SetColorSpace1 {} success",
+                 DX::DXGIColorSpaceTypeToString(colorSpace));
     }
     else
     {
-      CLog::LogF(LOGERROR, "DXGI SetColorSpace1 failed");
+      CLog::LogF(LOGERROR, "DXGI SetColorSpace1 {} failed",
+                 DX::DXGIColorSpaceTypeToString(colorSpace));
     }
   }
 }

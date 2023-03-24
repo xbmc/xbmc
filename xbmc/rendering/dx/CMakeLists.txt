@@ -1,4 +1,5 @@
 set(SOURCES DeviceResources.cpp
+            DirectXHelper.cpp
             RenderSystemDX.cpp
             ScreenshotSurfaceWindows.cpp)
 

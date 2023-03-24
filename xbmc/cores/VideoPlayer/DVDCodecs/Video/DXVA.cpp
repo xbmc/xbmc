@@ -289,6 +289,16 @@ bool CContext::CreateContext()
   {
     CLog::LogF(LOGINFO, "creating discrete d3d11va device for decoding.");
 
+    D3D_FEATURE_LEVEL d3dFeatureLevel{D3D_FEATURE_LEVEL_9_1};
+    UINT creationFlags = D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
+#if defined(_DEBUG)
+    if (DX::SdkLayersAvailable())
+    {
+      // If the project is in a debug build, enable debugging via SDK Layers with this flag.
+      creationFlags |= D3D11_CREATE_DEVICE_DEBUG;
+    }
+#endif
+
     std::vector<D3D_FEATURE_LEVEL> featureLevels;
     if (CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10))
     {
@@ -304,13 +314,30 @@ bool CContext::CreateContext()
     featureLevels.push_back(D3D_FEATURE_LEVEL_9_1);
 
     hr = D3D11CreateDevice(DX::DeviceResources::Get()->GetAdapter(), D3D_DRIVER_TYPE_UNKNOWN,
-                           nullptr, D3D11_CREATE_DEVICE_VIDEO_SUPPORT, featureLevels.data(),
-                           featureLevels.size(), D3D11_SDK_VERSION, &pD3DDevice, nullptr,
-                           &pD3DDeviceContext);
-
-    if (FAILED(hr))
+                           nullptr, creationFlags, featureLevels.data(), featureLevels.size(),
+                           D3D11_SDK_VERSION, &pD3DDevice, &d3dFeatureLevel, &pD3DDeviceContext);
+    if (SUCCEEDED(hr))
     {
-      CLog::LogF(LOGWARNING, "unable to create device for decoding, fallback to using app device.");
+      DXGI_ADAPTER_DESC aDesc;
+      DX::DeviceResources::Get()->GetAdapter()->GetDesc(&aDesc);
+
+      CLog::LogF(LOGINFO, "device for decoding created on adapter '{}' with {}",
+                 KODI::PLATFORM::WINDOWS::FromW(aDesc.Description),
+                 DX::GetFeatureLevelDescription(d3dFeatureLevel));
+
+#ifdef _DEBUG
+      if (FAILED(pD3DDevice.As(&m_d3d11Debug)))
+      {
+        CLog::LogF(LOGDEBUG, "unable to create debug interface. Error {}",
+                   DX::GetErrorDescription(hr));
+      }
+#endif
+    }
+    else
+    {
+      CLog::LogF(LOGWARNING,
+                 "unable to create device for decoding, fallback to using app device. Error {}",
+                 DX::GetErrorDescription(hr));
       m_sharingAllowed = false;
     }
   }
@@ -364,6 +391,13 @@ void CContext::DestroyContext()
   delete[] m_input_list;
   m_pD3D11Device = nullptr;
   m_pD3D11Context = nullptr;
+#ifdef _DEBUG
+  if (m_d3d11Debug)
+  {
+    m_d3d11Debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL);
+    m_d3d11Debug = nullptr;
+  }
+#endif
 
   // Restores normal priority process
   SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
@@ -441,7 +475,7 @@ bool CContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DES
       if (FAILED(res) || !format_supported)
       {
         CLog::Log(LOGINFO, "DXVA: Output format {} is not supported by '{}'",
-                  render_targets_dxgi[j], mode.name);
+                  DX::DXGIFormatToString(render_targets_dxgi[j]), mode.name);
         continue;
       }
 
@@ -476,7 +510,7 @@ bool CContext::GetConfig(const D3D11_VIDEO_DECODER_DESC &format, D3D11_VIDEO_DEC
   if (!cfg_count)
   {
     CLog::LogF(LOGINFO, "no decoder configuration possible for {}x{} ({}).", format.SampleWidth,
-               format.SampleHeight, format.OutputFormat);
+               format.SampleHeight, DX::DXGIFormatToString(format.OutputFormat));
     return false;
   }
 
@@ -540,12 +574,14 @@ bool CContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC& format, uint32_t c
     texDesc.MiscFlags |= D3D11_RESOURCE_MISC_SHARED;
   }
 
-  CLog::Log(LOGDEBUG, "DXVA: allocating {} surfaces with format {}.", count, format.OutputFormat);
+  CLog::Log(LOGDEBUG, "DXVA: allocating {} surfaces with format {}.", count,
+            DX::DXGIFormatToString(format.OutputFormat));
 
   ComPtr<ID3D11Texture2D> texture;
-  if (FAILED(pD3DDevice->CreateTexture2D(&texDesc, NULL, texture.GetAddressOf())))
+  if (FAILED(hr = pD3DDevice->CreateTexture2D(&texDesc, NULL, texture.GetAddressOf())))
   {
-    CLog::LogF(LOGERROR, "failed creating decoder texture array.");
+    CLog::LogF(LOGERROR, "failed creating decoder texture array. Error {}",
+               DX::GetErrorDescription(hr));
     return false;
   }
 
@@ -576,7 +612,7 @@ bool CContext::CreateSurfaces(const D3D11_VIDEO_DECODER_DESC& format, uint32_t c
     hr = m_pD3D11Device->CreateVideoDecoderOutputView(texture.Get(), &vdovDesc, &surfaces[i]);
     if (FAILED(hr))
     {
-      CLog::LogF(LOGERROR, "failed creating surfaces.");
+      CLog::LogF(LOGERROR, "failed creating surfaces. Error {}", DX::GetErrorDescription(hr));
       break;
     }
     if (pD3DDeviceContext1)
@@ -764,19 +800,20 @@ void CVideoBufferCopy::Initialize(CDecoder* decoder)
     ComPtr<ID3D11Texture2D> pCopyTexture;
     ComPtr<IDXGIResource> pDXGIResource;
     ComPtr<ID3D11Resource> pResource;
+    HRESULT hr;
 
     decoder->m_pD3D11Context->GetDevice(&pDevice);
     pDevice->GetImmediateContext(&pDeviceContext);
 
-    if (FAILED(CVideoBuffer::GetResource(&pResource)))
+    if (FAILED(hr = CVideoBuffer::GetResource(&pResource)))
     {
-      CLog::LogF(LOGDEBUG, "unable to get decoder resource");
+      CLog::LogF(LOGDEBUG, "unable to get decoder resource. Error {}", DX::GetErrorDescription(hr));
       return;
     }
 
-    if (FAILED(pResource.As(&pDecoderTexture)))
+    if (FAILED(hr = pResource.As(&pDecoderTexture)))
     {
-      CLog::LogF(LOGDEBUG, "unable to get decoder texture");
+      CLog::LogF(LOGDEBUG, "unable to get decoder texture. Error {}", DX::GetErrorDescription(hr));
       return;
     }
 
@@ -786,21 +823,22 @@ void CVideoBufferCopy::Initialize(CDecoder* decoder)
     desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
     desc.MiscFlags = D3D11_RESOURCE_MISC_SHARED;
 
-    if (FAILED(pDevice->CreateTexture2D(&desc, nullptr, &pCopyTexture)))
+    if (FAILED(hr = pDevice->CreateTexture2D(&desc, nullptr, &pCopyTexture)))
     {
-      CLog::LogF(LOGDEBUG, "unable to create copy texture");
+      CLog::LogF(LOGDEBUG, "unable to create copy texture. Error {}", DX::GetErrorDescription(hr));
       return;
     }
-    if (FAILED(pCopyTexture.As(&pDXGIResource)))
+    if (FAILED(hr = pCopyTexture.As(&pDXGIResource)))
     {
-      CLog::LogF(LOGDEBUG, "unable to get DXGI resource for copy texture");
+      CLog::LogF(LOGDEBUG, "unable to get DXGI resource for copy texture. Error {}",
+                 DX::GetErrorDescription(hr));
       return;
     }
 
     HANDLE shared_handle;
-    if (FAILED(pDXGIResource->GetSharedHandle(&shared_handle)))
+    if (FAILED(hr = pDXGIResource->GetSharedHandle(&shared_handle)))
     {
-      CLog::LogF(LOGDEBUG, "unable to get shared handle");
+      CLog::LogF(LOGDEBUG, "unable to get shared handle. Error {}", DX::GetErrorDescription(hr));
       return;
     }
 
@@ -1167,7 +1205,8 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "DXVA: selected output format: {}.", m_format.OutputFormat);
+  CLog::Log(LOGDEBUG, "DXVA: selected output format: {}.",
+            DX::DXGIFormatToString(m_format.OutputFormat));
   CLog::Log(LOGDEBUG, "DXVA: source requires {} references.", avctx->refs);
   if (m_format.Guid == DXVADDI_Intel_ModeH264_E && avctx->refs > 11)
   {
