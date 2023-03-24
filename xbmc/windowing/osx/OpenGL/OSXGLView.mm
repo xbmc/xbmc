@@ -47,7 +47,7 @@
   [self updateTrackingAreas];
 
   GLint swapInterval = 1;
-  [m_glcontext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
+  [m_glcontext setValues:&swapInterval forParameter:NSOpenGLContextParameterSwapInterval];
   [m_glcontext makeCurrentContext];
 
   return self;
@@ -63,7 +63,7 @@
 {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    [m_glcontext setView:self];
+    [self setOpenGLContext:m_glcontext];
 
     // clear screen on first render
     glClearColor(0, 0, 0, 0);
