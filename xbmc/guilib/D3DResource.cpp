@@ -201,7 +201,7 @@ bool CD3DTexture::Create(UINT width, UINT height, UINT mipLevels, D3D11_USAGE us
 
   if (!DX::Windowing()->IsFormatSupport(format, D3D11_FORMAT_SUPPORT_TEXTURE2D))
   {
-    CLog::LogF(LOGERROR, "unsupported texture format {}", format);
+    CLog::LogF(LOGERROR, "unsupported texture format {}", DX::DXGIFormatToString(format));
     return false;
   }
 
