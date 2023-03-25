@@ -38,12 +38,6 @@ public:
   ~CPVRChannelGroupInternal() override;
 
   /*!
-   * @brief The amount of channels in this container.
-   * @return The amount of channels in this container.
-   */
-  size_t GetNumHiddenChannels() const override { return m_iHiddenChannels; }
-
-  /*!
    * @see CPVRChannelGroup::IsGroupMember
    */
   bool IsGroupMember(const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const override;
@@ -80,19 +74,8 @@ protected:
   bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients) override;
 
   /*!
-   * @brief Load the channels from the database.
-   * @param channels All available channels.
-   * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
-   * @return True when loaded successfully, false otherwise.
-   */
-  bool LoadFromDatabase(const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels,
-                        const std::vector<std::shared_ptr<CPVRClient>>& clients) override;
-
-  /*!
    * @brief Clear all data.
    */
   void Unload() override;
-
-  size_t m_iHiddenChannels; /*!< the amount of hidden channels in this container */
 };
 } // namespace PVR

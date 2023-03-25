@@ -96,9 +96,8 @@ public:
    * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
    * @return True when loaded successfully, false otherwise.
    */
-  virtual bool LoadFromDatabase(
-      const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels,
-      const std::vector<std::shared_ptr<CPVRClient>>& clients);
+  bool LoadFromDatabase(const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels,
+                        const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
   /*!
    * @brief Clear all data.
@@ -366,21 +365,22 @@ public:
   void GetChannelNumbers(std::vector<std::string>& channelNumbers) const;
 
   /*!
-   * @brief The amount of hidden channels in this container.
-   * @return The amount of hidden channels in this container.
-   */
-  virtual size_t GetNumHiddenChannels() const { return 0; }
-
-  /*!
-   * @brief Does this container holds channels.
+   * @brief Check whether this container has any channels.
    * @return True if there is at least one channel in this container, otherwise false.
    */
   bool HasChannels() const;
 
   /*!
+   * @brief Check whether this container has any new channels.
    * @return True if there is at least one new channel in this group that hasn't been persisted, false otherwise.
    */
   bool HasNewChannels() const;
+
+  /*!
+  * @brief Check whether this container has any hidden channels.
+  * @return True if at least one hidden channel is present, false otherwise.
+  */
+  bool HasHiddenChannels() const;
 
   /*!
    * @return True if anything changed in this group that hasn't been persisted, false otherwise.
