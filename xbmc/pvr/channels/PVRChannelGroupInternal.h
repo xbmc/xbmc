@@ -93,11 +93,6 @@ protected:
    */
   void Unload() override;
 
-  /*!
-   * @brief Update the vfs paths of all channels.
-   */
-  void UpdateChannelPaths();
-
   size_t m_iHiddenChannels; /*!< the amount of hidden channels in this container */
 };
 } // namespace PVR
