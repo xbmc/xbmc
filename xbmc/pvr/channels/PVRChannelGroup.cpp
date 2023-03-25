@@ -653,12 +653,8 @@ bool CPVRChannelGroup::UpdateFromClient(const std::shared_ptr<CPVRChannelGroupMe
     CLog::LogFC(LOGDEBUG, LOGPVR, "Added {} channel group member '{}' to group '{}'",
                 IsRadio() ? "radio" : "TV", channel->ChannelName(), GroupName());
 
-    // create EPG for new channel
-    if (IsInternalGroup() && channel->CreateEPG())
-    {
-      CLog::LogFC(LOGDEBUG, LOGPVR, "Created EPG for {} channel '{}' from PVR client",
-                  IsRadio() ? "radio" : "TV", channel->ChannelName());
-    }
+    // Create EPG for new channel
+    channel->CreateEPG();
 
     bChanged = true;
   }
@@ -1216,12 +1212,6 @@ bool CPVRChannelGroup::HasChannels() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return !m_members.empty();
-}
-
-bool CPVRChannelGroup::CreateChannelEpgs(bool bForce /* = false */)
-{
-  /* used only by internal channel groups */
-  return true;
 }
 
 bool CPVRChannelGroup::SetHidden(bool bHidden)
