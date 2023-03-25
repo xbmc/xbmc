@@ -115,7 +115,7 @@ void CGUIWindowPVRChannelsBase::UpdateButtons()
     btnShowHidden->SetVisible(CServiceBroker::GetPVRManager()
                                   .ChannelGroups()
                                   ->GetGroupAll(m_bRadio)
-                                  ->GetNumHiddenChannels() > 0);
+                                  ->HasHiddenChannels());
     btnShowHidden->SetSelected(m_bShowHiddenChannels);
   }
 
