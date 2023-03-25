@@ -411,7 +411,7 @@ void CPVRManager::Stop(bool bRestart /* = false */)
   }
 
   CLog::Log(LOGINFO, "PVR Manager: Stopping");
-  SetState(ManagerState::STATE_SSTOPPING);
+  SetState(ManagerState::STATE_STOPPING);
 
   StopThread();
 }
@@ -460,7 +460,7 @@ void CPVRManager::SetState(CPVRManager::ManagerState state)
     case ManagerState::STATE_STARTING:
       event = PVREvent::ManagerStarting;
       break;
-    case ManagerState::STATE_SSTOPPING:
+    case ManagerState::STATE_STOPPING:
       event = PVREvent::ManagerStopped;
       break;
     case ManagerState::STATE_INTERRUPTED:
