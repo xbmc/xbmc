@@ -42,6 +42,11 @@ InfoTagPicture::~InfoTagPicture()
     delete infoTag;
 }
 
+void InfoTagPicture::SerializeInfo(CPictureInfoTag& infoTag) const
+{
+  infoTag = *this->infoTag;
+}
+
 String InfoTagPicture::getResolution()
 {
   return infoTag->GetInfo(SLIDESHOW_RESOLUTION);

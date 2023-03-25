@@ -41,6 +41,11 @@ namespace XBMCAddon
         delete infoTag;
     }
 
+    void InfoTagMusic::SerializeInfo(MUSIC_INFO::CMusicInfoTag& infoTag) const
+    {
+      infoTag = *this->infoTag;
+    }
+
     int InfoTagMusic::getDbId()
     {
       return infoTag->GetDatabaseId();

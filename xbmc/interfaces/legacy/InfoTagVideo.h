@@ -903,7 +903,12 @@ namespace XBMCAddon
 #else
       explicit InfoTagVideo(bool offscreen = false);
 #endif
+
       ~InfoTagVideo() override;
+
+#ifndef SWIG
+      void SerializeInfo(CVideoInfoTag& infoTag) const;
+#endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

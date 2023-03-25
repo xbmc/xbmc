@@ -93,7 +93,12 @@ public:
 #else
   explicit InfoTagGame(bool offscreen = false);
 #endif
+
   ~InfoTagGame() override;
+
+#ifndef SWIG
+  void SerializeInfo(KODI::GAME::CGameInfoTag& infoTag) const;
+#endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
   ///

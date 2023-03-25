@@ -1203,6 +1203,23 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setVideoInfoTag() }
+      /// Sets the VideoInfoTag for this item.
+      ///
+      /// @param infoTag The video info tag
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      setVideoInfoTag(...);
+#else
+      void setVideoInfoTag(const xbmc::InfoTagVideo* infoTag);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getMusicInfoTag() }
       /// Returns the MusicInfoTag for this item.
       ///
@@ -1215,6 +1232,23 @@ namespace XBMCAddon
       getMusicInfoTag();
 #else
       xbmc::InfoTagMusic* getMusicInfoTag();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setMusicInfoTag() }
+      /// Sets the MusicInfoTag for this item.
+      ///
+      /// @param infoTag The music info tag
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      setMusicInfoTag(...);
+#else
+      void setMusicInfoTag(const xbmc::InfoTagMusic* infoTag);
 #endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
@@ -1237,6 +1271,23 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ setPictureInfoTag() }
+      /// Sets the InfoTagPicture for this item.
+      ///
+      /// @param infoTag The picture info tag
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      setPictureInfoTag(...);
+#else
+      void setPictureInfoTag(const xbmc::InfoTagPicture* infoTag);
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
       /// @brief \python_func{ getGameInfoTag() }
       /// Returns the InfoTagGame for this item.
       ///
@@ -1251,7 +1302,24 @@ namespace XBMCAddon
       xbmc::InfoTagGame* getGameInfoTag();
 #endif
 
-private:
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_xbmcgui_listitem
+      /// @brief \python_func{ getGameInfoTag() }
+      /// Sets the InfoTagGame for this item.
+      ///
+      /// @param infoTag The game info tag
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v20 New function added.
+      ///
+      setGameInfoTag(...);
+#else
+      void setGameInfoTag(const xbmc::InfoTagGame* infoTag);
+#endif
+
+    private:
       std::vector<std::string> getStringArray(const InfoLabelValue& alt,
                                               const std::string& tag,
                                               std::string value,
@@ -1268,6 +1336,12 @@ private:
 
       MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag();
       const MUSIC_INFO::CMusicInfoTag* GetMusicInfoTag() const;
+
+      CPictureInfoTag* GetPictureInfoTag();
+      const CPictureInfoTag* GetPictureInfoTag() const;
+
+      KODI::GAME::CGameInfoTag* GetGameInfoTag();
+      const KODI::GAME::CGameInfoTag* GetGameInfoTag() const;
 
       void setTitleRaw(std::string title);
       void setPathRaw(const std::string& path);

@@ -92,7 +92,12 @@ namespace XBMCAddon
 #else
       explicit InfoTagMusic(bool offscreen = false);
 #endif
+
       ~InfoTagMusic() override;
+
+#ifndef SWIG
+      void SerializeInfo(MUSIC_INFO::CMusicInfoTag& infoTag) const;
+#endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///

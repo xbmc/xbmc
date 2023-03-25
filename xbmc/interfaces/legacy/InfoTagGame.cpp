@@ -40,6 +40,11 @@ InfoTagGame::~InfoTagGame()
     delete infoTag;
 }
 
+void InfoTagGame::SerializeInfo(KODI::GAME::CGameInfoTag& infoTag) const
+{
+  infoTag = *this->infoTag;
+}
+
 String InfoTagGame::getTitle()
 {
   return infoTag->GetTitle();

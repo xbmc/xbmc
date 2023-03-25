@@ -88,7 +88,12 @@ public:
 #else
   explicit InfoTagPicture(bool offscreen = false);
 #endif
+
   ~InfoTagPicture() override;
+
+#ifndef SWIG
+  void SerializeInfo(CPictureInfoTag& infoTag) const;
+#endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
   ///

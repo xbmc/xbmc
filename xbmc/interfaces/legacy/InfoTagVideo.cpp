@@ -130,6 +130,11 @@ namespace XBMCAddon
         delete infoTag;
     }
 
+    void InfoTagVideo::SerializeInfo(CVideoInfoTag& infoTag) const
+    {
+      infoTag = *this->infoTag;
+    }
+
     int InfoTagVideo::getDbId()
     {
       return infoTag->m_iDbId;

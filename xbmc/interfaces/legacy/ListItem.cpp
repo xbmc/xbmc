@@ -892,10 +892,22 @@ namespace XBMCAddon
       return new xbmc::InfoTagVideo(GetVideoInfoTag(), m_offscreen);
     }
 
+    void ListItem::setVideoInfoTag(const xbmc::InfoTagVideo* infoTag)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      infoTag->SerializeInfo(*GetVideoInfoTag());
+    }
+
     xbmc::InfoTagMusic* ListItem::getMusicInfoTag()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       return new xbmc::InfoTagMusic(GetMusicInfoTag(), m_offscreen);
+    }
+
+    void ListItem::setMusicInfoTag(const xbmc::InfoTagMusic* infoTag)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      infoTag->SerializeInfo(*GetMusicInfoTag());
     }
 
     xbmc::InfoTagPicture* ListItem::getPictureInfoTag()
@@ -906,12 +918,24 @@ namespace XBMCAddon
       return new xbmc::InfoTagPicture();
     }
 
+    void ListItem::setPictureInfoTag(const xbmc::InfoTagPicture* infoTag)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      infoTag->SerializeInfo(*GetPictureInfoTag());
+    }
+
     xbmc::InfoTagGame* ListItem::getGameInfoTag()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
       if (item->HasGameInfoTag())
         return new xbmc::InfoTagGame(item->GetGameInfoTag(), m_offscreen);
       return new xbmc::InfoTagGame();
+    }
+
+    void ListItem::setGameInfoTag(const xbmc::InfoTagGame* infoTag)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
+      infoTag->SerializeInfo(*GetGameInfoTag());
     }
 
     std::vector<std::string> ListItem::getStringArray(const InfoLabelValue& alt,
@@ -972,6 +996,26 @@ namespace XBMCAddon
     const MUSIC_INFO::CMusicInfoTag* ListItem::GetMusicInfoTag() const
     {
       return item->GetMusicInfoTag();
+    }
+
+    CPictureInfoTag* ListItem::GetPictureInfoTag()
+    {
+      return item->GetPictureInfoTag();
+    }
+
+    const CPictureInfoTag* ListItem::GetPictureInfoTag() const
+    {
+      return item->GetPictureInfoTag();
+    }
+
+    KODI::GAME::CGameInfoTag* ListItem::GetGameInfoTag()
+    {
+      return item->GetGameInfoTag();
+    }
+
+    const KODI::GAME::CGameInfoTag* ListItem::GetGameInfoTag() const
+    {
+      return item->GetGameInfoTag();
     }
 
     void ListItem::setTitleRaw(std::string title)
