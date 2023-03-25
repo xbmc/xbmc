@@ -54,10 +54,14 @@ bool CPVRChannelGroupInternal::LoadFromDatabase(
   {
     for (const auto& groupMember : m_members)
     {
+      const auto channel = groupMember.second->Channel();
       groupMember.second->Channel()->CreateEPG();
+      groupMember.second->SetGroupName(GroupName());
+
+      if (groupMember.second->Channel()->IsHidden())
+        m_iHiddenChannels++;
     }
 
-    UpdateChannelPaths();
     return true;
   }
 
