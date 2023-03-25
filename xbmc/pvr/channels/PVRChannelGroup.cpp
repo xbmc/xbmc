@@ -116,17 +116,25 @@ bool CPVRChannelGroup::LoadFromDatabase(
 
   for (const auto& groupMember : m_members)
   {
-    if (groupMember.second->Channel())
+    groupMember.second->SetGroupName(GroupName());
+
+    auto channel = groupMember.second->Channel();
+    if (channel)
       continue;
 
-    auto channel = channels.find(groupMember.first);
-    if (channel == channels.end())
+    auto channelIt = channels.find(groupMember.first);
+    if (channelIt == channels.end())
     {
       CLog::Log(LOGERROR, "Cannot find group member '{},{}' in channels!", groupMember.first.first,
                 groupMember.first.second);
       // No workaround here, please. We need to find and fix the root cause of this case!
     }
-    groupMember.second->SetChannel((*channel).second);
+
+    channel = (*channelIt).second;
+    groupMember.second->SetChannel(channel);
+
+    // Create EPG for loaded channel
+    channel->CreateEPG();
   }
 
   m_bLoaded = true;
@@ -1142,6 +1150,13 @@ bool CPVRChannelGroup::HasChannels() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return !m_members.empty();
+}
+
+bool CPVRChannelGroup::HasHiddenChannels() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return std::any_of(m_members.cbegin(), m_members.cend(),
+                     [](const auto& member) { return member.second->Channel()->IsHidden(); });
 }
 
 bool CPVRChannelGroup::SetHidden(bool bHidden)

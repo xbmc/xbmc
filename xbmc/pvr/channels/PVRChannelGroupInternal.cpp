@@ -32,41 +32,17 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio)
   : CPVRChannelGroup(
         CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287), PVR_GROUP_CLIENT_ID_LOCAL),
         PVR_GROUP_TYPE_ALL_CHANNELS,
-        nullptr),
-    m_iHiddenChannels(0)
+        nullptr)
 {
 }
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelsPath& path)
-  : CPVRChannelGroup(path, PVR_GROUP_TYPE_ALL_CHANNELS, nullptr), m_iHiddenChannels(0)
+  : CPVRChannelGroup(path, PVR_GROUP_TYPE_ALL_CHANNELS, nullptr)
 {
 }
 
 CPVRChannelGroupInternal::~CPVRChannelGroupInternal()
 {
-}
-
-bool CPVRChannelGroupInternal::LoadFromDatabase(
-    const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels,
-    const std::vector<std::shared_ptr<CPVRClient>>& clients)
-{
-  if (CPVRChannelGroup::LoadFromDatabase(channels, clients))
-  {
-    for (const auto& groupMember : m_members)
-    {
-      const auto channel = groupMember.second->Channel();
-      groupMember.second->Channel()->CreateEPG();
-      groupMember.second->SetGroupName(GroupName());
-
-      if (groupMember.second->Channel()->IsHidden())
-        m_iHiddenChannels++;
-    }
-
-    return true;
-  }
-
-  CLog::LogF(LOGERROR, "Failed to load channels");
-  return false;
 }
 
 void CPVRChannelGroupInternal::Unload()
@@ -168,14 +144,6 @@ bool CPVRChannelGroupInternal::AppendToGroup(
 
   groupMember->Channel()->SetHidden(false, true);
 
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-
-  if (m_iHiddenChannels > 0)
-    m_iHiddenChannels--;
-
-  const size_t iChannelNumber = m_members.size() - m_iHiddenChannels;
-  allChannelsGroupMember->SetChannelNumber(CPVRChannelNumber(static_cast<int>(iChannelNumber), 0));
-
   SortAndRenumber();
   return true;
 }
@@ -187,10 +155,6 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(
     return false;
 
   groupMember->Channel()->SetHidden(true, true);
-
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-
-  ++m_iHiddenChannels;
 
   SortAndRenumber();
   return true;
