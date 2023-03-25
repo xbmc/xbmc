@@ -63,7 +63,7 @@
 {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    [self setOpenGLContext:m_glcontext];
+    [m_glcontext setView:self];
 
     // clear screen on first render
     glClearColor(0, 0, 0, 0);
