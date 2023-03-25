@@ -76,28 +76,10 @@ void CPVRChannelGroupInternal::Unload()
 
 void CPVRChannelGroupInternal::CheckGroupName()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  //! @todo major design flaw to fix: channel and group URLs must not contain the group name!
 
-  /* check whether the group name is still correct, or channels will fail to load after the language setting changed */
-  const std::string& strNewGroupName = g_localizeStrings.Get(19287);
-  if (GroupName() != strNewGroupName)
-  {
-    SetGroupName(strNewGroupName);
-    UpdateChannelPaths();
-  }
-}
-
-void CPVRChannelGroupInternal::UpdateChannelPaths()
-{
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_iHiddenChannels = 0;
-  for (auto& groupMemberPair : m_members)
-  {
-    if (groupMemberPair.second->Channel()->IsHidden())
-      ++m_iHiddenChannels;
-    else
-      groupMemberPair.second->SetGroupName(GroupName());
-  }
+  // Ensure the group name is still correct, or channels may fail to load after a locale change
+  SetGroupName(g_localizeStrings.Get(19287));
 }
 
 bool CPVRChannelGroupInternal::UpdateFromClients(
