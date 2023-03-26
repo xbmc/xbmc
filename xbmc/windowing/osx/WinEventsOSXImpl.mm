@@ -36,6 +36,15 @@
   std::queue<XBMC_Event> events;
   CCriticalSection m_inputlock;
   id mLocalMonitorId;
+
+  //! macOS requires the calls the NSCursor hide/unhide to be balanced
+  enum class NSCursorVisibilityBalancer
+  {
+    NONE,
+    HIDE,
+    UNHIDE
+  };
+  NSCursorVisibilityBalancer m_lastAppCursorVisibilityAction;
 }
 
 #pragma mark - init
@@ -45,6 +54,7 @@
   self = [super init];
 
   [self enableInputEvents];
+  m_lastAppCursorVisibilityAction = NSCursorVisibilityBalancer::NONE;
 
   return self;
 }
@@ -198,6 +208,24 @@
   if (mLocalMonitorId != nil)
     [NSEvent removeMonitor:mLocalMonitorId];
   mLocalMonitorId = nil;
+}
+
+- (void)signalMouseEntered
+{
+  if (m_lastAppCursorVisibilityAction != NSCursorVisibilityBalancer::HIDE)
+  {
+    m_lastAppCursorVisibilityAction = NSCursorVisibilityBalancer::HIDE;
+    [NSCursor hide];
+  }
+}
+
+- (void)signalMouseExited
+{
+  if (m_lastAppCursorVisibilityAction != NSCursorVisibilityBalancer::UNHIDE)
+  {
+    m_lastAppCursorVisibilityAction = NSCursorVisibilityBalancer::UNHIDE;
+    [NSCursor unhide];
+  }
 }
 
 - (NSEvent*)InputEventHandler:(NSEvent*)nsevent

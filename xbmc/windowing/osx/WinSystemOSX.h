@@ -47,7 +47,6 @@ public:
   bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop) override;
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
   void UpdateResolutions() override;
-  void ShowOSMouse(bool show) override;
   bool Minimize() override;
   bool Restore() override;
   bool Hide() override;
@@ -83,6 +82,9 @@ public:
   NSRect GetWindowDimensions();
   void enableInputEvents();
   void disableInputEvents();
+
+  void signalMouseEntered();
+  void signalMouseExited();
 
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
