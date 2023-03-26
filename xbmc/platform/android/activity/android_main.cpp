@@ -12,6 +12,7 @@
 
 #include "platform/android/activity/JNIMainActivity.h"
 #include "platform/android/activity/JNIXBMCAudioManagerOnAudioFocusChangeListener.h"
+#include "platform/android/activity/JNIXBMCConnectivityManagerNetworkCallback.h"
 #include "platform/android/activity/JNIXBMCDisplayManagerDisplayListener.h"
 #include "platform/android/activity/JNIXBMCFile.h"
 #include "platform/android/activity/JNIXBMCJsonHandler.h"
@@ -28,6 +29,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <thread>
+
 #include <unistd.h>
 
 namespace
@@ -130,6 +132,7 @@ extern "C" JNIEXPORT jint JNI_OnLoad(JavaVM *vm, void *reserved)
   jni::CJNIXBMCFile::RegisterNatives(env);
   jni::CJNIXBMCURIUtils::RegisterNatives(env);
   jni::CJNIXBMCSpeechRecognitionListener::RegisterNatives(env);
+  jni::CJNIXBMCConnectivityManagerNetworkCallback::RegisterNatives(env);
 
   jclass cMain = env->FindClass(mainClass.c_str());
   if(cMain)
