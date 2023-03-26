@@ -303,6 +303,7 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_MONITOR)
   {
+    CServiceBroker::GetWinSystem()->NotifyScreenChangeIntention();
     CServiceBroker::GetWinSystem()->UpdateResolutions();
     RESOLUTION newRes = GetResolutionForScreen();
 

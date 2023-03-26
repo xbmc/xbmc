@@ -1196,6 +1196,9 @@ void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, S
         if (settingString->GetOptionsType() == SettingOptionsType::Dynamic)
           settingString->UpdateDynamicOptions();
       }
+      // when a setting depends on another, it might need to refresh its visible/enable status
+      // after been updated. E.g. if it depends on some complex setting condition
+      RefreshVisibilityAndEnableStatus(setting);
       break;
     }
 
@@ -1209,6 +1212,34 @@ void CSettingsManager::UpdateSettingByDependency(const std::string &settingId, S
     case SettingDependencyType::Unknown:
     default:
       break;
+  }
+}
+
+void CSettingsManager::RefreshVisibilityAndEnableStatus(
+    const std::shared_ptr<const CSetting>& setting)
+{
+  bool updateVisibility{false};
+  bool updateEnableStatus{false};
+  for (const auto& dep : setting->GetDependencies())
+  {
+    if (dep.GetType() == SettingDependencyType::Enable)
+    {
+      updateEnableStatus = true;
+    }
+
+    if (dep.GetType() == SettingDependencyType::Visible)
+    {
+      updateVisibility = true;
+    }
+  }
+
+  if (updateVisibility)
+  {
+    OnSettingPropertyChanged(setting, "visible");
+  }
+  if (updateEnableStatus)
+  {
+    OnSettingPropertyChanged(setting, "enabled");
   }
 }
 
