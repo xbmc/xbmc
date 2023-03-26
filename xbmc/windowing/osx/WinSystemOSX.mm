@@ -1279,7 +1279,12 @@ std::string CWinSystemOSX::GetClipboardText()
   return utf8_text;
 }
 
-void CWinSystemOSX::ShowOSMouse(bool show)
+void CWinSystemOSX::signalMouseEntered()
 {
-  // do nothing (this is already handled by OSXGLView on mouseEntered and mouseExited)
+  m_winEvents->signalMouseEntered();
+}
+
+void CWinSystemOSX::signalMouseExited()
+{
+  m_winEvents->signalMouseExited();
 }

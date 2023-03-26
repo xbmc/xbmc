@@ -52,3 +52,13 @@ void CWinEventsOSX::disableInputEvents()
 {
   return [m_eventsImplWrapper->callbackClass disableInputEvents];
 }
+
+void CWinEventsOSX::signalMouseEntered()
+{
+  return [m_eventsImplWrapper->callbackClass signalMouseEntered];
+}
+
+void CWinEventsOSX::signalMouseExited()
+{
+  return [m_eventsImplWrapper->callbackClass signalMouseExited];
+}
