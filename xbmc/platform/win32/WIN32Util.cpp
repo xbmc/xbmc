@@ -1600,9 +1600,9 @@ VideoDriverInfo CWIN32Util::GetVideoDriverInfo(const UINT vendorId, const std::w
       info.majorVersion = std::stoi(ver.substr(ver.length() - 5, 3));
       info.minorVersion = std::stoi(ver.substr(ver.length() - 2, 2));
     }
-    else // for Intel/AMD fill major version only
+    else // for Intel/AMD fill major version only. Single-digit for WDDM < 1.3.
     {
-      info.majorVersion = std::stoi(info.version.substr(0, 2));
+      info.majorVersion = std::stoi(info.version.substr(0, info.version.find('.')));
     }
 
   } while (sta == ERROR_SUCCESS && !info.valid);

@@ -371,26 +371,32 @@ void DX::DeviceResources::CreateDeviceResources()
 
   if (FAILED(hr))
   {
-    CLog::LogF(LOGERROR,
-               "unable to create hardware device, trying to create WARP devices then. Error {}",
+    CLog::LogF(LOGERROR, "unable to create hardware device with video support, error {}",
                DX::GetErrorDescription(hr));
-    hr = D3D11CreateDevice(
-        nullptr,
-        D3D_DRIVER_TYPE_WARP, // Create a WARP device instead of a hardware device.
-        nullptr,
-        creationFlags,
-        featureLevels.data(),
-        featureLevels.size(),
-        D3D11_SDK_VERSION,
-        &device,
-        &m_d3dFeatureLevel,
-        &context
-    );
+    CLog::LogF(LOGERROR, "trying to create hardware device without video support.");
+
+    creationFlags &= ~D3D11_CREATE_DEVICE_VIDEO_SUPPORT;
+
+    hr = D3D11CreateDevice(m_adapter.Get(), drivertType, nullptr, creationFlags,
+                           featureLevels.data(), featureLevels.size(), D3D11_SDK_VERSION, &device,
+                           &m_d3dFeatureLevel, &context);
+
     if (FAILED(hr))
     {
-      CLog::LogF(LOGFATAL, "unable to create WARP device. Rendering is not possible. Error {}",
+      CLog::LogF(LOGERROR, "unable to create hardware device, error {}",
                  DX::GetErrorDescription(hr));
-      CHECK_ERR();
+      CLog::LogF(LOGERROR, "trying to create WARP device.");
+
+      hr = D3D11CreateDevice(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, creationFlags,
+                             featureLevels.data(), featureLevels.size(), D3D11_SDK_VERSION, &device,
+                             &m_d3dFeatureLevel, &context);
+
+      if (FAILED(hr))
+      {
+        CLog::LogF(LOGFATAL, "unable to create WARP device. Rendering is not possible. Error {}",
+                   DX::GetErrorDescription(hr));
+        CHECK_ERR();
+      }
     }
   }
 
