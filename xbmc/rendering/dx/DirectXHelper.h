@@ -21,6 +21,7 @@ enum PCI_Vendors
   PCIV_AMD = 0x1002,
   PCIV_NVIDIA = 0x10DE,
   PCIV_Intel = 0x8086,
+  PCIV_MICROSOFT = 0x1414,
 };
 
 namespace DX
@@ -114,6 +115,9 @@ namespace DX
         break;
       case PCIV_NVIDIA:
         name = "NVIDIA";
+        break;
+      case PCIV_MICROSOFT:
+        name = "Microsoft";
         break;
     }
 
