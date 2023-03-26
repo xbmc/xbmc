@@ -29,6 +29,9 @@ public:
   void enableInputEvents();
   void disableInputEvents();
 
+  void signalMouseEntered();
+  void signalMouseExited();
+
 private:
   std::unique_ptr<CWinEventsOSXImplWrapper> m_eventsImplWrapper;
 };

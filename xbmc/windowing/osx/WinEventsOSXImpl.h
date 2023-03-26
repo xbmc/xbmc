@@ -22,4 +22,7 @@
 - (void)disableInputEvents;
 - (XBMC_Event)keyPressEvent:(CGEventRef*)event;
 
+- (void)signalMouseEntered;
+- (void)signalMouseExited;
+
 @end

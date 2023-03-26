@@ -16,6 +16,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
+#import "windowing/osx/WinSystemOSX.h"
 
 #include "system_gl.h"
 
@@ -90,18 +91,22 @@
   [self addTrackingArea:m_trackingArea];
 }
 
-- (void)mouseEntered:(NSEvent*)theEvent
+- (void)mouseEntered:(NSEvent*)nsEvent
 {
-  [NSCursor hide];
+  CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (winSystem)
+    winSystem->signalMouseEntered();
 }
 
-- (void)mouseMoved:(NSEvent*)theEvent
+- (void)mouseMoved:(NSEvent*)nsEvent
 {
 }
 
-- (void)mouseExited:(NSEvent*)theEvent
+- (void)mouseExited:(NSEvent*)nsEvent
 {
-  [NSCursor unhide];
+  CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (winSystem)
+    winSystem->signalMouseExited();
 }
 
 - (NSOpenGLContext*)getGLContext
