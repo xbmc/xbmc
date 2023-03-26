@@ -96,9 +96,8 @@ public:
    * @param clients The PVR clients data should be loaded for. Leave empty for all clients.
    * @return True when loaded successfully, false otherwise.
    */
-  virtual bool LoadFromDatabase(
-      const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels,
-      const std::vector<std::shared_ptr<CPVRClient>>& clients);
+  bool LoadFromDatabase(const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels,
+                        const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
   /*!
    * @brief Clear all data.
@@ -142,27 +141,18 @@ public:
   void SetPath(const CPVRChannelsPath& path);
 
   /*!
-   * @brief Change the channelnumber of a group. Used by CGUIDialogPVRChannelManager.
-   * Call SortByChannelNumber() and Renumber() after all changes are done.
-   * @param channel The channel to change the channel number for.
-   * @param channelNumber The new channel number.
-   */
-  bool SetChannelNumber(const std::shared_ptr<CPVRChannel>& channel,
-                        const CPVRChannelNumber& channelNumber);
-
-  /*!
-   * @brief Remove a channel from this container.
-   * @param channel The channel to remove.
+   * @brief Remove a channel group member from this container.
+   * @param groupMember The channel to remove.
    * @return True if the channel was found and removed, false otherwise.
    */
-  virtual bool RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel);
+  virtual bool RemoveFromGroup(const std::shared_ptr<CPVRChannelGroupMember>& groupMember);
 
   /*!
    * @brief Append a channel to this container.
-   * @param channel The channel to append.
+   * @param groupMember The channel to append.
    * @return True if the channel was appended, false otherwise.
    */
-  virtual bool AppendToGroup(const std::shared_ptr<CPVRChannel>& channel);
+  virtual bool AppendToGroup(const std::shared_ptr<CPVRChannelGroupMember>& groupMember);
 
   /*!
    * @brief Change the name of this group.
@@ -190,11 +180,11 @@ public:
   bool Persist();
 
   /*!
-   * @brief Check whether a channel is in this container.
-   * @param channel The channel to find.
+   * @brief Check whether a channel group member is in this container.
+   * @param grouoMember The channel to find.
    * @return True if the channel was found, false otherwise.
    */
-  virtual bool IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const;
+  virtual bool IsGroupMember(const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const;
 
   /*!
    * @brief Check if this group is the internal group containing all channels.
@@ -375,21 +365,22 @@ public:
   void GetChannelNumbers(std::vector<std::string>& channelNumbers) const;
 
   /*!
-   * @brief The amount of hidden channels in this container.
-   * @return The amount of hidden channels in this container.
-   */
-  virtual size_t GetNumHiddenChannels() const { return 0; }
-
-  /*!
-   * @brief Does this container holds channels.
+   * @brief Check whether this container has any channels.
    * @return True if there is at least one channel in this container, otherwise false.
    */
   bool HasChannels() const;
 
   /*!
+   * @brief Check whether this container has any new channels.
    * @return True if there is at least one new channel in this group that hasn't been persisted, false otherwise.
    */
   bool HasNewChannels() const;
+
+  /*!
+  * @brief Check whether this container has any hidden channels.
+  * @return True if at least one hidden channel is present, false otherwise.
+  */
+  bool HasHiddenChannels() const;
 
   /*!
    * @return True if anything changed in this group that hasn't been persisted, false otherwise.
@@ -400,31 +391,6 @@ public:
    * @return True if the group was never persisted, false otherwise.
    */
   bool IsNew() const;
-
-  /*!
-   * @brief Update a channel group member with given data.
-   * @param storageId The storage id of the channel.
-   * @param strChannelName The channel name to set.
-   * @param strIconPath The icon path to set.
-   * @param iEPGSource The EPG id.
-   * @param iChannelNumber The channel number to set.
-   * @param bHidden Set/Remove hidden flag for the channel group member identified by storage id.
-   * @param bEPGEnabled Set/Remove EPG enabled flag for the channel group member identified by storage id.
-   * @param bParentalLocked Set/Remove parental locked flag for the channel group member identified by storage id.
-   * @param bUserSetIcon Set/Remove user set icon flag for the channel group member identified by storage id.
-   * @param bUserSetHidden Set/Remove user set hidden flag for the channel group member identified by storage id.
-   * @return True on success, false otherwise.
-   */
-  bool UpdateChannel(const std::pair<int, int>& storageId,
-                     const std::string& strChannelName,
-                     const std::string& strIconPath,
-                     int iEPGSource,
-                     int iChannelNumber,
-                     bool bHidden,
-                     bool bEPGEnabled,
-                     bool bParentalLocked,
-                     bool bUserSetIcon,
-                     bool bUserSetHidden);
 
   /*!
    * @brief Get a channel given the channel number on the client.

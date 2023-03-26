@@ -32,37 +32,17 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio)
   : CPVRChannelGroup(
         CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287), PVR_GROUP_CLIENT_ID_LOCAL),
         PVR_GROUP_TYPE_ALL_CHANNELS,
-        nullptr),
-    m_iHiddenChannels(0)
+        nullptr)
 {
 }
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelsPath& path)
-  : CPVRChannelGroup(path, PVR_GROUP_TYPE_ALL_CHANNELS, nullptr), m_iHiddenChannels(0)
+  : CPVRChannelGroup(path, PVR_GROUP_TYPE_ALL_CHANNELS, nullptr)
 {
 }
 
 CPVRChannelGroupInternal::~CPVRChannelGroupInternal()
 {
-}
-
-bool CPVRChannelGroupInternal::LoadFromDatabase(
-    const std::map<std::pair<int, int>, std::shared_ptr<CPVRChannel>>& channels,
-    const std::vector<std::shared_ptr<CPVRClient>>& clients)
-{
-  if (CPVRChannelGroup::LoadFromDatabase(channels, clients))
-  {
-    for (const auto& groupMember : m_members)
-    {
-      groupMember.second->Channel()->CreateEPG();
-    }
-
-    UpdateChannelPaths();
-    return true;
-  }
-
-  CLog::LogF(LOGERROR, "Failed to load channels");
-  return false;
 }
 
 void CPVRChannelGroupInternal::Unload()
@@ -72,28 +52,11 @@ void CPVRChannelGroupInternal::Unload()
 
 void CPVRChannelGroupInternal::CheckGroupName()
 {
-  std::unique_lock<CCriticalSection> lock(m_critSection);
+  //! @todo major design flaw to fix: channel and group URLs must not contain the group name!
 
-  /* check whether the group name is still correct, or channels will fail to load after the language setting changed */
-  const std::string& strNewGroupName = g_localizeStrings.Get(19287);
-  if (GroupName() != strNewGroupName)
-  {
-    SetGroupName(strNewGroupName);
-    UpdateChannelPaths();
-  }
-}
-
-void CPVRChannelGroupInternal::UpdateChannelPaths()
-{
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_iHiddenChannels = 0;
-  for (auto& groupMemberPair : m_members)
-  {
-    if (groupMemberPair.second->Channel()->IsHidden())
-      ++m_iHiddenChannels;
-    else
-      groupMemberPair.second->SetGroupName(GroupName());
-  }
+  // Ensure the group name is still correct, or channels may fail to load after a locale change
+  if (!IsUserSetName())
+    SetGroupName(g_localizeStrings.Get(19287));
 }
 
 bool CPVRChannelGroupInternal::UpdateFromClients(
@@ -173,45 +136,32 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroupInternal::
   return removedMembers;
 }
 
-bool CPVRChannelGroupInternal::AppendToGroup(const std::shared_ptr<CPVRChannel>& channel)
+bool CPVRChannelGroupInternal::AppendToGroup(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
 {
-  if (IsGroupMember(channel))
+  if (IsGroupMember(groupMember))
     return false;
 
-  const std::shared_ptr<CPVRChannelGroupMember> groupMember = GetByUniqueID(channel->StorageId());
-  if (!groupMember)
-    return false;
-
-  channel->SetHidden(false, true);
-
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-
-  if (m_iHiddenChannels > 0)
-    m_iHiddenChannels--;
-
-  const unsigned int iChannelNumber = m_members.size() - m_iHiddenChannels;
-  groupMember->SetChannelNumber(CPVRChannelNumber(iChannelNumber, 0));
+  groupMember->Channel()->SetHidden(false, true);
 
   SortAndRenumber();
   return true;
 }
 
-bool CPVRChannelGroupInternal::RemoveFromGroup(const std::shared_ptr<CPVRChannel>& channel)
+bool CPVRChannelGroupInternal::RemoveFromGroup(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
 {
-  if (!IsGroupMember(channel))
+  if (!IsGroupMember(groupMember))
     return false;
 
-  channel->SetHidden(true, true);
-
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-
-  ++m_iHiddenChannels;
+  groupMember->Channel()->SetHidden(true, true);
 
   SortAndRenumber();
   return true;
 }
 
-bool CPVRChannelGroupInternal::IsGroupMember(const std::shared_ptr<CPVRChannel>& channel) const
+bool CPVRChannelGroupInternal::IsGroupMember(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const
 {
-  return !channel->IsHidden();
+  return !groupMember->Channel()->IsHidden();
 }
