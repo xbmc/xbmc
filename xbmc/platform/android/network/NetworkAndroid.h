@@ -11,6 +11,8 @@
 #include "network/Network.h"
 #include "threads/CriticalSection.h"
 
+#include "platform/android/activity/JNIXBMCConnectivityManagerNetworkCallback.h"
+
 #include <androidjni/LinkProperties.h>
 #include <androidjni/Network.h>
 #include <androidjni/NetworkInfo.h>
@@ -47,8 +49,7 @@ protected:
   CJNINetworkInterface m_intf;
 };
 
-
-class CNetworkAndroid : public CNetworkBase
+class CNetworkAndroid : public CNetworkBase, public jni::CJNIXBMCConnectivityManagerNetworkCallback
 {
   friend class CXBMCApp;
 
@@ -72,4 +73,10 @@ protected:
   std::vector<CNetworkInterface*> m_interfaces;
   std::vector<CNetworkInterface*> m_oldInterfaces;
   CCriticalSection m_refreshMutex;
+
+  std::unique_ptr<CNetworkInterface> m_defaultInterface;
+
+public:
+  void onAvailable(const CJNINetwork network) override;
+  void onLost(const CJNINetwork network) override;
 };

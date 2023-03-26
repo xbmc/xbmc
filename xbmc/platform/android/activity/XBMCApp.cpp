@@ -1397,9 +1397,12 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   {
     if (g_application.IsInitialized())
     {
-      CNetworkBase& net = CServiceBroker::GetNetwork();
-      CNetworkAndroid* netdroid = static_cast<CNetworkAndroid*>(&net);
-      netdroid->RetrieveInterfaces();
+      if (CJNIBase::GetSDKVersion() < 24)
+      {
+        CNetworkBase& net = CServiceBroker::GetNetwork();
+        CNetworkAndroid* netdroid = static_cast<CNetworkAndroid*>(&net);
+        netdroid->RetrieveInterfaces();
+      }
     }
   }
 }
