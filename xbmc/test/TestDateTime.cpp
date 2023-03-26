@@ -475,6 +475,19 @@ TEST_F(TestDateTime, GetAsLocalized)
   EXPECT_EQ(dateTime1.GetAsLocalizedTime(TIME_FORMAT(19)), "12:34:56");
   EXPECT_EQ(dateTime1.GetAsLocalizedTime(TIME_FORMAT(27)), "12:34:56 PM");
 
+  //Test abbreviated month and short year formats
+  CDateTime dateTime3;
+  dateTime3.SetDateTime(1991, 05, 9, 12, 34, 56); //Need a single digit date
+
+  g_langInfo.SetShortDateFormat("DD-mmm-YY");
+  g_langInfo.SetLongDateFormat("ddd, D MMMM YYYY");
+
+  //Actual formatted date
+  //Test short month name and 2 digit year.
+  EXPECT_EQ(dateTime3.GetAsLocalizedDate(false), "09-May-91");
+  //Test short day name and single digit day number.
+  EXPECT_EQ(dateTime3.GetAsLocalizedDate(true), "Thu, 9 May 1991");
+
   // not possible to use these three
   // EXPECT_EQ(dateTime1.GetAsLocalizedTime(TIME_FORMAT(32)), "");
   // EXPECT_EQ(dateTime1.GetAsLocalizedTime(TIME_FORMAT(64)), "");
