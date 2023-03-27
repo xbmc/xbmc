@@ -709,7 +709,6 @@ int CPVRDatabase::GetGroups(CPVRChannelGroups& results, const std::string& query
                              m_pDS->fv("iClientId").get_asInt()));
 
         group->m_iGroupId = m_pDS->fv("idGroup").get_asInt();
-        group->m_iGroupType = m_pDS->fv("iGroupType").get_asInt();
         group->m_iLastWatched = static_cast<time_t>(m_pDS->fv("iLastWatched").get_asInt());
         group->m_bHidden = m_pDS->fv("bIsHidden").get_asBool();
         group->m_iPosition = m_pDS->fv("iPosition").get_asInt();
@@ -994,8 +993,9 @@ bool CPVRDatabase::Persist(CPVRChannelGroup& group)
   else
     bReturn = true;
 
-  /* only persist the channel data for the internal groups */
-  if (group.IsInternalGroup())
+  // only persist the channel data for the all channels groups as all groups
+  // share the same channel instances and all groups has them all.
+  if (group.IsChannelsOwner())
     bReturn &= PersistChannels(group);
 
   /* persist the group member entries */

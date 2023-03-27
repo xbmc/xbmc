@@ -20,7 +20,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/channels/PVRChannelGroup.h"
-#include "pvr/channels/PVRChannelGroupInternal.h"
+#include "pvr/channels/PVRChannelGroupAllChannels.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelsPath.h"
@@ -858,9 +858,9 @@ void CPVRManager::LocalizationChanged()
   std::unique_lock<CCriticalSection> lock(m_critSection);
   if (IsStarted())
   {
-    static_cast<CPVRChannelGroupInternal*>(m_channelGroups->GetGroupAllRadio().get())
+    static_cast<CPVRChannelGroupAllChannels*>(m_channelGroups->GetGroupAllRadio().get())
         ->CheckGroupName();
-    static_cast<CPVRChannelGroupInternal*>(m_channelGroups->GetGroupAllTV().get())
+    static_cast<CPVRChannelGroupAllChannels*>(m_channelGroups->GetGroupAllTV().get())
         ->CheckGroupName();
   }
 }
