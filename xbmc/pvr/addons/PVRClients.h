@@ -29,7 +29,6 @@ namespace ADDON
 namespace PVR
 {
 class CPVRChannel;
-class CPVRChannelGroupInternal;
 class CPVRChannelGroup;
 class CPVRChannelGroupMember;
 class CPVRChannelGroups;
