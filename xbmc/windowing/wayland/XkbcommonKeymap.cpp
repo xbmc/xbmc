@@ -28,154 +28,152 @@ struct ModifierNameXBMCMapping
 };
 
 static const std::vector<ModifierNameXBMCMapping> ModifierNameXBMCMappings = {
-  { XKB_MOD_NAME_CTRL, XBMCKMOD_LCTRL },
-  { XKB_MOD_NAME_SHIFT, XBMCKMOD_LSHIFT },
-  { XKB_MOD_NAME_LOGO, XBMCKMOD_LSUPER },
-  { XKB_MOD_NAME_ALT, XBMCKMOD_LALT },
-  { "Meta", XBMCKMOD_LMETA },
-  { "RControl", XBMCKMOD_RCTRL },
-  { "RShift", XBMCKMOD_RSHIFT },
-  { "Hyper", XBMCKMOD_RSUPER },
-  { "AltGr", XBMCKMOD_RALT },
-  { XKB_LED_NAME_CAPS, XBMCKMOD_CAPS },
-  { XKB_LED_NAME_NUM, XBMCKMOD_NUM },
-  { XKB_LED_NAME_SCROLL, XBMCKMOD_MODE }
-};
+    {XKB_MOD_NAME_CTRL, XBMCKMOD_LCTRL},
+    {XKB_MOD_NAME_SHIFT, XBMCKMOD_LSHIFT},
+    {XKB_MOD_NAME_LOGO, XBMCKMOD_LSUPER},
+    {XKB_MOD_NAME_ALT, XBMCKMOD_LALT},
+    {"Meta", XBMCKMOD_LMETA},
+    {"RControl", XBMCKMOD_RCTRL},
+    {"RShift", XBMCKMOD_RSHIFT},
+    {"Hyper", XBMCKMOD_RSUPER},
+    {"AltGr", XBMCKMOD_RALT},
+    {XKB_LED_NAME_CAPS, XBMCKMOD_CAPS},
+    {XKB_LED_NAME_NUM, XBMCKMOD_NUM},
+    {XKB_LED_NAME_SCROLL, XBMCKMOD_MODE}};
 
 static const std::map<xkb_keycode_t, XBMCKey> XkbKeycodeXBMCMappings = {
-  // Function keys before start of ASCII printable character range
-  { XKB_KEY_BackSpace, XBMCK_BACKSPACE },
-  { XKB_KEY_Tab, XBMCK_TAB },
-  { XKB_KEY_Clear, XBMCK_CLEAR },
-  { XKB_KEY_Return, XBMCK_RETURN },
-  { XKB_KEY_Pause, XBMCK_PAUSE },
-  { XKB_KEY_Escape, XBMCK_ESCAPE },
+    // Function keys before start of ASCII printable character range
+    {XKB_KEY_BackSpace, XBMCK_BACKSPACE},
+    {XKB_KEY_Tab, XBMCK_TAB},
+    {XKB_KEY_Clear, XBMCK_CLEAR},
+    {XKB_KEY_Return, XBMCK_RETURN},
+    {XKB_KEY_Pause, XBMCK_PAUSE},
+    {XKB_KEY_Escape, XBMCK_ESCAPE},
 
-  // ASCII printable range - not included here
+    // ASCII printable range - not included here
 
-  // Function keys after end of ASCII printable character range
-  { XKB_KEY_Delete, XBMCK_DELETE },
+    // Function keys after end of ASCII printable character range
+    {XKB_KEY_Delete, XBMCK_DELETE},
 
-  // Multimedia keys
-  { XKB_KEY_XF86Back, XBMCK_BROWSER_BACK },
-  { XKB_KEY_XF86Forward, XBMCK_BROWSER_FORWARD },
-  { XKB_KEY_XF86Refresh, XBMCK_BROWSER_REFRESH },
-  { XKB_KEY_XF86Stop, XBMCK_BROWSER_STOP },
-  { XKB_KEY_XF86Search, XBMCK_BROWSER_SEARCH },
-  // XKB_KEY_XF86Favorites could be XBMCK_BROWSER_FAVORITES or XBMCK_FAVORITES,
-  // XBMCK_FAVORITES was chosen here because it is more general
-  { XKB_KEY_XF86HomePage, XBMCK_BROWSER_HOME },
-  { XKB_KEY_XF86AudioMute, XBMCK_VOLUME_MUTE },
-  { XKB_KEY_XF86AudioLowerVolume, XBMCK_VOLUME_DOWN },
-  { XKB_KEY_XF86AudioRaiseVolume, XBMCK_VOLUME_UP },
-  { XKB_KEY_XF86AudioNext, XBMCK_MEDIA_NEXT_TRACK },
-  { XKB_KEY_XF86AudioPrev, XBMCK_MEDIA_PREV_TRACK },
-  { XKB_KEY_XF86AudioStop, XBMCK_MEDIA_STOP },
-  { XKB_KEY_XF86AudioPause, XBMCK_MEDIA_PLAY_PAUSE },
-  { XKB_KEY_XF86Mail, XBMCK_LAUNCH_MAIL },
-  { XKB_KEY_XF86Select, XBMCK_LAUNCH_MEDIA_SELECT },
-  { XKB_KEY_XF86Launch0, XBMCK_LAUNCH_APP1 },
-  { XKB_KEY_XF86Launch1, XBMCK_LAUNCH_APP2 },
-  { XKB_KEY_XF86WWW, XBMCK_LAUNCH_FILE_BROWSER },
-  { XKB_KEY_XF86AudioMedia, XBMCK_LAUNCH_MEDIA_CENTER },
-  { XKB_KEY_XF86AudioRewind, XBMCK_MEDIA_REWIND },
-  { XKB_KEY_XF86AudioForward, XBMCK_MEDIA_FASTFORWARD },
+    // Multimedia keys
+    {XKB_KEY_XF86Back, XBMCK_BROWSER_BACK},
+    {XKB_KEY_XF86Forward, XBMCK_BROWSER_FORWARD},
+    {XKB_KEY_XF86Refresh, XBMCK_BROWSER_REFRESH},
+    {XKB_KEY_XF86Stop, XBMCK_BROWSER_STOP},
+    {XKB_KEY_XF86Search, XBMCK_BROWSER_SEARCH},
+    // XKB_KEY_XF86Favorites could be XBMCK_BROWSER_FAVORITES or XBMCK_FAVORITES,
+    // XBMCK_FAVORITES was chosen here because it is more general
+    {XKB_KEY_XF86HomePage, XBMCK_BROWSER_HOME},
+    {XKB_KEY_XF86AudioMute, XBMCK_VOLUME_MUTE},
+    {XKB_KEY_XF86AudioLowerVolume, XBMCK_VOLUME_DOWN},
+    {XKB_KEY_XF86AudioRaiseVolume, XBMCK_VOLUME_UP},
+    {XKB_KEY_XF86AudioNext, XBMCK_MEDIA_NEXT_TRACK},
+    {XKB_KEY_XF86AudioPrev, XBMCK_MEDIA_PREV_TRACK},
+    {XKB_KEY_XF86AudioStop, XBMCK_MEDIA_STOP},
+    {XKB_KEY_XF86AudioPause, XBMCK_MEDIA_PLAY_PAUSE},
+    {XKB_KEY_XF86Mail, XBMCK_LAUNCH_MAIL},
+    {XKB_KEY_XF86Select, XBMCK_LAUNCH_MEDIA_SELECT},
+    {XKB_KEY_XF86Launch0, XBMCK_LAUNCH_APP1},
+    {XKB_KEY_XF86Launch1, XBMCK_LAUNCH_APP2},
+    {XKB_KEY_XF86WWW, XBMCK_LAUNCH_FILE_BROWSER},
+    {XKB_KEY_XF86AudioMedia, XBMCK_LAUNCH_MEDIA_CENTER},
+    {XKB_KEY_XF86AudioRewind, XBMCK_MEDIA_REWIND},
+    {XKB_KEY_XF86AudioForward, XBMCK_MEDIA_FASTFORWARD},
 
-  // Numeric keypad
-  { XKB_KEY_KP_0, XBMCK_KP0 },
-  { XKB_KEY_KP_1, XBMCK_KP1 },
-  { XKB_KEY_KP_2, XBMCK_KP2 },
-  { XKB_KEY_KP_3, XBMCK_KP3 },
-  { XKB_KEY_KP_4, XBMCK_KP4 },
-  { XKB_KEY_KP_5, XBMCK_KP5 },
-  { XKB_KEY_KP_6, XBMCK_KP6 },
-  { XKB_KEY_KP_7, XBMCK_KP7 },
-  { XKB_KEY_KP_8, XBMCK_KP8 },
-  { XKB_KEY_KP_9, XBMCK_KP9 },
-  { XKB_KEY_KP_Decimal, XBMCK_KP_PERIOD },
-  { XKB_KEY_KP_Divide, XBMCK_KP_DIVIDE },
-  { XKB_KEY_KP_Multiply, XBMCK_KP_MULTIPLY },
-  { XKB_KEY_KP_Subtract, XBMCK_KP_MINUS },
-  { XKB_KEY_KP_Add, XBMCK_KP_PLUS },
-  { XKB_KEY_KP_Enter, XBMCK_KP_ENTER },
-  { XKB_KEY_KP_Equal, XBMCK_KP_EQUALS },
+    // Numeric keypad
+    {XKB_KEY_KP_0, XBMCK_KP0},
+    {XKB_KEY_KP_1, XBMCK_KP1},
+    {XKB_KEY_KP_2, XBMCK_KP2},
+    {XKB_KEY_KP_3, XBMCK_KP3},
+    {XKB_KEY_KP_4, XBMCK_KP4},
+    {XKB_KEY_KP_5, XBMCK_KP5},
+    {XKB_KEY_KP_6, XBMCK_KP6},
+    {XKB_KEY_KP_7, XBMCK_KP7},
+    {XKB_KEY_KP_8, XBMCK_KP8},
+    {XKB_KEY_KP_9, XBMCK_KP9},
+    {XKB_KEY_KP_Decimal, XBMCK_KP_PERIOD},
+    {XKB_KEY_KP_Divide, XBMCK_KP_DIVIDE},
+    {XKB_KEY_KP_Multiply, XBMCK_KP_MULTIPLY},
+    {XKB_KEY_KP_Subtract, XBMCK_KP_MINUS},
+    {XKB_KEY_KP_Add, XBMCK_KP_PLUS},
+    {XKB_KEY_KP_Enter, XBMCK_KP_ENTER},
+    {XKB_KEY_KP_Equal, XBMCK_KP_EQUALS},
 
-  // Arrows + Home/End pad
-  { XKB_KEY_Up, XBMCK_UP },
-  { XKB_KEY_Down, XBMCK_DOWN },
-  { XKB_KEY_Right, XBMCK_RIGHT },
-  { XKB_KEY_Left, XBMCK_LEFT },
-  { XKB_KEY_Insert, XBMCK_INSERT },
-  { XKB_KEY_Home, XBMCK_HOME },
-  { XKB_KEY_End, XBMCK_END },
-  { XKB_KEY_Page_Up, XBMCK_PAGEUP },
-  { XKB_KEY_Page_Down, XBMCK_PAGEDOWN },
+    // Arrows + Home/End pad
+    {XKB_KEY_Up, XBMCK_UP},
+    {XKB_KEY_Down, XBMCK_DOWN},
+    {XKB_KEY_Right, XBMCK_RIGHT},
+    {XKB_KEY_Left, XBMCK_LEFT},
+    {XKB_KEY_Insert, XBMCK_INSERT},
+    {XKB_KEY_Home, XBMCK_HOME},
+    {XKB_KEY_End, XBMCK_END},
+    {XKB_KEY_Page_Up, XBMCK_PAGEUP},
+    {XKB_KEY_Page_Down, XBMCK_PAGEDOWN},
 
-  // Function keys
-  { XKB_KEY_F1, XBMCK_F1 },
-  { XKB_KEY_F2, XBMCK_F2 },
-  { XKB_KEY_F3, XBMCK_F3 },
-  { XKB_KEY_F4, XBMCK_F4 },
-  { XKB_KEY_F5, XBMCK_F5 },
-  { XKB_KEY_F6, XBMCK_F6 },
-  { XKB_KEY_F7, XBMCK_F7 },
-  { XKB_KEY_F8, XBMCK_F8 },
-  { XKB_KEY_F9, XBMCK_F9 },
-  { XKB_KEY_F10, XBMCK_F10 },
-  { XKB_KEY_F11, XBMCK_F11 },
-  { XKB_KEY_F12, XBMCK_F12 },
-  { XKB_KEY_F13, XBMCK_F13 },
-  { XKB_KEY_F14, XBMCK_F14 },
-  { XKB_KEY_F15, XBMCK_F15 },
+    // Function keys
+    {XKB_KEY_F1, XBMCK_F1},
+    {XKB_KEY_F2, XBMCK_F2},
+    {XKB_KEY_F3, XBMCK_F3},
+    {XKB_KEY_F4, XBMCK_F4},
+    {XKB_KEY_F5, XBMCK_F5},
+    {XKB_KEY_F6, XBMCK_F6},
+    {XKB_KEY_F7, XBMCK_F7},
+    {XKB_KEY_F8, XBMCK_F8},
+    {XKB_KEY_F9, XBMCK_F9},
+    {XKB_KEY_F10, XBMCK_F10},
+    {XKB_KEY_F11, XBMCK_F11},
+    {XKB_KEY_F12, XBMCK_F12},
+    {XKB_KEY_F13, XBMCK_F13},
+    {XKB_KEY_F14, XBMCK_F14},
+    {XKB_KEY_F15, XBMCK_F15},
 
-  // Key state modifier keys
-  { XKB_KEY_Num_Lock, XBMCK_NUMLOCK },
-  { XKB_KEY_Caps_Lock, XBMCK_CAPSLOCK },
-  { XKB_KEY_Scroll_Lock, XBMCK_SCROLLOCK },
-  { XKB_KEY_Shift_R, XBMCK_RSHIFT },
-  { XKB_KEY_Shift_L, XBMCK_LSHIFT },
-  { XKB_KEY_Control_R, XBMCK_RCTRL },
-  { XKB_KEY_Control_L, XBMCK_LCTRL },
-  { XKB_KEY_Alt_R, XBMCK_RALT },
-  { XKB_KEY_Alt_L, XBMCK_LALT },
-  { XKB_KEY_Meta_R, XBMCK_RMETA },
-  { XKB_KEY_Meta_L, XBMCK_LMETA },
-  { XKB_KEY_Super_R, XBMCK_RSUPER },
-  { XKB_KEY_Super_L, XBMCK_LSUPER },
-  // XKB does not have XBMCK_MODE/"Alt Gr" - probably equal to XKB_KEY_Alt_R
-  { XKB_KEY_Multi_key, XBMCK_COMPOSE },
+    // Key state modifier keys
+    {XKB_KEY_Num_Lock, XBMCK_NUMLOCK},
+    {XKB_KEY_Caps_Lock, XBMCK_CAPSLOCK},
+    {XKB_KEY_Scroll_Lock, XBMCK_SCROLLOCK},
+    {XKB_KEY_Shift_R, XBMCK_RSHIFT},
+    {XKB_KEY_Shift_L, XBMCK_LSHIFT},
+    {XKB_KEY_Control_R, XBMCK_RCTRL},
+    {XKB_KEY_Control_L, XBMCK_LCTRL},
+    {XKB_KEY_Alt_R, XBMCK_RALT},
+    {XKB_KEY_Alt_L, XBMCK_LALT},
+    {XKB_KEY_Meta_R, XBMCK_RMETA},
+    {XKB_KEY_Meta_L, XBMCK_LMETA},
+    {XKB_KEY_Super_R, XBMCK_RSUPER},
+    {XKB_KEY_Super_L, XBMCK_LSUPER},
+    // XKB does not have XBMCK_MODE/"Alt Gr" - probably equal to XKB_KEY_Alt_R
+    {XKB_KEY_Multi_key, XBMCK_COMPOSE},
 
-  // Miscellaneous function keys
-  { XKB_KEY_Help, XBMCK_HELP },
-  { XKB_KEY_Print, XBMCK_PRINT },
-  // Unmapped: XBMCK_SYSREQ
-  { XKB_KEY_Break, XBMCK_BREAK },
-  { XKB_KEY_Menu, XBMCK_MENU },
-  { XKB_KEY_XF86PowerOff, XBMCK_POWER },
-  { XKB_KEY_EcuSign, XBMCK_EURO },
-  { XKB_KEY_Undo, XBMCK_UNDO },
-  { XKB_KEY_XF86Sleep, XBMCK_SLEEP },
-  // Unmapped: XBMCK_GUIDE, XBMCK_SETTINGS, XBMCK_INFO
-  { XKB_KEY_XF86Red, XBMCK_RED },
-  { XKB_KEY_XF86Green, XBMCK_GREEN },
-  { XKB_KEY_XF86Yellow, XBMCK_YELLOW },
-  { XKB_KEY_XF86Blue, XBMCK_BLUE },
-  // Unmapped: XBMCK_ZOOM, XBMCK_TEXT
-  { XKB_KEY_XF86Favorites, XBMCK_FAVORITES },
-  { XKB_KEY_XF86HomePage, XBMCK_HOMEPAGE },
-  // Unmapped: XBMCK_CONFIG, XBMCK_EPG
+    // Miscellaneous function keys
+    {XKB_KEY_Help, XBMCK_HELP},
+    {XKB_KEY_Print, XBMCK_PRINT},
+    // Unmapped: XBMCK_SYSREQ
+    {XKB_KEY_Break, XBMCK_BREAK},
+    {XKB_KEY_Menu, XBMCK_MENU},
+    {XKB_KEY_XF86PowerOff, XBMCK_POWER},
+    {XKB_KEY_EcuSign, XBMCK_EURO},
+    {XKB_KEY_Undo, XBMCK_UNDO},
+    {XKB_KEY_XF86Sleep, XBMCK_SLEEP},
+    // Unmapped: XBMCK_GUIDE, XBMCK_SETTINGS, XBMCK_INFO
+    {XKB_KEY_XF86Red, XBMCK_RED},
+    {XKB_KEY_XF86Green, XBMCK_GREEN},
+    {XKB_KEY_XF86Yellow, XBMCK_YELLOW},
+    {XKB_KEY_XF86Blue, XBMCK_BLUE},
+    // Unmapped: XBMCK_ZOOM, XBMCK_TEXT
+    {XKB_KEY_XF86Favorites, XBMCK_FAVORITES},
+    {XKB_KEY_XF86HomePage, XBMCK_HOMEPAGE},
+    // Unmapped: XBMCK_CONFIG, XBMCK_EPG
 
-  // Media keys
-  { XKB_KEY_XF86Eject, XBMCK_EJECT },
-  // XBMCK_STOP clashes with XBMCK_MEDIA_STOP
-  { XKB_KEY_XF86AudioRecord, XBMCK_RECORD },
-  // XBMCK_REWIND clashes with XBMCK_MEDIA_REWIND
-  { XKB_KEY_XF86Phone, XBMCK_PHONE },
-  { XKB_KEY_XF86AudioPlay, XBMCK_PLAY },
-  { XKB_KEY_XF86AudioRandomPlay, XBMCK_SHUFFLE }
-  // XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
+    // Media keys
+    {XKB_KEY_XF86Eject, XBMCK_EJECT},
+    // XBMCK_STOP clashes with XBMCK_MEDIA_STOP
+    {XKB_KEY_XF86AudioRecord, XBMCK_RECORD},
+    // XBMCK_REWIND clashes with XBMCK_MEDIA_REWIND
+    {XKB_KEY_XF86Phone, XBMCK_PHONE},
+    {XKB_KEY_XF86AudioPlay, XBMCK_PLAY},
+    {XKB_KEY_XF86AudioRandomPlay, XBMCK_SHUFFLE}
+    // XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
 };
-
 }
 
 CXkbcommonContext::CXkbcommonContext(xkb_context_flags flags)
