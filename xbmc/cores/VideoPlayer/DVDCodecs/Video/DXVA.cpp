@@ -396,6 +396,8 @@ void CContext::DestroyContext()
   {
     m_d3d11Debug->ReportLiveDeviceObjects(D3D11_RLDO_SUMMARY | D3D11_RLDO_DETAIL);
     m_d3d11Debug = nullptr;
+    // References in the report to ID3D11VideoDecoderOutputView are normal at this point
+    // They are held for VideoPlayer and should be freed later.
   }
 #endif
 
