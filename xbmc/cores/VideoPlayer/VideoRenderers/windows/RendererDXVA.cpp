@@ -96,11 +96,13 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
   {
     m_format = picture.videoBuffer->GetFormat();
     const DXGI_FORMAT dxgi_format = CRenderBufferImpl::GetDXGIFormat(m_format, GetDXGIFormat(picture));
+    const DXGI_FORMAT dest_format = DX::Windowing()->GetBackBuffer().GetFormat();
 
     // create processor
     m_processor = std::make_unique<DXVA::CProcessorHD>();
     if (m_processor->PreInit() && m_processor->Open(m_sourceWidth, m_sourceHeight) &&
-        m_processor->IsFormatSupported(dxgi_format, support_type))
+        m_processor->IsFormatSupported(dxgi_format, support_type) &&
+        m_processor->IsFormatConversionSupported(dxgi_format, dest_format, picture))
     {
       return true;
     }

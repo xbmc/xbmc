@@ -188,6 +188,8 @@ namespace DX
 
   const std::string DXGIFormatToString(const DXGI_FORMAT format);
   const std::string DXGIColorSpaceTypeToString(DXGI_COLOR_SPACE_TYPE type);
+  const std::string D3D11VideoProcessorFormatSupportToString(
+      D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT value);
 }
 
 #ifdef TARGET_WINDOWS_DESKTOP
