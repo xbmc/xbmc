@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include <d3d11_4.h>
 #include <dxgicommon.h>
 #include <dxgiformat.h>
 
@@ -180,5 +181,19 @@ const std::string DXGIColorSpaceTypeToString(DXGI_COLOR_SPACE_TYPE type)
       return std::to_string(type);
   }
 #undef CASEDXGICOLORSPACETYPE
+}
+
+const std::string D3D11VideoProcessorFormatSupportToString(
+    D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT value)
+{
+  switch (value)
+  {
+    case D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT:
+      return "input";
+    case D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT:
+      return "output";
+    default:
+      return std::to_string(value);
+  }
 }
 } // namespace DX
