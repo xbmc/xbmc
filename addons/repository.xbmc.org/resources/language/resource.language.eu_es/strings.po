@@ -23,7 +23,7 @@ msgstr "Instalatu Kodi.tv-eko gehigarriak"
 
 msgctxt "Addon Description"
 msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
-msgstr "Deskargatu eta instalatu gehigarriak Kodi.tv biltegi ofizialetik.[CR]  &#10;Biltegi ofiziala erabiliz zugandik gertu dagoen gune batetik deskargatu&#10;ditzakezu gure fitxategi-ispilu zerbitzu zabalaren abantailaz aprobetxatuaz.[CR]  &#10;Biltegi honetako gehigarri guztiek oinarrizko probak gainditu dituzte baina hondaturiko edo funtzionatzen ez duen gehigarri baten bat aurkituz gero jakinarazi Kodi taldeari beharrezko ekintzak burutu ditzagun."
+msgstr "Deskargatu eta instalatu gehigarriak Kodi.tv biltegi ofizialetik.[CR]  [CR]Biltegi ofiziala erabiliz zugandik gertu dagoen gune batetik deskargatu[CR]ditzakezu gure fitxategi-ispilu zerbitzu zabalaren abantailaz aprobetxatuaz.[CR]  [CR]Biltegi honetako gehigarri guztiek oinarrizko probak gainditu dituzte baina hondaturiko edo funtzionatzen ez duen gehigarri baten bat aurkituz gero jakinarazi Kodi taldeari beharrezko ekintzak burutu ditzagun."
 
 msgctxt "Addon Disclaimer"
 msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"

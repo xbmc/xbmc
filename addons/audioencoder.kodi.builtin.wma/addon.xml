@@ -43,6 +43,7 @@
     <summary lang="sk_SK">Audio kodér WMA</summary>
     <summary lang="sv_SE">WMA Ljud Encoder</summary>
     <summary lang="tr_TR">WMA Ses Kodlayıcı</summary>
+    <summary lang="uk_UA">Аудіокодер WMA</summary>
     <summary lang="zh_CN">WMA 音频编码器</summary>
     <description lang="be_BY">Windows Media Audio, гукавы фармат ад Microsoft.</description>
     <description lang="bs_BA">Windows Media Audio (WMA), Microsoftov format zvuka sa gubitkom.</description>
@@ -72,6 +73,7 @@
     <description lang="ru_RU">Windows Media Audio, звуковой формат с потерями от Microsoft.</description>
     <description lang="sk_SK">Windows Media Audio, stratový audio formát spoločnosti Microsoft.</description>
     <description lang="tr_TR">Windows Media Audio, Microsoft&apos;un kayıplı ses biçimi.</description>
+    <description lang="uk_UA">Windows Media Audio, формат аудіо з втратами від Microsoft.</description>
     <description lang="zh_CN">Windows Media Audio，Microsoft 的有损压缩音频格式。</description>
   </extension>
 </addon>
