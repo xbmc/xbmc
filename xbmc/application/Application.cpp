@@ -1607,6 +1607,10 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     appPlayer->TriggerUpdateResolution();
     break;
 
+  case TMSG_TOGGLEFLOATONTOP:
+    CServiceBroker::GetWinSystem()->ToggleFloatOnTop();
+    break;
+
   case TMSG_MINIMIZE:
     CServiceBroker::GetWinSystem()->Minimize();
     break;

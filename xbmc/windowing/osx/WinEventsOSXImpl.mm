@@ -172,6 +172,11 @@
           return true;
         }
         break;
+
+      case XBMCK_t: // CMD-t to toggle float on top
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFLOATONTOP);
+        return true;
+
       case XBMCK_s: // CMD-s to take a screenshot
       {
         CAction* action = new CAction(ACTION_TAKE_SCREENSHOT);
