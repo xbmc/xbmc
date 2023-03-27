@@ -20,7 +20,6 @@
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClientUID.h"
-#include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"

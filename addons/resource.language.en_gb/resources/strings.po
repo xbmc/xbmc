@@ -9560,14 +9560,12 @@ msgid "Radio"
 msgstr ""
 
 #. generic 'hidden' label used in different places
-#: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
 msgctxt "#19022"
 msgid "Hidden"
 msgstr ""
 
 #. generic label for 'Live TV channels' used in different places
-#: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: addons/skin.estuary/xml/Variables.xml
 #: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 msgctxt "#19023"
@@ -9575,7 +9573,6 @@ msgid "TV channels"
 msgstr ""
 
 #. generic label for pvr-provided 'Radio channels' used in different places
-#: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 #: addons/skin.estuary/xml/Variables.xml
 msgctxt "#19024"
