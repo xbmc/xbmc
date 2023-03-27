@@ -15,6 +15,11 @@
 #include <memory>
 
 struct CWinEventsOSXImplWrapper;
+#ifdef __OBJC__
+@class NSEvent;
+#else
+struct NSEvent;
+#endif
 
 class CWinEventsOSX : public IWinEvents, public CThread
 {
@@ -31,6 +36,7 @@ public:
 
   void signalMouseEntered();
   void signalMouseExited();
+  void SendInputEvent(NSEvent* nsEvent);
 
 private:
   std::unique_ptr<CWinEventsOSXImplWrapper> m_eventsImplWrapper;
