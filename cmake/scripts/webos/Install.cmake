@@ -9,7 +9,6 @@ set(APP_PACKAGE_DIR ${CMAKE_BINARY_DIR}/tools/webOS/packaging)
 configure_file(${CMAKE_SOURCE_DIR}/tools/webOS/packaging/appinfo.json.in ${APP_PACKAGE_DIR}/appinfo.json @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/webOS/packaging/icon.png ${APP_PACKAGE_DIR}/icon.png COPYONLY)
 configure_file(${CMAKE_SOURCE_DIR}/tools/webOS/packaging/largeIcon.png ${APP_PACKAGE_DIR}/largeIcon.png COPYONLY)
-configure_file(${CMAKE_SOURCE_DIR}/tools/webOS/packaging/keyboard.xml ${APP_PACKAGE_DIR}/.kodi/userdata/keymaps/keyboard.xml COPYONLY)
 
 
 # Webos-userland are stubs for libs on the target device not contained in the toolchain,
