@@ -35,7 +35,7 @@
 {
   std::queue<XBMC_Event> events;
   CCriticalSection m_inputlock;
-  id mLocalMonitorId;
+  bool m_inputEnabled;
 
   //! macOS requires the calls the NSCursor hide/unhide to be balanced
   enum class NSCursorVisibilityBalancer
@@ -55,6 +55,7 @@
 
   [self enableInputEvents];
   m_lastAppCursorVisibilityAction = NSCursorVisibilityBalancer::NONE;
+  m_inputEnabled = true;
 
   return self;
 }
@@ -199,34 +200,12 @@
 
 - (void)enableInputEvents
 {
-  [self disableInputEvents]; // allow only one registration at a time
-
-  // clang-format off
-  // Create an event tap. We are interested in mouse and keyboard events.
-  NSEventMask eventMask =
-      NSEventMaskKeyDown | NSEventMaskKeyUp |
-      NSEventMaskLeftMouseDown | NSEventMaskLeftMouseUp |
-      NSEventMaskRightMouseDown | NSEventMaskRightMouseUp |
-      NSEventMaskOtherMouseDown | NSEventMaskOtherMouseUp |
-      NSEventMaskScrollWheel |
-      NSEventMaskLeftMouseDragged |
-      NSEventMaskRightMouseDragged |
-      NSEventMaskOtherMouseDragged |
-      NSEventMaskMouseMoved;
-  // clang-format on
-
-  mLocalMonitorId = [NSEvent addLocalMonitorForEventsMatchingMask:eventMask
-                                                          handler:^(NSEvent* event) {
-                                                            return [self InputEventHandler:event];
-                                                          }];
+  m_inputEnabled = true;
 }
 
 - (void)disableInputEvents
 {
-  // Disable the local Monitor
-  if (mLocalMonitorId != nil)
-    [NSEvent removeMonitor:mLocalMonitorId];
-  mLocalMonitorId = nil;
+  m_inputEnabled = false;
 }
 
 - (void)signalMouseEntered
@@ -244,6 +223,14 @@
   {
     m_lastAppCursorVisibilityAction = NSCursorVisibilityBalancer::UNHIDE;
     [NSCursor unhide];
+  }
+}
+
+- (void)ProcessInputEvent:(NSEvent*)nsEvent
+{
+  if (m_inputEnabled)
+  {
+    [self InputEventHandler:nsEvent];
   }
 }
 

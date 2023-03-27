@@ -62,3 +62,8 @@ void CWinEventsOSX::signalMouseExited()
 {
   return [m_eventsImplWrapper->callbackClass signalMouseExited];
 }
+
+void CWinEventsOSX::SendInputEvent(NSEvent* nsEvent)
+{
+  [m_eventsImplWrapper->callbackClass ProcessInputEvent:nsEvent];
+}

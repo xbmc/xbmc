@@ -25,9 +25,11 @@ class CWinEventsOSX;
 #ifdef __OBJC__
 @class NSWindow;
 @class OSXGLView;
+@class NSEvent;
 #else
 struct NSWindow;
 struct OSXGLView;
+struct NSEvent;
 #endif
 
 class CWinSystemOSX : public CWinSystemBase, public ITimerCallback
@@ -98,6 +100,7 @@ public:
 
   void signalMouseEntered();
   void signalMouseExited();
+  void SendInputEvent(NSEvent* nsEvent);
 
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
