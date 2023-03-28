@@ -95,6 +95,7 @@ bool CProcessorHD::PreInit() const
 
 bool CProcessorHD::InitProcessor()
 {
+  HRESULT hr{};
   m_pVideoDevice = nullptr;
   m_pVideoContext = nullptr;
   m_pEnumerator = nullptr;
@@ -102,14 +103,16 @@ bool CProcessorHD::InitProcessor()
   ComPtr<ID3D11DeviceContext1> pD3DDeviceContext = DX::DeviceResources::Get()->GetImmediateContext();
   ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
 
-  if (FAILED(pD3DDeviceContext.As(&m_pVideoContext)))
+  if (FAILED(hr = pD3DDeviceContext.As(&m_pVideoContext)))
   {
-    CLog::LogF(LOGWARNING, "video context initialization is failed.");
+    CLog::LogF(LOGWARNING, "video context initialization is failed. Error {}",
+               DX::GetErrorDescription(hr));
     return false;
   }
-  if (FAILED(pD3DDevice.As(&m_pVideoDevice)))
+  if (FAILED(hr = pD3DDevice.As(&m_pVideoDevice)))
   {
-    CLog::LogF(LOGWARNING, "video device initialization is failed.");
+    CLog::LogF(LOGWARNING, "video device initialization is failed. Error {}",
+               DX::GetErrorDescription(hr));
     return false;
   }
 
@@ -123,16 +126,42 @@ bool CProcessorHD::InitProcessor()
   contentDesc.OutputHeight = m_height;
   contentDesc.Usage = D3D11_VIDEO_USAGE_PLAYBACK_NORMAL;
 
-  if (FAILED(m_pVideoDevice->CreateVideoProcessorEnumerator(&contentDesc, m_pEnumerator.ReleaseAndGetAddressOf())))
+  if (FAILED(hr = m_pVideoDevice->CreateVideoProcessorEnumerator(
+                 &contentDesc, m_pEnumerator.ReleaseAndGetAddressOf())))
   {
-    CLog::LogF(LOGWARNING, "failed to init video enumerator with params: {}x{}.", m_width,
-               m_height);
+    CLog::LogF(LOGWARNING, "failed to init video enumerator with params: {}x{}. Error {}", m_width,
+               m_height, DX::GetErrorDescription(hr));
     return false;
   }
 
-  if (FAILED(m_pEnumerator->GetVideoProcessorCaps(&m_vcaps)))
+  if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG))
   {
-    CLog::LogF(LOGWARNING, "failed to get processor caps.");
+    std::string inputFormats{};
+    std::string outputFormats{};
+    for (int fmt = DXGI_FORMAT_UNKNOWN; fmt <= DXGI_FORMAT_V408; fmt++)
+    {
+      UINT uiFlags;
+      if (S_OK == m_pEnumerator->CheckVideoProcessorFormat((DXGI_FORMAT)fmt, &uiFlags))
+      {
+        if (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT)
+        {
+          inputFormats.append("\n");
+          inputFormats.append(DX::DXGIFormatToString((DXGI_FORMAT)fmt));
+        }
+        if (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT)
+        {
+          outputFormats.append("\n");
+          outputFormats.append(DX::DXGIFormatToString((DXGI_FORMAT)fmt));
+        }
+      }
+    }
+    CLog::LogF(LOGDEBUG, "Supported input formats:{}", inputFormats);
+    CLog::LogF(LOGDEBUG, "Supported output formats:{}", outputFormats);
+  }
+
+  if (FAILED(hr = m_pEnumerator->GetVideoProcessorCaps(&m_vcaps)))
+  {
+    CLog::LogF(LOGWARNING, "failed to get processor caps. Error {}", DX::GetErrorDescription(hr));
     return false;
   }
 
@@ -140,6 +169,8 @@ bool CProcessorHD::InitProcessor()
   CLog::LogF(LOGDEBUG, "video processor has {:#x} feature caps.", m_vcaps.FeatureCaps);
   CLog::LogF(LOGDEBUG, "video processor has {:#x} device caps.", m_vcaps.DeviceCaps);
   CLog::LogF(LOGDEBUG, "video processor has {:#x} input format caps.", m_vcaps.InputFormatCaps);
+  CLog::LogF(LOGDEBUG, "video processor has {:#x} auto stream caps.", m_vcaps.AutoStreamCaps);
+  CLog::LogF(LOGDEBUG, "video processor has {:#x} stereo caps.", m_vcaps.StereoCaps);
   CLog::LogF(LOGDEBUG, "video processor has {} max input streams.", m_vcaps.MaxInputStreams);
   CLog::LogF(LOGDEBUG, "video processor has {} max stream states.", m_vcaps.MaxStreamStates);
   if (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_METADATA_HDR10)
@@ -148,10 +179,24 @@ bool CProcessorHD::InitProcessor()
   if (0 != (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_LEGACY))
     CLog::LogF(LOGWARNING, "the video driver does not support full video processing capabilities.");
 
+  if (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_STEREO)
+    CLog::LogF(LOGDEBUG, "video processor supports stereo.");
+
+  if (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_ROTATION)
+    CLog::LogF(LOGDEBUG, "video processor supports rotation.");
+
+  if (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_SHADER_USAGE)
+    CLog::LogF(LOGDEBUG, "video processor supports shader usage.");
+
   m_max_back_refs = 0;
   m_max_fwd_refs = 0;
   m_procIndex = 0;
 
+  const UINT deinterlacingCaps =
+      D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS_DEINTERLACE_BLEND |
+      D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS_DEINTERLACE_BOB |
+      D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS_DEINTERLACE_ADAPTIVE |
+      D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS_DEINTERLACE_MOTION_COMPENSATION;
   unsigned maxProcCaps = 0;
   // try to find best processor
   for (unsigned int i = 0; i < m_vcaps.RateConversionCapsCount; i++)
@@ -160,10 +205,10 @@ bool CProcessorHD::InitProcessor()
     LOGIFERROR(m_pEnumerator->GetVideoProcessorRateConversionCaps(i, &convCaps))
 
     // check only deinterlace caps
-    if ((convCaps.ProcessorCaps & 15) > maxProcCaps)
+    if ((convCaps.ProcessorCaps & deinterlacingCaps) > maxProcCaps)
     {
       m_procIndex = i;
-      maxProcCaps = convCaps.ProcessorCaps & 15;
+      maxProcCaps = convCaps.ProcessorCaps & deinterlacingCaps;
     }
   }
 
@@ -188,21 +233,22 @@ bool CProcessorHD::InitProcessor()
   // Get the image filtering capabilities.
   for (size_t i = 0; i < NUM_FILTERS; i++)
   {
-    if (m_vcaps.FilterCaps & (1 << i))
+    if (m_vcaps.FilterCaps & PROCAMP_FILTERS[i].cap)
     {
       m_Filters[i].Range = {};
-      m_Filters[i].bSupported = SUCCEEDED(m_pEnumerator->GetVideoProcessorFilterRange(PROCAMP_FILTERS[i], &m_Filters[i].Range));
+      m_Filters[i].bSupported = SUCCEEDED(m_pEnumerator->GetVideoProcessorFilterRange(
+          PROCAMP_FILTERS[i].filter, &m_Filters[i].Range));
 
       if (m_Filters[i].bSupported)
       {
         CLog::LogF(LOGDEBUG, "filter {} has following params - max: {}, min: {}, default: {}",
-                   PROCAMP_FILTERS[i], m_Filters[i].Range.Maximum, m_Filters[i].Range.Minimum,
+                   PROCAMP_FILTERS[i].name, m_Filters[i].Range.Maximum, m_Filters[i].Range.Minimum,
                    m_Filters[i].Range.Default);
       }
     }
     else
     {
-      CLog::LogF(LOGDEBUG, "filter {} not supported by processor.", PROCAMP_FILTERS[i]);
+      CLog::LogF(LOGDEBUG, "filter {} not supported by processor.", PROCAMP_FILTERS[i].name);
       m_Filters[i].bSupported = false;
     }
   }
@@ -244,7 +290,7 @@ bool CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_F
       return true;
   }
 
-  CLog::LogF(LOGERROR, "unsupported format {} for {}.", format, support);
+  CLog::LogF(LOGERROR, "unsupported format {} for {}.", DX::DXGIFormatToString(format), support);
   return false;
 }
 
@@ -297,10 +343,12 @@ bool CProcessorHD::OpenProcessor()
   CLog::LogF(LOGDEBUG, "creating processor.");
 
   // create processor
-  HRESULT hr = m_pVideoDevice->CreateVideoProcessor(m_pEnumerator.Get(), m_procIndex, m_pVideoProcessor.ReleaseAndGetAddressOf());
+  HRESULT hr = m_pVideoDevice->CreateVideoProcessor(m_pEnumerator.Get(), m_procIndex,
+                                                    m_pVideoProcessor.ReleaseAndGetAddressOf());
   if (FAILED(hr))
   {
-    CLog::LogF(LOGDEBUG, "failed creating video processor with error {:x}.", hr);
+    CLog::LogF(LOGDEBUG, "failed creating video processor with error {}.",
+               DX::GetErrorDescription(hr));
     return false;
   }
 
@@ -349,7 +397,7 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) c
   }
 
   if (FAILED(hr) || hr == S_FALSE)
-    CLog::LogF(LOGERROR, "cannot create processor input view.");
+    CLog::LogF(LOGERROR, "CreateVideoProcessorInputView returned {}.", DX::GetErrorDescription(hr));
 
   return inputView.Detach();
 }
@@ -614,8 +662,8 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   ComPtr<ID3D11VideoProcessorOutputView> pOutputView;
   HRESULT hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_pEnumerator.Get(), &OutputViewDesc, &pOutputView);
   if (S_OK != hr)
-    CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING,
-               "video device returns result '{:x}' while creating processor output view.", hr);
+    CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING, "CreateVideoProcessorOutputView returned {}.",
+               DX::GetErrorDescription(hr));
 
   if (SUCCEEDED(hr))
   {
@@ -623,7 +671,8 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     if (S_OK != hr)
     {
       CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING,
-                 "video device returns result '{:x}' while VideoProcessorBlt execution.", hr);
+                 "VideoProcessorBlt returned {} while VideoProcessorBlt execution.",
+                 DX::GetErrorDescription(hr));
     }
   }
 

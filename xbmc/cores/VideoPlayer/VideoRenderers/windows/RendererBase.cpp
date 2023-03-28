@@ -87,7 +87,7 @@ void CRenderBuffer::QueueCopyFromGPU()
 
   unsigned index;
   ComPtr<ID3D11Resource> pResource;
-  const HRESULT hr = GetResource(&pResource, &index);
+  HRESULT hr = GetResource(&pResource, &index);
 
   if (FAILED(hr))
   {
@@ -112,8 +112,10 @@ void CRenderBuffer::QueueCopyFromGPU()
       sDesc.MiscFlags = 0;
 
       ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
-      if (SUCCEEDED(pDevice->CreateTexture2D(&sDesc, nullptr, &m_staging)))
+      if (SUCCEEDED(hr = pDevice->CreateTexture2D(&sDesc, nullptr, &m_staging)))
         m_sDesc = sDesc;
+      else
+        CLog::LogF(LOGERROR, "unable to create texture {}", DX::DXGIFormatToString(sDesc.Format));
     }
   }
 
@@ -346,7 +348,7 @@ bool CRendererBase::CreateIntermediateTarget(unsigned width, unsigned height, bo
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  CLog::LogF(LOGDEBUG, "intermediate target format {}.", format);
+  CLog::LogF(LOGDEBUG, "intermediate target format {}.", DX::DXGIFormatToString(format));
 
   if (!m_IntermediateTarget.Create(width, height, 1, dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT, format))
   {

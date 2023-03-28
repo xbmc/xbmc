@@ -21,6 +21,7 @@ enum PCI_Vendors
   PCIV_AMD = 0x1002,
   PCIV_NVIDIA = 0x10DE,
   PCIV_Intel = 0x8086,
+  PCIV_MICROSOFT = 0x1414,
 };
 
 namespace DX
@@ -115,6 +116,9 @@ namespace DX
       case PCIV_NVIDIA:
         name = "NVIDIA";
         break;
+      case PCIV_MICROSOFT:
+        name = "Microsoft";
+        break;
     }
 
     return name;
@@ -181,6 +185,9 @@ namespace DX
 		return SUCCEEDED(hr);
 	}
 #endif
+
+  const std::string DXGIFormatToString(const DXGI_FORMAT format);
+  const std::string DXGIColorSpaceTypeToString(DXGI_COLOR_SPACE_TYPE type);
 }
 
 #ifdef TARGET_WINDOWS_DESKTOP
