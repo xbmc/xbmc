@@ -101,20 +101,96 @@
 {
   switch (character)
   {
-    case kVK_ANSI_8:
+    case kVK_LeftArrow:
     case NSLeftArrowFunctionKey:
       return XBMCK_LEFT;
-    case kVK_ANSI_0:
+    case kVK_RightArrow:
     case NSRightArrowFunctionKey:
       return XBMCK_RIGHT;
+    case kVK_UpArrow:
     case kVK_ANSI_RightBracket:
     case NSUpArrowFunctionKey:
       return XBMCK_UP;
-    case kVK_ANSI_O:
+    case kVK_DownArrow:
     case NSDownArrowFunctionKey:
       return XBMCK_DOWN;
+    case kVK_Delete:
     case NSDeleteCharacter:
       return XBMCK_BACKSPACE;
+    case kVK_Return:
+      return XBMCK_RETURN;
+    case kVK_ANSI_0:
+      return XBMCK_0;
+    case kVK_ANSI_1:
+      return XBMCK_1;
+    case kVK_ANSI_2:
+      return XBMCK_2;
+    case kVK_ANSI_3:
+      return XBMCK_3;
+    case kVK_ANSI_4:
+      return XBMCK_4;
+    case kVK_ANSI_5:
+      return XBMCK_5;
+    case kVK_ANSI_6:
+      return XBMCK_6;
+    case kVK_ANSI_7:
+      return XBMCK_7;
+    case kVK_ANSI_8:
+      return XBMCK_8;
+    case kVK_ANSI_9:
+      return XBMCK_9;
+    case kVK_ANSI_A:
+      return XBMCK_a;
+    case kVK_ANSI_B:
+      return XBMCK_b;
+    case kVK_ANSI_C:
+      return XBMCK_c;
+    case kVK_ANSI_D:
+      return XBMCK_d;
+    case kVK_ANSI_E:
+      return XBMCK_e;
+    case kVK_ANSI_F:
+      return XBMCK_f;
+    case kVK_ANSI_G:
+      return XBMCK_g;
+    case kVK_ANSI_H:
+      return XBMCK_h;
+    case kVK_ANSI_I:
+      return XBMCK_i;
+    case kVK_ANSI_J:
+      return XBMCK_j;
+    case kVK_ANSI_K:
+      return XBMCK_k;
+    case kVK_ANSI_L:
+      return XBMCK_l;
+    case kVK_ANSI_M:
+      return XBMCK_m;
+    case kVK_ANSI_N:
+      return XBMCK_n;
+    case kVK_ANSI_O:
+      return XBMCK_o;
+    case kVK_ANSI_P:
+      return XBMCK_p;
+    case kVK_ANSI_Q:
+      return XBMCK_q;
+    case kVK_ANSI_R:
+      return XBMCK_r;
+    case kVK_ANSI_S:
+      return XBMCK_s;
+    case kVK_ANSI_T:
+      return XBMCK_t;
+    case kVK_ANSI_U:
+      return XBMCK_u;
+    case kVK_ANSI_V:
+      return XBMCK_v;
+    case kVK_ANSI_W:
+      return XBMCK_w;
+    case kVK_ANSI_X:
+      return XBMCK_x;
+    case kVK_ANSI_Y:
+      return XBMCK_y;
+    case kVK_ANSI_Z:
+      return XBMCK_z;
     default:
       return character;
   }
@@ -398,12 +474,23 @@
     return newEvent;
   }
 
-  unicodeString[0] = [self OsxKey2XbmcKey:unicodeString[0]];
+  auto keyModifiers = [self OsxMod2XbmcMod:CGEventGetFlags(*event)];
+  // - Unicode control characters (0-31) are usually mapped to key combos the application
+  // might use as shortcuts (e.g. ctrl-shift-d for toggledebug).
+  // Since they are not actual characters, translate the key from cocoa world to XBMC and
+  // propagate the event.
+  // see https://en.wikipedia.org/wiki/List_of_Unicode_characters#Control_codes
+  // - For all other events, we rely on the unicode char returned by macOS (they map directly
+  // to XBMC keys anyway). This is also the case of MacOS shortcuts.
+  if (unicodeString[0] <= 31 && !(keyModifiers & XBMCKMOD_LMETA))
+  {
+    unicodeString[0] = [self OsxKey2XbmcKey:keycode];
+  }
 
   newEvent.key.keysym.scancode = keycode;
   newEvent.key.keysym.sym = static_cast<XBMCKey>(unicodeString[0]);
   newEvent.key.keysym.unicode = unicodeString[0];
-  newEvent.key.keysym.mod = [self OsxMod2XbmcMod:CGEventGetFlags(*event)];
+  newEvent.key.keysym.mod = keyModifiers;
 
   return newEvent;
 }
