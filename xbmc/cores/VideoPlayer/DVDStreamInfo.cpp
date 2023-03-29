@@ -11,6 +11,8 @@
 #include "DVDDemuxers/DVDDemux.h"
 #include "cores/VideoPlayer/Interface/DemuxCrypto.h"
 
+#include <cstring>
+
 CDVDStreamInfo::CDVDStreamInfo()                                                     { extradata = NULL; Clear(); }
 CDVDStreamInfo::CDVDStreamInfo(const CDVDStreamInfo &right, bool withextradata )     { extradata = NULL; Clear(); Assign(right, withextradata); }
 CDVDStreamInfo::CDVDStreamInfo(const CDemuxStream &right, bool withextradata )       { extradata = NULL; Clear(); Assign(right, withextradata); }
@@ -64,6 +66,7 @@ void CDVDStreamInfo::Clear()
   masteringMetadata = nullptr;
   contentLightMetadata = nullptr;
   stereo_mode.clear();
+  dovi = {};
 
   channels   = 0;
   samplerate = 0;
@@ -152,6 +155,9 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare)
   else if (contentLightMetadata || right.contentLightMetadata)
     return false;
 
+  if (0 != std::memcmp(&dovi, &right.dovi, sizeof(AVDOVIDecoderConfigurationRecord)))
+    return false;
+
   // AUDIO
   if( channels      != right.channels
   ||  samplerate    != right.samplerate
@@ -237,6 +243,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   masteringMetadata = right.masteringMetadata;
   contentLightMetadata = right.contentLightMetadata;
   stereo_mode = right.stereo_mode;
+  dovi = right.dovi;
 
   // AUDIO
   channels      = right.channels;
@@ -307,6 +314,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     masteringMetadata = stream->masteringMetaData;
     contentLightMetadata = stream->contentLightMetaData;
     stereo_mode = stream->stereo_mode;
+    dovi = stream->dovi;
   }
   else if (right.type == STREAM_SUBTITLE)
   {
