@@ -1351,6 +1351,11 @@ void CWinSystemOSX::signalMouseExited()
   m_winEvents->signalMouseExited();
 }
 
+void CWinSystemOSX::SendInputEvent(NSEvent* nsEvent)
+{
+  m_winEvents->SendInputEvent(nsEvent);
+}
+
 bool CWinSystemOSX::SupportsScreenMove()
 {
   // macOS doesn't allow programatically moving windows across screens if the window is fullscreen

@@ -28,6 +28,15 @@
   BOOL pause;
 }
 
+- (void)SendInputEvent:(NSEvent*)nsEvent
+{
+  CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (winSystem)
+  {
+    winSystem->SendInputEvent(nsEvent);
+  }
+}
+
 - (id)initWithFrame:(NSRect)frameRect
 {
   NSOpenGLPixelFormatAttribute wattrs[] = {
@@ -58,6 +67,11 @@
 {
   [NSOpenGLContext clearCurrentContext];
   [m_glcontext clearDrawable];
+}
+
+- (BOOL)acceptsFirstResponder
+{
+  return YES;
 }
 
 - (void)drawRect:(NSRect)rect
@@ -98,8 +112,71 @@
     winSystem->signalMouseEntered();
 }
 
+#pragma mark - Input Events
+
 - (void)mouseMoved:(NSEvent*)nsEvent
 {
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)mouseDown:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)mouseDragged:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)mouseUp:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)rightMouseDown:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)rightMouseDragged:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)rightMouseUp:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)otherMouseUp:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)otherMouseDown:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)scrollWheel:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)otherMouseDragged:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)keyDown:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)keyUp:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
 }
 
 - (void)mouseExited:(NSEvent*)nsEvent

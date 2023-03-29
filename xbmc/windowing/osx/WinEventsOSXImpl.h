@@ -24,5 +24,6 @@
 
 - (void)signalMouseEntered;
 - (void)signalMouseExited;
+- (void)ProcessInputEvent:(NSEvent*)nsEvent;
 
 @end
