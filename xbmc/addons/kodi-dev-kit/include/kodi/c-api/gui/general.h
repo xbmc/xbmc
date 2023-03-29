@@ -21,13 +21,13 @@ extern "C"
   /// @brief **Adjust refresh rate enum**\n
   /// Used to get the Adjust refresh rate status info.
   ///
-  enum AdjustRefreshRateStatus
+  typedef enum AdjustRefreshRateStatus
   {
     ADJUST_REFRESHRATE_STATUS_OFF = 0,
     ADJUST_REFRESHRATE_STATUS_ALWAYS,
     ADJUST_REFRESHRATE_STATUS_ON_STARTSTOP,
     ADJUST_REFRESHRATE_STATUS_ON_START,
-  };
+  } AdjustRefreshRateStatus;
   //------------------------------------------------------------------------------
 
   typedef struct AddonToKodiFuncTable_kodi_gui_general
