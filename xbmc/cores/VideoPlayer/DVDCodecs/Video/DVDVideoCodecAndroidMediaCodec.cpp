@@ -546,7 +546,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
                   "Display: {}, MediaCodec: {}",
                   displaySupportsDovi, mediaCodecSupportsDovi);
 
-        if (mediaCodecSupportsDovi)
+        // For Dolby Vision profiles that don't have HDR10 fallback, always use
+        // the dvhe decoder even if the display not supports Dolby Vision.
+        // For profiles that has HDR10 fallback (7, 8) is better use HEVC decoder to
+        // ensure HDR10 output if display is not DV capable.
+        bool notHasHDR10fallback = (m_hints.dovi.dv_profile == 4 || m_hints.dovi.dv_profile == 5);
+
+        if (mediaCodecSupportsDovi && (displaySupportsDovi || notHasHDR10fallback))
         {
           m_mime = "video/dolby-vision";
           m_formatname = isDvhe ? "amc-dvhe" : "amc-dvh1";
