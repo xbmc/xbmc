@@ -179,6 +179,7 @@ public:
   std::string GetAsDBTime() const;
   std::string GetAsLocalizedDate(bool longDate=false) const;
   std::string GetAsLocalizedDate(const std::string &strFormat) const;
+  std::string GetAsLocalizedDate(const std::string &strFormat, bool returnFormat) const;
   std::string GetAsLocalizedTime(const std::string &format, bool withSeconds=true) const;
   std::string GetAsLocalizedDateTime(bool longDate=false, bool withSeconds=true) const;
   std::string GetAsLocalizedTime(TIME_FORMAT format, bool withSeconds = false) const;

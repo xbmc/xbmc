@@ -1332,7 +1332,13 @@ std::string CDateTime::GetAsLocalizedDate(bool longDate/*=false*/) const
 
 std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
 {
+  return GetAsLocalizedDate(strFormat, false);
+}
+
+std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat, bool returnFormat) const
+{
   std::string strOut;
+  std::string fmtOut;
 
   KODI::TIME::SystemTime dateTime;
   GetAsSystemTime(dateTime);
@@ -1364,6 +1370,7 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
       }
       StringUtils::Replace(strPart, "''", "'");
       strOut+=strPart;
+      fmtOut+=strPart;
     }
     else if (c=='D' || c=='d') // parse days
     {
@@ -1386,14 +1393,23 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
       // Format string with the length of the mask
       std::string str;
       if (partLength==1) // single-digit number
-        str = std::to_string(dateTime.day);
+      {
+          str = std::to_string(dateTime.day);
+          fmtOut+="%-d";
+      }
       else if (partLength==2) // two-digit number
+      {
         str = StringUtils::Format("{:02}", dateTime.day);
+        fmtOut+="%d";
+      }
       else // Day of week string
       {
         int wday = dateTime.dayOfWeek;
         if (wday < 1 || wday > 7) wday = 7;
-        str = g_localizeStrings.Get((c =='d' ? 40 : 10) + wday);
+        {
+          str = g_localizeStrings.Get((c =='d' ? 40 : 10) + wday);
+          fmtOut+=(c =='d' ? "%a" : "%A");
+        }
       }
       strOut+=str;
     }
@@ -1418,14 +1434,23 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
       // Format string with the length of the mask
       std::string str;
       if (partLength==1) // single-digit number
+      {
         str = std::to_string(dateTime.month);
+        fmtOut+="%-m";
+      }
       else if (partLength==2) // two-digit number
+      {
         str = StringUtils::Format("{:02}", dateTime.month);
+        fmtOut+="%m";
+      }
       else // Month string
       {
         int wmonth = dateTime.month;
         if (wmonth < 1 || wmonth > 12) wmonth = 12;
-        str = g_localizeStrings.Get((c =='m' ? 50 : 20) + wmonth);
+          {
+             str = g_localizeStrings.Get((c =='m' ? 50 : 20) + wmonth);
+             fmtOut+=(c =='m' ? "%b" : "%B");
+          }
       }
       strOut+=str;
     }
@@ -1450,15 +1475,25 @@ std::string CDateTime::GetAsLocalizedDate(const std::string &strFormat) const
       // Format string with the length of the mask
       std::string str = std::to_string(dateTime.year); // four-digit number
       if (partLength <= 2)
+      {
         str.erase(0, 2); // two-digit number
+        fmtOut+="%y";
+      }
+      else
+      {
+          fmtOut+="%Y";
+      }
 
-      strOut+=str;
+        strOut+=str;
     }
     else // everything else pass to output
+    {
       strOut+=c;
+      fmtOut+=c;
+    }
   }
 
-  return strOut;
+  return (returnFormat ? fmtOut : strOut);
 }
 
 std::string CDateTime::GetAsLocalizedDateTime(bool longDate/*=false*/, bool withSeconds/*=true*/) const
