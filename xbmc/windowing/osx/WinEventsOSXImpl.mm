@@ -10,7 +10,6 @@
 
 #include "ServiceBroker.h"
 #include "application/AppInboundProtocol.h"
-#include "application/Application.h"
 #include "input/XBMC_keysym.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
@@ -139,12 +138,6 @@
   // left command
   if (appleModifier & kCGEventFlagMaskCommand)
     xbmcModifier |= XBMCKMOD_LMETA;
-  // fn/globe
-  if (appleModifier & kCGEventFlagMaskSecondaryFn && !(appleModifier & kCGEventFlagMaskNumericPad))
-  {
-    xbmcModifier |= XBMCKMOD_LMETA;
-    xbmcModifier |= XBMCKMOD_MODE;
-  }
 
   return static_cast<XBMCMod>(xbmcModifier);
 }
@@ -152,32 +145,10 @@
 - (bool)ProcessOSXShortcuts:(XBMC_Event&)event
 {
   const auto cmd = (event.key.keysym.mod & (XBMCKMOD_LMETA | XBMCKMOD_RMETA)) != 0;
-  const auto isFn = (event.key.keysym.mod & XBMCKMOD_MODE) != 0;
   if (cmd && event.type == XBMC_KEYDOWN)
   {
     switch (event.key.keysym.sym)
     {
-      case XBMCK_q: // CMD-q to quit
-        if (!g_application.m_bStop)
-          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_QUIT);
-        return true;
-
-      case XBMCK_CTRLF: // CMD-CTRL-f to toggle fullscreen
-        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
-        return true;
-
-      case XBMCK_f: // FN/Globe-f to toggle fullscreen
-        if (isFn) // avoid cmd-f to toggle fullscreen
-        {
-          CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
-          return true;
-        }
-        break;
-
-      case XBMCK_t: // CMD-t to toggle float on top
-        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFLOATONTOP);
-        return true;
-
       case XBMCK_s: // CMD-s to take a screenshot
       {
         CAction* action = new CAction(ACTION_TAKE_SCREENSHOT);
@@ -186,7 +157,6 @@
         return true;
       }
       case XBMCK_h: // CMD-h to hide (but we minimize for now)
-      case XBMCK_m: // CMD-m to minimize
         CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MINIMIZE);
         return true;
 
