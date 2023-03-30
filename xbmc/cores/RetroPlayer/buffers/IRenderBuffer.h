@@ -34,14 +34,14 @@ public:
   virtual void Acquire(std::shared_ptr<IRenderBufferPool> pool) = 0;
   virtual void Release() = 0;
   virtual IRenderBufferPool* GetPool() = 0;
+  virtual DataAccess GetMemoryAccess() const = 0;
+  virtual DataAlignment GetMemoryAlignment() const = 0;
 
   // Buffer functions
   virtual bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) = 0;
   virtual void Update() {} //! @todo Remove me
   virtual size_t GetFrameSize() const = 0;
   virtual uint8_t* GetMemory() = 0;
-  virtual DataAccess GetMemoryAccess() const = 0;
-  virtual DataAlignment GetMemoryAlignment() const { return DataAlignment::DATA_UNALIGNED; }
   virtual void ReleaseMemory() {}
   virtual bool UploadTexture() = 0;
   virtual void BindToUnit(unsigned int unit) {}
