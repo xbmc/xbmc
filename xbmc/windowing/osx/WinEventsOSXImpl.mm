@@ -316,26 +316,33 @@
 
 - (XBMC_Event)keyPressEvent:(NSEvent*)nsEvent
 {
-  NSString* unicodeNSString = nsEvent.characters;
   XBMC_Event newEvent = {};
+
+  // use characters to propagate the actual unicode character
+  NSString* unicode = nsEvent.characters;
+  // use charactersIgnoringModifiers to get the corresponding char without modifiers. This will
+  // keep shift so, lower case it as kodi shortcuts might depend on it. modifiers are propagated
+  // anyway in keysym.mod
+  NSString* unicodeWithoutModifiers = [nsEvent.charactersIgnoringModifiers lowercaseString];
 
   // May be possible for actualStringLength > 1. Havent been able to replicate anything
   // larger than 1, but keep in mind for any regressions
-  if (!unicodeNSString || unicodeNSString.length == 0)
+  if (!unicode || unicode.length == 0 || !unicodeWithoutModifiers ||
+      unicodeWithoutModifiers.length == 0)
   {
     return newEvent;
   }
-  else if (unicodeNSString.length > 1)
+  else if (unicode.length > 1)
   {
     CLog::Log(LOGERROR, "CWinEventsOSXImpl::keyPressEvent - event string > 1 - size: {}",
-              unicodeNSString.length);
+              unicode.length);
     return newEvent;
   }
 
   newEvent.key.keysym.scancode = nsEvent.keyCode;
   newEvent.key.keysym.sym =
-      static_cast<XBMCKey>([self OsxKey2XbmcKey:[unicodeNSString characterAtIndex:0]]);
-  newEvent.key.keysym.unicode = [unicodeNSString characterAtIndex:0];
+      static_cast<XBMCKey>([self OsxKey2XbmcKey:[unicodeWithoutModifiers characterAtIndex:0]]);
+  newEvent.key.keysym.unicode = [unicode characterAtIndex:0];
   newEvent.key.keysym.mod = [self OsxMod2XbmcMod:nsEvent.modifierFlags];
 
   return newEvent;
