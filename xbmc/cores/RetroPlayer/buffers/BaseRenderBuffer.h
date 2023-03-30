@@ -28,6 +28,8 @@ public:
   void Acquire(std::shared_ptr<IRenderBufferPool> pool) override;
   void Release() override;
   IRenderBufferPool* GetPool() override { return m_pool.get(); }
+  DataAccess GetMemoryAccess() const override;
+  DataAlignment GetMemoryAlignment() const override;
 
 protected:
   // Reference counting

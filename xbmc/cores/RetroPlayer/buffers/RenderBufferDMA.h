@@ -40,7 +40,6 @@ public:
   bool Allocate(AVPixelFormat format, unsigned int width, unsigned int height) override;
   size_t GetFrameSize() const override;
   uint8_t* GetMemory() override;
-  DataAccess GetMemoryAccess() const override { return DataAccess::READ_WRITE; }
   void ReleaseMemory() override;
 
   // implementation of IRenderBuffer
