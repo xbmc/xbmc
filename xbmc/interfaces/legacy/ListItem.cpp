@@ -901,17 +901,13 @@ namespace XBMCAddon
     xbmc::InfoTagPicture* ListItem::getPictureInfoTag()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      if (item->HasPictureInfoTag())
-        return new xbmc::InfoTagPicture(item->GetPictureInfoTag(), m_offscreen);
-      return new xbmc::InfoTagPicture();
+      return new xbmc::InfoTagPicture(item->GetPictureInfoTag(), m_offscreen);
     }
 
     xbmc::InfoTagGame* ListItem::getGameInfoTag()
     {
       XBMCAddonUtils::GuiLock lock(languageHook, m_offscreen);
-      if (item->HasGameInfoTag())
-        return new xbmc::InfoTagGame(item->GetGameInfoTag(), m_offscreen);
-      return new xbmc::InfoTagGame();
+      return new xbmc::InfoTagGame(item->GetGameInfoTag(), m_offscreen);
     }
 
     std::vector<std::string> ListItem::getStringArray(const InfoLabelValue& alt,
