@@ -39,7 +39,7 @@ constexpr auto DEVELOPER = "Developer";
 constexpr auto GENRE = "Genre";
 constexpr auto CONSOLE_NAME = "ConsoleName";
 
-constexpr int RESPORNSE_SIZE = 64;
+constexpr int RESPONSE_SIZE = 64;
 } // namespace
 
 CCheevos::CCheevos(GAME::CGameClient* gameClient,
@@ -84,8 +84,8 @@ bool CCheevos::LoadData()
   response.CURLCreate(requestURL);
   response.CURLOpen(0);
 
-  char responseStr[RESPORNSE_SIZE];
-  response.ReadString(responseStr, RESPORNSE_SIZE);
+  char responseStr[RESPONSE_SIZE];
+  response.ReadString(responseStr, RESPONSE_SIZE);
 
   response.Close();
 
