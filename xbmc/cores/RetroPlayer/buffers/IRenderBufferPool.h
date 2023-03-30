@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "cores/RetroPlayer/RetroPlayerTypes.h"
+
 extern "C"
 {
 #include <libavutil/pixfmt.h>
@@ -60,6 +62,9 @@ public:
   virtual void Prime(unsigned int width, unsigned int height) = 0;
 
   virtual void Flush() = 0;
+
+  virtual DataAccess GetMemoryAccess() const { return DataAccess::READ_WRITE; }
+  virtual DataAlignment GetMemoryAlignment() const { return DataAlignment::DATA_UNALIGNED; }
 
   /*!
    * \brief Call in GetBuffer() before returning buffer to caller
