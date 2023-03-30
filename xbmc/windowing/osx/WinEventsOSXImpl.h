@@ -10,8 +10,13 @@
 
 #include "windowing/osx/WinEventsOSX.h"
 
-#import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
+
+#ifdef __OBJC__
+@class NSEvent;
+#else
+struct NSEvent;
+#endif
 
 @interface CWinEventsOSXImpl : NSObject
 
@@ -20,7 +25,7 @@
 - (bool)MessagePump;
 - (void)enableInputEvents;
 - (void)disableInputEvents;
-- (XBMC_Event)keyPressEvent:(CGEventRef*)event;
+- (XBMC_Event)keyPressEvent:(NSEvent*)nsEvent;
 
 - (void)signalMouseEntered;
 - (void)signalMouseExited;
