@@ -52,6 +52,10 @@ void CGUIWindowPointer::UpdateVisibility()
     else
       Close();
   }
+  else
+  {
+    Close();
+  }
 }
 
 void CGUIWindowPointer::OnWindowLoaded()
