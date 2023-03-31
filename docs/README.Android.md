@@ -11,8 +11,7 @@ It should work if you're using macOS. If that is the case, read **[macOS specifi
 3. **[Prerequisites](#3-prerequisites)**  
   3.1. **[Extract Android SDK and NDK](#31-extract-android-sdk-and-ndk)**  
   3.2. **[Configure Android SDK](#32-configure-android-sdk)**   
-  3.3. **[Create a key to sign debug APKs](#33-create-a-key-to-sign-debug-apks)**  
-  3.4. **[macOS specific prerequisites](#34-macos-specific-prerequisites)**
+  3.3. **[Create a key to sign debug APKs](#33-create-a-key-to-sign-debug-apks)**
 4. **[Get the source code](#4-get-the-source-code)**
 5. **[Build tools and dependencies](#5-build-tools-and-dependencies)**  
   5.1. **[Advanced Configure Options](#51-advanced-configure-options)**  
@@ -107,15 +106,6 @@ All packages must be signed. The following command will generate a self-signed d
 ```
 keytool -genkey -keystore ~/.android/debug.keystore -v -alias androiddebugkey -dname "CN=Android Debug,O=Android,C=US" -keypass android -storepass android -keyalg RSA -keysize 2048 -validity 10000
 ```
-
-### 3.4. macOS specific prerequisites
-* **[Java Development Kit 11+ (JDK)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)** installed.
-* Normal macOS installations filesystem is case insensitive but compiling for Android requires a case sensitive filesystem. Generate a writeable hdd image and format it with hfs+ (case sensitive) issuing
-  * `hdiutil create -type UDIF -fs 'Case-sensitive Journaled HFS+' -size 20g -volname android-dev $HOME/android-dev.dmg`
-* Whenever you want to compile/develop you need to mount the image
-  * `open ~/android-dev.dmg`
-* Once you have your hdd image with case sensitive hfs+ file system execute all the steps inside of this filesystem. You need to adapt all paths in this guide so that they match your local environment. As an example here is a configure line that demonstrates possible paths:
-  * `./configure --with-tarballs=/Users/Shared/xbmc-depends/tarballs --host=arm-linux-androideabi --with-sdk-path=/Volumes/android-dev/android/android-sdk-macosx --with-ndk-path=/Volumes/android-dev/android/android-ndk-r21e --prefix=/Volumes/android-dev/android/xbmc-depends`
   
 **[back to top](#table-of-contents)** | **[back to section top](#3-prerequisites)**
 
