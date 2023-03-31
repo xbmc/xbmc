@@ -139,12 +139,9 @@ CRendererBase::CRendererBase(CVideoSettings& videoSettings)
 
 CRendererBase::~CRendererBase()
 {
-  if (DX::Windowing()->IsHDROutput())
+  if (!DX::Windowing()->IsHDROutput() && m_AutoSwitchHDR)
   {
-    CLog::LogF(LOGDEBUG, "Restoring SDR rendering");
-    DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
-    if (m_AutoSwitchHDR)
-      DX::Windowing()->ToggleHDR(); // Toggle display HDR OFF
+    DX::Windowing()->ToggleHDR(); //Toggle HDR only if supported and stream is SDR      
   }
   Flush(false);
 }
