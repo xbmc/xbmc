@@ -1341,13 +1341,20 @@ std::string CWinSystemOSX::GetClipboardText()
   return utf8_text;
 }
 
+bool CWinSystemOSX::HasCursor()
+{
+  return m_hasCursor;
+}
+
 void CWinSystemOSX::signalMouseEntered()
 {
+  m_hasCursor = true;
   m_winEvents->signalMouseEntered();
 }
 
 void CWinSystemOSX::signalMouseExited()
 {
+  m_hasCursor = false;
   m_winEvents->signalMouseExited();
 }
 
