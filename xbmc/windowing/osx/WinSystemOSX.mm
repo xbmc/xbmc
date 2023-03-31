@@ -841,8 +841,6 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   if (!m_appWindow)
     return false;
 
-  [(OSXGLWindow*)m_appWindow setResizeState:true];
-
   __block OSXGLView* view;
   dispatch_sync(dispatch_get_main_queue(), ^{
     view = m_appWindow.contentView;
@@ -870,23 +868,12 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   if (view)
   {
     dispatch_sync(dispatch_get_main_queue(), ^{
-      NSOpenGLContext* context = [view getGLContext];
-      NSWindow* window = m_appWindow;
-
-      NSRect pos = window.frame;
-
-      NSRect myNewContentFrame = NSMakeRect(pos.origin.x, pos.origin.y, newWidth, newHeight);
-      NSRect myNewWindowRect = [window frameRectForContentRect:myNewContentFrame];
-      [window setFrame:myNewWindowRect display:TRUE];
-
-      [context update];
+      [[view getGLContext] update];
     });
   }
 
   m_nWidth = newWidth;
   m_nHeight = newHeight;
-
-  [(OSXGLWindow*)m_appWindow setResizeState:false];
 
   return true;
 }
