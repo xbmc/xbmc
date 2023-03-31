@@ -12,8 +12,6 @@
 
 @interface OSXGLWindow : NSWindow <NSWindowDelegate>
 
-@property(atomic) bool resizeState;
-
 - (id)initWithContentRect:(NSRect)box styleMask:(uint)style;
 
 @end
