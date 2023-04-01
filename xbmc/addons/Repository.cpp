@@ -315,7 +315,8 @@ RepositoryDirInfo CRepository::ParseDirConfiguration(const CAddonExtensions& con
     dir.hashType = CDigest::TypeFromString(hashStr);
     if (dir.hashType == CDigest::Type::MD5)
     {
-      CLog::Log(LOGWARNING, "CRepository::{}: Repository has MD5 hashes enabled - this hash function is broken and will only guard against unintentional data corruption", __FUNCTION__);
+      CLog::LogF(LOGWARNING, "CRepository: Repository has MD5 hashes enabled - this hash function "
+                             "is broken and will only guard against unintentional data corruption");
     }
   }
 

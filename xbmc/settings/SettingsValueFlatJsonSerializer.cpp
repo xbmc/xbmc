@@ -36,7 +36,7 @@ std::string CSettingsValueFlatJsonSerializer::SerializeValues(
   if (!CJSONVariantWriter::Write(root, result, m_compact))
   {
     CLog::Log(LOGWARNING,
-      "CSettingsValueFlatJsonSerializer: failed to serialize settings into JSON");
+              "CSettingsValueFlatJsonSerializer: failed to serialize settings into JSON");
     return "";
   }
 
@@ -131,9 +131,11 @@ CVariant CSettingsValueFlatJsonSerializer::SerializeSettingValue(
 
     case SettingType::Unknown:
     default:
-      CLog::Log(LOGWARNING,
-        "CSettingsValueFlatJsonSerializer: failed to serialize setting \"{}\" with value \"{}\" " \
-        "of unknown type", setting->GetId(), setting->ToString());
+      CLog::Log(
+          LOGWARNING,
+          "CSettingsValueFlatJsonSerializer: failed to serialize setting \"{}\" with value \"{}\" "
+          "of unknown type",
+          setting->GetId(), setting->ToString());
       return CVariant::ConstNullVariant;
   }
 }

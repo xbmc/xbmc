@@ -75,7 +75,7 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
 
   if (!m_DRM->SetMode(res))
   {
-    CLog::Log(LOGERROR, "CWinSystemGbmEGLContext::{} - failed to set DRM mode", __FUNCTION__);
+    CLog::LogF(LOGERROR, "CWinSystemGbmEGLContext: failed to set DRM mode");
     return false;
   }
 
@@ -90,7 +90,7 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   if (!m_GBM->GetDevice()->CreateSurface(res.iWidth, res.iHeight, format, modifiers.data(),
                                          modifiers.size()))
   {
-    CLog::Log(LOGERROR, "CWinSystemGbmEGLContext::{} - failed to initialize GBM", __FUNCTION__);
+    CLog::LogF(LOGERROR, "CWinSystemGbmEGLContext: failed to initialize GBM");
     return false;
   }
 
@@ -114,7 +114,7 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   m_nHeight = res.iHeight;
   m_fRefreshRate = res.fRefreshRate;
 
-  CLog::Log(LOGDEBUG, "CWinSystemGbmEGLContext::{} - initialized GBM", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CWinSystemGbmEGLContext: initialized GBM");
   return true;
 }
 
@@ -122,7 +122,7 @@ bool CWinSystemGbmEGLContext::DestroyWindow()
 {
   m_eglContext.DestroySurface();
 
-  CLog::Log(LOGDEBUG, "CWinSystemGbmEGLContext::{} - deinitialized GBM", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CWinSystemGbmEGLContext: deinitialized GBM");
   return true;
 }
 

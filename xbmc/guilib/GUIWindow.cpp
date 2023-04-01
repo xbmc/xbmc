@@ -1021,7 +1021,7 @@ bool CGUIWindow::SendMessage(int message, int id, int param1 /* = 0*/, int param
 #ifdef _DEBUG
 void CGUIWindow::DumpTextureUse()
 {
-  CLog::Log(LOGDEBUG, "{} for window {}", __FUNCTION__, GetID());
+  CLog::LogF(LOGDEBUG, "for window {}", GetID());
   CGUIControlGroup::DumpTextureUse();
 }
 #endif

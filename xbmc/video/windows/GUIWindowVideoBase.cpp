@@ -356,8 +356,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
           URIUtils::GetParentPath(item->GetPath(), strParentDirectory);
           if (m_database.GetTvShowId(strParentDirectory) < 0)
           {
-            CLog::Log(LOGERROR, "{}: could not add episode [{}]. tvshow does not exist yet..",
-                      __FUNCTION__, item->GetPath());
+            CLog::LogF(LOGERROR, "could not add episode [{}]. tvshow does not exist yet..",
+                       item->GetPath());
             return false;
           }
         }
@@ -1084,7 +1084,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
     item.SetPath(pItem->GetVideoInfoTag()->m_strFileNameAndPath);
     item.SetProperty("original_listitem_url", pItem->GetPath());
   }
-  CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(item.GetPath()));
+  CLog::LogF(LOGDEBUG, "{}", CURL::GetRedacted(item.GetPath()));
 
   item.SetProperty("playlist_type_hint", m_guiState->GetPlaylist());
 

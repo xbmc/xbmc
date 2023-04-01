@@ -47,8 +47,8 @@ bool CDRMPlane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
   {
     if (!SupportsFormat(format))
     {
-      CLog::Log(LOGDEBUG, "CDRMPlane::{} - format not supported: {}", __FUNCTION__,
-                DRMHELPERS::FourCCToString(format));
+      CLog::LogF(LOGDEBUG, "CDRMPlane: format not supported: {}",
+                 DRMHELPERS::FourCCToString(format));
       return false;
     }
   }
@@ -57,23 +57,22 @@ bool CDRMPlane::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
     auto formatModifiers = &m_modifiers_map[format];
     if (formatModifiers->empty())
     {
-      CLog::Log(LOGDEBUG, "CDRMPlane::{} - format not supported: {}", __FUNCTION__,
-                DRMHELPERS::FourCCToString(format));
+      CLog::LogF(LOGDEBUG, "CDRMPlane: format not supported: {}",
+                 DRMHELPERS::FourCCToString(format));
       return false;
     }
 
     auto formatModifier = std::find(formatModifiers->begin(), formatModifiers->end(), modifier);
     if (formatModifier == formatModifiers->end())
     {
-      CLog::Log(LOGDEBUG, "CDRMPlane::{} - modifier ({}) not supported for format ({})",
-                __FUNCTION__, DRMHELPERS::ModifierToString(modifier),
-                DRMHELPERS::FourCCToString(format));
+      CLog::LogF(LOGDEBUG, "CDRMPlane: modifier ({}) not supported for format ({})",
+                 DRMHELPERS::ModifierToString(modifier), DRMHELPERS::FourCCToString(format));
       return false;
     }
   }
 
-  CLog::Log(LOGDEBUG, "CDRMPlane::{} - found plane format ({}) and modifier ({})", __FUNCTION__,
-            DRMHELPERS::FourCCToString(format), DRMHELPERS::ModifierToString(modifier));
+  CLog::LogF(LOGDEBUG, "CDRMPlane: found plane format ({}) and modifier ({})",
+             DRMHELPERS::FourCCToString(format), DRMHELPERS::ModifierToString(modifier));
 
   return true;
 }

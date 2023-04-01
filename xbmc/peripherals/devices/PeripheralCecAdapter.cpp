@@ -155,8 +155,7 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
       // may not action the standby command.
       bIgnoreDeactivate = data["shuttingdown"].asBoolean();
       if (bIgnoreDeactivate)
-        CLog::Log(LOGDEBUG, "{} - ignoring OnScreensaverDeactivated for power action",
-                  __FUNCTION__);
+        CLog::LogF(LOGDEBUG, "ignoring OnScreensaverDeactivated for power action");
     }
     if (m_bPowerOnScreensaver && !bIgnoreDeactivate && m_configuration.bActivateSource)
     {
@@ -189,7 +188,7 @@ void CPeripheralCecAdapter::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
   else if (flag == ANNOUNCEMENT::System && sender == CAnnouncementManager::ANNOUNCEMENT_SENDER &&
            message == "OnWake")
   {
-    CLog::Log(LOGDEBUG, "{} - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "reconnecting to the CEC adapter after standby mode");
     if (ReopenConnection())
     {
       bool bActivate(false);
@@ -275,8 +274,8 @@ bool CPeripheralCecAdapter::InitialiseFeature(const PeripheralFeature feature)
     }
     else
     {
-      CLog::Log(LOGDEBUG, "{} - using libCEC v{}", __FUNCTION__,
-                m_cecAdapter->VersionToString(m_configuration.serverVersion));
+      CLog::LogF(LOGDEBUG, "using libCEC v{}",
+                 m_cecAdapter->VersionToString(m_configuration.serverVersion));
       SetVersionInfo(m_configuration);
     }
 
@@ -307,14 +306,13 @@ bool CPeripheralCecAdapter::OpenConnection(void)
 
   if (!GetSettingBool("enabled"))
   {
-    CLog::Log(LOGDEBUG, "{} - CEC adapter is disabled in peripheral settings", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "CEC adapter is disabled in peripheral settings");
     m_bStarted = false;
     return bIsOpen;
   }
 
   // open the CEC adapter
-  CLog::Log(LOGDEBUG, "{} - opening a connection to the CEC adapter: {}", __FUNCTION__,
-            m_strComPort);
+  CLog::LogF(LOGDEBUG, "opening a connection to the CEC adapter: {}", m_strComPort);
 
   // scanning the CEC bus takes about 5 seconds, so display a notification to inform users that
   // we're busy
@@ -330,7 +328,7 @@ bool CPeripheralCecAdapter::OpenConnection(void)
     if ((bIsOpen = m_cecAdapter->Open(m_strComPort.c_str(), 10000)) == false)
     {
       // display warning: couldn't initialise libCEC
-      CLog::Log(LOGERROR, "{} - could not opening a connection to the CEC adapter", __FUNCTION__);
+      CLog::LogF(LOGERROR, "could not opening a connection to the CEC adapter");
       if (!bConnectionFailedDisplayed)
         CGUIDialogKaiToast::QueueNotification(
             CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), g_localizeStrings.Get(36012));
@@ -342,7 +340,7 @@ bool CPeripheralCecAdapter::OpenConnection(void)
 
   if (bIsOpen)
   {
-    CLog::Log(LOGDEBUG, "{} - connection to the CEC adapter opened", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "connection to the CEC adapter opened");
 
     // read the configuration
     libcec_configuration config;
@@ -410,26 +408,25 @@ void CPeripheralCecAdapter::Process(void)
     {
       if (!m_configuration.powerOffDevices.IsEmpty())
       {
-        CLog::Log(LOGDEBUG, "{} - sending standby commands", __FUNCTION__);
+        CLog::LogF(LOGDEBUG, "sending standby commands");
         m_standbySent = CDateTime::GetCurrentDateTime();
         m_cecAdapter->StandbyDevices();
       }
       else if (m_bSendInactiveSource)
       {
-        CLog::Log(LOGDEBUG, "{} - sending inactive source commands", __FUNCTION__);
+        CLog::LogF(LOGDEBUG, "sending inactive source commands");
         m_cecAdapter->SetInactiveView();
       }
     }
     else
     {
-      CLog::Log(LOGDEBUG, "{} - XBMC is not the active source, not sending any standby commands",
-                __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "XBMC is not the active source, not sending any standby commands");
     }
   }
 
   m_cecAdapter->Close();
 
-  CLog::Log(LOGDEBUG, "{} - CEC adapter processor thread ended", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CEC adapter processor thread ended");
 
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -615,11 +612,10 @@ void CPeripheralCecAdapter::SetMenuLanguage(const char* strLanguage)
   {
     strGuiLanguage = "resource.language." + strGuiLanguage;
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SETLANGUAGE, -1, -1, nullptr, strGuiLanguage);
-    CLog::Log(LOGDEBUG, "{} - language set to '{}'", __FUNCTION__, strGuiLanguage);
+    CLog::LogF(LOGDEBUG, "language set to '{}'", strGuiLanguage);
   }
   else
-    CLog::Log(LOGWARNING, "{} - TV menu language set to unknown value '{}'", __FUNCTION__,
-              strLanguage);
+    CLog::LogF(LOGWARNING, "TV menu language set to unknown value '{}'", strLanguage);
 }
 
 void CPeripheralCecAdapter::OnTvStandby(void)
@@ -657,7 +653,7 @@ void CPeripheralCecAdapter::OnTvStandby(void)
     case LOCALISED_ID_IGNORE:
       break;
     default:
-      CLog::Log(LOGERROR, "{} - Unexpected [standby_pc_on_tv_standby] setting value", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Unexpected [standby_pc_on_tv_standby] setting value");
       break;
   }
 }
@@ -814,8 +810,7 @@ void CPeripheralCecAdapter::GetNextKey(void)
 
 void CPeripheralCecAdapter::PushCecKeypress(const CecButtonPress& key)
 {
-  CLog::Log(LOGDEBUG, "{} - received key {:2x} duration {}", __FUNCTION__, key.iButton,
-            key.iDuration);
+  CLog::LogF(LOGDEBUG, "received key {:2x} duration {}", key.iButton, key.iDuration);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
   // avoid the queue getting too long
@@ -1170,12 +1165,12 @@ void CPeripheralCecAdapter::OnSettingChanged(const std::string& strChangedSettin
     bool bEnabled(GetSettingBool("enabled"));
     if (!bEnabled && IsRunning())
     {
-      CLog::Log(LOGDEBUG, "{} - closing the CEC connection", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "closing the CEC connection");
       StopThread(true);
     }
     else if (bEnabled && !IsRunning())
     {
-      CLog::Log(LOGDEBUG, "{} - starting the CEC connection", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "starting the CEC connection");
       SetConfigurationFromSettings();
       InitialiseFeature(FEATURE_CEC);
     }
@@ -1184,14 +1179,14 @@ void CPeripheralCecAdapter::OnSettingChanged(const std::string& strChangedSettin
   {
     if (m_queryThread->IsRunning())
     {
-      CLog::Log(LOGDEBUG, "{} - sending the updated configuration to libCEC", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "sending the updated configuration to libCEC");
       SetConfigurationFromSettings();
       m_queryThread->UpdateConfiguration(&m_configuration);
     }
   }
   else
   {
-    CLog::Log(LOGDEBUG, "{} - restarting the CEC connection", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "restarting the CEC connection");
     SetConfigurationFromSettings();
     InitialiseFeature(FEATURE_CEC);
   }
@@ -1593,13 +1588,13 @@ void CPeripheralCecAdapterUpdateThread::UpdateMenuLanguage(void)
   // request the menu language of the TV
   if (m_adapter->m_bUseTVMenuLanguage == 1)
   {
-    CLog::Log(LOGDEBUG, "{} - requesting the menu language of the TV", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "requesting the menu language of the TV");
     std::string language(m_adapter->m_cecAdapter->GetDeviceMenuLanguage(CECDEVICE_TV));
     m_adapter->SetMenuLanguage(language.c_str());
   }
   else
   {
-    CLog::Log(LOGDEBUG, "{} - using TV menu language is disabled", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "using TV menu language is disabled");
   }
 }
 
@@ -1613,9 +1608,8 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
   {
     // request the OSD name of the amp
     std::string ampName(m_adapter->m_cecAdapter->GetDeviceOSDName(CECDEVICE_AUDIOSYSTEM));
-    CLog::Log(LOGDEBUG,
-              "{} - CEC capable amplifier found ({}). volume will be controlled on the amp",
-              __FUNCTION__, ampName);
+    CLog::LogF(LOGDEBUG, "CEC capable amplifier found ({}). volume will be controlled on the amp",
+               ampName);
     strAmpName += ampName;
 
     // set amp present
@@ -1628,7 +1622,7 @@ std::string CPeripheralCecAdapterUpdateThread::UpdateAudioSystemStatus(void)
   else
   {
     // set amp present
-    CLog::Log(LOGDEBUG, "{} - no CEC capable amplifier found", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "no CEC capable amplifier found");
     m_adapter->SetAudioSystemConnected(false);
   }
 
@@ -1704,11 +1698,11 @@ void CPeripheralCecAdapterUpdateThread::Process(void)
         m_bIsUpdating = false;
       }
 
-      CLog::Log(LOGDEBUG, "{} - updating the configuration", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "updating the configuration");
       bool bConfigSet(m_adapter->m_cecAdapter->SetConfiguration(&configuration));
       // display message: config updated / failed to update
       if (!bConfigSet)
-        CLog::Log(LOGERROR, "{} - libCEC couldn't set the new configuration", __FUNCTION__);
+        CLog::LogF(LOGERROR, "libCEC couldn't set the new configuration");
       else
       {
         UpdateMenuLanguage();
@@ -1832,7 +1826,7 @@ void CPeripheralCecAdapter::ProcessStandbyDevices(void)
     }
     else if (m_bSendInactiveSource == 1)
     {
-      CLog::Log(LOGDEBUG, "{} - sending inactive source commands", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "sending inactive source commands");
       m_cecAdapter->SetInactiveView();
     }
   }
@@ -1846,13 +1840,13 @@ bool CPeripheralCecAdapter::ToggleDeviceState(CecStateChange mode /*= STATE_SWIT
   if (m_cecAdapter->IsLibCECActiveSource() &&
       (mode == STATE_SWITCH_TOGGLE || mode == STATE_STANDBY))
   {
-    CLog::Log(LOGDEBUG, "{} - putting CEC device on standby...", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "putting CEC device on standby...");
     StandbyDevices();
     return false;
   }
   else if (mode == STATE_SWITCH_TOGGLE || mode == STATE_ACTIVATE_SOURCE)
   {
-    CLog::Log(LOGDEBUG, "{} - waking up CEC device...", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "waking up CEC device...");
     ActivateSource();
     return true;
   }

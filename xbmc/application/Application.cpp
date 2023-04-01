@@ -486,8 +486,7 @@ bool CApplication::CreateGUI()
 
   for (auto& windowSystem : windowSystems)
   {
-    CLog::Log(LOGDEBUG, "CApplication::{} - trying to init {} windowing system", __FUNCTION__,
-              windowSystem);
+    CLog::LogF(LOGDEBUG, "CApplication: trying to init {} windowing system", windowSystem);
     m_pWinSystem = KODI::WINDOWING::CWindowSystemFactory::CreateWindowSystem(windowSystem);
 
     if (!m_pWinSystem)
@@ -500,8 +499,7 @@ bool CApplication::CreateGUI()
 
     if (!m_pWinSystem->InitWindowSystem())
     {
-      CLog::Log(LOGDEBUG, "CApplication::{} - unable to init {} windowing system", __FUNCTION__,
-                windowSystem);
+      CLog::LogF(LOGDEBUG, "CApplication: unable to init {} windowing system", windowSystem);
       m_pWinSystem->DestroyWindowSystem();
       m_pWinSystem.reset();
       CServiceBroker::UnregisterWinSystem();
@@ -509,15 +507,14 @@ bool CApplication::CreateGUI()
     }
     else
     {
-      CLog::Log(LOGINFO, "CApplication::{} - using the {} windowing system", __FUNCTION__,
-                windowSystem);
+      CLog::LogF(LOGINFO, "CApplication: using the {} windowing system", windowSystem);
       break;
     }
   }
 
   if (!m_pWinSystem)
   {
-    CLog::Log(LOGFATAL, "CApplication::{} - unable to init windowing system", __FUNCTION__);
+    CLog::LogF(LOGFATAL, "CApplication: unable to init windowing system");
     CServiceBroker::UnregisterWinSystem();
     return false;
   }
@@ -1624,8 +1621,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     {
       if (!audioengine->Suspend())
       {
-        CLog::Log(LOGINFO, "{}: Failed to suspend AudioEngine before launching external program",
-                  __FUNCTION__);
+          CLog::LogF(LOGINFO, "Failed to suspend AudioEngine before launching external program");
       }
     }
 #if defined(TARGET_DARWIN)
@@ -1640,8 +1636,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     {
       if (!audioengine->Resume())
       {
-        CLog::Log(LOGFATAL, "{}: Failed to restart AudioEngine after return from external player",
-                  __FUNCTION__);
+          CLog::LogF(LOGFATAL, "Failed to restart AudioEngine after return from external player");
       }
     }
     break;
@@ -1761,7 +1756,7 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   break;
 
   default:
-    CLog::Log(LOGERROR, "{}: Unhandled threadmessage sent, {}", __FUNCTION__, msg);
+    CLog::LogF(LOGERROR, "Unhandled threadmessage sent, {}", msg);
     break;
   }
 }
@@ -3054,8 +3049,8 @@ void CApplication::ConfigureAndEnableAddons()
         auto addonInfo = addonMgr.GetAddonInfo(addon->ID(), AddonType::UNKNOWN);
         if (addonInfo && addonMgr.IsCompatible(addonInfo))
         {
-          CLog::Log(LOGDEBUG, "CApplication::{}: enabling the compatible version of [{}].",
-                    __FUNCTION__, addon->ID());
+          CLog::LogF(LOGDEBUG, "CApplication: enabling the compatible version of [{}].",
+                     addon->ID());
           addonMgr.EnableAddon(addon->ID());
         }
         continue;

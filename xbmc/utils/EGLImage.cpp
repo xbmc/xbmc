@@ -182,13 +182,13 @@ bool CEGLImage::CreateImage(EglAttrs imageAttrs)
       eglString.append(StringUtils::Format("{}: {}\n", keyStr, valueStr));
     }
 
-    CLog::Log(LOGDEBUG, "CEGLImage::{} - attributes:\n{}", __FUNCTION__, eglString);
+    CLog::LogF(LOGDEBUG, "CEGLImage: attributes:\n{}", eglString);
   }
 
   if (!m_image)
   {
-    CLog::Log(LOGERROR, "CEGLImage::{} - failed to import buffer into EGL image: {:#4x}",
-              __FUNCTION__, eglGetError());
+    CLog::LogF(LOGERROR, "CEGLImage: failed to import buffer into EGL image: {:#4x}",
+               eglGetError());
     return false;
   }
 
@@ -215,17 +215,15 @@ bool CEGLImage::SupportsFormat(uint32_t format)
   EGLint numFormats;
   if (eglQueryDmaBufFormatsEXT(m_display, 0, nullptr, &numFormats) != EGL_TRUE)
   {
-    CLog::Log(LOGERROR,
-              "CEGLImage::{} - failed to query the max number of EGL dma-buf formats: {:#4x}",
-              __FUNCTION__, eglGetError());
+    CLog::LogF(LOGERROR, "CEGLImage: failed to query the max number of EGL dma-buf formats: {:#4x}",
+               eglGetError());
     return false;
   }
 
   std::vector<EGLint> formats(numFormats);
   if (eglQueryDmaBufFormatsEXT(m_display, numFormats, formats.data(), &numFormats) != EGL_TRUE)
   {
-    CLog::Log(LOGERROR, "CEGLImage::{} - failed to query EGL dma-buf formats: {:#4x}", __FUNCTION__,
-              eglGetError());
+    CLog::LogF(LOGERROR, "CEGLImage: failed to query EGL dma-buf formats: {:#4x}", eglGetError());
     return false;
   }
 
@@ -236,7 +234,7 @@ bool CEGLImage::SupportsFormat(uint32_t format)
     for (const auto& supportedFormat : formats)
       formatStr.append("\n" + DRMHELPERS::FourCCToString(supportedFormat));
 
-    CLog::Log(LOGDEBUG, "CEGLImage::{} - supported formats:{}", __FUNCTION__, formatStr);
+    CLog::LogF(LOGDEBUG, "CEGLImage: supported formats:{}", formatStr);
   }
 
   if (foundFormat != formats.end())
@@ -246,8 +244,7 @@ bool CEGLImage::SupportsFormat(uint32_t format)
     return true;
   }
 
-  CLog::Log(LOGERROR, "CEGLImage::{} - format not supported: {}", __FUNCTION__,
-            DRMHELPERS::FourCCToString(format));
+  CLog::LogF(LOGERROR, "CEGLImage: format not supported: {}", DRMHELPERS::FourCCToString(format));
 
   return false;
 }
@@ -274,10 +271,10 @@ bool CEGLImage::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
   EGLint numFormats;
   if (eglQueryDmaBufModifiersEXT(m_display, format, 0, nullptr, nullptr, &numFormats) != EGL_TRUE)
   {
-    CLog::Log(LOGERROR,
-              "CEGLImage::{} - failed to query the max number of EGL dma-buf format modifiers for "
-              "format: {} - {:#4x}",
-              __FUNCTION__, DRMHELPERS::FourCCToString(format), eglGetError());
+    CLog::LogF(LOGERROR,
+               "CEGLImage: failed to query the max number of EGL dma-buf format modifiers for "
+               "format: {} - {:#4x}",
+               DRMHELPERS::FourCCToString(format), eglGetError());
     return false;
   }
 
@@ -286,10 +283,9 @@ bool CEGLImage::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
   if (eglQueryDmaBufModifiersEXT(m_display, format, numFormats, modifiers.data(), nullptr,
                                  &numFormats) != EGL_TRUE)
   {
-    CLog::Log(
-        LOGERROR,
-        "CEGLImage::{} - failed to query EGL dma-buf format modifiers for format: {} - {:#4x}",
-        __FUNCTION__, DRMHELPERS::FourCCToString(format), eglGetError());
+    CLog::LogF(LOGERROR,
+               "CEGLImage: failed to query EGL dma-buf format modifiers for format: {} - {:#4x}",
+               DRMHELPERS::FourCCToString(format), eglGetError());
     return false;
   }
 
@@ -300,7 +296,7 @@ bool CEGLImage::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
     for (const auto& supportedModifier : modifiers)
       modifierStr.append("\n" + DRMHELPERS::ModifierToString(supportedModifier));
 
-    CLog::Log(LOGDEBUG, "CEGLImage::{} - supported modifiers:{}", __FUNCTION__, modifierStr);
+    CLog::LogF(LOGDEBUG, "CEGLImage: supported modifiers:{}", modifierStr);
   }
 
   if (foundModifier != modifiers.end())
@@ -310,8 +306,8 @@ bool CEGLImage::SupportsFormatAndModifier(uint32_t format, uint64_t modifier)
     return true;
   }
 
-  CLog::Log(LOGERROR, "CEGLImage::{} - modifier ({}) not supported for format ({})", __FUNCTION__,
-            DRMHELPERS::ModifierToString(modifier), DRMHELPERS::FourCCToString(format));
+  CLog::LogF(LOGERROR, "CEGLImage: modifier ({}) not supported for format ({})",
+             DRMHELPERS::ModifierToString(modifier), DRMHELPERS::FourCCToString(format));
 
   return false;
 }

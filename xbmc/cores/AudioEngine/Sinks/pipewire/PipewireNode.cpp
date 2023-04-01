@@ -50,7 +50,7 @@ void CPipewireNode::Info(void* userdata, const struct pw_node_info* info)
 
   if (node.m_info)
   {
-    CLog::Log(LOGDEBUG, "CPipewireNode::{} - node {} changed", __FUNCTION__, info->id);
+    CLog::LogF(LOGDEBUG, "CPipewireNode: node {} changed", info->id);
     pw_node_info* m_info = node.m_info.get();
     m_info = pw_node_info_update(m_info, info);
   }

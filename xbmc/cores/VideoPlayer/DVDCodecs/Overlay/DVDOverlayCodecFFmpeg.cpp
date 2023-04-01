@@ -44,7 +44,7 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   const AVCodec* pCodec = avcodec_find_decoder(hints.codec);
   if (!pCodec)
   {
-    CLog::Log(LOGDEBUG, "{} - Unable to find codec {}", __FUNCTION__, hints.codec);
+    CLog::LogF(LOGDEBUG, "Unable to find codec {}", hints.codec);
     return false;
   }
 
@@ -84,7 +84,7 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
         {
           m_pCodecContext->width = width;
           m_pCodecContext->height = height;
-          CLog::Log(LOGDEBUG, "{} - parsed extradata: size: {} x {}", __FUNCTION__, width, height);
+          CLog::LogF(LOGDEBUG, "parsed extradata: size: {} x {}", width, height);
         }
       }
       /*
@@ -126,8 +126,7 @@ OverlayMessage CDVDOverlayCodecFFmpeg::Decode(DemuxPacket* pPacket)
   AVPacket* avpkt = av_packet_alloc();
   if (!avpkt)
   {
-    CLog::Log(LOGERROR, "CDVDOverlayCodecFFmpeg::{} - av_packet_alloc failed: {}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CDVDOverlayCodecFFmpeg: av_packet_alloc failed: {}", strerror(errno));
     return OverlayMessage::OC_ERROR;
   }
 
@@ -144,14 +143,13 @@ OverlayMessage CDVDOverlayCodecFFmpeg::Decode(DemuxPacket* pPacket)
 
   if (len < 0)
   {
-    CLog::Log(LOGERROR, "{} - avcodec_decode_subtitle returned failure", __FUNCTION__);
+    CLog::LogF(LOGERROR, "avcodec_decode_subtitle returned failure");
     Flush();
     return OverlayMessage::OC_ERROR;
   }
 
   if (len != size)
-    CLog::Log(LOGWARNING, "{} - avcodec_decode_subtitle didn't consume the full packet",
-              __FUNCTION__);
+    CLog::LogF(LOGWARNING, "avcodec_decode_subtitle didn't consume the full packet");
 
   if (!gotsub)
     return OverlayMessage::OC_BUFFER;

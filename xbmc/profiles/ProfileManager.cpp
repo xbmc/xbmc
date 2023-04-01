@@ -543,7 +543,7 @@ const CProfile& CProfileManager::GetMasterProfile() const
   if (!m_profiles.empty())
     return m_profiles[0];
 
-  CLog::Log(LOGERROR, "{}: master profile doesn't exist", __FUNCTION__);
+  CLog::LogF(LOGERROR, "master profile doesn't exist");
   return EmptyProfile;
 }
 

@@ -174,7 +174,7 @@ void CGLContextGLX::SetVSync(bool enable)
     if(m_glXSwapIntervalMESA(1) == 0)
       m_vsyncMode = 2;
     else
-      CLog::Log(LOGWARNING, "{} - glXSwapIntervalMESA failed", __FUNCTION__);
+      CLog::LogF(LOGWARNING, "glXSwapIntervalMESA failed");
   }
   if (m_glXWaitVideoSyncSGI && m_glXGetVideoSyncSGI && !m_vsyncMode)
   {
@@ -182,8 +182,7 @@ void CGLContextGLX::SetVSync(bool enable)
     if(m_glXGetVideoSyncSGI(&count) == 0)
       m_vsyncMode = 3;
     else
-      CLog::Log(LOGWARNING, "{} - glXGetVideoSyncSGI failed, glcontext probably not direct",
-                __FUNCTION__);
+      CLog::LogF(LOGWARNING, "glXGetVideoSyncSGI failed, glcontext probably not direct");
   }
 }
 
@@ -194,15 +193,13 @@ void CGLContextGLX::SwapBuffers()
     glFinish();
     unsigned int before = 0, after = 0;
     if (m_glXGetVideoSyncSGI(&before) != 0)
-      CLog::Log(LOGERROR, "{} - glXGetVideoSyncSGI - Failed to get current retrace count",
-                __FUNCTION__);
+      CLog::LogF(LOGERROR, "glXGetVideoSyncSGI - Failed to get current retrace count");
 
     glXSwapBuffers(m_dpy, m_glxWindow);
     glFinish();
 
     if(m_glXGetVideoSyncSGI(&after) != 0)
-      CLog::Log(LOGERROR, "{} - glXGetVideoSyncSGI - Failed to get current retrace count",
-                __FUNCTION__);
+      CLog::LogF(LOGERROR, "glXGetVideoSyncSGI - Failed to get current retrace count");
 
     if (after == before)
       m_iVSyncErrors = 1;
@@ -231,21 +228,19 @@ void CGLContextGLX::SwapBuffers()
     glFinish();
     unsigned int before = 0, swap = 0, after = 0;
     if (m_glXGetVideoSyncSGI(&before) != 0)
-      CLog::Log(LOGERROR, "{} - glXGetVideoSyncSGI - Failed to get current retrace count",
-                __FUNCTION__);
+      CLog::LogF(LOGERROR, "glXGetVideoSyncSGI - Failed to get current retrace count");
 
     if(m_glXWaitVideoSyncSGI(2, (before+1)%2, &swap) != 0)
-      CLog::Log(LOGERROR, "{} - glXWaitVideoSyncSGI - Returned error", __FUNCTION__);
+      CLog::LogF(LOGERROR, "glXWaitVideoSyncSGI - Returned error");
 
     glXSwapBuffers(m_dpy, m_glxWindow);
     glFinish();
 
     if (m_glXGetVideoSyncSGI(&after) != 0)
-      CLog::Log(LOGERROR, "{} - glXGetVideoSyncSGI - Failed to get current retrace count",
-                __FUNCTION__);
+      CLog::LogF(LOGERROR, "glXGetVideoSyncSGI - Failed to get current retrace count");
 
     if (after == before)
-      CLog::Log(LOGERROR, "{} - glXWaitVideoSyncSGI - Woke up early", __FUNCTION__);
+      CLog::LogF(LOGERROR, "glXWaitVideoSyncSGI - Woke up early");
 
     if (after > before + 1)
       m_iVSyncErrors++;

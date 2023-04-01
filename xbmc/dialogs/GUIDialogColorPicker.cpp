@@ -173,8 +173,7 @@ void CGUIDialogColorPicker::LoadColors(const std::string& filePath)
     }
   }
   else
-    CLog::Log(LOGERROR, "{} - An error occurred when loading colours from the xml file.",
-              __FUNCTION__);
+    CLog::LogF(LOGERROR, "An error occurred when loading colours from the xml file.");
 }
 
 std::string CGUIDialogColorPicker::GetSelectedColor() const
@@ -224,7 +223,7 @@ void CGUIDialogColorPicker::OnWindowLoaded()
 void CGUIDialogColorPicker::OnInitWindow()
 {
   if (!m_vecList || m_vecList->IsEmpty())
-    CLog::Log(LOGERROR, "{} - No colours have been added in the list.", __FUNCTION__);
+    CLog::LogF(LOGERROR, "No colours have been added in the list.");
 
   m_viewControl.SetItems(*m_vecList);
   m_viewControl.SetCurrentView(CONTROL_ICON_LIST);

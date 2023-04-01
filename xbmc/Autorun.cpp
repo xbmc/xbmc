@@ -141,7 +141,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
 {
   if (!pDir)
   {
-    CLog::Log(LOGDEBUG, "CAutorun::{}: cannot run disc. is it properly mounted?", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "CAutorun: cannot run disc. is it properly mounted?");
     return false;
   }
 

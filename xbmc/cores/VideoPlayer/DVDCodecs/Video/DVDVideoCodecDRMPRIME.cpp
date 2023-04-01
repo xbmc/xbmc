@@ -208,8 +208,8 @@ enum AVPixelFormat CDVDVideoCodecDRMPRIME::GetFormat(struct AVCodecContext* avct
   {
     formats.emplace_back(av_get_pix_fmt_name(fmt[n]));
   }
-  CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - no supported pixel formats: {}", __FUNCTION__,
-            StringUtils::Join(formats, ", "));
+  CLog::LogF(LOGERROR, "CDVDVideoCodecDRMPRIME: supported pixel formats: {}",
+             StringUtils::Join(formats, ", "));
 
   return AV_PIX_FMT_NONE;
 }
@@ -266,13 +266,12 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   const AVCodec* pCodec = FindDecoder(hints);
   if (!pCodec)
   {
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::{} - unable to find decoder for codec {}",
-              __FUNCTION__, hints.codec);
+    CLog::LogF(LOGDEBUG, "CDVDVideoCodecDRMPRIME: unable to find decoder for codec {}",
+               hints.codec);
     return false;
   }
 
-  CLog::Log(LOGINFO, "CDVDVideoCodecDRMPRIME::{} - using decoder {}", __FUNCTION__,
-            pCodec->long_name ? pCodec->long_name : pCodec->name);
+  CLog::LogF(LOGINFO, "CDVDVideoCodecDRMPRIME: using decoder {}");
 
   m_pCodecContext = avcodec_alloc_context3(pCodec);
   if (!m_pCodecContext)
@@ -308,14 +307,15 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
     if (!device)
       device = "/dev/dri/renderD128";
 
-    CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::{} - using drm device for av_hwdevice_ctx: {}", __FUNCTION__, device);
+    CLog::LogF(LOGDEBUG, "CDVDVideoCodecDRMPRIME: using drm device for av_hwdevice_ctx: {}",
+               device);
 
     if (av_hwdevice_ctx_create(&m_pCodecContext->hw_device_ctx, pConfig->device_type,
                                device, nullptr, 0) < 0)
     {
-      CLog::Log(LOGERROR,
-                "CDVDVideoCodecDRMPRIME::{} - unable to create hwdevice context using device: {}",
-                __FUNCTION__, device);
+      CLog::LogF(LOGERROR,
+                 "CDVDVideoCodecDRMPRIME: unable to create hwdevice context using device: {}",
+                 device);
       avcodec_free_context(&m_pCodecContext);
       return false;
     }
@@ -346,7 +346,7 @@ bool CDVDVideoCodecDRMPRIME::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
 
   if (avcodec_open2(m_pCodecContext, pCodec, nullptr) < 0)
   {
-    CLog::Log(LOGINFO, "CDVDVideoCodecDRMPRIME::{} - unable to open codec", __FUNCTION__);
+    CLog::LogF(LOGINFO, "CDVDVideoCodecDRMPRIME: unable to open codec");
     avcodec_free_context(&m_pCodecContext);
     if (hints.codecOptions & CODEC_FORCE_SOFTWARE)
       return false;
@@ -388,8 +388,7 @@ bool CDVDVideoCodecDRMPRIME::AddData(const DemuxPacket& packet)
   AVPacket* avpkt = av_packet_alloc();
   if (!avpkt)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - av_packet_alloc failed: {}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CDVDVideoCodecDRMPRIME: av_packet_alloc failed: {}", strerror(errno));
     return false;
   }
 
@@ -418,8 +417,7 @@ bool CDVDVideoCodecDRMPRIME::AddData(const DemuxPacket& packet)
   {
     char err[AV_ERROR_MAX_STRING_SIZE] = {};
     av_strerror(ret, err, AV_ERROR_MAX_STRING_SIZE);
-    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - send packet failed: {} ({})", __FUNCTION__,
-              err, ret);
+    CLog::LogF(LOGERROR, "CDVDVideoCodecDRMPRIME: send packet failed: {} ({})", err, ret);
     if (ret != AVERROR_EOF && ret != AVERROR_INVALIDDATA)
       return false;
   }
@@ -443,15 +441,14 @@ void CDVDVideoCodecDRMPRIME::Reset()
     {
       char err[AV_ERROR_MAX_STRING_SIZE] = {};
       av_strerror(ret, err, AV_ERROR_MAX_STRING_SIZE);
-      CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - receive frame failed: {} ({})",
-                __FUNCTION__, err, ret);
+      CLog::LogF(LOGERROR, "CDVDVideoCodecDRMPRIME: receive frame failed: {} ({})", err, ret);
       break;
     }
     else
       av_frame_unref(m_pFrame);
   } while (true);
 
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::{} - flush buffers", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CDVDVideoCodecDRMPRIME: flush buffers");
   avcodec_flush_buffers(m_pCodecContext);
 }
 
@@ -460,8 +457,7 @@ void CDVDVideoCodecDRMPRIME::Drain()
   AVPacket* avpkt = av_packet_alloc();
   if (!avpkt)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - av_packet_alloc failed: {}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CDVDVideoCodecDRMPRIME: av_packet_alloc failed: {}", strerror(errno));
     return;
   }
 
@@ -473,8 +469,7 @@ void CDVDVideoCodecDRMPRIME::Drain()
   {
     char err[AV_ERROR_MAX_STRING_SIZE] = {};
     av_strerror(ret, err, AV_ERROR_MAX_STRING_SIZE);
-    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - send packet failed: {} ({})", __FUNCTION__,
-              err, ret);
+    CLog::LogF(LOGERROR, "CDVDVideoCodecDRMPRIME: send packet failed: {} ({})", err, ret);
   }
 
   av_packet_free(&avpkt);
@@ -589,7 +584,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
   {
     if (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN)
     {
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecDRMPRIME::{} - flush buffers", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "CDVDVideoCodecDRMPRIME: flush buffers");
       avcodec_flush_buffers(m_pCodecContext);
       SetCodecControl(m_codecControlFlags & ~DVD_CODEC_CTRL_DRAIN);
     }
@@ -599,8 +594,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
   {
     char err[AV_ERROR_MAX_STRING_SIZE] = {};
     av_strerror(ret, err, AV_ERROR_MAX_STRING_SIZE);
-    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - receive frame failed: {} ({})", __FUNCTION__,
-              err, ret);
+    CLog::LogF(LOGERROR, "CDVDVideoCodecDRMPRIME: receive frame failed: {} ({})", err, ret);
     return VC_ERROR;
   }
 
@@ -634,8 +628,8 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecDRMPRIME::GetPicture(VideoPicture* pVideo
 
   if (!pVideoPicture->videoBuffer)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecDRMPRIME::{} - videoBuffer:nullptr format:{}", __FUNCTION__,
-              av_get_pix_fmt_name(static_cast<AVPixelFormat>(m_pFrame->format)));
+    CLog::LogF(LOGERROR, "CDVDVideoCodecDRMPRIME: videoBuffer:nullptr format:{}",
+               av_get_pix_fmt_name(static_cast<AVPixelFormat>(m_pFrame->format)));
     av_frame_unref(m_pFrame);
     return VC_ERROR;
   }

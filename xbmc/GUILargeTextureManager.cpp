@@ -58,7 +58,7 @@ bool CImageLoader::DoWork()
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
     if (duration.count() > 100)
-      CLog::Log(LOGDEBUG, "{} - took {} ms to load {}", __FUNCTION__, duration.count(), loadPath);
+      CLog::LogF(LOGDEBUG, "took {} ms to load {}", duration.count(), loadPath);
 
     if (m_texture)
     {
@@ -69,7 +69,7 @@ bool CImageLoader::DoWork()
     }
 
     // Fallthrough on failure:
-    CLog::Log(LOGERROR, "{} - Direct texture file loading failed for {}", __FUNCTION__, loadPath);
+    CLog::LogF(LOGERROR, "Direct texture file loading failed for {}", loadPath);
   }
 
   if (!m_use_cache)

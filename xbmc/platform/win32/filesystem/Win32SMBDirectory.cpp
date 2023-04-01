@@ -544,7 +544,7 @@ static bool localGetNetworkResources(struct _NETRESOURCEW* basePathToScanPtr, co
             }
           }
           else
-            CLog::Log(LOGERROR, "{}: Skipping container with empty remote name", __FUNCTION__);
+            CLog::LogF(LOGERROR, "Skipping container with empty remote name");
         }
       }
     }

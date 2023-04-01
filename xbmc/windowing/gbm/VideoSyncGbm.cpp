@@ -36,26 +36,26 @@ bool CVideoSyncGbm::Setup(PUPDATECLOCK func)
   UpdateClock = func;
   m_abort = false;
   m_winSystem->Register(this);
-  CLog::Log(LOGDEBUG, "CVideoSyncGbm::{} setting up", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CVideoSyncGbm: setting up");
 
   auto winSystemGbm = dynamic_cast<KODI::WINDOWING::GBM::CWinSystemGbm*>(m_winSystem);
   if (!winSystemGbm)
   {
-    CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: failed to get winSystem", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "CVideoSyncGbm: failed to get winSystem");
     return false;
   }
 
   auto drm = winSystemGbm->GetDrm();
   if (!drm)
   {
-    CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: failed to get drm", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "CVideoSyncGbm: failed to get drm");
     return false;
   }
 
   auto crtc = drm->GetCrtc();
   if (!crtc)
   {
-    CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: failed to get crtc", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "CVideoSyncGbm: failed to get crtc");
     return false;
   }
 
@@ -66,12 +66,12 @@ bool CVideoSyncGbm::Setup(PUPDATECLOCK func)
   m_offset = CurrentHostCounter() - ns;
   if (s != 0)
   {
-    CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: drmCrtcGetSequence failed ({})", __FUNCTION__, s);
+    CLog::LogF(LOGWARNING, "CVideoSyncGbm: drmCrtcGetSequence failed ({})", s);
     return false;
   }
 
-  CLog::Log(LOGINFO, "CVideoSyncGbm::{}: opened (fd:{} crtc:{} seq:{} ns:{}:{})", __FUNCTION__,
-            m_fd, m_crtcId, m_sequence, ns, m_offset + ns);
+  CLog::LogF(LOGINFO, "CVideoSyncGbm: opened (fd:{} crtc:{} seq:{} ns:{}:{})", m_fd, m_crtcId,
+             m_sequence, ns, m_offset + ns);
   return true;
 }
 
@@ -82,10 +82,10 @@ void CVideoSyncGbm::Run(CEvent& stopEvent)
 
   if (m_fd < 0)
   {
-    CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: failed to open device ({})", __FUNCTION__, m_fd);
+    CLog::LogF(LOGWARNING, "CVideoSyncGbm: failed to open device ({})", m_fd);
     return;
   }
-  CLog::Log(LOGDEBUG, "CVideoSyncGbm::{}: started {}", __FUNCTION__, m_fd);
+  CLog::LogF(LOGDEBUG, "CVideoSyncGbm: started {}", m_fd);
 
   while (!stopEvent.Signaled() && !m_abort)
   {
@@ -94,7 +94,7 @@ void CVideoSyncGbm::Run(CEvent& stopEvent)
     int s = drmCrtcGetSequence(m_fd, m_crtcId, &sequence, &ns);
     if (s != 0)
     {
-      CLog::Log(LOGWARNING, "CVideoSyncGbm::{}: drmCrtcGetSequence failed ({})", __FUNCTION__, s);
+      CLog::LogF(LOGWARNING, "CVideoSyncGbm: drmCrtcGetSequence failed ({})", s);
       break;
     }
 
@@ -108,14 +108,14 @@ void CVideoSyncGbm::Run(CEvent& stopEvent)
 
 void CVideoSyncGbm::Cleanup()
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncGbm::{}: cleaning up", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CVideoSyncGbm: cleaning up");
   m_winSystem->Unregister(this);
 }
 
 float CVideoSyncGbm::GetFps()
 {
   m_fps = m_winSystem->GetGfxContext().GetFPS();
-  CLog::Log(LOGDEBUG, "CVideoSyncGbm::{}: fps:{}", __FUNCTION__, m_fps);
+  CLog::LogF(LOGDEBUG, "CVideoSyncGbm: fps:{}", m_fps);
   return m_fps;
 }
 

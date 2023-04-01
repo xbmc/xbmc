@@ -193,8 +193,7 @@ bool CSMBDirectory::GetDirectory(const CURL& url, CFileItemList &items)
             iSize = info.st_size;
           }
           else
-            CLog::Log(LOGERROR, "{} - Failed to stat file {}", __FUNCTION__,
-                      CURL::GetRedacted(strFullName));
+            CLog::LogF(LOGERROR, "Failed to stat file {}", CURL::GetRedacted(strFullName));
 
           lock.unlock();
         }
@@ -329,7 +328,7 @@ bool CSMBDirectory::Create(const CURL& url2)
   int result = smbc_mkdir(strFileName.c_str(), 0);
   bool success = (result == 0 || EEXIST == errno);
   if(!success)
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "Error( {} )", strerror(errno));
 
   return success;
 }
@@ -347,7 +346,7 @@ bool CSMBDirectory::Remove(const CURL& url2)
 
   if(result != 0 && errno != ENOENT)
   {
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "Error( {} )", strerror(errno));
     return false;
   }
 

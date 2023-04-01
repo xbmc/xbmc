@@ -188,7 +188,7 @@ bool CMusicInfoScraper::CheckValidOrFallback(const std::string &fallbackScraper)
   if (m_scraper->Path() != fallbackScraper &&
       parser.Load("special://xbmc/system/scrapers/music/" + fallbackScraper))
   {
-    CLog::Log(LOGWARNING, "{} - scraper {} fails to load, falling back to {}", __FUNCTION__, m_info.strPath, fallbackScraper);
+    CLog::LogF(LOGWARNING, "scraper {} fails to load, falling back to {}", m_info.strPath, fallbackScraper);
     m_info.strPath = fallbackScraper;
     m_info.strContent = "albums";
     m_info.strTitle = parser.GetName();

@@ -179,7 +179,7 @@ CDateTime CFileUtils::GetModificationDate(const int& code, const std::string& st
   CDateTime dateAdded;
   if (strFileNameAndPath.empty())
   {
-    CLog::Log(LOGDEBUG, "{} empty strFileNameAndPath variable", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "empty strFileNameAndPath variable");
     return dateAdded;
   }
 
@@ -245,8 +245,7 @@ CDateTime CFileUtils::GetModificationDate(const int& code, const std::string& st
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} unable to extract modification date for file ({})", __FUNCTION__,
-              strFileNameAndPath);
+    CLog::LogF(LOGERROR, "unable to extract modification date for file ({})", strFileNameAndPath);
   }
   return dateAdded;
 }
@@ -292,7 +291,7 @@ bool CFileUtils::CheckFileAccessAllowed(const std::string &filePath)
   {
     if (decodePath.find(b) != std::string::npos)
     {
-      CLog::Log(LOGERROR, "{} denied access to {}", __FUNCTION__, decodePath);
+      CLog::LogF(LOGERROR, "denied access to {}", decodePath);
       return false;
     }
   }

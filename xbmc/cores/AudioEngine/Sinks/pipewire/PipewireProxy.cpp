@@ -42,7 +42,7 @@ CPipewireProxy::~CPipewireProxy()
 
 void CPipewireProxy::Bound(void* userdata, uint32_t id)
 {
-  CLog::Log(LOGDEBUG, "CPipewireProxy::{} - id={}", __FUNCTION__, id);
+  CLog::LogF(LOGDEBUG, "CPipewireProxy: id={}", id);
 
   auto AE = CServiceBroker::GetActiveAE();
   if (AE)
@@ -51,7 +51,7 @@ void CPipewireProxy::Bound(void* userdata, uint32_t id)
 
 void CPipewireProxy::Removed(void* userdata)
 {
-  CLog::Log(LOGDEBUG, "CPipewireProxy::{}", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CPipewireProxy");
 
   auto AE = CServiceBroker::GetActiveAE();
   if (AE)

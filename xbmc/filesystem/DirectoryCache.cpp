@@ -247,8 +247,7 @@ void CDirectoryCache::CheckIfFull()
 void CDirectoryCache::PrintStats() const
 {
   std::unique_lock<CCriticalSection> lock(m_cs);
-  CLog::Log(LOGDEBUG, "{} - total of {} cache hits, and {} cache misses", __FUNCTION__, m_cacheHits,
-            m_cacheMisses);
+  CLog::LogF(LOGDEBUG, "total of {} cache hits, and {} cache misses", m_cacheHits, m_cacheMisses);
   // run through and find the oldest and the number of items cached
   unsigned int oldest = UINT_MAX;
   unsigned int numItems = 0;
@@ -260,7 +259,7 @@ void CDirectoryCache::PrintStats() const
     numItems += dir.m_Items->Size();
     numDirs++;
   }
-  CLog::Log(LOGDEBUG, "{} - {} folders cached, with {} items total.  Oldest is {}, current is {}",
-            __FUNCTION__, numDirs, numItems, oldest, m_accessCounter);
+  CLog::LogF(LOGDEBUG, "{} folders cached, with {} items total.  Oldest is {}, current is {}",
+             numDirs, numItems, oldest, m_accessCounter);
 }
 #endif

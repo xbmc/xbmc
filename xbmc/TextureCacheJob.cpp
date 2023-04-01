@@ -260,7 +260,7 @@ std::string CTextureCacheJob::GetImageHash(const std::string &url)
     return "BADHASH";
   }
 
-  CLog::Log(LOGDEBUG, "{} - unable to stat url {}", __FUNCTION__, CURL::GetRedacted(url));
+  CLog::LogF(LOGDEBUG, "unable to stat url {}", CURL::GetRedacted(url));
   return "";
 }
 

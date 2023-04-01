@@ -286,7 +286,7 @@ std::string CDatabase::GetSingleValue(const std::string& query, std::unique_ptr<
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - failed on query '{}'", __FUNCTION__, query);
+    CLog::LogF(LOGERROR, "failed on query '{}'", query);
   }
   return ret;
 }
@@ -325,7 +325,7 @@ int CDatabase::GetSingleValueInt(const std::string& query, std::unique_ptr<Datas
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - failed on query '{}'", __FUNCTION__, query);
+    CLog::LogF(LOGERROR, "failed on query '{}'", query);
   }
   return ret;
 }
@@ -395,7 +395,7 @@ bool CDatabase::ExecuteQuery(const std::string& strQuery)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - failed to execute query '{}'", __FUNCTION__, strQuery);
+    CLog::LogF(LOGERROR, "failed to execute query '{}'", strQuery);
   }
 
   return bReturn;
@@ -418,7 +418,7 @@ bool CDatabase::ResultQuery(const std::string& strQuery) const
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - failed to execute query '{}'", __FUNCTION__, strQuery);
+    CLog::LogF(LOGERROR, "failed to execute query '{}'", strQuery);
   }
 
   return bReturn;
@@ -460,7 +460,7 @@ bool CDatabase::CommitInsertQueries()
     catch (...)
     {
       bReturn = false;
-      CLog::Log(LOGERROR, "{} - failed to execute queries", __FUNCTION__);
+      CLog::LogF(LOGERROR, "failed to execute queries");
     }
   }
 
@@ -498,7 +498,7 @@ bool CDatabase::CommitDeleteQueries()
     catch (...)
     {
       bReturn = false;
-      CLog::Log(LOGERROR, "{} - failed to execute queries", __FUNCTION__);
+      CLog::LogF(LOGERROR, "failed to execute queries");
     }
   }
 
@@ -653,7 +653,7 @@ bool CDatabase::Connect(const std::string& dbName, const DatabaseSettings& dbSet
   }
   catch (DbErrors& error)
   {
-    CLog::Log(LOGERROR, "{} failed with '{}'", __FUNCTION__, error.getMsg());
+    CLog::LogF(LOGERROR, "failed with '{}'", error.getMsg());
     m_openCount = 1; // set to open so we can execute Close()
     Close();
     return false;
@@ -732,7 +732,7 @@ bool CDatabase::Compress(bool bForce /* =true */)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} - Compressing the database failed", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Compressing the database failed");
     return false;
   }
   return true;
@@ -800,7 +800,7 @@ bool CDatabase::CreateDatabase()
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} unable to create database:{}", __FUNCTION__, (int)GetLastError());
+    CLog::LogF(LOGERROR, "unable to create database:{}", (int)GetLastError());
     RollbackTransaction();
     return false;
   }

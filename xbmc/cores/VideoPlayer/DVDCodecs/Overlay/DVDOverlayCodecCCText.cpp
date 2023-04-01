@@ -104,7 +104,7 @@ OverlayMessage CDVDOverlayCodecCCText::Decode(DemuxPacket* pPacket)
     m_prevPTSStart = PTSStartTime;
   }
   else
-    CLog::Log(LOGERROR, "{} - Failed to initialize tag converter", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Failed to initialize tag converter");
 
   return m_pOverlay ? OverlayMessage::OC_DONE : OverlayMessage::OC_OVERLAY;
 }

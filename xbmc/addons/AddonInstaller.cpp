@@ -761,8 +761,9 @@ bool CAddonInstallJob::DoWork()
         {
           CFile::Delete(package);
 
-          CLog::Log(LOGERROR, "CAddonInstallJob[{}]: Hash mismatch after download. Expected {}, was {}",
-              m_addon->ID(), hash.value, actualHash.value);
+          CLog::Log(LOGERROR,
+                    "CAddonInstallJob[{}]: Hash mismatch after download. Expected {}, was {}",
+                    m_addon->ID(), hash.value, actualHash.value);
           ReportInstallError(m_addon->ID(), URIUtils::GetFileName(package));
           return false;
         }

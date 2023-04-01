@@ -2809,8 +2809,7 @@ void CFileItemList::StackFolders()
   while (strExpression != strFolderRegExps.end())
   {
     if (!folderRegExp.RegComp(*strExpression))
-      CLog::Log(LOGERROR, "{}: Invalid folder stack RegExp:'{}'", __FUNCTION__,
-                strExpression->c_str());
+      CLog::LogF(LOGERROR, "Invalid folder stack RegExp:'{}'", strExpression->c_str());
     else
       folderRegExps.push_back(folderRegExp);
 
@@ -2819,8 +2818,7 @@ void CFileItemList::StackFolders()
 
   if (!folderRegExp.IsCompiled())
   {
-    CLog::Log(LOGDEBUG, "{}: No stack expressions available. Skipping folder stacking",
-              __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "No stack expressions available. Skipping folder stacking");
     return;
   }
 
@@ -3634,7 +3632,7 @@ bool CFileItem::LoadMusicTag()
     musicDatabase.Close();
   }
   // load tag from file
-  CLog::Log(LOGDEBUG, "{}: loading tag information for file: {}", __FUNCTION__, m_strPath);
+  CLog::LogF(LOGDEBUG, "loading tag information for file: {}", m_strPath);
   CMusicInfoTagLoaderFactory factory;
   std::unique_ptr<IMusicInfoTagLoader> pLoader (factory.CreateLoader(*this));
   if (pLoader)

@@ -181,7 +181,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
   PeripheralPtr peripheral = CServiceBroker::GetPeripherals().GetByPath(m_item->GetPath());
   if (!peripheral)
   {
-    CLog::Log(LOGDEBUG, "{} - no peripheral", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "no peripheral");
     m_initialising = false;
     return;
   }
@@ -211,7 +211,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
 
     if (!setting->IsVisible())
     {
-      CLog::Log(LOGDEBUG, "{} - invisible", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "invisible");
       continue;
     }
 
@@ -292,7 +292,7 @@ void CGUIDialogPeripheralSettings::InitializeSettings()
 
       default:
         //! @todo add more types if needed
-        CLog::Log(LOGDEBUG, "{} - unknown type", __FUNCTION__);
+        CLog::LogF(LOGDEBUG, "unknown type");
         break;
     }
 

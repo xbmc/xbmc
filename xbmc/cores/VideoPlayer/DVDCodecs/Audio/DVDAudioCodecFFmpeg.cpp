@@ -150,8 +150,7 @@ bool CDVDAudioCodecFFmpeg::AddData(const DemuxPacket &packet)
   AVPacket* avpkt = av_packet_alloc();
   if (!avpkt)
   {
-    CLog::Log(LOGERROR, "CDVDAudioCodecFFmpeg::{} - av_packet_alloc failed: {}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CDVDAudioCodecFFmpeg: av_packet_alloc failed: {}", strerror(errno));
     return false;
   }
 

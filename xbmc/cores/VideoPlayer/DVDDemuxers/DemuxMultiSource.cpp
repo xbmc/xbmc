@@ -184,8 +184,8 @@ DemuxPacket* CDemuxMultiSource::Read()
     {
       if (input->second->IsEOF())
       {
-        CLog::Log(LOGDEBUG, "{} - Demuxer for file {} is at eof, removed it from the queue",
-                  __FUNCTION__, CURL::GetRedacted(currentDemuxer->GetFileName()));
+        CLog::LogF(LOGDEBUG, "Demuxer for file {} is at eof, removed it from the queue",
+                   CURL::GetRedacted(currentDemuxer->GetFileName()));
       }
       else    //maybe add an error counter?
         m_demuxerQueue.push(std::make_pair(-1.0, currentDemuxer));
@@ -204,12 +204,12 @@ bool CDemuxMultiSource::SeekTime(double time, bool backwards, double* startpts)
     if (iter.second->SeekTime(time, false, startpts))
     {
       demuxerQueue.push(std::make_pair(*startpts, iter.second));
-      CLog::Log(LOGDEBUG, "{} - starting demuxer from: {:f}", __FUNCTION__, time);
+      CLog::LogF(LOGDEBUG, "starting demuxer from: {:f}", time);
       ret = true;
     }
     else
     {
-      CLog::Log(LOGDEBUG, "{} - failed to start demuxing from: {:f}", __FUNCTION__, time);
+      CLog::LogF(LOGDEBUG, "failed to start demuxing from: {:f}", time);
     }
   }
   m_demuxerQueue = demuxerQueue;

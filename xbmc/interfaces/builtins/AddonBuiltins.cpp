@@ -265,7 +265,7 @@ static int RunScript(const std::vector<std::string>& params)
         }
         else
         {
-          CLog::Log(LOGERROR, "{} - Could not get addon: {}", __FUNCTION__, params[0]);
+          CLog::LogF(LOGERROR, "Could not get addon: {}", params[0]);
         }
       }
     }

@@ -261,7 +261,7 @@ void CPlayList::Shuffle(int iPosition)
       return;
     if (iPosition < 0)
       iPosition = 0;
-    CLog::Log(LOGDEBUG, "{} shuffling at pos:{}", __FUNCTION__, iPosition);
+    CLog::LogF(LOGDEBUG, "shuffling at pos:{}", iPosition);
 
     ivecItems it = m_vecItems.begin() + iPosition;
     KODI::UTILS::RandomShuffle(it, m_vecItems.end());
@@ -426,8 +426,7 @@ bool CPlayList::Load(const std::string& strFileName)
 
   if (file.GetLength() > 1024*1024)
   {
-    CLog::Log(LOGWARNING, "{} - File is larger than 1 MB, most likely not a playlist",
-              __FUNCTION__);
+    CLog::LogF(LOGWARNING, "File is larger than 1 MB, most likely not a playlist");
     return false;
   }
 

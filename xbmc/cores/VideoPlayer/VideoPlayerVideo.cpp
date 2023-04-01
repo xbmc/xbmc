@@ -868,7 +868,7 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
                                 orientation,
                                 m_pVideoCodec->GetAllowedReferences()))
   {
-    CLog::Log(LOGERROR, "{} - failed to configure renderer", __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed to configure renderer");
     return OUTPUT_ABORT;
   }
 
@@ -911,7 +911,7 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
   if ((pPicture->iFlags & DVP_FLAG_DROPPED))
   {
     m_droppingStats.AddOutputDropGain(pPicture->pts, 1);
-    CLog::Log(LOGDEBUG, "{} - dropped in output", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "dropped in output");
     return OUTPUT_DROPPED;
   }
 
@@ -926,7 +926,7 @@ CVideoPlayerVideo::EOutputState CVideoPlayerVideo::OutputPicture(const VideoPict
   if (buffer < 0)
   {
     if (m_speed != DVD_PLAYSPEED_PAUSE)
-      CLog::Log(LOGWARNING, "{} - timeout waiting for buffer", __FUNCTION__);
+      CLog::LogF(LOGWARNING, "timeout waiting for buffer");
     return OUTPUT_AGAIN;
   }
 
@@ -1026,9 +1026,9 @@ void CVideoPlayerVideo::CalcFrameRate()
 
     if (m_iFrameRateErr == MAXFRAMESERR && m_iFrameRateLength == 1)
     {
-      CLog::Log(LOGDEBUG,
-                "{} counted {} frames without being able to calculate the framerate, giving up",
-                __FUNCTION__, m_iFrameRateErr);
+      CLog::LogF(LOGDEBUG,
+                 "counted {} frames without being able to calculate the framerate, giving up",
+                 m_iFrameRateErr);
       m_bAllowDrop = true;
       m_iFrameRateLength = 128;
     }
@@ -1055,8 +1055,8 @@ void CVideoPlayerVideo::CalcFrameRate()
       //store the calculated framerate if it differs too much from m_fFrameRate
       if (fabs(m_fFrameRate - (m_fStableFrameRate / m_iFrameRateCount)) > MAXFRAMERATEDIFF || m_bFpsInvalid)
       {
-        CLog::Log(LOGDEBUG, "{} framerate was:{:f} calculated:{:f}", __FUNCTION__, m_fFrameRate,
-                  m_fStableFrameRate / m_iFrameRateCount);
+        CLog::LogF(LOGDEBUG, "framerate was:{:f} calculated:{:f}", m_fFrameRate,
+                   m_fStableFrameRate / m_iFrameRateCount);
         m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
         m_bFpsInvalid = false;
         m_processInfo.SetVideoFps(static_cast<float>(m_fFrameRate));

@@ -40,7 +40,7 @@ bool CMusicSearchDirectory::GetDirectory(const CURL& url, CFileItemList &items)
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-  CLog::Log(LOGDEBUG, "{} ({}) took {} ms", __FUNCTION__, url.GetRedacted(), duration.count());
+  CLog::LogF(LOGDEBUG, "({}) took {} ms", url.GetRedacted(), duration.count());
 
   items.SetLabel(g_localizeStrings.Get(137)); // Search
   return true;

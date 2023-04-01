@@ -580,8 +580,7 @@ bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
   AVPacket* avpkt = av_packet_alloc();
   if (!avpkt)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::{} - av_packet_alloc failed: {}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CDVDVideoCodecFFmpeg: av_packet_alloc failed: {}", strerror(errno));
     return false;
   }
 
@@ -684,8 +683,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
     AVPacket* avpkt = av_packet_alloc();
     if (!avpkt)
     {
-      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::{} - av_packet_alloc failed: {}", __FUNCTION__,
-                strerror(errno));
+      CLog::LogF(LOGERROR, "CDVDVideoCodecFFmpeg: av_packet_alloc failed: {}", strerror(errno));
       return VC_ERROR;
     }
     avpkt->data = nullptr;
@@ -758,7 +756,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecFFmpeg::GetPicture(VideoPicture* pVideoPi
   }
   else if (ret)
   {
-    CLog::Log(LOGERROR, "{} - avcodec_receive_frame returned failure", __FUNCTION__);
+    CLog::LogF(LOGERROR, "avcodec_receive_frame returned failure");
     return VC_ERROR;
   }
 

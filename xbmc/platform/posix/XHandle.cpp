@@ -36,7 +36,7 @@ CXHandle::CXHandle(const CXHandle &src)
 {
   // we shouldn't get here EVER. however, if we do - try to make the best. copy what we can
   // and most importantly - not share any pointer.
-  CLog::Log(LOGWARNING, "{}, copy handle.", __FUNCTION__);
+  CLog::LogF(LOGWARNING, "copy handle.");
 
   Init();
 
@@ -60,13 +60,12 @@ CXHandle::~CXHandle()
   m_objectTracker[m_type]--;
 
   if (RecursionCount > 0) {
-    CLog::Log(LOGERROR, "{}, destroying handle with recursion count {}", __FUNCTION__,
-              RecursionCount);
+    CLog::LogF(LOGERROR, "destroying handle with recursion count {}", RecursionCount);
     assert(false);
   }
 
   if (m_nRefCount > 1) {
-    CLog::Log(LOGERROR, "{}, destroying handle with ref count {}", __FUNCTION__, m_nRefCount);
+    CLog::LogF(LOGERROR, "destroying handle with ref count {}", m_nRefCount);
     assert(false);
   }
 

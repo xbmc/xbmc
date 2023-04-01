@@ -61,7 +61,7 @@ bool CWinSystemX11::InitWindowSystem()
   const char* env = getenv("DISPLAY");
   if (!env)
   {
-    CLog::Log(LOGDEBUG, "CWinSystemX11::{} - DISPLAY env not set", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "CWinSystemX11: DISPLAY env not set");
     return false;
   }
 
@@ -559,7 +559,7 @@ bool CWinSystemX11::Show(bool raise)
 
 void CWinSystemX11::NotifyXRREvent()
 {
-  CLog::Log(LOGDEBUG, "{} - notify display reset event", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "notify display reset event");
 
   std::unique_lock<CCriticalSection> lock(CServiceBroker::GetWinSystem()->GetGfxContext());
 
@@ -588,10 +588,10 @@ void CWinSystemX11::RecreateWindow()
   XMode   mode = g_xrandr.GetCurrentMode(m_userOutput);
 
   if (out)
-    CLog::Log(LOGDEBUG, "{} - current output: {}, mode: {}, refresh: {:.3f}", __FUNCTION__,
-              out->name, mode.id, mode.hz);
+    CLog::LogF(LOGDEBUG, "current output: {}, mode: {}, refresh: {:.3f}", out->name, mode.id,
+               mode.hz);
   else
-    CLog::Log(LOGWARNING, "{} - output name not set", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "output name not set");
 
   RESOLUTION_INFO res;
   unsigned int i;
@@ -620,7 +620,7 @@ void CWinSystemX11::RecreateWindow()
 
 void CWinSystemX11::OnLostDevice()
 {
-  CLog::Log(LOGDEBUG, "{} - notify display change event", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "notify display change event");
 
   {
     std::unique_lock<CCriticalSection> lock(m_resourceSection);

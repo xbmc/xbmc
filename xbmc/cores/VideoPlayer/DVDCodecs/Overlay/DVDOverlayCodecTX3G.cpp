@@ -123,7 +123,7 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
   {
     if (sampleData.CharsLeft() < MP4_BOX_HEADER_SIZE)
     {
-      CLog::Log(LOGWARNING, "{} - Incomplete box header found", __FUNCTION__);
+      CLog::LogF(LOGWARNING, "Incomplete box header found");
       break;
     }
 
@@ -132,21 +132,21 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
 
     if (boxType == BOX_TYPE_UUID)
     {
-      CLog::Log(LOGDEBUG, "{} - Sample data has unsupported extended type 'uuid'", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "Sample data has unsupported extended type 'uuid'");
     }
     else if (boxType == BOX_TYPE_STYL)
     {
       // Parse the contained StyleRecords
       if (styleRecords.size() != 0)
       {
-        CLog::Log(LOGDEBUG, "{} - Found additional TextStyleBox, skipping", __FUNCTION__);
+        CLog::LogF(LOGDEBUG, "Found additional TextStyleBox, skipping");
         sampleData.SkipChars(boxSize - MP4_BOX_HEADER_SIZE);
         continue;
       }
 
       if (sampleData.CharsLeft() < 2)
       {
-        CLog::Log(LOGWARNING, "{} - Incomplete TextStyleBox header found", __FUNCTION__);
+        CLog::LogF(LOGWARNING, "Incomplete TextStyleBox header found");
         return OverlayMessage::OC_ERROR;
       }
       uint16_t styleCount = sampleData.ReadNextUnsignedShort();
@@ -160,7 +160,7 @@ OverlayMessage CDVDOverlayCodecTX3G::Decode(DemuxPacket* pPacket)
       {
         if (sampleData.CharsLeft() < 12)
         {
-          CLog::Log(LOGWARNING, "{} - Incomplete StyleRecord found, skipping", __FUNCTION__);
+          CLog::LogF(LOGWARNING, "Incomplete StyleRecord found, skipping");
           sampleData.SkipChars(sampleData.CharsLeft());
           continue;
         }

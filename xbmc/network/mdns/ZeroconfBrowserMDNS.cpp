@@ -45,7 +45,7 @@ CZeroconfBrowserMDNS::~CZeroconfBrowserMDNS()
   WSAAsyncSelect( (SOCKET) DNSServiceRefSockFD( m_browser ), g_hWnd, BONJOUR_BROWSER_EVENT, 0 );
 #elif  defined(TARGET_WINDOWS_STORE)
   // need to modify this code to use WSAEventSelect since WSAAsyncSelect is not supported
-  CLog::Log(LOGDEBUG, "{} is not implemented for TARGET_WINDOWS_STORE", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "is not implemented for TARGET_WINDOWS_STORE");
 #endif //TARGET_WINDOWS
 
   if (m_browser)
@@ -247,7 +247,7 @@ bool CZeroconfBrowserMDNS::doAddServiceType(const std::string& fcr_service_type)
       CLog::Log(LOGERROR, "ZeroconfBrowserMDNS: WSAAsyncSelect failed with error = {}", (int)err);
 #elif defined(TARGET_WINDOWS_STORE)
     // need to modify this code to use WSAEventSelect since WSAAsyncSelect is not supported
-    CLog::Log(LOGERROR, "{} is not implemented for TARGET_WINDOWS_STORE", __FUNCTION__);
+    CLog::LogF(LOGERROR, "is not implemented for TARGET_WINDOWS_STORE");
 #endif // TARGET_WINDOWS_STORE
   }
 #endif //!HAS_MDNS_EMBEDDED

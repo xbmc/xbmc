@@ -244,7 +244,7 @@ void CCocoaPowerSyscall::CreateOSPowerCallBacks(void)
   }
   else
   {
-    CLog::Log(LOGERROR, "{} - IORegisterForSystemPower failed", __FUNCTION__);
+    CLog::LogF(LOGERROR, "IORegisterForSystemPower failed");
   }
 
   // if we have a battery, we want power source change notifications (on AC, on Battery, etc)
@@ -254,7 +254,7 @@ void CCocoaPowerSyscall::CreateOSPowerCallBacks(void)
     if (m_power_source)
       CFRunLoopAddSource(CFRunLoopGetCurrent(), m_power_source, kCFRunLoopDefaultMode);
     else
-      CLog::Log(LOGERROR, "{} - IOPSNotificationCreateRunLoopSource failed", __FUNCTION__);
+      CLog::LogF(LOGERROR, "IOPSNotificationCreateRunLoopSource failed");
   }
 }
 
@@ -295,7 +295,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       // if we don't respond, OS will sleep in 30 second.
       ctx->m_OnSuspend = true;
       IOAllowPowerChange(ctx->m_root_port, (long)msg_arg);
-      //CLog::Log(LOGDEBUG, "{} - kIOMessageCanSystemSleep", __FUNCTION__);
+      //CLog::LogF(LOGDEBUG, "kIOMessageCanSystemSleep");
       break;
     case kIOMessageSystemWillSleep:
       // System demanded sleep from:
@@ -307,7 +307,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       // in main thread so we can do this.
       CServiceBroker::GetPowerManager().ProcessEvents();
       IOAllowPowerChange(ctx->m_root_port, (long)msg_arg);
-      //CLog::Log(LOGDEBUG, "{} - kIOMessageSystemWillSleep", __FUNCTION__);
+      //CLog::LogF(LOGDEBUG, "kIOMessageSystemWillSleep");
       // let XBMC know system will sleep
       //! @todo implement
       break;
@@ -316,7 +316,7 @@ void CCocoaPowerSyscall::OSPowerCallBack(void *refcon, io_service_t service, nat
       // let XBMC know system has woke
       //! @todo implement
       ctx->m_OnResume = true;
-      //CLog::Log(LOGDEBUG, "{} - kIOMessageSystemHasPoweredOn", __FUNCTION__);
+      //CLog::LogF(LOGDEBUG, "kIOMessageSystemHasPoweredOn");
       break;
   }
 }

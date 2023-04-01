@@ -395,8 +395,8 @@ void CUtil::CleanString(const std::string& strFileName,
 
   if (!reYear.RegComp(advancedSettings->m_videoCleanDateTimeRegExp))
   {
-    CLog::Log(LOGERROR, "{}: Invalid datetime clean RegExp:'{}'", __FUNCTION__,
-              advancedSettings->m_videoCleanDateTimeRegExp);
+    CLog::LogF(LOGERROR, "Invalid datetime clean RegExp:'{}'",
+               advancedSettings->m_videoCleanDateTimeRegExp);
   }
   else
   {
@@ -413,7 +413,7 @@ void CUtil::CleanString(const std::string& strFileName,
   {
     if (!reTags.RegComp(regexp.c_str()))
     { // invalid regexp - complain in logs
-      CLog::Log(LOGERROR, "{}: Invalid string clean RegExp:'{}'", __FUNCTION__, regexp);
+      CLog::LogF(LOGERROR, "Invalid string clean RegExp:'{}'", regexp);
       continue;
     }
     int j=0;
@@ -533,7 +533,7 @@ bool CUtil::ExcludeFileOrFolder(const std::string& strFileOrFolder, const std::v
   {
     if (!regExExcludes.RegComp(regexp.c_str()))
     { // invalid regexp - complain in logs
-      CLog::Log(LOGERROR, "{}: Invalid exclude RegExp:'{}'", __FUNCTION__, regexp);
+      CLog::LogF(LOGERROR, "Invalid exclude RegExp:'{}'", regexp);
       continue;
     }
     if (regExExcludes.RegFind(strFileOrFolder) > -1)
@@ -671,7 +671,7 @@ void CUtil::ClearSubtitles()
       if (item->GetPath().find("subtitle") != std::string::npos ||
           item->GetPath().find("vobsub_queue") != std::string::npos)
       {
-        CLog::Log(LOGDEBUG, "{} - Deleting temporary subtitle {}", __FUNCTION__, item->GetPath());
+        CLog::LogF(LOGDEBUG, "Deleting temporary subtitle {}", item->GetPath());
         CFile::Delete(item->GetPath());
       }
     }
@@ -880,7 +880,7 @@ bool CUtil::CreateDirectoryEx(const std::string& strPath)
   // we currently only allow HD and smb and nfs paths
   if (!URIUtils::IsHD(strPath) && !URIUtils::IsSmb(strPath) && !URIUtils::IsNfs(strPath))
   {
-    CLog::Log(LOGERROR, "{} called with an unsupported path: {}", __FUNCTION__, strPath);
+    CLog::LogF(LOGERROR, "called with an unsupported path: {}", strPath);
     return false;
   }
 
@@ -1079,8 +1079,7 @@ void CUtil::SplitParams(const std::string &paramString, std::vector<std::string>
     parameter += ch;
   }
   if (inFunction || inQuotes)
-    CLog::Log(LOGWARNING, "{}({}) - end of string while searching for ) or \"", __FUNCTION__,
-              paramString);
+    CLog::LogF(LOGWARNING, "({}) - end of string while searching for ) or \"", paramString);
   if (whiteSpacePos)
     parameter.erase(whiteSpacePos);
   // trim off start and end quotes
@@ -1865,8 +1864,7 @@ void CUtil::ScanPathsForAssociatedItems(const std::string& videoName,
       else
       {
         associatedFiles.push_back(pItem->GetPath());
-        CLog::Log(LOGINFO, "{}: found associated file {}", __FUNCTION__,
-                  CURL::GetRedacted(pItem->GetPath()));
+        CLog::LogF(LOGINFO, "found associated file {}", CURL::GetRedacted(pItem->GetPath()));
       }
     }
     else
@@ -1926,8 +1924,7 @@ int CUtil::ScanArchiveForAssociatedItems(const std::string& strArchivePath,
     {
       if (StringUtils::EqualsNoCase(strExt, ext))
       {
-        CLog::Log(LOGINFO, "{}: found associated file {}", __FUNCTION__,
-                  CURL::GetRedacted(strPathInRar));
+        CLog::LogF(LOGINFO, "found associated file {}", CURL::GetRedacted(strPathInRar));
         associatedFiles.push_back(strPathInRar);
         nItemsAdded++;
         break;
@@ -1949,7 +1946,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
     || !item.IsVideo())
     return;
 
-  CLog::Log(LOGDEBUG, "{}: Searching for subtitles...", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "Searching for subtitles...");
 
   std::string strBasePath;
   std::string strSubtitle;
@@ -2033,7 +2030,7 @@ void CUtil::ScanForExternalSubtitles(const std::string& strMovie, std::vector<st
 
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  CLog::Log(LOGDEBUG, "{}: END (total time: {} ms)", __FUNCTION__, duration.count());
+  CLog::LogF(LOGDEBUG, "END (total time: {} ms)", duration.count());
 }
 
 ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string& videoPath, const std::string& associatedFile)
@@ -2052,8 +2049,8 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
   else if (URIUtils::GetExtension(associatedFile) == ".sub" && URIUtils::IsInArchive(associatedFile))
   {
     // exclude parsing of vobsub file names that are embedded in an archive
-    CLog::Log(LOGDEBUG, "{} - skipping archived vobsub filename parsing: {}", __FUNCTION__,
-              CURL::GetRedacted(associatedFile));
+    CLog::LogF(LOGDEBUG, "skipping archived vobsub filename parsing: {}",
+               CURL::GetRedacted(associatedFile));
     toParse.clear();
   }
 
@@ -2110,8 +2107,8 @@ ExternalStreamInfo CUtil::GetExternalStreamDetailsFromFilename(const std::string
   if (info.flag == 0)
     info.flag = StreamFlags::FLAG_NONE;
 
-  CLog::Log(LOGDEBUG, "{} - Language = '{}' / Name = '{}' / Flag = '{}' from {}", __FUNCTION__,
-            info.language, info.name, info.flag, CURL::GetRedacted(associatedFile));
+  CLog::LogF(LOGDEBUG, "Language = '{}' / Name = '{}' / Flag = '{}' from {}", info.language,
+             info.name, info.flag, CURL::GetRedacted(associatedFile));
 
   return info;
 }

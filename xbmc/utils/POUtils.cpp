@@ -35,8 +35,7 @@ bool CPODocument::LoadFile(const std::string &pofilename)
   std::vector<uint8_t> buf;
   if (file.LoadFile(poFileUrl, buf) < 18) // at least a size of a minimalistic header
   {
-    CLog::Log(LOGERROR, "{}: can't load file \"{}\" or file is too small", __FUNCTION__,
-              pofilename);
+    CLog::LogF(LOGERROR, "can't load file \"{}\" or file is too small", pofilename);
     return false;
   }
 

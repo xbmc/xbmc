@@ -712,8 +712,8 @@ void CMediaManager::OnStorageAdded(const MEDIA_DETECT::STORAGE::StorageDevice& d
         {
           return;
         }
-        CLog::Log(LOGDEBUG, "{}: Could not execute autorun for optical disc with path {}",
-                  __FUNCTION__, device.path);
+        CLog::LogF(LOGDEBUG, "Could not execute autorun for optical disc with path {}",
+                   device.path);
       }
       CServiceBroker::GetJobManager()->AddJob(new CAutorunMediaJob(device.label, device.path), this,
                                               CJob::PRIORITY_HIGH);

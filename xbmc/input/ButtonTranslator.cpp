@@ -270,7 +270,7 @@ unsigned int CButtonTranslator::GetActionCode(int window,
   // Some buttoncodes changed in Hardy
   if (action == ACTION_NONE && (code & KEY_VKEY) == KEY_VKEY && (code & 0x0F00))
   {
-    CLog::Log(LOGDEBUG, "{}: Trying Hardy keycode for {:#04x}", __FUNCTION__, code);
+    CLog::LogF(LOGDEBUG, "Trying Hardy keycode for {:#04x}", code);
     code &= ~0x0F00;
     it2 = (*it).second.find(code);
     if (it2 != (*it).second.end())

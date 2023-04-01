@@ -817,8 +817,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   if (CServiceBroker::GetAddonMgr().GetAddon(item->GetAddonInfo()->ID(), m_localAddon,
                                              OnlyEnabled::CHOICE_NO))
   {
-    CLog::Log(LOGDEBUG, "{} - Addon with id {} not found locally.", __FUNCTION__,
-              item->GetAddonInfo()->ID());
+    CLog::LogF(LOGDEBUG, "Addon with id {} not found locally.", item->GetAddonInfo()->ID());
   }
   return true;
 }

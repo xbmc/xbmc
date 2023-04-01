@@ -145,10 +145,9 @@ bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIX
   if (CCharsetDetection::DetectXmlEncoding(data, detectedCharset) && TryParse(data, detectedCharset))
   {
     if (!m_SuggestedCharset.empty())
-      CLog::Log(LOGWARNING,
-                "{}: \"{}\" charset was used instead of suggested charset \"{}\" for {}",
-                __FUNCTION__, m_UsedCharset, m_SuggestedCharset,
-                (value.empty() ? "XML data" : ("file \"" + value + "\"")));
+      CLog::LogF(LOGWARNING, "\"{}\" charset was used instead of suggested charset \"{}\" for {}",
+                 m_UsedCharset, m_SuggestedCharset,
+                 (value.empty() ? "XML data" : ("file \"" + value + "\"")));
 
     return true;
   }
@@ -158,14 +157,13 @@ bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIX
       TryParse(data, "UTF-8"))
   {
     if (!m_SuggestedCharset.empty())
-      CLog::Log(LOGWARNING,
-                "{}: \"{}\" charset was used instead of suggested charset \"{}\" for {}",
-                __FUNCTION__, m_UsedCharset, m_SuggestedCharset,
-                (value.empty() ? "XML data" : ("file \"" + value + "\"")));
+      CLog::LogF(LOGWARNING, "\"{}\" charset was used instead of suggested charset \"{}\" for {}",
+                 m_UsedCharset, m_SuggestedCharset,
+                 (value.empty() ? "XML data" : ("file \"" + value + "\"")));
     else if (!detectedCharset.empty())
-      CLog::Log(LOGWARNING, "{}: \"{}\" charset was used instead of detected charset \"{}\" for {}",
-                __FUNCTION__, m_UsedCharset, detectedCharset,
-                (value.empty() ? "XML data" : ("file \"" + value + "\"")));
+      CLog::LogF(LOGWARNING, "\"{}\" charset was used instead of detected charset \"{}\" for {}",
+                 m_UsedCharset, detectedCharset,
+                 (value.empty() ? "XML data" : ("file \"" + value + "\"")));
     return true;
   }
 
@@ -173,14 +171,13 @@ bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIX
   if (TryParse(data, g_langInfo.GetGuiCharSet()))
   {
     if (!m_SuggestedCharset.empty())
-      CLog::Log(LOGWARNING,
-                "{}: \"{}\" charset was used instead of suggested charset \"{}\" for {}",
-                __FUNCTION__, m_UsedCharset, m_SuggestedCharset,
-                (value.empty() ? "XML data" : ("file \"" + value + "\"")));
+      CLog::LogF(LOGWARNING, "\"{}\" charset was used instead of suggested charset \"{}\" for {}",
+                 m_UsedCharset, m_SuggestedCharset,
+                 (value.empty() ? "XML data" : ("file \"" + value + "\"")));
     else if (!detectedCharset.empty())
-      CLog::Log(LOGWARNING, "{}: \"{}\" charset was used instead of detected charset \"{}\" for {}",
-                __FUNCTION__, m_UsedCharset, detectedCharset,
-                (value.empty() ? "XML data" : ("file \"" + value + "\"")));
+      CLog::LogF(LOGWARNING, "\"{}\" charset was used instead of detected charset \"{}\" for {}",
+                 m_UsedCharset, detectedCharset,
+                 (value.empty() ? "XML data" : ("file \"" + value + "\"")));
     return true;
   }
 
@@ -188,13 +185,11 @@ bool CXBMCTinyXML::Parse(const std::string& data, TiXmlEncoding encoding /*= TIX
   if (InternalParse(data, TIXML_ENCODING_UNKNOWN))
   {
     if (!m_SuggestedCharset.empty())
-      CLog::Log(LOGWARNING, "{}: Processed {} as unknown encoding instead of suggested \"{}\"",
-                __FUNCTION__, (value.empty() ? "XML data" : ("file \"" + value + "\"")),
-                m_SuggestedCharset);
+      CLog::LogF(LOGWARNING, "Processed {} as unknown encoding instead of suggested \"{}\"",
+                 (value.empty() ? "XML data" : ("file \"" + value + "\"")), m_SuggestedCharset);
     else if (!detectedCharset.empty())
-      CLog::Log(LOGWARNING, "{}: Processed {} as unknown encoding instead of detected \"{}\"",
-                __FUNCTION__, (value.empty() ? "XML data" : ("file \"" + value + "\"")),
-                detectedCharset);
+      CLog::LogF(LOGWARNING, "Processed {} as unknown encoding instead of detected \"{}\"",
+                 (value.empty() ? "XML data" : ("file \"" + value + "\"")), detectedCharset);
     return true;
   }
 

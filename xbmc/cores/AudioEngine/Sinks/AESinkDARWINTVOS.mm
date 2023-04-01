@@ -373,7 +373,7 @@ unsigned int CAAudioUnitSink::write(uint8_t* data, unsigned int frames, unsigned
     condVar.wait(mutex, timeout);
     if (!m_started && timer.IsTimePast())
     {
-      CLog::Log(LOGERROR, "{} engine didn't start in {} ms!", __FUNCTION__, timeout.count());
+      CLog::LogF(LOGERROR, "engine didn't start in {} ms!", timeout.count());
       return INT_MAX;
     }
   }

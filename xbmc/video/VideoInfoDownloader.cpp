@@ -65,8 +65,7 @@ void CVideoInfoDownloader::Process()
   if (m_state == FIND_MOVIE)
   {
     if (!(m_found=FindMovie(m_movieTitle, m_movieYear, m_movieList)))
-      CLog::Log(LOGERROR, "{}: Error looking up item {} ({})", __FUNCTION__, m_movieTitle,
-                m_movieYear);
+      CLog::LogF(LOGERROR, "Error looking up item {} ({})", m_movieTitle, m_movieYear);
     m_state = DO_NOTHING;
     return;
   }
@@ -75,26 +74,23 @@ void CVideoInfoDownloader::Process()
   {
     // empty url when it's not supposed to be..
     // this might happen if the previously scraped item was removed from the site (see ticket #10537)
-    CLog::Log(LOGERROR, "{}: Error getting details for {} ({}) due to an empty url", __FUNCTION__,
-              m_movieTitle, m_movieYear);
+    CLog::LogF(LOGERROR, "Error getting details for {} ({}) due to an empty url", m_movieTitle,
+               m_movieYear);
   }
   else if (m_state == GET_DETAILS)
   {
     if (!GetDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "{}: Error getting details from {}", __FUNCTION__,
-                m_url.GetFirstThumbUrl());
+      CLog::LogF(LOGERROR, "Error getting details from {}", m_url.GetFirstThumbUrl());
   }
   else if (m_state == GET_EPISODE_DETAILS)
   {
     if (!GetEpisodeDetails(m_url, m_movieDetails))
-      CLog::Log(LOGERROR, "{}: Error getting episode details from {}", __FUNCTION__,
-                m_url.GetFirstThumbUrl());
+      CLog::LogF(LOGERROR, "Error getting episode details from {}", m_url.GetFirstThumbUrl());
   }
   else if (m_state == GET_EPISODE_LIST)
   {
     if (!GetEpisodeList(m_url, m_episode))
-      CLog::Log(LOGERROR, "{}: Error getting episode list from {}", __FUNCTION__,
-                m_url.GetFirstThumbUrl());
+      CLog::LogF(LOGERROR, "Error getting episode list from {}", m_url.GetFirstThumbUrl());
   }
   m_found = 1;
   m_state = DO_NOTHING;

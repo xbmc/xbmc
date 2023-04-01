@@ -36,8 +36,7 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
   status = vaDeriveImage(pic->vadsp, pic->procPic.videoSurface, &m_glSurface.vaImage);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "CVaapiTexture::{} - Error: {}({})", __FUNCTION__, vaErrorStr(status),
-              status);
+    CLog::LogF(LOGERROR, "CVaapiTexture: Error: {}({})", vaErrorStr(status), status);
     return false;
   }
   memset(&m_glSurface.vBufInfo, 0, sizeof(m_glSurface.vBufInfo));
@@ -45,8 +44,7 @@ bool CVaapi1Texture::Map(CVaapiRenderPicture *pic)
   status = vaAcquireBufferHandle(pic->vadsp, m_glSurface.vaImage.buf, &m_glSurface.vBufInfo);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "CVaapiTexture::{} - Error: {}({})", __FUNCTION__, vaErrorStr(status),
-              status);
+    CLog::LogF(LOGERROR, "CVaapiTexture: Error: {}({})", vaErrorStr(status), status);
     return false;
   }
 
@@ -257,13 +255,13 @@ void CVaapi1Texture::Unmap()
   status = vaReleaseBufferHandle(m_vaapiPic->vadsp, m_glSurface.vaImage.buf);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI::{} - Error: {}({})", __FUNCTION__, vaErrorStr(status), status);
+    CLog::LogF(LOGERROR, "VAAPI: Error: {}({})", vaErrorStr(status), status);
   }
 
   status = vaDestroyImage(m_vaapiPic->vadsp, m_glSurface.vaImage.image_id);
   if (status != VA_STATUS_SUCCESS)
   {
-    CLog::Log(LOGERROR, "VAAPI::{} - Error: {}({})", __FUNCTION__, vaErrorStr(status), status);
+    CLog::LogF(LOGERROR, "VAAPI: Error: {}({})", vaErrorStr(status), status);
   }
 
   m_glSurface.vaImage.image_id = VA_INVALID_ID;

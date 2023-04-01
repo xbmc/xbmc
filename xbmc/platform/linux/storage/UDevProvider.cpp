@@ -73,7 +73,7 @@ void CUDevProvider::Initialize()
   m_udev = udev_new();
   if (!m_udev)
   {
-    CLog::Log(LOGERROR, "{} - failed to allocate udev context", __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed to allocate udev context");
     return;
   }
   /* set up a devices monitor that listen for any device change */

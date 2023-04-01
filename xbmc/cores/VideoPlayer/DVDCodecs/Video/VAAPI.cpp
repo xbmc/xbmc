@@ -759,7 +759,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
 
 void CDecoder::Close()
 {
-  CLog::Log(LOGINFO, "VAAPI::{}", __FUNCTION__);
+  CLog::LogF(LOGINFO, "VAAPI");
 
   std::unique_lock<CCriticalSection> lock(m_DecoderSection);
 
@@ -801,13 +801,13 @@ long CDecoder::Release()
       reply->Release();
       if (!success)
       {
-        CLog::Log(LOGERROR, "VAAPI::{} - pre-cleanup returned error", __FUNCTION__);
+        CLog::LogF(LOGERROR, "VAAPI: pre-cleanup returned error");
         m_DisplayState = VAAPI_ERROR;
       }
     }
     else
     {
-      CLog::Log(LOGERROR, "VAAPI::{} - pre-cleanup timed out", __FUNCTION__);
+      CLog::LogF(LOGERROR, "VAAPI: pre-cleanup timed out");
       m_DisplayState = VAAPI_ERROR;
     }
 
@@ -862,7 +862,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, CVAAPIContext::FFReleaseBuffer, va, 0);
   if (!buffer)
   {
-    CLog::Log(LOGERROR, "VAAPI::{} - error creating buffer", __FUNCTION__);
+    CLog::LogF(LOGERROR, "VAAPI: error creating buffer");
     return -1;
   }
   pic->buf[0] = buffer;
@@ -993,10 +993,10 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext* avctx, AVFrame* pFrame
       break;
   }
 
-  CLog::Log(LOGERROR,
-            "VAAPI::{} - timed out waiting for output message - decoded: {}, proc: {}, has free "
-            "surface: {}",
-            __FUNCTION__, decoded, processed, m_videoSurfaces.HasFree() ? "yes" : "no");
+  CLog::LogF(LOGERROR,
+             "VAAPI: timed out waiting for output message - decoded: {}, proc: {}, has free "
+             "surface: {}",
+             decoded, processed, m_videoSurfaces.HasFree() ? "yes" : "no");
   m_DisplayState = VAAPI_ERROR;
 
   return CDVDVideoCodec::VC_ERROR;
@@ -1098,7 +1098,7 @@ void CDecoder::Reset()
     reply->Release();
     if (!success)
     {
-      CLog::Log(LOGERROR, "VAAPI::{} - flush returned error", __FUNCTION__);
+      CLog::LogF(LOGERROR, "VAAPI: flush returned error");
       m_DisplayState = VAAPI_ERROR;
     }
     else
@@ -1109,7 +1109,7 @@ void CDecoder::Reset()
   }
   else
   {
-    CLog::Log(LOGERROR, "VAAPI::{} - flush timed out", __FUNCTION__);
+    CLog::LogF(LOGERROR, "VAAPI: flush timed out");
     m_DisplayState = VAAPI_ERROR;
   }
 }
@@ -1201,7 +1201,7 @@ bool CDecoder::ConfigVAAPI()
     if (!success)
     {
       reply->Release();
-      CLog::Log(LOGERROR, "VAAPI::{} - vaapi output returned error", __FUNCTION__);
+      CLog::LogF(LOGERROR, "VAAPI: vaapi output returned error");
       m_vaapiOutput.Dispose();
       return false;
     }
@@ -1209,7 +1209,7 @@ bool CDecoder::ConfigVAAPI()
   }
   else
   {
-    CLog::Log(LOGERROR, "VAAPI::{} - failed to init output", __FUNCTION__);
+    CLog::LogF(LOGERROR, "VAAPI: failed to init output");
     m_vaapiOutput.Dispose();
     return false;
   }
@@ -1603,8 +1603,8 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
       }
       {
         std::string portName = port == NULL ? "timer" : port->portName;
-        CLog::Log(LOGWARNING, "COutput::{} - signal: {} form port: {} not handled for state: {}",
-                  __FUNCTION__, signal, portName, m_state);
+        CLog::LogF(LOGWARNING, "COutput: signal: {} form port: {} not handled for state: {}",
+                   signal, portName, m_state);
       }
       return;
 
@@ -1830,7 +1830,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
       break;
 
     default: // we are in no state, should not happen
-      CLog::Log(LOGERROR, "COutput::{} - no valid state: {}", __FUNCTION__, m_state);
+      CLog::LogF(LOGERROR, "COutput: no valid state: {}", m_state);
       return;
     }
   } // for

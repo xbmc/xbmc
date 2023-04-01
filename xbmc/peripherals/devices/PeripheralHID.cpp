@@ -29,7 +29,7 @@ CPeripheralHID::~CPeripheralHID(void)
 {
   if (!m_strKeymap.empty() && !GetSettingBool("do_not_use_custom_keymap"))
   {
-    CLog::Log(LOGDEBUG, "{} - switching active keymapping to: default", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "switching active keymapping to: default");
     m_manager.GetInputManager().RemoveKeymap(m_strKeymap);
   }
 }
@@ -57,18 +57,17 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
       bool bKeymapEnabled(!GetSettingBool("do_not_use_custom_keymap"));
       if (bKeymapEnabled)
       {
-        CLog::Log(LOGDEBUG, "{} - adding keymapping for: {}", __FUNCTION__, m_strKeymap);
+        CLog::LogF(LOGDEBUG, "adding keymapping for: {}", m_strKeymap);
         m_manager.GetInputManager().AddKeymap(m_strKeymap);
       }
       else
       {
-        CLog::Log(LOGDEBUG, "{} - removing keymapping for: {}", __FUNCTION__, m_strKeymap);
+        CLog::LogF(LOGDEBUG, "removing keymapping for: {}", m_strKeymap);
         m_manager.GetInputManager().RemoveKeymap(m_strKeymap);
       }
     }
 
-    CLog::Log(LOGDEBUG, "{} - initialised HID device ({}:{})", __FUNCTION__, m_strVendorId,
-              m_strProductId);
+    CLog::LogF(LOGDEBUG, "initialised HID device ({}:{})", m_strVendorId, m_strProductId);
   }
 
   return CPeripheral::InitialiseFeature(feature);

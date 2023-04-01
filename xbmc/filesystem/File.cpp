@@ -137,7 +137,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
       if (iRead == 0) break;
       else if (iRead < 0)
       {
-        CLog::Log(LOGERROR, "{} - Failed read from file {}", __FUNCTION__, url.GetRedacted());
+        CLog::LogF(LOGERROR, "Failed read from file {}", url.GetRedacted());
         llFileSize = (uint64_t)-1;
         break;
       }
@@ -154,7 +154,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
 
       if (iWrite != iRead)
       {
-        CLog::Log(LOGERROR, "{} - Failed write to file {}", __FUNCTION__, dest.GetRedacted());
+        CLog::LogF(LOGERROR, "Failed write to file {}", dest.GetRedacted());
         llFileSize = (uint64_t)-1;
         break;
       }
@@ -175,7 +175,7 @@ bool CFile::Copy(const CURL& url2, const CURL& dest, XFILE::IFileCallback* pCall
 
         if(!pCallback->OnFileCallback(pContext, ipercent, averageSpeed))
         {
-          CLog::Log(LOGERROR, "{} - User aborted copy", __FUNCTION__);
+          CLog::LogF(LOGERROR, "User aborted copy");
           llFileSize = (uint64_t)-1;
           break;
         }
@@ -375,8 +375,11 @@ bool CFile::Open(const CURL& file, const unsigned int flags)
     return true;
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
-  CLog::Log(LOGERROR, "{} - Error opening {}", __FUNCTION__, file.GetRedacted());
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
+  CLog::LogF(LOGERROR, "Error opening {}", file.GetRedacted());
   return false;
 }
 
@@ -408,9 +411,9 @@ bool CFile::OpenForWrite(const CURL& file, bool bOverWrite)
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
-    CLog::Log(LOGERROR, "{} - Unhandled exception opening {}", __FUNCTION__, file.GetRedacted());
+    CLog::LogF(LOGERROR, "Unhandled exception opening {}", file.GetRedacted());
   }
-  CLog::Log(LOGERROR, "{} - Error opening {}", __FUNCTION__, file.GetRedacted());
+  CLog::LogF(LOGERROR, "Error opening {}", file.GetRedacted());
   return false;
 }
 
@@ -488,8 +491,11 @@ bool CFile::Exists(const CURL& file, bool bUseCache /* = true */)
       }
     }
   }
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
-  CLog::Log(LOGERROR, "{} - Error checking for {}", __FUNCTION__, file.GetRedacted());
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
+  CLog::LogF(LOGERROR, "Error checking for {}", file.GetRedacted());
   return false;
 }
 
@@ -566,8 +572,11 @@ int CFile::Stat(const CURL& file, struct __stat64* buffer)
       }
     }
   }
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
-  CLog::Log(LOGERROR, "{} - Error statting {}", __FUNCTION__, file.GetRedacted());
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
+  CLog::LogF(LOGERROR, "Error statting {}", file.GetRedacted());
   return -1;
 }
 
@@ -642,7 +651,7 @@ ssize_t CFile::Read(void *lpBuf, size_t uiBufSize)
   XBMCCOMMONS_HANDLE_UNCHECKED
   catch(...)
   {
-    CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Unhandled exception");
     return -1;
   }
   return 0;
@@ -660,7 +669,10 @@ void CFile::Close()
     m_pFile.reset();
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
 }
 
 void CFile::Flush()
@@ -671,7 +683,10 @@ void CFile::Flush()
       m_pFile->Flush();
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
 }
 
 //*********************************************************************************************
@@ -695,7 +710,10 @@ int64_t CFile::Seek(int64_t iFilePosition, int iWhence)
     return m_pFile->Seek(iFilePosition, iWhence);
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
   return -1;
 }
 
@@ -710,7 +728,10 @@ int CFile::Truncate(int64_t iSize)
     return m_pFile->Truncate(iSize);
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
   return -1;
 }
 
@@ -724,7 +745,10 @@ int64_t CFile::GetLength()
     return 0;
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
   return 0;
 }
 
@@ -742,7 +766,10 @@ int64_t CFile::GetPosition() const
     return m_pFile->GetPosition();
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
   return -1;
 }
 
@@ -801,7 +828,10 @@ bool CFile::ReadString(char *szLine, int iLineLength)
     return m_pFile->ReadString(szLine, iLineLength);
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
   return false;
 }
 
@@ -825,7 +855,10 @@ ssize_t CFile::Write(const void* lpBuf, size_t uiBufSize)
     return m_pFile->Write(lpBuf, uiBufSize);
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
   return -1;
 }
 
@@ -855,9 +888,12 @@ bool CFile::Delete(const CURL& file)
     }
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__); }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception");
+  }
   if (Exists(file))
-    CLog::Log(LOGERROR, "{} - Error deleting file {}", __FUNCTION__, file.GetRedacted());
+    CLog::LogF(LOGERROR, "Error deleting file {}", file.GetRedacted());
   return false;
 }
 
@@ -894,8 +930,11 @@ bool CFile::Rename(const CURL& file, const CURL& newFile)
     }
   }
   XBMCCOMMONS_HANDLE_UNCHECKED
-  catch (...) { CLog::Log(LOGERROR, "{} - Unhandled exception ", __FUNCTION__); }
-  CLog::Log(LOGERROR, "{} - Error renaming file {}", __FUNCTION__, file.GetRedacted());
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Unhandled exception ");
+  }
+  CLog::LogF(LOGERROR, "Error renaming file {}", file.GetRedacted());
   return false;
 }
 
@@ -922,7 +961,7 @@ bool CFile::SetHidden(const CURL& file, bool hidden)
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "{}({}) - Unhandled exception", __FUNCTION__, file.GetRedacted());
+    CLog::LogF(LOGERROR, "({}) - Unhandled exception", file.GetRedacted());
   }
   return false;
 }

@@ -190,8 +190,7 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
   if (url.IsProtocol("pvr"))
     return new CPVRDirectory();
 
-  CLog::Log(LOGWARNING, "{} - unsupported protocol({}) in {}", __FUNCTION__, url.GetProtocol(),
-            url.GetRedacted());
+  CLog::LogF(LOGWARNING, "unsupported protocol({}) in {}", url.GetProtocol(), url.GetRedacted());
   return NULL;
 }
 

@@ -115,13 +115,13 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
     pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true);
     if(!pDemuxer)
     {
-      CLog::Log(LOGERROR, "{} - Error creating demuxer", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Error creating demuxer");
       return false;
     }
   }
   catch(...)
   {
-    CLog::Log(LOGERROR, "{} - Exception thrown when opening demuxer", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Exception thrown when opening demuxer");
     if (pDemuxer)
       delete pDemuxer;
 
@@ -201,8 +201,8 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
       int nTotalLen = pDemuxer->GetStreamLength();
       int64_t nSeekTo = (pos == -1) ? nTotalLen / 3 : pos;
 
-      CLog::Log(LOGDEBUG, "{} - seeking to pos {}ms (total: {}ms) in {}", __FUNCTION__, nSeekTo,
-                nTotalLen, redactPath);
+      CLog::LogF(LOGDEBUG, "seeking to pos {}ms (total: {}ms) in {}", nSeekTo, nTotalLen,
+                 redactPath);
 
       if (pDemuxer->SeekTime(static_cast<double>(nSeekTo), true))
       {
@@ -281,8 +281,7 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
         }
         else
         {
-          CLog::Log(LOGDEBUG, "{} - decode failed in {} after {} packets.", __FUNCTION__,
-                    redactPath, packetsTried);
+          CLog::LogF(LOGDEBUG, "decode failed in {} after {} packets.", redactPath, packetsTried);
         }
       }
     }
@@ -300,8 +299,8 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
 
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  CLog::Log(LOGDEBUG, "{} - measured {} ms to extract thumb from file <{}> in {} packets. ",
-            __FUNCTION__, duration.count(), redactPath, packetsTried);
+  CLog::LogF(LOGDEBUG, "measured {} ms to extract thumb from file <{}> in {} packets. ",
+             duration.count(), redactPath, packetsTried);
 
   return bOk;
 }

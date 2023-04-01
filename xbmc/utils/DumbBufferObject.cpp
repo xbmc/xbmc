@@ -74,8 +74,8 @@ bool CDumbBufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint
   int ret = drmIoctl(m_device, DRM_IOCTL_MODE_CREATE_DUMB, &create_dumb);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CDumbBufferObject::{} - ioctl DRM_IOCTL_MODE_CREATE_DUMB failed, errno={}",
-              __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "CDumbBufferObject: ioctl DRM_IOCTL_MODE_CREATE_DUMB failed, errno={}",
+               strerror(errno));
     return false;
   }
 
@@ -85,8 +85,8 @@ bool CDumbBufferObject::CreateBufferObject(uint32_t format, uint32_t width, uint
   ret = drmPrimeHandleToFD(m_device, create_dumb.handle, 0, &m_fd);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CDumbBufferObject::{} - failed to get fd from prime handle, errno={}",
-              __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "CDumbBufferObject: failed to get fd from prime handle, errno={}",
+               strerror(errno));
     return false;
   }
 
@@ -100,8 +100,7 @@ void CDumbBufferObject::DestroyBufferObject()
 
   int ret = close(m_fd);
   if (ret < 0)
-    CLog::Log(LOGERROR, "CDumbBufferObject::{} - close failed, errno={}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CDumbBufferObject: close failed, errno={}", strerror(errno));
 
   m_fd = -1;
   m_stride = 0;
@@ -115,8 +114,7 @@ uint8_t* CDumbBufferObject::GetMemory()
 
   if (m_map)
   {
-    CLog::Log(LOGDEBUG, "CDumbBufferObject::{} - already mapped fd={} map={}", __FUNCTION__, m_fd,
-              fmt::ptr(m_map));
+    CLog::LogF(LOGDEBUG, "CDumbBufferObject: already mapped fd={} map={}", m_fd, fmt::ptr(m_map));
     return m_map;
   }
 
@@ -124,8 +122,8 @@ uint8_t* CDumbBufferObject::GetMemory()
   int ret = drmPrimeFDToHandle(m_device, m_fd, &handle);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CDumbBufferObject::{} - failed to get handle from prime fd, errno={}",
-              __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "CDumbBufferObject: failed to get handle from prime fd, errno={}",
+               strerror(errno));
     return nullptr;
   }
 
@@ -135,8 +133,8 @@ uint8_t* CDumbBufferObject::GetMemory()
   ret = drmIoctl(m_device, DRM_IOCTL_MODE_MAP_DUMB, &map_dumb);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CDumbBufferObject::{} - ioctl DRM_IOCTL_MODE_MAP_DUMB failed, errno={}",
-              __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "CDumbBufferObject: ioctl DRM_IOCTL_MODE_MAP_DUMB failed, errno={}",
+               strerror(errno));
     return nullptr;
   }
 
@@ -145,8 +143,7 @@ uint8_t* CDumbBufferObject::GetMemory()
   m_map = static_cast<uint8_t*>(mmap(nullptr, m_size, PROT_WRITE, MAP_SHARED, m_device, m_offset));
   if (m_map == MAP_FAILED)
   {
-    CLog::Log(LOGERROR, "CDumbBufferObject::{} - mmap failed, errno={}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CDumbBufferObject: mmap failed, errno={}", strerror(errno));
     return nullptr;
   }
 
@@ -160,8 +157,7 @@ void CDumbBufferObject::ReleaseMemory()
 
   int ret = munmap(m_map, m_size);
   if (ret < 0)
-    CLog::Log(LOGERROR, "CDumbBufferObject::{} - munmap failed, errno={}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CDumbBufferObject: munmap failed, errno={}", strerror(errno));
 
   m_map = nullptr;
   m_offset = 0;

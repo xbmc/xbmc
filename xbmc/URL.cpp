@@ -354,7 +354,7 @@ void CURL::SetOptions(const std::string& strOptions)
       m_options.AddOptions(m_strOptions);
     }
     else
-      CLog::Log(LOGWARNING, "{} - Invalid options specified for url {}", __FUNCTION__, strOptions);
+      CLog::LogF(LOGWARNING, "Invalid options specified for url {}", strOptions);
   }
 }
 

@@ -48,7 +48,7 @@ void TranslateAliasShortcut(std::string& path)
   // Linux does not use alias or shortcut methods
 #elif defined(TARGET_WINDOWS_STORE)
   // Win10 does not use alias or shortcut methods
-  CLog::Log(LOGDEBUG, "{} is not implemented", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "is not implemented");
 #elif defined(TARGET_WINDOWS)
 /* Needs testing under Windows platform so ignore shortcuts for now
   CComPtr<IShellLink> ipShellLink;

@@ -109,7 +109,7 @@ void CTexture::Allocate(unsigned int width, unsigned int height, unsigned int fo
 
     if (m_pixels == nullptr)
     {
-      CLog::Log(LOGERROR, "{} - Could not allocate {} bytes. Out of memory.", __FUNCTION__, size);
+      CLog::LogF(LOGERROR, "Could not allocate {} bytes. Out of memory.", size);
     }
   }
 }
@@ -293,7 +293,7 @@ bool CTexture::LoadFromFileInternal(const std::string& texturePath,
 
   if (!LoadIImage(pImage, buf.data(), buf.size(), width, height))
   {
-    CLog::Log(LOGDEBUG, "{} - Load of {} failed.", __FUNCTION__, CURL::GetRedacted(texturePath));
+    CLog::LogF(LOGDEBUG, "Load of {} failed.", CURL::GetRedacted(texturePath));
     delete pImage;
     return false;
   }

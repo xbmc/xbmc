@@ -361,7 +361,7 @@ void CRenderManager::PreInit()
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RENDERER_PREINIT);
     if (!m_initEvent.Wait(2000ms))
     {
-      CLog::Log(LOGERROR, "{} - timed out waiting for renderer to preinit", __FUNCTION__);
+      CLog::LogF(LOGERROR, "timed out waiting for renderer to preinit");
     }
   }
 
@@ -390,7 +390,7 @@ void CRenderManager::UnInit()
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_RENDERER_UNINIT);
     if (!m_initEvent.Wait(2000ms))
     {
-      CLog::Log(LOGERROR, "{} - timed out waiting for renderer to uninit", __FUNCTION__);
+      CLog::LogF(LOGERROR, "timed out waiting for renderer to uninit");
     }
   }
 
@@ -417,7 +417,7 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
 
   if (CServiceBroker::GetAppMessenger()->IsProcessThread())
   {
-    CLog::Log(LOGDEBUG, "{} - flushing renderer", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "flushing renderer");
 
 // fix deadlock on Windows only when is enabled 'Sync playback to display'
 #ifndef TARGET_WINDOWS
@@ -456,7 +456,7 @@ bool CRenderManager::Flush(bool wait, bool saveBuffers)
     {
       if (!m_flushEvent.Wait(1000ms))
       {
-        CLog::Log(LOGERROR, "{} - timed out waiting for renderer to flush", __FUNCTION__);
+        CLog::LogF(LOGERROR, "timed out waiting for renderer to flush");
         return false;
       }
       else
@@ -494,7 +494,7 @@ void CRenderManager::DeleteRenderer()
 {
   if (m_pRenderer)
   {
-    CLog::Log(LOGDEBUG, "{} - deleting renderer", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "deleting renderer");
 
     delete m_pRenderer;
     m_pRenderer = NULL;

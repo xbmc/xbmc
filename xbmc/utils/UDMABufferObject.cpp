@@ -42,8 +42,7 @@ void CUDMABufferObject::Register()
   int fd = open("/dev/udmabuf", O_RDWR);
   if (fd < 0)
   {
-    CLog::Log(LOGDEBUG, "CUDMABufferObject::{} - unable to open /dev/udmabuf: {}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGDEBUG, "CUDMABufferObject: unable to open /dev/udmabuf: {}", strerror(errno));
     return;
   }
 
@@ -59,8 +58,7 @@ CUDMABufferObject::~CUDMABufferObject()
 
   int ret = close(m_udmafd);
   if (ret < 0)
-    CLog::Log(LOGERROR, "CUDMABufferObject::{} - close /dev/udmabuf failed, errno={}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CUDMABufferObject: close /dev/udmabuf failed, errno={}", strerror(errno));
 
   m_udmafd = -1;
 }
@@ -98,21 +96,19 @@ bool CUDMABufferObject::CreateBufferObject(uint64_t size)
   m_memfd = memfd_create("kodi", MFD_CLOEXEC | MFD_ALLOW_SEALING);
   if (m_memfd < 0)
   {
-    CLog::Log(LOGERROR, "CUDMABufferObject::{} - memfd_create failed: {}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CUDMABufferObject: memfd_create failed: {}", strerror(errno));
     return false;
   }
 
   if (ftruncate(m_memfd, m_size) < 0)
   {
-    CLog::Log(LOGERROR, "CUDMABufferObject::{} - ftruncate failed: {}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CUDMABufferObject: ftruncate failed: {}", strerror(errno));
     return false;
   }
 
   if (fcntl(m_memfd, F_ADD_SEALS, F_SEAL_SHRINK) < 0)
   {
-    CLog::Log(LOGERROR, "CUDMABufferObject::{} - fcntl failed: {}", __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "CUDMABufferObject: fcntl failed: {}", strerror(errno));
     close(m_memfd);
     return false;
   }
@@ -122,8 +118,7 @@ bool CUDMABufferObject::CreateBufferObject(uint64_t size)
     m_udmafd = open("/dev/udmabuf", O_RDWR);
     if (m_udmafd < 0)
     {
-      CLog::Log(LOGERROR, "CUDMABufferObject::{} - unable to open /dev/udmabuf: {}", __FUNCTION__,
-                strerror(errno));
+      CLog::LogF(LOGERROR, "CUDMABufferObject: unable to open /dev/udmabuf: {}", strerror(errno));
       close(m_memfd);
       return false;
     }
@@ -137,8 +132,7 @@ bool CUDMABufferObject::CreateBufferObject(uint64_t size)
   m_fd = ioctl(m_udmafd, UDMABUF_CREATE, &create);
   if (m_fd < 0)
   {
-    CLog::Log(LOGERROR, "CUDMABufferObject::{} - ioctl UDMABUF_CREATE failed: {}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CUDMABufferObject: ioctl UDMABUF_CREATE failed: {}", strerror(errno));
     close(m_memfd);
     return false;
   }
@@ -153,13 +147,11 @@ void CUDMABufferObject::DestroyBufferObject()
 
   int ret = close(m_fd);
   if (ret < 0)
-    CLog::Log(LOGERROR, "CUDMABufferObject::{} - close fd failed, errno={}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CUDMABufferObject: close fd failed, errno={}", strerror(errno));
 
   ret = close(m_memfd);
   if (ret < 0)
-    CLog::Log(LOGERROR, "CUDMABufferObject::{} - close memfd failed, errno={}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CUDMABufferObject: close memfd failed, errno={}", strerror(errno));
 
   m_memfd = -1;
   m_fd = -1;
@@ -174,16 +166,14 @@ uint8_t* CUDMABufferObject::GetMemory()
 
   if (m_map)
   {
-    CLog::Log(LOGDEBUG, "CUDMABufferObject::{} - already mapped fd={} map={}", __FUNCTION__, m_fd,
-              fmt::ptr(m_map));
+    CLog::LogF(LOGDEBUG, "CUDMABufferObject: already mapped fd={} map={}", m_fd, fmt::ptr(m_map));
     return m_map;
   }
 
   m_map = static_cast<uint8_t*>(mmap(nullptr, m_size, PROT_WRITE, MAP_SHARED, m_memfd, 0));
   if (m_map == MAP_FAILED)
   {
-    CLog::Log(LOGERROR, "CUDMABufferObject::{} - mmap failed, errno={}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CUDMABufferObject: mmap failed, errno={}", strerror(errno));
     return nullptr;
   }
 
@@ -197,8 +187,7 @@ void CUDMABufferObject::ReleaseMemory()
 
   int ret = munmap(m_map, m_size);
   if (ret < 0)
-    CLog::Log(LOGERROR, "CUDMABufferObject::{} - munmap failed, errno={}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CUDMABufferObject: munmap failed, errno={}", strerror(errno));
 
   m_map = nullptr;
 }

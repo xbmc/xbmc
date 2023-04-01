@@ -17,7 +17,7 @@
 
 bool CVideoSyncTVos::Setup(PUPDATECLOCK func)
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncTVos::{} setting up TVOS", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CVideoSyncTVos: setting up TVOS");
 
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
@@ -42,7 +42,7 @@ void CVideoSyncTVos::Run(CEvent& stopEvent)
 
 void CVideoSyncTVos::Cleanup()
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncTVos::{} cleaning up TVOS", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CVideoSyncTVos: cleaning up TVOS");
   DeinitDisplayLink();
   m_winSystem.Unregister(this);
 }
@@ -50,7 +50,7 @@ void CVideoSyncTVos::Cleanup()
 float CVideoSyncTVos::GetFps()
 {
   m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
-  CLog::Log(LOGDEBUG, "CVideoSyncTVos::{} Detected refreshrate: {} hertz", __FUNCTION__, m_fps);
+  CLog::LogF(LOGDEBUG, "CVideoSyncTVos: Detected refreshrate: {} hertz", m_fps);
   return m_fps;
 }
 

@@ -180,8 +180,8 @@ void CPeripheralBusUSB::Process(void)
 {
   if (!(m_udev = udev_new()))
   {
-    CLog::Log(LOGERROR, "{} - failed to allocate udev context", __FUNCTION__);
-    return;
+  CLog::LogF(LOGERROR, "failed to allocate udev context");
+  return;
   }
 
   /* set up a devices monitor that listen for any device change */
@@ -193,7 +193,7 @@ void CPeripheralBusUSB::Process(void)
     CLog::Log(LOGERROR, "Could not limit filter on USB only");
   }
 
-  CLog::Log(LOGDEBUG, "{} - initialised udev monitor", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "initialised udev monitor");
 
   udev_monitor_enable_receiving(m_udevMon);
   bool bUpdated(false);
@@ -221,7 +221,7 @@ bool CPeripheralBusUSB::WaitForUpdate()
 
   if (udevFd < 0)
   {
-    CLog::Log(LOGERROR, "{} - get udev monitor", __FUNCTION__);
+    CLog::LogF(LOGERROR, "get udev monitor");
     return false;
   }
 
@@ -244,8 +244,7 @@ bool CPeripheralBusUSB::WaitForUpdate()
     udev_device_unref(dev);
   else
   {
-    CLog::Log(LOGERROR, "{} - failed to get device from udev_monitor_receive_device()",
-              __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed to get device from udev_monitor_receive_device()");
     Clear();
     return false;
   }

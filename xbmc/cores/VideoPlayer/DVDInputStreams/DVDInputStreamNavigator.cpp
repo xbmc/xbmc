@@ -184,7 +184,7 @@ bool CDVDInputStreamNavigator::Open()
     }
   }
 
-  CLog::Log(LOGDEBUG, "{} - Setting region mask {:02x}", __FUNCTION__, mask);
+  CLog::LogF(LOGDEBUG, "Setting region mask {:02x}", mask);
   m_dll.dvdnav_set_region_mask(m_dvdnav, mask);
 
   // get default language settings
@@ -525,9 +525,8 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
           int entries = m_dll.dvdnav_describe_title_chapters(m_dvdnav, m_iTitle, &times, &duration);
 
           if (entries != m_iPartCount)
-            CLog::Log(LOGDEBUG,
-                      "{} - Number of chapters/positions differ: Chapters {}, positions {}",
-                      __FUNCTION__, m_iPartCount, entries);
+          CLog::LogF(LOGDEBUG, "Number of chapters/positions differ: Chapters {}, positions {}",
+                     m_iPartCount, entries);
 
           if (times)
           {
@@ -540,10 +539,9 @@ int CDVDInputStreamNavigator::ProcessBlock(uint8_t* dest_buffer, int* read)
             free(times);
           }
         }
-        CLog::Log(LOGDEBUG, "{} - Cell change: Title {}, Chapter {}", __FUNCTION__, m_iTitle,
-                  m_iPart);
-        CLog::Log(LOGDEBUG, "{} - At position {:.0f}% inside the feature", __FUNCTION__,
-                  100 * (double)pos / (double)len);
+        CLog::LogF(LOGDEBUG, "Cell change: Title {}, Chapter {}", m_iTitle, m_iPart);
+        CLog::LogF(LOGDEBUG, "At position {:.0f}% inside the feature",
+                   100 * (double)pos / (double)len);
         //Get total segment time
 
         dvdnav_cell_change_event_t* cell_change_event = reinterpret_cast<dvdnav_cell_change_event_t*>(buf);
@@ -1234,8 +1232,7 @@ bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
   // therefore we just skip the request in case there are buttons and return false
   if (IsInMenu() && GetTotalButtons() > 0)
   {
-    CLog::Log(LOGDEBUG, "{} - Seeking chapter is not allowed in menu set with buttons",
-              __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "Seeking chapter is not allowed in menu set with buttons");
     return false;
   }
 
@@ -1283,7 +1280,7 @@ float CDVDInputStreamNavigator::GetVideoAspectRatio()
   //and such. should be able to give us info that we can zoom in automatically
   //not sure what to do with it currently
 
-  CLog::Log(LOGINFO, "{} - Aspect wanted: {}, Scale permissions: {}", __FUNCTION__, iAspect, iPerm);
+  CLog::LogF(LOGINFO, "Aspect wanted: {}, Scale permissions: {}", iAspect, iPerm);
   switch(iAspect)
   {
     case 0: //4:3

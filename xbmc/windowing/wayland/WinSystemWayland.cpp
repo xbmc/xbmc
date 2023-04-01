@@ -155,7 +155,7 @@ bool CWinSystemWayland::InitWindowSystem()
   const char* env = getenv("WAYLAND_DISPLAY");
   if (!env)
   {
-    CLog::Log(LOGDEBUG, "CWinSystemWayland::{} - WAYLAND_DISPLAY env not set", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "CWinSystemWayland: WAYLAND_DISPLAY env not set");
     return false;
   }
 

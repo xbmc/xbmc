@@ -65,7 +65,7 @@ bool CDRMConnector::CheckConnector()
   unsigned retryCnt = 7;
   while (!IsConnected() && retryCnt > 0)
   {
-    CLog::Log(LOGDEBUG, "CDRMConnector::{} - connector is disconnected", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "CDRMConnector: connector is disconnected");
     retryCnt--;
     KODI::TIME::Sleep(1s);
 

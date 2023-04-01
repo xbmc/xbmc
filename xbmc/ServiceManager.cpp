@@ -72,7 +72,7 @@ bool CServiceManager::InitForTesting()
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
-    CLog::Log(LOGFATAL, "CServiceManager::{}: Unable to start CAddonMgr", __FUNCTION__);
+    CLog::LogF(LOGFATAL, "CServiceManager: Unable to start CAddonMgr");
     return false;
   }
 
@@ -125,7 +125,7 @@ bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
   m_addonMgr.reset(new ADDON::CAddonMgr());
   if (!m_addonMgr->Init())
   {
-    CLog::Log(LOGFATAL, "CServiceManager::{}: Unable to start CAddonMgr", __FUNCTION__);
+    CLog::LogF(LOGFATAL, "CServiceManager: Unable to start CAddonMgr");
     return false;
   }
 

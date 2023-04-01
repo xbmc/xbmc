@@ -133,8 +133,8 @@ namespace VIDEO
            * doesn't exist rather than a NAS being switched off.  A manual clean from settings
            * will still pick up and remove it though.
            */
-          CLog::Log(LOGWARNING, "{} directory '{}' does not exist - skipping scan{}.", __FUNCTION__,
-                    CURL::GetRedacted(directory), m_bClean ? " and clean" : "");
+          CLog::LogF(LOGWARNING, "directory '{}' does not exist - skipping scan{}.",
+                     CURL::GetRedacted(directory), m_bClean ? " and clean" : "");
           m_pathsToScan.erase(m_pathsToScan.begin());
         }
         else if (!DoScan(directory))
@@ -1048,8 +1048,8 @@ namespace VIDEO
       if (item->IsPlugin())
         episode.item = std::make_shared<CFileItem>(*item);
       episodeList.push_back(episode);
-      CLog::Log(LOGDEBUG, "{} - found match for: {}. Season {}, Episode {}", __FUNCTION__,
-                CURL::GetRedacted(episode.strPath), episode.iSeason, episode.iEpisode);
+      CLog::LogF(LOGDEBUG, "found match for: {}. Season {}, Episode {}",
+                 CURL::GetRedacted(episode.strPath), episode.iSeason, episode.iEpisode);
       return true;
     }
 
@@ -1073,10 +1073,9 @@ namespace VIDEO
        */
       episode.cDate = item->GetVideoInfoTag()->m_firstAired;
       episodeList.push_back(episode);
-      CLog::Log(LOGDEBUG, "{} - found match for: '{}', firstAired: '{}' = '{}', title: '{}'",
-                __FUNCTION__, CURL::GetRedacted(episode.strPath),
-                tag->m_firstAired.GetAsDBDateTime(), episode.cDate.GetAsLocalizedDate(),
-                episode.strTitle);
+      CLog::LogF(LOGDEBUG, "found match for: '{}', firstAired: '{}' = '{}', title: '{}'",
+                 CURL::GetRedacted(episode.strPath), tag->m_firstAired.GetAsDBDateTime(),
+                 episode.cDate.GetAsLocalizedDate(), episode.strTitle);
       return true;
     }
 
@@ -1096,8 +1095,8 @@ namespace VIDEO
       episode.iSeason = -1;
       episode.iEpisode = -1;
       episodeList.push_back(episode);
-      CLog::Log(LOGDEBUG, "{} - found match for: '{}', title: '{}'", __FUNCTION__,
-                CURL::GetRedacted(episode.strPath), episode.strTitle);
+      CLog::LogF(LOGDEBUG, "found match for: '{}', title: '{}'", CURL::GetRedacted(episode.strPath),
+                 episode.strTitle);
       return true;
     }
 
@@ -1108,10 +1107,10 @@ namespace VIDEO
      */
     if (tag->m_iSeason == 0 && tag->m_iEpisode == 0)
     {
-      CLog::Log(LOGDEBUG,
-                "{} - found exclusion match for: {}. Both Season and Episode are 0. Item will be "
-                "ignored for scanning.",
-                __FUNCTION__, CURL::GetRedacted(item->GetPath()));
+      CLog::LogF(LOGDEBUG,
+                 "found exclusion match for: {}. Both Season and Episode are 0. Item will be "
+                 "ignored for scanning.",
+                 CURL::GetRedacted(item->GetPath()));
       return true;
     }
 
@@ -1510,9 +1509,8 @@ namespace VIDEO
     path = URIUtils::AddFileToFolder(path, CUtil::MakeLegalFileName(setTitle, LEGAL_WIN32_COMPAT));
     URIUtils::AddSlashAtEnd(path);
     CLog::Log(LOGDEBUG,
-        "VideoInfoScanner: Looking for local artwork for movie set '{}' in folder '{}'",
-        setTitle,
-        CURL::GetRedacted(path));
+              "VideoInfoScanner: Looking for local artwork for movie set '{}' in folder '{}'",
+              setTitle, CURL::GetRedacted(path));
     return CDirectory::Exists(path) ? path : "";
   }
 
@@ -1897,11 +1895,10 @@ namespace VIDEO
           {
             guide = candidates->begin() + index;
             bFound = true;
-            CLog::Log(LOGDEBUG,
-                      "{} fuzzy title match for show: '{}', title: '{}', match: '{}', score: {:f} "
-                      ">= {:f}",
-                      __FUNCTION__, showInfo.m_strTitle, file->strTitle, titles[index], matchscore,
-                      minscore);
+            CLog::LogF(LOGDEBUG,
+                       "fuzzy title match for show: '{}', title: '{}', match: '{}', score: {:f} "
+                       ">= {:f}",
+                       showInfo.m_strTitle, file->strTitle, titles[index], matchscore, minscore);
           }
         }
       }
@@ -1925,10 +1922,10 @@ namespace VIDEO
       }
       else
       {
-        CLog::Log(
+        CLog::LogF(
             LOGDEBUG,
-            "{} - no match for show: '{}', season: {}, episode: {}.{}, airdate: '{}', title: '{}'",
-            __FUNCTION__, showInfo.m_strTitle, file->iSeason, file->iEpisode, file->iSubepisode,
+            "no match for show: '{}', season: {}, episode: {}.{}, airdate: '{}', title: '{}'",
+            showInfo.m_strTitle, file->iSeason, file->iEpisode, file->iSubepisode,
             file->cDate.GetAsLocalizedDate(), file->strTitle);
       }
     }

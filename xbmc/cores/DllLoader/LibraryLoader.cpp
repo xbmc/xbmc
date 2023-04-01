@@ -57,6 +57,6 @@ int LibraryLoader::DecrRef()
 
 int LibraryLoader::ResolveOrdinal(unsigned long ordinal, void** ptr)
 {
-  CLog::Log(LOGWARNING, "{} - Unable to resolve {} in dll {}", __FUNCTION__, ordinal, GetName());
+  CLog::LogF(LOGWARNING, "Unable to resolve {} in dll {}", ordinal, GetName());
   return 0;
 }

@@ -62,7 +62,7 @@ void CWebVTTISOHandler::DecodeStream(const char* buffer,
   {
     if (sampleData.CharsLeft() < MP4_BOX_HEADER_SIZE)
     {
-      CLog::Log(LOGWARNING, "{} - Incomplete box header found", __FUNCTION__);
+      CLog::LogF(LOGWARNING, "Incomplete box header found");
       break;
     }
 
@@ -116,7 +116,7 @@ bool CWebVTTISOHandler::ParseVTTCueBox(CCharArrayParser& sampleData,
   {
     if (remainingCueBoxChars < MP4_BOX_HEADER_SIZE)
     {
-      CLog::Log(LOGWARNING, "{} - Incomplete VTT Cue box header found", __FUNCTION__);
+      CLog::LogF(LOGWARNING, "Incomplete VTT Cue box header found");
       return false;
     }
     uint32_t boxSize = sampleData.ReadNextUnsignedInt();

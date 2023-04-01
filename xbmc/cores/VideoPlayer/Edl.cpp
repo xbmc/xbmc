@@ -55,9 +55,9 @@ bool CEdl::ReadEditDecisionLists(const CFileItem& fileItem, const float fFramesP
   if ((URIUtils::IsHD(strMovie) || URIUtils::IsOnLAN(strMovie)) &&
       !URIUtils::IsInternetStream(strMovie))
   {
-    CLog::Log(LOGDEBUG,
-              "{} - Checking for edit decision lists (EDL) on local drive or remote share for: {}",
-              __FUNCTION__, CURL::GetRedacted(strMovie));
+    CLog::LogF(LOGDEBUG,
+               "Checking for edit decision lists (EDL) on local drive or remote share for: {}",
+               CURL::GetRedacted(strMovie));
 
     /*
      * Read any available file format until a valid EDL related file is found.
@@ -99,8 +99,7 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
   CFile edlFile;
   if (!edlFile.Open(edlFilename))
   {
-    CLog::Log(LOGERROR, "{} - Could not open EDL file: {}", __FUNCTION__,
-              CURL::GetRedacted(edlFilename));
+    CLog::LogF(LOGERROR, "Could not open EDL file: {}", CURL::GetRedacted(edlFilename));
     return false;
   }
 
@@ -112,8 +111,8 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
   {
     // Log any errors from previous run in the loop
     if (bError)
-      CLog::Log(LOGWARNING, "{} - Error on line {} in EDL file: {}", __FUNCTION__, iLine,
-                CURL::GetRedacted(edlFilename));
+      CLog::LogF(LOGWARNING, "Error on line {} in EDL file: {}", iLine,
+                 CURL::GetRedacted(edlFilename));
 
     bError = false;
 
@@ -223,47 +222,47 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
       edit.action = Action::CUT;
       if (!AddEdit(edit))
       {
-        CLog::Log(LOGWARNING, "{} - Error adding cut from line {} in EDL file: {}", __FUNCTION__,
-                  iLine, CURL::GetRedacted(edlFilename));
-        continue;
+          CLog::LogF(LOGWARNING, "Error adding cut from line {} in EDL file: {}", iLine,
+                     CURL::GetRedacted(edlFilename));
+          continue;
       }
       break;
     case 1:
       edit.action = Action::MUTE;
       if (!AddEdit(edit))
       {
-        CLog::Log(LOGWARNING, "{} - Error adding mute from line {} in EDL file: {}", __FUNCTION__,
-                  iLine, CURL::GetRedacted(edlFilename));
-        continue;
+          CLog::LogF(LOGWARNING, "Error adding mute from line {} in EDL file: {}", iLine,
+                     CURL::GetRedacted(edlFilename));
+          continue;
       }
       break;
     case 2:
       if (!AddSceneMarker(edit.end))
       {
-        CLog::Log(LOGWARNING, "{} - Error adding scene marker from line {} in EDL file: {}",
-                  __FUNCTION__, iLine, CURL::GetRedacted(edlFilename));
-        continue;
+          CLog::LogF(LOGWARNING, "Error adding scene marker from line {} in EDL file: {}", iLine,
+                     CURL::GetRedacted(edlFilename));
+          continue;
       }
       break;
     case 3:
       edit.action = Action::COMM_BREAK;
       if (!AddEdit(edit))
       {
-        CLog::Log(LOGWARNING, "{} - Error adding commercial break from line {} in EDL file: {}",
-                  __FUNCTION__, iLine, CURL::GetRedacted(edlFilename));
-        continue;
+          CLog::LogF(LOGWARNING, "Error adding commercial break from line {} in EDL file: {}",
+                     iLine, CURL::GetRedacted(edlFilename));
+          continue;
       }
       break;
     default:
-      CLog::Log(LOGWARNING, "{} - Invalid action on line {} in EDL file: {}", __FUNCTION__, iLine,
-                CURL::GetRedacted(edlFilename));
+      CLog::LogF(LOGWARNING, "Invalid action on line {} in EDL file: {}", iLine,
+                 CURL::GetRedacted(edlFilename));
       continue;
     }
   }
 
   if (bError) // Log last line warning, if there was one, since while loop will have terminated.
-    CLog::Log(LOGWARNING, "{} - Error on line {} in EDL file: {}", __FUNCTION__, iLine,
-              CURL::GetRedacted(edlFilename));
+    CLog::LogF(LOGWARNING, "Error on line {} in EDL file: {}", iLine,
+               CURL::GetRedacted(edlFilename));
 
   edlFile.Close();
 
@@ -275,8 +274,8 @@ bool CEdl::ReadEdl(const std::string& strMovie, const float fFramesPerSecond)
   }
   else
   {
-    CLog::Log(LOGDEBUG, "{} - No edits or scene markers found in EDL file: {}", __FUNCTION__,
-              CURL::GetRedacted(edlFilename));
+    CLog::LogF(LOGDEBUG, "No edits or scene markers found in EDL file: {}",
+               CURL::GetRedacted(edlFilename));
     return false;
   }
 }
@@ -292,8 +291,7 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
   CFile comskipFile;
   if (!comskipFile.Open(comskipFilename))
   {
-    CLog::Log(LOGERROR, "{} - Could not open Comskip file: {}", __FUNCTION__,
-              CURL::GetRedacted(comskipFilename));
+    CLog::LogF(LOGERROR, "Could not open Comskip file: {}", CURL::GetRedacted(comskipFilename));
     return false;
   }
 
@@ -301,9 +299,8 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
   if (comskipFile.ReadString(szBuffer, 1023)
   &&  strncmp(szBuffer, COMSKIP_HEADER, strlen(COMSKIP_HEADER)) != 0) // Line 1.
   {
-    CLog::Log(LOGERROR,
-              "{} - Invalid Comskip file: {}. Error reading line 1 - expected '{}' at start.",
-              __FUNCTION__, CURL::GetRedacted(comskipFilename), COMSKIP_HEADER);
+    CLog::LogF(LOGERROR, "Invalid Comskip file: {}. Error reading line 1 - expected '{}' at start.",
+               CURL::GetRedacted(comskipFilename), COMSKIP_HEADER);
     comskipFile.Close();
     return false;
   }
@@ -355,10 +352,10 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
 
   if (!bValid)
   {
-    CLog::Log(LOGERROR,
-              "{} - Invalid Comskip file: {}. Error on line {}. Clearing any valid commercial "
-              "breaks found.",
-              __FUNCTION__, CURL::GetRedacted(comskipFilename), iLine);
+    CLog::LogF(LOGERROR,
+               "Invalid Comskip file: {}. Error on line {}. Clearing any valid commercial "
+               "breaks found.",
+               CURL::GetRedacted(comskipFilename), iLine);
     Clear();
     return false;
   }
@@ -370,8 +367,8 @@ bool CEdl::ReadComskip(const std::string& strMovie, const float fFramesPerSecond
   }
   else
   {
-    CLog::Log(LOGDEBUG, "{} - No commercial breaks found in Comskip file: {}", __FUNCTION__,
-              CURL::GetRedacted(comskipFilename));
+    CLog::LogF(LOGDEBUG, "No commercial breaks found in Comskip file: {}",
+               CURL::GetRedacted(comskipFilename));
     return false;
   }
 }
@@ -392,8 +389,7 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
   CFile videoReDoFile;
   if (!videoReDoFile.Open(videoReDoFilename))
   {
-    CLog::Log(LOGERROR, "{} - Could not open VideoReDo file: {}", __FUNCTION__,
-              CURL::GetRedacted(videoReDoFilename));
+    CLog::LogF(LOGERROR, "Could not open VideoReDo file: {}", CURL::GetRedacted(videoReDoFilename));
     return false;
   }
 
@@ -401,10 +397,10 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
   if (videoReDoFile.ReadString(szBuffer, 1023)
   &&  strncmp(szBuffer, VIDEOREDO_HEADER, strlen(VIDEOREDO_HEADER)) != 0)
   {
-    CLog::Log(LOGERROR,
-              "{} - Invalid VideoReDo file: {}. Error reading line 1 - expected {}. Only version 2 "
-              "files are supported.",
-              __FUNCTION__, CURL::GetRedacted(videoReDoFilename), VIDEOREDO_HEADER);
+    CLog::LogF(LOGERROR,
+               "Invalid VideoReDo file: {}. Error reading line 1 - expected {}. Only version 2 "
+               "files are supported.",
+               CURL::GetRedacted(videoReDoFilename), VIDEOREDO_HEADER);
     videoReDoFile.Close();
     return false;
   }
@@ -452,10 +448,10 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
 
   if (!bValid)
   {
-    CLog::Log(LOGERROR,
-              "{} - Invalid VideoReDo file: {}. Error in line {}. Clearing any valid edits or "
-              "scenes found.",
-              __FUNCTION__, CURL::GetRedacted(videoReDoFilename), iLine);
+    CLog::LogF(LOGERROR,
+               "Invalid VideoReDo file: {}. Error in line {}. Clearing any valid edits or "
+               "scenes found.",
+               CURL::GetRedacted(videoReDoFilename), iLine);
     Clear();
     return false;
   }
@@ -468,8 +464,8 @@ bool CEdl::ReadVideoReDo(const std::string& strMovie)
   }
   else
   {
-    CLog::Log(LOGDEBUG, "{} - No edits or scene markers found in VideoReDo file: {}", __FUNCTION__,
-              CURL::GetRedacted(videoReDoFilename));
+    CLog::LogF(LOGDEBUG, "No edits or scene markers found in VideoReDo file: {}",
+               CURL::GetRedacted(videoReDoFilename));
     return false;
   }
 }
@@ -485,23 +481,23 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(beyondTVFilename))
   {
-    CLog::Log(LOGERROR, "{} - Could not load Beyond TV file: {}. {}", __FUNCTION__,
-              CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorDesc());
+    CLog::LogF(LOGERROR, "Could not load Beyond TV file: {}. {}",
+               CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorDesc());
     return false;
   }
 
   if (xmlDoc.Error())
   {
-    CLog::Log(LOGERROR, "{} - Could not parse Beyond TV file: {}. {}", __FUNCTION__,
-              CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorDesc());
+    CLog::LogF(LOGERROR, "Could not parse Beyond TV file: {}. {}",
+               CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorDesc());
     return false;
   }
 
   TiXmlElement *pRoot = xmlDoc.RootElement();
   if (!pRoot || strcmp(pRoot->Value(), "cutlist"))
   {
-    CLog::Log(LOGERROR, "{} - Invalid Beyond TV file: {}. Expected root node to be <cutlist>",
-              __FUNCTION__, CURL::GetRedacted(beyondTVFilename));
+    CLog::LogF(LOGERROR, "Invalid Beyond TV file: {}. Expected root node to be <cutlist>",
+               CURL::GetRedacted(beyondTVFilename));
     return false;
   }
 
@@ -538,9 +534,8 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
   }
   if (!bValid)
   {
-    CLog::Log(LOGERROR,
-              "{} - Invalid Beyond TV file: {}. Clearing any valid commercial breaks found.",
-              __FUNCTION__, CURL::GetRedacted(beyondTVFilename));
+    CLog::LogF(LOGERROR, "Invalid Beyond TV file: {}. Clearing any valid commercial breaks found.",
+               CURL::GetRedacted(beyondTVFilename));
     Clear();
     return false;
   }
@@ -552,8 +547,8 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
   }
   else
   {
-    CLog::Log(LOGDEBUG, "{} - No commercial breaks found in Beyond TV file: {}", __FUNCTION__,
-              CURL::GetRedacted(beyondTVFilename));
+    CLog::LogF(LOGDEBUG, "No commercial breaks found in Beyond TV file: {}",
+               CURL::GetRedacted(beyondTVFilename));
     return false;
   }
 }
@@ -570,29 +565,29 @@ bool CEdl::ReadPvr(const CFileItem &fileItem)
       case Action::COMM_BREAK:
         if (AddEdit(edit))
         {
-          CLog::Log(LOGDEBUG, "{} - Added break [{} - {}] found in PVR item for: {}.", __FUNCTION__,
-                    MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-                    CURL::GetRedacted(fileItem.GetDynPath()));
+          CLog::LogF(LOGDEBUG, "Added break [{} - {}] found in PVR item for: {}.",
+                     MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+                     CURL::GetRedacted(fileItem.GetDynPath()));
         }
         else
         {
-          CLog::Log(LOGERROR,
-                    "{} - Invalid break [{} - {}] found in PVR item for: {}. Continuing anyway.",
-                    __FUNCTION__, MillisecondsToTimeString(edit.start),
-                    MillisecondsToTimeString(edit.end), CURL::GetRedacted(fileItem.GetDynPath()));
+          CLog::LogF(LOGERROR,
+                     "Invalid break [{} - {}] found in PVR item for: {}. Continuing anyway.",
+                     MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+                     CURL::GetRedacted(fileItem.GetDynPath()));
         }
         break;
 
       case Action::SCENE:
         if (!AddSceneMarker(edit.end))
         {
-          CLog::Log(LOGWARNING, "{} - Error adding scene marker for PVR item", __FUNCTION__);
+          CLog::LogF(LOGWARNING, "Error adding scene marker for PVR item");
         }
         break;
 
       default:
-        CLog::Log(LOGINFO, "{} - Ignoring entry of unknown edit action: {}", __FUNCTION__,
-                  static_cast<int>(edit.action));
+        CLog::LogF(LOGINFO, "Ignoring entry of unknown edit action: {}",
+                   static_cast<int>(edit.action));
         break;
     }
   }
@@ -607,34 +602,32 @@ bool CEdl::AddEdit(const Edit& newEdit)
   if (edit.action != Action::CUT && edit.action != Action::MUTE &&
       edit.action != Action::COMM_BREAK)
   {
-    CLog::Log(LOGERROR,
-              "{} - Not an Action::CUT, Action::MUTE, or Action::COMM_BREAK! [{} - {}], {}",
-              __FUNCTION__, MillisecondsToTimeString(edit.start),
-              MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
+    CLog::LogF(LOGERROR, "Not an Action::CUT, Action::MUTE, or Action::COMM_BREAK! [{} - {}], {}",
+               MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+               static_cast<int>(edit.action));
     return false;
   }
 
   if (edit.start < 0)
   {
-    CLog::Log(LOGERROR, "{} - Before start! [{} - {}], {}", __FUNCTION__,
-              MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-              static_cast<int>(edit.action));
+    CLog::LogF(LOGERROR, "Before start! [{} - {}], {}", MillisecondsToTimeString(edit.start),
+               MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
     return false;
   }
 
   if (edit.start >= edit.end)
   {
-    CLog::Log(LOGERROR, "{} - Times are around the wrong way or the same! [{} - {}], {}",
-              __FUNCTION__, MillisecondsToTimeString(edit.start),
-              MillisecondsToTimeString(edit.end), static_cast<int>(edit.action));
+    CLog::LogF(LOGERROR, "Times are around the wrong way or the same! [{} - {}], {}",
+               MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+               static_cast<int>(edit.action));
     return false;
   }
 
   if (InEdit(edit.start) || InEdit(edit.end))
   {
-    CLog::Log(LOGERROR, "{} - Start or end is in an existing edit! [{} - {}], {}", __FUNCTION__,
-              MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-              static_cast<int>(edit.action));
+    CLog::LogF(LOGERROR, "Start or end is in an existing edit! [{} - {}], {}",
+               MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+               static_cast<int>(edit.action));
     return false;
   }
 
@@ -642,9 +635,9 @@ bool CEdl::AddEdit(const Edit& newEdit)
   {
     if (edit.start < m_vecEdits[i].start && edit.end > m_vecEdits[i].end)
     {
-      CLog::Log(LOGERROR, "{} - Edit surrounds an existing edit! [{} - {}], {}", __FUNCTION__,
-                MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-                static_cast<int>(edit.action));
+      CLog::LogF(LOGERROR, "Edit surrounds an existing edit! [{} - {}], {}",
+                 MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+                 static_cast<int>(edit.action));
       return false;
     }
   }
@@ -680,9 +673,9 @@ bool CEdl::AddEdit(const Edit& newEdit)
    */
   if (m_vecEdits.empty() || edit.start > m_vecEdits.back().start)
   {
-    CLog::Log(LOGDEBUG, "{} - Pushing new edit to back [{} - {}], {}", __FUNCTION__,
-              MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-              static_cast<int>(edit.action));
+    CLog::LogF(LOGDEBUG, "Pushing new edit to back [{} - {}], {}",
+               MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+               static_cast<int>(edit.action));
     m_vecEdits.emplace_back(edit);
   }
   else
@@ -692,9 +685,9 @@ bool CEdl::AddEdit(const Edit& newEdit)
     {
       if (edit.start < pCurrentEdit->start)
       {
-        CLog::Log(LOGDEBUG, "{} - Inserting new edit [{} - {}], {}", __FUNCTION__,
-                  MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
-                  static_cast<int>(edit.action));
+        CLog::LogF(LOGDEBUG, "Inserting new edit [{} - {}], {}",
+                   MillisecondsToTimeString(edit.start), MillisecondsToTimeString(edit.end),
+                   static_cast<int>(edit.action));
         m_vecEdits.insert(pCurrentEdit, edit);
         break;
       }
@@ -714,8 +707,7 @@ bool CEdl::AddSceneMarker(const int iSceneMarker)
   if (InEdit(iSceneMarker, &edit) && edit.action == Action::CUT) // Only works for current cuts.
     return false;
 
-  CLog::Log(LOGDEBUG, "{} - Inserting new scene marker: {}", __FUNCTION__,
-            MillisecondsToTimeString(iSceneMarker));
+  CLog::LogF(LOGDEBUG, "Inserting new scene marker: {}", MillisecondsToTimeString(iSceneMarker));
   m_vecSceneMarkers.push_back(iSceneMarker); // Unsorted
 
   return true;
@@ -946,9 +938,9 @@ void CEdl::MergeShortCommBreaks()
   if (!m_vecEdits.empty() && m_vecEdits[0].action == Action::COMM_BREAK &&
       (m_vecEdits[0].end - m_vecEdits[0].start) < 5 * 1000) // 5 seconds
   {
-    CLog::Log(LOGDEBUG, "{} - Removing short commercial break at start [{} - {}]. <5 seconds",
-              __FUNCTION__, MillisecondsToTimeString(m_vecEdits[0].start),
-              MillisecondsToTimeString(m_vecEdits[0].end));
+    CLog::LogF(LOGDEBUG, "Removing short commercial break at start [{} - {}]. <5 seconds",
+               MillisecondsToTimeString(m_vecEdits[0].start),
+               MillisecondsToTimeString(m_vecEdits[0].end));
     m_vecEdits.erase(m_vecEdits.begin());
   }
 
@@ -969,13 +961,13 @@ void CEdl::MergeShortCommBreaks()
         commBreak.start = m_vecEdits[i].start;
         commBreak.end = m_vecEdits[i + 1].end;
 
-        CLog::Log(
-            LOGDEBUG, "{} - Consolidating commercial break [{} - {}] and [{} - {}] to: [{} - {}]",
-            __FUNCTION__, MillisecondsToTimeString(m_vecEdits[i].start),
-            MillisecondsToTimeString(m_vecEdits[i].end),
-            MillisecondsToTimeString(m_vecEdits[i + 1].start),
-            MillisecondsToTimeString(m_vecEdits[i + 1].end),
-            MillisecondsToTimeString(commBreak.start), MillisecondsToTimeString(commBreak.end));
+        CLog::LogF(LOGDEBUG, "Consolidating commercial break [{} - {}] and [{} - {}] to: [{} - {}]",
+                   MillisecondsToTimeString(m_vecEdits[i].start),
+                   MillisecondsToTimeString(m_vecEdits[i].end),
+                   MillisecondsToTimeString(m_vecEdits[i + 1].start),
+                   MillisecondsToTimeString(m_vecEdits[i + 1].end),
+                   MillisecondsToTimeString(commBreak.start),
+                   MillisecondsToTimeString(commBreak.end));
 
         /*
          * Erase old edits and insert the new merged one.
@@ -996,9 +988,9 @@ void CEdl::MergeShortCommBreaks()
     if (!m_vecEdits.empty() && m_vecEdits[0].action == Action::COMM_BREAK &&
         m_vecEdits[0].start < advancedSettings->m_iEdlMaxStartGap * 1000)
     {
-      CLog::Log(LOGDEBUG, "{} - Expanding first commercial break back to start [{} - {}].",
-                __FUNCTION__, MillisecondsToTimeString(m_vecEdits[0].start),
-                MillisecondsToTimeString(m_vecEdits[0].end));
+      CLog::LogF(LOGDEBUG, "Expanding first commercial break back to start [{} - {}].",
+                 MillisecondsToTimeString(m_vecEdits[0].start),
+                 MillisecondsToTimeString(m_vecEdits[0].end));
       m_vecEdits[0].start = 0;
     }
 
@@ -1011,11 +1003,11 @@ void CEdl::MergeShortCommBreaks()
           (m_vecEdits[i].end - m_vecEdits[i].start) <
               advancedSettings->m_iEdlMinCommBreakLength * 1000)
       {
-        CLog::Log(LOGDEBUG,
-                  "{} - Removing short commercial break [{} - {}]. Minimum length: {} seconds",
-                  __FUNCTION__, MillisecondsToTimeString(m_vecEdits[i].start),
-                  MillisecondsToTimeString(m_vecEdits[i].end),
-                  advancedSettings->m_iEdlMinCommBreakLength);
+        CLog::LogF(LOGDEBUG,
+                   "Removing short commercial break [{} - {}]. Minimum length: {} seconds",
+                   MillisecondsToTimeString(m_vecEdits[i].start),
+                   MillisecondsToTimeString(m_vecEdits[i].end),
+                   advancedSettings->m_iEdlMinCommBreakLength);
         m_vecEdits.erase(m_vecEdits.begin() + i);
 
         i--;

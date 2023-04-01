@@ -319,10 +319,10 @@ bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
 
       if(nfsRet != 0)
       {
-        CLog::Log(LOGERROR, "NFS: Failed to mount nfs share: {} ({})", exportPath,
-                  nfs_get_error(m_pNfsContext));
-        destroyContext(url.GetHostName() + exportPath);
-        return false;
+          CLog::Log(LOGERROR, "NFS: Failed to mount nfs share: {} ({})", exportPath,
+                    nfs_get_error(m_pNfsContext));
+          destroyContext(url.GetHostName() + exportPath);
+          return false;
       }
       CLog::Log(LOGDEBUG, "NFS: Connected to server {} and export {}", url.GetHostName(),
                 exportPath);
@@ -726,8 +726,8 @@ ssize_t CNFSFile::Read(void *lpBuf, size_t uiBufSize)
 
   //something went wrong ...
   if (numberOfBytesRead < 0)
-    CLog::Log(LOGERROR, "{} - Error( {}, {} )", __FUNCTION__, (int64_t)numberOfBytesRead,
-              nfs_get_error(m_pNfsContext));
+    CLog::LogF(LOGERROR, "Error( {}, {} )", (int64_t)numberOfBytesRead,
+               nfs_get_error(m_pNfsContext));
 
   return numberOfBytesRead;
 }
@@ -744,8 +744,8 @@ int64_t CNFSFile::Seek(int64_t iFilePosition, int iWhence)
   ret = nfs_lseek(m_pNfsContext, m_pFileHandle, iFilePosition, iWhence, &offset);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "{} - Error( seekpos: {}, whence: {}, fsize: {}, {})", __FUNCTION__,
-              iFilePosition, iWhence, m_fileSize, nfs_get_error(m_pNfsContext));
+    CLog::LogF(LOGERROR, "Error( seekpos: {}, whence: {}, fsize: {}, {})", iFilePosition, iWhence,
+               m_fileSize, nfs_get_error(m_pNfsContext));
     return -1;
   }
   return (int64_t)offset;
@@ -762,8 +762,8 @@ int CNFSFile::Truncate(int64_t iSize)
   ret = nfs_ftruncate(m_pNfsContext, m_pFileHandle, iSize);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "{} - Error( ftruncate: {}, fsize: {}, {})", __FUNCTION__, iSize,
-              m_fileSize, nfs_get_error(m_pNfsContext));
+    CLog::LogF(LOGERROR, "Error( ftruncate: {}, fsize: {}, {})", iSize, m_fileSize,
+               nfs_get_error(m_pNfsContext));
     return -1;
   }
   return ret;
@@ -857,8 +857,7 @@ bool CNFSFile::Delete(const CURL& url)
 
   if(ret != 0)
   {
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__,
-              nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::LogF(LOGERROR, "Error( {} )", nfs_get_error(gNfsConnection.GetNfsContext()));
   }
   return (ret == 0);
 }
@@ -880,8 +879,7 @@ bool CNFSFile::Rename(const CURL& url, const CURL& urlnew)
 
   if(ret != 0)
   {
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__,
-              nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::LogF(LOGERROR, "Error( {} )", nfs_get_error(gNfsConnection.GetNfsContext()));
   }
   return (ret == 0);
 }

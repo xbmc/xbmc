@@ -71,11 +71,11 @@ bool CTVOSPowerSyscall::PumpPowerEvents(IPowerEventsCallback* callback)
   {
     case SUSPENDED:
       callback->OnSleep();
-      CLog::Log(LOGDEBUG, "{}: OnSleep called", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "OnSleep called");
       break;
     case RESUMED:
       callback->OnWake();
-      CLog::Log(LOGDEBUG, "{}: OnWake called", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "OnWake called");
       break;
     default:
       return false;

@@ -125,7 +125,7 @@ namespace XBMCAddon
       PyObject* main_module = PyImport_AddModule("__main__");
       if (!main_module)
       {
-        CLog::Log(LOGDEBUG, "PythonLanguageHook::{}: __main__ returns null", __FUNCTION__);
+        CLog::LogF(LOGDEBUG, "PythonLanguageHook: __main__ returns null");
         return "";
       }
       PyObject* global_dict = PyModule_GetDict(main_module);
@@ -145,7 +145,7 @@ namespace XBMCAddon
       PyObject* main_module = PyImport_AddModule("__main__");
       if (!main_module)
       {
-        CLog::Log(LOGDEBUG, "PythonLanguageHook::{}: __main__ returns null", __FUNCTION__);
+        CLog::LogF(LOGDEBUG, "PythonLanguageHook: __main__ returns null");
         return "";
       }
       PyObject* global_dict = PyModule_GetDict(main_module);
@@ -166,7 +166,7 @@ namespace XBMCAddon
       PyObject* main_module = PyImport_AddModule("__main__");
       if (!main_module)
       {
-        CLog::Log(LOGDEBUG, "PythonLanguageHook::{}: __main__ returns null", __FUNCTION__);
+        CLog::LogF(LOGDEBUG, "PythonLanguageHook: __main__ returns null");
         return -1;
       }
       PyObject* global_dict = PyModule_GetDict(main_module);

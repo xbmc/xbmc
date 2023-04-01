@@ -258,8 +258,7 @@ void CGUIDialogContentSettings::OnSettingAction(const std::shared_ptr<const CSet
       }
       else
       {
-        CLog::Log(LOGERROR, "{} - Could not get settings for addon: {}", __FUNCTION__,
-                  selectedAddonId);
+        CLog::LogF(LOGERROR, "Could not get settings for addon: {}", selectedAddonId);
       }
     }
   }

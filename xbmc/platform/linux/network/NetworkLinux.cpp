@@ -99,7 +99,7 @@ bool CNetworkInterfaceLinux::GetHostMacAddress(unsigned long host_ip, std::strin
 
   if (result != 0)
   {
-    //  CLog::Log(LOGERROR, "{} - GetHostMacAddress/ioctl failed with errno ({})", __FUNCTION__, errno);
+    //  CLog::LogF(LOGERROR, "GetHostMacAddress/ioctl failed with errno ({})", errno);
     return false;
   }
 

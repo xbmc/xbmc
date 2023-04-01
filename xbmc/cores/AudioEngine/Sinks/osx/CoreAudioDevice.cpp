@@ -895,9 +895,9 @@ void CCoreAudioDevice::RegisterDeviceChangedCB(bool bRegister, AudioObjectProper
         ret = AudioObjectRemovePropertyListener(kAudioObjectSystemObject, &inAdr, callback, ref);
 
     if (ret != noErr)
-      CLog::Log(LOGERROR,
-                "CCoreAudioAE::Deinitialize - error {} a listener callback for device changes!",
-                bRegister ? "attaching" : "removing");
+        CLog::Log(LOGERROR,
+                  "CCoreAudioAE::Deinitialize - error {} a listener callback for device changes!",
+                  bRegister ? "attaching" : "removing");
 }
 
 void CCoreAudioDevice::RegisterDefaultOutputDeviceChangedCB(bool bRegister, AudioObjectPropertyListenerProc callback, void *ref)
@@ -928,10 +928,10 @@ void CCoreAudioDevice::RegisterDefaultOutputDeviceChangedCB(bool bRegister, Audi
     }
 
     if (ret != noErr)
-      CLog::Log(LOGERROR,
-                "CCoreAudioAE::Deinitialize - error {} a listener callback for default output "
-                "device changes!",
-                bRegister ? "attaching" : "removing");
+        CLog::Log(LOGERROR,
+                  "CCoreAudioAE::Deinitialize - error {} a listener callback for default output "
+                  "device changes!",
+                  bRegister ? "attaching" : "removing");
     else
         registered = bRegister ? 1 : 0;
 }

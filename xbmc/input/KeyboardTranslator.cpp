@@ -35,7 +35,7 @@ uint32_t CKeyboardTranslator::TranslateButton(const TiXmlElement* pButton)
       char* endptr;
       long int id = strtol(str, &endptr, 0);
       if (endptr - str != (int)strlen(str) || id <= 0 || id > 0x00FFFFFF)
-        CLog::Log(LOGDEBUG, "{} - invalid key id {}", __FUNCTION__, strID);
+        CLog::LogF(LOGDEBUG, "invalid key id {}", strID);
       else
         button_id = (uint32_t)id;
     }

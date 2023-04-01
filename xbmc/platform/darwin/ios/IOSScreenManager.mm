@@ -167,7 +167,6 @@ static CEvent screenChangeEvent;
   NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:mode, @"screenMode",
                                                                   idx,  @"screenIdx", nil];
 
-
   CLog::Log(LOGINFO, "Changing screen to {} with {:f} x {:f}", screenIdx, [mode size].width,
             [mode size].height);
   //ensure that the screen change is done in the mainthread

@@ -93,7 +93,7 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
     m_time = 0;
     m_playbackStartTime = std::chrono::steady_clock::now();
     m_launchFilename = file.GetDynPath();
-    CLog::Log(LOGINFO, "{}: {}", __FUNCTION__, m_launchFilename);
+    CLog::LogF(LOGINFO, "{}", m_launchFilename);
     Create();
 
     return true;
@@ -101,7 +101,7 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
   catch(...)
   {
     m_bIsPlaying = false;
-    CLog::Log(LOGERROR, "{} - Exception thrown", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Exception thrown");
     return false;
   }
 }
@@ -173,7 +173,7 @@ void CExternalPlayer::Process()
 
       if (!regExp.RegComp(strMatch.c_str()))
       { // invalid regexp - complain in logs
-        CLog::Log(LOGERROR, "{}: Invalid RegExp:'{}'", __FUNCTION__, strMatch);
+        CLog::LogF(LOGERROR, "Invalid RegExp:'{}'", strMatch);
         continue;
       }
 
@@ -184,7 +184,7 @@ void CExternalPlayer::Process()
 
         if (!regExp.RegComp(strPat.c_str()))
         { // invalid regexp - complain in logs
-          CLog::Log(LOGERROR, "{}: Invalid RegExp:'{}'", __FUNCTION__, strPat);
+          CLog::LogF(LOGERROR, "Invalid RegExp:'{}'", strPat);
           continue;
         }
 
@@ -200,18 +200,18 @@ void CExternalPlayer::Process()
           if (!bGlobal)
             break;
         }
-        CLog::Log(LOGINFO, "{}: File matched:'{}' (RE='{}',Rep='{}') new filename:'{}'.",
-                  __FUNCTION__, strMatch, strPat, strRep, mainFile);
+        CLog::LogF(LOGINFO, "File matched:'{}' (RE='{}',Rep='{}') new filename:'{}'.", strMatch,
+                   strPat, strRep, mainFile);
         if (bStop) break;
       }
     }
   }
 
-  CLog::Log(LOGINFO, "{}: Player : {}", __FUNCTION__, m_filename);
-  CLog::Log(LOGINFO, "{}: File   : {}", __FUNCTION__, mainFile);
-  CLog::Log(LOGINFO, "{}: Content: {}", __FUNCTION__, archiveContent);
-  CLog::Log(LOGINFO, "{}: Args   : {}", __FUNCTION__, m_args);
-  CLog::Log(LOGINFO, "{}: Start", __FUNCTION__);
+  CLog::LogF(LOGINFO, "Player : {}", m_filename);
+  CLog::LogF(LOGINFO, "File   : {}", mainFile);
+  CLog::LogF(LOGINFO, "Content: {}", archiveContent);
+  CLog::LogF(LOGINFO, "Args   : {}", m_args);
+  CLog::LogF(LOGINFO, "Start");
 
   // make sure we surround the arguments with quotes where necessary
   std::string strFName;
@@ -268,7 +268,7 @@ void CExternalPlayer::Process()
         y = GetSystemMetrics(SM_CYSCREEN) / 2;
         break;
     }
-    CLog::Log(LOGINFO, "{}: Warping cursor to ({},{})", __FUNCTION__, x, y);
+    CLog::LogF(LOGINFO, "Warping cursor to ({},{})", x, y);
     SetCursorPos(x,y);
   }
 
@@ -277,17 +277,17 @@ void CExternalPlayer::Process()
 
   if (m_hidexbmc && !m_islauncher)
   {
-    CLog::Log(LOGINFO, "{}: Hiding {} window", __FUNCTION__, CCompileInfo::GetAppName());
+    CLog::LogF(LOGINFO, "Hiding {} window", CCompileInfo::GetAppName());
     CServiceBroker::GetWinSystem()->Hide();
   }
 #if defined(TARGET_WINDOWS_DESKTOP)
   else if (currentStyle & WS_EX_TOPMOST)
   {
-    CLog::Log(LOGINFO, "{}: Lowering {} window", __FUNCTION__, CCompileInfo::GetAppName());
+    CLog::LogF(LOGINFO, "Lowering {} window", CCompileInfo::GetAppName());
     SetWindowPos(g_hWnd, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOREDRAW | SWP_ASYNCWINDOWPOS);
   }
 
-  CLog::Log(LOGDEBUG, "{}: Unlocking foreground window", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "Unlocking foreground window");
   LockSetForegroundWindow(LSFW_UNLOCK);
 #endif
 
@@ -304,8 +304,7 @@ void CExternalPlayer::Process()
   }
   if (timer.IsTimePast())
   {
-    CLog::Log(LOGERROR, "{}: AudioEngine did not suspend before launching external player",
-              __FUNCTION__);
+    CLog::LogF(LOGERROR, "AudioEngine did not suspend before launching external player");
   }
 
   m_callback.OnPlayBackStarted(m_file);
@@ -326,8 +325,8 @@ void CExternalPlayer::Process()
   {
     if (m_hidexbmc)
     {
-      CLog::Log(LOGINFO, "{}: {} cannot stay hidden for a launcher process", __FUNCTION__,
-                CCompileInfo::GetAppName());
+      CLog::LogF(LOGINFO, "{} cannot stay hidden for a launcher process",
+                 CCompileInfo::GetAppName());
       CServiceBroker::GetWinSystem()->Show(false);
     }
 
@@ -344,21 +343,21 @@ void CExternalPlayer::Process()
   }
 
   m_bIsPlaying = false;
-  CLog::Log(LOGINFO, "{}: Stop", __FUNCTION__);
+  CLog::LogF(LOGINFO, "Stop");
 
 #if defined(TARGET_WINDOWS_DESKTOP)
   CServiceBroker::GetWinSystem()->Restore();
 
   if (currentStyle & WS_EX_TOPMOST)
   {
-    CLog::Log(LOGINFO, "{}: Showing {} window TOPMOST", __FUNCTION__, CCompileInfo::GetAppName());
+    CLog::LogF(LOGINFO, "Showing {} window TOPMOST", CCompileInfo::GetAppName());
     SetWindowPos(g_hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW | SWP_ASYNCWINDOWPOS);
     SetForegroundWindow(g_hWnd);
   }
   else
 #endif
   {
-    CLog::Log(LOGINFO, "{}: Showing {} window", __FUNCTION__, CCompileInfo::GetAppName());
+    CLog::LogF(LOGINFO, "Showing {} window", CCompileInfo::GetAppName());
     CServiceBroker::GetWinSystem()->Show();
   }
 
@@ -372,7 +371,7 @@ void CExternalPlayer::Process()
       m_xPos = (m_ptCursorpos.x);
       m_yPos = (m_ptCursorpos.y);
     }
-    CLog::Log(LOGINFO, "{}: Restoring cursor to ({},{})", __FUNCTION__, m_xPos, m_yPos);
+    CLog::LogF(LOGINFO, "Restoring cursor to ({},{})", m_xPos, m_yPos);
     SetCursorPos(m_xPos,m_yPos);
   }
 #endif
@@ -386,8 +385,7 @@ void CExternalPlayer::Process()
   /* Resume AE processing of XBMC native audio */
   if (!CServiceBroker::GetActiveAE()->Resume())
   {
-    CLog::Log(LOGFATAL, "{}: Failed to restart AudioEngine after return from external player",
-              __FUNCTION__);
+    CLog::LogF(LOGFATAL, "Failed to restart AudioEngine after return from external player");
   }
 
   // We don't want to come back to an active screensaver
@@ -405,7 +403,7 @@ void CExternalPlayer::Process()
 #if defined(TARGET_WINDOWS_DESKTOP)
 bool CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches)
 {
-  CLog::Log(LOGINFO, "{}: {} {}", __FUNCTION__, strPath, strSwitches);
+  CLog::LogF(LOGINFO, "{} {}", strPath, strSwitches);
 
   STARTUPINFOW si = {};
   si.cb = sizeof(si);
@@ -425,7 +423,7 @@ bool CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
   if (ret == FALSE)
   {
     DWORD lastError = GetLastError();
-    CLog::Log(LOGINFO, "{} - Failure: {}", __FUNCTION__, lastError);
+    CLog::LogF(LOGINFO, "Failure: {}", lastError);
   }
   else
   {
@@ -434,16 +432,16 @@ bool CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
     switch (res)
     {
       case WAIT_OBJECT_0:
-        CLog::Log(LOGINFO, "{}: WAIT_OBJECT_0", __FUNCTION__);
+        CLog::LogF(LOGINFO, "WAIT_OBJECT_0");
         break;
       case WAIT_ABANDONED:
-        CLog::Log(LOGINFO, "{}: WAIT_ABANDONED", __FUNCTION__);
+        CLog::LogF(LOGINFO, "WAIT_ABANDONED");
         break;
       case WAIT_TIMEOUT:
-        CLog::Log(LOGINFO, "{}: WAIT_TIMEOUT", __FUNCTION__);
+        CLog::LogF(LOGINFO, "WAIT_TIMEOUT");
         break;
       case WAIT_FAILED:
-        CLog::Log(LOGINFO, "{}: WAIT_FAILED ({})", __FUNCTION__, GetLastError());
+        CLog::LogF(LOGINFO, "WAIT_FAILED ({})", GetLastError());
         ret = FALSE;
         break;
     }
@@ -460,12 +458,12 @@ bool CExternalPlayer::ExecuteAppW32(const char* strPath, const char* strSwitches
 #if !defined(TARGET_ANDROID) && !defined(TARGET_DARWIN_EMBEDDED) && defined(TARGET_POSIX)
 bool CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 {
-  CLog::Log(LOGINFO, "{}: {}", __FUNCTION__, strSwitches);
+  CLog::LogF(LOGINFO, "{}", strSwitches);
 
   int ret = system(strSwitches);
   if (ret != 0)
   {
-    CLog::Log(LOGINFO, "{}: Failure: {}", __FUNCTION__, ret);
+    CLog::LogF(LOGINFO, "Failure: {}", ret);
   }
 
   return (ret == 0);
@@ -475,13 +473,13 @@ bool CExternalPlayer::ExecuteAppLinux(const char* strSwitches)
 #if defined(TARGET_ANDROID)
 bool CExternalPlayer::ExecuteAppAndroid(const char* strSwitches,const char* strPath)
 {
-  CLog::Log(LOGINFO, "{}: {}", __FUNCTION__, strSwitches);
+  CLog::LogF(LOGINFO, "{}", strSwitches);
 
   bool ret = CXBMCApp::StartActivity(strSwitches, "android.intent.action.VIEW", "video/*", strPath);
 
   if (!ret)
   {
-    CLog::Log(LOGINFO, "{}: Failure", __FUNCTION__);
+    CLog::LogF(LOGINFO, "Failure");
   }
 
   return (ret == 0);

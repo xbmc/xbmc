@@ -31,15 +31,14 @@ static int open_restricted(const char *path, int flags, void __attribute__((unus
 
   if (fd < 0)
   {
-    CLog::Log(LOGERROR, "{} - failed to open {} ({})", __FUNCTION__, path, strerror(errno));
+    CLog::LogF(LOGERROR, "failed to open {} ({})", path, strerror(errno));
     return -errno;
   }
 
   auto ret = ioctl(fd, EVIOCGRAB, (void*)1);
   if (ret < 0)
   {
-    CLog::Log(LOGDEBUG, "{} - grab requested, but failed for {} ({})", __FUNCTION__, path,
-              strerror(errno));
+    CLog::LogF(LOGDEBUG, "grab requested, but failed for {} ({})", path, strerror(errno));
   }
 
   return fd;
@@ -72,15 +71,14 @@ CLibInputHandler::CLibInputHandler() : CThread("libinput")
   m_udev = udev_new();
   if (!m_udev)
   {
-    CLog::Log(LOGERROR, "CLibInputHandler::{} - failed to get udev context for libinput",
-              __FUNCTION__);
+    CLog::LogF(LOGERROR, "CLibInputHandler: failed to get udev context for libinput");
     return;
   }
 
   m_li = libinput_udev_create_context(&m_interface, nullptr, m_udev);
   if (!m_li)
   {
-    CLog::Log(LOGERROR, "CLibInputHandler::{} - failed to get libinput context", __FUNCTION__);
+    CLog::LogF(LOGERROR, "CLibInputHandler: failed to get libinput context");
     return;
   }
 
@@ -89,7 +87,7 @@ CLibInputHandler::CLibInputHandler() : CThread("libinput")
 
   auto ret = libinput_udev_assign_seat(m_li, "seat0");
   if (ret < 0)
-    CLog::Log(LOGERROR, "CLibInputHandler::{} - failed to assign seat", __FUNCTION__);
+    CLog::LogF(LOGERROR, "CLibInputHandler: failed to assign seat");
 
   m_liFd = libinput_get_fd(m_li);
 
@@ -123,7 +121,7 @@ void CLibInputHandler::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     {
       auto ret = libinput_resume(m_li);
       if (ret < 0)
-        CLog::Log(LOGERROR, "CLibInputHandler::{} - failed to resume monitoring", __FUNCTION__);
+        CLog::LogF(LOGERROR, "CLibInputHandler: failed to resume monitoring");
     }
   }
 }
@@ -144,8 +142,8 @@ void CLibInputHandler::Process()
   int epollFd = epoll_create1(EPOLL_CLOEXEC);
   if (epollFd < 0)
   {
-    CLog::Log(LOGERROR, "CLibInputHandler::{} - failed to create epoll file descriptor: {}",
-              __FUNCTION__, strerror(-errno));
+    CLog::LogF(LOGERROR, "CLibInputHandler: failed to create epoll file descriptor: {}",
+               strerror(-errno));
     return;
   }
 
@@ -156,8 +154,8 @@ void CLibInputHandler::Process()
   auto ret = epoll_ctl(epollFd, EPOLL_CTL_ADD, m_liFd, &event);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CLibInputHandler::{} - failed to add file descriptor to epoll: {}",
-              __FUNCTION__, strerror(-errno));
+    CLog::LogF(LOGERROR, "CLibInputHandler: failed to add file descriptor to epoll: {}",
+               strerror(-errno));
     close(epollFd);
     return;
   }
@@ -169,8 +167,7 @@ void CLibInputHandler::Process()
     ret = libinput_dispatch(m_li);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR, "CLibInputHandler::{} - libinput_dispatch failed: {}", __FUNCTION__,
-                strerror(-errno));
+      CLog::LogF(LOGERROR, "CLibInputHandler: libinput_dispatch failed: {}", strerror(-errno));
       close(epollFd);
       return;
     }
@@ -186,8 +183,8 @@ void CLibInputHandler::Process()
   ret = close(epollFd);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CLibInputHandler::{} - failed to close epoll file descriptor: {}",
-              __FUNCTION__, strerror(-errno));
+    CLog::LogF(LOGERROR, "CLibInputHandler: failed to close epoll file descriptor: {}",
+               strerror(-errno));
     return;
   }
 }
@@ -249,22 +246,19 @@ void CLibInputHandler::DeviceAdded(libinput_device *dev)
 
   if (libinput_device_has_capability(dev, LIBINPUT_DEVICE_CAP_TOUCH))
   {
-    CLog::Log(LOGDEBUG, "CLibInputHandler::{} - touch type device added: {} ({})", __FUNCTION__,
-              name, sysname);
+    CLog::LogF(LOGDEBUG, "CLibInputHandler: touch type device added: {} ({})", name, sysname);
     m_devices.push_back(libinput_device_ref(dev));
   }
 
   if (libinput_device_has_capability(dev, LIBINPUT_DEVICE_CAP_POINTER))
   {
-    CLog::Log(LOGDEBUG, "CLibInputHandler::{} - pointer type device added: {} ({})", __FUNCTION__,
-              name, sysname);
+    CLog::LogF(LOGDEBUG, "CLibInputHandler: pointer type device added: {} ({})", name, sysname);
     m_devices.push_back(libinput_device_ref(dev));
   }
 
   if (libinput_device_has_capability(dev, LIBINPUT_DEVICE_CAP_KEYBOARD))
   {
-    CLog::Log(LOGDEBUG, "CLibInputHandler::{} - keyboard type device added: {} ({})", __FUNCTION__,
-              name, sysname);
+    CLog::LogF(LOGDEBUG, "CLibInputHandler: keyboard type device added: {} ({})", name, sysname);
     m_devices.push_back(libinput_device_ref(dev));
     m_keyboard->GetRepeat(dev);
   }
@@ -277,24 +271,21 @@ void CLibInputHandler::DeviceRemoved(libinput_device *dev)
 
   if (libinput_device_has_capability(dev, LIBINPUT_DEVICE_CAP_TOUCH))
   {
-    CLog::Log(LOGDEBUG, "CLibInputHandler::{} - touch type device removed: {} ({})", __FUNCTION__,
-              name, sysname);
+    CLog::LogF(LOGDEBUG, "CLibInputHandler: touch type device removed: {} ({})", name, sysname);
     auto device = std::find(m_devices.begin(), m_devices.end(), libinput_device_unref(dev));
     m_devices.erase(device);
   }
 
   if (libinput_device_has_capability(dev, LIBINPUT_DEVICE_CAP_POINTER))
   {
-    CLog::Log(LOGDEBUG, "CLibInputHandler::{} - pointer type device removed: {} ({})", __FUNCTION__,
-              name, sysname);
+    CLog::LogF(LOGDEBUG, "CLibInputHandler: pointer type device removed: {} ({})", name, sysname);
     auto device = std::find(m_devices.begin(), m_devices.end(), libinput_device_unref(dev));
     m_devices.erase(device);
   }
 
   if (libinput_device_has_capability(dev, LIBINPUT_DEVICE_CAP_KEYBOARD))
   {
-    CLog::Log(LOGDEBUG, "CLibInputHandler::{} - keyboard type device removed: {} ({})",
-              __FUNCTION__, name, sysname);
+    CLog::LogF(LOGDEBUG, "CLibInputHandler: keyboard type device removed: {} ({})", name, sysname);
     auto device = std::find(m_devices.begin(), m_devices.end(), libinput_device_unref(dev));
     m_devices.erase(device);
   }

@@ -183,8 +183,8 @@ bool CPeripheral::Initialise(void)
 
   if (bReturn)
   {
-    CLog::Log(LOGDEBUG, "{} - initialised peripheral on '{}' with {} features and {} sub devices",
-              __FUNCTION__, m_strLocation, (int)m_features.size(), (int)m_subDevices.size());
+    CLog::LogF(LOGDEBUG, "initialised peripheral on '{}' with {} features and {} sub devices",
+               m_strLocation, (int)m_features.size(), (int)m_subDevices.size());
     m_bInitialised = true;
   }
 
@@ -220,7 +220,7 @@ void CPeripheral::AddSetting(const std::string& strKey, const SettingConstPtr& s
 {
   if (!setting)
   {
-    CLog::Log(LOGERROR, "{} - invalid setting", __FUNCTION__);
+    CLog::LogF(LOGERROR, "invalid setting");
     return;
   }
 

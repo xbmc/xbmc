@@ -530,7 +530,7 @@ int CSMBFile::Truncate(int64_t size)
   int iResult = smbc_ftruncate(m_fd, size);
 #endif
 */
-  CLog::Log(LOGWARNING, "{} - Warning(smbc_ftruncate called and not implemented)", __FUNCTION__);
+  CLog::LogF(LOGWARNING, "Warning(smbc_ftruncate called and not implemented)");
   return 0;
 }
 
@@ -560,14 +560,12 @@ ssize_t CSMBFile::Read(void *lpBuf, size_t uiBufSize)
 
   if (m_allowRetry && bytesRead < 0 && errno == EINVAL )
   {
-    CLog::Log(LOGERROR, "{} - Error( {}, {}, {} ) - Retrying", __FUNCTION__, bytesRead, errno,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "Error( {}, {}, {} ) - Retrying", bytesRead, errno, strerror(errno));
     bytesRead = smbc_read(m_fd, lpBuf, (int)uiBufSize);
   }
 
   if ( bytesRead < 0 )
-    CLog::Log(LOGERROR, "{} - Error( {}, {}, {} )", __FUNCTION__, bytesRead, errno,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "Error( {}, {}, {} )", bytesRead, errno, strerror(errno));
 
   return bytesRead;
 }
@@ -585,7 +583,7 @@ int64_t CSMBFile::Seek(int64_t iFilePosition, int iWhence)
 
   if ( pos < 0 )
   {
-    CLog::Log(LOGERROR, "{} - Error( {}, {}, {} )", __FUNCTION__, pos, errno, strerror(errno));
+    CLog::LogF(LOGERROR, "Error( {}, {}, {} )", pos, errno, strerror(errno));
     return -1;
   }
 
@@ -629,7 +627,7 @@ bool CSMBFile::Delete(const CURL& url)
   int result = smbc_unlink(strFile.c_str());
 
   if(result != 0)
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "Error( {} )", strerror(errno));
 
   return (result == 0);
 }
@@ -646,7 +644,7 @@ bool CSMBFile::Rename(const CURL& url, const CURL& urlnew)
   int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
 
   if(result != 0)
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__, strerror(errno));
+    CLog::LogF(LOGERROR, "Error( {} )", strerror(errno));
 
   return (result == 0);
 }

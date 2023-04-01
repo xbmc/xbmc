@@ -90,7 +90,7 @@ bool CWinSystemAndroid::InitWindowSystem()
 
 bool CWinSystemAndroid::DestroyWindowSystem()
 {
-  CLog::Log(LOGINFO, "CWinSystemAndroid::{}", __FUNCTION__);
+  CLog::LogF(LOGINFO, "CWinSystemAndroid");
 
   delete m_android;
   m_android = nullptr;
@@ -147,7 +147,7 @@ bool CWinSystemAndroid::CreateNewWindow(const std::string& name,
 
 bool CWinSystemAndroid::DestroyWindow()
 {
-  CLog::Log(LOGINFO, "CWinSystemAndroid::{}", __FUNCTION__);
+  CLog::LogF(LOGINFO, "CWinSystemAndroid");
   m_nativeWindow.reset();
   m_bWindowCreated = false;
   return true;
@@ -165,7 +165,7 @@ void CWinSystemAndroid::UpdateResolutions(bool bUpdateDesktopRes)
   std::vector<RESOLUTION_INFO> resolutions;
   if (!m_android->ProbeResolutions(resolutions) || resolutions.empty())
   {
-    CLog::Log(LOGWARNING, "CWinSystemAndroid::{} failed.", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "CWinSystemAndroid: failed.");
   }
 
   const RESOLUTION_INFO resWindow = CDisplaySettings::GetInstance().GetResolutionInfo(RES_WINDOW);

@@ -440,8 +440,8 @@ void CScraperParser::ParseNext(TiXmlElement* element)
           ParseExpression(strInput, m_param[iDest - 1],pReg,bAppend);
       }
       else
-        CLog::Log(LOGERROR,"CScraperParser::ParseNext: destination buffer "
-                           "out of bounds, skipping expression");
+        CLog::Log(LOGERROR, "CScraperParser::ParseNext: destination buffer "
+                            "out of bounds, skipping expression");
     }
     pReg = NextSiblingScraperElement(pReg);
   }
@@ -453,7 +453,7 @@ const std::string CScraperParser::Parse(const std::string& strTag,
   TiXmlElement* pChildElement = m_pRootElement->FirstChildElement(strTag.c_str());
   if(pChildElement == NULL)
   {
-    CLog::Log(LOGERROR, "{}: Could not find scraper function {}", __FUNCTION__, strTag);
+    CLog::LogF(LOGERROR, "Could not find scraper function {}", strTag);
     return "";
   }
   int iResult = 1; // default to param 1

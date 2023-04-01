@@ -353,11 +353,10 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
     if (iSize > 0)
     {
       strHTML = strBuffer;
-      CLog::Log(LOGDEBUG, "{}: Archive \"{}\" was unpacked in memory", __FUNCTION__, scrURL.m_url);
+      CLog::LogF(LOGDEBUG, "Archive \"{}\" was unpacked in memory", scrURL.m_url);
     }
     else
-      CLog::Log(LOGWARNING, "{}: \"{}\" looks like archive but cannot be unpacked", __FUNCTION__,
-                scrURL.m_url);
+      CLog::LogF(LOGWARNING, "\"{}\" looks like archive but cannot be unpacked", scrURL.m_url);
   }
 
   const auto reportedCharset = http.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET);
@@ -365,12 +364,10 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
   {
     std::string realHtmlCharset, converted;
     if (!CCharsetDetection::ConvertHtmlToUtf8(strHTML, converted, reportedCharset, realHtmlCharset))
-      CLog::Log(LOGWARNING,
-                "{}: Can't find precise charset for HTML \"{}\", using \"{}\" as fallback",
-                __FUNCTION__, scrURL.m_url, realHtmlCharset);
+      CLog::LogF(LOGWARNING, "Can't find precise charset for HTML \"{}\", using \"{}\" as fallback",
+                 scrURL.m_url, realHtmlCharset);
     else
-      CLog::Log(LOGDEBUG, "{}: Using \"{}\" charset for HTML \"{}\"", __FUNCTION__, realHtmlCharset,
-                scrURL.m_url);
+      CLog::LogF(LOGDEBUG, "Using \"{}\" charset for HTML \"{}\"", realHtmlCharset, scrURL.m_url);
 
     strHTML = converted;
   }
@@ -382,8 +379,7 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
     const auto realXmlCharset = xmlDoc.GetUsedCharset();
     if (!realXmlCharset.empty())
     {
-      CLog::Log(LOGDEBUG, "{}: Using \"{}\" charset for XML \"{}\"", __FUNCTION__, realXmlCharset,
-                scrURL.m_url);
+      CLog::LogF(LOGDEBUG, "Using \"{}\" charset for XML \"{}\"", realXmlCharset, scrURL.m_url);
       std::string converted;
       g_charsetConverter.ToUtf8(realXmlCharset, strHTML, converted);
       strHTML = converted;
@@ -397,18 +393,17 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
     CCharsetDetection::ConvertPlainTextToUtf8(strHTML, converted, reportedCharset, realTextCharset);
     strHTML = converted;
     if (reportedCharset != realTextCharset)
-      CLog::Log(LOGWARNING,
-                "{}: Using \"{}\" charset for plain text \"{}\" instead of server reported \"{}\" "
-                "charset",
-                __FUNCTION__, realTextCharset, scrURL.m_url, reportedCharset);
+      CLog::LogF(LOGWARNING,
+                 "Using \"{}\" charset for plain text \"{}\" instead of server reported \"{}\" "
+                 "charset",
+                 realTextCharset, scrURL.m_url, reportedCharset);
     else
-      CLog::Log(LOGDEBUG, "{}: Using \"{}\" charset for plain text \"{}\"", __FUNCTION__,
-                realTextCharset, scrURL.m_url);
+      CLog::LogF(LOGDEBUG, "Using \"{}\" charset for plain text \"{}\"", realTextCharset,
+                 scrURL.m_url);
   }
   else if (!reportedCharset.empty())
   {
-    CLog::Log(LOGDEBUG, "{}: Using \"{}\" charset for \"{}\"", __FUNCTION__, reportedCharset,
-              scrURL.m_url);
+    CLog::LogF(LOGDEBUG, "Using \"{}\" charset for \"{}\"", reportedCharset, scrURL.m_url);
     if (reportedCharset != "UTF-8")
     {
       std::string converted;
@@ -417,8 +412,8 @@ bool CScraperUrl::Get(const SUrlEntry& scrURL,
     }
   }
   else
-    CLog::Log(LOGDEBUG, "{}: Using content of \"{}\" as binary or text with \"UTF-8\" charset",
-              __FUNCTION__, scrURL.m_url);
+    CLog::LogF(LOGDEBUG, "Using content of \"{}\" as binary or text with \"UTF-8\" charset",
+               scrURL.m_url);
 
   if (!scrURL.m_cache.empty())
   {

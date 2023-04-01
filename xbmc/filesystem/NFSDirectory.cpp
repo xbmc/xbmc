@@ -351,8 +351,7 @@ bool CNFSDirectory::Remove(const CURL& url2)
 
   if(ret != 0 && errno != ENOENT)
   {
-    CLog::Log(LOGERROR, "{} - Error( {} )", __FUNCTION__,
-              nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::LogF(LOGERROR, "Error( {} )", nfs_get_error(gNfsConnection.GetNfsContext()));
     return false;
   }
   return true;

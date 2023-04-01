@@ -1487,7 +1487,7 @@ bool CGUIMediaWindow::OnPlayMedia(int iItem, const std::string &player)
   CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
   CFileItemPtr pItem=m_vecItems->Get(iItem);
 
-  CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(pItem->GetPath()));
+  CLog::LogF(LOGDEBUG, "{}", CURL::GetRedacted(pItem->GetPath()));
 
   bool bResult = false;
   if (pItem->IsInternetStream() || pItem->IsPlayList())

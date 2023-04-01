@@ -602,14 +602,14 @@ bool CTeletextDecoder::InitDecoder()
   m_txtCache = appPlayer->GetTeletextCache();
   if (m_txtCache == nullptr)
   {
-    CLog::Log(LOGERROR, "{}: called without teletext cache", __FUNCTION__);
+    CLog::LogF(LOGERROR, "called without teletext cache");
     return false;
   }
 
   /* init fontlibrary */
   if ((error = FT_Init_FreeType(&m_Library)))
   {
-    CLog::Log(LOGERROR, "{}: <FT_Init_FreeType: {:#2X}>", __FUNCTION__, error);
+    CLog::LogF(LOGERROR, "<FT_Init_FreeType: {:#2X}>", error);
     m_Library = NULL;
     return false;
   }
@@ -619,7 +619,7 @@ bool CTeletextDecoder::InitDecoder()
     FT_Done_FreeType(m_Library);
     m_Library = NULL;
     m_Manager = NULL;
-    CLog::Log(LOGERROR, "{}: <FTC_Manager_New: {:#2X}>", __FUNCTION__, error);
+    CLog::LogF(LOGERROR, "<FTC_Manager_New: {:#2X}>", error);
     return false;
   }
 
@@ -629,7 +629,7 @@ bool CTeletextDecoder::InitDecoder()
     FT_Done_FreeType(m_Library);
     m_Manager = NULL;
     m_Library = NULL;
-    CLog::Log(LOGERROR, "{}: <FTC_SBit_Cache_New: {:#2X}>", __FUNCTION__, error);
+    CLog::LogF(LOGERROR, "<FTC_SBit_Cache_New: {:#2X}>", error);
     return false;
   }
 
@@ -651,8 +651,7 @@ bool CTeletextDecoder::InitDecoder()
     m_TypeTTF.face_id = (FTC_FaceID) const_cast<char*>(m_teletextFont.c_str());
     if ((error = FTC_Manager_LookupFace(m_Manager, m_TypeTTF.face_id, &m_Face)))
     {
-      CLog::Log(LOGERROR, "{}: <FTC_Manager_Lookup_Face failed with Errorcode {:#2X}>",
-                __FUNCTION__, error);
+      CLog::LogF(LOGERROR, "<FTC_Manager_Lookup_Face failed with Errorcode {:#2X}>", error);
       FTC_Manager_Done(m_Manager);
       FT_Done_FreeType(m_Library);
       m_Manager = NULL;
@@ -722,7 +721,7 @@ void CTeletextDecoder::EndDecoder()
 
   if (!m_txtCache)
   {
-    CLog::Log(LOGINFO, "{}: called without cache", __FUNCTION__);
+    CLog::LogF(LOGINFO, "called without cache");
   }
   else
   {
@@ -2376,8 +2375,7 @@ void CTeletextDecoder::RenderCharIntern(TextRenderInfo_t* RenderInfo, int Char, 
   /* render char */
   if (!(glyph = FT_Get_Char_Index(m_Face, Char)))
   {
-    CLog::Log(LOGERROR, "{}:  <FT_Get_Char_Index for Char {:x} \"{}\" failed", __FUNCTION__,
-              alphachar, alphachar);
+    CLog::LogF(LOGERROR, "<FT_Get_Char_Index for Char {:x} \"{}\" failed", alphachar, alphachar);
 
     FillRect(m_TextureBuffer, m_RenderInfo.Width, m_RenderInfo.PosX, m_RenderInfo.PosY + yoffset, curfontwidth, factor*m_RenderInfo.FontHeight, bgcolor);
     m_RenderInfo.PosX += curfontwidth;

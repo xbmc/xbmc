@@ -83,7 +83,7 @@ bool CWinSystemWin10::InitWindowSystem()
 
   if (m_displays.empty())
   {
-    CLog::Log(LOGERROR, "{} - no suitable monitor found, aborting...", __FUNCTION__);
+    CLog::LogF(LOGERROR, "no suitable monitor found, aborting...");
     return false;
   }
 
@@ -157,7 +157,7 @@ void CWinSystemWin10::FinishWindowResize(int newWidth, int newHeight)
 
 void CWinSystemWin10::AdjustWindow()
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__": adjusting window if required.");
+  CLog::LogF(LOGDEBUG, "adjusting window if required.");
 
   auto appView = ApplicationView::GetForCurrentView();
   bool isInFullscreen = appView.IsFullScreenMode();
@@ -202,9 +202,9 @@ bool CWinSystemWin10::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool 
   CWinSystemWin10::UpdateStates(fullScreen);
   WINDOW_STATE state = GetState(fullScreen);
 
-  CLog::Log(LOGDEBUG, "{} ({}) with size {}x{}, refresh {:f}{}", __FUNCTION__,
-            window_state_names[state], res.iWidth, res.iHeight, res.fRefreshRate,
-            (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
+  CLog::LogF(LOGDEBUG, "({}) with size {}x{}, refresh {:f}{}", window_state_names[state],
+             res.iWidth, res.iHeight, res.fRefreshRate,
+             (res.dwFlags & D3DPRESENTFLAG_INTERLACED) ? "i" : "");
 
   bool forceChange = false;    // resolution/display is changed but window state isn't changed
   bool stereoChange = IsStereoEnabled() != (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED);
@@ -288,7 +288,7 @@ bool CWinSystemWin10::DPIChanged(WORD dpi, RECT windowRect) const
 
 void CWinSystemWin10::RestoreDesktopResolution()
 {
-  CLog::Log(LOGDEBUG, __FUNCTION__": restoring default desktop resolution");
+  CLog::LogF(LOGDEBUG, "restoring default desktop resolution");
   ChangeResolution(CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP));
 }
 
@@ -531,22 +531,22 @@ void CWinSystemWin10::ShowOSMouse(bool show)
 
 bool CWinSystemWin10::Minimize()
 {
-  CLog::Log(LOGDEBUG, "{} is not implemented", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "is not implemented");
   return true;
 }
 bool CWinSystemWin10::Restore()
 {
-  CLog::Log(LOGDEBUG, "{} is not implemented", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "is not implemented");
   return true;
 }
 bool CWinSystemWin10::Hide()
 {
-  CLog::Log(LOGDEBUG, "{} is not implemented", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "is not implemented");
   return true;
 }
 bool CWinSystemWin10::Show(bool raise)
 {
-  CLog::Log(LOGDEBUG, "{} is not implemented", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "is not implemented");
   return true;
 }
 
@@ -566,7 +566,7 @@ void CWinSystemWin10::Unregister(IDispResource* resource)
 
 void CWinSystemWin10::OnDisplayLost()
 {
-  CLog::Log(LOGDEBUG, "{} - notify display lost event", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "notify display lost event");
 
   {
     std::unique_lock<CCriticalSection> lock(m_resourceSection);
@@ -579,7 +579,7 @@ void CWinSystemWin10::OnDisplayReset()
 {
   if (!m_delayDispReset)
   {
-    CLog::Log(LOGDEBUG, "{} - notify display reset event", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "notify display reset event");
     std::unique_lock<CCriticalSection> lock(m_resourceSection);
     for (std::vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); ++i)
       (*i)->OnResetDisplay();

@@ -17,7 +17,7 @@
 
 bool CVideoSyncIos::Setup(PUPDATECLOCK func)
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncIos::{} setting up OSX", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CVideoSyncIos: setting up OSX");
 
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
@@ -42,7 +42,7 @@ void CVideoSyncIos::Run(CEvent& stopEvent)
 
 void CVideoSyncIos::Cleanup()
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncIos::{} cleaning up OSX", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CVideoSyncIos: cleaning up OSX");
   DeinitDisplayLink();
   m_winSystem.Unregister(this);
 }
@@ -50,7 +50,7 @@ void CVideoSyncIos::Cleanup()
 float CVideoSyncIos::GetFps()
 {
   m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
-  CLog::Log(LOGDEBUG, "CVideoSyncIos::{} Detected refreshrate: {:f} hertz", __FUNCTION__, m_fps);
+  CLog::LogF(LOGDEBUG, "CVideoSyncIos: Detected refreshrate: {:f} hertz", m_fps);
   return m_fps;
 }
 

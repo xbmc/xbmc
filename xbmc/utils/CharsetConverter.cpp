@@ -182,8 +182,8 @@ iconv_t CConverterType::GetConverter(std::unique_lock<CCriticalSection>& convert
     m_iconv = iconv_open(m_targetCharset.c_str(), m_sourceCharset.c_str());
 
     if (m_iconv == NO_ICONV)
-      CLog::Log(LOGERROR, "{}: iconv_open() for \"{}\" -> \"{}\" failed, errno = {} ({})",
-                __FUNCTION__, m_sourceCharset, m_targetCharset, errno, strerror(errno));
+      CLog::LogF(LOGERROR, "iconv_open() for \"{}\" -> \"{}\" failed, errno = {} ({})",
+                 m_sourceCharset, m_targetCharset, errno, strerror(errno));
   }
 
   return m_iconv;
@@ -342,8 +342,8 @@ bool CCharsetConverter::CInnerConverter::customConvert(const std::string& source
   iconv_t conv = iconv_open(targetCharset.c_str(), sourceCharset.c_str());
   if (conv == NO_ICONV)
   {
-    CLog::Log(LOGERROR, "{}: iconv_open() for \"{}\" -> \"{}\" failed, errno = {} ({})",
-              __FUNCTION__, sourceCharset, targetCharset, errno, strerror(errno));
+    CLog::LogF(LOGERROR, "iconv_open() for \"{}\" -> \"{}\" failed, errno = {} ({})", sourceCharset,
+               targetCharset, errno, strerror(errno));
     return false;
   }
   const int dstMultp = (targetCharset.compare(0, 5, "UTF-8") == 0) ? CCharsetConverter::m_Utf8CharMaxSize : 1;
@@ -381,7 +381,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
   char*       outBuf     = (char*)malloc(outBufSize);
   if (outBuf == NULL)
   {
-    CLog::Log(LOGFATAL, "{}: malloc failed", __FUNCTION__);
+    CLog::LogF(LOGFATAL, "malloc failed");
     return false;
   }
 
@@ -408,8 +408,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
         char* newBuf  = (char*)realloc(outBuf, outBufSize);
         if (!newBuf)
         {
-          CLog::Log(LOGFATAL, "{} realloc failed with errno={}({})", __FUNCTION__, errno,
-                    strerror(errno));
+          CLog::LogF(LOGFATAL, "realloc failed with errno={}({})", errno, strerror(errno));
           break;
         }
         outBuf = newBuf;
@@ -441,8 +440,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
       }
       else //iconv() had some other error
       {
-        CLog::Log(LOGERROR, "{}: iconv() failed, errno={} ({})", __FUNCTION__, errno,
-                  strerror(errno));
+        CLog::LogF(LOGERROR, "iconv() failed, errno={} ({})", errno, strerror(errno));
       }
     }
     break;
@@ -450,7 +448,7 @@ bool CCharsetConverter::CInnerConverter::convert(iconv_t type, int multiplier, c
 
   //complete the conversion (reset buffers), otherwise the current data will prefix the data on the next call
   if (iconv(type, NULL, NULL, &outBufStart, &outBytesAvail) == (size_t)-1)
-    CLog::Log(LOGERROR, "{} failed cleanup errno={}({})", __FUNCTION__, errno, strerror(errno));
+    CLog::LogF(LOGERROR, "failed cleanup errno={}({})", errno, strerror(errno));
 
   if (returnV == (size_t)-1)
   {
@@ -504,7 +502,7 @@ bool CCharsetConverter::CInnerConverter::logicalToVisualBiDi(
     if (visual == NULL)
     {
       free(visual);
-      CLog::Log(LOGFATAL, "{}: can't allocate memory", __FUNCTION__);
+      CLog::LogF(LOGFATAL, "can't allocate memory");
       return false;
     }
 

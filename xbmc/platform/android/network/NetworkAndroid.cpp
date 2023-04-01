@@ -126,7 +126,7 @@ bool CNetworkInterfaceAndroid::GetHostMacAddress(unsigned long host_ip, std::str
 
     if (result != 0)
     {
-      //  CLog::Log(LOGERROR, "{} - GetHostMacAddress/ioctl failed with errno ({})", __FUNCTION__, errno);
+      //  CLog::LogF(LOGERROR, "GetHostMacAddress/ioctl failed with errno ({})", errno);
       return false;
     }
   }

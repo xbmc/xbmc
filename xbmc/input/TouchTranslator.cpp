@@ -164,7 +164,7 @@ unsigned int CTouchTranslator::TranslateTouchCommand(const TiXmlElement* pButton
 
   if (touchCommandId == TOUCH_COMMAND_NONE)
   {
-    CLog::Log(LOGERROR, "{}: Can't find touch command {}", __FUNCTION__, szButton);
+    CLog::LogF(LOGERROR, "Can't find touch command {}", szButton);
     return ACTION_NONE;
   }
 

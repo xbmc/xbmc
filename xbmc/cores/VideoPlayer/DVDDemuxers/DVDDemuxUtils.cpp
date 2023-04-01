@@ -27,8 +27,7 @@ void CDVDDemuxUtils::FreeDemuxPacket(DemuxPacket* pPacket)
       AVPacket* avPkt = av_packet_alloc();
       if (!avPkt)
       {
-        CLog::Log(LOGERROR, "CDVDDemuxUtils::{} - av_packet_alloc failed: {}", __FUNCTION__,
-                  strerror(errno));
+        CLog::LogF(LOGERROR, "CDVDDemuxUtils: av_packet_alloc failed: {}", strerror(errno));
       }
       else
       {
@@ -91,8 +90,7 @@ void CDVDDemuxUtils::StoreSideData(DemuxPacket *pkt, AVPacket *src)
   AVPacket* avPkt = av_packet_alloc();
   if (!avPkt)
   {
-    CLog::Log(LOGERROR, "CDVDDemuxUtils::{} - av_packet_alloc failed: {}", __FUNCTION__,
-              strerror(errno));
+    CLog::LogF(LOGERROR, "CDVDDemuxUtils: av_packet_alloc failed: {}", strerror(errno));
     return;
   }
 

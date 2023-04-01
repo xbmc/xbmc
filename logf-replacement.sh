@@ -5,7 +5,8 @@ find xbmc -type f | xargs sed -i \
     /CLog::Log(/{
       :line
       s/,\n[ ]*/, /g
-      s/[^,]\n[ ]*//g
+      s/(\n[ ]*/(/g
+      s/"\s*\n\s*"/" "/g
       /);/!{
         N
         bline
@@ -133,3 +134,8 @@ git commit --no-verify -m "CLog: update logging calls that use __FUNCTION__ and 
 find xbmc -type f | xargs sed -E -e 's/CLog::Log\((LOG[A-Z]+), __FUNCTION__": /CLog::LogF(\1, "/g' -i
 git add xbmc
 git commit --no-verify -m "CLog: update logging calls that use __FUNCTION__ as macro"
+
+find xbmc -type f | xargs sed -E -e 's/CLog::Log\((LOG[A-Z]+), __FUNCTION__\s*"\s*[:,-]\s*(.*)"/CLog::LogF(\1, "\2"/g' -i
+git add xbmc
+git commit --no-verify -m "CLog: update loggings calls that only use __FUNCTION__ to use LogF (with C string literal concat)"
+

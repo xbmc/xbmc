@@ -65,7 +65,7 @@ bool CDRMPRIMETexture::Map(CVideoBufferDRMPRIME* buffer)
 
   if (!buffer->AcquireDescriptor())
   {
-    CLog::Log(LOGERROR, "CDRMPRIMETexture::{} - failed to acquire descriptor", __FUNCTION__);
+    CLog::LogF(LOGERROR, "CDRMPRIMETexture: failed to acquire descriptor");
     return false;
   }
 

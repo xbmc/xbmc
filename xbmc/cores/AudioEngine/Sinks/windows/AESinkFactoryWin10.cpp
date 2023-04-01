@@ -112,7 +112,7 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
   }
 
 failed:
-  CLog::Log(LOGERROR, __FUNCTION__": Failed to enumerate audio renderer devices.");
+  CLog::LogF(LOGERROR, "Failed to enumerate audio renderer devices.");
   return list;
 }
 

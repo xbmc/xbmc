@@ -106,7 +106,7 @@ CKey CKeyboardStat::TranslateKey(XBMC_keysym& keysym) const
   // Start by check whether any of the HID peripherals wants to translate this keypress
   if (LookupSymAndUnicodePeripherals(keysym, &vkey, &ascii))
   {
-    CLog::Log(LOGDEBUG, "{} - keypress translated by a HID peripheral", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "keypress translated by a HID peripheral");
   }
 
   // Continue by trying to match both the sym and unicode. This will identify

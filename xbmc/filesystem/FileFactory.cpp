@@ -174,7 +174,6 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   else if (url.IsProtocol("upnp")) return new CUPnPFile();
 #endif
 
-  CLog::Log(LOGWARNING, "{} - unsupported protocol({}) in {}", __FUNCTION__, url.GetProtocol(),
-            url.GetRedacted());
+  CLog::LogF(LOGWARNING, "unsupported protocol({}) in {}", url.GetProtocol(), url.GetRedacted());
   return NULL;
 }

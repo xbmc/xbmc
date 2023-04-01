@@ -67,8 +67,7 @@ void CThread::Create(bool bAutoDelete)
       StopThread(true);  // so let's just clean up
     else
     { // otherwise we have a problem.
-      CLog::Log(LOGERROR, "{} - fatal error creating thread {} - old thread id not null",
-                __FUNCTION__, m_ThreadName);
+      CLog::LogF(LOGERROR, "fatal error creating thread {} - old thread id not null", m_ThreadName);
       exit(1);
     }
   }
@@ -115,7 +114,7 @@ void CThread::Create(bool bAutoDelete)
 
         if (pThread == nullptr)
         {
-          CLog::Log(LOGERROR, "{}, sanity failed. thread is NULL.", __FUNCTION__);
+          CLog::LogF(LOGERROR, "sanity failed. thread is NULL.");
           promise.set_value(false);
           return;
         }

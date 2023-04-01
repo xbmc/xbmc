@@ -42,14 +42,14 @@ static bool LoadTexture(int width, int height, int stride
 {
   if (!texture->Create(width, height, 1, D3D11_USAGE_IMMUTABLE, format, pixels, stride))
   {
-    CLog::Log(LOGERROR, "{} - failed to allocate texture.", __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed to allocate texture.");
     return false;
   }
 
   D3D11_TEXTURE2D_DESC desc = {};
   if (!texture->GetDesc(&desc))
   {
-    CLog::Log(LOGERROR, "{} - failed to get texture description.", __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed to get texture description.");
     texture->Release();
     return false;
   }
@@ -141,7 +141,7 @@ COverlayQuadsDX::COverlayQuadsDX(ASS_Image* images, float width, float height)
   if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 6 * m_count, sizeof(Vertex), DXGI_FORMAT_UNKNOWN,
                        D3D11_USAGE_IMMUTABLE, vt))
   {
-    CLog::Log(LOGERROR, "{} - failed to create vertex buffer", __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed to create vertex buffer");
     m_texture.Release();
   }
 
@@ -316,7 +316,7 @@ void COverlayImageDX::Load(const uint32_t* rgba, int width, int height, int stri
 
   if (!m_vertex.Create(D3D11_BIND_VERTEX_BUFFER, 4, sizeof(Vertex), DXGI_FORMAT_UNKNOWN, D3D11_USAGE_IMMUTABLE, vt))
   {
-    CLog::Log(LOGERROR, "{} - failed to create vertex buffer", __FUNCTION__);
+    CLog::LogF(LOGERROR, "failed to create vertex buffer");
     m_texture.Release();
   }
 }

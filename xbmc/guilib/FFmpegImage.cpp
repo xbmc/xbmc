@@ -357,7 +357,7 @@ bool CFFmpegImage::Decode(unsigned char * const pixels, unsigned int width, unsi
 
   if (pixels == nullptr)
   {
-    CLog::Log(LOGERROR, "{} - No valid buffer pointer (nullptr) passed", __FUNCTION__);
+    CLog::LogF(LOGERROR, "No valid buffer pointer (nullptr) passed");
     return false;
   }
 
@@ -418,8 +418,8 @@ bool CFFmpegImage::DecodeFrame(AVFrame* frame, unsigned int width, unsigned int 
 {
   if (pixels == nullptr)
   {
-    CLog::Log(LOGERROR, "{} - No valid buffer pointer (nullptr) passed", __FUNCTION__);
-    return false;
+   CLog::LogF(LOGERROR, "No valid buffer pointer (nullptr) passed");
+   return false;
   }
 
   AVFrame* pictureRGB = av_frame_alloc();

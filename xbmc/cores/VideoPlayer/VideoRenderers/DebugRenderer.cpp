@@ -35,7 +35,7 @@ void CDebugRenderer::Initialize()
   m_isInitialized = m_adapter->Initialize();
   if (!m_isInitialized)
   {
-    CLog::Log(LOGERROR, "{} - Failed to configure OSD info debug renderer", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Failed to configure OSD info debug renderer");
     delete m_adapter;
     m_adapter = nullptr;
     return;

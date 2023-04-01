@@ -352,9 +352,8 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
       }
       {
         std::string portName = port == nullptr ? "timer" : port->portName;
-        CLog::Log(LOGWARNING,
-                  "CActiveAESink::{} - signal: {} form port: {} not handled for state: {}",
-                  __FUNCTION__, signal, portName, m_state);
+        CLog::LogF(LOGWARNING, "CActiveAESink: signal: {} form port: {} not handled for state: {}",
+                   signal, portName, m_state);
       }
       return;
 
@@ -595,7 +594,7 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
       break;
 
     default: // we are in no state, should not happen
-      CLog::Log(LOGERROR, "CActiveAESink::{} - no valid state: {}", __FUNCTION__, m_state);
+      CLog::LogF(LOGERROR, "CActiveAESink: no valid state: {}", m_state);
       return;
     }
   } // for

@@ -341,10 +341,8 @@ void CPeripherals::CreatePeripheral(CPeripheralBus& bus, const PeripheralScanRes
       if (!m_bMissingLibCecWarningDisplayed)
       {
         m_bMissingLibCecWarningDisplayed = true;
-        CLog::Log(
-            LOGWARNING,
-            "{} - libCEC support has not been compiled in, so the CEC adapter cannot be used.",
-            __FUNCTION__);
+        CLog::LogF(LOGWARNING,
+                   "libCEC support has not been compiled in, so the CEC adapter cannot be used.");
         CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning,
                                               g_localizeStrings.Get(36000),
                                               g_localizeStrings.Get(36017));
@@ -380,8 +378,7 @@ void CPeripherals::CreatePeripheral(CPeripheralBus& bus, const PeripheralScanRes
       bus.Register(peripheral);
     else
     {
-      CLog::Log(LOGDEBUG, "{} - failed to initialise peripheral on '{}'", __FUNCTION__,
-                mappedResult.m_strLocation);
+      CLog::LogF(LOGDEBUG, "failed to initialise peripheral on '{}'", mappedResult.m_strLocation);
     }
   }
 }
@@ -454,9 +451,9 @@ bool CPeripherals::GetMappingForDevice(const CPeripheralBus& bus,
       std::string strVendorId, strProductId;
       PeripheralTypeTranslator::FormatHexString(result.m_iVendorId, strVendorId);
       PeripheralTypeTranslator::FormatHexString(result.m_iProductId, strProductId);
-      CLog::Log(LOGDEBUG, "{} - device ({}:{}) mapped to {} (type = {})", __FUNCTION__, strVendorId,
-                strProductId, mapping.m_strDeviceName,
-                PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
+      CLog::LogF(LOGDEBUG, "device ({}:{}) mapped to {} (type = {})", strVendorId, strProductId,
+                 mapping.m_strDeviceName,
+                 PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
       result.m_mappedType = mapping.m_mappedTo;
       if (result.m_strDeviceName.empty() && !mapping.m_strDeviceName.empty())
         result.m_strDeviceName = mapping.m_strDeviceName;
@@ -506,14 +503,14 @@ bool CPeripherals::LoadMappings()
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile("special://xbmc/system/peripherals.xml"))
   {
-    CLog::Log(LOGWARNING, "{} - peripherals.xml does not exist", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "peripherals.xml does not exist");
     return true;
   }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "peripherals") != 0)
   {
-    CLog::Log(LOGERROR, "{} - peripherals.xml does not contain <peripherals>", __FUNCTION__);
+    CLog::LogF(LOGERROR, "peripherals.xml does not contain <peripherals>");
     return false;
   }
 
@@ -536,8 +533,8 @@ bool CPeripherals::LoadMappings()
         std::vector<std::string> idArray = StringUtils::Split(i, ":");
         if (idArray.size() != 2)
         {
-          CLog::Log(LOGERROR, "{} - ignoring node \"{}\" with invalid vendor_product attribute",
-                    __FUNCTION__, mapping.m_strDeviceName);
+          CLog::LogF(LOGERROR, "ignoring node \"{}\" with invalid vendor_product attribute",
+                     mapping.m_strDeviceName);
           continue;
         }
 
@@ -556,7 +553,7 @@ bool CPeripherals::LoadMappings()
     GetSettingsFromMappingsFile(currentNode, mapping.m_settings);
 
     m_mappings.push_back(mapping);
-    CLog::Log(LOGDEBUG, "{} - loaded node \"{}\"", __FUNCTION__, mapping.m_strDeviceName);
+    CLog::LogF(LOGDEBUG, "loaded node \"{}\"", mapping.m_strDeviceName);
   }
 
   return true;

@@ -72,7 +72,7 @@ OverlayMessage CDVDOverlayCodecText::Decode(DemuxPacket* pPacket)
     AddSubtitle(text, PTSStartTime, PTSStopTime);
   }
   else
-    CLog::Log(LOGERROR, "{} - Failed to initialize tag converter", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Failed to initialize tag converter");
 
   return m_pOverlay ? OverlayMessage::OC_DONE : OverlayMessage::OC_OVERLAY;
 }

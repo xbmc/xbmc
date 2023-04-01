@@ -686,7 +686,7 @@ CCdInfo* CCdIoSupport::GetCdInfo(char* cDeviceFileName)
   cdio = ::cdio_open(source_name, DRIVER_UNKNOWN);
   if (cdio == NULL)
   {
-    CLog::Log(LOGERROR, "{}: Error in automatically selecting driver with input", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Error in automatically selecting driver with input");
     return NULL;
   }
 

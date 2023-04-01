@@ -324,9 +324,7 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
     int ret = loop.Wait(5s);
     if (ret == -ETIMEDOUT)
     {
-      CLog::Log(LOGDEBUG,
-                "CAESinkPipewire::{} - timed out out waiting for formats to be enumerated",
-                __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "CAESinkPipewire: timed out out waiting for formats to be enumerated");
       continue;
     }
 
@@ -475,16 +473,14 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   if (!m_stream->Connect(id, PW_DIRECTION_OUTPUT, params, flags))
     return false;
 
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - rate: {}", __FUNCTION__, format.m_sampleRate);
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - channels: {}", __FUNCTION__, pwChannels.size());
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - format: {}", __FUNCTION__, PWFormatToString(pwFormat));
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - samplesize: {}", __FUNCTION__,
-            PWFormatToSampleSize(pwFormat));
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - framesize: {}", __FUNCTION__,
-            pwChannels.size() * PWFormatToSampleSize(pwFormat));
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - latency: {}/{} ({:.3f}s)", __FUNCTION__, frames,
-            format.m_sampleRate,
-            static_cast<double>(frames) / DEFAULT_LATENCY_DIVIDER / format.m_sampleRate);
+  CLog::LogF(LOGDEBUG, "CAESinkPipewire: rate: {}", format.m_sampleRate);
+  CLog::LogF(LOGDEBUG, "CAESinkPipewire: channels: {}", pwChannels.size());
+  CLog::LogF(LOGDEBUG, "CAESinkPipewire: format: {}", PWFormatToString(pwFormat));
+  CLog::LogF(LOGDEBUG, "CAESinkPipewire: samplesize: {}", PWFormatToSampleSize(pwFormat));
+  CLog::LogF(LOGDEBUG, "CAESinkPipewire: framesize: {}",
+             pwChannels.size() * PWFormatToSampleSize(pwFormat));
+  CLog::LogF(LOGDEBUG, "CAESinkPipewire: latency: {}/{} ({:.3f}s)", frames, format.m_sampleRate,
+             static_cast<double>(frames) / format.m_sampleRate);
 
   pw_stream_state state;
   do
@@ -493,18 +489,17 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
     if (state == PW_STREAM_STATE_PAUSED)
       break;
 
-    CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - waiting", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "CAESinkPipewire: waiting");
 
     int ret = loop.Wait(5s);
     if (ret == -ETIMEDOUT)
     {
-      CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - timed out waiting for stream to be paused",
-                __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "CAESinkPipewire: timed out waiting for stream to be paused");
       return false;
     }
   } while (state != PW_STREAM_STATE_PAUSED);
 
-  CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - initialized", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CAESinkPipewire: initialized");
 
   format.m_frameSize = pwChannels.size() * PWFormatToSampleSize(pwFormat);
   format.m_frames = frames;
@@ -624,6 +619,6 @@ void CAESinkPipewire::Drain()
   int ret = loop.Wait(1s);
   if (ret == -ETIMEDOUT)
   {
-    CLog::Log(LOGDEBUG, "CAESinkPipewire::{} - wait timed out, already drained?", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "CAESinkPipewire: wait timed out, already drained?");
   }
 }

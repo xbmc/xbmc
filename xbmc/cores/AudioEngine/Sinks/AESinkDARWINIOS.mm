@@ -236,7 +236,7 @@ unsigned int CAAudioUnitSink::write(uint8_t *data, unsigned int frames)
     condVar.wait(mutex, timeout);
     if (!m_started && timer.IsTimePast())
     {
-      CLog::Log(LOGERROR, "{} engine didn't start in {} ms!", __FUNCTION__, timeout.count());
+      CLog::LogF(LOGERROR, "engine didn't start in {} ms!", timeout.count());
       return INT_MAX;
     }
   }
@@ -317,7 +317,7 @@ Float64 CAAudioUnitSink::getCoreAudioRealisedSampleRate()
   UInt32 ioDataSize = sizeof(outputSampleRate);
   if (AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareSampleRate,
                               &ioDataSize, &outputSampleRate) != noErr)
-    CLog::Log(LOGERROR, "{}: error getting CurrentHardwareSampleRate", __FUNCTION__);
+    CLog::LogF(LOGERROR, "error getting CurrentHardwareSampleRate");
   return outputSampleRate;
 }
 
@@ -423,20 +423,20 @@ bool CAAudioUnitSink::checkSessionProperties()
   ioDataSize = sizeof(m_outputVolume);
   if (AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareOutputVolume,
     &ioDataSize, &m_outputVolume) != noErr)
-    CLog::Log(LOGERROR, "{}: error getting CurrentHardwareOutputVolume", __FUNCTION__);
+    CLog::LogF(LOGERROR, "error getting CurrentHardwareOutputVolume");
 
   ioDataSize = sizeof(m_outputLatency);
   if (AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareOutputLatency,
     &ioDataSize, &m_outputLatency) != noErr)
-    CLog::Log(LOGERROR, "{}: error getting CurrentHardwareOutputLatency", __FUNCTION__);
+    CLog::LogF(LOGERROR, "error getting CurrentHardwareOutputLatency");
 
   ioDataSize = sizeof(m_bufferDuration);
   if (AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration,
     &ioDataSize, &m_bufferDuration) != noErr)
-    CLog::Log(LOGERROR, "{}: error getting CurrentHardwareIOBufferDuration", __FUNCTION__);
+    CLog::LogF(LOGERROR, "error getting CurrentHardwareIOBufferDuration");
 
-  CLog::Log(LOGDEBUG, "{}: volume = {:f}, latency = {:f}, buffer = {:f}", __FUNCTION__,
-            m_outputVolume, m_outputLatency, m_bufferDuration);
+  CLog::LogF(LOGDEBUG, "volume = {:f}, latency = {:f}, buffer = {:f}", m_outputVolume,
+             m_outputLatency, m_bufferDuration);
   return true;
 }
 

@@ -615,7 +615,7 @@ bool DllLoader::Load()
     XBMCCOMMONS_HANDLE_UNCHECKED
     catch(...)
     {
-      CLog::Log(LOGERROR, "{} - Unhandled exception during DLL_PROCESS_ATTACH", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Unhandled exception during DLL_PROCESS_ATTACH");
 
       // vp7vfw.dll throws a CUserException due to a missing export
       // but the export isn't really needed for normal operation
@@ -624,8 +624,7 @@ bool DllLoader::Load()
       if (StringUtils::CompareNoCase(GetName(), "vp7vfw.dll") != 0)
         return false;
 
-
-      CLog::Log(LOGDEBUG, "{} - Ignoring exception during DLL_PROCESS_ATTACH", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "Ignoring exception during DLL_PROCESS_ATTACH");
     }
 
     // init function may have fixed up the export table

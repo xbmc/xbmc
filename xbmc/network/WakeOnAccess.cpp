@@ -210,7 +210,7 @@ bool CMACDiscoveryJob::DoWork()
 
   if (ipAddress == INADDR_NONE)
   {
-    CLog::Log(LOGERROR, "{} - can't determine ip of '{}'", __FUNCTION__, m_host);
+    CLog::LogF(LOGERROR, "can't determine ip of '{}'", m_host);
     return false;
   }
 
@@ -644,7 +644,7 @@ void CWakeOnAccess::QueueMACDiscoveryForHost(const std::string& host)
     if (URIUtils::IsHostOnLAN(host, true))
       CServiceBroker::GetJobManager()->AddJob(new CMACDiscoveryJob(host), this);
     else
-      CLog::Log(LOGINFO, "{} - skip Mac discovery for non-local host '{}'", __FUNCTION__, host);
+      CLog::LogF(LOGINFO, "skip Mac discovery for non-local host '{}'", host);
   }
 }
 
@@ -709,7 +709,7 @@ void CWakeOnAccess::QueueMACDiscoveryForAllRemotes()
 
 void CWakeOnAccess::SaveMACDiscoveryResult(const std::string& host, const std::string& mac)
 {
-  CLog::Log(LOGINFO, "{} - Mac discovered for host '{}' -> '{}'", __FUNCTION__, host, mac);
+  CLog::LogF(LOGINFO, "Mac discovered for host '{}' -> '{}'", host, mac);
 
   for (auto& i : m_entries)
   {
@@ -750,7 +750,7 @@ void CWakeOnAccess::OnJobComplete(unsigned int jobID, bool success, CJob *job)
   }
   else
   {
-    CLog::Log(LOGERROR, "{} - Mac discovery failed for host '{}'", __FUNCTION__, host);
+    CLog::LogF(LOGERROR, "Mac discovery failed for host '{}'", host);
 
     if (IsEnabled())
     {
@@ -805,15 +805,14 @@ void CWakeOnAccess::LoadFromXML()
   if (!xmlDoc.LoadFile(GetSettingFile()))
   {
     if (enabled)
-      CLog::Log(LOGINFO, "{} - unable to load:{}", __FUNCTION__, GetSettingFile());
+      CLog::LogF(LOGINFO, "unable to load:{}", GetSettingFile());
     return;
   }
 
   TiXmlElement* pRootElement = xmlDoc.RootElement();
   if (StringUtils::CompareNoCase(pRootElement->Value(), "onaccesswakeup"))
   {
-    CLog::Log(LOGERROR, "{} - XML file {} doesn't contain <onaccesswakeup>", __FUNCTION__,
-              GetSettingFile());
+    CLog::LogF(LOGERROR, "XML file {} doesn't contain <onaccesswakeup>", GetSettingFile());
     return;
   }
 
@@ -845,9 +844,9 @@ void CWakeOnAccess::LoadFromXML()
       entry.mac = strtmp;
 
     if (entry.host.empty())
-      CLog::Log(LOGERROR, "{} - Missing <host> tag or it's empty", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Missing <host> tag or it's empty");
     else if (entry.mac.empty())
-      CLog::Log(LOGERROR, "{} - Missing <mac> tag or it's empty", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Missing <mac> tag or it's empty");
     else
     {
       if (XMLUtils::GetInt(pWakeUp, "pingport", tmp, 0, USHRT_MAX))
@@ -900,7 +899,7 @@ void CWakeOnAccess::LoadFromXML()
       server.m_name = server.m_uuid;
 
     if (server.m_uuid.empty() || server.m_mac.empty())
-      CLog::Log(LOGERROR, "{} - Missing or empty <upnp_map> entry", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Missing or empty <upnp_map> entry");
     else
     {
       CLog::Log(LOGINFO, "  Registering upnp_map entry [{} : {}] -> [{}]", server.m_name,

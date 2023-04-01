@@ -113,7 +113,7 @@ bool CGUIColorManager::LoadColorsListFromXML(
   CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(filePath))
   {
-    CLog::Log(LOGERROR, "{} - Failed to load colors from file {}", __FUNCTION__, filePath);
+    CLog::LogF(LOGERROR, "Failed to load colors from file {}", filePath);
     return false;
   }
 
@@ -121,7 +121,7 @@ bool CGUIColorManager::LoadColorsListFromXML(
   std::string strValue = pRootElement->Value();
   if (strValue != std::string("colors"))
   {
-    CLog::Log(LOGERROR, "{} - Color file doesn't start with <colors>", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Color file doesn't start with <colors>");
     return false;
   }
 

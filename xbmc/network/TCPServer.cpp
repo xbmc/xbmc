@@ -275,7 +275,7 @@ bool CTCPServer::Initialize()
 #ifdef TARGET_WINDOWS_STORE
 bool CTCPServer::InitializeBlue()
 {
-  CLog::Log(LOGDEBUG, "{} is not implemented", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "is not implemented");
   return true; // need to fake it for now
 }
 

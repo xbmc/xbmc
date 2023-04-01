@@ -37,10 +37,10 @@ bool CDVDSubtitleStream::Open(const std::string& strFile)
 
     if (URIUtils::HasExtension(strFile, ".sub") && IsIncompatible(pInputStream.get(), buf, &totalread))
     {
-      CLog::Log(LOGDEBUG,
-                "{}: file {} seems to be a vob sub"
-                "file without an idx file, skipping it",
-                __FUNCTION__, CURL::GetRedacted(pInputStream->GetFileName()));
+      CLog::LogF(LOGDEBUG,
+                 "file {} seems to be a vob sub"
+                 "file without an idx file, skipping it",
+                 CURL::GetRedacted(pInputStream->GetFileName()));
       buf.clear();
       return false;
     }

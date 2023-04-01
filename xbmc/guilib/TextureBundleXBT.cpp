@@ -62,7 +62,7 @@ void CTextureBundleXBT::CloseBundle()
   if (m_XBTFReader != nullptr && m_XBTFReader->IsOpen())
   {
     XFILE::CXbtManager::GetInstance().Release(CURL(m_path));
-    CLog::Log(LOGDEBUG, "{} - Closed {}bundle", __FUNCTION__, m_themeBundle ? "theme " : "");
+    CLog::LogF(LOGDEBUG, "Closed {}bundle", m_themeBundle ? "theme " : "");
   }
 }
 
@@ -97,7 +97,7 @@ bool CTextureBundleXBT::OpenBundle()
     return false;
   }
 
-  CLog::Log(LOGDEBUG, "{} - Opened bundle {}", __FUNCTION__, m_path);
+  CLog::LogF(LOGDEBUG, "Opened bundle {}", m_path);
 
   m_TimeStamp = m_XBTFReader->GetLastModificationTimestamp();
 

@@ -419,8 +419,7 @@ void CGUIDialogSubtitles::OnSearchComplete(const CFileItemList *items)
           CSettings::SETTING_SUBTITLES_DOWNLOADFIRST))
   {
     CFileItemPtr item = items->Get(0);
-    CLog::Log(LOGDEBUG, "{} - Automatically download first subtitle: {}", __FUNCTION__,
-              item->GetLabel2());
+    CLog::LogF(LOGDEBUG, "Automatically download first subtitle: {}", item->GetLabel2());
     m_LastAutoDownloaded = g_application.CurrentFile();
     Download(*item);
   }
@@ -454,8 +453,8 @@ void CGUIDialogSubtitles::OnSubtitleServiceContextMenu(int itemIdx)
       }
       else
       {
-        CLog::Log(LOGERROR, "{} - Could not open settings for addon: {}", __FUNCTION__,
-                  service->GetProperty("Addon.ID").asString());
+        CLog::LogF(LOGERROR, "Could not open settings for addon: {}",
+                   service->GetProperty("Addon.ID").asString());
       }
       break;
     }
@@ -617,8 +616,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
     if (!CFile::Copy(strUrl, strDownloadFile))
     {
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strSubName, g_localizeStrings.Get(24113));
-      CLog::Log(LOGERROR, "{} - Saving of subtitle {} to {} failed", __FUNCTION__, strUrl,
-                strDownloadFile);
+      CLog::LogF(LOGERROR, "Saving of subtitle {} to {} failed", strUrl, strDownloadFile);
     }
     else
     {
@@ -632,8 +630,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
          * so that all remaining items (including the .idx below) are copied directly to their final destination and thus all
          * items end up in the same folder
          */
-        CLog::Log(LOGDEBUG, "{} - Saving subtitle {} to {}", __FUNCTION__, strDownloadFile,
-                  strTryDestFile);
+        CLog::LogF(LOGDEBUG, "Saving subtitle {} to {}", strDownloadFile, strTryDestFile);
         if (CFile::Copy(strDownloadFile, strTryDestFile))
         {
           CFile::Delete(strDownloadFile);
@@ -642,14 +639,14 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
         }
         else
         {
-          CLog::Log(LOGWARNING, "{} - Saving of subtitle {} to {} failed. Falling back to {}",
-                    __FUNCTION__, strDownloadFile, strTryDestFile, strDownloadPath);
+          CLog::LogF(LOGWARNING, "Saving of subtitle {} to {} failed. Falling back to {}",
+                     strDownloadFile, strTryDestFile, strDownloadPath);
           strDestPath = strDownloadPath; // Copy failed, use fallback for the rest of the items
         }
       }
       else
       {
-        CLog::Log(LOGDEBUG, "{} - Saved subtitle {} to {}", __FUNCTION__, strUrl, strDownloadFile);
+        CLog::LogF(LOGDEBUG, "Saved subtitle {} to {}", strUrl, strDownloadFile);
       }
 
       // for ".sub" subtitles we check if ".idx" counterpart exists and copy that as well

@@ -677,13 +677,13 @@ long CDecoder::Release()
       reply->Release();
       if (!success)
       {
-        CLog::Log(LOGERROR, "VDPAU::{} - pre-cleanup returned error", __FUNCTION__);
+        CLog::LogF(LOGERROR, "VDPAU: pre-cleanup returned error");
         m_DisplayState = VDPAU_ERROR;
       }
     }
     else
     {
-      CLog::Log(LOGERROR, "VDPAU::{} - pre-cleanup timed out", __FUNCTION__);
+      CLog::LogF(LOGERROR, "VDPAU: pre-cleanup timed out");
       m_DisplayState = VDPAU_ERROR;
     }
 
@@ -972,14 +972,14 @@ bool CDecoder::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
     reply->Release();
     if (!success)
     {
-      CLog::Log(LOGERROR, "VDPAU::{} - vdpau output returned error", __FUNCTION__);
+      CLog::LogF(LOGERROR, "VDPAU: vdpau output returned error");
       m_vdpauOutput.Dispose();
       return false;
     }
   }
   else
   {
-    CLog::Log(LOGERROR, "VDPAU::{} - failed to init output", __FUNCTION__);
+    CLog::LogF(LOGERROR, "VDPAU: failed to init output");
     m_vdpauOutput.Dispose();
     return false;
   }
@@ -1036,7 +1036,7 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   AVBufferRef *buffer = av_buffer_create(pic->data[3], 0, FFReleaseBuffer, vdp, 0);
   if (!buffer)
   {
-    CLog::Log(LOGERROR, "CVDPAU::{} - error creating buffer", __FUNCTION__);
+    CLog::LogF(LOGERROR, "CVDPAU: error creating buffer");
     return -1;
   }
   pic->buf[0] = buffer;
@@ -1232,7 +1232,7 @@ CDVDVideoCodec::VCReturn CDecoder::Decode(AVCodecContext *avctx, AVFrame *pFrame
       break;
   }
 
-  CLog::Log(LOGERROR, "VDPAU::{} - timed out waiting for output message", __FUNCTION__);
+  CLog::LogF(LOGERROR, "VDPAU: timed out waiting for output message");
   m_DisplayState = VDPAU_ERROR;
 
   return CDVDVideoCodec::VC_ERROR;
@@ -1278,7 +1278,7 @@ void CDecoder::Reset()
     reply->Release();
     if (!success)
     {
-      CLog::Log(LOGERROR, "VDPAU::{} - flush returned error", __FUNCTION__);
+      CLog::LogF(LOGERROR, "VDPAU: flush returned error");
       m_DisplayState = VDPAU_ERROR;
     }
     else
@@ -1286,7 +1286,7 @@ void CDecoder::Reset()
   }
   else
   {
-    CLog::Log(LOGERROR, "VDPAU::{} - flush timed out", __FUNCTION__);
+    CLog::LogF(LOGERROR, "VDPAU: flush timed out");
     m_DisplayState = VDPAU_ERROR;
   }
 }
@@ -1633,8 +1633,8 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
       }
       {
         std::string portName = port == NULL ? "timer" : port->portName;
-        CLog::Log(LOGWARNING, "CMixer::{} - signal: {} form port: {} not handled for state: {}",
-                  __FUNCTION__, signal, portName, m_state);
+        CLog::LogF(LOGWARNING, "CMixer: signal: {} form port: {} not handled for state: {}", signal,
+                   portName, m_state);
       }
       return;
 
@@ -1842,8 +1842,8 @@ void CMixer::StateMachine(int signal, Protocol *port, Message *msg)
        break;
 
     default: // we are in no state, should not happen
-      CLog::Log(LOGERROR, "CMixer::{} - no valid state: {}", __FUNCTION__, m_state);
-      return;
+       CLog::LogF(LOGERROR, "CMixer: no valid state: {}", m_state);
+       return;
     }
   } // for
 }
@@ -2920,8 +2920,8 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
       }
       {
         std::string portName = port == NULL ? "timer" : port->portName;
-        CLog::Log(LOGWARNING, "COutput::{} - signal: {} form port: {} not handled for state: {}",
-                  __FUNCTION__, signal, portName, m_state);
+        CLog::LogF(LOGWARNING, "COutput: signal: {} form port: {} not handled for state: {}",
+                   signal, portName, m_state);
       }
       return;
 
@@ -3079,7 +3079,7 @@ void COutput::StateMachine(int signal, Protocol *port, Message *msg)
       break;
 
     default: // we are in no state, should not happen
-      CLog::Log(LOGERROR, "COutput::{} - no valid state: {}", __FUNCTION__, m_state);
+      CLog::LogF(LOGERROR, "COutput: no valid state: {}", m_state);
       return;
     }
   } // for
@@ -3190,7 +3190,7 @@ void COutput::Flush()
       reply->Release();
     }
     else
-      CLog::Log(LOGERROR, "Coutput::{} - failed to flush mixer", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Coutput: failed to flush mixer");
   }
 
   Message *msg;

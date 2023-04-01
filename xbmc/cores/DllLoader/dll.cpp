@@ -131,7 +131,7 @@ extern "C" int __stdcall dllFreeLibrary(HINSTANCE hLibModule)
 
   if( !dllhandle )
   {
-    CLog::Log(LOGERROR, "{} - Invalid hModule specified", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid hModule specified");
     return 1;
   }
 
@@ -152,7 +152,7 @@ extern "C" intptr_t (*__stdcall dllGetProcAddress(HMODULE hModule, const char* f
 
   if( !dll )
   {
-    CLog::Log(LOGERROR, "{} - Invalid hModule specified", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Invalid hModule specified");
     return NULL;
   }
 
@@ -162,8 +162,8 @@ extern "C" intptr_t (*__stdcall dllGetProcAddress(HMODULE hModule, const char* f
   {
     if( dll->ResolveOrdinal(LOW_WORD(function), &address) )
     {
-      CLog::Log(LOGDEBUG, "{}({}({}), {}) => {}", __FUNCTION__, fmt::ptr(hModule), dll->GetName(),
-                LOW_WORD(function), fmt::ptr(address));
+      CLog::LogF(LOGDEBUG, "({}({}), {}) => {}", fmt::ptr(hModule), dll->GetName(),
+                 LOW_WORD(function), fmt::ptr(address));
     }
     else if( dll->IsSystemDll() )
     {
@@ -176,22 +176,21 @@ extern "C" intptr_t (*__stdcall dllGetProcAddress(HMODULE hModule, const char* f
       if( track )
         tracker_dll_data_track(track->pDll, (uintptr_t)address);
 
-      CLog::Log(LOGDEBUG, "{} - created dummy function {}!{}", __FUNCTION__, dll->GetName(),
-                ordinal);
+      CLog::LogF(LOGDEBUG, "created dummy function {}!{}", dll->GetName(), ordinal);
     }
     else
     {
       address = NULL;
-      CLog::Log(LOGDEBUG, "{}({}({}), '{}') => {}", __FUNCTION__, fmt::ptr(hModule), dll->GetName(),
-                function, fmt::ptr(address));
+      CLog::LogF(LOGDEBUG, "({}({}), '{}') => {}", fmt::ptr(hModule), dll->GetName(), function,
+                 fmt::ptr(address));
     }
   }
   else
   {
     if( dll->ResolveExport(function, &address) )
     {
-      CLog::Log(LOGDEBUG, "{}({}({}), '{}') => {}", __FUNCTION__, fmt::ptr(hModule), dll->GetName(),
-                function, fmt::ptr(address));
+      CLog::LogF(LOGDEBUG, "({}({}), '{}') => {}", fmt::ptr(hModule), dll->GetName(), function,
+                 fmt::ptr(address));
     }
     else
     {
@@ -203,14 +202,13 @@ extern "C" intptr_t (*__stdcall dllGetProcAddress(HMODULE hModule, const char* f
       {
         address = (void*)create_dummy_function(dll->GetName(), function);
         tracker_dll_data_track(track->pDll, (uintptr_t)address);
-        CLog::Log(LOGDEBUG, "{} - created dummy function {}!{}", __FUNCTION__, dll->GetName(),
-                  function);
+        CLog::LogF(LOGDEBUG, "created dummy function {}!{}", dll->GetName(), function);
       }
       else
       {
         address = NULL;
-        CLog::Log(LOGDEBUG, "{}({}({}), '{}') => {}", __FUNCTION__, fmt::ptr(hModule),
-                  dll->GetName(), function, fmt::ptr(address));
+        CLog::LogF(LOGDEBUG, "({}({}), '{}') => {}", fmt::ptr(hModule), dll->GetName(), function,
+                   fmt::ptr(address));
       }
     }
   }

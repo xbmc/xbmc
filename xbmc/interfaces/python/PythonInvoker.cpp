@@ -547,7 +547,7 @@ void CPythonInvoker::onExecutionDone()
   std::unique_lock<CCriticalSection> lock(m_critical);
   if (m_threadState != NULL)
   {
-    CLog::Log(LOGDEBUG, "{}({}, {})", __FUNCTION__, GetId(), m_sourceFile);
+    CLog::LogF(LOGDEBUG, "({}, {})", GetId(), m_sourceFile);
 
     PyEval_RestoreThread(m_threadState);
 

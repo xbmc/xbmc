@@ -40,7 +40,7 @@ void CDatabaseManager::Initialize()
 
   m_dbStatus.clear();
 
-  CLog::Log(LOGDEBUG, "{}, updating databases...", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "updating databases...");
 
   const std::shared_ptr<CAdvancedSettings> advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
 
@@ -57,7 +57,7 @@ void CDatabaseManager::Initialize()
   { CPVRDatabase db; UpdateDatabase(db, &advancedSettings->m_databaseTV); }
   { CPVREpgDatabase db; UpdateDatabase(db, &advancedSettings->m_databaseEpg); }
 
-  CLog::Log(LOGDEBUG, "{}, updating databases... DONE", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "updating databases... DONE");
 
   m_bIsUpgrading = false;
 }

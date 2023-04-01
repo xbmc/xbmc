@@ -103,7 +103,7 @@ void CMusicInfoScanner::Process()
 
     if (m_scanType == 0) // load info from files
     {
-      CLog::Log(LOGDEBUG, "{} - Starting scan", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "Starting scan");
 
       if (m_handle)
         m_handle->SetTitle(g_localizeStrings.Get(505));
@@ -133,8 +133,7 @@ void CMusicInfoScanner::Process()
            * and cleans out all songs under that path as its first step before re-adding files, if
            * the entire source is offline we totally empty the music database in one go.
            */
-          CLog::Log(LOGWARNING, "{} directory '{}' does not exist - skipping scan.", __FUNCTION__,
-                    it);
+          CLog::LogF(LOGWARNING, "directory '{}' does not exist - skipping scan.", it);
           m_seenPaths.insert(it);
           continue;
         }
@@ -271,7 +270,7 @@ void CMusicInfoScanner::Process()
     CLog::Log(LOGERROR, "MusicInfoScanner: Exception while scanning.");
   }
   m_musicDatabase.Close();
-  CLog::Log(LOGDEBUG, "{} - Finished scan", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "Finished scan");
 
   m_bRunning = false;
   CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::AudioLibrary, "OnScanFinished");
@@ -504,11 +503,10 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   if ((m_flags & SCAN_RESCAN) || !m_musicDatabase.GetPathHash(strDirectory, dbHash) || !StringUtils::EqualsNoCase(dbHash, hash))
   { // path has changed - rescan
     if (dbHash.empty())
-      CLog::Log(LOGDEBUG, "{} Scanning dir '{}' as not in the database", __FUNCTION__,
-                CURL::GetRedacted(strDirectory));
+      CLog::LogF(LOGDEBUG, "Scanning dir '{}' as not in the database",
+                 CURL::GetRedacted(strDirectory));
     else
-      CLog::Log(LOGDEBUG, "{} Rescanning dir '{}' due to change", __FUNCTION__,
-                CURL::GetRedacted(strDirectory));
+      CLog::LogF(LOGDEBUG, "Rescanning dir '{}' due to change", CURL::GetRedacted(strDirectory));
 
     if (m_handle)
       m_handle->SetTitle(g_localizeStrings.Get(505)); //"Loading media information from files..."
@@ -529,8 +527,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
   }
   else
   { // path is the same - no need to rescan
-    CLog::Log(LOGDEBUG, "{} Skipping dir '{}' due to no change", __FUNCTION__,
-              CURL::GetRedacted(strDirectory));
+    CLog::LogF(LOGDEBUG, "Skipping dir '{}' due to no change", CURL::GetRedacted(strDirectory));
     m_currentItem += CountFiles(items, false);  // false for non-recursive
 
     // updated the dialog with our progress
@@ -595,7 +592,7 @@ CInfoScanner::INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items,
 
     if (!tag.Loaded() && !pItem->HasCueDocument())
     {
-      CLog::Log(LOGDEBUG, "{} - No tag found for: {}", __FUNCTION__, pItem->GetPath());
+      CLog::LogF(LOGDEBUG, "No tag found for: {}", pItem->GetPath());
       continue;
     }
     else
@@ -1296,7 +1293,7 @@ CMusicInfoScanner::UpdateDatabaseAlbumInfo(CAlbum& album,
   while (!stop)
   {
     stop = true;
-    CLog::Log(LOGDEBUG, "{} downloading info for: {}", __FUNCTION__, album.strAlbum);
+    CLog::LogF(LOGDEBUG, "downloading info for: {}", album.strAlbum);
     albumDownloadStatus = DownloadAlbumInfo(album, scraper, albumInfo, !bAllowSelection, pDialog);
     if (albumDownloadStatus == INFO_NOT_FOUND)
     {
@@ -1377,7 +1374,7 @@ CMusicInfoScanner::UpdateDatabaseArtistInfo(CArtist& artist,
   while (!stop)
   {
     stop = true;
-    CLog::Log(LOGDEBUG, "{} downloading info for: {}", __FUNCTION__, artist.strArtist);
+    CLog::LogF(LOGDEBUG, "downloading info for: {}", artist.strArtist);
     artistDownloadStatus = DownloadArtistInfo(artist, scraper, artistInfo, !bAllowSelection, pDialog);
     if (artistDownloadStatus == INFO_NOT_FOUND)
     {
@@ -1502,7 +1499,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
     result = nfoReader.Create(strNfo, info);
     if (result == CInfoScanner::FULL_NFO)
     {
-      CLog::Log(LOGDEBUG, "{} Got details from nfo", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "Got details from nfo");
       nfoReader.GetDetails(albumInfo.GetAlbum());
       return INFO_ADDED;
     }
@@ -1524,8 +1521,7 @@ CMusicInfoScanner::DownloadAlbumInfo(const CAlbum& album,
 
   if (!scraper.CheckValidOrFallback(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CSettings::SETTING_MUSICLIBRARY_ALBUMSSCRAPER)))
   { // the current scraper is invalid, as is the default - bail
-    CLog::Log(LOGERROR, "{} - current and default scrapers are invalid.  Pick another one",
-              __FUNCTION__);
+    CLog::LogF(LOGERROR, "current and default scrapers are invalid.  Pick another one");
     return INFO_ERROR;
   }
 
@@ -1785,7 +1781,7 @@ CMusicInfoScanner::DownloadArtistInfo(const CArtist& artist,
     result = nfoReader.Create(strNfo, info);
     if (result == CInfoScanner::FULL_NFO)
     {
-      CLog::Log(LOGDEBUG, "{} Got details from nfo", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "Got details from nfo");
       nfoReader.GetDetails(artistInfo.GetArtist());
       return INFO_ADDED;
     }

@@ -116,15 +116,14 @@ void CPipewireStream::StateChanged(void* userdata,
   auto& stream = *reinterpret_cast<CPipewireStream*>(userdata);
   auto& loop = stream.GetCore().GetContext().GetThreadLoop();
 
-  CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream state changed {} -> {}", __FUNCTION__,
-            pw_stream_state_as_string(old), pw_stream_state_as_string(state));
+  CLog::LogF(LOGDEBUG, "CPipewireStream: stream state changed {} -> {}",
+             pw_stream_state_as_string(old), pw_stream_state_as_string(state));
 
   if (state == PW_STREAM_STATE_STREAMING)
-    CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream node {}", __FUNCTION__, stream.GetNodeId());
+    CLog::LogF(LOGDEBUG, "CPipewireStream: stream node {}", stream.GetNodeId());
 
   if (state == PW_STREAM_STATE_ERROR)
-    CLog::Log(LOGDEBUG, "CPipewireStream::{} - stream node {} error: {}", __FUNCTION__,
-              stream.GetNodeId(), error);
+    CLog::LogF(LOGDEBUG, "CPipewireStream: stream node {} error: {}", stream.GetNodeId(), error);
 
   loop.Signal(false);
 }
@@ -144,7 +143,7 @@ void CPipewireStream::Drained(void* userdata)
 
   stream.SetActive(false);
 
-  CLog::Log(LOGDEBUG, "CPipewireStream::{}", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CPipewireStream");
 
   loop.Signal(false);
 }

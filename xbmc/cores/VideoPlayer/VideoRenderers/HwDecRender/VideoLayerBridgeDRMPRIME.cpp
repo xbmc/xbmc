@@ -74,8 +74,7 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
 
   if (!buffer->AcquireDescriptor())
   {
-    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to acquire descriptor",
-              __FUNCTION__);
+    CLog::LogF(LOGERROR, "CVideoLayerBridgeDRMPRIME: failed to acquire descriptor");
     return false;
   }
 
@@ -91,10 +90,10 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
                              &buffer->m_handles[object]);
     if (ret < 0)
     {
-      CLog::Log(LOGERROR,
-                "CVideoLayerBridgeDRMPRIME::{} - failed to convert prime fd {} to gem handle {}, "
-                "ret = {}",
-                __FUNCTION__, descriptor->objects[object].fd, buffer->m_handles[object], ret);
+      CLog::LogF(LOGERROR,
+                 "CVideoLayerBridgeDRMPRIME: failed to convert prime fd {} to gem handle {}, "
+                 "ret = {}",
+                 descriptor->objects[object].fd, buffer->m_handles[object], ret);
       return false;
     }
   }
@@ -123,8 +122,8 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
                                    modifier, &buffer->m_fb_id, flags);
   if (ret < 0)
   {
-    CLog::Log(LOGERROR, "CVideoLayerBridgeDRMPRIME::{} - failed to add fb {}, ret = {}",
-              __FUNCTION__, buffer->m_fb_id, ret);
+    CLog::LogF(LOGERROR, "CVideoLayerBridgeDRMPRIME: failed to add fb {}, ret = {}",
+               buffer->m_fb_id, ret);
     return false;
   }
 

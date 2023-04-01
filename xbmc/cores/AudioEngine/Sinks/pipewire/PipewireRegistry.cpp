@@ -92,8 +92,7 @@ void CPipewireRegistry::OnGlobalRemoved(void* userdata, uint32_t id)
   if (it != globals.end())
   {
     const auto& [globalId, global] = *it;
-    CLog::Log(LOGDEBUG, "CPipewireRegistry::{} - id={} type={}", __FUNCTION__, id,
-              global->GetType());
+    CLog::LogF(LOGDEBUG, "CPipewireRegistry: id={} type={}", id, global->GetType());
 
     globals.erase(it);
   }

@@ -88,7 +88,7 @@ void CBackgroundInfoLoader::Run()
   catch (...)
   {
     m_bIsLoading = false;
-    CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Unhandled exception");
   }
 }
 

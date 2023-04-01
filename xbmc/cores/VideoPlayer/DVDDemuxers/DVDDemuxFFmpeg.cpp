@@ -404,8 +404,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
         pd.buf_size = avio_read(m_ioContext, pd.buf, probeBufferSize);
         if (pd.buf_size <= 0)
         {
-          CLog::Log(LOGERROR, "{} - error reading from input stream, {}", __FUNCTION__,
-                    CURL::GetRedacted(strFile));
+          CLog::LogF(LOGERROR, "error reading from input stream, {}", CURL::GetRedacted(strFile));
           return false;
         }
         memset(pd.buf + pd.buf_size, 0, AVPROBE_PADDING_SIZE);
@@ -442,7 +441,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
             {
               // not dts either, return false in case we were explicitly
               // requested to only check for S/PDIF padded compressed audio
-              CLog::Log(LOGDEBUG, "{} - not spdif or dts file, falling back", __FUNCTION__);
+              CLog::LogF(LOGDEBUG, "not spdif or dts file, falling back");
               return false;
             }
           }
@@ -466,16 +465,15 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
 
       if (!iformat)
       {
-        CLog::Log(LOGERROR, "{} - error probing input format, {}", __FUNCTION__,
-                  CURL::GetRedacted(strFile));
+        CLog::LogF(LOGERROR, "error probing input format, {}", CURL::GetRedacted(strFile));
         return false;
       }
       else
       {
         if (iformat->name)
-          CLog::Log(LOGDEBUG, "{} - probing detected format [{}]", __FUNCTION__, iformat->name);
+          CLog::LogF(LOGDEBUG, "probing detected format [{}]", iformat->name);
         else
-          CLog::Log(LOGDEBUG, "{} - probing detected unnamed format", __FUNCTION__);
+          CLog::LogF(LOGDEBUG, "probing detected unnamed format");
       }
     }
 
@@ -485,7 +483,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
     AVDictionary* options = NULL;
     if (iformat->name && (strcmp(iformat->name, "mp3") == 0 || strcmp(iformat->name, "mp2") == 0))
     {
-      CLog::Log(LOGDEBUG, "{} - setting usetoc to 0 for accurate VBR MP3 seek", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "setting usetoc to 0 for accurate VBR MP3 seek");
       av_dict_set(&options, "usetoc", "0", 0);
     }
 
@@ -500,8 +498,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
 
     if (avformat_open_input(&m_pFormatContext, strFile.c_str(), iformat, &options) < 0)
     {
-      CLog::Log(LOGERROR, "{} - Error, could not open file {}", __FUNCTION__,
-                CURL::GetRedacted(strFile));
+      CLog::LogF(LOGERROR, "Error, could not open file {}", CURL::GetRedacted(strFile));
       Dispose();
       av_dict_free(&options);
       return false;
@@ -555,7 +552,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
     if (m_pInput->IsStreamType(DVDSTREAM_TYPE_DVD))
       av_opt_set_int(m_pFormatContext, "analyzeduration", 500000, 0);
 
-    CLog::Log(LOGDEBUG, "{} - avformat_find_stream_info starting", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "avformat_find_stream_info starting");
     int iErr = avformat_find_stream_info(m_pFormatContext, NULL);
     if (iErr < 0)
     {
@@ -574,7 +571,7 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
         return false;
       }
     }
-    CLog::Log(LOGDEBUG, "{} - av_find_stream_info finished", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "av_find_stream_info finished");
 
     // print some extra information
     av_dump_format(m_pFormatContext, 0, CURL::GetRedacted(strFile).c_str(), 0);
@@ -1280,7 +1277,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
   if (!m_pInput->Seek(0, SEEK_POSSIBLE) &&
       !m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG))
   {
-    CLog::Log(LOGDEBUG, "{} - input stream reports it is not seekable", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "input stream reports it is not seekable");
     return false;
   }
 
@@ -1303,8 +1300,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
 
       if (timer.IsTimePast())
       {
-        CLog::Log(LOGERROR, "CDVDDemuxFFmpeg::{} - Timed out waiting for video to be ready",
-                  __FUNCTION__);
+        CLog::LogF(LOGERROR, "CDVDDemuxFFmpeg: Timed out waiting for video to be ready");
         return false;
       }
     }
@@ -1356,10 +1352,9 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
   }
 
   if (m_currentPts == DVD_NOPTS_VALUE)
-    CLog::Log(LOGDEBUG, "{} - unknown position after seek", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "unknown position after seek");
   else
-    CLog::Log(LOGDEBUG, "{} - seek ended up on time {}", __FUNCTION__,
-              (int)(m_currentPts / DVD_TIME_BASE * 1000));
+    CLog::LogF(LOGDEBUG, "seek ended up on time {}", (int)(m_currentPts / DVD_TIME_BASE * 1000));
 
   // in this case the start time is requested time
   if (startpts)
@@ -1737,8 +1732,7 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
             {
               pStream->codecpar->codec_id = AV_CODEC_ID_MPEG2VIDEO;
               pStream->codecpar->codec_tag = MKTAG('M','P','2','V');
-              CLog::Log(LOGERROR, "{} - AV_CODEC_ID_PROBE detected, forcing AV_CODEC_ID_MPEG2VIDEO",
-                        __FUNCTION__);
+              CLog::LogF(LOGERROR, "AV_CODEC_ID_PROBE detected, forcing AV_CODEC_ID_MPEG2VIDEO");
             }
           }
         }
@@ -2064,7 +2058,7 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
   std::shared_ptr<CDVDInputStream::IChapter> ich = std::dynamic_pointer_cast<CDVDInputStream::IChapter>(m_pInput);
   if (ich)
   {
-    CLog::Log(LOGDEBUG, "{} - chapter seeking using input stream", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "chapter seeking using input stream");
     if (!ich->SeekChapter(chapter))
       return false;
 
@@ -2286,7 +2280,7 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket* pkt)
       const AVCodec* codec = avcodec_find_decoder(st->codecpar->codec_id);
       if (codec == nullptr)
       {
-        CLog::Log(LOGERROR, "{} - can't find decoder", __FUNCTION__);
+        CLog::LogF(LOGERROR, "can't find decoder");
         m_parsers.erase(parser);
         return;
       }
@@ -2501,7 +2495,7 @@ void CDVDDemuxFFmpeg::GetL16Parameters(int &channels, int &samplerate)
             if (val > 0)
               channels = val;
             else
-              CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::{} - no parameter for channels", __FUNCTION__);
+              CLog::LogF(LOGDEBUG, "CDVDDemuxFFmpeg: no parameter for channels");
           }
         }
         else if (content.compare(pos, 5, "rate=", 5) == 0)
@@ -2519,8 +2513,7 @@ void CDVDDemuxFFmpeg::GetL16Parameters(int &channels, int &samplerate)
             if (val > 0)
               samplerate = val;
             else
-              CLog::Log(LOGDEBUG, "CDVDDemuxFFmpeg::{} - no parameter for samplerate",
-                        __FUNCTION__);
+              CLog::LogF(LOGDEBUG, "CDVDDemuxFFmpeg: no parameter for samplerate");
           }
         }
         pos = content.find(';', pos); // find next parameter

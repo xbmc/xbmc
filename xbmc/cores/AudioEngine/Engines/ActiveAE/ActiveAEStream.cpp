@@ -88,7 +88,7 @@ void CActiveAEStream::InitRemapper()
 
   if(needRemap)
   {
-    CLog::Log(LOGDEBUG, "CActiveAEStream::{} - initialize remapper", __FUNCTION__);
+    CLog::LogF(LOGDEBUG, "CActiveAEStream: initialize remapper");
 
     m_remapper = CAEResampleFactory::Create();
     uint64_t avLayout = CAEUtil::GetAVChannelLayout(m_format.m_channelLayout);
@@ -168,7 +168,7 @@ void CActiveAEStream::RemapBuffer()
 
     if (samples != m_currentBuffer->pkt->nb_samples)
     {
-      CLog::Log(LOGERROR, "CActiveAEStream::{} - error remapping", __FUNCTION__);
+      CLog::LogF(LOGERROR, "CActiveAEStream: error remapping");
     }
 
     // swap sound packets

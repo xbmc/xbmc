@@ -487,7 +487,7 @@ void CGUITextureManager::ReleaseTexture(const std::string& strTextureName, bool 
     }
     ++i;
   }
-  CLog::Log(LOGWARNING, "{}: Unable to release texture {}", __FUNCTION__, strTextureName);
+  CLog::LogF(LOGWARNING, "Unable to release texture {}", strTextureName);
 }
 
 void CGUITextureManager::FreeUnusedTextures(unsigned int timeDelay)
@@ -538,7 +538,7 @@ void CGUITextureManager::Cleanup()
   while (i != m_vecTextures.end())
   {
     CTextureMap* pMap = *i;
-    CLog::Log(LOGWARNING, "{}: Having to cleanup texture {}", __FUNCTION__, pMap->GetName());
+    CLog::LogF(LOGWARNING, "Having to cleanup texture {}", pMap->GetName());
     delete pMap;
     i = m_vecTextures.erase(i);
   }

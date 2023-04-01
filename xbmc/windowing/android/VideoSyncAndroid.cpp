@@ -22,7 +22,7 @@
 
 bool CVideoSyncAndroid::Setup(PUPDATECLOCK func)
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncAndroid::{} setting up", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CVideoSyncAndroid: setting up");
 
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
@@ -43,7 +43,7 @@ void CVideoSyncAndroid::Run(CEvent& stopEvent)
 
 void CVideoSyncAndroid::Cleanup()
 {
-  CLog::Log(LOGDEBUG, "CVideoSyncAndroid::{} cleaning up", __FUNCTION__);
+  CLog::LogF(LOGDEBUG, "CVideoSyncAndroid: cleaning up");
   CXBMCApp::Get().DeinitFrameCallback();
   CServiceBroker::GetWinSystem()->Unregister(this);
 }
@@ -51,8 +51,7 @@ void CVideoSyncAndroid::Cleanup()
 float CVideoSyncAndroid::GetFps()
 {
   m_fps = CServiceBroker::GetWinSystem()->GetGfxContext().GetFPS();
-  CLog::Log(LOGDEBUG, "CVideoSyncAndroid::{} Detected refreshrate: {:f} hertz", __FUNCTION__,
-            m_fps);
+  CLog::LogF(LOGDEBUG, "CVideoSyncAndroid: Detected refreshrate: {:f} hertz", m_fps);
   return m_fps;
 }
 

@@ -192,7 +192,7 @@ void CPowerManager::OnSleep()
   if (dialog)
     dialog->Open();
 
-  CLog::Log(LOGINFO, "{}: Running sleep jobs", __FUNCTION__);
+  CLog::LogF(LOGINFO, "Running sleep jobs");
 
   StorePlayerState();
 
@@ -208,7 +208,7 @@ void CPowerManager::OnSleep()
 
 void CPowerManager::OnWake()
 {
-  CLog::Log(LOGINFO, "{}: Running resume jobs", __FUNCTION__);
+  CLog::LogF(LOGINFO, "Running resume jobs");
 
   CServiceBroker::GetNetwork().WaitForNet();
 
@@ -245,7 +245,7 @@ void CPowerManager::OnWake()
 
 void CPowerManager::OnLowBattery()
 {
-  CLog::Log(LOGINFO, "{}: Running low battery jobs", __FUNCTION__);
+  CLog::LogF(LOGINFO, "Running low battery jobs");
 
   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
 

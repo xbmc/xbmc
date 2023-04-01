@@ -47,7 +47,7 @@ void CViewDatabase::CreateTables()
 
 void CViewDatabase::CreateAnalytics()
 {
-  CLog::Log(LOGINFO, "{} - creating indices", __FUNCTION__);
+  CLog::LogF(LOGINFO, "creating indices");
   m_pDS->exec("CREATE INDEX idxViews ON view(path)");
   m_pDS->exec("CREATE INDEX idxViewsWindow ON view(window)");
 }
@@ -145,7 +145,7 @@ bool CViewDatabase::GetViewState(const std::string &path, int window, CViewState
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{}, failed on path '{}'", __FUNCTION__, path);
+    CLog::LogF(LOGERROR, "failed on path '{}'", path);
   }
   return false;
 }
@@ -183,7 +183,7 @@ bool CViewDatabase::SetViewState(const std::string &path, int window, const CVie
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on path '{}'", __FUNCTION__, path);
+    CLog::LogF(LOGERROR, "failed on path '{}'", path);
   }
   return true;
 }
@@ -202,7 +202,7 @@ bool CViewDatabase::ClearViewStates(int windowID)
   }
   catch (...)
   {
-    CLog::Log(LOGERROR, "{} failed on window '{}'", __FUNCTION__, windowID);
+    CLog::LogF(LOGERROR, "failed on window '{}'", windowID);
   }
   return true;
 }

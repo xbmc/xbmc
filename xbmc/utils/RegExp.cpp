@@ -253,7 +253,7 @@ CRegExp& CRegExp::operator=(const CRegExp& re)
         m_iOptions = re.m_iOptions;
       }
       else
-        CLog::Log(LOGFATAL, "{}: Failed to allocate memory", __FUNCTION__);
+        CLog::LogF(LOGFATAL, "Failed to allocate memory");
     }
   }
   return *this;
@@ -300,8 +300,7 @@ bool CRegExp::RegComp(const char *re, studyMode study /*= NoStudy*/)
     m_sd = pcre_study(m_re, studyOptions, &errMsg);
     if (errMsg != NULL)
     {
-      CLog::Log(LOGWARNING, "{}: PCRE error \"{}\" while studying expression", __FUNCTION__,
-                errMsg);
+      CLog::LogF(LOGWARNING, "PCRE error \"{}\" while studying expression", errMsg);
       if (m_sd != NULL)
       {
         pcre_free_study(m_sd);
@@ -343,7 +342,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
 
   if (startoffset > bufferLen)
   {
-    CLog::Log(LOGERROR, "{}: startoffset is beyond end of string to match", __FUNCTION__);
+    CLog::LogF(LOGERROR, "startoffset is beyond end of string to match");
     return -1;
   }
 
@@ -352,7 +351,7 @@ int CRegExp::PrivateRegFind(size_t bufferLen, const char *str, unsigned int star
   {
     m_jitStack = pcre_jit_stack_alloc(32*1024, 512*1024);
     if (m_jitStack == NULL)
-      CLog::Log(LOGWARNING, "{}: can't allocate address space for JIT stack", __FUNCTION__);
+      CLog::LogF(LOGWARNING, "can't allocate address space for JIT stack");
 
     pcre_assign_jit_stack(m_sd, NULL, m_jitStack);
   }

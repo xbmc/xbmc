@@ -843,7 +843,7 @@ bool CVideoPlayer::OpenDemuxStream()
     }
     else if(!m_pDemuxer && m_pInputStream->NextStream() != CDVDInputStream::NEXTSTREAM_NONE)
     {
-      CLog::Log(LOGDEBUG, "{} - New stream available from input, retry open", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "New stream available from input, retry open");
       continue;
     }
     break;
@@ -851,7 +851,7 @@ bool CVideoPlayer::OpenDemuxStream()
 
   if (!m_pDemuxer)
   {
-    CLog::Log(LOGERROR, "{} - Error creating demuxer", __FUNCTION__);
+    CLog::LogF(LOGERROR, "Error creating demuxer");
     return false;
   }
 
@@ -1036,8 +1036,7 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
       stream = m_pSubtitleDemuxer->GetStream(packet->demuxerId, packet->iStreamId);
       if (!stream)
       {
-        CLog::Log(LOGERROR, "{} - Error demux packet doesn't belong to a valid stream",
-                  __FUNCTION__);
+        CLog::LogF(LOGERROR, "Error demux packet doesn't belong to a valid stream");
         return false;
       }
       if (stream->source == STREAM_SOURCE_NONE)
@@ -1084,8 +1083,7 @@ bool CVideoPlayer::ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream)
       stream = m_pDemuxer->GetStream(packet->demuxerId, packet->iStreamId);
       if (!stream)
       {
-        CLog::Log(LOGERROR, "{} - Error demux packet doesn't belong to a valid stream",
-                  __FUNCTION__);
+        CLog::LogF(LOGERROR, "Error demux packet doesn't belong to a valid stream");
         return false;
       }
       if(stream->source == STREAM_SOURCE_NONE)
@@ -1288,8 +1286,7 @@ void CVideoPlayer::Prepare()
       starttime = m_Edl.GetTimeAfterRestoringCuts(
           static_cast<int>(m_playerOptions.starttime * 1000)); // s to ms
     }
-    CLog::Log(LOGDEBUG, "{} - Start position set to last stopped position: {}", __FUNCTION__,
-              starttime);
+    CLog::LogF(LOGDEBUG, "Start position set to last stopped position: {}", starttime);
   }
   else if (m_Edl.InEdit(starttime, &edit))
   {
@@ -1300,16 +1297,14 @@ void CVideoPlayer::Prepare()
     if (edit.action == EDL::Action::CUT)
     {
       starttime = edit.end;
-      CLog::Log(LOGDEBUG, "{} - Start position set to end of first cut: {}", __FUNCTION__,
-                starttime);
+      CLog::LogF(LOGDEBUG, "Start position set to end of first cut: {}", starttime);
     }
     else if (edit.action == EDL::Action::COMM_BREAK)
     {
       if (m_SkipCommercials)
       {
         starttime = edit.end;
-        CLog::Log(LOGDEBUG, "{} - Start position set to end of first commercial break: {}",
-                  __FUNCTION__, starttime);
+        CLog::LogF(LOGDEBUG, "Start position set to end of first commercial break: {}", starttime);
       }
 
       const std::shared_ptr<CAdvancedSettings> advancedSettings =
@@ -1331,19 +1326,18 @@ void CVideoPlayer::Prepare()
       if (m_pDemuxer->SeekTime(starttime, true, &startpts))
       {
         FlushBuffers(starttime / 1000 * AV_TIME_BASE, true, true);
-        CLog::Log(LOGDEBUG, "{} - starting demuxer from: {}", __FUNCTION__, starttime);
+        CLog::LogF(LOGDEBUG, "starting demuxer from: {}", starttime);
       }
       else
-        CLog::Log(LOGDEBUG, "{} - failed to start demuxing from: {}", __FUNCTION__, starttime);
+        CLog::LogF(LOGDEBUG, "failed to start demuxing from: {}", starttime);
     }
 
     if (m_pSubtitleDemuxer)
     {
       if(m_pSubtitleDemuxer->SeekTime(starttime, true, &startpts))
-        CLog::Log(LOGDEBUG, "{} - starting subtitle demuxer from: {}", __FUNCTION__, starttime);
+        CLog::LogF(LOGDEBUG, "starting subtitle demuxer from: {}", starttime);
       else
-        CLog::Log(LOGDEBUG, "{} - failed to start subtitle demuxing from: {}", __FUNCTION__,
-                  starttime);
+        CLog::LogF(LOGDEBUG, "failed to start subtitle demuxing from: {}", starttime);
     }
 
     m_clock.Discontinuity(DVD_MSEC_TO_TIME(starttime));
@@ -1556,7 +1550,7 @@ void CVideoPlayer::Process()
       }
 
       if (!m_pInputStream->IsEOF())
-        CLog::Log(LOGINFO, "{} - eof reading from demuxer", __FUNCTION__);
+        CLog::LogF(LOGINFO, "eof reading from demuxer");
 
       break;
     }
@@ -2220,14 +2214,14 @@ bool CVideoPlayer::CheckPlayerInit(CCurrentStream& current)
   {
     if(current.dts == DVD_NOPTS_VALUE)
     {
-      CLog::Log(LOGDEBUG, "{} - dropping packet type:{} dts:{:f} to get to start point at {:f}",
-                __FUNCTION__, current.player, current.dts, current.startpts);
+      CLog::LogF(LOGDEBUG, "dropping packet type:{} dts:{:f} to get to start point at {:f}",
+                 current.player, current.dts, current.startpts);
       return true;
     }
 
     if ((current.startpts - current.dts) > DVD_SEC_TO_TIME(20))
     {
-      CLog::Log(LOGDEBUG, "{} - too far to decode before finishing seek", __FUNCTION__);
+      CLog::LogF(LOGDEBUG, "too far to decode before finishing seek");
       if(m_CurrentAudio.startpts != DVD_NOPTS_VALUE)
         m_CurrentAudio.startpts = current.dts;
       if(m_CurrentVideo.startpts != DVD_NOPTS_VALUE)
@@ -2244,8 +2238,8 @@ bool CVideoPlayer::CheckPlayerInit(CCurrentStream& current)
 
     if(current.dts < current.startpts)
     {
-      CLog::Log(LOGDEBUG, "{} - dropping packet type:{} dts:{:f} to get to start point at {:f}",
-                __FUNCTION__, current.player, current.dts, current.startpts);
+      CLog::LogF(LOGDEBUG, "dropping packet type:{} dts:{:f} to get to start point at {:f}",
+                 current.player, current.dts, current.startpts);
       return true;
     }
   }
@@ -2425,9 +2419,9 @@ void CVideoPlayer::CheckAutoSceneSkip()
     if ((m_playSpeed > 0 && correctClock < (edit.start + 1000)) ||
         (m_playSpeed < 0 && correctClock < (edit.end - 1000)))
     {
-      CLog::Log(LOGDEBUG, "{} - Clock in EDL cut [{} - {}]: {}. Automatically skipping over.",
-                __FUNCTION__, CEdl::MillisecondsToTimeString(edit.start),
-                CEdl::MillisecondsToTimeString(edit.end), CEdl::MillisecondsToTimeString(clock));
+      CLog::LogF(LOGDEBUG, "Clock in EDL cut [{} - {}]: {}. Automatically skipping over.",
+                 CEdl::MillisecondsToTimeString(edit.start),
+                 CEdl::MillisecondsToTimeString(edit.end), CEdl::MillisecondsToTimeString(clock));
 
       // Seeking either goes to the start or the end of the cut depending on the play direction.
       int seek = m_playSpeed >= 0 ? edit.end : edit.start;
@@ -2466,11 +2460,11 @@ void CVideoPlayer::CheckAutoSceneSkip()
 
       if (m_SkipCommercials)
       {
-        CLog::Log(LOGDEBUG,
-                  "{} - Clock in commercial break [{} - {}]: {}. Automatically skipping to end of "
-                  "commercial break",
-                  __FUNCTION__, CEdl::MillisecondsToTimeString(edit.start),
-                  CEdl::MillisecondsToTimeString(edit.end), CEdl::MillisecondsToTimeString(clock));
+        CLog::LogF(LOGDEBUG,
+                   "Clock in commercial break [{} - {}]: {}. Automatically skipping to end of "
+                   "commercial break",
+                   CEdl::MillisecondsToTimeString(edit.start),
+                   CEdl::MillisecondsToTimeString(edit.end), CEdl::MillisecondsToTimeString(clock));
 
         CDVDMsgPlayerSeek::CMode mode;
         mode.time = edit.end;
@@ -3567,7 +3561,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
       pts = 0;
     pts += m_offset_pts;
     if (!m_pSubtitleDemuxer->SeekTime((int)(1000.0 * pts / (double)DVD_TIME_BASE)))
-      CLog::Log(LOGDEBUG, "{} - failed to start subtitle demuxing from: {:f}", __FUNCTION__, pts);
+      CLog::LogF(LOGDEBUG, "failed to start subtitle demuxing from: {:f}", pts);
     stream = m_pSubtitleDemuxer->GetStream(demuxerId, iStream);
     if(!stream || stream->disabled)
       return false;
@@ -3660,8 +3654,7 @@ bool CVideoPlayer::OpenStream(CCurrentStream& current, int64_t demuxerId, int iS
     if(stream)
     {
       /* mark stream as disabled, to disallow further attempts*/
-      CLog::Log(LOGWARNING, "{} - Unsupported stream {}. Stream disabled.", __FUNCTION__,
-                stream->uniqueId);
+      CLog::LogF(LOGWARNING, "Unsupported stream {}. Stream disabled.", stream->uniqueId);
       stream->disabled = true;
     }
   }
@@ -4321,7 +4314,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
           {
             THREAD_ACTION(action);
             /* this will force us out of the stillframe */
-            CLog::Log(LOGDEBUG, "{} - User asked to exit stillframe", __FUNCTION__);
+            CLog::LogF(LOGDEBUG, "User asked to exit stillframe");
             m_dvd.iDVDStillStartTime = {};
             m_dvd.iDVDStillTime = 1ms;
           }

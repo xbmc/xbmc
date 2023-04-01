@@ -397,7 +397,7 @@ void CArchive::FlushBuffer()
   if (m_iMode == store && m_BufferPos != m_pBuffer.get())
   {
     if (m_pFile->Write(m_pBuffer.get(), m_BufferPos - m_pBuffer.get()) != m_BufferPos - m_pBuffer.get())
-      CLog::Log(LOGERROR, "{}: Error flushing buffer", __FUNCTION__);
+      CLog::LogF(LOGERROR, "Error flushing buffer");
     else
     {
       m_BufferPos = m_pBuffer.get();
@@ -445,9 +445,9 @@ CArchive &CArchive::streamin_bufferwrap(uint8_t *ptr, size_t size)
       FillBuffer();
       if (m_BufferRemain < CARCHIVE_BUFFER_MAX && m_BufferRemain < size)
       {
-        CLog::Log(LOGERROR, "{}: can't stream in: requested {} bytes, was read {} bytes",
-                  __FUNCTION__, static_cast<unsigned long>(orig_size),
-                  static_cast<unsigned long>(ptr - orig_ptr + m_BufferRemain));
+        CLog::LogF(LOGERROR, "can't stream in: requested {} bytes, was read {} bytes",
+                   static_cast<unsigned long>(orig_size),
+                   static_cast<unsigned long>(ptr - orig_ptr + m_BufferRemain));
 
         memset(orig_ptr, 0, orig_size);
         return *this;
