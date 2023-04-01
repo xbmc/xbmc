@@ -45,6 +45,13 @@ static NSMenu* setupWindowMenu()
   menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
   [windowMenu addItem:menuItem];
 
+  // "Hide" item
+  menuItem = [[NSMenuItem alloc] initWithTitle:@"Hide"
+                                        action:@selector(hideAppAction:)
+                                 keyEquivalent:@"h"];
+  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
+  [windowMenu addItem:menuItem];
+
   // "Minimize" item
   menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize"
                                         action:@selector(performMiniaturize:)
@@ -97,9 +104,26 @@ static NSMenu* setupWindowMenu()
                                                        keyEquivalent:@"t"];
   floatOnTopMenuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
   [windowMenu addItem:floatOnTopMenuItem];
+
+  NSMenuItem* hideMenuItem = [[NSMenuItem alloc] initWithTitle:@"Hide"
+                                                        action:@selector(hideAppAction:)
+                                                 keyEquivalent:@"h"];
+  hideMenuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
+  [windowMenu addItem:hideMenuItem];
+
   [windowMenu addItemWithTitle:@"Minimize"
                         action:@selector(performMiniaturize:)
                  keyEquivalent:@"m"];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem*)item
+{
+  // validate if the hide menu item should be shown
+  if ([item.title isEqual:@"Hide"] && [[NSApplication sharedApplication] isHidden])
+  {
+    return NO;
+  }
+  return YES;
 }
 
 // Called after the internal event loop has started running.
@@ -276,6 +300,11 @@ static NSMenu* setupWindowMenu()
                         ? NSControlStateValueOn
                         : NSControlStateValueOff)];
   CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFLOATONTOP);
+}
+
+- (void)hideAppAction:(id)sender
+{
+  [[NSApplication sharedApplication] hide:sender];
 }
 
 - (NSMenu*)applicationDockMenu:(NSApplication*)sender

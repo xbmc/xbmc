@@ -150,9 +150,6 @@
                                                    static_cast<void*>(action));
         return true;
       }
-      case XBMCK_h: // CMD-h to hide (but we minimize for now)
-        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_MINIMIZE);
-        return true;
 
       default:
         return false;
