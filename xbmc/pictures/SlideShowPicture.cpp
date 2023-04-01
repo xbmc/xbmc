@@ -411,7 +411,7 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
     */
     m_iCounter++;
   }
-  if (m_iCounter > m_transitionEnd.start + m_transitionEnd.length)
+  if (m_iCounter >= m_transitionEnd.start + m_transitionEnd.length)
     m_bIsFinished = true;
 
   RESOLUTION_INFO info = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
