@@ -148,9 +148,9 @@ bool CDVDVideoCodecStarfish::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
           payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]
                     ["encryptionType"] = "clear"; //"clear", "bl", "el", "all"
           payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]["profileId"] =
-              5; // profile 0-9
+              m_hints.dovi.dv_profile; // profile 0-9
           payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]["trackType"] =
-              "single"; // "single" / "dual"
+              m_hints.dovi.el_present_flag ? "dual" : "single"; // "single" / "dual"
         }
       }
 
