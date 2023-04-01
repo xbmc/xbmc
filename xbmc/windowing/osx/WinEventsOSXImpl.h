@@ -12,11 +12,7 @@
 
 #import <Foundation/Foundation.h>
 
-#ifdef __OBJC__
 @class NSEvent;
-#else
-struct NSEvent;
-#endif
 
 @interface CWinEventsOSXImpl : NSObject
 
