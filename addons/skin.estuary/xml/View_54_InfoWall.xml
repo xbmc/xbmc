@@ -254,16 +254,28 @@
 					<include condition="$PARAM[focused]">Animation_FocusTextureFade</include>
 				</control>
 				<control type="textbox">
-					<left>40</left>
+					<left>65</left>
 					<top>244</top>
-					<width>242</width>
+					<width>190</width>
 					<height>120</height>
 					<font>font27</font>
 					<align>center</align>
 					<aligny>center</aligny>
 					<label>$INFO[ListItem.Label]</label>
 					<autoscroll time="2000" delay="3000" repeat="5000">$PARAM[focused]</autoscroll>
-					<visible>!ListItem.IsParentFolder</visible>
+					<visible>!ListItem.IsParentFolder + !String.IsEqual(ListItem.DBtype,tvshow)</visible>
+				</control>
+				<control type="textbox">
+					<left>65</left>
+					<top>220</top>
+					<width>190</width>
+					<height>120</height>
+					<font>font27</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+					<autoscroll time="2000" delay="3000" repeat="5000">$PARAM[focused]</autoscroll>
+					<visible>!ListItem.IsParentFolder + String.IsEqual(ListItem.DBtype,tvshow)</visible>
 				</control>
 				<control type="image">
 					<left>24</left>
@@ -304,7 +316,7 @@
 					<width>80</width>
 					<height>80</height>
 					<texture>overlays/overlay-bg.png</texture>
-					<visible>Listitem.IsCollection | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0)</visible>
+					<visible>Listitem.IsCollection | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0) | !Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
 				</control>
 			</control>
 			<control type="group">

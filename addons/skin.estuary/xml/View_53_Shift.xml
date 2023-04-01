@@ -20,7 +20,7 @@
 				</control>
 				<control type="image">
 					<left>0</left>
-					<top>35</top>
+					<top>10</top>
 					<width>100%</width>
 					<height>190</height>
 					<texture colordiffuse="E6FFFFFF">dialogs/dialog-bg-nobo.png</texture>
@@ -30,11 +30,11 @@
 				<visible>Control.IsVisible(53)</visible>
 				<include>Visible_Right</include>
 				<include>OpenClose_Right</include>
-				<top>160</top>
+				<top>140</top>
 				<control type="image">
-					<left>600</left>
-					<top>600</top>
-					<width>340</width>
+					<left>605</left>
+					<top>620</top>
+					<width>330</width>
 					<height>110</height>
 					<visible>Control.HasFocus(53)</visible>
 					<animation effect="fade" time="200">VisibleChange</animation>
@@ -48,7 +48,7 @@
 					<left>-150</left>
 					<top>0</top>
 					<width>111%</width>
-					<height>695</height>
+					<height>715</height>
 					<focusposition>1</focusposition>
 					<movement>0</movement>
 					<pagecontrol>5199</pagecontrol>
@@ -62,179 +62,10 @@
 					<preloaditems>1</preloaditems>
 					<viewtype label="31100">icon</viewtype>
 					<itemlayout width="370">
-						<control type="image">
-							<left>0</left>
-							<top>90</top>
-							<width>370</width>
-							<height>480</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-							<bordersize>20</bordersize>
-							<visible>String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
-						</control>
-						<control type="image">
-							<depth>DepthContentPopout</depth>
-							<left>0</left>
-							<top>90</top>
-							<width>370</width>
-							<height>480</height>
-							<aspectratio aligny="center">keep</aspectratio>
-							<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-							<bordersize>20</bordersize>
-						</control>
-						<control type="textbox">
-							<left>20</left>
-							<top>603</top>
-							<width>330</width>
-							<height>105</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-						<control type="group">
-							<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
-							<control type="image">
-								<left>35</left>
-								<top>500</top>
-								<width>298</width>
-								<height>50</height>
-								<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
-								<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
-							</control>
-							<control type="label">
-								<left>0</left>
-								<top>522</top>
-								<width>292</width>
-								<height>24</height>
-								<label>$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</label>
-								<font>font20_title</font>
-								<shadowcolor>text_shadow</shadowcolor>
-								<align>right</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="image">
-								<left>302</left>
-								<top>522</top>
-								<width>24</width>
-								<height>24</height>
-								<texture>lists/played-total.png</texture>
-								<align>right</align>
-								<aligny>center</aligny>
-							</control>
-						</control>
-						<control type="image">
-							<left>35</left>
-							<top>518</top>
-							<width>32</width>
-							<height>32</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<texture>$VAR[WallWatchedIconVar]</texture>
-						</control>
-						<control type="group">
-							<left>158</left>
-							<top>92</top>
-							<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
-						</control>
-						<control type="progress">
-							<left>32</left>
-							<top>530</top>
-							<width>298</width>
-							<height>1</height>
-							<texturebg></texturebg>
-							<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
-							<info>ListItem.PercentPlayed</info>
-							<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
-						</control>
+						<include>ShiftFixedListLayout</include>
 					</itemlayout>
 					<focusedlayout width="370">
-						<control type="image">
-							<left>0</left>
-							<top>90</top>
-							<width>370</width>
-							<height>480</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-							<bordersize>20</bordersize>
-							<visible>String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
-						</control>
-						<control type="image">
-							<depth>DepthContentPopout</depth>
-							<left>0</left>
-							<top>90</top>
-							<width>370</width>
-							<height>480</height>
-							<aspectratio aligny="center">keep</aspectratio>
-							<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-							<bordersize>20</bordersize>
-						</control>
-						<control type="textbox">
-							<left>20</left>
-							<top>603</top>
-							<width>330</width>
-							<height>105</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-							<autoscroll time="3000" delay="3000" repeat="3000">True</autoscroll>
-						</control>
-						<control type="group">
-							<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
-							<control type="image">
-								<left>35</left>
-								<top>500</top>
-								<width>298</width>
-								<height>50</height>
-								<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
-								<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
-							</control>
-							<control type="label">
-								<left>0</left>
-								<top>522</top>
-								<width>292</width>
-								<height>24</height>
-								<label>$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</label>
-								<font>font20_title</font>
-								<shadowcolor>text_shadow</shadowcolor>
-								<align>right</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="image">
-								<left>302</left>
-								<top>522</top>
-								<width>24</width>
-								<height>24</height>
-								<texture>lists/played-total.png</texture>
-								<align>right</align>
-								<aligny>center</aligny>
-							</control>
-						</control>
-						<control type="image">
-							<left>35</left>
-							<top>518</top>
-							<width>32</width>
-							<height>32</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<texture>$VAR[WallWatchedIconVar]</texture>
-						</control>
-						<control type="group">
-							<left>158</left>
-							<top>92</top>
-							<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
-						</control>
-						<control type="progress">
-							<left>32</left>
-							<top>530</top>
-							<width>298</width>
-							<height>1</height>
-							<texturebg></texturebg>
-							<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
-							<info>ListItem.PercentPlayed</info>
-							<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
-						</control>
+						<include>ShiftFixedListLayout</include>
 					</focusedlayout>
 				</control>
 			</control>
@@ -290,13 +121,126 @@
 			</control>
 		</control>
 	</include>
+	<include name="ShiftFixedListLayout">
+		<definition>
+			<control type="image">
+				<left>0</left>
+				<top>80</top>
+				<width>370</width>
+				<height>515</height>
+				<texture>dialogs/dialog-bg-nobo.png</texture>
+				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+				<visible>String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
+			</control>
+			<control type="image">
+				<depth>DepthContentPopout</depth>
+				<left>0</left>
+				<top>80</top>
+				<width>370</width>
+				<height>515</height>
+				<aspectratio aligny="center">keep</aspectratio>
+				<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
+				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+				<visible>String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
+			</control>
+			<control type="image">
+				<depth>DepthContentPopout</depth>
+				<left>0</left>
+				<top>80</top>
+				<width>370</width>
+				<height>515</height>
+				<aspectratio aligny="center">scale</aspectratio>
+				<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
+				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+				<visible>!String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
+			</control>
+			<control type="textbox">
+				<left>25</left>
+				<top>630</top>
+				<width>320</width>
+				<height>90</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+			</control>
+			<control type="group">
+				<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
+				<control type="image">
+					<left>20</left>
+					<top>525</top>
+					<width>330</width>
+					<height>50</height>
+					<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
+					<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
+				</control>
+				<control type="label">
+					<left>0</left>
+					<top>545</top>
+					<width>302</width>
+					<height>24</height>
+					<label>$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</label>
+					<font>font20_title</font>
+					<shadowcolor>text_shadow</shadowcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+				</control>
+				<control type="image">
+					<left>312</left>
+					<top>545</top>
+					<width>24</width>
+					<height>24</height>
+					<texture>lists/played-total.png</texture>
+					<align>right</align>
+					<aligny>center</aligny>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Listitem.IsCollection | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0) | !Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+				<control type="image">
+					<left>20</left>
+					<top>495</top>
+					<width>80</width>
+					<height>80</height>
+					<texture>overlays/overlay-bg.png</texture>
+					<visible>!String.IsEqual(ListItem.DBtype,tvshow) + !String.IsEmpty(ListItem.Art(poster))</visible>
+				</control>
+				<control type="image">
+					<left>25</left>
+					<top>541</top>
+					<width>32</width>
+					<height>32</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<texture>$VAR[WallWatchedIconVar]</texture>
+				</control>
+			</control>	
+			<control type="group">
+				<left>158</left>
+				<top>82</top>
+				<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
+			</control>
+			<control type="progress">
+				<left>20</left>
+				<top>555</top>
+				<width>330</width>
+				<height>1</height>
+				<texturebg></texturebg>
+				<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
+				<info>ListItem.PercentPlayed</info>
+				<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+			</control>
+		</definition>
+	</include>
 	<include name="ShiftTextbox">
 		<control type="group">
 			<animation effect="fade" time="200" start="0" end="100" condition="!String.IsEmpty(Control.GetLabel($PARAM[textbox_id]))">Conditional</animation>
 			<animation effect="fade" time="200" start="100" end="0" condition="String.IsEmpty(Control.GetLabel($PARAM[textbox_id]))">Conditional</animation>
 			<control type="textbox" id="$PARAM[textbox_id]">
 				<left>30</left>
-				<top>45</top>
+				<top>20</top>
 				<right>30</right>
 				<height>163</height>
 				<label>$PARAM[textbox_content]</label>
