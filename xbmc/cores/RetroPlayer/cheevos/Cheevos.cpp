@@ -8,11 +8,15 @@
 
 #include "Cheevos.h"
 
+#include "FileItem.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/CurlFile.h"
 #include "filesystem/File.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/cheevos/GameClientCheevos.h"
+#include "games/tags/GameInfoTag.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -29,8 +33,13 @@ constexpr auto SUCCESS = "Success";
 constexpr auto GAME_ID = "GameID";
 constexpr auto PATCH_DATA = "PatchData";
 constexpr auto RICH_PRESENCE = "RichPresencePatch";
+constexpr auto GAME_TITLE = "Title";
+constexpr auto PUBLISHER = "Publisher";
+constexpr auto DEVELOPER = "Developer";
+constexpr auto GENRE = "Genre";
+constexpr auto CONSOLE_NAME = "ConsoleName";
 
-constexpr int RESPORNSE_SIZE = 64;
+constexpr int RESPONSE_SIZE = 64;
 } // namespace
 
 CCheevos::CCheevos(GAME::CGameClient* gameClient,
@@ -75,8 +84,8 @@ bool CCheevos::LoadData()
   response.CURLCreate(requestURL);
   response.CURLOpen(0);
 
-  char responseStr[RESPORNSE_SIZE];
-  response.ReadString(responseStr, RESPORNSE_SIZE);
+  char responseStr[RESPONSE_SIZE];
+  response.ReadString(responseStr, RESPONSE_SIZE);
 
   response.Close();
 
@@ -107,6 +116,18 @@ bool CCheevos::LoadData()
 
   m_richPresenceScript = data[PATCH_DATA][RICH_PRESENCE].asString();
   m_richPresenceLoaded = true;
+
+  std::unique_ptr<CFileItem> file{std::make_unique<CFileItem>()};
+
+  GAME::CGameInfoTag& tag = *file->GetGameInfoTag();
+  tag.SetTitle(data[PATCH_DATA][GAME_TITLE].asString());
+  tag.SetPublisher(data[PATCH_DATA][PUBLISHER].asString());
+  tag.SetDeveloper(data[PATCH_DATA][DEVELOPER].asString());
+  tag.SetGenres({data[PATCH_DATA][GENRE].asString()});
+  tag.SetPlatform(data[PATCH_DATA][CONSOLE_NAME].asString());
+
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_PLAYER_ITEM, -1, -1,
+                                             static_cast<void*>(file.release()));
 
   return true;
 }
