@@ -350,7 +350,7 @@ Function .onInit
     ${Endif}
   !else
     ${If} ${RunningX64}
-      MessageBox MB_YESNO|MB_ICONEXCLAMATION|MB_DEFBUTTON2 'There is a specific 64-bit ${APP_NAME} version available for download. Please consider installing the 64-bit version instead.$\nFor details visit ${WEBSITE}.$\nProceed with 32-bit installation anyway?' IDYES noprob
+      MessageBox MB_YESNO|MB_ICONEXCLAMATION|MB_DEFBUTTON2 'There is a specific 64-bit ${APP_NAME} version available for download. Please consider installing the 64-bit version instead.$\nFor details visit ${WEBSITE}.$\nProceed with 32-bit installation anyway?' /SD IDYES IDYES noprob
       Quit
       noprob:
     ${Endif}
