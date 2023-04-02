@@ -12,8 +12,10 @@
 #include "StringUtils.h"
 #include "guilib/IDirtyRegionSolver.h"
 #include "log.h"
+#include "rendering/RenderSystem.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "windowing/WinSystem.h"
 
 #include <map>
 
@@ -185,6 +187,8 @@ CEGLContextUtils::CEGLContextUtils(EGLenum platform, std::string const& platform
   }
 
   m_platformSupported = CEGLUtils::HasClientExtension("EGL_EXT_platform_base") && CEGLUtils::HasClientExtension(platformExtension);
+  m_eglSetDamageRegionKHR =
+      (PFNEGLSETDAMAGEREGIONKHRPROC)eglGetProcAddress("eglSetDamageRegionKHR");
 }
 
 bool CEGLContextUtils::IsPlatformSupported() const
@@ -290,11 +294,6 @@ bool CEGLContextUtils::ChooseConfig(EGLint renderableType, EGLint visualId, bool
   }
 
   EGLint surfaceType = EGL_WINDOW_BIT;
-  // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
-  int guiAlgorithmDirtyRegions = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions;
-  if (guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
-      guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
-    surfaceType |= EGL_SWAP_BEHAVIOR_PRESERVED_BIT;
 
   CEGLAttributesVec attribs;
   attribs.Add({{EGL_RED_SIZE, 8},
@@ -454,15 +453,10 @@ void CEGLContextUtils::SurfaceAttrib()
     throw std::logic_error("Setting surface attributes requires a surface");
   }
 
-  // for the non-trivial dirty region modes, we need the EGL buffer to be preserved across updates
-  int guiAlgorithmDirtyRegions = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiAlgorithmDirtyRegions;
-  if (guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_COST_REDUCTION ||
-      guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_UNION)
+  if (eglSurfaceAttrib(m_eglDisplay, m_eglSurface, EGL_SWAP_BEHAVIOR, EGL_BUFFER_DESTROYED) !=
+      EGL_TRUE)
   {
-    if (eglSurfaceAttrib(m_eglDisplay, m_eglSurface, EGL_SWAP_BEHAVIOR, EGL_BUFFER_PRESERVED) != EGL_TRUE)
-    {
-      CEGLUtils::Log(LOGERROR, "failed to set EGL_BUFFER_PRESERVED swap behavior");
-    }
+    CEGLUtils::Log(LOGERROR, "failed to set EGL_BUFFER_DESTROYED swap behavior");
   }
 }
 
@@ -595,4 +589,49 @@ bool CEGLContextUtils::TrySwapBuffers()
   }
 
   return (eglSwapBuffers(m_eglDisplay, m_eglSurface) == EGL_TRUE);
+}
+
+int32_t CEGLContextUtils::GetBufferAge()
+{
+  int32_t bufferAge = 2;
+  if (CEGLUtils::HasExtension(m_eglDisplay, "EGL_KHR_partial_update"))
+    eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_BUFFER_AGE_KHR, &bufferAge);
+  else if (CEGLUtils::HasExtension(m_eglDisplay, "EGL_EXT_buffer_age"))
+    eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_BUFFER_AGE_EXT, &bufferAge);
+
+  return bufferAge;
+}
+
+bool CEGLContextUtils::HasDamagedRegionSupport()
+{
+  return CEGLUtils::HasExtension(m_eglDisplay, "EGL_KHR_partial_update");
+}
+
+void CEGLContextUtils::SetDamagedRegions(const CDirtyRegionList& dirtyRegions)
+{
+  if (!CEGLUtils::HasExtension(m_eglDisplay, "EGL_KHR_partial_update"))
+    return;
+
+  std::vector<EGLint> rects;
+  if (dirtyRegions.empty())
+  {
+    rects.push_back((EGLint)0);
+    rects.push_back((EGLint)0);
+    rects.push_back((EGLint)0);
+    rects.push_back((EGLint)0);
+  }
+  else
+  {
+    EGLint height = CServiceBroker().GetWinSystem()->GetHeight();
+    for (const auto& i : dirtyRegions)
+    {
+      if (i.IsEmpty())
+        continue;
+      rects.push_back((EGLint)i.x1);
+      rects.push_back(height - (EGLint)i.y2);
+      rects.push_back((EGLint)i.Width());
+      rects.push_back((EGLint)i.Height());
+    }
+  }
+  m_eglSetDamageRegionKHR(m_eglDisplay, m_eglSurface, rects.data(), rects.size() / 4);
 }

@@ -10,16 +10,10 @@
 
 #include "IDirtyRegionSolver.h"
 
-#if defined(TARGET_DARWIN_EMBEDDED)
-#define DEFAULT_BUFFERING 4
-#else
-#define DEFAULT_BUFFERING 3
-#endif
-
 class CDirtyRegionTracker
 {
 public:
-  explicit CDirtyRegionTracker(int buffering = DEFAULT_BUFFERING);
+  explicit CDirtyRegionTracker();
   ~CDirtyRegionTracker();
   void SelectAlgorithm();
   void MarkDirtyRegion(const CDirtyRegion &region);
@@ -30,6 +24,5 @@ public:
 
 private:
   CDirtyRegionList m_markedRegions;
-  int m_buffering;
   IDirtyRegionSolver *m_solver;
 };

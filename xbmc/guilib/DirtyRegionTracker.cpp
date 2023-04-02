@@ -13,12 +13,12 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
+#include "windowing/WinSystem.h"
 
 #include <stdio.h>
 
-CDirtyRegionTracker::CDirtyRegionTracker(int buffering)
+CDirtyRegionTracker::CDirtyRegionTracker()
 {
-  m_buffering = buffering;
   m_solver = NULL;
 }
 
@@ -76,7 +76,10 @@ CDirtyRegionList CDirtyRegionTracker::GetDirtyRegions()
 
 void CDirtyRegionTracker::CleanMarkedRegions()
 {
-  int buffering = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiVisualizeDirtyRegions ? 20 : m_buffering;
+  int32_t buffering = CServiceBroker::GetWinSystem()->GetBufferAge() + 1;
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiVisualizeDirtyRegions)
+    buffering = 20;
+
   int i = m_markedRegions.size() - 1;
   while (i >= 0)
 	{

@@ -541,3 +541,11 @@ void CGLContextEGL::QueryExtensions()
 
   CLog::Log(LOGDEBUG, "EGL_EXTENSIONS:{}", m_extensions);
 }
+
+int32_t CGLContextEGL::GetBufferAge()
+{
+  EGLint bufferAge = 2;
+  if (IsExtSupported("EGL_EXT_buffer_age"))
+    eglQuerySurface(m_eglDisplay, m_eglSurface, EGL_BUFFER_AGE_KHR, &bufferAge);
+  return bufferAge;
+}

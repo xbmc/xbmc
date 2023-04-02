@@ -11,6 +11,7 @@
 #include "EGL/egl.h"
 #include "WinSystemX11.h"
 #include "rendering/gles/RenderSystemGLES.h"
+#include "windowing/X11/GLContextEGL.h"
 
 class CGLContextEGL;
 
@@ -45,6 +46,8 @@ public:
   EGLSurface GetEGLSurface() const;
   EGLContext GetEGLContext() const;
   EGLConfig GetEGLConfig() const;
+
+  int32_t GetBufferAge() override { return m_pGLContext->GetBufferAge(); }
 
 protected:
   bool SetWindow(int width, int height, bool fullscreen, const std::string& output, int* winstate = nullptr) override;

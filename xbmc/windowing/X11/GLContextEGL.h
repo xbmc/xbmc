@@ -36,6 +36,8 @@ public:
   void QueryExtensions() override;
   uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval) override;
 
+  int32_t GetBufferAge() override;
+
   EGLint m_renderingApi;
   EGLDisplay m_eglDisplay = EGL_NO_DISPLAY;
   EGLSurface m_eglSurface = EGL_NO_SURFACE;

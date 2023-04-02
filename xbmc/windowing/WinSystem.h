@@ -14,6 +14,7 @@
 #include "VideoSync.h"
 #include "WinEvents.h"
 #include "cores/VideoPlayer/VideoRenderers/DebugInfo.h"
+#include "guilib/DirtyRegion.h"
 #include "guilib/DispResource.h"
 #include "utils/HDRCapabilities.h"
 
@@ -200,6 +201,32 @@ public:
   virtual DEBUG_INFO_RENDER GetDebugInfo() { return {}; }
 
   virtual std::vector<std::string> GetConnectedOutputs() { return {}; }
+
+  /*!
+   * @brief Queries the age of the current backbuffer.
+   *
+   * @return Returns the buffer age. Usual values are: 1 for double buffering,
+   * 2 for triple buffering.
+   *
+   * @note Should be called once before any draw call, as it triggers damaged
+   * regions rendering.
+   */
+  virtual int32_t GetBufferAge() { return 2; }
+  /*!
+   * @brief Queries the GPU driver if it supports damaged regions.
+   *
+   * @return Returns true if the driver supports damaged regions.
+   *
+   * @note Especially tilers should support it. See EGL_KHR_partial_update for
+   * more info.
+   */
+  virtual bool HasDamagedRegionSupport() { return false; }
+  /*!
+   * @brief Sets the damaged regions.
+   *
+   * @param damagedRegions The list which regions need to be redrawn.
+   */
+  virtual void SetDamagedRegions(const CDirtyRegionList& damagedRegions){};
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);

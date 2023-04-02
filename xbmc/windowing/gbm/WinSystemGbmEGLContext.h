@@ -34,6 +34,13 @@ public:
                        RESOLUTION_INFO& res) override;
   bool DestroyWindow() override;
 
+  int32_t GetBufferAge() override { return m_eglContext.GetBufferAge(); };
+  bool HasDamagedRegionSupport() override { return m_eglContext.HasDamagedRegionSupport(); };
+  void SetDamagedRegions(const CDirtyRegionList& damagedRegions) override
+  {
+    m_eglContext.SetDamagedRegions(damagedRegions);
+  };
+
 protected:
   CWinSystemGbmEGLContext(EGLenum platform, std::string const& platformExtension)
     : CWinSystemEGL{platform, platformExtension}

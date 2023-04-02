@@ -340,6 +340,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
 
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;
+    bool m_guiHardwareDirtyRegions{false};
     bool m_guiSmartRedraw;
     unsigned int m_addonPackageFolderSize;
 
