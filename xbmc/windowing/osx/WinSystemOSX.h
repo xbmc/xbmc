@@ -52,6 +52,7 @@ public:
   bool Minimize() override;
   bool Restore() override;
   bool Hide() override;
+  bool HasCursor() override;
   bool Show(bool raise = true) override;
   void OnMove(int x, int y) override;
 
@@ -127,5 +128,6 @@ protected:
   bool m_delayDispReset;
   XbmcThreads::EndTime<> m_dispResetTimer;
   bool m_fullscreenWillToggle;
+  bool m_hasCursor{false};
   CCriticalSection m_critSection;
 };
