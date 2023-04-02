@@ -15,11 +15,7 @@
 #include <memory>
 
 struct CWinEventsOSXImplWrapper;
-#ifdef __OBJC__
 @class NSEvent;
-#else
-struct NSEvent;
-#endif
 
 class CWinEventsOSX : public IWinEvents, public CThread
 {
