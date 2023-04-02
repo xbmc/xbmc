@@ -409,18 +409,23 @@ void CDVDVideoCodecStarfish::SetCodecControl(int flags)
   if (m_codecControlFlags != flags)
   {
     CLog::LogFC(LOGDEBUG, LOGVIDEO, "{:x}->{:x}", m_codecControlFlags, flags);
-
-    if ((flags & DVD_CODEC_CTRL_DRAIN) && !(m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
-    {
-      m_starfishMediaAPI->Pause();
-    }
-
-    if (!(flags & DVD_CODEC_CTRL_DRAIN) && (m_codecControlFlags & DVD_CODEC_CTRL_DRAIN))
-    {
-      m_starfishMediaAPI->Play();
-    }
-
     m_codecControlFlags = flags;
+  }
+}
+
+void CDVDVideoCodecStarfish::SetSpeed(int iSpeed)
+{
+  switch (iSpeed)
+  {
+    case DVD_PLAYSPEED_NORMAL:
+      m_starfishMediaAPI->Play();
+      break;
+    case DVD_PLAYSPEED_PAUSE:
+      m_starfishMediaAPI->Pause();
+      break;
+    default:
+      CLog::Log(LOGWARNING, "CDVDVideoCodecStarfish::SetSpeed unknown playback speed");
+      break;
   }
 }
 
