@@ -231,6 +231,8 @@ public:
 #endif
 private:
   void RenderPass() const;
+  void RenderPassSingle() const;
+  void RenderPassDual() const;
 
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();

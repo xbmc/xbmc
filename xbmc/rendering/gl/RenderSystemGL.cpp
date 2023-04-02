@@ -130,6 +130,8 @@ bool CRenderSystemGL::InitRenderSystem()
   if (tmpRenderer != NULL)
     m_RenderRenderer = tmpRenderer;
 
+  MatchGPUArchitecture();
+
   m_bRenderCreated = true;
 
   if (m_RenderVersionMajor > 3 ||
@@ -266,7 +268,9 @@ bool CRenderSystemGL::EndRender()
   return true;
 }
 
-bool CRenderSystemGL::ClearBuffers(UTILS::COLOR::Color color)
+bool CRenderSystemGL::ClearBuffers(UTILS::COLOR::Color color,
+                                   bool forceClearColor,
+                                   bool forceClearDepth)
 {
   if (!m_bRenderCreated)
     return false;
@@ -275,14 +279,27 @@ bool CRenderSystemGL::ClearBuffers(UTILS::COLOR::Color color)
   if(m_stereoMode == RENDER_STEREO_MODE_INTERLACED && m_stereoView == RENDER_STEREO_VIEW_RIGHT)
     return true;
 
-  float r = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color) / 255.0f;
-  float g = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color) / 255.0f;
-  float b = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color) / 255.0f;
-  float a = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color) / 255.0f;
+  GLbitfield flags = 0;
 
-  glClearColor(r, g, b, a);
+  if (forceClearColor || m_isTileBasedGPU)
+  {
+    float r = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color) / 255.0f;
+    float g = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color) / 255.0f;
+    float b = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color) / 255.0f;
+    float a = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color) / 255.0f;
 
-  GLbitfield flags = GL_COLOR_BUFFER_BIT;
+    glClearColor(r, g, b, a);
+
+    flags = GL_COLOR_BUFFER_BIT;
+  }
+
+  if (forceClearDepth)
+  {
+    flags |= GL_DEPTH_BUFFER_BIT;
+    glClearDepthf(0);
+    glDepthMask(true);
+  };
+
   glClear(flags);
 
   return true;
@@ -503,6 +520,27 @@ void CRenderSystemGL::SetScissors(const CRect &rect)
 void CRenderSystemGL::ResetScissors()
 {
   SetScissors(CRect(0, 0, (float)m_width, (float)m_height));
+}
+
+void CRenderSystemGL::SetDepthCulling(DEPTH_CULLING culling)
+{
+  if (culling == DEPTH_CULLING_OFF)
+  {
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+  }
+  else if (culling == DEPTH_CULLING_BACK_TO_FRONT)
+  {
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+    glDepthFunc(GL_GEQUAL);
+  }
+  else if (culling == DEPTH_CULLING_FRONT_TO_BACK)
+  {
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_GREATER);
+  }
 }
 
 void CRenderSystemGL::GetGLSLVersion(int& major, int& minor)
@@ -791,6 +829,14 @@ GLint CRenderSystemGL::ShaderGetCoord1()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetCord1Loc();
+
+  return -1;
+}
+
+GLint CRenderSystemGL::ShaderGetDepth()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetDepthLoc();
 
   return -1;
 }

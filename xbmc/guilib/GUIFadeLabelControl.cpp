@@ -170,6 +170,9 @@ bool CGUIFadeLabelControl::UpdateColors(const CGUIListItem* item)
 
 void CGUIFadeLabelControl::Render()
 {
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+      RENDER_ORDER_FRONT_TO_BACK)
+    return;
   if (!m_label.font)
   { // nothing to render
     CGUIControl::Render();

@@ -49,6 +49,7 @@ public:
   void SetAutoScrolling(const TiXmlNode *node);
   void SetAutoScrolling(int delay, int time, int repeatTime, const std::string &condition = "");
   void ResetAutoScrolling();
+  void AssignDepth() override;
 
   bool GetCondition(int condition, int data) const override;
   virtual std::string GetLabel(int info) const;

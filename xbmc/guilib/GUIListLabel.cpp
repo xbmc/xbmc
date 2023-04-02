@@ -67,6 +67,9 @@ void CGUIListLabel::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
 void CGUIListLabel::Render()
 {
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+      RENDER_ORDER_FRONT_TO_BACK)
+    return;
   m_label.Render();
   CGUIControl::Render();
 }

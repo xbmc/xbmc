@@ -21,6 +21,13 @@
  *   This interface is very basic since a lot of the actual details will go in to the derived classes
  */
 
+enum DEPTH_CULLING
+{
+  DEPTH_CULLING_OFF = 0,
+  DEPTH_CULLING_BACK_TO_FRONT,
+  DEPTH_CULLING_FRONT_TO_BACK,
+};
+
 class CGUIImage;
 class CGUITextLayout;
 
@@ -37,7 +44,9 @@ public:
   virtual bool BeginRender() = 0;
   virtual bool EndRender() = 0;
   virtual void PresentRender(bool rendered, bool videoLayer) = 0;
-  virtual bool ClearBuffers(UTILS::COLOR::Color color) = 0;
+  virtual bool ClearBuffers(UTILS::COLOR::Color color,
+                            bool forceClearColor = true,
+                            bool forceClearDepth = true) = 0;
   virtual bool IsExtSupported(const char* extension) const = 0;
 
   virtual void SetViewPort(const CRect& viewPort) = 0;
@@ -48,6 +57,8 @@ public:
   virtual CRect ClipRectToScissorRect(const CRect &rect) { return CRect(); }
   virtual void SetScissors(const CRect &rect) = 0;
   virtual void ResetScissors() = 0;
+
+  virtual void SetDepthCulling(DEPTH_CULLING culling) {}
 
   virtual void CaptureStateBlock() = 0;
   virtual void ApplyStateBlock() = 0;
@@ -74,10 +85,13 @@ public:
   virtual bool SupportsStereo(RENDER_STEREO_MODE mode) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
+  bool IsTileBasedGPU() const { return m_isTileBasedGPU; }
 
   virtual void ShowSplash(const std::string& message);
 
 protected:
+  void MatchGPUArchitecture();
+
   bool                m_bRenderCreated;
   bool                m_bVSync;
   unsigned int        m_maxTextureSize;
@@ -88,6 +102,7 @@ protected:
   std::string   m_RenderVersion;
   int          m_RenderVersionMinor;
   int          m_RenderVersionMajor;
+  bool m_isTileBasedGPU{false};
   RENDER_STEREO_VIEW m_stereoView = RENDER_STEREO_VIEW_OFF;
   RENDER_STEREO_MODE m_stereoMode = RENDER_STEREO_MODE_OFF;
   bool m_limitedColorRange = false;

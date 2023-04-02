@@ -49,6 +49,7 @@ void CGLShader::OnCompiledAndLinked()
   // Variables passed directly to the Vertex shader
   m_hProj = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel = glGetUniformLocation(ProgramHandle(), "m_model");
+  m_hDepth = glGetUniformLocation(ProgramHandle(), "m_depth");
 
   // Vertex attributes
   m_hPos = glGetAttribLocation(ProgramHandle(),  "m_attrpos");

@@ -14,6 +14,7 @@
 #include "guilib/GUILabelControl.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/log.h"
 
 CRenderSystemBase::CRenderSystemBase()
 {
@@ -68,7 +69,7 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
   }
 
   CServiceBroker::GetWinSystem()->GetGfxContext().lock();
-  CServiceBroker::GetWinSystem()->GetGfxContext().Clear();
+  CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0);
 
   RESOLUTION_INFO res = CServiceBroker::GetWinSystem()->GetGfxContext().GetResInfo();
   CServiceBroker::GetWinSystem()->GetGfxContext().SetRenderingResolution(res, true);
@@ -108,3 +109,22 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
   CServiceBroker::GetWinSystem()->GetGfxContext().Flip(true, false);
 }
 
+void CRenderSystemBase::MatchGPUArchitecture()
+{
+  std::vector<std::string> manufactures{
+      "Arm", "ARM", "Mali", "MALI", "Broadcom", "BROADCOM", "VC4", "VC6",
+  };
+
+  for (const auto& manufacturer : manufactures)
+  {
+    if ((m_RenderVendor.find(manufacturer) != std::string::npos) ||
+        (m_RenderRenderer.find(manufacturer) != std::string::npos))
+    {
+      CLog::Log(LOGINFO, "Tile-Based Rendering GPU detected");
+      m_isTileBasedGPU = true;
+      return;
+    }
+  }
+
+  CLog::Log(LOGINFO, "Immediate Rendering GPU detected");
+}

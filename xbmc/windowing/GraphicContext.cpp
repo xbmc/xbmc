@@ -580,9 +580,16 @@ void CGraphicContext::ResetScreenParameters(RESOLUTION res)
   ResetOverscan(res, info.Overscan);
 }
 
+void CGraphicContext::Clear()
+{
+  bool twoPassRendering = m_renderOrder != RENDER_ORDER_ALL_BACK_TO_FRONT;
+  CServiceBroker::GetRenderSystem()->ClearBuffers(0xff000000, false, twoPassRendering);
+}
+
 void CGraphicContext::Clear(UTILS::COLOR::Color color)
 {
-  CServiceBroker::GetRenderSystem()->ClearBuffers(color);
+  bool twoPassRendering = m_renderOrder != RENDER_ORDER_ALL_BACK_TO_FRONT;
+  CServiceBroker::GetRenderSystem()->ClearBuffers(color, true, twoPassRendering);
 }
 
 void CGraphicContext::CaptureStateBlock()
@@ -822,6 +829,22 @@ void CGraphicContext::RestoreStereoFactor()
   UpdateCameraPosition(m_cameras.top(), m_stereoFactors.top());
 }
 
+float CGraphicContext::GetNormalizedDepth(uint32_t depth)
+{
+  float normalizedDepth = static_cast<float>(depth);
+  normalizedDepth /= m_layer;
+  normalizedDepth = normalizedDepth * 2 - 1;
+  return normalizedDepth;
+}
+
+float CGraphicContext::GetTransformDepth(int32_t depthOffset)
+{
+  float depth = static_cast<float>(m_finalTransform.matrix.depth + depthOffset);
+  depth /= m_layer;
+  depth = depth * 2 - 1;
+  return depth;
+}
+
 CRect CGraphicContext::GenerateAABB(const CRect &rect) const
 {
 // ------------------------
@@ -1004,6 +1027,23 @@ void CGraphicContext::GetAllowedResolutions(std::vector<RESOLUTION> &res)
   {
     res.push_back((RESOLUTION) r);
   }
+}
+
+void CGraphicContext::SetRenderOrder(RENDER_ORDER renderOrder)
+{
+  m_renderOrder = renderOrder;
+  if (renderOrder == RENDER_ORDER_ALL_BACK_TO_FRONT)
+    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING_OFF);
+  else if (renderOrder == RENDER_ORDER_BACK_TO_FRONT)
+    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING_BACK_TO_FRONT);
+  else if (renderOrder == RENDER_ORDER_FRONT_TO_BACK)
+    CServiceBroker::GetRenderSystem()->SetDepthCulling(DEPTH_CULLING_FRONT_TO_BACK);
+}
+
+uint32_t CGraphicContext::GetDepth(uint32_t addLayers)
+{
+  m_layer += addLayers;
+  return m_layer;
 }
 
 void CGraphicContext::SetFPS(float fps)

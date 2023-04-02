@@ -36,6 +36,7 @@ public:
     m[2][0] = m[2][1] = m[2][3] = 0.0f; m[2][2] = 1.0f;
     alpha = red = green = blue = 1.0f;
     identity = true;
+    depth = 0;
   };
   static TransformMatrix CreateTranslation(float transX, float transY, float transZ = 0)
   {
@@ -50,6 +51,7 @@ public:
     m[2][0] = m[2][1] = 0.0f; m[2][2] = 1.0f; m[2][3] = transZ;
     alpha = red = green = blue = 1.0f;
     identity = (transX == 0 && transY == 0 && transZ == 0);
+    depth = 0;
   }
   static TransformMatrix CreateScaler(float scaleX, float scaleY, float scaleZ = 1.0f)
   {
@@ -69,6 +71,7 @@ public:
     m[2][0] = 0.0f;    m[2][1] = 0.0f;    m[2][2] = scaleZ;  m[2][3] = centerZ*(1-scaleZ);
     alpha = red = green = blue = 1.0f;
     identity = (scaleX == 1 && scaleY == 1);
+    depth = 0;
   };
   void SetXRotation(float angle, float y, float z, float ar = 1.0f)
   { // angle about the X axis, centered at y,z where our coordinate system has aspect ratio ar.
@@ -79,6 +82,7 @@ public:
     m[2][0] = 0.0f;  m[2][1] = s;     m[2][2] = c;      m[2][3] = (-y*s-c*z) + z;
     alpha = red = green = blue = 1.0f;
     identity = (angle == 0);
+    depth = 0;
   }
   void SetYRotation(float angle, float x, float z, float ar = 1.0f)
   { // angle about the Y axis, centered at x,z where our coordinate system has aspect ratio ar.
@@ -89,6 +93,7 @@ public:
     m[2][0] = ar*s;  m[2][1] = 0.0f;  m[2][2] = c;      m[2][3] = -ar*x*s - c*z + z;
     alpha = red = green = blue = 1.0f;
     identity = (angle == 0);
+    depth = 0;
   }
   static TransformMatrix CreateZRotation(float angle, float x, float y, float ar = 1.0f)
   { // angle about the Z axis, centered at x,y where our coordinate system has aspect ratio ar.
@@ -106,6 +111,7 @@ public:
     m[2][0] = 0.0f;  m[2][1] = 0.0f;   m[2][2] = 1.0f;  m[2][3] = 0.0f;
     alpha = red = green = blue = 1.0f;
     identity = (angle == 0);
+    depth = 0;
   }
   static TransformMatrix CreateFader(float a)
   {
@@ -127,6 +133,7 @@ public:
     alpha = a;
     red = green = blue = 1.0f;
     identity = (a == 1.0f);
+    depth = 0;
   }
 
   void SetFader(float a, float r, float g, float b)
@@ -139,6 +146,7 @@ public:
     green = g;
     blue = b;
     identity = ((a == 1.0f) && (r == 1.0f) && (g == 1.0f) && (b == 1.0f));
+    depth = 0;
   }
 
   // multiplication operators
@@ -171,6 +179,7 @@ public:
     green *= right.green;
     blue *= right.blue;
     identity = false;
+    depth = std::max(depth, right.depth);
     return *this;
   }
 
@@ -198,6 +207,7 @@ public:
     result.green = green * right.green;
     result.blue = blue * right.blue;
     result.identity = false;
+    result.depth = std::max(depth, right.depth);
     return result;
   }
 
@@ -278,12 +288,14 @@ public:
   float green;
   float blue;
   bool identity;
+  uint32_t depth{0};
 };
 
 inline bool operator==(const TransformMatrix &a, const TransformMatrix &b)
 {
   bool comparison =
       a.alpha == b.alpha && a.red == b.red && a.green == b.green && a.blue == b.blue &&
+      a.depth == b.depth &&
       ((a.identity && b.identity) ||
        (!a.identity && !b.identity &&
         std::equal(&a.m[0][0], &a.m[0][0] + sizeof(a.m) / sizeof(a.m[0][0]), &b.m[0][0])));

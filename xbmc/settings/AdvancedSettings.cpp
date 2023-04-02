@@ -1243,6 +1243,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "visualizedirtyregions", m_guiVisualizeDirtyRegions);
     XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
     XMLUtils::GetBoolean(pElement, "smartredraw", m_guiSmartRedraw);
+    XMLUtils::GetBoolean(pElement, "fronttobackrendering", m_guiFrontToBackRendering);
   }
 
   std::string seekSteps;

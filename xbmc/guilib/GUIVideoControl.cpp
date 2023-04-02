@@ -38,6 +38,9 @@ void CGUIVideoControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
 
 void CGUIVideoControl::Render()
 {
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+      RENDER_ORDER_FRONT_TO_BACK)
+    return;
   auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer->IsRenderingVideo())

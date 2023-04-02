@@ -99,6 +99,8 @@ bool CRenderSystemGLES::InitRenderSystem()
 
   LogGraphicsInfo();
 
+  MatchGPUArchitecture();
+
   m_bRenderCreated = true;
 
   InitialiseShaders();
@@ -184,19 +186,34 @@ bool CRenderSystemGLES::EndRender()
   return true;
 }
 
-bool CRenderSystemGLES::ClearBuffers(UTILS::COLOR::Color color)
+bool CRenderSystemGLES::ClearBuffers(UTILS::COLOR::Color color,
+                                     bool forceClearColor,
+                                     bool forceClearDepth)
 {
   if (!m_bRenderCreated)
     return false;
 
-  float r = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color) / 255.0f;
-  float g = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color) / 255.0f;
-  float b = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color) / 255.0f;
-  float a = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color) / 255.0f;
+  GLbitfield flags = 0;
 
-  glClearColor(r, g, b, a);
+  if (forceClearColor || m_isTileBasedGPU)
+  {
+    float r = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::R, color) / 255.0f;
+    float g = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::G, color) / 255.0f;
+    float b = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::B, color) / 255.0f;
+    float a = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color) / 255.0f;
 
-  GLbitfield flags = GL_COLOR_BUFFER_BIT;
+    glClearColor(r, g, b, a);
+
+    flags = GL_COLOR_BUFFER_BIT;
+  }
+
+  if (forceClearDepth)
+  {
+    flags |= GL_DEPTH_BUFFER_BIT;
+    glClearDepthf(0);
+    glDepthMask(true);
+  }
+
   glClear(flags);
 
   return true;
@@ -378,6 +395,27 @@ void CRenderSystemGLES::SetScissors(const CRect &rect)
 void CRenderSystemGLES::ResetScissors()
 {
   SetScissors(CRect(0, 0, (float)m_width, (float)m_height));
+}
+
+void CRenderSystemGLES::SetDepthCulling(DEPTH_CULLING culling)
+{
+  if (culling == DEPTH_CULLING_OFF)
+  {
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+  }
+  else if (culling == DEPTH_CULLING_BACK_TO_FRONT)
+  {
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+    glDepthFunc(GL_GEQUAL);
+  }
+  else if (culling == DEPTH_CULLING_FRONT_TO_BACK)
+  {
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_GREATER);
+  }
 }
 
 void CRenderSystemGLES::InitialiseShaders()
@@ -603,6 +641,14 @@ GLint CRenderSystemGLES::GUIShaderGetCoord1()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetCord1Loc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetDepth()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetDepthLoc();
 
   return -1;
 }

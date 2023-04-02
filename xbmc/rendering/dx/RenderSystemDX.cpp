@@ -328,10 +328,15 @@ bool CRenderSystemDX::EndRender()
   return true;
 }
 
-bool CRenderSystemDX::ClearBuffers(UTILS::COLOR::Color color)
+bool CRenderSystemDX::ClearBuffers(UTILS::COLOR::Color color,
+                                   bool forceClearColor,
+                                   bool forceClearDepth)
 {
   if (!m_bRenderCreated)
     return false;
+
+  if (!forceClearColor)
+    return true;
 
   float fColor[4];
   CD3DHelper::XMStoreColor(fColor, color);

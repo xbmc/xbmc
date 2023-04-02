@@ -48,6 +48,9 @@ void CGUISettingsSliderControl::Render()
 {
   m_buttonControl.Render();
   CGUISliderControl::Render();
+  if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+      RENDER_ORDER_FRONT_TO_BACK)
+    return;
   m_label.Render();
 }
 

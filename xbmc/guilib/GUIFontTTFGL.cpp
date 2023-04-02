@@ -127,6 +127,7 @@ void CGUIFontTTFGL::LastEnd()
   GLint colLoc = renderSystem->ShaderGetCol();
   GLint tex0Loc = renderSystem->ShaderGetCoord0();
   GLint modelLoc = renderSystem->ShaderGetModel();
+  GLint depthLoc = renderSystem->ShaderGetDepth();
 
   CreateStaticVertexBuffers();
 
@@ -166,6 +167,9 @@ void CGUIFontTTFGL::LastEnd()
                           reinterpret_cast<const GLvoid*>(offsetof(SVertex, r)));
     glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, GL_FALSE, sizeof(SVertex),
                           reinterpret_cast<const GLvoid*>(offsetof(SVertex, u)));
+
+    float depth = CServiceBroker::GetWinSystem()->GetGfxContext().GetTransformDepth();
+    glUniform1f(depthLoc, depth);
 
     glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
 
@@ -207,6 +211,10 @@ void CGUIFontTTFGL::LastEnd()
       glMatrixModview.Get().Translatef(m_vertexTrans[i].m_translateX, m_vertexTrans[i].m_translateY,
                                        m_vertexTrans[i].m_translateZ);
       glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glMatrixModview.Get());
+
+      // Apply the depth value of the layer
+      float depth = CServiceBroker::GetWinSystem()->GetGfxContext().GetTransformDepth();
+      glUniform1f(depthLoc, depth);
 
       // Bind the buffer to the OpenGL context's GL_ARRAY_BUFFER binding point
       glBindBuffer(GL_ARRAY_BUFFER, m_vertexTrans[i].m_vertexBuffer->bufferHandle);

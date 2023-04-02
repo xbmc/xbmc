@@ -34,6 +34,7 @@ void main ()
 {
   mat4 mvp = m_proj * m_model;
   gl_Position = mvp * m_attrpos;
+  gl_Position.z = -1. * gl_Position.w;
   m_cordY = m_attrcordY;
   m_cordU = m_attrcordU;
   m_cordV = m_attrcordV;

@@ -114,11 +114,14 @@ void CGUITextureGLES::End()
     GLint tex0Loc = m_renderSystem->GUIShaderGetCoord0();
     GLint tex1Loc = m_renderSystem->GUIShaderGetCoord1();
     GLint uniColLoc = m_renderSystem->GUIShaderGetUniCol();
+    GLint depthLoc = m_renderSystem->GUIShaderGetDepth();
 
     if(uniColLoc >= 0)
     {
       glUniform4f(uniColLoc,(m_col[0] / 255.0f), (m_col[1] / 255.0f), (m_col[2] / 255.0f), (m_col[3] / 255.0f));
     }
+
+    glUniform1f(depthLoc, m_depth);
 
     if(m_diffuse.size())
     {
@@ -234,7 +237,8 @@ void CGUITextureGLES::Draw(float *x, float *y, float *z, const CRect &texture, c
 void CGUITextureGLES::DrawQuad(const CRect& rect,
                                UTILS::COLOR::Color color,
                                CTexture* texture,
-                               const CRect* texCoords)
+                               const CRect* texCoords,
+                               const float depth)
 {
   CRenderSystemGLES *renderSystem = dynamic_cast<CRenderSystemGLES*>(CServiceBroker::GetRenderSystem());
   if (texture)
@@ -261,6 +265,7 @@ void CGUITextureGLES::DrawQuad(const CRect& rect,
   GLint posLoc   = renderSystem->GUIShaderGetPos();
   GLint tex0Loc  = renderSystem->GUIShaderGetCoord0();
   GLint uniColLoc= renderSystem->GUIShaderGetUniCol();
+  GLint depthLoc = renderSystem->GUIShaderGetDepth();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
   if (texture)
@@ -277,6 +282,7 @@ void CGUITextureGLES::DrawQuad(const CRect& rect,
   col[3] = KODI::UTILS::GL::GetChannelFromARGB(KODI::UTILS::GL::ColorChannel::A, color);
 
   glUniform4f(uniColLoc, col[0] / 255.0f, col[1] / 255.0f, col[2] / 255.0f, col[3] / 255.0f);
+  glUniform1f(depthLoc, depth);
 
   ver[0][0] = ver[3][0] = rect.x1;
   ver[0][1] = ver[1][1] = rect.y1;
