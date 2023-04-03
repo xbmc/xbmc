@@ -93,7 +93,7 @@ public:
                  unsigned int maxWidth,
                  unsigned int maxHeight,
                  float pixelAspectRatio);
-  std::vector<VideoStreamBuffer> GetVideoBuffers(unsigned int width, unsigned int height);
+  bool GetVideoBuffer(unsigned int width, unsigned int height, VideoStreamBuffer& buffer);
   void AddFrame(const uint8_t* data,
                 size_t size,
                 unsigned int width,
