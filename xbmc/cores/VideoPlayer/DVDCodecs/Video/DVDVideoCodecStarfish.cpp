@@ -77,6 +77,12 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
   CVariant payloadArg;
   CVariant payloadArgs;
 
+  if (hints.cryptoSession)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecStarfish::OpenInternal CryptoSessions unsupported");
+    return false;
+  }
+
   if (!hints.width || !hints.height)
   {
     CLog::Log(LOGERROR, "CDVDVideoCodecStarfish::OpenInternal - {}", "null size, cannot handle");
