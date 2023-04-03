@@ -126,6 +126,11 @@ bool CRPRenderManager::Configure(AVPixelFormat format,
 std::vector<VideoStreamBuffer> CRPRenderManager::GetVideoBuffers(unsigned int width,
                                                                  unsigned int height)
 {
+  // Clear any previous pending buffers
+  for (IRenderBuffer* buffer : m_pendingBuffers)
+    buffer->Release();
+  m_pendingBuffers.clear();
+
   std::vector<VideoStreamBuffer> buffers;
 
   if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
