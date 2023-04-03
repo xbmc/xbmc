@@ -123,40 +123,56 @@ bool CRPRenderManager::Configure(AVPixelFormat format,
   return true;
 }
 
-std::vector<VideoStreamBuffer> CRPRenderManager::GetVideoBuffers(unsigned int width,
-                                                                 unsigned int height)
+bool CRPRenderManager::GetVideoBuffer(unsigned int width,
+                                      unsigned int height,
+                                      VideoStreamBuffer& buffer)
 {
   // Clear any previous pending buffers
   for (IRenderBuffer* buffer : m_pendingBuffers)
     buffer->Release();
   m_pendingBuffers.clear();
 
-  std::vector<VideoStreamBuffer> buffers;
-
   if (m_bFlush || m_state != RENDER_STATE::CONFIGURED)
-    return buffers;
+    return false;
 
-  // Get buffers from visible renderers
-  for (IRenderBufferPool* bufferPool : m_processInfo.GetBufferManager().GetBufferPools())
+  // We should do our best to get a valid render buffer. If we return false,
+  // the game add-on will likely allocate its own memory.
+  IRenderBuffer* renderBuffer = nullptr;
+
+  auto bufferPools = m_processInfo.GetBufferManager().GetBufferPools();
+
+  std::sort(bufferPools.begin(), bufferPools.end(),
+            [](const IRenderBufferPool* lhs, const IRenderBufferPool* rhs) {
+              // Prefer buffer pools with a visible renderer
+              if (lhs->HasVisibleRenderer() && !rhs->HasVisibleRenderer())
+                return true;
+              if (!lhs->HasVisibleRenderer() && rhs->HasVisibleRenderer())
+                return false;
+
+              //! @todo De-prioritize buffer pools with write-only or unaligned memory
+
+              return false;
+            });
+
+  for (IRenderBufferPool* bufferPool : bufferPools)
   {
-    if (!bufferPool->HasVisibleRenderer())
-      continue;
-
-    IRenderBuffer* renderBuffer = bufferPool->GetBuffer(width, height);
+    renderBuffer = bufferPool->GetBuffer(width, height);
     if (renderBuffer != nullptr)
-      m_pendingBuffers.emplace_back(renderBuffer);
+      break;
     else
       CLog::Log(LOGDEBUG, "RetroPlayer[RENDER]: Unable to get video buffer for frame");
   }
 
-  for (IRenderBuffer* renderBuffer : m_pendingBuffers)
-  {
-    buffers.emplace_back(VideoStreamBuffer{
-        renderBuffer->GetFormat(), renderBuffer->GetMemory(), renderBuffer->GetFrameSize(),
-        renderBuffer->GetMemoryAccess(), renderBuffer->GetMemoryAlignment()});
-  }
+  if (renderBuffer == nullptr)
+    return false;
 
-  return buffers;
+  buffer = VideoStreamBuffer{renderBuffer->GetFormat(), renderBuffer->GetMemory(),
+                             renderBuffer->GetFrameSize(), renderBuffer->GetMemoryAccess(),
+                             renderBuffer->GetMemoryAlignment()};
+
+  m_pendingBuffers.emplace_back(std::move(renderBuffer));
+
+  return true;
 }
 
 void CRPRenderManager::AddFrame(const uint8_t* data,
