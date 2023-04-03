@@ -36,5 +36,7 @@ public:
 private:
   std::shared_ptr<CDVDOverlay> m_pOverlay;
   CDVDStreamInfo m_hints;
+  int m_prevSubId{-1};
+  bool m_changePrevStopTime{false};
   AVCodecID m_codecId{AV_CODEC_ID_NONE};
 };
