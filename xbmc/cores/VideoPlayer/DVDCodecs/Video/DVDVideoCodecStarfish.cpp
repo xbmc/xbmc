@@ -56,10 +56,6 @@ std::atomic<bool> CDVDVideoCodecStarfish::ms_instanceGuard(false);
 
 bool CDVDVideoCodecStarfish::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
 {
-  m_opened = false;
-  CVariant payloadArg;
-  CVariant payloadArgs;
-
   // allow only 1 instance here
   if (ms_instanceGuard.exchange(true))
   {
@@ -67,18 +63,32 @@ bool CDVDVideoCodecStarfish::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
     return false;
   }
 
+  auto ok = OpenInternal(hints, options);
+
+  if (!ok)
+    ms_instanceGuard.exchange(false);
+
+  return ok;
+}
+
+bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOptions& options)
+{
+  m_opened = false;
+  CVariant payloadArg;
+  CVariant payloadArgs;
+
   if (!hints.width || !hints.height)
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecStarfish::Open - {}", "null size, cannot handle");
-    ms_instanceGuard.exchange(false);
+    CLog::Log(LOGERROR, "CDVDVideoCodecStarfish::OpenInternal - {}", "null size, cannot handle");
     return false;
   }
 
-  CLog::Log(LOGDEBUG,
-            "CDVDVideoCodecStarfish::Open hints: Width {} x Height {}, Fpsrate {} / Fpsscale "
-            "{}, CodecID {}, Level {}, Profile {}, PTS_invalid {}, Tag {}, Extradata-Size: {}",
-            hints.width, hints.height, hints.fpsrate, hints.fpsscale, hints.codec, hints.level,
-            hints.profile, hints.ptsinvalid, hints.codec_tag, hints.extrasize);
+  CLog::Log(
+      LOGDEBUG,
+      "CDVDVideoCodecStarfish::OpenInternal hints: Width {} x Height {}, Fpsrate {} / Fpsscale "
+      "{}, CodecID {}, Level {}, Profile {}, PTS_invalid {}, Tag {}, Extradata-Size: {}",
+      hints.width, hints.height, hints.fpsrate, hints.fpsscale, hints.codec, hints.level,
+      hints.profile, hints.ptsinvalid, hints.codec_tag, hints.extrasize);
 
   m_hints = hints;
   switch (m_hints.codec)
@@ -138,7 +148,8 @@ bool CDVDVideoCodecStarfish::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
       {
         bool supportsDovi = true;
 
-        CLog::Log(LOGDEBUG, "CDVDVideoCodecStarfish::Open Dolby Vision playback support: {}",
+        CLog::Log(LOGDEBUG,
+                  "CDVDVideoCodecStarfish::OpenInternal Dolby Vision playback support: {}",
                   supportsDovi);
 
         if (supportsDovi)
@@ -175,8 +186,8 @@ bool CDVDVideoCodecStarfish::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
       m_codecname = "AV1";
       break;
     default:
-      CLog::Log(LOGDEBUG, "CDVDVideoCodecStarfish::Open Unknown hints.codec({})", hints.codec);
-      ms_instanceGuard.exchange(false);
+      CLog::Log(LOGDEBUG, "CDVDVideoCodecStarfish::OpenInternal Unknown hints.codec({})",
+                hints.codec);
       return false;
   }
 
@@ -226,11 +237,10 @@ bool CDVDVideoCodecStarfish::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
   std::string payload;
   CJSONVariantWriter::Write(payloadArgs, payload, true);
 
-  CLog::Log(LOGDEBUG, "CDVDVideoCodecStarfish: Sending Load payload {}", payload);
+  CLog::Log(LOGDEBUG, "CDVDVideoCodecStarfish::OpenInternal Sending Load payload {}", payload);
   if (!m_starfishMediaAPI->Load(payload.c_str(), &CDVDVideoCodecStarfish::PlayerCallback, this))
   {
-    CLog::Log(LOGERROR, "CDVDVideoCodecStarfish: Load failed");
-    ms_instanceGuard.exchange(false);
+    CLog::Log(LOGERROR, "CDVDVideoCodecStarfish::OpenInternal Load failed");
     return false;
   }
 
@@ -238,7 +248,7 @@ bool CDVDVideoCodecStarfish::Open(CDVDStreamInfo& hints, CDVDCodecOptions& optio
 
   m_codecControlFlags = 0;
 
-  CLog::Log(LOGINFO, "CDVDVideoCodecStarfish::Open Starfish {}", m_codecname);
+  CLog::Log(LOGINFO, "CDVDVideoCodecStarfish::OpenInternal Starfish {}", m_codecname);
 
   // first make sure all properties are reset.
   m_videobuffer.Reset();

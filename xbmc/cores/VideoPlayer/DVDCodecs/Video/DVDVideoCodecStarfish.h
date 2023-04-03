@@ -51,6 +51,7 @@ private:
   void Dispose();
   void SetHDR();
   void UpdateFpsDuration();
+  bool OpenInternal(CDVDStreamInfo& hints, CDVDCodecOptions& options);
 
   void PlayerCallback(const int32_t type, const int64_t numValue, const char* strValue);
   static void PlayerCallback(const int32_t type,
