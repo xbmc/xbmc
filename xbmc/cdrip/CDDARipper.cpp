@@ -210,7 +210,7 @@ std::string CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTa
   if (pos == std::string::npos)
     return ""; // no directory
 
-  strAlbumDir = strAlbumDir.substr(0, pos);
+  strAlbumDir.resize(pos);
 
   // replace %A with album artist name
   if (strAlbumDir.find("%A") != std::string::npos)

@@ -1919,7 +1919,7 @@ bool CGUIDialogVideoInfo::AddItemsToTag(const std::shared_ptr<CFileItem>& tagIte
     return true;
 
   std::string mediaType = videoUrl.GetItemType();
-  mediaType = mediaType.substr(0, mediaType.length() - 1);
+  mediaType.pop_back();
 
   CFileItemList items;
   std::string localizedType = GetLocalizedVideoType(mediaType);
@@ -1952,7 +1952,7 @@ bool CGUIDialogVideoInfo::RemoveItemsFromTag(const std::shared_ptr<CFileItem>& t
     return true;
 
   std::string mediaType = videoUrl.GetItemType();
-  mediaType = mediaType.substr(0, mediaType.length() - 1);
+  mediaType.pop_back();
 
   CFileItemList items;
   std::string localizedType = GetLocalizedVideoType(mediaType);

@@ -1012,7 +1012,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
 
     // get the media type and convert from plural to singular (by removing the trailing "s")
     std::string mediaType = item->GetPath().substr(9);
-    mediaType = mediaType.substr(0, mediaType.size() - 1);
+    mediaType.pop_back();
     std::string localizedType = CGUIDialogVideoInfo::GetLocalizedVideoType(mediaType);
     if (localizedType.empty())
       return true;

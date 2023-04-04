@@ -77,7 +77,7 @@ void SplitParams(const std::string& paramString, std::vector<std::string>& param
       if (!inFunction && ch == ',')
       { // not in a function, so a comma signifies the end of this parameter
         if (whiteSpacePos)
-          parameter = parameter.substr(0, whiteSpacePos);
+          parameter.resize(whiteSpacePos);
         // trim off start and end quotes
         if (parameter.length() > 1 && parameter[0] == '"' &&
             parameter[parameter.length() - 1] == '"')
