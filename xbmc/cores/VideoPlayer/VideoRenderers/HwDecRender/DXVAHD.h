@@ -110,12 +110,6 @@ public:
     UnInit();
   }
 
-  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceSource(const DXGIColorSpaceArgs& csArgs,
-                                                       bool supportHDR,
-                                                       bool supportHLG);
-  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
-                                                       bool supportHDR);
-
 protected:
   bool ReInit();
   bool InitProcessor();
@@ -129,6 +123,12 @@ protected:
    * \return the input and output color spaces
    */
   ProcColorSpaces CalculateDXGIColorSpaces(const DXGIColorSpaceArgs& csArgs) const;
+  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceSource(const DXGIColorSpaceArgs& csArgs,
+                                                       bool supportHDR,
+                                                       bool supportHLG);
+  DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
+                                                bool supportHDR,
+                                                bool limitedRange) const;
 
   CCriticalSection m_section;
 
