@@ -21,9 +21,9 @@
 
 using namespace KODI;
 
-COverlayCodecWebVTT::COverlayCodecWebVTT() : CDVDOverlayCodec("WebVTT Subtitle Decoder")
+COverlayCodecWebVTT::COverlayCodecWebVTT()
+  : CDVDOverlayCodec("WebVTT Subtitle Decoder"), m_pOverlay(nullptr)
 {
-  m_pOverlay = nullptr;
 }
 
 bool COverlayCodecWebVTT::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)

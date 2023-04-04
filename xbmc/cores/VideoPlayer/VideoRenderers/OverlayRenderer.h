@@ -139,11 +139,7 @@ namespace OVERLAY {
 
     struct SElement
     {
-      SElement()
-      {
-        overlay_dvd = NULL;
-        pts = 0.0;
-      }
+      SElement() : overlay_dvd(NULL) { pts = 0.0; }
       double pts;
       std::shared_ptr<CDVDOverlay> overlay_dvd;
     };

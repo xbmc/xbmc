@@ -247,10 +247,8 @@ char* CLibcdio::GetDeviceFileName()
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-CCdIoSupport::CCdIoSupport()
-: cdio(nullptr)
+CCdIoSupport::CCdIoSupport() : cdio(nullptr), m_cdio(CLibcdio::GetInstance())
 {
-  m_cdio = CLibcdio::GetInstance();
   m_nFirstData = -1;        /* # of first data track */
   m_nNumData = 0;                /* # of data tracks */
   m_nFirstAudio = -1;      /* # of first audio track */

@@ -122,6 +122,6 @@ public:
   {
   }
 
-  CDVDOverlayGroup(const CDVDOverlayGroup& src) : CDVDOverlay(src) { m_overlays = src.m_overlays; }
+  CDVDOverlayGroup(const CDVDOverlayGroup& src) : CDVDOverlay(src), m_overlays(src.m_overlays) {}
   VecOverlays m_overlays;
 };
