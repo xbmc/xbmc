@@ -463,7 +463,7 @@ VECSOURCES& CGUIViewState::GetSources()
 void CGUIViewState::AddLiveTVSources()
 {
   VECSOURCES *sources = CMediaSourceSettings::GetInstance().GetSources("video");
-  for (IVECSOURCES it = sources->begin(); it != sources->end(); it++)
+  for (IVECSOURCES it = sources->begin(); it != sources->end(); ++it)
   {
     if (URIUtils::IsLiveTV((*it).strPath))
     {
