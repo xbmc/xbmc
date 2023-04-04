@@ -13,12 +13,15 @@
 
 using namespace KODI::UTILS::EGL;
 
-CEGLFence::CEGLFence(EGLDisplay display) :
-  m_display(display)
+CEGLFence::CEGLFence(EGLDisplay display)
+  : m_display(display),
+    m_eglCreateSyncKHR(
+        CEGLUtils::GetRequiredProcAddress<PFNEGLCREATESYNCKHRPROC>("eglCreateSyncKHR")),
+    m_eglDestroySyncKHR(
+        CEGLUtils::GetRequiredProcAddress<PFNEGLDESTROYSYNCKHRPROC>("eglDestroySyncKHR")),
+    m_eglGetSyncAttribKHR(
+        CEGLUtils::GetRequiredProcAddress<PFNEGLGETSYNCATTRIBKHRPROC>("eglGetSyncAttribKHR"))
 {
-  m_eglCreateSyncKHR = CEGLUtils::GetRequiredProcAddress<PFNEGLCREATESYNCKHRPROC>("eglCreateSyncKHR");
-  m_eglDestroySyncKHR = CEGLUtils::GetRequiredProcAddress<PFNEGLDESTROYSYNCKHRPROC>("eglDestroySyncKHR");
-  m_eglGetSyncAttribKHR = CEGLUtils::GetRequiredProcAddress<PFNEGLGETSYNCATTRIBKHRPROC>("eglGetSyncAttribKHR");
 }
 
 void CEGLFence::CreateFence()
