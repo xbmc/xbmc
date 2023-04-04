@@ -28,7 +28,7 @@ std::string HTTPRequestHandlerUtils::GetRequestHeaderValue(struct MHD_Connection
     std::string strValue(value);
     size_t pos = strValue.find(';');
     if (pos != std::string::npos)
-      strValue = strValue.substr(0, pos);
+      strValue.resize(pos);
 
     return strValue;
   }

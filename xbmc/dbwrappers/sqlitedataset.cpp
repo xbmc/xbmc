@@ -839,7 +839,7 @@ int SqliteDataset::exec(const std::string& sql)
     pos = qry.find(" ON ", pos + 1);
 
     if (pos != std::string::npos)
-      qry = qry.substr(0, pos);
+      qry.resize(pos);
   }
 
   char* errmsg;
