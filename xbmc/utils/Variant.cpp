@@ -609,7 +609,7 @@ const CVariant& CVariant::operator[](unsigned int position) const&
 CVariant CVariant::operator[](unsigned int position) &&
 {
   if (m_type == VariantTypeArray && size() > position)
-    return std::move(m_data.array->at(position));
+    return m_data.array->at(position);
   else
     return ConstNullVariant;
 }
