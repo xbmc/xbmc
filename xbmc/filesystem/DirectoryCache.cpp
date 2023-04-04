@@ -24,11 +24,10 @@
 
 using namespace XFILE;
 
-CDirectoryCache::CDir::CDir(DIR_CACHE_TYPE cacheType)
+CDirectoryCache::CDir::CDir(DIR_CACHE_TYPE cacheType) : m_Items(std::make_unique<CFileItemList>())
 {
   m_cacheType = cacheType;
   m_lastAccess = 0;
-  m_Items = std::make_unique<CFileItemList>();
   m_Items->SetIgnoreURLOptions(true);
   m_Items->SetFastLookup(true);
 }

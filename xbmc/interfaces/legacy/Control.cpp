@@ -956,22 +956,30 @@ namespace XBMCAddon
     // ============================================================
     //  ControlLabel
     // ============================================================
-    ControlLabel::ControlLabel(long x, long y, long width, long height,
+    ControlLabel::ControlLabel(long x,
+                               long y,
+                               long width,
+                               long height,
                                const String& label,
-                               const char* font, const char* p_textColor,
+                               const char* font,
+                               const char* p_textColor,
                                const char* p_disabledColor,
                                long p_alignment,
-                               bool hasPath, long angle) :
-      strFont("font13"),
-      textColor(0xffffffff), disabledColor(0x60ffffff),
-      align(p_alignment), bHasPath(hasPath), iAngle(angle)
+                               bool hasPath,
+                               long angle)
+      : strFont("font13"),
+        strText(label),
+        textColor(0xffffffff),
+        disabledColor(0x60ffffff),
+        align(p_alignment),
+        bHasPath(hasPath),
+        iAngle(angle)
     {
       dwPosX = x;
       dwPosY = y;
       dwWidth = width;
       dwHeight = height;
 
-      strText = label;
       if (font)
         strFont = font;
 
@@ -1027,25 +1035,31 @@ namespace XBMCAddon
     // ============================================================
     //  ControlEdit
     // ============================================================
-    ControlEdit::ControlEdit(long x, long y, long width, long height, const String& label,
-                             const char* font, const char* _textColor,
+    ControlEdit::ControlEdit(long x,
+                             long y,
+                             long width,
+                             long height,
+                             const String& label,
+                             const char* font,
+                             const char* _textColor,
                              const char* _disabledColor,
-                             long _alignment, const char* focusTexture,
-                             const char* noFocusTexture) :
-      strFont("font13"), textColor(0xffffffff), disabledColor(0x60ffffff),
-      align(_alignment)
-
+                             long _alignment,
+                             const char* focusTexture,
+                             const char* noFocusTexture)
+      : strFont("font13"),
+        strTextureFocus(focusTexture ? focusTexture
+                                     : XBMCAddonUtils::getDefaultImage("edit", "texturefocus")),
+        strTextureNoFocus(noFocusTexture
+                              ? noFocusTexture
+                              : XBMCAddonUtils::getDefaultImage("edit", "texturenofocus")),
+        textColor(0xffffffff),
+        disabledColor(0x60ffffff),
+        align(_alignment)
     {
       dwPosX = x;
       dwPosY = y;
       dwWidth = width;
       dwHeight = height;
-
-      strTextureFocus = focusTexture ? focusTexture :
-        XBMCAddonUtils::getDefaultImage("edit", "texturefocus");
-
-      strTextureNoFocus = noFocusTexture ? noFocusTexture :
-        XBMCAddonUtils::getDefaultImage("edit", "texturenofocus");
 
       if (!label.empty())
       {

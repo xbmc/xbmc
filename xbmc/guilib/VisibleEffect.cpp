@@ -38,11 +38,11 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
 }
 
 CAnimEffect::CAnimEffect(unsigned int delay, unsigned int length, EFFECT_TYPE effect)
+  : m_pTweener(std::shared_ptr<Tweener>(new LinearTweener()))
 {
   m_delay = delay;
   m_length = length;
   m_effect = effect;
-  m_pTweener = std::shared_ptr<Tweener>(new LinearTweener());
 }
 
 CAnimEffect::~CAnimEffect() = default;
@@ -195,11 +195,11 @@ CFadeEffect::CFadeEffect(UTILS::COLOR::Color start,
                          UTILS::COLOR::Color end,
                          unsigned int delay,
                          unsigned int length)
-  : CAnimEffect(delay, length, EFFECT_TYPE_FADE_DIFFUSE)
+  : CAnimEffect(delay, length, EFFECT_TYPE_FADE_DIFFUSE),
+    m_startColor(UTILS::COLOR::ConvertToFloats(start)),
+    m_endColor(UTILS::COLOR::ConvertToFloats(end))
 {
   m_startAlpha = m_endAlpha = 1.0f;
-  m_startColor = UTILS::COLOR::ConvertToFloats(start);
-  m_endColor = UTILS::COLOR::ConvertToFloats(end);
 }
 
 void CFadeEffect::ApplyEffect(float offset, const CPoint &center)
@@ -741,7 +741,9 @@ void CAnimation::AddEffect(const std::string &type, const TiXmlElement *node, co
     m_effects.push_back(effect);
 }
 
-CScroller::CScroller(unsigned int duration /* = 200 */, std::shared_ptr<Tweener> tweener /* = NULL */)
+CScroller::CScroller(unsigned int duration /* = 200 */,
+                     std::shared_ptr<Tweener> tweener /* = NULL */)
+  : m_pTweener(std::move(tweener))
 {
   m_scrollValue = 0;
   m_delta = 0;
@@ -749,7 +751,6 @@ CScroller::CScroller(unsigned int duration /* = 200 */, std::shared_ptr<Tweener>
   m_startPosition = 0;
   m_hasResumePoint = false;
   m_duration = duration > 0 ? duration : 1;
-  m_pTweener = std::move(tweener);
 }
 
 CScroller::CScroller(const CScroller& right)

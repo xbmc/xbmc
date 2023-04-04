@@ -27,9 +27,9 @@ namespace
 constexpr double DEFAULT_DURATION = 20.0 * static_cast<double>(DVD_TIME_BASE);
 } // namespace
 
-CDVDOverlayCodecText::CDVDOverlayCodecText() : CDVDOverlayCodec("Text Subtitle Decoder")
+CDVDOverlayCodecText::CDVDOverlayCodecText()
+  : CDVDOverlayCodec("Text Subtitle Decoder"), m_pOverlay(nullptr)
 {
-  m_pOverlay = nullptr;
 }
 
 bool CDVDOverlayCodecText::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)

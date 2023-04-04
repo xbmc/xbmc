@@ -142,10 +142,10 @@ bool CDecoder::Register()
   return true;
 }
 
-CDecoder::CDecoder(CProcessInfo& processInfo) : m_processInfo(processInfo)
+CDecoder::CDecoder(CProcessInfo& processInfo)
+  : m_processInfo(processInfo), m_videoBufferPool(std::make_shared<CVideoBufferPoolVTB>())
 {
   m_avctx = nullptr;
-  m_videoBufferPool = std::make_shared<CVideoBufferPoolVTB>();
 }
 
 CDecoder::~CDecoder()

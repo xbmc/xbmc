@@ -175,14 +175,13 @@ static std::string LookupUPnPHost(const std::string& uuid)
   return "";
 }
 
-CWakeOnAccess::WakeUpEntry::WakeUpEntry (bool isAwake)
-  : timeout (0, 0, 0, DEFAULT_TIMEOUT_SEC)
-  , wait_online1_sec(DEFAULT_WAIT_FOR_ONLINE_SEC_1)
-  , wait_online2_sec(DEFAULT_WAIT_FOR_ONLINE_SEC_2)
-  , wait_services_sec(DEFAULT_WAIT_FOR_SERVICES_SEC)
+CWakeOnAccess::WakeUpEntry::WakeUpEntry(bool isAwake)
+  : timeout(0, 0, 0, DEFAULT_TIMEOUT_SEC),
+    wait_online1_sec(DEFAULT_WAIT_FOR_ONLINE_SEC_1),
+    wait_online2_sec(DEFAULT_WAIT_FOR_ONLINE_SEC_2),
+    wait_services_sec(DEFAULT_WAIT_FOR_SERVICES_SEC),
+    nextWake(CDateTime::GetCurrentDateTime())
 {
-  nextWake = CDateTime::GetCurrentDateTime();
-
   if (isAwake)
     nextWake += timeout;
 }

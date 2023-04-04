@@ -23,9 +23,10 @@
 using namespace KODI;
 
 CDVDOverlayCodecSSA::CDVDOverlayCodecSSA()
-  : CDVDOverlayCodec("SSA Subtitle Decoder"), m_libass(std::make_shared<CDVDSubtitlesLibass>())
+  : CDVDOverlayCodec("SSA Subtitle Decoder"),
+    m_libass(std::make_shared<CDVDSubtitlesLibass>()),
+    m_pOverlay(nullptr)
 {
-  m_pOverlay = nullptr;
   m_order = 0;
   m_libass->Configure();
 }

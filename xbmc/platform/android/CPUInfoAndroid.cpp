@@ -21,10 +21,8 @@ std::shared_ptr<CCPUInfo> CCPUInfo::GetCPUInfo()
   return std::make_shared<CCPUInfoAndroid>();
 }
 
-CCPUInfoAndroid::CCPUInfoAndroid()
+CCPUInfoAndroid::CCPUInfoAndroid() : m_posixFile(std::make_unique<CPosixFile>())
 {
-  m_posixFile = std::make_unique<CPosixFile>();
-
   if (m_posixFile && m_posixFile->Open(CURL("/proc/cpuinfo")))
   {
     std::array<char, 2048> buffer = {};

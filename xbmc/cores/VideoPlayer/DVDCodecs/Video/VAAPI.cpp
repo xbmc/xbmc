@@ -1500,14 +1500,14 @@ void CVaapiRenderPicture::GetStrides(int(&strides)[YuvImage::MAX_PLANES])
 //-----------------------------------------------------------------------------
 // Output
 //-----------------------------------------------------------------------------
-COutput::COutput(CDecoder &decoder, CEvent *inMsgEvent) :
-  CThread("Vaapi-Output"),
-  m_controlPort("OutputControlPort", inMsgEvent, &m_outMsgEvent),
-  m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent),
-  m_vaapi(decoder)
+COutput::COutput(CDecoder& decoder, CEvent* inMsgEvent)
+  : CThread("Vaapi-Output"),
+    m_controlPort("OutputControlPort", inMsgEvent, &m_outMsgEvent),
+    m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent),
+    m_vaapi(decoder),
+    m_bufferPool(std::make_shared<CVaapiBufferPool>(decoder))
 {
   m_inMsgEvent = inMsgEvent;
-  m_bufferPool = std::make_shared<CVaapiBufferPool>(decoder);
 }
 
 void COutput::Start()

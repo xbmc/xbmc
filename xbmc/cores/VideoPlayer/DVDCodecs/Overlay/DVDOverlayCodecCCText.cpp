@@ -26,9 +26,9 @@ namespace
 constexpr double DEFAULT_DURATION = 20.0 * (double)DVD_TIME_BASE;
 } // namespace
 
-CDVDOverlayCodecCCText::CDVDOverlayCodecCCText() : CDVDOverlayCodec("CC Text Subtitle Decoder")
+CDVDOverlayCodecCCText::CDVDOverlayCodecCCText()
+  : CDVDOverlayCodec("CC Text Subtitle Decoder"), m_pOverlay(nullptr)
 {
-  m_pOverlay = nullptr;
   m_prevSubId = NO_SUBTITLE_ID;
   m_prevPTSStart = 0.0;
   m_prevText.clear();
