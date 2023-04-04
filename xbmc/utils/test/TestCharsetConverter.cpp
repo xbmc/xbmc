@@ -220,7 +220,7 @@ TEST_F(TestCharsetConverter, isValidUtf8_1)
 {
   varstra1.clear();
   g_charsetConverter.ToUtf8("UTF-16LE", refutf16LE3, varstra1);
-  EXPECT_TRUE(CUtf8Utils::isValidUtf8(varstra1.c_str()));
+  EXPECT_TRUE(CUtf8Utils::isValidUtf8(varstra1));
 }
 
 TEST_F(TestCharsetConverter, isValidUtf8_2)
@@ -233,7 +233,7 @@ TEST_F(TestCharsetConverter, isValidUtf8_3)
 {
   varstra1.clear();
   g_charsetConverter.ToUtf8("UTF-16LE", refutf16LE3, varstra1);
-  EXPECT_TRUE(CUtf8Utils::isValidUtf8(varstra1.c_str()));
+  EXPECT_TRUE(CUtf8Utils::isValidUtf8(varstra1));
 }
 
 TEST_F(TestCharsetConverter, isValidUtf8_4)

@@ -421,7 +421,8 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
   {
     // Save videoscreen.screenmode setting
     std::string mode = GetStringFromResolution(resolution);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode.c_str());
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
+        CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode);
 
     // Check if videoscreen.screen setting also needs to be saved
     // e.g. if ToggleFullscreen is called
