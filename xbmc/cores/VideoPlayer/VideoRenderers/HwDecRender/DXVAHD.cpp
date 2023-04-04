@@ -517,11 +517,10 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(const DXGIColorSpace
 }
 
 DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
-                                                            bool supportHDR)
+                                                            bool supportHDR,
+                                                            bool limitedRange) const
 {
-  DXGI_COLOR_SPACE_TYPE color;
-
-  color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
+  DXGI_COLOR_SPACE_TYPE color = limitedRange ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
                                              : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
 
   if (!DX::Windowing()->IsHDROutput())
@@ -533,13 +532,13 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceTarget(const DXGIColorSpace
   {
     if (supportHDR)
     {
-      color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
-                                                 : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+      color = limitedRange ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
+                           : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
     }
     else
     {
-      color = DX::Windowing()->UseLimitedColor() ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020
-                                                 : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
+      color = limitedRange ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020
+                           : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
     }
   }
 
@@ -723,9 +722,9 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
 
 ProcColorSpaces CProcessorHD::CalculateDXGIColorSpaces(const DXGIColorSpaceArgs& csArgs) const
 {
-  bool supportHDR = DX::Windowing()->IsHDROutput() &&
-                    (m_bSupportHDR10Limited || !DX::Windowing()->UseLimitedColor());
+  const bool limited = DX::Windowing()->UseLimitedColor();
+  const bool supportHDR = DX::Windowing()->IsHDROutput() && (m_bSupportHDR10Limited || !limited);
 
   return ProcColorSpaces{GetDXGIColorSpaceSource(csArgs, supportHDR, m_bSupportHLG),
-                         GetDXGIColorSpaceTarget(csArgs, supportHDR)};
+                         GetDXGIColorSpaceTarget(csArgs, supportHDR, limited)};
 }
