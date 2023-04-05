@@ -19,10 +19,10 @@
 
 typedef struct _CGLContextObject* CGLContextObj;
 typedef struct CGRect NSRect;
-
 class IDispResource;
 class CWinEventsOSX;
 #ifdef __OBJC__
+@class NSWindowController;
 @class NSWindow;
 @class OSXGLView;
 @class NSEvent;
@@ -30,6 +30,8 @@ class CWinEventsOSX;
 struct NSWindow;
 struct OSXGLView;
 struct NSEvent;
+struct NSWindowController;
+
 #endif
 
 class CWinSystemOSX : public CWinSystemBase, public ITimerCallback
@@ -130,4 +132,7 @@ protected:
   bool m_fullscreenWillToggle;
   bool m_hasCursor{false};
   CCriticalSection m_critSection;
+
+private:
+  NSWindowController* m_appWindowController;
 };

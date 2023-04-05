@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *  Copyright (C) 2021- Team Kodi
+ *  Copyright (C) 2023- Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -10,8 +10,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface OSXGLWindow : NSWindow <NSWindowDelegate>
+@interface XBMCWindowControllerMacOS : NSWindowController <NSWindowDelegate>
 
-- (nullable instancetype)initWithContentRect:(NSRect)box styleMask:(uint)style;
+- (nullable instancetype)initWithTitle:(nonnull NSString*)title
+                           defaultSize:(NSSize)size NS_DESIGNATED_INITIALIZER;
 
+- (nonnull instancetype)initWithWindow:(nullable NSWindow*)window NS_UNAVAILABLE;
+- (nullable instancetype)initWithCoder:(nonnull NSCoder*)coder NS_UNAVAILABLE;
 @end

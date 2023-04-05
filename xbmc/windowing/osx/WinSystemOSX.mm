@@ -613,11 +613,6 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   // screen index is not found/available.
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_lastDisplayNr = GetDisplayIndex(settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
-  NSScreen* screen = nil;
-  if (m_lastDisplayNr < NSScreen.screens.count)
-  {
-    screen = [NSScreen.screens objectAtIndex:m_lastDisplayNr];
-  }
 
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
@@ -627,83 +622,24 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   m_bFullScreen = false;
   m_name = name;
 
-  __block NSWindow* appWindow;
-  // because we are not main thread, delay any updates
-  // and only become keyWindow after it finishes.
-  [NSAnimationContext beginGrouping];
-  [NSAnimationContext.currentContext setCompletionHandler:^{
-    [appWindow makeKeyWindow];
-    [appWindow makeMainWindow];
-  }];
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    auto title = [NSString stringWithUTF8String:m_name.c_str()];
+    auto size = NSMakeSize(m_nWidth, m_nHeight);
+    m_appWindowController = [[XBMCWindowControllerMacOS alloc] initWithTitle:title
+                                                                 defaultSize:size];
 
-  const NSUInteger windowStyleMask = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable |
-                                     NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable;
+    m_appWindow = m_appWindowController.window;
+    m_glView = m_appWindow.contentView;
+  });
 
-  if (m_appWindow == nullptr)
-  {
-    // create new content view
-    NSRect rect = [appWindow contentRectForFrameRect:appWindow.frame];
+  [m_glView.getGLContext makeCurrentContext];
+  [m_glView.getGLContext update];
 
-    // create new view if we don't have one
-    if (!m_glView)
-      m_glView = [[OSXGLView alloc] initWithFrame:rect];
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    [m_appWindowController showWindow:m_appWindow];
+  });
 
-    OSXGLView* view = (OSXGLView*)m_glView;
-
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      appWindow = [[OSXGLWindow alloc] initWithContentRect:NSMakeRect(0, 0, m_nWidth, m_nHeight)
-                                                 styleMask:windowStyleMask];
-      NSString* title = [NSString stringWithUTF8String:m_name.c_str()];
-      appWindow.backgroundColor = NSColor.blackColor;
-      appWindow.title = title;
-      appWindow.titlebarAppearsTransparent = YES;
-      appWindow.titleVisibility = NSWindowTitleHidden;
-
-      NSWindowCollectionBehavior behavior = appWindow.collectionBehavior;
-      //! @todo actually implement fullscreen tilling and remove NSWindowCollectionBehaviorFullScreenDisallowsTiling
-      behavior |= NSWindowCollectionBehaviorFullScreenPrimary |
-                  NSWindowCollectionBehaviorFullScreenDisallowsTiling;
-      [appWindow setCollectionBehavior:behavior];
-
-      // associate with current window
-      [appWindow setContentView:view];
-
-      // set the window to the appropriate screen and screen position
-      if (screen)
-      {
-        if (m_bFullScreen)
-        {
-          [appWindow setFrameOrigin:screen.frame.origin];
-        }
-        else
-        {
-          // if there are stored window positions use that as the origin point
-          const int top = settings->GetInt(SETTING_WINDOW_TOP);
-          const int left = settings->GetInt(SETTING_WINDOW_LEFT);
-
-          NSPoint windowPos;
-          if (top != 0 || left != 0)
-          {
-            windowPos = NSMakePoint(left, top);
-          }
-          else
-          {
-            // otherwise center the window on the screen
-            windowPos =
-                NSMakePoint(screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
-                            screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2);
-          }
-          [appWindow setFrameOrigin:windowPos];
-        }
-      }
-    });
-
-    [view.getGLContext makeCurrentContext];
-    [view.getGLContext update];
-
-    m_appWindow = appWindow;
-    m_bWindowCreated = true;
-  }
+  m_bWindowCreated = true;
 
   // warning, we can order front but not become
   // key window or risk starting up with bad flicker
@@ -739,11 +675,13 @@ bool CWinSystemOSX::DestroyWindowInternal()
   m_bWindowCreated = false;
   if (m_appWindow)
   {
-    NSWindow* oldAppWindow = m_appWindow;
-    m_appWindow = nullptr;
     dispatch_sync(dispatch_get_main_queue(), ^{
-      [oldAppWindow setContentView:nil];
+      [m_appWindow setContentView:nil];
+      [[m_appWindowController window] close];
     });
+
+    m_appWindow = nil;
+    m_appWindowController = nil;
   }
 
   return true;
