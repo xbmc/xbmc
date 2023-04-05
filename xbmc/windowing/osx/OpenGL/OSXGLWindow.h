@@ -12,6 +12,6 @@
 
 @interface OSXGLWindow : NSWindow <NSWindowDelegate>
 
-- (id)initWithContentRect:(NSRect)box styleMask:(uint)style;
+- (nullable instancetype)initWithContentRect:(NSRect)box styleMask:(uint)style;
 
 @end
