@@ -656,6 +656,8 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
       NSString* title = [NSString stringWithUTF8String:m_name.c_str()];
       appWindow.backgroundColor = NSColor.blackColor;
       appWindow.title = title;
+      appWindow.titlebarAppearsTransparent = YES;
+      appWindow.titleVisibility = NSWindowTitleHidden;
 
       NSWindowCollectionBehavior behavior = appWindow.collectionBehavior;
       //! @todo actually implement fullscreen tilling and remove NSWindowCollectionBehaviorFullScreenDisallowsTiling
