@@ -24,27 +24,112 @@
 
 #include "platform/darwin/osx/CocoaInterface.h"
 
-//------------------------------------------------------------------------------------------
-@implementation OSXGLWindow
+@implementation XBMCWindowControllerMacOS
 
-- (id)initWithContentRect:(NSRect)box styleMask:(uint)style
+- (nullable instancetype)initWithTitle:(NSString*)title defaultSize:(NSSize)size
 {
-  self = [super initWithContentRect:box styleMask:style backing:NSBackingStoreBuffered defer:YES];
-  [self setDelegate:self];
-  [self setAcceptsMouseMovedEvents:YES];
-  // autosave the window position/size
-  // Tell the controller to not cascade its windows.
-  [self.windowController setShouldCascadeWindows:NO];
-  [self setFrameAutosaveName:@"OSXGLWindowPositionHeightWidth"];
+  auto frame = NSMakeRect(0, 0, size.width, size.height);
+  const NSWindowStyleMask style = NSWindowStyleMaskTitled | NSWindowStyleMaskClosable |
+                                  NSWindowStyleMaskMiniaturizable | NSWindowStyleMaskResizable;
 
+  auto window = [[NSWindow alloc] initWithContentRect:frame
+                                            styleMask:style
+                                              backing:NSBackingStoreBuffered
+                                                defer:YES];
+  window.backgroundColor = NSColor.blackColor;
+  window.title = title;
+  window.titlebarAppearsTransparent = YES;
+  window.titleVisibility = NSWindowTitleHidden;
+
+  window.collectionBehavior = NSWindowCollectionBehaviorFullScreenPrimary |
+                              NSWindowCollectionBehaviorFullScreenDisallowsTiling;
+  window.tabbingMode = NSWindowTabbingModeDisallowed;
+
+  if ((self = [super initWithWindow:window]))
+  {
+    self.windowFrameAutosaveName = @"OSXGLWindowPositionHeightWidth";
+    self.shouldCascadeWindows = NO;
+    window.delegate = self;
+    window.contentView = [[OSXGLView alloc] initWithFrame:NSZeroRect];
+    window.acceptsMouseMovedEvents = YES; // SHH: ?view can't unless window does
+  }
   g_application.m_AppFocused = true;
-
   return self;
 }
 
-- (void)dealloc
+- (void)windowDidResize:(NSNotification*)aNotification
 {
-  [self setDelegate:nil];
+  auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (!winSystem)
+    return;
+
+  NSRect rect = [self.window contentRectForFrameRect:self.window.frame];
+  int width = static_cast<int>(rect.size.width);
+  int height = static_cast<int>(rect.size.height);
+
+  XBMC_Event newEvent = {};
+
+  if (!winSystem->IsFullScreen() && !winSystem->GetFullscreenWillToggle())
+  {
+    RESOLUTION res_index = RES_DESKTOP;
+    if ((width == CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iWidth) &&
+        (height == CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iHeight))
+      return;
+
+    newEvent.type = XBMC_VIDEORESIZE;
+  }
+  else
+  {
+    // macos may trigger a resize/rescale event after (or in) the fullscreen state. Use a different event
+    // so that window coordinates are properly set (XBMC_VIDEORESIZE is only supposed to be used when running
+    // windowed)
+    newEvent.type = XBMC_FULLSCREEN_UPDATE;
+  }
+
+  newEvent.resize.w = width;
+  newEvent.resize.h = height;
+
+  // check for valid sizes cause in some cases
+  // we are hit during fullscreen transition from macos
+  // and might be technically "zero" sized
+  if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
+  {
+    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+    if (appPort)
+      appPort->OnEvent(newEvent);
+  }
+}
+
+- (void)windowDidMiniaturize:(NSNotification*)aNotification
+{
+  g_application.m_AppFocused = false;
+}
+
+- (void)windowDidDeminiaturize:(NSNotification*)aNotification
+{
+  g_application.m_AppFocused = true;
+}
+
+- (void)windowDidBecomeKey:(NSNotification*)aNotification
+{
+  g_application.m_AppFocused = true;
+
+  auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (winSystem)
+  {
+    winSystem->enableInputEvents();
+  }
+}
+
+- (void)windowDidResignKey:(NSNotification*)aNotification
+{
+  g_application.m_AppFocused = false;
+
+  auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (winSystem)
+  {
+    winSystem->disableInputEvents();
+  }
 }
 
 - (BOOL)windowShouldClose:(id)sender
@@ -62,9 +147,9 @@
 
 - (void)windowDidMove:(NSNotification*)aNotification
 {
-  if (self.contentView)
+  if (self.window.contentView)
   {
-    NSPoint window_origin = [self.contentView frame].origin;
+    NSPoint window_origin = [self.window.contentView frame].origin;
     XBMC_Event newEvent = {};
     newEvent.type = XBMC_VIDEOMOVE;
     newEvent.move.x = window_origin.x;
@@ -74,45 +159,6 @@
     {
       appPort->OnEvent(newEvent);
     }
-  }
-}
-
-- (void)windowDidResize:(NSNotification*)aNotification
-{
-  NSRect rect = [self contentRectForFrameRect:self.frame];
-  int width = static_cast<int>(rect.size.width);
-  int height = static_cast<int>(rect.size.height);
-
-  XBMC_Event newEvent = {};
-
-  if (!CServiceBroker::GetWinSystem()->IsFullScreen())
-  {
-    RESOLUTION res_index = RES_DESKTOP;
-    if ((width == CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iWidth) &&
-        (height == CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iHeight))
-      return;
-
-    newEvent.type = XBMC_VIDEORESIZE;
-  }
-  else
-  {
-    // macos may trigger a resize/rescale event just after Kodi has entered fullscreen
-    // (from windowDidEndLiveResize). Kodi needs to rescale the UI - use a different event
-    // type since XBMC_VIDEORESIZE is supposed to only be used in windowed mode
-    newEvent.type = XBMC_FULLSCREEN_UPDATE;
-  }
-
-  newEvent.resize.w = width;
-  newEvent.resize.h = height;
-
-  // check for valid sizes cause in some cases
-  // we are hit during fullscreen transition from macos
-  // and might be technically "zero" sized
-  if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
-  {
-    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
-    if (appPort)
-      appPort->OnEvent(newEvent);
   }
 }
 
@@ -156,6 +202,17 @@
   }
 }
 
+- (NSApplicationPresentationOptions)window:(NSWindow*)window
+      willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions
+{
+  // customize our appearance when entering full screen:
+  // we don't want the dock to appear but we want the menubar to hide/show automatically
+  //
+  return (NSApplicationPresentationFullScreen | // support full screen for this window (required)
+          NSApplicationPresentationHideDock | // completely hide the dock
+          NSApplicationPresentationAutoHideMenuBar); // yes we want the menu bar to show/hide
+}
+
 - (void)windowDidExitFullScreen:(NSNotification*)pNotification
 {
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
@@ -178,49 +235,6 @@
     // of Kodi did a toggle - just reset the flag
     // we don't need to do anything else
     winSystem->SetFullscreenWillToggle(false);
-  }
-}
-
-- (NSApplicationPresentationOptions)window:(NSWindow*)window
-      willUseFullScreenPresentationOptions:(NSApplicationPresentationOptions)proposedOptions
-{
-  // customize our appearance when entering full screen:
-  // we don't want the dock to appear but we want the menubar to hide/show automatically
-  //
-  return (NSApplicationPresentationFullScreen | // support full screen for this window (required)
-          NSApplicationPresentationHideDock | // completely hide the dock
-          NSApplicationPresentationAutoHideMenuBar); // yes we want the menu bar to show/hide
-}
-
-- (void)windowDidMiniaturize:(NSNotification*)aNotification
-{
-  g_application.m_AppFocused = false;
-}
-
-- (void)windowDidDeminiaturize:(NSNotification*)aNotification
-{
-  g_application.m_AppFocused = true;
-}
-
-- (void)windowDidBecomeKey:(NSNotification*)aNotification
-{
-  g_application.m_AppFocused = true;
-
-  auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  if (winSystem)
-  {
-    winSystem->enableInputEvents();
-  }
-}
-
-- (void)windowDidResignKey:(NSNotification*)aNotification
-{
-  g_application.m_AppFocused = false;
-
-  auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  if (winSystem)
-  {
-    winSystem->disableInputEvents();
   }
 }
 @end
