@@ -766,7 +766,7 @@
                 "showtitle", "cast", "streamdetails", "lastplayed", "fanart",
                 "thumbnail", "file", "resume", "tvshowid", "dateadded",
                 "uniqueid", "art", "specialsortseason", "specialsortepisode", "userrating",
-                "seasonid", "ratings", "genre" ]
+                "seasonid", "ratings", "genre", "studio" ]
     }
   },
   "Video.Fields.MusicVideo": {
@@ -974,7 +974,9 @@
       "specialsortepisode": { "type": "integer" },
       "userrating": { "type": "integer" },
       "seasonid": { "$ref": "Library.Id" },
-      "ratings": { "type": "Video.Ratings" }
+      "ratings": { "type": "Video.Ratings" },
+      "studio": { "$ref": "Array.String" },
+      "genre": { "$ref": "Array.String" }
     }
   },
   "Video.Details.MusicVideo": {
