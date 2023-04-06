@@ -728,3 +728,69 @@ ProcColorSpaces CProcessorHD::CalculateDXGIColorSpaces(const DXGIColorSpaceArgs&
   return ProcColorSpaces{GetDXGIColorSpaceSource(csArgs, supportHDR, m_bSupportHLG),
                          GetDXGIColorSpaceTarget(csArgs, supportHDR, limited)};
 }
+
+bool CProcessorHD::IsBT2020Supported()
+{
+  ComPtr<ID3D11VideoDevice> pVideoDevice;
+  ComPtr<ID3D11VideoProcessorEnumerator> pEnumerator;
+  ComPtr<ID3D11VideoProcessorEnumerator1> pEnumerator1;
+  ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
+
+  if (FAILED(pD3DDevice.As(&pVideoDevice)))
+  {
+    CLog::LogF(LOGERROR, "failed to get video device.");
+    return false;
+  }
+
+  D3D11_VIDEO_PROCESSOR_CONTENT_DESC desc = {};
+  desc.InputWidth = 3840;
+  desc.InputHeight = 2160;
+  desc.OutputWidth = 3840;
+  desc.OutputHeight = 2160;
+
+  if (FAILED(pVideoDevice->CreateVideoProcessorEnumerator(&desc, &pEnumerator)))
+  {
+    CLog::LogF(LOGERROR, "failed to create Video Enumerator.");
+    return false;
+  }
+
+  if (FAILED(pEnumerator.As(&pEnumerator1)))
+  {
+    CLog::LogF(LOGWARNING,
+               "ID3D11VideoProcessorEnumerator1 is not available. DXVA will not be used.");
+    return false;
+  }
+
+  const DXGI_FORMAT destFormat = DX::Windowing()->GetBackBuffer().GetFormat();
+  const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
+                                              ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
+                                              : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+  BOOL supported = 0;
+
+  // Check if BT.2020 (LEFT) input color space is supported by video driver
+  HRESULT hr = pEnumerator1->CheckVideoProcessorFormatConversion(
+      DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020, destFormat, destColor,
+      &supported);
+
+  if (SUCCEEDED(hr) && static_cast<bool>(supported))
+  {
+    CLog::LogF(LOGDEBUG, "Input color space BT.2020 LEFT is supported by video processor.");
+    return true;
+  }
+
+  // Check if BT.2020 (TOP LEFT) input color space is supported by video driver
+  hr = pEnumerator1->CheckVideoProcessorFormatConversion(
+      DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020, destFormat, destColor,
+      &supported);
+
+  if (SUCCEEDED(hr) && static_cast<bool>(supported))
+  {
+    CLog::LogF(LOGDEBUG, "Input color space BT.2020 TOP LEFT is supported by video processor.");
+    return true;
+  }
+
+  CLog::LogF(
+      LOGWARNING,
+      "Input color space BT.2020 is not supported by video processor. DXVA will not be used.");
+  return false;
+}

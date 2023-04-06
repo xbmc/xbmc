@@ -110,6 +110,8 @@ public:
     UnInit();
   }
 
+  static bool IsBT2020Supported();
+
 protected:
   bool ReInit();
   bool InitProcessor();
