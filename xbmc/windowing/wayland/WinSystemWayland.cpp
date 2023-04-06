@@ -53,10 +53,6 @@
 # include "windowing/linux/OSScreenSaverFreedesktop.h"
 #endif
 
-#ifdef TARGET_WEBOS
-#include "ShellSurfaceWebOSShell.h"
-#endif
-
 using namespace KODI::WINDOWING;
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace std::placeholders;
@@ -306,25 +302,8 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   // Try with this resolution if compositor does not say otherwise
   UpdateSizeVariables({res.iWidth, res.iHeight}, m_scale, m_shellSurfaceState, false);
 
-#ifdef TARGET_WEBOS
-  m_shellSurface.reset(new CShellSurfaceWebOSShell(*this, *m_connection, m_surface, name,
-                                                   std::string(CCompileInfo::GetAppName())));
-#else
   // Use AppName as the desktop file name. This is required to lookup the app icon of the same name.
-  m_shellSurface.reset(CShellSurfaceXdgShell::TryCreate(*this, *m_connection, m_surface, name,
-                                                        std::string(CCompileInfo::GetAppName())));
-  if (!m_shellSurface)
-  {
-    m_shellSurface.reset(CShellSurfaceXdgShellUnstableV6::TryCreate(
-        *this, *m_connection, m_surface, name, std::string(CCompileInfo::GetAppName())));
-  }
-  if (!m_shellSurface)
-  {
-    CLog::LogF(LOGWARNING, "Compositor does not support xdg_shell protocol (stable or unstable v6) - falling back to wl_shell, not all features might work");
-    m_shellSurface.reset(new CShellSurfaceWlShell(*this, *m_connection, m_surface, name,
-                                                  std::string(CCompileInfo::GetAppName())));
-  }
-#endif
+  m_shellSurface.reset(CreateShellSurface(name));
 
   if (fullScreen)
   {
@@ -386,6 +365,26 @@ bool CWinSystemWayland::CreateNewWindow(const std::string& name,
   CWinEventsWayland::SetDisplay(&m_connection->GetDisplay());
 
   return true;
+}
+
+IShellSurface* CWinSystemWayland::CreateShellSurface(const std::string& name)
+{
+  IShellSurface* shell = CShellSurfaceXdgShell::TryCreate(*this, *m_connection, m_surface, name,
+                                                          std::string(CCompileInfo::GetAppName()));
+  if (!shell)
+  {
+    shell = CShellSurfaceXdgShellUnstableV6::TryCreate(*this, *m_connection, m_surface, name,
+                                                       std::string(CCompileInfo::GetAppName()));
+  }
+  if (!shell)
+  {
+    CLog::LogF(LOGWARNING, "Compositor does not support xdg_shell protocol (stable or unstable v6) "
+                           "- falling back to wl_shell, not all features might work");
+    shell = new CShellSurfaceWlShell(*this, *m_connection, m_surface, name,
+                                     std::string(CCompileInfo::GetAppName()));
+  }
+
+  return shell;
 }
 
 bool CWinSystemWayland::DestroyWindow()
