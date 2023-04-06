@@ -317,8 +317,6 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
     groups = m_groups;
   }
 
-  std::vector<std::shared_ptr<CPVRChannelGroup>> emptyGroups;
-
   for (const auto& group : groups)
   {
     if (!bChannelsOnly || group->IsInternalGroup())
@@ -353,12 +351,6 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
     {
       CServiceBroker::GetPVRManager().TriggerSearchMissingChannelIcons(group);
     }
-  }
-
-  for (const auto& group : emptyGroups)
-  {
-    CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting empty channel group '{}'", group->GroupName());
-    DeleteGroup(group);
   }
 
   if (bChannelsOnly)
