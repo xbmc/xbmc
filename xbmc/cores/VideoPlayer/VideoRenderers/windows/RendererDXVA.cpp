@@ -31,7 +31,13 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
 
   if (av_pixel_format == AV_PIX_FMT_D3D11VA_VLD)
+  {
+    // Check if BT.2020 color space is supported by DXVA video processor
+    if (picture.color_primaries == AVCOL_PRI_BT2020 && !DXVA::CProcessorHD::IsBT2020Supported())
+      return;
+
     weight += 1000;
+  }
   else
   {
     // check format for buffer
@@ -56,6 +62,10 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
                  DX::DXGIFormatToString(dxgi_format));
       return;
     }
+
+    // Check if BT.2020 color space is supported by DXVA video processor
+    if (picture.color_primaries == AVCOL_PRI_BT2020 && !DXVA::CProcessorHD::IsBT2020Supported())
+      return;
 
     if (av_pixel_format == AV_PIX_FMT_NV12 ||
         av_pixel_format == AV_PIX_FMT_P010 ||
