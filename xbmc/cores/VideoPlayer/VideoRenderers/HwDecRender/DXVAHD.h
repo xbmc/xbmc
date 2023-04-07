@@ -127,7 +127,8 @@ protected:
   ProcColorSpaces CalculateDXGIColorSpaces(const DXGIColorSpaceArgs& csArgs) const;
   static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceSource(const DXGIColorSpaceArgs& csArgs,
                                                        bool supportHDR,
-                                                       bool supportHLG);
+                                                       bool supportHLG,
+                                                       bool topLeft);
   DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
                                                 bool supportHDR,
                                                 bool limitedRange) const;
@@ -143,6 +144,7 @@ protected:
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps = {};
   bool m_bSupportHLG = false;
   bool m_bSupportHDR10Limited = false;
+  bool m_BT2020TopLeft = false;
 
   struct ProcAmpInfo
   {

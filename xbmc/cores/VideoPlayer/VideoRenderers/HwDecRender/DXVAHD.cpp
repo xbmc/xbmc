@@ -278,6 +278,23 @@ bool CProcessorHD::InitProcessor()
         DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020, format,
         DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020, &supported);
     m_bSupportHDR10Limited = SUCCEEDED(hr) && !!supported;
+
+    // Check if driver prefers YCbCr TOP LEFT for 10 bit BT.2020
+    hr = pEnumerator1->CheckVideoProcessorFormatConversion(
+        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020, format,
+        DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709, &supported);
+    const bool left = SUCCEEDED(hr) && static_cast<bool>(supported);
+
+    hr = pEnumerator1->CheckVideoProcessorFormatConversion(
+        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020, format,
+        DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709, &supported);
+    const bool topLeft = SUCCEEDED(hr) && static_cast<bool>(supported);
+
+    m_BT2020TopLeft = !left && topLeft;
+    CLog::LogF(LOGDEBUG,
+               "BT.2020 input color spaces supported: YCBCR_STUDIO_G22_LEFT_P2020: {}, "
+               "YCBCR_STUDIO_G22_TOPLEFT_P2020: {}",
+               left ? "yes" : "no", topLeft ? "yes" : "no");
   }
 
   CLog::LogF(LOGDEBUG, "HLG color space conversion is{}supported.", m_bSupportHLG ? " " : " NOT ");
@@ -449,7 +466,8 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) c
 
 DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(const DXGIColorSpaceArgs& csArgs,
                                                             bool supportHDR,
-                                                            bool supportHLG)
+                                                            bool supportHLG,
+                                                            bool topleft)
 {
   // RGB
   if (csArgs.color_space == AVCOL_SPC_RGB)
@@ -494,7 +512,8 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(const DXGIColorSpace
     if (csArgs.full_range)
       return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P2020;
 
-    return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
+    return (topleft) ? DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020
+                     : DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
   }
   // SDTV
   if (csArgs.primaries == AVCOL_PRI_BT470BG || csArgs.primaries == AVCOL_PRI_SMPTE170M)
@@ -725,8 +744,9 @@ ProcColorSpaces CProcessorHD::CalculateDXGIColorSpaces(const DXGIColorSpaceArgs&
   const bool limited = DX::Windowing()->UseLimitedColor();
   const bool supportHDR = DX::Windowing()->IsHDROutput() && (m_bSupportHDR10Limited || !limited);
 
-  return ProcColorSpaces{GetDXGIColorSpaceSource(csArgs, supportHDR, m_bSupportHLG),
-                         GetDXGIColorSpaceTarget(csArgs, supportHDR, limited)};
+  return ProcColorSpaces{
+      GetDXGIColorSpaceSource(csArgs, supportHDR, m_bSupportHLG, m_BT2020TopLeft),
+      GetDXGIColorSpaceTarget(csArgs, supportHDR, limited)};
 }
 
 bool CProcessorHD::IsBT2020Supported()
