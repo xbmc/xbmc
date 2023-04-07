@@ -694,8 +694,8 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
     // skip not (yet) connected clients
     if (entry.second->IgnoreClient())
     {
-      CLog::LogFC(LOGDEBUG, LOGPVR, "Skipping not (yet) connected PVR client '{}'",
-                  entry.second->ID());
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Skipping not (yet) connected PVR client {}",
+                  entry.second->GetID());
       continue;
     }
 
@@ -704,8 +704,8 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
       m_knownClients.emplace_back(entry.second);
       newClients.emplace_back(entry.second);
 
-      CLog::LogFC(LOGDEBUG, LOGPVR, "Adding new PVR client '{}' to list of known clients",
-                  entry.second->ID());
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Adding new PVR client {} to list of known clients",
+                  entry.second->GetID());
     }
   }
 

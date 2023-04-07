@@ -90,7 +90,6 @@ void CPVRRecordings::UpdateInProgressSize()
     return;
   m_bIsUpdating = true;
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Updating recordings size");
   bool bHaveUpdatedInProgessRecording = false;
   for (auto& recording : m_recordings)
   {

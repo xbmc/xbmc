@@ -82,6 +82,9 @@ void CPVRChannelGroups::Unload()
 
 bool CPVRChannelGroups::UpdateFromClient(const std::shared_ptr<CPVRChannelGroup>& group)
 {
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Got channel group '{}' from client {}.", group->GroupName(),
+              group->GetClientID());
+
   if (!Update(group, true))
     return false;
 
@@ -300,14 +303,11 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
   bool bReturn = true;
 
   // sync groups
-  const int iSize = static_cast<int>(m_groups.size());
   if (!bChannelsOnly)
   {
     // get channel groups from the clients
     CServiceBroker::GetPVRManager().Clients()->GetChannelGroups(clients, this,
                                                                 m_failedClientsForChannelGroups);
-    CLog::LogFC(LOGDEBUG, LOGPVR, "{} new {} channel groups fetched from clients",
-                (m_groups.size() - iSize), m_bRadio ? "radio" : "TV");
   }
 
   // sync channels in groups
@@ -321,28 +321,10 @@ bool CPVRChannelGroups::UpdateFromClients(const std::vector<std::shared_ptr<CPVR
   {
     if (!bChannelsOnly || group->IsInternalGroup())
     {
-      const int iMemberCount = static_cast<int>(group->Size());
       if (!group->UpdateFromClients(clients))
       {
         CLog::LogFC(LOGERROR, LOGPVR, "Failed to update channel group '{}'", group->GroupName());
         bReturn = false;
-      }
-
-      const int iChangedMembersCount = static_cast<int>(group->Size()) - iMemberCount;
-      if (iChangedMembersCount > 0)
-      {
-        CLog::LogFC(LOGDEBUG, LOGPVR, "{} channel group members added to group '{}'",
-                    iChangedMembersCount, group->GroupName());
-      }
-      else if (iChangedMembersCount < 0)
-      {
-        CLog::LogFC(LOGDEBUG, LOGPVR, "{} channel group members removed from group '{}'",
-                    -iChangedMembersCount, group->GroupName());
-      }
-      else
-      {
-        // could still be changed if same amount of members was removed as was added, but too
-        // complicated to calculate just for debug logging
       }
     }
 
