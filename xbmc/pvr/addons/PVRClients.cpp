@@ -166,7 +166,6 @@ void CPVRClients::UpdateClients(
 
       if (status != ADDON_STATUS_OK)
       {
-        CLog::LogF(LOGERROR, "Failed to create add-on {}, status = {}", client->ID(), status);
         if (status == ADDON_STATUS_PERMANENT_FAILURE)
         {
           CServiceBroker::GetAddonMgr().DisableAddon(client->ID(),
@@ -916,12 +915,23 @@ PVR_ERROR CPVRClients::ForCreatedClients(const char* strFunctionName,
 
   for (const auto& clientEntry : clients)
   {
+    //    CLog::LogFC(LOGDEBUG, LOGPVR, "Calling add-on function '{}' on client {}.", strFunctionName,
+    //                clientEntry.second->GetID());
+
     PVR_ERROR currentError = function(clientEntry.second);
+
+    //    CLog::LogFC(LOGDEBUG, LOGPVR, "Called add-on function '{}' on client {}. return={}",
+    //                strFunctionName, clientEntry.second->GetID(), currentError);
 
     if (currentError != PVR_ERROR_NO_ERROR && currentError != PVR_ERROR_NOT_IMPLEMENTED)
     {
       lastError = currentError;
       failedClients.emplace_back(clientEntry.first);
+
+      CLog::LogFC(LOGDEBUG, LOGPVR,
+                  "Added client {} to failed clients list after call to "
+                  "function '{}‘ returned error {}.",
+                  clientEntry.second->GetID(), strFunctionName, currentError);
     }
   }
   return lastError;
@@ -960,12 +970,23 @@ PVR_ERROR CPVRClients::ForClients(const char* strFunctionName,
     if (std::none_of(failedClients.cbegin(), failedClients.cend(),
                      [&client](int failedClientId) { return failedClientId == client->GetID(); }))
     {
+      //      CLog::LogFC(LOGDEBUG, LOGPVR, "Calling add-on function '{}' on client {}.", strFunctionName,
+      //                  client->GetID());
+
       PVR_ERROR currentError = function(client);
+
+      //      CLog::LogFC(LOGDEBUG, LOGPVR, "Called add-on function '{}' on client {}. return={}",
+      //                  strFunctionName, client->GetID(), currentError);
 
       if (currentError != PVR_ERROR_NO_ERROR && currentError != PVR_ERROR_NOT_IMPLEMENTED)
       {
         lastError = currentError;
         failedClients.emplace_back(client->GetID());
+
+        CLog::LogFC(LOGDEBUG, LOGPVR,
+                    "Added client {} to failed clients list after call to "
+                    "function '{}‘ returned error {}.",
+                    client->GetID(), strFunctionName, currentError);
       }
     }
     else

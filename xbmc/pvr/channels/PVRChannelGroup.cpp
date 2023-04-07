@@ -734,8 +734,9 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroup::RemoveDel
     {
       if (HasValidDataForClient(channel->ClientID()))
       {
-        CLog::Log(LOGINFO, "Removed stale {} channel '{}' from group '{}'",
-                  IsRadio() ? "radio" : "TV", channel->ChannelName(), GroupName());
+        CLog::LogFC(LOGDEBUG, LOGPVR, "Removed stale {} channel '{}' from group '{}'. clientId={}",
+                    IsRadio() ? "radio" : "TV", channel->ChannelName(), GroupName(),
+                    channel->ClientID());
         membersToRemove.emplace_back(*it);
 
         m_members.erase(channel->StorageId());
