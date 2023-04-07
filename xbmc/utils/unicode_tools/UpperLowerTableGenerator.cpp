@@ -130,7 +130,6 @@ public:
   }
 };
 
-const char32_t DUMMY_CHAR32_T = 0;
 std::vector<CaseMap> caseMapTable;
 
 bool compare(const CaseMap& left, const CaseMap& right)
@@ -282,35 +281,35 @@ std::string To_UTF8(const std::u32string& s)
   return conv.to_bytes(s);
 }
 
-static void dump_second_level_table(const std::string label,
+static void dump_second_level_table(const std::string_view label,
                                     const char32_t tableIndex,
-                                    std::vector<CaseMap> secondLevelTable)
+                                    std::vector<uint32_t> secondLevelTable)
 {
-
   std::cout << std::hex << std::noshowbase // manually show the 0x prefix
             << std::internal // fill between the prefix and the number
             << std::setfill('0'); // fill with 0s
 
-  // Table declaration
-  // static const CaseMap T_CASEMAP_0x0000[] =
+  char32_t table_length = secondLevelTable.size();
+  char32_t upper_index = table_length;
 
-  std::cout << "static const CaseMap T_" << label << "_0x" << std::setw(4) << tableIndex
-            << "[] = " << std::endl;
+  std::cout << "static constexpr const char32_t " << label << "_0x" << std::setw(3) << tableIndex
+            << "[]" << std::endl;
   std::cout << "{" << std::endl;
 
-  if (secondLevelTable.size() == 0)
+  if (table_length < 2)
     return;
 
-  CaseMap length = CaseMap(secondLevelTable.size());
+  // Write # of elements in table on first line
+  std::cout << "  U'\\x" << std::setw(5) << std::hex << secondLevelTable[0] << "',";
 
-  int items_on_row = 0;
-  for (int i = 0; i < secondLevelTable.size(); i++)
+  int items_on_row = 100;
+  for (int i = 1; i < table_length; i++)
   {
-    if (i > 0)
+    if (i > 1)
     {
       std::cout << ",  ";
     }
-    if (items_on_row > 0)
+    if (items_on_row > 6)
     {
       std::cout << std::endl;
       items_on_row = 0;
@@ -318,8 +317,7 @@ static void dump_second_level_table(const std::string label,
     if (items_on_row == 0)
       std::cout << "  "; // indent
 
-    CaseMap currentElement = secondLevelTable[i];
-    std::cout << currentElement.print();
+    std::cout << "U'\\x" << std::setw(5) << std::hex << secondLevelTable[i] << "'";
 
     items_on_row++;
   }
@@ -327,36 +325,17 @@ static void dump_second_level_table(const std::string label,
     std::cout << std::endl;
 
   std::cout << "};" << std::endl << std::endl;
-
-  // static const std::vector<CaseMap> CASEMAP_0x0000(T_CASEMAP_0x0000, T_CASEMAP_0x0000 + (sizeof(T_CASEMAP_0x0000) / sizeof(CaseMap)));
-
-  std::stringstream ss;
-
-  ss << std::hex << std::noshowbase // manually show the 0x prefix
-     << std::internal // fill between the prefix and the number
-     << std::setfill('0'); // fill with 0s
-
-  ss << label << "_0x" << std::setw(4) << tableIndex;
-  std::string vectorName = ss.str();
-  ss.str("");
-  ss << "T_" << vectorName;
-  std::string tableName = ss.str();
-  std::cout << "static const std::vector<CaseMap> " << vectorName << "(" << tableName << ", "
-            << tableName << " + (sizeof(" << tableName << ") / sizeof(CaseMap)));" << std::endl
-            << std::endl;
 }
 
-static void dump_first_level_table(std::string label,
+static void dump_first_level_table(std::string_view tableLabel,
                                    int table_length,
-                                   const uint16_t firstLevelTable[])
+                                   const std::vector<uint16_t> firstLevelTable)
 {
-  std::cout << "static const std::vector<CaseMap> EMPTY_CASEMAP_ = {};" << std::endl << std::endl;
-
   std::cout << std::noshowbase // manually show the 0x prefix
             << std::internal // fill between the prefix and the number
             << std::setfill('0'); // fill with 0s
 
-  std::cout << "static const std::vector<CaseMap> " << label << "_INDEX [] =" << std::endl;
+  std::cout << "static constexpr const char32_t* const " << tableLabel << "_INDEX[]" << std::endl;
   std::cout << "{";
 
   int items_on_row = 8;
@@ -372,91 +351,108 @@ static void dump_first_level_table(std::string label,
       std::cout << std::endl << "  ";
       items_on_row = 0;
     }
-    if ((i != 0) and (firstLevelTable[i] == 0))
-    {
-      std::cout << "EMPTY_CASEMAP_";
-    }
+
+    if ((firstLevelTable[i] == 0) && (i != 0))
+      std::cout << "0x0";
     else
-    {
-      std::cout << label << "_0x" << std::setw(4) << std::hex << (i);
-    }
+      std::cout << tableLabel << "_0x" << std::setw(3) << std::hex << (i);
     items_on_row++;
     firstComma = false;
   }
   std::cout << std::endl << "};" << std::endl << std::endl;
 }
 
-static void doTable(std::string label, const std::vector<CaseMap> mappingTable)
+static void doTable(std::string label,
+                    const std::vector<CaseMap> mappingTable,
+                    std::string_view tableName,
+                    bool includeIndex = false)
 {
-  char32_t lastCodepoint = mappingTable.back().codepoint;
   char32_t previousCodepoint = 0x0;
-  char32_t start;
-  char32_t end;
-  char32_t previous_inputCodepoint_high_bytes = 0xFFFFFFFF;
-  CaseMap DUMMY_ENTRY = CaseMap();
-  std::vector<CaseMap> secondLevelTable;
-  int second_level_table_index = 0;
+  char32_t currentFirstTableIndex = 0xFFFFFFFF;
+  std::vector<uint32_t> secondLevelTable;
+  secondLevelTable.assign(0x101, 0);
+  int second_level_table_index = 1;
   int endOfSecondTable = 0;
-  int first_level_table_index = 0;
-  uint16_t firstLevelTable[0x200] = {}; // Initializes elements to 0
+  std::vector<uint16_t> firstLevelTable(0x200); // Initializes elements to 0
+
+  // The first element of each secondLevelTable contains the number of entries
+  // in the table. This allows for partial tables to be used. Otherwise, every
+  // table would be 256 elements long. Due to this first element, every mapped
+  // character is in a 'one-based' table instead of the normal 'zero-based'
+  // table.
 
   for (CaseMap entry : mappingTable)
   {
     char32_t inputCodepoint = entry.codepoint;
-    char32_t inputCodepoint_high_bytes = inputCodepoint >> 8;
-    if (inputCodepoint_high_bytes != previous_inputCodepoint_high_bytes)
+    char32_t newFirstTableIndex = inputCodepoint >> 8;
+    char32_t mappedCodepoint;
+    if (tableName == "UPPER_CASE")
+      mappedCodepoint = entry.upperCaseValue;
+    else if (tableName == "LOWER_CASE")
+      mappedCodepoint = entry.lowerCaseValue;
+    else if (tableName == "TITLE_CASE")
+      mappedCodepoint = entry.titleCaseValue;
+
+    // completed this sub-table?
+    if (newFirstTableIndex != currentFirstTableIndex)
     {
-      first_level_table_index = previous_inputCodepoint_high_bytes;
-
-      // Don't include tables that have no CaseMap entries
-
-      if (secondLevelTable.size() > 0)
+      if (endOfSecondTable > 1) // More than just the size, write it!
       {
         // Truncate secondLevelTable after last added entry so that extra DUMMY
         // entries not written.
 
-        int idx = previousCodepoint & 0xFF;
-        if (idx + 1 < secondLevelTable.size())
+        if (endOfSecondTable < secondLevelTable.size())
         {
-          auto unusedSpaceIter = next(secondLevelTable.begin() + idx);
+          auto unusedSpaceIter = next(secondLevelTable.begin() + endOfSecondTable);
           secondLevelTable.erase(unusedSpaceIter, secondLevelTable.end());
         }
+        // When no conversions are found within a block of 256 chars,
+        // then the firstLevelTable index for that block will be zero, otherwise
+        // generate a pointer to the 256 char block
 
-        dump_second_level_table(label, previous_inputCodepoint_high_bytes, secondLevelTable);
-        secondLevelTable.clear();
+        firstLevelTable[currentFirstTableIndex] = currentFirstTableIndex;
+        dump_second_level_table(tableName, currentFirstTableIndex, secondLevelTable);
+        secondLevelTable.assign(0x101, 0); // Reinitialize with zeros
+        endOfSecondTable = 0;
+        currentFirstTableIndex = newFirstTableIndex;
       }
-      previous_inputCodepoint_high_bytes = inputCodepoint_high_bytes;
+      // Done with the current sub-table, start processing the next sub-table
+      currentFirstTableIndex = newFirstTableIndex;
     }
-    first_level_table_index = inputCodepoint_high_bytes;
-    firstLevelTable[first_level_table_index] = inputCodepoint_high_bytes;
-    if (secondLevelTable.size() == 0)
-      secondLevelTable.assign(0x100, DUMMY_ENTRY);
-
-    secondLevelTable[entry.codepoint & 0xFF] = entry;
-    previousCodepoint = entry.codepoint;
-  }
-  if (secondLevelTable.size() > 0)
-  {
-    // Don't include tables that have no CaseMap entries
-
-    // Truncate any DUMMY entries
-
-    int idx = previousCodepoint & 0xFF;
-    if (idx + 1 < secondLevelTable.size())
+    if (mappedCodepoint != 0)
     {
-      auto unusedSpaceIter = next(secondLevelTable.begin() + idx);
+      endOfSecondTable = (inputCodepoint & 0xFF) + 1;
+      secondLevelTable[endOfSecondTable] = mappedCodepoint;
+      secondLevelTable[0] = inputCodepoint & 0xFF;
+    }
+    previousCodepoint = inputCodepoint;
+  } // End for
+  // Process last sub-table, if needed
+
+  if (endOfSecondTable > 1)
+  {
+    // Truncate secondLevelTable after last added entry so that extra DUMMY
+    // entries not written.
+
+    if (endOfSecondTable < secondLevelTable.size())
+    {
+      auto unusedSpaceIter = next(secondLevelTable.begin() + endOfSecondTable);
       secondLevelTable.erase(unusedSpaceIter, secondLevelTable.end());
     }
-
-    dump_second_level_table(label, previous_inputCodepoint_high_bytes, secondLevelTable);
-    secondLevelTable.clear();
+    firstLevelTable[currentFirstTableIndex] = currentFirstTableIndex;
+    dump_second_level_table(tableName, currentFirstTableIndex, secondLevelTable);
+    secondLevelTable.assign(0x101, 0);
+    endOfSecondTable = 0;
   }
-  dump_first_level_table(label, first_level_table_index + 1, firstLevelTable);
+  if (includeIndex)
+    dump_first_level_table(tableName, currentFirstTableIndex + 1, firstLevelTable);
 }
 
 int main()
 {
   loadData();
 
-  doTable("CASEMAP", caseMapTable);
+  doTable("CASEMAP", caseMapTable, "LOWER_CASE", true);
+  doTable("CASEMAP", caseMapTable, "UPPER_CASE", true);
+  // doTable("CASEMAP", caseMapTable, "TITLE_CASE");
 }

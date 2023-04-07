@@ -9,14 +9,11 @@
 //
 //  File:      StringUtils.cpp
 //
-//  Purpose:   String utilities, including those that support Unicode
+//  Purpose:   ATL split string utility
+//  Author:    Paul J. Weiss
 //
-//  Authors:   Frank Feuerbacher, Paul J. Weiss and numerous others
+//  Modified to use J O'Leary's std::string class by kraqh3d
 //
-//  Modified:  To support J O'Leary's std::string class by kraqh3d
-//             FoldCase to replace most uses of ToLower
-//             ToLower/ToUpper/FoldCase use UTF-32 for more accurate
-//             and consistent results
 //------------------------------------------------------------------------
 
 #ifdef HAVE_NEW_CROSSGUID
@@ -70,13 +67,53 @@ const std::string StringUtils::Empty{""};
 
 namespace
 {
+// Configures the behavior of iconv.
+// When true, FAIL_ON_ERROR causes conversion to return an empty string on any error.
+// Otherwise, the behavior depends upon SUBSTITUTE_BAD_CHARS
 static constexpr bool FAIL_ON_ERROR{false};
+
+// When FAIL_ON_ERROR is false:
+//   then SUBSTITUTE_BAD_CHARS, when true, causes any invalid codepoints to be replaced
+//   with a substitution codepoint (U"x0fffd" which is displayed as: '�').
+//   When false then any bad codepoints are omitted from the returned string.
 static constexpr bool SUBSTITUTE_BAD_CHARS{true};
 
-static const std::ctype<char>& C_CTYPE_CHAR =
-    std::use_facet<std::ctype<char>>(StringUtils::GetCLocale());
-static const std::ctype<wchar_t>& C_CTYPE_WCHAR =
-    std::use_facet<std::ctype<wchar_t>>(StringUtils::GetCLocale());
+// MacOS does not like C.UTF-8
+
+#if defined(TARGET_DARWIN)
+static constexpr std::string_view C_LOCALE_NAME{"C"};
+#else
+static constexpr std::string_view C_LOCALE_NAME{"C.UTF-8"};
+#endif
+
+static const std::locale C_LOCALE = []() {
+  std::locale cLocale;
+  try
+  {
+    cLocale = std::locale(C_LOCALE_NAME.data()); // MacOS does not like C.UTF-8
+  }
+  catch (std::runtime_error& e)
+  {
+    // Have to be careful about logging in StringUtils. Can get recursive during
+    // formatting of message.
+
+    std::cout << "Locale C.UTF-8 not supported trying 'C'" << std::endl;
+    try
+    {
+      cLocale = std::locale("C"); // This shouldn't fail
+    }
+    catch (std::runtime_error& e2)
+    {
+      // Have to be careful about logging in StringUtils. Can get recursive
+
+      std::cout << "Locale C not supported" << std::endl;
+    }
+  }
+  return cLocale;
+}();
+
+static const std::ctype<char>& C_CTYPE_CHAR = std::use_facet<std::ctype<char>>(C_LOCALE);
+static const std::ctype<wchar_t>& C_CTYPE_WCHAR = std::use_facet<std::ctype<wchar_t>>(C_LOCALE);
 
 // Unicode Replacement Character, commonly used to substitute for bad
 // or malformed unicode characters.
@@ -108,7 +145,6 @@ T NumberFromSS(std::string_view str, T fallback) noexcept
  * \return case folded version of c
  */
 static char32_t FoldCaseChar(const char32_t c);
-
 static char32_t ToUpperUnicode(const char32_t c);
 static char32_t ToLowerUnicode(const char32_t c);
 
@@ -206,58 +242,44 @@ std::wstring StringUtils::FormatV(const wchar_t* fmt, va_list args)
 //
 // --------------  Unicode encoding converters --------------
 //
-// There are two ways to convert between the Unicode encodings:
-// iconv or C++ wstring_convert
-//
-// iconv
-//   - handles all of the conversions that we need
-//   - on error can ignore bad code-units
-//   - OR truncate converted string
-//   - OR substitute bad code-units with 'replacement character' UxFFFD,
-//     which preserves more of the string
-//   - likely more consistent behavior than wstring_convert
-//
-// wstring_convert
-//   - c++ built-in
-//   - does not support wstring to/from char32_t
-//   - on error can either throw exception or return 'bad value' string
-//   - some conversions are in 'limbo': deprecated, but no
-//     replacement defined.
-//
+// Using iconv for conversions:
+// - C++ does not convert between wstring and u32string
+// - iconv behavior better understood
+// - iconv can handle DARWIN UTF-8-MAC encoding
 
-std::string StringUtils::ToUtf8(const std::u32string_view str)
+std::string StringUtils::ToUtf8(std::u32string_view str)
 {
   std::string utf8Str = CUnicodeConverter::Utf32ToUtf8(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
   return utf8Str;
 }
 
-std::string StringUtils::ToUtf8(const std::wstring_view str)
+std::string StringUtils::ToUtf8(std::wstring_view str)
 {
   std::string utf8Str = CUnicodeConverter::WToUtf8(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
   return utf8Str;
 }
 
-std::u32string StringUtils::ToUtf32(const std::string_view str)
+std::u32string StringUtils::ToUtf32(std::string_view str)
 {
   std::u32string utf32Str =
       CUnicodeConverter::Utf8ToUtf32(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
   return utf32Str;
 }
 
-std::u32string StringUtils::ToUtf32(const std::wstring_view str)
+std::u32string StringUtils::ToUtf32(std::wstring_view str)
 {
   std::u32string utf32Str;
   utf32Str = CUnicodeConverter::WToUtf32(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
   return utf32Str;
 }
 
-std::wstring StringUtils::ToWstring(const std::string_view str)
+std::wstring StringUtils::ToWstring(std::string_view str)
 {
   std::wstring wStr = CUnicodeConverter::Utf8ToW(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
   return wStr;
 }
 
-std::wstring StringUtils::ToWstring(const std::u32string_view str)
+std::wstring StringUtils::ToWstring(std::u32string_view str)
 {
   std::wstring result;
   result = CUnicodeConverter::Utf32ToW(str, FAIL_ON_ERROR, SUBSTITUTE_BAD_CHARS);
@@ -266,7 +288,7 @@ std::wstring StringUtils::ToWstring(const std::u32string_view str)
 
 namespace
 {
-static int FoldAndCompare(const std::u32string_view str1, const std::u32string_view str2)
+static int FoldAndCompare(std::u32string_view str1, std::u32string_view str2)
 {
   // FoldAndEquals is faster for equality checks.
 
@@ -293,183 +315,148 @@ static int FoldAndCompare(const std::u32string_view str1, const std::u32string_v
 
   return 0;
 }
+
+std::wstring ToUpperC(std::wstring_view str)
+{
+  std::wstring result;
+  result.reserve(str.size());
+
+  std::transform(str.cbegin(), str.cend(), std::back_inserter(result),
+                 [](wchar_t c) { return C_CTYPE_WCHAR.toupper(c); });
+
+  return result;
+}
+
+std::string ToUpperC(std::string_view str)
+{
+  std::string result;
+  result.reserve(str.size());
+
+  std::transform(str.cbegin(), str.cend(), std::back_inserter(result),
+                 [](unsigned char c) { return C_CTYPE_CHAR.toupper(c); });
+
+  return result;
+}
+
+std::wstring ToLowerC(std::wstring_view str)
+{
+  std::wstring result;
+  result.reserve(str.size());
+
+  std::transform(str.cbegin(), str.cend(), std::back_inserter(result),
+                 [](wchar_t c) { return C_CTYPE_WCHAR.tolower(c); });
+
+  return result;
+}
+
+std::string ToLowerC(std::string_view str)
+{
+  std::string result;
+  result.reserve(str.size());
+
+  std::transform(str.cbegin(), str.cend(), std::back_inserter(result),
+                 [](unsigned char c) { return C_CTYPE_CHAR.tolower(c); });
+
+  return result;
+}
 } // namespace
 
 std::locale StringUtils::GetCLocale()
 {
-  static std::locale C_LOCALE;
-  static bool initialized{false};
-
-  if (!initialized)
-  {
-    std::locale x;
-    try
-    {
-      x = std::locale("C.UTF-8"); // MacOS does not like C.UTF-8
-      C_LOCALE = x;
-      initialized = true;
-    }
-    catch (std::runtime_error& e)
-    {
-      // Have to be careful about logging in StringUtils. Can get recursive during
-      // formatting of message.
-
-      std::cout << "Locale C.UTF-8 not supported trying 'C'" << std::endl;
-      try
-      {
-        x = std::locale("C"); // This shouldn't fail
-        C_LOCALE = x;
-        initialized = true;
-      }
-      catch (std::runtime_error& e2)
-      {
-        // Have to be careful about logging in StringUtils. Can get recursive
-
-        std::cout << "Locale C not supported" << std::endl;
-      }
-    }
-  }
   return C_LOCALE;
 }
 
-std::wstring ToUpperC(const std::wstring_view str)
-{
-  std::wstring result;
-  const std::locale cLocale = StringUtils::GetCLocale();
-
-  for (auto c : str)
-    result.push_back(C_CTYPE_WCHAR.toupper(c));
-
-  return result;
-}
-
-std::string ToUpperC(const std::string_view str)
-{
-  std::string result;
-  const std::locale cLocale = StringUtils::GetCLocale();
-  for (auto c : str)
-    result.push_back(C_CTYPE_CHAR.toupper(c));
-
-  return result;
-}
-
-std::wstring ToLowerC(const std::wstring_view str)
-{
-  std::wstring result;
-  const std::locale cLocale = StringUtils::GetCLocale();
-  for (auto c : str)
-    result.push_back(C_CTYPE_WCHAR.tolower(c));
-
-  return result;
-}
-
-std::string ToLowerC(const std::string_view str)
-{
-  std::string result;
-  const std::locale cLocale = StringUtils::GetCLocale();
-  for (auto c : str)
-    result.push_back(C_CTYPE_CHAR.tolower(c));
-
-  return result;
-}
-
-std::u32string StringUtils::ToUpper(const std::u32string_view str,
+std::u32string StringUtils::ToUpper(std::u32string_view str,
                                     const std::locale locale /* = GetSystemLocale() */)
 {
   std::u32string result;
-  if (str.length() == 0)
-    return result;
+  result.reserve(str.size());
 
-  for (char32_t c : str)
-  {
-    result.push_back(ToUpperUnicode(c));
-  }
+  std::transform(str.cbegin(), str.cend(), std::back_inserter(result),
+                 [](char32_t c) { return ToUpperUnicode(c); });
+
   return result;
 }
 
-std::string StringUtils::ToUpper(const std::string_view str,
+std::string StringUtils::ToUpper(std::string_view str,
                                  const std::locale locale /* = GetSystemLocale()) */)
 {
-  std::string result;
   if (str.length() == 0)
-    return result;
+    return std::string();
 
   // If Locale is "C" or "C.UTF-8", then only ASCII characters are upper-cased
   // All others are left as is. No point in changing to larger code-units.
 
-  if (locale == StringUtils::GetCLocale())
+  if (locale == C_LOCALE)
     return ToUpperC(str);
 
   std::u32string str32 = ToUtf32(str);
   std::u32string u32Result = ToUpper(str32, locale);
-  result = ToUtf8(u32Result);
+  std::string result = ToUtf8(u32Result);
   return result;
 }
 
-std::wstring StringUtils::ToUpper(const std::wstring_view str,
+std::wstring StringUtils::ToUpper(std::wstring_view str,
                                   const std::locale locale /* = GetSystemLocale()) */)
 {
-  std::wstring result;
   if (str.length() == 0)
-    return result;
+    return std::wstring();
 
-  if (locale == StringUtils::GetCLocale())
+  if (locale == C_LOCALE)
     return ToUpperC(str);
 
   std::u32string str32 = ToUtf32(str);
   std::u32string u32Result = ToUpper(str32, locale);
-  result = ToWstring(u32Result);
+  std::wstring result = ToWstring(u32Result);
   return result;
 }
 
-std::u32string StringUtils::ToLower(const std::u32string_view str,
+std::u32string StringUtils::ToLower(std::u32string_view str,
                                     const std::locale locale /* = GetSystemLocale() */)
 {
   std::u32string result;
   if (str.length() == 0)
     return result;
 
-  for (char32_t c : str)
-  {
-    result.push_back(ToLowerUnicode(c));
-  }
+  result.reserve(str.size());
+  std::transform(str.cbegin(), str.cend(), std::back_inserter(result),
+                 [](char32_t c) { return ToLowerUnicode(c); });
+
   return result;
 }
 
-std::string StringUtils::ToLower(const std::string_view str,
+std::string StringUtils::ToLower(std::string_view str,
                                  const std::locale locale /* = GetSystemLocale() */)
 {
-  std::string result;
   if (str.length() == 0)
-    return result;
+    return std::string();
 
-  if (locale == StringUtils::GetCLocale())
+  if (locale == C_LOCALE)
     return ToLowerC(str);
 
   std::u32string str32 = ToUtf32(str);
   std::u32string u32Result = ToLower(str32, locale);
-  result = ToUtf8(u32Result);
+  std::string result = ToUtf8(u32Result);
   return result;
 }
 
-std::wstring StringUtils::ToLower(const std::wstring_view str,
+std::wstring StringUtils::ToLower(std::wstring_view str,
                                   const std::locale locale /* = GetSystemLocale() */)
 {
-  std::wstring result;
   if (str.length() == 0)
-    return result;
+    return std::wstring();
 
-  if (locale == StringUtils::GetCLocale())
+  if (locale == C_LOCALE)
     return ToLowerC(str);
 
   std::u32string str32 = ToUtf32(str);
   std::u32string u32Result = ToLower(str32, locale);
-  result = ToWstring(u32Result);
+  std::wstring result = ToWstring(u32Result);
 
   return result;
 }
 
-std::u32string StringUtils::FoldCase(const std::u32string_view str)
+std::u32string StringUtils::FoldCase(std::u32string_view str)
 {
   // Common code to do actual case folding
   //
@@ -521,17 +508,17 @@ std::u32string StringUtils::FoldCase(const std::u32string_view str)
   // such as ICU can.
 
   std::u32string result;
-  for (auto i = str.begin(); i != str.end(); i++)
-  {
-    char32_t fold_c = FoldCaseChar(*i);
-    result.push_back(fold_c);
-  }
+  result.reserve(str.size());
+
+  std::transform(str.cbegin(), str.cend(), std::back_inserter(result),
+                 [](char32_t c) { return FoldCaseChar(c); });
+
   return result;
 }
 
-std::wstring StringUtils::FoldCase(const std::wstring_view str)
+std::wstring StringUtils::FoldCase(std::wstring_view str)
 {
-  if (str.length() == 0)
+  if (str.empty())
     return std::wstring(str);
 
   std::u32string utf32Str;
@@ -542,18 +529,15 @@ std::wstring StringUtils::FoldCase(const std::wstring_view str)
   return result;
 }
 
-std::string StringUtils::FoldCase(const std::string_view str)
+std::string StringUtils::FoldCase(std::string_view str)
 {
-  // To get same behavior and better accuracy as the wstring version, convert to utf32string.
-
   std::u32string utf32Str = StringUtils::ToUtf32(str);
   std::u32string foldedStr = StringUtils::FoldCase(utf32Str);
   std::string result = StringUtils::ToUtf8(foldedStr);
   return result;
 }
 
-bool StringUtils::FoldAndCompareStart(const std::u32string_view str1,
-                                      const std::u32string_view str2)
+bool StringUtils::FoldAndCompareStart(std::u32string_view str1, std::u32string_view str2)
 {
   if (str1.length() < str2.length())
     return false;
@@ -568,12 +552,12 @@ bool StringUtils::FoldAndCompareStart(const std::u32string_view str1,
   return true;
 }
 
-bool StringUtils::FoldAndCompareEnd(const std::u32string_view str1, const std::u32string_view str2)
+bool StringUtils::FoldAndCompareEnd(std::u32string_view str1, std::u32string_view str2)
 {
   if (str1.length() < str2.length())
     return false;
 
-  if (str2.length() == 0)
+  if (str2.empty())
     return true;
 
   size_t str1_delta = str1.length() - str2.length();
@@ -589,9 +573,9 @@ bool StringUtils::FoldAndCompareEnd(const std::u32string_view str1, const std::u
   return true;
 }
 
-bool StringUtils::FoldAndEquals(const std::u32string_view str1, const std::u32string_view str2)
+bool StringUtils::FoldAndEquals(std::u32string_view str1, std::u32string_view str2)
 {
-  // A bit faster than FoldCompareAndCompare because it can immediately return if lengths
+  // A bit faster than FoldAndCompare because it can immediately return if lengths
   // not the same. Simple FoldCase does not change codepoint length.
   //
   // Embedded NULLS can occur. Does NOT consider NULLS string terminators (doing so would
@@ -635,18 +619,31 @@ void StringUtils::ToCapitalize(std::wstring& str)
   }
 }
 
-bool StringUtils::Equals(const std::string_view str1, const std::string_view str2)
+bool StringUtils::Equals(std::string_view str1, std::string_view str2)
 {
   // The Simple Unicode support that is supplied here allows a quick
   // binary comparison of the two strings without conversion.
 
-  if (str1.length() != str2.length())
-    return false;
+  return str1 == str2; // Binary compare not lexicographic
+}
+
+bool StringUtils::Equals(std::wstring_view str1, std::wstring_view str2)
+{
+  // The Simple Unicode support that is supplied here allows a quick
+  // binary comparison of the two strings without conversion.
 
   return str1 == str2; // Binary compare not lexicographic
 }
 
-bool StringUtils::EqualsNoCase(const std::string_view str1, const std::string_view str2)
+bool StringUtils::Equals(std::u32string_view str1, std::u32string_view str2)
+{
+  // The Simple Unicode support that is supplied here allows a quick
+  // binary comparison of the two strings without conversion.
+
+  return str1 == str2; // Binary compare not lexicographic
+}
+
+bool StringUtils::EqualsNoCase(std::string_view str1, std::string_view str2)
 {
   // FoldCase both strings and then compare the string. Slower than a byte at a time,
   // but more accurate for multi-byte characters. Does not impact char32_t length,
@@ -661,8 +658,8 @@ bool StringUtils::EqualsNoCase(const std::string_view str1, const std::string_vi
   return StringUtils::FoldAndEquals(utf32Str1, utf32Str2);
 }
 
-int StringUtils::CompareNoCase(const std::string_view str1,
-                               const std::string_view str2,
+int StringUtils::CompareNoCase(std::string_view str1,
+                               std::string_view str2,
                                const size_t n /* = 0 */)
 {
   // n is the maximum number of Unicode codepoints (for practical purposes
@@ -679,18 +676,18 @@ int StringUtils::CompareNoCase(const std::string_view str1,
   std::u32string utf32Str1 = StringUtils::ToUtf32(str1);
   std::u32string utf32Str2 = StringUtils::ToUtf32(str2);
 
-  if (n > 0 and n < utf32Str1.length())
+  if (n > 0 && n < utf32Str1.length())
     utf32Str1 = utf32Str1.substr(0, n);
 
-  if (n > 0 and n < utf32Str2.length())
+  if (n > 0 && n < utf32Str2.length())
     utf32Str2 = utf32Str2.substr(0, n);
 
   int result = FoldAndCompare(utf32Str1, utf32Str2);
   return result;
 }
 
-int StringUtils::CompareNoCase(const std::wstring_view str1,
-                               const std::wstring_view str2,
+int StringUtils::CompareNoCase(std::wstring_view str1,
+                               std::wstring_view str2,
                                const size_t n /* = 0 */)
 {
   // n is the maximum number of Unicode codepoints (for practical purposes
@@ -707,10 +704,10 @@ int StringUtils::CompareNoCase(const std::wstring_view str1,
   std::u32string utf32Str1 = StringUtils::ToUtf32(str1);
   std::u32string utf32Str2 = StringUtils::ToUtf32(str2);
 
-  if (n > 0 and n < utf32Str1.length())
+  if (n > 0 && n < utf32Str1.length())
     utf32Str1 = utf32Str1.substr(0, n);
 
-  if (n > 0 and n < utf32Str2.length())
+  if (n > 0 && n < utf32Str2.length())
     utf32Str2 = utf32Str2.substr(0, n);
 
   int result = FoldAndCompare(utf32Str1, utf32Str2);
@@ -883,12 +880,12 @@ int StringUtils::Replace(std::wstring& str, const std::wstring& oldStr, const st
   return replacedChars;
 }
 
-bool StringUtils::StartsWith(const std::string_view str1, const std::string_view str2)
+bool StringUtils::StartsWith(std::string_view str1, std::string_view str2)
 {
   return str1.substr(0, str2.size()) == str2; // Binary compare
 }
 
-bool StringUtils::StartsWithNoCase(const std::string_view str1, const std::string_view str2)
+bool StringUtils::StartsWithNoCase(std::string_view str1, std::string_view str2)
 {
   // FoldCase both strings and then compare the string. Slower than a byte at a time,
   // but more accurate for multi-byte characters. In "full case folding" (which
@@ -906,7 +903,7 @@ bool StringUtils::StartsWithNoCase(const std::string_view str1, const std::strin
   return result;
 }
 
-bool StringUtils::EndsWith(const std::string_view str1, const std::string_view str2)
+bool StringUtils::EndsWith(std::string_view str1, std::string_view str2)
 {
   // No character conversion required
 
@@ -915,7 +912,7 @@ bool StringUtils::EndsWith(const std::string_view str1, const std::string_view s
   return str1.substr(str1.size() - str2.size(), str2.size()) == str2; // Binary compare
 }
 
-bool StringUtils::EndsWithNoCase(const std::string_view str1, const std::string_view str2)
+bool StringUtils::EndsWithNoCase(std::string_view str1, std::string_view str2)
 {
   // FoldCase both strings and then compare the end of str1 for str2.
   // Slower than a byte at a time, but more accurate for multi-byte characters. In "full case
@@ -1029,13 +1026,12 @@ int StringUtils::FindNumber(const std::string& strInput, const std::string& strF
 
 namespace
 {
-// TODO: Move plane maps  to Anonymous namespace
-
 // Plane maps for MySQL utf8_general_ci (now known as utf8mb3_general_ci) collation
 // Derived from https://github.com/MariaDB/server/blob/10.5/strings/ctype-utf8.c
 
 // clang-format off
-static const uint16_t plane00[] = {
+static constexpr uint16_t plane00[]
+{
   0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007, 0x0008, 0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x000E, 0x000F,
   0x0010, 0x0011, 0x0012, 0x0013, 0x0014, 0x0015, 0x0016, 0x0017, 0x0018, 0x0019, 0x001A, 0x001B, 0x001C, 0x001D, 0x001E, 0x001F,
   0x0020, 0x0021, 0x0022, 0x0023, 0x0024, 0x0025, 0x0026, 0x0027, 0x0028, 0x0029, 0x002A, 0x002B, 0x002C, 0x002D, 0x002E, 0x002F,
@@ -1054,7 +1050,8 @@ static const uint16_t plane00[] = {
   0x00D0, 0x004E, 0x004F, 0x004F, 0x004F, 0x004F, 0x004F, 0x00F7, 0x00D8, 0x0055, 0x0055, 0x0055, 0x0055, 0x0059, 0x00DE, 0x0059
 };
 
-static const uint16_t plane01[] = {
+static constexpr uint16_t plane01[]
+{
   0x0041, 0x0041, 0x0041, 0x0041, 0x0041, 0x0041, 0x0043, 0x0043, 0x0043, 0x0043, 0x0043, 0x0043, 0x0043, 0x0043, 0x0044, 0x0044,
   0x0110, 0x0110, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0047, 0x0047, 0x0047, 0x0047,
   0x0047, 0x0047, 0x0047, 0x0047, 0x0048, 0x0048, 0x0126, 0x0126, 0x0049, 0x0049, 0x0049, 0x0049, 0x0049, 0x0049, 0x0049, 0x0049,
@@ -1073,7 +1070,8 @@ static const uint16_t plane01[] = {
   0x004A, 0x01F1, 0x01F1, 0x01F1, 0x0047, 0x0047, 0x01F6, 0x01F7, 0x004E, 0x004E, 0x0041, 0x0041, 0x00C6, 0x00C6, 0x00D8, 0x00D8
 };
 
-static const uint16_t plane02[] = {
+static constexpr uint16_t plane02[]
+{
   0x0041, 0x0041, 0x0041, 0x0041, 0x0045, 0x0045, 0x0045, 0x0045, 0x0049, 0x0049, 0x0049, 0x0049, 0x004F, 0x004F, 0x004F, 0x004F,
   0x0052, 0x0052, 0x0052, 0x0052, 0x0055, 0x0055, 0x0055, 0x0055, 0x0053, 0x0053, 0x0054, 0x0054, 0x021C, 0x021C, 0x0048, 0x0048,
   0x0220, 0x0221, 0x0222, 0x0222, 0x0224, 0x0224, 0x0041, 0x0041, 0x0045, 0x0045, 0x004F, 0x004F, 0x004F, 0x004F, 0x004F, 0x004F,
@@ -1092,7 +1090,8 @@ static const uint16_t plane02[] = {
   0x02F0, 0x02F1, 0x02F2, 0x02F3, 0x02F4, 0x02F5, 0x02F6, 0x02F7, 0x02F8, 0x02F9, 0x02FA, 0x02FB, 0x02FC, 0x02FD, 0x02FE, 0x02FF
 };
 
-static const uint16_t plane03[] = {
+static constexpr uint16_t plane03[]
+{
   0x0300, 0x0301, 0x0302, 0x0303, 0x0304, 0x0305, 0x0306, 0x0307, 0x0308, 0x0309, 0x030A, 0x030B, 0x030C, 0x030D, 0x030E, 0x030F,
   0x0310, 0x0311, 0x0312, 0x0313, 0x0314, 0x0315, 0x0316, 0x0317, 0x0318, 0x0319, 0x031A, 0x031B, 0x031C, 0x031D, 0x031E, 0x031F,
   0x0320, 0x0321, 0x0322, 0x0323, 0x0324, 0x0325, 0x0326, 0x0327, 0x0328, 0x0329, 0x032A, 0x032B, 0x032C, 0x032D, 0x032E, 0x032F,
@@ -1111,7 +1110,8 @@ static const uint16_t plane03[] = {
   0x039A, 0x03A1, 0x03A3, 0x03F3, 0x03F4, 0x03F5, 0x03F6, 0x03F7, 0x03F8, 0x03F9, 0x03FA, 0x03FB, 0x03FC, 0x03FD, 0x03FE, 0x03FF
 };
 
-static const uint16_t plane04[] = {
+static constexpr uint16_t plane04[]
+{
   0x0415, 0x0415, 0x0402, 0x0413, 0x0404, 0x0405, 0x0406, 0x0406, 0x0408, 0x0409, 0x040A, 0x040B, 0x041A, 0x0418, 0x0423, 0x040F,
   0x0410, 0x0411, 0x0412, 0x0413, 0x0414, 0x0415, 0x0416, 0x0417, 0x0418, 0x0419, 0x041A, 0x041B, 0x041C, 0x041D, 0x041E, 0x041F,
   0x0420, 0x0421, 0x0422, 0x0423, 0x0424, 0x0425, 0x0426, 0x0427, 0x0428, 0x0429, 0x042A, 0x042B, 0x042C, 0x042D, 0x042E, 0x042F,
@@ -1130,7 +1130,8 @@ static const uint16_t plane04[] = {
   0x0423, 0x0423, 0x0423, 0x0423, 0x0427, 0x0427, 0x04F6, 0x04F7, 0x042B, 0x042B, 0x04FA, 0x04FB, 0x04FC, 0x04FD, 0x04FE, 0x04FF
 };
 
-static const uint16_t plane05[] = {
+static constexpr uint16_t plane05[]
+{
   0x0500, 0x0501, 0x0502, 0x0503, 0x0504, 0x0505, 0x0506, 0x0507, 0x0508, 0x0509, 0x050A, 0x050B, 0x050C, 0x050D, 0x050E, 0x050F,
   0x0510, 0x0511, 0x0512, 0x0513, 0x0514, 0x0515, 0x0516, 0x0517, 0x0518, 0x0519, 0x051A, 0x051B, 0x051C, 0x051D, 0x051E, 0x051F,
   0x0520, 0x0521, 0x0522, 0x0523, 0x0524, 0x0525, 0x0526, 0x0527, 0x0528, 0x0529, 0x052A, 0x052B, 0x052C, 0x052D, 0x052E, 0x052F,
@@ -1149,7 +1150,8 @@ static const uint16_t plane05[] = {
   0x05F0, 0x05F1, 0x05F2, 0x05F3, 0x05F4, 0x05F5, 0x05F6, 0x05F7, 0x05F8, 0x05F9, 0x05FA, 0x05FB, 0x05FC, 0x05FD, 0x05FE, 0x05FF
 };
 
-static const uint16_t plane1E[] = {
+static constexpr uint16_t plane1E[]
+{
   0x0041, 0x0041, 0x0042, 0x0042, 0x0042, 0x0042, 0x0042, 0x0042, 0x0043, 0x0043, 0x0044, 0x0044, 0x0044, 0x0044, 0x0044, 0x0044,
   0x0044, 0x0044, 0x0044, 0x0044, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0045, 0x0046, 0x0046,
   0x0047, 0x0047, 0x0048, 0x0048, 0x0048, 0x0048, 0x0048, 0x0048, 0x0048, 0x0048, 0x0048, 0x0048, 0x0049, 0x0049, 0x0049, 0x0049,
@@ -1168,7 +1170,8 @@ static const uint16_t plane1E[] = {
   0x0055, 0x0055, 0x0059, 0x0059, 0x0059, 0x0059, 0x0059, 0x0059, 0x0059, 0x0059, 0x1EFA, 0x1EFB, 0x1EFC, 0x1EFD, 0x1EFE, 0x1EFF
 };
 
-static const uint16_t plane1F[] = {
+static constexpr uint16_t plane1F[]
+{
   0x0391, 0x0391, 0x0391, 0x0391, 0x0391, 0x0391, 0x0391, 0x0391, 0x0391, 0x0391, 0x0391, 0x0391, 0x0391, 0x0391, 0x0391, 0x0391,
   0x0395, 0x0395, 0x0395, 0x0395, 0x0395, 0x0395, 0x1F16, 0x1F17, 0x0395, 0x0395, 0x0395, 0x0395, 0x0395, 0x0395, 0x1F1E, 0x1F1F,
   0x0397, 0x0397, 0x0397, 0x0397, 0x0397, 0x0397, 0x0397, 0x0397, 0x0397, 0x0397, 0x0397, 0x0397, 0x0397, 0x0397, 0x0397, 0x0397,
@@ -1187,7 +1190,8 @@ static const uint16_t plane1F[] = {
   0x1FF0, 0x1FF1, 0x03A9, 0x03A9, 0x03A9, 0x1FF5, 0x03A9, 0x03A9, 0x039F, 0x1FF9, 0x03A9, 0x1FFB, 0x03A9, 0x1FFD, 0x1FFE, 0x1FFF
 };
 
-static const uint16_t plane21[] = {
+static constexpr uint16_t plane21[]
+{
   0x2100, 0x2101, 0x2102, 0x2103, 0x2104, 0x2105, 0x2106, 0x2107, 0x2108, 0x2109, 0x210A, 0x210B, 0x210C, 0x210D, 0x210E, 0x210F,
   0x2110, 0x2111, 0x2112, 0x2113, 0x2114, 0x2115, 0x2116, 0x2117, 0x2118, 0x2119, 0x211A, 0x211B, 0x211C, 0x211D, 0x211E, 0x211F,
   0x2120, 0x2121, 0x2122, 0x2123, 0x2124, 0x2125, 0x2126, 0x2127, 0x2128, 0x2129, 0x212A, 0x212B, 0x212C, 0x212D, 0x212E, 0x212F,
@@ -1206,7 +1210,8 @@ static const uint16_t plane21[] = {
   0x21F0, 0x21F1, 0x21F2, 0x21F3, 0x21F4, 0x21F5, 0x21F6, 0x21F7, 0x21F8, 0x21F9, 0x21FA, 0x21FB, 0x21FC, 0x21FD, 0x21FE, 0x21FF
 };
 
-static const uint16_t plane24[] = {
+static constexpr uint16_t plane24[]
+{
   0x2400, 0x2401, 0x2402, 0x2403, 0x2404, 0x2405, 0x2406, 0x2407, 0x2408, 0x2409, 0x240A, 0x240B, 0x240C, 0x240D, 0x240E, 0x240F,
   0x2410, 0x2411, 0x2412, 0x2413, 0x2414, 0x2415, 0x2416, 0x2417, 0x2418, 0x2419, 0x241A, 0x241B, 0x241C, 0x241D, 0x241E, 0x241F,
   0x2420, 0x2421, 0x2422, 0x2423, 0x2424, 0x2425, 0x2426, 0x2427, 0x2428, 0x2429, 0x242A, 0x242B, 0x242C, 0x242D, 0x242E, 0x242F,
@@ -1225,7 +1230,8 @@ static const uint16_t plane24[] = {
   0x24F0, 0x24F1, 0x24F2, 0x24F3, 0x24F4, 0x24F5, 0x24F6, 0x24F7, 0x24F8, 0x24F9, 0x24FA, 0x24FB, 0x24FC, 0x24FD, 0x24FE, 0x24FF
 };
 
-static const uint16_t planeFF[] = {
+static constexpr uint16_t planeFF[]
+{
   0xFF00, 0xFF01, 0xFF02, 0xFF03, 0xFF04, 0xFF05, 0xFF06, 0xFF07, 0xFF08, 0xFF09, 0xFF0A, 0xFF0B, 0xFF0C, 0xFF0D, 0xFF0E, 0xFF0F,
   0xFF10, 0xFF11, 0xFF12, 0xFF13, 0xFF14, 0xFF15, 0xFF16, 0xFF17, 0xFF18, 0xFF19, 0xFF1A, 0xFF1B, 0xFF1C, 0xFF1D, 0xFF1E, 0xFF1F,
   0xFF20, 0xFF21, 0xFF22, 0xFF23, 0xFF24, 0xFF25, 0xFF26, 0xFF27, 0xFF28, 0xFF29, 0xFF2A, 0xFF2B, 0xFF2C, 0xFF2D, 0xFF2E, 0xFF2F,
@@ -1244,7 +1250,8 @@ static const uint16_t planeFF[] = {
   0xFFF0, 0xFFF1, 0xFFF2, 0xFFF3, 0xFFF4, 0xFFF5, 0xFFF6, 0xFFF7, 0xFFF8, 0xFFF9, 0xFFFA, 0xFFFB, 0xFFFC, 0xFFFD, 0xFFFE, 0xFFFF
 };
 
-static const uint16_t* const planemap[256] = {
+static constexpr const uint16_t* const planemap[256]
+{
     plane00, plane01, plane02, plane03, plane04, plane05, NULL, NULL, NULL,    NULL,    NULL,
     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL, NULL, NULL,    NULL,    NULL,
     NULL,    NULL,    NULL,    NULL,    NULL,    NULL,    NULL, NULL, plane1E, plane1F, NULL,
@@ -1824,7 +1831,7 @@ std::string StringUtils::ToHexadecimal(const std::string& in)
   return ss.str();
 }
 
-std::string StringUtils::ToHex(const std::string_view in)
+std::string StringUtils::ToHex(std::string_view in)
 {
   int width = sizeof(char) * 2;
   std::string gap;
@@ -1841,7 +1848,7 @@ std::string StringUtils::ToHex(const std::string_view in)
   return ss.str();
 }
 
-std::string StringUtils::ToHex(const std::wstring_view in)
+std::string StringUtils::ToHex(std::wstring_view in)
 {
   int width = sizeof(wchar_t) * 2;
   std::string gap;
@@ -1857,7 +1864,7 @@ std::string StringUtils::ToHex(const std::wstring_view in)
   return ss.str();
 }
 
-std::string StringUtils::ToHex(const std::u32string_view in)
+std::string StringUtils::ToHex(std::u32string_view in)
 {
   int width = sizeof(char32_t) * 2;
   std::string gap;
@@ -1867,7 +1874,7 @@ std::string StringUtils::ToHex(const std::u32string_view in)
   ss << std::setfill('0');
   for (char32_t ch : in)
   {
-    ss << gap << std::setw(width) << std::hex << static_cast<unsigned long>(ch);
+    ss << gap << std::setw(width) << std::hex << ch;
     gap = " "s;
   }
   return ss.str();
@@ -1875,7 +1882,7 @@ std::string StringUtils::ToHex(const std::u32string_view in)
 namespace
 {
 // return -1 if not, else return the utf8 char length.
-int IsUTF8Letter(const unsigned char* str)
+static int IsUTF8Letter(const unsigned char* str)
 {
   // reference:
   // unicode -> utf8 table: http://www.utf8-chartable.de/
@@ -1980,8 +1987,12 @@ void StringUtils::WordToDigits(std::string& word)
     uint8_t letter = static_cast<uint8_t>(digits[i]);
     if (letter > 0x7f)
     {
-      CLog::Log(LOGWARNING, "StringUtils.WordToDigits: Non-ASCII input: {}\n", word);
+      // Note that error can occur prior to logger being ready which can cause message
+      // to be lost or crash Kodi.
+
+      CLog::LogF(LOGWARNING, "Non-ASCII input: {}", word);
     }
+
     if ((letter >= 'a' && letter <= 'z')) // assume contiguous letter range
     {
       digits[i] = word_to_letter[letter - 'a'];
@@ -2200,7 +2211,15 @@ std::string StringUtils::CreateFromCString(const char* cstr)
 
 namespace
 {
-/* Case folding tables are derived from Unicode Inc.
+/*
+ *                               C A S E   C H A N G E   T A B L E S
+ *
+ * What follows are the large tables for case changing: FOLD, LOWER & UPPER as well
+ * as the code which does the character conversion using the tables. The code is at
+ * the end.
+ *
+ *
+ * Case folding tables are derived from Unicode Inc.
  * Data file, CaseFolding.txt (CaseFolding-14.0.0.txt, 2021-03-08). Copyright follows below.
  *
  * These tables provide for "simple case folding" that is not locale sensitive. They do NOT
@@ -2212,9 +2231,6 @@ namespace
  * xbmc/utils/unicode_tools. They are built and run by hand with the table data
  * pasted and formatted here. This only needs to be done if an error or an update
  * to CaseFolding.txt occurs.
- *
- * TODO: The following license agreement will be moved to the appropriate location
- * once that has been worked out.
  *
  * Terms of use:
  *
@@ -2270,6 +2286,8 @@ namespace
 // character which is to be case folded. The value found in the table is
 // the case folded value, or 0 if no such value exists.
 //
+// FOLDCASE, TO_UPPER_CASE & TO_LOWER_CASE all use the same methodology.
+//
 // A char32_t contains a 32-bit Unicode codepoint, although only 24 bits is
 // used. The array FOLDCASE_INDEX is indexed by the upper 16-bits of the
 // the 24-bit codepoint, yielding a pointer to another table indexed by
@@ -2288,7 +2306,7 @@ namespace
 //
 // clang-format off
 
-static const char32_t FOLDCASE_0x00000[]
+static constexpr const char32_t FOLDCASE_0x00000[]
 {
  U'\x000df',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2325,7 +2343,7 @@ static const char32_t FOLDCASE_0x00000[]
  U'\x000f9',  U'\x000fa',  U'\x000fb',  U'\x000fc',  U'\x000fd',  U'\x000fe'
 };
 
-static const char32_t FOLDCASE_0x00001[]
+static constexpr const char32_t FOLDCASE_0x00001[]
 {
  U'\x000ff',
  U'\x00101',  U'\x00000',  U'\x00103',  U'\x00000',  U'\x00105',  U'\x00000',  U'\x00107',
@@ -2367,7 +2385,7 @@ static const char32_t FOLDCASE_0x00001[]
  U'\x001fd',  U'\x00000',  U'\x001ff'
 };
 
-static const char32_t FOLDCASE_0x00002[]
+static constexpr const char32_t FOLDCASE_0x00002[]
 {
  U'\x0004f',
  U'\x00201',  U'\x00000',  U'\x00203',  U'\x00000',  U'\x00205',  U'\x00000',  U'\x00207',
@@ -2384,7 +2402,7 @@ static const char32_t FOLDCASE_0x00002[]
  U'\x00000',  U'\x0024f'
 };
 
-static const char32_t FOLDCASE_0x00003[]
+static constexpr const char32_t FOLDCASE_0x00003[]
 {
  U'\x00100',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2426,7 +2444,7 @@ static const char32_t FOLDCASE_0x00003[]
  U'\x00000',  U'\x0037b',  U'\x0037c',  U'\x0037d'
 };
 
-static const char32_t FOLDCASE_0x00004[]
+static constexpr const char32_t FOLDCASE_0x00004[]
 {
  U'\x000ff',
  U'\x00450',  U'\x00451',  U'\x00452',  U'\x00453',  U'\x00454',  U'\x00455',  U'\x00456',
@@ -2468,7 +2486,7 @@ static const char32_t FOLDCASE_0x00004[]
  U'\x004fd',  U'\x00000',  U'\x004ff'
 };
 
-static const char32_t FOLDCASE_0x00005[]
+static constexpr const char32_t FOLDCASE_0x00005[]
 {
  U'\x00057',
  U'\x00501',  U'\x00000',  U'\x00503',  U'\x00000',  U'\x00505',  U'\x00000',  U'\x00507',
@@ -2486,7 +2504,7 @@ static const char32_t FOLDCASE_0x00005[]
  U'\x00584',  U'\x00585',  U'\x00586'
 };
 
-static const char32_t FOLDCASE_0x00010[]
+static constexpr const char32_t FOLDCASE_0x00010[]
 {
  U'\x000ce',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2521,7 +2539,7 @@ static const char32_t FOLDCASE_0x00010[]
  U'\x00000',  U'\x00000',  U'\x02d2d'
 };
 
-static const char32_t FOLDCASE_0x00013[]
+static constexpr const char32_t FOLDCASE_0x00013[]
 {
  U'\x000fe',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2563,7 +2581,7 @@ static const char32_t FOLDCASE_0x00013[]
  U'\x013f4',  U'\x013f5'
 };
 
-static const char32_t FOLDCASE_0x0001c[]
+static constexpr const char32_t FOLDCASE_0x0001c[]
 {
  U'\x000c0',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2596,7 +2614,7 @@ static const char32_t FOLDCASE_0x0001c[]
  U'\x010fd',  U'\x010fe',  U'\x010ff'
 };
 
-static const char32_t FOLDCASE_0x0001e[]
+static constexpr const char32_t FOLDCASE_0x0001e[]
 {
  U'\x000ff',
  U'\x01e01',  U'\x00000',  U'\x01e03',  U'\x00000',  U'\x01e05',  U'\x00000',  U'\x01e07',
@@ -2638,7 +2656,7 @@ static const char32_t FOLDCASE_0x0001e[]
  U'\x01efd',  U'\x00000',  U'\x01eff'
 };
 
-static const char32_t FOLDCASE_0x0001f[]
+static constexpr const char32_t FOLDCASE_0x0001f[]
 {
  U'\x000fd',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2680,7 +2698,7 @@ static const char32_t FOLDCASE_0x0001f[]
  U'\x01ff3'
 };
 
-static const char32_t FOLDCASE_0x00021[]
+static constexpr const char32_t FOLDCASE_0x00021[]
 {
  U'\x00084',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2704,7 +2722,7 @@ static const char32_t FOLDCASE_0x00021[]
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02184'
 };
 
-static const char32_t FOLDCASE_0x00024[]
+static constexpr const char32_t FOLDCASE_0x00024[]
 {
  U'\x000d0',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2739,7 +2757,7 @@ static const char32_t FOLDCASE_0x00024[]
  U'\x024e5',  U'\x024e6',  U'\x024e7',  U'\x024e8',  U'\x024e9'
 };
 
-static const char32_t FOLDCASE_0x0002c[]
+static constexpr const char32_t FOLDCASE_0x0002c[]
 {
  U'\x000f3',
  U'\x02c30',  U'\x02c31',  U'\x02c32',  U'\x02c33',  U'\x02c34',  U'\x02c35',  U'\x02c36',
@@ -2779,7 +2797,7 @@ static const char32_t FOLDCASE_0x0002c[]
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02cf3'
 };
 
-static const char32_t FOLDCASE_0x000a6[]
+static constexpr const char32_t FOLDCASE_0x000a6[]
 {
  U'\x0009b',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2807,7 +2825,7 @@ static const char32_t FOLDCASE_0x000a6[]
  U'\x0a69b'
 };
 
-static const char32_t FOLDCASE_0x000a7[]
+static constexpr const char32_t FOLDCASE_0x000a7[]
 {
  U'\x000f6',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2848,7 +2866,7 @@ static const char32_t FOLDCASE_0x000a7[]
  U'\x0a7f6'
 };
 
-static const char32_t FOLDCASE_0x000ab[]
+static constexpr const char32_t FOLDCASE_0x000ab[]
 {
  U'\x000c0',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2881,7 +2899,7 @@ static const char32_t FOLDCASE_0x000ab[]
  U'\x013ed',  U'\x013ee',  U'\x013ef'
 };
 
-static const char32_t FOLDCASE_0x000ff[]
+static constexpr const char32_t FOLDCASE_0x000ff[]
 {
  U'\x0003b',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2895,7 +2913,7 @@ static const char32_t FOLDCASE_0x000ff[]
  U'\x0ff58',  U'\x0ff59',  U'\x0ff5a'
 };
 
-static const char32_t FOLDCASE_0x00104[]
+static constexpr const char32_t FOLDCASE_0x00104[]
 {
  U'\x000d4',
  U'\x10428',  U'\x10429',  U'\x1042a',  U'\x1042b',  U'\x1042c',  U'\x1042d',  U'\x1042e',
@@ -2931,7 +2949,7 @@ static const char32_t FOLDCASE_0x00104[]
  U'\x104fa',  U'\x104fb'
 };
 
-static const char32_t FOLDCASE_0x00105[]
+static constexpr const char32_t FOLDCASE_0x00105[]
 {
  U'\x00096',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2958,7 +2976,7 @@ static const char32_t FOLDCASE_0x00105[]
  U'\x00000',  U'\x105bb',  U'\x105bc'
 };
 
-static const char32_t FOLDCASE_0x0010c[]
+static constexpr const char32_t FOLDCASE_0x0010c[]
 {
  U'\x000b3',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -2989,7 +3007,7 @@ static const char32_t FOLDCASE_0x0010c[]
  U'\x10cef',  U'\x10cf0',  U'\x10cf1',  U'\x10cf2'
 };
 
-static const char32_t FOLDCASE_0x00118[]
+static constexpr const char32_t FOLDCASE_0x00118[]
 {
  U'\x000c0',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -3022,7 +3040,7 @@ static const char32_t FOLDCASE_0x00118[]
  U'\x118dd',  U'\x118de',  U'\x118df'
 };
 
-static const char32_t FOLDCASE_0x0016e[]
+static constexpr const char32_t FOLDCASE_0x0016e[]
 {
  U'\x00060',
  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
@@ -3041,7 +3059,7 @@ static const char32_t FOLDCASE_0x0016e[]
  U'\x16e7b',  U'\x16e7c',  U'\x16e7d',  U'\x16e7e',  U'\x16e7f'
 };
 
-static const char32_t FOLDCASE_0x001e9[]
+static constexpr const char32_t FOLDCASE_0x001e9[]
 {
  U'\x00022',
  U'\x1e922',  U'\x1e923',  U'\x1e924',  U'\x1e925',  U'\x1e926',  U'\x1e927',  U'\x1e928',
@@ -3050,7 +3068,8 @@ static const char32_t FOLDCASE_0x001e9[]
  U'\x1e937',  U'\x1e938',  U'\x1e939',  U'\x1e93a',  U'\x1e93b',  U'\x1e93c',  U'\x1e93d',
  U'\x1e93e',  U'\x1e93f',  U'\x1e940',  U'\x1e941',  U'\x1e942',  U'\x1e943'
 };
-const char32_t* FOLDCASE_INDEX []
+
+static constexpr const char32_t* const FOLDCASE_INDEX []
 {
  FOLDCASE_0x00000,  FOLDCASE_0x00001,  FOLDCASE_0x00002,  FOLDCASE_0x00003,  FOLDCASE_0x00004,  FOLDCASE_0x00005,
  0x0,  0x0,  0x0,  0x0,  0x0,  0x0,
@@ -3136,9 +3155,1804 @@ const char32_t* FOLDCASE_INDEX []
  0x0,  0x0,  0x0,  FOLDCASE_0x001e9
 };
 
+static constexpr const char32_t LOWER_CASE_0x000[]
+{
+  U'\x000de',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00061',  U'\x00062',  U'\x00063',  U'\x00064',  U'\x00065',
+  U'\x00066',  U'\x00067',  U'\x00068',  U'\x00069',  U'\x0006a',  U'\x0006b',  U'\x0006c',
+  U'\x0006d',  U'\x0006e',  U'\x0006f',  U'\x00070',  U'\x00071',  U'\x00072',  U'\x00073',
+  U'\x00074',  U'\x00075',  U'\x00076',  U'\x00077',  U'\x00078',  U'\x00079',  U'\x0007a',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x000e0',  U'\x000e1',  U'\x000e2',  U'\x000e3',
+  U'\x000e4',  U'\x000e5',  U'\x000e6',  U'\x000e7',  U'\x000e8',  U'\x000e9',  U'\x000ea',
+  U'\x000eb',  U'\x000ec',  U'\x000ed',  U'\x000ee',  U'\x000ef',  U'\x000f0',  U'\x000f1',
+  U'\x000f2',  U'\x000f3',  U'\x000f4',  U'\x000f5',  U'\x000f6',  U'\x00000',  U'\x000f8',
+  U'\x000f9',  U'\x000fa',  U'\x000fb',  U'\x000fc',  U'\x000fd',  U'\x000fe'
+};
+
+static constexpr const char32_t LOWER_CASE_0x001[]
+{
+  U'\x000fe',
+  U'\x00101',  U'\x00000',  U'\x00103',  U'\x00000',  U'\x00105',  U'\x00000',  U'\x00107',
+  U'\x00000',  U'\x00109',  U'\x00000',  U'\x0010b',  U'\x00000',  U'\x0010d',  U'\x00000',
+  U'\x0010f',  U'\x00000',  U'\x00111',  U'\x00000',  U'\x00113',  U'\x00000',  U'\x00115',
+  U'\x00000',  U'\x00117',  U'\x00000',  U'\x00119',  U'\x00000',  U'\x0011b',  U'\x00000',
+  U'\x0011d',  U'\x00000',  U'\x0011f',  U'\x00000',  U'\x00121',  U'\x00000',  U'\x00123',
+  U'\x00000',  U'\x00125',  U'\x00000',  U'\x00127',  U'\x00000',  U'\x00129',  U'\x00000',
+  U'\x0012b',  U'\x00000',  U'\x0012d',  U'\x00000',  U'\x0012f',  U'\x00000',  U'\x00069',
+  U'\x00000',  U'\x00133',  U'\x00000',  U'\x00135',  U'\x00000',  U'\x00137',  U'\x00000',
+  U'\x00000',  U'\x0013a',  U'\x00000',  U'\x0013c',  U'\x00000',  U'\x0013e',  U'\x00000',
+  U'\x00140',  U'\x00000',  U'\x00142',  U'\x00000',  U'\x00144',  U'\x00000',  U'\x00146',
+  U'\x00000',  U'\x00148',  U'\x00000',  U'\x00000',  U'\x0014b',  U'\x00000',  U'\x0014d',
+  U'\x00000',  U'\x0014f',  U'\x00000',  U'\x00151',  U'\x00000',  U'\x00153',  U'\x00000',
+  U'\x00155',  U'\x00000',  U'\x00157',  U'\x00000',  U'\x00159',  U'\x00000',  U'\x0015b',
+  U'\x00000',  U'\x0015d',  U'\x00000',  U'\x0015f',  U'\x00000',  U'\x00161',  U'\x00000',
+  U'\x00163',  U'\x00000',  U'\x00165',  U'\x00000',  U'\x00167',  U'\x00000',  U'\x00169',
+  U'\x00000',  U'\x0016b',  U'\x00000',  U'\x0016d',  U'\x00000',  U'\x0016f',  U'\x00000',
+  U'\x00171',  U'\x00000',  U'\x00173',  U'\x00000',  U'\x00175',  U'\x00000',  U'\x00177',
+  U'\x00000',  U'\x000ff',  U'\x0017a',  U'\x00000',  U'\x0017c',  U'\x00000',  U'\x0017e',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00253',  U'\x00183',  U'\x00000',  U'\x00185',
+  U'\x00000',  U'\x00254',  U'\x00188',  U'\x00000',  U'\x00256',  U'\x00257',  U'\x0018c',
+  U'\x00000',  U'\x00000',  U'\x001dd',  U'\x00259',  U'\x0025b',  U'\x00192',  U'\x00000',
+  U'\x00260',  U'\x00263',  U'\x00000',  U'\x00269',  U'\x00268',  U'\x00199',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x0026f',  U'\x00272',  U'\x00000',  U'\x00275',  U'\x001a1',
+  U'\x00000',  U'\x001a3',  U'\x00000',  U'\x001a5',  U'\x00000',  U'\x00280',  U'\x001a8',
+  U'\x00000',  U'\x00283',  U'\x00000',  U'\x00000',  U'\x001ad',  U'\x00000',  U'\x00288',
+  U'\x001b0',  U'\x00000',  U'\x0028a',  U'\x0028b',  U'\x001b4',  U'\x00000',  U'\x001b6',
+  U'\x00000',  U'\x00292',  U'\x001b9',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x001bd',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x001c6',  U'\x001c6',  U'\x00000',  U'\x001c9',  U'\x001c9',  U'\x00000',  U'\x001cc',
+  U'\x001cc',  U'\x00000',  U'\x001ce',  U'\x00000',  U'\x001d0',  U'\x00000',  U'\x001d2',
+  U'\x00000',  U'\x001d4',  U'\x00000',  U'\x001d6',  U'\x00000',  U'\x001d8',  U'\x00000',
+  U'\x001da',  U'\x00000',  U'\x001dc',  U'\x00000',  U'\x00000',  U'\x001df',  U'\x00000',
+  U'\x001e1',  U'\x00000',  U'\x001e3',  U'\x00000',  U'\x001e5',  U'\x00000',  U'\x001e7',
+  U'\x00000',  U'\x001e9',  U'\x00000',  U'\x001eb',  U'\x00000',  U'\x001ed',  U'\x00000',
+  U'\x001ef',  U'\x00000',  U'\x00000',  U'\x001f3',  U'\x001f3',  U'\x00000',  U'\x001f5',
+  U'\x00000',  U'\x00195',  U'\x001bf',  U'\x001f9',  U'\x00000',  U'\x001fb',  U'\x00000',
+  U'\x001fd',  U'\x00000',  U'\x001ff'
+};
+
+static constexpr const char32_t LOWER_CASE_0x002[]
+{
+  U'\x0004e',
+  U'\x00201',  U'\x00000',  U'\x00203',  U'\x00000',  U'\x00205',  U'\x00000',  U'\x00207',
+  U'\x00000',  U'\x00209',  U'\x00000',  U'\x0020b',  U'\x00000',  U'\x0020d',  U'\x00000',
+  U'\x0020f',  U'\x00000',  U'\x00211',  U'\x00000',  U'\x00213',  U'\x00000',  U'\x00215',
+  U'\x00000',  U'\x00217',  U'\x00000',  U'\x00219',  U'\x00000',  U'\x0021b',  U'\x00000',
+  U'\x0021d',  U'\x00000',  U'\x0021f',  U'\x00000',  U'\x0019e',  U'\x00000',  U'\x00223',
+  U'\x00000',  U'\x00225',  U'\x00000',  U'\x00227',  U'\x00000',  U'\x00229',  U'\x00000',
+  U'\x0022b',  U'\x00000',  U'\x0022d',  U'\x00000',  U'\x0022f',  U'\x00000',  U'\x00231',
+  U'\x00000',  U'\x00233',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x02c65',  U'\x0023c',  U'\x00000',  U'\x0019a',  U'\x02c66',
+  U'\x00000',  U'\x00000',  U'\x00242',  U'\x00000',  U'\x00180',  U'\x00289',  U'\x0028c',
+  U'\x00247',  U'\x00000',  U'\x00249',  U'\x00000',  U'\x0024b',  U'\x00000',  U'\x0024d',
+  U'\x00000',  U'\x0024f'
+};
+
+static constexpr const char32_t LOWER_CASE_0x003[]
+{
+  U'\x000ff',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00371',  U'\x00000',  U'\x00373',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00377',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x003f3',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x003ac',  U'\x00000',  U'\x003ad',  U'\x003ae',  U'\x003af',  U'\x00000',
+  U'\x003cc',  U'\x00000',  U'\x003cd',  U'\x003ce',  U'\x00000',  U'\x003b1',  U'\x003b2',
+  U'\x003b3',  U'\x003b4',  U'\x003b5',  U'\x003b6',  U'\x003b7',  U'\x003b8',  U'\x003b9',
+  U'\x003ba',  U'\x003bb',  U'\x003bc',  U'\x003bd',  U'\x003be',  U'\x003bf',  U'\x003c0',
+  U'\x003c1',  U'\x00000',  U'\x003c3',  U'\x003c4',  U'\x003c5',  U'\x003c6',  U'\x003c7',
+  U'\x003c8',  U'\x003c9',  U'\x003ca',  U'\x003cb',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x003d7',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x003d9',
+  U'\x00000',  U'\x003db',  U'\x00000',  U'\x003dd',  U'\x00000',  U'\x003df',  U'\x00000',
+  U'\x003e1',  U'\x00000',  U'\x003e3',  U'\x00000',  U'\x003e5',  U'\x00000',  U'\x003e7',
+  U'\x00000',  U'\x003e9',  U'\x00000',  U'\x003eb',  U'\x00000',  U'\x003ed',  U'\x00000',
+  U'\x003ef',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x003b8',
+  U'\x00000',  U'\x00000',  U'\x003f8',  U'\x00000',  U'\x003f2',  U'\x003fb',  U'\x00000',
+  U'\x00000',  U'\x0037b',  U'\x0037c',  U'\x0037d'
+};
+
+static constexpr const char32_t LOWER_CASE_0x004[]
+{
+  U'\x000fe',
+  U'\x00450',  U'\x00451',  U'\x00452',  U'\x00453',  U'\x00454',  U'\x00455',  U'\x00456',
+  U'\x00457',  U'\x00458',  U'\x00459',  U'\x0045a',  U'\x0045b',  U'\x0045c',  U'\x0045d',
+  U'\x0045e',  U'\x0045f',  U'\x00430',  U'\x00431',  U'\x00432',  U'\x00433',  U'\x00434',
+  U'\x00435',  U'\x00436',  U'\x00437',  U'\x00438',  U'\x00439',  U'\x0043a',  U'\x0043b',
+  U'\x0043c',  U'\x0043d',  U'\x0043e',  U'\x0043f',  U'\x00440',  U'\x00441',  U'\x00442',
+  U'\x00443',  U'\x00444',  U'\x00445',  U'\x00446',  U'\x00447',  U'\x00448',  U'\x00449',
+  U'\x0044a',  U'\x0044b',  U'\x0044c',  U'\x0044d',  U'\x0044e',  U'\x0044f',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00461',  U'\x00000',
+  U'\x00463',  U'\x00000',  U'\x00465',  U'\x00000',  U'\x00467',  U'\x00000',  U'\x00469',
+  U'\x00000',  U'\x0046b',  U'\x00000',  U'\x0046d',  U'\x00000',  U'\x0046f',  U'\x00000',
+  U'\x00471',  U'\x00000',  U'\x00473',  U'\x00000',  U'\x00475',  U'\x00000',  U'\x00477',
+  U'\x00000',  U'\x00479',  U'\x00000',  U'\x0047b',  U'\x00000',  U'\x0047d',  U'\x00000',
+  U'\x0047f',  U'\x00000',  U'\x00481',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0048b',  U'\x00000',
+  U'\x0048d',  U'\x00000',  U'\x0048f',  U'\x00000',  U'\x00491',  U'\x00000',  U'\x00493',
+  U'\x00000',  U'\x00495',  U'\x00000',  U'\x00497',  U'\x00000',  U'\x00499',  U'\x00000',
+  U'\x0049b',  U'\x00000',  U'\x0049d',  U'\x00000',  U'\x0049f',  U'\x00000',  U'\x004a1',
+  U'\x00000',  U'\x004a3',  U'\x00000',  U'\x004a5',  U'\x00000',  U'\x004a7',  U'\x00000',
+  U'\x004a9',  U'\x00000',  U'\x004ab',  U'\x00000',  U'\x004ad',  U'\x00000',  U'\x004af',
+  U'\x00000',  U'\x004b1',  U'\x00000',  U'\x004b3',  U'\x00000',  U'\x004b5',  U'\x00000',
+  U'\x004b7',  U'\x00000',  U'\x004b9',  U'\x00000',  U'\x004bb',  U'\x00000',  U'\x004bd',
+  U'\x00000',  U'\x004bf',  U'\x00000',  U'\x004cf',  U'\x004c2',  U'\x00000',  U'\x004c4',
+  U'\x00000',  U'\x004c6',  U'\x00000',  U'\x004c8',  U'\x00000',  U'\x004ca',  U'\x00000',
+  U'\x004cc',  U'\x00000',  U'\x004ce',  U'\x00000',  U'\x00000',  U'\x004d1',  U'\x00000',
+  U'\x004d3',  U'\x00000',  U'\x004d5',  U'\x00000',  U'\x004d7',  U'\x00000',  U'\x004d9',
+  U'\x00000',  U'\x004db',  U'\x00000',  U'\x004dd',  U'\x00000',  U'\x004df',  U'\x00000',
+  U'\x004e1',  U'\x00000',  U'\x004e3',  U'\x00000',  U'\x004e5',  U'\x00000',  U'\x004e7',
+  U'\x00000',  U'\x004e9',  U'\x00000',  U'\x004eb',  U'\x00000',  U'\x004ed',  U'\x00000',
+  U'\x004ef',  U'\x00000',  U'\x004f1',  U'\x00000',  U'\x004f3',  U'\x00000',  U'\x004f5',
+  U'\x00000',  U'\x004f7',  U'\x00000',  U'\x004f9',  U'\x00000',  U'\x004fb',  U'\x00000',
+  U'\x004fd',  U'\x00000',  U'\x004ff'
+};
+
+static constexpr const char32_t LOWER_CASE_0x005[]
+{
+  U'\x00056',
+  U'\x00501',  U'\x00000',  U'\x00503',  U'\x00000',  U'\x00505',  U'\x00000',  U'\x00507',
+  U'\x00000',  U'\x00509',  U'\x00000',  U'\x0050b',  U'\x00000',  U'\x0050d',  U'\x00000',
+  U'\x0050f',  U'\x00000',  U'\x00511',  U'\x00000',  U'\x00513',  U'\x00000',  U'\x00515',
+  U'\x00000',  U'\x00517',  U'\x00000',  U'\x00519',  U'\x00000',  U'\x0051b',  U'\x00000',
+  U'\x0051d',  U'\x00000',  U'\x0051f',  U'\x00000',  U'\x00521',  U'\x00000',  U'\x00523',
+  U'\x00000',  U'\x00525',  U'\x00000',  U'\x00527',  U'\x00000',  U'\x00529',  U'\x00000',
+  U'\x0052b',  U'\x00000',  U'\x0052d',  U'\x00000',  U'\x0052f',  U'\x00000',  U'\x00000',
+  U'\x00561',  U'\x00562',  U'\x00563',  U'\x00564',  U'\x00565',  U'\x00566',  U'\x00567',
+  U'\x00568',  U'\x00569',  U'\x0056a',  U'\x0056b',  U'\x0056c',  U'\x0056d',  U'\x0056e',
+  U'\x0056f',  U'\x00570',  U'\x00571',  U'\x00572',  U'\x00573',  U'\x00574',  U'\x00575',
+  U'\x00576',  U'\x00577',  U'\x00578',  U'\x00579',  U'\x0057a',  U'\x0057b',  U'\x0057c',
+  U'\x0057d',  U'\x0057e',  U'\x0057f',  U'\x00580',  U'\x00581',  U'\x00582',  U'\x00583',
+  U'\x00584',  U'\x00585',  U'\x00586'
+};
+
+static constexpr const char32_t LOWER_CASE_0x010[]
+{
+  U'\x000cd',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02d00',
+  U'\x02d01',  U'\x02d02',  U'\x02d03',  U'\x02d04',  U'\x02d05',  U'\x02d06',  U'\x02d07',
+  U'\x02d08',  U'\x02d09',  U'\x02d0a',  U'\x02d0b',  U'\x02d0c',  U'\x02d0d',  U'\x02d0e',
+  U'\x02d0f',  U'\x02d10',  U'\x02d11',  U'\x02d12',  U'\x02d13',  U'\x02d14',  U'\x02d15',
+  U'\x02d16',  U'\x02d17',  U'\x02d18',  U'\x02d19',  U'\x02d1a',  U'\x02d1b',  U'\x02d1c',
+  U'\x02d1d',  U'\x02d1e',  U'\x02d1f',  U'\x02d20',  U'\x02d21',  U'\x02d22',  U'\x02d23',
+  U'\x02d24',  U'\x02d25',  U'\x00000',  U'\x02d27',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x02d2d'
+};
+
+static constexpr const char32_t LOWER_CASE_0x013[]
+{
+  U'\x000f5',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0ab70',
+  U'\x0ab71',  U'\x0ab72',  U'\x0ab73',  U'\x0ab74',  U'\x0ab75',  U'\x0ab76',  U'\x0ab77',
+  U'\x0ab78',  U'\x0ab79',  U'\x0ab7a',  U'\x0ab7b',  U'\x0ab7c',  U'\x0ab7d',  U'\x0ab7e',
+  U'\x0ab7f',  U'\x0ab80',  U'\x0ab81',  U'\x0ab82',  U'\x0ab83',  U'\x0ab84',  U'\x0ab85',
+  U'\x0ab86',  U'\x0ab87',  U'\x0ab88',  U'\x0ab89',  U'\x0ab8a',  U'\x0ab8b',  U'\x0ab8c',
+  U'\x0ab8d',  U'\x0ab8e',  U'\x0ab8f',  U'\x0ab90',  U'\x0ab91',  U'\x0ab92',  U'\x0ab93',
+  U'\x0ab94',  U'\x0ab95',  U'\x0ab96',  U'\x0ab97',  U'\x0ab98',  U'\x0ab99',  U'\x0ab9a',
+  U'\x0ab9b',  U'\x0ab9c',  U'\x0ab9d',  U'\x0ab9e',  U'\x0ab9f',  U'\x0aba0',  U'\x0aba1',
+  U'\x0aba2',  U'\x0aba3',  U'\x0aba4',  U'\x0aba5',  U'\x0aba6',  U'\x0aba7',  U'\x0aba8',
+  U'\x0aba9',  U'\x0abaa',  U'\x0abab',  U'\x0abac',  U'\x0abad',  U'\x0abae',  U'\x0abaf',
+  U'\x0abb0',  U'\x0abb1',  U'\x0abb2',  U'\x0abb3',  U'\x0abb4',  U'\x0abb5',  U'\x0abb6',
+  U'\x0abb7',  U'\x0abb8',  U'\x0abb9',  U'\x0abba',  U'\x0abbb',  U'\x0abbc',  U'\x0abbd',
+  U'\x0abbe',  U'\x0abbf',  U'\x013f8',  U'\x013f9',  U'\x013fa',  U'\x013fb',  U'\x013fc',
+  U'\x013fd'
+};
+
+static constexpr const char32_t LOWER_CASE_0x01c[]
+{
+  U'\x000bf',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x010d0',  U'\x010d1',  U'\x010d2',
+  U'\x010d3',  U'\x010d4',  U'\x010d5',  U'\x010d6',  U'\x010d7',  U'\x010d8',  U'\x010d9',
+  U'\x010da',  U'\x010db',  U'\x010dc',  U'\x010dd',  U'\x010de',  U'\x010df',  U'\x010e0',
+  U'\x010e1',  U'\x010e2',  U'\x010e3',  U'\x010e4',  U'\x010e5',  U'\x010e6',  U'\x010e7',
+  U'\x010e8',  U'\x010e9',  U'\x010ea',  U'\x010eb',  U'\x010ec',  U'\x010ed',  U'\x010ee',
+  U'\x010ef',  U'\x010f0',  U'\x010f1',  U'\x010f2',  U'\x010f3',  U'\x010f4',  U'\x010f5',
+  U'\x010f6',  U'\x010f7',  U'\x010f8',  U'\x010f9',  U'\x010fa',  U'\x00000',  U'\x00000',
+  U'\x010fd',  U'\x010fe',  U'\x010ff'
+};
+
+static constexpr const char32_t LOWER_CASE_0x01e[]
+{
+  U'\x000fe',
+  U'\x01e01',  U'\x00000',  U'\x01e03',  U'\x00000',  U'\x01e05',  U'\x00000',  U'\x01e07',
+  U'\x00000',  U'\x01e09',  U'\x00000',  U'\x01e0b',  U'\x00000',  U'\x01e0d',  U'\x00000',
+  U'\x01e0f',  U'\x00000',  U'\x01e11',  U'\x00000',  U'\x01e13',  U'\x00000',  U'\x01e15',
+  U'\x00000',  U'\x01e17',  U'\x00000',  U'\x01e19',  U'\x00000',  U'\x01e1b',  U'\x00000',
+  U'\x01e1d',  U'\x00000',  U'\x01e1f',  U'\x00000',  U'\x01e21',  U'\x00000',  U'\x01e23',
+  U'\x00000',  U'\x01e25',  U'\x00000',  U'\x01e27',  U'\x00000',  U'\x01e29',  U'\x00000',
+  U'\x01e2b',  U'\x00000',  U'\x01e2d',  U'\x00000',  U'\x01e2f',  U'\x00000',  U'\x01e31',
+  U'\x00000',  U'\x01e33',  U'\x00000',  U'\x01e35',  U'\x00000',  U'\x01e37',  U'\x00000',
+  U'\x01e39',  U'\x00000',  U'\x01e3b',  U'\x00000',  U'\x01e3d',  U'\x00000',  U'\x01e3f',
+  U'\x00000',  U'\x01e41',  U'\x00000',  U'\x01e43',  U'\x00000',  U'\x01e45',  U'\x00000',
+  U'\x01e47',  U'\x00000',  U'\x01e49',  U'\x00000',  U'\x01e4b',  U'\x00000',  U'\x01e4d',
+  U'\x00000',  U'\x01e4f',  U'\x00000',  U'\x01e51',  U'\x00000',  U'\x01e53',  U'\x00000',
+  U'\x01e55',  U'\x00000',  U'\x01e57',  U'\x00000',  U'\x01e59',  U'\x00000',  U'\x01e5b',
+  U'\x00000',  U'\x01e5d',  U'\x00000',  U'\x01e5f',  U'\x00000',  U'\x01e61',  U'\x00000',
+  U'\x01e63',  U'\x00000',  U'\x01e65',  U'\x00000',  U'\x01e67',  U'\x00000',  U'\x01e69',
+  U'\x00000',  U'\x01e6b',  U'\x00000',  U'\x01e6d',  U'\x00000',  U'\x01e6f',  U'\x00000',
+  U'\x01e71',  U'\x00000',  U'\x01e73',  U'\x00000',  U'\x01e75',  U'\x00000',  U'\x01e77',
+  U'\x00000',  U'\x01e79',  U'\x00000',  U'\x01e7b',  U'\x00000',  U'\x01e7d',  U'\x00000',
+  U'\x01e7f',  U'\x00000',  U'\x01e81',  U'\x00000',  U'\x01e83',  U'\x00000',  U'\x01e85',
+  U'\x00000',  U'\x01e87',  U'\x00000',  U'\x01e89',  U'\x00000',  U'\x01e8b',  U'\x00000',
+  U'\x01e8d',  U'\x00000',  U'\x01e8f',  U'\x00000',  U'\x01e91',  U'\x00000',  U'\x01e93',
+  U'\x00000',  U'\x01e95',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x000df',  U'\x00000',  U'\x01ea1',
+  U'\x00000',  U'\x01ea3',  U'\x00000',  U'\x01ea5',  U'\x00000',  U'\x01ea7',  U'\x00000',
+  U'\x01ea9',  U'\x00000',  U'\x01eab',  U'\x00000',  U'\x01ead',  U'\x00000',  U'\x01eaf',
+  U'\x00000',  U'\x01eb1',  U'\x00000',  U'\x01eb3',  U'\x00000',  U'\x01eb5',  U'\x00000',
+  U'\x01eb7',  U'\x00000',  U'\x01eb9',  U'\x00000',  U'\x01ebb',  U'\x00000',  U'\x01ebd',
+  U'\x00000',  U'\x01ebf',  U'\x00000',  U'\x01ec1',  U'\x00000',  U'\x01ec3',  U'\x00000',
+  U'\x01ec5',  U'\x00000',  U'\x01ec7',  U'\x00000',  U'\x01ec9',  U'\x00000',  U'\x01ecb',
+  U'\x00000',  U'\x01ecd',  U'\x00000',  U'\x01ecf',  U'\x00000',  U'\x01ed1',  U'\x00000',
+  U'\x01ed3',  U'\x00000',  U'\x01ed5',  U'\x00000',  U'\x01ed7',  U'\x00000',  U'\x01ed9',
+  U'\x00000',  U'\x01edb',  U'\x00000',  U'\x01edd',  U'\x00000',  U'\x01edf',  U'\x00000',
+  U'\x01ee1',  U'\x00000',  U'\x01ee3',  U'\x00000',  U'\x01ee5',  U'\x00000',  U'\x01ee7',
+  U'\x00000',  U'\x01ee9',  U'\x00000',  U'\x01eeb',  U'\x00000',  U'\x01eed',  U'\x00000',
+  U'\x01eef',  U'\x00000',  U'\x01ef1',  U'\x00000',  U'\x01ef3',  U'\x00000',  U'\x01ef5',
+  U'\x00000',  U'\x01ef7',  U'\x00000',  U'\x01ef9',  U'\x00000',  U'\x01efb',  U'\x00000',
+  U'\x01efd',  U'\x00000',  U'\x01eff'
+};
+
+static constexpr const char32_t LOWER_CASE_0x01f[]
+{
+  U'\x000fc',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x01f00',  U'\x01f01',  U'\x01f02',  U'\x01f03',  U'\x01f04',  U'\x01f05',
+  U'\x01f06',  U'\x01f07',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f10',  U'\x01f11',  U'\x01f12',  U'\x01f13',
+  U'\x01f14',  U'\x01f15',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f20',  U'\x01f21',
+  U'\x01f22',  U'\x01f23',  U'\x01f24',  U'\x01f25',  U'\x01f26',  U'\x01f27',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x01f30',  U'\x01f31',  U'\x01f32',  U'\x01f33',  U'\x01f34',  U'\x01f35',  U'\x01f36',
+  U'\x01f37',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x01f40',  U'\x01f41',  U'\x01f42',  U'\x01f43',  U'\x01f44',
+  U'\x01f45',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f51',  U'\x00000',
+  U'\x01f53',  U'\x00000',  U'\x01f55',  U'\x00000',  U'\x01f57',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f60',
+  U'\x01f61',  U'\x01f62',  U'\x01f63',  U'\x01f64',  U'\x01f65',  U'\x01f66',  U'\x01f67',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f80',  U'\x01f81',  U'\x01f82',  U'\x01f83',
+  U'\x01f84',  U'\x01f85',  U'\x01f86',  U'\x01f87',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f90',  U'\x01f91',
+  U'\x01f92',  U'\x01f93',  U'\x01f94',  U'\x01f95',  U'\x01f96',  U'\x01f97',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x01fa0',  U'\x01fa1',  U'\x01fa2',  U'\x01fa3',  U'\x01fa4',  U'\x01fa5',  U'\x01fa6',
+  U'\x01fa7',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x01fb0',  U'\x01fb1',  U'\x01f70',  U'\x01f71',  U'\x01fb3',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f72',  U'\x01f73',  U'\x01f74',
+  U'\x01f75',  U'\x01fc3',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01fd0',
+  U'\x01fd1',  U'\x01f76',  U'\x01f77',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x01fe0',  U'\x01fe1',  U'\x01f7a',  U'\x01f7b',  U'\x01fe5',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f78',  U'\x01f79',  U'\x01f7c',  U'\x01f7d',
+  U'\x01ff3'
+};
+
+static constexpr const char32_t LOWER_CASE_0x021[]
+{
+  U'\x00083',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x003c9',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x0006b',  U'\x000e5',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x0214e',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02170',  U'\x02171',
+  U'\x02172',  U'\x02173',  U'\x02174',  U'\x02175',  U'\x02176',  U'\x02177',  U'\x02178',
+  U'\x02179',  U'\x0217a',  U'\x0217b',  U'\x0217c',  U'\x0217d',  U'\x0217e',  U'\x0217f',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02184'
+};
+
+static constexpr const char32_t LOWER_CASE_0x024[]
+{
+  U'\x000cf',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x024d0',  U'\x024d1',  U'\x024d2',  U'\x024d3',  U'\x024d4',  U'\x024d5',  U'\x024d6',
+  U'\x024d7',  U'\x024d8',  U'\x024d9',  U'\x024da',  U'\x024db',  U'\x024dc',  U'\x024dd',
+  U'\x024de',  U'\x024df',  U'\x024e0',  U'\x024e1',  U'\x024e2',  U'\x024e3',  U'\x024e4',
+  U'\x024e5',  U'\x024e6',  U'\x024e7',  U'\x024e8',  U'\x024e9'
+};
+
+static constexpr const char32_t LOWER_CASE_0x02c[]
+{
+  U'\x000f2',
+  U'\x02c30',  U'\x02c31',  U'\x02c32',  U'\x02c33',  U'\x02c34',  U'\x02c35',  U'\x02c36',
+  U'\x02c37',  U'\x02c38',  U'\x02c39',  U'\x02c3a',  U'\x02c3b',  U'\x02c3c',  U'\x02c3d',
+  U'\x02c3e',  U'\x02c3f',  U'\x02c40',  U'\x02c41',  U'\x02c42',  U'\x02c43',  U'\x02c44',
+  U'\x02c45',  U'\x02c46',  U'\x02c47',  U'\x02c48',  U'\x02c49',  U'\x02c4a',  U'\x02c4b',
+  U'\x02c4c',  U'\x02c4d',  U'\x02c4e',  U'\x02c4f',  U'\x02c50',  U'\x02c51',  U'\x02c52',
+  U'\x02c53',  U'\x02c54',  U'\x02c55',  U'\x02c56',  U'\x02c57',  U'\x02c58',  U'\x02c59',
+  U'\x02c5a',  U'\x02c5b',  U'\x02c5c',  U'\x02c5d',  U'\x02c5e',  U'\x02c5f',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02c61',  U'\x00000',
+  U'\x0026b',  U'\x01d7d',  U'\x0027d',  U'\x00000',  U'\x00000',  U'\x02c68',  U'\x00000',
+  U'\x02c6a',  U'\x00000',  U'\x02c6c',  U'\x00000',  U'\x00251',  U'\x00271',  U'\x00250',
+  U'\x00252',  U'\x00000',  U'\x02c73',  U'\x00000',  U'\x00000',  U'\x02c76',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x0023f',  U'\x00240',  U'\x02c81',  U'\x00000',  U'\x02c83',  U'\x00000',  U'\x02c85',
+  U'\x00000',  U'\x02c87',  U'\x00000',  U'\x02c89',  U'\x00000',  U'\x02c8b',  U'\x00000',
+  U'\x02c8d',  U'\x00000',  U'\x02c8f',  U'\x00000',  U'\x02c91',  U'\x00000',  U'\x02c93',
+  U'\x00000',  U'\x02c95',  U'\x00000',  U'\x02c97',  U'\x00000',  U'\x02c99',  U'\x00000',
+  U'\x02c9b',  U'\x00000',  U'\x02c9d',  U'\x00000',  U'\x02c9f',  U'\x00000',  U'\x02ca1',
+  U'\x00000',  U'\x02ca3',  U'\x00000',  U'\x02ca5',  U'\x00000',  U'\x02ca7',  U'\x00000',
+  U'\x02ca9',  U'\x00000',  U'\x02cab',  U'\x00000',  U'\x02cad',  U'\x00000',  U'\x02caf',
+  U'\x00000',  U'\x02cb1',  U'\x00000',  U'\x02cb3',  U'\x00000',  U'\x02cb5',  U'\x00000',
+  U'\x02cb7',  U'\x00000',  U'\x02cb9',  U'\x00000',  U'\x02cbb',  U'\x00000',  U'\x02cbd',
+  U'\x00000',  U'\x02cbf',  U'\x00000',  U'\x02cc1',  U'\x00000',  U'\x02cc3',  U'\x00000',
+  U'\x02cc5',  U'\x00000',  U'\x02cc7',  U'\x00000',  U'\x02cc9',  U'\x00000',  U'\x02ccb',
+  U'\x00000',  U'\x02ccd',  U'\x00000',  U'\x02ccf',  U'\x00000',  U'\x02cd1',  U'\x00000',
+  U'\x02cd3',  U'\x00000',  U'\x02cd5',  U'\x00000',  U'\x02cd7',  U'\x00000',  U'\x02cd9',
+  U'\x00000',  U'\x02cdb',  U'\x00000',  U'\x02cdd',  U'\x00000',  U'\x02cdf',  U'\x00000',
+  U'\x02ce1',  U'\x00000',  U'\x02ce3',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02cec',  U'\x00000',  U'\x02cee',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02cf3'
+};
+
+static constexpr const char32_t LOWER_CASE_0x0a6[]
+{
+  U'\x0009a',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x0a641',  U'\x00000',  U'\x0a643',  U'\x00000',  U'\x0a645',  U'\x00000',
+  U'\x0a647',  U'\x00000',  U'\x0a649',  U'\x00000',  U'\x0a64b',  U'\x00000',  U'\x0a64d',
+  U'\x00000',  U'\x0a64f',  U'\x00000',  U'\x0a651',  U'\x00000',  U'\x0a653',  U'\x00000',
+  U'\x0a655',  U'\x00000',  U'\x0a657',  U'\x00000',  U'\x0a659',  U'\x00000',  U'\x0a65b',
+  U'\x00000',  U'\x0a65d',  U'\x00000',  U'\x0a65f',  U'\x00000',  U'\x0a661',  U'\x00000',
+  U'\x0a663',  U'\x00000',  U'\x0a665',  U'\x00000',  U'\x0a667',  U'\x00000',  U'\x0a669',
+  U'\x00000',  U'\x0a66b',  U'\x00000',  U'\x0a66d',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x0a681',  U'\x00000',  U'\x0a683',  U'\x00000',  U'\x0a685',
+  U'\x00000',  U'\x0a687',  U'\x00000',  U'\x0a689',  U'\x00000',  U'\x0a68b',  U'\x00000',
+  U'\x0a68d',  U'\x00000',  U'\x0a68f',  U'\x00000',  U'\x0a691',  U'\x00000',  U'\x0a693',
+  U'\x00000',  U'\x0a695',  U'\x00000',  U'\x0a697',  U'\x00000',  U'\x0a699',  U'\x00000',
+  U'\x0a69b'
+};
+
+static constexpr const char32_t LOWER_CASE_0x0a7[]
+{
+  U'\x000f5',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a723',
+  U'\x00000',  U'\x0a725',  U'\x00000',  U'\x0a727',  U'\x00000',  U'\x0a729',  U'\x00000',
+  U'\x0a72b',  U'\x00000',  U'\x0a72d',  U'\x00000',  U'\x0a72f',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x0a733',  U'\x00000',  U'\x0a735',  U'\x00000',  U'\x0a737',  U'\x00000',
+  U'\x0a739',  U'\x00000',  U'\x0a73b',  U'\x00000',  U'\x0a73d',  U'\x00000',  U'\x0a73f',
+  U'\x00000',  U'\x0a741',  U'\x00000',  U'\x0a743',  U'\x00000',  U'\x0a745',  U'\x00000',
+  U'\x0a747',  U'\x00000',  U'\x0a749',  U'\x00000',  U'\x0a74b',  U'\x00000',  U'\x0a74d',
+  U'\x00000',  U'\x0a74f',  U'\x00000',  U'\x0a751',  U'\x00000',  U'\x0a753',  U'\x00000',
+  U'\x0a755',  U'\x00000',  U'\x0a757',  U'\x00000',  U'\x0a759',  U'\x00000',  U'\x0a75b',
+  U'\x00000',  U'\x0a75d',  U'\x00000',  U'\x0a75f',  U'\x00000',  U'\x0a761',  U'\x00000',
+  U'\x0a763',  U'\x00000',  U'\x0a765',  U'\x00000',  U'\x0a767',  U'\x00000',  U'\x0a769',
+  U'\x00000',  U'\x0a76b',  U'\x00000',  U'\x0a76d',  U'\x00000',  U'\x0a76f',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x0a77a',  U'\x00000',  U'\x0a77c',  U'\x00000',  U'\x01d79',
+  U'\x0a77f',  U'\x00000',  U'\x0a781',  U'\x00000',  U'\x0a783',  U'\x00000',  U'\x0a785',
+  U'\x00000',  U'\x0a787',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a78c',
+  U'\x00000',  U'\x00265',  U'\x00000',  U'\x00000',  U'\x0a791',  U'\x00000',  U'\x0a793',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a797',  U'\x00000',  U'\x0a799',  U'\x00000',
+  U'\x0a79b',  U'\x00000',  U'\x0a79d',  U'\x00000',  U'\x0a79f',  U'\x00000',  U'\x0a7a1',
+  U'\x00000',  U'\x0a7a3',  U'\x00000',  U'\x0a7a5',  U'\x00000',  U'\x0a7a7',  U'\x00000',
+  U'\x0a7a9',  U'\x00000',  U'\x00266',  U'\x0025c',  U'\x00261',  U'\x0026c',  U'\x0026a',
+  U'\x00000',  U'\x0029e',  U'\x00287',  U'\x0029d',  U'\x0ab53',  U'\x0a7b5',  U'\x00000',
+  U'\x0a7b7',  U'\x00000',  U'\x0a7b9',  U'\x00000',  U'\x0a7bb',  U'\x00000',  U'\x0a7bd',
+  U'\x00000',  U'\x0a7bf',  U'\x00000',  U'\x0a7c1',  U'\x00000',  U'\x0a7c3',  U'\x00000',
+  U'\x0a794',  U'\x00282',  U'\x01d8e',  U'\x0a7c8',  U'\x00000',  U'\x0a7ca',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a7d1',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a7d7',  U'\x00000',  U'\x0a7d9',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x0a7f6'
+};
+
+static constexpr const char32_t LOWER_CASE_0x0ff[]
+{
+  U'\x0003a',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0ff41',  U'\x0ff42',
+  U'\x0ff43',  U'\x0ff44',  U'\x0ff45',  U'\x0ff46',  U'\x0ff47',  U'\x0ff48',  U'\x0ff49',
+  U'\x0ff4a',  U'\x0ff4b',  U'\x0ff4c',  U'\x0ff4d',  U'\x0ff4e',  U'\x0ff4f',  U'\x0ff50',
+  U'\x0ff51',  U'\x0ff52',  U'\x0ff53',  U'\x0ff54',  U'\x0ff55',  U'\x0ff56',  U'\x0ff57',
+  U'\x0ff58',  U'\x0ff59',  U'\x0ff5a'
+};
+
+static constexpr const char32_t LOWER_CASE_0x104[]
+{
+  U'\x000d3',
+  U'\x10428',  U'\x10429',  U'\x1042a',  U'\x1042b',  U'\x1042c',  U'\x1042d',  U'\x1042e',
+  U'\x1042f',  U'\x10430',  U'\x10431',  U'\x10432',  U'\x10433',  U'\x10434',  U'\x10435',
+  U'\x10436',  U'\x10437',  U'\x10438',  U'\x10439',  U'\x1043a',  U'\x1043b',  U'\x1043c',
+  U'\x1043d',  U'\x1043e',  U'\x1043f',  U'\x10440',  U'\x10441',  U'\x10442',  U'\x10443',
+  U'\x10444',  U'\x10445',  U'\x10446',  U'\x10447',  U'\x10448',  U'\x10449',  U'\x1044a',
+  U'\x1044b',  U'\x1044c',  U'\x1044d',  U'\x1044e',  U'\x1044f',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x104d8',  U'\x104d9',  U'\x104da',  U'\x104db',  U'\x104dc',  U'\x104dd',
+  U'\x104de',  U'\x104df',  U'\x104e0',  U'\x104e1',  U'\x104e2',  U'\x104e3',  U'\x104e4',
+  U'\x104e5',  U'\x104e6',  U'\x104e7',  U'\x104e8',  U'\x104e9',  U'\x104ea',  U'\x104eb',
+  U'\x104ec',  U'\x104ed',  U'\x104ee',  U'\x104ef',  U'\x104f0',  U'\x104f1',  U'\x104f2',
+  U'\x104f3',  U'\x104f4',  U'\x104f5',  U'\x104f6',  U'\x104f7',  U'\x104f8',  U'\x104f9',
+  U'\x104fa',  U'\x104fb'
+};
+
+static constexpr const char32_t LOWER_CASE_0x105[]
+{
+  U'\x00095',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x10597',  U'\x10598',  U'\x10599',  U'\x1059a',  U'\x1059b',  U'\x1059c',  U'\x1059d',
+  U'\x1059e',  U'\x1059f',  U'\x105a0',  U'\x105a1',  U'\x00000',  U'\x105a3',  U'\x105a4',
+  U'\x105a5',  U'\x105a6',  U'\x105a7',  U'\x105a8',  U'\x105a9',  U'\x105aa',  U'\x105ab',
+  U'\x105ac',  U'\x105ad',  U'\x105ae',  U'\x105af',  U'\x105b0',  U'\x105b1',  U'\x00000',
+  U'\x105b3',  U'\x105b4',  U'\x105b5',  U'\x105b6',  U'\x105b7',  U'\x105b8',  U'\x105b9',
+  U'\x00000',  U'\x105bb',  U'\x105bc'
+};
+
+static constexpr const char32_t LOWER_CASE_0x10c[]
+{
+  U'\x000b2',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x10cc0',  U'\x10cc1',  U'\x10cc2',  U'\x10cc3',  U'\x10cc4',
+  U'\x10cc5',  U'\x10cc6',  U'\x10cc7',  U'\x10cc8',  U'\x10cc9',  U'\x10cca',  U'\x10ccb',
+  U'\x10ccc',  U'\x10ccd',  U'\x10cce',  U'\x10ccf',  U'\x10cd0',  U'\x10cd1',  U'\x10cd2',
+  U'\x10cd3',  U'\x10cd4',  U'\x10cd5',  U'\x10cd6',  U'\x10cd7',  U'\x10cd8',  U'\x10cd9',
+  U'\x10cda',  U'\x10cdb',  U'\x10cdc',  U'\x10cdd',  U'\x10cde',  U'\x10cdf',  U'\x10ce0',
+  U'\x10ce1',  U'\x10ce2',  U'\x10ce3',  U'\x10ce4',  U'\x10ce5',  U'\x10ce6',  U'\x10ce7',
+  U'\x10ce8',  U'\x10ce9',  U'\x10cea',  U'\x10ceb',  U'\x10cec',  U'\x10ced',  U'\x10cee',
+  U'\x10cef',  U'\x10cf0',  U'\x10cf1',  U'\x10cf2'
+};
+
+static constexpr const char32_t LOWER_CASE_0x118[]
+{
+  U'\x000bf',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x118c0',
+  U'\x118c1',  U'\x118c2',  U'\x118c3',  U'\x118c4',  U'\x118c5',  U'\x118c6',  U'\x118c7',
+  U'\x118c8',  U'\x118c9',  U'\x118ca',  U'\x118cb',  U'\x118cc',  U'\x118cd',  U'\x118ce',
+  U'\x118cf',  U'\x118d0',  U'\x118d1',  U'\x118d2',  U'\x118d3',  U'\x118d4',  U'\x118d5',
+  U'\x118d6',  U'\x118d7',  U'\x118d8',  U'\x118d9',  U'\x118da',  U'\x118db',  U'\x118dc',
+  U'\x118dd',  U'\x118de',  U'\x118df'
+};
+
+static constexpr const char32_t LOWER_CASE_0x16e[]
+{
+  U'\x0005f',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x16e60',  U'\x16e61',  U'\x16e62',  U'\x16e63',  U'\x16e64',  U'\x16e65',
+  U'\x16e66',  U'\x16e67',  U'\x16e68',  U'\x16e69',  U'\x16e6a',  U'\x16e6b',  U'\x16e6c',
+  U'\x16e6d',  U'\x16e6e',  U'\x16e6f',  U'\x16e70',  U'\x16e71',  U'\x16e72',  U'\x16e73',
+  U'\x16e74',  U'\x16e75',  U'\x16e76',  U'\x16e77',  U'\x16e78',  U'\x16e79',  U'\x16e7a',
+  U'\x16e7b',  U'\x16e7c',  U'\x16e7d',  U'\x16e7e',  U'\x16e7f'
+};
+
+static constexpr const char32_t LOWER_CASE_0x1e9[]
+{
+  U'\x00021',
+  U'\x1e922',  U'\x1e923',  U'\x1e924',  U'\x1e925',  U'\x1e926',  U'\x1e927',  U'\x1e928',
+  U'\x1e929',  U'\x1e92a',  U'\x1e92b',  U'\x1e92c',  U'\x1e92d',  U'\x1e92e',  U'\x1e92f',
+  U'\x1e930',  U'\x1e931',  U'\x1e932',  U'\x1e933',  U'\x1e934',  U'\x1e935',  U'\x1e936',
+  U'\x1e937',  U'\x1e938',  U'\x1e939',  U'\x1e93a',  U'\x1e93b',  U'\x1e93c',  U'\x1e93d',
+  U'\x1e93e',  U'\x1e93f',  U'\x1e940',  U'\x1e941',  U'\x1e942',  U'\x1e943'
+};
+
+static constexpr const char32_t * const LOWER_CASE_INDEX[]
+{
+  LOWER_CASE_0x000,  LOWER_CASE_0x001,  LOWER_CASE_0x002,  LOWER_CASE_0x003,  LOWER_CASE_0x004,
+  LOWER_CASE_0x005,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  LOWER_CASE_0x010,  0x0,  0x0,  LOWER_CASE_0x013,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  LOWER_CASE_0x01c,  0x0,
+  LOWER_CASE_0x01e,  LOWER_CASE_0x01f,  0x0,  LOWER_CASE_0x021,  0x0,
+  0x0,  LOWER_CASE_0x024,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  LOWER_CASE_0x02c,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  LOWER_CASE_0x0a6,  LOWER_CASE_0x0a7,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  LOWER_CASE_0x0ff,  0x0,  0x0,  0x0,  0x0,
+  LOWER_CASE_0x104,  LOWER_CASE_0x105,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  LOWER_CASE_0x10c,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  LOWER_CASE_0x118,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  LOWER_CASE_0x16e,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  LOWER_CASE_0x1e9
+};
+
+static constexpr const char32_t UPPER_CASE_0x000[]
+{
+  U'\x000ff',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00041',
+  U'\x00042',  U'\x00043',  U'\x00044',  U'\x00045',  U'\x00046',  U'\x00047',  U'\x00048',
+  U'\x00049',  U'\x0004a',  U'\x0004b',  U'\x0004c',  U'\x0004d',  U'\x0004e',  U'\x0004f',
+  U'\x00050',  U'\x00051',  U'\x00052',  U'\x00053',  U'\x00054',  U'\x00055',  U'\x00056',
+  U'\x00057',  U'\x00058',  U'\x00059',  U'\x0005a',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0039c',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x000c0',  U'\x000c1',  U'\x000c2',  U'\x000c3',  U'\x000c4',  U'\x000c5',  U'\x000c6',
+  U'\x000c7',  U'\x000c8',  U'\x000c9',  U'\x000ca',  U'\x000cb',  U'\x000cc',  U'\x000cd',
+  U'\x000ce',  U'\x000cf',  U'\x000d0',  U'\x000d1',  U'\x000d2',  U'\x000d3',  U'\x000d4',
+  U'\x000d5',  U'\x000d6',  U'\x00000',  U'\x000d8',  U'\x000d9',  U'\x000da',  U'\x000db',
+  U'\x000dc',  U'\x000dd',  U'\x000de',  U'\x00178'
+};
+
+static constexpr const char32_t UPPER_CASE_0x001[]
+{
+  U'\x000ff',
+  U'\x00000',  U'\x00100',  U'\x00000',  U'\x00102',  U'\x00000',  U'\x00104',  U'\x00000',
+  U'\x00106',  U'\x00000',  U'\x00108',  U'\x00000',  U'\x0010a',  U'\x00000',  U'\x0010c',
+  U'\x00000',  U'\x0010e',  U'\x00000',  U'\x00110',  U'\x00000',  U'\x00112',  U'\x00000',
+  U'\x00114',  U'\x00000',  U'\x00116',  U'\x00000',  U'\x00118',  U'\x00000',  U'\x0011a',
+  U'\x00000',  U'\x0011c',  U'\x00000',  U'\x0011e',  U'\x00000',  U'\x00120',  U'\x00000',
+  U'\x00122',  U'\x00000',  U'\x00124',  U'\x00000',  U'\x00126',  U'\x00000',  U'\x00128',
+  U'\x00000',  U'\x0012a',  U'\x00000',  U'\x0012c',  U'\x00000',  U'\x0012e',  U'\x00000',
+  U'\x00049',  U'\x00000',  U'\x00132',  U'\x00000',  U'\x00134',  U'\x00000',  U'\x00136',
+  U'\x00000',  U'\x00000',  U'\x00139',  U'\x00000',  U'\x0013b',  U'\x00000',  U'\x0013d',
+  U'\x00000',  U'\x0013f',  U'\x00000',  U'\x00141',  U'\x00000',  U'\x00143',  U'\x00000',
+  U'\x00145',  U'\x00000',  U'\x00147',  U'\x00000',  U'\x00000',  U'\x0014a',  U'\x00000',
+  U'\x0014c',  U'\x00000',  U'\x0014e',  U'\x00000',  U'\x00150',  U'\x00000',  U'\x00152',
+  U'\x00000',  U'\x00154',  U'\x00000',  U'\x00156',  U'\x00000',  U'\x00158',  U'\x00000',
+  U'\x0015a',  U'\x00000',  U'\x0015c',  U'\x00000',  U'\x0015e',  U'\x00000',  U'\x00160',
+  U'\x00000',  U'\x00162',  U'\x00000',  U'\x00164',  U'\x00000',  U'\x00166',  U'\x00000',
+  U'\x00168',  U'\x00000',  U'\x0016a',  U'\x00000',  U'\x0016c',  U'\x00000',  U'\x0016e',
+  U'\x00000',  U'\x00170',  U'\x00000',  U'\x00172',  U'\x00000',  U'\x00174',  U'\x00000',
+  U'\x00176',  U'\x00000',  U'\x00000',  U'\x00179',  U'\x00000',  U'\x0017b',  U'\x00000',
+  U'\x0017d',  U'\x00053',  U'\x00243',  U'\x00000',  U'\x00000',  U'\x00182',  U'\x00000',
+  U'\x00184',  U'\x00000',  U'\x00000',  U'\x00187',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x0018b',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00191',
+  U'\x00000',  U'\x00000',  U'\x001f6',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00198',
+  U'\x0023d',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00220',  U'\x00000',  U'\x00000',
+  U'\x001a0',  U'\x00000',  U'\x001a2',  U'\x00000',  U'\x001a4',  U'\x00000',  U'\x00000',
+  U'\x001a7',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x001ac',  U'\x00000',
+  U'\x00000',  U'\x001af',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x001b3',  U'\x00000',
+  U'\x001b5',  U'\x00000',  U'\x00000',  U'\x001b8',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x001bc',  U'\x00000',  U'\x001f7',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x001c4',  U'\x001c4',  U'\x00000',  U'\x001c7',  U'\x001c7',  U'\x00000',
+  U'\x001ca',  U'\x001ca',  U'\x00000',  U'\x001cd',  U'\x00000',  U'\x001cf',  U'\x00000',
+  U'\x001d1',  U'\x00000',  U'\x001d3',  U'\x00000',  U'\x001d5',  U'\x00000',  U'\x001d7',
+  U'\x00000',  U'\x001d9',  U'\x00000',  U'\x001db',  U'\x0018e',  U'\x00000',  U'\x001de',
+  U'\x00000',  U'\x001e0',  U'\x00000',  U'\x001e2',  U'\x00000',  U'\x001e4',  U'\x00000',
+  U'\x001e6',  U'\x00000',  U'\x001e8',  U'\x00000',  U'\x001ea',  U'\x00000',  U'\x001ec',
+  U'\x00000',  U'\x001ee',  U'\x00000',  U'\x00000',  U'\x001f1',  U'\x001f1',  U'\x00000',
+  U'\x001f4',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x001f8',  U'\x00000',  U'\x001fa',
+  U'\x00000',  U'\x001fc',  U'\x00000',  U'\x001fe'
+};
+
+static constexpr const char32_t UPPER_CASE_0x002[]
+{
+  U'\x0009e',
+  U'\x00000',  U'\x00200',  U'\x00000',  U'\x00202',  U'\x00000',  U'\x00204',  U'\x00000',
+  U'\x00206',  U'\x00000',  U'\x00208',  U'\x00000',  U'\x0020a',  U'\x00000',  U'\x0020c',
+  U'\x00000',  U'\x0020e',  U'\x00000',  U'\x00210',  U'\x00000',  U'\x00212',  U'\x00000',
+  U'\x00214',  U'\x00000',  U'\x00216',  U'\x00000',  U'\x00218',  U'\x00000',  U'\x0021a',
+  U'\x00000',  U'\x0021c',  U'\x00000',  U'\x0021e',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00222',  U'\x00000',  U'\x00224',  U'\x00000',  U'\x00226',  U'\x00000',  U'\x00228',
+  U'\x00000',  U'\x0022a',  U'\x00000',  U'\x0022c',  U'\x00000',  U'\x0022e',  U'\x00000',
+  U'\x00230',  U'\x00000',  U'\x00232',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0023b',  U'\x00000',  U'\x00000',
+  U'\x02c7e',  U'\x02c7f',  U'\x00000',  U'\x00241',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00246',  U'\x00000',  U'\x00248',  U'\x00000',  U'\x0024a',  U'\x00000',
+  U'\x0024c',  U'\x00000',  U'\x0024e',  U'\x02c6f',  U'\x02c6d',  U'\x02c70',  U'\x00181',
+  U'\x00186',  U'\x00000',  U'\x00189',  U'\x0018a',  U'\x00000',  U'\x0018f',  U'\x00000',
+  U'\x00190',  U'\x0a7ab',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00193',  U'\x0a7ac',
+  U'\x00000',  U'\x00194',  U'\x00000',  U'\x0a78d',  U'\x0a7aa',  U'\x00000',  U'\x00197',
+  U'\x00196',  U'\x0a7ae',  U'\x02c62',  U'\x0a7ad',  U'\x00000',  U'\x00000',  U'\x0019c',
+  U'\x00000',  U'\x02c6e',  U'\x0019d',  U'\x00000',  U'\x00000',  U'\x0019f',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02c64',
+  U'\x00000',  U'\x00000',  U'\x001a6',  U'\x00000',  U'\x0a7c5',  U'\x001a9',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x0a7b1',  U'\x001ae',  U'\x00244',  U'\x001b1',  U'\x001b2',
+  U'\x00245',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x001b7',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a7b2',  U'\x0a7b0'
+};
+
+static constexpr const char32_t UPPER_CASE_0x003[]
+{
+  U'\x000fb',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00399',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00370',  U'\x00000',  U'\x00372',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00376',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x003fd',  U'\x003fe',  U'\x003ff',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00386',  U'\x00388',  U'\x00389',
+  U'\x0038a',  U'\x00000',  U'\x00391',  U'\x00392',  U'\x00393',  U'\x00394',  U'\x00395',
+  U'\x00396',  U'\x00397',  U'\x00398',  U'\x00399',  U'\x0039a',  U'\x0039b',  U'\x0039c',
+  U'\x0039d',  U'\x0039e',  U'\x0039f',  U'\x003a0',  U'\x003a1',  U'\x003a3',  U'\x003a3',
+  U'\x003a4',  U'\x003a5',  U'\x003a6',  U'\x003a7',  U'\x003a8',  U'\x003a9',  U'\x003aa',
+  U'\x003ab',  U'\x0038c',  U'\x0038e',  U'\x0038f',  U'\x00000',  U'\x00392',  U'\x00398',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x003a6',  U'\x003a0',  U'\x003cf',  U'\x00000',
+  U'\x003d8',  U'\x00000',  U'\x003da',  U'\x00000',  U'\x003dc',  U'\x00000',  U'\x003de',
+  U'\x00000',  U'\x003e0',  U'\x00000',  U'\x003e2',  U'\x00000',  U'\x003e4',  U'\x00000',
+  U'\x003e6',  U'\x00000',  U'\x003e8',  U'\x00000',  U'\x003ea',  U'\x00000',  U'\x003ec',
+  U'\x00000',  U'\x003ee',  U'\x0039a',  U'\x003a1',  U'\x003f9',  U'\x0037f',  U'\x00000',
+  U'\x00395',  U'\x00000',  U'\x00000',  U'\x003f7',  U'\x00000',  U'\x00000',  U'\x003fa'
+};
+
+static constexpr const char32_t UPPER_CASE_0x004[]
+{
+  U'\x000ff',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00410',
+  U'\x00411',  U'\x00412',  U'\x00413',  U'\x00414',  U'\x00415',  U'\x00416',  U'\x00417',
+  U'\x00418',  U'\x00419',  U'\x0041a',  U'\x0041b',  U'\x0041c',  U'\x0041d',  U'\x0041e',
+  U'\x0041f',  U'\x00420',  U'\x00421',  U'\x00422',  U'\x00423',  U'\x00424',  U'\x00425',
+  U'\x00426',  U'\x00427',  U'\x00428',  U'\x00429',  U'\x0042a',  U'\x0042b',  U'\x0042c',
+  U'\x0042d',  U'\x0042e',  U'\x0042f',  U'\x00400',  U'\x00401',  U'\x00402',  U'\x00403',
+  U'\x00404',  U'\x00405',  U'\x00406',  U'\x00407',  U'\x00408',  U'\x00409',  U'\x0040a',
+  U'\x0040b',  U'\x0040c',  U'\x0040d',  U'\x0040e',  U'\x0040f',  U'\x00000',  U'\x00460',
+  U'\x00000',  U'\x00462',  U'\x00000',  U'\x00464',  U'\x00000',  U'\x00466',  U'\x00000',
+  U'\x00468',  U'\x00000',  U'\x0046a',  U'\x00000',  U'\x0046c',  U'\x00000',  U'\x0046e',
+  U'\x00000',  U'\x00470',  U'\x00000',  U'\x00472',  U'\x00000',  U'\x00474',  U'\x00000',
+  U'\x00476',  U'\x00000',  U'\x00478',  U'\x00000',  U'\x0047a',  U'\x00000',  U'\x0047c',
+  U'\x00000',  U'\x0047e',  U'\x00000',  U'\x00480',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0048a',
+  U'\x00000',  U'\x0048c',  U'\x00000',  U'\x0048e',  U'\x00000',  U'\x00490',  U'\x00000',
+  U'\x00492',  U'\x00000',  U'\x00494',  U'\x00000',  U'\x00496',  U'\x00000',  U'\x00498',
+  U'\x00000',  U'\x0049a',  U'\x00000',  U'\x0049c',  U'\x00000',  U'\x0049e',  U'\x00000',
+  U'\x004a0',  U'\x00000',  U'\x004a2',  U'\x00000',  U'\x004a4',  U'\x00000',  U'\x004a6',
+  U'\x00000',  U'\x004a8',  U'\x00000',  U'\x004aa',  U'\x00000',  U'\x004ac',  U'\x00000',
+  U'\x004ae',  U'\x00000',  U'\x004b0',  U'\x00000',  U'\x004b2',  U'\x00000',  U'\x004b4',
+  U'\x00000',  U'\x004b6',  U'\x00000',  U'\x004b8',  U'\x00000',  U'\x004ba',  U'\x00000',
+  U'\x004bc',  U'\x00000',  U'\x004be',  U'\x00000',  U'\x00000',  U'\x004c1',  U'\x00000',
+  U'\x004c3',  U'\x00000',  U'\x004c5',  U'\x00000',  U'\x004c7',  U'\x00000',  U'\x004c9',
+  U'\x00000',  U'\x004cb',  U'\x00000',  U'\x004cd',  U'\x004c0',  U'\x00000',  U'\x004d0',
+  U'\x00000',  U'\x004d2',  U'\x00000',  U'\x004d4',  U'\x00000',  U'\x004d6',  U'\x00000',
+  U'\x004d8',  U'\x00000',  U'\x004da',  U'\x00000',  U'\x004dc',  U'\x00000',  U'\x004de',
+  U'\x00000',  U'\x004e0',  U'\x00000',  U'\x004e2',  U'\x00000',  U'\x004e4',  U'\x00000',
+  U'\x004e6',  U'\x00000',  U'\x004e8',  U'\x00000',  U'\x004ea',  U'\x00000',  U'\x004ec',
+  U'\x00000',  U'\x004ee',  U'\x00000',  U'\x004f0',  U'\x00000',  U'\x004f2',  U'\x00000',
+  U'\x004f4',  U'\x00000',  U'\x004f6',  U'\x00000',  U'\x004f8',  U'\x00000',  U'\x004fa',
+  U'\x00000',  U'\x004fc',  U'\x00000',  U'\x004fe'
+};
+
+static constexpr const char32_t UPPER_CASE_0x005[]
+{
+  U'\x00086',
+  U'\x00000',  U'\x00500',  U'\x00000',  U'\x00502',  U'\x00000',  U'\x00504',  U'\x00000',
+  U'\x00506',  U'\x00000',  U'\x00508',  U'\x00000',  U'\x0050a',  U'\x00000',  U'\x0050c',
+  U'\x00000',  U'\x0050e',  U'\x00000',  U'\x00510',  U'\x00000',  U'\x00512',  U'\x00000',
+  U'\x00514',  U'\x00000',  U'\x00516',  U'\x00000',  U'\x00518',  U'\x00000',  U'\x0051a',
+  U'\x00000',  U'\x0051c',  U'\x00000',  U'\x0051e',  U'\x00000',  U'\x00520',  U'\x00000',
+  U'\x00522',  U'\x00000',  U'\x00524',  U'\x00000',  U'\x00526',  U'\x00000',  U'\x00528',
+  U'\x00000',  U'\x0052a',  U'\x00000',  U'\x0052c',  U'\x00000',  U'\x0052e',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00531',
+  U'\x00532',  U'\x00533',  U'\x00534',  U'\x00535',  U'\x00536',  U'\x00537',  U'\x00538',
+  U'\x00539',  U'\x0053a',  U'\x0053b',  U'\x0053c',  U'\x0053d',  U'\x0053e',  U'\x0053f',
+  U'\x00540',  U'\x00541',  U'\x00542',  U'\x00543',  U'\x00544',  U'\x00545',  U'\x00546',
+  U'\x00547',  U'\x00548',  U'\x00549',  U'\x0054a',  U'\x0054b',  U'\x0054c',  U'\x0054d',
+  U'\x0054e',  U'\x0054f',  U'\x00550',  U'\x00551',  U'\x00552',  U'\x00553',  U'\x00554',
+  U'\x00555',  U'\x00556'
+};
+
+static constexpr const char32_t UPPER_CASE_0x010[]
+{
+  U'\x000ff',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01c90',  U'\x01c91',
+  U'\x01c92',  U'\x01c93',  U'\x01c94',  U'\x01c95',  U'\x01c96',  U'\x01c97',  U'\x01c98',
+  U'\x01c99',  U'\x01c9a',  U'\x01c9b',  U'\x01c9c',  U'\x01c9d',  U'\x01c9e',  U'\x01c9f',
+  U'\x01ca0',  U'\x01ca1',  U'\x01ca2',  U'\x01ca3',  U'\x01ca4',  U'\x01ca5',  U'\x01ca6',
+  U'\x01ca7',  U'\x01ca8',  U'\x01ca9',  U'\x01caa',  U'\x01cab',  U'\x01cac',  U'\x01cad',
+  U'\x01cae',  U'\x01caf',  U'\x01cb0',  U'\x01cb1',  U'\x01cb2',  U'\x01cb3',  U'\x01cb4',
+  U'\x01cb5',  U'\x01cb6',  U'\x01cb7',  U'\x01cb8',  U'\x01cb9',  U'\x01cba',  U'\x00000',
+  U'\x00000',  U'\x01cbd',  U'\x01cbe',  U'\x01cbf'
+};
+
+static constexpr const char32_t UPPER_CASE_0x013[]
+{
+  U'\x000fd',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x013f0',  U'\x013f1',  U'\x013f2',  U'\x013f3',
+  U'\x013f4',  U'\x013f5'
+};
+
+static constexpr const char32_t UPPER_CASE_0x01c[]
+{
+  U'\x00088',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00412',  U'\x00414',  U'\x0041e',  U'\x00421',  U'\x00422',
+  U'\x00422',  U'\x0042a',  U'\x00462',  U'\x0a64a'
+};
+
+static constexpr const char32_t UPPER_CASE_0x01d[]
+{
+  U'\x0008e',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x0a77d',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02c63',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x0a7c6'
+};
+
+static constexpr const char32_t UPPER_CASE_0x01e[]
+{
+  U'\x000ff',
+  U'\x00000',  U'\x01e00',  U'\x00000',  U'\x01e02',  U'\x00000',  U'\x01e04',  U'\x00000',
+  U'\x01e06',  U'\x00000',  U'\x01e08',  U'\x00000',  U'\x01e0a',  U'\x00000',  U'\x01e0c',
+  U'\x00000',  U'\x01e0e',  U'\x00000',  U'\x01e10',  U'\x00000',  U'\x01e12',  U'\x00000',
+  U'\x01e14',  U'\x00000',  U'\x01e16',  U'\x00000',  U'\x01e18',  U'\x00000',  U'\x01e1a',
+  U'\x00000',  U'\x01e1c',  U'\x00000',  U'\x01e1e',  U'\x00000',  U'\x01e20',  U'\x00000',
+  U'\x01e22',  U'\x00000',  U'\x01e24',  U'\x00000',  U'\x01e26',  U'\x00000',  U'\x01e28',
+  U'\x00000',  U'\x01e2a',  U'\x00000',  U'\x01e2c',  U'\x00000',  U'\x01e2e',  U'\x00000',
+  U'\x01e30',  U'\x00000',  U'\x01e32',  U'\x00000',  U'\x01e34',  U'\x00000',  U'\x01e36',
+  U'\x00000',  U'\x01e38',  U'\x00000',  U'\x01e3a',  U'\x00000',  U'\x01e3c',  U'\x00000',
+  U'\x01e3e',  U'\x00000',  U'\x01e40',  U'\x00000',  U'\x01e42',  U'\x00000',  U'\x01e44',
+  U'\x00000',  U'\x01e46',  U'\x00000',  U'\x01e48',  U'\x00000',  U'\x01e4a',  U'\x00000',
+  U'\x01e4c',  U'\x00000',  U'\x01e4e',  U'\x00000',  U'\x01e50',  U'\x00000',  U'\x01e52',
+  U'\x00000',  U'\x01e54',  U'\x00000',  U'\x01e56',  U'\x00000',  U'\x01e58',  U'\x00000',
+  U'\x01e5a',  U'\x00000',  U'\x01e5c',  U'\x00000',  U'\x01e5e',  U'\x00000',  U'\x01e60',
+  U'\x00000',  U'\x01e62',  U'\x00000',  U'\x01e64',  U'\x00000',  U'\x01e66',  U'\x00000',
+  U'\x01e68',  U'\x00000',  U'\x01e6a',  U'\x00000',  U'\x01e6c',  U'\x00000',  U'\x01e6e',
+  U'\x00000',  U'\x01e70',  U'\x00000',  U'\x01e72',  U'\x00000',  U'\x01e74',  U'\x00000',
+  U'\x01e76',  U'\x00000',  U'\x01e78',  U'\x00000',  U'\x01e7a',  U'\x00000',  U'\x01e7c',
+  U'\x00000',  U'\x01e7e',  U'\x00000',  U'\x01e80',  U'\x00000',  U'\x01e82',  U'\x00000',
+  U'\x01e84',  U'\x00000',  U'\x01e86',  U'\x00000',  U'\x01e88',  U'\x00000',  U'\x01e8a',
+  U'\x00000',  U'\x01e8c',  U'\x00000',  U'\x01e8e',  U'\x00000',  U'\x01e90',  U'\x00000',
+  U'\x01e92',  U'\x00000',  U'\x01e94',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x01e60',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x01ea0',  U'\x00000',  U'\x01ea2',  U'\x00000',  U'\x01ea4',  U'\x00000',  U'\x01ea6',
+  U'\x00000',  U'\x01ea8',  U'\x00000',  U'\x01eaa',  U'\x00000',  U'\x01eac',  U'\x00000',
+  U'\x01eae',  U'\x00000',  U'\x01eb0',  U'\x00000',  U'\x01eb2',  U'\x00000',  U'\x01eb4',
+  U'\x00000',  U'\x01eb6',  U'\x00000',  U'\x01eb8',  U'\x00000',  U'\x01eba',  U'\x00000',
+  U'\x01ebc',  U'\x00000',  U'\x01ebe',  U'\x00000',  U'\x01ec0',  U'\x00000',  U'\x01ec2',
+  U'\x00000',  U'\x01ec4',  U'\x00000',  U'\x01ec6',  U'\x00000',  U'\x01ec8',  U'\x00000',
+  U'\x01eca',  U'\x00000',  U'\x01ecc',  U'\x00000',  U'\x01ece',  U'\x00000',  U'\x01ed0',
+  U'\x00000',  U'\x01ed2',  U'\x00000',  U'\x01ed4',  U'\x00000',  U'\x01ed6',  U'\x00000',
+  U'\x01ed8',  U'\x00000',  U'\x01eda',  U'\x00000',  U'\x01edc',  U'\x00000',  U'\x01ede',
+  U'\x00000',  U'\x01ee0',  U'\x00000',  U'\x01ee2',  U'\x00000',  U'\x01ee4',  U'\x00000',
+  U'\x01ee6',  U'\x00000',  U'\x01ee8',  U'\x00000',  U'\x01eea',  U'\x00000',  U'\x01eec',
+  U'\x00000',  U'\x01eee',  U'\x00000',  U'\x01ef0',  U'\x00000',  U'\x01ef2',  U'\x00000',
+  U'\x01ef4',  U'\x00000',  U'\x01ef6',  U'\x00000',  U'\x01ef8',  U'\x00000',  U'\x01efa',
+  U'\x00000',  U'\x01efc',  U'\x00000',  U'\x01efe'
+};
+
+static constexpr const char32_t UPPER_CASE_0x01f[]
+{
+  U'\x000f3',
+  U'\x01f08',  U'\x01f09',  U'\x01f0a',  U'\x01f0b',  U'\x01f0c',  U'\x01f0d',  U'\x01f0e',
+  U'\x01f0f',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x01f18',  U'\x01f19',  U'\x01f1a',  U'\x01f1b',  U'\x01f1c',
+  U'\x01f1d',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f28',  U'\x01f29',  U'\x01f2a',
+  U'\x01f2b',  U'\x01f2c',  U'\x01f2d',  U'\x01f2e',  U'\x01f2f',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f38',
+  U'\x01f39',  U'\x01f3a',  U'\x01f3b',  U'\x01f3c',  U'\x01f3d',  U'\x01f3e',  U'\x01f3f',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x01f48',  U'\x01f49',  U'\x01f4a',  U'\x01f4b',  U'\x01f4c',  U'\x01f4d',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f59',  U'\x00000',  U'\x01f5b',
+  U'\x00000',  U'\x01f5d',  U'\x00000',  U'\x01f5f',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f68',  U'\x01f69',
+  U'\x01f6a',  U'\x01f6b',  U'\x01f6c',  U'\x01f6d',  U'\x01f6e',  U'\x01f6f',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x01fba',  U'\x01fbb',  U'\x01fc8',  U'\x01fc9',  U'\x01fca',  U'\x01fcb',  U'\x01fda',
+  U'\x01fdb',  U'\x01ff8',  U'\x01ff9',  U'\x01fea',  U'\x01feb',  U'\x01ffa',  U'\x01ffb',
+  U'\x00000',  U'\x00000',  U'\x01f88',  U'\x01f89',  U'\x01f8a',  U'\x01f8b',  U'\x01f8c',
+  U'\x01f8d',  U'\x01f8e',  U'\x01f8f',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01f98',  U'\x01f99',  U'\x01f9a',
+  U'\x01f9b',  U'\x01f9c',  U'\x01f9d',  U'\x01f9e',  U'\x01f9f',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01fa8',
+  U'\x01fa9',  U'\x01faa',  U'\x01fab',  U'\x01fac',  U'\x01fad',  U'\x01fae',  U'\x01faf',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x01fb8',  U'\x01fb9',  U'\x00000',  U'\x01fbc',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00399',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01fcc',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01fd8',  U'\x01fd9',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x01fe8',  U'\x01fe9',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01fec',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x01ffc'
+};
+
+static constexpr const char32_t UPPER_CASE_0x021[]
+{
+  U'\x00084',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x02132',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x02160',  U'\x02161',  U'\x02162',  U'\x02163',  U'\x02164',  U'\x02165',  U'\x02166',
+  U'\x02167',  U'\x02168',  U'\x02169',  U'\x0216a',  U'\x0216b',  U'\x0216c',  U'\x0216d',
+  U'\x0216e',  U'\x0216f',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02183'
+};
+
+static constexpr const char32_t UPPER_CASE_0x024[]
+{
+  U'\x000e9',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x024b6',  U'\x024b7',
+  U'\x024b8',  U'\x024b9',  U'\x024ba',  U'\x024bb',  U'\x024bc',  U'\x024bd',  U'\x024be',
+  U'\x024bf',  U'\x024c0',  U'\x024c1',  U'\x024c2',  U'\x024c3',  U'\x024c4',  U'\x024c5',
+  U'\x024c6',  U'\x024c7',  U'\x024c8',  U'\x024c9',  U'\x024ca',  U'\x024cb',  U'\x024cc',
+  U'\x024cd',  U'\x024ce',  U'\x024cf'
+};
+
+static constexpr const char32_t UPPER_CASE_0x02c[]
+{
+  U'\x000f3',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02c00',
+  U'\x02c01',  U'\x02c02',  U'\x02c03',  U'\x02c04',  U'\x02c05',  U'\x02c06',  U'\x02c07',
+  U'\x02c08',  U'\x02c09',  U'\x02c0a',  U'\x02c0b',  U'\x02c0c',  U'\x02c0d',  U'\x02c0e',
+  U'\x02c0f',  U'\x02c10',  U'\x02c11',  U'\x02c12',  U'\x02c13',  U'\x02c14',  U'\x02c15',
+  U'\x02c16',  U'\x02c17',  U'\x02c18',  U'\x02c19',  U'\x02c1a',  U'\x02c1b',  U'\x02c1c',
+  U'\x02c1d',  U'\x02c1e',  U'\x02c1f',  U'\x02c20',  U'\x02c21',  U'\x02c22',  U'\x02c23',
+  U'\x02c24',  U'\x02c25',  U'\x02c26',  U'\x02c27',  U'\x02c28',  U'\x02c29',  U'\x02c2a',
+  U'\x02c2b',  U'\x02c2c',  U'\x02c2d',  U'\x02c2e',  U'\x02c2f',  U'\x00000',  U'\x02c60',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0023a',  U'\x0023e',  U'\x00000',  U'\x02c67',
+  U'\x00000',  U'\x02c69',  U'\x00000',  U'\x02c6b',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02c72',  U'\x00000',  U'\x00000',  U'\x02c75',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02c80',  U'\x00000',  U'\x02c82',  U'\x00000',
+  U'\x02c84',  U'\x00000',  U'\x02c86',  U'\x00000',  U'\x02c88',  U'\x00000',  U'\x02c8a',
+  U'\x00000',  U'\x02c8c',  U'\x00000',  U'\x02c8e',  U'\x00000',  U'\x02c90',  U'\x00000',
+  U'\x02c92',  U'\x00000',  U'\x02c94',  U'\x00000',  U'\x02c96',  U'\x00000',  U'\x02c98',
+  U'\x00000',  U'\x02c9a',  U'\x00000',  U'\x02c9c',  U'\x00000',  U'\x02c9e',  U'\x00000',
+  U'\x02ca0',  U'\x00000',  U'\x02ca2',  U'\x00000',  U'\x02ca4',  U'\x00000',  U'\x02ca6',
+  U'\x00000',  U'\x02ca8',  U'\x00000',  U'\x02caa',  U'\x00000',  U'\x02cac',  U'\x00000',
+  U'\x02cae',  U'\x00000',  U'\x02cb0',  U'\x00000',  U'\x02cb2',  U'\x00000',  U'\x02cb4',
+  U'\x00000',  U'\x02cb6',  U'\x00000',  U'\x02cb8',  U'\x00000',  U'\x02cba',  U'\x00000',
+  U'\x02cbc',  U'\x00000',  U'\x02cbe',  U'\x00000',  U'\x02cc0',  U'\x00000',  U'\x02cc2',
+  U'\x00000',  U'\x02cc4',  U'\x00000',  U'\x02cc6',  U'\x00000',  U'\x02cc8',  U'\x00000',
+  U'\x02cca',  U'\x00000',  U'\x02ccc',  U'\x00000',  U'\x02cce',  U'\x00000',  U'\x02cd0',
+  U'\x00000',  U'\x02cd2',  U'\x00000',  U'\x02cd4',  U'\x00000',  U'\x02cd6',  U'\x00000',
+  U'\x02cd8',  U'\x00000',  U'\x02cda',  U'\x00000',  U'\x02cdc',  U'\x00000',  U'\x02cde',
+  U'\x00000',  U'\x02ce0',  U'\x00000',  U'\x02ce2',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02ceb',  U'\x00000',
+  U'\x02ced',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x02cf2'
+};
+
+static constexpr const char32_t UPPER_CASE_0x02d[]
+{
+  U'\x0002d',
+  U'\x010a0',  U'\x010a1',  U'\x010a2',  U'\x010a3',  U'\x010a4',  U'\x010a5',  U'\x010a6',
+  U'\x010a7',  U'\x010a8',  U'\x010a9',  U'\x010aa',  U'\x010ab',  U'\x010ac',  U'\x010ad',
+  U'\x010ae',  U'\x010af',  U'\x010b0',  U'\x010b1',  U'\x010b2',  U'\x010b3',  U'\x010b4',
+  U'\x010b5',  U'\x010b6',  U'\x010b7',  U'\x010b8',  U'\x010b9',  U'\x010ba',  U'\x010bb',
+  U'\x010bc',  U'\x010bd',  U'\x010be',  U'\x010bf',  U'\x010c0',  U'\x010c1',  U'\x010c2',
+  U'\x010c3',  U'\x010c4',  U'\x010c5',  U'\x00000',  U'\x010c7',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x010cd'
+};
+
+static constexpr const char32_t UPPER_CASE_0x0a6[]
+{
+  U'\x0009b',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x0a640',  U'\x00000',  U'\x0a642',  U'\x00000',  U'\x0a644',
+  U'\x00000',  U'\x0a646',  U'\x00000',  U'\x0a648',  U'\x00000',  U'\x0a64a',  U'\x00000',
+  U'\x0a64c',  U'\x00000',  U'\x0a64e',  U'\x00000',  U'\x0a650',  U'\x00000',  U'\x0a652',
+  U'\x00000',  U'\x0a654',  U'\x00000',  U'\x0a656',  U'\x00000',  U'\x0a658',  U'\x00000',
+  U'\x0a65a',  U'\x00000',  U'\x0a65c',  U'\x00000',  U'\x0a65e',  U'\x00000',  U'\x0a660',
+  U'\x00000',  U'\x0a662',  U'\x00000',  U'\x0a664',  U'\x00000',  U'\x0a666',  U'\x00000',
+  U'\x0a668',  U'\x00000',  U'\x0a66a',  U'\x00000',  U'\x0a66c',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a680',  U'\x00000',  U'\x0a682',  U'\x00000',
+  U'\x0a684',  U'\x00000',  U'\x0a686',  U'\x00000',  U'\x0a688',  U'\x00000',  U'\x0a68a',
+  U'\x00000',  U'\x0a68c',  U'\x00000',  U'\x0a68e',  U'\x00000',  U'\x0a690',  U'\x00000',
+  U'\x0a692',  U'\x00000',  U'\x0a694',  U'\x00000',  U'\x0a696',  U'\x00000',  U'\x0a698',
+  U'\x00000',  U'\x0a69a'
+};
+
+static constexpr const char32_t UPPER_CASE_0x0a7[]
+{
+  U'\x000f6',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x0a722',  U'\x00000',  U'\x0a724',  U'\x00000',  U'\x0a726',  U'\x00000',  U'\x0a728',
+  U'\x00000',  U'\x0a72a',  U'\x00000',  U'\x0a72c',  U'\x00000',  U'\x0a72e',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x0a732',  U'\x00000',  U'\x0a734',  U'\x00000',  U'\x0a736',
+  U'\x00000',  U'\x0a738',  U'\x00000',  U'\x0a73a',  U'\x00000',  U'\x0a73c',  U'\x00000',
+  U'\x0a73e',  U'\x00000',  U'\x0a740',  U'\x00000',  U'\x0a742',  U'\x00000',  U'\x0a744',
+  U'\x00000',  U'\x0a746',  U'\x00000',  U'\x0a748',  U'\x00000',  U'\x0a74a',  U'\x00000',
+  U'\x0a74c',  U'\x00000',  U'\x0a74e',  U'\x00000',  U'\x0a750',  U'\x00000',  U'\x0a752',
+  U'\x00000',  U'\x0a754',  U'\x00000',  U'\x0a756',  U'\x00000',  U'\x0a758',  U'\x00000',
+  U'\x0a75a',  U'\x00000',  U'\x0a75c',  U'\x00000',  U'\x0a75e',  U'\x00000',  U'\x0a760',
+  U'\x00000',  U'\x0a762',  U'\x00000',  U'\x0a764',  U'\x00000',  U'\x0a766',  U'\x00000',
+  U'\x0a768',  U'\x00000',  U'\x0a76a',  U'\x00000',  U'\x0a76c',  U'\x00000',  U'\x0a76e',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a779',  U'\x00000',  U'\x0a77b',  U'\x00000',
+  U'\x00000',  U'\x0a77e',  U'\x00000',  U'\x0a780',  U'\x00000',  U'\x0a782',  U'\x00000',
+  U'\x0a784',  U'\x00000',  U'\x0a786',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x0a78b',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a790',  U'\x00000',
+  U'\x0a792',  U'\x0a7c4',  U'\x00000',  U'\x00000',  U'\x0a796',  U'\x00000',  U'\x0a798',
+  U'\x00000',  U'\x0a79a',  U'\x00000',  U'\x0a79c',  U'\x00000',  U'\x0a79e',  U'\x00000',
+  U'\x0a7a0',  U'\x00000',  U'\x0a7a2',  U'\x00000',  U'\x0a7a4',  U'\x00000',  U'\x0a7a6',
+  U'\x00000',  U'\x0a7a8',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a7b4',
+  U'\x00000',  U'\x0a7b6',  U'\x00000',  U'\x0a7b8',  U'\x00000',  U'\x0a7ba',  U'\x00000',
+  U'\x0a7bc',  U'\x00000',  U'\x0a7be',  U'\x00000',  U'\x0a7c0',  U'\x00000',  U'\x0a7c2',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a7c7',  U'\x00000',  U'\x0a7c9',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a7d0',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a7d6',  U'\x00000',
+  U'\x0a7d8',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x0a7f5'
+};
+
+static constexpr const char32_t UPPER_CASE_0x0ab[]
+{
+  U'\x000bf',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x0a7b3',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x013a0',  U'\x013a1',  U'\x013a2',  U'\x013a3',  U'\x013a4',  U'\x013a5',  U'\x013a6',
+  U'\x013a7',  U'\x013a8',  U'\x013a9',  U'\x013aa',  U'\x013ab',  U'\x013ac',  U'\x013ad',
+  U'\x013ae',  U'\x013af',  U'\x013b0',  U'\x013b1',  U'\x013b2',  U'\x013b3',  U'\x013b4',
+  U'\x013b5',  U'\x013b6',  U'\x013b7',  U'\x013b8',  U'\x013b9',  U'\x013ba',  U'\x013bb',
+  U'\x013bc',  U'\x013bd',  U'\x013be',  U'\x013bf',  U'\x013c0',  U'\x013c1',  U'\x013c2',
+  U'\x013c3',  U'\x013c4',  U'\x013c5',  U'\x013c6',  U'\x013c7',  U'\x013c8',  U'\x013c9',
+  U'\x013ca',  U'\x013cb',  U'\x013cc',  U'\x013cd',  U'\x013ce',  U'\x013cf',  U'\x013d0',
+  U'\x013d1',  U'\x013d2',  U'\x013d3',  U'\x013d4',  U'\x013d5',  U'\x013d6',  U'\x013d7',
+  U'\x013d8',  U'\x013d9',  U'\x013da',  U'\x013db',  U'\x013dc',  U'\x013dd',  U'\x013de',
+  U'\x013df',  U'\x013e0',  U'\x013e1',  U'\x013e2',  U'\x013e3',  U'\x013e4',  U'\x013e5',
+  U'\x013e6',  U'\x013e7',  U'\x013e8',  U'\x013e9',  U'\x013ea',  U'\x013eb',  U'\x013ec',
+  U'\x013ed',  U'\x013ee',  U'\x013ef'
+};
+
+static constexpr const char32_t UPPER_CASE_0x0ff[]
+{
+  U'\x0005a',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x0ff21',  U'\x0ff22',  U'\x0ff23',  U'\x0ff24',  U'\x0ff25',
+  U'\x0ff26',  U'\x0ff27',  U'\x0ff28',  U'\x0ff29',  U'\x0ff2a',  U'\x0ff2b',  U'\x0ff2c',
+  U'\x0ff2d',  U'\x0ff2e',  U'\x0ff2f',  U'\x0ff30',  U'\x0ff31',  U'\x0ff32',  U'\x0ff33',
+  U'\x0ff34',  U'\x0ff35',  U'\x0ff36',  U'\x0ff37',  U'\x0ff38',  U'\x0ff39',  U'\x0ff3a'
+};
+
+static constexpr const char32_t UPPER_CASE_0x104[]
+{
+  U'\x000fb',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x10400',  U'\x10401',
+  U'\x10402',  U'\x10403',  U'\x10404',  U'\x10405',  U'\x10406',  U'\x10407',  U'\x10408',
+  U'\x10409',  U'\x1040a',  U'\x1040b',  U'\x1040c',  U'\x1040d',  U'\x1040e',  U'\x1040f',
+  U'\x10410',  U'\x10411',  U'\x10412',  U'\x10413',  U'\x10414',  U'\x10415',  U'\x10416',
+  U'\x10417',  U'\x10418',  U'\x10419',  U'\x1041a',  U'\x1041b',  U'\x1041c',  U'\x1041d',
+  U'\x1041e',  U'\x1041f',  U'\x10420',  U'\x10421',  U'\x10422',  U'\x10423',  U'\x10424',
+  U'\x10425',  U'\x10426',  U'\x10427',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x104b0',
+  U'\x104b1',  U'\x104b2',  U'\x104b3',  U'\x104b4',  U'\x104b5',  U'\x104b6',  U'\x104b7',
+  U'\x104b8',  U'\x104b9',  U'\x104ba',  U'\x104bb',  U'\x104bc',  U'\x104bd',  U'\x104be',
+  U'\x104bf',  U'\x104c0',  U'\x104c1',  U'\x104c2',  U'\x104c3',  U'\x104c4',  U'\x104c5',
+  U'\x104c6',  U'\x104c7',  U'\x104c8',  U'\x104c9',  U'\x104ca',  U'\x104cb',  U'\x104cc',
+  U'\x104cd',  U'\x104ce',  U'\x104cf',  U'\x104d0',  U'\x104d1',  U'\x104d2',  U'\x104d3'
+};
+
+static constexpr const char32_t UPPER_CASE_0x105[]
+{
+  U'\x000bc',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x10570',  U'\x10571',  U'\x10572',
+  U'\x10573',  U'\x10574',  U'\x10575',  U'\x10576',  U'\x10577',  U'\x10578',  U'\x10579',
+  U'\x1057a',  U'\x00000',  U'\x1057c',  U'\x1057d',  U'\x1057e',  U'\x1057f',  U'\x10580',
+  U'\x10581',  U'\x10582',  U'\x10583',  U'\x10584',  U'\x10585',  U'\x10586',  U'\x10587',
+  U'\x10588',  U'\x10589',  U'\x1058a',  U'\x00000',  U'\x1058c',  U'\x1058d',  U'\x1058e',
+  U'\x1058f',  U'\x10590',  U'\x10591',  U'\x10592',  U'\x00000',  U'\x10594',  U'\x10595'
+};
+
+static constexpr const char32_t UPPER_CASE_0x10c[]
+{
+  U'\x000f2',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x10c80',  U'\x10c81',  U'\x10c82',  U'\x10c83',
+  U'\x10c84',  U'\x10c85',  U'\x10c86',  U'\x10c87',  U'\x10c88',  U'\x10c89',  U'\x10c8a',
+  U'\x10c8b',  U'\x10c8c',  U'\x10c8d',  U'\x10c8e',  U'\x10c8f',  U'\x10c90',  U'\x10c91',
+  U'\x10c92',  U'\x10c93',  U'\x10c94',  U'\x10c95',  U'\x10c96',  U'\x10c97',  U'\x10c98',
+  U'\x10c99',  U'\x10c9a',  U'\x10c9b',  U'\x10c9c',  U'\x10c9d',  U'\x10c9e',  U'\x10c9f',
+  U'\x10ca0',  U'\x10ca1',  U'\x10ca2',  U'\x10ca3',  U'\x10ca4',  U'\x10ca5',  U'\x10ca6',
+  U'\x10ca7',  U'\x10ca8',  U'\x10ca9',  U'\x10caa',  U'\x10cab',  U'\x10cac',  U'\x10cad',
+  U'\x10cae',  U'\x10caf',  U'\x10cb0',  U'\x10cb1',  U'\x10cb2'
+};
+
+static constexpr const char32_t UPPER_CASE_0x118[]
+{
+  U'\x000df',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x118a0',  U'\x118a1',  U'\x118a2',  U'\x118a3',
+  U'\x118a4',  U'\x118a5',  U'\x118a6',  U'\x118a7',  U'\x118a8',  U'\x118a9',  U'\x118aa',
+  U'\x118ab',  U'\x118ac',  U'\x118ad',  U'\x118ae',  U'\x118af',  U'\x118b0',  U'\x118b1',
+  U'\x118b2',  U'\x118b3',  U'\x118b4',  U'\x118b5',  U'\x118b6',  U'\x118b7',  U'\x118b8',
+  U'\x118b9',  U'\x118ba',  U'\x118bb',  U'\x118bc',  U'\x118bd',  U'\x118be',  U'\x118bf'
+};
+
+static constexpr const char32_t UPPER_CASE_0x16e[]
+{
+  U'\x0007f',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x16e40',  U'\x16e41',
+  U'\x16e42',  U'\x16e43',  U'\x16e44',  U'\x16e45',  U'\x16e46',  U'\x16e47',  U'\x16e48',
+  U'\x16e49',  U'\x16e4a',  U'\x16e4b',  U'\x16e4c',  U'\x16e4d',  U'\x16e4e',  U'\x16e4f',
+  U'\x16e50',  U'\x16e51',  U'\x16e52',  U'\x16e53',  U'\x16e54',  U'\x16e55',  U'\x16e56',
+  U'\x16e57',  U'\x16e58',  U'\x16e59',  U'\x16e5a',  U'\x16e5b',  U'\x16e5c',  U'\x16e5d',
+  U'\x16e5e',  U'\x16e5f'
+};
+
+static constexpr const char32_t UPPER_CASE_0x1e9[]
+{
+  U'\x00043',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',
+  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x00000',  U'\x1e900',
+  U'\x1e901',  U'\x1e902',  U'\x1e903',  U'\x1e904',  U'\x1e905',  U'\x1e906',  U'\x1e907',
+  U'\x1e908',  U'\x1e909',  U'\x1e90a',  U'\x1e90b',  U'\x1e90c',  U'\x1e90d',  U'\x1e90e',
+  U'\x1e90f',  U'\x1e910',  U'\x1e911',  U'\x1e912',  U'\x1e913',  U'\x1e914',  U'\x1e915',
+  U'\x1e916',  U'\x1e917',  U'\x1e918',  U'\x1e919',  U'\x1e91a',  U'\x1e91b',  U'\x1e91c',
+  U'\x1e91d',  U'\x1e91e',  U'\x1e91f',  U'\x1e920',  U'\x1e921'
+};
+
+static constexpr const char32_t * const UPPER_CASE_INDEX[]
+{
+  UPPER_CASE_0x000,  UPPER_CASE_0x001,  UPPER_CASE_0x002,  UPPER_CASE_0x003,  UPPER_CASE_0x004,
+  UPPER_CASE_0x005,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  UPPER_CASE_0x010,  0x0,  0x0,  UPPER_CASE_0x013,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  UPPER_CASE_0x01c,  UPPER_CASE_0x01d,
+  UPPER_CASE_0x01e,  UPPER_CASE_0x01f,  0x0,  UPPER_CASE_0x021,  0x0,
+  0x0,  UPPER_CASE_0x024,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  UPPER_CASE_0x02c,
+  UPPER_CASE_0x02d,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  UPPER_CASE_0x0a6,  UPPER_CASE_0x0a7,  0x0,  0x0,
+  0x0,  UPPER_CASE_0x0ab,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  UPPER_CASE_0x0ff,  0x0,  0x0,  0x0,  0x0,
+  UPPER_CASE_0x104,  UPPER_CASE_0x105,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  UPPER_CASE_0x10c,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  UPPER_CASE_0x118,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  UPPER_CASE_0x16e,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  0x0,
+  0x0,  0x0,  0x0,  0x0,  UPPER_CASE_0x1e9
+};
+
 // clang-format on
 
-static constexpr char32_t MAX_FOLD_HIGH_BYTES = (sizeof(FOLDCASE_INDEX) / sizeof(char32_t*)) - 1;
+static constexpr const char32_t MAX_FOLD_HIGH_BYTES =
+    (sizeof(FOLDCASE_INDEX) / sizeof(char32_t*)) - 1;
 
 /*!
  * \brief Folds the case of the given Unicode (32-bit) character
@@ -3155,7 +4969,6 @@ char32_t FoldCaseChar(const char32_t c)
   const char32_t high_bytes = c >> 8;
   if (high_bytes > MAX_FOLD_HIGH_BYTES)
     return c;
-
   const char32_t* table = FOLDCASE_INDEX[high_bytes];
   if (table == 0) // Not case folded
     return c;
@@ -3173,3470 +4986,54 @@ char32_t FoldCaseChar(const char32_t c)
   return foldedChar;
 }
 
-class CaseMap
-{
-public:
-  char32_t codepoint;
-  char32_t upperCaseValue;
-  char32_t lowerCaseValue;
-  char32_t titleCaseValue;
-
-  CaseMap(char32_t p_codepoint,
-          char32_t p_upperCaseValue,
-          char32_t p_lowerCaseValue,
-          char32_t p_titleCaseValue)
-    : codepoint(p_codepoint),
-      upperCaseValue(p_upperCaseValue),
-      lowerCaseValue(p_lowerCaseValue),
-      titleCaseValue(p_titleCaseValue)
-  {
-  }
-
-  CaseMap() : codepoint(0), upperCaseValue(0), lowerCaseValue(0), titleCaseValue(0) {}
-
-  std::string print()
-  {
-    std::stringstream ss;
-    std::cout << std::hex << std::noshowbase // manually show the 0x prefix
-              << std::internal // fill between the prefix and the number
-              << std::setfill('0'); // fill with 0s
-
-    if (upperCaseValue > 0x0)
-    {
-      ss << "CaseMap(U'\\x" << std::setw(5) << std::hex << std::noshowbase << std::internal
-         << std::setfill('0') << codepoint << "', "
-         << "U'\\x" << std::setw(5) << std::hex << upperCaseValue << "', "
-         << "U'\\x" << std::setw(5) << std::hex << lowerCaseValue << "', "
-         << "U'\\x" << std::setw(5) << std::hex << titleCaseValue << "')";
-    }
-    else
-    {
-      ss << "CaseMap()";
-    }
-    return ss.str();
-  }
-};
-
-/*
-   * CaseMap is similar to FoldCase. They could be combined into one table.
-   *
-   * The Data for Case Mapping (ToLower, ToUpper and as-yet unused Title-Case)
-   * comes, like the FoldCase data, from Unicode.org. The motivations for
-   * using this ar:
-   *
-   * - UTF-8 ToLower/ToUpper produces poor results when more than one byte
-   *   is required to represent a codepoint (character).
-   *
-   * - StringUtils was using C++ builtin tolower/toupper for UTF8, but
-   *   a custom table for wstring which m be common with an earlier
-   *   version from Unicode.org.
-   *
-   * - Since the length of wchar_t varies (Windows 16-bit and everywhere else 32-bit)
-   *   it seems that using uchar32string is a better option, since it is the same on all
-   *   platforms.
-   *
-   * ToLower/ToUpper is Locale dependent. However, the vast majority of
-   * codepoints (characters) are NOT Locale dependent. Unicode.org refers
-   * to to Simple and Full case mapping. Simple case mapping ignores, or largely
-   * ignores Locale. Full case mapping, like full case folding takes into
-   * account context and locale. Full case mapping can result in the number
-   * of codepoints in a string changing (even Simple case mapping can change
-   * the number of code-units in a string (ie: each byte of a multibyte utf8
-   * character is a one-byte code-unit).
-   *
-   * As stated before, the vast majority of case mapped characters do not
-   * take Locale into account. These are defined in the file
-   * xbmc/utils/unicode_tools/CaseFolding.txt. The Full Case Mapping
-   * characters and the rules for handling them come from the much smaller
-   * xbmc/utils/unicode_tools/SpecialCasing.txt. For now, this file is not
-   * used, but serves as documentation and for reference.
-   */
-
-// clang-format off
-static const CaseMap T_CASEMAP_0x0000[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x00041', U'\x00000', U'\x00061', U'\x00000'),
-    CaseMap(U'\x00042', U'\x00000', U'\x00062', U'\x00000'),
-    CaseMap(U'\x00043', U'\x00000', U'\x00063', U'\x00000'),
-    CaseMap(U'\x00044', U'\x00000', U'\x00064', U'\x00000'),
-    CaseMap(U'\x00045', U'\x00000', U'\x00065', U'\x00000'),
-    CaseMap(U'\x00046', U'\x00000', U'\x00066', U'\x00000'),
-    CaseMap(U'\x00047', U'\x00000', U'\x00067', U'\x00000'),
-    CaseMap(U'\x00048', U'\x00000', U'\x00068', U'\x00000'),
-    CaseMap(U'\x00049', U'\x00000', U'\x00069', U'\x00000'),
-    CaseMap(U'\x0004a', U'\x00000', U'\x0006a', U'\x00000'),
-    CaseMap(U'\x0004b', U'\x00000', U'\x0006b', U'\x00000'),
-    CaseMap(U'\x0004c', U'\x00000', U'\x0006c', U'\x00000'),
-    CaseMap(U'\x0004d', U'\x00000', U'\x0006d', U'\x00000'),
-    CaseMap(U'\x0004e', U'\x00000', U'\x0006e', U'\x00000'),
-    CaseMap(U'\x0004f', U'\x00000', U'\x0006f', U'\x00000'),
-    CaseMap(U'\x00050', U'\x00000', U'\x00070', U'\x00000'),
-    CaseMap(U'\x00051', U'\x00000', U'\x00071', U'\x00000'),
-    CaseMap(U'\x00052', U'\x00000', U'\x00072', U'\x00000'),
-    CaseMap(U'\x00053', U'\x00000', U'\x00073', U'\x00000'),
-    CaseMap(U'\x00054', U'\x00000', U'\x00074', U'\x00000'),
-    CaseMap(U'\x00055', U'\x00000', U'\x00075', U'\x00000'),
-    CaseMap(U'\x00056', U'\x00000', U'\x00076', U'\x00000'),
-    CaseMap(U'\x00057', U'\x00000', U'\x00077', U'\x00000'),
-    CaseMap(U'\x00058', U'\x00000', U'\x00078', U'\x00000'),
-    CaseMap(U'\x00059', U'\x00000', U'\x00079', U'\x00000'),
-    CaseMap(U'\x0005a', U'\x00000', U'\x0007a', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x00061', U'\x00041', U'\x00000', U'\x00041'),
-    CaseMap(U'\x00062', U'\x00042', U'\x00000', U'\x00042'),
-    CaseMap(U'\x00063', U'\x00043', U'\x00000', U'\x00043'),
-    CaseMap(U'\x00064', U'\x00044', U'\x00000', U'\x00044'),
-    CaseMap(U'\x00065', U'\x00045', U'\x00000', U'\x00045'),
-    CaseMap(U'\x00066', U'\x00046', U'\x00000', U'\x00046'),
-    CaseMap(U'\x00067', U'\x00047', U'\x00000', U'\x00047'),
-    CaseMap(U'\x00068', U'\x00048', U'\x00000', U'\x00048'),
-    CaseMap(U'\x00069', U'\x00049', U'\x00000', U'\x00049'),
-    CaseMap(U'\x0006a', U'\x0004a', U'\x00000', U'\x0004a'),
-    CaseMap(U'\x0006b', U'\x0004b', U'\x00000', U'\x0004b'),
-    CaseMap(U'\x0006c', U'\x0004c', U'\x00000', U'\x0004c'),
-    CaseMap(U'\x0006d', U'\x0004d', U'\x00000', U'\x0004d'),
-    CaseMap(U'\x0006e', U'\x0004e', U'\x00000', U'\x0004e'),
-    CaseMap(U'\x0006f', U'\x0004f', U'\x00000', U'\x0004f'),
-    CaseMap(U'\x00070', U'\x00050', U'\x00000', U'\x00050'),
-    CaseMap(U'\x00071', U'\x00051', U'\x00000', U'\x00051'),
-    CaseMap(U'\x00072', U'\x00052', U'\x00000', U'\x00052'),
-    CaseMap(U'\x00073', U'\x00053', U'\x00000', U'\x00053'),
-    CaseMap(U'\x00074', U'\x00054', U'\x00000', U'\x00054'),
-    CaseMap(U'\x00075', U'\x00055', U'\x00000', U'\x00055'),
-    CaseMap(U'\x00076', U'\x00056', U'\x00000', U'\x00056'),
-    CaseMap(U'\x00077', U'\x00057', U'\x00000', U'\x00057'),
-    CaseMap(U'\x00078', U'\x00058', U'\x00000', U'\x00058'),
-    CaseMap(U'\x00079', U'\x00059', U'\x00000', U'\x00059'),
-    CaseMap(U'\x0007a', U'\x0005a', U'\x00000', U'\x0005a'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x000b5', U'\x0039c', U'\x00000', U'\x0039c'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x000c0', U'\x00000', U'\x000e0', U'\x00000'),
-    CaseMap(U'\x000c1', U'\x00000', U'\x000e1', U'\x00000'),
-    CaseMap(U'\x000c2', U'\x00000', U'\x000e2', U'\x00000'),
-    CaseMap(U'\x000c3', U'\x00000', U'\x000e3', U'\x00000'),
-    CaseMap(U'\x000c4', U'\x00000', U'\x000e4', U'\x00000'),
-    CaseMap(U'\x000c5', U'\x00000', U'\x000e5', U'\x00000'),
-    CaseMap(U'\x000c6', U'\x00000', U'\x000e6', U'\x00000'),
-    CaseMap(U'\x000c7', U'\x00000', U'\x000e7', U'\x00000'),
-    CaseMap(U'\x000c8', U'\x00000', U'\x000e8', U'\x00000'),
-    CaseMap(U'\x000c9', U'\x00000', U'\x000e9', U'\x00000'),
-    CaseMap(U'\x000ca', U'\x00000', U'\x000ea', U'\x00000'),
-    CaseMap(U'\x000cb', U'\x00000', U'\x000eb', U'\x00000'),
-    CaseMap(U'\x000cc', U'\x00000', U'\x000ec', U'\x00000'),
-    CaseMap(U'\x000cd', U'\x00000', U'\x000ed', U'\x00000'),
-    CaseMap(U'\x000ce', U'\x00000', U'\x000ee', U'\x00000'),
-    CaseMap(U'\x000cf', U'\x00000', U'\x000ef', U'\x00000'),
-    CaseMap(U'\x000d0', U'\x00000', U'\x000f0', U'\x00000'),
-    CaseMap(U'\x000d1', U'\x00000', U'\x000f1', U'\x00000'),
-    CaseMap(U'\x000d2', U'\x00000', U'\x000f2', U'\x00000'),
-    CaseMap(U'\x000d3', U'\x00000', U'\x000f3', U'\x00000'),
-    CaseMap(U'\x000d4', U'\x00000', U'\x000f4', U'\x00000'),
-    CaseMap(U'\x000d5', U'\x00000', U'\x000f5', U'\x00000'),
-    CaseMap(U'\x000d6', U'\x00000', U'\x000f6', U'\x00000'), CaseMap(),
-    CaseMap(U'\x000d8', U'\x00000', U'\x000f8', U'\x00000'),
-    CaseMap(U'\x000d9', U'\x00000', U'\x000f9', U'\x00000'),
-    CaseMap(U'\x000da', U'\x00000', U'\x000fa', U'\x00000'),
-    CaseMap(U'\x000db', U'\x00000', U'\x000fb', U'\x00000'),
-    CaseMap(U'\x000dc', U'\x00000', U'\x000fc', U'\x00000'),
-    CaseMap(U'\x000dd', U'\x00000', U'\x000fd', U'\x00000'),
-    CaseMap(U'\x000de', U'\x00000', U'\x000fe', U'\x00000'), CaseMap(),
-    CaseMap(U'\x000e0', U'\x000c0', U'\x00000', U'\x000c0'),
-    CaseMap(U'\x000e1', U'\x000c1', U'\x00000', U'\x000c1'),
-    CaseMap(U'\x000e2', U'\x000c2', U'\x00000', U'\x000c2'),
-    CaseMap(U'\x000e3', U'\x000c3', U'\x00000', U'\x000c3'),
-    CaseMap(U'\x000e4', U'\x000c4', U'\x00000', U'\x000c4'),
-    CaseMap(U'\x000e5', U'\x000c5', U'\x00000', U'\x000c5'),
-    CaseMap(U'\x000e6', U'\x000c6', U'\x00000', U'\x000c6'),
-    CaseMap(U'\x000e7', U'\x000c7', U'\x00000', U'\x000c7'),
-    CaseMap(U'\x000e8', U'\x000c8', U'\x00000', U'\x000c8'),
-    CaseMap(U'\x000e9', U'\x000c9', U'\x00000', U'\x000c9'),
-    CaseMap(U'\x000ea', U'\x000ca', U'\x00000', U'\x000ca'),
-    CaseMap(U'\x000eb', U'\x000cb', U'\x00000', U'\x000cb'),
-    CaseMap(U'\x000ec', U'\x000cc', U'\x00000', U'\x000cc'),
-    CaseMap(U'\x000ed', U'\x000cd', U'\x00000', U'\x000cd'),
-    CaseMap(U'\x000ee', U'\x000ce', U'\x00000', U'\x000ce'),
-    CaseMap(U'\x000ef', U'\x000cf', U'\x00000', U'\x000cf'),
-    CaseMap(U'\x000f0', U'\x000d0', U'\x00000', U'\x000d0'),
-    CaseMap(U'\x000f1', U'\x000d1', U'\x00000', U'\x000d1'),
-    CaseMap(U'\x000f2', U'\x000d2', U'\x00000', U'\x000d2'),
-    CaseMap(U'\x000f3', U'\x000d3', U'\x00000', U'\x000d3'),
-    CaseMap(U'\x000f4', U'\x000d4', U'\x00000', U'\x000d4'),
-    CaseMap(U'\x000f5', U'\x000d5', U'\x00000', U'\x000d5'),
-    CaseMap(U'\x000f6', U'\x000d6', U'\x00000', U'\x000d6'), CaseMap(),
-    CaseMap(U'\x000f8', U'\x000d8', U'\x00000', U'\x000d8'),
-    CaseMap(U'\x000f9', U'\x000d9', U'\x00000', U'\x000d9'),
-    CaseMap(U'\x000fa', U'\x000da', U'\x00000', U'\x000da'),
-    CaseMap(U'\x000fb', U'\x000db', U'\x00000', U'\x000db'),
-    CaseMap(U'\x000fc', U'\x000dc', U'\x00000', U'\x000dc'),
-    CaseMap(U'\x000fd', U'\x000dd', U'\x00000', U'\x000dd'),
-    CaseMap(U'\x000fe', U'\x000de', U'\x00000', U'\x000de'),
-    CaseMap(U'\x000ff', U'\x00178', U'\x00000', U'\x00178')};
-
-static const std::vector<CaseMap> CASEMAP_0x0000(
-    T_CASEMAP_0x0000, T_CASEMAP_0x0000 + (sizeof(T_CASEMAP_0x0000) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0001[]{CaseMap(U'\x00100', U'\x00000', U'\x00101', U'\x00000'),
-    CaseMap(U'\x00101', U'\x00100', U'\x00000', U'\x00100'),
-    CaseMap(U'\x00102', U'\x00000', U'\x00103', U'\x00000'),
-    CaseMap(U'\x00103', U'\x00102', U'\x00000', U'\x00102'),
-    CaseMap(U'\x00104', U'\x00000', U'\x00105', U'\x00000'),
-    CaseMap(U'\x00105', U'\x00104', U'\x00000', U'\x00104'),
-    CaseMap(U'\x00106', U'\x00000', U'\x00107', U'\x00000'),
-    CaseMap(U'\x00107', U'\x00106', U'\x00000', U'\x00106'),
-    CaseMap(U'\x00108', U'\x00000', U'\x00109', U'\x00000'),
-    CaseMap(U'\x00109', U'\x00108', U'\x00000', U'\x00108'),
-    CaseMap(U'\x0010a', U'\x00000', U'\x0010b', U'\x00000'),
-    CaseMap(U'\x0010b', U'\x0010a', U'\x00000', U'\x0010a'),
-    CaseMap(U'\x0010c', U'\x00000', U'\x0010d', U'\x00000'),
-    CaseMap(U'\x0010d', U'\x0010c', U'\x00000', U'\x0010c'),
-    CaseMap(U'\x0010e', U'\x00000', U'\x0010f', U'\x00000'),
-    CaseMap(U'\x0010f', U'\x0010e', U'\x00000', U'\x0010e'),
-    CaseMap(U'\x00110', U'\x00000', U'\x00111', U'\x00000'),
-    CaseMap(U'\x00111', U'\x00110', U'\x00000', U'\x00110'),
-    CaseMap(U'\x00112', U'\x00000', U'\x00113', U'\x00000'),
-    CaseMap(U'\x00113', U'\x00112', U'\x00000', U'\x00112'),
-    CaseMap(U'\x00114', U'\x00000', U'\x00115', U'\x00000'),
-    CaseMap(U'\x00115', U'\x00114', U'\x00000', U'\x00114'),
-    CaseMap(U'\x00116', U'\x00000', U'\x00117', U'\x00000'),
-    CaseMap(U'\x00117', U'\x00116', U'\x00000', U'\x00116'),
-    CaseMap(U'\x00118', U'\x00000', U'\x00119', U'\x00000'),
-    CaseMap(U'\x00119', U'\x00118', U'\x00000', U'\x00118'),
-    CaseMap(U'\x0011a', U'\x00000', U'\x0011b', U'\x00000'),
-    CaseMap(U'\x0011b', U'\x0011a', U'\x00000', U'\x0011a'),
-    CaseMap(U'\x0011c', U'\x00000', U'\x0011d', U'\x00000'),
-    CaseMap(U'\x0011d', U'\x0011c', U'\x00000', U'\x0011c'),
-    CaseMap(U'\x0011e', U'\x00000', U'\x0011f', U'\x00000'),
-    CaseMap(U'\x0011f', U'\x0011e', U'\x00000', U'\x0011e'),
-    CaseMap(U'\x00120', U'\x00000', U'\x00121', U'\x00000'),
-    CaseMap(U'\x00121', U'\x00120', U'\x00000', U'\x00120'),
-    CaseMap(U'\x00122', U'\x00000', U'\x00123', U'\x00000'),
-    CaseMap(U'\x00123', U'\x00122', U'\x00000', U'\x00122'),
-    CaseMap(U'\x00124', U'\x00000', U'\x00125', U'\x00000'),
-    CaseMap(U'\x00125', U'\x00124', U'\x00000', U'\x00124'),
-    CaseMap(U'\x00126', U'\x00000', U'\x00127', U'\x00000'),
-    CaseMap(U'\x00127', U'\x00126', U'\x00000', U'\x00126'),
-    CaseMap(U'\x00128', U'\x00000', U'\x00129', U'\x00000'),
-    CaseMap(U'\x00129', U'\x00128', U'\x00000', U'\x00128'),
-    CaseMap(U'\x0012a', U'\x00000', U'\x0012b', U'\x00000'),
-    CaseMap(U'\x0012b', U'\x0012a', U'\x00000', U'\x0012a'),
-    CaseMap(U'\x0012c', U'\x00000', U'\x0012d', U'\x00000'),
-    CaseMap(U'\x0012d', U'\x0012c', U'\x00000', U'\x0012c'),
-    CaseMap(U'\x0012e', U'\x00000', U'\x0012f', U'\x00000'),
-    CaseMap(U'\x0012f', U'\x0012e', U'\x00000', U'\x0012e'),
-    CaseMap(U'\x00130', U'\x00000', U'\x00069', U'\x00000'),
-    CaseMap(U'\x00131', U'\x00049', U'\x00000', U'\x00049'),
-    CaseMap(U'\x00132', U'\x00000', U'\x00133', U'\x00000'),
-    CaseMap(U'\x00133', U'\x00132', U'\x00000', U'\x00132'),
-    CaseMap(U'\x00134', U'\x00000', U'\x00135', U'\x00000'),
-    CaseMap(U'\x00135', U'\x00134', U'\x00000', U'\x00134'),
-    CaseMap(U'\x00136', U'\x00000', U'\x00137', U'\x00000'),
-    CaseMap(U'\x00137', U'\x00136', U'\x00000', U'\x00136'), CaseMap(),
-    CaseMap(U'\x00139', U'\x00000', U'\x0013a', U'\x00000'),
-    CaseMap(U'\x0013a', U'\x00139', U'\x00000', U'\x00139'),
-    CaseMap(U'\x0013b', U'\x00000', U'\x0013c', U'\x00000'),
-    CaseMap(U'\x0013c', U'\x0013b', U'\x00000', U'\x0013b'),
-    CaseMap(U'\x0013d', U'\x00000', U'\x0013e', U'\x00000'),
-    CaseMap(U'\x0013e', U'\x0013d', U'\x00000', U'\x0013d'),
-    CaseMap(U'\x0013f', U'\x00000', U'\x00140', U'\x00000'),
-    CaseMap(U'\x00140', U'\x0013f', U'\x00000', U'\x0013f'),
-    CaseMap(U'\x00141', U'\x00000', U'\x00142', U'\x00000'),
-    CaseMap(U'\x00142', U'\x00141', U'\x00000', U'\x00141'),
-    CaseMap(U'\x00143', U'\x00000', U'\x00144', U'\x00000'),
-    CaseMap(U'\x00144', U'\x00143', U'\x00000', U'\x00143'),
-    CaseMap(U'\x00145', U'\x00000', U'\x00146', U'\x00000'),
-    CaseMap(U'\x00146', U'\x00145', U'\x00000', U'\x00145'),
-    CaseMap(U'\x00147', U'\x00000', U'\x00148', U'\x00000'),
-    CaseMap(U'\x00148', U'\x00147', U'\x00000', U'\x00147'), CaseMap(),
-    CaseMap(U'\x0014a', U'\x00000', U'\x0014b', U'\x00000'),
-    CaseMap(U'\x0014b', U'\x0014a', U'\x00000', U'\x0014a'),
-    CaseMap(U'\x0014c', U'\x00000', U'\x0014d', U'\x00000'),
-    CaseMap(U'\x0014d', U'\x0014c', U'\x00000', U'\x0014c'),
-    CaseMap(U'\x0014e', U'\x00000', U'\x0014f', U'\x00000'),
-    CaseMap(U'\x0014f', U'\x0014e', U'\x00000', U'\x0014e'),
-    CaseMap(U'\x00150', U'\x00000', U'\x00151', U'\x00000'),
-    CaseMap(U'\x00151', U'\x00150', U'\x00000', U'\x00150'),
-    CaseMap(U'\x00152', U'\x00000', U'\x00153', U'\x00000'),
-    CaseMap(U'\x00153', U'\x00152', U'\x00000', U'\x00152'),
-    CaseMap(U'\x00154', U'\x00000', U'\x00155', U'\x00000'),
-    CaseMap(U'\x00155', U'\x00154', U'\x00000', U'\x00154'),
-    CaseMap(U'\x00156', U'\x00000', U'\x00157', U'\x00000'),
-    CaseMap(U'\x00157', U'\x00156', U'\x00000', U'\x00156'),
-    CaseMap(U'\x00158', U'\x00000', U'\x00159', U'\x00000'),
-    CaseMap(U'\x00159', U'\x00158', U'\x00000', U'\x00158'),
-    CaseMap(U'\x0015a', U'\x00000', U'\x0015b', U'\x00000'),
-    CaseMap(U'\x0015b', U'\x0015a', U'\x00000', U'\x0015a'),
-    CaseMap(U'\x0015c', U'\x00000', U'\x0015d', U'\x00000'),
-    CaseMap(U'\x0015d', U'\x0015c', U'\x00000', U'\x0015c'),
-    CaseMap(U'\x0015e', U'\x00000', U'\x0015f', U'\x00000'),
-    CaseMap(U'\x0015f', U'\x0015e', U'\x00000', U'\x0015e'),
-    CaseMap(U'\x00160', U'\x00000', U'\x00161', U'\x00000'),
-    CaseMap(U'\x00161', U'\x00160', U'\x00000', U'\x00160'),
-    CaseMap(U'\x00162', U'\x00000', U'\x00163', U'\x00000'),
-    CaseMap(U'\x00163', U'\x00162', U'\x00000', U'\x00162'),
-    CaseMap(U'\x00164', U'\x00000', U'\x00165', U'\x00000'),
-    CaseMap(U'\x00165', U'\x00164', U'\x00000', U'\x00164'),
-    CaseMap(U'\x00166', U'\x00000', U'\x00167', U'\x00000'),
-    CaseMap(U'\x00167', U'\x00166', U'\x00000', U'\x00166'),
-    CaseMap(U'\x00168', U'\x00000', U'\x00169', U'\x00000'),
-    CaseMap(U'\x00169', U'\x00168', U'\x00000', U'\x00168'),
-    CaseMap(U'\x0016a', U'\x00000', U'\x0016b', U'\x00000'),
-    CaseMap(U'\x0016b', U'\x0016a', U'\x00000', U'\x0016a'),
-    CaseMap(U'\x0016c', U'\x00000', U'\x0016d', U'\x00000'),
-    CaseMap(U'\x0016d', U'\x0016c', U'\x00000', U'\x0016c'),
-    CaseMap(U'\x0016e', U'\x00000', U'\x0016f', U'\x00000'),
-    CaseMap(U'\x0016f', U'\x0016e', U'\x00000', U'\x0016e'),
-    CaseMap(U'\x00170', U'\x00000', U'\x00171', U'\x00000'),
-    CaseMap(U'\x00171', U'\x00170', U'\x00000', U'\x00170'),
-    CaseMap(U'\x00172', U'\x00000', U'\x00173', U'\x00000'),
-    CaseMap(U'\x00173', U'\x00172', U'\x00000', U'\x00172'),
-    CaseMap(U'\x00174', U'\x00000', U'\x00175', U'\x00000'),
-    CaseMap(U'\x00175', U'\x00174', U'\x00000', U'\x00174'),
-    CaseMap(U'\x00176', U'\x00000', U'\x00177', U'\x00000'),
-    CaseMap(U'\x00177', U'\x00176', U'\x00000', U'\x00176'),
-    CaseMap(U'\x00178', U'\x00000', U'\x000ff', U'\x00000'),
-    CaseMap(U'\x00179', U'\x00000', U'\x0017a', U'\x00000'),
-    CaseMap(U'\x0017a', U'\x00179', U'\x00000', U'\x00179'),
-    CaseMap(U'\x0017b', U'\x00000', U'\x0017c', U'\x00000'),
-    CaseMap(U'\x0017c', U'\x0017b', U'\x00000', U'\x0017b'),
-    CaseMap(U'\x0017d', U'\x00000', U'\x0017e', U'\x00000'),
-    CaseMap(U'\x0017e', U'\x0017d', U'\x00000', U'\x0017d'),
-    CaseMap(U'\x0017f', U'\x00053', U'\x00000', U'\x00053'),
-    CaseMap(U'\x00180', U'\x00243', U'\x00000', U'\x00243'),
-    CaseMap(U'\x00181', U'\x00000', U'\x00253', U'\x00000'),
-    CaseMap(U'\x00182', U'\x00000', U'\x00183', U'\x00000'),
-    CaseMap(U'\x00183', U'\x00182', U'\x00000', U'\x00182'),
-    CaseMap(U'\x00184', U'\x00000', U'\x00185', U'\x00000'),
-    CaseMap(U'\x00185', U'\x00184', U'\x00000', U'\x00184'),
-    CaseMap(U'\x00186', U'\x00000', U'\x00254', U'\x00000'),
-    CaseMap(U'\x00187', U'\x00000', U'\x00188', U'\x00000'),
-    CaseMap(U'\x00188', U'\x00187', U'\x00000', U'\x00187'),
-    CaseMap(U'\x00189', U'\x00000', U'\x00256', U'\x00000'),
-    CaseMap(U'\x0018a', U'\x00000', U'\x00257', U'\x00000'),
-    CaseMap(U'\x0018b', U'\x00000', U'\x0018c', U'\x00000'),
-    CaseMap(U'\x0018c', U'\x0018b', U'\x00000', U'\x0018b'), CaseMap(),
-    CaseMap(U'\x0018e', U'\x00000', U'\x001dd', U'\x00000'),
-    CaseMap(U'\x0018f', U'\x00000', U'\x00259', U'\x00000'),
-    CaseMap(U'\x00190', U'\x00000', U'\x0025b', U'\x00000'),
-    CaseMap(U'\x00191', U'\x00000', U'\x00192', U'\x00000'),
-    CaseMap(U'\x00192', U'\x00191', U'\x00000', U'\x00191'),
-    CaseMap(U'\x00193', U'\x00000', U'\x00260', U'\x00000'),
-    CaseMap(U'\x00194', U'\x00000', U'\x00263', U'\x00000'),
-    CaseMap(U'\x00195', U'\x001f6', U'\x00000', U'\x001f6'),
-    CaseMap(U'\x00196', U'\x00000', U'\x00269', U'\x00000'),
-    CaseMap(U'\x00197', U'\x00000', U'\x00268', U'\x00000'),
-    CaseMap(U'\x00198', U'\x00000', U'\x00199', U'\x00000'),
-    CaseMap(U'\x00199', U'\x00198', U'\x00000', U'\x00198'),
-    CaseMap(U'\x0019a', U'\x0023d', U'\x00000', U'\x0023d'), CaseMap(),
-    CaseMap(U'\x0019c', U'\x00000', U'\x0026f', U'\x00000'),
-    CaseMap(U'\x0019d', U'\x00000', U'\x00272', U'\x00000'),
-    CaseMap(U'\x0019e', U'\x00220', U'\x00000', U'\x00220'),
-    CaseMap(U'\x0019f', U'\x00000', U'\x00275', U'\x00000'),
-    CaseMap(U'\x001a0', U'\x00000', U'\x001a1', U'\x00000'),
-    CaseMap(U'\x001a1', U'\x001a0', U'\x00000', U'\x001a0'),
-    CaseMap(U'\x001a2', U'\x00000', U'\x001a3', U'\x00000'),
-    CaseMap(U'\x001a3', U'\x001a2', U'\x00000', U'\x001a2'),
-    CaseMap(U'\x001a4', U'\x00000', U'\x001a5', U'\x00000'),
-    CaseMap(U'\x001a5', U'\x001a4', U'\x00000', U'\x001a4'),
-    CaseMap(U'\x001a6', U'\x00000', U'\x00280', U'\x00000'),
-    CaseMap(U'\x001a7', U'\x00000', U'\x001a8', U'\x00000'),
-    CaseMap(U'\x001a8', U'\x001a7', U'\x00000', U'\x001a7'),
-    CaseMap(U'\x001a9', U'\x00000', U'\x00283', U'\x00000'), CaseMap(), CaseMap(),
-    CaseMap(U'\x001ac', U'\x00000', U'\x001ad', U'\x00000'),
-    CaseMap(U'\x001ad', U'\x001ac', U'\x00000', U'\x001ac'),
-    CaseMap(U'\x001ae', U'\x00000', U'\x00288', U'\x00000'),
-    CaseMap(U'\x001af', U'\x00000', U'\x001b0', U'\x00000'),
-    CaseMap(U'\x001b0', U'\x001af', U'\x00000', U'\x001af'),
-    CaseMap(U'\x001b1', U'\x00000', U'\x0028a', U'\x00000'),
-    CaseMap(U'\x001b2', U'\x00000', U'\x0028b', U'\x00000'),
-    CaseMap(U'\x001b3', U'\x00000', U'\x001b4', U'\x00000'),
-    CaseMap(U'\x001b4', U'\x001b3', U'\x00000', U'\x001b3'),
-    CaseMap(U'\x001b5', U'\x00000', U'\x001b6', U'\x00000'),
-    CaseMap(U'\x001b6', U'\x001b5', U'\x00000', U'\x001b5'),
-    CaseMap(U'\x001b7', U'\x00000', U'\x00292', U'\x00000'),
-    CaseMap(U'\x001b8', U'\x00000', U'\x001b9', U'\x00000'),
-    CaseMap(U'\x001b9', U'\x001b8', U'\x00000', U'\x001b8'), CaseMap(), CaseMap(),
-    CaseMap(U'\x001bc', U'\x00000', U'\x001bd', U'\x00000'),
-    CaseMap(U'\x001bd', U'\x001bc', U'\x00000', U'\x001bc'), CaseMap(),
-    CaseMap(U'\x001bf', U'\x001f7', U'\x00000', U'\x001f7'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x001c4', U'\x00000', U'\x001c6', U'\x001c5'),
-    CaseMap(U'\x001c5', U'\x001c4', U'\x001c6', U'\x001c5'),
-    CaseMap(U'\x001c6', U'\x001c4', U'\x00000', U'\x001c5'),
-    CaseMap(U'\x001c7', U'\x00000', U'\x001c9', U'\x001c8'),
-    CaseMap(U'\x001c8', U'\x001c7', U'\x001c9', U'\x001c8'),
-    CaseMap(U'\x001c9', U'\x001c7', U'\x00000', U'\x001c8'),
-    CaseMap(U'\x001ca', U'\x00000', U'\x001cc', U'\x001cb'),
-    CaseMap(U'\x001cb', U'\x001ca', U'\x001cc', U'\x001cb'),
-    CaseMap(U'\x001cc', U'\x001ca', U'\x00000', U'\x001cb'),
-    CaseMap(U'\x001cd', U'\x00000', U'\x001ce', U'\x00000'),
-    CaseMap(U'\x001ce', U'\x001cd', U'\x00000', U'\x001cd'),
-    CaseMap(U'\x001cf', U'\x00000', U'\x001d0', U'\x00000'),
-    CaseMap(U'\x001d0', U'\x001cf', U'\x00000', U'\x001cf'),
-    CaseMap(U'\x001d1', U'\x00000', U'\x001d2', U'\x00000'),
-    CaseMap(U'\x001d2', U'\x001d1', U'\x00000', U'\x001d1'),
-    CaseMap(U'\x001d3', U'\x00000', U'\x001d4', U'\x00000'),
-    CaseMap(U'\x001d4', U'\x001d3', U'\x00000', U'\x001d3'),
-    CaseMap(U'\x001d5', U'\x00000', U'\x001d6', U'\x00000'),
-    CaseMap(U'\x001d6', U'\x001d5', U'\x00000', U'\x001d5'),
-    CaseMap(U'\x001d7', U'\x00000', U'\x001d8', U'\x00000'),
-    CaseMap(U'\x001d8', U'\x001d7', U'\x00000', U'\x001d7'),
-    CaseMap(U'\x001d9', U'\x00000', U'\x001da', U'\x00000'),
-    CaseMap(U'\x001da', U'\x001d9', U'\x00000', U'\x001d9'),
-    CaseMap(U'\x001db', U'\x00000', U'\x001dc', U'\x00000'),
-    CaseMap(U'\x001dc', U'\x001db', U'\x00000', U'\x001db'),
-    CaseMap(U'\x001dd', U'\x0018e', U'\x00000', U'\x0018e'),
-    CaseMap(U'\x001de', U'\x00000', U'\x001df', U'\x00000'),
-    CaseMap(U'\x001df', U'\x001de', U'\x00000', U'\x001de'),
-    CaseMap(U'\x001e0', U'\x00000', U'\x001e1', U'\x00000'),
-    CaseMap(U'\x001e1', U'\x001e0', U'\x00000', U'\x001e0'),
-    CaseMap(U'\x001e2', U'\x00000', U'\x001e3', U'\x00000'),
-    CaseMap(U'\x001e3', U'\x001e2', U'\x00000', U'\x001e2'),
-    CaseMap(U'\x001e4', U'\x00000', U'\x001e5', U'\x00000'),
-    CaseMap(U'\x001e5', U'\x001e4', U'\x00000', U'\x001e4'),
-    CaseMap(U'\x001e6', U'\x00000', U'\x001e7', U'\x00000'),
-    CaseMap(U'\x001e7', U'\x001e6', U'\x00000', U'\x001e6'),
-    CaseMap(U'\x001e8', U'\x00000', U'\x001e9', U'\x00000'),
-    CaseMap(U'\x001e9', U'\x001e8', U'\x00000', U'\x001e8'),
-    CaseMap(U'\x001ea', U'\x00000', U'\x001eb', U'\x00000'),
-    CaseMap(U'\x001eb', U'\x001ea', U'\x00000', U'\x001ea'),
-    CaseMap(U'\x001ec', U'\x00000', U'\x001ed', U'\x00000'),
-    CaseMap(U'\x001ed', U'\x001ec', U'\x00000', U'\x001ec'),
-    CaseMap(U'\x001ee', U'\x00000', U'\x001ef', U'\x00000'),
-    CaseMap(U'\x001ef', U'\x001ee', U'\x00000', U'\x001ee'), CaseMap(),
-    CaseMap(U'\x001f1', U'\x00000', U'\x001f3', U'\x001f2'),
-    CaseMap(U'\x001f2', U'\x001f1', U'\x001f3', U'\x001f2'),
-    CaseMap(U'\x001f3', U'\x001f1', U'\x00000', U'\x001f2'),
-    CaseMap(U'\x001f4', U'\x00000', U'\x001f5', U'\x00000'),
-    CaseMap(U'\x001f5', U'\x001f4', U'\x00000', U'\x001f4'),
-    CaseMap(U'\x001f6', U'\x00000', U'\x00195', U'\x00000'),
-    CaseMap(U'\x001f7', U'\x00000', U'\x001bf', U'\x00000'),
-    CaseMap(U'\x001f8', U'\x00000', U'\x001f9', U'\x00000'),
-    CaseMap(U'\x001f9', U'\x001f8', U'\x00000', U'\x001f8'),
-    CaseMap(U'\x001fa', U'\x00000', U'\x001fb', U'\x00000'),
-    CaseMap(U'\x001fb', U'\x001fa', U'\x00000', U'\x001fa'),
-    CaseMap(U'\x001fc', U'\x00000', U'\x001fd', U'\x00000'),
-    CaseMap(U'\x001fd', U'\x001fc', U'\x00000', U'\x001fc'),
-    CaseMap(U'\x001fe', U'\x00000', U'\x001ff', U'\x00000'),
-    CaseMap(U'\x001ff', U'\x001fe', U'\x00000', U'\x001fe')};
-
-static const std::vector<CaseMap> CASEMAP_0x0001(
-    T_CASEMAP_0x0001, T_CASEMAP_0x0001 + (sizeof(T_CASEMAP_0x0001) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0002[]{CaseMap(U'\x00200', U'\x00000', U'\x00201', U'\x00000'),
-    CaseMap(U'\x00201', U'\x00200', U'\x00000', U'\x00200'),
-    CaseMap(U'\x00202', U'\x00000', U'\x00203', U'\x00000'),
-    CaseMap(U'\x00203', U'\x00202', U'\x00000', U'\x00202'),
-    CaseMap(U'\x00204', U'\x00000', U'\x00205', U'\x00000'),
-    CaseMap(U'\x00205', U'\x00204', U'\x00000', U'\x00204'),
-    CaseMap(U'\x00206', U'\x00000', U'\x00207', U'\x00000'),
-    CaseMap(U'\x00207', U'\x00206', U'\x00000', U'\x00206'),
-    CaseMap(U'\x00208', U'\x00000', U'\x00209', U'\x00000'),
-    CaseMap(U'\x00209', U'\x00208', U'\x00000', U'\x00208'),
-    CaseMap(U'\x0020a', U'\x00000', U'\x0020b', U'\x00000'),
-    CaseMap(U'\x0020b', U'\x0020a', U'\x00000', U'\x0020a'),
-    CaseMap(U'\x0020c', U'\x00000', U'\x0020d', U'\x00000'),
-    CaseMap(U'\x0020d', U'\x0020c', U'\x00000', U'\x0020c'),
-    CaseMap(U'\x0020e', U'\x00000', U'\x0020f', U'\x00000'),
-    CaseMap(U'\x0020f', U'\x0020e', U'\x00000', U'\x0020e'),
-    CaseMap(U'\x00210', U'\x00000', U'\x00211', U'\x00000'),
-    CaseMap(U'\x00211', U'\x00210', U'\x00000', U'\x00210'),
-    CaseMap(U'\x00212', U'\x00000', U'\x00213', U'\x00000'),
-    CaseMap(U'\x00213', U'\x00212', U'\x00000', U'\x00212'),
-    CaseMap(U'\x00214', U'\x00000', U'\x00215', U'\x00000'),
-    CaseMap(U'\x00215', U'\x00214', U'\x00000', U'\x00214'),
-    CaseMap(U'\x00216', U'\x00000', U'\x00217', U'\x00000'),
-    CaseMap(U'\x00217', U'\x00216', U'\x00000', U'\x00216'),
-    CaseMap(U'\x00218', U'\x00000', U'\x00219', U'\x00000'),
-    CaseMap(U'\x00219', U'\x00218', U'\x00000', U'\x00218'),
-    CaseMap(U'\x0021a', U'\x00000', U'\x0021b', U'\x00000'),
-    CaseMap(U'\x0021b', U'\x0021a', U'\x00000', U'\x0021a'),
-    CaseMap(U'\x0021c', U'\x00000', U'\x0021d', U'\x00000'),
-    CaseMap(U'\x0021d', U'\x0021c', U'\x00000', U'\x0021c'),
-    CaseMap(U'\x0021e', U'\x00000', U'\x0021f', U'\x00000'),
-    CaseMap(U'\x0021f', U'\x0021e', U'\x00000', U'\x0021e'),
-    CaseMap(U'\x00220', U'\x00000', U'\x0019e', U'\x00000'), CaseMap(),
-    CaseMap(U'\x00222', U'\x00000', U'\x00223', U'\x00000'),
-    CaseMap(U'\x00223', U'\x00222', U'\x00000', U'\x00222'),
-    CaseMap(U'\x00224', U'\x00000', U'\x00225', U'\x00000'),
-    CaseMap(U'\x00225', U'\x00224', U'\x00000', U'\x00224'),
-    CaseMap(U'\x00226', U'\x00000', U'\x00227', U'\x00000'),
-    CaseMap(U'\x00227', U'\x00226', U'\x00000', U'\x00226'),
-    CaseMap(U'\x00228', U'\x00000', U'\x00229', U'\x00000'),
-    CaseMap(U'\x00229', U'\x00228', U'\x00000', U'\x00228'),
-    CaseMap(U'\x0022a', U'\x00000', U'\x0022b', U'\x00000'),
-    CaseMap(U'\x0022b', U'\x0022a', U'\x00000', U'\x0022a'),
-    CaseMap(U'\x0022c', U'\x00000', U'\x0022d', U'\x00000'),
-    CaseMap(U'\x0022d', U'\x0022c', U'\x00000', U'\x0022c'),
-    CaseMap(U'\x0022e', U'\x00000', U'\x0022f', U'\x00000'),
-    CaseMap(U'\x0022f', U'\x0022e', U'\x00000', U'\x0022e'),
-    CaseMap(U'\x00230', U'\x00000', U'\x00231', U'\x00000'),
-    CaseMap(U'\x00231', U'\x00230', U'\x00000', U'\x00230'),
-    CaseMap(U'\x00232', U'\x00000', U'\x00233', U'\x00000'),
-    CaseMap(U'\x00233', U'\x00232', U'\x00000', U'\x00232'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x0023a', U'\x00000', U'\x02c65', U'\x00000'),
-    CaseMap(U'\x0023b', U'\x00000', U'\x0023c', U'\x00000'),
-    CaseMap(U'\x0023c', U'\x0023b', U'\x00000', U'\x0023b'),
-    CaseMap(U'\x0023d', U'\x00000', U'\x0019a', U'\x00000'),
-    CaseMap(U'\x0023e', U'\x00000', U'\x02c66', U'\x00000'),
-    CaseMap(U'\x0023f', U'\x02c7e', U'\x00000', U'\x02c7e'),
-    CaseMap(U'\x00240', U'\x02c7f', U'\x00000', U'\x02c7f'),
-    CaseMap(U'\x00241', U'\x00000', U'\x00242', U'\x00000'),
-    CaseMap(U'\x00242', U'\x00241', U'\x00000', U'\x00241'),
-    CaseMap(U'\x00243', U'\x00000', U'\x00180', U'\x00000'),
-    CaseMap(U'\x00244', U'\x00000', U'\x00289', U'\x00000'),
-    CaseMap(U'\x00245', U'\x00000', U'\x0028c', U'\x00000'),
-    CaseMap(U'\x00246', U'\x00000', U'\x00247', U'\x00000'),
-    CaseMap(U'\x00247', U'\x00246', U'\x00000', U'\x00246'),
-    CaseMap(U'\x00248', U'\x00000', U'\x00249', U'\x00000'),
-    CaseMap(U'\x00249', U'\x00248', U'\x00000', U'\x00248'),
-    CaseMap(U'\x0024a', U'\x00000', U'\x0024b', U'\x00000'),
-    CaseMap(U'\x0024b', U'\x0024a', U'\x00000', U'\x0024a'),
-    CaseMap(U'\x0024c', U'\x00000', U'\x0024d', U'\x00000'),
-    CaseMap(U'\x0024d', U'\x0024c', U'\x00000', U'\x0024c'),
-    CaseMap(U'\x0024e', U'\x00000', U'\x0024f', U'\x00000'),
-    CaseMap(U'\x0024f', U'\x0024e', U'\x00000', U'\x0024e'),
-    CaseMap(U'\x00250', U'\x02c6f', U'\x00000', U'\x02c6f'),
-    CaseMap(U'\x00251', U'\x02c6d', U'\x00000', U'\x02c6d'),
-    CaseMap(U'\x00252', U'\x02c70', U'\x00000', U'\x02c70'),
-    CaseMap(U'\x00253', U'\x00181', U'\x00000', U'\x00181'),
-    CaseMap(U'\x00254', U'\x00186', U'\x00000', U'\x00186'), CaseMap(),
-    CaseMap(U'\x00256', U'\x00189', U'\x00000', U'\x00189'),
-    CaseMap(U'\x00257', U'\x0018a', U'\x00000', U'\x0018a'), CaseMap(),
-    CaseMap(U'\x00259', U'\x0018f', U'\x00000', U'\x0018f'), CaseMap(),
-    CaseMap(U'\x0025b', U'\x00190', U'\x00000', U'\x00190'),
-    CaseMap(U'\x0025c', U'\x0a7ab', U'\x00000', U'\x0a7ab'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x00260', U'\x00193', U'\x00000', U'\x00193'),
-    CaseMap(U'\x00261', U'\x0a7ac', U'\x00000', U'\x0a7ac'), CaseMap(),
-    CaseMap(U'\x00263', U'\x00194', U'\x00000', U'\x00194'), CaseMap(),
-    CaseMap(U'\x00265', U'\x0a78d', U'\x00000', U'\x0a78d'),
-    CaseMap(U'\x00266', U'\x0a7aa', U'\x00000', U'\x0a7aa'), CaseMap(),
-    CaseMap(U'\x00268', U'\x00197', U'\x00000', U'\x00197'),
-    CaseMap(U'\x00269', U'\x00196', U'\x00000', U'\x00196'),
-    CaseMap(U'\x0026a', U'\x0a7ae', U'\x00000', U'\x0a7ae'),
-    CaseMap(U'\x0026b', U'\x02c62', U'\x00000', U'\x02c62'),
-    CaseMap(U'\x0026c', U'\x0a7ad', U'\x00000', U'\x0a7ad'), CaseMap(), CaseMap(),
-    CaseMap(U'\x0026f', U'\x0019c', U'\x00000', U'\x0019c'), CaseMap(),
-    CaseMap(U'\x00271', U'\x02c6e', U'\x00000', U'\x02c6e'),
-    CaseMap(U'\x00272', U'\x0019d', U'\x00000', U'\x0019d'), CaseMap(), CaseMap(),
-    CaseMap(U'\x00275', U'\x0019f', U'\x00000', U'\x0019f'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x0027d', U'\x02c64', U'\x00000', U'\x02c64'), CaseMap(), CaseMap(),
-    CaseMap(U'\x00280', U'\x001a6', U'\x00000', U'\x001a6'), CaseMap(),
-    CaseMap(U'\x00282', U'\x0a7c5', U'\x00000', U'\x0a7c5'),
-    CaseMap(U'\x00283', U'\x001a9', U'\x00000', U'\x001a9'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x00287', U'\x0a7b1', U'\x00000', U'\x0a7b1'),
-    CaseMap(U'\x00288', U'\x001ae', U'\x00000', U'\x001ae'),
-    CaseMap(U'\x00289', U'\x00244', U'\x00000', U'\x00244'),
-    CaseMap(U'\x0028a', U'\x001b1', U'\x00000', U'\x001b1'),
-    CaseMap(U'\x0028b', U'\x001b2', U'\x00000', U'\x001b2'),
-    CaseMap(U'\x0028c', U'\x00245', U'\x00000', U'\x00245'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(U'\x00292', U'\x001b7', U'\x00000', U'\x001b7'), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x0029d', U'\x0a7b2', U'\x00000', U'\x0a7b2'),
-    CaseMap(U'\x0029e', U'\x0a7b0', U'\x00000', U'\x0a7b0')};
-
-static const std::vector<CaseMap> CASEMAP_0x0002(
-    T_CASEMAP_0x0002, T_CASEMAP_0x0002 + (sizeof(T_CASEMAP_0x0002) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0003[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x00345', U'\x00399', U'\x00000', U'\x00399'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x00370', U'\x00000', U'\x00371', U'\x00000'),
-    CaseMap(U'\x00371', U'\x00370', U'\x00000', U'\x00370'),
-    CaseMap(U'\x00372', U'\x00000', U'\x00373', U'\x00000'),
-    CaseMap(U'\x00373', U'\x00372', U'\x00000', U'\x00372'), CaseMap(), CaseMap(),
-    CaseMap(U'\x00376', U'\x00000', U'\x00377', U'\x00000'),
-    CaseMap(U'\x00377', U'\x00376', U'\x00000', U'\x00376'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x0037b', U'\x003fd', U'\x00000', U'\x003fd'),
-    CaseMap(U'\x0037c', U'\x003fe', U'\x00000', U'\x003fe'),
-    CaseMap(U'\x0037d', U'\x003ff', U'\x00000', U'\x003ff'), CaseMap(),
-    CaseMap(U'\x0037f', U'\x00000', U'\x003f3', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x00386', U'\x00000', U'\x003ac', U'\x00000'),
-    CaseMap(), CaseMap(U'\x00388', U'\x00000', U'\x003ad', U'\x00000'),
-    CaseMap(U'\x00389', U'\x00000', U'\x003ae', U'\x00000'),
-    CaseMap(U'\x0038a', U'\x00000', U'\x003af', U'\x00000'), CaseMap(),
-    CaseMap(U'\x0038c', U'\x00000', U'\x003cc', U'\x00000'), CaseMap(),
-    CaseMap(U'\x0038e', U'\x00000', U'\x003cd', U'\x00000'),
-    CaseMap(U'\x0038f', U'\x00000', U'\x003ce', U'\x00000'), CaseMap(),
-    CaseMap(U'\x00391', U'\x00000', U'\x003b1', U'\x00000'),
-    CaseMap(U'\x00392', U'\x00000', U'\x003b2', U'\x00000'),
-    CaseMap(U'\x00393', U'\x00000', U'\x003b3', U'\x00000'),
-    CaseMap(U'\x00394', U'\x00000', U'\x003b4', U'\x00000'),
-    CaseMap(U'\x00395', U'\x00000', U'\x003b5', U'\x00000'),
-    CaseMap(U'\x00396', U'\x00000', U'\x003b6', U'\x00000'),
-    CaseMap(U'\x00397', U'\x00000', U'\x003b7', U'\x00000'),
-    CaseMap(U'\x00398', U'\x00000', U'\x003b8', U'\x00000'),
-    CaseMap(U'\x00399', U'\x00000', U'\x003b9', U'\x00000'),
-    CaseMap(U'\x0039a', U'\x00000', U'\x003ba', U'\x00000'),
-    CaseMap(U'\x0039b', U'\x00000', U'\x003bb', U'\x00000'),
-    CaseMap(U'\x0039c', U'\x00000', U'\x003bc', U'\x00000'),
-    CaseMap(U'\x0039d', U'\x00000', U'\x003bd', U'\x00000'),
-    CaseMap(U'\x0039e', U'\x00000', U'\x003be', U'\x00000'),
-    CaseMap(U'\x0039f', U'\x00000', U'\x003bf', U'\x00000'),
-    CaseMap(U'\x003a0', U'\x00000', U'\x003c0', U'\x00000'),
-    CaseMap(U'\x003a1', U'\x00000', U'\x003c1', U'\x00000'), CaseMap(),
-    CaseMap(U'\x003a3', U'\x00000', U'\x003c3', U'\x00000'),
-    CaseMap(U'\x003a4', U'\x00000', U'\x003c4', U'\x00000'),
-    CaseMap(U'\x003a5', U'\x00000', U'\x003c5', U'\x00000'),
-    CaseMap(U'\x003a6', U'\x00000', U'\x003c6', U'\x00000'),
-    CaseMap(U'\x003a7', U'\x00000', U'\x003c7', U'\x00000'),
-    CaseMap(U'\x003a8', U'\x00000', U'\x003c8', U'\x00000'),
-    CaseMap(U'\x003a9', U'\x00000', U'\x003c9', U'\x00000'),
-    CaseMap(U'\x003aa', U'\x00000', U'\x003ca', U'\x00000'),
-    CaseMap(U'\x003ab', U'\x00000', U'\x003cb', U'\x00000'),
-    CaseMap(U'\x003ac', U'\x00386', U'\x00000', U'\x00386'),
-    CaseMap(U'\x003ad', U'\x00388', U'\x00000', U'\x00388'),
-    CaseMap(U'\x003ae', U'\x00389', U'\x00000', U'\x00389'),
-    CaseMap(U'\x003af', U'\x0038a', U'\x00000', U'\x0038a'), CaseMap(),
-    CaseMap(U'\x003b1', U'\x00391', U'\x00000', U'\x00391'),
-    CaseMap(U'\x003b2', U'\x00392', U'\x00000', U'\x00392'),
-    CaseMap(U'\x003b3', U'\x00393', U'\x00000', U'\x00393'),
-    CaseMap(U'\x003b4', U'\x00394', U'\x00000', U'\x00394'),
-    CaseMap(U'\x003b5', U'\x00395', U'\x00000', U'\x00395'),
-    CaseMap(U'\x003b6', U'\x00396', U'\x00000', U'\x00396'),
-    CaseMap(U'\x003b7', U'\x00397', U'\x00000', U'\x00397'),
-    CaseMap(U'\x003b8', U'\x00398', U'\x00000', U'\x00398'),
-    CaseMap(U'\x003b9', U'\x00399', U'\x00000', U'\x00399'),
-    CaseMap(U'\x003ba', U'\x0039a', U'\x00000', U'\x0039a'),
-    CaseMap(U'\x003bb', U'\x0039b', U'\x00000', U'\x0039b'),
-    CaseMap(U'\x003bc', U'\x0039c', U'\x00000', U'\x0039c'),
-    CaseMap(U'\x003bd', U'\x0039d', U'\x00000', U'\x0039d'),
-    CaseMap(U'\x003be', U'\x0039e', U'\x00000', U'\x0039e'),
-    CaseMap(U'\x003bf', U'\x0039f', U'\x00000', U'\x0039f'),
-    CaseMap(U'\x003c0', U'\x003a0', U'\x00000', U'\x003a0'),
-    CaseMap(U'\x003c1', U'\x003a1', U'\x00000', U'\x003a1'),
-    CaseMap(U'\x003c2', U'\x003a3', U'\x00000', U'\x003a3'),
-    CaseMap(U'\x003c3', U'\x003a3', U'\x00000', U'\x003a3'),
-    CaseMap(U'\x003c4', U'\x003a4', U'\x00000', U'\x003a4'),
-    CaseMap(U'\x003c5', U'\x003a5', U'\x00000', U'\x003a5'),
-    CaseMap(U'\x003c6', U'\x003a6', U'\x00000', U'\x003a6'),
-    CaseMap(U'\x003c7', U'\x003a7', U'\x00000', U'\x003a7'),
-    CaseMap(U'\x003c8', U'\x003a8', U'\x00000', U'\x003a8'),
-    CaseMap(U'\x003c9', U'\x003a9', U'\x00000', U'\x003a9'),
-    CaseMap(U'\x003ca', U'\x003aa', U'\x00000', U'\x003aa'),
-    CaseMap(U'\x003cb', U'\x003ab', U'\x00000', U'\x003ab'),
-    CaseMap(U'\x003cc', U'\x0038c', U'\x00000', U'\x0038c'),
-    CaseMap(U'\x003cd', U'\x0038e', U'\x00000', U'\x0038e'),
-    CaseMap(U'\x003ce', U'\x0038f', U'\x00000', U'\x0038f'),
-    CaseMap(U'\x003cf', U'\x00000', U'\x003d7', U'\x00000'),
-    CaseMap(U'\x003d0', U'\x00392', U'\x00000', U'\x00392'),
-    CaseMap(U'\x003d1', U'\x00398', U'\x00000', U'\x00398'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x003d5', U'\x003a6', U'\x00000', U'\x003a6'),
-    CaseMap(U'\x003d6', U'\x003a0', U'\x00000', U'\x003a0'),
-    CaseMap(U'\x003d7', U'\x003cf', U'\x00000', U'\x003cf'),
-    CaseMap(U'\x003d8', U'\x00000', U'\x003d9', U'\x00000'),
-    CaseMap(U'\x003d9', U'\x003d8', U'\x00000', U'\x003d8'),
-    CaseMap(U'\x003da', U'\x00000', U'\x003db', U'\x00000'),
-    CaseMap(U'\x003db', U'\x003da', U'\x00000', U'\x003da'),
-    CaseMap(U'\x003dc', U'\x00000', U'\x003dd', U'\x00000'),
-    CaseMap(U'\x003dd', U'\x003dc', U'\x00000', U'\x003dc'),
-    CaseMap(U'\x003de', U'\x00000', U'\x003df', U'\x00000'),
-    CaseMap(U'\x003df', U'\x003de', U'\x00000', U'\x003de'),
-    CaseMap(U'\x003e0', U'\x00000', U'\x003e1', U'\x00000'),
-    CaseMap(U'\x003e1', U'\x003e0', U'\x00000', U'\x003e0'),
-    CaseMap(U'\x003e2', U'\x00000', U'\x003e3', U'\x00000'),
-    CaseMap(U'\x003e3', U'\x003e2', U'\x00000', U'\x003e2'),
-    CaseMap(U'\x003e4', U'\x00000', U'\x003e5', U'\x00000'),
-    CaseMap(U'\x003e5', U'\x003e4', U'\x00000', U'\x003e4'),
-    CaseMap(U'\x003e6', U'\x00000', U'\x003e7', U'\x00000'),
-    CaseMap(U'\x003e7', U'\x003e6', U'\x00000', U'\x003e6'),
-    CaseMap(U'\x003e8', U'\x00000', U'\x003e9', U'\x00000'),
-    CaseMap(U'\x003e9', U'\x003e8', U'\x00000', U'\x003e8'),
-    CaseMap(U'\x003ea', U'\x00000', U'\x003eb', U'\x00000'),
-    CaseMap(U'\x003eb', U'\x003ea', U'\x00000', U'\x003ea'),
-    CaseMap(U'\x003ec', U'\x00000', U'\x003ed', U'\x00000'),
-    CaseMap(U'\x003ed', U'\x003ec', U'\x00000', U'\x003ec'),
-    CaseMap(U'\x003ee', U'\x00000', U'\x003ef', U'\x00000'),
-    CaseMap(U'\x003ef', U'\x003ee', U'\x00000', U'\x003ee'),
-    CaseMap(U'\x003f0', U'\x0039a', U'\x00000', U'\x0039a'),
-    CaseMap(U'\x003f1', U'\x003a1', U'\x00000', U'\x003a1'),
-    CaseMap(U'\x003f2', U'\x003f9', U'\x00000', U'\x003f9'),
-    CaseMap(U'\x003f3', U'\x0037f', U'\x00000', U'\x0037f'),
-    CaseMap(U'\x003f4', U'\x00000', U'\x003b8', U'\x00000'),
-    CaseMap(U'\x003f5', U'\x00395', U'\x00000', U'\x00395'), CaseMap(),
-    CaseMap(U'\x003f7', U'\x00000', U'\x003f8', U'\x00000'),
-    CaseMap(U'\x003f8', U'\x003f7', U'\x00000', U'\x003f7'),
-    CaseMap(U'\x003f9', U'\x00000', U'\x003f2', U'\x00000'),
-    CaseMap(U'\x003fa', U'\x00000', U'\x003fb', U'\x00000'),
-    CaseMap(U'\x003fb', U'\x003fa', U'\x00000', U'\x003fa'), CaseMap(),
-    CaseMap(U'\x003fd', U'\x00000', U'\x0037b', U'\x00000'),
-    CaseMap(U'\x003fe', U'\x00000', U'\x0037c', U'\x00000'),
-    CaseMap(U'\x003ff', U'\x00000', U'\x0037d', U'\x00000')};
-
-static const std::vector<CaseMap> CASEMAP_0x0003(
-    T_CASEMAP_0x0003, T_CASEMAP_0x0003 + (sizeof(T_CASEMAP_0x0003) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0004[]{CaseMap(U'\x00400', U'\x00000', U'\x00450', U'\x00000'),
-    CaseMap(U'\x00401', U'\x00000', U'\x00451', U'\x00000'),
-    CaseMap(U'\x00402', U'\x00000', U'\x00452', U'\x00000'),
-    CaseMap(U'\x00403', U'\x00000', U'\x00453', U'\x00000'),
-    CaseMap(U'\x00404', U'\x00000', U'\x00454', U'\x00000'),
-    CaseMap(U'\x00405', U'\x00000', U'\x00455', U'\x00000'),
-    CaseMap(U'\x00406', U'\x00000', U'\x00456', U'\x00000'),
-    CaseMap(U'\x00407', U'\x00000', U'\x00457', U'\x00000'),
-    CaseMap(U'\x00408', U'\x00000', U'\x00458', U'\x00000'),
-    CaseMap(U'\x00409', U'\x00000', U'\x00459', U'\x00000'),
-    CaseMap(U'\x0040a', U'\x00000', U'\x0045a', U'\x00000'),
-    CaseMap(U'\x0040b', U'\x00000', U'\x0045b', U'\x00000'),
-    CaseMap(U'\x0040c', U'\x00000', U'\x0045c', U'\x00000'),
-    CaseMap(U'\x0040d', U'\x00000', U'\x0045d', U'\x00000'),
-    CaseMap(U'\x0040e', U'\x00000', U'\x0045e', U'\x00000'),
-    CaseMap(U'\x0040f', U'\x00000', U'\x0045f', U'\x00000'),
-    CaseMap(U'\x00410', U'\x00000', U'\x00430', U'\x00000'),
-    CaseMap(U'\x00411', U'\x00000', U'\x00431', U'\x00000'),
-    CaseMap(U'\x00412', U'\x00000', U'\x00432', U'\x00000'),
-    CaseMap(U'\x00413', U'\x00000', U'\x00433', U'\x00000'),
-    CaseMap(U'\x00414', U'\x00000', U'\x00434', U'\x00000'),
-    CaseMap(U'\x00415', U'\x00000', U'\x00435', U'\x00000'),
-    CaseMap(U'\x00416', U'\x00000', U'\x00436', U'\x00000'),
-    CaseMap(U'\x00417', U'\x00000', U'\x00437', U'\x00000'),
-    CaseMap(U'\x00418', U'\x00000', U'\x00438', U'\x00000'),
-    CaseMap(U'\x00419', U'\x00000', U'\x00439', U'\x00000'),
-    CaseMap(U'\x0041a', U'\x00000', U'\x0043a', U'\x00000'),
-    CaseMap(U'\x0041b', U'\x00000', U'\x0043b', U'\x00000'),
-    CaseMap(U'\x0041c', U'\x00000', U'\x0043c', U'\x00000'),
-    CaseMap(U'\x0041d', U'\x00000', U'\x0043d', U'\x00000'),
-    CaseMap(U'\x0041e', U'\x00000', U'\x0043e', U'\x00000'),
-    CaseMap(U'\x0041f', U'\x00000', U'\x0043f', U'\x00000'),
-    CaseMap(U'\x00420', U'\x00000', U'\x00440', U'\x00000'),
-    CaseMap(U'\x00421', U'\x00000', U'\x00441', U'\x00000'),
-    CaseMap(U'\x00422', U'\x00000', U'\x00442', U'\x00000'),
-    CaseMap(U'\x00423', U'\x00000', U'\x00443', U'\x00000'),
-    CaseMap(U'\x00424', U'\x00000', U'\x00444', U'\x00000'),
-    CaseMap(U'\x00425', U'\x00000', U'\x00445', U'\x00000'),
-    CaseMap(U'\x00426', U'\x00000', U'\x00446', U'\x00000'),
-    CaseMap(U'\x00427', U'\x00000', U'\x00447', U'\x00000'),
-    CaseMap(U'\x00428', U'\x00000', U'\x00448', U'\x00000'),
-    CaseMap(U'\x00429', U'\x00000', U'\x00449', U'\x00000'),
-    CaseMap(U'\x0042a', U'\x00000', U'\x0044a', U'\x00000'),
-    CaseMap(U'\x0042b', U'\x00000', U'\x0044b', U'\x00000'),
-    CaseMap(U'\x0042c', U'\x00000', U'\x0044c', U'\x00000'),
-    CaseMap(U'\x0042d', U'\x00000', U'\x0044d', U'\x00000'),
-    CaseMap(U'\x0042e', U'\x00000', U'\x0044e', U'\x00000'),
-    CaseMap(U'\x0042f', U'\x00000', U'\x0044f', U'\x00000'),
-    CaseMap(U'\x00430', U'\x00410', U'\x00000', U'\x00410'),
-    CaseMap(U'\x00431', U'\x00411', U'\x00000', U'\x00411'),
-    CaseMap(U'\x00432', U'\x00412', U'\x00000', U'\x00412'),
-    CaseMap(U'\x00433', U'\x00413', U'\x00000', U'\x00413'),
-    CaseMap(U'\x00434', U'\x00414', U'\x00000', U'\x00414'),
-    CaseMap(U'\x00435', U'\x00415', U'\x00000', U'\x00415'),
-    CaseMap(U'\x00436', U'\x00416', U'\x00000', U'\x00416'),
-    CaseMap(U'\x00437', U'\x00417', U'\x00000', U'\x00417'),
-    CaseMap(U'\x00438', U'\x00418', U'\x00000', U'\x00418'),
-    CaseMap(U'\x00439', U'\x00419', U'\x00000', U'\x00419'),
-    CaseMap(U'\x0043a', U'\x0041a', U'\x00000', U'\x0041a'),
-    CaseMap(U'\x0043b', U'\x0041b', U'\x00000', U'\x0041b'),
-    CaseMap(U'\x0043c', U'\x0041c', U'\x00000', U'\x0041c'),
-    CaseMap(U'\x0043d', U'\x0041d', U'\x00000', U'\x0041d'),
-    CaseMap(U'\x0043e', U'\x0041e', U'\x00000', U'\x0041e'),
-    CaseMap(U'\x0043f', U'\x0041f', U'\x00000', U'\x0041f'),
-    CaseMap(U'\x00440', U'\x00420', U'\x00000', U'\x00420'),
-    CaseMap(U'\x00441', U'\x00421', U'\x00000', U'\x00421'),
-    CaseMap(U'\x00442', U'\x00422', U'\x00000', U'\x00422'),
-    CaseMap(U'\x00443', U'\x00423', U'\x00000', U'\x00423'),
-    CaseMap(U'\x00444', U'\x00424', U'\x00000', U'\x00424'),
-    CaseMap(U'\x00445', U'\x00425', U'\x00000', U'\x00425'),
-    CaseMap(U'\x00446', U'\x00426', U'\x00000', U'\x00426'),
-    CaseMap(U'\x00447', U'\x00427', U'\x00000', U'\x00427'),
-    CaseMap(U'\x00448', U'\x00428', U'\x00000', U'\x00428'),
-    CaseMap(U'\x00449', U'\x00429', U'\x00000', U'\x00429'),
-    CaseMap(U'\x0044a', U'\x0042a', U'\x00000', U'\x0042a'),
-    CaseMap(U'\x0044b', U'\x0042b', U'\x00000', U'\x0042b'),
-    CaseMap(U'\x0044c', U'\x0042c', U'\x00000', U'\x0042c'),
-    CaseMap(U'\x0044d', U'\x0042d', U'\x00000', U'\x0042d'),
-    CaseMap(U'\x0044e', U'\x0042e', U'\x00000', U'\x0042e'),
-    CaseMap(U'\x0044f', U'\x0042f', U'\x00000', U'\x0042f'),
-    CaseMap(U'\x00450', U'\x00400', U'\x00000', U'\x00400'),
-    CaseMap(U'\x00451', U'\x00401', U'\x00000', U'\x00401'),
-    CaseMap(U'\x00452', U'\x00402', U'\x00000', U'\x00402'),
-    CaseMap(U'\x00453', U'\x00403', U'\x00000', U'\x00403'),
-    CaseMap(U'\x00454', U'\x00404', U'\x00000', U'\x00404'),
-    CaseMap(U'\x00455', U'\x00405', U'\x00000', U'\x00405'),
-    CaseMap(U'\x00456', U'\x00406', U'\x00000', U'\x00406'),
-    CaseMap(U'\x00457', U'\x00407', U'\x00000', U'\x00407'),
-    CaseMap(U'\x00458', U'\x00408', U'\x00000', U'\x00408'),
-    CaseMap(U'\x00459', U'\x00409', U'\x00000', U'\x00409'),
-    CaseMap(U'\x0045a', U'\x0040a', U'\x00000', U'\x0040a'),
-    CaseMap(U'\x0045b', U'\x0040b', U'\x00000', U'\x0040b'),
-    CaseMap(U'\x0045c', U'\x0040c', U'\x00000', U'\x0040c'),
-    CaseMap(U'\x0045d', U'\x0040d', U'\x00000', U'\x0040d'),
-    CaseMap(U'\x0045e', U'\x0040e', U'\x00000', U'\x0040e'),
-    CaseMap(U'\x0045f', U'\x0040f', U'\x00000', U'\x0040f'),
-    CaseMap(U'\x00460', U'\x00000', U'\x00461', U'\x00000'),
-    CaseMap(U'\x00461', U'\x00460', U'\x00000', U'\x00460'),
-    CaseMap(U'\x00462', U'\x00000', U'\x00463', U'\x00000'),
-    CaseMap(U'\x00463', U'\x00462', U'\x00000', U'\x00462'),
-    CaseMap(U'\x00464', U'\x00000', U'\x00465', U'\x00000'),
-    CaseMap(U'\x00465', U'\x00464', U'\x00000', U'\x00464'),
-    CaseMap(U'\x00466', U'\x00000', U'\x00467', U'\x00000'),
-    CaseMap(U'\x00467', U'\x00466', U'\x00000', U'\x00466'),
-    CaseMap(U'\x00468', U'\x00000', U'\x00469', U'\x00000'),
-    CaseMap(U'\x00469', U'\x00468', U'\x00000', U'\x00468'),
-    CaseMap(U'\x0046a', U'\x00000', U'\x0046b', U'\x00000'),
-    CaseMap(U'\x0046b', U'\x0046a', U'\x00000', U'\x0046a'),
-    CaseMap(U'\x0046c', U'\x00000', U'\x0046d', U'\x00000'),
-    CaseMap(U'\x0046d', U'\x0046c', U'\x00000', U'\x0046c'),
-    CaseMap(U'\x0046e', U'\x00000', U'\x0046f', U'\x00000'),
-    CaseMap(U'\x0046f', U'\x0046e', U'\x00000', U'\x0046e'),
-    CaseMap(U'\x00470', U'\x00000', U'\x00471', U'\x00000'),
-    CaseMap(U'\x00471', U'\x00470', U'\x00000', U'\x00470'),
-    CaseMap(U'\x00472', U'\x00000', U'\x00473', U'\x00000'),
-    CaseMap(U'\x00473', U'\x00472', U'\x00000', U'\x00472'),
-    CaseMap(U'\x00474', U'\x00000', U'\x00475', U'\x00000'),
-    CaseMap(U'\x00475', U'\x00474', U'\x00000', U'\x00474'),
-    CaseMap(U'\x00476', U'\x00000', U'\x00477', U'\x00000'),
-    CaseMap(U'\x00477', U'\x00476', U'\x00000', U'\x00476'),
-    CaseMap(U'\x00478', U'\x00000', U'\x00479', U'\x00000'),
-    CaseMap(U'\x00479', U'\x00478', U'\x00000', U'\x00478'),
-    CaseMap(U'\x0047a', U'\x00000', U'\x0047b', U'\x00000'),
-    CaseMap(U'\x0047b', U'\x0047a', U'\x00000', U'\x0047a'),
-    CaseMap(U'\x0047c', U'\x00000', U'\x0047d', U'\x00000'),
-    CaseMap(U'\x0047d', U'\x0047c', U'\x00000', U'\x0047c'),
-    CaseMap(U'\x0047e', U'\x00000', U'\x0047f', U'\x00000'),
-    CaseMap(U'\x0047f', U'\x0047e', U'\x00000', U'\x0047e'),
-    CaseMap(U'\x00480', U'\x00000', U'\x00481', U'\x00000'),
-    CaseMap(U'\x00481', U'\x00480', U'\x00000', U'\x00480'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x0048a', U'\x00000', U'\x0048b', U'\x00000'),
-    CaseMap(U'\x0048b', U'\x0048a', U'\x00000', U'\x0048a'),
-    CaseMap(U'\x0048c', U'\x00000', U'\x0048d', U'\x00000'),
-    CaseMap(U'\x0048d', U'\x0048c', U'\x00000', U'\x0048c'),
-    CaseMap(U'\x0048e', U'\x00000', U'\x0048f', U'\x00000'),
-    CaseMap(U'\x0048f', U'\x0048e', U'\x00000', U'\x0048e'),
-    CaseMap(U'\x00490', U'\x00000', U'\x00491', U'\x00000'),
-    CaseMap(U'\x00491', U'\x00490', U'\x00000', U'\x00490'),
-    CaseMap(U'\x00492', U'\x00000', U'\x00493', U'\x00000'),
-    CaseMap(U'\x00493', U'\x00492', U'\x00000', U'\x00492'),
-    CaseMap(U'\x00494', U'\x00000', U'\x00495', U'\x00000'),
-    CaseMap(U'\x00495', U'\x00494', U'\x00000', U'\x00494'),
-    CaseMap(U'\x00496', U'\x00000', U'\x00497', U'\x00000'),
-    CaseMap(U'\x00497', U'\x00496', U'\x00000', U'\x00496'),
-    CaseMap(U'\x00498', U'\x00000', U'\x00499', U'\x00000'),
-    CaseMap(U'\x00499', U'\x00498', U'\x00000', U'\x00498'),
-    CaseMap(U'\x0049a', U'\x00000', U'\x0049b', U'\x00000'),
-    CaseMap(U'\x0049b', U'\x0049a', U'\x00000', U'\x0049a'),
-    CaseMap(U'\x0049c', U'\x00000', U'\x0049d', U'\x00000'),
-    CaseMap(U'\x0049d', U'\x0049c', U'\x00000', U'\x0049c'),
-    CaseMap(U'\x0049e', U'\x00000', U'\x0049f', U'\x00000'),
-    CaseMap(U'\x0049f', U'\x0049e', U'\x00000', U'\x0049e'),
-    CaseMap(U'\x004a0', U'\x00000', U'\x004a1', U'\x00000'),
-    CaseMap(U'\x004a1', U'\x004a0', U'\x00000', U'\x004a0'),
-    CaseMap(U'\x004a2', U'\x00000', U'\x004a3', U'\x00000'),
-    CaseMap(U'\x004a3', U'\x004a2', U'\x00000', U'\x004a2'),
-    CaseMap(U'\x004a4', U'\x00000', U'\x004a5', U'\x00000'),
-    CaseMap(U'\x004a5', U'\x004a4', U'\x00000', U'\x004a4'),
-    CaseMap(U'\x004a6', U'\x00000', U'\x004a7', U'\x00000'),
-    CaseMap(U'\x004a7', U'\x004a6', U'\x00000', U'\x004a6'),
-    CaseMap(U'\x004a8', U'\x00000', U'\x004a9', U'\x00000'),
-    CaseMap(U'\x004a9', U'\x004a8', U'\x00000', U'\x004a8'),
-    CaseMap(U'\x004aa', U'\x00000', U'\x004ab', U'\x00000'),
-    CaseMap(U'\x004ab', U'\x004aa', U'\x00000', U'\x004aa'),
-    CaseMap(U'\x004ac', U'\x00000', U'\x004ad', U'\x00000'),
-    CaseMap(U'\x004ad', U'\x004ac', U'\x00000', U'\x004ac'),
-    CaseMap(U'\x004ae', U'\x00000', U'\x004af', U'\x00000'),
-    CaseMap(U'\x004af', U'\x004ae', U'\x00000', U'\x004ae'),
-    CaseMap(U'\x004b0', U'\x00000', U'\x004b1', U'\x00000'),
-    CaseMap(U'\x004b1', U'\x004b0', U'\x00000', U'\x004b0'),
-    CaseMap(U'\x004b2', U'\x00000', U'\x004b3', U'\x00000'),
-    CaseMap(U'\x004b3', U'\x004b2', U'\x00000', U'\x004b2'),
-    CaseMap(U'\x004b4', U'\x00000', U'\x004b5', U'\x00000'),
-    CaseMap(U'\x004b5', U'\x004b4', U'\x00000', U'\x004b4'),
-    CaseMap(U'\x004b6', U'\x00000', U'\x004b7', U'\x00000'),
-    CaseMap(U'\x004b7', U'\x004b6', U'\x00000', U'\x004b6'),
-    CaseMap(U'\x004b8', U'\x00000', U'\x004b9', U'\x00000'),
-    CaseMap(U'\x004b9', U'\x004b8', U'\x00000', U'\x004b8'),
-    CaseMap(U'\x004ba', U'\x00000', U'\x004bb', U'\x00000'),
-    CaseMap(U'\x004bb', U'\x004ba', U'\x00000', U'\x004ba'),
-    CaseMap(U'\x004bc', U'\x00000', U'\x004bd', U'\x00000'),
-    CaseMap(U'\x004bd', U'\x004bc', U'\x00000', U'\x004bc'),
-    CaseMap(U'\x004be', U'\x00000', U'\x004bf', U'\x00000'),
-    CaseMap(U'\x004bf', U'\x004be', U'\x00000', U'\x004be'),
-    CaseMap(U'\x004c0', U'\x00000', U'\x004cf', U'\x00000'),
-    CaseMap(U'\x004c1', U'\x00000', U'\x004c2', U'\x00000'),
-    CaseMap(U'\x004c2', U'\x004c1', U'\x00000', U'\x004c1'),
-    CaseMap(U'\x004c3', U'\x00000', U'\x004c4', U'\x00000'),
-    CaseMap(U'\x004c4', U'\x004c3', U'\x00000', U'\x004c3'),
-    CaseMap(U'\x004c5', U'\x00000', U'\x004c6', U'\x00000'),
-    CaseMap(U'\x004c6', U'\x004c5', U'\x00000', U'\x004c5'),
-    CaseMap(U'\x004c7', U'\x00000', U'\x004c8', U'\x00000'),
-    CaseMap(U'\x004c8', U'\x004c7', U'\x00000', U'\x004c7'),
-    CaseMap(U'\x004c9', U'\x00000', U'\x004ca', U'\x00000'),
-    CaseMap(U'\x004ca', U'\x004c9', U'\x00000', U'\x004c9'),
-    CaseMap(U'\x004cb', U'\x00000', U'\x004cc', U'\x00000'),
-    CaseMap(U'\x004cc', U'\x004cb', U'\x00000', U'\x004cb'),
-    CaseMap(U'\x004cd', U'\x00000', U'\x004ce', U'\x00000'),
-    CaseMap(U'\x004ce', U'\x004cd', U'\x00000', U'\x004cd'),
-    CaseMap(U'\x004cf', U'\x004c0', U'\x00000', U'\x004c0'),
-    CaseMap(U'\x004d0', U'\x00000', U'\x004d1', U'\x00000'),
-    CaseMap(U'\x004d1', U'\x004d0', U'\x00000', U'\x004d0'),
-    CaseMap(U'\x004d2', U'\x00000', U'\x004d3', U'\x00000'),
-    CaseMap(U'\x004d3', U'\x004d2', U'\x00000', U'\x004d2'),
-    CaseMap(U'\x004d4', U'\x00000', U'\x004d5', U'\x00000'),
-    CaseMap(U'\x004d5', U'\x004d4', U'\x00000', U'\x004d4'),
-    CaseMap(U'\x004d6', U'\x00000', U'\x004d7', U'\x00000'),
-    CaseMap(U'\x004d7', U'\x004d6', U'\x00000', U'\x004d6'),
-    CaseMap(U'\x004d8', U'\x00000', U'\x004d9', U'\x00000'),
-    CaseMap(U'\x004d9', U'\x004d8', U'\x00000', U'\x004d8'),
-    CaseMap(U'\x004da', U'\x00000', U'\x004db', U'\x00000'),
-    CaseMap(U'\x004db', U'\x004da', U'\x00000', U'\x004da'),
-    CaseMap(U'\x004dc', U'\x00000', U'\x004dd', U'\x00000'),
-    CaseMap(U'\x004dd', U'\x004dc', U'\x00000', U'\x004dc'),
-    CaseMap(U'\x004de', U'\x00000', U'\x004df', U'\x00000'),
-    CaseMap(U'\x004df', U'\x004de', U'\x00000', U'\x004de'),
-    CaseMap(U'\x004e0', U'\x00000', U'\x004e1', U'\x00000'),
-    CaseMap(U'\x004e1', U'\x004e0', U'\x00000', U'\x004e0'),
-    CaseMap(U'\x004e2', U'\x00000', U'\x004e3', U'\x00000'),
-    CaseMap(U'\x004e3', U'\x004e2', U'\x00000', U'\x004e2'),
-    CaseMap(U'\x004e4', U'\x00000', U'\x004e5', U'\x00000'),
-    CaseMap(U'\x004e5', U'\x004e4', U'\x00000', U'\x004e4'),
-    CaseMap(U'\x004e6', U'\x00000', U'\x004e7', U'\x00000'),
-    CaseMap(U'\x004e7', U'\x004e6', U'\x00000', U'\x004e6'),
-    CaseMap(U'\x004e8', U'\x00000', U'\x004e9', U'\x00000'),
-    CaseMap(U'\x004e9', U'\x004e8', U'\x00000', U'\x004e8'),
-    CaseMap(U'\x004ea', U'\x00000', U'\x004eb', U'\x00000'),
-    CaseMap(U'\x004eb', U'\x004ea', U'\x00000', U'\x004ea'),
-    CaseMap(U'\x004ec', U'\x00000', U'\x004ed', U'\x00000'),
-    CaseMap(U'\x004ed', U'\x004ec', U'\x00000', U'\x004ec'),
-    CaseMap(U'\x004ee', U'\x00000', U'\x004ef', U'\x00000'),
-    CaseMap(U'\x004ef', U'\x004ee', U'\x00000', U'\x004ee'),
-    CaseMap(U'\x004f0', U'\x00000', U'\x004f1', U'\x00000'),
-    CaseMap(U'\x004f1', U'\x004f0', U'\x00000', U'\x004f0'),
-    CaseMap(U'\x004f2', U'\x00000', U'\x004f3', U'\x00000'),
-    CaseMap(U'\x004f3', U'\x004f2', U'\x00000', U'\x004f2'),
-    CaseMap(U'\x004f4', U'\x00000', U'\x004f5', U'\x00000'),
-    CaseMap(U'\x004f5', U'\x004f4', U'\x00000', U'\x004f4'),
-    CaseMap(U'\x004f6', U'\x00000', U'\x004f7', U'\x00000'),
-    CaseMap(U'\x004f7', U'\x004f6', U'\x00000', U'\x004f6'),
-    CaseMap(U'\x004f8', U'\x00000', U'\x004f9', U'\x00000'),
-    CaseMap(U'\x004f9', U'\x004f8', U'\x00000', U'\x004f8'),
-    CaseMap(U'\x004fa', U'\x00000', U'\x004fb', U'\x00000'),
-    CaseMap(U'\x004fb', U'\x004fa', U'\x00000', U'\x004fa'),
-    CaseMap(U'\x004fc', U'\x00000', U'\x004fd', U'\x00000'),
-    CaseMap(U'\x004fd', U'\x004fc', U'\x00000', U'\x004fc'),
-    CaseMap(U'\x004fe', U'\x00000', U'\x004ff', U'\x00000'),
-    CaseMap(U'\x004ff', U'\x004fe', U'\x00000', U'\x004fe')};
-
-static const std::vector<CaseMap> CASEMAP_0x0004(
-    T_CASEMAP_0x0004, T_CASEMAP_0x0004 + (sizeof(T_CASEMAP_0x0004) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0005[]{CaseMap(U'\x00500', U'\x00000', U'\x00501', U'\x00000'),
-    CaseMap(U'\x00501', U'\x00500', U'\x00000', U'\x00500'),
-    CaseMap(U'\x00502', U'\x00000', U'\x00503', U'\x00000'),
-    CaseMap(U'\x00503', U'\x00502', U'\x00000', U'\x00502'),
-    CaseMap(U'\x00504', U'\x00000', U'\x00505', U'\x00000'),
-    CaseMap(U'\x00505', U'\x00504', U'\x00000', U'\x00504'),
-    CaseMap(U'\x00506', U'\x00000', U'\x00507', U'\x00000'),
-    CaseMap(U'\x00507', U'\x00506', U'\x00000', U'\x00506'),
-    CaseMap(U'\x00508', U'\x00000', U'\x00509', U'\x00000'),
-    CaseMap(U'\x00509', U'\x00508', U'\x00000', U'\x00508'),
-    CaseMap(U'\x0050a', U'\x00000', U'\x0050b', U'\x00000'),
-    CaseMap(U'\x0050b', U'\x0050a', U'\x00000', U'\x0050a'),
-    CaseMap(U'\x0050c', U'\x00000', U'\x0050d', U'\x00000'),
-    CaseMap(U'\x0050d', U'\x0050c', U'\x00000', U'\x0050c'),
-    CaseMap(U'\x0050e', U'\x00000', U'\x0050f', U'\x00000'),
-    CaseMap(U'\x0050f', U'\x0050e', U'\x00000', U'\x0050e'),
-    CaseMap(U'\x00510', U'\x00000', U'\x00511', U'\x00000'),
-    CaseMap(U'\x00511', U'\x00510', U'\x00000', U'\x00510'),
-    CaseMap(U'\x00512', U'\x00000', U'\x00513', U'\x00000'),
-    CaseMap(U'\x00513', U'\x00512', U'\x00000', U'\x00512'),
-    CaseMap(U'\x00514', U'\x00000', U'\x00515', U'\x00000'),
-    CaseMap(U'\x00515', U'\x00514', U'\x00000', U'\x00514'),
-    CaseMap(U'\x00516', U'\x00000', U'\x00517', U'\x00000'),
-    CaseMap(U'\x00517', U'\x00516', U'\x00000', U'\x00516'),
-    CaseMap(U'\x00518', U'\x00000', U'\x00519', U'\x00000'),
-    CaseMap(U'\x00519', U'\x00518', U'\x00000', U'\x00518'),
-    CaseMap(U'\x0051a', U'\x00000', U'\x0051b', U'\x00000'),
-    CaseMap(U'\x0051b', U'\x0051a', U'\x00000', U'\x0051a'),
-    CaseMap(U'\x0051c', U'\x00000', U'\x0051d', U'\x00000'),
-    CaseMap(U'\x0051d', U'\x0051c', U'\x00000', U'\x0051c'),
-    CaseMap(U'\x0051e', U'\x00000', U'\x0051f', U'\x00000'),
-    CaseMap(U'\x0051f', U'\x0051e', U'\x00000', U'\x0051e'),
-    CaseMap(U'\x00520', U'\x00000', U'\x00521', U'\x00000'),
-    CaseMap(U'\x00521', U'\x00520', U'\x00000', U'\x00520'),
-    CaseMap(U'\x00522', U'\x00000', U'\x00523', U'\x00000'),
-    CaseMap(U'\x00523', U'\x00522', U'\x00000', U'\x00522'),
-    CaseMap(U'\x00524', U'\x00000', U'\x00525', U'\x00000'),
-    CaseMap(U'\x00525', U'\x00524', U'\x00000', U'\x00524'),
-    CaseMap(U'\x00526', U'\x00000', U'\x00527', U'\x00000'),
-    CaseMap(U'\x00527', U'\x00526', U'\x00000', U'\x00526'),
-    CaseMap(U'\x00528', U'\x00000', U'\x00529', U'\x00000'),
-    CaseMap(U'\x00529', U'\x00528', U'\x00000', U'\x00528'),
-    CaseMap(U'\x0052a', U'\x00000', U'\x0052b', U'\x00000'),
-    CaseMap(U'\x0052b', U'\x0052a', U'\x00000', U'\x0052a'),
-    CaseMap(U'\x0052c', U'\x00000', U'\x0052d', U'\x00000'),
-    CaseMap(U'\x0052d', U'\x0052c', U'\x00000', U'\x0052c'),
-    CaseMap(U'\x0052e', U'\x00000', U'\x0052f', U'\x00000'),
-    CaseMap(U'\x0052f', U'\x0052e', U'\x00000', U'\x0052e'), CaseMap(),
-    CaseMap(U'\x00531', U'\x00000', U'\x00561', U'\x00000'),
-    CaseMap(U'\x00532', U'\x00000', U'\x00562', U'\x00000'),
-    CaseMap(U'\x00533', U'\x00000', U'\x00563', U'\x00000'),
-    CaseMap(U'\x00534', U'\x00000', U'\x00564', U'\x00000'),
-    CaseMap(U'\x00535', U'\x00000', U'\x00565', U'\x00000'),
-    CaseMap(U'\x00536', U'\x00000', U'\x00566', U'\x00000'),
-    CaseMap(U'\x00537', U'\x00000', U'\x00567', U'\x00000'),
-    CaseMap(U'\x00538', U'\x00000', U'\x00568', U'\x00000'),
-    CaseMap(U'\x00539', U'\x00000', U'\x00569', U'\x00000'),
-    CaseMap(U'\x0053a', U'\x00000', U'\x0056a', U'\x00000'),
-    CaseMap(U'\x0053b', U'\x00000', U'\x0056b', U'\x00000'),
-    CaseMap(U'\x0053c', U'\x00000', U'\x0056c', U'\x00000'),
-    CaseMap(U'\x0053d', U'\x00000', U'\x0056d', U'\x00000'),
-    CaseMap(U'\x0053e', U'\x00000', U'\x0056e', U'\x00000'),
-    CaseMap(U'\x0053f', U'\x00000', U'\x0056f', U'\x00000'),
-    CaseMap(U'\x00540', U'\x00000', U'\x00570', U'\x00000'),
-    CaseMap(U'\x00541', U'\x00000', U'\x00571', U'\x00000'),
-    CaseMap(U'\x00542', U'\x00000', U'\x00572', U'\x00000'),
-    CaseMap(U'\x00543', U'\x00000', U'\x00573', U'\x00000'),
-    CaseMap(U'\x00544', U'\x00000', U'\x00574', U'\x00000'),
-    CaseMap(U'\x00545', U'\x00000', U'\x00575', U'\x00000'),
-    CaseMap(U'\x00546', U'\x00000', U'\x00576', U'\x00000'),
-    CaseMap(U'\x00547', U'\x00000', U'\x00577', U'\x00000'),
-    CaseMap(U'\x00548', U'\x00000', U'\x00578', U'\x00000'),
-    CaseMap(U'\x00549', U'\x00000', U'\x00579', U'\x00000'),
-    CaseMap(U'\x0054a', U'\x00000', U'\x0057a', U'\x00000'),
-    CaseMap(U'\x0054b', U'\x00000', U'\x0057b', U'\x00000'),
-    CaseMap(U'\x0054c', U'\x00000', U'\x0057c', U'\x00000'),
-    CaseMap(U'\x0054d', U'\x00000', U'\x0057d', U'\x00000'),
-    CaseMap(U'\x0054e', U'\x00000', U'\x0057e', U'\x00000'),
-    CaseMap(U'\x0054f', U'\x00000', U'\x0057f', U'\x00000'),
-    CaseMap(U'\x00550', U'\x00000', U'\x00580', U'\x00000'),
-    CaseMap(U'\x00551', U'\x00000', U'\x00581', U'\x00000'),
-    CaseMap(U'\x00552', U'\x00000', U'\x00582', U'\x00000'),
-    CaseMap(U'\x00553', U'\x00000', U'\x00583', U'\x00000'),
-    CaseMap(U'\x00554', U'\x00000', U'\x00584', U'\x00000'),
-    CaseMap(U'\x00555', U'\x00000', U'\x00585', U'\x00000'),
-    CaseMap(U'\x00556', U'\x00000', U'\x00586', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x00561', U'\x00531', U'\x00000', U'\x00531'),
-    CaseMap(U'\x00562', U'\x00532', U'\x00000', U'\x00532'),
-    CaseMap(U'\x00563', U'\x00533', U'\x00000', U'\x00533'),
-    CaseMap(U'\x00564', U'\x00534', U'\x00000', U'\x00534'),
-    CaseMap(U'\x00565', U'\x00535', U'\x00000', U'\x00535'),
-    CaseMap(U'\x00566', U'\x00536', U'\x00000', U'\x00536'),
-    CaseMap(U'\x00567', U'\x00537', U'\x00000', U'\x00537'),
-    CaseMap(U'\x00568', U'\x00538', U'\x00000', U'\x00538'),
-    CaseMap(U'\x00569', U'\x00539', U'\x00000', U'\x00539'),
-    CaseMap(U'\x0056a', U'\x0053a', U'\x00000', U'\x0053a'),
-    CaseMap(U'\x0056b', U'\x0053b', U'\x00000', U'\x0053b'),
-    CaseMap(U'\x0056c', U'\x0053c', U'\x00000', U'\x0053c'),
-    CaseMap(U'\x0056d', U'\x0053d', U'\x00000', U'\x0053d'),
-    CaseMap(U'\x0056e', U'\x0053e', U'\x00000', U'\x0053e'),
-    CaseMap(U'\x0056f', U'\x0053f', U'\x00000', U'\x0053f'),
-    CaseMap(U'\x00570', U'\x00540', U'\x00000', U'\x00540'),
-    CaseMap(U'\x00571', U'\x00541', U'\x00000', U'\x00541'),
-    CaseMap(U'\x00572', U'\x00542', U'\x00000', U'\x00542'),
-    CaseMap(U'\x00573', U'\x00543', U'\x00000', U'\x00543'),
-    CaseMap(U'\x00574', U'\x00544', U'\x00000', U'\x00544'),
-    CaseMap(U'\x00575', U'\x00545', U'\x00000', U'\x00545'),
-    CaseMap(U'\x00576', U'\x00546', U'\x00000', U'\x00546'),
-    CaseMap(U'\x00577', U'\x00547', U'\x00000', U'\x00547'),
-    CaseMap(U'\x00578', U'\x00548', U'\x00000', U'\x00548'),
-    CaseMap(U'\x00579', U'\x00549', U'\x00000', U'\x00549'),
-    CaseMap(U'\x0057a', U'\x0054a', U'\x00000', U'\x0054a'),
-    CaseMap(U'\x0057b', U'\x0054b', U'\x00000', U'\x0054b'),
-    CaseMap(U'\x0057c', U'\x0054c', U'\x00000', U'\x0054c'),
-    CaseMap(U'\x0057d', U'\x0054d', U'\x00000', U'\x0054d'),
-    CaseMap(U'\x0057e', U'\x0054e', U'\x00000', U'\x0054e'),
-    CaseMap(U'\x0057f', U'\x0054f', U'\x00000', U'\x0054f'),
-    CaseMap(U'\x00580', U'\x00550', U'\x00000', U'\x00550'),
-    CaseMap(U'\x00581', U'\x00551', U'\x00000', U'\x00551'),
-    CaseMap(U'\x00582', U'\x00552', U'\x00000', U'\x00552'),
-    CaseMap(U'\x00583', U'\x00553', U'\x00000', U'\x00553'),
-    CaseMap(U'\x00584', U'\x00554', U'\x00000', U'\x00554'),
-    CaseMap(U'\x00585', U'\x00555', U'\x00000', U'\x00555'),
-    CaseMap(U'\x00586', U'\x00556', U'\x00000', U'\x00556')};
-
-static const std::vector<CaseMap> CASEMAP_0x0005(
-    T_CASEMAP_0x0005, T_CASEMAP_0x0005 + (sizeof(T_CASEMAP_0x0005) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0010[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x010a0', U'\x00000', U'\x02d00', U'\x00000'),
-    CaseMap(U'\x010a1', U'\x00000', U'\x02d01', U'\x00000'),
-    CaseMap(U'\x010a2', U'\x00000', U'\x02d02', U'\x00000'),
-    CaseMap(U'\x010a3', U'\x00000', U'\x02d03', U'\x00000'),
-    CaseMap(U'\x010a4', U'\x00000', U'\x02d04', U'\x00000'),
-    CaseMap(U'\x010a5', U'\x00000', U'\x02d05', U'\x00000'),
-    CaseMap(U'\x010a6', U'\x00000', U'\x02d06', U'\x00000'),
-    CaseMap(U'\x010a7', U'\x00000', U'\x02d07', U'\x00000'),
-    CaseMap(U'\x010a8', U'\x00000', U'\x02d08', U'\x00000'),
-    CaseMap(U'\x010a9', U'\x00000', U'\x02d09', U'\x00000'),
-    CaseMap(U'\x010aa', U'\x00000', U'\x02d0a', U'\x00000'),
-    CaseMap(U'\x010ab', U'\x00000', U'\x02d0b', U'\x00000'),
-    CaseMap(U'\x010ac', U'\x00000', U'\x02d0c', U'\x00000'),
-    CaseMap(U'\x010ad', U'\x00000', U'\x02d0d', U'\x00000'),
-    CaseMap(U'\x010ae', U'\x00000', U'\x02d0e', U'\x00000'),
-    CaseMap(U'\x010af', U'\x00000', U'\x02d0f', U'\x00000'),
-    CaseMap(U'\x010b0', U'\x00000', U'\x02d10', U'\x00000'),
-    CaseMap(U'\x010b1', U'\x00000', U'\x02d11', U'\x00000'),
-    CaseMap(U'\x010b2', U'\x00000', U'\x02d12', U'\x00000'),
-    CaseMap(U'\x010b3', U'\x00000', U'\x02d13', U'\x00000'),
-    CaseMap(U'\x010b4', U'\x00000', U'\x02d14', U'\x00000'),
-    CaseMap(U'\x010b5', U'\x00000', U'\x02d15', U'\x00000'),
-    CaseMap(U'\x010b6', U'\x00000', U'\x02d16', U'\x00000'),
-    CaseMap(U'\x010b7', U'\x00000', U'\x02d17', U'\x00000'),
-    CaseMap(U'\x010b8', U'\x00000', U'\x02d18', U'\x00000'),
-    CaseMap(U'\x010b9', U'\x00000', U'\x02d19', U'\x00000'),
-    CaseMap(U'\x010ba', U'\x00000', U'\x02d1a', U'\x00000'),
-    CaseMap(U'\x010bb', U'\x00000', U'\x02d1b', U'\x00000'),
-    CaseMap(U'\x010bc', U'\x00000', U'\x02d1c', U'\x00000'),
-    CaseMap(U'\x010bd', U'\x00000', U'\x02d1d', U'\x00000'),
-    CaseMap(U'\x010be', U'\x00000', U'\x02d1e', U'\x00000'),
-    CaseMap(U'\x010bf', U'\x00000', U'\x02d1f', U'\x00000'),
-    CaseMap(U'\x010c0', U'\x00000', U'\x02d20', U'\x00000'),
-    CaseMap(U'\x010c1', U'\x00000', U'\x02d21', U'\x00000'),
-    CaseMap(U'\x010c2', U'\x00000', U'\x02d22', U'\x00000'),
-    CaseMap(U'\x010c3', U'\x00000', U'\x02d23', U'\x00000'),
-    CaseMap(U'\x010c4', U'\x00000', U'\x02d24', U'\x00000'),
-    CaseMap(U'\x010c5', U'\x00000', U'\x02d25', U'\x00000'), CaseMap(),
-    CaseMap(U'\x010c7', U'\x00000', U'\x02d27', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(U'\x010cd', U'\x00000', U'\x02d2d', U'\x00000'), CaseMap(),
-    CaseMap(), CaseMap(U'\x010d0', U'\x01c90', U'\x00000', U'\x010d0'),
-    CaseMap(U'\x010d1', U'\x01c91', U'\x00000', U'\x010d1'),
-    CaseMap(U'\x010d2', U'\x01c92', U'\x00000', U'\x010d2'),
-    CaseMap(U'\x010d3', U'\x01c93', U'\x00000', U'\x010d3'),
-    CaseMap(U'\x010d4', U'\x01c94', U'\x00000', U'\x010d4'),
-    CaseMap(U'\x010d5', U'\x01c95', U'\x00000', U'\x010d5'),
-    CaseMap(U'\x010d6', U'\x01c96', U'\x00000', U'\x010d6'),
-    CaseMap(U'\x010d7', U'\x01c97', U'\x00000', U'\x010d7'),
-    CaseMap(U'\x010d8', U'\x01c98', U'\x00000', U'\x010d8'),
-    CaseMap(U'\x010d9', U'\x01c99', U'\x00000', U'\x010d9'),
-    CaseMap(U'\x010da', U'\x01c9a', U'\x00000', U'\x010da'),
-    CaseMap(U'\x010db', U'\x01c9b', U'\x00000', U'\x010db'),
-    CaseMap(U'\x010dc', U'\x01c9c', U'\x00000', U'\x010dc'),
-    CaseMap(U'\x010dd', U'\x01c9d', U'\x00000', U'\x010dd'),
-    CaseMap(U'\x010de', U'\x01c9e', U'\x00000', U'\x010de'),
-    CaseMap(U'\x010df', U'\x01c9f', U'\x00000', U'\x010df'),
-    CaseMap(U'\x010e0', U'\x01ca0', U'\x00000', U'\x010e0'),
-    CaseMap(U'\x010e1', U'\x01ca1', U'\x00000', U'\x010e1'),
-    CaseMap(U'\x010e2', U'\x01ca2', U'\x00000', U'\x010e2'),
-    CaseMap(U'\x010e3', U'\x01ca3', U'\x00000', U'\x010e3'),
-    CaseMap(U'\x010e4', U'\x01ca4', U'\x00000', U'\x010e4'),
-    CaseMap(U'\x010e5', U'\x01ca5', U'\x00000', U'\x010e5'),
-    CaseMap(U'\x010e6', U'\x01ca6', U'\x00000', U'\x010e6'),
-    CaseMap(U'\x010e7', U'\x01ca7', U'\x00000', U'\x010e7'),
-    CaseMap(U'\x010e8', U'\x01ca8', U'\x00000', U'\x010e8'),
-    CaseMap(U'\x010e9', U'\x01ca9', U'\x00000', U'\x010e9'),
-    CaseMap(U'\x010ea', U'\x01caa', U'\x00000', U'\x010ea'),
-    CaseMap(U'\x010eb', U'\x01cab', U'\x00000', U'\x010eb'),
-    CaseMap(U'\x010ec', U'\x01cac', U'\x00000', U'\x010ec'),
-    CaseMap(U'\x010ed', U'\x01cad', U'\x00000', U'\x010ed'),
-    CaseMap(U'\x010ee', U'\x01cae', U'\x00000', U'\x010ee'),
-    CaseMap(U'\x010ef', U'\x01caf', U'\x00000', U'\x010ef'),
-    CaseMap(U'\x010f0', U'\x01cb0', U'\x00000', U'\x010f0'),
-    CaseMap(U'\x010f1', U'\x01cb1', U'\x00000', U'\x010f1'),
-    CaseMap(U'\x010f2', U'\x01cb2', U'\x00000', U'\x010f2'),
-    CaseMap(U'\x010f3', U'\x01cb3', U'\x00000', U'\x010f3'),
-    CaseMap(U'\x010f4', U'\x01cb4', U'\x00000', U'\x010f4'),
-    CaseMap(U'\x010f5', U'\x01cb5', U'\x00000', U'\x010f5'),
-    CaseMap(U'\x010f6', U'\x01cb6', U'\x00000', U'\x010f6'),
-    CaseMap(U'\x010f7', U'\x01cb7', U'\x00000', U'\x010f7'),
-    CaseMap(U'\x010f8', U'\x01cb8', U'\x00000', U'\x010f8'),
-    CaseMap(U'\x010f9', U'\x01cb9', U'\x00000', U'\x010f9'),
-    CaseMap(U'\x010fa', U'\x01cba', U'\x00000', U'\x010fa'), CaseMap(), CaseMap(),
-    CaseMap(U'\x010fd', U'\x01cbd', U'\x00000', U'\x010fd'),
-    CaseMap(U'\x010fe', U'\x01cbe', U'\x00000', U'\x010fe'),
-    CaseMap(U'\x010ff', U'\x01cbf', U'\x00000', U'\x010ff')};
-
-static const std::vector<CaseMap> CASEMAP_0x0010(
-    T_CASEMAP_0x0010, T_CASEMAP_0x0010 + (sizeof(T_CASEMAP_0x0010) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0013[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x013a0', U'\x00000', U'\x0ab70', U'\x00000'),
-    CaseMap(U'\x013a1', U'\x00000', U'\x0ab71', U'\x00000'),
-    CaseMap(U'\x013a2', U'\x00000', U'\x0ab72', U'\x00000'),
-    CaseMap(U'\x013a3', U'\x00000', U'\x0ab73', U'\x00000'),
-    CaseMap(U'\x013a4', U'\x00000', U'\x0ab74', U'\x00000'),
-    CaseMap(U'\x013a5', U'\x00000', U'\x0ab75', U'\x00000'),
-    CaseMap(U'\x013a6', U'\x00000', U'\x0ab76', U'\x00000'),
-    CaseMap(U'\x013a7', U'\x00000', U'\x0ab77', U'\x00000'),
-    CaseMap(U'\x013a8', U'\x00000', U'\x0ab78', U'\x00000'),
-    CaseMap(U'\x013a9', U'\x00000', U'\x0ab79', U'\x00000'),
-    CaseMap(U'\x013aa', U'\x00000', U'\x0ab7a', U'\x00000'),
-    CaseMap(U'\x013ab', U'\x00000', U'\x0ab7b', U'\x00000'),
-    CaseMap(U'\x013ac', U'\x00000', U'\x0ab7c', U'\x00000'),
-    CaseMap(U'\x013ad', U'\x00000', U'\x0ab7d', U'\x00000'),
-    CaseMap(U'\x013ae', U'\x00000', U'\x0ab7e', U'\x00000'),
-    CaseMap(U'\x013af', U'\x00000', U'\x0ab7f', U'\x00000'),
-    CaseMap(U'\x013b0', U'\x00000', U'\x0ab80', U'\x00000'),
-    CaseMap(U'\x013b1', U'\x00000', U'\x0ab81', U'\x00000'),
-    CaseMap(U'\x013b2', U'\x00000', U'\x0ab82', U'\x00000'),
-    CaseMap(U'\x013b3', U'\x00000', U'\x0ab83', U'\x00000'),
-    CaseMap(U'\x013b4', U'\x00000', U'\x0ab84', U'\x00000'),
-    CaseMap(U'\x013b5', U'\x00000', U'\x0ab85', U'\x00000'),
-    CaseMap(U'\x013b6', U'\x00000', U'\x0ab86', U'\x00000'),
-    CaseMap(U'\x013b7', U'\x00000', U'\x0ab87', U'\x00000'),
-    CaseMap(U'\x013b8', U'\x00000', U'\x0ab88', U'\x00000'),
-    CaseMap(U'\x013b9', U'\x00000', U'\x0ab89', U'\x00000'),
-    CaseMap(U'\x013ba', U'\x00000', U'\x0ab8a', U'\x00000'),
-    CaseMap(U'\x013bb', U'\x00000', U'\x0ab8b', U'\x00000'),
-    CaseMap(U'\x013bc', U'\x00000', U'\x0ab8c', U'\x00000'),
-    CaseMap(U'\x013bd', U'\x00000', U'\x0ab8d', U'\x00000'),
-    CaseMap(U'\x013be', U'\x00000', U'\x0ab8e', U'\x00000'),
-    CaseMap(U'\x013bf', U'\x00000', U'\x0ab8f', U'\x00000'),
-    CaseMap(U'\x013c0', U'\x00000', U'\x0ab90', U'\x00000'),
-    CaseMap(U'\x013c1', U'\x00000', U'\x0ab91', U'\x00000'),
-    CaseMap(U'\x013c2', U'\x00000', U'\x0ab92', U'\x00000'),
-    CaseMap(U'\x013c3', U'\x00000', U'\x0ab93', U'\x00000'),
-    CaseMap(U'\x013c4', U'\x00000', U'\x0ab94', U'\x00000'),
-    CaseMap(U'\x013c5', U'\x00000', U'\x0ab95', U'\x00000'),
-    CaseMap(U'\x013c6', U'\x00000', U'\x0ab96', U'\x00000'),
-    CaseMap(U'\x013c7', U'\x00000', U'\x0ab97', U'\x00000'),
-    CaseMap(U'\x013c8', U'\x00000', U'\x0ab98', U'\x00000'),
-    CaseMap(U'\x013c9', U'\x00000', U'\x0ab99', U'\x00000'),
-    CaseMap(U'\x013ca', U'\x00000', U'\x0ab9a', U'\x00000'),
-    CaseMap(U'\x013cb', U'\x00000', U'\x0ab9b', U'\x00000'),
-    CaseMap(U'\x013cc', U'\x00000', U'\x0ab9c', U'\x00000'),
-    CaseMap(U'\x013cd', U'\x00000', U'\x0ab9d', U'\x00000'),
-    CaseMap(U'\x013ce', U'\x00000', U'\x0ab9e', U'\x00000'),
-    CaseMap(U'\x013cf', U'\x00000', U'\x0ab9f', U'\x00000'),
-    CaseMap(U'\x013d0', U'\x00000', U'\x0aba0', U'\x00000'),
-    CaseMap(U'\x013d1', U'\x00000', U'\x0aba1', U'\x00000'),
-    CaseMap(U'\x013d2', U'\x00000', U'\x0aba2', U'\x00000'),
-    CaseMap(U'\x013d3', U'\x00000', U'\x0aba3', U'\x00000'),
-    CaseMap(U'\x013d4', U'\x00000', U'\x0aba4', U'\x00000'),
-    CaseMap(U'\x013d5', U'\x00000', U'\x0aba5', U'\x00000'),
-    CaseMap(U'\x013d6', U'\x00000', U'\x0aba6', U'\x00000'),
-    CaseMap(U'\x013d7', U'\x00000', U'\x0aba7', U'\x00000'),
-    CaseMap(U'\x013d8', U'\x00000', U'\x0aba8', U'\x00000'),
-    CaseMap(U'\x013d9', U'\x00000', U'\x0aba9', U'\x00000'),
-    CaseMap(U'\x013da', U'\x00000', U'\x0abaa', U'\x00000'),
-    CaseMap(U'\x013db', U'\x00000', U'\x0abab', U'\x00000'),
-    CaseMap(U'\x013dc', U'\x00000', U'\x0abac', U'\x00000'),
-    CaseMap(U'\x013dd', U'\x00000', U'\x0abad', U'\x00000'),
-    CaseMap(U'\x013de', U'\x00000', U'\x0abae', U'\x00000'),
-    CaseMap(U'\x013df', U'\x00000', U'\x0abaf', U'\x00000'),
-    CaseMap(U'\x013e0', U'\x00000', U'\x0abb0', U'\x00000'),
-    CaseMap(U'\x013e1', U'\x00000', U'\x0abb1', U'\x00000'),
-    CaseMap(U'\x013e2', U'\x00000', U'\x0abb2', U'\x00000'),
-    CaseMap(U'\x013e3', U'\x00000', U'\x0abb3', U'\x00000'),
-    CaseMap(U'\x013e4', U'\x00000', U'\x0abb4', U'\x00000'),
-    CaseMap(U'\x013e5', U'\x00000', U'\x0abb5', U'\x00000'),
-    CaseMap(U'\x013e6', U'\x00000', U'\x0abb6', U'\x00000'),
-    CaseMap(U'\x013e7', U'\x00000', U'\x0abb7', U'\x00000'),
-    CaseMap(U'\x013e8', U'\x00000', U'\x0abb8', U'\x00000'),
-    CaseMap(U'\x013e9', U'\x00000', U'\x0abb9', U'\x00000'),
-    CaseMap(U'\x013ea', U'\x00000', U'\x0abba', U'\x00000'),
-    CaseMap(U'\x013eb', U'\x00000', U'\x0abbb', U'\x00000'),
-    CaseMap(U'\x013ec', U'\x00000', U'\x0abbc', U'\x00000'),
-    CaseMap(U'\x013ed', U'\x00000', U'\x0abbd', U'\x00000'),
-    CaseMap(U'\x013ee', U'\x00000', U'\x0abbe', U'\x00000'),
-    CaseMap(U'\x013ef', U'\x00000', U'\x0abbf', U'\x00000'),
-    CaseMap(U'\x013f0', U'\x00000', U'\x013f8', U'\x00000'),
-    CaseMap(U'\x013f1', U'\x00000', U'\x013f9', U'\x00000'),
-    CaseMap(U'\x013f2', U'\x00000', U'\x013fa', U'\x00000'),
-    CaseMap(U'\x013f3', U'\x00000', U'\x013fb', U'\x00000'),
-    CaseMap(U'\x013f4', U'\x00000', U'\x013fc', U'\x00000'),
-    CaseMap(U'\x013f5', U'\x00000', U'\x013fd', U'\x00000'), CaseMap(), CaseMap(),
-    CaseMap(U'\x013f8', U'\x013f0', U'\x00000', U'\x013f0'),
-    CaseMap(U'\x013f9', U'\x013f1', U'\x00000', U'\x013f1'),
-    CaseMap(U'\x013fa', U'\x013f2', U'\x00000', U'\x013f2'),
-    CaseMap(U'\x013fb', U'\x013f3', U'\x00000', U'\x013f3'),
-    CaseMap(U'\x013fc', U'\x013f4', U'\x00000', U'\x013f4'),
-    CaseMap(U'\x013fd', U'\x013f5', U'\x00000', U'\x013f5')};
-
-static const std::vector<CaseMap> CASEMAP_0x0013(
-    T_CASEMAP_0x0013, T_CASEMAP_0x0013 + (sizeof(T_CASEMAP_0x0013) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x001c[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x01c80', U'\x00412', U'\x00000', U'\x00412'),
-    CaseMap(U'\x01c81', U'\x00414', U'\x00000', U'\x00414'),
-    CaseMap(U'\x01c82', U'\x0041e', U'\x00000', U'\x0041e'),
-    CaseMap(U'\x01c83', U'\x00421', U'\x00000', U'\x00421'),
-    CaseMap(U'\x01c84', U'\x00422', U'\x00000', U'\x00422'),
-    CaseMap(U'\x01c85', U'\x00422', U'\x00000', U'\x00422'),
-    CaseMap(U'\x01c86', U'\x0042a', U'\x00000', U'\x0042a'),
-    CaseMap(U'\x01c87', U'\x00462', U'\x00000', U'\x00462'),
-    CaseMap(U'\x01c88', U'\x0a64a', U'\x00000', U'\x0a64a'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x01c90', U'\x00000', U'\x010d0', U'\x00000'),
-    CaseMap(U'\x01c91', U'\x00000', U'\x010d1', U'\x00000'),
-    CaseMap(U'\x01c92', U'\x00000', U'\x010d2', U'\x00000'),
-    CaseMap(U'\x01c93', U'\x00000', U'\x010d3', U'\x00000'),
-    CaseMap(U'\x01c94', U'\x00000', U'\x010d4', U'\x00000'),
-    CaseMap(U'\x01c95', U'\x00000', U'\x010d5', U'\x00000'),
-    CaseMap(U'\x01c96', U'\x00000', U'\x010d6', U'\x00000'),
-    CaseMap(U'\x01c97', U'\x00000', U'\x010d7', U'\x00000'),
-    CaseMap(U'\x01c98', U'\x00000', U'\x010d8', U'\x00000'),
-    CaseMap(U'\x01c99', U'\x00000', U'\x010d9', U'\x00000'),
-    CaseMap(U'\x01c9a', U'\x00000', U'\x010da', U'\x00000'),
-    CaseMap(U'\x01c9b', U'\x00000', U'\x010db', U'\x00000'),
-    CaseMap(U'\x01c9c', U'\x00000', U'\x010dc', U'\x00000'),
-    CaseMap(U'\x01c9d', U'\x00000', U'\x010dd', U'\x00000'),
-    CaseMap(U'\x01c9e', U'\x00000', U'\x010de', U'\x00000'),
-    CaseMap(U'\x01c9f', U'\x00000', U'\x010df', U'\x00000'),
-    CaseMap(U'\x01ca0', U'\x00000', U'\x010e0', U'\x00000'),
-    CaseMap(U'\x01ca1', U'\x00000', U'\x010e1', U'\x00000'),
-    CaseMap(U'\x01ca2', U'\x00000', U'\x010e2', U'\x00000'),
-    CaseMap(U'\x01ca3', U'\x00000', U'\x010e3', U'\x00000'),
-    CaseMap(U'\x01ca4', U'\x00000', U'\x010e4', U'\x00000'),
-    CaseMap(U'\x01ca5', U'\x00000', U'\x010e5', U'\x00000'),
-    CaseMap(U'\x01ca6', U'\x00000', U'\x010e6', U'\x00000'),
-    CaseMap(U'\x01ca7', U'\x00000', U'\x010e7', U'\x00000'),
-    CaseMap(U'\x01ca8', U'\x00000', U'\x010e8', U'\x00000'),
-    CaseMap(U'\x01ca9', U'\x00000', U'\x010e9', U'\x00000'),
-    CaseMap(U'\x01caa', U'\x00000', U'\x010ea', U'\x00000'),
-    CaseMap(U'\x01cab', U'\x00000', U'\x010eb', U'\x00000'),
-    CaseMap(U'\x01cac', U'\x00000', U'\x010ec', U'\x00000'),
-    CaseMap(U'\x01cad', U'\x00000', U'\x010ed', U'\x00000'),
-    CaseMap(U'\x01cae', U'\x00000', U'\x010ee', U'\x00000'),
-    CaseMap(U'\x01caf', U'\x00000', U'\x010ef', U'\x00000'),
-    CaseMap(U'\x01cb0', U'\x00000', U'\x010f0', U'\x00000'),
-    CaseMap(U'\x01cb1', U'\x00000', U'\x010f1', U'\x00000'),
-    CaseMap(U'\x01cb2', U'\x00000', U'\x010f2', U'\x00000'),
-    CaseMap(U'\x01cb3', U'\x00000', U'\x010f3', U'\x00000'),
-    CaseMap(U'\x01cb4', U'\x00000', U'\x010f4', U'\x00000'),
-    CaseMap(U'\x01cb5', U'\x00000', U'\x010f5', U'\x00000'),
-    CaseMap(U'\x01cb6', U'\x00000', U'\x010f6', U'\x00000'),
-    CaseMap(U'\x01cb7', U'\x00000', U'\x010f7', U'\x00000'),
-    CaseMap(U'\x01cb8', U'\x00000', U'\x010f8', U'\x00000'),
-    CaseMap(U'\x01cb9', U'\x00000', U'\x010f9', U'\x00000'),
-    CaseMap(U'\x01cba', U'\x00000', U'\x010fa', U'\x00000'), CaseMap(), CaseMap(),
-    CaseMap(U'\x01cbd', U'\x00000', U'\x010fd', U'\x00000'),
-    CaseMap(U'\x01cbe', U'\x00000', U'\x010fe', U'\x00000'),
-    CaseMap(U'\x01cbf', U'\x00000', U'\x010ff', U'\x00000')};
-
-static const std::vector<CaseMap> CASEMAP_0x001c(
-    T_CASEMAP_0x001c, T_CASEMAP_0x001c + (sizeof(T_CASEMAP_0x001c) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x001d[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x01d79', U'\x0a77d', U'\x00000', U'\x0a77d'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x01d7d', U'\x02c63', U'\x00000', U'\x02c63'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x01d8e', U'\x0a7c6', U'\x00000', U'\x0a7c6')};
-
-static const std::vector<CaseMap> CASEMAP_0x001d(
-    T_CASEMAP_0x001d, T_CASEMAP_0x001d + (sizeof(T_CASEMAP_0x001d) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x001e[]{CaseMap(U'\x01e00', U'\x00000', U'\x01e01', U'\x00000'),
-    CaseMap(U'\x01e01', U'\x01e00', U'\x00000', U'\x01e00'),
-    CaseMap(U'\x01e02', U'\x00000', U'\x01e03', U'\x00000'),
-    CaseMap(U'\x01e03', U'\x01e02', U'\x00000', U'\x01e02'),
-    CaseMap(U'\x01e04', U'\x00000', U'\x01e05', U'\x00000'),
-    CaseMap(U'\x01e05', U'\x01e04', U'\x00000', U'\x01e04'),
-    CaseMap(U'\x01e06', U'\x00000', U'\x01e07', U'\x00000'),
-    CaseMap(U'\x01e07', U'\x01e06', U'\x00000', U'\x01e06'),
-    CaseMap(U'\x01e08', U'\x00000', U'\x01e09', U'\x00000'),
-    CaseMap(U'\x01e09', U'\x01e08', U'\x00000', U'\x01e08'),
-    CaseMap(U'\x01e0a', U'\x00000', U'\x01e0b', U'\x00000'),
-    CaseMap(U'\x01e0b', U'\x01e0a', U'\x00000', U'\x01e0a'),
-    CaseMap(U'\x01e0c', U'\x00000', U'\x01e0d', U'\x00000'),
-    CaseMap(U'\x01e0d', U'\x01e0c', U'\x00000', U'\x01e0c'),
-    CaseMap(U'\x01e0e', U'\x00000', U'\x01e0f', U'\x00000'),
-    CaseMap(U'\x01e0f', U'\x01e0e', U'\x00000', U'\x01e0e'),
-    CaseMap(U'\x01e10', U'\x00000', U'\x01e11', U'\x00000'),
-    CaseMap(U'\x01e11', U'\x01e10', U'\x00000', U'\x01e10'),
-    CaseMap(U'\x01e12', U'\x00000', U'\x01e13', U'\x00000'),
-    CaseMap(U'\x01e13', U'\x01e12', U'\x00000', U'\x01e12'),
-    CaseMap(U'\x01e14', U'\x00000', U'\x01e15', U'\x00000'),
-    CaseMap(U'\x01e15', U'\x01e14', U'\x00000', U'\x01e14'),
-    CaseMap(U'\x01e16', U'\x00000', U'\x01e17', U'\x00000'),
-    CaseMap(U'\x01e17', U'\x01e16', U'\x00000', U'\x01e16'),
-    CaseMap(U'\x01e18', U'\x00000', U'\x01e19', U'\x00000'),
-    CaseMap(U'\x01e19', U'\x01e18', U'\x00000', U'\x01e18'),
-    CaseMap(U'\x01e1a', U'\x00000', U'\x01e1b', U'\x00000'),
-    CaseMap(U'\x01e1b', U'\x01e1a', U'\x00000', U'\x01e1a'),
-    CaseMap(U'\x01e1c', U'\x00000', U'\x01e1d', U'\x00000'),
-    CaseMap(U'\x01e1d', U'\x01e1c', U'\x00000', U'\x01e1c'),
-    CaseMap(U'\x01e1e', U'\x00000', U'\x01e1f', U'\x00000'),
-    CaseMap(U'\x01e1f', U'\x01e1e', U'\x00000', U'\x01e1e'),
-    CaseMap(U'\x01e20', U'\x00000', U'\x01e21', U'\x00000'),
-    CaseMap(U'\x01e21', U'\x01e20', U'\x00000', U'\x01e20'),
-    CaseMap(U'\x01e22', U'\x00000', U'\x01e23', U'\x00000'),
-    CaseMap(U'\x01e23', U'\x01e22', U'\x00000', U'\x01e22'),
-    CaseMap(U'\x01e24', U'\x00000', U'\x01e25', U'\x00000'),
-    CaseMap(U'\x01e25', U'\x01e24', U'\x00000', U'\x01e24'),
-    CaseMap(U'\x01e26', U'\x00000', U'\x01e27', U'\x00000'),
-    CaseMap(U'\x01e27', U'\x01e26', U'\x00000', U'\x01e26'),
-    CaseMap(U'\x01e28', U'\x00000', U'\x01e29', U'\x00000'),
-    CaseMap(U'\x01e29', U'\x01e28', U'\x00000', U'\x01e28'),
-    CaseMap(U'\x01e2a', U'\x00000', U'\x01e2b', U'\x00000'),
-    CaseMap(U'\x01e2b', U'\x01e2a', U'\x00000', U'\x01e2a'),
-    CaseMap(U'\x01e2c', U'\x00000', U'\x01e2d', U'\x00000'),
-    CaseMap(U'\x01e2d', U'\x01e2c', U'\x00000', U'\x01e2c'),
-    CaseMap(U'\x01e2e', U'\x00000', U'\x01e2f', U'\x00000'),
-    CaseMap(U'\x01e2f', U'\x01e2e', U'\x00000', U'\x01e2e'),
-    CaseMap(U'\x01e30', U'\x00000', U'\x01e31', U'\x00000'),
-    CaseMap(U'\x01e31', U'\x01e30', U'\x00000', U'\x01e30'),
-    CaseMap(U'\x01e32', U'\x00000', U'\x01e33', U'\x00000'),
-    CaseMap(U'\x01e33', U'\x01e32', U'\x00000', U'\x01e32'),
-    CaseMap(U'\x01e34', U'\x00000', U'\x01e35', U'\x00000'),
-    CaseMap(U'\x01e35', U'\x01e34', U'\x00000', U'\x01e34'),
-    CaseMap(U'\x01e36', U'\x00000', U'\x01e37', U'\x00000'),
-    CaseMap(U'\x01e37', U'\x01e36', U'\x00000', U'\x01e36'),
-    CaseMap(U'\x01e38', U'\x00000', U'\x01e39', U'\x00000'),
-    CaseMap(U'\x01e39', U'\x01e38', U'\x00000', U'\x01e38'),
-    CaseMap(U'\x01e3a', U'\x00000', U'\x01e3b', U'\x00000'),
-    CaseMap(U'\x01e3b', U'\x01e3a', U'\x00000', U'\x01e3a'),
-    CaseMap(U'\x01e3c', U'\x00000', U'\x01e3d', U'\x00000'),
-    CaseMap(U'\x01e3d', U'\x01e3c', U'\x00000', U'\x01e3c'),
-    CaseMap(U'\x01e3e', U'\x00000', U'\x01e3f', U'\x00000'),
-    CaseMap(U'\x01e3f', U'\x01e3e', U'\x00000', U'\x01e3e'),
-    CaseMap(U'\x01e40', U'\x00000', U'\x01e41', U'\x00000'),
-    CaseMap(U'\x01e41', U'\x01e40', U'\x00000', U'\x01e40'),
-    CaseMap(U'\x01e42', U'\x00000', U'\x01e43', U'\x00000'),
-    CaseMap(U'\x01e43', U'\x01e42', U'\x00000', U'\x01e42'),
-    CaseMap(U'\x01e44', U'\x00000', U'\x01e45', U'\x00000'),
-    CaseMap(U'\x01e45', U'\x01e44', U'\x00000', U'\x01e44'),
-    CaseMap(U'\x01e46', U'\x00000', U'\x01e47', U'\x00000'),
-    CaseMap(U'\x01e47', U'\x01e46', U'\x00000', U'\x01e46'),
-    CaseMap(U'\x01e48', U'\x00000', U'\x01e49', U'\x00000'),
-    CaseMap(U'\x01e49', U'\x01e48', U'\x00000', U'\x01e48'),
-    CaseMap(U'\x01e4a', U'\x00000', U'\x01e4b', U'\x00000'),
-    CaseMap(U'\x01e4b', U'\x01e4a', U'\x00000', U'\x01e4a'),
-    CaseMap(U'\x01e4c', U'\x00000', U'\x01e4d', U'\x00000'),
-    CaseMap(U'\x01e4d', U'\x01e4c', U'\x00000', U'\x01e4c'),
-    CaseMap(U'\x01e4e', U'\x00000', U'\x01e4f', U'\x00000'),
-    CaseMap(U'\x01e4f', U'\x01e4e', U'\x00000', U'\x01e4e'),
-    CaseMap(U'\x01e50', U'\x00000', U'\x01e51', U'\x00000'),
-    CaseMap(U'\x01e51', U'\x01e50', U'\x00000', U'\x01e50'),
-    CaseMap(U'\x01e52', U'\x00000', U'\x01e53', U'\x00000'),
-    CaseMap(U'\x01e53', U'\x01e52', U'\x00000', U'\x01e52'),
-    CaseMap(U'\x01e54', U'\x00000', U'\x01e55', U'\x00000'),
-    CaseMap(U'\x01e55', U'\x01e54', U'\x00000', U'\x01e54'),
-    CaseMap(U'\x01e56', U'\x00000', U'\x01e57', U'\x00000'),
-    CaseMap(U'\x01e57', U'\x01e56', U'\x00000', U'\x01e56'),
-    CaseMap(U'\x01e58', U'\x00000', U'\x01e59', U'\x00000'),
-    CaseMap(U'\x01e59', U'\x01e58', U'\x00000', U'\x01e58'),
-    CaseMap(U'\x01e5a', U'\x00000', U'\x01e5b', U'\x00000'),
-    CaseMap(U'\x01e5b', U'\x01e5a', U'\x00000', U'\x01e5a'),
-    CaseMap(U'\x01e5c', U'\x00000', U'\x01e5d', U'\x00000'),
-    CaseMap(U'\x01e5d', U'\x01e5c', U'\x00000', U'\x01e5c'),
-    CaseMap(U'\x01e5e', U'\x00000', U'\x01e5f', U'\x00000'),
-    CaseMap(U'\x01e5f', U'\x01e5e', U'\x00000', U'\x01e5e'),
-    CaseMap(U'\x01e60', U'\x00000', U'\x01e61', U'\x00000'),
-    CaseMap(U'\x01e61', U'\x01e60', U'\x00000', U'\x01e60'),
-    CaseMap(U'\x01e62', U'\x00000', U'\x01e63', U'\x00000'),
-    CaseMap(U'\x01e63', U'\x01e62', U'\x00000', U'\x01e62'),
-    CaseMap(U'\x01e64', U'\x00000', U'\x01e65', U'\x00000'),
-    CaseMap(U'\x01e65', U'\x01e64', U'\x00000', U'\x01e64'),
-    CaseMap(U'\x01e66', U'\x00000', U'\x01e67', U'\x00000'),
-    CaseMap(U'\x01e67', U'\x01e66', U'\x00000', U'\x01e66'),
-    CaseMap(U'\x01e68', U'\x00000', U'\x01e69', U'\x00000'),
-    CaseMap(U'\x01e69', U'\x01e68', U'\x00000', U'\x01e68'),
-    CaseMap(U'\x01e6a', U'\x00000', U'\x01e6b', U'\x00000'),
-    CaseMap(U'\x01e6b', U'\x01e6a', U'\x00000', U'\x01e6a'),
-    CaseMap(U'\x01e6c', U'\x00000', U'\x01e6d', U'\x00000'),
-    CaseMap(U'\x01e6d', U'\x01e6c', U'\x00000', U'\x01e6c'),
-    CaseMap(U'\x01e6e', U'\x00000', U'\x01e6f', U'\x00000'),
-    CaseMap(U'\x01e6f', U'\x01e6e', U'\x00000', U'\x01e6e'),
-    CaseMap(U'\x01e70', U'\x00000', U'\x01e71', U'\x00000'),
-    CaseMap(U'\x01e71', U'\x01e70', U'\x00000', U'\x01e70'),
-    CaseMap(U'\x01e72', U'\x00000', U'\x01e73', U'\x00000'),
-    CaseMap(U'\x01e73', U'\x01e72', U'\x00000', U'\x01e72'),
-    CaseMap(U'\x01e74', U'\x00000', U'\x01e75', U'\x00000'),
-    CaseMap(U'\x01e75', U'\x01e74', U'\x00000', U'\x01e74'),
-    CaseMap(U'\x01e76', U'\x00000', U'\x01e77', U'\x00000'),
-    CaseMap(U'\x01e77', U'\x01e76', U'\x00000', U'\x01e76'),
-    CaseMap(U'\x01e78', U'\x00000', U'\x01e79', U'\x00000'),
-    CaseMap(U'\x01e79', U'\x01e78', U'\x00000', U'\x01e78'),
-    CaseMap(U'\x01e7a', U'\x00000', U'\x01e7b', U'\x00000'),
-    CaseMap(U'\x01e7b', U'\x01e7a', U'\x00000', U'\x01e7a'),
-    CaseMap(U'\x01e7c', U'\x00000', U'\x01e7d', U'\x00000'),
-    CaseMap(U'\x01e7d', U'\x01e7c', U'\x00000', U'\x01e7c'),
-    CaseMap(U'\x01e7e', U'\x00000', U'\x01e7f', U'\x00000'),
-    CaseMap(U'\x01e7f', U'\x01e7e', U'\x00000', U'\x01e7e'),
-    CaseMap(U'\x01e80', U'\x00000', U'\x01e81', U'\x00000'),
-    CaseMap(U'\x01e81', U'\x01e80', U'\x00000', U'\x01e80'),
-    CaseMap(U'\x01e82', U'\x00000', U'\x01e83', U'\x00000'),
-    CaseMap(U'\x01e83', U'\x01e82', U'\x00000', U'\x01e82'),
-    CaseMap(U'\x01e84', U'\x00000', U'\x01e85', U'\x00000'),
-    CaseMap(U'\x01e85', U'\x01e84', U'\x00000', U'\x01e84'),
-    CaseMap(U'\x01e86', U'\x00000', U'\x01e87', U'\x00000'),
-    CaseMap(U'\x01e87', U'\x01e86', U'\x00000', U'\x01e86'),
-    CaseMap(U'\x01e88', U'\x00000', U'\x01e89', U'\x00000'),
-    CaseMap(U'\x01e89', U'\x01e88', U'\x00000', U'\x01e88'),
-    CaseMap(U'\x01e8a', U'\x00000', U'\x01e8b', U'\x00000'),
-    CaseMap(U'\x01e8b', U'\x01e8a', U'\x00000', U'\x01e8a'),
-    CaseMap(U'\x01e8c', U'\x00000', U'\x01e8d', U'\x00000'),
-    CaseMap(U'\x01e8d', U'\x01e8c', U'\x00000', U'\x01e8c'),
-    CaseMap(U'\x01e8e', U'\x00000', U'\x01e8f', U'\x00000'),
-    CaseMap(U'\x01e8f', U'\x01e8e', U'\x00000', U'\x01e8e'),
-    CaseMap(U'\x01e90', U'\x00000', U'\x01e91', U'\x00000'),
-    CaseMap(U'\x01e91', U'\x01e90', U'\x00000', U'\x01e90'),
-    CaseMap(U'\x01e92', U'\x00000', U'\x01e93', U'\x00000'),
-    CaseMap(U'\x01e93', U'\x01e92', U'\x00000', U'\x01e92'),
-    CaseMap(U'\x01e94', U'\x00000', U'\x01e95', U'\x00000'),
-    CaseMap(U'\x01e95', U'\x01e94', U'\x00000', U'\x01e94'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(U'\x01e9b', U'\x01e60', U'\x00000', U'\x01e60'), CaseMap(),
-    CaseMap(), CaseMap(U'\x01e9e', U'\x00000', U'\x000df', U'\x00000'), CaseMap(),
-    CaseMap(U'\x01ea0', U'\x00000', U'\x01ea1', U'\x00000'),
-    CaseMap(U'\x01ea1', U'\x01ea0', U'\x00000', U'\x01ea0'),
-    CaseMap(U'\x01ea2', U'\x00000', U'\x01ea3', U'\x00000'),
-    CaseMap(U'\x01ea3', U'\x01ea2', U'\x00000', U'\x01ea2'),
-    CaseMap(U'\x01ea4', U'\x00000', U'\x01ea5', U'\x00000'),
-    CaseMap(U'\x01ea5', U'\x01ea4', U'\x00000', U'\x01ea4'),
-    CaseMap(U'\x01ea6', U'\x00000', U'\x01ea7', U'\x00000'),
-    CaseMap(U'\x01ea7', U'\x01ea6', U'\x00000', U'\x01ea6'),
-    CaseMap(U'\x01ea8', U'\x00000', U'\x01ea9', U'\x00000'),
-    CaseMap(U'\x01ea9', U'\x01ea8', U'\x00000', U'\x01ea8'),
-    CaseMap(U'\x01eaa', U'\x00000', U'\x01eab', U'\x00000'),
-    CaseMap(U'\x01eab', U'\x01eaa', U'\x00000', U'\x01eaa'),
-    CaseMap(U'\x01eac', U'\x00000', U'\x01ead', U'\x00000'),
-    CaseMap(U'\x01ead', U'\x01eac', U'\x00000', U'\x01eac'),
-    CaseMap(U'\x01eae', U'\x00000', U'\x01eaf', U'\x00000'),
-    CaseMap(U'\x01eaf', U'\x01eae', U'\x00000', U'\x01eae'),
-    CaseMap(U'\x01eb0', U'\x00000', U'\x01eb1', U'\x00000'),
-    CaseMap(U'\x01eb1', U'\x01eb0', U'\x00000', U'\x01eb0'),
-    CaseMap(U'\x01eb2', U'\x00000', U'\x01eb3', U'\x00000'),
-    CaseMap(U'\x01eb3', U'\x01eb2', U'\x00000', U'\x01eb2'),
-    CaseMap(U'\x01eb4', U'\x00000', U'\x01eb5', U'\x00000'),
-    CaseMap(U'\x01eb5', U'\x01eb4', U'\x00000', U'\x01eb4'),
-    CaseMap(U'\x01eb6', U'\x00000', U'\x01eb7', U'\x00000'),
-    CaseMap(U'\x01eb7', U'\x01eb6', U'\x00000', U'\x01eb6'),
-    CaseMap(U'\x01eb8', U'\x00000', U'\x01eb9', U'\x00000'),
-    CaseMap(U'\x01eb9', U'\x01eb8', U'\x00000', U'\x01eb8'),
-    CaseMap(U'\x01eba', U'\x00000', U'\x01ebb', U'\x00000'),
-    CaseMap(U'\x01ebb', U'\x01eba', U'\x00000', U'\x01eba'),
-    CaseMap(U'\x01ebc', U'\x00000', U'\x01ebd', U'\x00000'),
-    CaseMap(U'\x01ebd', U'\x01ebc', U'\x00000', U'\x01ebc'),
-    CaseMap(U'\x01ebe', U'\x00000', U'\x01ebf', U'\x00000'),
-    CaseMap(U'\x01ebf', U'\x01ebe', U'\x00000', U'\x01ebe'),
-    CaseMap(U'\x01ec0', U'\x00000', U'\x01ec1', U'\x00000'),
-    CaseMap(U'\x01ec1', U'\x01ec0', U'\x00000', U'\x01ec0'),
-    CaseMap(U'\x01ec2', U'\x00000', U'\x01ec3', U'\x00000'),
-    CaseMap(U'\x01ec3', U'\x01ec2', U'\x00000', U'\x01ec2'),
-    CaseMap(U'\x01ec4', U'\x00000', U'\x01ec5', U'\x00000'),
-    CaseMap(U'\x01ec5', U'\x01ec4', U'\x00000', U'\x01ec4'),
-    CaseMap(U'\x01ec6', U'\x00000', U'\x01ec7', U'\x00000'),
-    CaseMap(U'\x01ec7', U'\x01ec6', U'\x00000', U'\x01ec6'),
-    CaseMap(U'\x01ec8', U'\x00000', U'\x01ec9', U'\x00000'),
-    CaseMap(U'\x01ec9', U'\x01ec8', U'\x00000', U'\x01ec8'),
-    CaseMap(U'\x01eca', U'\x00000', U'\x01ecb', U'\x00000'),
-    CaseMap(U'\x01ecb', U'\x01eca', U'\x00000', U'\x01eca'),
-    CaseMap(U'\x01ecc', U'\x00000', U'\x01ecd', U'\x00000'),
-    CaseMap(U'\x01ecd', U'\x01ecc', U'\x00000', U'\x01ecc'),
-    CaseMap(U'\x01ece', U'\x00000', U'\x01ecf', U'\x00000'),
-    CaseMap(U'\x01ecf', U'\x01ece', U'\x00000', U'\x01ece'),
-    CaseMap(U'\x01ed0', U'\x00000', U'\x01ed1', U'\x00000'),
-    CaseMap(U'\x01ed1', U'\x01ed0', U'\x00000', U'\x01ed0'),
-    CaseMap(U'\x01ed2', U'\x00000', U'\x01ed3', U'\x00000'),
-    CaseMap(U'\x01ed3', U'\x01ed2', U'\x00000', U'\x01ed2'),
-    CaseMap(U'\x01ed4', U'\x00000', U'\x01ed5', U'\x00000'),
-    CaseMap(U'\x01ed5', U'\x01ed4', U'\x00000', U'\x01ed4'),
-    CaseMap(U'\x01ed6', U'\x00000', U'\x01ed7', U'\x00000'),
-    CaseMap(U'\x01ed7', U'\x01ed6', U'\x00000', U'\x01ed6'),
-    CaseMap(U'\x01ed8', U'\x00000', U'\x01ed9', U'\x00000'),
-    CaseMap(U'\x01ed9', U'\x01ed8', U'\x00000', U'\x01ed8'),
-    CaseMap(U'\x01eda', U'\x00000', U'\x01edb', U'\x00000'),
-    CaseMap(U'\x01edb', U'\x01eda', U'\x00000', U'\x01eda'),
-    CaseMap(U'\x01edc', U'\x00000', U'\x01edd', U'\x00000'),
-    CaseMap(U'\x01edd', U'\x01edc', U'\x00000', U'\x01edc'),
-    CaseMap(U'\x01ede', U'\x00000', U'\x01edf', U'\x00000'),
-    CaseMap(U'\x01edf', U'\x01ede', U'\x00000', U'\x01ede'),
-    CaseMap(U'\x01ee0', U'\x00000', U'\x01ee1', U'\x00000'),
-    CaseMap(U'\x01ee1', U'\x01ee0', U'\x00000', U'\x01ee0'),
-    CaseMap(U'\x01ee2', U'\x00000', U'\x01ee3', U'\x00000'),
-    CaseMap(U'\x01ee3', U'\x01ee2', U'\x00000', U'\x01ee2'),
-    CaseMap(U'\x01ee4', U'\x00000', U'\x01ee5', U'\x00000'),
-    CaseMap(U'\x01ee5', U'\x01ee4', U'\x00000', U'\x01ee4'),
-    CaseMap(U'\x01ee6', U'\x00000', U'\x01ee7', U'\x00000'),
-    CaseMap(U'\x01ee7', U'\x01ee6', U'\x00000', U'\x01ee6'),
-    CaseMap(U'\x01ee8', U'\x00000', U'\x01ee9', U'\x00000'),
-    CaseMap(U'\x01ee9', U'\x01ee8', U'\x00000', U'\x01ee8'),
-    CaseMap(U'\x01eea', U'\x00000', U'\x01eeb', U'\x00000'),
-    CaseMap(U'\x01eeb', U'\x01eea', U'\x00000', U'\x01eea'),
-    CaseMap(U'\x01eec', U'\x00000', U'\x01eed', U'\x00000'),
-    CaseMap(U'\x01eed', U'\x01eec', U'\x00000', U'\x01eec'),
-    CaseMap(U'\x01eee', U'\x00000', U'\x01eef', U'\x00000'),
-    CaseMap(U'\x01eef', U'\x01eee', U'\x00000', U'\x01eee'),
-    CaseMap(U'\x01ef0', U'\x00000', U'\x01ef1', U'\x00000'),
-    CaseMap(U'\x01ef1', U'\x01ef0', U'\x00000', U'\x01ef0'),
-    CaseMap(U'\x01ef2', U'\x00000', U'\x01ef3', U'\x00000'),
-    CaseMap(U'\x01ef3', U'\x01ef2', U'\x00000', U'\x01ef2'),
-    CaseMap(U'\x01ef4', U'\x00000', U'\x01ef5', U'\x00000'),
-    CaseMap(U'\x01ef5', U'\x01ef4', U'\x00000', U'\x01ef4'),
-    CaseMap(U'\x01ef6', U'\x00000', U'\x01ef7', U'\x00000'),
-    CaseMap(U'\x01ef7', U'\x01ef6', U'\x00000', U'\x01ef6'),
-    CaseMap(U'\x01ef8', U'\x00000', U'\x01ef9', U'\x00000'),
-    CaseMap(U'\x01ef9', U'\x01ef8', U'\x00000', U'\x01ef8'),
-    CaseMap(U'\x01efa', U'\x00000', U'\x01efb', U'\x00000'),
-    CaseMap(U'\x01efb', U'\x01efa', U'\x00000', U'\x01efa'),
-    CaseMap(U'\x01efc', U'\x00000', U'\x01efd', U'\x00000'),
-    CaseMap(U'\x01efd', U'\x01efc', U'\x00000', U'\x01efc'),
-    CaseMap(U'\x01efe', U'\x00000', U'\x01eff', U'\x00000'),
-    CaseMap(U'\x01eff', U'\x01efe', U'\x00000', U'\x01efe')};
-
-static const std::vector<CaseMap> CASEMAP_0x001e(
-    T_CASEMAP_0x001e, T_CASEMAP_0x001e + (sizeof(T_CASEMAP_0x001e) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x001f[]{CaseMap(U'\x01f00', U'\x01f08', U'\x00000', U'\x01f08'),
-    CaseMap(U'\x01f01', U'\x01f09', U'\x00000', U'\x01f09'),
-    CaseMap(U'\x01f02', U'\x01f0a', U'\x00000', U'\x01f0a'),
-    CaseMap(U'\x01f03', U'\x01f0b', U'\x00000', U'\x01f0b'),
-    CaseMap(U'\x01f04', U'\x01f0c', U'\x00000', U'\x01f0c'),
-    CaseMap(U'\x01f05', U'\x01f0d', U'\x00000', U'\x01f0d'),
-    CaseMap(U'\x01f06', U'\x01f0e', U'\x00000', U'\x01f0e'),
-    CaseMap(U'\x01f07', U'\x01f0f', U'\x00000', U'\x01f0f'),
-    CaseMap(U'\x01f08', U'\x00000', U'\x01f00', U'\x00000'),
-    CaseMap(U'\x01f09', U'\x00000', U'\x01f01', U'\x00000'),
-    CaseMap(U'\x01f0a', U'\x00000', U'\x01f02', U'\x00000'),
-    CaseMap(U'\x01f0b', U'\x00000', U'\x01f03', U'\x00000'),
-    CaseMap(U'\x01f0c', U'\x00000', U'\x01f04', U'\x00000'),
-    CaseMap(U'\x01f0d', U'\x00000', U'\x01f05', U'\x00000'),
-    CaseMap(U'\x01f0e', U'\x00000', U'\x01f06', U'\x00000'),
-    CaseMap(U'\x01f0f', U'\x00000', U'\x01f07', U'\x00000'),
-    CaseMap(U'\x01f10', U'\x01f18', U'\x00000', U'\x01f18'),
-    CaseMap(U'\x01f11', U'\x01f19', U'\x00000', U'\x01f19'),
-    CaseMap(U'\x01f12', U'\x01f1a', U'\x00000', U'\x01f1a'),
-    CaseMap(U'\x01f13', U'\x01f1b', U'\x00000', U'\x01f1b'),
-    CaseMap(U'\x01f14', U'\x01f1c', U'\x00000', U'\x01f1c'),
-    CaseMap(U'\x01f15', U'\x01f1d', U'\x00000', U'\x01f1d'), CaseMap(), CaseMap(),
-    CaseMap(U'\x01f18', U'\x00000', U'\x01f10', U'\x00000'),
-    CaseMap(U'\x01f19', U'\x00000', U'\x01f11', U'\x00000'),
-    CaseMap(U'\x01f1a', U'\x00000', U'\x01f12', U'\x00000'),
-    CaseMap(U'\x01f1b', U'\x00000', U'\x01f13', U'\x00000'),
-    CaseMap(U'\x01f1c', U'\x00000', U'\x01f14', U'\x00000'),
-    CaseMap(U'\x01f1d', U'\x00000', U'\x01f15', U'\x00000'), CaseMap(), CaseMap(),
-    CaseMap(U'\x01f20', U'\x01f28', U'\x00000', U'\x01f28'),
-    CaseMap(U'\x01f21', U'\x01f29', U'\x00000', U'\x01f29'),
-    CaseMap(U'\x01f22', U'\x01f2a', U'\x00000', U'\x01f2a'),
-    CaseMap(U'\x01f23', U'\x01f2b', U'\x00000', U'\x01f2b'),
-    CaseMap(U'\x01f24', U'\x01f2c', U'\x00000', U'\x01f2c'),
-    CaseMap(U'\x01f25', U'\x01f2d', U'\x00000', U'\x01f2d'),
-    CaseMap(U'\x01f26', U'\x01f2e', U'\x00000', U'\x01f2e'),
-    CaseMap(U'\x01f27', U'\x01f2f', U'\x00000', U'\x01f2f'),
-    CaseMap(U'\x01f28', U'\x00000', U'\x01f20', U'\x00000'),
-    CaseMap(U'\x01f29', U'\x00000', U'\x01f21', U'\x00000'),
-    CaseMap(U'\x01f2a', U'\x00000', U'\x01f22', U'\x00000'),
-    CaseMap(U'\x01f2b', U'\x00000', U'\x01f23', U'\x00000'),
-    CaseMap(U'\x01f2c', U'\x00000', U'\x01f24', U'\x00000'),
-    CaseMap(U'\x01f2d', U'\x00000', U'\x01f25', U'\x00000'),
-    CaseMap(U'\x01f2e', U'\x00000', U'\x01f26', U'\x00000'),
-    CaseMap(U'\x01f2f', U'\x00000', U'\x01f27', U'\x00000'),
-    CaseMap(U'\x01f30', U'\x01f38', U'\x00000', U'\x01f38'),
-    CaseMap(U'\x01f31', U'\x01f39', U'\x00000', U'\x01f39'),
-    CaseMap(U'\x01f32', U'\x01f3a', U'\x00000', U'\x01f3a'),
-    CaseMap(U'\x01f33', U'\x01f3b', U'\x00000', U'\x01f3b'),
-    CaseMap(U'\x01f34', U'\x01f3c', U'\x00000', U'\x01f3c'),
-    CaseMap(U'\x01f35', U'\x01f3d', U'\x00000', U'\x01f3d'),
-    CaseMap(U'\x01f36', U'\x01f3e', U'\x00000', U'\x01f3e'),
-    CaseMap(U'\x01f37', U'\x01f3f', U'\x00000', U'\x01f3f'),
-    CaseMap(U'\x01f38', U'\x00000', U'\x01f30', U'\x00000'),
-    CaseMap(U'\x01f39', U'\x00000', U'\x01f31', U'\x00000'),
-    CaseMap(U'\x01f3a', U'\x00000', U'\x01f32', U'\x00000'),
-    CaseMap(U'\x01f3b', U'\x00000', U'\x01f33', U'\x00000'),
-    CaseMap(U'\x01f3c', U'\x00000', U'\x01f34', U'\x00000'),
-    CaseMap(U'\x01f3d', U'\x00000', U'\x01f35', U'\x00000'),
-    CaseMap(U'\x01f3e', U'\x00000', U'\x01f36', U'\x00000'),
-    CaseMap(U'\x01f3f', U'\x00000', U'\x01f37', U'\x00000'),
-    CaseMap(U'\x01f40', U'\x01f48', U'\x00000', U'\x01f48'),
-    CaseMap(U'\x01f41', U'\x01f49', U'\x00000', U'\x01f49'),
-    CaseMap(U'\x01f42', U'\x01f4a', U'\x00000', U'\x01f4a'),
-    CaseMap(U'\x01f43', U'\x01f4b', U'\x00000', U'\x01f4b'),
-    CaseMap(U'\x01f44', U'\x01f4c', U'\x00000', U'\x01f4c'),
-    CaseMap(U'\x01f45', U'\x01f4d', U'\x00000', U'\x01f4d'), CaseMap(), CaseMap(),
-    CaseMap(U'\x01f48', U'\x00000', U'\x01f40', U'\x00000'),
-    CaseMap(U'\x01f49', U'\x00000', U'\x01f41', U'\x00000'),
-    CaseMap(U'\x01f4a', U'\x00000', U'\x01f42', U'\x00000'),
-    CaseMap(U'\x01f4b', U'\x00000', U'\x01f43', U'\x00000'),
-    CaseMap(U'\x01f4c', U'\x00000', U'\x01f44', U'\x00000'),
-    CaseMap(U'\x01f4d', U'\x00000', U'\x01f45', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x01f51', U'\x01f59', U'\x00000', U'\x01f59'), CaseMap(),
-    CaseMap(U'\x01f53', U'\x01f5b', U'\x00000', U'\x01f5b'), CaseMap(),
-    CaseMap(U'\x01f55', U'\x01f5d', U'\x00000', U'\x01f5d'), CaseMap(),
-    CaseMap(U'\x01f57', U'\x01f5f', U'\x00000', U'\x01f5f'), CaseMap(),
-    CaseMap(U'\x01f59', U'\x00000', U'\x01f51', U'\x00000'), CaseMap(),
-    CaseMap(U'\x01f5b', U'\x00000', U'\x01f53', U'\x00000'), CaseMap(),
-    CaseMap(U'\x01f5d', U'\x00000', U'\x01f55', U'\x00000'), CaseMap(),
-    CaseMap(U'\x01f5f', U'\x00000', U'\x01f57', U'\x00000'),
-    CaseMap(U'\x01f60', U'\x01f68', U'\x00000', U'\x01f68'),
-    CaseMap(U'\x01f61', U'\x01f69', U'\x00000', U'\x01f69'),
-    CaseMap(U'\x01f62', U'\x01f6a', U'\x00000', U'\x01f6a'),
-    CaseMap(U'\x01f63', U'\x01f6b', U'\x00000', U'\x01f6b'),
-    CaseMap(U'\x01f64', U'\x01f6c', U'\x00000', U'\x01f6c'),
-    CaseMap(U'\x01f65', U'\x01f6d', U'\x00000', U'\x01f6d'),
-    CaseMap(U'\x01f66', U'\x01f6e', U'\x00000', U'\x01f6e'),
-    CaseMap(U'\x01f67', U'\x01f6f', U'\x00000', U'\x01f6f'),
-    CaseMap(U'\x01f68', U'\x00000', U'\x01f60', U'\x00000'),
-    CaseMap(U'\x01f69', U'\x00000', U'\x01f61', U'\x00000'),
-    CaseMap(U'\x01f6a', U'\x00000', U'\x01f62', U'\x00000'),
-    CaseMap(U'\x01f6b', U'\x00000', U'\x01f63', U'\x00000'),
-    CaseMap(U'\x01f6c', U'\x00000', U'\x01f64', U'\x00000'),
-    CaseMap(U'\x01f6d', U'\x00000', U'\x01f65', U'\x00000'),
-    CaseMap(U'\x01f6e', U'\x00000', U'\x01f66', U'\x00000'),
-    CaseMap(U'\x01f6f', U'\x00000', U'\x01f67', U'\x00000'),
-    CaseMap(U'\x01f70', U'\x01fba', U'\x00000', U'\x01fba'),
-    CaseMap(U'\x01f71', U'\x01fbb', U'\x00000', U'\x01fbb'),
-    CaseMap(U'\x01f72', U'\x01fc8', U'\x00000', U'\x01fc8'),
-    CaseMap(U'\x01f73', U'\x01fc9', U'\x00000', U'\x01fc9'),
-    CaseMap(U'\x01f74', U'\x01fca', U'\x00000', U'\x01fca'),
-    CaseMap(U'\x01f75', U'\x01fcb', U'\x00000', U'\x01fcb'),
-    CaseMap(U'\x01f76', U'\x01fda', U'\x00000', U'\x01fda'),
-    CaseMap(U'\x01f77', U'\x01fdb', U'\x00000', U'\x01fdb'),
-    CaseMap(U'\x01f78', U'\x01ff8', U'\x00000', U'\x01ff8'),
-    CaseMap(U'\x01f79', U'\x01ff9', U'\x00000', U'\x01ff9'),
-    CaseMap(U'\x01f7a', U'\x01fea', U'\x00000', U'\x01fea'),
-    CaseMap(U'\x01f7b', U'\x01feb', U'\x00000', U'\x01feb'),
-    CaseMap(U'\x01f7c', U'\x01ffa', U'\x00000', U'\x01ffa'),
-    CaseMap(U'\x01f7d', U'\x01ffb', U'\x00000', U'\x01ffb'), CaseMap(), CaseMap(),
-    CaseMap(U'\x01f80', U'\x01f88', U'\x00000', U'\x01f88'),
-    CaseMap(U'\x01f81', U'\x01f89', U'\x00000', U'\x01f89'),
-    CaseMap(U'\x01f82', U'\x01f8a', U'\x00000', U'\x01f8a'),
-    CaseMap(U'\x01f83', U'\x01f8b', U'\x00000', U'\x01f8b'),
-    CaseMap(U'\x01f84', U'\x01f8c', U'\x00000', U'\x01f8c'),
-    CaseMap(U'\x01f85', U'\x01f8d', U'\x00000', U'\x01f8d'),
-    CaseMap(U'\x01f86', U'\x01f8e', U'\x00000', U'\x01f8e'),
-    CaseMap(U'\x01f87', U'\x01f8f', U'\x00000', U'\x01f8f'),
-    CaseMap(U'\x01f88', U'\x00000', U'\x01f80', U'\x00000'),
-    CaseMap(U'\x01f89', U'\x00000', U'\x01f81', U'\x00000'),
-    CaseMap(U'\x01f8a', U'\x00000', U'\x01f82', U'\x00000'),
-    CaseMap(U'\x01f8b', U'\x00000', U'\x01f83', U'\x00000'),
-    CaseMap(U'\x01f8c', U'\x00000', U'\x01f84', U'\x00000'),
-    CaseMap(U'\x01f8d', U'\x00000', U'\x01f85', U'\x00000'),
-    CaseMap(U'\x01f8e', U'\x00000', U'\x01f86', U'\x00000'),
-    CaseMap(U'\x01f8f', U'\x00000', U'\x01f87', U'\x00000'),
-    CaseMap(U'\x01f90', U'\x01f98', U'\x00000', U'\x01f98'),
-    CaseMap(U'\x01f91', U'\x01f99', U'\x00000', U'\x01f99'),
-    CaseMap(U'\x01f92', U'\x01f9a', U'\x00000', U'\x01f9a'),
-    CaseMap(U'\x01f93', U'\x01f9b', U'\x00000', U'\x01f9b'),
-    CaseMap(U'\x01f94', U'\x01f9c', U'\x00000', U'\x01f9c'),
-    CaseMap(U'\x01f95', U'\x01f9d', U'\x00000', U'\x01f9d'),
-    CaseMap(U'\x01f96', U'\x01f9e', U'\x00000', U'\x01f9e'),
-    CaseMap(U'\x01f97', U'\x01f9f', U'\x00000', U'\x01f9f'),
-    CaseMap(U'\x01f98', U'\x00000', U'\x01f90', U'\x00000'),
-    CaseMap(U'\x01f99', U'\x00000', U'\x01f91', U'\x00000'),
-    CaseMap(U'\x01f9a', U'\x00000', U'\x01f92', U'\x00000'),
-    CaseMap(U'\x01f9b', U'\x00000', U'\x01f93', U'\x00000'),
-    CaseMap(U'\x01f9c', U'\x00000', U'\x01f94', U'\x00000'),
-    CaseMap(U'\x01f9d', U'\x00000', U'\x01f95', U'\x00000'),
-    CaseMap(U'\x01f9e', U'\x00000', U'\x01f96', U'\x00000'),
-    CaseMap(U'\x01f9f', U'\x00000', U'\x01f97', U'\x00000'),
-    CaseMap(U'\x01fa0', U'\x01fa8', U'\x00000', U'\x01fa8'),
-    CaseMap(U'\x01fa1', U'\x01fa9', U'\x00000', U'\x01fa9'),
-    CaseMap(U'\x01fa2', U'\x01faa', U'\x00000', U'\x01faa'),
-    CaseMap(U'\x01fa3', U'\x01fab', U'\x00000', U'\x01fab'),
-    CaseMap(U'\x01fa4', U'\x01fac', U'\x00000', U'\x01fac'),
-    CaseMap(U'\x01fa5', U'\x01fad', U'\x00000', U'\x01fad'),
-    CaseMap(U'\x01fa6', U'\x01fae', U'\x00000', U'\x01fae'),
-    CaseMap(U'\x01fa7', U'\x01faf', U'\x00000', U'\x01faf'),
-    CaseMap(U'\x01fa8', U'\x00000', U'\x01fa0', U'\x00000'),
-    CaseMap(U'\x01fa9', U'\x00000', U'\x01fa1', U'\x00000'),
-    CaseMap(U'\x01faa', U'\x00000', U'\x01fa2', U'\x00000'),
-    CaseMap(U'\x01fab', U'\x00000', U'\x01fa3', U'\x00000'),
-    CaseMap(U'\x01fac', U'\x00000', U'\x01fa4', U'\x00000'),
-    CaseMap(U'\x01fad', U'\x00000', U'\x01fa5', U'\x00000'),
-    CaseMap(U'\x01fae', U'\x00000', U'\x01fa6', U'\x00000'),
-    CaseMap(U'\x01faf', U'\x00000', U'\x01fa7', U'\x00000'),
-    CaseMap(U'\x01fb0', U'\x01fb8', U'\x00000', U'\x01fb8'),
-    CaseMap(U'\x01fb1', U'\x01fb9', U'\x00000', U'\x01fb9'), CaseMap(),
-    CaseMap(U'\x01fb3', U'\x01fbc', U'\x00000', U'\x01fbc'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x01fb8', U'\x00000', U'\x01fb0', U'\x00000'),
-    CaseMap(U'\x01fb9', U'\x00000', U'\x01fb1', U'\x00000'),
-    CaseMap(U'\x01fba', U'\x00000', U'\x01f70', U'\x00000'),
-    CaseMap(U'\x01fbb', U'\x00000', U'\x01f71', U'\x00000'),
-    CaseMap(U'\x01fbc', U'\x00000', U'\x01fb3', U'\x00000'), CaseMap(),
-    CaseMap(U'\x01fbe', U'\x00399', U'\x00000', U'\x00399'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x01fc3', U'\x01fcc', U'\x00000', U'\x01fcc'), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(U'\x01fc8', U'\x00000', U'\x01f72', U'\x00000'),
-    CaseMap(U'\x01fc9', U'\x00000', U'\x01f73', U'\x00000'),
-    CaseMap(U'\x01fca', U'\x00000', U'\x01f74', U'\x00000'),
-    CaseMap(U'\x01fcb', U'\x00000', U'\x01f75', U'\x00000'),
-    CaseMap(U'\x01fcc', U'\x00000', U'\x01fc3', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x01fd0', U'\x01fd8', U'\x00000', U'\x01fd8'),
-    CaseMap(U'\x01fd1', U'\x01fd9', U'\x00000', U'\x01fd9'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x01fd8', U'\x00000', U'\x01fd0', U'\x00000'),
-    CaseMap(U'\x01fd9', U'\x00000', U'\x01fd1', U'\x00000'),
-    CaseMap(U'\x01fda', U'\x00000', U'\x01f76', U'\x00000'),
-    CaseMap(U'\x01fdb', U'\x00000', U'\x01f77', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x01fe0', U'\x01fe8', U'\x00000', U'\x01fe8'),
-    CaseMap(U'\x01fe1', U'\x01fe9', U'\x00000', U'\x01fe9'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x01fe5', U'\x01fec', U'\x00000', U'\x01fec'), CaseMap(), CaseMap(),
-    CaseMap(U'\x01fe8', U'\x00000', U'\x01fe0', U'\x00000'),
-    CaseMap(U'\x01fe9', U'\x00000', U'\x01fe1', U'\x00000'),
-    CaseMap(U'\x01fea', U'\x00000', U'\x01f7a', U'\x00000'),
-    CaseMap(U'\x01feb', U'\x00000', U'\x01f7b', U'\x00000'),
-    CaseMap(U'\x01fec', U'\x00000', U'\x01fe5', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x01ff3', U'\x01ffc', U'\x00000', U'\x01ffc'),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x01ff8', U'\x00000', U'\x01f78', U'\x00000'),
-    CaseMap(U'\x01ff9', U'\x00000', U'\x01f79', U'\x00000'),
-    CaseMap(U'\x01ffa', U'\x00000', U'\x01f7c', U'\x00000'),
-    CaseMap(U'\x01ffb', U'\x00000', U'\x01f7d', U'\x00000'),
-    CaseMap(U'\x01ffc', U'\x00000', U'\x01ff3', U'\x00000')};
-
-static const std::vector<CaseMap> CASEMAP_0x001f(
-    T_CASEMAP_0x001f, T_CASEMAP_0x001f + (sizeof(T_CASEMAP_0x001f) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0021[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x02126', U'\x00000', U'\x003c9', U'\x00000'), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x0212a', U'\x00000', U'\x0006b', U'\x00000'),
-    CaseMap(U'\x0212b', U'\x00000', U'\x000e5', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x02132', U'\x00000', U'\x0214e', U'\x00000'),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x0214e', U'\x02132', U'\x00000', U'\x02132'),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x02160', U'\x00000', U'\x02170', U'\x00000'),
-    CaseMap(U'\x02161', U'\x00000', U'\x02171', U'\x00000'),
-    CaseMap(U'\x02162', U'\x00000', U'\x02172', U'\x00000'),
-    CaseMap(U'\x02163', U'\x00000', U'\x02173', U'\x00000'),
-    CaseMap(U'\x02164', U'\x00000', U'\x02174', U'\x00000'),
-    CaseMap(U'\x02165', U'\x00000', U'\x02175', U'\x00000'),
-    CaseMap(U'\x02166', U'\x00000', U'\x02176', U'\x00000'),
-    CaseMap(U'\x02167', U'\x00000', U'\x02177', U'\x00000'),
-    CaseMap(U'\x02168', U'\x00000', U'\x02178', U'\x00000'),
-    CaseMap(U'\x02169', U'\x00000', U'\x02179', U'\x00000'),
-    CaseMap(U'\x0216a', U'\x00000', U'\x0217a', U'\x00000'),
-    CaseMap(U'\x0216b', U'\x00000', U'\x0217b', U'\x00000'),
-    CaseMap(U'\x0216c', U'\x00000', U'\x0217c', U'\x00000'),
-    CaseMap(U'\x0216d', U'\x00000', U'\x0217d', U'\x00000'),
-    CaseMap(U'\x0216e', U'\x00000', U'\x0217e', U'\x00000'),
-    CaseMap(U'\x0216f', U'\x00000', U'\x0217f', U'\x00000'),
-    CaseMap(U'\x02170', U'\x02160', U'\x00000', U'\x02160'),
-    CaseMap(U'\x02171', U'\x02161', U'\x00000', U'\x02161'),
-    CaseMap(U'\x02172', U'\x02162', U'\x00000', U'\x02162'),
-    CaseMap(U'\x02173', U'\x02163', U'\x00000', U'\x02163'),
-    CaseMap(U'\x02174', U'\x02164', U'\x00000', U'\x02164'),
-    CaseMap(U'\x02175', U'\x02165', U'\x00000', U'\x02165'),
-    CaseMap(U'\x02176', U'\x02166', U'\x00000', U'\x02166'),
-    CaseMap(U'\x02177', U'\x02167', U'\x00000', U'\x02167'),
-    CaseMap(U'\x02178', U'\x02168', U'\x00000', U'\x02168'),
-    CaseMap(U'\x02179', U'\x02169', U'\x00000', U'\x02169'),
-    CaseMap(U'\x0217a', U'\x0216a', U'\x00000', U'\x0216a'),
-    CaseMap(U'\x0217b', U'\x0216b', U'\x00000', U'\x0216b'),
-    CaseMap(U'\x0217c', U'\x0216c', U'\x00000', U'\x0216c'),
-    CaseMap(U'\x0217d', U'\x0216d', U'\x00000', U'\x0216d'),
-    CaseMap(U'\x0217e', U'\x0216e', U'\x00000', U'\x0216e'),
-    CaseMap(U'\x0217f', U'\x0216f', U'\x00000', U'\x0216f'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x02183', U'\x00000', U'\x02184', U'\x00000'),
-    CaseMap(U'\x02184', U'\x02183', U'\x00000', U'\x02183')};
-
-static const std::vector<CaseMap> CASEMAP_0x0021(
-    T_CASEMAP_0x0021, T_CASEMAP_0x0021 + (sizeof(T_CASEMAP_0x0021) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0024[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x024b6', U'\x00000', U'\x024d0', U'\x00000'),
-    CaseMap(U'\x024b7', U'\x00000', U'\x024d1', U'\x00000'),
-    CaseMap(U'\x024b8', U'\x00000', U'\x024d2', U'\x00000'),
-    CaseMap(U'\x024b9', U'\x00000', U'\x024d3', U'\x00000'),
-    CaseMap(U'\x024ba', U'\x00000', U'\x024d4', U'\x00000'),
-    CaseMap(U'\x024bb', U'\x00000', U'\x024d5', U'\x00000'),
-    CaseMap(U'\x024bc', U'\x00000', U'\x024d6', U'\x00000'),
-    CaseMap(U'\x024bd', U'\x00000', U'\x024d7', U'\x00000'),
-    CaseMap(U'\x024be', U'\x00000', U'\x024d8', U'\x00000'),
-    CaseMap(U'\x024bf', U'\x00000', U'\x024d9', U'\x00000'),
-    CaseMap(U'\x024c0', U'\x00000', U'\x024da', U'\x00000'),
-    CaseMap(U'\x024c1', U'\x00000', U'\x024db', U'\x00000'),
-    CaseMap(U'\x024c2', U'\x00000', U'\x024dc', U'\x00000'),
-    CaseMap(U'\x024c3', U'\x00000', U'\x024dd', U'\x00000'),
-    CaseMap(U'\x024c4', U'\x00000', U'\x024de', U'\x00000'),
-    CaseMap(U'\x024c5', U'\x00000', U'\x024df', U'\x00000'),
-    CaseMap(U'\x024c6', U'\x00000', U'\x024e0', U'\x00000'),
-    CaseMap(U'\x024c7', U'\x00000', U'\x024e1', U'\x00000'),
-    CaseMap(U'\x024c8', U'\x00000', U'\x024e2', U'\x00000'),
-    CaseMap(U'\x024c9', U'\x00000', U'\x024e3', U'\x00000'),
-    CaseMap(U'\x024ca', U'\x00000', U'\x024e4', U'\x00000'),
-    CaseMap(U'\x024cb', U'\x00000', U'\x024e5', U'\x00000'),
-    CaseMap(U'\x024cc', U'\x00000', U'\x024e6', U'\x00000'),
-    CaseMap(U'\x024cd', U'\x00000', U'\x024e7', U'\x00000'),
-    CaseMap(U'\x024ce', U'\x00000', U'\x024e8', U'\x00000'),
-    CaseMap(U'\x024cf', U'\x00000', U'\x024e9', U'\x00000'),
-    CaseMap(U'\x024d0', U'\x024b6', U'\x00000', U'\x024b6'),
-    CaseMap(U'\x024d1', U'\x024b7', U'\x00000', U'\x024b7'),
-    CaseMap(U'\x024d2', U'\x024b8', U'\x00000', U'\x024b8'),
-    CaseMap(U'\x024d3', U'\x024b9', U'\x00000', U'\x024b9'),
-    CaseMap(U'\x024d4', U'\x024ba', U'\x00000', U'\x024ba'),
-    CaseMap(U'\x024d5', U'\x024bb', U'\x00000', U'\x024bb'),
-    CaseMap(U'\x024d6', U'\x024bc', U'\x00000', U'\x024bc'),
-    CaseMap(U'\x024d7', U'\x024bd', U'\x00000', U'\x024bd'),
-    CaseMap(U'\x024d8', U'\x024be', U'\x00000', U'\x024be'),
-    CaseMap(U'\x024d9', U'\x024bf', U'\x00000', U'\x024bf'),
-    CaseMap(U'\x024da', U'\x024c0', U'\x00000', U'\x024c0'),
-    CaseMap(U'\x024db', U'\x024c1', U'\x00000', U'\x024c1'),
-    CaseMap(U'\x024dc', U'\x024c2', U'\x00000', U'\x024c2'),
-    CaseMap(U'\x024dd', U'\x024c3', U'\x00000', U'\x024c3'),
-    CaseMap(U'\x024de', U'\x024c4', U'\x00000', U'\x024c4'),
-    CaseMap(U'\x024df', U'\x024c5', U'\x00000', U'\x024c5'),
-    CaseMap(U'\x024e0', U'\x024c6', U'\x00000', U'\x024c6'),
-    CaseMap(U'\x024e1', U'\x024c7', U'\x00000', U'\x024c7'),
-    CaseMap(U'\x024e2', U'\x024c8', U'\x00000', U'\x024c8'),
-    CaseMap(U'\x024e3', U'\x024c9', U'\x00000', U'\x024c9'),
-    CaseMap(U'\x024e4', U'\x024ca', U'\x00000', U'\x024ca'),
-    CaseMap(U'\x024e5', U'\x024cb', U'\x00000', U'\x024cb'),
-    CaseMap(U'\x024e6', U'\x024cc', U'\x00000', U'\x024cc'),
-    CaseMap(U'\x024e7', U'\x024cd', U'\x00000', U'\x024cd'),
-    CaseMap(U'\x024e8', U'\x024ce', U'\x00000', U'\x024ce'),
-    CaseMap(U'\x024e9', U'\x024cf', U'\x00000', U'\x024cf')};
-
-static const std::vector<CaseMap> CASEMAP_0x0024(
-    T_CASEMAP_0x0024, T_CASEMAP_0x0024 + (sizeof(T_CASEMAP_0x0024) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x002c[]{CaseMap(U'\x02c00', U'\x00000', U'\x02c30', U'\x00000'),
-    CaseMap(U'\x02c01', U'\x00000', U'\x02c31', U'\x00000'),
-    CaseMap(U'\x02c02', U'\x00000', U'\x02c32', U'\x00000'),
-    CaseMap(U'\x02c03', U'\x00000', U'\x02c33', U'\x00000'),
-    CaseMap(U'\x02c04', U'\x00000', U'\x02c34', U'\x00000'),
-    CaseMap(U'\x02c05', U'\x00000', U'\x02c35', U'\x00000'),
-    CaseMap(U'\x02c06', U'\x00000', U'\x02c36', U'\x00000'),
-    CaseMap(U'\x02c07', U'\x00000', U'\x02c37', U'\x00000'),
-    CaseMap(U'\x02c08', U'\x00000', U'\x02c38', U'\x00000'),
-    CaseMap(U'\x02c09', U'\x00000', U'\x02c39', U'\x00000'),
-    CaseMap(U'\x02c0a', U'\x00000', U'\x02c3a', U'\x00000'),
-    CaseMap(U'\x02c0b', U'\x00000', U'\x02c3b', U'\x00000'),
-    CaseMap(U'\x02c0c', U'\x00000', U'\x02c3c', U'\x00000'),
-    CaseMap(U'\x02c0d', U'\x00000', U'\x02c3d', U'\x00000'),
-    CaseMap(U'\x02c0e', U'\x00000', U'\x02c3e', U'\x00000'),
-    CaseMap(U'\x02c0f', U'\x00000', U'\x02c3f', U'\x00000'),
-    CaseMap(U'\x02c10', U'\x00000', U'\x02c40', U'\x00000'),
-    CaseMap(U'\x02c11', U'\x00000', U'\x02c41', U'\x00000'),
-    CaseMap(U'\x02c12', U'\x00000', U'\x02c42', U'\x00000'),
-    CaseMap(U'\x02c13', U'\x00000', U'\x02c43', U'\x00000'),
-    CaseMap(U'\x02c14', U'\x00000', U'\x02c44', U'\x00000'),
-    CaseMap(U'\x02c15', U'\x00000', U'\x02c45', U'\x00000'),
-    CaseMap(U'\x02c16', U'\x00000', U'\x02c46', U'\x00000'),
-    CaseMap(U'\x02c17', U'\x00000', U'\x02c47', U'\x00000'),
-    CaseMap(U'\x02c18', U'\x00000', U'\x02c48', U'\x00000'),
-    CaseMap(U'\x02c19', U'\x00000', U'\x02c49', U'\x00000'),
-    CaseMap(U'\x02c1a', U'\x00000', U'\x02c4a', U'\x00000'),
-    CaseMap(U'\x02c1b', U'\x00000', U'\x02c4b', U'\x00000'),
-    CaseMap(U'\x02c1c', U'\x00000', U'\x02c4c', U'\x00000'),
-    CaseMap(U'\x02c1d', U'\x00000', U'\x02c4d', U'\x00000'),
-    CaseMap(U'\x02c1e', U'\x00000', U'\x02c4e', U'\x00000'),
-    CaseMap(U'\x02c1f', U'\x00000', U'\x02c4f', U'\x00000'),
-    CaseMap(U'\x02c20', U'\x00000', U'\x02c50', U'\x00000'),
-    CaseMap(U'\x02c21', U'\x00000', U'\x02c51', U'\x00000'),
-    CaseMap(U'\x02c22', U'\x00000', U'\x02c52', U'\x00000'),
-    CaseMap(U'\x02c23', U'\x00000', U'\x02c53', U'\x00000'),
-    CaseMap(U'\x02c24', U'\x00000', U'\x02c54', U'\x00000'),
-    CaseMap(U'\x02c25', U'\x00000', U'\x02c55', U'\x00000'),
-    CaseMap(U'\x02c26', U'\x00000', U'\x02c56', U'\x00000'),
-    CaseMap(U'\x02c27', U'\x00000', U'\x02c57', U'\x00000'),
-    CaseMap(U'\x02c28', U'\x00000', U'\x02c58', U'\x00000'),
-    CaseMap(U'\x02c29', U'\x00000', U'\x02c59', U'\x00000'),
-    CaseMap(U'\x02c2a', U'\x00000', U'\x02c5a', U'\x00000'),
-    CaseMap(U'\x02c2b', U'\x00000', U'\x02c5b', U'\x00000'),
-    CaseMap(U'\x02c2c', U'\x00000', U'\x02c5c', U'\x00000'),
-    CaseMap(U'\x02c2d', U'\x00000', U'\x02c5d', U'\x00000'),
-    CaseMap(U'\x02c2e', U'\x00000', U'\x02c5e', U'\x00000'),
-    CaseMap(U'\x02c2f', U'\x00000', U'\x02c5f', U'\x00000'),
-    CaseMap(U'\x02c30', U'\x02c00', U'\x00000', U'\x02c00'),
-    CaseMap(U'\x02c31', U'\x02c01', U'\x00000', U'\x02c01'),
-    CaseMap(U'\x02c32', U'\x02c02', U'\x00000', U'\x02c02'),
-    CaseMap(U'\x02c33', U'\x02c03', U'\x00000', U'\x02c03'),
-    CaseMap(U'\x02c34', U'\x02c04', U'\x00000', U'\x02c04'),
-    CaseMap(U'\x02c35', U'\x02c05', U'\x00000', U'\x02c05'),
-    CaseMap(U'\x02c36', U'\x02c06', U'\x00000', U'\x02c06'),
-    CaseMap(U'\x02c37', U'\x02c07', U'\x00000', U'\x02c07'),
-    CaseMap(U'\x02c38', U'\x02c08', U'\x00000', U'\x02c08'),
-    CaseMap(U'\x02c39', U'\x02c09', U'\x00000', U'\x02c09'),
-    CaseMap(U'\x02c3a', U'\x02c0a', U'\x00000', U'\x02c0a'),
-    CaseMap(U'\x02c3b', U'\x02c0b', U'\x00000', U'\x02c0b'),
-    CaseMap(U'\x02c3c', U'\x02c0c', U'\x00000', U'\x02c0c'),
-    CaseMap(U'\x02c3d', U'\x02c0d', U'\x00000', U'\x02c0d'),
-    CaseMap(U'\x02c3e', U'\x02c0e', U'\x00000', U'\x02c0e'),
-    CaseMap(U'\x02c3f', U'\x02c0f', U'\x00000', U'\x02c0f'),
-    CaseMap(U'\x02c40', U'\x02c10', U'\x00000', U'\x02c10'),
-    CaseMap(U'\x02c41', U'\x02c11', U'\x00000', U'\x02c11'),
-    CaseMap(U'\x02c42', U'\x02c12', U'\x00000', U'\x02c12'),
-    CaseMap(U'\x02c43', U'\x02c13', U'\x00000', U'\x02c13'),
-    CaseMap(U'\x02c44', U'\x02c14', U'\x00000', U'\x02c14'),
-    CaseMap(U'\x02c45', U'\x02c15', U'\x00000', U'\x02c15'),
-    CaseMap(U'\x02c46', U'\x02c16', U'\x00000', U'\x02c16'),
-    CaseMap(U'\x02c47', U'\x02c17', U'\x00000', U'\x02c17'),
-    CaseMap(U'\x02c48', U'\x02c18', U'\x00000', U'\x02c18'),
-    CaseMap(U'\x02c49', U'\x02c19', U'\x00000', U'\x02c19'),
-    CaseMap(U'\x02c4a', U'\x02c1a', U'\x00000', U'\x02c1a'),
-    CaseMap(U'\x02c4b', U'\x02c1b', U'\x00000', U'\x02c1b'),
-    CaseMap(U'\x02c4c', U'\x02c1c', U'\x00000', U'\x02c1c'),
-    CaseMap(U'\x02c4d', U'\x02c1d', U'\x00000', U'\x02c1d'),
-    CaseMap(U'\x02c4e', U'\x02c1e', U'\x00000', U'\x02c1e'),
-    CaseMap(U'\x02c4f', U'\x02c1f', U'\x00000', U'\x02c1f'),
-    CaseMap(U'\x02c50', U'\x02c20', U'\x00000', U'\x02c20'),
-    CaseMap(U'\x02c51', U'\x02c21', U'\x00000', U'\x02c21'),
-    CaseMap(U'\x02c52', U'\x02c22', U'\x00000', U'\x02c22'),
-    CaseMap(U'\x02c53', U'\x02c23', U'\x00000', U'\x02c23'),
-    CaseMap(U'\x02c54', U'\x02c24', U'\x00000', U'\x02c24'),
-    CaseMap(U'\x02c55', U'\x02c25', U'\x00000', U'\x02c25'),
-    CaseMap(U'\x02c56', U'\x02c26', U'\x00000', U'\x02c26'),
-    CaseMap(U'\x02c57', U'\x02c27', U'\x00000', U'\x02c27'),
-    CaseMap(U'\x02c58', U'\x02c28', U'\x00000', U'\x02c28'),
-    CaseMap(U'\x02c59', U'\x02c29', U'\x00000', U'\x02c29'),
-    CaseMap(U'\x02c5a', U'\x02c2a', U'\x00000', U'\x02c2a'),
-    CaseMap(U'\x02c5b', U'\x02c2b', U'\x00000', U'\x02c2b'),
-    CaseMap(U'\x02c5c', U'\x02c2c', U'\x00000', U'\x02c2c'),
-    CaseMap(U'\x02c5d', U'\x02c2d', U'\x00000', U'\x02c2d'),
-    CaseMap(U'\x02c5e', U'\x02c2e', U'\x00000', U'\x02c2e'),
-    CaseMap(U'\x02c5f', U'\x02c2f', U'\x00000', U'\x02c2f'),
-    CaseMap(U'\x02c60', U'\x00000', U'\x02c61', U'\x00000'),
-    CaseMap(U'\x02c61', U'\x02c60', U'\x00000', U'\x02c60'),
-    CaseMap(U'\x02c62', U'\x00000', U'\x0026b', U'\x00000'),
-    CaseMap(U'\x02c63', U'\x00000', U'\x01d7d', U'\x00000'),
-    CaseMap(U'\x02c64', U'\x00000', U'\x0027d', U'\x00000'),
-    CaseMap(U'\x02c65', U'\x0023a', U'\x00000', U'\x0023a'),
-    CaseMap(U'\x02c66', U'\x0023e', U'\x00000', U'\x0023e'),
-    CaseMap(U'\x02c67', U'\x00000', U'\x02c68', U'\x00000'),
-    CaseMap(U'\x02c68', U'\x02c67', U'\x00000', U'\x02c67'),
-    CaseMap(U'\x02c69', U'\x00000', U'\x02c6a', U'\x00000'),
-    CaseMap(U'\x02c6a', U'\x02c69', U'\x00000', U'\x02c69'),
-    CaseMap(U'\x02c6b', U'\x00000', U'\x02c6c', U'\x00000'),
-    CaseMap(U'\x02c6c', U'\x02c6b', U'\x00000', U'\x02c6b'),
-    CaseMap(U'\x02c6d', U'\x00000', U'\x00251', U'\x00000'),
-    CaseMap(U'\x02c6e', U'\x00000', U'\x00271', U'\x00000'),
-    CaseMap(U'\x02c6f', U'\x00000', U'\x00250', U'\x00000'),
-    CaseMap(U'\x02c70', U'\x00000', U'\x00252', U'\x00000'), CaseMap(),
-    CaseMap(U'\x02c72', U'\x00000', U'\x02c73', U'\x00000'),
-    CaseMap(U'\x02c73', U'\x02c72', U'\x00000', U'\x02c72'), CaseMap(),
-    CaseMap(U'\x02c75', U'\x00000', U'\x02c76', U'\x00000'),
-    CaseMap(U'\x02c76', U'\x02c75', U'\x00000', U'\x02c75'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x02c7e', U'\x00000', U'\x0023f', U'\x00000'),
-    CaseMap(U'\x02c7f', U'\x00000', U'\x00240', U'\x00000'),
-    CaseMap(U'\x02c80', U'\x00000', U'\x02c81', U'\x00000'),
-    CaseMap(U'\x02c81', U'\x02c80', U'\x00000', U'\x02c80'),
-    CaseMap(U'\x02c82', U'\x00000', U'\x02c83', U'\x00000'),
-    CaseMap(U'\x02c83', U'\x02c82', U'\x00000', U'\x02c82'),
-    CaseMap(U'\x02c84', U'\x00000', U'\x02c85', U'\x00000'),
-    CaseMap(U'\x02c85', U'\x02c84', U'\x00000', U'\x02c84'),
-    CaseMap(U'\x02c86', U'\x00000', U'\x02c87', U'\x00000'),
-    CaseMap(U'\x02c87', U'\x02c86', U'\x00000', U'\x02c86'),
-    CaseMap(U'\x02c88', U'\x00000', U'\x02c89', U'\x00000'),
-    CaseMap(U'\x02c89', U'\x02c88', U'\x00000', U'\x02c88'),
-    CaseMap(U'\x02c8a', U'\x00000', U'\x02c8b', U'\x00000'),
-    CaseMap(U'\x02c8b', U'\x02c8a', U'\x00000', U'\x02c8a'),
-    CaseMap(U'\x02c8c', U'\x00000', U'\x02c8d', U'\x00000'),
-    CaseMap(U'\x02c8d', U'\x02c8c', U'\x00000', U'\x02c8c'),
-    CaseMap(U'\x02c8e', U'\x00000', U'\x02c8f', U'\x00000'),
-    CaseMap(U'\x02c8f', U'\x02c8e', U'\x00000', U'\x02c8e'),
-    CaseMap(U'\x02c90', U'\x00000', U'\x02c91', U'\x00000'),
-    CaseMap(U'\x02c91', U'\x02c90', U'\x00000', U'\x02c90'),
-    CaseMap(U'\x02c92', U'\x00000', U'\x02c93', U'\x00000'),
-    CaseMap(U'\x02c93', U'\x02c92', U'\x00000', U'\x02c92'),
-    CaseMap(U'\x02c94', U'\x00000', U'\x02c95', U'\x00000'),
-    CaseMap(U'\x02c95', U'\x02c94', U'\x00000', U'\x02c94'),
-    CaseMap(U'\x02c96', U'\x00000', U'\x02c97', U'\x00000'),
-    CaseMap(U'\x02c97', U'\x02c96', U'\x00000', U'\x02c96'),
-    CaseMap(U'\x02c98', U'\x00000', U'\x02c99', U'\x00000'),
-    CaseMap(U'\x02c99', U'\x02c98', U'\x00000', U'\x02c98'),
-    CaseMap(U'\x02c9a', U'\x00000', U'\x02c9b', U'\x00000'),
-    CaseMap(U'\x02c9b', U'\x02c9a', U'\x00000', U'\x02c9a'),
-    CaseMap(U'\x02c9c', U'\x00000', U'\x02c9d', U'\x00000'),
-    CaseMap(U'\x02c9d', U'\x02c9c', U'\x00000', U'\x02c9c'),
-    CaseMap(U'\x02c9e', U'\x00000', U'\x02c9f', U'\x00000'),
-    CaseMap(U'\x02c9f', U'\x02c9e', U'\x00000', U'\x02c9e'),
-    CaseMap(U'\x02ca0', U'\x00000', U'\x02ca1', U'\x00000'),
-    CaseMap(U'\x02ca1', U'\x02ca0', U'\x00000', U'\x02ca0'),
-    CaseMap(U'\x02ca2', U'\x00000', U'\x02ca3', U'\x00000'),
-    CaseMap(U'\x02ca3', U'\x02ca2', U'\x00000', U'\x02ca2'),
-    CaseMap(U'\x02ca4', U'\x00000', U'\x02ca5', U'\x00000'),
-    CaseMap(U'\x02ca5', U'\x02ca4', U'\x00000', U'\x02ca4'),
-    CaseMap(U'\x02ca6', U'\x00000', U'\x02ca7', U'\x00000'),
-    CaseMap(U'\x02ca7', U'\x02ca6', U'\x00000', U'\x02ca6'),
-    CaseMap(U'\x02ca8', U'\x00000', U'\x02ca9', U'\x00000'),
-    CaseMap(U'\x02ca9', U'\x02ca8', U'\x00000', U'\x02ca8'),
-    CaseMap(U'\x02caa', U'\x00000', U'\x02cab', U'\x00000'),
-    CaseMap(U'\x02cab', U'\x02caa', U'\x00000', U'\x02caa'),
-    CaseMap(U'\x02cac', U'\x00000', U'\x02cad', U'\x00000'),
-    CaseMap(U'\x02cad', U'\x02cac', U'\x00000', U'\x02cac'),
-    CaseMap(U'\x02cae', U'\x00000', U'\x02caf', U'\x00000'),
-    CaseMap(U'\x02caf', U'\x02cae', U'\x00000', U'\x02cae'),
-    CaseMap(U'\x02cb0', U'\x00000', U'\x02cb1', U'\x00000'),
-    CaseMap(U'\x02cb1', U'\x02cb0', U'\x00000', U'\x02cb0'),
-    CaseMap(U'\x02cb2', U'\x00000', U'\x02cb3', U'\x00000'),
-    CaseMap(U'\x02cb3', U'\x02cb2', U'\x00000', U'\x02cb2'),
-    CaseMap(U'\x02cb4', U'\x00000', U'\x02cb5', U'\x00000'),
-    CaseMap(U'\x02cb5', U'\x02cb4', U'\x00000', U'\x02cb4'),
-    CaseMap(U'\x02cb6', U'\x00000', U'\x02cb7', U'\x00000'),
-    CaseMap(U'\x02cb7', U'\x02cb6', U'\x00000', U'\x02cb6'),
-    CaseMap(U'\x02cb8', U'\x00000', U'\x02cb9', U'\x00000'),
-    CaseMap(U'\x02cb9', U'\x02cb8', U'\x00000', U'\x02cb8'),
-    CaseMap(U'\x02cba', U'\x00000', U'\x02cbb', U'\x00000'),
-    CaseMap(U'\x02cbb', U'\x02cba', U'\x00000', U'\x02cba'),
-    CaseMap(U'\x02cbc', U'\x00000', U'\x02cbd', U'\x00000'),
-    CaseMap(U'\x02cbd', U'\x02cbc', U'\x00000', U'\x02cbc'),
-    CaseMap(U'\x02cbe', U'\x00000', U'\x02cbf', U'\x00000'),
-    CaseMap(U'\x02cbf', U'\x02cbe', U'\x00000', U'\x02cbe'),
-    CaseMap(U'\x02cc0', U'\x00000', U'\x02cc1', U'\x00000'),
-    CaseMap(U'\x02cc1', U'\x02cc0', U'\x00000', U'\x02cc0'),
-    CaseMap(U'\x02cc2', U'\x00000', U'\x02cc3', U'\x00000'),
-    CaseMap(U'\x02cc3', U'\x02cc2', U'\x00000', U'\x02cc2'),
-    CaseMap(U'\x02cc4', U'\x00000', U'\x02cc5', U'\x00000'),
-    CaseMap(U'\x02cc5', U'\x02cc4', U'\x00000', U'\x02cc4'),
-    CaseMap(U'\x02cc6', U'\x00000', U'\x02cc7', U'\x00000'),
-    CaseMap(U'\x02cc7', U'\x02cc6', U'\x00000', U'\x02cc6'),
-    CaseMap(U'\x02cc8', U'\x00000', U'\x02cc9', U'\x00000'),
-    CaseMap(U'\x02cc9', U'\x02cc8', U'\x00000', U'\x02cc8'),
-    CaseMap(U'\x02cca', U'\x00000', U'\x02ccb', U'\x00000'),
-    CaseMap(U'\x02ccb', U'\x02cca', U'\x00000', U'\x02cca'),
-    CaseMap(U'\x02ccc', U'\x00000', U'\x02ccd', U'\x00000'),
-    CaseMap(U'\x02ccd', U'\x02ccc', U'\x00000', U'\x02ccc'),
-    CaseMap(U'\x02cce', U'\x00000', U'\x02ccf', U'\x00000'),
-    CaseMap(U'\x02ccf', U'\x02cce', U'\x00000', U'\x02cce'),
-    CaseMap(U'\x02cd0', U'\x00000', U'\x02cd1', U'\x00000'),
-    CaseMap(U'\x02cd1', U'\x02cd0', U'\x00000', U'\x02cd0'),
-    CaseMap(U'\x02cd2', U'\x00000', U'\x02cd3', U'\x00000'),
-    CaseMap(U'\x02cd3', U'\x02cd2', U'\x00000', U'\x02cd2'),
-    CaseMap(U'\x02cd4', U'\x00000', U'\x02cd5', U'\x00000'),
-    CaseMap(U'\x02cd5', U'\x02cd4', U'\x00000', U'\x02cd4'),
-    CaseMap(U'\x02cd6', U'\x00000', U'\x02cd7', U'\x00000'),
-    CaseMap(U'\x02cd7', U'\x02cd6', U'\x00000', U'\x02cd6'),
-    CaseMap(U'\x02cd8', U'\x00000', U'\x02cd9', U'\x00000'),
-    CaseMap(U'\x02cd9', U'\x02cd8', U'\x00000', U'\x02cd8'),
-    CaseMap(U'\x02cda', U'\x00000', U'\x02cdb', U'\x00000'),
-    CaseMap(U'\x02cdb', U'\x02cda', U'\x00000', U'\x02cda'),
-    CaseMap(U'\x02cdc', U'\x00000', U'\x02cdd', U'\x00000'),
-    CaseMap(U'\x02cdd', U'\x02cdc', U'\x00000', U'\x02cdc'),
-    CaseMap(U'\x02cde', U'\x00000', U'\x02cdf', U'\x00000'),
-    CaseMap(U'\x02cdf', U'\x02cde', U'\x00000', U'\x02cde'),
-    CaseMap(U'\x02ce0', U'\x00000', U'\x02ce1', U'\x00000'),
-    CaseMap(U'\x02ce1', U'\x02ce0', U'\x00000', U'\x02ce0'),
-    CaseMap(U'\x02ce2', U'\x00000', U'\x02ce3', U'\x00000'),
-    CaseMap(U'\x02ce3', U'\x02ce2', U'\x00000', U'\x02ce2'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x02ceb', U'\x00000', U'\x02cec', U'\x00000'),
-    CaseMap(U'\x02cec', U'\x02ceb', U'\x00000', U'\x02ceb'),
-    CaseMap(U'\x02ced', U'\x00000', U'\x02cee', U'\x00000'),
-    CaseMap(U'\x02cee', U'\x02ced', U'\x00000', U'\x02ced'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x02cf2', U'\x00000', U'\x02cf3', U'\x00000'),
-    CaseMap(U'\x02cf3', U'\x02cf2', U'\x00000', U'\x02cf2')};
-
-static const std::vector<CaseMap> CASEMAP_0x002c(
-    T_CASEMAP_0x002c, T_CASEMAP_0x002c + (sizeof(T_CASEMAP_0x002c) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x002d[]{CaseMap(U'\x02d00', U'\x010a0', U'\x00000', U'\x010a0'),
-    CaseMap(U'\x02d01', U'\x010a1', U'\x00000', U'\x010a1'),
-    CaseMap(U'\x02d02', U'\x010a2', U'\x00000', U'\x010a2'),
-    CaseMap(U'\x02d03', U'\x010a3', U'\x00000', U'\x010a3'),
-    CaseMap(U'\x02d04', U'\x010a4', U'\x00000', U'\x010a4'),
-    CaseMap(U'\x02d05', U'\x010a5', U'\x00000', U'\x010a5'),
-    CaseMap(U'\x02d06', U'\x010a6', U'\x00000', U'\x010a6'),
-    CaseMap(U'\x02d07', U'\x010a7', U'\x00000', U'\x010a7'),
-    CaseMap(U'\x02d08', U'\x010a8', U'\x00000', U'\x010a8'),
-    CaseMap(U'\x02d09', U'\x010a9', U'\x00000', U'\x010a9'),
-    CaseMap(U'\x02d0a', U'\x010aa', U'\x00000', U'\x010aa'),
-    CaseMap(U'\x02d0b', U'\x010ab', U'\x00000', U'\x010ab'),
-    CaseMap(U'\x02d0c', U'\x010ac', U'\x00000', U'\x010ac'),
-    CaseMap(U'\x02d0d', U'\x010ad', U'\x00000', U'\x010ad'),
-    CaseMap(U'\x02d0e', U'\x010ae', U'\x00000', U'\x010ae'),
-    CaseMap(U'\x02d0f', U'\x010af', U'\x00000', U'\x010af'),
-    CaseMap(U'\x02d10', U'\x010b0', U'\x00000', U'\x010b0'),
-    CaseMap(U'\x02d11', U'\x010b1', U'\x00000', U'\x010b1'),
-    CaseMap(U'\x02d12', U'\x010b2', U'\x00000', U'\x010b2'),
-    CaseMap(U'\x02d13', U'\x010b3', U'\x00000', U'\x010b3'),
-    CaseMap(U'\x02d14', U'\x010b4', U'\x00000', U'\x010b4'),
-    CaseMap(U'\x02d15', U'\x010b5', U'\x00000', U'\x010b5'),
-    CaseMap(U'\x02d16', U'\x010b6', U'\x00000', U'\x010b6'),
-    CaseMap(U'\x02d17', U'\x010b7', U'\x00000', U'\x010b7'),
-    CaseMap(U'\x02d18', U'\x010b8', U'\x00000', U'\x010b8'),
-    CaseMap(U'\x02d19', U'\x010b9', U'\x00000', U'\x010b9'),
-    CaseMap(U'\x02d1a', U'\x010ba', U'\x00000', U'\x010ba'),
-    CaseMap(U'\x02d1b', U'\x010bb', U'\x00000', U'\x010bb'),
-    CaseMap(U'\x02d1c', U'\x010bc', U'\x00000', U'\x010bc'),
-    CaseMap(U'\x02d1d', U'\x010bd', U'\x00000', U'\x010bd'),
-    CaseMap(U'\x02d1e', U'\x010be', U'\x00000', U'\x010be'),
-    CaseMap(U'\x02d1f', U'\x010bf', U'\x00000', U'\x010bf'),
-    CaseMap(U'\x02d20', U'\x010c0', U'\x00000', U'\x010c0'),
-    CaseMap(U'\x02d21', U'\x010c1', U'\x00000', U'\x010c1'),
-    CaseMap(U'\x02d22', U'\x010c2', U'\x00000', U'\x010c2'),
-    CaseMap(U'\x02d23', U'\x010c3', U'\x00000', U'\x010c3'),
-    CaseMap(U'\x02d24', U'\x010c4', U'\x00000', U'\x010c4'),
-    CaseMap(U'\x02d25', U'\x010c5', U'\x00000', U'\x010c5'), CaseMap(),
-    CaseMap(U'\x02d27', U'\x010c7', U'\x00000', U'\x010c7'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(U'\x02d2d', U'\x010cd', U'\x00000', U'\x010cd')};
-
-static const std::vector<CaseMap> CASEMAP_0x002d(
-    T_CASEMAP_0x002d, T_CASEMAP_0x002d + (sizeof(T_CASEMAP_0x002d) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x00a6[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x0a640', U'\x00000', U'\x0a641', U'\x00000'),
-    CaseMap(U'\x0a641', U'\x0a640', U'\x00000', U'\x0a640'),
-    CaseMap(U'\x0a642', U'\x00000', U'\x0a643', U'\x00000'),
-    CaseMap(U'\x0a643', U'\x0a642', U'\x00000', U'\x0a642'),
-    CaseMap(U'\x0a644', U'\x00000', U'\x0a645', U'\x00000'),
-    CaseMap(U'\x0a645', U'\x0a644', U'\x00000', U'\x0a644'),
-    CaseMap(U'\x0a646', U'\x00000', U'\x0a647', U'\x00000'),
-    CaseMap(U'\x0a647', U'\x0a646', U'\x00000', U'\x0a646'),
-    CaseMap(U'\x0a648', U'\x00000', U'\x0a649', U'\x00000'),
-    CaseMap(U'\x0a649', U'\x0a648', U'\x00000', U'\x0a648'),
-    CaseMap(U'\x0a64a', U'\x00000', U'\x0a64b', U'\x00000'),
-    CaseMap(U'\x0a64b', U'\x0a64a', U'\x00000', U'\x0a64a'),
-    CaseMap(U'\x0a64c', U'\x00000', U'\x0a64d', U'\x00000'),
-    CaseMap(U'\x0a64d', U'\x0a64c', U'\x00000', U'\x0a64c'),
-    CaseMap(U'\x0a64e', U'\x00000', U'\x0a64f', U'\x00000'),
-    CaseMap(U'\x0a64f', U'\x0a64e', U'\x00000', U'\x0a64e'),
-    CaseMap(U'\x0a650', U'\x00000', U'\x0a651', U'\x00000'),
-    CaseMap(U'\x0a651', U'\x0a650', U'\x00000', U'\x0a650'),
-    CaseMap(U'\x0a652', U'\x00000', U'\x0a653', U'\x00000'),
-    CaseMap(U'\x0a653', U'\x0a652', U'\x00000', U'\x0a652'),
-    CaseMap(U'\x0a654', U'\x00000', U'\x0a655', U'\x00000'),
-    CaseMap(U'\x0a655', U'\x0a654', U'\x00000', U'\x0a654'),
-    CaseMap(U'\x0a656', U'\x00000', U'\x0a657', U'\x00000'),
-    CaseMap(U'\x0a657', U'\x0a656', U'\x00000', U'\x0a656'),
-    CaseMap(U'\x0a658', U'\x00000', U'\x0a659', U'\x00000'),
-    CaseMap(U'\x0a659', U'\x0a658', U'\x00000', U'\x0a658'),
-    CaseMap(U'\x0a65a', U'\x00000', U'\x0a65b', U'\x00000'),
-    CaseMap(U'\x0a65b', U'\x0a65a', U'\x00000', U'\x0a65a'),
-    CaseMap(U'\x0a65c', U'\x00000', U'\x0a65d', U'\x00000'),
-    CaseMap(U'\x0a65d', U'\x0a65c', U'\x00000', U'\x0a65c'),
-    CaseMap(U'\x0a65e', U'\x00000', U'\x0a65f', U'\x00000'),
-    CaseMap(U'\x0a65f', U'\x0a65e', U'\x00000', U'\x0a65e'),
-    CaseMap(U'\x0a660', U'\x00000', U'\x0a661', U'\x00000'),
-    CaseMap(U'\x0a661', U'\x0a660', U'\x00000', U'\x0a660'),
-    CaseMap(U'\x0a662', U'\x00000', U'\x0a663', U'\x00000'),
-    CaseMap(U'\x0a663', U'\x0a662', U'\x00000', U'\x0a662'),
-    CaseMap(U'\x0a664', U'\x00000', U'\x0a665', U'\x00000'),
-    CaseMap(U'\x0a665', U'\x0a664', U'\x00000', U'\x0a664'),
-    CaseMap(U'\x0a666', U'\x00000', U'\x0a667', U'\x00000'),
-    CaseMap(U'\x0a667', U'\x0a666', U'\x00000', U'\x0a666'),
-    CaseMap(U'\x0a668', U'\x00000', U'\x0a669', U'\x00000'),
-    CaseMap(U'\x0a669', U'\x0a668', U'\x00000', U'\x0a668'),
-    CaseMap(U'\x0a66a', U'\x00000', U'\x0a66b', U'\x00000'),
-    CaseMap(U'\x0a66b', U'\x0a66a', U'\x00000', U'\x0a66a'),
-    CaseMap(U'\x0a66c', U'\x00000', U'\x0a66d', U'\x00000'),
-    CaseMap(U'\x0a66d', U'\x0a66c', U'\x00000', U'\x0a66c'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x0a680', U'\x00000', U'\x0a681', U'\x00000'),
-    CaseMap(U'\x0a681', U'\x0a680', U'\x00000', U'\x0a680'),
-    CaseMap(U'\x0a682', U'\x00000', U'\x0a683', U'\x00000'),
-    CaseMap(U'\x0a683', U'\x0a682', U'\x00000', U'\x0a682'),
-    CaseMap(U'\x0a684', U'\x00000', U'\x0a685', U'\x00000'),
-    CaseMap(U'\x0a685', U'\x0a684', U'\x00000', U'\x0a684'),
-    CaseMap(U'\x0a686', U'\x00000', U'\x0a687', U'\x00000'),
-    CaseMap(U'\x0a687', U'\x0a686', U'\x00000', U'\x0a686'),
-    CaseMap(U'\x0a688', U'\x00000', U'\x0a689', U'\x00000'),
-    CaseMap(U'\x0a689', U'\x0a688', U'\x00000', U'\x0a688'),
-    CaseMap(U'\x0a68a', U'\x00000', U'\x0a68b', U'\x00000'),
-    CaseMap(U'\x0a68b', U'\x0a68a', U'\x00000', U'\x0a68a'),
-    CaseMap(U'\x0a68c', U'\x00000', U'\x0a68d', U'\x00000'),
-    CaseMap(U'\x0a68d', U'\x0a68c', U'\x00000', U'\x0a68c'),
-    CaseMap(U'\x0a68e', U'\x00000', U'\x0a68f', U'\x00000'),
-    CaseMap(U'\x0a68f', U'\x0a68e', U'\x00000', U'\x0a68e'),
-    CaseMap(U'\x0a690', U'\x00000', U'\x0a691', U'\x00000'),
-    CaseMap(U'\x0a691', U'\x0a690', U'\x00000', U'\x0a690'),
-    CaseMap(U'\x0a692', U'\x00000', U'\x0a693', U'\x00000'),
-    CaseMap(U'\x0a693', U'\x0a692', U'\x00000', U'\x0a692'),
-    CaseMap(U'\x0a694', U'\x00000', U'\x0a695', U'\x00000'),
-    CaseMap(U'\x0a695', U'\x0a694', U'\x00000', U'\x0a694'),
-    CaseMap(U'\x0a696', U'\x00000', U'\x0a697', U'\x00000'),
-    CaseMap(U'\x0a697', U'\x0a696', U'\x00000', U'\x0a696'),
-    CaseMap(U'\x0a698', U'\x00000', U'\x0a699', U'\x00000'),
-    CaseMap(U'\x0a699', U'\x0a698', U'\x00000', U'\x0a698'),
-    CaseMap(U'\x0a69a', U'\x00000', U'\x0a69b', U'\x00000'),
-    CaseMap(U'\x0a69b', U'\x0a69a', U'\x00000', U'\x0a69a')};
-
-static const std::vector<CaseMap> CASEMAP_0x00a6(
-    T_CASEMAP_0x00a6, T_CASEMAP_0x00a6 + (sizeof(T_CASEMAP_0x00a6) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x00a7[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x0a722', U'\x00000', U'\x0a723', U'\x00000'),
-    CaseMap(U'\x0a723', U'\x0a722', U'\x00000', U'\x0a722'),
-    CaseMap(U'\x0a724', U'\x00000', U'\x0a725', U'\x00000'),
-    CaseMap(U'\x0a725', U'\x0a724', U'\x00000', U'\x0a724'),
-    CaseMap(U'\x0a726', U'\x00000', U'\x0a727', U'\x00000'),
-    CaseMap(U'\x0a727', U'\x0a726', U'\x00000', U'\x0a726'),
-    CaseMap(U'\x0a728', U'\x00000', U'\x0a729', U'\x00000'),
-    CaseMap(U'\x0a729', U'\x0a728', U'\x00000', U'\x0a728'),
-    CaseMap(U'\x0a72a', U'\x00000', U'\x0a72b', U'\x00000'),
-    CaseMap(U'\x0a72b', U'\x0a72a', U'\x00000', U'\x0a72a'),
-    CaseMap(U'\x0a72c', U'\x00000', U'\x0a72d', U'\x00000'),
-    CaseMap(U'\x0a72d', U'\x0a72c', U'\x00000', U'\x0a72c'),
-    CaseMap(U'\x0a72e', U'\x00000', U'\x0a72f', U'\x00000'),
-    CaseMap(U'\x0a72f', U'\x0a72e', U'\x00000', U'\x0a72e'), CaseMap(), CaseMap(),
-    CaseMap(U'\x0a732', U'\x00000', U'\x0a733', U'\x00000'),
-    CaseMap(U'\x0a733', U'\x0a732', U'\x00000', U'\x0a732'),
-    CaseMap(U'\x0a734', U'\x00000', U'\x0a735', U'\x00000'),
-    CaseMap(U'\x0a735', U'\x0a734', U'\x00000', U'\x0a734'),
-    CaseMap(U'\x0a736', U'\x00000', U'\x0a737', U'\x00000'),
-    CaseMap(U'\x0a737', U'\x0a736', U'\x00000', U'\x0a736'),
-    CaseMap(U'\x0a738', U'\x00000', U'\x0a739', U'\x00000'),
-    CaseMap(U'\x0a739', U'\x0a738', U'\x00000', U'\x0a738'),
-    CaseMap(U'\x0a73a', U'\x00000', U'\x0a73b', U'\x00000'),
-    CaseMap(U'\x0a73b', U'\x0a73a', U'\x00000', U'\x0a73a'),
-    CaseMap(U'\x0a73c', U'\x00000', U'\x0a73d', U'\x00000'),
-    CaseMap(U'\x0a73d', U'\x0a73c', U'\x00000', U'\x0a73c'),
-    CaseMap(U'\x0a73e', U'\x00000', U'\x0a73f', U'\x00000'),
-    CaseMap(U'\x0a73f', U'\x0a73e', U'\x00000', U'\x0a73e'),
-    CaseMap(U'\x0a740', U'\x00000', U'\x0a741', U'\x00000'),
-    CaseMap(U'\x0a741', U'\x0a740', U'\x00000', U'\x0a740'),
-    CaseMap(U'\x0a742', U'\x00000', U'\x0a743', U'\x00000'),
-    CaseMap(U'\x0a743', U'\x0a742', U'\x00000', U'\x0a742'),
-    CaseMap(U'\x0a744', U'\x00000', U'\x0a745', U'\x00000'),
-    CaseMap(U'\x0a745', U'\x0a744', U'\x00000', U'\x0a744'),
-    CaseMap(U'\x0a746', U'\x00000', U'\x0a747', U'\x00000'),
-    CaseMap(U'\x0a747', U'\x0a746', U'\x00000', U'\x0a746'),
-    CaseMap(U'\x0a748', U'\x00000', U'\x0a749', U'\x00000'),
-    CaseMap(U'\x0a749', U'\x0a748', U'\x00000', U'\x0a748'),
-    CaseMap(U'\x0a74a', U'\x00000', U'\x0a74b', U'\x00000'),
-    CaseMap(U'\x0a74b', U'\x0a74a', U'\x00000', U'\x0a74a'),
-    CaseMap(U'\x0a74c', U'\x00000', U'\x0a74d', U'\x00000'),
-    CaseMap(U'\x0a74d', U'\x0a74c', U'\x00000', U'\x0a74c'),
-    CaseMap(U'\x0a74e', U'\x00000', U'\x0a74f', U'\x00000'),
-    CaseMap(U'\x0a74f', U'\x0a74e', U'\x00000', U'\x0a74e'),
-    CaseMap(U'\x0a750', U'\x00000', U'\x0a751', U'\x00000'),
-    CaseMap(U'\x0a751', U'\x0a750', U'\x00000', U'\x0a750'),
-    CaseMap(U'\x0a752', U'\x00000', U'\x0a753', U'\x00000'),
-    CaseMap(U'\x0a753', U'\x0a752', U'\x00000', U'\x0a752'),
-    CaseMap(U'\x0a754', U'\x00000', U'\x0a755', U'\x00000'),
-    CaseMap(U'\x0a755', U'\x0a754', U'\x00000', U'\x0a754'),
-    CaseMap(U'\x0a756', U'\x00000', U'\x0a757', U'\x00000'),
-    CaseMap(U'\x0a757', U'\x0a756', U'\x00000', U'\x0a756'),
-    CaseMap(U'\x0a758', U'\x00000', U'\x0a759', U'\x00000'),
-    CaseMap(U'\x0a759', U'\x0a758', U'\x00000', U'\x0a758'),
-    CaseMap(U'\x0a75a', U'\x00000', U'\x0a75b', U'\x00000'),
-    CaseMap(U'\x0a75b', U'\x0a75a', U'\x00000', U'\x0a75a'),
-    CaseMap(U'\x0a75c', U'\x00000', U'\x0a75d', U'\x00000'),
-    CaseMap(U'\x0a75d', U'\x0a75c', U'\x00000', U'\x0a75c'),
-    CaseMap(U'\x0a75e', U'\x00000', U'\x0a75f', U'\x00000'),
-    CaseMap(U'\x0a75f', U'\x0a75e', U'\x00000', U'\x0a75e'),
-    CaseMap(U'\x0a760', U'\x00000', U'\x0a761', U'\x00000'),
-    CaseMap(U'\x0a761', U'\x0a760', U'\x00000', U'\x0a760'),
-    CaseMap(U'\x0a762', U'\x00000', U'\x0a763', U'\x00000'),
-    CaseMap(U'\x0a763', U'\x0a762', U'\x00000', U'\x0a762'),
-    CaseMap(U'\x0a764', U'\x00000', U'\x0a765', U'\x00000'),
-    CaseMap(U'\x0a765', U'\x0a764', U'\x00000', U'\x0a764'),
-    CaseMap(U'\x0a766', U'\x00000', U'\x0a767', U'\x00000'),
-    CaseMap(U'\x0a767', U'\x0a766', U'\x00000', U'\x0a766'),
-    CaseMap(U'\x0a768', U'\x00000', U'\x0a769', U'\x00000'),
-    CaseMap(U'\x0a769', U'\x0a768', U'\x00000', U'\x0a768'),
-    CaseMap(U'\x0a76a', U'\x00000', U'\x0a76b', U'\x00000'),
-    CaseMap(U'\x0a76b', U'\x0a76a', U'\x00000', U'\x0a76a'),
-    CaseMap(U'\x0a76c', U'\x00000', U'\x0a76d', U'\x00000'),
-    CaseMap(U'\x0a76d', U'\x0a76c', U'\x00000', U'\x0a76c'),
-    CaseMap(U'\x0a76e', U'\x00000', U'\x0a76f', U'\x00000'),
-    CaseMap(U'\x0a76f', U'\x0a76e', U'\x00000', U'\x0a76e'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x0a779', U'\x00000', U'\x0a77a', U'\x00000'),
-    CaseMap(U'\x0a77a', U'\x0a779', U'\x00000', U'\x0a779'),
-    CaseMap(U'\x0a77b', U'\x00000', U'\x0a77c', U'\x00000'),
-    CaseMap(U'\x0a77c', U'\x0a77b', U'\x00000', U'\x0a77b'),
-    CaseMap(U'\x0a77d', U'\x00000', U'\x01d79', U'\x00000'),
-    CaseMap(U'\x0a77e', U'\x00000', U'\x0a77f', U'\x00000'),
-    CaseMap(U'\x0a77f', U'\x0a77e', U'\x00000', U'\x0a77e'),
-    CaseMap(U'\x0a780', U'\x00000', U'\x0a781', U'\x00000'),
-    CaseMap(U'\x0a781', U'\x0a780', U'\x00000', U'\x0a780'),
-    CaseMap(U'\x0a782', U'\x00000', U'\x0a783', U'\x00000'),
-    CaseMap(U'\x0a783', U'\x0a782', U'\x00000', U'\x0a782'),
-    CaseMap(U'\x0a784', U'\x00000', U'\x0a785', U'\x00000'),
-    CaseMap(U'\x0a785', U'\x0a784', U'\x00000', U'\x0a784'),
-    CaseMap(U'\x0a786', U'\x00000', U'\x0a787', U'\x00000'),
-    CaseMap(U'\x0a787', U'\x0a786', U'\x00000', U'\x0a786'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x0a78b', U'\x00000', U'\x0a78c', U'\x00000'),
-    CaseMap(U'\x0a78c', U'\x0a78b', U'\x00000', U'\x0a78b'),
-    CaseMap(U'\x0a78d', U'\x00000', U'\x00265', U'\x00000'), CaseMap(), CaseMap(),
-    CaseMap(U'\x0a790', U'\x00000', U'\x0a791', U'\x00000'),
-    CaseMap(U'\x0a791', U'\x0a790', U'\x00000', U'\x0a790'),
-    CaseMap(U'\x0a792', U'\x00000', U'\x0a793', U'\x00000'),
-    CaseMap(U'\x0a793', U'\x0a792', U'\x00000', U'\x0a792'),
-    CaseMap(U'\x0a794', U'\x0a7c4', U'\x00000', U'\x0a7c4'), CaseMap(),
-    CaseMap(U'\x0a796', U'\x00000', U'\x0a797', U'\x00000'),
-    CaseMap(U'\x0a797', U'\x0a796', U'\x00000', U'\x0a796'),
-    CaseMap(U'\x0a798', U'\x00000', U'\x0a799', U'\x00000'),
-    CaseMap(U'\x0a799', U'\x0a798', U'\x00000', U'\x0a798'),
-    CaseMap(U'\x0a79a', U'\x00000', U'\x0a79b', U'\x00000'),
-    CaseMap(U'\x0a79b', U'\x0a79a', U'\x00000', U'\x0a79a'),
-    CaseMap(U'\x0a79c', U'\x00000', U'\x0a79d', U'\x00000'),
-    CaseMap(U'\x0a79d', U'\x0a79c', U'\x00000', U'\x0a79c'),
-    CaseMap(U'\x0a79e', U'\x00000', U'\x0a79f', U'\x00000'),
-    CaseMap(U'\x0a79f', U'\x0a79e', U'\x00000', U'\x0a79e'),
-    CaseMap(U'\x0a7a0', U'\x00000', U'\x0a7a1', U'\x00000'),
-    CaseMap(U'\x0a7a1', U'\x0a7a0', U'\x00000', U'\x0a7a0'),
-    CaseMap(U'\x0a7a2', U'\x00000', U'\x0a7a3', U'\x00000'),
-    CaseMap(U'\x0a7a3', U'\x0a7a2', U'\x00000', U'\x0a7a2'),
-    CaseMap(U'\x0a7a4', U'\x00000', U'\x0a7a5', U'\x00000'),
-    CaseMap(U'\x0a7a5', U'\x0a7a4', U'\x00000', U'\x0a7a4'),
-    CaseMap(U'\x0a7a6', U'\x00000', U'\x0a7a7', U'\x00000'),
-    CaseMap(U'\x0a7a7', U'\x0a7a6', U'\x00000', U'\x0a7a6'),
-    CaseMap(U'\x0a7a8', U'\x00000', U'\x0a7a9', U'\x00000'),
-    CaseMap(U'\x0a7a9', U'\x0a7a8', U'\x00000', U'\x0a7a8'),
-    CaseMap(U'\x0a7aa', U'\x00000', U'\x00266', U'\x00000'),
-    CaseMap(U'\x0a7ab', U'\x00000', U'\x0025c', U'\x00000'),
-    CaseMap(U'\x0a7ac', U'\x00000', U'\x00261', U'\x00000'),
-    CaseMap(U'\x0a7ad', U'\x00000', U'\x0026c', U'\x00000'),
-    CaseMap(U'\x0a7ae', U'\x00000', U'\x0026a', U'\x00000'), CaseMap(),
-    CaseMap(U'\x0a7b0', U'\x00000', U'\x0029e', U'\x00000'),
-    CaseMap(U'\x0a7b1', U'\x00000', U'\x00287', U'\x00000'),
-    CaseMap(U'\x0a7b2', U'\x00000', U'\x0029d', U'\x00000'),
-    CaseMap(U'\x0a7b3', U'\x00000', U'\x0ab53', U'\x00000'),
-    CaseMap(U'\x0a7b4', U'\x00000', U'\x0a7b5', U'\x00000'),
-    CaseMap(U'\x0a7b5', U'\x0a7b4', U'\x00000', U'\x0a7b4'),
-    CaseMap(U'\x0a7b6', U'\x00000', U'\x0a7b7', U'\x00000'),
-    CaseMap(U'\x0a7b7', U'\x0a7b6', U'\x00000', U'\x0a7b6'),
-    CaseMap(U'\x0a7b8', U'\x00000', U'\x0a7b9', U'\x00000'),
-    CaseMap(U'\x0a7b9', U'\x0a7b8', U'\x00000', U'\x0a7b8'),
-    CaseMap(U'\x0a7ba', U'\x00000', U'\x0a7bb', U'\x00000'),
-    CaseMap(U'\x0a7bb', U'\x0a7ba', U'\x00000', U'\x0a7ba'),
-    CaseMap(U'\x0a7bc', U'\x00000', U'\x0a7bd', U'\x00000'),
-    CaseMap(U'\x0a7bd', U'\x0a7bc', U'\x00000', U'\x0a7bc'),
-    CaseMap(U'\x0a7be', U'\x00000', U'\x0a7bf', U'\x00000'),
-    CaseMap(U'\x0a7bf', U'\x0a7be', U'\x00000', U'\x0a7be'),
-    CaseMap(U'\x0a7c0', U'\x00000', U'\x0a7c1', U'\x00000'),
-    CaseMap(U'\x0a7c1', U'\x0a7c0', U'\x00000', U'\x0a7c0'),
-    CaseMap(U'\x0a7c2', U'\x00000', U'\x0a7c3', U'\x00000'),
-    CaseMap(U'\x0a7c3', U'\x0a7c2', U'\x00000', U'\x0a7c2'),
-    CaseMap(U'\x0a7c4', U'\x00000', U'\x0a794', U'\x00000'),
-    CaseMap(U'\x0a7c5', U'\x00000', U'\x00282', U'\x00000'),
-    CaseMap(U'\x0a7c6', U'\x00000', U'\x01d8e', U'\x00000'),
-    CaseMap(U'\x0a7c7', U'\x00000', U'\x0a7c8', U'\x00000'),
-    CaseMap(U'\x0a7c8', U'\x0a7c7', U'\x00000', U'\x0a7c7'),
-    CaseMap(U'\x0a7c9', U'\x00000', U'\x0a7ca', U'\x00000'),
-    CaseMap(U'\x0a7ca', U'\x0a7c9', U'\x00000', U'\x0a7c9'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(U'\x0a7d0', U'\x00000', U'\x0a7d1', U'\x00000'),
-    CaseMap(U'\x0a7d1', U'\x0a7d0', U'\x00000', U'\x0a7d0'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x0a7d6', U'\x00000', U'\x0a7d7', U'\x00000'),
-    CaseMap(U'\x0a7d7', U'\x0a7d6', U'\x00000', U'\x0a7d6'),
-    CaseMap(U'\x0a7d8', U'\x00000', U'\x0a7d9', U'\x00000'),
-    CaseMap(U'\x0a7d9', U'\x0a7d8', U'\x00000', U'\x0a7d8'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x0a7f5', U'\x00000', U'\x0a7f6', U'\x00000'),
-    CaseMap(U'\x0a7f6', U'\x0a7f5', U'\x00000', U'\x0a7f5')};
-
-static const std::vector<CaseMap> CASEMAP_0x00a7(
-    T_CASEMAP_0x00a7, T_CASEMAP_0x00a7 + (sizeof(T_CASEMAP_0x00a7) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x00ab[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x0ab53', U'\x0a7b3', U'\x00000', U'\x0a7b3'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x0ab70', U'\x013a0', U'\x00000', U'\x013a0'),
-    CaseMap(U'\x0ab71', U'\x013a1', U'\x00000', U'\x013a1'),
-    CaseMap(U'\x0ab72', U'\x013a2', U'\x00000', U'\x013a2'),
-    CaseMap(U'\x0ab73', U'\x013a3', U'\x00000', U'\x013a3'),
-    CaseMap(U'\x0ab74', U'\x013a4', U'\x00000', U'\x013a4'),
-    CaseMap(U'\x0ab75', U'\x013a5', U'\x00000', U'\x013a5'),
-    CaseMap(U'\x0ab76', U'\x013a6', U'\x00000', U'\x013a6'),
-    CaseMap(U'\x0ab77', U'\x013a7', U'\x00000', U'\x013a7'),
-    CaseMap(U'\x0ab78', U'\x013a8', U'\x00000', U'\x013a8'),
-    CaseMap(U'\x0ab79', U'\x013a9', U'\x00000', U'\x013a9'),
-    CaseMap(U'\x0ab7a', U'\x013aa', U'\x00000', U'\x013aa'),
-    CaseMap(U'\x0ab7b', U'\x013ab', U'\x00000', U'\x013ab'),
-    CaseMap(U'\x0ab7c', U'\x013ac', U'\x00000', U'\x013ac'),
-    CaseMap(U'\x0ab7d', U'\x013ad', U'\x00000', U'\x013ad'),
-    CaseMap(U'\x0ab7e', U'\x013ae', U'\x00000', U'\x013ae'),
-    CaseMap(U'\x0ab7f', U'\x013af', U'\x00000', U'\x013af'),
-    CaseMap(U'\x0ab80', U'\x013b0', U'\x00000', U'\x013b0'),
-    CaseMap(U'\x0ab81', U'\x013b1', U'\x00000', U'\x013b1'),
-    CaseMap(U'\x0ab82', U'\x013b2', U'\x00000', U'\x013b2'),
-    CaseMap(U'\x0ab83', U'\x013b3', U'\x00000', U'\x013b3'),
-    CaseMap(U'\x0ab84', U'\x013b4', U'\x00000', U'\x013b4'),
-    CaseMap(U'\x0ab85', U'\x013b5', U'\x00000', U'\x013b5'),
-    CaseMap(U'\x0ab86', U'\x013b6', U'\x00000', U'\x013b6'),
-    CaseMap(U'\x0ab87', U'\x013b7', U'\x00000', U'\x013b7'),
-    CaseMap(U'\x0ab88', U'\x013b8', U'\x00000', U'\x013b8'),
-    CaseMap(U'\x0ab89', U'\x013b9', U'\x00000', U'\x013b9'),
-    CaseMap(U'\x0ab8a', U'\x013ba', U'\x00000', U'\x013ba'),
-    CaseMap(U'\x0ab8b', U'\x013bb', U'\x00000', U'\x013bb'),
-    CaseMap(U'\x0ab8c', U'\x013bc', U'\x00000', U'\x013bc'),
-    CaseMap(U'\x0ab8d', U'\x013bd', U'\x00000', U'\x013bd'),
-    CaseMap(U'\x0ab8e', U'\x013be', U'\x00000', U'\x013be'),
-    CaseMap(U'\x0ab8f', U'\x013bf', U'\x00000', U'\x013bf'),
-    CaseMap(U'\x0ab90', U'\x013c0', U'\x00000', U'\x013c0'),
-    CaseMap(U'\x0ab91', U'\x013c1', U'\x00000', U'\x013c1'),
-    CaseMap(U'\x0ab92', U'\x013c2', U'\x00000', U'\x013c2'),
-    CaseMap(U'\x0ab93', U'\x013c3', U'\x00000', U'\x013c3'),
-    CaseMap(U'\x0ab94', U'\x013c4', U'\x00000', U'\x013c4'),
-    CaseMap(U'\x0ab95', U'\x013c5', U'\x00000', U'\x013c5'),
-    CaseMap(U'\x0ab96', U'\x013c6', U'\x00000', U'\x013c6'),
-    CaseMap(U'\x0ab97', U'\x013c7', U'\x00000', U'\x013c7'),
-    CaseMap(U'\x0ab98', U'\x013c8', U'\x00000', U'\x013c8'),
-    CaseMap(U'\x0ab99', U'\x013c9', U'\x00000', U'\x013c9'),
-    CaseMap(U'\x0ab9a', U'\x013ca', U'\x00000', U'\x013ca'),
-    CaseMap(U'\x0ab9b', U'\x013cb', U'\x00000', U'\x013cb'),
-    CaseMap(U'\x0ab9c', U'\x013cc', U'\x00000', U'\x013cc'),
-    CaseMap(U'\x0ab9d', U'\x013cd', U'\x00000', U'\x013cd'),
-    CaseMap(U'\x0ab9e', U'\x013ce', U'\x00000', U'\x013ce'),
-    CaseMap(U'\x0ab9f', U'\x013cf', U'\x00000', U'\x013cf'),
-    CaseMap(U'\x0aba0', U'\x013d0', U'\x00000', U'\x013d0'),
-    CaseMap(U'\x0aba1', U'\x013d1', U'\x00000', U'\x013d1'),
-    CaseMap(U'\x0aba2', U'\x013d2', U'\x00000', U'\x013d2'),
-    CaseMap(U'\x0aba3', U'\x013d3', U'\x00000', U'\x013d3'),
-    CaseMap(U'\x0aba4', U'\x013d4', U'\x00000', U'\x013d4'),
-    CaseMap(U'\x0aba5', U'\x013d5', U'\x00000', U'\x013d5'),
-    CaseMap(U'\x0aba6', U'\x013d6', U'\x00000', U'\x013d6'),
-    CaseMap(U'\x0aba7', U'\x013d7', U'\x00000', U'\x013d7'),
-    CaseMap(U'\x0aba8', U'\x013d8', U'\x00000', U'\x013d8'),
-    CaseMap(U'\x0aba9', U'\x013d9', U'\x00000', U'\x013d9'),
-    CaseMap(U'\x0abaa', U'\x013da', U'\x00000', U'\x013da'),
-    CaseMap(U'\x0abab', U'\x013db', U'\x00000', U'\x013db'),
-    CaseMap(U'\x0abac', U'\x013dc', U'\x00000', U'\x013dc'),
-    CaseMap(U'\x0abad', U'\x013dd', U'\x00000', U'\x013dd'),
-    CaseMap(U'\x0abae', U'\x013de', U'\x00000', U'\x013de'),
-    CaseMap(U'\x0abaf', U'\x013df', U'\x00000', U'\x013df'),
-    CaseMap(U'\x0abb0', U'\x013e0', U'\x00000', U'\x013e0'),
-    CaseMap(U'\x0abb1', U'\x013e1', U'\x00000', U'\x013e1'),
-    CaseMap(U'\x0abb2', U'\x013e2', U'\x00000', U'\x013e2'),
-    CaseMap(U'\x0abb3', U'\x013e3', U'\x00000', U'\x013e3'),
-    CaseMap(U'\x0abb4', U'\x013e4', U'\x00000', U'\x013e4'),
-    CaseMap(U'\x0abb5', U'\x013e5', U'\x00000', U'\x013e5'),
-    CaseMap(U'\x0abb6', U'\x013e6', U'\x00000', U'\x013e6'),
-    CaseMap(U'\x0abb7', U'\x013e7', U'\x00000', U'\x013e7'),
-    CaseMap(U'\x0abb8', U'\x013e8', U'\x00000', U'\x013e8'),
-    CaseMap(U'\x0abb9', U'\x013e9', U'\x00000', U'\x013e9'),
-    CaseMap(U'\x0abba', U'\x013ea', U'\x00000', U'\x013ea'),
-    CaseMap(U'\x0abbb', U'\x013eb', U'\x00000', U'\x013eb'),
-    CaseMap(U'\x0abbc', U'\x013ec', U'\x00000', U'\x013ec'),
-    CaseMap(U'\x0abbd', U'\x013ed', U'\x00000', U'\x013ed'),
-    CaseMap(U'\x0abbe', U'\x013ee', U'\x00000', U'\x013ee'),
-    CaseMap(U'\x0abbf', U'\x013ef', U'\x00000', U'\x013ef')};
-
-static const std::vector<CaseMap> CASEMAP_0x00ab(
-    T_CASEMAP_0x00ab, T_CASEMAP_0x00ab + (sizeof(T_CASEMAP_0x00ab) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x00ff[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x0ff21', U'\x00000', U'\x0ff41', U'\x00000'),
-    CaseMap(U'\x0ff22', U'\x00000', U'\x0ff42', U'\x00000'),
-    CaseMap(U'\x0ff23', U'\x00000', U'\x0ff43', U'\x00000'),
-    CaseMap(U'\x0ff24', U'\x00000', U'\x0ff44', U'\x00000'),
-    CaseMap(U'\x0ff25', U'\x00000', U'\x0ff45', U'\x00000'),
-    CaseMap(U'\x0ff26', U'\x00000', U'\x0ff46', U'\x00000'),
-    CaseMap(U'\x0ff27', U'\x00000', U'\x0ff47', U'\x00000'),
-    CaseMap(U'\x0ff28', U'\x00000', U'\x0ff48', U'\x00000'),
-    CaseMap(U'\x0ff29', U'\x00000', U'\x0ff49', U'\x00000'),
-    CaseMap(U'\x0ff2a', U'\x00000', U'\x0ff4a', U'\x00000'),
-    CaseMap(U'\x0ff2b', U'\x00000', U'\x0ff4b', U'\x00000'),
-    CaseMap(U'\x0ff2c', U'\x00000', U'\x0ff4c', U'\x00000'),
-    CaseMap(U'\x0ff2d', U'\x00000', U'\x0ff4d', U'\x00000'),
-    CaseMap(U'\x0ff2e', U'\x00000', U'\x0ff4e', U'\x00000'),
-    CaseMap(U'\x0ff2f', U'\x00000', U'\x0ff4f', U'\x00000'),
-    CaseMap(U'\x0ff30', U'\x00000', U'\x0ff50', U'\x00000'),
-    CaseMap(U'\x0ff31', U'\x00000', U'\x0ff51', U'\x00000'),
-    CaseMap(U'\x0ff32', U'\x00000', U'\x0ff52', U'\x00000'),
-    CaseMap(U'\x0ff33', U'\x00000', U'\x0ff53', U'\x00000'),
-    CaseMap(U'\x0ff34', U'\x00000', U'\x0ff54', U'\x00000'),
-    CaseMap(U'\x0ff35', U'\x00000', U'\x0ff55', U'\x00000'),
-    CaseMap(U'\x0ff36', U'\x00000', U'\x0ff56', U'\x00000'),
-    CaseMap(U'\x0ff37', U'\x00000', U'\x0ff57', U'\x00000'),
-    CaseMap(U'\x0ff38', U'\x00000', U'\x0ff58', U'\x00000'),
-    CaseMap(U'\x0ff39', U'\x00000', U'\x0ff59', U'\x00000'),
-    CaseMap(U'\x0ff3a', U'\x00000', U'\x0ff5a', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x0ff41', U'\x0ff21', U'\x00000', U'\x0ff21'),
-    CaseMap(U'\x0ff42', U'\x0ff22', U'\x00000', U'\x0ff22'),
-    CaseMap(U'\x0ff43', U'\x0ff23', U'\x00000', U'\x0ff23'),
-    CaseMap(U'\x0ff44', U'\x0ff24', U'\x00000', U'\x0ff24'),
-    CaseMap(U'\x0ff45', U'\x0ff25', U'\x00000', U'\x0ff25'),
-    CaseMap(U'\x0ff46', U'\x0ff26', U'\x00000', U'\x0ff26'),
-    CaseMap(U'\x0ff47', U'\x0ff27', U'\x00000', U'\x0ff27'),
-    CaseMap(U'\x0ff48', U'\x0ff28', U'\x00000', U'\x0ff28'),
-    CaseMap(U'\x0ff49', U'\x0ff29', U'\x00000', U'\x0ff29'),
-    CaseMap(U'\x0ff4a', U'\x0ff2a', U'\x00000', U'\x0ff2a'),
-    CaseMap(U'\x0ff4b', U'\x0ff2b', U'\x00000', U'\x0ff2b'),
-    CaseMap(U'\x0ff4c', U'\x0ff2c', U'\x00000', U'\x0ff2c'),
-    CaseMap(U'\x0ff4d', U'\x0ff2d', U'\x00000', U'\x0ff2d'),
-    CaseMap(U'\x0ff4e', U'\x0ff2e', U'\x00000', U'\x0ff2e'),
-    CaseMap(U'\x0ff4f', U'\x0ff2f', U'\x00000', U'\x0ff2f'),
-    CaseMap(U'\x0ff50', U'\x0ff30', U'\x00000', U'\x0ff30'),
-    CaseMap(U'\x0ff51', U'\x0ff31', U'\x00000', U'\x0ff31'),
-    CaseMap(U'\x0ff52', U'\x0ff32', U'\x00000', U'\x0ff32'),
-    CaseMap(U'\x0ff53', U'\x0ff33', U'\x00000', U'\x0ff33'),
-    CaseMap(U'\x0ff54', U'\x0ff34', U'\x00000', U'\x0ff34'),
-    CaseMap(U'\x0ff55', U'\x0ff35', U'\x00000', U'\x0ff35'),
-    CaseMap(U'\x0ff56', U'\x0ff36', U'\x00000', U'\x0ff36'),
-    CaseMap(U'\x0ff57', U'\x0ff37', U'\x00000', U'\x0ff37'),
-    CaseMap(U'\x0ff58', U'\x0ff38', U'\x00000', U'\x0ff38'),
-    CaseMap(U'\x0ff59', U'\x0ff39', U'\x00000', U'\x0ff39'),
-    CaseMap(U'\x0ff5a', U'\x0ff3a', U'\x00000', U'\x0ff3a')};
-
-static const std::vector<CaseMap> CASEMAP_0x00ff(
-    T_CASEMAP_0x00ff, T_CASEMAP_0x00ff + (sizeof(T_CASEMAP_0x00ff) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0104[]{CaseMap(U'\x10400', U'\x00000', U'\x10428', U'\x00000'),
-    CaseMap(U'\x10401', U'\x00000', U'\x10429', U'\x00000'),
-    CaseMap(U'\x10402', U'\x00000', U'\x1042a', U'\x00000'),
-    CaseMap(U'\x10403', U'\x00000', U'\x1042b', U'\x00000'),
-    CaseMap(U'\x10404', U'\x00000', U'\x1042c', U'\x00000'),
-    CaseMap(U'\x10405', U'\x00000', U'\x1042d', U'\x00000'),
-    CaseMap(U'\x10406', U'\x00000', U'\x1042e', U'\x00000'),
-    CaseMap(U'\x10407', U'\x00000', U'\x1042f', U'\x00000'),
-    CaseMap(U'\x10408', U'\x00000', U'\x10430', U'\x00000'),
-    CaseMap(U'\x10409', U'\x00000', U'\x10431', U'\x00000'),
-    CaseMap(U'\x1040a', U'\x00000', U'\x10432', U'\x00000'),
-    CaseMap(U'\x1040b', U'\x00000', U'\x10433', U'\x00000'),
-    CaseMap(U'\x1040c', U'\x00000', U'\x10434', U'\x00000'),
-    CaseMap(U'\x1040d', U'\x00000', U'\x10435', U'\x00000'),
-    CaseMap(U'\x1040e', U'\x00000', U'\x10436', U'\x00000'),
-    CaseMap(U'\x1040f', U'\x00000', U'\x10437', U'\x00000'),
-    CaseMap(U'\x10410', U'\x00000', U'\x10438', U'\x00000'),
-    CaseMap(U'\x10411', U'\x00000', U'\x10439', U'\x00000'),
-    CaseMap(U'\x10412', U'\x00000', U'\x1043a', U'\x00000'),
-    CaseMap(U'\x10413', U'\x00000', U'\x1043b', U'\x00000'),
-    CaseMap(U'\x10414', U'\x00000', U'\x1043c', U'\x00000'),
-    CaseMap(U'\x10415', U'\x00000', U'\x1043d', U'\x00000'),
-    CaseMap(U'\x10416', U'\x00000', U'\x1043e', U'\x00000'),
-    CaseMap(U'\x10417', U'\x00000', U'\x1043f', U'\x00000'),
-    CaseMap(U'\x10418', U'\x00000', U'\x10440', U'\x00000'),
-    CaseMap(U'\x10419', U'\x00000', U'\x10441', U'\x00000'),
-    CaseMap(U'\x1041a', U'\x00000', U'\x10442', U'\x00000'),
-    CaseMap(U'\x1041b', U'\x00000', U'\x10443', U'\x00000'),
-    CaseMap(U'\x1041c', U'\x00000', U'\x10444', U'\x00000'),
-    CaseMap(U'\x1041d', U'\x00000', U'\x10445', U'\x00000'),
-    CaseMap(U'\x1041e', U'\x00000', U'\x10446', U'\x00000'),
-    CaseMap(U'\x1041f', U'\x00000', U'\x10447', U'\x00000'),
-    CaseMap(U'\x10420', U'\x00000', U'\x10448', U'\x00000'),
-    CaseMap(U'\x10421', U'\x00000', U'\x10449', U'\x00000'),
-    CaseMap(U'\x10422', U'\x00000', U'\x1044a', U'\x00000'),
-    CaseMap(U'\x10423', U'\x00000', U'\x1044b', U'\x00000'),
-    CaseMap(U'\x10424', U'\x00000', U'\x1044c', U'\x00000'),
-    CaseMap(U'\x10425', U'\x00000', U'\x1044d', U'\x00000'),
-    CaseMap(U'\x10426', U'\x00000', U'\x1044e', U'\x00000'),
-    CaseMap(U'\x10427', U'\x00000', U'\x1044f', U'\x00000'),
-    CaseMap(U'\x10428', U'\x10400', U'\x00000', U'\x10400'),
-    CaseMap(U'\x10429', U'\x10401', U'\x00000', U'\x10401'),
-    CaseMap(U'\x1042a', U'\x10402', U'\x00000', U'\x10402'),
-    CaseMap(U'\x1042b', U'\x10403', U'\x00000', U'\x10403'),
-    CaseMap(U'\x1042c', U'\x10404', U'\x00000', U'\x10404'),
-    CaseMap(U'\x1042d', U'\x10405', U'\x00000', U'\x10405'),
-    CaseMap(U'\x1042e', U'\x10406', U'\x00000', U'\x10406'),
-    CaseMap(U'\x1042f', U'\x10407', U'\x00000', U'\x10407'),
-    CaseMap(U'\x10430', U'\x10408', U'\x00000', U'\x10408'),
-    CaseMap(U'\x10431', U'\x10409', U'\x00000', U'\x10409'),
-    CaseMap(U'\x10432', U'\x1040a', U'\x00000', U'\x1040a'),
-    CaseMap(U'\x10433', U'\x1040b', U'\x00000', U'\x1040b'),
-    CaseMap(U'\x10434', U'\x1040c', U'\x00000', U'\x1040c'),
-    CaseMap(U'\x10435', U'\x1040d', U'\x00000', U'\x1040d'),
-    CaseMap(U'\x10436', U'\x1040e', U'\x00000', U'\x1040e'),
-    CaseMap(U'\x10437', U'\x1040f', U'\x00000', U'\x1040f'),
-    CaseMap(U'\x10438', U'\x10410', U'\x00000', U'\x10410'),
-    CaseMap(U'\x10439', U'\x10411', U'\x00000', U'\x10411'),
-    CaseMap(U'\x1043a', U'\x10412', U'\x00000', U'\x10412'),
-    CaseMap(U'\x1043b', U'\x10413', U'\x00000', U'\x10413'),
-    CaseMap(U'\x1043c', U'\x10414', U'\x00000', U'\x10414'),
-    CaseMap(U'\x1043d', U'\x10415', U'\x00000', U'\x10415'),
-    CaseMap(U'\x1043e', U'\x10416', U'\x00000', U'\x10416'),
-    CaseMap(U'\x1043f', U'\x10417', U'\x00000', U'\x10417'),
-    CaseMap(U'\x10440', U'\x10418', U'\x00000', U'\x10418'),
-    CaseMap(U'\x10441', U'\x10419', U'\x00000', U'\x10419'),
-    CaseMap(U'\x10442', U'\x1041a', U'\x00000', U'\x1041a'),
-    CaseMap(U'\x10443', U'\x1041b', U'\x00000', U'\x1041b'),
-    CaseMap(U'\x10444', U'\x1041c', U'\x00000', U'\x1041c'),
-    CaseMap(U'\x10445', U'\x1041d', U'\x00000', U'\x1041d'),
-    CaseMap(U'\x10446', U'\x1041e', U'\x00000', U'\x1041e'),
-    CaseMap(U'\x10447', U'\x1041f', U'\x00000', U'\x1041f'),
-    CaseMap(U'\x10448', U'\x10420', U'\x00000', U'\x10420'),
-    CaseMap(U'\x10449', U'\x10421', U'\x00000', U'\x10421'),
-    CaseMap(U'\x1044a', U'\x10422', U'\x00000', U'\x10422'),
-    CaseMap(U'\x1044b', U'\x10423', U'\x00000', U'\x10423'),
-    CaseMap(U'\x1044c', U'\x10424', U'\x00000', U'\x10424'),
-    CaseMap(U'\x1044d', U'\x10425', U'\x00000', U'\x10425'),
-    CaseMap(U'\x1044e', U'\x10426', U'\x00000', U'\x10426'),
-    CaseMap(U'\x1044f', U'\x10427', U'\x00000', U'\x10427'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(U'\x104b0', U'\x00000', U'\x104d8', U'\x00000'),
-    CaseMap(U'\x104b1', U'\x00000', U'\x104d9', U'\x00000'),
-    CaseMap(U'\x104b2', U'\x00000', U'\x104da', U'\x00000'),
-    CaseMap(U'\x104b3', U'\x00000', U'\x104db', U'\x00000'),
-    CaseMap(U'\x104b4', U'\x00000', U'\x104dc', U'\x00000'),
-    CaseMap(U'\x104b5', U'\x00000', U'\x104dd', U'\x00000'),
-    CaseMap(U'\x104b6', U'\x00000', U'\x104de', U'\x00000'),
-    CaseMap(U'\x104b7', U'\x00000', U'\x104df', U'\x00000'),
-    CaseMap(U'\x104b8', U'\x00000', U'\x104e0', U'\x00000'),
-    CaseMap(U'\x104b9', U'\x00000', U'\x104e1', U'\x00000'),
-    CaseMap(U'\x104ba', U'\x00000', U'\x104e2', U'\x00000'),
-    CaseMap(U'\x104bb', U'\x00000', U'\x104e3', U'\x00000'),
-    CaseMap(U'\x104bc', U'\x00000', U'\x104e4', U'\x00000'),
-    CaseMap(U'\x104bd', U'\x00000', U'\x104e5', U'\x00000'),
-    CaseMap(U'\x104be', U'\x00000', U'\x104e6', U'\x00000'),
-    CaseMap(U'\x104bf', U'\x00000', U'\x104e7', U'\x00000'),
-    CaseMap(U'\x104c0', U'\x00000', U'\x104e8', U'\x00000'),
-    CaseMap(U'\x104c1', U'\x00000', U'\x104e9', U'\x00000'),
-    CaseMap(U'\x104c2', U'\x00000', U'\x104ea', U'\x00000'),
-    CaseMap(U'\x104c3', U'\x00000', U'\x104eb', U'\x00000'),
-    CaseMap(U'\x104c4', U'\x00000', U'\x104ec', U'\x00000'),
-    CaseMap(U'\x104c5', U'\x00000', U'\x104ed', U'\x00000'),
-    CaseMap(U'\x104c6', U'\x00000', U'\x104ee', U'\x00000'),
-    CaseMap(U'\x104c7', U'\x00000', U'\x104ef', U'\x00000'),
-    CaseMap(U'\x104c8', U'\x00000', U'\x104f0', U'\x00000'),
-    CaseMap(U'\x104c9', U'\x00000', U'\x104f1', U'\x00000'),
-    CaseMap(U'\x104ca', U'\x00000', U'\x104f2', U'\x00000'),
-    CaseMap(U'\x104cb', U'\x00000', U'\x104f3', U'\x00000'),
-    CaseMap(U'\x104cc', U'\x00000', U'\x104f4', U'\x00000'),
-    CaseMap(U'\x104cd', U'\x00000', U'\x104f5', U'\x00000'),
-    CaseMap(U'\x104ce', U'\x00000', U'\x104f6', U'\x00000'),
-    CaseMap(U'\x104cf', U'\x00000', U'\x104f7', U'\x00000'),
-    CaseMap(U'\x104d0', U'\x00000', U'\x104f8', U'\x00000'),
-    CaseMap(U'\x104d1', U'\x00000', U'\x104f9', U'\x00000'),
-    CaseMap(U'\x104d2', U'\x00000', U'\x104fa', U'\x00000'),
-    CaseMap(U'\x104d3', U'\x00000', U'\x104fb', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(U'\x104d8', U'\x104b0', U'\x00000', U'\x104b0'),
-    CaseMap(U'\x104d9', U'\x104b1', U'\x00000', U'\x104b1'),
-    CaseMap(U'\x104da', U'\x104b2', U'\x00000', U'\x104b2'),
-    CaseMap(U'\x104db', U'\x104b3', U'\x00000', U'\x104b3'),
-    CaseMap(U'\x104dc', U'\x104b4', U'\x00000', U'\x104b4'),
-    CaseMap(U'\x104dd', U'\x104b5', U'\x00000', U'\x104b5'),
-    CaseMap(U'\x104de', U'\x104b6', U'\x00000', U'\x104b6'),
-    CaseMap(U'\x104df', U'\x104b7', U'\x00000', U'\x104b7'),
-    CaseMap(U'\x104e0', U'\x104b8', U'\x00000', U'\x104b8'),
-    CaseMap(U'\x104e1', U'\x104b9', U'\x00000', U'\x104b9'),
-    CaseMap(U'\x104e2', U'\x104ba', U'\x00000', U'\x104ba'),
-    CaseMap(U'\x104e3', U'\x104bb', U'\x00000', U'\x104bb'),
-    CaseMap(U'\x104e4', U'\x104bc', U'\x00000', U'\x104bc'),
-    CaseMap(U'\x104e5', U'\x104bd', U'\x00000', U'\x104bd'),
-    CaseMap(U'\x104e6', U'\x104be', U'\x00000', U'\x104be'),
-    CaseMap(U'\x104e7', U'\x104bf', U'\x00000', U'\x104bf'),
-    CaseMap(U'\x104e8', U'\x104c0', U'\x00000', U'\x104c0'),
-    CaseMap(U'\x104e9', U'\x104c1', U'\x00000', U'\x104c1'),
-    CaseMap(U'\x104ea', U'\x104c2', U'\x00000', U'\x104c2'),
-    CaseMap(U'\x104eb', U'\x104c3', U'\x00000', U'\x104c3'),
-    CaseMap(U'\x104ec', U'\x104c4', U'\x00000', U'\x104c4'),
-    CaseMap(U'\x104ed', U'\x104c5', U'\x00000', U'\x104c5'),
-    CaseMap(U'\x104ee', U'\x104c6', U'\x00000', U'\x104c6'),
-    CaseMap(U'\x104ef', U'\x104c7', U'\x00000', U'\x104c7'),
-    CaseMap(U'\x104f0', U'\x104c8', U'\x00000', U'\x104c8'),
-    CaseMap(U'\x104f1', U'\x104c9', U'\x00000', U'\x104c9'),
-    CaseMap(U'\x104f2', U'\x104ca', U'\x00000', U'\x104ca'),
-    CaseMap(U'\x104f3', U'\x104cb', U'\x00000', U'\x104cb'),
-    CaseMap(U'\x104f4', U'\x104cc', U'\x00000', U'\x104cc'),
-    CaseMap(U'\x104f5', U'\x104cd', U'\x00000', U'\x104cd'),
-    CaseMap(U'\x104f6', U'\x104ce', U'\x00000', U'\x104ce'),
-    CaseMap(U'\x104f7', U'\x104cf', U'\x00000', U'\x104cf'),
-    CaseMap(U'\x104f8', U'\x104d0', U'\x00000', U'\x104d0'),
-    CaseMap(U'\x104f9', U'\x104d1', U'\x00000', U'\x104d1'),
-    CaseMap(U'\x104fa', U'\x104d2', U'\x00000', U'\x104d2'),
-    CaseMap(U'\x104fb', U'\x104d3', U'\x00000', U'\x104d3')};
-
-static const std::vector<CaseMap> CASEMAP_0x0104(
-    T_CASEMAP_0x0104, T_CASEMAP_0x0104 + (sizeof(T_CASEMAP_0x0104) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0105[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x10570', U'\x00000', U'\x10597', U'\x00000'),
-    CaseMap(U'\x10571', U'\x00000', U'\x10598', U'\x00000'),
-    CaseMap(U'\x10572', U'\x00000', U'\x10599', U'\x00000'),
-    CaseMap(U'\x10573', U'\x00000', U'\x1059a', U'\x00000'),
-    CaseMap(U'\x10574', U'\x00000', U'\x1059b', U'\x00000'),
-    CaseMap(U'\x10575', U'\x00000', U'\x1059c', U'\x00000'),
-    CaseMap(U'\x10576', U'\x00000', U'\x1059d', U'\x00000'),
-    CaseMap(U'\x10577', U'\x00000', U'\x1059e', U'\x00000'),
-    CaseMap(U'\x10578', U'\x00000', U'\x1059f', U'\x00000'),
-    CaseMap(U'\x10579', U'\x00000', U'\x105a0', U'\x00000'),
-    CaseMap(U'\x1057a', U'\x00000', U'\x105a1', U'\x00000'), CaseMap(),
-    CaseMap(U'\x1057c', U'\x00000', U'\x105a3', U'\x00000'),
-    CaseMap(U'\x1057d', U'\x00000', U'\x105a4', U'\x00000'),
-    CaseMap(U'\x1057e', U'\x00000', U'\x105a5', U'\x00000'),
-    CaseMap(U'\x1057f', U'\x00000', U'\x105a6', U'\x00000'),
-    CaseMap(U'\x10580', U'\x00000', U'\x105a7', U'\x00000'),
-    CaseMap(U'\x10581', U'\x00000', U'\x105a8', U'\x00000'),
-    CaseMap(U'\x10582', U'\x00000', U'\x105a9', U'\x00000'),
-    CaseMap(U'\x10583', U'\x00000', U'\x105aa', U'\x00000'),
-    CaseMap(U'\x10584', U'\x00000', U'\x105ab', U'\x00000'),
-    CaseMap(U'\x10585', U'\x00000', U'\x105ac', U'\x00000'),
-    CaseMap(U'\x10586', U'\x00000', U'\x105ad', U'\x00000'),
-    CaseMap(U'\x10587', U'\x00000', U'\x105ae', U'\x00000'),
-    CaseMap(U'\x10588', U'\x00000', U'\x105af', U'\x00000'),
-    CaseMap(U'\x10589', U'\x00000', U'\x105b0', U'\x00000'),
-    CaseMap(U'\x1058a', U'\x00000', U'\x105b1', U'\x00000'), CaseMap(),
-    CaseMap(U'\x1058c', U'\x00000', U'\x105b3', U'\x00000'),
-    CaseMap(U'\x1058d', U'\x00000', U'\x105b4', U'\x00000'),
-    CaseMap(U'\x1058e', U'\x00000', U'\x105b5', U'\x00000'),
-    CaseMap(U'\x1058f', U'\x00000', U'\x105b6', U'\x00000'),
-    CaseMap(U'\x10590', U'\x00000', U'\x105b7', U'\x00000'),
-    CaseMap(U'\x10591', U'\x00000', U'\x105b8', U'\x00000'),
-    CaseMap(U'\x10592', U'\x00000', U'\x105b9', U'\x00000'), CaseMap(),
-    CaseMap(U'\x10594', U'\x00000', U'\x105bb', U'\x00000'),
-    CaseMap(U'\x10595', U'\x00000', U'\x105bc', U'\x00000'), CaseMap(),
-    CaseMap(U'\x10597', U'\x10570', U'\x00000', U'\x10570'),
-    CaseMap(U'\x10598', U'\x10571', U'\x00000', U'\x10571'),
-    CaseMap(U'\x10599', U'\x10572', U'\x00000', U'\x10572'),
-    CaseMap(U'\x1059a', U'\x10573', U'\x00000', U'\x10573'),
-    CaseMap(U'\x1059b', U'\x10574', U'\x00000', U'\x10574'),
-    CaseMap(U'\x1059c', U'\x10575', U'\x00000', U'\x10575'),
-    CaseMap(U'\x1059d', U'\x10576', U'\x00000', U'\x10576'),
-    CaseMap(U'\x1059e', U'\x10577', U'\x00000', U'\x10577'),
-    CaseMap(U'\x1059f', U'\x10578', U'\x00000', U'\x10578'),
-    CaseMap(U'\x105a0', U'\x10579', U'\x00000', U'\x10579'),
-    CaseMap(U'\x105a1', U'\x1057a', U'\x00000', U'\x1057a'), CaseMap(),
-    CaseMap(U'\x105a3', U'\x1057c', U'\x00000', U'\x1057c'),
-    CaseMap(U'\x105a4', U'\x1057d', U'\x00000', U'\x1057d'),
-    CaseMap(U'\x105a5', U'\x1057e', U'\x00000', U'\x1057e'),
-    CaseMap(U'\x105a6', U'\x1057f', U'\x00000', U'\x1057f'),
-    CaseMap(U'\x105a7', U'\x10580', U'\x00000', U'\x10580'),
-    CaseMap(U'\x105a8', U'\x10581', U'\x00000', U'\x10581'),
-    CaseMap(U'\x105a9', U'\x10582', U'\x00000', U'\x10582'),
-    CaseMap(U'\x105aa', U'\x10583', U'\x00000', U'\x10583'),
-    CaseMap(U'\x105ab', U'\x10584', U'\x00000', U'\x10584'),
-    CaseMap(U'\x105ac', U'\x10585', U'\x00000', U'\x10585'),
-    CaseMap(U'\x105ad', U'\x10586', U'\x00000', U'\x10586'),
-    CaseMap(U'\x105ae', U'\x10587', U'\x00000', U'\x10587'),
-    CaseMap(U'\x105af', U'\x10588', U'\x00000', U'\x10588'),
-    CaseMap(U'\x105b0', U'\x10589', U'\x00000', U'\x10589'),
-    CaseMap(U'\x105b1', U'\x1058a', U'\x00000', U'\x1058a'), CaseMap(),
-    CaseMap(U'\x105b3', U'\x1058c', U'\x00000', U'\x1058c'),
-    CaseMap(U'\x105b4', U'\x1058d', U'\x00000', U'\x1058d'),
-    CaseMap(U'\x105b5', U'\x1058e', U'\x00000', U'\x1058e'),
-    CaseMap(U'\x105b6', U'\x1058f', U'\x00000', U'\x1058f'),
-    CaseMap(U'\x105b7', U'\x10590', U'\x00000', U'\x10590'),
-    CaseMap(U'\x105b8', U'\x10591', U'\x00000', U'\x10591'),
-    CaseMap(U'\x105b9', U'\x10592', U'\x00000', U'\x10592'), CaseMap(),
-    CaseMap(U'\x105bb', U'\x10594', U'\x00000', U'\x10594'),
-    CaseMap(U'\x105bc', U'\x10595', U'\x00000', U'\x10595')};
-
-static const std::vector<CaseMap> CASEMAP_0x0105(
-    T_CASEMAP_0x0105, T_CASEMAP_0x0105 + (sizeof(T_CASEMAP_0x0105) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x010c[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x10c80', U'\x00000', U'\x10cc0', U'\x00000'),
-    CaseMap(U'\x10c81', U'\x00000', U'\x10cc1', U'\x00000'),
-    CaseMap(U'\x10c82', U'\x00000', U'\x10cc2', U'\x00000'),
-    CaseMap(U'\x10c83', U'\x00000', U'\x10cc3', U'\x00000'),
-    CaseMap(U'\x10c84', U'\x00000', U'\x10cc4', U'\x00000'),
-    CaseMap(U'\x10c85', U'\x00000', U'\x10cc5', U'\x00000'),
-    CaseMap(U'\x10c86', U'\x00000', U'\x10cc6', U'\x00000'),
-    CaseMap(U'\x10c87', U'\x00000', U'\x10cc7', U'\x00000'),
-    CaseMap(U'\x10c88', U'\x00000', U'\x10cc8', U'\x00000'),
-    CaseMap(U'\x10c89', U'\x00000', U'\x10cc9', U'\x00000'),
-    CaseMap(U'\x10c8a', U'\x00000', U'\x10cca', U'\x00000'),
-    CaseMap(U'\x10c8b', U'\x00000', U'\x10ccb', U'\x00000'),
-    CaseMap(U'\x10c8c', U'\x00000', U'\x10ccc', U'\x00000'),
-    CaseMap(U'\x10c8d', U'\x00000', U'\x10ccd', U'\x00000'),
-    CaseMap(U'\x10c8e', U'\x00000', U'\x10cce', U'\x00000'),
-    CaseMap(U'\x10c8f', U'\x00000', U'\x10ccf', U'\x00000'),
-    CaseMap(U'\x10c90', U'\x00000', U'\x10cd0', U'\x00000'),
-    CaseMap(U'\x10c91', U'\x00000', U'\x10cd1', U'\x00000'),
-    CaseMap(U'\x10c92', U'\x00000', U'\x10cd2', U'\x00000'),
-    CaseMap(U'\x10c93', U'\x00000', U'\x10cd3', U'\x00000'),
-    CaseMap(U'\x10c94', U'\x00000', U'\x10cd4', U'\x00000'),
-    CaseMap(U'\x10c95', U'\x00000', U'\x10cd5', U'\x00000'),
-    CaseMap(U'\x10c96', U'\x00000', U'\x10cd6', U'\x00000'),
-    CaseMap(U'\x10c97', U'\x00000', U'\x10cd7', U'\x00000'),
-    CaseMap(U'\x10c98', U'\x00000', U'\x10cd8', U'\x00000'),
-    CaseMap(U'\x10c99', U'\x00000', U'\x10cd9', U'\x00000'),
-    CaseMap(U'\x10c9a', U'\x00000', U'\x10cda', U'\x00000'),
-    CaseMap(U'\x10c9b', U'\x00000', U'\x10cdb', U'\x00000'),
-    CaseMap(U'\x10c9c', U'\x00000', U'\x10cdc', U'\x00000'),
-    CaseMap(U'\x10c9d', U'\x00000', U'\x10cdd', U'\x00000'),
-    CaseMap(U'\x10c9e', U'\x00000', U'\x10cde', U'\x00000'),
-    CaseMap(U'\x10c9f', U'\x00000', U'\x10cdf', U'\x00000'),
-    CaseMap(U'\x10ca0', U'\x00000', U'\x10ce0', U'\x00000'),
-    CaseMap(U'\x10ca1', U'\x00000', U'\x10ce1', U'\x00000'),
-    CaseMap(U'\x10ca2', U'\x00000', U'\x10ce2', U'\x00000'),
-    CaseMap(U'\x10ca3', U'\x00000', U'\x10ce3', U'\x00000'),
-    CaseMap(U'\x10ca4', U'\x00000', U'\x10ce4', U'\x00000'),
-    CaseMap(U'\x10ca5', U'\x00000', U'\x10ce5', U'\x00000'),
-    CaseMap(U'\x10ca6', U'\x00000', U'\x10ce6', U'\x00000'),
-    CaseMap(U'\x10ca7', U'\x00000', U'\x10ce7', U'\x00000'),
-    CaseMap(U'\x10ca8', U'\x00000', U'\x10ce8', U'\x00000'),
-    CaseMap(U'\x10ca9', U'\x00000', U'\x10ce9', U'\x00000'),
-    CaseMap(U'\x10caa', U'\x00000', U'\x10cea', U'\x00000'),
-    CaseMap(U'\x10cab', U'\x00000', U'\x10ceb', U'\x00000'),
-    CaseMap(U'\x10cac', U'\x00000', U'\x10cec', U'\x00000'),
-    CaseMap(U'\x10cad', U'\x00000', U'\x10ced', U'\x00000'),
-    CaseMap(U'\x10cae', U'\x00000', U'\x10cee', U'\x00000'),
-    CaseMap(U'\x10caf', U'\x00000', U'\x10cef', U'\x00000'),
-    CaseMap(U'\x10cb0', U'\x00000', U'\x10cf0', U'\x00000'),
-    CaseMap(U'\x10cb1', U'\x00000', U'\x10cf1', U'\x00000'),
-    CaseMap(U'\x10cb2', U'\x00000', U'\x10cf2', U'\x00000'), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(U'\x10cc0', U'\x10c80', U'\x00000', U'\x10c80'),
-    CaseMap(U'\x10cc1', U'\x10c81', U'\x00000', U'\x10c81'),
-    CaseMap(U'\x10cc2', U'\x10c82', U'\x00000', U'\x10c82'),
-    CaseMap(U'\x10cc3', U'\x10c83', U'\x00000', U'\x10c83'),
-    CaseMap(U'\x10cc4', U'\x10c84', U'\x00000', U'\x10c84'),
-    CaseMap(U'\x10cc5', U'\x10c85', U'\x00000', U'\x10c85'),
-    CaseMap(U'\x10cc6', U'\x10c86', U'\x00000', U'\x10c86'),
-    CaseMap(U'\x10cc7', U'\x10c87', U'\x00000', U'\x10c87'),
-    CaseMap(U'\x10cc8', U'\x10c88', U'\x00000', U'\x10c88'),
-    CaseMap(U'\x10cc9', U'\x10c89', U'\x00000', U'\x10c89'),
-    CaseMap(U'\x10cca', U'\x10c8a', U'\x00000', U'\x10c8a'),
-    CaseMap(U'\x10ccb', U'\x10c8b', U'\x00000', U'\x10c8b'),
-    CaseMap(U'\x10ccc', U'\x10c8c', U'\x00000', U'\x10c8c'),
-    CaseMap(U'\x10ccd', U'\x10c8d', U'\x00000', U'\x10c8d'),
-    CaseMap(U'\x10cce', U'\x10c8e', U'\x00000', U'\x10c8e'),
-    CaseMap(U'\x10ccf', U'\x10c8f', U'\x00000', U'\x10c8f'),
-    CaseMap(U'\x10cd0', U'\x10c90', U'\x00000', U'\x10c90'),
-    CaseMap(U'\x10cd1', U'\x10c91', U'\x00000', U'\x10c91'),
-    CaseMap(U'\x10cd2', U'\x10c92', U'\x00000', U'\x10c92'),
-    CaseMap(U'\x10cd3', U'\x10c93', U'\x00000', U'\x10c93'),
-    CaseMap(U'\x10cd4', U'\x10c94', U'\x00000', U'\x10c94'),
-    CaseMap(U'\x10cd5', U'\x10c95', U'\x00000', U'\x10c95'),
-    CaseMap(U'\x10cd6', U'\x10c96', U'\x00000', U'\x10c96'),
-    CaseMap(U'\x10cd7', U'\x10c97', U'\x00000', U'\x10c97'),
-    CaseMap(U'\x10cd8', U'\x10c98', U'\x00000', U'\x10c98'),
-    CaseMap(U'\x10cd9', U'\x10c99', U'\x00000', U'\x10c99'),
-    CaseMap(U'\x10cda', U'\x10c9a', U'\x00000', U'\x10c9a'),
-    CaseMap(U'\x10cdb', U'\x10c9b', U'\x00000', U'\x10c9b'),
-    CaseMap(U'\x10cdc', U'\x10c9c', U'\x00000', U'\x10c9c'),
-    CaseMap(U'\x10cdd', U'\x10c9d', U'\x00000', U'\x10c9d'),
-    CaseMap(U'\x10cde', U'\x10c9e', U'\x00000', U'\x10c9e'),
-    CaseMap(U'\x10cdf', U'\x10c9f', U'\x00000', U'\x10c9f'),
-    CaseMap(U'\x10ce0', U'\x10ca0', U'\x00000', U'\x10ca0'),
-    CaseMap(U'\x10ce1', U'\x10ca1', U'\x00000', U'\x10ca1'),
-    CaseMap(U'\x10ce2', U'\x10ca2', U'\x00000', U'\x10ca2'),
-    CaseMap(U'\x10ce3', U'\x10ca3', U'\x00000', U'\x10ca3'),
-    CaseMap(U'\x10ce4', U'\x10ca4', U'\x00000', U'\x10ca4'),
-    CaseMap(U'\x10ce5', U'\x10ca5', U'\x00000', U'\x10ca5'),
-    CaseMap(U'\x10ce6', U'\x10ca6', U'\x00000', U'\x10ca6'),
-    CaseMap(U'\x10ce7', U'\x10ca7', U'\x00000', U'\x10ca7'),
-    CaseMap(U'\x10ce8', U'\x10ca8', U'\x00000', U'\x10ca8'),
-    CaseMap(U'\x10ce9', U'\x10ca9', U'\x00000', U'\x10ca9'),
-    CaseMap(U'\x10cea', U'\x10caa', U'\x00000', U'\x10caa'),
-    CaseMap(U'\x10ceb', U'\x10cab', U'\x00000', U'\x10cab'),
-    CaseMap(U'\x10cec', U'\x10cac', U'\x00000', U'\x10cac'),
-    CaseMap(U'\x10ced', U'\x10cad', U'\x00000', U'\x10cad'),
-    CaseMap(U'\x10cee', U'\x10cae', U'\x00000', U'\x10cae'),
-    CaseMap(U'\x10cef', U'\x10caf', U'\x00000', U'\x10caf'),
-    CaseMap(U'\x10cf0', U'\x10cb0', U'\x00000', U'\x10cb0'),
-    CaseMap(U'\x10cf1', U'\x10cb1', U'\x00000', U'\x10cb1'),
-    CaseMap(U'\x10cf2', U'\x10cb2', U'\x00000', U'\x10cb2')};
-
-static const std::vector<CaseMap> CASEMAP_0x010c(
-    T_CASEMAP_0x010c, T_CASEMAP_0x010c + (sizeof(T_CASEMAP_0x010c) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x0118[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x118a0', U'\x00000', U'\x118c0', U'\x00000'),
-    CaseMap(U'\x118a1', U'\x00000', U'\x118c1', U'\x00000'),
-    CaseMap(U'\x118a2', U'\x00000', U'\x118c2', U'\x00000'),
-    CaseMap(U'\x118a3', U'\x00000', U'\x118c3', U'\x00000'),
-    CaseMap(U'\x118a4', U'\x00000', U'\x118c4', U'\x00000'),
-    CaseMap(U'\x118a5', U'\x00000', U'\x118c5', U'\x00000'),
-    CaseMap(U'\x118a6', U'\x00000', U'\x118c6', U'\x00000'),
-    CaseMap(U'\x118a7', U'\x00000', U'\x118c7', U'\x00000'),
-    CaseMap(U'\x118a8', U'\x00000', U'\x118c8', U'\x00000'),
-    CaseMap(U'\x118a9', U'\x00000', U'\x118c9', U'\x00000'),
-    CaseMap(U'\x118aa', U'\x00000', U'\x118ca', U'\x00000'),
-    CaseMap(U'\x118ab', U'\x00000', U'\x118cb', U'\x00000'),
-    CaseMap(U'\x118ac', U'\x00000', U'\x118cc', U'\x00000'),
-    CaseMap(U'\x118ad', U'\x00000', U'\x118cd', U'\x00000'),
-    CaseMap(U'\x118ae', U'\x00000', U'\x118ce', U'\x00000'),
-    CaseMap(U'\x118af', U'\x00000', U'\x118cf', U'\x00000'),
-    CaseMap(U'\x118b0', U'\x00000', U'\x118d0', U'\x00000'),
-    CaseMap(U'\x118b1', U'\x00000', U'\x118d1', U'\x00000'),
-    CaseMap(U'\x118b2', U'\x00000', U'\x118d2', U'\x00000'),
-    CaseMap(U'\x118b3', U'\x00000', U'\x118d3', U'\x00000'),
-    CaseMap(U'\x118b4', U'\x00000', U'\x118d4', U'\x00000'),
-    CaseMap(U'\x118b5', U'\x00000', U'\x118d5', U'\x00000'),
-    CaseMap(U'\x118b6', U'\x00000', U'\x118d6', U'\x00000'),
-    CaseMap(U'\x118b7', U'\x00000', U'\x118d7', U'\x00000'),
-    CaseMap(U'\x118b8', U'\x00000', U'\x118d8', U'\x00000'),
-    CaseMap(U'\x118b9', U'\x00000', U'\x118d9', U'\x00000'),
-    CaseMap(U'\x118ba', U'\x00000', U'\x118da', U'\x00000'),
-    CaseMap(U'\x118bb', U'\x00000', U'\x118db', U'\x00000'),
-    CaseMap(U'\x118bc', U'\x00000', U'\x118dc', U'\x00000'),
-    CaseMap(U'\x118bd', U'\x00000', U'\x118dd', U'\x00000'),
-    CaseMap(U'\x118be', U'\x00000', U'\x118de', U'\x00000'),
-    CaseMap(U'\x118bf', U'\x00000', U'\x118df', U'\x00000'),
-    CaseMap(U'\x118c0', U'\x118a0', U'\x00000', U'\x118a0'),
-    CaseMap(U'\x118c1', U'\x118a1', U'\x00000', U'\x118a1'),
-    CaseMap(U'\x118c2', U'\x118a2', U'\x00000', U'\x118a2'),
-    CaseMap(U'\x118c3', U'\x118a3', U'\x00000', U'\x118a3'),
-    CaseMap(U'\x118c4', U'\x118a4', U'\x00000', U'\x118a4'),
-    CaseMap(U'\x118c5', U'\x118a5', U'\x00000', U'\x118a5'),
-    CaseMap(U'\x118c6', U'\x118a6', U'\x00000', U'\x118a6'),
-    CaseMap(U'\x118c7', U'\x118a7', U'\x00000', U'\x118a7'),
-    CaseMap(U'\x118c8', U'\x118a8', U'\x00000', U'\x118a8'),
-    CaseMap(U'\x118c9', U'\x118a9', U'\x00000', U'\x118a9'),
-    CaseMap(U'\x118ca', U'\x118aa', U'\x00000', U'\x118aa'),
-    CaseMap(U'\x118cb', U'\x118ab', U'\x00000', U'\x118ab'),
-    CaseMap(U'\x118cc', U'\x118ac', U'\x00000', U'\x118ac'),
-    CaseMap(U'\x118cd', U'\x118ad', U'\x00000', U'\x118ad'),
-    CaseMap(U'\x118ce', U'\x118ae', U'\x00000', U'\x118ae'),
-    CaseMap(U'\x118cf', U'\x118af', U'\x00000', U'\x118af'),
-    CaseMap(U'\x118d0', U'\x118b0', U'\x00000', U'\x118b0'),
-    CaseMap(U'\x118d1', U'\x118b1', U'\x00000', U'\x118b1'),
-    CaseMap(U'\x118d2', U'\x118b2', U'\x00000', U'\x118b2'),
-    CaseMap(U'\x118d3', U'\x118b3', U'\x00000', U'\x118b3'),
-    CaseMap(U'\x118d4', U'\x118b4', U'\x00000', U'\x118b4'),
-    CaseMap(U'\x118d5', U'\x118b5', U'\x00000', U'\x118b5'),
-    CaseMap(U'\x118d6', U'\x118b6', U'\x00000', U'\x118b6'),
-    CaseMap(U'\x118d7', U'\x118b7', U'\x00000', U'\x118b7'),
-    CaseMap(U'\x118d8', U'\x118b8', U'\x00000', U'\x118b8'),
-    CaseMap(U'\x118d9', U'\x118b9', U'\x00000', U'\x118b9'),
-    CaseMap(U'\x118da', U'\x118ba', U'\x00000', U'\x118ba'),
-    CaseMap(U'\x118db', U'\x118bb', U'\x00000', U'\x118bb'),
-    CaseMap(U'\x118dc', U'\x118bc', U'\x00000', U'\x118bc'),
-    CaseMap(U'\x118dd', U'\x118bd', U'\x00000', U'\x118bd'),
-    CaseMap(U'\x118de', U'\x118be', U'\x00000', U'\x118be'),
-    CaseMap(U'\x118df', U'\x118bf', U'\x00000', U'\x118bf')};
-
-static const std::vector<CaseMap> CASEMAP_0x0118(
-    T_CASEMAP_0x0118, T_CASEMAP_0x0118 + (sizeof(T_CASEMAP_0x0118) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x016e[]{CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(), CaseMap(),
-    CaseMap(), CaseMap(), CaseMap(), CaseMap(U'\x16e40', U'\x00000', U'\x16e60', U'\x00000'),
-    CaseMap(U'\x16e41', U'\x00000', U'\x16e61', U'\x00000'),
-    CaseMap(U'\x16e42', U'\x00000', U'\x16e62', U'\x00000'),
-    CaseMap(U'\x16e43', U'\x00000', U'\x16e63', U'\x00000'),
-    CaseMap(U'\x16e44', U'\x00000', U'\x16e64', U'\x00000'),
-    CaseMap(U'\x16e45', U'\x00000', U'\x16e65', U'\x00000'),
-    CaseMap(U'\x16e46', U'\x00000', U'\x16e66', U'\x00000'),
-    CaseMap(U'\x16e47', U'\x00000', U'\x16e67', U'\x00000'),
-    CaseMap(U'\x16e48', U'\x00000', U'\x16e68', U'\x00000'),
-    CaseMap(U'\x16e49', U'\x00000', U'\x16e69', U'\x00000'),
-    CaseMap(U'\x16e4a', U'\x00000', U'\x16e6a', U'\x00000'),
-    CaseMap(U'\x16e4b', U'\x00000', U'\x16e6b', U'\x00000'),
-    CaseMap(U'\x16e4c', U'\x00000', U'\x16e6c', U'\x00000'),
-    CaseMap(U'\x16e4d', U'\x00000', U'\x16e6d', U'\x00000'),
-    CaseMap(U'\x16e4e', U'\x00000', U'\x16e6e', U'\x00000'),
-    CaseMap(U'\x16e4f', U'\x00000', U'\x16e6f', U'\x00000'),
-    CaseMap(U'\x16e50', U'\x00000', U'\x16e70', U'\x00000'),
-    CaseMap(U'\x16e51', U'\x00000', U'\x16e71', U'\x00000'),
-    CaseMap(U'\x16e52', U'\x00000', U'\x16e72', U'\x00000'),
-    CaseMap(U'\x16e53', U'\x00000', U'\x16e73', U'\x00000'),
-    CaseMap(U'\x16e54', U'\x00000', U'\x16e74', U'\x00000'),
-    CaseMap(U'\x16e55', U'\x00000', U'\x16e75', U'\x00000'),
-    CaseMap(U'\x16e56', U'\x00000', U'\x16e76', U'\x00000'),
-    CaseMap(U'\x16e57', U'\x00000', U'\x16e77', U'\x00000'),
-    CaseMap(U'\x16e58', U'\x00000', U'\x16e78', U'\x00000'),
-    CaseMap(U'\x16e59', U'\x00000', U'\x16e79', U'\x00000'),
-    CaseMap(U'\x16e5a', U'\x00000', U'\x16e7a', U'\x00000'),
-    CaseMap(U'\x16e5b', U'\x00000', U'\x16e7b', U'\x00000'),
-    CaseMap(U'\x16e5c', U'\x00000', U'\x16e7c', U'\x00000'),
-    CaseMap(U'\x16e5d', U'\x00000', U'\x16e7d', U'\x00000'),
-    CaseMap(U'\x16e5e', U'\x00000', U'\x16e7e', U'\x00000'),
-    CaseMap(U'\x16e5f', U'\x00000', U'\x16e7f', U'\x00000'),
-    CaseMap(U'\x16e60', U'\x16e40', U'\x00000', U'\x16e40'),
-    CaseMap(U'\x16e61', U'\x16e41', U'\x00000', U'\x16e41'),
-    CaseMap(U'\x16e62', U'\x16e42', U'\x00000', U'\x16e42'),
-    CaseMap(U'\x16e63', U'\x16e43', U'\x00000', U'\x16e43'),
-    CaseMap(U'\x16e64', U'\x16e44', U'\x00000', U'\x16e44'),
-    CaseMap(U'\x16e65', U'\x16e45', U'\x00000', U'\x16e45'),
-    CaseMap(U'\x16e66', U'\x16e46', U'\x00000', U'\x16e46'),
-    CaseMap(U'\x16e67', U'\x16e47', U'\x00000', U'\x16e47'),
-    CaseMap(U'\x16e68', U'\x16e48', U'\x00000', U'\x16e48'),
-    CaseMap(U'\x16e69', U'\x16e49', U'\x00000', U'\x16e49'),
-    CaseMap(U'\x16e6a', U'\x16e4a', U'\x00000', U'\x16e4a'),
-    CaseMap(U'\x16e6b', U'\x16e4b', U'\x00000', U'\x16e4b'),
-    CaseMap(U'\x16e6c', U'\x16e4c', U'\x00000', U'\x16e4c'),
-    CaseMap(U'\x16e6d', U'\x16e4d', U'\x00000', U'\x16e4d'),
-    CaseMap(U'\x16e6e', U'\x16e4e', U'\x00000', U'\x16e4e'),
-    CaseMap(U'\x16e6f', U'\x16e4f', U'\x00000', U'\x16e4f'),
-    CaseMap(U'\x16e70', U'\x16e50', U'\x00000', U'\x16e50'),
-    CaseMap(U'\x16e71', U'\x16e51', U'\x00000', U'\x16e51'),
-    CaseMap(U'\x16e72', U'\x16e52', U'\x00000', U'\x16e52'),
-    CaseMap(U'\x16e73', U'\x16e53', U'\x00000', U'\x16e53'),
-    CaseMap(U'\x16e74', U'\x16e54', U'\x00000', U'\x16e54'),
-    CaseMap(U'\x16e75', U'\x16e55', U'\x00000', U'\x16e55'),
-    CaseMap(U'\x16e76', U'\x16e56', U'\x00000', U'\x16e56'),
-    CaseMap(U'\x16e77', U'\x16e57', U'\x00000', U'\x16e57'),
-    CaseMap(U'\x16e78', U'\x16e58', U'\x00000', U'\x16e58'),
-    CaseMap(U'\x16e79', U'\x16e59', U'\x00000', U'\x16e59'),
-    CaseMap(U'\x16e7a', U'\x16e5a', U'\x00000', U'\x16e5a'),
-    CaseMap(U'\x16e7b', U'\x16e5b', U'\x00000', U'\x16e5b'),
-    CaseMap(U'\x16e7c', U'\x16e5c', U'\x00000', U'\x16e5c'),
-    CaseMap(U'\x16e7d', U'\x16e5d', U'\x00000', U'\x16e5d'),
-    CaseMap(U'\x16e7e', U'\x16e5e', U'\x00000', U'\x16e5e'),
-    CaseMap(U'\x16e7f', U'\x16e5f', U'\x00000', U'\x16e5f')};
-
-static const std::vector<CaseMap> CASEMAP_0x016e(
-    T_CASEMAP_0x016e, T_CASEMAP_0x016e + (sizeof(T_CASEMAP_0x016e) / sizeof(CaseMap)));
-
-static const CaseMap T_CASEMAP_0x01e9[]{CaseMap(U'\x1e900', U'\x00000', U'\x1e922', U'\x00000'),
-    CaseMap(U'\x1e901', U'\x00000', U'\x1e923', U'\x00000'),
-    CaseMap(U'\x1e902', U'\x00000', U'\x1e924', U'\x00000'),
-    CaseMap(U'\x1e903', U'\x00000', U'\x1e925', U'\x00000'),
-    CaseMap(U'\x1e904', U'\x00000', U'\x1e926', U'\x00000'),
-    CaseMap(U'\x1e905', U'\x00000', U'\x1e927', U'\x00000'),
-    CaseMap(U'\x1e906', U'\x00000', U'\x1e928', U'\x00000'),
-    CaseMap(U'\x1e907', U'\x00000', U'\x1e929', U'\x00000'),
-    CaseMap(U'\x1e908', U'\x00000', U'\x1e92a', U'\x00000'),
-    CaseMap(U'\x1e909', U'\x00000', U'\x1e92b', U'\x00000'),
-    CaseMap(U'\x1e90a', U'\x00000', U'\x1e92c', U'\x00000'),
-    CaseMap(U'\x1e90b', U'\x00000', U'\x1e92d', U'\x00000'),
-    CaseMap(U'\x1e90c', U'\x00000', U'\x1e92e', U'\x00000'),
-    CaseMap(U'\x1e90d', U'\x00000', U'\x1e92f', U'\x00000'),
-    CaseMap(U'\x1e90e', U'\x00000', U'\x1e930', U'\x00000'),
-    CaseMap(U'\x1e90f', U'\x00000', U'\x1e931', U'\x00000'),
-    CaseMap(U'\x1e910', U'\x00000', U'\x1e932', U'\x00000'),
-    CaseMap(U'\x1e911', U'\x00000', U'\x1e933', U'\x00000'),
-    CaseMap(U'\x1e912', U'\x00000', U'\x1e934', U'\x00000'),
-    CaseMap(U'\x1e913', U'\x00000', U'\x1e935', U'\x00000'),
-    CaseMap(U'\x1e914', U'\x00000', U'\x1e936', U'\x00000'),
-    CaseMap(U'\x1e915', U'\x00000', U'\x1e937', U'\x00000'),
-    CaseMap(U'\x1e916', U'\x00000', U'\x1e938', U'\x00000'),
-    CaseMap(U'\x1e917', U'\x00000', U'\x1e939', U'\x00000'),
-    CaseMap(U'\x1e918', U'\x00000', U'\x1e93a', U'\x00000'),
-    CaseMap(U'\x1e919', U'\x00000', U'\x1e93b', U'\x00000'),
-    CaseMap(U'\x1e91a', U'\x00000', U'\x1e93c', U'\x00000'),
-    CaseMap(U'\x1e91b', U'\x00000', U'\x1e93d', U'\x00000'),
-    CaseMap(U'\x1e91c', U'\x00000', U'\x1e93e', U'\x00000'),
-    CaseMap(U'\x1e91d', U'\x00000', U'\x1e93f', U'\x00000'),
-    CaseMap(U'\x1e91e', U'\x00000', U'\x1e940', U'\x00000'),
-    CaseMap(U'\x1e91f', U'\x00000', U'\x1e941', U'\x00000'),
-    CaseMap(U'\x1e920', U'\x00000', U'\x1e942', U'\x00000'),
-    CaseMap(U'\x1e921', U'\x00000', U'\x1e943', U'\x00000'),
-    CaseMap(U'\x1e922', U'\x1e900', U'\x00000', U'\x1e900'),
-    CaseMap(U'\x1e923', U'\x1e901', U'\x00000', U'\x1e901'),
-    CaseMap(U'\x1e924', U'\x1e902', U'\x00000', U'\x1e902'),
-    CaseMap(U'\x1e925', U'\x1e903', U'\x00000', U'\x1e903'),
-    CaseMap(U'\x1e926', U'\x1e904', U'\x00000', U'\x1e904'),
-    CaseMap(U'\x1e927', U'\x1e905', U'\x00000', U'\x1e905'),
-    CaseMap(U'\x1e928', U'\x1e906', U'\x00000', U'\x1e906'),
-    CaseMap(U'\x1e929', U'\x1e907', U'\x00000', U'\x1e907'),
-    CaseMap(U'\x1e92a', U'\x1e908', U'\x00000', U'\x1e908'),
-    CaseMap(U'\x1e92b', U'\x1e909', U'\x00000', U'\x1e909'),
-    CaseMap(U'\x1e92c', U'\x1e90a', U'\x00000', U'\x1e90a'),
-    CaseMap(U'\x1e92d', U'\x1e90b', U'\x00000', U'\x1e90b'),
-    CaseMap(U'\x1e92e', U'\x1e90c', U'\x00000', U'\x1e90c'),
-    CaseMap(U'\x1e92f', U'\x1e90d', U'\x00000', U'\x1e90d'),
-    CaseMap(U'\x1e930', U'\x1e90e', U'\x00000', U'\x1e90e'),
-    CaseMap(U'\x1e931', U'\x1e90f', U'\x00000', U'\x1e90f'),
-    CaseMap(U'\x1e932', U'\x1e910', U'\x00000', U'\x1e910'),
-    CaseMap(U'\x1e933', U'\x1e911', U'\x00000', U'\x1e911'),
-    CaseMap(U'\x1e934', U'\x1e912', U'\x00000', U'\x1e912'),
-    CaseMap(U'\x1e935', U'\x1e913', U'\x00000', U'\x1e913'),
-    CaseMap(U'\x1e936', U'\x1e914', U'\x00000', U'\x1e914'),
-    CaseMap(U'\x1e937', U'\x1e915', U'\x00000', U'\x1e915'),
-    CaseMap(U'\x1e938', U'\x1e916', U'\x00000', U'\x1e916'),
-    CaseMap(U'\x1e939', U'\x1e917', U'\x00000', U'\x1e917'),
-    CaseMap(U'\x1e93a', U'\x1e918', U'\x00000', U'\x1e918'),
-    CaseMap(U'\x1e93b', U'\x1e919', U'\x00000', U'\x1e919'),
-    CaseMap(U'\x1e93c', U'\x1e91a', U'\x00000', U'\x1e91a'),
-    CaseMap(U'\x1e93d', U'\x1e91b', U'\x00000', U'\x1e91b'),
-    CaseMap(U'\x1e93e', U'\x1e91c', U'\x00000', U'\x1e91c'),
-    CaseMap(U'\x1e93f', U'\x1e91d', U'\x00000', U'\x1e91d'),
-    CaseMap(U'\x1e940', U'\x1e91e', U'\x00000', U'\x1e91e'),
-    CaseMap(U'\x1e941', U'\x1e91f', U'\x00000', U'\x1e91f'),
-    CaseMap(U'\x1e942', U'\x1e920', U'\x00000', U'\x1e920'),
-    CaseMap(U'\x1e943', U'\x1e921', U'\x00000', U'\x1e921')};
-
-static const std::vector<CaseMap> CASEMAP_0x01e9(T_CASEMAP_0x01e9,
-                                                 T_CASEMAP_0x01e9 +
-                                                     (sizeof(T_CASEMAP_0x01e9) / sizeof(CaseMap)));
-
-static const std::vector<CaseMap> EMPTY_CASEMAP_{};
-
-static const std::vector<CaseMap> CASEMAP_INDEX[]{
-    CASEMAP_0x0000, CASEMAP_0x0001, CASEMAP_0x0002, CASEMAP_0x0003, CASEMAP_0x0004, CASEMAP_0x0005,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, CASEMAP_0x0010, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, CASEMAP_0x0013, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, CASEMAP_0x001c, CASEMAP_0x001d,
-    CASEMAP_0x001e, CASEMAP_0x001f, EMPTY_CASEMAP_, CASEMAP_0x0021, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    CASEMAP_0x0024, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, CASEMAP_0x002c, CASEMAP_0x002d, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, CASEMAP_0x00a6, CASEMAP_0x00a7,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, CASEMAP_0x00ab, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, CASEMAP_0x00ff, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, CASEMAP_0x0104, CASEMAP_0x0105, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, CASEMAP_0x010c, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, CASEMAP_0x0118, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    CASEMAP_0x016e, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_,
-    EMPTY_CASEMAP_, EMPTY_CASEMAP_, EMPTY_CASEMAP_, CASEMAP_0x01e9};
-
-// clang-format on
-
-const size_t CASEMAP_INDEX_LENGTH = sizeof(CASEMAP_INDEX) / sizeof(CASEMAP_INDEX[0]);
+static constexpr size_t LOWER_CASE_INDEX_LENGTH =
+    (sizeof(LOWER_CASE_INDEX) / sizeof(char32_t*)) - 1;
+static constexpr size_t UPPER_CASE_INDEX_LENGTH =
+    (sizeof(UPPER_CASE_INDEX) / sizeof(char32_t*)) - 1;
 
 char32_t ToUpperUnicode(const char32_t c)
 {
   const char32_t high_bytes = c >> 8;
-  if (high_bytes >= CASEMAP_INDEX_LENGTH)
+  if (high_bytes > UPPER_CASE_INDEX_LENGTH)
     return c;
 
-  std::vector<CaseMap> table;
-  try
-  {
-    table = CASEMAP_INDEX[high_bytes];
-  }
-  catch (const std::bad_array_new_length& gfg)
-  {
-    CLog::Log(LOGERROR, "CASEMAP_INDEX- index out of range: {}",
-              StringUtils::ToHex(std::u32string(1, high_bytes)));
-  }
-
-  const char32_t low_byte = c & 0xFF;
-
-  if (low_byte >= table.size())
-    // This character is not in this table, therefore not case mapped
+  const char32_t* table = UPPER_CASE_INDEX[high_bytes];
+  if (table == 0) // Not case folded
     return c;
 
-  CaseMap entry = table[low_byte];
-  if (entry.upperCaseValue == 0)
-    return c; // Not case mapped
+  const uint16_t low_byte = c & 0xFF;
+  // First table entry is # entries.
+  // Entries are in table[1...n + 1], NOT [0..n]
+  if (low_byte >= table[0])
+    return c; // Not case folded
 
-  return entry.upperCaseValue;
+  const char32_t upperChar = table[low_byte + 1];
+  if (upperChar == 0)
+    return c; // No change in case
+
+  return upperChar;
 }
 
 char32_t ToLowerUnicode(const char32_t c)
 {
   const char32_t high_bytes = c >> 8;
-  if (high_bytes >= CASEMAP_INDEX_LENGTH)
+  if (high_bytes > LOWER_CASE_INDEX_LENGTH)
     return c;
 
-  std::vector<CaseMap> table;
-  try
-  {
-    table = CASEMAP_INDEX[high_bytes];
-  }
-  catch (const std::bad_array_new_length& gfg)
-  {
-    CLog::Log(LOGERROR, "CASEMAP_INDEX- index out of range: {}",
-              StringUtils::ToHex(std::u32string(1, high_bytes)));
-  }
-  const char32_t low_byte = c & 0xFF;
-  if (low_byte >= table.size())
-    // This character is not in this table, therefore not case mapped
+  const char32_t* table = LOWER_CASE_INDEX[high_bytes];
+  if (table == 0) // Not case folded
     return c;
 
-  CaseMap entry = table[low_byte];
-  if (entry.lowerCaseValue == 0)
-    return c; // Not case mapped
+  const uint16_t low_byte = c & 0xFF;
+  // First table entry is # entries.
+  // Entries are in table[1...n + 1], NOT [0..n]
+  if (low_byte >= table[0])
+    return c; // Not case folded
 
-  return entry.lowerCaseValue;
+  const char32_t lowerChar = table[low_byte + 1];
+  if (lowerChar == 0)
+    return c; // No change in case
+
+  return lowerChar;
 }
 } // namespace

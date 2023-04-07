@@ -17,6 +17,12 @@
 
 using namespace std::literals;
 
+#if defined(TARGET_DARWIN)
+constexpr bool IS_DARWIN{true};
+#else
+constexpr bool IS_DARWIN{false};
+#endif
+
 enum class ECG
 {
   A,
@@ -353,59 +359,62 @@ TEST(TestStringUtils, BadUnicode)
   // For more info on substitute characters, see:
   // UnicodeConverter or TestUnicodeConverter for more info.
   //
-  std::string_view UTF8_SUBSTITUTE_CHARACTER{"\xef\xbf\xbd"sv};
+  std::string_view UTF8_SUBSTITUTE_CHARACTER{"\xef\xbf\xbd"};
   // std::u16string_view UTF16_SUBSTITUTE_CHARACTER{u"\x0fffd"sv};
   // std::u16string_view UTF16_LE_SUBSTITUTE_CHARACTER{u"�"sv};
-  std::u32string_view CHAR32_T_SUBSTITUTE_CHARACTER{U"\x0fffd"sv}; //U'�'sv};
-  static const char32_t BAD_CHARS[]{
-      U'\xFDD0',   U'\xFDEF',  U'\xFFFE',  U'\xFFFF',  U'\x1FFFE', U'\x1FFFF', U'\x2FFFE',
-      U'\x2FFFF',  U'\x3FFFE', U'\x3FFFF', U'\x4FFFE', U'\x4FFFF', U'\x5FFFE', U'\x5FFFF',
-      U'\x6FFFE',  U'\x6FFFF', U'\x7FFFE', U'\x7FFFF', U'\x8FFFE', U'\x8FFFF', U'\x9FFFE',
-      U'\x9FFFF',  U'\xAFFFE', U'\xAFFFF', U'\xBFFFE', U'\xBFFFF', U'\xCFFFE', U'\xCFFFF',
-      U'\xDFFFE',  U'\xDFFFF', U'\xEFFFE', U'\xEFFFF', U'\xFFFFE', U'\xFFFFF', U'\x10FFFE',
-      U'\x10FFFF', U'\x0D800', U'\x0D801', U'\x0D802', U'\x0D803', U'\x0D804', U'\x0D805',
-      U'\x0DFFF'};
+  std::u32string_view CHAR32_T_SUBSTITUTE_CHARACTER{U"\x0fffd"}; //U'�'sv};
 
-  for (char32_t c : BAD_CHARS)
+  /*
+   DARWIN uses UTF-8-MAC, which uses NFD normalization after the conversion. Normal
+    systems don't do any normalization, but normally, Unicode is in NFC normalization
+    form. The normalization impacts unicode graphemes (chars) in multiple ways:
+    as a single unicode codepoint, or as multiple codepoints. As a further twist,
+    UTF-8-MAC does not convert to NFD for certain unicode codepoint ranges:
+
+    U+2000-U+2FFF
+    U+F900-U+FAFF
+    U+2F800-U+2FAFF
+     */
+
+  // What follows are surrogate codepoints which are invalid alone.
+  static const char32_t SURROGATE_CHARS[] = {U'\x0D800', U'\x0D801', U'\x0D802', U'\x0D803',
+                                             U'\x0D804', U'\x0D805', U'\xDB7F',  U'\xDB80',
+                                             U'\xDBFF',  U'\xDC00',  U'\x0DFFF'};
+  // DARWIN has not evolved to the point where it recognizes unpaired surrogates as bad unicode
+  // It happily converts to malformed utf8. TestUnicodeUtils tests with bad utf8 chars which
+  // DARWIN can handle.
+
+  if constexpr (!IS_DARWIN)
   {
-    std::u32string s(1, c);
-    std::string utf8str = StringUtils::ToUtf8(s);
+    for (char32_t c : SURROGATE_CHARS)
+    {
+      std::u32string s(1, c);
+      std::string utf8str = StringUtils::ToUtf8(s);
+      EXPECT_TRUE(StringUtils::Equals(utf8str, UTF8_SUBSTITUTE_CHARACTER));
 
-    // std::cout << "u32string: " << std::hex << s[0] << " utf8: " << utf8str << std::endl;
+      if (!StringUtils::Equals(utf8str, UTF8_SUBSTITUTE_CHARACTER))
+      {
+        // Note, if you do run this on DARWIN, then utf8str will print out looking corrupted.
+        // This is an artifact of printing utf8str as hex and NOT due to iconv. Not sure what
+        // to think of it. Behaves the same whether std::hex or StringUtils::ToHex is used
 
-    std::string folded = StringUtils::FoldCase(utf8str);
-    std::u32string foldedU32 = StringUtils::ToUtf32(folded);
+        std::cout << "Surrogate: " << std::hex << s[0]
+                  << " converted to UTF8: " << StringUtils::ToHex(utf8str)
+                  << " expected: " << std::hex << UTF8_SUBSTITUTE_CHARACTER << std::endl;
+      }
 
-    // std::cout << "folded: " << folded << " foldedU32: " << std::hex << foldedU32[0] << std::endl;
+      std::string folded = StringUtils::FoldCase(utf8str);
+      std::u32string foldedU32 = StringUtils::ToUtf32(folded);
+
+      EXPECT_TRUE(StringUtils::Equals(folded, UTF8_SUBSTITUTE_CHARACTER));
+
+      EXPECT_EQ(foldedU32[0], CHAR32_T_SUBSTITUTE_CHARACTER[0]);
+      // std::cout << "folded: " << folded << " foldedU32: " << std::hex << foldedU32[0] << std::endl;
+    }
+    EXPECT_TRUE(true);
+    // More problems should show up with multi-byte utf8 characters missing the
+    // first byte.
   }
-  EXPECT_TRUE(true);
-
-  static const char32_t REPLACED_CHARS[] = {U'\x0D800', U'\x0D801', U'\x0D802', U'\x0D803',
-                                            U'\x0D804', U'\x0D805', U'\xDB7F',  U'\xDB80',
-                                            U'\xDBFF',  U'\xDC00',  U'\x0DFFF'};
-
-  for (char32_t c : REPLACED_CHARS)
-  {
-    std::u32string s(1, c);
-    std::string utf8str = StringUtils::ToUtf8(s);
-    EXPECT_TRUE(StringUtils::Equals(utf8str, UTF8_SUBSTITUTE_CHARACTER));
-
-    // std::cout << "Bad Char: " << std::hex << s[0] << " converted to UTF8: "
-    //     << std::hex << utf8str
-    //    << " expected: " << std::hex << UTF8_SUBSTITUTE_CHARACTER << std::endl;
-
-    std::string folded = StringUtils::FoldCase(utf8str);
-    std::u32string foldedU32 = StringUtils::ToUtf32(folded);
-
-    EXPECT_TRUE(StringUtils::Equals(folded, UTF8_SUBSTITUTE_CHARACTER));
-
-    EXPECT_EQ(foldedU32[0], CHAR32_T_SUBSTITUTE_CHARACTER[0]);
-    // std::cout << "folded: " << folded << " foldedU32: " << std::hex << foldedU32[0] << std::endl;
-  }
-  EXPECT_TRUE(true);
-  // More problems should show up with multi-byte utf8 characters missing the
-  // first byte.
-
   static const std::string BAD_UTF8[] = {
       "\xcc"s, "\xb3"s, "\x9f"s, "\xab"s, "\x93", "\x8b",
   };

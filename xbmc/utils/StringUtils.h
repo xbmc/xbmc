@@ -10,16 +10,13 @@
 
 //-----------------------------------------------------------------------
 //
-//  File:      StringUtils.h
+//  File:      StringUtils.cpp
 //
-//  Purpose:   String utilities, including those that support Unicode
+//  Purpose:   ATL split string utility
+//  Author:    Paul J. Weiss
 //
-//  Authors:   Frank Feuerbacher, Paul J. Weiss and numerous others
+//  Modified to use J O'Leary's std::string class by kraqh3d
 //
-//  Modified:  To support J O'Leary's std::string class by kraqh3d
-//             FoldCase to replace most uses of ToLower
-//             ToLower/ToUpper/FoldCase use UTF-32 for more accurate
-//             and consistent results
 //------------------------------------------------------------------------
 
 #include <locale>
@@ -41,14 +38,6 @@
 #include <fmt/format.h>
 #if FMT_VERSION >= 80000
 #include <fmt/xchar.h>
-#endif
-
-#ifdef _MSC_VER
-#define WARN_UNUSED_RESULT
-#elif defined(__GNUC__) || defined(__clang__)
-#define WARN_UNUSED_RESULT __attribute__((warn_unused_result))
-#else
-#define WARN_UNUSED_RESULT
 #endif
 
 /*!
@@ -112,7 +101,7 @@ public:
    *        UTF8 format
    * \return a string containing the result
    */
-  static std::string ToUtf8(const std::u32string_view str);
+  static std::string ToUtf8(std::u32string_view str);
 
   /*!
    * \brief Converts a wstring_view to a string
@@ -121,7 +110,7 @@ public:
    *            format to be converted to string in UTF-8
    * \return a string containing the result
    */
-  static std::string ToUtf8(const std::wstring_view str);
+  static std::string ToUtf8(std::wstring_view str);
 
   /*!
    * \brief Converts a string to a u32string
@@ -129,7 +118,7 @@ public:
    * \param str_string a string_view in UTF8 format to be converted to u32string
    * \return a u32string containing the result
    */
-  static std::u32string ToUtf32(const std::string_view str);
+  static std::u32string ToUtf32(std::string_view str);
 
   /*!
    * \brief Converts a wstring to a u32string
@@ -137,7 +126,7 @@ public:
    * \param str a wstring_view in to be converted to a u32string
    * \return a u32string containing the result
    */
-  static std::u32string ToUtf32(const std::wstring_view str);
+  static std::u32string ToUtf32(std::wstring_view str);
 
   /*!
    * \brief Converts a string to a wstring
@@ -145,7 +134,7 @@ public:
    * \param str a u32string_view to be converted to wstring
    * \return a wstring containing the result
    */
-  static std::wstring ToWstring(const std::string_view str);
+  static std::wstring ToWstring(std::string_view str);
 
   /*!
    * \brief Converts a u32string to a wstring
@@ -153,7 +142,7 @@ public:
    * \param str a u32string_view to be converted to wstring
    * \return a wstring containing the result
    */
-  static std::wstring ToWstring(const std::u32string_view str);
+  static std::wstring ToWstring(std::u32string_view str);
 
   /*!
    * \brief Returns the C Locale, primarily for the use of ToLower/ToUpper.
@@ -229,8 +218,8 @@ public:
    * \param locale Specifies the language rules to follow
    * \return upper cased string
    */
-  static std::u32string ToUpper(const std::u32string_view str,
-                                const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
+  [[nodiscard]] static std::u32string ToUpper(std::u32string_view str,
+                                              const std::locale locale = GetSystemLocale());
 
   /*!
    * \brief Changes lower case letters to upper case.
@@ -241,8 +230,8 @@ public:
    * \param locale Specifies the language rules to follow
    * \return upper cased string
    */
-  static std::string ToUpper(const std::string_view str,
-                             const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
+  [[nodiscard]] static std::string ToUpper(std::string_view str,
+                                           const std::locale locale = GetSystemLocale());
 
   /*!
    * \brief Changes lower case letters to upper case.
@@ -253,8 +242,8 @@ public:
    * \param locale Specifies the language rules to follow
    * \return upper cased string
    */
-  static std::wstring ToUpper(const std::wstring_view str,
-                              const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
+  [[nodiscard]] static std::wstring ToUpper(std::wstring_view str,
+                                            const std::locale locale = GetSystemLocale());
 
   /*!
    * \brief Changes upper case letters to lower-case case.
@@ -265,8 +254,8 @@ public:
    * \param locale Specifies the language rules to follow
    * \return lower cased string
    */
-  static std::u32string ToLower(const std::u32string_view str,
-                                const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
+  [[nodiscard]] static std::u32string ToLower(std::u32string_view str,
+                                              const std::locale locale = GetSystemLocale());
 
   /*!
    * \brief Changes upper case letters to lower case.
@@ -277,8 +266,8 @@ public:
    * \param locale Specifies the language rules to follow
    * \return lower cased string
    */
-  static std::string ToLower(const std::string_view str,
-                             const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
+  [[nodiscard]] static std::string ToLower(std::string_view str,
+                                           const std::locale locale = GetSystemLocale());
 
   /*!
    * \brief Changes upper case letters to lower case.
@@ -289,8 +278,8 @@ public:
    * \param locale Specifies the language rules to follow
    * \return lower cased string
    */
-  static std::wstring ToLower(const std::wstring_view str,
-                              const std::locale locale = GetSystemLocale()) WARN_UNUSED_RESULT;
+  [[nodiscard]] static std::wstring ToLower(std::wstring_view str,
+                                            const std::locale locale = GetSystemLocale());
 
 private:
   /*!
@@ -314,7 +303,7 @@ private:
    * \param str u32string to fold
    * \return Case folded version of str (all lower-case)
    */
-  static std::u32string FoldCase(const std::u32string_view str) WARN_UNUSED_RESULT;
+  [[nodiscard]] static std::u32string FoldCase(std::u32string_view str);
 
 public:
   /*!
@@ -336,7 +325,7 @@ public:
    * \return Case folded version of str (all lower-case)
    */
 
-  static std::string FoldCase(const std::string_view str) WARN_UNUSED_RESULT;
+  [[nodiscard]] static std::string FoldCase(std::string_view str);
 
   /*!
    * \brief Folds the case of a string using a simple algorithm.
@@ -356,7 +345,7 @@ public:
    * \param str string to fold
    * \return Case folded version of str (all lower-case)
    */
-  static std::wstring FoldCase(const std::wstring_view str) WARN_UNUSED_RESULT;
+  [[nodiscard]] static std::wstring FoldCase(std::wstring_view str);
 
 private:
   /*!
@@ -375,7 +364,7 @@ private:
    *         of str1 match str2
    *         false otherwise
    */
-  static bool FoldAndCompareStart(const std::u32string_view str1, const std::u32string_view str2);
+  static bool FoldAndCompareStart(std::u32string_view str1, std::u32string_view str2);
 
   /*!
    * \brief Folds and compares two u32strings from the rightmost end. str2 determines the
@@ -393,7 +382,7 @@ private:
    *         of str1 match str2
    *         false otherwise
    */
-  static bool FoldAndCompareEnd(const std::u32string_view str1, const std::u32string_view str2);
+  static bool FoldAndCompareEnd(std::u32string_view str1, std::u32string_view str2);
 
   /*!
    *  \brief Determines if two strings are equal when folded, or not
@@ -413,7 +402,7 @@ private:
    * \return true if both folded strings are identical,
    *         false otherwise
    */
-  static bool FoldAndEquals(const std::u32string_view str1, const std::u32string_view str2);
+  static bool FoldAndEquals(std::u32string_view str1, std::u32string_view str2);
 
 public:
   static void ToCapitalize(std::string& str);
@@ -429,7 +418,32 @@ public:
    * \param str2 one of the strings to compare
    * \return true if both strings are identical, otherwise false
    */
-  static bool Equals(const std::string_view str1, const std::string_view str2);
+  static bool Equals(std::string_view str1, std::string_view str2);
+
+  /*
+   *
+   * \brief Determines if two strings are the same.
+   *
+   * A bit faster than Compare since length check can be done before compare.
+   * Also compare does not require any conversion.
+   *
+   * \param str1 one of the strings to compare
+   * \param str2 one of the strings to compare
+   * \return true if both strings are identical, otherwise false
+   */
+  static bool Equals(std::wstring_view str1, std::wstring_view str2);
+
+  /*!
+   * \brief Determines if two strings are the same.
+   *
+   * A bit faster than Compare since length check can be done before compare.
+   * Also compare does not require any conversion.
+   *
+   * \param str1 one of the strings to compare
+   * \param str2 one of the strings to compare
+   * \return true if both strings are identical, otherwise false
+   */
+  static bool Equals(std::u32string_view str1, std::u32string_view str2);
 
   /*!
    * \brief Determines if two strings are the same, after case folding each.
@@ -441,7 +455,7 @@ public:
    * \return true if both strings compare after case folding, otherwise false
    */
 
-  static bool EqualsNoCase(const std::string_view str1, const std::string_view str2);
+  static bool EqualsNoCase(std::string_view str1, std::string_view str2);
 
   /*!
    * \brief Compares two strings, ignoring case, using lexicographic order.
@@ -467,16 +481,8 @@ public:
    *       represent a single Unicode codepoint (for practical
    *       purposes a character).
    */
-  // TODO: The VAST majority of uses can be changed to use EqualsNoCase, which is faster
-  //       since no conversion to Unicode is required. Further, if string length is fixed,
-  //       then a simple length check is all that is needed.
-  //
-  // TODO: For all of the cases that use 'n' they should change to StartsWithNoCase or EndsWithNoCase
-  //       because they will be faster and less error-prone.
 
-  static int CompareNoCase(const std::string_view str1,
-                           const std::string_view str2,
-                           const size_t n = 0);
+  static int CompareNoCase(std::string_view str1, std::string_view str2, const size_t n = 0);
 
   /*!
    * \brief Compares two wstrings, ignoring case, using codepoint order.
@@ -503,9 +509,7 @@ public:
    *       represent a single Unicode codepoint (for practical
    *       purposes a character).
    */
-  static int CompareNoCase(const std::wstring_view str1,
-                           const std::wstring_view str2,
-                           const size_t n = 0);
+  static int CompareNoCase(std::wstring_view str1, std::wstring_view str2, const size_t n = 0);
   /*!
    * \brief Returns the int value of the first series of digits found in the string
    *
@@ -582,7 +586,7 @@ public:
    * \param str2 string to find at beginning of str1
    * \return true if str1 starts with str2, otherwise false
    */
-  static bool StartsWith(const std::string_view str1, const std::string_view str2);
+  static bool StartsWith(std::string_view str1, std::string_view str2);
 
   /*!
    * \brief Determines if a string begins with another string, ignoring case
@@ -593,7 +597,7 @@ public:
    * \param str2 string to find at beginning of str1
    * \return true if folded str1 starts with folded str2, otherwise false
    */
-  static bool StartsWithNoCase(const std::string_view str1, const std::string_view str2);
+  static bool StartsWithNoCase(std::string_view str1, std::string_view str2);
 
   /*!
    * \brief Determines if a string ends with another string
@@ -604,7 +608,7 @@ public:
    * \param str2 string to find at end of str1
    * \return true if str1 ends with str2, otherwise false
    */
-  static bool EndsWith(const std::string_view str1, const std::string_view str2);
+  static bool EndsWith(std::string_view str1, std::string_view str2);
 
   /*!
    *  \brief Determines if a string ends with another string while ignoring case
@@ -613,7 +617,7 @@ public:
    * \param str2 string to find at end of str1
    * \return true if str1 ends with str2, otherwise false
    */
-  static bool EndsWithNoCase(const std::string_view str1, const std::string_view str2);
+  static bool EndsWithNoCase(std::string_view str1, std::string_view str2);
 
   /*!
    *  \brief Builds a string by appending every string from a container,
@@ -626,12 +630,32 @@ public:
   template<typename CONTAINER>
   static std::string Join(const CONTAINER& strings, const std::string& delimiter)
   {
-    std::string result;
-    for (const auto& str : strings)
-      result += str + delimiter;
+    if (strings.empty())
+      return std::string();
 
-    if (!result.empty())
-      result.erase(result.size() - delimiter.size());
+    size_t size{0};
+    size_t delimSize = delimiter.size();
+    for (const auto& str : strings)
+      size += str.size() + delimSize;
+
+    std::string result;
+    size -= delimSize;
+
+    result.reserve(size);
+
+    // Avoid erase
+
+    bool appendDelimiter = false;
+    for (const auto& str : strings)
+    {
+      if (appendDelimiter)
+        result += delimiter;
+      else
+        appendDelimiter = true;
+
+      result += str;
+    }
+
     return result;
   }
 
@@ -1051,7 +1075,7 @@ public:
    *
    * \return Each character in 'in' represented in hex, separated by space
    */
-  static std::string ToHex(const std::string_view in);
+  static std::string ToHex(std::string_view in);
 
   /*!
    * \brief Convert wstring_view to hex primarily for debugging purposes.
@@ -1062,7 +1086,7 @@ public:
    *
    * \return Each character in 'in' represented in hex, separated by space
    */
-  static std::string ToHex(const std::wstring_view in);
+  static std::string ToHex(std::wstring_view in);
 
   /*!
    * \brief Convert u32string_view to hex primarily for debugging purposes.
@@ -1074,7 +1098,7 @@ public:
    * \return Each character in 'in' represented in hex, separated by space
    *
    */
-  static std::string ToHex(const std::u32string_view in);
+  static std::string ToHex(std::u32string_view in);
 
   /*!
    * \brief Formats a string with separators appropriate for the Locale
