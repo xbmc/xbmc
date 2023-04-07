@@ -35,11 +35,13 @@
 #include <d3d11_4.h>
 #include <dxva.h>
 #include <initguid.h>
+#include <sdkddkver.h>
 
 using namespace DXVA;
 using namespace Microsoft::WRL;
 using namespace std::chrono_literals;
 
+// clang-format off
 DEFINE_GUID(DXVADDI_Intel_ModeH264_A,      0x604F8E64,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
 DEFINE_GUID(DXVADDI_Intel_ModeH264_C,      0x604F8E66,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
 DEFINE_GUID(DXVADDI_Intel_ModeH264_E,      0x604F8E68,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
@@ -47,30 +49,37 @@ DEFINE_GUID(DXVADDI_Intel_ModeVC1_E,       0xBCC5DB6D,0xA2B6,0x4AF0,0xAC,0xE4,0x
 DEFINE_GUID(DXVA_ModeH264_VLD_NoFGT_Flash, 0x4245F676,0x2BBC,0x4166,0xa0,0xBB,0x54,0xE7,0xB8,0x49,0xC3,0x80);
 DEFINE_GUID(DXVA_Intel_VC1_ClearVideo_2,   0xE07EC519,0xE651,0x4CD6,0xAC,0x84,0x13,0x70,0xCC,0xEE,0xC8,0x51);
 
+// These AV1 GUIDs are only defined from Windows SDK 10.0.22000.0
+// Defined conditional here to able compile with lower SDK versions
+#ifndef NTDDI_WIN10_CO
+DEFINE_GUID(D3D11_DECODER_PROFILE_AV1_VLD_PROFILE0, 0xb8be4ccb,0xcf53,0x46ba,0x8d,0x59,0xd6,0xb8,0xa6,0xda,0x5d,0x2a);
+DEFINE_GUID(D3D11_DECODER_PROFILE_AV1_VLD_PROFILE1, 0x6936ff0f,0x45b1,0x4163,0x9c,0xc1,0x64,0x6e,0xf6,0x94,0x61,0x08);
+DEFINE_GUID(D3D11_DECODER_PROFILE_AV1_VLD_PROFILE2, 0x0c5f2aa1,0xe541,0x4089,0xbb,0x7b,0x98,0x11,0x0a,0x19,0xd7,0xc8);
+#endif
+
 // redefine DXVA_NoEncrypt with other macro, solves unresolved external symbol linker error
 #ifndef DXVA_NoEncrypt
 DEFINE_GUID(DXVA_NoEncrypt, 0x1b81beD0, 0xa0c7, 0x11d3, 0xb9, 0x84, 0x00, 0xc0, 0x4f, 0x2e, 0x73, 0xc5);
 #endif
+// clang-format on
 
-static const int PROFILES_MPEG2_SIMPLE[] = { FF_PROFILE_MPEG2_SIMPLE,
-                                             FF_PROFILE_UNKNOWN };
-static const int PROFILES_MPEG2_MAIN[]   = { FF_PROFILE_MPEG2_SIMPLE,
-                                             FF_PROFILE_MPEG2_MAIN,
-                                             FF_PROFILE_UNKNOWN };
-static const int PROFILES_H264_HIGH[]    = { FF_PROFILE_H264_BASELINE,
-                                             FF_PROFILE_H264_CONSTRAINED_BASELINE,
-                                             FF_PROFILE_H264_MAIN,
-                                             FF_PROFILE_H264_HIGH,
-                                             FF_PROFILE_UNKNOWN };
-static const int PROFILES_HEVC_MAIN[]    = { FF_PROFILE_HEVC_MAIN,
-                                             FF_PROFILE_UNKNOWN };
-static const int PROFILES_HEVC_MAIN10[]  = { FF_PROFILE_HEVC_MAIN,
-                                             FF_PROFILE_HEVC_MAIN_10,
-                                             FF_PROFILE_UNKNOWN };
-static const int PROFILES_VP9_0[]        = { FF_PROFILE_VP9_0,
-                                             FF_PROFILE_UNKNOWN };
-static const int PROFILES_VP9_10_2[]     = { FF_PROFILE_VP9_2,
-                                             FF_PROFILE_UNKNOWN };
+namespace
+{
+constexpr int PROFILES_MPEG2_SIMPLE[] = {FF_PROFILE_MPEG2_SIMPLE, FF_PROFILE_UNKNOWN};
+constexpr int PROFILES_MPEG2_MAIN[] = {FF_PROFILE_MPEG2_SIMPLE, FF_PROFILE_MPEG2_MAIN,
+                                       FF_PROFILE_UNKNOWN};
+constexpr int PROFILES_H264_HIGH[] = {FF_PROFILE_H264_BASELINE,
+                                      FF_PROFILE_H264_CONSTRAINED_BASELINE, FF_PROFILE_H264_MAIN,
+                                      FF_PROFILE_H264_HIGH, FF_PROFILE_UNKNOWN};
+constexpr int PROFILES_HEVC_MAIN[] = {FF_PROFILE_HEVC_MAIN, FF_PROFILE_UNKNOWN};
+constexpr int PROFILES_HEVC_MAIN10[] = {FF_PROFILE_HEVC_MAIN, FF_PROFILE_HEVC_MAIN_10,
+                                        FF_PROFILE_UNKNOWN};
+constexpr int PROFILES_VP9_0[] = {FF_PROFILE_VP9_0, FF_PROFILE_UNKNOWN};
+constexpr int PROFILES_VP9_10_2[] = {FF_PROFILE_VP9_2, FF_PROFILE_UNKNOWN};
+constexpr int PROFILES_AV1_MAIN[] = {FF_PROFILE_AV1_MAIN, FF_PROFILE_UNKNOWN};
+constexpr int PROFILES_AV1_HIGH[] = {FF_PROFILE_AV1_HIGH, FF_PROFILE_UNKNOWN};
+constexpr int PROFILES_AV1_PROFESSIONAL[] = {FF_PROFILE_AV1_PROFESSIONAL, FF_PROFILE_UNKNOWN};
+} // namespace
 
 typedef struct
 {
@@ -81,6 +90,7 @@ typedef struct
 } dxva2_mode_t;
 
 /* XXX Preferred modes must come first */
+// clang-format off
 static const std::vector<dxva2_mode_t> dxva2_modes = {
     { "MPEG2 variable-length decoder",                                              &D3D11_DECODER_PROFILE_MPEG2_VLD,     AV_CODEC_ID_MPEG2VIDEO, PROFILES_MPEG2_MAIN },
     { "MPEG1/2 variable-length decoder",                                            &D3D11_DECODER_PROFILE_MPEG2and1_VLD, AV_CODEC_ID_MPEG2VIDEO, PROFILES_MPEG2_MAIN },
@@ -130,7 +140,12 @@ static const std::vector<dxva2_mode_t> dxva2_modes = {
 
     { "VP9 variable-length decoder, Profile 0",                                     &D3D11_DECODER_PROFILE_VP9_VLD_PROFILE0,       AV_CODEC_ID_VP9, PROFILES_VP9_0 },
     { "VP9 variable-length decoder, 10bit, profile 2",                              &D3D11_DECODER_PROFILE_VP9_VLD_10BIT_PROFILE2, AV_CODEC_ID_VP9, PROFILES_VP9_10_2 },
+
+    { "AV1 Profile 0 (main)",                                                       &D3D11_DECODER_PROFILE_AV1_VLD_PROFILE0, AV_CODEC_ID_AV1, PROFILES_AV1_MAIN },
+    { "AV1 Profile 1 (high)",                                                       &D3D11_DECODER_PROFILE_AV1_VLD_PROFILE1, AV_CODEC_ID_AV1, PROFILES_AV1_HIGH },
+    { "AV1 Profile 2 (professional)",                                               &D3D11_DECODER_PROFILE_AV1_VLD_PROFILE2, AV_CODEC_ID_AV1, PROFILES_AV1_PROFESSIONAL },
 };
+// clang-format on
 
 // Preferred targets must be first
 static const DXGI_FORMAT render_targets_dxgi[] = {
@@ -467,8 +482,13 @@ bool CContext::GetFormatAndConfig(AVCodecContext* avctx, D3D11_VIDEO_DECODER_DES
     CLog::Log(LOGDEBUG, "DXVA: trying '{}'.", mode.name);
     for (unsigned j = 0; render_targets_dxgi[j]; ++j)
     {
-      bool bHighBits = (avctx->codec_id == AV_CODEC_ID_HEVC && (avctx->sw_pix_fmt == AV_PIX_FMT_YUV420P10 || avctx->profile == FF_PROFILE_HEVC_MAIN_10))
-                    || (avctx->codec_id == AV_CODEC_ID_VP9 && (avctx->sw_pix_fmt == AV_PIX_FMT_YUV420P10 || avctx->profile == FF_PROFILE_VP9_2));
+      bool bHighBits =
+          (avctx->codec_id == AV_CODEC_ID_HEVC && (avctx->sw_pix_fmt == AV_PIX_FMT_YUV420P10 ||
+                                                   avctx->profile == FF_PROFILE_HEVC_MAIN_10)) ||
+          (avctx->codec_id == AV_CODEC_ID_VP9 &&
+           (avctx->sw_pix_fmt == AV_PIX_FMT_YUV420P10 || avctx->profile == FF_PROFILE_VP9_2)) ||
+          (avctx->codec_id == AV_CODEC_ID_AV1 && avctx->sw_pix_fmt == AV_PIX_FMT_YUV420P10);
+
       if (bHighBits && render_targets_dxgi[j] < DXGI_FORMAT_P010)
         continue;
 
@@ -1264,6 +1284,12 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
     m_refs += avctx->refs ? avctx->refs : 16;
     break;
   case AV_CODEC_ID_VP9:
+    m_refs += 8;
+    break;
+  case AV_CODEC_ID_AV1:
+    // the AV1 DXVA2 spec asks for 128 pixel aligned surfaces
+    m_surface_alignment = 128;
+    // by specification AV1 decoder can hold up to 8 unique refs
     m_refs += 8;
     break;
   default:
