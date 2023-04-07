@@ -23,7 +23,8 @@
 					<width>12</width>
 					<height>870</height>
 					<onleft>20</onleft>
-					<onright>9002</onright>
+					<onright condition="Integer.IsGreater(Container(20).NumItems, 0)">9002</onright>
+					<onright condition="Integer.IsEqual(Container(20).NumItems, 0)">9003</onright>
 					<orientation>vertical</orientation>
 				</control>
 				<control type="image">
@@ -200,14 +201,14 @@
 					<aspectratio>keep</aspectratio>
 					<texture background="true">$INFO[Container(20).ListItem.Property(icon)]</texture>
 				</control>
-				<control type="grouplist">
+				<control type="grouplist" id="9003">
 					<top>590</top>
 					<itemgap>-18</itemgap>
 					<onleft>60</onleft>
 					<onright>9000</onright>
 					<onup>14</onup>
 					<ondown>7</ondown>
-					<control type="label" id="9003">
+					<control type="label">
 						<description>misc options Header</description>
 						<width>700</width>
 						<height>52</height>
@@ -258,7 +259,8 @@
 			<control type="grouplist" id="9000">
 				<right>20</right>
 				<top>90</top>
-				<onleft>9002</onleft>
+				<onleft condition="Integer.IsGreater(Container(20).NumItems, 0)">9002</onleft>
+				<onleft condition="Integer.IsEqual(Container(20).NumItems, 0)">9003</onleft>
 				<onright>20</onright>
 				<itemgap>dialogbuttons_itemgap</itemgap>
 				<width>400</width>
