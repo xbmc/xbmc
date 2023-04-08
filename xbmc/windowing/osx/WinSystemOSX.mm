@@ -598,6 +598,11 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   // screen index is not found/available.
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   m_lastDisplayNr = GetDisplayIndex(settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  NSScreen* screen = nil;
+  if (m_lastDisplayNr < NSScreen.screens.count)
+  {
+    screen = [NSScreen.screens objectAtIndex:m_lastDisplayNr];
+  }
 
   // force initial window creation to be windowed, if fullscreen, it will switch to it below
   // fixes the white screen of death if starting fullscreen and switching to windowed.
@@ -620,7 +625,17 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   [m_glView.getGLContext makeCurrentContext];
   [m_glView.getGLContext update];
 
+  NSScreen* currentScreen = [NSScreen mainScreen];
   dispatch_sync(dispatch_get_main_queue(), ^{
+    // NSWindowController does not track the last used screen so set the frame coordinates
+    // to the center of the screen in that case
+    if (screen && currentScreen != screen)
+    {
+      [m_appWindow
+          setFrameOrigin:NSMakePoint(
+                             screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
+                             screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2)];
+    }
     [m_appWindowController showWindow:m_appWindow];
   });
 
@@ -850,9 +865,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // This is Cocoa Windowed FullScreen Mode
     // Get the screen rect of our current display
     NSScreen* pScreen = [NSScreen.screens objectAtIndex:m_lastDisplayNr];
-
-    // remove frame origin offset of original display
-    pScreen.frame.origin = NSZeroPoint;
 
     // Update safeareainsets (display may have a notch)
     //! @TODO update code block once minimal SDK version is bumped to at least 12.0 (remove NSInvocation and selector)
