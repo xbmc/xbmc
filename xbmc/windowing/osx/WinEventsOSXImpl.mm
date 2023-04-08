@@ -10,16 +10,13 @@
 
 #include "ServiceBroker.h"
 #include "application/AppInboundProtocol.h"
-#include "input/XBMC_keysym.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "input/mouse/MouseStat.h"
 #include "messaging/ApplicationMessenger.h"
-#include "threads/CriticalSection.h"
 #include "utils/log.h"
 #include "windowing/osx/WinSystemOSX.h"
 
-#include <memory>
 #include <mutex>
 #include <queue>
 
