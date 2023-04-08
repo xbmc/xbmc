@@ -1,12 +1,12 @@
 /*
- *  Copyright (C) 2021- Team Kodi
+ *  Copyright (C) 2023- Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
  *  See LICENSES/README.md for more information.
  */
 
-#import "OSXGLWindow.h"
+#import "WindowControllerMacOS.h"
 
 #include "ServiceBroker.h"
 #include "application/AppInboundProtocol.h"
@@ -46,7 +46,7 @@
     self.shouldCascadeWindows = NO;
     window.delegate = self;
     window.contentView = [[OSXGLView alloc] initWithFrame:NSZeroRect];
-    window.acceptsMouseMovedEvents = YES; // SHH: ?view can't unless window does
+    window.acceptsMouseMovedEvents = YES;
   }
   g_application.m_AppFocused = true;
   return self;
