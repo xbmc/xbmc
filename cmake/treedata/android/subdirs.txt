@@ -5,7 +5,6 @@ xbmc/input/touch/generic                    input/touch/generic
 xbmc/media/decoderfilter                    media/decoderfilter
 xbmc/platform/android                       platform/android
 xbmc/platform/android/activity              platform/android/activity
-xbmc/platform/android/bionic_supplement     platform/android/bionicsupplement
 xbmc/platform/android/filesystem            platform/android/filesystem
 xbmc/platform/android/media/decoderfilter   platform/android/media/decoderfilter
 xbmc/platform/android/media/drm             platform/android/media/drm
