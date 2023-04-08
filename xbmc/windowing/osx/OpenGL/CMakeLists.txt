@@ -4,9 +4,9 @@ if(OPENGL_FOUND)
 
   if(NOT SDL_FOUND)
     list(APPEND SOURCES OSXGLView.mm
-                        OSXGLWindow.mm)
+                        WindowControllerMacOS.mm)
     list(APPEND HEADERS OSXGLView.h
-                        OSXGLWindow.h)
+                        WindowControllerMacOS.h)
   endif()
 
   core_add_library(windowing_osx_opengl)

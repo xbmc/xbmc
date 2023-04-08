@@ -30,7 +30,7 @@
 #include "windowing/osx/CocoaDPMSSupport.h"
 #include "windowing/osx/OSScreenSaverOSX.h"
 #import "windowing/osx/OpenGL/OSXGLView.h"
-#import "windowing/osx/OpenGL/OSXGLWindow.h"
+#import "windowing/osx/OpenGL/WindowControllerMacOS.h"
 #include "windowing/osx/VideoSyncOsx.h"
 #include "windowing/osx/WinEventsOSX.h"
 
