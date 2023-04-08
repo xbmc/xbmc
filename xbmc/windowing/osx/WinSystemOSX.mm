@@ -52,10 +52,6 @@ namespace
 {
 constexpr int MAX_DISPLAYS = 32;
 constexpr const char* DEFAULT_SCREEN_NAME = "Default";
-//! MacOS specific window top position setting
-constexpr const char* SETTING_WINDOW_TOP = "window.top";
-//! MacOS specific window left position setting
-constexpr const char* SETTING_WINDOW_LEFT = "window.left";
 } // namespace
 
 static std::array<NSWindowController*, MAX_DISPLAYS> blankingWindowControllers;
@@ -1107,15 +1103,6 @@ void CWinSystemOSX::OnMove(int x, int y)
       NSRect frame = win.contentView.frame;
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_VIDEORESIZE, frame.size.width,
                                                  frame.size.height);
-    });
-  }
-  // store window position in window mode
-  if (!m_bFullScreen)
-  {
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      settings->SetInt(SETTING_WINDOW_LEFT, m_appWindow.frame.origin.x);
-      settings->SetInt(SETTING_WINDOW_TOP, m_appWindow.frame.origin.y);
-      settings->Save();
     });
   }
 }
