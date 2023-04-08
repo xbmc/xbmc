@@ -6,6 +6,8 @@
  *  See LICENSES/README.md for more information.
  */
 
+#define _LIBCPP_DISABLE_AVAILABILITY
+
 #include "Variant.h"
 
 #include <charconv>
