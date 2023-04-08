@@ -196,7 +196,7 @@ protected:
     double         pts;
     EFIELDSYNC     presentfield;
     EPRESENTMETHOD presentmethod;
-  } m_Queue[NUM_BUFFERS];
+  } m_Queue[NUM_BUFFERS]{};
 
   std::deque<int> m_free;
   std::deque<int> m_queued;
