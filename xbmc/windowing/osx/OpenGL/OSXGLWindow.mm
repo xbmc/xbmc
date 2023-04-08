@@ -10,10 +10,7 @@
 
 #include "ServiceBroker.h"
 #include "application/AppInboundProtocol.h"
-#include "application/AppParamParser.h"
 #include "application/Application.h"
-#include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
@@ -21,8 +18,6 @@
 #import "windowing/osx/OpenGL/OSXGLView.h"
 #include "windowing/osx/WinEventsOSX.h"
 #import "windowing/osx/WinSystemOSX.h"
-
-#include "platform/darwin/osx/CocoaInterface.h"
 
 @implementation XBMCWindowControllerMacOS
 

@@ -9,13 +9,6 @@
 #import "OSXGLView.h"
 
 #include "ServiceBroker.h"
-#include "application/AppInboundProtocol.h"
-#include "application/AppParamParser.h"
-#include "application/Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/log.h"
 #import "windowing/osx/WinSystemOSX.h"
 
 #include "system_gl.h"
