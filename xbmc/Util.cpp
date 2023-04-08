@@ -25,7 +25,6 @@
 #endif
 #if defined(TARGET_ANDROID)
 #include <androidjni/ApplicationInfo.h>
-#include "platform/android/bionic_supplement/bionic_supplement.h"
 #include "platform/android/activity/XBMCApp.h"
 #include "CompileInfo.h"
 #endif
