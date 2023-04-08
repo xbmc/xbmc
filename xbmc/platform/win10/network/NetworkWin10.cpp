@@ -56,6 +56,7 @@ typedef struct icmp_echo_reply {
 
 #endif //! IP_STATUS_BASE
 #include <Icmpapi.h>
+#include <winrt/Windows.Networking.Connectivity.h>
 
 namespace
 {
