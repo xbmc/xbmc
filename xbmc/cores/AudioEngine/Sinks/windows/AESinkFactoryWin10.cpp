@@ -183,7 +183,7 @@ public:
 
 struct AEWASAPIDeviceWin10 : public IAEWASAPIDevice
 {
-  HRESULT AEWASAPIDeviceWin10::Activate(IAudioClient** ppAudioClient)
+  HRESULT Activate(IAudioClient** ppAudioClient)
   {
     if (!ppAudioClient)
       return E_POINTER;
@@ -212,13 +212,13 @@ struct AEWASAPIDeviceWin10 : public IAEWASAPIDevice
     return E_UNEXPECTED;
   };
 
-  int AEWASAPIDeviceWin10::Release() override
+  int Release() override
   {
     delete this;
     return 0;
   };
 
-  bool AEWASAPIDeviceWin10::IsUSBDevice() override
+  bool IsUSBDevice() override
   {
     // TODO
     return false;
