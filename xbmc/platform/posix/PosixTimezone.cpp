@@ -7,9 +7,6 @@
  */
 
 #include <time.h>
-#ifdef TARGET_ANDROID
-#include "platform/android/bionic_supplement/bionic_supplement.h"
-#endif
 #include "PlatformDefs.h"
 #include "PosixTimezone.h"
 #include "utils/SystemInfo.h"
