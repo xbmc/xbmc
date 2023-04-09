@@ -275,7 +275,9 @@ bool CGUIWindowPVRChannelsBase::OnContextButtonManage(const CFileItemPtr& item,
     CContextButtons buttons;
     buttons.Add(CONTEXT_BUTTON_GROUP_MANAGER, 19048);
     buttons.Add(CONTEXT_BUTTON_CHANNEL_MANAGER, 19199);
-    buttons.Add(CONTEXT_BUTTON_UPDATE_EPG, 19251);
+
+    if (item->HasPVRChannelInfoTag())
+      buttons.Add(CONTEXT_BUTTON_UPDATE_EPG, 19251);
 
     // Get the response
     int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
