@@ -299,10 +299,22 @@ static NSMenu* setupWindowMenu()
 
 - (void)floatOnTopToggle:(id)sender
 {
-  [sender setState:([NSApplication sharedApplication].mainWindow.level == NSNormalWindowLevel
-                        ? NSControlStateValueOn
-                        : NSControlStateValueOff)];
-  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFLOATONTOP);
+  auto mainWindow = [NSApplication sharedApplication].mainWindow;
+  if (!mainWindow)
+  {
+    return;
+  }
+
+  if (mainWindow.level == NSNormalWindowLevel)
+  {
+    [mainWindow setLevel:NSFloatingWindowLevel];
+    [sender setState:NSControlStateValueOn];
+  }
+  else
+  {
+    [mainWindow setLevel:NSNormalWindowLevel];
+    [sender setState:NSControlStateValueOff];
+  }
 }
 
 - (void)hideAppToggle:(id)sender
