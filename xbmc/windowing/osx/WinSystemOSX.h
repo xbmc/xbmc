@@ -76,8 +76,6 @@ public:
   void Register(IDispResource* resource) override;
   void Unregister(IDispResource* resource) override;
 
-  void ToggleFloatOnTop() override;
-
   std::unique_ptr<CVideoSync> GetVideoSync(void* clock) override;
 
   void WindowChangedScreen();
