@@ -1032,7 +1032,8 @@ CDecoder::CDecoder(CProcessInfo& processInfo)
   m_event.Set();
   m_avD3D11Context = av_d3d11va_alloc_context();
   m_avD3D11Context->cfg = reinterpret_cast<D3D11_VIDEO_DECODER_CONFIG*>(av_mallocz(sizeof(D3D11_VIDEO_DECODER_CONFIG)));
-  m_avD3D11Context->surface = reinterpret_cast<ID3D11VideoDecoderOutputView**>(av_mallocz_array(32, sizeof(ID3D11VideoDecoderOutputView*)));
+  m_avD3D11Context->surface = reinterpret_cast<ID3D11VideoDecoderOutputView**>(
+      av_calloc(32, sizeof(ID3D11VideoDecoderOutputView*)));
   m_bufferPool.reset();
 
   DX::Windowing()->Register(this);
@@ -1604,8 +1605,6 @@ int CDecoder::GetBuffer(AVCodecContext* avctx, AVFrame* pic)
     return -1;
   }
 
-  pic->reordered_opaque = avctx->reordered_opaque;
-
   for (unsigned i = 0; i < 4; i++)
   {
     pic->data[i] = nullptr;
@@ -1621,6 +1620,10 @@ int CDecoder::GetBuffer(AVCodecContext* avctx, AVFrame* pic)
     return -1;
   }
   pic->buf[0] = buffer;
+
+#if LIBAVCODEC_VERSION_MAJOR < 60
+  pic->reordered_opaque = avctx->reordered_opaque;
+#endif
 
   Acquire();
 

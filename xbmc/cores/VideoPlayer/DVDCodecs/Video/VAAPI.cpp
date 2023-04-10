@@ -867,7 +867,10 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   }
   pic->buf[0] = buffer;
 
+#if LIBAVCODEC_VERSION_MAJOR < 60
   pic->reordered_opaque = avctx->reordered_opaque;
+#endif
+
   va->Acquire();
   return 0;
 }
@@ -2962,10 +2965,11 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
   const AVFilter* srcFilter = avfilter_get_by_name("buffer");
   const AVFilter* outFilter = avfilter_get_by_name("buffersink");
 
-  std::string args = StringUtils::Format("{}:{}:{}:{}:{}:{}:{}", m_config.vidWidth,
-                                         m_config.vidHeight, AV_PIX_FMT_NV12, 1, 1,
-                                         (m_config.aspect.num != 0) ? m_config.aspect.num : 1,
-                                         (m_config.aspect.num != 0) ? m_config.aspect.den : 1);
+  std::string args =
+      StringUtils::Format("video_size={}x{}:pix_fmt={}:time_base={}/{}:pixel_aspect={}/{}",
+                          m_config.vidWidth, m_config.vidHeight, AV_PIX_FMT_NV12, 1, 1,
+                          (m_config.aspect.num != 0) ? m_config.aspect.num : 1,
+                          (m_config.aspect.num != 0) ? m_config.aspect.den : 1);
 
   if (avfilter_graph_create_filter(&m_pFilterIn, srcFilter, "src", args.c_str(), NULL, m_pFilterGraph) < 0)
   {
