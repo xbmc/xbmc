@@ -17,13 +17,16 @@ package @APP_PACKAGE@.channels;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.app.job.JobParameters;
 import android.app.job.JobScheduler;
 import android.app.job.JobService;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import androidx.tvprovider.media.tv.TvContractCompat;
 
@@ -58,7 +61,6 @@ public class SyncChannelJobService extends JobService
               @Override
               protected void onPostExecute(Boolean success)
               {
-                super.onPostExecute(success);
                 jobFinished(jobParameters, !success);
               }
             };
@@ -71,19 +73,37 @@ public class SyncChannelJobService extends JobService
   {
     if (mSyncChannelTask != null)
     {
-      mSyncChannelTask.cancel(true);
+      mSyncChannelTask.cancel();
     }
     return true;
   }
 
-  private static class SyncChannelTask extends AsyncTask<Void, Void, Boolean>
+  private static class SyncChannelTask
   {
-
     private final Context mContext;
+    private ExecutorService executor;
+    private Handler handler;
 
     SyncChannelTask(Context context)
     {
-      this.mContext = context;
+      mContext = context;
+      executor = Executors.newSingleThreadExecutor();
+      handler = new Handler(Looper.getMainLooper());
+    }
+
+    public void execute()
+    {
+      executor.execute(() -> {
+        Boolean success = doInBackground();
+        handler.post(() -> onPostExecute(success));
+      });
+    }
+
+    protected void onPostExecute(Boolean success) {};
+
+    protected void cancel()
+    {
+      executor.shutdown();
     }
 
     List<File> getFilesFromUrl(String url)
@@ -108,8 +128,7 @@ public class SyncChannelJobService extends JobService
       return list;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids)
+    protected Boolean doInBackground()
     {
       XBMCJsonRPC json = new XBMCJsonRPC();
       if (!json.Ping())
