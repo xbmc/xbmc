@@ -28,6 +28,10 @@ typedef std::shared_ptr<CGUIListItem> CGUIListItemPtr;
 
 namespace KODI
 {
+namespace GAME
+{
+class CGameInfoTag;
+}
 namespace GUILIB
 {
 namespace GUIINFO
@@ -130,6 +134,9 @@ public:
 
   // Current video stuff
   const CVideoInfoTag* GetCurrentMovieTag() const;
+
+  // Current game stuff
+  const KODI::GAME::CGameInfoTag* GetCurrentGameTag() const;
 
   void UpdateAVInfo();
 
