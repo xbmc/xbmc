@@ -378,7 +378,7 @@ bool CPVRDatabase::Persist(const CPVRClient& client)
   if (client.GetID() == PVR_INVALID_CLIENT_ID)
     return false;
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Persisting client '{}' to database", client.ID());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Persisting client {} to database", client.GetID());
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -393,7 +393,7 @@ bool CPVRDatabase::Delete(const CPVRClient& client)
   if (client.GetID() == PVR_INVALID_CLIENT_ID)
     return false;
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting client '{}' from the database", client.ID());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Deleting client {} from the database", client.GetID());
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -408,7 +408,7 @@ int CPVRDatabase::GetPriority(const CPVRClient& client)
   if (client.GetID() == PVR_INVALID_CLIENT_ID)
     return 0;
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Getting priority for client '{}' from the database", client.ID());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Getting priority for client {} from the database", client.GetID());
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
