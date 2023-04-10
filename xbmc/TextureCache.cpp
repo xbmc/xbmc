@@ -54,24 +54,25 @@ void CTextureCache::Deinitialize()
 
 bool CTextureCache::CanCacheImage(const std::string& url)
 {
-  if (url.empty())
+  const std::string checkurl = CTextureUtils::UnwrapImageURL(url);
+  if (checkurl.empty())
     return false;
 
-  if (!CURL::IsFullPath(url))
+  if (!CURL::IsFullPath(checkurl))
     return false;
 
   bool fastLoadingPath =
       // install directory and home directory are likely to be as fast or faster than texture cache
-      URIUtils::PathHasParent(url, "special://xbmc", true) ||
-      URIUtils::PathHasParent(url, "special://home", true) ||
+      URIUtils::PathHasParent(checkurl, "special://xbmc", true) ||
+      URIUtils::PathHasParent(checkurl, "special://home", true) ||
       // these are often located in 'home' or 'xbmc', but let's be clear
-      URIUtils::PathHasParent(url, "special://thumbnails", true) ||
-      URIUtils::PathHasParent(url, "special://skin", true) ||
-      URIUtils::PathHasParent(url, "special://temp", true) ||
+      URIUtils::PathHasParent(checkurl, "special://thumbnails", true) ||
+      URIUtils::PathHasParent(checkurl, "special://skin", true) ||
+      URIUtils::PathHasParent(checkurl, "special://temp", true) ||
       // image resources are often located in home, likely to be packed in xbt
-      URIUtils::PathHasParent(url, "resource://", true) ||
+      URIUtils::PathHasParent(checkurl, "resource://", true) ||
       // app icons loaded from Android system something
-      URIUtils::PathHasParent(url, "androidapp://", true);
+      URIUtils::PathHasParent(checkurl, "androidapp://", true);
   return !fastLoadingPath;
 }
 
