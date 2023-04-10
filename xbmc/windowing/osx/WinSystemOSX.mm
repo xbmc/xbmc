@@ -18,9 +18,7 @@
 #include "cores/VideoPlayer/DVDCodecs/Video/VTB.h"
 #include "cores/VideoPlayer/Process/osx/ProcessInfoOSX.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererVTBGL.h"
-#include "cores/VideoPlayer/VideoRenderers/LinuxRendererGL.h"
 #include "cores/VideoPlayer/VideoRenderers/RenderFactory.h"
-#include "guilib/DispResource.h"
 #include "guilib/GUIWindowManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "rendering/gl/ScreenshotSurfaceGL.h"
@@ -28,31 +26,22 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/CriticalSection.h"
-#include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/osx/CocoaDPMSSupport.h"
 #include "windowing/osx/OSScreenSaverOSX.h"
 #import "windowing/osx/OpenGL/OSXGLView.h"
-#import "windowing/osx/OpenGL/OSXGLWindow.h"
+#import "windowing/osx/OpenGL/WindowControllerMacOS.h"
 #include "windowing/osx/VideoSyncOsx.h"
 #include "windowing/osx/WinEventsOSX.h"
 
-#include "platform/darwin/DarwinUtils.h"
-#include "platform/darwin/DictionaryUtils.h"
 #include "platform/darwin/osx/CocoaInterface.h"
 #include "platform/darwin/osx/powermanagement/CocoaPowerSyscall.h"
 
 #include <array>
 #include <chrono>
-#include <cstdlib>
 #include <mutex>
-#include <signal.h>
 
-#import <Cocoa/Cocoa.h>
-#import <Foundation/Foundation.h>
 #import <IOKit/graphics/IOGraphicsLib.h>
-#import <IOKit/pwr_mgt/IOPMLib.h>
-#import <QuartzCore/QuartzCore.h>
 
 using namespace KODI;
 using namespace MESSAGING;
@@ -63,10 +52,6 @@ namespace
 {
 constexpr int MAX_DISPLAYS = 32;
 constexpr const char* DEFAULT_SCREEN_NAME = "Default";
-//! MacOS specific window top position setting
-constexpr const char* SETTING_WINDOW_TOP = "window.top";
-//! MacOS specific window left position setting
-constexpr const char* SETTING_WINDOW_LEFT = "window.left";
 } // namespace
 
 static std::array<NSWindowController*, MAX_DISPLAYS> blankingWindowControllers;
@@ -627,83 +612,32 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
   m_bFullScreen = false;
   m_name = name;
 
-  __block NSWindow* appWindow;
-  // because we are not main thread, delay any updates
-  // and only become keyWindow after it finishes.
-  [NSAnimationContext beginGrouping];
-  [NSAnimationContext.currentContext setCompletionHandler:^{
-    [appWindow makeKeyWindow];
-    [appWindow makeMainWindow];
-  }];
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    auto title = [NSString stringWithUTF8String:m_name.c_str()];
+    auto size = NSMakeSize(m_nWidth, m_nHeight);
+    m_appWindowController = [[XBMCWindowControllerMacOS alloc] initWithTitle:title
+                                                                 defaultSize:size];
 
-  const NSUInteger windowStyleMask = NSWindowStyleMaskTitled | NSWindowStyleMaskResizable |
-                                     NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable;
+    m_appWindow = m_appWindowController.window;
+    m_glView = m_appWindow.contentView;
+  });
 
-  if (m_appWindow == nullptr)
-  {
-    // create new content view
-    NSRect rect = [appWindow contentRectForFrameRect:appWindow.frame];
+  [m_glView.getGLContext makeCurrentContext];
+  [m_glView.getGLContext update];
 
-    // create new view if we don't have one
-    if (!m_glView)
-      m_glView = [[OSXGLView alloc] initWithFrame:rect];
+  NSScreen* currentScreen = [NSScreen mainScreen];
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    // NSWindowController does not track the last used screen so set the frame coordinates
+    // to the center of the screen in that case
+    if (screen && currentScreen != screen)
+    {
+      [m_appWindow setFrameOrigin:NSMakePoint(NSMidX(screen.frame) - m_nWidth / 2,
+                                              NSMidY(screen.frame) - m_nHeight / 2)];
+    }
+    [m_appWindowController showWindow:m_appWindow];
+  });
 
-    OSXGLView* view = (OSXGLView*)m_glView;
-
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      appWindow = [[OSXGLWindow alloc] initWithContentRect:NSMakeRect(0, 0, m_nWidth, m_nHeight)
-                                                 styleMask:windowStyleMask];
-      NSString* title = [NSString stringWithUTF8String:m_name.c_str()];
-      appWindow.backgroundColor = NSColor.blackColor;
-      appWindow.title = title;
-      appWindow.titlebarAppearsTransparent = YES;
-      appWindow.titleVisibility = NSWindowTitleHidden;
-
-      NSWindowCollectionBehavior behavior = appWindow.collectionBehavior;
-      //! @todo actually implement fullscreen tilling and remove NSWindowCollectionBehaviorFullScreenDisallowsTiling
-      behavior |= NSWindowCollectionBehaviorFullScreenPrimary |
-                  NSWindowCollectionBehaviorFullScreenDisallowsTiling;
-      [appWindow setCollectionBehavior:behavior];
-
-      // associate with current window
-      [appWindow setContentView:view];
-
-      // set the window to the appropriate screen and screen position
-      if (screen)
-      {
-        if (m_bFullScreen)
-        {
-          [appWindow setFrameOrigin:screen.frame.origin];
-        }
-        else
-        {
-          // if there are stored window positions use that as the origin point
-          const int top = settings->GetInt(SETTING_WINDOW_TOP);
-          const int left = settings->GetInt(SETTING_WINDOW_LEFT);
-
-          NSPoint windowPos;
-          if (top != 0 || left != 0)
-          {
-            windowPos = NSMakePoint(left, top);
-          }
-          else
-          {
-            // otherwise center the window on the screen
-            windowPos =
-                NSMakePoint(screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
-                            screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2);
-          }
-          [appWindow setFrameOrigin:windowPos];
-        }
-      }
-    });
-
-    [view.getGLContext makeCurrentContext];
-    [view.getGLContext update];
-
-    m_appWindow = appWindow;
-    m_bWindowCreated = true;
-  }
+  m_bWindowCreated = true;
 
   // warning, we can order front but not become
   // key window or risk starting up with bad flicker
@@ -739,11 +673,13 @@ bool CWinSystemOSX::DestroyWindowInternal()
   m_bWindowCreated = false;
   if (m_appWindow)
   {
-    NSWindow* oldAppWindow = m_appWindow;
-    m_appWindow = nullptr;
     dispatch_sync(dispatch_get_main_queue(), ^{
-      [oldAppWindow setContentView:nil];
+      [m_appWindow setContentView:nil];
+      [[m_appWindowController window] close];
     });
+
+    m_appWindow = nil;
+    m_appWindowController = nil;
   }
 
   return true;
@@ -927,9 +863,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // This is Cocoa Windowed FullScreen Mode
     // Get the screen rect of our current display
     NSScreen* pScreen = [NSScreen.screens objectAtIndex:m_lastDisplayNr];
-
-    // remove frame origin offset of original display
-    pScreen.frame.origin = NSZeroPoint;
 
     // Update safeareainsets (display may have a notch)
     //! @TODO update code block once minimal SDK version is bumped to at least 12.0 (remove NSInvocation and selector)
@@ -1182,15 +1115,6 @@ void CWinSystemOSX::OnMove(int x, int y)
                                                  frame.size.height);
     });
   }
-  // store window position in window mode
-  if (!m_bFullScreen)
-  {
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      settings->SetInt(SETTING_WINDOW_LEFT, m_appWindow.frame.origin.x);
-      settings->SetInt(SETTING_WINDOW_TOP, m_appWindow.frame.origin.y);
-      settings->Save();
-    });
-  }
 }
 
 void CWinSystemOSX::WindowChangedScreen()
@@ -1223,8 +1147,7 @@ void CWinSystemOSX::NotifyScreenChangeIntention()
   if (dispIdx != m_lastDisplayNr && screen)
   {
     NSPoint windowPos =
-        NSMakePoint(screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
-                    screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2);
+        NSMakePoint(NSMidX(screen.frame) - m_nWidth / 2, NSMidY(screen.frame) - m_nHeight / 2);
     dispatch_sync(dispatch_get_main_queue(), ^{
       [m_appWindow setFrameOrigin:windowPos];
     });
