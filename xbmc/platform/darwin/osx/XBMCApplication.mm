@@ -81,6 +81,20 @@ static NSMenu* setupWindowMenu()
                                                  keyEquivalent:@"h"];
   hideMenuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
   [appMenu addItem:hideMenuItem];
+
+  NSMenuItem* hideOthersMenuItem =
+      [[NSMenuItem alloc] initWithTitle:@"Hide Others"
+                                 action:@selector(hideOtherApplications:)
+                          keyEquivalent:@"h"];
+  hideOthersMenuItem.keyEquivalentModifierMask =
+      NSEventModifierFlagOption | NSEventModifierFlagCommand;
+  [appMenu addItem:hideOthersMenuItem];
+
+  NSMenuItem* showAllMenuItem = [[NSMenuItem alloc] initWithTitle:@"Show All"
+                                                           action:@selector(unhideAllApplications:)
+                                                    keyEquivalent:@""];
+  [appMenu addItem:showAllMenuItem];
+
   NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle:@"Quit"
                                                         action:@selector(terminate:)
                                                  keyEquivalent:@"q"];
