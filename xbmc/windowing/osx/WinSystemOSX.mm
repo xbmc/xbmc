@@ -631,10 +631,8 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
     // to the center of the screen in that case
     if (screen && currentScreen != screen)
     {
-      [m_appWindow
-          setFrameOrigin:NSMakePoint(
-                             screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
-                             screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2)];
+      [m_appWindow setFrameOrigin:NSMakePoint(NSMidX(screen.frame) - m_nWidth / 2,
+                                              NSMidY(screen.frame) - m_nHeight / 2)];
     }
     [m_appWindowController showWindow:m_appWindow];
   });
@@ -1149,8 +1147,7 @@ void CWinSystemOSX::NotifyScreenChangeIntention()
   if (dispIdx != m_lastDisplayNr && screen)
   {
     NSPoint windowPos =
-        NSMakePoint(screen.frame.origin.x + screen.frame.size.width / 2 - m_nWidth / 2,
-                    screen.frame.origin.y + screen.frame.size.height / 2 - m_nHeight / 2);
+        NSMakePoint(NSMidX(screen.frame) - m_nWidth / 2, NSMidY(screen.frame) - m_nHeight / 2);
     dispatch_sync(dispatch_get_main_queue(), ^{
       [m_appWindow setFrameOrigin:windowPos];
     });
