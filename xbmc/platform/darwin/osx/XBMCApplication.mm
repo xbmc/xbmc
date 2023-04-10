@@ -120,6 +120,12 @@ static NSMenu* setupWindowMenu()
   [windowMenu addItemWithTitle:@"Minimize"
                         action:@selector(performMiniaturize:)
                  keyEquivalent:@"m"];
+
+  // "Zoom" item
+  NSMenuItem* zoomMenuItem = [[NSMenuItem alloc] initWithTitle:@"Zoom"
+                                                        action:@selector(performZoom:)
+                                                 keyEquivalent:@""];
+  [windowMenu addItem:zoomMenuItem];
 }
 
 // Called after the internal event loop has started running.
