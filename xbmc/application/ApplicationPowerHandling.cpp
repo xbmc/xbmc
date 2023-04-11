@@ -538,6 +538,9 @@ void CApplicationPowerHandling::CheckShutdown()
     m_shutdownTimer.Stop();
 
     // Sleep the box
+    CLog::LogF(LOGDEBUG, "Timer is over (shutdown function: {})",
+               CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+                   CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNSTATE));
     CServiceBroker::GetAppMessenger()->PostMsg(TMSG_SHUTDOWN);
   }
 }
