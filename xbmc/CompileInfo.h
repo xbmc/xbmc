@@ -31,6 +31,7 @@ public:
   static std::string GetBuildDate();
   static const char* GetVersionCode();
   static std::vector<std::string> GetAvailableWindowSystems();
+  static std::vector<std::string> GetAvailableAudioBackends();
   static std::vector<ADDON::RepoInfo> LoadOfficialRepoInfos();
   static std::string GetPythonVersion();
   static std::vector<std::string> GetWebserverExtraWhitelist();
