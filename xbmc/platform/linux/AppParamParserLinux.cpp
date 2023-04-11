@@ -21,6 +21,7 @@ namespace
 {
 std::vector<std::string> availableWindowSystems = CCompileInfo::GetAvailableWindowSystems();
 std::array<std::string, 1> availableLogTargets = {"console"};
+std::vector<std::string> availableAudioBackends = CCompileInfo::GetAvailableAudioBackends();
 
 constexpr const char* windowingText =
     R"""(
@@ -34,6 +35,12 @@ Selected logging target not available: {}
     Available log targest: {}
 )""";
 
+constexpr const char* audioBackendsText =
+    R"""(
+Selected audio backend not available: {}
+    Available audio backends: {}
+)""";
+
 constexpr const char* helpText =
     R"""(
 Linux Specific Arguments:
@@ -41,8 +48,9 @@ Linux Specific Arguments:
                           Available window systems are: {}
   --logging=<target>    Select which log target to use (log file will always be used in conjunction).
                           Available log targets are: {}
+  --audio-backend=<backend> Select which audio backend to use.
+                          Available audio backends are: {}
 )""";
-
 
 } // namespace
 
@@ -82,6 +90,23 @@ void CAppParamParserLinux::ParseArg(const std::string& arg)
       exit(0);
     }
   }
+  else if (arg.find("--audio-backend=") != std::string::npos)
+  {
+    const auto argValue = arg.substr(16);
+    const auto it =
+        std::find(availableAudioBackends.cbegin(), availableAudioBackends.cend(), argValue);
+    if (it != availableAudioBackends.cend())
+    {
+      GetAppParams()->SetAudioBackend(argValue);
+    }
+    else
+    {
+      std::cout << StringUtils::Format(audioBackendsText, argValue,
+                                       StringUtils::Join(availableAudioBackends, ", "));
+
+      exit(0);
+    }
+  }
 }
 
 void CAppParamParserLinux::DisplayHelp()
@@ -89,5 +114,6 @@ void CAppParamParserLinux::DisplayHelp()
   CAppParamParser::DisplayHelp();
 
   std::cout << StringUtils::Format(helpText, StringUtils::Join(availableWindowSystems, ", "),
-                                   StringUtils::Join(availableLogTargets, ", "));
+                                   StringUtils::Join(availableLogTargets, ", "),
+                                   StringUtils::Join(availableAudioBackends, ", "));
 }
