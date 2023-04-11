@@ -15,11 +15,11 @@
 class CVideoSyncD3D : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncD3D(void* clock)
+  CVideoSyncD3D(CVideoReferenceClock* clock)
     : CVideoSync(clock), m_displayLost(false), m_displayReset(false), m_lastUpdateTime(0)
   {
   }
-  bool Setup(PUPDATECLOCK func) override;
+  bool Setup() override;
   void Run(CEvent& stopEvent) override;
   void Cleanup() override;
   float GetFps() override;

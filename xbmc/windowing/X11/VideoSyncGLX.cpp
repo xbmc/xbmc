@@ -8,6 +8,7 @@
 
 #include "VideoSyncGLX.h"
 
+#include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "utils/TimeUtils.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
@@ -39,7 +40,7 @@ void CVideoSyncGLX::OnResetDisplay()
   m_displayReset = true;
 }
 
-bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
+bool CVideoSyncGLX::Setup()
 {
   std::unique_lock<CCriticalSection> lock(m_winSystem.GetGfxContext());
 
@@ -48,7 +49,6 @@ bool CVideoSyncGLX::Setup(PUPDATECLOCK func)
   m_vInfo = NULL;
   m_Window = 0;
   m_Context = NULL;
-  UpdateClock = func;
 
   int singleBufferAttributes[] = {
     GLX_RGBA,
@@ -197,7 +197,7 @@ void CVideoSyncGLX::Run(CEvent& stopEvent)
 
     if (VblankCount > PrevVblankCount)
     {
-      UpdateClock((int)(VblankCount - PrevVblankCount), Now, m_refClock);
+      m_refClock->UpdateClock((int)(VblankCount - PrevVblankCount), Now);
       IsReset = false;
     }
     else

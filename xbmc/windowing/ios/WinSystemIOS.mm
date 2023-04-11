@@ -489,7 +489,7 @@ void CWinSystemIOS::MoveToTouchscreen()
   CDisplaySettings::GetInstance().SetMonitor(CONST_TOUCHSCREEN);
 }
 
-std::unique_ptr<CVideoSync> CWinSystemIOS::GetVideoSync(void *clock)
+std::unique_ptr<CVideoSync> CWinSystemIOS::GetVideoSync(CVideoReferenceClock* clock)
 {
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncIos(clock, *this));
   return pVSync;

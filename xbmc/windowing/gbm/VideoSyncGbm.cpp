@@ -9,6 +9,7 @@
 #include "VideoSyncGbm.h"
 
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "threads/Thread.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -24,16 +25,15 @@
 
 #include <unistd.h>
 
-CVideoSyncGbm::CVideoSyncGbm(void* clock)
+CVideoSyncGbm::CVideoSyncGbm(CVideoReferenceClock* clock)
   : CVideoSync(clock), m_winSystem(CServiceBroker::GetWinSystem())
 {
   if (!m_winSystem)
     throw std::runtime_error("window system not available");
 }
 
-bool CVideoSyncGbm::Setup(PUPDATECLOCK func)
+bool CVideoSyncGbm::Setup()
 {
-  UpdateClock = func;
   m_abort = false;
   m_winSystem->Register(this);
   CLog::Log(LOGDEBUG, "CVideoSyncGbm::{} setting up", __FUNCTION__);
@@ -101,7 +101,7 @@ void CVideoSyncGbm::Run(CEvent& stopEvent)
     if (sequence == m_sequence)
       continue;
 
-    UpdateClock(sequence - m_sequence, m_offset + ns, m_refClock);
+    m_refClock->UpdateClock(sequence - m_sequence, m_offset + ns);
     m_sequence = sequence;
   }
 }

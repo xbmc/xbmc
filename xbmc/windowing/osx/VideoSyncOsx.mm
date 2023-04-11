@@ -9,6 +9,7 @@
 #include "VideoSyncOsx.h"
 
 #include "ServiceBroker.h"
+#include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "utils/MathUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -23,13 +24,12 @@
 
 using namespace std::chrono_literals;
 
-bool CVideoSyncOsx::Setup(PUPDATECLOCK func)
+bool CVideoSyncOsx::Setup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncOsx::{} setting up OSX", __FUNCTION__);
 
   //init the vblank timestamp
   m_LastVBlankTime = 0;
-  UpdateClock = func;
   m_displayLost = false;
   m_displayReset = false;
   m_lostEvent.Reset();
@@ -105,7 +105,7 @@ void CVideoSyncOsx::VblankHandler(int64_t nowtime, uint32_t timebase)
     NrVBlanks = MathUtils::round_int(VBlankTime * static_cast<double>(m_fps));
 
     //update the vblank timestamp, update the clock and send a signal that we got a vblank
-    UpdateClock(NrVBlanks, Now, m_refClock);
+    m_refClock->UpdateClock(NrVBlanks, Now);
   }
 
   //save the timestamp of this vblank so we can calculate how many happened next time

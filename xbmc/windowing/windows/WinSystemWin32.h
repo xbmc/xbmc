@@ -98,7 +98,7 @@ public:
   bool HasSystemSdrPeakLuminance() override;
 
   // videosync
-  std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
+  std::unique_ptr<CVideoSync> GetVideoSync(CVideoReferenceClock* clock) override;
 
   bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays) override;
 

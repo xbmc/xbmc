@@ -8,6 +8,8 @@
 
 #include "OptionalsReg.h"
 
+#include "cores/VideoPlayer/VideoReferenceClock.h"
+
 //-----------------------------------------------------------------------------
 // VAAPI
 //-----------------------------------------------------------------------------
@@ -159,8 +161,7 @@ CGLContext* GLXContextCreate(Display *dpy)
   return new CGLContextGLX(dpy);
 }
 
-
-CVideoSync* GLXVideoSyncCreate(void* clock, CWinSystemX11GLContext& winSystem)
+CVideoSync* GLXVideoSyncCreate(CVideoReferenceClock* clock, CWinSystemX11GLContext& winSystem)
 {
   return new  CVideoSyncGLX(clock, winSystem);
 }
@@ -192,7 +193,7 @@ CGLContext* GLXContextCreate(Display *dpy)
   return nullptr;
 }
 
-CVideoSync* GLXVideoSyncCreate(void* clock, CWinSystemX11GLContext& winSystem)
+CVideoSync* GLXVideoSyncCreate(CVideoReferenceClock* clock, CWinSystemX11GLContext& winSystem)
 {
   return nullptr;
 }
