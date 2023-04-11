@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 class CFileItemList;
@@ -49,6 +50,9 @@ public:
   const std::string& GetLogTarget() const { return m_logTarget; }
   void SetLogTarget(const std::string& logTarget) { m_logTarget = logTarget; }
 
+  std::string_view GetAudioBackend() const { return m_audioBackend; }
+  void SetAudioBackend(std::string_view audioBackend) { m_audioBackend = audioBackend; }
+
   CFileItemList& GetPlaylist() const { return *m_playlist; }
 
   /*!
@@ -81,6 +85,7 @@ private:
   std::string m_settingsFile;
   std::string m_windowing;
   std::string m_logTarget;
+  std::string m_audioBackend;
 
   std::unique_ptr<CFileItemList> m_playlist;
 
