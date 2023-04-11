@@ -112,6 +112,8 @@ endif()
 
 core_find_git_rev(APP_SCMID FULL)
 
+set(AUDIO_BACKENDS_LIST "" CACHE STRING "Available audio backends")
+
 # Dynamically loaded libraries built with the project
 add_custom_target(${APP_NAME_LC}-libraries)
 set(LIBRARY_FILES "" CACHE STRING "" FORCE)
@@ -255,12 +257,17 @@ endif()
 set(outputFilterRegex "addons/xbmc.json")
 find_addon_xml_in_files(${outputFilterRegex})
 
+if(ALSA_FOUND AND PULSEAUDIO_FOUND)
+  list(APPEND AUDIO_BACKENDS_LIST "alsa+pulseaudio")
+endif()
+
 # Compile Info
 add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                           ${ADDON_XML_OUTPUTS}
                    COMMAND ${CMAKE_COMMAND} -DCORE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
                                             -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                                             -DCORE_PLATFORM_NAME_LC="${CORE_PLATFORM_NAME_LC}"
+                                            -DAUDIO_BACKENDS="${AUDIO_BACKENDS_LIST}"
                                             -DCORE_BUILD_DIR=${CORE_BUILD_DIR}
                                             -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}
                                             -DARCH_DEFINES="${ARCH_DEFINES}"
