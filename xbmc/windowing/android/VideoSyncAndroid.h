@@ -14,10 +14,10 @@
 class CVideoSyncAndroid : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncAndroid(void *clock) : CVideoSync(clock), m_LastVBlankTime(0) {}
+  CVideoSyncAndroid(CVideoReferenceClock* clock) : CVideoSync(clock), m_LastVBlankTime(0) {}
 
   // CVideoSync interface
-  bool Setup(PUPDATECLOCK func) override;
+  bool Setup() override;
   void Run(CEvent& stop) override;
   void Cleanup() override;
   float GetFps() override;
