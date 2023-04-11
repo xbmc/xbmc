@@ -60,7 +60,7 @@ public:
   void Register(IDispResource *resource) override;
   void Unregister(IDispResource *resource) override;
 
-  std::unique_ptr<CVideoSync> GetVideoSync(void* clock) override;
+  std::unique_ptr<CVideoSync> GetVideoSync(CVideoReferenceClock* clock) override;
 
   std::vector<std::string> GetConnectedOutputs() override;
 

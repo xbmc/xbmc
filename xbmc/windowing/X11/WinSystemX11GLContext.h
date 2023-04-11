@@ -15,6 +15,7 @@
 #include <memory>
 
 class CGLContext;
+class CVideoReferenceClock;
 
 namespace KODI
 {
@@ -46,7 +47,7 @@ public:
   bool IsExtSupported(const char* extension) const override;
 
   // videosync
-  std::unique_ptr<CVideoSync> GetVideoSync(void *clock) override;
+  std::unique_ptr<CVideoSync> GetVideoSync(CVideoReferenceClock* clock) override;
   float GetFrameLatencyAdjustment() override;
   uint64_t GetVblankTiming(uint64_t &msc, uint64_t &interval);
 

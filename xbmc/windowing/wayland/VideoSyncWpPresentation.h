@@ -25,10 +25,10 @@ class CWinSystemWayland;
 class CVideoSyncWpPresentation : public CVideoSync
 {
 public:
-  explicit CVideoSyncWpPresentation(void* clock, CWinSystemWayland& winSystem);
+  explicit CVideoSyncWpPresentation(CVideoReferenceClock* clock, CWinSystemWayland& winSystem);
 
   float GetFps() override;
-  bool Setup(PUPDATECLOCK func) override;
+  bool Setup() override;
   void Run(CEvent& stop) override;
   void Cleanup() override;
 

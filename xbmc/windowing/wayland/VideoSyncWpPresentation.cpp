@@ -8,6 +8,7 @@
 
 #include "VideoSyncWpPresentation.h"
 
+#include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
@@ -19,14 +20,14 @@
 using namespace KODI::WINDOWING::WAYLAND;
 using namespace std::placeholders;
 
-CVideoSyncWpPresentation::CVideoSyncWpPresentation(void* clock, CWinSystemWayland& winSystem)
-: CVideoSync(clock), m_winSystem(winSystem)
+CVideoSyncWpPresentation::CVideoSyncWpPresentation(CVideoReferenceClock* clock,
+                                                   CWinSystemWayland& winSystem)
+  : CVideoSync(clock), m_winSystem(winSystem)
 {
 }
 
-bool CVideoSyncWpPresentation::Setup(PUPDATECLOCK func)
+bool CVideoSyncWpPresentation::Setup()
 {
-  UpdateClock = func;
   m_stopEvent.Reset();
   m_fps = m_winSystem.GetSyncOutputRefreshRate();
 
@@ -79,5 +80,5 @@ void CVideoSyncWpPresentation::HandlePresentation(timespec tv, std::uint32_t ref
 
   // FIXME use timespec instead of currenthostcounter()? Possibly difficult
   // due to different clock base
-  UpdateClock(mscDiff, CurrentHostCounter(), m_refClock);
+  m_refClock->UpdateClock(mscDiff, CurrentHostCounter());
 }

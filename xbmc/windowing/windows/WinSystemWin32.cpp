@@ -1239,7 +1239,7 @@ void CWinSystemWin32::SetForegroundWindowInternal(HWND hWnd)
   }
 }
 
-std::unique_ptr<CVideoSync> CWinSystemWin32::GetVideoSync(void *clock)
+std::unique_ptr<CVideoSync> CWinSystemWin32::GetVideoSync(CVideoReferenceClock* clock)
 {
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncD3D(clock));
   return pVSync;

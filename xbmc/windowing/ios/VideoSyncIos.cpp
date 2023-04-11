@@ -15,13 +15,12 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/ios/WinSystemIOS.h"
 
-bool CVideoSyncIos::Setup(PUPDATECLOCK func)
+bool CVideoSyncIos::Setup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncIos::{} setting up OSX", __FUNCTION__);
 
   //init the vblank timestamp
   m_LastVBlankTime = CurrentHostCounter();
-  UpdateClock = func;
   m_abortEvent.Reset();
 
   bool setupOk = InitDisplayLink();
@@ -73,7 +72,7 @@ void CVideoSyncIos::IosVblankHandler()
   m_LastVBlankTime = nowtime;
 
   //update the vblank timestamp, update the clock and send a signal that we got a vblank
-  UpdateClock(NrVBlanks, nowtime, m_refClock);
+  m_refClock->UpdateClock(NrVBlanks, nowtime);
 }
 
 bool CVideoSyncIos::InitDisplayLink()

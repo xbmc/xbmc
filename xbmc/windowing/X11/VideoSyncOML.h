@@ -26,11 +26,11 @@ class CWinSystemX11GLContext;
 class CVideoSyncOML : public CVideoSync, IDispResource
 {
 public:
-  explicit CVideoSyncOML(void* clock, CWinSystemX11GLContext& winSystem)
+  explicit CVideoSyncOML(CVideoReferenceClock* clock, CWinSystemX11GLContext& winSystem)
     : CVideoSync(clock), m_winSystem(winSystem)
   {
   }
-  bool Setup(PUPDATECLOCK func) override;
+  bool Setup() override;
   void Run(CEvent& stopEvent) override;
   void Cleanup() override;
   float GetFps() override;

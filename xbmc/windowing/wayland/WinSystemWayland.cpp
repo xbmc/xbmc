@@ -24,6 +24,7 @@
 #include "application/Application.h"
 #include "cores/RetroPlayer/process/wayland/RPProcessInfoWayland.h"
 #include "cores/VideoPlayer/Process/wayland/ProcessInfoWayland.h"
+#include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "guilib/DispResource.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/InputManager.h"
@@ -1471,7 +1472,7 @@ KODI::CSignalRegistration CWinSystemWayland::RegisterOnPresentationFeedback(
   return m_presentationFeedbackHandlers.Register(handler);
 }
 
-std::unique_ptr<CVideoSync> CWinSystemWayland::GetVideoSync(void* clock)
+std::unique_ptr<CVideoSync> CWinSystemWayland::GetVideoSync(CVideoReferenceClock* clock)
 {
   if (m_surface && m_presentation)
   {

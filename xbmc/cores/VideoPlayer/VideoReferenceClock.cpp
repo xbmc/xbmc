@@ -50,14 +50,12 @@ void CVideoReferenceClock::Start()
     Create();
 }
 
-void CVideoReferenceClock::CBUpdateClock(int NrVBlanks, uint64_t time, void *clock)
+void CVideoReferenceClock::UpdateClock(int NrVBlanks, uint64_t time)
 {
-  {
-    CVideoReferenceClock *refClock = static_cast<CVideoReferenceClock*>(clock);
-    std::unique_lock<CCriticalSection> lock(refClock->m_CritSection);
-    refClock->m_VblankTime = time;
-    refClock->UpdateClock(NrVBlanks, true);
-  }
+  std::unique_lock<CCriticalSection> lock(m_CritSection);
+
+  m_VblankTime = time;
+  UpdateClockInternal(NrVBlanks, true);
 }
 
 void CVideoReferenceClock::Process()
@@ -71,7 +69,7 @@ void CVideoReferenceClock::Process()
 
     if (m_pVideoSync)
     {
-      SetupSuccess = m_pVideoSync->Setup(CBUpdateClock);
+      SetupSuccess = m_pVideoSync->Setup();
       UpdateRefreshrate();
     }
 
@@ -121,7 +119,7 @@ void CVideoReferenceClock::Process()
 }
 
 //this is called from the vblank run function and from CVideoReferenceClock::Wait in case of a late update
-void CVideoReferenceClock::UpdateClock(int NrVBlanks, bool CheckMissed)
+void CVideoReferenceClock::UpdateClockInternal(int NrVBlanks, bool CheckMissed)
 {
   if (CheckMissed) //set to true from the vblank run function, set to false from Wait and GetTime
   {
@@ -176,7 +174,7 @@ int64_t CVideoReferenceClock::GetTime(bool interpolated /* = true*/)
 
     while(Now >= NextVblank)  //keep looping until the next vblank is in the future
     {
-      UpdateClock(1, false);           //update clock when next vblank should have happened already
+      UpdateClockInternal(1, false); //update clock when next vblank should have happened already
       NextVblank = TimeOfNextVblank(); //get time when the next vblank should happen
     }
 

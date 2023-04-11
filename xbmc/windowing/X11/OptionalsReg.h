@@ -43,6 +43,7 @@ void VAAPIRegisterRenderGLES(CVaapiProxy* winSystem, bool& general, bool& deepCo
 
 class CVideoSync;
 class CGLContext;
+class CVideoReferenceClock;
 
 namespace KODI
 {
@@ -56,7 +57,7 @@ class CWinSystemX11GLContext;
 XID GLXGetWindow(void* context);
 void* GLXGetContext(void* context);
 CGLContext* GLXContextCreate(Display *dpy);
-CVideoSync* GLXVideoSyncCreate(void *clock, CWinSystemX11GLContext& winSystem);
+CVideoSync* GLXVideoSyncCreate(CVideoReferenceClock* clock, CWinSystemX11GLContext& winSystem);
 }
 }
 }

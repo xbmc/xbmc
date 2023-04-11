@@ -8,6 +8,7 @@
 
 #include "VideoSyncOML.h"
 
+#include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -17,11 +18,9 @@
 
 using namespace KODI::WINDOWING::X11;
 
-bool CVideoSyncOML::Setup(PUPDATECLOCK func)
+bool CVideoSyncOML::Setup()
 {
   CLog::Log(LOGDEBUG, "CVideoSyncOML::{} - setting up OML", __FUNCTION__);
-
-  UpdateClock = func;
 
   m_abort = false;
 
@@ -60,7 +59,7 @@ void CVideoSyncOML::Run(CEvent& stopEvent)
     }
 
     uint64_t now = CurrentHostCounter();
-    UpdateClock(newMsc - msc, now, m_refClock);
+    m_refClock->UpdateClock(newMsc - msc, now);
     msc = newMsc;
   }
 }

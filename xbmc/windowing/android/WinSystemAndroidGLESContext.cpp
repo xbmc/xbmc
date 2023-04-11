@@ -168,7 +168,7 @@ EGLConfig  CWinSystemAndroidGLESContext::GetEGLConfig() const
   return m_pGLContext.GetEGLConfig();
 }
 
-std::unique_ptr<CVideoSync> CWinSystemAndroidGLESContext::GetVideoSync(void *clock)
+std::unique_ptr<CVideoSync> CWinSystemAndroidGLESContext::GetVideoSync(CVideoReferenceClock* clock)
 {
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncAndroid(clock));
   return pVSync;
