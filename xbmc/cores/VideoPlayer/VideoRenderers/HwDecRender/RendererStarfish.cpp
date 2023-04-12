@@ -18,12 +18,10 @@
 
 CRendererStarfish::CRendererStarfish()
 {
-  CLog::Log(LOGINFO, "Instancing CRendererStarfish");
+  CLog::LogF(LOGINFO, "CRendererStarfish: Instanced");
 }
 
-CRendererStarfish::~CRendererStarfish()
-{
-}
+CRendererStarfish::~CRendererStarfish() = default;
 
 CBaseRenderer* CRendererStarfish::Create(CVideoBuffer* buffer)
 {
@@ -57,8 +55,10 @@ void CRendererStarfish::ManageRenderArea()
   {
     auto origRect =
         CRect{0, 0, static_cast<float>(m_sourceWidth), static_cast<float>(m_sourceHeight)};
-    static_cast<KODI::WINDOWING::WAYLAND::CWinSystemWaylandWebOS*>(CServiceBroker::GetWinSystem())
-        ->SetExportedWindow(origRect, m_sourceRect, m_destRect);
+    using namespace KODI::WINDOWING::WAYLAND;
+    auto winSystem = static_cast<CWinSystemWaylandWebOS*>(CServiceBroker::GetWinSystem());
+
+    winSystem->SetExportedWindow(origRect, m_sourceRect, m_destRect);
     m_exportedSourceRect = m_sourceRect;
     m_exportedDestRect = m_destRect;
   }
