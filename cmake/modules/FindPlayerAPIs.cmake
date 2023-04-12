@@ -23,7 +23,7 @@ find_path(PLAYERAPIS_INCLUDE_DIR NAMES starfish-media-pipeline/StarfishMediaAPIs
 find_library(PLAYERAPIS_LIBRARY NAMES playerAPIs
         PATHS ${PC_PLAYERAPIS_LIBDIR})
 
-set(PLAYERAPIS_VERSION 1.0.0)
+set(PLAYERAPIS_VERSION ${PC_PLAYERAPIS_VERSION})
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(PlayerAPIs
