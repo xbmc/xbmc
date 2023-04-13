@@ -26,6 +26,12 @@
 
 #include <jpeglib.h>
 
+JPGDecoder::JPGDecoder()
+{
+  m_extensions.emplace_back(".jpg");
+  m_extensions.emplace_back(".jpeg");
+}
+
 bool JPGDecoder::CanDecode(const std::string &filename)
 {
   CFile fp;
@@ -122,10 +128,4 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   frames.frameList.push_back(frame);
 
   return true;
-}
-
-void JPGDecoder::FillSupportedExtensions()
-{
-  m_supportedExtensions.emplace_back(".jpg");
-  m_supportedExtensions.emplace_back(".jpeg");
 }

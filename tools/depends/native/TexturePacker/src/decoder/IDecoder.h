@@ -37,17 +37,10 @@ class IDecoder
     virtual const char* GetImageFormatName() = 0;
     virtual const char* GetDecoderName() = 0;
 
-    const std::vector<std::string>& GetSupportedExtensions()
-    {
-      m_supportedExtensions.clear();
-      FillSupportedExtensions();
-      return m_supportedExtensions;
-    }
+    const std::vector<std::string>& GetSupportedExtensions() const { return m_extensions; }
 
   protected:
-    virtual void FillSupportedExtensions() = 0;
-    //fill this with extensions in FillSupportedExtensions like ".png"
-    std::vector<std::string> m_supportedExtensions;
+    std::vector<std::string> m_extensions;
 };
 
 class RGBAImage
