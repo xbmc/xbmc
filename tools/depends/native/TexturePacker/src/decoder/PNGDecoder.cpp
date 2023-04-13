@@ -219,11 +219,6 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   return true;
 }
 
-void PNGDecoder::FreeDecodedFrame(DecodedFrame &frame)
-{
-  frame.rgbaImage.pixels.clear();
-}
-
 void PNGDecoder::FillSupportedExtensions()
 {
   m_supportedExtensions.emplace_back(".png");
