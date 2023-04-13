@@ -36,7 +36,7 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   bool result = false;
 
   GifHelper gifImage;
-  if (gifImage.LoadGif(filename.c_str()))
+  if (gifImage.LoadGif(filename))
   {
     auto extractedFrames = gifImage.GetFrames();
     n = extractedFrames.size();
