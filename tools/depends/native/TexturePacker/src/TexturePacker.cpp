@@ -325,7 +325,6 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
           frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
       }
     }
-    DecoderManager::FreeDecodedFrames(frames);
     file.SetLoop(0);
 
     writer.UpdateFile(file);

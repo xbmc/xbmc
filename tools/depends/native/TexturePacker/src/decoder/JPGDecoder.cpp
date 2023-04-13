@@ -125,11 +125,6 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   return true;
 }
 
-void JPGDecoder::FreeDecodedFrame(DecodedFrame &frame)
-{
-  frame.rgbaImage.pixels.clear();
-}
-
 void JPGDecoder::FillSupportedExtensions()
 {
   m_supportedExtensions.emplace_back(".jpg");

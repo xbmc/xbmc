@@ -68,11 +68,6 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   return result;
 }
 
-void GIFDecoder::FreeDecodedFrame(DecodedFrame &frame)
-{
-  frame.rgbaImage.pixels.clear();
-}
-
 void GIFDecoder::FillSupportedExtensions()
 {
   m_supportedExtensions.emplace_back(".gif");
