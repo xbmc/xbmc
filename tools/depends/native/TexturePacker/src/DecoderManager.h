@@ -23,6 +23,7 @@
 #include "IDecoder.h"
 
 #include <memory>
+#include <string_view>
 
 class DecoderManager
 {
@@ -30,7 +31,7 @@ class DecoderManager
     DecoderManager();
     ~DecoderManager() = default;
 
-    bool IsSupportedGraphicsFile(char* strFileName);
+    bool IsSupportedGraphicsFile(std::string_view filename);
     bool LoadFile(const std::string& filename, DecodedFrames& frames);
     bool verbose;
 
