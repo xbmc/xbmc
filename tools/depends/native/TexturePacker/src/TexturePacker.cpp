@@ -271,7 +271,7 @@ bool TexturePacker::CheckDupe(MD5Context* ctx,
     return true;
   }
 
-  m_hashes.insert(std::make_pair(hex, pos));
+  m_hashes[hex] = pos;
   m_dupes[pos] = pos;
 
   return false;
