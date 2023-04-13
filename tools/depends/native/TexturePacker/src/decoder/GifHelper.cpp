@@ -449,22 +449,3 @@ void GifHelper::ClearFrameAreaToTransparency(unsigned char* dest, const GifFrame
     }
   }
 }
-
-GifFrame::GifFrame(const GifFrame& src)
-  : m_delay(src.m_delay),
-    m_top(src.m_top),
-    m_left(src.m_left),
-    m_disposal(src.m_disposal),
-    m_height(src.m_height),
-    m_width(src.m_width)
-{
-  if (src.m_pImage.size())
-  {
-    m_pImage = src.m_pImage;
-  }
-
-  if (src.m_palette.size())
-  {
-    m_palette = src.m_palette;
-  }
-}
