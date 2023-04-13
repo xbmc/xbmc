@@ -33,8 +33,7 @@ class IDecoder
   public:
     virtual ~IDecoder() = default;
     virtual bool CanDecode(const std::string &filename) = 0;
-    virtual bool LoadFile(const std::string &filename, DecodedFrames &frames) = 0;
-    virtual void FreeDecodedFrame(DecodedFrame &frame) = 0;
+    virtual bool LoadFile(const std::string& filename, DecodedFrames& frames) = 0;
     virtual const char* GetImageFormatName() = 0;
     virtual const char* GetDecoderName() = 0;
 
@@ -77,22 +76,4 @@ class DecodedFrames
   public:
     DecodedFrames() = default;
     std::vector<DecodedFrame> frameList;
-
-    void clear()
-    {
-      for (auto f : frameList)
-      {
-        if (f.decoder != NULL)
-        {
-          f.decoder->FreeDecodedFrame(f);
-        }
-        else
-        {
-          fprintf(stderr,
-            "ERROR: %s - can not determine decoder type for frame!\n",
-            __FUNCTION__);
-        }
-      }
-      frameList.clear();
-    }
 };

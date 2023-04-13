@@ -81,8 +81,3 @@ bool DecoderManager::LoadFile(const std::string &filename, DecodedFrames &frames
   }
   return false;
 }
-
-void DecoderManager::FreeDecodedFrames(DecodedFrames &frames)
-{
-  frames.clear();
-}
