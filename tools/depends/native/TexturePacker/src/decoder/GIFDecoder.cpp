@@ -35,16 +35,16 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   int n = 0;
   bool result = false;
 
-  GifHelper *gifImage = new GifHelper();
-  if (gifImage->LoadGif(filename.c_str()))
+  GifHelper gifImage;
+  if (gifImage.LoadGif(filename.c_str()))
   {
-    auto extractedFrames = gifImage->GetFrames();
+    auto extractedFrames = gifImage.GetFrames();
     n = extractedFrames.size();
     if (n > 0)
     {
-      unsigned int height = gifImage->GetHeight();
-      unsigned int width = gifImage->GetWidth();
-      unsigned int pitch = gifImage->GetPitch();
+      unsigned int height = gifImage.GetHeight();
+      unsigned int width = gifImage.GetWidth();
+      unsigned int pitch = gifImage.GetPitch();
       unsigned int frameSize = pitch * height;
       for (unsigned int i = 0; i < extractedFrames.size(); i++)
       {
@@ -63,7 +63,7 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
     }
     result = true;
   }
-  delete gifImage;
+
   return result;
 }
 
