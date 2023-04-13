@@ -120,11 +120,12 @@ private:
 
   CXBTFFrame CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer) const;
 
-  bool CheckDupe(MD5Context* ctx, std::vector<unsigned int>& dupes, unsigned int pos);
+  bool CheckDupe(MD5Context* ctx, unsigned int pos);
 
   DecoderManager decoderManager;
 
   std::map<std::string, unsigned int> m_hashes;
+  std::vector<unsigned int> m_dupes;
 
   bool m_dupecheck{false};
   unsigned int m_flags{0};
@@ -251,7 +252,6 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
 }
 
 bool TexturePacker::CheckDupe(MD5Context* ctx,
-                              std::vector<unsigned int>& dupes,
                               unsigned int pos)
 {
   unsigned char digest[17];
@@ -267,12 +267,12 @@ bool TexturePacker::CheckDupe(MD5Context* ctx,
   std::map<std::string, unsigned int>::iterator it = m_hashes.find(hex);
   if (it != m_hashes.end())
   {
-    dupes[pos] = it->second;
+    m_dupes[pos] = it->second;
     return true;
   }
 
   m_hashes.insert(std::make_pair(hex, pos));
-  dupes[pos] = pos;
+  m_dupes[pos] = pos;
 
   return false;
 }
@@ -286,15 +286,14 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
     return 1;
   }
 
-  std::vector<unsigned int> dupes;
   CreateSkeletonHeader(writer, InputDir);
 
   std::vector<CXBTFFile> files = writer.GetFiles();
-  dupes.resize(files.size());
+  m_dupes.resize(files.size());
   if (!m_dupecheck)
   {
-    for (unsigned int i=0;i<dupes.size();++i)
-      dupes[i] = i;
+    for (unsigned int i=0;i<m_dupes.size();++i)
+      m_dupes[i] = i;
   }
 
   for (size_t i = 0; i < files.size(); i++)
@@ -325,12 +324,12 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
         MD5Update(&ctx, (const uint8_t*)frames.frameList[j].rgbaImage.pixels.data(),
                   frames.frameList[j].rgbaImage.height * frames.frameList[j].rgbaImage.pitch);
 
-      if (CheckDupe(&ctx, dupes, i))
+      if (CheckDupe(&ctx, i))
       {
-        printf("****  duplicate of %s\n", files[dupes[i]].GetPath().c_str());
+        printf("****  duplicate of %s\n", files[m_dupes[i]].GetPath().c_str());
         file.GetFrames().insert(file.GetFrames().end(),
-                                files[dupes[i]].GetFrames().begin(),
-                                files[dupes[i]].GetFrames().end());
+                                files[m_dupes[i]].GetFrames().begin(),
+                                files[m_dupes[i]].GetFrames().end());
         skip = true;
       }
     }
@@ -353,7 +352,7 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
     writer.UpdateFile(file);
   }
 
-  if (!writer.UpdateHeader(dupes))
+  if (!writer.UpdateHeader(m_dupes))
   {
     fprintf(stderr, "Error writing header to file\n");
     return 1;
