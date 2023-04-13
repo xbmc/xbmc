@@ -43,16 +43,10 @@ int ReadFromVfs(GifFileType* gif, GifByteType* gifbyte, int len)
   return gifFile->Read(gifbyte, len);
 }
 
-GifHelper::GifHelper()
-{
-  m_gifFile = new CFile();
-}
-
 GifHelper::~GifHelper()
 {
     Close(m_gif);
     Release();
-    delete m_gifFile;
 }
 
 bool GifHelper::Open(GifFileType*& gif, void *dataPtr, InputFunc readFunc)
@@ -176,8 +170,8 @@ bool GifHelper::LoadGifMetaData(GifFileType* gif)
 
 bool GifHelper::LoadGifMetaData(const std::string& file)
 {
-  m_gifFile->Close();
-  if (!m_gifFile->Open(file) || !Open(m_gif, m_gifFile, ReadFromVfs))
+  m_gifFile.Close();
+  if (!m_gifFile.Open(file) || !Open(m_gif, &m_gifFile, ReadFromVfs))
     return false;
 
   return LoadGifMetaData(m_gif);
