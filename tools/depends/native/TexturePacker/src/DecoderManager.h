@@ -25,12 +25,13 @@
 class DecoderManager
 {
   public:
-    static void InstantiateDecoders();
-    static void FreeDecoders();
-    static bool IsSupportedGraphicsFile(char *strFileName);
-    static bool LoadFile(const std::string& filename, DecodedFrames& frames);
-    static bool verbose;
+    DecoderManager();
+    ~DecoderManager();
+
+    bool IsSupportedGraphicsFile(char* strFileName);
+    bool LoadFile(const std::string& filename, DecodedFrames& frames);
+    bool verbose;
 
   private:
-    static std::vector<IDecoder *> m_decoders;
+    std::vector<IDecoder*> m_decoders;
 };
