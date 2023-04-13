@@ -174,7 +174,7 @@ bool GifHelper::LoadGifMetaData(GifFileType* gif)
   return true;
 }
 
-bool GifHelper::LoadGifMetaData(const char* file)
+bool GifHelper::LoadGifMetaData(const std::string& file)
 {
   m_gifFile->Close();
   if (!m_gifFile->Open(file) || !Open(m_gif, m_gifFile, ReadFromVfs))
@@ -200,10 +200,10 @@ bool GifHelper::Slurp(GifFileType* gif)
   return true;
 }
 
-bool GifHelper::LoadGif(const char* file)
+bool GifHelper::LoadGif(const std::string& file)
 {
   m_filename = file;
-  if (!LoadGifMetaData(m_filename.c_str()))
+  if (!LoadGifMetaData(m_filename))
     return false;
 
   try

@@ -90,8 +90,7 @@ public:
   GifHelper();
   virtual ~GifHelper();
 
-
-  bool LoadGif(const char* file);
+  bool LoadGif(const std::string& file);
 
   std::vector<FramePtr>& GetFrames() { return m_frames; }
   unsigned int GetPitch() const { return m_pitch; }
@@ -120,7 +119,7 @@ private:
 
   const char* Reason(int reason);
 
-  bool LoadGifMetaData(const char* file);
+  bool LoadGifMetaData(const std::string& file);
   bool Slurp(GifFileType* gif);
   void InitTemplateAndColormap();
   bool LoadGifMetaData(GifFileType* gif);
