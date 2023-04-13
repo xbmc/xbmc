@@ -51,8 +51,6 @@
 
 #define DIR_SEPARATOR '/'
 
-static DecoderManager decoderManager;
-
 const char *GetFormatString(unsigned int format)
 {
   switch (format)
@@ -74,9 +72,29 @@ const char *GetFormatString(unsigned int format)
   }
 }
 
-void CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
-                          const std::string& fullPath,
-                          const std::string& relativePath = "")
+class TexturePacker
+{
+public:
+  TexturePacker() = default;
+  ~TexturePacker() = default;
+
+  int createBundle(const std::string& InputDir,
+                   const std::string& OutputFile,
+                   double maxMSE,
+                   unsigned int flags,
+                   bool dupecheck);
+
+  DecoderManager decoderManager;
+
+private:
+  void CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
+                            const std::string& fullPath,
+                            const std::string& relativePath = "");
+};
+
+void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
+                                         const std::string& fullPath,
+                                         const std::string& relativePath)
 {
   struct dirent* dp;
   struct stat stat_p;
@@ -248,7 +266,11 @@ static bool checkDupe(struct MD5Context* ctx,
   return false;
 }
 
-int createBundle(const std::string& InputDir, const std::string& OutputFile, double maxMSE, unsigned int flags, bool dupecheck)
+int TexturePacker::createBundle(const std::string& InputDir,
+                                const std::string& OutputFile,
+                                double maxMSE,
+                                unsigned int flags,
+                                bool dupecheck)
 {
   CXBTFWriter writer(OutputFile);
   if (!writer.Create())
@@ -363,6 +385,8 @@ int main(int argc, char* argv[])
   std::string InputDir;
   std::string OutputFilename = "Textures.xbt";
 
+  TexturePacker texturePacker;
+
   for (unsigned int i = 1; i < args.size(); ++i)
   {
     if (!platform_stricmp(args[i], "-help") || !platform_stricmp(args[i], "-h") || !platform_stricmp(args[i], "-?"))
@@ -381,7 +405,7 @@ int main(int argc, char* argv[])
     }
     else if (!strcmp(args[i], "-verbose"))
     {
-      decoderManager.verbose = true;
+      texturePacker.decoderManager.verbose = true;
     }
     else if (!platform_stricmp(args[i], "-output") || !platform_stricmp(args[i], "-o"))
     {
@@ -409,5 +433,6 @@ int main(int argc, char* argv[])
     InputDir += DIR_SEPARATOR;
 
   double maxMSE = 1.5; // HQ only please
-  createBundle(InputDir, OutputFilename, maxMSE, flags, dupecheck);
+
+  texturePacker.createBundle(InputDir, OutputFilename, maxMSE, flags, dupecheck);
 }
