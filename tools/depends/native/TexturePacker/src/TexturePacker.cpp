@@ -88,6 +88,15 @@ bool HasAlpha(unsigned char* argb, unsigned int width, unsigned int height)
   return false;
 }
 
+void Usage()
+{
+  puts("Usage:");
+  puts("  -help            Show this screen.");
+  puts("  -input <dir>     Input directory. Default: current dir");
+  puts("  -output <dir>    Output directory/filename. Default: Textures.xbt");
+  puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: off");
+}
+
 } // namespace
 
 class TexturePacker
@@ -236,15 +245,6 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame,
   frame.SetFormat(hasAlpha ? format : format | XB_FMT_OPAQUE);
   frame.SetDuration(delay);
   return frame;
-}
-
-void Usage()
-{
-  puts("Usage:");
-  puts("  -help            Show this screen.");
-  puts("  -input <dir>     Input directory. Default: current dir");
-  puts("  -output <dir>    Output directory/filename. Default: Textures.xbt");
-  puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: off");
 }
 
 bool TexturePacker::CheckDupe(MD5Context* ctx,
