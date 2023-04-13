@@ -67,8 +67,6 @@ public:
   unsigned int m_delay = 0;
 
 private:
-  GifFrame(const GifFrame& src);
-
   unsigned int m_top = 0;
   unsigned int m_left = 0;
   unsigned int m_disposal = 0;
