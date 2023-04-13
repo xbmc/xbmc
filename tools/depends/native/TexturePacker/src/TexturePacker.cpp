@@ -109,6 +109,11 @@ private:
                             const std::string& relativePath = "");
 
   CXBTFFrame CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer, unsigned int flags) const;
+
+  bool CheckDupe(MD5Context* ctx,
+                 std::map<std::string, unsigned int>& hashes,
+                 std::vector<unsigned int>& dupes,
+                 unsigned int pos);
 };
 
 void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
@@ -242,9 +247,10 @@ void Usage()
   puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: off");
 }
 
-static bool checkDupe(struct MD5Context* ctx,
-                      std::map<std::string, unsigned int>& hashes,
-                      std::vector<unsigned int>& dupes, unsigned int pos)
+bool TexturePacker::CheckDupe(MD5Context* ctx,
+                              std::map<std::string, unsigned int>& hashes,
+                              std::vector<unsigned int>& dupes,
+                              unsigned int pos)
 {
   unsigned char digest[17];
   MD5Final(digest,ctx);
@@ -321,7 +327,7 @@ int TexturePacker::createBundle(const std::string& InputDir,
         MD5Update(&ctx, (const uint8_t*)frames.frameList[j].rgbaImage.pixels.data(),
                   frames.frameList[j].rgbaImage.height * frames.frameList[j].rgbaImage.pitch);
 
-      if (checkDupe(&ctx,hashes,dupes,i))
+      if (CheckDupe(&ctx, hashes, dupes, i))
       {
         printf("****  duplicate of %s\n", files[dupes[i]].GetPath().c_str());
         file.GetFrames().insert(file.GetFrames().end(),
