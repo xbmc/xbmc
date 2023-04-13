@@ -28,18 +28,9 @@
 
 DecoderManager::DecoderManager()
 {
-  m_decoders.push_back(new PNGDecoder());
-  m_decoders.push_back(new JPGDecoder());
-  m_decoders.push_back(new GIFDecoder());
-}
-
-DecoderManager::~DecoderManager()
-{
-  for (unsigned int i = 0; i < m_decoders.size(); i++)
-  {
-    delete m_decoders[i];
-  }
-  m_decoders.clear();
+  m_decoders.emplace_back(std::make_unique<PNGDecoder>());
+  m_decoders.emplace_back(std::make_unique<JPGDecoder>());
+  m_decoders.emplace_back(std::make_unique<GIFDecoder>());
 }
 
 // returns true for png, bmp, tga, jpg and dds files, otherwise returns false

@@ -22,16 +22,18 @@
 
 #include "IDecoder.h"
 
+#include <memory>
+
 class DecoderManager
 {
   public:
     DecoderManager();
-    ~DecoderManager();
+    ~DecoderManager() = default;
 
     bool IsSupportedGraphicsFile(char* strFileName);
     bool LoadFile(const std::string& filename, DecodedFrames& frames);
     bool verbose;
 
   private:
-    std::vector<IDecoder*> m_decoders;
+    std::vector<std::unique_ptr<IDecoder>> m_decoders;
 };
