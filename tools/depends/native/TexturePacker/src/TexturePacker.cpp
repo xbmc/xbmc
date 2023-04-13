@@ -107,6 +107,8 @@ private:
   void CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
                             const std::string& fullPath,
                             const std::string& relativePath = "");
+
+  CXBTFFrame CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer, unsigned int flags) const;
 };
 
 void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
@@ -169,7 +171,9 @@ void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
   }
 }
 
-CXBTFFrame createXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer, unsigned int flags)
+CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame,
+                                          CXBTFWriter& writer,
+                                          unsigned int flags) const
 {
   const unsigned int delay = decodedFrame.delay;
   const unsigned int width = decodedFrame.rgbaImage.width;
@@ -331,7 +335,7 @@ int TexturePacker::createBundle(const std::string& InputDir,
     {
       for (unsigned int j = 0; j < frames.frameList.size(); j++)
       {
-        CXBTFFrame frame = createXBTFFrame(frames.frameList[j], writer, flags);
+        CXBTFFrame frame = CreateXBTFFrame(frames.frameList[j], writer, flags);
         file.GetFrames().push_back(frame);
         printf("    frame %4i (delay:%4i)                         %s%c (%d,%d @ %" PRIu64
                " bytes)\n",
