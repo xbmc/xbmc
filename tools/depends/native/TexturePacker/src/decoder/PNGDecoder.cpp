@@ -187,38 +187,24 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   // glTexImage2d requires rows to be 4-byte aligned
   //  rowbytes += 3 - ((rowbytes-1) % 4);
 
+  DecodedFrame frame;
+
   // Allocate the image_data as a big block, to be given to opengl
-  png_byte * image_data;
-  image_data = (png_byte*)new png_byte[rowbytes * temp_height * sizeof(png_byte)+15];
-  if (image_data == NULL)
-  {
-    fprintf(stderr, "error: could not allocate memory for PNG image data\n");
-    png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
-    return false;
-  }
+  frame.rgbaImage.pixels.resize(rowbytes * temp_height * sizeof(png_byte) + 15);
 
   // row_pointers is for pointing to image_data for reading the png with libpng
-  png_bytep * row_pointers = (png_bytep*) new png_bytep[temp_height * sizeof(png_bytep)];
-  if (row_pointers == NULL)
-  {
-    fprintf(stderr, "error: could not allocate memory for PNG row pointers\n");
-    png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
-    delete [] image_data;
-    return false;
-  }
+  std::vector<png_bytep> row_pointers;
+  row_pointers.resize(temp_height);
 
   // set the individual row_pointers to point at the correct offsets of image_data
   for (unsigned int i = 0; i < temp_height; i++)
   {
-    row_pointers[i] = image_data + i * rowbytes;
+    row_pointers[i] = frame.rgbaImage.pixels.data() + i * rowbytes;
   }
 
   // read the png into image_data through row_pointers
-  png_read_image(png_ptr, row_pointers);
+  png_read_image(png_ptr, row_pointers.data());
 
-  DecodedFrame frame;
-
-  frame.rgbaImage.pixels = (char *)image_data;
   frame.rgbaImage.height = temp_height;
   frame.rgbaImage.width = temp_width;
   frame.rgbaImage.bbp = 32;
@@ -229,13 +215,13 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   frames.frameList.push_back(frame);
   // clean up
   png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
-  delete [] row_pointers;
+
   return true;
 }
 
 void PNGDecoder::FreeDecodedFrame(DecodedFrame &frame)
 {
-  delete [] frame.rgbaImage.pixels;
+  frame.rgbaImage.pixels.clear();
 }
 
 void PNGDecoder::FillSupportedExtensions()
