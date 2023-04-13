@@ -20,23 +20,20 @@
 #include <cstdio>
 #include "DecoderManager.h"
 
-bool DecoderManager::verbose;
-std::vector<IDecoder *> DecoderManager::m_decoders;
-
 // ADD new decoders here
 // include decoders
 #include "PNGDecoder.h"
 #include "JPGDecoder.h"
 #include "GIFDecoder.h"
 
-void DecoderManager::InstantiateDecoders()
+DecoderManager::DecoderManager()
 {
   m_decoders.push_back(new PNGDecoder());
   m_decoders.push_back(new JPGDecoder());
   m_decoders.push_back(new GIFDecoder());
 }
 
-void DecoderManager::FreeDecoders()
+DecoderManager::~DecoderManager()
 {
   for (unsigned int i = 0; i < m_decoders.size(); i++)
   {
