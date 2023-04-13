@@ -105,10 +105,9 @@ public:
   TexturePacker() = default;
   ~TexturePacker() = default;
 
-  int createBundle(const std::string& InputDir,
-                   const std::string& OutputFile,
-                   unsigned int flags,
-                   bool dupecheck);
+  void EnableDupeCheck() { m_dupecheck = true; }
+
+  int createBundle(const std::string& InputDir, const std::string& OutputFile, unsigned int flags);
 
   DecoderManager decoderManager;
 
@@ -123,6 +122,8 @@ private:
                  std::map<std::string, unsigned int>& hashes,
                  std::vector<unsigned int>& dupes,
                  unsigned int pos);
+
+  bool m_dupecheck{false};
 };
 
 void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
@@ -277,8 +278,7 @@ bool TexturePacker::CheckDupe(MD5Context* ctx,
 
 int TexturePacker::createBundle(const std::string& InputDir,
                                 const std::string& OutputFile,
-                                unsigned int flags,
-                                bool dupecheck)
+                                unsigned int flags)
 {
   CXBTFWriter writer(OutputFile);
   if (!writer.Create())
@@ -293,7 +293,7 @@ int TexturePacker::createBundle(const std::string& InputDir,
 
   std::vector<CXBTFFile> files = writer.GetFiles();
   dupes.resize(files.size());
-  if (!dupecheck)
+  if (!m_dupecheck)
   {
     for (unsigned int i=0;i<dupes.size();++i)
       dupes[i] = i;
@@ -321,7 +321,7 @@ int TexturePacker::createBundle(const std::string& InputDir,
 
     printf("%s\n", output.c_str());
     bool skip=false;
-    if (dupecheck)
+    if (m_dupecheck)
     {
       for (unsigned int j = 0; j < frames.frameList.size(); j++)
         MD5Update(&ctx, (const uint8_t*)frames.frameList[j].rgbaImage.pixels.data(),
@@ -376,7 +376,6 @@ int main(int argc, char* argv[])
     return 1;
   bool valid = false;
   unsigned int flags = 0;
-  bool dupecheck = false;
   CmdLineArgs args(argc, (const char**)argv);
 
   // setup some defaults, lzo packing,
@@ -407,7 +406,7 @@ int main(int argc, char* argv[])
     }
     else if (!strcmp(args[i], "-dupecheck"))
     {
-      dupecheck = true;
+      texturePacker.EnableDupeCheck();
     }
     else if (!strcmp(args[i], "-verbose"))
     {
@@ -438,5 +437,5 @@ int main(int argc, char* argv[])
   if (pos != InputDir.length() - 1)
     InputDir += DIR_SEPARATOR;
 
-  texturePacker.createBundle(InputDir, OutputFilename, flags, dupecheck);
+  texturePacker.createBundle(InputDir, OutputFilename, flags);
 }
