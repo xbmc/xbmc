@@ -40,9 +40,9 @@ bool DecoderManager::IsSupportedGraphicsFile(char *strFileName)
   if (filename.length() < 4)
     return false;
 
-  for (unsigned int i = 0; i < m_decoders.size(); i++)
+  for (const auto& decoder : m_decoders)
   {
-    const std::vector<std::string> extensions = m_decoders[i]->GetSupportedExtensions();
+    const std::vector<std::string> extensions = decoder->GetSupportedExtensions();
     for (unsigned int n = 0; n < extensions.size(); n++)
     {
       int extLen = extensions[n].length();
@@ -57,14 +57,14 @@ bool DecoderManager::IsSupportedGraphicsFile(char *strFileName)
 
 bool DecoderManager::LoadFile(const std::string &filename, DecodedFrames &frames)
 {
-  for (unsigned int i = 0; i < m_decoders.size(); i++)
+  for (const auto& decoder : m_decoders)
   {
-    if (m_decoders[i]->CanDecode(filename))
+    if (decoder->CanDecode(filename))
     {
       if (verbose)
-        fprintf(stdout, "This is a %s - lets load it via %s...\n",
-                m_decoders[i]->GetImageFormatName(), m_decoders[i]->GetDecoderName());
-      return m_decoders[i]->LoadFile(filename, frames);
+        fprintf(stdout, "This is a %s - lets load it via %s...\n", decoder->GetImageFormatName(),
+                decoder->GetDecoderName());
+      return decoder->LoadFile(filename, frames);
     }
   }
   return false;
