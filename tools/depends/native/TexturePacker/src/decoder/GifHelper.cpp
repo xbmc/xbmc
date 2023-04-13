@@ -329,9 +329,7 @@ int GifHelper::ExtractFrames(unsigned int count)
       continue;
     }
 
-    frame->m_pImage = new unsigned char[m_imageSize];
-    frame->m_imageSize = m_imageSize;
-    memcpy(frame->m_pImage, m_pTemplate.data(), m_imageSize);
+    frame->m_pImage = m_pTemplate;
 
     ConstructFrame(*frame, savedImage.RasterBits);
 
@@ -353,7 +351,8 @@ void GifHelper::ConstructFrame(GifFrame &frame, const unsigned char* src) const
 
   for (unsigned int dest_y = frame.m_top, src_y = 0; src_y < frame.m_height; ++dest_y, ++src_y)
   {
-    unsigned char *to = frame.m_pImage + (dest_y * m_pitch) + (frame.m_left * sizeof(GifColor));
+    unsigned char* to =
+        frame.m_pImage.data() + (dest_y * m_pitch) + (frame.m_left * sizeof(GifColor));
 
     const unsigned char *from = src + (src_y * frame.m_width);
     for (unsigned int src_x = 0; src_x < frame.m_width; ++src_x)
@@ -383,7 +382,7 @@ bool GifHelper::PrepareTemplate(GifFrame &frame)
   case DISPOSAL_UNSPECIFIED:
     /* Leave image in place */
   case DISPOSE_DO_NOT:
-      memcpy(m_pTemplate.data(), frame.m_pImage, m_imageSize);
+      m_pTemplate = frame.m_pImage;
       break;
 
       /*
@@ -416,7 +415,7 @@ bool GifHelper::PrepareTemplate(GifFrame &frame)
     {
       if (m_frames[i]->m_disposal != DISPOSE_PREVIOUS)
       {
-        memcpy(m_pTemplate.data(), m_frames[i]->m_pImage, m_imageSize);
+        m_pTemplate = m_frames[i]->m_pImage;
         valid = true;
         break;
       }
@@ -457,23 +456,15 @@ GifFrame::GifFrame(const GifFrame& src)
     m_left(src.m_left),
     m_disposal(src.m_disposal),
     m_height(src.m_height),
-    m_width(src.m_width),
-    m_imageSize(src.m_imageSize)
+    m_width(src.m_width)
 {
-  if (src.m_pImage)
+  if (src.m_pImage.size())
   {
-    m_pImage = new unsigned char[m_imageSize];
-    memcpy(m_pImage, src.m_pImage, m_imageSize);
+    m_pImage = src.m_pImage;
   }
 
   if (src.m_palette.size())
   {
     m_palette = src.m_palette;
   }
-}
-
-GifFrame::~GifFrame()
-{
-  delete[] m_pImage;
-  m_pImage = nullptr;
 }
