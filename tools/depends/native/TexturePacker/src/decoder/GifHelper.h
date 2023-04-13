@@ -108,7 +108,7 @@ private:
   std::string     m_filename;
   GifFileType* m_gif = nullptr;
   std::vector<GifColor> m_globalPalette;
-  unsigned char* m_pTemplate = nullptr;
+  std::vector<uint8_t> m_pTemplate;
   CFile m_gifFile;
 
   unsigned int m_width;
