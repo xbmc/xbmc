@@ -28,6 +28,11 @@
 #  define png_jmpbuf(png_ptr) ((png_ptr)->jmpbuf)
 #endif
 
+PNGDecoder::PNGDecoder()
+{
+  m_extensions.emplace_back(".png");
+}
+
 /* Check to see if a file is a PNG file using png_sig_cmp().  png_sig_cmp()
  * returns zero if the image is a PNG and nonzero if it isn't a PNG.
  *
@@ -215,9 +220,4 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
 
   return true;
-}
-
-void PNGDecoder::FillSupportedExtensions()
-{
-  m_supportedExtensions.emplace_back(".png");
 }
