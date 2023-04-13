@@ -33,8 +33,10 @@ class DecoderManager
 
     bool IsSupportedGraphicsFile(std::string_view filename);
     bool LoadFile(const std::string& filename, DecodedFrames& frames);
-    bool verbose;
+    void EnableVerboseOutput() { verbose = true; }
 
   private:
     std::vector<std::unique_ptr<IDecoder>> m_decoders;
+
+    bool verbose{false};
 };

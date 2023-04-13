@@ -107,9 +107,9 @@ public:
 
   void EnableDupeCheck() { m_dupecheck = true; }
 
-  int createBundle(const std::string& InputDir, const std::string& OutputFile);
+  void EnableVerboseOutput() { decoderManager.EnableVerboseOutput(); }
 
-  DecoderManager decoderManager;
+  int createBundle(const std::string& InputDir, const std::string& OutputFile);
 
   void SetFlags(unsigned int flags) { m_flags = flags; }
 
@@ -124,6 +124,8 @@ private:
                  std::map<std::string, unsigned int>& hashes,
                  std::vector<unsigned int>& dupes,
                  unsigned int pos);
+
+  DecoderManager decoderManager;
 
   bool m_dupecheck{false};
   unsigned int m_flags{0};
@@ -408,7 +410,7 @@ int main(int argc, char* argv[])
     }
     else if (!strcmp(args[i], "-verbose"))
     {
-      texturePacker.decoderManager.verbose = true;
+      texturePacker.EnableVerboseOutput();
     }
     else if (!platform_stricmp(args[i], "-output") || !platform_stricmp(args[i], "-o"))
     {
