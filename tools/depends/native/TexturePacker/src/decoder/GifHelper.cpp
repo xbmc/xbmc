@@ -101,8 +101,7 @@ const char* GifHelper::Reason(int reason)
 
 void GifHelper::Release()
 {
-  delete[] m_pTemplate;
-  m_pTemplate = nullptr;
+  m_pTemplate.clear();
   m_globalPalette.clear();
   m_frames.clear();
 }
@@ -228,8 +227,7 @@ bool GifHelper::LoadGif(const std::string& file)
 
 void GifHelper::InitTemplateAndColormap()
 {
-  m_pTemplate = new unsigned char[m_imageSize];
-  memset(m_pTemplate, 0, m_imageSize);
+  m_pTemplate.resize(m_imageSize);
 
   if (m_gif->SColorMap)
   {
@@ -288,12 +286,6 @@ int GifHelper::ExtractFrames(unsigned int count)
   if (!m_gif)
     return -1;
 
-  if (!m_pTemplate)
-  {
-    fprintf(stderr, "Gif::ExtractFrames(): No frame template available\n");
-    return -1;
-  }
-
   int extracted = 0;
   for (unsigned int i = 0; i < count; i++)
   {
@@ -339,7 +331,7 @@ int GifHelper::ExtractFrames(unsigned int count)
 
     frame->m_pImage = new unsigned char[m_imageSize];
     frame->m_imageSize = m_imageSize;
-    memcpy(frame->m_pImage, m_pTemplate, m_imageSize);
+    memcpy(frame->m_pImage, m_pTemplate.data(), m_imageSize);
 
     ConstructFrame(*frame, savedImage.RasterBits);
 
@@ -391,18 +383,18 @@ bool GifHelper::PrepareTemplate(GifFrame &frame)
   case DISPOSAL_UNSPECIFIED:
     /* Leave image in place */
   case DISPOSE_DO_NOT:
-    memcpy(m_pTemplate, frame.m_pImage, m_imageSize);
-    break;
+      memcpy(m_pTemplate.data(), frame.m_pImage, m_imageSize);
+      break;
 
-    /*
+      /*
        Clear the frame's area to transparency.
        The disposal names is misleading. Do not restore to the background color because
        this part of the specification is ignored by all browsers/image viewers.
     */
   case DISPOSE_BACKGROUND:
   {
-    ClearFrameAreaToTransparency(m_pTemplate, frame);
-    break;
+      ClearFrameAreaToTransparency(m_pTemplate.data(), frame);
+      break;
   }
   /* Restore to previous content */
   case DISPOSE_PREVIOUS:
@@ -424,7 +416,7 @@ bool GifHelper::PrepareTemplate(GifFrame &frame)
     {
       if (m_frames[i]->m_disposal != DISPOSE_PREVIOUS)
       {
-        memcpy(m_pTemplate, m_frames[i]->m_pImage, m_imageSize);
+        memcpy(m_pTemplate.data(), m_frames[i]->m_pImage, m_imageSize);
         valid = true;
         break;
       }
