@@ -44,6 +44,8 @@
 #define strncasecmp _strnicmp
 #endif
 
+#include <vector>
+
 #include <lzo/lzo1x.h>
 #include <sys/stat.h>
 
@@ -160,31 +162,33 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
   {
     // grab a temporary buffer for unpacking into
     packedSize = size + size / 16 + 64 + 3; // see simple.c in lzo
-    unsigned char *packed  = new unsigned char[packedSize];
-    unsigned char *working = new unsigned char[LZO1X_999_MEM_COMPRESS];
-    if (packed && working)
+
+    std::vector<uint8_t> packed;
+    packed.resize(packedSize);
+
+    std::vector<uint8_t> working;
+    working.resize(LZO1X_999_MEM_COMPRESS);
+
+    if (lzo1x_999_compress(data, size, packed.data(), &packedSize, working.data()) != LZO_E_OK ||
+        packedSize > size)
     {
-      if (lzo1x_999_compress(data, size, packed, &packedSize, working) != LZO_E_OK || packedSize > size)
-      {
-        // compression failed, or compressed size is bigger than uncompressed, so store as uncompressed
+      // compression failed, or compressed size is bigger than uncompressed, so store as uncompressed
+      packedSize = size;
+      writer.AppendContent(data, size);
+    }
+    else
+    { // success
+      lzo_uint optimSize = size;
+      if (lzo1x_optimize(packed.data(), packedSize, data, &optimSize, NULL) != LZO_E_OK ||
+          optimSize != size)
+      { //optimisation failed
         packedSize = size;
         writer.AppendContent(data, size);
       }
       else
       { // success
-        lzo_uint optimSize = size;
-        if (lzo1x_optimize(packed, packedSize, data, &optimSize, NULL) != LZO_E_OK || optimSize != size)
-        { //optimisation failed
-          packedSize = size;
-          writer.AppendContent(data, size);
-        }
-        else
-        { // success
-          writer.AppendContent(packed, packedSize);
-        }
+        writer.AppendContent(packed.data(), packedSize);
       }
-      delete[] working;
-      delete[] packed;
     }
   }
   else
