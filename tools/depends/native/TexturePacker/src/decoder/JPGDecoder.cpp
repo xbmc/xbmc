@@ -22,19 +22,21 @@
 
 #include "SimpleFS.h"
 
+#include <memory>
+
 #include <jpeglib.h>
 
 bool JPGDecoder::CanDecode(const std::string &filename)
 {
-  CFile *fp = new CFile();
+  CFile fp;
   bool ret = false;
   unsigned char magic[2];
-  if (fp->Open(filename))
+  if (fp.Open(filename))
   {
 
     //JPEG image files begin with FF D8 and end with FF D9.
     // check for FF D8 big + little endian on start
-    uint64_t readbytes = fp->Read(magic, 2);
+    uint64_t readbytes = fp.Read(magic, 2);
     if (readbytes == 2)
     {
       if ((magic[0] == 0xd8 && magic[1] == 0xff) ||
@@ -46,9 +48,9 @@ bool JPGDecoder::CanDecode(const std::string &filename)
     {
       ret = false;
       //check on FF D9 big + little endian on end
-      uint64_t fileSize = fp->GetFileSize();
-      fp->Seek(fileSize - 2);
-      readbytes = fp->Read(magic, 2);
+      uint64_t fileSize = fp.GetFileSize();
+      fp.Seek(fileSize - 2);
+      readbytes = fp.Read(magic, 2);
       if (readbytes == 2)
       {
         if ((magic[0] == 0xd9 && magic[1] == 0xff) ||
@@ -57,19 +59,17 @@ bool JPGDecoder::CanDecode(const std::string &filename)
       }
     }
   }
-  delete fp;
+
   return ret;
 }
 
 bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
 {
   #define WIDTHBYTES(bits) ((((bits) + 31) / 32) * 4)
-  CFile *arq = new CFile();
-  if (!arq->Open(filename))
-  {
-    delete arq;
+
+  CFile arq;
+  if (!arq.Open(filename))
     return false;
-  }
 
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr jerr;
@@ -79,7 +79,7 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   cinfo.err = jpeg_std_error(&jerr);
   jpeg_create_decompress(&cinfo);
 
-  jpeg_stdio_src(&cinfo, arq->getFP());
+  jpeg_stdio_src(&cinfo, arq.getFP());
   jpeg_read_header(&cinfo, TRUE);
   jpeg_start_decompress(&cinfo);
 
@@ -119,7 +119,6 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
 
   frames.frameList.push_back(frame);
 
-  delete arq;
   return true;
 }
 
