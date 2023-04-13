@@ -80,7 +80,6 @@ public:
 
   int createBundle(const std::string& InputDir,
                    const std::string& OutputFile,
-                   double maxMSE,
                    unsigned int flags,
                    bool dupecheck);
 
@@ -212,7 +211,7 @@ bool HasAlpha(unsigned char *argb, unsigned int width, unsigned int height)
   return false;
 }
 
-CXBTFFrame createXBTFFrame(RGBAImage &image, CXBTFWriter& writer, double maxMSE, unsigned int flags)
+CXBTFFrame createXBTFFrame(RGBAImage& image, CXBTFWriter& writer, unsigned int flags)
 {
 
   int width, height;
@@ -268,7 +267,6 @@ static bool checkDupe(struct MD5Context* ctx,
 
 int TexturePacker::createBundle(const std::string& InputDir,
                                 const std::string& OutputFile,
-                                double maxMSE,
                                 unsigned int flags,
                                 bool dupecheck)
 {
@@ -337,7 +335,7 @@ int TexturePacker::createBundle(const std::string& InputDir,
       for (unsigned int j = 0; j < frames.frameList.size(); j++)
       {
         printf("    frame %4i (delay:%4i)                         ", j, frames.frameList[j].delay);
-        CXBTFFrame frame = createXBTFFrame(frames.frameList[j].rgbaImage, writer, maxMSE, flags);
+        CXBTFFrame frame = createXBTFFrame(frames.frameList[j].rgbaImage, writer, flags);
         frame.SetDuration(frames.frameList[j].delay);
         file.GetFrames().push_back(frame);
         printf("%s%c (%d,%d @ %" PRIu64 " bytes)\n", GetFormatString(frame.GetFormat()), frame.HasAlpha() ? ' ' : '*',
@@ -432,7 +430,5 @@ int main(int argc, char* argv[])
   if (pos != InputDir.length() - 1)
     InputDir += DIR_SEPARATOR;
 
-  double maxMSE = 1.5; // HQ only please
-
-  texturePacker.createBundle(InputDir, OutputFilename, maxMSE, flags, dupecheck);
+  texturePacker.createBundle(InputDir, OutputFilename, flags, dupecheck);
 }
