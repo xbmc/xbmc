@@ -120,12 +120,11 @@ private:
 
   CXBTFFrame CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer) const;
 
-  bool CheckDupe(MD5Context* ctx,
-                 std::map<std::string, unsigned int>& hashes,
-                 std::vector<unsigned int>& dupes,
-                 unsigned int pos);
+  bool CheckDupe(MD5Context* ctx, std::vector<unsigned int>& dupes, unsigned int pos);
 
   DecoderManager decoderManager;
+
+  std::map<std::string, unsigned int> m_hashes;
 
   bool m_dupecheck{false};
   unsigned int m_flags{0};
@@ -252,7 +251,6 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
 }
 
 bool TexturePacker::CheckDupe(MD5Context* ctx,
-                              std::map<std::string, unsigned int>& hashes,
                               std::vector<unsigned int>& dupes,
                               unsigned int pos)
 {
@@ -266,14 +264,14 @@ bool TexturePacker::CheckDupe(MD5Context* ctx,
       digest[9], digest[10], digest[11], digest[12], digest[13], digest[14],
       digest[15]);
   hex[32] = 0;
-  std::map<std::string, unsigned int>::iterator it = hashes.find(hex);
-  if (it != hashes.end())
+  std::map<std::string, unsigned int>::iterator it = m_hashes.find(hex);
+  if (it != m_hashes.end())
   {
     dupes[pos] = it->second;
     return true;
   }
 
-  hashes.insert(std::make_pair(hex,pos));
+  m_hashes.insert(std::make_pair(hex, pos));
   dupes[pos] = pos;
 
   return false;
@@ -288,7 +286,6 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
     return 1;
   }
 
-  std::map<std::string, unsigned int> hashes;
   std::vector<unsigned int> dupes;
   CreateSkeletonHeader(writer, InputDir);
 
@@ -328,7 +325,7 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
         MD5Update(&ctx, (const uint8_t*)frames.frameList[j].rgbaImage.pixels.data(),
                   frames.frameList[j].rgbaImage.height * frames.frameList[j].rgbaImage.pitch);
 
-      if (CheckDupe(&ctx, hashes, dupes, i))
+      if (CheckDupe(&ctx, dupes, i))
       {
         printf("****  duplicate of %s\n", files[dupes[i]].GetPath().c_str());
         file.GetFrames().insert(file.GetFrames().end(),
