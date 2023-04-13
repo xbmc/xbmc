@@ -90,13 +90,16 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
 
   frame.rgbaImage.pixels.resize(ImageSize);
 
-  unsigned char *scanlinebuff = new unsigned char[3 * cinfo.image_width];
+  std::vector<unsigned char> scanlinebuff;
+  scanlinebuff.resize(3 * cinfo.image_width);
+
   unsigned char* dst = (unsigned char*)frame.rgbaImage.pixels.data();
   while (cinfo.output_scanline < cinfo.output_height)
   {
-    jpeg_read_scanlines(&cinfo,&scanlinebuff,1);
+    unsigned char* src2 = scanlinebuff.data();
 
-    unsigned char *src2 = scanlinebuff;
+    jpeg_read_scanlines(&cinfo, &src2, 1);
+
     unsigned char *dst2 = dst;
     for (unsigned int x = 0; x < cinfo.image_width; x++, src2 += 3)
     {
@@ -107,7 +110,6 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
     }
     dst += cinfo.image_width * 4;
   }
-  delete [] scanlinebuff;
 
   jpeg_finish_decompress(&cinfo);
   jpeg_destroy_decompress(&cinfo);
