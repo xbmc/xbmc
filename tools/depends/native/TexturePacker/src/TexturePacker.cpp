@@ -74,9 +74,9 @@ const char *GetFormatString(unsigned int format)
   }
 }
 
-void CreateSkeletonHeaderImpl(CXBTFWriter& xbtfWriter,
-                              const std::string& fullPath,
-                              const std::string& relativePath)
+void CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
+                          const std::string& fullPath,
+                          const std::string& relativePath = "")
 {
   struct dirent* dp;
   struct stat stat_p;
@@ -103,7 +103,8 @@ void CreateSkeletonHeaderImpl(CXBTFWriter& xbtfWriter,
             tmpPath += "/";
           }
 
-          CreateSkeletonHeaderImpl(xbtfWriter, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
+          CreateSkeletonHeader(xbtfWriter, fullPath + DIR_SEPARATOR + dp->d_name,
+                               tmpPath + dp->d_name);
         }
         else if (decoderManager.IsSupportedGraphicsFile(dp->d_name))
         {
@@ -131,12 +132,6 @@ void CreateSkeletonHeaderImpl(CXBTFWriter& xbtfWriter,
   {
     fprintf(stderr, "Error opening %s (%s)\n", fullPath.c_str(), strerror(errno));
   }
-}
-
-void CreateSkeletonHeader(CXBTFWriter& xbtfWriter, const std::string& fullPath)
-{
-  std::string temp;
-  CreateSkeletonHeaderImpl(xbtfWriter, fullPath, temp);
 }
 
 CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, bool hasAlpha, unsigned int flags)
