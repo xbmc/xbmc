@@ -290,11 +290,6 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
 
   std::vector<CXBTFFile> files = writer.GetFiles();
   m_dupes.resize(files.size());
-  if (!m_dupecheck)
-  {
-    for (unsigned int i=0;i<m_dupes.size();++i)
-      m_dupes[i] = i;
-  }
 
   for (size_t i = 0; i < files.size(); i++)
   {
@@ -332,6 +327,10 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
                                 files[m_dupes[i]].GetFrames().end());
         skip = true;
       }
+    }
+    else
+    {
+      m_dupes[i] = i;
     }
 
     if (!skip)
