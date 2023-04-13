@@ -42,7 +42,6 @@ private:
 
   std::string m_outputFile;
   FILE* m_file;
-  unsigned char *m_data;
-  size_t         m_size;
+  std::vector<uint8_t> m_data;
 };
 

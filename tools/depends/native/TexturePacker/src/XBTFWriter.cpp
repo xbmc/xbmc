@@ -37,11 +37,7 @@
 #define WRITE_U32(i, file) { uint32_t _n = Endian_SwapLE32(i); fwrite(&_n, 4, 1, file); }
 #define WRITE_U64(i, file) { uint64_t _n = i; _n = Endian_SwapLE64(i); fwrite(&_n, 8, 1, file); }
 
-CXBTFWriter::CXBTFWriter(const std::string& outputFile)
-  : m_outputFile(outputFile),
-    m_file(nullptr),
-    m_data(nullptr),
-    m_size(0)
+CXBTFWriter::CXBTFWriter(const std::string& outputFile) : m_outputFile(outputFile), m_file(nullptr)
 { }
 
 CXBTFWriter::~CXBTFWriter()
@@ -60,10 +56,10 @@ bool CXBTFWriter::Create()
 
 bool CXBTFWriter::Close()
 {
-  if (m_file == nullptr || m_data == nullptr)
+  if (m_file == nullptr)
     return false;
 
-  fwrite(m_data, 1, m_size, m_file);
+  fwrite(m_data.data(), 1, m_data.size(), m_file);
 
   Cleanup();
 
@@ -72,9 +68,6 @@ bool CXBTFWriter::Close()
 
 void CXBTFWriter::Cleanup()
 {
-  free(m_data);
-  m_data = nullptr;
-  m_size = 0;
   if (m_file)
   {
     fclose(m_file);
@@ -84,18 +77,7 @@ void CXBTFWriter::Cleanup()
 
 bool CXBTFWriter::AppendContent(unsigned char const* data, size_t length)
 {
-  unsigned char *new_data = (unsigned char *)realloc(m_data, m_size + length);
-
-  if (new_data == nullptr)
-  { // OOM - cleanup and fail
-    Cleanup();
-    return false;
-  }
-
-  m_data = new_data;
-
-  memcpy(m_data + m_size, data, length);
-  m_size += length;
+  m_data.insert(m_data.end(), data, data + length);
 
   return true;
 }
