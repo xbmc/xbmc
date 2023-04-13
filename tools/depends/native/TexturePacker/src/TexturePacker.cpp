@@ -107,16 +107,18 @@ public:
 
   void EnableDupeCheck() { m_dupecheck = true; }
 
-  int createBundle(const std::string& InputDir, const std::string& OutputFile, unsigned int flags);
+  int createBundle(const std::string& InputDir, const std::string& OutputFile);
 
   DecoderManager decoderManager;
+
+  void SetFlags(unsigned int flags) { m_flags = flags; }
 
 private:
   void CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
                             const std::string& fullPath,
                             const std::string& relativePath = "");
 
-  CXBTFFrame CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer, unsigned int flags) const;
+  CXBTFFrame CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer) const;
 
   bool CheckDupe(MD5Context* ctx,
                  std::map<std::string, unsigned int>& hashes,
@@ -124,6 +126,7 @@ private:
                  unsigned int pos);
 
   bool m_dupecheck{false};
+  unsigned int m_flags{0};
 };
 
 void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
@@ -186,9 +189,7 @@ void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
   }
 }
 
-CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame,
-                                          CXBTFWriter& writer,
-                                          unsigned int flags) const
+CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer) const
 {
   const unsigned int delay = decodedFrame.delay;
   const unsigned int width = decodedFrame.rgbaImage.width;
@@ -202,7 +203,7 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame,
   CXBTFFrame frame;
   lzo_uint packedSize = size;
 
-  if ((flags & FLAGS_USE_LZO) == FLAGS_USE_LZO)
+  if ((m_flags & FLAGS_USE_LZO) == FLAGS_USE_LZO)
   {
     // grab a temporary buffer for unpacking into
     packedSize = size + size / 16 + 64 + 3; // see simple.c in lzo
@@ -276,9 +277,7 @@ bool TexturePacker::CheckDupe(MD5Context* ctx,
   return false;
 }
 
-int TexturePacker::createBundle(const std::string& InputDir,
-                                const std::string& OutputFile,
-                                unsigned int flags)
+int TexturePacker::createBundle(const std::string& InputDir, const std::string& OutputFile)
 {
   CXBTFWriter writer(OutputFile);
   if (!writer.Create())
@@ -341,7 +340,7 @@ int TexturePacker::createBundle(const std::string& InputDir,
     {
       for (unsigned int j = 0; j < frames.frameList.size(); j++)
       {
-        CXBTFFrame frame = CreateXBTFFrame(frames.frameList[j], writer, flags);
+        CXBTFFrame frame = CreateXBTFFrame(frames.frameList[j], writer);
         file.GetFrames().push_back(frame);
         printf("    frame %4i (delay:%4i)                         %s%c (%d,%d @ %" PRIu64
                " bytes)\n",
@@ -375,11 +374,8 @@ int main(int argc, char* argv[])
   if (lzo_init() != LZO_E_OK)
     return 1;
   bool valid = false;
-  unsigned int flags = 0;
-  CmdLineArgs args(argc, (const char**)argv);
 
-  // setup some defaults, lzo packing,
-  flags = FLAGS_USE_LZO;
+  CmdLineArgs args(argc, (const char**)argv);
 
   if (args.size() == 1)
   {
@@ -391,6 +387,8 @@ int main(int argc, char* argv[])
   std::string OutputFilename = "Textures.xbt";
 
   TexturePacker texturePacker;
+
+  texturePacker.SetFlags(FLAGS_USE_LZO);
 
   for (unsigned int i = 1; i < args.size(); ++i)
   {
@@ -437,5 +435,5 @@ int main(int argc, char* argv[])
   if (pos != InputDir.length() - 1)
     InputDir += DIR_SEPARATOR;
 
-  texturePacker.createBundle(InputDir, OutputFilename, flags);
+  texturePacker.createBundle(InputDir, OutputFilename);
 }
