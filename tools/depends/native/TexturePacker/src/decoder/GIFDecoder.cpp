@@ -24,6 +24,11 @@
 
 #include <cstring>
 
+GIFDecoder::GIFDecoder()
+{
+  m_extensions.emplace_back(".gif");
+}
+
 // returns true for gif files, otherwise returns false
 bool GIFDecoder::CanDecode(const std::string &filename)
 {
@@ -64,9 +69,4 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   }
 
   return result;
-}
-
-void GIFDecoder::FillSupportedExtensions()
-{
-  m_supportedExtensions.emplace_back(".gif");
 }
