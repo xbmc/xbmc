@@ -87,7 +87,7 @@ class GifHelper
   typedef std::shared_ptr<GifFrame> FramePtr;
 
 public:
-  GifHelper();
+  GifHelper() = default;
   virtual ~GifHelper();
 
   bool LoadGif(const std::string& file);
@@ -109,7 +109,7 @@ private:
   GifFileType* m_gif = nullptr;
   std::vector<GifColor> m_globalPalette;
   unsigned char* m_pTemplate = nullptr;
-  CFile*          m_gifFile;
+  CFile m_gifFile;
 
   unsigned int m_width;
   unsigned int m_height;
