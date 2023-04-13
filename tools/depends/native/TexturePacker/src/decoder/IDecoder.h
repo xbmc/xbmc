@@ -56,7 +56,7 @@ class RGBAImage
 public:
   RGBAImage() = default;
 
-  char* pixels = nullptr; // image data
+  std::vector<uint8_t> pixels;
   int width = 0; // width
   int height = 0; // height
   int bbp = 0; // bits per pixel
