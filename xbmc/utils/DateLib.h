@@ -32,6 +32,7 @@ namespace TIME
 
 const std::string ExtractTzName(const char* tzname);
 const date::time_zone* GetTimeZone();
+void LoadTimeZoneDatabase();
 
 } // namespace TIME
 } // namespace KODI

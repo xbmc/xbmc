@@ -32,9 +32,7 @@ bool CTimeZoneResource::IsInUse() const
 
 void CTimeZoneResource::OnPostInstall(bool update, bool modal)
 {
-#if defined(DATE_INTERNAL_TZDATA)
-  date::reload_tzdb();
-#endif
+  KODI::TIME::LoadTimeZoneDatabase();
 }
 
 } // namespace ADDON

@@ -73,8 +73,6 @@ private:
   bool InitDirectoriesOSX(bool bPlatformDirectories);
   bool InitDirectoriesWin32(bool bPlatformDirectories);
   void CreateUserDirs() const;
-  //!@todo check if the whole dirs logic should be moved to AppEnvironment
-  void LoadTimeZoneDatabase() const;
 
   enum class State
   {

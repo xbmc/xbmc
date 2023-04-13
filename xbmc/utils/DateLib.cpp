@@ -70,3 +70,26 @@ const date::time_zone* KODI::TIME::GetTimeZone()
 
   return tz;
 }
+
+void KODI::TIME::LoadTimeZoneDatabase()
+{
+#if defined(DATE_INTERNAL_TZDATA)
+  // First check the timezone resource from userprofile
+  auto tzdataPath =
+      CSpecialProtocol::TranslatePath("special://home/addons/resource.timezone/resources/tzdata");
+  if (!XFILE::CDirectory::Exists(tzdataPath))
+  {
+    // Then check system-wide Kodi profile and bail out if not found
+    tzdataPath =
+        CSpecialProtocol::TranslatePath("special://xbmc/addons/resource.timezone/resources/tzdata");
+    if (!XFILE::CDirectory::Exists(tzdataPath))
+    {
+      CLog::LogF(LOGFATAL, "failed to find resource.timezone");
+      return;
+    }
+  }
+
+  CLog::LogF(LOGDEBUG, "Loading tzdata from path: {}", tzdataPath);
+  date::set_install(tzdataPath);
+#endif
+}

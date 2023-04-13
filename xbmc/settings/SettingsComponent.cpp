@@ -57,8 +57,9 @@ void CSettingsComponent::Initialize()
     if (!inited)
       inited = InitDirectoriesWin32(params->HasPlatformDirectories());
 
-    // Load timezone database
-    LoadTimeZoneDatabase();
+    // Try loading timezone information after directories were provisioned
+    //!@todo check if the whole dirs logic should be moved to AppEnvironment
+    KODI::TIME::LoadTimeZoneDatabase();
 
     m_settings->Initialize();
 
@@ -401,29 +402,4 @@ void CSettingsComponent::CreateUserDirs() const
       CLog::Log(LOGWARNING, "Failed to remove the archive cache at {}", archiveCachePath);
   XFILE::CDirectory::Create(archiveCachePath);
 
-}
-
-// Try loading timezone information after directories were provisioned
-//!@todo check if the whole dirs logic should be moved to AppEnvironment
-void LoadTimeZoneDatabase() const
-{
-#if defined(DATE_INTERNAL_TZDATA)
-  // First check the timezone resource from userprofile
-  auto tzdataPath =
-      CSpecialProtocol::TranslatePath("special://home/addons/resource.timezone/resources/tzdata");
-  if (!XFILE::CDirectory::Exists(tzdataPath))
-  {
-    // Then check system-wide Kodi profile and bail out if not found
-    tzdataPath =
-        CSpecialProtocol::TranslatePath("special://xbmc/addons/resource.timezone/resources/tzdata");
-    if (!XFILE::CDirectory::Exists(tzdataPath))
-    {
-      CLog::LogF(LOGFATAL, "failed to find resource.timezone");
-      return;
-    }
-  }
-
-  CLog::LogF(LOGDEBUG, "tzdata path: {}", tzdataPath);
-  date::set_install(tzdataPath);
-#endif
 }
