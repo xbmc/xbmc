@@ -61,9 +61,9 @@ class GifFrame
 public:
 
   GifFrame() = default;
-  virtual ~GifFrame();
+  virtual ~GifFrame() = default;
 
-  unsigned char* m_pImage = nullptr;
+  std::vector<uint8_t> m_pImage;
   unsigned int m_delay = 0;
 
 private:
@@ -74,7 +74,6 @@ private:
   unsigned int m_disposal = 0;
   unsigned int m_height = 0;
   unsigned int m_width = 0;
-  unsigned int m_imageSize = 0;
   std::vector<GifColor>   m_palette;
 };
 
