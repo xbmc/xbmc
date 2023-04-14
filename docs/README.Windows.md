@@ -82,8 +82,6 @@ Start the Visual Studio installer and click **Workloads** select
 Click in **Individual components** select
 * Under **Compilers, build tools and runtimes** section select
   * `MSVC v142/3 - VS 2019/22 C++ ARM build tools (Latest)` (if compiling for UWP-ARM)
-* Under **SDKs, libraries, and frameworks** section select
-  * `Windows 10 SDK (10.0.18362.0)` (if compiling for UWP or UWP-ARM)
 
 Hit `Install`. Yes, it will download and install almost 8GB of stuff for x64 only or up to 20GB if everything is selected for UWP / UWP-ARM as well.
 
@@ -210,17 +208,17 @@ cmake -G "Visual Studio 17 2022" -A Win32 -T host=x64 %userprofile%\kodi
 
 Or configure build for UWP 64bit:
 ```
-cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0.18362.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for UWP 32bit:
 ```
-cmake -G "Visual Studio 17 2022" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0.18362.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A Win32 -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
 Or configure build for UWP ARM 32bit:
 ```
-cmake -G "Visual Studio 17 2022" -A ARM -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0.18362.0 -T host=x64 %userprofile%\kodi
+cmake -G "Visual Studio 17 2022" -A ARM -DCMAKE_SYSTEM_NAME=WindowsStore -DCMAKE_SYSTEM_VERSION=10.0 -T host=x64 %userprofile%\kodi
 ```
 
 **Visual Studio 2019:**
