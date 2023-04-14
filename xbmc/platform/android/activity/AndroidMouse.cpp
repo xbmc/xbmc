@@ -8,11 +8,9 @@
 
 #include "AndroidMouse.h"
 
-#include "AndroidExtra.h"
 #include "ServiceBroker.h"
 #include "XBMCApp.h"
 #include "application/AppInboundProtocol.h"
-#include "guilib/GUIWindowManager.h"
 #include "input/mouse/MouseStat.h"
 #include "windowing/android/WinSystemAndroid.h"
 
