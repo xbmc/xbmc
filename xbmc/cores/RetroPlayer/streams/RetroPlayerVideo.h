@@ -107,7 +107,6 @@ private:
 
   // Stream properties
   bool m_bOpen = false;
-  std::vector<VideoStreamBuffer> m_buffers;
 };
 } // namespace RETRO
 } // namespace KODI

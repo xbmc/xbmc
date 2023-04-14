@@ -13,8 +13,6 @@
 #include "cores/RetroPlayer/rendering/RenderTranslator.h"
 #include "utils/log.h"
 
-#include <algorithm>
-
 using namespace KODI;
 using namespace RETRO;
 
@@ -74,33 +72,7 @@ bool CRetroPlayerVideo::GetStreamBuffer(unsigned int width,
   VideoStreamBuffer& videoBuffer = static_cast<VideoStreamBuffer&>(buffer);
 
   if (m_bOpen)
-  {
-    m_buffers = m_renderManager.GetVideoBuffers(width, height);
-
-    std::sort(m_buffers.begin(), m_buffers.end(),
-              [](const VideoStreamBuffer& lhs, const VideoStreamBuffer& rhs) {
-                // Prefer read-write over write only
-                if (lhs.access == DataAccess::READ_WRITE && rhs.access != DataAccess::READ_WRITE)
-                  return true;
-                if (lhs.access != DataAccess::READ_WRITE && rhs.access == DataAccess::READ_WRITE)
-                  return false;
-
-                // Prefer aligned over unaligned
-                if (lhs.alignment == DataAlignment::DATA_ALIGNED &&
-                    rhs.alignment != DataAlignment::DATA_ALIGNED)
-                  return true;
-                if (lhs.alignment != DataAlignment::DATA_ALIGNED &&
-                    rhs.alignment == DataAlignment::DATA_ALIGNED)
-                  return false;
-
-                return false;
-              });
-
-    //! @todo This comment was in the original code
-    //! @todo Handle multiple buffers
-    if (!m_buffers.empty())
-      videoBuffer = m_buffers.at(0);
-  }
+    return m_renderManager.GetVideoBuffer(width, height, videoBuffer);
 
   return false;
 }
@@ -130,8 +102,6 @@ void CRetroPlayerVideo::AddStreamData(const StreamPacket& packet)
     m_renderManager.AddFrame(videoPacket.data, videoPacket.size, videoPacket.width,
                              videoPacket.height, orientationDegCCW);
   }
-
-  m_buffers.clear();
 }
 
 void CRetroPlayerVideo::CloseStream()
