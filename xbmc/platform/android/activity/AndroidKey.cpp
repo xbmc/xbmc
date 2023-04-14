@@ -8,14 +8,12 @@
 
 #include "AndroidKey.h"
 
-#include "AndroidExtra.h"
 #include "ServiceBroker.h"
 #include "XBMCApp.h"
 #include "input/Key.h"
 #include "windowing/android/WinSystemAndroid.h"
 
 #include <androidjni/KeyCharacterMap.h>
-
 
 typedef struct {
   int32_t nativeKey;
