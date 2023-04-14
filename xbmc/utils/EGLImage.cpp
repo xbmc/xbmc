@@ -104,12 +104,16 @@ std::map<EGLint, const char*> eglAttributes =
 
 } // namespace
 
-CEGLImage::CEGLImage(EGLDisplay display) :
-  m_display(display)
+CEGLImage::CEGLImage(EGLDisplay display)
+  : m_display(display),
+    m_eglCreateImageKHR(
+        CEGLUtils::GetRequiredProcAddress<PFNEGLCREATEIMAGEKHRPROC>("eglCreateImageKHR")),
+    m_eglDestroyImageKHR(
+        CEGLUtils::GetRequiredProcAddress<PFNEGLDESTROYIMAGEKHRPROC>("eglDestroyImageKHR")),
+    m_glEGLImageTargetTexture2DOES(
+        CEGLUtils::GetRequiredProcAddress<PFNGLEGLIMAGETARGETTEXTURE2DOESPROC>(
+            "glEGLImageTargetTexture2DOES"))
 {
-  m_eglCreateImageKHR = CEGLUtils::GetRequiredProcAddress<PFNEGLCREATEIMAGEKHRPROC>("eglCreateImageKHR");
-  m_eglDestroyImageKHR = CEGLUtils::GetRequiredProcAddress<PFNEGLDESTROYIMAGEKHRPROC>("eglDestroyImageKHR");
-  m_glEGLImageTargetTexture2DOES = CEGLUtils::GetRequiredProcAddress<PFNGLEGLIMAGETARGETTEXTURE2DOESPROC>("glEGLImageTargetTexture2DOES");
 }
 
 bool CEGLImage::CreateImage(EglAttrs imageAttrs)

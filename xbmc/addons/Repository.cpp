@@ -170,7 +170,7 @@ bool CRepository::FetchChecksum(const std::string& url,
   std::size_t pos = checksum.find_first_of(" \n");
   if (pos != std::string::npos)
   {
-    checksum = checksum.substr(0, pos);
+    checksum.resize(pos);
   }
 
   // Determine update interval from (potential) HTTP response

@@ -25,16 +25,16 @@ using namespace AE;
 using namespace ActiveAE;
 using namespace std::chrono_literals;
 
-CActiveAESink::CActiveAESink(CEvent *inMsgEvent) :
-  CThread("AESink"),
-  m_controlPort("SinkControlPort", inMsgEvent, &m_outMsgEvent),
-  m_dataPort("SinkDataPort", inMsgEvent, &m_outMsgEvent)
+CActiveAESink::CActiveAESink(CEvent* inMsgEvent)
+  : CThread("AESink"),
+    m_controlPort("SinkControlPort", inMsgEvent, &m_outMsgEvent),
+    m_dataPort("SinkDataPort", inMsgEvent, &m_outMsgEvent),
+    m_sink(nullptr),
+    m_packer(nullptr)
 {
   m_inMsgEvent = inMsgEvent;
-  m_sink = nullptr;
   m_stats = nullptr;
   m_volume = 0.0;
-  m_packer = nullptr;
   m_streamNoise = true;
 }
 

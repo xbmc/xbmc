@@ -724,7 +724,8 @@ bool CURL::IsProtocolEqual(const std::string &protocol, const char *type)
 void CURL::GetOptions(std::map<std::string, std::string> &options) const
 {
   CUrlOptions::UrlOptions optionsMap = m_options.GetOptions();
-  for (CUrlOptions::UrlOptions::const_iterator option = optionsMap.begin(); option != optionsMap.end(); option++)
+  for (CUrlOptions::UrlOptions::const_iterator option = optionsMap.begin();
+       option != optionsMap.end(); ++option)
     options[option->first] = option->second.asString();
 }
 
@@ -767,7 +768,8 @@ void CURL::RemoveOption(const std::string &key)
 void CURL::GetProtocolOptions(std::map<std::string, std::string> &options) const
 {
   CUrlOptions::UrlOptions optionsMap = m_protocolOptions.GetOptions();
-  for (CUrlOptions::UrlOptions::const_iterator option = optionsMap.begin(); option != optionsMap.end(); option++)
+  for (CUrlOptions::UrlOptions::const_iterator option = optionsMap.begin();
+       option != optionsMap.end(); ++option)
     options[option->first] = option->second.asString();
 }
 

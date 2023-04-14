@@ -4597,12 +4597,12 @@ bool CMusicDatabase::TrimImageURLs(std::string& strImage, const size_t space)
 {
   if (strImage.length() > space)
   {
-    strImage = strImage.substr(0, space);
+    strImage.resize(space);
     // Tidy to last </thumb> tag
     size_t iPos = strImage.rfind("</thumb>");
     if (iPos == std::string::npos)
       return false;
-    strImage = strImage.substr(0, iPos + 8);
+    strImage.resize(iPos + 8);
   }
   return true;
 }

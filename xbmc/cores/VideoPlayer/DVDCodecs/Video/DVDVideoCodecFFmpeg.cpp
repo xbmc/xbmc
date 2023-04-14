@@ -305,11 +305,11 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
   return avcodec_default_get_format(avctx, fmt);
 }
 
-CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo &processInfo)
-: CDVDVideoCodec(processInfo), m_postProc(processInfo)
+CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo& processInfo)
+  : CDVDVideoCodec(processInfo),
+    m_videoBufferPool(std::make_shared<CVideoBufferPoolFFmpeg>()),
+    m_postProc(processInfo)
 {
-  m_videoBufferPool = std::make_shared<CVideoBufferPoolFFmpeg>();
-
   m_decoderState = STATE_NONE;
 }
 

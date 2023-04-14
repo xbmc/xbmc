@@ -154,9 +154,8 @@ CPVRChannelsPath::CPVRChannelsPath(bool bRadio,
                                    bool bHidden,
                                    const std::string& strGroupName,
                                    int iGroupClientID)
-  : m_bRadio(bRadio)
+  : m_bRadio(bRadio), m_groupName(bHidden ? ".hidden" : strGroupName)
 {
-  m_groupName = bHidden ? ".hidden" : strGroupName;
   if (m_groupName.empty())
   {
     m_kind = Kind::EMPTY;
@@ -172,9 +171,8 @@ CPVRChannelsPath::CPVRChannelsPath(bool bRadio,
 }
 
 CPVRChannelsPath::CPVRChannelsPath(bool bRadio, const std::string& strGroupName, int iGroupClientID)
-  : m_bRadio(bRadio)
+  : m_bRadio(bRadio), m_groupName(strGroupName)
 {
-  m_groupName = strGroupName;
   if (m_groupName.empty())
   {
     m_kind = Kind::EMPTY;
