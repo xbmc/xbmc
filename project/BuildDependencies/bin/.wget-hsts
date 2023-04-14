@@ -1,0 +1,7 @@
+# HSTS 1.0 Known Hosts database for GNU Wget.
+# Edit at your own risk.
+# <hostname>	<port>	<incl. subdomains>	<created>	<max-age>
+mirrors.up.pt	0	1	1666906530	63072000
+aka.ms	0	1	1666911358	31536000
+github.com	0	1	1666906839	31536000
+codeload.github.com	0	0	1666906839	31536000
