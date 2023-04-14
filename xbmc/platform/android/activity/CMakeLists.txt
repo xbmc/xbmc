@@ -5,7 +5,6 @@ set(SOURCES android_main.cpp
             AndroidMouse.cpp
             AndroidTouch.cpp
             EventLoop.cpp
-            GraphicBuffer.cpp
             JNIMainActivity.cpp
             JNIXBMCMainView.cpp
             JNIXBMCMediaSession.cpp
@@ -29,9 +28,7 @@ set(HEADERS AndroidExtra.h
             AndroidKey.h
             AndroidMouse.h
             AndroidTouch.h
-            DllGraphicBuffer.h
             EventLoop.h
-            GraphicBuffer.h
             IActivityHandler.h
             JNIMainActivity.h
             JNIXBMCMainView.h
