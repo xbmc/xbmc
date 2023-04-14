@@ -716,26 +716,13 @@ void DX::DeviceResources::ResizeBuffers()
 
     if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG))
     {
-      ComPtr<IDXGISwapChain4> swapChain4;
-      if (SUCCEEDED(m_swapChain.As(&swapChain4)))
+      std::string colorSpaces;
+      for (const DXGI_COLOR_SPACE_TYPE& colorSpace : GetSwapChainColorSpaces())
       {
-        UINT colorSpaceSupport = 0;
-        std::string colorSpaces{};
-        for (UINT colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-             colorSpace < DXGI_COLOR_SPACE_YCBCR_STUDIO_G24_TOPLEFT_P2020; colorSpace++)
-        {
-          if (SUCCEEDED(swapChain4->CheckColorSpaceSupport(
-                  static_cast<DXGI_COLOR_SPACE_TYPE>(colorSpace), &colorSpaceSupport)) &&
-              (colorSpaceSupport & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT) ==
-                  DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT)
-          {
-            colorSpaces.append("\n");
-            colorSpaces.append(
-                DX::DXGIColorSpaceTypeToString(static_cast<DXGI_COLOR_SPACE_TYPE>(colorSpace)));
-          }
-        }
-        CLog::LogF(LOGDEBUG, "Color spaces supported by the swap chain:{}", colorSpaces);
+        colorSpaces.append("\n");
+        colorSpaces.append(DX::DXGIColorSpaceTypeToString(colorSpace));
       }
+      CLog::LogF(LOGDEBUG, "Color spaces supported by the swap chain:{}", colorSpaces);
     }
 
     // Ensure that DXGI does not queue more than one frame at a time. This both reduces latency and
@@ -1398,4 +1385,32 @@ DEBUG_INFO_RENDER DX::DeviceResources::GetDebugInfo() const
       DX::Windowing()->UseLimitedColor() ? "limited" : "full", range_min, range_max);
 
   return info;
+}
+
+std::vector<DXGI_COLOR_SPACE_TYPE> DX::DeviceResources::GetSwapChainColorSpaces() const
+{
+  if (!m_swapChain)
+    return {};
+
+  std::vector<DXGI_COLOR_SPACE_TYPE> result;
+  HRESULT hr;
+
+  ComPtr<IDXGISwapChain3> swapChain3;
+  if (SUCCEEDED(hr = m_swapChain.As(&swapChain3)))
+  {
+    UINT colorSpaceSupport = 0;
+    for (UINT colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+         colorSpace < DXGI_COLOR_SPACE_YCBCR_STUDIO_G24_TOPLEFT_P2020; colorSpace++)
+    {
+      DXGI_COLOR_SPACE_TYPE cs = static_cast<DXGI_COLOR_SPACE_TYPE>(colorSpace);
+      if (SUCCEEDED(swapChain3->CheckColorSpaceSupport(cs, &colorSpaceSupport)) &&
+          (colorSpaceSupport & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT))
+        result.push_back(cs);
+    }
+  }
+  else
+  {
+    CLog::LogF(LOGDEBUG, "IDXGISwapChain3 is not available. Error {}", DX::GetErrorDescription(hr));
+  }
+  return result;
 }
