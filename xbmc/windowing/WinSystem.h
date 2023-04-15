@@ -168,7 +168,7 @@ public:
   virtual bool MessagePump() { return false; }
 
   // Access render system interface
-  CGraphicContext& GetGfxContext();
+  CGraphicContext& GetGfxContext() const;
 
   /**
    * Get OS specific hardware context

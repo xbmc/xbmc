@@ -264,7 +264,7 @@ void CWinSystemBase::DriveRenderLoop()
   }
 }
 
-CGraphicContext& CWinSystemBase::GetGfxContext()
+CGraphicContext& CWinSystemBase::GetGfxContext() const
 {
   return *m_gfxContext;
 }
