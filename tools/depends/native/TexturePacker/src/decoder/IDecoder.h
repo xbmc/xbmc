@@ -68,7 +68,6 @@ public:
   DecodedFrame() = default;
   RGBAImage rgbaImage; /* rgbaimage for this frame */
   int delay = 0; /* Frame delay in ms */
-  IDecoder* decoder = nullptr; /* Pointer to decoder */
 };
 
 class DecodedFrames
