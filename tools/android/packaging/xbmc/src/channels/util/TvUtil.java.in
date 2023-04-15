@@ -209,7 +209,12 @@ public class TvUtil
     builder.setMinimumLatency(10000);
 
     Log.d(TAG, "TvUtil: Scheduled channel creation.");
-    scheduler.schedule(builder.build());
+
+    try {
+      scheduler.schedule(builder.build());
+    } catch (IllegalStateException e) {
+      Log.w(TAG, "TvUtil: scheduleSyncingChannel - Exception: " + e.getMessage());
+    }
   }
 
   /**
@@ -241,7 +246,12 @@ public class TvUtil
     builder.setExtras(bundle);
 
     scheduler.cancel(getTriggeredJobIdForChannelId(channelId));
-    scheduler.schedule(builder.build());
+
+    try {
+      scheduler.schedule(builder.build());
+    } catch (IllegalStateException e) {
+      Log.w(TAG, "TvUtil: scheduleTriggeredSyncingProgramsForChannel - Exception: " + e.getMessage());
+    }
   }
 
   /**
@@ -271,7 +281,11 @@ public class TvUtil
     JobInfo job = builder.build();
     Log.d(TAG, "TvUtil: scheduleTimedSyncingProgramsForChannel: minperiod=" + job.getMinPeriodMillis());
 
-    scheduler.schedule(job);
+    try {
+      scheduler.schedule(job);
+    } catch (IllegalStateException e) {
+      Log.w(TAG, "TvUtil: scheduleTimedSyncingProgramsForChannel - Exception: " + e.getMessage());
+    }
   }
 
   public static int getTriggeredJobIdForChannelId(long channelId)
