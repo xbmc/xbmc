@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <string_view>
 #include <vector>
 
 #include <xf86drmMode.h>
@@ -35,8 +36,7 @@ public:
 
   uint32_t GetId() const { return m_id; }
   uint32_t GetPropertyId(const std::string& name) const;
-  std::optional<uint64_t> GetPropertyValue(const std::string& name,
-                                           const std::string& valueName) const;
+  std::optional<uint64_t> GetPropertyValue(std::string_view name, std::string_view valueName) const;
 
   bool SetProperty(const std::string& name, uint64_t value);
   bool SupportsProperty(const std::string& name);
