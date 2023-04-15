@@ -110,6 +110,17 @@ bool CPlayerController::OnAction(const CAction& action)
         return true;
       }
 
+      case ACTION_DOWNLOAD_SUBTITLES:
+      {
+        CGUIDialogSubtitles *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSubtitles>(WINDOW_DIALOG_SUBTITLES);
+        if (dialog)
+        {
+          dialog->Open();
+        }
+
+        return true;
+      }
+
       case ACTION_NEXT_SUBTITLE:
       case ACTION_PREV_SUBTITLE:
       case ACTION_CYCLE_SUBTITLE:
