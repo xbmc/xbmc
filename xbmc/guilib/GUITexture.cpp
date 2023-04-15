@@ -93,6 +93,7 @@ CGUITexture::CGUITexture(
   m_isAllocated = NO;
   m_invalid = true;
   m_use_cache = true;
+  m_info.useLarge = !CServiceBroker::GetGUI()->GetTextureManager().ShouldLoadImage(m_info.filename);
 }
 
 CGUITexture::CGUITexture(const CGUITexture& right)
@@ -313,12 +314,8 @@ bool CGUITexture::AllocResources()
 
   // reset our animstate
   ResetAnimState();
-
-  bool useLargeLoader =
-      !CServiceBroker::GetGUI()->GetTextureManager().ShouldLoadImage(m_info.filename);
-
   bool changed = false;
-  if (useLargeLoader)
+  if (m_info.useLarge)
   {
     if (m_isAllocated != NORMAL)
     { // use our large image background loader
@@ -673,6 +670,7 @@ bool CGUITexture::SetFileName(const std::string& filename)
   // filenames mid-animation
   FreeResources();
   m_info.filename = filename;
+  m_info.useLarge = !CServiceBroker::GetGUI()->GetTextureManager().ShouldLoadImage(m_info.filename);
 
   // Don't allocate resources here as this is done at render time
   return true;
