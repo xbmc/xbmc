@@ -13,6 +13,9 @@
 @interface OSXGLView : NSOpenGLView
 
 - (id)initWithFrame:(NSRect)frameRect;
-- (NSOpenGLContext*)getGLContext;
+- (CGLContextObj)getGLContextObj;
+
+- (void)Update;
+- (void)FlushBuffer;
 
 @end
