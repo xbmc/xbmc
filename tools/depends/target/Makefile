@@ -136,6 +136,10 @@ ifeq ($(OS),linux)
     DEPENDS += wayland waylandpp wayland-protocols webos-wayland-extensions webos-userland
     EXCLUDED_DEPENDS += dbus libcec linux-system-x11-libs pipewire mesa
   endif
+
+  ifneq (,$(findstring gbm,$(TARGET_PLATFORM)))
+    DEPENDS += hwdata libdisplay-info
+  endif
 endif
 
 DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
@@ -160,6 +164,7 @@ libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
 libcec: p8-platform
+libdisplay-info: meson-cross-file hwdata
 libdrm: meson-cross-file
 libevdev: libudev
 libgcrypt: libgpg-error

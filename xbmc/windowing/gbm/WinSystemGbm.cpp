@@ -21,6 +21,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/DisplayInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -70,6 +71,8 @@ CWinSystemGbm::CWinSystemGbm() :
   m_libinput->Start();
 }
 
+CWinSystemGbm::~CWinSystemGbm() = default;
+
 bool CWinSystemGbm::InitWindowSystem()
 {
   const char* x11 = getenv("DISPLAY");
@@ -103,6 +106,16 @@ bool CWinSystemGbm::InitWindowSystem()
         m_DRM.reset();
         return false;
       }
+    }
+  }
+
+  CDRMConnector* connector = m_DRM->GetConnector();
+  if (connector)
+  {
+    std::vector<uint8_t> edid = connector->GetEDID();
+    if (!edid.empty())
+    {
+      m_info = UTILS::CDisplayInfo::Create(edid);
     }
   }
 
@@ -345,13 +358,16 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
     return true;
   }
 
+  KODI::UTILS::Eotf eotf = DRMPRIME::GetEOTF(*videoPicture);
+
   auto connector = drm->GetConnector();
-  if (connector->SupportsProperty("HDR_OUTPUT_METADATA"))
+  if (connector->SupportsProperty("HDR_OUTPUT_METADATA") && m_info &&
+      m_info->SupportsHDRStaticMetadataType1() && m_info->SupportsEOTF(eotf))
   {
     hdr_output_metadata hdr_metadata = {};
 
     hdr_metadata.metadata_type = DRMPRIME::HDMI_STATIC_METADATA_TYPE1;
-    hdr_metadata.hdmi_metadata_type1.eotf = DRMPRIME::GetEOTF(*videoPicture);
+    hdr_metadata.hdmi_metadata_type1.eotf = static_cast<uint8_t>(eotf);
     hdr_metadata.hdmi_metadata_type1.metadata_type = DRMPRIME::HDMI_STATIC_METADATA_TYPE1;
 
     if (m_hdr_blob_id)
@@ -437,7 +453,22 @@ bool CWinSystemGbm::IsHDRDisplay()
   if (!connector)
     return false;
 
-  //! @todo: improve detection (edid?)
-  // we have no way to know if the display is actually HDR capable and we blindly set the HDR metadata
-  return connector->SupportsProperty("HDR_OUTPUT_METADATA");
+  return connector->SupportsProperty("HDR_OUTPUT_METADATA") && m_info &&
+         m_info->SupportsHDRStaticMetadataType1();
+}
+
+CHDRCapabilities CWinSystemGbm::GetDisplayHDRCapabilities() const
+{
+  if (!m_info)
+    return {};
+
+  CHDRCapabilities caps;
+
+  if (m_info->SupportsEOTF(UTILS::Eotf::PQ))
+    caps.SetHDR10();
+
+  if (m_info->SupportsEOTF(UTILS::Eotf::HLG))
+    caps.SetHLG();
+
+  return caps;
 }
