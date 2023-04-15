@@ -181,27 +181,28 @@
 
 - (CGLContextObj)getGLContextObj
 {
-  if (!m_glcontext)
-    return nil;
-
+  assert(m_glcontext);
   return [m_glcontext CGLContextObj];
 }
 
 - (void)Update
 {
-  if (!m_glcontext)
-    return;
-
-  // sets current glContext frame (required if we render out of view drawRect)
-  [m_glcontext makeCurrentContext];
+  assert(m_glcontext);
+  [self NotifyContext];
   [m_glcontext update];
+}
+
+- (void)NotifyContext
+{
+  assert(m_glcontext);
+  // signals/notifies the context that this view is current (required if we render out of DrawRect)
+  [m_glcontext makeCurrentContext];
 }
 
 - (void)FlushBuffer
 {
-  if (!m_glcontext)
-    return;
-
+  assert(m_glcontext);
+  [m_glcontext makeCurrentContext];
   [m_glcontext flushBuffer];
 }
 @end

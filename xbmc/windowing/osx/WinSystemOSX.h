@@ -57,6 +57,8 @@ public:
   bool HasCursor() override;
   bool Show(bool raise = true) override;
   void OnMove(int x, int y) override;
+  CGraphicContext& GetGfxContext() const override;
+  bool HasValidResolution() const;
 
   std::string GetClipboardText() override;
 
