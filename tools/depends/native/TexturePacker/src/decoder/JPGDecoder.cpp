@@ -117,8 +117,6 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   frame.rgbaImage.bbp = 32;
   frame.rgbaImage.pitch = 4 * cinfo.image_width;
 
-  frame.decoder = this;
-
   frames.frameList.push_back(frame);
 
   delete arq;

@@ -210,8 +210,6 @@ bool PNGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   frame.rgbaImage.bbp = 32;
   frame.rgbaImage.pitch = 4 * temp_width;
 
-  frame.decoder = this;
-
   frames.frameList.push_back(frame);
   // clean up
   png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
