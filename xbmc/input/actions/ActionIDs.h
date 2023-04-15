@@ -442,6 +442,9 @@ constexpr const int ACTION_VIDEO_NEXT_STREAM = 250;
 //! Used to queue an item to the next position in the playlist
 constexpr const int ACTION_QUEUE_ITEM_NEXT = 251;
 
+//! Used to open the Download Subtitles dialog
+constexpr const int ACTION_DOWNLOAD_SUBTITLES = 252;
+
 constexpr const int ACTION_HDR_TOGGLE = 260; //!< Toggle display HDR on/off
 
 constexpr const int ACTION_CYCLE_TONEMAP_METHOD = 261; //!< Switch to next tonemap method
