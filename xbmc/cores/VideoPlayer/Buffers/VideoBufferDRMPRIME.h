@@ -35,6 +35,7 @@ enum hdmi_eotf
   HDMI_EOTF_BT_2100_HLG,
 };
 
+KODI::UTILS::Colorimetry GetColorimetry(const VideoPicture& picture);
 std::string GetColorEncoding(const VideoPicture& picture);
 std::string GetColorRange(const VideoPicture& picture);
 KODI::UTILS::Eotf GetEOTF(const VideoPicture& picture);
