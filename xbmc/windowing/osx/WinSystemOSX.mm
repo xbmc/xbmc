@@ -622,8 +622,7 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
     m_glView = m_appWindow.contentView;
   });
 
-  [m_glView.getGLContext makeCurrentContext];
-  [m_glView.getGLContext update];
+  [m_glView Update];
 
   NSScreen* currentScreen = [NSScreen mainScreen];
   dispatch_sync(dispatch_get_main_queue(), ^{
@@ -806,7 +805,7 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   if (view)
   {
     dispatch_sync(dispatch_get_main_queue(), ^{
-      [[view getGLContext] update];
+      [view Update];
     });
   }
 
@@ -1161,8 +1160,7 @@ CGLContextObj CWinSystemOSX::GetCGLContextObj()
   if (m_appWindow)
   {
     dispatch_sync(dispatch_get_main_queue(), ^{
-      OSXGLView* contentView = m_appWindow.contentView;
-      cglcontex = contentView.getGLContext.CGLContextObj;
+      cglcontex = [(OSXGLView*)m_appWindow.contentView getGLContextObj];
     });
   }
 
@@ -1174,9 +1172,7 @@ bool CWinSystemOSX::FlushBuffer()
   if (m_appWindow)
   {
     dispatch_sync(dispatch_get_main_queue(), ^{
-      OSXGLView* contentView = m_appWindow.contentView;
-      NSOpenGLContext* glcontex = contentView.getGLContext;
-      [glcontex flushBuffer];
+      [m_appWindow.contentView FlushBuffer];
     });
   }
 

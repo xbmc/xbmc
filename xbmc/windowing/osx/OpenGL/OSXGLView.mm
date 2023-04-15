@@ -179,8 +179,29 @@
     winSystem->signalMouseExited();
 }
 
-- (NSOpenGLContext*)getGLContext
+- (CGLContextObj)getGLContextObj
 {
-  return m_glcontext;
+  if (!m_glcontext)
+    return nil;
+
+  return [m_glcontext CGLContextObj];
+}
+
+- (void)Update
+{
+  if (!m_glcontext)
+    return;
+
+  // sets current glContext frame (required if we render out of view drawRect)
+  [m_glcontext makeCurrentContext];
+  [m_glcontext update];
+}
+
+- (void)FlushBuffer
+{
+  if (!m_glcontext)
+    return;
+
+  [m_glcontext flushBuffer];
 }
 @end
