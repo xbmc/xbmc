@@ -10,7 +10,7 @@
 			<posy>0</posy>
 			<include>ScreenWidth</include>
 			<height>960</height>
-			<texture background="true">$INFO[Player.Art(fanart)]</texture>
+			<texture>$INFO[Player.Art(fanart)]</texture>
 			<aspectratio>scale</aspectratio>
 			<fadetime>FanartCrossfadeTime</fadetime>
 		</control>

@@ -30,7 +30,7 @@
 					<width>526</width>
 					<height>801</height>
 					<aspectratio>scale</aspectratio>
-					<texture fallback="DefaultVideo.png" background="true">$VAR[InfoDialogPosterVar]</texture>
+					<texture fallback="DefaultVideo.png">$VAR[InfoDialogPosterVar]</texture>
 				</control>
 				<control type="group">
 					<visible>String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,video)</visible>
@@ -317,7 +317,7 @@
 								<left>20</left>
 								<width>224</width>
 								<height>277</height>
-								<texture background="true">$INFO[ListItem.Thumb]</texture>
+								<texture>$INFO[ListItem.Thumb]</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">
@@ -369,7 +369,7 @@
 								<left>20</left>
 								<width>224</width>
 								<height>277</height>
-								<texture background="true">$INFO[ListItem.Thumb]</texture>
+								<texture>$INFO[ListItem.Thumb]</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">
@@ -430,7 +430,7 @@
 								<left>20</left>
 								<width>204</width>
 								<height>277</height>
-								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+								<texture>$INFO[ListItem.Art(poster)]</texture>
 								<aspectratio aligny="center">keep</aspectratio>
 							</control>
 							<control type="image">
@@ -472,7 +472,7 @@
 								<left>20</left>
 								<width>204</width>
 								<height>277</height>
-								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+								<texture>$INFO[ListItem.Art(poster)]</texture>
 								<aspectratio aligny="center">keep</aspectratio>
 							</control>
 							<control type="image">

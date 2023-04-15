@@ -61,7 +61,7 @@
 						<bottom>124</bottom>
 						<fadetime>200</fadetime>
 						<aspectratio aligny="bottom">keep</aspectratio>
-						<texture fallback="DefaultVideo.png" background="true">$VAR[InfoWallThumbVar]</texture>
+						<texture fallback="DefaultVideo.png">$VAR[InfoWallThumbVar]</texture>
 					</control>
 					<control type="group">
 						<left>291</left>
@@ -80,7 +80,7 @@
 						<height>470</height>
 						<aspectratio aligny="bottom">keep</aspectratio>
 						<fadetime>300</fadetime>
-						<texture fallback="DefaultAudio.png" background="true">$INFO[Player.Icon]</texture>
+						<texture fallback="DefaultAudio.png">$INFO[Player.Icon]</texture>
 					</control>
 					<control type="group">
 						<left>301</left>
@@ -239,7 +239,7 @@
 					<height>470</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>300</fadetime>
-					<texture fallback="$PARAM[fallback_image]" background="true">$VAR[IconWallThumbVar]</texture>
+					<texture fallback="$PARAM[fallback_image]">$VAR[IconWallThumbVar]</texture>
 					<visible>!String.IsEqual(ListItem.DbType,episode) + !String.IsEqual(ListItem.DBType,song)</visible>
 				</control>
 				<control type="image">
@@ -249,7 +249,7 @@
 					<height>330</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>300</fadetime>
-					<texture background="true">$VAR[ShiftThumbVar]</texture>
+					<texture>$VAR[ShiftThumbVar]</texture>
 					<visible>String.IsEqual(ListItem.DbType,episode)</visible>
 				</control>
 				<control type="image">
@@ -259,7 +259,7 @@
 					<height>470</height>
 					<aspectratio aligny="bottom">keep</aspectratio>
 					<fadetime>300</fadetime>
-					<texture fallback="DefaultAudio.png" background="true">$VAR[IconWallThumbVar]</texture>
+					<texture fallback="DefaultAudio.png">$VAR[IconWallThumbVar]</texture>
 					<visible>String.IsEqual(ListItem.DBType,song)</visible>
 				</control>
 				<control type="group">

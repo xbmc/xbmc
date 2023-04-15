@@ -40,7 +40,7 @@
 					<posy>4</posy>
 					<width>62</width>
 					<height>62</height>
-					<texture background="true">$VAR[PosterThumb]</texture>
+					<texture>$VAR[PosterThumb]</texture>
 					<aspectratio>keep</aspectratio>
 					<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
@@ -49,7 +49,7 @@
 					<posy>4</posy>
 					<width>62</width>
 					<height>62</height>
-					<texture background="true">$INFO[Listitem.Icon]</texture>
+					<texture>$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
 					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Games) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Container.Content(Addons) + ListItem.IsFolder] | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
@@ -182,7 +182,7 @@
 					<posy>4</posy>
 					<width>62</width>
 					<height>62</height>
-					<texture background="true">$VAR[PosterThumb]</texture>
+					<texture>$VAR[PosterThumb]</texture>
 					<aspectratio>keep</aspectratio>
 					<visible>Container.Content(Movies) | Container.Content(Seasons) | Container.Content(TVShows) | Container.Content(Episodes) | Container.Content(MusicVideos) | Container.Content(Videos) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | [Container.Content(Addons) + !ListItem.IsFolder] | Container.Content(Actors) | Container.Content(Sets) | [Window.IsVisible(Pictures) + !String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
@@ -191,7 +191,7 @@
 					<posy>4</posy>
 					<width>62</width>
 					<height>62</height>
-					<texture background="true">$INFO[Listitem.Icon]</texture>
+					<texture>$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
 					<visible>[Container.Content() + !Window.IsVisible(Pictures)] | Container.Content(Files) | Container.Content(Games) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | [Container.Content(Addons) + ListItem.IsFolder] | [Window.IsVisible(Pictures) + String.IsEmpty(Container.FolderPath)]</visible>
 				</control>
@@ -316,7 +316,7 @@
 					<posy>4</posy>
 					<width>82</width>
 					<height>82</height>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="label">
@@ -366,7 +366,7 @@
 					<posy>4</posy>
 					<width>82</width>
 					<height>82</height>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="label">

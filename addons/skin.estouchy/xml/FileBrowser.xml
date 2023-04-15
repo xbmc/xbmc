@@ -141,7 +141,7 @@
 					<posy>0</posy>
 					<width>260</width>
 					<height>260</height>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="label">
@@ -162,7 +162,7 @@
 					<posy>0</posy>
 					<width>260</width>
 					<height>260</height>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="image">

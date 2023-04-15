@@ -32,7 +32,7 @@
 					<posy>5</posy>
 					<width>200</width>
 					<height>200</height>
-					<texture background="true">$INFO[Listitem.Icon]</texture>
+					<texture>$INFO[Listitem.Icon]</texture>
 					<aspectratio>scale</aspectratio>
 					<visible>Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons) | Container.Content(Games) | Container.Content(Images) | Container.Content(Actors) | Container.Content(Sets)</visible>
 				</control>
@@ -41,7 +41,7 @@
 					<posy>62</posy>
 					<width>86</width>
 					<height>86</height>
-					<texture background="true">$INFO[Listitem.Icon]</texture>
+					<texture>$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
 					<visible>Container.Content() | Container.Content(Files) | Container.Content(Games) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | Container.Content(Playlists)</visible>
 				</control>
@@ -104,7 +104,7 @@
 					<posy>5</posy>
 					<width>200</width>
 					<height>200</height>
-					<texture background="true">$INFO[Listitem.Icon]</texture>
+					<texture>$INFO[Listitem.Icon]</texture>
 					<aspectratio>scale</aspectratio>
 					<visible>Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Container.Content(Addons) | Container.Content(Games) | Container.Content(Images) | Container.Content(Actors) | Container.Content(Sets)</visible>
 				</control>
@@ -113,7 +113,7 @@
 					<posy>62</posy>
 					<width>86</width>
 					<height>86</height>
-					<texture background="true">$INFO[Listitem.Icon]</texture>
+					<texture>$INFO[Listitem.Icon]</texture>
 					<aspectratio>keep</aspectratio>
 					<visible>Container.Content() | Container.Content(Files) | Container.Content(Genres) | Container.Content(Years) | Container.Content(Directors) | Container.Content(Studios) | Container.Content(Countries) | Container.Content(Tags) | Container.Content(Playlists)</visible>
 				</control>
@@ -177,7 +177,7 @@
 					<posy>5</posy>
 					<width>200</width>
 					<height>300</height>
-					<texture background="true">$VAR[PosterThumb]</texture>
+					<texture>$VAR[PosterThumb]</texture>
 					<aspectratio>stretch</aspectratio>
 				</control>
 				<control type="image">
@@ -246,7 +246,7 @@
 					<posy>5</posy>
 					<width>200</width>
 					<height>300</height>
-					<texture background="true">$VAR[PosterThumb]</texture>
+					<texture>$VAR[PosterThumb]</texture>
 					<aspectratio>stretch</aspectratio>
 				</control>
 				<control type="image">
@@ -316,7 +316,7 @@
 					<width>298</width>
 					<height>168</height>
 					<aspectratio>scale</aspectratio>
-					<texture background="true">$INFO[Listitem.Icon]</texture>
+					<texture>$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="image">
 					<posx>5</posx>
@@ -377,7 +377,7 @@
 					<width>298</width>
 					<height>168</height>
 					<aspectratio>scale</aspectratio>
-					<texture background="true">$INFO[Listitem.Icon]</texture>
+					<texture>$INFO[Listitem.Icon]</texture>
 				</control>
 				<control type="image">
 					<posx>5</posx>

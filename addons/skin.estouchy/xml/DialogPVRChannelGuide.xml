@@ -61,7 +61,7 @@
 					<posy>2</posy>
 					<width>86</width>
 					<height>86</height>
-					<texture background="true">$VAR[PosterThumb]</texture>
+					<texture>$VAR[PosterThumb]</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="label">
@@ -133,7 +133,7 @@
 					<posy>2</posy>
 					<width>86</width>
 					<height>86</height>
-					<texture background="true">$VAR[PosterThumb]</texture>
+					<texture>$VAR[PosterThumb]</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="label">

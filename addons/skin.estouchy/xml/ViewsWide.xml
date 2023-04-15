@@ -41,7 +41,7 @@
 					<posy>10</posy>
 					<width>150</width>
 					<height>220</height>
-					<texture background="true">$VAR[PosterThumb]</texture>
+					<texture>$VAR[PosterThumb]</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="label">
@@ -147,7 +147,7 @@
 					<posy>10</posy>
 					<width>150</width>
 					<height>220</height>
-					<texture background="true">$VAR[PosterThumb]</texture>
+					<texture>$VAR[PosterThumb]</texture>
 					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="label">
@@ -247,7 +247,7 @@
 					<width>250</width>
 					<height>160</height>
 					<aspectratio>scale</aspectratio>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>10</posx>
@@ -357,7 +357,7 @@
 					<width>250</width>
 					<height>160</height>
 					<aspectratio>scale</aspectratio>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>10</posx>
@@ -460,7 +460,7 @@
 					<width>230</width>
 					<height>230</height>
 					<aspectratio>scale</aspectratio>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>250</posx>
@@ -590,7 +590,7 @@
 					<width>230</width>
 					<height>230</height>
 					<aspectratio>scale</aspectratio>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>250</posx>
@@ -712,7 +712,7 @@
 					<width>230</width>
 					<height>230</height>
 					<aspectratio>scale</aspectratio>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>250</posx>
@@ -771,7 +771,7 @@
 					<width>230</width>
 					<height>230</height>
 					<aspectratio>scale</aspectratio>
-					<texture background="true">$INFO[ListItem.Icon]</texture>
+					<texture>$INFO[ListItem.Icon]</texture>
 				</control>
 				<control type="label">
 					<posx>250</posx>

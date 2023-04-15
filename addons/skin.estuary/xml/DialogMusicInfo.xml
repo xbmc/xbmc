@@ -29,7 +29,7 @@
 					<height>570</height>
 					<aspectratio aligny="top">scale</aspectratio>
 					<fadetime>300</fadetime>
-					<texture background="true">$VAR[MusicInfoThumbVar]</texture>
+					<texture>$VAR[MusicInfoThumbVar]</texture>
 				</control>
 			</control>
 			<control type="group">
@@ -280,7 +280,7 @@
 							<top>21</top>
 							<width>190</width>
 							<height>190</height>
-							<texture border="2" fallback="DefaultAudio.png" background="true">$INFO[ListItem.Thumb]</texture>
+							<texture border="2" fallback="DefaultAudio.png">$INFO[ListItem.Thumb]</texture>
 							<aspectratio>keep</aspectratio>
 							<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 							<bordersize>4</bordersize>
@@ -316,7 +316,7 @@
 								<top>21</top>
 								<width>190</width>
 								<height>190</height>
-								<texture border="2" fallback="DefaultAudio.png" background="true">$INFO[ListItem.Thumb]</texture>
+								<texture border="2" fallback="DefaultAudio.png">$INFO[ListItem.Thumb]</texture>
 								<aspectratio>keep</aspectratio>
 								<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 								<bordersize>4</bordersize>

@@ -29,7 +29,7 @@
 							<top>0</top>
 							<width>860</width>
 							<height>195</height>
-							<texture fallback="dialogs/dialog-bg-nobo.png" background="true">$VAR[BannerArtVar]</texture>
+							<texture fallback="dialogs/dialog-bg-nobo.png">$VAR[BannerArtVar]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -66,7 +66,7 @@
 							<top>0</top>
 							<width>860</width>
 							<height>195</height>
-							<texture fallback="dialogs/dialog-bg-nobo.png" background="true">$VAR[BannerArtVar]</texture>
+							<texture fallback="dialogs/dialog-bg-nobo.png">$VAR[BannerArtVar]</texture>
 							<aspectratio aligny="center">scale</aspectratio>
 							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>

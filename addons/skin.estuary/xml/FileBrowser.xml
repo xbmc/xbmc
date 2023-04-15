@@ -52,7 +52,7 @@
 				<aspectratio aligny="bottom">keep</aspectratio>
 				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
 				<bordersize>4</bordersize>
-				<texture border="4" background="true">$INFO[ListItem.Icon]</texture>
+				<texture border="4">$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="image">
 				<left>0</left>

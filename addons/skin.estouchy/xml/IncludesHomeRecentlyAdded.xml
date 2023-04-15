@@ -54,7 +54,7 @@
 							<posy>15</posy>
 							<width>180</width>
 							<height>270</height>
-							<texture background="true">$VAR[PosterThumb]</texture>
+							<texture>$VAR[PosterThumb]</texture>
 						</control>
 						<control type="label">
 							<posx>10</posx>
@@ -85,7 +85,7 @@
 							<posy>15</posy>
 							<width>180</width>
 							<height>270</height>
-							<texture background="true">$VAR[PosterThumb]</texture>
+							<texture>$VAR[PosterThumb]</texture>
 						</control>
 						<control type="label">
 							<posx>10</posx>
@@ -148,7 +148,7 @@
 							<width>250</width>
 							<height>140</height>
 							<aspectratio>scale</aspectratio>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
+							<texture>$INFO[Listitem.Icon]</texture>
 						</control>
 						<control type="label">
 							<posx>15</posx>
@@ -192,7 +192,7 @@
 							<width>250</width>
 							<height>140</height>
 							<aspectratio>scale</aspectratio>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
+							<texture>$INFO[Listitem.Icon]</texture>
 						</control>
 						<control type="label">
 							<posx>15</posx>
@@ -265,7 +265,7 @@
 							<posy>15</posy>
 							<width>180</width>
 							<height>165</height>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
+							<texture>$INFO[Listitem.Icon]</texture>
 						</control>
 						<control type="label">
 							<posx>15</posx>
@@ -296,7 +296,7 @@
 							<posy>15</posy>
 							<width>180</width>
 							<height>165</height>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
+							<texture>$INFO[Listitem.Icon]</texture>
 						</control>
 						<control type="label">
 							<posx>15</posx>
@@ -357,7 +357,7 @@
 							<posy>15</posy>
 							<width>180</width>
 							<height>165</height>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
+							<texture>$INFO[Listitem.Icon]</texture>
 						</control>
 						<control type="label">
 							<posx>15</posx>
@@ -388,7 +388,7 @@
 							<posy>15</posy>
 							<width>180</width>
 							<height>165</height>
-							<texture background="true">$INFO[Listitem.Icon]</texture>
+							<texture>$INFO[Listitem.Icon]</texture>
 						</control>
 						<control type="label">
 							<posx>15</posx>

@@ -395,7 +395,7 @@
 				<width>400</width>
 				<height>600</height>
 				<aspectratio aligny="bottom">keep</aspectratio>
-				<texture fallback="DefaultVideo.png" background="true">$VAR[NowPlayingPosterVar]</texture>
+				<texture fallback="DefaultVideo.png">$VAR[NowPlayingPosterVar]</texture>
 				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 				<bordersize>20</bordersize>
 				<include>OpenClose_Left</include>

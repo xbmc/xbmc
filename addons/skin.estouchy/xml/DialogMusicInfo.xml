@@ -180,7 +180,7 @@
 				<width>260</width>
 				<height>360</height>
 				<aspectratio>keep</aspectratio>
-				<texture background="true">$INFO[ListItem.Icon]</texture>
+				<texture>$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="textbox">
 				<description>Description Value for Albums</description>
@@ -340,7 +340,7 @@
 				<width>260</width>
 				<height>360</height>
 				<aspectratio>keep</aspectratio>
-				<texture background="true">$INFO[ListItem.Icon]</texture>
+				<texture>$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="textbox">
 				<description>Description Value for Artists</description>

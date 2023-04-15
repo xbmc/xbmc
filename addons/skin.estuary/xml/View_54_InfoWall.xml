@@ -27,7 +27,7 @@
 				<top>10</top>
 				<width>336</width>
 				<height>300</height>
-				<texture border="2" background="true">$VAR[InfoWallThumbVar]</texture>
+				<texture border="2">$VAR[InfoWallThumbVar]</texture>
 				<aspectratio>keep</aspectratio>
 			</control>
 			<control type="label">
@@ -74,7 +74,7 @@
 				<top>0</top>
 				<width>316</width>
 				<height>316</height>
-				<texture fallback="$PARAM[fallback_image]" background="true">$VAR[InfoWallThumbVar]</texture>
+				<texture fallback="$PARAM[fallback_image]">$VAR[InfoWallThumbVar]</texture>
 				<aspectratio>keep</aspectratio>
 				<bordersize>20</bordersize>
 			</control>
@@ -150,7 +150,7 @@
 				<top>10</top>
 				<width>316</width>
 				<height>218</height>
-				<texture fallback="$PARAM[fallback_image]" background="true">$VAR[InfoWallThumbVar]</texture>
+				<texture fallback="$PARAM[fallback_image]">$VAR[InfoWallThumbVar]</texture>
 				<aspectratio>scale</aspectratio>
 				<bordersize>20</bordersize>
 			</control>
@@ -270,7 +270,7 @@
 					<top>-1</top>
 					<width>272</width>
 					<height>270</height>
-					<texture fallback="DefaultMovies.png" background="true">$INFO[ListItem.Icon]</texture>
+					<texture fallback="DefaultMovies.png">$INFO[ListItem.Icon]</texture>
 					<aspectratio>scale</aspectratio>
 					<bordersize>20</bordersize>
 				</control>
@@ -293,7 +293,7 @@
 					<top>-10</top>
 					<width>290</width>
 					<height>400</height>
-					<texture background="true">$INFO[ListItem.Art(poster)]</texture>
+					<texture>$INFO[ListItem.Art(poster)]</texture>
 					<aspectratio>scale</aspectratio>
 					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>

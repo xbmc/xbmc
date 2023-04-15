@@ -20,7 +20,7 @@
 				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<animation effect="fade" start="100" end="50" time="0" condition="Visualisation.Enabled">Conditional</animation>
-				<texture background="true">$INFO[Player.Art(fanart)]</texture>
+				<texture>$INFO[Player.Art(fanart)]</texture>
 				<visible>String.IsEmpty(Window(Visualisation).Property(ArtistSlideshow.Image))</visible>
 			</control>
 			<control type="image">
@@ -29,7 +29,7 @@
 				<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<animation effect="fade" start="100" end="50" time="0" condition="Visualisation.Enabled">Conditional</animation>
-				<texture background="true">$INFO[Window(Visualisation).Property(ArtistSlideshow.Image)]</texture>
+				<texture>$INFO[Window(Visualisation).Property(ArtistSlideshow.Image)]</texture>
 			</control>
 		</control>
 		<control type="group">

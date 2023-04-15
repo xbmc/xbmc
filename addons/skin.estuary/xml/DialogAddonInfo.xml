@@ -41,7 +41,7 @@
 					<control type="image">
 						<width>425</width>
 						<height>260</height>
-						<texture background="true">DefaultNoPreview.png</texture>
+						<texture>DefaultNoPreview.png</texture>
 						<aspectratio>scale</aspectratio>
 						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
@@ -50,7 +50,7 @@
 						<left>405</left>
 						<width>425</width>
 						<height>260</height>
-						<texture background="true">DefaultNoPreview.png</texture>
+						<texture>DefaultNoPreview.png</texture>
 						<aspectratio>scale</aspectratio>
 						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
@@ -59,7 +59,7 @@
 						<left>810</left>
 						<width>425</width>
 						<height>260</height>
-						<texture background="true">DefaultNoPreview.png</texture>
+						<texture>DefaultNoPreview.png</texture>
 						<aspectratio>scale</aspectratio>
 						<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 						<bordersize>20</bordersize>
@@ -78,7 +78,7 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture background="true">DefaultNoPreview.png</texture>
+							<texture>DefaultNoPreview.png</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -87,7 +87,7 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<texture>$INFO[ListItem.Icon]</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -98,7 +98,7 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture background="true">DefaultNoPreview.png</texture>
+							<texture>DefaultNoPreview.png</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -107,7 +107,7 @@
 							<left>-12</left>
 							<width>425</width>
 							<height>260</height>
-							<texture background="true">$INFO[ListItem.Icon]</texture>
+							<texture>$INFO[ListItem.Icon]</texture>
 							<aspectratio>scale</aspectratio>
 							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 							<bordersize>20</bordersize>
@@ -316,7 +316,7 @@
 					<height>500</height>
 					<aspectratio aligny="top">scale</aspectratio>
 					<fadetime>300</fadetime>
-					<texture fallback="DefaultAddon.png" background="true">$INFO[ListItem.Art(thumb)]</texture>
+					<texture fallback="DefaultAddon.png">$INFO[ListItem.Art(thumb)]</texture>
 				</control>
 				<control type="group">
 					<visible>String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24170]) | String.IsEqual(ListItem.AddonLifecycleType,$LOCALIZE[24171])</visible>

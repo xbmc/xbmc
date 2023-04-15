@@ -127,7 +127,7 @@
 			<posy>0</posy>
 			<include>ScreenWidth</include>
 			<height>960</height>
-			<texture background="true">$INFO[Container.Art(tvshow.fanart)]</texture>
+			<texture>$INFO[Container.Art(tvshow.fanart)]</texture>
 			<aspectratio>scale</aspectratio>
 			<fadetime>FanartCrossfadeTime</fadetime>
 			<visible>Container.Content(Seasons) | Container.Content(Episodes)</visible>
@@ -137,7 +137,7 @@
 			<posy>0</posy>
 			<include>ScreenWidth</include>
 			<height>960</height>
-			<texture background="true">$INFO[Container.Art(artist.fanart)]</texture>
+			<texture>$INFO[Container.Art(artist.fanart)]</texture>
 			<aspectratio>scale</aspectratio>
 			<fadetime>FanartCrossfadeTime</fadetime>
 			<visible>Container.Content(Albums) | Container.Content(Songs)</visible>
@@ -147,7 +147,7 @@
 			<posy>0</posy>
 			<include>ScreenWidth</include>
 			<height>960</height>
-			<texture background="true">$INFO[ListItem.Art(fanart)]</texture>
+			<texture>$INFO[ListItem.Art(fanart)]</texture>
 			<aspectratio>scale</aspectratio>
 			<fadetime>FanartCrossfadeTime</fadetime>
 			<visible>![Container.Content(Seasons) | Container.Content(Episodes) | Container.Content(Albums) | Container.Content(Songs)]</visible>
@@ -158,7 +158,7 @@
 			<posy>0</posy>
 			<include>ScreenWidth</include>
 			<height>960</height>
-			<texture background="true">$INFO[Player.Art(fanart)]</texture>
+			<texture>$INFO[Player.Art(fanart)]</texture>
 			<aspectratio>scale</aspectratio>
 			<fadetime>FanartCrossfadeTime</fadetime>
 			<visible>Player.HasMedia</visible>

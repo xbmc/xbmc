@@ -357,9 +357,6 @@ bool CGUIControlFactory::GetTexture(const TiXmlNode* pRootNode, const char* strT
     image.orientation = 3 - image.orientation; // either 3 or 2
   image.diffuse = XMLUtils::GetAttribute(pNode, "diffuse");
   image.diffuseColor.Parse(XMLUtils::GetAttribute(pNode, "colordiffuse"), 0);
-  const char *background = pNode->Attribute("background");
-  if (background && StringUtils::CompareNoCase(background, "true", 4) == 0)
-    image.useLarge = true;
   image.filename = pNode->FirstChild() ? pNode->FirstChild()->Value() : "";
   return true;
 }

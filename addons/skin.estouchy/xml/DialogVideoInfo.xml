@@ -54,7 +54,7 @@
 				<width>240</width>
 				<height>330</height>
 				<aspectratio>keep</aspectratio>
-				<texture background="true">$INFO[ListItem.Icon]</texture>
+				<texture>$INFO[ListItem.Icon]</texture>
 			</control>
 			<control type="textbox" id="600">
 				<description>Description Value</description>
