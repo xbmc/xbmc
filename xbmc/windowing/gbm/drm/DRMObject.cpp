@@ -80,8 +80,8 @@ bool CDRMObject::GetProperties(uint32_t id, uint32_t type)
   return true;
 }
 
-std::optional<uint64_t> CDRMObject::GetPropertyValue(const std::string& name,
-                                                     const std::string& valueName) const
+std::optional<uint64_t> CDRMObject::GetPropertyValue(std::string_view name,
+                                                     std::string_view valueName) const
 {
   auto property = std::find_if(m_propsInfo.begin(), m_propsInfo.end(),
                                [&name](const auto& prop) { return prop->name == name; });
