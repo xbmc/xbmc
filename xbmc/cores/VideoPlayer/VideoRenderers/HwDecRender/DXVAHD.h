@@ -95,12 +95,12 @@ public:
    * Always returns true when the Windows 10+ API is not available or cannot be called successfully.
    * \param inputFormat The source format
    * \param outputFormat The destination format
-   * \param picture Picutre information used to derive the color spaces
+   * \param picture Picture information used to derive the color spaces
    * \return true if the conversion is supported, false otherwise
    */
   bool IsFormatConversionSupported(DXGI_FORMAT inputFormat,
                                    DXGI_FORMAT outputFormat,
-                                   const VideoPicture& picture) const;
+                                   const VideoPicture& picture);
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
@@ -155,6 +155,7 @@ protected:
   Microsoft::WRL::ComPtr<ID3D11VideoDevice> m_pVideoDevice;
   Microsoft::WRL::ComPtr<ID3D11VideoContext> m_pVideoContext;
   Microsoft::WRL::ComPtr<ID3D11VideoProcessorEnumerator> m_pEnumerator;
+  Microsoft::WRL::ComPtr<ID3D11VideoProcessorEnumerator1> m_pEnumerator1;
   Microsoft::WRL::ComPtr<ID3D11VideoProcessor> m_pVideoProcessor;
 };
 
