@@ -749,7 +749,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool bReverse = true;
   bool bReveal = false;
   CTextureInfo textureBackground, textureLeft, textureRight, textureMid, textureOverlay;
-  CTextureInfo textureNib, textureNibFocus, textureBar, textureBarFocus;
+  CTextureInfo textureNib, textureNibFocus, textureNibDisabled, textureBar, textureBarFocus,
+      textureBarDisabled;
   CTextureInfo textureUp, textureDown;
   CTextureInfo textureUpFocus, textureDownFocus;
   CTextureInfo textureUpDisabled, textureDownDisabled;
@@ -974,8 +975,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetTexture(pControlNode, "texturesliderbackground", textureBackground);
   GetTexture(pControlNode, "texturesliderbar", textureBar);
   GetTexture(pControlNode, "texturesliderbarfocus", textureBarFocus);
+  if (!GetTexture(pControlNode, "texturesliderbardisabled", textureBarDisabled))
+    GetTexture(pControlNode, "texturesliderbar", textureBarDisabled); // backward compatibility
   GetTexture(pControlNode, "textureslidernib", textureNib);
   GetTexture(pControlNode, "textureslidernibfocus", textureNibFocus);
+  if (!GetTexture(pControlNode, "textureslidernibdisabled", textureNibDisabled))
+    GetTexture(pControlNode, "textureslidernib", textureNibDisabled); // backward compatibility
 
   GetTexture(pControlNode, "texturecolormask", textureColorMask);
   GetTexture(pControlNode, "texturecolordisabledmask", textureColorDisabledMask);
@@ -1350,8 +1355,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   case CGUIControl::GUICONTROL_SLIDER:
     {
       control = new CGUISliderControl(
-        parentID, id, posX, posY, width, height,
-        textureBar, textureNib, textureNibFocus, SLIDER_CONTROL_TYPE_PERCENTAGE, orientation);
+          parentID, id, posX, posY, width, height, textureBar, textureBarDisabled, textureNib,
+          textureNibFocus, textureNibDisabled, SLIDER_CONTROL_TYPE_PERCENTAGE, orientation);
 
       static_cast<CGUISliderControl*>(control)->SetInfo(singleInfo);
       static_cast<CGUISliderControl*>(control)->SetAction(action);
@@ -1360,8 +1365,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
     {
       control = new CGUISettingsSliderControl(
-        parentID, id, posX, posY, width, height, sliderWidth, sliderHeight, textureFocus, textureNoFocus,
-        textureBar, textureNib, textureNibFocus, labelInfo, SLIDER_CONTROL_TYPE_PERCENTAGE);
+          parentID, id, posX, posY, width, height, sliderWidth, sliderHeight, textureFocus,
+          textureNoFocus, textureBar, textureBarDisabled, textureNib, textureNibFocus,
+          textureNibDisabled, labelInfo, SLIDER_CONTROL_TYPE_PERCENTAGE);
 
       static_cast<CGUISettingsSliderControl*>(control)->SetText(strLabel);
       static_cast<CGUISettingsSliderControl*>(control)->SetInfo(singleInfo);

@@ -2753,7 +2753,7 @@ namespace XBMCAddon
     /// @{
     /// @brief **Used for a volume slider.**
     ///
-    /// \python_class{ ControlSlider(x, y, width, height[, textureback, texture, texturefocus, orientation]) }
+    /// \python_class{ ControlSlider(x, y, width, height[, textureback, texture, texturefocus, orientation, texturebackdisabled, texturedisabled]) }
     ///
     /// The slider control is used for things where a sliding bar best represents
     /// the operation at hand (such as a volume control or seek control). You can
@@ -2769,6 +2769,8 @@ namespace XBMCAddon
     /// @param texture              [opt] string - image filename
     /// @param texturefocus         [opt] string - image filename
     /// @param orientation          [opt] integer - orientation of slider (xbmcgui.HORIZONTAL / xbmcgui.VERTICAL (default))
+    /// @param texturebackdisabled  [opt] string - image filename
+    /// @param texturedisabled      [opt] string - image filename
     ///
     ///
     /// @note You can use the above as keywords for arguments and skip certain
@@ -2791,10 +2793,16 @@ namespace XBMCAddon
     class ControlSlider : public Control
     {
     public:
-      ControlSlider(long x, long y, long width, long height,
+      ControlSlider(long x,
+                    long y,
+                    long width,
+                    long height,
                     const char* textureback = NULL,
                     const char* texture = NULL,
-                    const char* texturefocus = NULL, int orientation = 1);
+                    const char* texturefocus = NULL,
+                    int orientation = 1,
+                    const char* texturebackdisabled = NULL,
+                    const char* texturedisabled = NULL);
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
@@ -2946,8 +2954,10 @@ namespace XBMCAddon
 
 #ifndef SWIG
       std::string strTextureBack;
+      std::string strTextureBackDisabled;
       std::string strTexture;
       std::string strTextureFoc;
+      std::string strTextureDisabled;
       int iOrientation;
 
       CGUIControl* Create() override;

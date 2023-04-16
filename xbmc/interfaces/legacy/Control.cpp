@@ -447,10 +447,16 @@ namespace XBMCAddon
 
     // ============================================================
     // ============================================================
-    ControlSlider::ControlSlider(long x, long y, long width, long height,
+    ControlSlider::ControlSlider(long x,
+                                 long y,
+                                 long width,
+                                 long height,
                                  const char* textureback,
                                  const char* texture,
-                                 const char* texturefocus, int orientation)
+                                 const char* texturefocus,
+                                 int orientation,
+                                 const char* texturebackdisabled,
+                                 const char* texturedisabled)
     {
       dwPosX = x;
       dwPosY = y;
@@ -461,10 +467,12 @@ namespace XBMCAddon
       // if texture is supplied use it, else get default ones
       strTextureBack = textureback ? textureback :
         XBMCAddonUtils::getDefaultImage("slider", "texturesliderbar");
+      strTextureBackDisabled = texturebackdisabled ? texturebackdisabled : strTextureBack;
       strTexture = texture ? texture :
         XBMCAddonUtils::getDefaultImage("slider", "textureslidernib");
       strTextureFoc = texturefocus ? texturefocus :
         XBMCAddonUtils::getDefaultImage("slider", "textureslidernibfocus");
+      strTextureDisabled = texturedisabled ? texturedisabled : strTexture;
     }
 
     float ControlSlider::getPercent()
@@ -510,12 +518,13 @@ namespace XBMCAddon
       }
     }
 
-    CGUIControl* ControlSlider::Create ()
+    CGUIControl* ControlSlider::Create()
     {
-      pGUIControl = new CGUISliderControl(iParentId, iControlId,(float)dwPosX, (float)dwPosY,
-                                          (float)dwWidth,(float)dwHeight,
-                                          CTextureInfo(strTextureBack),CTextureInfo(strTexture),
-                                          CTextureInfo(strTextureFoc), 0, ORIENTATION(iOrientation));
+      pGUIControl = new CGUISliderControl(
+          iParentId, iControlId, (float)dwPosX, (float)dwPosY, (float)dwWidth, (float)dwHeight,
+          CTextureInfo(strTextureBack), CTextureInfo(strTextureBackDisabled),
+          CTextureInfo(strTexture), CTextureInfo(strTextureFoc), CTextureInfo(strTextureDisabled),
+          0, ORIENTATION(iOrientation));
 
       return pGUIControl;
     }
