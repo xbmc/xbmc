@@ -143,8 +143,10 @@
 	</default>
 	<default type="slider">
 		<texturesliderbar border="10">buttons/slider-back.png</texturesliderbar>
+		<texturesliderbardisabled colordiffuse="disabled">buttons/slider-back.png</texturesliderbardisabled>
 		<textureslidernib>buttons/slider-nib.png</textureslidernib>
 		<textureslidernibfocus colordiffuse="button_focus">buttons/slider-nib.png</textureslidernibfocus>
+		<textureslidernibdisabled colordiffuse="disabled">buttons/slider-nib.png</textureslidernibdisabled>
 		<orientation>horizontal</orientation>
 	</default>
 	<default type="sliderex">
@@ -155,8 +157,10 @@
 		<sliderwidth>150</sliderwidth>
 		<sliderheight>28</sliderheight>
 		<texturesliderbar>buttons/slider-back.png</texturesliderbar>
+		<texturesliderbardisabled colordiffuse="disabled">buttons/slider-back.png</texturesliderbardisabled>
 		<textureslidernib>buttons/slider-nib.png</textureslidernib>
 		<textureslidernibfocus colordiffuse="button_focus">buttons/slider-nib.png</textureslidernibfocus>
+		<textureslidernibdisabled colordiffuse="disabled">buttons/slider-nib.png</textureslidernibdisabled>
 		<font>font13</font>
 		<textcolor>white</textcolor>
 		<disabledcolor>disabled</disabledcolor>
