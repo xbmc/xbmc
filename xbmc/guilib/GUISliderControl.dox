@@ -22,8 +22,10 @@ the position, size, and look of the slider control.
       <height>30</height>
       <visible>true</visible>
       <texturesliderbar>mybackgroundtexture.png</texturesliderbar>
+      <texturesliderbardisabled>mydisabledbackgroundtexture.png</texturesliderbardisabled>
       <textureslidernib>mydowntexture.png</textureslidernib>
       <textureslidernibfocus>mydownfocustexture.png</textureslidernibfocus>
+      <textureslidernibdisabled>mydisablednibtexture.png</textureslidernibdisabled>
       <info></info>
       <action></action>
       <controloffsetx></controloffsetx>
@@ -45,16 +47,18 @@ In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_
 the following tags are available. Note that each tag is lower case only. This is
 important, as xml tags are case-sensitive.
 
-| Tag                   | Description                                                   |
-|----------------------:|:--------------------------------------------------------------|
-| texturesliderbar      | Specifies the image file which should be displayed in the background of the slider control. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
-| textureslidernib      | Specifies the image file which should be displayed for the slider nib.
-| textureslidernibfocus | Specifies the image file which should be displayed for the slider nib when it has focus.
-| controloffsetx        | Amount to offset the slider background texture from the left edge of the control. Only useful if a value is being rendered as well (ie in int or float mode).
-| controloffsety        | Amount to offset the slider background texture from the top edge of the control.
-| info                  | Specifies the information that the slider controls. [See here for more information](http://kodi.wiki/view/InfoLabels).
-| orientation           | Specifies whether this scrollbar is horizontal or vertical. Defaults to vertical.
-| action                | Can be <b>`volume`</b> to adjust the volume, <b>`seek`</b> to change the seek position, <b>`pvr.seek`</b> for timeshifting in PVR.
+| Tag                      | Description                                                   |
+|-------------------------:|:--------------------------------------------------------------|
+| texturesliderbar         | Specifies the image file which should be displayed in the background of the slider control. [See here for additional information about textures](http://kodi.wiki/view/Texture_Attributes).
+| texturesliderdisabled    | Specifies the image file which should be displayed in the background of the slider control when it is disabled.
+| textureslidernib         | Specifies the image file which should be displayed for the slider nib.
+| textureslidernibfocus    | Specifies the image file which should be displayed for the slider nib when it has focus.
+| textureslidernibdisabled | Specifies the image file which should be displayed for the slider nib when it is disabled.
+| controloffsetx           | Amount to offset the slider background texture from the left edge of the control. Only useful if a value is being rendered as well (ie in int or float mode).
+| controloffsety           | Amount to offset the slider background texture from the top edge of the control.
+| info                     | Specifies the information that the slider controls. [See here for more information](http://kodi.wiki/view/InfoLabels).
+| orientation              | Specifies whether this scrollbar is horizontal or vertical. Defaults to vertical.
+| action                   | Can be <b>`volume`</b> to adjust the volume, <b>`seek`</b> to change the seek position, <b>`pvr.seek`</b> for timeshifting in PVR.
 
 \section Slider_Control_revhistory Revision History
 
