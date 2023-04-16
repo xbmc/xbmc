@@ -113,8 +113,10 @@
 		<controloffsetx>75</controloffsetx>
 		<controloffsety>0</controloffsety>
 		<texturesliderbar>slider.png</texturesliderbar>
+		<texturesliderbardisabled colordiffuse="grey2">slider.png</texturesliderbardisabled>
 		<textureslidernib>slider_nofocus.png</textureslidernib>
 		<textureslidernibfocus>slider_focus.png</textureslidernibfocus>
+		<textureslidernibdisabled colordiffuse="grey2">slider_nofocus.png"</textureslidernibdisabled>
 		<orientation>horizontal</orientation>
 	</default>
 	<default type="sliderex">
@@ -126,8 +128,10 @@
 		<sliderwidth>350</sliderwidth>
 		<sliderheight>40</sliderheight>
 		<texturesliderbar>slider.png</texturesliderbar>
+		<texturesliderbardisabled colordiffuse="grey2">slider.png</texturesliderbardisabled>
 		<textureslidernib>slider_nofocus.png</textureslidernib>
 		<textureslidernibfocus>slider_focus.png</textureslidernibfocus>
+		<textureslidernibdisabled colordiffuse="grey2">slider_nofocus.png"</textureslidernibdisabled>
 		<font>font16</font>
 		<textcolor>white</textcolor>
 		<disabledcolor>grey2</disabledcolor>
