@@ -101,6 +101,15 @@ public:
   bool IsFormatConversionSupported(DXGI_FORMAT inputFormat,
                                    DXGI_FORMAT outputFormat,
                                    const VideoPicture& picture);
+  /*!
+   * \brief Outputs in the log a list of conversions supported by the DXVA processor.
+   * \param inputFormat The source format
+   * \param outputFormat The destination format
+   * \param picture Picture information used to derive the color spaces
+   */
+  void ListSupportedConversions(const DXGI_FORMAT& inputFormat,
+                                const DXGI_FORMAT& outputFormat,
+                                const VideoPicture& picture);
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
@@ -132,6 +141,17 @@ protected:
   DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
                                                 bool supportHDR,
                                                 bool limitedRange) const;
+  /*!
+   * \brief Converts ffmpeg AV parameters to a DXGI color space
+   * \param csArgs ffmpeg AV picture parameters
+   * \return DXGI color space
+   */
+  static DXGI_COLOR_SPACE_TYPE AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs);
+  /*!
+   * \brief Retrieve the list of DXGI_FORMAT supported as output by the DXVA processor
+   * \return Vector of formats
+   */
+  std::vector<DXGI_FORMAT> GetProcessorOutputFormats() const;
 
   CCriticalSection m_section;
 
