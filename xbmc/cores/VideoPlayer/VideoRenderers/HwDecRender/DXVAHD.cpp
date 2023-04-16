@@ -17,6 +17,7 @@
 #include "VideoRenderers/RenderManager.h"
 #include "VideoRenderers/windows/RendererBase.h"
 #include "rendering/dx/RenderContext.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <mutex>
@@ -814,4 +815,217 @@ bool CProcessorHD::IsBT2020Supported()
       LOGWARNING,
       "Input color space BT.2020 is not supported by video processor. DXVA will not be used.");
   return false;
+}
+
+void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
+                                            const DXGI_FORMAT& heuristicsOutputFormat,
+                                            const VideoPicture& picture)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  // Windows 8 and above compatible code
+  if (!m_pEnumerator)
+    return;
+
+  HRESULT hr;
+  UINT uiFlags;
+
+  if (FAILED(hr = m_pEnumerator->CheckVideoProcessorFormat(inputFormat, &uiFlags)))
+  {
+    CLog::LogF(LOGDEBUG, "unable to retrieve processor support of input format {}. Error {}",
+               DX::DXGIFormatToString(inputFormat), DX::GetErrorDescription(hr));
+    return;
+  }
+  else if (!(uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
+  {
+    CLog::LogF(LOGERROR, "input format {} not supported by the processor. No conversion possible.",
+               DX::DXGIFormatToString(inputFormat));
+    return;
+  }
+
+  // Windows 10 and above from this point on
+  if (!m_pEnumerator1)
+    return;
+
+  const DXGIColorSpaceArgs csArgs = DXGIColorSpaceArgs(picture);
+
+  // Defaults used by Kodi
+  const ProcColorSpaces heuristicsCS = CalculateDXGIColorSpaces(csArgs);
+  BOOL supported{FALSE};
+
+  const DXGI_COLOR_SPACE_TYPE inputNativeCS = AvToDxgiColorSpace(csArgs);
+  CLog::LogF(LOGDEBUG, "The source is {} / {}", DX::DXGIFormatToString(inputFormat),
+             DX::DXGIColorSpaceTypeToString(inputNativeCS));
+
+  if (SUCCEEDED(hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
+                    inputFormat, inputNativeCS, heuristicsOutputFormat,
+                    heuristicsCS.outputColorSpace, &supported)))
+  {
+    CLog::LogF(LOGDEBUG, "conversion from {} / {} to {} / {} is {}supported.",
+               DX::DXGIFormatToString(inputFormat), DX::DXGIColorSpaceTypeToString(inputNativeCS),
+               DX::DXGIFormatToString(heuristicsOutputFormat),
+               DX::DXGIColorSpaceTypeToString(heuristicsCS.outputColorSpace),
+               supported == TRUE ? "" : "NOT ");
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "unable to validate the default format conversion, error {}",
+               DX::GetErrorDescription(hr));
+  }
+
+  // Possible input color spaces: YCbCr only
+  std::vector<DXGI_COLOR_SPACE_TYPE> ycbcrColorSpaces;
+  // Possible output color spaces: RGB only
+  std::vector<DXGI_COLOR_SPACE_TYPE> rgbColorSpaces;
+
+  for (UINT colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+       colorSpace < DXGI_COLOR_SPACE_YCBCR_STUDIO_G24_TOPLEFT_P2020; ++colorSpace)
+  {
+    DXGI_COLOR_SPACE_TYPE cs = static_cast<DXGI_COLOR_SPACE_TYPE>(colorSpace);
+
+    constexpr std::string_view rgb("RGB_");
+    if (DX::DXGIColorSpaceTypeToString(cs).compare(0, rgb.size(), rgb) == 0)
+      rgbColorSpaces.push_back(cs);
+
+    constexpr std::string_view ycbcr("YCBCR_");
+    if (DX::DXGIColorSpaceTypeToString(cs).compare(0, ycbcr.size(), ycbcr) == 0)
+      ycbcrColorSpaces.push_back(cs);
+  }
+
+  // Only probe the output formats of RGB/BGR type supported by the processor.
+  std::vector<DXGI_FORMAT> outputFormats;
+  for (const auto& format : GetProcessorOutputFormats())
+  {
+    std::string name = DX::DXGIFormatToString(format);
+    if (name.find('R') != std::string::npos && name.find('G') != std::string::npos &&
+        name.find('B') != std::string::npos)
+      outputFormats.push_back(format);
+  }
+
+  // Color spaces supported directly by the swap chain - as a set for easy lookup
+  std::vector<DXGI_COLOR_SPACE_TYPE> bbcs = DX::DeviceResources::Get()->GetSwapChainColorSpaces();
+  std::set<DXGI_COLOR_SPACE_TYPE> backbufferColorSpaces(bbcs.begin(), bbcs.end());
+
+  std::string conversions;
+
+  // The input format cannot be worked around and is fixed.
+  // Loop over the lists of:
+  // - input color spaces
+  // - output formats
+  // - output color spaces
+  for (const DXGI_COLOR_SPACE_TYPE& inputCS : ycbcrColorSpaces)
+  {
+    for (const DXGI_FORMAT& outputFormat : outputFormats)
+    {
+      for (const DXGI_COLOR_SPACE_TYPE& outputCS : rgbColorSpaces)
+      {
+        if (SUCCEEDED(m_pEnumerator1->CheckVideoProcessorFormatConversion(
+                inputFormat, inputCS, outputFormat, outputCS, &supported)) &&
+            supported == TRUE)
+        {
+          conversions.append("\n");
+          conversions.append(StringUtils::Format(
+              "{} {} / {}{} {:<{}} to {} {:<{}} / {}{} {:<{}}", "*",
+              DX::DXGIFormatToString(inputFormat),
+              (inputCS == heuristicsCS.inputColorSpace) ? "*" : " ",
+              (inputCS == inputNativeCS) ? "N" : " ", DX::DXGIColorSpaceTypeToString(inputCS), 32,
+              (outputFormat == heuristicsOutputFormat) ? "*" : " ",
+              DX::DXGIFormatToString(outputFormat), 26,
+              (outputCS == heuristicsCS.outputColorSpace) ? "*" : " ",
+              (backbufferColorSpaces.find(outputCS) != backbufferColorSpaces.end()) ? "bb" : "  ",
+              DX::DXGIColorSpaceTypeToString(outputCS), 32));
+        }
+      }
+    }
+  }
+
+  CLog::LogF(LOGDEBUG,
+             "supported conversions from format {}\n(*: values picked by "
+             "heuristics, N native input color space, bb supported as swap chain backbuffer){}",
+             DX::DXGIFormatToString(inputFormat), conversions);
+}
+
+std::vector<DXGI_FORMAT> CProcessorHD::GetProcessorOutputFormats() const
+{
+  std::vector<DXGI_FORMAT> result;
+
+  UINT uiFlags;
+  for (int fmt = DXGI_FORMAT_UNKNOWN; fmt <= DXGI_FORMAT_V408; fmt++)
+  {
+    DXGI_FORMAT dxgiFormat = static_cast<DXGI_FORMAT>(fmt);
+    if (S_OK == m_pEnumerator->CheckVideoProcessorFormat(dxgiFormat, &uiFlags) &&
+        uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT)
+      result.push_back(dxgiFormat);
+  }
+  return result;
+}
+
+DXGI_COLOR_SPACE_TYPE CProcessorHD::AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs)
+{
+  // RGB
+  if (csArgs.color_space == AVCOL_SPC_RGB)
+  {
+    if (!csArgs.full_range)
+    {
+      if (csArgs.primaries == AVCOL_PRI_BT2020)
+      {
+        if (csArgs.color_transfer == AVCOL_TRC_SMPTEST2084)
+          return DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
+
+        return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
+      }
+      return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
+    }
+
+    if (csArgs.primaries == AVCOL_PRI_BT2020)
+    {
+      if (csArgs.color_transfer == AVCOL_TRC_SMPTEST2084)
+        return DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+
+      return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
+    }
+    if (csArgs.color_transfer == AVCOL_TRC_LINEAR || csArgs.color_transfer == AVCOL_TRC_LOG)
+      return DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
+
+    return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+  }
+  // UHDTV
+  if (csArgs.primaries == AVCOL_PRI_BT2020)
+  {
+    if (csArgs.color_transfer == AVCOL_TRC_SMPTEST2084)
+      // Full range DXGI_COLOR_SPACE_YCBCR_FULL_G2084_LEFT_P2020 does not exist at this time
+      return DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
+
+    // HLG transfer can be used for HLG source in SDR display if is supported
+    if (csArgs.color_transfer == AVCOL_TRC_ARIB_STD_B67)
+    {
+      if (csArgs.full_range)
+        return DXGI_COLOR_SPACE_YCBCR_FULL_GHLG_TOPLEFT_P2020;
+      else
+        return DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020;
+    }
+
+    if (csArgs.full_range)
+      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P2020;
+    else
+      return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
+  }
+  // SDTV
+  if (csArgs.primaries == AVCOL_PRI_BT470BG || csArgs.primaries == AVCOL_PRI_SMPTE170M)
+  {
+    if (csArgs.full_range)
+      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P601;
+
+    return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P601;
+  }
+  // HDTV
+  if (csArgs.full_range)
+  {
+    if (csArgs.color_transfer == AVCOL_TRC_SMPTE170M)
+      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_NONE_P709_X601;
+
+    return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P709;
+  }
+
+  return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
 }
