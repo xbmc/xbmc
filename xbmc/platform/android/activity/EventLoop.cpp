@@ -8,10 +8,7 @@
 
 #include "EventLoop.h"
 
-#include "AndroidExtra.h"
 #include "XBMCApp.h"
-
-#include <dlfcn.h>
 
 #define IS_FROM_SOURCE(v, s) ((v & s) == s)
 
