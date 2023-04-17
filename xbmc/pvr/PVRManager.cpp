@@ -756,6 +756,9 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
     return false;
   }
 
+  // reinit playbackstate as new client may provide new last opened group / last played channel
+  m_playbackState->ReInit();
+
   PublishEvent(PVREvent::ClientsInvalidated);
   return true;
 }
