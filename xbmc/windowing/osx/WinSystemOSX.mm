@@ -426,8 +426,7 @@ static void DisplayReconfigured(CGDirectDisplayID display,
   if (flags & kCGDisplayBeginConfigurationFlag)
   {
     // pre/post-reconfiguration changes
-    RESOLUTION res = CServiceBroker::GetWinSystem()->GetGfxContext().GetVideoResolution();
-    if (res == RES_INVALID)
+    if (!winsys->HasValidResolution())
       return;
 
     NSScreen* pScreen = nil;
@@ -536,7 +535,7 @@ void CWinSystemOSX::AnnounceOnResetDevice()
   // doing the callbacks
   GetScreenResolution(&w, &h, &currentFps, currentScreenIdx);
 
-  CServiceBroker::GetWinSystem()->GetGfxContext().SetFPS(currentFps);
+  m_gfxContext->SetFPS(currentFps);
 
   std::unique_lock<CCriticalSection> lock(m_resourceSection);
   // tell any shared resources
@@ -622,8 +621,7 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
     m_glView = m_appWindow.contentView;
   });
 
-  [m_glView.getGLContext makeCurrentContext];
-  [m_glView.getGLContext update];
+  [m_glView Update];
 
   NSScreen* currentScreen = [NSScreen mainScreen];
   dispatch_sync(dispatch_get_main_queue(), ^{
@@ -806,7 +804,7 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   if (view)
   {
     dispatch_sync(dispatch_get_main_queue(), ^{
-      [[view getGLContext] update];
+      [view Update];
     });
   }
 
@@ -962,6 +960,11 @@ void CWinSystemOSX::GetScreenResolution(size_t* w, size_t* h, double* fps, unsig
   }
 }
 
+bool CWinSystemOSX::HasValidResolution() const
+{
+  return m_gfxContext->GetVideoResolution() != RES_INVALID;
+}
+
 #pragma mark - Video Modes
 
 bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate)
@@ -1074,7 +1077,7 @@ void CWinSystemOSX::FillInVideoModes()
         {
           UpdateDesktopResolution(res, (dispName != nil) ? [dispName UTF8String] : "Unknown",
                                   static_cast<int>(w), static_cast<int>(h), refreshrate, 0);
-          CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(res);
+          m_gfxContext->ResetOverscan(res);
           CDisplaySettings::GetInstance().AddResolutionInfo(res);
         }
       }
@@ -1161,12 +1164,23 @@ CGLContextObj CWinSystemOSX::GetCGLContextObj()
   if (m_appWindow)
   {
     dispatch_sync(dispatch_get_main_queue(), ^{
-      OSXGLView* contentView = m_appWindow.contentView;
-      cglcontex = contentView.getGLContext.CGLContextObj;
+      cglcontex = [(OSXGLView*)m_appWindow.contentView getGLContextObj];
     });
   }
 
   return cglcontex;
+}
+
+CGraphicContext& CWinSystemOSX::GetGfxContext() const
+{
+  if (m_glView)
+  {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      [m_glView NotifyContext];
+    });
+  }
+
+  return CWinSystemBase::GetGfxContext();
 }
 
 bool CWinSystemOSX::FlushBuffer()
@@ -1174,9 +1188,7 @@ bool CWinSystemOSX::FlushBuffer()
   if (m_appWindow)
   {
     dispatch_sync(dispatch_get_main_queue(), ^{
-      OSXGLView* contentView = m_appWindow.contentView;
-      NSOpenGLContext* glcontex = contentView.getGLContext;
-      [glcontex flushBuffer];
+      [m_appWindow.contentView FlushBuffer];
     });
   }
 
