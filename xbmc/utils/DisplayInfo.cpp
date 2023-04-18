@@ -136,8 +136,8 @@ void CDisplayInfo::LogInfo() const
               m_hdr_static_metadata->eotfs->traditional_sdr);
     CLog::Log(LOGINFO, "[display-info]   traditional hdr: {}",
               m_hdr_static_metadata->eotfs->traditional_hdr);
-    CLog::Log(LOGINFO, "[display-info]   traditional pq:  {}", m_hdr_static_metadata->eotfs->pq);
-    CLog::Log(LOGINFO, "[display-info]   traditional hlg: {}", m_hdr_static_metadata->eotfs->hlg);
+    CLog::Log(LOGINFO, "[display-info]   pq:              {}", m_hdr_static_metadata->eotfs->pq);
+    CLog::Log(LOGINFO, "[display-info]   hlg:             {}", m_hdr_static_metadata->eotfs->hlg);
 
     CLog::Log(LOGINFO, "[display-info] luma min: '{}' avg: '{}' max: '{}'",
               m_hdr_static_metadata->desired_content_min_luminance,
