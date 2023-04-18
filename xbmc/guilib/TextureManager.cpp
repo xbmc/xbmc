@@ -340,19 +340,22 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   if (bundle >= 0 && StringUtils::EndsWithNoCase(strPath, ".gif"))
   {
     CTextureMap* pMap = nullptr;
-    std::vector<std::pair<std::unique_ptr<CTexture>, int>> textures;
-    int nLoops = 0, width = 0, height = 0;
-    bool success = m_TexBundle[bundle].LoadAnim(strTextureName, textures, width, height, nLoops);
-    if (!success)
+    std::optional<CTextureBundleXBT::Animation> animation =
+        m_TexBundle[bundle].LoadAnim(strTextureName);
+    if (!animation)
     {
       CLog::Log(LOGERROR, "Texture manager unable to load bundled file: {}", strTextureName);
       return emptyTexture;
     }
 
+    int nLoops = animation.value().loops;
+    int width = animation.value().width;
+    int height = animation.value().height;
+
     unsigned int maxWidth = 0;
     unsigned int maxHeight = 0;
     pMap = new CTextureMap(strTextureName, width, height, nLoops);
-    for (auto& texture : textures)
+    for (auto& texture : animation.value().textures)
     {
       maxWidth = std::max(maxWidth, texture.first->GetWidth());
       maxHeight = std::max(maxHeight, texture.first->GetHeight());

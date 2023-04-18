@@ -52,16 +52,12 @@ std::optional<CTextureBundleXBT::Texture> CTextureBundle::LoadTexture(const std:
     return {};
 }
 
-bool CTextureBundle::LoadAnim(const std::string& filename,
-                              std::vector<std::pair<std::unique_ptr<CTexture>, int>>& textures,
-                              int& width,
-                              int& height,
-                              int& nLoops)
+std::optional<CTextureBundleXBT::Animation> CTextureBundle::LoadAnim(const std::string& filename)
 {
   if (m_useXBT)
-    return m_tbXBT.LoadAnim(filename, textures, width, height, nLoops);
+    return m_tbXBT.LoadAnim(filename);
   else
-    return false;
+    return {};
 }
 
 void CTextureBundle::Close()

@@ -170,26 +170,24 @@ std::optional<CTextureBundleXBT::Texture> CTextureBundleXBT::LoadTexture(
   if (!texture.texture)
     return {};
 
-  return std::make_optional<CTextureBundleXBT::Texture>(std::move(texture));
+  return std::make_optional<Texture>(std::move(texture));
 }
 
-bool CTextureBundleXBT::LoadAnim(const std::string& filename,
-                                 std::vector<std::pair<std::unique_ptr<CTexture>, int>>& textures,
-                                 int& width,
-                                 int& height,
-                                 int& nLoops)
+std::optional<CTextureBundleXBT::Animation> CTextureBundleXBT::LoadAnim(const std::string& filename)
 {
   std::string name = Normalize(filename);
 
   CXBTFFile file;
   if (!m_XBTFReader->Get(name, file))
-    return false;
+    return {};
 
   if (file.GetFrames().empty())
-    return false;
+    return {};
 
   size_t nTextures = file.GetFrames().size();
-  textures.reserve(nTextures);
+
+  Animation animation;
+  animation.textures.reserve(nTextures);
 
   for (size_t i = 0; i < nTextures; i++)
   {
@@ -197,16 +195,16 @@ bool CTextureBundleXBT::LoadAnim(const std::string& filename,
 
     std::unique_ptr<CTexture> texture = ConvertFrameToTexture(filename, frame);
     if (!texture)
-      return false;
+      return {};
 
-    textures.emplace_back(std::move(texture), frame.GetDuration());
+    animation.textures.emplace_back(std::move(texture), frame.GetDuration());
   }
 
-  width = file.GetFrames().at(0).GetWidth();
-  height = file.GetFrames().at(0).GetHeight();
-  nLoops = file.GetLoop();
+  animation.width = file.GetFrames().at(0).GetWidth();
+  animation.height = file.GetFrames().at(0).GetHeight();
+  animation.loops = file.GetLoop();
 
-  return true;
+  return std::make_optional<Animation>(std::move(animation));
 }
 
 std::unique_ptr<CTexture> CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
