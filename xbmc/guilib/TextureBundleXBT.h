@@ -8,14 +8,16 @@
 
 #pragma once
 
+#include "Texture.h"
+
 #include <cstdint>
 #include <ctime>
 #include <memory>
+#include <optional>
 #include <string>
 #include <utility>
 #include <vector>
 
-class CTexture;
 class CXBTFReader;
 class CXBTFFrame;
 
@@ -31,13 +33,17 @@ public:
   std::vector<std::string> GetTexturesFromPath(const std::string& path);
   static std::string Normalize(std::string name);
 
+  struct Texture
+  {
+    std::unique_ptr<CTexture> texture;
+    int width;
+    int height;
+  };
+
   /*!
    * \brief See CTextureBundle::LoadTexture
    */
-  bool LoadTexture(const std::string& filename,
-                   std::unique_ptr<CTexture>& texture,
-                   int& width,
-                   int& height);
+  std::optional<Texture> LoadTexture(const std::string& filename);
 
   /*!
    * \brief See CTextureBundle::LoadAnim

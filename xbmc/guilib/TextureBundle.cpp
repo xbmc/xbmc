@@ -44,15 +44,12 @@ std::vector<std::string> CTextureBundle::GetTexturesFromPath(const std::string& 
     return {};
 }
 
-bool CTextureBundle::LoadTexture(const std::string& filename,
-                                 std::unique_ptr<CTexture>& texture,
-                                 int& width,
-                                 int& height)
+std::optional<CTextureBundleXBT::Texture> CTextureBundle::LoadTexture(const std::string& filename)
 {
   if (m_useXBT)
-    return m_tbXBT.LoadTexture(filename, texture, width, height);
+    return m_tbXBT.LoadTexture(filename);
   else
-    return false;
+    return {};
 }
 
 bool CTextureBundle::LoadAnim(const std::string& filename,
