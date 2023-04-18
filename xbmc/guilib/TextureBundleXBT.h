@@ -45,14 +45,18 @@ public:
    */
   std::optional<Texture> LoadTexture(const std::string& filename);
 
+  struct Animation
+  {
+    std::vector<std::pair<std::unique_ptr<CTexture>, int>> textures;
+    int width;
+    int height;
+    int loops;
+  };
+
   /*!
    * \brief See CTextureBundle::LoadAnim
    */
-  bool LoadAnim(const std::string& filename,
-                std::vector<std::pair<std::unique_ptr<CTexture>, int>>& textures,
-                int& width,
-                int& height,
-                int& nLoops);
+  std::optional<Animation> LoadAnim(const std::string& filename);
 
   //! @todo Change return to std::optional<std::vector<uint8_t>>> when c++17 is allowed
   static std::vector<uint8_t> UnpackFrame(const CXBTFReader& reader, const CXBTFFrame& frame);
