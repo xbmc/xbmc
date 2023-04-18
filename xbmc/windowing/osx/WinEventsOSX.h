@@ -15,6 +15,7 @@
 #include <memory>
 
 struct CWinEventsOSXImplWrapper;
+@class NSEvent;
 
 class CWinEventsOSX : public IWinEvents, public CThread
 {
@@ -28,6 +29,10 @@ public:
 
   void enableInputEvents();
   void disableInputEvents();
+
+  void signalMouseEntered();
+  void signalMouseExited();
+  void SendInputEvent(NSEvent* nsEvent);
 
 private:
   std::unique_ptr<CWinEventsOSXImplWrapper> m_eventsImplWrapper;

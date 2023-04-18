@@ -22,6 +22,13 @@
 #include <mutex>
 #include <stdlib.h>
 
+#include <fmt/ostream.h>
+
+template<>
+struct fmt::formatter<std::thread::id> : ostream_formatter
+{
+};
+
 static thread_local CThread* currentThread;
 
 //////////////////////////////////////////////////////////////////////
@@ -110,9 +117,6 @@ void CThread::Create(bool bAutoDelete)
         // to be set before anything else is done.
         currentThread = pThread;
 
-        std::string name;
-        bool autodelete;
-
         if (pThread == nullptr)
         {
           CLog::Log(LOGERROR, "{}, sanity failed. thread is NULL.", __FUNCTION__);
@@ -120,31 +124,26 @@ void CThread::Create(bool bAutoDelete)
           return;
         }
 
-        name = pThread->m_ThreadName;
-
-        std::stringstream ss;
-        ss << std::this_thread::get_id();
-        std::string id = ss.str();
-        autodelete = pThread->m_bAutoDelete;
-
         pThread->m_impl = IThreadImpl::CreateThreadImpl(pThread->m_thread->native_handle());
-        pThread->m_impl->SetThreadInfo(name);
+        pThread->m_impl->SetThreadInfo(pThread->m_ThreadName);
 
-        CLog::Log(LOGDEBUG, "Thread {} start, auto delete: {}", name,
-                  (autodelete ? "true" : "false"));
+        CLog::Log(LOGDEBUG, "Thread {} start, auto delete: {}", pThread->m_ThreadName,
+                  (pThread->m_bAutoDelete ? "true" : "false"));
 
         pThread->m_StartEvent.Set();
 
         pThread->Action();
 
-        if (autodelete)
+        if (pThread->m_bAutoDelete)
         {
-          CLog::Log(LOGDEBUG, "Thread {} {} terminating (autodelete)", name, id);
+          CLog::Log(LOGDEBUG, "Thread {} {} terminating (autodelete)", pThread->m_ThreadName,
+                    std::this_thread::get_id());
           delete pThread;
           pThread = NULL;
         }
         else
-          CLog::Log(LOGDEBUG, "Thread {} {} terminating", name, id);
+          CLog::Log(LOGDEBUG, "Thread {} {} terminating", pThread->m_ThreadName,
+                    std::this_thread::get_id());
       }
       catch (const std::exception& e)
       {

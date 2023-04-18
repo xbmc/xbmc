@@ -110,12 +110,12 @@ bool HasSystemSdrPeakLuminance(const std::string& condition,
   return CServiceBroker::GetWinSystem()->HasSystemSdrPeakLuminance();
 }
 
-bool IsFullscreen(const std::string& condition,
-                  const std::string& value,
-                  const SettingConstPtr& setting,
-                  void* data)
+bool SupportsScreenMove(const std::string& condition,
+                        const std::string& value,
+                        const SettingConstPtr& setting,
+                        void* data)
 {
-  return CServiceBroker::GetWinSystem()->IsFullScreen();
+  return CServiceBroker::GetWinSystem()->SupportsScreenMove();
 }
 
 bool IsHDRDisplay(const std::string& condition,
@@ -456,7 +456,7 @@ void CSettingConditions::Initialize()
   m_complexConditions.emplace("hasrumblecontroller", HasRumbleController);
   m_complexConditions.emplace("haspowerofffeature", HasPowerOffFeature);
   m_complexConditions.emplace("hassystemsdrpeakluminance", HasSystemSdrPeakLuminance);
-  m_complexConditions.emplace("isfullscreen", IsFullscreen);
+  m_complexConditions.emplace("supportsscreenmove", SupportsScreenMove);
   m_complexConditions.emplace("ishdrdisplay", IsHDRDisplay);
   m_complexConditions.emplace("ismasteruser", IsMasterUser);
   m_complexConditions.emplace("hassubtitlesfontextensions", HasSubtitlesFontExtensions);

@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-20 09:09+0000\n"
+"Last-Translator: taxigps <taxigps@sina.com>\n"
+"Language-Team: Chinese (China) <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/zh_cn/>\n"
+"Language: zh_cn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "从 Kodi.tv 安装插件"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "从 Kodi.tv 官方插件库下载并安装插件。[CR]通过使用官方插件库，您将能够利用我们遍布各地的文件镜像服务，就近高速下载。[CR]本插件库中的所有插件都已进行基本测试，如果您发现损坏或无法工作的插件，请报告给 Kodi 团队，以便我们及时处理。"
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "此插件库中插件并不完全由 Kodi 团队制作，对相关内容不承担责任"

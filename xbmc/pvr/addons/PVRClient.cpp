@@ -121,8 +121,7 @@ void CPVRClient::ResetProperties()
   m_connectionState = PVR_CONNECTION_STATE_UNKNOWN;
   m_prevConnectionState = PVR_CONNECTION_STATE_UNKNOWN;
   m_ignoreClient = false;
-  m_iPriority = 0;
-  m_bPriorityFetched = false;
+  m_priority.reset();
   m_strBackendVersion = DEFAULT_INFO_STRING_VALUE;
   m_strConnectionString = DEFAULT_INFO_STRING_VALUE;
   m_strBackendName = DEFAULT_INFO_STRING_VALUE;
@@ -166,21 +165,29 @@ void CPVRClient::ResetProperties()
 
 ADDON_STATUS CPVRClient::Create()
 {
-  ADDON_STATUS status(ADDON_STATUS_UNKNOWN);
-
   ResetProperties();
 
-  /* initialise the add-on */
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Creating PVR add-on instance '{}'", ID());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Creating PVR add-on instance [{},{},{}]", ID(), InstanceId(),
+              m_iClientId);
 
-  bool bReadyToUse = false;
-  if ((status = CreateInstance()) == ADDON_STATUS_OK)
-    bReadyToUse = GetAddonProperties();
+  const ADDON_STATUS status = CreateInstance();
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Created PVR add-on instance '{}'. readytouse={} ", ID(),
-              bReadyToUse);
+  if (status == ADDON_STATUS_OK)
+  {
+    m_bReadyToUse = GetAddonProperties();
 
-  m_bReadyToUse = bReadyToUse;
+    CLog::LogFC(LOGDEBUG, LOGPVR,
+                "Created PVR add-on instance {}. readytouse={}, ignoreclient={}, "
+                "connectionstate={}",
+                GetID(), m_bReadyToUse, IgnoreClient(), GetConnectionState());
+  }
+  else
+  {
+    m_bReadyToUse = false;
+
+    CLog::LogF(LOGERROR, "Failed to create PVR add-on instance {}. status={}", GetID(), status);
+  }
+
   return status;
 }
 
@@ -191,14 +198,14 @@ void CPVRClient::Destroy()
 
   m_bReadyToUse = false;
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Destroying PVR add-on instance '{}'", ID());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Destroying PVR add-on instance {}", GetID());
 
   m_bBlockAddonCalls = true;
   m_allAddonCallsFinished.Wait();
 
   DestroyInstance();
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Destroyed PVR add-on instance '{}'", ID());
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Destroyed PVR add-on instance {}", GetID());
 
   if (m_menuhooks)
     m_menuhooks->Clear();
@@ -209,7 +216,7 @@ void CPVRClient::Destroy()
 void CPVRClient::Stop()
 {
   m_bBlockAddonCalls = true;
-  m_bPriorityFetched = false;
+  m_priority.reset();
 }
 
 void CPVRClient::Continue()
@@ -383,7 +390,7 @@ bool CPVRClient::GetAddonProperties()
           {
             if (types_array[i].iId == PVR_TIMER_TYPE_NONE)
             {
-              CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on '{}'.", ID());
+              CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on {}.", GetID());
               continue;
             }
             timerTypes.emplace_back(
@@ -1305,21 +1312,21 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
 
   if (m_bBlockAddonCalls)
   {
-    CLog::Log(LOGWARNING, "{}: Blocking call to add-on '{}'.", strFunctionName, ID());
+    CLog::Log(LOGWARNING, "{}: Blocking call to add-on {}.", strFunctionName, GetID());
     return PVR_ERROR_SERVER_ERROR;
   }
 
   if (bCheckReadyToUse && IgnoreClient())
   {
-    CLog::Log(LOGWARNING, "{}: Blocking call to add-on '{}'. Add-on not (yet) connected.",
-              strFunctionName, ID());
+    CLog::Log(LOGWARNING, "{}: Blocking call to add-on {}. Add-on not (yet) connected.",
+              strFunctionName, GetID());
     return PVR_ERROR_SERVER_ERROR;
   }
 
   if (bCheckReadyToUse && !ReadyToUse())
   {
-    CLog::Log(LOGWARNING, "{}: Blocking call to add-on '{}'. Add-on not ready to use.",
-              strFunctionName, ID());
+    CLog::Log(LOGWARNING, "{}: Blocking call to add-on {}. Add-on not ready to use.",
+              strFunctionName, GetID());
     return PVR_ERROR_SERVER_ERROR;
   }
 
@@ -1327,7 +1334,13 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
   m_allAddonCallsFinished.Reset();
   m_iAddonCalls++;
 
+  //  CLog::LogFC(LOGDEBUG, LOGPVR, "Calling add-on function '{}' on client {}.", strFunctionName,
+  //              GetID());
+
   const PVR_ERROR error = function(m_ifc.pvr);
+
+  //  CLog::LogFC(LOGDEBUG, LOGPVR, "Called add-on function '{}' on client {}. return={}",
+  //              strFunctionName, GetID(), error);
 
   m_iAddonCalls--;
   if (m_iAddonCalls == 0)
@@ -1335,7 +1348,7 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
 
   // Log error, if any.
   if (error != PVR_ERROR_NO_ERROR && error != PVR_ERROR_NOT_IMPLEMENTED)
-    CLog::Log(LOGERROR, "{}: Add-on '{}' returned an error: {}", strFunctionName, ID(),
+    CLog::Log(LOGERROR, "{}: Add-on {} returned an error: {}", strFunctionName, GetID(),
               ToString(error));
 
   return error;
@@ -1357,7 +1370,7 @@ PVR_ERROR CPVRClient::OpenLiveStream(const std::shared_ptr<CPVRChannel>& channel
 
     if (!CanPlayChannel(channel))
     {
-      CLog::LogFC(LOGDEBUG, LOGPVR, "Add-on '{}' can not play channel '{}'", ID(),
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Add-on {} can not play channel '{}'", GetID(),
                   channel->ChannelName());
       return PVR_ERROR_SERVER_ERROR;
     }
@@ -1578,26 +1591,25 @@ PVR_ERROR CPVRClient::CallSettingsMenuHook(const CPVRClientMenuHook& hook)
 void CPVRClient::SetPriority(int iPriority)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  if (m_iPriority != iPriority)
+  if (m_priority != iPriority)
   {
-    m_iPriority = iPriority;
+    m_priority = iPriority;
     if (m_iClientId > PVR_INVALID_CLIENT_ID)
     {
       CServiceBroker::GetPVRManager().GetTVDatabase()->Persist(*this);
-      m_bPriorityFetched = true;
     }
+    CServiceBroker::GetPVRManager().PublishEvent(PVREvent::ClientsPrioritiesInvalidated);
   }
 }
 
 int CPVRClient::GetPriority() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  if (!m_bPriorityFetched && m_iClientId > PVR_INVALID_CLIENT_ID)
+  if (!m_priority.has_value() && m_iClientId > PVR_INVALID_CLIENT_ID)
   {
-    m_iPriority = CServiceBroker::GetPVRManager().GetTVDatabase()->GetPriority(*this);
-    m_bPriorityFetched = true;
+    m_priority = CServiceBroker::GetPVRManager().GetTVDatabase()->GetPriority(*this);
   }
-  return m_iPriority;
+  return *m_priority;
 }
 
 void CPVRClient::HandleAddonCallback(const char* strFunctionName,
@@ -1644,7 +1656,7 @@ void CPVRClient::cb_transfer_channel_group(void* kodiInstance,
     // transfer this entry to the groups container
     CPVRChannelGroups* kodiGroups = static_cast<CPVRChannelGroups*>(handle->dataAddress);
     const auto transferGroup =
-        std::make_shared<CPVRChannelGroup>(*group, kodiGroups->GetGroupAll());
+        std::make_shared<CPVRChannelGroup>(*group, client->GetID(), kodiGroups->GetGroupAll());
     kodiGroups->UpdateFromClient(transferGroup);
   });
 }
@@ -1672,8 +1684,8 @@ void CPVRClient::cb_transfer_channel_group_member(void* kodiInstance,
     {
       auto* groupMembers =
           static_cast<std::vector<std::shared_ptr<CPVRChannelGroupMember>>*>(handle->dataAddress);
-      groupMembers->emplace_back(
-          std::make_shared<CPVRChannelGroupMember>(member->strGroupName, member->iOrder, channel));
+      groupMembers->emplace_back(std::make_shared<CPVRChannelGroupMember>(
+          member->strGroupName, client->GetID(), member->iOrder, channel));
     }
   });
 }
@@ -1820,8 +1832,8 @@ void CPVRClient::cb_recording_notification(void* kodiInstance,
       eventLog->Add(EventPtr(
           new CNotificationEvent(client->GetFriendlyName(), strLine1, client->Icon(), strLine2)));
 
-    CLog::LogFC(LOGDEBUG, LOGPVR, "Recording {} on client '{}'. name='{}' filename='{}'",
-                bOnOff ? "started" : "finished", client->ID(), strName, strFileName);
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Recording {} on client {}. name='{}' filename='{}'",
+                bOnOff ? "started" : "finished", client->GetID(), strName, strFileName);
   });
 }
 
@@ -1908,9 +1920,8 @@ void CPVRClient::cb_connection_state_change(void* kodiInstance,
     if (prevState == newState)
       return;
 
-    CLog::LogFC(LOGDEBUG, LOGPVR,
-                "State for connection '{}' on client '{}' changed from '{}' to '{}'",
-                strConnectionString, client->ID(), prevState, newState);
+    CLog::LogFC(LOGDEBUG, LOGPVR, "Connection state for client {} changed from {} to {}",
+                client->GetID(), prevState, newState);
 
     client->SetConnectionState(newState);
 

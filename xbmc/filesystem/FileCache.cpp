@@ -38,12 +38,10 @@ using namespace std::chrono_literals;
 class CWriteRate
 {
 public:
-  CWriteRate()
+  CWriteRate() : m_stamp(std::chrono::steady_clock::now()), m_time(std::chrono::milliseconds(0))
   {
-    m_stamp = std::chrono::steady_clock::now();
     m_pos   = 0;
     m_size = 0;
-    m_time = std::chrono::milliseconds(0);
   }
 
   void Reset(int64_t pos, bool bResetAll = true)

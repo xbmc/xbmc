@@ -63,7 +63,11 @@ endif()
 
 # where is the target environment
 if(NOT "@use_toolchain@" STREQUAL "")
-  list(APPEND CMAKE_FIND_ROOT_PATH @use_toolchain@/sysroot/usr)
+  if("@target_platform@" STREQUAL "webos")
+    list(APPEND CMAKE_FIND_ROOT_PATH @use_toolchain@/@use_host@/sysroot)
+  else()
+    list(APPEND CMAKE_FIND_ROOT_PATH @use_toolchain@/sysroot/usr)
+  endif()
 endif()
 
 # add Android directories and tools

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-01-29 21:15+0000\n"
+"PO-Revision-Date: 2023-03-26 07:48+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/it_it/>\n"
 "Language: it_it\n"
@@ -31,7 +31,7 @@ msgstr "Estuary è la skin predefinita di Kodi, rimuoverla potrebbe causare prob
 
 msgctxt "#31000"
 msgid "Now playing"
-msgstr "In riproduzione"
+msgstr "Ora in riproduzione"
 
 msgctxt "#31001"
 msgid "Search..."
@@ -71,7 +71,7 @@ msgstr "Scarica icone"
 
 msgctxt "#31010"
 msgid "In progress movies"
-msgstr "Film non terminati"
+msgstr "Film in corso"
 
 msgctxt "#31011"
 msgid "Most played albums"
@@ -163,7 +163,7 @@ msgstr "Informazioni sulla versione"
 
 msgctxt "#31032"
 msgid "Order"
-msgstr "Ordina"
+msgstr "Ordinamento"
 
 msgctxt "#31033"
 msgid "Your rating"
@@ -283,7 +283,7 @@ msgstr "Registro eventi"
 
 msgctxt "#31068"
 msgid "Choose presets"
-msgstr "Scegli predefiniti"
+msgstr "Scegli preimpostazioni"
 
 msgctxt "#31069"
 msgid "Last Updated"
@@ -295,7 +295,7 @@ msgstr "da"
 
 msgctxt "#31072"
 msgid "Power Options"
-msgstr "Opzioni alimentazione"
+msgstr "Opzioni spegnimento"
 
 msgctxt "#31073"
 msgid "Total length"
@@ -307,7 +307,7 @@ msgstr "Durata totale"
 
 msgctxt "#31075"
 msgid "Movie sets"
-msgstr "Raccolte di film"
+msgstr "Saghe cinematografiche"
 
 msgctxt "#31079"
 msgid "Cast not available"
@@ -351,11 +351,11 @@ msgstr "Sottotitoli locali disponibili"
 
 msgctxt "#31097"
 msgid "Channel options"
-msgstr "Opzioni canali"
+msgstr "Opzioni canale"
 
 msgctxt "#31098"
 msgid "Select your Kodi user profile[CR]to login and continue"
-msgstr "Selezionare il proprio profilo utente di Kodi[CR]per accedere e proseguire"
+msgstr "Seleziona il tuo profilo utente Kodi[CR]per accedere e continuare"
 
 #. viewtype name
 msgctxt "#31099"
@@ -379,7 +379,7 @@ msgstr "Muro"
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "Inserire il testo qui..."
+msgstr "Inserisci il testo qui..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
@@ -396,7 +396,7 @@ msgstr "Televideo"
 #. viewtype name
 msgctxt "#31107"
 msgid "WideList"
-msgstr "Lista ampia"
+msgstr "Elenco ampio"
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -617,7 +617,7 @@ msgstr "Mostra sfondo fanart"
 #. Choose profile identifier
 msgctxt "#31164"
 msgid "Choose kind of profile identification"
-msgstr "Scegli il tipo di identificazione del profilo"
+msgstr "Scegli tipo di identificazione del profilo"
 
 #. Label for the kind of profile identification
 msgctxt "#31165"
@@ -677,7 +677,7 @@ msgstr "Azione di selezione predefinita per le serie TV nella schermata iniziale
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
-msgstr "Azione di selezione predefinita per i set cinematografici nella schermata iniziale"
+msgstr "Azione di selezione predefinita per le saghe cinematografiche nella schermata iniziale"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name

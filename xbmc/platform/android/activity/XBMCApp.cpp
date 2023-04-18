@@ -22,6 +22,8 @@
 #include "messaging/ApplicationMessenger.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "windowing/GraphicContext.h"
 
 #include <mutex>
@@ -291,6 +293,16 @@ void CXBMCApp::onResume()
   if (g_application.IsInitialized() &&
       CServiceBroker::GetWinSystem()->GetOSScreenSaver()->IsInhibited())
     KeepScreenOn(true);
+
+  // Reset shutdown timer on wake up
+  if (g_application.IsInitialized() &&
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+          CSettings::SETTING_POWERMANAGEMENT_SHUTDOWNTIME))
+  {
+    auto& components = CServiceBroker::GetAppComponents();
+    const auto appPower = components.GetComponent<CApplicationPowerHandling>();
+    appPower->ResetShutdownTimers();
+  }
 
   m_headsetPlugged = isHeadsetPlugged();
 
@@ -722,18 +734,14 @@ void CXBMCApp::SetRefreshRate(float rate)
   }
 
   m_refreshRate = rate;
-
   m_displayChangeEvent.Reset();
+
+  if (m_hdmiSource)
+    dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
+
   CVariant *variant = new CVariant(rate);
   runNativeOnUiThread(SetRefreshRateCallback, variant);
-  if (g_application.IsInitialized())
-  {
-    m_displayChangeEvent.Wait(5000ms);
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    if (m_hdmiSource && appPlayer->IsPlaying())
-      dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
-  }
+  m_displayChangeEvent.Wait(5000ms);
 }
 
 void CXBMCApp::SetDisplayMode(int mode, float rate)
@@ -750,19 +758,17 @@ void CXBMCApp::SetDisplayMode(int mode, float rate)
   }
 
   m_displayChangeEvent.Reset();
+
+  if (m_hdmiSource)
+    dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
+
   std::map<std::string, CVariant> vmap;
   vmap["mode"] = mode;
   m_refreshRate = rate;
   CVariant *variant = new CVariant(vmap);
   runNativeOnUiThread(SetDisplayModeCallback, variant);
   if (g_application.IsInitialized())
-  {
     m_displayChangeEvent.Wait(5000ms);
-    const auto& components = CServiceBroker::GetAppComponents();
-    const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    if (m_hdmiSource && appPlayer->IsPlaying())
-      dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
-  }
 }
 
 int CXBMCApp::android_printf(const char *format, ...)

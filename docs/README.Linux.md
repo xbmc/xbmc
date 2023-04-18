@@ -124,7 +124,7 @@ Internal dependencies that are based on cmake upstream (currently crossguid, ffm
 
 **Note:** fstrcmp requires libtool
 
-**[back to top](#table-of-contents)** | **[back to section top](#3-installing-the-required-packages)**
+**[back to top](#table-of-contents)** | **[back to section top](#3-install-the-required-packages)**
 
 ## 4. Build Kodi
 ### 4.1. Configure build
@@ -252,6 +252,12 @@ Build a specific group of add-ons:
 ```
 sudo make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons PREFIX=/usr/local ADDONS="pvr.*"
 ```
+
+Clean-up binary add-ons:
+```
+sudo make -C tools/depends/target/binary-addons clean
+```
+
 For additional information on regular expression usage for ADDONS_TO_BUILD, view ADDONS_TO_BUILD section located here [Kodi add-ons CMake based buildsystem](../cmake/addons/README.md)
 
 **NOTE:** `PREFIX=/usr/local` should match Kodi's `-DCMAKE_INSTALL_PREFIX=` prefix used in **[section 4.1](#41-configure-build)**.

@@ -1041,7 +1041,10 @@ int CDecoder::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic, int flags)
   }
   pic->buf[0] = buffer;
 
-  pic->reordered_opaque= avctx->reordered_opaque;
+#if LIBAVCODEC_VERSION_MAJOR < 60
+  pic->reordered_opaque = avctx->reordered_opaque;
+#endif
+
   return 0;
 }
 
@@ -2824,15 +2827,15 @@ bool CMixer::CheckStatus(VdpStatus vdp_st, int line)
 //-----------------------------------------------------------------------------
 // Output
 //-----------------------------------------------------------------------------
-COutput::COutput(CDecoder &decoder, CEvent *inMsgEvent) :
-  CThread("Vdpau Output"),
-  m_controlPort("OutputControlPort", inMsgEvent, &m_outMsgEvent),
-  m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent),
-  m_vdpau(decoder),
-  m_mixer(&m_outMsgEvent)
+COutput::COutput(CDecoder& decoder, CEvent* inMsgEvent)
+  : CThread("Vdpau Output"),
+    m_controlPort("OutputControlPort", inMsgEvent, &m_outMsgEvent),
+    m_dataPort("OutputDataPort", inMsgEvent, &m_outMsgEvent),
+    m_vdpau(decoder),
+    m_bufferPool(std::make_shared<CVdpauBufferPool>(decoder)),
+    m_mixer(&m_outMsgEvent)
 {
   m_inMsgEvent = inMsgEvent;
-  m_bufferPool = std::make_shared<CVdpauBufferPool>(decoder);
 }
 
 void COutput::Start()

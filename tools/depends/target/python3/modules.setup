@@ -219,7 +219,7 @@ _sqlite3 _sqlite/blob.c _sqlite/connection.c _sqlite/cursor.c _sqlite/microproto
 
 # To statically link OpenSSL:
  _ssl _ssl.c -I$(prefix)/include -I$(prefix)/include/openssl \
-	-L$(prefix)/lib -lintl -lssl -lcrypto
+	-L$(prefix)/lib -lintl $(LDFLAGS) -lssl -lcrypto
  _hashlib _hashopenssl.c -I$(prefix)/include -I$(prefix)/include/openssl \
 	-L$(prefix)/lib
 

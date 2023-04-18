@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.default"
         name="Default Controller"
-        version="1.0.35"
+        version="1.0.39"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -14,7 +14,7 @@
         <summary lang="ca_ES">Comandament per defecte</summary>
         <summary lang="cs_CZ">Výchozí ovladač</summary>
         <summary lang="da_DK">Standard controller</summary>
-        <summary lang="de_DE">Standard-Controller</summary>
+        <summary lang="de_DE">Standardcontroller</summary>
         <summary lang="en_GB">Default Controller</summary>
         <summary lang="es_ES">Mando por defecto</summary>
         <summary lang="es_MX">Mando por defecto</summary>
@@ -29,6 +29,7 @@
         <summary lang="it_IT">Controller predefinito</summary>
         <summary lang="ko_KR">기본 콘트롤러</summary>
         <summary lang="lt_LT">Numatytasis valdiklis</summary>
+        <summary lang="lv_LV">Standarta kontrolieris</summary>
         <summary lang="nb_NO">Forvalgt kontroller</summary>
         <summary lang="nl_NL">Standaard Controller</summary>
         <summary lang="oc_FR">Contrarotlaire per defaut</summary>
@@ -37,7 +38,7 @@
         <summary lang="ru_RU">Стандартный контроллер</summary>
         <summary lang="sk_SK">Predvolený Ovládač</summary>
         <summary lang="sv_SE">Standard handkontroll</summary>
-        <summary lang="tr_TR">Varsayılan Denetimci</summary>
+        <summary lang="tr_TR">Varsayılan Denetleyici</summary>
         <summary lang="zh_CN">默认控制器</summary>
         <summary lang="zh_TW">預設控制器</summary>
         <description lang="be_BY">Прадвызначаны кантролер на аснове кантролера Xbox 360.</description>
@@ -51,7 +52,7 @@
         <description lang="es_MX">El mando por defecto de Kodi se basa en el control de Xbox 360.</description>
         <description lang="fa_IR">دستهٔ پیش‌گزیدهٔ مرکز رسانه، بر پایهٔ دستهٔ اکس‌باکس ۳۶۰ است.</description>
         <description lang="fi_FI">Mediakeskuksen oletusohjain perustuu Xbox 360 -ohjaimeen.</description>
-        <description lang="fr_FR">La manette par défaut du centre multimedia est basée sur la manette de la Xbox 360.</description>
+        <description lang="fr_FR">La manette par défaut du centre multimédia est basée sur la manette de la Xbox 360.</description>
         <description lang="he_IL">בקר בררת המחדל של מרכז המדיה מבוסס על הבקר של Xbox 360.</description>
         <description lang="hr_HR">Zadani upravljač medijskog centra temelji se na Xbox 360 upravljačkom uređaju.</description>
         <description lang="hu_HU">Az alapértelmezett médiaközpont -vezérlő az Xbox 360 vezérlőn alapul.</description>
@@ -60,12 +61,13 @@
         <description lang="it_IT">Il controller predefinito del media center è basato sul controller Xbox 360.</description>
         <description lang="ko_KR">기본 미디어 센터 컨트롤러는 Xbox 360 컨트롤러를 기반으로 합니다.</description>
         <description lang="lt_LT">Numatytasis media centro valdiklis yra paremtas Xbox 360 valdikliu.</description>
+        <description lang="lv_LV">Standarta mediju centra kontrolleris, kas balstīts uz Xbox 360 kontrolieri.</description>
         <description lang="nl_NL">De standaard media centrum controller is gebaseerd op de Xbox 360 controller.</description>
         <description lang="pl_PL">Domyślny kontroler centrum multimedialnego jest oparty na kontrolerze Xbox 360.</description>
         <description lang="pt_BR">O controlador do media center padrão é baseado no controlador do Xbox 360.</description>
         <description lang="ru_RU">Стандартный контроллер, основанный на контроллере Xbox 360.</description>
         <description lang="sk_SK">Predvolený ovládač media centra je založený na ovládači Xbox 360.</description>
-        <description lang="tr_TR">Varsayılan ortam merkezi denetimcisi, Xbox 360 denetimcisini temel alır.</description>
+        <description lang="tr_TR">Varsayılan ortam merkezi denetleyicisi, Xbox 360 denetimcisini temel alır.</description>
         <description lang="zh_CN">默认媒体中心控制器基于 Xbox 360 控制器。</description>
         <description lang="zh_TW">預設的媒體中心控制器佈局是以Xbox 360控制器為基礎。</description>
         <disclaimer lang="be_BY">Крыніца выяў: Wikipedia (wikipedia.org)</disclaimer>
@@ -79,7 +81,7 @@
         <disclaimer lang="es_MX">Crédito de la imagen: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="fa_IR">اعتبار تصویر: ویکی‌پدیا (wikipedia.org)</disclaimer>
         <disclaimer lang="fi_FI">Kuvan lähde: Wikipedia (wikipedia.org)</disclaimer>
-        <disclaimer lang="fr_FR">Crédit Image : Wikipédia (wikipedia.org)</disclaimer>
+        <disclaimer lang="fr_FR">Crédit Image: Wikipédia (wikipedia.org)</disclaimer>
         <disclaimer lang="he_IL">זכויות על התמונה: ויקיפדיה (wikipedia.org)</disclaimer>
         <disclaimer lang="hr_HR">Izvor slike: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="hu_HU">Kép credit: Wikipedia (wikipedia.org)</disclaimer>
@@ -88,6 +90,7 @@
         <disclaimer lang="it_IT">Credito immagine: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="ko_KR">이미지 제공: Wikipedia(wikipedia.org)</disclaimer>
         <disclaimer lang="lt_LT">Atvaizdo šaltinis: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="lv_LV">Attēla avots: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="nb_NO">Bildekilde: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="nl_NL">Bron afbeelding: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="oc_FR">Crèdit imatge : Wikipedia (wikipedia.org)</disclaimer>

@@ -1368,12 +1368,12 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
         (*it)->m_processingBuffers->Flush();
         m_discardBufferPools.push_back((*it)->m_processingBuffers->GetResampleBuffers());
         m_discardBufferPools.push_back((*it)->m_processingBuffers->GetAtempoBuffers());
-        delete (*it)->m_processingBuffers;
-        (*it)->m_processingBuffers = nullptr;
+        (*it)->m_processingBuffers.reset();
       }
       if (!(*it)->m_processingBuffers)
       {
-        (*it)->m_processingBuffers = new CActiveAEStreamBuffers((*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
+        (*it)->m_processingBuffers = std::make_unique<CActiveAEStreamBuffers>(
+            (*it)->m_inputBuffers->m_format, outputFormat, m_settings.resampleQuality);
         (*it)->m_processingBuffers->ForceResampler((*it)->m_forceResampler);
 
         (*it)->m_processingBuffers->Create(MAX_CACHE_LEVEL*1000, false, m_settings.stereoupmix, m_settings.normalizelevels);
@@ -1481,12 +1481,11 @@ CActiveAEStream* CActiveAE::CreateStream(MsgStreamNew *streamMsg)
   // create the stream
   CActiveAEStream *stream;
   stream = new CActiveAEStream(&streamMsg->format, m_streamIdGen++, this);
-  stream->m_streamPort = new CActiveAEDataProtocol("stream",
-                             &stream->m_inMsgEvent, &m_outMsgEvent);
+  stream->m_streamPort =
+      std::make_unique<CActiveAEDataProtocol>("stream", &stream->m_inMsgEvent, &m_outMsgEvent);
 
   // create buffer pool
   stream->m_inputBuffers = NULL; // create in Configure when we know the sink format
-  stream->m_processingBuffers = NULL; // create in Configure when we know the sink format
   stream->m_fadingSamples = 0;
   stream->m_started = false;
   stream->m_resampleMode = 0;
@@ -1529,10 +1528,8 @@ void CActiveAE::DiscardStream(CActiveAEStream *stream)
         m_discardBufferPools.push_back((*it)->m_processingBuffers->GetResampleBuffers());
         m_discardBufferPools.push_back((*it)->m_processingBuffers->GetAtempoBuffers());
       }
-      delete (*it)->m_processingBuffers;
       CLog::Log(LOGDEBUG, "CActiveAE::DiscardStream - audio stream deleted");
       m_stats.RemoveStream((*it)->m_id);
-      delete (*it)->m_streamPort;
       delete (*it);
       it = m_streams.erase(it);
     }

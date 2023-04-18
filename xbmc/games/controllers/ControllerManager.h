@@ -10,10 +10,16 @@
 
 #include "ControllerTypes.h"
 #include "addons/IAddon.h"
+#include "threads/CriticalSection.h"
 
 #include <map>
 #include <set>
 #include <string>
+
+namespace ADDON
+{
+struct AddonEvent;
+} // namespace ADDON
 
 namespace KODI
 {
@@ -22,8 +28,8 @@ namespace GAME
 class CControllerManager
 {
 public:
-  CControllerManager() = default;
-  ~CControllerManager() = default;
+  CControllerManager(ADDON::CAddonMgr& addonManager);
+  ~CControllerManager();
 
   /*!
    * \brief Get a controller
@@ -67,10 +73,21 @@ public:
   ControllerVector GetControllers();
 
 private:
+  // Add-on event handler
+  void OnEvent(const ADDON::AddonEvent& event);
+
+  // Utility functions
   ControllerPtr LoadController(const ADDON::AddonPtr& addon);
 
+  // Construction parameters
+  ADDON::CAddonMgr& m_addonManager;
+
+  // Controller state
   std::map<std::string, ControllerPtr> m_cache;
   std::set<std::string> m_failedControllers; // Controllers that failed to load
+
+  // Synchronization parameters
+  CCriticalSection m_mutex;
 };
 } // namespace GAME
 } // namespace KODI

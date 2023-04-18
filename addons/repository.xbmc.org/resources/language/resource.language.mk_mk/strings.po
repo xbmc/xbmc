@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-27 15:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Macedonian <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/mk_mk/>\n"
+"Language: mk_mk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n==1 || n%10==1 ? 0 : 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "Инсталирај Додатоци од Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "Превземи и инсталирај Додатоци од официјалниот Kodi.tv склад.[CR] Со користење на официјалниот склад ќе бидете во можност да ги користите предностите на нашата богата датотека со услуги која ви помага да добиете побрзи превземања од регионот блиску до вас.[CR]  Сите Додатоци во овој склад се основно тестирани, ако најдете неисправни или додатоци кои не работат пријавете го тоа на тимот на Kodi така што ќе можеме да превземеме било каква акција што е потребна."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "Kodi тимот ги нема направено сите овие додатоци и не е одговорен за нивната содржина"

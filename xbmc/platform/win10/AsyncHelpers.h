@@ -10,10 +10,20 @@
 
 #include <ppl.h>
 #include <ppltasks.h>
+#include <sdkddkver.h>
 
 namespace winrt
 {
   using namespace Windows::Foundation;
+}
+
+inline bool is_sta()
+{
+#ifdef NTDDI_WIN10_CO // Windows SDK 10.0.22000.0 or newer
+  return winrt::impl::is_sta_thread();
+#else
+  return winrt::impl::is_sta();
+#endif
 }
 
 inline void Wait(const winrt::IAsyncAction& asyncOp)
@@ -21,7 +31,7 @@ inline void Wait(const winrt::IAsyncAction& asyncOp)
   if (asyncOp.Status() == winrt::AsyncStatus::Completed)
     return;
 
-  if (!winrt::impl::is_sta())
+  if (!is_sta())
     return asyncOp.get();
 
   auto __sync = std::make_shared<Concurrency::event>();
@@ -37,7 +47,7 @@ TResult Wait(const winrt::IAsyncOperationWithProgress<TResult, TProgress>& async
   if (asyncOp.Status() == winrt::AsyncStatus::Completed)
     return asyncOp.GetResults();
 
-  if (!winrt::impl::is_sta())
+  if (!is_sta())
     return asyncOp.get();
 
   auto __sync = std::make_shared<Concurrency::event>();
@@ -55,7 +65,7 @@ TResult Wait(const winrt::IAsyncOperation<TResult>& asyncOp)
   if (asyncOp.Status() == winrt::AsyncStatus::Completed)
     return asyncOp.GetResults();
 
-  if (!winrt::impl::is_sta())
+  if (!is_sta())
     return asyncOp.get();
 
   auto __sync = std::make_shared<Concurrency::event>();
@@ -74,7 +84,7 @@ TResult Wait(const Concurrency::task<TResult>& asyncOp)
   if (asyncOp.is_done())
     return asyncOp.get();
 
-  if (!winrt::impl::is_sta()) // blocking suspend is allowed
+  if (!is_sta()) // blocking suspend is allowed
     return asyncOp.get();
 
   auto _sync = std::make_shared<Concurrency::event>();

@@ -3,17 +3,13 @@ include ../../depends/Makefile.include
 BUILD_TYPE:=@CMAKE_BUILD_TYPE@
 BUILD_TYPE_LC:=$(shell echo $(BUILD_TYPE) | tr A-Z a-z)
 
-OBJS = libshairplay.so \
-  libass.so
+OBJS = libshairplay.so
 
-PLATFORM_OBJS =
 EXCLUDED_ADDONS =
 
 CMAKE_SOURCE_DIR = $(shell cd $(CURDIR)/../../..; pwd)
 APP_PACKAGE_DIR = $(subst .,/,@APP_PACKAGE@)
 COPYDIRS = system addons media
-GCC_VERSION=$(shell $(CC) -dumpversion)
-ZIP=zip
 
 ifeq ($(KODI_ANDROID_STORE_FILE),)
 export KODI_ANDROID_STORE_FILE:=$(HOME)/.android/debug.keystore
@@ -31,33 +27,16 @@ ifeq ($(KODI_ANDROID_KEY_PASSWORD),)
 export KODI_ANDROID_KEY_PASSWORD:=android
 endif
 
-#this fixes a android ndk fuckup where the paths to
-#prebuilt stuff follow different name schemes for
-#arm and x86
-ifeq ($(findstring x86_64,$(CPU)),x86_64)
-  ARCH=x86_64
-else ifeq ($(findstring x86,$(CPU)),x86)
-  ARCH=x86
-else ifeq ($(findstring arm64,$(CPU)),arm64)
-  ARCH=arm64
-else ifeq ($(findstring arm,$(CPU)),arm)
-  ARCH=arm
-endif
-
 # libc++
 STLLIB=$(TOOLCHAIN)/sysroot/usr/lib/$(HOST)/libc++_shared.so
 
 SRCLIBS = $(addprefix $(PREFIX)/lib/,$(OBJS))
-DSTLIBS = $(CPU)/lib/lib@APP_NAME_LC@.so $(addprefix $(CPU)/lib/,$(OBJS)) $(addprefix $(CPU)/lib/,$(PLATFORM_OBJS))
+DSTLIBS = $(CPU)/lib/lib@APP_NAME_LC@.so $(addprefix $(CPU)/lib/,$(OBJS))
 libs= $(DSTLIBS)
 
 all: apk
 
 apk: apk-clean sharedapk package
-
-obb: apk-clean sharedobb
-
-apk-obb: apk-clean sharedobb package
 
 xbmc/assets:
 	mkdir -p xbmc/assets
@@ -74,11 +53,6 @@ shared:
 
 sharedapk: shared | xbmc/assets
 	cp -rfp assets/* ./xbmc/assets
-
-sharedobb: shared
-	rm -f $(CMAKE_SOURCE_DIR)/main.@APP_NAME_LC@.obb
-	$(ZIP) -9 -q -r $(CMAKE_SOURCE_DIR)/main.@APP_NAME_LC@.obb assets
-	@echo "$(CMAKE_SOURCE_DIR)/main.@APP_NAME_LC@.obb created"
 
 python: | xbmc/assets
 	mkdir -p xbmc/assets/python@PYTHON_VERSION@/lib/
@@ -146,5 +120,5 @@ apk-clean:
 	rm -f xbmc/res/drawable-xxxhdpi/splash.*
 	rm -rf assets
 
-.PHONY: force libs assets python sharedapk sharedobb res package
+.PHONY: force libs assets python sharedapk res package
 

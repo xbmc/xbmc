@@ -11,7 +11,6 @@
 #include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_general.h"
 #include "interfaces/IAnnouncer.h"
 #include "pvr/PVRComponentRegistration.h"
-#include "pvr/epg/EpgContainer.h"
 #include "pvr/guilib/PVRGUIActionListener.h"
 #include "pvr/settings/PVRSettings.h"
 #include "threads/CriticalSection.h"
@@ -42,6 +41,8 @@ class CPVRPlaybackState;
 class CPVRRecording;
 class CPVRRecordings;
 class CPVRTimers;
+class CPVREpgContainer;
+class CPVREpgInfoTag;
 
 enum class PVREvent
 {
@@ -60,7 +61,6 @@ enum class PVREvent
   ChannelGroup,
   ChannelGroupInvalidated,
   ChannelGroupsInvalidated,
-  ChannelGroupsLoaded,
 
   // Recording events
   RecordingsInvalidated,
@@ -69,6 +69,10 @@ enum class PVREvent
   AnnounceReminder,
   Timers,
   TimersInvalidated,
+
+  // Client events
+  ClientsPrioritiesInvalidated,
+  ClientsInvalidated,
 
   // EPG events
   Epg,
@@ -84,7 +88,7 @@ enum class PVREvent
   // Item events
   CurrentItem,
 
-  // Syetem events
+  // System events
   SystemSleep,
   SystemWake,
 };
@@ -221,12 +225,6 @@ public:
   bool IsStarted() const { return GetState() == ManagerState::STATE_STARTED; }
 
   /*!
-   * @brief Check whether EPG tags for channels have been created.
-   * @return True if EPG tags have been created, false otherwise.
-   */
-  bool EpgsCreated() const;
-
-  /*!
    * @brief Inform PVR manager that playback of an item just started.
    * @param item The item that started to play.
    */
@@ -243,11 +241,6 @@ public:
    * @param item The item that ended to play.
    */
   void OnPlaybackEnded(const CFileItem& item);
-
-  /*!
-   * @brief Let the background thread create epg tags for all channels.
-   */
-  void TriggerEpgsCreate();
 
   /*!
    * @brief Let the background thread update the recordings list.
@@ -330,12 +323,6 @@ public:
   void RestartParentalTimer();
 
   /*!
-   * @brief Create EPG tags for all channels in internal channel groups
-   * @return True if EPG tags where created successfully, false otherwise
-   */
-  bool CreateChannelEpgs();
-
-  /*!
    * @brief Signal a connection change of a client
    */
   void ConnectionStateChange(CPVRClient* client,
@@ -371,7 +358,7 @@ private:
     STATE_ERROR = 0,
     STATE_STOPPED,
     STATE_STARTING,
-    STATE_SSTOPPING,
+    STATE_STOPPING,
     STATE_INTERRUPTED,
     STATE_STARTED
   };
@@ -455,7 +442,7 @@ private:
   std::shared_ptr<CPVRClients> m_addons; /*!< pointer to the pvr addon container */
   std::unique_ptr<CPVRGUIInfo> m_guiInfo; /*!< pointer to the guiinfo data */
   std::shared_ptr<CPVRComponentRegistration> m_components; /*!< pointer to the PVR components */
-  CPVREpgContainer m_epgContainer; /*!< the epg container */
+  std::unique_ptr<CPVREpgContainer> m_epgContainer; /*!< the epg container */
   //@}
 
   std::vector<std::shared_ptr<CPVRClient>> m_knownClients; /*!< vector with all known clients */
@@ -464,7 +451,6 @@ private:
   mutable CCriticalSection
       m_critSection; /*!< critical section for all changes to this class, except for changes to triggers */
   bool m_bFirstStart = true; /*!< true when the PVR manager was started first, false otherwise */
-  bool m_bEpgsCreated = false; /*!< true if epg data for channels has been created */
 
   mutable CCriticalSection m_managerStateMutex;
   ManagerState m_managerState = ManagerState::STATE_STOPPED;

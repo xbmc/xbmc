@@ -60,6 +60,7 @@ private:
 
   // Game parameters
   GameClientPtr m_gameClient;
+  std::string m_controllerId;
 
   // Controller parameters
   std::unique_ptr<CControllerInstaller> m_installer;

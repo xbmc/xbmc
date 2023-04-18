@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-01-29 21:15+0000\n"
+"PO-Revision-Date: 2023-03-27 11:26+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/it_it/>\n"
 "Language: it_it\n"
@@ -43,7 +43,7 @@ msgstr "Opzioni visualizzazione"
 
 msgctxt "#31006"
 msgid "Visualization Presets"
-msgstr "Preset visualizzazione"
+msgstr "Preimpostazioni visualizzazione"
 
 msgctxt "#31007"
 msgid "Context Menu"
@@ -55,7 +55,7 @@ msgstr "Caricamento..."
 
 msgctxt "#31011"
 msgid "Recent"
-msgstr "Recente"
+msgstr "Recenti"
 
 msgctxt "#31013"
 msgid "Movies"
@@ -108,7 +108,7 @@ msgstr "Elenco informazioni"
 
 msgctxt "#31038"
 msgid "Login"
-msgstr "Login"
+msgstr "Accedi"
 
 msgctxt "#31039"
 msgid "Updated:"
@@ -196,7 +196,7 @@ msgstr "Ultimo aggiornamento"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "Fornitore dei dati"
+msgstr "Fornitore dati"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
@@ -252,7 +252,7 @@ msgstr "Configura le azioni che possono essere usate durante la riproduzione · 
 
 msgctxt "#31409"
 msgid "Configure library sources · Show the media lists display content · Configure how library lists are navigated"
-msgstr "Configura sorgenti libreria · Mostra contenuto visualizzato negli elenchi · Configura navigazione elenchi libreria"
+msgstr "Configura le fonti della libreria · Mostra il contenuto visualizzato negli elenchi multimediali · Configura la modalità di navigazione degli elenchi delle librerie"
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
@@ -268,11 +268,11 @@ msgstr "Mostra informazioni sul sistema · Statistiche hardware · Controlla dis
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
-msgstr "Seleziona il tuo profilo utente Kodi[CR]per fare il login e continuare"
+msgstr "Seleziona il tuo profilo utente Kodi[CR]per accedere e continuare"
 
 msgctxt "#31548"
 msgid "Home menu"
-msgstr "Menu Home"
+msgstr "Menu principale"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
@@ -300,7 +300,7 @@ msgstr "Sfondo:"
 
 msgctxt "#31555"
 msgid "Configure TV settings · Change full screen info · Manage EPG data settings"
-msgstr "Configura impostazioni TV · Modifica info schermo intero · Gestisci impostazioni dati EPG"
+msgstr "Configura le impostazioni TV · Modifica le informazioni a schermo intero · Gestisci le impostazioni dei dati EPG"
 
 msgctxt "#31556"
 msgid "Live TV"

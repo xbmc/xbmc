@@ -1,15 +1,23 @@
-include ../../Makefile.include
+include ../../Makefile.include GNUTLS-VERSION ../../download-files.include
 DEPS = ../../Makefile.include Makefile ../../download-files.include \
                               add-dl-as-private-lib.patch \
-                              01-macos-clang-accel.patch 03-support-correct-cisdigit.patch
+                              03-support-correct-cisdigit.patch \
+                              android-fpending.patch
 
-# lib name, version
-LIBNAME=gnutls
-VERSION=3.6.16
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.xz
-SHA512=72c78d7fcb024393c1d15f2a1856608ae4460ba43cc5bbbb4c29b80508cae6cb822df4638029de2363437d110187e0a3cc19a7288c3b2f44b2f648399a028438
-include ../../download-files.include
+# disable rpl_malloc and rpl_realloc symbols in glib
+# causes linking errors in libmicrohttpd and ffmpeg with missing symbols
+# Undefined symbols for architecture arm64:
+#  "_rpl_realloc", referenced from:
+#      _gnutls_realloc in libgnutls.a(mem.o)
+#      _gnutls_realloc_zero in libgnutls.a(init.o)
+#      __asn1_realloc in libgnutls.a(parser_aux.o)
+#      __asn1_ordering_set_of in libgnutls.a(coding.o)
+#      __asn1_realloc in libgnutls.a(decoding.o)
+#      __gnutls_fread_file in libgnutls.a(read-file.o)
+#      _rpl_getdelim in libgnutls.a(getdelim.o)
+#      ...
+CONFIGURE_OPTIONS+= ac_cv_func_malloc_0_nonnull=yes \
+                    ac_cv_func_realloc_0_nonnull=yes
 
 # configuration settings
 CONFIGURE=./configure --prefix=$(PREFIX) \
@@ -34,10 +42,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../add-dl-as-private-lib.patch
-ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
-	cd $(PLATFORM); patch -p1 -i ../01-macos-clang-accel.patch
-endif
 	cd $(PLATFORM); patch -p1 -i ../03-support-correct-cisdigit.patch
+	cd $(PLATFORM); patch -p1 -i ../android-fpending.patch
 	cd $(PLATFORM); $(AUTORECONF) -vif
 	cd $(PLATFORM); $(CONFIGURE)
 

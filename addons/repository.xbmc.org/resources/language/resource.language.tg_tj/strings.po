@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-27 15:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Tajik <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/tg_tj/>\n"
+"Language: tg_tj\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "Насб кардани барномаҳои иловагӣ аз Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "Барномаҳои иловагиро аз анбори нармафзори Kodi.tv боргирӣ кунед ва насб намоед.[CR]  Аз истифодаи анбори нармафзори расмии мо ба шумо имконият пайдо мешавад, ки тавонед шароити мусофидро аз хидмати оинаи файлии васеъ ба даст оред ва нармафзори лозимиро аз сервери минтакаи ба шумо наздиктар бо суръати баланд боргирӣ кунед.[CR]  Ҳамаи барномаҳо аз анбори нармафзори мо дар ҳолати санҷишӣ мебошанд, бинобар ин агар ягон барномаи иловагии нуқсондор ё вайроншударо ёбед, лутфан дар бораи он барнома ва нуқсон пайдошуда ба гурӯҳи кории Kodi гузориш диҳед, то ин ки мо тавонем ҳамаи камбудиҳои барномаҳои моро ҳал кунем."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "Гурӯҳи кории Kodi дар ин анбори нармафзор соҳиби ҳамаи барномаҳои иловагӣ намебошад ва барои мӯҳтавояшон ҷавобгар намебшад"

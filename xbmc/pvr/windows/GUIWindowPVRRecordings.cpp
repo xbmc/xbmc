@@ -28,8 +28,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
-#include "video/VideoUtils.h"
-#include "video/windows/GUIWindowVideoNav.h"
+#include "video/windows/GUIWindowVideoBase.h"
 
 #include <memory>
 #include <mutex>
@@ -120,6 +119,17 @@ bool CGUIWindowPVRRecordingsBase::OnAction(const CAction& action)
   }
 
   return CGUIWindowPVRBase::OnAction(action);
+}
+
+bool CGUIWindowPVRRecordingsBase::OnPopupMenu(int iItem)
+{
+  if (iItem >= 0 && iItem < m_vecItems->Size())
+  {
+    const auto item = m_vecItems->Get(iItem);
+    item->SetProperty("CheckAutoPlayNextItem", true);
+  }
+
+  return CGUIWindowPVRBase::OnPopupMenu(iItem);
 }
 
 bool CGUIWindowPVRRecordingsBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -240,8 +250,8 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
               {
                 if (item->m_bIsFolder)
                 {
-                  if (CGUIWindowVideoNav::ShowResumeMenu(*item))
-                    VIDEO_UTILS::PlayItem(item);
+                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
+                      *item, true /* check resume */);
                 }
                 else
                   CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
@@ -385,7 +395,7 @@ void CGUIWindowPVRRecordingsBase::OnPrepareFileItems(CFileItemList& items)
   {
     if (m_database.Open())
     {
-      CGUIWindowVideoNav::LoadVideoInfo(files, m_database, false);
+      CGUIWindowVideoBase::LoadVideoInfo(files, m_database, false);
       m_database.Close();
     }
     m_thumbLoader.Load(files);

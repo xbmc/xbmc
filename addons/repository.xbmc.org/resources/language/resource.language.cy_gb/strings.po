@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-27 15:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Welsh (United Kingdom) <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/cy_gb/>\n"
+"Language: cy_gb\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0) ? 0 : (n==1) ? 1 : (n==2) ? 2 : (n==3) ? 3 :(n==6) ? 4 : 5;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "Gosod Ychwanegion o Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "Llwytho i lawr a gosod ychwanegion o storfa ychwanegion Swyddogol Kodi.tv.{CR}Drwy ddefnyddio'r Storfa swyddogol bydd modd i chi gymryd mantais o'n gwasanaeth drychau ffeiliau i'ch cynorthwyoi lwytho i lawr yn gyflym o ardal yn agos i chi.[CR] Mae pob ychwnaegyn yn y storfa hwn wedi eu profi'n fras, os ydych yn canfod ychwanegyn sydd wedi torri  neu ddim yn gweithio yna hysbyswch Team Kodi fel bod modd i ni weithredu."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "Nid Team Kodi wnaeth yr holl ychwanegion yn y storfa hon ac nid ydynt yn gyfrifol am eu cynnwys."

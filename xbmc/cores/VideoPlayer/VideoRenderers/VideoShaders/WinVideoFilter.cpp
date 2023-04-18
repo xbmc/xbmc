@@ -1044,7 +1044,7 @@ bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()
     return false;
   }
 
-  CLog::LogF(LOGDEBUG, "format {}", m_IntermediateFormat);
+  CLog::LogF(LOGDEBUG, "format {}", DX::DXGIFormatToString(m_IntermediateFormat));
   return true;
 }
 

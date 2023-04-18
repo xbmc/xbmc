@@ -546,7 +546,13 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
                   "Display: {}, MediaCodec: {}",
                   displaySupportsDovi, mediaCodecSupportsDovi);
 
-        if (displaySupportsDovi && mediaCodecSupportsDovi)
+        // For Dolby Vision profiles that don't have HDR10 fallback, always use
+        // the dvhe decoder even if the display not supports Dolby Vision.
+        // For profiles that has HDR10 fallback (7, 8) is better use HEVC decoder to
+        // ensure HDR10 output if display is not DV capable.
+        bool notHasHDR10fallback = (m_hints.dovi.dv_profile == 4 || m_hints.dovi.dv_profile == 5);
+
+        if (mediaCodecSupportsDovi && (displaySupportsDovi || notHasHDR10fallback))
         {
           m_mime = "video/dolby-vision";
           m_formatname = isDvhe ? "amc-dvhe" : "amc-dvh1";
@@ -1391,48 +1397,79 @@ bool CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec(void)
 
   if (CJNIBase::GetSDKVersion() >= 24)
   {
-    if (m_hints.colorRange != AVCOL_RANGE_UNSPECIFIED)
-      mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_RANGE, m_hints.colorRange);
-
-    if (m_hints.colorPrimaries != AVCOL_PRI_UNSPECIFIED)
+    switch (m_hints.colorRange)
     {
-      switch (m_hints.colorPrimaries)
-      {
-        case AVCOL_PRI_BT709:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
-                                 CJNIMediaFormat::COLOR_STANDARD_BT709);
-          break;
-        case AVCOL_PRI_BT2020:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
-                                 CJNIMediaFormat::COLOR_STANDARD_BT2020);
-          break;
-        default:; // do nothing
-      }
+      case AVCOL_RANGE_UNSPECIFIED:
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Color range: "
+                            "AVCOL_RANGE_UNSPECIFIED");
+        break;
+      case AVCOL_RANGE_MPEG:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_RANGE,
+                               CJNIMediaFormat::COLOR_RANGE_LIMITED);
+        break;
+      case AVCOL_RANGE_JPEG:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_RANGE, CJNIMediaFormat::COLOR_RANGE_FULL);
+        break;
+      default:
+        CLog::Log(LOGWARNING,
+                  "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Color range: {}",
+                  m_hints.colorRange);
+        break;
     }
 
-    if (m_hints.colorTransferCharacteristic != AVCOL_TRC_UNSPECIFIED)
+    switch (m_hints.colorPrimaries)
     {
-      switch (m_hints.colorTransferCharacteristic)
-      {
-        case AVCOL_TRC_LINEAR:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                                 CJNIMediaFormat::COLOR_TRANSFER_LINEAR);
-          break;
-        case AVCOL_TRC_SMPTE170M:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                                 CJNIMediaFormat::COLOR_TRANSFER_SDR_VIDEO);
-          break;
-        case AVCOL_TRC_SMPTE2084:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                                 CJNIMediaFormat::COLOR_TRANSFER_ST2084);
-          break;
-        case AVCOL_TRC_ARIB_STD_B67:
-          mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
-                                 CJNIMediaFormat::COLOR_TRANSFER_HLG);
-          break;
-        default:; // do nothing
-      }
+      case AVCOL_PRI_UNSPECIFIED:
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Color primaries: "
+                            "AVCOL_PRI_UNSPECIFIED");
+        break;
+      case AVCOL_PRI_BT709:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
+                               CJNIMediaFormat::COLOR_STANDARD_BT709);
+        break;
+      case AVCOL_PRI_BT2020:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_STANDARD,
+                               CJNIMediaFormat::COLOR_STANDARD_BT2020);
+        break;
+      default:
+        CLog::Log(
+            LOGWARNING,
+            "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Color primaries: {}",
+            m_hints.colorPrimaries);
+        break;
     }
+
+    switch (m_hints.colorTransferCharacteristic)
+    {
+      case AVCOL_TRC_UNSPECIFIED:
+        CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Transfer "
+                            "characteristic: AVCOL_TRC_UNSPECIFIED");
+        break;
+      case AVCOL_TRC_LINEAR:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                               CJNIMediaFormat::COLOR_TRANSFER_LINEAR);
+        break;
+      case AVCOL_TRC_BT709:
+      case AVCOL_TRC_SMPTE170M:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                               CJNIMediaFormat::COLOR_TRANSFER_SDR_VIDEO);
+        break;
+      case AVCOL_TRC_SMPTE2084:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                               CJNIMediaFormat::COLOR_TRANSFER_ST2084);
+        break;
+      case AVCOL_TRC_ARIB_STD_B67:
+        mediaformat.setInteger(CJNIMediaFormat::KEY_COLOR_TRANSFER,
+                               CJNIMediaFormat::COLOR_TRANSFER_HLG);
+        break;
+      default:
+        CLog::Log(LOGWARNING,
+                  "CDVDVideoCodecAndroidMediaCodec::ConfigureMediaCodec Unhandled Transfer "
+                  "characteristic: {}",
+                  m_hints.colorTransferCharacteristic);
+        break;
+    }
+
     std::vector<uint8_t> hdr_static_data = GetHDRStaticMetadata();
     if (!hdr_static_data.empty())
     {

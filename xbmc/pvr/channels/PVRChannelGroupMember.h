@@ -28,11 +28,13 @@ public:
   CPVRChannelGroupMember() : m_bNeedsSave(false) {}
 
   CPVRChannelGroupMember(const std::string& groupName,
+                         int groupClientID,
                          int order,
                          const std::shared_ptr<CPVRChannel>& channel);
 
   CPVRChannelGroupMember(int iGroupID,
                          const std::string& groupName,
+                         int groupClientID,
                          const std::shared_ptr<CPVRChannel>& channel);
 
   virtual ~CPVRChannelGroupMember() = default;
@@ -67,7 +69,7 @@ public:
   bool NeedsSave() const { return m_bNeedsSave; }
   void SetSaved() { m_bNeedsSave = false; }
 
-  int ClientID() const { return m_iClientID; }
+  int ChannelClientID() const { return m_iChannelClientID; }
 
   int ChannelUID() const { return m_iChannelUID; }
 
@@ -83,7 +85,8 @@ public:
 
 private:
   int m_iGroupID = -1;
-  int m_iClientID = -1;
+  int m_iGroupClientID = -1;
+  int m_iChannelClientID = -1;
   int m_iChannelUID = -1;
   int m_iChannelDatabaseID = -1;
   bool m_bIsRadio = false;

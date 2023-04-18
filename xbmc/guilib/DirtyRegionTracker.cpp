@@ -10,10 +10,12 @@
 
 #include "DirtyRegionSolvers.h"
 #include "ServiceBroker.h"
+#include "guilib/DirtyRegion.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <stdio.h>
 
 CDirtyRegionTracker::CDirtyRegionTracker(int buffering)
@@ -77,12 +79,8 @@ CDirtyRegionList CDirtyRegionTracker::GetDirtyRegions()
 void CDirtyRegionTracker::CleanMarkedRegions()
 {
   int buffering = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiVisualizeDirtyRegions ? 20 : m_buffering;
-  int i = m_markedRegions.size() - 1;
-  while (i >= 0)
-	{
-    if (m_markedRegions[i].UpdateAge() >= buffering)
-      m_markedRegions.erase(m_markedRegions.begin() + i);
-
-    i--;
-  }
+  m_markedRegions.erase(
+      std::remove_if(m_markedRegions.begin(), m_markedRegions.end(),
+                     [buffering](CDirtyRegion& r) { return r.UpdateAge() >= buffering; }),
+      m_markedRegions.end());
 }

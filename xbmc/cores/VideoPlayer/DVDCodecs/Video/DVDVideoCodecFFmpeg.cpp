@@ -305,11 +305,11 @@ enum AVPixelFormat CDVDVideoCodecFFmpeg::GetFormat(struct AVCodecContext * avctx
   return avcodec_default_get_format(avctx, fmt);
 }
 
-CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo &processInfo)
-: CDVDVideoCodec(processInfo), m_postProc(processInfo)
+CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg(CProcessInfo& processInfo)
+  : CDVDVideoCodec(processInfo),
+    m_videoBufferPool(std::make_shared<CVideoBufferPoolFFmpeg>()),
+    m_postProc(processInfo)
 {
-  m_videoBufferPool = std::make_shared<CVideoBufferPoolFFmpeg>();
-
   m_decoderState = STATE_NONE;
 }
 
@@ -369,6 +369,10 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->workaround_bugs = FF_BUG_AUTODETECT;
   m_pCodecContext->get_format = GetFormat;
   m_pCodecContext->codec_tag = hints.codec_tag;
+
+#if LIBAVCODEC_VERSION_MAJOR >= 60
+  m_pCodecContext->flags = AV_CODEC_FLAG_COPY_OPAQUE;
+#endif
 
   // setup threading model
   if (!(hints.codecOptions & CODEC_FORCE_SOFTWARE))
@@ -545,9 +549,10 @@ void CDVDVideoCodecFFmpeg::UpdateName()
   CLog::Log(LOGDEBUG, "CDVDVideoCodecFFmpeg - Updated codec: {}", m_name);
 }
 
+#if LIBAVCODEC_VERSION_MAJOR < 60
 union pts_union
 {
-  double  pts_d;
+  double pts_d;
   int64_t pts_i;
 };
 
@@ -557,6 +562,7 @@ static int64_t pts_dtoi(double pts)
   u.pts_d = pts;
   return u.pts_i;
 }
+#endif
 
 bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
 {
@@ -575,7 +581,10 @@ bool CDVDVideoCodecFFmpeg::AddData(const DemuxPacket &packet)
     m_started = true;
 
   m_dts = packet.dts;
+
+#if LIBAVCODEC_VERSION_MAJOR < 60
   m_pCodecContext->reordered_opaque = pts_dtoi(packet.pts);
+#endif
 
   AVPacket* avpkt = av_packet_alloc();
   if (!avpkt)
@@ -1028,9 +1037,9 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
            (m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10||
             m_pCodecContext->profile == FF_PROFILE_H264_HIGH_10_INTRA))
     pVideoPicture->colorBits = 10;
-  else if (m_pCodecContext->codec_id == AV_CODEC_ID_VP9 &&
-           (m_pCodecContext->profile == FF_PROFILE_VP9_2 ||
-            m_pCodecContext->profile == FF_PROFILE_VP9_3))
+  else if ((m_pCodecContext->codec_id == AV_CODEC_ID_VP9 ||
+            m_pCodecContext->codec_id == AV_CODEC_ID_AV1) &&
+           m_pCodecContext->sw_pix_fmt == AV_PIX_FMT_YUV420P10)
     pVideoPicture->colorBits = 10;
 
   if (m_pCodecContext->color_range == AVCOL_RANGE_JPEG ||
@@ -1164,8 +1173,9 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const std::string& filters, bool scale)
   const AVFilter* outFilter = avfilter_get_by_name("buffersink"); // should be last filter in the graph for now
 
   std::string args = StringUtils::Format(
-      "{}:{}:{}:{}:{}:{}:{}", m_pCodecContext->width, m_pCodecContext->height,
-      m_pCodecContext->pix_fmt, m_pCodecContext->time_base.num ? m_pCodecContext->time_base.num : 1,
+      "video_size={}x{}:pix_fmt={}:time_base={}/{}:pixel_aspect={}/{}", m_pCodecContext->width,
+      m_pCodecContext->height, m_pCodecContext->pix_fmt,
+      m_pCodecContext->time_base.num ? m_pCodecContext->time_base.num : 1,
       m_pCodecContext->time_base.num ? m_pCodecContext->time_base.den : 1,
       m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.num : 1,
       m_pCodecContext->sample_aspect_ratio.num != 0 ? m_pCodecContext->sample_aspect_ratio.den : 1);

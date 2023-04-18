@@ -303,6 +303,7 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_MONITOR)
   {
+    CServiceBroker::GetWinSystem()->NotifyScreenChangeIntention();
     CServiceBroker::GetWinSystem()->UpdateResolutions();
     RESOLUTION newRes = GetResolutionForScreen();
 
@@ -420,7 +421,8 @@ void CDisplaySettings::SetCurrentResolution(RESOLUTION resolution, bool save /* 
   {
     // Save videoscreen.screenmode setting
     std::string mode = GetStringFromResolution(resolution);
-    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode.c_str());
+    CServiceBroker::GetSettingsComponent()->GetSettings()->SetString(
+        CSettings::SETTING_VIDEOSCREEN_SCREENMODE, mode);
 
     // Check if videoscreen.screen setting also needs to be saved
     // e.g. if ToggleFullscreen is called

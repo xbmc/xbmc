@@ -237,6 +237,11 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_L
     list(APPEND SOURCES DRMHelpers.cpp)
     list(APPEND HEADERS DRMHelpers.h)
   endif()
+
+  if(LIBDISPLAYINFO_FOUND)
+    list(APPEND SOURCES DisplayInfo.cpp)
+    list(APPEND HEADERS DisplayInfo.h)
+  endif()
 endif()
 
 core_add_library(utils)

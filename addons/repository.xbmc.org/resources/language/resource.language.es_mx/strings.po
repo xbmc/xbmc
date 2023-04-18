@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-27 15:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Spanish (Mexico) <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/es_mx/>\n"
+"Language: es_mx\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "Instalar complementos de Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "Descarga e instala complementos del repositorio oficial de Kodi.tv.[CR] Al usar el repositorio oficial, tienes la ventaja de los servicios de réplicas para tener descargas más rápidas.[CR] Todos los complementos en este repositorio se han probado de manera básica, si encuentras alguno roto o que no funciona, por favor repórtalo al equipo de Kodi para poder tomar las medidas necesarias."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "El equipo de Kodi no hizo todos los complementos en este repositorio y no es responsable de su contenido"

@@ -14,6 +14,8 @@ class CFileItem;
 
 namespace PERIPHERALS
 {
+class CPeripherals;
+
 class CGUIDialogPeripheralSettings : public CGUIDialogSettingsManualBase
 {
 public:
@@ -22,6 +24,9 @@ public:
 
   // specializations of CGUIControl
   bool OnMessage(CGUIMessage& message) override;
+
+  void RegisterPeripheralManager(CPeripherals& manager);
+  void UnregisterPeripheralManager();
 
   virtual void SetFileItem(const CFileItem* item);
 
@@ -38,6 +43,8 @@ protected:
   // specialization of CGUIDialogSettingsManualBase
   void InitializeSettings() override;
 
+  // Dialog state
+  CPeripherals* m_manager{nullptr};
   CFileItem* m_item;
   bool m_initialising = false;
   std::map<std::string, std::shared_ptr<CSetting>> m_settingsMap;

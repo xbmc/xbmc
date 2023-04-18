@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-27 15:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Slovenian <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/sl_si/>\n"
+"Language: sl_si\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "Namestite dodatke s Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "Prenos in namestitev dodatkov iz uradnega skladišča Kodi.tv.[CR] Z uporabo uradnega skladišča, boste lahko izkoristili hitrejšo povezavo, ki bo izbrana glede na vašo lokacijo.[CR] Vsi dodatki tega skladišča so bili osnovno stestirani, če pa boste našli pokvarjen ali nedelujoč dodatek, to sporočite ekipi Kodi, da bomo lahko odpravili napake."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "Ekipa Kodi ni naredila vseh dodatkov v tem skladišču in ne odgovarja za njihovo vsebino"

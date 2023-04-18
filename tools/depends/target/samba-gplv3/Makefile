@@ -30,7 +30,8 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
           --disable-symbol-versions \
           --without-json \
           --without-libarchive \
-          --without-regedit
+          --without-regedit \
+          --without-lttng
 
 LIBDYLIB=$(PLATFORM)/bin/default/source3/libsmb/libsmbclient.a
 
@@ -72,6 +73,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); patch -p1 -i ../04-built-static.patch
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../samba_android.patch
+	cd $(PLATFORM); patch -p1 -i ../07-innetgr-check.patch
 endif
 ifeq ($(OS), darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../no_fork_and_exec.patch
@@ -80,6 +82,9 @@ endif
 ifeq ($(findstring apple-darwin, $(HOST)), apple-darwin)
 	cd $(PLATFORM); patch -p1 -i ../05-apple-disable-zlib-pkgconfig.patch
 	cd $(PLATFORM); patch -p1 -i ../06-apple-fix-st_atim.patch
+endif
+ifeq ($(TARGET_PLATFORM),webos)
+	cd $(PLATFORM); patch -p1 -i ../webos-no-readline.patch
 endif
 	cd $(PLATFORM); $(CONFIGURE)
 

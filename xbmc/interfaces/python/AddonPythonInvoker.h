@@ -16,8 +16,9 @@ public:
   explicit CAddonPythonInvoker(ILanguageInvocationHandler *invocationHandler);
   ~CAddonPythonInvoker() override;
 
+  static void GlobalInitializeModules(void);
+
 protected:
   // overrides of CPythonInvoker
-  std::map<std::string, PythonModuleInitialization> getModules() const override;
   const char* getInitializationScript() const override;
 };

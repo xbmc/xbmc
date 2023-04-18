@@ -8,8 +8,8 @@
 
 #include "PipewireCore.h"
 
-#include "cores/AudioEngine/Sinks/pipewire/PipewireContext.h"
-#include "cores/AudioEngine/Sinks/pipewire/PipewireThreadLoop.h"
+#include "PipewireContext.h"
+#include "PipewireThreadLoop.h"
 #include "utils/log.h"
 
 #include <stdexcept>

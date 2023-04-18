@@ -12,8 +12,6 @@
 #include "rendering/gl/RenderSystemGL.h"
 #include "windowing/WindowSystemFactory.h"
 
-#include <unistd.h>
-
 void CWinSystemOSXGL::Register()
 {
   KODI::WINDOWING::CWindowSystemFactory::RegisterWindowSystem(CreateWinSystem);
@@ -28,11 +26,6 @@ void CWinSystemOSXGL::PresentRenderImpl(bool rendered)
 {
   if (rendered)
     FlushBuffer();
-
-  // FlushBuffer does not block if window is obscured
-  // in this case we need to throttle the render loop
-  if (IsObscured())
-    usleep(10000);
 
   if (m_delayDispReset && m_dispResetTimer.IsTimePast())
   {
@@ -67,7 +60,8 @@ bool CWinSystemOSXGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int
 bool CWinSystemOSXGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   CWinSystemOSX::SetFullScreen(fullScreen, res, blankOtherDisplays);
-  CRenderSystemGL::ResetRenderSystem(res.iWidth, res.iHeight);
+  CRenderSystemGL::ResetRenderSystem(res.iWidth - res.guiInsets.right - res.guiInsets.left,
+                                     res.iHeight - res.guiInsets.top - res.guiInsets.bottom);
 
   if (m_bVSync)
   {

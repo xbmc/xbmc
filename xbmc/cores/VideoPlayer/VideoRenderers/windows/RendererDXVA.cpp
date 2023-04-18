@@ -31,7 +31,13 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
 
   if (av_pixel_format == AV_PIX_FMT_D3D11VA_VLD)
+  {
+    // Check if BT.2020 color space is supported by DXVA video processor
+    if (picture.color_primaries == AVCOL_PRI_BT2020 && !DXVA::CProcessorHD::IsBT2020Supported())
+      return;
+
     weight += 1000;
+  }
   else
   {
     // check format for buffer
@@ -52,9 +58,14 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
     ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
     if (FAILED(pDevice->CreateTexture2D(&texDesc, nullptr, nullptr)))
     {
-      CLog::LogF(LOGWARNING, "Texture format {} is not supported.", dxgi_format);
+      CLog::LogF(LOGWARNING, "Texture format {} is not supported.",
+                 DX::DXGIFormatToString(dxgi_format));
       return;
     }
+
+    // Check if BT.2020 color space is supported by DXVA video processor
+    if (picture.color_primaries == AVCOL_PRI_BT2020 && !DXVA::CProcessorHD::IsBT2020Supported())
+      return;
 
     if (av_pixel_format == AV_PIX_FMT_NV12 ||
         av_pixel_format == AV_PIX_FMT_P010 ||
@@ -95,12 +106,13 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
   {
     m_format = picture.videoBuffer->GetFormat();
     const DXGI_FORMAT dxgi_format = CRenderBufferImpl::GetDXGIFormat(m_format, GetDXGIFormat(picture));
+    const DXGI_FORMAT dest_format = DX::Windowing()->GetBackBuffer().GetFormat();
 
     // create processor
     m_processor = std::make_unique<DXVA::CProcessorHD>();
-    if (m_processor->PreInit() &&
-        m_processor->Open(m_sourceWidth, m_sourceWidth) &&
-        m_processor->IsFormatSupported(dxgi_format, support_type))
+    if (m_processor->PreInit() && m_processor->Open(m_sourceWidth, m_sourceHeight) &&
+        m_processor->IsFormatSupported(dxgi_format, support_type) &&
+        m_processor->IsFormatConversionSupported(dxgi_format, dest_format, picture))
     {
       return true;
     }

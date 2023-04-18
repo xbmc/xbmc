@@ -1,121 +1,148 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="service.xbmc.versioncheck" name="Version Check" version="0.5.19+matrix.1" provider-name="Team Kodi">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-    </requires>
-    <extension point="xbmc.service" library="resources/lib/runner.py"/>
-    <extension point="xbmc.addon.metadata">
-        <news>
-- add Kodi 19.1 release
+<addon id="service.xbmc.versioncheck" name="Version Check" version="0.5.27+matrix.1" provider-name="Team Kodi">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+  </requires>
+  <extension point="xbmc.service" library="resources/lib/runner.py"/>
+  <extension point="xbmc.addon.metadata">
+    <news>
+- Fix crash when lsb_release cannot be executed on linux
         </news>
-        <assets>
-            <icon>icon.png</icon>
-        </assets>
-        <summary lang="be_BY">Kodi Version Check checks if you are running latest released version.</summary>
-        <summary lang="bg_BG">Проверява дали ползвате най-новата версия на Kodi.</summary>
-        <summary lang="ca_ES">Kodi Version Check comprova si està utilitzant la última versió publicada.</summary>
-        <summary lang="cs_CZ">Kontrola verze Kodi, zkontroluje, zda používáte nejnovější vydanou verzi.</summary>
-        <summary lang="da_DK">Kodi undersøger om du benytter den nyeste version.</summary>
-        <summary lang="de_DE">Kodi Versionsprüfung prüft, ob die neuste Version von Kodi installiert ist.</summary>
-        <summary lang="el_GR">Ο Έλεγχος Έκδοσης Kodi εξετάζει αν έχετε την πιο πρόσφατη έκδοση του προγράμματος.</summary>
-        <summary lang="en_GB">Kodi Version Check checks if you are running latest released version.</summary>
-        <summary lang="en_NZ">Kodi Version Check checks if you are running latest released version.</summary>
-        <summary lang="en_US">Kodi Version Check checks if you are running latest released version.</summary>
-        <summary lang="es_ES">Kodi Version Check comprueba si está ejecutando la última versión de Kodi.</summary>
-        <summary lang="es_MX">Comprobador de Version de Kodi comprueba si se esta ejecutando ultima version publicada.</summary>
-        <summary lang="fi_FI">Kodi Version Check tarkistaa onko käyttämäsi uusin versio.</summary>
-        <summary lang="fr_FR">Le contrôle de version de Kodi vérifie si la dernière version sortie est utilisée.</summary>
-        <summary lang="fr_CA">Le contrôleur de version Kodi vérifie si vous utilisez la dernière version parue.</summary>
-        <summary lang="gl_ES">Kodi Version Check verifica se está a executar a última versión.</summary>
-        <summary lang="he_IL">בודק גרסת Kodi מוודא אם אתה מריץ את הגרסה הרשמית האחרונה.</summary>
-        <summary lang="hr_HR">Kodi provjeritelj inačice provjerava imate li posljednju inačicu izdanja.</summary>
-        <summary lang="hu_HU">Az Kodi verzió ellenőrző megvizsgálja, hogy a legújabb kiadást futtatja-e.</summary>
-        <summary lang="id_ID">Kodi Version Check mengecek apakah Anda menggunakan versi rilis terbaru.</summary>
-        <summary lang="is_IS">Kodi Version Check athugar hvort þú sért að keyra nýjustu viðurkennda útgáfu.</summary>
-        <summary lang="it_IT">Kodi Version Check verifica se hai l'ultima versione rilasciata</summary>
-        <summary lang="ko_KR">Kodi Version Checks는 최신 정식 릴리즈 버전을 사용중인지 검사해줍니다.</summary>
-        <summary lang="lt_LT">Kodi Version Check patikrina ar naudojate naujausią versiją.</summary>
-        <summary lang="nl_NL">Kodi versie-check controleert of je de laatst beschikbare versie hebt.</summary>
-        <summary lang="nb_NO">Kodi Versjonsettersyn sjekker om du kjører den sist utgitte versjonen.</summary>
-        <summary lang="pl_PL">Dodatek Version Check sprawdza czy używasz najnowszej wersji Kodi.</summary>
-        <summary lang="pt_PT">O Kodi Version Check verifica se a sua versão de lançamento do Kodi está actualizada.</summary>
-        <summary lang="pt_BR">Kodi Version Check verifica se você está executando a versão mais recente.</summary>
-        <summary lang="ro_RO">Verificare versiune Kodi verifică dacă folosiți ultima versiune lansată.</summary>
-        <summary lang="ru_RU">Kodi Version Check проверяет если вы используете последнюю версию</summary>
-        <summary lang="sk_SK">Kodi Kontrola verzií overuje, či používate najnovšiu vydanú verziu.</summary>
-        <summary lang="sl_SI">Preverjanje različice Kodi preveri, če imate nameščeno nazadnje izdano različico.</summary>
-        <summary lang="sv_SE">Kodi Version Check kontrollerar om du använder den senaste versionen.</summary>
-        <summary lang="tr_TR">Kodi Sürüm Kontrol yayınlanmış son sürümü kullanıp kullanmadığınızı kontrol eder.</summary>
-        <summary lang="zh_CN">Kodi 版本检查检查你使用的是否为最新发布的版本。</summary>
-        <description lang="be_BY">Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website.</description>
-        <description lang="bg_BG">Kodi Version Check поддържа няколко платформи/дистрибуции. За повече информация посетете страницата www.kodi.tv</description>
-        <description lang="ca_ES">Kodi Version Check només és compatible amb una sèrie de plataformes / distribucions ja que les ultimes versions poden ser diferents entre elles. Per obtenir més informació, visiteu el lloc web kodi.tv.</description>
-        <description lang="cs_CZ">Kontrola verze Kodi podporuje pouze několik platforem/distribucí a verze mezi nimi se můžou lišit. Pro více informací navštivte webové stránky kodi.tv.</description>
-        <description lang="da_DK">Kodi kan kun undersøge for opdateringer for visse platforme/udgaver, da der kan være forskel. For mere information, besøg kodi.tv.</description>
-        <description lang="de_DE">Kodi Versionsprüfung unterstützt nur ein paar Plattformen/Distributionen, da sich die jeweiligen Veröffentlichungen unterscheiden können. Für weitere Informationen besuchen Sie die kodi.tv-Webseite.</description>
-        <description lang="el_GR">Ο Έλεγχος Έκδοσης Kodi υποστηρίζει μόνο ορισμένα λειτουργικά συστήματα/διανομές, καθώς οι εκδόσεις διαφέρουν για το καθένα. Για περισσότερες πληροφορίες επισκεφθείτε το kodi.tv</description>
-        <description lang="en_GB">Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website.</description>
-        <description lang="en_NZ">Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website.</description>
-        <description lang="en_US">Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website.</description>
-        <description lang="es_ES">Kodi Version Check solo soporta un número limitado de plataformas/distribuciones, ya que los lanzamientos pueden diferir entre ellos. Para más información, visite la web de kodi.tv.</description>
-        <description lang="fi_FI">Kodi Version Check tukee vain joitain alustoja/distroja koska julkaisut saattavat poiketa toisistaan. Saadaksesi lisätietoa, vieraile kodi.tv:ssä.</description>
-        <description lang="fr_FR">Le contrôle de version de Kodi ne prend en charge qu'un certain nombre de plate-formes/distributions car les versions peuvent varier entre elles. Pour plus d'informations, consulter le site Web kodi.tv.</description>
-        <description lang="fr_CA">Le contrôleur de version Kodi ne prend en charge qu'un certain nombre de plate-formes/distributions car les versions peuvent varier entre elles. Pour plus d'informations, visitez le site Web kodi.tv.</description>
-        <description lang="gl_ES">Kodi Version Check só soporta un número limitado de plataformas/distribucións, xa que os lanzamentos poden diferir entre eles. Para máis información visitar o sitio web de kodi.tv.</description>
-        <description lang="he_IL">בודק גרסת Kodi תומך רק במספר פלטפורמות/הפצות מאחר שסימון הגרסאות שונה בין אחת לשניה. למידע נוסף בקר באתר kodi.tv.</description>
-        <description lang="hr_HR">Kodi provjeritelj inačice samo podržava broj platformi/distribucija koliko to dopuštaju pojedina izdanja. Za više informacija posjetite kodi.tv web stranicu.</description>
-        <description lang="hu_HU">Az Kodi verzió-ellenőrző csak néhány platformot / disztribúciót támogat, mert a kiadások között különbségek lehetnek. További információkért keresse fel az kodi.tv oldalt.</description>
-        <description lang="id_ID">Kodi Version Check hanya mendukung beberapa platform/distro karena rilisnya mungkin berbeda-beda. Untuk informasi lebih lanjut kunjungi situs kodi.tv.</description>
-        <description lang="it_IT">Kodi Version Check supporta un numero di piattaforme e distribuzioni diverse tra loro. Per più informazioni visita il sito kodi.tv</description>
-        <description lang="ko_KR">Kodi Versio Check는 일부 플랫폼/배포본만을 지원합니다. 자세한 정보는 kodi.tv 웹사이트에서 확인하세요</description>
-        <description lang="lt_LT">Kodi Version Check palaiko tik kelias platformas/distribucijas, nes leidimai tarp jų gali skirtis. Norėdami gauti daugiau informacijos, apsilankykite Kodi.tv puslapyje.</description>
-        <description lang="nl_NL">Kodi versie check ondersteunt alleen een aantal platforms/distro`s omdat uitgaven verschillen tussen hen. Voor meer informatie bezoek de kodi.tv website.</description>
-        <description lang="nb_NO">Kodi Versjonsettersyn støtter kun noen plattformer/distribusjoner fordi utgivelser kan være forskjellige mellom dem. Besøk kodi.tv for mer informasjon.</description>
-        <description lang="pl_PL">Dodatek Version Check wspiera tylko część platform i dystrybucji. Więcej informacji na stronie kodi.tv</description>
-        <description lang="pt_PT">O Kodi Version Check suporta apenas algumas plataformas/distribuições, porque os lançamentos podem não ser sempre idênticos. Para mais informação, visite o site kodi.tv.</description>
-        <description lang="pt_BR">Verificador de versões do Kodi somente suporta algumas plataformas/distros em que os lançamentos podem diferenciar entre si. Para maiores informações visite o website kodi.tv.</description>
-        <description lang="ru_RU">Проверка новых версий Kodi поддерживается только на ряде платформ/дистрибутивов и они могут различаться между собой. Для получения доп. информации посетите сайт kodi.tv</description>
-        <description lang="sl_SI">Preverjanje različice Kodi podpira le nekatere platforme/distribucije, saj se izdaje med njimi lahko zelo razlikujejo. Za več informacij obiščite spletišče kodi.tv</description>
-        <description lang="sv_SE">Kodi Version Check stöder endeast ett antal plattformar/distributioner eftersom utgivningar kan skilja mellan dessa. För mer information besök kodi.tv webplatsen.</description>
-        <description lang="tr_TR">Kodi Sürüm Kontrol sürümler arasında değişiklik olduğu için sadece birkaç platform/dağıtım destekler. Daha fazla bilgi için kodi.tv web sitesini ziyaret edin.</description>
-        <description lang="zh_CN">Kodi 版本检查只支持部分平台/发行版，它们之间的版本可能会有所不同。欲了解更多信息，请访问 kodi.tv 网站。</description>
-        <disclaimer lang="be_BY">Feel free to use this script. For information visit kodi.tv</disclaimer>
-        <disclaimer lang="bg_BG">Ползвайте скрипта свободно. За повече информация посетете www.kodi.tv</disclaimer>
-        <disclaimer lang="ca_ES">Sigues lliure d'utilitzar aquest script. Per més informació visita kodi.tv</disclaimer>
-        <disclaimer lang="cs_CZ">Neváhejte použít tento skript. Pro více informací navštivte kodi.tv</disclaimer>
-        <disclaimer lang="da_DK">Du er velkommen til at bruge dette script. For information, besøg kodi.tv</disclaimer>
-        <disclaimer lang="de_DE">Zögern Sie nicht, dieses Skript zu verwenden. Für Informationen besuchen Sie kodi.tv</disclaimer>
-        <disclaimer lang="el_GR">Χρησιμοποιήστε αυτό το script ελεύθερα. Για πληροφορίες επισκεφθείτε το kodi.tv</disclaimer>
-        <disclaimer lang="en_GB">Feel free to use this script. For information visit kodi.tv</disclaimer>
-        <disclaimer lang="en_NZ">Feel free to use this script. For information visit kodi.tv</disclaimer>
-        <disclaimer lang="en_US">Feel free to use this script. For information visit kodi.tv</disclaimer>
-        <disclaimer lang="es_ES">Puede usar libremente este programa. Para más información, visite kodi.tv</disclaimer>
-        <disclaimer lang="es_MX">Sientase libre de utilizar este script. Para mas información visita kodi.tv</disclaimer>
-        <disclaimer lang="fr_FR">Utiliser ce script si désiré. Pour plus d'informations, consulter le site kodi.tv</disclaimer>
-        <disclaimer lang="fr_CA">N'hésitez pas à utiliser ce script. Pour plus d'informations visitez kodi.tv</disclaimer>
-        <disclaimer lang="gl_ES">Síntase libre de usar este script, para máis información visitar kodi.tv.</disclaimer>
-        <disclaimer lang="he_IL">תרגיש חופשי להשתמש בסקריפט זה. למידע נוסף בקר ב-kodi.tv</disclaimer>
-        <disclaimer lang="hr_HR">Slobodno koristite ovu skriptu. Za više informacija posjetite kodi.tv</disclaimer>
-        <disclaimer lang="hu_HU">Használja bátran ezt a szkriptet! Információkért keresse fel az kodi.tv oldalt!</disclaimer>
-        <disclaimer lang="id_ID">Jangan sungkan menggunakan script ini. Untuk informasi hubungi kodi.tv</disclaimer>
-        <disclaimer lang="it_IT">Usa liberamente lo script. Per informazioni visita kodi.tv</disclaimer>
-        <disclaimer lang="ko_KR">이 스크립트를 자유롭게 사용하세요. 관련 정보는 kodi.tv를 방문하세요.</disclaimer>
-        <disclaimer lang="lt_LT">Galite laisvai naudoti šį scenarijų. Apsilankykite kodi.tv, norėdami gauti daugiau informacijos.</disclaimer>
-        <disclaimer lang="nl_NL">Gebruik dit script vrijblijvend. Voor meer informatie bezoek kodi.tv</disclaimer>
-        <disclaimer lang="nb_NO">Du har fri tillatelse til å benytte dette skriptet. Besøk kodi.tv for informasjon</disclaimer>
-        <disclaimer lang="pl_PL">Zapraszamy do używania tego dodatku. Więcej informacji na stronie kodi.tv</disclaimer>
-        <disclaimer lang="pt_PT">Esteja à vontade para usar este script. Para mais informação, visite kodi.tv.</disclaimer>
-        <disclaimer lang="pt_BR">Sinta-se livre para usar este script. Para maiores informações visite kodi.tv</disclaimer>
-        <disclaimer lang="ro_RO">Simțiți-vă liberi să folosiți acest script. Pentru informații vizitați kodi.tv</disclaimer>
-        <disclaimer lang="ru_RU">Используйте этот скрипт на свое усмотрение. Для информации посетите kodi.tv</disclaimer>
-        <disclaimer lang="sl_SI">Izvolite uporabiti ta skript. Za dodatne informacije obiščite kodi.tv</disclaimer>
-        <disclaimer lang="sv_SE">Använd gärna detta skript. För information, besök kodi.tv</disclaimer>
-        <disclaimer lang="tr_TR">Bu betiği kullanmaktan çekinmeyin. Daha fazla bilgi için kodi.tv adresini ziyaret edin</disclaimer>
-        <disclaimer lang="zh_CN">可放心使用此脚本，更多信息访问 kodi.tv</disclaimer>
-        <platform>all</platform>
-        <license>GPL-2.0-or-later, GPL-3.0-or-later, Apache-2.0</license>
-        <forum>https://forum.kodi.tv/showthread.php?tid=160228</forum>
-        <website>https://kodi.tv</website>
-        <source>https://github.com/XBMC-Addons/service.xbmc.versioncheck</source>
-    </extension>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
+    <platform>all</platform>
+    <license>GPL-2.0-or-later, GPL-3.0-or-later, Apache-2.0</license>
+    <forum>https://forum.kodi.tv/showthread.php?tid=160228</forum>
+    <website>https://kodi.tv</website>
+    <source>https://github.com/XBMC-Addons/service.xbmc.versioncheck</source>
+    <summary lang="be_BY">Kodi Version Check правярае наяўнасць апошняй версіі.</summary>
+    <summary lang="bg_BG">Проверява дали ползвате най-новата версия на Kodi.</summary>
+    <summary lang="bs_BA">Kodi Verzijski Provjerač provjerava imate li najnoviju izdanu verziju.</summary>
+    <summary lang="ca_ES">Kodi Version Check comprova si està utilitzant la última versió publicada.</summary>
+    <summary lang="cs_CZ">Kontrola verze Kodi, zkontroluje, zda používáte nejnovější vydanou verzi.</summary>
+    <summary lang="da_DK">Kodi Version Check undersøger om du benytter den nyeste version.</summary>
+    <summary lang="de_DE">Kodi Version Check prüft, ob die neuste Version von Kodi installiert ist.</summary>
+    <summary lang="el_GR">Ο Έλεγχος Έκδοσης Kodi εξετάζει αν έχετε την πιο πρόσφατη έκδοση του προγράμματος.</summary>
+    <summary lang="en_GB">Kodi Version Check checks if you are running latest released version.</summary>
+    <summary lang="en_NZ">Kodi Version Check checks if you are running latest released version.</summary>
+    <summary lang="en_US">Kodi Version Check checks if you are running latest released version.</summary>
+    <summary lang="es_ES">Kodi Version Check comprueba si está ejecutando la última versión de Kodi.</summary>
+    <summary lang="es_MX">Kodi Version Check comprueba si estás ejecutando la última versión de Kodi publicada.</summary>
+    <summary lang="et_EE">Kontrollitakse, kas kasutuses on uusim Kodi väljalase.</summary>
+    <summary lang="fa_IR">بررسی نگارش کودی، بررسی می‌کند که جدیدترین نگارش ارائه‌شده را اجرا کنید.</summary>
+    <summary lang="fi_FI">Kodi Version Check tarkistaa käytätkö sovelluksen viimeisintä versiota.</summary>
+    <summary lang="fr_CA">Le contrôleur de version Kodi vérifie si vous utilisez la dernière version parue.</summary>
+    <summary lang="fr_FR">Kodi Version Check vérifie que vous utilisez la dernière version.</summary>
+    <summary lang="gl_ES">Kodi Version Check verifica se está a executar a última versión.</summary>
+    <summary lang="he_IL">בודק גרסת Kodi מוודא אם אתה מריץ את הגרסה הרשמית האחרונה.</summary>
+    <summary lang="hr_HR">Kodi Version Check provjerava imate li zadnju izdanu inačicu.</summary>
+    <summary lang="hu_HU">Az Kodi verzió ellenőrző megvizsgálja, hogy a legújabb kiadást futtatja-e.</summary>
+    <summary lang="id_ID">Kodi Version Check mengecek apakah Anda menggunakan versi rilis terbaru.</summary>
+    <summary lang="is_IS">Kodi Version Check athugar hvort þú sért að keyra nýjustu viðurkennda útgáfu.</summary>
+    <summary lang="it_IT">Kodi Version Check controlla se stai utilizzando l'ultima versione disponibile.</summary>
+    <summary lang="ko_KR">Kodi Version Checks는 최신 정식 릴리즈 버전을 사용중인지 검사해줍니다.</summary>
+    <summary lang="lt_LT">Kodi Version Check patikrina ar naudojate naujausią versiją.</summary>
+    <summary lang="lv_LV">Kodi versijas pārbaude pārbauda, vai izmantojat jaunāko versiju.</summary>
+    <summary lang="nb_NO">Kodi Versjonsettersyn sjekker om du kjører den sist utgitte versjonen.</summary>
+    <summary lang="nl_NL">Kodi versie-check controleert of je de laatst beschikbare versie hebt.</summary>
+    <summary lang="oc_FR">Kodi Version Check verifica s’executatz la darrièra version sortida.</summary>
+    <summary lang="pl_PL">Dodatek Version Check sprawdza, czy używasz najnowszej wersji Kodi.</summary>
+    <summary lang="pt_BR">Kodi Version Check verifica se você está executando a versão mais recente.</summary>
+    <summary lang="pt_PT">O Kodi Version Check verifica se a sua versão de lançamento do Kodi está actualizada.</summary>
+    <summary lang="ro_RO">Verificare versiune Kodi verifică dacă folosiți ultima versiune lansată.</summary>
+    <summary lang="ru_RU">Kodi Version Check проверяет наличие последней версии.</summary>
+    <summary lang="sk_SK">Kodi Kontrola verzií overuje, či používate najnovšiu vydanú verziu.</summary>
+    <summary lang="sl_SI">Preverjalnik različic Kodi preveri, ali je nameščena zadnja objavljena različica.</summary>
+    <summary lang="sv_SE">Kodi Version Check kontrollerar om du använder den senaste versionen.</summary>
+    <summary lang="tr_TR">Kodi Sürüm Kontrol, yayınlanmış son sürümü kullanıp kullanmadığınızı kontrol eder.</summary>
+    <summary lang="vi_VN">Kodi Version Check kiểm tra xem bạn có đang chạy phiên bản mới nhất được phát hành hay không.</summary>
+    <summary lang="zh_CN">Kodi 版本检查检查你使用的是否为最新发布的版本。</summary>
+    <summary lang="zh_TW">Kodi版本檢查器會檢查您執行中的是否是最新版本。</summary>
+    <description lang="be_BY">Kodi Version Check працуе толькі на пэўнай колькасці платформ і дыстрыбутываў, версіі якіх могуць адрознівацца паміж сабой. Каб даведацца больш падрабязна, наведайце саkodi.tv.</description>
+    <description lang="bg_BG">Kodi Version Check поддържа няколко платформи/дистрибуции. За повече информация посетете страницата www.kodi.tv</description>
+    <description lang="bs_BA">Kodi Verzijski Provjerač podržava samo određeni broj platformi/distribucija jer njihova izdanja se međusobno mogu razlikovati. Za više informacija posjetite kodi.tv web stranicu.</description>
+    <description lang="ca_ES">Kodi Version Check només és compatible amb una sèrie de plataformes / distribucions ja que les ultimes versions poden ser diferents entre elles. Per obtenir més informació, visiteu el lloc web kodi.tv.</description>
+    <description lang="cs_CZ">Kontrola verze Kodi podporuje pouze několik platforem/distribucí a verze mezi nimi se můžou lišit. Pro více informací navštivte webové stránky kodi.tv.</description>
+    <description lang="da_DK">Kodi Version Check kan kun undersøge for opdateringer for visse platforme/udgaver, da udgivelserne kan variere mellem dem. For mere information, besøg kodi.tv.</description>
+    <description lang="de_DE">Kodi Version Check unterstützt nur ausgewählte Plattformen/Distributionen, da sich die jeweiligen Veröffentlichungen unterscheiden können. Mehr Informationen dazu gibt es auf der kodi.tv-Website.</description>
+    <description lang="el_GR">Ο Έλεγχος Έκδοσης Kodi υποστηρίζει μόνο ορισμένα λειτουργικά συστήματα/διανομές, καθώς οι εκδόσεις διαφέρουν για το καθένα. Για περισσότερες πληροφορίες επισκεφθείτε το kodi.tv</description>
+    <description lang="en_GB">Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website.</description>
+    <description lang="en_NZ">Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website.</description>
+    <description lang="en_US">Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website.</description>
+    <description lang="es_ES">Kodi Version Check solo soporta un número limitado de plataformas/distribuciones, ya que los lanzamientos pueden diferir entre ellos. Para más información, visite la web de kodi.tv.</description>
+    <description lang="es_MX">Kodi Version Check solo soporta un número de plataformas/distros dado que las versiones pueden diferir. Para más información visita el sitio web de kodi.tv.</description>
+    <description lang="et_EE">Toetatud on ainult osad platvormid/distrod, kuna väljalasked võivad nende vahel erineda. Lisateavet leiab aadressilt kodi.tv.</description>
+    <description lang="fa_IR">بررسی نگارش کودی تنها چند بن‌سازه/توزیع را که ممکن است ارائه‌ها رویشان تفاوت داشته باشند بررسی می‌کند. برای اطّلاعات بیش‌تر، پایگاه وب kodi.tv را ببینید.</description>
+    <description lang="fi_FI">Kodi Version Check tukee vain joitakin alustoja/distroja, koska julkaisut saattavat poiketa toisistaan. Lue lisää kodi.tv-sivustolta.</description>
+    <description lang="fr_CA">Le contrôleur de version Kodi ne prend en charge qu'un certain nombre de plate-formes/distributions car les versions peuvent varier entre elles. Pour plus d'informations, visitez le site Web kodi.tv.</description>
+    <description lang="fr_FR">Kodi Version Check ne prend en charge qu'un certain nombre de plateformes/distributions car les versions peuvent varier entre elles. Pour plus d'informations, consulter le site Web kodi.tv.</description>
+    <description lang="gl_ES">Kodi Version Check só soporta un número limitado de plataformas/distribucións, xa que os lanzamentos poden diferir entre eles. Para máis información visitar o sitio web de kodi.tv.</description>
+    <description lang="he_IL">בודק גרסת Kodi תומך רק במספר פלטפורמות/הפצות מאחר שסימון הגרסאות שונה בין אחת לשניה. למידע נוסף בקר באתר kodi.tv.</description>
+    <description lang="hr_HR">Kodi Version Check podržava samo određen broj platformi/distribucija budući da se njihova izdanja međusobno mogu razlikovati. Za više informacija posjetite kodi.tv web stranicu.</description>
+    <description lang="hu_HU">Az Kodi verzió-ellenőrző csak néhány platformot / disztribúciót támogat, mert a kiadások között különbségek lehetnek. További információkért keresse fel az kodi.tv oldalt.</description>
+    <description lang="id_ID">Kodi Version Check hanya mendukung beberapa platform/distro karena rilisnya mungkin berbeda-beda. Untuk informasi lebih lanjut kunjungi situs kodi.tv.</description>
+    <description lang="is_IS">Athugun á útgáfu Kodi styður fjölda stýrikerfa/dreifinga þar sem útgáfur geta verið mismunandi á milli þeirra. Farðu inn á Kodi.tv til að fá nánari upplýsingar.</description>
+    <description lang="it_IT">Kodi Version Check supporta solo un certo numero di piattaforme/distribuzioni poiché le versioni potrebbero differire tra loro. Per ulteriori informazioni, visita il sito Web kodi.tv.</description>
+    <description lang="ko_KR">Kodi 버전 확인은 릴리스가 다를 수 있으므로 다수 플랫폼/배포판만 지원합니다. 자세한 내용은 kodi.tv 웹사이트를 방문하세요.</description>
+    <description lang="lt_LT">Kodi Version Check palaiko tik kelias platformas/distribucijas, nes leidimai tarp jų gali skirtis. Norėdami gauti daugiau informacijos, apsilankykite Kodi.tv puslapyje.</description>
+    <description lang="lv_LV">Kodi versijas pārbaude tiek atbalstīta tikai dažās platformās/distributīvos, un tās var atšķirties viena no otras. Lai iegūtu vairāk informācijas, apmeklējiet kodi.tv vietni.</description>
+    <description lang="nb_NO">Kodi Versjonsettersyn støtter kun noen plattformer/distribusjoner fordi utgivelser kan være forskjellige mellom dem. Besøk kodi.tv for mer informasjon.</description>
+    <description lang="nl_NL">Kodi versie check ondersteunt alleen een aantal platforms/distro`s omdat uitgaven verschillen tussen hen. Voor meer informatie bezoek de kodi.tv website.</description>
+    <description lang="pl_PL">Dodatek Version Check wspiera tylko część platform i dystrybucji. Więcej informacji na stronie kodi.tv.</description>
+    <description lang="pt_BR">Verificador de versões do Kodi somente suporta algumas plataformas/distros em que os lançamentos podem diferenciar entre si. Para maiores informações visite o website kodi.tv.</description>
+    <description lang="pt_PT">O Kodi Version Check suporta apenas algumas plataformas/distribuições, porque os lançamentos podem não ser sempre idênticos. Para mais informação, visite o site kodi.tv.</description>
+    <description lang="ru_RU">Kodi Version Check поддерживается только на ряде платформ/дистрибутивов и они могут различаться между собой. Для получения доп. информации посетите сайт kodi.tv.</description>
+    <description lang="sk_SK">Kontrola verzie Kodi podporuje iba niekoľko platforiem/distribúcií keďže vydania sa môžu medzi nimi líšiť. Pre viac informácií navštívte webové stránky kodi.tv.</description>
+    <description lang="sl_SI">Preverjalnik različic Kodi podpira le nekatera okolja, saj se te lahko med njimi močno razlikujejo. Več podrobnosti o tem je na voljo na spletišču kodi.tv.</description>
+    <description lang="sv_SE">Kodi Version Check stöder endeast ett antal plattformar/distributioner eftersom utgivningar kan skilja mellan dessa. För mer information besök kodi.tv webplatsen.</description>
+    <description lang="tr_TR">Kodi Sürüm Kontrol, sürümler arasında değişiklik olduğu için sadece birkaç platform/dağıtım destekler. Daha fazla bilgi için kodi.tv web sitesini ziyaret edin.</description>
+    <description lang="vi_VN">Kodi Version Check chỉ hỗ trợ một số nền tảng/phân phối vì các bản phát hành có thể khác nhau giữa chúng. Để biết thêm thông tin, hãy truy cập trang web kodi.tv.</description>
+    <description lang="zh_CN">Kodi 版本检查只支持部分平台/发行版，它们之间的版本可能会有所不同。欲了解更多信息，请访问 kodi.tv 网站。</description>
+    <description lang="zh_TW">由於各發行版之間的差異，Kodi版本檢查器只支援部分平台及版本號。更多資訊請參閱kodi.tv網站。</description>
+    <disclaimer lang="be_BY">Выкарыстоўвайце гэты скрыпт па ўласным жаданні. Каб даведацца больш падрабязна, наведайце kodi.tv</disclaimer>
+    <disclaimer lang="bg_BG">Ползвайте скрипта свободно. За повече информация посетете www.kodi.tv</disclaimer>
+    <disclaimer lang="bs_BA">Slobodno koristite ovu skriptu ako želite. Za više informacija posjetite kodi.tv</disclaimer>
+    <disclaimer lang="ca_ES">Sigues lliure d'utilitzar aquest script. Per més informació visita kodi.tv</disclaimer>
+    <disclaimer lang="cs_CZ">Neváhejte použít tento skript. Pro více informací navštivte kodi.tv</disclaimer>
+    <disclaimer lang="da_DK">Du er velkommen til at bruge dette script. For information, besøg kodi.tv</disclaimer>
+    <disclaimer lang="de_DE">Dieses Skript ist sehr nützlich und jeder sollte es verwenden. Mehr Informationen dazu gibt es auf der kodi.tv-Website</disclaimer>
+    <disclaimer lang="el_GR">Χρησιμοποιήστε αυτό το script ελεύθερα. Για πληροφορίες επισκεφθείτε το kodi.tv</disclaimer>
+    <disclaimer lang="en_GB">Feel free to use this script. For information visit kodi.tv</disclaimer>
+    <disclaimer lang="en_NZ">Feel free to use this script. For information visit kodi.tv</disclaimer>
+    <disclaimer lang="en_US">Feel free to use this script. For information visit kodi.tv</disclaimer>
+    <disclaimer lang="es_ES">Puede usar libremente este programa. Para más información, visite kodi.tv</disclaimer>
+    <disclaimer lang="es_MX">Siéntete libre de utilizar este script. Para mas información visita kodi.tv</disclaimer>
+    <disclaimer lang="et_EE">Kasuta seda skripti julgelt. Lisateavet leiab aadressilt kodi.tv</disclaimer>
+    <disclaimer lang="fa_IR">برای استفاده از این کدنوشته، احساس راحتی داشته باشید. برای اطّلاعات بیش‌تر kodi.tv را ببینید</disclaimer>
+    <disclaimer lang="fi_FI">Käytä tätä komentosarjaa vapaasti. Lue lisää kodi.tv-sivustolta.</disclaimer>
+    <disclaimer lang="fr_CA">N'hésitez pas à utiliser ce script. Pour plus d'informations visitez kodi.tv</disclaimer>
+    <disclaimer lang="fr_FR">N'hésitez pas à utiliser ce script. Pour plus d'informations, visitez kodi.tv</disclaimer>
+    <disclaimer lang="gl_ES">Síntase libre de usar este script, para máis información visitar kodi.tv.</disclaimer>
+    <disclaimer lang="he_IL">תרגיש חופשי להשתמש בסקריפט זה. למידע נוסף בקר ב-kodi.tv</disclaimer>
+    <disclaimer lang="hr_HR">Slobodno koristite ovu skriptu. Za više informacija posjetite kodi.tv</disclaimer>
+    <disclaimer lang="hu_HU">Használja bátran ezt a szkriptet! Információkért keresse fel az kodi.tv oldalt!</disclaimer>
+    <disclaimer lang="id_ID">Jangan sungkan menggunakan script ini. Untuk informasi hubungi kodi.tv</disclaimer>
+    <disclaimer lang="is_IS">Notaðu þessa skriftu eins og þig lystir. Til að vita meira ættirðu að skoða kodi.tv</disclaimer>
+    <disclaimer lang="it_IT">Sentiti libero di usare questo script. Per informazioni visita kodi.tv</disclaimer>
+    <disclaimer lang="ja_JP">このスクリプトをお使いください。詳しくは kodi.tv を参照してください</disclaimer>
+    <disclaimer lang="ko_KR">이 스크립트를 자유롭게 사용하세요. 관련 정보는 kodi.tv를 방문하세요</disclaimer>
+    <disclaimer lang="lt_LT">Galite laisvai naudoti šį scenarijų. Apsilankykite kodi.tv, norėdami gauti daugiau informacijos.</disclaimer>
+    <disclaimer lang="lv_LV">Brīvi izmantojiet šo skriptu pēc saviem ieskatiem. Lai iegūtu vairāk informācijas, apmeklējiet kodi.tv vietni</disclaimer>
+    <disclaimer lang="nb_NO">Du har fri tillatelse til å benytte dette skriptet. Besøk kodi.tv for informasjon</disclaimer>
+    <disclaimer lang="nl_NL">Gebruik dit script vrijblijvend. Voor meer informatie bezoek kodi.tv</disclaimer>
+    <disclaimer lang="oc_FR">Siatz liure d’utilizar aqueste script. Per d’informacions consultatz kodi.tv</disclaimer>
+    <disclaimer lang="pl_PL">Zapraszamy do używania tego dodatku. Więcej informacji na stronie kodi.tv</disclaimer>
+    <disclaimer lang="pt_BR">Sinta-se livre para usar este script. Para maiores informações visite kodi.tv</disclaimer>
+    <disclaimer lang="pt_PT">Esteja à vontade para usar este script. Para mais informação, visite kodi.tv.</disclaimer>
+    <disclaimer lang="ro_RO">Simțiți-vă liberi să folosiți acest script. Pentru informații vizitați kodi.tv</disclaimer>
+    <disclaimer lang="ru_RU">Используйте этот скрипт на свое усмотрение. Для информации посетите kodi.tv</disclaimer>
+    <disclaimer lang="sk_SK">Neváhajte použiť tento skript. Pre viac informácií navštívte kodi.tv</disclaimer>
+    <disclaimer lang="sl_SI">Izvolite uporabiti ta skript. Za dodatne informacije obiščite kodi.tv</disclaimer>
+    <disclaimer lang="sv_SE">Använd gärna detta skript. För information, besök kodi.tv</disclaimer>
+    <disclaimer lang="tr_TR">Bu betiği kullanmaktan çekinmeyin. Daha fazla bilgi için kodi.tv adresini ziyaret edin</disclaimer>
+    <disclaimer lang="vi_VN">Hãy sử dụng tập lệnh này. Để biết thêm thông tin, truy cập kodi.tv</disclaimer>
+    <disclaimer lang="zh_CN">可放心使用此脚本，更多信息访问 kodi.tv</disclaimer>
+    <disclaimer lang="zh_TW">歡迎使用本腳本，相關資訊請參閱kodi.tv</disclaimer>
+  </extension>
 </addon>

@@ -10,6 +10,9 @@ cd %WORKSPACE%
 rem clean the BUILD_WIN32 at first to avoid problems with possible git files in there
 IF EXIST %WORKSPACE%\project\Win32BuildSetup\BUILD_WIN32 rmdir %WORKSPACE%\project\Win32BuildSetup\BUILD_WIN32 /S /Q
 
+rem also clean 'build' dir used to build ffmpeg as git clean has trouble to remove some times
+IF EXIST %WORKSPACE%\project\BuildDependencies\build rmdir %WORKSPACE%\project\BuildDependencies\build /S /Q
+
 rem we assume git in path as this is a requirement
 rem git clean the untracked files and directories
 rem but keep the downloaded dependencies
@@ -18,8 +21,3 @@ SET GIT_CLEAN_CMD=git clean -xffd -e "project/BuildDependencies/downloads" -e "p
 
 ECHO running %GIT_CLEAN_CMD%
 %GIT_CLEAN_CMD%
-
-REM 'build' dir is necessary to extract ffmpeg code
-REM we prevents missing under certain circumstances (early creation)
-SET BUILD_FFMPEG=%WORKSPACE%\project\BuildDependencies\build
-IF NOT EXIST %BUILD_FFMPEG% mkdir %BUILD_FFMPEG%

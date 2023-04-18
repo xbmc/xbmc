@@ -95,7 +95,7 @@
 					<itemgap>20</itemgap>
 					<control type="label">
 						<width>100</width>
-						<height>40</height>
+						<height>35</height>
 						<label>$INFO[MusicPlayer.Year]</label>
 						<font>font37</font>
 						<shadowcolor>black</shadowcolor>
@@ -105,7 +105,7 @@
 					</control>
 					<control type="label">
 						<width min="0" max="1130">auto</width>
-						<height>40</height>
+						<height>35</height>
 						<label>$INFO[MusicPlayer.Genre]</label>
 						<font>font37</font>
 						<shadowcolor>black</shadowcolor>

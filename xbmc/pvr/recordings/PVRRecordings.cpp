@@ -9,6 +9,7 @@
 #include "PVRRecordings.h"
 
 #include "ServiceBroker.h"
+#include "addons/kodi-dev-kit/include/kodi/c-api/addon-instance/pvr/pvr_epg.h" // EPG_TAG_INVALID_UID
 #include "pvr/PVRCachedImages.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
@@ -89,7 +90,6 @@ void CPVRRecordings::UpdateInProgressSize()
     return;
   m_bIsUpdating = true;
 
-  CLog::LogFC(LOGDEBUG, LOGPVR, "Updating recordings size");
   bool bHaveUpdatedInProgessRecording = false;
   for (auto& recording : m_recordings)
   {

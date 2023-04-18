@@ -35,9 +35,20 @@
 #include <algorithm>
 #include <stdexcept>
 
+namespace
+{
+std::string GetDateStringWithFormat(const CDateTime& date, const std::string& format)
+{
+  // Return the formatted date together with the format used.
+  // eg: '1/02/2003 (D/MM/YYYY)'
+  return date.GetAsLocalizedDate(format) + " (" + format + ")";
+}
+} // namespace
+
 using namespace PVR;
 
 static std::string shortDateFormats[] = {
+    // clang-format off
   // short date formats using "/"
   "DD/MM/YYYY",
   "MM/DD/YYYY",
@@ -53,7 +64,13 @@ static std::string shortDateFormats[] = {
   "DD.M.YYYY",
   "D.M.YYYY",
   "D. M. YYYY",
-  "YYYY.MM.DD"
+  "YYYY.MM.DD",
+  // short date formats with abbreviated month and 2 digit year
+  "D-mmm-YY",
+  "DD-mmm-YY",
+  "D mmm YY",
+  "DD mmm YY",
+    // clang-format on
 };
 
 static std::string longDateFormats[] = {
@@ -1281,10 +1298,11 @@ void CLangInfo::SettingOptionsShortDateFormatsFiller(const SettingConstPtr& sett
 
   CDateTime now = CDateTime::GetCurrentDateTime();
 
-  list.emplace_back(
-      StringUtils::Format(g_localizeStrings.Get(20035),
-                          now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatShort)),
-      SETTING_REGIONAL_DEFAULT);
+  list.emplace_back(StringUtils::Format(g_localizeStrings.Get(20035),
+                                        GetDateStringWithFormat(
+                                            now, g_langInfo.m_currentRegion->m_strDateFormatShort)),
+                    SETTING_REGIONAL_DEFAULT);
+
   if (shortDateFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1293,7 +1311,7 @@ void CLangInfo::SettingOptionsShortDateFormatsFiller(const SettingConstPtr& sett
 
   for (const std::string& shortDateFormat : shortDateFormats)
   {
-    list.emplace_back(now.GetAsLocalizedDate(shortDateFormat), shortDateFormat);
+    list.emplace_back(GetDateStringWithFormat(now, shortDateFormat), shortDateFormat);
 
     if (!match && shortDateFormatSetting == shortDateFormat)
     {
@@ -1316,10 +1334,11 @@ void CLangInfo::SettingOptionsLongDateFormatsFiller(const SettingConstPtr& setti
 
   CDateTime now = CDateTime::GetCurrentDateTime();
 
-  list.emplace_back(
-      StringUtils::Format(g_localizeStrings.Get(20035),
-                          now.GetAsLocalizedDate(g_langInfo.m_currentRegion->m_strDateFormatLong)),
-      SETTING_REGIONAL_DEFAULT);
+  list.emplace_back(StringUtils::Format(g_localizeStrings.Get(20035),
+                                        GetDateStringWithFormat(
+                                            now, g_langInfo.m_currentRegion->m_strDateFormatLong)),
+                    SETTING_REGIONAL_DEFAULT);
+
   if (longDateFormatSetting == SETTING_REGIONAL_DEFAULT)
   {
     match = true;
@@ -1328,7 +1347,7 @@ void CLangInfo::SettingOptionsLongDateFormatsFiller(const SettingConstPtr& setti
 
   for (const std::string& longDateFormat : longDateFormats)
   {
-    list.emplace_back(now.GetAsLocalizedDate(longDateFormat), longDateFormat);
+    list.emplace_back(GetDateStringWithFormat(now, longDateFormat), longDateFormat);
 
     if (!match && longDateFormatSetting == longDateFormat)
     {

@@ -409,6 +409,41 @@ public:
   //----------------------------------------------------------------------------
 
   //============================================================================
+  /// @brief Get the ID of the controller that best represents the peripheral's
+  /// appearance.
+  ///
+  /// @param[in] joystick The device's joystick properties; unknown values may
+  ///                     be left at their default
+  /// @param[out] controllerId The controller ID of the appearance, or empty
+  ///                          if the appearance is unknown
+  ///
+  /// @return @ref PERIPHERAL_NO_ERROR if successful
+  ///
+  virtual PERIPHERAL_ERROR GetAppearance(const kodi::addon::Joystick& joystick,
+                                         std::string& controllerId)
+  {
+    return PERIPHERAL_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
+  /// @brief Set the ID of the controller that best represents the peripheral's
+  /// appearance.
+  ///
+  /// @param[in] joystick The device's joystick properties; unknown values may
+  ///                     be left at their default
+  /// @param[in] controllerId The controller ID of the appearance
+  ///
+  /// @return @ref PERIPHERAL_NO_ERROR if successful
+  ///
+  virtual PERIPHERAL_ERROR SetAppearance(const kodi::addon::Joystick& joystick,
+                                         const std::string& controllerId)
+  {
+    return PERIPHERAL_ERROR_NOT_IMPLEMENTED;
+  }
+  //----------------------------------------------------------------------------
+
+  //============================================================================
   /// @brief Get the features that allow translating the joystick into the
   /// controller profile.
   ///
@@ -612,6 +647,8 @@ private:
 
     instance->peripheral->toAddon->get_joystick_info = ADDON_GetJoystickInfo;
     instance->peripheral->toAddon->free_joystick_info = ADDON_FreeJoystickInfo;
+    instance->peripheral->toAddon->get_appearance = ADDON_GetAppearance;
+    instance->peripheral->toAddon->set_appearance = ADDON_SetAppearance;
     instance->peripheral->toAddon->get_features = ADDON_GetFeatures;
     instance->peripheral->toAddon->free_features = ADDON_FreeFeatures;
     instance->peripheral->toAddon->map_features = ADDON_MapFeatures;
@@ -730,6 +767,42 @@ private:
       return;
 
     kodi::addon::Joystick::FreeStruct(*info);
+  }
+
+  inline static PERIPHERAL_ERROR ADDON_GetAppearance(const AddonInstance_Peripheral* addonInstance,
+                                                     const JOYSTICK_INFO* joystick,
+                                                     char* buffer,
+                                                     unsigned int bufferSize)
+  {
+    if (addonInstance == nullptr || joystick == nullptr || buffer == nullptr || bufferSize == 0)
+      return PERIPHERAL_ERROR_INVALID_PARAMETERS;
+
+    kodi::addon::Joystick addonJoystick(*joystick);
+    std::string controllerId;
+
+    PERIPHERAL_ERROR err = static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
+                               ->GetAppearance(addonJoystick, controllerId);
+    if (err == PERIPHERAL_NO_ERROR)
+    {
+      std::strncpy(buffer, controllerId.c_str(), bufferSize - 1);
+      buffer[bufferSize - 1] = '\0';
+    }
+
+    return err;
+  }
+
+  inline static PERIPHERAL_ERROR ADDON_SetAppearance(const AddonInstance_Peripheral* addonInstance,
+                                                     const JOYSTICK_INFO* joystick,
+                                                     const char* controllerId)
+  {
+    if (addonInstance == nullptr || joystick == nullptr || controllerId == nullptr)
+      return PERIPHERAL_ERROR_INVALID_PARAMETERS;
+
+    kodi::addon::Joystick addonJoystick(*joystick);
+    std::string strControllerId(controllerId);
+
+    return static_cast<CInstancePeripheral*>(addonInstance->toAddon->addonInstance)
+        ->SetAppearance(addonJoystick, strControllerId);
   }
 
   inline static PERIPHERAL_ERROR ADDON_GetFeatures(const AddonInstance_Peripheral* addonInstance,

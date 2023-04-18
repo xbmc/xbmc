@@ -71,6 +71,16 @@ public:
    */
   static std::string GetResumeString(const CFileItem &item);
 
+  /*! \brief Load video information from the database for these items (public static version)
+   Useful for grabbing information for file listings, from watched status to full metadata
+   \param items the items to load information for.
+   \param database open database object to retrieve the data from
+   \param allowReplaceLabels allow label replacement if according GUI setting is enabled
+   */
+  static void LoadVideoInfo(CFileItemList& items,
+                            CVideoDatabase& database,
+                            bool allowReplaceLabels = true);
+
 protected:
   void OnScan(const std::string& strPath, bool scanAll = false);
   bool Update(const std::string &strDirectory, bool updateFilterPath = true) override;

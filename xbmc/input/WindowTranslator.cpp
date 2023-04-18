@@ -219,7 +219,7 @@ int CWindowTranslator::TranslateWindow(const std::string& window)
 
   // Eliminate .xml
   if (StringUtils::EndsWith(strWindow, ".xml"))
-    strWindow = strWindow.substr(0, strWindow.size() - 4);
+    strWindow.resize(strWindow.size() - 4);
 
   // window12345, for custom window to be keymapped
   if (strWindow.length() > 6 && StringUtils::StartsWith(strWindow, "window"))

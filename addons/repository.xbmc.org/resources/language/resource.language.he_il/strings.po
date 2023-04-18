@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-27 15:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Hebrew (Israel) <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/he_il/>\n"
+"Language: he_il\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && n % 10 == 0) ? 2 : 3));\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "התקנת הרחבות מ־Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "הורדה והתקנת הרחבות ממאגר הרחבות Kodi.tv הרשמי.[CR] שימוש במאגר הרשמי מאפשר לנצל את שירות שיקוף הקבצים של Kodi.tv העוזר להוריד מהר יותר מהשרת הקרוב ביותר.[CR] כל ההרחבות במאגר זה עברו בדיקה בסיסית. יש לדווח לצוות הפיתוח של Kodi על כל הרחבה שנמצאה כלא תקינה או שלא עובדת ע\"מ שתתבצע הפעולה המתאימה."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "צוות הפיתוח של Kodi לא יצר את כל ההרחבות שבמאגר זה ואיננו אחראי על תוכנן"

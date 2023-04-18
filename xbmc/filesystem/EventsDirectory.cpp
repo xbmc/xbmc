@@ -38,7 +38,7 @@ bool CEventsDirectory::GetDirectory(const CURL& url, CFileItemList &items)
       includeHigherLevels = true;
 
       // remove the "+" from the end of the hostname
-      hostname = hostname.substr(0, hostname.size() - 1);
+      hostname.pop_back();
     }
 
     EventLevel level = CEventLog::EventLevelFromString(hostname);

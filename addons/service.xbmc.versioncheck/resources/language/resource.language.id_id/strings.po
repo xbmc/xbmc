@@ -5,16 +5,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Indonesian (http://www.transifex.com/projects/p/xbmc-addons/language/id/)\n"
-"Language: id\n"
+"PO-Revision-Date: 2021-11-18 07:13+0000\n"
+"Last-Translator: Nao3Line Prez <n.yazawa6932@gmail.com>\n"
+"Language-Team: Indonesian <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/id_id/>\n"
+"Language: id_id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.9\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "Kodi Version Check mengecek apakah Anda menggunakan versi rilis terbaru."
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr "Kodi Version Check hanya mendukung beberapa platform/distro karena rilisnya mungkin berbeda-beda. Untuk informasi lebih lanjut kunjungi situs kodi.tv."
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "Jangan sungkan menggunakan script ini. Untuk informasi hubungi kodi.tv"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
@@ -30,7 +43,7 @@ msgstr "Apakah anda ingin menghapus pengingat ini?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
-msgstr ""
+msgstr "Anda dapat mengaktifkan/menonaktifkannya melalui pengaturan add-on."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
@@ -80,42 +93,42 @@ msgstr "Linux: Perbarui menggunakan apt"
 #. Used in OK dialog
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Versi stabil baru dari Kodi tersedia."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "Kunjungi http://kodi.tv untuk informasi lebih lanjut."
 
 #. Used in OK dialog
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Versi stabil baru dari Kodi tersedia."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "Kunjungi http://kodi.tv untuk informasi lebih lanjut."
 
 #. For example: "You are using 13.1 prealpha while 13.2 stable is available"
 msgctxt "#32034"
 msgid "Using %s while %s is available."
-msgstr ""
+msgstr "Menggunakan %s selagi %s tersedia."
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
-msgstr ""
+msgid "It is recommended that you upgrade to a newer version."
+msgstr "Disarankan agar Anda meningkatkan ke versi yang lebih baru."
 
 # empty strings from id 32036 to 32039
 msgctxt "#32040"
 msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
-msgstr ""
+msgstr "Versi %s dari modul kriptografi Python Anda terlalu tua. Anda memerlukan setidaknya versi 1.7."
 
 msgctxt "#32041"
 msgid "Please upgrade your operating system."
-msgstr ""
+msgstr "Harap tingkatkan sistem operasi Anda."
 
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
-msgstr ""
+msgstr "Untuk informasi lebih lanjut, lihat https://kodi.wiki/view/Linux"

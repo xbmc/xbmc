@@ -73,6 +73,7 @@ if(PIPEWIRE_FOUND)
                       Sinks/pipewire/Pipewire.cpp
                       Sinks/pipewire/PipewireContext.cpp
                       Sinks/pipewire/PipewireCore.cpp
+                      Sinks/pipewire/PipewireGlobal.cpp
                       Sinks/pipewire/PipewireNode.cpp
                       Sinks/pipewire/PipewireProxy.cpp
                       Sinks/pipewire/PipewireRegistry.cpp
@@ -82,6 +83,7 @@ if(PIPEWIRE_FOUND)
                       Sinks/pipewire/Pipewire.h
                       Sinks/pipewire/PipewireContext.h
                       Sinks/pipewire/PipewireCore.h
+                      Sinks/pipewire/PipewireGlobal.h
                       Sinks/pipewire/PipewireNode.h
                       Sinks/pipewire/PipewireProxy.h
                       Sinks/pipewire/PipewireRegistry.h
@@ -147,6 +149,11 @@ endif()
 if(CORE_SYSTEM_NAME STREQUAL android)
   list(APPEND SOURCES Sinks/AESinkAUDIOTRACK.cpp)
   list(APPEND HEADERS Sinks/AESinkAUDIOTRACK.h)
+endif()
+
+if("webos" IN_LIST CORE_PLATFORM_NAME_LC)
+  list(APPEND SOURCES Sinks/AESinkStarfish.cpp)
+  list(APPEND HEADERS Sinks/AESinkStarfish.h)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL freebsd)

@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-27 15:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Persian (Iran) <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/fa_ir/>\n"
+"Language: fa_ir\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "نصف افزونه‌ها از Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "افزودنی ها را از منبع رسمی افزونه ها در Kodi.tv دانلود و نصب کنید. [CR] با استفاده از منبع رسمی شما قادر خواهید بود از خدمات گسترده سرویس دانلود جایگزین ما بهره ببرید که امکان دانلود از مناطق نزدیکتر را در اختیار شما قرار می دهد. [CR] همه افزونه های این منبع آزمایش های اولیه را پشت سر گذاشته اند. در صورت یافتن افزونه معیوب یا غیر قابل استفاده لطفا آن را به تیم کودی گزارش کنید تا اقدامات لازم را انجام دهیم."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "همه افزونه های این منبع محصول کار تیم کودی نیستند و این تیم مسئولیتی در قبال محتوای آنها ندارد."

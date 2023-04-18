@@ -136,7 +136,10 @@ void CSeat::SetCursor(std::uint32_t serial, wayland::surface_t const &surface, s
 {
   if (m_pointer)
   {
+    // set_cursor on webOS completely breaks pointer input
+#ifndef TARGET_WEBOS
     m_pointer.set_cursor(serial, surface, hotspotX, hotspotY);
+#endif
   }
 }
 

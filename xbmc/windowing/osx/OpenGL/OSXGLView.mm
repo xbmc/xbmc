@@ -9,13 +9,7 @@
 #import "OSXGLView.h"
 
 #include "ServiceBroker.h"
-#include "application/AppInboundProtocol.h"
-#include "application/AppParamParser.h"
-#include "application/Application.h"
-#include "messaging/ApplicationMessenger.h"
-#include "settings/AdvancedSettings.h"
-#include "settings/SettingsComponent.h"
-#include "utils/log.h"
+#import "windowing/osx/WinSystemOSX.h"
 
 #include "system_gl.h"
 
@@ -25,6 +19,15 @@
   NSOpenGLPixelFormat* m_pixFmt;
   NSTrackingArea* m_trackingArea;
   BOOL pause;
+}
+
+- (void)SendInputEvent:(NSEvent*)nsEvent
+{
+  CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (winSystem)
+  {
+    winSystem->SendInputEvent(nsEvent);
+  }
 }
 
 - (id)initWithFrame:(NSRect)frameRect
@@ -47,7 +50,7 @@
   [self updateTrackingAreas];
 
   GLint swapInterval = 1;
-  [m_glcontext setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
+  [m_glcontext setValues:&swapInterval forParameter:NSOpenGLContextParameterSwapInterval];
   [m_glcontext makeCurrentContext];
 
   return self;
@@ -59,11 +62,16 @@
   [m_glcontext clearDrawable];
 }
 
+- (BOOL)acceptsFirstResponder
+{
+  return YES;
+}
+
 - (void)drawRect:(NSRect)rect
 {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    [m_glcontext setView:self];
+    [self setOpenGLContext:m_glcontext];
 
     // clear screen on first render
     glClearColor(0, 0, 0, 0);
@@ -90,22 +98,111 @@
   [self addTrackingArea:m_trackingArea];
 }
 
-- (void)mouseEntered:(NSEvent*)theEvent
+- (void)mouseEntered:(NSEvent*)nsEvent
 {
-  [NSCursor hide];
+  CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (winSystem)
+    winSystem->signalMouseEntered();
 }
 
-- (void)mouseMoved:(NSEvent*)theEvent
+#pragma mark - Input Events
+
+- (void)mouseMoved:(NSEvent*)nsEvent
 {
+  [self SendInputEvent:nsEvent];
 }
 
-- (void)mouseExited:(NSEvent*)theEvent
+- (void)mouseDown:(NSEvent*)nsEvent
 {
-  [NSCursor unhide];
+  [self SendInputEvent:nsEvent];
 }
 
-- (NSOpenGLContext*)getGLContext
+- (void)mouseDragged:(NSEvent*)nsEvent
 {
-  return m_glcontext;
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)mouseUp:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)rightMouseDown:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)rightMouseDragged:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)rightMouseUp:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)otherMouseUp:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)otherMouseDown:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)scrollWheel:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)otherMouseDragged:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)keyDown:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)keyUp:(NSEvent*)nsEvent
+{
+  [self SendInputEvent:nsEvent];
+}
+
+- (void)mouseExited:(NSEvent*)nsEvent
+{
+  CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (winSystem)
+    winSystem->signalMouseExited();
+}
+
+- (CGLContextObj)getGLContextObj
+{
+  assert(m_glcontext);
+  return [m_glcontext CGLContextObj];
+}
+
+- (void)Update
+{
+  assert(m_glcontext);
+  [self NotifyContext];
+  [m_glcontext update];
+}
+
+- (void)NotifyContext
+{
+  assert(m_glcontext);
+  // signals/notifies the context that this view is current (required if we render out of DrawRect)
+  [m_glcontext makeCurrentContext];
+}
+
+- (void)FlushBuffer
+{
+  assert(m_glcontext);
+  [m_glcontext makeCurrentContext];
+  [m_glcontext flushBuffer];
 }
 @end

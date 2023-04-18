@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-27 15:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Vietnamese <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/vi_vn/>\n"
+"Language: vi_vn\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "Cài đặt Add-on từ Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "Tải về và cài đặt tiện ích từ kho tiện ích chính thức của Kodi.[CR]  Khi sử dụng kho lưu trữ này bạn sẽ hưởng lợi từ dịch vụ nguồn của chúng tôi, giúp bạn có thể tải về nhanh hơn từ một khu vực gần bạn.[CR]  Tất cả tiện ích trên kho lưu trữ này đã được thông qua bài kiểm tra cơ bản, nếu bạn phát hiện ra một tiện ích không hoạt động xin vui lòng báo cáo lại nó cho đội ngũ Kodi để chúng tôi có thể kịp thời xử lý."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "Đội ngũ Kodi không làm ra tất cả các add-on có trên kho chứa này và sẽ không chịu trách nhiệm về nội dung của các add-on đấy"

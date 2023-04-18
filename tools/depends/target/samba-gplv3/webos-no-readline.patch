@@ -1,0 +1,111 @@
+--- a/lib/replace/wscript
++++ b/lib/replace/wscript
+@@ -663,8 +663,6 @@
+     conf.CHECK_FUNCS_IN('crypt_r', 'crypt', checklibc=True)
+     conf.CHECK_FUNCS_IN('crypt_rn', 'crypt', checklibc=True)
+ 
+-    conf.CHECK_VARIABLE('rl_event_hook', define='HAVE_DECL_RL_EVENT_HOOK', always=True,
+-                        headers='readline.h readline/readline.h readline/history.h')
+     conf.CHECK_VARIABLE('program_invocation_short_name', headers='errno.h')
+ 
+     conf.CHECK_DECLS('snprintf vsnprintf asprintf vasprintf')
+--- a/libcli/smbreadline/wscript_build
++++ b/libcli/smbreadline/wscript_build
+@@ -1,8 +1,6 @@
+ #!/usr/bin/env python
+ 
+ 
+-termlib=bld.env.READLINE_TERMLIB or ''
+-
+ bld.SAMBA_SUBSYSTEM('SMBREADLINE',
+                     source='smbreadline.c',
+-                    deps=termlib + ' readline talloc')
++                    deps='talloc')
+--- a/libcli/smbreadline/wscript_configure
++++ b/libcli/smbreadline/wscript_configure
+@@ -1,85 +1,3 @@
+ #!/usr/bin/env python
+ 
+ 
+-conf.CHECK_HEADERS('readline.h history.h readline/readline.h readline/history.h')
+-for termlib in ['ncurses', 'curses', 'termcap', 'terminfo', 'termlib', 'tinfo']:
+-    if conf.CHECK_FUNCS_IN('tgetent', termlib):
+-        conf.env['READLINE_TERMLIB'] = termlib
+-        break
+-
+-#
+-# Check if we need to work around readline/readline.h
+-# deprecated declarations
+-#
+-if conf.CONFIG_SET('HAVE_READLINE_READLINE_H'):
+-    if not conf.CHECK_CODE('''
+-                    #include <readline/readline.h>
+-                    int main() {return 0;}
+-                    ''',
+-                    define='HAVE_WORKING_READLINE_READLINE_WITH_STRICT_PROTO',
+-                    cflags=conf.env['WERROR_CFLAGS'] +
+-                           ['-Wstrict-prototypes',
+-                            '-Werror=strict-prototypes'],
+-                    msg='for compiling <readline/readline.h> with strict prototypes',
+-                    addmain=False):
+-                conf.CHECK_CODE('''
+-                    #define _FUNCTION_DEF
+-                    #include <readline/readline.h>
+-                    int main() {return 0;}
+-                    ''',
+-                    cflags=conf.env['WERROR_CFLAGS'] +
+-                           ['-Wstrict-prototypes',
+-                            '-Werror=strict-prototypes'],
+-                    msg='for workaround to <readline/readline.h> strict prototypes issue',
+-                    define='HAVE_READLINE_READLINE_WORKAROUND',
+-                    addmain=False)
+-
+-conf.CHECK_CODE('''
+-#ifdef HAVE_READLINE_READLINE_H
+-#  ifdef HAVE_READLINE_READLINE_WORKAROUND
+-#    define _FUNCTION_DEF
+-#  endif
+-#  include <readline/readline.h>
+-#  ifdef HAVE_READLINE_HISTORY_H
+-#    include <readline/history.h>
+-#  endif
+-#else
+-#  ifdef HAVE_READLINE_H
+-#    include <readline.h>
+-#    ifdef HAVE_HISTORY_H
+-#      include <history.h>
+-#    endif
+-#  endif
+-#endif
+-int main(void) {rl_completion_t f; return 0;}
+-''',
+-'HAVE_RL_COMPLETION_FUNC_T', execute=False, addmain=False,
+-msg='Checking for rl_completion_t')
+-
+-conf.CHECK_CODE('''
+-#ifdef HAVE_READLINE_READLINE_H
+-#  ifdef HAVE_READLINE_READLINE_WORKAROUND
+-#    define _FUNCTION_DEF
+-#  endif
+-#  include <readline/readline.h>
+-#  ifdef HAVE_READLINE_HISTORY_H
+-#    include <readline/history.h>
+-#  endif
+-#else
+-#  ifdef HAVE_READLINE_H
+-#    include <readline.h>
+-#    ifdef HAVE_HISTORY_H
+-#      include <history.h>
+-#    endif
+-#  endif
+-#endif
+-int main(void) {CPPFunction f; return 0;}
+-''',
+-'HAVE_CPPFUNCTION', execute=False, addmain=False,
+-msg='Checking for CPPFunction')
+-
+-if conf.CHECK_FUNCS_IN('rl_completion_matches', 'readline'):
+-    conf.DEFINE('HAVE_NEW_LIBREADLINE', 1)
+-
+-if conf.CHECK_FUNCS_IN('history_list', 'readline'):
+-    conf.DEFINE('HAVE_HISTORY_LIST', 1)

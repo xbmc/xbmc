@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="100"
+   height="100"
+   version="1.1"
+   viewBox="0 0 26.458333 26.458334"
+   id="svg26"
+   sodipodi:docname="webos"
+   inkscape:version="1.2.2 (732a01da63, 2022-12-09, custom)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs30">
+    <rect
+       x="451.29898"
+       y="586.10344"
+       width="761.80025"
+       height="574.33171"
+       id="rect770" />
+  </defs>
+  <sodipodi:namedview
+     id="namedview28"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="9.86"
+     inkscape:cx="59.381339"
+     inkscape:cy="60.699797"
+     inkscape:window-width="1850"
+     inkscape:window-height="1136"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g24" />
+  <metadata
+     id="metadata18">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(0 -270.54)"
+     id="g24">
+    <rect
+       x="-1.4211e-14"
+       y="270.54"
+       width="26.458"
+       height="26.458"
+       fill="#2b2e34"
+       stroke-width=".27763"
+       id="rect20" />
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;fill:#ffffff;stroke-width:0.264583"
+       x="8.4137917"
+       y="285.82489"
+       id="text762"><tspan
+         sodipodi:role="line"
+         id="tspan760"
+         style="stroke-width:0.264583"
+         x="8.4137917"
+         y="285.82489" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:3.175px;letter-spacing:-0.53975px;word-spacing:0px;fill:#ffffff;stroke-width:0.264583"
+       x="3.7344356"
+       y="286.08652"
+       id="text766"><tspan
+         sodipodi:role="line"
+         id="tspan764"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.99722px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583"
+         x="3.7344356"
+         y="286.08652">web<tspan
+   style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.35px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+   id="tspan774">OS</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,0,270.54)"
+       id="text768"
+       style="white-space:pre;shape-inside:url(#rect770);display:inline;fill:#ffffff" />
+  </g>
+</svg>

@@ -21,6 +21,8 @@
 #include <memory>
 #include <vector>
 
+typedef struct ass_image ASS_Image;
+
 class CDVDOverlay;
 class CDVDOverlayLibass;
 class CDVDOverlayImage;
@@ -41,6 +43,10 @@ namespace OVERLAY {
   class COverlay
   {
   public:
+    static std::shared_ptr<COverlay> Create(const CDVDOverlayImage& o, CRect& rSource);
+    static std::shared_ptr<COverlay> Create(const CDVDOverlaySpu& o);
+    static std::shared_ptr<COverlay> Create(ASS_Image* images, float width, float height);
+
     COverlay();
     virtual ~COverlay();
 
@@ -133,11 +139,7 @@ namespace OVERLAY {
 
     struct SElement
     {
-      SElement()
-      {
-        overlay_dvd = NULL;
-        pts = 0.0;
-      }
+      SElement() : overlay_dvd(NULL) { pts = 0.0; }
       double pts;
       std::shared_ptr<CDVDOverlay> overlay_dvd;
     };

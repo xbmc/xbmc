@@ -10,6 +10,7 @@
 
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "DVDCodecs/Video/DXVA.h"
+#include "VideoRenderers/Windows/RendererBase.h"
 #include "guilib/D3DResource.h"
 #include "utils/Geometry.h"
 
@@ -22,15 +23,59 @@ class CRenderBuffer;
 namespace DXVA {
 
 // ProcAmp filters d3d11 filters
-const D3D11_VIDEO_PROCESSOR_FILTER PROCAMP_FILTERS[] =
+struct ProcAmpFilter
 {
-  D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS,
-  D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST,
-  D3D11_VIDEO_PROCESSOR_FILTER_HUE,
-  D3D11_VIDEO_PROCESSOR_FILTER_SATURATION
+  D3D11_VIDEO_PROCESSOR_FILTER filter;
+  D3D11_VIDEO_PROCESSOR_FILTER_CAPS cap;
+  const char* name;
 };
 
+// clang-format off
+const ProcAmpFilter PROCAMP_FILTERS[] = {
+    {D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS,
+    D3D11_VIDEO_PROCESSOR_FILTER_CAPS_BRIGHTNESS, "Brightness"},
+    {D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST,
+    D3D11_VIDEO_PROCESSOR_FILTER_CAPS_CONTRAST, "Contrast"},
+    {D3D11_VIDEO_PROCESSOR_FILTER_HUE,
+    D3D11_VIDEO_PROCESSOR_FILTER_CAPS_HUE, "Hue"},
+    {D3D11_VIDEO_PROCESSOR_FILTER_SATURATION,
+    D3D11_VIDEO_PROCESSOR_FILTER_CAPS_SATURATION, "Saturation"},
+    {D3D11_VIDEO_PROCESSOR_FILTER_NOISE_REDUCTION,
+    D3D11_VIDEO_PROCESSOR_FILTER_CAPS_NOISE_REDUCTION, "Noise Reduction"},
+    {D3D11_VIDEO_PROCESSOR_FILTER_EDGE_ENHANCEMENT,
+     D3D11_VIDEO_PROCESSOR_FILTER_CAPS_EDGE_ENHANCEMENT, "Edge Enhancement"},
+    {D3D11_VIDEO_PROCESSOR_FILTER_ANAMORPHIC_SCALING,
+     D3D11_VIDEO_PROCESSOR_FILTER_CAPS_ANAMORPHIC_SCALING, "Anamorphic Scaling"},
+    {D3D11_VIDEO_PROCESSOR_FILTER_STEREO_ADJUSTMENT,
+     D3D11_VIDEO_PROCESSOR_FILTER_CAPS_STEREO_ADJUSTMENT, "Stereo Adjustment"}};
+// clang-format on
+
 const size_t NUM_FILTERS = ARRAYSIZE(PROCAMP_FILTERS);
+
+struct DXGIColorSpaceArgs
+{
+  AVColorPrimaries primaries = AVCOL_PRI_UNSPECIFIED;
+  AVColorSpace color_space = AVCOL_SPC_UNSPECIFIED;
+  AVColorTransferCharacteristic color_transfer = AVCOL_TRC_UNSPECIFIED;
+  bool full_range = false;
+
+  DXGIColorSpaceArgs(const CRenderBuffer& buf)
+  {
+    primaries = buf.primaries;
+    color_space = buf.color_space;
+    color_transfer = buf.color_transfer;
+    full_range = buf.full_range;
+  }
+  DXGIColorSpaceArgs(const VideoPicture& picture)
+  {
+    primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
+    color_space = static_cast<AVColorSpace>(picture.color_space);
+    color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+    full_range = picture.color_range == 1;
+  }
+};
+
+struct ProcColorSpaces;
 
 class CProcessorHD : public ID3DResource
 {
@@ -45,6 +90,17 @@ public:
   bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
   uint8_t PastRefs() const { return m_max_back_refs; }
   bool IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const;
+  /*!
+   * \brief Evaluate if the DXVA processor supports converting between two formats and color spaces.
+   * Always returns true when the Windows 10+ API is not available or cannot be called successfully.
+   * \param inputFormat The source format
+   * \param outputFormat The destination format
+   * \param picture Picutre information used to derive the color spaces
+   * \return true if the conversion is supported, false otherwise
+   */
+  bool IsFormatConversionSupported(DXGI_FORMAT inputFormat,
+                                   DXGI_FORMAT outputFormat,
+                                   const VideoPicture& picture) const;
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
@@ -54,8 +110,7 @@ public:
     UnInit();
   }
 
-  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceSource(CRenderBuffer* view, bool supportHDR, bool supportHLG);
-  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(CRenderBuffer* view, bool supportHDR);
+  static bool IsBT2020Supported();
 
 protected:
   bool ReInit();
@@ -64,6 +119,19 @@ protected:
   bool OpenProcessor();
   void ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
   ID3D11VideoProcessorInputView* GetInputView(CRenderBuffer* view) const;
+  /*!
+   * \brief Calculate the color spaces of the input and output of the processor
+   * \param csArgs Arguments for the calculations
+   * \return the input and output color spaces
+   */
+  ProcColorSpaces CalculateDXGIColorSpaces(const DXGIColorSpaceArgs& csArgs) const;
+  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceSource(const DXGIColorSpaceArgs& csArgs,
+                                                       bool supportHDR,
+                                                       bool supportHLG,
+                                                       bool topLeft);
+  DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
+                                                bool supportHDR,
+                                                bool limitedRange) const;
 
   CCriticalSection m_section;
 
@@ -76,6 +144,7 @@ protected:
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps = {};
   bool m_bSupportHLG = false;
   bool m_bSupportHDR10Limited = false;
+  bool m_BT2020TopLeft = false;
 
   struct ProcAmpInfo
   {

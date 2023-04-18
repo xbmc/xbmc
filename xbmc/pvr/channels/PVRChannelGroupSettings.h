@@ -22,7 +22,6 @@ class IChannelGroupSettingsCallback
 public:
   virtual ~IChannelGroupSettingsCallback() = default;
 
-  virtual void SyncChannelGroupsChanged() {}
   virtual void UseBackendChannelOrderChanged() {}
   virtual void UseBackendChannelNumbersChanged() {}
   virtual void StartGroupChannelNumbersFromOneChanged() {}
@@ -39,18 +38,15 @@ public:
   void RegisterCallback(IChannelGroupSettingsCallback* callback);
   void UnregisterCallback(IChannelGroupSettingsCallback* callback);
 
-  bool SyncChannelGroups() const { return m_bSyncChannelGroups; }
   bool UseBackendChannelOrder() const { return m_bUseBackendChannelOrder; }
   bool UseBackendChannelNumbers() const { return m_bUseBackendChannelNumbers; }
   bool StartGroupChannelNumbersFromOne() const { return m_bStartGroupChannelNumbersFromOne; }
 
 private:
-  bool UpdateSyncChannelGroups();
   bool UpdateUseBackendChannelOrder();
   bool UpdateUseBackendChannelNumbers();
   bool UpdateStartGroupChannelNumbersFromOne();
 
-  bool m_bSyncChannelGroups = false;
   bool m_bUseBackendChannelOrder = false;
   bool m_bUseBackendChannelNumbers = false;
   bool m_bStartGroupChannelNumbersFromOne = false;

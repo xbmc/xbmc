@@ -21,10 +21,9 @@
 using namespace MEDIA_DETECT;
 using namespace XFILE;
 
-CFileCDDA::CFileCDDA(void)
+CFileCDDA::CFileCDDA(void) : m_cdio(CLibcdio::GetInstance())
 {
   m_pCdIo = NULL;
-  m_cdio = CLibcdio::GetInstance();
   m_iSectorCount = 52;
 }
 

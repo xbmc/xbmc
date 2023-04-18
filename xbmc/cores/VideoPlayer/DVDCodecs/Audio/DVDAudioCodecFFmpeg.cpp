@@ -73,15 +73,28 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = 1;
 
+#if LIBAVCODEC_VERSION_MAJOR < 60
   if (pCodec->capabilities & AV_CODEC_CAP_TRUNCATED)
     m_pCodecContext->flags |= AV_CODEC_FLAG_TRUNCATED;
+#endif
 
   m_matrixEncoding = AV_MATRIX_ENCODING_NONE;
   m_channels = 0;
   av_channel_layout_uninit(&m_pCodecContext->ch_layout);
-  m_pCodecContext->ch_layout.order = AV_CHANNEL_ORDER_NATIVE;
-  m_pCodecContext->ch_layout.nb_channels = hints.channels;
-  m_hint_layout = hints.channellayout;
+
+  if (hints.channels > 0 && hints.channellayout > 0)
+  {
+    m_pCodecContext->ch_layout.order = AV_CHANNEL_ORDER_NATIVE;
+    m_pCodecContext->ch_layout.nb_channels = hints.channels;
+    m_pCodecContext->ch_layout.u.mask = hints.channellayout;
+  }
+  else if (hints.channels > 0)
+  {
+    av_channel_layout_default(&m_pCodecContext->ch_layout, hints.channels);
+  }
+
+  m_hint_layout = m_pCodecContext->ch_layout.u.mask;
+
   m_pCodecContext->sample_rate = hints.samplerate;
   m_pCodecContext->block_align = hints.blockalign;
   m_pCodecContext->bit_rate = hints.bitrate;

@@ -1,5 +1,5 @@
 # Minimum SDK version we support
-set(VS_MINIMUM_SDK_VERSION 10.0.17763.0)
+set(VS_MINIMUM_SDK_VERSION 10.0.18362.0)
 
 if(CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION VERSION_LESS VS_MINIMUM_SDK_VERSION)
   message(FATAL_ERROR "Detected Windows SDK version is ${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}.\n"
@@ -86,7 +86,12 @@ set(SYSTEM_DEFINES -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DHAS_DX -D__STDC_CONSTANT_M
 list(APPEND SYSTEM_DEFINES -DHAS_WIN10_NETWORK)
 
 # The /MP option enables /FS by default.
-set(CMAKE_CXX_FLAGS "/MP ${CMAKE_CXX_FLAGS} /EHsc /await /permissive-")
+if(DEFINED ENV{MAXTHREADS})
+  set(MP_FLAG "/MP$ENV{MAXTHREADS}")
+else()
+  set(MP_FLAG "/MP")
+endif()
+set(CMAKE_CXX_FLAGS "${MP_FLAG} ${CMAKE_CXX_FLAGS} /EHsc /await /permissive-")
 # Google Test needs to use shared version of runtime libraries
 set(gtest_force_shared_crt ON CACHE STRING "" FORCE)
 

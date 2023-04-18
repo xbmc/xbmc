@@ -46,10 +46,10 @@ class CSampleBuffer
 {
 public:
   CSampleBuffer() = default;
-  ~CSampleBuffer();
+  ~CSampleBuffer() = default;
   CSampleBuffer *Acquire();
   void Return();
-  CSoundPacket *pkt = nullptr;
+  std::unique_ptr<CSoundPacket> pkt;
   CActiveAEBufferPool *pool = nullptr;
   int64_t timestamp;
   int pkt_start_offset = 0;

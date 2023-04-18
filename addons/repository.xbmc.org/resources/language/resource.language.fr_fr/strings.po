@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-19 10:24+0000\n"
+"Last-Translator: skypichat <skypichat@hotmail.fr>\n"
+"Language-Team: French (France) <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/fr_fr/>\n"
+"Language: fr_fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "Installer des modules complémentaires à partir de Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "Télécharger et installer des modules complémentaires à partir du magasin de modules complémentaires officiel Kodi.tv.[CR] En utilisant le magasin officiel, vous pourrez profiter de notre service de miroir de fichiers étendu pour vous aider à obtenir des téléchargements plus rapides depuis une région proche de chez vous. .[CR] Tous les modules complémentaires de ce magasin ont subi des tests de base. Si vous trouvez un module complémentaire cassé ou qui ne fonctionne pas, veuillez le signaler à l'équipe Kodi afin que nous puissions prendre les mesures nécessaires."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "L'équipe Kodi n'a pas créé tous les add-ons de ce magasin et n'est pas responsable de leur contenu"

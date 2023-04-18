@@ -437,7 +437,6 @@ bool CRendererShaders::CRenderBufferImpl::UploadFromBuffer() const
   int srcLines[3];
   videoBuffer->GetPlanes(bufData);
   videoBuffer->GetStrides(srcLines);
-  std::vector<Concurrency::task<void>> tasks;
 
   for (unsigned plane = 0; plane < m_viewCount; ++plane)
   {
@@ -451,34 +450,22 @@ bool CRendererShaders::CRenderBufferImpl::UploadFromBuffer() const
     int dstLine = mapping.RowPitch;
     int height = plane ? m_height >> 1 : m_height;
 
-    auto task = Concurrency::create_task([src, dst, srcLine, dstLine, height]()
+    if (srcLine == dstLine)
     {
-      if (srcLine == dstLine)
+      memcpy(dst, src, srcLine * height);
+    }
+    else
+    {
+      uint8_t* s = src;
+      uint8_t* d = dst;
+      for (int i = 0; i < height; ++i)
       {
-        memcpy(dst, src, srcLine * height);
+        memcpy(d, s, std::min(srcLine, dstLine));
+        d += dstLine;
+        s += srcLine;
       }
-      else
-      {
-        uint8_t* s = src;
-        uint8_t* d = dst;
-        for (int i = 0; i < height; ++i)
-        {
-          memcpy(d, s, std::min(srcLine, dstLine));
-          d += dstLine;
-          s += srcLine;
-        }
-      }
-    });
-    tasks.push_back(task);
+    }
   }
-
-  // event based await is required on WinRT because
-  // blocking WinRT STA threads with task.wait() isn't allowed
-  auto sync = std::make_shared<Concurrency::event>();
-  when_all(tasks.begin(), tasks.end()).then([&sync]() {
-    sync->set();
-  });
-  sync->wait();
 
   for (unsigned plane = 0; plane < m_viewCount; ++plane)
     if (!m_textures[plane].UnlockRect(0)) {}

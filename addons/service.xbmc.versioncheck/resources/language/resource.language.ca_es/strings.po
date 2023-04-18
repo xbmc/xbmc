@@ -5,16 +5,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Kodi Translation Team\n"
-"Language-Team: Catalan (http://www.transifex.com/projects/p/xbmc-addons/language/ca/)\n"
-"Language: ca\n"
+"PO-Revision-Date: 2021-10-25 10:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Catalan (Spain) <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/ca_es/>\n"
+"Language: ca_es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.8\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "Kodi Version Check comprova si està utilitzant la última versió publicada."
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr "Kodi Version Check només és compatible amb una sèrie de plataformes / distribucions ja que les ultimes versions poden ser diferents entre elles. Per obtenir més informació, visiteu el lloc web kodi.tv."
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "Sigues lliure d'utilitzar aquest script. Per més informació visita kodi.tv"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
@@ -30,7 +43,7 @@ msgstr "Vols eliminar aquest recordatori?"
 
 msgctxt "#32010"
 msgid "You can enable/disable it through add-on settings."
-msgstr ""
+msgstr "Podeu activar-lo o desactivar-lo mitjançant la configuració del complement."
 
 msgctxt "#32011"
 msgid "Use your package manager(apt) to upgrade."
@@ -42,7 +55,7 @@ msgstr "Una nova versió esta disponible, vol actualitzar ara?"
 
 msgctxt "#32013"
 msgid "Upgrade successful"
-msgstr "Actualització realitzada correctament."
+msgstr "Actualització realitzada correctament"
 
 msgctxt "#32014"
 msgid "Do you want to restart Kodi to finish the upgrade?"
@@ -54,7 +67,7 @@ msgstr "Vols comprovar el repositori per buscar una versió nova?"
 
 msgctxt "#32016"
 msgid "There is a newer stable Kodi version available."
-msgstr ""
+msgstr "Hi ha una nova versió estable de Kodi disponible."
 
 msgctxt "#32020"
 msgid "General"
@@ -74,48 +87,52 @@ msgstr "Linux: Actualitzar tot el sistema"
 
 msgctxt "#32024"
 msgid "Linux: Upgrade using apt"
-msgstr ""
+msgstr "Linux: actualitzeu amb apt"
 
 # empty strings from id 32025 to 32029
 #. Used in OK dialog
 msgctxt "#32030"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Hi ha disponible una nova versió estable de Kodi."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32031"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "Visiteu http://kodi.tv per obtenir més informació."
 
 #. Used in OK dialog
 msgctxt "#32032"
 msgid "A new stable version of Kodi is available."
-msgstr ""
+msgstr "Hi ha disponible una nova versió estable de Kodi."
 
 #. Direct people to the website. Used in OK dialog
 msgctxt "#32033"
 msgid "Visit http://kodi.tv for more information."
-msgstr ""
+msgstr "Visiteu http://kodi.tv per obtenir més informació."
 
 #. For example: "You are using 13.1 prealpha while 13.2 stable is available"
 msgctxt "#32034"
 msgid "Using %s while %s is available."
-msgstr ""
+msgstr "Usant %s mentre que la %s està disponible."
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
-msgstr ""
+msgid "It is recommended that you upgrade to a newer version."
+msgstr "Es recomana actualitzar a una versió més recent."
 
 # empty strings from id 32036 to 32039
 msgctxt "#32040"
 msgid "Your version %s of the Python cryptography module is too old. You need at least version 1.7."
-msgstr ""
+msgstr "La vostra versió %s del mòdul de criptografia Python és massa antiga. Necessiteu almenys la versió 1.7."
 
 msgctxt "#32041"
 msgid "Please upgrade your operating system."
-msgstr ""
+msgstr "Si us plau, actualitzeu el vostre sistema operatiu."
 
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
-msgstr ""
+msgstr "Per obtenir més informació, consulteu https://kodi.wiki/view/Linux"
+
+#~ msgctxt "#32035"
+#~ msgid "It is recommended that you to upgrade to a newer version."
+#~ msgstr "Es recomana actualitzar a una versió més recent."

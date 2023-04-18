@@ -41,13 +41,15 @@ using namespace GAME;
 
 CGUIControllerList::CGUIControllerList(CGUIWindow* window,
                                        IFeatureList* featureList,
-                                       GameClientPtr gameClient)
+                                       GameClientPtr gameClient,
+                                       std::string controllerId)
   : m_guiWindow(window),
     m_featureList(featureList),
     m_controllerList(nullptr),
     m_controllerButton(nullptr),
     m_focusedController(-1), // Initially unfocused
-    m_gameClient(std::move(gameClient))
+    m_gameClient(std::move(gameClient)),
+    m_controllerId(std::move(controllerId))
 {
   assert(m_featureList != nullptr);
 }
@@ -187,8 +189,17 @@ bool CGUIControllerList::RefreshControllers(void)
   CGameServices& gameServices = CServiceBroker::GetGameServices();
   ControllerVector newControllers = gameServices.GetControllers();
 
+  // Filter by specified controller ID
+  if (!m_controllerId.empty())
+  {
+    newControllers.erase(std::remove_if(newControllers.begin(), newControllers.end(),
+                                        [this](const ControllerPtr& controller) {
+                                          return controller->ID() != m_controllerId;
+                                        }),
+                         newControllers.end());
+  }
   // Filter by current game add-on
-  if (m_gameClient)
+  else if (m_gameClient)
   {
     const CControllerTree& controllers = m_gameClient->Input().GetDefaultControllerTree();
 
@@ -201,6 +212,9 @@ bool CGUIControllerList::RefreshControllers(void)
           std::remove_if(newControllers.begin(), newControllers.end(), ControllerNotAccepted),
           newControllers.end());
   }
+
+  if (newControllers.empty())
+    newControllers.emplace_back(gameServices.GetDefaultController());
 
   // Check for changes
   std::set<std::string> oldControllerIds;

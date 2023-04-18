@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-27 15:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Croatian <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/hr_hr/>\n"
+"Language: hr_hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "Instaliraj dodatke s Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "Preuzmite i instalirajte dodatke sa službenog Kodi.tv repozitorija dodataka.[CR] Korištenjem službenog repozitorija bit ćete u mogućnosti iskoristiti prednosti usluge našeg brzog zrcalnog poslužitelja datoteka, kako bi mogli brže preuzimati iz regije koje je bliže vašoj lokaciji.[CR] Svi dodaci na ovom repozitoriju prošli su osnovno testiranje, u slučaju da primijetite neispravan dodatak, molimo vas da to prijavite Kodi timu koji će zatim poduzeti potrebne korake."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "Kodi tim nije autor svih dodataka u ovom repozitoriju te kao takvi ne odgovaraju za njihov sadržaj"

@@ -9,6 +9,7 @@
 #include "AESinkPipewire.h"
 
 #include "CompileInfo.h"
+#include "PipewireGlobal.h"
 #include "cores/AudioEngine/AESinkFactory.h"
 #include "cores/AudioEngine/Sinks/pipewire/Pipewire.h"
 #include "cores/AudioEngine/Sinks/pipewire/PipewireCore.h"
@@ -302,13 +303,13 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   list.emplace_back(defaultDevice);
 
   auto& registry = pipewire->GetRegistry();
-  for (const auto& global : registry.GetGlobals())
+  for (const auto& [id, global] : registry.GetGlobals())
   {
     CAEDeviceInfo device;
     device.m_deviceType = AE_DEVTYPE_PCM;
-    device.m_deviceName = global.second->name;
-    device.m_displayName = global.second->description;
-    device.m_displayNameExtra = global.second->description + " (PIPEWIRE)";
+    device.m_deviceName = global->GetName();
+    device.m_displayName = global->GetDescription();
+    device.m_displayNameExtra = StringUtils::Format("{} (PIPEWIRE)", global->GetDescription());
     device.m_wantsIECPassthrough = true;
 
     std::for_each(formatMap.cbegin(), formatMap.cend(),
@@ -317,10 +318,8 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
     std::for_each(defaultSampleRates.cbegin(), defaultSampleRates.cend(),
                   [&device](const auto& rate) { device.m_sampleRates.emplace_back(rate); });
 
-    auto proxy = global.second->proxy.get();
-    auto node = static_cast<PIPEWIRE::CPipewireNode*>(proxy);
-
-    node->EnumerateFormats();
+    auto& node = global->GetNode();
+    node.EnumerateFormats();
 
     int ret = loop.Wait(5s);
     if (ret == -ETIMEDOUT)
@@ -331,7 +330,7 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
       continue;
     }
 
-    auto& channels = node->GetChannels();
+    auto& channels = node.GetChannels();
     if (channels.size() < 1)
       continue;
 
@@ -342,7 +341,7 @@ void CAESinkPipewire::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
         device.m_channels += ch->second;
     }
 
-    for (const auto& iec958Codec : node->GetIEC958Codecs())
+    for (const auto& iec958Codec : node.GetIEC958Codecs())
     {
       auto streamTypes = PWIEC958CodecToAEStreamInfoDataTypeList(iec958Codec);
       device.m_streamTypes.insert(device.m_streamTypes.end(), streamTypes.begin(),
@@ -382,7 +381,11 @@ bool CAESinkPipewire::Initialize(AEAudioFormat& format, std::string& device)
   else
   {
     auto target = std::find_if(globals.begin(), globals.end(),
-                               [&device](const auto& p) { return device == p.second->name; });
+                               [&device](const auto& p)
+                               {
+                                 const auto& [globalId, global] = p;
+                                 return device == global->GetName();
+                               });
     if (target == globals.end())
       return false;
 

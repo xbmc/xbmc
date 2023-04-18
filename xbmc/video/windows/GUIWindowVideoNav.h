@@ -39,21 +39,7 @@ public:
 
   void OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr &info) override;
 
-  /*! \brief Load video information from the database for these items (public static version)
-   Useful for grabbing information for file listings, from watched status to full metadata
-   \param items the items to load information for.
-   \param database open database object to retrieve the data from
-   \param allowReplaceLabels allow label replacement if according GUI setting is enabled
-   */
-  static void LoadVideoInfo(CFileItemList &items, CVideoDatabase &database, bool allowReplaceLabels = true);
-
 protected:
-  /*! \brief Load video information from the database for these items
-   Useful for grabbing information for file listings, from watched status to full metadata
-   \param items the items to load information for.
-   */
-  void LoadVideoInfo(CFileItemList &items);
-
   bool ApplyWatchedFilter(CFileItemList &items);
   bool GetFilteredItems(const std::string &filter, CFileItemList &items) override;
 
@@ -67,6 +53,7 @@ protected:
   virtual void PlayItem(int iItem);
   void OnDeleteItem(const CFileItemPtr& pItem) override;
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
+  bool OnPopupMenu(int iItem) override;
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   bool OnAddMediaSource() override;
   bool OnClick(int iItem, const std::string &player = "") override;

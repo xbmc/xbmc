@@ -410,7 +410,7 @@ int CFTPParse::FTPParse(const std::string& str)
       // handle symlink
       size_t found = m_name.find(" -> ");
       if (found != std::string::npos)
-        m_name = m_name.substr(0, found);
+        m_name.resize(found);
     }
     setTime(date);
 
@@ -442,7 +442,7 @@ int CFTPParse::FTPParse(const std::string& str)
       // handle symlink
       size_t found = m_name.find(" -> ");
       if (found != std::string::npos)
-        m_name = m_name.substr(0, found);
+        m_name.resize(found);
     }
     setTime(date);
 

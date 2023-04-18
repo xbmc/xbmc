@@ -23,6 +23,8 @@
 #include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/channels/PVRChannelsPath.h"
+#include "pvr/epg/EpgContainer.h"
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
 #include "pvr/guilib/PVRGUIActionsPlayback.h"
@@ -198,7 +200,7 @@ CPVRManager::CPVRManager()
     m_addons(new CPVRClients),
     m_guiInfo(new CPVRGUIInfo),
     m_components(new CPVRComponentRegistration),
-    m_epgContainer(m_events),
+    m_epgContainer(new CPVREpgContainer(m_events)),
     m_pendingUpdates(new CPVRManagerJobQueue),
     m_database(new CPVRDatabase),
     m_parentalTimer(new CStopWatch),
@@ -295,6 +297,11 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
     if (channel)
       iClientID = channel->ClientID();
   }
+  else if (URIUtils::IsPVRChannelGroup(item.GetPath()))
+  {
+    const CPVRChannelsPath path(item.GetPath());
+    iClientID = path.GetGroupClientID();
+  }
   else if (URIUtils::IsPVRRecording(item.GetPath()))
   {
     const std::shared_ptr<CPVRRecording> recording = m_recordings->GetByPath(item.GetPath());
@@ -318,7 +325,7 @@ std::shared_ptr<CPVRPlaybackState> CPVRManager::PlaybackState() const
 CPVREpgContainer& CPVRManager::EpgContainer()
 {
   // note: m_epgContainer is const (only set/reset in ctor/dtor). no need for a lock here.
-  return m_epgContainer;
+  return *m_epgContainer;
 }
 
 void CPVRManager::Clear()
@@ -335,8 +342,6 @@ void CPVRManager::Clear()
   m_channelGroups.reset();
   m_parentalTimer.reset();
   m_database.reset();
-
-  m_bEpgsCreated = false;
 }
 
 void CPVRManager::ResetProperties()
@@ -405,7 +410,7 @@ void CPVRManager::Stop(bool bRestart /* = false */)
   }
 
   CLog::Log(LOGINFO, "PVR Manager: Stopping");
-  SetState(ManagerState::STATE_SSTOPPING);
+  SetState(ManagerState::STATE_STOPPING);
 
   StopThread();
 }
@@ -454,7 +459,7 @@ void CPVRManager::SetState(CPVRManager::ManagerState state)
     case ManagerState::STATE_STARTING:
       event = PVREvent::ManagerStarting;
       break;
-    case ManagerState::STATE_SSTOPPING:
+    case ManagerState::STATE_STOPPING:
       event = PVREvent::ManagerStopped;
       break;
     case ManagerState::STATE_INTERRUPTED:
@@ -504,13 +509,13 @@ void CPVRManager::Process()
   }
 
   // Load EPGs from database.
-  m_epgContainer.Load();
+  m_epgContainer->Load();
 
   // Reinit playbackstate
   m_playbackState->ReInit();
 
   m_guiInfo->Start();
-  m_epgContainer.Start();
+  m_epgContainer->Start();
   m_timers->Start();
   m_pendingUpdates->Start();
 
@@ -578,7 +583,7 @@ void CPVRManager::Process()
   m_addons->Stop();
   m_pendingUpdates->Stop();
   m_timers->Stop();
-  m_epgContainer.Stop();
+  m_epgContainer->Stop();
   m_guiInfo->Stop();
 
   SetState(ManagerState::STATE_INTERRUPTED);
@@ -628,16 +633,14 @@ void CPVRManager::OnSleep()
 
   SetWakeupCommand();
 
-  m_epgContainer.OnSystemSleep();
-
+  m_epgContainer->OnSystemSleep();
   m_addons->OnSystemSleep();
 }
 
 void CPVRManager::OnWake()
 {
   m_addons->OnSystemWake();
-
-  m_epgContainer.OnSystemWake();
+  m_epgContainer->OnSystemWake();
 
   PublishEvent(PVREvent::SystemWake);
 
@@ -652,7 +655,6 @@ void CPVRManager::OnWake()
   TriggerProvidersUpdate();
   TriggerChannelsUpdate();
   TriggerRecordingsUpdate();
-  TriggerEpgsCreate();
   TriggerTimersUpdate();
 }
 
@@ -682,6 +684,7 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   {
     CLog::LogFC(LOGDEBUG, LOGPVR, "All created PVR clients gone!");
     m_knownClients.clear(); // start over
+    PublishEvent(PVREvent::ClientsInvalidated);
     return false;
   }
 
@@ -691,8 +694,8 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
     // skip not (yet) connected clients
     if (entry.second->IgnoreClient())
     {
-      CLog::LogFC(LOGDEBUG, LOGPVR, "Skipping not (yet) connected PVR client '{}'",
-                  entry.second->ID());
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Skipping not (yet) connected PVR client {}",
+                  entry.second->GetID());
       continue;
     }
 
@@ -701,8 +704,8 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
       m_knownClients.emplace_back(entry.second);
       newClients.emplace_back(entry.second);
 
-      CLog::LogFC(LOGDEBUG, LOGPVR, "Adding new PVR client '{}' to list of known clients",
-                  entry.second->ID());
+      CLog::LogFC(LOGDEBUG, LOGPVR, "Adding new PVR client {} to list of known clients",
+                  entry.second->GetID());
     }
   }
 
@@ -717,6 +720,7 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   {
     CLog::LogF(LOGERROR, "Failed to load PVR providers.");
     m_knownClients.clear(); // start over
+    PublishEvent(PVREvent::ClientsInvalidated);
     return false;
   }
 
@@ -724,10 +728,9 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   {
     CLog::LogF(LOGERROR, "Failed to load PVR channels / groups.");
     m_knownClients.clear(); // start over
+    PublishEvent(PVREvent::ClientsInvalidated);
     return false;
   }
-
-  PublishEvent(PVREvent::ChannelGroupsLoaded);
 
   // Load all timers
   if (progressHandler)
@@ -737,6 +740,7 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   {
     CLog::LogF(LOGERROR, "Failed to load PVR timers.");
     m_knownClients.clear(); // start over
+    PublishEvent(PVREvent::ClientsInvalidated);
     return false;
   }
 
@@ -748,9 +752,14 @@ bool CPVRManager::UpdateComponents(ManagerState stateToCheck,
   {
     CLog::LogF(LOGERROR, "Failed to load PVR recordings.");
     m_knownClients.clear(); // start over
+    PublishEvent(PVREvent::ClientsInvalidated);
     return false;
   }
 
+  // reinit playbackstate as new client may provide new last opened group / last played channel
+  m_playbackState->ReInit();
+
+  PublishEvent(PVREvent::ClientsInvalidated);
   return true;
 }
 
@@ -760,7 +769,7 @@ void CPVRManager::UnloadComponents()
   m_timers->Unload();
   m_channelGroups->Unload();
   m_providers->Unload();
-  m_epgContainer.Unload();
+  m_epgContainer->Unload();
 }
 
 bool CPVRManager::IsKnownClient(int clientID) const
@@ -825,7 +834,7 @@ void CPVRManager::OnPlaybackStarted(const CFileItem& item)
 {
   m_playbackState->OnPlaybackStarted(item);
   Get<PVR::GUI::Channels>().OnPlaybackStarted(item);
-  m_epgContainer.OnPlaybackStarted();
+  m_epgContainer->OnPlaybackStarted();
 }
 
 void CPVRManager::OnPlaybackStopped(const CFileItem& item)
@@ -835,7 +844,7 @@ void CPVRManager::OnPlaybackStopped(const CFileItem& item)
     PublishEvent(PVREvent::ChannelPlaybackStopped);
 
   Get<PVR::GUI::Channels>().OnPlaybackStopped(item);
-  m_epgContainer.OnPlaybackStopped();
+  m_epgContainer->OnPlaybackStopped();
 }
 
 void CPVRManager::OnPlaybackEnded(const CFileItem& item)
@@ -854,17 +863,6 @@ void CPVRManager::LocalizationChanged()
     static_cast<CPVRChannelGroupInternal*>(m_channelGroups->GetGroupAllTV().get())
         ->CheckGroupName();
   }
-}
-
-bool CPVRManager::EpgsCreated() const
-{
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  return m_bEpgsCreated;
-}
-
-void CPVRManager::TriggerEpgsCreate()
-{
-  m_pendingUpdates->Append("pvr-create-epgs", [this]() { return CreateChannelEpgs(); });
 }
 
 void CPVRManager::TriggerRecordingsSizeInProgressUpdate()
@@ -1007,16 +1005,4 @@ void CPVRManager::ConnectionStateChange(CPVRClient* client,
     Clients()->ConnectionStateChange(client, connectString, state, message);
     return true;
   });
-}
-
-bool CPVRManager::CreateChannelEpgs()
-{
-  if (EpgsCreated())
-    return true;
-
-  bool bEpgsCreated = m_channelGroups->CreateChannelEpgs();
-
-  std::unique_lock<CCriticalSection> lock(m_critSection);
-  m_bEpgsCreated = bEpgsCreated;
-  return m_bEpgsCreated;
 }

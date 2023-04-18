@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-27 15:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Norwegian Bokmål <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/nb_no/>\n"
+"Language: nb_no\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "Installer utvidelser fra Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "Last ned og installer utvidelser fra den offisielle Kodi.tv-pakkebrønnen.[CR] Når du benytter den offisielle pakkebrønnen kan du dra nytte av vår omfattende arkivtjeneste slik at du får raskere nedlasting fra en tjener nær deg.[CR] Alle tillegg i denne brønnen har gått gjennom grunnleggende testing, men hvis du finner en utvidelse som ikke fungerer, rapporter det til Team Kodi, så vi får sett på det."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "Team Kodi har ikke utviklet alle utvidelsene i denne pakkebrønnen og er ikke ansvarlig for deres innhold"

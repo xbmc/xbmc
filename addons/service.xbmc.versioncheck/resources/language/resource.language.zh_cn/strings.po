@@ -5,17 +5,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: XBMC Addons\n"
-"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2021-03-22 02:28+0000\n"
-"Last-Translator: Meano  Lee <meanocat@gmail.com>\n"
+"PO-Revision-Date: 2021-10-25 10:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Chinese (China) <https://kodi.weblate.cloud/projects/kodi-core/service-xbmc-versioncheck/zh_cn/>\n"
 "Language: zh_cn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.5.1\n"
+"X-Generator: Weblate 4.8\n"
+
+msgctxt "Addon Summary"
+msgid "Kodi Version Check checks if you are running latest released version."
+msgstr "Kodi 版本检查检查你使用的是否为最新发布的版本。"
+
+msgctxt "Addon Description"
+msgid "Kodi Version Check only supports a number of platforms/distros as releases may differ between them. For more information visit the kodi.tv website."
+msgstr "Kodi 版本检查只支持部分平台/发行版，它们之间的版本可能会有所不同。欲了解更多信息，请访问 kodi.tv 网站。"
+
+msgctxt "Addon Disclaimer"
+msgid "Feel free to use this script. For information visit kodi.tv"
+msgstr "可放心使用此脚本，更多信息访问 kodi.tv"
 
 msgctxt "#32001"
 msgid "We would like to recommend you to upgrade."
@@ -104,7 +116,7 @@ msgstr "使用 %s 当 %s 可用。"
 
 #. Used in OK dialog
 msgctxt "#32035"
-msgid "It is recommended that you to upgrade to a newer version."
+msgid "It is recommended that you upgrade to a newer version."
 msgstr "建议升级到新版本。"
 
 # empty strings from id 32036 to 32039
@@ -119,3 +131,7 @@ msgstr "请更新您的操作系统。"
 msgctxt "#32042"
 msgid "For more information, see https://kodi.wiki/view/Linux"
 msgstr "更多详情，请访问 https://kodi.wiki/view/Linux"
+
+#~ msgctxt "#32035"
+#~ msgid "It is recommended that you to upgrade to a newer version."
+#~ msgstr "建议升级到新版本。"

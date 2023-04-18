@@ -58,6 +58,14 @@ public:
   bool PlayRecording(const CFileItem& item, bool bCheckResume) const;
 
   /*!
+   * @brief Play a recording folder.
+   * @param item containing a recording folder.
+   * @param bCheckResume controls resume check.
+   * @return true on success, false otherwise.
+   */
+  bool PlayRecordingFolder(const CFileItem& item, bool bCheckResume) const;
+
+  /*!
    * @brief Play EPG tag.
    * @param item containing an epg tag.
    * @return true on success, false otherwise.

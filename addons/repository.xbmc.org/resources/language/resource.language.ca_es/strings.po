@@ -1,0 +1,30 @@
+# Kodi Media Center language file
+# Addon Name: Kodi Add-on repository
+# Addon id: repository.xbmc.org
+# Addon Provider: Team Kodi
+msgid ""
+msgstr ""
+"Project-Id-Version: KODI Main\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2023-03-27 15:08+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"Language-Team: Catalan (Spain) <https://kodi.weblate.cloud/projects/kodi-core/repository-xbmc-org/ca_es/>\n"
+"Language: ca_es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.15.2\n"
+
+msgctxt "Addon Summary"
+msgid "Install Add-ons from Kodi.tv"
+msgstr "Instal·la complements des de Kodi.tv"
+
+msgctxt "Addon Description"
+msgid "Download and install add-ons from the Official Kodi.tv add-on repository.[CR]  By using the official Repository you will be able to take advantage of our extensive file mirror service to help get you faster downloads from a region close to you.[CR]  All add-ons on this repository have under gone basic testing, if you find a broken or not working add-on please report it to Team Kodi so we can take any action needed."
+msgstr "Baixeu i instal·leu els complements des del dipòsit oficial de Kodi.tv.[CR] Mitjançant el dipòsit oficial, podreu aprofitar els avantatges del nostre servei de rèplica de fitxers per ajudar-vos a tenir unes baixades més ràpides des d'una regió que estigui a prop vostre.[CR] Tots els complements d'aquest dipòsit han passat per proves bàsiques, així que si trobeu algun complement que no funcioni correctament, si us plau, digueu-ho a l'equip de Kodi perquè puguin dur a terme les accions pertinents."
+
+msgctxt "Addon Disclaimer"
+msgid "Team Kodi did not make all the add-ons on this repository and are not responsible for their content"
+msgstr "L'equip de Kodi no ha fet tots els complements d'aquest dipòsit i per tant no són responsables del seu contingut."

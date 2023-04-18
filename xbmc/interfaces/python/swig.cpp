@@ -150,7 +150,7 @@ namespace PythonBindings
     std::string ns(methodNamespacePrefix);
     // cut off trailing '::'
     if (ns.size() > 2 && ns[ns.size() - 1] == ':' && ns[ns.size() - 2] == ':')
-      ns = ns.substr(0,ns.size()-2);
+      ns.resize(ns.size() - 2);
 
     bool done = false;
     while(! done)

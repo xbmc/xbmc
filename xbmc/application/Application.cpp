@@ -1607,6 +1607,10 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     appPlayer->TriggerUpdateResolution();
     break;
 
+  case TMSG_TOGGLEFLOATONTOP:
+    CServiceBroker::GetWinSystem()->ToggleFloatOnTop();
+    break;
+
   case TMSG_MINIMIZE:
     CServiceBroker::GetWinSystem()->Minimize();
     break;
@@ -1752,6 +1756,17 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
       XBMC_Event* event = static_cast<XBMC_Event*>(pMsg->lpVoid);
       OnEvent(*event);
       delete event;
+    }
+  }
+  break;
+
+  case TMSG_UPDATE_PLAYER_ITEM:
+  {
+    std::unique_ptr<CFileItem> item{static_cast<CFileItem*>(pMsg->lpVoid)};
+    if (item)
+    {
+      m_itemCurrentFile->UpdateInfo(*item);
+      CServiceBroker::GetGUI()->GetInfoManager().UpdateCurrentItem(*m_itemCurrentFile);
     }
   }
   break;

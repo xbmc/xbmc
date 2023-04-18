@@ -224,7 +224,7 @@ bool CLocale::ParseLocale(const std::string &locale, std::string &language, std:
   if (pos != std::string::npos)
   {
     modifier = tmp.substr(pos + 1);
-    tmp = tmp.substr(0, pos);
+    tmp.resize(pos);
   }
 
   // look for the codeset after .
@@ -232,7 +232,7 @@ bool CLocale::ParseLocale(const std::string &locale, std::string &language, std:
   if (pos != std::string::npos)
   {
     codeset = tmp.substr(pos + 1);
-    tmp = tmp.substr(0, pos);
+    tmp.resize(pos);
   }
 
   // look for the codeset after _
@@ -241,7 +241,7 @@ bool CLocale::ParseLocale(const std::string &locale, std::string &language, std:
   {
     territory = tmp.substr(pos + 1);
     StringUtils::ToUpper(territory);
-    tmp = tmp.substr(0, pos);
+    tmp.resize(pos);
   }
 
   // what remains is the language

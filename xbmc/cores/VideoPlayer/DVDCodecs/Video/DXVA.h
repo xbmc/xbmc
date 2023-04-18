@@ -135,6 +135,10 @@ private:
   bool m_sharingAllowed = false;
   Microsoft::WRL::ComPtr<ID3D11VideoContext> m_pD3D11Context;
   Microsoft::WRL::ComPtr<ID3D11VideoDevice> m_pD3D11Device;
+#ifdef _DEBUG
+  Microsoft::WRL::ComPtr<ID3D11Debug> m_d3d11Debug;
+#endif
+
   std::vector<CDecoder*> m_decoders;
 };
 

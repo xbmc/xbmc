@@ -81,8 +81,6 @@ ifeq ($(OS),android)
   LIBUUID = libuuid
 endif
 
-DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
-
 ZLIB=
 ifneq ($(HAS_ZLIB),1)
   DEPENDS += zlib
@@ -97,27 +95,54 @@ endif
 
 ALSA_LIB=
 ifeq ($(OS),linux)
-  DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev pipewire wayland waylandpp wayland-protocols linux-system-x11-libs
+  DEPENDS += dbus libuuid alsa-lib libdrm libxkbcommon libinput libudev libevdev mtdev pipewire
   ALSA_LIB = alsa-lib
   LIBUUID = libuuid
 
-  ifeq ($(RENDER_SYSTEM),gl)
-    WAYLANDPP_DEPS += linux-system-gl-libs
-    DEPENDS += linux-system-gl-libs
-  else
-    WAYLANDPP_DEPS += mesa
-    DEPENDS += mesa
-  endif
-
-  MESA_DEPS += wayland-protocols wayland linux-system-x11-libs
-
   ifeq ($(CPU),x86_64)
-    LIBVA_DEPS += wayland linux-system-x11-libs
-
     DEPENDS += libva
     LIBVA = libva
   endif
+
+  ifneq (,$(findstring wayland,$(TARGET_PLATFORM)))
+    DEPENDS += wayland waylandpp wayland-protocols
+    MESA_DEPS += wayland-protocols wayland
+    ifeq ($(CPU),x86_64)
+      LIBVA_DEPS += wayland
+    endif
+
+    ifeq ($(RENDER_SYSTEM),gl)
+      WAYLANDPP_DEPS += linux-system-gl-libs
+    else
+      WAYLANDPP_DEPS += mesa
+    endif
+  endif
+
+  ifneq (,$(findstring x11,$(TARGET_PLATFORM)))
+    DEPENDS += linux-system-x11-libs
+    MESA_DEPS += linux-system-x11-libs
+    ifeq ($(CPU),x86_64)
+      LIBVA_DEPS += linux-system-x11-libs
+    endif
+  endif
+
+  ifeq ($(RENDER_SYSTEM),gl)
+    DEPENDS += linux-system-gl-libs
+  else
+    DEPENDS += mesa
+  endif
+
+  ifeq ($(TARGET_PLATFORM),webos)
+    DEPENDS += wayland waylandpp wayland-protocols webos-wayland-extensions webos-userland
+    EXCLUDED_DEPENDS += dbus libcec linux-system-x11-libs pipewire mesa
+  endif
+
+  ifneq (,$(findstring gbm,$(TARGET_PLATFORM)))
+    DEPENDS += hwdata libdisplay-info
+  endif
 endif
+
+DEPENDS := $(filter-out $(EXCLUDED_DEPENDS),$(DEPENDS))
 
 .PHONY: $(DEPENDS)
 
@@ -139,6 +164,7 @@ libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
 libcec: p8-platform
+libdisplay-info: meson-cross-file hwdata
 libdrm: meson-cross-file
 libevdev: libudev
 libgcrypt: libgpg-error

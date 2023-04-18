@@ -22,7 +22,7 @@ else()
 endif()
 
 if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_MARIADBCLIENT mariadb QUIET)
+  pkg_search_module(PC_MARIADBCLIENT libmariadb mariadb QUIET)
 endif()
 
 
