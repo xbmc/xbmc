@@ -8,6 +8,7 @@
 
 #include "DisplayInfo.h"
 
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 extern "C"
@@ -53,7 +54,17 @@ bool CDisplayInfo::IsValid() const
   const char* error = di_info_get_failure_msg(m_info.get());
   if (error)
   {
-    CLog::Log(LOGERROR, "[display-info] error: {}", error);
+    CLog::Log(LOGERROR, "[display-info] Error parsing EDID:");
+    CLog::Log(LOGERROR, "[display-info] ----------------------------------------------");
+
+    std::vector<std::string> lines = StringUtils::Split(error, "\n");
+
+    for (const auto& line : lines)
+    {
+      CLog::Log(LOGERROR, "[display-info] {}", line);
+    }
+
+    CLog::Log(LOGERROR, "[display-info] ----------------------------------------------");
   }
 
   return true;
