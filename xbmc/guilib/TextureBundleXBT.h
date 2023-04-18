@@ -55,9 +55,7 @@ public:
 
 private:
   bool OpenBundle();
-  bool ConvertFrameToTexture(const std::string& name,
-                             const CXBTFFrame& frame,
-                             std::unique_ptr<CTexture>& texture);
+  std::unique_ptr<CTexture> ConvertFrameToTexture(const std::string& name, const CXBTFFrame& frame);
 
   time_t m_TimeStamp;
 
