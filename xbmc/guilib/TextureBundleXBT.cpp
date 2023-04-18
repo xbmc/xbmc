@@ -148,31 +148,29 @@ std::vector<std::string> CTextureBundleXBT::GetTexturesFromPath(const std::strin
   return textures;
 }
 
-bool CTextureBundleXBT::LoadTexture(const std::string& filename,
-                                    std::unique_ptr<CTexture>& texture,
-                                    int& width,
-                                    int& height)
+std::optional<CTextureBundleXBT::Texture> CTextureBundleXBT::LoadTexture(
+    const std::string& filename)
 {
   std::string name = Normalize(filename);
 
   CXBTFFile file;
   if (!m_XBTFReader->Get(name, file))
-    return false;
+    return {};
 
   if (file.GetFrames().empty())
-    return false;
+    return {};
 
   const CXBTFFrame& frame = file.GetFrames().at(0);
-  texture = ConvertFrameToTexture(filename, frame);
-  if (!texture)
-  {
-    return false;
-  }
 
-  width = frame.GetWidth();
-  height = frame.GetHeight();
+  Texture texture;
+  texture.width = frame.GetWidth();
+  texture.height = frame.GetHeight();
 
-  return true;
+  texture.texture = ConvertFrameToTexture(filename, frame);
+  if (!texture.texture)
+    return {};
+
+  return std::make_optional<CTextureBundleXBT::Texture>(std::move(texture));
 }
 
 bool CTextureBundleXBT::LoadAnim(const std::string& filename,
