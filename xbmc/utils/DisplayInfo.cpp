@@ -54,7 +54,6 @@ bool CDisplayInfo::IsValid() const
   if (error)
   {
     CLog::Log(LOGERROR, "[display-info] error: {}", error);
-    return false;
   }
 
   return true;
