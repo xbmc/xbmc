@@ -33,19 +33,9 @@ public:
    * \brief Load texture from bundle
    *
    * \param[in] filename name of the texture to load
-   * \param[out] texture holds the pointer to the texture after successful loading
-   * \param[out] width width of the loaded texture
-   * \param[out] height height of the loaded texture
-   * \return true if texture was loaded
-   *
-   * \todo With c++17 this should be changed to return a std::optional that's
-   *       wrapping a struct containing the output values. Same for
-   *       CTextureBundleXBT::LoadTexture.
+   * \return std::optional<CTextureBundleXBT::Texture> if texture was loaded
    */
-  bool LoadTexture(const std::string& filename,
-                   std::unique_ptr<CTexture>& texture,
-                   int& width,
-                   int& height);
+  std::optional<CTextureBundleXBT::Texture> LoadTexture(const std::string& filename);
 
   /*!
    * \brief Load animation from bundle

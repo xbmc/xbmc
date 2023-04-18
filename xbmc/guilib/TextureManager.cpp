@@ -428,11 +428,17 @@ const CTextureArray& CGUITextureManager::Load(const std::string& strTextureName,
   int width = 0, height = 0;
   if (bundle >= 0)
   {
-    if (!m_TexBundle[bundle].LoadTexture(strTextureName, pTexture, width, height))
+    std::optional<CTextureBundleXBT::Texture> texture =
+        m_TexBundle[bundle].LoadTexture(strTextureName);
+    if (!texture)
     {
       CLog::Log(LOGERROR, "Texture manager unable to load bundled file: {}", strTextureName);
       return emptyTexture;
     }
+
+    pTexture = std::move(texture.value().texture);
+    width = texture.value().width;
+    height = texture.value().height;
   }
   else
   {
