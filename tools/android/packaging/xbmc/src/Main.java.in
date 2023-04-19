@@ -2,9 +2,12 @@ package @APP_PACKAGE@;
 
 import @APP_PACKAGE@.channels.util.TvUtil;
 
+import static android.content.pm.PackageManager.FEATURE_LEANBACK;
+
 import android.app.NativeActivity;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.hardware.input.InputManager;
@@ -134,11 +137,15 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
       getIntent().setData(null);
     }
 
-    if (getPackageManager().hasSystemFeature("android.software.leanback"))
+    if (getPackageManager().hasSystemFeature(FEATURE_LEANBACK))
     {
-      if (Build.VERSION.SDK_INT >= VERSION_CODES.O)
+      if (Build.VERSION.SDK_INT >= VERSION_CODES.O
+          && getLauncherName().equals("com.google.android.tvlauncher"))
+      {
         TvUtil.scheduleSyncingChannel(this);
-      else
+      }
+      else if (Build.VERSION.SDK_INT < VERSION_CODES.O
+               && getLauncherName().equals("com.google.android.leanbacklauncher"))
       {
         // Leanback
         mJsonRPC = new XBMCJsonRPC();
@@ -273,8 +280,11 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
   {
     super.onPause();
 
-    if (getPackageManager().hasSystemFeature("android.software.leanback") && Build.VERSION.SDK_INT >= VERSION_CODES.O)
+    if (getPackageManager().hasSystemFeature(FEATURE_LEANBACK)
+        && Build.VERSION.SDK_INT >= VERSION_CODES.O
+        && getLauncherName().equals("com.google.android.tvlauncher")) {
       TvUtil.scheduleSyncingChannel(this);
+    }
 
     mPaused = true;
   }
@@ -326,5 +336,15 @@ public class Main extends NativeActivity implements Choreographer.FrameCallback
         _callNative(funcAddr, variantAddr);
       }
     });
+  }
+
+  /**
+   * Gets the package name of the current system launcher
+   */
+  private String getLauncherName() {
+    final Intent intent = new Intent(Intent.ACTION_MAIN);
+    intent.addCategory(Intent.CATEGORY_HOME);
+    final ResolveInfo res = getPackageManager().resolveActivity(intent, 0);
+    return res.activityInfo.packageName;
   }
 }
