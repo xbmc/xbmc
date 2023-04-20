@@ -460,5 +460,32 @@
       { "name": "data", "type": "null", "required": true }
     ],
     "returns": null
+  }.
+  "Addons.OnInstallStarted": {
+    "type": "notification",
+    "description": "An addon has started installing.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "string", "required": true, "description": "The addon ID of the addon being installed." }
+    ],
+    "returns": null
+  },
+  "Addons.OnInstallFinished": {
+    "type": "notification",
+    "description": "An addon has successfully been installed.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "string", "required": true, "description": "The addon ID of the successful addon." }
+    ],
+    "returns": null
+  },
+  "Addons.OnInstallFailed": {
+    "type": "notification",
+    "description": "An addon has failed to be installed.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "string", "required": true, "description": "The addon ID of the failed addon." }
+    ],
+    "returns": null
   }
 }

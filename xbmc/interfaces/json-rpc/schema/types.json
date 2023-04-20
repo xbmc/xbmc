@@ -65,6 +65,7 @@
       "Application": { "type": "boolean", "required": true },
       "Input": { "type": "boolean", "required": true },
       "PVR": { "type": "boolean", "required": true },
+      "Addons": { "type": "boolean", "required": true },
       "Other": { "type": "boolean", "required": true }
     },
     "additionalProperties": false
