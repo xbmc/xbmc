@@ -18,6 +18,10 @@ else
     TARBALLS_LOCATION = $(ROOT_DIR)
     PKGCONFIGPATH = PKG_CONFIG_PATH="$(ROOT_DIR)/../libdvdread/dvdread-install/lib/pkgconfig:$(ROOT_DIR)/../libdvdcss/dvdcss-install/lib/pkgconfig"
     EXTRA_CFLAGS += -I$(ROOT_DIR)/../libdvdread/dvdread-install/include -I$(ROOT_DIR)/../libdvdcss/dvdcss-install/include
+    RETRIEVE_TOOL := curl
+    RETRIEVE_TOOL_FLAGS := -LsS --create-dirs --retry 10 --retry-connrefused -o
+    ARCHIVE_TOOL := tar
+    ARCHIVE_TOOL_FLAGS := --strip-components=1 -xf
   endif
 endif
 
@@ -29,20 +33,12 @@ ifeq ($(OS),darwin_embedded)
   EXTRA_CFLAGS +=  -D__DARWIN__
 endif
 
-RETRIEVE_TOOL := curl -Ls --create-dirs --retry 10 --retry-delay 3
-ARCHIVE_TOOL := tar --strip-components=1 -xf
-
 include ../../download-files.include
 all: .installed-$(PLATFORM)
 
-download: $(TARBALLS_LOCATION)/$(ARCHIVE)
-
-$(TARBALLS_LOCATION)/$(ARCHIVE):
-	cd $(TARBALLS_LOCATION); $(RETRIEVE_TOOL) -o $(TARBALLS_LOCATION)/$(ARCHIVE) $(BASE_URL)/archive/$(VERSION).tar.gz
-
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
-	cd $(PLATFORM); $(ARCHIVE_TOOL) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); $(AUTORECONF) -vif && $(PKGCONFIGPATH) CFLAGS="$(CFLAGS) $(EXTRA_CFLAGS)" ac_cv_path_GIT= ./configure $(config)
 
 $(PLATFORM)/.libs/$(LIBNAME).a: $(PLATFORM)

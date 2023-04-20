@@ -30,7 +30,7 @@ ifeq ($(CROSS_COMPILING), yes)
 else
   TARBALLS_LOCATION := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
   RETRIEVE_TOOL = curl
-  RETRIEVE_TOOL_FLAGS = -LsS --create-dirs --retry 10 --retry-connrefused -O
+  RETRIEVE_TOOL_FLAGS = -LsS --create-dirs --retry 10 --retry-connrefused -o
   ARCHIVE_TOOL_FLAGS = --strip-components=1 -xf
   BASE_URL := http://mirrors.kodi.tv/build-deps/sources
 endif
@@ -42,7 +42,6 @@ ifeq ($(OS), android)
 endif
 
 include ../../download-files.include
-download: $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 all: .installed-$(PLATFORM)
 
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)

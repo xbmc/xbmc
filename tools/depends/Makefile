@@ -4,6 +4,10 @@ NATIVE=native/.installed-$(NATIVEPLATFORM)
 target=target/.installed-$(PLATFORM)
 all: $(target)
 
+download:
+	$(MAKE) -C native download
+	$(MAKE) -C target download
+
 $(NATIVE):
 	$(MAKE) -C native
 
