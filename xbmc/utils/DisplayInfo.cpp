@@ -8,6 +8,7 @@
 
 #include "DisplayInfo.h"
 
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 extern "C"
@@ -53,8 +54,17 @@ bool CDisplayInfo::IsValid() const
   const char* error = di_info_get_failure_msg(m_info.get());
   if (error)
   {
-    CLog::Log(LOGERROR, "[display-info] error: {}", error);
-    return false;
+    CLog::Log(LOGERROR, "[display-info] Error parsing EDID:");
+    CLog::Log(LOGERROR, "[display-info] ----------------------------------------------");
+
+    std::vector<std::string> lines = StringUtils::Split(error, "\n");
+
+    for (const auto& line : lines)
+    {
+      CLog::Log(LOGERROR, "[display-info] {}", line);
+    }
+
+    CLog::Log(LOGERROR, "[display-info] ----------------------------------------------");
   }
 
   return true;
@@ -126,8 +136,8 @@ void CDisplayInfo::LogInfo() const
               m_hdr_static_metadata->eotfs->traditional_sdr);
     CLog::Log(LOGINFO, "[display-info]   traditional hdr: {}",
               m_hdr_static_metadata->eotfs->traditional_hdr);
-    CLog::Log(LOGINFO, "[display-info]   traditional pq:  {}", m_hdr_static_metadata->eotfs->pq);
-    CLog::Log(LOGINFO, "[display-info]   traditional hlg: {}", m_hdr_static_metadata->eotfs->hlg);
+    CLog::Log(LOGINFO, "[display-info]   pq:              {}", m_hdr_static_metadata->eotfs->pq);
+    CLog::Log(LOGINFO, "[display-info]   hlg:             {}", m_hdr_static_metadata->eotfs->hlg);
 
     CLog::Log(LOGINFO, "[display-info] luma min: '{}' avg: '{}' max: '{}'",
               m_hdr_static_metadata->desired_content_min_luminance,
