@@ -1111,12 +1111,6 @@
         </setting>
       </group>
       <group id="4" label="39123">
-        <!-- Hidden setting indicating video art settings have been migrated from old advancedsettings.xml format-->
-        <setting id="videolibrary.artsettingsupdated" type="boolean" label="0" help="">
-          <level>4</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videolibrary.artworklevel" type="integer" label="39137" help="39138">
           <level>1</level>
           <default>0</default>
@@ -1305,12 +1299,6 @@
         </setting>
       </group>
       <group id="3" label="39123">
-        <!-- Hidden setting indicating music art settings have been migrated from old advancedsettings.xml format-->
-        <setting id="musiclibrary.artsettings" type="boolean" label="0" help="">
-          <level>4</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="musiclibrary.artworklevel" type="integer" label="39137" help="39138">
           <level>1</level>
           <default>0</default>
