@@ -91,8 +91,7 @@ public:
   // SUBTITLE
 
   // CODEC EXTRADATA
-  void*        extradata; // extra data for codec to use
-  unsigned int extrasize; // size of extra data
+  FFmpegExtraData extradata; // extra data for codec to use
   unsigned int codec_tag; // extra identifier hints for decoding
 
   // Crypto initialization Data

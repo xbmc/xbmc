@@ -39,7 +39,8 @@ bool COverlayCodecWebVTT::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
   // Extradata can be provided by Inputstream addons (e.g. inputstream.adaptive)
   if (hints.extradata)
   {
-    std::string extradata{static_cast<char*>(hints.extradata), hints.extrasize};
+    std::string extradata{reinterpret_cast<char*>(hints.extradata.GetData()),
+                          hints.extradata.GetSize()};
     if (extradata == "file")
     {
       // WebVTT data like single file are sent one time only,

@@ -135,15 +135,78 @@ void ff_avutil_log(void* ptr, int level, const char* format, va_list va)
   buffer.erase(0, start);
 }
 
-std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt, const AVCodecParameters* codecPar)
+FFmpegExtraData::FFmpegExtraData(size_t size)
+  : m_data(reinterpret_cast<uint8_t*>(av_malloc(size + AV_INPUT_BUFFER_PADDING_SIZE))), m_size(size)
+{
+  if (!m_data)
+    throw std::bad_alloc();
+}
+
+FFmpegExtraData::FFmpegExtraData(const uint8_t* data, size_t size) : FFmpegExtraData(size)
+{
+  std::memcpy(m_data, data, size);
+}
+
+FFmpegExtraData::~FFmpegExtraData()
+{
+  av_free(m_data);
+}
+
+FFmpegExtraData::FFmpegExtraData(const FFmpegExtraData& e) : FFmpegExtraData(e.m_size)
+{
+  std::memcpy(m_data, e.m_data, m_size);
+}
+
+FFmpegExtraData::FFmpegExtraData(FFmpegExtraData&& other) noexcept : FFmpegExtraData()
+{
+  std::swap(m_data, other.m_data);
+  std::swap(m_size, other.m_size);
+}
+
+FFmpegExtraData& FFmpegExtraData::operator=(const FFmpegExtraData& other)
+{
+  if (this != &other)
+  {
+    if (m_size >= other.m_size) // reuse current buffer if large enough
+    {
+      std::memcpy(m_data, other.m_data, other.m_size);
+      m_size = other.m_size;
+    }
+    else
+    {
+      FFmpegExtraData extraData(other);
+      *this = std::move(extraData);
+    }
+  }
+  return *this;
+}
+
+FFmpegExtraData& FFmpegExtraData::operator=(FFmpegExtraData&& other) noexcept
+{
+  if (this != &other)
+  {
+    std::swap(m_data, other.m_data);
+    std::swap(m_size, other.m_size);
+  }
+  return *this;
+}
+
+bool FFmpegExtraData::operator==(const FFmpegExtraData& other) const
+{
+  return m_size == other.m_size && std::memcmp(m_data, other.m_data, m_size) == 0;
+}
+
+bool FFmpegExtraData::operator!=(const FFmpegExtraData& other) const
+{
+  return !(*this == other);
+}
+
+FFmpegExtraData GetPacketExtradata(const AVPacket* pkt, const AVCodecParameters* codecPar)
 {
   constexpr int FF_MAX_EXTRADATA_SIZE = ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE);
 
   if (!pkt)
-    return std::make_tuple(nullptr, 0);
-
-  uint8_t* extraData = nullptr;
-  int extraDataSize = 0;
+    return {};
 
   /* extract_extradata bitstream filter is implemented only
    * for certain codecs, as noted in discussion of PR#21248
@@ -165,29 +228,29 @@ std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt, const AVCodecP
     codecId != AV_CODEC_ID_CAVS
   )
     // clang-format on
-    return std::make_tuple(nullptr, 0);
+    return {};
 
   const AVBitStreamFilter* f = av_bsf_get_by_name("extract_extradata");
   if (!f)
-    return std::make_tuple(nullptr, 0);
+    return {};
 
   AVBSFContext* bsf = nullptr;
   int ret = av_bsf_alloc(f, &bsf);
   if (ret < 0)
-    return std::make_tuple(nullptr, 0);
+    return {};
 
   ret = avcodec_parameters_copy(bsf->par_in, codecPar);
   if (ret < 0)
   {
     av_bsf_free(&bsf);
-    return std::make_tuple(nullptr, 0);
+    return {};
   }
 
   ret = av_bsf_init(bsf);
   if (ret < 0)
   {
     av_bsf_free(&bsf);
-    return std::make_tuple(nullptr, 0);
+    return {};
   }
 
   AVPacket* dstPkt = av_packet_alloc();
@@ -196,7 +259,7 @@ std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt, const AVCodecP
     CLog::LogF(LOGERROR, "failed to allocate packet");
 
     av_bsf_free(&bsf);
-    return std::make_tuple(nullptr, 0);
+    return {};
   }
   AVPacket* pktRef = dstPkt;
 
@@ -205,7 +268,7 @@ std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt, const AVCodecP
   {
     av_bsf_free(&bsf);
     av_packet_free(&dstPkt);
-    return std::make_tuple(nullptr, 0);
+    return {};
   }
 
   ret = av_bsf_send_packet(bsf, pktRef);
@@ -214,9 +277,10 @@ std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt, const AVCodecP
     av_packet_unref(pktRef);
     av_bsf_free(&bsf);
     av_packet_free(&dstPkt);
-    return std::make_tuple(nullptr, 0);
+    return {};
   }
 
+  FFmpegExtraData extraData;
   ret = 0;
   while (ret >= 0)
   {
@@ -234,22 +298,21 @@ std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt, const AVCodecP
         av_packet_get_side_data(pktRef, AV_PKT_DATA_NEW_EXTRADATA, &retExtraDataSize);
     if (retExtraData && retExtraDataSize > 0 && retExtraDataSize < FF_MAX_EXTRADATA_SIZE)
     {
-      extraData = static_cast<uint8_t*>(av_malloc(retExtraDataSize + AV_INPUT_BUFFER_PADDING_SIZE));
-      if (!extraData)
+      try
+      {
+        extraData = FFmpegExtraData(retExtraData, retExtraDataSize);
+      }
+      catch (const std::bad_alloc&)
       {
         CLog::LogF(LOGERROR, "failed to allocate {} bytes for extradata", retExtraDataSize);
 
         av_packet_unref(pktRef);
         av_bsf_free(&bsf);
         av_packet_free(&dstPkt);
-        return std::make_tuple(nullptr, 0);
+        return {};
       }
 
       CLog::LogF(LOGDEBUG, "fetching extradata, extradata_size({})", retExtraDataSize);
-
-      memcpy(extraData, retExtraData, retExtraDataSize);
-      memset(extraData + retExtraDataSize, 0, AV_INPUT_BUFFER_PADDING_SIZE);
-      extraDataSize = retExtraDataSize;
 
       av_packet_unref(pktRef);
       break;
@@ -261,5 +324,5 @@ std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt, const AVCodecP
   av_bsf_free(&bsf);
   av_packet_free(&dstPkt);
 
-  return std::make_tuple(extraData, extraDataSize);
+  return extraData;
 }

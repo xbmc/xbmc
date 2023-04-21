@@ -317,9 +317,7 @@ CBitstreamConverter::CBitstreamConverter()
   m_convertSize       = 0;
   m_inputBuffer       = NULL;
   m_inputSize         = 0;
-  m_to_annexb         = false;
-  m_extradata         = NULL;
-  m_extrasize         = 0;
+  m_to_annexb = false;
   m_convert_3byteTo4byteNALSize = false;
   m_convert_bytestream = false;
   m_sps_pps_context.sps_pps_data = NULL;
@@ -350,10 +348,9 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
         if ( in_extradata[0] == 1 )
         {
           CLog::Log(LOGINFO, "CBitstreamConverter::Open bitstream to annexb init");
-          m_extrasize = in_extrasize;
-          m_extradata = (uint8_t*)av_malloc(in_extrasize);
-          memcpy(m_extradata, in_extradata, in_extrasize);
-          m_convert_bitstream = BitstreamConvertInitAVC(m_extradata, m_extrasize);
+          m_extraData = FFmpegExtraData(in_extradata, in_extrasize);
+          m_convert_bitstream =
+              BitstreamConvertInitAVC(m_extraData.GetData(), m_extraData.GetSize());
           return true;
         }
         else
@@ -381,9 +378,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
             // extract the avcC atom data into extradata then write it into avcCData for VDADecoder
             in_extrasize = avio_close_dyn_buf(pb, &in_extradata);
             // make a copy of extradata contents
-            m_extradata = (uint8_t *)av_malloc(in_extrasize);
-            memcpy(m_extradata, in_extradata, in_extrasize);
-            m_extrasize = in_extrasize;
+            m_extraData = FFmpegExtraData(in_extradata, in_extrasize);
             // done with the converted extradata, we MUST free using av_free
             av_free(in_extradata);
             return true;
@@ -404,16 +399,12 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
             in_extradata[4] = 0xFF;
             m_convert_3byteTo4byteNALSize = true;
 
-            m_extradata = (uint8_t *)av_malloc(in_extrasize);
-            memcpy(m_extradata, in_extradata, in_extrasize);
-            m_extrasize = in_extrasize;
+            m_extraData = FFmpegExtraData(in_extradata, in_extrasize);
             return true;
           }
         }
         // valid avcC atom
-        m_extradata = (uint8_t*)av_malloc(in_extrasize);
-        memcpy(m_extradata, in_extradata, in_extrasize);
-        m_extrasize = in_extrasize;
+        m_extraData = FFmpegExtraData(in_extradata, in_extrasize);
         return true;
       }
       return false;
@@ -437,10 +428,9 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
         if (in_extradata[0] || in_extradata[1] || in_extradata[2] > 1)
         {
           CLog::Log(LOGINFO, "CBitstreamConverter::Open bitstream to annexb init");
-          m_extrasize = in_extrasize;
-          m_extradata = (uint8_t*)av_malloc(in_extrasize);
-          memcpy(m_extradata, in_extradata, in_extrasize);
-          m_convert_bitstream = BitstreamConvertInitHEVC(m_extradata, m_extrasize);
+          m_extraData = FFmpegExtraData(in_extradata, in_extrasize);
+          m_convert_bitstream =
+              BitstreamConvertInitHEVC(m_extraData.GetData(), m_extraData.GetSize());
           return true;
         }
         else
@@ -476,9 +466,7 @@ bool CBitstreamConverter::Open(enum AVCodecID codec, uint8_t *in_extradata, int 
           }
         }
         // valid hvcC atom
-        m_extradata = (uint8_t*)av_malloc(in_extrasize);
-        memcpy(m_extradata, in_extradata, in_extrasize);
-        m_extrasize = in_extrasize;
+        m_extraData = FFmpegExtraData(in_extradata, in_extrasize);
         return true;
       }
       return false;
@@ -499,9 +487,7 @@ void CBitstreamConverter::Close(void)
     av_free(m_convertBuffer), m_convertBuffer = NULL;
   m_convertSize = 0;
 
-  if (m_extradata)
-    av_free(m_extradata), m_extradata = NULL;
-  m_extrasize = 0;
+  m_extraData = {};
 
   m_inputSize = 0;
   m_inputBuffer = NULL;
@@ -637,19 +623,26 @@ int CBitstreamConverter::GetConvertSize() const
     return m_inputSize;
 }
 
-uint8_t *CBitstreamConverter::GetExtraData() const
+uint8_t* CBitstreamConverter::GetExtraData()
+{
+  if (m_convert_bitstream)
+    return m_sps_pps_context.sps_pps_data;
+  else
+    return m_extraData.GetData();
+}
+const uint8_t* CBitstreamConverter::GetExtraData() const
 {
   if(m_convert_bitstream)
     return m_sps_pps_context.sps_pps_data;
   else
-    return m_extradata;
+    return m_extraData.GetData();
 }
 int CBitstreamConverter::GetExtraSize() const
 {
   if(m_convert_bitstream)
     return m_sps_pps_context.size;
   else
-    return m_extrasize;
+    return m_extraData.GetSize();
 }
 
 void CBitstreamConverter::ResetStartDecode(void)
