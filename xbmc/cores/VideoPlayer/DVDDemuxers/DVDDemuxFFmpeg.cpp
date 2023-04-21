@@ -1881,10 +1881,8 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
 
     if (stream->type != STREAM_NONE && pStream->codecpar->extradata && pStream->codecpar->extradata_size > 0)
     {
-      stream->ExtraSize = pStream->codecpar->extradata_size;
-      stream->ExtraData = std::make_unique<uint8_t[]>(pStream->codecpar->extradata_size);
-      memcpy(stream->ExtraData.get(), pStream->codecpar->extradata,
-             pStream->codecpar->extradata_size);
+      stream->extraData =
+          FFmpegExtraData(pStream->codecpar->extradata, pStream->codecpar->extradata_size);
     }
 
 #ifdef HAVE_LIBBLURAY
@@ -2166,7 +2164,8 @@ bool CDVDDemuxFFmpeg::IsProgramChange()
         return true;
       }
     }
-    if (m_pFormatContext->streams[idx]->codecpar->extradata_size != static_cast<int>(stream->ExtraSize))
+    if (m_pFormatContext->streams[idx]->codecpar->extradata_size !=
+        static_cast<int>(stream->extraData.GetSize()))
       return true;
   }
   return false;
@@ -2299,11 +2298,11 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket* pkt)
         parser->second->m_parserCtx->parser &&
         !st->codecpar->extradata)
     {
-      auto [retExtraData, i] = GetPacketExtradata(pkt, st->codecpar);
-      if (i > 0)
+      FFmpegExtraData retExtraData = GetPacketExtradata(pkt, st->codecpar);
+      if (retExtraData)
       {
-        st->codecpar->extradata_size = i;
-        st->codecpar->extradata = retExtraData;
+        st->codecpar->extradata_size = retExtraData.GetSize();
+        st->codecpar->extradata = retExtraData.GetData();
 
         if (parser->second->m_parserCtx->parser->parser_parse)
         {

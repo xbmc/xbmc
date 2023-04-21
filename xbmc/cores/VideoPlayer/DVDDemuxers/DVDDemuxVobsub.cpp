@@ -113,9 +113,8 @@ bool CDVDDemuxVobsub::Open(const std::string& filename, int source, const std::s
 
   for(unsigned i=0;i<m_Streams.size();i++)
   {
-    m_Streams[i]->ExtraSize = state.extra.length()+1;
-    m_Streams[i]->ExtraData = std::make_unique<uint8_t[]>(m_Streams[i]->ExtraSize);
-    strcpy((char*)m_Streams[i]->ExtraData.get(), state.extra.c_str());
+    m_Streams[i]->extraData =
+        FFmpegExtraData(reinterpret_cast<uint8_t*>(state.extra.data()), state.extra.length() + 1);
   }
 
   return true;
