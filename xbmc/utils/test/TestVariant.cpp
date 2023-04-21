@@ -8,6 +8,10 @@
 
 #include "utils/Variant.h"
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include <gtest/gtest.h>
 
 TEST(TestVariant, VariantTypeInteger)
@@ -284,9 +288,32 @@ TEST(TestVariant, size)
 TEST(TestVariant, empty)
 {
   std::vector<std::string> strarray;
-  CVariant a(strarray);
+  EXPECT_TRUE(CVariant(strarray).empty());
+  strarray.emplace_back("abc");
+  EXPECT_FALSE(CVariant(strarray).empty());
 
-  EXPECT_TRUE(a.empty());
+  std::map<std::string, std::string> strmap;
+  EXPECT_TRUE(CVariant(strmap).empty());
+  strmap.emplace(std::make_pair(std::string("key"), std::string("value")));
+  EXPECT_FALSE(CVariant(strmap).empty());
+
+  std::string str;
+  EXPECT_TRUE(CVariant(str).empty());
+  str = "abc";
+  EXPECT_FALSE(CVariant(str).empty());
+
+  std::wstring wstr;
+  EXPECT_TRUE(CVariant(wstr).empty());
+  wstr = L"abc";
+  EXPECT_FALSE(CVariant(wstr).empty());
+
+  EXPECT_TRUE(CVariant().empty());
+
+  EXPECT_FALSE(CVariant(CVariant::VariantTypeConstNull).empty());
+  EXPECT_FALSE(CVariant(CVariant::VariantTypeInteger).empty());
+  EXPECT_FALSE(CVariant(CVariant::VariantTypeUnsignedInteger).empty());
+  EXPECT_FALSE(CVariant(CVariant::VariantTypeBoolean).empty());
+  EXPECT_FALSE(CVariant(CVariant::VariantTypeDouble).empty());
 }
 
 TEST(TestVariant, clear)
