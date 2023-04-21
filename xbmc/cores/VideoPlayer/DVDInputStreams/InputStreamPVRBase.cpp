@@ -322,12 +322,11 @@ void CInputStreamPVRBase::UpdateStreamMap()
 
       if (stream.iSubtitleInfo)
       {
-        streamSubtitle->ExtraData = std::make_unique<uint8_t[]>(4);
-        streamSubtitle->ExtraSize = 4;
-        streamSubtitle->ExtraData[0] = (stream.iSubtitleInfo >> 8) & 0xff;
-        streamSubtitle->ExtraData[1] = (stream.iSubtitleInfo >> 0) & 0xff;
-        streamSubtitle->ExtraData[2] = (stream.iSubtitleInfo >> 24) & 0xff;
-        streamSubtitle->ExtraData[3] = (stream.iSubtitleInfo >> 16) & 0xff;
+        streamSubtitle->extraData = FFmpegExtraData(4);
+        streamSubtitle->extraData.GetData()[0] = (stream.iSubtitleInfo >> 8) & 0xff;
+        streamSubtitle->extraData.GetData()[1] = (stream.iSubtitleInfo >> 0) & 0xff;
+        streamSubtitle->extraData.GetData()[2] = (stream.iSubtitleInfo >> 24) & 0xff;
+        streamSubtitle->extraData.GetData()[3] = (stream.iSubtitleInfo >> 16) & 0xff;
       }
       dStream = streamSubtitle;
     }

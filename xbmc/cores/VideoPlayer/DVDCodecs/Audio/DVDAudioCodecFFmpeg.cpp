@@ -103,13 +103,14 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if(m_pCodecContext->bits_per_coded_sample == 0)
     m_pCodecContext->bits_per_coded_sample = 16;
 
-  if( hints.extradata && hints.extrasize > 0 )
+  if (hints.extradata)
   {
-    m_pCodecContext->extradata = (uint8_t*)av_mallocz(hints.extrasize + AV_INPUT_BUFFER_PADDING_SIZE);
+    m_pCodecContext->extradata =
+        (uint8_t*)av_mallocz(hints.extradata.GetSize() + AV_INPUT_BUFFER_PADDING_SIZE);
     if(m_pCodecContext->extradata)
     {
-      m_pCodecContext->extradata_size = hints.extrasize;
-      memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
+      m_pCodecContext->extradata_size = hints.extradata.GetSize();
+      memcpy(m_pCodecContext->extradata, hints.extradata.GetData(), hints.extradata.GetSize());
     }
   }
 

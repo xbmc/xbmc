@@ -60,16 +60,17 @@ bool CDVDOverlayCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &optio
   m_pCodecContext->pkt_timebase.num = 1;
   m_pCodecContext->pkt_timebase.den = DVD_TIME_BASE;
 
-  if( hints.extradata && hints.extrasize > 0 )
+  if (hints.extradata)
   {
-    m_pCodecContext->extradata_size = hints.extrasize;
-    m_pCodecContext->extradata = (uint8_t*)av_mallocz(hints.extrasize + AV_INPUT_BUFFER_PADDING_SIZE);
-    memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
+    m_pCodecContext->extradata_size = hints.extradata.GetSize();
+    m_pCodecContext->extradata =
+        (uint8_t*)av_mallocz(hints.extradata.GetSize() + AV_INPUT_BUFFER_PADDING_SIZE);
+    memcpy(m_pCodecContext->extradata, hints.extradata.GetData(), hints.extradata.GetSize());
 
     // start parsing of extra data - create a copy to be safe and make it zero-terminating to avoid access violations!
-    unsigned int parse_extrasize = hints.extrasize;
+    unsigned int parse_extrasize = hints.extradata.GetSize();
     char* parse_extra = new char[parse_extrasize + 1];
-    memcpy(parse_extra, hints.extradata, parse_extrasize);
+    memcpy(parse_extra, hints.extradata.GetData(), parse_extrasize);
     parse_extra[parse_extrasize] = '\0';
 
     // assume that the extra data is formatted as a concatenation of lines ('\n' terminated)

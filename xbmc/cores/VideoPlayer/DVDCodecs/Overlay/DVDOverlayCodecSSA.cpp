@@ -38,7 +38,8 @@ bool CDVDOverlayCodecSSA::Open(CDVDStreamInfo& hints, CDVDCodecOptions& options)
 
   m_pOverlay.reset();
 
-  return m_libass->DecodeHeader(static_cast<char*>(hints.extradata), hints.extrasize);
+  return m_libass->DecodeHeader(reinterpret_cast<char*>(hints.extradata.GetData()),
+                                hints.extradata.GetSize());
 }
 
 OverlayMessage CDVDOverlayCodecSSA::Decode(DemuxPacket* pPacket)

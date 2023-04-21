@@ -387,7 +387,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       "CDVDVideoCodecAndroidMediaCodec::Open hints: Width {} x Height {}, Fpsrate {} / Fpsscale "
       "{}, CodecID {}, Level {}, Profile {}, PTS_invalid {}, Tag {}, Extradata-Size: {}",
       hints.width, hints.height, hints.fpsrate, hints.fpsscale, hints.codec, hints.level,
-      hints.profile, hints.ptsinvalid, hints.codec_tag, hints.extrasize);
+      hints.profile, hints.ptsinvalid, hints.codec_tag, hints.extradata.GetSize());
 
   m_render_surface = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOPLAYER_USEMEDIACODECSURFACE);
   m_state = MEDIACODEC_STATE_UNINITIALIZED;
@@ -447,9 +447,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       }
       m_mime = "video/x-vnd.on2.vp9";
       m_formatname = "amc-vp9";
-      free(m_hints.extradata);
-      m_hints.extradata = nullptr;
-      m_hints.extrasize = 0;
+      m_hints.extradata = {};
       break;
     case AV_CODEC_ID_AVS:
     case AV_CODEC_ID_CAVS:
@@ -493,7 +491,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       if (m_hints.extradata && !m_hints.cryptoSession)
       {
         m_bitstream = std::make_unique<CBitstreamConverter>();
-        if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true))
+        if (!m_bitstream->Open(m_hints.codec, m_hints.extradata.GetData(),
+                               m_hints.extradata.GetSize(), true))
         {
           m_bitstream.reset();
         }
@@ -564,7 +563,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       if (m_hints.extradata && !m_hints.cryptoSession)
       {
         m_bitstream = std::make_unique<CBitstreamConverter>();
-        if (!m_bitstream->Open(m_hints.codec, (uint8_t*)m_hints.extradata, m_hints.extrasize, true))
+        if (!m_bitstream->Open(m_hints.codec, m_hints.extradata.GetData(),
+                               m_hints.extradata.GetSize(), true))
         {
           m_bitstream.reset();
         }
@@ -572,28 +572,26 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       break;
     }
     case AV_CODEC_ID_WMV3:
-      if (m_hints.extrasize == 4 || m_hints.extrasize == 5)
+      if (m_hints.extradata.GetSize() == 4 || m_hints.extradata.GetSize() == 5)
       {
         // Convert to SMPTE 421M-2006 Annex-L
         static uint8_t annexL_hdr1[] = {0x8e, 0x01, 0x00, 0xc5, 0x04, 0x00, 0x00, 0x00};
         static uint8_t annexL_hdr2[] = {0x0c, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-        free(m_hints.extradata);
-        m_hints.extrasize = 36;
-        m_hints.extradata = malloc(m_hints.extrasize);
+        m_hints.extradata = FFmpegExtraData(36);
 
         unsigned int offset = 0;
         char buf[4];
-        memcpy(m_hints.extradata, annexL_hdr1, sizeof(annexL_hdr1));
+        memcpy(m_hints.extradata.GetData(), annexL_hdr1, sizeof(annexL_hdr1));
         offset += sizeof(annexL_hdr1);
-        memcpy(&((char *)(m_hints.extradata))[offset], hints.extradata, 4);
+        memcpy(m_hints.extradata.GetData() + offset, hints.extradata.GetData(), 4);
         offset += 4;
         BS_WL32(buf, hints.height);
-        memcpy(&((char *)(m_hints.extradata))[offset], buf, 4);
+        memcpy(m_hints.extradata.GetData() + offset, buf, 4);
         offset += 4;
         BS_WL32(buf, hints.width);
-        memcpy(&((char *)(m_hints.extradata))[offset], buf, 4);
+        memcpy(m_hints.extradata.GetData() + offset, buf, 4);
         offset += 4;
-        memcpy(&((char *)(m_hints.extradata))[offset], annexL_hdr2, sizeof(annexL_hdr2));
+        memcpy(m_hints.extradata.GetData() + offset, annexL_hdr2, sizeof(annexL_hdr2));
       }
 
       m_mime = "video/x-ms-wmv";
@@ -601,26 +599,24 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       break;
     case AV_CODEC_ID_VC1:
     {
-      if (m_hints.extrasize < 16)
+      if (m_hints.extradata.GetSize() < 16)
         goto FAIL;
 
       // Reduce extradata to first SEQ header
       unsigned int seq_offset = 0;
-      for (; seq_offset <= m_hints.extrasize-4; ++seq_offset)
+      for (; seq_offset <= m_hints.extradata.GetSize() - 4; ++seq_offset)
       {
-        char *ptr = &((char*)m_hints.extradata)[seq_offset];
+        const uint8_t* ptr = m_hints.extradata.GetData() + seq_offset;
         if (ptr[0] == 0x00 && ptr[1] == 0x00 && ptr[2] == 0x01 && ptr[3] == 0x0f)
           break;
       }
-      if (seq_offset > m_hints.extrasize-4)
+      if (seq_offset > m_hints.extradata.GetSize() - 4)
         goto FAIL;
 
       if (seq_offset)
       {
-        free(m_hints.extradata);
-        m_hints.extrasize -= seq_offset;
-        m_hints.extradata = malloc(m_hints.extrasize);
-        memcpy(m_hints.extradata, &((char *)(hints.extradata))[seq_offset], m_hints.extrasize);
+        hints.extradata = FFmpegExtraData(hints.extradata.GetData() + seq_offset,
+                                          hints.extradata.GetSize() - seq_offset);
       }
 
       m_mime = "video/wvc1";
@@ -643,9 +639,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       }
       m_mime = "video/av01";
       m_formatname = "amc-av1";
-      free(m_hints.extradata);
-      m_hints.extradata = nullptr;
-      m_hints.extrasize = 0;
+      m_hints.extradata = {};
       break;
     }
     default:
@@ -1314,12 +1308,12 @@ void CDVDVideoCodecAndroidMediaCodec::SignalEndOfStream()
 
 void CDVDVideoCodecAndroidMediaCodec::InjectExtraData(CJNIMediaFormat& mediaformat)
 {
-  if (!m_hints.extrasize)
+  if (!m_hints.extradata)
     return;
 
   CLog::Log(LOGDEBUG, "CDVDVideoCodecAndroidMediaCodec::{}", __func__);
-  size_t size = m_hints.extrasize;
-  void* src_ptr = m_hints.extradata;
+  size_t size = m_hints.extradata.GetSize();
+  void* src_ptr = m_hints.extradata.GetData();
   if (m_bitstream)
   {
     size = m_bitstream->GetExtraSize();
