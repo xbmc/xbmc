@@ -292,7 +292,7 @@ std::unique_ptr<CTexture> CGUIFontTTFGL::ReallocTexture(unsigned int& newHeight)
   newHeight = CTexture::PadPow2(newHeight);
 
   std::unique_ptr<CTexture> newTexture =
-      CTexture::CreateTexture(m_textureWidth, newHeight, XB_FMT_A8);
+      CTexture::CreateTexture(m_textureWidth, newHeight, XB_FMT_R8);
 
   if (!newTexture || !newTexture->GetPixels())
   {

@@ -407,6 +407,15 @@ void CRenderSystemGLES::InitialiseShaders()
     CLog::Log(LOGERROR, "GUI Shader gles_shader_texture.frag - compile and link failed");
   }
 
+  m_pShader[ShaderMethodGLES::SM_TEXTURE_ALPHA] =
+      std::make_unique<CGLESShader>("gles_shader_texture_alpha.frag", defines);
+  if (!m_pShader[ShaderMethodGLES::SM_TEXTURE_ALPHA]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_TEXTURE_ALPHA]->Free();
+    m_pShader[ShaderMethodGLES::SM_TEXTURE_ALPHA].reset();
+    CLog::Log(LOGERROR, "GUI Shader gles_shader_texture_alpha.frag - compile and link failed");
+  }
+
   m_pShader[ShaderMethodGLES::SM_MULTI] =
       std::make_unique<CGLESShader>("gles_shader_multi.frag", defines);
   if (!m_pShader[ShaderMethodGLES::SM_MULTI]->CompileAndLink())
@@ -441,6 +450,36 @@ void CRenderSystemGLES::InitialiseShaders()
     m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR]->Free();
     m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR].reset();
     CLog::Log(LOGERROR, "GUI Shader gles_shader_multi_blendcolor.frag - compile and link failed");
+  }
+
+  m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_COLOR_ALPHA] =
+      std::make_unique<CGLESShader>("gles_shader_multi_blendcolor_color_alpha.frag", defines);
+  if (!m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_COLOR_ALPHA]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_COLOR_ALPHA]->Free();
+    m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_COLOR_ALPHA].reset();
+    CLog::Log(LOGERROR,
+              "GUI Shader gles_shader_multi_blendcolor_color_alpha.frag - compile and link failed");
+  }
+
+  m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_COLOR] =
+      std::make_unique<CGLESShader>("gles_shader_multi_blendcolor_alpha_color.frag", defines);
+  if (!m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_COLOR]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_COLOR]->Free();
+    m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_COLOR].reset();
+    CLog::Log(LOGERROR,
+              "GUI Shader gles_shader_multi_blendcolor_alpha_color.frag - compile and link failed");
+  }
+
+  m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_ALPHA] =
+      std::make_unique<CGLESShader>("gles_shader_multi_blendcolor_alpha_alpha.frag", defines);
+  if (!m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_ALPHA]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_ALPHA]->Free();
+    m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_ALPHA].reset();
+    CLog::Log(LOGERROR,
+              "GUI Shader gles_shader_multi_blendcolor_alpha_alpha.frag - compile and link failed");
   }
 
   m_pShader[ShaderMethodGLES::SM_TEXTURE_RGBA] =
@@ -512,6 +551,10 @@ void CRenderSystemGLES::ReleaseShaders()
     m_pShader[ShaderMethodGLES::SM_TEXTURE]->Free();
   m_pShader[ShaderMethodGLES::SM_TEXTURE].reset();
 
+  if (m_pShader[ShaderMethodGLES::SM_TEXTURE_ALPHA])
+    m_pShader[ShaderMethodGLES::SM_TEXTURE_ALPHA]->Free();
+  m_pShader[ShaderMethodGLES::SM_TEXTURE_ALPHA].reset();
+
   if (m_pShader[ShaderMethodGLES::SM_MULTI])
     m_pShader[ShaderMethodGLES::SM_MULTI]->Free();
   m_pShader[ShaderMethodGLES::SM_MULTI].reset();
@@ -527,6 +570,18 @@ void CRenderSystemGLES::ReleaseShaders()
   if (m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR])
     m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR]->Free();
   m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR].reset();
+
+  if (m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_COLOR_ALPHA])
+    m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_COLOR_ALPHA]->Free();
+  m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_COLOR_ALPHA].reset();
+
+  if (m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_COLOR])
+    m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_COLOR]->Free();
+  m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_COLOR].reset();
+
+  if (m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_ALPHA])
+    m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_ALPHA]->Free();
+  m_pShader[ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_ALPHA].reset();
 
   if (m_pShader[ShaderMethodGLES::SM_TEXTURE_RGBA])
     m_pShader[ShaderMethodGLES::SM_TEXTURE_RGBA]->Free();

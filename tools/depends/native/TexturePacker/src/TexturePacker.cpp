@@ -67,6 +67,10 @@ const char *GetFormatString(unsigned int format)
     return "ARGB ";
   case XB_FMT_A8:
     return "A8   ";
+  case XB_FMT_L8:
+    return "L8   ";
+  case XB_FMT_L8A8:
+    return "L8A8 ";
   default:
     return "?????";
   }
@@ -137,7 +141,13 @@ void CreateSkeletonHeader(CXBTFWriter& xbtfWriter, const std::string& fullPath)
   CreateSkeletonHeaderImpl(xbtfWriter, fullPath, temp);
 }
 
-CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, bool hasAlpha, unsigned int flags)
+CXBTFFrame appendContent(CXBTFWriter& writer,
+                         int width,
+                         int height,
+                         unsigned char* data,
+                         unsigned int size,
+                         unsigned int format,
+                         unsigned int flags)
 {
   CXBTFFrame frame;
   lzo_uint packedSize = size;
@@ -181,36 +191,23 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
   frame.SetUnpackedSize(size);
   frame.SetWidth(width);
   frame.SetHeight(height);
-  frame.SetFormat(hasAlpha ? format : format | XB_FMT_OPAQUE);
+  frame.SetFormat(format);
   frame.SetDuration(0);
   return frame;
-}
-
-bool HasAlpha(unsigned char *argb, unsigned int width, unsigned int height)
-{
-  unsigned char *p = argb + 3; // offset of alpha
-  for (unsigned int i = 0; i < 4*width*height; i += 4)
-  {
-    if (p[i] != 0xff)
-      return true;
-  }
-  return false;
 }
 
 CXBTFFrame createXBTFFrame(RGBAImage &image, CXBTFWriter& writer, double maxMSE, unsigned int flags)
 {
 
   int width, height;
-  unsigned int format = 0;
   unsigned char* argb = (unsigned char*)image.pixels;
 
   width  = image.width;
   height = image.height;
-  bool hasAlpha = HasAlpha(argb, width, height);
 
   CXBTFFrame frame;
-  format = XB_FMT_A8R8G8B8;
-  frame = appendContent(writer, width, height, argb, (width * height * 4), format, hasAlpha, flags);
+  frame = appendContent(writer, width, height, argb, (width * height * image.bbp / 8), image.format,
+                        flags);
 
   return frame;
 }
@@ -249,6 +246,101 @@ static bool checkDupe(struct MD5Context* ctx,
   dupes[pos] = pos;
 
   return false;
+}
+
+void convertToSingleChannel(RGBAImage& image, uint32_t channel)
+{
+  uint32_t size = (image.width * image.height);
+  for (uint32_t i = 0; i < size; i++)
+  {
+    image.pixels[i] = image.pixels[i * 4 + channel];
+  }
+  if (channel == 3)
+    image.format = XB_FMT_A8;
+  else
+  {
+    image.format = XB_FMT_L8;
+    image.format |= XB_FMT_OPAQUE;
+  }
+  image.bbp = 8;
+  image.pitch = 1 * image.width;
+}
+
+void convertToDualChannel(RGBAImage& image)
+{
+  uint32_t size = (image.width * image.height);
+  for (uint32_t i = 0; i < size; i++)
+  {
+    image.pixels[i * 2] = image.pixels[i * 4];
+    image.pixels[i * 2 + 1] = image.pixels[i * 4 + 3];
+  }
+  image.format = XB_FMT_L8A8;
+  image.bbp = 16;
+  image.pitch = 2 * image.width;
+}
+
+void ReduceChannels(RGBAImage& image)
+{
+  if (image.format != XB_FMT_A8R8G8B8)
+    return;
+  uint32_t size = (image.width * image.height);
+  char red = image.pixels[0];
+  char green = image.pixels[1];
+  char blue = image.pixels[2];
+  char alpha = image.pixels[3];
+  bool uniformRed = true;
+  bool uniformGreen = true;
+  bool uniformBlue = true;
+  bool uniformAlpha = true;
+  bool isGrey = true;
+
+  // Checks each pixel for various properties.
+  for (uint32_t i = 0; i < size; i++)
+  {
+    if (image.pixels[i * 4] != red && image.pixels[i * 4 + 3] != (char)0x00)
+      uniformRed = false;
+    if (image.pixels[i * 4 + 1] != green && image.pixels[i * 4 + 3] != (char)0x00)
+      uniformGreen = false;
+    if (image.pixels[i * 4 + 2] != blue && image.pixels[i * 4 + 3] != (char)0x00)
+      uniformBlue = false;
+    if (image.pixels[i * 4 + 3] != alpha)
+      uniformAlpha = false;
+    if (!(image.pixels[i * 4] == image.pixels[i * 4 + 1] &&
+          image.pixels[i * 4] == image.pixels[i * 4 + 2]) &&
+        image.pixels[i * 4 + 3] != (char)0x00)
+      isGrey = false;
+  }
+
+  if (uniformAlpha && alpha != (char)0xff)
+    printf("WARNING: uniform alpha detected! Use diffusecolor!\n");
+
+  bool isWhite = red == (char)0xff && green == (char)0xff && blue == (char)0xff;
+  if (uniformRed && uniformGreen && uniformBlue && !isWhite)
+    printf("WARNING: uniform color detected! Use diffusecolor!\n");
+
+  if (uniformAlpha && alpha == (char)0xff)
+  {
+    image.format |= XB_FMT_OPAQUE;
+    if (isGrey)
+    {
+      convertToSingleChannel(image, 1);
+      return;
+    }
+    return;
+  }
+  else
+  {
+    if (uniformRed && uniformGreen && uniformBlue && isWhite)
+    {
+      convertToSingleChannel(image, 3);
+      return;
+    }
+    else if (isGrey)
+    {
+      convertToDualChannel(image);
+      return;
+    }
+  }
 }
 
 int createBundle(const std::string& InputDir, const std::string& OutputFile, double maxMSE, unsigned int flags, bool dupecheck)
@@ -318,6 +410,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
     {
       for (unsigned int j = 0; j < frames.frameList.size(); j++)
       {
+        ReduceChannels(frames.frameList[j].rgbaImage);
         printf("    frame %4i (delay:%4i)                         ", j, frames.frameList[j].delay);
         CXBTFFrame frame = createXBTFFrame(frames.frameList[j].rgbaImage, writer, maxMSE, flags);
         frame.SetDuration(frames.frameList[j].delay);

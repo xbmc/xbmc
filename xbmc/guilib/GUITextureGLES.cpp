@@ -65,10 +65,24 @@ void CGUITextureGLES::Begin(UTILS::COLOR::Color color)
   }
 
   bool hasAlpha = m_texture.m_textures[m_currentFrame]->HasAlpha() || m_col[3] < 255;
+  bool alphaOnlyTexture = m_texture.m_textures[m_currentFrame]->IsAlphaTexture();
 
   if (m_diffuse.size())
   {
-    if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255 )
+    bool alphaOnlyDiffuse = m_diffuse.m_textures[0]->IsAlphaTexture();
+    if (alphaOnlyTexture && alphaOnlyDiffuse)
+    {
+      m_renderSystem->EnableGUIShader(ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_ALPHA);
+    }
+    else if (alphaOnlyTexture)
+    {
+      m_renderSystem->EnableGUIShader(ShaderMethodGLES::SM_MULTI_BLENDCOLOR_ALPHA_COLOR);
+    }
+    else if (alphaOnlyDiffuse)
+    {
+      m_renderSystem->EnableGUIShader(ShaderMethodGLES::SM_MULTI_BLENDCOLOR_COLOR_ALPHA);
+    }
+    else if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255)
     {
       m_renderSystem->EnableGUIShader(ShaderMethodGLES::SM_MULTI);
     }
@@ -84,7 +98,11 @@ void CGUITextureGLES::Begin(UTILS::COLOR::Color color)
   }
   else
   {
-    if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255)
+    if (alphaOnlyTexture)
+    {
+      m_renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_ALPHA);
+    }
+    else if (m_col[0] == 255 && m_col[1] == 255 && m_col[2] == 255 && m_col[3] == 255)
     {
       m_renderSystem->EnableGUIShader(ShaderMethodGLES::SM_TEXTURE_NOBLEND);
     }

@@ -239,7 +239,7 @@ std::unique_ptr<CTexture> CGUIFontTTFDX::ReallocTexture(unsigned int& newHeight)
   m_dynamicCache.Flush();
 
   std::unique_ptr<CDXTexture> pNewTexture =
-      std::make_unique<CDXTexture>(m_textureWidth, newHeight, XB_FMT_A8);
+      std::make_unique<CDXTexture>(m_textureWidth, newHeight, XB_FMT_R8);
   std::unique_ptr<CD3DTexture> newSpeedupTexture = std::make_unique<CD3DTexture>();
   if (!newSpeedupTexture->Create(m_textureWidth, newHeight, 1, D3D11_USAGE_DEFAULT,
                                  DXGI_FORMAT_R8_UNORM))

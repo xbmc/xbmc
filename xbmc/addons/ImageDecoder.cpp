@@ -19,7 +19,7 @@ namespace
 
 constexpr std::array<std::tuple<unsigned int, ADDON_IMG_FMT, size_t>, 4> KodiToAddonFormat = {
     {{XB_FMT_A8R8G8B8, ADDON_IMG_FMT_A8R8G8B8, sizeof(uint8_t) * 4},
-     {XB_FMT_A8, ADDON_IMG_FMT_A8, sizeof(uint8_t) * 1},
+     {XB_FMT_R8, ADDON_IMG_FMT_A8, sizeof(uint8_t) * 1},
      {XB_FMT_RGBA8, ADDON_IMG_FMT_RGBA8, sizeof(uint8_t) * 4},
      {XB_FMT_RGB8, ADDON_IMG_FMT_RGB8, sizeof(uint8_t) * 3}}};
 
