@@ -673,6 +673,7 @@ bool CVariant::empty() const
                                [](const VariantArray& a) { return a.empty(); },
                                [](const std::string& s) { return s.empty(); },
                                [](const std::wstring& w) { return w.empty(); },
+                               [](const Null& n) { return true; },
                                [](const auto&) { return false; }},
                     m_data);
 }
