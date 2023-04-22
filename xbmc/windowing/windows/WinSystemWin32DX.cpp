@@ -445,3 +445,8 @@ DEBUG_INFO_RENDER CWinSystemWin32DX::GetDebugInfo()
 {
   return m_deviceResources->GetDebugInfo();
 }
+
+bool CWinSystemWin32DX::SupportsVideoSuperResolution()
+{
+  return m_deviceResources->IsSuperResolutionSupported();
+}

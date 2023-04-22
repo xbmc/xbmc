@@ -113,6 +113,26 @@
             <formatlabel>14047</formatlabel>
           </control>
         </setting>
+        <setting id="videoplayer.usesuperresolution" type="boolean" label="13417" help="39194">
+          <requirement>HAS_DX</requirement>
+          <dependencies>
+            <dependency type="visible">
+              <condition on="property" name="supportsvideosuperresolution" />
+            </dependency>
+            <dependency type="enable">
+              <or>
+                <condition setting="videoplayer.rendermethod" operator="is">0</condition> <!-- RENDER_METHOD_AUTO -->
+                <condition setting="videoplayer.rendermethod" operator="is">4</condition> <!-- RENDER_METHOD_DXVA -->
+              </or>
+            </dependency>
+          </dependencies>
+          <level>2</level>
+          <default>false</default>
+          <updates>
+            <update type="change" />
+          </updates>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.usemediacodecsurface" type="boolean" label="13440" help="36544">
           <requirement>HAS_MEDIACODEC</requirement>
           <level>2</level>

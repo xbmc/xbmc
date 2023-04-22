@@ -12,6 +12,8 @@
 #include "VideoRenderers/BaseRenderer.h"
 #include "WIN32Util.h"
 #include "rendering/dx/RenderContext.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/memcpy_sse2.h"
 #include "windowing/GraphicContext.h"
@@ -115,7 +117,21 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
         m_processor->ListSupportedConversions(dxgi_format, dest_format, picture);
 
       if (m_processor->IsFormatConversionSupported(dxgi_format, dest_format, picture))
+      {
+        const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+        if (!settings)
+          return true;
+
+        if (settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USESUPERRESOLUTION) &&
+            DXVA::CProcessorHD::IsSuperResolutionSuitable(picture) &&
+            DX::Windowing()->SupportsVideoSuperResolution())
+        {
+          m_processor->TryEnableVideoSuperResolution();
+        }
+
         return true;
+      }
     }
 
     CLog::LogF(LOGERROR, "unable to create DXVA processor");
