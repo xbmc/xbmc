@@ -419,11 +419,12 @@ float CVariant::asFloat(float fallback) const
 bool CVariant::asBoolean(bool fallback) const
 {
   return std::visit(
-      overloaded{[](bool b) { return b; }, [](int64_t i) { return i != 0; },
-                 [](uint64_t u) { return u != 0; }, [](double d) { return d != 0; },
-                 [](const std::string& s) { return s.empty() || s == "0" || s == "false"; },
-                 [](const std::wstring& ws) { return ws.empty() || ws == L"0" || ws == L"false"; },
-                 [=](const auto&) { return fallback; }},
+      overloaded{
+          [](bool b) { return b; }, [](int64_t i) { return i != 0; },
+          [](uint64_t u) { return u != 0; }, [](double d) { return d != 0; },
+          [](const std::string& s) { return !(s.empty() || s == "0" || s == "false"); },
+          [](const std::wstring& ws) { return !(ws.empty() || ws == L"0" || ws == L"false"); },
+          [=](const auto&) { return fallback; }},
       m_data);
 }
 
