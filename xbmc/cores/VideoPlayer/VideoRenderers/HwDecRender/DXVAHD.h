@@ -120,6 +120,8 @@ public:
   }
 
   static bool IsBT2020Supported();
+  static bool IsSuperResolutionSuitable(const VideoPicture& picture);
+  void TryEnableVideoSuperResolution();
 
 protected:
   bool ReInit();
@@ -153,6 +155,9 @@ protected:
    */
   std::vector<DXGI_FORMAT> GetProcessorOutputFormats() const;
 
+  void EnableIntelVideoSuperResolution();
+  void EnableNvidiaRTXVideoSuperResolution();
+
   CCriticalSection m_section;
 
   uint32_t m_width = 0;
@@ -177,6 +182,9 @@ protected:
   Microsoft::WRL::ComPtr<ID3D11VideoProcessorEnumerator> m_pEnumerator;
   Microsoft::WRL::ComPtr<ID3D11VideoProcessorEnumerator1> m_pEnumerator1;
   Microsoft::WRL::ComPtr<ID3D11VideoProcessor> m_pVideoProcessor;
+
+  bool m_forced8bit{false};
+  bool m_superResolutionEnabled{false};
 };
 
 };

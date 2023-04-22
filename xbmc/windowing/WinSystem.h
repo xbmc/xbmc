@@ -192,6 +192,13 @@ public:
   static const char* SETTING_WINSYSTEM_IS_HDR_DISPLAY;
   virtual bool HasSystemSdrPeakLuminance() { return false; }
 
+  /**
+   * @brief System supports Video Super Resolution HW upscaler i.e.:
+   * "NVIDIA RTX Video Super Resolution" or "Intel Video Super Resolution"
+   *
+   */
+  virtual bool SupportsVideoSuperResolution() { return false; }
+
   // Gets debug info from video renderer
   virtual DEBUG_INFO_RENDER GetDebugInfo() { return {}; }
 
