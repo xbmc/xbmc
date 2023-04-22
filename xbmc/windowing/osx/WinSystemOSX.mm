@@ -827,6 +827,11 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   const bool fullScreenState = m_bFullScreen;
   m_bFullScreen = fullScreen;
 
+  if (fullScreen || (!fullScreenState && m_fullscreenWillToggle))
+  {
+    UpdateSafeAreaInsets();
+  }
+
   //handle resolution/refreshrate switching early here
   if (m_bFullScreen)
   {
@@ -858,30 +863,6 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   if (m_bFullScreen)
   {
-    // This is Cocoa Windowed FullScreen Mode
-    // Get the screen rect of our current display
-    NSScreen* pScreen = [NSScreen.screens objectAtIndex:m_lastDisplayNr];
-
-    // Update safeareainsets (display may have a notch)
-    //! @TODO update code block once minimal SDK version is bumped to at least 12.0 (remove NSInvocation and selector)
-    auto safeAreaInsetsSelector = @selector(safeAreaInsets);
-    if ([pScreen respondsToSelector:safeAreaInsetsSelector])
-    {
-      NSEdgeInsets insets;
-      NSMethodSignature* safeAreaSignature =
-          [pScreen methodSignatureForSelector:safeAreaInsetsSelector];
-      NSInvocation* safeAreaInvocation =
-          [NSInvocation invocationWithMethodSignature:safeAreaSignature];
-      [safeAreaInvocation setSelector:safeAreaInsetsSelector];
-      [safeAreaInvocation invokeWithTarget:pScreen];
-      [safeAreaInvocation getReturnValue:&insets];
-
-      RESOLUTION currentRes = m_gfxContext->GetVideoResolution();
-      RESOLUTION_INFO resInfo = m_gfxContext->GetResInfo(currentRes);
-      resInfo.guiInsets = EdgeInsets(insets.right, insets.bottom, insets.left, insets.top);
-      m_gfxContext->SetResInfo(currentRes, resInfo);
-    }
-
     dispatch_sync(dispatch_get_main_queue(), ^{
       [window.contentView setFrameSize:NSMakeSize(m_nWidth, m_nHeight)];
       window.title = @"";
@@ -916,6 +897,33 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   ResizeWindow(m_nWidth, m_nHeight, -1, -1);
 
   return true;
+}
+
+void CWinSystemOSX::UpdateSafeAreaInsets()
+{
+  // This is Cocoa Windowed FullScreen Mode
+  // Get the screen rect of our current display
+  NSScreen* pScreen = [NSScreen.screens objectAtIndex:m_lastDisplayNr];
+
+  // Update safeareainsets (display may have a notch)
+  //! @TODO update code block once minimal SDK version is bumped to at least 12.0 (remove NSInvocation and selector)
+  auto safeAreaInsetsSelector = @selector(safeAreaInsets);
+  if ([pScreen respondsToSelector:safeAreaInsetsSelector])
+  {
+    NSEdgeInsets insets;
+    NSMethodSignature* safeAreaSignature =
+        [pScreen methodSignatureForSelector:safeAreaInsetsSelector];
+    NSInvocation* safeAreaInvocation =
+        [NSInvocation invocationWithMethodSignature:safeAreaSignature];
+    [safeAreaInvocation setSelector:safeAreaInsetsSelector];
+    [safeAreaInvocation invokeWithTarget:pScreen];
+    [safeAreaInvocation getReturnValue:&insets];
+
+    RESOLUTION currentRes = m_gfxContext->GetVideoResolution();
+    RESOLUTION_INFO resInfo = m_gfxContext->GetResInfo(currentRes);
+    resInfo.guiInsets = EdgeInsets(insets.right, insets.bottom, insets.left, insets.top);
+    m_gfxContext->SetResInfo(currentRes, resInfo);
+  }
 }
 
 #pragma mark - Resolution
