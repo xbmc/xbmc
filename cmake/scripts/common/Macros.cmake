@@ -646,6 +646,10 @@ endfunction()
 #   APP_PACKAGE - Android full package name
 #   COMPANY_NAME - company name
 #   APP_WEBSITE - site url
+#   ABOUT_WEBSITE - url for the about page of the app
+#   DEV_NAME - name of the developer of the app
+#   DOCS_WEBSITE - url for the documentation of the app
+#   FORUM_WEBSITE - url for the forum/discussion board of the app
 #   APP_VERSION_MAJOR - the app version major
 #   APP_VERSION_MINOR - the app version minor
 #   APP_VERSION_TAG - the app version tag
@@ -676,10 +680,14 @@ macro(core_find_versions)
   set(version_props
     ADDON_API
     ADDON_REPOS
+    ABOUT_WEBSITE
     APP_NAME
     APP_PACKAGE
     COMPANY_NAME
     COPYRIGHT_YEARS
+    DEV_NAME
+    DOCS_WEBSITE
+    FORUM_WEBSITE
     JSONRPC_VERSION
     PACKAGE_DESCRIPTION
     PACKAGE_IDENTITY
@@ -699,6 +707,10 @@ macro(core_find_versions)
   string(TOLOWER ${APP_APP_NAME} APP_NAME_LC)
   string(TOUPPER ${APP_APP_NAME} APP_NAME_UC)
   set(COMPANY_NAME ${APP_COMPANY_NAME})
+  set(ABOUT_WEBSITE ${APP_ABOUT_WEBSITE})
+  set(DEV_NAME ${APP_DEV_NAME})
+  set(DOCS_WEBSITE ${APP_DOCS_WEBSITE})
+  set(FORUM_WEBSITE ${APP_FORUM_WEBSITE})
   set(APP_VERSION ${APP_VERSION_MAJOR}.${APP_VERSION_MINOR})
   # Let Flatpak builders etc override APP_PACKAGE
   # NOTE: We cannot declare an option() in top-level CMakeLists.txt
