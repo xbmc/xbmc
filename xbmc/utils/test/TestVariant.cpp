@@ -359,3 +359,40 @@ TEST(TestVariant, isMember)
   EXPECT_TRUE(a.isMember("key1"));
   EXPECT_FALSE(a.isMember("key2"));
 }
+
+TEST(TestVariant, asBoolean)
+{
+  EXPECT_TRUE(CVariant("true").asBoolean());
+  EXPECT_FALSE(CVariant("false").asBoolean());
+  EXPECT_TRUE(CVariant("1").asBoolean());
+  EXPECT_FALSE(CVariant("0").asBoolean());
+  EXPECT_FALSE(CVariant("").asBoolean());
+
+  EXPECT_TRUE(CVariant(L"true").asBoolean());
+  EXPECT_FALSE(CVariant(L"false").asBoolean());
+  EXPECT_TRUE(CVariant(L"1").asBoolean());
+  EXPECT_FALSE(CVariant(L"0").asBoolean());
+  EXPECT_FALSE(CVariant(L"").asBoolean());
+
+  EXPECT_TRUE(CVariant(uint64_t{1}).asBoolean());
+  EXPECT_TRUE(CVariant(uint64_t{999999999}).asBoolean());
+  EXPECT_FALSE(CVariant(uint64_t{0}).asBoolean());
+
+  EXPECT_TRUE(CVariant(int64_t{1}).asBoolean());
+  EXPECT_TRUE(CVariant(int64_t{999999999}).asBoolean());
+  EXPECT_TRUE(CVariant(int64_t{-999999999}).asBoolean());
+  EXPECT_FALSE(CVariant(int64_t{0}).asBoolean());
+
+  EXPECT_TRUE(CVariant(double{1}).asBoolean());
+  EXPECT_TRUE(CVariant(double{999999999}).asBoolean());
+  EXPECT_TRUE(CVariant(double{-999999999}).asBoolean());
+  EXPECT_FALSE(CVariant(double{0}).asBoolean());
+
+  EXPECT_TRUE(CVariant(true).asBoolean());
+  EXPECT_FALSE(CVariant(false).asBoolean());
+
+  EXPECT_FALSE(CVariant(CVariant::VariantTypeNull).asBoolean());
+  EXPECT_FALSE(CVariant(CVariant::VariantTypeConstNull).asBoolean());
+  EXPECT_FALSE(CVariant(CVariant::VariantTypeArray).asBoolean());
+  EXPECT_FALSE(CVariant(CVariant::VariantTypeObject).asBoolean());
+}
