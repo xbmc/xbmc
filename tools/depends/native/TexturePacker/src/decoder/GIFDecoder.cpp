@@ -50,14 +50,13 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
       {
         DecodedFrame frame;
 
-        frame.rgbaImage.pixels = (char *)new char[frameSize];
-        memcpy(frame.rgbaImage.pixels, extractedFrames[i]->m_pImage, frameSize);
+        frame.rgbaImage.pixels.resize(frameSize);
+        memcpy(frame.rgbaImage.pixels.data(), extractedFrames[i]->m_pImage, frameSize);
         frame.rgbaImage.height = height;
         frame.rgbaImage.width = width;
         frame.rgbaImage.bbp = 32;
         frame.rgbaImage.pitch = pitch;
         frame.delay = extractedFrames[i]->m_delay;
-        frame.decoder = this;
 
         frames.frameList.push_back(frame);
       }
@@ -66,11 +65,6 @@ bool GIFDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   }
   delete gifImage;
   return result;
-}
-
-void GIFDecoder::FreeDecodedFrame(DecodedFrame &frame)
-{
-  delete [] frame.rgbaImage.pixels;
 }
 
 void GIFDecoder::FillSupportedExtensions()

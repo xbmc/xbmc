@@ -22,16 +22,19 @@
 
 #include "IDecoder.h"
 
+#include <memory>
+#include <string_view>
+
 class DecoderManager
 {
   public:
-    static void InstantiateDecoders();
-    static void FreeDecoders();
-    static bool IsSupportedGraphicsFile(char *strFileName);
-    static bool LoadFile(const std::string &filename, DecodedFrames &frames);
-    static void FreeDecodedFrames(DecodedFrames &frames);
-    static bool verbose;
+    DecoderManager();
+    ~DecoderManager() = default;
+
+    bool IsSupportedGraphicsFile(std::string_view filename);
+    bool LoadFile(const std::string& filename, DecodedFrames& frames);
+    bool verbose;
 
   private:
-    static std::vector<IDecoder *> m_decoders;
+    std::vector<std::unique_ptr<IDecoder>> m_decoders;
 };

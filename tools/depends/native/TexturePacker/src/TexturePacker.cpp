@@ -51,6 +51,8 @@
 
 #define DIR_SEPARATOR '/'
 
+static DecoderManager decoderManager;
+
 const char *GetFormatString(unsigned int format)
 {
   switch (format)
@@ -103,7 +105,7 @@ void CreateSkeletonHeaderImpl(CXBTFWriter& xbtfWriter,
 
           CreateSkeletonHeaderImpl(xbtfWriter, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
         }
-        else if (DecoderManager::IsSupportedGraphicsFile(dp->d_name))
+        else if (decoderManager.IsSupportedGraphicsFile(dp->d_name))
         {
           std::string fileName = "";
           if (relativePath.size() > 0)
@@ -202,7 +204,7 @@ CXBTFFrame createXBTFFrame(RGBAImage &image, CXBTFWriter& writer, double maxMSE,
 
   int width, height;
   unsigned int format = 0;
-  unsigned char* argb = (unsigned char*)image.pixels;
+  unsigned char* argb = (unsigned char*)image.pixels.data();
 
   width  = image.width;
   height = image.height;
@@ -287,7 +289,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
       output += ' ';
 
     DecodedFrames frames;
-    bool loaded = DecoderManager::LoadFile(fullPath, frames);
+    bool loaded = decoderManager.LoadFile(fullPath, frames);
 
     if (!loaded)
     {
@@ -300,9 +302,8 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
     if (dupecheck)
     {
       for (unsigned int j = 0; j < frames.frameList.size(); j++)
-        MD5Update(&ctx,
-          (const uint8_t*)frames.frameList[j].rgbaImage.pixels,
-          frames.frameList[j].rgbaImage.height * frames.frameList[j].rgbaImage.pitch);
+        MD5Update(&ctx, (const uint8_t*)frames.frameList[j].rgbaImage.pixels.data(),
+                  frames.frameList[j].rgbaImage.height * frames.frameList[j].rgbaImage.pitch);
 
       if (checkDupe(&ctx,hashes,dupes,i))
       {
@@ -326,7 +327,6 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
           frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
       }
     }
-    DecoderManager::FreeDecodedFrames(frames);
     file.SetLoop(0);
 
     writer.UpdateFile(file);
@@ -386,7 +386,7 @@ int main(int argc, char* argv[])
     }
     else if (!strcmp(args[i], "-verbose"))
     {
-      DecoderManager::verbose = true;
+      decoderManager.verbose = true;
     }
     else if (!platform_stricmp(args[i], "-output") || !platform_stricmp(args[i], "-o"))
     {
@@ -413,8 +413,6 @@ int main(int argc, char* argv[])
   if (pos != InputDir.length() - 1)
     InputDir += DIR_SEPARATOR;
 
-  double maxMSE = 1.5;    // HQ only please
-  DecoderManager::InstantiateDecoders();
+  double maxMSE = 1.5; // HQ only please
   createBundle(InputDir, OutputFilename, maxMSE, flags, dupecheck);
-  DecoderManager::FreeDecoders();
 }
