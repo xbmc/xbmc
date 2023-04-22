@@ -54,7 +54,6 @@ private:
    * For others a typical size is a cache page, e.g. 4kb.
    */
   static constexpr size_t BUFFER_SIZE = 4096;
-  uint8_t* m_bcBuffer{nullptr};
 
   unsigned int m_neededFrames{0};
   size_t m_neededBytes{0};
