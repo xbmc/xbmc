@@ -29,6 +29,27 @@
 using namespace DXVA;
 using namespace Microsoft::WRL;
 
+namespace
+{
+// magic constants taken from Chromium:
+// https://chromium.googlesource.com/chromium/src/+/refs/heads/main/ui/gl/swap_chain_presenter.cc#180
+constexpr GUID GUID_INTEL_VPE_INTERFACE = {
+    0xedd1d4b9, 0x8659, 0x4cbc, {0xa4, 0xd6, 0x98, 0x31, 0xa2, 0x16, 0x3a, 0xc3}};
+
+constexpr UINT kIntelVpeFnVersion = 0x01;
+constexpr UINT kIntelVpeFnMode = 0x20;
+constexpr UINT kIntelVpeFnScaling = 0x37;
+constexpr UINT kIntelVpeVersion3 = 0x0003;
+constexpr UINT kIntelVpeModePreproc = 0x01;
+constexpr UINT kIntelVpeScalingSuperResolution = 0x2;
+
+constexpr GUID GUID_NVIDIA_PPE_INTERFACE = {
+    0xd43ce1b3, 0x1f4b, 0x48ac, {0xba, 0xee, 0xc3, 0xc2, 0x53, 0x75, 0xe6, 0xf7}};
+
+constexpr UINT kStreamExtensionVersionV1 = 0x1;
+constexpr UINT kStreamExtensionMethodSuperResolution = 0x2;
+} // unnamed namespace
+
 #define LOGIFERROR(a) \
   do \
   { \
@@ -70,6 +91,12 @@ void CProcessorHD::Close()
   m_pVideoProcessor = nullptr;
   m_pVideoContext = nullptr;
   m_pVideoDevice = nullptr;
+
+  // restores 10 bit swap chain if previously forced to 8 bit
+  if (m_forced8bit)
+    DX::DeviceResources::Get()->ApplyDisplaySettings();
+
+  m_superResolutionEnabled = false;
 }
 
 bool CProcessorHD::PreInit() const
@@ -670,7 +697,11 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   // Stream dest rect
   m_pVideoContext->VideoProcessorSetStreamDestRect(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, TRUE, &dstRECT);
   // Output rect
-  m_pVideoContext->VideoProcessorSetOutputTargetRect(m_pVideoProcessor.Get(), TRUE, &dstRECT);
+  // Disabled when using Video Super Resolution because it causes vertical shift of a few pixels.
+  // Tested with RTX 4070 and NVIDIA driver 535.98. It doesn't seem to happen with Intel i7-13700K.
+  // ToDo: retest with future NVIDIA drivers and eventually remove this workaround.
+  m_pVideoContext->VideoProcessorSetOutputTargetRect(
+      m_pVideoProcessor.Get(), m_superResolutionEnabled ? FALSE : TRUE, &dstRECT);
 
   ComPtr<ID3D11VideoContext1> videoCtx1;
   if (SUCCEEDED(m_pVideoContext.As(&videoCtx1)))
@@ -1028,4 +1059,128 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::AvToDxgiColorSpace(const DXGIColorSpaceArgs&
   }
 
   return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
+}
+
+bool CProcessorHD::IsSuperResolutionSuitable(const VideoPicture& picture)
+{
+  if (picture.iWidth > 1920)
+    return false;
+
+  const UINT outputWidth = DX::Windowing()->GetBackBuffer().GetWidth();
+
+  if (outputWidth <= picture.iWidth)
+    return false;
+
+  if (picture.iFlags & DVP_FLAG_INTERLACED)
+    return false;
+
+  if (picture.color_primaries == AVCOL_PRI_BT2020 ||
+      picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
+    return false;
+
+  return true;
+}
+
+void CProcessorHD::TryEnableVideoSuperResolution()
+{
+  if (!m_pVideoContext || !m_pVideoProcessor)
+    return;
+
+  const DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
+
+  if (format == DXGI_FORMAT_R10G10B10A2_UNORM)
+  {
+    // force 8 bit swap chain temporally as NVIDIA Super Resolution not supports 10 bit
+    DX::DeviceResources::Get()->ApplyDisplaySettings(true);
+    m_forced8bit = true;
+  }
+
+  DXGI_ADAPTER_DESC ad{};
+  DX::DeviceResources::Get()->GetAdapterDesc(&ad);
+
+  if (ad.VendorId == PCIV_Intel)
+  {
+    EnableIntelVideoSuperResolution();
+  }
+  else if (ad.VendorId == PCIV_NVIDIA)
+  {
+    EnableNvidiaRTXVideoSuperResolution();
+  }
+}
+
+void CProcessorHD::EnableIntelVideoSuperResolution()
+{
+  UINT param = 0;
+
+  struct IntelVpeExt
+  {
+    UINT function;
+    void* param;
+  };
+
+  IntelVpeExt ext{0, &param};
+
+  ext.function = kIntelVpeFnVersion;
+  param = kIntelVpeVersion3;
+
+  HRESULT hr = m_pVideoContext->VideoProcessorSetOutputExtension(
+      m_pVideoProcessor.Get(), &GUID_INTEL_VPE_INTERFACE, sizeof(ext), &ext);
+  if (FAILED(hr))
+  {
+    CLog::LogF(LOGWARNING, "Failed to set the Intel VPE version with error {}.",
+               DX::GetErrorDescription(hr));
+    return;
+  }
+
+  ext.function = kIntelVpeFnMode;
+  param = kIntelVpeModePreproc;
+
+  hr = m_pVideoContext->VideoProcessorSetOutputExtension(
+      m_pVideoProcessor.Get(), &GUID_INTEL_VPE_INTERFACE, sizeof(ext), &ext);
+  if (FAILED(hr))
+  {
+    CLog::LogF(LOGWARNING, "Failed to set the Intel VPE mode with error {}.",
+               DX::GetErrorDescription(hr));
+    return;
+  }
+
+  ext.function = kIntelVpeFnScaling;
+  param = kIntelVpeScalingSuperResolution;
+
+  hr = m_pVideoContext->VideoProcessorSetStreamExtension(
+      m_pVideoProcessor.Get(), 0, &GUID_INTEL_VPE_INTERFACE, sizeof(ext), &ext);
+  if (FAILED(hr))
+  {
+    CLog::LogF(LOGWARNING, "Failed to set the Intel VPE scaling type with error {}.",
+               DX::GetErrorDescription(hr));
+    return;
+  }
+
+  CLog::LogF(LOGINFO, "Intel Video Super Resolution enabled successfully");
+  m_superResolutionEnabled = true;
+}
+
+void CProcessorHD::EnableNvidiaRTXVideoSuperResolution()
+{
+  struct NvidiaStreamExt
+  {
+    UINT version;
+    UINT method;
+    UINT enable;
+  };
+
+  NvidiaStreamExt ext = {kStreamExtensionVersionV1, kStreamExtensionMethodSuperResolution, 1u};
+
+  HRESULT hr = m_pVideoContext->VideoProcessorSetStreamExtension(
+      m_pVideoProcessor.Get(), 0, &GUID_NVIDIA_PPE_INTERFACE, sizeof(ext), &ext);
+  if (FAILED(hr))
+  {
+    CLog::LogF(LOGWARNING, "Failed to set the NVIDIA video process stream extension with error {}.",
+               DX::GetErrorDescription(hr));
+    return;
+  }
+
+  CLog::LogF(LOGINFO, "RTX Video Super Resolution enabled successfully");
+  m_superResolutionEnabled = true;
 }
