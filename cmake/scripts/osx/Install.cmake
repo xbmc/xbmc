@@ -45,6 +45,9 @@ add_dependencies(bundle ${APP_NAME_LC})
 configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/osx/mkdmg-osx.sh.in
                ${CMAKE_BINARY_DIR}/tools/darwin/packaging/osx/mkdmg-osx.sh @ONLY)
 
+configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/Credits.html.in
+               ${CMAKE_BINARY_DIR}/xbmc/platform/darwin/Credits.html @ONLY)
+
 string(TOLOWER ${CORE_BUILD_CONFIG} CORE_BUILD_CONFIG_LOWERCASED)
 if(${CORE_BUILD_CONFIG_LOWERCASED} STREQUAL "release")
   set(ALLOW_DEBUGGER "false")

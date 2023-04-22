@@ -18,23 +18,18 @@ th { text-align: right; }
 </style>
 </head>
 <body>
-<center><a href="http://kodi.tv/about/">Team Kodi</a></center>
+<center><a href="@ABOUT_WEBSITE@">@DEV_NAME@</a></center>
 <br>
 <table style="font-family:Verdana;">
 
 <tr>
 <th>Documentation</th>
-<td><a href="http://kodi.wiki/view/Online_Manual">Kodi online manual</a></td>
+<td><a href="@DOCS_WEBSITE@">@DOCS_WEBSITE@</a></td>
 </tr>
 
 <tr>
 <th width="40%">Need Help?</th>
-<td width="60%"><a href="http://forum.kodi.tv/">Kodi community forums</a></td>
-</tr>
-
-<tr>
-<th>Chat</th>
-<td><a href="irc://freenode.net/%23xbmc-osx">#xbmc-osx</a></td>
+<td width="60%"><a href="@FORUM_WEBSITE@">@FORUM_WEBSITE@</a></td>
 </tr>
 
 </table>
