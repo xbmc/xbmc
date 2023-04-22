@@ -60,14 +60,17 @@ bool CEncoderFFmpeg::Init()
     if (!m_formatCtx)
       throw FFMpegException("Could not allocate output format context");
 
-    m_bcBuffer = static_cast<uint8_t*>(av_malloc(BUFFER_SIZE + AV_INPUT_BUFFER_PADDING_SIZE));
-    if (!m_bcBuffer)
+    auto buffer = static_cast<uint8_t*>(av_malloc(BUFFER_SIZE + AV_INPUT_BUFFER_PADDING_SIZE));
+    if (!buffer)
       throw FFMpegException("Could not allocate buffer");
 
-    m_formatCtx->pb = avio_alloc_context(m_bcBuffer, BUFFER_SIZE, AVIO_FLAG_WRITE, this, nullptr,
+    m_formatCtx->pb = avio_alloc_context(buffer, BUFFER_SIZE, AVIO_FLAG_WRITE, this, nullptr,
                                          avio_write_callback, avio_seek_callback);
     if (!m_formatCtx->pb)
+    {
+      av_free(buffer);
       throw FFMpegException("Failed to allocate ByteIOContext");
+    }
 
     /* Guess the desired container format based on the file extension. */
     m_formatCtx->oformat = av_guess_format(nullptr, filename.c_str(), nullptr);
@@ -213,11 +216,11 @@ bool CEncoderFFmpeg::Init()
     av_channel_layout_uninit(&m_resampledFrame->ch_layout);
     av_frame_free(&m_resampledFrame);
     av_freep(&m_resampledBuffer);
-    av_free(m_bcBuffer);
     av_channel_layout_uninit(&m_codecCtx->ch_layout);
     avcodec_free_context(&m_codecCtx);
     if (m_formatCtx)
     {
+      av_freep(&m_formatCtx->pb->buffer);
       av_freep(&m_formatCtx->pb);
       avformat_free_context(m_formatCtx);
     }
@@ -372,9 +375,9 @@ bool CEncoderFFmpeg::Close()
     av_write_trailer(m_formatCtx);
 
     /* cleanup */
-    av_free(m_bcBuffer);
     av_channel_layout_uninit(&m_codecCtx->ch_layout);
     avcodec_free_context(&m_codecCtx);
+    av_freep(&m_formatCtx->pb->buffer);
     av_freep(&m_formatCtx->pb);
     avformat_free_context(m_formatCtx);
   }
