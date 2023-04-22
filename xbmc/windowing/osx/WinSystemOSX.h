@@ -115,6 +115,7 @@ protected:
   bool SwitchToVideoMode(int width, int height, double refreshrate);
   void FillInVideoModes();
   bool FlushBuffer();
+  void UpdateSafeAreaInsets();
 
   bool DestroyWindowInternal();
 
