@@ -54,17 +54,13 @@
 
 - (void)windowDidResize:(NSNotification*)aNotification
 {
-  auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  if (!winSystem)
-    return;
-
   NSRect rect = [self.window contentRectForFrameRect:self.window.frame];
   int width = static_cast<int>(rect.size.width);
   int height = static_cast<int>(rect.size.height);
 
   XBMC_Event newEvent = {};
 
-  if (!winSystem->IsFullScreen() && !winSystem->GetFullscreenWillToggle())
+  if ((self.window.styleMask & NSWindowStyleMaskFullScreen) != NSWindowStyleMaskFullScreen)
   {
     RESOLUTION res_index = RES_DESKTOP;
     if ((width == CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iWidth) &&
