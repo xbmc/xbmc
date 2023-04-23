@@ -198,9 +198,16 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
   bool is_png = (bufSize > 3 && buffer[1] == 'P' && buffer[2] == 'N' && buffer[3] == 'G');
   bool is_tiff = (bufSize > 2 && buffer[0] == 'I' && buffer[1] == 'I' && buffer[2] == '*');
 
+  // See Github #19113
+#if LIBAVCODEC_VERSION_MAJOR < 60
+  constexpr char jpegFormat[] = "image2";
+#else
+  constexpr char jpegFormat[] = "jpeg_pipe";
+#endif
+
   const AVInputFormat* inp = nullptr;
   if (is_jpeg)
-    inp = av_find_input_format("image2");
+    inp = av_find_input_format(jpegFormat);
   else if (m_strMimeType == "image/apng")
     inp = av_find_input_format("apng");
   else if (is_png)
@@ -213,7 +220,7 @@ bool CFFmpegImage::Initialize(unsigned char* buffer, size_t bufSize)
     inp = av_find_input_format("webp_pipe");
   // brute force parse if above check already failed
   else if (m_strMimeType == "image/jpeg" || m_strMimeType == "image/jpg")
-    inp = av_find_input_format("image2");
+    inp = av_find_input_format(jpegFormat);
   else if (m_strMimeType == "image/png")
     inp = av_find_input_format("png_pipe");
   else if (m_strMimeType == "image/tiff")
