@@ -1272,14 +1272,20 @@ bool CWinSystemOSX::HasCursor()
 
 void CWinSystemOSX::signalMouseEntered()
 {
-  m_hasCursor = true;
-  m_winEvents->signalMouseEntered();
+  if (m_appWindow.keyWindow)
+  {
+    m_hasCursor = true;
+    m_winEvents->signalMouseEntered();
+  }
 }
 
 void CWinSystemOSX::signalMouseExited()
 {
-  m_hasCursor = false;
-  m_winEvents->signalMouseExited();
+  if (m_appWindow.keyWindow)
+  {
+    m_hasCursor = false;
+    m_winEvents->signalMouseExited();
+  }
 }
 
 void CWinSystemOSX::SendInputEvent(NSEvent* nsEvent)
