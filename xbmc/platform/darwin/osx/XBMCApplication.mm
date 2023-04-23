@@ -25,35 +25,45 @@ static int gArgc;
 static const char** gArgv;
 static BOOL gCalledAppMainline = FALSE;
 
-// Create a window menu
-static NSMenu* setupWindowMenu()
-{
-  NSMenu* windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
+//! @TODO We should use standard XIB files for better management of the menubar.
+static NSDictionary* _appMenu = @{
+  @"title" : @"Kodi",
+  @"items" : @[
+    @{@"title" : @"About", @"sel" : @"orderFrontStandardAboutPanel:"},
+    @{@"title" : @"-"},
+    @{@"title" : @"Hide", @"sel" : @"hide:", @"key" : @"h"},
+    @{
+      @"title" : @"Hide Others",
+      @"sel" : @"hideOtherApplications:",
+      @"mod" : @(NSEventModifierFlagOption),
+      @"key" : @"h"
+    },
+    @{@"title" : @"Show All", @"sel" : @"unhideAllApplications:"},
+    @{@"title" : @"-"},
+    @{@"title" : @"Quit", @"sel" : @"terminate:", @"key" : @"q"},
+  ]
+};
 
-  // "Full/Windowed Toggle" item
-  NSMenuItem* menuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle"
-                                                    action:@selector(fullScreenToggle:)
-                                             keyEquivalent:@"f"];
-  // this is just for display purposes, key handling is in CWinEventsOSX::ProcessOSXShortcuts()
-  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand | NSEventModifierFlagControl;
-  [windowMenu addItem:menuItem];
-
-  // "Float on top" item
-  menuItem = [[NSMenuItem alloc] initWithTitle:@"Float on Top"
-                                        action:@selector(floatOnTopToggle:)
-                                 keyEquivalent:@"t"];
-  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
-  [windowMenu addItem:menuItem];
-
-  // "Minimize" item
-  menuItem = [[NSMenuItem alloc] initWithTitle:@"Minimize"
-                                        action:@selector(performMiniaturize:)
-                                 keyEquivalent:@"m"];
-  menuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
-  [windowMenu addItem:menuItem];
-
-  return windowMenu;
-}
+static NSDictionary* _windowMenu = @{
+  @"title" : @"Window",
+  @"items" : @[
+    @{@"title" : @"Minimize", @"sel" : @"performMiniaturize:", @"key" : @"m"},
+    @{@"title" : @"Zoom", @"sel" : @"performZoom:"},
+    @{
+      @"title" : @"Float on Top",
+      @"sel" : @"floatOnTopToggle:",
+      @"mod" : @(NSEventModifierFlagOption),
+      @"key" : @"t"
+    },
+    @{@"title" : @"-"},
+    @{
+      @"title" : @"Enter Full Screen",
+      @"sel" : @"fullScreenToggle:",
+      @"mod" : @(NSEventModifierFlagControl),
+      @"key" : @"f"
+    },
+  ]
+};
 
 // The main class of the application, the application's delegate
 @implementation XBMCDelegate
@@ -67,70 +77,47 @@ static NSMenu* setupWindowMenu()
            @"SetupWorkingDirectory Failed to cwd");
 }
 
-- (void)applicationWillFinishLaunching:(NSNotification*)notification
+- (void)setupMenuBar
 {
   NSMenu* menubar = [NSMenu new];
-  NSMenuItem* menuBarItem = [NSMenuItem new];
-  [menubar addItem:menuBarItem];
-  [NSApp setMainMenu:menubar];
+  NSMenu* windowsMenu = nil;
 
-  // Main menu
-  NSMenu* appMenu = [NSMenu new];
-  NSMenuItem* aboutMenuItem =
-      [[NSMenuItem alloc] initWithTitle:@"About"
-                                 action:@selector(orderFrontStandardAboutPanel:)
-                          keyEquivalent:@""];
-  [appMenu addItem:aboutMenuItem];
-  NSMenuItem* hideMenuItem = [[NSMenuItem alloc] initWithTitle:@"Hide"
-                                                        action:@selector(hide:)
-                                                 keyEquivalent:@"h"];
-  hideMenuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
-  [appMenu addItem:hideMenuItem];
+  for (NSDictionary* menuDict in @[ _appMenu, _windowMenu ])
+  {
+    auto item = [menubar addItemWithTitle:@"" action:nil keyEquivalent:@""];
+    auto submenu = [self makeMenu:menuDict];
+    [menubar setSubmenu:submenu forItem:item];
+  }
+  NSApp.mainMenu = menubar;
+  NSApp.windowsMenu = windowsMenu;
+}
 
-  NSMenuItem* hideOthersMenuItem =
-      [[NSMenuItem alloc] initWithTitle:@"Hide Others"
-                                 action:@selector(hideOtherApplications:)
-                          keyEquivalent:@"h"];
-  hideOthersMenuItem.keyEquivalentModifierMask =
-      NSEventModifierFlagOption | NSEventModifierFlagCommand;
-  [appMenu addItem:hideOthersMenuItem];
+- (NSMenu*)makeMenu:(NSDictionary*)menuDict
+{
+  auto menu = [[NSMenu alloc] initWithTitle:menuDict[@"title"]];
+  for (NSDictionary* items in menuDict[@"items"])
+  {
+    NSString* title = items[@"title"];
+    if ([title isEqualToString:@"-"])
+    {
+      [menu addItem:[NSMenuItem separatorItem]];
+      continue;
+    }
+    auto item = [[NSMenuItem alloc] initWithTitle:title action:nil keyEquivalent:@""];
+    if (NSString* sel = items[@"sel"])
+      item.action = NSSelectorFromString(sel);
+    if (NSString* key = items[@"key"])
+      item.keyEquivalent = key;
+    if (NSNumber* mask = items[@"mod"])
+      item.keyEquivalentModifierMask |= [mask intValue];
+    [menu addItem:item];
+  }
+  return menu;
+}
 
-  NSMenuItem* showAllMenuItem = [[NSMenuItem alloc] initWithTitle:@"Show All"
-                                                           action:@selector(unhideAllApplications:)
-                                                    keyEquivalent:@""];
-  [appMenu addItem:showAllMenuItem];
-
-  NSMenuItem* quitMenuItem = [[NSMenuItem alloc] initWithTitle:@"Quit"
-                                                        action:@selector(terminate:)
-                                                 keyEquivalent:@"q"];
-  [appMenu addItem:quitMenuItem];
-  [menuBarItem setSubmenu:appMenu];
-
-  // Window Menu
-  NSMenuItem* windowMenuItem = [menubar addItemWithTitle:@"" action:nil keyEquivalent:@""];
-  NSMenu* windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
-  [menubar setSubmenu:windowMenu forItem:windowMenuItem];
-  NSMenuItem* fullscreenMenuItem = [[NSMenuItem alloc] initWithTitle:@"Full/Windowed Toggle"
-                                                              action:@selector(fullScreenToggle:)
-                                                       keyEquivalent:@"f"];
-  fullscreenMenuItem.keyEquivalentModifierMask =
-      NSEventModifierFlagCommand | NSEventModifierFlagControl;
-  [windowMenu addItem:fullscreenMenuItem];
-  NSMenuItem* floatOnTopMenuItem = [[NSMenuItem alloc] initWithTitle:@"Float on Top"
-                                                              action:@selector(floatOnTopToggle:)
-                                                       keyEquivalent:@"t"];
-  floatOnTopMenuItem.keyEquivalentModifierMask = NSEventModifierFlagCommand;
-  [windowMenu addItem:floatOnTopMenuItem];
-
-  [windowMenu addItemWithTitle:@"Minimize"
-                        action:@selector(performMiniaturize:)
-                 keyEquivalent:@"m"];
-
-  // "Zoom" item
-  NSMenuItem* zoomMenuItem = [[NSMenuItem alloc] initWithTitle:@"Zoom"
-                                                        action:@selector(performZoom:)
-                                                 keyEquivalent:@""];
-  [windowMenu addItem:zoomMenuItem];
+- (void)applicationWillFinishLaunching:(NSNotification*)notification
+{
+  [self setupMenuBar];
 }
 
 // Called after the internal event loop has started running.
@@ -323,7 +310,7 @@ static NSMenu* setupWindowMenu()
 
 - (NSMenu*)applicationDockMenu:(NSApplication*)sender
 {
-  return setupWindowMenu();
+  return [self makeMenu:_windowMenu];
 }
 
 @end
