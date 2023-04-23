@@ -123,6 +123,9 @@ set(DEPENDS_ROOT_FOR_XCODE ${NATIVEPREFIX}/..)
 configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh.in
                ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded/mkdeb-darwin_embedded.sh @ONLY)
 
+configure_file(${CMAKE_SOURCE_DIR}/xbmc/platform/darwin/Credits.html.in
+               ${CMAKE_BINARY_DIR}/xbmc/platform/darwin/Credits.html @ONLY)
+
 add_custom_target(deb
     COMMAND sh ./mkdeb-darwin_embedded.sh ${CORE_BUILD_CONFIG}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/darwin/packaging/darwin_embedded)
