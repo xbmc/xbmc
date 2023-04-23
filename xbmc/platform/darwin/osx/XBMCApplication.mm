@@ -76,6 +76,11 @@ static NSMenu* setupWindowMenu()
 
   // Main menu
   NSMenu* appMenu = [NSMenu new];
+  NSMenuItem* aboutMenuItem =
+      [[NSMenuItem alloc] initWithTitle:@"About"
+                                 action:@selector(orderFrontStandardAboutPanel:)
+                          keyEquivalent:@""];
+  [appMenu addItem:aboutMenuItem];
   NSMenuItem* hideMenuItem = [[NSMenuItem alloc] initWithTitle:@"Hide"
                                                         action:@selector(hide:)
                                                  keyEquivalent:@"h"];
