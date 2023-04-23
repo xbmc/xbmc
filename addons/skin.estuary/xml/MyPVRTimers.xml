@@ -57,29 +57,29 @@
 					<param name="folder_sortorder" value="ascending" />
 				</include>
 			</control>
-		</control>
-		<include content="TopBar">
-			<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRTimersVar]" />
-		</include>
-		<include content="BottomBar">
-			<param name="info_visible" value="true" />
-		</include>
-		<control type="label">
-			<right>20</right>
-			<include>OpenClose_Right</include>
-			<bottom>10</bottom>
-			<width>850</width>
-			<height>60</height>
-			<label>$INFO[PVR.NextTimer]</label>
-			<shadowcolor>black</shadowcolor>
-			<align>right</align>
-			<aligny>center</aligny>
-			<wrapmultiline>true</wrapmultiline>
-			<font>font27</font>
-		</control>
-		<control type="group">
-			<include>MediaMenuCommon</include>
-			<include>PVRSideBar</include>
+			<include content="TopBar">
+				<param name="breadcrumbs_label" value="$VAR[BreadcrumbsPVRTimersVar]" />
+			</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
+			<control type="label">
+				<right>20</right>
+				<include>OpenClose_Right</include>
+				<bottom>10</bottom>
+				<width>850</width>
+				<height>60</height>
+				<label>$INFO[PVR.NextTimer]</label>
+				<shadowcolor>black</shadowcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<wrapmultiline>true</wrapmultiline>
+				<font>font27</font>
+			</control>
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<include>PVRSideBar</include>
+			</control>
 		</control>
 		<control type="label" id="29">
 			<font></font>
