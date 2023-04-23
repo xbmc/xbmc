@@ -441,7 +441,8 @@ CGUIDialogPVRGuideSearch::Result CGUIWindowPVRSearchBase::OpenDialogSearch(
   else if (result == CGUIDialogPVRGuideSearch::Result::SAVE)
   {
     CServiceBroker::GetPVRManager().EpgContainer().PersistSavedSearch(*tmpSearchFilter);
-    searchFilter->SetDatabaseId(tmpSearchFilter->GetDatabaseId());
+    if (searchFilter)
+      searchFilter->SetDatabaseId(tmpSearchFilter->GetDatabaseId());
 
     const CPVREpgSearchPath path(m_vecItems->GetPath());
     if (path.IsValid() && path.IsSearchRoot())
