@@ -117,10 +117,6 @@ public:
    */
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
-  static bool GetEmbeddedThumb(const std::string& path,
-                               const std::string& type,
-                               EmbeddedArt& art);
-
 protected:
   CVideoDatabase *m_videoDatabase;
   ArtCache m_artCache;
