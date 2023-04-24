@@ -17,6 +17,7 @@
 #include "commons/ilog.h"
 #include "filesystem/File.h"
 #include "guilib/Texture.h"
+#include "imagefiles/SpecialImageLoaderFactory.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
@@ -209,6 +210,14 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const std::string& image,
     if (CVideoThumbLoader::GetEmbeddedThumb(image, additional_info.substr(6), art))
       return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime, width,
                                             height);
+  }
+
+  if (!additional_info.empty())
+  {
+    IMAGE_FILES::CSpecialImageLoaderFactory specialImageLoader{};
+    auto texture = specialImageLoader.Load(additional_info, image, width, height);
+    if (texture)
+      return texture;
   }
 
   // Validate file URL to see if it is an image
