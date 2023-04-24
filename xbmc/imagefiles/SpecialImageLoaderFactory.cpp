@@ -9,6 +9,7 @@
 #include "SpecialImageLoaderFactory.h"
 
 #include "guilib/Texture.h"
+#include "music/MusicEmbeddedImageFileLoader.h"
 #include "video/VideoEmbeddedImageFileLoader.h"
 
 using namespace IMAGE_FILES;
@@ -16,6 +17,7 @@ using namespace IMAGE_FILES;
 CSpecialImageLoaderFactory::CSpecialImageLoaderFactory()
 {
   m_specialImageLoaders[0] = std::make_unique<VIDEO::CVideoEmbeddedImageFileLoader>();
+  m_specialImageLoaders[1] = std::make_unique<MUSIC_INFO::CMusicEmbeddedImageFileLoader>();
 }
 
 std::unique_ptr<CTexture> CSpecialImageLoaderFactory::Load(std::string specialType,
