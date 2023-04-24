@@ -18,11 +18,9 @@
 #include "filesystem/File.h"
 #include "guilib/Texture.h"
 #include "imagefiles/SpecialImageLoaderFactory.h"
-#include "music/MusicThumbLoader.h"
 #include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/EmbeddedArt.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -195,14 +193,6 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const std::string& image,
                                                       const std::string& additional_info,
                                                       bool requirePixels)
 {
-  if (additional_info == "music")
-  { // special case for embedded music images
-    EmbeddedArt art;
-    if (CMusicThumbLoader::GetEmbeddedThumb(image, art))
-      return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime, width,
-                                            height);
-  }
-
   if (!additional_info.empty())
   {
     IMAGE_FILES::CSpecialImageLoaderFactory specialImageLoader{};
