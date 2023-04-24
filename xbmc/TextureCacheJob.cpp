@@ -26,7 +26,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "video/VideoThumbLoader.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -200,14 +199,6 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const std::string& image,
   { // special case for embedded music images
     EmbeddedArt art;
     if (CMusicThumbLoader::GetEmbeddedThumb(image, art))
-      return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime, width,
-                                            height);
-  }
-
-  if (StringUtils::StartsWith(additional_info, "video_"))
-  {
-    EmbeddedArt art;
-    if (CVideoThumbLoader::GetEmbeddedThumb(image, additional_info.substr(6), art))
       return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime, width,
                                             height);
   }

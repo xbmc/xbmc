@@ -5,6 +5,7 @@ set(SOURCES Bookmark.cpp
             Teletext.cpp
             VideoDatabase.cpp
             VideoDbUrl.cpp
+            VideoEmbeddedImageFileLoader.cpp
             VideoInfoDownloader.cpp
             VideoInfoScanner.cpp
             VideoInfoTag.cpp
@@ -22,6 +23,7 @@ set(HEADERS Bookmark.h
             TeletextDefines.h
             VideoDatabase.h
             VideoDbUrl.h
+            VideoEmbeddedImageFileLoader.h
             VideoInfoDownloader.h
             VideoInfoScanner.h
             VideoInfoTag.h

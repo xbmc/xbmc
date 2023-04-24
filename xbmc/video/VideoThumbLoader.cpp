@@ -27,13 +27,11 @@
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/EmbeddedArt.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
-#include "video/tags/VideoInfoTagLoaderFactory.h"
 
 #include <algorithm>
 #include <cstdlib>
@@ -690,29 +688,6 @@ std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
     path = CStackDirectory::GetFirstStackedFile(path);
 
   return CTextureUtils::GetWrappedImageURL(path, "video");
-}
-
-bool CVideoThumbLoader::GetEmbeddedThumb(const std::string& path,
-                                         const std::string& type, EmbeddedArt& art)
-{
-  CFileItem item(path, false);
-  std::unique_ptr<IVideoInfoTagLoader> pLoader;
-  pLoader.reset(CVideoInfoTagLoaderFactory::CreateLoader(item,ADDON::ScraperPtr(),false));
-  CVideoInfoTag tag;
-  std::vector<EmbeddedArt> artv;
-  if (pLoader)
-    pLoader->Load(tag, false, &artv);
-
-  for (const EmbeddedArt& it : artv)
-  {
-    if (it.m_type == type)
-    {
-      art = it;
-      break;
-    }
-  }
-
-  return !art.Empty();
 }
 
 void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
