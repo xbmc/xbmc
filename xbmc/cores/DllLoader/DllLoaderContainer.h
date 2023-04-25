@@ -24,7 +24,6 @@ public:
 
   static void RegisterDll(LibraryLoader* pDll);
   static void UnRegisterDll(LibraryLoader* pDll);
-  static void UnloadPythonDlls();
 
 private:
   static LibraryLoader* FindModule(const char* sName, const char* sCurrentDir, bool bLoadSymbols);
