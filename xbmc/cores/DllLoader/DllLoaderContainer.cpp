@@ -56,8 +56,7 @@
 using namespace XFILE;
 
 LibraryLoader* DllLoaderContainer::m_dlls[64] = {};
-int        DllLoaderContainer::m_iNrOfDlls = 0;
-bool       DllLoaderContainer::m_bTrack = true;
+int DllLoaderContainer::m_iNrOfDlls = 0;
 
 void DllLoaderContainer::Clear()
 {
@@ -244,8 +243,6 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
   pLoader = new SoLoader(sName, bLoadSymbols);
 #elif defined(TARGET_WINDOWS)
   pLoader = new Win32DllLoader(sName, false);
-#else
-  pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);
 #endif
 
   if (!pLoader)
