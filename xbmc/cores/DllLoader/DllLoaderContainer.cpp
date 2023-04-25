@@ -56,10 +56,6 @@ using namespace XFILE;
 LibraryLoader* DllLoaderContainer::m_dlls[64] = {};
 int DllLoaderContainer::m_iNrOfDlls = 0;
 
-void DllLoaderContainer::Clear()
-{
-}
-
 HMODULE DllLoaderContainer::GetModuleAddress(const char* sName)
 {
   return (HMODULE)GetModule(sName);
