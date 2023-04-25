@@ -1,11 +1,9 @@
 set(SOURCES dll.cpp
             DllLoaderContainer.cpp
-            dll_util.cpp
             LibraryLoader.cpp)
 
 set(HEADERS dll.h
             DllLoaderContainer.h
-            dll_util.h
             LibraryLoader.h)
 
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
