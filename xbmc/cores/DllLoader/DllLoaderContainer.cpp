@@ -56,11 +56,6 @@ using namespace XFILE;
 LibraryLoader* DllLoaderContainer::m_dlls[64] = {};
 int DllLoaderContainer::m_iNrOfDlls = 0;
 
-HMODULE DllLoaderContainer::GetModuleAddress(const char* sName)
-{
-  return (HMODULE)GetModule(sName);
-}
-
 LibraryLoader* DllLoaderContainer::GetModule(const char* sName)
 {
   for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
