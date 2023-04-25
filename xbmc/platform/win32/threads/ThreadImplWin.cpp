@@ -67,14 +67,14 @@ void CThreadImplWin::SetThreadInfo(const std::string& name)
   {
     DWORD dwType; // must be 0x1000
     LPCSTR szName; // pointer to name (in same addr space)
-    DWORD dwThreadID; // thread ID (-1 caller thread)
-    DWORD dwFlags; // reserved for future use, most be zero
+    DWORD dwThreadID; // thread ID (-1 = caller thread)
+    DWORD dwFlags; // reserved for future use, must be zero
   } info;
 #pragma pack(pop)
 
   info.dwType = 0x1000;
   info.szName = name.c_str();
-  info.dwThreadID = reinterpret_cast<std::uintptr_t>(m_handle);
+  info.dwThreadID = GetThreadId(static_cast<HANDLE>(m_handle));
   info.dwFlags = 0;
 
   __try
