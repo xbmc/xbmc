@@ -446,6 +446,25 @@ bool CAEStreamParser::TrySyncAC3(uint8_t *data, unsigned int size, bool resyncin
     m_fsize = framesize << 1;
     m_info.m_repeat = MAX_EAC3_BLOCKS / blocks;
 
+    /* EAC3 can have a dependent stream too */
+    if (!wantEAC3dependent)
+    {
+      unsigned int fsizeMain = m_fsize;
+      unsigned int reqBytes = fsizeMain + 8;
+      if (size < reqBytes) {
+        /* not enough data to check for E-AC3 dependent frame, request more */
+        m_needBytes = reqBytes;
+        m_fsize = 0;
+        /* no need to resync => return true */
+        return true;
+      }
+      if (TrySyncAC3(data + fsizeMain, size - fsizeMain, resyncing, /*wantEAC3dependent*/ true)) {
+        /* concatenate the main and dependent frames */
+        m_fsize += fsizeMain;
+        return true;
+      }
+    }
+
     if (m_info.m_type == CAEStreamInfo::STREAM_TYPE_EAC3 && m_hasSync && !resyncing)
       return true;
 
