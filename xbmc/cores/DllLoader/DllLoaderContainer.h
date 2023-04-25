@@ -33,5 +33,4 @@ private:
 
   static LibraryLoader* m_dlls[64];
   static int m_iNrOfDlls;
-  static bool m_bTrack;
 };
