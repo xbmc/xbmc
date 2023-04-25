@@ -8,11 +8,12 @@
 
 #pragma once
 
+#include "LibraryLoader.h"
+
 #include <stdio.h>
 #ifdef TARGET_POSIX
 #include "PlatformDefs.h"
 #endif
-#include "DllLoader.h"
 
 class SoLoader : public LibraryLoader
 {
