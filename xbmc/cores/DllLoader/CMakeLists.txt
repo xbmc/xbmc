@@ -1,12 +1,9 @@
-set(SOURCES coff.cpp
-            dll.cpp
+set(SOURCES dll.cpp
             DllLoaderContainer.cpp
             dll_util.cpp
             LibraryLoader.cpp)
 
-set(HEADERS coff.h
-            coffldr.h
-            dll.h
+set(HEADERS dll.h
             DllLoaderContainer.h
             dll_util.h
             LibraryLoader.h)
