@@ -682,17 +682,25 @@ std::string CSysInfo::GetOsPrettyNameWithVersion(void)
         osNameVer.append("Server 2012 R2");
       break;
     case WindowsVersionWin10:
+    case WindowsVersionWin10_1607:
     case WindowsVersionWin10_1709:
     case WindowsVersionWin10_1803:
     case WindowsVersionWin10_1809:
     case WindowsVersionWin10_1903:
     case WindowsVersionWin10_1909:
     case WindowsVersionWin10_2004:
+    case WindowsVersionWin10_20H2:
+    case WindowsVersionWin10_21H1:
+    case WindowsVersionWin10_21H2:
+    case WindowsVersionWin10_22H2:
+
     case WindowsVersionWin10_Future:
       osNameVer.append("10");
       appendWindows10NameVersion(osNameVer);
       break;
-    case WindowsVersionWin11:
+    case WindowsVersionWin11_21H2:
+    case WindowsVersionWin11_22H2:
+    case WindowsVersionWin11_Future:
       osNameVer.append("11");
       appendWindows10NameVersion(osNameVer);
       break;
@@ -855,8 +863,10 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
     {
       if (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion == 3)
         m_WinVer = WindowsVersionWin8_1;
-      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber < 16299)
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber < 14393)
         m_WinVer = WindowsVersionWin10;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 14393)
+        m_WinVer = WindowsVersionWin10_1607;
       else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 16299)
         m_WinVer = WindowsVersionWin10_1709;
       else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 17134)
@@ -869,9 +879,21 @@ CSysInfo::WindowsVersion CSysInfo::GetWindowsVersion()
         m_WinVer = WindowsVersionWin10_1909;
       else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 19041)
         m_WinVer = WindowsVersionWin10_2004;
-      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber >= 22000)
-        m_WinVer = WindowsVersionWin11;
-      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber > 19041)
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 19042)
+        m_WinVer = WindowsVersionWin10_20H2;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 19043)
+        m_WinVer = WindowsVersionWin10_21H1;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 19044)
+        m_WinVer = WindowsVersionWin10_21H2;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 19045)
+        m_WinVer = WindowsVersionWin10_22H2;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 22000)
+        m_WinVer = WindowsVersionWin11_21H2;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber == 22621)
+        m_WinVer = WindowsVersionWin11_22H2;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber > 22621)
+        m_WinVer = WindowsVersionWin11_Future;
+      else if (osvi.dwMajorVersion == 10 && osvi.dwMinorVersion == 0 && osvi.dwBuildNumber > 19045)
         m_WinVer = WindowsVersionWin10_Future;
       /* Insert checks for new Windows versions here */
       else if ( (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion > 3) || osvi.dwMajorVersion > 10)
