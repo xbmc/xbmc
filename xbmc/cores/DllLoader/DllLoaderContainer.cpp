@@ -321,19 +321,3 @@ void DllLoaderContainer::UnRegisterDll(LibraryLoader* pDll)
     }
   }
 }
-
-void DllLoaderContainer::UnloadPythonDlls()
-{
-  // unload all dlls that python could have loaded
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
-  {
-    const char* name = m_dlls[i]->GetName();
-    if (strstr(name, ".pyd") != NULL)
-    {
-      LibraryLoader* pDll = m_dlls[i];
-      ReleaseModule(pDll);
-      i = 0;
-    }
-  }
-
-}
