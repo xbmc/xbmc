@@ -267,13 +267,7 @@ bool DllLoaderContainer::IsSystemDll(const char* sName)
 
 int DllLoaderContainer::GetNrOfModules()
 {
-  return m_iNrOfDlls;
-}
-
-LibraryLoader* DllLoaderContainer::GetModule(int iPos)
-{
-  if (iPos < m_iNrOfDlls) return m_dlls[iPos];
-  return NULL;
+  return m_dlls.size();
 }
 
 void DllLoaderContainer::RegisterDll(LibraryLoader* pDll)
