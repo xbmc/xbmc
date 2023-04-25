@@ -13,7 +13,6 @@
 class DllLoaderContainer
 {
 public:
-  static void       Clear();
   static HMODULE    GetModuleAddress(const char* sName);
   static int        GetNrOfModules();
   static LibraryLoader* GetModule(int iPos);
