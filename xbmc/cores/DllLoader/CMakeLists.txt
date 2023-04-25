@@ -16,10 +16,6 @@ if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL windo
                       SoLoader.cpp)
   list(APPEND HEADERS mmap_anon.h
                       SoLoader.h)
-  if(NOT CORE_SYSTEM_NAME STREQUAL freebsd)
-    list(APPEND SOURCES ldt_keeper.c)
-    list(APPEND HEADERS ldt_keeper.h)
-  endif()
 else()
   list(APPEND SOURCES Win32DllLoader.cpp)
   list(APPEND HEADERS Win32DllLoader.h)
