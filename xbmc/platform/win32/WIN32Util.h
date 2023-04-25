@@ -84,4 +84,11 @@ public:
 
   static VideoDriverInfo GetVideoDriverInfo(const UINT vendorId, const std::wstring& driverDesc);
   static std::wstring GetDisplayFriendlyName(const std::wstring& GdiDeviceName);
+  /*!
+   * \brief Set the thread name using SetThreadDescription when available
+   * \param handle handle of the thread
+   * \param name name of the thread
+   * \return true if the name was successfully set, false otherwise (API not supported or API failure)
+   */
+  static bool SetThreadName(const HANDLE handle, const std::string& name);
 };

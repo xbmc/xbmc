@@ -1672,3 +1672,50 @@ std::wstring CWIN32Util::GetDisplayFriendlyName(const std::wstring& gdiDeviceNam
   return std::wstring();
 #endif
 }
+
+using SETTHREADDESCRIPTION = HRESULT(WINAPI*)(HANDLE hThread, PCWSTR lpThreadDescription);
+
+bool CWIN32Util::SetThreadName(const HANDLE handle, const std::string& name)
+{
+#if defined(TARGET_WINDOWS_STORE)
+  //not supported
+  return false;
+#else
+  static bool initialized = false;
+  static HINSTANCE hinstLib = NULL;
+  static SETTHREADDESCRIPTION pSetThreadDescription = nullptr;
+
+  if (!initialized)
+  {
+    initialized = true;
+
+    // MS documentation: SetThreadDescription available since Windows 10 1607
+    // function located in Kernel32.dll
+    // except for Windows 10 1607, where it is located in KernelBase.dll
+    CSysInfo::WindowsVersion winver = CSysInfo::GetWindowsVersion();
+
+    if (winver < CSysInfo::WindowsVersion::WindowsVersionWin10_1607)
+      return false;
+    else if (winver == CSysInfo::WindowsVersion::WindowsVersionWin10_1607)
+      hinstLib = LoadLibrary(L"KernelBase.dll");
+    else if (winver > CSysInfo::WindowsVersion::WindowsVersionWin10_1607)
+      hinstLib = LoadLibrary(L"Kernel32.dll");
+
+    if (hinstLib != NULL)
+    {
+      pSetThreadDescription = reinterpret_cast<SETTHREADDESCRIPTION>(
+          ::GetProcAddress(hinstLib, "SetThreadDescription"));
+    }
+
+    if (pSetThreadDescription == nullptr && hinstLib)
+      FreeLibrary(hinstLib);
+  }
+
+  if (pSetThreadDescription != nullptr &&
+      SUCCEEDED(pSetThreadDescription(handle, KODI::PLATFORM::WINDOWS::ToW(name).c_str())))
+    return true;
+  else
+    return false;
+
+#endif
+}
