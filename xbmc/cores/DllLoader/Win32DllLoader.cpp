@@ -22,7 +22,7 @@
 
 extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR function);
 
-//dllLoadLibraryA, dllFreeLibrary, dllGetProcAddress are from dllLoader,
+//dllLoadLibraryA, dllFreeLibrary are from dllLoader,
 //they are wrapper functions of COFF/PE32 loader.
 extern "C" HMODULE WINAPI dllLoadLibraryA(LPCSTR libname);
 extern "C" BOOL WINAPI dllFreeLibrary(HINSTANCE hLibModule);
