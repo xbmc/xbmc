@@ -40,6 +40,16 @@ public:
   CWinSystemOSX();
   ~CWinSystemOSX() override;
 
+  struct ScreenResolution
+  {
+    bool interlaced{false};
+    size_t resWidth{0};
+    size_t resHeight{0};
+    size_t pixelWidth{0};
+    size_t pixelHeight{0};
+    double refreshrate{0.0};
+  };
+
   // ITimerCallback interface
   void OnTimeout() override;
 
@@ -108,12 +118,11 @@ public:
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
 
-  void GetScreenResolution(size_t* w, size_t* h, double* fps, unsigned long screenIdx);
+  ScreenResolution GetScreenResolution(unsigned long screenIdx);
   void EnableVSync(bool enable);
-  bool SwitchToVideoMode(int width, int height, double refreshrate);
+  bool SwitchToVideoMode(RESOLUTION_INFO& res);
   void FillInVideoModes();
   bool FlushBuffer();
-  void UpdateSafeAreaInsets();
 
   bool DestroyWindowInternal();
 
