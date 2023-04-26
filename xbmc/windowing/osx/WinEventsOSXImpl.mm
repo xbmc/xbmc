@@ -200,12 +200,14 @@
   if (!nsEvent.window || location.x < 0 || location.y < 0)
     return nsEvent;
 
+  location = [nsEvent.window convertPointToBacking:location];
+
   // cocoa world is upside down ...
   auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
   if (!winSystem)
     return nsEvent;
 
-  NSRect frame = winSystem->GetWindowDimensions();
+  NSRect frame = [nsEvent.window convertRectToBacking:winSystem->GetWindowDimensions()];
   location.y = frame.size.height - location.y;
 
   XBMC_Event newEvent = {};
