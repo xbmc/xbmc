@@ -349,6 +349,7 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
     if (connector->SupportsProperty("HDR_OUTPUT_METADATA"))
     {
       drm->AddProperty(connector, "HDR_OUTPUT_METADATA", 0);
+      drm->SetActive(true);
 
       if (m_hdr_blob_id)
         drmModeDestroyPropertyBlob(drm->GetFileDescriptor(), m_hdr_blob_id);
@@ -438,6 +439,7 @@ bool CWinSystemGbm::SetHDR(const VideoPicture* videoPicture)
     }
 
     drm->AddProperty(connector, "HDR_OUTPUT_METADATA", m_hdr_blob_id);
+    drm->SetActive(true);
   }
 
   return true;
