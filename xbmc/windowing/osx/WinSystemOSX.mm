@@ -751,25 +751,6 @@ NSRect CWinSystemOSX::GetWindowDimensions()
   return frame;
 }
 
-#pragma mark - Window level
-
-void CWinSystemOSX::ToggleFloatOnTop()
-{
-  dispatch_sync(dispatch_get_main_queue(), ^{
-    if (!m_appWindow)
-      return;
-
-    if (m_appWindow.level == NSFloatingWindowLevel)
-    {
-      [m_appWindow setLevel:NSNormalWindowLevel];
-    }
-    else
-    {
-      [m_appWindow setLevel:NSFloatingWindowLevel];
-    }
-  });
-}
-
 #pragma mark - Resize Window
 
 bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
