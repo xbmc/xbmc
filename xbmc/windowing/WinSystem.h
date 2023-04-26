@@ -18,6 +18,7 @@
 #include "utils/HDRCapabilities.h"
 
 #include <memory>
+#include <string>
 #include <vector>
 
 struct RESOLUTION_WHR
@@ -26,6 +27,7 @@ struct RESOLUTION_WHR
   int height;
   int flags; //< only D3DPRESENTFLAG_MODEMASK flags
   int ResInfo_Index;
+  std::string id;
 };
 
 struct REFRESHRATE
