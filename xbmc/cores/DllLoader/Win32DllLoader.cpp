@@ -8,7 +8,6 @@
 
 #include "Win32DllLoader.h"
 
-#include "DllLoader.h"
 #include "DllLoaderContainer.h"
 #include "dll_tracker_file.h"
 #include "dll_tracker_library.h"
@@ -28,78 +27,87 @@ extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR functio
 extern "C" HMODULE WINAPI dllLoadLibraryA(LPCSTR libname);
 extern "C" BOOL WINAPI dllFreeLibrary(HINSTANCE hLibModule);
 
+struct Export
+{
+  const char* name;
+  unsigned long ordinal;
+  void* function;
+};
+
 // our exports
+// clang-format off
 Export win32_exports[] =
 {
-  { "LoadLibraryA",                                 -1, (void*)dllLoadLibraryA,                              (void*)track_LoadLibraryA },
-  { "FreeLibrary",                                  -1, (void*)dllFreeLibrary,                               (void*)track_FreeLibrary },
+  { "LoadLibraryA",               -1, (void*)dllLoadLibraryA,   },
+  { "FreeLibrary",                -1, (void*)dllFreeLibrary,    },
 // msvcrt
-  { "_close",                     -1, (void*)dll_close,                     (void*)track_close},
-  { "_lseek",                     -1, (void*)dll_lseek,                     NULL },
-  { "_read",                      -1, (void*)dll_read,                      NULL },
-  { "_write",                     -1, (void*)dll_write,                     NULL },
-  { "_lseeki64",                  -1, (void*)dll_lseeki64,                  NULL },
-  { "_open",                      -1, (void*)dll_open,                      (void*)track_open },
-  { "fflush",                     -1, (void*)dll_fflush,                    NULL },
-  { "fprintf",                    -1, (void*)dll_fprintf,                   NULL },
-  { "fwrite",                     -1, (void*)dll_fwrite,                    NULL },
-  { "putchar",                    -1, (void*)dll_putchar,                   NULL },
-  { "_fstat",                     -1, (void*)dll_fstat,                     NULL },
-  { "_mkdir",                     -1, (void*)dll_mkdir,                     NULL },
-  { "_stat",                      -1, (void*)dll_stat,                      NULL },
-  { "_fstat32",                   -1, (void*)dll_fstat,                     NULL },
-  { "_stat32",                    -1, (void*)dll_stat,                      NULL },
-  { "_findclose",                 -1, (void*)dll_findclose,                 NULL },
-  { "_findfirst",                 -1, (void*)dll_findfirst,                 NULL },
-  { "_findnext",                  -1, (void*)dll_findnext,                  NULL },
-  { "_findfirst64i32",            -1, (void*)dll_findfirst64i32,            NULL },
-  { "_findnext64i32",             -1, (void*)dll_findnext64i32,             NULL },
-  { "fclose",                     -1, (void*)dll_fclose,                    (void*)track_fclose},
-  { "feof",                       -1, (void*)dll_feof,                      NULL },
-  { "fgets",                      -1, (void*)dll_fgets,                     NULL },
-  { "fopen",                      -1, (void*)dll_fopen,                     (void*)track_fopen},
-  { "fopen_s",                    -1, (void*)dll_fopen_s,                   NULL },
-  { "putc",                       -1, (void*)dll_putc,                      NULL },
-  { "fputc",                      -1, (void*)dll_fputc,                     NULL },
-  { "fputs",                      -1, (void*)dll_fputs,                     NULL },
-  { "fread",                      -1, (void*)dll_fread,                     NULL },
-  { "fseek",                      -1, (void*)dll_fseek,                     NULL },
-  { "ftell",                      -1, (void*)dll_ftell,                     NULL },
-  { "getc",                       -1, (void*)dll_getc,                      NULL },
-  { "fgetc",                      -1, (void*)dll_getc,                      NULL },
-  { "rewind",                     -1, (void*)dll_rewind,                    NULL },
-  { "vfprintf",                   -1, (void*)dll_vfprintf,                  NULL },
-  { "fgetpos",                    -1, (void*)dll_fgetpos,                   NULL },
-  { "fsetpos",                    -1, (void*)dll_fsetpos,                   NULL },
-  { "_stati64",                   -1, (void*)dll_stati64,                   NULL },
-  { "_stat64",                    -1, (void*)dll_stat64,                    NULL },
-  { "_stat64i32",                 -1, (void*)dll_stat64i32,                 NULL },
-  { "_fstati64",                  -1, (void*)dll_fstati64,                  NULL },
-  { "_fstat64",                   -1, (void*)dll_fstat64,                   NULL },
-  { "_fstat64i32",                -1, (void*)dll_fstat64i32,                NULL },
-  { "_telli64",                   -1, (void*)dll_telli64,                   NULL },
-  { "_tell",                      -1, (void*)dll_tell,                      NULL },
-  { "_fileno",                    -1, (void*)dll_fileno,                    NULL },
-  { "ferror",                     -1, (void*)dll_ferror,                    NULL },
-  { "freopen",                    -1, (void*)dll_freopen,                   (void*)track_freopen},
-  { "fscanf",                     -1, (void*)dll_fscanf,                    NULL },
-  { "ungetc",                     -1, (void*)dll_ungetc,                    NULL },
-  { "_fdopen",                    -1, (void*)dll_fdopen,                    NULL },
-  { "clearerr",                   -1, (void*)dll_clearerr,                  NULL },
+  { "_close",                     -1, (void*)dll_close          },
+  { "_lseek",                     -1, (void*)dll_lseek          },
+  { "_read",                      -1, (void*)dll_read           },
+  { "_write",                     -1, (void*)dll_write          },
+  { "_lseeki64",                  -1, (void*)dll_lseeki64       },
+  { "_open",                      -1, (void*)dll_open           },
+  { "fflush",                     -1, (void*)dll_fflush         },
+  { "fprintf",                    -1, (void*)dll_fprintf        },
+  { "fwrite",                     -1, (void*)dll_fwrite         },
+  { "putchar",                    -1, (void*)dll_putchar        },
+  { "_fstat",                     -1, (void*)dll_fstat          },
+  { "_mkdir",                     -1, (void*)dll_mkdir          },
+  { "_stat",                      -1, (void*)dll_stat           },
+  { "_fstat32",                   -1, (void*)dll_fstat          },
+  { "_stat32",                    -1, (void*)dll_stat           },
+  { "_findclose",                 -1, (void*)dll_findclose      },
+  { "_findfirst",                 -1, (void*)dll_findfirst      },
+  { "_findnext",                  -1, (void*)dll_findnext       },
+  { "_findfirst64i32",            -1, (void*)dll_findfirst64i32 },
+  { "_findnext64i32",             -1, (void*)dll_findnext64i32  },
+  { "fclose",                     -1, (void*)dll_fclose         },
+  { "feof",                       -1, (void*)dll_feof           },
+  { "fgets",                      -1, (void*)dll_fgets          },
+  { "fopen",                      -1, (void*)dll_fopen          },
+  { "fopen_s",                    -1, (void*)dll_fopen_s        },
+  { "putc",                       -1, (void*)dll_putc           },
+  { "fputc",                      -1, (void*)dll_fputc          },
+  { "fputs",                      -1, (void*)dll_fputs          },
+  { "fread",                      -1, (void*)dll_fread          },
+  { "fseek",                      -1, (void*)dll_fseek          },
+  { "ftell",                      -1, (void*)dll_ftell          },
+  { "getc",                       -1, (void*)dll_getc           },
+  { "fgetc",                      -1, (void*)dll_getc           },
+  { "rewind",                     -1, (void*)dll_rewind         },
+  { "vfprintf",                   -1, (void*)dll_vfprintf       },
+  { "fgetpos",                    -1, (void*)dll_fgetpos        },
+  { "fsetpos",                    -1, (void*)dll_fsetpos        },
+  { "_stati64",                   -1, (void*)dll_stati64        },
+  { "_stat64",                    -1, (void*)dll_stat64         },
+  { "_stat64i32",                 -1, (void*)dll_stat64i32      },
+  { "_fstati64",                  -1, (void*)dll_fstati64       },
+  { "_fstat64",                   -1, (void*)dll_fstat64        },
+  { "_fstat64i32",                -1, (void*)dll_fstat64i32     },
+  { "_telli64",                   -1, (void*)dll_telli64        },
+  { "_tell",                      -1, (void*)dll_tell           },
+  { "_fileno",                    -1, (void*)dll_fileno         },
+  { "ferror",                     -1, (void*)dll_ferror         },
+  { "freopen",                    -1, (void*)dll_freopen        },
+  { "fscanf",                     -1, (void*)dll_fscanf         },
+  { "ungetc",                     -1, (void*)dll_ungetc         },
+  { "_fdopen",                    -1, (void*)dll_fdopen         },
+  { "clearerr",                   -1, (void*)dll_clearerr       },
   // for debugging
-  { "printf",                     -1, (void*)dllprintf,                     NULL },
-  { "vprintf",                    -1, (void*)dllvprintf,                    NULL },
-  { "perror",                     -1, (void*)dllperror,                     NULL },
-  { "puts",                       -1, (void*)dllputs,                       NULL },
+  { "printf",                     -1, (void*)dllprintf          },
+  { "vprintf",                    -1, (void*)dllvprintf         },
+  { "perror",                     -1, (void*)dllperror          },
+  { "puts",                       -1, (void*)dllputs            },
   // workarounds for non-win32 signals
-  { "signal",                     -1, (void*)dll_signal,                    NULL },
+  { "signal",                     -1, (void*)dll_signal         },
 
   // libdvdnav + python need this (due to us using dll_putenv() to put stuff only?)
-  { "getenv",                     -1, (void*)dll_getenv,                    NULL },
-  { "_environ",                   -1, (void*)&dll__environ,                 NULL },
-  { "_open_osfhandle",            -1, (void*)dll_open_osfhandle,            NULL },
+  { "getenv",                     -1, (void*)dll_getenv         },
+  { "_environ",                   -1, (void*)&dll__environ      },
+  { "_open_osfhandle",            -1, (void*)dll_open_osfhandle },
 
-  { NULL,                          -1, NULL,                                NULL }
+  { NULL,                         -1, NULL                      }
+// clang-format off
 };
 
 Win32DllLoader::Win32DllLoader(const std::string& dll, bool isSystemDll)
@@ -356,11 +364,8 @@ bool FunctionNeedsWrapping(Export *exports, const char *functionName, void **fix
   while (exp->name)
   {
     if (strcmp(exp->name, functionName) == 0)
-    { //! @todo Should we be tracking stuff?
-      if (0)
-        *fixup = exp->track_function;
-      else
-        *fixup = exp->function;
+    {
+      *fixup = exp->function;
       return true;
     }
     exp++;
@@ -379,11 +384,8 @@ bool Win32DllLoader::ResolveOrdinal(const char *dllName, unsigned long ordinal, 
   while (exp->name)
   {
     if (exp->ordinal == ordinal)
-    { //! @todo Should we be tracking stuff?
-      if (0)
-        *fixup = exp->track_function;
-      else
-        *fixup = exp->function;
+    {
+      *fixup = exp->function;
       return true;
     }
     exp++;
