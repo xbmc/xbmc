@@ -95,12 +95,21 @@ public:
    * Always returns true when the Windows 10+ API is not available or cannot be called successfully.
    * \param inputFormat The source format
    * \param outputFormat The destination format
-   * \param picture Picutre information used to derive the color spaces
+   * \param picture Picture information used to derive the color spaces
    * \return true if the conversion is supported, false otherwise
    */
   bool IsFormatConversionSupported(DXGI_FORMAT inputFormat,
                                    DXGI_FORMAT outputFormat,
-                                   const VideoPicture& picture) const;
+                                   const VideoPicture& picture);
+  /*!
+   * \brief Outputs in the log a list of conversions supported by the DXVA processor.
+   * \param inputFormat The source format
+   * \param outputFormat The destination format
+   * \param picture Picture information used to derive the color spaces
+   */
+  void ListSupportedConversions(const DXGI_FORMAT& inputFormat,
+                                const DXGI_FORMAT& outputFormat,
+                                const VideoPicture& picture);
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
@@ -132,6 +141,17 @@ protected:
   DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
                                                 bool supportHDR,
                                                 bool limitedRange) const;
+  /*!
+   * \brief Converts ffmpeg AV parameters to a DXGI color space
+   * \param csArgs ffmpeg AV picture parameters
+   * \return DXGI color space
+   */
+  static DXGI_COLOR_SPACE_TYPE AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs);
+  /*!
+   * \brief Retrieve the list of DXGI_FORMAT supported as output by the DXVA processor
+   * \return Vector of formats
+   */
+  std::vector<DXGI_FORMAT> GetProcessorOutputFormats() const;
 
   CCriticalSection m_section;
 
@@ -155,6 +175,7 @@ protected:
   Microsoft::WRL::ComPtr<ID3D11VideoDevice> m_pVideoDevice;
   Microsoft::WRL::ComPtr<ID3D11VideoContext> m_pVideoContext;
   Microsoft::WRL::ComPtr<ID3D11VideoProcessorEnumerator> m_pEnumerator;
+  Microsoft::WRL::ComPtr<ID3D11VideoProcessorEnumerator1> m_pEnumerator1;
   Microsoft::WRL::ComPtr<ID3D11VideoProcessor> m_pVideoProcessor;
 };
 
