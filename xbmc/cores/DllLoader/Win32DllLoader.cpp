@@ -17,6 +17,7 @@
 #include "platform/win32/CharsetConverter.h"
 
 #include <limits>
+#include <string_view>
 
 extern "C" FARPROC WINAPI dllWin32GetProcAddress(HMODULE hModule, LPCSTR function);
 
@@ -27,7 +28,7 @@ extern "C" BOOL WINAPI dllFreeLibrary(HINSTANCE hLibModule);
 
 struct Export
 {
-  const char* name;
+  std::string_view name;
   unsigned long ordinal;
   void* function;
 };
@@ -103,8 +104,6 @@ Export win32_exports[] =
   { "getenv",                     -1UL, (void*)dll_getenv         },
   { "_environ",                   -1UL, (void*)&dll__environ      },
   { "_open_osfhandle",            -1UL, (void*)dll_open_osfhandle },
-
-  { NULL,                         -1UL, NULL                      }
 // clang-format off
 };
 
@@ -356,38 +355,36 @@ void Win32DllLoader::RestoreImports()
   }
 }
 
-bool FunctionNeedsWrapping(Export *exports, const char *functionName, void **fixup)
+bool FunctionNeedsWrapping(const char *functionName, void **fixup)
 {
-  Export *exp = exports;
-  while (exp->name)
+  for (const auto& exp : win32_exports)
   {
-    if (strcmp(exp->name, functionName) == 0)
+    if (exp.name == functionName)
     {
-      *fixup = exp->function;
+      *fixup = exp.function;
       return true;
     }
-    exp++;
   }
+
   return false;
 }
 
 bool Win32DllLoader::ResolveImport(const char *dllName, const char *functionName, void **fixup)
 {
-  return FunctionNeedsWrapping(win32_exports, functionName, fixup);
+  return FunctionNeedsWrapping(functionName, fixup);
 }
 
 bool Win32DllLoader::ResolveOrdinal(const char *dllName, unsigned long ordinal, void **fixup)
 {
-  Export *exp = win32_exports;
-  while (exp->name)
+  for (const auto& exp : win32_exports)
   {
-    if (exp->ordinal == ordinal)
+    if (exp.ordinal == ordinal)
     {
-      *fixup = exp->function;
+      *fixup = exp.function;
       return true;
     }
-    exp++;
   }
+
   return false;
 }
 
@@ -398,7 +395,7 @@ extern "C" FARPROC __stdcall dllWin32GetProcAddress(HMODULE hModule, LPCSTR func
   {
     // first check whether this function is one of the ones we need to wrap
     void *fixup = NULL;
-    if (FunctionNeedsWrapping(win32_exports, function, &fixup))
+    if (FunctionNeedsWrapping(function, &fixup))
       return (FARPROC)fixup;
   }
 
