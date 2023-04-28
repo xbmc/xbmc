@@ -103,6 +103,12 @@ void CDisplayInfo::Parse()
 
           switch (cta_tag)
           {
+            case DI_CTA_DATA_BLOCK_COLORIMETRY:
+            {
+              m_colorimetry = di_cta_data_block_get_colorimetry(block);
+
+              break;
+            }
             case DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA:
             {
               m_hdr_static_metadata = di_cta_data_block_get_hdr_static_metadata(block);
@@ -144,6 +150,21 @@ void CDisplayInfo::LogInfo() const
               m_hdr_static_metadata->desired_content_max_frame_avg_luminance,
               m_hdr_static_metadata->desired_content_max_luminance);
   }
+
+  if (m_colorimetry)
+  {
+    CLog::Log(LOGINFO, "[display-info] supported colorimetry:");
+    CLog::Log(LOGINFO, "[display-info]   xvycc_601:   {}", m_colorimetry->xvycc_601);
+    CLog::Log(LOGINFO, "[display-info]   xvycc_709:   {}", m_colorimetry->xvycc_709);
+    CLog::Log(LOGINFO, "[display-info]   sycc_601:    {}", m_colorimetry->sycc_601);
+    CLog::Log(LOGINFO, "[display-info]   opycc_601:   {}", m_colorimetry->opycc_601);
+    CLog::Log(LOGINFO, "[display-info]   oprgb:       {}", m_colorimetry->oprgb);
+    CLog::Log(LOGINFO, "[display-info]   bt2020_cycc: {}", m_colorimetry->bt2020_cycc);
+    CLog::Log(LOGINFO, "[display-info]   bt2020_ycc:  {}", m_colorimetry->bt2020_ycc);
+    CLog::Log(LOGINFO, "[display-info]   bt2020_rgb:  {}", m_colorimetry->bt2020_rgb);
+    CLog::Log(LOGINFO, "[display-info]   st2113_rgb:  {}", m_colorimetry->st2113_rgb);
+    CLog::Log(LOGINFO, "[display-info]   ictcp:       {}", m_colorimetry->ictcp);
+  }
 }
 
 bool CDisplayInfo::SupportsHDRStaticMetadataType1() const
@@ -169,6 +190,38 @@ bool CDisplayInfo::SupportsEOTF(Eotf eotf) const
       return m_hdr_static_metadata->eotfs->pq;
     case Eotf::HLG:
       return m_hdr_static_metadata->eotfs->hlg;
+    default:
+      return false;
+  }
+}
+
+bool CDisplayInfo::SupportsColorimetry(Colorimetry colorimetry) const
+{
+  if (!m_colorimetry)
+    return false;
+
+  switch (colorimetry)
+  {
+    case Colorimetry::XVYCC_601:
+      return m_colorimetry->xvycc_601;
+    case Colorimetry::XVYCC_709:
+      return m_colorimetry->xvycc_709;
+    case Colorimetry::SYCC_601:
+      return m_colorimetry->sycc_601;
+    case Colorimetry::OPYCC_601:
+      return m_colorimetry->opycc_601;
+    case Colorimetry::OPRGB:
+      return m_colorimetry->oprgb;
+    case Colorimetry::BT2020_CYCC:
+      return m_colorimetry->bt2020_cycc;
+    case Colorimetry::BT2020_YCC:
+      return m_colorimetry->bt2020_ycc;
+    case Colorimetry::BT2020_RGB:
+      return m_colorimetry->bt2020_rgb;
+    case Colorimetry::ST2113_RGB:
+      return m_colorimetry->st2113_rgb;
+    case Colorimetry::ICTCP:
+      return m_colorimetry->ictcp;
     default:
       return false;
   }

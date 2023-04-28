@@ -20,6 +20,19 @@ extern "C"
 namespace DRMPRIME
 {
 
+KODI::UTILS::Colorimetry GetColorimetry(const VideoPicture& picture)
+{
+  switch (picture.color_space)
+  {
+    case AVCOL_SPC_BT2020_CL:
+      return KODI::UTILS::Colorimetry::BT2020_CYCC;
+    case AVCOL_SPC_BT2020_NCL:
+      return KODI::UTILS::Colorimetry::BT2020_YCC;
+    default:
+      return KODI::UTILS::Colorimetry::DEFAULT;
+  }
+}
+
 std::string GetColorEncoding(const VideoPicture& picture)
 {
   switch (picture.color_space)
