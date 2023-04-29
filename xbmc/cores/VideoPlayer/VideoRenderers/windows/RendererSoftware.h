@@ -35,6 +35,7 @@ protected:
 
 private:
   SwsContext* m_sw_scale_ctx = nullptr;
+  bool m_restoreMultithreadProtectedOff = false;
 };
 
 class CRendererSoftware::CRenderBufferImpl : public CRenderBuffer
