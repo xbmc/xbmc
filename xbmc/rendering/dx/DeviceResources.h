@@ -118,6 +118,7 @@ namespace DX
     // Gets debug info from swapchain
     DEBUG_INFO_RENDER GetDebugInfo() const;
     std::vector<DXGI_COLOR_SPACE_TYPE> GetSwapChainColorSpaces() const;
+    bool SetMultithreadProtected(bool enabled) const;
 
   private:
     class CBackBuffer : public CD3DTexture
