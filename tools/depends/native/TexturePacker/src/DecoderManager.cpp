@@ -22,15 +22,17 @@
 
 // ADD new decoders here
 // include decoders
-#include "PNGDecoder.h"
-#include "JPGDecoder.h"
 #include "GIFDecoder.h"
+#include "HEIFDecoder.h"
+#include "JPGDecoder.h"
+#include "PNGDecoder.h"
 
 DecoderManager::DecoderManager()
 {
   m_decoders.emplace_back(std::make_unique<PNGDecoder>());
   m_decoders.emplace_back(std::make_unique<JPGDecoder>());
   m_decoders.emplace_back(std::make_unique<GIFDecoder>());
+  m_decoders.emplace_back(std::make_unique<HEIFDecoder>());
 }
 
 // returns true for png, bmp, tga, jpg and dds files, otherwise returns false

@@ -23,6 +23,7 @@ TexturePacker_SOURCES =  md5.cpp \
   decoder/JPGDecoder.cpp \
   decoder/GifHelper.cpp \
   decoder/GIFDecoder.cpp \
+  decoder/HEIFDecoder.cpp \
   XBTF.cpp
 
 XBTF.cpp:
