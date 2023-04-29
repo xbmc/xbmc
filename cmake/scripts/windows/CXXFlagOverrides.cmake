@@ -9,6 +9,6 @@ if(MSVC)
   set(CMAKE_CXX_FLAGS_RELEASE "/MD /Ox /Ob2 /Oi /Ot /Oy /GL /DNDEBUG")
 endif()
 
-if(NOT "$ENV{Platform}" STREQUAL "x64")
-  string(JOIN " " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" "/arch:SSE2")
+if("$ENV{Platform}" STREQUAL "x86")
+  string(APPEND CMAKE_CXX_FLAGS " /arch:SSE2")
 endif()
