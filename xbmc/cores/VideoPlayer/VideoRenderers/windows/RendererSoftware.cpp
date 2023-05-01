@@ -82,12 +82,13 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
     return;
 
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
+  const AVPixelFormat dstFormat =
+      (target.GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM) ? AV_PIX_FMT_X2BGR10 : AV_PIX_FMT_BGRA;
 
   // 1. convert yuv to rgb
-  m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx,
-    buf->GetWidth(), buf->GetHeight(), buf->av_format,
-    buf->GetWidth(), buf->GetHeight(), AV_PIX_FMT_BGRA,
-    SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
+  m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx, buf->GetWidth(), buf->GetHeight(),
+                                        buf->av_format, buf->GetWidth(), buf->GetHeight(),
+                                        dstFormat, SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
 
   if (!m_sw_scale_ctx)
     return;
