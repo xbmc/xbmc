@@ -13,7 +13,11 @@
 #include <map>
 
 #include <d3d11_4.h>
+
+extern "C"
+{
 #include <libavutil/pixfmt.h>
+}
 
 enum RenderMethod;
 
