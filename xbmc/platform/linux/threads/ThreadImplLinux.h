@@ -23,4 +23,5 @@ public:
 
 private:
   pid_t m_threadID;
+  std::string m_name;
 };
