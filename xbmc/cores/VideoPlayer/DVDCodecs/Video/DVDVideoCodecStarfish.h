@@ -78,7 +78,6 @@ public:
   VCReturn GetPicture(VideoPicture* pVideoPicture) override;
   const char* GetName() override { return m_formatname.c_str(); }
   void SetCodecControl(int flags) override;
-  unsigned GetAllowedReferences() override;
   void SetSpeed(int iSpeed) override;
 
 private:
