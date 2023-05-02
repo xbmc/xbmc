@@ -15,6 +15,7 @@
 #include "threads/Thread.h"
 #include "utils/Geometry.h"
 
+#include <fmt/format.h>
 #include <starfish-media-pipeline/StarfishMediaAPIs.h>
 
 class CBitstreamConverter;
@@ -24,6 +25,39 @@ class CStarfishVideoBuffer : public CVideoBuffer
 public:
   explicit CStarfishVideoBuffer(int id) : CVideoBuffer(id) {}
   AVPixelFormat GetFormat() override { return AV_PIX_FMT_NONE; }
+};
+
+enum class StarfishState
+{
+  RESET,
+  FLUSHED,
+  RUNNING,
+  MAX,
+};
+
+template<>
+struct fmt::formatter<StarfishState> : fmt::formatter<std::string_view>
+{
+public:
+  template<typename FormatContext>
+  constexpr auto format(const StarfishState& state, FormatContext& ctx)
+  {
+    const auto it = ms_stateMap.find(state);
+    if (it == ms_stateMap.cend())
+      throw std::range_error("no starfish state string found");
+
+    return fmt::formatter<string_view>::format(it->second, ctx);
+  }
+
+private:
+  static constexpr auto ms_stateMap = make_map<StarfishState, std::string_view>({
+      {StarfishState::RESET, "Reset"},
+      {StarfishState::FLUSHED, "Flushed"},
+      {StarfishState::RUNNING, "Running"},
+  });
+  static_assert(static_cast<size_t>(StarfishState::MAX) == ms_stateMap.size(),
+                "ms_stateMap doesn't match the size of StarfishState, did you forget to "
+                "add/remove a mapping?");
 };
 
 class CDVDVideoCodecStarfish : public CDVDVideoCodec
@@ -65,18 +99,43 @@ private:
   std::string m_formatname{"starfish"};
   bool m_opened{false};
   int m_codecControlFlags;
-  int64_t m_currentPlaytime{0};
+  std::chrono::nanoseconds m_currentPlaytime{0};
 
-  enum class StarfishState
-  {
-    RESET,
-    FLUSHED,
-    RUNNING,
-  };
   StarfishState m_state{StarfishState::FLUSHED};
 
   VideoPicture m_videobuffer;
   std::unique_ptr<CBitstreamConverter> m_bitstream;
+
+  static constexpr auto ms_codecMap = make_map<AVCodecID, std::string_view>({
+      {AV_CODEC_ID_MPEG2VIDEO, "MPEG2"},
+      {AV_CODEC_ID_MPEG4, "MPEG4"},
+      {AV_CODEC_ID_VP8, "VP8"},
+      {AV_CODEC_ID_VP9, "VP9"},
+      {AV_CODEC_ID_AVS, "H264"},
+      {AV_CODEC_ID_CAVS, "H264"},
+      {AV_CODEC_ID_H264, "H264"},
+      {AV_CODEC_ID_HEVC, "H265"},
+      {AV_CODEC_ID_VC1, "VC1"},
+      {AV_CODEC_ID_AV1, "AV1"},
+  });
+
+  static constexpr auto ms_formatInfoMap = make_map<AVCodecID, std::string_view>({
+      {AV_CODEC_ID_MPEG2VIDEO, "starfish-mpeg2"},
+      {AV_CODEC_ID_MPEG4, "starfish-mpeg4"},
+      {AV_CODEC_ID_VP8, "starfish-vp8"},
+      {AV_CODEC_ID_VP9, "starfish-vp9"},
+      {AV_CODEC_ID_AVS, "starfish-h264"},
+      {AV_CODEC_ID_CAVS, "starfish-h264"},
+      {AV_CODEC_ID_H264, "starfish-h264"},
+      {AV_CODEC_ID_HEVC, "starfish-h265"},
+      {AV_CODEC_ID_VC1, "starfish-vc1"},
+      {AV_CODEC_ID_AV1, "starfish-av1"},
+  });
+
+  static constexpr auto ms_hdrInfoMap = make_map<AVColorTransferCharacteristic, std::string_view>({
+      {AVCOL_TRC_SMPTE2084, "HDR10"},
+      {AVCOL_TRC_ARIB_STD_B67, "HLG"},
+  });
 
   static std::atomic<bool> ms_instanceGuard;
 };

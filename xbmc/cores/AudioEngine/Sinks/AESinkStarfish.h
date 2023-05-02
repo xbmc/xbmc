@@ -11,6 +11,9 @@
 #include "cores/AudioEngine/Interfaces/AESink.h"
 #include "cores/AudioEngine/Utils/AEDeviceInfo.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include "utils/Map.h"
+
+#include <chrono>
 
 #include <starfish-media-pipeline/StarfishMediaAPIs.h>
 
@@ -33,8 +36,6 @@ public:
   void AddPause(unsigned int millis) override;
   void GetDelay(AEDelayStatus& status) override;
   void Drain() override;
-  bool HasVolume() override;
-  void SetVolume(float volume) override;
 
 private:
   void PlayerCallback(const int32_t type, const int64_t numValue, const char* strValue);
@@ -43,12 +44,9 @@ private:
                              const char* strValue,
                              void* data);
 
-  std::string_view AEFormatToStarfishFormat(AEDataFormat format);
-
   std::unique_ptr<StarfishMediaAPIs> m_starfishMediaAPI;
   AEAudioFormat m_format;
-  int64_t m_pts{0};
+  std::chrono::nanoseconds m_pts{0};
   int64_t m_bufferSize{0};
-  int64_t m_delay{0};
-  int64_t m_playtime{0};
+  std::chrono::nanoseconds m_delay{0};
 };
