@@ -10,7 +10,10 @@
 
 #include "cores/GameSettings.h"
 
+extern "C"
+{
 #include <libavutil/pixfmt.h>
+}
 
 namespace KODI
 {

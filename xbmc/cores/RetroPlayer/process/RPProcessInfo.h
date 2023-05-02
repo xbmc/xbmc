@@ -17,7 +17,10 @@
 #include <string>
 #include <vector>
 
+extern "C"
+{
 #include <libavutil/pixfmt.h>
+}
 
 class CDataCacheCore;
 
