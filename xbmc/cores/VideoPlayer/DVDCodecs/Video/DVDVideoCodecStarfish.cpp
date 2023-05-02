@@ -410,11 +410,6 @@ void CDVDVideoCodecStarfish::SetSpeed(int iSpeed)
   }
 }
 
-unsigned CDVDVideoCodecStarfish::GetAllowedReferences()
-{
-  return 4;
-}
-
 void CDVDVideoCodecStarfish::SetHDR()
 {
   if (m_hints.masteringMetadata)
