@@ -19,9 +19,8 @@
 #include <androidjni/ConnectivityManager.h>
 #include <androidjni/InetAddress.h>
 #include <androidjni/LinkAddress.h>
+#include <androidjni/NetworkInfo.h>
 #include <androidjni/RouteInfo.h>
-#include <androidjni/WifiInfo.h>
-#include <androidjni/WifiManager.h>
 #include <arpa/inet.h>
 #include <net/if_arp.h>
 #include <netinet/in.h>
