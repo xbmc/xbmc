@@ -261,46 +261,38 @@ bool CAndroidKey::onKeyboardEvent(AInputEvent *event)
   switch (action)
   {
     case AKEY_EVENT_ACTION_DOWN:
-#if 1
-      CXBMCApp::android_printf("CAndroidKey: key down (dev:%d; src:%d; code: %d; repeat: %d; flags: 0x%0X; alt: %s; shift: %s; sym: %s)",
-        deviceId, source, keycode, repeat, flags,
-        (state & AMETA_ALT_ON) ? "yes" : "no",
-        (state & AMETA_SHIFT_ON) ? "yes" : "no",
-        (state & AMETA_SYM_ON) ? "yes" : "no");
-#endif
+      CXBMCApp::android_printf(
+          "CAndroidKey: key down (dev: %d; src: %d; code: %d; repeat: %d; flags: 0x%0X; alt: %s; "
+          "shift: %s; sym: %s)",
+          deviceId, source, keycode, repeat, flags, (state & AMETA_ALT_ON) ? "yes" : "no",
+          (state & AMETA_SHIFT_ON) ? "yes" : "no", (state & AMETA_SYM_ON) ? "yes" : "no");
       XBMC_Key((uint8_t)keycode, sym, modifiers, unicode, false);
       break;
 
     case AKEY_EVENT_ACTION_UP:
-#if 1
-      CXBMCApp::android_printf("CAndroidKey: key up (dev:%d; src:%d; code: %d; repeat: %d; flags: 0x%0X; alt: %s; shift: %s; sym: %s)",
-        deviceId, source, keycode, repeat, flags,
-        (state & AMETA_ALT_ON) ? "yes" : "no",
-        (state & AMETA_SHIFT_ON) ? "yes" : "no",
-        (state & AMETA_SYM_ON) ? "yes" : "no");
-#endif
+      CXBMCApp::android_printf(
+          "CAndroidKey: key up (dev: %d; src: %d; code: %d; repeat: %d; flags: 0x%0X; alt: %s; "
+          "shift: %s; sym: %s)",
+          deviceId, source, keycode, repeat, flags, (state & AMETA_ALT_ON) ? "yes" : "no",
+          (state & AMETA_SHIFT_ON) ? "yes" : "no", (state & AMETA_SYM_ON) ? "yes" : "no");
       XBMC_Key((uint8_t)keycode, sym, modifiers, unicode, true);
       break;
 
     case AKEY_EVENT_ACTION_MULTIPLE:
-#if 1
-      CXBMCApp::android_printf("CAndroidKey: key multiple (dev:%d; src:%d; code: %d; repeat: %d; flags: 0x%0X; alt: %s; shift: %s; sym: %s)",
-        deviceId, source, keycode, repeat, flags,
-        (state & AMETA_ALT_ON) ? "yes" : "no",
-        (state & AMETA_SHIFT_ON) ? "yes" : "no",
-        (state & AMETA_SYM_ON) ? "yes" : "no");
-#endif
+      CXBMCApp::android_printf(
+          "CAndroidKey: key multiple (dev: %d; src: %d; code: %d; repeat: %d; flags: 0x%0X; alt: "
+          "%s; shift: %s; sym: %s)",
+          deviceId, source, keycode, repeat, flags, (state & AMETA_ALT_ON) ? "yes" : "no",
+          (state & AMETA_SHIFT_ON) ? "yes" : "no", (state & AMETA_SYM_ON) ? "yes" : "no");
       return false;
       break;
 
     default:
-#if 1
-      CXBMCApp::android_printf("CAndroidKey: unknown key (dev:%d; src:%d; code: %d; repeat: %d; flags: 0x%0X; alt: %s; shift: %s; sym: %s)",
-        deviceId, source, keycode, repeat, flags,
-        (state & AMETA_ALT_ON) ? "yes" : "no",
-        (state & AMETA_SHIFT_ON) ? "yes" : "no",
-        (state & AMETA_SYM_ON) ? "yes" : "no");
-#endif
+      CXBMCApp::android_printf(
+          "CAndroidKey: unknown key (dev: %d; src: %d; code: %d; repeat: %d; flags: 0x%0X; alt: "
+          "%s; shift: %s; sym: %s)",
+          deviceId, source, keycode, repeat, flags, (state & AMETA_ALT_ON) ? "yes" : "no",
+          (state & AMETA_SHIFT_ON) ? "yes" : "no", (state & AMETA_SYM_ON) ? "yes" : "no");
       return false;
       break;
   }
