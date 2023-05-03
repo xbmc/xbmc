@@ -46,6 +46,8 @@ CRendererSoftware::~CRendererSoftware()
     sws_freeContext(m_sw_scale_ctx);
     m_sw_scale_ctx = nullptr;
   }
+  if (m_restoreMultithreadProtectedOff)
+    DX::DeviceResources::Get()->SetMultithreadProtected(false);
 }
 
 bool CRendererSoftware::Configure(const VideoPicture& picture, float fps, unsigned orientation)
@@ -57,8 +59,11 @@ bool CRendererSoftware::Configure(const VideoPicture& picture, float fps, unsign
 
     m_format = picture.videoBuffer->GetFormat();
     if (m_format == AV_PIX_FMT_D3D11VA_VLD)
+    {
       m_format = GetAVFormat(GetDXGIFormat(picture));
-
+      if (!DX::DeviceResources::Get()->SetMultithreadProtected(true))
+        m_restoreMultithreadProtectedOff = true;
+    }
     return true;
   }
   return false;
@@ -77,12 +82,13 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
     return;
 
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
+  const AVPixelFormat dstFormat =
+      (target.GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM) ? AV_PIX_FMT_X2BGR10 : AV_PIX_FMT_BGRA;
 
   // 1. convert yuv to rgb
-  m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx,
-    buf->GetWidth(), buf->GetHeight(), buf->av_format,
-    buf->GetWidth(), buf->GetHeight(), AV_PIX_FMT_BGRA,
-    SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
+  m_sw_scale_ctx = sws_getCachedContext(m_sw_scale_ctx, buf->GetWidth(), buf->GetHeight(),
+                                        buf->av_format, buf->GetWidth(), buf->GetHeight(),
+                                        dstFormat, SWS_FAST_BILINEAR, nullptr, nullptr, nullptr);
 
   if (!m_sw_scale_ctx)
     return;
