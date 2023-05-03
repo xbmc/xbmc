@@ -24,7 +24,23 @@ class CGUISettingsSliderControl :
       public CGUISliderControl
 {
 public:
-  CGUISettingsSliderControl(int parentID, int controlID, float posX, float posY, float width, float height, float sliderWidth, float sliderHeight, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus, const CTextureInfo& backGroundTexture, const CTextureInfo& nibTexture, const CTextureInfo& nibTextureFocus, const CLabelInfo &labelInfo, int iType);
+  CGUISettingsSliderControl(int parentID,
+                            int controlID,
+                            float posX,
+                            float posY,
+                            float width,
+                            float height,
+                            float sliderWidth,
+                            float sliderHeight,
+                            const CTextureInfo& textureFocus,
+                            const CTextureInfo& textureNoFocus,
+                            const CTextureInfo& backGroundTexture,
+                            const CTextureInfo& backGroundTextureDisabled,
+                            const CTextureInfo& nibTexture,
+                            const CTextureInfo& nibTextureFocus,
+                            const CTextureInfo& nibTextureDisabled,
+                            const CLabelInfo& labelInfo,
+                            int iType);
   ~CGUISettingsSliderControl() override = default;
   CGUISettingsSliderControl *Clone() const override { return new CGUISettingsSliderControl(*this); }
 
