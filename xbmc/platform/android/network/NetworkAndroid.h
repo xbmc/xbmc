@@ -15,11 +15,7 @@
 
 #include <androidjni/LinkProperties.h>
 #include <androidjni/Network.h>
-#include <androidjni/NetworkInfo.h>
 #include <androidjni/NetworkInterface.h>
-#include <androidjni/RouteInfo.h>
-
-class CNetworkAndroid;
 
 class CNetworkInterfaceAndroid : public CNetworkInterface
 {
