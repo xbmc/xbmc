@@ -237,7 +237,7 @@ void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItemPtr& ite
       CGUIListItemLayoutPtr layout = std::make_unique<CGUIListItemLayout>(*m_layout, this);
       item->SetLayout(std::move(layout));
     }
-    if (item->GetFocusedLayout())
+    if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
       item->GetFocusedLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
     if (item->GetLayout())
       item->GetLayout()->Process(item.get(), m_parentID, currentTime, dirtyregions);
