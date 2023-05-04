@@ -31,6 +31,16 @@
 using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
+namespace
+{
+constexpr unsigned int PRE_BUFFER_BYTES = 0;
+constexpr unsigned int MAX_QUEUE_BUFFER_LEVEL = 1 * 1024 * 1024; // 1 MB
+constexpr unsigned int MIN_BUFFER_LEVEL = 0;
+constexpr unsigned int MAX_BUFFER_LEVEL = 0;
+constexpr unsigned int MIN_SRC_BUFFER_LEVEL = 1 * 1024 * 1024; // 1 MB
+constexpr unsigned int MAX_SRC_BUFFER_LEVEL = 8 * 1024 * 1024; // 8 MB
+} // namespace
+
 CDVDVideoCodecStarfish::CDVDVideoCodecStarfish(CProcessInfo& processInfo)
   : CDVDVideoCodec(processInfo), m_starfishMediaAPI(std::make_unique<StarfishMediaAPIs>())
 {
@@ -189,6 +199,15 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
   payloadArg["option"]["externalStreamingInfo"]["contents"]["esInfo"]["videoFpsScale"] =
       m_hints.fpsscale;
   payloadArg["option"]["externalStreamingInfo"]["contents"]["format"] = "RAW";
+
+  CVariant& bufferingCtrInfo = payloadArg["option"]["externalStreamingInfo"]["bufferingCtrInfo"];
+  bufferingCtrInfo["preBufferByte"] = PRE_BUFFER_BYTES;
+  bufferingCtrInfo["bufferMinLevel"] = MIN_BUFFER_LEVEL;
+  bufferingCtrInfo["bufferMaxLevel"] = MAX_BUFFER_LEVEL;
+  bufferingCtrInfo["qBufferLevelVideo"] = MAX_QUEUE_BUFFER_LEVEL;
+  bufferingCtrInfo["srcBufferLevelVideo"]["minimum"] = MIN_SRC_BUFFER_LEVEL;
+  bufferingCtrInfo["srcBufferLevelVideo"]["maximum"] = MAX_SRC_BUFFER_LEVEL;
+
   payloadArg["option"]["transmission"]["contentsType"] = "LIVE"; // "LIVE", "WebRTC"
   payloadArg["option"]["needAudio"] = false;
   payloadArg["option"]["seekMode"] = "late_Iframe";
