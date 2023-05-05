@@ -89,10 +89,11 @@ bool HasAlpha(unsigned char* argb, unsigned int width, unsigned int height)
 void Usage()
 {
   puts("Usage:");
-  puts("  -help            Show this screen.");
-  puts("  -input <dir>     Input directory. Default: current dir");
-  puts("  -output <dir>    Output directory/filename. Default: Textures.xbt");
-  puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: off");
+  puts("  -help               Show this screen.");
+  puts("  -input <dir>        Input directory. Default: current dir");
+  puts("  -output <dir>       Output directory/filename. Default: Textures.xbt");
+  puts("  -dupecheck          Enable duplicate file detection. Reduces output file size. Default: off");
+  puts("  -compression-method Compression method to use. [lzo|none] Default: lzo");
 }
 
 } // namespace
@@ -407,6 +408,20 @@ int main(int argc, char* argv[])
     else if (!strcmp(args[i], "-verbose"))
     {
       texturePacker.EnableVerboseOutput();
+    }
+    else if (!strcmp(args[i], "-compression-method"))
+    {
+      std::string compressionMethod = args[++i];
+
+      if (compressionMethod == "lzo")
+      {
+        texturePacker.SetCompressionMethod(XBTFCompressionMethod::LZO);
+      }
+
+      if (compressionMethod == "none")
+      {
+        texturePacker.SetCompressionMethod(XBTFCompressionMethod::NONE);
+      }
     }
     else if (!platform_stricmp(args[i], "-output") || !platform_stricmp(args[i], "-o"))
     {
