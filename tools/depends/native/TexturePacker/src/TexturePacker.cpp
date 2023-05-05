@@ -53,6 +53,9 @@
 
 #define DIR_SEPARATOR '/'
 
+namespace
+{
+
 const char *GetFormatString(unsigned int format)
 {
   switch (format)
@@ -73,6 +76,8 @@ const char *GetFormatString(unsigned int format)
     return "?????";
   }
 }
+
+} // namespace
 
 class TexturePacker
 {
