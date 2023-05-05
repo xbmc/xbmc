@@ -48,7 +48,7 @@ class Observable
 public:
   Observable() = default;
   virtual ~Observable() = default;
-  virtual Observable &operator=(const Observable &observable);
+  Observable& operator=(const Observable& observable);
 
   /*!
    * @brief Register an observer.
