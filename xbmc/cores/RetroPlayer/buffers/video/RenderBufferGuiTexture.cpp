@@ -75,7 +75,7 @@ void CRenderBufferGuiTexture::BindToUnit(unsigned int unit)
     m_texture->BindToUnit(unit);
 }
 
-AVPixelFormat CRenderBufferGuiTexture::TranslateFormat(unsigned int textureFormat)
+AVPixelFormat CRenderBufferGuiTexture::TranslateFormat(XB_FMT textureFormat)
 {
   switch (textureFormat)
   {

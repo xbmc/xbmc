@@ -18,7 +18,7 @@
 class CGLTexture : public CTexture
 {
 public:
-  CGLTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
+  CGLTexture(unsigned int width = 0, unsigned int height = 0, XB_FMT format = XB_FMT_A8R8G8B8);
   ~CGLTexture() override;
 
   void CreateTextureObject() override;

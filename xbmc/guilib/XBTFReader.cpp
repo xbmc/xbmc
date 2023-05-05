@@ -134,7 +134,7 @@ bool CXBTFReader::Open(const std::string& path)
 
       if (!ReadUInt32(m_file, u32))
         return false;
-      frame.SetFormat(u32);
+      frame.SetFormat(static_cast<XB_FMT>(u32));
 
       if (!ReadUInt64(m_file, u64))
         return false;
