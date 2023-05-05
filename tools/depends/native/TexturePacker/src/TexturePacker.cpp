@@ -77,6 +77,17 @@ const char *GetFormatString(unsigned int format)
   }
 }
 
+bool HasAlpha(unsigned char* argb, unsigned int width, unsigned int height)
+{
+  unsigned char* p = argb + 3; // offset of alpha
+  for (unsigned int i = 0; i < 4 * width * height; i += 4)
+  {
+    if (p[i] != 0xff)
+      return true;
+  }
+  return false;
+}
+
 } // namespace
 
 class TexturePacker
@@ -207,17 +218,6 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
   frame.SetFormat(hasAlpha ? format : format | XB_FMT_OPAQUE);
   frame.SetDuration(0);
   return frame;
-}
-
-bool HasAlpha(unsigned char *argb, unsigned int width, unsigned int height)
-{
-  unsigned char *p = argb + 3; // offset of alpha
-  for (unsigned int i = 0; i < 4*width*height; i += 4)
-  {
-    if (p[i] != 0xff)
-      return true;
-  }
-  return false;
 }
 
 CXBTFFrame createXBTFFrame(RGBAImage& image, CXBTFWriter& writer, unsigned int flags)
