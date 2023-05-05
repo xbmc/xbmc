@@ -8,12 +8,13 @@
 
 #pragma once
 
+#include "utils/Map.h"
+
 #include <ctime>
 #include <map>
+#include <stdint.h>
 #include <string>
 #include <vector>
-
-#include <stdint.h>
 
 static const std::string XBTF_MAGIC = "XBTF";
 static const std::string XBTF_VERSION = "3";
@@ -25,6 +26,11 @@ enum class XBTFCompressionMethod : uint32_t
   NONE,
   LZO,
 };
+
+constexpr auto XBTFCompressionMethodMap = make_map<XBTFCompressionMethod, std::string_view>({
+    {XBTFCompressionMethod::NONE, "none"},
+    {XBTFCompressionMethod::LZO, "lzo"},
+});
 
 class CXBTFFrame
 {

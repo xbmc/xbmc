@@ -350,10 +350,11 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
         CXBTFFrame frame = CreateXBTFFrame(frames.frameList[j], writer);
         file.GetFrames().push_back(frame);
         printf("    frame %4i (delay:%4i)                         %s%c (%d,%d @ %" PRIu64
-               " -> %" PRIu64 " bytes)\n",
+               " -> %" PRIu64 " bytes, compression: %s)\n",
                j, frame.GetDuration(), GetFormatString(frame.GetFormat()),
                frame.HasAlpha() ? ' ' : '*', frame.GetWidth(), frame.GetHeight(),
-               frame.GetUnpackedSize(), frame.GetPackedSize());
+               frame.GetUnpackedSize(), frame.GetPackedSize(),
+               XBTFCompressionMethodMap.at(frame.GetCompressionMethod()).data());
       }
     }
     file.SetLoop(0);
