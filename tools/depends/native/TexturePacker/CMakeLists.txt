@@ -8,6 +8,7 @@ find_package(Lzo2 REQUIRED)
 find_package(PNG REQUIRED)
 find_package(GIF REQUIRED)
 find_package(JPEG REQUIRED)
+find_package(ZSTD REQUIRED)
 
 if(GIF_VERSION LESS 4)
   message(FATAL_ERROR "giflib < 4 not supported")
@@ -42,6 +43,7 @@ target_include_directories(TexturePacker
                            PRIVATE ${PNG_INCLUDE_DIRS}
                                     ${JPEG_INCLUDE_DIR}
                                     ${GIF_INCLUDE_DIR}
+                                    ${ZSTD_INCLUDE_DIRS}
                                     ${CMAKE_SOURCE_DIR}/xbmc
                                     ${CMAKE_CURRENT_SOURCE_DIR}/src
                                     ${CMAKE_CURRENT_SOURCE_DIR}/src/decoder)
@@ -50,5 +52,6 @@ target_link_libraries(TexturePacker
                               ${GIF_LIBRARIES}
                               ${PNG_LIBRARIES}
                               ${JPEG_LIBRARIES}
+                              ${ZSTD_LIBRARIES}
                               ${LZO2_LIBRARIES})
 target_compile_options(TexturePacker PRIVATE ${ARCH_DEFINES} ${SYSTEM_DEFINES})

@@ -33,6 +33,9 @@ AC_CHECK_HEADER([jpeglib.h],, AC_MSG_ERROR("jpeglib.h not found"))
 AC_CHECK_LIB([jpeg],[main],, AC_MSG_ERROR("libjpeg not found"))
 AC_CHECK_HEADER([lzo/lzo1x.h],, AC_MSG_ERROR("lzo/lzo1x.h not found"))
 AC_CHECK_LIB([lzo2],[main],, AC_MSG_ERROR("liblzo2 not found"))
+AC_CHECK_HEADER([zstd.h],, AC_MSG_ERROR("zstd.h not found"))
+AC_CHECK_LIB([zstd],[main],, AC_MSG_ERROR("libzstd not found"))
+
 
 AC_SUBST(KODI_SRC_DIR)
 AC_SUBST(STATIC_FLAG)

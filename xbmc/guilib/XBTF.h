@@ -25,11 +25,13 @@ enum class XBTFCompressionMethod : uint32_t
 {
   NONE,
   LZO,
+  ZSTD,
 };
 
 constexpr auto XBTFCompressionMethodMap = make_map<XBTFCompressionMethod, std::string_view>({
     {XBTFCompressionMethod::NONE, "none"},
     {XBTFCompressionMethod::LZO, "lzo"},
+    {XBTFCompressionMethod::ZSTD, "zstd"},
 });
 
 class CXBTFFrame

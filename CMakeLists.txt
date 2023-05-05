@@ -187,6 +187,7 @@ set(required_deps ASS
                   TagLib
                   TinyXML
                   ZLIB
+                  ZSTD
                   ${PLATFORM_REQUIRED_DEPS})
 
 # Optional dependencies. Keep in alphabetical order please

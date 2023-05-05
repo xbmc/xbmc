@@ -30,7 +30,7 @@
 
 #include <lzo/lzo1x.h>
 #include <lzo/lzoconf.h>
-
+#include <zstd.h>
 
 #ifdef TARGET_WINDOWS_DESKTOP
 #ifdef NDEBUG
@@ -238,10 +238,29 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
         CLog::Log(LOGERROR, "Error loading texture: {}: Decompression error", name);
         return false;
       }
+
       buffer = std::move(unpacked);
 
       break;
     }
+    case XBTFCompressionMethod::ZSTD:
+    {
+      std::vector<uint8_t> unpacked(static_cast<size_t>(frame.GetUnpackedSize()));
+
+      const size_t unpackedSize =
+          ZSTD_decompress(unpacked.data(), unpacked.size(), buffer.data(), buffer.size());
+
+      if (ZSTD_isError(unpackedSize) == 1)
+      {
+        CLog::Log(LOGERROR, "Error loading texture: {}: zstd error: {}", name,
+                  ZSTD_getErrorName(unpackedSize));
+        return false;
+      }
+
+      buffer = std::move(unpacked);
+      break;
+    }
+    case XBTFCompressionMethod::NONE:
     default:
       break;
   }
@@ -308,6 +327,22 @@ std::vector<uint8_t> CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader,
             LOGERROR,
             "CTextureBundleXBT: failed to decompress frame with {} unpacked bytes to {} bytes",
             frame.GetPackedSize(), frame.GetUnpackedSize());
+        return {};
+      }
+
+      return unpackedBuffer;
+    }
+    case XBTFCompressionMethod::ZSTD:
+    {
+      std::vector<uint8_t> unpackedBuffer(static_cast<size_t>(frame.GetUnpackedSize()));
+
+      const size_t unpackedSize = ZSTD_decompress(unpackedBuffer.data(), unpackedBuffer.size(),
+                                                  packedBuffer.data(), packedBuffer.size());
+
+      if (ZSTD_isError(unpackedSize) == 1)
+      {
+        CLog::Log(LOGERROR, "CTextureBundleXBT: failed to decompress frame - zstd error: {}",
+                  ZSTD_getErrorName(unpackedSize));
         return {};
       }
 

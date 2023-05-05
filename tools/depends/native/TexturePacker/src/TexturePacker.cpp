@@ -27,18 +27,18 @@
 #include <inttypes.h>
 #define platform_stricmp strcasecmp
 #endif
-#include <cerrno>
-#include <dirent.h>
-#include <map>
-
+#include "DecoderManager.h"
+#include "XBTFWriter.h"
+#include "cmdlineargs.h"
 #include "guilib/XBTF.h"
 #include "guilib/XBTFReader.h"
-
-#include "DecoderManager.h"
-
-#include "XBTFWriter.h"
 #include "md5.h"
-#include "cmdlineargs.h"
+
+#include <cerrno>
+#include <map>
+
+#include <dirent.h>
+#include <zstd.h>
 
 #ifdef TARGET_WINDOWS
 #define strncasecmp _strnicmp
@@ -205,7 +205,7 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
   const bool hasAlpha = HasAlpha(data, width, height);
 
   CXBTFFrame frame;
-  lzo_uint packedSize = size;
+  uint64_t packedSize = size;
 
   if (m_compressionMethod == XBTFCompressionMethod::LZO)
   {
@@ -244,6 +244,31 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
 
         frame.SetCompressionMethod(XBTFCompressionMethod::LZO);
       }
+    }
+  }
+  else if (m_compressionMethod == XBTFCompressionMethod::ZSTD)
+  {
+    packedSize = ZSTD_compressBound(size);
+
+    std::vector<uint8_t> packed(packedSize);
+
+    packedSize = ZSTD_compress(packed.data(), packed.size(), data, size, ZSTD_CLEVEL_DEFAULT);
+
+    if (ZSTD_isError(packedSize) == 1)
+    {
+      fprintf(stderr, "ztd error: %s\n", ZSTD_getErrorName(packedSize));
+
+      packedSize = size;
+      writer.AppendContent(data, size);
+
+      frame.SetCompressionMethod(XBTFCompressionMethod::NONE);
+    }
+    else
+    {
+      packed.resize(packedSize);
+      writer.AppendContent(packed.data(), packed.size());
+
+      frame.SetCompressionMethod(XBTFCompressionMethod::ZSTD);
     }
   }
   else
@@ -425,6 +450,11 @@ int main(int argc, char* argv[])
       if (compressionMethod == "lzo")
       {
         texturePacker.SetCompressionMethod(XBTFCompressionMethod::LZO);
+      }
+
+      if (compressionMethod == "zstd")
+      {
+        texturePacker.SetCompressionMethod(XBTFCompressionMethod::ZSTD);
       }
 
       if (compressionMethod == "none")
