@@ -298,9 +298,6 @@ int TexturePacker::createBundle(const std::string& InputDir,
     fullPath += file.GetPath();
 
     std::string output = file.GetPath();
-    output = output.substr(0, 40);
-    while (output.size() < 46)
-      output += ' ';
 
     DecodedFrames frames;
     bool loaded = decoderManager.LoadFile(fullPath, frames);
