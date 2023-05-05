@@ -72,14 +72,14 @@ void CXBTFFrame::SetUnpackedSize(uint64_t size)
   m_unpackedSize = size;
 }
 
-void CXBTFFrame::SetFormat(uint32_t format)
+void CXBTFFrame::SetFormat(XB_FMT format)
 {
   m_format = format;
 }
 
-uint32_t CXBTFFrame::GetFormat(bool raw) const
+XB_FMT CXBTFFrame::GetFormat(bool raw) const
 {
-  return raw ? m_format : (m_format & XB_FMT_MASK);
+  return raw ? m_format : static_cast<XB_FMT>(m_format & XB_FMT_MASK);
 }
 
 uint64_t CXBTFFrame::GetOffset() const

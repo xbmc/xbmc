@@ -42,7 +42,7 @@ public:
 
   uint32_t GetImageWidth() const;
   uint32_t GetImageHeight() const;
-  uint32_t GetImageFormat() const;
+  XB_FMT GetImageFormat() const;
   bool HasImageAlpha() const;
 
 private:

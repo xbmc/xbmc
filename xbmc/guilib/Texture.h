@@ -35,12 +35,12 @@ class CTexture
 {
 
 public:
-  CTexture(unsigned int width = 0, unsigned int height = 0, unsigned int format = XB_FMT_A8R8G8B8);
+  CTexture(unsigned int width = 0, unsigned int height = 0, XB_FMT format = XB_FMT_A8R8G8B8);
   virtual ~CTexture();
 
   static std::unique_ptr<CTexture> CreateTexture(unsigned int width = 0,
                                                  unsigned int height = 0,
-                                                 unsigned int format = XB_FMT_A8R8G8B8);
+                                                 XB_FMT format = XB_FMT_A8R8G8B8);
 
   /*! \brief Load a texture from a file
    Loads a texture from a file, restricting in size if needed based on maxHeight and maxWidth.
@@ -73,8 +73,18 @@ public:
                                                         unsigned int idealWidth = 0,
                                                         unsigned int idealHeight = 0);
 
-  bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, const unsigned char* pixels);
-  bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette);
+  bool LoadFromMemory(unsigned int width,
+                      unsigned int height,
+                      unsigned int pitch,
+                      XB_FMT format,
+                      bool hasAlpha,
+                      const unsigned char* pixels);
+  bool LoadPaletted(unsigned int width,
+                    unsigned int height,
+                    unsigned int pitch,
+                    XB_FMT format,
+                    const unsigned char* pixels,
+                    const COLOR* palette);
 
   bool HasAlpha() const;
 
@@ -105,8 +115,13 @@ public:
   int GetOrientation() const { return m_orientation; }
   void SetOrientation(int orientation) { m_orientation = orientation; }
 
-  void Update(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, bool loadToGPU);
-  void Allocate(unsigned int width, unsigned int height, unsigned int format);
+  void Update(unsigned int width,
+              unsigned int height,
+              unsigned int pitch,
+              XB_FMT format,
+              const unsigned char* pixels,
+              bool loadToGPU);
+  void Allocate(unsigned int width, unsigned int height, XB_FMT format);
   void ClampToEdge();
 
   static unsigned int PadPow2(unsigned int x);
@@ -135,7 +150,7 @@ protected:
 
   unsigned char* m_pixels;
   bool m_loadedToGPU;
-  unsigned int m_format;
+  XB_FMT m_format;
   int m_orientation;
   bool m_hasAlpha =  true ;
   bool m_mipmapping =  false ;

@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "TextureFormats.h"
+
 #include <stdint.h>
 #include <string>
 
@@ -15,22 +17,24 @@ class CDDSImage
 {
 public:
   CDDSImage();
-  CDDSImage(unsigned int width, unsigned int height, unsigned int format);
+  CDDSImage(unsigned int width, unsigned int height, XB_FMT format);
   ~CDDSImage();
 
   unsigned int GetWidth() const;
   unsigned int GetHeight() const;
-  unsigned int GetFormat() const;
+  XB_FMT GetFormat() const;
   unsigned int GetSize() const;
   unsigned char *GetData() const;
 
   bool ReadFile(const std::string &file);
 
 private:
-  void Allocate(unsigned int width, unsigned int height, unsigned int format);
-  static const char *GetFourCC(unsigned int format);
+  void Allocate(unsigned int width, unsigned int height, XB_FMT format);
+  static const char* GetFourCC(XB_FMT format);
 
-  static unsigned int GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format);
+  static unsigned int GetStorageRequirements(unsigned int width,
+                                             unsigned int height,
+                                             XB_FMT format);
   enum {
     ddsd_caps        = 0x00000001,
     ddsd_height      = 0x00000002,
