@@ -25,11 +25,10 @@
 class PNGDecoder : public IDecoder
 {
   public:
+    PNGDecoder();
     ~PNGDecoder() override = default;
     bool CanDecode(const std::string &filename) override;
     bool LoadFile(const std::string& filename, DecodedFrames& frames) override;
     const char* GetImageFormatName() override { return "PNG"; }
     const char* GetDecoderName() override { return "libpng"; }
-  protected:
-    void FillSupportedExtensions() override;
 };

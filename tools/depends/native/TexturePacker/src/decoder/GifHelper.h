@@ -61,20 +61,17 @@ class GifFrame
 public:
 
   GifFrame() = default;
-  virtual ~GifFrame();
+  virtual ~GifFrame() = default;
 
-  unsigned char* m_pImage = nullptr;
+  std::vector<uint8_t> m_pImage;
   unsigned int m_delay = 0;
 
 private:
-  GifFrame(const GifFrame& src);
-
   unsigned int m_top = 0;
   unsigned int m_left = 0;
   unsigned int m_disposal = 0;
   unsigned int m_height = 0;
   unsigned int m_width = 0;
-  unsigned int m_imageSize = 0;
   std::vector<GifColor>   m_palette;
 };
 
@@ -87,11 +84,10 @@ class GifHelper
   typedef std::shared_ptr<GifFrame> FramePtr;
 
 public:
-  GifHelper();
+  GifHelper() = default;
   virtual ~GifHelper();
 
-
-  bool LoadGif(const char* file);
+  bool LoadGif(const std::string& file);
 
   std::vector<FramePtr>& GetFrames() { return m_frames; }
   unsigned int GetPitch() const { return m_pitch; }
@@ -109,8 +105,8 @@ private:
   std::string     m_filename;
   GifFileType* m_gif = nullptr;
   std::vector<GifColor> m_globalPalette;
-  unsigned char* m_pTemplate = nullptr;
-  CFile*          m_gifFile;
+  std::vector<uint8_t> m_pTemplate;
+  CFile m_gifFile;
 
   unsigned int m_width;
   unsigned int m_height;
@@ -120,7 +116,7 @@ private:
 
   const char* Reason(int reason);
 
-  bool LoadGifMetaData(const char* file);
+  bool LoadGifMetaData(const std::string& file);
   bool Slurp(GifFileType* gif);
   void InitTemplateAndColormap();
   bool LoadGifMetaData(GifFileType* gif);

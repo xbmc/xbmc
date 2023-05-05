@@ -25,11 +25,10 @@
 class GIFDecoder : public IDecoder
 {
   public:
+    GIFDecoder();
     ~GIFDecoder() override = default;
     bool CanDecode(const std::string &filename) override;
     bool LoadFile(const std::string& filename, DecodedFrames& frames) override;
     const char* GetImageFormatName() override { return "GIF"; }
     const char* GetDecoderName() override { return "libgif"; }
-  protected:
-    void FillSupportedExtensions() override;
 };

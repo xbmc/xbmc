@@ -44,14 +44,14 @@
 #define strncasecmp _strnicmp
 #endif
 
+#include <vector>
+
 #include <lzo/lzo1x.h>
 #include <sys/stat.h>
 
 #define FLAGS_USE_LZO     1
 
 #define DIR_SEPARATOR '/'
-
-static DecoderManager decoderManager;
 
 const char *GetFormatString(unsigned int format)
 {
@@ -74,9 +74,28 @@ const char *GetFormatString(unsigned int format)
   }
 }
 
-void CreateSkeletonHeaderImpl(CXBTFWriter& xbtfWriter,
-                              const std::string& fullPath,
-                              const std::string& relativePath)
+class TexturePacker
+{
+public:
+  TexturePacker() = default;
+  ~TexturePacker() = default;
+
+  int createBundle(const std::string& InputDir,
+                   const std::string& OutputFile,
+                   unsigned int flags,
+                   bool dupecheck);
+
+  DecoderManager decoderManager;
+
+private:
+  void CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
+                            const std::string& fullPath,
+                            const std::string& relativePath = "");
+};
+
+void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
+                                         const std::string& fullPath,
+                                         const std::string& relativePath)
 {
   struct dirent* dp;
   struct stat stat_p;
@@ -103,7 +122,8 @@ void CreateSkeletonHeaderImpl(CXBTFWriter& xbtfWriter,
             tmpPath += "/";
           }
 
-          CreateSkeletonHeaderImpl(xbtfWriter, fullPath + DIR_SEPARATOR + dp->d_name, tmpPath + dp->d_name);
+          CreateSkeletonHeader(xbtfWriter, fullPath + DIR_SEPARATOR + dp->d_name,
+                               tmpPath + dp->d_name);
         }
         else if (decoderManager.IsSupportedGraphicsFile(dp->d_name))
         {
@@ -133,12 +153,6 @@ void CreateSkeletonHeaderImpl(CXBTFWriter& xbtfWriter,
   }
 }
 
-void CreateSkeletonHeader(CXBTFWriter& xbtfWriter, const std::string& fullPath)
-{
-  std::string temp;
-  CreateSkeletonHeaderImpl(xbtfWriter, fullPath, temp);
-}
-
 CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, bool hasAlpha, unsigned int flags)
 {
   CXBTFFrame frame;
@@ -148,31 +162,33 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
   {
     // grab a temporary buffer for unpacking into
     packedSize = size + size / 16 + 64 + 3; // see simple.c in lzo
-    unsigned char *packed  = new unsigned char[packedSize];
-    unsigned char *working = new unsigned char[LZO1X_999_MEM_COMPRESS];
-    if (packed && working)
+
+    std::vector<uint8_t> packed;
+    packed.resize(packedSize);
+
+    std::vector<uint8_t> working;
+    working.resize(LZO1X_999_MEM_COMPRESS);
+
+    if (lzo1x_999_compress(data, size, packed.data(), &packedSize, working.data()) != LZO_E_OK ||
+        packedSize > size)
     {
-      if (lzo1x_999_compress(data, size, packed, &packedSize, working) != LZO_E_OK || packedSize > size)
-      {
-        // compression failed, or compressed size is bigger than uncompressed, so store as uncompressed
+      // compression failed, or compressed size is bigger than uncompressed, so store as uncompressed
+      packedSize = size;
+      writer.AppendContent(data, size);
+    }
+    else
+    { // success
+      lzo_uint optimSize = size;
+      if (lzo1x_optimize(packed.data(), packedSize, data, &optimSize, NULL) != LZO_E_OK ||
+          optimSize != size)
+      { //optimisation failed
         packedSize = size;
         writer.AppendContent(data, size);
       }
       else
       { // success
-        lzo_uint optimSize = size;
-        if (lzo1x_optimize(packed, packedSize, data, &optimSize, NULL) != LZO_E_OK || optimSize != size)
-        { //optimisation failed
-          packedSize = size;
-          writer.AppendContent(data, size);
-        }
-        else
-        { // success
-          writer.AppendContent(packed, packedSize);
-        }
+        writer.AppendContent(packed.data(), packedSize);
       }
-      delete[] working;
-      delete[] packed;
     }
   }
   else
@@ -199,7 +215,7 @@ bool HasAlpha(unsigned char *argb, unsigned int width, unsigned int height)
   return false;
 }
 
-CXBTFFrame createXBTFFrame(RGBAImage &image, CXBTFWriter& writer, double maxMSE, unsigned int flags)
+CXBTFFrame createXBTFFrame(RGBAImage& image, CXBTFWriter& writer, unsigned int flags)
 {
 
   int width, height;
@@ -253,7 +269,10 @@ static bool checkDupe(struct MD5Context* ctx,
   return false;
 }
 
-int createBundle(const std::string& InputDir, const std::string& OutputFile, double maxMSE, unsigned int flags, bool dupecheck)
+int TexturePacker::createBundle(const std::string& InputDir,
+                                const std::string& OutputFile,
+                                unsigned int flags,
+                                bool dupecheck)
 {
   CXBTFWriter writer(OutputFile);
   if (!writer.Create())
@@ -320,7 +339,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
       for (unsigned int j = 0; j < frames.frameList.size(); j++)
       {
         printf("    frame %4i (delay:%4i)                         ", j, frames.frameList[j].delay);
-        CXBTFFrame frame = createXBTFFrame(frames.frameList[j].rgbaImage, writer, maxMSE, flags);
+        CXBTFFrame frame = createXBTFFrame(frames.frameList[j].rgbaImage, writer, flags);
         frame.SetDuration(frames.frameList[j].delay);
         file.GetFrames().push_back(frame);
         printf("%s%c (%d,%d @ %" PRIu64 " bytes)\n", GetFormatString(frame.GetFormat()), frame.HasAlpha() ? ' ' : '*',
@@ -368,6 +387,8 @@ int main(int argc, char* argv[])
   std::string InputDir;
   std::string OutputFilename = "Textures.xbt";
 
+  TexturePacker texturePacker;
+
   for (unsigned int i = 1; i < args.size(); ++i)
   {
     if (!platform_stricmp(args[i], "-help") || !platform_stricmp(args[i], "-h") || !platform_stricmp(args[i], "-?"))
@@ -386,7 +407,7 @@ int main(int argc, char* argv[])
     }
     else if (!strcmp(args[i], "-verbose"))
     {
-      decoderManager.verbose = true;
+      texturePacker.decoderManager.verbose = true;
     }
     else if (!platform_stricmp(args[i], "-output") || !platform_stricmp(args[i], "-o"))
     {
@@ -413,6 +434,5 @@ int main(int argc, char* argv[])
   if (pos != InputDir.length() - 1)
     InputDir += DIR_SEPARATOR;
 
-  double maxMSE = 1.5; // HQ only please
-  createBundle(InputDir, OutputFilename, maxMSE, flags, dupecheck);
+  texturePacker.createBundle(InputDir, OutputFilename, flags, dupecheck);
 }

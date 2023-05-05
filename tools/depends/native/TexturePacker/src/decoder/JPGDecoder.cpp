@@ -22,19 +22,27 @@
 
 #include "SimpleFS.h"
 
+#include <memory>
+
 #include <jpeglib.h>
+
+JPGDecoder::JPGDecoder()
+{
+  m_extensions.emplace_back(".jpg");
+  m_extensions.emplace_back(".jpeg");
+}
 
 bool JPGDecoder::CanDecode(const std::string &filename)
 {
-  CFile *fp = new CFile();
+  CFile fp;
   bool ret = false;
   unsigned char magic[2];
-  if (fp->Open(filename))
+  if (fp.Open(filename))
   {
 
     //JPEG image files begin with FF D8 and end with FF D9.
     // check for FF D8 big + little endian on start
-    uint64_t readbytes = fp->Read(magic, 2);
+    uint64_t readbytes = fp.Read(magic, 2);
     if (readbytes == 2)
     {
       if ((magic[0] == 0xd8 && magic[1] == 0xff) ||
@@ -46,9 +54,9 @@ bool JPGDecoder::CanDecode(const std::string &filename)
     {
       ret = false;
       //check on FF D9 big + little endian on end
-      uint64_t fileSize = fp->GetFileSize();
-      fp->Seek(fileSize - 2);
-      readbytes = fp->Read(magic, 2);
+      uint64_t fileSize = fp.GetFileSize();
+      fp.Seek(fileSize - 2);
+      readbytes = fp.Read(magic, 2);
       if (readbytes == 2)
       {
         if ((magic[0] == 0xd9 && magic[1] == 0xff) ||
@@ -57,19 +65,17 @@ bool JPGDecoder::CanDecode(const std::string &filename)
       }
     }
   }
-  delete fp;
+
   return ret;
 }
 
 bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
 {
   #define WIDTHBYTES(bits) ((((bits) + 31) / 32) * 4)
-  CFile *arq = new CFile();
-  if (!arq->Open(filename))
-  {
-    delete arq;
+
+  CFile arq;
+  if (!arq.Open(filename))
     return false;
-  }
 
   struct jpeg_decompress_struct cinfo;
   struct jpeg_error_mgr jerr;
@@ -79,7 +85,7 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
   cinfo.err = jpeg_std_error(&jerr);
   jpeg_create_decompress(&cinfo);
 
-  jpeg_stdio_src(&cinfo, arq->getFP());
+  jpeg_stdio_src(&cinfo, arq.getFP());
   jpeg_read_header(&cinfo, TRUE);
   jpeg_start_decompress(&cinfo);
 
@@ -90,13 +96,16 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
 
   frame.rgbaImage.pixels.resize(ImageSize);
 
-  unsigned char *scanlinebuff = new unsigned char[3 * cinfo.image_width];
+  std::vector<unsigned char> scanlinebuff;
+  scanlinebuff.resize(3 * cinfo.image_width);
+
   unsigned char* dst = (unsigned char*)frame.rgbaImage.pixels.data();
   while (cinfo.output_scanline < cinfo.output_height)
   {
-    jpeg_read_scanlines(&cinfo,&scanlinebuff,1);
+    unsigned char* src2 = scanlinebuff.data();
 
-    unsigned char *src2 = scanlinebuff;
+    jpeg_read_scanlines(&cinfo, &src2, 1);
+
     unsigned char *dst2 = dst;
     for (unsigned int x = 0; x < cinfo.image_width; x++, src2 += 3)
     {
@@ -107,7 +116,6 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
     }
     dst += cinfo.image_width * 4;
   }
-  delete [] scanlinebuff;
 
   jpeg_finish_decompress(&cinfo);
   jpeg_destroy_decompress(&cinfo);
@@ -119,12 +127,5 @@ bool JPGDecoder::LoadFile(const std::string &filename, DecodedFrames &frames)
 
   frames.frameList.push_back(frame);
 
-  delete arq;
   return true;
-}
-
-void JPGDecoder::FillSupportedExtensions()
-{
-  m_supportedExtensions.emplace_back(".jpg");
-  m_supportedExtensions.emplace_back(".jpeg");
 }

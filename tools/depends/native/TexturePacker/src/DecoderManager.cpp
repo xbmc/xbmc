@@ -41,7 +41,7 @@ bool DecoderManager::IsSupportedGraphicsFile(std::string_view filename)
 
   for (const auto& decoder : m_decoders)
   {
-    const std::vector<std::string> extensions = decoder->GetSupportedExtensions();
+    const std::vector<std::string>& extensions = decoder->GetSupportedExtensions();
     for (const auto& extension : extensions)
     {
       if (std::string::npos != filename.rfind(extension, filename.length() - extension.length()))
