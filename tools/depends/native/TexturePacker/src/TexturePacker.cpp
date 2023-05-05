@@ -171,6 +171,7 @@ void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
 
 CXBTFFrame createXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer, unsigned int flags)
 {
+  const unsigned int delay = decodedFrame.delay;
   const unsigned int width = decodedFrame.rgbaImage.width;
   const unsigned int height = decodedFrame.rgbaImage.height;
   const unsigned int size = width * height * 4;
@@ -224,7 +225,7 @@ CXBTFFrame createXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer, unsi
   frame.SetWidth(width);
   frame.SetHeight(height);
   frame.SetFormat(hasAlpha ? format : format | XB_FMT_OPAQUE);
-  frame.SetDuration(0);
+  frame.SetDuration(delay);
   return frame;
 }
 
@@ -331,7 +332,6 @@ int TexturePacker::createBundle(const std::string& InputDir,
       for (unsigned int j = 0; j < frames.frameList.size(); j++)
       {
         CXBTFFrame frame = createXBTFFrame(frames.frameList[j], writer, flags);
-        frame.SetDuration(frames.frameList[j].delay);
         file.GetFrames().push_back(frame);
         printf("    frame %4i (delay:%4i)                         %s%c (%d,%d @ %" PRIu64
                " bytes)\n",
