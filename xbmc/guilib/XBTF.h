@@ -16,11 +16,11 @@
 #include <stdint.h>
 
 static const std::string XBTF_MAGIC = "XBTF";
-static const std::string XBTF_VERSION = "2";
+static const std::string XBTF_VERSION = "3";
 
 #include "TextureFormats.h"
 
-enum class XBTFCompressionMethod
+enum class XBTFCompressionMethod : uint32_t
 {
   NONE,
   LZO,
@@ -54,7 +54,9 @@ public:
   uint32_t GetDuration() const;
   void SetDuration(uint32_t duration);
 
-  bool IsPacked() const;
+  XBTFCompressionMethod GetCompressionMethod() const;
+  void SetCompressionMethod(XBTFCompressionMethod compressionMethod);
+
   bool HasAlpha() const;
 
 private:
@@ -65,6 +67,7 @@ private:
   uint64_t m_unpackedSize;
   uint64_t m_offset;
   uint32_t m_duration;
+  XBTFCompressionMethod m_compressionMethod = XBTFCompressionMethod::NONE;
 };
 
 class CXBTFFile

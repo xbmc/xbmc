@@ -131,6 +131,7 @@ bool CXBTFWriter::UpdateHeader(const std::vector<unsigned int>& dupes)
       WRITE_U64(frame.GetUnpackedSize(), m_file);
       WRITE_U32(frame.GetDuration(), m_file);
       WRITE_U64(frame.GetOffset(), m_file);
+      WRITE_U32(static_cast<uint32_t>(frame.GetCompressionMethod()), m_file);
     }
   }
 

@@ -224,6 +224,8 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
       // compression failed, or compressed size is bigger than uncompressed, so store as uncompressed
       packedSize = size;
       writer.AppendContent(data, size);
+
+      frame.SetCompressionMethod(XBTFCompressionMethod::NONE);
     }
     else
     { // success
@@ -233,16 +235,22 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
       { //optimisation failed
         packedSize = size;
         writer.AppendContent(data, size);
+
+        frame.SetCompressionMethod(XBTFCompressionMethod::NONE);
       }
       else
       { // success
         writer.AppendContent(packed.data(), packedSize);
+
+        frame.SetCompressionMethod(XBTFCompressionMethod::LZO);
       }
     }
   }
   else
   {
     writer.AppendContent(data, size);
+
+    frame.SetCompressionMethod(XBTFCompressionMethod::NONE);
   }
   frame.SetPackedSize(packedSize);
   frame.SetUnpackedSize(size);

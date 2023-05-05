@@ -52,9 +52,14 @@ void CXBTFFrame::SetPackedSize(uint64_t size)
   m_packedSize = size;
 }
 
-bool CXBTFFrame::IsPacked() const
+XBTFCompressionMethod CXBTFFrame::GetCompressionMethod() const
 {
-  return m_unpackedSize != m_packedSize;
+  return m_compressionMethod;
+}
+
+void CXBTFFrame::SetCompressionMethod(XBTFCompressionMethod compressionMethod)
+{
+  m_compressionMethod = compressionMethod;
 }
 
 bool CXBTFFrame::HasAlpha() const
@@ -111,7 +116,8 @@ uint64_t CXBTFFrame::GetHeaderSize() const
     sizeof(m_packedSize) +
     sizeof(m_unpackedSize) +
     sizeof(m_offset) +
-    sizeof(m_duration);
+    sizeof(m_duration) +
+    sizeof(m_compressionMethod);
 
   return result;
 }

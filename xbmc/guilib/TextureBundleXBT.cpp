@@ -225,7 +225,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
   }
 
   // check if it's packed with lzo
-  if (frame.IsPacked())
+  if (frame.GetCompressionMethod() == XBTFCompressionMethod::LZO)
   { // unpack
     std::vector<unsigned char> unpacked(static_cast<size_t>(frame.GetUnpackedSize()));
     lzo_uint s = (lzo_uint)frame.GetUnpackedSize();
@@ -275,7 +275,7 @@ std::vector<uint8_t> CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader,
   }
 
   // if the frame isn't packed there's nothing else to be done
-  if (!frame.IsPacked())
+  if (frame.GetCompressionMethod() == XBTFCompressionMethod::NONE)
     return packedBuffer;
 
   // make sure lzo is initialized

@@ -152,6 +152,10 @@ bool CXBTFReader::Open(const std::string& path)
         return false;
       frame.SetOffset(u64);
 
+      if (!ReadUInt32(m_file, u32))
+        return false;
+      frame.SetCompressionMethod(static_cast<XBTFCompressionMethod>(u32));
+
       xbtfFile.GetFrames().push_back(frame);
     }
 
