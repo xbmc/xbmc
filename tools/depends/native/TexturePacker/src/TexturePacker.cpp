@@ -169,8 +169,16 @@ void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
   }
 }
 
-CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, bool hasAlpha, unsigned int flags)
+CXBTFFrame createXBTFFrame(RGBAImage& image, CXBTFWriter& writer, unsigned int flags)
 {
+  const unsigned int width = image.width;
+  const unsigned int height = image.height;
+  const unsigned int size = width * height * 4;
+  const unsigned int format = XB_FMT_A8R8G8B8;
+  unsigned char* data = (unsigned char*)image.pixels.data();
+
+  const bool hasAlpha = HasAlpha(data, width, height);
+
   CXBTFFrame frame;
   lzo_uint packedSize = size;
 
@@ -217,24 +225,6 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
   frame.SetHeight(height);
   frame.SetFormat(hasAlpha ? format : format | XB_FMT_OPAQUE);
   frame.SetDuration(0);
-  return frame;
-}
-
-CXBTFFrame createXBTFFrame(RGBAImage& image, CXBTFWriter& writer, unsigned int flags)
-{
-
-  int width, height;
-  unsigned int format = 0;
-  unsigned char* argb = (unsigned char*)image.pixels.data();
-
-  width  = image.width;
-  height = image.height;
-  bool hasAlpha = HasAlpha(argb, width, height);
-
-  CXBTFFrame frame;
-  format = XB_FMT_A8R8G8B8;
-  frame = appendContent(writer, width, height, argb, (width * height * 4), format, hasAlpha, flags);
-
   return frame;
 }
 
