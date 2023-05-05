@@ -333,12 +333,14 @@ int TexturePacker::createBundle(const std::string& InputDir,
     {
       for (unsigned int j = 0; j < frames.frameList.size(); j++)
       {
-        printf("    frame %4i (delay:%4i)                         ", j, frames.frameList[j].delay);
         CXBTFFrame frame = createXBTFFrame(frames.frameList[j].rgbaImage, writer, flags);
         frame.SetDuration(frames.frameList[j].delay);
         file.GetFrames().push_back(frame);
-        printf("%s%c (%d,%d @ %" PRIu64 " bytes)\n", GetFormatString(frame.GetFormat()), frame.HasAlpha() ? ' ' : '*',
-          frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
+        printf("    frame %4i (delay:%4i)                         %s%c (%d,%d @ %" PRIu64
+               " bytes)\n",
+               j, frames.frameList[j].delay, GetFormatString(frame.GetFormat()),
+               frame.HasAlpha() ? ' ' : '*', frame.GetWidth(), frame.GetHeight(),
+               frame.GetUnpackedSize());
       }
     }
     file.SetLoop(0);
