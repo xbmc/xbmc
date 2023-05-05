@@ -49,8 +49,6 @@
 #include <lzo/lzo1x.h>
 #include <sys/stat.h>
 
-#define FLAGS_USE_LZO     1
-
 #define DIR_SEPARATOR '/'
 
 namespace
@@ -111,7 +109,10 @@ public:
 
   int createBundle(const std::string& InputDir, const std::string& OutputFile);
 
-  void SetFlags(unsigned int flags) { m_flags = flags; }
+  void SetCompressionMethod(XBTFCompressionMethod compressionMethod)
+  {
+    m_compressionMethod = compressionMethod;
+  }
 
 private:
   void CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
@@ -128,7 +129,7 @@ private:
   std::vector<unsigned int> m_dupes;
 
   bool m_dupecheck{false};
-  unsigned int m_flags{0};
+  XBTFCompressionMethod m_compressionMethod = XBTFCompressionMethod::NONE;
 };
 
 void TexturePacker::CreateSkeletonHeader(CXBTFWriter& xbtfWriter,
@@ -205,7 +206,7 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
   CXBTFFrame frame;
   lzo_uint packedSize = size;
 
-  if ((m_flags & FLAGS_USE_LZO) == FLAGS_USE_LZO)
+  if (m_compressionMethod == XBTFCompressionMethod::LZO)
   {
     // grab a temporary buffer for unpacking into
     packedSize = size + size / 16 + 64 + 3; // see simple.c in lzo
@@ -385,7 +386,7 @@ int main(int argc, char* argv[])
 
   TexturePacker texturePacker;
 
-  texturePacker.SetFlags(FLAGS_USE_LZO);
+  texturePacker.SetCompressionMethod(XBTFCompressionMethod::LZO);
 
   for (unsigned int i = 1; i < args.size(); ++i)
   {

@@ -20,6 +20,12 @@ static const std::string XBTF_VERSION = "2";
 
 #include "TextureFormats.h"
 
+enum class XBTFCompressionMethod
+{
+  NONE,
+  LZO,
+};
+
 class CXBTFFrame
 {
 public:
