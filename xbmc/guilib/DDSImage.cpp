@@ -22,7 +22,7 @@ CDDSImage::CDDSImage()
   memset(&m_desc, 0, sizeof(m_desc));
 }
 
-CDDSImage::CDDSImage(unsigned int width, unsigned int height, unsigned int format)
+CDDSImage::CDDSImage(unsigned int width, unsigned int height, XB_FMT format)
 {
   m_data = NULL;
   Allocate(width, height, format);
@@ -43,10 +43,10 @@ unsigned int CDDSImage::GetHeight() const
   return m_desc.height;
 }
 
-unsigned int CDDSImage::GetFormat() const
+XB_FMT CDDSImage::GetFormat() const
 {
   if (m_desc.pixelFormat.flags & DDPF_RGB)
-    return 0; // Not supported
+    return XB_FMT_UNKNOWN; // Not supported
   if (m_desc.pixelFormat.flags & DDPF_FOURCC)
   {
     if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "DXT1", 4) == 0)
@@ -58,7 +58,7 @@ unsigned int CDDSImage::GetFormat() const
     if (strncmp((const char *)&m_desc.pixelFormat.fourcc, "ARGB", 4) == 0)
       return XB_FMT_A8R8G8B8;
   }
-  return 0;
+  return XB_FMT_UNKNOWN;
 }
 
 unsigned int CDDSImage::GetSize() const
@@ -100,7 +100,9 @@ bool CDDSImage::ReadFile(const std::string &inputFile)
   return true;
 }
 
-unsigned int CDDSImage::GetStorageRequirements(unsigned int width, unsigned int height, unsigned int format)
+unsigned int CDDSImage::GetStorageRequirements(unsigned int width,
+                                               unsigned int height,
+                                               XB_FMT format)
 {
   switch (format)
   {
@@ -115,7 +117,7 @@ unsigned int CDDSImage::GetStorageRequirements(unsigned int width, unsigned int 
   }
 }
 
-void CDDSImage::Allocate(unsigned int width, unsigned int height, unsigned int format)
+void CDDSImage::Allocate(unsigned int width, unsigned int height, XB_FMT format)
 {
   memset(&m_desc, 0, sizeof(m_desc));
   m_desc.size = sizeof(m_desc);
@@ -131,7 +133,7 @@ void CDDSImage::Allocate(unsigned int width, unsigned int height, unsigned int f
   m_data = new unsigned char[m_desc.linearSize];
 }
 
-const char *CDDSImage::GetFourCC(unsigned int format)
+const char* CDDSImage::GetFourCC(XB_FMT format)
 {
   switch (format)
   {

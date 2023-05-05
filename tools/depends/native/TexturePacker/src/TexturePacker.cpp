@@ -197,7 +197,7 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
   const unsigned int width = decodedFrame.rgbaImage.width;
   const unsigned int height = decodedFrame.rgbaImage.height;
   const unsigned int size = width * height * 4;
-  const unsigned int format = XB_FMT_A8R8G8B8;
+  const XB_FMT format = XB_FMT_A8R8G8B8;
   unsigned char* data = (unsigned char*)decodedFrame.rgbaImage.pixels.data();
 
   const bool hasAlpha = HasAlpha(data, width, height);
@@ -246,7 +246,7 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
   frame.SetUnpackedSize(size);
   frame.SetWidth(width);
   frame.SetHeight(height);
-  frame.SetFormat(hasAlpha ? format : format | XB_FMT_OPAQUE);
+  frame.SetFormat(hasAlpha ? format : static_cast<XB_FMT>(format | XB_FMT_OPAQUE));
   frame.SetDuration(delay);
   return frame;
 }
