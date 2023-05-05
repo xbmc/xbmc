@@ -335,7 +335,7 @@ int TexturePacker::createBundle(const std::string& InputDir,
         file.GetFrames().push_back(frame);
         printf("    frame %4i (delay:%4i)                         %s%c (%d,%d @ %" PRIu64
                " bytes)\n",
-               j, frames.frameList[j].delay, GetFormatString(frame.GetFormat()),
+               j, frame.GetDuration(), GetFormatString(frame.GetFormat()),
                frame.HasAlpha() ? ' ' : '*', frame.GetWidth(), frame.GetHeight(),
                frame.GetUnpackedSize());
       }
