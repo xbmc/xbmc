@@ -67,12 +67,12 @@ if(TARGET_WEBOS)
                               ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.hpp
                               PROPERTIES GENERATED TRUE)
 
-  list(APPEND SOURCES ShellSurfaceWebOSShell.cpp
-                      WebOSScreenSaverInhibitor.cpp
+  list(APPEND SOURCES OSScreenSaverWebOS.cpp
+                      ShellSurfaceWebOSShell.cpp
                       WinSystemWaylandWebOS.cpp
                       ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.cpp)
-  list(APPEND HEADERS ShellSurfaceWebOSShell.h
-                      WebOSScreenSaverInhibitor.h
+  list(APPEND HEADERS OSScreenSaverWebOS.h
+                      ShellSurfaceWebOSShell.h
                       WinSystemWaylandWebOS.h
                       ${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos-protocols.hpp)
 endif()

@@ -9,6 +9,7 @@
 #include "WinSystemWaylandWebOS.h"
 
 #include "Connection.h"
+#include "OSScreenSaverWebOS.h"
 #include "Registry.h"
 #include "ShellSurfaceWebOSShell.h"
 #include "cores/AudioEngine/Sinks/AESinkStarfish.h"
@@ -114,6 +115,11 @@ IShellSurface* CWinSystemWaylandWebOS::CreateShellSurface(const std::string& nam
 {
   return new CShellSurfaceWebOSShell(*this, *GetConnection(), GetMainSurface(), name,
                                      std::string(CCompileInfo::GetAppName()));
+}
+
+std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> CWinSystemWaylandWebOS::GetOSScreenSaverImpl()
+{
+  return std::make_unique<COSScreenSaverWebOS>();
 }
 
 } // namespace KODI::WINDOWING::WAYLAND
