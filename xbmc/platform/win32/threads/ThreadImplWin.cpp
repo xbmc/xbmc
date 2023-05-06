@@ -60,29 +60,34 @@ CThreadImplWin::CThreadImplWin(std::thread::native_handle_type handle) : IThread
 
 void CThreadImplWin::SetThreadInfo(const std::string& name)
 {
-  const unsigned int MS_VC_EXCEPTION = 0x406d1388;
-
-#pragma pack(push,8)
-  struct THREADNAME_INFO
+  // Modern way to name threads first (Windows 10 1607 and above)
+  if (!CWIN32Util::SetThreadName(static_cast<HANDLE>(m_handle), name))
   {
-    DWORD dwType; // must be 0x1000
-    LPCSTR szName; // pointer to name (in same addr space)
-    DWORD dwThreadID; // thread ID (-1 caller thread)
-    DWORD dwFlags; // reserved for future use, most be zero
-  } info;
+    // Fallback on legacy method - specially configured exception
+    const unsigned int MS_VC_EXCEPTION = 0x406d1388;
+
+#pragma pack(push, 8)
+    struct THREADNAME_INFO
+    {
+      DWORD dwType; // must be 0x1000
+      LPCSTR szName; // pointer to name (in same addr space)
+      DWORD dwThreadID; // thread ID (-1 = caller thread)
+      DWORD dwFlags; // reserved for future use, must be zero
+    } info;
 #pragma pack(pop)
 
-  info.dwType = 0x1000;
-  info.szName = name.c_str();
-  info.dwThreadID = reinterpret_cast<std::uintptr_t>(m_handle);
-  info.dwFlags = 0;
+    info.dwType = 0x1000;
+    info.szName = name.c_str();
+    info.dwThreadID = GetThreadId(static_cast<HANDLE>(m_handle));
+    info.dwFlags = 0;
 
-  __try
-  {
-    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR *)&info);
-  }
-  __except(EXCEPTION_EXECUTE_HANDLER)
-  {
+    __try
+    {
+      RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), (ULONG_PTR*)&info);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+    }
   }
 
   CWIN32Util::SetThreadLocalLocale(true); // avoid crashing with setlocale(), see https://connect.microsoft.com/VisualStudio/feedback/details/794122

@@ -71,19 +71,28 @@ class CSysInfo : public CInfoLoader, public ISubSettings
 public:
   enum WindowsVersion
   {
+    // clang-format off
     WindowsVersionUnknown = -1, // Undetected, unsupported Windows version or OS in not Windows
-    WindowsVersionWin8_1, // Windows 8.1, Windows Server 2012 R2
+    WindowsVersionWin8_1,       // Windows 8.1, Windows Server 2012 R2
     WindowsVersionWin10,        // Windows 10
+    WindowsVersionWin10_1607,   // Windows 10 1607
     WindowsVersionWin10_1709,   // Windows 10 1709 (FCU)
     WindowsVersionWin10_1803,   // Windows 10 1803
     WindowsVersionWin10_1809,   // Windows 10 1809
     WindowsVersionWin10_1903,   // Windows 10 1903
     WindowsVersionWin10_1909,   // Windows 10 1909
     WindowsVersionWin10_2004,   // Windows 10 2004
+    WindowsVersionWin10_20H2,   // Windows 10 20H2
+    WindowsVersionWin10_21H1,   // Windows 10 21H1
+    WindowsVersionWin10_21H2,   // Windows 10 21H2
+    WindowsVersionWin10_22H2,   // Windows 10 22H2
     WindowsVersionWin10_Future, // Windows 10 future build
-    WindowsVersionWin11,        // Windows 11
+    WindowsVersionWin11_21H2,   // Windows 11 21H2 - Sun Valley
+    WindowsVersionWin11_22H2,   // Windows 11 22H2 - Sun Valley 2
+    WindowsVersionWin11_Future, // Windows 11 future build
     /* Insert new Windows versions here, when they'll be known */
     WindowsVersionFuture = 100  // Future Windows version, not known to code
+    // clang-format on
   };
   enum WindowsDeviceFamily
   {
