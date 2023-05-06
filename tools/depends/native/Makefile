@@ -30,7 +30,8 @@ NATIVE= \
   python3 \
   swig \
   TexturePacker \
-  zlib
+  zlib \
+  zstd
 
 ifneq ($(NATIVE_OS),osx)
   NATIVE += libffi
