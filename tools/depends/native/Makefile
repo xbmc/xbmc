@@ -16,6 +16,7 @@ NATIVE= \
   giflib \
   heimdal \
   JsonSchemaBuilder \
+  libheif \
   libjpeg-turbo \
   liblzo2 \
   libpng \
@@ -71,6 +72,7 @@ dav1d: ninja
 dpkg: automake gettext libtool pkg-config tar
 heimdal: libtool
 JsonSchemaBuilder: automake
+libheif: dav1d
 libjpeg-turbo: cmake nasm
 libpng: zlib automake
 libtool: automake
