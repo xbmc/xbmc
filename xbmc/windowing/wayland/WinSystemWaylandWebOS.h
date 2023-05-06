@@ -44,6 +44,9 @@ public:
   ~CWinSystemWaylandWebOS() noexcept override;
   bool HasCursor() override;
 
+protected:
+  std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
+
 private:
   std::unique_ptr<CRegistry> m_webosRegistry;
 
