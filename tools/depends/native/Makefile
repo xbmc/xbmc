@@ -10,6 +10,7 @@ NATIVE= \
   autoconf-archive \
   automake \
   cmake \
+  dav1d \
   gas-preprocessor \
   gettext \
   giflib \
@@ -66,6 +67,7 @@ download: $(DOWNLOAD_TARGETS)
 autoconf-archive: autoconf
 autoconf: m4
 automake: autoconf
+dav1d: ninja
 dpkg: automake gettext libtool pkg-config tar
 heimdal: libtool
 JsonSchemaBuilder: automake
