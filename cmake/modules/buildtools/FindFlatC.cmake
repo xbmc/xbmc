@@ -25,14 +25,15 @@ if(NOT TARGET flatbuffers::flatc)
                     OUTPUT_STRIP_TRAILING_WHITESPACE)
     string(REGEX MATCH "[^\n]* version [^\n]*" FLATBUFFERS_FLATC_VERSION "${FLATBUFFERS_FLATC_VERSION}")
     string(REGEX REPLACE ".* version (.*)" "\\1" FLATBUFFERS_FLATC_VERSION "${FLATBUFFERS_FLATC_VERSION}")
+  endif()
 
-  else()
+  set(MODULE_LC flatbuffers)
+  # Duplicate URL may exist from FindFlatbuffers.cmake
+  # unset otherwise it thinks we are providing a local file location and incorrect concatenation happens
+  unset(FLATBUFFERS_URL)
+  SETUP_BUILD_VARS()
 
-    set(MODULE_LC flatbuffers)
-    # Duplicate URL may exist from FindFlatbuffers.cmake
-    # unset otherwise it thinks we are providing a local file location and incorrect concatenation happens
-    unset(FLATBUFFERS_URL)
-    SETUP_BUILD_VARS()
+  if(NOT FLATBUFFERS_FLATC_EXECUTABLE OR (ENABLE_INTERNAL_FLATBUFFERS AND NOT "${FLATBUFFERS_FLATC_VERSION}" VERSION_EQUAL "${FLATBUFFERS_VER}"))
 
     # Override build type detection and always build as release
     set(FLATBUFFERS_BUILD_TYPE Release)
