@@ -225,18 +225,25 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
   }
 
   // check if it's packed with lzo
-  if (frame.GetCompressionMethod() == XBTFCompressionMethod::LZO)
-  { // unpack
-    std::vector<unsigned char> unpacked(static_cast<size_t>(frame.GetUnpackedSize()));
-    lzo_uint s = (lzo_uint)frame.GetUnpackedSize();
-    if (lzo1x_decompress_safe(buffer.data(), static_cast<lzo_uint>(buffer.size()), unpacked.data(),
-                              &s, NULL) != LZO_E_OK ||
-        s != frame.GetUnpackedSize())
-    {
-      CLog::Log(LOGERROR, "Error loading texture: {}: Decompression error", name);
-      return false;
+  switch (frame.GetCompressionMethod())
+  {
+    case XBTFCompressionMethod::LZO:
+    { // unpack
+      std::vector<unsigned char> unpacked(static_cast<size_t>(frame.GetUnpackedSize()));
+      lzo_uint s = (lzo_uint)frame.GetUnpackedSize();
+      if (lzo1x_decompress_safe(buffer.data(), static_cast<lzo_uint>(buffer.size()),
+                                unpacked.data(), &s, NULL) != LZO_E_OK ||
+          s != frame.GetUnpackedSize())
+      {
+        CLog::Log(LOGERROR, "Error loading texture: {}: Decompression error", name);
+        return false;
+      }
+      buffer = std::move(unpacked);
+
+      break;
     }
-    buffer = std::move(unpacked);
+    default:
+      break;
   }
 
   // create an xbmc texture
@@ -275,27 +282,36 @@ std::vector<uint8_t> CTextureBundleXBT::UnpackFrame(const CXBTFReader& reader,
   }
 
   // if the frame isn't packed there's nothing else to be done
-  if (frame.GetCompressionMethod() == XBTFCompressionMethod::NONE)
-    return packedBuffer;
-
-  // make sure lzo is initialized
-  if (lzo_init() != LZO_E_OK)
+  switch (frame.GetCompressionMethod())
   {
-    CLog::Log(LOGERROR, "CTextureBundleXBT: failed to initialize lzo");
-    return {};
-  }
+    case XBTFCompressionMethod::NONE:
+    default:
+    {
+      return packedBuffer;
+    }
+    case XBTFCompressionMethod::LZO:
+    {
+      // make sure lzo is initialized
+      if (lzo_init() != LZO_E_OK)
+      {
+        CLog::Log(LOGERROR, "CTextureBundleXBT: failed to initialize lzo");
+        return {};
+      }
 
-  lzo_uint size = static_cast<lzo_uint>(frame.GetUnpackedSize());
-  std::vector<uint8_t> unpackedBuffer(static_cast<size_t>(frame.GetUnpackedSize()));
-  if (lzo1x_decompress_safe(packedBuffer.data(), static_cast<lzo_uint>(packedBuffer.size()),
-                            unpackedBuffer.data(), &size, nullptr) != LZO_E_OK ||
-      size != frame.GetUnpackedSize())
-  {
-    CLog::Log(LOGERROR,
-              "CTextureBundleXBT: failed to decompress frame with {} unpacked bytes to {} bytes",
-              frame.GetPackedSize(), frame.GetUnpackedSize());
-    return {};
-  }
+      lzo_uint size = static_cast<lzo_uint>(frame.GetUnpackedSize());
+      std::vector<uint8_t> unpackedBuffer(static_cast<size_t>(frame.GetUnpackedSize()));
+      if (lzo1x_decompress_safe(packedBuffer.data(), static_cast<lzo_uint>(packedBuffer.size()),
+                                unpackedBuffer.data(), &size, nullptr) != LZO_E_OK ||
+          size != frame.GetUnpackedSize())
+      {
+        CLog::Log(
+            LOGERROR,
+            "CTextureBundleXBT: failed to decompress frame with {} unpacked bytes to {} bytes",
+            frame.GetPackedSize(), frame.GetUnpackedSize());
+        return {};
+      }
 
-  return unpackedBuffer;
+      return unpackedBuffer;
+    }
+  }
 }
