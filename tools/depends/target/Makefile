@@ -48,7 +48,8 @@ DEPENDS = \
   sqlite3 \
   tinyxml \
   udfread \
-  xz
+  xz \
+  zstd
 
 ifeq ($(ENABLE_GPLV3),yes)
   DEPENDS+=samba-gplv3 libcdio-gplv3
