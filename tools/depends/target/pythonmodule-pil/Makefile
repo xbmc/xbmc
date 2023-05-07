@@ -21,6 +21,8 @@ else ifeq ($(OS),darwin_embedded)
   PILPATH=$(PREFIX)/share/$(APP_NAME)/addons/script.module.pil
   PILPATHLIB=$(PILPATH)/lib
   PYTHONPATH=$(PILPATH):$(PYTHON_SITE_PKG)
+else ifeq ($(TARGET_PLATFORM),webos)
+  PILPATHLIB=$(PYTHON_SITE_PKG)/..
 endif
 
 SED_FLAG=-i
@@ -85,6 +87,11 @@ ifeq ($(OS),android)
 else ifeq ($(OS),darwin_embedded)
 	cd $(PILPATHLIB) && unzip -o ../Pillow-*.egg
 	cd $(PILPATH) && rm -rf Pillow-*.egg
+else ifeq ($(TARGET_PLATFORM),webos)
+	cd $(PILPATHLIB) && unzip -o $(PILPATH)/Pillow-*.egg && rm -f $(PILPATH)/Pillow-*.egg
+	cd $(PILPATHLIB)/PIL && \
+          sed $(SED_FLAG) -e 's/import sys, pkg_resources,/import sys, /' \
+                          -re "/__file__/ s|=.*(_imaging.*.so).*$$|= 'lib/python3/PIL/\1'|" _imaging*.py
 endif
 	touch $@
 
