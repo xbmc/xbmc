@@ -82,6 +82,12 @@ using namespace winrt::Windows::System::Profile;
 namespace
 {
 auto startTime = std::chrono::steady_clock::now();
+
+#if defined(TARGET_WEBOS)
+constexpr const char* osReleaseFile = "/usr/lib/os-release";
+#elif defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
+constexpr const char* osReleaseFile = "/etc/os-release";
+#endif
 }
 
 using namespace XFILE;
@@ -134,7 +140,7 @@ static bool appendWindows10NameVersion(std::string& osNameVer)
 #if defined(TARGET_LINUX) && !defined(TARGET_ANDROID)
 static std::string getValueFromOs_release(std::string key)
 {
-  FILE* os_rel = fopen("/etc/os-release", "r");
+  FILE* os_rel = fopen(osReleaseFile, "r");
   if (!os_rel)
     return "";
 
@@ -606,6 +612,8 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
       osName = "Android TV";
     else
       osName = "Android";
+#elif defined(TARGET_WEBOS)
+    osName = "webOS";
 #elif defined(TARGET_LINUX)
     osName = getValueFromOs_release("NAME");
     if (osName.empty())
@@ -1295,6 +1303,8 @@ std::string CSysInfo::GetBuildTargetPlatformName(void)
   return "FreeBSD";
 #elif defined(TARGET_ANDROID)
   return "Android";
+#elif defined(TARGET_WEBOS)
+  return "webOS";
 #elif defined(TARGET_LINUX)
   return "Linux";
 #elif defined(TARGET_WINDOWS)
