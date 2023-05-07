@@ -187,7 +187,7 @@ case $build in
   *darwin*)
     build_os="osx"
     if test "x$build_cpu" = "xx86_64"; then
-      host_includes="-arch x86_64 -mmacosx-version-min=10.13"
+      host_includes="-arch x86_64 -mmacosx-version-min=10.14"
     else
       host_includes="-arch arm64 -mmacosx-version-min=11.0"
     fi
@@ -461,7 +461,7 @@ case $host in
           AC_MSG_ERROR(invalid architecture (--with-cpu=$use_cpu))
         fi
 
-        target_minver="10.13"
+        target_minver="10.14"
 
         # check provided window system is valid_sdk
         # if no window system supplied, default to SDL for now.
