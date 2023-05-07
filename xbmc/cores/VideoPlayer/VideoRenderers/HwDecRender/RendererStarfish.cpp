@@ -83,7 +83,6 @@ CRenderInfo CRendererStarfish::GetRenderInfo()
 {
   CRenderInfo info;
   info.max_buffer_size = 4;
-  info.optimal_buffer_size = 3;
   return info;
 }
 
