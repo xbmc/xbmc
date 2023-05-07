@@ -25,8 +25,7 @@ else()
   endif()
 endif()
 
-set(SOURCES src/md5.cpp
-            src/DecoderManager.cpp
+set(SOURCES src/DecoderManager.cpp
             src/TexturePacker.cpp
             src/XBTFWriter.cpp
             src/decoder/GIFDecoder.cpp

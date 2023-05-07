@@ -26,8 +26,9 @@ char* GetCommandLine();
 #else
 #include <windows.h>
 #endif
-#include <vector>
+#include <cstring>
 #include <string>
+#include <vector>
 
 class CmdLineArgs : public std::vector<char*>
 {

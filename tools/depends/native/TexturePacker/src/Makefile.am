@@ -15,7 +15,7 @@ AM_LDFLAGS = @LIBS@ @STATIC_FLAG@
 
 
 bin_PROGRAMS = TexturePacker
-TexturePacker_SOURCES =  md5.cpp \
+TexturePacker_SOURCES = \
   XBTFWriter.cpp \
   TexturePacker.cpp \
   DecoderManager.cpp \

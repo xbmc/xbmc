@@ -27,18 +27,16 @@
 #include <inttypes.h>
 #define platform_stricmp strcasecmp
 #endif
-#include <cerrno>
-#include <dirent.h>
-#include <map>
-
+#include "DecoderManager.h"
+#include "XBTFWriter.h"
+#include "cmdlineargs.h"
 #include "guilib/XBTF.h"
 #include "guilib/XBTFReader.h"
 
-#include "DecoderManager.h"
+#include <cerrno>
+#include <map>
 
-#include "XBTFWriter.h"
-#include "md5.h"
-#include "cmdlineargs.h"
+#include <dirent.h>
 
 #ifdef TARGET_WINDOWS
 #define strncasecmp _strnicmp
@@ -120,11 +118,11 @@ private:
 
   CXBTFFrame CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWriter& writer) const;
 
-  bool CheckDupe(MD5Context* ctx, unsigned int pos);
+  bool CheckDupe(std::size_t hash, unsigned int pos);
 
   DecoderManager decoderManager;
 
-  std::map<std::string, unsigned int> m_hashes;
+  std::map<std::size_t, unsigned int> m_hashes;
   std::vector<unsigned int> m_dupes;
 
   bool m_dupecheck{false};
@@ -251,27 +249,16 @@ CXBTFFrame TexturePacker::CreateXBTFFrame(DecodedFrame& decodedFrame, CXBTFWrite
   return frame;
 }
 
-bool TexturePacker::CheckDupe(MD5Context* ctx,
-                              unsigned int pos)
+bool TexturePacker::CheckDupe(std::size_t hash, unsigned int pos)
 {
-  unsigned char digest[17];
-  MD5Final(digest,ctx);
-  digest[16] = 0;
-  char hex[33];
-  sprintf(hex, "%02X%02X%02X%02X%02X%02X%02X%02X"\
-      "%02X%02X%02X%02X%02X%02X%02X%02X", digest[0], digest[1], digest[2],
-      digest[3], digest[4], digest[5], digest[6], digest[7], digest[8],
-      digest[9], digest[10], digest[11], digest[12], digest[13], digest[14],
-      digest[15]);
-  hex[32] = 0;
-  std::map<std::string, unsigned int>::iterator it = m_hashes.find(hex);
+  auto it = m_hashes.find(hash);
   if (it != m_hashes.end())
   {
     m_dupes[pos] = it->second;
     return true;
   }
 
-  m_hashes[hex] = pos;
+  m_hashes[hash] = pos;
   m_dupes[pos] = pos;
 
   return false;
@@ -293,8 +280,6 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
 
   for (size_t i = 0; i < files.size(); i++)
   {
-    struct MD5Context ctx;
-    MD5Init(&ctx);
     CXBTFFile& file = files[i];
 
     std::string fullPath = InputDir;
@@ -315,11 +300,9 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
     bool skip=false;
     if (m_dupecheck)
     {
-      for (unsigned int j = 0; j < frames.frameList.size(); j++)
-        MD5Update(&ctx, (const uint8_t*)frames.frameList[j].rgbaImage.pixels.data(),
-                  frames.frameList[j].rgbaImage.height * frames.frameList[j].rgbaImage.pitch);
+      std::size_t hash = std::hash<DecodedFrames>{}(frames);
 
-      if (CheckDupe(&ctx, i))
+      if (CheckDupe(hash, i))
       {
         printf("****  duplicate of %s\n", files[m_dupes[i]].GetPath().c_str());
         file.GetFrames().insert(file.GetFrames().end(),

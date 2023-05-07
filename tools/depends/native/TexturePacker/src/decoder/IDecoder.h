@@ -21,6 +21,7 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
 #include <string>
 #include <vector>
 
@@ -69,4 +70,26 @@ class DecodedFrames
   public:
     DecodedFrames() = default;
     std::vector<DecodedFrame> frameList;
+};
+
+template<>
+struct std::hash<DecodedFrames>
+{
+    std::size_t operator()(DecodedFrames const& frames) const noexcept
+    {
+      std::size_t seed = frames.frameList.front().rgbaImage.pixels.size();
+
+      for (const auto& frame : frames.frameList)
+      {
+        for (auto x : frame.rgbaImage.pixels)
+        {
+          x = ((x >> 16) ^ x) * 0x45d9f3b;
+          x = ((x >> 16) ^ x) * 0x45d9f3b;
+          x = (x >> 16) ^ x;
+          seed ^= x + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+        }
+      }
+
+      return seed;
+    }
 };
