@@ -163,7 +163,6 @@ CRenderInfo CRendererBase::GetRenderInfo()
     AV_PIX_FMT_YUV420P16
   };
   info.max_buffer_size = NUM_BUFFERS;
-  info.optimal_buffer_size = 4;
 
   return info;
 }

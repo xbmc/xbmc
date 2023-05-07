@@ -91,8 +91,6 @@ CRenderInfo CRendererDXVA::GetRenderInfo()
 {
   auto info = __super::GetRenderInfo();
 
-  const int buffers = NUM_BUFFERS + m_processor->PastRefs();
-  info.optimal_buffer_size = std::min(NUM_BUFFERS, buffers);
   info.m_deintMethods.push_back(VS_INTERLACEMETHOD_DXVA_AUTO);
 
   return  info;
