@@ -24,13 +24,11 @@ struct CRenderInfo
   }
   void Reset()
   {
-    optimal_buffer_size = 0;
     max_buffer_size = 0;
     opaque_pointer = nullptr;
     m_deintMethods.clear();
     formats.clear();
   }
-  unsigned int optimal_buffer_size;
   unsigned int max_buffer_size;
   // Supported pixel formats, can be called before configure
   std::vector<AVPixelFormat> formats;
