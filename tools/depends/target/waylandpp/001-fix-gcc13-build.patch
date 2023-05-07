@@ -1,0 +1,28 @@
+--- a/include/wayland-client.hpp
++++ b/include/wayland-client.hpp
+@@ -33,6 +33,7 @@
+ #include <memory>
+ #include <string>
+ #include <vector>
++#include <cstdint>
+ #include <wayland-version.hpp>
+ #include <wayland-client-core.h>
+ #include <wayland-util.hpp>
+
+--- a/scanner/scanner.cpp
++++ b/scanner/scanner.cpp
+@@ -24,6 +24,7 @@
+ #include <cctype>
+ #include <cmath>
+ #include <stdexcept>
++#include <cstdint>
+
+ #include "pugixml.hpp"
+
+@@ -928,6 +929,7 @@
+               << "#include <memory>" << std::endl
+               << "#include <string>" << std::endl
+               << "#include <vector>" << std::endl
++              << "#include <cstdint>" << std::endl
+               << std::endl
+               << "#include <wayland-client.hpp>" << std::endl;
