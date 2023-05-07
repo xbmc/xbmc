@@ -606,7 +606,7 @@ void CWinSystemWin10::ResolutionChanged()
   OnDisplayBack();
 }
 
-std::unique_ptr<CVideoSync> CWinSystemWin10::GetVideoSync(void *clock)
+std::unique_ptr<CVideoSync> CWinSystemWin10::GetVideoSync(CVideoReferenceClock* clock)
 {
   std::unique_ptr<CVideoSync> pVSync(new CVideoSyncD3D(clock));
   return pVSync;

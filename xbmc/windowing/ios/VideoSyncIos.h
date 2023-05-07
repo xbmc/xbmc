@@ -16,11 +16,13 @@ class CWinSystemIOS;
 class CVideoSyncIos : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncIos(void *clock, CWinSystemIOS &winSystem) :
-    CVideoSync(clock), m_winSystem(winSystem) {}
+  CVideoSyncIos(CVideoReferenceClock* clock, CWinSystemIOS& winSystem)
+    : CVideoSync(clock), m_winSystem(winSystem)
+  {
+  }
 
   // CVideoSync interface
-  bool Setup(PUPDATECLOCK func) override;
+  bool Setup() override;
   void Run(CEvent& stopEvent) override;
   void Cleanup() override;
   float GetFps() override;

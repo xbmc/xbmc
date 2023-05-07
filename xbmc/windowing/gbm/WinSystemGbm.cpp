@@ -13,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "VideoSyncGbm.h"
 #include "cores/VideoPlayer/Buffers/VideoBufferDRMPRIME.h"
+#include "cores/VideoPlayer/VideoReferenceClock.h"
 #include "drm/DRMAtomic.h"
 #include "drm/DRMLegacy.h"
 #include "drm/OffScreenModeSetting.h"
@@ -338,7 +339,7 @@ void CWinSystemGbm::OnLostDevice()
     resource->OnLostDisplay();
 }
 
-std::unique_ptr<CVideoSync> CWinSystemGbm::GetVideoSync(void* clock)
+std::unique_ptr<CVideoSync> CWinSystemGbm::GetVideoSync(CVideoReferenceClock* clock)
 {
   return std::make_unique<CVideoSyncGbm>(clock);
 }

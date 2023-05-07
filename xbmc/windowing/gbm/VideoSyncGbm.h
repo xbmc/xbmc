@@ -18,12 +18,12 @@ class CWinSystemBase;
 class CVideoSyncGbm : public CVideoSync, IDispResource
 {
 public:
-  explicit CVideoSyncGbm(void* clock);
+  explicit CVideoSyncGbm(CVideoReferenceClock* clock);
   CVideoSyncGbm() = delete;
   ~CVideoSyncGbm() override = default;
 
   // CVideoSync overrides
-  bool Setup(PUPDATECLOCK func) override;
+  bool Setup() override;
   void Run(CEvent& stopEvent) override;
   void Cleanup() override;
   float GetFps() override;
