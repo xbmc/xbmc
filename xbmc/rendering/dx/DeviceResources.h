@@ -183,5 +183,6 @@ namespace DX
     bool m_IsTransferPQ;
     bool m_NV12SharedTexturesSupport{false};
     bool m_DXVA2SharedDecoderSurfaces{false};
+    bool m_usedSwapChain{false};
   };
 }

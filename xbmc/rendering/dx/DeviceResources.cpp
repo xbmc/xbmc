@@ -708,6 +708,7 @@ void DX::DeviceResources::ResizeBuffers()
     ComPtr<IDXGIDevice1> dxgiDevice;
     hr = m_d3dDevice.As(&dxgiDevice); CHECK_ERR();
     dxgiDevice->SetMaximumFrameLatency(1);
+    m_usedSwapChain = false;
   }
 
   CLog::LogF(LOGDEBUG, "end resize buffers.");
@@ -935,6 +936,7 @@ void DX::DeviceResources::HandleDeviceLost(bool removed)
 bool DX::DeviceResources::Begin()
 {
   HRESULT hr = m_swapChain->Present(0, DXGI_PRESENT_TEST);
+  m_usedSwapChain = true;
 
   // If the device was removed either by a disconnection or a driver upgrade, we
   // must recreate all device resources.
@@ -966,6 +968,7 @@ void DX::DeviceResources::Present()
   // frames that will never be displayed to the screen.
   DXGI_PRESENT_PARAMETERS parameters = {};
   HRESULT hr = m_swapChain->Present1(1, 0, &parameters);
+  m_usedSwapChain = true;
 
   // If the device was removed either by a disconnection or a driver upgrade, we
   // must recreate all device resources.
@@ -1270,6 +1273,18 @@ void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpac
 
   if (SUCCEEDED(m_swapChain.As(&swapChain3)))
   {
+    // Set the color space on a new swap chain - not mandated by MS documentation but needed
+    // at least for some AMD, at least up to Adrenalin 23.4.3 / Windows driver 31.0.14043.7000
+    if (m_usedSwapChain &&
+        m_IsTransferPQ != (colorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020))
+    {
+      // Temporary release, can't hold references during swap chain re-creation
+      swapChain3 = nullptr;
+      DestroySwapChain();
+      CreateWindowSizeDependentResources();
+      m_swapChain.As(&swapChain3);
+    }
+
     if (SUCCEEDED(swapChain3->SetColorSpace1(colorSpace)))
     {
       m_IsTransferPQ = (colorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
