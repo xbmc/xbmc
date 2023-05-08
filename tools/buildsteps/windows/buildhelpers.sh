@@ -37,9 +37,9 @@ do_wget() {
   local archive="$2"
 
   if [[ -z $archive ]]; then
-    wget --tries=5 --retry-connrefused --waitretry=2 --no-check-certificate -c -P /downloads/ $URL
+    curl --retry 5 --retry-all-errors --retry-connrefused --retry-delay 5 --location --output-dir /downloads/ --remote-name $URL
   else
-    wget --tries=5 --retry-connrefused --waitretry=2 --no-check-certificate -c $URL -O /downloads/$archive
+    curl --retry 5 --retry-all-errors --retry-connrefused --retry-delay 5 --location --output-dir /downloads/ --output $archive $URL
   fi
 }
 
