@@ -121,7 +121,7 @@ do_download() {
 
     do_print_status "$LIBNAME-$VERSION" "$blue_color" "Extracting"
     mkdir $LOCALSRCDIR && cd $LOCALSRCDIR
-    tar -xaf /downloads/$ARCHIVE --strip 1
+    tar -xf /downloads/$ARCHIVE --strip 1
   fi
   # applying patches
   local patches=(/xbmc/tools/buildsteps/windows/patches/*-$LIBNAME-*.patch)
