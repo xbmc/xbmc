@@ -6872,6 +6872,20 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_SongVideoURL `ListItem.SongVideoURL`\endlink
 ///   }
+///   \table_row3{   <b>`ListItem.VideoWidth`</b>,
+///                  \anchor ListItem_VideoWidth
+///                  _string_,
+///     @return String containing width of video in pixels - empty if unknown.
+///     <p><hr>
+///     @skinning_v21 **[New Infolabel]** \link ListItem_VideoWidth `ListItem.VideoWidth`\endlink
+///   }
+///   \table_row3{   <b>`ListItem.VideoHeight`</b>,
+///                  \anchor ListItem_VideoHeight
+///                  _string_,
+///     @return String containing height of video in pixels - empty if unknown.
+///     <p><hr>
+///     @skinning_v21 **[New Infolabel]** \link ListItem_VideoHeight `ListItem.VideoHeight`\endlink
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -6989,6 +7003,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "setid",            LISTITEM_SETID },
                                   { "videocodec",       LISTITEM_VIDEO_CODEC },
                                   { "videoresolution",  LISTITEM_VIDEO_RESOLUTION },
+                                  { "videowidth",       LISTITEM_VIDEO_WIDTH},
+                                  { "videoheight",      LISTITEM_VIDEO_HEIGHT},
                                   { "videoaspect",      LISTITEM_VIDEO_ASPECT },
                                   { "audiocodec",       LISTITEM_AUDIO_CODEC },
                                   { "audiochannels",    LISTITEM_AUDIO_CHANNELS },
