@@ -437,6 +437,20 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
       case LISTITEM_VIDEO_ASPECT:
         value = CStreamDetails::VideoAspectToAspectDescription(tag->m_streamDetails.GetVideoAspect());
         return true;
+      case LISTITEM_VIDEO_WIDTH:
+      {
+        const int val = tag->m_streamDetails.GetVideoWidth();
+        if (val > 0)
+          value = std::to_string(val);
+        return true;
+      }
+      case LISTITEM_VIDEO_HEIGHT:
+      {
+        const int val = tag->m_streamDetails.GetVideoHeight();
+        if (val > 0)
+          value = std::to_string(val);
+        return true;
+      }
       case LISTITEM_AUDIO_CODEC:
         value = tag->m_streamDetails.GetAudioCodec();
         return true;
