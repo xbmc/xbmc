@@ -57,7 +57,7 @@ static NSDictionary* _windowMenu = @{
     },
     @{@"title" : @"-"},
     @{
-      @"title" : @"Enter Full Screen",
+      @"title" : @"Toggle Full Screen",
       @"sel" : @"fullScreenToggle:",
       @"mod" : @(NSEventModifierFlagControl),
       @"key" : @"f"
