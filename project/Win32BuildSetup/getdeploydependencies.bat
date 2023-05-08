@@ -11,7 +11,7 @@ if not exist %DOWNLOAD_FOLDER% mkdir %DOWNLOAD_FOLDER%
 
 if not exist %DOWNLOAD_FOLDER%\%DOWNLOAD_FILE% (
   echo Downloading vc143 redist...
-  ..\BuildDependencies\bin\wget --tries=5 --retry-connrefused --waitretry=2 -nv -O %DOWNLOAD_FOLDER%\%DOWNLOAD_FILE% %DOWNLOAD_URL%
+  curl --retry 5 --retry-all-errors --retry-connrefused --retry-delay 5 --location --output %DOWNLOAD_FOLDER%\%DOWNLOAD_FILE% %DOWNLOAD_URL%
 )
 :: Restore the previous current directory
 POPD
