@@ -17,15 +17,13 @@
 #include "commons/ilog.h"
 #include "filesystem/File.h"
 #include "guilib/Texture.h"
-#include "music/MusicThumbLoader.h"
+#include "imagefiles/SpecialImageLoaderFactory.h"
 #include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "utils/EmbeddedArt.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
-#include "video/VideoThumbLoader.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -195,20 +193,12 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const std::string& image,
                                                       const std::string& additional_info,
                                                       bool requirePixels)
 {
-  if (additional_info == "music")
-  { // special case for embedded music images
-    EmbeddedArt art;
-    if (CMusicThumbLoader::GetEmbeddedThumb(image, art))
-      return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime, width,
-                                            height);
-  }
-
-  if (StringUtils::StartsWith(additional_info, "video_"))
+  if (!additional_info.empty())
   {
-    EmbeddedArt art;
-    if (CVideoThumbLoader::GetEmbeddedThumb(image, additional_info.substr(6), art))
-      return CTexture::LoadFromFileInMemory(art.m_data.data(), art.m_size, art.m_mime, width,
-                                            height);
+    IMAGE_FILES::CSpecialImageLoaderFactory specialImageLoader{};
+    auto texture = specialImageLoader.Load(additional_info, image, width, height);
+    if (texture)
+      return texture;
   }
 
   // Validate file URL to see if it is an image
