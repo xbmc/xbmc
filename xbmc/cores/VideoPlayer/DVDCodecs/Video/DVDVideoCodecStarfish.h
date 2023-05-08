@@ -106,28 +106,22 @@ private:
   std::unique_ptr<CBitstreamConverter> m_bitstream;
 
   static constexpr auto ms_codecMap = make_map<AVCodecID, std::string_view>({
-      {AV_CODEC_ID_MPEG2VIDEO, "MPEG2"},
-      {AV_CODEC_ID_MPEG4, "MPEG4"},
       {AV_CODEC_ID_VP8, "VP8"},
       {AV_CODEC_ID_VP9, "VP9"},
       {AV_CODEC_ID_AVS, "H264"},
       {AV_CODEC_ID_CAVS, "H264"},
       {AV_CODEC_ID_H264, "H264"},
       {AV_CODEC_ID_HEVC, "H265"},
-      {AV_CODEC_ID_VC1, "VC1"},
       {AV_CODEC_ID_AV1, "AV1"},
   });
 
   static constexpr auto ms_formatInfoMap = make_map<AVCodecID, std::string_view>({
-      {AV_CODEC_ID_MPEG2VIDEO, "starfish-mpeg2"},
-      {AV_CODEC_ID_MPEG4, "starfish-mpeg4"},
       {AV_CODEC_ID_VP8, "starfish-vp8"},
       {AV_CODEC_ID_VP9, "starfish-vp9"},
       {AV_CODEC_ID_AVS, "starfish-h264"},
       {AV_CODEC_ID_CAVS, "starfish-h264"},
       {AV_CODEC_ID_H264, "starfish-h264"},
       {AV_CODEC_ID_HEVC, "starfish-h265"},
-      {AV_CODEC_ID_VC1, "starfish-vc1"},
       {AV_CODEC_ID_AV1, "starfish-av1"},
   });
 
