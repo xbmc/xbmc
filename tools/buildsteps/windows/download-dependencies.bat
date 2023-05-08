@@ -31,7 +31,6 @@ REM Can't run rmdir and md back to back. access denied error otherwise.
 IF EXIST %TMP_PATH% rmdir %TMP_PATH% /S /Q
 
 SET DL_PATH="%BUILD_DEPS_PATH%\downloads"
-SET WGET=%BUILD_DEPS_PATH%\bin\wget
 SET ZIP=%BUILD_DEPS_PATH%\..\Win32BuildSetup\tools\7z\7za
 
 IF NOT EXIST %DL_PATH% md %DL_PATH%
