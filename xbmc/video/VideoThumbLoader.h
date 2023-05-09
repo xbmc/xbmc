@@ -56,7 +56,7 @@ public:
   bool m_fillStreamDetails; ///< fill in stream details?
 };
 
-class CVideoThumbLoader : public CThumbLoader, public CJobQueue
+class CVideoThumbLoader : public CThumbLoader
 {
 public:
   CVideoThumbLoader();
@@ -107,15 +107,6 @@ public:
    \return true if we fill art, false otherwise
    */
  bool FillLibraryArt(CFileItem &item) override;
-
-  /*!
-   \brief Callback from CThumbExtractor on completion of a generated image
-
-   Performs the callbacks and updates the GUI.
-
-   \sa CImageLoader, IJobCallback
-   */
-  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
 protected:
   CVideoDatabase *m_videoDatabase;
