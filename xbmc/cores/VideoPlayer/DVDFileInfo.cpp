@@ -518,6 +518,9 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   if (!pItem)
     return false;
 
+  if (!CanExtract(*pItem))
+    return false;
+
   std::string strFileNameAndPath;
   if (pItem->HasVideoInfoTag())
     strFileNameAndPath = pItem->GetVideoInfoTag()->m_strFileNameAndPath;

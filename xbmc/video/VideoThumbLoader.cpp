@@ -9,17 +9,14 @@
 #include "VideoThumbLoader.h"
 
 #include "FileItem.h"
-#include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "URL.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "cores/VideoSettings.h"
 #include "filesystem/Directory.h"
-#include "filesystem/DirectoryCache.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
@@ -177,8 +174,7 @@ bool CThumbExtractor::DoWork()
   return false;
 }
 
-CVideoThumbLoader::CVideoThumbLoader() :
-  CThumbLoader(), CJobQueue(true, 1, CJob::PRIORITY_LOW_PAUSABLE)
+CVideoThumbLoader::CVideoThumbLoader() : CThumbLoader()
 {
   m_videoDatabase = new CVideoDatabase();
 }
@@ -201,27 +197,6 @@ void CVideoThumbLoader::OnLoaderFinish()
   m_videoDatabase->Close();
   m_artCache.clear();
   CThumbLoader::OnLoaderFinish();
-}
-
-static void SetupRarOptions(CFileItem& item, const std::string& path)
-{
-  std::string path2(path);
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
-    path2 = item.GetVideoInfoTag()->m_strFileNameAndPath;
-  CURL url(path2);
-  std::string opts = url.GetOptions();
-  if (opts.find("flags") != std::string::npos)
-    return;
-  if (opts.size())
-    opts += "&flags=8";
-  else
-    opts = "?flags=8";
-  url.SetOptions(opts);
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
-    item.GetVideoInfoTag()->m_strFileNameAndPath = url.Get();
-  else
-    item.SetPath(url.Get());
-  g_directoryCache.ClearDirectory(url.GetWithoutFilename());
 }
 
 namespace
@@ -396,8 +371,6 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
       pItem->GetVideoInfoTag()->m_type != MediaTypeMusicVideo)
     return false; // Nothing to do here
 
-  DetectAndAddMissingItemData(*pItem);
-
   m_videoDatabase->Open();
 
   std::map<std::string, std::string> artwork = pItem->GetArt();
@@ -438,63 +411,61 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   // We can only extract flags/thumbs for file-like items
   if (!pItem->m_bIsFolder && pItem->IsVideo())
   {
-    // An auto-generated thumb may have been cached on a different device - check we have it here
-    std::string url = pItem->GetArt("thumb");
-    if (StringUtils::StartsWith(url, "image://video@") &&
-        !CServiceBroker::GetTextureCache()->HasCachedImage(url))
-      pItem->SetArt("thumb", "");
-
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     if (!pItem->HasArt("thumb"))
     {
-      // create unique thumb for auto generated thumbs
       std::string thumbURL = GetEmbeddedThumbURL(*pItem);
-      if (CServiceBroker::GetTextureCache()->HasCachedImage(thumbURL))
+      if (CDVDFileInfo::CanExtract(*pItem) &&
+          settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
+          settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL) !=
+              CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE)
       {
-        CServiceBroker::GetTextureCache()->BackgroundCacheImage(thumbURL);
-        pItem->SetProperty("HasAutoThumb", true);
-        pItem->SetProperty("AutoThumbImage", thumbURL);
         pItem->SetArt("thumb", thumbURL);
 
         if (pItem->HasVideoInfoTag())
         {
-          // Item has cached autogen image but no art entry. Save it to db.
           CVideoInfoTag* info = pItem->GetVideoInfoTag();
           if (info->m_iDbId > 0 && !info->m_type.empty())
             m_videoDatabase->SetArtForItem(info->m_iDbId, info->m_type, "thumb", thumbURL);
         }
       }
-      else if (settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
-               settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
-               settings->GetInt(CSettings::SETTING_VIDEOLIBRARY_ARTWORK_LEVEL) !=
-                   CSettings::VIDEOLIBRARY_ARTWORK_LEVEL_NONE)
+    }
+
+    // flag extraction mostly for non-library items - should end up somewhere else,
+    // like a VideoInfoLoader if it existed
+    if (settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
+        CDVDFileInfo::CanExtract(*pItem) &&
+        (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails()))
+    {
+      // No tag or no details set, so extract them
+      CLog::LogF(LOGDEBUG, "trying to extract filestream details from video file {}",
+                 CURL::GetRedacted(pItem->GetPath()));
+      if (CDVDFileInfo::GetFileStreamDetails(pItem))
       {
-        CFileItem item(*pItem);
-        std::string path(item.GetPath());
-        if (URIUtils::IsInRAR(item.GetPath()))
-          SetupRarOptions(item,path);
+        CVideoInfoTag* info = pItem->GetVideoInfoTag();
+        m_videoDatabase->BeginTransaction();
 
-        CThumbExtractor* extract = new CThumbExtractor(item, path, true, thumbURL);
-        AddJob(extract);
+        if (info->m_iFileId < 0)
+          m_videoDatabase->SetStreamDetailsForFile(
+              info->m_streamDetails,
+              !info->m_strFileNameAndPath.empty() ? info->m_strFileNameAndPath : pItem->GetPath());
+        else
+          m_videoDatabase->SetStreamDetailsForFileId(info->m_streamDetails, info->m_iFileId);
 
-        m_videoDatabase->Close();
-        return true;
+        // overwrite the runtime value if the one from streamdetails is available
+        if (info->m_iDbId > 0 && info->GetStaticDuration() != info->GetDuration())
+        {
+          info->SetDuration(info->GetDuration());
+
+          // store the updated information in the database
+          m_videoDatabase->SetDetailsForItem(info->m_iDbId, info->m_type, *info, pItem->GetArt());
+        }
+
+        m_videoDatabase->CommitTransaction();
       }
     }
-
-    // flag extraction
-    if (settings->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS) &&
-       (!pItem->HasVideoInfoTag()                     ||
-        !pItem->GetVideoInfoTag()->HasStreamDetails() ) )
-    {
-      CFileItem item(*pItem);
-      std::string path(item.GetPath());
-      if (URIUtils::IsInRAR(item.GetPath()))
-        SetupRarOptions(item,path);
-      CThumbExtractor* extract = new CThumbExtractor(item,path,false);
-      AddJob(extract);
-    }
   }
+  DetectAndAddMissingItemData(*pItem);
 
   m_videoDatabase->Close();
   return true;
@@ -688,22 +659,6 @@ std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
     path = CStackDirectory::GetFirstStackedFile(path);
 
   return CTextureUtils::GetWrappedImageURL(path, "video");
-}
-
-void CVideoThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
-{
-  if (success)
-  {
-    CThumbExtractor* loader = static_cast<CThumbExtractor*>(job);
-    loader->m_item.SetPath(loader->m_listpath);
-
-    if (m_pObserver)
-      m_pObserver->OnItemLoaded(&loader->m_item);
-    CFileItemPtr pItem(new CFileItem(loader->m_item));
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
-    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-  }
-  CJobQueue::OnJobComplete(jobID, success, job);
 }
 
 void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
