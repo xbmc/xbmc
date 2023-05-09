@@ -87,10 +87,7 @@ int DegreeToOrientation(int degrees)
   }
 }
 
-bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
-                                CTextureDetails &details,
-                                CStreamDetails *pStreamDetails,
-                                int64_t pos)
+bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem, CTextureDetails& details, int64_t pos)
 {
   const std::string redactPath = CURL::GetRedacted(fileItem.GetPath());
   auto start = std::chrono::steady_clock::now();
@@ -128,41 +125,6 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
       delete pDemuxer;
 
     return false;
-  }
-
-  if (pStreamDetails)
-  {
-
-    const std::string& strPath = item.GetPath();
-    DemuxerToStreamDetails(pInputStream, pDemuxer, *pStreamDetails, strPath);
-
-    //extern subtitles
-    std::vector<std::string> filenames;
-    std::string video_path;
-    if (strPath.empty())
-      video_path = pInputStream->GetFileName();
-    else
-      video_path = strPath;
-
-    CUtil::ScanForExternalSubtitles(video_path, filenames);
-
-    for(unsigned int i=0;i<filenames.size();i++)
-    {
-      // if vobsub subtitle:
-      if (URIUtils::GetExtension(filenames[i]) == ".idx")
-      {
-        std::string strSubFile;
-        if ( CUtil::FindVobSubPair(filenames, filenames[i], strSubFile) )
-          AddExternalSubtitleToDetails(video_path, *pStreamDetails, filenames[i], strSubFile);
-      }
-      else
-      {
-        if ( !CUtil::IsVobSub(filenames, filenames[i]) )
-        {
-          AddExternalSubtitleToDetails(video_path, *pStreamDetails, filenames[i]);
-        }
-      }
-    }
   }
 
   int nVideoStream = -1;

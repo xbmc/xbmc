@@ -23,11 +23,8 @@ class CTextureDetails;
 class CDVDFileInfo
 {
 public:
-  // Extract a thumbnail image from the media referenced by fileItem, optionally populating a streamdetails class with the data
-  static bool ExtractThumb(const CFileItem& fileItem,
-                           CTextureDetails &details,
-                           CStreamDetails *pStreamDetails,
-                           int64_t pos);
+  // Extract a thumbnail image from the media referenced by fileItem
+  static bool ExtractThumb(const CFileItem& fileItem, CTextureDetails& details, int64_t pos);
 
   static std::unique_ptr<CTexture> ExtractThumbToTexture(const CFileItem& fileItem);
 
