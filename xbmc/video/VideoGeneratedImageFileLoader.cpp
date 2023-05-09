@@ -1,0 +1,59 @@
+/*
+ *  Copyright (C) 2023 Team Kodi
+ *  This file is part of Kodi - https://kodi.tv
+ *
+ *  SPDX-License-Identifier: GPL-2.0-or-later
+ *  See LICENSES/README.md for more information.
+ */
+
+#include "VideoGeneratedImageFileLoader.h"
+
+#include "DVDFileInfo.h"
+#include "FileItem.h"
+#include "URL.h"
+#include "filesystem/DirectoryCache.h"
+#include "guilib/Texture.h"
+#include "utils/URIUtils.h"
+#include "video/VideoInfoTag.h"
+
+bool VIDEO::CVideoGeneratedImageFileLoader::CanLoad(std::string specialType) const
+{
+  return specialType == "video";
+}
+
+namespace
+{
+void SetupRarOptions(CFileItem& item, const std::string& path)
+{
+  std::string path2(path);
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
+    path2 = item.GetVideoInfoTag()->m_strFileNameAndPath;
+  CURL url(path2);
+  std::string opts = url.GetOptions();
+  if (opts.find("flags") != std::string::npos)
+    return;
+  if (opts.size())
+    opts += "&flags=8";
+  else
+    opts = "?flags=8";
+  url.SetOptions(opts);
+  if (item.IsVideoDb() && item.HasVideoInfoTag())
+    item.GetVideoInfoTag()->m_strFileNameAndPath = url.Get();
+  else
+    item.SetPath(url.Get());
+  g_directoryCache.ClearDirectory(url.GetWithoutFilename());
+}
+} // namespace
+
+std::unique_ptr<CTexture> VIDEO::CVideoGeneratedImageFileLoader::Load(std::string specialType,
+                                                                      std::string filePath,
+                                                                      unsigned int,
+                                                                      unsigned int) const
+{
+  CFileItem item{filePath, false};
+
+  if (URIUtils::IsInRAR(filePath))
+    SetupRarOptions(item, filePath);
+
+  return CDVDFileInfo::ExtractThumbToTexture(item);
+}

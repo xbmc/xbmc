@@ -7,18 +7,20 @@
  */
 
 #include "DVDFileInfo.h"
-#include "ServiceBroker.h"
+
+#include "DVDInputStreams/DVDInputStream.h"
+#include "DVDStreamInfo.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
+#include "filesystem/StackDirectory.h"
+#include "guilib/Texture.h"
+#include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
-#include "pictures/Picture.h"
-#include "video/VideoInfoTag.h"
-#include "filesystem/StackDirectory.h"
-#include "utils/log.h"
+#include "utils/MemUtils.h"
 #include "utils/URIUtils.h"
-
-#include "DVDStreamInfo.h"
-#include "DVDInputStreams/DVDInputStream.h"
+#include "utils/log.h"
+#include "video/VideoInfoTag.h"
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
@@ -304,6 +306,207 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem,
             __FUNCTION__, duration.count(), redactPath, packetsTried);
 
   return bOk;
+}
+
+std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem)
+{
+  if (!CanExtract(fileItem))
+    return {};
+
+  const std::string redactPath = CURL::GetRedacted(fileItem.GetPath());
+  auto start = std::chrono::steady_clock::now();
+
+  CFileItem item(fileItem);
+  item.SetMimeTypeForInternetFile();
+  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
+  if (!pInputStream)
+  {
+    CLog::Log(LOGERROR, "InputStream: Error creating stream for {}", redactPath);
+    return {};
+  }
+
+  if (!pInputStream->Open())
+  {
+    CLog::Log(LOGERROR, "InputStream: Error opening, {}", redactPath);
+    return {};
+  }
+
+  CDVDDemux* pDemuxer = NULL;
+
+  try
+  {
+    pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true);
+    if (!pDemuxer)
+    {
+      CLog::LogF(LOGERROR, "Error creating demuxer");
+      return {};
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Exception thrown when opening demuxer");
+    if (pDemuxer)
+      delete pDemuxer;
+
+    return {};
+  }
+
+  int nVideoStream = -1;
+  int64_t demuxerId = -1;
+  for (CDemuxStream* pStream : pDemuxer->GetStreams())
+  {
+    if (pStream)
+    {
+      // ignore if it's a picture attachment (e.g. jpeg artwork)
+      if (pStream->type == STREAM_VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC))
+      {
+        nVideoStream = pStream->uniqueId;
+        demuxerId = pStream->demuxerId;
+      }
+      else
+        pDemuxer->EnableStream(pStream->demuxerId, pStream->uniqueId, false);
+    }
+  }
+
+  int packetsTried = 0;
+
+  std::unique_ptr<CTexture> result{};
+  if (nVideoStream != -1)
+  {
+    std::unique_ptr<CProcessInfo> pProcessInfo(CProcessInfo::CreateInstance());
+    std::vector<AVPixelFormat> pixFmts;
+    pixFmts.push_back(AV_PIX_FMT_YUV420P);
+    pProcessInfo->SetPixFormats(pixFmts);
+
+    CDVDStreamInfo hint(*pDemuxer->GetStream(demuxerId, nVideoStream), true);
+    hint.codecOptions = CODEC_FORCE_SOFTWARE;
+
+    std::unique_ptr<CDVDVideoCodec> pVideoCodec =
+        CDVDFactoryCodec::CreateVideoCodec(hint, *pProcessInfo);
+
+    if (pVideoCodec)
+    {
+      int nTotalLen = pDemuxer->GetStreamLength();
+      int64_t nSeekTo = nTotalLen / 3;
+
+      CLog::LogF(LOGDEBUG, "seeking to pos {}ms (total: {}ms) in {}", nSeekTo, nTotalLen,
+                 redactPath);
+
+      if (pDemuxer->SeekTime(static_cast<double>(nSeekTo), true))
+      {
+        CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
+        VideoPicture picture = {};
+
+        // num streams * 160 frames, should get a valid frame, if not abort.
+        int abort_index = pDemuxer->GetNrOfStreams() * 160;
+        do
+        {
+          DemuxPacket* pPacket = pDemuxer->Read();
+          packetsTried++;
+
+          if (!pPacket)
+            break;
+
+          if (pPacket->iStreamId != nVideoStream)
+          {
+            CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+            continue;
+          }
+
+          pVideoCodec->AddData(*pPacket);
+          CDVDDemuxUtils::FreeDemuxPacket(pPacket);
+
+          iDecoderState = CDVDVideoCodec::VC_NONE;
+          while (iDecoderState == CDVDVideoCodec::VC_NONE)
+          {
+            iDecoderState = pVideoCodec->GetPicture(&picture);
+          }
+
+          if (iDecoderState == CDVDVideoCodec::VC_PICTURE)
+          {
+            if (!(picture.iFlags & DVP_FLAG_DROPPED))
+              break;
+          }
+
+        } while (abort_index--);
+
+        if (iDecoderState == CDVDVideoCodec::VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
+        {
+          {
+            unsigned int nWidth =
+                std::min(picture.iDisplayWidth,
+                         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes);
+            double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
+            if (hint.forced_aspect && hint.aspect != 0)
+              aspect = hint.aspect;
+            unsigned int nHeight = (unsigned int)((double)nWidth / aspect);
+
+            result = CTexture::CreateTexture(nWidth, nHeight);
+            result->SetAlpha(false);
+            struct SwsContext* context =
+                sws_getContext(picture.iWidth, picture.iHeight, AV_PIX_FMT_YUV420P, nWidth, nHeight,
+                               AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+
+            if (context)
+            {
+              uint8_t* planes[YuvImage::MAX_PLANES];
+              int stride[YuvImage::MAX_PLANES];
+              picture.videoBuffer->GetPlanes(planes);
+              picture.videoBuffer->GetStrides(stride);
+              uint8_t* src[4] = {planes[0], planes[1], planes[2], 0};
+              int srcStride[] = {stride[0], stride[1], stride[2], 0};
+              uint8_t* dst[] = {result->GetPixels(), 0, 0, 0};
+              int dstStride[] = {static_cast<int>(result->GetPitch()), 0, 0, 0};
+              result->SetOrientation(DegreeToOrientation(hint.orientation));
+              sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
+              sws_freeContext(context);
+            }
+          }
+        }
+        else
+        {
+          CLog::LogF(LOGDEBUG, "decode failed in {} after {} packets.", redactPath, packetsTried);
+        }
+      }
+    }
+  }
+
+  if (pDemuxer)
+    delete pDemuxer;
+
+  auto end = std::chrono::steady_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+  CLog::LogF(LOGDEBUG, "measured {} ms to extract thumb from file <{}> in {} packets. ",
+             duration.count(), redactPath, packetsTried);
+
+  return result;
+}
+
+bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
+{
+  if (fileItem.m_bIsFolder)
+    return false;
+
+  if (fileItem.IsLiveTV() ||
+      // Due to a pvr addon api design flaw (no support for multiple concurrent streams
+      // per addon instance), pvr recording thumbnail extraction does not work (reliably).
+      URIUtils::IsPVRRecording(fileItem.GetDynPath()) ||
+      // plugin path not fully resolved
+      URIUtils::IsPlugin(fileItem.GetDynPath()) || URIUtils::IsUPnP(fileItem.GetPath()) ||
+      fileItem.IsInternetStream() || fileItem.IsDiscStub() || fileItem.IsPlayList())
+    return false;
+
+  // mostly can't extract from discs and files from discs.
+  if (URIUtils::IsBluray(fileItem.GetPath()) || fileItem.IsBDFile() || fileItem.IsDVD() ||
+      fileItem.IsDiscImage() || fileItem.IsDVDFile(false, true))
+    return false;
+
+  // For HTTP/FTP we only allow extraction when on a LAN
+  if (URIUtils::IsRemote(fileItem.GetPath()) && !URIUtils::IsOnLAN(fileItem.GetPath()) &&
+      (URIUtils::IsFTP(fileItem.GetPath()) || URIUtils::IsHTTP(fileItem.GetPath())))
+    return false;
+
+  return true;
 }
 
 /**

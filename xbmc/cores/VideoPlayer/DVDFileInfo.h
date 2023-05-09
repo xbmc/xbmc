@@ -17,6 +17,7 @@ class CDVDDemux;
 class CStreamDetails;
 class CStreamDetailSubtitle;
 class CDVDInputStream;
+class CTexture;
 class CTextureDetails;
 
 class CDVDFileInfo
@@ -27,6 +28,13 @@ public:
                            CTextureDetails &details,
                            CStreamDetails *pStreamDetails,
                            int64_t pos);
+
+  static std::unique_ptr<CTexture> ExtractThumbToTexture(const CFileItem& fileItem);
+
+  /*!
+   * @brief Can a thumbnail image and file stream details be extracted from this file item?
+  */
+  static bool CanExtract(const CFileItem& fileItem);
 
   // Probe the files streams and store the info in the VideoInfoTag
   static bool GetFileStreamDetails(CFileItem *pItem);

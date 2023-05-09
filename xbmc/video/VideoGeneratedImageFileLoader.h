@@ -10,25 +10,19 @@
 
 #include "imagefiles/SpecialImageFileLoader.h"
 
-#include <array>
-#include <memory>
-#include <string>
-
-class CTexture;
-
-namespace IMAGE_FILES
+namespace VIDEO
 {
-class CSpecialImageLoaderFactory
+/*!
+ * @brief Generates a texture for a thumbnail of a video file, from a frame approx 1/3 into the video.
+*/
+class CVideoGeneratedImageFileLoader : public IMAGE_FILES::ISpecialImageFileLoader
 {
 public:
-  CSpecialImageLoaderFactory();
-
+  bool CanLoad(std::string specialType) const override;
   std::unique_ptr<CTexture> Load(std::string specialType,
                                  std::string filePath,
                                  unsigned int preferredWidth,
-                                 unsigned int preferredHeight) const;
-
-private:
-  std::array<std::unique_ptr<ISpecialImageFileLoader>, 3> m_specialImageLoaders{};
+                                 unsigned int preferredHeight) const override;
 };
-} // namespace IMAGE_FILES
+
+} // namespace VIDEO
