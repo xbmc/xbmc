@@ -9,9 +9,8 @@
 #pragma once
 
 #include "ThumbLoader.h"
-#include "utils/JobManager.h"
 
-class CPictureThumbLoader : public CThumbLoader, public CJobQueue
+class CPictureThumbLoader : public CThumbLoader
 {
 public:
   CPictureThumbLoader();
@@ -22,15 +21,6 @@ public:
   bool LoadItemLookup(CFileItem* pItem) override;
   void SetRegenerateThumbs(bool regenerate) { m_regenerateThumbs = regenerate; }
   static void ProcessFoldersAndArchives(CFileItem *pItem);
-
-  /*!
-   \brief Callback from CThumbExtractor on completion of a generated image
-
-   Performs the callbacks and updates the GUI.
-
-   \sa CImageLoader, IJobCallback
-   */
-  void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 
 protected:
   void OnLoaderFinish() override;
