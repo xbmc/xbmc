@@ -34,7 +34,11 @@ public:
   static bool CanExtract(const CFileItem& fileItem);
 
   // Probe the files streams and store the info in the VideoInfoTag
-  static bool GetFileStreamDetails(CFileItem *pItem);
+  static bool GetFileStreamDetails(CFileItem* pItem);
+
+  static bool GetFileDuration(const std::string& path, int& duration);
+
+private:
   static bool DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>& pInputStream,
                                      CDVDDemux* pDemux,
                                      CStreamDetails& details,
@@ -47,8 +51,6 @@ public:
                                      CDVDDemux* pDemuxer,
                                      const std::vector<CStreamDetailSubtitle>& subs,
                                      CStreamDetails& details);
-
-  static bool GetFileDuration(const std::string &path, int &duration);
 
   /** \brief Probe the streams of an external subtitle file and store the info in the StreamDetails parameter.
   *   \param[out] details The external subtitle file's StreamDetails.
