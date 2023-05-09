@@ -1672,6 +1672,14 @@ namespace VIDEO
       }
     }
 
+    if (art.find("thumb") == art.end() &&
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
+        CDVDFileInfo::CanExtract(*pItem))
+    {
+      art["thumb"] = CVideoThumbLoader::GetEmbeddedThumbURL(*pItem);
+    }
+
     for (const auto& artType : artTypes)
     {
       if (art.find(artType) != art.end())
