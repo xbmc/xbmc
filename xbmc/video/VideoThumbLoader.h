@@ -26,15 +26,18 @@ using ArtCache = std::map<std::pair<MediaType, int>, ArtMap>;
  \ingroup thumbs,jobs
  \brief Thumb extractor job class
 
- Used by the CVideoThumbLoader to perform asynchronous generation of thumbs
+ Used by the "chapter browser" GUI window to generate chapter thumbs.
 
  \sa CVideoThumbLoader and CJob
  */
-class CThumbExtractor : public CJob
+class CChapterThumbExtractor : public CJob
 {
 public:
-  CThumbExtractor(const CFileItem& item, const std::string& listpath, bool thumb, const std::string& strTarget="", int64_t pos = -1, bool fillStreamDetails = true);
-  ~CThumbExtractor() override;
+  CChapterThumbExtractor(const CFileItem& item,
+                         const std::string& listpath,
+                         const std::string& strTarget = "",
+                         int64_t pos = -1);
+  ~CChapterThumbExtractor() override;
 
   /*!
    \brief Work function that extracts thumb.
@@ -50,10 +53,8 @@ public:
 
   std::string m_target; ///< thumbpath
   std::string m_listpath; ///< path used in fileitem list
-  CFileItem  m_item;
-  bool       m_thumb; ///< extract thumb?
-  int64_t    m_pos; ///< position to extract thumb from
-  bool m_fillStreamDetails; ///< fill in stream details?
+  CFileItem m_item;
+  int64_t m_pos; ///< position to extract thumb from
 };
 
 class CVideoThumbLoader : public CThumbLoader
