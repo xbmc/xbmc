@@ -6,6 +6,7 @@ set(SOURCES Bookmark.cpp
             VideoDatabase.cpp
             VideoDbUrl.cpp
             VideoEmbeddedImageFileLoader.cpp
+            VideoGeneratedImageFileLoader.cpp
             VideoInfoDownloader.cpp
             VideoInfoScanner.cpp
             VideoInfoTag.cpp
@@ -24,6 +25,7 @@ set(HEADERS Bookmark.h
             VideoDatabase.h
             VideoDbUrl.h
             VideoEmbeddedImageFileLoader.h
+            VideoGeneratedImageFileLoader.h
             VideoInfoDownloader.h
             VideoInfoScanner.h
             VideoInfoTag.h

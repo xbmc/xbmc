@@ -29,6 +29,6 @@ public:
                                  unsigned int preferredHeight) const;
 
 private:
-  std::array<std::unique_ptr<ISpecialImageFileLoader>, 2> m_specialImageLoaders{};
+  std::array<std::unique_ptr<ISpecialImageFileLoader>, 3> m_specialImageLoaders{};
 };
 } // namespace IMAGE_FILES

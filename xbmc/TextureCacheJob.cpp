@@ -149,8 +149,8 @@ std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned in
 
     if (!CTextureCache::CanCacheImageURL(thumbURL))
       return "";
-    if (thumbURL.GetUserName() == "music")
-      additional_info = "music";
+    if (thumbURL.GetUserName() == "music" || thumbURL.GetUserName() == "video")
+      additional_info = thumbURL.GetUserName();
     if (StringUtils::StartsWith(thumbURL.GetUserName(), "video_") ||
         StringUtils::StartsWith(thumbURL.GetUserName(), "pvr") ||
         StringUtils::StartsWith(thumbURL.GetUserName(), "epg"))
