@@ -1152,16 +1152,21 @@ bool CWinSystemOSX::HasValidResolution() const
 
 #pragma mark - Window Move
 
-void CWinSystemOSX::OnMove(int x, int y)
+void CheckAndUpdateCurrentMonitor(NSUInteger screenNumber)
 {
-  // check if the current screen/monitor settings needs to be updated
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const std::string storedScreenName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
-  const std::string currentScreenName = screenNameForDisplay(m_lastDisplayNr).UTF8String;
+  const std::string currentScreenName = screenNameForDisplay(screenNumber).UTF8String;
   if (storedScreenName != currentScreenName)
   {
     CDisplaySettings::GetInstance().SetMonitor(currentScreenName);
   }
+}
+
+void CWinSystemOSX::OnMove(int x, int y)
+{
+  // check if the current screen/monitor settings needs to be updated
+  CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
 
   // check if refresh rate needs to be updated
   static double oldRefreshRate = m_refreshRate;
@@ -1184,33 +1189,27 @@ void CWinSystemOSX::OnMove(int x, int y)
   }
 }
 
-void CWinSystemOSX::WindowChangedScreen()
+void CWinSystemOSX::OnChangeScreen(unsigned int screenIdx)
 {
-  // if we are here the user dragged the window to a different
-  // screen and we return the screen of the window
   const NSUInteger lastDisplay = m_lastDisplayNr;
   if (m_appWindow)
   {
-    m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen(m_appWindow.screen));
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen(m_appWindow.screen));
+    });
   }
   // force unblank the current display
   if (lastDisplay != m_lastDisplayNr && m_bFullScreen)
   {
     UnblankDisplay(m_lastDisplayNr);
+    CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
   }
 }
 
-void CWinSystemOSX::NotifyScreenChangeIntention()
+void CWinSystemOSX::MoveToScreen(const std::string& screen)
 {
-  if (!SupportsScreenMove())
-  {
-    return;
-  }
-
   // find the future displayId and the screen object
-  const NSUInteger dispIdx =
-      GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-          CSettings::SETTING_VIDEOSCREEN_MONITOR));
+  const NSUInteger dispIdx = GetDisplayIndex(screen);
   NSScreen* currentScreen;
   NSScreen* targetScreen;
   if (dispIdx < NSScreen.screens.count && m_lastDisplayNr < NSScreen.screens.count)

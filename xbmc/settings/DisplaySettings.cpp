@@ -303,12 +303,18 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
   }
   else if (settingId == CSettings::SETTING_VIDEOSCREEN_MONITOR)
   {
-    CServiceBroker::GetWinSystem()->NotifyScreenChangeIntention();
-    CServiceBroker::GetWinSystem()->UpdateResolutions();
+    auto winSystem = CServiceBroker::GetWinSystem();
+    if (winSystem->SupportsScreenMove())
+    {
+      const std::string screen =
+          std::static_pointer_cast<const CSettingString>(setting)->GetValue();
+      winSystem->MoveToScreen(screen);
+    }
+    winSystem->UpdateResolutions();
     RESOLUTION newRes = GetResolutionForScreen();
 
     SetCurrentResolution(newRes, false);
-    CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(newRes, true);
+    winSystem->GetGfxContext().SetVideoResolution(newRes, true);
 
     if (!m_resolutionChangeAborted)
     {
