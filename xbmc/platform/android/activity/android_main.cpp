@@ -28,8 +28,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <thread>
-
-#include <androidjni/SurfaceTexture.h>
 #include <unistd.h>
 
 namespace
