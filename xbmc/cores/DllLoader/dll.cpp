@@ -8,10 +8,7 @@
 
 #include "dll.h"
 
-#include "DllLoader.h"
 #include "DllLoaderContainer.h"
-#include "dll_tracker.h"
-#include "dll_util.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -141,81 +138,6 @@ extern "C" int __stdcall dllFreeLibrary(HINSTANCE hLibModule)
   DllLoaderContainer::ReleaseModule(dllhandle);
 
   return 1;
-}
-
-extern "C" intptr_t (*__stdcall dllGetProcAddress(HMODULE hModule, const char* function))(void)
-{
-  uintptr_t loc = (uintptr_t)_ReturnAddress();
-
-  void* address = NULL;
-  LibraryLoader* dll = DllLoaderContainer::GetModule(hModule);
-
-  if( !dll )
-  {
-    CLog::Log(LOGERROR, "{} - Invalid hModule specified", __FUNCTION__);
-    return NULL;
-  }
-
-  /* how can somebody get the stupid idea to create such a stupid function */
-  /* where you never know if the given pointer is a pointer or a value */
-  if( HIGH_WORD(function) == 0 && LOW_WORD(function) < 1000)
-  {
-    if( dll->ResolveOrdinal(LOW_WORD(function), &address) )
-    {
-      CLog::Log(LOGDEBUG, "{}({}({}), {}) => {}", __FUNCTION__, fmt::ptr(hModule), dll->GetName(),
-                LOW_WORD(function), fmt::ptr(address));
-    }
-    else if( dll->IsSystemDll() )
-    {
-      char ordinal[6] = {};
-      sprintf(ordinal, "%u", LOW_WORD(function));
-      address = (void*)create_dummy_function(dll->GetName(), ordinal);
-
-      /* add to tracklist if we are tracking this source dll */
-      DllTrackInfo* track = tracker_get_dlltrackinfo(loc);
-      if( track )
-        tracker_dll_data_track(track->pDll, (uintptr_t)address);
-
-      CLog::Log(LOGDEBUG, "{} - created dummy function {}!{}", __FUNCTION__, dll->GetName(),
-                ordinal);
-    }
-    else
-    {
-      address = NULL;
-      CLog::Log(LOGDEBUG, "{}({}({}), '{}') => {}", __FUNCTION__, fmt::ptr(hModule), dll->GetName(),
-                function, fmt::ptr(address));
-    }
-  }
-  else
-  {
-    if( dll->ResolveExport(function, &address) )
-    {
-      CLog::Log(LOGDEBUG, "{}({}({}), '{}') => {}", __FUNCTION__, fmt::ptr(hModule), dll->GetName(),
-                function, fmt::ptr(address));
-    }
-    else
-    {
-      DllTrackInfo* track = tracker_get_dlltrackinfo(loc);
-      /* some dll's require us to always return a function or it will fail, other's  */
-      /* decide functionality depending on if the functions exist and may fail      */
-      if (dll->IsSystemDll() && track &&
-          StringUtils::CompareNoCase(track->pDll->GetName(), "CoreAVCDecoder.ax") == 0)
-      {
-        address = (void*)create_dummy_function(dll->GetName(), function);
-        tracker_dll_data_track(track->pDll, (uintptr_t)address);
-        CLog::Log(LOGDEBUG, "{} - created dummy function {}!{}", __FUNCTION__, dll->GetName(),
-                  function);
-      }
-      else
-      {
-        address = NULL;
-        CLog::Log(LOGDEBUG, "{}({}({}), '{}') => {}", __FUNCTION__, fmt::ptr(hModule),
-                  dll->GetName(), function, fmt::ptr(address));
-      }
-    }
-  }
-
-  return (intptr_t(*)(void)) address;
 }
 
 extern "C" HMODULE WINAPI dllGetModuleHandleA(const char* lpModuleName)

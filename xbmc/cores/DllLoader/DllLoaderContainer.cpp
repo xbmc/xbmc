@@ -13,13 +13,11 @@
 #ifdef TARGET_WINDOWS
 #include "Win32DllLoader.h"
 #endif
-#include "DllLoader.h"
-#include "dll_tracker.h" // for python unload hack
-#include "filesystem/File.h"
-#include "utils/URIUtils.h"
-#include "utils/StringUtils.h"
-#include "utils/log.h"
 #include "URL.h"
+#include "filesystem/File.h"
+#include "utils/StringUtils.h"
+#include "utils/URIUtils.h"
+#include "utils/log.h"
 
 #if defined(TARGET_WINDOWS)
 #define ENV_PARTIAL_PATH \
@@ -56,8 +54,7 @@
 using namespace XFILE;
 
 LibraryLoader* DllLoaderContainer::m_dlls[64] = {};
-int        DllLoaderContainer::m_iNrOfDlls = 0;
-bool       DllLoaderContainer::m_bTrack = true;
+int DllLoaderContainer::m_iNrOfDlls = 0;
 
 void DllLoaderContainer::Clear()
 {
@@ -244,8 +241,6 @@ LibraryLoader* DllLoaderContainer::LoadDll(const char* sName, bool bLoadSymbols)
   pLoader = new SoLoader(sName, bLoadSymbols);
 #elif defined(TARGET_WINDOWS)
   pLoader = new Win32DllLoader(sName, false);
-#else
-  pLoader = new DllLoader(sName, m_bTrack, false, bLoadSymbols);
 #endif
 
   if (!pLoader)
