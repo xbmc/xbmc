@@ -318,6 +318,9 @@ void CApplication::HandlePortEvents()
       case XBMC_MODECHANGE:
         CServiceBroker::GetWinSystem()->GetGfxContext().ApplyModeChange(newEvent.mode.res);
         break;
+      case XBMC_SCREENCHANGE:
+        CServiceBroker::GetWinSystem()->OnChangeScreen(newEvent.screen.screenIdx);
+        break;
       case XBMC_USEREVENT:
         CServiceBroker::GetAppMessenger()->PostMsg(static_cast<uint32_t>(newEvent.user.code));
         break;

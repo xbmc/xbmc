@@ -107,6 +107,11 @@ public:
   virtual bool Hide() { return false; }
   virtual bool Show(bool raise = true) { return false; }
 
+  /*! \brief Window was requested to move to the given screen
+      \param screen the screen name (as shown in the application settings)
+  */
+  virtual void MoveToScreen(const std::string& screen) {}
+
   // videosync
   virtual std::unique_ptr<CVideoSync> GetVideoSync(CVideoReferenceClock* clock) { return nullptr; }
 
@@ -114,10 +119,10 @@ public:
   virtual void OnMove(int x, int y) {}
 
   /**
-   * \brief Used to signal the windowing system about the intention of the user to change the main display
-   * \details triggered, for example, when the user manually changes the monitor setting
+   * \brief Used to signal the windowing system about the change of the current screen
+   * \param screenIdx the screen index as know by the windowing system implementation
   */
-  virtual void NotifyScreenChangeIntention() {}
+  virtual void OnChangeScreen(unsigned int screenIdx) {}
 
   // OS System screensaver
   /**

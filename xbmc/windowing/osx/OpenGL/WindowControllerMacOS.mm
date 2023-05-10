@@ -156,11 +156,19 @@
 
 - (void)windowDidChangeScreen:(NSNotification*)notification
 {
-  // user has moved the window to a different screen
-  CWinSystemOSX* winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  if (!winSystem)
-    return;
-  winSystem->WindowChangedScreen();
+  // window has moved to a different screen
+  if (self.window)
+  {
+    XBMC_Event newEvent = {};
+    newEvent.type = XBMC_SCREENCHANGE;
+    newEvent.screen.screenIdx =
+        static_cast<unsigned int>([NSScreen.screens indexOfObject:self.window.screen]);
+    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+    if (appPort)
+    {
+      appPort->OnEvent(newEvent);
+    }
+  }
 }
 
 - (void)windowDidChangeBackingProperties:(NSNotification*)notification

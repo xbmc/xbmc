@@ -23,6 +23,7 @@ typedef enum
   XBMC_QUIT, /* User-requested quit */
   XBMC_VIDEORESIZE, /* User resized video mode */
   XBMC_FULLSCREEN_UPDATE, /* Triggered by an OS event when Kodi is running in fullscreen, rescale and repositioning is required  */
+  XBMC_SCREENCHANGE, /* Window moved to a different screen */
   XBMC_VIDEOMOVE, /* User moved the window */
   XBMC_MODECHANGE, /* Video mode must be changed */
   XBMC_TOUCH,
@@ -62,6 +63,11 @@ typedef struct XBMC_MoveEvent {
 	int x;		/* New x position */
 	int y;		/* New y position */
 } XBMC_MoveEvent;
+
+typedef struct XBMC_ScreenChangeEvent
+{
+  unsigned int screenIdx; /* The screen index */
+} XBMC_ScreenChangeEvent;
 
 struct XBMC_ModeChangeEvent
 {
@@ -122,6 +128,7 @@ typedef struct XBMC_Event {
     XBMC_TouchEvent touch;
     XBMC_ButtonEvent keybutton;
     XBMC_SetFocusEvent focus;
+    XBMC_ScreenChangeEvent screen;
   };
 } XBMC_Event;
 
