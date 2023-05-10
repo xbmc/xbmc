@@ -850,9 +850,15 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       [window setAllowsConcurrentViewDrawing:YES];
     });
 
-    // Blank other displays if requested.
+    // Blank/Unblank other displays if requested.
     if (blankOtherDisplays)
+    {
       BlankOtherDisplays(m_lastDisplayNr);
+    }
+    else
+    {
+      UnblankDisplays(m_lastDisplayNr);
+    }
   }
   else
   {
