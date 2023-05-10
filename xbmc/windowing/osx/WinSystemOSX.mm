@@ -390,6 +390,16 @@ void BlankOtherDisplays(NSUInteger screenBeingUsed)
   }
 }
 
+void UnblankDisplay(NSUInteger screenToUnblank)
+{
+  if (screenToUnblank < blankingWindowControllers.size() &&
+      blankingWindowControllers[screenToUnblank])
+  {
+    [[blankingWindowControllers[screenToUnblank] window] close];
+    blankingWindowControllers[screenToUnblank] = nil;
+  }
+}
+
 void UnblankDisplays(NSUInteger screenBeingUsed)
 {
   for (NSUInteger i = 0; i < NSScreen.screens.count; i++)
@@ -399,8 +409,7 @@ void UnblankDisplays(NSUInteger screenBeingUsed)
       // Get rid of the blanking windows we created.
       // Note after closing the window, setting the NSWindowController to nil will dealoc
       dispatch_sync(dispatch_get_main_queue(), ^{
-        [[blankingWindowControllers[i] window] close];
-        blankingWindowControllers[i] = nil;
+        UnblankDisplay(i);
       });
     }
   }
@@ -1119,9 +1128,15 @@ void CWinSystemOSX::WindowChangedScreen()
 {
   // if we are here the user dragged the window to a different
   // screen and we return the screen of the window
+  const NSUInteger lastDisplay = m_lastDisplayNr;
   if (m_appWindow)
   {
     m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen(m_appWindow.screen));
+  }
+  // force unblank the current display
+  if (lastDisplay != m_lastDisplayNr && m_bFullScreen)
+  {
+    UnblankDisplay(m_lastDisplayNr);
   }
 }
 
