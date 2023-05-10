@@ -29,29 +29,11 @@
 #include <stdio.h>
 #include <thread>
 
-#include <android_native_app_glue.h>
 #include <androidjni/SurfaceTexture.h>
 #include <unistd.h>
 
 namespace
 {
-// copied from new android_native_app_glue.c
-static void process_input(struct android_app* app, struct android_poll_source* source) {
-    AInputEvent* event = NULL;
-    int processed = 0;
-    while (AInputQueue_getEvent(app->inputQueue, &event) >= 0) {
-        if (AInputQueue_preDispatchEvent(app->inputQueue, event)) {
-            continue;
-        }
-        int32_t handled = 0;
-        if (app->onInputEvent != NULL) handled = app->onInputEvent(app, event);
-        AInputQueue_finishEvent(app->inputQueue, event, handled);
-        processed = 1;
-    }
-    if (processed == 0 && errno != EAGAIN) {
-        CXBMCApp::android_printf("process_input: Failure reading next input event: %s", strerror(errno));
-    }
-}
 
 class LogRedirector
 {
@@ -99,12 +81,6 @@ LogRedirector g_LogRedirector;
 extern void android_main(struct android_app* state)
 {
   {
-    // revector inputPollSource.process so we can shut up
-    // its useless verbose logging on new events (see ouya)
-    // and fix the error in handling multiple input events.
-    // see https://code.google.com/p/android/issues/detail?id=41755
-    state->inputPollSource.process = process_input;
-
     CEventLoop eventLoop(state);
     IInputHandler inputHandler;
     CXBMCApp& theApp = CXBMCApp::Create(state->activity, inputHandler);
