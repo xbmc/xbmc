@@ -211,7 +211,6 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
   payloadArg["option"]["transmission"]["contentsType"] = "LIVE"; // "LIVE", "WebRTC"
   payloadArg["option"]["needAudio"] = false;
   payloadArg["option"]["seekMode"] = "late_Iframe";
-  payloadArg["option"]["lowDelayMode"] = true;
 
   payloadArgs["args"] = CVariant(CVariant::VariantTypeArray);
   payloadArgs["args"].push_back(std::move(payloadArg));
