@@ -243,5 +243,14 @@
     // we don't need to do anything else
     winSystem->SetFullscreenWillToggle(false);
   }
+  winSystem->SignalFullScreenStateChanged(false);
+}
+
+- (void)windowDidEnterFullScreen:(NSNotification*)notification
+{
+  auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
+  if (!winSystem)
+    return;
+  winSystem->SignalFullScreenStateChanged(true);
 }
 @end

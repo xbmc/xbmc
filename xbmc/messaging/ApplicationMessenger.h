@@ -83,6 +83,7 @@
 #define TMSG_RENDERER_PREINIT             TMSG_MASK_APPLICATION + 31
 #define TMSG_RENDERER_UNINIT              TMSG_MASK_APPLICATION + 32
 #define TMSG_EVENT                        TMSG_MASK_APPLICATION + 33
+#define TMSG_MOVETOSCREEN                 TMSG_MASK_APPLICATION + 34
 
 /// @brief Called from the player when its current item is updated
 #define TMSG_UPDATE_PLAYER_ITEM TMSG_MASK_APPLICATION + 35

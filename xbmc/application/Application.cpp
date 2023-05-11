@@ -1609,6 +1609,10 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
     appPlayer->TriggerUpdateResolution();
     break;
 
+  case TMSG_MOVETOSCREEN:
+    CServiceBroker::GetWinSystem()->MoveToScreen(static_cast<int>(pMsg->param1));
+    break;
+
   case TMSG_MINIMIZE:
     CServiceBroker::GetWinSystem()->Minimize();
     break;
