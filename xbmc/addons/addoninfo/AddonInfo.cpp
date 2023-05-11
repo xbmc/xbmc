@@ -284,27 +284,25 @@ std::vector<AddonInstanceId> CAddonInfo::GetKnownInstanceIds() const
     return singletonInstance;
 
   std::vector<AddonInstanceId> ret;
-
-  if (!XFILE::CDirectory::Exists(StringUtils::Format("special://profile/addon_data/{}/", m_id)))
-  {
-    ret.emplace_back(ADDON_FIRST_INSTANCE_ID);
-    return ret;
-  }
-
   const std::string searchPath = StringUtils::Format("special://profile/addon_data/{}/", m_id);
-  CFileItemList items;
-  XFILE::CDirectory::GetDirectory(searchPath, items, ".xml", XFILE::DIR_FLAG_NO_FILE_DIRS);
 
-  for (const auto& item : items)
+  if (XFILE::CDirectory::Exists(searchPath))
   {
-    const std::string startName = "instance-settings-";
-    std::string filename = URIUtils::GetFileName(item->GetPath());
-    if (StringUtils::StartsWithNoCase(URIUtils::GetFileName(item->GetPath()), startName))
+    CFileItemList items;
+    XFILE::CDirectory::GetDirectory(searchPath, items, ".xml", XFILE::DIR_FLAG_NO_FILE_DIRS);
+
+    static const std::string startName = "instance-settings-";
+
+    for (const auto& item : items)
     {
-      URIUtils::RemoveExtension(filename);
-      const std::string uid = filename.substr(startName.length());
-      if (!uid.empty() && StringUtils::IsInteger(uid))
-        ret.emplace_back(std::atoi(uid.c_str()));
+      std::string filename = URIUtils::GetFileName(item->GetPath());
+      if (StringUtils::StartsWithNoCase(filename, startName))
+      {
+        URIUtils::RemoveExtension(filename);
+        const std::string_view uid(filename.data() + startName.length());
+        if (!uid.empty() && StringUtils::IsInteger(uid.data()))
+          ret.emplace_back(std::atoi(uid.data()));
+      }
     }
   }
 
