@@ -22069,7 +22069,43 @@ msgctxt "#37052"
 msgid "NFS protocol version to use when establishing NFS connections"
 msgstr ""
 
-#empty strings from id 37053 to 38010
+#. Setting #37053 NFS UID/GID settings"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37053"
+msgid "Enable the NFS User ID (UID) and Group ID (GID)"
+msgstr ""
+
+#. Description of setting #37053 NFS UID/GID settings"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37054"
+msgid "Enables the NFS User ID (UID) and Group ID (GID) settings for NFS connections. These UID/GID are used by NFS servers to match acls on the NAS File system. This avoids the use of squash options on exports."
+msgstr ""
+
+#. Setting #37055 NFS connection User ID (UID)"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37055"
+msgid "NFS connection User ID (UID)"
+msgstr ""
+
+#. Description of setting #37055 NFS connection User ID (UID)"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37056"
+msgid "NFS User ID (UID) to be used by NFS connections. This UID must match a UID of the NAS system (/etc/passwd). The value is between 1000 and 60000."
+msgstr ""
+
+#. Setting #37055 NFS connection Group ID (GID)"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37057"
+msgid "NFS connection Goup ID (GID)"
+msgstr ""
+
+#. Description of setting #37057 NFS connection Group ID (GID)"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37058"
+msgid "NFS Goup ID (GID) to be used by NFS connections. This GID must match a GID of the NAS system (/etc/group). The value is between 100 and 60000."
+msgstr ""
+
+#empty strings from id 37059 to 38010
 
 #. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml

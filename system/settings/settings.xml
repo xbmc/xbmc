@@ -2383,6 +2383,37 @@
           </constraints>
           <control type="spinner" format="integer" />
         </setting>
+        <setting id="nfs.enableids" type="boolean" label="37053" help="37054">
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="nfs.uid" type="integer" label="37055" help="37056" parent="nfs.enableids">
+          <level>3</level>
+          <default>1000</default>
+          <constraints>
+            <minimum>1000</minimum>
+            <step>1</step>
+            <maximum>60000</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="nfs.enableids">true</dependency>
+          </dependencies>
+          <control type="edit" format="integer" />
+        </setting>
+        <setting id="nfs.gid" type="integer" label="37057" help="37058" parent="nfs.enableids">
+          <level>2</level>
+          <default>100</default>
+          <constraints>
+            <minimum>100</minimum>
+            <step>1</step>
+            <maximum>60000</maximum>
+          </constraints>
+          <dependencies>
+            <dependency type="enable" setting="nfs.enableids">true</dependency>
+          </dependencies>
+          <control type="edit" format="integer" />
+        </setting>
       </group>
     </category>
     <category id="weather" label="8" help="36316">

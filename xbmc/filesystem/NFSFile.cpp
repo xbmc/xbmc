@@ -56,6 +56,9 @@ constexpr auto IDLE_TIMEOUT = 30s; // close fast unused contexts when no active 
 constexpr int NFS4ERR_EXPIRED = -11; // client session expired due idle time greater than lease_time
 
 constexpr auto SETTING_NFS_VERSION = "nfs.version";
+constexpr auto SETTING_NFS_ENABLE_IDS = "nfs.enableids";
+constexpr auto SETTING_NFS_UID = "nfs.uid";
+constexpr auto SETTING_NFS_GID = "nfs.gid";
 } // unnamed namespace
 
 CNfsConnection::CNfsConnection()
@@ -553,6 +556,19 @@ void CNfsConnection::setOptions(struct nfs_context* context)
   }
 
   CLog::Log(LOGDEBUG, "NFS: version: {}", nfsVersion);
+
+  const bool isNfsEnableIDs = settings->GetBool(SETTING_NFS_ENABLE_IDS);
+
+  if (isNfsEnableIDs)
+  {
+    const int nfsUid = settings->GetInt(SETTING_NFS_UID);
+    const int nfsGid = settings->GetInt(SETTING_NFS_GID);
+
+    nfs_set_uid(context, nfsUid);
+    nfs_set_gid(context, nfsGid);
+
+    CLog::Log(LOGDEBUG, "NFS: UID: {}, GID {}", nfsUid, nfsGid);
+  } 
 }
 
 CNfsConnection gNfsConnection;
