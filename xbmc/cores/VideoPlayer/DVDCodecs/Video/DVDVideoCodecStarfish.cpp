@@ -274,7 +274,7 @@ bool CDVDVideoCodecStarfish::AddData(const DemuxPacket& packet)
   auto pts = std::chrono::duration_cast<std::chrono::nanoseconds>(
       std::chrono::duration<double, std::ratio<1, DVD_TIME_BASE>>(packet.pts));
   auto dts = std::chrono::duration_cast<std::chrono::nanoseconds>(
-      std::chrono::duration<double, std::ratio<1, DVD_TIME_BASE>>(packet.pts));
+      std::chrono::duration<double, std::ratio<1, DVD_TIME_BASE>>(packet.dts));
 
   CLog::LogFC(LOGDEBUG, LOGVIDEO,
               "CDVDVideoCodecStarfish: dts:{} ns pts:{} ns sz:{} current state {}", dts.count(),
