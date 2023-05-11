@@ -260,7 +260,7 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
         if (!orientation || OrientateImage(buffer, dest_width, dest_height, orientation))
         {
           success = CreateThumbnailFromSurface((unsigned char*)buffer, dest_width, dest_height,
-                                               stride, dest);
+                                               dest_width * 4, dest);
         }
       }
       delete[] buffer;
