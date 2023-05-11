@@ -386,6 +386,7 @@ void CRendererDRMPRIMEGLES::Render(unsigned int flags, int index)
 
   glBindTexture(GL_TEXTURE_EXTERNAL_OES, 0);
 
+  buf.fence->DestroyFence();
   buf.fence->CreateFence();
 }
 
