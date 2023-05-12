@@ -103,7 +103,7 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
              "CDVDVideoCodecStarfish: hints: Width {} x Height {}, Fpsrate {} / Fpsscale {}, "
              "CodecID {}, Level {}, Profile {}, PTS_invalid {}, Tag {}, Extradata-Size: {}",
              hints.width, hints.height, hints.fpsrate, hints.fpsscale, hints.codec, hints.level,
-             hints.profile, hints.ptsinvalid, hints.codec_tag, hints.extrasize);
+             hints.profile, hints.ptsinvalid, hints.codec_tag, hints.extradata.GetSize());
 
   if (ms_codecMap.find(hints.codec) == ms_codecMap.cend() ||
       ms_formatInfoMap.find(hints.codec) == ms_formatInfoMap.cend())
@@ -125,8 +125,8 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
       if (m_hints.extradata && !m_hints.cryptoSession)
       {
         m_bitstream = std::make_unique<CBitstreamConverter>();
-        if (!m_bitstream->Open(m_hints.codec, reinterpret_cast<uint8_t*>(m_hints.extradata),
-                               m_hints.extrasize, true))
+        if (!m_bitstream->Open(m_hints.codec, m_hints.extradata.GetData(),
+                               m_hints.extradata.GetSize(), true))
         {
           m_bitstream.reset();
         }
@@ -163,8 +163,8 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
       if (m_hints.extradata && !m_hints.cryptoSession)
       {
         m_bitstream = std::make_unique<CBitstreamConverter>();
-        if (!m_bitstream->Open(m_hints.codec, reinterpret_cast<uint8_t*>(m_hints.extradata),
-                               m_hints.extrasize, true))
+        if (!m_bitstream->Open(m_hints.codec, m_hints.extradata.GetData(),
+                               m_hints.extradata.GetSize(), true))
         {
           m_bitstream.reset();
         }

@@ -72,5 +72,31 @@ public:
   int level;
 };
 
-std::tuple<uint8_t*, int> GetPacketExtradata(const AVPacket* pkt,
-                                             const AVCodecParameters* codecPar);
+class FFmpegExtraData
+{
+public:
+  FFmpegExtraData() = default;
+  explicit FFmpegExtraData(size_t size);
+  FFmpegExtraData(const uint8_t* data, size_t size);
+  FFmpegExtraData(const FFmpegExtraData& other);
+  FFmpegExtraData(FFmpegExtraData&& other) noexcept;
+
+  ~FFmpegExtraData();
+
+  FFmpegExtraData& operator=(const FFmpegExtraData& other);
+  FFmpegExtraData& operator=(FFmpegExtraData&& other) noexcept;
+
+  bool operator==(const FFmpegExtraData& other) const;
+  bool operator!=(const FFmpegExtraData& other) const;
+
+  operator bool() const { return m_data != nullptr && m_size != 0; }
+  uint8_t* GetData() { return m_data; }
+  const uint8_t* GetData() const { return m_data; }
+  size_t GetSize() const { return m_size; }
+
+private:
+  uint8_t* m_data{nullptr};
+  size_t m_size{};
+};
+
+FFmpegExtraData GetPacketExtradata(const AVPacket* pkt, const AVCodecParameters* codecPar);

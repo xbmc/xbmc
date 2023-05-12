@@ -9,6 +9,7 @@
 #pragma once
 
 #include "Interface/StreamInfo.h"
+#include "cores/FFmpeg.h"
 
 #include <memory>
 #include <string>
@@ -83,7 +84,6 @@ public:
     source = STREAM_SOURCE_NONE;
     iDuration = 0;
     pPrivate = NULL;
-    ExtraSize = 0;
     disabled = false;
     changes = 0;
     flags = StreamFlags::FLAG_NONE;
@@ -106,8 +106,7 @@ public:
 
   int iDuration; // in mseconds
   void* pPrivate; // private pointer for the demuxer
-  std::unique_ptr<uint8_t[]> ExtraData; // extra data for codec to use
-  unsigned int ExtraSize; // size of extra data
+  FFmpegExtraData extraData;
 
   StreamFlags flags;
   std::string language; // RFC 5646 language code (empty string if undefined)

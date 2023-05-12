@@ -103,7 +103,7 @@ bool CVideoPlayerVideo::OpenStream(CDVDStreamInfo hint)
 {
   if (hint.flags & AV_DISPOSITION_ATTACHED_PIC)
     return false;
-  if (hint.extrasize == 0)
+  if (!hint.extradata)
   {
     // codecs which require extradata
     // clang-format off

@@ -231,8 +231,8 @@ bool CAddonVideoCodec::CopyToInitData(VIDEOCODEC_INITDATA &initData, CDVDStreamI
             sizeof(initData.cryptoSession.sessionId) - 1);
   }
 
-  initData.extraData = reinterpret_cast<const uint8_t*>(hints.extradata);
-  initData.extraDataSize = hints.extrasize;
+  initData.extraData = hints.extradata.GetData();
+  initData.extraDataSize = hints.extradata.GetSize();
   initData.width = hints.width;
   initData.height = hints.height;
   initData.videoFormats = m_formats;
