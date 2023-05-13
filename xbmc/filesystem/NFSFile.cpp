@@ -557,7 +557,7 @@ void CNfsConnection::setOptions(struct nfs_context* context)
 
   CLog::Log(LOGDEBUG, "NFS: version: {}", nfsVersion);
 
-  const bool isNfsEnableIDs = settings->GetBool(SETTING_NFS_ENABLE_IDS);
+  const bool isNfsIdsEnabled = settings->GetBool(SETTING_NFS_ENABLE_IDS);
 
   if (isNfsEnableIDs)
   {
