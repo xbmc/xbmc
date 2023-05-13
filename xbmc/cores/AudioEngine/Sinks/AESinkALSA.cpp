@@ -1189,7 +1189,6 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
        * "plughw", "dsnoop"). */
 
       else if (baseName != "default"
-            && baseName != "surround40"
             && baseName != "surround41"
             && baseName != "surround50"
             && baseName != "surround51"
@@ -1261,6 +1260,8 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
   for (AEDeviceInfoList::iterator it1 = list.begin(); it1 != list.end(); ++it1)
   {
+    std::string replacementName = "";
+
     for (AEDeviceInfoList::iterator it2 = it1+1; it2 != list.end(); ++it2)
     {
       if (it1->m_displayName == it2->m_displayName
@@ -1290,9 +1291,13 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
         }
 
         /* if we got here, the configuration is really weird, just append the whole device string */
-        it1->m_displayName += " (" + it1->m_deviceName + ")";
+        replacementName = it1->m_displayName + " (" + it1->m_deviceName + ")";
         it2->m_displayName += " (" + it2->m_deviceName + ")";
       }
+    }
+
+    if (!replacementName.empty()) {
+      it1->m_displayName = replacementName;
     }
   }
 
