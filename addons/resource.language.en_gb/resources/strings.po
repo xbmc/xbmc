@@ -22102,7 +22102,7 @@ msgstr ""
 #. Description of setting #37057 NFS connection Group ID (GID)"
 #: xbmc/filesystem/NFSFile.cpp
 msgctxt "#37058"
-msgid "NFS Goup ID (GID) to be used by NFS connections. This GID must match a GID of the NAS system (/etc/group). The value is between 100 and 60000."
+msgid "NFS Group ID (GID) to be used by NFS connections. This GID must match a GID already present on the NFS server. The value is between 100 and 60000."
 msgstr ""
 
 #empty strings from id 37059 to 38010
