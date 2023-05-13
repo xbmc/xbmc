@@ -559,7 +559,7 @@ void CNfsConnection::setOptions(struct nfs_context* context)
 
   const bool isNfsIdsEnabled = settings->GetBool(SETTING_NFS_ENABLE_IDS);
 
-  if (isNfsEnableIDs)
+  if (isNfsIdsEnabled)
   {
     const int nfsUid = settings->GetInt(SETTING_NFS_UID);
     const int nfsGid = settings->GetInt(SETTING_NFS_GID);
@@ -568,7 +568,7 @@ void CNfsConnection::setOptions(struct nfs_context* context)
     nfs_set_gid(context, nfsGid);
 
     CLog::Log(LOGDEBUG, "NFS: UID: {}, GID {}", nfsUid, nfsGid);
-  } 
+  }
 }
 
 CNfsConnection gNfsConnection;
