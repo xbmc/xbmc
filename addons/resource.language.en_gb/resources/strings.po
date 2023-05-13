@@ -22090,7 +22090,7 @@ msgstr ""
 #. Description of setting #37055 NFS connection User ID (UID)"
 #: xbmc/filesystem/NFSFile.cpp
 msgctxt "#37056"
-msgid "NFS User ID (UID) to be used by NFS connections. This UID must match a UID of the NAS system (/etc/passwd). The value is between 1000 and 60000."
+msgid "NFS User ID (UID) to be used by NFS connections. This UID must match a UID already present on the NFS server. The value is between 1000 and 60000."
 msgstr ""
 
 #. Setting #37055 NFS connection Group ID (GID)"
