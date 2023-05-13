@@ -22096,7 +22096,7 @@ msgstr ""
 #. Setting #37055 NFS connection Group ID (GID)"
 #: xbmc/filesystem/NFSFile.cpp
 msgctxt "#37057"
-msgid "NFS connection Goup ID (GID)"
+msgid "NFS connection Group ID (GID)"
 msgstr ""
 
 #. Description of setting #37057 NFS connection Group ID (GID)"
