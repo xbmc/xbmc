@@ -39,6 +39,7 @@ constexpr unsigned int MIN_BUFFER_LEVEL = 0;
 constexpr unsigned int MAX_BUFFER_LEVEL = 0;
 constexpr unsigned int MIN_SRC_BUFFER_LEVEL = 1 * 1024 * 1024; // 1 MB
 constexpr unsigned int MAX_SRC_BUFFER_LEVEL = 8 * 1024 * 1024; // 8 MB
+constexpr std::chrono::nanoseconds MAX_FEED_AHEAD_TIME = 1s;
 } // namespace
 
 CDVDVideoCodecStarfish::CDVDVideoCodecStarfish(CProcessInfo& processInfo)
@@ -328,7 +329,10 @@ bool CDVDVideoCodecStarfish::AddData(const DemuxPacket& packet)
     std::string result = m_starfishMediaAPI->Feed(json.c_str());
 
     if (result.find("Ok") != std::string::npos)
+    {
+      m_fedTimestamp = pts;
       return true;
+    }
 
     if (result.find("BufferFull") != std::string::npos)
       return false;
@@ -346,6 +350,7 @@ void CDVDVideoCodecStarfish::Reset()
 
   CLog::LogF(LOGDEBUG, "CDVDVideoCodecStarfish: Reset");
   m_starfishMediaAPI->flush();
+  m_fedTimestamp = TIMESTAMP_UNSET;
 
   m_state = StarfishState::FLUSHED;
 
@@ -374,7 +379,7 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecStarfish::GetPicture(VideoPicture* pVideo
   if (!m_opened)
     return VC_NONE;
 
-  if (m_state == StarfishState::FLUSHED)
+  if (m_state == StarfishState::FLUSHED || !m_videoReady)
   {
     return VC_BUFFER;
   }
@@ -385,7 +390,12 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecStarfish::GetPicture(VideoPicture* pVideo
 
   // The playtime didn't advance probably we need more data
   if (currentPlaytime == m_currentPlaytime)
-    return VC_BUFFER;
+  {
+    if (m_fedTimestamp == TIMESTAMP_UNSET || m_fedTimestamp - currentPlaytime < MAX_FEED_AHEAD_TIME)
+      return VC_BUFFER;
+    else
+      return VC_NONE;
+  }
 
   m_currentPlaytime = currentPlaytime;
 
@@ -509,6 +519,10 @@ void CDVDVideoCodecStarfish::PlayerCallback(const int32_t type,
     case PF_EVENT_TYPE_STR_STATE_UPDATE__LOADCOMPLETED:
       m_starfishMediaAPI->Play();
       m_state = StarfishState::FLUSHED;
+      break;
+    case PF_EVENT_TYPE_STR_VIDEO_INFO:
+      // getCurrentPlaytime will return correct values now
+      m_videoReady = true;
       break;
   }
 }
