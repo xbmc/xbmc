@@ -9,7 +9,6 @@ This guide has been tested with an adapted buildroot configuration where the Lin
 3. **[Configure the tool chain](#3-Configure-the-tool-chain)**
 4. **[Configure ares-cli tools](#4-Configure-ares-cli-tools)**
 5. **[Get the source code](#5-get-the-source-code)**  
-  5.1. **[5.1. Downgrade flatc binary](#51-Downgrade-flatc-binary)**
 6. **[Configure and build tools and dependencies](#6-configure-and-build-tools-and-dependencies)**  
   6.1. **[Advanced Configure Options](#61-Advanced-Configure-Options)**
 7. **[Generate Kodi Build files](#7-Generate-Kodi-Build-files)**  
@@ -101,19 +100,6 @@ Clone Kodi's current master branch:
 ```
 git clone https://github.com/xbmc/xbmc kodi
 ```
-
-### 5.1. Downgrade flatc binary
-
-The version of FlatBuffers in Kodi is currently locked to v2.0.0, the flatc binary installed onto your Linux system is likely
-to be much newer and therefore incompatible. You can get a version compatible here:
-
-```
-https://github.com/google/flatbuffers/releases/download/v2.0.0/Linux.flatc.binary.clang++-9.zip
-```
-
-Place flatc somewhere in your path, for example `/usr/local/bin`
-
-Alternatively, you may run `make -C native/flatc` when in $HOME/kodi/tools/depends which will compile it for you.
 
 **[back to top](#table-of-contents)**
 
