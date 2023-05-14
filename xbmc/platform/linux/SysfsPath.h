@@ -10,7 +10,9 @@
 
 #include "utils/log.h"
 
+#include <exception>
 #include <fstream>
+#include <optional>
 #include <string>
 
 class CSysfsPath
@@ -23,21 +25,29 @@ public:
   bool Exists();
 
   template<typename T>
-  T Get()
+  std::optional<T> Get()
   {
-    std::ifstream file(m_path);
-
-    T value;
-
-    file >> value;
-
-    if (file.bad())
+    try
     {
-      CLog::LogF(LOGERROR, "error reading from '{}'", m_path);
-      throw std::runtime_error("error reading from " + m_path);
-    }
+      std::ifstream file(m_path);
 
-    return value;
+      T value;
+
+      file >> value;
+
+      if (file.bad())
+      {
+        CLog::LogF(LOGERROR, "error reading from '{}'", m_path);
+        return std::nullopt;
+      }
+
+      return value;
+    }
+    catch (const std::exception& e)
+    {
+      CLog::LogF(LOGERROR, "exception reading from '{}': {}", m_path, e.what());
+      return std::nullopt;
+    }
   }
 
 private:
@@ -45,4 +55,4 @@ private:
 };
 
 template<>
-std::string CSysfsPath::Get<std::string>();
+std::optional<std::string> CSysfsPath::Get<std::string>();
