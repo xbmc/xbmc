@@ -158,25 +158,22 @@ download: $(DOWNLOAD_TARGETS)
 
 crossguid: $(LIBUUID)
 curl: openssl nghttp2
-dav1d: meson-cross-file
 dbus: expat
 ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
-fontconfig: freetype2 expat $(ICONV) $(LIBUUID) meson-cross-file
+fontconfig: freetype2 expat $(ICONV) $(LIBUUID)
 freetype2: bzip2 harfbuzz $(ZLIB)
-fribidi: meson-cross-file
 gettext: $(ICONV)
 gnutls: nettle $(ZLIB)
-harfbuzz: meson-cross-file freetype2-noharfbuzz $(ICONV)
+harfbuzz: freetype2-noharfbuzz $(ICONV)
 libass: fontconfig fribidi harfbuzz libpng freetype2 expat $(ICONV)
 libbluray: fontconfig freetype2 $(ICONV) udfread libxml2
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
 libcec: p8-platform
-libdisplay-info: meson-cross-file hwdata
-libdrm: meson-cross-file
+libdisplay-info: hwdata
 libevdev: libudev
 libgcrypt: libgpg-error
-libinput: mtdev libevdev meson-cross-file
+libinput: mtdev libevdev
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: $(ZLIB)
 libpng: $(ZLIB)
@@ -185,10 +182,9 @@ libxml2: $(ZLIB)
 libxslt: libgcrypt libxml2
 libzip: bzip2 gnutls $(ZLIB)
 mariadb: openssl $(ICONV) $(ZLIB)
-mesa: libdrm meson-cross-file $(MESA_DEPS)
+mesa: libdrm $(MESA_DEPS)
 nettle: gmp
 openssl: $(ZLIB)
-pipewire: meson-cross-file
 python3: expat gettext libxml2 sqlite3 openssl libffi bzip2 xz $(ICONV)
 pythonmodule-pil: bzip2 $(PYMODULE_DEPS) $(ZLIB) libjpeg-turbo libpng freetype2 python3 pythonmodule-setuptools
 pythonmodule-pycryptodome: $(PYMODULE_DEPS) python3 pythonmodule-setuptools
@@ -267,21 +263,3 @@ linux-system-gl-libs:
 	[ -f $(PREFIX)/lib/pkgconfig/wayland-egl.pc ] || ln -sf $(HOST_LIB_PKGCONFIG)/wayland-egl.pc $(PREFIX)/lib/pkgconfig/wayland-egl.pc
 	[ -f $(PREFIX)/lib/pkgconfig/gl.pc ] || ln -sf $(HOST_LIB_PKGCONFIG)/gl.pc $(PREFIX)/lib/pkgconfig/gl.pc
 	[ -f $(PREFIX)/lib/pkgconfig/glu.pc ] || ln -sf $(HOST_LIB_PKGCONFIG)/glu.pc $(PREFIX)/lib/pkgconfig/glu.pc
-
-$(PREFIX)/share/cross-file.meson:
-	PREFIX="$(PREFIX)" \
-	NATIVEPREFIX="$(NATIVEPREFIX)" \
-	CC="$(CC)" \
-	CXX="$(CXX)" \
-	AR="$(AR)" \
-	STRIP="$(STRIP)" \
-	MESON_SYSTEM="$(MESON_SYSTEM)" \
-	MESON_CPU="$(MESON_CPU)" \
-	CPU="$(CPU)" \
-	CFLAGS="$(CFLAGS)" \
-	CXXFLAGS="$(CXXFLAGS)" \
-	LDFLAGS="$(LDFLAGS)" \
-	./meson-cross-setup.sh $@
-
-.PHONY: meson-cross-file
-meson-cross-file: $(PREFIX)/share/cross-file.meson
