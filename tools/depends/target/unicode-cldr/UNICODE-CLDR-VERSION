@@ -4,3 +4,4 @@ ARCHIVE=$(LIBNAME)-$(VERSION).zip
 SHA512=930c64208d6f680d115bfa74a69445fb614910bb54233227b0b9ae85ddbce4db19e4ec863bf04ae9d4a11b2306aa7394e553384d7537487de8011f0e34877cef
 SOURCE_DIR=addons/resource.timezone/resources/tzdata
 BYPRODUCT_WIN=WindowsZones.xml
+BASE_URL=https://github.com/unicode-org/cldr/releases/download/release-43
