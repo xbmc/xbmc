@@ -325,7 +325,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
     }
 
     std::string strOldDirectory = m_vecItems->GetPath();
-    m_history.SetSelectedItem(strSelectedItem, strOldDirectory);
+    m_history.SetSelectedItem(strSelectedItem, strOldDirectory, iItem);
 
     PLAYLIST::CPlayListM3U playlist;
     for (int i = 0; i < m_vecItems->Size(); ++i)
