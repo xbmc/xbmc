@@ -93,6 +93,15 @@ public:
   uint8_t* GetData() { return m_data; }
   const uint8_t* GetData() const { return m_data; }
   size_t GetSize() const { return m_size; }
+  /*!
+   * \brief Take ownership over the extra data buffer
+   *
+   * It's in the responsibility of the caller to free the buffer with av_free. After the call
+   * FFmpegExtraData is empty.
+   *
+   * \return The extra data buffer or nullptr if FFmpegExtraData is empty.
+   */
+  uint8_t* TakeData();
 
 private:
   uint8_t* m_data{nullptr};
