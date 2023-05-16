@@ -19,6 +19,14 @@ using namespace std::chrono_literals;
 
 namespace
 {
+// clang-format off
+constexpr std::array<unsigned int, 3> defaultSampleRates = {
+  32000,
+  44100,
+  48000
+};
+// clang-format on
+
 constexpr unsigned int STARFISH_AUDIO_BUFFERS = 8;
 constexpr unsigned int AC3_SYNCFRAME_SIZE = 2560;
 
@@ -52,7 +60,8 @@ void CAESinkStarfish::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   CAEDeviceInfo info;
   info.m_deviceName = "Starfish";
   info.m_displayName = "Starfish (Passthrough only)";
-  info.m_channels = AE_CH_LAYOUT_5_1;
+  info.m_channels = AE_CH_LAYOUT_2_0;
+  info.m_sampleRates.assign(defaultSampleRates.begin(), defaultSampleRates.end());
   info.m_wantsIECPassthrough = false;
 
   // PCM disabled for now as the latency is just too high, needs more research
