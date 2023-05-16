@@ -203,6 +203,14 @@ bool FFmpegExtraData::operator!=(const FFmpegExtraData& other) const
   return !(*this == other);
 }
 
+uint8_t* FFmpegExtraData::TakeData()
+{
+  auto tmp = m_data;
+  m_data = nullptr;
+  m_size = 0;
+  return tmp;
+}
+
 FFmpegExtraData GetPacketExtradata(const AVPacket* pkt, const AVCodecParameters* codecPar)
 {
   constexpr int FF_MAX_EXTRADATA_SIZE = ((1 << 28) - AV_INPUT_BUFFER_PADDING_SIZE);
