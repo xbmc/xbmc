@@ -369,6 +369,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
       // no need to resync => return true
       return true;
     }
+    m_info.m_ac3FrameSize = fsizeMain;
     if (TrySyncAC3(data + fsizeMain, size - fsizeMain, resyncing, true))
     {
       // concatenate the main and dependent frames
@@ -392,7 +393,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
     m_info.m_channels = AC3Channels[acmod] + lfeon;
     m_syncFunc = &CAEStreamParser::SyncAC3;
     m_info.m_type = CAEStreamInfo::STREAM_TYPE_AC3;
-    m_info.m_ac3FrameSize = m_fsize;
+    m_info.m_ac3FrameSize += m_fsize;
     m_info.m_repeat = 1;
 
     CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - AC3 stream detected ({} channels, {}Hz)",
@@ -451,6 +452,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
         // no need to resync => return true
         return true;
       }
+      m_info.m_ac3FrameSize = fsizeMain;
       if (TrySyncAC3(data + fsizeMain, size - fsizeMain, resyncing, true))
       {
         // concatenate the main and dependent frames
@@ -467,7 +469,7 @@ bool CAEStreamParser::TrySyncAC3(uint8_t* data,
     m_info.m_channels = AC3Channels[acmod] + lfeon;
     m_syncFunc = &CAEStreamParser::SyncAC3;
     m_info.m_type = CAEStreamInfo::STREAM_TYPE_EAC3;
-    m_info.m_ac3FrameSize = m_fsize;
+    m_info.m_ac3FrameSize += m_fsize;
 
     CLog::Log(LOGINFO, "CAEStreamParser::TrySyncAC3 - E-AC3 stream detected ({} channels, {}Hz)",
               m_info.m_channels, m_info.m_sampleRate);
