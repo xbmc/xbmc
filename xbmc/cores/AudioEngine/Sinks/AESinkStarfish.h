@@ -49,4 +49,5 @@ private:
   std::chrono::nanoseconds m_pts{0};
   int64_t m_bufferSize{0};
   std::chrono::nanoseconds m_delay{0};
+  bool m_firstFeed{true};
 };
