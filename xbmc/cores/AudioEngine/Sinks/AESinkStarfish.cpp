@@ -221,9 +221,7 @@ void CAESinkStarfish::AddPause(unsigned int millis)
 
 void CAESinkStarfish::GetDelay(AEDelayStatus& status)
 {
-  constexpr auto hwLatency = 250ms;
-  status.SetDelay(
-      std::chrono::duration_cast<std::chrono::duration<double>>(m_delay + hwLatency).count());
+  status.SetDelay(std::chrono::duration_cast<std::chrono::duration<double>>(m_delay).count());
 }
 
 void CAESinkStarfish::Drain()
