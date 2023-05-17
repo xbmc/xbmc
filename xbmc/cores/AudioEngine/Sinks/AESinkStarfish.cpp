@@ -97,8 +97,6 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
   payload["option"]["externalStreamingInfo"]["contents"]["format"] = "RAW";
   payload["option"]["transmission"]["contentsType"] = "LIVE"; // "LIVE", "WEBRTC"
 
-  payload["option"]["lowDelayMode"] = true;
-
   switch (m_format.m_streamInfo.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
