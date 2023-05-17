@@ -181,17 +181,18 @@ double CAESinkStarfish::GetLatency()
 
 unsigned int CAESinkStarfish::AddPackets(uint8_t** data, unsigned int frames, unsigned int offset)
 {
+  auto frameTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
+      std::chrono::duration<double, std::milli>(m_format.m_streamInfo.GetDuration()));
+
+  if (!m_firstFeed && offset == 0)
+    m_pts += frameTime;
+
   CVariant payload;
   uint8_t* buffer = data[0] + offset * m_format.m_frameSize;
   payload["bufferAddr"] = fmt::format("{:#x}", reinterpret_cast<std::uintptr_t>(buffer));
   payload["bufferSize"] = frames * m_format.m_frameSize;
   payload["pts"] = m_pts.count();
   payload["esData"] = 2;
-
-  auto frameTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
-      std::chrono::duration<double, std::milli>(m_format.m_streamInfo.GetDuration()));
-
-  m_pts += frameTime;
 
   std::string json;
   CJSONVariantWriter::Write(payload, json, true);
@@ -204,7 +205,10 @@ unsigned int CAESinkStarfish::AddPackets(uint8_t** data, unsigned int frames, un
   }
 
   if (result.find("Ok") != std::string::npos)
+  {
+    m_firstFeed = false;
     return frames;
+  }
 
   CLog::LogF(LOGWARNING, "CAESinkStarfish: Buffer submit returned error: {}", result);
   return 0;
