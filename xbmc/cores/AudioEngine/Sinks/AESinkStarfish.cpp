@@ -63,6 +63,10 @@ void CAESinkStarfish::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_AC3);
   info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_EAC3);
 
+  info.m_sampleRates.emplace_back(32000);
+  info.m_sampleRates.emplace_back(44100);
+  info.m_sampleRates.emplace_back(48000);
+
   list.emplace_back(info);
 }
 
@@ -109,8 +113,7 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
     }
     case CAEStreamInfo::STREAM_TYPE_EAC3:
     {
-      payload["option"]["externalStreamingInfo"]["contents"]["ac3PlusInfo"]["channels"] =
-          m_format.m_streamInfo.m_channels;
+      payload["option"]["externalStreamingInfo"]["contents"]["ac3PlusInfo"]["channels"] = 8;
       payload["option"]["externalStreamingInfo"]["contents"]["ac3PlusInfo"]["frequency"] =
           static_cast<double>(m_format.m_streamInfo.m_sampleRate) / 1000;
 
