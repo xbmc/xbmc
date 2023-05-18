@@ -178,7 +178,7 @@ bool CDatabaseManager::UpdateVersion(CDatabase &db, const std::string &dbName)
     }
     if (!success)
     {
-      CLog::Log(LOGERROR, "Exception droping old analytics from {}", dbName);
+      CLog::Log(LOGERROR, "Exception dropping old analytics from {}", dbName);
       db.RollbackTransaction();
       return false;
     }
