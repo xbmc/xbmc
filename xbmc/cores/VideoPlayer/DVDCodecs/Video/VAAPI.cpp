@@ -3007,7 +3007,7 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
   {
     std::string filter;
 
-    filter = "yadif=1:-1";
+    filter = "bwdif=1:-1";
 
     if (avfilter_graph_parse_ptr(m_pFilterGraph, filter.c_str(), &inputs, &outputs, NULL) < 0)
     {
@@ -3026,7 +3026,7 @@ bool CFFmpegPostproc::Init(EINTERLACEMETHOD method)
       return false;
     }
 
-    m_config.processInfo->SetVideoDeintMethod("yadif");
+    m_config.processInfo->SetVideoDeintMethod("bwdif");
   }
   else if (method == VS_INTERLACEMETHOD_RENDER_BOB ||
            method == VS_INTERLACEMETHOD_NONE)
