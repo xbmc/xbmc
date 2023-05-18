@@ -33,10 +33,20 @@
 #endif
 
 #if defined(TARGET_WINDOWS)
-#define S_IRGRP 0
-#define S_IROTH 0
-#define S_IWUSR _S_IWRITE
-#define S_IRUSR _S_IREAD
+#define S_IRWXU 00700
+#define S_IRUSR 00400
+#define S_IWUSR 00200
+#define S_IXUSR 00100
+
+#define S_IRWXG 00070
+#define S_IRGRP 00040
+#define S_IWGRP 00020
+#define S_IXGRP 00010
+
+#define S_IRWXO 00007
+#define S_IROTH 00004
+#define S_IWOTH 00002
+#define S_IXOTH 00001
 #endif
 
 using namespace XFILE;
@@ -56,7 +66,14 @@ constexpr auto IDLE_TIMEOUT = 30s; // close fast unused contexts when no active 
 constexpr int NFS4ERR_EXPIRED = -11; // client session expired due idle time greater than lease_time
 
 constexpr auto SETTING_NFS_VERSION = "nfs.version";
+
 constexpr auto SETTING_NFS_CHUNKSIZE = "nfs.chunksize";
+
+constexpr auto SETTING_NFS_ENABLE_IDS = "nfs.enableids";
+constexpr auto SETTING_NFS_UID = "nfs.uid";
+constexpr auto SETTING_NFS_GID = "nfs.gid";
+constexpr auto SETTING_NFS_GROUP_PERMISSIONS = "nfs.grouppermissions";
+constexpr auto SETTING_NFS_OTHER_PERMISSIONS = "nfs.otherpermissions";
 } // unnamed namespace
 
 CNfsConnection::CNfsConnection()
@@ -64,7 +81,8 @@ CNfsConnection::CNfsConnection()
     m_exportPath(""),
     m_hostName(""),
     m_resolvedHostName(""),
-    m_IdleTimeout(std::chrono::steady_clock::now() + IDLE_TIMEOUT)
+    m_IdleTimeout(std::chrono::steady_clock::now() + IDLE_TIMEOUT),
+    m_protocolVersion(0)
 {
 }
 
@@ -146,7 +164,10 @@ struct nfs_context *CNfsConnection::getContextFromMap(const std::string &exportn
   struct nfs_context *pRet = NULL;
   std::unique_lock<CCriticalSection> lock(openContextLock);
 
+  SetVersionAndPermissions();
+
   tOpenContextMap::iterator it = m_openContextMap.find(exportname.c_str());
+
   if (it != m_openContextMap.end())
   {
     //check if context has timed out already
@@ -217,20 +238,12 @@ CNfsConnection::ContextStatus CNfsConnection::getContextForExport(const std::str
 
 bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, std::string &exportPath, std::string &relativePath)
 {
+  SetVersionAndPermissions();
+
   //refresh exportlist if empty or hostname change
   if(m_exportList.empty() || !StringUtils::EqualsNoCase(url.GetHostName(), m_hostName))
   {
-    const auto settingsComponent = CServiceBroker::GetSettingsComponent();
-    if (!settingsComponent)
-      return false;
-
-    const auto settings = settingsComponent->GetSettings();
-    if (!settings)
-      return false;
-
-    const int nfsVersion = settings->GetInt(SETTING_NFS_VERSION);
-
-    if (nfsVersion == 4)
+    if (m_protocolVersion == 4)
       m_exportList = {"/"};
     else
       m_exportList = GetExportList(url);
@@ -577,6 +590,46 @@ void CNfsConnection::setOptions(struct nfs_context* context)
   }
 
   CLog::Log(LOGDEBUG, "NFS: version: {}", nfsVersion);
+
+  const bool isNfsIdsEnabled = settings->GetBool(SETTING_NFS_ENABLE_IDS);
+
+  if (isNfsIdsEnabled)
+  {
+    const int nfsUid = settings->GetInt(SETTING_NFS_UID);
+    const int nfsGid = settings->GetInt(SETTING_NFS_GID);
+
+    nfs_set_uid(context, nfsUid);
+    nfs_set_gid(context, nfsGid);
+
+    CLog::Log(LOGDEBUG, "NFS: UID: {}, GID {}", nfsUid, nfsGid);
+  }
+}
+
+void CNfsConnection::SetVersionAndPermissions()
+{
+  if (m_protocolVersion > 0)
+  {
+    return;
+  }
+
+  const auto settingsComponent = CServiceBroker::GetSettingsComponent();
+  if (!settingsComponent)
+    return;
+
+  const auto settings = settingsComponent->GetSettings();
+  if (!settings)
+    return;
+
+  m_protocolVersion = settings->GetInt(SETTING_NFS_VERSION);
+
+  const int nfsGroupPerms = settings->GetInt(SETTING_NFS_GROUP_PERMISSIONS);
+  const int nfsOtherPerms = settings->GetInt(SETTING_NFS_OTHER_PERMISSIONS);
+
+  m_directoryPermisssions = S_IRWXU | nfsGroupPerms | nfsOtherPerms;
+  m_filePermisssions = m_directoryPermisssions & ~(S_IXUSR | S_IXGRP | S_IXOTH);
+
+  CLog::Log(LOGDEBUG, "NFS: permissions: files {} (decimal), directories {} (decimal)",
+            m_filePermisssions, m_directoryPermisssions);
 }
 
 CNfsConnection gNfsConnection;
@@ -931,9 +984,12 @@ bool CNFSFile::OpenForWrite(const CURL& url, bool bOverWrite)
   {
     CLog::Log(LOGWARNING, "FileNFS::OpenForWrite() called with overwriting enabled! - {}",
               filename);
-    //create file with proper permissions
-    ret = nfs_creat(m_pNfsContext, filename.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);
+    //create file with proper permissions.
+    //O_EXCL is required for the nfs V4 implementation of libnfs.
+    ret = nfs_create(m_pNfsContext, filename.c_str(), O_RDWR | O_EXCL,
+                     gNfsConnection.GetFilePermissions(), &m_pFileHandle);
     //if file was created the file handle isn't valid ... so close it and open later
+
     if(ret == 0)
     {
       nfs_close(m_pNfsContext,m_pFileHandle);

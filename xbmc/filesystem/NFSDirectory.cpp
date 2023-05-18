@@ -326,8 +326,8 @@ bool CNFSDirectory::Create(const CURL& url2)
   if(!gNfsConnection.Connect(url,folderName))
     return false;
 
-  ret = nfs_mkdir(gNfsConnection.GetNfsContext(), folderName.c_str());
-
+  ret = nfs_mkdir2(gNfsConnection.GetNfsContext(), folderName.c_str(),
+                   gNfsConnection.GetDirectoryPermissions());
   success = (ret == 0 || -EEXIST == ret);
   if(!success)
     CLog::Log(LOGERROR, "NFS: Failed to create({}) {}", folderName,
