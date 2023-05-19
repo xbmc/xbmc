@@ -56,15 +56,6 @@ using namespace XFILE;
 LibraryLoader* DllLoaderContainer::m_dlls[64] = {};
 int DllLoaderContainer::m_iNrOfDlls = 0;
 
-void DllLoaderContainer::Clear()
-{
-}
-
-HMODULE DllLoaderContainer::GetModuleAddress(const char* sName)
-{
-  return (HMODULE)GetModule(sName);
-}
-
 LibraryLoader* DllLoaderContainer::GetModule(const char* sName)
 {
   for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
@@ -269,17 +260,6 @@ bool DllLoaderContainer::IsSystemDll(const char* sName)
   return false;
 }
 
-int DllLoaderContainer::GetNrOfModules()
-{
-  return m_iNrOfDlls;
-}
-
-LibraryLoader* DllLoaderContainer::GetModule(int iPos)
-{
-  if (iPos < m_iNrOfDlls) return m_dlls[iPos];
-  return NULL;
-}
-
 void DllLoaderContainer::RegisterDll(LibraryLoader* pDll)
 {
   for (LibraryLoader*& dll : m_dlls)
@@ -320,20 +300,4 @@ void DllLoaderContainer::UnRegisterDll(LibraryLoader* pDll)
       }
     }
   }
-}
-
-void DllLoaderContainer::UnloadPythonDlls()
-{
-  // unload all dlls that python could have loaded
-  for (int i = 0; i < m_iNrOfDlls && m_dlls[i] != NULL; i++)
-  {
-    const char* name = m_dlls[i]->GetName();
-    if (strstr(name, ".pyd") != NULL)
-    {
-      LibraryLoader* pDll = m_dlls[i];
-      ReleaseModule(pDll);
-      i = 0;
-    }
-  }
-
 }
