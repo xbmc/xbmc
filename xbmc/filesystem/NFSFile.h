@@ -68,6 +68,9 @@ public:
   const std::string& GetConnectedExport() const {return m_exportPath;}
   const std::string GetContextMapId() const {return m_hostName + m_exportPath;}
 
+  int GetDirectoryPermissions() { return m_directoryPermisssions; }
+  int GetFilePermissions() { return m_filePermisssions; }
+
 private:
   enum class ContextStatus
   {
@@ -102,6 +105,11 @@ private:
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
   void keepAlive(const std::string& _exportPath, struct nfsfh* _pFileHandle);
   static void setOptions(struct nfs_context* context);
+  void setVersionAndPermissions();
+
+  int m_protocolVersion; //keep the protocol version here as it is required to create files with proper permissions
+  int m_directoryPermisssions; //creation directory permissions
+  int m_filePermisssions; //creation file permissions
 };
 
 extern CNfsConnection gNfsConnection;

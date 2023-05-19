@@ -22067,7 +22067,88 @@ msgctxt "#37052"
 msgid "NFS protocol version to use when establishing NFS connections"
 msgstr ""
 
-#empty strings from id 37053 to 38010
+#. Setting #37053 NFS UID/GID settings"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37053"
+msgid "Enforce the NFS User ID (UID) and Group ID (GID)"
+msgstr ""
+
+#. Description of setting #37053 NFS UID/GID settings"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37054"
+msgid "Enforces a User ID (UID) and Group ID (GID) for NFS connections. These UID/GID are used by NFS servers to match filesystem ACLs. This avoids the use of squash options on exports."
+msgstr ""
+
+#. Setting #37055 NFS connection User ID (UID)"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37055"
+msgid "NFS connection User ID (UID)"
+msgstr ""
+
+#. Description of setting #37055 NFS connection User ID (UID)"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37056"
+msgid "NFS User ID (UID) to be used by NFS connections. This UID should match a UID already present on the NFS server."
+msgstr ""
+
+#. Setting #37055 NFS connection Group ID (GID)"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37057"
+msgid "NFS connection Group ID (GID)"
+msgstr ""
+
+#. Description of setting #37057 NFS connection Group ID (GID)"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37058"
+msgid "NFS Group ID (GID) to be used by NFS connections. This GID should match a GID already present on the NFS server."
+msgstr ""
+
+#. Setting #37059 NFS Group and Other permissions"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37059"
+msgid "Permissions used for file and directory creation"
+msgstr ""
+
+#. Setting #37060 NFS Group permissions"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37060"
+msgid "Group permissons (....???...):"
+msgstr ""
+
+#. Description of setting #37060 NFS Group permissions"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37061"
+msgid "Sets the permissions of the 'group' applied when creating files or directories"
+msgstr ""
+
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37062"
+msgid "No permisions: ---"
+msgstr ""
+
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37063"
+msgid "Read permissions: r-- (default)"
+msgstr ""
+
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37064"
+msgid "Write permissions: rw-"
+msgstr ""
+
+#. Setting #37065 NFS Other permissions"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37065"
+msgid "Other permissons (.......???):"
+msgstr ""
+
+#. Description of setting #37065 NFS Other permissions"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37066"
+msgid "Sets the permissions of 'other' applied when creating files or directories"
+msgstr ""
+
+#empty strings from id 37067 to 38010
 
 #. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml
