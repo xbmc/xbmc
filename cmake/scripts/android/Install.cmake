@@ -66,6 +66,7 @@ set(package_files strings.xml
                   src/interfaces/XBMCMediaDrmOnEventListener.java
                   src/interfaces/XBMCDisplayManagerDisplayListener.java
                   src/interfaces/XBMCSpeechRecognitionListener.java
+		  src/interfaces/XBMCConnectivityManagerNetworkCallback.java
                   src/model/TVEpisode.java
                   src/model/Movie.java
                   src/model/TVShow.java
