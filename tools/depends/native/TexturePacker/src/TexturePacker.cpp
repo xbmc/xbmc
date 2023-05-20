@@ -44,6 +44,7 @@
 #define strncasecmp _strnicmp
 #endif
 
+#include <chrono>
 #include <vector>
 
 #include <lzo/lzo1x.h>
@@ -326,6 +327,8 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
   std::vector<CXBTFFile> files = writer.GetFiles();
   m_dupes.resize(files.size());
 
+  const auto start = std::chrono::steady_clock::now();
+
   for (size_t i = 0; i < files.size(); i++)
   {
     struct MD5Context ctx;
@@ -386,6 +389,15 @@ int TexturePacker::createBundle(const std::string& InputDir, const std::string& 
 
     writer.UpdateFile(file);
   }
+
+  const auto end = std::chrono::steady_clock::now();
+
+  const auto diff =
+      std::chrono::duration_cast<std::chrono::duration<double, std::milli>>(end - start);
+
+  printf(
+      "TexturePacker: processed %lu files in %.3f ms using %s\n", files.size(), diff.count(),
+      XBTFCompressionMethodMap.at(files.front().GetFrames().front().GetCompressionMethod()).data());
 
   if (!writer.UpdateHeader(m_dupes))
   {

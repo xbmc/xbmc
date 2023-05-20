@@ -24,6 +24,8 @@
 
 #include <mutex>
 
+#define _DEBUG_TEXTURES
+
 #ifdef _DEBUG_TEXTURES
 #include "utils/TimeUtils.h"
 #endif
