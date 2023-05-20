@@ -55,7 +55,6 @@ void CDirectoryHistory::SetSelectedItem(const std::string& strSelectedItem,
 
   CHistoryItem item;
   item.m_strItem = strItem;
-  item.m_strDirectory = strDir;
   item.m_indexItem = indexItem;
   m_vecHistory[strDir] = item;
 }
