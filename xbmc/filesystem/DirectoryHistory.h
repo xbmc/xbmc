@@ -21,7 +21,6 @@ public:
     CHistoryItem() = default;
     virtual ~CHistoryItem() = default;
     std::string m_strItem;
-    std::string m_strDirectory;
     int m_indexItem{-1};
   };
 
