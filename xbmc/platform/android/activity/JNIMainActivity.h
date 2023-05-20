@@ -20,6 +20,8 @@ public:
 
   static CJNIMainActivity* GetAppInstance() { return m_appInstance; }
 
+  static void RegisterNatives(JNIEnv* env);
+
   static void _onNewIntent(JNIEnv *env, jobject context, jobject intent);
   static void _onActivityResult(JNIEnv *env, jobject context, jint requestCode, jint resultCode, jobject resultData);
   static void _onVolumeChanged(JNIEnv *env, jobject context, jint volume);
