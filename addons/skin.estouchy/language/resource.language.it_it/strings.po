@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-03-27 11:26+0000\n"
+"PO-Revision-Date: 2023-05-17 14:09+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/it_it/>\n"
 "Language: it_it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 4.17\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -232,7 +232,7 @@ msgstr "Basato su Arial"
 
 msgctxt "#31400"
 msgid "Change the skin · Set language and region · Change file listing options · Set up a screensaver"
-msgstr "Cambia la skin · Imposta lingua e regione · Cambia le impostazioni di elenco dei file · Imposta uno screensaver"
+msgstr "Cambia la skin · Imposta lingua e regione · Cambia le impostazioni di elenco dei file · Imposta un salvaschermo"
 
 msgctxt "#31405"
 msgid "Configure & manage media sharing services · Configure & manage the weather service"
@@ -240,7 +240,7 @@ msgstr "Configura e gestisci i servizi di condivisione multimediale · Configura
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
-msgstr "Configura il display · Configura l'audio · Configura l'accesso a internet · Configura il risparmio energetico · Configura il logging"
+msgstr "Configura lo schermo · Configura l'audio · Configura l'accesso a internet · Configura il risparmio energetico · Configura la registrazione eventi"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
@@ -256,15 +256,15 @@ msgstr "Configura le fonti della libreria · Mostra il contenuto visualizzato ne
 
 msgctxt "#31410"
 msgid "Configure skin · Configure region · Configure control · Configure screensaver · Configure master lock"
-msgstr "Configura la skin · Configura la regione · Configura i controlli · Configura lo screensaver · Configura il master lock"
+msgstr "Configura la skin · Configura la regione · Configura i controlli · Configura il salvaschermo · Configura il blocco master"
 
 msgctxt "#31411"
 msgid "Configure your profiles · Set locking options · Enable login screen"
-msgstr "Configura i tuoi profili · Imposta le opzioni di blocco · Abilita la schermata di login"
+msgstr "Configura i tuoi profili · Imposta le opzioni di blocco · Abilita la schermata di accesso"
 
 msgctxt "#31412"
 msgid "Display system information · Hardware statistics · Check storage availability · View network configuration"
-msgstr "Mostra informazioni sul sistema · Statistiche hardware · Controlla disponibilità archiviazione · Visualizza configurazione di rete"
+msgstr "Mostra informazioni sul sistema · Statistiche hardware · Verifica disponibilità dello spazio di archiviazione · Visualizza configurazione di rete"
 
 msgctxt "#31421"
 msgid "Select your Kodi user Profile[CR]to login and continue"
@@ -276,7 +276,7 @@ msgstr "Menu principale"
 
 msgctxt "#31549"
 msgid "Home Add-ons"
-msgstr "Home add-on"
+msgstr "Add-on menu principale"
 
 msgctxt "#31550"
 msgid "Backgrounds"
@@ -381,7 +381,7 @@ msgstr "Bitrate audio"
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
-msgstr "Risoluzione dello schermo"
+msgstr "Risoluzione schermo"
 
 #. Label to show the system rendering speed
 msgctxt "#31608"
@@ -413,7 +413,7 @@ msgstr "Ci sono due cose da sapere sulla navigazione in Estouchy"
 
 msgctxt "#31902"
 msgid "The Kodi logo functions as a 'HOME' button. Whenever you touch it, you will be taken back to the home screen."
-msgstr "Il logo Kodi funziona come un pulsante 'HOME'. Ogni volta che lo tocchi, sarai riportato alla schermata home."
+msgstr "Il logo Kodi funziona come un pulsante 'HOME'. Ogni volta che lo tocchi, sarai riportato alla schermata principale."
 
 msgctxt "#31903"
 msgid "When you are playing audio or video, the item title will appear at the top of the screen. Touching it will take you to the fullscreen visualization or video window."

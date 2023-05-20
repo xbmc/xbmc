@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-03-26 07:48+0000\n"
+"PO-Revision-Date: 2023-05-17 14:15+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/it_it/>\n"
 "Language: it_it\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 4.17\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -159,7 +159,7 @@ msgstr "Utilizzo memoria di sistema"
 
 msgctxt "#31031"
 msgid "Version info"
-msgstr "Informazioni sulla versione"
+msgstr "Info versione"
 
 msgctxt "#31032"
 msgid "Order"
@@ -299,7 +299,7 @@ msgstr "Opzioni spegnimento"
 
 msgctxt "#31073"
 msgid "Total length"
-msgstr "Durata totale"
+msgstr "Lunghezza totale"
 
 msgctxt "#31074"
 msgid "Total duration"
@@ -343,7 +343,7 @@ msgstr "Mostra informazioni meteo nella barra superiore"
 
 msgctxt "#31095"
 msgid "Use slide animations"
-msgstr "Usa animazioni di scorrimento"
+msgstr "Usa effetti di transizione a scorrimento"
 
 msgctxt "#31096"
 msgid "Local subtitle available"
@@ -424,7 +424,7 @@ msgstr "Cambia traccia sottotitoli"
 
 msgctxt "#31116"
 msgid "Remove this main menu item"
-msgstr "Rimuovi questo elemento dal menu principale"
+msgstr "Rimuovi questa voce dal menu principale"
 
 msgctxt "#31117"
 msgid "Edit nodes"
@@ -444,7 +444,7 @@ msgstr "Non hai ancora impostato un provider meteo. Per poter vedere le informaz
 
 msgctxt "#31121"
 msgid "Set weather provider"
-msgstr "Imposta provider meteo"
+msgstr "Imposta fornitore meteo"
 
 msgctxt "#31122"
 msgid "Unwatched TV Shows"
@@ -476,7 +476,7 @@ msgstr "Impostazioni generali che si applicano a tutte le aree della skin."
 
 msgctxt "#31130"
 msgid "Main menu-related settings: Configure the home screen to your likings."
-msgstr "Impostazioni relative al menu principale: Configura la schermata home secondo i tuoi gusti."
+msgstr "Impostazioni relative al menu principale: configura la schermata principale secondo i tuoi gusti."
 
 msgctxt "#31131"
 msgid "Choose skin fanart pack"
@@ -524,7 +524,7 @@ msgstr "Formato pixel"
 
 msgctxt "#31141"
 msgid "Changes for version"
-msgstr "Cambiamenti della versione"
+msgstr "Modifiche apportate alla versione"
 
 msgctxt "#31142"
 msgid "Play speed"
@@ -592,7 +592,7 @@ msgstr "Modifica categorie"
 
 msgctxt "#31158"
 msgid "Touch mode"
-msgstr "Modalità Touch"
+msgstr "Modalità touch"
 
 msgctxt "#31159"
 msgid "Artwork"
@@ -600,7 +600,7 @@ msgstr "Artwork"
 
 msgctxt "#31160"
 msgid "Show media flags"
-msgstr "Mostra le icone delle informazioni multimediali"
+msgstr "Mostra indicatori multimediali"
 
 msgctxt "#31161"
 msgid "Numeric pad"
@@ -647,7 +647,7 @@ msgstr "Impostazioni relative agli artwork."
 #. Label for OSD settings category
 msgctxt "#31170"
 msgid "On screen display"
-msgstr "Visualizzazione OSD"
+msgstr "Visualizza sullo schermo"
 
 #. Helper text for the label of OSD settings category
 msgctxt "#31171"
@@ -657,27 +657,27 @@ msgstr "Impostazioni relative alla visualizzazione su schermo (OSD)"
 #. Setting Automatically close video OSD
 msgctxt "#31172"
 msgid "Automatically close video OSD"
-msgstr "Chiudi automaticamente l'OSD video"
+msgstr "Chiudi automaticamente OSD del video"
 
 #. Setting auto close time for video osd
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr "Tempo di chiusura automatica OSD video (secondi)"
+msgstr "Tempo di chiusura automatica OSD del video (secondi)"
 
 #. Setting to control what happens when clicking a music album on the home screen
 msgctxt "#31174"
 msgid "Default select action for albums on the home screen"
-msgstr "Azione di selezione predefinita per gli album nella schermata iniziale"
+msgstr "Azione di selezione predefinita per gli album nella schermata principale"
 
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr "Azione di selezione predefinita per le serie TV nella schermata iniziale"
+msgstr "Azione di selezione predefinita per le serie TV nella schermata principale"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
-msgstr "Azione di selezione predefinita per le saghe cinematografiche nella schermata iniziale"
+msgstr "Azione di selezione predefinita per le saghe nella schermata principale"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
@@ -718,7 +718,7 @@ msgstr "Bitrate audio"
 #. Label to show the screen resolution
 msgctxt "#31607"
 msgid "Screen resolution"
-msgstr "Risoluzione dello schermo"
+msgstr "Risoluzione schermo"
 
 #. Label to show the system rendering speed
 msgctxt "#31608"
