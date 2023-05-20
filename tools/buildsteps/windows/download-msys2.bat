@@ -84,7 +84,7 @@ if exist "%downloaddir%\%msysfile%" GOTO unpack
         ::download msys2 from our mirror
         set msysurl=%MSYS_MIRROR%/%msysfile%
     )
-    %instdir%\bin\wget --tries=20 --retry-connrefused --waitretry=2 --no-check-certificate -c -O %downloaddir%\%msysfile% %msysurl%
+    curl --retry 5 --retry-all-errors --retry-connrefused --retry-delay 5 --location --output %downloaddir%\%msysfile% %msysurl%
     if errorlevel == 1 (
         if exist "%downloaddir%\%msysfile%" del %downloaddir%\%msysfile%
         if %usemirror%==yes (
@@ -383,7 +383,7 @@ if exist %downloaddir%\%gaspreprocfile% goto extractGasPreproc
     echo -------------------------------------------------------------------------------
     echo.- Downloading gas-preprocessor.pl
     echo -------------------------------------------------------------------------------
-    %instdir%\bin\wget --tries=20 --retry-connrefused --waitretry=2 --no-check-certificate -c -O %downloaddir%\%gaspreprocfile% %gaspreprocurl%
+    curl --retry 5 --retry-all-errors --retry-connrefused --retry-delay 5 --location --output %downloaddir%\%gaspreprocfile% %gaspreprocurl%
 
 :extractGasPreproc
 if exist %instdir%\%msys2%\usr\bin\gas-preprocessor.pl goto end
