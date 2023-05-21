@@ -23,6 +23,7 @@ CONFIGURE_OPTIONS+= ac_cv_func_malloc_0_nonnull=yes \
 CONFIGURE=./configure --prefix=$(PREFIX) \
                       --disable-shared \
                       --without-p11-kit \
+                      --without-zstd \
                       --disable-nls \
                       --with-included-unistring \
                       --with-included-libtasn1 \
