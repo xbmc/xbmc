@@ -235,13 +235,13 @@ std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
 
 CNetworkAndroid::CNetworkAndroid() : CNetworkBase(), CJNIXBMCConnectivityManagerNetworkCallback()
 {
+  RetrieveInterfaces();
+
   if (CJNIBase::GetSDKVersion() >= 24)
   {
     CJNIConnectivityManager connman{CXBMCApp::getSystemService(CJNIContext::CONNECTIVITY_SERVICE)};
     connman.registerDefaultNetworkCallback(this->get_raw());
   }
-  else
-    RetrieveInterfaces();
 }
 
 CNetworkAndroid::~CNetworkAndroid()
@@ -279,7 +279,7 @@ CNetworkInterface* CNetworkAndroid::GetFirstConnectedInterface()
 {
   std::unique_lock<CCriticalSection> lock(m_refreshMutex);
 
-  if (CJNIBase::GetSDKVersion() >= 24)
+  if (m_defaultInterface)
     return m_defaultInterface.get();
   else
   {
