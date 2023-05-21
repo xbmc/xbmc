@@ -15,7 +15,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 
 .installed-$(PLATFORM): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)/lib libzstd.a PREFIX=$(PREFIX)
+	$(MAKE) -C $(PLATFORM)/lib libzstd.a PREFIX=$(PREFIX) CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)"
 	$(MAKE) -C $(PLATFORM)/lib install-pc install-static install-includes PREFIX=$(PREFIX)
 	touch $@
 
