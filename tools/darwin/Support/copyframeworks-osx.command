@@ -51,7 +51,7 @@ function check_xbmc_dylib_depends
 EXTERNAL_LIBS=$XBMC_DEPENDS
 
 TARGET_NAME=$FULL_PRODUCT_NAME
-TARGET_CONTENTS=$TARGET_BUILD_DIR/$TARGET_NAME/Contents
+TARGET_CONTENTS=$TARGET_BUILD_DIR
 
 TARGET_BINARY=$TARGET_CONTENTS/MacOS/$APP_NAME
 TARGET_FRAMEWORKS=$TARGET_CONTENTS/Libraries
@@ -63,9 +63,6 @@ mkdir -p "$TARGET_CONTENTS/Resources"
 # start clean so we don't keep old dylibs
 rm -rf "$TARGET_CONTENTS/Libraries"
 mkdir -p "$TARGET_CONTENTS/Libraries"
-
-echo "Package $TARGET_BUILD_DIR/$APP_NAME"
-cp -f "$TARGET_BUILD_DIR/$APP_NAME" "$TARGET_BINARY"
 
 echo "Creating icon"
 iconutil -c icns --output "$TARGET_CONTENTS/Resources/kodi.icns" "$SRCROOT/tools/darwin/packaging/media/osx/icon.iconset"

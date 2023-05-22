@@ -409,9 +409,14 @@ if(WIN32)
   endif()
 elseif(CORE_SYSTEM_NAME STREQUAL android)
   # Nothing
-elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
+elseif(CORE_SYSTEM_NAME STREQUAL darwin_embedded OR CORE_SYSTEM_NAME STREQUAL osx)
+  # Build all apple app target as bundled and dont sign.
+  # We do all signing post build of the app target manually
   set_target_properties(${APP_NAME_LC} PROPERTIES OUTPUT_NAME ${APP_NAME}
-                                                  MACOSX_BUNDLE_INFO_PLIST ${PLATFORM_BUNDLE_INFO_PLIST})
+                                                  MACOSX_BUNDLE YES
+                                                  MACOSX_BUNDLE_INFO_PLIST ${PLATFORM_BUNDLE_INFO_PLIST}
+                                                  XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO"
+                                                  XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "")
 else()
   set_target_properties(${APP_NAME_LC} PROPERTIES SUFFIX ${APP_BINARY_SUFFIX})
 endif()
