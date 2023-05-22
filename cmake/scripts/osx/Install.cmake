@@ -21,26 +21,23 @@ if(CMAKE_GENERATOR MATCHES "Xcode")
   unset(_addons)
 endif()
 
-add_custom_target(bundle
-    COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${APP_NAME_LC}> ${PACKAGE_OUTPUT_DIR}/${APP_NAME}
+add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/DllPaths_generated.h
                                      ${CMAKE_BINARY_DIR}/xbmc/DllPaths_generated.h
     COMMAND "ACTION=build"
-            "TARGET_BUILD_DIR=${PACKAGE_OUTPUT_DIR}"
+            "TARGET_BUILD_DIR=$<TARGET_BUNDLE_CONTENT_DIR:${APP_NAME_LC}>"
             "TARGET_NAME=${APP_NAME}.app"
             "APP_NAME=${APP_NAME}"
             "SRCROOT=${CMAKE_BINARY_DIR}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/CopyRootFiles-osx.command
     COMMAND "XBMC_DEPENDS=${DEPENDS_PATH}"
-            "TARGET_BUILD_DIR=${PACKAGE_OUTPUT_DIR}"
+            "TARGET_BUILD_DIR=$<TARGET_BUNDLE_CONTENT_DIR:${APP_NAME_LC}>"
             "TARGET_NAME=${APP_NAME}.app"
             "APP_NAME=${APP_NAME}"
             "FULL_PRODUCT_NAME=${APP_NAME}.app"
             "SRCROOT=${CMAKE_BINARY_DIR}"
             "PYTHON_VERSION=${PYTHON_VERSION}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/copyframeworks-osx.command)
-set_target_properties(bundle PROPERTIES FOLDER "Build Utilities")
-add_dependencies(bundle ${APP_NAME_LC})
 
 configure_file(${CMAKE_SOURCE_DIR}/tools/darwin/packaging/osx/mkdmg-osx.sh.in
                ${CMAKE_BINARY_DIR}/tools/darwin/packaging/osx/mkdmg-osx.sh @ONLY)
@@ -64,7 +61,8 @@ add_custom_target(dmg
                                                ${CMAKE_BINARY_DIR}/tools/darwin/packaging/media/osx/
     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/darwin/Support/Codesign.command
                                      ${CMAKE_BINARY_DIR}/tools/darwin/packaging/osx/Codesign.command
-    COMMAND "CODESIGNING_FOLDER_PATH=${PACKAGE_OUTPUT_DIR}/${APP_NAME}.app"
+    COMMAND "CODESIGNING_FOLDER_PATH=$<TARGET_BUNDLE_DIR:${APP_NAME_LC}>"
+            "APP=$<TARGET_BUNDLE_DIR:${APP_NAME_LC}>"
             "DEV_ACCOUNT=${DEV_ACCOUNT}"
             "DEV_ACCOUNT_PASSWORD=${DEV_ACCOUNT_PASSWORD}"
             "DEV_TEAM=${DEV_TEAM}"
@@ -74,4 +72,4 @@ add_custom_target(dmg
             ./mkdmg-osx.sh ${CORE_BUILD_CONFIG_LOWERCASED}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tools/darwin/packaging/osx)
 set_target_properties(dmg PROPERTIES FOLDER "Build Utilities")
-add_dependencies(dmg bundle)
+add_dependencies(dmg ${APP_NAME_LC})

@@ -19,7 +19,7 @@ SYNCSKIN="rsync -aq --exclude .git* --exclude CVS* --exclude .svn* --exclude .cv
 # rsync command for including everything but the skins
 ADDONSYNC="rsync -aq --no-links --exclude .git* --exclude .DS_Store* --exclude addons/skin.estuary --exclude addons/skin.estouchy"
 
-BASE_TARGET_PATH="$TARGET_BUILD_DIR/$TARGET_NAME/Contents/Resources"
+BASE_TARGET_PATH="$TARGET_BUILD_DIR/Resources"
 TARGET_PATH="$BASE_TARGET_PATH/$APP_NAME"
 
 mkdir -p "$TARGET_PATH"
@@ -55,11 +55,6 @@ fi
 if [ -d "$SRCROOT/extras/user" ]; then
   ${SYNC} "$SRCROOT/extras/user/" "$TARGET_PATH/extras/user"
 fi
-
-
-
-# magic that gets the icon to update
-touch "$TARGET_BUILD_DIR/$TARGET_NAME"
 
 # not sure we want to do this with out major testing, many scripts cannot handle the spaces in the app name
 #mv "$TARGET_BUILD_DIR/$TARGET_NAME" "$TARGET_BUILD_DIR/$APP_NAME Media Center.app"
