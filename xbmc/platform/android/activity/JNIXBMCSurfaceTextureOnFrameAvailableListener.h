@@ -11,6 +11,9 @@
 #include <androidjni/JNIBase.h>
 #include <androidjni/SurfaceTexture.h>
 
+namespace jni
+{
+
 class CJNIXBMCSurfaceTextureOnFrameAvailableListener : public CJNISurfaceTextureOnFrameAvailableListener, public CJNIInterfaceImplem<CJNIXBMCSurfaceTextureOnFrameAvailableListener>
 {
 public:
@@ -26,3 +29,5 @@ public:
 protected:
   static void _onFrameAvailable(JNIEnv* env, jobject thiz, jobject surface);
 };
+
+} // namespace jni

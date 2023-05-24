@@ -12,6 +12,9 @@
 #include <androidjni/InputManager.h>
 #include <androidjni/Rect.h>
 
+namespace jni
+{
+
 class CJNIMainActivity : public CJNIActivity, public CJNIInputManagerInputDeviceListener
 {
 public:
@@ -52,3 +55,5 @@ protected:
   virtual void onDisplayChanged(int displayId)=0;
   virtual void onDisplayRemoved(int displayId)=0;
 };
+
+} // namespace jni

@@ -88,7 +88,8 @@ static bool IsSupportedColorFormat(int color_format)
 
 /*****************************************************************************/
 /*****************************************************************************/
-class CDVDMediaCodecOnFrameAvailable : public CEvent, public CJNIXBMCSurfaceTextureOnFrameAvailableListener
+class CDVDMediaCodecOnFrameAvailable : public CEvent,
+                                       public jni::CJNIXBMCSurfaceTextureOnFrameAvailableListener
 {
 public:
   CDVDMediaCodecOnFrameAvailable(std::shared_ptr<CJNISurfaceTexture> &surfaceTexture)
@@ -114,10 +115,11 @@ private:
 
 /*****************************************************************************/
 /*****************************************************************************/
-void CMediaCodecVideoBuffer::Set(int bufferId, int textureId,
-  std::shared_ptr<CJNISurfaceTexture> surfacetexture,
-  std::shared_ptr<CDVDMediaCodecOnFrameAvailable> frameready,
-  std::shared_ptr<CJNIXBMCVideoView> videoview)
+void CMediaCodecVideoBuffer::Set(int bufferId,
+                                 int textureId,
+                                 std::shared_ptr<CJNISurfaceTexture> surfacetexture,
+                                 std::shared_ptr<CDVDMediaCodecOnFrameAvailable> frameready,
+                                 std::shared_ptr<jni::CJNIXBMCVideoView> videoview)
 {
   m_bufferId = bufferId;
   m_textureId = textureId;
@@ -795,7 +797,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
   if (m_render_surface)
   {
-    m_jnivideoview.reset(CJNIXBMCVideoView::createVideoView(this));
+    m_jnivideoview.reset(jni::CJNIXBMCVideoView::createVideoView(this));
     if (!m_jnivideoview || !m_jnivideoview->waitForSurface(2000))
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open VideoView creation failed!!");

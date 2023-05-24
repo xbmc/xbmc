@@ -16,6 +16,9 @@
 #include <androidjni/Surface.h>
 #include <androidjni/SurfaceHolder.h>
 
+namespace jni
+{
+
 class CJNIXBMCMainView : virtual public CJNIBase, public CJNISurfaceHolderCallback, public CJNIInterfaceImplem<CJNIXBMCMainView>
 {
 public:
@@ -45,3 +48,5 @@ protected:
   static void _surfaceCreated(JNIEnv* env, jobject thiz, jobject holder);
   static void _surfaceDestroyed(JNIEnv* env, jobject thiz, jobject holder);
 };
+
+} // namespace jni
