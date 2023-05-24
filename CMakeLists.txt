@@ -349,10 +349,14 @@ get_property(INTERNAL_DEPS GLOBAL PROPERTY INTERNAL_DEPS_PROP)
 set(GLOBAL_TARGET_DEPS ${INTERNAL_DEPS} ${PLATFORM_GLOBAL_TARGET_DEPS})
 
 # main library (used for main binary and tests)
-if(CMAKE_GENERATOR STREQUAL Xcode)
+if(CORE_SYSTEM_NAME STREQUAL "darwin_embedded")
+  # $<TARGET_OBJECTS:> as at 3.26.4 provides incorrect paths for ios/tvos platforms
+  # Even if XCODE_EMIT_EFFECTIVE_PLATFORM_NAME global property is used, the xcode project
+  # still sets int dir paths to $(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME) and the generator
+  # expression only provides a path using $(CONFIGURATION)
   add_library(compileinfo_obj OBJECT IMPORTED)
   set_property(TARGET compileinfo_obj PROPERTY IMPORTED_OBJECTS
-    "${CMAKE_BINARY_DIR}/$(PROJECT_NAME).build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/compileinfo.build/$(OBJECT_FILE_DIR_normal:base)/$(CURRENT_ARCH)/CompileInfo.o"
+    "${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/compileinfo.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/$(OBJECT_FILE_DIR_normal:base)/$(CURRENT_ARCH)/CompileInfo.o"
   )
   add_library(lib${APP_NAME_LC} STATIC)
   add_dependencies(lib${APP_NAME_LC} compileinfo)

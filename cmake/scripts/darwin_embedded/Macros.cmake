@@ -1,18 +1,15 @@
 function(core_link_library lib wraplib)
-  if(CMAKE_GENERATOR MATCHES "Unix Makefiles" OR CMAKE_GENERATOR STREQUAL Ninja)
-    set(wrapper_obj cores/dll-loader/exports/CMakeFiles/wrapper.dir/wrapper.c.o)
-  elseif(CMAKE_GENERATOR MATCHES "Xcode")
-    # CURRENT_VARIANT is an Xcode env var
-    # CPU is a project cmake var
-    # Xcode new build system (CMAKE_XCODE_BUILD_SYSTEM=12) requires the env var CURRENT_VARIANT to be passed WITHOUT brackets
-    # Xcode Legacy build system (CMAKE_XCODE_BUILD_SYSTEM=1) requires the env var CURRENT_VARIANT to be passed WITH brackets
-    if(CMAKE_XCODE_BUILD_SYSTEM STREQUAL 12)
-      set(wrapper_obj cores/dll-loader/exports/kodi.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/wrapper.build/Objects-$CURRENT_VARIANT/${CPU}/wrapper.o)
-    else()
-      set(wrapper_obj cores/dll-loader/exports/kodi.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/wrapper.build/Objects-$(CURRENT_VARIANT)/${CPU}/wrapper.o)
-    endif()
+
+  # Somewhere after cmake 3.21 the xcode generation moves this into its out intermediate folder
+  # ideally we want to use $<TARGET_OBJECTS:wrapper> instead of all this wrapper_obj stuff
+  # however as at 3.26.4, even with the XCODE_EMIT_EFFECTIVE_PLATFORM_NAME property
+  # the intermediate config dirs are the same as $(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+  # but the generator expression only uses $(CONFIGURATION) in the paths returned.
+  # Somewhat similar to https://gitlab.kitware.com/cmake/cmake/-/issues/24024
+  if(CMAKE_XCODE_BUILD_SYSTEM STREQUAL 12)
+    set(wrapper_obj wrapper.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Objects-$CURRENT_VARIANT/${CPU}/wrapper.o)
   else()
-    message(FATAL_ERROR "Unsupported generator in core_link_library")
+    set(wrapper_obj wrapper.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/Objects-$(CURRENT_VARIANT)/${CPU}/wrapper.o)
   endif()
 
   set(export -bundle -undefined dynamic_lookup

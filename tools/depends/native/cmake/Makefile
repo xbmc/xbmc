@@ -3,10 +3,10 @@ PLATFORM=$(NATIVEPLATFORM)
 DEPS = ../../Makefile.include Makefile ../../download-files.include
 
 APPNAME=cmake
-VERSION=3.21.3
+VERSION=3.26.4
 SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
-SHA512=0571b78443906c5ad51fb0fafbd32d565caf628cc150b1190802cb819e8497c108ea6b7ecaa03133df2dbbceb730696d24b4df38468c92088c769ce4076d9e9f
+SHA512=fe817c8d5e247db3f0a9a58ee37c466a47220100d9e90711cd5d06c223cef87e41d1a756e75d1537e5f8cd010dcb8971cbeab4684b1ac12bcecf84bf7b720167
 include ../../download-files.include
 
 # configuration settings
