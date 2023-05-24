@@ -11,6 +11,9 @@
 #include <androidjni/AudioManager.h>
 #include <androidjni/JNIBase.h>
 
+namespace jni
+{
+
 class CJNIXBMCAudioManagerOnAudioFocusChangeListener : public CJNIAudioManagerAudioFocusChangeListener, public CJNIInterfaceImplem<CJNIXBMCAudioManagerOnAudioFocusChangeListener>
 {
 public:
@@ -26,3 +29,5 @@ public:
 protected:
   static void _onAudioFocusChange(JNIEnv* env, jobject thiz, jint focusChange);
 };
+
+} // namespace jni
