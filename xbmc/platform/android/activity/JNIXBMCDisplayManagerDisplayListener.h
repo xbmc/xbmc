@@ -10,6 +10,9 @@
 
 #include <androidjni/JNIBase.h>
 
+namespace jni
+{
+
 class CJNIXBMCDisplayManagerDisplayListener : public CJNIBase
 {
 public:
@@ -23,3 +26,5 @@ protected:
   static void _onDisplayChanged(JNIEnv* env, jobject thiz, int displayId);
   static void _onDisplayRemoved(JNIEnv* env, jobject thiz, int displayId);
 };
+
+} // namespace jni

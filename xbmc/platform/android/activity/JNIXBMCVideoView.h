@@ -17,6 +17,9 @@
 #include <androidjni/Surface.h>
 #include <androidjni/SurfaceHolder.h>
 
+namespace jni
+{
+
 class CJNIXBMCVideoView : virtual public CJNIBase, public CJNISurfaceHolderCallback, public CJNIInterfaceImplem<CJNIXBMCVideoView>
 {
 public:
@@ -53,4 +56,6 @@ protected:
 
 private:
   CJNIXBMCVideoView() = default;
-  };
+};
+
+} // namespace jni
