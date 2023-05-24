@@ -22,18 +22,37 @@
 #include "utils/ColorUtils.h"
 #include "utils/Digest.h"
 #include "utils/Variant.h"
+#include "utils/log.h"
 #include "windowing/WinSystem.h"
+
+#include <algorithm>
 
 using namespace KODI::GUILIB;
 
 using KODI::UTILITY::CDigest;
 
-const char* CGUIEditControl::smsLetters[10] = { " !@#$%^&*()[]{}<>/\\|0", ".,;:\'\"-+_=?`~1", "abc2ABC", "def3DEF", "ghi4GHI", "jkl5JKL", "mno6MNO", "pqrs7PQRS", "tuv8TUV", "wxyz9WXYZ" };
-const unsigned int CGUIEditControl::smsDelay = 1000;
-
 #ifdef TARGET_WINDOWS
 extern HWND g_hWnd;
 #endif
+
+namespace
+{
+constexpr std::string_view smsLetters[] = {" !@#$%^&*()[]{}<>/\\|0",
+                                           ".,;:\'\"-+_=?`~1",
+                                           "abc2ABC",
+                                           "def3DEF",
+                                           "ghi4GHI",
+                                           "jkl5JKL",
+                                           "mno6MNO",
+                                           "pqrs7PQRS",
+                                           "tuv8TUV",
+                                           "wxyz9WXYZ"};
+
+constexpr float smsDelay = 1000;
+
+// Additional space between left label text and left label text in pixels
+constexpr float TEXT_SPACE = 20.0f;
+} // unnamed namespace
 
 CGUIEditControl::CGUIEditControl(int parentID, int controlID, float posX, float posY,
                                  float width, float height, const CTextureInfo &textureFocus, const CTextureInfo &textureNoFocus,
@@ -42,20 +61,27 @@ CGUIEditControl::CGUIEditControl(int parentID, int controlID, float posX, float 
 {
   DefaultConstructor();
   SetLabel(text);
+
+  // if skinner forgot to set height
+  if (m_height == 0 && m_label.GetLabelInfo().font)
+  {
+    m_height = m_label.GetLabelInfo().font->GetTextHeight(1);
+    CLog::LogF(LOGWARNING,
+               "No height has been set for GUI edit control ID {}, fallback to font height",
+               controlID);
+  }
 }
 
 void CGUIEditControl::DefaultConstructor()
 {
   ControlType = GUICONTROL_EDIT;
   m_textOffset = 0;
-  m_textWidth = GetWidth();
   m_cursorPos = 0;
   m_cursorBlink = 0;
   m_inputHeading = g_localizeStrings.Get(16028);
   m_inputType = INPUT_TYPE_TEXT;
   m_smsLastKey = 0;
   m_smsKeyIndex = 0;
-  m_label.SetAlign(m_label.GetLabelInfo().align & XBFONT_CENTER_Y); // left align
   m_label2.GetLabelInfo().offsetX = 0;
   m_isMD5 = false;
   m_invalidInput = false;
@@ -379,25 +405,22 @@ void CGUIEditControl::SetInputType(CGUIEditControl::INPUT_TYPE type, const CVari
   //! @todo Verify the current input string?
 }
 
-void CGUIEditControl::RecalcLabelPosition()
+void CGUIEditControl::RecalcRightLabelPosition()
 {
   // ensure that our cursor is within our width
   ValidateCursor();
 
-  std::wstring text = GetDisplayedText();
-  m_textWidth = m_label.CalcTextWidth(text + L'|');
-  float beforeCursorWidth = m_label.CalcTextWidth(text.substr(0, m_cursorPos));
-  float afterCursorWidth = m_label.CalcTextWidth(text.substr(0, m_cursorPos) + L'|');
-  float leftTextWidth = m_label.GetRenderRect().Width();
-  float maxTextWidth = m_label.GetMaxWidth();
+  const std::wstring text = GetDisplayedText();
+  const float textWidth = m_label2.CalcTextWidth(text + L'|');
+  const float beforeCursorWidth = m_label2.CalcTextWidth(text.substr(0, m_cursorPos));
+  const float afterCursorWidth = m_label2.CalcTextWidth(text.substr(0, m_cursorPos) + L'|');
+  const float leftTextWidth = std::min(m_label.GetTextWidth(), m_label.GetMaxWidth());
+  float maxTextWidth = m_width - 2 * m_label.GetLabelInfo().offsetX;
+
   if (leftTextWidth > 0)
-    maxTextWidth -= leftTextWidth + spaceWidth;
+    maxTextWidth -= leftTextWidth + TEXT_SPACE;
 
-  // if skinner forgot to set height :p
-  if (m_height == 0 && m_label.GetLabelInfo().font)
-    m_height = m_label.GetLabelInfo().font->GetTextHeight(1);
-
-  if (m_textWidth > maxTextWidth)
+  if (textWidth > maxTextWidth)
   { // we render taking up the full width, so make sure our cursor position is
     // within the render window
     if (m_textOffset + afterCursorWidth > maxTextWidth)
@@ -410,9 +433,9 @@ void CGUIEditControl::RecalcLabelPosition()
       // otherwise use original position
       m_textOffset = -beforeCursorWidth;
     }
-    else if (m_textOffset + m_textWidth < maxTextWidth)
+    else if (m_textOffset + textWidth < maxTextWidth)
     { // we have more text than we're allowed, but we aren't filling all the space
-      m_textOffset = maxTextWidth - m_textWidth;
+      m_textOffset = maxTextWidth - textWidth;
     }
   }
   else
@@ -424,45 +447,55 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
   if (m_smsTimer.IsRunning() && m_smsTimer.GetElapsedMilliseconds() > smsDelay)
     UpdateText();
 
-  if (m_bInvalidated)
-  {
-    m_label.SetMaxRect(m_posX, m_posY, m_width, m_height);
-    m_label.SetText(m_info.GetLabel(GetParentID()));
-    RecalcLabelPosition();
-  }
-
   bool changed = false;
+  changed |= m_label.SetText(m_info.GetLabel(m_parentID));
 
-  m_clipRect.x1 = m_label.GetRenderRect().x1;
-  m_clipRect.x2 = m_clipRect.x1 + m_label.GetMaxWidth();
+  m_clipRect.x1 = m_posX + m_label.GetLabelInfo().offsetX;
+  m_clipRect.x2 = m_clipRect.x1 + m_width - 2 * m_label.GetLabelInfo().offsetX;
   m_clipRect.y1 = m_posY;
   m_clipRect.y2 = m_posY + m_height;
 
-  // start by rendering the normal text
-  float leftTextWidth = m_label.GetRenderRect().Width();
+  // Limit left text max width to 50% of space when focused, otherwise 70%
+  const float maxTextWidth = m_width * (HasFocus() ? 0.5f : 0.7f);
+
+  const float leftTextWidth =
+      std::min(m_label.GetTextWidth(), maxTextWidth - 2 * m_label.GetLabelInfo().offsetX);
+
+  changed |= m_label.SetMaxRect(m_posX, m_posY, maxTextWidth, m_height);
+
+  if (m_bInvalidated)
+  {
+    if (!HasFocus() && leftTextWidth > 0)
+      m_textOffset = 0;
+    else
+      RecalcRightLabelPosition();
+  }
+
   if (leftTextWidth > 0)
   {
     // render the text on the left
+    changed |= m_label.SetScrolling(HasFocus());
     changed |= m_label.SetColor(GetTextColor());
     changed |= m_label.Process(currentTime);
 
-    m_clipRect.x1 += leftTextWidth + spaceWidth;
+    m_clipRect.x1 += leftTextWidth + TEXT_SPACE;
   }
+
+  // render the text on the right
 
   if (CServiceBroker::GetWinSystem()->GetGfxContext().SetClipRegion(m_clipRect.x1, m_clipRect.y1, m_clipRect.Width(), m_clipRect.Height()))
   {
+    // set alignment for right label text
     uint32_t align = m_label.GetLabelInfo().align & XBFONT_CENTER_Y; // start aligned left
-    if (m_label2.GetTextWidth() < m_clipRect.Width())
-    { // align text as our text fits
-      if (leftTextWidth > 0)
-      { // right align as we have 2 labels
-        align |= XBFONT_RIGHT;
-      }
-      else
-      { // align by whatever the skinner requests
-        align |= (m_label2.GetLabelInfo().align & 3);
-      }
+    if (leftTextWidth > 0)
+    { // right align as we have 2 labels
+      align |= XBFONT_RIGHT;
     }
+    else
+    { // align by whatever the skinner requests
+      align |= (m_label2.GetLabelInfo().align & 3);
+    }
+
     changed |= m_label2.SetMaxRect(m_clipRect.x1 + m_textOffset, m_posY, m_clipRect.Width() - m_textOffset, m_height);
 
     std::wstring text = GetDisplayedText();
@@ -482,7 +515,12 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
 
     changed |= m_label2.SetAlign(align);
     changed |= m_label2.SetColor(GetTextColor());
-    changed |= m_label2.SetOverflow(CGUILabel::OVER_FLOW_CLIP);
+
+    if (HasFocus() || leftTextWidth == 0)
+      changed |= m_label2.SetOverflow(CGUILabel::OVER_FLOW_CLIP);
+    else
+      changed |= m_label2.SetOverflow(CGUILabel::OVER_FLOW_TRUNCATE);
+
     changed |= m_label2.Process(currentTime);
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
   }
@@ -658,7 +696,7 @@ void CGUIEditControl::OnSMSCharacter(unsigned int key)
     m_smsKeyIndex = 0;
   }
 
-  m_smsKeyIndex = m_smsKeyIndex % strlen(smsLetters[key]);
+  m_smsKeyIndex = m_smsKeyIndex % smsLetters[key].size();
 
   m_text2.insert(m_text2.begin() + m_cursorPos++, smsLetters[key][m_smsKeyIndex]);
   UpdateText();
