@@ -44,6 +44,7 @@ public:
   CGUIString(iString start, iString end, bool carriageReturn);
 
   std::string GetAsString() const;
+  std::wstring GetAsWstring() const;
 
   vecText m_text;
   bool m_carriageReturn; // true if we have a carriage return here
