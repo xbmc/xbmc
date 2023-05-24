@@ -9,6 +9,7 @@
 #pragma once
 
 #include <array>
+#include <cstdint>
 
 #if defined(HAS_GL)
 // always define GL_GLEXT_PROTOTYPES before include gl headers

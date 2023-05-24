@@ -8,6 +8,7 @@
 
 #include "CSSUtils.h"
 
+#include <cstdint>
 #include <string>
 
 namespace

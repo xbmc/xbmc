@@ -10,6 +10,7 @@
 
 #include "RConsoleIDs.h"
 
+#include <cstdint>
 #include <map>
 #include <string>
 
