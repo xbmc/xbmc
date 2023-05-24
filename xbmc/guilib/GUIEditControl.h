@@ -81,7 +81,13 @@ protected:
   std::wstring GetDisplayedText() const;
   std::string GetDescriptionByIndex(int index) const override;
   bool SetStyledText(const std::wstring &text);
-  void RecalcLabelPosition();
+
+  /*!
+   * \brief Recalculate the text offset position for the right label
+   *        by updating m_textOffset and validate the cursor position.
+   */
+  void RecalcRightLabelPosition();
+
   void ValidateCursor();
   void UpdateText(bool sendUpdate = true);
   void OnPasteClipboard();
@@ -100,10 +106,7 @@ protected:
   std::string  m_text;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_hintInfo;
   float m_textOffset;
-  float m_textWidth;
   CRect m_clipRect; ///< clipping rect for the second label
-
-  static const int spaceWidth = 5;
 
   unsigned int m_cursorPos;
   unsigned int m_cursorBlink;
@@ -125,7 +128,4 @@ protected:
   std::wstring m_edit;
   int          m_editOffset;
   int          m_editLength;
-
-  static const char*        smsLetters[10];
-  static const unsigned int smsDelay;
 };
