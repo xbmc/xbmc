@@ -358,6 +358,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
         CGUIFontCacheDynamicPosition(context.ScaleFinalXCoord(x, y), context.ScaleFinalYCoord(x, y),
                                      context.ScaleFinalZCoord(x, y));
   }
+
   CVertexBuffer unusedVertexBuffer;
   CVertexBuffer& vertexBuffer =
       hardwareClipping
@@ -399,6 +400,9 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
         m_ellipsesWidth = ellipse->m_advance;
     }
 
+    // Define the width of ellipses of three chars "..."
+    const float ellipsesWidth = 3 * m_ellipsesWidth;
+
     // Check if we will really need to truncate or justify the text
     if (alignment & XBFONT_TRUNCATED)
     {
@@ -415,7 +419,12 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     float startX = 0;
     float startY = (alignment & XBFONT_CENTER_Y) ? -0.5f * m_cellHeight : 0; // vertical centering
 
-    if (alignment & (XBFONT_RIGHT | XBFONT_CENTER_X))
+    // Defines whether ellipses are to be added at the beginning for right-aligned text
+    bool isBeginWithEllipses{false};
+    // Defines the index position where start rendering glyphs
+    size_t startPosGlyph{0};
+
+    if (alignment & XBFONT_CENTER_X)
     {
       // Get the extent of this line
       float w = GetTextWidthInternal(text, glyphs);
@@ -427,6 +436,34 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
         w *= 0.5f;
       // Offset this line's starting position
       startX -= w;
+    }
+    else if (alignment & XBFONT_RIGHT)
+    {
+      // We need to determine the point at which to stop rendering glyphs starting from the left,
+      // if "truncated" flag is set then we need to take in account ellipses before the text
+      float textWidth{0};
+      if (alignment & XBFONT_TRUNCATED)
+      {
+        textWidth = ellipsesWidth;
+        isBeginWithEllipses = true;
+      }
+      // We need to iterate from the end to the beginning
+      for (auto itRGlyph = glyphs.crbegin(); itRGlyph != glyphs.crend(); ++itRGlyph)
+      {
+        Character* ch =
+            GetCharacter(text[itRGlyph->m_glyphInfo.cluster], itRGlyph->m_glyphInfo.codepoint);
+        if (!ch)
+          continue;
+
+        textWidth += ch->m_advance;
+
+        if (textWidth > maxPixelWidth)
+        {
+          // Start rendering from the glyph that does not exceed the maximum width
+          startPosGlyph = std::distance(itRGlyph, glyphs.crend());
+          break;
+        }
+      }
     }
 
     float spacePerSpaceCharacter = 0; // for justification effects
@@ -459,9 +496,14 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     std::queue<Character> characters;
     if (alignment & XBFONT_TRUNCATED)
       GetCharacter(L'.', 0);
-    for (const auto& glyph : glyphs)
+
+    if (isBeginWithEllipses) // for right aligned text only
+      cursorX += ellipsesWidth;
+
+    for (auto itGlyph = glyphs.cbegin() + startPosGlyph; itGlyph != glyphs.cend(); ++itGlyph)
     {
-      Character* ch = GetCharacter(text[glyph.m_glyphInfo.cluster], glyph.m_glyphInfo.codepoint);
+      Character* ch =
+          GetCharacter(text[itGlyph->m_glyphInfo.cluster], itGlyph->m_glyphInfo.codepoint);
       if (!ch)
       {
         Character null = {};
@@ -470,10 +512,20 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       }
       characters.push(*ch);
 
-      if (maxPixelWidth > 0 &&
-          cursorX + ((alignment & XBFONT_TRUNCATED) ? ch->m_advance + 3 * m_ellipsesWidth : 0) >
-              maxPixelWidth)
-        break;
+      if (maxPixelWidth > 0)
+      {
+        float nextCursorX = cursorX;
+
+        if (alignment & XBFONT_TRUNCATED)
+        {
+          nextCursorX += ch->m_advance;
+          if (!isBeginWithEllipses) // for left aligned text only
+            nextCursorX += ellipsesWidth;
+        }
+        if (nextCursorX > maxPixelWidth)
+          break;
+      }
+
       cursorX += ch->m_advance;
     }
 
@@ -481,11 +533,11 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
     tempVertices->reserve(VERTEX_PER_GLYPH * glyphs.size());
     cursorX = 0;
 
-    for (const auto& glyph : glyphs)
+    for (auto itGlyph = glyphs.cbegin() + startPosGlyph; itGlyph != glyphs.cend(); ++itGlyph)
     {
       // If starting text on a new line, determine justification effects
       // Get the current letter in the CStdString
-      UTILS::COLOR::Color color = (text[glyph.m_glyphInfo.cluster] & 0xff0000) >> 16;
+      UTILS::COLOR::Color color = (text[itGlyph->m_glyphInfo.cluster] & 0xff0000) >> 16;
       if (color >= colors.size())
         color = 0;
       color = colors[color];
@@ -493,7 +545,7 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
       // grab the next character
       Character* ch = &characters.front();
 
-      if ((text[glyph.m_glyphInfo.cluster] & 0xffff) == static_cast<character_t>('\t'))
+      if ((text[itGlyph->m_glyphInfo.cluster] & 0xffff) == static_cast<character_t>('\t'))
       {
         const float tabwidth = GetTabSpaceLength();
         const float a = cursorX / tabwidth;
@@ -504,36 +556,58 @@ void CGUIFontTTF::DrawTextInternal(CGraphicContext& context,
 
       if (alignment & XBFONT_TRUNCATED)
       {
-        // Check if we will be exceeded the max allowed width
-        if (cursorX + ch->m_advance + 3 * m_ellipsesWidth > maxPixelWidth)
+        if (alignment & XBFONT_RIGHT)
         {
-          // Yup. Let's draw the ellipses, then bail
-          // Perhaps we should really bail to the next line in this case??
-          Character* period = GetCharacter(L'.', 0);
-          if (!period)
-            break;
-
-          for (int i = 0; i < 3; i++)
+          if (isBeginWithEllipses)
           {
-            RenderCharacter(context, startX + cursorX, startY, period, color, !scrolling,
-                            *tempVertices);
-            cursorX += period->m_advance;
+            isBeginWithEllipses = false;
+            Character* period = GetCharacter(L'.', 0);
+            if (!period)
+              break;
+
+            for (int i = 0; i < 3; i++)
+            {
+              RenderCharacter(context, startX + cursorX, startY, period, color, !scrolling,
+                              *tempVertices);
+              cursorX += period->m_advance;
+            }
           }
-          break;
+          if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
+            break; // exceeded max allowed width - stop rendering
+        }
+        else
+        {
+          // Check if we will be exceeded the max allowed width
+          if (cursorX + ch->m_advance + ellipsesWidth > maxPixelWidth)
+          {
+            // Yup. Let's draw the ellipses, then bail
+            // Perhaps we should really bail to the next line in this case??
+            Character* period = GetCharacter(L'.', 0);
+            if (!period)
+              break;
+
+            for (int i = 0; i < 3; i++)
+            {
+              RenderCharacter(context, startX + cursorX, startY, period, color, !scrolling,
+                              *tempVertices);
+              cursorX += period->m_advance;
+            }
+            break;
+          }
         }
       }
       else if (maxPixelWidth > 0 && cursorX > maxPixelWidth)
         break; // exceeded max allowed width - stop rendering
 
       offsetX = static_cast<float>(
-          MathUtils::round_int(static_cast<double>(glyph.m_glyphPosition.x_offset) / 64));
+          MathUtils::round_int(static_cast<double>(itGlyph->m_glyphPosition.x_offset) / 64));
       offsetY = static_cast<float>(
-          MathUtils::round_int(static_cast<double>(glyph.m_glyphPosition.y_offset) / 64));
+          MathUtils::round_int(static_cast<double>(itGlyph->m_glyphPosition.y_offset) / 64));
       RenderCharacter(context, startX + cursorX + offsetX, startY - offsetY, ch, color, !scrolling,
                       *tempVertices);
       if (alignment & XBFONT_JUSTIFIED)
       {
-        if ((text[glyph.m_glyphInfo.cluster] & 0xffff) == L' ')
+        if ((text[itGlyph->m_glyphInfo.cluster] & 0xffff) == L' ')
           cursorX += ch->m_advance + spacePerSpaceCharacter;
         else
           cursorX += ch->m_advance;
