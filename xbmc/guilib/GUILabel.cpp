@@ -115,20 +115,22 @@ void CGUILabel::Render()
     float posY = m_renderRect.y1;
     uint32_t align = 0;
     if (!overFlows)
-    { // hack for right and centered multiline text, as GUITextLayout::Render() treats posX as the right hand
-      // or center edge of the text (see GUIFontTTF::DrawTextInternal), and this has already been taken care of
+    { // hack for centered multiline text, as GUITextLayout::Render() treats posX as
+      // center edge of the text (see GUIFontTTF::DrawTextInternal), and this has already been taken care of
       // in UpdateRenderRect(), but we wish to still pass the horizontal alignment info through (so that multiline text
       // is aligned correctly), so we must undo the UpdateRenderRect() changes for horizontal alignment.
-      if (m_label.align & XBFONT_RIGHT)
-        posX += m_renderRect.Width();
-      else if (m_label.align & XBFONT_CENTER_X)
+      if (m_label.align & XBFONT_CENTER_X)
         posX += m_renderRect.Width() * 0.5f;
       if (m_label.align & XBFONT_CENTER_Y) // need to pass a centered Y so that <angle> will rotate around the correct point.
         posY += m_renderRect.Height() * 0.5f;
       align = m_label.align;
     }
     else
+    {
       align |= XBFONT_TRUNCATED;
+      if (m_label.align & XBFONT_RIGHT)
+        align |= XBFONT_RIGHT;
+    }
     m_textLayout.Render(posX, posY, m_label.angle, color, m_label.shadowColor, align, m_overflowType == OVER_FLOW_CLIP ? m_textLayout.GetTextWidth() : m_renderRect.Width(), renderSolid);
   }
 }

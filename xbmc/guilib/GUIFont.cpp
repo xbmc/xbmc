@@ -256,8 +256,6 @@ bool CGUIFont::ClippedRegionIsEmpty(
 {
   if (alignment & XBFONT_CENTER_X)
     x -= width * 0.5f;
-  else if (alignment & XBFONT_RIGHT)
-    x -= width;
   if (alignment & XBFONT_CENTER_Y)
     y -= m_font->GetLineHeight(m_lineSpacing);
 
