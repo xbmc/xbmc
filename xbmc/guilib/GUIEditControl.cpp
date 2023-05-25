@@ -493,7 +493,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     }
     else
     { // align by whatever the skinner requests
-      align |= (m_label2.GetLabelInfo().align & 3);
+      align |= (m_label2.GetLabelInfo().align & (XBFONT_RIGHT | XBFONT_CENTER_X));
     }
 
     changed |= m_label2.SetMaxRect(m_clipRect.x1 + m_textOffset, m_posY, m_clipRect.Width() - m_textOffset, m_height);
