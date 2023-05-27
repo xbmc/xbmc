@@ -44,7 +44,12 @@ public:
   CGUIString(iString start, iString end, bool carriageReturn);
 
   std::string GetAsString() const;
+  std::wstring GetAsWstring() const;
 
+  // The text is UTF-16 and the data stored in a character_t hold multiple informations by bits:
+  // <16 bits: are unicode code bits
+  // 16-24 bits: are color bits
+  // 24-32 bits: are style bits (see FONT_STYLE_* flags)
   vecText m_text;
   bool m_carriageReturn; // true if we have a carriage return here
 };

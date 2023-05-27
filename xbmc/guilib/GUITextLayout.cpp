@@ -29,6 +29,18 @@ std::string CGUIString::GetAsString() const
   return text;
 }
 
+std::wstring CGUIString::GetAsWstring() const
+{
+  std::wstring text;
+  text.reserve(m_text.size());
+  // Get text without style
+  for (const auto& it : m_text)
+  {
+    text += static_cast<wchar_t>(it & 0xffff);
+  }
+  return text;
+}
+
 CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight, CGUIFont *borderFont)
 {
   m_varFont = m_font = font;
