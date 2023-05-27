@@ -55,7 +55,7 @@ void CSpeechRecognitionAndroid::StartSpeechRecognition(
 
       // speech recognizer init must be called from the main thread:
       // https://developer.android.com/reference/android/speech/SpeechRecognizer
-      CJNIMainActivity::runNativeOnUiThread(RegisterSpeechRecognitionListener, this);
+      jni::CJNIMainActivity::runNativeOnUiThread(RegisterSpeechRecognitionListener, this);
     }
     else
     {
