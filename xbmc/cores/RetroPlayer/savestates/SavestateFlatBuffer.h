@@ -14,11 +14,6 @@
 
 #include <flatbuffers/flatbuffers.h>
 
-namespace flatbuffers
-{
-class FlatBufferBuilder;
-}
-
 namespace KODI
 {
 namespace RETRO
