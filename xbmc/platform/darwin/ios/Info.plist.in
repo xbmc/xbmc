@@ -405,5 +405,9 @@
 			</dict>
 		</dict>
 	</array>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Translate speech to text in virtual keyboard dialog</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Used for speech recognition</string>
 </dict>
 </plist>
