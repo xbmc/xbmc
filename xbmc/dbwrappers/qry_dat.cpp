@@ -830,6 +830,12 @@ void field_value::set_asString(const std::string& s)
   field_type = ft_String;
 }
 
+void field_value::set_asString(std::string&& s)
+{
+  str_value = std::move(s);
+  field_type = ft_String;
+}
+
 void field_value::set_asBool(const bool b)
 {
   bool_value = b;
