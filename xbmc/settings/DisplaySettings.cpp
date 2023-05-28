@@ -788,16 +788,34 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(const SettingConstPtr& se
     std::vector<RESOLUTION_WHR> resolutions = CServiceBroker::GetWinSystem()->ScreenResolutions(info.fRefreshRate);
     for (std::vector<RESOLUTION_WHR>::const_iterator resolution = resolutions.begin(); resolution != resolutions.end(); ++resolution)
     {
-      list.emplace_back(StringUtils::Format("{}x{}{}", resolution->width, resolution->height,
-                                            ModeFlagsToString(resolution->flags, false)),
-                        resolution->ResInfo_Index);
+      std::string resLabel =
+          !resolution->id.empty()
+              ? resolution->id
+              : StringUtils::Format("{}x{}{}", resolution->width, resolution->height,
+                                    ModeFlagsToString(resolution->flags, false));
+      list.emplace_back(resLabel, resolution->ResInfo_Index);
 
       resolutionInfos.insert(std::make_pair((RESOLUTION)resolution->ResInfo_Index, CDisplaySettings::GetInstance().GetResolutionInfo(resolution->ResInfo_Index)));
     }
 
-    current = FindBestMatchingResolution(resolutionInfos,
-                                         info.iScreenWidth, info.iScreenHeight,
-                                         info.fRefreshRate, info.dwFlags);
+    // ids are unique, so try to find a match by id first. Then resort to best matching resolution.
+    if (!info.strId.empty())
+    {
+      const auto it = std::find_if(resolutionInfos.begin(), resolutionInfos.end(),
+                                   [&](const std::pair<RESOLUTION, RESOLUTION_INFO>& resItem) {
+                                     return info.strId == resItem.second.strId;
+                                   });
+      current =
+          it != resolutionInfos.end()
+              ? it->first
+              : FindBestMatchingResolution(resolutionInfos, info.iScreenWidth, info.iScreenHeight,
+                                           info.fRefreshRate, info.dwFlags);
+    }
+    else
+    {
+      current = FindBestMatchingResolution(resolutionInfos, info.iScreenWidth, info.iScreenHeight,
+                                           info.fRefreshRate, info.dwFlags);
+    }
   }
 }
 

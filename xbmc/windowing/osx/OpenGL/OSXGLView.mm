@@ -46,7 +46,7 @@
     m_pixFmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:wattrs];
     m_glcontext = [[NSOpenGLContext alloc] initWithFormat:m_pixFmt shareContext:nil];
   }
-
+  self.wantsBestResolutionOpenGLSurface = YES;
   [self updateTrackingAreas];
 
   GLint swapInterval = 1;
