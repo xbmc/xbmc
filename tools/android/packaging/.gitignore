@@ -1,3 +1,4 @@
+/.gradle/
 /images/*
 xbmc/assets/*
 xbmc/lib/*
