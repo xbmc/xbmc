@@ -105,6 +105,11 @@ field_value::field_value(const int64_t i)
   is_null = false;
 }
 
+field_value::field_value(const char* s, std::size_t len)
+  : field_type(ft_String), str_value(s, len), is_null(false)
+{
+}
+
 field_value::field_value(const field_value& fv)
 {
   switch (fv.get_fType())
@@ -810,6 +815,12 @@ field_value& field_value::operator=(field_value&& fv) noexcept
 void field_value::set_asString(const char* s)
 {
   str_value = s;
+  field_type = ft_String;
+}
+
+void field_value::set_asString(const char* s, std::size_t len)
+{
+  str_value = std::string_view(s, len);
   field_type = ft_String;
 }
 
