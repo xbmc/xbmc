@@ -168,7 +168,7 @@ bool CFileOperationJob::DoProcess(FileAction action,
           strFileName += URIUtils::GetExtension(pItem->GetPath());
         }
 
-        strFileName = CUtil::MakeLegalFileName(strFileName);
+        strFileName = CUtil::MakeLegalFileName(std::move(strFileName));
       }
 
       std::string strnewDestFile;

@@ -202,7 +202,7 @@ std::string CSpecialProtocol::TranslatePath(const CURL &url)
   }
 
   // Validate the final path, just in case
-  return CUtil::ValidatePath(translatedPath);
+  return CUtil::ValidatePath(std::move(translatedPath));
 }
 
 std::string CSpecialProtocol::TranslatePathConvertCase(const std::string& path)
