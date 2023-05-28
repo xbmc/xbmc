@@ -165,6 +165,11 @@ field_value::field_value(const field_value& fv)
   is_null = fv.get_isNull();
 }
 
+field_value::field_value(field_value&& fv) noexcept
+{
+  *this = std::move(fv);
+}
+
 //empty destructor
 field_value::~field_value() = default;
 
@@ -781,6 +786,23 @@ field_value& field_value::operator=(const field_value& fv)
     }
     default:
       return *this;
+  }
+}
+
+field_value& field_value::operator=(field_value&& fv) noexcept
+{
+  if (this == &fv)
+    return *this;
+
+  is_null = fv.get_isNull();
+
+  switch (fv.get_fType())
+  {
+    case ft_String:
+      set_asString(std::move(fv.str_value));
+      return *this;
+    default:
+      return *this = fv;
   }
 }
 
