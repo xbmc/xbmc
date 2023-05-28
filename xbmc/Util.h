@@ -99,13 +99,16 @@ public:
   static bool CreateDirectoryEx(const std::string& strPath);
 
 #ifdef TARGET_WINDOWS
-  static std::string MakeLegalFileName(const std::string &strFile, int LegalType=LEGAL_WIN32_COMPAT);
-  static std::string MakeLegalPath(const std::string &strPath, int LegalType=LEGAL_WIN32_COMPAT);
+  static std::string MakeLegalFileName(std::string strFile, int LegalType = LEGAL_WIN32_COMPAT);
+  static std::string MakeLegalPath(std::string strPath, int LegalType = LEGAL_WIN32_COMPAT);
 #else
-  static std::string MakeLegalFileName(const std::string &strFile, int LegalType=LEGAL_NONE);
-  static std::string MakeLegalPath(const std::string &strPath, int LegalType=LEGAL_NONE);
+  static std::string MakeLegalFileName(std::string strFile, int LegalType = LEGAL_NONE);
+  static std::string MakeLegalPath(std::string strPath, int LegalType = LEGAL_NONE);
 #endif
-  static std::string ValidatePath(const std::string &path, bool bFixDoubleSlashes = false); ///< return a validated path, with correct directory separators.
+  static std::string ValidatePath(
+      std::string path,
+      bool bFixDoubleSlashes =
+          false); ///< return a validated path, with correct directory separators.
 
   /*!
    * \brief Check if a filename contains a supported font extension.
