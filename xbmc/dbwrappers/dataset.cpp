@@ -357,7 +357,7 @@ bool Dataset::set_field_value(const char* f_name, const field_value& value)
   //  return false;
 }
 
-const field_value Dataset::get_field_value(const char* f_name)
+const field_value& Dataset::get_field_value(const char* f_name)
 {
   if (ds_state != dsInactive)
   {
@@ -391,7 +391,7 @@ const field_value Dataset::get_field_value(const char* f_name)
   throw DbErrors("Dataset state is Inactive");
 }
 
-const field_value Dataset::get_field_value(int index)
+const field_value& Dataset::get_field_value(int index)
 {
   if (ds_state != dsInactive)
   {
