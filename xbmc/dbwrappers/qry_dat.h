@@ -77,6 +77,7 @@ public:
   explicit field_value(const double d);
   explicit field_value(const int64_t i);
   field_value(const field_value& fv);
+  field_value(field_value&& fv) noexcept;
   ~field_value();
 
   fType get_fType() const { return field_type; }
@@ -144,6 +145,7 @@ public:
     return *this;
   }
   field_value& operator=(const field_value& fv);
+  field_value& operator=(field_value&& fv) noexcept;
 
   //class ostream;
   friend std::ostream& operator<<(std::ostream& os, const field_value& fv)
