@@ -898,31 +898,29 @@ bool CUtil::CreateDirectoryEx(const std::string& strPath)
   return CDirectory::Exists(strPath);
 }
 
-std::string CUtil::MakeLegalFileName(const std::string &strFile, int LegalType)
+std::string CUtil::MakeLegalFileName(std::string strFile, int LegalType)
 {
-  std::string result = strFile;
-
-  StringUtils::Replace(result, '/', '_');
-  StringUtils::Replace(result, '\\', '_');
-  StringUtils::Replace(result, '?', '_');
+  StringUtils::Replace(strFile, '/', '_');
+  StringUtils::Replace(strFile, '\\', '_');
+  StringUtils::Replace(strFile, '?', '_');
 
   if (LegalType == LEGAL_WIN32_COMPAT)
   {
     // just filter out some illegal characters on windows
-    StringUtils::Replace(result, ':', '_');
-    StringUtils::Replace(result, '*', '_');
-    StringUtils::Replace(result, '?', '_');
-    StringUtils::Replace(result, '\"', '_');
-    StringUtils::Replace(result, '<', '_');
-    StringUtils::Replace(result, '>', '_');
-    StringUtils::Replace(result, '|', '_');
-    StringUtils::TrimRight(result, ". ");
+    StringUtils::Replace(strFile, ':', '_');
+    StringUtils::Replace(strFile, '*', '_');
+    StringUtils::Replace(strFile, '?', '_');
+    StringUtils::Replace(strFile, '\"', '_');
+    StringUtils::Replace(strFile, '<', '_');
+    StringUtils::Replace(strFile, '>', '_');
+    StringUtils::Replace(strFile, '|', '_');
+    StringUtils::TrimRight(strFile, ". ");
   }
-  return result;
+  return strFile;
 }
 
 // legalize entire path
-std::string CUtil::MakeLegalPath(const std::string &strPathAndFile, int LegalType)
+std::string CUtil::MakeLegalPath(std::string strPathAndFile, int LegalType)
 {
   if (URIUtils::IsStack(strPathAndFile))
     return MakeLegalPath(CStackDirectory::GetFirstStackedFile(strPathAndFile));
@@ -946,9 +944,8 @@ std::string CUtil::MakeLegalPath(const std::string &strPathAndFile, int LegalTyp
   return dir;
 }
 
-std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes /* = false */)
+std::string CUtil::ValidatePath(std::string path, bool bFixDoubleSlashes /* = false */)
 {
-  std::string result = path;
 
   // Don't do any stuff on URLs containing %-characters or protocols that embed
   // filenames. NOTE: Don't use IsInZip or IsInRar here since it will infinitely
@@ -961,46 +958,47 @@ std::string CUtil::ValidatePath(const std::string &path, bool bFixDoubleSlashes 
       StringUtils::StartsWithNoCase(path, "stack:") ||
       StringUtils::StartsWithNoCase(path, "bluray:") ||
       StringUtils::StartsWithNoCase(path, "multipath:") ))
-    return result;
+    return path;
 
-  // check the path for incorrect slashes
+    // check the path for incorrect slashes
 #ifdef TARGET_WINDOWS
   if (URIUtils::IsDOSPath(path))
   {
-    StringUtils::Replace(result, '/', '\\');
+    StringUtils::Replace(path, '/', '\\');
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
     */
-    if (bFixDoubleSlashes && !result.empty())
+    if (bFixDoubleSlashes && !path.empty())
     {
       // Fixup for double back slashes (but ignore the \\ of unc-paths)
-      for (size_t x = 1; x < result.size() - 1; x++)
+      for (size_t x = 1; x < path.size() - 1; x++)
       {
-        if (result[x] == '\\' && result[x+1] == '\\')
-          result.erase(x, 1);
+        if (path[x] == '\\' && path[x + 1] == '\\')
+          path.erase(x, 1);
       }
     }
   }
   else if (path.find("://") != std::string::npos || path.find(":\\\\") != std::string::npos)
 #endif
   {
-    StringUtils::Replace(result, '\\', '/');
+    StringUtils::Replace(path, '\\', '/');
     /* The double slash correction should only be used when *absolutely*
        necessary! This applies to certain DLLs or use from Python DLLs/scripts
        that incorrectly generate double (back) slashes.
     */
-    if (bFixDoubleSlashes && !result.empty())
+    if (bFixDoubleSlashes && !path.empty())
     {
       // Fixup for double forward slashes(/) but don't touch the :// of URLs
-      for (size_t x = 2; x < result.size() - 1; x++)
+      for (size_t x = 2; x < path.size() - 1; x++)
       {
-        if ( result[x] == '/' && result[x + 1] == '/' && !(result[x - 1] == ':' || (result[x - 1] == '/' && result[x - 2] == ':')) )
-          result.erase(x, 1);
+        if (path[x] == '/' && path[x + 1] == '/' &&
+            !(path[x - 1] == ':' || (path[x - 1] == '/' && path[x - 2] == ':')))
+          path.erase(x, 1);
       }
     }
   }
-  return result;
+  return path;
 }
 
 void CUtil::SplitParams(const std::string &paramString, std::vector<std::string> &parameters)

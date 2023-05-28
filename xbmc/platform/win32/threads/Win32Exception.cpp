@@ -73,8 +73,9 @@ bool win32_exception::write_minidump(EXCEPTION_POINTERS* pEp)
                                      mVersion, stLocalTime.year, stLocalTime.month, stLocalTime.day,
                                      stLocalTime.hour, stLocalTime.minute, stLocalTime.second);
 
-  dumpFileName = CWIN32Util::SmbToUnc(URIUtils::AddFileToFolder(
-      CWIN32Util::GetProfilePath(m_platformDir), CUtil::MakeLegalFileName(dumpFileName)));
+  dumpFileName = CWIN32Util::SmbToUnc(
+      URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(m_platformDir),
+                                CUtil::MakeLegalFileName(std::move(dumpFileName))));
 
   dumpFileNameW = KODI::PLATFORM::WINDOWS::ToW(dumpFileName);
   HANDLE hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
@@ -189,8 +190,9 @@ bool win32_exception::write_stacktrace(EXCEPTION_POINTERS* pEp)
                                      mVersion, stLocalTime.year, stLocalTime.month, stLocalTime.day,
                                      stLocalTime.hour, stLocalTime.minute, stLocalTime.second);
 
-  dumpFileName = CWIN32Util::SmbToUnc(URIUtils::AddFileToFolder(
-      CWIN32Util::GetProfilePath(m_platformDir), CUtil::MakeLegalFileName(dumpFileName)));
+  dumpFileName = CWIN32Util::SmbToUnc(
+      URIUtils::AddFileToFolder(CWIN32Util::GetProfilePath(m_platformDir),
+                                CUtil::MakeLegalFileName(std::move(dumpFileName))));
 
   dumpFileNameW = KODI::PLATFORM::WINDOWS::ToW(dumpFileName);
   hDumpFile = CreateFileW(dumpFileNameW.c_str(), GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);

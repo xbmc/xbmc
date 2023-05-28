@@ -10927,7 +10927,7 @@ std::string CVideoDatabase::GetSafeFile(const std::string &dir, const std::strin
 {
   std::string safeThumb(name);
   StringUtils::Replace(safeThumb, ' ', '_');
-  return URIUtils::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
+  return URIUtils::AddFileToFolder(dir, CUtil::MakeLegalFileName(std::move(safeThumb)));
 }
 
 void CVideoDatabase::AnnounceRemove(const std::string& content, int id, bool scanning /* = false */)

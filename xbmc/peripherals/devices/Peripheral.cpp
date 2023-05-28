@@ -148,10 +148,10 @@ bool CPeripheral::Initialise(void)
 
   if (m_iVendorId == 0x0000 && m_iProductId == 0x0000)
   {
-    m_strSettingsFile =
-        StringUtils::Format("special://profile/peripheral_data/{}_{}.xml",
-                            PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
-                            CUtil::MakeLegalFileName(safeDeviceName, LEGAL_WIN32_COMPAT));
+    m_strSettingsFile = StringUtils::Format(
+        "special://profile/peripheral_data/{}_{}.xml",
+        PeripheralTypeTranslator::BusTypeToString(m_mappedBusType),
+        CUtil::MakeLegalFileName(std::move(safeDeviceName), LEGAL_WIN32_COMPAT));
   }
   else
   {
@@ -164,7 +164,7 @@ bool CPeripheral::Initialise(void)
       m_strSettingsFile = StringUtils::Format(
           "special://profile/peripheral_data/{}_{}_{}_{}.xml",
           PeripheralTypeTranslator::BusTypeToString(m_mappedBusType), m_strVendorId, m_strProductId,
-          CUtil::MakeLegalFileName(safeDeviceName, LEGAL_WIN32_COMPAT));
+          CUtil::MakeLegalFileName(std::move(safeDeviceName), LEGAL_WIN32_COMPAT));
   }
 
   LoadPersistedSettings();

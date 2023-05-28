@@ -226,7 +226,7 @@ void CGUIDialogSmartPlaylistEditor::OnOK()
     if (CGUIKeyboardFactory::ShowAndGetInput(filename, CVariant{g_localizeStrings.Get(16013)}, false))
     {
       path = URIUtils::AddFileToFolder(systemPlaylistsPath, m_playlist.GetSaveLocation(),
-                                        CUtil::MakeLegalFileName(filename));
+                                       CUtil::MakeLegalFileName(std::move(filename)));
     }
     else
       return;
