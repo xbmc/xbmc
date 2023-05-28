@@ -81,7 +81,8 @@ public:
 
   fType get_fType() const { return field_type; }
   bool get_isNull() const { return is_null; }
-  std::string get_asString() const;
+  std::string get_asString() const&;
+  std::string get_asString() &&;
   bool get_asBool() const;
   char get_asChar() const;
   short get_asShort() const;
