@@ -21,10 +21,7 @@
 class CURL
 {
 public:
-  explicit CURL(const std::string& strURL)
-  {
-    Parse(strURL);
-  }
+  explicit CURL(std::string strURL) { Parse(std::move(strURL)); }
 
   CURL() = default;
   virtual ~CURL(void);
@@ -33,31 +30,19 @@ public:
   bool operator==(const std::string &url) const { return Get() == url; }
 
   void Reset();
-  void Parse(const std::string& strURL);
-  void SetFileName(const std::string& strFileName);
-  void SetHostName(const std::string& strHostName)
-  {
-    m_strHostName = strHostName;
-  }
+  void Parse(std::string strURL);
+  void SetFileName(std::string strFileName);
+  void SetHostName(std::string strHostName) { m_strHostName = std::move(strHostName); }
 
-  void SetUserName(const std::string& strUserName)
-  {
-    m_strUserName = strUserName;
-  }
+  void SetUserName(std::string strUserName) { m_strUserName = std::move(strUserName); }
 
-  void SetDomain(const std::string& strDomain)
-  {
-    m_strDomain = strDomain;
-  }
+  void SetDomain(std::string strDomain) { m_strDomain = std::move(strDomain); }
 
-  void SetPassword(const std::string& strPassword)
-  {
-    m_strPassword = strPassword;
-  }
+  void SetPassword(std::string strPassword) { m_strPassword = std::move(strPassword); }
 
-  void SetProtocol(const std::string& strProtocol);
-  void SetOptions(const std::string& strOptions);
-  void SetProtocolOptions(const std::string& strOptions);
+  void SetProtocol(std::string strProtocol);
+  void SetOptions(std::string strOptions);
+  void SetProtocolOptions(std::string strOptions);
   void SetPort(int port)
   {
     m_iPort = port;
@@ -103,7 +88,7 @@ public:
     return m_strProtocol;
   }
 
-  const std::string GetTranslatedProtocol() const;
+  std::string GetTranslatedProtocol() const;
 
   const std::string& GetFileType() const
   {
@@ -125,7 +110,7 @@ public:
     return m_strProtocolOptions;
   }
 
-  const std::string GetFileNameWithoutPath() const; /* return the filename excluding path */
+  std::string GetFileNameWithoutPath() const; /* return the filename excluding path */
 
   char GetDirectorySeparator() const;
 
@@ -134,7 +119,7 @@ public:
   std::string GetWithoutUserDetails(bool redact = false) const;
   std::string GetWithoutFilename() const;
   std::string GetRedacted() const;
-  static std::string GetRedacted(const std::string& path);
+  static std::string GetRedacted(std::string path);
   bool IsLocal() const;
   bool IsLocalHost() const;
   static bool IsFileOnly(const std::string &url); ///< return true if there are no directories in the url.
