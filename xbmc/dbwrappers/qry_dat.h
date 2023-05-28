@@ -76,6 +76,7 @@ public:
   explicit field_value(const float f);
   explicit field_value(const double d);
   explicit field_value(const int64_t i);
+  field_value(const char* s, std::size_t len);
   field_value(const field_value& fv);
   field_value(field_value&& fv) noexcept;
   ~field_value();
@@ -212,6 +213,7 @@ public:
 
   void set_isNull() { is_null = true; }
   void set_asString(const char* s);
+  void set_asString(const char* s, std::size_t len);
   void set_asString(const std::string& s);
   void set_asBool(const bool b);
   void set_asChar(const char c);
