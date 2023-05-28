@@ -169,7 +169,7 @@ field_value::field_value(const field_value& fv)
 field_value::~field_value() = default;
 
 //Conversations functions
-std::string field_value::get_asString() const
+std::string field_value::get_asString() const&
 {
   switch (field_type)
   {
@@ -232,6 +232,17 @@ std::string field_value::get_asString() const
     }
     default:
       return "";
+  }
+}
+
+std::string field_value::get_asString() &&
+{
+  switch (field_type)
+  {
+    case ft_String:
+      return std::move(str_value);
+    default:
+      return get_asString();
   }
 }
 
