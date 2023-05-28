@@ -266,7 +266,7 @@ protected:
   void parse_sql(std::string& sql);
 
   /* Returns old field value (for :OLD) */
-  virtual const field_value f_old(const char* f);
+  virtual field_value f_old(const char* f);
 
   /* fast string tolower helper */
   char* str_toLower(char* s);
