@@ -105,6 +105,11 @@ public:
     set_asString(s);
     return *this;
   }
+  field_value& operator=(std::string&& s)
+  {
+    set_asString(std::move(s));
+    return *this;
+  }
   field_value& operator=(const bool b)
   {
     set_asBool(b);
@@ -215,6 +220,7 @@ public:
   void set_asString(const char* s);
   void set_asString(const char* s, std::size_t len);
   void set_asString(const std::string& s);
+  void set_asString(std::string&& s);
   void set_asBool(const bool b);
   void set_asChar(const char c);
   void set_asShort(const short s);
