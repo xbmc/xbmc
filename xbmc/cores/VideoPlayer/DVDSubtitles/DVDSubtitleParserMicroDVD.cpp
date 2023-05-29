@@ -23,11 +23,6 @@ CDVDSubtitleParserMicroDVD::CDVDSubtitleParserMicroDVD(std::unique_ptr<CDVDSubti
 {
 }
 
-CDVDSubtitleParserMicroDVD::~CDVDSubtitleParserMicroDVD()
-{
-  Dispose();
-}
-
 bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo& hints)
 {
   if (!CDVDSubtitleParserText::Open())
@@ -71,9 +66,4 @@ bool CDVDSubtitleParserMicroDVD::Open(CDVDStreamInfo& hints)
   m_collection.Add(CreateOverlay());
 
   return true;
-}
-
-void CDVDSubtitleParserMicroDVD::Dispose()
-{
-  CDVDSubtitleParserCollection::Dispose();
 }

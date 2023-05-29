@@ -17,10 +17,9 @@ class CDVDSubtitleParserSSA : public CDVDSubtitleParserText
 {
 public:
   CDVDSubtitleParserSSA(std::unique_ptr<CDVDSubtitleStream>&& pStream, const std::string& strFile);
-  ~CDVDSubtitleParserSSA() override;
+  ~CDVDSubtitleParserSSA() = default;
 
   bool Open(CDVDStreamInfo& hints) override;
-  void Dispose() override;
 
 private:
   std::shared_ptr<CDVDSubtitlesLibass> m_libass;

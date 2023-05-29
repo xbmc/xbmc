@@ -18,8 +18,7 @@ class CDVDSubtitleParserSubrip : public CDVDSubtitleParserText, private CSubtitl
 public:
   CDVDSubtitleParserSubrip(std::unique_ptr<CDVDSubtitleStream>&& pStream,
                            const std::string& strFile);
-  ~CDVDSubtitleParserSubrip() override;
+  ~CDVDSubtitleParserSubrip() = default;
 
   bool Open(CDVDStreamInfo& hints) override;
-  void Dispose() override;
 };

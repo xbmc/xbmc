@@ -21,11 +21,6 @@ CDVDSubtitleParserSami::CDVDSubtitleParserSami(std::unique_ptr<CDVDSubtitleStrea
 {
 }
 
-CDVDSubtitleParserSami::~CDVDSubtitleParserSami()
-{
-  Dispose();
-}
-
 bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
 {
   if (!CDVDSubtitleParserText::Open())
@@ -149,9 +144,4 @@ bool CDVDSubtitleParserSami::Open(CDVDStreamInfo& hints)
   m_collection.Add(CreateOverlay());
 
   return true;
-}
-
-void CDVDSubtitleParserSami::Dispose()
-{
-  CDVDSubtitleParserCollection::Dispose();
 }
