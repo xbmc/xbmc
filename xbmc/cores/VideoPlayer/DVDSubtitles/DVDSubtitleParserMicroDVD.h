@@ -18,10 +18,9 @@ class CDVDSubtitleParserMicroDVD : public CDVDSubtitleParserText, private CSubti
 public:
   CDVDSubtitleParserMicroDVD(std::unique_ptr<CDVDSubtitleStream>&& stream,
                              const std::string& strFile);
-  ~CDVDSubtitleParserMicroDVD() override;
+  ~CDVDSubtitleParserMicroDVD() = default;
 
   bool Open(CDVDStreamInfo& hints) override;
-  void Dispose() override;
 
 private:
   double m_framerate;

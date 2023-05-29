@@ -24,11 +24,6 @@ CSubtitleParserWebVTT::CSubtitleParserWebVTT(std::unique_ptr<CDVDSubtitleStream>
 {
 }
 
-CSubtitleParserWebVTT::~CSubtitleParserWebVTT()
-{
-  Dispose();
-}
-
 bool CSubtitleParserWebVTT::Open(CDVDStreamInfo& hints)
 {
   if (!CDVDSubtitleParserText::Open())
@@ -76,9 +71,4 @@ bool CSubtitleParserWebVTT::Open(CDVDStreamInfo& hints)
   m_collection.Add(overlay);
 
   return true;
-}
-
-void CSubtitleParserWebVTT::Dispose()
-{
-  CDVDSubtitleParserCollection::Dispose();
 }

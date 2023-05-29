@@ -17,8 +17,7 @@ class CSubtitleParserWebVTT : public CDVDSubtitleParserText, public CSubtitlesAd
 {
 public:
   CSubtitleParserWebVTT(std::unique_ptr<CDVDSubtitleStream>&& pStream, const std::string& strFile);
-  ~CSubtitleParserWebVTT() override;
+  ~CSubtitleParserWebVTT() = default;
 
   bool Open(CDVDStreamInfo& hints) override;
-  void Dispose() override;
 };
