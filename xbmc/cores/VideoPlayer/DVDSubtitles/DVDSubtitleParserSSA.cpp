@@ -24,11 +24,6 @@ CDVDSubtitleParserSSA::CDVDSubtitleParserSSA(std::unique_ptr<CDVDSubtitleStream>
   m_libass->Configure();
 }
 
-CDVDSubtitleParserSSA::~CDVDSubtitleParserSSA()
-{
-  Dispose();
-}
-
 bool CDVDSubtitleParserSSA::Open(CDVDStreamInfo& hints)
 {
 
@@ -49,9 +44,4 @@ bool CDVDSubtitleParserSSA::Open(CDVDStreamInfo& hints)
   m_collection.Add(overlay);
 
   return true;
-}
-
-void CDVDSubtitleParserSSA::Dispose()
-{
-  CDVDSubtitleParserCollection::Dispose();
 }

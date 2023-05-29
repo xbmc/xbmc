@@ -22,8 +22,7 @@ class CDVDSubtitleParser
 {
 public:
   virtual ~CDVDSubtitleParser() = default;
-  virtual bool Open(CDVDStreamInfo &hints) = 0;
-  virtual void Dispose() = 0;
+  virtual bool Open(CDVDStreamInfo& hints) = 0;
   virtual void Reset() = 0;
   virtual std::shared_ptr<CDVDOverlay> Parse(double iPts) = 0;
   virtual const std::string& GetName() const = 0;
@@ -43,7 +42,6 @@ public:
     return o->Clone();
   }
   void Reset() override { m_collection.Reset(); }
-  void Dispose() override { m_collection.Clear(); }
 
 protected:
   CDVDSubtitleLineCollection m_collection;
