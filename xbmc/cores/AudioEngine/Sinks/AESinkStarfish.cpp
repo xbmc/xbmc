@@ -63,6 +63,10 @@ void CAESinkStarfish::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_AC3);
   info.m_streamTypes.emplace_back(CAEStreamInfo::STREAM_TYPE_EAC3);
 
+  info.m_sampleRates.emplace_back(32000);
+  info.m_sampleRates.emplace_back(44100);
+  info.m_sampleRates.emplace_back(48000);
+
   list.emplace_back(info);
 }
 
@@ -97,8 +101,6 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
   payload["option"]["externalStreamingInfo"]["contents"]["format"] = "RAW";
   payload["option"]["transmission"]["contentsType"] = "LIVE"; // "LIVE", "WEBRTC"
 
-  payload["option"]["lowDelayMode"] = true;
-
   switch (m_format.m_streamInfo.m_type)
   {
     case CAEStreamInfo::STREAM_TYPE_AC3:
@@ -111,8 +113,7 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
     }
     case CAEStreamInfo::STREAM_TYPE_EAC3:
     {
-      payload["option"]["externalStreamingInfo"]["contents"]["ac3PlusInfo"]["channels"] =
-          m_format.m_streamInfo.m_channels;
+      payload["option"]["externalStreamingInfo"]["contents"]["ac3PlusInfo"]["channels"] = 8;
       payload["option"]["externalStreamingInfo"]["contents"]["ac3PlusInfo"]["frequency"] =
           static_cast<double>(m_format.m_streamInfo.m_sampleRate) / 1000;
 
@@ -170,7 +171,7 @@ double CAESinkStarfish::GetCacheTotal()
   {
     auto frameTimeSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(
         std::chrono::duration<double, std::milli>(m_format.m_streamInfo.GetDuration()));
-    return STARFISH_AUDIO_BUFFERS * frameTimeSeconds.count();
+    return STARFISH_AUDIO_BUFFERS * frameTimeSeconds.count() * 2;
   }
   else
     return 0.0;
@@ -183,17 +184,18 @@ double CAESinkStarfish::GetLatency()
 
 unsigned int CAESinkStarfish::AddPackets(uint8_t** data, unsigned int frames, unsigned int offset)
 {
+  auto frameTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
+      std::chrono::duration<double, std::milli>(m_format.m_streamInfo.GetDuration()));
+
+  if (!m_firstFeed && offset == 0)
+    m_pts += frameTime;
+
   CVariant payload;
   uint8_t* buffer = data[0] + offset * m_format.m_frameSize;
   payload["bufferAddr"] = fmt::format("{:#x}", reinterpret_cast<std::uintptr_t>(buffer));
   payload["bufferSize"] = frames * m_format.m_frameSize;
   payload["pts"] = m_pts.count();
   payload["esData"] = 2;
-
-  auto frameTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
-      std::chrono::duration<double, std::milli>(m_format.m_streamInfo.GetDuration()));
-
-  m_pts += frameTime;
 
   std::string json;
   CJSONVariantWriter::Write(payload, json, true);
@@ -206,7 +208,10 @@ unsigned int CAESinkStarfish::AddPackets(uint8_t** data, unsigned int frames, un
   }
 
   if (result.find("Ok") != std::string::npos)
+  {
+    m_firstFeed = false;
     return frames;
+  }
 
   CLog::LogF(LOGWARNING, "CAESinkStarfish: Buffer submit returned error: {}", result);
   return 0;
@@ -221,9 +226,7 @@ void CAESinkStarfish::AddPause(unsigned int millis)
 
 void CAESinkStarfish::GetDelay(AEDelayStatus& status)
 {
-  constexpr auto hwLatency = 250ms;
-  status.SetDelay(
-      std::chrono::duration_cast<std::chrono::duration<double>>(m_delay + hwLatency).count());
+  status.SetDelay(std::chrono::duration_cast<std::chrono::duration<double>>(m_delay).count());
 }
 
 void CAESinkStarfish::Drain()
