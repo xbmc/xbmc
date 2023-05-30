@@ -202,8 +202,6 @@ struct PlayerControllerState
 {
   controller.microGamepad.valueChangedHandler =
       ^(GCMicroGamepad* gamepad, GCControllerElement* element) {
-        NSString* message;
-
         kodi::addon::PeripheralEvent newEvent;
         newEvent.SetPeripheralIndex(static_cast<unsigned int>(gamepad.controller.playerIndex));
 
@@ -212,46 +210,43 @@ struct PlayerControllerState
         // A button
         if (gamepad.buttonA == element)
         {
-          message = [self setButtonState:gamepad.buttonA
-                               withEvent:&newEvent
-                             withMessage:@"A Button"
-                           withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO,
-                                                        GCCONTROLLER_MICRO_GAMEPAD_BUTTON::A}];
+          [self setButtonState:gamepad.buttonA
+                     withEvent:&newEvent
+                   withMessage:@"A Button"
+                 withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO,
+                                              GCCONTROLLER_MICRO_GAMEPAD_BUTTON::A}];
         }
         // X button
         else if (gamepad.buttonX == element)
         {
-          message = [self setButtonState:gamepad.buttonX
-                               withEvent:&newEvent
-                             withMessage:@"X Button"
-                           withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO,
-                                                        GCCONTROLLER_MICRO_GAMEPAD_BUTTON::X}];
+          [self setButtonState:gamepad.buttonX
+                     withEvent:&newEvent
+                   withMessage:@"X Button"
+                 withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO,
+                                              GCCONTROLLER_MICRO_GAMEPAD_BUTTON::X}];
         }
         // d-pad
         else if (gamepad.dpad == element)
         {
-          message = [self checkdpad:gamepad.dpad
-                          withEvent:&newEvent
-                      withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO}
-                    withplayerIndex:static_cast<int>(controller.playerIndex)];
+          [self checkdpad:gamepad.dpad
+                    withEvent:&newEvent
+                withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO}
+              withplayerIndex:static_cast<int>(controller.playerIndex)];
         }
         if (@available(iOS 13.0, tvOS 13.0, macOS 10.15, *))
         {
           // buttonMenu
           if (gamepad.buttonMenu == element)
           {
-            message = [self setButtonState:static_cast<GCControllerButtonInput*>(element)
-                                 withEvent:&newEvent
-                               withMessage:@"Menu Button"
-                             withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO,
-                                                          GCCONTROLLER_MICRO_GAMEPAD_BUTTON::MENU}];
+            [self setButtonState:static_cast<GCControllerButtonInput*>(element)
+                       withEvent:&newEvent
+                     withMessage:@"Menu Button"
+                   withInputInfo:InputValueInfo{GCCONTROLLER_TYPE::MICRO,
+                                                GCCONTROLLER_MICRO_GAMEPAD_BUTTON::MENU}];
           }
         }
 
         [cbmanager SetDigitalEvent:newEvent];
-        //! @todo Debug Purposes only - excessive log spam
-        // utilise spdlog for input compononent logging
-        // [cbmanager displayMessage:message controllerID:static_cast<int>(controller.playerIndex)];
       };
 }
 
