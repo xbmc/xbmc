@@ -273,7 +273,7 @@ void CScraperParser::ParseExpression(const std::string& input, std::string& dest
       if (iOptional > -1) // check that required param is there
       {
         char temp[12];
-        sprintf(temp,"\\%i",iOptional);
+        snprintf(temp, sizeof(temp), "\\%i", iOptional);
         std::string szParam = reg.GetReplaceString(temp);
         CRegExp reg2;
         reg2.RegComp("(.*)(\\\\\\(.*\\\\2.*)\\\\\\)(.*)");
@@ -593,7 +593,7 @@ void CScraperParser::GetBufferParams(bool* result, const char* attribute, bool d
 void CScraperParser::InsertToken(std::string& strOutput, int buf, const char* token)
 {
   char temp[4];
-  sprintf(temp,"\\%i",buf);
+  snprintf(temp, sizeof(temp), "\\%i", buf);
   size_t i2=0;
   while ((i2 = strOutput.find(temp,i2)) != std::string::npos)
   {

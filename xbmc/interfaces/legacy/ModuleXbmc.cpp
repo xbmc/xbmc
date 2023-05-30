@@ -234,7 +234,7 @@ namespace XBMCAddon
     {
       XBMC_TRACE;
       char cTitleIP[32];
-      sprintf(cTitleIP, "127.0.0.1");
+      snprintf(cTitleIP, sizeof(cTitleIP), "127.0.0.1");
       CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
       if (iface)
         return iface->GetCurrentIPAddress();
