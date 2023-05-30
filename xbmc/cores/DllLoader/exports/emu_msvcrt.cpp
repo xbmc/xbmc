@@ -1783,7 +1783,7 @@ extern "C"
   char* dllstrerror(int iErr)
   {
     static char szError[32];
-    sprintf(szError, "err:%i", iErr);
+    snprintf(szError, sizeof(szError), "err:%i", iErr);
     return (char*)szError;
   }
 

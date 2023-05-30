@@ -309,7 +309,8 @@ bool CNetworkAndroid::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
   struct in_addr host_ip;
   host_ip.s_addr = remote_ip;
 
-  sprintf(cmd_line, "ping -c 1 -w %d %s", timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
+  snprintf(cmd_line, sizeof(cmd_line), "ping -c 1 -w %d %s",
+           timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
 
   int status = system (cmd_line);
 

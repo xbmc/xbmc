@@ -62,7 +62,7 @@ bool Xcddb::openSocket()
   hints.ai_family   = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_protocol = IPPROTO_TCP;
-  sprintf(service, "%d", CDDB_PORT);
+  snprintf(service, sizeof(service), "%d", CDDB_PORT);
 
   res = getaddrinfo(m_cddb_ip_address.c_str(), service, &hints, &result);
   if(res)
@@ -711,7 +711,7 @@ void Xcddb::addInexactListLine(int line_cnt, const char *line, int len)
       break;
     }
   }
-  sprintf(cddb_command, "cddb read %s %s", genre, discid);
+  snprintf(cddb_command, sizeof(cddb_command), "cddb read %s %s", genre, discid);
 
   m_mapInexact_cddb_command_list[line_cnt] = cddb_command;
 
@@ -725,7 +725,7 @@ void Xcddb::addInexactListLine(int line_cnt, const char *line, int len)
   g_charsetConverter.unknownToUTF8(title, strTitle);
   m_mapInexact_title_list[line_cnt] = strTitle;
   // char log_string[1024];
-  // sprintf(log_string,"%u: %s - %s",line_cnt,artist,title);
+  // snprintf(log_string, sizeof(log_string), "%u: %s - %s",line_cnt,artist,title);
   // //writeLog(log_string);
   // //writeLog("addInexactListLine End");
 }
@@ -924,23 +924,23 @@ bool Xcddb::queryCDinfo(CCdInfo* pInfo)
   strcat(query_buffer, "cddb query");
   {
     char tmp_buffer[256];
-    sprintf(tmp_buffer, " %08x", discid);
+    snprintf(tmp_buffer, sizeof(tmp_buffer), " %08x", discid);
     strcat(query_buffer, tmp_buffer);
   }
   {
     char tmp_buffer[256];
-    sprintf(tmp_buffer, " %i", real_track_count);
+    snprintf(tmp_buffer, sizeof(tmp_buffer), " %i", real_track_count);
     strcat(query_buffer, tmp_buffer);
   }
   for (int i = 0;i < lead_out;i++)
   {
     char tmp_buffer[256];
-    sprintf(tmp_buffer, " %lu", frames[i]);
+    snprintf(tmp_buffer, sizeof(tmp_buffer), " %lu", frames[i]);
     strcat(query_buffer, tmp_buffer);
   }
   {
     char tmp_buffer[256];
-    sprintf(tmp_buffer, " %lu", complete_length);
+    snprintf(tmp_buffer, sizeof(tmp_buffer), " %lu", complete_length);
     strcat(query_buffer, tmp_buffer);
   }
 

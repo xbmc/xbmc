@@ -193,43 +193,43 @@ std::string field_value::get_asString() const
     case ft_Short:
     {
       char t[10];
-      sprintf(t, "%i", short_value);
+      snprintf(t, sizeof(t), "%i", short_value);
       return tmp = t;
     }
     case ft_UShort:
     {
       char t[10];
-      sprintf(t, "%i", ushort_value);
+      snprintf(t, sizeof(t), "%i", ushort_value);
       return tmp = t;
     }
     case ft_Int:
     {
       char t[12];
-      sprintf(t, "%d", int_value);
+      snprintf(t, sizeof(t), "%d", int_value);
       return tmp = t;
     }
     case ft_UInt:
     {
       char t[12];
-      sprintf(t, "%u", uint_value);
+      snprintf(t, sizeof(t), "%u", uint_value);
       return tmp = t;
     }
     case ft_Float:
     {
       char t[16];
-      sprintf(t, "%f", static_cast<double>(float_value));
+      snprintf(t, sizeof(t), "%f", static_cast<double>(float_value));
       return tmp = t;
     }
     case ft_Double:
     {
       char t[32];
-      sprintf(t, "%f", double_value);
+      snprintf(t, sizeof(t), "%f", double_value);
       return tmp = t;
     }
     case ft_Int64:
     {
       char t[23];
-      sprintf(t, "%" PRId64, int64_value);
+      snprintf(t, sizeof(t), "%" PRId64, int64_value);
       return tmp = t;
     }
     default:
@@ -314,43 +314,43 @@ char field_value::get_asChar() const
     case ft_Short:
     {
       char t[10];
-      sprintf(t, "%i", short_value);
+      snprintf(t, sizeof(t), "%i", short_value);
       return t[0];
     }
     case ft_UShort:
     {
       char t[10];
-      sprintf(t, "%i", ushort_value);
+      snprintf(t, sizeof(t), "%i", ushort_value);
       return t[0];
     }
     case ft_Int:
     {
       char t[12];
-      sprintf(t, "%d", int_value);
+      snprintf(t, sizeof(t), "%d", int_value);
       return t[0];
     }
     case ft_UInt:
     {
       char t[12];
-      sprintf(t, "%u", uint_value);
+      snprintf(t, sizeof(t), "%u", uint_value);
       return t[0];
     }
     case ft_Float:
     {
       char t[16];
-      sprintf(t, "%f", static_cast<double>(float_value));
+      snprintf(t, sizeof(t), "%f", static_cast<double>(float_value));
       return t[0];
     }
     case ft_Double:
     {
       char t[32];
-      sprintf(t, "%f", double_value);
+      snprintf(t, sizeof(t), "%f", double_value);
       return t[0];
     }
     case ft_Int64:
     {
       char t[24];
-      sprintf(t, "%" PRId64, int64_value);
+      snprintf(t, sizeof(t), "%" PRId64, int64_value);
       return t[0];
     }
     default:

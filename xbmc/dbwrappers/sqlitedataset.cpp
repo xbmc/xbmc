@@ -370,7 +370,7 @@ bool SqliteDatabase::exists(void)
 
   // performing a select all on the sqlite_master will return rows if there are tables
   // defined indicating it's not empty and therefore must "exist".
-  sprintf(sqlcmd, "SELECT * FROM sqlite_master");
+  snprintf(sqlcmd, sizeof(sqlcmd), "SELECT * FROM sqlite_master");
   if ((last_err = sqlite3_exec(getHandle(), sqlcmd, &callback, &res, NULL)) == SQLITE_OK)
   {
     bRet = (res.records.size() > 0);
@@ -450,39 +450,43 @@ int SqliteDatabase::drop_analytics(void)
   result_set res;
 
   CLog::Log(LOGDEBUG, "Cleaning indexes from database {} at {}", db, host);
-  sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'index' AND sql IS NOT NULL");
+  snprintf(sqlcmd, sizeof(sqlcmd),
+           "SELECT name FROM sqlite_master WHERE type == 'index' AND sql IS NOT NULL");
   if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK)
     return DB_UNEXPECTED_RESULT;
 
   for (size_t i = 0; i < res.records.size(); i++)
   {
-    sprintf(sqlcmd, "DROP INDEX '%s'", res.records[i]->at(0).get_asString().c_str());
+    snprintf(sqlcmd, sizeof(sqlcmd), "DROP INDEX '%s'",
+             res.records[i]->at(0).get_asString().c_str());
     if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL)) != SQLITE_OK)
       return DB_UNEXPECTED_RESULT;
   }
   res.clear();
 
   CLog::Log(LOGDEBUG, "Cleaning views from database {} at {}", db, host);
-  sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'view'");
+  snprintf(sqlcmd, sizeof(sqlcmd), "SELECT name FROM sqlite_master WHERE type == 'view'");
   if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK)
     return DB_UNEXPECTED_RESULT;
 
   for (size_t i = 0; i < res.records.size(); i++)
   {
-    sprintf(sqlcmd, "DROP VIEW '%s'", res.records[i]->at(0).get_asString().c_str());
+    snprintf(sqlcmd, sizeof(sqlcmd), "DROP VIEW '%s'",
+             res.records[i]->at(0).get_asString().c_str());
     if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL)) != SQLITE_OK)
       return DB_UNEXPECTED_RESULT;
   }
   res.clear();
 
   CLog::Log(LOGDEBUG, "Cleaning triggers from database {} at {}", db, host);
-  sprintf(sqlcmd, "SELECT name FROM sqlite_master WHERE type == 'trigger'");
+  snprintf(sqlcmd, sizeof(sqlcmd), "SELECT name FROM sqlite_master WHERE type == 'trigger'");
   if ((last_err = sqlite3_exec(conn, sqlcmd, &callback, &res, NULL)) != SQLITE_OK)
     return DB_UNEXPECTED_RESULT;
 
   for (size_t i = 0; i < res.records.size(); i++)
   {
-    sprintf(sqlcmd, "DROP TRIGGER '%s'", res.records[i]->at(0).get_asString().c_str());
+    snprintf(sqlcmd, sizeof(sqlcmd), "DROP TRIGGER '%s'",
+             res.records[i]->at(0).get_asString().c_str());
     if ((last_err = sqlite3_exec(conn, sqlcmd, NULL, NULL, NULL)) != SQLITE_OK)
       return DB_UNEXPECTED_RESULT;
   }

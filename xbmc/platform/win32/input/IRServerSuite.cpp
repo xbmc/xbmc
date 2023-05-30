@@ -115,7 +115,7 @@ bool CIRServerSuite::Connect(bool logMessages)
   hints.ai_family   = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_protocol = IPPROTO_TCP;
-  sprintf(service, "%d", IRSS_PORT);
+  snprintf(service, sizeof(service), "%d", IRSS_PORT);
 
   res = getaddrinfo("localhost", service, &hints, &result);
   if(res)
@@ -336,7 +336,7 @@ bool CIRServerSuite::HandleRemoteEvent(CIrssMessage& message)
       //seems to be version 1.0.4.1, only keycode is sent, use Microsoft MCE mapping??
       devicenamelength = 13;
       deviceName = new char[devicenamelength + 1];
-      sprintf(deviceName, "Microsoft MCE");
+      snprintf(deviceName, devicenamelength + 1, "Microsoft MCE");
       keycodelength = datalen;
       keycode = new char[keycodelength + 1];
       memcpy(keycode, data, keycodelength);

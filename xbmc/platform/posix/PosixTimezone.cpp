@@ -187,7 +187,7 @@ void CPosixTimezone::SetTimezone(const std::string& timezoneName)
   if (use_timezone)
   {
     static char env_var[255];
-    sprintf(env_var, "TZ=:%s", timezoneName.c_str());
+    snprintf(env_var, sizeof(env_var), "TZ=:%s", timezoneName.c_str());
     putenv(env_var);
     tzset();
   }
