@@ -1068,7 +1068,7 @@ void CDVDInputStreamNavigator::SetAudioStreamName(AudioStreamInfo &info, const a
     break;
   default:
     char temp[32];
-    sprintf(temp, " %d-chs", audio_attributes.channels + 1);
+    snprintf(temp, sizeof(temp), " %d-chs", audio_attributes.channels + 1);
     info.name += temp;
   }
 

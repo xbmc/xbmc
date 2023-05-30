@@ -94,7 +94,7 @@ int MysqlDatabase::setErr(int err_code, const char* qry)
       break;
     default:
       char err[256];
-      snprintf(err, 256, "Undefined MySQL error: Code (%d)", err_code);
+      snprintf(err, sizeof(err), "Undefined MySQL error: Code (%d)", err_code);
       error = err;
   }
   error = "[" + db + "] " + error;
@@ -316,7 +316,7 @@ int MysqlDatabase::copy(const char* backup_name)
     throw DbErrors("Can't connect to source database: '%s'", db.c_str());
 
   // grab a list of base tables only (no views)
-  sprintf(sql, "SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'");
+  snprintf(sql, sizeof(sql), "SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'");
   if ((ret = query_with_reconnect(sql)) != MYSQL_OK)
     throw DbErrors("Can't determine base tables for copy.");
 

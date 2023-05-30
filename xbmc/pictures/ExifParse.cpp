@@ -858,7 +858,7 @@ void CExifParse::GetLatLong(
     else
     {
       char latLong[30];
-      sprintf(latLong, "%3.0fd %2.0f' %5.2f\"", Values[0], Values[1], Values[2]);
+      snprintf(latLong, sizeof(latLong), "%3.0fd %2.0f' %5.2f\"", Values[0], Values[1], Values[2]);
       strcat(latLongString, latLong);
     }
   }
@@ -946,7 +946,8 @@ void CExifParse::ProcessGpsInfo(
       case TAG_GPS_ALT:
         {
           char temp[18];
-          sprintf(temp, "%.2fm", static_cast<double>(ConvertAnyFormat(ValuePtr, Format)));
+          snprintf(temp, sizeof(temp), "%.2fm",
+                   static_cast<double>(ConvertAnyFormat(ValuePtr, Format)));
           strcat(m_ExifInfo->GpsAlt, temp);
         }
       break;

@@ -484,7 +484,7 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
       m_RenderInfo.PosY = 0;
       char ns[10];
       SetPosX(1);
-      sprintf(ns,"+%d    ", m_RenderInfo.SubtitleDelay);
+      snprintf(ns, sizeof(ns), "+%d    ", m_RenderInfo.SubtitleDelay);
       RenderCharFB(ns[0], &Text_AtrTable[ATR_WB]);
       RenderCharFB(ns[1], &Text_AtrTable[ATR_WB]);
       RenderCharFB(ns[2], &Text_AtrTable[ATR_WB]);
@@ -508,7 +508,7 @@ bool CTeletextDecoder::HandleAction(const CAction &action)
         m_RenderInfo.PosY = 0;
         char ns[10];
         SetPosX(1);
-        sprintf(ns,"+%d    ", m_RenderInfo.SubtitleDelay);
+        snprintf(ns, sizeof(ns), "+%d    ", m_RenderInfo.SubtitleDelay);
         RenderCharFB(ns[0], &Text_AtrTable[ATR_WB]);
         RenderCharFB(ns[1], &Text_AtrTable[ATR_WB]);
         RenderCharFB(ns[2], &Text_AtrTable[ATR_WB]);
