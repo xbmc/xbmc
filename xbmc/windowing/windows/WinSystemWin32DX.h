@@ -82,6 +82,8 @@ public:
   // Get debug info from swapchain
   DEBUG_INFO_RENDER GetDebugInfo() override;
 
+  bool SupportsVideoSuperResolution() override;
+
 protected:
   void SetDeviceFullScreen(bool fullScreen, RESOLUTION_INFO& res) override;
   void ReleaseBackBuffer() override;
