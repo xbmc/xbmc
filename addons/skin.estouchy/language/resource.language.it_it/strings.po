@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-05-17 14:09+0000\n"
+"PO-Revision-Date: 2023-05-27 13:18+0000\n"
 "Last-Translator: Massimo Pissarello <mapi68@gmail.com>\n"
 "Language-Team: Italian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/it_it/>\n"
 "Language: it_it\n"
@@ -240,7 +240,7 @@ msgstr "Configura e gestisci i servizi di condivisione multimediale · Configura
 
 msgctxt "#31406"
 msgid "Configure display · Configure audio · Configure internet access · Configure power saving · Configure logging"
-msgstr "Configura lo schermo · Configura l'audio · Configura l'accesso a internet · Configura il risparmio energetico · Configura la registrazione eventi"
+msgstr "Configura lo schermo · Configura l'audio · Configura l'accesso a Internet · Configura il risparmio energetico · Configura la registrazione eventi"
 
 msgctxt "#31407"
 msgid "Manage your installed add-ons · Browse for and install add-ons from kodi.tv · Modify add-on settings"
