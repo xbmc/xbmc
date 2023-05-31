@@ -22,6 +22,7 @@
 #include <mutex>
 #include <sstream>
 
+#import <AVFoundation/AVAudioSession.h>
 #include <AudioToolbox/AudioToolbox.h>
 
 using namespace std::chrono_literals;
@@ -274,14 +275,18 @@ void CAAudioUnitSink::setCoreAudioBuffersize()
 #if !TARGET_IPHONE_SIMULATOR
   // set the buffer size, this affects the number of samples
   // that get rendered every time the audio callback is fired.
-  Float32 preferredBufferSize = 512 * m_outputFormat.mChannelsPerFrame / m_outputFormat.mSampleRate;
-  CLog::Log(LOGINFO, "{} setting buffer duration to {:f}", __PRETTY_FUNCTION__,
-            preferredBufferSize);
-  OSStatus status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareIOBufferDuration,
-                                   sizeof(preferredBufferSize), &preferredBufferSize);
-  if (status != noErr)
-    CLog::Log(LOGWARNING, "{} preferredBufferSize couldn't be set (error: {})", __PRETTY_FUNCTION__,
-              (int)status);
+  auto preferredBufferSize = 512 * m_outputFormat.mChannelsPerFrame / m_outputFormat.mSampleRate;
+  CLog::LogF(LOGINFO, "setting buffer duration to {:f}", preferredBufferSize);
+
+  AVAudioSession* session = [AVAudioSession sharedInstance];
+  NSError* status = nil;
+
+  [session setPreferredIOBufferDuration:preferredBufferSize error:&status];
+  if (status)
+  {
+    CLog::LogF(LOGWARNING, "PreferredBufferSize couldn't be set (error: {})", (int)status.code);
+  }
+
 #endif
 }
 
@@ -302,23 +307,22 @@ bool CAAudioUnitSink::setCoreAudioInputFormat()
 
 void CAAudioUnitSink::setCoreAudioPreferredSampleRate()
 {
-  Float64 preferredSampleRate = m_outputFormat.mSampleRate;
-  CLog::Log(LOGINFO, "{} requesting hw samplerate {:f}", __PRETTY_FUNCTION__, preferredSampleRate);
-  OSStatus status = AudioSessionSetProperty(kAudioSessionProperty_PreferredHardwareSampleRate,
-                                   sizeof(preferredSampleRate), &preferredSampleRate);
-  if (status != noErr)
-    CLog::Log(LOGWARNING, "{} preferredSampleRate couldn't be set (error: {})", __PRETTY_FUNCTION__,
-              (int)status);
+  auto preferredSampleRate = m_outputFormat.mSampleRate;
+  CLog::LogF(LOGINFO, "requesting hw samplerate {:f}", preferredSampleRate);
+
+  AVAudioSession* session = [AVAudioSession sharedInstance];
+  NSError* status = nil;
+
+  [session setPreferredSampleRate:preferredSampleRate error:&status];
+  if (status)
+  {
+    CLog::LogF(LOGWARNING, "preferredSampleRate couldn't be set (error: {})", (int)status.code);
+  }
 }
 
 Float64 CAAudioUnitSink::getCoreAudioRealisedSampleRate()
 {
-  Float64 outputSampleRate = 0.0;
-  UInt32 ioDataSize = sizeof(outputSampleRate);
-  if (AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareSampleRate,
-                              &ioDataSize, &outputSampleRate) != noErr)
-    CLog::Log(LOGERROR, "{}: error getting CurrentHardwareSampleRate", __FUNCTION__);
-  return outputSampleRate;
+  return [[AVAudioSession sharedInstance] sampleRate];
 }
 
 bool CAAudioUnitSink::setupAudio()
@@ -419,21 +423,11 @@ bool CAAudioUnitSink::checkSessionProperties()
 {
   checkAudioRoute();
 
-  UInt32 ioDataSize;
-  ioDataSize = sizeof(m_outputVolume);
-  if (AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareOutputVolume,
-    &ioDataSize, &m_outputVolume) != noErr)
-    CLog::Log(LOGERROR, "{}: error getting CurrentHardwareOutputVolume", __FUNCTION__);
+  AVAudioSession* session = [AVAudioSession sharedInstance];
 
-  ioDataSize = sizeof(m_outputLatency);
-  if (AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareOutputLatency,
-    &ioDataSize, &m_outputLatency) != noErr)
-    CLog::Log(LOGERROR, "{}: error getting CurrentHardwareOutputLatency", __FUNCTION__);
-
-  ioDataSize = sizeof(m_bufferDuration);
-  if (AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareIOBufferDuration,
-    &ioDataSize, &m_bufferDuration) != noErr)
-    CLog::Log(LOGERROR, "{}: error getting CurrentHardwareIOBufferDuration", __FUNCTION__);
+  m_outputVolume = [session outputVolume];
+  m_outputLatency = [session outputLatency];
+  m_bufferDuration = [session IOBufferDuration];
 
   CLog::Log(LOGDEBUG, "{}: volume = {:f}, latency = {:f}, buffer = {:f}", __FUNCTION__,
             m_outputVolume, m_outputLatency, m_bufferDuration);
