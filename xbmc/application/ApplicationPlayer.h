@@ -95,8 +95,9 @@ public:
   std::string GetPlayerState();
   PLAYLIST::Id GetPreferredPlaylist() const;
   int GetSubtitleDelay() const;
+  ESUBTITLEFPS GetSubtitleFPS() const;
   int GetSubtitle();
-  void GetSubtitleCapabilities(std::vector<int>& subCaps) const;
+  void GetSubtitleCapabilities(std::vector<IPlayerSubtitleCapabilities>& subCaps) const;
   int GetSubtitleCount() const;
   void GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) const;
   bool GetSubtitleVisible() const;
@@ -152,6 +153,7 @@ public:
   bool SetPlayerState(const std::string& state);
   void SetSubtitle(int iStream);
   void SetSubTitleDelay(float fValue = 0.0f);
+  void SetSubtitleFPS(ESUBTITLEFPS value);
   void SetSubtitleVisible(bool bVisible);
 
   /*!

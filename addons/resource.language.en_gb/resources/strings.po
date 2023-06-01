@@ -23789,6 +23789,17 @@ msgctxt "#39201"
 msgid "HDR10+"
 msgstr ""
 
+#: xbmc/dialogs/GUIDialogSubtitles.cpp
+msgctxt "#39202"
+msgid "Subtitle frame rate correction"
+msgstr ""
+
+#: xbmc/dialogs/GUIDialogSubtitles.cpp
+msgctxt "#39203"
+msgid "Same as video"
+msgstr ""
+
+
 # 40000 to 40800 are reserved for Video Versions feature
 
 #. Generic video versions label (plural)

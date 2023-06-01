@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cores/IPlayer.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
@@ -53,7 +54,7 @@ private:
   bool m_subtitleVisible;
   std::shared_ptr<CSettingInt> m_subtitleStreamSetting;
 
-  std::vector<int> m_subtitleCapabilities;
+  std::vector<IPlayerSubtitleCapabilities> m_subtitleCapabilities;
   static std::string FormatFlags(StreamFlags flags);
 
   static void SubtitleStreamsOptionFiller(const std::shared_ptr<const CSetting>& setting,

@@ -177,6 +177,32 @@ private:
                 "add/remove a mapping?");
 };
 
+enum ESUBTITLEFPS
+{
+  ST_FPS_SAME = 0,
+  ST_FPS_24 = 23976,
+  ST_FPS_25 = 25000
+};
+
+template<>
+struct fmt::formatter<ESUBTITLEFPS> : fmt::formatter<std::string_view>
+{
+public:
+  template<typename FormatContext>
+  constexpr auto format(const ESUBTITLEFPS& subtitleFPS, FormatContext& ctx)
+  {
+    const auto it = subtitleFPSMap.find(subtitleFPS);
+    if (it == subtitleFPSMap.cend())
+      throw std::range_error("no subtitle stretch string found");
+
+    return fmt::formatter<string_view>::format(it->second, ctx);
+  }
+
+private:
+  static constexpr auto subtitleFPSMap = make_map<ESUBTITLEFPS, std::string_view>(
+      {{ST_FPS_SAME, "Same as video"}, {ST_FPS_24, "24 fps"}, {ST_FPS_25, "25 fps"}});
+};
+
 enum ViewMode
 {
   ViewModeNormal = 0,
@@ -210,6 +236,7 @@ public:
   float m_VolumeAmplification;
   int m_SubtitleStream;
   float m_SubtitleDelay;
+  double m_subtitleFPS;
   int m_subtitleVerticalPosition{0};
   bool m_subtitleVerticalPositionSave{false};
   bool m_SubtitleOn;
@@ -246,6 +273,7 @@ public:
   void SetVideoStream(int stream);
   void SetAudioDelay(float delay);
   void SetSubtitleDelay(float delay);
+  void SetSubtitleFPS(double stretch);
 
   /*!
    * \brief Set the subtitle vertical position,

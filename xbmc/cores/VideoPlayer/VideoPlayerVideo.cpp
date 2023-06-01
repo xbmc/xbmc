@@ -63,6 +63,7 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
   m_paused = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_iSubtitleDelay = 0;
+  m_subtitleFPS = 0.0;
   m_iLateFrames = 0;
   m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;
@@ -802,9 +803,11 @@ void CVideoPlayerVideo::Flush(bool sync)
 
 void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
 {
+  double pts1 = (m_subtitleFPS == 0.0) ? pts : pts * (m_fFrameRate / m_subtitleFPS);
+
   // remove any overlays that are out of time
   if (m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
-    m_pOverlayContainer->CleanUp(pts - m_iSubtitleDelay);
+    m_pOverlayContainer->CleanUp(pts1 - m_iSubtitleDelay);
 
   VecOverlays overlays;
 
@@ -822,7 +825,7 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
       if(!pOverlay->bForced && !m_bRenderSubs)
         continue;
 
-      double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
+      double pts2 = pOverlay->bForced ? pts1 : pts1 - m_iSubtitleDelay;
 
       if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)))
       {
@@ -837,7 +840,7 @@ void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
 
     for(it = overlays.begin(); it != overlays.end(); ++it)
     {
-      double pts2 = (*it)->bForced ? pts : pts - m_iSubtitleDelay;
+      double pts2 = (*it)->bForced ? pts1 : pts1 - m_iSubtitleDelay;
       m_renderManager.AddOverlay(*it, pts2);
     }
   }
