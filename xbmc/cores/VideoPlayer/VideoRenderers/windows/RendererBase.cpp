@@ -336,21 +336,28 @@ void CRendererBase::DeleteRenderBuffer(int index)
   }
 }
 
-bool CRendererBase::CreateIntermediateTarget(unsigned width, unsigned height, bool dynamic)
+bool CRendererBase::CreateIntermediateTarget(unsigned width,
+                                             unsigned height,
+                                             bool dynamic,
+                                             DXGI_FORMAT format)
 {
-  DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
+  // No format specified by renderer > mirror swap chain's backbuffer format
+  if (format == DXGI_FORMAT_UNKNOWN)
+    format = DX::Windowing()->GetBackBuffer().GetFormat();
 
   // don't create new one if it exists with requested size and format
-  if (m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format
-    && m_IntermediateTarget.GetWidth() == width && m_IntermediateTarget.GetHeight() == height)
+  if (m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format &&
+      m_IntermediateTarget.GetWidth() == width && m_IntermediateTarget.GetHeight() == height)
     return true;
 
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  CLog::LogF(LOGDEBUG, "intermediate target format {}.", DX::DXGIFormatToString(format));
+  CLog::LogF(LOGDEBUG, "creating intermediate target {}x{} format {}.", width, height,
+             DX::DXGIFormatToString(format));
 
-  if (!m_IntermediateTarget.Create(width, height, 1, dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT, format))
+  if (!m_IntermediateTarget.Create(width, height, 1,
+                                   dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT, format))
   {
     CLog::LogF(LOGERROR, "intermediate target creation failed.");
     return false;
