@@ -214,7 +214,7 @@ void XBMCHelper::Configure()
     strConfig += "--verbose ";
 #endif
     char strDelay[64];
-    sprintf(strDelay, "--timeout %d ", m_sequenceDelay);
+    snprintf(strDelay, sizeof(strDelay), "--timeout %d ", m_sequenceDelay);
     strConfig += strDelay;
 
     // Find out where we're running from.

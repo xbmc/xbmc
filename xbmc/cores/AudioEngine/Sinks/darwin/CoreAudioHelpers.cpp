@@ -25,7 +25,7 @@ std::string GetError(OSStatus error)
   else
   {
     // no, format it as an integer
-    sprintf(buffer, "%d", (int)error);
+    snprintf(buffer, sizeof(buffer), "%d", (int)error);
   }
 
   return std::string(buffer);
