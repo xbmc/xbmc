@@ -1,5 +1,5 @@
 -include ../../Makefile.include
-DEPS =Makefile ../../download-files.include
+DEPS =Makefile ../../download-files.include 001-fix-gcc13-build.patch
 
 # lib name, version
 LIBNAME=waylandpp
@@ -41,6 +41,7 @@ ifeq ($(PREFIX),)
 endif
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
+	cd $(PLATFORM); patch -p1 -i ../001-fix-gcc13-build.patch
 	mkdir -p $(BUILDDIR)
 	cd $(BUILDDIR); $(CMAKE) $(CMAKE_OPTIONS) ..
 
