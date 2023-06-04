@@ -34,6 +34,8 @@ if(ALSA_FOUND)
   set(ALSA_INCLUDE_DIRS "") # Don't want these added as 'timer.h' is a dangerous file
   set(ALSA_LIBRARIES ${ALSA_LIBRARY})
   set(ALSA_DEFINITIONS -DHAS_ALSA=1)
+  list(APPEND AUDIO_BACKENDS_LIST "alsa")
+  set(AUDIO_BACKENDS_LIST ${AUDIO_BACKENDS_LIST} PARENT_SCOPE)
 
   if(NOT TARGET ALSA::ALSA)
     add_library(ALSA::ALSA UNKNOWN IMPORTED)

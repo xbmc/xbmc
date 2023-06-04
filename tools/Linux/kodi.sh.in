@@ -171,12 +171,30 @@ if command_exists gdb; then
   fi
 fi
 
+if [ -n "${KODI_AE_SINK}" ]; then
+
+  echo "KODI_AE_SINK env variable is deprecated and will be removed in the future."
+  echo "Use the --audio-backend command line switch instead."
+
+  if [ "${KODI_AE_SINK}" = "PIPEWIRE" ]; then
+    ENV_ARGS="--audio-backend=pipewire"
+  elif [ "${KODI_AE_SINK}" = "PULSE" ]; then
+    ENV_ARGS="--audio-backend=pulseaudio"
+  elif [ "${KODI_AE_SINK}" = "ALSA" ]; then
+    ENV_ARGS="--audio-backend=alsa"
+  elif [ "${KODI_AE_SINK}" = "SNDIO" ]; then
+    ENV_ARGS="--audio-backend=sndio"
+  elif [ "${KODI_AE_SINK}" = "ALSA+PULSE" ]; then
+    ENV_ARGS="--audio-backend=alsa+pulseaudio"
+  fi
+fi
+
 LOOP=1
 while [ $(( $LOOP )) = "1" ]
 do
   [ -f "${APPORT_CORE}" ] && rm -f "${APPORT_CORE}"
   LOOP=0
-  ${KODI_BINARY} $SAVED_ARGS &
+  ${KODI_BINARY} ${ENV_ARGS} $SAVED_ARGS &
   CHILD=$!
   wait "${CHILD}"
   RET=$?
