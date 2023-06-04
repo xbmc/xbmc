@@ -307,12 +307,6 @@ bool CProcessorHD::InitProcessor()
         DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709, &supported);
     m_bSupportHLG = SUCCEEDED(hr) && !!supported;
 
-    // Check if HDR10 RGB limited range output is supported by driver
-    hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020, format,
-        DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020, &supported);
-    m_bSupportHDR10Limited = SUCCEEDED(hr) && !!supported;
-
     // Check if driver prefers YCbCr TOP LEFT for 10 bit BT.2020
     hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
         DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020, format,
@@ -324,16 +318,47 @@ bool CProcessorHD::InitProcessor()
         DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709, &supported);
     const bool topLeft = SUCCEEDED(hr) && static_cast<bool>(supported);
 
-    m_BT2020TopLeft = !left && topLeft;
+    // Check if driver prefers HDR10 LEFT input color space for HDR10 passthrough
+    const DXGI_COLOR_SPACE_TYPE outputCS = DX::Windowing()->UseLimitedColor()
+                                               ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
+                                               : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+
+    hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
+        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020, format, outputCS,
+        &supported);
+    const bool HDRleft = SUCCEEDED(hr) && static_cast<bool>(supported);
+
+    hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
+        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020, format, outputCS,
+        &supported);
+    const bool HDRtopLeft = SUCCEEDED(hr) && static_cast<bool>(supported);
+
+    m_BT2020Left = !topLeft && left;
+
     CLog::LogF(LOGDEBUG,
                "BT.2020 input color spaces supported: YCBCR_STUDIO_G22_LEFT_P2020: {}, "
                "YCBCR_STUDIO_G22_TOPLEFT_P2020: {}",
                left ? "yes" : "no", topLeft ? "yes" : "no");
+
+    if (topLeft && left)
+      CLog::LogF(LOGDEBUG, "Preferred UHD Blu-Ray top left chroma siting will be used "
+                           "(YCBCR_STUDIO_G22_TOPLEFT_P2020)");
+
+    m_HDR10Left = !HDRtopLeft && HDRleft;
+
+    CLog::LogF(LOGDEBUG,
+               "HDR10 input color spaces supported with {} range output: "
+               "YCBCR_STUDIO_G2084_LEFT_P2020: {}, "
+               "YCBCR_STUDIO_G2084_TOPLEFT_P2020: {}",
+               DX::Windowing()->UseLimitedColor() ? "limited" : "full", HDRleft ? "yes" : "no",
+               HDRtopLeft ? "yes" : "no");
+
+    if (HDRtopLeft && HDRleft)
+      CLog::LogF(LOGDEBUG, "Preferred UHD Blu-Ray top left chroma siting will be used "
+                           "(YCBCR_STUDIO_G2084_TOPLEFT_P2020)");
   }
 
   CLog::LogF(LOGDEBUG, "HLG color space conversion is{}supported.", m_bSupportHLG ? " " : " NOT ");
-  CLog::LogF(LOGDEBUG, "HDR10 RGB limited range output is{}supported.",
-             m_bSupportHDR10Limited ? " " : " NOT ");
 
   return true;
 }
@@ -496,7 +521,8 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) c
 DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(const DXGIColorSpaceArgs& csArgs,
                                                             bool supportHDR,
                                                             bool supportHLG,
-                                                            bool topleft)
+                                                            bool BT2020Left,
+                                                            bool HDRLeft)
 {
   // RGB
   if (csArgs.color_space == AVCOL_SPC_RGB)
@@ -532,7 +558,8 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(const DXGIColorSpace
     if ((csArgs.color_transfer == AVCOL_TRC_SMPTEST2084 ||
          csArgs.color_transfer == AVCOL_TRC_ARIB_STD_B67) &&
         supportHDR) // is HDR display ON
-      return DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
+      return (HDRLeft) ? DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020
+                       : DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020;
 
     // HLG transfer can be used for HLG source in SDR display if is supported
     if (csArgs.color_transfer == AVCOL_TRC_ARIB_STD_B67 && supportHLG) // driver supports HLG
@@ -541,8 +568,8 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(const DXGIColorSpace
     if (csArgs.full_range)
       return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P2020;
 
-    return (topleft) ? DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020
-                     : DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
+    return (BT2020Left) ? DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020
+                        : DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020;
   }
   // SDTV
   if (csArgs.primaries == AVCOL_PRI_BT470BG || csArgs.primaries == AVCOL_PRI_SMPTE170M)
@@ -566,28 +593,20 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(const DXGIColorSpace
 
 DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
                                                             bool supportHDR,
-                                                            bool limitedRange) const
+                                                            bool limitedRange)
 {
   DXGI_COLOR_SPACE_TYPE color = limitedRange ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
                                              : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
 
-  if (!DX::Windowing()->IsHDROutput())
+  if (!supportHDR)
     return color;
 
   // HDR10 or HLG
   if (csArgs.primaries == AVCOL_PRI_BT2020 && (csArgs.color_transfer == AVCOL_TRC_SMPTE2084 ||
                                                csArgs.color_transfer == AVCOL_TRC_ARIB_STD_B67))
   {
-    if (supportHDR)
-    {
-      color = limitedRange ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
-                           : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-    }
-    else
-    {
-      color = limitedRange ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020
-                           : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
-    }
+    color = limitedRange ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
+                         : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
   }
 
   return color;
@@ -774,12 +793,11 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
 
 ProcColorSpaces CProcessorHD::CalculateDXGIColorSpaces(const DXGIColorSpaceArgs& csArgs) const
 {
-  const bool limited = DX::Windowing()->UseLimitedColor();
-  const bool supportHDR = DX::Windowing()->IsHDROutput() && (m_bSupportHDR10Limited || !limited);
+  const bool supportHDR = DX::Windowing()->IsHDROutput();
 
   return ProcColorSpaces{
-      GetDXGIColorSpaceSource(csArgs, supportHDR, m_bSupportHLG, m_BT2020TopLeft),
-      GetDXGIColorSpaceTarget(csArgs, supportHDR, limited)};
+      GetDXGIColorSpaceSource(csArgs, supportHDR, m_bSupportHLG, m_BT2020Left, m_HDR10Left),
+      GetDXGIColorSpaceTarget(csArgs, supportHDR, DX::Windowing()->UseLimitedColor())};
 }
 
 bool CProcessorHD::IsBT2020Supported()
@@ -845,6 +863,72 @@ bool CProcessorHD::IsBT2020Supported()
   CLog::LogF(
       LOGWARNING,
       "Input color space BT.2020 is not supported by video processor. DXVA will not be used.");
+  return false;
+}
+
+bool CProcessorHD::IsPQ10PassthroughSupported(const DXGI_FORMAT dxgi_format)
+{
+  ComPtr<ID3D11VideoDevice> pVideoDevice;
+  ComPtr<ID3D11VideoProcessorEnumerator> pEnumerator;
+  ComPtr<ID3D11VideoProcessorEnumerator1> pEnumerator1;
+  ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
+
+  if (FAILED(pD3DDevice.As(&pVideoDevice)))
+  {
+    CLog::LogF(LOGERROR, "failed to get video device.");
+    return false;
+  }
+
+  D3D11_VIDEO_PROCESSOR_CONTENT_DESC desc = {};
+  desc.InputWidth = 3840;
+  desc.InputHeight = 2160;
+  desc.OutputWidth = 3840;
+  desc.OutputHeight = 2160;
+
+  if (FAILED(pVideoDevice->CreateVideoProcessorEnumerator(&desc, &pEnumerator)))
+  {
+    CLog::LogF(LOGERROR, "failed to create Video Enumerator.");
+    return false;
+  }
+
+  if (FAILED(pEnumerator.As(&pEnumerator1)))
+  {
+    CLog::LogF(LOGWARNING,
+               "ID3D11VideoProcessorEnumerator1 is not available. DXVA will not be used.");
+    return false;
+  }
+
+  const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
+                                              ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
+                                              : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+  BOOL supported = 0;
+
+  // Check if HDR10 (TOP LEFT) input color space is supported by video driver
+  HRESULT hr = pEnumerator1->CheckVideoProcessorFormatConversion(
+      dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020, DXGI_FORMAT_R10G10B10A2_UNORM,
+      destColor, &supported);
+
+  if (SUCCEEDED(hr) && static_cast<bool>(supported))
+  {
+    CLog::LogF(LOGDEBUG, "Input color space HDR10 TOP LEFT is supported by video processor.");
+    return true;
+  }
+
+  // Check if HDR10 (LEFT) input color space is supported by video driver
+  hr = pEnumerator1->CheckVideoProcessorFormatConversion(
+      dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020, DXGI_FORMAT_R10G10B10A2_UNORM,
+      destColor, &supported);
+
+  if (SUCCEEDED(hr) && static_cast<bool>(supported))
+  {
+    CLog::LogF(LOGDEBUG, "Input color space HDR10 LEFT is supported by video processor.");
+    return true;
+  }
+
+  CLog::LogF(LOGWARNING,
+             "Input color space HDR10 is not supported by video processor with {} range output. "
+             "DXVA will not be used.",
+             DX::Windowing()->UseLimitedColor() ? "limited" : "full");
   return false;
 }
 
@@ -1024,8 +1108,10 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::AvToDxgiColorSpace(const DXGIColorSpaceArgs&
   if (csArgs.primaries == AVCOL_PRI_BT2020)
   {
     if (csArgs.color_transfer == AVCOL_TRC_SMPTEST2084)
-      // Full range DXGI_COLOR_SPACE_YCBCR_FULL_G2084_LEFT_P2020 does not exist at this time
-      return DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
+      // Full range DXGI_COLOR_SPACE_YCBCR_FULL_G2084_TOPLEFT_P2020 does not exist at this time
+      // Chroma siting top left is always preferred for 4K HDR10 because is used in UHD Blu-Ray's
+      // Also not considering for now FFmpeg flags because can be missing or bad flagged anyway
+      return DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020;
 
     // HLG transfer can be used for HLG source in SDR display if is supported
     if (csArgs.color_transfer == AVCOL_TRC_ARIB_STD_B67)
@@ -1039,7 +1125,7 @@ DXGI_COLOR_SPACE_TYPE CProcessorHD::AvToDxgiColorSpace(const DXGIColorSpaceArgs&
     if (csArgs.full_range)
       return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P2020;
     else
-      return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
+      return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020;
   }
   // SDTV
   if (csArgs.primaries == AVCOL_PRI_BT470BG || csArgs.primaries == AVCOL_PRI_SMPTE170M)
