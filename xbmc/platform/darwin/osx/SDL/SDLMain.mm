@@ -176,7 +176,10 @@ static void setupWindowMenu(void)
 
 - (void)floatOnTopToggle:(id)sender
 {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
   NSWindow* window = [[[NSOpenGLContext currentContext] view] window];
+#pragma clang diagnostic pop
   if ([window level] == NSFloatingWindowLevel)
   {
     [window setLevel:NSNormalWindowLevel];
@@ -191,7 +194,10 @@ static void setupWindowMenu(void)
 
 - (void)titlebarToggle:(id)sender
 {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
   NSWindow* window = [[[NSOpenGLContext currentContext] view] window];
+#pragma clang diagnostic pop
   [window setStyleMask: [window styleMask] ^ NSWindowStyleMaskTitled ];
   BOOL isSet = [window styleMask] & NSWindowStyleMaskTitled;
   [window setMovableByWindowBackground: !isSet];
