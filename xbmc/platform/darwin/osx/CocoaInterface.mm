@@ -51,7 +51,10 @@ uint32_t Cocoa_GL_GetCurrentDisplayID(void)
 
   NSNumber* __block screenID;
   auto getScreenNumber = ^{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     screenID = Cocoa_GL_GetCurrentContext().view.window.screen.deviceDescription[@"NSScreenNumber"];
+#pragma clang diagnostic pop
   };
   if (NSThread.isMainThread)
     getScreenNumber();
@@ -70,7 +73,10 @@ bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkConte
 
   // OpenGL Flush synchronised with vertical retrace
   GLint swapInterval = 1;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
   [[NSOpenGLContext currentContext] setValues:&swapInterval forParameter:NSOpenGLCPSwapInterval];
+#pragma clang diagnostic pop
 
   display_id = (CGDirectDisplayID)Cocoa_GL_GetCurrentDisplayID();
   if (!displayLink)
@@ -243,7 +249,8 @@ void Cocoa_ShowMouse()
 const char *Cocoa_Paste()
 {
   NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-  NSString *type = [pasteboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]];
+  NSString* type =
+      [pasteboard availableTypeFromArray:[NSArray arrayWithObject:NSPasteboardTypeString]];
   if (type != nil) {
     NSString *contents = [pasteboard stringForType:type];
     if (contents != nil) {
