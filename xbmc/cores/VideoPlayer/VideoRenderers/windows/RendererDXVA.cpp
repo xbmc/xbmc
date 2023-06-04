@@ -20,6 +20,7 @@
 
 #include <ppl.h>
 
+using namespace DXVA;
 using namespace Microsoft::WRL;
 
 CRendererBase* CRendererDXVA::Create(CVideoSettings& videoSettings)
@@ -31,11 +32,27 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
 {
   unsigned weight = 0;
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
+  const DXGI_FORMAT dxgi_format =
+      CRenderBufferImpl::GetDXGIFormat(av_pixel_format, GetDXGIFormat(picture));
+
+  const bool streamIsHDR = (picture.color_primaries == AVCOL_PRI_BT2020) &&
+                           (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+                            picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const auto setting = DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY;
+  const bool systemUsesHDR =
+      (settings ? settings->GetBool(setting) && DX::Windowing()->IsHDRDisplay() : false) ||
+      DX::Windowing()->IsHDROutput();
 
   if (av_pixel_format == AV_PIX_FMT_D3D11VA_VLD)
   {
+    // Check if HDR10 passthrough is supported by DXVA video processor
+    // Also used for HLG because it is not supported by Windows, HDR10 is used instead
+    if (streamIsHDR && systemUsesHDR && !CProcessorHD::IsPQ10PassthroughSupported(dxgi_format))
+      return;
+
     // Check if BT.2020 color space is supported by DXVA video processor
-    if (picture.color_primaries == AVCOL_PRI_BT2020 && !DXVA::CProcessorHD::IsBT2020Supported())
+    if (picture.color_primaries == AVCOL_PRI_BT2020 && !CProcessorHD::IsBT2020Supported())
       return;
 
     weight += 1000;
@@ -43,7 +60,6 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
   else
   {
     // check format for buffer
-    const DXGI_FORMAT dxgi_format = CRenderBufferImpl::GetDXGIFormat(av_pixel_format, GetDXGIFormat(picture));
     if (dxgi_format == DXGI_FORMAT_UNKNOWN)
       return;
 
@@ -65,8 +81,13 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
       return;
     }
 
+    // Check if HDR10 passthrough is supported by DXVA video processor
+    // Also used for HLG because it is not supported by Windows, HDR10 is used instead
+    if (streamIsHDR && systemUsesHDR && !CProcessorHD::IsPQ10PassthroughSupported(dxgi_format))
+      return;
+
     // Check if BT.2020 color space is supported by DXVA video processor
-    if (picture.color_primaries == AVCOL_PRI_BT2020 && !DXVA::CProcessorHD::IsBT2020Supported())
+    if (picture.color_primaries == AVCOL_PRI_BT2020 && !CProcessorHD::IsBT2020Supported())
       return;
 
     if (av_pixel_format == AV_PIX_FMT_NV12 ||
