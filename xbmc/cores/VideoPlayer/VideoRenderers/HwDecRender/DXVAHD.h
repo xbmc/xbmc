@@ -120,6 +120,7 @@ public:
   }
 
   static bool IsBT2020Supported();
+  static bool IsPQ10PassthroughSupported(const DXGI_FORMAT dxgi_format);
   static bool IsSuperResolutionSuitable(const VideoPicture& picture);
   void TryEnableVideoSuperResolution();
 
@@ -139,10 +140,11 @@ protected:
   static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceSource(const DXGIColorSpaceArgs& csArgs,
                                                        bool supportHDR,
                                                        bool supportHLG,
-                                                       bool topLeft);
-  DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
-                                                bool supportHDR,
-                                                bool limitedRange) const;
+                                                       bool BT2020Left,
+                                                       bool HDRLeft);
+  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
+                                                       bool supportHDR,
+                                                       bool limitedRange);
   /*!
    * \brief Converts ffmpeg AV parameters to a DXGI color space
    * \param csArgs ffmpeg AV picture parameters
@@ -168,8 +170,8 @@ protected:
   D3D11_VIDEO_PROCESSOR_CAPS m_vcaps = {};
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps = {};
   bool m_bSupportHLG = false;
-  bool m_bSupportHDR10Limited = false;
-  bool m_BT2020TopLeft = false;
+  bool m_HDR10Left{false};
+  bool m_BT2020Left{false};
 
   struct ProcAmpInfo
   {
