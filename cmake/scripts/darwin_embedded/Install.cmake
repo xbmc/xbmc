@@ -103,6 +103,7 @@ add_custom_command(TARGET ${APP_NAME_LC} POST_BUILD
     COMMAND "ACTION=build"
             "APP_NAME=${APP_NAME}"
             "XBMC_DEPENDS=${DEPENDS_PATH}"
+            "SRCROOT=${CMAKE_BINARY_DIR}"
             ${CMAKE_SOURCE_DIR}/tools/darwin/Support/CopyRootFiles-darwin_embedded.command
     COMMAND "XBMC_DEPENDS=${DEPENDS_PATH}"
             "PYTHON_VERSION=${PYTHON_VERSION}"
