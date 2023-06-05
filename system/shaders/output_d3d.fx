@@ -96,19 +96,25 @@ float3 inversePQ(float3 x)
 }
 #endif
 #if defined(KODI_HLG_TO_PQ)
+
+// HLG inverse OETF - BT.2100
+// input: non-linear signal [0,1] range
+// output: linear [0,1] range
 float3 inverseHLG(float3 x)
 {
-  const float B67_a = 0.17883277f;
-  const float B67_b = 0.28466892f;
-  const float B67_c = 0.55991073f;
-  const float B67_inv_r2 = 4.0f;
-  x = (x <= 0.5f) ? x * x * B67_inv_r2 : exp((x - B67_c) / B67_a) + B67_b;
+  static const float B67_a = 0.17883277f;
+  static const float B67_b = 0.28466892f; // b = 1 - 4*a
+  static const float B67_c = 0.55991073f; // c = 0.5 - a*log(4*a)
+  x = (x <= 0.5f) ? x * x / 3.0f : (exp((x - B67_c) / B67_a) + B67_b) / 12.0f;
   return x;
 }
 
+// PQ inverse EOTF, BT.2100
+// input: linear cd/m2 [0,10000] range
+// output: non-linear [0,1] range
 float3 tranferPQ(float3 x)
 {
-  x = pow(x / 1000.0f, ST2084_m1);
+  x = pow(x / 10000.0f, ST2084_m1);
   x = (ST2084_c1 + ST2084_c2 * x) / (1.0f + ST2084_c3 * x);
   x = pow(x, ST2084_m2);
   return x;
@@ -136,10 +142,21 @@ float4 output4(float4 color, float2 uv)
   color.rgb = pow(color.rgb, 1.0f / 2.2f);
 #endif
 #if defined(KODI_HLG_TO_PQ)
+
+  // Reference: BT.2100, Table 5, HLG Reference EOTF
+
+  // Display peak luminance in cd/m2
+  static const float HLG_Lw = 1000.0f;
+  static const float HLG_gamma = 1.2f + 0.42f * log10(HLG_Lw / 1000.0f);
+
+  // color.rgb: E', range [0,1]
   color.rgb = inverseHLG(color.rgb);
-  float3 ootf_2020 = float3(0.2627f, 0.6780f, 0.0593f);
-  float ootf_ys = 2000.0f * dot(ootf_2020, color.rgb);
-  color.rgb *= pow(ootf_ys, 0.2f);
+  // color.rgb: E, range [0,1]
+  static const float3 bt2020_lum_rgbweights = float3(0.2627f, 0.6780f, 0.0593f);
+  float HLG_Ys = dot(bt2020_lum_rgbweights, color.rgb);
+  color.rgb *= HLG_Lw * pow(HLG_Ys, HLG_gamma - 1.0f);
+
+  // color.rgb: FD, in cd/m2
   color.rgb = tranferPQ(color.rgb);
 #endif
 #if defined(KODI_3DLUT)
