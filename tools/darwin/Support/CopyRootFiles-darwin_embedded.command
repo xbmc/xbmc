@@ -27,34 +27,34 @@ mkdir -p "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/userdata"
 mkdir -p "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/media"
 mkdir -p "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/tools/darwin/runtime"
 
-${SYNC} "$BUILD_ROOT/LICENSE.md"  "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/"
-${SYNC} "$BUILD_ROOT/privacy-policy.txt"  "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
-${SYNC} "$BUILD_ROOT/xbmc/platform/darwin/Credits.html"  "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/"
-${ADDONSYNC} "$BUILD_ROOT/addons"  "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
-${SYNC} "$BUILD_ROOT/media"    "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
+${SYNC} "$SRCROOT/LICENSE.md"  "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/"
+${SYNC} "$SRCROOT/privacy-policy.txt"  "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
+${SYNC} "$SRCROOT/xbmc/platform/darwin/Credits.html"  "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/"
+${ADDONSYNC} "$SRCROOT/addons"  "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
+${SYNC} "$SRCROOT/media"    "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
 
 # extracted eggs
 ${SYNC} "$XBMC_DEPENDS/share/$APP_NAME/addons" "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
 
 # sync skin.estouchy
 SYNCSKIN_A=${SKINSYNC}
-if [ -f "$BUILD_ROOT/addons/skin.estouchy/media/Textures.xbt" ]; then
+if [ -f "$SRCROOT/addons/skin.estouchy/media/Textures.xbt" ]; then
 SYNCSKIN_A="${SKINSYNC} --exclude *.png --exclude *.jpg"
 fi
-${SYNCSKIN_A} "$BUILD_ROOT/addons/skin.estouchy"    "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons"
-${SYNC} "$BUILD_ROOT/addons/skin.estouchy/background"   "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons/skin.estouchy"
-${SYNC} "$BUILD_ROOT/addons/skin.estouchy/resources"   "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons/skin.estouchy"
+${SYNCSKIN_A} "$SRCROOT/addons/skin.estouchy"    "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons"
+${SYNC} "$SRCROOT/addons/skin.estouchy/background"   "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons/skin.estouchy"
+${SYNC} "$SRCROOT/addons/skin.estouchy/resources"   "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons/skin.estouchy"
 
 # sync skin.estuary
 SYNCSKIN_B=${SKINSYNC}
-if [ -f "$BUILD_ROOT/addons/skin.estuary/media/Textures.xbt" ]; then
+if [ -f "$SRCROOT/addons/skin.estuary/media/Textures.xbt" ]; then
 SYNCSKIN_B="${SKINSYNC} --exclude *.png --exclude *.jpg"
 fi
-${SYNCSKIN_B} "$BUILD_ROOT/addons/skin.estuary"     "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons"
-${SYNC} "$BUILD_ROOT/addons/skin.estuary/extras"   "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons/skin.estuary"
-${SYNC} "$BUILD_ROOT/addons/skin.estuary/resources"   "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons/skin.estuary"
+${SYNCSKIN_B} "$SRCROOT/addons/skin.estuary"     "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons"
+${SYNC} "$SRCROOT/addons/skin.estuary/extras"   "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons/skin.estuary"
+${SYNC} "$SRCROOT/addons/skin.estuary/resources"   "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome/addons/skin.estuary"
 
-${SYNC} "$BUILD_ROOT/system"     "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
-${SYNC} "$BUILD_ROOT/userdata"   "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
+${SYNC} "$SRCROOT/system"     "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
+${SYNC} "$SRCROOT/userdata"   "$TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/AppData/AppHome"
 
 fi
