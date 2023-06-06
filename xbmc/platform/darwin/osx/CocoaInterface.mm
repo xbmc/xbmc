@@ -226,16 +226,6 @@ bool Cocoa_GetVolumeNameFromMountPoint(const std::string &mountPoint, std::strin
   }
 }
 
-void Cocoa_HideMouse()
-{
-  [NSCursor hide];
-}
-
-void Cocoa_ShowMouse()
-{
-  [NSCursor unhide];
-}
-
 //---------------------------------------------------------------------------------
 const char *Cocoa_Paste()
 {
