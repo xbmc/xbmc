@@ -110,6 +110,12 @@ struct RESOLUTION_INFO
   //!< Resolution ID
   std::string strId;
 
+  //! @brief Resolution label
+  //! @note This label is shown to the user (display settings) and takes precedence over the computation of the label based on the internal properties.
+  //! e.g. sometimes, as the example of HiDPI resolutions, it is preferable to show a custom label/string instead of the one computed using the width/height
+  //! of the resolution
+  std::string label;
+
 public:
   RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const std::string &mode = "");
   float DisplayRatio() const;
