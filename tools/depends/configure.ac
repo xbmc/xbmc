@@ -313,7 +313,7 @@ esac
 case $host in
   *-*linux-android*)
     deps_dir="$use_host-$use_ndk_api-$build_type"
-    platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC -DPIC"
+    platform_cflags="-DANDROID -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC -DPIC"
     optimize_flags="-Os"
     platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
 
