@@ -963,6 +963,33 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   return true;
 }
 
+void CWinSystemOSX::SignalFullScreenStateChanged(bool fullscreenState)
+{
+  if (!m_fullScreenMovingToScreen.has_value())
+  {
+    return;
+  }
+
+  if (!fullscreenState)
+  {
+    // check if we are already on the target screen (e.g. due to a display lost)
+    if (m_lastDisplayNr != m_fullScreenMovingToScreen.value())
+    {
+      CServiceBroker::GetAppMessenger()->PostMsg(
+          TMSG_MOVETOSCREEN, static_cast<int>(m_fullScreenMovingToScreen.value()));
+    }
+    else
+    {
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
+    }
+  }
+  else if (fullscreenState)
+  {
+    // fullscreen move of the window has been finished
+    m_fullScreenMovingToScreen.reset();
+  }
+}
+
 #pragma mark - Video Modes
 
 bool CWinSystemOSX::SwitchToVideoMode(RESOLUTION_INFO& res)
@@ -1152,16 +1179,21 @@ bool CWinSystemOSX::HasValidResolution() const
 
 #pragma mark - Window Move
 
-void CWinSystemOSX::OnMove(int x, int y)
+void CheckAndUpdateCurrentMonitor(NSUInteger screenNumber)
 {
-  // check if the current screen/monitor settings needs to be updated
   const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const std::string storedScreenName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
-  const std::string currentScreenName = screenNameForDisplay(m_lastDisplayNr).UTF8String;
+  const std::string currentScreenName = screenNameForDisplay(screenNumber).UTF8String;
   if (storedScreenName != currentScreenName)
   {
     CDisplaySettings::GetInstance().SetMonitor(currentScreenName);
   }
+}
+
+void CWinSystemOSX::OnMove(int x, int y)
+{
+  // check if the current screen/monitor settings needs to be updated
+  CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
 
   // check if refresh rate needs to be updated
   static double oldRefreshRate = m_refreshRate;
@@ -1182,44 +1214,59 @@ void CWinSystemOSX::OnMove(int x, int y)
                                                  frame.size.height);
     });
   }
+  if (m_fullScreenMovingToScreen.has_value())
+  {
+    CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
+  }
 }
 
-void CWinSystemOSX::WindowChangedScreen()
+void CWinSystemOSX::OnChangeScreen(unsigned int screenIdx)
 {
-  // if we are here the user dragged the window to a different
-  // screen and we return the screen of the window
   const NSUInteger lastDisplay = m_lastDisplayNr;
   if (m_appWindow)
   {
-    m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen(m_appWindow.screen));
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      m_lastDisplayNr = GetDisplayIndex(GetDisplayIDFromScreen(m_appWindow.screen));
+    });
   }
   // force unblank the current display
   if (lastDisplay != m_lastDisplayNr && m_bFullScreen)
   {
     UnblankDisplay(m_lastDisplayNr);
+    CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
   }
 }
 
-void CWinSystemOSX::NotifyScreenChangeIntention()
+unsigned int CWinSystemOSX::GetScreenId(const std::string& screen)
 {
-  if (!SupportsScreenMove())
+  return static_cast<int>(GetDisplayIndex(screen));
+}
+
+void CWinSystemOSX::MoveToScreen(unsigned int screenIdx)
+{
+  // find the future displayId and the screen object
+  if (m_bFullScreen)
   {
+    // macOS doesn't allow moving fullscreen windows directly to another screen
+    // toggle fullscreen first
+    if (screenIdx < NSScreen.screens.count)
+    {
+      m_fullScreenMovingToScreen.emplace(screenIdx);
+      m_fullscreenWillToggle = true;
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_TOGGLEFULLSCREEN);
+    }
     return;
   }
 
-  // find the future displayId and the screen object
-  const NSUInteger dispIdx =
-      GetDisplayIndex(CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-          CSettings::SETTING_VIDEOSCREEN_MONITOR));
   NSScreen* currentScreen;
   NSScreen* targetScreen;
-  if (dispIdx < NSScreen.screens.count && m_lastDisplayNr < NSScreen.screens.count)
+  if (screenIdx < NSScreen.screens.count && m_lastDisplayNr < NSScreen.screens.count)
   {
     currentScreen = NSScreen.screens[m_lastDisplayNr];
-    targetScreen = NSScreen.screens[dispIdx];
+    targetScreen = NSScreen.screens[screenIdx];
   }
   // move the window to the center of the new screen
-  if (dispIdx != m_lastDisplayNr && targetScreen && currentScreen)
+  if (screenIdx != m_lastDisplayNr && targetScreen && currentScreen)
   {
     // moving from a HiDPI screen to a non-HiDPI screen requires that we scale the dimensions of
     // the window properly. m_nWidth and m_nHeight store pixels (not points) after resize callbacks
@@ -1232,7 +1279,7 @@ void CWinSystemOSX::NotifyScreenChangeIntention()
     dispatch_sync(dispatch_get_main_queue(), ^{
       [m_appWindow setFrameOrigin:windowPos];
     });
-    m_lastDisplayNr = dispIdx;
+    m_lastDisplayNr = screenIdx;
   }
 }
 
@@ -1369,10 +1416,4 @@ void CWinSystemOSX::signalMouseExited()
 void CWinSystemOSX::SendInputEvent(NSEvent* nsEvent)
 {
   m_winEvents->SendInputEvent(nsEvent);
-}
-
-bool CWinSystemOSX::SupportsScreenMove()
-{
-  // macOS doesn't allow programatically moving windows across screens if the window is fullscreen
-  return !m_bFullScreen;
 }

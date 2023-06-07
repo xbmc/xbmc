@@ -113,11 +113,22 @@ public:
   // notifications
   virtual void OnMove(int x, int y) {}
 
-  /**
-   * \brief Used to signal the windowing system about the intention of the user to change the main display
-   * \details triggered, for example, when the user manually changes the monitor setting
+  /*! \brief Get the screen ID provided the screen name
+   *  \param screen the name of the screen as presented on the application display settings
+   *  \return the screen index as known by the windowing system implementation (or the default screen by default)
   */
-  virtual void NotifyScreenChangeIntention() {}
+  virtual unsigned int GetScreenId(const std::string& screen) { return 0; }
+
+  /*! \brief Window was requested to move to the given screen
+   *  \param screenIdx the screen index as known by the windowing system implementation
+  */
+  virtual void MoveToScreen(unsigned int screenIdx) {}
+
+  /**
+   * \brief Used to signal the windowing system about the change of the current screen
+   * \param screenIdx the screen index as known by the windowing system implementation
+  */
+  virtual void OnChangeScreen(unsigned int screenIdx) {}
 
   // OS System screensaver
   /**

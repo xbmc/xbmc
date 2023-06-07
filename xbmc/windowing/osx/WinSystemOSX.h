@@ -14,6 +14,7 @@
 #include "windowing/WinSystem.h"
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -66,22 +67,14 @@ public:
   bool Hide() override;
   bool HasCursor() override;
   bool Show(bool raise = true) override;
+  unsigned int GetScreenId(const std::string& screen) override;
+  void MoveToScreen(unsigned int screenIdx) override;
   void OnMove(int x, int y) override;
+  void OnChangeScreen(unsigned int screenIdx) override;
   CGraphicContext& GetGfxContext() const override;
   bool HasValidResolution() const;
 
   std::string GetClipboardText() override;
-
-  /*! \brief Check if the windowing system supports moving windows across screens
-   *  \return true if the windowing system supports moving windows across screens, false otherwise
-  */
-  bool SupportsScreenMove() override;
-
-  /**
-   * \brief Used to signal the windowing system about the intention of the user to change the main display
-   * \details triggered, for example, when the user manually changes the monitor setting
-  */
-  void NotifyScreenChangeIntention() override;
 
   void Register(IDispResource* resource) override;
   void Unregister(IDispResource* resource) override;
@@ -99,6 +92,7 @@ public:
   int CheckDisplayChanging(uint32_t flags);
   void SetFullscreenWillToggle(bool toggle) { m_fullscreenWillToggle = toggle; }
   bool GetFullscreenWillToggle() { return m_fullscreenWillToggle; }
+  void SignalFullScreenStateChanged(bool fullscreenState);
 
   CGLContextObj GetCGLContextObj();
 
@@ -141,6 +135,8 @@ protected:
   XbmcThreads::EndTime<> m_dispResetTimer;
   bool m_fullscreenWillToggle;
   bool m_hasCursor{false};
+  //! Set while moving the fullscreen window to another screen. Stores the target screen id.
+  std::optional<unsigned long> m_fullScreenMovingToScreen;
   CCriticalSection m_critSection;
 
 private:

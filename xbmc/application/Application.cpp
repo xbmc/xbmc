@@ -318,6 +318,9 @@ void CApplication::HandlePortEvents()
       case XBMC_MODECHANGE:
         CServiceBroker::GetWinSystem()->GetGfxContext().ApplyModeChange(newEvent.mode.res);
         break;
+      case XBMC_SCREENCHANGE:
+        CServiceBroker::GetWinSystem()->OnChangeScreen(newEvent.screen.screenIdx);
+        break;
       case XBMC_USEREVENT:
         CServiceBroker::GetAppMessenger()->PostMsg(static_cast<uint32_t>(newEvent.user.code));
         break;
@@ -1604,6 +1607,10 @@ void CApplication::OnApplicationMessage(ThreadMessage* pMsg)
   case TMSG_TOGGLEFULLSCREEN:
     CServiceBroker::GetWinSystem()->GetGfxContext().ToggleFullScreen();
     appPlayer->TriggerUpdateResolution();
+    break;
+
+  case TMSG_MOVETOSCREEN:
+    CServiceBroker::GetWinSystem()->MoveToScreen(static_cast<int>(pMsg->param1));
     break;
 
   case TMSG_MINIMIZE:
