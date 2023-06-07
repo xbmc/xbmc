@@ -797,8 +797,8 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(const SettingConstPtr& se
     for (std::vector<RESOLUTION_WHR>::const_iterator resolution = resolutions.begin(); resolution != resolutions.end(); ++resolution)
     {
       std::string resLabel =
-          !resolution->id.empty()
-              ? resolution->id
+          !resolution->label.empty()
+              ? resolution->label
               : StringUtils::Format("{}x{}{}", resolution->width, resolution->height,
                                     ModeFlagsToString(resolution->flags, false));
       list.emplace_back(resLabel, resolution->ResInfo_Index);

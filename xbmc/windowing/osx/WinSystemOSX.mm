@@ -1111,6 +1111,7 @@ void CWinSystemOSX::FillInVideoModes()
         if (disp == dispIdx)
         {
           res.strId = ComputeVideoModeId(resWidth, resHeight, pixelWidth, pixelHeight, interlaced);
+          res.label = res.strId;
           UpdateDesktopResolution(res, (dispName != nil) ? dispName.UTF8String : "Unknown",
                                   static_cast<int>(pixelWidth), static_cast<int>(pixelHeight),
                                   refreshrate, 0);
@@ -1139,6 +1140,7 @@ void CWinSystemOSX::UpdateResolutions()
   resInfo.strId = ComputeVideoModeId(screenResolution.resWidth, screenResolution.resHeight,
                                      screenResolution.pixelWidth, screenResolution.pixelHeight,
                                      screenResolution.interlaced);
+  resInfo.label = resInfo.strId;
   UpdateDesktopResolution(
       resInfo, dispName.UTF8String, static_cast<int>(screenResolution.pixelWidth),
       static_cast<int>(screenResolution.pixelHeight), screenResolution.refreshrate, 0);
