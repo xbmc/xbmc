@@ -28,6 +28,7 @@ struct RESOLUTION_WHR
   int flags; //< only D3DPRESENTFLAG_MODEMASK flags
   int ResInfo_Index;
   std::string id;
+  std::string label;
 };
 
 struct REFRESHRATE
