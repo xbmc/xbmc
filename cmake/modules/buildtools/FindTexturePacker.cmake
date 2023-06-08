@@ -22,7 +22,7 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
     set_target_properties(TexturePacker::TexturePacker::Executable PROPERTIES
                                           IMPORTED_LOCATION "${TEXTUREPACKER_EXECUTABLE}")
     message(STATUS "External TexturePacker for KODI_DEPENDSBUILD will be executed during build: ${TEXTUREPACKER_EXECUTABLE}")
-  elseif(WIN32)
+  elseif(${CMAKE_SYSTEM_NAME} STREQUAL "WindowsStore")
     get_filename_component(_tppath "${DEPENDS_PATH}/tools/TexturePacker" ABSOLUTE)
     find_program(TEXTUREPACKER_EXECUTABLE NAMES "${APP_NAME_LC}-TexturePacker.exe" TexturePacker.exe
                                           HINTS ${_tppath})

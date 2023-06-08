@@ -35,6 +35,11 @@ set(SOURCES src/md5.cpp
             src/decoder/PNGDecoder.cpp
             ${CMAKE_SOURCE_DIR}/xbmc/guilib/XBTF.cpp)
 
+if(WIN32)
+    set(SOURCES ${SOURCES} src/Win32/dirent.c)
+    set(WININCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/src/Win32)
+endif()
+
 set(CMAKE_POSITITION_INDEPENDENT_CODE 1)
 
 add_executable(TexturePacker ${SOURCES})
@@ -44,7 +49,8 @@ target_include_directories(TexturePacker
                                     ${GIF_INCLUDE_DIR}
                                     ${CMAKE_SOURCE_DIR}/xbmc
                                     ${CMAKE_CURRENT_SOURCE_DIR}/src
-                                    ${CMAKE_CURRENT_SOURCE_DIR}/src/decoder)
+                                    ${CMAKE_CURRENT_SOURCE_DIR}/src/decoder
+                                    ${WININCLUDES})
 target_link_libraries(TexturePacker
                       PRIVATE ${SYSTEM_LDFLAGS}
                               ${GIF_LIBRARIES}
