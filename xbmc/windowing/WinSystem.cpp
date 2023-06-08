@@ -111,23 +111,24 @@ static void AddResolution(std::vector<RESOLUTION_WHR> &resolutions, unsigned int
   float refreshrate = resInfo.fRefreshRate;
 
   // don't touch RES_DESKTOP
-  for (unsigned int idx = 1; idx < resolutions.size(); idx++)
-    if (resolutions[idx].width == width && resolutions[idx].height == height &&
-        (resolutions[idx].flags & D3DPRESENTFLAG_MODEMASK) == flags &&
-        resolutions[idx].label == label)
+  for (auto& resolution : resolutions)
+  {
+    if (resolution.width == width && resolution.height == height &&
+        (resolution.flags & D3DPRESENTFLAG_MODEMASK) == flags && resolution.label == label)
     {
       // check if the refresh rate of this resolution is better suited than
       // the refresh rate of the resolution with the same width/height/interlaced
       // property and if so replace it
       if (bestRefreshrate > 0.0f && refreshrate == bestRefreshrate)
-        resolutions[idx].ResInfo_Index = addindex;
+        resolution.ResInfo_Index = addindex;
 
       // no need to add the resolution again
       return;
     }
+  }
 
   RESOLUTION_WHR res = {width, height, flags, static_cast<int>(addindex), id, label};
-  resolutions.push_back(res);
+  resolutions.emplace_back(res);
 }
 
 static bool resSortPredicate(RESOLUTION_WHR i, RESOLUTION_WHR j)
