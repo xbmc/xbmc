@@ -32,23 +32,6 @@ char* GetCommandLine();
 class CmdLineArgs : public std::vector<char*>
 {
 public:
-    CmdLineArgs ()
-    {
-        // Save local copy of the command line string, because
-        // ParseCmdLine() modifies this string while parsing it.
-        char* cmdline = GetCommandLine();
-        m_cmdline = new char [strlen (cmdline) + 1];
-        if (m_cmdline)
-        {
-            strcpy (m_cmdline, cmdline);
-            ParseCmdLine();
-        } else {
-#ifdef TARGET_POSIX
-          delete[] cmdline;
-#endif
-        }
-    }
-
     CmdLineArgs (const int argc, const char **argv)
     {
       std::string cmdline;
