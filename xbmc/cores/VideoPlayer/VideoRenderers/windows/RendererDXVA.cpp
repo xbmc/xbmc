@@ -139,18 +139,19 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
 
       if (m_processor->IsFormatConversionSupported(dxgi_format, dest_format, picture))
       {
-        const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
-        if (!settings)
-          return true;
-
-        if (settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USESUPERRESOLUTION) &&
-            DXVA::CProcessorHD::IsSuperResolutionSuitable(picture) &&
-            DX::Windowing()->SupportsVideoSuperResolution())
+        if (DX::Windowing()->SupportsVideoSuperResolution())
         {
-          m_processor->TryEnableVideoSuperResolution();
-        }
+          const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
 
+          if (!settings)
+            return true;
+
+          if (settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USESUPERRESOLUTION) &&
+              CProcessorHD::IsSuperResolutionSuitable(picture))
+          {
+            m_processor->TryEnableVideoSuperResolution();
+          }
+        }
         return true;
       }
     }
