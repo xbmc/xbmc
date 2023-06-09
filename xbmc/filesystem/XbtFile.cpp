@@ -305,11 +305,11 @@ uint32_t CXbtFile::GetImageHeight() const
   return frame.GetHeight();
 }
 
-uint32_t CXbtFile::GetImageFormat() const
+XB_FMT CXbtFile::GetImageFormat() const
 {
   CXBTFFrame frame;
   if (!GetFirstFrame(frame))
-    return false;
+    return XB_FMT_UNKNOWN;
 
   return frame.GetFormat();
 }

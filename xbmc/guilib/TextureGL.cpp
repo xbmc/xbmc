@@ -20,12 +20,12 @@
 
 std::unique_ptr<CTexture> CTexture::CreateTexture(unsigned int width,
                                                   unsigned int height,
-                                                  unsigned int format)
+                                                  XB_FMT format)
 {
   return std::make_unique<CGLTexture>(width, height, format);
 }
 
-CGLTexture::CGLTexture(unsigned int width, unsigned int height, unsigned int format)
+CGLTexture::CGLTexture(unsigned int width, unsigned int height, XB_FMT format)
   : CTexture(width, height, format)
 {
   unsigned int major, minor;

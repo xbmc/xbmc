@@ -37,7 +37,7 @@
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-CTexture::CTexture(unsigned int width, unsigned int height, unsigned int format)
+CTexture::CTexture(unsigned int width, unsigned int height, XB_FMT format)
 {
   m_pixels = NULL;
   m_loadedToGPU = false;
@@ -50,7 +50,7 @@ CTexture::~CTexture()
   m_pixels = NULL;
 }
 
-void CTexture::Allocate(unsigned int width, unsigned int height, unsigned int format)
+void CTexture::Allocate(unsigned int width, unsigned int height, XB_FMT format)
 {
   m_imageWidth = m_originalWidth = width;
   m_imageHeight = m_originalHeight = height;
@@ -117,7 +117,7 @@ void CTexture::Allocate(unsigned int width, unsigned int height, unsigned int fo
 void CTexture::Update(unsigned int width,
                       unsigned int height,
                       unsigned int pitch,
-                      unsigned int format,
+                      XB_FMT format,
                       const unsigned char* pixels,
                       bool loadToGPU)
 {
@@ -357,7 +357,7 @@ bool CTexture::LoadIImage(IImage* pImage,
 bool CTexture::LoadFromMemory(unsigned int width,
                               unsigned int height,
                               unsigned int pitch,
-                              unsigned int format,
+                              XB_FMT format,
                               bool hasAlpha,
                               const unsigned char* pixels)
 {
@@ -372,7 +372,7 @@ bool CTexture::LoadFromMemory(unsigned int width,
 bool CTexture::LoadPaletted(unsigned int width,
                             unsigned int height,
                             unsigned int pitch,
-                            unsigned int format,
+                            XB_FMT format,
                             const unsigned char* pixels,
                             const COLOR* palette)
 {

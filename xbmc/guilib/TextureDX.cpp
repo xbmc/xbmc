@@ -15,12 +15,12 @@
 
 std::unique_ptr<CTexture> CTexture::CreateTexture(unsigned int width,
                                                   unsigned int height,
-                                                  unsigned int format)
+                                                  XB_FMT format)
 {
   return std::make_unique<CDXTexture>(width, height, format);
 }
 
-CDXTexture::CDXTexture(unsigned int width, unsigned int height, unsigned int format)
+CDXTexture::CDXTexture(unsigned int width, unsigned int height, XB_FMT format)
   : CTexture(width, height, format)
 {
 }

@@ -8,15 +8,21 @@
 
 #pragma once
 
-#define XB_FMT_MASK   0xffff ///< mask for format info - other flags are outside this
-#define XB_FMT_DXT_MASK   15
-#define XB_FMT_UNKNOWN     0
-#define XB_FMT_DXT1        1
-#define XB_FMT_DXT3        2
-#define XB_FMT_DXT5        4
-#define XB_FMT_DXT5_YCoCg  8
-#define XB_FMT_A8R8G8B8   16 // texture.xbt byte order (matches BGRA8)
-#define XB_FMT_A8         32
-#define XB_FMT_RGBA8      64
-#define XB_FMT_RGB8      128
-#define XB_FMT_OPAQUE  65536
+// clang-format off
+enum XB_FMT
+{
+  XB_FMT_UNKNOWN     = 0x0,
+  XB_FMT_DXT1        = 0x1,
+  XB_FMT_DXT3        = 0x2,
+  XB_FMT_DXT5        = 0x4,
+  XB_FMT_DXT5_YCoCg  = 0x8,
+  XB_FMT_DXT_MASK    = 0xF,
+
+  XB_FMT_A8R8G8B8    = 0x10, // texture.xbt byte order (matches BGRA8)
+  XB_FMT_A8          = 0x20,
+  XB_FMT_RGBA8       = 0x40,
+  XB_FMT_RGB8        = 0x80,
+  XB_FMT_MASK        = 0xFFFF,
+  XB_FMT_OPAQUE      = 0x10000,
+};
+// clang-format on
