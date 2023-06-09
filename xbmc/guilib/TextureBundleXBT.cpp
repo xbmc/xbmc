@@ -148,71 +148,67 @@ std::vector<std::string> CTextureBundleXBT::GetTexturesFromPath(const std::strin
   return textures;
 }
 
-bool CTextureBundleXBT::LoadTexture(const std::string& filename,
-                                    std::unique_ptr<CTexture>& texture,
-                                    int& width,
-                                    int& height)
+std::optional<CTextureBundleXBT::Texture> CTextureBundleXBT::LoadTexture(
+    const std::string& filename)
 {
   std::string name = Normalize(filename);
 
   CXBTFFile file;
   if (!m_XBTFReader->Get(name, file))
-    return false;
+    return {};
 
   if (file.GetFrames().empty())
-    return false;
+    return {};
 
   const CXBTFFrame& frame = file.GetFrames().at(0);
-  if (!ConvertFrameToTexture(filename, frame, texture))
-  {
-    return false;
-  }
 
-  width = frame.GetWidth();
-  height = frame.GetHeight();
+  Texture texture;
+  texture.width = frame.GetWidth();
+  texture.height = frame.GetHeight();
 
-  return true;
+  texture.texture = ConvertFrameToTexture(filename, frame);
+  if (!texture.texture)
+    return {};
+
+  return std::make_optional<Texture>(std::move(texture));
 }
 
-bool CTextureBundleXBT::LoadAnim(const std::string& filename,
-                                 std::vector<std::pair<std::unique_ptr<CTexture>, int>>& textures,
-                                 int& width,
-                                 int& height,
-                                 int& nLoops)
+std::optional<CTextureBundleXBT::Animation> CTextureBundleXBT::LoadAnim(const std::string& filename)
 {
   std::string name = Normalize(filename);
 
   CXBTFFile file;
   if (!m_XBTFReader->Get(name, file))
-    return false;
+    return {};
 
   if (file.GetFrames().empty())
-    return false;
+    return {};
 
   size_t nTextures = file.GetFrames().size();
-  textures.reserve(nTextures);
+
+  Animation animation;
+  animation.textures.reserve(nTextures);
 
   for (size_t i = 0; i < nTextures; i++)
   {
     CXBTFFrame& frame = file.GetFrames().at(i);
 
-    std::unique_ptr<CTexture> texture;
-    if (!ConvertFrameToTexture(filename, frame, texture))
-      return false;
+    std::unique_ptr<CTexture> texture = ConvertFrameToTexture(filename, frame);
+    if (!texture)
+      return {};
 
-    textures.emplace_back(std::move(texture), frame.GetDuration());
+    animation.textures.emplace_back(std::move(texture), frame.GetDuration());
   }
 
-  width = file.GetFrames().at(0).GetWidth();
-  height = file.GetFrames().at(0).GetHeight();
-  nLoops = file.GetLoop();
+  animation.width = file.GetFrames().at(0).GetWidth();
+  animation.height = file.GetFrames().at(0).GetHeight();
+  animation.loops = file.GetLoop();
 
-  return true;
+  return std::make_optional<Animation>(std::move(animation));
 }
 
-bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
-                                              const CXBTFFrame& frame,
-                                              std::unique_ptr<CTexture>& texture)
+std::unique_ptr<CTexture> CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
+                                                                   const CXBTFFrame& frame)
 {
   // found texture - allocate the necessary buffers
   std::vector<unsigned char> buffer(static_cast<size_t>(frame.GetPackedSize()));
@@ -221,7 +217,7 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
   if (!m_XBTFReader->Load(frame, buffer.data()))
   {
     CLog::Log(LOGERROR, "Error loading texture: {}", name);
-    return false;
+    return {};
   }
 
   // check if it's packed with lzo
@@ -234,17 +230,17 @@ bool CTextureBundleXBT::ConvertFrameToTexture(const std::string& name,
         s != frame.GetUnpackedSize())
     {
       CLog::Log(LOGERROR, "Error loading texture: {}: Decompression error", name);
-      return false;
+      return {};
     }
     buffer = std::move(unpacked);
   }
 
   // create an xbmc texture
-  texture = CTexture::CreateTexture();
+  std::unique_ptr<CTexture> texture = CTexture::CreateTexture();
   texture->LoadFromMemory(frame.GetWidth(), frame.GetHeight(), 0, frame.GetFormat(),
                           frame.HasAlpha(), buffer.data());
 
-  return true;
+  return texture;
 }
 
 void CTextureBundleXBT::SetThemeBundle(bool themeBundle)
