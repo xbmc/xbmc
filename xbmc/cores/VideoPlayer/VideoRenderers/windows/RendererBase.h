@@ -155,6 +155,7 @@ protected:
   virtual void CheckVideoParameters();
   virtual void OnViewSizeChanged() {}
   virtual void OnOutputReset() {}
+  virtual std::string GetRenderMethodDebugInfo() const { return {}; }
 
   bool m_toneMapping = false;
   bool m_useDithering = false;
@@ -188,4 +189,5 @@ protected:
   DXGI_HDR_METADATA_HDR10 m_lastHdr10 = {};
   HDR_TYPE m_HdrType = HDR_TYPE::HDR_NONE_SDR;
   bool m_AutoSwitchHDR = false;
+  std::string m_renderMethodName;
 };

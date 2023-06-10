@@ -71,6 +71,11 @@ void CRendererShaders::GetWeight(std::map<RenderMethod, int>& weights, const Vid
     weights[RENDER_PS] = weight;
 }
 
+CRendererShaders::CRendererShaders(CVideoSettings& videoSettings) : CRendererHQ(videoSettings)
+{
+  m_renderMethodName = "Pixel Shaders";
+}
+
 bool CRendererShaders::Supports(ESCALINGMETHOD method) const
 {
   if (method == VS_SCALINGMETHOD_LINEAR)
