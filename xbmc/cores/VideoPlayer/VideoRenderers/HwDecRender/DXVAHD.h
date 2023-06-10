@@ -123,6 +123,7 @@ public:
   static bool IsPQ10PassthroughSupported(const DXGI_FORMAT dxgi_format);
   static bool IsSuperResolutionSuitable(const VideoPicture& picture);
   void TryEnableVideoSuperResolution();
+  bool IsVideoSuperResolutionEnabled() const { return m_superResolutionEnabled; }
 
 protected:
   bool ReInit();

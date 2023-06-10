@@ -37,11 +37,12 @@ public:
   static void GetWeight(std::map<RenderMethod, int>& weights, const VideoPicture& picture);
 
 protected:
-  explicit CRendererDXVA(CVideoSettings& videoSettings) : CRendererHQ(videoSettings) {}
+  explicit CRendererDXVA(CVideoSettings& videoSettings);
 
   void CheckVideoParameters() override;
   void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
   CRenderBuffer* CreateBuffer() override;
+  virtual std::string GetRenderMethodDebugInfo() const;
 
 private:
   void FillBuffersSet(CRenderBuffer* (&buffers)[8]);

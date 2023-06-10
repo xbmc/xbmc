@@ -110,6 +110,11 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
     weights[RENDER_DXVA] = weight;
 }
 
+CRendererDXVA::CRendererDXVA(CVideoSettings& videoSettings) : CRendererHQ(videoSettings)
+{
+  m_renderMethodName = "DXVA";
+}
+
 CRenderInfo CRendererDXVA::GetRenderInfo()
 {
   auto info = __super::GetRenderInfo();
@@ -294,6 +299,16 @@ bool CRendererDXVA::Supports(ESCALINGMETHOD method) const
 CRenderBuffer* CRendererDXVA::CreateBuffer()
 {
   return new CRenderBufferImpl(m_format, m_sourceWidth, m_sourceHeight);
+}
+
+std::string CRendererDXVA::GetRenderMethodDebugInfo() const
+{
+  if (m_processor && DX::Windowing()->SupportsVideoSuperResolution())
+  {
+    return StringUtils::Format("Video Super Resolution: {}",
+                               m_processor->IsVideoSuperResolutionEnabled() ? "requested" : "OFF");
+  }
+  return {};
 }
 
 CRendererDXVA::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_format, unsigned width, unsigned height)

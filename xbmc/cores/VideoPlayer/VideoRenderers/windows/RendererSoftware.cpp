@@ -39,6 +39,11 @@ void CRendererSoftware::GetWeight(std::map<RenderMethod, int>& weights, const Vi
     weights[RENDER_SW] = weight;
 }
 
+CRendererSoftware::CRendererSoftware(CVideoSettings& videoSettings) : CRendererBase(videoSettings)
+{
+  m_renderMethodName = "Software";
+}
+
 CRendererSoftware::~CRendererSoftware()
 {
   if (m_sw_scale_ctx)
