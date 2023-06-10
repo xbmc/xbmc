@@ -445,6 +445,23 @@ void CGUIDialogPVRTimerSettings::OnSettingChanged(const std::shared_ptr<const CS
     {
       m_timerType = it->second;
 
+      // reset certain settings to the defaults of the new timer type
+
+      if (m_timerType->SupportsPriority())
+        m_iPriority = m_timerType->GetPriorityDefault();
+
+      if (m_timerType->SupportsLifetime())
+        m_iLifetime = m_timerType->GetLifetimeDefault();
+
+      if (m_timerType->SupportsMaxRecordings())
+        m_iMaxRecordings = m_timerType->GetMaxRecordingsDefault();
+
+      if (m_timerType->SupportsRecordingGroup())
+        m_iRecordingGroup = m_timerType->GetRecordingGroupDefault();
+
+      if (m_timerType->SupportsRecordOnlyNewEpisodes())
+        m_iPreventDupEpisodes = m_timerType->GetPreventDuplicateEpisodesDefault();
+
       if (m_timerType->IsTimerRule() && (m_iWeekdays == PVR_WEEKDAY_ALLDAYS))
         SetButtonLabels(); // update "Any day" vs. "Every day"
     }
