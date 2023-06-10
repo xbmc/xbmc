@@ -188,6 +188,7 @@ private:
   unsigned int m_iMarginStart = 0;
   unsigned int m_iMarginEnd = 0;
   int m_iPriority = 0;
+  int* m_pPriority = nullptr;
   int m_iLifetime = 0;
   int m_iMaxRecordings = 0;
   std::string m_strDirectory;

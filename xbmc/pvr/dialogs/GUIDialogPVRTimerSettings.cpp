@@ -133,6 +133,10 @@ void CGUIDialogPVRTimerSettings::SetTimer(const std::shared_ptr<CPVRTimerInfoTag
   m_iMarginStart = m_timerInfoTag->m_iMarginStart;
   m_iMarginEnd = m_timerInfoTag->m_iMarginEnd;
   m_iPriority = m_timerInfoTag->m_iPriority;
+  if (m_timerType->SupportsPriority())
+    m_pPriority = &m_iPriority;
+  else
+    m_pPriority = nullptr;
   m_iLifetime = m_timerInfoTag->m_iLifetime;
   m_iMaxRecordings = m_timerInfoTag->m_iMaxRecordings;
 
@@ -1082,7 +1086,10 @@ void CGUIDialogPVRTimerSettings::PrioritiesFiller(const SettingConstPtr& setting
       return IntegerSettingOption(value.first, value.second);
     });
 
-    current = pThis->m_iPriority;
+    if (pThis->m_pPriority == nullptr)
+      current = pThis->m_timerType->GetPriorityDefault();
+    else
+      current = pThis->m_iPriority;
 
     auto it = list.begin();
     while (it != list.end())
