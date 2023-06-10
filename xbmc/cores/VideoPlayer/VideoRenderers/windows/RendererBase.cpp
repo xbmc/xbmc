@@ -724,5 +724,14 @@ DEBUG_INFO_VIDEO CRendererBase::GetDebugInfo(int idx)
   if (m_outputShader)
     info.shader = m_outputShader->GetDebugInfo();
 
+  info.render = StringUtils::Format("Render method: {}", m_renderMethodName);
+
+  std::string rmInfo = GetRenderMethodDebugInfo();
+  if (!rmInfo.empty())
+  {
+    info.render.append(", ");
+    info.render.append(rmInfo);
+  }
+
   return info;
 }
