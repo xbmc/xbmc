@@ -53,7 +53,8 @@ RESOLUTION_INFO::RESOLUTION_INFO(const RESOLUTION_INFO& res)
     guiInsets(res.guiInsets),
     strMode(res.strMode),
     strOutput(res.strOutput),
-    strId(res.strId)
+    strId(res.strId),
+    label(res.label)
 {
   bFullScreen = res.bFullScreen;
   iWidth = res.iWidth; iHeight = res.iHeight;
