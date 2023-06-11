@@ -611,6 +611,13 @@ PVR_ERROR CPVRClients::GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>
   });
 }
 
+PVR_ERROR CPVRClients::RefreshTimerTypesCache()
+{
+  return ForCreatedClients(__FUNCTION__, [](const std::shared_ptr<CPVRClient>& client) {
+    return client->RefreshTimerTypesCache();
+  });
+}
+
 PVR_ERROR CPVRClients::GetRecordings(const std::vector<std::shared_ptr<CPVRClient>>& clients,
                                      CPVRRecordings* recordings,
                                      bool deleted,

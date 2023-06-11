@@ -218,6 +218,12 @@ struct SBackend
      */
     PVR_ERROR GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results) const;
 
+    /*!
+     * @brief Refetch all timer types from all backends.
+     * @return PVR_ERROR_NO_ERROR if the types have been refetched successfully.
+     */
+    PVR_ERROR RefreshTimerTypesCache();
+
     //@}
 
     /*! @name Recording methods */

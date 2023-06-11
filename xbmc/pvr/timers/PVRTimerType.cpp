@@ -214,6 +214,24 @@ bool CPVRTimerType::operator !=(const CPVRTimerType& right) const
   return !(*this == right);
 }
 
+void CPVRTimerType::Update(const CPVRTimerType& type)
+{
+  m_iClientId = type.m_iClientId;
+  m_iTypeId = type.m_iTypeId;
+  m_iAttributes = type.m_iAttributes;
+  m_strDescription = type.m_strDescription;
+  m_priorityValues = type.m_priorityValues;
+  m_iPriorityDefault = type.m_iPriorityDefault;
+  m_lifetimeValues = type.m_lifetimeValues;
+  m_iLifetimeDefault = type.m_iLifetimeDefault;
+  m_maxRecordingsValues = type.m_maxRecordingsValues;
+  m_iMaxRecordingsDefault = type.m_iMaxRecordingsDefault;
+  m_preventDupEpisodesValues = type.m_preventDupEpisodesValues;
+  m_iPreventDupEpisodesDefault = type.m_iPreventDupEpisodesDefault;
+  m_recordingGroupValues = type.m_recordingGroupValues;
+  m_iRecordingGroupDefault = type.m_iRecordingGroupDefault;
+}
+
 void CPVRTimerType::InitDescription()
 {
   // if no description was given, compile it

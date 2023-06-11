@@ -819,6 +819,8 @@ void CGUIDialogPVRTimerSettings::InitializeTypesList()
     return;
   }
 
+  CServiceBroker::GetPVRManager().Clients()->RefreshTimerTypesCache();
+
   bool bFoundThisType(false);
   int idx(0);
   const std::vector<std::shared_ptr<CPVRTimerType>> types(CPVRTimerType::GetAllTypes());
