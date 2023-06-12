@@ -305,7 +305,6 @@ bool CPVRClient::GetAddonProperties()
     return false;
 
   PVR_ADDON_CAPABILITIES addonCapabilities = {};
-  std::vector<std::shared_ptr<CPVRTimerType>> timerTypes;
 
   /* get the capabilities */
   PVR_ERROR retVal = DoAddonCall(
@@ -318,96 +317,8 @@ bool CPVRClient::GetAddonProperties()
   if (retVal != PVR_ERROR_NO_ERROR)
     return false;
 
-  /* timer types */
-  retVal = DoAddonCall(
-      __func__,
-      [this, &addonCapabilities, &timerTypes](const AddonInstance* addon) {
-        std::unique_ptr<PVR_TIMER_TYPE[]> types_array(
-            new PVR_TIMER_TYPE[PVR_ADDON_TIMERTYPE_ARRAY_SIZE]);
-        int size = PVR_ADDON_TIMERTYPE_ARRAY_SIZE;
-
-        PVR_ERROR retval = addon->toAddon->GetTimerTypes(addon, types_array.get(), &size);
-
-        if (retval == PVR_ERROR_NOT_IMPLEMENTED)
-        {
-          // begin compat section
-          CLog::LogF(LOGWARNING,
-                     "Add-on {} does not support timer types. It will work, but not benefit from "
-                     "the timer features introduced with PVR Addon API 2.0.0",
-                     GetFriendlyName());
-
-          // Create standard timer types (mostly) matching the timer functionality available in Isengard.
-          // This is for migration only and does not make changes to the addons obsolete. Addons should
-          // work and benefit from some UI changes (e.g. some of the timer settings dialog enhancements),
-          // but all old problems/bugs due to static attributes and values will remain the same as in
-          // Isengard. Also, new features (like epg search) are not available to addons automatically.
-          // This code can be removed once all addons actually support the respective PVR Addon API version.
-
-          size = 0;
-          // manual one time
-          memset(&types_array[size], 0, sizeof(types_array[size]));
-          types_array[size].iId = size + 1;
-          types_array[size].iAttributes =
-              PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-              PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-              PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
-              PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-          ++size;
-
-          // manual timer rule
-          memset(&types_array[size], 0, sizeof(types_array[size]));
-          types_array[size].iId = size + 1;
-          types_array[size].iAttributes =
-              PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REPEATING |
-              PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-              PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
-              PVR_TIMER_TYPE_SUPPORTS_PRIORITY | PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
-              PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY | PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS |
-              PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-          ++size;
-
-          if (addonCapabilities.bSupportsEPG)
-          {
-            // One-shot epg-based
-            memset(&types_array[size], 0, sizeof(types_array[size]));
-            types_array[size].iId = size + 1;
-            types_array[size].iAttributes =
-                PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
-                PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
-                PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
-                PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
-            ++size;
-          }
-
-          retval = PVR_ERROR_NO_ERROR;
-          // end compat section
-        }
-
-        if (retval == PVR_ERROR_NO_ERROR)
-        {
-          timerTypes.reserve(size);
-          for (int i = 0; i < size; ++i)
-          {
-            if (types_array[i].iId == PVR_TIMER_TYPE_NONE)
-            {
-              CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on {}.", GetID());
-              continue;
-            }
-            timerTypes.emplace_back(
-                std::shared_ptr<CPVRTimerType>(new CPVRTimerType(types_array[i], m_iClientId)));
-          }
-        }
-        return retval;
-      },
-      addonCapabilities.bSupportsTimers, false);
-
-  if (retVal == PVR_ERROR_NOT_IMPLEMENTED)
-    retVal = PVR_ERROR_NO_ERROR; // timer support is optional.
-
-  /* update the members */
   std::unique_lock<CCriticalSection> lock(m_critSection);
   m_clientCapabilities = addonCapabilities;
-  m_timertypes = timerTypes;
 
   return retVal == PVR_ERROR_NO_ERROR;
 }
@@ -1078,11 +989,124 @@ PVR_ERROR CPVRClient::UpdateTimer(const CPVRTimerInfoTag& timer)
       m_clientCapabilities.SupportsTimers());
 }
 
-PVR_ERROR CPVRClient::GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results) const
+const std::vector<std::shared_ptr<CPVRTimerType>>& CPVRClient::GetTimerTypes() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  results = m_timertypes;
-  return PVR_ERROR_NO_ERROR;
+  return m_timertypes;
+}
+
+PVR_ERROR CPVRClient::UpdateTimerTypes()
+{
+  std::vector<std::shared_ptr<CPVRTimerType>> timerTypes;
+
+  PVR_ERROR retVal = DoAddonCall(
+      __func__,
+      [this, &timerTypes](const AddonInstance* addon) {
+        std::unique_ptr<PVR_TIMER_TYPE[]> types_array(
+            new PVR_TIMER_TYPE[PVR_ADDON_TIMERTYPE_ARRAY_SIZE]);
+        int size = PVR_ADDON_TIMERTYPE_ARRAY_SIZE;
+
+        PVR_ERROR retval = addon->toAddon->GetTimerTypes(addon, types_array.get(), &size);
+
+        if (retval == PVR_ERROR_NOT_IMPLEMENTED)
+        {
+          // begin compat section
+          CLog::LogF(LOGWARNING,
+                     "Add-on {} does not support timer types. It will work, but not benefit from "
+                     "the timer features introduced with PVR Addon API 2.0.0",
+                     GetFriendlyName());
+
+          // Create standard timer types (mostly) matching the timer functionality available in Isengard.
+          // This is for migration only and does not make changes to the addons obsolete. Addons should
+          // work and benefit from some UI changes (e.g. some of the timer settings dialog enhancements),
+          // but all old problems/bugs due to static attributes and values will remain the same as in
+          // Isengard. Also, new features (like epg search) are not available to addons automatically.
+          // This code can be removed once all addons actually support the respective PVR Addon API version.
+
+          size = 0;
+          // manual one time
+          memset(&types_array[size], 0, sizeof(types_array[size]));
+          types_array[size].iId = size + 1;
+          types_array[size].iAttributes =
+              PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+              PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
+              PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
+              PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+          ++size;
+
+          // manual timer rule
+          memset(&types_array[size], 0, sizeof(types_array[size]));
+          types_array[size].iId = size + 1;
+          types_array[size].iAttributes =
+              PVR_TIMER_TYPE_IS_MANUAL | PVR_TIMER_TYPE_IS_REPEATING |
+              PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
+              PVR_TIMER_TYPE_SUPPORTS_START_TIME | PVR_TIMER_TYPE_SUPPORTS_END_TIME |
+              PVR_TIMER_TYPE_SUPPORTS_PRIORITY | PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
+              PVR_TIMER_TYPE_SUPPORTS_FIRST_DAY | PVR_TIMER_TYPE_SUPPORTS_WEEKDAYS |
+              PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+          ++size;
+
+          if (m_clientCapabilities.SupportsEPG())
+          {
+            // One-shot epg-based
+            memset(&types_array[size], 0, sizeof(types_array[size]));
+            types_array[size].iId = size + 1;
+            types_array[size].iAttributes =
+                PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE | PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE |
+                PVR_TIMER_TYPE_SUPPORTS_CHANNELS | PVR_TIMER_TYPE_SUPPORTS_START_TIME |
+                PVR_TIMER_TYPE_SUPPORTS_END_TIME | PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
+                PVR_TIMER_TYPE_SUPPORTS_LIFETIME | PVR_TIMER_TYPE_SUPPORTS_RECORDING_FOLDERS;
+            ++size;
+          }
+
+          retval = PVR_ERROR_NO_ERROR;
+          // end compat section
+        }
+
+        if (retval == PVR_ERROR_NO_ERROR)
+        {
+          timerTypes.reserve(size);
+          for (int i = 0; i < size; ++i)
+          {
+            if (types_array[i].iId == PVR_TIMER_TYPE_NONE)
+            {
+              CLog::LogF(LOGERROR, "Invalid timer type supplied by add-on {}.", GetID());
+              continue;
+            }
+            timerTypes.emplace_back(std::make_shared<CPVRTimerType>(types_array[i], m_iClientId));
+          }
+        }
+        return retval;
+      },
+      m_clientCapabilities.SupportsTimers(), false);
+
+  if (retVal == PVR_ERROR_NO_ERROR)
+  {
+    std::vector<std::shared_ptr<CPVRTimerType>> newTimerTypes;
+    newTimerTypes.reserve(timerTypes.size());
+
+    std::unique_lock<CCriticalSection> lock(m_critSection);
+
+    for (const auto& type : timerTypes)
+    {
+      const auto it = std::find_if(m_timertypes.cbegin(), m_timertypes.cend(),
+                                   [&type](const std::shared_ptr<CPVRTimerType>& entry) {
+                                     return entry->GetTypeId() == type->GetTypeId();
+                                   });
+      if (it == m_timertypes.cend())
+      {
+        newTimerTypes.emplace_back(type);
+      }
+      else
+      {
+        (*it)->Update(*type);
+        newTimerTypes.emplace_back(*it);
+      }
+    }
+
+    m_timertypes = newTimerTypes;
+  }
+  return retVal;
 }
 
 PVR_ERROR CPVRClient::GetStreamReadChunkSize(int& iChunkSize)
