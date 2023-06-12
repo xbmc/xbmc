@@ -212,11 +212,19 @@ struct SBackend
                    std::vector<int>& failedClients);
 
     /*!
-     * @brief Get all supported timer types.
-     * @param results The container to store the result in.
+     * @brief Update all timer types from the given clients
+     * @param clients The clients to fetch data from. Leave empty to fetch data from all created clients.
+     * @param failedClients in case of errors will contain the ids of the clients for which the timer types could not be obtained.
      * @return PVR_ERROR_NO_ERROR if the operation succeeded, the respective PVR_ERROR value otherwise.
      */
-    PVR_ERROR GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results) const;
+    PVR_ERROR UpdateTimerTypes(const std::vector<std::shared_ptr<CPVRClient>>& clients,
+                               std::vector<int>& failedClients);
+
+    /*!
+     * @brief Get all timer types supported by the backends, without updating them from the backends.
+     * @return the types.
+     */
+    const std::vector<std::shared_ptr<CPVRTimerType>> GetTimerTypes() const;
 
     //@}
 

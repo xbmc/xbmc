@@ -157,9 +157,12 @@ bool CPVRTimers::UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>
     m_bIsUpdating = true;
   }
 
+  CLog::LogFC(LOGDEBUG, LOGPVR, "Updating timer types");
+  std::vector<int> failedClients;
+  CServiceBroker::GetPVRManager().Clients()->UpdateTimerTypes(clients, failedClients);
+
   CLog::LogFC(LOGDEBUG, LOGPVR, "Updating timers");
   CPVRTimersContainer newTimerList;
-  std::vector<int> failedClients;
   CServiceBroker::GetPVRManager().Clients()->GetTimers(clients, &newTimerList, failedClients);
   return UpdateEntries(newTimerList, failedClients);
 }
