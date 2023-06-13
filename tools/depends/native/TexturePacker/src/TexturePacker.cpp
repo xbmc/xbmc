@@ -258,11 +258,12 @@ bool TexturePacker::CheckDupe(MD5Context* ctx,
   MD5Final(digest,ctx);
   digest[16] = 0;
   char hex[33];
-  sprintf(hex, "%02X%02X%02X%02X%02X%02X%02X%02X"\
-      "%02X%02X%02X%02X%02X%02X%02X%02X", digest[0], digest[1], digest[2],
-      digest[3], digest[4], digest[5], digest[6], digest[7], digest[8],
-      digest[9], digest[10], digest[11], digest[12], digest[13], digest[14],
-      digest[15]);
+  snprintf(hex, sizeof(hex),
+           "%02X%02X%02X%02X%02X%02X%02X%02X"
+           "%02X%02X%02X%02X%02X%02X%02X%02X",
+           digest[0], digest[1], digest[2], digest[3], digest[4], digest[5], digest[6], digest[7],
+           digest[8], digest[9], digest[10], digest[11], digest[12], digest[13], digest[14],
+           digest[15]);
   hex[32] = 0;
   std::map<std::string, unsigned int>::iterator it = m_hashes.find(hex);
   if (it != m_hashes.end())
