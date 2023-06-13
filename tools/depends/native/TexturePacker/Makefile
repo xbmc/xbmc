@@ -1,51 +1,33 @@
-ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 include ../../Makefile.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
 DEPS =../../Makefile.include Makefile
 
-ifeq ($(NATIVE_OS), linux)
-  EXTRA_CONFIGURE = --enable-static
-endif
-ifeq ($(NATIVE_OS), android)
-  EXTRA_CONFIGURE = --enable-static
-endif
+APP=$(PLATFORM)/build/TexturePacker
 
-ifeq ($(CMAKE_SOURCE_DIR),)
-  CMAKE_SOURCE_DIR = $(ROOT_DIR)/../../../..
-endif
-
-SOURCE=$(ROOT_DIR)/src
-
-APP=$(PLATFORM)/TexturePacker
-APPBIN=$(PREFIX)/bin/TexturePacker
+CMAKE_OPTIONS := -DNATIVEPREFIX=${NATIVEPREFIX} \
+                 -DKODI_SOURCE_DIR=$(CMAKE_SOURCE_DIR) \
+                 -DENABLE_STATIC=1 \
+                 -DARCH_DEFINES="$(NATIVE_ARCH_DEFINES)"
 
 all: .installed-$(PLATFORM)
 
 download:
 
 $(PLATFORM): $(DEPS)
-	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
-	cd $(PLATFORM); cp -a $(SOURCE)/* .
-	cd $(PLATFORM); ./autogen.sh
-	cd $(PLATFORM); ./configure --prefix=$(PREFIX) $(EXTRA_CONFIGURE) EXTRA_DEFINES="$(NATIVE_ARCH_DEFINES)"
-
+	-rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)/build
+	cd $(PLATFORM); cp -a ../src/* .
+	cd $(PLATFORM)/build; $(CMAKE_FOR_BUILD) $(CMAKE_OPTIONS) ..
 
 $(APP): $(PLATFORM)
-	$(MAKE) -C $(PLATFORM)
+	$(MAKE) -C $(PLATFORM)/build
 
 .installed-$(PLATFORM): $(APP)
-	$(MAKE) -C $(PLATFORM) install
+	$(MAKE) -C $(PLATFORM)/build install
 	touch $@
-	#TEMP workaround for skins: create legacy link. Remove me when skins are fixed
-	@mkdir -p $(CMAKE_SOURCE_DIR)/tools/TexturePacker
-	@[ -f $(CMAKE_SOURCE_DIR)/tools/TexturePacker/TexturePacker ] && rm $(CMAKE_SOURCE_DIR)/tools/TexturePacker/TexturePacker || :
-	@ln -sf $(APPBIN) $(CMAKE_SOURCE_DIR)/tools/TexturePacker/TexturePacker
-	@echo "all:" > $(CMAKE_SOURCE_DIR)/tools/TexturePacker/Makefile
-	@echo "\t@echo "WARNING: use of tools/TexturePacker/TexturePacker is deprecated, please update your skins Makefile"" >> $(CMAKE_SOURCE_DIR)/tools/TexturePacker/Makefile
 
 clean:
-	$(MAKE) -C $(PLATFORM) clean
+	$(MAKE) -C $(PLATFORM)/build clean
 
 distclean::
 	rm -rf $(PLATFORM) .installed-$(PLATFORM)
