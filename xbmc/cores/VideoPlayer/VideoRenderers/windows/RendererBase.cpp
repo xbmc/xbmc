@@ -271,7 +271,8 @@ void CRendererBase::Render(CD3DTexture& target, const CRect& sourceRect, const C
 
 void CRendererBase::FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& src, const CPoint(&destPoints)[4])
 {
-  m_outputShader->Render(source, src, destPoints, target);
+  if (m_outputShader)
+    m_outputShader->Render(source, src, destPoints, target);
 }
 
 void CRendererBase::ManageTextures()
