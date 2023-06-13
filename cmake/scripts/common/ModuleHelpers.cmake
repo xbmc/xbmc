@@ -158,6 +158,7 @@ macro(SETUP_BUILD_VARS)
     message(STATUS "PROJECTSOURCE: ${PROJECTSOURCE}")
     message(STATUS "${MODULE}_URL: ${${MODULE}_URL}")
   endif()
+  unset(LIB_TYPE)
 endmacro()
 
 macro(CLEAR_BUILD_VARS)
