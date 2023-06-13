@@ -69,7 +69,11 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
 
     # Build and install internal TexturePacker if needed
     if (INTERNAL_TEXTUREPACKER_EXECUTABLE OR INTERNAL_TEXTUREPACKER_INSTALLABLE)
-      add_subdirectory(${CMAKE_SOURCE_DIR}/tools/depends/native/TexturePacker build/texturepacker)
+      set(KODI_SOURCE_DIR ${CMAKE_SOURCE_DIR})
+      set(ENABLE_STATIC 1)
+      add_subdirectory(${CMAKE_SOURCE_DIR}/tools/depends/native/TexturePacker/src build/texturepacker)
+      unset(KODI_SOURCE_DIR)
+      unset(ENABLE_STATIC)
       message(STATUS "Building internal TexturePacker")
     endif()
 
