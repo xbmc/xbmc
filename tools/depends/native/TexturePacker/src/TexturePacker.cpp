@@ -92,9 +92,15 @@ void Usage()
 {
   puts("Usage:");
   puts("  -help            Show this screen.");
+  puts("  -version         Show version.");
   puts("  -input <dir>     Input directory. Default: current dir");
   puts("  -output <dir>    Output directory/filename. Default: Textures.xbt");
   puts("  -dupecheck       Enable duplicate file detection. Reduces output file size. Default: off");
+}
+
+void Version()
+{
+  puts("TexturePacker version 1.0.0");
 }
 
 } // namespace
@@ -393,6 +399,11 @@ int main(int argc, char* argv[])
     if (!platform_stricmp(args[i], "-help") || !platform_stricmp(args[i], "-h") || !platform_stricmp(args[i], "-?"))
     {
       Usage();
+      return 1;
+    }
+    else if (!platform_stricmp(args[i], "-version") || !platform_stricmp(args[i], "-v"))
+    {
+      Version();
       return 1;
     }
     else if (!platform_stricmp(args[i], "-input") || !platform_stricmp(args[i], "-i"))
