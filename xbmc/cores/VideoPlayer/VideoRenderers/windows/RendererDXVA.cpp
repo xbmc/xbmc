@@ -131,7 +131,7 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
 
     // create processor
     m_processor = std::make_unique<DXVA::CProcessorHD>();
-    if (m_processor->PreInit() && m_processor->Open(m_sourceWidth, m_sourceHeight) &&
+    if (m_processor->PreInit() && m_processor->Open(m_sourceWidth, m_sourceHeight, picture) &&
         m_processor->IsFormatSupported(dxgi_format, support_type))
     {
       if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG))
