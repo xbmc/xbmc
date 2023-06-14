@@ -215,8 +215,12 @@ bool CProcessorHD::InitProcessor()
   CLog::LogF(LOGDEBUG, "video processor has {:#x} stereo caps.", m_vcaps.StereoCaps);
   CLog::LogF(LOGDEBUG, "video processor has {} max input streams.", m_vcaps.MaxInputStreams);
   CLog::LogF(LOGDEBUG, "video processor has {} max stream states.", m_vcaps.MaxStreamStates);
+
   if (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_METADATA_HDR10)
-    CLog::LogF(LOGDEBUG, "video processor supports HDR10.");
+  {
+    CLog::LogF(LOGDEBUG, "video processor supports HDR10 metadata.");
+    m_hasMetadataHDR10Support = true;
+  }
 
   if (0 != (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_LEGACY))
     CLog::LogF(LOGWARNING, "the video driver does not support full video processing capabilities.");
@@ -416,7 +420,7 @@ bool CProcessorHD::IsFormatConversionSupported(DXGI_FORMAT inputFormat,
   return supported == TRUE;
 }
 
-bool CProcessorHD::Open(UINT width, UINT height)
+bool CProcessorHD::Open(UINT width, UINT height, const VideoPicture& picture)
 {
   Close();
 
@@ -424,6 +428,8 @@ bool CProcessorHD::Open(UINT width, UINT height)
 
   m_width = width;
   m_height = height;
+  m_color_primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
+  m_color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
 
   if (!InitProcessor())
     return false;
@@ -472,6 +478,37 @@ bool CProcessorHD::OpenProcessor()
   D3D11_VIDEO_COLOR color;
   color.YCbCr = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color
   m_pVideoContext->VideoProcessorSetOutputBackgroundColor(m_pVideoProcessor.Get(), TRUE, &color);
+
+  // AMD/HDR (as of 2023-06-16): processor tone maps by default and modifies high code values
+  // We want "passthrough" of the signal and to do our own tone mapping when needed.
+  // Disable the functionality by pretending that the display supports all PQ levels (0-10000)
+  DXGI_ADAPTER_DESC ad{};
+  DX::DeviceResources::Get()->GetAdapterDesc(&ad);
+  bool streamIsHDR =
+      (m_color_primaries == AVCOL_PRI_BT2020) &&
+      (m_color_transfer == AVCOL_TRC_SMPTE2084 || m_color_transfer == AVCOL_TRC_ARIB_STD_B67);
+
+  if (m_hasMetadataHDR10Support && ad.VendorId == PCIV_AMD && streamIsHDR)
+  {
+    ComPtr<ID3D11VideoContext2> videoCtx2;
+    if (SUCCEEDED(m_pVideoContext.As(&videoCtx2)))
+    {
+      DXGI_HDR_METADATA_HDR10 hdr10{};
+      hdr10.MaxMasteringLuminance = 10000;
+      hdr10.MinMasteringLuminance = 0;
+
+      videoCtx2->VideoProcessorSetOutputHDRMetaData(m_pVideoProcessor.Get(),
+                                                    DXGI_HDR_METADATA_TYPE_HDR10,
+                                                    sizeof(DXGI_HDR_METADATA_HDR10), &hdr10);
+
+      CLog::LogF(LOGDEBUG, "video processor tone mapping disabled.");
+    }
+    else
+    {
+      CLog::LogF(LOGDEBUG,
+                 "unable to retrieve ID3D11VideoContext2 to disable video processor tone mapping.");
+    }
+  }
 
   return true;
 }
