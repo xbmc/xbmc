@@ -1,6 +1,8 @@
 if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
   list(APPEND SOURCES DXVAHD.cpp)
+  list(APPEND SOURCES DXVAEnumeratorHD.cpp)
   list(APPEND HEADERS DXVAHD.h)
+  list(APPEND HEADERS DXVAEnumeratorHD.h)
 endif()
 
 if(VAAPI_FOUND)
