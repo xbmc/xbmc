@@ -21,7 +21,7 @@ if(NOT TARGET JsonSchemaBuilder::JsonSchemaBuilder)
     set_target_properties(JsonSchemaBuilder::JsonSchemaBuilder PROPERTIES
                                                        IMPORTED_LOCATION "${JSONSCHEMABUILDER_EXECUTABLE}")
   elseif(CORE_SYSTEM_NAME STREQUAL windowsstore)
-    get_filename_component(_jsbpath "${DEPENDS_PATH}/bin/json-rpc" ABSOLUTE)
+    get_filename_component(_jsbpath "${NATIVEPREFIX}/bin/json-rpc" ABSOLUTE)
     find_program(JSONSCHEMABUILDER_EXECUTABLE NAMES "${APP_NAME_LC}-JsonSchemaBuilder" JsonSchemaBuilder
                                               HINTS ${_jsbpath})
 
