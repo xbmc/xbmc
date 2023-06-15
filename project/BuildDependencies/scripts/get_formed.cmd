@@ -28,11 +28,22 @@ IF "%KODI_MIRROR%" == "" SET KODI_MIRROR=http://mirrors.kodi.tv
 echo Downloading from mirror %KODI_MIRROR%
 
 
-CALL :setStageName Starting downloads of formed packages...
+CALL :setStageName Starting downloads of Host (%NATIVEPLATFORM%) formed packages...
 SET SCRIPT_PATH=%CD%
 CD %DL_PATH% || EXIT /B 10
-FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.list %SCRIPT_PATH%\0_package.target-%TARGETPLATFORM%.list) DO (
-  CALL :processFile %%f
+FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.native-%NATIVEPLATFORM%.list) DO (
+  CALL :processFile %%f %NATIVE_PATH%
+  REM Apparently there's a quirk in cmd so this means if error level => 1
+  IF ERRORLEVEL 1 (
+    ECHO One or more packages failed to download
+    EXIT /B 7
+  )
+)
+
+CALL :setStageName Starting downloads of Target (%TARGETPLATFORM%) formed packages...
+CD %DL_PATH% || EXIT /B 10
+FOR /F "eol=; tokens=1" %%f IN (%SCRIPT_PATH%\0_package.target-%TARGETPLATFORM%.list) DO (
+  CALL :processFile %%f %APP_PATH%
   REM Apparently there's a quirk in cmd so this means if error level => 1
   IF ERRORLEVEL 1 (
     ECHO One or more packages failed to download
@@ -123,9 +134,9 @@ ROBOCOPY "%~n1\x64\\" "%~n1\\" *.* /E /MOVE /njh /njs /ndl /nc /ns /nfl >NUL 2>N
 dir /A:D "%~n1\x64" >NUL 2>NUL && (ECHO %1^|Failed to re-arrange package contents >> %FORMED_FAILED_LIST% && EXIT /B 5)
 )
 
-CALL :setSubStageName Copying %1 to build tree...
+CALL :setSubStageName Copying %1 to path %2...
 REM Copy only content of extracted ".\packagename\"
-XCOPY "%~n1\*" "%APP_PATH%\" /E /I /Y /F /R /H /K  >NUL 2>NUL|| (ECHO %1^|Failed to copy package contents to build tree >> %FORMED_FAILED_LIST% && EXIT /B 5)
+XCOPY "%~n1\*" "%2\" /E /I /Y /F /R /H /K  >NUL 2>NUL|| (ECHO %1^|Failed to copy package contents to build tree >> %FORMED_FAILED_LIST% && EXIT /B 5)
 
 dir /A:-D * >NUL 2>NUL && (
 CALL :setSubStageName Post-Cleaning %1...
