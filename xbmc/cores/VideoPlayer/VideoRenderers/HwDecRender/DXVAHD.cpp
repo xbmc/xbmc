@@ -16,6 +16,7 @@
 #include "VideoRenderers/RenderFlags.h"
 #include "VideoRenderers/RenderManager.h"
 #include "VideoRenderers/windows/RendererBase.h"
+#include "VideoRenderers/windows/RendererDXVA.h"
 #include "rendering/dx/RenderContext.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -50,16 +51,6 @@ constexpr UINT kStreamExtensionVersionV1 = 0x1;
 constexpr UINT kStreamExtensionMethodSuperResolution = 0x2;
 } // unnamed namespace
 
-#define LOGIFERROR(a) \
-  do \
-  { \
-    HRESULT res = a; \
-    if (FAILED(res)) \
-    { \
-      CLog::LogF(LOGERROR, "failed executing " #a " at line {} with error {:x}", __LINE__, res); \
-    } \
-  } while (0);
-
 struct DXVA::ProcColorSpaces
 {
   DXGI_COLOR_SPACE_TYPE inputColorSpace;
@@ -86,8 +77,7 @@ void CProcessorHD::UnInit()
 void CProcessorHD::Close()
 {
   std::unique_lock<CCriticalSection> lock(m_section);
-  m_pEnumerator1 = nullptr;
-  m_pEnumerator = nullptr;
+  m_enumerator = nullptr;
   m_pVideoProcessor = nullptr;
   m_pVideoContext = nullptr;
   m_pVideoDevice = nullptr;
@@ -133,8 +123,10 @@ bool CProcessorHD::InitProcessor()
   HRESULT hr{};
   m_pVideoDevice = nullptr;
   m_pVideoContext = nullptr;
-  m_pEnumerator = nullptr;
-  m_pEnumerator1 = nullptr;
+
+  m_enumerator = std::make_unique<CEnumeratorHD>();
+  if (!m_enumerator->Open(m_width, m_height, m_input_dxgi_format))
+    return false;
 
   ComPtr<ID3D11DeviceContext1> pD3DDeviceContext = DX::DeviceResources::Get()->GetImmediateContext();
   ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
@@ -152,217 +144,9 @@ bool CProcessorHD::InitProcessor()
     return false;
   }
 
-  CLog::LogF(LOGDEBUG, "initing video enumerator with params: {}x{}.", m_width, m_height);
-
-  D3D11_VIDEO_PROCESSOR_CONTENT_DESC contentDesc = {};
-  contentDesc.InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
-  contentDesc.InputWidth = m_width;
-  contentDesc.InputHeight = m_height;
-  contentDesc.OutputWidth = m_width;
-  contentDesc.OutputHeight = m_height;
-  contentDesc.Usage = D3D11_VIDEO_USAGE_PLAYBACK_NORMAL;
-
-  if (FAILED(hr = m_pVideoDevice->CreateVideoProcessorEnumerator(
-                 &contentDesc, m_pEnumerator.ReleaseAndGetAddressOf())))
-  {
-    CLog::LogF(LOGWARNING, "failed to init video enumerator with params: {}x{}. Error {}", m_width,
-               m_height, DX::GetErrorDescription(hr));
+  m_procCaps = m_enumerator->ProbeProcessorCaps();
+  if (!m_procCaps.m_valid)
     return false;
-  }
-
-  if (FAILED(hr = m_pEnumerator.As(&m_pEnumerator1)))
-  {
-    CLog::LogF(LOGDEBUG, "ID3D11VideoProcessorEnumerator1 not available on this system. Message {}",
-               DX::GetErrorDescription(hr));
-  }
-
-  if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG))
-  {
-    std::string inputFormats{};
-    std::string outputFormats{};
-    for (int fmt = DXGI_FORMAT_UNKNOWN; fmt <= DXGI_FORMAT_V408; fmt++)
-    {
-      UINT uiFlags;
-      if (S_OK == m_pEnumerator->CheckVideoProcessorFormat((DXGI_FORMAT)fmt, &uiFlags))
-      {
-        if (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT)
-        {
-          inputFormats.append("\n");
-          inputFormats.append(DX::DXGIFormatToString((DXGI_FORMAT)fmt));
-        }
-        if (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT)
-        {
-          outputFormats.append("\n");
-          outputFormats.append(DX::DXGIFormatToString((DXGI_FORMAT)fmt));
-        }
-      }
-    }
-    CLog::LogF(LOGDEBUG, "Supported input formats:{}", inputFormats);
-    CLog::LogF(LOGDEBUG, "Supported output formats:{}", outputFormats);
-  }
-
-  if (FAILED(hr = m_pEnumerator->GetVideoProcessorCaps(&m_vcaps)))
-  {
-    CLog::LogF(LOGWARNING, "failed to get processor caps. Error {}", DX::GetErrorDescription(hr));
-    return false;
-  }
-
-  CLog::LogF(LOGDEBUG, "video processor has {} rate conversion.", m_vcaps.RateConversionCapsCount);
-  CLog::LogF(LOGDEBUG, "video processor has {:#x} feature caps.", m_vcaps.FeatureCaps);
-  CLog::LogF(LOGDEBUG, "video processor has {:#x} device caps.", m_vcaps.DeviceCaps);
-  CLog::LogF(LOGDEBUG, "video processor has {:#x} input format caps.", m_vcaps.InputFormatCaps);
-  CLog::LogF(LOGDEBUG, "video processor has {:#x} auto stream caps.", m_vcaps.AutoStreamCaps);
-  CLog::LogF(LOGDEBUG, "video processor has {:#x} stereo caps.", m_vcaps.StereoCaps);
-  CLog::LogF(LOGDEBUG, "video processor has {} max input streams.", m_vcaps.MaxInputStreams);
-  CLog::LogF(LOGDEBUG, "video processor has {} max stream states.", m_vcaps.MaxStreamStates);
-
-  if (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_METADATA_HDR10)
-  {
-    CLog::LogF(LOGDEBUG, "video processor supports HDR10 metadata.");
-    m_hasMetadataHDR10Support = true;
-  }
-
-  if (0 != (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_LEGACY))
-    CLog::LogF(LOGWARNING, "the video driver does not support full video processing capabilities.");
-
-  if (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_STEREO)
-    CLog::LogF(LOGDEBUG, "video processor supports stereo.");
-
-  if (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_ROTATION)
-    CLog::LogF(LOGDEBUG, "video processor supports rotation.");
-
-  if (m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_SHADER_USAGE)
-    CLog::LogF(LOGDEBUG, "video processor supports shader usage.");
-
-  m_max_back_refs = 0;
-  m_max_fwd_refs = 0;
-  m_procIndex = 0;
-
-  const UINT deinterlacingCaps =
-      D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS_DEINTERLACE_BLEND |
-      D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS_DEINTERLACE_BOB |
-      D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS_DEINTERLACE_ADAPTIVE |
-      D3D11_VIDEO_PROCESSOR_PROCESSOR_CAPS_DEINTERLACE_MOTION_COMPENSATION;
-  unsigned maxProcCaps = 0;
-  // try to find best processor
-  for (unsigned int i = 0; i < m_vcaps.RateConversionCapsCount; i++)
-  {
-    D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS convCaps;
-    LOGIFERROR(m_pEnumerator->GetVideoProcessorRateConversionCaps(i, &convCaps))
-
-    // check only deinterlace caps
-    if ((convCaps.ProcessorCaps & deinterlacingCaps) > maxProcCaps)
-    {
-      m_procIndex = i;
-      maxProcCaps = convCaps.ProcessorCaps & deinterlacingCaps;
-    }
-  }
-
-  CLog::LogF(LOGDEBUG, "selected video processor index: {}.", m_procIndex);
-
-  LOGIFERROR(m_pEnumerator->GetVideoProcessorRateConversionCaps(m_procIndex, &m_rateCaps))
-  m_max_fwd_refs  = std::min(m_rateCaps.FutureFrames, 2u);
-  m_max_back_refs = std::min(m_rateCaps.PastFrames,  4u);
-
-  CLog::LogF(LOGINFO, "supported deinterlace methods: blend:{}, bob:{}, adaptive:{}, mocomp:{}.",
-             (m_rateCaps.ProcessorCaps & 0x1) != 0 ? "yes" : "no", // BLEND
-             (m_rateCaps.ProcessorCaps & 0x2) != 0 ? "yes" : "no", // BOB
-             (m_rateCaps.ProcessorCaps & 0x4) != 0 ? "yes" : "no", // ADAPTIVE
-             (m_rateCaps.ProcessorCaps & 0x8) != 0 ? "yes" : "no" // MOTION_COMPENSATION
-  );
-
-  CLog::LogF(LOGDEBUG, "selected video processor allows {} future frames and {} past frames.",
-             m_rateCaps.FutureFrames, m_rateCaps.PastFrames);
-
-  //m_size = m_max_back_refs + 1 + m_max_fwd_refs;  // refs + 1 display
-
-  // Get the image filtering capabilities.
-  for (size_t i = 0; i < NUM_FILTERS; i++)
-  {
-    if (m_vcaps.FilterCaps & PROCAMP_FILTERS[i].cap)
-    {
-      m_Filters[i].Range = {};
-      m_Filters[i].bSupported = SUCCEEDED(m_pEnumerator->GetVideoProcessorFilterRange(
-          PROCAMP_FILTERS[i].filter, &m_Filters[i].Range));
-
-      if (m_Filters[i].bSupported)
-      {
-        CLog::LogF(LOGDEBUG, "filter {} has following params - max: {}, min: {}, default: {}",
-                   PROCAMP_FILTERS[i].name, m_Filters[i].Range.Maximum, m_Filters[i].Range.Minimum,
-                   m_Filters[i].Range.Default);
-      }
-    }
-    else
-    {
-      CLog::LogF(LOGDEBUG, "filter {} not supported by processor.", PROCAMP_FILTERS[i].name);
-      m_Filters[i].bSupported = false;
-    }
-  }
-
-  if (m_pEnumerator1)
-  {
-    DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
-    BOOL supported = 0;
-    HRESULT hr;
-
-    // Check if HLG color space conversion is supported by driver
-    hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020, format,
-        DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709, &supported);
-    m_bSupportHLG = SUCCEEDED(hr) && !!supported;
-
-    // Check if driver prefers YCbCr TOP LEFT for 10 bit BT.2020
-    hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020, format,
-        DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709, &supported);
-    const bool left = SUCCEEDED(hr) && static_cast<bool>(supported);
-
-    hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020, format,
-        DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709, &supported);
-    const bool topLeft = SUCCEEDED(hr) && static_cast<bool>(supported);
-
-    // Check if driver prefers HDR10 LEFT input color space for HDR10 passthrough
-    const DXGI_COLOR_SPACE_TYPE outputCS = DX::Windowing()->UseLimitedColor()
-                                               ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
-                                               : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-
-    hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020, format, outputCS,
-        &supported);
-    const bool HDRleft = SUCCEEDED(hr) && static_cast<bool>(supported);
-
-    hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020, format, outputCS,
-        &supported);
-    const bool HDRtopLeft = SUCCEEDED(hr) && static_cast<bool>(supported);
-
-    m_BT2020Left = !topLeft && left;
-
-    CLog::LogF(LOGDEBUG,
-               "BT.2020 input color spaces supported: YCBCR_STUDIO_G22_LEFT_P2020: {}, "
-               "YCBCR_STUDIO_G22_TOPLEFT_P2020: {}",
-               left ? "yes" : "no", topLeft ? "yes" : "no");
-
-    if (topLeft && left)
-      CLog::LogF(LOGDEBUG, "Preferred UHD Blu-Ray top left chroma siting will be used "
-                           "(YCBCR_STUDIO_G22_TOPLEFT_P2020)");
-
-    m_HDR10Left = !HDRtopLeft && HDRleft;
-
-    CLog::LogF(LOGDEBUG,
-               "HDR10 input color spaces supported with {} range output: "
-               "YCBCR_STUDIO_G2084_LEFT_P2020: {}, "
-               "YCBCR_STUDIO_G2084_TOPLEFT_P2020: {}",
-               DX::Windowing()->UseLimitedColor() ? "limited" : "full", HDRleft ? "yes" : "no",
-               HDRtopLeft ? "yes" : "no");
-
-    if (HDRtopLeft && HDRleft)
-      CLog::LogF(LOGDEBUG, "Preferred UHD Blu-Ray top left chroma siting will be used "
-                           "(YCBCR_STUDIO_G2084_TOPLEFT_P2020)");
-  }
-
-  CLog::LogF(LOGDEBUG, "HLG color space conversion is{}supported.", m_bSupportHLG ? " " : " NOT ");
 
   return true;
 }
@@ -370,7 +154,7 @@ bool CProcessorHD::InitProcessor()
 bool CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const
 {
   UINT uiFlags;
-  if (S_OK == m_pEnumerator->CheckVideoProcessorFormat(format, &uiFlags))
+  if (S_OK == m_enumerator->Get()->CheckVideoProcessorFormat(format, &uiFlags))
   {
     if (uiFlags & support)
       return true;
@@ -396,13 +180,13 @@ bool CProcessorHD::IsFormatConversionSupported(DXGI_FORMAT inputFormat,
   // accept the conversion unless the API can be called successfully and disallows it
   BOOL supported{TRUE};
 
-  if (!m_pEnumerator1)
+  if (!m_enumerator || !m_enumerator->Get1())
     return true;
 
   ProcColorSpaces spaces = CalculateDXGIColorSpaces(DXGIColorSpaceArgs(picture));
 
   HRESULT hr;
-  if (SUCCEEDED(hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
+  if (SUCCEEDED(hr = m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
                     inputFormat, spaces.inputColorSpace, outputFormat, spaces.outputColorSpace,
                     &supported)))
   {
@@ -430,6 +214,9 @@ bool CProcessorHD::Open(UINT width, UINT height, const VideoPicture& picture)
   m_height = height;
   m_color_primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
   m_color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+  const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
+  m_input_dxgi_format =
+      CRendererDXVA::GetDXGIFormat(av_pixel_format, CRendererBase::GetDXGIFormat(picture));
 
   if (!InitProcessor())
     return false;
@@ -459,14 +246,15 @@ bool CProcessorHD::OpenProcessor()
   std::unique_lock<CCriticalSection> lock(m_section);
 
   // restore the device if it was lost
-  if (!m_pEnumerator && !ReInit())
+  if ((!m_enumerator || !m_enumerator->Get()) && !ReInit())
     return false;
 
   CLog::LogF(LOGDEBUG, "creating processor.");
 
   // create processor
-  HRESULT hr = m_pVideoDevice->CreateVideoProcessor(m_pEnumerator.Get(), m_procIndex,
-                                                    m_pVideoProcessor.ReleaseAndGetAddressOf());
+  HRESULT hr =
+      m_pVideoDevice->CreateVideoProcessor(m_enumerator->Get().Get(), m_procCaps.m_procIndex,
+                                           m_pVideoProcessor.ReleaseAndGetAddressOf());
   if (FAILED(hr))
   {
     CLog::LogF(LOGDEBUG, "failed creating video processor with error {}.",
@@ -488,7 +276,7 @@ bool CProcessorHD::OpenProcessor()
       (m_color_primaries == AVCOL_PRI_BT2020) &&
       (m_color_transfer == AVCOL_TRC_SMPTE2084 || m_color_transfer == AVCOL_TRC_ARIB_STD_B67);
 
-  if (m_hasMetadataHDR10Support && ad.VendorId == PCIV_AMD && streamIsHDR)
+  if (m_procCaps.m_hasMetadataHDR10Support && ad.VendorId == PCIV_AMD && streamIsHDR)
   {
     ComPtr<ID3D11VideoContext2> videoCtx2;
     if (SUCCEEDED(m_pVideoContext.As(&videoCtx2)))
@@ -519,10 +307,10 @@ void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
     return;
 
   // Unsupported filter. Ignore.
-  if (!m_Filters[filter].bSupported)
+  if (!m_procCaps.m_Filters[filter].bSupported)
     return;
 
-  D3D11_VIDEO_PROCESSOR_FILTER_RANGE range = m_Filters[filter].Range;
+  D3D11_VIDEO_PROCESSOR_FILTER_RANGE range = m_procCaps.m_Filters[filter].Range;
   int val;
 
   if(value > def)
@@ -546,7 +334,8 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) c
   if (SUCCEEDED(hr))
   {
     vpivd.Texture2D.ArraySlice = arrayIdx;
-    hr = m_pVideoDevice->CreateVideoProcessorInputView(resource.Get(), m_pEnumerator.Get(), &vpivd, inputView.GetAddressOf());
+    hr = m_pVideoDevice->CreateVideoProcessorInputView(resource.Get(), m_enumerator->Get().Get(),
+                                                       &vpivd, inputView.GetAddressOf());
   }
 
   if (FAILED(hr) || hr == S_FALSE)
@@ -679,8 +468,8 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     if (views[i])
       providedFuture++;
   }
-  const int futureFrames = std::min(providedFuture, m_rateCaps.FutureFrames);
-  const int pastFrames = std::min(providedPast, m_rateCaps.PastFrames);
+  const int futureFrames = std::min(providedFuture, m_procCaps.m_rateCaps.FutureFrames);
+  const int pastFrames = std::min(providedPast, m_procCaps.m_rateCaps.PastFrames);
   std::vector<ID3D11VideoProcessorInputView*> pastViews(pastFrames, nullptr);
   std::vector<ID3D11VideoProcessorInputView*> futureViews(futureFrames, nullptr);
 
@@ -809,7 +598,8 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   // create output view for surface.
   D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC OutputViewDesc = { D3D11_VPOV_DIMENSION_TEXTURE2D, { 0 }};
   ComPtr<ID3D11VideoProcessorOutputView> pOutputView;
-  HRESULT hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_pEnumerator.Get(), &OutputViewDesc, &pOutputView);
+  HRESULT hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_enumerator->Get().Get(),
+                                                              &OutputViewDesc, &pOutputView);
   if (S_OK != hr)
     CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING, "CreateVideoProcessorOutputView returned {}.",
                DX::GetErrorDescription(hr));
@@ -833,140 +623,9 @@ ProcColorSpaces CProcessorHD::CalculateDXGIColorSpaces(const DXGIColorSpaceArgs&
   const bool supportHDR = DX::Windowing()->IsHDROutput();
 
   return ProcColorSpaces{
-      GetDXGIColorSpaceSource(csArgs, supportHDR, m_bSupportHLG, m_BT2020Left, m_HDR10Left),
+      GetDXGIColorSpaceSource(csArgs, supportHDR, m_procCaps.m_bSupportHLG, m_procCaps.m_BT2020Left,
+                              m_procCaps.m_HDR10Left),
       GetDXGIColorSpaceTarget(csArgs, supportHDR, DX::Windowing()->UseLimitedColor())};
-}
-
-bool CProcessorHD::IsBT2020Supported()
-{
-  ComPtr<ID3D11VideoDevice> pVideoDevice;
-  ComPtr<ID3D11VideoProcessorEnumerator> pEnumerator;
-  ComPtr<ID3D11VideoProcessorEnumerator1> pEnumerator1;
-  ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
-
-  if (FAILED(pD3DDevice.As(&pVideoDevice)))
-  {
-    CLog::LogF(LOGERROR, "failed to get video device.");
-    return false;
-  }
-
-  D3D11_VIDEO_PROCESSOR_CONTENT_DESC desc = {};
-  desc.InputWidth = 3840;
-  desc.InputHeight = 2160;
-  desc.OutputWidth = 3840;
-  desc.OutputHeight = 2160;
-
-  if (FAILED(pVideoDevice->CreateVideoProcessorEnumerator(&desc, &pEnumerator)))
-  {
-    CLog::LogF(LOGERROR, "failed to create Video Enumerator.");
-    return false;
-  }
-
-  if (FAILED(pEnumerator.As(&pEnumerator1)))
-  {
-    CLog::LogF(LOGWARNING,
-               "ID3D11VideoProcessorEnumerator1 is not available. DXVA will not be used.");
-    return false;
-  }
-
-  const DXGI_FORMAT destFormat = DX::Windowing()->GetBackBuffer().GetFormat();
-  const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
-                                              ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
-                                              : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-  BOOL supported = 0;
-
-  // Check if BT.2020 (LEFT) input color space is supported by video driver
-  HRESULT hr = pEnumerator1->CheckVideoProcessorFormatConversion(
-      DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020, destFormat, destColor,
-      &supported);
-
-  if (SUCCEEDED(hr) && static_cast<bool>(supported))
-  {
-    CLog::LogF(LOGDEBUG, "Input color space BT.2020 LEFT is supported by video processor.");
-    return true;
-  }
-
-  // Check if BT.2020 (TOP LEFT) input color space is supported by video driver
-  hr = pEnumerator1->CheckVideoProcessorFormatConversion(
-      DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020, destFormat, destColor,
-      &supported);
-
-  if (SUCCEEDED(hr) && static_cast<bool>(supported))
-  {
-    CLog::LogF(LOGDEBUG, "Input color space BT.2020 TOP LEFT is supported by video processor.");
-    return true;
-  }
-
-  CLog::LogF(
-      LOGWARNING,
-      "Input color space BT.2020 is not supported by video processor. DXVA will not be used.");
-  return false;
-}
-
-bool CProcessorHD::IsPQ10PassthroughSupported(const DXGI_FORMAT dxgi_format)
-{
-  ComPtr<ID3D11VideoDevice> pVideoDevice;
-  ComPtr<ID3D11VideoProcessorEnumerator> pEnumerator;
-  ComPtr<ID3D11VideoProcessorEnumerator1> pEnumerator1;
-  ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
-
-  if (FAILED(pD3DDevice.As(&pVideoDevice)))
-  {
-    CLog::LogF(LOGERROR, "failed to get video device.");
-    return false;
-  }
-
-  D3D11_VIDEO_PROCESSOR_CONTENT_DESC desc = {};
-  desc.InputWidth = 3840;
-  desc.InputHeight = 2160;
-  desc.OutputWidth = 3840;
-  desc.OutputHeight = 2160;
-
-  if (FAILED(pVideoDevice->CreateVideoProcessorEnumerator(&desc, &pEnumerator)))
-  {
-    CLog::LogF(LOGERROR, "failed to create Video Enumerator.");
-    return false;
-  }
-
-  if (FAILED(pEnumerator.As(&pEnumerator1)))
-  {
-    CLog::LogF(LOGWARNING,
-               "ID3D11VideoProcessorEnumerator1 is not available. DXVA will not be used.");
-    return false;
-  }
-
-  const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
-                                              ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
-                                              : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-  BOOL supported = 0;
-
-  // Check if HDR10 (TOP LEFT) input color space is supported by video driver
-  HRESULT hr = pEnumerator1->CheckVideoProcessorFormatConversion(
-      dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020, DXGI_FORMAT_R10G10B10A2_UNORM,
-      destColor, &supported);
-
-  if (SUCCEEDED(hr) && static_cast<bool>(supported))
-  {
-    CLog::LogF(LOGDEBUG, "Input color space HDR10 TOP LEFT is supported by video processor.");
-    return true;
-  }
-
-  // Check if HDR10 (LEFT) input color space is supported by video driver
-  hr = pEnumerator1->CheckVideoProcessorFormatConversion(
-      dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020, DXGI_FORMAT_R10G10B10A2_UNORM,
-      destColor, &supported);
-
-  if (SUCCEEDED(hr) && static_cast<bool>(supported))
-  {
-    CLog::LogF(LOGDEBUG, "Input color space HDR10 LEFT is supported by video processor.");
-    return true;
-  }
-
-  CLog::LogF(LOGWARNING,
-             "Input color space HDR10 is not supported by video processor with {} range output. "
-             "DXVA will not be used.",
-             DX::Windowing()->UseLimitedColor() ? "limited" : "full");
-  return false;
 }
 
 void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
@@ -976,13 +635,13 @@ void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
   std::unique_lock<CCriticalSection> lock(m_section);
 
   // Windows 8 and above compatible code
-  if (!m_pEnumerator)
+  if (!m_enumerator || !m_enumerator->Get())
     return;
 
   HRESULT hr;
   UINT uiFlags;
 
-  if (FAILED(hr = m_pEnumerator->CheckVideoProcessorFormat(inputFormat, &uiFlags)))
+  if (FAILED(hr = m_enumerator->Get()->CheckVideoProcessorFormat(inputFormat, &uiFlags)))
   {
     CLog::LogF(LOGDEBUG, "unable to retrieve processor support of input format {}. Error {}",
                DX::DXGIFormatToString(inputFormat), DX::GetErrorDescription(hr));
@@ -996,7 +655,7 @@ void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
   }
 
   // Windows 10 and above from this point on
-  if (!m_pEnumerator1)
+  if (!m_enumerator->Get1())
     return;
 
   const DXGIColorSpaceArgs csArgs = DXGIColorSpaceArgs(picture);
@@ -1009,7 +668,7 @@ void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
   CLog::LogF(LOGDEBUG, "The source is {} / {}", DX::DXGIFormatToString(inputFormat),
              DX::DXGIColorSpaceTypeToString(inputNativeCS));
 
-  if (SUCCEEDED(hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
+  if (SUCCEEDED(hr = m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
                     inputFormat, inputNativeCS, heuristicsOutputFormat,
                     heuristicsCS.outputColorSpace, &supported)))
   {
@@ -1071,7 +730,7 @@ void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
     {
       for (const DXGI_COLOR_SPACE_TYPE& outputCS : rgbColorSpaces)
       {
-        if (SUCCEEDED(m_pEnumerator1->CheckVideoProcessorFormatConversion(
+        if (SUCCEEDED(m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
                 inputFormat, inputCS, outputFormat, outputCS, &supported)) &&
             supported == TRUE)
         {
@@ -1105,7 +764,7 @@ std::vector<DXGI_FORMAT> CProcessorHD::GetProcessorOutputFormats() const
   for (int fmt = DXGI_FORMAT_UNKNOWN; fmt <= DXGI_FORMAT_V408; fmt++)
   {
     DXGI_FORMAT dxgiFormat = static_cast<DXGI_FORMAT>(fmt);
-    if (S_OK == m_pEnumerator->CheckVideoProcessorFormat(dxgiFormat, &uiFlags) &&
+    if (S_OK == m_enumerator->Get()->CheckVideoProcessorFormat(dxgiFormat, &uiFlags) &&
         uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT)
       result.push_back(dxgiFormat);
   }

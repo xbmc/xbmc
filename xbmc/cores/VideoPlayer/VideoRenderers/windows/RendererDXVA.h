@@ -35,6 +35,7 @@ public:
 
   static CRendererBase* Create(CVideoSettings& videoSettings);
   static void GetWeight(std::map<RenderMethod, int>& weights, const VideoPicture& picture);
+  static DXGI_FORMAT GetDXGIFormat(AVPixelFormat format, DXGI_FORMAT default_fmt);
 
 protected:
   explicit CRendererDXVA(CVideoSettings& videoSettings);
