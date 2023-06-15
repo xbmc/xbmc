@@ -23,7 +23,7 @@ if(NOT TARGET TexturePacker::TexturePacker::Executable)
                                           IMPORTED_LOCATION "${TEXTUREPACKER_EXECUTABLE}")
     message(STATUS "External TexturePacker for KODI_DEPENDSBUILD will be executed during build: ${TEXTUREPACKER_EXECUTABLE}")
   elseif(WIN32)
-    get_filename_component(_tppath "${DEPENDS_PATH}/tools/TexturePacker" ABSOLUTE)
+    get_filename_component(_tppath "${NATIVEPREFIX}/tools/TexturePacker" ABSOLUTE)
     find_program(TEXTUREPACKER_EXECUTABLE NAMES "${APP_NAME_LC}-TexturePacker.exe" TexturePacker.exe
                                           HINTS ${_tppath})
 
