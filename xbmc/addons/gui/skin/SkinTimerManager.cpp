@@ -73,7 +73,8 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
     startInfo = CServiceBroker::GetGUI()->GetInfoManager().Register(
         node->FirstChild("start")->FirstChild()->ValueStr());
     // check if timer needs to be reset after start
-    if (node->Attribute("reset") && StringUtils::EqualsNoCase(node->Attribute("reset"), "true"))
+    if (node->FirstChildElement("start")->Attribute("reset") &&
+        StringUtils::EqualsNoCase(node->FirstChildElement("start")->Attribute("reset"), "true"))
     {
       resetOnStart = true;
     }
