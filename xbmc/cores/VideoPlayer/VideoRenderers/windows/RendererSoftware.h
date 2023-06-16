@@ -28,7 +28,7 @@ public:
   static void GetWeight(std::map<RenderMethod, int>& weights, const VideoPicture& picture);
 
 protected:
-  explicit CRendererSoftware(CVideoSettings& videoSettings) : CRendererBase(videoSettings) {}
+  explicit CRendererSoftware(CVideoSettings& videoSettings);
   CRenderBuffer* CreateBuffer() override;
   void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags) override;
   void FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& src, const CPoint(&destPoints)[4]) override;
