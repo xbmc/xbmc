@@ -17,11 +17,17 @@
 #define _onexit_t void*
 #endif
 
-#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD) || defined(TARGET_ANDROID)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 typedef off_t __off_t;
 typedef int64_t off64_t;
 typedef off64_t __off64_t;
 typedef fpos_t fpos64_t;
+#endif
+
+#if defined(TARGET_ANDROID)
+typedef off_t __off_t;
+typedef int64_t off64_t;
+typedef off64_t __off64_t;
 #endif
 
 #ifdef TARGET_WINDOWS
