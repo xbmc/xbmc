@@ -98,6 +98,7 @@ NM_FOR_BUILD=@NM_FOR_BUILD@
 STRIP_FOR_BUILD=@STRIP_FOR_BUILD@
 READELF_FOR_BUILD=@READELF_FOR_BUILD@
 OBJDUMP_FOR_BUILD=@OBJDUMP_FOR_BUILD@
+CMAKE_FOR_BUILD=@prefix@/@tool_dir@/bin/cmake -DCMAKE_TOOLCHAIN_FILE=$(NATIVEPREFIX)/share/Toolchain-Native.cmake -DCMAKE_INSTALL_PREFIX=$(NATIVEPREFIX)
 
 NATIVE_CFLAGS=@host_includes@ -I@prefix@/@tool_dir@/include
 NATIVE_LDFLAGS=@host_includes@ -L@prefix@/@tool_dir@/lib
