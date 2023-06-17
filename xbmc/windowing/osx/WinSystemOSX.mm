@@ -239,9 +239,9 @@ NSUInteger GetDisplayIndex(const std::string& dispName)
 std::string ComputeVideoModeId(
     size_t resWidth, size_t resHeight, size_t pixelWidth, size_t pixelHeight, bool interlaced)
 {
-  const char* hiDPIdesc = pixelWidth > resWidth && pixelHeight > resHeight ? " (HiDPI)" : "";
   const char* interlacedDesc = interlaced ? "i" : "p";
-  return StringUtils::Format("{}x{}{}{}", resWidth, resHeight, interlacedDesc, hiDPIdesc);
+  return StringUtils::Format("{}x{}{}({}x{})", resWidth, resHeight, interlacedDesc, pixelWidth,
+                             pixelHeight);
 }
 
 CFArrayRef CopyAllDisplayModes(CGDirectDisplayID display)
@@ -1100,20 +1100,23 @@ void CWinSystemOSX::FillInVideoModes()
           // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
           refreshrate = 60.0;
         }
+        const std::string modeId =
+            ComputeVideoModeId(resWidth, resHeight, pixelWidth, pixelHeight, interlaced);
         CLog::LogF(
             LOGINFO,
             "Found possible resolution for display {} ({}) with {} x {} @ {} Hz (pixel size: "
-            "{} x {})",
-            disp, dispName.UTF8String, resWidth, resHeight, refreshrate, pixelWidth, pixelHeight);
+            "{} x {}{}) (id:{})",
+            disp, dispName.UTF8String, resWidth, resHeight, refreshrate, pixelWidth, pixelHeight,
+            pixelWidth > resWidth && pixelHeight > resHeight ? " - HiDPI" : "", modeId);
 
         // only add the resolution if it belongs to "our" screen
         // all others are only logged above...
         if (disp == dispIdx)
         {
-          res.strId = ComputeVideoModeId(resWidth, resHeight, pixelWidth, pixelHeight, interlaced);
-          res.label = res.strId;
+          res.strId = modeId;
           UpdateDesktopResolution(res, (dispName != nil) ? dispName.UTF8String : "Unknown",
                                   static_cast<int>(pixelWidth), static_cast<int>(pixelHeight),
+                                  static_cast<int>(resWidth), static_cast<int>(resHeight),
                                   refreshrate, 0);
           m_gfxContext->ResetOverscan(res);
           CDisplaySettings::GetInstance().AddResolutionInfo(res);
@@ -1140,10 +1143,10 @@ void CWinSystemOSX::UpdateResolutions()
   resInfo.strId = ComputeVideoModeId(screenResolution.resWidth, screenResolution.resHeight,
                                      screenResolution.pixelWidth, screenResolution.pixelHeight,
                                      screenResolution.interlaced);
-  resInfo.label = resInfo.strId;
   UpdateDesktopResolution(
       resInfo, dispName.UTF8String, static_cast<int>(screenResolution.pixelWidth),
-      static_cast<int>(screenResolution.pixelHeight), screenResolution.refreshrate, 0);
+      static_cast<int>(screenResolution.pixelHeight), static_cast<int>(screenResolution.resWidth),
+      static_cast<int>(screenResolution.resHeight), screenResolution.refreshrate, 0);
 
   CDisplaySettings::GetInstance().ClearCustomResolutions();
 
