@@ -8,6 +8,8 @@
 
 #include "SysfsPath.h"
 
+#include <exception>
+
 bool CSysfsPath::Exists()
 {
   std::ifstream file(m_path);
@@ -19,19 +21,27 @@ bool CSysfsPath::Exists()
 }
 
 template<>
-std::string CSysfsPath::Get()
+std::optional<std::string> CSysfsPath::Get()
 {
-  std::ifstream file(m_path);
-
-  std::string value;
-
-  std::getline(file, value);
-
-  if (file.bad())
+  try
   {
-    CLog::LogF(LOGERROR, "error reading from '{}'", m_path);
-    throw std::runtime_error("error reading from " + m_path);
-  }
+    std::ifstream file(m_path);
 
-  return value;
+    std::string value;
+
+    std::getline(file, value);
+
+    if (file.bad())
+    {
+      CLog::LogF(LOGERROR, "error reading from '{}'", m_path);
+      return std::nullopt;
+    }
+
+    return value;
+  }
+  catch (const std::exception& e)
+  {
+    CLog::LogF(LOGERROR, "exception reading from '{}': {}", m_path, e.what());
+    return std::nullopt;
+  }
 }
