@@ -5,7 +5,7 @@ set(TARBALL_DIR "@use_tarballs@")
 set(OS "@build_os@")
 set(CMAKE_SYSTEM_PROCESSOR @host_cpu@)
 set(CPU "@use_buildcpu@")
-set(ARCH_DEFINES "@NATIVE_ARCH_DEFINES@")
+set(ARCH_DEFINES @NATIVE_ARCH_DEFINES@)
 
 if(OS STREQUAL linux)
   set(CMAKE_SYSTEM_NAME Linux)
