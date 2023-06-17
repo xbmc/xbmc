@@ -34,7 +34,6 @@ LIBGCRYPT_CONFIG=@prefix@/@deps_dir@/bin/libgcrypt-config
 PATH=@prefix@/@tool_dir@/bin:@use_toolchain@/usr/bin:@use_toolchain@/bin:$PATH
 LD_LIBRARY_PATH=@prefix@/@tool_dir@/lib:$LD_LIBRARY_PATH
 
-PYTHON_VERSION=3.9
 NATIVE_ROOT=@prefix@/@tool_dir@
 
 #curl
