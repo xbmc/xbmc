@@ -796,11 +796,13 @@ void CDisplaySettings::SettingOptionsResolutionsFiller(const SettingConstPtr& se
     std::vector<RESOLUTION_WHR> resolutions = CServiceBroker::GetWinSystem()->ScreenResolutions(info.fRefreshRate);
     for (std::vector<RESOLUTION_WHR>::const_iterator resolution = resolutions.begin(); resolution != resolutions.end(); ++resolution)
     {
-      std::string resLabel =
-          !resolution->label.empty()
-              ? resolution->label
-              : StringUtils::Format("{}x{}{}", resolution->width, resolution->height,
-                                    ModeFlagsToString(resolution->flags, false));
+      const std::string resLabel =
+          StringUtils::Format("{}x{}{}{}", resolution->m_screenWidth, resolution->m_screenHeight,
+                              ModeFlagsToString(resolution->flags, false),
+                              resolution->width > resolution->m_screenWidth &&
+                                      resolution->height > resolution->m_screenHeight
+                                  ? " (HiDPI)"
+                                  : "");
       list.emplace_back(resLabel, resolution->ResInfo_Index);
 
       resolutionInfos.insert(std::make_pair((RESOLUTION)resolution->ResInfo_Index, CDisplaySettings::GetInstance().GetResolutionInfo(resolution->ResInfo_Index)));
