@@ -100,7 +100,8 @@ ProcessorCapabilities CEnumeratorHD::ProbeProcessorCaps()
   HRESULT hr{};
   ProcessorCapabilities result{};
 
-  if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG))
+  if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+      CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
   {
     std::string inputFormats{};
     std::string outputFormats{};
@@ -121,8 +122,8 @@ ProcessorCapabilities CEnumeratorHD::ProbeProcessorCaps()
         }
       }
     }
-    CLog::LogF(LOGDEBUG, "Supported input formats:{}", inputFormats);
-    CLog::LogF(LOGDEBUG, "Supported output formats:{}", outputFormats);
+    CLog::LogFC(LOGDEBUG, LOGVIDEO, "Supported input formats:{}", inputFormats);
+    CLog::LogFC(LOGDEBUG, LOGVIDEO, "Supported output formats:{}", outputFormats);
   }
 
   if (FAILED(hr = m_pEnumerator->GetVideoProcessorCaps(&result.m_vcaps)))
