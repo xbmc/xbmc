@@ -717,7 +717,8 @@ void DX::DeviceResources::ResizeBuffers()
     hr = swapChain.As(&m_swapChain); CHECK_ERR();
     m_stereoEnabled = bHWStereoEnabled;
 
-    if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG))
+    if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+        CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
     {
       std::string colorSpaces;
       for (const DXGI_COLOR_SPACE_TYPE& colorSpace : GetSwapChainColorSpaces())
@@ -725,7 +726,7 @@ void DX::DeviceResources::ResizeBuffers()
         colorSpaces.append("\n");
         colorSpaces.append(DX::DXGIColorSpaceTypeToString(colorSpace));
       }
-      CLog::LogF(LOGDEBUG, "Color spaces supported by the swap chain:{}", colorSpaces);
+      CLog::LogFC(LOGDEBUG, LOGVIDEO, "Color spaces supported by the swap chain:{}", colorSpaces);
     }
 
     // Ensure that DXGI does not queue more than one frame at a time. This both reduces latency and

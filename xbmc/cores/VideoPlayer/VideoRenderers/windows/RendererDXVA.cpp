@@ -150,7 +150,8 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
     if (m_processor->PreInit() && m_processor->Open(m_sourceWidth, m_sourceHeight, picture) &&
         m_processor->IsFormatSupported(dxgi_format, support_type))
     {
-      if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG))
+      if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+          CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
         m_processor->ListSupportedConversions(dxgi_format, dest_format, picture);
 
       if (m_processor->IsFormatConversionSupported(dxgi_format, dest_format, picture))
