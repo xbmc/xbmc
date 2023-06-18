@@ -10,6 +10,7 @@
 
 #include "DVDCodecs/Video/DVDVideoCodec.h"
 #include "VideoRenderers/BaseRenderer.h"
+#include "VideoRenderers/HwDecRender/DXVAEnumeratorHD.h"
 #include "WIN32Util.h"
 #include "rendering/dx/RenderContext.h"
 #include "settings/Settings.h"
@@ -32,8 +33,7 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
 {
   unsigned weight = 0;
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
-  const DXGI_FORMAT dxgi_format =
-      CRenderBufferImpl::GetDXGIFormat(av_pixel_format, GetDXGIFormat(picture));
+  const DXGI_FORMAT dxgi_format = GetDXGIFormat(av_pixel_format, __super::GetDXGIFormat(picture));
 
   const bool streamIsHDR = (picture.color_primaries == AVCOL_PRI_BT2020) &&
                            (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
@@ -44,15 +44,18 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
       (settings ? settings->GetBool(setting) && DX::Windowing()->IsHDRDisplay() : false) ||
       DX::Windowing()->IsHDROutput();
 
+  CEnumeratorHD enumerator;
+  enumerator.Open(picture.iWidth, picture.iHeight, dxgi_format);
+
   if (av_pixel_format == AV_PIX_FMT_D3D11VA_VLD)
   {
     // Check if HDR10 passthrough is supported by DXVA video processor
     // Also used for HLG because it is not supported by Windows, HDR10 is used instead
-    if (streamIsHDR && systemUsesHDR && !CProcessorHD::IsPQ10PassthroughSupported(dxgi_format))
+    if (streamIsHDR && systemUsesHDR && !enumerator.IsPQ10PassthroughSupported())
       return;
 
     // Check if BT.2020 color space is supported by DXVA video processor
-    if (picture.color_primaries == AVCOL_PRI_BT2020 && !CProcessorHD::IsBT2020Supported())
+    if (picture.color_primaries == AVCOL_PRI_BT2020 && !enumerator.IsBT2020Supported())
       return;
 
     weight += 1000;
@@ -83,11 +86,11 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
 
     // Check if HDR10 passthrough is supported by DXVA video processor
     // Also used for HLG because it is not supported by Windows, HDR10 is used instead
-    if (streamIsHDR && systemUsesHDR && !CProcessorHD::IsPQ10PassthroughSupported(dxgi_format))
+    if (streamIsHDR && systemUsesHDR && !enumerator.IsPQ10PassthroughSupported())
       return;
 
     // Check if BT.2020 color space is supported by DXVA video processor
-    if (picture.color_primaries == AVCOL_PRI_BT2020 && !CProcessorHD::IsBT2020Supported())
+    if (picture.color_primaries == AVCOL_PRI_BT2020 && !enumerator.IsBT2020Supported())
       return;
 
     if (av_pixel_format == AV_PIX_FMT_NV12 ||
@@ -131,7 +134,7 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
   if (__super::Configure(picture, fps, orientation))
   {
     m_format = picture.videoBuffer->GetFormat();
-    const DXGI_FORMAT dxgi_format = CRenderBufferImpl::GetDXGIFormat(m_format, GetDXGIFormat(picture));
+    const DXGI_FORMAT dxgi_format = GetDXGIFormat(m_format, __super::GetDXGIFormat(picture));
     const DXGI_FORMAT dest_format = DX::Windowing()->GetBackBuffer().GetFormat();
 
     // create processor
@@ -309,6 +312,11 @@ std::string CRendererDXVA::GetRenderMethodDebugInfo() const
                                m_processor->IsVideoSuperResolutionEnabled() ? "requested" : "OFF");
   }
   return {};
+}
+
+DXGI_FORMAT CRendererDXVA::GetDXGIFormat(AVPixelFormat format, DXGI_FORMAT default_fmt)
+{
+  return CRenderBufferImpl::GetDXGIFormat(format, default_fmt);
 }
 
 CRendererDXVA::CRenderBufferImpl::CRenderBufferImpl(AVPixelFormat av_pix_format, unsigned width, unsigned height)
