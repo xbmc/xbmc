@@ -542,11 +542,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   // Stream dest rect
   m_pVideoContext->VideoProcessorSetStreamDestRect(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, TRUE, &dstRECT);
   // Output rect
-  // Disabled when using Video Super Resolution because it causes vertical shift of a few pixels.
-  // Tested with RTX 4070 and NVIDIA driver 535.98. It doesn't seem to happen with Intel i7-13700K.
-  // ToDo: retest with future NVIDIA drivers and eventually remove this workaround.
-  m_pVideoContext->VideoProcessorSetOutputTargetRect(
-      m_pVideoProcessor.Get(), m_superResolutionEnabled ? FALSE : TRUE, &dstRECT);
+  m_pVideoContext->VideoProcessorSetOutputTargetRect(m_pVideoProcessor.Get(), TRUE, &dstRECT);
 
   ComPtr<ID3D11VideoContext1> videoCtx1;
   if (SUCCEEDED(m_pVideoContext.As(&videoCtx1)))
@@ -939,7 +935,7 @@ void CProcessorHD::EnableIntelVideoSuperResolution()
     return;
   }
 
-  CLog::LogF(LOGINFO, "Intel Video Super Resolution enabled successfully");
+  CLog::LogF(LOGINFO, "Intel Video Super Resolution request enable successfully");
   m_superResolutionEnabled = true;
 }
 
@@ -963,6 +959,6 @@ void CProcessorHD::EnableNvidiaRTXVideoSuperResolution()
     return;
   }
 
-  CLog::LogF(LOGINFO, "RTX Video Super Resolution enabled successfully");
+  CLog::LogF(LOGINFO, "RTX Video Super Resolution request enable successfully");
   m_superResolutionEnabled = true;
 }
