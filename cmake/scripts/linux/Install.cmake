@@ -163,14 +163,6 @@ install(FILES ${CMAKE_SOURCE_DIR}/privacy-policy.txt
         DESTINATION ${datarootdir}/${APP_NAME_LC}
         COMPONENT kodi)
 
-# Install kodi-tools-texturepacker
-if(INTERNAL_TEXTUREPACKER_INSTALLABLE)
-  install(PROGRAMS $<TARGET_FILE:TexturePacker::TexturePacker::Installable>
-          DESTINATION ${bindir}
-          RENAME "${APP_NAME_LC}-TexturePacker"
-          COMPONENT kodi-tools-texturepacker)
-endif()
-
 # Install kodi-addon-dev headers
 include(${CMAKE_SOURCE_DIR}/xbmc/addons/AddonBindings.cmake)
 install(DIRECTORY ${CORE_ADDON_BINDINGS_DIRS}/

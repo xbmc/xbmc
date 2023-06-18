@@ -11,7 +11,7 @@ function(pack_xbt input output)
   get_filename_component(dir ${output} DIRECTORY)
   add_custom_command(OUTPUT  ${output}
                      COMMAND ${CMAKE_COMMAND} -E make_directory ${dir}
-                     COMMAND TexturePacker::TexturePacker::Executable
+                     COMMAND TexturePacker::TexturePacker
                      ARGS    -input ${input}
                              -output ${output}
                              -dupecheck
