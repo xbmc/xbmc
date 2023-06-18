@@ -184,7 +184,15 @@ void CWinSystemGbm::UpdateResolutions()
   auto resolutions = m_DRM->GetModes();
   if (resolutions.empty())
   {
-    CLog::Log(LOGWARNING, "CWinSystemGbm::{} - Failed to get resolutions", __FUNCTION__);
+    CDisplaySettings::GetInstance().ClearCustomResolutions();
+
+    CServiceBroker::GetWinSystem()->GetGfxContext().ResetOverscan(current);
+    CDisplaySettings::GetInstance().AddResolutionInfo(current);
+    CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP) = current;
+
+    CLog::Log(LOGINFO, "Found resolution {}x{} with {}x{}{} @ {:f} Hz", current.iWidth,
+              current.iHeight, current.iScreenWidth, current.iScreenHeight,
+              current.dwFlags & D3DPRESENTFLAG_INTERLACED ? "i" : "", current.fRefreshRate);
   }
   else
   {
