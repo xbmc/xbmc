@@ -88,7 +88,7 @@ IF EXIST %1 (
 CALL :setSubStageName Extracting %1...
 copy /b "%1" "%TMP_PATH%" >NUL 2>NUL || EXIT /B 5
 PUSHD "%TMP_PATH%" || EXIT /B 10
-%ZIP% x %1 >NUL 2>NUL || (
+%ZIP% x -y %1 >NUL 2>NUL || (
   IF %RetryDownload%==YES (
     POPD || EXIT /B 5
     ECHO WARNING! Can't extract files from archive %1!
