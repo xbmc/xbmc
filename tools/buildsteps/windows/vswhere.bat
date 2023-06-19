@@ -27,18 +27,12 @@ SET vcvars=no
 SET sdkver=
 
 SET vsver=
-SET toolsdir=%arch%
+REM Current tools are only using x86/win32
+REM ToDo: allow to set NATIVEPLATFORM to allow native tools based on actual native arch (eg x86/x86_64/arm/arm64)
+SET toolsdir=win32
 
 IF "%arch%" NEQ "x64" (
   SET vcarch=%vcarch%_%arch%
-)
-
-IF "%arch%"=="x86" (
-  SET toolsdir=win32
-)
-
-IF "%vcstore%"=="store" (
-  SET toolsdir="win10-%toolsdir%"
 )
 
 SET vswhere="%builddeps%\%toolsdir%\tools\vswhere\vswhere.exe"
