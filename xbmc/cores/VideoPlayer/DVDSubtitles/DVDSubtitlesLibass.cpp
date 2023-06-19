@@ -209,6 +209,9 @@ bool CDVDSubtitlesLibass::CreateTrack()
   m_track->Kerning = true; // Font kerning improves the letterspacing
   m_track->WrapStyle = 1; // The line feed \n doesn't break but wraps (instead \N breaks)
 
+  if (ass_track_set_feature(m_track, ASS_FEATURE_BIDI_BRACKETS, 1) != 0)
+    CLog::LogF(LOGWARNING, "ASS track ASS_FEATURE_BIDI_BRACKETS feature cannot be set");
+
   return true;
 }
 
