@@ -395,3 +395,47 @@ bool CEnumeratorHD::IsBT2020Supported()
 
   return true;
 }
+
+bool CEnumeratorHD::QuerySDRSupport() const
+{
+  // Not initialized yet
+  if (!m_pEnumerator)
+    return false;
+
+  // Full range SDR output: this has always been standard functionality, assume it's present.
+  if (!DX::Windowing()->UseLimitedColor())
+    return true;
+
+  if (!m_pEnumerator1)
+  {
+    CLog::LogF(LOGWARNING,
+               "ID3D11VideoProcessorEnumerator1 not available - assuming SDR output is possible.");
+    return true;
+  }
+
+  const DXGI_FORMAT destFormat = DX::Windowing()->GetBackBuffer().GetFormat();
+  BOOL supported = 0;
+
+  // Check if BT.709 input color space is supported by video driver
+  HRESULT hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
+      m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709, destFormat,
+      DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709, &supported);
+  return SUCCEEDED(hr) && static_cast<bool>(supported);
+}
+
+bool CEnumeratorHD::IsSDRSupported()
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  if (!QuerySDRSupport())
+  {
+    CLog::LogF(
+        LOGWARNING,
+        "Input color space BT.709 is not supported by video processor with SDR {} range output. "
+        "DXVA will not be used.",
+        DX::Windowing()->UseLimitedColor() ? "limited" : "full");
+
+    return false;
+  }
+
+  return true;
+}
