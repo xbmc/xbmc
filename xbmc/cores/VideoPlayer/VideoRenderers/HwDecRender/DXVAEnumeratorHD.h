@@ -96,6 +96,13 @@ public:
 
   bool IsBT2020Supported();
   bool IsPQ10PassthroughSupported();
+  /*!
+   * \brief Test whether the dxva video processor supports SDR to SDR conversion.
+   * Support is assumed to exist on systems that don't support the
+   * ID3D11VideoProcessorEnumerator1 interface.
+   * \return conversion supported yes/no
+  */
+  bool IsSDRSupported();
   ProcessorCapabilities ProbeProcessorCaps();
 
   ComPtr<ID3D11VideoProcessorEnumerator> Get() { return m_pEnumerator; }
@@ -105,6 +112,7 @@ protected:
   void UnInit();
   InputFormat QueryHDRtoHDRSupport() const;
   InputFormat QueryHDRtoSDRSupport() const;
+  bool QuerySDRSupport() const;
 
   CCriticalSection m_section;
 
