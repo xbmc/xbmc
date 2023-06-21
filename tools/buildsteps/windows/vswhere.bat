@@ -35,7 +35,7 @@ IF "%arch%" NEQ "x64" (
   SET vcarch=%vcarch%_%arch%
 )
 
-SET vswhere="%builddeps%\%toolsdir%\tools\vswhere\vswhere.exe"
+SET vswhere="%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
 
 FOR /f "usebackq tokens=1* delims=" %%i in (`%vswhere% -latest -property installationPath`) do (
   IF EXIST "%%i\VC\Auxiliary\Build\vcvarsall.bat" (
