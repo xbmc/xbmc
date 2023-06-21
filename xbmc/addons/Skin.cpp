@@ -488,6 +488,42 @@ void CSkinInfo::SettingOptionsSkinColorsFiller(const SettingConstPtr& setting,
   }
 }
 
+namespace
+{
+void GetFontsetsFromFile(const std::string& fontsetFilePath,
+                         std::vector<StringSettingOption>& list,
+                         const std::string& settingValue,
+                         bool* currentValueSet)
+{
+  CXBMCTinyXML xmlDoc;
+  if (xmlDoc.LoadFile(fontsetFilePath))
+  {
+    TiXmlElement* rootElement = xmlDoc.RootElement();
+    g_SkinInfo->ResolveIncludes(rootElement);
+    if (rootElement && (rootElement->ValueStr() == "fonts"))
+    {
+      const TiXmlElement* fontsetElement = rootElement->FirstChildElement("fontset");
+      while (fontsetElement)
+      {
+        const char* idAttr = fontsetElement->Attribute("id");
+        const char* idLocAttr = fontsetElement->Attribute("idloc");
+        if (idAttr)
+        {
+          if (idLocAttr)
+            list.emplace_back(g_localizeStrings.Get(atoi(idLocAttr)), idAttr);
+          else
+            list.emplace_back(idAttr, idAttr);
+
+          if (StringUtils::EqualsNoCase(idAttr, settingValue))
+            *currentValueSet = true;
+        }
+        fontsetElement = fontsetElement->NextSiblingElement("fontset");
+      }
+    }
+  }
+}
+} // unnamed namespace
+
 void CSkinInfo::SettingOptionsSkinFontsFiller(const SettingConstPtr& setting,
                                               std::vector<StringSettingOption>& list,
                                               std::string& current,
@@ -496,44 +532,24 @@ void CSkinInfo::SettingOptionsSkinFontsFiller(const SettingConstPtr& setting,
   if (!g_SkinInfo)
     return;
 
-  std::string settingValue = std::static_pointer_cast<const CSettingString>(setting)->GetValue();
+  const std::string settingValue =
+      std::static_pointer_cast<const CSettingString>(setting)->GetValue();
   bool currentValueSet = false;
-  std::string strPath = g_SkinInfo->GetSkinPath("Font.xml");
 
-  CXBMCTinyXML xmlDoc;
-  if (!xmlDoc.LoadFile(strPath))
-  {
-    CLog::Log(LOGERROR, "FillInSkinFonts: Couldn't load {}", strPath);
-    return;
-  }
+  // Look for fontsets that are defined in the skin's Font.xml file
+  const std::string fontsetFilePath = g_SkinInfo->GetSkinPath("Font.xml");
+  GetFontsetsFromFile(fontsetFilePath, list, settingValue, &currentValueSet);
 
-  const TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || pRootElement->ValueStr() != "fonts")
-  {
-    CLog::Log(LOGERROR, "FillInSkinFonts: file {} doesn't start with <fonts>", strPath);
-    return;
-  }
-
-  const TiXmlElement *pChild = pRootElement->FirstChildElement("fontset");
-  while (pChild)
-  {
-    const char* idAttr = pChild->Attribute("id");
-    const char* idLocAttr = pChild->Attribute("idloc");
-    if (idAttr != nullptr)
-    {
-      if (idLocAttr)
-        list.emplace_back(g_localizeStrings.Get(atoi(idLocAttr)), idAttr);
-      else
-        list.emplace_back(idAttr, idAttr);
-
-      if (StringUtils::EqualsNoCase(idAttr, settingValue))
-        currentValueSet = true;
-    }
-    pChild = pChild->NextSiblingElement("fontset");
-  }
+  // Look for additional fontsets that are defined in .xml files in the skin's fonts directory
+  CFileItemList xmlFileItems;
+  CDirectory::GetDirectory(CSpecialProtocol::TranslatePath("special://skin/fonts"), xmlFileItems,
+                           ".xml", DIR_FLAG_DEFAULTS);
+  for (int i = 0; i < xmlFileItems.Size(); i++)
+    GetFontsetsFromFile(xmlFileItems[i]->GetPath(), list, settingValue, &currentValueSet);
 
   if (list.empty())
   { // Since no fontset is defined, there is no selection of a fontset, so disable the component
+    CLog::LogF(LOGERROR, "No fontsets found");
     list.emplace_back(g_localizeStrings.Get(13278), "");
     current = "";
     currentValueSet = true;
