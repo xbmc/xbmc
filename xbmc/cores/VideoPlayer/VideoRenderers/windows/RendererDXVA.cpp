@@ -54,8 +54,12 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
     if (streamIsHDR && systemUsesHDR && !enumerator.IsPQ10PassthroughSupported())
       return;
 
-    // Check if BT.2020 color space is supported by DXVA video processor
+    // Check if BT.2020 color space is supported by DXVA video processor (for own HDR-SDR tonemap)
     if (picture.color_primaries == AVCOL_PRI_BT2020 && !enumerator.IsBT2020Supported())
+      return;
+
+    // Everything else is played as HD / BT709, check support.
+    if (picture.color_primaries != AVCOL_PRI_BT2020 && !enumerator.IsSDRSupported())
       return;
 
     weight += 1000;
@@ -91,6 +95,10 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
 
     // Check if BT.2020 color space is supported by DXVA video processor
     if (picture.color_primaries == AVCOL_PRI_BT2020 && !enumerator.IsBT2020Supported())
+      return;
+
+    // Everything else is played as HD / BT709, check support.
+    if (picture.color_primaries != AVCOL_PRI_BT2020 && !enumerator.IsSDRSupported())
       return;
 
     if (av_pixel_format == AV_PIX_FMT_NV12 ||
