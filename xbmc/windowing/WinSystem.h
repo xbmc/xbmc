@@ -25,10 +25,11 @@ struct RESOLUTION_WHR
 {
   int width;
   int height;
+  int m_screenWidth;
+  int m_screenHeight;
   int flags; //< only D3DPRESENTFLAG_MODEMASK flags
   int ResInfo_Index;
   std::string id;
-  std::string label;
 };
 
 struct REFRESHRATE
@@ -218,6 +219,14 @@ public:
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);
+  void UpdateDesktopResolution(RESOLUTION_INFO& newRes,
+                               const std::string& output,
+                               int width,
+                               int height,
+                               int screenWidth,
+                               int screenHeight,
+                               float refreshRate,
+                               uint32_t dwFlags);
   virtual std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() { return nullptr; }
 
   int m_nWidth = 0;
