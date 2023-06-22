@@ -639,14 +639,16 @@ void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
 
   if (FAILED(hr = m_enumerator->Get()->CheckVideoProcessorFormat(inputFormat, &uiFlags)))
   {
-    CLog::LogF(LOGDEBUG, "unable to retrieve processor support of input format {}. Error {}",
-               DX::DXGIFormatToString(inputFormat), DX::GetErrorDescription(hr));
+    CLog::LogFC(LOGDEBUG, LOGVIDEO,
+                "unable to retrieve processor support of input format {}. Error {}",
+                DX::DXGIFormatToString(inputFormat), DX::GetErrorDescription(hr));
     return;
   }
   else if (!(uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
   {
-    CLog::LogF(LOGERROR, "input format {} not supported by the processor. No conversion possible.",
-               DX::DXGIFormatToString(inputFormat));
+    CLog::LogFC(LOGDEBUG, LOGVIDEO,
+                "input format {} not supported by the processor. No conversion possible.",
+                DX::DXGIFormatToString(inputFormat));
     return;
   }
 
@@ -661,23 +663,23 @@ void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
   BOOL supported{FALSE};
 
   const DXGI_COLOR_SPACE_TYPE inputNativeCS = AvToDxgiColorSpace(csArgs);
-  CLog::LogF(LOGDEBUG, "The source is {} / {}", DX::DXGIFormatToString(inputFormat),
-             DX::DXGIColorSpaceTypeToString(inputNativeCS));
+  CLog::LogFC(LOGDEBUG, LOGVIDEO, "The source is {} / {}", DX::DXGIFormatToString(inputFormat),
+              DX::DXGIColorSpaceTypeToString(inputNativeCS));
 
   if (SUCCEEDED(hr = m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
                     inputFormat, inputNativeCS, heuristicsOutputFormat,
                     heuristicsCS.outputColorSpace, &supported)))
   {
-    CLog::LogF(LOGDEBUG, "conversion from {} / {} to {} / {} is {}supported.",
-               DX::DXGIFormatToString(inputFormat), DX::DXGIColorSpaceTypeToString(inputNativeCS),
-               DX::DXGIFormatToString(heuristicsOutputFormat),
-               DX::DXGIColorSpaceTypeToString(heuristicsCS.outputColorSpace),
-               supported == TRUE ? "" : "NOT ");
+    CLog::LogFC(LOGDEBUG, LOGVIDEO, "conversion from {} / {} to {} / {} is {}supported.",
+                DX::DXGIFormatToString(inputFormat), DX::DXGIColorSpaceTypeToString(inputNativeCS),
+                DX::DXGIFormatToString(heuristicsOutputFormat),
+                DX::DXGIColorSpaceTypeToString(heuristicsCS.outputColorSpace),
+                supported == TRUE ? "" : "NOT ");
   }
   else
   {
-    CLog::LogF(LOGERROR, "unable to validate the default format conversion, error {}",
-               DX::GetErrorDescription(hr));
+    CLog::LogFC(LOGDEBUG, LOGVIDEO, "unable to validate the default format conversion, error {}",
+                DX::GetErrorDescription(hr));
   }
 
   // Possible input color spaces: YCbCr only
@@ -746,10 +748,10 @@ void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
     }
   }
 
-  CLog::LogF(LOGDEBUG,
-             "supported conversions from format {}\n(*: values picked by "
-             "heuristics, N native input color space, bb supported as swap chain backbuffer){}",
-             DX::DXGIFormatToString(inputFormat), conversions);
+  CLog::LogFC(LOGDEBUG, LOGVIDEO,
+              "supported conversions from format {}\n(*: values picked by "
+              "heuristics, N native input color space, bb supported as swap chain backbuffer){}",
+              DX::DXGIFormatToString(inputFormat), conversions);
 }
 
 std::vector<DXGI_FORMAT> CProcessorHD::GetProcessorOutputFormats() const
