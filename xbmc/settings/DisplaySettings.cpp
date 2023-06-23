@@ -310,7 +310,6 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
           std::static_pointer_cast<const CSettingString>(setting)->GetValue();
       const unsigned int screenIdx = winSystem->GetScreenId(screen);
       winSystem->MoveToScreen(screenIdx);
-      m_resolutionChangeAborted = true;
     }
     winSystem->UpdateResolutions();
     RESOLUTION newRes = GetResolutionForScreen();
