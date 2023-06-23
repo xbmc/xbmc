@@ -14,6 +14,7 @@ NATIVE= \
   gettext \
   giflib \
   heimdal \
+  JsonSchemaBuilder \
   libjpeg-turbo \
   liblzo2 \
   libpng \
@@ -67,7 +68,7 @@ autoconf: m4
 automake: autoconf
 dpkg: automake gettext libtool pkg-config tar
 heimdal: libtool
-JsonSchemaBuilder: cmake
+JsonSchemaBuilder: automake
 libjpeg-turbo: cmake nasm
 libpng: zlib automake
 libtool: automake
