@@ -29,10 +29,10 @@ else
 endif
 
 ifeq ($(OS),osx)
-  ifeq ($(APP_WINDOW_SYSTEM),native)
-    WINDOWSYSTEM=-DAPP_WINDOW_SYSTEM=native
-  else
+  ifeq ($(APP_WINDOW_SYSTEM),sdl)
     WINDOWSYSTEM=-DAPP_WINDOW_SYSTEM=sdl
+  else
+    WINDOWSYSTEM=-DAPP_WINDOW_SYSTEM=native
   endif
 endif
 
