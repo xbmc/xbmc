@@ -150,26 +150,30 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
     if (m_processor->PreInit() && m_processor->Open(picture) &&
         m_processor->IsFormatSupported(dxgi_format, support_type))
     {
-      if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
-          CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
-        m_processor->ListSupportedConversions(dxgi_format, dest_format, picture);
-
-      if (m_processor->IsFormatConversionSupported(dxgi_format, dest_format, picture))
+      m_intermediateTargetFormat = CalcIntermediateTargetFormat(picture);
+      if (m_processor->SetOutputFormat(m_intermediateTargetFormat))
       {
-        if (DX::Windowing()->SupportsVideoSuperResolution())
+        if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+            CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+          m_processor->ListSupportedConversions(dxgi_format, dest_format, picture);
+
+        if (m_processor->IsFormatConversionSupported(dxgi_format, dest_format, picture))
         {
-          const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
-          if (!settings)
-            return true;
-
-          if (settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USESUPERRESOLUTION) &&
-              CProcessorHD::IsSuperResolutionSuitable(picture))
+          if (DX::Windowing()->SupportsVideoSuperResolution())
           {
-            m_processor->TryEnableVideoSuperResolution();
+            const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+            if (!settings)
+              return true;
+
+            if (settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USESUPERRESOLUTION) &&
+                CProcessorHD::IsSuperResolutionSuitable(picture))
+            {
+              m_processor->TryEnableVideoSuperResolution();
+            }
           }
+          return true;
         }
-        return true;
       }
     }
 
@@ -195,9 +199,9 @@ void CRendererDXVA::CheckVideoParameters()
 {
   __super::CheckVideoParameters();
 
-  CreateIntermediateTarget(
-    HasHQScaler() ? m_sourceWidth : m_viewWidth, 
-    HasHQScaler() ? m_sourceHeight : m_viewHeight);
+  CreateIntermediateTarget(HasHQScaler() ? m_sourceWidth : m_viewWidth,
+                           HasHQScaler() ? m_sourceHeight : m_viewHeight, false,
+                           m_intermediateTargetFormat);
 }
 
 void CRendererDXVA::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags)
@@ -464,4 +468,37 @@ bool CRendererDXVA::CRenderBufferImpl::UploadToTexture()
 
   m_bLoaded = m_texture.UnlockRect(0);
   return m_bLoaded;
+}
+
+DXGI_FORMAT CRendererDXVA::CalcIntermediateTargetFormat(const VideoPicture& picture) const
+{
+  // Default value: same as the back buffer
+  DXGI_FORMAT format{DX::Windowing()->GetBackBuffer().GetFormat()};
+
+  if (!m_processor)
+    return format;
+
+  // Preserve HDR precision
+  if (picture.colorBits > 8 && (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+                                picture.color_transfer == AVCOL_TRC_ARIB_STD_B67))
+  {
+    const AVPixelFormat avpFormat = picture.videoBuffer->GetFormat();
+    const DXGI_FORMAT inputFormat =
+        CRenderBufferImpl::GetDXGIFormat(avpFormat, __super::GetDXGIFormat(picture));
+
+    const std::array hdrformats{DXGI_FORMAT_R10G10B10A2_UNORM, DXGI_FORMAT_R16G16B16A16_FLOAT};
+
+    const auto it =
+        std::find_if(hdrformats.cbegin(), hdrformats.cend(), [&](DXGI_FORMAT outputFormat) {
+          return m_processor->IsFormatSupported(outputFormat,
+                                                D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT) &&
+                 m_processor->IsFormatConversionSupported(inputFormat, outputFormat, picture);
+        });
+
+    if (it != hdrformats.cend())
+      format = *it;
+    else
+      CLog::LogF(LOGDEBUG, "no compatible high precision format found for HDR.");
+  }
+  return format;
 }

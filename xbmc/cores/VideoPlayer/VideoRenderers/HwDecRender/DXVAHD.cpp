@@ -168,7 +168,7 @@ bool CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_F
 bool CProcessorHD::CheckFormats() const
 {
   // check default output format (as render target)
-  return IsFormatSupported(DX::Windowing()->GetBackBuffer().GetFormat(), D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT);
+  return IsFormatSupported(m_output_dxgi_format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT);
 }
 
 bool CProcessorHD::IsFormatConversionSupported(DXGI_FORMAT inputFormat,
@@ -219,9 +219,6 @@ bool CProcessorHD::Open(const VideoPicture& picture)
       CRendererDXVA::GetDXGIFormat(av_pixel_format, CRendererBase::GetDXGIFormat(picture));
 
   if (!InitProcessor())
-    return false;
-
-  if (!CheckFormats())
     return false;
 
   return OpenProcessor();
@@ -963,4 +960,14 @@ void CProcessorHD::EnableNvidiaRTXVideoSuperResolution()
 
   CLog::LogF(LOGINFO, "RTX Video Super Resolution request enable successfully");
   m_superResolutionEnabled = true;
+}
+
+bool CProcessorHD::SetOutputFormat(DXGI_FORMAT outputFormat)
+{
+  if (IsFormatSupported(outputFormat, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
+  {
+    m_output_dxgi_format = outputFormat;
+    return true;
+  }
+  return false;
 }

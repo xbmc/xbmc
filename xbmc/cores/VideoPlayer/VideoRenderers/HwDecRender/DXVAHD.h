@@ -84,6 +84,13 @@ public:
                                 const DXGI_FORMAT& outputFormat,
                                 const VideoPicture& picture);
 
+  /*!
+   * \brief Set the output format of the dxva processor. Format compatibility will be verified.
+   * \param format The output format
+   * \return true when the processor supports the format as output and the format is changed.
+   */
+  bool SetOutputFormat(DXGI_FORMAT format);
+
   // ID3DResource overrides
   void OnCreateDevice() override  {}
   void OnDestroyDevice(bool) override
@@ -146,6 +153,7 @@ protected:
   AVColorTransferCharacteristic m_color_transfer{AVCOL_TRC_UNSPECIFIED};
   ProcessorCapabilities m_procCaps{};
   DXGI_FORMAT m_input_dxgi_format{DXGI_FORMAT_UNKNOWN};
+  DXGI_FORMAT m_output_dxgi_format{DXGI_FORMAT_UNKNOWN};
 
   bool m_forced8bit{false};
   bool m_superResolutionEnabled{false};
