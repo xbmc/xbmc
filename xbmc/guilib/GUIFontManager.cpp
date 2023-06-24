@@ -597,10 +597,16 @@ void GUIFontManager::LoadUserFonts()
       while (fontNode)
       {
         std::string filename;
-        std::string familyName;
         XMLUtils::GetString(fontNode, "filename", filename);
-        XMLUtils::GetString(fontNode, "familyname", familyName);
-        m_userFontsCache.emplace_back(filename, familyName);
+
+        std::set<std::string> familyNames;
+        for (const TiXmlElement* fnChildNode = fontNode->FirstChildElement("familyname");
+             fnChildNode; fnChildNode = fnChildNode->NextSiblingElement("familyname"))
+        {
+          familyNames.emplace(fnChildNode->GetText());
+        }
+
+        m_userFontsCache.emplace_back(filename, familyNames);
         fontNode = fontNode->NextSibling("font");
       }
     }
@@ -645,10 +651,10 @@ void GUIFontManager::LoadUserFonts()
     if (item->m_bIsFolder)
       continue;
 
-    std::string familyName = UTILS::FONT::GetFontFamily(filepath);
-    if (!familyName.empty())
+    std::set<std::string> familyNames;
+    if (UTILS::FONT::GetFontFamilyNames(filepath, familyNames))
     {
-      m_userFontsCache.emplace_back(item->GetLabel(), familyName);
+      m_userFontsCache.emplace_back(item->GetLabel(), familyNames);
     }
   }
   isCacheChanged = isCacheChanged || previousCacheSize != m_userFontsCache.size();
@@ -660,22 +666,26 @@ void GUIFontManager::LoadUserFonts()
     TiXmlDeclaration decl("1.0", "UTF-8", "yes");
     xmlDoc.InsertEndChild(decl);
     TiXmlElement xmlMainElement("fonts");
+
     TiXmlNode* fontsNode = xmlDoc.InsertEndChild(xmlMainElement);
     if (fontsNode)
     {
-      for (auto& fontMetadata : m_userFontsCache)
+      for (const FontMetadata& fontMetadata : m_userFontsCache)
       {
         TiXmlElement fontElement("font");
         TiXmlNode* fontNode = fontsNode->InsertEndChild(fontElement);
         XMLUtils::SetString(fontNode, "filename", fontMetadata.m_filename);
-        XMLUtils::SetString(fontNode, "familyname", fontMetadata.m_familyName);
+        for (const std::string& familyName : fontMetadata.m_familyNames)
+        {
+          XMLUtils::SetString(fontNode, "familyname", familyName);
+        }
       }
       if (!xmlDoc.SaveFile(userFontCacheFilepath))
-        CLog::LogF(LOGERROR, "Failed to save fonts cache file '{}'", userFontCacheFilepath);
+        CLog::LogF(LOGERROR, "Failed to save fonts cache file \"{}\"", userFontCacheFilepath);
     }
     else
     {
-      CLog::LogF(LOGERROR, "Failed to create XML 'fonts' node");
+      CLog::LogF(LOGERROR, "Failed to create XML \"fonts\" node");
     }
   }
   CLog::LogF(LOGDEBUG, "Updating user fonts cache... DONE");
@@ -687,9 +697,12 @@ std::vector<std::string> GUIFontManager::GetUserFontsFamilyNames()
   // Duplicated family names can happens for example when a font have each style
   // on different files
   std::set<std::string, sortstringbyname> familyNames;
-  for (auto& fontMetadata : m_userFontsCache)
+  for (const FontMetadata& fontMetadata : m_userFontsCache)
   {
-    familyNames.insert(fontMetadata.m_familyName);
+    for (const std::string& familyName : fontMetadata.m_familyNames)
+    {
+      familyNames.insert(familyName);
+    }
   }
   return std::vector<std::string>(familyNames.begin(), familyNames.end());
 }
