@@ -464,13 +464,13 @@ case $host in
         target_minver="10.14"
 
         # check provided window system is valid_sdk
-        # if no window system supplied, default to SDL for now.
+        # if no window system supplied, default to native.
         if test -n "$app_winsystem"; then
           if test "$app_winsystem" != "native" && test "$app_winsystem" != "sdl"; then
             AC_MSG_ERROR(Window system must be native or sdl)
           fi
         else
-          app_winsystem=sdl
+          app_winsystem=native
         fi
       ;;
       aarch64-apple-darwin*)
