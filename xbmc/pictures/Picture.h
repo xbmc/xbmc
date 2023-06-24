@@ -13,6 +13,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -34,6 +35,8 @@ public:
    \param thumb the filename of the thumb
    */
   static bool CreateTiledThumb(const std::vector<std::string> &files, const std::string &thumb);
+
+  static std::unique_ptr<CTexture> CreateTiledThumb(const std::vector<std::string>& files);
 
   static bool ResizeTexture(
       const std::string& image,
