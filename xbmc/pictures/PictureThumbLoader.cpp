@@ -39,6 +39,11 @@ CPictureThumbLoader::~CPictureThumbLoader()
 
 void CPictureThumbLoader::OnLoaderFinish()
 {
+  if (m_regenerateThumbs)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+  }
   m_regenerateThumbs = false;
   CThumbLoader::OnLoaderFinish();
 }
