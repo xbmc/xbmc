@@ -58,7 +58,7 @@ public:
 
   bool PreInit() const;
   void UnInit();
-  bool Open(UINT width, UINT height, const VideoPicture& picture);
+  bool Open(const VideoPicture& picture);
   void Close();
   bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
   uint8_t PastRefs() const { return std::min(m_procCaps.m_rateCaps.PastFrames, 4u); }
