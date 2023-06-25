@@ -204,14 +204,14 @@ bool CProcessorHD::IsFormatConversionSupported(DXGI_FORMAT inputFormat,
   return supported == TRUE;
 }
 
-bool CProcessorHD::Open(UINT width, UINT height, const VideoPicture& picture)
+bool CProcessorHD::Open(const VideoPicture& picture)
 {
   Close();
 
   std::unique_lock<CCriticalSection> lock(m_section);
 
-  m_width = width;
-  m_height = height;
+  m_width = picture.iWidth;
+  m_height = picture.iHeight;
   m_color_primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
   m_color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
