@@ -366,7 +366,7 @@ bool CDVDAudioCodecAndroidMediaCodec::AddData(const DemuxPacket &packet)
     if (xbmc_jnienv()->ExceptionCheck())
     {
       std::string err = CJNIBase::ExceptionToString();
-      CLog::Log(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::AddData ExceptionCheck \n {}", err);
+      CLog::Log(LOGERROR, "CDVDAudioCodecAndroidMediaCodec::AddData ExceptionCheck: {}", err);
     }
     else if (index >= 0)
     {
@@ -635,7 +635,7 @@ int CDVDAudioCodecAndroidMediaCodec::GetData(uint8_t** dst)
   {
     std::string err = CJNIBase::ExceptionToString();
     CLog::Log(LOGERROR,
-              "CDVDAudioCodecAndroidMediaCodec::GetData ExceptionCheck; dequeueOutputBuffer \n {}",
+              "CDVDAudioCodecAndroidMediaCodec::GetData ExceptionCheck: dequeueOutputBuffer: {}",
               err);
     xbmc_jnienv()->ExceptionDescribe();
     xbmc_jnienv()->ExceptionClear();
@@ -749,20 +749,18 @@ int CDVDAudioCodecAndroidMediaCodec::GetData(uint8_t** dst)
 
 void CDVDAudioCodecAndroidMediaCodec::ConfigureOutputFormat(CJNIMediaFormat* mediaformat)
 {
-  m_samplerate       = 0;
-  m_channels         = 0;
+  m_samplerate = 0;
+  m_channels = 0;
 
-  if (mediaformat->containsKey("sample-rate"))
-    m_samplerate       = mediaformat->getInteger("sample-rate");
-  if (mediaformat->containsKey("channel-count"))
-    m_channels     = mediaformat->getInteger("channel-count");
+  if (mediaformat->containsKey(CJNIMediaFormat::KEY_SAMPLE_RATE))
+    m_samplerate = mediaformat->getInteger(CJNIMediaFormat::KEY_SAMPLE_RATE);
+  if (mediaformat->containsKey(CJNIMediaFormat::KEY_CHANNEL_COUNT))
+    m_channels = mediaformat->getInteger(CJNIMediaFormat::KEY_CHANNEL_COUNT);
 
-#if 1 //defined(DEBUG_VERBOSE)
   CLog::Log(LOGDEBUG,
-            "CDVDAudioCodecAndroidMediaCodec:: "
+            "CDVDAudioCodecAndroidMediaCodec::ConfigureOutputFormat "
             "sample_rate({}), channel_count({})",
             m_samplerate, m_channels);
-#endif
 
   // clear any jni exceptions
   if (xbmc_jnienv()->ExceptionCheck())
