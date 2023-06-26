@@ -11,6 +11,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <tinyxml2.h>
+
 using namespace XFILE;
 
 /*
@@ -18,23 +20,21 @@ using namespace XFILE;
  *
  * if pElement is <DAV:foo> and value is foo then ValueWithoutNamespace is true
  */
-bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const std::string& value)
+bool CDAVCommon::ValueWithoutNamespace(const tinyxml2::XMLNode* node, const std::string& value)
 {
-  const TiXmlElement *pElement;
-
-  if (!pNode)
+  if (!node)
   {
     return false;
   }
 
-  pElement = pNode->ToElement();
+  auto* element = node->ToElement();
 
-  if (!pElement)
+  if (!element)
   {
     return false;
   }
 
-  std::vector<std::string> tag = StringUtils::Split(pElement->ValueStr(), ":", 2);
+  std::vector<std::string> tag = StringUtils::Split(element->Value(), ":", 2);
 
   if (tag.size() == 1 && tag[0] == value)
   {
@@ -46,8 +46,8 @@ bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const std::string
   }
   else if (tag.size() > 2)
   {
-    CLog::Log(LOGERROR, "{} - Splitting {} failed, size(): {}, value: {}", __FUNCTION__,
-              pElement->Value(), (unsigned long int)tag.size(), value);
+    CLog::LogF(LOGERROR, "Splitting {} failed, size(): {}, value: {}", element->Value(), tag.size(),
+               value);
   }
 
   return false;
@@ -56,18 +56,15 @@ bool CDAVCommon::ValueWithoutNamespace(const TiXmlNode *pNode, const std::string
 /*
  * Search for <status> and return its content
  */
-std::string CDAVCommon::GetStatusTag(const TiXmlElement *pElement)
+std::string CDAVCommon::GetStatusTag(const tinyxml2::XMLElement* element)
 {
-  const TiXmlElement *pChild;
-
-  for (pChild = pElement->FirstChildElement(); pChild != 0; pChild = pChild->NextSiblingElement())
+  for (auto* child = element->FirstChildElement(); child; child = child->NextSiblingElement())
   {
-    if (ValueWithoutNamespace(pChild, "status"))
+    if (ValueWithoutNamespace(child, "status"))
     {
-      return pChild->NoChildren() ? "" : pChild->FirstChild()->ValueStr();
+      return child->NoChildren() ? "" : child->FirstChild()->Value();
     }
   }
 
   return "";
 }
-
