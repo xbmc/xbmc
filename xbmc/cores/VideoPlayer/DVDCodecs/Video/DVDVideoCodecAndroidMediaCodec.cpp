@@ -23,6 +23,7 @@
 #include "cores/VideoPlayer/VideoRenderers/RenderManager.h"
 #include "media/decoderfilter/DecoderFilterManager.h"
 #include "messaging/ApplicationMessenger.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/BitstreamConverter.h"
@@ -553,7 +554,7 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         // ensure HDR10 output if display is not DV capable.
         bool notHasHDR10fallback = (m_hints.dovi.dv_profile == 4 || m_hints.dovi.dv_profile == 5);
 
-        if (mediaCodecSupportsDovi && (displaySupportsDovi || notHasHDR10fallback))
+        if (mediaCodecSupportsDovi && (displaySupportsDovi || notHasHDR10fallback || enforceDVOutput))
         {
           m_mime = "video/dolby-vision";
           m_formatname = isDvhe ? "amc-dvhe" : "amc-dvh1";
