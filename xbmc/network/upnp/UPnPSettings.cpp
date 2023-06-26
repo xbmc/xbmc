@@ -11,7 +11,7 @@
 #include "ServiceBroker.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -54,26 +54,26 @@ bool CUPnPSettings::Load(const std::string &file)
   if (!CFileUtils::Exists(file))
     return false;
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   if (!doc.LoadFile(file))
   {
-    m_logger->error("error loading {}, Line {}\n{}", file, doc.ErrorRow(), doc.ErrorDesc());
+    m_logger->error("error loading {}, Line {}\n{}", file, doc.ErrorLineNum(), doc.ErrorStr());
     return false;
   }
 
-  TiXmlElement *pRootElement = doc.RootElement();
-  if (pRootElement == NULL || !StringUtils::EqualsNoCase(pRootElement->Value(), XML_UPNP))
+  auto* rootElement = doc.RootElement();
+  if (!rootElement || !StringUtils::EqualsNoCase(rootElement->Value(), XML_UPNP))
   {
     m_logger->error("error loading {}, no <upnpserver> node", file);
     return false;
   }
 
   // load settings
-  XMLUtils::GetString(pRootElement, XML_SERVER_UUID, m_serverUUID);
-  XMLUtils::GetInt(pRootElement, XML_SERVER_PORT, m_serverPort);
-  XMLUtils::GetInt(pRootElement, XML_MAX_ITEMS, m_maxReturnedItems);
-  XMLUtils::GetString(pRootElement, XML_RENDERER_UUID, m_rendererUUID);
-  XMLUtils::GetInt(pRootElement, XML_RENDERER_PORT, m_rendererPort);
+  XMLUtils::GetString(rootElement, XML_SERVER_UUID, m_serverUUID);
+  XMLUtils::GetInt(rootElement, XML_SERVER_PORT, m_serverPort);
+  XMLUtils::GetInt(rootElement, XML_MAX_ITEMS, m_maxReturnedItems);
+  XMLUtils::GetString(rootElement, XML_RENDERER_UUID, m_rendererUUID);
+  XMLUtils::GetInt(rootElement, XML_RENDERER_PORT, m_rendererPort);
 
   return true;
 }
@@ -82,17 +82,17 @@ bool CUPnPSettings::Save(const std::string &file) const
 {
   std::unique_lock<CCriticalSection> lock(m_critical);
 
-  CXBMCTinyXML doc;
-  TiXmlElement xmlRootElement(XML_UPNP);
-  TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
-  if (pRoot == NULL)
+  CXBMCTinyXML2 doc;
+  auto* element = doc.NewElement(XML_UPNP);
+  auto* rootNode = doc.InsertFirstChild(element);
+  if (!rootNode)
     return false;
 
-  XMLUtils::SetString(pRoot, XML_SERVER_UUID, m_serverUUID);
-  XMLUtils::SetInt(pRoot, XML_SERVER_PORT, m_serverPort);
-  XMLUtils::SetInt(pRoot, XML_MAX_ITEMS, m_maxReturnedItems);
-  XMLUtils::SetString(pRoot, XML_RENDERER_UUID, m_rendererUUID);
-  XMLUtils::SetInt(pRoot, XML_RENDERER_PORT, m_rendererPort);
+  XMLUtils::SetString(rootNode, XML_SERVER_UUID, m_serverUUID);
+  XMLUtils::SetInt(rootNode, XML_SERVER_PORT, m_serverPort);
+  XMLUtils::SetInt(rootNode, XML_MAX_ITEMS, m_maxReturnedItems);
+  XMLUtils::SetString(rootNode, XML_RENDERER_UUID, m_rendererUUID);
+  XMLUtils::SetInt(rootNode, XML_RENDERER_PORT, m_rendererPort);
 
   // save the file
   return doc.SaveFile(file);
