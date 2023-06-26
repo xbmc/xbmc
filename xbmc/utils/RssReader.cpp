@@ -129,7 +129,6 @@ void CRssReader::Process()
 
     int nRetries = 3;
     CURL url(strUrl);
-    std::string fileCharset;
 
     // we wait for the network to come up
     if ((url.IsProtocol("http") || url.IsProtocol("https")) &&
@@ -164,7 +163,6 @@ void CRssReader::Process()
         {
           if (http.Get(strUrl, strXML))
           {
-            fileCharset = http.GetProperty(XFILE::FILE_PROPERTY_CONTENT_CHARSET);
             CLog::Log(LOGDEBUG, "Got rss feed: {}", strUrl);
             break;
           }
@@ -192,7 +190,7 @@ void CRssReader::Process()
         iStart = strXML.find("<content:encoded>");
       }
 
-      if (Parse(strXML, iFeed, fileCharset))
+      if (Parse(strXML, iFeed))
         CLog::Log(LOGDEBUG, "Parsed rss feed: {}", strUrl);
     }
   }
@@ -241,11 +239,11 @@ void CRssReader::AddString(std::wstring aString, int aColour, int iFeed)
     m_strColors[iFeed] += aString;
 }
 
-void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
+void CRssReader::GetNewsItems(tinyxml2::XMLNode* channelXmlNode, int iFeed)
 {
   HTML::CHTMLUtil html;
 
-  TiXmlElement * itemNode = channelXmlNode->FirstChildElement("item");
+  auto* itemNode = channelXmlNode->FirstChildElement("item");
   std::map<std::string, std::wstring> mTagElements;
   typedef std::pair<std::string, std::wstring> StrPair;
   std::list<std::string>::iterator i;
@@ -256,19 +254,19 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
   if (m_tagSet.empty())
     AddTag("title");
 
-  while (itemNode != nullptr)
+  while (itemNode)
   {
-    TiXmlNode* childNode = itemNode->FirstChild();
+    auto* childNode = itemNode->FirstChild();
     mTagElements.clear();
-    while (childNode != nullptr)
+    while (childNode)
     {
-      std::string strName = childNode->ValueStr();
+      std::string strName = childNode->Value();
 
       for (i = m_tagSet.begin(); i != m_tagSet.end(); ++i)
       {
         if (!childNode->NoChildren() && *i == strName)
         {
-          std::string htmlText = childNode->FirstChild()->ValueStr();
+          std::string htmlText = childNode->FirstChild()->Value();
 
           // This usually happens in right-to-left languages where they want to
           // specify in the RSS body that the text should be RTL.
@@ -276,7 +274,7 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
           //  <div dir="RTL">��� ����: ���� �� �����</div>
           // </title>
           if (htmlText == "div" || htmlText == "span")
-            htmlText = childNode->FirstChild()->FirstChild()->ValueStr();
+            htmlText = childNode->FirstChild()->FirstChild()->Value();
 
           std::wstring unicodeText, unicodeText2;
 
@@ -307,39 +305,32 @@ void CRssReader::GetNewsItems(TiXmlElement* channelXmlNode, int iFeed)
   }
 }
 
-bool CRssReader::Parse(const std::string& data, int iFeed, const std::string& charset)
+bool CRssReader::Parse(const std::string& data, int iFeed)
 {
   m_xml.Clear();
-  m_xml.Parse(data, charset);
-
-  CLog::Log(LOGDEBUG, "RSS feed encoding: {}", m_xml.GetUsedCharset());
+  m_xml.Parse(data);
 
   return Parse(iFeed);
 }
 
 bool CRssReader::Parse(int iFeed)
 {
-  TiXmlElement* rootXmlNode = m_xml.RootElement();
+  auto* rootXmlNode = m_xml.RootElement();
 
   if (!rootXmlNode)
     return false;
 
-  TiXmlElement* rssXmlNode = NULL;
-
-  std::string strValue = rootXmlNode->ValueStr();
-  if (strValue.find("rss") != std::string::npos ||
-      strValue.find("rdf") != std::string::npos)
-    rssXmlNode = rootXmlNode;
-  else
+  std::string strValue = rootXmlNode->Value();
+  if (strValue.find("rss") == std::string::npos || strValue.find("rdf") == std::string::npos)
   {
     // Unable to find root <rss> or <rdf> node
     return false;
   }
 
-  TiXmlElement* channelXmlNode = rssXmlNode->FirstChildElement("channel");
+  auto* channelXmlNode = rootXmlNode->FirstChildElement("channel");
   if (channelXmlNode)
   {
-    TiXmlElement* titleNode = channelXmlNode->FirstChildElement("title");
+    auto* titleNode = channelXmlNode->FirstChildElement("title");
     if (titleNode && !titleNode->NoChildren())
     {
       std::string strChannel = titleNode->FirstChild()->Value();
@@ -354,7 +345,7 @@ bool CRssReader::Parse(int iFeed)
     GetNewsItems(channelXmlNode,iFeed);
   }
 
-  GetNewsItems(rssXmlNode,iFeed);
+  GetNewsItems(rootXmlNode, iFeed);
 
   // avoid trailing ' - '
   if (m_strFeed[iFeed].size() > 3 && m_strFeed[iFeed].substr(m_strFeed[iFeed].size() - 3) == L" - ")
