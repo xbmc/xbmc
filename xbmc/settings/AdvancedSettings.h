@@ -160,6 +160,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     float m_videoIgnorePercentAtEnd;
     float m_audioApplyDrc;
     unsigned int m_maxPassthroughOffSyncDuration = 10; // when 10 ms off adjust
+    bool m_enforceDolbyVisionOutput = false;
 
     int   m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
