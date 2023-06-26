@@ -274,7 +274,41 @@ PROCESSDECODER:
     if (m_hints.cryptoSession)
     {
       m_mime = "audio/raw";
-      m_codec = std::shared_ptr<CJNIMediaCodec>(new CJNIMediaCodec(CJNIMediaCodec::createDecoderByType(m_mime)));
+
+      // Workaround for old Android devices
+      // Prefer the Google raw decoder over the MediaTek one
+      const std::vector<CJNIMediaCodecInfo> codecInfos =
+          CJNIMediaCodecList(CJNIMediaCodecList::REGULAR_CODECS).getCodecInfos();
+
+      bool mtk_raw_decoder = false;
+      bool google_raw_decoder = false;
+
+      for (const CJNIMediaCodecInfo& codec_info : codecInfos)
+      {
+        if (codec_info.isEncoder())
+          continue;
+
+        if (codec_info.getName() == "OMX.MTK.AUDIO.DECODER.RAW")
+          mtk_raw_decoder = true;
+        if (codec_info.getName() == "OMX.google.raw.decoder")
+          google_raw_decoder = true;
+      }
+
+      if (CJNIBase::GetSDKVersion() <= 27 && mtk_raw_decoder && google_raw_decoder)
+      {
+        CLog::Log(LOGDEBUG, "CDVDAudioCodecAndroidMediaCodec::Open Prefer the Google raw decoder "
+                            "over the MediaTek one");
+        m_codec = std::shared_ptr<CJNIMediaCodec>(
+            new CJNIMediaCodec(CJNIMediaCodec::createByCodecName("OMX.google.raw.decoder")));
+      }
+      else
+      {
+        CLog::Log(
+            LOGDEBUG,
+            "CDVDAudioCodecAndroidMediaCodec::Open Use the raw decoder proposed by the platform");
+        m_codec = std::shared_ptr<CJNIMediaCodec>(
+            new CJNIMediaCodec(CJNIMediaCodec::createDecoderByType(m_mime)));
+      }
       if (xbmc_jnienv()->ExceptionCheck())
       {
         xbmc_jnienv()->ExceptionDescribe();
