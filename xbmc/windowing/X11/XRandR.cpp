@@ -11,7 +11,7 @@
 #include "CompileInfo.h"
 #include "threads/SystemClock.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
@@ -78,9 +78,8 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
     return false;
   }
 
-
-  CXBMCTinyXML xmlDoc;
-  if (!xmlDoc.LoadFile(file, TIXML_DEFAULT_ENCODING))
+  CXBMCTinyXML2 xmlDoc;
+  if (!xmlDoc.LoadFile(file))
   {
     CLog::Log(LOGERROR, "CXRandR::Query - unable to open xrandr xml");
     pclose(file);
@@ -88,14 +87,15 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
   }
   pclose(file);
 
-  TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (atoi(pRootElement->Attribute("id")) != screennum)
+  auto* rootElement = xmlDoc.RootElement();
+  if (atoi(rootElement->Attribute("id")) != screennum)
   {
     //! @todo ERROR
     return false;
   }
 
-  for (TiXmlElement* output = pRootElement->FirstChildElement("output"); output; output = output->NextSiblingElement("output"))
+  for (auto* output = rootElement->FirstChildElement("output"); output;
+       output = output->NextSiblingElement("output"))
   {
     XOutput xoutput;
     xoutput.name = output->Attribute("name");
@@ -122,7 +122,8 @@ bool CXRandR::Query(bool force, int screennum, bool ignoreoff)
        continue;
 
     bool hascurrent = false;
-    for (TiXmlElement* mode = output->FirstChildElement("mode"); mode; mode = mode->NextSiblingElement("mode"))
+    for (auto* mode = output->FirstChildElement("mode"); mode;
+         mode = mode->NextSiblingElement("mode"))
     {
       XMode xmode;
       xmode.id = mode->Attribute("id");
@@ -396,15 +397,15 @@ XMode CXRandR::GetPreferredMode(const std::string& outputName)
 void CXRandR::LoadCustomModeLinesToAllOutputs(void)
 {
   Query();
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
 
   if (!xmlDoc.LoadFile("special://xbmc/userdata/ModeLines.xml"))
   {
     return;
   }
 
-  TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (StringUtils::CompareNoCase(pRootElement->Value(), "modelines") != 0)
+  auto* rootElement = xmlDoc.RootElement();
+  if (StringUtils::CompareNoCase(rootElement->Value(), "modelines") != 0)
   {
     //! @todo ERROR
     return;
@@ -414,7 +415,8 @@ void CXRandR::LoadCustomModeLinesToAllOutputs(void)
   std::string name;
   std::string strModeLine;
 
-  for (TiXmlElement* modeline = pRootElement->FirstChildElement("modeline"); modeline; modeline = modeline->NextSiblingElement("modeline"))
+  for (auto* modeline = rootElement->FirstChildElement("modeline"); modeline;
+       modeline = modeline->NextSiblingElement("modeline"))
   {
     name = modeline->Attribute("label");
     StringUtils::Trim(name);
