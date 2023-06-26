@@ -76,7 +76,7 @@
 		<summary lang="szl">Insztaluj przidŏwki ze Kodi.tv</summary>
 		<summary lang="tg_TJ">Насб кардани барномаҳои иловагӣ аз Kodi.tv</summary>
 		<summary lang="th_TH">ติดตั้งส่วนเสริมจาก Kodi.tv</summary>
-		<summary lang="tr_TR">Kodi.tv sitesinden eklentileri yükle</summary>
+		<summary lang="tr_TR">Kodi.tv sitesinden eklentileri yükleyin</summary>
 		<summary lang="uk_UA">Встановити додатки з Kodi.tv</summary>
 		<summary lang="vi_VN">Cài đặt Add-on từ Kodi.tv</summary>
 		<summary lang="zh_CN">从 Kodi.tv 安装插件</summary>
@@ -134,7 +134,7 @@
 		<description lang="szl">Sebiyrej i insztaluj przidŏwki z ôficjalnygo repozytoriōm Kodi.tv.[CR] Przi Używaniu ôficjalnygo repozytoriōm używŏsz serwerōw zdrzadłowych, rozsianych po calistym świecie. Ôbiyrany je tyn, kery je nŏjbliżyj ciebie, co istuje srogõ wartkość skuplowaniŏ.[CR]Wszyjske przidŏwki w tym repozytoriōm sōm testowane, ale mogōm pokŏzać sie popszniōne. Zgłoś wtynczŏs feler, coby ekipa Kodi mogła go sprŏwić.</description>
 		<description lang="tg_TJ">Барномаҳои иловагиро аз анбори нармафзори Kodi.tv боргирӣ кунед ва насб намоед.[CR]  Аз истифодаи анбори нармафзори расмии мо ба шумо имконият пайдо мешавад, ки тавонед шароити мусофидро аз хидмати оинаи файлии васеъ ба даст оред ва нармафзори лозимиро аз сервери минтакаи ба шумо наздиктар бо суръати баланд боргирӣ кунед.[CR]  Ҳамаи барномаҳо аз анбори нармафзори мо дар ҳолати санҷишӣ мебошанд, бинобар ин агар ягон барномаи иловагии нуқсондор ё вайроншударо ёбед, лутфан дар бораи он барнома ва нуқсон пайдошуда ба гурӯҳи кории Kodi гузориш диҳед, то ин ки мо тавонем ҳамаи камбудиҳои барномаҳои моро ҳал кунем.</description>
 		<description lang="th_TH">ดาวน์โหลดและติดตั้งส่วนเสริม จากแหล่งข้อมูลโปรแกรมของ Kodi.tv อย่างเป็นทางการ.[CR]  โดยการใช้งานแหล่งข้อมูลโปรแกรมอย่างเป็นทางการ คุณสามารถใช้ประโยชน์จากบริการแฟ้มมิเรอร์ที่กว้างขวางของเรา ที่จะช่วยให้การดาวน์โหลดของคุณเร็วขึ้นจากภูมิภาคที่ใกล้ที่สุด.[CR]  ส่วนเสริม ทั้งหมดในแหล่งเก็บข้อมูลนี้ อยู่ภายใต้การทดสอบขั้นพื้นฐานแล้ว ถ้าคุณพบส่วนเสริมที่เสียหายหรือไม่ทำงาน กรุณาแจ้งทีมงาน Kodi เพื่อให้เราสามารถดำเนินการใด ๆ ที่จำเป็น.</description>
-		<description lang="tr_TR">Eklentileri resmi Kodi.tv eklenti deposundan indir ve yükle.[CR]Resmi yazılım depomuzu kullanarak size en yakın bölgeden en hızlı biçimde indirme yapmanızı sağlayacak gelişkin dosya aynalama servisini kullanma avantajını elde edeceksiniz.[CR]Bu yazılım deposundaki tüm eklentiler temel testlerden geçerler, şayet hatalı ya da çalışmayan bir eklenti bulur iseniz lütfen düzeltilmesi için bu durumu Kodi Takımına bildiriniz.</description>
+		<description lang="tr_TR">Eklentileri resmi Kodi.tv eklenti deposundan indirin ve yükleyin.[CR]Resmi yazılım depomuzu kullanarak size en yakın bölgeden en hızlı biçimde indirme yapmanızı sağlayacak gelişkin dosya aynalama servisini kullanma avantajını elde edeceksiniz.[CR]Bu yazılım deposundaki tüm eklentiler temel testlerden geçerler, şayet hatalı ya da çalışmayan bir eklenti bulursanız lütfen düzeltilmesi için bu durumu Kodi Takımına bildiriniz.</description>
 		<description lang="uk_UA">Завантажити і встановити додатки з Офіційного репозиторію додатків Kodi.tv.[CR]  Використовуючи Офіційний Репозиторій ви отримаєте перевагу надану нашими дзеркальними серверами, які забезпечать вам швидке завантаження із найближчого до вас регіону.[CR]  Всі додатки в цьому Репозиторії пройшли лише базове тестування. Якщо ви знайшли зламаний або непрацюючий додаток, будь-ласка повідомте про це Команду Kodi щоб ми могли вжити потрібних заходів.</description>
 		<description lang="vi_VN">Tải về và cài đặt tiện ích từ kho tiện ích chính thức của Kodi.[CR]  Khi sử dụng kho lưu trữ này bạn sẽ hưởng lợi từ dịch vụ nguồn của chúng tôi, giúp bạn có thể tải về nhanh hơn từ một khu vực gần bạn.[CR]  Tất cả tiện ích trên kho lưu trữ này đã được thông qua bài kiểm tra cơ bản, nếu bạn phát hiện ra một tiện ích không hoạt động xin vui lòng báo cáo lại nó cho đội ngũ Kodi để chúng tôi có thể kịp thời xử lý.</description>
 		<description lang="zh_CN">从 Kodi.tv 官方插件库下载并安装插件。[CR]通过使用官方插件库，您将能够利用我们遍布各地的文件镜像服务，就近高速下载。[CR]本插件库中的所有插件都已进行基本测试，如果您发现损坏或无法工作的插件，请报告给 Kodi 团队，以便我们及时处理。</description>
@@ -189,11 +189,11 @@
 		<disclaimer lang="sl_SI">Ekipa Kodi ni naredila vseh dodatkov v tem skladišču in ne odgovarja za njihovo vsebino</disclaimer>
 		<disclaimer lang="sr_RS">Тим Kodi није направио све додатке у овом спремишту и није одговоран за њихов садржај</disclaimer>
 		<disclaimer lang="sr_RS@latin">Tim-Kodi nije napravio sve dodatne programe u ovom spremištu i nije odgovoran za njihov sadržaj</disclaimer>
-		<disclaimer lang="sv_SE">Team Kodi har inte gjort alla tillägg i förrådet och är inte ansvariga för innehållet i dessa.</disclaimer>
+		<disclaimer lang="sv_SE">Team Kodi har inte gjort alla tillägg i förrådet och är inte ansvariga för innehållet i dessa</disclaimer>
 		<disclaimer lang="szl">Ekipa Kodi niy rychtuje wszyjskich przidŏwkōw i niy ôdpadŏ za jejich zawartość</disclaimer>
 		<disclaimer lang="tg_TJ">Гурӯҳи кории Kodi дар ин анбори нармафзор соҳиби ҳамаи барномаҳои иловагӣ намебошад ва барои мӯҳтавояшон ҷавобгар намебшад</disclaimer>
 		<disclaimer lang="th_TH">ทีม Kodi ไม่ได้จัดทำ ส่วนเสริม ทั้งหมดในแหล่งข้อมูลโปรแกรมนี้ และจะไม่รับผิดชอบต่อเนื้อหาเหล่านั้น</disclaimer>
-		<disclaimer lang="tr_TR">Kodi takımı bu depodaki tüm eklentileri geliştirmemiştir ve bunların içeriklerinden sorumlu değildir.</disclaimer>
+		<disclaimer lang="tr_TR">Kodi takımı bu depodaki eklentilerin birçoğunu kendisi geliştirmemiştir ve bunların içeriklerinden sorumlu değildir</disclaimer>
 		<disclaimer lang="uk_UA">Зауважте, що не всі додатки в цьому Репозиторії створені Командою Kodi, і тому Команда не несе відповідальності за їх вміст.</disclaimer>
 		<disclaimer lang="vi_VN">Đội ngũ Kodi không làm ra tất cả các add-on có trên kho chứa này và sẽ không chịu trách nhiệm về nội dung của các add-on đấy</disclaimer>
 		<disclaimer lang="zh_CN">此插件库中插件并不完全由 Kodi 团队制作，对相关内容不承担责任</disclaimer>
