@@ -25,6 +25,61 @@
 
 using namespace XFILE;
 
+namespace
+{
+// \brief Get font family from SFNT table entries
+std::string GetFamilyNameFromSfnt(FT_Face face)
+{
+  std::string familyName;
+
+  for (FT_UInt index = 0; index < FT_Get_Sfnt_Name_Count(face); ++index)
+  {
+    FT_SfntName name;
+    if (FT_Get_Sfnt_Name(face, index, &name) != 0)
+    {
+      CLog::LogF(LOGWARNING, "Failed to get SFNT name at index {}", index);
+      continue;
+    }
+
+    // Get the unicode font family name (format-specific interface)
+    // In properties there may be one or more font family names encoded for each platform.
+    // NOTE: we give preference to MS/APPLE platform data, then fallback to MAC
+    // because has been found some fonts that provide names not convertible MAC text to UTF8
+    if (name.name_id == TT_NAME_ID_FONT_FAMILY)
+    {
+      const std::string nameEnc{reinterpret_cast<const char*>(name.string), name.string_len};
+
+      if (name.platform_id == TT_PLATFORM_MICROSOFT ||
+          name.platform_id == TT_PLATFORM_APPLE_UNICODE)
+      {
+        if (name.language_id != TT_MAC_LANGID_ENGLISH &&
+            name.language_id != TT_MS_LANGID_ENGLISH_UNITED_STATES &&
+            name.language_id != TT_MS_LANGID_ENGLISH_UNITED_KINGDOM)
+          continue;
+
+        if (CCharsetConverter::utf16BEtoUTF8(nameEnc, familyName))
+          break; // Stop here to prefer the name given with this platform
+        else
+          CLog::LogF(LOGERROR, "Failed to convert the font name string encoded as \"UTF-16BE\"");
+      }
+      else if (name.platform_id == TT_PLATFORM_MACINTOSH && familyName.empty())
+      {
+        if (name.language_id != TT_MAC_LANGID_ENGLISH || name.encoding_id != TT_MAC_ID_ROMAN)
+          continue;
+
+        if (!CCharsetConverter::MacintoshToUTF8(nameEnc, familyName))
+          CLog::LogF(LOGERROR, "Failed to convert the font name string encoded as \"macintosh\"");
+      }
+      else
+      {
+        CLog::LogF(LOGERROR, "Unsupported font SFNT name platform \"{}\"", name.platform_id);
+      }
+    }
+  }
+  return familyName;
+}
+} // unnamed namespace
+
 std::string UTILS::FONT::GetFontFamily(std::vector<uint8_t>& buffer)
 {
   FT_Library m_library{nullptr};
@@ -41,48 +96,15 @@ std::string UTILS::FONT::GetFontFamily(std::vector<uint8_t>& buffer)
   if (FT_New_Memory_Face(m_library, reinterpret_cast<const FT_Byte*>(buffer.data()), buffer.size(),
                          0, &face) == 0)
   {
-    // Get SFNT table entries to get font properties
-    for (FT_UInt index = 0; index < FT_Get_Sfnt_Name_Count(face); index++)
-    {
-      FT_SfntName name;
-      if (FT_Get_Sfnt_Name(face, index, &name) != 0)
-      {
-        CLog::LogF(LOGWARNING, "Failed to get SFNT name at index {}", index);
-        continue;
-      }
-
-      // Get the unicode font family name (format-specific interface)
-      // In properties there may be one or more font family names encoded for
-      // each platform, we take the first available converting it to UTF-8
-      if (name.name_id == TT_NAME_ID_FONT_FAMILY)
-      {
-        const std::string nameEnc{reinterpret_cast<const char*>(name.string), name.string_len};
-
-        if (name.platform_id == TT_PLATFORM_MICROSOFT ||
-            name.platform_id == TT_PLATFORM_APPLE_UNICODE)
-        {
-          if (!CCharsetConverter::utf16BEtoUTF8(nameEnc, familyName))
-            CLog::LogF(LOGERROR, "Failed to convert the font name string encoded as \"UTF-16BE\"");
-        }
-        else if (name.platform_id == TT_PLATFORM_MACINTOSH)
-        {
-          if (!CCharsetConverter::MacintoshToUTF8(nameEnc, familyName))
-            CLog::LogF(LOGERROR, "Failed to convert the font name string encoded as \"macintosh\"");
-        }
-        else
-        {
-          CLog::LogF(LOGERROR, "Unsupported font SFNT name platform \"{}\"", name.platform_id);
-        }
-        if (!familyName.empty())
-          break;
-      }
-    }
+    familyName = GetFamilyNameFromSfnt(face);
     if (familyName.empty())
     {
       CLog::LogF(LOGWARNING, "Failed to get the unicode family name for \"{}\", fallback to ASCII",
                  face->family_name);
       // ASCII font family name may differ from the unicode one, use this as fallback only
       familyName = std::string{face->family_name};
+      if (familyName.empty())
+        CLog::LogF(LOGERROR, "Family name missing in the font");
     }
   }
   else
