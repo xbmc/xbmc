@@ -46,6 +46,10 @@ class dist_sink;
 } // namespace sinks
 } // namespace spdlog
 
+#if FMT_VERSION >= 100000
+using fmt::enums::format_as;
+#endif
+
 class CLog : public ISettingsHandler, public ISettingCallback
 {
 public:
