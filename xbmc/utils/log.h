@@ -48,6 +48,14 @@ class dist_sink;
 
 #if FMT_VERSION >= 100000
 using fmt::enums::format_as;
+
+namespace fmt
+{
+template<typename T, typename Char>
+struct formatter<std::atomic<T>, Char> : formatter<T, Char>
+{
+};
+} // namespace fmt
 #endif
 
 class CLog : public ISettingsHandler, public ISettingCallback
