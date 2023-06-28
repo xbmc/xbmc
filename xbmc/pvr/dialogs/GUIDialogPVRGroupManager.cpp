@@ -481,11 +481,8 @@ bool CGUIDialogPVRGroupManager::OnActionMove(const CAction& action)
       {
         if (iSelected != m_iSelectedChannelGroup)
         {
-          if (iSelected != m_iSelectedChannelGroup)
-          {
-            m_iSelectedChannelGroup = iSelected;
-            Update();
-          }
+          m_iSelectedChannelGroup = iSelected;
+          Update();
         }
       }
       else
