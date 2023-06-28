@@ -336,21 +336,34 @@ void CRendererBase::DeleteRenderBuffer(int index)
   }
 }
 
-bool CRendererBase::CreateIntermediateTarget(unsigned width, unsigned height, bool dynamic)
+bool CRendererBase::CreateIntermediateTarget(unsigned width,
+                                             unsigned height,
+                                             bool dynamic,
+                                             DXGI_FORMAT format)
 {
-  DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
+  // No format specified by renderer or high precision disabled > mirror swap chain's backbuffer format
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  if (!settings)
+    return false;
+
+  if (format == DXGI_FORMAT_UNKNOWN ||
+      !settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING))
+    format = DX::Windowing()->GetBackBuffer().GetFormat();
 
   // don't create new one if it exists with requested size and format
-  if (m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format
-    && m_IntermediateTarget.GetWidth() == width && m_IntermediateTarget.GetHeight() == height)
+  if (m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format &&
+      m_IntermediateTarget.GetWidth() == width && m_IntermediateTarget.GetHeight() == height)
     return true;
 
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  CLog::LogF(LOGDEBUG, "intermediate target format {}.", DX::DXGIFormatToString(format));
+  CLog::LogF(LOGDEBUG, "creating intermediate target {}x{} format {}.", width, height,
+             DX::DXGIFormatToString(format));
 
-  if (!m_IntermediateTarget.Create(width, height, 1, dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT, format))
+  if (!m_IntermediateTarget.Create(width, height, 1,
+                                   dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT, format))
   {
     CLog::LogF(LOGERROR, "intermediate target creation failed.");
     return false;
@@ -724,7 +737,27 @@ DEBUG_INFO_VIDEO CRendererBase::GetDebugInfo(int idx)
   if (m_outputShader)
     info.shader = m_outputShader->GetDebugInfo();
 
-  info.render = StringUtils::Format("Render method: {}", m_renderMethodName);
+  std::string itformat;
+  switch (m_IntermediateTarget.GetFormat())
+  {
+    case DXGI_FORMAT_B8G8R8A8_UNORM:
+      itformat = "BGRA8";
+      break;
+    case DXGI_FORMAT_R10G10B10A2_UNORM:
+      itformat = "RGBA10";
+      break;
+    case DXGI_FORMAT_R16G16B16A16_FLOAT:
+      itformat = "FP16";
+      break;
+    case DXGI_FORMAT_R32G32B32A32_FLOAT:
+      itformat = "FP32";
+      break;
+    default:
+      itformat = "unknown";
+  }
+
+  info.render =
+      StringUtils::Format("Render method: {}, IT format: {}", m_renderMethodName, itformat);
 
   std::string rmInfo = GetRenderMethodDebugInfo();
   if (!rmInfo.empty())
