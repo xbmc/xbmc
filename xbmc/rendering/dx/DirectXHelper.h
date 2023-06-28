@@ -102,26 +102,21 @@ namespace DX
     return StringUtils::Format("D3D_FEATURE_LEVEL_{}_{}", fl_major, fl_minor);
   }
 
-  inline std::string GetGFXProviderName(UINT vendorId)
+  constexpr std::string_view GetGFXProviderName(UINT vendorId)
   {
-    std::string name;
     switch (vendorId)
     {
       case PCIV_AMD:
-        name = "AMD";
-        break;
+        return "AMD";
       case PCIV_Intel:
-        name = "Intel";
-        break;
+        return "Intel";
       case PCIV_NVIDIA:
-        name = "NVIDIA";
-        break;
+        return "NVIDIA";
       case PCIV_MICROSOFT:
-        name = "Microsoft";
-        break;
+        return "Microsoft";
+      default:
+        return "unknown";
     }
-
-    return name;
   }
 
   constexpr std::string_view DXGIFormatToShortString(const DXGI_FORMAT format)
