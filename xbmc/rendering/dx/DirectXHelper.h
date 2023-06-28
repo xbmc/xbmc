@@ -124,6 +124,23 @@ namespace DX
     return name;
   }
 
+  constexpr std::string_view DXGIFormatToShortString(const DXGI_FORMAT format)
+  {
+    switch (format)
+    {
+      case DXGI_FORMAT_B8G8R8A8_UNORM:
+        return "BGRA8";
+      case DXGI_FORMAT_R10G10B10A2_UNORM:
+        return "RGBA10";
+      case DXGI_FORMAT_R16G16B16A16_FLOAT:
+        return "FP16";
+      case DXGI_FORMAT_R32G32B32A32_FLOAT:
+        return "FP32";
+      default:
+        return "unknown";
+    }
+  }
+
   template <typename T> struct SizeGen
   {
     SizeGen<T>() { Width = Height = 0; }
