@@ -320,7 +320,7 @@ bool CPVRClient::GetAddonProperties()
   std::unique_lock<CCriticalSection> lock(m_critSection);
   m_clientCapabilities = addonCapabilities;
 
-  return retVal == PVR_ERROR_NO_ERROR;
+  return true;
 }
 
 bool CPVRClient::GetAddonNameStringProperties()
