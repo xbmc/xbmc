@@ -1413,7 +1413,7 @@ DEBUG_INFO_RENDER DX::DeviceResources::GetDebugInfo() const
       (md.ScanlineOrdering > DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE) ? "i" : "p",
       static_cast<double>(md.RefreshRate.Numerator) /
           static_cast<double>(md.RefreshRate.Denominator),
-      (desc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) ? "R10G10B10A2" : "B8G8R8A8", bits,
+      DXGIFormatToShortString(desc.Format), bits,
       DX::Windowing()->UseLimitedColor() ? "limited" : "full", range_min, range_max);
 
   return info;
