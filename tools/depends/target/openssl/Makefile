@@ -1,13 +1,5 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile 001-android-getauxvalrevert.patch 16-kodi.conf ../../download-files.include
-
-# lib name, version
-LIBNAME=openssl
-VERSION=1.1.1n
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=1937796736613dcf4105a54e42ecb61f95a1cea74677156f9459aea0f2c95159359e766089632bf364ee6b0d28d661eb9957bce8fecc9d2436378d8d79e8d0a4
-include ../../download-files.include
+include ../../Makefile.include OPENSSL-VERSION ../../download-files.include
+DEPS = ../../Makefile.include OPENSSL-VERSION Makefile 16-kodi.conf ../../download-files.include
 
 # configuration settings
 ifeq ($(OS), linux)
@@ -17,9 +9,7 @@ ifeq ($(OS), linux)
 else
   ifeq ($(OS), android)
     TARGETOPT=--with-zlib-include=$(PREFIX)/include --with-zlib-lib=$(PREFIX)/lib -D__ANDROID_API__=$(NDK_LEVEL)
-    # openssl 1.x incorrectly uses ANDROID_NDK_HOME, when openssl 3.x.x comes in use ANDROID_NDK_ROOT
-    # see https://github.com/openssl/openssl/pull/11206
-    export ANDROID_NDK_HOME=$(NDKROOT)
+    export ANDROID_NDK_ROOT=$(NDKROOT)
     export PATH:=$(TOOLCHAIN)/bin:$(PATH)
     ifeq ($(MESON_CPU), aarch64)
       OPENSSLPLATFORM=android-arm64
@@ -46,7 +36,7 @@ endif
 export CC CXX AR RANLIB
 export CFLAGS CXXFLAGS CPPFLAGS LDFLAGS
 
-LIBDYLIB=$(PLATFORM)/libssl.a
+LIBDYLIB=$(PLATFORM)/$(BYPRODUCT)
 
 all: .installed-$(PLATFORM)
 
@@ -54,9 +44,6 @@ all: .installed-$(PLATFORM)
 $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM); mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
-ifeq ($(OS),android)
-	cd $(PLATFORM); patch -p1 -i ../001-android-getauxvalrevert.patch
-endif
 	cd $(PLATFORM); cp ../16-kodi.conf ./Configurations/
 	cd $(PLATFORM); $(CONFIGURE)
 	if test "$(OS)" = "darwin_embedded"; then \
