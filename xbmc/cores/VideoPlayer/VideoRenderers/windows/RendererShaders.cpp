@@ -10,6 +10,8 @@
 
 #include "DVDCodecs/Video/DXVA.h"
 #include "rendering/dx/RenderContext.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/CPUInfo.h"
 #ifndef _M_ARM
   #include "utils/gpu_memcpy_sse4.h"
@@ -207,6 +209,11 @@ DXGI_FORMAT CRendererShaders::CalcIntermediateTargetFormat(const VideoPicture& p
 {
   // Default value: same as the back buffer
   DXGI_FORMAT format{DX::Windowing()->GetBackBuffer().GetFormat()};
+
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  if (!settings || !settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING))
+    return format;
 
   // Preserve HDR precision
   if (picture.colorBits > 8 && (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
