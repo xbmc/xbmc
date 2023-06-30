@@ -81,11 +81,6 @@ void CProcessorHD::Close()
   m_pVideoProcessor = nullptr;
   m_pVideoContext = nullptr;
   m_pVideoDevice = nullptr;
-
-  // restores 10 bit swap chain if previously forced to 8 bit
-  if (m_forced8bit)
-    DX::DeviceResources::Get()->ApplyDisplaySettings();
-
   m_superResolutionEnabled = false;
 }
 
@@ -863,15 +858,6 @@ void CProcessorHD::TryEnableVideoSuperResolution()
 {
   if (!m_pVideoContext || !m_pVideoProcessor)
     return;
-
-  const DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
-
-  if (format == DXGI_FORMAT_R10G10B10A2_UNORM)
-  {
-    // force 8 bit swap chain temporally as NVIDIA Super Resolution not supports 10 bit
-    DX::DeviceResources::Get()->ApplyDisplaySettings(true);
-    m_forced8bit = true;
-  }
 
   DXGI_ADAPTER_DESC ad{};
   DX::DeviceResources::Get()->GetAdapterDesc(&ad);

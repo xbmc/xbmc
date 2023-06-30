@@ -155,7 +155,6 @@ protected:
   DXGI_FORMAT m_input_dxgi_format{DXGI_FORMAT_UNKNOWN};
   DXGI_FORMAT m_output_dxgi_format{DXGI_FORMAT_UNKNOWN};
 
-  bool m_forced8bit{false};
   bool m_superResolutionEnabled{false};
 };
 };

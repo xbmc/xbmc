@@ -48,7 +48,7 @@ protected:
 private:
   void FillBuffersSet(CRenderBuffer* (&buffers)[8]);
   CRect ApplyTransforms(const CRect& destRect) const;
-  DXGI_FORMAT CalcIntermediateTargetFormat(const VideoPicture& picture) const;
+  DXGI_FORMAT CalcIntermediateTargetFormat(const VideoPicture& picture, bool tryVSR) const;
 
   std::unique_ptr<DXVA::CProcessorHD> m_processor;
   DXGI_FORMAT m_intermediateTargetFormat{DXGI_FORMAT_UNKNOWN};
