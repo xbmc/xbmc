@@ -144,13 +144,25 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
     m_format = picture.videoBuffer->GetFormat();
     const DXGI_FORMAT dxgi_format = GetDXGIFormat(m_format, __super::GetDXGIFormat(picture));
     const DXGI_FORMAT dest_format = DX::Windowing()->GetBackBuffer().GetFormat();
+    bool tryVSR{false};
+
+    if (DX::Windowing()->SupportsVideoSuperResolution())
+    {
+      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+      if (settings && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USESUPERRESOLUTION) &&
+          CProcessorHD::IsSuperResolutionSuitable(picture))
+      {
+        tryVSR = true;
+      }
+    }
 
     // create processor
     m_processor = std::make_unique<DXVA::CProcessorHD>();
     if (m_processor->PreInit() && m_processor->Open(picture) &&
         m_processor->IsFormatSupported(dxgi_format, support_type))
     {
-      m_intermediateTargetFormat = CalcIntermediateTargetFormat(picture);
+      m_intermediateTargetFormat = CalcIntermediateTargetFormat(picture, tryVSR);
       if (m_processor->SetOutputFormat(m_intermediateTargetFormat))
       {
         if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
@@ -159,19 +171,9 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
 
         if (m_processor->IsFormatConversionSupported(dxgi_format, dest_format, picture))
         {
-          if (DX::Windowing()->SupportsVideoSuperResolution())
-          {
-            const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+          if (tryVSR)
+            m_processor->TryEnableVideoSuperResolution();
 
-            if (!settings)
-              return true;
-
-            if (settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USESUPERRESOLUTION) &&
-                CProcessorHD::IsSuperResolutionSuitable(picture))
-            {
-              m_processor->TryEnableVideoSuperResolution();
-            }
-          }
           return true;
         }
       }
@@ -470,8 +472,13 @@ bool CRendererDXVA::CRenderBufferImpl::UploadToTexture()
   return m_bLoaded;
 }
 
-DXGI_FORMAT CRendererDXVA::CalcIntermediateTargetFormat(const VideoPicture& picture) const
+DXGI_FORMAT CRendererDXVA::CalcIntermediateTargetFormat(const VideoPicture& picture,
+                                                        bool tryVSR) const
 {
+  // RGB8 processor output format is required for VSR
+  if (tryVSR)
+    return DXGI_FORMAT_B8G8R8A8_UNORM;
+
   // Default value: same as the back buffer
   DXGI_FORMAT format{DX::Windowing()->GetBackBuffer().GetFormat()};
 
