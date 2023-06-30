@@ -342,14 +342,8 @@ bool CRendererBase::CreateIntermediateTarget(unsigned width,
                                              bool dynamic,
                                              DXGI_FORMAT format)
 {
-  // No format specified by renderer or high precision disabled > mirror swap chain's backbuffer format
-  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
-  if (!settings)
-    return false;
-
-  if (format == DXGI_FORMAT_UNKNOWN ||
-      !settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING))
+  // No format specified by renderer
+  if (format == DXGI_FORMAT_UNKNOWN)
     format = DX::Windowing()->GetBackBuffer().GetFormat();
 
   // don't create new one if it exists with requested size and format
