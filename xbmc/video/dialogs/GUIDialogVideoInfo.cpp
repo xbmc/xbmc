@@ -739,9 +739,8 @@ void CGUIDialogVideoInfo::Play(bool resume)
       Open();
       return;
     }
-    m_movieItem->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
 
-    pWindow->PlayMovie(m_movieItem.get());
+    pWindow->PlayMedia(m_movieItem);
   }
 }
 
