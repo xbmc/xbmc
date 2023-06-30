@@ -478,6 +478,11 @@ DXGI_FORMAT CRendererDXVA::CalcIntermediateTargetFormat(const VideoPicture& pict
   if (!m_processor)
     return format;
 
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  if (!settings || !settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING))
+    return format;
+
   // Preserve HDR precision
   if (picture.colorBits > 8 && (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
                                 picture.color_transfer == AVCOL_TRC_ARIB_STD_B67))
