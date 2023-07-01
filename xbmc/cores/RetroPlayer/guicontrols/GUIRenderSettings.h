@@ -36,7 +36,7 @@ public:
 
   // Render functions
   void Reset();
-  void SetSettings(CRenderSettings settings);
+  void SetSettings(const CRenderSettings& settings);
   void SetDimensions(const CRect& dimensions);
   void SetVideoFilter(const std::string& videoFilter);
   void SetStretchMode(STRETCHMODE stretchMode);
