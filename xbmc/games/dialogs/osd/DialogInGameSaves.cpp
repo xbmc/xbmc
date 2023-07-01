@@ -280,7 +280,7 @@ void CDialogInGameSaves::OnNewSave()
   CFileItemPtr item = std::make_shared<CFileItem>();
   CSavestateDatabase::GetSavestateItem(*savestate, savestatePath, *item);
 
-  m_savestateItems.AddFront(std::move(item), 0);
+  m_savestateItems.AddFront(item, 0);
 
   RefreshList();
 }
