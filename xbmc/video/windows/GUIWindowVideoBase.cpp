@@ -1086,10 +1086,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   }
   CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(item.GetPath()));
 
-  item.SetProperty("playlist_type_hint", m_guiState->GetPlaylist());
-
-  PlayMovie(&item, player);
-
+  PlayMedia(pItem, player, ContentUtils::PlayMode::PLAY_ONLY_THIS);
   return true;
 }
 
@@ -1110,12 +1107,16 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr& item, const st
   return CGUIMediaWindow::OnPlayAndQueueMedia(movieItem, player);
 }
 
-void CGUIWindowVideoBase::PlayMovie(const CFileItem *item, const std::string &player)
+void CGUIWindowVideoBase::PlayMedia(const std::shared_ptr<CFileItem>& item,
+                                    const std::string& player,
+                                    ContentUtils::PlayMode mode)
 {
   if(m_thumbLoader.IsLoading())
     m_thumbLoader.StopAsync();
 
-  CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(*item), player);
+  item->SetProperty("playlist_type_hint", m_guiState->GetPlaylist());
+  item->SetProperty("ParentPath", m_vecItems->GetPath());
+  VIDEO_UTILS::PlayItem(item, mode);
 
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
