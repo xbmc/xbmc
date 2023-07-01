@@ -370,7 +370,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonEditName()
     CFileItemPtr pItem = m_channelItems->Get(m_iSelected);
     if (pItem)
     {
-      std::string label = msg.GetLabel();
+      const std::string& label = msg.GetLabel();
       if (pItem->GetProperty(PROPERTY_CHANNEL_NAME).asString() != label)
       {
         pItem->SetProperty(PROPERTY_CHANNEL_NAME, label);
