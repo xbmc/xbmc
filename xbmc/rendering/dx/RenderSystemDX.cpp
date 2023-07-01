@@ -44,7 +44,6 @@ using namespace Microsoft::WRL;
 using namespace std::chrono_literals;
 
 CRenderSystemDX::CRenderSystemDX() : CRenderSystemBase()
-  , m_interlaced(false)
 {
   m_bVSync = true;
 
