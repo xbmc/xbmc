@@ -170,7 +170,7 @@ bool CRPRenderManager::GetVideoBuffer(unsigned int width,
                              renderBuffer->GetFrameSize(), renderBuffer->GetMemoryAccess(),
                              renderBuffer->GetMemoryAlignment()};
 
-  m_pendingBuffers.emplace_back(std::move(renderBuffer));
+  m_pendingBuffers.emplace_back(renderBuffer);
 
   return true;
 }
