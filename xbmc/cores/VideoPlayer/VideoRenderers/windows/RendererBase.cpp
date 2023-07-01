@@ -342,14 +342,8 @@ bool CRendererBase::CreateIntermediateTarget(unsigned width,
                                              bool dynamic,
                                              DXGI_FORMAT format)
 {
-  // No format specified by renderer or high precision disabled > mirror swap chain's backbuffer format
-  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
-  if (!settings)
-    return false;
-
-  if (format == DXGI_FORMAT_UNKNOWN ||
-      !settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING))
+  // No format specified by renderer
+  if (format == DXGI_FORMAT_UNKNOWN)
     format = DX::Windowing()->GetBackBuffer().GetFormat();
 
   // don't create new one if it exists with requested size and format
@@ -738,8 +732,10 @@ DEBUG_INFO_VIDEO CRendererBase::GetDebugInfo(int idx)
   if (m_outputShader)
     info.shader = m_outputShader->GetDebugInfo();
 
-  info.render = StringUtils::Format("Render method: {}, IT format: {}", m_renderMethodName,
-                                    DX::DXGIFormatToShortString(m_IntermediateTarget.GetFormat()));
+  info.render =
+      StringUtils::Format("Render method: {}, IT: {}x{} {}", m_renderMethodName,
+                          m_IntermediateTarget.GetWidth(), m_IntermediateTarget.GetHeight(),
+                          DX::DXGIFormatToShortString(m_IntermediateTarget.GetFormat()));
 
   std::string rmInfo = GetRenderMethodDebugInfo();
   if (!rmInfo.empty())
