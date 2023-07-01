@@ -20,8 +20,8 @@ CSpecialImageLoaderFactory::CSpecialImageLoaderFactory()
   m_specialImageLoaders[1] = std::make_unique<MUSIC_INFO::CMusicEmbeddedImageFileLoader>();
 }
 
-std::unique_ptr<CTexture> CSpecialImageLoaderFactory::Load(std::string specialType,
-                                                           std::string filePath,
+std::unique_ptr<CTexture> CSpecialImageLoaderFactory::Load(const std::string& specialType,
+                                                           const std::string& filePath,
                                                            unsigned int preferredWidth,
                                                            unsigned int preferredHeight) const
 {
