@@ -64,7 +64,7 @@ private:
                    uint8_t* target,
                    unsigned int targetStride);
 
-  static AVPixelFormat GetPixFormat(DXGI_FORMAT dxFormat);
+  static AVPixelFormat GetPixFormat();
 
   // Construction parameters
   const AVPixelFormat m_pixFormat;
@@ -89,7 +89,7 @@ public:
   IRenderBuffer* CreateRenderBuffer(void* header = nullptr) override;
 
   // DirectX interface
-  bool ConfigureDX(DXGI_FORMAT dxFormat);
+  bool ConfigureDX();
   CRPWinOutputShader* GetShader(SCALINGMETHOD scalingMethod) const;
 
 private:
