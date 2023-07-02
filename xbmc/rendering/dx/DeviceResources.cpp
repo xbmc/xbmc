@@ -638,9 +638,6 @@ void DX::DeviceResources::ResizeBuffers()
     else if (use10bitSetting == 2)
       use10bit = true;
 
-    if (m_force8bit)
-      use10bit = false;
-
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.Width = lround(m_outputSize.Width);
     swapChainDesc.Height = lround(m_outputSize.Height);
@@ -1368,17 +1365,12 @@ HDR_STATUS DX::DeviceResources::ToggleHDR()
   return hdrStatus;
 }
 
-void DX::DeviceResources::ApplyDisplaySettings(bool force8bit)
+void DX::DeviceResources::ApplyDisplaySettings()
 {
   CLog::LogF(LOGDEBUG, "Re-create swapchain due Display Settings changed");
 
-  if (force8bit)
-    m_force8bit = true;
-
   DestroySwapChain();
   CreateWindowSizeDependentResources();
-
-  m_force8bit = false;
 }
 
 DEBUG_INFO_RENDER DX::DeviceResources::GetDebugInfo() const
