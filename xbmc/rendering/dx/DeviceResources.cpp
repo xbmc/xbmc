@@ -188,7 +188,7 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
   if (hdmiInfo) // Xbox only
   {
     auto currentMode = hdmiInfo.GetCurrentDisplayMode();
-    AVRational refresh = av_d2q(currentMode.RefreshRate(), 60000);
+    AVRational refresh = av_d2q(currentMode.RefreshRate(), 120000);
     mode->RefreshRate.Numerator = refresh.num;
     mode->RefreshRate.Denominator = refresh.den;
   }
