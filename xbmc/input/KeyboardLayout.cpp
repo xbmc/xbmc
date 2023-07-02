@@ -53,7 +53,7 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
   const TiXmlElement* keyboard = element->FirstChildElement("keyboard");
   if (element->Attribute("codingtable"))
     m_codingtable = IInputCodingTablePtr(
-        CInputCodingTableFactory::CreateCodingTable(element->Attribute("codingtable"), element));
+        CInputCodingTableFactory::CreateCodingTable(element->Attribute("codingtable")));
   else
     m_codingtable = NULL;
   while (keyboard != NULL)
