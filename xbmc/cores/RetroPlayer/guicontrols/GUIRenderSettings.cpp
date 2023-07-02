@@ -60,7 +60,7 @@ void CGUIRenderSettings::Reset()
   return m_renderSettings.Reset();
 }
 
-void CGUIRenderSettings::SetSettings(CRenderSettings settings)
+void CGUIRenderSettings::SetSettings(const CRenderSettings& settings)
 {
   std::unique_lock<CCriticalSection> lock(m_mutex);
 
