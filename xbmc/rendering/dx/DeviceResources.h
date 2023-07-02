@@ -81,7 +81,7 @@ namespace DX
     bool SetFullScreen(bool fullscreen, RESOLUTION_INFO& res);
 
     // Apply display settings changes
-    void ApplyDisplaySettings(bool force8bit = false);
+    void ApplyDisplaySettings();
 
     // HDR display support
     HDR_STATUS ToggleHDR();
@@ -188,6 +188,5 @@ namespace DX
     bool m_DXVA2SharedDecoderSurfaces{false};
     bool m_DXVASuperResolutionSupport{false};
     bool m_usedSwapChain{false};
-    bool m_force8bit{false};
   };
 }
