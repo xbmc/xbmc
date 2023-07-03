@@ -895,13 +895,29 @@ void CGUIDialogAddonInfo::BuildDependencyList()
                 return a.m_depInfo.optional;
               }
 
-              // 3. scripts/modules to bottom
+              // 3. addon type asc, except scripts/modules at the bottom
               const std::shared_ptr<IAddon>& depA = a.m_installed ? a.m_installed : a.m_available;
               const std::shared_ptr<IAddon>& depB = b.m_installed ? b.m_installed : b.m_available;
 
-              if (depA && depB && depA->MainType() != depB->MainType())
+              if (depA && depB)
               {
-                return depA->MainType() != AddonType::SCRIPT_MODULE;
+                const AddonType typeA = depA->MainType();
+                const AddonType typeB = depB->MainType();
+                if (typeA != typeB)
+                {
+                  if ((typeA == AddonType::SCRIPT_MODULE) == (typeB == AddonType::SCRIPT_MODULE))
+                  {
+                    // both are scripts/modules or neither one is => sort by addon type asc
+                    return typeA < typeB;
+                  }
+                  else
+                  {
+                    // At this point, either:
+                    // A is script/module and B is not, or A is not script/module and B is.
+                    // the script/module goes to the bottom
+                    return typeA != AddonType::SCRIPT_MODULE;
+                  }
+                }
               }
 
               // 4. finally order by addon-id
