@@ -33,6 +33,11 @@ struct CTVShowInfo : CVideoInfo
   CTVShowInfo() : CVideoInfo(MediaTypeTvShow) {}
 };
 
+struct CSeasonInfo : CVideoInfo
+{
+  CSeasonInfo() : CVideoInfo(MediaTypeSeason) {}
+};
+
 struct CEpisodeInfo : CVideoInfo
 {
   CEpisodeInfo() : CVideoInfo(MediaTypeEpisode) {}
