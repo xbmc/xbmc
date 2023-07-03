@@ -59,7 +59,7 @@ private:
   bool ReleaseTexture();
 
   bool CreateScalingContext();
-  void ScalePixels(uint8_t* source,
+  void ScalePixels(const uint8_t* source,
                    unsigned int sourceStride,
                    uint8_t* target,
                    unsigned int targetStride);

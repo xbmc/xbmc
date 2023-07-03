@@ -143,12 +143,12 @@ bool CWinRenderBuffer::CreateScalingContext()
   return true;
 }
 
-void CWinRenderBuffer::ScalePixels(uint8_t* source,
+void CWinRenderBuffer::ScalePixels(const uint8_t* source,
                                    unsigned int sourceStride,
                                    uint8_t* target,
                                    unsigned int targetStride)
 {
-  uint8_t* src[] = {source, nullptr, nullptr, nullptr};
+  uint8_t* src[] = {const_cast<uint8_t*>(source), nullptr, nullptr, nullptr};
   int srcStride[] = {static_cast<int>(sourceStride), 0, 0, 0};
   uint8_t* dst[] = {target, nullptr, nullptr, nullptr};
   int dstStride[] = {static_cast<int>(targetStride), 0, 0, 0};
