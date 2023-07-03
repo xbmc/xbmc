@@ -52,6 +52,7 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoUtils.h"
 #include "video/tags/VideoTagLoaderFFmpeg.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
@@ -726,23 +727,26 @@ void CGUIDialogVideoInfo::Play(bool resume)
     return;
   }
 
-  CGUIWindowVideoNav* pWindow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowVideoNav>(WINDOW_VIDEO_NAV);
-  if (pWindow)
-  {
-    // close our dialog
-    Close(true);
-    if (resume)
-      m_movieItem->SetStartOffset(STARTOFFSET_RESUME);
-    else if (!CGUIWindowVideoBase::ShowResumeMenu(*m_movieItem))
-    {
-      // The Resume dialog was closed without any choice
-      Open();
-      return;
-    }
-    m_movieItem->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+  // close our dialog
+  Close(true);
 
-    pWindow->PlayMovie(m_movieItem.get());
+  if (resume)
+  {
+    m_movieItem->SetStartOffset(STARTOFFSET_RESUME);
   }
+  else if (!CGUIWindowVideoBase::ShowResumeMenu(*m_movieItem))
+  {
+    // The Resume dialog was closed without any choice
+    Open();
+    return;
+  }
+
+  m_movieItem->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+
+  const ContentUtils::PlayMode mode = m_movieItem->GetProperty("CheckAutoPlayNextItem").asBoolean()
+                                          ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
+                                          : ContentUtils::PlayMode::PLAY_ONLY_THIS;
+  VIDEO_UTILS::PlayItem(m_movieItem, mode);
 }
 
 namespace
