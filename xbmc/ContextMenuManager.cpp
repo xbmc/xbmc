@@ -80,6 +80,7 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CMovieSetInfo>(),
       std::make_shared<CONTEXTMENU::CMusicVideoInfo>(),
       std::make_shared<CONTEXTMENU::CTVShowInfo>(),
+      std::make_shared<CONTEXTMENU::CSeasonInfo>(),
       std::make_shared<CONTEXTMENU::CAlbumInfo>(),
       std::make_shared<CONTEXTMENU::CArtistInfo>(),
       std::make_shared<CONTEXTMENU::CSongInfo>(),
