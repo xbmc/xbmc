@@ -33,8 +33,6 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;
 
-  void PlayMovie(const CFileItem* item, const std::string& player = "");
-
   virtual void OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& scraper);
 
 
