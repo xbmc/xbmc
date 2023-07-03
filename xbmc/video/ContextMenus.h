@@ -48,6 +48,11 @@ struct CMovieInfo : CVideoInfo
   CMovieInfo() : CVideoInfo(MediaTypeMovie) {}
 };
 
+struct CMovieSetInfo : CVideoInfo
+{
+  CMovieSetInfo() : CVideoInfo(MediaTypeVideoCollection) {}
+};
+
 struct CVideoRemoveResumePoint : CStaticContextMenuAction
 {
   CVideoRemoveResumePoint() : CStaticContextMenuAction(38209) {}
