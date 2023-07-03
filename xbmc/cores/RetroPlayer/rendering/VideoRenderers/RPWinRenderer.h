@@ -46,7 +46,7 @@ class CWinRenderBuffer : public CRenderBufferSysMem
 {
 public:
   CWinRenderBuffer(AVPixelFormat pixFormat, DXGI_FORMAT dxFormat);
-  ~CWinRenderBuffer() override = default;
+  ~CWinRenderBuffer() override;
 
   // implementation of IRenderBuffer via CRenderBufferSysMem
   bool UploadTexture() override;

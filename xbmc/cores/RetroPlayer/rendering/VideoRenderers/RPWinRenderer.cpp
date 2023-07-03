@@ -52,6 +52,12 @@ CWinRenderBuffer::CWinRenderBuffer(AVPixelFormat pixFormat, DXGI_FORMAT dxFormat
 {
 }
 
+CWinRenderBuffer::~CWinRenderBuffer()
+{
+  if (m_swsContext != nullptr)
+    sws_freeContext(m_swsContext);
+}
+
 bool CWinRenderBuffer::CreateTexture()
 {
   if (!m_intermediateTarget->Create(m_width, m_height, 1, D3D11_USAGE_DYNAMIC, m_targetDxFormat))
