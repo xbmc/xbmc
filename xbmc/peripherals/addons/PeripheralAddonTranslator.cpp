@@ -55,6 +55,10 @@ PeripheralType CPeripheralAddonTranslator::TranslateType(PERIPHERAL_TYPE type)
   {
     case PERIPHERAL_TYPE_JOYSTICK:
       return PERIPHERAL_JOYSTICK;
+    case PERIPHERAL_TYPE_KEYBOARD:
+      return PERIPHERAL_KEYBOARD;
+    case PERIPHERAL_TYPE_MOUSE:
+      return PERIPHERAL_MOUSE;
     default:
       break;
   }
@@ -67,6 +71,10 @@ PERIPHERAL_TYPE CPeripheralAddonTranslator::TranslateType(PeripheralType type)
   {
     case PERIPHERAL_JOYSTICK:
       return PERIPHERAL_TYPE_JOYSTICK;
+    case PERIPHERAL_KEYBOARD:
+      return PERIPHERAL_TYPE_KEYBOARD;
+    case PERIPHERAL_MOUSE:
+      return PERIPHERAL_TYPE_MOUSE;
     default:
       break;
   }
