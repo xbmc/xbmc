@@ -185,12 +185,12 @@ void SetPathAndPlay(CFileItem& item)
   }
   else
   {
+    item.SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+
     const ContentUtils::PlayMode mode = item.GetProperty("CheckAutoPlayNextItem").asBoolean()
                                             ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                             : ContentUtils::PlayMode::PLAY_ONLY_THIS;
     VIDEO_UTILS::PlayItem(std::make_shared<CFileItem>(item), mode);
-
-    item.SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
   }
 }
 } // unnamed namespace
