@@ -37,6 +37,7 @@ public:
   CGLTexture(unsigned int width = 0, unsigned int height = 0, XB_FMT format = XB_FMT_A8R8G8B8);
   ~CGLTexture() override;
 
+  // Implementation of CTexture
   void CreateTextureObject() override;
   void DestroyTextureObject() override;
   void LoadToGPU() override;
@@ -47,6 +48,9 @@ public:
   {
     return true;
   }
+
+  // GL interface
+  GLuint GetTextureID() const;
 
 protected:
   void SetSwizzle();
