@@ -11,7 +11,7 @@
     <timer>
         <name>1109_topbaroverlay</name>
         <description>A timer that is activated when the topbaroverlay is loaded and stops automatically after 5 seconds (or playback is resumed)</description>
-        <start reset="true">Window.IsActive(1109) + [Player.Seeking | Player.Forwarding | Player.Rewinding | Player.HasPerformedSeek(1)]</start>
+        <start reset="true">[Window.IsActive(videoosd) | Window.IsActive(musicosd) | Window.IsActive(playerprocessinfo)] | [Window.IsActive(1109) + [Player.Seeking | Player.Forwarding | Player.Rewinding | Player.HasPerformedSeek(1)]]</start>
         <reset>Player.Seeking | Player.Forwarding | Player.Rewinding | Player.HasPerformedSeek(1)</reset>
         <stop>Integer.IsGreaterOrEqual(Skin.TimerElapsedSecs(1109_topbaroverlay),5) | Player.Playing</stop>
     </timer>
