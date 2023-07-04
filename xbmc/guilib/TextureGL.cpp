@@ -326,3 +326,8 @@ TextureFormat CGLTexture::GetFormatGL(KD_TEX_FMT textureFormat)
 
   return glFormat;
 }
+
+GLuint CGLTexture::GetTextureID() const
+{
+  return m_texture;
+}

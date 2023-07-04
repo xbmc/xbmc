@@ -480,3 +480,8 @@ TextureFormat CGLESTexture::GetFormatGLES30(KD_TEX_FMT textureFormat)
 
   return glFormat;
 }
+
+GLuint CGLESTexture::GetTextureID() const
+{
+  return m_texture;
+}
