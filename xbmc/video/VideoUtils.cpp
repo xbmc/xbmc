@@ -396,8 +396,9 @@ bool IsAutoPlayNextItem(const std::string& content)
   return setting && CSettingUtils::FindIntInList(setting, settingValue);
 }
 
-void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
-              ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */)
+void PlayItem(
+    const std::shared_ptr<CFileItem>& itemIn,
+    ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_VIDEO */)
 {
   auto item = itemIn;
 
