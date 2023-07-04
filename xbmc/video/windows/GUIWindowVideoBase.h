@@ -9,7 +9,6 @@
 #pragma once
 
 #include "playlists/PlayListTypes.h"
-#include "utils/ContentUtils.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
 #include "windows/GUIMediaWindow.h"
@@ -33,10 +32,6 @@ public:
   ~CGUIWindowVideoBase(void) override;
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction &action) override;
-
-  void PlayMedia(const std::shared_ptr<CFileItem>& item,
-                 const std::string& player = "",
-                 ContentUtils::PlayMode mode = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM);
 
   virtual void OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& scraper);
 
