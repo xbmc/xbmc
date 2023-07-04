@@ -36,6 +36,7 @@
 #include "utils/ScraperUrl.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
@@ -44,6 +45,7 @@
 #include <sstream>
 
 #include <fstrcmp.h>
+#include <tinyxml2.h>
 
 using namespace XFILE;
 using namespace KODI;
@@ -112,7 +114,7 @@ AddonType ScraperTypeFromContent(const CONTENT_TYPE& content)
 }
 
 // if the XML root is <error>, throw CScraperError with enclosed <title>/<message> values
-static void CheckScraperError(const TiXmlElement *pxeRoot)
+static void CheckScraperError(const tinyxml2::XMLElement* pxeRoot)
 {
   if (!pxeRoot || StringUtils::CompareNoCase(pxeRoot->Value(), "error"))
     return;
@@ -171,7 +173,7 @@ bool CScraper::SetPathSettings(CONTENT_TYPE content, const std::string &xml)
   if (xml.empty())
     return true;
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(xml);
   return SettingsFromXML(doc, false);
 }
@@ -181,13 +183,17 @@ std::string CScraper::GetPathSettings()
   if (!LoadSettings(false, true))
     return "";
 
-  std::stringstream stream;
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   SettingsToXML(doc);
-  if (doc.RootElement())
-    stream << *doc.RootElement();
+  if (!doc.RootElement())
+  {
+    return "";
+  }
+  tinyxml2::XMLPrinter printer;
+  doc.Accept(&printer);
+  const char* stream{printer.CStr()};
 
-  return stream.str();
+  return stream;
 }
 
 void CScraper::ClearCache()
@@ -238,9 +244,9 @@ std::vector<std::string> CScraper::Run(const std::string &function,
 
   CLog::Log(LOGDEBUG, "scraper: {} returned {}", function, strXML);
 
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   /* all data was converted to UTF-8 before being processed by scraper */
-  doc.Parse(strXML, TIXML_ENCODING_UTF8);
+  doc.Parse(strXML);
   if (!doc.RootElement())
   {
     CLog::Log(LOGERROR, "{}: Unable to parse XML", __FUNCTION__);
@@ -249,7 +255,7 @@ std::vector<std::string> CScraper::Run(const std::string &function,
 
   std::vector<std::string> result;
   result.push_back(strXML);
-  TiXmlElement *xchain = doc.RootElement()->FirstChildElement();
+  auto* xchain = doc.RootElement()->FirstChildElement();
   // skip children of the root element until <url> or <chain>
   while (xchain && strcmp(xchain->Value(), "url") && strcmp(xchain->Value(), "chain"))
     xchain = xchain->NextSiblingElement();
@@ -371,7 +377,7 @@ bool CScraper::Load()
 
       if (CServiceBroker::GetAddonMgr().GetAddon((*itr).id, dep, ADDON::OnlyEnabled::CHOICE_YES))
       {
-        CXBMCTinyXML doc;
+        CXBMCTinyXML2 doc;
         if (dep->Type() == AddonType::SCRAPER_LIBRARY && doc.LoadFile(dep->LibPath()))
           m_parser.AddDocument(&doc);
       }
@@ -463,8 +469,8 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
   // or <url>...</url> or <url>...</url><id>...</id> on success
   for (size_t i = 0; i < vcsOut.size(); ++i)
   {
-    CXBMCTinyXML doc;
-    doc.Parse(vcsOut[i], TIXML_ENCODING_UTF8);
+    CXBMCTinyXML2 doc;
+    doc.Parse(vcsOut[i]);
     CheckScraperError(doc.RootElement());
 
     if (doc.RootElement())
@@ -476,8 +482,8 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
        with start and end-tags we're not able to use it.
        Check for the desired Elements instead.
       */
-      TiXmlElement* pxeUrl = nullptr;
-      TiXmlElement* pId = nullptr;
+      tinyxml2::XMLElement* pxeUrl = nullptr;
+      tinyxml2::XMLElement* pId = nullptr;
       if (!strcmp(doc.RootElement()->Value(), "details"))
       {
         pxeUrl = doc.RootElement()->FirstChildElement("url");
@@ -489,7 +495,7 @@ CScraperUrl CScraper::NfoUrl(const std::string &sNfoContent)
         pxeUrl = doc.FirstChildElement("url");
       }
       if (pId && pId->FirstChild())
-        scurlRet.SetId(pId->FirstChild()->ValueStr());
+        scurlRet.SetId(pId->FirstChild()->Value());
 
       if (pxeUrl && pxeUrl->Attribute("function"))
         continue;
@@ -539,8 +545,8 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
   // or <url>...</url> or <url>...</url><id>...</id> on success
   for (size_t i = 0; i < vcsOut.size(); ++i)
   {
-    CXBMCTinyXML doc;
-    doc.Parse(vcsOut[i], TIXML_ENCODING_UTF8);
+    CXBMCTinyXML2 doc;
+    doc.Parse(vcsOut[i]);
     CheckScraperError(doc.RootElement());
 
     if (doc.RootElement())
@@ -552,8 +558,8 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
        with start and end-tags we're not able to use it.
        Check for the desired Elements instead.
        */
-      TiXmlElement* pxeUrl = nullptr;
-      TiXmlElement* pId = nullptr;
+      tinyxml2::XMLElement* pxeUrl = nullptr;
+      tinyxml2::XMLElement* pId = nullptr;
       if (!strcmp(doc.RootElement()->Value(), "details"))
       {
         pxeUrl = doc.RootElement()->FirstChildElement("url");
@@ -565,7 +571,7 @@ CScraperUrl CScraper::ResolveIDToUrl(const std::string &externalID)
         pxeUrl = doc.FirstChildElement("url");
       }
       if (pId && pId->FirstChild())
-        scurlRet.SetId(pId->FirstChild()->ValueStr());
+        scurlRet.SetId(pId->FirstChild()->Value());
 
       if (pxeUrl && pxeUrl->Attribute("function"))
         continue;
@@ -714,20 +720,23 @@ static void ParseThumbs(CScraperUrl &scurl,
 static std::string ParseFanart(const CFileItem &item, int nFanart, const std::string &tag)
 {
   std::string result;
-  TiXmlElement fanart("fanart");
+  tinyxml2::XMLDocument doc;
+  tinyxml2::XMLElement* fanart = doc.NewElement("fanart");
   for (int i = 0; i < nFanart; ++i)
   {
     std::stringstream prefix;
     prefix << tag << i + 1;
     std::string url = FromString(item, prefix.str() + ".url");
     std::string preview = FromString(item, prefix.str() + ".preview");
-    TiXmlElement thumb("thumb");
-    thumb.SetAttribute("preview", preview);
-    TiXmlText text(url);
-    thumb.InsertEndChild(text);
-    fanart.InsertEndChild(thumb);
+    tinyxml2::XMLElement* thumb = doc.NewElement("thumb");
+    thumb->SetAttribute("preview", preview.c_str());
+    tinyxml2::XMLText* text = doc.NewText(url.c_str());
+    thumb->InsertEndChild(text);
+    fanart->InsertEndChild(thumb);
   }
-  result << fanart;
+  tinyxml2::XMLPrinter printer;
+  fanart->Accept(&printer);
+  result = printer.CStr();
 
   return result;
 }
@@ -970,8 +979,8 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
   bool fResults(false);
   for (std::vector<std::string>::const_iterator i = vcsOut.begin(); i != vcsOut.end(); ++i)
   {
-    CXBMCTinyXML doc;
-    doc.Parse(*i, TIXML_ENCODING_UTF8);
+    CXBMCTinyXML2 doc;
+    doc.Parse(*i);
     if (!doc.RootElement())
     {
       CLog::Log(LOGERROR, "{}: Unable to parse XML", __FUNCTION__);
@@ -980,29 +989,29 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CCurlFile &fcurl,
 
     CheckScraperError(doc.RootElement());
 
-    TiXmlHandle xhDoc(&doc);
-    TiXmlHandle xhResults = xhDoc.FirstChild("results");
-    if (!xhResults.Element())
+    tinyxml2::XMLHandle xhDoc(&doc);
+    tinyxml2::XMLHandle xhResults = xhDoc.FirstChildElement("results");
+    if (!xhResults.ToElement())
       continue;
     fResults = true; // even if empty
 
     // we need to sort if returned results don't specify 'sorted="yes"'
     if (fSort)
     {
-      const char *sorted = xhResults.Element()->Attribute("sorted");
+      const char* sorted = xhResults.ToElement()->Attribute("sorted");
       if (sorted != nullptr)
         fSort = !StringUtils::EqualsNoCase(sorted, "yes");
     }
 
-    for (TiXmlElement *pxeMovie = xhResults.FirstChild("entity").Element(); pxeMovie;
+    for (auto* pxeMovie = xhResults.FirstChildElement("entity").ToElement(); pxeMovie;
          pxeMovie = pxeMovie->NextSiblingElement())
     {
-      TiXmlNode *pxnTitle = pxeMovie->FirstChild("title");
-      TiXmlElement *pxeLink = pxeMovie->FirstChildElement("url");
+      auto* pxnTitle = pxeMovie->FirstChildElement("title");
+      auto* pxeLink = pxeMovie->FirstChildElement("url");
       if (pxnTitle && pxnTitle->FirstChild() && pxeLink && pxeLink->FirstChild())
       {
         CScraperUrl scurlMovie;
-        auto title = pxnTitle->FirstChild()->ValueStr();
+        std::string title{pxnTitle->FirstChild()->Value()};
         std::string id;
         if (XMLUtils::GetString(pxeMovie, "id", id))
           scurlMovie.SetId(id);
@@ -1112,11 +1121,12 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
   // parse the returned XML into a vector of album objects
   for (std::vector<std::string>::const_iterator i = vcsOut.begin(); i != vcsOut.end(); ++i)
   {
-    CXBMCTinyXML doc;
-    doc.Parse(*i, TIXML_ENCODING_UTF8);
-    TiXmlHandle xhDoc(&doc);
+    CXBMCTinyXML2 doc;
+    doc.Parse(*i);
+    tinyxml2::XMLHandle xhDoc(&doc);
 
-    for (TiXmlElement *pxeAlbum = xhDoc.FirstChild("results").FirstChild("entity").Element();
+    for (auto* pxeAlbum =
+             xhDoc.FirstChildElement("results").FirstChildElement("entity").ToElement();
          pxeAlbum; pxeAlbum = pxeAlbum->NextSiblingElement())
     {
       std::string sTitle;
@@ -1135,7 +1145,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
 
         // if no URL is provided, use the URL we got back from CreateAlbumSearchUrl
         // (e.g., in case we only got one result back and were sent to the detail page)
-        TiXmlElement *pxeLink = pxeAlbum->FirstChildElement("url");
+        auto* pxeLink = pxeAlbum->FirstChildElement("url");
         CScraperUrl scurlAlbum;
         if (!pxeLink)
           scurlAlbum.ParseFromData(scurl.GetData());
@@ -1147,7 +1157,7 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CCurlFile &fcurl,
 
         CMusicAlbumInfo ali(sTitle, sArtist, sAlbumName, scurlAlbum);
 
-        TiXmlElement *pxeRel = pxeAlbum->FirstChildElement("relevance");
+        auto* pxeRel = pxeAlbum->FirstChildElement("relevance");
         if (pxeRel && pxeRel->FirstChild())
         {
           const char *szScale = pxeRel->Attribute("scale");
@@ -1209,23 +1219,24 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CCurlFile &fcurl, const std::
   // parse the returned XML into a vector of artist objects
   for (std::vector<std::string>::const_iterator i = vcsOut.begin(); i != vcsOut.end(); ++i)
   {
-    CXBMCTinyXML doc;
-    doc.Parse(*i, TIXML_ENCODING_UTF8);
+    CXBMCTinyXML2 doc;
+    doc.Parse(*i);
     if (!doc.RootElement())
     {
       CLog::Log(LOGERROR, "{}: Unable to parse XML", __FUNCTION__);
       return vcari;
     }
-    TiXmlHandle xhDoc(&doc);
-    for (TiXmlElement *pxeArtist = xhDoc.FirstChild("results").FirstChild("entity").Element();
+    tinyxml2::XMLHandle xhDoc(&doc);
+    for (auto* pxeArtist =
+             xhDoc.FirstChildElement("results").FirstChildElement("entity").ToElement();
          pxeArtist; pxeArtist = pxeArtist->NextSiblingElement())
     {
-      TiXmlNode *pxnTitle = pxeArtist->FirstChild("title");
+      auto* pxnTitle = pxeArtist->FirstChildElement("title");
       if (pxnTitle && pxnTitle->FirstChild())
       {
         CScraperUrl scurlArtist;
 
-        TiXmlElement *pxeLink = pxeArtist->FirstChildElement("url");
+        auto* pxeLink = pxeArtist->FirstChildElement("url");
         if (!pxeLink)
           scurlArtist.ParseFromData(scurl.GetData());
         for (; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
@@ -1300,7 +1311,7 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile& fcurl, const CScra
   // parse the XML response
   for (std::vector<std::string>::const_iterator i = vcsOut.begin(); i != vcsOut.end(); ++i)
   {
-    CXBMCTinyXML doc;
+    CXBMCTinyXML2 doc;
     doc.Parse(*i);
     if (!doc.RootElement())
     {
@@ -1308,12 +1319,13 @@ VIDEO::EPISODELIST CScraper::GetEpisodeList(XFILE::CCurlFile& fcurl, const CScra
       continue;
     }
 
-    TiXmlHandle xhDoc(&doc);
-    for (TiXmlElement *pxeMovie = xhDoc.FirstChild("episodeguide").FirstChild("episode").Element();
+    tinyxml2::XMLHandle xhDoc(&doc);
+    for (auto* pxeMovie =
+             xhDoc.FirstChildElement("episodeguide").FirstChildElement("episode").ToElement();
          pxeMovie; pxeMovie = pxeMovie->NextSiblingElement())
     {
       VIDEO::EPISODE ep;
-      TiXmlElement *pxeLink = pxeMovie->FirstChildElement("url");
+      auto* pxeLink = pxeMovie->FirstChildElement("url");
       std::string strEpNum;
       if (pxeLink && XMLUtils::GetInt(pxeMovie, "season", ep.iSeason) &&
           XMLUtils::GetString(pxeMovie, "epnum", strEpNum) && !strEpNum.empty())
@@ -1380,16 +1392,16 @@ bool CScraper::GetVideoDetails(XFILE::CCurlFile& fcurl,
   bool fRet(false);
   for (std::vector<std::string>::const_iterator i = vcsOut.begin(); i != vcsOut.end(); ++i)
   {
-    CXBMCTinyXML doc;
-    doc.Parse(*i, TIXML_ENCODING_UTF8);
+    CXBMCTinyXML2 doc;
+    doc.Parse(*i);
     if (!doc.RootElement())
     {
       CLog::Log(LOGERROR, "{}: Unable to parse XML", __FUNCTION__);
       continue;
     }
 
-    TiXmlHandle xhDoc(&doc);
-    TiXmlElement *pxeDetails = xhDoc.FirstChild("details").Element();
+    tinyxml2::XMLHandle xhDoc(&doc);
+    auto* pxeDetails = xhDoc.FirstChildElement("details").ToElement();
     if (!pxeDetails)
     {
       CLog::Log(LOGERROR, "{}: Invalid XML file (want <details>)", __FUNCTION__);
@@ -1420,8 +1432,8 @@ bool CScraper::GetAlbumDetails(CCurlFile &fcurl, const CScraperUrl &scurl, CAlbu
   bool fRet(false);
   for (std::vector<std::string>::const_iterator i = vcsOut.begin(); i != vcsOut.end(); ++i)
   {
-    CXBMCTinyXML doc;
-    doc.Parse(*i, TIXML_ENCODING_UTF8);
+    CXBMCTinyXML2 doc;
+    doc.Parse(*i);
     if (!doc.RootElement())
     {
       CLog::Log(LOGERROR, "{}: Unable to parse XML", __FUNCTION__);
@@ -1463,8 +1475,8 @@ bool CScraper::GetArtistDetails(CCurlFile &fcurl,
   bool fRet(false);
   for (std::vector<std::string>::const_iterator i = vcsOut.begin(); i != vcsOut.end(); ++i)
   {
-    CXBMCTinyXML doc;
-    doc.Parse(*i, TIXML_ENCODING_UTF8);
+    CXBMCTinyXML2 doc;
+    doc.Parse(*i);
     if (!doc.RootElement())
     {
       CLog::Log(LOGERROR, "{}: Unable to parse XML", __FUNCTION__);
@@ -1499,8 +1511,8 @@ bool CScraper::GetArtwork(XFILE::CCurlFile &fcurl, CVideoInfoTag &details)
   bool fRet(false);
   for (std::vector<std::string>::const_iterator it = vcsOut.begin(); it != vcsOut.end(); ++it)
   {
-    CXBMCTinyXML doc;
-    doc.Parse(*it, TIXML_ENCODING_UTF8);
+    CXBMCTinyXML2 doc;
+    doc.Parse(*it);
     if (!doc.RootElement())
     {
       CLog::Log(LOGERROR, "{}: Unable to parse XML", __FUNCTION__);

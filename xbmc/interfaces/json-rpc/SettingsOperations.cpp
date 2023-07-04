@@ -825,12 +825,12 @@ JSONRPC_STATUS CSettingsOperations::GetSkinSettings(const std::string& method,
 
     if (setting->GetType() == "bool")
     {
-      varSetting["value"] = std::static_pointer_cast<ADDON::CSkinSettingBool>(setting)->value;
+      varSetting["value"] = std::static_pointer_cast<ADDON::CSkinSettingBool>(setting)->m_value;
       varSetting["type"] = "boolean";
     }
     else if (setting->GetType() == "string")
     {
-      varSetting["value"] = std::static_pointer_cast<ADDON::CSkinSettingString>(setting)->value;
+      varSetting["value"] = std::static_pointer_cast<ADDON::CSkinSettingString>(setting)->m_value;
       varSetting["type"] = setting->GetType();
     }
     else
@@ -859,9 +859,9 @@ JSONRPC_STATUS CSettingsOperations::GetSkinSettingValue(const std::string& metho
 
   CVariant value;
   if (setting->GetType() == "string")
-    value = std::static_pointer_cast<ADDON::CSkinSettingString>(setting)->value;
+    value = std::static_pointer_cast<ADDON::CSkinSettingString>(setting)->m_value;
   else if (setting->GetType() == "bool")
-    value = std::static_pointer_cast<ADDON::CSkinSettingBool>(setting)->value;
+    value = std::static_pointer_cast<ADDON::CSkinSettingBool>(setting)->m_value;
   else
     return InvalidParams;
 
@@ -887,14 +887,14 @@ JSONRPC_STATUS CSettingsOperations::SetSkinSettingValue(const std::string& metho
     if (!value.isString())
       return InvalidParams;
 
-    result = std::static_pointer_cast<ADDON::CSkinSettingString>(setting)->value = value.asString();
+    result = std::static_pointer_cast<ADDON::CSkinSettingString>(setting)->m_value = value.asString();
   }
   else if (setting->GetType() == "bool")
   {
     if (!value.isBoolean())
       return InvalidParams;
 
-    result = std::static_pointer_cast<ADDON::CSkinSettingBool>(setting)->value = value.asBoolean();
+    result = std::static_pointer_cast<ADDON::CSkinSettingBool>(setting)->m_value = value.asBoolean();
   }
   else
   {

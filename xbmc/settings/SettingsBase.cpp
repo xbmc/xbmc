@@ -13,7 +13,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingsManager.h"
 #include "utils/Variant.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 
 #include <mutex>
 
@@ -69,16 +69,16 @@ bool CSettingsBase::IsInitialized() const
   return m_initialized && m_settingsManager->IsInitialized();
 }
 
-bool CSettingsBase::LoadValuesFromXml(const CXBMCTinyXML& xml, bool& updated)
+bool CSettingsBase::LoadValuesFromXml(const CXBMCTinyXML2& xml, bool& updated)
 {
-  const TiXmlElement* xmlRoot = xml.RootElement();
-  if (xmlRoot == nullptr || xmlRoot->ValueStr() != SETTINGS_XML_ROOT)
+  const auto* xmlRoot = xml.RootElement();
+  if (!xmlRoot || strcmp(xmlRoot->Value(), SETTINGS_XML_ROOT) != 0)
     return false;
 
   return m_settingsManager->Load(xmlRoot, updated);
 }
 
-bool CSettingsBase::LoadValuesFromXml(const TiXmlElement* root, bool& updated)
+bool CSettingsBase::LoadValuesFromXml(const tinyxml2::XMLElement* root, bool& updated)
 {
   if (root == nullptr)
     return false;
@@ -86,7 +86,7 @@ bool CSettingsBase::LoadValuesFromXml(const TiXmlElement* root, bool& updated)
   return m_settingsManager->Load(root, updated);
 }
 
-bool CSettingsBase::LoadHiddenValuesFromXml(const TiXmlElement* root)
+bool CSettingsBase::LoadHiddenValuesFromXml(const tinyxml2::XMLElement* root)
 {
   if (root == nullptr)
     return false;
@@ -115,7 +115,7 @@ bool CSettingsBase::IsLoaded() const
   return m_settingsManager->IsLoaded();
 }
 
-bool CSettingsBase::SaveValuesToXml(CXBMCTinyXML& xml) const
+bool CSettingsBase::SaveValuesToXml(CXBMCTinyXML2& xml) const
 {
   std::string serializedSettings;
   auto xmlSerializer = std::make_unique<CSettingsValueXmlSerializer>();
@@ -263,10 +263,10 @@ void CSettingsBase::SetDefaults()
   m_settingsManager->SetDefaults();
 }
 
-bool CSettingsBase::InitializeDefinitionsFromXml(const CXBMCTinyXML& xml)
+bool CSettingsBase::InitializeDefinitionsFromXml(const CXBMCTinyXML2& xml)
 {
-  const TiXmlElement* root = xml.RootElement();
-  if (root == nullptr)
+  const auto* root = xml.RootElement();
+  if (!root)
     return false;
 
   return m_settingsManager->Initialize(root);

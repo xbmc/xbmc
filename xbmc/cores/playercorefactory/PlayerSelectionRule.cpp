@@ -25,14 +25,16 @@
 
 #include <algorithm>
 
+#include <tinyxml2.h>
+
 using namespace KODI;
 
-CPlayerSelectionRule::CPlayerSelectionRule(TiXmlElement* pRule)
+CPlayerSelectionRule::CPlayerSelectionRule(tinyxml2::XMLElement* pRule)
 {
   Initialize(pRule);
 }
 
-void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
+void CPlayerSelectionRule::Initialize(tinyxml2::XMLElement* pRule)
 {
   m_name = XMLUtils::GetAttribute(pRule, "name");
   if (m_name.empty())
@@ -82,7 +84,7 @@ void CPlayerSelectionRule::Initialize(TiXmlElement* pRule)
 
   m_playerName = XMLUtils::GetAttribute(pRule, "player");
 
-  TiXmlElement* pSubRule = pRule->FirstChildElement("rule");
+  auto* pSubRule = pRule->FirstChildElement("rule");
   while (pSubRule)
   {
     vecSubRules.emplace_back(std::make_unique<CPlayerSelectionRule>(pSubRule));

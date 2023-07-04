@@ -34,7 +34,7 @@
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -43,6 +43,8 @@
 #include <memory>
 #include <mutex>
 #include <vector>
+
+#include <tinyxml2.h>
 
 namespace
 {
@@ -99,7 +101,7 @@ SettingPtr AddSettingWithoutDefinition(ADDON::CAddonSettings& settings,
     return nullptr;
 
   // if necessary try to initialize the settings manager on-the-fly without any definitions
-  if (!settings.IsInitialized() && !settings.Initialize(CXBMCTinyXML(), true))
+  if (!settings.IsInitialized() && !settings.Initialize(CXBMCTinyXML2(), true))
   {
     logger->warn("failed to initialize settings on-the-fly");
     return nullptr;
@@ -282,7 +284,7 @@ bool CAddonSettings::AddInstanceSettings()
   return true;
 }
 
-bool CAddonSettings::Initialize(const CXBMCTinyXML& doc, bool allowEmpty /* = false */)
+bool CAddonSettings::Initialize(const CXBMCTinyXML2& doc, bool allowEmpty /* = false */)
 {
   std::unique_lock<CCriticalSection> lock(m_critical);
   if (m_initialized)
@@ -311,7 +313,7 @@ bool CAddonSettings::Initialize(const CXBMCTinyXML& doc, bool allowEmpty /* = fa
   return true;
 }
 
-bool CAddonSettings::Load(const CXBMCTinyXML& doc)
+bool CAddonSettings::Load(const CXBMCTinyXML2& doc)
 {
   std::unique_lock<CCriticalSection> lock(m_critical);
   if (!m_initialized)
@@ -335,8 +337,9 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
       return false;
 
     // helper lambda for parsing a setting's ID and value from XML
-    auto parseSettingValue = [&settingValues](const TiXmlNode* setting,
-                                              const std::string& categoryId = "") {
+    auto parseSettingValue =
+        [&settingValues](const tinyxml2::XMLNode* setting, const std::string& categoryId = "")
+    {
       // put together the setting ID
       auto settingId = categoryId;
       if (!settingId.empty())
@@ -348,7 +351,7 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
       // parse the setting value
       std::string settingValue;
       if (setting->FirstChild())
-        settingValue = setting->FirstChild()->ValueStr();
+        settingValue = setting->FirstChild()->Value();
 
       // add the setting to the map
       settingValues.emplace(settingId, settingValue);
@@ -359,9 +362,9 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
     while (category != nullptr)
     {
       // check if this really is a category with setting elements
-      if (category->FirstChild() && category->FirstChild()->Type() == CXBMCTinyXML::TINYXML_ELEMENT)
+      if (category->FirstChild() && category->FirstChild()->ToElement())
       {
-        const auto& categoryId = category->ValueStr();
+        const auto& categoryId = category->Value();
         auto setting = category->FirstChild();
         while (setting != nullptr)
         {
@@ -416,7 +419,7 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
   return true;
 }
 
-bool CAddonSettings::Save(CXBMCTinyXML& doc) const
+bool CAddonSettings::Save(CXBMCTinyXML2& doc) const
 {
   std::unique_lock<CCriticalSection> lock(m_critical);
   if (!m_initialized)
@@ -513,7 +516,7 @@ void CAddonSettings::InitializeConditions()
   GetSettingsManager()->AddDynamicCondition("InfoBool", InfoBool);
 }
 
-bool CAddonSettings::InitializeDefinitions(const CXBMCTinyXML& doc)
+bool CAddonSettings::InitializeDefinitions(const CXBMCTinyXML2& doc)
 {
   // figure out the version of the setting definitions
   uint32_t version = 0;
@@ -531,13 +534,13 @@ bool CAddonSettings::InitializeDefinitions(const CXBMCTinyXML& doc)
   return InitializeFromOldSettingDefinitions(doc);
 }
 
-bool CAddonSettings::ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& version) const
+bool CAddonSettings::ParseSettingVersion(const CXBMCTinyXML2& doc, uint32_t& version) const
 {
-  const TiXmlElement* root = doc.RootElement();
-  if (root == nullptr)
+  const auto* root = doc.RootElement();
+  if (!root)
     return false;
 
-  if (!StringUtils::EqualsNoCase(root->ValueStr(), SETTING_XML_ROOT))
+  if (!StringUtils::EqualsNoCase(root->Value(), SETTING_XML_ROOT))
   {
     m_logger->error("error reading setting definitions: no <settings> tag");
     return false;
@@ -548,7 +551,7 @@ bool CAddonSettings::ParseSettingVersion(const CXBMCTinyXML& doc, uint32_t& vers
 }
 
 std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(
-    const TiXmlElement* categoryElement,
+    const tinyxml2::XMLElement* categoryElement,
     const std::shared_ptr<CSettingCategory>& category,
     std::set<std::string>& settingIds)
 {
@@ -569,8 +572,8 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(
   uint32_t groupId = 1;
 
   // go through all settings in the category
-  const TiXmlElement* settingElement = categoryElement->FirstChildElement("setting");
-  while (settingElement != nullptr)
+  const auto* settingElement = categoryElement->FirstChildElement("setting");
+  while (settingElement)
   {
     // read the possible attributes
     const auto settingType = XMLUtils::GetAttribute(settingElement, "type");
@@ -674,7 +677,8 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(
 
       // handle subsettings
       bool isSubsetting = false;
-      if (settingElement->QueryBoolAttribute("subsetting", &isSubsetting) == TIXML_SUCCESS &&
+      if (settingElement->QueryBoolAttribute("subsetting", &isSubsetting) ==
+              tinyxml2::XML_SUCCESS &&
           isSubsetting)
       {
         // find the last non-subsetting in the current group and use that as the parent setting
@@ -786,7 +790,9 @@ std::shared_ptr<CSettingGroup> CAddonSettings::ParseOldSettingElement(
 }
 
 std::shared_ptr<CSettingCategory> CAddonSettings::ParseOldCategoryElement(
-    uint32_t& categoryId, const TiXmlElement* categoryElement, std::set<std::string>& settingIds)
+    uint32_t& categoryId,
+    const tinyxml2::XMLElement* categoryElement,
+    std::set<std::string>& settingIds)
 {
   // create the category
   auto category = std::make_shared<CSettingCategory>(StringUtils::Format("category{}", categoryId),
@@ -807,12 +813,12 @@ std::shared_ptr<CSettingCategory> CAddonSettings::ParseOldCategoryElement(
   return category;
 }
 
-bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc)
+bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML2& doc)
 {
   m_logger->debug("trying to load setting definitions from old format...");
 
-  const TiXmlElement* root = doc.RootElement();
-  if (root == nullptr)
+  const auto* root = doc.RootElement();
+  if (!root)
     return false;
 
   std::shared_ptr<CSettingSection> section =
@@ -827,8 +833,8 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
   // Special case for no category settings
   section->AddCategory(ParseOldCategoryElement(categoryId, root, settingIds));
 
-  const TiXmlElement* categoryElement = root->FirstChildElement("category");
-  while (categoryElement != nullptr)
+  const auto* categoryElement = root->FirstChildElement("category");
+  while (categoryElement)
   {
     section->AddCategory(ParseOldCategoryElement(categoryId, categoryElement, settingIds));
 
@@ -842,9 +848,10 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
   return true;
 }
 
-SettingPtr CAddonSettings::InitializeFromOldSettingAction(const std::string& settingId,
-                                                          const TiXmlElement* settingElement,
-                                                          const std::string& defaultValue)
+SettingPtr CAddonSettings::InitializeFromOldSettingAction(
+    const std::string& settingId,
+    const tinyxml2::XMLElement* settingElement,
+    const std::string& defaultValue)
 {
   // parse the action attribute
   std::string action = XMLUtils::GetAttribute(settingElement, "action");
@@ -907,7 +914,7 @@ std::shared_ptr<CSetting> CAddonSettings::InitializeFromOldSettingLabel()
 }
 
 SettingPtr CAddonSettings::InitializeFromOldSettingBool(const std::string& settingId,
-                                                        const TiXmlElement* settingElement,
+                                                        const tinyxml2::XMLElement* settingElement,
                                                         const std::string& defaultValue)
 {
   auto setting = std::make_shared<CSettingBool>(settingId, GetSettingsManager());
@@ -919,11 +926,12 @@ SettingPtr CAddonSettings::InitializeFromOldSettingBool(const std::string& setti
   return setting;
 }
 
-SettingPtr CAddonSettings::InitializeFromOldSettingTextIpAddress(const std::string& settingId,
-                                                                 const std::string& settingType,
-                                                                 const TiXmlElement* settingElement,
-                                                                 const std::string& defaultValue,
-                                                                 const int settingLabel)
+SettingPtr CAddonSettings::InitializeFromOldSettingTextIpAddress(
+    const std::string& settingId,
+    const std::string& settingType,
+    const tinyxml2::XMLElement* settingElement,
+    const std::string& defaultValue,
+    const int settingLabel)
 {
   std::shared_ptr<CSettingString> setting;
   auto control = std::make_shared<CSettingControlEdit>();
@@ -960,10 +968,11 @@ SettingPtr CAddonSettings::InitializeFromOldSettingTextIpAddress(const std::stri
   return setting;
 }
 
-SettingPtr CAddonSettings::InitializeFromOldSettingNumber(const std::string& settingId,
-                                                          const TiXmlElement* settingElement,
-                                                          const std::string& defaultValue,
-                                                          const int settingLabel)
+SettingPtr CAddonSettings::InitializeFromOldSettingNumber(
+    const std::string& settingId,
+    const tinyxml2::XMLElement* settingElement,
+    const std::string& defaultValue,
+    const int settingLabel)
 {
   auto setting = std::make_shared<CSettingInt>(settingId, GetSettingsManager());
   if (setting->FromString(defaultValue))
@@ -979,7 +988,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingNumber(const std::string& set
 
 SettingPtr CAddonSettings::InitializeFromOldSettingPath(const std::string& settingId,
                                                         const std::string& settingType,
-                                                        const TiXmlElement* settingElement,
+                                                        const tinyxml2::XMLElement* settingElement,
                                                         const std::string& defaultValue,
                                                         const int settingLabel)
 {
@@ -1049,7 +1058,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingPath(const std::string& setti
 }
 
 SettingPtr CAddonSettings::InitializeFromOldSettingDate(const std::string& settingId,
-                                                        const TiXmlElement* settingElement,
+                                                        const tinyxml2::XMLElement* settingElement,
                                                         const std::string& defaultValue,
                                                         const int settingLabel)
 {
@@ -1066,7 +1075,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingDate(const std::string& setti
 }
 
 SettingPtr CAddonSettings::InitializeFromOldSettingTime(const std::string& settingId,
-                                                        const TiXmlElement* settingElement,
+                                                        const tinyxml2::XMLElement* settingElement,
                                                         const std::string& defaultValue,
                                                         const int settingLabel)
 {
@@ -1084,7 +1093,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingTime(const std::string& setti
 
 SettingPtr CAddonSettings::InitializeFromOldSettingSelect(
     const std::string& settingId,
-    const TiXmlElement* settingElement,
+    const tinyxml2::XMLElement* settingElement,
     const std::string& defaultValue,
     const int settingLabel,
     const std::string& settingValues,
@@ -1150,7 +1159,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSelect(
 }
 
 SettingPtr CAddonSettings::InitializeFromOldSettingAddon(const std::string& settingId,
-                                                         const TiXmlElement* settingElement,
+                                                         const tinyxml2::XMLElement* settingElement,
                                                          const std::string& defaultValue,
                                                          const int settingLabel)
 {
@@ -1220,7 +1229,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAddon(const std::string& sett
 SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
     const std::string& settingId,
     const std::string& settingType,
-    const TiXmlElement* settingElement,
+    const tinyxml2::XMLElement* settingElement,
     const std::string& defaultValue,
     const std::string& settingValues,
     const std::vector<std::string>& settingLValues)
@@ -1343,10 +1352,11 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
   return setting;
 }
 
-SettingPtr CAddonSettings::InitializeFromOldSettingFileEnum(const std::string& settingId,
-                                                            const TiXmlElement* settingElement,
-                                                            const std::string& defaultValue,
-                                                            const std::string& settingValues)
+SettingPtr CAddonSettings::InitializeFromOldSettingFileEnum(
+    const std::string& settingId,
+    const tinyxml2::XMLElement* settingElement,
+    const std::string& defaultValue,
+    const std::string& settingValues)
 {
   auto setting = InitializeFromOldSettingFileWithSource(settingId, settingElement, defaultValue,
                                                         settingValues);
@@ -1358,9 +1368,10 @@ SettingPtr CAddonSettings::InitializeFromOldSettingFileEnum(const std::string& s
   return setting;
 }
 
-SettingPtr CAddonSettings::InitializeFromOldSettingRangeOfNum(const std::string& settingId,
-                                                              const TiXmlElement* settingElement,
-                                                              const std::string& defaultValue)
+SettingPtr CAddonSettings::InitializeFromOldSettingRangeOfNum(
+    const std::string& settingId,
+    const tinyxml2::XMLElement* settingElement,
+    const std::string& defaultValue)
 {
   auto setting = std::make_shared<CSettingNumber>(settingId, GetSettingsManager());
   if (setting->FromString(defaultValue))
@@ -1391,9 +1402,10 @@ SettingPtr CAddonSettings::InitializeFromOldSettingRangeOfNum(const std::string&
   return setting;
 }
 
-SettingPtr CAddonSettings::InitializeFromOldSettingSlider(const std::string& settingId,
-                                                          const TiXmlElement* settingElement,
-                                                          const std::string& defaultValue)
+SettingPtr CAddonSettings::InitializeFromOldSettingSlider(
+    const std::string& settingId,
+    const tinyxml2::XMLElement* settingElement,
+    const std::string& defaultValue)
 {
   // parse range
   double min = 0.0, max = 100.0, step = 1.0;
@@ -1459,7 +1471,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSlider(const std::string& set
 
 SettingPtr CAddonSettings::InitializeFromOldSettingFileWithSource(
     const std::string& settingId,
-    const TiXmlElement* settingElement,
+    const tinyxml2::XMLElement* settingElement,
     const std::string& defaultValue,
     std::string source)
 {
@@ -1485,20 +1497,20 @@ SettingPtr CAddonSettings::InitializeFromOldSettingFileWithSource(
   return setting;
 }
 
-bool CAddonSettings::LoadOldSettingValues(const CXBMCTinyXML& doc,
+bool CAddonSettings::LoadOldSettingValues(const CXBMCTinyXML2& doc,
                                           std::map<std::string, std::string>& settings) const
 {
   if (!doc.RootElement())
     return false;
 
-  const TiXmlElement* category = doc.RootElement()->FirstChildElement("category");
-  if (category == nullptr)
+  const auto* category = doc.RootElement()->FirstChildElement("category");
+  if (!category)
     category = doc.RootElement();
 
-  while (category != nullptr)
+  while (category)
   {
-    const TiXmlElement* setting = category->FirstChildElement("setting");
-    while (setting != nullptr)
+    const auto* setting = category->FirstChildElement("setting");
+    while (setting)
     {
       const char* id = setting->Attribute("id");
       const char* value = setting->Attribute("value");
@@ -1514,18 +1526,18 @@ bool CAddonSettings::LoadOldSettingValues(const CXBMCTinyXML& doc,
   return !settings.empty();
 }
 
-bool CAddonSettings::ParseOldLabel(const TiXmlElement* element,
+bool CAddonSettings::ParseOldLabel(const tinyxml2::XMLElement* element,
                                    const std::string& settingId,
                                    int& labelId)
 {
   labelId = -1;
-  if (element == nullptr)
+  if (!element)
     return false;
 
   // label value as a string
-  std::string labelString;
-  element->QueryStringAttribute("label", &labelString);
-
+  const char* label = "";
+  element->QueryStringAttribute("label", &label);
+  std::string labelString{label};
   bool parsed = !labelString.empty();
 
   // try to parse the label as a pure number, i.e. a localized string

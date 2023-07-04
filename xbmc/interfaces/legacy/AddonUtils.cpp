@@ -11,10 +11,11 @@
 #include "LanguageHook.h"
 #include "addons/Skin.h"
 #include "application/Application.h"
-#include "utils/XBMCTinyXML.h"
 #ifdef ENABLE_XBMC_TRACE_API
 #include "utils/log.h"
 #endif
+
+#include <tinyxml2.h>
 
 namespace XBMCAddonUtils
 {
@@ -47,21 +48,22 @@ namespace XBMCAddonUtils
     // <control type="type">
     //   <description />
     // </control>
-    TiXmlElement control("control");
-    control.SetAttribute("type", cControlType);
-    TiXmlElement filler("description");
-    control.InsertEndChild(filler);
-    g_SkinInfo->ResolveIncludes(&control);
+    tinyxml2::XMLDocument doc;
+    auto* control = doc.NewElement("control");
+    control->SetAttribute("type", cControlType);
+    auto* filler = doc.NewElement("description");
+    control->InsertEndChild(filler);
+    g_SkinInfo->ResolveIncludes(control);
 
     // ok, now check for our texture type
-    TiXmlElement *pTexture = control.FirstChildElement(cTextureType);
-    if (pTexture)
+    auto* textureElement = control->FirstChildElement(cTextureType);
+    if (textureElement)
     {
       // found our textureType
-      TiXmlNode *pNode = pTexture->FirstChild();
-      if (pNode && pNode->Value()[0] != '-')
+      auto* node = textureElement->FirstChild();
+      if (node && node->Value()[0] != '-')
       {
-        strncpy(defaultImage, pNode->Value(), sizeof(defaultImage));
+        strncpy(defaultImage, node->Value(), sizeof(defaultImage));
         defaultImage[sizeof(defaultImage) - 1] = '\0';
         return defaultImage;
       }

@@ -26,7 +26,11 @@
 class CArtist;
 class CFileItem;
 class CMusicDbUrl;
-class TiXmlNode;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 namespace dbiplus
 {
@@ -713,7 +717,7 @@ public:
   /////////////////////////////////////////////////
   void ExportToXML(const CLibExportSettings& settings,
                    CGUIDialogProgress* progressDialog = nullptr);
-  bool ExportSongHistory(TiXmlNode* pNode, CGUIDialogProgress* progressDialog = nullptr);
+  bool ExportSongHistory(tinyxml2::XMLNode* pNode, CGUIDialogProgress* progressDialog = nullptr);
   void ImportFromXML(const std::string& xmlFile, CGUIDialogProgress* progressDialog = nullptr);
   bool ImportSongHistory(const std::string& xmlFile,
                          const int total,

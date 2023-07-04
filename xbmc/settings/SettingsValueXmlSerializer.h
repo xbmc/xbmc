@@ -16,7 +16,11 @@ class CSetting;
 class CSettingCategory;
 class CSettingGroup;
 class CSettingSection;
-class TiXmlNode;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class CSettingsValueXmlSerializer : public ISettingsValueSerializer
 {
@@ -28,9 +32,10 @@ public:
   std::string SerializeValues(const CSettingsManager* settingsManager) const override;
 
 private:
-  void SerializeSection(TiXmlNode* parent, const std::shared_ptr<CSettingSection>& section) const;
-  void SerializeCategory(TiXmlNode* parent,
+  void SerializeSection(tinyxml2::XMLNode* parent,
+                        const std::shared_ptr<CSettingSection>& section) const;
+  void SerializeCategory(tinyxml2::XMLNode* parent,
                          const std::shared_ptr<CSettingCategory>& category) const;
-  void SerializeGroup(TiXmlNode* parent, const std::shared_ptr<CSettingGroup>& group) const;
-  void SerializeSetting(TiXmlNode* parent, const std::shared_ptr<CSetting>& setting) const;
+  void SerializeGroup(tinyxml2::XMLNode* parent, const std::shared_ptr<CSettingGroup>& group) const;
+  void SerializeSetting(tinyxml2::XMLNode* parent, const std::shared_ptr<CSetting>& setting) const;
 };

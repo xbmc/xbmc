@@ -51,7 +51,7 @@
 #include "utils/StringUtils.h"
 #include "utils/SystemInfo.h"
 #include "utils/Variant.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 #include "view/ViewStateSettings.h"
 
@@ -118,7 +118,7 @@ bool CSettings::Load()
 
 bool CSettings::Load(const std::string &file)
 {
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   bool updated = false;
   if (!XFILE::CFile::Exists(file) || !xmlDoc.LoadFile(file) ||
       !Load(xmlDoc.RootElement(), updated))
@@ -138,7 +138,7 @@ bool CSettings::Load(const std::string &file)
   return true;
 }
 
-bool CSettings::Load(const TiXmlElement* root)
+bool CSettings::Load(const tinyxml2::XMLElement* root)
 {
   bool updated = false;
   return Load(root, updated);
@@ -153,11 +153,11 @@ bool CSettings::Save()
 
 bool CSettings::Save(const std::string &file)
 {
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if (!SaveValuesToXml(xmlDoc))
     return false;
 
-  TiXmlElement* root = xmlDoc.RootElement();
+  auto* root = xmlDoc.RootElement();
   if (root == nullptr)
     return false;
 
@@ -167,7 +167,7 @@ bool CSettings::Save(const std::string &file)
   return xmlDoc.SaveFile(file);
 }
 
-bool CSettings::Save(TiXmlNode* root) const
+bool CSettings::Save(tinyxml2::XMLNode* root) const
 {
   std::unique_lock<CCriticalSection> lock(m_critical);
   // save any ISubSettings implementations
@@ -180,7 +180,7 @@ bool CSettings::Save(TiXmlNode* root) const
   return true;
 }
 
-bool CSettings::LoadSetting(const TiXmlNode *node, const std::string &settingId)
+bool CSettings::LoadSetting(const tinyxml2::XMLNode* node, const std::string& settingId)
 {
   return GetSettingsManager()->LoadSetting(node, settingId);
 }
@@ -208,7 +208,7 @@ void CSettings::Clear()
   m_initialized = false;
 }
 
-bool CSettings::Load(const TiXmlElement* root, bool& updated)
+bool CSettings::Load(const tinyxml2::XMLElement* root, bool& updated)
 {
   if (root == nullptr)
     return false;
@@ -216,10 +216,10 @@ bool CSettings::Load(const TiXmlElement* root, bool& updated)
   if (!CSettingsBase::LoadValuesFromXml(root, updated))
     return false;
 
-  return Load(static_cast<const TiXmlNode*>(root));
+  return Load(static_cast<const tinyxml2::XMLNode*>(root));
 }
 
-bool CSettings::Load(const TiXmlNode* settings)
+bool CSettings::Load(const tinyxml2::XMLNode* settings)
 {
   bool ok = true;
   std::unique_lock<CCriticalSection> lock(m_critical);
@@ -231,11 +231,11 @@ bool CSettings::Load(const TiXmlNode* settings)
 
 bool CSettings::Initialize(const std::string &file)
 {
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if (!xmlDoc.LoadFile(file.c_str()))
   {
     CLog::Log(LOGERROR, "CSettings: error loading settings definition from {}, Line {}\n{}", file,
-              xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+              xmlDoc.ErrorLineNum(), xmlDoc.ErrorStr());
     return false;
   }
 

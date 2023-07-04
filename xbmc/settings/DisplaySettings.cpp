@@ -24,6 +24,7 @@
 #include "storage/MediaManager.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -97,7 +98,7 @@ CDisplaySettings& CDisplaySettings::GetInstance()
   return sDisplaySettings;
 }
 
-bool CDisplaySettings::Load(const TiXmlNode *settings)
+bool CDisplaySettings::Load(const tinyxml2::XMLNode* settings)
 {
   std::unique_lock<CCriticalSection> lock(m_critical);
   m_calibrations.clear();
@@ -105,35 +106,35 @@ bool CDisplaySettings::Load(const TiXmlNode *settings)
   if (settings == NULL)
     return false;
 
-  const TiXmlElement *pElement = settings->FirstChildElement("resolutions");
-  if (!pElement)
+  const auto* element = settings->FirstChildElement("resolutions");
+  if (!element)
   {
     CLog::Log(LOGERROR, "CDisplaySettings: settings file doesn't contain <resolutions>");
     return false;
   }
 
-  const TiXmlElement *pResolution = pElement->FirstChildElement("resolution");
-  while (pResolution)
+  const auto* resolution = element->FirstChildElement("resolution");
+  while (resolution)
   {
     // get the data for this calibration
     RESOLUTION_INFO cal;
 
-    XMLUtils::GetString(pResolution, "description", cal.strMode);
-    XMLUtils::GetInt(pResolution, "subtitles", cal.iSubtitles);
-    XMLUtils::GetFloat(pResolution, "pixelratio", cal.fPixelRatio);
+    XMLUtils::GetString(resolution, "description", cal.strMode);
+    XMLUtils::GetInt(resolution, "subtitles", cal.iSubtitles);
+    XMLUtils::GetFloat(resolution, "pixelratio", cal.fPixelRatio);
 #ifdef HAVE_X11
-    XMLUtils::GetFloat(pResolution, "refreshrate", cal.fRefreshRate);
-    XMLUtils::GetString(pResolution, "output", cal.strOutput);
-    XMLUtils::GetString(pResolution, "xrandrid", cal.strId);
+    XMLUtils::GetFloat(resolution, "refreshrate", cal.fRefreshRate);
+    XMLUtils::GetString(resolution, "output", cal.strOutput);
+    XMLUtils::GetString(resolution, "xrandrid", cal.strId);
 #endif
 
-    const TiXmlElement *pOverscan = pResolution->FirstChildElement("overscan");
-    if (pOverscan)
+    const auto* overscan = resolution->FirstChildElement("overscan");
+    if (overscan)
     {
-      XMLUtils::GetInt(pOverscan, "left", cal.Overscan.left);
-      XMLUtils::GetInt(pOverscan, "top", cal.Overscan.top);
-      XMLUtils::GetInt(pOverscan, "right", cal.Overscan.right);
-      XMLUtils::GetInt(pOverscan, "bottom", cal.Overscan.bottom);
+      XMLUtils::GetInt(overscan, "left", cal.Overscan.left);
+      XMLUtils::GetInt(overscan, "top", cal.Overscan.top);
+      XMLUtils::GetInt(overscan, "right", cal.Overscan.right);
+      XMLUtils::GetInt(overscan, "bottom", cal.Overscan.bottom);
     }
 
     // mark calibration as not updated
@@ -154,53 +155,54 @@ bool CDisplaySettings::Load(const TiXmlNode *settings)
       m_calibrations.push_back(cal);
 
     // iterate around
-    pResolution = pResolution->NextSiblingElement("resolution");
+    resolution = resolution->NextSiblingElement("resolution");
   }
 
   ApplyCalibrations();
   return true;
 }
 
-bool CDisplaySettings::Save(TiXmlNode *settings) const
+bool CDisplaySettings::Save(tinyxml2::XMLNode* settings) const
 {
   if (settings == NULL)
     return false;
 
   std::unique_lock<CCriticalSection> lock(m_critical);
-  TiXmlElement xmlRootElement("resolutions");
-  TiXmlNode *pRoot = settings->InsertEndChild(xmlRootElement);
-  if (pRoot == NULL)
+  auto doc = settings->GetDocument();
+  auto* xmlRootElement = doc->NewElement("resolutions");
+  auto* root = settings->InsertEndChild(xmlRootElement);
+  if (root == NULL)
     return false;
 
   // save calibrations
   for (ResolutionInfos::const_iterator it = m_calibrations.begin(); it != m_calibrations.end(); ++it)
   {
     // Write the resolution tag
-    TiXmlElement resElement("resolution");
-    TiXmlNode *pNode = pRoot->InsertEndChild(resElement);
-    if (pNode == NULL)
+    auto* resElement = doc->NewElement("resolution");
+    auto* node = root->InsertEndChild(resElement);
+    if (node == NULL)
       return false;
 
     // Now write each of the pieces of information we need...
-    XMLUtils::SetString(pNode, "description", it->strMode);
-    XMLUtils::SetInt(pNode, "subtitles", it->iSubtitles);
-    XMLUtils::SetFloat(pNode, "pixelratio", it->fPixelRatio);
+    XMLUtils::SetString(node, "description", it->strMode);
+    XMLUtils::SetInt(node, "subtitles", it->iSubtitles);
+    XMLUtils::SetFloat(node, "pixelratio", it->fPixelRatio);
 #ifdef HAVE_X11
-    XMLUtils::SetFloat(pNode, "refreshrate", it->fRefreshRate);
-    XMLUtils::SetString(pNode, "output", it->strOutput);
-    XMLUtils::SetString(pNode, "xrandrid", it->strId);
+    XMLUtils::SetFloat(node, "refreshrate", it->fRefreshRate);
+    XMLUtils::SetString(node, "output", it->strOutput);
+    XMLUtils::SetString(node, "xrandrid", it->strId);
 #endif
 
     // create the overscan child
-    TiXmlElement overscanElement("overscan");
-    TiXmlNode *pOverscanNode = pNode->InsertEndChild(overscanElement);
-    if (pOverscanNode == NULL)
+    auto* overscanElement = doc->NewElement("overscan");
+    auto* overscanNode = node->InsertEndChild(overscanElement);
+    if (overscanNode == NULL)
       return false;
 
-    XMLUtils::SetInt(pOverscanNode, "left", it->Overscan.left);
-    XMLUtils::SetInt(pOverscanNode, "top", it->Overscan.top);
-    XMLUtils::SetInt(pOverscanNode, "right", it->Overscan.right);
-    XMLUtils::SetInt(pOverscanNode, "bottom", it->Overscan.bottom);
+    XMLUtils::SetInt(overscanNode, "left", it->Overscan.left);
+    XMLUtils::SetInt(overscanNode, "top", it->Overscan.top);
+    XMLUtils::SetInt(overscanNode, "right", it->Overscan.right);
+    XMLUtils::SetInt(overscanNode, "bottom", it->Overscan.bottom);
   }
 
   return true;
@@ -356,7 +358,7 @@ bool CDisplaySettings::OnSettingChanging(const std::shared_ptr<const CSetting>& 
 
 bool CDisplaySettings::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                        const char* oldSettingId,
-                                       const TiXmlNode* oldSettingNode)
+                                       const tinyxml2::XMLNode* oldSettingNode)
 {
   if (setting == NULL)
     return false;

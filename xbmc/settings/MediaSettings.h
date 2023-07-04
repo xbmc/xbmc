@@ -22,7 +22,10 @@
 #define VOLUME_DRC_MINIMUM 0    // 0dB
 #define VOLUME_DRC_MAXIMUM 6000 // 60dB
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 // Step used to increase/decrease audio delay
 static constexpr float AUDIO_DELAY_STEP = 0.025f;
@@ -38,8 +41,8 @@ class CMediaSettings : public ISettingCallback, public ISettingsHandler, public 
 public:
   static CMediaSettings& GetInstance();
 
-  bool Load(const TiXmlNode *settings) override;
-  bool Save(TiXmlNode *settings) const override;
+  bool Load(const tinyxml2::XMLNode* settings) override;
+  bool Save(tinyxml2::XMLNode* settings) const override;
 
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;

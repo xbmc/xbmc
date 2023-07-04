@@ -11,14 +11,15 @@
 #include "DirectoryProvider.h"
 #include "MultiProvider.h"
 #include "StaticProvider.h"
-#include "utils/XBMCTinyXML.h"
 
-std::unique_ptr<IListProvider> IListProvider::Create(const TiXmlNode* node, int parentID)
+#include <tinyxml2.h>
+
+std::unique_ptr<IListProvider> IListProvider::Create(const tinyxml2::XMLNode* node, int parentID)
 {
-  const TiXmlNode *root = node->FirstChild("content");
+  const auto* root = node->FirstChildElement("content");
   if (root)
   {
-    const TiXmlNode *next = root->NextSibling("content");
+    const auto* next = root->NextSiblingElement("content");
     if (next)
       return std::make_unique<CMultiProvider>(root, parentID);
 
@@ -27,9 +28,10 @@ std::unique_ptr<IListProvider> IListProvider::Create(const TiXmlNode* node, int 
   return std::unique_ptr<IListProvider>{};
 }
 
-std::unique_ptr<IListProvider> IListProvider::CreateSingle(const TiXmlNode* content, int parentID)
+std::unique_ptr<IListProvider> IListProvider::CreateSingle(const tinyxml2::XMLNode* content,
+                                                           int parentID)
 {
-  const TiXmlElement *item = content->FirstChildElement("item");
+  const auto* item = content->FirstChildElement("item");
   if (item)
     return std::make_unique<CStaticListProvider>(content->ToElement(), parentID);
 

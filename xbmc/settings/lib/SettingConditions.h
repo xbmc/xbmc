@@ -18,7 +18,11 @@
 
 class CSettingsManager;
 class CSetting;
-class TiXmlNode;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 using SettingConditionCheck = bool (*)(const std::string& condition,
                                        const std::string& value,
@@ -47,7 +51,7 @@ public:
   { }
   ~CSettingConditionItem() override = default;
 
-  bool Deserialize(const TiXmlNode *node) override;
+  bool Deserialize(const tinyxml2::XMLNode* node) override;
   const char* GetTag() const override { return SETTING_XML_ELM_CONDITION; }
   bool Check() const override;
 

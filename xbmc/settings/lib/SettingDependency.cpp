@@ -13,13 +13,14 @@
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 #include <memory>
 #include <set>
 #include <stdlib.h>
 #include <string>
+
+#include <tinyxml2.h>
 
 Logger CSettingDependencyCondition::s_logger;
 
@@ -75,13 +76,13 @@ CSettingDependencyCondition::CSettingDependencyCondition(
   m_negated = negated;
 }
 
-bool CSettingDependencyCondition::Deserialize(const TiXmlNode *node)
+bool CSettingDependencyCondition::Deserialize(const tinyxml2::XMLNode* node)
 {
   if (!CSettingConditionItem::Deserialize(node))
     return false;
 
   auto elem = node->ToElement();
-  if (elem == nullptr)
+  if (!elem)
     return false;
 
   m_target = SettingDependencyTarget::Setting;
@@ -262,9 +263,9 @@ bool CSettingDependencyCondition::setOperator(const std::string &op)
   return true;
 }
 
-bool CSettingDependencyConditionCombination::Deserialize(const TiXmlNode *node)
+bool CSettingDependencyConditionCombination::Deserialize(const tinyxml2::XMLNode* node)
 {
-  if (node == nullptr)
+  if (!node)
     return false;
 
   size_t numOperations = m_operations.size();
@@ -355,13 +356,13 @@ CSettingDependency::CSettingDependency(SettingDependencyType type,
   m_operation = CBooleanLogicOperationPtr(new CSettingDependencyConditionCombination(m_settingsManager));
 }
 
-bool CSettingDependency::Deserialize(const TiXmlNode *node)
+bool CSettingDependency::Deserialize(const tinyxml2::XMLNode* node)
 {
-  if (node == nullptr)
+  if (!node)
     return false;
 
   auto elem = node->ToElement();
-  if (elem == nullptr)
+  if (!elem)
     return false;
 
   auto strType = elem->Attribute(SETTING_XML_ATTR_TYPE);

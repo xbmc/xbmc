@@ -42,7 +42,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 
@@ -276,16 +276,16 @@ bool CApplicationSkinHandling::LoadCustomWindows()
         std::string skinFile = URIUtils::GetFileName(item->GetPath());
         if (StringUtils::StartsWithNoCase(skinFile, "custom"))
         {
-          CXBMCTinyXML xmlDoc;
+          CXBMCTinyXML2 xmlDoc;
           if (!xmlDoc.LoadFile(item->GetPath()))
           {
-            CLog::Log(LOGERROR, "Unable to load custom window XML {}. Line {}\n{}", item->GetPath(),
-                      xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            CLog::Log(LOGERROR, "Unable to load custom window XML {}. Line {} Error: {}",
+                      item->GetPath(), xmlDoc.ErrorLineNum(), xmlDoc.ErrorStr());
             continue;
           }
 
           // Root element should be <window>
-          TiXmlElement* pRootElement = xmlDoc.RootElement();
+          auto* pRootElement = xmlDoc.RootElement();
           std::string strValue = pRootElement->Value();
           if (!StringUtils::EqualsNoCase(strValue, "window"))
           {
@@ -302,15 +302,15 @@ bool CApplicationSkinHandling::LoadCustomWindows()
             strType = pRootElement->Attribute("type");
           else
           {
-            const TiXmlNode* pType = pRootElement->FirstChild("type");
+            const auto* pType = pRootElement->FirstChildElement("type");
             if (pType && pType->FirstChild())
               strType = pType->FirstChild()->Value();
           }
 
           // Read the id attribute or element to get the window id
-          if (!pRootElement->Attribute("id", &id))
+          if (pRootElement->QueryIntAttribute("id", &id) != tinyxml2::XML_SUCCESS)
           {
-            const TiXmlNode* pType = pRootElement->FirstChild("id");
+            const auto* pType = pRootElement->FirstChildElement("id");
             if (pType && pType->FirstChild())
               id = atol(pType->FirstChild()->Value());
           }

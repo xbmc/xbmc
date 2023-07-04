@@ -15,10 +15,13 @@
 #include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
+
+#include <tinyxml2.h>
 
 using namespace MUSIC_INFO;
 
@@ -475,7 +478,7 @@ bool CAlbum::operator<(const CAlbum &a) const
   return false;
 }
 
-bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
+bool CAlbum::Load(const tinyxml2::XMLElement* album, bool append, bool prioritise)
 {
   if (!album) return false;
   if (!append)
@@ -515,25 +518,27 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   }
   XMLUtils::GetString(album, "originalreleasedate", strOrigReleaseDate);
 
-  const TiXmlElement* rElement = album->FirstChildElement("rating");
+  const auto* rElement = album->FirstChildElement("rating");
   if (rElement)
   {
     float rating = 0;
     float max_rating = 10;
     XMLUtils::GetFloat(album, "rating", rating);
-    if (rElement->QueryFloatAttribute("max", &max_rating) == TIXML_SUCCESS && max_rating>=1)
+    if (rElement->QueryFloatAttribute("max", &max_rating) == tinyxml2::XML_SUCCESS &&
+        max_rating >= 1)
       rating *= (10.f / max_rating); // Normalise the Rating to between 0 and 10
     if (rating > 10.f)
       rating = 10.f;
     fRating = rating;
   }
-  const TiXmlElement* userrating = album->FirstChildElement("userrating");
+  const auto* userrating = album->FirstChildElement("userrating");
   if (userrating)
   {
     float rating = 0;
     float max_rating = 10;
     XMLUtils::GetFloat(album, "userrating", rating);
-    if (userrating->QueryFloatAttribute("max", &max_rating) == TIXML_SUCCESS && max_rating >= 1)
+    if (userrating->QueryFloatAttribute("max", &max_rating) == tinyxml2::XML_SUCCESS &&
+        max_rating >= 1)
       rating *= (10.f / max_rating); // Normalise the Rating to between 0 and 10
     if (rating > 10.f)
       rating = 10.f;
@@ -543,15 +548,17 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 
   size_t iThumbCount = thumbURL.GetUrls().size();
   std::string xmlAdd = thumbURL.GetData();
-  const TiXmlElement* thumb = album->FirstChildElement("thumb");
+  const auto* thumb = album->FirstChildElement("thumb");
+  tinyxml2::XMLPrinter printer;
+
   while (thumb)
   {
     thumbURL.ParseAndAppendUrl(thumb);
     if (prioritise)
     {
-      std::string temp;
-      temp << *thumb;
-      xmlAdd = temp+xmlAdd;
+      thumb->Accept(&printer);
+      const char* temp{printer.CStr()};
+      xmlAdd = temp + xmlAdd;
     }
     thumb = thumb->NextSiblingElement("thumb");
   }
@@ -564,7 +571,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
     thumbURL.SetData(xmlAdd);
   }
 
-  const TiXmlElement* albumArtistCreditsNode = album->FirstChildElement("albumArtistCredits");
+  const auto* albumArtistCreditsNode = album->FirstChildElement("albumArtistCredits");
   if (albumArtistCreditsNode)
     artistCredits.clear();
 
@@ -602,13 +609,13 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
   return true;
 }
 
-bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& strPath)
+bool CAlbum::Save(tinyxml2::XMLNode* node, const std::string& tag, const std::string& strPath)
 {
   if (!node) return false;
 
   // we start with a <tag> tag
-  TiXmlElement albumElement(tag.c_str());
-  TiXmlNode *album = node->InsertEndChild(albumElement);
+  tinyxml2::XMLElement* albumElement = node->GetDocument()->NewElement(tag.c_str());
+  auto* album = node->InsertEndChild(albumElement);
 
   if (!album) return false;
 
@@ -633,13 +640,14 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
   XMLUtils::SetInt(album, "duration", iAlbumDuration);
   if (thumbURL.HasData())
   {
-    CXBMCTinyXML doc;
-    doc.Parse(thumbURL.GetData());
-    const TiXmlNode* thumb = doc.FirstChild("thumb");
+    CXBMCTinyXML2 xmlDoc;
+    xmlDoc.Parse(thumbURL.GetData());
+    auto* thumb = xmlDoc.FirstChildElement("thumb");
     while (thumb)
     {
-      album->InsertEndChild(*thumb);
-      thumb = thumb->NextSibling("thumb");
+      auto* thumbCopy = thumb->DeepClone(node->GetDocument());
+      album->InsertEndChild(thumbCopy);
+      thumb = thumb->NextSiblingElement("thumb");
     }
   }
   XMLUtils::SetString(album,        "path", strPath);
@@ -657,8 +665,8 @@ bool CAlbum::Save(TiXmlNode *node, const std::string &tag, const std::string& st
   for (const auto& artistCredit : artistCredits)
   {
     // add an <albumArtistCredits> tag
-    TiXmlElement albumArtistCreditsElement("albumArtistCredits");
-    TiXmlNode *albumArtistCreditsNode = album->InsertEndChild(albumArtistCreditsElement);
+    tinyxml2::XMLElement* albumArtistCreditsElement = node->GetDocument()->NewElement("albumArtistCredits");
+    auto* albumArtistCreditsNode = album->InsertEndChild(albumArtistCreditsElement);
     XMLUtils::SetString(albumArtistCreditsNode, "artist", artistCredit.m_strArtist);
     XMLUtils::SetString(albumArtistCreditsNode, "musicBrainzArtistID",
                         artistCredit.m_strMusicBrainzArtistID);

@@ -11,7 +11,7 @@
 #include "guilib/GUIFont.h"
 #include "guilib/GUITexture.h"
 #include "guilib/LocalizeStrings.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 
 #include <gtest/gtest.h>
 
@@ -23,12 +23,12 @@ using namespace KODI;
 class CGFTestable : public CGUIControlFactory
 {
 public:
-  static std::string GetType(const TiXmlElement* pControlNode)
+  static std::string GetType(const tinyxml2::XMLElement* pControlNode)
   {
     return CGUIControlFactory::GetType(pControlNode);
   }
 
-  static bool GetIntRange(const TiXmlNode* pRootNode,
+  static bool GetIntRange(const tinyxml2::XMLNode* pRootNode,
                           const char* strTag,
                           int& iMinValue,
                           int& iMaxValue,
@@ -41,7 +41,7 @@ public:
                                            iIntervalValue);
   }
 
-  static bool GetFloatRange(const TiXmlNode* pRootNode,
+  static bool GetFloatRange(const tinyxml2::XMLNode* pRootNode,
                             const char* strTag,
                             float& fMinValue,
                             float& fMaxValue,
@@ -54,7 +54,7 @@ public:
                                              fIntervalValue);
   }
 
-  static bool GetPosition(const TiXmlNode* node,
+  static bool GetPosition(const tinyxml2::XMLNode* node,
                           const char* tag,
                           const float parentSize,
                           float& value)
@@ -65,7 +65,7 @@ public:
                                            value);
   }
 
-  static bool GetDimension(const TiXmlNode* node,
+  static bool GetDimension(const tinyxml2::XMLNode* node,
                            const char* strTag,
                            const float parentSize,
                            float& value,
@@ -78,7 +78,7 @@ public:
                                             min);
   }
 
-  static bool GetDimensions(const TiXmlNode* node,
+  static bool GetDimensions(const tinyxml2::XMLNode* node,
                             const char* leftTag,
                             const char* rightTag,
                             const char* centerLeftTag,
@@ -101,7 +101,7 @@ public:
                                              min_width);
   }
 
-  static bool GetMovingSpeedConfig(const TiXmlNode* pRootNode,
+  static bool GetMovingSpeedConfig(const tinyxml2::XMLNode* pRootNode,
                                    const char* strTag,
                                    UTILS::MOVING_SPEED::MapEventConfig& movingSpeedCfg)
   {
@@ -110,7 +110,7 @@ public:
                                                     movingSpeedCfg);
   }
 
-  static bool GetConditionalVisibility(const TiXmlNode* control,
+  static bool GetConditionalVisibility(const tinyxml2::XMLNode* control,
                                        std::string& condition,
                                        std::string& allowHiddenFocus)
   {
@@ -119,7 +119,7 @@ public:
                                                         allowHiddenFocus);
   }
 
-  static bool GetString(const TiXmlNode* pRootNode,
+  static bool GetString(const tinyxml2::XMLNode* pRootNode,
                         const char* strTag,
                         std::string& strString)
   {
@@ -472,7 +472,7 @@ const auto TypeTests = std::array{
 
 TEST_P(TestAlignment, GetAlignment)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   uint32_t align{};
   EXPECT_EQ(CGFTestable::GetAlignment(doc.RootElement(),
@@ -487,7 +487,7 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
 
 TEST_P(TestAlignmentY, GetAlignmentY)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   uint32_t align = std::numeric_limits<uint32_t>::max();
   EXPECT_EQ(CGFTestable::GetAlignmentY(doc.RootElement(),
@@ -502,7 +502,7 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
 
 TEST_P(TestAspectRatio, GetAspectRatio)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   CAspectRatio ratio;
   EXPECT_EQ(CGFTestable::GetAspectRatio(doc.RootElement(),
@@ -518,7 +518,7 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
 
 TEST_P(TestGetDimension, GetDimension)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   float min = 0.f, value = 0.f;
   EXPECT_EQ(CGFTestable::GetDimension(doc.RootElement(),
@@ -534,7 +534,7 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
 
 TEST_P(TestGetDimensions, GetDimensions)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   float left = 0.f, width = 0.f, min_width = 0.f;
   EXPECT_EQ(CGFTestable::GetDimensions(doc.RootElement(),
@@ -556,7 +556,7 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
 
 TEST_P(TestGetFloatRange, GetFloatRange)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   float min = 0.f, max = 0.f, interval = 0.f;
   EXPECT_EQ(CGFTestable::GetFloatRange(doc.RootElement(),
@@ -573,7 +573,7 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
 
 TEST_P(TestGetHitRect, GetHitRect)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   CRect rect, parentRect{1.0, 2.0, 3.0, 4.0};
   EXPECT_EQ(CGFTestable::GetHitRect(doc.RootElement(),
@@ -591,7 +591,7 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
 
 TEST_P(TestGetIntRange, GetIntRange)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   int min = 0, max = 0, interval = 0;
   EXPECT_EQ(CGFTestable::GetIntRange(doc.RootElement(),
@@ -608,7 +608,7 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
 
 TEST_P(TestGetMovingSpeed, GetMovingSpeed)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   UTILS::MOVING_SPEED::MapEventConfig config;
   EXPECT_EQ(CGFTestable::GetMovingSpeedConfig(doc.RootElement(),
@@ -623,7 +623,7 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
 
 TEST_P(TestGetPosition, GetPosition)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   float pos = 0.f;
   EXPECT_EQ(CGFTestable::GetPosition(doc.RootElement(),
@@ -640,7 +640,7 @@ TEST_P(TestGetString, GetString)
 {
   ASSERT_TRUE(g_localizeStrings.Load(g_langInfo.GetLanguagePath(),
                                      "resource.language.en_gb"));
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   std::string value;
   EXPECT_EQ(CGFTestable::GetString(doc.RootElement(),
@@ -654,7 +654,7 @@ INSTANTIATE_TEST_SUITE_P(TestGUIControlFactory,
 
 TEST_P(TestGetType, GetType)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   doc.Parse(GetParam().def);
   std::string type;
   EXPECT_EQ(CGFTestable::GetType(doc.RootElement()), GetParam().type);

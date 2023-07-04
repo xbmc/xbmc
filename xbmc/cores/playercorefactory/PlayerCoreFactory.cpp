@@ -24,6 +24,7 @@
 #include "settings/lib/SettingsManager.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoFileItemClassify.h"
@@ -343,16 +344,16 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     return false;
   }
 
-  CXBMCTinyXML playerCoreFactoryXML;
+  CXBMCTinyXML2 playerCoreFactoryXML;
   if (!playerCoreFactoryXML.LoadFile(file))
   {
-    CLog::Log(LOGERROR, "Error loading {}, Line {} ({})", file, playerCoreFactoryXML.ErrorRow(),
-              playerCoreFactoryXML.ErrorDesc());
+    CLog::Log(LOGERROR, "Error loading {}, Line {} ({})", file, playerCoreFactoryXML.ErrorLineNum(),
+              playerCoreFactoryXML.ErrorStr());
     return false;
   }
 
-  TiXmlElement *pConfig = playerCoreFactoryXML.RootElement();
-  if (pConfig == NULL)
+  auto* pConfig = playerCoreFactoryXML.RootElement();
+  if (!pConfig)
   {
     CLog::Log(LOGERROR, "Error loading {}, Bad structure", file);
     return false;
@@ -383,10 +384,10 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     return false;
   }
 
-  TiXmlElement *pPlayers = pConfig->FirstChildElement("players");
+  auto* pPlayers = pConfig->FirstChildElement("players");
   if (pPlayers)
   {
-    TiXmlElement* pPlayer = pPlayers->FirstChildElement("player");
+    auto* pPlayer = pPlayers->FirstChildElement("player");
     while (pPlayer)
     {
       std::string name = XMLUtils::GetAttribute(pPlayer, "name");
@@ -422,7 +423,7 @@ bool CPlayerCoreFactory::LoadConfiguration(const std::string &file, bool clear)
     }
   }
 
-  TiXmlElement *pRule = pConfig->FirstChildElement("rules");
+  auto* pRule = pConfig->FirstChildElement("rules");
   while (pRule)
   {
     const char* szAction = pRule->Attribute("action");

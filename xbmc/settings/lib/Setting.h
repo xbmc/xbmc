@@ -26,6 +26,11 @@
 #include <utility>
 #include <vector>
 
+namespace tinyxml2
+{
+class XMLNode;
+}
+
 enum class SettingOptionsType {
   Unknown = 0,
   StaticTranslatable,
@@ -34,7 +39,6 @@ enum class SettingOptionsType {
 };
 
 class CSetting;
-class TiXmlNode;
 using SettingPtr = std::shared_ptr<CSetting>;
 using SettingConstPtr = std::shared_ptr<const CSetting>;
 using SettingList = std::vector<SettingPtr>;
@@ -57,7 +61,7 @@ public:
   void MergeBasics(const CSetting& other);
   virtual void MergeDetails(const CSetting& other) = 0;
 
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   virtual SettingType GetType() const = 0;
   virtual bool FromString(const std::string &value) = 0;
@@ -104,7 +108,7 @@ public:
    \param isReference Whether the setting is a reference to the setting with the determined identifier
    \return True if a setting object's identifier was deserialized, false otherwise
    */
-  static bool DeserializeIdentification(const TiXmlNode* node,
+  static bool DeserializeIdentification(const tinyxml2::XMLNode* node,
                                         std::string& identification,
                                         bool& isReference);
 
@@ -114,7 +118,7 @@ protected:
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                        const char* oldSettingId,
-                       const TiXmlNode* oldSettingNode) override;
+                       const tinyxml2::XMLNode* oldSettingNode) override;
   void OnSettingPropertyChanged(const std::shared_ptr<const CSetting>& setting,
                                 const char* propertyName) override;
 
@@ -177,7 +181,7 @@ public:
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
   void MergeDetails(const CSetting& other) override;
 
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   SettingType GetType() const override { return SettingType::List; }
   bool FromString(const std::string &value) override;
@@ -238,7 +242,7 @@ public:
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
   void MergeDetails(const CSetting& other) override;
 
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   bool FromString(const std::string &value) override;
   std::string ToString() const override;
@@ -285,7 +289,7 @@ public:
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
   void MergeDetails(const CSetting& other) override;
 
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   bool FromString(const std::string &value) override;
   std::string ToString() const override;
@@ -373,7 +377,7 @@ public:
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
   void MergeDetails(const CSetting& other) override;
 
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   bool FromString(const std::string &value) override;
   std::string ToString() const override;
@@ -432,7 +436,7 @@ public:
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
   void MergeDetails(const CSetting& other) override;
 
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   bool FromString(const std::string &value) override { return SetValue(value); }
   std::string ToString() const override { return m_value; }
@@ -515,7 +519,7 @@ public:
   std::shared_ptr<CSetting> Clone(const std::string &id) const override;
   void MergeDetails(const CSetting& other) override;
 
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   SettingType GetType() const override { return SettingType::Action; }
   bool FromString(const std::string &value) override { return CheckValidity(value); }

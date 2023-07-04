@@ -14,15 +14,14 @@
 
 #include <cassert>
 
-CStaticListProvider::CStaticListProvider(const TiXmlElement *element, int parentID)
-: IListProvider(parentID),
-  m_defaultItem(-1),
-  m_defaultAlways(false),
-  m_updateTime(0)
+#include <tinyxml2.h>
+
+CStaticListProvider::CStaticListProvider(const tinyxml2::XMLElement* element, int parentID)
+  : IListProvider(parentID), m_defaultItem(-1), m_defaultAlways(false), m_updateTime(0)
 {
   assert(element);
 
-  const TiXmlElement *item = element->FirstChildElement("item");
+  const auto* item = element->FirstChildElement("item");
   while (item)
   {
     if (item->FirstChild())

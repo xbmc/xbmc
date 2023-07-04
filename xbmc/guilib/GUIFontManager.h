@@ -27,10 +27,14 @@
 // Forward
 class CGUIFont;
 class CGUIFontTTF;
-class CXBMCTinyXML;
-class TiXmlNode;
+class CXBMCTinyXML2;
 class CSetting;
 struct StringSettingOption;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 struct OrigFontInfo
 {
@@ -116,9 +120,9 @@ protected:
                                        float* aspect,
                                        const RESOLUTION_INFO& sourceRes,
                                        bool preserveAspect);
-  void LoadFonts(const TiXmlNode* fontNode);
+  void LoadFonts(const tinyxml2::XMLNode* fontNode);
   CGUIFontTTF* GetFontFile(const std::string& fontIdent);
-  static void GetStyle(const TiXmlNode* fontNode, int& iStyle);
+  static void GetStyle(const tinyxml2::XMLNode* fontNode, int& iStyle);
 
   std::vector<std::unique_ptr<CGUIFont>> m_vecFonts;
   std::vector<std::unique_ptr<CGUIFontTTF>> m_vecFontFiles;

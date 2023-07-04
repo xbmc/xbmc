@@ -10,7 +10,7 @@
 
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 
 bool CGUIControlProfiler::m_bIsRunning = false;
 
@@ -73,9 +73,9 @@ void CGUIControlProfilerItem::EndRender(void)
   m_renderTime += (unsigned int)(m_pProfiler->m_fPerfScale * (CurrentHostCounter() - m_i64RenderStart));
 }
 
-void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
+void CGUIControlProfilerItem::SaveToXML(tinyxml2::XMLElement* parent)
 {
-  TiXmlElement *xmlControl = new TiXmlElement("control");
+  auto* xmlControl = parent->GetDocument()->NewElement("control");
   parent->LinkEndChild(xmlControl);
 
   const char *lpszType = NULL;
@@ -163,9 +163,9 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
 
   if (!m_strDescription.empty())
   {
-    TiXmlElement *elem = new TiXmlElement("description");
+    auto* elem = parent->GetDocument()->NewElement("description");
     xmlControl->LinkEndChild(elem);
-    TiXmlText *text = new TiXmlText(m_strDescription.c_str());
+    auto* text = parent->GetDocument()->NewText(m_strDescription.c_str());
     elem->LinkEndChild(text);
   }
 
@@ -175,22 +175,22 @@ void CGUIControlProfilerItem::SaveToXML(TiXmlElement *parent)
   if (vis || rend)
   {
     std::string val;
-    TiXmlElement *elem = new TiXmlElement("rendertime");
+    auto* elem = parent->GetDocument()->NewElement("rendertime");
     xmlControl->LinkEndChild(elem);
     val = std::to_string(rend);
-    TiXmlText *text = new TiXmlText(val.c_str());
+    auto* text = parent->GetDocument()->NewText(val.c_str());
     elem->LinkEndChild(text);
 
-    elem = new TiXmlElement("visibletime");
+    elem = parent->GetDocument()->NewElement("visibletime");
     xmlControl->LinkEndChild(elem);
     val = std::to_string(vis);
-    text = new TiXmlText(val.c_str());
+    text = parent->GetDocument()->NewText(val.c_str());
     elem->LinkEndChild(text);
   }
 
   if (m_vecChildren.size())
   {
-    TiXmlElement *xmlChilds = new TiXmlElement("children");
+    auto* xmlChilds = parent->GetDocument()->NewElement("children");
     xmlControl->LinkEndChild(xmlChilds);
     const unsigned int dwSize = m_vecChildren.size();
     for (unsigned int i=0; i<dwSize; ++i)
@@ -324,11 +324,11 @@ bool CGUIControlProfiler::SaveResults(void)
   if (m_strOutputFile.empty())
     return false;
 
-  CXBMCTinyXML doc;
-  TiXmlDeclaration decl("1.0", "", "yes");
+  CXBMCTinyXML2 doc;
+  auto* decl = doc.NewDeclaration();
   doc.InsertEndChild(decl);
 
-  TiXmlElement *root = new TiXmlElement("guicontrolprofiler");
+  auto* root = doc.NewElement("guicontrolprofiler");
   std::string str = std::to_string(m_iFrameCount);
   root->SetAttribute("framecount", str.c_str());
   root->SetAttribute("timeunit", "ms");

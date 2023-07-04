@@ -63,6 +63,7 @@
 #include "utils/log.h"
 #include "view/GUIViewState.h"
 
+#include <tinyxml2.h>
 #define CONTROL_BTNVIEWASICONS       2
 #define CONTROL_BTNSORTBY            3
 #define CONTROL_BTNSORTASC           4
@@ -130,7 +131,7 @@ CGUIMediaWindow::~CGUIMediaWindow()
   delete m_unfilteredItems;
 }
 
-bool CGUIMediaWindow::Load(TiXmlElement *pRootElement)
+bool CGUIMediaWindow::Load(tinyxml2::XMLElement* pRootElement)
 {
   bool retVal = CGUIWindow::Load(pRootElement);
 
@@ -140,10 +141,10 @@ bool CGUIMediaWindow::Load(TiXmlElement *pRootElement)
   // configure our view control
   m_viewControl.Reset();
   m_viewControl.SetParentWindow(GetID());
-  TiXmlElement *element = pRootElement->FirstChildElement("views");
+  auto* element = pRootElement->FirstChildElement("views");
   if (element && element->FirstChild())
   { // format is <views>50,29,51,95</views>
-    const std::string &allViews = element->FirstChild()->ValueStr();
+    const std::string& allViews = element->FirstChild()->Value();
     std::vector<std::string> views = StringUtils::Split(allViews, ",");
     for (std::vector<std::string>::const_iterator i = views.begin(); i != views.end(); ++i)
     {

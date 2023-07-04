@@ -8,14 +8,14 @@
 
 #include "MultiProvider.h"
 
-#include "utils/XBMCTinyXML.h"
-
 #include <mutex>
 
-CMultiProvider::CMultiProvider(const TiXmlNode *first, int parentID)
- : IListProvider(parentID)
+#include <tinyxml2.h>
+
+CMultiProvider::CMultiProvider(const tinyxml2::XMLNode* first, int parentID)
+  : IListProvider(parentID)
 {
-  for (const TiXmlNode *content = first; content; content = content->NextSiblingElement("content"))
+  for (const auto* content = first; content; content = content->NextSiblingElement("content"))
   {
     IListProviderPtr sub(IListProvider::CreateSingle(content, parentID));
     if (sub)

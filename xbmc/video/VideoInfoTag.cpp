@@ -16,6 +16,7 @@
 #include "utils/Archive.h"
 #include "utils/StringUtils.h"
 #include "utils/Variant.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoManagerTypes.h"
@@ -24,6 +25,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
+#include <tinyxml2.h>
 
 void CVideoInfoTag::Reset()
 {
@@ -101,13 +104,17 @@ void CVideoInfoTag::Reset()
   m_updateSetOverview = true;
 }
 
-bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathInfo, const TiXmlElement *additionalNode)
+bool CVideoInfoTag::Save(tinyxml2::XMLNode* node,
+                         const std::string& tag,
+                         bool savePathInfo,
+                         const tinyxml2::XMLElement* additionalNode)
 {
   if (!node) return false;
 
   // we start with a <tag> tag
-  TiXmlElement movieElement(tag.c_str());
-  TiXmlNode *movie = node->InsertEndChild(movieElement);
+  CXBMCTinyXML2 doc;
+  tinyxml2::XMLElement* movieElement = doc.NewElement(tag.c_str());
+  auto* movie = node->InsertEndChild(movieElement);
 
   if (!movie) return false;
 
@@ -120,17 +127,17 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
   if (!m_ratings.empty())
   {
-    TiXmlElement ratings("ratings");
+    tinyxml2::XMLElement* ratings = doc.NewElement("ratings");
     for (const auto& it : m_ratings)
     {
-      TiXmlElement rating("rating");
-      rating.SetAttribute("name", it.first.c_str());
-      XMLUtils::SetFloat(&rating, "value", it.second.rating);
-      XMLUtils::SetInt(&rating, "votes", it.second.votes);
-      rating.SetAttribute("max", 10);
+      tinyxml2::XMLElement* rating = doc.NewElement("rating");
+      rating->SetAttribute("name", it.first.c_str());
+      XMLUtils::SetFloat(rating, "value", it.second.rating);
+      XMLUtils::SetInt(rating, "votes", it.second.votes);
+      rating->SetAttribute("max", 10);
       if (it.first == m_strDefaultRating)
-        rating.SetAttribute("default", "true");
-      ratings.InsertEndChild(rating);
+        rating->SetAttribute("default", "true");
+      ratings->InsertEndChild(rating);
     }
     movie->InsertEndChild(ratings);
   }
@@ -138,15 +145,14 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
 
   if (m_EpBookmark.timeInSeconds > 0)
   {
-    TiXmlElement epbookmark("episodebookmark");
-    XMLUtils::SetDouble(&epbookmark, "position", m_EpBookmark.timeInSeconds);
+    tinyxml2::XMLElement* epbookmark = doc.NewElement("episodebookmark");
+    XMLUtils::SetDouble(epbookmark, "position", m_EpBookmark.timeInSeconds);
     if (!m_EpBookmark.playerState.empty())
     {
-      TiXmlElement playerstate("playerstate");
-      CXBMCTinyXML doc;
+      tinyxml2::XMLElement* playerstate = doc.NewElement("playerstate");
       doc.Parse(m_EpBookmark.playerState);
-      playerstate.InsertEndChild(*doc.RootElement());
-      epbookmark.InsertEndChild(playerstate);
+      playerstate->InsertEndChild(doc.RootElement());
+      epbookmark->InsertEndChild(playerstate);
     }
     movie->InsertEndChild(epbookmark);
   }
@@ -170,20 +176,18 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetInt(movie, "runtime", GetDuration() / 60);
   if (m_strPictureURL.HasData())
   {
-    CXBMCTinyXML doc;
     doc.Parse(m_strPictureURL.GetData());
-    const TiXmlNode* thumb = doc.FirstChild("thumb");
+    auto* thumb = doc.FirstChildElement("thumb");
     while (thumb)
     {
-      movie->InsertEndChild(*thumb);
-      thumb = thumb->NextSibling("thumb");
+      movie->InsertEndChild(thumb);
+      thumb = thumb->NextSiblingElement("thumb");
     }
   }
   if (m_fanart.m_xml.size())
   {
-    CXBMCTinyXML doc;
     doc.Parse(m_fanart.m_xml);
-    movie->InsertEndChild(*doc.RootElement());
+    movie->InsertEndChild(doc.RootElement());
   }
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::SetInt(movie, "playcount", GetPlayCount());
@@ -197,10 +201,9 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   }
   if (!m_strEpisodeGuide.empty())
   {
-    CXBMCTinyXML doc;
     doc.Parse(m_strEpisodeGuide);
     if (doc.RootElement())
-      movie->InsertEndChild(*doc.RootElement());
+      movie->InsertEndChild(doc.RootElement());
     else
       XMLUtils::SetString(movie, "episodeguide", m_strEpisodeGuide);
   }
@@ -208,12 +211,12 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetString(movie, "id", GetUniqueID());
   for (const auto& uniqueid : m_uniqueIDs)
   {
-    TiXmlElement uniqueID("uniqueid");
-    uniqueID.SetAttribute("type", uniqueid.first);
+    tinyxml2::XMLElement* uniqueID = doc.NewElement("uniqueid");
+    uniqueID->SetAttribute("type", uniqueid.first.c_str());
     if (uniqueid.first == m_strDefaultUniqueID)
-      uniqueID.SetAttribute("default", "true");
-    TiXmlText value(uniqueid.second);
-    uniqueID.InsertEndChild(value);
+      uniqueID->SetAttribute("default", "true");
+    tinyxml2::XMLText* value = doc.NewText(uniqueid.second.c_str());
+    uniqueID->InsertEndChild(value);
 
     movie->InsertEndChild(uniqueID);
   }
@@ -221,10 +224,10 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetStringArray(movie, "country", m_country);
   if (!m_set.title.empty())
   {
-    TiXmlElement set("set");
-    XMLUtils::SetString(&set, "name", m_set.title);
+    tinyxml2::XMLElement* set = doc.NewElement("set");
+    XMLUtils::SetString(set, "name", m_set.title);
     if (!m_set.overview.empty())
-      XMLUtils::SetString(&set, "overview", m_set.overview);
+      XMLUtils::SetString(set, "overview", m_set.overview);
     movie->InsertEndChild(set);
   }
   XMLUtils::SetStringArray(movie, "tag", m_tags);
@@ -247,35 +250,35 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   if (m_streamDetails.HasItems())
   {
     // it goes fileinfo/streamdetails/[video|audio|subtitle]
-    TiXmlElement fileinfo("fileinfo");
-    TiXmlElement streamdetails("streamdetails");
+    auto* fileinfo = doc.NewElement("fileinfo");
+    auto* streamdetails = doc.NewElement("streamdetails");
     for (int iStream=1; iStream<=m_streamDetails.GetVideoStreamCount(); iStream++)
     {
-      TiXmlElement stream("video");
-      XMLUtils::SetString(&stream, "codec", m_streamDetails.GetVideoCodec(iStream));
-      XMLUtils::SetFloat(&stream, "aspect", m_streamDetails.GetVideoAspect(iStream));
-      XMLUtils::SetInt(&stream, "width", m_streamDetails.GetVideoWidth(iStream));
-      XMLUtils::SetInt(&stream, "height", m_streamDetails.GetVideoHeight(iStream));
-      XMLUtils::SetInt(&stream, "durationinseconds", m_streamDetails.GetVideoDuration(iStream));
-      XMLUtils::SetString(&stream, "stereomode", m_streamDetails.GetStereoMode(iStream));
-      XMLUtils::SetString(&stream, "hdrtype", m_streamDetails.GetVideoHdrType(iStream));
-      streamdetails.InsertEndChild(stream);
+      auto* stream = doc.NewElement("video");
+      XMLUtils::SetString(stream, "codec", m_streamDetails.GetVideoCodec(iStream));
+      XMLUtils::SetFloat(stream, "aspect", m_streamDetails.GetVideoAspect(iStream));
+      XMLUtils::SetInt(stream, "width", m_streamDetails.GetVideoWidth(iStream));
+      XMLUtils::SetInt(stream, "height", m_streamDetails.GetVideoHeight(iStream));
+      XMLUtils::SetInt(stream, "durationinseconds", m_streamDetails.GetVideoDuration(iStream));
+      XMLUtils::SetString(stream, "stereomode", m_streamDetails.GetStereoMode(iStream));
+      XMLUtils::SetString(stream, "hdrtype", m_streamDetails.GetVideoHdrType(iStream));
+      streamdetails->InsertEndChild(stream);
     }
     for (int iStream=1; iStream<=m_streamDetails.GetAudioStreamCount(); iStream++)
     {
-      TiXmlElement stream("audio");
-      XMLUtils::SetString(&stream, "codec", m_streamDetails.GetAudioCodec(iStream));
-      XMLUtils::SetString(&stream, "language", m_streamDetails.GetAudioLanguage(iStream));
-      XMLUtils::SetInt(&stream, "channels", m_streamDetails.GetAudioChannels(iStream));
-      streamdetails.InsertEndChild(stream);
+      auto* stream = doc.NewElement("audio");
+      XMLUtils::SetString(stream, "codec", m_streamDetails.GetAudioCodec(iStream));
+      XMLUtils::SetString(stream, "language", m_streamDetails.GetAudioLanguage(iStream));
+      XMLUtils::SetInt(stream, "channels", m_streamDetails.GetAudioChannels(iStream));
+      streamdetails->InsertEndChild(stream);
     }
     for (int iStream=1; iStream<=m_streamDetails.GetSubtitleStreamCount(); iStream++)
     {
-      TiXmlElement stream("subtitle");
-      XMLUtils::SetString(&stream, "language", m_streamDetails.GetSubtitleLanguage(iStream));
-      streamdetails.InsertEndChild(stream);
+      tinyxml2::XMLElement* stream = doc.NewElement("subtitle");
+      XMLUtils::SetString(stream, "language", m_streamDetails.GetSubtitleLanguage(iStream));
+      streamdetails->InsertEndChild(stream);
     }
-    fileinfo.InsertEndChild(streamdetails);
+    fileinfo->InsertEndChild(streamdetails);
     movie->InsertEndChild(fileinfo);
   }  /* if has stream details */
 
@@ -283,8 +286,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   for (iCast it = m_cast.begin(); it != m_cast.end(); ++it)
   {
     // add a <actor> tag
-    TiXmlElement cast("actor");
-    TiXmlNode *node = movie->InsertEndChild(cast);
+    tinyxml2::XMLElement* cast = doc.NewElement("actor");
+    auto* node = movie->InsertEndChild(cast);
     XMLUtils::SetString(node, "name", it->strName);
     XMLUtils::SetString(node, "role", it->strRole);
     XMLUtils::SetInt(node, "order", it->order);
@@ -295,35 +298,34 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
 
   for (const auto& namedSeason : m_namedSeasons)
   {
-    TiXmlElement season("namedseason");
-    season.SetAttribute("number", namedSeason.first);
-    TiXmlText value(namedSeason.second);
-    season.InsertEndChild(value);
+    tinyxml2::XMLElement* season = doc.NewElement("namedseason");
+    season->SetAttribute("number", namedSeason.first);
+    auto* value = doc.NewText(namedSeason.second.c_str());
+    season->InsertEndChild(value);
     movie->InsertEndChild(season);
   }
 
-  TiXmlElement resume("resume");
-  XMLUtils::SetDouble(&resume, "position", m_resumePoint.timeInSeconds);
-  XMLUtils::SetDouble(&resume, "total", m_resumePoint.totalTimeInSeconds);
+  tinyxml2::XMLElement* resume = doc.NewElement("resume");
+  XMLUtils::SetDouble(resume, "position", m_resumePoint.timeInSeconds);
+  XMLUtils::SetDouble(resume, "total", m_resumePoint.totalTimeInSeconds);
   if (!m_resumePoint.playerState.empty())
   {
-    TiXmlElement playerstate("playerstate");
-    CXBMCTinyXML doc;
+    tinyxml2::XMLElement* playerstate = doc.NewElement("playerstate");
     doc.Parse(m_resumePoint.playerState);
-    playerstate.InsertEndChild(*doc.RootElement());
-    resume.InsertEndChild(playerstate);
+    playerstate->InsertEndChild(doc.RootElement());
+    resume->InsertEndChild(playerstate);
   }
   movie->InsertEndChild(resume);
 
   XMLUtils::SetDateTime(movie, "dateadded", m_dateAdded);
 
   if (additionalNode)
-    movie->InsertEndChild(*additionalNode);
+    movie->InsertEndChild(const_cast<tinyxml2::XMLElement*>(additionalNode));
 
   return true;
 }
 
-bool CVideoInfoTag::Load(const TiXmlElement *element, bool append, bool prioritise)
+bool CVideoInfoTag::Load(const tinyxml2::XMLElement* element, bool append, bool prioritise)
 {
   if (!element)
     return false;
@@ -996,7 +998,7 @@ const std::string CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   return StringUtils::TrimRight(strLabel, "\n");
 }
 
-void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
+void CVideoInfoTag::ParseNative(const tinyxml2::XMLElement* movie, bool prioritise)
 {
   std::string value;
   float fValue;
@@ -1013,27 +1015,25 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "sorttitle", value))
     SetSortTitle(value);
 
-  const TiXmlElement* node = movie->FirstChildElement("ratings");
+  const auto* node = movie->FirstChildElement("ratings");
   if (node)
   {
-    for (const TiXmlElement* child = node->FirstChildElement("rating"); child != nullptr; child = child->NextSiblingElement("rating"))
+    for (const auto* child = node->FirstChildElement("rating"); child != nullptr;
+         child = child->NextSiblingElement("rating"))
     {
       CRating r;
-      std::string name;
-      if (child->QueryStringAttribute("name", &name) != TIXML_SUCCESS)
+      const char* name = "";
+      if (child->QueryStringAttribute("name", &name) != tinyxml2::XML_SUCCESS)
         name = "default";
       XMLUtils::GetFloat(child, "value", r.rating);
       if (XMLUtils::GetString(child, "votes", value))
         r.votes = StringUtils::ReturnDigits(value);
       int max_value = 10;
-      if ((child->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
+      if ((child->QueryIntAttribute("max", &max_value) == tinyxml2::XML_SUCCESS) && max_value >= 1)
         r.rating = r.rating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
       SetRating(r, name);
       bool isDefault = false;
-      // guard against assert in tinyxml
-      const char* rAtt = child->Attribute("default", static_cast<int*>(nullptr));
-      if (rAtt && strlen(rAtt) != 0 &&
-          (child->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
+      if ((tinyxml2::XML_SUCCESS == child->QueryBoolAttribute("default", &isDefault)) && isDefault)
         m_strDefaultRating = name;
     }
   }
@@ -1043,32 +1043,36 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     if (XMLUtils::GetString(movie, "votes", value))
       r.votes = StringUtils::ReturnDigits(value);
     int max_value = 10;
-    const TiXmlElement* rElement = movie->FirstChildElement("rating");
-    if (rElement && (rElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
+    const auto* rElement = movie->FirstChildElement("rating");
+    if (rElement && (rElement->QueryIntAttribute("max", &max_value) == tinyxml2::XML_SUCCESS) &&
+        max_value >= 1)
       r.rating = r.rating / max_value * 10; // Normalise the Movie Rating to between 1 and 10
     SetRating(r, "default");
     m_strDefaultRating = "default";
   }
   XMLUtils::GetInt(movie, "userrating", m_iUserRating);
 
-  const TiXmlElement *epbookmark = movie->FirstChildElement("episodebookmark");
+  const auto* epbookmark = movie->FirstChildElement("episodebookmark");
   if (epbookmark)
   {
     XMLUtils::GetDouble(epbookmark, "position", m_EpBookmark.timeInSeconds);
-    const TiXmlElement *playerstate = epbookmark->FirstChildElement("playerstate");
+    const auto* playerstate = epbookmark->FirstChildElement("playerstate");
     if (playerstate)
     {
-      const TiXmlElement *value = playerstate->FirstChildElement();
+      tinyxml2::XMLPrinter epBookmarkprinter;
+      const auto* value = playerstate->FirstChildElement();
+      value->Accept(&epBookmarkprinter);
       if (value)
-        m_EpBookmark.playerState << *value;
+        m_EpBookmark.playerState = epBookmarkprinter.CStr();
     }
   }
   else
     XMLUtils::GetDouble(movie, "epbookmark", m_EpBookmark.timeInSeconds);
 
   int max_value = 10;
-  const TiXmlElement* urElement = movie->FirstChildElement("userrating");
-  if (urElement && (urElement->QueryIntAttribute("max", &max_value) == TIXML_SUCCESS) && max_value >= 1)
+  const auto* urElement = movie->FirstChildElement("userrating");
+  if (urElement && (urElement->QueryIntAttribute("max", &max_value) == tinyxml2::XML_SUCCESS) &&
+      max_value >= 1)
     m_iUserRating = m_iUserRating / max_value * 10; // Normalise the user Movie Rating to between 1 and 10
   XMLUtils::GetInt(movie, "top250", m_iTop250);
   XMLUtils::GetInt(movie, "season", m_iSeason);
@@ -1094,7 +1098,6 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "tagline", value))
     SetTagLine(value);
 
-
   if (XMLUtils::GetString(movie, "runtime", value) && !value.empty())
     m_duration = GetDurationFromMinuteString(StringUtils::Trim(value));
 
@@ -1110,7 +1113,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetString(movie, "path", value))
     SetPath(value);
 
-  const TiXmlElement* uniqueid = movie->FirstChildElement("uniqueid");
+  const auto* uniqueid = movie->FirstChildElement("uniqueid");
   if (uniqueid == nullptr)
   {
     if (XMLUtils::GetString(movie, "id", value))
@@ -1122,15 +1125,17 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     {
       if (uniqueid->FirstChild())
       {
-        if (uniqueid->QueryStringAttribute("type", &value) == TIXML_SUCCESS)
-          SetUniqueID(uniqueid->FirstChild()->ValueStr(), value);
+        const char* valueChar = "";
+        if (uniqueid->QueryStringAttribute("type", &valueChar) == tinyxml2::XML_SUCCESS)
+          SetUniqueID(uniqueid->FirstChild()->Value(), valueChar);
         else
-          SetUniqueID(uniqueid->FirstChild()->ValueStr());
+          SetUniqueID(uniqueid->FirstChild()->Value());
         bool isDefault;
         if (m_strDefaultUniqueID == "unknown" &&
-            (uniqueid->QueryBoolAttribute("default", &isDefault) == TIXML_SUCCESS) && isDefault)
+            (uniqueid->QueryBoolAttribute("default", &isDefault) == tinyxml2::XML_SUCCESS) &&
+            isDefault)
         {
-          m_strDefaultUniqueID = value;
+          m_strDefaultUniqueID = valueChar;
         }
       }
     }
@@ -1172,15 +1177,16 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   size_t iThumbCount = m_strPictureURL.GetUrls().size();
   std::string xmlAdd = m_strPictureURL.GetData();
 
-  const TiXmlElement* thumb = movie->FirstChildElement("thumb");
+  const auto* thumb = movie->FirstChildElement("thumb");
   while (thumb)
   {
     m_strPictureURL.ParseAndAppendUrl(thumb);
     if (prioritise)
     {
-      std::string temp;
-      temp << *thumb;
-      xmlAdd = temp+xmlAdd;
+      tinyxml2::XMLPrinter thumbPrinter;
+      thumb->Accept(&thumbPrinter);
+      std::string temp = thumbPrinter.CStr();
+      xmlAdd = temp + xmlAdd;
     }
     thumb = thumb->NextSiblingElement("thumb");
   }
@@ -1216,16 +1222,18 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetStringArray(movie, "showlink", showLink, prioritise, itemSeparator))
     SetShowLink(showLink);
 
-  const TiXmlElement* namedSeason = movie->FirstChildElement("namedseason");
-  while (namedSeason != nullptr)
+  const auto* namedSeason = movie->FirstChildElement("namedseason");
+  while (namedSeason)
   {
-    if (namedSeason->FirstChild() != nullptr)
+    if (namedSeason->FirstChild())
     {
-      int seasonNumber;
-      std::string seasonName = namedSeason->FirstChild()->ValueStr();
-      if (!seasonName.empty() &&
-          namedSeason->Attribute("number", &seasonNumber) != nullptr)
+      std::string seasonName = namedSeason->FirstChild()->Value();
+      auto* seasonAttrib = namedSeason->Attribute("number");
+      if (!seasonName.empty() && seasonAttrib)
+      {
+        int seasonNumber = std::stoi(seasonAttrib);
         m_namedSeasons.insert(std::make_pair(seasonNumber, seasonName));
+      }
     }
 
     namedSeason = namedSeason->NextSiblingElement("namedseason");
@@ -1237,7 +1245,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     m_cast.clear();
   while (node)
   {
-    const TiXmlNode *actor = node->FirstChild("name");
+    const auto* actor = node->FirstChildElement("name");
     if (actor && actor->FirstChild())
     {
       SActorInfo info;
@@ -1247,7 +1255,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         info.strRole = StringUtils::Trim(value);
 
       XMLUtils::GetInt(node, "order", info.order);
-      const TiXmlElement* thumb = node->FirstChildElement("thumb");
+      const auto* thumb = node->FirstChildElement("thumb");
       while (thumb)
       {
         info.thumbUrl.ParseAndAppendUrl(thumb);
@@ -1300,7 +1308,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     artist.clear();
   while (node)
   {
-    const TiXmlNode* pNode = node->FirstChild("name");
+    const auto* pNode = node->FirstChildElement("name");
     const char* pValue=NULL;
     if (pNode && pNode->FirstChild())
       pValue = pNode->FirstChild()->Value();
@@ -1317,16 +1325,15 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
     node = node->NextSiblingElement("artist");
   }
   SetArtist(artist);
-
   node = movie->FirstChildElement("fileinfo");
   if (node)
   {
     // Try to pull from fileinfo/streamdetails/[video|audio|subtitle]
-    const TiXmlNode *nodeStreamDetails = node->FirstChild("streamdetails");
+    const auto* nodeStreamDetails = node->FirstChildElement("streamdetails");
     if (nodeStreamDetails)
     {
-      const TiXmlNode *nodeDetail = NULL;
-      while ((nodeDetail = nodeStreamDetails->IterateChildren("audio", nodeDetail)))
+      auto* nodeDetail = nodeStreamDetails->FirstChildElement("audio");
+      while (nodeDetail)
       {
         CStreamDetailAudio *p = new CStreamDetailAudio();
         if (XMLUtils::GetString(nodeDetail, "codec", value))
@@ -1339,9 +1346,10 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         StringUtils::ToLower(p->m_strCodec);
         StringUtils::ToLower(p->m_strLanguage);
         m_streamDetails.AddStream(p);
+        nodeDetail = nodeDetail->NextSiblingElement("audio");
       }
-      nodeDetail = NULL;
-      while ((nodeDetail = nodeStreamDetails->IterateChildren("video", nodeDetail)))
+      nodeDetail = nodeStreamDetails->FirstChildElement("video");
+      while (nodeDetail)
       {
         CStreamDetailVideo *p = new CStreamDetailVideo();
         if (XMLUtils::GetString(nodeDetail, "codec", value))
@@ -1363,15 +1371,17 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
         StringUtils::ToLower(p->m_strLanguage);
         StringUtils::ToLower(p->m_strHdrType);
         m_streamDetails.AddStream(p);
+        nodeDetail = nodeDetail->NextSiblingElement("video");
       }
-      nodeDetail = NULL;
-      while ((nodeDetail = nodeStreamDetails->IterateChildren("subtitle", nodeDetail)))
+      nodeDetail = nodeStreamDetails->FirstChildElement("subtitle");
+      while (nodeDetail)
       {
         CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
         if (XMLUtils::GetString(nodeDetail, "language", value))
           p->m_strLanguage = StringUtils::Trim(value);
         StringUtils::ToLower(p->m_strLanguage);
         m_streamDetails.AddStream(p);
+        nodeDetail = nodeDetail->NextSiblingElement("subtitle");
       }
     }
     m_streamDetails.DetermineBestStreams();
@@ -1379,7 +1389,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
 
   if (m_strEpisodeGuide.empty())
   {
-    const TiXmlElement* epguide = movie->FirstChildElement("episodeguide");
+    const auto* epguide = movie->FirstChildElement("episodeguide");
     if (epguide)
     {
       // DEPRECIATE ME - support for old XML-encoded <episodeguide> blocks.
@@ -1390,41 +1400,46 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
       }
       else
       {
-        std::stringstream stream;
-        stream << *epguide;
-        m_strEpisodeGuide = stream.str();
+        tinyxml2::XMLPrinter epgGuidePrinter;
+        epguide->Accept(&epgGuidePrinter);
+        m_strEpisodeGuide = epgGuidePrinter.CStr();
       }
     }
   }
 
   // fanart
-  const TiXmlElement *fanart = movie->FirstChildElement("fanart");
+  const auto* fanart = movie->FirstChildElement("fanart");
   if (fanart)
   {
+    tinyxml2::XMLPrinter fanartPrinter;
+    fanart->Accept(&fanartPrinter);
     // we prioritise mixed-mode nfo's with fanart set
     if (prioritise)
     {
-      std::string temp;
-      temp << *fanart;
-      m_fanart.m_xml = temp+m_fanart.m_xml;
+      const char* temp{fanartPrinter.CStr()};
+      m_fanart.m_xml = temp + m_fanart.m_xml;
     }
     else
-      m_fanart.m_xml << *fanart;
+      m_fanart.m_xml.append(fanartPrinter.CStr());
     m_fanart.Unpack();
   }
 
   // resumePoint
-  const TiXmlNode *resume = movie->FirstChild("resume");
+  const auto* resume = movie->FirstChildElement("resume");
   if (resume)
   {
     XMLUtils::GetDouble(resume, "position", m_resumePoint.timeInSeconds);
     XMLUtils::GetDouble(resume, "total", m_resumePoint.totalTimeInSeconds);
-    const TiXmlElement *playerstate = resume->FirstChildElement("playerstate");
+    const auto* playerstate = resume->FirstChildElement("playerstate");
     if (playerstate)
     {
-      const TiXmlElement *value = playerstate->FirstChildElement();
+      const auto* value = playerstate->FirstChildElement();
       if (value)
-        m_resumePoint.playerState << *value;
+      {
+        tinyxml2::XMLPrinter resumePointPrinter;
+        value->Accept(&resumePointPrinter);
+        m_resumePoint.playerState = resumePointPrinter.CStr();
+      }
     }
   }
 
@@ -1851,14 +1866,14 @@ void CVideoInfoTag::CAssetInfo::Archive(CArchive& ar)
   }
 }
 
-void CVideoInfoTag::CAssetInfo::Save(TiXmlNode* movie)
+void CVideoInfoTag::CAssetInfo::Save(tinyxml2::XMLNode* movie)
 {
   XMLUtils::SetString(movie, "videoassettitle", m_title);
   XMLUtils::SetInt(movie, "videoassetid", m_id);
   XMLUtils::SetInt(movie, "videoassettype", static_cast<int>(m_type));
 }
 
-void CVideoInfoTag::CAssetInfo::ParseNative(const TiXmlElement* movie)
+void CVideoInfoTag::CAssetInfo::ParseNative(const tinyxml2::XMLElement* movie)
 {
   std::string value;
   if (XMLUtils::GetString(movie, "videoassettitle", value))

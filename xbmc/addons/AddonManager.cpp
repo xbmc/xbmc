@@ -56,7 +56,7 @@ std::map<AddonType, IAddonMgrCallback*> CAddonMgr::m_managers;
 
 static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& optional)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   if (!doc.LoadFile("special://xbmc/system/addon-manifest.xml"))
   {
     CLog::Log(LOGERROR, "ADDONS: manifest missing");
@@ -64,7 +64,7 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
   }
 
   auto root = doc.RootElement();
-  if (!root || root->ValueStr() != "addons")
+  if (!root || strcmp(root->Value(), "addons") != 0)
   {
     CLog::Log(LOGERROR, "ADDONS: malformed manifest");
     return false;
@@ -76,9 +76,9 @@ static bool LoadManifest(std::set<std::string>& system, std::set<std::string>& o
     if (elem->FirstChild())
     {
       if (XMLUtils::GetAttribute(elem, "optional") == "true")
-        optional.insert(elem->FirstChild()->ValueStr());
+        optional.insert(elem->FirstChild()->Value());
       else
-        system.insert(elem->FirstChild()->ValueStr());
+        system.insert(elem->FirstChild()->Value());
     }
     elem = elem->NextSiblingElement("addon");
   }

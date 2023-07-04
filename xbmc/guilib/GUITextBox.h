@@ -23,7 +23,10 @@
  \brief
  */
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class CGUITextBox : public CGUIControl, public CGUITextLayout
 {
@@ -46,7 +49,7 @@ public:
 
   bool CanFocus() const override;
   void SetInfo(const KODI::GUILIB::GUIINFO::CGUIInfoLabel &info);
-  void SetAutoScrolling(const TiXmlNode *node);
+  void SetAutoScrolling(const tinyxml2::XMLNode* node);
   void SetAutoScrolling(int delay, int time, int repeatTime, const std::string &condition = "");
   void ResetAutoScrolling();
   void AssignDepth() override;

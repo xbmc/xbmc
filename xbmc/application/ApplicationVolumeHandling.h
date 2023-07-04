@@ -14,7 +14,10 @@ class CAction;
 class CApplication;
 class CSetting;
 class CSettings;
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 /*!
  * \brief Class handling application support for audio volume management.
@@ -48,8 +51,8 @@ public:
   static constexpr float VOLUME_MAXIMUM = 1.0f; // 0dB
   static constexpr float VOLUME_DYNAMIC_RANGE = 90.0f; // 60dB
 
-  bool Load(const TiXmlNode* settings);
-  bool Save(TiXmlNode* settings) const;
+  bool Load(const tinyxml2::XMLNode* settings);
+  bool Save(tinyxml2::XMLNode* settings) const;
   bool OnSettingChanged(const CSetting& setting);
 
 protected:

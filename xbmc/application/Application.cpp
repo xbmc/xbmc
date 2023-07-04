@@ -223,8 +223,6 @@ CApplication::CApplication(void)
     m_itemCurrentFile(std::make_shared<CFileItem>()),
     m_playerEvent(true, true)
 {
-  TiXmlBase::SetCondenseWhiteSpace(false);
-
 #ifdef HAVE_X11
   XInitThreads();
 #endif

@@ -28,6 +28,8 @@
 #include "utils/StringUtils.h"
 #endif
 
+#include <tinyxml2.h>
+
 namespace
 {
 bool IsPlaying(const std::string& condition,
@@ -175,7 +177,7 @@ void CApplicationSettingsHandling::OnSettingAction(const std::shared_ptr<const C
 
 bool CApplicationSettingsHandling::OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                                    const char* oldSettingId,
-                                                   const TiXmlNode* oldSettingNode)
+                                                   const tinyxml2::XMLNode* oldSettingNode)
 {
   if (!setting)
     return false;
@@ -199,14 +201,14 @@ bool CApplicationSettingsHandling::OnSettingUpdate(const std::shared_ptr<CSettin
   return false;
 }
 
-bool CApplicationSettingsHandling::Load(const TiXmlNode* settings)
+bool CApplicationSettingsHandling::Load(const tinyxml2::XMLNode* settings)
 {
   auto& components = CServiceBroker::GetAppComponents();
   const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();
   return appVolume->Load(settings);
 }
 
-bool CApplicationSettingsHandling::Save(TiXmlNode* settings) const
+bool CApplicationSettingsHandling::Save(tinyxml2::XMLNode* settings) const
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appVolume = components.GetComponent<CApplicationVolumeHandling>();

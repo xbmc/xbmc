@@ -47,6 +47,8 @@
 #include <mutex>
 #include <utility>
 
+#include <tinyxml2.h>
+
 using namespace XFILE;
 using namespace KODI;
 using namespace KODI::MESSAGING;
@@ -191,7 +193,7 @@ private:
   std::map<InfoTagType, std::shared_ptr<CThumbLoader> > m_thumbloaders;
 };
 
-CDirectoryProvider::CDirectoryProvider(const TiXmlElement* element, int parentID)
+CDirectoryProvider::CDirectoryProvider(const tinyxml2::XMLElement* element, int parentID)
   : IListProvider(parentID)
 {
   assert(element);
@@ -217,7 +219,7 @@ CDirectoryProvider::CDirectoryProvider(const TiXmlElement* element, int parentID
     if (browse)
       m_browse.SetLabel(browse, "", parentID);
 
-    m_url.SetLabel(element->FirstChild()->ValueStr(), "", parentID);
+    m_url.SetLabel(element->FirstChild()->Value(), "", parentID);
   }
 }
 

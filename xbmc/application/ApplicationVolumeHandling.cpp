@@ -22,7 +22,7 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 
-#include <tinyxml.h>
+#include <tinyxml2.h>
 
 float CApplicationVolumeHandling::GetVolumePercent() const
 {
@@ -147,12 +147,12 @@ void CApplicationVolumeHandling::CacheReplayGainSettings(const CSettings& settin
       settings.GetBool(CSettings::SETTING_MUSICPLAYER_REPLAYGAINAVOIDCLIPPING);
 }
 
-bool CApplicationVolumeHandling::Load(const TiXmlNode* settings)
+bool CApplicationVolumeHandling::Load(const tinyxml2::XMLNode* settings)
 {
   if (!settings)
     return false;
 
-  const TiXmlElement* audioElement = settings->FirstChildElement("audio");
+  const auto* audioElement = settings->FirstChildElement("audio");
   if (audioElement)
   {
     XMLUtils::GetBoolean(audioElement, "mute", m_muted);
@@ -164,13 +164,14 @@ bool CApplicationVolumeHandling::Load(const TiXmlNode* settings)
   return true;
 }
 
-bool CApplicationVolumeHandling::Save(TiXmlNode* settings) const
+bool CApplicationVolumeHandling::Save(tinyxml2::XMLNode* settings) const
 {
   if (!settings)
     return false;
 
-  TiXmlElement volumeNode("audio");
-  TiXmlNode* audioNode = settings->InsertEndChild(volumeNode);
+  auto* volumeNode = settings->GetDocument()->NewElement("audio");
+
+  auto* audioNode = settings->InsertEndChild(volumeNode);
   if (!audioNode)
     return false;
 

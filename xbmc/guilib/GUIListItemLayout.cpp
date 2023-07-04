@@ -13,7 +13,8 @@
 #include "GUIImage.h"
 #include "GUIInfoManager.h"
 #include "GUIListLabel.h"
-#include "utils/XBMCTinyXML.h"
+
+#include <tinyxml2.h>
 
 using namespace KODI::GUILIB;
 
@@ -146,7 +147,7 @@ bool CGUIListItemLayout::CheckCondition()
   return !m_condition || m_condition->Get(INFO::DEFAULT_CONTEXT);
 }
 
-void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group)
+void CGUIListItemLayout::LoadControl(tinyxml2::XMLElement* child, CGUIControlGroup* group)
 {
   if (!group) return;
 
@@ -160,7 +161,7 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
     group->AddControl(control);
     if (control->IsGroup())
     {
-      TiXmlElement *grandChild = child->FirstChildElement("control");
+      auto* grandChild = child->FirstChildElement("control");
       while (grandChild)
       {
         LoadControl(grandChild, static_cast<CGUIControlGroup*>(control));
@@ -170,7 +171,8 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
   }
 }
 
-void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focused, float maxWidth, float maxHeight)
+void CGUIListItemLayout::LoadLayout(
+    tinyxml2::XMLElement* layout, int context, bool focused, float maxWidth, float maxHeight)
 {
   m_focused = focused;
   layout->QueryFloatAttribute("width", &m_width);
@@ -195,7 +197,7 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focu
   m_group.SetWidth(m_width);
   m_group.SetHeight(m_height);
 
-  TiXmlElement *child = layout->FirstChildElement("control");
+  auto* child = layout->FirstChildElement("control");
   while (child)
   {
     LoadControl(child, &m_group);

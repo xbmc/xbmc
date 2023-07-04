@@ -26,7 +26,11 @@
 #define SETTING_XML_ATTR_HIDE_SEPARATOR "hideseparator"
 
 class CVariant;
-class TiXmlNode;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class CSettingControlCreator : public ISettingControlCreator
 {
@@ -58,7 +62,7 @@ class CSettingControlFormattedRange : public ISettingControl
 public:
   ~CSettingControlFormattedRange() override = default;
 
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   int GetFormatLabel() const { return m_formatLabel; }
   void SetFormatLabel(int formatLabel) { m_formatLabel = formatLabel; }
@@ -99,7 +103,7 @@ public:
 
   // implementation of ISettingControl
   std::string GetType() const override { return "edit"; }
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
   bool SetFormat(const std::string &format) override;
 
   bool IsHidden() const { return m_hidden; }
@@ -123,7 +127,7 @@ public:
 
   // implementation of ISettingControl
   std::string GetType() const override { return "button"; }
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
   bool SetFormat(const std::string &format) override;
 
   int GetHeading() const { return m_heading; }
@@ -182,7 +186,7 @@ public:
   std::string GetType() const override { return "list"; }
 
   // specialization of CSettingControlFormattedRange
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
   bool SetFormat(const std::string &format) override;
 
   int GetHeading() const { return m_heading; }
@@ -225,7 +229,7 @@ public:
 
   // implementation of ISettingControl
   std::string GetType() const override { return "slider"; }
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
   bool SetFormat(const std::string &format) override;
 
   int GetHeading() const { return m_heading; }
@@ -257,7 +261,7 @@ public:
 
   // implementation of ISettingControl
   std::string GetType() const override { return "range"; }
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
   bool SetFormat(const std::string &format) override;
 
   int GetFormatLabel() const { return m_formatLabel; }
@@ -281,7 +285,7 @@ public:
 
   // implementation of ISettingControl
   std::string GetType() const override { return "title"; }
-  bool Deserialize(const TiXmlNode *node, bool update = false) override;
+  bool Deserialize(const tinyxml2::XMLNode* node, bool update = false) override;
 
   bool IsSeparatorHidden() const { return m_separatorHidden; }
   void SetSeparatorHidden(bool hidden) { m_separatorHidden = hidden; }

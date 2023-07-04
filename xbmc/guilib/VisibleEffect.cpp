@@ -16,13 +16,14 @@
 #include "guilib/GUIComponent.h"
 #include "utils/ColorUtils.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <utility>
 
-CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
+#include <tinyxml2.h>
+
+CAnimEffect::CAnimEffect(const tinyxml2::XMLElement* node, EFFECT_TYPE effect)
 {
   m_effect = effect;
   // defaults
@@ -31,8 +32,10 @@ CAnimEffect::CAnimEffect(const TiXmlElement *node, EFFECT_TYPE effect)
   // time and delay
 
   float temp;
-  if (TIXML_SUCCESS == node->QueryFloatAttribute("time", &temp)) m_length = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
-  if (TIXML_SUCCESS == node->QueryFloatAttribute("delay", &temp)) m_delay = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
+  if (tinyxml2::XML_SUCCESS == node->QueryFloatAttribute("time", &temp))
+    m_length = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
+  if (tinyxml2::XML_SUCCESS == node->QueryFloatAttribute("delay", &temp))
+    m_delay = (unsigned int)(temp * g_SkinInfo->GetEffectsSlowdown());
 
   m_pTweener = GetTweener(node);
 }
@@ -87,7 +90,7 @@ void CAnimEffect::ApplyState(ANIMATION_STATE state, const CPoint &center)
   ApplyEffect(offset, center);
 }
 
-std::shared_ptr<Tweener> CAnimEffect::GetTweener(const TiXmlElement *pAnimationNode)
+std::shared_ptr<Tweener> CAnimEffect::GetTweener(const tinyxml2::XMLElement* pAnimationNode)
 {
   std::shared_ptr<Tweener> m_pTweener;
   const char *tween = pAnimationNode->Attribute("tween");
@@ -140,7 +143,7 @@ std::shared_ptr<Tweener> CAnimEffect::GetTweener(const TiXmlElement *pAnimationN
   return m_pTweener;
 }
 
-CFadeEffect::CFadeEffect(const TiXmlElement* node, bool reverseDefaults, EFFECT_TYPE effect)
+CFadeEffect::CFadeEffect(const tinyxml2::XMLElement* node, bool reverseDefaults, EFFECT_TYPE effect)
   : CAnimEffect(node, effect)
 {
   if (reverseDefaults)
@@ -217,7 +220,7 @@ void CFadeEffect::ApplyEffect(float offset, const CPoint &center)
   }
 }
 
-CSlideEffect::CSlideEffect(const TiXmlElement *node) : CAnimEffect(node, EFFECT_TYPE_SLIDE)
+CSlideEffect::CSlideEffect(const tinyxml2::XMLElement* node) : CAnimEffect(node, EFFECT_TYPE_SLIDE)
 {
   m_startX = m_endX = 0;
   m_startY = m_endY = 0;
@@ -246,7 +249,8 @@ void CSlideEffect::ApplyEffect(float offset, const CPoint &center)
   m_matrix.SetTranslation((m_endX - m_startX)*offset + m_startX, (m_endY - m_startY)*offset + m_startY, 0);
 }
 
-CRotateEffect::CRotateEffect(const TiXmlElement *node, EFFECT_TYPE effect) : CAnimEffect(node, effect)
+CRotateEffect::CRotateEffect(const tinyxml2::XMLElement* node, EFFECT_TYPE effect)
+  : CAnimEffect(node, effect)
 {
   m_startAngle = m_endAngle = 0;
   m_autoCenter = false;
@@ -286,7 +290,8 @@ void CRotateEffect::ApplyEffect(float offset, const CPoint &center)
     m_matrix.SetZRotation(((m_endAngle - m_startAngle)*offset + m_startAngle) * degree_to_radian, m_center.x, m_center.y, CServiceBroker::GetWinSystem()->GetGfxContext().GetScalingPixelRatio());
 }
 
-CZoomEffect::CZoomEffect(const TiXmlElement *node, const CRect &rect) : CAnimEffect(node, EFFECT_TYPE_ZOOM), m_center(CPoint(0,0))
+CZoomEffect::CZoomEffect(const tinyxml2::XMLElement* node, const CRect& rect)
+  : CAnimEffect(node, EFFECT_TYPE_ZOOM), m_center(CPoint(0, 0))
 {
   // effect defaults
   m_startX = m_startY = 100;
@@ -648,7 +653,7 @@ void CAnimation::SetInitialCondition()
     ResetAnimation();
 }
 
-void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context)
+void CAnimation::Create(const tinyxml2::XMLElement* node, const CRect& rect, int context)
 {
   if (!node || !node->FirstChild())
     return;
@@ -661,7 +666,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   if (reverse && StringUtils::CompareNoCase(reverse, "false") == 0)
     m_reversible = false;
 
-  const TiXmlElement *effect = node->FirstChildElement("effect");
+  const auto* effect = node->FirstChildElement("effect");
 
   std::string type = node->FirstChild()->Value();
   m_type = ANIM_TYPE_CONDITIONAL;
@@ -719,7 +724,9 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context
   m_length = total - m_delay;
 }
 
-void CAnimation::AddEffect(const std::string &type, const TiXmlElement *node, const CRect &rect)
+void CAnimation::AddEffect(const std::string& type,
+                           const tinyxml2::XMLElement* node,
+                           const CRect& rect)
 {
   CAnimEffect *effect = NULL;
   if (StringUtils::EqualsNoCase(type, "fade"))

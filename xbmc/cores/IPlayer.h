@@ -23,10 +23,14 @@
 #define CAPTUREFORMAT_BGRA 0x01
 
 struct TextCacheStruct_t;
-class TiXmlElement;
 class CStreamDetails;
 class CAction;
 class IPlayerCallback;
+
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 class CPlayerOptions
 {
@@ -89,7 +93,7 @@ class IPlayer
 public:
   explicit IPlayer(IPlayerCallback& callback) : m_callback(callback) {}
   virtual ~IPlayer() = default;
-  virtual bool Initialize(TiXmlElement* pConfig) { return true; }
+  virtual bool Initialize(tinyxml2::XMLElement* pConfig) { return true; }
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options){ return false;}
   virtual bool QueueNextFile(const CFileItem &file) { return false; }
   virtual void OnNothingToQueueNotify() {}

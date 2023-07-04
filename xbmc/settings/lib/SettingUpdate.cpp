@@ -11,8 +11,9 @@
 #include "ServiceBroker.h"
 #include "SettingDefinitions.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
+
+#include <tinyxml2.h>
 
 Logger CSettingUpdate::s_logger;
 
@@ -22,13 +23,13 @@ CSettingUpdate::CSettingUpdate()
     s_logger = CServiceBroker::GetLogging().GetLogger("CSettingUpdate");
 }
 
-bool CSettingUpdate::Deserialize(const TiXmlNode *node)
+bool CSettingUpdate::Deserialize(const tinyxml2::XMLNode* node)
 {
-  if (node == nullptr)
+  if (!node)
     return false;
 
   auto elem = node->ToElement();
-  if (elem == nullptr)
+  if (!elem)
     return false;
 
   auto strType = elem->Attribute(SETTING_XML_ATTR_TYPE);
@@ -40,13 +41,13 @@ bool CSettingUpdate::Deserialize(const TiXmlNode *node)
 
   if (m_type == SettingUpdateType::Rename)
   {
-    if (node->FirstChild() == nullptr || node->FirstChild()->Type() != TiXmlNode::TINYXML_TEXT)
+    if (!node->FirstChild() || !node->FirstChild()->ToText())
     {
       s_logger->warn("missing or invalid setting id for rename update definition");
       return false;
     }
 
-    m_value = node->FirstChild()->ValueStr();
+    m_value = node->FirstChild()->Value();
   }
 
   return true;

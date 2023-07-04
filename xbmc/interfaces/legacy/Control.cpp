@@ -30,7 +30,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/listproviders/StaticProvider.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
+
+#include <tinyxml2.h>
 
 using namespace KODI;
 
@@ -783,11 +785,11 @@ namespace XBMCAddon
 
     void Control::setAnimations(const std::vector< Tuple<String,String> >& eventAttr)
     {
-      CXBMCTinyXML xmlDoc;
-      TiXmlElement xmlRootElement("control");
-      TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
+      CXBMCTinyXML2 xmlDoc;
+      auto* xmlRootElement = xmlDoc.NewElement("control");
+      auto* pRoot = xmlDoc.InsertEndChild(xmlRootElement);
       if (!pRoot)
-        throw WindowException("TiXmlNode creation error");
+        throw WindowException("XmlNode creation error");
 
       std::vector<CAnimation> animations;
 
@@ -801,16 +803,16 @@ namespace XBMCAddon
         const String& cEvent = pTuple.first();
         const String& cAttr = pTuple.second();
 
-        TiXmlElement pNode("animation");
+        auto* pNode = xmlDoc.NewElement("animation");
         std::vector<std::string> attrs = StringUtils::Split(cAttr, " ");
         for (const auto& i : attrs)
         {
           std::vector<std::string> attrs2 = StringUtils::Split(i, "=");
           if (attrs2.size() == 2)
-            pNode.SetAttribute(attrs2[0], attrs2[1]);
+            pNode->SetAttribute(attrs2[0].c_str(), attrs2[1].c_str());
         }
-        TiXmlText value(cEvent.c_str());
-        pNode.InsertEndChild(value);
+        auto* textValue = xmlDoc.NewText(cEvent.c_str());
+        pNode->InsertEndChild(textValue);
         pRoot->InsertEndChild(pNode);
       }
 

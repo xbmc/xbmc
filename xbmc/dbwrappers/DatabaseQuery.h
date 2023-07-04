@@ -17,7 +17,11 @@
 
 class CDatabase;
 class CVariant;
-class TiXmlNode;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class CDatabaseQueryRule
 {
@@ -58,9 +62,9 @@ public:
     TEXTIN_FIELD
   };
 
-  virtual bool Load(const TiXmlNode* node, const std::string& encoding = "UTF-8");
+  virtual bool Load(const tinyxml2::XMLNode* node);
   virtual bool Load(const CVariant& obj);
-  virtual bool Save(TiXmlNode* parent) const;
+  virtual bool Save(tinyxml2::XMLNode* parent) const;
   virtual bool Save(CVariant& obj) const;
 
   static std::string GetLocalizedOperator(SEARCH_OPERATOR oper);
@@ -127,9 +131,9 @@ public:
   } Combination;
 
   void clear();
-  virtual bool Load(const TiXmlNode* node, const std::string& encoding = "UTF-8") { return false; }
+  virtual bool Load(const tinyxml2::XMLNode* node) { return false; }
   virtual bool Load(const CVariant& obj, const IDatabaseQueryRuleFactory* factory);
-  virtual bool Save(TiXmlNode* parent) const;
+  virtual bool Save(tinyxml2::XMLNode* parent) const;
   virtual bool Save(CVariant& obj) const;
 
   std::string GetWhereClause(const CDatabase& db, const std::string& strType) const;

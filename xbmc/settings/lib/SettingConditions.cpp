@@ -11,15 +11,16 @@
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 
-bool CSettingConditionItem::Deserialize(const TiXmlNode *node)
+#include <tinyxml2.h>
+
+bool CSettingConditionItem::Deserialize(const tinyxml2::XMLNode* node)
 {
   if (!CBooleanLogicValue::Deserialize(node))
     return false;
 
   auto elem = node->ToElement();
-  if (elem == nullptr)
+  if (!elem)
     return false;
 
   // get the "name" attribute

@@ -53,6 +53,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 #include "video/VideoLibraryQueue.h" //! @todo Remove me
@@ -149,10 +150,10 @@ bool CProfileManager::Load()
 
   if (CFile::Exists(file))
   {
-    CXBMCTinyXML profilesDoc;
+    CXBMCTinyXML2 profilesDoc;
     if (profilesDoc.LoadFile(file))
     {
-      const TiXmlElement *rootElement = profilesDoc.RootElement();
+      const auto* rootElement = profilesDoc.RootElement();
       if (rootElement && StringUtils::EqualsNoCase(rootElement->Value(), XML_PROFILES))
       {
         XMLUtils::GetUInt(rootElement, XML_LAST_LOADED, m_lastUsedProfile);
@@ -164,14 +165,14 @@ bool CProfileManager::Load()
         if (!CDirectory::Exists(defaultDir))
           defaultDir = "special://xbmc/userdata";
 
-        const TiXmlElement* pProfile = rootElement->FirstChildElement(XML_PROFILE);
-        while (pProfile)
+        const auto* profileElement = rootElement->FirstChildElement(XML_PROFILE);
+        while (profileElement)
         {
           CProfile profile(defaultDir);
-          profile.Load(pProfile, GetNextProfileId());
+          profile.Load(profileElement, GetNextProfileId());
           AddProfile(profile);
 
-          pProfile = pProfile->NextSiblingElement(XML_PROFILE);
+          profileElement = profileElement->NextSiblingElement(XML_PROFILE);
         }
       }
       else
@@ -183,7 +184,7 @@ bool CProfileManager::Load()
     else
     {
       CLog::Log(LOGERROR, "CProfileManager: error loading {}, Line {}\n{}", file,
-                profilesDoc.ErrorRow(), profilesDoc.ErrorDesc());
+                profilesDoc.ErrorLineNum(), profilesDoc.ErrorStr());
       ret = false;
     }
   }
@@ -229,19 +230,19 @@ bool CProfileManager::Save() const
 
   std::unique_lock<CCriticalSection> lock(m_critical);
 
-  CXBMCTinyXML xmlDoc;
-  TiXmlElement xmlRootElement(XML_PROFILES);
-  TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
-  if (pRoot == nullptr)
+  CXBMCTinyXML2 xmlDoc;
+  auto* xmlRootElement = xmlDoc.NewElement(XML_PROFILES);
+  auto* root = xmlDoc.InsertEndChild(xmlRootElement);
+  if (!root)
     return false;
 
-  XMLUtils::SetInt(pRoot, XML_LAST_LOADED, m_currentProfile);
-  XMLUtils::SetBoolean(pRoot, XML_LOGIN_SCREEN, m_usingLoginScreen);
-  XMLUtils::SetInt(pRoot, XML_AUTO_LOGIN, m_autoLoginProfile);
-  XMLUtils::SetInt(pRoot, XML_NEXTID, m_nextProfileId);
+  XMLUtils::SetInt(root, XML_LAST_LOADED, m_currentProfile);
+  XMLUtils::SetBoolean(root, XML_LOGIN_SCREEN, m_usingLoginScreen);
+  XMLUtils::SetInt(root, XML_AUTO_LOGIN, m_autoLoginProfile);
+  XMLUtils::SetInt(root, XML_NEXTID, m_nextProfileId);
 
   for (const auto& profile : m_profiles)
-    profile.Save(pRoot);
+    profile.Save(root);
 
   // save the file
   return xmlDoc.SaveFile(file);
@@ -343,7 +344,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
 
   if (m_currentProfile != 0)
   {
-    CXBMCTinyXML doc;
+    CXBMCTinyXML2 doc;
     if (doc.LoadFile(URIUtils::AddFileToFolder(GetUserDataFolder(), "guisettings.xml")))
     {
       settings->LoadSetting(doc.RootElement(), CSettings::SETTING_MASTERLOCK_MAXRETRIES);

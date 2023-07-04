@@ -12,13 +12,16 @@
 #include "SettingDefinitions.h"
 #include "SettingsManager.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
 #include <algorithm>
 
 template<class T>
-void addISetting(const TiXmlNode* node, const T& item, std::vector<T>& items, bool toBegin = false)
+void addISetting(const tinyxml2::XMLNode* node,
+                 const T& item,
+                 std::vector<T>& items,
+                 bool toBegin = false)
 {
   if (node != nullptr)
   {
@@ -67,24 +70,24 @@ CSettingGroup::CSettingGroup(const std::string& id,
     s_logger = CServiceBroker::GetLogging().GetLogger("CSettingGroup");
 }
 
-bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingGroup::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   // handle <visible> conditions
   if (!ISetting::Deserialize(node, update))
     return false;
 
   auto controlElement = node->FirstChildElement(SETTING_XML_ELM_CONTROL);
-  if (controlElement != nullptr)
+  if (controlElement)
   {
     auto controlType = controlElement->Attribute(SETTING_XML_ATTR_TYPE);
-    if (controlType == nullptr || strlen(controlType) <= 0)
+    if (!controlType || strlen(controlType) <= 0)
     {
       s_logger->error("unable to read control type");
       return false;
     }
 
     m_control = m_settingsManager->CreateControl(controlType);
-    if (m_control == nullptr)
+    if (!m_control)
     {
       s_logger->error("unable to create new control \"{}\"", controlType);
       return false;
@@ -98,7 +101,7 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
   }
 
   auto settingElement = node->FirstChildElement(SETTING_XML_ELM_SETTING);
-  while (settingElement != nullptr)
+  while (settingElement)
   {
     std::string settingId;
     bool isReference;
@@ -118,18 +121,18 @@ bool CSettingGroup::Deserialize(const TiXmlNode *node, bool update /* = false */
       if (!update)
       {
         auto settingType = settingElement->Attribute(SETTING_XML_ATTR_TYPE);
-        if (settingType == nullptr || strlen(settingType) <= 0)
+        if (!settingType || strlen(settingType) <= 0)
         {
           s_logger->error("unable to read setting type of \"{}\"", settingId);
           return false;
         }
 
         setting = m_settingsManager->CreateSetting(settingType, settingId, m_settingsManager);
-        if (setting == nullptr)
+        if (!setting)
           s_logger->error("unknown setting type \"{}\" of \"{}\"", settingType, settingId);
       }
 
-      if (setting == nullptr)
+      if (!setting)
         s_logger->error("unable to create new setting \"{}\"", settingId);
       else
       {
@@ -213,18 +216,18 @@ CSettingCategory::CSettingCategory(const std::string& id,
     s_logger = CServiceBroker::GetLogging().GetLogger("CSettingCategory");
 }
 
-bool CSettingCategory::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingCategory::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   // handle <visible> conditions
   if (!ISetting::Deserialize(node, update))
     return false;
 
-  auto accessNode = node->FirstChild(SETTING_XML_ELM_ACCESS);
+  auto accessNode = node->FirstChildElement(SETTING_XML_ELM_ACCESS);
   if (accessNode != nullptr && !m_accessCondition.Deserialize(accessNode))
     return false;
 
-  auto groupNode = node->FirstChild(SETTING_XML_ELM_GROUP);
-  while (groupNode != nullptr)
+  auto groupNode = node->FirstChildElement(SETTING_XML_ELM_GROUP);
+  while (groupNode)
   {
     std::string groupId;
     if (CSettingGroup::DeserializeIdentification(groupNode, groupId))
@@ -252,7 +255,7 @@ bool CSettingCategory::Deserialize(const TiXmlNode *node, bool update /* = false
         s_logger->warn("unable to read group \"{}\"", groupId);
     }
 
-    groupNode = groupNode->NextSibling(SETTING_XML_ELM_GROUP);
+    groupNode = groupNode->NextSiblingElement(SETTING_XML_ELM_GROUP);
   }
 
   return true;
@@ -301,14 +304,14 @@ CSettingSection::CSettingSection(const std::string& id,
     s_logger = CServiceBroker::GetLogging().GetLogger("CSettingSection");
 }
 
-bool CSettingSection::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingSection::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   // handle <visible> conditions
   if (!ISetting::Deserialize(node, update))
     return false;
 
-  auto categoryNode = node->FirstChild(SETTING_XML_ELM_CATEGORY);
-  while (categoryNode != nullptr)
+  auto categoryNode = node->FirstChildElement(SETTING_XML_ELM_CATEGORY);
+  while (categoryNode)
   {
     std::string categoryId;
     if (CSettingCategory::DeserializeIdentification(categoryNode, categoryId))
@@ -336,7 +339,7 @@ bool CSettingSection::Deserialize(const TiXmlNode *node, bool update /* = false 
         s_logger->warn("unable to read category \"{}\"", categoryId);
     }
 
-    categoryNode = categoryNode->NextSibling(SETTING_XML_ELM_CATEGORY);
+    categoryNode = categoryNode->NextSiblingElement(SETTING_XML_ELM_CATEGORY);
   }
 
   return true;

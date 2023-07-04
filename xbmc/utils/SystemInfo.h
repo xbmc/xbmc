@@ -15,6 +15,11 @@
 #include <string>
 #include <vector>
 
+namespace tinyxml2
+{
+class XMLNode;
+}
+
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
 #define MB  (1024*KB)       // 1 MegaByte (1MB)   1024 KB (2^10 KB)
 #define GB  (1024*MB)       // 1 GigaByte (1GB)   1024 MB (2^10 MB)
@@ -23,8 +28,6 @@
 #define MAX_KNOWN_ATTRIBUTES  46
 
 #define REG_CURRENT_VERSION L"Software\\Microsoft\\Windows NT\\CurrentVersion"
-
-class TiXmlNode;
 
 class CSysData
 {
@@ -121,8 +124,8 @@ public:
   CSysInfo(void);
   ~CSysInfo() override;
 
-  bool Load(const TiXmlNode *settings) override;
-  bool Save(TiXmlNode *settings) const override;
+  bool Load(const tinyxml2::XMLNode* settings) override;
+  bool Save(tinyxml2::XMLNode* settings) const override;
 
   char MD5_Sign[32 + 1];
 

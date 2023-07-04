@@ -18,15 +18,18 @@
 #include <map>
 #include <string>
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class CViewStateSettings : public ISubSettings
 {
 public:
   static CViewStateSettings& GetInstance();
 
-  bool Load(const TiXmlNode *settings) override;
-  bool Save(TiXmlNode *settings) const override;
+  bool Load(const tinyxml2::XMLNode* settings) override;
+  bool Save(tinyxml2::XMLNode* settings) const override;
   void Clear() override;
 
   const CViewState* Get(const std::string &viewState) const;

@@ -11,11 +11,12 @@
 #include "settings/lib/SettingsManager.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <mutex>
+
+#include <tinyxml2.h>
 
 #define XML_ELM_DEFAULT     "default"
 #define XML_ELM_CONSTRAINTS "constraints"
@@ -39,7 +40,7 @@ SettingPtr CSettingPath::Clone(const std::string &id) const
   return std::make_shared<CSettingPath>(id, *this);
 }
 
-bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool CSettingPath::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   std::unique_lock<CSharedSection> lock(m_critical);
 
@@ -53,7 +54,7 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
     return false;
   }
 
-  auto constraints = node->FirstChild(XML_ELM_CONSTRAINTS);
+  auto constraints = node->FirstChildElement(XML_ELM_CONSTRAINTS);
   if (constraints != nullptr)
   {
     // get writable
@@ -62,29 +63,29 @@ bool CSettingPath::Deserialize(const TiXmlNode *node, bool update /* = false */)
     XMLUtils::GetBoolean(constraints, "hideextensions", m_hideExtension);
 
     // get sources
-    auto sources = constraints->FirstChild("sources");
+    auto sources = constraints->FirstChildElement("sources");
     if (sources != nullptr)
     {
       m_sources.clear();
-      auto source = sources->FirstChild("source");
+      auto source = sources->FirstChildElement("source");
       while (source != nullptr)
       {
         auto child = source->FirstChild();
         if (child != nullptr)
         {
-          const std::string& strSource = child->ValueStr();
+          const std::string& strSource = child->Value();
           if (!strSource.empty())
             m_sources.push_back(strSource);
         }
 
-        source = source->NextSibling("source");
+        source = source->NextSiblingElement("source");
       }
     }
 
     // get masking
-    auto masking = constraints->FirstChild("masking");
+    auto masking = constraints->FirstChildElement("masking");
     if (masking != nullptr)
-      m_masking = masking->FirstChild()->ValueStr();
+      m_masking = masking->FirstChild()->Value();
   }
 
   return true;

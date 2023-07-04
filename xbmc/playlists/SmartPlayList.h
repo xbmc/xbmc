@@ -10,7 +10,7 @@
 
 #include "dbwrappers/DatabaseQuery.h"
 #include "utils/SortUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 
 #include <set>
 #include <string>
@@ -111,7 +111,7 @@ public:
   bool SaveAsJson(std::string &json, bool full = true) const;
 
   bool OpenAndReadName(const CURL &url);
-  bool LoadFromXML(const TiXmlNode *root, const std::string &encoding = "UTF-8");
+  bool LoadFromXML(const tinyxml2::XMLNode* root);
 
   void Reset();
 
@@ -181,10 +181,10 @@ private:
   friend class ::CGUIDialogSmartPlaylistEditor;
   friend class ::CGUIDialogMediaFilter;
 
-  const TiXmlNode* readName(const TiXmlNode *root);
-  const TiXmlNode* readNameFromPath(const CURL &url);
-  const TiXmlNode* readNameFromXml(const std::string &xml);
-  bool load(const TiXmlNode *root);
+  const tinyxml2::XMLNode* readName(const tinyxml2::XMLNode* root);
+  const tinyxml2::XMLNode* readNameFromPath(const CURL& url);
+  const tinyxml2::XMLNode* readNameFromXml(const std::string& xml);
+  bool load(const tinyxml2::XMLNode* root);
 
   CSmartPlaylistRuleCombination m_ruleCombination;
   std::string m_playlistName;
@@ -198,7 +198,7 @@ private:
   std::string m_group;
   bool m_groupMixed;
 
-  CXBMCTinyXML m_xmlDoc;
+  std::shared_ptr<CXBMCTinyXML2> m_xmlDoc;
 };
 
 } // namespace KODI::PLAYLIST

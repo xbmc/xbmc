@@ -11,6 +11,8 @@
 #include "XBDateTime.h"
 #include "utils/XMLUtils.h"
 
+#include <tinyxml2.h>
+
 CProfile::CLock::CLock(LockType type, const std::string &password):
   code(password)
 {
@@ -59,7 +61,7 @@ void CProfile::setDate()
     setDate(strDate+" - "+strTime);
 }
 
-void CProfile::Load(const TiXmlNode *node, int nextIdProfile)
+void CProfile::Load(const tinyxml2::XMLNode* node, int nextIdProfile)
 {
   if (!XMLUtils::GetInt(node, "id", m_id))
     m_id = nextIdProfile;
@@ -92,10 +94,11 @@ void CProfile::Load(const TiXmlNode *node, int nextIdProfile)
   XMLUtils::GetString(node, "lastdate", m_date);
 }
 
-void CProfile::Save(TiXmlNode *root) const
+void CProfile::Save(tinyxml2::XMLNode* root) const
 {
-  TiXmlElement profileNode("profile");
-  TiXmlNode *node = root->InsertEndChild(profileNode);
+  auto doc = root->GetDocument();
+  auto* profileNode = doc->NewElement("profile");
+  auto* node = root->InsertEndChild(profileNode);
 
   XMLUtils::SetInt(node, "id", m_id);
   XMLUtils::SetString(node, "name", m_name);

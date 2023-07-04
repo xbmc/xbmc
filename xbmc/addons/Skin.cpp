@@ -31,11 +31,14 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <charconv>
 #include <memory>
+
+#include <tinyxml2.h>
 
 #define XML_SETTINGS      "settings"
 #define XML_SETTING       "setting"
@@ -73,16 +76,17 @@ private:
   CTimer m_timer;
 };
 
-bool CSkinSetting::Serialize(TiXmlElement* parent) const
+bool CSkinSetting::Serialize(tinyxml2::XMLElement* parent) const
 {
-  if (parent == nullptr)
+  if (!parent)
     return false;
 
-  TiXmlElement setting(XML_SETTING);
-  setting.SetAttribute(XML_ATTR_ID, name.c_str());
-  setting.SetAttribute(XML_ATTR_TYPE, GetType());
+  auto* setting = parent->GetDocument()->NewElement(XML_SETTING);
 
-  if (!SerializeSetting(&setting))
+  setting->SetAttribute(XML_ATTR_ID, name.c_str());
+  setting->SetAttribute(XML_ATTR_TYPE, GetType().c_str());
+
+  if (!SerializeSetting(setting))
     return false;
 
   parent->InsertEndChild(setting);
@@ -90,9 +94,9 @@ bool CSkinSetting::Serialize(TiXmlElement* parent) const
   return true;
 }
 
-bool CSkinSetting::Deserialize(const TiXmlElement* element)
+bool CSkinSetting::Deserialize(const tinyxml2::XMLElement* element)
 {
-  if (element == nullptr)
+  if (!element)
     return false;
 
   name = XMLUtils::GetAttribute(element, XML_ATTR_ID);
@@ -104,49 +108,50 @@ bool CSkinSetting::Deserialize(const TiXmlElement* element)
   return true;
 }
 
-bool CSkinSettingString::Deserialize(const TiXmlElement* element)
+bool CSkinSettingString::Deserialize(const tinyxml2::XMLElement* element)
 {
-  value.clear();
+  m_value.clear();
 
   if (!CSkinSetting::Deserialize(element))
     return false;
 
-  if (element->FirstChild() != nullptr)
-    value = element->FirstChild()->Value();
+  if (element->FirstChild())
+    m_value = element->FirstChild()->Value();
 
   return true;
 }
 
-bool CSkinSettingString::SerializeSetting(TiXmlElement* element) const
+bool CSkinSettingString::SerializeSetting(tinyxml2::XMLElement* element) const
 {
   if (element == nullptr)
     return false;
 
-  TiXmlText xmlValue(value);
+  auto* xmlValue = element->GetDocument()->NewText(m_value.c_str());
   element->InsertEndChild(xmlValue);
 
   return true;
 }
 
-bool CSkinSettingBool::Deserialize(const TiXmlElement* element)
+bool CSkinSettingBool::Deserialize(const tinyxml2::XMLElement* element)
 {
-  value = false;
+  m_value = false;
 
   if (!CSkinSetting::Deserialize(element))
     return false;
 
   if (element->FirstChild() != nullptr)
-    value = StringUtils::EqualsNoCase(element->FirstChild()->ValueStr(), "true");
+    m_value = StringUtils::EqualsNoCase(element->FirstChild()->Value(), "true");
 
   return true;
 }
 
-bool CSkinSettingBool::SerializeSetting(TiXmlElement* element) const
+bool CSkinSettingBool::SerializeSetting(tinyxml2::XMLElement* element) const
 {
-  if (element == nullptr)
+  if (!element)
     return false;
 
-  TiXmlText xmlValue(value ? "true" : "false");
+  auto* xmlValue = element->GetDocument()->NewText(m_value ? "true" : "false");
+
   element->InsertEndChild(xmlValue);
 
   return true;
@@ -299,7 +304,7 @@ void CSkinInfo::ProcessTimers()
 {
   m_skinTimerManager->Process();
 }
-void CSkinInfo::ResolveIncludes(TiXmlElement* node,
+void CSkinInfo::ResolveIncludes(tinyxml2::XMLElement* node,
                                 std::map<INFO::InfoPtr, bool>* xmlIncludeConditions /* = nullptr */)
 {
   if(xmlIncludeConditions)
@@ -499,14 +504,14 @@ void GetFontsetsFromFile(const std::string& fontsetFilePath,
                          const std::string& settingValue,
                          bool* currentValueSet)
 {
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if (xmlDoc.LoadFile(fontsetFilePath))
   {
-    TiXmlElement* rootElement = xmlDoc.RootElement();
+    auto* rootElement = xmlDoc.RootElement();
     g_SkinInfo->ResolveIncludes(rootElement);
-    if (rootElement && (rootElement->ValueStr() == "fonts"))
+    if (rootElement && (strcmp(rootElement->Value(), "fonts") == 0))
     {
-      const TiXmlElement* fontsetElement = rootElement->FirstChildElement("fontset");
+      const auto* fontsetElement = rootElement->FirstChildElement("fontset");
       while (fontsetElement)
       {
         const char* idAttr = fontsetElement->Attribute("id");
@@ -666,7 +671,7 @@ const std::string& CSkinInfo::GetString(int setting) const
 {
   const auto& it = m_strings.find(setting);
   if (it != m_strings.end())
-    return it->second->value;
+    return it->second->m_value;
 
   return StringUtils::Empty;
 }
@@ -676,7 +681,7 @@ void CSkinInfo::SetString(int setting, const std::string &label)
   auto&& it = m_strings.find(setting);
   if (it != m_strings.end())
   {
-    it->second->value = label;
+    it->second->m_value = label;
     m_settingsUpdateHandler->TriggerSave();
     return;
   }
@@ -709,7 +714,7 @@ bool CSkinInfo::GetBool(int setting) const
 {
   const auto& it = m_bools.find(setting);
   if (it != m_bools.end())
-    return it->second->value;
+    return it->second->m_value;
 
   // default is to return false
   return false;
@@ -720,7 +725,7 @@ void CSkinInfo::SetBool(int setting, bool set)
   auto&& it = m_bools.find(setting);
   if (it != m_bools.end())
   {
-    it->second->value = set;
+    it->second->m_value = set;
     m_settingsUpdateHandler->TriggerSave();
     return;
   }
@@ -764,7 +769,7 @@ void CSkinInfo::Reset(const std::string &setting)
   {
     if (StringUtils::EqualsNoCase(setting, it.second->name))
     {
-      it.second->value.clear();
+      it.second->m_value.clear();
       m_settingsUpdateHandler->TriggerSave();
       return;
     }
@@ -775,7 +780,7 @@ void CSkinInfo::Reset(const std::string &setting)
   {
     if (StringUtils::EqualsNoCase(setting, it.second->name))
     {
-      it.second->value = false;
+      it.second->m_value = false;
       m_settingsUpdateHandler->TriggerSave();
       return;
     }
@@ -786,25 +791,25 @@ void CSkinInfo::Reset()
 {
   // clear all the settings and strings from this skin.
   for (auto& it : m_bools)
-    it.second->value = false;
+    it.second->m_value = false;
 
   for (auto& it : m_strings)
-    it.second->value.clear();
+    it.second->m_value.clear();
 
   m_settingsUpdateHandler->TriggerSave();
 }
 
-std::set<CSkinSettingPtr> CSkinInfo::ParseSettings(const TiXmlElement* rootElement)
+std::set<CSkinSettingPtr> CSkinInfo::ParseSettings(const tinyxml2::XMLElement* rootElement)
 {
   std::set<CSkinSettingPtr> settings;
-  if (rootElement == nullptr)
+  if (!rootElement)
     return settings;
 
-  const TiXmlElement *settingElement = rootElement->FirstChildElement(XML_SETTING);
-  while (settingElement != nullptr)
+  const auto* settingElement = rootElement->FirstChildElement(XML_SETTING);
+  while (settingElement)
   {
     CSkinSettingPtr setting = ParseSetting(settingElement);
-    if (setting != nullptr)
+    if (setting)
       settings.insert(setting);
 
     settingElement = settingElement->NextSiblingElement(XML_SETTING);
@@ -813,9 +818,9 @@ std::set<CSkinSettingPtr> CSkinInfo::ParseSettings(const TiXmlElement* rootEleme
   return settings;
 }
 
-CSkinSettingPtr CSkinInfo::ParseSetting(const TiXmlElement* element)
+CSkinSettingPtr CSkinInfo::ParseSetting(const tinyxml2::XMLElement* element)
 {
-  if (element == nullptr)
+  if (!element)
     return CSkinSettingPtr();
 
   std::string settingType = XMLUtils::GetAttribute(element, XML_ATTR_TYPE);
@@ -844,12 +849,12 @@ bool CSkinInfo::SettingsLoaded(AddonInstanceId id /* = ADDON_SETTINGS_ID */) con
   return !m_strings.empty() || !m_bools.empty();
 }
 
-bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML& doc,
+bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML2& doc,
                                 bool loadDefaults,
                                 AddonInstanceId id /* = ADDON_SETTINGS_ID */)
 {
-  const TiXmlElement *rootElement = doc.RootElement();
-  if (rootElement == nullptr || rootElement->ValueStr().compare(XML_SETTINGS) != 0)
+  const auto* rootElement = doc.RootElement();
+  if (!rootElement || strcmp(rootElement->Value(), XML_SETTINGS) != 0)
   {
     CLog::Log(LOGWARNING, "CSkinInfo: no <settings> tag found");
     return false;
@@ -883,18 +888,19 @@ bool CSkinInfo::SettingsFromXML(const CXBMCTinyXML& doc,
   return true;
 }
 
-bool CSkinInfo::SettingsToXML(CXBMCTinyXML& doc, AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
+bool CSkinInfo::SettingsToXML(CXBMCTinyXML2& doc,
+                              AddonInstanceId id /* = ADDON_SETTINGS_ID */) const
 {
   // add the <skinsettings> tag
-  TiXmlElement rootElement(XML_SETTINGS);
-  TiXmlNode *settingsNode = doc.InsertEndChild(rootElement);
-  if (settingsNode == nullptr)
+  auto* rootElement = doc.NewElement(XML_SETTINGS);
+  auto* settingsNode = doc.InsertEndChild(rootElement);
+  if (!settingsNode)
   {
     CLog::Log(LOGWARNING, "CSkinInfo: could not create <settings> tag");
     return false;
   }
 
-  TiXmlElement* settingsElement = settingsNode->ToElement();
+  auto* settingsElement = settingsNode->ToElement();
   for (const auto& it : m_bools)
   {
     if (!it.second->Serialize(settingsElement))

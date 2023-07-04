@@ -12,8 +12,6 @@
 #include "music/Album.h"
 #include "utils/ScraperUrl.h"
 
-class CXBMCTinyXML;
-
 namespace XFILE { class CCurlFile; }
 
 namespace MUSIC_GRABBER

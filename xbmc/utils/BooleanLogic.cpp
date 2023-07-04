@@ -9,22 +9,23 @@
 #include "BooleanLogic.h"
 
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 #include <memory>
 
-bool CBooleanLogicValue::Deserialize(const TiXmlNode *node)
+#include <tinyxml2.h>
+
+bool CBooleanLogicValue::Deserialize(const tinyxml2::XMLNode* node)
 {
   if (node == NULL)
     return false;
 
-  const TiXmlElement *elem = node->ToElement();
-  if (elem == NULL)
+  const auto* elem = node->ToElement();
+  if (!elem)
     return false;
 
-  if (node->FirstChild() != NULL && node->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
-    m_value = node->FirstChild()->ValueStr();
+  if (node->FirstChild() && node->FirstChild()->ToText())
+    m_value = node->FirstChild()->Value();
 
   m_negated = false;
   const char *strNegated = elem->Attribute("negated");
@@ -42,14 +43,14 @@ bool CBooleanLogicValue::Deserialize(const TiXmlNode *node)
   return true;
 }
 
-bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
+bool CBooleanLogicOperation::Deserialize(const tinyxml2::XMLNode* node)
 {
-  if (node == NULL)
+  if (!node)
     return false;
 
   // check if this is a simple operation with a single value directly expressed
   // in the parent tag
-  if (node->FirstChild() == NULL || node->FirstChild()->Type() == TiXmlNode::TINYXML_TEXT)
+  if (!node->FirstChild() || node->FirstChild()->ToText())
   {
     CBooleanLogicValuePtr value = CBooleanLogicValuePtr(newValue());
     if (value == NULL || !value->Deserialize(node))
@@ -62,10 +63,10 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
     return true;
   }
 
-  const TiXmlNode *operationNode = node->FirstChild();
-  while (operationNode != NULL)
+  const auto* operationNode = node->FirstChild();
+  while (operationNode)
   {
-    std::string tag = operationNode->ValueStr();
+    std::string tag = operationNode->Value();
     if (StringUtils::EqualsNoCase(tag, "and") || StringUtils::EqualsNoCase(tag, "or"))
     {
       CBooleanLogicOperationPtr operation = CBooleanLogicOperationPtr(newOperation());
@@ -97,7 +98,7 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
 
         m_values.push_back(value);
       }
-      else if (operationNode->Type() == TiXmlNode::TINYXML_ELEMENT)
+      else if (operationNode->ToElement())
         CLog::Log(LOGDEBUG, "CBooleanLogicOperation: unknown <{}> definition encountered", tag);
     }
 
@@ -107,9 +108,9 @@ bool CBooleanLogicOperation::Deserialize(const TiXmlNode *node)
   return true;
 }
 
-bool CBooleanLogic::Deserialize(const TiXmlNode *node)
+bool CBooleanLogic::Deserialize(const tinyxml2::XMLNode* node)
 {
-  if (node == NULL)
+  if (!node)
     return false;
 
   if (m_operation == NULL)

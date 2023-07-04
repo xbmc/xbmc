@@ -15,12 +15,13 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 #include <memory>
 #include <mutex>
 #include <string>
+
+#include <tinyxml2.h>
 
 #define XML_SKINSETTINGS  "skinsettings"
 
@@ -102,12 +103,12 @@ void CSkinSettings::Reset()
   infoMgr.GetInfoProviders().GetGUIControlsInfoProvider().ResetContainerMovingCache();
 }
 
-bool CSkinSettings::Load(const TiXmlNode *settings)
+bool CSkinSettings::Load(const tinyxml2::XMLNode* settings)
 {
   if (settings == nullptr)
     return false;
 
-  const TiXmlElement *rootElement = settings->FirstChildElement(XML_SKINSETTINGS);
+  const auto* rootElement = settings->FirstChildElement(XML_SKINSETTINGS);
 
   // return true in the case skinsettings is missing. It just means that
   // it's been migrated and it's not an error
@@ -124,7 +125,7 @@ bool CSkinSettings::Load(const TiXmlNode *settings)
   return true;
 }
 
-bool CSkinSettings::Save(TiXmlNode *settings) const
+bool CSkinSettings::Save(tinyxml2::XMLNode* settings) const
 {
   if (settings == nullptr)
     return false;
@@ -161,13 +162,13 @@ void CSkinSettings::MigrateSettings(const std::shared_ptr<ADDON::CSkinInfo>& ski
     {
       int settingNumber = skin->TranslateString(settingName);
       if (settingNumber >= 0)
-        skin->SetString(settingNumber, std::dynamic_pointer_cast<ADDON::CSkinSettingString>(setting)->value);
+        skin->SetString(settingNumber, std::dynamic_pointer_cast<ADDON::CSkinSettingString>(setting)->m_value);
     }
     else if (setting->GetType() == "bool")
     {
       int settingNumber = skin->TranslateBool(settingName);
       if (settingNumber >= 0)
-        skin->SetBool(settingNumber, std::dynamic_pointer_cast<ADDON::CSkinSettingBool>(setting)->value);
+        skin->SetBool(settingNumber, std::dynamic_pointer_cast<ADDON::CSkinSettingBool>(setting)->m_value);
     }
 
     m_settings.erase(setting);

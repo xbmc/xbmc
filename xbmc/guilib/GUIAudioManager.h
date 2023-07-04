@@ -20,8 +20,12 @@
 // forward definitions
 class CAction;
 class CSettings;
-class TiXmlNode;
 class IAESound;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 enum WINDOW_SOUND { SOUND_INIT = 0, SOUND_DEINIT };
 
@@ -46,7 +50,7 @@ public:
   void OnSettingChanged(const std::shared_ptr<const CSetting>& setting) override;
   bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                        const char* oldSettingId,
-                       const TiXmlNode* oldSettingNode) override;
+                       const tinyxml2::XMLNode* oldSettingNode) override;
 
   void Initialize();
   void DeInitialize();
@@ -83,7 +87,7 @@ private:
   CCriticalSection    m_cs;
 
   std::shared_ptr<IAESound> LoadSound(const std::string& filename);
-  std::shared_ptr<IAESound> LoadWindowSound(TiXmlNode* pWindowNode,
+  std::shared_ptr<IAESound> LoadWindowSound(tinyxml2::XMLNode* windowNode,
                                             const std::string& strIdentifier);
 };
 

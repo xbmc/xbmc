@@ -13,14 +13,19 @@
 
 class IPlayer;
 class IPlayerCallback;
-class TiXmlElement;
+class CXBMCTinyXML2;
+
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 class CPlayerCoreConfig
 {
 public:
   CPlayerCoreConfig(std::string name,
                     std::string type,
-                    const TiXmlElement* pConfig,
+                    const tinyxml2::XMLElement* pConfig,
                     const std::string& id = "");
 
   ~CPlayerCoreConfig() = default;
@@ -52,5 +57,5 @@ public:
   std::string m_type;
   bool m_bPlaysAudio{false};
   bool m_bPlaysVideo{false};
-  std::unique_ptr<TiXmlElement> m_config;
+  std::unique_ptr<CXBMCTinyXML2> m_config;
 };

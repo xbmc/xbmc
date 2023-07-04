@@ -9,7 +9,7 @@
 #include "ISetting.h"
 
 #include "SettingDefinitions.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 
 #include <string>
@@ -20,7 +20,7 @@ ISetting::ISetting(const std::string &id, CSettingsManager *settingsManager /* =
   , m_requirementCondition(settingsManager)
 { }
 
-bool ISetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
+bool ISetting::Deserialize(const tinyxml2::XMLNode* node, bool update /* = false */)
 {
   if (node == nullptr)
     return false;
@@ -34,24 +34,26 @@ bool ISetting::Deserialize(const TiXmlNode *node, bool update /* = false */)
     return false;
 
   int iValue = -1;
-  if (element->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &iValue) == TIXML_SUCCESS && iValue > 0)
+  if (element->QueryIntAttribute(SETTING_XML_ATTR_LABEL, &iValue) == tinyxml2::XML_SUCCESS &&
+      iValue > 0)
     m_label = iValue;
-  if (element->QueryIntAttribute(SETTING_XML_ATTR_HELP, &iValue) == TIXML_SUCCESS && iValue > 0)
+  if (element->QueryIntAttribute(SETTING_XML_ATTR_HELP, &iValue) == tinyxml2::XML_SUCCESS &&
+      iValue > 0)
     m_help = iValue;
 
-  auto requirementNode = node->FirstChild(SETTING_XML_ELM_REQUIREMENT);
-  if (requirementNode == nullptr)
+  auto requirementNode = node->FirstChildElement(SETTING_XML_ELM_REQUIREMENT);
+  if (!requirementNode)
     return true;
 
   return m_requirementCondition.Deserialize(requirementNode);
 }
 
-bool ISetting::DeserializeIdentification(const TiXmlNode* node, std::string& identification)
+bool ISetting::DeserializeIdentification(const tinyxml2::XMLNode* node, std::string& identification)
 {
   return DeserializeIdentificationFromAttribute(node, SETTING_XML_ATTR_ID, identification);
 }
 
-bool ISetting::DeserializeIdentificationFromAttribute(const TiXmlNode* node,
+bool ISetting::DeserializeIdentificationFromAttribute(const tinyxml2::XMLNode* node,
                                                       const std::string& attribute,
                                                       std::string& identification)
 {
@@ -62,11 +64,11 @@ bool ISetting::DeserializeIdentificationFromAttribute(const TiXmlNode* node,
   if (element == nullptr)
     return false;
 
-  auto idAttribute = element->Attribute(attribute);
-  if (idAttribute == nullptr || idAttribute->empty())
+  auto idAttribute = element->Attribute(attribute.c_str());
+  if (idAttribute == nullptr || *idAttribute == 0)
     return false;
 
-  identification = *idAttribute;
+  identification = idAttribute;
   return true;
 }
 

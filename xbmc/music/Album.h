@@ -21,8 +21,12 @@
 #include <map>
 #include <vector>
 
-class TiXmlElement;
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+class XMLElement;
+} // namespace tinyxml2
+
 class CFileItem;
 class CAlbum
 {
@@ -139,8 +143,8 @@ public:
    \param prioritise if appending, whether additive tags should be prioritised (i.e. replace or prepend) over existing values. Defaults to false.
    \sa CVideoInfoTag::Load
    */
-  bool Load(const TiXmlElement *element, bool append = false, bool prioritise = false);
-  bool Save(TiXmlNode *node, const std::string &tag, const std::string& strPath);
+  bool Load(const tinyxml2::XMLElement* element, bool append = false, bool prioritise = false);
+  bool Save(tinyxml2::XMLNode* node, const std::string& tag, const std::string& strPath);
 
   int idAlbum = -1;
   std::string strAlbum;

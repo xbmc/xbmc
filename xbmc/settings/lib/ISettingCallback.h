@@ -11,7 +11,11 @@
 #include <memory>
 
 class CSetting;
-class TiXmlNode;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class ISettingCallback
 {
@@ -67,7 +71,7 @@ public:
    */
   virtual bool OnSettingUpdate(const std::shared_ptr<CSetting>& setting,
                                const char* oldSettingId,
-                               const TiXmlNode* oldSettingNode)
+                               const tinyxml2::XMLNode* oldSettingNode)
   {
     return false;
   }

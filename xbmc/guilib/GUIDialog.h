@@ -28,6 +28,11 @@ enum class DialogModalityType
 #pragma pack(pop)
 #endif
 
+namespace tinyxml2
+{
+class XMLElement;
+}
+
 /*!
  \ingroup winmsg
  \brief
@@ -62,7 +67,7 @@ public:
   bool IsSoundEnabled() const override { return m_enableSound; }
 
 protected:
-  bool Load(TiXmlElement *pRootElement) override;
+  bool Load(tinyxml2::XMLElement* pRootElement) override;
   void SetDefaults() override;
   void OnWindowLoaded() override;
   using CGUIWindow::UpdateVisibility;

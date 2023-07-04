@@ -11,7 +11,6 @@
 #include "addons/Scraper.h"
 #include "music/Artist.h"
 
-class CXBMCTinyXML;
 class CScraperUrl;
 
 namespace MUSIC_GRABBER
