@@ -17742,6 +17742,7 @@ msgstr ""
 #empty strings from id 34409 to 34999
 
 #: system/settings/settings.xml
+#: xbmc/games/agents/windows/GUIAgentList.cpp
 #: xbmc/peripherals/Peripherals.cpp
 msgctxt "#35000"
 msgid "Peripherals"
@@ -17763,6 +17764,7 @@ msgctxt "#35003"
 msgid "Generic disk"
 msgstr ""
 
+#: xbmc/games/agents/windows/GUIAgentList.cpp
 #: xbmc/peripherals/Peripherals.cpp
 msgctxt "#35004"
 msgid "There are no settings available for this peripheral."
@@ -18301,7 +18303,20 @@ msgctxt "#35171"
 msgid "Mouse"
 msgstr ""
 
-#empty strings from id 35172 to 35199
+#. Name of window for configuring players while playing a game
+#: addons/skin.estuary/xml/GameOSD.xml
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35172"
+msgid "Players"
+msgstr ""
+
+#. Notification shown when no controllers are connected in the in-game dialog that lets users configure player assignment
+#: xbmc/games/agents/windows/GUIAgentList.cpp
+msgctxt "#35173"
+msgid "No controllers connected"
+msgstr ""
+
+#empty strings from id 35174 to 35199
 
 #. This string is an early meme from the late 1990's that made fun of the poor translation in the 16-bit game Zero Wing from the late 1980's. DO NOT TRANSLATE!
 #: system/settings/settings.xml

@@ -134,3 +134,11 @@ bool CControllerNode::ProvidesInput() const
 {
   return m_controller && m_controller->Topology().ProvidesInput();
 }
+
+void CControllerNode::GetInputPorts(std::vector<std::string>& inputPorts) const
+{
+  if (ProvidesInput())
+    inputPorts.emplace_back(m_portAddress);
+
+  m_hub->GetInputPorts(inputPorts);
+}

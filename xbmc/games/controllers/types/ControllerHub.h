@@ -44,6 +44,13 @@ public:
 
   const CPortNode& GetPort(const std::string& address) const;
 
+  /*!
+   * \brief Get a list of ports that accept player input
+   *
+   * \param[out] inputPorts The list of input ports
+   */
+  void GetInputPorts(std::vector<std::string>& inputPorts) const;
+
 private:
   static const CPortNode& GetPortInternal(const PortVec& ports, const std::string& address);
 

@@ -101,6 +101,13 @@ public:
    */
   bool ProvidesInput() const;
 
+  /*!
+   * \brief Get a list of ports that accept player input
+   *
+   * \param[out] inputPorts The list of input ports
+   */
+  void GetInputPorts(std::vector<std::string>& activePorts) const;
+
 private:
   ControllerPtr m_controller;
 

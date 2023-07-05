@@ -41,11 +41,13 @@ public:
   void SetControllerAddress(const GUILIB::GUIINFO::CGUIInfoLabel& controllerAddress);
   void SetControllerDiffuse(const GUILIB::GUIINFO::CGUIInfoColor& color);
   void SetPortAddress(const GUILIB::GUIINFO::CGUIInfoLabel& portAddress);
+  void SetPeripheralLocation(const GUILIB::GUIINFO::CGUIInfoLabel& peripheralLocation);
 
   // Game functions
   void ActivateController(const std::string& controllerId);
   void ActivateController(const ControllerPtr& controller);
   std::string GetPortAddress();
+  std::string GetPeripheralLocation();
 
 private:
   // GUI functions
@@ -56,10 +58,12 @@ private:
   GUILIB::GUIINFO::CGUIInfoLabel m_controllerAddressInfo;
   GUILIB::GUIINFO::CGUIInfoColor m_controllerDiffuse;
   GUILIB::GUIINFO::CGUIInfoLabel m_portAddressInfo;
+  GUILIB::GUIINFO::CGUIInfoLabel m_peripheralLocationInfo;
 
   // Game parameters
   ControllerPtr m_currentController;
   std::string m_portAddress;
+  std::string m_peripheralLocation;
 
   // Synchronization parameters
   std::mutex m_mutex;

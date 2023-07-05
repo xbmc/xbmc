@@ -20,3 +20,6 @@
 
 // Skin XML file
 #define PORT_DIALOG_XML "DialogGameControllers.xml"
+
+// Allow for two Saturn 6 Player Adapters
+constexpr unsigned int MAX_PORT_COUNT = 12;

@@ -8,9 +8,11 @@
 
 #include "GameAgentManager.h"
 
+#include "GameAgent.h"
 #include "games/addons/GameClient.h"
 #include "games/addons/input/GameClientInput.h"
 #include "games/addons/input/GameClientJoystick.h"
+#include "games/controllers/Controller.h"
 #include "input/InputManager.h"
 #include "peripherals/EventLockHandle.h"
 #include "peripherals/Peripherals.h"
@@ -133,6 +135,34 @@ bool CGameAgentManager::OnButtonPress(MOUSE::BUTTON_ID button)
   return false;
 }
 
+GameAgentVec CGameAgentManager::GetAgents() const
+{
+  std::lock_guard<std::mutex> lock(m_agentMutex);
+  return m_agents;
+}
+
+std::string CGameAgentManager::GetPortAddress(JOYSTICK::IInputProvider* inputProvider) const
+{
+  auto it = m_portMap.find(inputProvider);
+  if (it != m_portMap.end())
+    return it->second->GetPortAddress();
+
+  return "";
+}
+
+std::vector<std::string> CGameAgentManager::GetInputPorts() const
+{
+  std::vector<std::string> inputPorts;
+
+  if (m_gameClient)
+  {
+    const CControllerTree& controllerTree = m_gameClient->Input().GetActiveControllerTree();
+    controllerTree.GetInputPorts(inputPorts);
+  }
+
+  return inputPorts;
+}
+
 float CGameAgentManager::GetPortActivation(const std::string& portAddress) const
 {
   float activation = 0.0f;
@@ -141,6 +171,19 @@ float CGameAgentManager::GetPortActivation(const std::string& portAddress) const
     activation = m_gameClient->Input().GetPortActivation(portAddress);
 
   return activation;
+}
+
+float CGameAgentManager::GetPeripheralActivation(const std::string& peripheralLocation) const
+{
+  std::lock_guard<std::mutex> lock(m_agentMutex);
+
+  for (const GameAgentPtr& agent : m_agents)
+  {
+    if (agent->GetPeripheralLocation() == peripheralLocation)
+      return agent->GetActivation();
+  }
+
+  return 0.0f;
 }
 
 void CGameAgentManager::ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlingLock)
@@ -155,6 +198,9 @@ void CGameAgentManager::ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputH
   //
   PERIPHERALS::PeripheralVector joysticks;
   m_peripheralManager.GetPeripheralsWithFeature(joysticks, PERIPHERALS::FEATURE_JOYSTICK);
+
+  // Update agents
+  ProcessAgents(joysticks, inputHandlingLock);
 
   // Update expired joysticks
   UpdateExpiredJoysticks(joysticks, inputHandlingLock);
@@ -221,6 +267,84 @@ void CGameAgentManager::ProcessMouse()
 
       PERIPHERALS::PeripheralPtr mouse = std::move(mice.at(0));
       m_gameClient->Input().OpenMouse(it->GetActiveController().GetController(), mouse);
+
+      SetChanged(true);
+    }
+  }
+}
+
+void CGameAgentManager::ProcessAgents(const PERIPHERALS::PeripheralVector& joysticks,
+                                      PERIPHERALS::EventLockHandlePtr& inputHandlingLock)
+{
+  std::lock_guard<std::mutex> lock(m_agentMutex);
+
+  // Handle new and existing agents
+  for (const auto& joystick : joysticks)
+  {
+    auto it =
+        std::find_if(m_agents.begin(), m_agents.end(), [&joystick](const GameAgentPtr& agent) {
+          return agent->GetPeripheralLocation() == joystick->Location();
+        });
+
+    if (it == m_agents.end())
+    {
+      // Handle new agent
+      m_agents.emplace_back(std::make_shared<CGameAgent>(joystick));
+      SetChanged(true);
+    }
+    else
+    {
+      CGameAgent& agent = **it;
+
+      // Check if appearance has changed
+      ControllerPtr oldController = agent.GetController();
+      ControllerPtr newController = joystick->ControllerProfile();
+
+      std::string oldControllerId = oldController ? oldController->ID() : "";
+      std::string newControllerId = newController ? newController->ID() : "";
+
+      if (oldControllerId != newControllerId)
+      {
+        if (!inputHandlingLock)
+          inputHandlingLock = m_peripheralManager.RegisterEventLock();
+
+        // Reinitialize agent
+        agent.Deinitialize();
+        agent.Initialize();
+
+        SetChanged(true);
+      }
+    }
+  }
+
+  // Remove expired agents
+  std::vector<std::string> expiredJoysticks;
+  for (const auto& agent : m_agents)
+  {
+    auto it = std::find_if(joysticks.begin(), joysticks.end(),
+                           [&agent](const PERIPHERALS::PeripheralPtr& joystick) {
+                             return agent->GetPeripheralLocation() == joystick->Location();
+                           });
+
+    if (it == joysticks.end())
+      expiredJoysticks.emplace_back(agent->GetPeripheralLocation());
+  }
+  for (const std::string& expiredJoystick : expiredJoysticks)
+  {
+    auto it = std::find_if(m_agents.begin(), m_agents.end(),
+                           [&expiredJoystick](const GameAgentPtr& agent) {
+                             return agent->GetPeripheralLocation() == expiredJoystick;
+                           });
+    if (it != m_agents.end())
+    {
+      if (!inputHandlingLock)
+        inputHandlingLock = m_peripheralManager.RegisterEventLock();
+
+      // Deinitialize agent
+      (*it)->Deinitialize();
+
+      // Remove from list
+      m_agents.erase(it);
 
       SetChanged(true);
     }
