@@ -20,6 +20,14 @@
 using namespace DXVA;
 using namespace Microsoft::WRL;
 
+const std::string ProcessorConversion::ToString() const
+{
+  return StringUtils::Format("{} / {} to {} / {}", DX::DXGIFormatToString(m_inputFormat),
+                             DX::DXGIColorSpaceTypeToString(m_inputCS),
+                             DX::DXGIFormatToString(m_outputFormat),
+                             DX::DXGIColorSpaceTypeToString(m_outputCS));
+}
+
 CEnumeratorHD::CEnumeratorHD()
 {
   DX::Windowing()->Register(this);
@@ -248,176 +256,54 @@ ProcessorCapabilities CEnumeratorHD::ProbeProcessorCaps()
   return result;
 }
 
-DXVA::InputFormat CEnumeratorHD::QueryHDRtoHDRSupport() const
+DXVA::InputFormat CEnumeratorHD::QueryHDRtoHDRSupport()
 {
-  // Not initialized yet
-  if (!m_pEnumerator)
+  const ProcessorConversions conv = QueryHDRConversions(false);
+
+  if (conv.empty())
     return None;
 
-  if (!m_pEnumerator1)
-  {
-    CLog::LogF(LOGWARNING,
-               "ID3D11VideoProcessorEnumerator1 required to evaluate support is not available.");
-    return None;
-  }
+  auto it = std::find_if(conv.cbegin(), conv.cend(), [](const ProcessorConversion& c) {
+    return c.m_inputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020;
+  });
 
-  const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
-                                              ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
-                                              : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-
-  // Check if HDR10 (TOP LEFT) input color space is supported by video driver
-  const bool HDRtopLeft = CheckConversionInternal(m_input_dxgi_format,
-                                                  DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020,
-                                                  DXGI_FORMAT_R10G10B10A2_UNORM, destColor);
-
-  // Check if HDR10 (LEFT) input color space is supported by video driver
-  const bool HDRleft =
-      CheckConversionInternal(m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020,
-                              DXGI_FORMAT_R10G10B10A2_UNORM, destColor);
-
-  CLog::LogF(LOGDEBUG,
-             "HDR10 input color spaces support with HDR {} range output: "
-             "YCBCR_STUDIO_G2084_LEFT_P2020: {}, "
-             "YCBCR_STUDIO_G2084_TOPLEFT_P2020: {}",
-             DX::Windowing()->UseLimitedColor() ? "limited" : "full", HDRleft ? "yes" : "no",
-             HDRtopLeft ? "yes" : "no");
-
-  if (HDRtopLeft)
-  {
-    if (HDRleft)
-      CLog::LogF(LOGDEBUG, "Preferred UHD Blu-Ray top left chroma siting will be used");
-
+  if (it != conv.end())
     return TopLeft;
-  }
-  else if (HDRleft)
-  {
-    return Left;
-  }
 
+  it = std::find_if(conv.cbegin(), conv.cend(), [](const ProcessorConversion& c) {
+    return c.m_inputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
+  });
+
+  if (it != conv.end())
+    return Left;
+
+  // Conversions returned, none with one of the expected types? Return "not supported"
   return None;
 }
 
-bool CEnumeratorHD::IsPQ10PassthroughSupported()
+InputFormat CEnumeratorHD::QueryHDRtoSDRSupport()
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
-  if (QueryHDRtoHDRSupport() == None)
-  {
-    CLog::LogF(
-        LOGWARNING,
-        "Input color space HDR10 is not supported by video processor with HDR {} range output. "
-        "DXVA will not be used.",
-        DX::Windowing()->UseLimitedColor() ? "limited" : "full");
+  const ProcessorConversions conv = QueryHDRtoSDRConversions(false);
 
-    return false;
-  }
-
-  return true;
-}
-
-InputFormat CEnumeratorHD::QueryHDRtoSDRSupport() const
-{
-  // Not initialized yet
-  if (!m_pEnumerator)
+  if (conv.empty())
     return None;
 
-  if (!m_pEnumerator1)
-  {
-    CLog::LogF(LOGWARNING,
-               "ID3D11VideoProcessorEnumerator1 required to evaluate support is not available.");
-    return None;
-  }
+  auto it = std::find_if(conv.cbegin(), conv.cend(), [](const ProcessorConversion& c) {
+    return c.m_inputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020;
+  });
 
-  const DXGI_FORMAT destFormat = DX::Windowing()->GetBackBuffer().GetFormat();
-  const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
-                                              ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
-                                              : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-
-  // Check if BT.2020 (LEFT) input color space is supported by video driver
-  const bool left = CheckConversionInternal(
-      m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020, destFormat, destColor);
-
-  // Check if BT.2020 (TOP LEFT) input color space is supported by video driver
-  const bool topLeft = CheckConversionInternal(
-      m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020, destFormat, destColor);
-
-  CLog::LogF(LOGDEBUG,
-             "BT.2020 input color spaces supported with SDR {} range output: "
-             "YCBCR_STUDIO_G22_LEFT_P2020: {}, "
-             "YCBCR_STUDIO_G22_TOPLEFT_P2020: {}",
-             DX::Windowing()->UseLimitedColor() ? "limited" : "full", left ? "yes" : "no",
-             topLeft ? "yes" : "no");
-
-  if (topLeft)
-  {
-    if (left)
-      CLog::LogF(LOGDEBUG, "Preferred UHD Blu-Ray top left chroma siting will be used");
-
+  if (it != conv.end())
     return TopLeft;
-  }
-  else if (left)
-  {
+
+  it = std::find_if(conv.cbegin(), conv.cend(), [](const ProcessorConversion& c) {
+    return c.m_inputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
+  });
+
+  if (it != conv.end())
     return Left;
-  }
 
+  // Conversions returned, none with one of the expected types? Return "not supported"
   return None;
-}
-
-bool CEnumeratorHD::IsBT2020Supported()
-{
-  std::unique_lock<CCriticalSection> lock(m_section);
-  if (QueryHDRtoSDRSupport() == None)
-  {
-    CLog::LogF(
-        LOGWARNING,
-        "Input color space BT.2020 is not supported by video processor with SDR {} range output. "
-        "DXVA will not be used.",
-        DX::Windowing()->UseLimitedColor() ? "limited" : "full");
-
-    return false;
-  }
-
-  return true;
-}
-
-bool CEnumeratorHD::QuerySDRSupport() const
-{
-  // Not initialized yet
-  if (!m_pEnumerator)
-    return false;
-
-  // Full range SDR output: this has always been standard functionality, assume it's present.
-  if (!DX::Windowing()->UseLimitedColor())
-    return true;
-
-  if (!m_pEnumerator1)
-  {
-    CLog::LogF(LOGWARNING,
-               "ID3D11VideoProcessorEnumerator1 not available - assuming SDR output is possible.");
-    return true;
-  }
-
-  const DXGI_FORMAT destFormat = DX::Windowing()->GetBackBuffer().GetFormat();
-
-  // Check if BT.709 input color space is supported by video driver
-  return CheckConversionInternal(m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709,
-                                 destFormat, DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709);
-}
-
-bool CEnumeratorHD::IsSDRSupported()
-{
-  std::unique_lock<CCriticalSection> lock(m_section);
-  if (!QuerySDRSupport())
-  {
-    CLog::LogF(
-        LOGWARNING,
-        "Input color space BT.709 is not supported by video processor with SDR {} range output. "
-        "DXVA will not be used.",
-        DX::Windowing()->UseLimitedColor() ? "limited" : "full");
-
-    return false;
-  }
-
-  return true;
 }
 
 ProcessorFormats CEnumeratorHD::GetProcessorFormats(bool inputFormats, bool outputFormats) const
@@ -731,4 +617,242 @@ ComPtr<ID3D11VideoProcessorOutputView> CEnumeratorHD::CreateVideoProcessorOutput
                DX::GetErrorDescription(hr));
 
   return outputView;
+}
+
+ProcessorConversions CEnumeratorHD::QueryHDRConversions(const bool isSourceFullRange)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  // Not initialized yet
+  if (!m_pEnumerator)
+    return {};
+
+  // HDR support started with Windows 10 implementing the Enumerator1 interface
+  if (!m_pEnumerator1)
+  {
+    CLog::LogF(LOGWARNING,
+               "ID3D11VideoProcessorEnumerator1 required to evaluate support is not available.");
+    return {};
+  }
+
+  // There are no full range equivalents of DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020 / LEFT
+  // => exit early as unsupported.
+  if (isSourceFullRange)
+    return {};
+
+  // Top left chroma siting is always preferred for HDR because is used in UHD Blu-Rays
+  // ffmpeg flags of the source can be missing of bad anyway
+  DXGI_COLOR_SPACE_TYPE inputCS = DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020;
+
+  const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
+                                              ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
+                                              : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+  const DXGI_COLOR_SPACE_TYPE outputCS = destColor;
+
+  const ProcessorConversions convTopLeft =
+      ListConversions(m_input_dxgi_format, std::vector<DXGI_COLOR_SPACE_TYPE>{inputCS},
+                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{outputCS});
+
+  CLog::LogF(LOGDEBUG, "HDR input color spaces support with HDR {} range output: {}: {}",
+             DX::Windowing()->UseLimitedColor() ? "limited" : "full",
+             DX::DXGIColorSpaceTypeToString(inputCS), !convTopLeft.empty() ? "yes" : "no");
+
+  if (!convTopLeft.empty())
+  {
+    if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+        CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+    {
+      for (const auto& c : convTopLeft)
+        CLog::LogF(LOGDEBUG, "supported conversion: {}", c.ToString());
+    }
+
+    CLog::LogF(LOGDEBUG, "Preferred UHD Blu-Ray top left chroma siting will be used.");
+    return convTopLeft;
+  }
+
+  // Try left chroma siting as fall back - half a pixel is not much difference at 4k
+  inputCS = DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
+  const ProcessorConversions convLeft =
+      ListConversions(m_input_dxgi_format, std::vector<DXGI_COLOR_SPACE_TYPE>{inputCS},
+                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{outputCS});
+
+  CLog::LogF(LOGDEBUG, "HDR input color spaces support with HDR {} range output: {}: {}",
+             DX::Windowing()->UseLimitedColor() ? "limited" : "full",
+             DX::DXGIColorSpaceTypeToString(inputCS), !convLeft.empty() ? "yes" : "no");
+
+  if (!convLeft.empty())
+  {
+    if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+        CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+    {
+      for (const auto& c : convLeft)
+        CLog::LogF(LOGDEBUG, "supported conversion: {}", c.ToString());
+    }
+
+    CLog::LogF(LOGDEBUG, "Left chroma siting will be used.");
+    return convLeft;
+  }
+
+  return {};
+}
+
+ProcessorConversions CEnumeratorHD::QueryHDRtoSDRConversions(const bool isSourceFullRange)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  // Not initialized yet
+  if (!m_pEnumerator)
+    return {};
+
+  // HDR support started with Windows 10 implementing the Enumerator1 interface
+  if (!m_pEnumerator1)
+  {
+    CLog::LogF(LOGWARNING,
+               "ID3D11VideoProcessorEnumerator1 required to evaluate support is not available.");
+    return {};
+  }
+
+  // There are no full range equivalents of DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020 / LEFT
+  // => exit early as unsupported.
+  if (isSourceFullRange)
+    return {};
+
+  // Top left chroma siting is always preferred for HDR because is used in UHD Blu-Rays
+  // ffmpeg flags of the source can be missing of bad anyway
+  DXGI_COLOR_SPACE_TYPE inputCS = DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020;
+
+  const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
+                                              ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
+                                              : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+  const DXGI_COLOR_SPACE_TYPE outputCS = destColor;
+
+  const ProcessorConversions convTopLeft =
+      ListConversions(m_input_dxgi_format, std::vector<DXGI_COLOR_SPACE_TYPE>{inputCS},
+                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{outputCS});
+
+  CLog::LogF(LOGDEBUG, "BT.2020 input color spaces supported with SDR {} range output: {}: {}",
+             DX::Windowing()->UseLimitedColor() ? "limited" : "full",
+             DX::DXGIColorSpaceTypeToString(inputCS), !convTopLeft.empty() ? "yes" : "no");
+
+  if (!convTopLeft.empty())
+  {
+    if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+        CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+    {
+      for (const auto& c : convTopLeft)
+        CLog::LogF(LOGDEBUG, "supported conversion: {}", c.ToString());
+    }
+
+    CLog::LogF(LOGDEBUG, "Preferred UHD Blu-Ray top left chroma siting will be used.");
+    return convTopLeft;
+  }
+
+  // Try left chroma siting as fall back - half a pixel is not much difference at 4k
+  inputCS = DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
+  const ProcessorConversions convLeft =
+      ListConversions(m_input_dxgi_format, std::vector<DXGI_COLOR_SPACE_TYPE>{inputCS},
+                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{outputCS});
+
+  CLog::LogF(LOGDEBUG, "BT.2020 input color spaces supported with SDR {} range output: {}: {}",
+             DX::Windowing()->UseLimitedColor() ? "limited" : "full",
+             DX::DXGIColorSpaceTypeToString(inputCS), !convLeft.empty() ? "yes" : "no");
+
+  if (!convLeft.empty())
+  {
+    if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+        CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+    {
+      for (const auto& c : convLeft)
+        CLog::LogF(LOGDEBUG, "supported conversion: {}", c.ToString());
+    }
+
+    CLog::LogF(LOGDEBUG, "Left chroma siting will be used.");
+    return convLeft;
+  }
+
+  return {};
+}
+
+ProcessorConversions CEnumeratorHD::QuerySDRConversions(const bool isSourceFullRange,
+                                                        AVColorPrimaries colorPrimaries,
+                                                        AVColorTransferCharacteristic colorTransfer)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  // Not initialized yet
+  if (!m_pEnumerator)
+    return {};
+
+  DXGI_COLOR_SPACE_TYPE inputCS = isSourceFullRange ? DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P709
+                                                    : DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
+
+  if (colorPrimaries == AVCOL_PRI_BT470BG || colorPrimaries == AVCOL_PRI_SMPTE170M)
+  {
+    inputCS = isSourceFullRange ? DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P601
+                                : DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P601;
+  }
+  else if (colorTransfer == AVCOL_TRC_SMPTE170M)
+  {
+    if (isSourceFullRange)
+      inputCS = DXGI_COLOR_SPACE_YCBCR_FULL_G22_NONE_P709_X601;
+    else
+      return {}; // No support for limited range
+  }
+
+  const DXGI_COLOR_SPACE_TYPE destCS = DX::Windowing()->UseLimitedColor()
+                                           ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
+                                           : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+
+  // SDR supported since Windows 7 even when the Enumerator1 interface is not available.
+  // Make up the data for consistency.
+  if (!m_pEnumerator1)
+  {
+    CLog::LogF(LOGWARNING, "ID3D11VideoProcessorEnumerator1 not available on legacy OS, SDR is "
+                           "assumed to be available.");
+
+    return {ProcessorConversion(m_input_dxgi_format, inputCS, DXGI_FORMAT_B8G8R8A8_UNORM, destCS)};
+  }
+
+  const ProcessorConversions conv =
+      ListConversions(m_input_dxgi_format, std::vector<DXGI_COLOR_SPACE_TYPE>{inputCS},
+                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{destCS});
+
+  CLog::LogF(LOGDEBUG, "SDR {} range input color spaces supported with SDR {} range output: {}: {}",
+             isSourceFullRange ? "full" : "limited",
+             DX::Windowing()->UseLimitedColor() ? "limited" : "full",
+             DX::DXGIColorSpaceTypeToString(inputCS), !conv.empty() ? "yes" : "no");
+
+  if (!conv.empty())
+  {
+    if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+        CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+    {
+      for (const auto& c : conv)
+        CLog::LogF(LOGDEBUG, "supported conversion: {}", c.ToString());
+    }
+    return conv;
+  }
+
+  return {};
+}
+
+ProcessorConversions CEnumeratorHD::SupportedConversions(const SupportedConversionsArgs& args)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  const bool streamIsHDR = (args.m_colorPrimaries == AVCOL_PRI_BT2020) &&
+                           (args.m_colorTransfer == AVCOL_TRC_SMPTE2084 ||
+                            args.m_colorTransfer == AVCOL_TRC_ARIB_STD_B67);
+
+  // HDR10 passthrough for HDR played as HDR
+  // Also used for HLG because it is not supported by Windows, HDR10 is used instead
+  if (streamIsHDR && args.m_hdrOutput)
+    return QueryHDRConversions(args.m_fullRange);
+
+  // Check if BT.2020 color space is supported by DXVA video processor (for own HDR-SDR tonemap)
+  if (args.m_colorPrimaries == AVCOL_PRI_BT2020)
+    return QueryHDRtoSDRConversions(args.m_fullRange);
+
+  // Everything else is played as HD / BT709, check support.
+  return QuerySDRConversions(args.m_fullRange, args.m_colorPrimaries, args.m_colorTransfer);
 }
