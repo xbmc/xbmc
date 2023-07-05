@@ -180,23 +180,18 @@ bool CProcessorHD::IsFormatConversionSupported(DXGI_FORMAT inputFormat,
 
   ProcColorSpaces spaces = CalculateDXGIColorSpaces(DXGIColorSpaceArgs(picture));
 
-  HRESULT hr;
-  if (SUCCEEDED(hr = m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
-                    inputFormat, spaces.inputColorSpace, outputFormat, spaces.outputColorSpace,
-                    &supported)))
+  if (m_enumerator->CheckConversion(inputFormat, spaces.inputColorSpace, outputFormat,
+                                    spaces.outputColorSpace))
   {
     CLog::LogF(
         LOGDEBUG, "conversion from {} / {} to {} / {} is {}supported.",
         DX::DXGIFormatToString(inputFormat), DX::DXGIColorSpaceTypeToString(spaces.inputColorSpace),
         DX::DXGIFormatToString(outputFormat),
         DX::DXGIColorSpaceTypeToString(spaces.outputColorSpace), supported == TRUE ? "" : "NOT ");
+    return true;
   }
-  else
-  {
-    CLog::LogF(LOGERROR, "unable to validate the format conversion, error {}",
-               DX::GetErrorDescription(hr));
-  }
-  return supported == TRUE;
+
+  return false;
 }
 
 bool CProcessorHD::Open(const VideoPicture& picture)
@@ -658,20 +653,14 @@ void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
   CLog::LogFC(LOGDEBUG, LOGVIDEO, "The source is {} / {}", DX::DXGIFormatToString(inputFormat),
               DX::DXGIColorSpaceTypeToString(inputNativeCS));
 
-  if (SUCCEEDED(hr = m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
-                    inputFormat, inputNativeCS, heuristicsOutputFormat,
-                    heuristicsCS.outputColorSpace, &supported)))
+  if (m_enumerator->CheckConversion(inputFormat, inputNativeCS, heuristicsOutputFormat,
+                                    heuristicsCS.outputColorSpace))
   {
     CLog::LogFC(LOGDEBUG, LOGVIDEO, "conversion from {} / {} to {} / {} is {}supported.",
                 DX::DXGIFormatToString(inputFormat), DX::DXGIColorSpaceTypeToString(inputNativeCS),
                 DX::DXGIFormatToString(heuristicsOutputFormat),
                 DX::DXGIColorSpaceTypeToString(heuristicsCS.outputColorSpace),
                 supported == TRUE ? "" : "NOT ");
-  }
-  else
-  {
-    CLog::LogFC(LOGDEBUG, LOGVIDEO, "unable to validate the default format conversion, error {}",
-                DX::GetErrorDescription(hr));
   }
 
   // Possible input color spaces: YCbCr only
@@ -700,43 +689,37 @@ void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
   std::vector<DXGI_COLOR_SPACE_TYPE> bbcs = DX::DeviceResources::Get()->GetSwapChainColorSpaces();
   std::set<DXGI_COLOR_SPACE_TYPE> backbufferColorSpaces(bbcs.begin(), bbcs.end());
 
-  std::string conversions;
 
   // The input format cannot be worked around and is fixed.
   // Loop over the lists of:
   // - input color spaces
   // - output formats
   // - output color spaces
-  for (const DXGI_COLOR_SPACE_TYPE& inputCS : ycbcrColorSpaces)
+
+  ProcessorConversions conversions =
+      m_enumerator->ListConversions(inputFormat, ycbcrColorSpaces, outputFormats, rgbColorSpaces);
+
+  std::string conversionsString;
+
+  for (const ProcessorConversion& c : conversions)
   {
-    for (const DXGI_FORMAT& outputFormat : outputFormats)
-    {
-      for (const DXGI_COLOR_SPACE_TYPE& outputCS : rgbColorSpaces)
-      {
-        if (SUCCEEDED(m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
-                inputFormat, inputCS, outputFormat, outputCS, &supported)) &&
-            supported == TRUE)
-        {
-          conversions.append("\n");
-          conversions.append(StringUtils::Format(
-              "{} {} / {}{} {:<{}} to {} {:<{}} / {}{} {:<{}}", "*",
-              DX::DXGIFormatToString(inputFormat),
-              (inputCS == heuristicsCS.inputColorSpace) ? "*" : " ",
-              (inputCS == inputNativeCS) ? "N" : " ", DX::DXGIColorSpaceTypeToString(inputCS), 32,
-              (outputFormat == heuristicsOutputFormat) ? "*" : " ",
-              DX::DXGIFormatToString(outputFormat), 26,
-              (outputCS == heuristicsCS.outputColorSpace) ? "*" : " ",
-              (backbufferColorSpaces.find(outputCS) != backbufferColorSpaces.end()) ? "bb" : "  ",
-              DX::DXGIColorSpaceTypeToString(outputCS), 32));
-        }
-      }
-    }
+    conversionsString.append("\n");
+    conversionsString.append(StringUtils::Format(
+        "{} {} / {}{} {:<{}} to {} {:<{}} / {}{} {:<{}}", "*",
+        DX::DXGIFormatToString(c.m_inputFormat),
+        (c.m_inputCS == heuristicsCS.inputColorSpace) ? "*" : " ",
+        (c.m_inputCS == inputNativeCS) ? "N" : " ", DX::DXGIColorSpaceTypeToString(c.m_inputCS), 32,
+        (c.m_outputFormat == heuristicsOutputFormat) ? "*" : " ",
+        DX::DXGIFormatToString(c.m_outputFormat), 26,
+        (c.m_outputCS == heuristicsCS.outputColorSpace) ? "*" : " ",
+        (backbufferColorSpaces.find(c.m_outputCS) != backbufferColorSpaces.end()) ? "bb" : "  ",
+        DX::DXGIColorSpaceTypeToString(c.m_outputCS), 32));
   }
 
   CLog::LogFC(LOGDEBUG, LOGVIDEO,
               "supported conversions from format {}\n(*: values picked by "
               "heuristics, N native input color space, bb supported as swap chain backbuffer){}",
-              DX::DXGIFormatToString(inputFormat), conversions);
+              DX::DXGIFormatToString(inputFormat), conversionsString);
 }
 
 DXGI_COLOR_SPACE_TYPE CProcessorHD::AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs)

@@ -84,6 +84,16 @@ struct ProcessorFormats
   bool m_valid{false};
 };
 
+struct ProcessorConversion
+{
+  DXGI_FORMAT m_inputFormat{DXGI_FORMAT_UNKNOWN};
+  DXGI_COLOR_SPACE_TYPE m_inputCS{DXGI_COLOR_SPACE_RESERVED};
+  DXGI_FORMAT m_outputFormat{DXGI_FORMAT_UNKNOWN};
+  DXGI_COLOR_SPACE_TYPE m_outputCS{DXGI_COLOR_SPACE_RESERVED};
+};
+
+using ProcessorConversions = std::vector<ProcessorConversion>;
+
 class CEnumeratorHD : public ID3DResource
 {
 public:
@@ -116,6 +126,32 @@ public:
    * \return Vector of formats
    */
   std::vector<DXGI_FORMAT> GetProcessorRGBOutputFormats();
+  /*!
+   * \brief Check if a conversion is supported by the dxva processor.
+   * \param inputFormat the input format
+   * \param inputCS the input color space
+   * \param outputFormat the output format
+   * \param outputCS the output color space
+   * \return true when the conversion is supported, false when it is not
+   * or the API used to validate is not availe (Windows < 10)
+  */
+  bool CheckConversion(DXGI_FORMAT inputFormat,
+                       DXGI_COLOR_SPACE_TYPE inputCS,
+                       DXGI_FORMAT outputFormat,
+                       DXGI_COLOR_SPACE_TYPE outputCS);
+  /*!
+   * \brief Iterate over all combinations of the input parameters and return a list of
+   * the combinations that are supported conversions.
+   * \param inputFormat The input format
+   * \param inputColorSpaces The possible source color spaces
+   * \param outputFormats The possible output formats
+   * \param outputColorSpaces The possible output color spaces
+   * \return List of the supported conversion.
+   */
+  ProcessorConversions ListConversions(DXGI_FORMAT inputFormat,
+                                       const std::vector<DXGI_COLOR_SPACE_TYPE>& inputColorSpaces,
+                                       const std::vector<DXGI_FORMAT>& outputFormats,
+                                       const std::vector<DXGI_COLOR_SPACE_TYPE>& outputColorSpaces);
 
   ComPtr<ID3D11VideoProcessorEnumerator> Get() { return m_pEnumerator; }
   ComPtr<ID3D11VideoProcessorEnumerator1> Get1() { return m_pEnumerator1; }
@@ -132,6 +168,19 @@ protected:
    * \return requested list of input and/or output formats.
    */
   ProcessorFormats GetProcessorFormats(bool inputFormats, bool outputFormats) const;
+  /*!
+   * \brief Check if a conversion is supported by the dxva processor.
+   * \param inputFormat the input format
+   * \param inputCS the input color space
+   * \param outputFormat the output format
+   * \param outputCS the output color space
+   * \return true when the conversion is supported, false when it is not
+   * or the API used to validate is not available (Windows < 10)
+  */
+  bool CheckConversionInternal(DXGI_FORMAT inputFormat,
+                               DXGI_COLOR_SPACE_TYPE inputCS,
+                               DXGI_FORMAT outputFormat,
+                               DXGI_COLOR_SPACE_TYPE outputCS) const;
 
   CCriticalSection m_section;
 
