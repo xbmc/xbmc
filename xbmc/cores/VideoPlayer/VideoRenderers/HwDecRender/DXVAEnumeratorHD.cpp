@@ -103,27 +103,20 @@ ProcessorCapabilities CEnumeratorHD::ProbeProcessorCaps()
   if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
       CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
   {
-    std::string inputFormats{};
-    std::string outputFormats{};
-    for (int fmt = DXGI_FORMAT_UNKNOWN; fmt <= DXGI_FORMAT_V408; fmt++)
+    ProcessorFormats formats = GetProcessorFormats(true, true);
+
+    if (formats.m_valid)
     {
-      UINT uiFlags;
-      if (S_OK == m_pEnumerator->CheckVideoProcessorFormat((DXGI_FORMAT)fmt, &uiFlags))
-      {
-        if (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT)
-        {
-          inputFormats.append("\n");
-          inputFormats.append(DX::DXGIFormatToString((DXGI_FORMAT)fmt));
-        }
-        if (uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT)
-        {
-          outputFormats.append("\n");
-          outputFormats.append(DX::DXGIFormatToString((DXGI_FORMAT)fmt));
-        }
-      }
+      CLog::LogFC(LOGDEBUG, LOGVIDEO, "Supported input formats:");
+
+      for (const auto& it : formats.m_input)
+        CLog::LogFC(LOGDEBUG, LOGVIDEO, "{}", DX::DXGIFormatToString(it));
+
+      CLog::LogFC(LOGDEBUG, LOGVIDEO, "Supported output formats:");
+
+      for (const auto& it : formats.m_output)
+        CLog::LogFC(LOGDEBUG, LOGVIDEO, "{}", DX::DXGIFormatToString(it));
     }
-    CLog::LogFC(LOGDEBUG, LOGVIDEO, "Supported input formats:{}", inputFormats);
-    CLog::LogFC(LOGDEBUG, LOGVIDEO, "Supported output formats:{}", outputFormats);
   }
 
   if (FAILED(hr = m_pEnumerator->GetVideoProcessorCaps(&result.m_vcaps)))
@@ -439,4 +432,60 @@ bool CEnumeratorHD::IsSDRSupported()
   }
 
   return true;
+}
+
+ProcessorFormats CEnumeratorHD::GetProcessorFormats(bool inputFormats, bool outputFormats) const
+{
+  // Not initialized yet
+  if (!m_pEnumerator)
+    return {};
+
+  ProcessorFormats formats;
+  HRESULT hr{};
+  UINT uiFlags{0};
+  for (int fmt = DXGI_FORMAT_UNKNOWN; fmt <= DXGI_FORMAT_V408; fmt++)
+  {
+    const DXGI_FORMAT dxgiFormat = static_cast<DXGI_FORMAT>(fmt);
+    if (S_OK == (hr = m_pEnumerator->CheckVideoProcessorFormat(dxgiFormat, &uiFlags)))
+    {
+      if ((uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT) && inputFormats)
+        formats.m_input.push_back(dxgiFormat);
+      if ((uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT) && outputFormats)
+        formats.m_output.push_back(dxgiFormat);
+    }
+    else
+    {
+      CLog::LogF(LOGWARNING,
+                 "Unable to retrieve support of the dxva processor for format {}, error {}",
+                 DX::DXGIFormatToString(dxgiFormat), DX::GetErrorDescription(hr));
+      return formats;
+    }
+  }
+  formats.m_valid = true;
+
+  return formats;
+}
+
+std::vector<DXGI_FORMAT> CEnumeratorHD::GetProcessorRGBOutputFormats()
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  ProcessorFormats formats = GetProcessorFormats(false, true);
+  if (!formats.m_valid)
+    return {};
+
+  std::vector<DXGI_FORMAT> result;
+  result.reserve(formats.m_output.size());
+  for (const auto& format : formats.m_output)
+  {
+    const std::string name = DX::DXGIFormatToString(format);
+
+    if (name.find('R') != std::string::npos && name.find('G') != std::string::npos &&
+        name.find('B') != std::string::npos)
+    {
+      result.emplace_back(format);
+    }
+  }
+
+  return result;
 }

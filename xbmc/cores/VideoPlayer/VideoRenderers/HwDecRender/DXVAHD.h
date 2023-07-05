@@ -130,11 +130,6 @@ protected:
    * \return DXGI color space
    */
   static DXGI_COLOR_SPACE_TYPE AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs);
-  /*!
-   * \brief Retrieve the list of DXGI_FORMAT supported as output by the DXVA processor
-   * \return Vector of formats
-   */
-  std::vector<DXGI_FORMAT> GetProcessorOutputFormats() const;
 
   void EnableIntelVideoSuperResolution();
   void EnableNvidiaRTXVideoSuperResolution();
