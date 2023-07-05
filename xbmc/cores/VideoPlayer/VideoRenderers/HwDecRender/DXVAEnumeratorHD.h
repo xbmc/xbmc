@@ -77,6 +77,13 @@ enum InputFormat
   Left
 };
 
+struct ProcessorFormats
+{
+  std::vector<DXGI_FORMAT> m_input;
+  std::vector<DXGI_FORMAT> m_output;
+  bool m_valid{false};
+};
+
 class CEnumeratorHD : public ID3DResource
 {
 public:
@@ -104,6 +111,11 @@ public:
   */
   bool IsSDRSupported();
   ProcessorCapabilities ProbeProcessorCaps();
+  /*!
+   * \brief Retrieve the list of RGB DXGI_FORMAT supported as output by the DXVA processor
+   * \return Vector of formats
+   */
+  std::vector<DXGI_FORMAT> GetProcessorRGBOutputFormats();
 
   ComPtr<ID3D11VideoProcessorEnumerator> Get() { return m_pEnumerator; }
   ComPtr<ID3D11VideoProcessorEnumerator1> Get1() { return m_pEnumerator1; }
@@ -113,6 +125,13 @@ protected:
   InputFormat QueryHDRtoHDRSupport() const;
   InputFormat QueryHDRtoSDRSupport() const;
   bool QuerySDRSupport() const;
+  /*!
+   * \brief Retrieve the list of DXGI_FORMAT supported by the DXVA processor
+   * \param inputFormats yes/no populate the input formats vector of the returned structure
+   * \param outputFormats yes/no populate the output formats vector of the returned structure
+   * \return requested list of input and/or output formats.
+   */
+  ProcessorFormats GetProcessorFormats(bool inputFormats, bool outputFormats) const;
 
   CCriticalSection m_section;
 

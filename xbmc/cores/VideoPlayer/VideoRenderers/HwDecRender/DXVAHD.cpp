@@ -694,14 +694,7 @@ void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
   }
 
   // Only probe the output formats of RGB/BGR type supported by the processor.
-  std::vector<DXGI_FORMAT> outputFormats;
-  for (const auto& format : GetProcessorOutputFormats())
-  {
-    std::string name = DX::DXGIFormatToString(format);
-    if (name.find('R') != std::string::npos && name.find('G') != std::string::npos &&
-        name.find('B') != std::string::npos)
-      outputFormats.push_back(format);
-  }
+  const std::vector<DXGI_FORMAT>& outputFormats = m_enumerator->GetProcessorRGBOutputFormats();
 
   // Color spaces supported directly by the swap chain - as a set for easy lookup
   std::vector<DXGI_COLOR_SPACE_TYPE> bbcs = DX::DeviceResources::Get()->GetSwapChainColorSpaces();
@@ -744,21 +737,6 @@ void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
               "supported conversions from format {}\n(*: values picked by "
               "heuristics, N native input color space, bb supported as swap chain backbuffer){}",
               DX::DXGIFormatToString(inputFormat), conversions);
-}
-
-std::vector<DXGI_FORMAT> CProcessorHD::GetProcessorOutputFormats() const
-{
-  std::vector<DXGI_FORMAT> result;
-
-  UINT uiFlags;
-  for (int fmt = DXGI_FORMAT_UNKNOWN; fmt <= DXGI_FORMAT_V408; fmt++)
-  {
-    DXGI_FORMAT dxgiFormat = static_cast<DXGI_FORMAT>(fmt);
-    if (S_OK == m_enumerator->Get()->CheckVideoProcessorFormat(dxgiFormat, &uiFlags) &&
-        uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT)
-      result.push_back(dxgiFormat);
-  }
-  return result;
 }
 
 DXGI_COLOR_SPACE_TYPE CProcessorHD::AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs)
