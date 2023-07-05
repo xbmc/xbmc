@@ -230,14 +230,11 @@ ProcessorCapabilities CEnumeratorHD::ProbeProcessorCaps()
   if (m_pEnumerator1)
   {
     DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
-    BOOL supported = 0;
-    HRESULT hr;
 
     // Check if HLG color space conversion is supported by driver
-    hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-        DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020, format,
-        DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709, &supported);
-    result.m_bSupportHLG = SUCCEEDED(hr) && !!supported;
+    result.m_bSupportHLG =
+        CheckConversionInternal(DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020,
+                                format, DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
 
     CLog::LogF(LOGDEBUG, "HLG color space conversion is{}supported.",
                result.m_bSupportHLG ? " " : " NOT ");
@@ -267,19 +264,16 @@ DXVA::InputFormat CEnumeratorHD::QueryHDRtoHDRSupport() const
   const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
                                               ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
                                               : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-  BOOL supported = 0;
 
   // Check if HDR10 (TOP LEFT) input color space is supported by video driver
-  HRESULT hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-      m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020,
-      DXGI_FORMAT_R10G10B10A2_UNORM, destColor, &supported);
-  const bool HDRtopLeft = SUCCEEDED(hr) && static_cast<bool>(supported);
+  const bool HDRtopLeft = CheckConversionInternal(m_input_dxgi_format,
+                                                  DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020,
+                                                  DXGI_FORMAT_R10G10B10A2_UNORM, destColor);
 
   // Check if HDR10 (LEFT) input color space is supported by video driver
-  hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-      m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020,
-      DXGI_FORMAT_R10G10B10A2_UNORM, destColor, &supported);
-  const bool HDRleft = SUCCEEDED(hr) && static_cast<bool>(supported);
+  const bool HDRleft =
+      CheckConversionInternal(m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020,
+                              DXGI_FORMAT_R10G10B10A2_UNORM, destColor);
 
   CLog::LogF(LOGDEBUG,
              "HDR10 input color spaces support with HDR {} range output: "
@@ -337,19 +331,14 @@ InputFormat CEnumeratorHD::QueryHDRtoSDRSupport() const
   const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
                                               ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
                                               : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-  BOOL supported = 0;
 
   // Check if BT.2020 (LEFT) input color space is supported by video driver
-  HRESULT hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-      m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020, destFormat, destColor,
-      &supported);
-  const bool left = SUCCEEDED(hr) && static_cast<bool>(supported);
+  const bool left = CheckConversionInternal(
+      m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020, destFormat, destColor);
 
   // Check if BT.2020 (TOP LEFT) input color space is supported by video driver
-  hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-      m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020, destFormat, destColor,
-      &supported);
-  const bool topLeft = SUCCEEDED(hr) && static_cast<bool>(supported);
+  const bool topLeft = CheckConversionInternal(
+      m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020, destFormat, destColor);
 
   CLog::LogF(LOGDEBUG,
              "BT.2020 input color spaces supported with SDR {} range output: "
@@ -408,13 +397,10 @@ bool CEnumeratorHD::QuerySDRSupport() const
   }
 
   const DXGI_FORMAT destFormat = DX::Windowing()->GetBackBuffer().GetFormat();
-  BOOL supported = 0;
 
   // Check if BT.709 input color space is supported by video driver
-  HRESULT hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
-      m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709, destFormat,
-      DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709, &supported);
-  return SUCCEEDED(hr) && static_cast<bool>(supported);
+  return CheckConversionInternal(m_input_dxgi_format, DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709,
+                                 destFormat, DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709);
 }
 
 bool CEnumeratorHD::IsSDRSupported()
@@ -487,5 +473,70 @@ std::vector<DXGI_FORMAT> CEnumeratorHD::GetProcessorRGBOutputFormats()
     }
   }
 
+  return result;
+}
+
+bool CEnumeratorHD::CheckConversion(DXGI_FORMAT inputFormat,
+                                    DXGI_COLOR_SPACE_TYPE inputCS,
+                                    DXGI_FORMAT outputFormat,
+                                    DXGI_COLOR_SPACE_TYPE outputCS)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  return CheckConversionInternal(inputFormat, inputCS, outputFormat, outputCS);
+}
+
+bool CEnumeratorHD::CheckConversionInternal(DXGI_FORMAT inputFormat,
+                                            DXGI_COLOR_SPACE_TYPE inputCS,
+                                            DXGI_FORMAT outputFormat,
+                                            DXGI_COLOR_SPACE_TYPE outputCS) const
+{
+  // Not initialized yet or OS < Windows 10
+  if (!m_pEnumerator || !m_pEnumerator1)
+    return false;
+
+  HRESULT hr;
+  BOOL supported;
+
+  if (SUCCEEDED(hr = m_pEnumerator1->CheckVideoProcessorFormatConversion(
+                    inputFormat, inputCS, outputFormat, outputCS, &supported)))
+  {
+    return (supported == TRUE);
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "unable to validate the format conversion, error {}",
+               DX::GetErrorDescription(hr));
+    return false;
+  }
+}
+
+ProcessorConversions CEnumeratorHD::ListConversions(
+    DXGI_FORMAT inputFormat,
+    const std::vector<DXGI_COLOR_SPACE_TYPE>& inputColorSpaces,
+    const std::vector<DXGI_FORMAT>& outputFormats,
+    const std::vector<DXGI_COLOR_SPACE_TYPE>& outputColorSpaces)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  // Not initialized yet, or under Windows 10
+  if (!m_pEnumerator || !m_pEnumerator1)
+    return {};
+
+  ProcessorConversions result;
+
+  for (const DXGI_COLOR_SPACE_TYPE& inputCS : inputColorSpaces)
+  {
+    for (const DXGI_FORMAT& outputFormat : outputFormats)
+    {
+      for (const DXGI_COLOR_SPACE_TYPE& outputCS : outputColorSpaces)
+      {
+        if (CheckConversionInternal(inputFormat, inputCS, outputFormat, outputCS))
+        {
+          result.push_back(
+              ProcessorConversion{m_input_dxgi_format, inputCS, outputFormat, outputCS});
+        }
+      }
+    }
+  }
   return result;
 }
