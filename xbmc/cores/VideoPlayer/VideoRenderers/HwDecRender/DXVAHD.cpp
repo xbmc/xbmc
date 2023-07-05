@@ -175,7 +175,7 @@ bool CProcessorHD::IsFormatConversionSupported(DXGI_FORMAT inputFormat,
   // accept the conversion unless the API can be called successfully and disallows it
   BOOL supported{TRUE};
 
-  if (!m_enumerator || !m_enumerator->Get1())
+  if (!m_enumerator || !m_enumerator->IsEnumerator1Available())
     return true;
 
   ProcColorSpaces spaces = CalculateDXGIColorSpaces(DXGIColorSpaceArgs(picture));

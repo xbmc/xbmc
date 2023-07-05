@@ -150,7 +150,12 @@ public:
                                const DXGI_COLOR_SPACE_TYPE heuristicsOutputCS);
 
   ComPtr<ID3D11VideoProcessorEnumerator> Get() { return m_pEnumerator; }
-  ComPtr<ID3D11VideoProcessorEnumerator1> Get1() { return m_pEnumerator1; }
+  /*!
+   * \brief Returns the availability of the interface ID3D11VideoProcessorEnumerator1
+   * (Windows 10 supporting HDR and above)
+   * \return true when the interface is available and initialized, false otherwise
+   */
+  bool IsEnumerator1Available() { return m_pEnumerator1; }
 
 protected:
   void UnInit();
