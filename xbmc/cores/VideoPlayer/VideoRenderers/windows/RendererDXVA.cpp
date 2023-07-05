@@ -35,9 +35,6 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
   const DXGI_FORMAT dxgi_format = GetDXGIFormat(av_pixel_format, __super::GetDXGIFormat(picture));
 
-  const bool streamIsHDR = (picture.color_primaries == AVCOL_PRI_BT2020) &&
-                           (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-                            picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const auto setting = DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY;
   const bool systemUsesHDR =
@@ -49,18 +46,11 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
 
   if (av_pixel_format == AV_PIX_FMT_D3D11VA_VLD)
   {
-    // Check if HDR10 passthrough is supported by DXVA video processor
-    // Also used for HLG because it is not supported by Windows, HDR10 is used instead
-    if (streamIsHDR && systemUsesHDR && !enumerator.IsPQ10PassthroughSupported())
+    if (enumerator.SupportedConversions(SupportedConversionsArgs{picture, systemUsesHDR}).empty())
+    {
+      CLog::LogF(LOGWARNING, "DXVA will not be used.");
       return;
-
-    // Check if BT.2020 color space is supported by DXVA video processor (for own HDR-SDR tonemap)
-    if (picture.color_primaries == AVCOL_PRI_BT2020 && !enumerator.IsBT2020Supported())
-      return;
-
-    // Everything else is played as HD / BT709, check support.
-    if (picture.color_primaries != AVCOL_PRI_BT2020 && !enumerator.IsSDRSupported())
-      return;
+    }
 
     weight += 1000;
   }
@@ -88,18 +78,11 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
       return;
     }
 
-    // Check if HDR10 passthrough is supported by DXVA video processor
-    // Also used for HLG because it is not supported by Windows, HDR10 is used instead
-    if (streamIsHDR && systemUsesHDR && !enumerator.IsPQ10PassthroughSupported())
+    if (enumerator.SupportedConversions(SupportedConversionsArgs{picture, systemUsesHDR}).empty())
+    {
+      CLog::LogF(LOGWARNING, "DXVA will not be used.");
       return;
-
-    // Check if BT.2020 color space is supported by DXVA video processor
-    if (picture.color_primaries == AVCOL_PRI_BT2020 && !enumerator.IsBT2020Supported())
-      return;
-
-    // Everything else is played as HD / BT709, check support.
-    if (picture.color_primaries != AVCOL_PRI_BT2020 && !enumerator.IsSDRSupported())
-      return;
+    }
 
     if (av_pixel_format == AV_PIX_FMT_NV12 ||
         av_pixel_format == AV_PIX_FMT_P010 ||

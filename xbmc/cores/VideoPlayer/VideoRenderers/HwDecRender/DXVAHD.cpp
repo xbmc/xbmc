@@ -190,6 +190,7 @@ bool CProcessorHD::Open(const VideoPicture& picture)
   m_height = picture.iHeight;
   m_color_primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
   m_color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+  m_full_range = picture.color_range == 1;
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
   m_input_dxgi_format =
       CRendererDXVA::GetDXGIFormat(av_pixel_format, CRendererBase::GetDXGIFormat(picture));
@@ -810,4 +811,15 @@ bool CProcessorHD::IsFormatSupportedOutput(DXGI_FORMAT format)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
   return m_enumerator && m_enumerator->IsFormatSupportedOutput(format);
+}
+
+ProcessorConversions CProcessorHD::SupportedConversions(bool isHdrOutput)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  if (!m_enumerator)
+    return {};
+
+  return m_enumerator->SupportedConversions(
+      SupportedConversionsArgs(m_color_primaries, m_color_transfer, m_full_range, isHdrOutput));
 }

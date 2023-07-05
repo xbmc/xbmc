@@ -101,6 +101,12 @@ public:
    * \return true when the processor supports the format as output and the format is changed.
    */
   bool SetOutputFormat(DXGI_FORMAT format);
+  /*!
+   * \brief Return a list of conversions supported by the processor.
+   * \param isHdrOutput will the output be HDR yes/no
+   * \return list of conversions
+   */
+  ProcessorConversions SupportedConversions(bool isHdrOutput);
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
@@ -157,6 +163,7 @@ protected:
 
   AVColorPrimaries m_color_primaries{AVCOL_PRI_UNSPECIFIED};
   AVColorTransferCharacteristic m_color_transfer{AVCOL_TRC_UNSPECIFIED};
+  bool m_full_range{false};
   ProcessorCapabilities m_procCaps;
   DXGI_FORMAT m_input_dxgi_format{DXGI_FORMAT_UNKNOWN};
   DXGI_FORMAT m_output_dxgi_format{DXGI_FORMAT_UNKNOWN};
