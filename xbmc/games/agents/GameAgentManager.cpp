@@ -299,44 +299,17 @@ CGameAgentManager::PortMap CGameAgentManager::MapJoysticks(
 {
   PortMap result;
 
+  // Sort by order of last button press
   //! @todo Preserve existing joystick ports
   PERIPHERALS::PeripheralVector sortedJoysticks = peripheralJoysticks;
   std::sort(sortedJoysticks.begin(), sortedJoysticks.end(),
             [](const PERIPHERALS::PeripheralPtr& lhs, const PERIPHERALS::PeripheralPtr& rhs) {
-              PERIPHERALS::CPeripheralJoystick* lhsJoystick =
-                  dynamic_cast<PERIPHERALS::CPeripheralJoystick*>(lhs.get());
-              PERIPHERALS::CPeripheralJoystick* rhsJoystick =
-                  dynamic_cast<PERIPHERALS::CPeripheralJoystick*>(lhs.get());
-
-              // Sort joysticks before other peripheral types
-              if (lhsJoystick && !rhsJoystick)
+              if (lhs->LastActive().IsValid() && !rhs->LastActive().IsValid())
                 return true;
-              if (!lhsJoystick && rhsJoystick)
+              if (!lhs->LastActive().IsValid() && rhs->LastActive().IsValid())
                 return false;
 
-              if (lhsJoystick && rhsJoystick)
-              {
-                // Sort joysticks with a requested port before joysticks without a requested port
-                if (lhsJoystick->RequestedPort() != -1 && rhsJoystick->RequestedPort() == -1)
-                  return true;
-                if (lhsJoystick->RequestedPort() == -1 && rhsJoystick->RequestedPort() != -1)
-                  return false;
-
-                // Sort by requested port, if provided
-                if (lhsJoystick->RequestedPort() < rhsJoystick->RequestedPort())
-                  return true;
-                if (lhsJoystick->RequestedPort() > rhsJoystick->RequestedPort())
-                  return false;
-
-                // Sort by location on the peripheral bus
-                if (lhs->Location() < rhs->Location())
-                  return true;
-                if (lhs->Location() > rhs->Location())
-                  return false;
-              }
-
-              // Shouldn't happen
-              return false;
+              return lhs->LastActive() > rhs->LastActive();
             });
 
   unsigned int i = 0;
