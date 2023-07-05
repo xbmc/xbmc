@@ -107,3 +107,9 @@ const CPortNode& CControllerHub::GetPortInternal(const PortVec& ports, const std
   static const CPortNode empty{};
   return empty;
 }
+
+void CControllerHub::GetInputPorts(std::vector<std::string>& inputPorts) const
+{
+  for (const CPortNode& port : m_ports)
+    port.GetInputPorts(inputPorts);
+}

@@ -18,6 +18,7 @@
 #include "guilib/GUIListItem.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <mutex>
 #include <tuple>
 
@@ -43,8 +44,10 @@ CGUIGameController::CGUIGameController(const CGUIGameController& from)
     m_controllerAddressInfo(from.m_controllerAddressInfo),
     m_controllerDiffuse(from.m_controllerDiffuse),
     m_portAddressInfo(from.m_portAddressInfo),
+    m_peripheralLocationInfo(from.m_peripheralLocationInfo),
     m_currentController(from.m_currentController),
-    m_portAddress(from.m_portAddress)
+    m_portAddress(from.m_portAddress),
+    m_peripheralLocation(from.m_peripheralLocation)
 {
   // Initialize CGUIControl
   ControlType = GUICONTROL_GAMECONTROLLER;
@@ -58,10 +61,12 @@ CGUIGameController* CGUIGameController::Clone(void) const
 void CGUIGameController::DoProcess(unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
   std::string portAddress;
+  std::string peripheralLocation;
 
   {
     std::lock_guard<std::mutex> lock(m_mutex);
     portAddress = m_portAddress;
+    peripheralLocation = m_peripheralLocation;
   }
 
   const GAME::CGameAgentManager& agentManager =
@@ -72,6 +77,9 @@ void CGUIGameController::DoProcess(unsigned int currentTime, CDirtyRegionList& d
 
   if (!portAddress.empty())
     activation = agentManager.GetPortActivation(portAddress);
+
+  if (!peripheralLocation.empty())
+    activation = std::max(agentManager.GetPeripheralActivation(peripheralLocation), activation);
 
   SetActivation(activation);
 
@@ -86,6 +94,7 @@ void CGUIGameController::UpdateInfo(const CGUIListItem* item /* = nullptr */)
   {
     std::string controllerId;
     std::string portAddress;
+    std::string peripheralLocation;
 
     if (item->HasProperty("Addon.ID"))
       controllerId = item->GetProperty("Addon.ID").asString();
@@ -94,6 +103,7 @@ void CGUIGameController::UpdateInfo(const CGUIListItem* item /* = nullptr */)
       controllerId = m_controllerIdInfo.GetItemLabel(item);
 
     portAddress = m_portAddressInfo.GetItemLabel(item);
+    peripheralLocation = m_peripheralLocationInfo.GetItemLabel(item);
 
     std::string controllerAddress = m_controllerAddressInfo.GetItemLabel(item);
     if (!controllerAddress.empty())
@@ -105,6 +115,8 @@ void CGUIGameController::UpdateInfo(const CGUIListItem* item /* = nullptr */)
       ActivateController(controllerId);
     if (!portAddress.empty())
       m_portAddress = portAddress;
+    if (!peripheralLocation.empty())
+      m_peripheralLocation = peripheralLocation;
   }
 }
 
@@ -161,6 +173,21 @@ void CGUIGameController::SetPortAddress(const GUILIB::GUIINFO::CGUIInfoLabel& po
   }
 }
 
+void CGUIGameController::SetPeripheralLocation(
+    const GUILIB::GUIINFO::CGUIInfoLabel& peripheralLocation)
+{
+  m_peripheralLocationInfo = peripheralLocation;
+
+  // Check if a port address is available without a listitem
+  static const CFileItem empty;
+  const std::string strPeripheralLocation = m_peripheralLocationInfo.GetItemLabel(&empty);
+  if (!strPeripheralLocation.empty())
+  {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_peripheralLocation = strPeripheralLocation;
+  }
+}
+
 void CGUIGameController::ActivateController(const std::string& controllerId)
 {
   CGameServices& gameServices = CServiceBroker::GetGameServices();
@@ -191,6 +218,12 @@ std::string CGUIGameController::GetPortAddress()
 {
   std::lock_guard<std::mutex> lock(m_mutex);
   return m_portAddress;
+}
+
+std::string CGUIGameController::GetPeripheralLocation()
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+  return m_peripheralLocation;
 }
 
 void CGUIGameController::SetActivation(float activation)
