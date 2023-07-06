@@ -143,7 +143,6 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
   {
     m_format = picture.videoBuffer->GetFormat();
     const DXGI_FORMAT dxgi_format = GetDXGIFormat(m_format, __super::GetDXGIFormat(picture));
-    const DXGI_FORMAT dest_format = DX::Windowing()->GetBackBuffer().GetFormat();
     bool tryVSR{false};
 
     if (DX::Windowing()->SupportsVideoSuperResolution())
@@ -167,9 +166,10 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
       {
         if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
             CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
-          m_processor->ListSupportedConversions(dxgi_format, dest_format, picture);
+          m_processor->LogSupportedConversions(dxgi_format, m_intermediateTargetFormat, picture);
 
-        if (m_processor->IsFormatConversionSupported(dxgi_format, dest_format, picture))
+        if (m_processor->IsFormatConversionSupported(dxgi_format, m_intermediateTargetFormat,
+                                                     picture))
         {
           if (tryVSR)
             m_processor->TryEnableVideoSuperResolution();

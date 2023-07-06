@@ -80,9 +80,9 @@ public:
    * \param outputFormat The destination format
    * \param picture Picture information used to derive the color spaces
    */
-  void ListSupportedConversions(const DXGI_FORMAT& inputFormat,
-                                const DXGI_FORMAT& outputFormat,
-                                const VideoPicture& picture);
+  void LogSupportedConversions(const DXGI_FORMAT& inputFormat,
+                               const DXGI_FORMAT& outputFormat,
+                               const VideoPicture& picture);
 
   /*!
    * \brief Set the output format of the dxva processor. Format compatibility will be verified.
