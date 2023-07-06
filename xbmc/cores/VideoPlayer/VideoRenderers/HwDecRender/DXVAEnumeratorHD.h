@@ -122,11 +122,6 @@ public:
   bool IsSDRSupported();
   ProcessorCapabilities ProbeProcessorCaps();
   /*!
-   * \brief Retrieve the list of RGB DXGI_FORMAT supported as output by the DXVA processor
-   * \return Vector of formats
-   */
-  std::vector<DXGI_FORMAT> GetProcessorRGBOutputFormats();
-  /*!
    * \brief Check if a conversion is supported by the dxva processor.
    * \param inputFormat the input format
    * \param inputCS the input color space
@@ -139,19 +134,6 @@ public:
                        DXGI_COLOR_SPACE_TYPE inputCS,
                        DXGI_FORMAT outputFormat,
                        DXGI_COLOR_SPACE_TYPE outputCS);
-  /*!
-   * \brief Iterate over all combinations of the input parameters and return a list of
-   * the combinations that are supported conversions.
-   * \param inputFormat The input format
-   * \param inputColorSpaces The possible source color spaces
-   * \param outputFormats The possible output formats
-   * \param outputColorSpaces The possible output color spaces
-   * \return List of the supported conversion.
-   */
-  ProcessorConversions ListConversions(DXGI_FORMAT inputFormat,
-                                       const std::vector<DXGI_COLOR_SPACE_TYPE>& inputColorSpaces,
-                                       const std::vector<DXGI_FORMAT>& outputFormats,
-                                       const std::vector<DXGI_COLOR_SPACE_TYPE>& outputColorSpaces);
   /*!
    * \brief Outputs in the log a list of conversions supported by the DXVA processor.
    * \param inputFormat the source format
@@ -183,6 +165,11 @@ protected:
    */
   ProcessorFormats GetProcessorFormats(bool inputFormats, bool outputFormats) const;
   /*!
+   * \brief Retrieve the list of RGB DXGI_FORMAT supported as output by the DXVA
+   * processor \return Vector of formats
+   */
+  std::vector<DXGI_FORMAT> GetProcessorRGBOutputFormats() const;
+  /*!
    * \brief Check if a conversion is supported by the dxva processor.
    * \param inputFormat the input format
    * \param inputCS the input color space
@@ -195,6 +182,20 @@ protected:
                                DXGI_COLOR_SPACE_TYPE inputCS,
                                DXGI_FORMAT outputFormat,
                                DXGI_COLOR_SPACE_TYPE outputCS) const;
+  /*!
+   * \brief Iterate over all combinations of the input parameters and return a list of
+   * the combinations that are supported conversions.
+   * \param inputFormat The input format
+   * \param inputColorSpaces The possible source color spaces
+   * \param outputFormats The possible output formats
+   * \param outputColorSpaces The possible output color spaces
+   * \return List of the supported conversion.
+   */
+  ProcessorConversions ListConversions(
+      DXGI_FORMAT inputFormat,
+      const std::vector<DXGI_COLOR_SPACE_TYPE>& inputColorSpaces,
+      const std::vector<DXGI_FORMAT>& outputFormats,
+      const std::vector<DXGI_COLOR_SPACE_TYPE>& outputColorSpaces) const;
 
   CCriticalSection m_section;
 

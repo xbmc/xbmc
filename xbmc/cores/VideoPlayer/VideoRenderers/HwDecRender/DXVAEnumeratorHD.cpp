@@ -452,10 +452,8 @@ ProcessorFormats CEnumeratorHD::GetProcessorFormats(bool inputFormats, bool outp
   return formats;
 }
 
-std::vector<DXGI_FORMAT> CEnumeratorHD::GetProcessorRGBOutputFormats()
+std::vector<DXGI_FORMAT> CEnumeratorHD::GetProcessorRGBOutputFormats() const
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
-
   ProcessorFormats formats = GetProcessorFormats(false, true);
   if (!formats.m_valid)
     return {};
@@ -514,11 +512,9 @@ ProcessorConversions CEnumeratorHD::ListConversions(
     DXGI_FORMAT inputFormat,
     const std::vector<DXGI_COLOR_SPACE_TYPE>& inputColorSpaces,
     const std::vector<DXGI_FORMAT>& outputFormats,
-    const std::vector<DXGI_COLOR_SPACE_TYPE>& outputColorSpaces)
+    const std::vector<DXGI_COLOR_SPACE_TYPE>& outputColorSpaces) const
 {
-  std::unique_lock<CCriticalSection> lock(m_section);
-
-  // Not initialized yet, or under Windows 10
+  // Not initialized yet or OS < Windows 10
   if (!m_pEnumerator || !m_pEnumerator1)
     return {};
 
