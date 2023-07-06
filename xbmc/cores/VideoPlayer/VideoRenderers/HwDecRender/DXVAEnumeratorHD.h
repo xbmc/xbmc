@@ -162,12 +162,19 @@ public:
                                const DXGI_COLOR_SPACE_TYPE heuristicsOutputCS);
 
   ComPtr<ID3D11VideoProcessorEnumerator> Get() { return m_pEnumerator; }
+  bool IsInitialized() const { return m_pEnumerator; }
   /*!
    * \brief Returns the availability of the interface ID3D11VideoProcessorEnumerator1
    * (Windows 10 supporting HDR and above)
    * \return true when the interface is available and initialized, false otherwise
    */
   bool IsEnumerator1Available() { return m_pEnumerator1; }
+
+  ComPtr<ID3D11VideoProcessor> CreateVideoProcessor(UINT RateConversionIndex);
+  ComPtr<ID3D11VideoProcessorInputView> CreateVideoProcessorInputView(
+      ID3D11Resource* pResource, const D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC* pDesc);
+  ComPtr<ID3D11VideoProcessorOutputView> CreateVideoProcessorOutputView(
+      ID3D11Resource* pResource, const D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC* pDesc);
 
 protected:
   void UnInit();
@@ -224,6 +231,7 @@ protected:
 
   CCriticalSection m_section;
 
+  ComPtr<ID3D11VideoDevice> m_pVideoDevice;
   ComPtr<ID3D11VideoProcessorEnumerator> m_pEnumerator;
   ComPtr<ID3D11VideoProcessorEnumerator1> m_pEnumerator1;
   DXGI_FORMAT m_input_dxgi_format{DXGI_FORMAT_UNKNOWN};

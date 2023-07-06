@@ -120,7 +120,7 @@ protected:
   bool CheckFormats() const;
   bool OpenProcessor();
   void ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
-  ID3D11VideoProcessorInputView* GetInputView(CRenderBuffer* view) const;
+  ComPtr<ID3D11VideoProcessorInputView> GetInputView(CRenderBuffer* view) const;
   /*!
    * \brief Calculate the color spaces of the input and output of the processor
    * \param csArgs Arguments for the calculations
