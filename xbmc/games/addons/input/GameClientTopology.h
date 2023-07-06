@@ -30,14 +30,14 @@ public:
   const CControllerTree& GetControllerTree() const { return m_controllers; }
   CControllerTree& GetControllerTree() { return m_controllers; }
 
+  // Utility function
+  static std::string MakeAddress(const std::string& baseAddress, const std::string& nodeId);
+
 private:
   static CControllerTree GetControllerTree(const GameClientPortVec& ports);
   static CPortNode GetPortNode(const GameClientPortPtr& port, const std::string& controllerAddress);
   static CControllerNode GetControllerNode(const GameClientDevicePtr& device,
                                            const std::string& portAddress);
-
-  // Utility function
-  static std::string MakeAddress(const std::string& baseAddress, const std::string& nodeId);
 
   // Game API parameters
   GameClientPortVec m_ports;
