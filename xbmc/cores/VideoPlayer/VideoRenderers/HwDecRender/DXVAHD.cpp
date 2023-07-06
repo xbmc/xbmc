@@ -219,19 +219,17 @@ bool CProcessorHD::OpenProcessor()
   std::unique_lock<CCriticalSection> lock(m_section);
 
   // restore the device if it was lost
-  if ((!m_enumerator || !m_enumerator->Get()) && !ReInit())
+  if ((!m_enumerator || !m_enumerator->IsInitialized()) && !ReInit())
     return false;
 
   CLog::LogF(LOGDEBUG, "creating processor.");
 
   // create processor
-  HRESULT hr =
-      m_pVideoDevice->CreateVideoProcessor(m_enumerator->Get().Get(), m_procCaps.m_procIndex,
-                                           m_pVideoProcessor.ReleaseAndGetAddressOf());
-  if (FAILED(hr))
+  m_pVideoProcessor = m_enumerator->CreateVideoProcessor(m_procCaps.m_procIndex);
+
+  if (!m_pVideoProcessor)
   {
-    CLog::LogF(LOGDEBUG, "failed creating video processor with error {}.",
-               DX::GetErrorDescription(hr));
+    CLog::LogF(LOGDEBUG, "failed creating video processor.");
     return false;
   }
 
@@ -296,9 +294,8 @@ void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
   m_pVideoContext->VideoProcessorSetStreamFilter(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, filter, val != range.Default, val);
 }
 
-ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) const
+ComPtr<ID3D11VideoProcessorInputView> CProcessorHD::GetInputView(CRenderBuffer* view) const
 {
-  ComPtr<ID3D11VideoProcessorInputView> inputView;
   D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = {0, D3D11_VPIV_DIMENSION_TEXTURE2D, {0, 0}};
 
   ComPtr<ID3D11Resource> resource;
@@ -307,14 +304,9 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) c
   if (SUCCEEDED(hr))
   {
     vpivd.Texture2D.ArraySlice = arrayIdx;
-    hr = m_pVideoDevice->CreateVideoProcessorInputView(resource.Get(), m_enumerator->Get().Get(),
-                                                       &vpivd, inputView.GetAddressOf());
+    return m_enumerator->CreateVideoProcessorInputView(resource.Get(), &vpivd);
   }
-
-  if (FAILED(hr) || hr == S_FALSE)
-    CLog::LogF(LOGERROR, "CreateVideoProcessorInputView returned {}.", DX::GetErrorDescription(hr));
-
-  return inputView.Detach();
+  return nullptr;
 }
 
 DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(const DXGIColorSpaceArgs& csArgs,
@@ -463,8 +455,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     if (!views[i])
       continue;
 
-    ComPtr<ID3D11VideoProcessorInputView> view;
-    view.Attach(GetInputView(views[i]));
+    ComPtr<ID3D11VideoProcessorInputView> view = GetInputView(views[i]);
 
     if (i > 2)
     {
@@ -565,15 +556,13 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
                                                    static_cast<D3D11_VIDEO_PROCESSOR_ROTATION>(rotation / 90));
 
   // create output view for surface.
-  D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC OutputViewDesc = { D3D11_VPOV_DIMENSION_TEXTURE2D, { 0 }};
-  ComPtr<ID3D11VideoProcessorOutputView> pOutputView;
-  HRESULT hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_enumerator->Get().Get(),
-                                                              &OutputViewDesc, &pOutputView);
-  if (S_OK != hr)
-    CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING, "CreateVideoProcessorOutputView returned {}.",
-               DX::GetErrorDescription(hr));
+  const D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC outputViewDesc = {D3D11_VPOV_DIMENSION_TEXTURE2D,
+                                                                 {0}};
+  ComPtr<ID3D11VideoProcessorOutputView> pOutputView =
+      m_enumerator->CreateVideoProcessorOutputView(target, &outputViewDesc);
 
-  if (SUCCEEDED(hr))
+  HRESULT hr{};
+  if (pOutputView)
   {
     hr = m_pVideoContext->VideoProcessorBlt(m_pVideoProcessor.Get(), pOutputView.Get(), frameIdx, 1, &stream_data);
     if (S_OK != hr)
@@ -584,7 +573,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     }
   }
 
-  return !FAILED(hr);
+  return pOutputView && !FAILED(hr);
 }
 
 ProcColorSpaces CProcessorHD::CalculateDXGIColorSpaces(const DXGIColorSpaceArgs& csArgs) const
