@@ -639,3 +639,33 @@ void CEnumeratorHD::LogSupportedConversions(const DXGI_FORMAT& inputFormat,
               "heuristics, N native input color space, bb supported as swap chain backbuffer){}",
               DX::DXGIFormatToString(inputFormat), conversionsString);
 }
+
+bool CEnumeratorHD::IsFormatSupportedInput(DXGI_FORMAT format)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  return IsFormatSupportedInternal(format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT);
+}
+bool CEnumeratorHD::IsFormatSupportedOutput(DXGI_FORMAT format)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  return IsFormatSupportedInternal(format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT);
+}
+
+bool CEnumeratorHD::IsFormatSupportedInternal(DXGI_FORMAT format,
+                                              D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const
+{
+  // Not initialized yet
+  if (!m_pEnumerator)
+    return false;
+
+  UINT uiFlags;
+  if (S_OK == m_pEnumerator->CheckVideoProcessorFormat(format, &uiFlags))
+  {
+    if (uiFlags & support)
+      return true;
+  }
+
+  CLog::LogF(LOGERROR, "unsupported format {} for {}.", DX::DXGIFormatToString(format),
+             DX::D3D11VideoProcessorFormatSupportToString(support));
+  return false;
+}

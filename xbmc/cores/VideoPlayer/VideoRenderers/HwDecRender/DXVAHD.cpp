@@ -146,24 +146,10 @@ bool CProcessorHD::InitProcessor()
   return true;
 }
 
-bool CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const
-{
-  UINT uiFlags;
-  if (S_OK == m_enumerator->Get()->CheckVideoProcessorFormat(format, &uiFlags))
-  {
-    if (uiFlags & support)
-      return true;
-  }
-
-  CLog::LogF(LOGERROR, "unsupported format {} for {}.", DX::DXGIFormatToString(format),
-             DX::D3D11VideoProcessorFormatSupportToString(support));
-  return false;
-}
-
 bool CProcessorHD::CheckFormats() const
 {
   // check default output format (as render target)
-  return IsFormatSupported(m_output_dxgi_format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT);
+  return m_enumerator && m_enumerator->IsFormatSupportedOutput(m_output_dxgi_format);
 }
 
 bool CProcessorHD::IsFormatConversionSupported(DXGI_FORMAT inputFormat,
@@ -815,10 +801,24 @@ void CProcessorHD::EnableNvidiaRTXVideoSuperResolution()
 
 bool CProcessorHD::SetOutputFormat(DXGI_FORMAT outputFormat)
 {
-  if (IsFormatSupported(outputFormat, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  if (m_enumerator && m_enumerator->IsFormatSupportedOutput(outputFormat))
   {
     m_output_dxgi_format = outputFormat;
     return true;
   }
   return false;
+}
+
+bool CProcessorHD::IsFormatSupportedInput(DXGI_FORMAT format)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  return m_enumerator && m_enumerator->IsFormatSupportedInput(format);
+}
+
+bool CProcessorHD::IsFormatSupportedOutput(DXGI_FORMAT format)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  return m_enumerator && m_enumerator->IsFormatSupportedOutput(format);
 }

@@ -135,6 +135,18 @@ public:
                        DXGI_FORMAT outputFormat,
                        DXGI_COLOR_SPACE_TYPE outputCS);
   /*!
+   * \brief Check dxva processor for support of the format as input texture
+   * \param format the format
+   * \return true supported, false not supported
+   */
+  bool IsFormatSupportedInput(DXGI_FORMAT format);
+  /*!
+   * \brief Check dxva processor for support of the format as output texture
+   * \param format the format
+   * \return true supported, false not supported
+   */
+  bool IsFormatSupportedOutput(DXGI_FORMAT format);
+  /*!
    * \brief Outputs in the log a list of conversions supported by the DXVA processor.
    * \param inputFormat the source format
    * \param heuristicsInputCS the input color space that will be used for playback
@@ -187,6 +199,14 @@ protected:
                                DXGI_COLOR_SPACE_TYPE inputCS,
                                DXGI_FORMAT outputFormat,
                                DXGI_COLOR_SPACE_TYPE outputCS) const;
+  /*!
+   * \brief Check dxva processor for support of the format as input texture
+   * \param format the format
+   * \return true supported, false not supported
+   */
+  bool IsFormatSupportedInternal(DXGI_FORMAT format,
+                                 D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const;
+
   /*!
    * \brief Iterate over all combinations of the input parameters and return a list of
    * the combinations that are supported conversions.
