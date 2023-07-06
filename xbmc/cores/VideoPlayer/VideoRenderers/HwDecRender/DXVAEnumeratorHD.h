@@ -152,6 +152,20 @@ public:
                                        const std::vector<DXGI_COLOR_SPACE_TYPE>& inputColorSpaces,
                                        const std::vector<DXGI_FORMAT>& outputFormats,
                                        const std::vector<DXGI_COLOR_SPACE_TYPE>& outputColorSpaces);
+  /*!
+   * \brief Outputs in the log a list of conversions supported by the DXVA processor.
+   * \param inputFormat the source format
+   * \param heuristicsInputCS the input color space that will be used for playback
+   * \param inputNativeCS the input color space that would be used with a direct mapping
+   * from avcodec to D3D11, without any workarounds or tricks.
+   * \param outputFormat the destination format
+   * \param heuristicsOutputCS the output color space that will be used for playback
+   */
+  void LogSupportedConversions(const DXGI_FORMAT& inputFormat,
+                               const DXGI_COLOR_SPACE_TYPE heuristicsInputCS,
+                               const DXGI_COLOR_SPACE_TYPE inputNativeCS,
+                               const DXGI_FORMAT& outputFormat,
+                               const DXGI_COLOR_SPACE_TYPE heuristicsOutputCS);
 
   ComPtr<ID3D11VideoProcessorEnumerator> Get() { return m_pEnumerator; }
   ComPtr<ID3D11VideoProcessorEnumerator1> Get1() { return m_pEnumerator1; }
