@@ -17,6 +17,7 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/Peripheral.h"
 #include "peripherals/devices/PeripheralJoystick.h"
+#include "utils/log.h"
 
 using namespace KODI;
 using namespace GAME;
@@ -70,6 +71,8 @@ void CGameAgentManager::Stop()
     }
 
     m_portMap.clear();
+    m_peripheralMap.clear();
+    m_disconnectedPeripherals.clear();
   }
 
   // Notify observers if anything changed
@@ -153,7 +156,21 @@ void CGameAgentManager::ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputH
                    m_currentPeripherals, m_gameClient->Input().GetPlayerLimit());
 
   // Update connected joysticks
-  UpdateConnectedJoysticks(joysticks, newPortMap, inputHandlingLock);
+  std::set<PERIPHERALS::PeripheralPtr> disconnectedPeripherals;
+  UpdateConnectedJoysticks(joysticks, newPortMap, inputHandlingLock, disconnectedPeripherals);
+
+  // Rebuild peripheral map
+  PeripheralMap peripheralMap;
+  for (const auto& [inputProvider, joystick] : m_portMap)
+    peripheralMap[joystick->GetControllerAddress()] = joystick->GetSource();
+
+  // Log peripheral map if there were any changes
+  if (peripheralMap != m_peripheralMap || disconnectedPeripherals != m_disconnectedPeripherals)
+  {
+    m_peripheralMap = std::move(peripheralMap);
+    m_disconnectedPeripherals = std::move(disconnectedPeripherals);
+    LogPeripheralMap(m_peripheralMap, m_disconnectedPeripherals);
+  }
 }
 
 void CGameAgentManager::ProcessKeyboard()
@@ -242,9 +259,11 @@ void CGameAgentManager::UpdateExpiredJoysticks(const PERIPHERALS::PeripheralVect
   }
 }
 
-void CGameAgentManager::UpdateConnectedJoysticks(const PERIPHERALS::PeripheralVector& joysticks,
-                                                 const PortMap& newPortMap,
-                                                 PERIPHERALS::EventLockHandlePtr& inputHandlingLock)
+void CGameAgentManager::UpdateConnectedJoysticks(
+    const PERIPHERALS::PeripheralVector& joysticks,
+    const PortMap& newPortMap,
+    PERIPHERALS::EventLockHandlePtr& inputHandlingLock,
+    std::set<PERIPHERALS::PeripheralPtr>& disconnectedPeripherals)
 {
   for (auto& peripheralJoystick : joysticks)
   {
@@ -290,6 +309,17 @@ void CGameAgentManager::UpdateConnectedJoysticks(const PERIPHERALS::PeripheralVe
         SetChanged(true);
       }
     }
+  }
+
+  // Record disconnected peripherals
+  for (const auto& peripheral : joysticks)
+  {
+    // Upcast peripheral to input interface
+    JOYSTICK::IInputProvider* inputProvider = peripheral.get();
+
+    // Check if peripheral is disconnected
+    if (m_portMap.find(inputProvider) == m_portMap.end())
+      disconnectedPeripherals.emplace(peripheral);
   }
 }
 
@@ -416,4 +446,44 @@ void CGameAgentManager::MapJoystick(PERIPHERALS::PeripheralPtr peripheralJoystic
 
   // Map input provider to input handler
   result[inputProvider] = std::move(gameClientJoystick);
+}
+
+void CGameAgentManager::LogPeripheralMap(
+    const PeripheralMap& peripheralMap,
+    const std::set<PERIPHERALS::PeripheralPtr>& disconnectedPeripherals)
+{
+  CLog::Log(LOGDEBUG, "===== Peripheral Map =====");
+
+  unsigned int line = 0;
+
+  if (!peripheralMap.empty())
+  {
+    for (const auto& [controllerAddress, peripheral] : peripheralMap)
+    {
+      if (line != 0)
+        CLog::Log(LOGDEBUG, "");
+      CLog::Log(LOGDEBUG, "{}:", controllerAddress);
+      CLog::Log(LOGDEBUG, "    {} [{}]", peripheral->Location(), peripheral->DeviceName());
+
+      ++line;
+    }
+  }
+
+  if (!disconnectedPeripherals.empty())
+  {
+    if (line != 0)
+      CLog::Log(LOGDEBUG, "");
+    CLog::Log(LOGDEBUG, "Disconnected:");
+
+    // Sort by peripheral location
+    std::map<std::string, std::string> disconnectedPeripheralMap;
+    for (const auto& peripheral : disconnectedPeripherals)
+      disconnectedPeripheralMap[peripheral->Location()] = peripheral->DeviceName();
+
+    // Log location and device name for disconnected peripherals
+    for (const auto& [location, deviceName] : disconnectedPeripheralMap)
+      CLog::Log(LOGDEBUG, "    {} [{}]", location, deviceName);
+  }
+
+  CLog::Log(LOGDEBUG, "==========================");
 }
