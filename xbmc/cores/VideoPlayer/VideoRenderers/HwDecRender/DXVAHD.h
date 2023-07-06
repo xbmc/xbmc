@@ -62,7 +62,18 @@ public:
   void Close();
   bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
   uint8_t PastRefs() const { return std::min(m_procCaps.m_rateCaps.PastFrames, 4u); }
-  bool IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const;
+  /*!
+   * \brief Check support of the format as input texture
+   * \param format the format
+   * \return true supported, false not supported
+   */
+  bool IsFormatSupportedInput(DXGI_FORMAT format);
+  /*!
+   * \brief Check support of the format as input texture
+   * \param format the format
+   * \return true supported, false not supported
+   */
+  bool IsFormatSupportedOutput(DXGI_FORMAT format);
   /*!
    * \brief Evaluate if the DXVA processor supports converting between two formats and color spaces.
    * Always returns true when the Windows 10+ API is not available or cannot be called successfully.
