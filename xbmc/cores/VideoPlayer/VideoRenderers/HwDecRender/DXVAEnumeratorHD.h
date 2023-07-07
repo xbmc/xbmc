@@ -161,7 +161,6 @@ public:
                                const DXGI_FORMAT& outputFormat,
                                const DXGI_COLOR_SPACE_TYPE heuristicsOutputCS);
 
-  ComPtr<ID3D11VideoProcessorEnumerator> Get() { return m_pEnumerator; }
   bool IsInitialized() const { return m_pEnumerator; }
   /*!
    * \brief Returns the availability of the interface ID3D11VideoProcessorEnumerator1
