@@ -94,7 +94,7 @@ bool CPhysicalFeature::Deserialize(const TiXmlElement* pElement,
     return false;
   }
 
-  // Cagegory was obtained from parent XML node
+  // Category was obtained from parent XML node
   m_category = category;
   m_categoryLabelId = categoryLabelId;
 
