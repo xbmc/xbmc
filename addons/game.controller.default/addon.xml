@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.default"
         name="Default Controller"
-        version="1.0.39"
+        version="1.0.40"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -38,7 +38,7 @@
         <summary lang="ru_RU">Стандартный контроллер</summary>
         <summary lang="sk_SK">Predvolený Ovládač</summary>
         <summary lang="sv_SE">Standard handkontroll</summary>
-        <summary lang="tr_TR">Varsayılan Denetleyici</summary>
+        <summary lang="tr_TR">Varsayılan Oyun Kumandası</summary>
         <summary lang="zh_CN">默认控制器</summary>
         <summary lang="zh_TW">預設控制器</summary>
         <description lang="be_BY">Прадвызначаны кантролер на аснове кантролера Xbox 360.</description>
@@ -67,7 +67,7 @@
         <description lang="pt_BR">O controlador do media center padrão é baseado no controlador do Xbox 360.</description>
         <description lang="ru_RU">Стандартный контроллер, основанный на контроллере Xbox 360.</description>
         <description lang="sk_SK">Predvolený ovládač media centra je založený na ovládači Xbox 360.</description>
-        <description lang="tr_TR">Varsayılan ortam merkezi denetleyicisi, Xbox 360 denetimcisini temel alır.</description>
+        <description lang="tr_TR">Varsayılan ortam merkezi denetleyicisi, Xbox 360 oyun kumandasını temel alır.</description>
         <description lang="zh_CN">默认媒体中心控制器基于 Xbox 360 控制器。</description>
         <description lang="zh_TW">預設的媒體中心控制器佈局是以Xbox 360控制器為基礎。</description>
         <disclaimer lang="be_BY">Крыніца выяў: Wikipedia (wikipedia.org)</disclaimer>
