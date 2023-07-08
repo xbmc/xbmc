@@ -13,6 +13,7 @@
 #include "utils/URIUtils.h"
 
 #include <cdio++/iso9660.hpp>
+#include "storage/cdioSupport.h"
 
 using namespace XFILE;
 
@@ -34,7 +35,11 @@ bool CISO9660Directory::GetDirectory(const CURL& url, CFileItemList& items)
 
   std::unique_ptr<ISO9660::IFS> iso(new ISO9660::IFS);
 
-  if (!iso->open(url2.GetHostName().c_str()))
+  std::shared_ptr<MEDIA_DETECT::CLibcdio> c_cdio = MEDIA_DETECT::CLibcdio::GetInstance();
+
+  std::string iso_file = url2.GetHostName();
+
+  if (!iso->open(!iso_file.empty() ? iso_file.c_str() : c_cdio->GetDeviceFileName() ))
     return false;
 
   std::vector<ISO9660::Stat*> isoFiles;
