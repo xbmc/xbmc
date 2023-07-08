@@ -9,7 +9,6 @@
 #include "PictureThumbLoader.h"
 
 #include "FileItem.h"
-#include "GUIUserMessages.h"
 #include "Picture.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
@@ -28,7 +27,7 @@
 
 using namespace XFILE;
 
-CPictureThumbLoader::CPictureThumbLoader() : CThumbLoader(), CJobQueue(true, 1, CJob::PRIORITY_LOW_PAUSABLE)
+CPictureThumbLoader::CPictureThumbLoader() : CThumbLoader()
 {
   m_regenerateThumbs = false;
 }
@@ -77,21 +76,7 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
   else if (pItem->IsVideo() && !pItem->IsZIP() && !pItem->IsRAR() && !pItem->IsCBZ() && !pItem->IsCBR() && !pItem->IsPlayList())
   { // video
     CVideoThumbLoader loader;
-    if (!loader.FillThumb(*pItem))
-    {
-      std::string thumbURL = CVideoThumbLoader::GetEmbeddedThumbURL(*pItem);
-      if (CServiceBroker::GetTextureCache()->HasCachedImage(thumbURL))
-      {
-        thumb = thumbURL;
-      }
-      else if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
-      {
-        CFileItem item(*pItem);
-        CThumbExtractor* extract = new CThumbExtractor(item, pItem->GetPath(), true, thumbURL);
-        AddJob(extract);
-        thumb.clear();
-      }
-    }
+    loader.LoadItemCached(pItem);
   }
   else if (!pItem->HasArt("thumb"))
   { // folder, zip, cbz, rar, cbr, playlist may have a previously cached image
@@ -109,19 +94,6 @@ bool CPictureThumbLoader::LoadItemCached(CFileItem* pItem)
 bool CPictureThumbLoader::LoadItemLookup(CFileItem* pItem)
 {
   return false;
-}
-
-void CPictureThumbLoader::OnJobComplete(unsigned int jobID, bool success, CJob* job)
-{
-  if (success)
-  {
-    CThumbExtractor* loader = static_cast<CThumbExtractor*>(job);
-    loader->m_item.SetPath(loader->m_listpath);
-    CFileItemPtr pItem(new CFileItem(loader->m_item));
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
-    CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-  }
-  CJobQueue::OnJobComplete(jobID, success, job);
 }
 
 void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)

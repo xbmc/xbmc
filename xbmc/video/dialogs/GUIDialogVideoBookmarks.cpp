@@ -293,7 +293,7 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     else if (i > m_jobsStarted && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
     {
       CFileItem item(m_filePath, false);
-      CJob* job = new CThumbExtractor(item, m_filePath, true, chapterPath, pos * 1000, false);
+      CJob* job = new CChapterThumbExtractor(item, m_filePath, chapterPath, pos * 1000);
       AddJob(job);
       m_mapJobsChapter[job] = i;
       m_jobsStarted++;
