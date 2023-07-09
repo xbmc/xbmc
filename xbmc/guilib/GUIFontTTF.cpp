@@ -727,7 +727,7 @@ std::vector<CGUIFontTTF::Glyph> CGUIFontTTF::GetHarfBuzzShapedGlyphs(const vecTe
   std::vector<hb_script_t> scripts;
   std::vector<RunInfo> runs;
   hb_unicode_funcs_t* ufuncs = hb_unicode_funcs_get_default();
-  hb_script_t lastScript;
+  hb_script_t lastScript{HB_SCRIPT_INVALID};
   int lastScriptIndex = -1;
   int lastSetIndex = -1;
 

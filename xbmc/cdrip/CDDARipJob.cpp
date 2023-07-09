@@ -98,8 +98,8 @@ bool CCDDARipJob::DoWork()
   // start ripping
   int percent = 0;
   int oldpercent = 0;
-  bool cancelled(false);
-  int result;
+  bool cancelled{false};
+  int result{-1};
   while (!cancelled && (result = RipChunk(reader, encoder, percent)) == 0)
   {
     cancelled = ShouldCancel(percent, 100);
