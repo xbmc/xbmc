@@ -39,6 +39,9 @@ void CControllerSelect::Initialize(ControllerVector controllers,
   if (!callback)
     return;
 
+  // Stop thread and reset state
+  Deinitialize();
+
   // Initialize state
   m_controllers = std::move(controllers);
   m_defaultController = std::move(defaultController);
