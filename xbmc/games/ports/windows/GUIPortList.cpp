@@ -198,10 +198,10 @@ bool CGUIPortList::AddItems(const CPortNode& port,
     const ControllerPtr& controller = controllerNode.GetController();
 
     // Create the list item
-    CFileItemPtr item = std::make_shared<CFileItem>(itemLabel);
-    item->SetLabel2(controller->Layout().Label());
-    item->SetPath(port.GetAddress());
-    item->SetArt("icon", controller->Layout().ImagePath());
+    CFileItem item{itemLabel};
+    item.SetLabel2(controller->Layout().Label());
+    item.SetPath(port.GetAddress());
+    item.SetArt("icon", controller->Layout().ImagePath());
     m_vecItems->Add(std::move(item));
     ++itemId;
 
@@ -221,10 +221,10 @@ bool CGUIPortList::AddItems(const CPortNode& port,
   else
   {
     // Create the list item
-    CFileItemPtr item = std::make_shared<CFileItem>(itemLabel);
-    item->SetLabel2(g_localizeStrings.Get(13298)); // "Disconnected"
-    item->SetPath(port.GetAddress());
-    item->SetArt("icon", "DefaultAddonNone.png");
+    CFileItem item{itemLabel};
+    item.SetLabel2(g_localizeStrings.Get(13298)); // "Disconnected"
+    item.SetPath(port.GetAddress());
+    item.SetArt("icon", "DefaultAddonNone.png");
     m_vecItems->Add(std::move(item));
     ++itemId;
   }

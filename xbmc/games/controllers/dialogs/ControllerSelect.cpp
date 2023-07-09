@@ -81,8 +81,8 @@ void CControllerSelect::Process()
   CFileItemList items;
   for (const ControllerPtr& controller : m_controllers)
   {
-    CFileItemPtr item(new CFileItem(controller->Layout().Label()));
-    item->SetArt("icon", controller->Layout().ImagePath());
+    CFileItem item{controller->Layout().Label()};
+    item.SetArt("icon", controller->Layout().ImagePath());
     items.Add(std::move(item));
 
     // Check if a specified controller should be selected by default
@@ -93,8 +93,8 @@ void CControllerSelect::Process()
   if (m_showDisconnect)
   {
     // Add a button to disconnect the port
-    CFileItemPtr item(new CFileItem(g_localizeStrings.Get(13298))); // "Disconnected"
-    item->SetArt("icon", "DefaultAddonNone.png");
+    CFileItem item{g_localizeStrings.Get(13298)}; // "Disconnected"
+    item.SetArt("icon", "DefaultAddonNone.png");
     items.Add(std::move(item));
 
     // Check if the disconnect button should be selected by default

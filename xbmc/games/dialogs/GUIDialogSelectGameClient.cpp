@@ -46,12 +46,12 @@ std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string& 
     {
       CFileItemPtr item(XFILE::CAddonsDirectory::FileItemFromAddon(candidate, candidate->ID()));
       item->SetLabel2(g_localizeStrings.Get(35257)); // "Installed"
-      items.Add(std::move(item));
+      items.Add(std::move(*item));
     }
     for (const auto& addon : installable)
     {
       CFileItemPtr item(XFILE::CAddonsDirectory::FileItemFromAddon(addon, addon->ID()));
-      installableItems.Add(std::move(item));
+      installableItems.Add(std::move(*item));
     }
     items.Sort(SortByLabel, SortOrderAscending);
     installableItems.Sort(SortByLabel, SortOrderAscending);

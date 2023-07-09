@@ -43,8 +43,8 @@ void CDialogGameVideoRotation::GetItems(CFileItemList& items)
 {
   for (unsigned int rotation : m_rotations)
   {
-    CFileItemPtr item = std::make_shared<CFileItem>(GetRotationLabel(rotation));
-    item->SetProperty("game.videorotation", CVariant{rotation});
+    CFileItem item{GetRotationLabel(rotation)};
+    item.SetProperty("game.videorotation", CVariant{rotation});
     items.Add(std::move(item));
   }
 }
