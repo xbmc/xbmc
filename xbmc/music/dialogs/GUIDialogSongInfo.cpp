@@ -262,9 +262,9 @@ void CGUIDialogSongInfo::Update()
   CFileItemList items;
   for (const auto& contributor : m_song->GetMusicInfoTag()->GetContributors())
   {
-    auto item = std::make_shared<CFileItem>(contributor.GetRoleDesc());
-    item->SetLabel2(contributor.GetArtist());
-    item->GetMusicInfoTag()->SetDatabaseId(contributor.GetArtistId(), MediaTypeArtist);
+    CFileItem item{contributor.GetRoleDesc()};
+    item.SetLabel2(contributor.GetArtist());
+    item.GetMusicInfoTag()->SetDatabaseId(contributor.GetArtistId(), MediaTypeArtist);
     items.Add(std::move(item));
   }
   CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, &items);
