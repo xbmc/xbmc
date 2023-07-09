@@ -271,8 +271,8 @@ void CGUIDialogAddonInfo::UpdateControls(PerformButtonFocus performButtonFocus)
   CFileItemList items;
   for (const auto& screenshot : m_item->GetAddonInfo()->Screenshots())
   {
-    auto item = std::make_shared<CFileItem>("");
-    item->SetArt("thumb", screenshot);
+    CFileItem item;
+    item.SetArt("thumb", screenshot);
     items.Add(std::move(item));
   }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_SCREENSHOTS, 0, 0, &items);
