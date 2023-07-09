@@ -213,7 +213,6 @@ std::string CAESinkFactoryWin::GetDefaultDeviceId()
   std::string strDeviceId = "";
   ComPtr<IMMDevice> pDevice = nullptr;
   ComPtr<IMMDeviceEnumerator> pEnumerator = nullptr;
-  LPWSTR pwszID = NULL;
   std::wstring wstrDDID;
 
   HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, reinterpret_cast<void**>(pEnumerator.GetAddressOf()));
