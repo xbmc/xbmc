@@ -65,7 +65,8 @@ using namespace XFILE;
 using namespace KODI::MESSAGING;
 
 CGUIDialogAddonInfo::CGUIDialogAddonInfo(void)
-  : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml"), m_item(CFileItemPtr(new CFileItem))
+  : CGUIDialog(WINDOW_DIALOG_ADDON_INFO, "DialogAddonInfo.xml"),
+    m_item(std::make_shared<CFileItem>())
 {
   m_loadType = KEEP_IN_MEMORY;
 }
