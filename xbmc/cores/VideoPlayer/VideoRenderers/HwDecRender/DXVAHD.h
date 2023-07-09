@@ -157,5 +157,8 @@ protected:
   DXGI_FORMAT m_output_dxgi_format{DXGI_FORMAT_UNKNOWN};
 
   bool m_superResolutionEnabled{false};
+  bool m_bSupportHLG{false};
+  bool m_HDR10Left{false};
+  bool m_BT2020Left{false};
 };
 };

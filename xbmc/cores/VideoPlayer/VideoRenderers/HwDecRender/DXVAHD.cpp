@@ -554,8 +554,7 @@ ProcColorSpaces CProcessorHD::CalculateDXGIColorSpaces(const DXGIColorSpaceArgs&
   const bool supportHDR = DX::Windowing()->IsHDROutput();
 
   return ProcColorSpaces{
-      GetDXGIColorSpaceSource(csArgs, supportHDR, m_procCaps.m_bSupportHLG, m_procCaps.m_BT2020Left,
-                              m_procCaps.m_HDR10Left),
+      GetDXGIColorSpaceSource(csArgs, supportHDR, m_bSupportHLG, m_BT2020Left, m_HDR10Left),
       GetDXGIColorSpaceTarget(csArgs, supportHDR, DX::Windowing()->UseLimitedColor())};
 }
 
@@ -804,16 +803,15 @@ bool CProcessorHD::SetConversion(const ProcessorConversion& conversion)
   }
 
   // Check if HLG color space conversion is supported by driver
-  m_procCaps.m_bSupportHLG = m_enumerator->CheckConversion(
+  m_bSupportHLG = m_enumerator->CheckConversion(
       conversion.m_inputFormat, DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020,
       conversion.m_outputFormat, DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
 
   CLog::LogF(LOGDEBUG, "HLG color space conversion to SDR is{}supported.",
-             m_procCaps.m_bSupportHLG ? " " : " NOT ");
+             m_bSupportHLG ? " " : " NOT ");
 
-  m_procCaps.m_BT2020Left = (conversion.m_outputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020);
-  m_procCaps.m_HDR10Left =
-      (conversion.m_outputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020);
+  m_BT2020Left = (conversion.m_outputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020);
+  m_HDR10Left = (conversion.m_outputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020);
 
   m_output_dxgi_format = conversion.m_outputFormat;
 
