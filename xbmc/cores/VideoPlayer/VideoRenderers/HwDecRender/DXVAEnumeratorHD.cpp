@@ -235,75 +235,9 @@ ProcessorCapabilities CEnumeratorHD::ProbeProcessorCaps()
     }
   }
 
-  if (m_pEnumerator1)
-  {
-    DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
-
-    // Check if HLG color space conversion is supported by driver
-    result.m_bSupportHLG =
-        CheckConversionInternal(DXGI_FORMAT_P010, DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020,
-                                format, DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
-
-    CLog::LogF(LOGDEBUG, "HLG color space conversion is{}supported.",
-               result.m_bSupportHLG ? " " : " NOT ");
-
-    result.m_BT2020Left = (QueryHDRtoSDRSupport() == Left);
-    result.m_HDR10Left = (QueryHDRtoHDRSupport() == Left);
-  }
-
   result.m_valid = true;
 
   return result;
-}
-
-DXVA::InputFormat CEnumeratorHD::QueryHDRtoHDRSupport()
-{
-  const ProcessorConversions conv = QueryHDRConversions(false);
-
-  if (conv.empty())
-    return None;
-
-  auto it = std::find_if(conv.cbegin(), conv.cend(), [](const ProcessorConversion& c) {
-    return c.m_inputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020;
-  });
-
-  if (it != conv.end())
-    return TopLeft;
-
-  it = std::find_if(conv.cbegin(), conv.cend(), [](const ProcessorConversion& c) {
-    return c.m_inputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
-  });
-
-  if (it != conv.end())
-    return Left;
-
-  // Conversions returned, none with one of the expected types? Return "not supported"
-  return None;
-}
-
-InputFormat CEnumeratorHD::QueryHDRtoSDRSupport()
-{
-  const ProcessorConversions conv = QueryHDRtoSDRConversions(false);
-
-  if (conv.empty())
-    return None;
-
-  auto it = std::find_if(conv.cbegin(), conv.cend(), [](const ProcessorConversion& c) {
-    return c.m_inputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020;
-  });
-
-  if (it != conv.end())
-    return TopLeft;
-
-  it = std::find_if(conv.cbegin(), conv.cend(), [](const ProcessorConversion& c) {
-    return c.m_inputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
-  });
-
-  if (it != conv.end())
-    return Left;
-
-  // Conversions returned, none with one of the expected types? Return "not supported"
-  return None;
 }
 
 ProcessorFormats CEnumeratorHD::GetProcessorFormats(bool inputFormats, bool outputFormats) const

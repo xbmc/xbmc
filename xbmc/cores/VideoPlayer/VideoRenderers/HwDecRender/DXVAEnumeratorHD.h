@@ -65,9 +65,6 @@ struct ProcessorCapabilities
   D3D11_VIDEO_PROCESSOR_CAPS m_vcaps{};
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps{};
   ProcAmpInfo m_Filters[NUM_FILTERS]{};
-  bool m_bSupportHLG{false};
-  bool m_HDR10Left{false};
-  bool m_BT2020Left{false};
   bool m_hasMetadataHDR10Support{false};
 };
 
@@ -244,8 +241,6 @@ public:
 
 protected:
   void UnInit();
-  InputFormat QueryHDRtoHDRSupport();
-  InputFormat QueryHDRtoSDRSupport();
   /*!
    * \brief Retrieve the list of DXGI_FORMAT supported by the DXVA processor
    * \param inputFormats yes/no populate the input formats vector of the returned structure
