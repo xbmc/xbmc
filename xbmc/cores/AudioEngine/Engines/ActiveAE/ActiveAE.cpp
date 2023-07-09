@@ -3017,7 +3017,7 @@ IAE::SoundPtr CActiveAE::MakeSound(const std::string& file)
   AVIOContext *io_ctx;
   const AVInputFormat* io_fmt = nullptr;
   const AVCodec* dec = nullptr;
-  SampleConfig config;
+  SampleConfig config{};
 
   // No custom deleter until sound is registered
   auto sound = std::make_unique<CActiveAESound>(file, this);
