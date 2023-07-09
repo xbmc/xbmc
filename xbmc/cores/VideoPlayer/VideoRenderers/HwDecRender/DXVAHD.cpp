@@ -152,34 +152,6 @@ bool CProcessorHD::CheckFormats() const
   return m_enumerator && m_enumerator->IsFormatSupportedOutput(m_output_dxgi_format);
 }
 
-bool CProcessorHD::IsFormatConversionSupported(DXGI_FORMAT inputFormat,
-                                               DXGI_FORMAT outputFormat,
-                                               const VideoPicture& picture)
-{
-  std::unique_lock<CCriticalSection> lock(m_section);
-
-  // accept the conversion unless the API can be called successfully and disallows it
-  BOOL supported{TRUE};
-
-  if (!m_enumerator || !m_enumerator->IsEnumerator1Available())
-    return true;
-
-  ProcColorSpaces spaces = CalculateDXGIColorSpaces(DXGIColorSpaceArgs(picture));
-
-  if (m_enumerator->CheckConversion(inputFormat, spaces.inputColorSpace, outputFormat,
-                                    spaces.outputColorSpace))
-  {
-    CLog::LogF(
-        LOGDEBUG, "conversion from {} / {} to {} / {} is {}supported.",
-        DX::DXGIFormatToString(inputFormat), DX::DXGIColorSpaceTypeToString(spaces.inputColorSpace),
-        DX::DXGIFormatToString(outputFormat),
-        DX::DXGIColorSpaceTypeToString(spaces.outputColorSpace), supported == TRUE ? "" : "NOT ");
-    return true;
-  }
-
-  return false;
-}
-
 bool CProcessorHD::Open(const VideoPicture& picture)
 {
   Close();
@@ -789,18 +761,6 @@ void CProcessorHD::EnableNvidiaRTXVideoSuperResolution()
   m_superResolutionEnabled = true;
 }
 
-bool CProcessorHD::SetOutputFormat(DXGI_FORMAT outputFormat)
-{
-  std::unique_lock<CCriticalSection> lock(m_section);
-
-  if (m_enumerator && m_enumerator->IsFormatSupportedOutput(outputFormat))
-  {
-    m_output_dxgi_format = outputFormat;
-    return true;
-  }
-  return false;
-}
-
 bool CProcessorHD::IsFormatSupportedInput(DXGI_FORMAT format)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
@@ -822,4 +782,40 @@ ProcessorConversions CProcessorHD::SupportedConversions(bool isHdrOutput)
 
   return m_enumerator->SupportedConversions(
       SupportedConversionsArgs(m_color_primaries, m_color_transfer, m_full_range, isHdrOutput));
+}
+
+bool CProcessorHD::SetConversion(const ProcessorConversion& conversion)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  if (!m_enumerator)
+    return false;
+
+  if (!m_enumerator || !m_enumerator->IsFormatSupportedInput(conversion.m_inputFormat) ||
+      !m_enumerator->IsFormatSupportedOutput(conversion.m_outputFormat))
+    return false;
+
+  if (m_enumerator->IsEnumerator1Available() &&
+      !m_enumerator->CheckConversion(conversion.m_inputFormat, conversion.m_inputCS,
+                                     conversion.m_outputFormat, conversion.m_outputCS))
+  {
+    CLog::LogF(LOGERROR, "Conversion {} is not supported", conversion.ToString());
+    return false;
+  }
+
+  // Check if HLG color space conversion is supported by driver
+  m_procCaps.m_bSupportHLG = m_enumerator->CheckConversion(
+      conversion.m_inputFormat, DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020,
+      conversion.m_outputFormat, DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+
+  CLog::LogF(LOGDEBUG, "HLG color space conversion to SDR is{}supported.",
+             m_procCaps.m_bSupportHLG ? " " : " NOT ");
+
+  m_procCaps.m_BT2020Left = (conversion.m_outputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020);
+  m_procCaps.m_HDR10Left =
+      (conversion.m_outputCS == DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020);
+
+  m_output_dxgi_format = conversion.m_outputFormat;
+
+  return true;
 }

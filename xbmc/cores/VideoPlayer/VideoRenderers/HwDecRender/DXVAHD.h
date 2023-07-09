@@ -75,17 +75,6 @@ public:
    */
   bool IsFormatSupportedOutput(DXGI_FORMAT format);
   /*!
-   * \brief Evaluate if the DXVA processor supports converting between two formats and color spaces.
-   * Always returns true when the Windows 10+ API is not available or cannot be called successfully.
-   * \param inputFormat The source format
-   * \param outputFormat The destination format
-   * \param picture Picture information used to derive the color spaces
-   * \return true if the conversion is supported, false otherwise
-   */
-  bool IsFormatConversionSupported(DXGI_FORMAT inputFormat,
-                                   DXGI_FORMAT outputFormat,
-                                   const VideoPicture& picture);
-  /*!
    * \brief Outputs in the log a list of conversions supported by the DXVA processor.
    * \param inputFormat The source format
    * \param outputFormat The destination format
@@ -94,19 +83,18 @@ public:
   void LogSupportedConversions(const DXGI_FORMAT& inputFormat,
                                const DXGI_FORMAT& outputFormat,
                                const VideoPicture& picture);
-
-  /*!
-   * \brief Set the output format of the dxva processor. Format compatibility will be verified.
-   * \param format The output format
-   * \return true when the processor supports the format as output and the format is changed.
-   */
-  bool SetOutputFormat(DXGI_FORMAT format);
   /*!
    * \brief Return a list of conversions supported by the processor.
    * \param isHdrOutput will the output be HDR yes/no
    * \return list of conversions
    */
   ProcessorConversions SupportedConversions(bool isHdrOutput);
+  /*!
+   * \brief Configure the processor for the provided conversion.
+   * \param conversion the conversion
+   * \return success status, true = success, false = error
+   */
+  bool SetConversion(const ProcessorConversion& conversion);
 
   // ID3DResource overrides
   void OnCreateDevice() override  {}
