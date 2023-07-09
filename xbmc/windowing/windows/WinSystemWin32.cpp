@@ -180,9 +180,6 @@ bool CWinSystemWin32::CreateNewWindow(const std::string& name, bool fullScreen, 
       // are for the client part of the window.
       RECT rcWorkArea = GetScreenWorkArea(m_hMonitor);
 
-      int workAreaWidth = rcWorkArea.right - rcWorkArea.left;
-      int workAreaHeight = rcWorkArea.bottom - rcWorkArea.top;
-
       RECT rcNcArea = GetNcAreaOffsets(m_windowStyle, false, m_windowExStyle);
       int maxClientWidth = (rcWorkArea.right - rcNcArea.right) - (rcWorkArea.left - rcNcArea.left);
       int maxClientHeight = (rcWorkArea.bottom - rcNcArea.bottom) - (rcWorkArea.top - rcNcArea.top);
@@ -405,9 +402,6 @@ void CWinSystemWin32::AdjustWindow(bool forceResize)
         // Windowed mode: position and size in settings and most places in Kodi
         // are for the client part of the window.
         RECT rcWorkArea = GetScreenWorkArea(m_hMonitor);
-
-        int workAreaWidth = rcWorkArea.right - rcWorkArea.left;
-        int workAreaHeight = rcWorkArea.bottom - rcWorkArea.top;
 
         RECT rcNcArea = GetNcAreaOffsets(m_windowStyle, false, m_windowExStyle);
         int maxClientWidth =
@@ -817,9 +811,6 @@ RECT CWinSystemWin32::ScreenRect(HMONITOR handle)
 void CWinSystemWin32::GetConnectedDisplays(std::vector<MONITOR_DETAILS>& outputs)
 {
   using KODI::PLATFORM::WINDOWS::FromW;
-
-  const POINT ptZero = { 0, 0 };
-  HMONITOR hmPrimary = MonitorFromPoint(ptZero, MONITOR_DEFAULTTOPRIMARY);
 
   DISPLAY_DEVICEW ddAdapter = {};
   ddAdapter.cb = sizeof(ddAdapter);

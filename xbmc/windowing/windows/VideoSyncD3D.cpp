@@ -74,7 +74,7 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
     // sleep until vblank
     Microsoft::WRL::ComPtr<IDXGIOutput> pOutput;
     DX::DeviceResources::Get()->GetOutput(&pOutput);
-    HRESULT hr = pOutput->WaitForVBlank();
+    pOutput->WaitForVBlank();
 
     // calculate how many vblanks happened
     Now = CurrentHostCounter();
