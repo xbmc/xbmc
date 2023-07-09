@@ -156,7 +156,7 @@ std::vector<std::string> CGameAgentManager::GetInputPorts() const
 
   if (m_gameClient)
   {
-    const CControllerTree& controllerTree = m_gameClient->Input().GetActiveControllerTree();
+    CControllerTree controllerTree = m_gameClient->Input().GetActiveControllerTree();
     controllerTree.GetInputPorts(inputPorts);
   }
 
@@ -237,7 +237,7 @@ void CGameAgentManager::ProcessKeyboard()
     m_peripheralManager.GetPeripheralsWithFeature(keyboards, PERIPHERALS::FEATURE_KEYBOARD);
     if (!keyboards.empty())
     {
-      const CControllerTree& controllers = m_gameClient->Input().GetActiveControllerTree();
+      CControllerTree controllers = m_gameClient->Input().GetActiveControllerTree();
 
       auto it = std::find_if(
           controllers.GetPorts().begin(), controllers.GetPorts().end(),
@@ -259,7 +259,7 @@ void CGameAgentManager::ProcessMouse()
     m_peripheralManager.GetPeripheralsWithFeature(mice, PERIPHERALS::FEATURE_MOUSE);
     if (!mice.empty())
     {
-      const CControllerTree& controllers = m_gameClient->Input().GetActiveControllerTree();
+      CControllerTree controllers = m_gameClient->Input().GetActiveControllerTree();
 
       auto it = std::find_if(
           controllers.GetPorts().begin(), controllers.GetPorts().end(),

@@ -106,8 +106,10 @@ void CGUIPortList::Refresh()
 
   if (m_gameClient)
   {
+    CControllerTree controllerTree = m_gameClient->Input().GetActiveControllerTree();
+
     unsigned int itemIndex = 0;
-    for (const CPortNode& port : m_gameClient->Input().GetActiveControllerTree().GetPorts())
+    for (const CPortNode& port : controllerTree.GetPorts())
       AddItems(port, itemIndex, GetLabel(port));
 
     m_viewControl->SetItems(*m_vecItems);
@@ -254,7 +256,7 @@ void CGUIPortList::OnItemSelect(unsigned int itemIndex)
     if (portAddress.empty())
       return;
 
-    const CPortNode& port = m_gameClient->Input().GetActiveControllerTree().GetPort(portAddress);
+    CPortNode port = m_gameClient->Input().GetActiveControllerTree().GetPort(portAddress);
 
     ControllerVector controllers;
     for (const CControllerNode& controllerNode : port.GetCompatibleControllers())
@@ -263,11 +265,13 @@ void CGUIPortList::OnItemSelect(unsigned int itemIndex)
     // Get current controller to give initial focus
     ControllerPtr controller = port.GetActiveController().GetController();
 
-    auto callback = [this, &port](const ControllerPtr& controller) {
+    // Check if we should show a "disconnect" option
+    const bool showDisconnect = !port.IsForceConnected();
+
+    auto callback = [this, port = std::move(port)](const ControllerPtr& controller) {
       OnControllerSelected(port, controller);
     };
 
-    const bool showDisconnect = !port.IsForceConnected();
     m_controllerSelectDialog.Initialize(std::move(controllers), std::move(controller),
                                         showDisconnect, callback);
   }

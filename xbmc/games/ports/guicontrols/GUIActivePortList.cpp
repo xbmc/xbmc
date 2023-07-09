@@ -86,7 +86,10 @@ void CGUIActivePortList::Refresh()
 
   // Add controllers of active ports
   if (m_gameClient)
-    AddItems(m_gameClient->Input().GetActiveControllerTree().GetPorts());
+  {
+    CControllerTree controllerTree = m_gameClient->Input().GetActiveControllerTree();
+    AddItems(controllerTree.GetPorts());
+  }
 
   // Add padding if right-aligned
   if (m_alignment == XBFONT_RIGHT)
