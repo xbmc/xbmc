@@ -139,19 +139,28 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
 
     // create processor
     m_processor = std::make_unique<DXVA::CProcessorHD>();
-    if (m_processor->PreInit() && m_processor->Open(picture) &&
-        m_processor->IsFormatSupportedInput(dxgi_format))
+    if (m_processor->PreInit() && m_processor->Open(picture))
     {
-      m_intermediateTargetFormat = CalcIntermediateTargetFormat(picture, tryVSR);
-      if (m_processor->SetOutputFormat(m_intermediateTargetFormat))
-      {
-        if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
-            CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
-          m_processor->LogSupportedConversions(dxgi_format, m_intermediateTargetFormat, picture);
+      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+      const auto setting = DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY;
+      const bool systemUsesHDR =
+          (settings ? settings->GetBool(setting) && DX::Windowing()->IsHDRDisplay() : false) ||
+          DX::Windowing()->IsHDROutput();
 
-        if (m_processor->IsFormatConversionSupported(dxgi_format, m_intermediateTargetFormat,
-                                                     picture))
+      const ProcessorConversions conversions = m_processor->SupportedConversions(systemUsesHDR);
+      if (!conversions.empty())
+      {
+        ProcessorConversion chosenConversion = ChooseConversion(conversions, picture, tryVSR);
+        m_intermediateTargetFormat = chosenConversion.m_outputFormat;
+
+        CLog::LogF(LOGINFO, "chosen conversion: {}", chosenConversion.ToString());
+
+        if (m_processor->SetConversion(chosenConversion))
         {
+          if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+              CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+            m_processor->LogSupportedConversions(dxgi_format, m_intermediateTargetFormat, picture);
+
           if (tryVSR)
             m_processor->TryEnableVideoSuperResolution();
 
@@ -453,44 +462,47 @@ bool CRendererDXVA::CRenderBufferImpl::UploadToTexture()
   return m_bLoaded;
 }
 
-DXGI_FORMAT CRendererDXVA::CalcIntermediateTargetFormat(const VideoPicture& picture,
-                                                        bool tryVSR) const
+ProcessorConversion CRendererDXVA::ChooseConversion(const ProcessorConversions& conversions,
+                                                    const VideoPicture& picture,
+                                                    bool tryVSR) const
 {
-  // RGB8 processor output format is required for VSR
-  if (tryVSR)
-    return DXGI_FORMAT_B8G8R8A8_UNORM;
+  assert(conversions.size() > 0);
 
-  // Default value: same as the back buffer
-  DXGI_FORMAT format{DX::Windowing()->GetBackBuffer().GetFormat()};
-
-  if (!m_processor)
-    return format;
-
-  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
-  if (!settings || !settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING))
-    return format;
-
-  // Preserve HDR precision
-  if (picture.colorBits > 8 && (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-                                picture.color_transfer == AVCOL_TRC_ARIB_STD_B67))
+  bool tryHQ{false};
+  if (!tryVSR)
   {
-    const AVPixelFormat avpFormat = picture.videoBuffer->GetFormat();
-    const DXGI_FORMAT inputFormat =
-        CRenderBufferImpl::GetDXGIFormat(avpFormat, __super::GetDXGIFormat(picture));
+    // Try high quality when: backbuffer is 10 bits or High precision processing is on and the source is HDR
+    tryHQ = (DX::Windowing()->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM);
 
-    const std::array hdrformats{DXGI_FORMAT_R10G10B10A2_UNORM, DXGI_FORMAT_R16G16B16A16_FLOAT};
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    if (settings && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING))
+      if (picture.colorBits > 8 && (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+                                    picture.color_transfer == AVCOL_TRC_ARIB_STD_B67))
+        tryHQ = true;
+  }
 
+  // RGB8 processor output format is required for VSR
+  if (!tryVSR && tryHQ)
+  {
     const auto it =
-        std::find_if(hdrformats.cbegin(), hdrformats.cend(), [&](DXGI_FORMAT outputFormat) {
-          return m_processor->IsFormatSupportedOutput(outputFormat) &&
-                 m_processor->IsFormatConversionSupported(inputFormat, outputFormat, picture);
+        std::find_if(conversions.cbegin(), conversions.cend(), [](const ProcessorConversion& c) {
+          return c.m_outputFormat == DXGI_FORMAT_R10G10B10A2_UNORM;
         });
 
-    if (it != hdrformats.cend())
-      format = *it;
+    if (it != conversions.end())
+      return *it;
     else
-      CLog::LogF(LOGDEBUG, "no compatible high precision format found for HDR.");
+      CLog::LogF(LOGDEBUG, "no compatible high precision format found.");
   }
-  return format;
+
+  const auto it =
+      std::find_if(conversions.cbegin(), conversions.cend(), [](const ProcessorConversion& c) {
+        return c.m_outputFormat == DXGI_FORMAT_B8G8R8A8_UNORM;
+      });
+
+  if (it != conversions.end())
+    return *it;
+
+  // bad situation, nothing matching our needs found, return the first conversion available
+  return conversions.front();
 }
