@@ -184,11 +184,9 @@ public:
    * \param inputFormat the source format
    * \param inputNativeCS the input color space that would be used with a direct mapping
    * from avcodec to D3D11, without any workarounds or tricks.
-   * \param outputFormat the destination format
    */
-  void LogSupportedConversions(const DXGI_FORMAT& inputFormat,
-                               const DXGI_COLOR_SPACE_TYPE inputNativeCS,
-                               const DXGI_FORMAT& outputFormat);
+  void LogSupportedConversions(const DXGI_FORMAT inputFormat,
+                               const DXGI_COLOR_SPACE_TYPE inputNativeCS);
 
   bool IsInitialized() const { return m_pEnumerator; }
   /*!

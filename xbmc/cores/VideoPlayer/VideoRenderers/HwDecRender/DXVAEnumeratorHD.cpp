@@ -356,9 +356,8 @@ ProcessorConversions CEnumeratorHD::ListConversions(
   return result;
 }
 
-void CEnumeratorHD::LogSupportedConversions(const DXGI_FORMAT& inputFormat,
-                                            const DXGI_COLOR_SPACE_TYPE inputNativeCS,
-                                            const DXGI_FORMAT& outputFormat)
+void CEnumeratorHD::LogSupportedConversions(const DXGI_FORMAT inputFormat,
+                                            const DXGI_COLOR_SPACE_TYPE inputNativeCS)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
 
@@ -434,16 +433,16 @@ void CEnumeratorHD::LogSupportedConversions(const DXGI_FORMAT& inputFormat,
   {
     conversionsString.append("\n");
     conversionsString.append(StringUtils::Format(
-        "{} {} / {} {:<{}} to {} {:<{}} / {} {:<{}}", "*", DX::DXGIFormatToString(c.m_inputFormat),
+        "{} / {} {:<{}} to {:<{}} / {} {:<{}}", DX::DXGIFormatToString(c.m_inputFormat),
         (c.m_inputCS == inputNativeCS) ? "N" : " ", DX::DXGIColorSpaceTypeToString(c.m_inputCS), 32,
-        (c.m_outputFormat == outputFormat) ? "*" : " ", DX::DXGIFormatToString(c.m_outputFormat),
-        26, (backbufferColorSpaces.find(c.m_outputCS) != backbufferColorSpaces.end()) ? "bb" : "  ",
+        DX::DXGIFormatToString(c.m_outputFormat), 26,
+        (backbufferColorSpaces.find(c.m_outputCS) != backbufferColorSpaces.end()) ? "bb" : "  ",
         DX::DXGIColorSpaceTypeToString(c.m_outputCS), 32));
   }
 
   CLog::LogFC(LOGDEBUG, LOGVIDEO,
-              "Supported conversions from format {}\n(*: values picked by "
-              "heuristics, N native input color space, bb supported as swap chain backbuffer){}",
+              "Supported conversions from format {}\n(N native input color space, bb supported as "
+              "swap chain backbuffer){}",
               DX::DXGIFormatToString(inputFormat), conversionsString);
 }
 

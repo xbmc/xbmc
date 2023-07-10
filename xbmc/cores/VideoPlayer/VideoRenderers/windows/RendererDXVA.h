@@ -60,6 +60,7 @@ private:
                                              bool tryVSR) const;
 
   std::unique_ptr<DXVA::CProcessorHD> m_processor;
+  std::shared_ptr<DXVA::CEnumeratorHD> m_enumerator;
   DXGI_FORMAT m_intermediateTargetFormat{DXGI_FORMAT_UNKNOWN};
 };
 
