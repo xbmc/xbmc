@@ -137,40 +137,48 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
       }
     }
 
-    // create processor
-    m_processor = std::make_unique<DXVA::CProcessorHD>();
-    if (m_processor->PreInit() && m_processor->Open(picture))
+    m_enumerator = std::make_shared<DXVA::CEnumeratorHD>();
+    if (m_enumerator->Open(picture.iWidth, picture.iHeight, dxgi_format))
     {
-      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-      const auto setting = DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY;
-      const bool systemUsesHDR =
-          (settings ? settings->GetBool(setting) && DX::Windowing()->IsHDRDisplay() : false) ||
-          DX::Windowing()->IsHDROutput();
-
-      const ProcessorConversions conversions = m_processor->SupportedConversions(systemUsesHDR);
-      if (!conversions.empty())
+      // create processor
+      m_processor = std::make_unique<DXVA::CProcessorHD>();
+      if (m_processor->Open(picture, m_enumerator))
       {
-        ProcessorConversion chosenConversion = ChooseConversion(conversions, picture, tryVSR);
-        m_intermediateTargetFormat = chosenConversion.m_outputFormat;
+        const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+        const auto setting = DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY;
+        const bool systemUsesHDR =
+            (settings ? settings->GetBool(setting) && DX::Windowing()->IsHDRDisplay() : false) ||
+            DX::Windowing()->IsHDROutput();
 
-        CLog::LogF(LOGINFO, "chosen conversion: {}", chosenConversion.ToString());
-
-        if (m_processor->SetConversion(chosenConversion))
+        const ProcessorConversions conversions = m_enumerator->SupportedConversions(
+            DXVA::SupportedConversionsArgs(picture, systemUsesHDR));
+        if (!conversions.empty())
         {
-          if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
-              CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
-            m_processor->LogSupportedConversions(dxgi_format, m_intermediateTargetFormat, picture);
+          ProcessorConversion chosenConversion = ChooseConversion(conversions, picture, tryVSR);
+          m_intermediateTargetFormat = chosenConversion.m_outputFormat;
 
-          if (tryVSR)
-            m_processor->TryEnableVideoSuperResolution();
+          CLog::LogF(LOGINFO, "chosen conversion: {}", chosenConversion.ToString());
 
-          return true;
+          if (m_processor->SetConversion(chosenConversion))
+          {
+            if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+                CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+            {
+              m_enumerator->LogSupportedConversions(
+                  dxgi_format, CProcessorHD::AvToDxgiColorSpace(DXVA::DXGIColorSpaceArgs(picture)));
+            }
+
+            if (tryVSR)
+              m_processor->TryEnableVideoSuperResolution();
+
+            return true;
+          }
         }
       }
     }
-
     CLog::LogF(LOGERROR, "unable to create DXVA processor");
     m_processor.reset();
+    m_enumerator.reset();
   }
   return false;
 }

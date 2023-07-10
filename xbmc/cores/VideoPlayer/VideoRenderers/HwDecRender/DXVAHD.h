@@ -56,39 +56,12 @@ public:
   explicit CProcessorHD();
  ~CProcessorHD();
 
-  bool PreInit() const;
   void UnInit();
-  bool Open(const VideoPicture& picture);
+  bool Open(const VideoPicture& picture, std::shared_ptr<DXVA::CEnumeratorHD> enumerator);
   void Close();
   bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
   uint8_t PastRefs() const { return std::min(m_procCaps.m_rateCaps.PastFrames, 4u); }
-  /*!
-   * \brief Check support of the format as input texture
-   * \param format the format
-   * \return true supported, false not supported
-   */
-  bool IsFormatSupportedInput(DXGI_FORMAT format);
-  /*!
-   * \brief Check support of the format as input texture
-   * \param format the format
-   * \return true supported, false not supported
-   */
-  bool IsFormatSupportedOutput(DXGI_FORMAT format);
-  /*!
-   * \brief Outputs in the log a list of conversions supported by the DXVA processor.
-   * \param inputFormat The source format
-   * \param outputFormat The destination format
-   * \param picture Picture information used to derive the color spaces
-   */
-  void LogSupportedConversions(const DXGI_FORMAT& inputFormat,
-                               const DXGI_FORMAT& outputFormat,
-                               const VideoPicture& picture);
-  /*!
-   * \brief Return a list of conversions supported by the processor.
-   * \param isHdrOutput will the output be HDR yes/no
-   * \return list of conversions
-   */
-  ProcessorConversions SupportedConversions(bool isHdrOutput);
+
   /*!
    * \brief Configure the processor for the provided conversion.
    * \param conversion the conversion
@@ -108,13 +81,6 @@ public:
   void TryEnableVideoSuperResolution();
   bool IsVideoSuperResolutionEnabled() const { return m_superResolutionEnabled; }
 
-protected:
-  bool ReInit();
-  bool InitProcessor();
-  bool CheckFormats() const;
-  bool OpenProcessor();
-  void ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
-  ComPtr<ID3D11VideoProcessorInputView> GetInputView(CRenderBuffer* view) const;
   /*!
    * \brief Converts ffmpeg AV parameters to a DXGI color space
    * \param csArgs ffmpeg AV picture parameters
@@ -122,26 +88,30 @@ protected:
    */
   static DXGI_COLOR_SPACE_TYPE AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs);
 
+protected:
+  bool ReInit();
+  bool InitProcessor();
+  bool CheckFormats() const;
+  bool OpenProcessor();
+  void ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
+  ComPtr<ID3D11VideoProcessorInputView> GetInputView(CRenderBuffer* view) const;
+
   void EnableIntelVideoSuperResolution();
   void EnableNvidiaRTXVideoSuperResolution();
 
   CCriticalSection m_section;
 
-  uint32_t m_width = 0;
-  uint32_t m_height = 0;
-
   ComPtr<ID3D11VideoDevice> m_pVideoDevice;
   ComPtr<ID3D11VideoContext> m_pVideoContext;
   ComPtr<ID3D11VideoProcessor> m_pVideoProcessor;
-  std::unique_ptr<CEnumeratorHD> m_enumerator;
+  std::shared_ptr<CEnumeratorHD> m_enumerator;
 
   AVColorPrimaries m_color_primaries{AVCOL_PRI_UNSPECIFIED};
   AVColorTransferCharacteristic m_color_transfer{AVCOL_TRC_UNSPECIFIED};
-  bool m_full_range{false};
   ProcessorCapabilities m_procCaps;
-  DXGI_FORMAT m_input_dxgi_format{DXGI_FORMAT_UNKNOWN};
 
   bool m_superResolutionEnabled{false};
   ProcessorConversion m_conversion;
+  bool m_isValidConversion{false};
 };
 };
