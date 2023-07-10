@@ -193,6 +193,17 @@ NSString* screenNameForDisplay(NSUInteger screenIdx)
   return screenName;
 }
 
+void CheckAndUpdateCurrentMonitor(NSUInteger screenNumber)
+{
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::string storedScreenName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  const std::string currentScreenName = screenNameForDisplay(screenNumber).UTF8String;
+  if (storedScreenName != currentScreenName)
+  {
+    CDisplaySettings::GetInstance().SetMonitor(currentScreenName);
+  }
+}
+
 CGDirectDisplayID GetDisplayIDFromScreen(NSScreen* screen)
 {
   NSDictionary* screenInfo = screen.deviceDescription;
@@ -731,6 +742,8 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
   m_bWindowCreated = true;
 
+  CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
+
   // warning, we can order front but not become
   // key window or risk starting up with bad flicker
   // becoming key window must happen in completion block.
@@ -1183,17 +1196,6 @@ bool CWinSystemOSX::HasValidResolution() const
 }
 
 #pragma mark - Window Move
-
-void CheckAndUpdateCurrentMonitor(NSUInteger screenNumber)
-{
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  const std::string storedScreenName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
-  const std::string currentScreenName = screenNameForDisplay(screenNumber).UTF8String;
-  if (storedScreenName != currentScreenName)
-  {
-    CDisplaySettings::GetInstance().SetMonitor(currentScreenName);
-  }
-}
 
 void CWinSystemOSX::OnMove(int x, int y)
 {
