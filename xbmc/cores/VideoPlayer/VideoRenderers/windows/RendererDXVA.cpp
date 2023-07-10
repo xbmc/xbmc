@@ -137,13 +137,10 @@ CRenderInfo CRendererDXVA::GetRenderInfo()
 
 bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned orientation)
 {
-  const auto support_type = D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT;
-
   if (__super::Configure(picture, fps, orientation))
   {
     m_format = picture.videoBuffer->GetFormat();
     const DXGI_FORMAT dxgi_format = GetDXGIFormat(m_format, __super::GetDXGIFormat(picture));
-    const DXGI_FORMAT dest_format = DX::Windowing()->GetBackBuffer().GetFormat();
     bool tryVSR{false};
 
     if (DX::Windowing()->SupportsVideoSuperResolution())
@@ -160,16 +157,17 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
     // create processor
     m_processor = std::make_unique<DXVA::CProcessorHD>();
     if (m_processor->PreInit() && m_processor->Open(picture) &&
-        m_processor->IsFormatSupported(dxgi_format, support_type))
+        m_processor->IsFormatSupportedInput(dxgi_format))
     {
       m_intermediateTargetFormat = CalcIntermediateTargetFormat(picture, tryVSR);
       if (m_processor->SetOutputFormat(m_intermediateTargetFormat))
       {
         if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
             CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
-          m_processor->ListSupportedConversions(dxgi_format, dest_format, picture);
+          m_processor->LogSupportedConversions(dxgi_format, m_intermediateTargetFormat, picture);
 
-        if (m_processor->IsFormatConversionSupported(dxgi_format, dest_format, picture))
+        if (m_processor->IsFormatConversionSupported(dxgi_format, m_intermediateTargetFormat,
+                                                     picture))
         {
           if (tryVSR)
             m_processor->TryEnableVideoSuperResolution();
@@ -502,8 +500,7 @@ DXGI_FORMAT CRendererDXVA::CalcIntermediateTargetFormat(const VideoPicture& pict
 
     const auto it =
         std::find_if(hdrformats.cbegin(), hdrformats.cend(), [&](DXGI_FORMAT outputFormat) {
-          return m_processor->IsFormatSupported(outputFormat,
-                                                D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT) &&
+          return m_processor->IsFormatSupportedOutput(outputFormat) &&
                  m_processor->IsFormatConversionSupported(inputFormat, outputFormat, picture);
         });
 

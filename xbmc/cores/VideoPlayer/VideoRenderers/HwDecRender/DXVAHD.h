@@ -62,7 +62,18 @@ public:
   void Close();
   bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
   uint8_t PastRefs() const { return std::min(m_procCaps.m_rateCaps.PastFrames, 4u); }
-  bool IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const;
+  /*!
+   * \brief Check support of the format as input texture
+   * \param format the format
+   * \return true supported, false not supported
+   */
+  bool IsFormatSupportedInput(DXGI_FORMAT format);
+  /*!
+   * \brief Check support of the format as input texture
+   * \param format the format
+   * \return true supported, false not supported
+   */
+  bool IsFormatSupportedOutput(DXGI_FORMAT format);
   /*!
    * \brief Evaluate if the DXVA processor supports converting between two formats and color spaces.
    * Always returns true when the Windows 10+ API is not available or cannot be called successfully.
@@ -80,9 +91,9 @@ public:
    * \param outputFormat The destination format
    * \param picture Picture information used to derive the color spaces
    */
-  void ListSupportedConversions(const DXGI_FORMAT& inputFormat,
-                                const DXGI_FORMAT& outputFormat,
-                                const VideoPicture& picture);
+  void LogSupportedConversions(const DXGI_FORMAT& inputFormat,
+                               const DXGI_FORMAT& outputFormat,
+                               const VideoPicture& picture);
 
   /*!
    * \brief Set the output format of the dxva processor. Format compatibility will be verified.
@@ -109,7 +120,7 @@ protected:
   bool CheckFormats() const;
   bool OpenProcessor();
   void ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
-  ID3D11VideoProcessorInputView* GetInputView(CRenderBuffer* view) const;
+  ComPtr<ID3D11VideoProcessorInputView> GetInputView(CRenderBuffer* view) const;
   /*!
    * \brief Calculate the color spaces of the input and output of the processor
    * \param csArgs Arguments for the calculations
@@ -130,11 +141,6 @@ protected:
    * \return DXGI color space
    */
   static DXGI_COLOR_SPACE_TYPE AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs);
-  /*!
-   * \brief Retrieve the list of DXGI_FORMAT supported as output by the DXVA processor
-   * \return Vector of formats
-   */
-  std::vector<DXGI_FORMAT> GetProcessorOutputFormats() const;
 
   void EnableIntelVideoSuperResolution();
   void EnableNvidiaRTXVideoSuperResolution();

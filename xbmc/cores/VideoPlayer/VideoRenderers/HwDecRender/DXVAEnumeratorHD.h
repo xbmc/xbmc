@@ -77,6 +77,23 @@ enum InputFormat
   Left
 };
 
+struct ProcessorFormats
+{
+  std::vector<DXGI_FORMAT> m_input;
+  std::vector<DXGI_FORMAT> m_output;
+  bool m_valid{false};
+};
+
+struct ProcessorConversion
+{
+  DXGI_FORMAT m_inputFormat{DXGI_FORMAT_UNKNOWN};
+  DXGI_COLOR_SPACE_TYPE m_inputCS{DXGI_COLOR_SPACE_RESERVED};
+  DXGI_FORMAT m_outputFormat{DXGI_FORMAT_UNKNOWN};
+  DXGI_COLOR_SPACE_TYPE m_outputCS{DXGI_COLOR_SPACE_RESERVED};
+};
+
+using ProcessorConversions = std::vector<ProcessorConversion>;
+
 class CEnumeratorHD : public ID3DResource
 {
 public:
@@ -104,18 +121,116 @@ public:
   */
   bool IsSDRSupported();
   ProcessorCapabilities ProbeProcessorCaps();
+  /*!
+   * \brief Check if a conversion is supported by the dxva processor.
+   * \param inputFormat the input format
+   * \param inputCS the input color space
+   * \param outputFormat the output format
+   * \param outputCS the output color space
+   * \return true when the conversion is supported, false when it is not
+   * or the API used to validate is not availe (Windows < 10)
+  */
+  bool CheckConversion(DXGI_FORMAT inputFormat,
+                       DXGI_COLOR_SPACE_TYPE inputCS,
+                       DXGI_FORMAT outputFormat,
+                       DXGI_COLOR_SPACE_TYPE outputCS);
+  /*!
+   * \brief Check dxva processor for support of the format as input texture
+   * \param format the format
+   * \return true supported, false not supported
+   */
+  bool IsFormatSupportedInput(DXGI_FORMAT format);
+  /*!
+   * \brief Check dxva processor for support of the format as output texture
+   * \param format the format
+   * \return true supported, false not supported
+   */
+  bool IsFormatSupportedOutput(DXGI_FORMAT format);
+  /*!
+   * \brief Outputs in the log a list of conversions supported by the DXVA processor.
+   * \param inputFormat the source format
+   * \param heuristicsInputCS the input color space that will be used for playback
+   * \param inputNativeCS the input color space that would be used with a direct mapping
+   * from avcodec to D3D11, without any workarounds or tricks.
+   * \param outputFormat the destination format
+   * \param heuristicsOutputCS the output color space that will be used for playback
+   */
+  void LogSupportedConversions(const DXGI_FORMAT& inputFormat,
+                               const DXGI_COLOR_SPACE_TYPE heuristicsInputCS,
+                               const DXGI_COLOR_SPACE_TYPE inputNativeCS,
+                               const DXGI_FORMAT& outputFormat,
+                               const DXGI_COLOR_SPACE_TYPE heuristicsOutputCS);
 
-  ComPtr<ID3D11VideoProcessorEnumerator> Get() { return m_pEnumerator; }
-  ComPtr<ID3D11VideoProcessorEnumerator1> Get1() { return m_pEnumerator1; }
+  bool IsInitialized() const { return m_pEnumerator; }
+  /*!
+   * \brief Returns the availability of the interface ID3D11VideoProcessorEnumerator1
+   * (Windows 10 supporting HDR and above)
+   * \return true when the interface is available and initialized, false otherwise
+   */
+  bool IsEnumerator1Available() { return m_pEnumerator1; }
+
+  ComPtr<ID3D11VideoProcessor> CreateVideoProcessor(UINT RateConversionIndex);
+  ComPtr<ID3D11VideoProcessorInputView> CreateVideoProcessorInputView(
+      ID3D11Resource* pResource, const D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC* pDesc);
+  ComPtr<ID3D11VideoProcessorOutputView> CreateVideoProcessorOutputView(
+      ID3D11Resource* pResource, const D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC* pDesc);
 
 protected:
   void UnInit();
   InputFormat QueryHDRtoHDRSupport() const;
   InputFormat QueryHDRtoSDRSupport() const;
   bool QuerySDRSupport() const;
+  /*!
+   * \brief Retrieve the list of DXGI_FORMAT supported by the DXVA processor
+   * \param inputFormats yes/no populate the input formats vector of the returned structure
+   * \param outputFormats yes/no populate the output formats vector of the returned structure
+   * \return requested list of input and/or output formats.
+   */
+  ProcessorFormats GetProcessorFormats(bool inputFormats, bool outputFormats) const;
+  /*!
+   * \brief Retrieve the list of RGB DXGI_FORMAT supported as output by the DXVA
+   * processor \return Vector of formats
+   */
+  std::vector<DXGI_FORMAT> GetProcessorRGBOutputFormats() const;
+  /*!
+   * \brief Check if a conversion is supported by the dxva processor.
+   * \param inputFormat the input format
+   * \param inputCS the input color space
+   * \param outputFormat the output format
+   * \param outputCS the output color space
+   * \return true when the conversion is supported, false when it is not
+   * or the API used to validate is not available (Windows < 10)
+  */
+  bool CheckConversionInternal(DXGI_FORMAT inputFormat,
+                               DXGI_COLOR_SPACE_TYPE inputCS,
+                               DXGI_FORMAT outputFormat,
+                               DXGI_COLOR_SPACE_TYPE outputCS) const;
+  /*!
+   * \brief Check dxva processor for support of the format as input texture
+   * \param format the format
+   * \return true supported, false not supported
+   */
+  bool IsFormatSupportedInternal(DXGI_FORMAT format,
+                                 D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const;
+
+  /*!
+   * \brief Iterate over all combinations of the input parameters and return a list of
+   * the combinations that are supported conversions.
+   * \param inputFormat The input format
+   * \param inputColorSpaces The possible source color spaces
+   * \param outputFormats The possible output formats
+   * \param outputColorSpaces The possible output color spaces
+   * \return List of the supported conversion.
+   */
+  ProcessorConversions ListConversions(
+      DXGI_FORMAT inputFormat,
+      const std::vector<DXGI_COLOR_SPACE_TYPE>& inputColorSpaces,
+      const std::vector<DXGI_FORMAT>& outputFormats,
+      const std::vector<DXGI_COLOR_SPACE_TYPE>& outputColorSpaces) const;
 
   CCriticalSection m_section;
 
+  ComPtr<ID3D11VideoDevice> m_pVideoDevice;
   ComPtr<ID3D11VideoProcessorEnumerator> m_pEnumerator;
   ComPtr<ID3D11VideoProcessorEnumerator1> m_pEnumerator1;
   DXGI_FORMAT m_input_dxgi_format{DXGI_FORMAT_UNKNOWN};

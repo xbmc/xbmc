@@ -146,24 +146,10 @@ bool CProcessorHD::InitProcessor()
   return true;
 }
 
-bool CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const
-{
-  UINT uiFlags;
-  if (S_OK == m_enumerator->Get()->CheckVideoProcessorFormat(format, &uiFlags))
-  {
-    if (uiFlags & support)
-      return true;
-  }
-
-  CLog::LogF(LOGERROR, "unsupported format {} for {}.", DX::DXGIFormatToString(format),
-             DX::D3D11VideoProcessorFormatSupportToString(support));
-  return false;
-}
-
 bool CProcessorHD::CheckFormats() const
 {
   // check default output format (as render target)
-  return IsFormatSupported(m_output_dxgi_format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT);
+  return m_enumerator && m_enumerator->IsFormatSupportedOutput(m_output_dxgi_format);
 }
 
 bool CProcessorHD::IsFormatConversionSupported(DXGI_FORMAT inputFormat,
@@ -175,28 +161,23 @@ bool CProcessorHD::IsFormatConversionSupported(DXGI_FORMAT inputFormat,
   // accept the conversion unless the API can be called successfully and disallows it
   BOOL supported{TRUE};
 
-  if (!m_enumerator || !m_enumerator->Get1())
+  if (!m_enumerator || !m_enumerator->IsEnumerator1Available())
     return true;
 
   ProcColorSpaces spaces = CalculateDXGIColorSpaces(DXGIColorSpaceArgs(picture));
 
-  HRESULT hr;
-  if (SUCCEEDED(hr = m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
-                    inputFormat, spaces.inputColorSpace, outputFormat, spaces.outputColorSpace,
-                    &supported)))
+  if (m_enumerator->CheckConversion(inputFormat, spaces.inputColorSpace, outputFormat,
+                                    spaces.outputColorSpace))
   {
     CLog::LogF(
         LOGDEBUG, "conversion from {} / {} to {} / {} is {}supported.",
         DX::DXGIFormatToString(inputFormat), DX::DXGIColorSpaceTypeToString(spaces.inputColorSpace),
         DX::DXGIFormatToString(outputFormat),
         DX::DXGIColorSpaceTypeToString(spaces.outputColorSpace), supported == TRUE ? "" : "NOT ");
+    return true;
   }
-  else
-  {
-    CLog::LogF(LOGERROR, "unable to validate the format conversion, error {}",
-               DX::GetErrorDescription(hr));
-  }
-  return supported == TRUE;
+
+  return false;
 }
 
 bool CProcessorHD::Open(const VideoPicture& picture)
@@ -238,19 +219,17 @@ bool CProcessorHD::OpenProcessor()
   std::unique_lock<CCriticalSection> lock(m_section);
 
   // restore the device if it was lost
-  if ((!m_enumerator || !m_enumerator->Get()) && !ReInit())
+  if ((!m_enumerator || !m_enumerator->IsInitialized()) && !ReInit())
     return false;
 
   CLog::LogF(LOGDEBUG, "creating processor.");
 
   // create processor
-  HRESULT hr =
-      m_pVideoDevice->CreateVideoProcessor(m_enumerator->Get().Get(), m_procCaps.m_procIndex,
-                                           m_pVideoProcessor.ReleaseAndGetAddressOf());
-  if (FAILED(hr))
+  m_pVideoProcessor = m_enumerator->CreateVideoProcessor(m_procCaps.m_procIndex);
+
+  if (!m_pVideoProcessor)
   {
-    CLog::LogF(LOGDEBUG, "failed creating video processor with error {}.",
-               DX::GetErrorDescription(hr));
+    CLog::LogF(LOGDEBUG, "failed creating video processor.");
     return false;
   }
 
@@ -315,9 +294,8 @@ void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
   m_pVideoContext->VideoProcessorSetStreamFilter(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, filter, val != range.Default, val);
 }
 
-ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) const
+ComPtr<ID3D11VideoProcessorInputView> CProcessorHD::GetInputView(CRenderBuffer* view) const
 {
-  ComPtr<ID3D11VideoProcessorInputView> inputView;
   D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = {0, D3D11_VPIV_DIMENSION_TEXTURE2D, {0, 0}};
 
   ComPtr<ID3D11Resource> resource;
@@ -326,14 +304,9 @@ ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) c
   if (SUCCEEDED(hr))
   {
     vpivd.Texture2D.ArraySlice = arrayIdx;
-    hr = m_pVideoDevice->CreateVideoProcessorInputView(resource.Get(), m_enumerator->Get().Get(),
-                                                       &vpivd, inputView.GetAddressOf());
+    return m_enumerator->CreateVideoProcessorInputView(resource.Get(), &vpivd);
   }
-
-  if (FAILED(hr) || hr == S_FALSE)
-    CLog::LogF(LOGERROR, "CreateVideoProcessorInputView returned {}.", DX::GetErrorDescription(hr));
-
-  return inputView.Detach();
+  return nullptr;
 }
 
 DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(const DXGIColorSpaceArgs& csArgs,
@@ -482,8 +455,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     if (!views[i])
       continue;
 
-    ComPtr<ID3D11VideoProcessorInputView> view;
-    view.Attach(GetInputView(views[i]));
+    ComPtr<ID3D11VideoProcessorInputView> view = GetInputView(views[i]);
 
     if (i > 2)
     {
@@ -584,15 +556,13 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
                                                    static_cast<D3D11_VIDEO_PROCESSOR_ROTATION>(rotation / 90));
 
   // create output view for surface.
-  D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC OutputViewDesc = { D3D11_VPOV_DIMENSION_TEXTURE2D, { 0 }};
-  ComPtr<ID3D11VideoProcessorOutputView> pOutputView;
-  HRESULT hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_enumerator->Get().Get(),
-                                                              &OutputViewDesc, &pOutputView);
-  if (S_OK != hr)
-    CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING, "CreateVideoProcessorOutputView returned {}.",
-               DX::GetErrorDescription(hr));
+  const D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC outputViewDesc = {D3D11_VPOV_DIMENSION_TEXTURE2D,
+                                                                 {0}};
+  ComPtr<ID3D11VideoProcessorOutputView> pOutputView =
+      m_enumerator->CreateVideoProcessorOutputView(target, &outputViewDesc);
 
-  if (SUCCEEDED(hr))
+  HRESULT hr{};
+  if (pOutputView)
   {
     hr = m_pVideoContext->VideoProcessorBlt(m_pVideoProcessor.Get(), pOutputView.Get(), frameIdx, 1, &stream_data);
     if (S_OK != hr)
@@ -603,7 +573,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     }
   }
 
-  return !FAILED(hr);
+  return pOutputView && !FAILED(hr);
 }
 
 ProcColorSpaces CProcessorHD::CalculateDXGIColorSpaces(const DXGIColorSpaceArgs& csArgs) const
@@ -616,149 +586,19 @@ ProcColorSpaces CProcessorHD::CalculateDXGIColorSpaces(const DXGIColorSpaceArgs&
       GetDXGIColorSpaceTarget(csArgs, supportHDR, DX::Windowing()->UseLimitedColor())};
 }
 
-void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
-                                            const DXGI_FORMAT& heuristicsOutputFormat,
-                                            const VideoPicture& picture)
+void CProcessorHD::LogSupportedConversions(const DXGI_FORMAT& inputFormat,
+                                           const DXGI_FORMAT& heuristicsOutputFormat,
+                                           const VideoPicture& picture)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
 
-  // Windows 8 and above compatible code
-  if (!m_enumerator || !m_enumerator->Get())
-    return;
-
-  HRESULT hr;
-  UINT uiFlags;
-
-  if (FAILED(hr = m_enumerator->Get()->CheckVideoProcessorFormat(inputFormat, &uiFlags)))
-  {
-    CLog::LogFC(LOGDEBUG, LOGVIDEO,
-                "unable to retrieve processor support of input format {}. Error {}",
-                DX::DXGIFormatToString(inputFormat), DX::GetErrorDescription(hr));
-    return;
-  }
-  else if (!(uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-  {
-    CLog::LogFC(LOGDEBUG, LOGVIDEO,
-                "input format {} not supported by the processor. No conversion possible.",
-                DX::DXGIFormatToString(inputFormat));
-    return;
-  }
-
-  // Windows 10 and above from this point on
-  if (!m_enumerator->Get1())
-    return;
-
-  const DXGIColorSpaceArgs csArgs = DXGIColorSpaceArgs(picture);
-
   // Defaults used by Kodi
+  const DXGIColorSpaceArgs csArgs = DXGIColorSpaceArgs(picture);
   const ProcColorSpaces heuristicsCS = CalculateDXGIColorSpaces(csArgs);
-  BOOL supported{FALSE};
-
   const DXGI_COLOR_SPACE_TYPE inputNativeCS = AvToDxgiColorSpace(csArgs);
-  CLog::LogFC(LOGDEBUG, LOGVIDEO, "The source is {} / {}", DX::DXGIFormatToString(inputFormat),
-              DX::DXGIColorSpaceTypeToString(inputNativeCS));
 
-  if (SUCCEEDED(hr = m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
-                    inputFormat, inputNativeCS, heuristicsOutputFormat,
-                    heuristicsCS.outputColorSpace, &supported)))
-  {
-    CLog::LogFC(LOGDEBUG, LOGVIDEO, "conversion from {} / {} to {} / {} is {}supported.",
-                DX::DXGIFormatToString(inputFormat), DX::DXGIColorSpaceTypeToString(inputNativeCS),
-                DX::DXGIFormatToString(heuristicsOutputFormat),
-                DX::DXGIColorSpaceTypeToString(heuristicsCS.outputColorSpace),
-                supported == TRUE ? "" : "NOT ");
-  }
-  else
-  {
-    CLog::LogFC(LOGDEBUG, LOGVIDEO, "unable to validate the default format conversion, error {}",
-                DX::GetErrorDescription(hr));
-  }
-
-  // Possible input color spaces: YCbCr only
-  std::vector<DXGI_COLOR_SPACE_TYPE> ycbcrColorSpaces;
-  // Possible output color spaces: RGB only
-  std::vector<DXGI_COLOR_SPACE_TYPE> rgbColorSpaces;
-
-  for (UINT colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-       colorSpace < DXGI_COLOR_SPACE_YCBCR_STUDIO_G24_TOPLEFT_P2020; ++colorSpace)
-  {
-    DXGI_COLOR_SPACE_TYPE cs = static_cast<DXGI_COLOR_SPACE_TYPE>(colorSpace);
-
-    constexpr std::string_view rgb("RGB_");
-    if (DX::DXGIColorSpaceTypeToString(cs).compare(0, rgb.size(), rgb) == 0)
-      rgbColorSpaces.push_back(cs);
-
-    constexpr std::string_view ycbcr("YCBCR_");
-    if (DX::DXGIColorSpaceTypeToString(cs).compare(0, ycbcr.size(), ycbcr) == 0)
-      ycbcrColorSpaces.push_back(cs);
-  }
-
-  // Only probe the output formats of RGB/BGR type supported by the processor.
-  std::vector<DXGI_FORMAT> outputFormats;
-  for (const auto& format : GetProcessorOutputFormats())
-  {
-    std::string name = DX::DXGIFormatToString(format);
-    if (name.find('R') != std::string::npos && name.find('G') != std::string::npos &&
-        name.find('B') != std::string::npos)
-      outputFormats.push_back(format);
-  }
-
-  // Color spaces supported directly by the swap chain - as a set for easy lookup
-  std::vector<DXGI_COLOR_SPACE_TYPE> bbcs = DX::DeviceResources::Get()->GetSwapChainColorSpaces();
-  std::set<DXGI_COLOR_SPACE_TYPE> backbufferColorSpaces(bbcs.begin(), bbcs.end());
-
-  std::string conversions;
-
-  // The input format cannot be worked around and is fixed.
-  // Loop over the lists of:
-  // - input color spaces
-  // - output formats
-  // - output color spaces
-  for (const DXGI_COLOR_SPACE_TYPE& inputCS : ycbcrColorSpaces)
-  {
-    for (const DXGI_FORMAT& outputFormat : outputFormats)
-    {
-      for (const DXGI_COLOR_SPACE_TYPE& outputCS : rgbColorSpaces)
-      {
-        if (SUCCEEDED(m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
-                inputFormat, inputCS, outputFormat, outputCS, &supported)) &&
-            supported == TRUE)
-        {
-          conversions.append("\n");
-          conversions.append(StringUtils::Format(
-              "{} {} / {}{} {:<{}} to {} {:<{}} / {}{} {:<{}}", "*",
-              DX::DXGIFormatToString(inputFormat),
-              (inputCS == heuristicsCS.inputColorSpace) ? "*" : " ",
-              (inputCS == inputNativeCS) ? "N" : " ", DX::DXGIColorSpaceTypeToString(inputCS), 32,
-              (outputFormat == heuristicsOutputFormat) ? "*" : " ",
-              DX::DXGIFormatToString(outputFormat), 26,
-              (outputCS == heuristicsCS.outputColorSpace) ? "*" : " ",
-              (backbufferColorSpaces.find(outputCS) != backbufferColorSpaces.end()) ? "bb" : "  ",
-              DX::DXGIColorSpaceTypeToString(outputCS), 32));
-        }
-      }
-    }
-  }
-
-  CLog::LogFC(LOGDEBUG, LOGVIDEO,
-              "supported conversions from format {}\n(*: values picked by "
-              "heuristics, N native input color space, bb supported as swap chain backbuffer){}",
-              DX::DXGIFormatToString(inputFormat), conversions);
-}
-
-std::vector<DXGI_FORMAT> CProcessorHD::GetProcessorOutputFormats() const
-{
-  std::vector<DXGI_FORMAT> result;
-
-  UINT uiFlags;
-  for (int fmt = DXGI_FORMAT_UNKNOWN; fmt <= DXGI_FORMAT_V408; fmt++)
-  {
-    DXGI_FORMAT dxgiFormat = static_cast<DXGI_FORMAT>(fmt);
-    if (S_OK == m_enumerator->Get()->CheckVideoProcessorFormat(dxgiFormat, &uiFlags) &&
-        uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT)
-      result.push_back(dxgiFormat);
-  }
-  return result;
+  m_enumerator->LogSupportedConversions(inputFormat, heuristicsCS.inputColorSpace, inputNativeCS,
+                                        heuristicsOutputFormat, heuristicsCS.outputColorSpace);
 }
 
 DXGI_COLOR_SPACE_TYPE CProcessorHD::AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs)
@@ -950,10 +790,24 @@ void CProcessorHD::EnableNvidiaRTXVideoSuperResolution()
 
 bool CProcessorHD::SetOutputFormat(DXGI_FORMAT outputFormat)
 {
-  if (IsFormatSupported(outputFormat, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT))
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  if (m_enumerator && m_enumerator->IsFormatSupportedOutput(outputFormat))
   {
     m_output_dxgi_format = outputFormat;
     return true;
   }
   return false;
+}
+
+bool CProcessorHD::IsFormatSupportedInput(DXGI_FORMAT format)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  return m_enumerator && m_enumerator->IsFormatSupportedInput(format);
+}
+
+bool CProcessorHD::IsFormatSupportedOutput(DXGI_FORMAT format)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  return m_enumerator && m_enumerator->IsFormatSupportedOutput(format);
 }
