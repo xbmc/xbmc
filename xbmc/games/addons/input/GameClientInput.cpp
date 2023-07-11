@@ -407,11 +407,11 @@ bool CGameClientInput::DisconnectController(const std::string& portAddress)
 
 void CGameClientInput::SavePorts()
 {
+  // Save port state
+  m_portManager->SaveXMLAsync();
+
   // Let the observers know that ports have changed
   NotifyObservers(ObservableMessageGamePortsChanged);
-
-  // Save port state
-  m_portManager->SaveXML();
 }
 
 void CGameClientInput::ResetPorts()
