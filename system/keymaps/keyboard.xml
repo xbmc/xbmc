@@ -423,6 +423,16 @@
       <menu>OSD</menu>
     </keyboard>
   </GameOSD>
+  <GameSaves>
+    <keyboard>
+      <delete>delete</delete>
+    </keyboard>
+  </GameSaves>
+  <InGameSaves>
+    <keyboard>
+      <delete>delete</delete>
+    </keyboard>
+  </InGameSaves>
   <VideoTimeSeek>
     <keyboard>
       <return>Select</return>
