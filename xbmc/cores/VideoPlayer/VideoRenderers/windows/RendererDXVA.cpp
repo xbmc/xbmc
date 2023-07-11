@@ -140,39 +140,37 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
     m_enumerator = std::make_shared<DXVA::CEnumeratorHD>();
     if (m_enumerator->Open(picture.iWidth, picture.iHeight, dxgi_format))
     {
-      // create processor
-      m_processor = std::make_unique<DXVA::CProcessorHD>();
-      if (m_processor->Open(picture, m_enumerator))
+      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+      const auto setting = DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY;
+      const bool systemUsesHDR =
+          (settings ? settings->GetBool(setting) && DX::Windowing()->IsHDRDisplay() : false) ||
+          DX::Windowing()->IsHDROutput();
+
+      if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+          CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
       {
-        const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-        const auto setting = DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY;
-        const bool systemUsesHDR =
-            (settings ? settings->GetBool(setting) && DX::Windowing()->IsHDRDisplay() : false) ||
-            DX::Windowing()->IsHDROutput();
+        m_enumerator->LogSupportedConversions(
+            dxgi_format, CProcessorHD::AvToDxgiColorSpace(DXVA::DXGIColorSpaceArgs(picture)));
+      }
 
-        const ProcessorConversions conversions = m_enumerator->SupportedConversions(
-            DXVA::SupportedConversionsArgs(picture, systemUsesHDR));
-        if (!conversions.empty())
+      const ProcessorConversions conversions = m_enumerator->SupportedConversions(
+          DXVA::SupportedConversionsArgs(picture, systemUsesHDR));
+      if (!conversions.empty())
+      {
+        ProcessorConversion chosenConversion = ChooseConversion(conversions, picture, tryVSR);
+        m_intermediateTargetFormat = chosenConversion.m_outputFormat;
+
+        CLog::LogF(LOGINFO, "chosen conversion: {}", chosenConversion.ToString());
+
+        // create processor
+        m_processor = std::make_unique<DXVA::CProcessorHD>();
+        if (m_processor->Open(picture, m_enumerator) &&
+            m_processor->SetConversion(chosenConversion))
         {
-          ProcessorConversion chosenConversion = ChooseConversion(conversions, picture, tryVSR);
-          m_intermediateTargetFormat = chosenConversion.m_outputFormat;
+          if (tryVSR)
+            m_processor->TryEnableVideoSuperResolution();
 
-          CLog::LogF(LOGINFO, "chosen conversion: {}", chosenConversion.ToString());
-
-          if (m_processor->SetConversion(chosenConversion))
-          {
-            if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
-                CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
-            {
-              m_enumerator->LogSupportedConversions(
-                  dxgi_format, CProcessorHD::AvToDxgiColorSpace(DXVA::DXGIColorSpaceArgs(picture)));
-            }
-
-            if (tryVSR)
-              m_processor->TryEnableVideoSuperResolution();
-
-            return true;
-          }
+          return true;
         }
       }
     }
