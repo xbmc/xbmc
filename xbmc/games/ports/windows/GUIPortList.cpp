@@ -208,6 +208,7 @@ bool CGUIPortList::AddItems(const CPortNode& port,
     for (const CPortNode& childPort : ports)
     {
       std::ostringstream childItemLabel;
+      childItemLabel << " - ";
       childItemLabel << controller->Layout().Label();
       childItemLabel << " - ";
       childItemLabel << GetLabel(childPort);
