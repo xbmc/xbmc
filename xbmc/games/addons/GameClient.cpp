@@ -599,8 +599,6 @@ void CGameClient::LogException(const char* strFunctionName) const
 
 void CGameClient::cb_close_game(KODI_HANDLE kodiInstance)
 {
-  using namespace MESSAGING;
-
   CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                              static_cast<void*>(new CAction(ACTION_STOP)));
 }
