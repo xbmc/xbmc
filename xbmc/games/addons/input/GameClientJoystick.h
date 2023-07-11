@@ -10,6 +10,7 @@
 
 #include "games/controllers/ControllerTypes.h"
 #include "input/joysticks/interfaces/IInputHandler.h"
+#include "peripherals/PeripheralTypes.h"
 
 #include <memory>
 
@@ -72,6 +73,18 @@ public:
                         unsigned int motionTimeMs) override;
   void OnInputFrame() override {}
 
+  // Input accessors
+  const std::string& GetPortAddress() const { return m_portAddress; }
+  const ControllerPtr& GetController() const { return m_controller; }
+  std::string GetControllerAddress() const;
+  const PERIPHERALS::PeripheralPtr& GetSource() const { return m_sourcePeripheral; }
+  std::string GetSourceLocation() const;
+
+  // Input mutators
+  void SetSource(PERIPHERALS::PeripheralPtr sourcePeripheral);
+  void ClearSource();
+
+  // Input handlers
   bool SetRumble(const std::string& feature, float magnitude);
 
 private:
@@ -82,6 +95,7 @@ private:
 
   // Input parameters
   std::unique_ptr<CPortInput> m_portInput;
+  PERIPHERALS::PeripheralPtr m_sourcePeripheral;
 };
 } // namespace GAME
 } // namespace KODI
