@@ -45,6 +45,7 @@ CPortNode& CPortNode::operator=(CPortNode&& rhs) noexcept
     m_portType = rhs.m_portType;
     m_portId = std::move(rhs.m_portId);
     m_address = std::move(rhs.m_address);
+    m_forceConnected = rhs.m_forceConnected;
     m_controllers = std::move(rhs.m_controllers);
   }
 
