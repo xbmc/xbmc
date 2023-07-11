@@ -44,8 +44,6 @@ bool CGUIFeatureButton::DoPrompt(const std::string& strPrompt,
                                  const std::string& strFeature,
                                  CEvent& waitEvent)
 {
-  using namespace MESSAGING;
-
   bool bInterrupted = false;
 
   if (!HasFocus())
