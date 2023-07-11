@@ -160,7 +160,6 @@ void CGUIPortList::ResetPorts()
     m_gameClient->Input().SavePorts();
 
     // Refresh the GUI
-    using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
     CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
   }
@@ -173,7 +172,6 @@ void CGUIPortList::OnEvent(const ADDON::AddonEvent& event)
       typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
       typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
-    using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
     msg.SetStringParam(event.addonId);
     CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
@@ -301,7 +299,6 @@ void CGUIPortList::OnControllerSelected(const CPortNode& port, const ControllerP
     }
 
     // Send a GUI message to reload the port list
-    using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_PORT_LIST);
     CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
   }
