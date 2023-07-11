@@ -423,7 +423,7 @@ void CGameClientInput::SavePorts()
     std::lock_guard<std::recursive_mutex> lock(m_portMutex);
 
     // Save port state
-    m_portManager->SaveXML();
+    m_portManager->SaveXMLAsync();
   }
 
   // Let the observers know that ports have changed
