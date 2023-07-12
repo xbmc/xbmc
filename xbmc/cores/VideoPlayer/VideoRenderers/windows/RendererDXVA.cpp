@@ -124,7 +124,6 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
   {
     m_format = picture.videoBuffer->GetFormat();
     const DXGI_FORMAT dxgi_format = GetDXGIFormat(m_format, __super::GetDXGIFormat(picture));
-    bool tryVSR{false};
 
     if (DX::Windowing()->SupportsVideoSuperResolution())
     {
@@ -133,7 +132,7 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
       if (settings && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USESUPERRESOLUTION) &&
           CProcessorHD::IsSuperResolutionSuitable(picture))
       {
-        tryVSR = true;
+        m_tryVSR = true;
       }
     }
 
@@ -153,21 +152,24 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
             dxgi_format, CProcessorHD::AvToDxgiColorSpace(DXVA::DXGIColorSpaceArgs(picture)));
       }
 
-      const ProcessorConversions conversions = m_enumerator->SupportedConversions(
-          DXVA::SupportedConversionsArgs(picture, systemUsesHDR));
+      m_conversionsArgs = SupportedConversionsArgs{picture, systemUsesHDR};
+      const ProcessorConversions conversions =
+          m_enumerator->SupportedConversions(m_conversionsArgs);
       if (!conversions.empty())
       {
-        ProcessorConversion chosenConversion = ChooseConversion(conversions, picture, tryVSR);
+        const ProcessorConversion chosenConversion = ChooseConversion(
+            conversions, picture.colorBits,
+            static_cast<AVColorTransferCharacteristic>(picture.color_transfer), m_tryVSR);
         m_intermediateTargetFormat = chosenConversion.m_outputFormat;
+        m_conversion = chosenConversion;
 
-        CLog::LogF(LOGINFO, "chosen conversion: {}", chosenConversion.ToString());
+        CLog::LogF(LOGINFO, "chosen conversion: {}", m_conversion.ToString());
 
         // create processor
         m_processor = std::make_unique<DXVA::CProcessorHD>();
-        if (m_processor->Open(picture, m_enumerator) &&
-            m_processor->SetConversion(chosenConversion))
+        if (m_processor->Open(picture, m_enumerator) && m_processor->SetConversion(m_conversion))
         {
-          if (tryVSR)
+          if (m_tryVSR)
             m_processor->TryEnableVideoSuperResolution();
 
           return true;
@@ -196,6 +198,37 @@ bool CRendererDXVA::NeedBuffer(int idx)
 void CRendererDXVA::CheckVideoParameters()
 {
   __super::CheckVideoParameters();
+
+  CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
+  if (m_enumerator)
+  {
+    const SupportedConversionsArgs args{buf->primaries, buf->color_transfer, buf->full_range,
+                                        DX::Windowing()->IsHDROutput()};
+
+    if (m_conversionsArgs != args)
+    {
+      CLog::LogF(LOGINFO, "source format change detected");
+
+      const ProcessorConversions conversions = m_enumerator->SupportedConversions(args);
+      // TODO case no supported conversion: add support in WinRenderer to fallback to a render method with support
+      // For now, keep using the current conversion. Results won't be ideal but a black screen is avoided
+      const ProcessorConversion conversion =
+          conversions.empty()
+              ? m_conversion
+              : ChooseConversion(conversions, buf->bits, buf->color_transfer, m_tryVSR);
+
+      if (m_conversion != conversion)
+      {
+        CLog::LogF(LOGINFO, "new conversion: {}", conversion.ToString());
+
+        m_processor->SetConversion(conversion);
+        m_intermediateTargetFormat = conversion.m_outputFormat;
+
+        m_conversion = conversion;
+      }
+      m_conversionsArgs = args;
+    }
+  }
 
   CreateIntermediateTarget(HasHQScaler() ? m_sourceWidth : m_viewWidth,
                            HasHQScaler() ? m_sourceHeight : m_viewHeight, false,
@@ -469,7 +502,8 @@ bool CRendererDXVA::CRenderBufferImpl::UploadToTexture()
 }
 
 ProcessorConversion CRendererDXVA::ChooseConversion(const ProcessorConversions& conversions,
-                                                    const VideoPicture& picture,
+                                                    unsigned int sourceBits,
+                                                    AVColorTransferCharacteristic colorTransfer,
                                                     bool tryVSR) const
 {
   assert(conversions.size() > 0);
@@ -482,8 +516,8 @@ ProcessorConversion CRendererDXVA::ChooseConversion(const ProcessorConversions& 
 
     const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     if (settings && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING))
-      if (picture.colorBits > 8 && (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-                                    picture.color_transfer == AVCOL_TRC_ARIB_STD_B67))
+      if (sourceBits > 8 &&
+          (colorTransfer == AVCOL_TRC_SMPTE2084 || colorTransfer == AVCOL_TRC_ARIB_STD_B67))
         tryHQ = true;
   }
 

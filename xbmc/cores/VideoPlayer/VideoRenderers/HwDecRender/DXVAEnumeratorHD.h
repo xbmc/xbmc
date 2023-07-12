@@ -102,6 +102,13 @@ struct ProcessorConversion
   }
 
   const std::string ToString() const;
+
+  bool operator!=(const ProcessorConversion& other) const
+  {
+    return m_inputFormat != other.m_inputFormat ||
+           m_inputCS != other.m_inputCS && m_outputFormat != other.m_outputFormat ||
+           m_outputCS != other.m_outputCS;
+  }
 };
 
 using ProcessorConversions = std::vector<ProcessorConversion>;
@@ -115,6 +122,8 @@ struct SupportedConversionsArgs
   AVColorTransferCharacteristic m_colorTransfer{AVCOL_TRC_UNSPECIFIED};
   bool m_fullRange{false};
   bool m_hdrOutput{false};
+
+  SupportedConversionsArgs() = default;
 
   SupportedConversionsArgs(const VideoPicture& picture, bool isHdrOutput)
   {
@@ -133,6 +142,12 @@ struct SupportedConversionsArgs
       m_fullRange(fullRange),
       m_hdrOutput(hdrOutput)
   {
+  }
+
+  bool operator!=(const SupportedConversionsArgs& other) const
+  {
+    return m_colorPrimaries != other.m_colorPrimaries || m_colorTransfer != other.m_colorTransfer ||
+           m_fullRange != other.m_fullRange || m_hdrOutput != other.m_hdrOutput;
   }
 };
 
