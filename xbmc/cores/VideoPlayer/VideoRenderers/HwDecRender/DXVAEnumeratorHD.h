@@ -146,7 +146,13 @@ public:
   void Close();
 
   // ID3DResource overrides
-  void OnCreateDevice() override {}
+  void OnCreateDevice() override
+  {
+    std::unique_lock<CCriticalSection> lock(m_section);
+    if (m_width > 0 && m_height > 0)
+      OpenEnumerator();
+  }
+
   void OnDestroyDevice(bool) override
   {
     std::unique_lock<CCriticalSection> lock(m_section);
@@ -236,6 +242,8 @@ public:
 
 protected:
   void UnInit();
+  bool OpenEnumerator();
+
   /*!
    * \brief Retrieve the list of DXGI_FORMAT supported by the DXVA processor
    * \param inputFormats yes/no populate the input formats vector of the returned structure
@@ -285,6 +293,9 @@ protected:
       const std::vector<DXGI_COLOR_SPACE_TYPE>& outputColorSpaces) const;
 
   CCriticalSection m_section;
+
+  uint32_t m_width = 0;
+  uint32_t m_height = 0;
 
   ComPtr<ID3D11VideoDevice> m_pVideoDevice;
   ComPtr<ID3D11VideoProcessorEnumerator> m_pEnumerator;
