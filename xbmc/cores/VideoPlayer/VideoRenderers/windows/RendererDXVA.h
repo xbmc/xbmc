@@ -56,12 +56,16 @@ private:
    * \return 
    */
   DXVA::ProcessorConversion ChooseConversion(const DXVA::ProcessorConversions& conversions,
-                                             const VideoPicture& picture,
+                                             unsigned int sourceBits,
+                                             AVColorTransferCharacteristic colorTransfer,
                                              bool tryVSR) const;
 
   std::unique_ptr<DXVA::CProcessorHD> m_processor;
   std::shared_ptr<DXVA::CEnumeratorHD> m_enumerator;
   DXGI_FORMAT m_intermediateTargetFormat{DXGI_FORMAT_UNKNOWN};
+  DXVA::ProcessorConversion m_conversion;
+  DXVA::SupportedConversionsArgs m_conversionsArgs;
+  bool m_tryVSR{false};
 };
 
 class CRendererDXVA::CRenderBufferImpl : public CRenderBuffer
