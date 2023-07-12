@@ -6,6 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
+#include "HDRStatus.h"
 #include "RendererBase.h"
 
 #include "DVDCodecs/Video/DVDVideoCodec.h"
@@ -21,6 +22,8 @@
 #include "utils/MemUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
+
+#include "platform/win32/WIN32Util.h"
 
 using namespace Microsoft::WRL;
 
@@ -140,12 +143,23 @@ CRendererBase::CRendererBase(CVideoSettings& videoSettings)
 
 CRendererBase::~CRendererBase()
 {
-  if (DX::Windowing()->IsHDROutput())
+  if (m_AutoSwitchHDR)
   {
-    CLog::LogF(LOGDEBUG, "Restoring SDR rendering");
-    DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
-    if (m_AutoSwitchHDR)
-      DX::Windowing()->ToggleHDR(); // Toggle display HDR OFF
+    if (m_isHdrEnabled)
+    {
+      if (!DX::Windowing()->IsHDROutput())
+	  {
+	    CLog::LogF(LOGINFO, "Restoring HDR rendering (AutoSwitch)");
+        DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
+	    DX::Windowing()->ToggleHDR(); // Toggle display HDR ON
+	  }
+	}
+	else if (DX::Windowing()->IsHDROutput())
+    {
+      CLog::LogF(LOGINFO, "Restoring SDR rendering (AutoSwitch)");
+      DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+	  DX::Windowing()->ToggleHDR(); // Toggle display HDR OFF
+    }
   }
   Flush(false);
 }
@@ -184,21 +198,13 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   m_lastHdr10 = {};
   m_HdrType = HDR_TYPE::HDR_NONE_SDR;
   m_useHLGtoPQ = false;
+  HDR_STATUS hdrStatus = CWIN32Util::GetWindowsHDRStatus();
+  m_isHdrEnabled = (hdrStatus == HDR_STATUS::HDR_ON);
+  CLog::LogF(LOGINFO, "Storing Windows HDR switch state: {}",
+                 m_isHdrEnabled ? "ON" : "OFF");
   m_AutoSwitchHDR = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
                         DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY) &&
                     DX::Windowing()->IsHDRDisplay();
-
-  // Auto switch HDR only if supported and "Settings/Player/Use HDR display capabilities" = ON
-  if (m_AutoSwitchHDR)
-  {
-    bool streamIsHDR = (picture.color_primaries == AVCOL_PRI_BT2020) &&
-                       (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-                        picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
-
-    if (streamIsHDR != DX::Windowing()->IsHDROutput())
-      DX::Windowing()->ToggleHDR();
-  }
-
   return true;
 }
 
@@ -581,7 +587,7 @@ void CRendererBase::ProcessHDR(CRenderBuffer* rb)
   {
     DX::Windowing()->ToggleHDR(); // Toggle display HDR ON
   }
-
+  
   if (!DX::Windowing()->IsHDROutput())
   {
     if (m_HdrType != HDR_TYPE::HDR_NONE_SDR)
@@ -591,7 +597,7 @@ void CRendererBase::ProcessHDR(CRenderBuffer* rb)
     }
     return;
   }
-
+  
   // HDR10
   if (rb->color_transfer == AVCOL_TRC_SMPTE2084 && rb->primaries == AVCOL_PRI_BT2020)
   {
@@ -650,9 +656,11 @@ void CRendererBase::ProcessHDR(CRenderBuffer* rb)
       DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
       m_HdrType = HDR_TYPE::HDR_NONE_SDR;
       m_lastHdr10 = {};
-      if (m_AutoSwitchHDR)
-        DX::Windowing()->ToggleHDR(); // Toggle display HDR OFF
     }
+	if (m_AutoSwitchHDR && DX::Windowing()->IsHDROutput())
+	{
+      DX::Windowing()->ToggleHDR(); // Toggle display HDR OFF
+	}
   }
 }
 

@@ -192,5 +192,6 @@ protected:
   DXGI_HDR_METADATA_HDR10 m_lastHdr10 = {};
   HDR_TYPE m_HdrType = HDR_TYPE::HDR_NONE_SDR;
   bool m_AutoSwitchHDR = false;
+  bool m_isHdrEnabled = false;
   std::string m_renderMethodName;
 };
