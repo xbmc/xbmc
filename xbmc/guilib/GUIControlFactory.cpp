@@ -1555,8 +1555,29 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control = new CGUIRenderingControl(parentID, id, posX, posY, width, height);
     break;
   case CGUIControl::GUICONTROL_GAMECONTROLLER:
-    control = new GAME::CGUIGameController(parentID, id, posX, posY, width, height);
+  {
+    control = new GAME::CGUIGameController(parentID, id, posX, posY, width, height, texture);
+
+    GAME::CGUIGameController* gcontrol = static_cast<GAME::CGUIGameController*>(control);
+
+    // Set texture
+    gcontrol->SetInfo(textureFile);
+
+    // Set aspect ratio
+    gcontrol->SetAspectRatio(aspect);
+
+    // Set controller ID
+    GUIINFO::CGUIInfoLabel controllerId;
+    GetInfoLabel(pControlNode, "controllerId", controllerId, parentID);
+    gcontrol->SetControllerID(controllerId);
+
+    // Set controller address
+    GUIINFO::CGUIInfoLabel controllerAddress;
+    GetInfoLabel(pControlNode, "controllerAddress", controllerAddress, parentID);
+    gcontrol->SetControllerAddress(controllerAddress);
+
     break;
+  }
   case CGUIControl::GUICONTROL_COLORBUTTON:
   {
     control = new CGUIColorButtonControl(parentID, id, posX, posY, width, height, textureFocus,
