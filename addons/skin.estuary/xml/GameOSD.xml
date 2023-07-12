@@ -32,11 +32,12 @@
 							<height>130</height>
 							<font>font13</font>
 						</control>
-						<control type="gamecontroller" id="1102">
+						<control type="gamecontroller">
 							<top>160</top>
 							<left>30</left>
 							<width>640</width>
 							<height>640</height>
+							<controllerId>game.controller.snes</controllerId>
 						</control>
 						<control type="textbox">
 							<description>Additional help text. This will be removed in future versions.</description>
@@ -200,33 +201,33 @@
 							</control>
 						</focusedlayout>
 						<content>
-							<item id="2101">
+							<item>
 								<description>Pause / Resume button</description>
 								<label>$LOCALIZE[35224]</label>
 								<label2>$LOCALIZE[31059]</label2>
 								<icon>osd/fullscreen/buttons/play.png</icon>
 								<onclick>Play</onclick>
 							</item>
-							<item id="2102">
+							<item>
 								<description>Save / Load button</description>
 								<label>$LOCALIZE[35249]</label>
 								<icon>osd/fullscreen/buttons/saves.png</icon>
 								<onclick>ActivateWindow(InGameSaves)</onclick>
 							</item>
-							<item id="2103">
+							<item>
 								<description>Reset button</description>
 								<label>$LOCALIZE[13007]</label>
 								<icon>osd/fullscreen/buttons/reset.png</icon>
 								<onclick>PlayerControl(Reset)</onclick>
 							</item>
-							<item id="2104">
+							<item>
 								<description>Stop button</description>
 								<label>$LOCALIZE[35222]</label>
 								<label2>$LOCALIZE[31060]</label2>
 								<icon>osd/fullscreen/buttons/stop.png</icon>
 								<onclick>Stop</onclick>
 							</item>
-							<item id="2105">
+							<item>
 								<description>Settings button</description>
 								<label>$LOCALIZE[5]</label>
 								<icon>osd/fullscreen/buttons/settings.png</icon>
