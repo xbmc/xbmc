@@ -58,7 +58,15 @@ bool CEnumeratorHD::Open(unsigned int width, unsigned int height, DXGI_FORMAT in
   Close();
 
   std::unique_lock<CCriticalSection> lock(m_section);
+  m_width = width;
+  m_height = height;
+  m_input_dxgi_format = input_dxgi_format;
 
+  return OpenEnumerator();
+}
+
+bool CEnumeratorHD::OpenEnumerator()
+{
   HRESULT hr{};
   ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
 
@@ -69,21 +77,21 @@ bool CEnumeratorHD::Open(unsigned int width, unsigned int height, DXGI_FORMAT in
     return false;
   }
 
-  CLog::LogF(LOGDEBUG, "initializing video enumerator with params: {}x{}.", width, height);
+  CLog::LogF(LOGDEBUG, "initializing video enumerator with params: {}x{}.", m_width, m_height);
 
   D3D11_VIDEO_PROCESSOR_CONTENT_DESC contentDesc = {};
   contentDesc.InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
-  contentDesc.InputWidth = width;
-  contentDesc.InputHeight = height;
-  contentDesc.OutputWidth = width;
-  contentDesc.OutputHeight = height;
+  contentDesc.InputWidth = m_width;
+  contentDesc.InputHeight = m_height;
+  contentDesc.OutputWidth = m_width;
+  contentDesc.OutputHeight = m_height;
   contentDesc.Usage = D3D11_VIDEO_USAGE_PLAYBACK_NORMAL;
 
   if (FAILED(hr = m_pVideoDevice->CreateVideoProcessorEnumerator(
                  &contentDesc, m_pEnumerator.ReleaseAndGetAddressOf())))
   {
-    CLog::LogF(LOGWARNING, "failed to init video enumerator with params: {}x{}. Error {}", width,
-               height, DX::GetErrorDescription(hr));
+    CLog::LogF(LOGWARNING, "failed to init video enumerator with params: {}x{}. Error {}", m_width,
+               m_height, DX::GetErrorDescription(hr));
     return false;
   }
 
@@ -92,8 +100,6 @@ bool CEnumeratorHD::Open(unsigned int width, unsigned int height, DXGI_FORMAT in
     CLog::LogF(LOGDEBUG, "ID3D11VideoProcessorEnumerator1 not available on this system. Message {}",
                DX::GetErrorDescription(hr));
   }
-
-  m_input_dxgi_format = input_dxgi_format;
 
   return true;
 }
