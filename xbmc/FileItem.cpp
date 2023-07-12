@@ -118,6 +118,60 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetFromVideoInfoTag(movie);
 }
 
+CFileItem* CFileItem::Clone()
+{
+  CFileItem* clone = new CFileItem();
+  clone->m_musicInfoTag = this->m_musicInfoTag;
+  clone->m_videoInfoTag = this->m_videoInfoTag;
+  clone->m_pictureInfoTag = this->m_pictureInfoTag;
+  clone->m_gameInfoTag = this->m_gameInfoTag;
+  clone->m_bLabelPreformatted = this->m_bLabelPreformatted;
+  clone->m_bIsAlbum = this->m_bIsAlbum;
+  clone->m_dwSize = this->m_dwSize;
+  clone->m_bIsParentFolder = this->m_bIsParentFolder;
+  clone->m_bIsShareOrDrive = this->m_bIsShareOrDrive;
+  clone->m_iDriveType = this->m_iDriveType;
+  clone->m_lStartOffset = this->m_lStartOffset;
+  clone->m_lStartPartNumber = this->m_lStartPartNumber;
+  clone->m_lEndOffset = this->m_lEndOffset;
+  clone->m_iprogramCount = this->m_iprogramCount;
+  clone->m_idepth = this->m_idepth;
+  clone->m_iLockMode = this->m_iLockMode;
+  clone->m_iBadPwdCount = this->m_iBadPwdCount;
+  clone->m_iHasLock = this->m_iHasLock;
+  clone->m_bCanQueue = this->m_bCanQueue;
+  clone->m_specialSort = this->m_specialSort;
+  clone->m_doContentLookup = this->m_doContentLookup;
+  return clone;
+}
+
+CFileItem* CFileItem::Clone(const CFileItem& item)
+{
+  CFileItem* clone = new CFileItem();
+  clone->m_musicInfoTag = item.m_musicInfoTag;
+  clone->m_videoInfoTag = item.m_videoInfoTag;
+  clone->m_pictureInfoTag = item.m_pictureInfoTag;
+  clone->m_gameInfoTag = item.m_gameInfoTag;
+  clone->m_bLabelPreformatted = item.m_bLabelPreformatted;
+  clone->m_bIsAlbum = item.m_bIsAlbum;
+  clone->m_dwSize = item.m_dwSize;
+  clone->m_bIsParentFolder = item.m_bIsParentFolder;
+  clone->m_bIsShareOrDrive = item.m_bIsShareOrDrive;
+  clone->m_iDriveType = item.m_iDriveType;
+  clone->m_lStartOffset = item.m_lStartOffset;
+  clone->m_lStartPartNumber = item.m_lStartPartNumber;
+  clone->m_lEndOffset = item.m_lEndOffset;
+  clone->m_iprogramCount = item.m_iprogramCount;
+  clone->m_idepth = item.m_idepth;
+  clone->m_iLockMode = item.m_iLockMode;
+  clone->m_iBadPwdCount = item.m_iBadPwdCount;
+  clone->m_iHasLock = item.m_iHasLock;
+  clone->m_bCanQueue = item.m_bCanQueue;
+  clone->m_specialSort = item.m_specialSort;
+  clone->m_doContentLookup = item.m_doContentLookup;
+  return clone;
+}
+
 namespace
 {
   std::string GetEpgTagTitle(const std::shared_ptr<CPVREpgInfoTag>& epgTag)

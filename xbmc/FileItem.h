@@ -126,6 +126,8 @@ public:
   explicit CFileItem(const CMediaSource& share);
   explicit CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
   explicit CFileItem(const EventPtr& eventLogEntry);
+  CFileItem* Clone();
+  CFileItem* Clone(const CFileItem& item);
 
   ~CFileItem(void) override;
   CGUIListItem* Clone() const override { return new CFileItem(*this); }
