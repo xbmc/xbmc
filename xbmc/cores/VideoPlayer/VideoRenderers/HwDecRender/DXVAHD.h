@@ -157,7 +157,7 @@ protected:
 
   AVColorPrimaries m_color_primaries{AVCOL_PRI_UNSPECIFIED};
   AVColorTransferCharacteristic m_color_transfer{AVCOL_TRC_UNSPECIFIED};
-  ProcessorCapabilities m_procCaps{};
+  ProcessorCapabilities m_procCaps;
   DXGI_FORMAT m_input_dxgi_format{DXGI_FORMAT_UNKNOWN};
   DXGI_FORMAT m_output_dxgi_format{DXGI_FORMAT_UNKNOWN};
 
