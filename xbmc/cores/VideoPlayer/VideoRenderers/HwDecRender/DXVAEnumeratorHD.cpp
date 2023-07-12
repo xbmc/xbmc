@@ -528,8 +528,7 @@ ProcessorConversions CEnumeratorHD::ListConversions(
       {
         if (CheckConversionInternal(inputFormat, inputCS, outputFormat, outputCS))
         {
-          result.push_back(
-              ProcessorConversion{m_input_dxgi_format, inputCS, outputFormat, outputCS});
+          result.push_back(ProcessorConversion{inputFormat, inputCS, outputFormat, outputCS});
         }
       }
     }
