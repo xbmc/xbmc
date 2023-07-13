@@ -45,6 +45,7 @@ public:
   virtual bool IsInited() const = 0;
   virtual bool AcceptsData() const = 0;
   virtual bool IsStalled() const = 0;
+  virtual bool IsEOS() { return false; }
 
   enum ESyncState
   {
@@ -80,22 +81,17 @@ public:
   bool OpenStream(CDVDStreamInfo hint) override = 0;
   void CloseStream(bool bWaitForBuffers) override = 0;
   virtual void Flush(bool sync) = 0;
-  bool AcceptsData() const override = 0;
   virtual bool HasData() const = 0;
-  bool IsInited() const override = 0;
-  void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override = 0;
   virtual void EnableSubtitle(bool bEnable) = 0;
   virtual bool IsSubtitleEnabled() = 0;
   virtual double GetSubtitleDelay() = 0;
   virtual void SetSubtitleDelay(double delay) = 0;
-  bool IsStalled() const override = 0;
   virtual bool IsRewindStalled() const { return false; }
   virtual double GetCurrentPts() = 0;
   virtual double GetOutputDelay() = 0;
   virtual std::string GetPlayerInfo() = 0;
   virtual int GetVideoBitrate() = 0;
   virtual void SetSpeed(int iSpeed) = 0;
-  virtual bool IsEOS() { return false; }
 };
 
 class CDVDAudioCodec;
@@ -108,19 +104,14 @@ public:
   void CloseStream(bool bWaitForBuffers) override = 0;
   virtual void SetSpeed(int speed) = 0;
   virtual void Flush(bool sync) = 0;
-  bool AcceptsData() const override = 0;
   virtual bool HasData() const = 0;
   virtual int  GetLevel() const = 0;
-  bool IsInited() const override = 0;
-  void SendMessage(std::shared_ptr<CDVDMsg> pMsg, int priority = 0) override = 0;
   virtual void SetVolume(float fVolume) {}
   virtual void SetMute(bool bOnOff) {}
   virtual void SetDynamicRangeCompression(long drc) = 0;
   virtual std::string GetPlayerInfo() = 0;
   virtual int GetAudioChannels() = 0;
   virtual double GetCurrentPts() = 0;
-  bool IsStalled() const override = 0;
   virtual bool IsPassthrough() const = 0;
   virtual float GetDynamicRangeAmplification() const = 0;
-  virtual bool IsEOS() { return false; }
 };
