@@ -18,8 +18,8 @@ namespace PythonBindings
 {
   TypeInfo::TypeInfo(const std::type_info& ti) : swigType(NULL), parentType(NULL), typeIndex(ti)
   {
-    static PyTypeObject py_type_object_header =
-    { PyVarObject_HEAD_INIT(nullptr, 0) 0,
+    static PyTypeObject py_type_object_header = {
+      PyVarObject_HEAD_INIT(nullptr, 0) 0,
       0,
       0,
       0,
