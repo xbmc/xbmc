@@ -48,6 +48,7 @@ enum RenderMethod
 
 enum class HDR_TYPE
 {
+  HDR_INVALID = -1,
   HDR_NONE_SDR = 0,
   HDR_HDR10 = 1,
   HDR_HLG = 2
@@ -190,7 +191,8 @@ protected:
   std::map<int, CRenderBuffer*> m_renderBuffers;
 
   DXGI_HDR_METADATA_HDR10 m_lastHdr10 = {};
-  HDR_TYPE m_HdrType = HDR_TYPE::HDR_NONE_SDR;
+  HDR_TYPE m_HdrType = HDR_TYPE::HDR_INVALID;
   bool m_AutoSwitchHDR = false;
+  bool m_initialHdrEnabled = false;
   std::string m_renderMethodName;
 };
