@@ -118,6 +118,13 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetFromVideoInfoTag(movie);
 }
 
+CFileItem* CFileItem::Clone()
+{
+  CFileItem* clone = new CFileItem();
+  *clone = *this;
+  return clone;
+}
+
 namespace
 {
   std::string GetEpgTagTitle(const std::shared_ptr<CPVREpgInfoTag>& epgTag)
@@ -2351,7 +2358,7 @@ bool CFileItemList::Copy(const CFileItemList& items, bool copyItems /* = true */
     // make a copy of each item
     for (int i = 0; i < items.Size(); i++)
     {
-      CFileItemPtr newItem(new CFileItem(*items[i]));
+      CFileItemPtr newItem(items[i]->Clone());
       Add(newItem);
     }
   }

@@ -127,8 +127,9 @@ public:
   explicit CFileItem(std::shared_ptr<const ADDON::IAddon> addonInfo);
   explicit CFileItem(const EventPtr& eventLogEntry);
 
+  CFileItem* Clone();
   ~CFileItem(void) override;
-  CGUIListItem* Clone() const override { return new CFileItem(*this); }
+  CGUIListItem* Clone() const override { return Clone(); }
 
   const CURL GetURL() const;
   void SetURL(const CURL& url);
