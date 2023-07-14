@@ -116,20 +116,6 @@ protected:
   void ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
   ComPtr<ID3D11VideoProcessorInputView> GetInputView(CRenderBuffer* view) const;
   /*!
-   * \brief Calculate the color spaces of the input and output of the processor
-   * \param csArgs Arguments for the calculations
-   * \return the input and output color spaces
-   */
-  ProcColorSpaces CalculateDXGIColorSpaces(const DXGIColorSpaceArgs& csArgs) const;
-  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceSource(const DXGIColorSpaceArgs& csArgs,
-                                                       bool supportHDR,
-                                                       bool supportHLG,
-                                                       bool BT2020Left,
-                                                       bool HDRLeft);
-  static DXGI_COLOR_SPACE_TYPE GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
-                                                       bool supportHDR,
-                                                       bool limitedRange);
-  /*!
    * \brief Converts ffmpeg AV parameters to a DXGI color space
    * \param csArgs ffmpeg AV picture parameters
    * \return DXGI color space
@@ -154,11 +140,8 @@ protected:
   bool m_full_range{false};
   ProcessorCapabilities m_procCaps;
   DXGI_FORMAT m_input_dxgi_format{DXGI_FORMAT_UNKNOWN};
-  DXGI_FORMAT m_output_dxgi_format{DXGI_FORMAT_UNKNOWN};
 
   bool m_superResolutionEnabled{false};
-  bool m_bSupportHLG{false};
-  bool m_HDR10Left{false};
-  bool m_BT2020Left{false};
+  ProcessorConversion m_conversion;
 };
 };
