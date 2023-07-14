@@ -11,6 +11,7 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "messaging/IMessageTarget.h"
 #include "playlists/PlayListTypes.h"
+#include "IMediaPlayer.h"
 
 #include <chrono>
 #include <map>
@@ -29,11 +30,16 @@ class CPlayList;
 class CPlayListPlayer : public IMsgTargetCallback,
                         public KODI::MESSAGING::IMessageTarget
 {
+private:
+  IMediaPlayer* mediaPlayerStrategy;
 
 public:
   CPlayListPlayer(void);
   ~CPlayListPlayer(void) override;
   bool OnMessage(CGUIMessage &message) override;
+
+
+  inline void setStrategy(IMediaPlayer* newStrategy) { mediaPlayerStrategy = newStrategy; }
 
   int GetMessageMask() override;
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
@@ -202,5 +208,4 @@ protected:
       {PLAYLIST::TYPE_PICTURE, PLAYLIST::RepeatState::NONE},
   };
 };
-
 }

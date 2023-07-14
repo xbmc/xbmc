@@ -51,6 +51,7 @@ CPlayListPlayer::CPlayListPlayer(void)
   m_bPlaybackStarted = false;
   m_iFailedSongs = 0;
   m_failedSongsStart = std::chrono::steady_clock::now();
+  mediaPlayerStrategy = new CMediaPlayerMusic();
 }
 
 CPlayListPlayer::~CPlayListPlayer(void)
@@ -525,50 +526,19 @@ void CPlayListPlayer::SetShuffle(Id playlistId, bool bYesNo, bool bNotify /* = f
   if (playlistId != TYPE_MUSIC && playlistId != TYPE_VIDEO)
     return;
 
-  // disable shuffle in party mode
-  if (g_partyModeManager.IsEnabled() && playlistId == TYPE_MUSIC)
-    return;
+  CMediaPlayerMusic mediaPlayerMusic;
+  CMediaPlayerVideo mediaPlayerVideo;
 
-  // do we even need to do anything?
-  if (bYesNo != IsShuffled(playlistId))
+  if(playlistId != TYPE_MUSIC && playlistId != TYPE_VIDEO) 
   {
-    // save the order value of the current song so we can use it find its new location later
-    int iOrder = -1;
-    CPlayList& playlist = GetPlaylist(playlistId);
-    if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size())
-      iOrder = playlist[m_iCurrentSong]->m_iprogramCount;
-
-    // shuffle or unshuffle as necessary
-    if (bYesNo)
-      playlist.Shuffle();
-    else
-      playlist.UnShuffle();
-
-    if (bNotify)
-    {
-      std::string shuffleStr =
-          StringUtils::Format("{}: {}", g_localizeStrings.Get(191),
-                              g_localizeStrings.Get(bYesNo ? 593 : 591)); // Shuffle: All/Off
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559),  shuffleStr);
-    }
-
-    // find the previous order value and fix the current song marker
-    if (iOrder >= 0)
-    {
-      int iIndex = playlist.FindOrder(iOrder);
-      if (iIndex >= 0)
-        m_iCurrentSong = iIndex;
-      // if iIndex < 0, something unexpected happened
-      // so dont do anything
-    }
+    setStrategy(&mediaPlayerMusic);
+  }
+  else
+  {
+    setStrategy(&mediaPlayerVideo);
   }
 
-  // its likely that the playlist changed
-  if (CServiceBroker::GetGUI() != nullptr)
-  {
-    CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
-    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-  }
+  mediaPlayerStrategy->SetShuffle(playlistId, bYesNo, bNotify /* = false */, m_iCurrentSong);
 
   AnnouncePropertyChanged(playlistId, "shuffled", IsShuffled(playlistId));
 }
@@ -1058,3 +1028,4 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
     break;
   }
 }
+
