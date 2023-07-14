@@ -48,8 +48,14 @@ RenderBufferPoolVector CWinRendererFactory::CreateBufferPools(CRenderContext& co
 // --- CWinRenderBuffer --------------------------------------------------------
 
 CWinRenderBuffer::CWinRenderBuffer(AVPixelFormat pixFormat, DXGI_FORMAT dxFormat)
-  : m_pixFormat(pixFormat), m_targetDxFormat(dxFormat), m_targetPixFormat(GetPixFormat(dxFormat))
+  : m_pixFormat(pixFormat), m_targetDxFormat(dxFormat), m_targetPixFormat(GetPixFormat())
 {
+}
+
+CWinRenderBuffer::~CWinRenderBuffer()
+{
+  if (m_swsContext != nullptr)
+    sws_freeContext(m_swsContext);
 }
 
 bool CWinRenderBuffer::CreateTexture()
@@ -143,12 +149,12 @@ bool CWinRenderBuffer::CreateScalingContext()
   return true;
 }
 
-void CWinRenderBuffer::ScalePixels(uint8_t* source,
+void CWinRenderBuffer::ScalePixels(const uint8_t* source,
                                    unsigned int sourceStride,
                                    uint8_t* target,
                                    unsigned int targetStride)
 {
-  uint8_t* src[] = {source, nullptr, nullptr, nullptr};
+  uint8_t* src[] = {const_cast<uint8_t*>(source), nullptr, nullptr, nullptr};
   int srcStride[] = {static_cast<int>(sourceStride), 0, 0, 0};
   uint8_t* dst[] = {target, nullptr, nullptr, nullptr};
   int dstStride[] = {static_cast<int>(targetStride), 0, 0, 0};
@@ -156,9 +162,9 @@ void CWinRenderBuffer::ScalePixels(uint8_t* source,
   sws_scale(m_swsContext, src, srcStride, 0, m_height, dst, dstStride);
 }
 
-AVPixelFormat CWinRenderBuffer::GetPixFormat(DXGI_FORMAT dxFormat)
+AVPixelFormat CWinRenderBuffer::GetPixFormat()
 {
-  return AV_PIX_FMT_BGRA; //! @todo
+  return AV_PIX_FMT_BGRA;
 }
 
 // --- CWinRenderBufferPool ----------------------------------------------------
@@ -178,12 +184,15 @@ IRenderBuffer* CWinRenderBufferPool::CreateRenderBuffer(void* header /* = nullpt
   return new CWinRenderBuffer(m_format, m_targetDxFormat);
 }
 
-bool CWinRenderBufferPool::ConfigureDX(DXGI_FORMAT dxFormat)
+bool CWinRenderBufferPool::ConfigureDX()
 {
   if (m_targetDxFormat != DXGI_FORMAT_UNKNOWN)
     return false; // Already configured
 
-  m_targetDxFormat = dxFormat;
+  // There are three pixel formats used by libretro: 0RGB32, RGB565 and
+  // RGB555. DirectX support for these varies, so always use BGRA32 as the
+  // intermediate format.
+  m_targetDxFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
 
   return true;
 }
@@ -234,9 +243,7 @@ bool CRPWinRenderer::ConfigureInternal()
 {
   CRenderSystemDX* renderingDx = static_cast<CRenderSystemDX*>(m_context.Rendering());
 
-  DXGI_FORMAT targetDxFormat = renderingDx->GetBackBuffer().GetFormat();
-
-  static_cast<CWinRenderBufferPool*>(m_bufferPool.get())->ConfigureDX(targetDxFormat);
+  static_cast<CWinRenderBufferPool*>(m_bufferPool.get())->ConfigureDX();
 
   return true;
 }
