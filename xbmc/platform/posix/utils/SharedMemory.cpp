@@ -15,6 +15,9 @@
 #if defined(HAVE_LINUX_MEMFD)
 #include <linux/memfd.h>
 #include <sys/syscall.h>
+#ifndef MFD_NOEXEC_SEAL
+#define MFD_NOEXEC_SEAL 0x0008U
+#endif
 #endif
 
 #include <cerrno>
@@ -62,8 +65,13 @@ CFileHandle CSharedMemory::OpenMemfd()
 {
 #if defined(SYS_memfd_create) && defined(HAVE_LINUX_MEMFD)
   // This is specific to Linux >= 3.17, but preferred over shm_create if available
-  // because it is race-free
-  int fd = syscall(SYS_memfd_create, "kodi", MFD_CLOEXEC);
+  // because it is race-free. Since linux >= 6.3 create with the MFD_NOEXEC_SEAL flag.
+  int fd = syscall(SYS_memfd_create, "kodi", MFD_CLOEXEC | MFD_ALLOW_SEALING | MFD_NOEXEC_SEAL);
+  if (fd < 0)
+  {
+    // retry creating fd without MFD_NOEXEC_SEAL to support linux < 6.3
+    fd = syscall(SYS_memfd_create, "kodi", MFD_CLOEXEC | MFD_ALLOW_SEALING);
+  }
   if (fd < 0)
   {
     throw std::system_error(errno, std::generic_category(), "memfd_create");
