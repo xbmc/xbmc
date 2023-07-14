@@ -357,10 +357,8 @@ ProcessorConversions CEnumeratorHD::ListConversions(
 }
 
 void CEnumeratorHD::LogSupportedConversions(const DXGI_FORMAT& inputFormat,
-                                            const DXGI_COLOR_SPACE_TYPE heuristicsInputCS,
                                             const DXGI_COLOR_SPACE_TYPE inputNativeCS,
-                                            const DXGI_FORMAT& outputFormat,
-                                            const DXGI_COLOR_SPACE_TYPE heuristicsOutputCS)
+                                            const DXGI_FORMAT& outputFormat)
 {
   std::unique_lock<CCriticalSection> lock(m_section);
 
@@ -393,14 +391,6 @@ void CEnumeratorHD::LogSupportedConversions(const DXGI_FORMAT& inputFormat,
 
   CLog::LogFC(LOGDEBUG, LOGVIDEO, "The source is {} / {}", DX::DXGIFormatToString(inputFormat),
               DX::DXGIColorSpaceTypeToString(inputNativeCS));
-
-  const bool supported =
-      CheckConversionInternal(inputFormat, inputNativeCS, outputFormat, heuristicsOutputCS);
-
-  CLog::LogFC(LOGDEBUG, LOGVIDEO, "conversion from {} / {} to {} / {} is {}supported.",
-              DX::DXGIFormatToString(inputFormat), DX::DXGIColorSpaceTypeToString(inputNativeCS),
-              DX::DXGIFormatToString(outputFormat),
-              DX::DXGIColorSpaceTypeToString(heuristicsOutputCS), supported ? "" : "NOT ");
 
   // Possible input color spaces: YCbCr only
   std::vector<DXGI_COLOR_SPACE_TYPE> ycbcrColorSpaces;
@@ -444,12 +434,10 @@ void CEnumeratorHD::LogSupportedConversions(const DXGI_FORMAT& inputFormat,
   {
     conversionsString.append("\n");
     conversionsString.append(StringUtils::Format(
-        "{} {} / {}{} {:<{}} to {} {:<{}} / {}{} {:<{}}", "*",
-        DX::DXGIFormatToString(c.m_inputFormat), (c.m_inputCS == heuristicsInputCS) ? "*" : " ",
+        "{} {} / {} {:<{}} to {} {:<{}} / {} {:<{}}", "*", DX::DXGIFormatToString(c.m_inputFormat),
         (c.m_inputCS == inputNativeCS) ? "N" : " ", DX::DXGIColorSpaceTypeToString(c.m_inputCS), 32,
         (c.m_outputFormat == outputFormat) ? "*" : " ", DX::DXGIFormatToString(c.m_outputFormat),
-        26, (c.m_outputCS == heuristicsOutputCS) ? "*" : " ",
-        (backbufferColorSpaces.find(c.m_outputCS) != backbufferColorSpaces.end()) ? "bb" : "  ",
+        26, (backbufferColorSpaces.find(c.m_outputCS) != backbufferColorSpaces.end()) ? "bb" : "  ",
         DX::DXGIColorSpaceTypeToString(c.m_outputCS), 32));
   }
 

@@ -89,6 +89,7 @@ struct ProcessorConversion
   DXGI_FORMAT m_outputFormat{DXGI_FORMAT_UNKNOWN};
   DXGI_COLOR_SPACE_TYPE m_outputCS{DXGI_COLOR_SPACE_RESERVED};
 
+  ProcessorConversion() = default;
   ProcessorConversion(const DXGI_FORMAT& inputFormat,
                       const DXGI_COLOR_SPACE_TYPE& inputCS,
                       const DXGI_FORMAT& outputFormat,
@@ -181,17 +182,13 @@ public:
   /*!
    * \brief Outputs in the log a list of conversions supported by the DXVA processor.
    * \param inputFormat the source format
-   * \param heuristicsInputCS the input color space that will be used for playback
    * \param inputNativeCS the input color space that would be used with a direct mapping
    * from avcodec to D3D11, without any workarounds or tricks.
    * \param outputFormat the destination format
-   * \param heuristicsOutputCS the output color space that will be used for playback
    */
   void LogSupportedConversions(const DXGI_FORMAT& inputFormat,
-                               const DXGI_COLOR_SPACE_TYPE heuristicsInputCS,
                                const DXGI_COLOR_SPACE_TYPE inputNativeCS,
-                               const DXGI_FORMAT& outputFormat,
-                               const DXGI_COLOR_SPACE_TYPE heuristicsOutputCS);
+                               const DXGI_FORMAT& outputFormat);
 
   bool IsInitialized() const { return m_pEnumerator; }
   /*!
