@@ -118,8 +118,8 @@ public:
 
   virtual void SetSubTitleDelay(float fValue = 0.0f) {}
   virtual float GetSubTitleDelay()    { return 0.0f; }
-  virtual void SetSubtitleFPS(ESUBTITLEFPS value = ST_FPS_SAME) {}
-  virtual ESUBTITLEFPS GetSubtitleFPS() { return ST_FPS_SAME; }
+  virtual void SetSubtitleFPS(SubtitleFPS value = SubtitleFPS::SAME) {}
+  virtual SubtitleFPS GetSubtitleFPS() { return SubtitleFPS::SAME; }
   virtual int GetSubtitleCount() const { return 0; }
   virtual int  GetSubtitle()          { return -1; }
   virtual void GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) const {}

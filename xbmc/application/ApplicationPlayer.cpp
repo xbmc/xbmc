@@ -737,7 +737,7 @@ void CApplicationPlayer::SetSubTitleDelay(float fValue)
     player->SetSubTitleDelay(fValue);
 }
 
-void CApplicationPlayer::SetSubtitleFPS(ESUBTITLEFPS value)
+void CApplicationPlayer::SetSubtitleFPS(SubtitleFPS value)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
   if (player)

@@ -114,8 +114,8 @@ void CGUIDialogSubtitleSettings::OnSettingChanged(const std::shared_ptr<const CS
   }
   else if (settingId == SETTING_SUBTITLE_FPS)
   {
-    ESUBTITLEFPS value =
-        static_cast<ESUBTITLEFPS>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    SubtitleFPS value =
+        static_cast<SubtitleFPS>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
     appPlayer->SetSubtitleFPS(value);
   }
   else if (settingId == SETTING_SUBTITLE_STREAM)
@@ -315,9 +315,9 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
     IntegerSettingOptions entries;
 
     entries.clear();
-    entries.push_back(IntegerSettingOption(g_localizeStrings.Get(39203), ST_FPS_SAME));
-    entries.push_back(IntegerSettingOption(fmt::format("{}", ST_FPS_24), ST_FPS_24));
-    entries.push_back(IntegerSettingOption(fmt::format("{}", ST_FPS_25), ST_FPS_25));
+    entries.push_back(IntegerSettingOption(g_localizeStrings.Get(39203), (int)SubtitleFPS::SAME));
+    entries.push_back(IntegerSettingOption(fmt::format("{}", ((int)SubtitleFPS::FPS_24)/1000.0), (int)SubtitleFPS::FPS_24));
+    entries.push_back(IntegerSettingOption(fmt::format("{}", ((int)SubtitleFPS::FPS_25)/1000.0), (int)SubtitleFPS::FPS_25));
 
     AddSpinner(groupSubtitles, SETTING_SUBTITLE_FPS, 39202, SettingLevel::Basic,
                videoSettings.m_subtitleFPS, entries);

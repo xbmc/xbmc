@@ -24,7 +24,7 @@ CVideoSettings::CVideoSettings()
   m_AudioStream = -1;
   m_SubtitleStream = -1;
   m_SubtitleDelay = 0.0f;
-  m_subtitleFPS = ST_FPS_SAME;
+  m_subtitleFPS = 0.0;
   m_subtitleVerticalPosition = 0;
   m_subtitleVerticalPositionSave = false;
   m_SubtitleOn = true;

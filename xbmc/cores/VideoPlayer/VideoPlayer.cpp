@@ -3347,24 +3347,24 @@ float CVideoPlayer::GetSubTitleDelay()
   return (float) -m_VideoPlayerVideo->GetSubtitleDelay() / DVD_TIME_BASE;
 }
 
-void CVideoPlayer::SetSubtitleFPS(ESUBTITLEFPS value)
+void CVideoPlayer::SetSubtitleFPS(SubtitleFPS value)
 {
-  m_processInfo->GetVideoSettingsLocked().SetSubtitleFPS(value);
   double dValue = 0.0;
-  if (value != ST_FPS_SAME)
+  if (value != SubtitleFPS::SAME)
     dValue = ((int)value) / 1000.0;
+  m_processInfo->GetVideoSettingsLocked().SetSubtitleFPS(dValue);
   m_VideoPlayerVideo->SetSubtitleFPS(dValue);
 }
 
-ESUBTITLEFPS CVideoPlayer::GetSubtitleFPS()
+SubtitleFPS CVideoPlayer::GetSubtitleFPS()
 {
   // return m_processInfo->GetVideoSettings().m_subtitleFPS;
   double dValue = m_VideoPlayerVideo->GetSubtitleFPS();
   // simplistic implementation, could properly have acceptance ranges for each setting or such
   if (dValue == 0.0)
-    return ST_FPS_SAME;
+    return SubtitleFPS::SAME;
   else
-    return static_cast<ESUBTITLEFPS>((int)(dValue * 1000.0));
+    return static_cast<SubtitleFPS>((int)(dValue * 1000.0));
 }
 
 bool CVideoPlayer::GetSubtitleVisible() const
