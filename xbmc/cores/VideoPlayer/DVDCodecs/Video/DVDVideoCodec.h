@@ -12,6 +12,7 @@
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDCodec.h"
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -104,7 +105,7 @@ class CDVDStreamInfo;
 class CDVDCodecOption;
 class CDVDCodecOptions;
 
-class CDVDVideoCodec
+class CDVDVideoCodec : public CDVDCodec
 {
 public:
 
@@ -121,16 +122,9 @@ public:
     VC_EOF              //< EOF
   };
 
-  explicit CDVDVideoCodec(CProcessInfo &processInfo) : m_processInfo(processInfo) {}
+  explicit CDVDVideoCodec(CProcessInfo &processInfo) : CDVDCodec(processInfo) {}
   virtual ~CDVDVideoCodec() = default;
-
-  /**
-   * Open the decoder, returns true on success
-   * Decoders not capable of running multiple instances should return false in case
-   * there is already a instance open
-   */
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) = 0;
-
+  
   /**
    * Reconfigure the decoder, returns true on success
    * Decoders not capable of running multiple instances may be capable of reconfiguring
@@ -141,18 +135,6 @@ public:
   {
     return false;
   }
-
-  /**
-   * add data, decoder has to consume the entire packet
-   * returns true if the packet was consumed or if resubmitting it is useless
-   */
-  virtual bool AddData(const DemuxPacket &packet) = 0;
-
-  /**
-   * Reset the decoder.
-   * Should be the same as calling Dispose and Open after each other
-   */
-  virtual void Reset() = 0;
 
   /**
    * GetPicture controls decoding. Player calls it on every cycle
@@ -166,11 +148,6 @@ public:
    * DVD_PLAYSPEED_PAUSE and friends.
    */
   virtual void SetSpeed(int iSpeed) {}
-
-  /**
-   * should return codecs name
-   */
-  virtual const char* GetName() = 0;
 
   /**
    * How many packets should player remember, so codec can recover should
@@ -237,8 +214,8 @@ public:
    */
   virtual void Reopen() {}
 
-protected:
-  CProcessInfo &m_processInfo;
+// protected:
+//  CProcessInfo &m_processInfo;
 };
 
 // callback interface for ffmpeg hw accelerators

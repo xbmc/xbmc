@@ -31,7 +31,7 @@ public:
   void Reset() override;
   AEAudioFormat GetFormat() override { return m_format; }
   bool NeedPassthrough() override { return true; }
-  std::string GetName() override { return m_codecName; }
+  const char* GetName() override { return m_codecName.c_str(); }
   int GetBufferSize() override;
 
 private:

@@ -11,6 +11,7 @@
 #include "cores/AudioEngine/Utils/AEAudioFormat.h"
 #include "cores/VideoPlayer/Interface/DemuxPacket.h"
 #include "cores/VideoPlayer/Process/ProcessInfo.h"
+#include "cores/VideoPlayer/DVDCodecs/DVDCodec.h"
 
 #include <vector>
 
@@ -45,17 +46,12 @@ typedef struct stDVDAudioFrame
   double centerMixLevel;
 } DVDAudioFrame;
 
-class CDVDAudioCodec
+class CDVDAudioCodec : public CDVDCodec
 {
 public:
 
-  explicit CDVDAudioCodec(CProcessInfo &processInfo) : m_processInfo(processInfo) {}
+  explicit CDVDAudioCodec(CProcessInfo &processInfo) : CDVDCodec(processInfo) {}
   virtual ~CDVDAudioCodec() = default;
-
-  /*
-   * Open the decoder, returns true on success
-   */
-  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options) = 0;
 
   /*
    * Dispose, Free all resources
@@ -63,20 +59,9 @@ public:
   virtual void Dispose() = 0;
 
   /*
-   * returns false on error
-   *
-   */
-  virtual bool AddData(const DemuxPacket &packet) = 0;
-
-  /*
    * the data is valid until the next call
    */
   virtual void GetData(DVDAudioFrame &frame) = 0;
-
-  /*
-   * resets the decoder
-   */
-  virtual void Reset() = 0;
 
   /*
    * returns the format for the audio stream
@@ -96,7 +81,7 @@ public:
   /*
    * should return codecs name
    */
-  virtual std::string GetName() = 0;
+//  virtual std::string GetName() = 0;
 
   /*
    * should return amount of data decoded has buffered in preparation for next audio frame
@@ -118,6 +103,4 @@ public:
    */
   virtual int GetProfile() { return 0; }
 
-protected:
-  CProcessInfo &m_processInfo;
 };
