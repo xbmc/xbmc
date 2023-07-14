@@ -27,6 +27,7 @@
 - [ ] **New feature** (non-breaking change which adds functionality)
 - [ ] **Breaking change** (fix or feature that will cause existing functionality to change)
 - [ ] **Cosmetic change** (non-breaking change that doesn't touch code)
+- [ ] **Student submission** (PR was done for educational purposes and will be treated as such)
 - [ ] **None of the above** (please explain below)
 
 ## Checklist:
