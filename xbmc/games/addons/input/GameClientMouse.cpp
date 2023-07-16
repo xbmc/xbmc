@@ -94,3 +94,13 @@ void CGameClientMouse::OnButtonRelease(const std::string& button)
 
   m_gameClient.Input().InputEvent(event);
 }
+
+void CGameClientMouse::SetSource(PERIPHERALS::PeripheralPtr sourcePeripheral)
+{
+  m_sourcePeripheral = std::move(sourcePeripheral);
+}
+
+void CGameClientMouse::ClearSource()
+{
+  m_sourcePeripheral.reset();
+}
