@@ -118,6 +118,14 @@ bool SupportsVideoSuperResolution(const std::string& condition,
   return CServiceBroker::GetWinSystem()->SupportsVideoSuperResolution();
 }
 
+bool SupportsDolbyVision(const std::string& condition,
+                         const std::string& value,
+                         const SettingConstPtr& setting,
+                         void* data)
+{
+  return CServiceBroker::GetWinSystem()->GetDisplayHDRCapabilities().SupportsDolbyVision();
+}
+
 bool SupportsScreenMove(const std::string& condition,
                         const std::string& value,
                         const SettingConstPtr& setting,
@@ -470,6 +478,7 @@ void CSettingConditions::Initialize()
   m_complexConditions.emplace("hassystemsdrpeakluminance", HasSystemSdrPeakLuminance);
   m_complexConditions.emplace("supportsscreenmove", SupportsScreenMove);
   m_complexConditions.emplace("supportsvideosuperresolution", SupportsVideoSuperResolution);
+  m_complexConditions.emplace("supportsdolbyvision", SupportsDolbyVision);
   m_complexConditions.emplace("ishdrdisplay", IsHDRDisplay);
   m_complexConditions.emplace("ismasteruser", IsMasterUser);
   m_complexConditions.emplace("hassubtitlesfontextensions", HasSubtitlesFontExtensions);

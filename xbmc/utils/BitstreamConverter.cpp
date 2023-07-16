@@ -20,6 +20,13 @@
 
 #include <algorithm>
 
+extern "C"
+{
+#ifdef HAVE_LIBDOVI
+#include <libdovi/rpu_parser.h>
+#endif
+}
+
 enum {
   AVC_NAL_SLICE=1,
   AVC_NAL_DPA,
@@ -257,6 +264,32 @@ static bool has_sei_recovery_point(const uint8_t *p, const uint8_t *end)
   return false;
 }
 
+#ifdef HAVE_LIBDOVI
+// The returned data must be freed with `dovi_data_free`
+// May be NULL if no conversion was done
+static const DoviData* convert_dovi_rpu_nal(uint8_t* buf, uint32_t nal_size)
+{
+  DoviRpuOpaque* rpu = dovi_parse_unspec62_nalu(buf, nal_size);
+  const DoviRpuDataHeader* header = dovi_rpu_get_header(rpu);
+  const DoviData* rpu_data = NULL;
+
+  if (header && header->guessed_profile == 7)
+  {
+    int ret = dovi_convert_rpu_with_mode(rpu, 2);
+    if (ret < 0)
+      goto done;
+
+    rpu_data = dovi_write_unspec62_nalu(rpu);
+  }
+
+done:
+  dovi_rpu_free_header(header);
+  dovi_rpu_free(rpu);
+
+  return rpu_data;
+}
+#endif
+
 ////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 CBitstreamParser::CBitstreamParser() = default;
@@ -322,6 +355,7 @@ CBitstreamConverter::CBitstreamConverter()
   m_convert_bytestream = false;
   m_sps_pps_context.sps_pps_data = NULL;
   m_start_decode = true;
+  m_convert_dovi = false;
 }
 
 CBitstreamConverter::~CBitstreamConverter()
@@ -875,6 +909,10 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
   uint32_t cumul_size = 0;
   const uint8_t *buf_end = buf + buf_size;
 
+#ifdef HAVE_LIBDOVI
+  const DoviData* rpu_data = NULL;
+#endif
+
   switch (m_codec)
   {
     case AV_CODEC_ID_H264:
@@ -928,12 +966,48 @@ bool CBitstreamConverter::BitstreamConvert(uint8_t* pData, int iSize, uint8_t **
     }
     else
     {
-      BitstreamAllocAndCopy(poutbuf, poutbuf_size, NULL, 0, buf, nal_size, unit_type);
+      bool write_buf = true;
+      const uint8_t* buf_to_write = buf;
+      int32_t final_nal_size = nal_size;
+
       if (!m_sps_pps_context.first_idr && IsSlice(unit_type))
       {
           m_sps_pps_context.first_idr = 1;
           m_sps_pps_context.idr_sps_pps_seen = 0;
       }
+
+      if (m_convert_dovi)
+      {
+        if (unit_type == HEVC_NAL_UNSPEC62)
+        {
+#ifdef HAVE_LIBDOVI
+          // Convert the RPU itself
+          rpu_data = convert_dovi_rpu_nal(buf, nal_size);
+          if (rpu_data)
+          {
+            buf_to_write = rpu_data->data;
+            final_nal_size = rpu_data->len;
+          }
+#endif
+        }
+        else if (unit_type == HEVC_NAL_UNSPEC63)
+        {
+          // Ignore the enhancement layer, may or may not help
+          write_buf = false;
+        }
+      }
+
+      if (write_buf)
+        BitstreamAllocAndCopy(poutbuf, poutbuf_size, NULL, 0, buf_to_write, final_nal_size,
+                              unit_type);
+
+#ifdef HAVE_LIBDOVI
+      if (rpu_data)
+      {
+        dovi_data_free(rpu_data);
+        rpu_data = NULL;
+      }
+#endif
     }
 
     buf += nal_size;

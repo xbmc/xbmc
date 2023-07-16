@@ -23481,3 +23481,15 @@ msgstr ""
 msgctxt "#39195"
 msgid "Enable this option for the best picture quality. Disabling reduces the load on resource-limited systems."
 msgstr ""
+
+#. Title of Dolby Vision RPU conversion setting
+#: system/settings/settings.xml
+msgctxt "#39196"
+msgid "Dolby Vision compatibility mode"
+msgstr ""
+
+#. Help text for setting "Convert Dolby Vision for compatibility" of label #39196
+#: system/settings/settings.xml
+msgctxt "#39197"
+msgid "If enabled, Dolby Vision profile 7 will be converted to profile 8.1, which is more commonly supported by devices. Enable if your device supports Dolby Vision, but has issues with some videos."
+msgstr ""
