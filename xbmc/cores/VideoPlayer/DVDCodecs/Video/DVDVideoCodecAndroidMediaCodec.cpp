@@ -560,7 +560,22 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         {
           m_bitstream.reset();
         }
+
+        // Only set for profile 7, container hint allows to skip parsing unnecessarily
+        if (m_bitstream && m_hints.dovi.dv_profile == 7)
+        {
+          bool convertDovi = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+              CSettings::SETTING_VIDEOPLAYER_CONVERTDOVI);
+
+          CLog::Log(LOGDEBUG,
+                    "CDVDVideoCodecAndroidMediaCodec::Open Dolby Vision compatibility mode "
+                    "enabled: {}",
+                    convertDovi);
+
+          m_bitstream->SetConvertDovi(convertDovi);
+        }
       }
+
       break;
     }
     case AV_CODEC_ID_WMV3:

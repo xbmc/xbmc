@@ -179,6 +179,17 @@
           <default>true</default>
           <control type="toggle" />
         </setting>
+        <setting id="videoplayer.convertdovi" type="boolean" label="39196" help="39197">
+          <requirement>HAS_MEDIACODEC</requirement>
+          <dependencies>
+            <dependency type="visible">
+              <condition on="property" name="supportsdolbyvision" />
+            </dependency>
+          </dependencies>
+          <level>2</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
       </group>
       <group id="4" label="14232">
         <setting id="videoplayer.stereoscopicplaybackmode" type="integer" label="36520" help="36537">
