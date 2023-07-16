@@ -13,8 +13,6 @@
 #include "VideoRenderers/HwDecRender/DXVAEnumeratorHD.h"
 #include "WIN32Util.h"
 #include "rendering/dx/RenderContext.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 #include "utils/memcpy_sse2.h"
 #include "windowing/GraphicContext.h"
@@ -35,11 +33,8 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
   const DXGI_FORMAT dxgi_format = GetDXGIFormat(av_pixel_format, __super::GetDXGIFormat(picture));
 
-  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  const auto setting = DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY;
   const bool systemUsesHDR =
-      (settings ? settings->GetBool(setting) && DX::Windowing()->IsHDRDisplay() : false) ||
-      DX::Windowing()->IsHDROutput();
+      DX::Windowing()->IsHDROutput() || DX::Windowing()->IsHDRDisplaySettingEnabled();
 
   CEnumeratorHD enumerator;
   enumerator.Open(picture.iWidth, picture.iHeight, dxgi_format);
@@ -125,25 +120,17 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
     m_format = picture.videoBuffer->GetFormat();
     const DXGI_FORMAT dxgi_format = GetDXGIFormat(m_format, __super::GetDXGIFormat(picture));
 
-    if (DX::Windowing()->SupportsVideoSuperResolution())
+    if (DX::Windowing()->IsVideoSuperResolutionSettingEnabled() &&
+        CProcessorHD::IsSuperResolutionSuitable(picture))
     {
-      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
-      if (settings && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USESUPERRESOLUTION) &&
-          CProcessorHD::IsSuperResolutionSuitable(picture))
-      {
-        m_tryVSR = true;
-      }
+      m_tryVSR = true;
     }
 
     m_enumerator = std::make_shared<DXVA::CEnumeratorHD>();
     if (m_enumerator->Open(picture.iWidth, picture.iHeight, dxgi_format))
     {
-      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-      const auto setting = DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY;
       const bool systemUsesHDR =
-          (settings ? settings->GetBool(setting) && DX::Windowing()->IsHDRDisplay() : false) ||
-          DX::Windowing()->IsHDROutput();
+          DX::Windowing()->IsHDROutput() || DX::Windowing()->IsHDRDisplaySettingEnabled();
 
       if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
           CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
@@ -514,11 +501,11 @@ ProcessorConversion CRendererDXVA::ChooseConversion(const ProcessorConversions& 
     // Try high quality when: backbuffer is 10 bits or High precision processing is on and the source is HDR
     tryHQ = (DX::Windowing()->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM);
 
-    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-    if (settings && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING))
-      if (sourceBits > 8 &&
-          (colorTransfer == AVCOL_TRC_SMPTE2084 || colorTransfer == AVCOL_TRC_ARIB_STD_B67))
-        tryHQ = true;
+    if (DX::Windowing()->IsHighPrecisionProcessingSettingEnabled() && sourceBits > 8 &&
+        (colorTransfer == AVCOL_TRC_SMPTE2084 || colorTransfer == AVCOL_TRC_ARIB_STD_B67))
+    {
+      tryHQ = true;
+    }
   }
 
   // RGB8 processor output format is required for VSR
