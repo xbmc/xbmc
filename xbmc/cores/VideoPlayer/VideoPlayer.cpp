@@ -767,11 +767,16 @@ bool CVideoPlayer::OpenInputStream()
   CLog::Log(LOGINFO, "Creating InputStream");
 
   // correct the filename if needed
-  std::string filename(m_item.GetPath());
-  if (URIUtils::IsProtocol(filename, "dvd") ||
-      StringUtils::EqualsNoCase(filename, "iso9660://video_ts/video_ts.ifo"))
+  const CURL url{m_item.GetPath()};
+  if (url.GetProtocol() == "dvd")
   {
+    // FIXME: we should deprecate this when more than one device drive is supported
     m_item.SetPath(CServiceBroker::GetMediaManager().TranslateDevicePath(""));
+  }
+  else if (url.GetProtocol() == "iso9660" && !url.GetHostName().empty() &&
+           url.GetFileName() == "VIDEO_TS/video_ts.ifo")
+  {
+    m_item.SetPath(url.GetHostName());
   }
 
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_item, true);
