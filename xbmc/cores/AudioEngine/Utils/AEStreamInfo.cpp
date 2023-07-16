@@ -590,8 +590,7 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
     if (m_fsize < 96 || m_fsize > 16384)
       continue;
 
-    bool invalid = false;
-    CAEStreamInfo::DataType dataType;
+    CAEStreamInfo::DataType dataType{CAEStreamInfo::STREAM_TYPE_NULL};
     switch (dtsBlocks << 5)
     {
       case 512:
@@ -603,12 +602,9 @@ unsigned int CAEStreamParser::SyncDTS(uint8_t* data, unsigned int size)
       case 2048:
         dataType = CAEStreamInfo::STREAM_TYPE_DTS_2048;
         break;
-      default:
-        invalid = true;
-        break;
     }
 
-    if (invalid)
+    if (dataType == CAEStreamInfo::STREAM_TYPE_NULL)
       continue;
 
     // adjust the fsize for 14 bit streams
