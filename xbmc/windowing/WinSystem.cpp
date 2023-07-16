@@ -296,3 +296,30 @@ std::shared_ptr<CDPMSSupport> CWinSystemBase::GetDPMSManager()
 {
   return m_dpms;
 }
+
+bool CWinSystemBase::IsHDRDisplaySettingEnabled()
+{
+  if (!IsHDRDisplay())
+    return false;
+
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  return (settings && settings->GetBool(SETTING_WINSYSTEM_IS_HDR_DISPLAY));
+}
+
+bool CWinSystemBase::IsVideoSuperResolutionSettingEnabled()
+{
+  if (!SupportsVideoSuperResolution())
+    return false;
+
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  return (settings && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USESUPERRESOLUTION));
+}
+
+bool CWinSystemBase::IsHighPrecisionProcessingSettingEnabled()
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  return (settings && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING));
+}

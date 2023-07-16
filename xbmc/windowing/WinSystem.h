@@ -84,8 +84,8 @@ public:
   //the number of presentation buffers
   virtual int NoOfBuffers();
 
-  /**
-   * Get average display latency
+  /*!
+   * \brief Get average display latency
    *
    * The latency should be measured as the time between finishing the rendering
    * of a frame, i.e. calling PresentRender, and the rendered content becoming
@@ -94,8 +94,9 @@ public:
    * \return average display latency in seconds, or negative value if unknown
    */
   virtual float GetDisplayLatency() { return -1.0f; }
-  /**
-   * Get time that should be subtracted from the display latency for this frame
+
+  /*!
+   * \brief Get time that should be subtracted from the display latency for this frame
    * in milliseconds
    *
    * Contrary to \ref GetDisplayLatency, this value is calculated ad-hoc
@@ -115,26 +116,31 @@ public:
   // notifications
   virtual void OnMove(int x, int y) {}
 
-  /*! \brief Get the screen ID provided the screen name
-   *  \param screen the name of the screen as presented on the application display settings
-   *  \return the screen index as known by the windowing system implementation (or the default screen by default)
-  */
+  /*!
+   * \brief Get the screen ID provided the screen name
+   *
+   * \param screen the name of the screen as presented on the application display settings
+   * \return the screen index as known by the windowing system implementation (or the default screen by default)
+   */
   virtual unsigned int GetScreenId(const std::string& screen) { return 0; }
 
-  /*! \brief Window was requested to move to the given screen
-   *  \param screenIdx the screen index as known by the windowing system implementation
-  */
+  /*!
+   * \brief Window was requested to move to the given screen
+   *
+   * \param screenIdx the screen index as known by the windowing system implementation
+   */
   virtual void MoveToScreen(unsigned int screenIdx) {}
 
-  /**
+  /*!
    * \brief Used to signal the windowing system about the change of the current screen
+   *
    * \param screenIdx the screen index as known by the windowing system implementation
-  */
+   */
   virtual void OnChangeScreen(unsigned int screenIdx) {}
 
   // OS System screensaver
-  /**
-   * Get OS screen saver inhibit implementation if available
+  /*!
+   * \brief Get OS screen saver inhibit implementation if available
    *
    * \return OS screen saver implementation that can be used with this windowing system
    *         or nullptr if unsupported.
@@ -149,9 +155,11 @@ public:
   virtual bool CanDoWindowed() { return true; }
   bool IsFullScreen() { return m_bFullScreen; }
 
-  /*! \brief Check if the windowing system supports moving windows across screens
-    \return true if the windowing system supports moving windows across screens, false otherwise
-  */
+  /*!
+   * \brief Check if the windowing system supports moving windows across screens
+   *
+   * \return true if the windowing system supports moving windows across screens, false otherwise
+   */
   virtual bool SupportsScreenMove() { return true; }
 
   virtual void UpdateResolutions();
@@ -179,8 +187,8 @@ public:
   // Access render system interface
   virtual CGraphicContext& GetGfxContext() const;
 
-  /**
-   * Get OS specific hardware context
+  /*!
+   * \brief Get OS specific hardware context
    *
    * \return OS specific context or nullptr if OS not have
    *
@@ -192,8 +200,8 @@ public:
 
   std::shared_ptr<CDPMSSupport> GetDPMSManager();
 
-  /**
-   * @brief Set the HDR metadata. Passing nullptr as the parameter should
+  /*!
+   * \brief Set the HDR metadata. Passing nullptr as the parameter should
    * disable HDR.
    *
    */
@@ -205,17 +213,38 @@ public:
   static const char* SETTING_WINSYSTEM_IS_HDR_DISPLAY;
   virtual bool HasSystemSdrPeakLuminance() { return false; }
 
-  /**
-   * @brief System supports Video Super Resolution HW upscaler i.e.:
+  /*!
+   * \brief System supports Video Super Resolution HW upscaler i.e.:
    * "NVIDIA RTX Video Super Resolution" or "Intel Video Super Resolution"
    *
    */
   virtual bool SupportsVideoSuperResolution() { return false; }
 
-  // Gets debug info from video renderer
+  /*!
+   * \brief Gets debug info from video renderer for use in "Debug Info OSD" (Alt + O)
+   *
+   */
   virtual DEBUG_INFO_RENDER GetDebugInfo() { return {}; }
 
   virtual std::vector<std::string> GetConnectedOutputs() { return {}; }
+
+  /*!
+   * \brief Return true when HDR display is available and enabled in settings
+   *
+   */
+  bool IsHDRDisplaySettingEnabled();
+
+  /*!
+   * \brief Return true when "Video Super Resolution" is supported and enabled in settings
+   *
+   */
+  bool IsVideoSuperResolutionSettingEnabled();
+
+  /*!
+   * \brief Return true when setting "High Precision Processing" is enabled
+   *
+   */
+  bool IsHighPrecisionProcessingSettingEnabled();
 
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);
