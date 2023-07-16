@@ -11,8 +11,6 @@
 #include "ServiceBroker.h"
 #include "VideoSyncAndroid.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "windowing/WindowSystemFactory.h"
@@ -222,7 +220,7 @@ bool CWinSystemAndroidGLESContext::IsHDRDisplay()
 
 bool CWinSystemAndroidGLESContext::SetHDR(const VideoPicture* videoPicture)
 {
-  if (!CWinSystemAndroid::IsHDRDisplay() || !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(SETTING_WINSYSTEM_IS_HDR_DISPLAY))
+  if (!CServiceBroker::GetWinSystem()->IsHDRDisplaySettingEnabled())
     return false;
 
   EGLint HDRColorSpace = 0;
