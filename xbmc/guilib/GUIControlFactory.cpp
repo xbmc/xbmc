@@ -1568,12 +1568,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
     // Set controller ID
     GUIINFO::CGUIInfoLabel controllerId;
-    GetInfoLabel(pControlNode, "controllerId", controllerId, parentID);
+    GetInfoLabel(pControlNode, "controllerid", controllerId, parentID);
     gcontrol->SetControllerID(controllerId);
 
     // Set controller address
     GUIINFO::CGUIInfoLabel controllerAddress;
-    GetInfoLabel(pControlNode, "controllerAddress", controllerAddress, parentID);
+    GetInfoLabel(pControlNode, "controlleraddress", controllerAddress, parentID);
     gcontrol->SetControllerAddress(controllerAddress);
 
     break;
