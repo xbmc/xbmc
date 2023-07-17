@@ -48,6 +48,11 @@ void CPortManager::Initialize(const std::string& profilePath)
 
 void CPortManager::Deinitialize()
 {
+  // Wait for save tasks
+  for (std::future<void>& task : m_saveFutures)
+    task.wait();
+  m_saveFutures.clear();
+
   m_controllerTree.Clear();
   m_xmlPath.clear();
 }
@@ -86,16 +91,32 @@ void CPortManager::LoadXML()
   DeserializePorts(pRootElement, m_controllerTree.GetPorts());
 }
 
-void CPortManager::SaveXML()
+void CPortManager::SaveXMLAsync()
 {
-  CXBMCTinyXML doc;
-  TiXmlElement node(XML_ROOT_PORTS);
+  PortVec ports = m_controllerTree.GetPorts();
 
-  SerializePorts(node, m_controllerTree.GetPorts());
+  // Prune any finished save tasks
+  m_saveFutures.erase(std::remove_if(m_saveFutures.begin(), m_saveFutures.end(),
+                                     [](std::future<void>& task) {
+                                       return task.wait_for(std::chrono::seconds(0)) ==
+                                              std::future_status::ready;
+                                     }),
+                      m_saveFutures.end());
 
-  doc.InsertEndChild(node);
+  // Save async
+  std::future<void> task = std::async(std::launch::async, [this, ports = std::move(ports)]() {
+    CXBMCTinyXML doc;
+    TiXmlElement node(XML_ROOT_PORTS);
 
-  doc.SaveFile(m_xmlPath);
+    SerializePorts(node, ports);
+
+    doc.InsertEndChild(node);
+
+    std::lock_guard<std::mutex> lock(m_saveMutex);
+    doc.SaveFile(m_xmlPath);
+  });
+
+  m_saveFutures.emplace_back(std::move(task));
 }
 
 void CPortManager::Clear()

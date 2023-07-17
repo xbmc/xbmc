@@ -61,6 +61,8 @@ void CGameClientInput::Initialize()
   // Send controller layouts to game client
   SetControllerLayouts(m_topology->GetControllerTree().GetControllers());
 
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
   // Reset ports to default state (first accepted controller is connected)
   ActivateControllers(m_topology->GetControllerTree());
 
@@ -72,23 +74,27 @@ void CGameClientInput::Initialize()
 
 void CGameClientInput::Start(IGameInputCallback* input)
 {
-  m_inputCallback = input;
-
-  // Connect/disconnect active controllers
-  for (const CPortNode& port : GetActiveControllerTree().GetPorts())
   {
-    if (port.IsConnected())
-    {
-      const ControllerPtr& activeController = port.GetActiveController().GetController();
-      if (activeController)
-        ConnectController(port.GetAddress(), activeController);
-    }
-    else
-      DisconnectController(port.GetAddress());
-  }
+    std::lock_guard<std::recursive_mutex> lock(m_portMutex);
 
-  // Ensure hardware is open to receive events
-  m_hardware.reset(new CGameClientHardware(m_gameClient));
+    m_inputCallback = input;
+
+    // Connect/disconnect active controllers
+    for (const CPortNode& port : GetActiveControllerTree().GetPorts())
+    {
+      if (port.IsConnected())
+      {
+        const ControllerPtr& activeController = port.GetActiveController().GetController();
+        if (activeController)
+          ConnectController(port.GetAddress(), activeController);
+      }
+      else
+        DisconnectController(port.GetAddress());
+    }
+
+    // Ensure hardware is open to receive events
+    m_hardware.reset(new CGameClientHardware(m_gameClient));
+  }
 
   // Notify observers of the initial port configuration
   NotifyObservers(ObservableMessageGamePortsChanged);
@@ -105,6 +111,8 @@ void CGameClientInput::Deinitialize()
 
 void CGameClientInput::Stop()
 {
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
   m_hardware.reset();
 
   CloseMouse();
@@ -312,6 +320,8 @@ bool CGameClientInput::ConnectController(const std::string& portAddress,
     return false;
   }
 
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
   const CPortNode& currentPort = GetActiveControllerTree().GetPort(portAddress);
 
   // Close current ports if any are open
@@ -367,6 +377,8 @@ bool CGameClientInput::DisconnectController(const std::string& portAddress)
 {
   PERIPHERALS::EventLockHandlePtr inputHandlingLock;
 
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
   // If port is a multitap, we need to deactivate its children
   const CPortNode& currentPort = GetActiveControllerTree().GetPort(portAddress);
   CloseJoysticks(currentPort, inputHandlingLock);
@@ -407,15 +419,21 @@ bool CGameClientInput::DisconnectController(const std::string& portAddress)
 
 void CGameClientInput::SavePorts()
 {
+  {
+    std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
+    // Save port state
+    m_portManager->SaveXMLAsync();
+  }
+
   // Let the observers know that ports have changed
   NotifyObservers(ObservableMessageGamePortsChanged);
-
-  // Save port state
-  m_portManager->SaveXML();
 }
 
 void CGameClientInput::ResetPorts()
 {
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
   const CControllerTree& controllerTree = GetDefaultControllerTree();
   for (const CPortNode& port : controllerTree.GetPorts())
     ConnectController(port.GetAddress(), port.GetActiveController().GetController());
@@ -423,6 +441,8 @@ void CGameClientInput::ResetPorts()
 
 bool CGameClientInput::HasAgent() const
 {
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
   if (!m_joysticks.empty())
     return true;
 
@@ -450,6 +470,8 @@ bool CGameClientInput::OpenKeyboard(const ControllerPtr& controller,
     return false;
 
   bool bSuccess = false;
+
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
 
   {
     std::unique_lock<CCriticalSection> lock(m_clientAccess);
@@ -480,11 +502,15 @@ bool CGameClientInput::OpenKeyboard(const ControllerPtr& controller,
 
 bool CGameClientInput::IsKeyboardOpen() const
 {
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
   return static_cast<bool>(m_keyboard);
 }
 
 void CGameClientInput::CloseKeyboard()
 {
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
   if (m_keyboard)
   {
     m_keyboard.reset();
@@ -521,6 +547,8 @@ bool CGameClientInput::OpenMouse(const ControllerPtr& controller,
 
   bool bSuccess = false;
 
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
   {
     std::unique_lock<CCriticalSection> lock(m_clientAccess);
 
@@ -549,11 +577,15 @@ bool CGameClientInput::OpenMouse(const ControllerPtr& controller,
 
 bool CGameClientInput::IsMouseOpen() const
 {
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
   return static_cast<bool>(m_mouse);
 }
 
 void CGameClientInput::CloseMouse()
 {
+  std::lock_guard<std::recursive_mutex> lock(m_portMutex);
+
   if (m_mouse)
   {
     m_mouse.reset();
