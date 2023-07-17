@@ -37,7 +37,7 @@
 							<left>30</left>
 							<width>640</width>
 							<height>640</height>
-							<controllerId>game.controller.snes</controllerId>
+							<controllerid>game.controller.snes</controllerid>
 						</control>
 						<control type="textbox">
 							<description>Additional help text. This will be removed in future versions.</description>
