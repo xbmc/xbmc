@@ -16,7 +16,6 @@
 
 #include <map>
 #include <memory>
-#include <mutex>
 #include <string>
 
 class CCriticalSection;
@@ -132,18 +131,8 @@ private:
    */
   JoystickMap m_joysticks;
 
-  /*!
-   * \brief Serializable port state
-   */
+  // TODO: Guard with a mutex
   std::unique_ptr<CPortManager> m_portManager;
-
-  /*!
-   * \brief Mutex for port state
-   *
-   * Mutex is recursive to allow for management of several ports within the
-   * function ResetPorts().
-   */
-  mutable std::recursive_mutex m_portMutex;
 
   /*!
    * \brief Keyboard handler
