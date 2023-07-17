@@ -385,8 +385,6 @@ void CDialogGameSaves::OnContextMenu(CFileItem& item)
     OnRename(item);
   else if (index == 1)
     OnDelete(item);
-
-  m_viewControl->SetItems(*m_vecList);
 }
 
 void CDialogGameSaves::OnRename(CFileItem& item)
@@ -410,8 +408,7 @@ void CDialogGameSaves::OnRename(CFileItem& item)
       RETRO::CSavestateDatabase::GetSavestateItem(*newSavestate, savestatePath, item);
 
       // Refresh thumbnails
-      CGUIMessage message(GUI_MSG_REFRESH_LIST, GetID(), CONTROL_SAVES_DETAILED_LIST);
-      OnMessage(message);
+      m_viewControl->SetItems(*m_vecList);
     }
     else
     {
@@ -436,8 +433,7 @@ void CDialogGameSaves::OnDelete(CFileItem& item)
       m_vecList->Remove(&item);
 
       // Refresh thumbnails
-      CGUIMessage message(GUI_MSG_REFRESH_LIST, GetID(), CONTROL_SAVES_DETAILED_LIST);
-      OnMessage(message);
+      m_viewControl->SetItems(*m_vecList);
     }
     else
     {
