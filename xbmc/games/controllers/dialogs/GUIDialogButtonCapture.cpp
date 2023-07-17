@@ -23,7 +23,6 @@
 
 using namespace KODI;
 using namespace GAME;
-using namespace KODI::MESSAGING;
 
 CGUIDialogButtonCapture::CGUIDialogButtonCapture() : CThread("ButtonCaptureDlg")
 {
@@ -42,8 +41,8 @@ void CGUIDialogButtonCapture::Show()
 
     Create();
 
-    bool bAccepted =
-        HELPERS::ShowOKDialogText(CVariant{GetDialogHeader()}, CVariant{GetDialogText()});
+    bool bAccepted = MESSAGING::HELPERS::ShowOKDialogText(CVariant{GetDialogHeader()},
+                                                          CVariant{GetDialogText()});
 
     StopThread(false);
 
@@ -65,7 +64,7 @@ void CGUIDialogButtonCapture::Process()
       break;
 
     //! @todo Move to rendering thread when there is a rendering thread
-    HELPERS::UpdateOKDialogText(CVariant{35013}, CVariant{GetDialogText()});
+    MESSAGING::HELPERS::UpdateOKDialogText(CVariant{35013}, CVariant{GetDialogText()});
   }
 }
 

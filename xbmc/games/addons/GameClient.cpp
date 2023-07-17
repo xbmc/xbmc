@@ -46,7 +46,6 @@
 
 using namespace KODI;
 using namespace GAME;
-using namespace KODI::MESSAGING;
 
 #define EXTENSION_SEPARATOR "|"
 #define EXTENSION_WILDCARD "*"
@@ -206,7 +205,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
     // Failed to play game
     // The required files can't be found.
-    HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{g_localizeStrings.Get(35219)});
+    MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{g_localizeStrings.Get(35219)});
     return false;
   }
 
@@ -406,15 +405,16 @@ void CGameClient::NotifyError(GAME_ERROR error)
   {
     // Failed to play game
     // This game requires the following add-on: %s
-    HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{StringUtils::Format(
-                                                   g_localizeStrings.Get(35211), missingResource)});
+    MESSAGING::HELPERS::ShowOKDialogText(
+        CVariant{35210},
+        CVariant{StringUtils::Format(g_localizeStrings.Get(35211), missingResource)});
   }
   else
   {
     // Failed to play game
     // The emulator "%s" had an internal error.
-    HELPERS::ShowOKDialogText(CVariant{35210},
-                              CVariant{StringUtils::Format(g_localizeStrings.Get(35213), Name())});
+    MESSAGING::HELPERS::ShowOKDialogText(
+        CVariant{35210}, CVariant{StringUtils::Format(g_localizeStrings.Get(35213), Name())});
   }
 }
 
