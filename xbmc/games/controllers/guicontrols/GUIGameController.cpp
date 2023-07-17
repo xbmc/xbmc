@@ -92,7 +92,7 @@ void CGUIGameController::UpdateInfo(const CGUIListItem* item /* = nullptr */)
   }
 }
 
-void CGUIGameController::SetControllerID(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& controllerId)
+void CGUIGameController::SetControllerID(const GUILIB::GUIINFO::CGUIInfoLabel& controllerId)
 {
   m_controllerIdInfo = controllerId;
 
@@ -107,7 +107,7 @@ void CGUIGameController::SetControllerID(const KODI::GUILIB::GUIINFO::CGUIInfoLa
 }
 
 void CGUIGameController::SetControllerAddress(
-    const KODI::GUILIB::GUIINFO::CGUIInfoLabel& controllerAddress)
+    const GUILIB::GUIINFO::CGUIInfoLabel& controllerAddress)
 {
   m_controllerAddressInfo = controllerAddress;
 

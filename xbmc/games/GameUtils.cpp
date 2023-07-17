@@ -71,7 +71,7 @@ bool CGameUtils::FillInGameClient(CFileItem& item, std::string& savestatePath)
           int errorTextId = bHasVfsGameClient ? 35214 : 35212;
 
           // "Failed to play game"
-          KODI::MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{errorTextId});
+          MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{errorTextId});
         }
         else if (candidates.size() == 1 && installable.empty())
         {
