@@ -21,7 +21,6 @@
 #include "utils/log.h"
 
 using namespace KODI;
-using namespace KODI::MESSAGING;
 using namespace GAME;
 
 std::string CGUIDialogSelectGameClient::ShowAndGetGameClient(const std::string& gamePath,

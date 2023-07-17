@@ -37,8 +37,8 @@ public:
   void UpdateInfo(const CGUIListItem* item = nullptr) override;
 
   // GUI functions
-  void SetControllerID(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& controllerId);
-  void SetControllerAddress(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& controllerAddress);
+  void SetControllerID(const GUILIB::GUIINFO::CGUIInfoLabel& controllerId);
+  void SetControllerAddress(const GUILIB::GUIINFO::CGUIInfoLabel& controllerAddress);
 
   // Game functions
   void ActivateController(const std::string& controllerId);
@@ -47,8 +47,8 @@ public:
 
 private:
   // GUI parameters
-  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_controllerIdInfo;
-  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_controllerAddressInfo;
+  GUILIB::GUIINFO::CGUIInfoLabel m_controllerIdInfo;
+  GUILIB::GUIINFO::CGUIInfoLabel m_controllerAddressInfo;
 
   // Game parameters
   ControllerPtr m_currentController;
