@@ -369,7 +369,7 @@ DriveState CDetectDVDMedia::PollDriveState()
     m_LastTrayState = m_TrayState;
   }
 
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   return DriveState::NOT_READY;
 #else
   return DriveState::READY;

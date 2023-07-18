@@ -16,7 +16,7 @@
 //
 //
 
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
 
 #include <memory>
 #include <string>

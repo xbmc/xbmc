@@ -552,7 +552,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     {
       // get the usual music shares, and anything for all media windows
       CGUIDialogContextMenu::GetContextButtons("music", item, buttons);
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
       // enable Rip CD an audio disc
       if (CServiceBroker::GetMediaManager().IsDiscInDrive() && item->IsCDDA())
       {

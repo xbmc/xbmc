@@ -41,7 +41,7 @@
 #include <mutex>
 #include <string>
 #include <vector>
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
 #include "ContextMenuManager.h" //! @todo Remove me
@@ -353,7 +353,7 @@ bool CProfileManager::LoadProfile(unsigned int index)
   CPasswordManager::GetInstance().Clear();
 
   // to set labels - shares are reloaded
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   MEDIA_DETECT::CDetectDVDMedia::UpdateState();
 #endif
 

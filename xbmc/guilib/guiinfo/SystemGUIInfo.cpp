@@ -257,7 +257,7 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_FPS:
       value = StringUtils::Format("{:02.2f}", m_fps);
       return true;
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
     case SYSTEM_DVD_LABEL:
       value = CServiceBroker::GetMediaManager().GetDiskLabel();
       return true;
@@ -546,7 +546,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       value = CServiceBroker::GetMediaManager().IsDiscInDrive();
       return true;
     case SYSTEM_MEDIA_AUDIO_CD:
-    #ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
       if (CServiceBroker::GetMediaManager().IsDiscInDrive())
       {
         MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
@@ -558,7 +558,7 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
         value = false;
       }
       return true;
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
     case SYSTEM_DVDREADY:
       value = CServiceBroker::GetMediaManager().GetDriveStatus() != DriveState::NOT_READY;
       return true;
