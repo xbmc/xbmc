@@ -48,10 +48,24 @@ protected:
 private:
   void FillBuffersSet(CRenderBuffer* (&buffers)[8]);
   CRect ApplyTransforms(const CRect& destRect) const;
-  DXGI_FORMAT CalcIntermediateTargetFormat(const VideoPicture& picture, bool tryVSR) const;
+  /*!
+   * \brief Choose the best available conversion for the given source and output constraints
+   * \param conversions list of supported conversions
+   * \param picture information about the source
+   * \param tryVSR yes/no favor a conversion that enables Video Super Resolution scaling
+   * \return 
+   */
+  DXVA::ProcessorConversion ChooseConversion(const DXVA::ProcessorConversions& conversions,
+                                             unsigned int sourceBits,
+                                             AVColorTransferCharacteristic colorTransfer,
+                                             bool tryVSR) const;
 
   std::unique_ptr<DXVA::CProcessorHD> m_processor;
+  std::shared_ptr<DXVA::CEnumeratorHD> m_enumerator;
   DXGI_FORMAT m_intermediateTargetFormat{DXGI_FORMAT_UNKNOWN};
+  DXVA::ProcessorConversion m_conversion;
+  DXVA::SupportedConversionsArgs m_conversionsArgs;
+  bool m_tryVSR{false};
 };
 
 class CRendererDXVA::CRenderBufferImpl : public CRenderBuffer

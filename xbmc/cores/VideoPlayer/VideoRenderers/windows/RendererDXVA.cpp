@@ -35,9 +35,6 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
   const DXGI_FORMAT dxgi_format = GetDXGIFormat(av_pixel_format, __super::GetDXGIFormat(picture));
 
-  const bool streamIsHDR = (picture.color_primaries == AVCOL_PRI_BT2020) &&
-                           (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-                            picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
   const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
   const auto setting = DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY;
   const bool systemUsesHDR =
@@ -49,18 +46,11 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
 
   if (av_pixel_format == AV_PIX_FMT_D3D11VA_VLD)
   {
-    // Check if HDR10 passthrough is supported by DXVA video processor
-    // Also used for HLG because it is not supported by Windows, HDR10 is used instead
-    if (streamIsHDR && systemUsesHDR && !enumerator.IsPQ10PassthroughSupported())
+    if (enumerator.SupportedConversions(SupportedConversionsArgs{picture, systemUsesHDR}).empty())
+    {
+      CLog::LogF(LOGWARNING, "DXVA will not be used.");
       return;
-
-    // Check if BT.2020 color space is supported by DXVA video processor (for own HDR-SDR tonemap)
-    if (picture.color_primaries == AVCOL_PRI_BT2020 && !enumerator.IsBT2020Supported())
-      return;
-
-    // Everything else is played as HD / BT709, check support.
-    if (picture.color_primaries != AVCOL_PRI_BT2020 && !enumerator.IsSDRSupported())
-      return;
+    }
 
     weight += 1000;
   }
@@ -88,18 +78,11 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
       return;
     }
 
-    // Check if HDR10 passthrough is supported by DXVA video processor
-    // Also used for HLG because it is not supported by Windows, HDR10 is used instead
-    if (streamIsHDR && systemUsesHDR && !enumerator.IsPQ10PassthroughSupported())
+    if (enumerator.SupportedConversions(SupportedConversionsArgs{picture, systemUsesHDR}).empty())
+    {
+      CLog::LogF(LOGWARNING, "DXVA will not be used.");
       return;
-
-    // Check if BT.2020 color space is supported by DXVA video processor
-    if (picture.color_primaries == AVCOL_PRI_BT2020 && !enumerator.IsBT2020Supported())
-      return;
-
-    // Everything else is played as HD / BT709, check support.
-    if (picture.color_primaries != AVCOL_PRI_BT2020 && !enumerator.IsSDRSupported())
-      return;
+    }
 
     if (av_pixel_format == AV_PIX_FMT_NV12 ||
         av_pixel_format == AV_PIX_FMT_P010 ||
@@ -141,7 +124,6 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
   {
     m_format = picture.videoBuffer->GetFormat();
     const DXGI_FORMAT dxgi_format = GetDXGIFormat(m_format, __super::GetDXGIFormat(picture));
-    bool tryVSR{false};
 
     if (DX::Windowing()->SupportsVideoSuperResolution())
     {
@@ -150,35 +132,53 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
       if (settings && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_USESUPERRESOLUTION) &&
           CProcessorHD::IsSuperResolutionSuitable(picture))
       {
-        tryVSR = true;
+        m_tryVSR = true;
       }
     }
 
-    // create processor
-    m_processor = std::make_unique<DXVA::CProcessorHD>();
-    if (m_processor->PreInit() && m_processor->Open(picture) &&
-        m_processor->IsFormatSupportedInput(dxgi_format))
+    m_enumerator = std::make_shared<DXVA::CEnumeratorHD>();
+    if (m_enumerator->Open(picture.iWidth, picture.iHeight, dxgi_format))
     {
-      m_intermediateTargetFormat = CalcIntermediateTargetFormat(picture, tryVSR);
-      if (m_processor->SetOutputFormat(m_intermediateTargetFormat))
-      {
-        if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
-            CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
-          m_processor->LogSupportedConversions(dxgi_format, m_intermediateTargetFormat, picture);
+      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+      const auto setting = DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY;
+      const bool systemUsesHDR =
+          (settings ? settings->GetBool(setting) && DX::Windowing()->IsHDRDisplay() : false) ||
+          DX::Windowing()->IsHDROutput();
 
-        if (m_processor->IsFormatConversionSupported(dxgi_format, m_intermediateTargetFormat,
-                                                     picture))
+      if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+          CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
+      {
+        m_enumerator->LogSupportedConversions(
+            dxgi_format, CProcessorHD::AvToDxgiColorSpace(DXVA::DXGIColorSpaceArgs(picture)));
+      }
+
+      m_conversionsArgs = SupportedConversionsArgs{picture, systemUsesHDR};
+      const ProcessorConversions conversions =
+          m_enumerator->SupportedConversions(m_conversionsArgs);
+      if (!conversions.empty())
+      {
+        const ProcessorConversion chosenConversion = ChooseConversion(
+            conversions, picture.colorBits,
+            static_cast<AVColorTransferCharacteristic>(picture.color_transfer), m_tryVSR);
+        m_intermediateTargetFormat = chosenConversion.m_outputFormat;
+        m_conversion = chosenConversion;
+
+        CLog::LogF(LOGINFO, "chosen conversion: {}", m_conversion.ToString());
+
+        // create processor
+        m_processor = std::make_unique<DXVA::CProcessorHD>();
+        if (m_processor->Open(picture, m_enumerator) && m_processor->SetConversion(m_conversion))
         {
-          if (tryVSR)
+          if (m_tryVSR)
             m_processor->TryEnableVideoSuperResolution();
 
           return true;
         }
       }
     }
-
     CLog::LogF(LOGERROR, "unable to create DXVA processor");
     m_processor.reset();
+    m_enumerator.reset();
   }
   return false;
 }
@@ -198,6 +198,37 @@ bool CRendererDXVA::NeedBuffer(int idx)
 void CRendererDXVA::CheckVideoParameters()
 {
   __super::CheckVideoParameters();
+
+  CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
+  if (m_enumerator)
+  {
+    const SupportedConversionsArgs args{buf->primaries, buf->color_transfer, buf->full_range,
+                                        DX::Windowing()->IsHDROutput()};
+
+    if (m_conversionsArgs != args)
+    {
+      CLog::LogF(LOGINFO, "source format change detected");
+
+      const ProcessorConversions conversions = m_enumerator->SupportedConversions(args);
+      // TODO case no supported conversion: add support in WinRenderer to fallback to a render method with support
+      // For now, keep using the current conversion. Results won't be ideal but a black screen is avoided
+      const ProcessorConversion conversion =
+          conversions.empty()
+              ? m_conversion
+              : ChooseConversion(conversions, buf->bits, buf->color_transfer, m_tryVSR);
+
+      if (m_conversion != conversion)
+      {
+        CLog::LogF(LOGINFO, "new conversion: {}", conversion.ToString());
+
+        m_processor->SetConversion(conversion);
+        m_intermediateTargetFormat = conversion.m_outputFormat;
+
+        m_conversion = conversion;
+      }
+      m_conversionsArgs = args;
+    }
+  }
 
   CreateIntermediateTarget(HasHQScaler() ? m_sourceWidth : m_viewWidth,
                            HasHQScaler() ? m_sourceHeight : m_viewHeight, false,
@@ -470,44 +501,48 @@ bool CRendererDXVA::CRenderBufferImpl::UploadToTexture()
   return m_bLoaded;
 }
 
-DXGI_FORMAT CRendererDXVA::CalcIntermediateTargetFormat(const VideoPicture& picture,
-                                                        bool tryVSR) const
+ProcessorConversion CRendererDXVA::ChooseConversion(const ProcessorConversions& conversions,
+                                                    unsigned int sourceBits,
+                                                    AVColorTransferCharacteristic colorTransfer,
+                                                    bool tryVSR) const
 {
-  // RGB8 processor output format is required for VSR
-  if (tryVSR)
-    return DXGI_FORMAT_B8G8R8A8_UNORM;
+  assert(conversions.size() > 0);
 
-  // Default value: same as the back buffer
-  DXGI_FORMAT format{DX::Windowing()->GetBackBuffer().GetFormat()};
-
-  if (!m_processor)
-    return format;
-
-  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-
-  if (!settings || !settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING))
-    return format;
-
-  // Preserve HDR precision
-  if (picture.colorBits > 8 && (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-                                picture.color_transfer == AVCOL_TRC_ARIB_STD_B67))
+  bool tryHQ{false};
+  if (!tryVSR)
   {
-    const AVPixelFormat avpFormat = picture.videoBuffer->GetFormat();
-    const DXGI_FORMAT inputFormat =
-        CRenderBufferImpl::GetDXGIFormat(avpFormat, __super::GetDXGIFormat(picture));
+    // Try high quality when: backbuffer is 10 bits or High precision processing is on and the source is HDR
+    tryHQ = (DX::Windowing()->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM);
 
-    const std::array hdrformats{DXGI_FORMAT_R10G10B10A2_UNORM, DXGI_FORMAT_R16G16B16A16_FLOAT};
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    if (settings && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING))
+      if (sourceBits > 8 &&
+          (colorTransfer == AVCOL_TRC_SMPTE2084 || colorTransfer == AVCOL_TRC_ARIB_STD_B67))
+        tryHQ = true;
+  }
 
+  // RGB8 processor output format is required for VSR
+  if (!tryVSR && tryHQ)
+  {
     const auto it =
-        std::find_if(hdrformats.cbegin(), hdrformats.cend(), [&](DXGI_FORMAT outputFormat) {
-          return m_processor->IsFormatSupportedOutput(outputFormat) &&
-                 m_processor->IsFormatConversionSupported(inputFormat, outputFormat, picture);
+        std::find_if(conversions.cbegin(), conversions.cend(), [](const ProcessorConversion& c) {
+          return c.m_outputFormat == DXGI_FORMAT_R10G10B10A2_UNORM;
         });
 
-    if (it != hdrformats.cend())
-      format = *it;
+    if (it != conversions.end())
+      return *it;
     else
-      CLog::LogF(LOGDEBUG, "no compatible high precision format found for HDR.");
+      CLog::LogF(LOGDEBUG, "no compatible high precision format found.");
   }
-  return format;
+
+  const auto it =
+      std::find_if(conversions.cbegin(), conversions.cend(), [](const ProcessorConversion& c) {
+        return c.m_outputFormat == DXGI_FORMAT_B8G8R8A8_UNORM;
+      });
+
+  if (it != conversions.end())
+    return *it;
+
+  // bad situation, nothing matching our needs found, return the first conversion available
+  return conversions.front();
 }

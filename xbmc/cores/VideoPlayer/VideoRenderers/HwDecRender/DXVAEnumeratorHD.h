@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "DVDCodecs/Video/DXVA.h"
 #include "VideoRenderers/Windows/RendererBase.h"
 #include "guilib/D3DResource.h"
 
@@ -64,9 +65,6 @@ struct ProcessorCapabilities
   D3D11_VIDEO_PROCESSOR_CAPS m_vcaps{};
   D3D11_VIDEO_PROCESSOR_RATE_CONVERSION_CAPS m_rateCaps{};
   ProcAmpInfo m_Filters[NUM_FILTERS]{};
-  bool m_bSupportHLG{false};
-  bool m_HDR10Left{false};
-  bool m_BT2020Left{false};
   bool m_hasMetadataHDR10Support{false};
 };
 
@@ -90,9 +88,68 @@ struct ProcessorConversion
   DXGI_COLOR_SPACE_TYPE m_inputCS{DXGI_COLOR_SPACE_RESERVED};
   DXGI_FORMAT m_outputFormat{DXGI_FORMAT_UNKNOWN};
   DXGI_COLOR_SPACE_TYPE m_outputCS{DXGI_COLOR_SPACE_RESERVED};
+
+  ProcessorConversion() = default;
+  ProcessorConversion(const DXGI_FORMAT& inputFormat,
+                      const DXGI_COLOR_SPACE_TYPE& inputCS,
+                      const DXGI_FORMAT& outputFormat,
+                      const DXGI_COLOR_SPACE_TYPE& outputCS)
+    : m_inputFormat(inputFormat),
+      m_inputCS(inputCS),
+      m_outputFormat(outputFormat),
+      m_outputCS(outputCS)
+  {
+  }
+
+  const std::string ToString() const;
+
+  bool operator!=(const ProcessorConversion& other) const
+  {
+    return m_inputFormat != other.m_inputFormat ||
+           m_inputCS != other.m_inputCS && m_outputFormat != other.m_outputFormat ||
+           m_outputCS != other.m_outputCS;
+  }
 };
 
 using ProcessorConversions = std::vector<ProcessorConversion>;
+
+const std::vector<DXGI_FORMAT> RenderingOutputFormats = {DXGI_FORMAT_B8G8R8A8_UNORM,
+                                                         DXGI_FORMAT_R10G10B10A2_UNORM};
+
+struct SupportedConversionsArgs
+{
+  AVColorPrimaries m_colorPrimaries{AVCOL_PRI_UNSPECIFIED};
+  AVColorTransferCharacteristic m_colorTransfer{AVCOL_TRC_UNSPECIFIED};
+  bool m_fullRange{false};
+  bool m_hdrOutput{false};
+
+  SupportedConversionsArgs() = default;
+
+  SupportedConversionsArgs(const VideoPicture& picture, bool isHdrOutput)
+  {
+    m_colorPrimaries = static_cast<AVColorPrimaries>(picture.color_primaries);
+    m_colorTransfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+    m_fullRange = picture.color_range == 1;
+    m_hdrOutput = isHdrOutput;
+  }
+
+  SupportedConversionsArgs(const AVColorPrimaries& colorPrimaries,
+                           const AVColorTransferCharacteristic& colorTransfer,
+                           bool fullRange,
+                           bool hdrOutput)
+    : m_colorPrimaries(colorPrimaries),
+      m_colorTransfer(colorTransfer),
+      m_fullRange(fullRange),
+      m_hdrOutput(hdrOutput)
+  {
+  }
+
+  bool operator!=(const SupportedConversionsArgs& other) const
+  {
+    return m_colorPrimaries != other.m_colorPrimaries || m_colorTransfer != other.m_colorTransfer ||
+           m_fullRange != other.m_fullRange || m_hdrOutput != other.m_hdrOutput;
+  }
+};
 
 class CEnumeratorHD : public ID3DResource
 {
@@ -104,22 +161,19 @@ public:
   void Close();
 
   // ID3DResource overrides
-  void OnCreateDevice() override {}
+  void OnCreateDevice() override
+  {
+    std::unique_lock<CCriticalSection> lock(m_section);
+    if (m_width > 0 && m_height > 0)
+      OpenEnumerator();
+  }
+
   void OnDestroyDevice(bool) override
   {
     std::unique_lock<CCriticalSection> lock(m_section);
     UnInit();
   }
 
-  bool IsBT2020Supported();
-  bool IsPQ10PassthroughSupported();
-  /*!
-   * \brief Test whether the dxva video processor supports SDR to SDR conversion.
-   * Support is assumed to exist on systems that don't support the
-   * ID3D11VideoProcessorEnumerator1 interface.
-   * \return conversion supported yes/no
-  */
-  bool IsSDRSupported();
   ProcessorCapabilities ProbeProcessorCaps();
   /*!
    * \brief Check if a conversion is supported by the dxva processor.
@@ -149,17 +203,11 @@ public:
   /*!
    * \brief Outputs in the log a list of conversions supported by the DXVA processor.
    * \param inputFormat the source format
-   * \param heuristicsInputCS the input color space that will be used for playback
    * \param inputNativeCS the input color space that would be used with a direct mapping
    * from avcodec to D3D11, without any workarounds or tricks.
-   * \param outputFormat the destination format
-   * \param heuristicsOutputCS the output color space that will be used for playback
    */
-  void LogSupportedConversions(const DXGI_FORMAT& inputFormat,
-                               const DXGI_COLOR_SPACE_TYPE heuristicsInputCS,
-                               const DXGI_COLOR_SPACE_TYPE inputNativeCS,
-                               const DXGI_FORMAT& outputFormat,
-                               const DXGI_COLOR_SPACE_TYPE heuristicsOutputCS);
+  void LogSupportedConversions(const DXGI_FORMAT inputFormat,
+                               const DXGI_COLOR_SPACE_TYPE inputNativeCS);
 
   bool IsInitialized() const { return m_pEnumerator; }
   /*!
@@ -175,11 +223,42 @@ public:
   ComPtr<ID3D11VideoProcessorOutputView> CreateVideoProcessorOutputView(
       ID3D11Resource* pResource, const D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC* pDesc);
 
+  /*!
+   * \brief Return the conversions supported by the processor to play HDR material as HDR.
+   * \param isSourceFullRange Is the source limited or full range
+   * \return conversion list of supported conversions
+   */
+  ProcessorConversions QueryHDRConversions(const bool isSourceFullRange);
+  /*!
+   * \brief Return the conversions supported by the processor to play HDR material as SDR
+   * These conversions avoid tonemapping by the processor and require post processing.
+   * \param isSourceFullRange Is the source limited or full range
+   * \return conversion list of supported conversions
+   */
+  ProcessorConversions QueryHDRtoSDRConversions(const bool isSourceFullRange);
+  /*!
+   * \brief Return the conversions supported by the processor for SDR material.
+   * Support is assumed to exist on systems that don't support the
+   * ID3D11VideoProcessorEnumerator1 interface.
+   * \param isSourceFullRange Is the source limited or full range
+   * \param colorPrimaries color primaries of the source
+   * \param colorTransfer transfer function of the source
+   * \return conversion list of supported conversions
+   */
+  ProcessorConversions QuerySDRConversions(const bool isSourceFullRange,
+                                           AVColorPrimaries colorPrimaries,
+                                           AVColorTransferCharacteristic colorTransfer);
+  /*!
+   * \brief Return a list of conversions supported by the processor for the given parameters.
+   * \param args parameters
+   * \return list of conversions
+   */
+  ProcessorConversions SupportedConversions(const SupportedConversionsArgs& args);
+
 protected:
   void UnInit();
-  InputFormat QueryHDRtoHDRSupport() const;
-  InputFormat QueryHDRtoSDRSupport() const;
-  bool QuerySDRSupport() const;
+  bool OpenEnumerator();
+
   /*!
    * \brief Retrieve the list of DXGI_FORMAT supported by the DXVA processor
    * \param inputFormats yes/no populate the input formats vector of the returned structure
@@ -229,6 +308,9 @@ protected:
       const std::vector<DXGI_COLOR_SPACE_TYPE>& outputColorSpaces) const;
 
   CCriticalSection m_section;
+
+  uint32_t m_width = 0;
+  uint32_t m_height = 0;
 
   ComPtr<ID3D11VideoDevice> m_pVideoDevice;
   ComPtr<ID3D11VideoProcessorEnumerator> m_pEnumerator;
