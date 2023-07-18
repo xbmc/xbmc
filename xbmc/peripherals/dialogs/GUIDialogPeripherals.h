@@ -40,7 +40,6 @@ private:
   // implementation of CGUIWindow via CGUIDialogSelect
   void OnInitWindow() override;
 
-  void ShowInternal();
   void UpdatePeripheralsAsync();
   void UpdatePeripheralsSync();
 
