@@ -122,7 +122,7 @@ WSDiscovery::IWSDiscovery& CServiceBroker::GetWSDiscovery()
 }
 #endif
 
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
 MEDIA_DETECT::CDetectDVDMedia& CServiceBroker::GetDetectDVDMedia()
 {
   return g_application.m_ServiceManager->GetDetectDVDMedia();

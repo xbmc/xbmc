@@ -74,7 +74,7 @@ using KODI::MESSAGING::HELPERS::DialogResponse;
 #define RECENTLY_PLAYED_LIMIT 25
 #define MIN_FULL_SEARCH_LENGTH 3
 
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
 using namespace CDDB;
 using namespace MEDIA_DETECT;
 #endif
@@ -4609,7 +4609,7 @@ bool CMusicDatabase::TrimImageURLs(std::string& strImage, const size_t space)
 
 bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/)
 {
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_AUDIOCDS_USECDDB))
     return false;
@@ -4730,7 +4730,7 @@ bool CMusicDatabase::LookupCDDBInfo(bool bRequery /*=false*/)
 
 void CMusicDatabase::DeleteCDDBInfo()
 {
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   CFileItemList items;
   if (!CDirectory::GetDirectory(m_profileManager.GetCDDBFolder(), items, ".cddb",
                                 DIR_FLAG_NO_FILE_DIRS))

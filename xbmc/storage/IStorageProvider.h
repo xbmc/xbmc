@@ -13,7 +13,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
 #include "cdioSupport.h"
 #endif
 
@@ -74,7 +74,7 @@ public:
   virtual void GetRemovableDrives(VECSOURCES &removableDrives) = 0;
   virtual std::string GetFirstOpticalDeviceFileName()
   {
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
     return std::string(MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName());
 #else
     return "";

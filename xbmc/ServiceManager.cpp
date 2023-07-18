@@ -40,7 +40,7 @@
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
 #include "pvr/PVRManager.h"
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
 #include "storage/DetectDVDType.h"
 #endif
 #include "storage/MediaManager.h"
@@ -168,7 +168,7 @@ bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
   m_mediaManager.reset(new CMediaManager());
   m_mediaManager->Initialize();
 
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   m_DetectDVDType = std::make_unique<MEDIA_DETECT::CDetectDVDMedia>();
 #endif
 
@@ -186,7 +186,7 @@ bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
 // stage 3 is called after successful initialization of WindowManager
 bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& profileManager)
 {
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   // Start Thread for DVD Mediatype detection
   CLog::Log(LOGINFO, "[Media Detection] starting service for optical media detection");
   m_DetectDVDType->Create(false);
@@ -217,7 +217,7 @@ bool CServiceManager::InitStageThree(const std::shared_ptr<CProfileManager>& pro
 void CServiceManager::DeinitStageThree()
 {
   init_level = 2;
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   m_DetectDVDType->StopThread();
   m_DetectDVDType.reset();
 #endif
@@ -328,7 +328,7 @@ XBPython& CServiceManager::GetXBPython()
 }
 #endif
 
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
 MEDIA_DETECT::CDetectDVDMedia& CServiceManager::GetDetectDVDMedia()
 {
   return *m_DetectDVDType;
