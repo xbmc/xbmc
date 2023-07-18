@@ -129,7 +129,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     return new CWin32File();
   }
 #endif // TARGET_WINDOWS
-#if defined(HAS_DVD_DRIVE)
+#if defined(HAS_OPTICAL_DRIVE)
   else if (url.IsProtocol("cdda")) return new CFileCDDA();
 #endif
 #if defined(HAS_ISO9660PP)

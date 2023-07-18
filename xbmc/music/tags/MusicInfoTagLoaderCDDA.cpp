@@ -18,7 +18,7 @@
 
 using namespace MUSIC_INFO;
 
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
 using namespace MEDIA_DETECT;
 using namespace CDDB;
 #endif
@@ -36,7 +36,7 @@ CMusicInfoTagLoaderCDDA::~CMusicInfoTagLoaderCDDA() = default;
 
 bool CMusicInfoTagLoaderCDDA::Load(const std::string& strFileName, CMusicInfoTag& tag, EmbeddedArt *art)
 {
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   try
   {
     tag.SetURL(strFileName);

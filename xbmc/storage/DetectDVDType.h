@@ -15,7 +15,7 @@
 
 #include "PlatformDefs.h"
 
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
 
 #include "storage/discs/IDiscDriveHandler.h"
 #include "threads/CriticalSection.h"

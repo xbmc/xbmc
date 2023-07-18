@@ -198,7 +198,7 @@ void SetPathAndPlay(CFileItem& item)
 bool CVideoResume::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   if (item.IsDVD() || item.IsCDDA())
     return MEDIA_DETECT::CAutorun::PlayDisc(item.GetPath(), true, false);
 #endif
@@ -226,7 +226,7 @@ bool CVideoPlay::IsVisible(const CFileItem& item) const
 bool CVideoPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   if (item.IsDVD() || item.IsCDDA())
     return MEDIA_DETECT::CAutorun::PlayDisc(item.GetPath(), true, true);
 #endif
