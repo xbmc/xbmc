@@ -54,8 +54,6 @@ bool CPeripheralMouse::InitialiseFeature(const PeripheralFeature feature)
 void CPeripheralMouse::RegisterMouseDriverHandler(MOUSE::IMouseDriverHandler* handler,
                                                   bool bPromiscuous)
 {
-  using namespace KEYBOARD;
-
   std::unique_lock<CCriticalSection> lock(m_mutex);
 
   MouseHandle handle{handler, bPromiscuous};
