@@ -192,7 +192,8 @@ protected:
 
   PeripheralVector m_peripherals;
   std::chrono::milliseconds m_iRescanTime;
-  bool m_bNeedsPolling; /*!< true when this bus needs to be polled for new devices, false when it
+  bool m_bNeedsPolling =
+      true; /*!< true when this bus needs to be polled for new devices, false when it
                            uses callbacks to notify this bus of changed */
   CPeripherals& m_manager;
   const PeripheralBusType m_type;

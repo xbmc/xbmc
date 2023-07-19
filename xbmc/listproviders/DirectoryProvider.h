@@ -73,8 +73,8 @@ public:
   // callback from directory job
   void OnJobComplete(unsigned int jobID, bool success, CJob *job) override;
 private:
-  UpdateState      m_updateState;
-  unsigned int     m_jobID;
+  UpdateState m_updateState = OK;
+  unsigned int m_jobID = 0;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_url;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_target;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_sortMethod;
@@ -83,7 +83,7 @@ private:
   std::string      m_currentUrl;
   std::string      m_currentTarget;   ///< \brief node.target property on the list as a whole
   SortDescription  m_currentSort;
-  unsigned int     m_currentLimit;
+  unsigned int m_currentLimit = 0;
   std::vector<CGUIStaticItemPtr> m_items;
   std::vector<InfoTagType> m_itemTypes;
   mutable CCriticalSection m_section;

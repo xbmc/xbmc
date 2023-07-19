@@ -37,13 +37,7 @@ using namespace KODI::MESSAGING;
 using KODI::UTILITY::CDigest;
 
 CGUIDialogNumeric::CGUIDialogNumeric(void)
-  : CGUIDialog(WINDOW_DIALOG_NUMERIC, "DialogNumeric.xml"),
-    m_bConfirmed{false},
-    m_bCanceled{false},
-    m_mode{INPUT_PASSWORD},
-    m_block{},
-    m_lastblock{},
-    m_dirty{false}
+  : CGUIDialog(WINDOW_DIALOG_NUMERIC, "DialogNumeric.xml"), m_block{}, m_lastblock{}
 {
   memset(&m_datetime, 0, sizeof(KODI::TIME::SystemTime));
   m_loadType = KEEP_IN_MEMORY;

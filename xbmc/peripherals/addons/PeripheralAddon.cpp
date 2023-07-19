@@ -51,10 +51,7 @@ using namespace XFILE;
 #endif
 
 CPeripheralAddon::CPeripheralAddon(const ADDON::AddonInfoPtr& addonInfo, CPeripherals& manager)
-  : IAddonInstanceHandler(ADDON_INSTANCE_PERIPHERAL, addonInfo),
-    m_manager(manager),
-    m_bSupportsJoystickRumble(false),
-    m_bSupportsJoystickPowerOff(false)
+  : IAddonInstanceHandler(ADDON_INSTANCE_PERIPHERAL, addonInfo), m_manager(manager)
 {
   m_bProvidesJoysticks =
       addonInfo->Type(ADDON::AddonType::PERIPHERALDLL)->GetValue("@provides_joysticks").asBoolean();

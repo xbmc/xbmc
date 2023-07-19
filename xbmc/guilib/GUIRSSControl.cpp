@@ -20,16 +20,22 @@
 
 using namespace KODI::GUILIB;
 
-CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float posY, float width, float height,
-                               const CLabelInfo& labelInfo, const GUIINFO::CGUIInfoColor &channelColor,
-                               const GUIINFO::CGUIInfoColor &headlineColor, std::string& strRSSTags)
-: CGUIControl(parentID, controlID, posX, posY, width, height),
-  m_strRSSTags(strRSSTags),
-  m_label(labelInfo),
-  m_channelColor(channelColor),
-  m_headlineColor(headlineColor),
-  m_scrollInfo(0,0,labelInfo.scrollSpeed,""),
-  m_dirty(true)
+CGUIRSSControl::CGUIRSSControl(int parentID,
+                               int controlID,
+                               float posX,
+                               float posY,
+                               float width,
+                               float height,
+                               const CLabelInfo& labelInfo,
+                               const GUIINFO::CGUIInfoColor& channelColor,
+                               const GUIINFO::CGUIInfoColor& headlineColor,
+                               std::string& strRSSTags)
+  : CGUIControl(parentID, controlID, posX, posY, width, height),
+    m_strRSSTags(strRSSTags),
+    m_label(labelInfo),
+    m_channelColor(channelColor),
+    m_headlineColor(headlineColor),
+    m_scrollInfo(0, 0, labelInfo.scrollSpeed, "")
 {
   m_pReader = NULL;
   m_rtl = false;
@@ -38,17 +44,16 @@ CGUIRSSControl::CGUIRSSControl(int parentID, int controlID, float posX, float po
   ControlType = GUICONTROL_RSS;
 }
 
-CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl &from)
+CGUIRSSControl::CGUIRSSControl(const CGUIRSSControl& from)
   : CGUIControl(from),
-  m_feed(),
-  m_strRSSTags(from.m_strRSSTags),
-  m_label(from.m_label),
-  m_channelColor(from.m_channelColor),
-  m_headlineColor(from.m_headlineColor),
-  m_vecUrls(),
-  m_vecIntervals(),
-  m_scrollInfo(from.m_scrollInfo),
-  m_dirty(true)
+    m_feed(),
+    m_strRSSTags(from.m_strRSSTags),
+    m_label(from.m_label),
+    m_channelColor(from.m_channelColor),
+    m_headlineColor(from.m_headlineColor),
+    m_vecUrls(),
+    m_vecIntervals(),
+    m_scrollInfo(from.m_scrollInfo)
 {
   m_pReader = NULL;
   m_rtl = from.m_rtl;

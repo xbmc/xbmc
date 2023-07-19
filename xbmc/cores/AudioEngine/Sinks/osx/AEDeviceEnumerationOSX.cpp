@@ -41,9 +41,7 @@ static enum AEChannel CAChannelMap[CA_MAX_CHANNELS + 1] = {
 };
 
 AEDeviceEnumerationOSX::AEDeviceEnumerationOSX(AudioDeviceID deviceID)
-: m_deviceID(deviceID)
-, m_isPlanar(false)
-, m_caDevice(deviceID)
+  : m_deviceID(deviceID), m_caDevice(deviceID)
 {
   Enumerate();
 }

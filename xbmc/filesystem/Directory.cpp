@@ -37,12 +37,12 @@ private:
 
   struct CResult
   {
-    CResult(const CURL& dir, const CURL& listDir) : m_event(true), m_dir(dir), m_listDir(listDir), m_result(false) {}
+    CResult(const CURL& dir, const CURL& listDir) : m_event(true), m_dir(dir), m_listDir(listDir) {}
     CEvent        m_event;
     CFileItemList m_list;
     CURL          m_dir;
     CURL          m_listDir;
-    bool          m_result;
+    bool m_result = false;
   };
 
   struct CGetJob

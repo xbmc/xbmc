@@ -32,5 +32,5 @@ private:
   /*!
    * \brief Angle of the detected rotation
    */
-  float m_angle;
+  float m_angle = 0.0f;
 };

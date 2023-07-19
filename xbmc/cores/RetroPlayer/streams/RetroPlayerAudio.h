@@ -61,7 +61,7 @@ public:
 private:
   CRPProcessInfo& m_processInfo;
   IAE::StreamPtr m_pAudioStream;
-  bool m_bAudioEnabled;
+  bool m_bAudioEnabled = true;
 };
 } // namespace RETRO
 } // namespace KODI

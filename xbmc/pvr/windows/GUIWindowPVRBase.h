@@ -133,6 +133,7 @@ namespace PVR
     std::unique_ptr<CGUIPVRChannelGroupsSelector> m_channelGroupsSelector;
     std::shared_ptr<CPVRChannelGroup> m_channelGroup;
     XbmcThreads::EndTime<> m_refreshTimeout;
-    CGUIDialogProgressBarHandle* m_progressHandle; /*!< progress dialog that is displayed while the pvr manager is loading */
+    CGUIDialogProgressBarHandle* m_progressHandle =
+        nullptr; /*!< progress dialog that is displayed while the pvr manager is loading */
   };
 }

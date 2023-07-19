@@ -38,9 +38,9 @@ public:
 
     CCacheStrategy *CreateNew() override;
 protected:
-    int64_t           m_beg;       /**< index in file (not buffer) of beginning of valid data */
-    int64_t           m_end;       /**< index in file (not buffer) of end of valid data */
-    int64_t           m_cur;       /**< current reading index in file */
+  int64_t m_beg = 0; /**< index in file (not buffer) of beginning of valid data */
+  int64_t m_end = 0; /**< index in file (not buffer) of end of valid data */
+  int64_t m_cur = 0; /**< current reading index in file */
     uint8_t          *m_buf;       /**< buffer holding data */
     size_t            m_size;      /**< size of data buffer used (m_buf) */
     size_t            m_size_back; /**< guaranteed size of back buffer (actual size can be smaller, or larger if front buffer doesn't need it) */

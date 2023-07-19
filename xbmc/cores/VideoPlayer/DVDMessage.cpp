@@ -24,10 +24,10 @@ class CDVDMsgGeneralSynchronizePriv
 {
 public:
   CDVDMsgGeneralSynchronizePriv(std::chrono::milliseconds timeout, unsigned int sources)
-    : sources(sources), reached(0), m_timer(timeout)
+    : sources(sources), m_timer(timeout)
   {}
   unsigned int sources;
-  unsigned int reached;
+  unsigned int reached = 0;
   CCriticalSection section;
   XbmcThreads::ConditionVariable condition;
   XbmcThreads::EndTime<> m_timer;

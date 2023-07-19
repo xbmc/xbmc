@@ -45,9 +45,6 @@ CGUIControllerList::CGUIControllerList(CGUIWindow* window,
                                        std::string controllerId)
   : m_guiWindow(window),
     m_featureList(featureList),
-    m_controllerList(nullptr),
-    m_controllerButton(nullptr),
-    m_focusedController(-1), // Initially unfocused
     m_gameClient(std::move(gameClient)),
     m_controllerId(std::move(controllerId))
 {

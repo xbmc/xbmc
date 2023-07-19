@@ -44,13 +44,7 @@ CReversiblePlayback::CReversiblePlayback(GAME::CGameClient* gameClient,
     m_cheevos(cheevos),
     m_guiMessenger(guiMessenger),
     m_gameLoop(this, fps),
-    m_savestateDatabase(new CSavestateDatabase),
-    m_totalFrameCount(0),
-    m_pastFrameCount(0),
-    m_futureFrameCount(0),
-    m_playTimeMs(0),
-    m_totalTimeMs(0),
-    m_cacheTimeMs(0)
+    m_savestateDatabase(new CSavestateDatabase)
 {
   UpdateMemoryStream();
 

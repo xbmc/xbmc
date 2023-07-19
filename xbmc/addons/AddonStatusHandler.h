@@ -40,6 +40,6 @@ namespace ADDON
       static CCriticalSection   m_critSection;
       const uint32_t m_instanceId;
       AddonPtr                  m_addon;
-      ADDON_STATUS m_status;
+      ADDON_STATUS m_status = ADDON_STATUS_UNKNOWN;
   };
 }

@@ -54,14 +54,11 @@ private:
     Array,
     Object
   };
-  PARSE_STATUS m_status;
+  PARSE_STATUS m_status = PARSE_STATUS::Variable;
 };
 
 CJSONVariantParserHandler::CJSONVariantParserHandler(CVariant& parsedObject)
-  : m_parsedObject(parsedObject),
-    m_parse(),
-    m_key(),
-    m_status(PARSE_STATUS::Variable)
+  : m_parsedObject(parsedObject), m_parse(), m_key()
 { }
 
 bool CJSONVariantParserHandler::Null()

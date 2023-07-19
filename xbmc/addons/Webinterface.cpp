@@ -16,9 +16,7 @@
 using namespace ADDON;
 
 CWebinterface::CWebinterface(const AddonInfoPtr& addonInfo)
-  : CAddon(addonInfo, AddonType::WEB_INTERFACE),
-    m_type(WebinterfaceTypeStatic),
-    m_entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT)
+  : CAddon(addonInfo, AddonType::WEB_INTERFACE), m_entryPoint(WEBINTERFACE_DEFAULT_ENTRY_POINT)
 {
   // determine the type of the webinterface
   std::string webinterfaceType = Type(AddonType::WEB_INTERFACE)->GetValue("@type").asString();

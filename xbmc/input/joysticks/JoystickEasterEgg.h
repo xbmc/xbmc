@@ -39,7 +39,7 @@ private:
 
   static const std::map<std::string, std::vector<FeatureName>> m_sequence;
 
-  unsigned int m_state;
+  unsigned int m_state = 0;
 };
 } // namespace JOYSTICK
 } // namespace KODI

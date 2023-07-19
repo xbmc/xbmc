@@ -72,18 +72,8 @@ static bool IsDecoderWhitelisted(const std::string &name)
 
 /****************************/
 
-CDVDAudioCodecAndroidMediaCodec::CDVDAudioCodecAndroidMediaCodec(CProcessInfo &processInfo) :
-  CDVDAudioCodec(processInfo),
-  m_formatname("mediacodec"),
-  m_opened(false),
-  m_codecIsFed(false),
-  m_samplerate(0),
-  m_channels(0),
-  m_buffer(NULL),
-  m_bufferSize(0),
-  m_bufferUsed(0),
-  m_currentPts(DVD_NOPTS_VALUE),
-  m_crypto(nullptr)
+CDVDAudioCodecAndroidMediaCodec::CDVDAudioCodecAndroidMediaCodec(CProcessInfo& processInfo)
+  : CDVDAudioCodec(processInfo), m_formatname("mediacodec"), m_buffer(NULL)
 {
 }
 

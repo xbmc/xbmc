@@ -28,5 +28,5 @@ protected:
   void onError(const std::string& exceptionType = "", const std::string& exceptionValue = "", const std::string& exceptionTraceback = "") override;
 
   HTTPPythonRequest* m_request;
-  bool m_internalError;
+  bool m_internalError = false;
 };

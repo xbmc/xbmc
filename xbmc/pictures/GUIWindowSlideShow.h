@@ -36,16 +36,16 @@ public:
 
 private:
   void Process() override;
-  int m_iPic;
-  int m_iSlideNumber;
+  int m_iPic = 0;
+  int m_iSlideNumber = 0;
   std::string m_strFileName;
-  int m_maxWidth;
-  int m_maxHeight;
+  int m_maxWidth = 0;
+  int m_maxHeight = 0;
 
   CEvent m_loadPic;
-  bool m_isLoading;
+  bool m_isLoading = false;
 
-  CGUIWindowSlideShow *m_pCallback;
+  CGUIWindowSlideShow* m_pCallback = nullptr;
 };
 
 class CGUIWindowSlideShow : public CGUIDialog

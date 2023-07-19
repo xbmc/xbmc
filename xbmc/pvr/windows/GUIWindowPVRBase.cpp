@@ -129,11 +129,10 @@ bool CGUIPVRChannelGroupsSelector::SelectChannelGroup(const std::shared_ptr<CPVR
   return false;
 }
 
-CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string& xmlFile) :
-  CGUIMediaWindow(id, xmlFile.c_str()),
-  m_bRadio(bRadio),
-  m_channelGroupsSelector(new CGUIPVRChannelGroupsSelector),
-  m_progressHandle(nullptr)
+CGUIWindowPVRBase::CGUIWindowPVRBase(bool bRadio, int id, const std::string& xmlFile)
+  : CGUIMediaWindow(id, xmlFile.c_str()),
+    m_bRadio(bRadio),
+    m_channelGroupsSelector(new CGUIPVRChannelGroupsSelector)
 {
   // prevent removable drives to appear in directory listing (base class default behavior).
   m_rootDir.AllowNonLocalSources(false);

@@ -15,7 +15,7 @@
 #endif
 
 CGenericTouchRotateDetector::CGenericTouchRotateDetector(ITouchActionHandler* handler, float dpi)
-  : IGenericTouchGestureDetector(handler, dpi), m_angle(0.0f)
+  : IGenericTouchGestureDetector(handler, dpi)
 {
 }
 

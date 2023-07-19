@@ -1,4 +1,5 @@
 Checks: "\
+  modernize-use-default-member-init,\
   performance-faster-string-find,\
   performance-for-range-copy,\
   performance-implicit-conversion-in-loop,\

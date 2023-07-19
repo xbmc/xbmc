@@ -1524,11 +1524,7 @@ bool CPeripheralCecAdapter::WriteLogicalAddresses(const cec_logical_addresses& a
 
 CPeripheralCecAdapterUpdateThread::CPeripheralCecAdapterUpdateThread(
     CPeripheralCecAdapter* adapter, libcec_configuration* configuration)
-  : CThread("CECAdapterUpdate"),
-    m_adapter(adapter),
-    m_configuration(*configuration),
-    m_bNextConfigurationScheduled(false),
-    m_bIsUpdating(true)
+  : CThread("CECAdapterUpdate"), m_adapter(adapter), m_configuration(*configuration)
 {
   m_nextConfiguration.Clear();
   m_event.Reset();

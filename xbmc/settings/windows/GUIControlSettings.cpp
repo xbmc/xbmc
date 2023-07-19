@@ -295,11 +295,7 @@ static bool GetStringOptions(const SettingConstPtr& setting,
 CGUIControlBaseSetting::CGUIControlBaseSetting(int id,
                                                std::shared_ptr<CSetting> pSetting,
                                                ILocalizer* localizer)
-  : m_id(id),
-    m_pSetting(std::move(pSetting)),
-    m_localizer(localizer),
-    m_delayed(false),
-    m_valid(true)
+  : m_id(id), m_pSetting(std::move(pSetting)), m_localizer(localizer)
 {
 }
 

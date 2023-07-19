@@ -170,11 +170,11 @@ private:
                          XFILE::CCurlFile& http,
                          const std::vector<std::string>* extras);
 
-  bool m_fLoaded;
+  bool m_fLoaded = false;
   bool m_isPython = false;
-  bool m_requiressettings;
+  bool m_requiressettings = false;
   CDateTimeSpan m_persistence;
-  CONTENT_TYPE m_pathContent;
+  CONTENT_TYPE m_pathContent = CONTENT_NONE;
   CScraperParser m_parser;
 };
 

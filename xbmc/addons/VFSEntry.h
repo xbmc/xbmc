@@ -191,7 +191,7 @@ protected:
     //! \param[in] url2 New URL of file.
     bool Rename(const CURL& url, const CURL& url2) override;
   protected:
-    void* m_context; //!< Opaque add-on specific context for opened file.
+    void* m_context = nullptr; //!< Opaque add-on specific context for opened file.
     VFSEntryPtr m_addon; //!< Pointer to wrapped CVFSEntry.
   };
 

@@ -240,7 +240,7 @@ private:
   bool m_bSupportsVFS;
   bool m_bSupportsStandalone;
   std::set<std::string> m_extensions;
-  bool m_bSupportsAllExtensions;
+  bool m_bSupportsAllExtensions = false;
   std::string m_emulatorName;
   std::string m_platforms;
 
@@ -248,11 +248,11 @@ private:
   std::atomic_bool m_bIsPlaying; // True between OpenFile() and CloseFile()
   std::string m_gamePath;
   bool m_bRequiresGameLoop = false;
-  size_t m_serializeSize;
+  size_t m_serializeSize = 0;
   IGameInputCallback* m_input = nullptr; // The input callback passed to OpenFile()
   double m_framerate = 0.0; // Video frame rate (fps)
   double m_samplerate = 0.0; // Audio sample rate (Hz)
-  GAME_REGION m_region; // Region of the loaded game
+  GAME_REGION m_region = GAME_REGION_UNKNOWN; // Region of the loaded game
 
   // In-game saves
   std::unique_ptr<CGameClientInGameSaves> m_inGameSaves;

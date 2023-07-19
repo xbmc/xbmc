@@ -154,11 +154,8 @@ private:
   std::map<InfoTagType, std::shared_ptr<CThumbLoader> > m_thumbloaders;
 };
 
-CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID)
- : IListProvider(parentID),
-   m_updateState(OK),
-   m_jobID(0),
-   m_currentLimit(0)
+CDirectoryProvider::CDirectoryProvider(const TiXmlElement* element, int parentID)
+  : IListProvider(parentID)
 {
   assert(element);
   if (!element->NoChildren())
@@ -186,7 +183,6 @@ CDirectoryProvider::CDirectoryProvider(const TiXmlElement *element, int parentID
 CDirectoryProvider::CDirectoryProvider(const CDirectoryProvider& other)
   : IListProvider(other.m_parentID),
     m_updateState(INVALIDATED),
-    m_jobID(0),
     m_url(other.m_url),
     m_target(other.m_target),
     m_sortMethod(other.m_sortMethod),

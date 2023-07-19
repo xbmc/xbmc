@@ -59,6 +59,6 @@ private:
 
   CGUIViewControl m_viewControl;
   CFileItemList* m_vecList;
-  bool m_focusToButton;
+  bool m_focusToButton = false;
   std::string m_selectedColor;
 };

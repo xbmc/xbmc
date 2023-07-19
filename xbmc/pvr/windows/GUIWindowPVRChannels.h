@@ -42,7 +42,7 @@ private:
   void UpdateEpg(const CFileItemPtr& item);
 
 protected:
-  bool m_bShowHiddenChannels;
+  bool m_bShowHiddenChannels = false;
 };
 
 class CGUIWindowPVRTVChannels : public CGUIWindowPVRChannelsBase
