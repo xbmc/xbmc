@@ -52,7 +52,7 @@ const std::map<std::string, std::vector<FeatureName>> CJoystickEasterEgg::m_sequ
 };
 
 CJoystickEasterEgg::CJoystickEasterEgg(const std::string& controllerId)
-  : m_controllerId(controllerId), m_state(0)
+  : m_controllerId(controllerId)
 {
 }
 

@@ -1167,15 +1167,7 @@ int Interface_GUIWindow::GetNextAvailableWindowId()
 
 CGUIAddonWindow::CGUIAddonWindow(int id, const std::string& strXML, CAddonDll* addon, bool isMedia)
   : CGUIMediaWindow(id, strXML.c_str()),
-    m_clientHandle{nullptr},
-    CBOnInit{nullptr},
-    CBOnFocus{nullptr},
-    CBOnClick{nullptr},
-    CBOnAction{nullptr},
-    CBGetContextButtons{nullptr},
-    CBOnContextButton{nullptr},
     m_windowId(id),
-    m_oldWindowId(0),
     m_actionEvent(true),
     m_addon(addon),
     m_isMedia(isMedia)
@@ -1445,9 +1437,8 @@ void CGUIAddonWindow::SetupShares()
   UpdateButtons();
 }
 
-
 CGUIAddonWindowDialog::CGUIAddonWindowDialog(int id, const std::string& strXML, CAddonDll* addon)
-  : CGUIAddonWindow(id, strXML, addon, false), m_bRunning(false)
+  : CGUIAddonWindow(id, strXML, addon, false)
 {
 }
 

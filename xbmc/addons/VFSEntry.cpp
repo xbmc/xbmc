@@ -573,8 +573,7 @@ bool CVFSEntry::ContainsFiles(const CURL& url, CFileItemList& items)
   return true;
 }
 
-CVFSEntryIFileWrapper::CVFSEntryIFileWrapper(VFSEntryPtr ptr)
-  : m_context(nullptr), m_addon(std::move(ptr))
+CVFSEntryIFileWrapper::CVFSEntryIFileWrapper(VFSEntryPtr ptr) : m_addon(std::move(ptr))
 {
 }
 

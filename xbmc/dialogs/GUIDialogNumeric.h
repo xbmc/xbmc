@@ -69,14 +69,14 @@ protected:
   void HandleInputSeconds(uint32_t num);
   void HandleInputTime(uint32_t num);
 
-  bool m_bConfirmed;
-  bool m_bCanceled;
+  bool m_bConfirmed = false;
+  bool m_bCanceled = false;
 
-  INPUT_MODE m_mode;                // the current input mode
+  INPUT_MODE m_mode = INPUT_PASSWORD; // the current input mode
   KODI::TIME::SystemTime m_datetime; // for time and date modes
   uint8_t m_ip[4];                  // for ip address mode
   uint32_t m_block;             // for time, date, and IP methods.
   uint32_t m_lastblock;
-  bool m_dirty;                     // true if the current block has been changed.
+  bool m_dirty = false; // true if the current block has been changed.
   std::string m_number;              ///< for number or password input
 };

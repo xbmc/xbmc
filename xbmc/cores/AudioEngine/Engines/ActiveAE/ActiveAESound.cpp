@@ -20,11 +20,8 @@ extern "C" {
 using namespace ActiveAE;
 using namespace XFILE;
 
-CActiveAESound::CActiveAESound(const std::string &filename, CActiveAE *ae) :
-  IAESound         (filename),
-  m_filename       (filename),
-  m_volume         (1.0f    ),
-  m_channel        (AE_CH_NULL)
+CActiveAESound::CActiveAESound(const std::string& filename, CActiveAE* ae)
+  : IAESound(filename), m_filename(filename)
 {
   m_orig_sound = NULL;
   m_dst_sound = NULL;

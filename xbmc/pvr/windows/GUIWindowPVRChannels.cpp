@@ -46,7 +46,7 @@ using namespace PVR;
 CGUIWindowPVRChannelsBase::CGUIWindowPVRChannelsBase(bool bRadio,
                                                      int id,
                                                      const std::string& xmlFile)
-  : CGUIWindowPVRBase(bRadio, id, xmlFile), m_bShowHiddenChannels(false)
+  : CGUIWindowPVRBase(bRadio, id, xmlFile)
 {
   CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().RegisterChannelNumberInputHandler(this);
 }

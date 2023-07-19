@@ -25,10 +25,10 @@ public:
   std::string m_strDescription;
   int m_controlID;
   CGUIControl::GUICONTROLTYPES m_ControlType;
-  unsigned int m_visTime;
-  unsigned int m_renderTime;
-  int64_t m_i64VisStart;
-  int64_t m_i64RenderStart;
+  unsigned int m_visTime = 0;
+  unsigned int m_renderTime = 0;
+  int64_t m_i64VisStart = 0;
+  int64_t m_i64RenderStart = 0;
 
   CGUIControlProfilerItem(CGUIControlProfiler *pProfiler, CGUIControlProfilerItem *pParent, CGUIControl *pControl);
   ~CGUIControlProfilerItem(void);

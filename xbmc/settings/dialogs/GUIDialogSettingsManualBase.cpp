@@ -21,9 +21,8 @@
 #include <string>
 #include <vector>
 
-CGUIDialogSettingsManualBase::CGUIDialogSettingsManualBase(int windowId, const std::string &xmlFile)
+CGUIDialogSettingsManualBase::CGUIDialogSettingsManualBase(int windowId, const std::string& xmlFile)
   : CGUIDialogSettingsManagerBase(windowId, xmlFile)
-  , m_settingsManager(nullptr)
 { }
 
 CGUIDialogSettingsManualBase::~CGUIDialogSettingsManualBase()

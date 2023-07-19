@@ -218,8 +218,8 @@ protected:
   CCriticalSection m_critSection;
   CEC::libcec_configuration m_configuration;
   CEC::libcec_configuration m_nextConfiguration;
-  bool m_bNextConfigurationScheduled;
-  bool m_bIsUpdating;
+  bool m_bNextConfigurationScheduled = false;
+  bool m_bIsUpdating = true;
 };
 } // namespace PERIPHERALS
 

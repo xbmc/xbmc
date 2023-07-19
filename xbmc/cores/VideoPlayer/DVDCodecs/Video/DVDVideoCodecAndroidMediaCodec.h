@@ -153,14 +153,14 @@ protected:
   std::string m_codecname;
   int m_colorFormat;
   std::string m_formatname;
-  bool m_opened;
+  bool m_opened = false;
   bool m_needSecureDecoder = false;
   int m_codecControlFlags;
   int m_state;
 
   std::shared_ptr<jni::CJNIXBMCVideoView> m_jnivideoview;
   CJNISurface m_jnivideosurface;
-  unsigned int m_textureId;
+  unsigned int m_textureId = 0;
   std::shared_ptr<CJNIMediaCodec> m_codec;
   CJNIMediaCrypto* m_crypto = nullptr;
   std::shared_ptr<CJNISurfaceTexture> m_surfaceTexture;
@@ -169,10 +169,10 @@ protected:
   amc_demux m_demux_pkt;
   std::shared_ptr<CMediaCodecVideoBufferPool> m_videoBufferPool;
 
-  uint32_t m_OutputDuration, m_fpsDuration;
-  int64_t m_lastPTS;
+  uint32_t m_OutputDuration = 0, m_fpsDuration = 0;
+  int64_t m_lastPTS = -1;
   int64_t m_invalidPTSValue = 0;
-  double m_dtsShift;
+  double m_dtsShift = DVD_NOPTS_VALUE;
 
   static std::atomic<bool> m_InstanceGuard;
 
@@ -181,10 +181,10 @@ protected:
 
   int m_indexInputBuffer;
   bool m_render_surface;
-  mpeg2_sequence* m_mpeg2_sequence;
+  mpeg2_sequence* m_mpeg2_sequence = nullptr;
   int m_src_offset[4];
   int m_src_stride[4];
-  bool m_useDTSforPTS;
+  bool m_useDTSforPTS = false;
 
   // CJNISurfaceHolderCallback interface
 public:
