@@ -26,15 +26,15 @@
 #if !defined(TARGET_FREEBSD) && (!defined(TARGET_ANDROID) && defined(__LP64__))
 #include <sys/timeb.h>
 #endif
-#ifdef HAS_DVD_DRIVE
-  #ifdef TARGET_POSIX
-    #include <sys/ioctl.h>
-    #if defined(TARGET_DARWIN)
-      #include <IOKit/storage/IODVDMediaBSDClient.h>
-    #elif !defined(TARGET_FREEBSD)
-      #include <linux/cdrom.h>
-    #endif
-  #endif
+#ifdef HAS_OPTICAL_DRIVE
+#ifdef TARGET_POSIX
+#include <sys/ioctl.h>
+#if defined(TARGET_DARWIN)
+#include <IOKit/storage/IODVDMediaBSDClient.h>
+#elif !defined(TARGET_FREEBSD)
+#include <linux/cdrom.h>
+#endif
+#endif
 #endif
 #include <fcntl.h>
 #include <time.h>
@@ -1992,7 +1992,7 @@ extern "C"
      if (!pFile)
        return -1;
 
-#if defined(HAS_DVD_DRIVE) && !defined(TARGET_FREEBSD)
+#if defined(HAS_OPTICAL_DRIVE) && !defined(TARGET_FREEBSD)
 #if !defined(TARGET_DARWIN)
     if(request == DVD_READ_STRUCT || request == DVD_AUTH)
 #else
