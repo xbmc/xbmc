@@ -36,7 +36,7 @@ public:
 
 protected:
   CZeroconfBrowserAndroid* m_browser;
-  bool m_isActive;
+  bool m_isActive = false;
 };
 
 class CZeroconfBrowserAndroidResolve : public jni::CJNIXBMCNsdManagerResolveListener

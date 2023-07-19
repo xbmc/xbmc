@@ -32,7 +32,7 @@ namespace ADDON
     std::string GetBaseLocation() const;
 
   private:
-    WebinterfaceType m_type;
+    WebinterfaceType m_type = WebinterfaceTypeStatic;
     std::string m_entryPoint;
   };
 }

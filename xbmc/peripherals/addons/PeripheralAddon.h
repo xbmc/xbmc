@@ -161,8 +161,8 @@ private:
 
   /* @brief Add-on properties */
   bool m_bProvidesJoysticks;
-  bool m_bSupportsJoystickRumble;
-  bool m_bSupportsJoystickPowerOff;
+  bool m_bSupportsJoystickRumble = false;
+  bool m_bSupportsJoystickPowerOff = false;
   bool m_bProvidesButtonMaps;
 
   /* @brief Map of peripherals belonging to the add-on */

@@ -122,10 +122,7 @@ static void CheckScraperError(const TiXmlElement *pxeRoot)
 }
 
 CScraper::CScraper(const AddonInfoPtr& addonInfo, AddonType addonType)
-  : CAddon(addonInfo, addonType),
-    m_fLoaded(false),
-    m_requiressettings(false),
-    m_pathContent(CONTENT_NONE)
+  : CAddon(addonInfo, addonType)
 {
   m_requiressettings = addonInfo->Type(addonType)->GetValue("@requiressettings").asBoolean();
 

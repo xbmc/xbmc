@@ -47,8 +47,8 @@ private:
   static bool get_frame_buffer(void* kodiInstance, VIDEOCODEC_PICTURE *picture);
   static void release_frame_buffer(void* kodiInstance, KODI_HANDLE videoBufferHandle);
 
-  int m_codecFlags;
+  int m_codecFlags = 0;
   VIDEOCODEC_FORMAT m_formats[VIDEOCODEC_FORMAT_MAXFORMATS + 1];
-  float m_displayAspect;
+  float m_displayAspect = 0.0f;
   unsigned int m_width, m_height;
 };

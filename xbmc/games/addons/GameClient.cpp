@@ -83,10 +83,7 @@ std::string NormalizeExtension(const std::string& strExtension)
 CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
   : CAddonDll(addonInfo, ADDON::AddonType::GAMEDLL),
     m_subsystems(CGameClientSubsystem::CreateSubsystems(*this, *m_ifc.game, m_critSection)),
-    m_bSupportsAllExtensions(false),
-    m_bIsPlaying(false),
-    m_serializeSize(0),
-    m_region(GAME_REGION_UNKNOWN)
+    m_bIsPlaying(false)
 {
   using namespace ADDON;
 

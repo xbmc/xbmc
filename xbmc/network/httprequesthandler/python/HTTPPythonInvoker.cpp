@@ -11,10 +11,9 @@
 #include "CompileInfo.h"
 #include "utils/StringUtils.h"
 
-CHTTPPythonInvoker::CHTTPPythonInvoker(ILanguageInvocationHandler* invocationHandler, HTTPPythonRequest* request)
-  : CPythonInvoker(invocationHandler),
-    m_request(request),
-    m_internalError(false)
+CHTTPPythonInvoker::CHTTPPythonInvoker(ILanguageInvocationHandler* invocationHandler,
+                                       HTTPPythonRequest* request)
+  : CPythonInvoker(invocationHandler), m_request(request)
 { }
 
 CHTTPPythonInvoker::~CHTTPPythonInvoker()

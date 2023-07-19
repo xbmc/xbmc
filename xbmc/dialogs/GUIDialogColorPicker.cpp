@@ -29,8 +29,7 @@
 
 CGUIDialogColorPicker::CGUIDialogColorPicker()
   : CGUIDialogBoxBase(WINDOW_DIALOG_COLOR_PICKER, "DialogColorPicker.xml"),
-    m_vecList(new CFileItemList()),
-    m_focusToButton(false)
+    m_vecList(new CFileItemList())
 {
   m_bConfirmed = false;
   m_loadType = KEEP_IN_MEMORY;

@@ -210,12 +210,13 @@ private:
   AxisConfiguration m_config; // mutable
 
   // State variables
-  AXIS_STATE m_state;
+  AXIS_STATE m_state = AXIS_STATE::INACTIVE;
   CDriverPrimitive m_activatedPrimitive;
-  AXIS_TYPE m_type;
-  bool m_initialPositionKnown; // set to true on first motion
-  float m_initialPosition; // set to position of first motion
-  bool m_initialPositionChanged; // set to true when position differs from the initial position
+  AXIS_TYPE m_type = AXIS_TYPE::UNKNOWN;
+  bool m_initialPositionKnown = false; // set to true on first motion
+  float m_initialPosition = 0.0f; // set to position of first motion
+  bool m_initialPositionChanged =
+      false; // set to true when position differs from the initial position
   std::chrono::time_point<std::chrono::steady_clock>
       m_activationTimeMs; // only used to delay anomalous trigger mapping to detect full range
 };
@@ -387,7 +388,7 @@ private:
   std::map<MOUSE::BUTTON_ID, CMouseButtonDetector> m_mouseButtons;
   std::unique_ptr<CPointerDetector> m_pointer;
   std::chrono::time_point<std::chrono::steady_clock> m_lastAction;
-  uint64_t m_frameCount;
+  uint64_t m_frameCount = 0;
 };
 } // namespace JOYSTICK
 } // namespace KODI

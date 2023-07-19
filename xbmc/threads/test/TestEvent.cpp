@@ -26,9 +26,9 @@ class waiter : public IRunnable
 public:
   bool& result;
 
-  volatile bool waiting;
+  volatile bool waiting = false;
 
-  waiter(CEvent& o, bool& flag) : event(o), result(flag), waiting(false) {}
+  waiter(CEvent& o, bool& flag) : event(o), result(flag) {}
 
   void Run() override
   {
@@ -46,10 +46,10 @@ class timed_waiter : public IRunnable
 public:
   int& result;
 
-  volatile bool waiting;
+  volatile bool waiting = false;
 
   timed_waiter(CEvent& o, int& flag, std::chrono::milliseconds waitTimeMillis)
-    : event(o), waitTime(waitTimeMillis), result(flag), waiting(false)
+    : event(o), waitTime(waitTimeMillis), result(flag)
   {
   }
 

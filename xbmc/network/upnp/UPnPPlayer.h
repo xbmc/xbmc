@@ -67,8 +67,8 @@ private:
   CUPnPPlayerController* m_delegate;
   std::string m_current_uri;
   std::string m_current_meta;
-  bool m_started;
-  bool m_stopremote;
+  bool m_started = false;
+  bool m_stopremote = false;
   XbmcThreads::EndTime<> m_updateTimer;
 
   Logger m_logger;

@@ -20,8 +20,8 @@ public:
 
 private:
   int       writer_le;
-  uint32_t  bit_buf;
-  int       bit_left;
+  uint32_t bit_buf = 0;
+  int bit_left = 32;
   uint8_t   *buf, *buf_ptr;
 };
 

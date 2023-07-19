@@ -81,11 +81,7 @@ unsigned int CJoystickFeature::MotionTimeMs() const
 CScalarFeature::CScalarFeature(const FeatureName& name,
                                IInputHandler* handler,
                                IButtonMap* buttonMap)
-  : CJoystickFeature(name, handler, buttonMap),
-    m_bDigitalState(false),
-    m_analogState(0.0f),
-    m_bActivated(false),
-    m_bDiscrete(true)
+  : CJoystickFeature(name, handler, buttonMap)
 {
   GAME::ControllerPtr controller =
       CServiceBroker::GetGameControllerManager().GetController(handler->ControllerID());
@@ -226,7 +222,7 @@ void CScalarFeature::ProcessAnalogMotion()
 // --- CAxisFeature ------------------------------------------------------------
 
 CAxisFeature::CAxisFeature(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap)
-  : CJoystickFeature(name, handler, buttonMap), m_state(0.0f)
+  : CJoystickFeature(name, handler, buttonMap)
 {
 }
 
@@ -379,7 +375,7 @@ bool CThrottle::OnAnalogMotion(const CDriverPrimitive& source, float magnitude)
 // --- CAnalogStick ------------------------------------------------------------
 
 CAnalogStick::CAnalogStick(const FeatureName& name, IInputHandler* handler, IButtonMap* buttonMap)
-  : CJoystickFeature(name, handler, buttonMap), m_vertState(0.0f), m_horizState(0.0f)
+  : CJoystickFeature(name, handler, buttonMap)
 {
 }
 
@@ -482,10 +478,7 @@ void CAnalogStick::ProcessMotions(void)
 CAccelerometer::CAccelerometer(const FeatureName& name,
                                IInputHandler* handler,
                                IButtonMap* buttonMap)
-  : CJoystickFeature(name, handler, buttonMap),
-    m_xAxisState(0.0f),
-    m_yAxisState(0.0f),
-    m_zAxisState(0.0f)
+  : CJoystickFeature(name, handler, buttonMap)
 {
 }
 

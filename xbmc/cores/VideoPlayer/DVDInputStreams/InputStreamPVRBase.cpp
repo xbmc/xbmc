@@ -19,7 +19,6 @@
 
 CInputStreamPVRBase::CInputStreamPVRBase(IVideoPlayer* pPlayer, const CFileItem& fileitem)
   : CDVDInputStream(DVDSTREAM_TYPE_PVRMANAGER, fileitem),
-    m_eof(true),
     m_StreamProps(new PVR_STREAM_PROPERTIES()),
     m_client(CServiceBroker::GetPVRManager().GetClient(fileitem))
 {

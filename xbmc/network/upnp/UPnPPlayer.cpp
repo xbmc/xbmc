@@ -54,9 +54,7 @@ public:
     : m_control(control),
       m_transport(NULL),
       m_device(device),
-      m_instance(0),
       m_callback(callback),
-      m_postime(0),
       m_logger(CServiceBroker::GetLogging().GetLogger("CUPnPPlayerController"))
   {
     m_posinfo = {};
@@ -141,14 +139,14 @@ public:
   PLT_MediaController*     m_control;
   PLT_Service *            m_transport;
   PLT_DeviceDataReference  m_device;
-  NPT_UInt32               m_instance;
+  NPT_UInt32 m_instance = 0;
   IPlayerCallback&         m_callback;
 
   NPT_Result               m_resstatus;
   CEvent                   m_resevent;
 
   CCriticalSection         m_section;
-  unsigned int             m_postime;
+  unsigned int m_postime = 0;
 
   CEvent                   m_posevnt;
   PLT_PositionInfo         m_posinfo;
@@ -163,8 +161,6 @@ CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
   : IPlayer(callback),
     m_control(NULL),
     m_delegate(NULL),
-    m_started(false),
-    m_stopremote(false),
     m_logger(CServiceBroker::GetLogging().GetLogger(StringUtils::Format("CUPnPPlayer[{}]", uuid)))
 {
   m_control  = CUPnP::GetInstance()->m_MediaController;

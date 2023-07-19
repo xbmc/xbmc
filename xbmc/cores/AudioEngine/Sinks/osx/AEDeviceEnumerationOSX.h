@@ -228,7 +228,7 @@ private:
   std::string       getExtraDisplayNameForStream(UInt32 streamIdx) const;
 
   AudioDeviceID     m_deviceID;
-  bool              m_isPlanar;
+  bool m_isPlanar = false;
   std::string       m_deviceName;
 
   typedef struct

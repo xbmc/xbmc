@@ -15,10 +15,7 @@
 class CVideoSyncOsx : public CVideoSync, IDispResource
 {
 public:
-  CVideoSyncOsx(CVideoReferenceClock* clock)
-    : CVideoSync(clock), m_LastVBlankTime(0), m_displayLost(false), m_displayReset(false)
-  {
-  }
+  CVideoSyncOsx(CVideoReferenceClock* clock) : CVideoSync(clock) {}
 
   // CVideoSync interface
   bool Setup() override;
@@ -38,9 +35,10 @@ private:
   virtual bool InitDisplayLink();
   virtual void DeinitDisplayLink();
 
-  int64_t m_LastVBlankTime;  //timestamp of the last vblank, used for calculating how many vblanks happened
-  volatile bool m_displayLost;
-  volatile bool m_displayReset;
+  int64_t m_LastVBlankTime =
+      0; //timestamp of the last vblank, used for calculating how many vblanks happened
+  volatile bool m_displayLost = false;
+  volatile bool m_displayReset = false;
   CEvent m_lostEvent;
 };
 

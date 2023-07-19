@@ -243,16 +243,14 @@ public:
 private:
     // members
     NPT_File&             m_Delegator;
-    OpenMode              m_Mode;
+    OpenMode m_Mode = 0;
     NPT_XbmcFileReference m_FileReference;
 };
 
 /*----------------------------------------------------------------------
 |   NPT_XbmcFile::NPT_XbmcFile
 +---------------------------------------------------------------------*/
-NPT_XbmcFile::NPT_XbmcFile(NPT_File& delegator) :
-    m_Delegator(delegator),
-    m_Mode(0)
+NPT_XbmcFile::NPT_XbmcFile(NPT_File& delegator) : m_Delegator(delegator)
 {
 }
 

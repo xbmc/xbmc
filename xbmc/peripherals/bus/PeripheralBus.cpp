@@ -31,7 +31,6 @@ CPeripheralBus::CPeripheralBus(const std::string& threadname,
                                PeripheralBusType type)
   : CThread(threadname.c_str()),
     m_iRescanTime(PERIPHERAL_DEFAULT_RESCAN_INTERVAL),
-    m_bNeedsPolling(true),
     m_manager(manager),
     m_type(type),
     m_triggerEvent(true)

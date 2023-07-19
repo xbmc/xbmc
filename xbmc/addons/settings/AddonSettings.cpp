@@ -158,7 +158,6 @@ CAddonSettings::CAddonSettings(const std::shared_ptr<const IAddon>& addon,
     m_addonPath(addon->Path()),
     m_addonProfile(addon->Profile()),
     m_instanceId(instanceId),
-    m_unidentifiedSettingId(0),
     m_unknownSettingLabelId(UnknownSettingLabelIdStart),
     m_logger(CServiceBroker::GetLogging().GetLogger(
         StringUtils::Format("CAddonSettings[{}@{}]", m_instanceId, m_addonId)))

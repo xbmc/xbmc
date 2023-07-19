@@ -60,16 +60,16 @@ protected:
   std::string m_mime;
   std::string m_codecname;
   std::string m_formatname;
-  bool m_opened, m_codecIsFed;
-  int m_samplerate;
-  int m_channels;
+  bool m_opened = false, m_codecIsFed = false;
+  int m_samplerate = 0;
+  int m_channels = 0;
   uint8_t* m_buffer;
-  int m_bufferSize;
-  int m_bufferUsed;
+  int m_bufferSize = 0;
+  int m_bufferUsed = 0;
   AEAudioFormat m_format;
-  double m_currentPts;
+  double m_currentPts = DVD_NOPTS_VALUE;
 
   std::shared_ptr<CJNIMediaCodec> m_codec;
-  CJNIMediaCrypto *m_crypto;
+  CJNIMediaCrypto* m_crypto = nullptr;
   std::shared_ptr<CDVDAudioCodec> m_decryptCodec;
 };

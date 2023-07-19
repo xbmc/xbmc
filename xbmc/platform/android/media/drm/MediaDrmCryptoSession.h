@@ -61,16 +61,16 @@ namespace DRM
     void CloseSession();
     bool ProvisionRequest();
 
-    CJNIMediaDrm* m_mediaDrm;
-    CJNIMediaDrmCryptoSession* m_cryptoSession;
+    CJNIMediaDrm* m_mediaDrm = nullptr;
+    CJNIMediaDrmCryptoSession* m_cryptoSession = nullptr;
 
     std::string m_cipherAlgo;
     std::string  m_macAlgo;
     std::string m_keySetId;
 
-    bool m_hasKeys;
+    bool m_hasKeys = false;
 
-    CharVecBuffer* m_sessionId;
+    CharVecBuffer* m_sessionId = nullptr;
   };
 
 } //namespace

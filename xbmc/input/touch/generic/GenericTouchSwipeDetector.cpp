@@ -28,9 +28,7 @@
 CGenericTouchSwipeDetector::CGenericTouchSwipeDetector(ITouchActionHandler* handler, float dpi)
   : IGenericTouchGestureDetector(handler, dpi),
     m_directions(TouchMoveDirectionLeft | TouchMoveDirectionRight | TouchMoveDirectionUp |
-                 TouchMoveDirectionDown),
-    m_swipeDetected(false),
-    m_size(0)
+                 TouchMoveDirectionDown)
 {
 }
 

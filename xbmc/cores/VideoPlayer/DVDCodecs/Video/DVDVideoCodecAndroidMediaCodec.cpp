@@ -306,20 +306,13 @@ void CMediaCodecVideoBufferPool::ReleaseMediaCodecBuffers()
 
 /*****************************************************************************/
 /*****************************************************************************/
-CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo &processInfo, bool surface_render)
-: CDVDVideoCodec(processInfo)
-, m_formatname("mediacodec")
-, m_opened(false)
-, m_jnivideoview(nullptr)
-, m_textureId(0)
-, m_OutputDuration(0)
-, m_fpsDuration(0)
-, m_lastPTS(-1)
-, m_dtsShift(DVD_NOPTS_VALUE)
-, m_bitstream(nullptr)
-, m_render_surface(surface_render)
-, m_mpeg2_sequence(nullptr)
-, m_useDTSforPTS(false)
+CDVDVideoCodecAndroidMediaCodec::CDVDVideoCodecAndroidMediaCodec(CProcessInfo& processInfo,
+                                                                 bool surface_render)
+  : CDVDVideoCodec(processInfo),
+    m_formatname("mediacodec"),
+    m_jnivideoview(nullptr),
+    m_bitstream(nullptr),
+    m_render_surface(surface_render)
 {
   m_videobuffer.Reset();
 }

@@ -91,8 +91,8 @@ protected:
   int m_id;
   std::shared_ptr<CSetting> m_pSetting;
   ILocalizer* m_localizer;
-  bool m_delayed;
-  bool m_valid;
+  bool m_delayed = false;
+  bool m_valid = true;
 };
 
 class CGUIControlRadioButtonSetting : public CGUIControlBaseSetting

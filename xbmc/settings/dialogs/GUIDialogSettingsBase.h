@@ -164,26 +164,26 @@ protected:
   std::vector<std::shared_ptr<CSettingCategory>> m_categories;
   std::vector<BaseSettingControlPtr> m_settingControls;
 
-  int m_iSetting;
-  int m_iCategory;
+  int m_iSetting = 0;
+  int m_iCategory = 0;
   std::shared_ptr<CSettingAction> m_resetSetting;
   std::shared_ptr<CSettingCategory> m_dummyCategory;
 
   CGUISpinControlEx* m_pOriginalSpin;
   CGUISettingsSliderControl* m_pOriginalSlider;
   CGUIRadioButtonControl* m_pOriginalRadioButton;
-  CGUIColorButtonControl* m_pOriginalColorButton;
+  CGUIColorButtonControl* m_pOriginalColorButton = nullptr;
   CGUIButtonControl* m_pOriginalCategoryButton;
   CGUIButtonControl* m_pOriginalButton;
   CGUIEditControl* m_pOriginalEdit;
   CGUIImage* m_pOriginalImage;
   CGUILabelControl* m_pOriginalGroupTitle;
-  bool m_newOriginalEdit;
+  bool m_newOriginalEdit = false;
 
   BaseSettingControlPtr
       m_delayedSetting; ///< Current delayed setting \sa CBaseSettingControl::SetDelayed()
   CTimer m_delayedTimer; ///< Delayed setting timer
 
-  bool m_confirmed;
-  int m_focusedControl, m_fadedControl;
+  bool m_confirmed = false;
+  int m_focusedControl = 0, m_fadedControl = 0;
 };

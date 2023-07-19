@@ -148,6 +148,6 @@ private:
 
   int m_logLevel;
 
-  bool m_componentLogEnabled;
-  uint32_t m_componentLogLevels;
+  bool m_componentLogEnabled = false;
+  uint32_t m_componentLogLevels = 0;
 };

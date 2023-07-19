@@ -223,12 +223,12 @@ private:
   std::shared_ptr<CAppParams> m_appParams;
   std::unique_ptr<CLog> m_logging;
   std::shared_ptr<ANNOUNCEMENT::CAnnouncementManager> m_pAnnouncementManager;
-  CGUIComponent* m_pGUI;
-  CWinSystemBase* m_pWinSystem;
-  IAE* m_pActiveAE;
+  CGUIComponent* m_pGUI = nullptr;
+  CWinSystemBase* m_pWinSystem = nullptr;
+  IAE* m_pActiveAE = nullptr;
   std::shared_ptr<CAppInboundProtocol> m_pAppPort;
   std::shared_ptr<CSettingsComponent> m_pSettingsComponent;
-  CDecoderFilterManager* m_decoderFilterManager;
+  CDecoderFilterManager* m_decoderFilterManager = nullptr;
   std::shared_ptr<CCPUInfo> m_cpuInfo;
   std::shared_ptr<CTextureCache> m_textureCache;
   std::shared_ptr<CJobManager> m_jobManager;

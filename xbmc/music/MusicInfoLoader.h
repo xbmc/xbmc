@@ -39,8 +39,8 @@ protected:
   MAPSONGS m_songsMap;
   std::string m_strPrevPath;
   CMusicDatabase m_musicDatabase;
-  unsigned int m_databaseHits;
-  unsigned int m_tagReads;
+  unsigned int m_databaseHits = 0;
+  unsigned int m_tagReads = 0;
   CMusicThumbLoader *m_thumbLoader;
 };
 }

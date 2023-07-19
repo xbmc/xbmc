@@ -68,14 +68,13 @@ public:
   const std::string &GetExpression() const { return m_expression; }
   bool ListItemDependent() const { return m_listItemDependent; }
 protected:
-
-  bool m_value;                ///< current value
+  bool m_value = false; ///< current value
   int m_context;               ///< contextual information to go with the condition
-  bool m_listItemDependent;    ///< do not cache if a listitem pointer is given
+  bool m_listItemDependent = false; ///< do not cache if a listitem pointer is given
   std::string  m_expression;   ///< original expression
 
 private:
-  unsigned int m_refreshCounter;
+  unsigned int m_refreshCounter = 0;
   unsigned int &m_parentRefreshCounter;
 };
 

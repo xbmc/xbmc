@@ -267,7 +267,7 @@ int NestDetect::m_nest = 0;
 class ProgressDialogHelper
 {
 public:
-  explicit ProgressDialogHelper (const std::string& heading) : m_dialog(0)
+  explicit ProgressDialogHelper(const std::string& heading)
   {
     if (CServiceBroker::GetAppMessenger()->IsProcessThread())
     {
@@ -335,7 +335,7 @@ public:
   }
 
 private:
-  CGUIDialogProgress* m_dialog;
+  CGUIDialogProgress* m_dialog = 0;
 };
 
 class NetworkStartWaiter : public WaitCondition
@@ -363,8 +363,7 @@ private:
 class PingResponseWaiter : public WaitCondition, private IJobCallback
 {
 public:
-  PingResponseWaiter (bool async, const CWakeOnAccess::WakeUpEntry& server)
-    : m_server(server), m_jobId(0), m_hostOnline(false)
+  PingResponseWaiter(bool async, const CWakeOnAccess::WakeUpEntry& server) : m_server(server)
   {
     if (async)
     {
@@ -427,8 +426,8 @@ private:
   };
 
   const CWakeOnAccess::WakeUpEntry& m_server;
-  unsigned int m_jobId;
-  bool m_hostOnline;
+  unsigned int m_jobId = 0;
+  bool m_hostOnline = false;
 };
 
 //
