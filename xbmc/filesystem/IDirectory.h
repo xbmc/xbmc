@@ -15,6 +15,7 @@
 class CFileItemList;
 class CProfileManager;
 class CURL;
+class CFileItem;
 
 namespace XFILE
 {
@@ -132,6 +133,14 @@ public:
    \sa GetKeyboardInput, SetErrorDialog, RequireAuthentication
    */
   bool ProcessRequirements();
+
+  /*!
+  \brief Resolves a given item to a playable item
+  \note Some directories (e.g. dvd, bluray, plugins etc) need to be translated/resolved to the actual playback url
+  \param item The item being manipulated (which the path points to a vfs protocol implementation)
+  \return true if the item was resolved, false if it failed to resolve
+  */
+  virtual bool Resolve(CFileItem& item) const { return true; };
 
 protected:
   /*! \brief Prompt the user for some keyboard input
