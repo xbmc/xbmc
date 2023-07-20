@@ -766,14 +766,6 @@ bool CVideoPlayer::OpenInputStream()
 
   CLog::Log(LOGINFO, "Creating InputStream");
 
-  // correct the filename if needed
-  const CURL url{m_item.GetPath()};
-  if (url.GetProtocol() == "dvd")
-  {
-    // FIXME: we should deprecate this when more than one device drive is supported
-    m_item.SetPath(CServiceBroker::GetMediaManager().TranslateDevicePath(""));
-  }
-
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_item, true);
   if (m_pInputStream == nullptr)
   {

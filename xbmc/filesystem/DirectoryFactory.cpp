@@ -74,6 +74,9 @@
 #ifdef HAVE_LIBBLURAY
 #include "BlurayDirectory.h"
 #endif
+#ifdef HAS_OPTICAL_DRIVE
+#include "DVDDirectory.h"
+#endif
 #if defined(TARGET_ANDROID)
 #include "platform/android/filesystem/AndroidAppDirectory.h"
 #endif
@@ -196,6 +199,10 @@ IDirectory* CDirectoryFactory::Create(const CURL& url)
 #endif
 #ifdef HAS_FILESYSTEM_NFS
   if (url.IsProtocol("nfs")) return new CNFSDirectory();
+#endif
+#ifdef HAS_OPTICAL_DRIVE
+  if (url.IsProtocol("dvd"))
+    return new CDVDDirectory();
 #endif
 
   if (url.IsProtocol("pvr"))
