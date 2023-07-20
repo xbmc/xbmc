@@ -682,8 +682,6 @@ bool CGameClientInput::SetRumble(const std::string& portAddress,
 
 ControllerVector CGameClientInput::GetControllers(const CGameClient& gameClient)
 {
-  using namespace ADDON;
-
   ControllerVector controllers;
 
   CGameServices& gameServices = CServiceBroker::GetGameServices();

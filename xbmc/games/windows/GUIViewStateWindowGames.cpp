@@ -61,8 +61,6 @@ std::string CGUIViewStateWindowGames::GetLockType()
 
 std::string CGUIViewStateWindowGames::GetExtensions()
 {
-  using namespace ADDON;
-
   std::set<std::string> exts = CGameUtils::GetGameExtensions();
 
   // Ensure .zip appears
