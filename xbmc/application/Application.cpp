@@ -2380,11 +2380,13 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     return false;
   }
 
+  //! TODO: Move this to plugin vfs dir resolve(item)
   // if the item is a plugin we need to resolve the plugin paths
   if (URIUtils::HasPluginPath(item) && !XFILE::CPluginDirectory::GetResolvedPluginResult(item))
     return false;
 
 #ifdef HAS_UPNP
+  //! TODO: Move this to upnp vfs dir resolve(item)
   if (URIUtils::IsUPnP(item.GetPath()))
   {
     if (!XFILE::CUPnPDirectory::GetResource(item.GetURL(), item))
