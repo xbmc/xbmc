@@ -19,15 +19,13 @@ using namespace XFILE;
 using namespace std::chrono_literals;
 
 CCircularCache::CCircularCache(size_t front, size_t back)
- : CCacheStrategy()
- , m_beg(0)
- , m_end(0)
- , m_cur(0)
- , m_buf(NULL)
- , m_size(front + back)
- , m_size_back(back)
+  : CCacheStrategy(),
+    m_buf(NULL),
+    m_size(front + back),
+    m_size_back(back)
 #ifdef TARGET_WINDOWS
- , m_handle(NULL)
+    ,
+    m_handle(NULL)
 #endif
 {
 }

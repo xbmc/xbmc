@@ -29,5 +29,5 @@ protected:
   bool CanSeekPVRStream() override;
 
 private:
-  bool m_bDemuxActive;
+  bool m_bDemuxActive = false;
 };

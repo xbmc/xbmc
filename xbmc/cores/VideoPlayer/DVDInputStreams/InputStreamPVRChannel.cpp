@@ -17,8 +17,7 @@
 using namespace PVR;
 
 CInputStreamPVRChannel::CInputStreamPVRChannel(IVideoPlayer* pPlayer, const CFileItem& fileitem)
-  : CInputStreamPVRBase(pPlayer, fileitem),
-    m_bDemuxActive(false)
+  : CInputStreamPVRBase(pPlayer, fileitem)
 {
 }
 

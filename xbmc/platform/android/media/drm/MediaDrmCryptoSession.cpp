@@ -45,13 +45,10 @@ void CMediaDrmCryptoSession::Register()
   CCryptoSession::RegisterInterface(CMediaDrmCryptoSession::Create);
 }
 
-CMediaDrmCryptoSession::CMediaDrmCryptoSession(const std::string& UUID, const std::string& cipherAlgo, const std::string& macAlgo)
-  : m_mediaDrm(nullptr)
-  , m_cryptoSession(nullptr)
-  , m_cipherAlgo(cipherAlgo)
-  , m_macAlgo(macAlgo)
-  , m_hasKeys(false)
-  , m_sessionId(nullptr)
+CMediaDrmCryptoSession::CMediaDrmCryptoSession(const std::string& UUID,
+                                               const std::string& cipherAlgo,
+                                               const std::string& macAlgo)
+  : m_cipherAlgo(cipherAlgo), m_macAlgo(macAlgo)
 {
   if (UUID.length() != 36 || UUID[8] != '-' || UUID[13] != '-' || UUID[18] != '-' ||
       UUID[23] != '-')

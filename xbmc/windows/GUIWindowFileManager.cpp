@@ -86,8 +86,8 @@ namespace
 class CGetDirectoryItems : public IRunnable
 {
 public:
-  CGetDirectoryItems(XFILE::CVirtualDirectory &dir, CURL &url, CFileItemList &items)
-  : m_result(false), m_dir(dir), m_url(url), m_items(items)
+  CGetDirectoryItems(XFILE::CVirtualDirectory& dir, CURL& url, CFileItemList& items)
+    : m_dir(dir), m_url(url), m_items(items)
   {
   }
   void Run() override
@@ -98,7 +98,8 @@ public:
   {
     m_dir.CancelDirectory();
   }
-  bool m_result;
+  bool m_result = false;
+
 protected:
   XFILE::CVirtualDirectory &m_dir;
   CURL m_url;

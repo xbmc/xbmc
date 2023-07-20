@@ -98,7 +98,7 @@ void AsyncSearchAction::Run()
 } // unnamed namespace
 
 CGUIWindowPVRSearchBase::CGUIWindowPVRSearchBase(bool bRadio, int id, const std::string& xmlFile)
-  : CGUIWindowPVRBase(bRadio, id, xmlFile), m_bSearchConfirmed(false)
+  : CGUIWindowPVRBase(bRadio, id, xmlFile)
 {
 }
 

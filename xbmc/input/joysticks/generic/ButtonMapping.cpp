@@ -81,14 +81,7 @@ bool CHatDetector::OnMotion(HAT_STATE state)
 CAxisDetector::CAxisDetector(CButtonMapping* buttonMapping,
                              unsigned int axisIndex,
                              const AxisConfiguration& config)
-  : CPrimitiveDetector(buttonMapping),
-    m_axisIndex(axisIndex),
-    m_config(config),
-    m_state(AXIS_STATE::INACTIVE),
-    m_type(AXIS_TYPE::UNKNOWN),
-    m_initialPositionKnown(false),
-    m_initialPosition(0.0f),
-    m_initialPositionChanged(false)
+  : CPrimitiveDetector(buttonMapping), m_axisIndex(axisIndex), m_config(config)
 {
 }
 
@@ -319,7 +312,7 @@ KODI::INPUT::INTERCARDINAL_DIRECTION CPointerDetector::GetPointerDirection(int x
 // --- CButtonMapping ----------------------------------------------------------
 
 CButtonMapping::CButtonMapping(IButtonMapper* buttonMapper, IButtonMap* buttonMap, IKeymap* keymap)
-  : m_buttonMapper(buttonMapper), m_buttonMap(buttonMap), m_keymap(keymap), m_frameCount(0)
+  : m_buttonMapper(buttonMapper), m_buttonMap(buttonMap), m_keymap(keymap)
 {
   assert(m_buttonMapper != nullptr);
   assert(m_buttonMap != nullptr);

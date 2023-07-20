@@ -84,7 +84,7 @@ static const std::string getListOfAddonClassesAsString(
 }
 
 CPythonInvoker::CPythonInvoker(ILanguageInvocationHandler* invocationHandler)
-  : ILanguageInvoker(invocationHandler), m_threadState(NULL), m_stop(false)
+  : ILanguageInvoker(invocationHandler), m_threadState(NULL)
 {
 }
 

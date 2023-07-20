@@ -21,7 +21,6 @@
 using namespace KODI;
 
 CServiceBroker::CServiceBroker()
-  : m_pGUI(nullptr), m_pWinSystem(nullptr), m_pActiveAE(nullptr), m_decoderFilterManager(nullptr)
 {
 }
 

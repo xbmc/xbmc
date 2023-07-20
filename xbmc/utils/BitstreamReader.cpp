@@ -8,12 +8,8 @@
 
 #include "BitstreamReader.h"
 
-CBitstreamReader::CBitstreamReader(const uint8_t *buf, int len)
-  : buffer(buf)
-  , start(buf)
-  , offbits(0)
-  , length(len)
-  , oflow(0)
+CBitstreamReader::CBitstreamReader(const uint8_t* buf, int len)
+  : buffer(buf), start(buf), length(len)
 {
 }
 

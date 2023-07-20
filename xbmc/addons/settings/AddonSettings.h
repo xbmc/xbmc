@@ -193,7 +193,7 @@ private:
   const std::string m_addonProfile;
   const AddonInstanceId m_instanceId{ADDON_SETTINGS_ID};
 
-  uint32_t m_unidentifiedSettingId;
+  uint32_t m_unidentifiedSettingId = 0;
   int m_unknownSettingLabelId;
   std::map<int, std::string> m_unknownSettingLabels;
 

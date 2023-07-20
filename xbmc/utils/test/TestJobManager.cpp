@@ -133,12 +133,7 @@ class BroadcastingJob :
   public CJob
 {
 public:
-
-  BroadcastingJob(JobControlPackage &package) :
-    m_package(package),
-    m_finish(false)
-  {
-  }
+  BroadcastingJob(JobControlPackage& package) : m_package(package) {}
 
   void FinishAndStopBlocking()
   {
@@ -176,7 +171,7 @@ private:
 
   XbmcThreads::ConditionVariable m_block;
   CCriticalSection m_blockMutex;
-  bool m_finish;
+  bool m_finish = false;
 };
 
 BroadcastingJob *

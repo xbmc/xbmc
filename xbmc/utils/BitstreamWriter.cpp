@@ -8,12 +8,8 @@
 
 #include "BitstreamWriter.h"
 
-CBitstreamWriter::CBitstreamWriter(uint8_t *buffer, unsigned int buffer_size, int writer_le)
-  : writer_le(writer_le)
-  , bit_buf(0)
-  , bit_left(32)
-  , buf(buffer)
-  , buf_ptr(buf)
+CBitstreamWriter::CBitstreamWriter(uint8_t* buffer, unsigned int buffer_size, int writer_le)
+  : writer_le(writer_le), buf(buffer), buf_ptr(buf)
 {
 }
 

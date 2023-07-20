@@ -98,12 +98,12 @@ private:
   CCriticalSection m_savestateMutex;
 
   // Playback stats
-  uint64_t m_totalFrameCount;
-  uint64_t m_pastFrameCount;
-  uint64_t m_futureFrameCount;
-  unsigned int m_playTimeMs;
-  unsigned int m_totalTimeMs;
-  unsigned int m_cacheTimeMs;
+  uint64_t m_totalFrameCount = 0;
+  uint64_t m_pastFrameCount = 0;
+  uint64_t m_futureFrameCount = 0;
+  unsigned int m_playTimeMs = 0;
+  unsigned int m_totalTimeMs = 0;
+  unsigned int m_cacheTimeMs = 0;
 };
 } // namespace RETRO
 } // namespace KODI

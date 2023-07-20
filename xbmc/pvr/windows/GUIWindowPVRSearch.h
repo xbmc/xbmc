@@ -60,7 +60,7 @@ private:
 
   void SetSearchFilter(const std::shared_ptr<CPVREpgSearchFilter>& searchFilter);
 
-  bool m_bSearchConfirmed;
+  bool m_bSearchConfirmed = false;
   std::shared_ptr<CPVREpgSearchFilter> m_searchfilter;
 };
 

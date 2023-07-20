@@ -41,20 +41,8 @@ using namespace std::chrono_literals;
 // Supporting all open  audio codec standards.
 // First one being nullsoft's nsv audio decoder format
 
-PAPlayer::PAPlayer(IPlayerCallback& callback) :
-  IPlayer(callback),
-  CThread("PAPlayer"),
-  m_signalSpeedChange(false),
-  m_playbackSpeed(1    ),
-  m_isPlaying(false),
-  m_isPaused(false),
-  m_isFinished(false),
-  m_defaultCrossfadeMS (0),
-  m_upcomingCrossfadeMS(0),
-  m_audioCallback(NULL ),
-  m_jobCounter(0),
-  m_newForcedPlayerTime(-1),
-  m_newForcedTotalTime (-1)
+PAPlayer::PAPlayer(IPlayerCallback& callback)
+  : IPlayer(callback), CThread("PAPlayer"), m_playbackSpeed(1), m_audioCallback(NULL)
 {
   memset(&m_playerGUIData, 0, sizeof(m_playerGUIData));
   m_processInfo.reset(CProcessInfo::CreateInstance());

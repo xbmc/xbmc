@@ -54,24 +54,17 @@
 
 CGUIDialogSettingsBase::CGUIDialogSettingsBase(int windowId, const std::string& xmlFile)
   : CGUIDialog(windowId, xmlFile),
-    m_iSetting(0),
-    m_iCategory(0),
     m_resetSetting(NULL),
     m_dummyCategory(NULL),
     m_pOriginalSpin(NULL),
     m_pOriginalSlider(NULL),
     m_pOriginalRadioButton(NULL),
-    m_pOriginalColorButton(nullptr),
     m_pOriginalCategoryButton(NULL),
     m_pOriginalButton(NULL),
     m_pOriginalEdit(NULL),
     m_pOriginalImage(NULL),
     m_pOriginalGroupTitle(NULL),
-    m_newOriginalEdit(false),
-    m_delayedTimer(this),
-    m_confirmed(false),
-    m_focusedControl(0),
-    m_fadedControl(0)
+    m_delayedTimer(this)
 {
   m_loadType = KEEP_IN_MEMORY;
 }
