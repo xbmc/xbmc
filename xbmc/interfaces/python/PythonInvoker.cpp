@@ -130,7 +130,7 @@ bool CPythonInvoker::execute(const std::string& script, const std::vector<std::s
   for (const auto& argument : arguments)
   {
     std::wstring w_argument;
-    g_charsetConverter.utf8ToW(argument, w_argument);
+    g_charsetConverter.utf8ToW(argument, w_argument, false);
     w_arguments.push_back(w_argument);
   }
   return execute(script, w_arguments);
