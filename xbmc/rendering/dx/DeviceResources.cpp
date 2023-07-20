@@ -702,14 +702,11 @@ void DX::DeviceResources::ResizeBuffers()
 
     m_IsHDROutput = (swapChainDesc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) && isHdrEnabled;
 
-    const int bits = (swapChainDesc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) ? 10 : 8;
-    std::string flip =
-        (swapChainDesc.SwapEffect == DXGI_SWAP_EFFECT_FLIP_DISCARD) ? "discard" : "sequential";
-
-    CLog::LogF(LOGINFO,
-               "{} bit swapchain is used with {} flip {} buffers and {} output (format {})", bits,
-               swapChainDesc.BufferCount, flip, m_IsHDROutput ? "HDR" : "SDR",
-               DX::DXGIFormatToString(swapChainDesc.Format));
+    CLog::LogF(
+        LOGINFO, "{} bit swapchain is used with {} flip {} buffers and {} output (format {})",
+        (swapChainDesc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) ? 10 : 8, swapChainDesc.BufferCount,
+        (swapChainDesc.SwapEffect == DXGI_SWAP_EFFECT_FLIP_DISCARD) ? "discard" : "sequential",
+        m_IsHDROutput ? "HDR" : "SDR", DX::DXGIFormatToString(swapChainDesc.Format));
 
     hr = swapChain.As(&m_swapChain); CHECK_ERR();
     m_stereoEnabled = bHWStereoEnabled;
@@ -732,6 +729,9 @@ void DX::DeviceResources::ResizeBuffers()
     hr = m_d3dDevice.As(&dxgiDevice); CHECK_ERR();
     dxgiDevice->SetMaximumFrameLatency(1);
     m_usedSwapChain = false;
+
+    if (m_IsHDROutput)
+      SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
   }
 
   CLog::LogF(LOGDEBUG, "end resize buffers.");
