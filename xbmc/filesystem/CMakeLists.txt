@@ -151,9 +151,11 @@ endif()
 
 if(ENABLE_OPTICAL)
   list(APPEND SOURCES CDDADirectory.cpp
-                      CDDAFile.cpp)
+                      CDDAFile.cpp
+                      DVDDirectory.cpp)
   list(APPEND HEADERS CDDADirectory.h
-                      CDDAFile.h)
+                      CDDAFile.h
+                      DVDDirectory.h)
 endif()
 
 if(NFS_FOUND)
