@@ -340,7 +340,7 @@
     <category id="discs" label="14087" help="36193">
       <group id="1" label="446">
         <setting id="dvds.autorun" type="boolean" label="14088" help="36194">
-          <requirement>HAS_DVD_DRIVE</requirement>
+          <requirement>HAS_OPTICAL_DRIVE</requirement>
           <level>0</level>
           <default>false</default>
           <control type="toggle" />
@@ -390,7 +390,7 @@
       </group>
       <group id="3" label="620">
         <setting id="audiocds.autoaction" type="integer" label="14097" help="36283">
-          <requirement>HAS_DVD_DRIVE</requirement>
+          <requirement>HAS_OPTICAL_DRIVE</requirement>
           <level>1</level>
           <default>0</default> <!-- AUTOCD_NONE -->
           <constraints>
@@ -399,7 +399,7 @@
           <control type="list" format="string" />
         </setting>
         <setting id="audiocds.usecddb" type="boolean" label="227" help="36284">
-          <requirement>HAS_DVD_DRIVE</requirement>
+          <requirement>HAS_OPTICAL_DRIVE</requirement>
           <level>1</level>
           <default>true</default>
           <control type="toggle" />
