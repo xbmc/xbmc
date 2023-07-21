@@ -7,6 +7,6 @@
   "title": "@APP_NAME@",
   "icon": "icon.png",
   "largeIcon": "largeIcon.png",
-  "splashBackground": "media/splash.jpg",
+  "splashBackground": "media/splash_webOS.png",
   "spinnerOnLaunch": false
 }
