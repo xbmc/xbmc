@@ -171,7 +171,7 @@ double CAESinkStarfish::GetCacheTotal()
   {
     auto frameTimeSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(
         std::chrono::duration<double, std::milli>(m_format.m_streamInfo.GetDuration()));
-    return STARFISH_AUDIO_BUFFERS * frameTimeSeconds.count() * 2;
+    return STARFISH_AUDIO_BUFFERS * frameTimeSeconds.count() * 4;
   }
   else
     return 0.0;
