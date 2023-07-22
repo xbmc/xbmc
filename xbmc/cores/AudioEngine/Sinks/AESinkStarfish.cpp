@@ -132,7 +132,7 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
 
   payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["preBufferByte"] = 0;
   payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["bufferMinLevel"] = 0;
-  payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["bufferMaxLevel"] = 0;
+  payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["bufferMaxLevel"] = 100;
   // This is the size after which the sink starts blocking
   payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["qBufferLevelAudio"] =
       m_bufferSize;
