@@ -54,6 +54,7 @@ void CAESinkStarfish::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   info.m_displayName = "Starfish (Passthrough only)";
   info.m_channels = AE_CH_LAYOUT_2_0;
   info.m_wantsIECPassthrough = false;
+  info.m_onlyPassthrough = true;
 
   // PCM disabled for now as the latency is just too high, needs more research
   // Thankfully, ALSA or PulseAudio do work as an alternative for PCM content
