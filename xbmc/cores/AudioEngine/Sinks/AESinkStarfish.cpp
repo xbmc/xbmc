@@ -96,6 +96,7 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
   payload["mediaTransportType"] = "BUFFERSTREAM";
   payload["option"]["appId"] = CCompileInfo::GetPackage();
   payload["option"]["needAudio"] = true;
+  payload["option"]["queryPosition"] = true;
   payload["option"]["externalStreamingInfo"]["contents"]["esInfo"]["pauseAtDecodeTime"] = true;
   payload["option"]["externalStreamingInfo"]["contents"]["esInfo"]["seperatedPTS"] = true;
   payload["option"]["externalStreamingInfo"]["contents"]["esInfo"]["ptsToDecode"] = 0;
@@ -188,14 +189,15 @@ unsigned int CAESinkStarfish::AddPackets(uint8_t** data, unsigned int frames, un
   auto frameTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
       std::chrono::duration<double, std::milli>(m_format.m_streamInfo.GetDuration()));
 
+  std::chrono::nanoseconds pts = 0ns;
   if (!m_firstFeed && offset == 0)
-    m_pts += frameTime;
+    pts += m_pts + frameTime;
 
   CVariant payload;
   uint8_t* buffer = data[0] + offset * m_format.m_frameSize;
   payload["bufferAddr"] = fmt::format("{:#x}", reinterpret_cast<std::uintptr_t>(buffer));
   payload["bufferSize"] = frames * m_format.m_frameSize;
-  payload["pts"] = m_pts.count();
+  payload["pts"] = pts.count();
   payload["esData"] = 2;
 
   std::string json;
@@ -210,6 +212,7 @@ unsigned int CAESinkStarfish::AddPackets(uint8_t** data, unsigned int frames, un
 
   if (result.find("Ok") != std::string::npos)
   {
+    m_pts = pts;
     m_firstFeed = false;
     return frames;
   }
@@ -227,7 +230,8 @@ void CAESinkStarfish::AddPause(unsigned int millis)
 
 void CAESinkStarfish::GetDelay(AEDelayStatus& status)
 {
-  status.SetDelay(std::chrono::duration_cast<std::chrono::duration<double>>(m_delay).count());
+  auto delay = m_pts - std::chrono::nanoseconds(m_starfishMediaAPI->getCurrentPlaytime());
+  status.SetDelay(std::chrono::duration_cast<std::chrono::duration<double>>(delay).count());
 }
 
 void CAESinkStarfish::Drain()
@@ -241,9 +245,6 @@ void CAESinkStarfish::PlayerCallback(const int32_t type,
 {
   switch (type)
   {
-    case PF_EVENT_TYPE_FRAMEREADY:
-      m_delay = m_pts - std::chrono::nanoseconds(numValue);
-      break;
     case PF_EVENT_TYPE_STR_STATE_UPDATE__LOADCOMPLETED:
       m_starfishMediaAPI->Play();
       break;
