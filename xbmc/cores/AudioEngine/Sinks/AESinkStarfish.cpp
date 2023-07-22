@@ -52,7 +52,7 @@ void CAESinkStarfish::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   CAEDeviceInfo info;
   info.m_deviceName = "Starfish";
   info.m_displayName = "Starfish (Passthrough only)";
-  info.m_channels = AE_CH_LAYOUT_5_1;
+  info.m_channels = AE_CH_LAYOUT_2_0;
   info.m_wantsIECPassthrough = false;
 
   // PCM disabled for now as the latency is just too high, needs more research
