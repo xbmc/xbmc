@@ -236,7 +236,7 @@ void CAESinkStarfish::GetDelay(AEDelayStatus& status)
 
 void CAESinkStarfish::Drain()
 {
-  m_starfishMediaAPI->flush();
+  m_starfishMediaAPI->pushEOS();
 }
 
 void CAESinkStarfish::PlayerCallback(const int32_t type,
