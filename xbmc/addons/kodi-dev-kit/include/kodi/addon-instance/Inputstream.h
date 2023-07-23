@@ -649,7 +649,7 @@ public:
   {
     m_extraData = extraData;
     m_cStructure->m_ExtraData = m_extraData.data();
-    m_cStructure->m_ExtraSize = m_extraData.size();
+    m_cStructure->m_ExtraSize = static_cast<unsigned int>(m_extraData.size());
   }
 
   /// @brief Additional data where can needed on streams.
@@ -666,7 +666,7 @@ public:
     }
 
     m_cStructure->m_ExtraData = m_extraData.data();
-    m_cStructure->m_ExtraSize = m_extraData.size();
+    m_cStructure->m_ExtraSize = static_cast<unsigned int>(m_extraData.size());
   }
 
   /// @brief To get with @ref SetExtraData changed values.
@@ -697,7 +697,7 @@ public:
   {
     m_extraData.clear();
     m_cStructure->m_ExtraData = m_extraData.data();
-    m_cStructure->m_ExtraSize = m_extraData.size();
+    m_cStructure->m_ExtraSize = static_cast<unsigned int>(m_extraData.size());
   }
 
   /// @brief RFC 5646 language code (empty string if undefined).
