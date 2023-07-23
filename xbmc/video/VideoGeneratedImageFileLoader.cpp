@@ -16,7 +16,7 @@
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
 
-bool VIDEO::CVideoGeneratedImageFileLoader::CanLoad(std::string specialType) const
+bool VIDEO::CVideoGeneratedImageFileLoader::CanLoad(const std::string& specialType) const
 {
   return specialType == "video";
 }
@@ -45,10 +45,8 @@ void SetupRarOptions(CFileItem& item, const std::string& path)
 }
 } // namespace
 
-std::unique_ptr<CTexture> VIDEO::CVideoGeneratedImageFileLoader::Load(std::string specialType,
-                                                                      std::string filePath,
-                                                                      unsigned int,
-                                                                      unsigned int) const
+std::unique_ptr<CTexture> VIDEO::CVideoGeneratedImageFileLoader::Load(
+    const std::string& specialType, const std::string& filePath, unsigned int, unsigned int) const
 {
   CFileItem item{filePath, false};
 
