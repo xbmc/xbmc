@@ -25,9 +25,9 @@ namespace IMAGE_FILES
 class ISpecialImageFileLoader
 {
 public:
-  virtual bool CanLoad(std::string specialType) const = 0;
-  virtual std::unique_ptr<CTexture> Load(std::string specialType,
-                                         std::string filePath,
+  virtual bool CanLoad(const std::string& specialType) const = 0;
+  virtual std::unique_ptr<CTexture> Load(const std::string& specialType,
+                                         const std::string& filePath,
                                          unsigned int preferredWidth,
                                          unsigned int preferredHeight) const = 0;
   virtual ~ISpecialImageFileLoader() = default;

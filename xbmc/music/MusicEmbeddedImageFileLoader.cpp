@@ -17,7 +17,7 @@
 
 using namespace MUSIC_INFO;
 
-bool CMusicEmbeddedImageFileLoader::CanLoad(std::string specialType) const
+bool CMusicEmbeddedImageFileLoader::CanLoad(const std::string& specialType) const
 {
   return specialType == "music";
 }
@@ -36,8 +36,8 @@ bool GetEmbeddedThumb(const std::string& path, EmbeddedArt& art)
 }
 } // namespace
 
-std::unique_ptr<CTexture> CMusicEmbeddedImageFileLoader::Load(std::string specialType,
-                                                              std::string filePath,
+std::unique_ptr<CTexture> CMusicEmbeddedImageFileLoader::Load(const std::string& specialType,
+                                                              const std::string& filePath,
                                                               unsigned int preferredWidth,
                                                               unsigned int preferredHeight) const
 {
