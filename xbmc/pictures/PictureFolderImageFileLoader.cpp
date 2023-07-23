@@ -20,13 +20,13 @@
 
 using namespace XFILE;
 
-bool CPictureFolderImageFileLoader::CanLoad(std::string specialType) const
+bool CPictureFolderImageFileLoader::CanLoad(const std::string& specialType) const
 {
   return specialType == "picturefolder";
 }
 
-std::unique_ptr<CTexture> CPictureFolderImageFileLoader::Load(std::string specialType,
-                                                              std::string filePath,
+std::unique_ptr<CTexture> CPictureFolderImageFileLoader::Load(const std::string& specialType,
+                                                              const std::string& filePath,
                                                               unsigned int preferredWidth,
                                                               unsigned int preferredHeight) const
 {
