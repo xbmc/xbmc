@@ -1019,9 +1019,7 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_HDR_TOGGLE)
   {
     // Only enables manual HDR toggle if no video is playing or auto HDR switch is disabled
-    if (appPlayer->IsPlayingVideo() &&
-        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CServiceBroker::GetWinSystem()->SETTING_WINSYSTEM_IS_HDR_DISPLAY))
+    if (appPlayer->IsPlayingVideo() && CServiceBroker::GetWinSystem()->IsHDRDisplaySettingEnabled())
       return true;
 
     HDR_STATUS hdrStatus = CServiceBroker::GetWinSystem()->ToggleHDR();
@@ -1042,9 +1040,7 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_CYCLE_TONEMAP_METHOD)
   {
     // Only enables tone mapping switch if display is not HDR capable or HDR is not enabled
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CServiceBroker::GetWinSystem()->SETTING_WINSYSTEM_IS_HDR_DISPLAY) &&
-        CServiceBroker::GetWinSystem()->IsHDRDisplay())
+    if (CServiceBroker::GetWinSystem()->IsHDRDisplaySettingEnabled())
       return true;
 
     if (appPlayer->IsPlayingVideo())
