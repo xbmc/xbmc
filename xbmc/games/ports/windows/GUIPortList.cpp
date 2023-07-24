@@ -32,7 +32,6 @@
 #include "view/ViewState.h"
 
 using namespace KODI;
-using namespace ADDON;
 using namespace GAME;
 
 CGUIPortList::CGUIPortList(CGUIWindow& window)

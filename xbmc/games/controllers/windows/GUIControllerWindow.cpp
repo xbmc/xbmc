@@ -32,7 +32,6 @@
 
 using namespace KODI;
 using namespace GAME;
-using namespace KODI::MESSAGING;
 
 CGUIControllerWindow::CGUIControllerWindow(void)
   : CGUIDialog(WINDOW_DIALOG_GAME_CONTROLLERS, "DialogGameControllers.xml"),
@@ -348,7 +347,7 @@ void CGUIControllerWindow::GetMoreControllers(void)
   {
     // "Controller profiles"
     // "All available controller profiles are installed."
-    HELPERS::ShowOKDialogText(CVariant{35050}, CVariant{35062});
+    MESSAGING::HELPERS::ShowOKDialogText(CVariant{35050}, CVariant{35062});
     return;
   }
 }
@@ -371,7 +370,7 @@ void CGUIControllerWindow::ShowHelp(void)
 {
   // "Help"
   // <help text>
-  HELPERS::ShowOKDialogText(CVariant{10043}, CVariant{35055});
+  MESSAGING::HELPERS::ShowOKDialogText(CVariant{10043}, CVariant{35055});
 }
 
 void CGUIControllerWindow::ShowButtonCaptureDialog(void)

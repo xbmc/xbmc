@@ -1568,13 +1568,23 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
     // Set controller ID
     GUIINFO::CGUIInfoLabel controllerId;
-    GetInfoLabel(pControlNode, "controllerId", controllerId, parentID);
+    GetInfoLabel(pControlNode, "controllerid", controllerId, parentID);
     gcontrol->SetControllerID(controllerId);
 
     // Set controller address
     GUIINFO::CGUIInfoLabel controllerAddress;
-    GetInfoLabel(pControlNode, "controllerAddress", controllerAddress, parentID);
+    GetInfoLabel(pControlNode, "controlleraddress", controllerAddress, parentID);
     gcontrol->SetControllerAddress(controllerAddress);
+
+    // Set controller diffuse color
+    GUIINFO::CGUIInfoColor controllerDiffuse(0xFFFFFFFF);
+    GetInfoColor(pControlNode, "controllerdiffuse", controllerDiffuse, parentID);
+    gcontrol->SetControllerDiffuse(controllerDiffuse);
+
+    // Set port address
+    GUIINFO::CGUIInfoLabel portAddress;
+    GetInfoLabel(pControlNode, "portaddress", portAddress, parentID);
+    gcontrol->SetPortAddress(portAddress);
 
     break;
   }

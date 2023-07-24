@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "games/GameServices.h"
 #include "games/addons/input/GameClientTopology.h"
+#include "games/agents/GameAgentManager.h"
 #include "games/controllers/Controller.h"
 #include "games/controllers/ControllerLayout.h"
 #include "guilib/GUIListItem.h"
@@ -40,6 +41,8 @@ CGUIGameController::CGUIGameController(const CGUIGameController& from)
   : CGUIImage(from),
     m_controllerIdInfo(from.m_controllerIdInfo),
     m_controllerAddressInfo(from.m_controllerAddressInfo),
+    m_controllerDiffuse(from.m_controllerDiffuse),
+    m_portAddressInfo(from.m_portAddressInfo),
     m_currentController(from.m_currentController),
     m_portAddress(from.m_portAddress)
 {
@@ -52,16 +55,27 @@ CGUIGameController* CGUIGameController::Clone(void) const
   return new CGUIGameController(*this);
 }
 
-void CGUIGameController::Render(void)
+void CGUIGameController::DoProcess(unsigned int currentTime, CDirtyRegionList& dirtyregions)
 {
-  CGUIImage::Render();
+  std::string portAddress;
 
-  std::lock_guard<std::mutex> lock(m_mutex);
-
-  if (m_currentController)
   {
-    //! @todo Render pressed buttons
+    std::lock_guard<std::mutex> lock(m_mutex);
+    portAddress = m_portAddress;
   }
+
+  const GAME::CGameAgentManager& agentManager =
+      CServiceBroker::GetGameServices().GameAgentManager();
+
+  // Highlight the controller if it is active
+  float activation = 0.0f;
+
+  if (!portAddress.empty())
+    activation = agentManager.GetPortActivation(portAddress);
+
+  SetActivation(activation);
+
+  CGUIImage::DoProcess(currentTime, dirtyregions);
 }
 
 void CGUIGameController::UpdateInfo(const CGUIListItem* item /* = nullptr */)
@@ -79,6 +93,8 @@ void CGUIGameController::UpdateInfo(const CGUIListItem* item /* = nullptr */)
     if (controllerId.empty())
       controllerId = m_controllerIdInfo.GetItemLabel(item);
 
+    portAddress = m_portAddressInfo.GetItemLabel(item);
+
     std::string controllerAddress = m_controllerAddressInfo.GetItemLabel(item);
     if (!controllerAddress.empty())
       std::tie(portAddress, controllerId) = CGameClientTopology::SplitAddress(controllerAddress);
@@ -92,7 +108,7 @@ void CGUIGameController::UpdateInfo(const CGUIListItem* item /* = nullptr */)
   }
 }
 
-void CGUIGameController::SetControllerID(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& controllerId)
+void CGUIGameController::SetControllerID(const GUILIB::GUIINFO::CGUIInfoLabel& controllerId)
 {
   m_controllerIdInfo = controllerId;
 
@@ -107,7 +123,7 @@ void CGUIGameController::SetControllerID(const KODI::GUILIB::GUIINFO::CGUIInfoLa
 }
 
 void CGUIGameController::SetControllerAddress(
-    const KODI::GUILIB::GUIINFO::CGUIInfoLabel& controllerAddress)
+    const GUILIB::GUIINFO::CGUIInfoLabel& controllerAddress)
 {
   m_controllerAddressInfo = controllerAddress;
 
@@ -123,6 +139,25 @@ void CGUIGameController::SetControllerAddress(
     std::lock_guard<std::mutex> lock(m_mutex);
     ActivateController(controllerId);
     m_portAddress = portAddress;
+  }
+}
+
+void CGUIGameController::SetControllerDiffuse(const GUILIB::GUIINFO::CGUIInfoColor& color)
+{
+  m_controllerDiffuse = color;
+}
+
+void CGUIGameController::SetPortAddress(const GUILIB::GUIINFO::CGUIInfoLabel& portAddress)
+{
+  m_portAddressInfo = portAddress;
+
+  // Check if a port address is available without a listitem
+  static const CFileItem empty;
+  const std::string strPortAddress = m_portAddressInfo.GetItemLabel(&empty);
+  if (!strPortAddress.empty())
+  {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_portAddress = strPortAddress;
   }
 }
 
@@ -156,4 +191,31 @@ std::string CGUIGameController::GetPortAddress()
 {
   std::lock_guard<std::mutex> lock(m_mutex);
   return m_portAddress;
+}
+
+void CGUIGameController::SetActivation(float activation)
+{
+  // Validate parameters
+  if (activation < 0.0f)
+    activation = 0.0f;
+  if (activation > 1.0f)
+    activation = 1.0f;
+
+  // Get diffuse color parts
+  const uint8_t alpha = (m_controllerDiffuse >> 24) & 0xff;
+  const uint8_t red = (m_controllerDiffuse >> 16) & 0xff;
+  const uint8_t green = (m_controllerDiffuse >> 8) & 0xff;
+  const uint8_t blue = m_controllerDiffuse & 0xff;
+
+  // Merge the diffuse color with white as a portion of the activation
+  const uint8_t newAlpha = static_cast<uint8_t>(0xff - (0xff - alpha) * activation);
+  const uint8_t newRed = static_cast<uint8_t>(0xff - (0xff - red) * activation);
+  const uint8_t newGreen = static_cast<uint8_t>(0xff - (0xff - green) * activation);
+  const uint8_t newBlue = static_cast<uint8_t>(0xff - (0xff - blue) * activation);
+
+  const UTILS::COLOR::Color activationColor =
+      (newAlpha << 24) | (newRed << 16) | (newGreen << 8) | newBlue;
+
+  if (CGUIImage::SetColorDiffuse(activationColor))
+    CGUIImage::UpdateDiffuseColor(nullptr);
 }

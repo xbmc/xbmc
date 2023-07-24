@@ -78,6 +78,9 @@ public:
   bool OnButtonPress(MOUSE::BUTTON_ID button) override;
   void OnButtonRelease(MOUSE::BUTTON_ID button) override {}
 
+  // Public interface
+  float GetPortActivation(const std::string& address) const;
+
 private:
   //! @todo De-duplicate these types
   using PortAddress = std::string;

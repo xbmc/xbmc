@@ -33,12 +33,14 @@ public:
 
   // implementation of CGUIControl via CGUIImage
   CGUIGameController* Clone() const override;
-  void Render() override;
+  void DoProcess(unsigned int currentTime, CDirtyRegionList& dirtyregions) override;
   void UpdateInfo(const CGUIListItem* item = nullptr) override;
 
   // GUI functions
-  void SetControllerID(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& controllerId);
-  void SetControllerAddress(const KODI::GUILIB::GUIINFO::CGUIInfoLabel& controllerAddress);
+  void SetControllerID(const GUILIB::GUIINFO::CGUIInfoLabel& controllerId);
+  void SetControllerAddress(const GUILIB::GUIINFO::CGUIInfoLabel& controllerAddress);
+  void SetControllerDiffuse(const GUILIB::GUIINFO::CGUIInfoColor& color);
+  void SetPortAddress(const GUILIB::GUIINFO::CGUIInfoLabel& portAddress);
 
   // Game functions
   void ActivateController(const std::string& controllerId);
@@ -46,9 +48,14 @@ public:
   std::string GetPortAddress();
 
 private:
+  // GUI functions
+  void SetActivation(float activation);
+
   // GUI parameters
-  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_controllerIdInfo;
-  KODI::GUILIB::GUIINFO::CGUIInfoLabel m_controllerAddressInfo;
+  GUILIB::GUIINFO::CGUIInfoLabel m_controllerIdInfo;
+  GUILIB::GUIINFO::CGUIInfoLabel m_controllerAddressInfo;
+  GUILIB::GUIINFO::CGUIInfoColor m_controllerDiffuse;
+  GUILIB::GUIINFO::CGUIInfoLabel m_portAddressInfo;
 
   // Game parameters
   ControllerPtr m_currentController;

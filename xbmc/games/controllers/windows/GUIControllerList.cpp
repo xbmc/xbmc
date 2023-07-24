@@ -36,7 +36,6 @@
 #include <iterator>
 
 using namespace KODI;
-using namespace ADDON;
 using namespace GAME;
 
 CGUIControllerList::CGUIControllerList(CGUIWindow* window,

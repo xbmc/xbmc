@@ -184,6 +184,11 @@ std::string CGameClientJoystick::GetSourceLocation() const
   return "";
 }
 
+float CGameClientJoystick::GetActivation() const
+{
+  return m_portInput->GetActivation();
+}
+
 void CGameClientJoystick::SetSource(PERIPHERALS::PeripheralPtr sourcePeripheral)
 {
   m_sourcePeripheral = std::move(sourcePeripheral);
