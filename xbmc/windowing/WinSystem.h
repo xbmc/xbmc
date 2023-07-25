@@ -246,6 +246,13 @@ public:
    */
   bool IsHighPrecisionProcessingSettingEnabled();
 
+  /*!
+   * \brief Get dither settings
+   *
+   * \return std::pair containing dither enabled (bool) and dither depth (int)
+   */
+  std::pair<bool, int> GetDitherSettings();
+
 protected:
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes, const std::string &output, int width, int height, float refreshRate, uint32_t dwFlags);
   void UpdateDesktopResolution(RESOLUTION_INFO& newRes,

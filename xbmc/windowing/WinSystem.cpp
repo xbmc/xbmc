@@ -323,3 +323,14 @@ bool CWinSystemBase::IsHighPrecisionProcessingSettingEnabled()
 
   return (settings && settings->GetBool(CSettings::SETTING_VIDEOPLAYER_HIGHPRECISIONPROCESSING));
 }
+
+std::pair<bool, int> CWinSystemBase::GetDitherSettings()
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  if (!settings)
+    return {};
+
+  return std::pair<bool, int>{settings->GetBool(CSettings::SETTING_VIDEOSCREEN_DITHER),
+                              settings->GetInt(CSettings::SETTING_VIDEOSCREEN_DITHERDEPTH)};
+}
