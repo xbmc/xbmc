@@ -112,8 +112,8 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_iFlags = 0;
   m_format = AV_PIX_FMT_NONE;
 
-  m_useDithering = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("videoscreen.dither");
-  m_ditherDepth = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.ditherdepth");
+  std::tie(m_useDithering, m_ditherDepth) = CServiceBroker::GetWinSystem()->GetDitherSettings();
+
   m_fullRange = !CServiceBroker::GetWinSystem()->UseLimitedColor();
 
   m_fbo.width = 0.0;
