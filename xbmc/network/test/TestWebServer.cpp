@@ -552,10 +552,8 @@ TEST_F(TestWebServer, CanHeadFile)
 
 TEST_F(TestWebServer, CanNotGetNonExistingFile)
 {
-  std::string result;
   CCurlFile curl;
-  ASSERT_FALSE(curl.Get(GetUrlOfTestFile("file_does_not_exist"), result));
-  ASSERT_TRUE(result.empty());
+  ASSERT_FALSE(curl.Exists(CURL(GetUrlOfTestFile(("file_does_not_exist")))));
 }
 
 TEST_F(TestWebServer, CanGetFile)
