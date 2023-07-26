@@ -571,14 +571,13 @@ ProcessorConversions CEnumeratorHD::QueryHDRConversions(const bool isSourceFullR
   // ffmpeg flags of the source can be missing of bad anyway
   DXGI_COLOR_SPACE_TYPE inputCS = DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020;
 
-  const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
-                                              ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
-                                              : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-  const DXGI_COLOR_SPACE_TYPE outputCS = destColor;
+  const DXGI_COLOR_SPACE_TYPE destCS = DX::Windowing()->UseLimitedColor()
+                                           ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
+                                           : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
 
   const ProcessorConversions convTopLeft =
       ListConversions(m_input_dxgi_format, std::vector<DXGI_COLOR_SPACE_TYPE>{inputCS},
-                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{outputCS});
+                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{destCS});
 
   CLog::LogF(LOGDEBUG, "HDR input color spaces support with HDR {} range output: {}: {}",
              DX::Windowing()->UseLimitedColor() ? "limited" : "full",
@@ -601,7 +600,7 @@ ProcessorConversions CEnumeratorHD::QueryHDRConversions(const bool isSourceFullR
   inputCS = DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020;
   const ProcessorConversions convLeft =
       ListConversions(m_input_dxgi_format, std::vector<DXGI_COLOR_SPACE_TYPE>{inputCS},
-                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{outputCS});
+                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{destCS});
 
   CLog::LogF(LOGDEBUG, "HDR input color spaces support with HDR {} range output: {}: {}",
              DX::Windowing()->UseLimitedColor() ? "limited" : "full",
@@ -648,14 +647,13 @@ ProcessorConversions CEnumeratorHD::QueryHDRtoSDRConversions(const bool isSource
   // ffmpeg flags of the source can be missing of bad anyway
   DXGI_COLOR_SPACE_TYPE inputCS = DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020;
 
-  const DXGI_COLOR_SPACE_TYPE destColor = DX::Windowing()->UseLimitedColor()
-                                              ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
-                                              : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-  const DXGI_COLOR_SPACE_TYPE outputCS = destColor;
+  const DXGI_COLOR_SPACE_TYPE destCS = DX::Windowing()->UseLimitedColor()
+                                           ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
+                                           : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
 
   const ProcessorConversions convTopLeft =
       ListConversions(m_input_dxgi_format, std::vector<DXGI_COLOR_SPACE_TYPE>{inputCS},
-                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{outputCS});
+                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{destCS});
 
   CLog::LogF(LOGDEBUG, "BT.2020 input color spaces supported with SDR {} range output: {}: {}",
              DX::Windowing()->UseLimitedColor() ? "limited" : "full",
@@ -678,7 +676,7 @@ ProcessorConversions CEnumeratorHD::QueryHDRtoSDRConversions(const bool isSource
   inputCS = DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020;
   const ProcessorConversions convLeft =
       ListConversions(m_input_dxgi_format, std::vector<DXGI_COLOR_SPACE_TYPE>{inputCS},
-                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{outputCS});
+                      RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{destCS});
 
   CLog::LogF(LOGDEBUG, "BT.2020 input color spaces supported with SDR {} range output: {}: {}",
              DX::Windowing()->UseLimitedColor() ? "limited" : "full",
