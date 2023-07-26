@@ -498,13 +498,9 @@ ProcessorConversion CRendererDXVA::ChooseConversion(
   if (!m_tryVSR)
   {
     // Try high quality when: backbuffer is 10 bits or High precision processing is on and the source is HDR
-    tryHQ = (DX::Windowing()->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM);
-
-    if (DX::Windowing()->IsHighPrecisionProcessingSettingEnabled() && sourceBits > 8 &&
-        (colorTransfer == AVCOL_TRC_SMPTE2084 || colorTransfer == AVCOL_TRC_ARIB_STD_B67))
-    {
-      tryHQ = true;
-    }
+    tryHQ = (DX::Windowing()->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM) ||
+            (DX::Windowing()->IsHighPrecisionProcessingSettingEnabled() && sourceBits > 8 &&
+             (colorTransfer == AVCOL_TRC_SMPTE2084 || colorTransfer == AVCOL_TRC_ARIB_STD_B67));
   }
 
   // RGB8 processor output format is required for VSR
