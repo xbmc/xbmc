@@ -149,7 +149,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
   CFileItemList vecItems;
 
   CURL pathToUrl{strDrive};
-  // if the url being requested is a generic "iso9660://" we need to expand it with the current drive device.
+  // if the url being requested is a generic "iso9660://" we need to enrich it with the actual drive.
   // use the hostname section to prepend the drive path
   if (pathToUrl.GetRedacted() == "iso9660://")
   {

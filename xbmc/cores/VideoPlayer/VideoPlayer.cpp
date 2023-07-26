@@ -773,11 +773,6 @@ bool CVideoPlayer::OpenInputStream()
     // FIXME: we should deprecate this when more than one device drive is supported
     m_item.SetPath(CServiceBroker::GetMediaManager().TranslateDevicePath(""));
   }
-  else if (url.GetProtocol() == "iso9660" && !url.GetHostName().empty() &&
-           url.GetFileName() == "VIDEO_TS/video_ts.ifo")
-  {
-    m_item.SetPath(url.GetHostName());
-  }
 
   m_pInputStream = CDVDFactoryInputStream::CreateInputStream(this, m_item, true);
   if (m_pInputStream == nullptr)
