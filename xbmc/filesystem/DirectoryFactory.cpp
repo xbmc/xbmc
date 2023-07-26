@@ -87,6 +87,17 @@ using namespace ADDON;
 using namespace XFILE;
 
 /*!
+ \brief Create a IDirectory object of the share type specified in a given item path.
+ \param item Specifies the item to which the factory will create the directory instance
+ \return IDirectory object to access the directories on the share.
+ \sa IDirectory
+ */
+IDirectory* CDirectoryFactory::Create(const CFileItem& item)
+{
+  return Create(CURL{item.GetDynPath()});
+}
+
+/*!
  \brief Create a IDirectory object of the share type specified in \e strPath .
  \param strPath Specifies the share type to access, can be a share or share with path.
  \return IDirectory object to access the directories on the share.
