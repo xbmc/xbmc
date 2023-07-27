@@ -59,7 +59,7 @@ public:
   std::string LibPath() const override;
 
   // addon settings
-  void SaveSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
+  bool SaveSettings(AddonInstanceId id = ADDON_SETTINGS_ID) override;
 
   bool DllLoaded(void) const;
 
