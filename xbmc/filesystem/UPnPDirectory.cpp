@@ -357,3 +357,8 @@ failure:
     return false;
 }
 }
+
+bool CUPnPDirectory::Resolve(CFileItem& item) const
+{
+  return GetResource(item.GetURL(), item);
+}
