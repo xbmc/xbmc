@@ -38,6 +38,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cassert>
 #include <mutex>
 #include <vector>
 
@@ -151,13 +152,13 @@ SettingPtr AddSettingWithoutDefinition(ADDON::CAddonSettings& settings,
 namespace ADDON
 {
 
-CAddonSettings::CAddonSettings(const std::shared_ptr<const IAddon>& addon,
-                               AddonInstanceId instanceId)
+CAddonSettings::CAddonSettings(const std::shared_ptr<IAddon>& addon, AddonInstanceId instanceId)
   : CSettingsBase(),
     m_addonId(addon->ID()),
     m_addonPath(addon->Path()),
     m_addonProfile(addon->Profile()),
     m_instanceId(instanceId),
+    m_addon{addon},
     m_unknownSettingLabelId(UnknownSettingLabelIdStart),
     m_logger(CServiceBroker::GetLogging().GetLogger(
         StringUtils::Format("CAddonSettings[{}@{}]", m_instanceId, m_addonId)))
@@ -431,6 +432,12 @@ bool CAddonSettings::Save(CXBMCTinyXML& doc) const
 bool CAddonSettings::HasSettings() const
 {
   return IsInitialized() && GetSettingsManager()->HasSettings();
+}
+
+bool CAddonSettings::Save()
+{
+  assert(m_addon);
+  return m_addon->SaveSettings();
 }
 
 std::string CAddonSettings::GetSettingLabel(int label) const
