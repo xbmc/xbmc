@@ -121,7 +121,12 @@ void CGUITextureD3D::Draw(float *x, float *y, float *z, const CRect &texture, co
   CDXTexture* tex = static_cast<CDXTexture*>(m_texture.m_textures[m_currentFrame].get());
   CGUIShaderDX* pGUIShader = DX::Windowing()->GetGUIShader();
 
-  pGUIShader->Begin(m_diffuse.size() ? SHADER_METHOD_RENDER_MULTI_TEXTURE_BLEND : SHADER_METHOD_RENDER_TEXTURE_BLEND);
+  pGUIShader->Begin(m_diffuse.size() > 0 ? (m_scalingMethod == TEXTURE_SCALING::NEAREST
+                                                ? SHADER_METHOD_RENDER_MULTI_TEXTURE_BLEND_NEAREST
+                                                : SHADER_METHOD_RENDER_MULTI_TEXTURE_BLEND)
+                                         : (m_scalingMethod == TEXTURE_SCALING::NEAREST
+                                                ? SHADER_METHOD_RENDER_TEXTURE_BLEND_NEAREST
+                                                : SHADER_METHOD_RENDER_TEXTURE_BLEND));
 
   if (m_diffuse.size())
   {

@@ -10,6 +10,7 @@
 
 #include "GUIComponent.h"
 #include "TextureBundle.h"
+#include "TextureScaling.h"
 #include "threads/CriticalSection.h"
 
 #include <chrono>
@@ -41,6 +42,8 @@ public:
   void Free();
   unsigned int size() const;
 
+  void SetScalingMethod(TEXTURE_SCALING scalingMethod);
+
   std::vector<std::shared_ptr<CTexture>> m_textures;
   std::vector<int> m_delays;
   int m_width;
@@ -50,6 +53,7 @@ public:
   int m_texWidth;
   int m_texHeight;
   bool m_texCoordsArePixels;
+  TEXTURE_SCALING m_scalingMethod{TEXTURE_SCALING::UNKNOWN};
 };
 
 /*!
