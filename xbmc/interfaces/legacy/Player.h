@@ -90,7 +90,12 @@ namespace XBMCAddon
       /// @param listitem            [opt] listitem - used with setInfo() to set
       ///                            different infolabels.
       /// @param windowed            [opt] bool - true=play video windowed,
-      ///                            false=play users preference.(default)
+      ///                            false=play users preference.(default) \n
+      ///                            If playback is started windowed refresh rate
+      ///                            switch (resolution update) is ignored. This
+      ///                            might be useful if you are designing your own
+      ///                            player window and want to avoid other GUI
+      ///                            elements popping up on screen.
       /// @param startpos            [opt] int - starting position when playing
       ///                            a playlist. Default = -1
       ///
