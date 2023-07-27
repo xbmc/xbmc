@@ -52,15 +52,13 @@ XBMCCOMMONS_STANDARD_EXCEPTION(SettingCallbacksNotSupportedException);
 class Settings : public AddonClass
 {
 public:
-#if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
-  std::shared_ptr<CSettingsBase> settings;
-#endif
-
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 #ifndef SWIG
+  std::shared_ptr<CSettingsBase> settings;
   Settings(std::shared_ptr<CSettingsBase> settings);
 #endif
-
   virtual ~Settings() = default;
+#endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
   ///
