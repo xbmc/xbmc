@@ -13,7 +13,10 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cstring>
 #include <utility>
+
+#include <tinyxml2.h>
 
 using namespace KODI;
 using namespace GAME;
@@ -34,7 +37,7 @@ bool CPhysicalPort::IsCompatible(const std::string& controllerId) const
   return std::find(m_accepts.begin(), m_accepts.end(), controllerId) != m_accepts.end();
 }
 
-bool CPhysicalPort::Deserialize(const TiXmlElement* pElement)
+bool CPhysicalPort::Deserialize(const tinyxml2::XMLElement* pElement)
 {
   if (pElement == nullptr)
     return false;
@@ -43,10 +46,10 @@ bool CPhysicalPort::Deserialize(const TiXmlElement* pElement)
 
   m_portId = XMLUtils::GetAttribute(pElement, LAYOUT_XML_ATTR_PORT_ID);
 
-  for (const TiXmlElement* pChild = pElement->FirstChildElement(); pChild != nullptr;
+  for (const auto* pChild = pElement->FirstChildElement(); pChild != nullptr;
        pChild = pChild->NextSiblingElement())
   {
-    if (pChild->ValueStr() == LAYOUT_XML_ELM_ACCEPTS)
+    if (std::strcmp(pChild->Value(), LAYOUT_XML_ELM_ACCEPTS) == 0)
     {
       std::string controller = XMLUtils::GetAttribute(pChild, LAYOUT_XML_ATTR_CONTROLLER);
 
@@ -58,7 +61,7 @@ bool CPhysicalPort::Deserialize(const TiXmlElement* pElement)
     }
     else
     {
-      CLog::Log(LOGDEBUG, "Unknown physical topology port tag: <{}>", pChild->ValueStr());
+      CLog::Log(LOGDEBUG, "Unknown physical topology port tag: <{}>", pChild->Value());
     }
   }
 

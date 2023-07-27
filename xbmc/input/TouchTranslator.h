@@ -13,7 +13,11 @@
 #include <map>
 #include <string>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+class XMLNode;
+} // namespace tinyxml2
 
 class CTouchTranslator : public IButtonMapper
 {
@@ -21,7 +25,7 @@ public:
   CTouchTranslator() = default;
 
   // implementation of IButtonMapper
-  void MapActions(int windowID, const TiXmlNode* bDevice) override;
+  void MapActions(int windowID, const tinyxml2::XMLNode* bDevice) override;
   void Clear() override;
 
   bool TranslateTouchAction(
@@ -50,7 +54,8 @@ private:
                            TouchActionKey touchActionKey,
                            std::string& actionString);
 
-  static unsigned int TranslateTouchCommand(const TiXmlElement* pButton, CTouchAction& action);
+  static unsigned int TranslateTouchCommand(const tinyxml2::XMLElement* pButton,
+                                            CTouchAction& action);
 
   static unsigned int GetTouchActionKey(unsigned int touchCommandId, int touchPointers);
 

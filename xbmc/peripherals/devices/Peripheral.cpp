@@ -24,7 +24,7 @@
 #include "settings/lib/Setting.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -484,13 +484,19 @@ bool CPeripheral::SetSetting(const std::string& strKey, const std::string& strVa
 
 void CPeripheral::PersistSettings(bool bExiting /* = false */)
 {
-  CXBMCTinyXML doc;
-  TiXmlElement node("settings");
+  CXBMCTinyXML2 doc;
+  auto* node = doc.NewElement("settings");
+  if (node == nullptr)
+    return;
+
   doc.InsertEndChild(node);
   for (const auto& itr : m_settings)
   {
-    TiXmlElement nodeSetting("setting");
-    nodeSetting.SetAttribute("id", itr.first.c_str());
+    auto* nodeSetting = doc.NewElement("setting");
+    if (nodeSetting == nullptr)
+      continue;
+
+    nodeSetting->SetAttribute("id", itr.first.c_str());
     std::string strValue;
     switch (itr.second.m_setting->GetType())
     {
@@ -529,7 +535,7 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
       default:
         break;
     }
-    nodeSetting.SetAttribute("value", strValue.c_str());
+    nodeSetting->SetAttribute("value", strValue.c_str());
     doc.RootElement()->InsertEndChild(nodeSetting);
   }
 
@@ -545,11 +551,11 @@ void CPeripheral::PersistSettings(bool bExiting /* = false */)
 
 void CPeripheral::LoadPersistedSettings(void)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   if (doc.LoadFile(m_strSettingsFile))
   {
-    const TiXmlElement* setting = doc.RootElement()->FirstChildElement("setting");
-    while (setting)
+    const auto* setting = doc.RootElement()->FirstChildElement("setting");
+    while (setting != nullptr)
     {
       std::string strId = XMLUtils::GetAttribute(setting, "id");
       std::string strValue = XMLUtils::GetAttribute(setting, "value");

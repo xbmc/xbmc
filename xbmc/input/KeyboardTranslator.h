@@ -11,11 +11,14 @@
 #include <stdint.h>
 #include <string>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 class CKeyboardTranslator
 {
 public:
-  static uint32_t TranslateButton(const TiXmlElement* pButton);
+  static uint32_t TranslateButton(const tinyxml2::XMLElement* pButton);
   static uint32_t TranslateString(const std::string& szButton);
 };

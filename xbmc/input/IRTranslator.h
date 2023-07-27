@@ -12,7 +12,10 @@
 #include <memory>
 #include <string>
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class CIRTranslator
 {
@@ -36,7 +39,7 @@ public:
 
 private:
   bool LoadIRMap(const std::string& irMapPath);
-  void MapRemote(TiXmlNode* pRemote, const std::string& szDevice);
+  void MapRemote(tinyxml2::XMLNode* pRemote, const std::string& szDevice);
 
   using IRButtonMap = std::map<std::string, std::string>;
 

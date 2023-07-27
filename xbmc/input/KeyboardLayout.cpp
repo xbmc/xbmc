@@ -12,18 +12,19 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 #include <algorithm>
 #include <set>
 
+#include <tinyxml2.h>
+
 CKeyboardLayout::~CKeyboardLayout() = default;
 
-bool CKeyboardLayout::Load(const TiXmlElement* element)
+bool CKeyboardLayout::Load(const tinyxml2::XMLElement* element)
 {
   const char* language = element->Attribute("language");
-  if (language == NULL)
+  if (language == nullptr)
   {
     CLog::Log(LOGWARNING, "CKeyboardLayout: invalid \"language\" attribute");
     return false;
@@ -37,7 +38,7 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
   }
 
   const char* layout = element->Attribute("layout");
-  if (layout == NULL)
+  if (layout == nullptr)
   {
     CLog::Log(LOGWARNING, "CKeyboardLayout: invalid \"layout\" attribute");
     return false;
@@ -50,13 +51,13 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
     return false;
   }
 
-  const TiXmlElement* keyboard = element->FirstChildElement("keyboard");
+  const auto* keyboard = element->FirstChildElement("keyboard");
   if (element->Attribute("codingtable"))
     m_codingtable = IInputCodingTablePtr(
         CInputCodingTableFactory::CreateCodingTable(element->Attribute("codingtable")));
   else
     m_codingtable = NULL;
-  while (keyboard != NULL)
+  while (keyboard != nullptr)
   {
     // parse modifiers keys
     std::set<unsigned int> modifierKeysSet;
@@ -85,12 +86,12 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
     }
 
     // parse keyboard rows
-    const TiXmlNode* row = keyboard->FirstChild("row");
-    while (row != NULL)
+    const auto* row = keyboard->FirstChildElement("row");
+    while (row != nullptr)
     {
       if (!row->NoChildren())
       {
-        std::string strRow = row->FirstChild()->ValueStr();
+        std::string strRow = row->FirstChild()->Value();
         std::vector<std::string> chars = BreakCharacters(strRow);
         if (!modifierKeysSet.empty())
         {
@@ -101,7 +102,7 @@ bool CKeyboardLayout::Load(const TiXmlElement* element)
           m_keyboards[ModifierKeyNone].push_back(chars);
       }
 
-      row = row->NextSibling();
+      row = row->NextSiblingElement();
     }
 
     keyboard = keyboard->NextSiblingElement();

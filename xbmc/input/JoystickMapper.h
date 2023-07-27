@@ -18,8 +18,12 @@
 #include <vector>
 
 class IWindowKeymap;
-class TiXmlElement;
-class TiXmlNode;
+
+namespace tinyxml2
+{
+class XMLElement;
+class XMLNode;
+} // namespace tinyxml2
 
 class CJoystickMapper : public IButtonMapper
 {
@@ -28,14 +32,14 @@ public:
   ~CJoystickMapper() override = default;
 
   // implementation of IButtonMapper
-  void MapActions(int windowID, const TiXmlNode* pDevice) override;
+  void MapActions(int windowID, const tinyxml2::XMLNode* pDevice) override;
   void Clear() override;
 
   std::vector<std::shared_ptr<const IWindowKeymap>> GetJoystickKeymaps() const;
 
 private:
-  void DeserializeJoystickNode(const TiXmlNode* pDevice, std::string& controllerId);
-  bool DeserializeButton(const TiXmlElement* pButton,
+  void DeserializeJoystickNode(const tinyxml2::XMLNode* pDevice, std::string& controllerId);
+  bool DeserializeButton(const tinyxml2::XMLElement* pButton,
                          std::string& feature,
                          KODI::JOYSTICK::ANALOG_STICK_DIRECTION& dir,
                          unsigned int& holdtimeMs,

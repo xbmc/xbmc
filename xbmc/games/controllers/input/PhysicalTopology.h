@@ -12,7 +12,10 @@
 
 #include <vector>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 namespace KODI
 {
@@ -50,7 +53,7 @@ public:
    */
   const std::vector<CPhysicalPort>& Ports() const { return m_ports; }
 
-  bool Deserialize(const TiXmlElement* pElement);
+  bool Deserialize(const tinyxml2::XMLElement* pElement);
 
 private:
   bool m_bProvidesInput = true;

@@ -17,7 +17,10 @@
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <cstring>
 #include <sstream>
+
+#include <tinyxml2.h>
 
 using namespace KODI;
 using namespace GAME;
@@ -87,7 +90,7 @@ std::string CControllerLayout::ImagePath(void) const
   return path;
 }
 
-void CControllerLayout::Deserialize(const TiXmlElement* pElement,
+void CControllerLayout::Deserialize(const tinyxml2::XMLElement* pElement,
                                     const CController* controller,
                                     std::vector<CPhysicalFeature>& features)
 {
@@ -116,10 +119,10 @@ void CControllerLayout::Deserialize(const TiXmlElement* pElement,
   if (!image.empty())
     m_strImage = image;
 
-  for (const TiXmlElement* pChild = pElement->FirstChildElement(); pChild != nullptr;
+  for (const auto* pChild = pElement->FirstChildElement(); pChild != nullptr;
        pChild = pChild->NextSiblingElement())
   {
-    if (pChild->ValueStr() == LAYOUT_XML_ELM_CATEGORY)
+    if (std::strcmp(pChild->Value(), LAYOUT_XML_ELM_CATEGORY) == 0)
     {
       // Category
       std::string strCategory = XMLUtils::GetAttribute(pChild, LAYOUT_XML_ATTR_CATEGORY_NAME);
@@ -135,7 +138,7 @@ void CControllerLayout::Deserialize(const TiXmlElement* pElement,
         std::istringstream(strCategoryLabelId) >> categoryLabelId;
 
       // Features
-      for (const TiXmlElement* pFeature = pChild->FirstChildElement(); pFeature != nullptr;
+      for (const auto* pFeature = pChild->FirstChildElement(); pFeature != nullptr;
            pFeature = pFeature->NextSiblingElement())
       {
         CPhysicalFeature feature;
@@ -144,7 +147,7 @@ void CControllerLayout::Deserialize(const TiXmlElement* pElement,
           features.push_back(feature);
       }
     }
-    else if (pChild->ValueStr() == LAYOUT_XML_ELM_TOPOLOGY)
+    else if (std::strcmp(pChild->Value(), LAYOUT_XML_ELM_TOPOLOGY) == 0)
     {
       // Topology
       CPhysicalTopology topology;
@@ -153,7 +156,7 @@ void CControllerLayout::Deserialize(const TiXmlElement* pElement,
     }
     else
     {
-      CLog::Log(LOGDEBUG, "Ignoring <{}> tag", pChild->ValueStr());
+      CLog::Log(LOGDEBUG, "Ignoring <{}> tag", pChild->Value());
     }
   }
 }

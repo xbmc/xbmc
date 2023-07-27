@@ -16,11 +16,15 @@
 #include <string>
 
 class CKey;
-class TiXmlNode;
 class CCustomControllerTranslator;
 class CTouchTranslator;
 class IButtonMapper;
 class IWindowKeymap;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 /// singleton class to map from buttons to actions
 /// Warning: _not_ threadsafe!
@@ -82,7 +86,7 @@ private:
 
   unsigned int GetActionCode(int window, const CKey& key, std::string& strAction) const;
 
-  void MapWindowActions(const TiXmlNode* pWindow, int wWindowID);
+  void MapWindowActions(const tinyxml2::XMLNode* pWindow, int wWindowID);
   void MapAction(uint32_t buttonCode, const std::string& szAction, buttonMap& map);
 
   bool LoadKeymap(const std::string& keymapPath);

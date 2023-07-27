@@ -25,9 +25,13 @@ class CFileItemList;
 class CInputManager;
 class CSetting;
 class CSettingsCategory;
-class TiXmlElement;
 class CAction;
 class CKey;
+
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 namespace KODI
 {
@@ -350,7 +354,7 @@ private:
   bool LoadMappings();
   bool GetMappingForDevice(const CPeripheralBus& bus, PeripheralScanResult& result) const;
   static void GetSettingsFromMappingsFile(
-      TiXmlElement* xmlNode, std::map<std::string, PeripheralDeviceSetting>& m_settings);
+      tinyxml2::XMLElement* xmlNode, std::map<std::string, PeripheralDeviceSetting>& m_settings);
 
   void OnDeviceChanged();
 

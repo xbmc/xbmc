@@ -17,6 +17,8 @@
 
 #include <sstream>
 
+#include <tinyxml2.h>
+
 using namespace KODI;
 using namespace GAME;
 using namespace JOYSTICK;
@@ -74,7 +76,7 @@ std::string CPhysicalFeature::Label() const
   return label;
 }
 
-bool CPhysicalFeature::Deserialize(const TiXmlElement* pElement,
+bool CPhysicalFeature::Deserialize(const tinyxml2::XMLElement* pElement,
                                    const CController* controller,
                                    FEATURE_CATEGORY category,
                                    int categoryLabelId)
