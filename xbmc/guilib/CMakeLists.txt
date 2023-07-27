@@ -150,7 +150,9 @@ set(HEADERS DDSImage.h
             Texture.h
             TextureBundle.h
             TextureBundleXBT.h
+            TextureFormats.h
             TextureManager.h
+            TextureScaling.h
             Tween.h
             VisibleEffect.h
             WindowIDs.h
@@ -205,7 +207,9 @@ if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
                     guishader_interlaced_right.hlsl
                     guishader_interlaced_left.hlsl
                     guishader_multi_texture_blend.hlsl
+                    guishader_multi_texture_blend_nearest.hlsl
                     guishader_texture.hlsl
+                    guishader_texture_nearest.hlsl
                     guishader_texture_noblend.hlsl)
   foreach(shader ${SHADERS_VERTEX})
     get_filename_component(file ${shader} NAME_WE)

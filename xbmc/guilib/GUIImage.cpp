@@ -320,6 +320,11 @@ void CGUIImage::SetAspectRatio(const CAspectRatio &aspect)
   m_texture->SetAspectRatio(aspect);
 }
 
+void CGUIImage::SetScalingMethod(TEXTURE_SCALING scalingMethod)
+{
+  m_texture->SetScalingMethod(scalingMethod);
+}
+
 void CGUIImage::SetCrossFade(unsigned int time)
 {
   m_crossFadeTime = time;
