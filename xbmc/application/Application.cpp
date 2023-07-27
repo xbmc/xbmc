@@ -2385,15 +2385,6 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (URIUtils::HasPluginPath(item) && !XFILE::CPluginDirectory::GetResolvedPluginResult(item))
     return false;
 
-#ifdef HAS_UPNP
-  //! TODO: Move this to upnp vfs dir resolve(item)
-  if (URIUtils::IsUPnP(item.GetPath()))
-  {
-    if (!XFILE::CUPnPDirectory::GetResource(item.GetURL(), item))
-      return false;
-  }
-#endif
-
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
   // will recall with restart set to true
