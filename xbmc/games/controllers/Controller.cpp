@@ -13,11 +13,12 @@
 #include "URL.h"
 #include "addons/addoninfo/AddonType.h"
 #include "games/controllers/input/PhysicalTopology.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cstring>
 
 using namespace KODI;
 using namespace GAME;
@@ -122,16 +123,17 @@ bool CController::LoadLayout(void)
 
     CLog::Log(LOGINFO, "Loading controller layout: {}", CURL::GetRedacted(strLayoutXmlPath));
 
-    CXBMCTinyXML xmlDoc;
+    CXBMCTinyXML2 xmlDoc;
     if (!xmlDoc.LoadFile(strLayoutXmlPath))
     {
-      CLog::Log(LOGDEBUG, "Unable to load file: {} at line {}", xmlDoc.ErrorDesc(),
-                xmlDoc.ErrorRow());
+      CLog::Log(LOGDEBUG, "Unable to load file: {} at line {}", xmlDoc.ErrorStr(),
+                xmlDoc.ErrorLineNum());
       return false;
     }
 
-    TiXmlElement* pRootElement = xmlDoc.RootElement();
-    if (!pRootElement || pRootElement->NoChildren() || pRootElement->ValueStr() != LAYOUT_XML_ROOT)
+    auto* pRootElement = xmlDoc.RootElement();
+    if (pRootElement == nullptr || pRootElement->NoChildren() ||
+        std::strcmp(pRootElement->Value(), LAYOUT_XML_ROOT) != 0)
     {
       CLog::Log(LOGERROR, "Can't find root <{}> tag", LAYOUT_XML_ROOT);
       return false;

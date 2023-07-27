@@ -19,7 +19,6 @@
 #include <string>
 #include <vector>
 
-class TiXmlDocument;
 class CDateTime;
 class CSetting;
 class IKeymap;

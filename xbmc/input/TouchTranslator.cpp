@@ -12,10 +12,11 @@
 #include "input/actions/ActionIDs.h"
 #include "input/actions/ActionTranslator.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 #include <map>
+
+#include <tinyxml2.h>
 
 using ActionName = std::string;
 using TouchCommandID = unsigned int;
@@ -33,7 +34,7 @@ static const std::map<ActionName, TouchCommandID> TouchCommands = {
     {"swipeup", ACTION_GESTURE_SWIPE_UP},
     {"swipedown", ACTION_GESTURE_SWIPE_DOWN}};
 
-void CTouchTranslator::MapActions(int windowID, const TiXmlNode* pTouch)
+void CTouchTranslator::MapActions(int windowID, const tinyxml2::XMLNode* pTouch)
 {
   if (pTouch == nullptr)
     return;
@@ -50,11 +51,11 @@ void CTouchTranslator::MapActions(int windowID, const TiXmlNode* pTouch)
     m_touchMap.erase(it);
   }
 
-  const TiXmlElement* pTouchElem = pTouch->ToElement();
+  const auto* pTouchElem = pTouch->ToElement();
   if (pTouchElem == nullptr)
     return;
 
-  const TiXmlElement* pButton = pTouchElem->FirstChildElement();
+  const auto* pButton = pTouchElem->FirstChildElement();
   while (pButton != nullptr)
   {
     CTouchAction action;
@@ -137,7 +138,7 @@ unsigned int CTouchTranslator::GetActionID(WindowID window,
   return touchIt->second.actionId;
 }
 
-unsigned int CTouchTranslator::TranslateTouchCommand(const TiXmlElement* pButton,
+unsigned int CTouchTranslator::TranslateTouchCommand(const tinyxml2::XMLElement* pButton,
                                                      CTouchAction& action)
 {
   const char* szButton = pButton->Value();

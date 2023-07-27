@@ -12,7 +12,10 @@
 
 #include <stdint.h>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 class CMouseTranslator
 {
@@ -20,7 +23,7 @@ public:
   /*!
    * \brief Translate a keymap element to a key ID
    */
-  static uint32_t TranslateCommand(const TiXmlElement* pButton);
+  static uint32_t TranslateCommand(const tinyxml2::XMLElement* pButton);
 
   /*!
    * \brief Translate a mouse event ID to a mouse button index

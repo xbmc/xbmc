@@ -57,7 +57,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -503,21 +503,22 @@ bool CPeripherals::LoadMappings()
 {
   std::unique_lock<CCriticalSection> lock(m_critSectionMappings);
 
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if (!xmlDoc.LoadFile("special://xbmc/system/peripherals.xml"))
   {
-    CLog::Log(LOGWARNING, "{} - peripherals.xml does not exist", __FUNCTION__);
+    CLog::LogF(LOGWARNING, "peripherals.xml does not exist");
     return true;
   }
 
-  TiXmlElement* pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || StringUtils::CompareNoCase(pRootElement->Value(), "peripherals") != 0)
+  auto* pRootElement = xmlDoc.RootElement();
+  if (pRootElement == nullptr ||
+      StringUtils::CompareNoCase(pRootElement->Value(), "peripherals") != 0)
   {
-    CLog::Log(LOGERROR, "{} - peripherals.xml does not contain <peripherals>", __FUNCTION__);
+    CLog::LogF(LOGERROR, "peripherals.xml does not contain <peripherals>");
     return false;
   }
 
-  for (TiXmlElement* currentNode = pRootElement->FirstChildElement("peripheral"); currentNode;
+  for (auto* currentNode = pRootElement->FirstChildElement("peripheral"); currentNode != nullptr;
        currentNode = currentNode->NextSiblingElement("peripheral"))
   {
     PeripheralID id;
@@ -536,8 +537,8 @@ bool CPeripherals::LoadMappings()
         std::vector<std::string> idArray = StringUtils::Split(i, ":");
         if (idArray.size() != 2)
         {
-          CLog::Log(LOGERROR, "{} - ignoring node \"{}\" with invalid vendor_product attribute",
-                    __FUNCTION__, mapping.m_strDeviceName);
+          CLog::LogF(LOGERROR, "ignoring node \"{}\" with invalid vendor_product attribute",
+                     mapping.m_strDeviceName);
           continue;
         }
 
@@ -556,19 +557,19 @@ bool CPeripherals::LoadMappings()
     GetSettingsFromMappingsFile(currentNode, mapping.m_settings);
 
     m_mappings.push_back(mapping);
-    CLog::Log(LOGDEBUG, "{} - loaded node \"{}\"", __FUNCTION__, mapping.m_strDeviceName);
+    CLog::LogF(LOGDEBUG, "loaded node \"{}\"", mapping.m_strDeviceName);
   }
 
   return true;
 }
 
 void CPeripherals::GetSettingsFromMappingsFile(
-    TiXmlElement* xmlNode, std::map<std::string, PeripheralDeviceSetting>& settings)
+    tinyxml2::XMLElement* xmlNode, std::map<std::string, PeripheralDeviceSetting>& settings)
 {
-  TiXmlElement* currentNode = xmlNode->FirstChildElement("setting");
+  auto* currentNode = xmlNode->FirstChildElement("setting");
   int iMaxOrder = 0;
 
-  while (currentNode)
+  while (currentNode != nullptr)
   {
     SettingPtr setting;
     std::string strKey = XMLUtils::GetAttribute(currentNode, "key");
@@ -640,7 +641,7 @@ void CPeripherals::GetSettingsFromMappingsFile(
 
       /* set the order */
       int iOrder = 0;
-      currentNode->Attribute("order", &iOrder);
+      currentNode->Attribute("order", std::to_string(iOrder).c_str());
       /* if the order attribute is invalid or 0, then the setting will be added at the end */
       if (iOrder < 0)
         iOrder = 0;
