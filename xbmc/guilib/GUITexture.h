@@ -138,7 +138,6 @@ protected:
   CGUITexture(const CGUITexture& left);
 
   bool CalculateSize();
-  void LoadDiffuseImage();
   bool AllocateOnDemand();
   bool UpdateAnimFrame(unsigned int currentTime);
   void Render(float left,
