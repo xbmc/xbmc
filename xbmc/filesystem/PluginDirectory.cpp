@@ -548,6 +548,11 @@ bool CPluginDirectory::CheckExists(const std::string& content, const std::string
   return CPluginDirectory::GetPluginResult(url.Get(), item, false);
 }
 
+bool CPluginDirectory::Resolve(CFileItem& item) const
+{
+  return GetResolvedPluginResult(item);
+}
+
 int CPluginDirectory::GetWatchedMode(int handle, const char *content)
 {
   std::unique_lock<CCriticalSection> lock(GetScriptsLock());
@@ -556,4 +561,3 @@ int CPluginDirectory::GetWatchedMode(int handle, const char *content)
     return WatchedModeAll;
   return CMediaSettings::GetInstance().GetWatchedMode((!content || !content[0]) ? dir->m_listItems->GetContent() : content);
 }
-

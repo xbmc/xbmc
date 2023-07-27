@@ -30,6 +30,7 @@ public:
   CPluginDirectory();
   ~CPluginDirectory(void) override;
   bool GetDirectory(const CURL& url, CFileItemList& items) override;
+  bool Resolve(CFileItem& item) const override;
   bool AllowAll() const override { return true; }
   bool Exists(const CURL& url) override { return true; }
   float GetProgress() const override;

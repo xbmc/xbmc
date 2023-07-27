@@ -2380,11 +2380,6 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     return false;
   }
 
-  //! TODO: Move this to plugin vfs dir resolve(item)
-  // if the item is a plugin we need to resolve the plugin paths
-  if (URIUtils::HasPluginPath(item) && !XFILE::CPluginDirectory::GetResolvedPluginResult(item))
-    return false;
-
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
   // will recall with restart set to true
