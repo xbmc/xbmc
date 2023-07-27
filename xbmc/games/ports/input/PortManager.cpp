@@ -15,11 +15,12 @@
 #include "games/ports/types/PortNode.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
+#include <cstring>
 
 using namespace KODI;
 using namespace GAME;
@@ -72,17 +73,17 @@ void CPortManager::LoadXML()
 
   CLog::Log(LOGINFO, "Loading port layout: {}", CURL::GetRedacted(m_xmlPath));
 
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if (!xmlDoc.LoadFile(m_xmlPath))
   {
-    CLog::Log(LOGDEBUG, "Unable to load file: {} at line {}", xmlDoc.ErrorDesc(),
-              xmlDoc.ErrorRow());
+    CLog::Log(LOGDEBUG, "Unable to load file: {} at line {}", xmlDoc.ErrorStr(),
+              xmlDoc.ErrorLineNum());
     return;
   }
 
-  const TiXmlElement* pRootElement = xmlDoc.RootElement();
+  const auto* pRootElement = xmlDoc.RootElement();
   if (pRootElement == nullptr || pRootElement->NoChildren() ||
-      pRootElement->ValueStr() != XML_ROOT_PORTS)
+      std::strcmp(pRootElement->Value(), XML_ROOT_PORTS) != 0)
   {
     CLog::Log(LOGERROR, "Can't find root <{}> tag", XML_ROOT_PORTS);
     return;
@@ -104,17 +105,21 @@ void CPortManager::SaveXMLAsync()
                       m_saveFutures.end());
 
   // Save async
-  std::future<void> task = std::async(std::launch::async, [this, ports = std::move(ports)]() {
-    CXBMCTinyXML doc;
-    TiXmlElement node(XML_ROOT_PORTS);
+  std::future<void> task = std::async(std::launch::async,
+                                      [this, ports = std::move(ports)]()
+                                      {
+                                        CXBMCTinyXML2 doc;
+                                        auto* node = doc.NewElement(XML_ROOT_PORTS);
+                                        if (node == nullptr)
+                                          return;
 
-    SerializePorts(node, ports);
+                                        SerializePorts(*node, ports);
 
-    doc.InsertEndChild(node);
+                                        doc.InsertEndChild(node);
 
-    std::lock_guard<std::mutex> lock(m_saveMutex);
-    doc.SaveFile(m_xmlPath);
-  });
+                                        std::lock_guard<std::mutex> lock(m_saveMutex);
+                                        doc.SaveFile(m_xmlPath);
+                                      });
 
   m_saveFutures.emplace_back(std::move(task));
 }
@@ -192,15 +197,14 @@ bool CPortManager::ConnectController(const std::string& portAddress,
   return false;
 }
 
-void CPortManager::DeserializePorts(const TiXmlElement* pElement, PortVec& ports)
+void CPortManager::DeserializePorts(const tinyxml2::XMLElement* pElement, PortVec& ports)
 {
-  for (const TiXmlElement* pPort = pElement->FirstChildElement(); pPort != nullptr;
+  for (const auto* pPort = pElement->FirstChildElement(); pPort != nullptr;
        pPort = pPort->NextSiblingElement())
   {
-    if (pPort->ValueStr() != XML_ELM_PORT)
+    if (std::strcmp(pPort->Value(), XML_ELM_PORT) != 0)
     {
-      CLog::Log(LOGDEBUG, "Inside <{}> tag: Ignoring <{}> tag", pElement->ValueStr(),
-                pPort->ValueStr());
+      CLog::Log(LOGDEBUG, "Inside <{}> tag: Ignoring <{}> tag", pElement->Value(), pPort->Value());
       continue;
     }
 
@@ -217,7 +221,7 @@ void CPortManager::DeserializePorts(const TiXmlElement* pElement, PortVec& ports
   }
 }
 
-void CPortManager::DeserializePort(const TiXmlElement* pPort, CPortNode& port)
+void CPortManager::DeserializePort(const tinyxml2::XMLElement* pPort, CPortNode& port)
 {
   // Connected
   bool connected = (XMLUtils::GetAttribute(pPort, XML_ATTR_PORT_CONNECTED) == "true");
@@ -231,15 +235,16 @@ void CPortManager::DeserializePort(const TiXmlElement* pPort, CPortNode& port)
   DeserializeControllers(pPort, port.GetCompatibleControllers());
 }
 
-void CPortManager::DeserializeControllers(const TiXmlElement* pPort, ControllerNodeVec& controllers)
+void CPortManager::DeserializeControllers(const tinyxml2::XMLElement* pPort,
+                                          ControllerNodeVec& controllers)
 {
-  for (const TiXmlElement* pController = pPort->FirstChildElement(); pController != nullptr;
+  for (const auto* pController = pPort->FirstChildElement(); pController != nullptr;
        pController = pController->NextSiblingElement())
   {
-    if (pController->ValueStr() != XML_ELM_CONTROLLER)
+    if (std::strcmp(pController->Value(), XML_ELM_CONTROLLER) != 0)
     {
-      CLog::Log(LOGDEBUG, "Inside <{}> tag: Ignoring <{}> tag", pPort->ValueStr(),
-                pController->ValueStr());
+      CLog::Log(LOGDEBUG, "Inside <{}> tag: Ignoring <{}> tag", pPort->Value(),
+                pController->Value());
       continue;
     }
 
@@ -258,32 +263,35 @@ void CPortManager::DeserializeControllers(const TiXmlElement* pPort, ControllerN
   }
 }
 
-void CPortManager::DeserializeController(const TiXmlElement* pController,
+void CPortManager::DeserializeController(const tinyxml2::XMLElement* pController,
                                          CControllerNode& controller)
 {
   // Child ports
   DeserializePorts(pController, controller.GetHub().GetPorts());
 }
 
-void CPortManager::SerializePorts(TiXmlElement& node, const PortVec& ports)
+void CPortManager::SerializePorts(tinyxml2::XMLElement& node, const PortVec& ports)
 {
+  auto doc = node.GetDocument();
   for (const CPortNode& port : ports)
   {
-    TiXmlElement portNode(XML_ELM_PORT);
+    auto portNode = doc->NewElement(XML_ELM_PORT);
+    if (portNode == nullptr)
+      continue;
 
-    SerializePort(portNode, port);
+    SerializePort(*portNode, port);
 
     node.InsertEndChild(portNode);
   }
 }
 
-void CPortManager::SerializePort(TiXmlElement& portNode, const CPortNode& port)
+void CPortManager::SerializePort(tinyxml2::XMLElement& portNode, const CPortNode& port)
 {
   // Port ID
-  portNode.SetAttribute(XML_ATTR_PORT_ID, port.GetPortID());
+  portNode.SetAttribute(XML_ATTR_PORT_ID, port.GetPortID().c_str());
 
   // Port address
-  portNode.SetAttribute(XML_ATTR_PORT_ADDRESS, port.GetAddress());
+  portNode.SetAttribute(XML_ATTR_PORT_ADDRESS, port.GetAddress().c_str());
 
   // Connected state
   portNode.SetAttribute(XML_ATTR_PORT_CONNECTED, port.IsConnected() ? "true" : "false");
@@ -292,14 +300,14 @@ void CPortManager::SerializePort(TiXmlElement& portNode, const CPortNode& port)
   if (port.GetActiveController().GetController())
   {
     const std::string controllerId = port.GetActiveController().GetController()->ID();
-    portNode.SetAttribute(XML_ATTR_PORT_CONTROLLER, controllerId);
+    portNode.SetAttribute(XML_ATTR_PORT_CONTROLLER, controllerId.c_str());
   }
 
   // All compatible controllers
   SerializeControllers(portNode, port.GetCompatibleControllers());
 }
 
-void CPortManager::SerializeControllers(TiXmlElement& portNode,
+void CPortManager::SerializeControllers(tinyxml2::XMLElement& portNode,
                                         const ControllerNodeVec& controllers)
 {
   for (const CControllerNode& controller : controllers)
@@ -308,20 +316,22 @@ void CPortManager::SerializeControllers(TiXmlElement& portNode,
     if (!HasState(controller))
       continue;
 
-    TiXmlElement controllerNode(XML_ELM_CONTROLLER);
+    auto controllerNode = portNode.GetDocument()->NewElement(XML_ELM_CONTROLLER);
+    if (controllerNode == nullptr)
+      continue;
 
-    SerializeController(controllerNode, controller);
+    SerializeController(*controllerNode, controller);
 
     portNode.InsertEndChild(controllerNode);
   }
 }
 
-void CPortManager::SerializeController(TiXmlElement& controllerNode,
+void CPortManager::SerializeController(tinyxml2::XMLElement& controllerNode,
                                        const CControllerNode& controller)
 {
   // Controller ID
   if (controller.GetController())
-    controllerNode.SetAttribute(XML_ATTR_CONTROLLER_ID, controller.GetController()->ID());
+    controllerNode.SetAttribute(XML_ATTR_CONTROLLER_ID, controller.GetController()->ID().c_str());
 
   // Ports
   SerializePorts(controllerNode, controller.GetHub().GetPorts());

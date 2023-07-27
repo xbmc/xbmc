@@ -12,7 +12,10 @@
 #include <string>
 #include <vector>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 namespace KODI
 {
@@ -76,7 +79,7 @@ public:
    * \param controller The controller, used to obtain read-only properties
    * \param features The deserialized features, if any
    */
-  void Deserialize(const TiXmlElement* pLayoutElement,
+  void Deserialize(const tinyxml2::XMLElement* pLayoutElement,
                    const CController* controller,
                    std::vector<CPhysicalFeature>& features);
 

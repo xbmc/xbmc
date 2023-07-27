@@ -13,7 +13,10 @@
 #include <map>
 #include <string>
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class CCustomControllerTranslator : public IButtonMapper
 {
@@ -21,7 +24,7 @@ public:
   CCustomControllerTranslator() = default;
 
   // implementation of IButtonMapper
-  void MapActions(int windowID, const TiXmlNode* pDevice) override;
+  void MapActions(int windowID, const tinyxml2::XMLNode* pDevice) override;
   void Clear() override;
 
   bool TranslateCustomControllerString(int windowId,
