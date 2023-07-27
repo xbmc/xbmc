@@ -29,6 +29,7 @@ public:
     // IDirectory methods
     bool GetDirectory(const CURL& url, CFileItemList &items) override;
     bool AllowAll() const override { return true; }
+    bool Resolve(CFileItem& item) const override;
 
     // class methods
     static const char* GetFriendlyName(const CURL& url);
