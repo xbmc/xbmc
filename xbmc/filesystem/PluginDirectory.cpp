@@ -546,3 +546,8 @@ bool CPluginDirectory::CheckExists(const std::string& content, const std::string
   CFileItem item;
   return CPluginDirectory::GetPluginResult(url.Get(), item, false);
 }
+
+bool CPluginDirectory::Resolve(CFileItem& item) const
+{
+  return GetResolvedPluginResult(item);
+}
