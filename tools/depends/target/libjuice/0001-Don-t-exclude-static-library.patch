@@ -1,0 +1,34 @@
+From b73b3371264e05ed1127c14c3ae1b111ebe2933a Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Fri, 28 Jul 2023 16:23:45 -0700
+Subject: [PATCH] Don't exclude static library
+
+---
+ CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 509e187..54ca0b7 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -97,7 +97,7 @@ target_include_directories(juice PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+ target_compile_definitions(juice PRIVATE $<$<CONFIG:Release>:RELEASE=1>)
+ target_link_libraries(juice PRIVATE Threads::Threads)
+ 
+-add_library(juice-static STATIC EXCLUDE_FROM_ALL ${LIBJUICE_SOURCES})
++add_library(juice-static STATIC ${LIBJUICE_SOURCES})
+ set_target_properties(juice-static PROPERTIES VERSION ${PROJECT_VERSION})
+ target_include_directories(juice-static PUBLIC
+     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+@@ -145,7 +145,7 @@ add_library(LibJuice::LibJuice ALIAS juice)
+ set_target_properties(juice-static PROPERTIES EXPORT_NAME LibJuiceStatic)
+ add_library(LibJuice::LibJuiceStatic ALIAS juice-static)
+ 
+-install(TARGETS juice EXPORT LibJuiceTargets
++install(TARGETS juice juice-static EXPORT LibJuiceTargets
+ 	RUNTIME DESTINATION bin
+ 	LIBRARY DESTINATION lib
+ 	ARCHIVE DESTINATION lib
+-- 
+2.34.1
+

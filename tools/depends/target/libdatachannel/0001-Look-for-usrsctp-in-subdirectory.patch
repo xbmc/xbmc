@@ -1,0 +1,26 @@
+From 72b77f4438a3154b97a7e62d3a1647b6f8c8ebf1 Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Sat, 29 Jul 2023 16:08:00 -0700
+Subject: [PATCH 1/2] Look for usrsctp in subdirectory
+
+---
+ cmake/Modules/FindUsrsctp.cmake | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/cmake/Modules/FindUsrsctp.cmake b/cmake/Modules/FindUsrsctp.cmake
+index 577bbc66..f0402d63 100644
+--- a/cmake/Modules/FindUsrsctp.cmake
++++ b/cmake/Modules/FindUsrsctp.cmake
+@@ -29,7 +29,8 @@ find_path(
+ find_library(
+ Usrsctp_LIBRARY
+   NAMES usrsctp libusrsctp
+-  PATHS /usr/lib /usr/local/lib)
++  PATHS /usr/lib /usr/local/lib
++  PATH_SUFFIXES usrsctplib)
+ 
+ find_package_handle_standard_args(
+   Usrsctp
+-- 
+2.34.1
+

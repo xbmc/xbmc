@@ -1,0 +1,26 @@
+From faca74f51071479e602a3c0825565b1eda04692f Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Sat, 29 Jul 2023 15:31:02 -0700
+Subject: [PATCH 2/4] Also install library to subdirectory
+
+---
+ usrsctplib/CMakeLists.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/usrsctplib/CMakeLists.txt b/usrsctplib/CMakeLists.txt
+index 455b468..6cb85dc 100644
+--- a/usrsctplib/CMakeLists.txt
++++ b/usrsctplib/CMakeLists.txt
+@@ -207,7 +207,8 @@ set_target_properties(usrsctp PROPERTIES SOVERSION ${SOVERSION_SHORT} VERSION ${
+ # INSTALL LIBRARY AND HEADER
+ #################################################
+ 
+-install(TARGETS usrsctp EXPORT UsrsctpConfig DESTINATION ${CMAKE_INSTALL_LIBDIR})
++install(TARGETS usrsctp DESTINATION ${CMAKE_INSTALL_LIBDIR})
++install(TARGETS usrsctp EXPORT UsrsctpConfig DESTINATION ${CMAKE_INSTALL_LIBDIR}/usrsctplib)
+ install(FILES usrsctp.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+ 
+ # Export Targets
+-- 
+2.34.1
+
