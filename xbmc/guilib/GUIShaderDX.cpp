@@ -30,18 +30,20 @@ using namespace DirectX;
 using namespace Microsoft::WRL;
 
 // shaders bytecode holder
+// clang-format off
 static const D3D_SHADER_DATA cbPSShaderCode[SHADER_METHOD_RENDER_COUNT] =
 {
-  { guishader_default,             sizeof(guishader_default)              }, // SHADER_METHOD_RENDER_DEFAULT
-  { guishader_texture_noblend,     sizeof(guishader_texture_noblend)      }, // SHADER_METHOD_RENDER_TEXTURE_NOBLEND
-  { guishader_fonts,               sizeof(guishader_fonts)                }, // SHADER_METHOD_RENDER_FONT
-  { guishader_texture,             sizeof(guishader_texture)              }, // SHADER_METHOD_RENDER_TEXTURE_BLEND
-  { guishader_multi_texture_blend, sizeof(guishader_multi_texture_blend)  }, // SHADER_METHOD_RENDER_MULTI_TEXTURE_BLEND
-  { guishader_interlaced_left,     sizeof(guishader_interlaced_left)      }, // SHADER_METHOD_RENDER_STEREO_INTERLACED_LEFT
-  { guishader_interlaced_right,    sizeof(guishader_interlaced_right)     }, // SHADER_METHOD_RENDER_STEREO_INTERLACED_RIGHT
-  { guishader_checkerboard_left,   sizeof(guishader_checkerboard_left)    }, // SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_LEFT
-  { guishader_checkerboard_right,  sizeof(guishader_checkerboard_right)   }, // SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_RIGHT
+  { guishader_default, sizeof(guishader_default) }, // SHADER_METHOD_RENDER_DEFAULT
+  { guishader_texture_noblend, sizeof(guishader_texture_noblend) }, // SHADER_METHOD_RENDER_TEXTURE_NOBLEND
+  { guishader_fonts, sizeof(guishader_fonts) }, // SHADER_METHOD_RENDER_FONT
+  { guishader_texture, sizeof(guishader_texture) }, // SHADER_METHOD_RENDER_TEXTURE_BLEND
+  { guishader_multi_texture_blend, sizeof(guishader_multi_texture_blend) }, // SHADER_METHOD_RENDER_MULTI_TEXTURE_BLEND
+  { guishader_interlaced_left, sizeof(guishader_interlaced_left) }, // SHADER_METHOD_RENDER_STEREO_INTERLACED_LEFT
+  { guishader_interlaced_right, sizeof(guishader_interlaced_right) }, // SHADER_METHOD_RENDER_STEREO_INTERLACED_RIGHT
+  { guishader_checkerboard_left, sizeof(guishader_checkerboard_left) }, // SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_LEFT
+  { guishader_checkerboard_right, sizeof(guishader_checkerboard_right) }, // SHADER_METHOD_RENDER_STEREO_CHECKERBOARD_RIGHT
 };
+// clang-format on
 
 CGUIShaderDX::CGUIShaderDX() :
     m_pSampLinear(nullptr),
