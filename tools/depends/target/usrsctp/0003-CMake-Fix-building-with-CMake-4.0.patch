@@ -1,0 +1,25 @@
+From a3ac02eeeca0407f1087f57786941536d317cf2c Mon Sep 17 00:00:00 2001
+From: Garrett Brown <garrett.brown@aclima.earth>
+Date: Tue, 17 Jun 2025 18:39:24 -0700
+Subject: [PATCH 3/3] CMake: Fix building with CMake 4.0
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 3fc4ec6..7f3320e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -30,7 +30,7 @@
+ #
+ 
+ project(usrsctplib C)
+-cmake_minimum_required(VERSION 3.0)
++cmake_minimum_required(VERSION 3.0...4.0)
+ 
+ # Debug build type as default
+ if (NOT CMAKE_BUILD_TYPE)
+-- 
+2.49.0
+
