@@ -103,12 +103,16 @@ option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
 option(ENABLE_TESTING     "Enable testing support?" ON)
+option(ENABLE_KADEMLIA    "Enable Kademlia support?" ON)
 
 # Internal Depends - supported on all platforms
+option(ENABLE_INTERNAL_BOOST "Enable internal boost?" ON) # TODO: Change to OFF
 option(ENABLE_INTERNAL_LIBDATACHANNEL "Enable internal libdatachannel?" ON) # TODO: Change to OFF
 option(ENABLE_INTERNAL_LIBJUICE "Enable internal libjuice?" ON) # TODO: Change to OFF
 option(ENABLE_INTERNAL_LIBSRTP "Enable internal libsrtp?" ON) # TODO: Change to OFF
+option(ENABLE_INTERNAL_LIBTORRENT "Enable internal libtorrent?" ON) # TODO: Change to OFF
 option(ENABLE_INTERNAL_PLOG "Enable internal plog?" ON) # TODO: Change to OFF
+option(ENABLE_INTERNAL_TRY_SIGNAL "Enable internal try_signal?" ON) # TODO: Change to OFF
 option(ENABLE_INTERNAL_USRSCTP "Enable internal usrsctp?" ON) # TODO: Change to OFF
 
 # These are required enabled for all CI platforms, and recommended for all builds
@@ -328,6 +332,13 @@ if(ENABLE_AIRTUNES)
   find_package(Shairplay ${SEARCH_QUIET})
   if(TARGET ${APP_NAME_LC}::Shairplay)
     core_require_dep(Shairplay)
+  endif()
+endif()
+
+if(ENABLE_KADEMLIA)
+  core_optional_dep(Libtorrent)
+  if(TARGET ${APP_NAME_LC}::Libtorrent)
+    core_require_dep(Boost)
   endif()
 endif()
 
