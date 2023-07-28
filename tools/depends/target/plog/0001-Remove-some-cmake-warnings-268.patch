@@ -1,0 +1,90 @@
+From ea244b160115bff80e8e92177007bc94ba46c6bb Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=E6=AC=8A=E5=B0=91?= <ljqican@163.com>
+Date: Thu, 31 Aug 2023 00:04:03 +0800
+Subject: [PATCH] Remove some cmake warnings #268
+
+1. Update the cmake_minimum_required to 3.6.
+2. Use COMMON_LANGUAGE_RUNTIME to set "/clr".
+---
+ CMakeLists.txt               | 6 +++++-
+ samples/CMakeLists.txt       | 6 +++++-
+ samples/CXX11/CMakeLists.txt | 6 +++++-
+ samples/CXX17/CMakeLists.txt | 6 +++++-
+ samples/Demo/CMakeLists.txt  | 3 ++-
+ 5 files changed, 22 insertions(+), 5 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 57c1f51..e4cbede 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,4 +1,8 @@
+-cmake_minimum_required(VERSION 3.0)
++if(${CMAKE_VERSION} VERSION_LESS 3.27.0)
++    cmake_minimum_required(VERSION 3.0)
++else()
++    cmake_minimum_required(VERSION 3.6)
++endif()
+ 
+ project(plog VERSION 1.1.10 LANGUAGES CXX)
+ 
+diff --git a/samples/CMakeLists.txt b/samples/CMakeLists.txt
+index ccedbc7..b91f628 100644
+--- a/samples/CMakeLists.txt
++++ b/samples/CMakeLists.txt
+@@ -1,4 +1,8 @@
+-cmake_minimum_required(VERSION 3.0)
++if(${CMAKE_VERSION} VERSION_LESS 3.27.0)
++    cmake_minimum_required(VERSION 3.0)
++else()
++    cmake_minimum_required(VERSION 3.6)
++endif()
+ 
+ if(POLICY CMP0063) #Honor visibility properties for all target types
+     cmake_policy(SET CMP0063 NEW)
+diff --git a/samples/CXX11/CMakeLists.txt b/samples/CXX11/CMakeLists.txt
+index 607ac7f..687f7ed 100644
+--- a/samples/CXX11/CMakeLists.txt
++++ b/samples/CXX11/CMakeLists.txt
+@@ -1,5 +1,9 @@
+ if (NOT CMAKE_VERSION VERSION_LESS 3.3.0)
+-    cmake_minimum_required(VERSION 3.3)
++    if(${CMAKE_VERSION} VERSION_LESS 3.27.0)
++        cmake_minimum_required(VERSION 3.3)
++    else()
++        cmake_minimum_required(VERSION 3.6)
++    endif()
+ 
+     if(cxx_std_11 IN_LIST CMAKE_CXX_COMPILE_FEATURES)
+         add_executable(CXX11 Main.cpp)
+diff --git a/samples/CXX17/CMakeLists.txt b/samples/CXX17/CMakeLists.txt
+index 7b18a4b..212f452 100644
+--- a/samples/CXX17/CMakeLists.txt
++++ b/samples/CXX17/CMakeLists.txt
+@@ -1,5 +1,9 @@
+ if (NOT CMAKE_VERSION VERSION_LESS 3.3.0)
+-    cmake_minimum_required(VERSION 3.3)
++    if(${CMAKE_VERSION} VERSION_LESS 3.27.0)
++        cmake_minimum_required(VERSION 3.3)
++    else()
++        cmake_minimum_required(VERSION 3.6)
++    endif()
+ 
+     # Unfortunately cxx_std_17 in CMAKE_CXX_COMPILE_FEATURES is not reliable, so check include files
+     include(CheckIncludeFileCXX)
+diff --git a/samples/Demo/CMakeLists.txt b/samples/Demo/CMakeLists.txt
+index d422ed8..14e817f 100644
+--- a/samples/Demo/CMakeLists.txt
++++ b/samples/Demo/CMakeLists.txt
+@@ -5,7 +5,8 @@ set_target_properties(Demo PROPERTIES FOLDER Samples)
+ if(MSVC AND NOT (MSVC_VERSION LESS 1700)) # Visual Studio 2012 and higher
+     add_executable(DemoManaged Main.cpp MyClass.h MyClass.cpp Customer.h)
+     target_link_libraries(DemoManaged plog)
+-    set_property(TARGET DemoManaged PROPERTY COMPILE_FLAGS "/clr /EHa")
++    set_property(TARGET DemoManaged PROPERTY COMPILE_FLAGS "/EHa")
++    set_property(TARGET DemoManaged PROPERTY COMMON_LANGUAGE_RUNTIME "")
+     set_target_properties(DemoManaged PROPERTIES FOLDER Samples CXX_STANDARD 17 CXX_STANDARD_REQUIRED OFF) # the latest standard supported by CLR is C++17
+ endif()
+ 
+-- 
+2.49.0
+
