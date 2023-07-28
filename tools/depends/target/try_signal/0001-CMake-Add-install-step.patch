@@ -1,0 +1,24 @@
+From 6819a48673b5cd6af082fb65edd7195088043c5b Mon Sep 17 00:00:00 2001
+From: Garrett Brown <themagnificentmrb@gmail.com>
+Date: Wed, 30 Aug 2023 02:32:03 -0700
+Subject: [PATCH] CMake: Add install step
+
+---
+ CMakeLists.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 945cd6c..a2f61e6 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -4,3 +4,7 @@ project(try_signal)
+ add_library(try_signal signal_error_code try_signal)
+ target_include_directories(try_signal PUBLIC .)
+ 
++file(GLOB HEADERS "*.hpp")
++
++install(TARGETS try_signal DESTINATION lib)
++install(FILES ${HEADERS} DESTINATION include)
+-- 
+2.34.1
+

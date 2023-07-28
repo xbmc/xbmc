@@ -74,10 +74,13 @@ option(ENABLE_PYTHON      "Enable python support?" ON)
 option(ENABLE_TESTING     "Enable testing support?" ON)
 
 # Internal Depends - supported on all platforms
+option(ENABLE_INTERNAL_BOOST "Enable internal boost?" ON) # TODO: Change to OFF
 option(ENABLE_INTERNAL_LIBDATACHANNEL "Enable internal libdatachannel?" ON) # TODO: Change to OFF
 option(ENABLE_INTERNAL_LIBJUICE "Enable internal libjuice?" ON) # TODO: Change to OFF
 option(ENABLE_INTERNAL_LIBSRTP "Enable internal libsrtp?" ON) # TODO: Change to OFF
+option(ENABLE_INTERNAL_LIBTORRENT "Enable internal libtorrent?" ON) # TODO: Change to OFF
 option(ENABLE_INTERNAL_PLOG "Enable internal plog?" ON) # TODO: Change to OFF
+option(ENABLE_INTERNAL_TRY_SIGNAL "Enable internal try_signal?" ON) # TODO: Change to OFF
 option(ENABLE_INTERNAL_USRSCTP "Enable internal usrsctp?" ON) # TODO: Change to OFF
 
 # These are required enabled for all CI platforms, and recommended for all builds
@@ -215,6 +218,7 @@ set(required_deps ASS>=0.15.0
                   LibDvd
                   Libjuice
                   Libsrtp
+                  Libtorrent
                   Lzo2
                   OpenSSL>=1.1.0
                   PCRE
@@ -224,6 +228,7 @@ set(required_deps ASS>=0.15.0
                   TagLib
                   TinyXML
                   TinyXML2
+                  try_signal
                   Usrsctp
                   ZLIB
                   ${PLATFORM_REQUIRED_DEPS})
