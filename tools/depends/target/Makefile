@@ -165,6 +165,7 @@ libbdplus: libaacs libgcrypt libgpg-error
 libbluray: fontconfig freetype2 $(ICONV) udfread libxml2 $(LIBAACS) $(LIBDPLUS) $(APACHEANT)
 libcdio-gplv3: $(ICONV)
 libcdio: $(ICONV)
+libdatachannel: libjuice libsrtp plog usrsctp
 libdisplay-info: hwdata
 libevdev: libudev
 libgcrypt: libgpg-error
@@ -172,6 +173,7 @@ libinput: mtdev libevdev
 libmicrohttpd: gnutls libgcrypt libgpg-error
 libplist: $(ZLIB)
 libpng: $(ZLIB)
+libsrtp: openssl
 libva: libdrm $(LIBVA_DEPS)
 libxml2: $(ZLIB)
 libxslt: libxml2
