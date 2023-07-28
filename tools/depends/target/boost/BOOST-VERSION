@@ -1,0 +1,8 @@
+LIBNAME=boost
+VERSION=1.87.0
+ARCHIVE=$(LIBNAME)-$(VERSION)-cmake.tar.gz
+SHA512=58841872225ba07135235b6d71c19208db2beb99c737b5bc0862a83517552738d750e514eb9908e6f754b35a2392ac48d3c7edd9d5d7b3cac320b569bef1f26c
+BYPRODUCT=stage/lib/libboost_system.a
+
+# TODO
+BASE_URL=https://github.com/boostorg/boost/releases/download/boost-1.87.0
