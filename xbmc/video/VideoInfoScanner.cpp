@@ -540,10 +540,18 @@ namespace VIDEO
                                            bool fetchEpisodes,
                                            CGUIDialogProgress* pDlgProgress)
   {
-    long idTvShow = -1;
+    const bool isSeason =
+        pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_type == MediaTypeSeason;
+
+    int idTvShow = -1;
+    int idSeason = -1;
     std::string strPath = pItem->GetPath();
     if (pItem->m_bIsFolder)
+    {
       idTvShow = m_database.GetTvShowId(strPath);
+      if (isSeason && idTvShow > -1)
+        idSeason = m_database.GetSeasonId(idTvShow, pItem->GetVideoInfoTag()->m_iSeason);
+    }
     else if (pItem->IsPlugin() && pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iIdShow >= 0)
     {
       // for plugin source we cannot get idTvShow from episode path with URIUtils::GetDirectory() in all cases
@@ -557,8 +565,10 @@ namespace VIDEO
     {
       strPath = URIUtils::GetDirectory(strPath);
       idTvShow = m_database.GetTvShowId(strPath);
+      if (isSeason && idTvShow > -1)
+        idSeason = m_database.GetSeasonId(idTvShow, pItem->GetVideoInfoTag()->m_iSeason);
     }
-    if (idTvShow > -1 && (fetchEpisodes || !pItem->m_bIsFolder))
+    if (idTvShow > -1 && (!isSeason || idSeason > -1) && (fetchEpisodes || !pItem->m_bIsFolder))
     {
       INFO_RET ret = RetrieveInfoForEpisodes(pItem, idTvShow, info2, useLocal, pDlgProgress);
       if (ret == INFO_ADDED)
