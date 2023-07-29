@@ -284,7 +284,8 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
   if (!files.size())
     return {};
 
-  unsigned int num_across = (unsigned int)ceil(sqrt((float)files.size()));
+  unsigned int num_across =
+      static_cast<unsigned int>(std::ceil(std::sqrt(static_cast<float>(files.size()))));
   unsigned int num_down = (files.size() + num_across - 1) / num_across;
 
   unsigned int imageRes = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
@@ -292,10 +293,10 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
   unsigned int tile_width = imageRes / num_across;
   unsigned int tile_height = imageRes / num_down;
   unsigned int tile_gap = 1;
-  bool success = false;
+  bool success = false; // Flag that we at least had one successful image processed
 
   // create a buffer for the resulting thumb
-  uint32_t* buffer = static_cast<uint32_t*>(calloc(imageRes * imageRes, 4));
+  std::unique_ptr<uint32_t[]> buffer(new uint32_t[imageRes * imageRes]);
   if (!buffer)
     return {};
   for (unsigned int i = 0; i < files.size(); ++i)
@@ -310,21 +311,22 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
       GetScale(texture->GetWidth(), texture->GetHeight(), width, height);
 
       // scale appropriately
-      uint32_t* scaled = new uint32_t[width * height];
+      std::unique_ptr<uint32_t[]> scaled(new uint32_t[width * height]);
       if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(),
-                     texture->GetPitch(), AV_PIX_FMT_BGRA, (uint8_t*)scaled, width, height,
-                     width * 4, AV_PIX_FMT_BGRA))
+                     texture->GetPitch(), AV_PIX_FMT_BGRA, reinterpret_cast<uint8_t*>(scaled.get()),
+                     width, height, width * 4, AV_PIX_FMT_BGRA))
       {
         unsigned int stridePixels{width};
+        uint32_t* scaledL = scaled.get();
         if (!texture->GetOrientation() ||
-            OrientateImage(scaled, width, height, texture->GetOrientation(), stridePixels))
+            OrientateImage(scaledL, width, height, texture->GetOrientation(), stridePixels))
         {
-          success = true; // Flag that we at least had one successful image processed
+          success = true;
           // drop into the texture
           unsigned int posX = x * tile_width + (tile_width - width) / 2;
           unsigned int posY = y * tile_height + (tile_height - height) / 2;
-          uint32_t* dest = buffer + posX + posY * imageRes;
-          uint32_t* src = scaled;
+          uint32_t* dest = buffer.get() + posX + posY * imageRes;
+          const uint32_t* src = scaled.get();
           for (unsigned int y = 0; y < height; ++y)
           {
             memcpy(dest, src, width * 4);
@@ -333,16 +335,14 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
           }
         }
       }
-      delete[] scaled;
     }
   }
 
   std::unique_ptr<CTexture> result = CTexture::CreateTexture();
   if (success)
     result->LoadFromMemory(imageRes, imageRes, imageRes * 4, XB_FMT_A8R8G8B8, true,
-                           reinterpret_cast<unsigned char*>(buffer));
+                           reinterpret_cast<unsigned char*>(buffer.get()));
 
-  free(buffer);
   return result;
 }
 
