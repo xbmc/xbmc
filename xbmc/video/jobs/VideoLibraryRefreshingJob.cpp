@@ -320,6 +320,8 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       {
         if (!m_item->m_bIsFolder)
           db.DeleteEpisode(dbId);
+        else if (m_item->GetVideoInfoTag()->m_type == MediaTypeSeason)
+          db.DeleteSeason(dbId);
         else if (m_refreshAll)
           db.DeleteTvShow(dbId);
         else
@@ -328,6 +330,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
     }
 
     if (pluginTag || pluginArt)
+    {
       // set video info and art from plugin source with metadata.local scraper to items
       for (auto &i: items)
       {
@@ -336,6 +339,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
         if (pluginArt)
           i->SetArt(*pluginArt);
       }
+    }
 
     // finally download the information for the item
     CVideoInfoScanner scanner;
@@ -361,9 +365,20 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       db.GetMusicVideoInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
     else if (scraper->Content() == CONTENT_TVSHOWS)
     {
-      // update tvshow info to get updated episode numbers
+      // update tvshow/season info to get updated episode numbers
       if (m_item->m_bIsFolder)
-        db.GetTvShowInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
+      {
+        // Note: don't use any database ids (m_iDbId, m_idSeason, m_IdShow) of m_item's video
+        // info tag here. The db information might have been deleted and recreated afterwards,
+        // invalidating the old db ids and m_item is not (yet) updated at this point.
+        bool hasInfo = false;
+        const CVideoInfoTag* videoTag = m_item->GetVideoInfoTag();
+        if (videoTag && videoTag->m_type == MediaTypeSeason && videoTag->m_iSeason != -1)
+          hasInfo = db.GetSeasonInfo(m_item->GetPath(), videoTag->m_iSeason,
+                                     *m_item->GetVideoInfoTag(), m_item.get());
+        if (!hasInfo)
+          db.GetTvShowInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
+      }
       else
         db.GetEpisodeInfo(m_item->GetPath(), *m_item->GetVideoInfoTag());
     }

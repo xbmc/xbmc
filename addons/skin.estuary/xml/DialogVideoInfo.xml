@@ -207,28 +207,34 @@
 						<param name="control_id" value="155" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[31048]: [/COLOR]$INFO[ListItem.Season,, $LOCALIZE[36905]]$INFO[ListItem.Episode, (, $LOCALIZE[20453])]" />
 						<param name="altlabel" value="$LOCALIZE[31048]: $INFO[ListItem.Season,, $LOCALIZE[36905]]$INFO[ListItem.Episode, (, $LOCALIZE[20453])]" />
-						<param name="visible" value="!String.IsEmpty(ListItem.Season) + !String.IsEqual(ListItem.DBType,episode)" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Season) + String.IsEqual(ListItem.DBType,tvshow)" />
 					</include>
 					<include content="InfoDialogMetadata">
 						<param name="control_id" value="156" />
+						<param name="label" value="[COLOR button_focus]$LOCALIZE[31048]: [/COLOR]$INFO[ListItem.Episode,, $LOCALIZE[20453]]" />
+						<param name="altlabel" value="$LOCALIZE[31048]: $INFO[ListItem.Episode,, $LOCALIZE[20453]]" />
+						<param name="visible" value="!String.IsEmpty(ListItem.Episode) + String.IsEqual(ListItem.DBType,season)" />
+					</include>
+					<include content="InfoDialogMetadata">
+						<param name="control_id" value="157" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[31017]: [/COLOR]$INFO[ListItem.Mpaa]" />
 						<param name="altlabel" value="$LOCALIZE[31017]: $INFO[ListItem.Mpaa]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Mpaa)" />
 					</include>
 					<include content="InfoDialogMetadata">
-						<param name="control_id" value="157" />
+						<param name="control_id" value="158" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[20457]: [/COLOR]$INFO[ListItem.Set]" />
 						<param name="altlabel" value="$LOCALIZE[20457]: $INFO[ListItem.Set]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Set)" />
 					</include>
 					<include content="InfoDialogMetadata">
-						<param name="control_id" value="158" />
+						<param name="control_id" value="159" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[20459]: [/COLOR]$INFO[ListItem.Tag]" />
 						<param name="altlabel" value="$LOCALIZE[20459]: $INFO[ListItem.Tag]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Tag)" />
 					</include>
 					<include content="InfoDialogMetadata">
-						<param name="control_id" value="159" />
+						<param name="control_id" value="160" />
 						<param name="label" value="[COLOR button_focus]$LOCALIZE[126]: [/COLOR]$INFO[ListItem.Status]" />
 						<param name="altlabel" value="$LOCALIZE[126]: $INFO[ListItem.Status]" />
 						<param name="visible" value="!String.IsEmpty(ListItem.Status)" />
