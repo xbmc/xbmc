@@ -339,7 +339,11 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
     {
       if (item->m_bIsFolder)
       {
-        bHasInfo = m_database.GetTvShowInfo(item->GetPath(), movieDetails, dbId);
+        const CVideoInfoTag* videoTag = item->GetVideoInfoTag();
+        if (videoTag && videoTag->m_type == MediaTypeSeason && videoTag->m_iSeason != -1)
+          bHasInfo = m_database.GetSeasonInfo(videoTag->m_iIdSeason, movieDetails);
+        if (!bHasInfo)
+          bHasInfo = m_database.GetTvShowInfo(item->GetPath(), movieDetails, dbId);
       }
       else
       {
@@ -420,18 +424,30 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
   // 3. Run a loop so that if we Refresh we re-run this block
   do
   {
-    if (!CVideoLibraryQueue::GetInstance().RefreshItemModal(item, needsRefresh, pDlgInfo->RefreshAll()))
-      return listNeedsUpdating;
+    // reload images
+    //! !todo we need this to update images in video info dialog immediatly after refresh, but why?
+    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+    OnMessage(reload);
+
+    if (!CVideoLibraryQueue::GetInstance().RefreshItemModal(item, needsRefresh,
+                                                            pDlgInfo->RefreshAll()))
+      break;
 
     // remove directory caches and reload images
     CUtil::DeleteVideoDatabaseDirectoryCache();
-    CGUIMessage reload(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
     OnMessage(reload);
 
     pDlgInfo->SetMovie(item.get());
     pDlgInfo->Open();
     item->SetArt("thumb", pDlgInfo->GetThumbnail());
     needsRefresh = pDlgInfo->NeedRefresh();
+    if (needsRefresh && pDlgInfo->GetCurrentListItem() != nullptr)
+    {
+      item = pDlgInfo->GetCurrentListItem();
+
+      if (item->IsVideoDb() && item->HasVideoInfoTag())
+        item->SetPath(item->GetVideoInfoTag()->GetPath());
+    }
     listNeedsUpdating = true;
   } while (needsRefresh);
 

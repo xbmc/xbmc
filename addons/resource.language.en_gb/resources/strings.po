@@ -13503,6 +13503,7 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogSmartPlaylistRule.cpp
 #: xbmc/media/MediaTypes.cpp
 #: xbmc/playlists/SmartPlaylist.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: addons/skin.estuary/xml/View_51_Poster.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/view/GUIViewState.cpp
