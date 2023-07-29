@@ -82,15 +82,6 @@ private:
    */
   static std::string GetImageHash(const std::string &url);
 
-  /*! \brief Check whether a given URL represents an image that can be updated
-   We currently don't check http:// and https:// URLs for updates, under the assumption that
-   a image URL is much more likely to be static and the actual image at the URL is unlikely
-   to change, so no point checking all the time.
-   \param url the url to check
-   \return true if the image given by the URL should be checked for updates, false otherwise
-   */
-  bool UpdateableURL(const std::string &url) const;
-
   /*! \brief Decode an image URL to the underlying image, width, height and orientation
    \param url wrapped URL of the image
    \param width width derived from URL
