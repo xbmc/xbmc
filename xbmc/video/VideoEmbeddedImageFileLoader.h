@@ -12,7 +12,9 @@
 
 namespace VIDEO
 {
-
+/*!
+ * @brief Generates a texture for an image embedded in a video file.
+*/
 class CVideoEmbeddedImageFileLoader : public IMAGE_FILES::ISpecialImageFileLoader
 {
 public:

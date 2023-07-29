@@ -17,10 +17,11 @@ namespace IMAGE_FILES
 {
 
 /*!
- * @brief An interface to load special image files into a texture for the cache.
+ * @brief An interface to load special image files into a texture for display.
  *
- * Special image files are generated or embedded images, like album covers embedded
- * in music files or thumbnails generated from video files.
+ * Special image files are images that are more than just a link or path to an
+ * image file, such as generated or embedded images - like album covers
+ * embedded in music files or thumbnails generated from video files.
 */
 class ISpecialImageFileLoader
 {

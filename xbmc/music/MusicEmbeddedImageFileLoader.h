@@ -12,7 +12,9 @@
 
 namespace MUSIC_INFO
 {
-
+/*!
+ * @brief Generates a texture for an image embedded in a music file.
+*/
 class CMusicEmbeddedImageFileLoader : public IMAGE_FILES::ISpecialImageFileLoader
 {
 public:
