@@ -12,6 +12,7 @@
 #include "ListItem.h"
 #include "Tuple.h"
 #include "swighelper.h"
+#include "settings/MediaSettings.h"
 
 #include <vector>
 
@@ -438,6 +439,33 @@ namespace XBMCAddon
     void setProperty(int handle, const char* key, const String& value);
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+    ///
+    /// \ingroup python_xbmcplugin
+    /// @brief \python_func{ xbmcplugin.getWatchedMode(handle, content) }
+    ///-------------------------------------------------------------------------
+    /// Get the watched mode for given content type:
+    ///  WatchedModeAll, WatchedModeUnwatched, or WatchedModeWatched.
+    ///
+    /// @param handle      integer - handle the plugin was started with.
+    /// @param content     [opt] string - content type; defaults to plugin content type.
+    ///
+    ///
+    /// ------------------------------------------------------------------------
+    ///
+    /// **Example:**
+    /// ~~~~~~~~~~~~~{.py}
+    /// ..
+    /// xbmcplugin.getWatchedMode(int(sys.argv[1]), 'tvshows')
+    /// ..
+    /// ~~~~~~~~~~~~~
+    ///
+    getWatchedMode(...);
+    ///@}
+#else
+    int getWatchedMode(int handle, const char* content = NULL);
+#endif
+
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     SWIG_CONSTANT(int, SORT_METHOD_NONE);
     SWIG_CONSTANT(int, SORT_METHOD_LABEL);
@@ -484,6 +512,10 @@ namespace XBMCAddon
     SWIG_CONSTANT(int, SORT_METHOD_DATE_TAKEN);
     SWIG_CONSTANT(int, SORT_METHOD_VIDEO_USER_RATING);
     SWIG_CONSTANT(int, SORT_METHOD_SONG_USER_RATING);
+
+    SWIG_CONSTANT(int, WatchedModeAll);
+    SWIG_CONSTANT(int, WatchedModeUnwatched);
+    SWIG_CONSTANT(int, WatchedModeWatched);
   }
 }
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */

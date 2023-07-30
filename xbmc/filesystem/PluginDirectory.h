@@ -70,6 +70,7 @@ public:
   static void SetProperty(int handle, const std::string &strProperty, const std::string &strValue);
   static void SetResolvedUrl(int handle, bool success, const CFileItem* resultItem);
   static void SetLabel2(int handle, const std::string& ident);
+  static int GetWatchedMode(int handle, const char *content);
 
 protected:
   // implementations of CRunningScriptsHandler / CScriptRunner

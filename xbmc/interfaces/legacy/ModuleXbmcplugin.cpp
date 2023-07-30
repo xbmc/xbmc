@@ -120,6 +120,11 @@ namespace XBMCAddon
     {
       XFILE::CPluginDirectory::SetProperty(handle, key, value);
     }
+    
+    int getWatchedMode(int handle, const char* content)
+    {
+      return XFILE::CPluginDirectory::GetWatchedMode(handle, content);
+    }
 
   }
 }
