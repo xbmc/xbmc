@@ -296,7 +296,7 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
   bool success = false; // Flag that we at least had one successful image processed
 
   // create a buffer for the resulting thumb
-  std::unique_ptr<uint32_t[]> buffer(new uint32_t[imageRes * imageRes]);
+  std::unique_ptr<uint32_t[]> buffer = std::make_unique<uint32_t[]>(imageRes * imageRes);
   if (!buffer)
     return {};
   for (unsigned int i = 0; i < files.size(); ++i)
@@ -311,7 +311,7 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
       GetScale(texture->GetWidth(), texture->GetHeight(), width, height);
 
       // scale appropriately
-      std::unique_ptr<uint32_t[]> scaled(new uint32_t[width * height]);
+      std::unique_ptr<uint32_t[]> scaled = std::make_unique<uint32_t[]>(width * height);
       if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(),
                      texture->GetPitch(), AV_PIX_FMT_BGRA, reinterpret_cast<uint8_t*>(scaled.get()),
                      width, height, width * 4, AV_PIX_FMT_BGRA))
