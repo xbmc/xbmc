@@ -32,13 +32,6 @@ struct DXGIColorSpaceArgs
   AVColorTransferCharacteristic color_transfer = AVCOL_TRC_UNSPECIFIED;
   bool full_range = false;
 
-  DXGIColorSpaceArgs(const CRenderBuffer& buf)
-  {
-    primaries = buf.primaries;
-    color_space = buf.color_space;
-    color_transfer = buf.color_transfer;
-    full_range = buf.full_range;
-  }
   DXGIColorSpaceArgs(const VideoPicture& picture)
   {
     primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
