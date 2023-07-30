@@ -48,6 +48,7 @@
 #include "addons/Skin.h"
 #include "cores/RetroPlayer/guicontrols/GUIGameControl.h"
 #include "games/controllers/guicontrols/GUIGameController.h"
+#include "games/controllers/guicontrols/GUIGameControllerList.h"
 #include "input/Key.h"
 #include "pvr/guilib/GUIEPGGridContainer.h"
 #include "utils/CharsetConverter.h"
@@ -74,6 +75,7 @@ static const ControlMapping controls[] = {
     {"fadelabel", CGUIControl::GUICONTROL_FADELABEL},
     {"fixedlist", CGUIControl::GUICONTAINER_FIXEDLIST},
     {"gamecontroller", CGUIControl::GUICONTROL_GAMECONTROLLER},
+    {"gamecontrollerlist", CGUIControl::GUICONTROL_GAMECONTROLLERLIST},
     {"gamewindow", CGUIControl::GUICONTROL_GAME},
     {"group", CGUIControl::GUICONTROL_GROUP},
     {"group", CGUIControl::GUICONTROL_LISTGROUP},
@@ -1585,6 +1587,33 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     GUIINFO::CGUIInfoLabel portAddress;
     GetInfoLabel(pControlNode, "portaddress", portAddress, parentID);
     gcontrol->SetPortAddress(portAddress);
+
+    // Set peripheral location
+    GUIINFO::CGUIInfoLabel peripheralLocation;
+    GetInfoLabel(pControlNode, "peripherallocation", peripheralLocation, parentID);
+    gcontrol->SetPeripheralLocation(peripheralLocation);
+
+    break;
+  }
+  case CGUIControl::GUICONTROL_GAMECONTROLLERLIST:
+  {
+    CScroller scroller;
+    GetScroller(pControlNode, "scrolltime", scroller);
+
+    control = new GAME::CGUIGameControllerList(parentID, id, posX, posY, width, height, orientation,
+                                               labelInfo.align, scroller);
+
+    GAME::CGUIGameControllerList* lcontrol = static_cast<GAME::CGUIGameControllerList*>(control);
+
+    lcontrol->LoadLayout(pControlNode);
+    lcontrol->LoadListProvider(pControlNode, defaultControl, defaultAlways);
+    lcontrol->SetType(viewType, viewLabel);
+    lcontrol->SetPageControl(pageControl);
+    lcontrol->SetRenderOffset(offset);
+    lcontrol->SetAutoScrolling(pControlNode);
+    lcontrol->SetClickActions(clickActions);
+    lcontrol->SetFocusActions(focusActions);
+    lcontrol->SetUnFocusActions(unfocusActions);
 
     break;
   }
