@@ -85,6 +85,18 @@ class CPeripheralCecAdapter : public CPeripheralHID,
   friend class CPeripheralCecAdapterUpdateThread;
   friend class CPeripheralCecAdapterReopenJob;
 
+  enum class CecCommandState {
+    WAITING_ACTIVATE,
+    WAITING_STAND_BY,
+    PROCESSED
+  };
+
+  enum class CecPowerState {
+    ACTIVE,
+    STAND_BY,
+    IN_TRANSITION
+  };
+
 public:
   CPeripheralCecAdapter(CPeripherals& manager,
                         const PeripheralScanResult& scanResult,
@@ -148,6 +160,7 @@ private:
   void SetAudioSystemConnected(bool bSetTo);
   void SetMenuLanguage(const char* strLanguage);
   void OnTvStandby(void);
+  CecPowerState GetConnectedDevicesPowerState() const;
 
   // callbacks from libCEC
   static void CecLogMessage(void* cbParam, const CEC::cec_log_message* message);
@@ -182,8 +195,7 @@ private:
   CEC::ICECCallbacks m_callbacks;
   mutable CCriticalSection m_critSection;
   CEC::libcec_configuration m_configuration;
-  bool m_bActiveSourcePending;
-  bool m_bStandbyPending;
+  CecCommandState m_cecCommandState;
   CDateTime m_preventActivateSourceOnPlay;
   bool m_bActiveSourceBeforeStandby;
   bool m_bOnPlayReceived;
