@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-04-07 20:11+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2023-07-26 16:11+0000\n"
+"Last-Translator: Andreas Bolin <bolin.andreas@gmail.com>\n"
 "Language-Team: Swedish <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/sv_se/>\n"
 "Language: sv_se\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.11.2\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -27,7 +27,7 @@ msgstr "Estuary är standardskalet för Kodi 17.0 och uppåt. Det är utformat f
 
 msgctxt "Addon Disclaimer"
 msgid "Estuary is the default skin for Kodi, removing it may cause issues"
-msgstr "Estuary är Kodis standardskal. Om du tar bort det kan det orsaka problem."
+msgstr "Estuary är Kodis standardskal. Om du tar bort det kan det orsaka problem"
 
 msgctxt "#31000"
 msgid "Now playing"
@@ -235,7 +235,7 @@ msgstr "Tryck på [B]vänster[/B] för att gå tillbaka eller [B]höger[/B] för
 
 msgctxt "#31055"
 msgid "Press [B]Right[/B] to frame advance"
-msgstr ""
+msgstr "Tryck på [B]Höger[/B] för att gå framåt"
 
 msgctxt "#31056"
 msgid "Go to playlist"
@@ -251,11 +251,11 @@ msgstr "Automatisk inloggning vid uppstart"
 
 msgctxt "#31059"
 msgid "Select + X"
-msgstr ""
+msgstr "Select + X"
 
 msgctxt "#31060"
 msgid "Select + Start"
-msgstr ""
+msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -303,7 +303,7 @@ msgstr "Total längd"
 
 msgctxt "#31074"
 msgid "Total duration"
-msgstr "Total längd"
+msgstr "Total speltid"
 
 msgctxt "#31075"
 msgid "Movie sets"
@@ -505,7 +505,7 @@ msgstr "Klicka här för att se de senaste ändringarna..."
 #. Label to show PVR info page
 msgctxt "#31137"
 msgid "PVR"
-msgstr ""
+msgstr "PVR"
 
 #. Label to show player info page
 msgctxt "#31138"
@@ -560,7 +560,7 @@ msgstr "Välj genre-fanart paket"
 
 msgctxt "#31150"
 msgid "Origin"
-msgstr ""
+msgstr "Ursprung"
 
 msgctxt "#31151"
 msgid "Unwatched music videos"
@@ -647,37 +647,37 @@ msgstr "Inställningar för omslag."
 #. Label for OSD settings category
 msgctxt "#31170"
 msgid "On screen display"
-msgstr ""
+msgstr "Skärmvisning"
 
 #. Helper text for the label of OSD settings category
 msgctxt "#31171"
 msgid "On screen display (OSD) related settings"
-msgstr ""
+msgstr "Skärmvisning (OSD) relaterade inställningar"
 
 #. Setting Automatically close video OSD
 msgctxt "#31172"
 msgid "Automatically close video OSD"
-msgstr ""
+msgstr "Stäng video OSD automatiskt"
 
 #. Setting auto close time for video osd
 msgctxt "#31173"
 msgid "Video OSD autoclose time (seconds)"
-msgstr ""
+msgstr "Tid för video OSD automatisk stängning (sekunder)"
 
 #. Setting to control what happens when clicking a music album on the home screen
 msgctxt "#31174"
 msgid "Default select action for albums on the home screen"
-msgstr ""
+msgstr "Standardvalåtgärd för album på hemskärmen"
 
 #. Setting to control what happens when clicking a TV show on the home screen
 msgctxt "#31175"
 msgid "Default select action for TV shows on the home screen"
-msgstr ""
+msgstr "Standardvalsåtgärd för TV-serier på hemskärmen"
 
 #. Setting to control what happens when clicking a movie set on the home screen
 msgctxt "#31176"
 msgid "Default select action for movie sets on the home screen"
-msgstr ""
+msgstr "Standardvalsåtgärd för filmer på hemskärmen"
 
 # empty strings from id 31170 to 31599
 #. Label to show the video codec name
@@ -698,7 +698,7 @@ msgstr "Bildförhållande"
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr ""
+msgstr "Video överföringshastighet"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
@@ -713,7 +713,7 @@ msgstr "Ljudkanaler"
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr ""
+msgstr "Ljud överföringshastighet"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
@@ -723,7 +723,7 @@ msgstr "Skärmupplösning"
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr ""
+msgstr "Systemets renderingshastighet"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
