@@ -417,6 +417,16 @@ public:
    */
   static std::string CreateFromCString(const char* cstr);
 
+  /*!
+   * \brief Check if a keyword string is contained on another string.
+   * \param str The string in which to search for the keyword
+   * \param keyword The string to search for
+   * \return True if the keyword if found.
+   */
+  static bool Contains(std::string_view str,
+                       std::string_view keyword,
+                       bool isCaseInsensitive = true);
+
 private:
   /*!
    * Wrapper for CLangInfo::GetOriginalLocale() which allows us to

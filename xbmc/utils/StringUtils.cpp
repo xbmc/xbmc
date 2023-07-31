@@ -1889,6 +1889,22 @@ std::string StringUtils::FormatFileSize(uint64_t bytes)
   return Format("{:.{}f}{}", value, decimals, units[i]);
 }
 
+bool StringUtils::Contains(std::string_view str,
+                           std::string_view keyword,
+                           bool isCaseInsensitive /* = true */)
+{
+  if (isCaseInsensitive)
+  {
+    auto itStr = std::search(str.begin(), str.end(), keyword.begin(), keyword.end(),
+                             [](unsigned char ch1, unsigned char ch2) {
+                               return std::toupper(ch1) == std::toupper(ch2);
+                             });
+    return (itStr != str.end());
+  }
+
+  return str.find(keyword) != std::string_view::npos;
+}
+
 const std::locale& StringUtils::GetOriginalLocale() noexcept
 {
   return g_langInfo.GetOriginalLocale();
