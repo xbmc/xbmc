@@ -52,15 +52,13 @@ XBMCCOMMONS_STANDARD_EXCEPTION(SettingCallbacksNotSupportedException);
 class Settings : public AddonClass
 {
 public:
-#if !defined SWIG && !defined DOXYGEN_SHOULD_SKIP_THIS
-  std::shared_ptr<CSettingsBase> settings;
-#endif
-
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 #ifndef SWIG
+  std::shared_ptr<CSettingsBase> settings;
   Settings(std::shared_ptr<CSettingsBase> settings);
 #endif
-
   virtual ~Settings() = default;
+#endif
 
 #ifdef DOXYGEN_SHOULD_USE_THIS
   ///
@@ -270,7 +268,6 @@ public:
   ///
   /// @param id                     string - id of the setting that the module needs to access.
   /// @param value                  bool - value of the setting.
-  /// @return                       bool - True if the value of the setting was set, false otherwise
   ///
   ///
   /// @note You can use the above as keywords for arguments.
@@ -299,7 +296,6 @@ public:
   ///
   /// @param id                     string - id of the setting that the module needs to access.
   /// @param value                  integer - value of the setting.
-  /// @return                       bool - True if the value of the setting was set, false otherwise
   ///
   ///
   /// @note You can use the above as keywords for arguments.
@@ -328,7 +324,6 @@ public:
   ///
   /// @param id                     string - id of the setting that the module needs to access.
   /// @param value                  float - value of the setting.
-  /// @return                       bool - True if the value of the setting was set, false otherwise
   ///
   ///
   /// @note You can use the above as keywords for arguments.
@@ -357,7 +352,6 @@ public:
   ///
   /// @param id                     string - id of the setting that the module needs to access.
   /// @param value                  string or unicode - value of the setting.
-  /// @return                       bool - True if the value of the setting was set, false otherwise
   ///
   ///
   /// @note You can use the above as keywords for arguments.
@@ -386,7 +380,6 @@ public:
   ///
   /// @param id                     string - id of the setting that the module needs to access.
   /// @param values                 list of boolean - values of the setting.
-  /// @return                       bool - True if the values of the setting were set, false otherwise
   ///
   ///
   /// @note You can use the above as keywords for arguments.
@@ -415,7 +408,6 @@ public:
   ///
   /// @param id                     string - id of the setting that the module needs to access.
   /// @param values                 list of int - values of the setting.
-  /// @return                       bool - True if the values of the setting were set, false otherwise
   ///
   ///
   /// @note You can use the above as keywords for arguments.
@@ -444,7 +436,6 @@ public:
   ///
   /// @param id                     string - id of the setting that the module needs to access.
   /// @param values                 list of float - values of the setting.
-  /// @return                       bool - True if the values of the setting were set, false otherwise
   ///
   ///
   /// @note You can use the above as keywords for arguments.
@@ -473,7 +464,6 @@ public:
   ///
   /// @param id                     string - id of the setting that the module needs to access.
   /// @param values                 list of string or unicode - values of the setting.
-  /// @return                       bool - True if the values of the setting were set, false otherwise
   ///
   ///
   /// @note You can use the above as keywords for arguments.

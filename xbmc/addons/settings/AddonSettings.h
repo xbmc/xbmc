@@ -41,7 +41,7 @@ class CAddonSettings : public CSettingsBase,
                        public ISettingCallback
 {
 public:
-  CAddonSettings(const std::shared_ptr<const IAddon>& addon, AddonInstanceId instanceId);
+  CAddonSettings(const std::shared_ptr<IAddon>& addon, AddonInstanceId instanceId);
   ~CAddonSettings() override = default;
 
   // specialization of CSettingsBase
@@ -49,7 +49,7 @@ public:
 
   // implementations of CSettingsBase
   bool Load() override { return false; }
-  bool Save() override { return false; }
+  bool Save() override;
 
   // specialization of CSettingCreator
   std::shared_ptr<CSetting> CreateSetting(
@@ -60,7 +60,7 @@ public:
   // implementation of ISettingCallback
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
-  const std::string& GetAddonId() const { return m_addonId; }
+  std::string GetAddonId() const;
 
   bool Initialize(const CXBMCTinyXML& doc, bool allowEmpty = false);
   bool Load(const CXBMCTinyXML& doc);
@@ -187,11 +187,8 @@ private:
                                            std::string& current,
                                            void* data);
 
-  // store these values so that we don't always have to access the weak pointer
-  const std::string m_addonId;
-  const std::string m_addonPath;
-  const std::string m_addonProfile;
   const AddonInstanceId m_instanceId{ADDON_SETTINGS_ID};
+  std::shared_ptr<IAddon> m_addon;
 
   uint32_t m_unidentifiedSettingId = 0;
   int m_unknownSettingLabelId;
