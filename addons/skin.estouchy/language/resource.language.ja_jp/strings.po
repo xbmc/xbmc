@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-07-01 08:26+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2023-07-11 19:35+0000\n"
+"Last-Translator: yohru <yohru7@gmail.com>\n"
 "Language-Team: Japanese <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/ja_jp/>\n"
 "Language: ja_jp\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 4.18.2\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -196,7 +196,7 @@ msgstr "最終更新時刻"
 
 msgctxt "#31303"
 msgid "Data provider"
-msgstr "気象データプロバイダー"
+msgstr "データの提供元"
 
 msgctxt "#31309"
 msgid "System Memory Used:"
@@ -361,7 +361,7 @@ msgstr "ビデオ アスペクト"
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr ""
+msgstr "ビデオのビットレート"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
@@ -376,7 +376,7 @@ msgstr "オーディオチャンネル"
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr ""
+msgstr "オーディオのビットレート"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
@@ -386,7 +386,7 @@ msgstr "画面解像度"
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr ""
+msgstr "システムのレンダリング速度"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
