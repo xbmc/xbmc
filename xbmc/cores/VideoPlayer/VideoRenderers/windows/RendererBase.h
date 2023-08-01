@@ -150,6 +150,20 @@ protected:
   void DeleteRenderBuffer(int index);
 
   void ProcessHDR(CRenderBuffer* rb);
+  /*!
+   * \brief Call before rendering begins to find out if rendering will be attempted as SDR or HDR.
+   * \param picture description of the source
+   * \return true: intent to render as HDR, false: intent to render as SDR
+   */
+  static bool IntendToRenderAsHDR(const VideoPicture& picture);
+  /*!
+   * \brief Call after rendering has started to find out if the output is configured as SDR or HDR.
+   * \return true: HDR output, false: SDR output
+  */
+  bool ActualRenderAsHDR()
+  {
+    return m_HdrType == HDR_TYPE::HDR_HDR10 || m_HdrType == HDR_TYPE::HDR_HLG;
+  }
 
   virtual void RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint (&destPoints)[4], uint32_t flags) = 0;
   virtual void FinalOutput(CD3DTexture& source, CD3DTexture& target, const CRect& sourceRect, const CPoint(&destPoints)[4]);
