@@ -25,22 +25,6 @@ namespace DXVA {
 
 using namespace Microsoft::WRL;
 
-struct DXGIColorSpaceArgs
-{
-  AVColorPrimaries primaries = AVCOL_PRI_UNSPECIFIED;
-  AVColorSpace color_space = AVCOL_SPC_UNSPECIFIED;
-  AVColorTransferCharacteristic color_transfer = AVCOL_TRC_UNSPECIFIED;
-  bool full_range = false;
-
-  DXGIColorSpaceArgs(const VideoPicture& picture)
-  {
-    primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
-    color_space = static_cast<AVColorSpace>(picture.color_space);
-    color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
-    full_range = picture.color_range == 1;
-  }
-};
-
 struct ProcColorSpaces;
 
 class CProcessorHD : public ID3DResource
@@ -73,13 +57,6 @@ public:
   static bool IsSuperResolutionSuitable(const VideoPicture& picture);
   void TryEnableVideoSuperResolution();
   bool IsVideoSuperResolutionEnabled() const { return m_superResolutionEnabled; }
-
-  /*!
-   * \brief Converts ffmpeg AV parameters to a DXGI color space
-   * \param csArgs ffmpeg AV picture parameters
-   * \return DXGI color space
-   */
-  static DXGI_COLOR_SPACE_TYPE AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs);
 
 protected:
   bool ReInit();

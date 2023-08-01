@@ -766,3 +766,15 @@ DEBUG_INFO_VIDEO CRendererBase::GetDebugInfo(int idx)
 
   return info;
 }
+
+bool CRendererBase::IntendToRenderAsHDR(const VideoPicture& picture)
+{
+  const bool streamIsHDR = (picture.color_primaries == AVCOL_PRI_BT2020) &&
+                           (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+                            picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
+
+  const bool canDisplayHDR =
+      DX::Windowing()->IsHDROutput() || DX::Windowing()->IsHDRDisplaySettingEnabled();
+
+  return streamIsHDR && canDisplayHDR;
+}
