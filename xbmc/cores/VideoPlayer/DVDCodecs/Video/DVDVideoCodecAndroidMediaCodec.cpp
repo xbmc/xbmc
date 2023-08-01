@@ -530,6 +530,47 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
           m_mime = "video/dolby-vision";
           m_formatname = isDvhe ? "amc-dvhe" : "amc-dvh1";
           profile = 0; // not an HEVC profile
+
+          if (CJNIBase::GetSDKVersion() >= 24)
+          {
+            switch (m_hints.dovi.dv_profile)
+            {
+              case 0:
+                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvavPer;
+                break;
+              case 1:
+                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvavPen;
+                break;
+              case 2:
+                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDer;
+                break;
+              case 3:
+                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDen;
+                break;
+              case 4:
+                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDtr;
+                break;
+              case 5:
+                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheStn;
+                break;
+              case 6:
+                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDth;
+                break;
+              case 7:
+                // profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDtb;
+                break;
+              case 8:
+                if (CJNIBase::GetSDKVersion() >= 27)
+                  profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheSt;
+                break;
+              case 9:
+                if (CJNIBase::GetSDKVersion() >= 27)
+                  profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvavSe;
+                break;
+              default:
+                break;
+            }
+          }
         }
       }
 
