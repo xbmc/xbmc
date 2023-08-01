@@ -119,6 +119,7 @@ const std::vector<DXGI_FORMAT> RenderingOutputFormats = {DXGI_FORMAT_B8G8R8A8_UN
 struct SupportedConversionsArgs
 {
   AVColorPrimaries m_colorPrimaries{AVCOL_PRI_UNSPECIFIED};
+  AVColorSpace m_colorSpace{AVCOL_SPC_UNSPECIFIED};
   AVColorTransferCharacteristic m_colorTransfer{AVCOL_TRC_UNSPECIFIED};
   bool m_fullRange{false};
   bool m_hdrOutput{false};
@@ -128,16 +129,19 @@ struct SupportedConversionsArgs
   SupportedConversionsArgs(const VideoPicture& picture, bool isHdrOutput)
   {
     m_colorPrimaries = static_cast<AVColorPrimaries>(picture.color_primaries);
+    m_colorSpace = static_cast<AVColorSpace>(picture.color_space);
     m_colorTransfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
     m_fullRange = picture.color_range == 1;
     m_hdrOutput = isHdrOutput;
   }
 
   SupportedConversionsArgs(const AVColorPrimaries& colorPrimaries,
+                           const AVColorSpace& colorSpace,
                            const AVColorTransferCharacteristic& colorTransfer,
                            bool fullRange,
                            bool hdrOutput)
     : m_colorPrimaries(colorPrimaries),
+      m_colorSpace(colorSpace),
       m_colorTransfer(colorTransfer),
       m_fullRange(fullRange),
       m_hdrOutput(hdrOutput)
@@ -148,6 +152,37 @@ struct SupportedConversionsArgs
   {
     return m_colorPrimaries != other.m_colorPrimaries || m_colorTransfer != other.m_colorTransfer ||
            m_fullRange != other.m_fullRange || m_hdrOutput != other.m_hdrOutput;
+  }
+};
+
+struct DXGIColorSpaceArgs
+{
+  AVColorPrimaries primaries = AVCOL_PRI_UNSPECIFIED;
+  AVColorSpace color_space = AVCOL_SPC_UNSPECIFIED;
+  AVColorTransferCharacteristic color_transfer = AVCOL_TRC_UNSPECIFIED;
+  bool full_range = false;
+  AVChromaLocation chroma_location = AVCHROMA_LOC_UNSPECIFIED;
+
+  DXGIColorSpaceArgs(const VideoPicture& picture)
+  {
+    primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
+    color_space = static_cast<AVColorSpace>(picture.color_space);
+    color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+    full_range = picture.color_range == 1;
+    chroma_location = static_cast<AVChromaLocation>(picture.chroma_position);
+  }
+
+  DXGIColorSpaceArgs(AVColorPrimaries primaries,
+                     AVColorSpace color_space,
+                     AVColorTransferCharacteristic color_transfer,
+                     bool full_range,
+                     AVChromaLocation chroma_location)
+  {
+    this->primaries = primaries;
+    this->color_space = color_space;
+    this->color_transfer = color_transfer;
+    this->full_range = full_range;
+    this->chroma_location = chroma_location;
   }
 };
 
@@ -224,36 +259,18 @@ public:
       ID3D11Resource* pResource, const D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC* pDesc);
 
   /*!
-   * \brief Return the conversions supported by the processor to play HDR material as HDR.
-   * \param isSourceFullRange Is the source limited or full range
-   * \return conversion list of supported conversions
-   */
-  ProcessorConversions QueryHDRConversions(const bool isSourceFullRange);
-  /*!
-   * \brief Return the conversions supported by the processor to play HDR material as SDR
-   * These conversions avoid tonemapping by the processor and require post processing.
-   * \param isSourceFullRange Is the source limited or full range
-   * \return conversion list of supported conversions
-   */
-  ProcessorConversions QueryHDRtoSDRConversions(const bool isSourceFullRange);
-  /*!
-   * \brief Return the conversions supported by the processor for SDR material.
-   * Support is assumed to exist on systems that don't support the
-   * ID3D11VideoProcessorEnumerator1 interface.
-   * \param isSourceFullRange Is the source limited or full range
-   * \param colorPrimaries color primaries of the source
-   * \param colorTransfer transfer function of the source
-   * \return conversion list of supported conversions
-   */
-  ProcessorConversions QuerySDRConversions(const bool isSourceFullRange,
-                                           AVColorPrimaries colorPrimaries,
-                                           AVColorTransferCharacteristic colorTransfer);
-  /*!
    * \brief Return a list of conversions supported by the processor for the given parameters.
    * \param args parameters
    * \return list of conversions
    */
   ProcessorConversions SupportedConversions(const SupportedConversionsArgs& args);
+
+  /*!
+   * \brief Converts ffmpeg AV parameters to a DXGI color space
+   * \param csArgs ffmpeg AV picture parameters
+   * \return DXGI color space. Special value DXGI_COLOR_SPACE_CUSTOM used when there is no match.
+   */
+  static DXGI_COLOR_SPACE_TYPE AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs);
 
 protected:
   void UnInit();
@@ -306,6 +323,30 @@ protected:
       const std::vector<DXGI_COLOR_SPACE_TYPE>& inputColorSpaces,
       const std::vector<DXGI_FORMAT>& outputFormats,
       const std::vector<DXGI_COLOR_SPACE_TYPE>& outputColorSpaces) const;
+
+  /*!
+   * \brief Helper function that outputs input/output to log and returns the results of
+   * ListConversions for the input parameters.
+   * \param inputArgs description of the source
+   * \param outputColorSpaces description of the destination
+   * \return List of the supported conversion.
+   */
+  ProcessorConversions LogAndListConversions(const DXGIColorSpaceArgs& inputArgs,
+                                             const DXGIColorSpaceArgs& outputArgs) const;
+  /*!
+   * \brief Suggest chroma siting derived from source charateristics.
+   * Has limited functionality at this time and supports values that make sense for dxgi
+   * \param args description of the sourcce
+   * \return suggested chroma siting.
+  */
+  AVChromaLocation DefaultChromaSiting(const SupportedConversionsArgs& args) const;
+  /*!
+   * \brief Suggest an alternative chroma siting to help with dxva processor that don't support
+   * some dxgi color spaces.
+   * \param location original chroma siting
+   * \return suggested alternative chroma siting
+   */
+  AVChromaLocation AlternativeChromaSiting(const AVChromaLocation& location) const;
 
   CCriticalSection m_section;
 
