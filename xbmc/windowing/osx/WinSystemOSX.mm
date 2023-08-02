@@ -1215,10 +1215,10 @@ void CWinSystemOSX::OnMove(int x, int y)
 
     // send a message so that videoresolution (and refreshrate) is changed
     dispatch_sync(dispatch_get_main_queue(), ^{
-      NSWindow* win = m_appWindow;
-      NSRect frame = win.contentView.frame;
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_VIDEORESIZE, frame.size.width,
-                                                 frame.size.height);
+      NSRect rect = [m_appWindow.contentView
+          convertRectToBacking:[m_appWindow contentRectForFrameRect:m_appWindow.frame]];
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_VIDEORESIZE, rect.size.width,
+                                                 rect.size.height);
     });
   }
   if (m_fullScreenMovingToScreen.has_value())
