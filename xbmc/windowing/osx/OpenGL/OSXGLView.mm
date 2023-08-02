@@ -18,7 +18,6 @@
   NSOpenGLContext* m_glcontext;
   NSOpenGLPixelFormat* m_pixFmt;
   NSTrackingArea* m_trackingArea;
-  BOOL pause;
 }
 
 @synthesize glContextOwned;
