@@ -30,4 +30,9 @@
  */
 - (void)FlushBuffer;
 
+/**
+ * @brief Specifies if the glContext is currently owned by the view
+ */
+@property(atomic, assign) BOOL glContextOwned;
+
 @end
