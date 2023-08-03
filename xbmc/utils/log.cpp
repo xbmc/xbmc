@@ -79,6 +79,9 @@ constexpr auto componentMap = make_map<int, ComponentInfo>({
 #ifdef HAVE_LIBBLURAY
   {LOGBLURAY,       {"bluray",      39126}},
 #endif
+#if defined(HAS_LIBTORRENT)
+  {LOGLIBTORRENT,   {"libtorrent",  21353}},
+#endif
 });
 // clang-format on
 
