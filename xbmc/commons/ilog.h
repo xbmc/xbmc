@@ -46,3 +46,4 @@ constexpr int LOGANNOUNCE = (1 << (LOGMASKBIT + 17));
 constexpr int LOGWSDISCOVERY = (1 << (LOGMASKBIT + 18));
 constexpr int LOGADDONS = (1 << (LOGMASKBIT + 19));
 constexpr int LOGBLURAY = (1 << (LOGMASKBIT + 20));
+constexpr int LOGLIBTORRENT = (1 << (LOGMASKBIT + 21));
