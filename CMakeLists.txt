@@ -72,6 +72,7 @@ option(ENABLE_AIRTUNES    "Enable AirTunes support?" ON)
 option(ENABLE_OPTICAL     "Enable optical support?" ON)
 option(ENABLE_PYTHON      "Enable python support?" ON)
 option(ENABLE_TESTING     "Enable testing support?" ON)
+option(ENABLE_LIBTORRENT  "Enable libtorrent support?" ON)
 
 # Internal Depends - supported on all platforms
 option(ENABLE_INTERNAL_BOOST "Enable internal boost?" ON) # TODO: Change to OFF
@@ -296,6 +297,10 @@ if(ENABLE_AIRTUNES)
   if(TARGET Shairplay::Shairplay)
     core_require_dep(Shairplay)
   endif()
+endif()
+
+if(ENABLE_LIBTORRENT)
+  list(APPEND DEP_DEFINES "-DHAS_LIBTORRENT")
 endif()
 
 # find all folders containing addon.xml.in

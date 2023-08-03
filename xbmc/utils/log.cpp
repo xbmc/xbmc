@@ -232,6 +232,10 @@ void CLog::SettingOptionsLoggingComponentsFiller(const SettingConstPtr& setting,
 #if defined(HAS_FILESYSTEM_SMB)
   list.emplace_back(g_localizeStrings.Get(37050), LOGWSDISCOVERY);
 #endif
+#if defined(HAS_LIBTORRENT)
+  list.emplace_back(g_localizeStrings.Get(21353),
+                    LOGLIBTORRENT); // Verbose logging for [B]libtorrent[/B]
+#endif
 }
 
 Logger CLog::GetLogger(const std::string& loggerName)

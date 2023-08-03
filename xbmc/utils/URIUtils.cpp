@@ -1191,6 +1191,16 @@ bool URIUtils::IsDOSPath(const std::string &path)
   return false;
 }
 
+bool URIUtils::IsURN(const std::string& strFile)
+{
+  return IsMagnetURI(strFile);
+}
+
+bool URIUtils::IsMagnetURI(const std::string& strFile)
+{
+  return StringUtils::StartsWithNoCase(strFile, "magnet:");
+}
+
 std::string URIUtils::AppendSlash(std::string strFolder)
 {
   AddSlashAtEnd(strFolder);
