@@ -10,14 +10,14 @@
 
 #include "imagefiles/SpecialImageFileLoader.h"
 
-namespace VIDEO
-{
-
-class CVideoEmbeddedImageFileLoader : public IMAGE_FILES::ISpecialImageFileLoader
+/*!
+ * @brief Generates a thumbnail for a folder in the picture browser, tile 4 images inside the folder.
+*/
+class CPictureFolderImageFileLoader : public IMAGE_FILES::ISpecialImageFileLoader
 {
 public:
-  CVideoEmbeddedImageFileLoader() = default;
-  ~CVideoEmbeddedImageFileLoader() override = default;
+  CPictureFolderImageFileLoader() = default;
+  ~CPictureFolderImageFileLoader() override = default;
 
   bool CanLoad(const std::string& specialType) const override;
   std::unique_ptr<CTexture> Load(const std::string& specialType,
@@ -25,5 +25,3 @@ public:
                                  unsigned int preferredWidth,
                                  unsigned int preferredHeight) const override;
 };
-
-} // namespace VIDEO

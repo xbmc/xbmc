@@ -39,6 +39,11 @@ CPictureThumbLoader::~CPictureThumbLoader()
 
 void CPictureThumbLoader::OnLoaderFinish()
 {
+  if (m_regenerateThumbs)
+  {
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+  }
   m_regenerateThumbs = false;
   CThumbLoader::OnLoaderFinish();
 }
@@ -195,24 +200,9 @@ void CPictureThumbLoader::ProcessFoldersAndArchives(CFileItem *pItem)
       }
       else
       {
-        // ok, now we've got the files to get the thumbs from, lets create it...
-        // we basically load the 4 images and combine them
-        std::vector<std::string> files;
-        files.reserve(4);
-        for (int thumb = 0; thumb < 4; thumb++)
-          files.push_back(items[thumb]->GetPath());
         std::string thumb = CTextureUtils::GetWrappedImageURL(pItem->GetPath(), "picturefolder");
-        std::string relativeCacheFile = CTextureCache::GetCacheFile(thumb) + ".png";
-        if (CPicture::CreateTiledThumb(files, CTextureCache::GetCachedPath(relativeCacheFile)))
-        {
-          CTextureDetails details;
-          details.file = relativeCacheFile;
-          details.width = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
-          details.height = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
-          CServiceBroker::GetTextureCache()->AddCachedTexture(thumb, details);
-          db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
-          pItem->SetArt("thumb", CTextureCache::GetCachedPath(relativeCacheFile));
-        }
+        db.SetTextureForPath(pItem->GetPath(), "thumb", thumb);
+        pItem->SetArt("thumb", thumb);
       }
     }
     // refill in the icon to get it to update

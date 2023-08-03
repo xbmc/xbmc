@@ -6,20 +6,22 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <algorithm>
-
 #include "Picture.h"
-#include "URL.h"
+
+#include "FileItem.h"
 #include "ServiceBroker.h"
+#include "URL.h"
+#include "filesystem/File.h"
+#include "guilib/Texture.h"
+#include "guilib/imagefactory.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "FileItem.h"
-#include "filesystem/File.h"
-#include "utils/log.h"
+#include "utils/MemUtils.h"
 #include "utils/URIUtils.h"
-#include "guilib/Texture.h"
-#include "guilib/imagefactory.h"
+#include "utils/log.h"
+
+#include <algorithm>
 
 extern "C" {
 #include <libswscale/swscale.h>
@@ -275,6 +277,73 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
     return CreateThumbnailFromSurface(pixels, width, height, pitch, dest);
   }
   return false;
+}
+
+std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::string>& files)
+{
+  if (!files.size())
+    return {};
+
+  unsigned int num_across =
+      static_cast<unsigned int>(std::ceil(std::sqrt(static_cast<float>(files.size()))));
+  unsigned int num_down = (files.size() + num_across - 1) / num_across;
+
+  unsigned int imageRes = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes;
+
+  unsigned int tile_width = imageRes / num_across;
+  unsigned int tile_height = imageRes / num_down;
+  unsigned int tile_gap = 1;
+  bool success = false; // Flag that we at least had one successful image processed
+
+  // create a buffer for the resulting thumb
+  std::unique_ptr<uint32_t[]> buffer = std::make_unique<uint32_t[]>(imageRes * imageRes);
+  if (!buffer)
+    return {};
+  for (unsigned int i = 0; i < files.size(); ++i)
+  {
+    int x = i % num_across;
+    int y = i / num_across;
+    // load in the image
+    unsigned int width = tile_width - 2 * tile_gap, height = tile_height - 2 * tile_gap;
+    std::unique_ptr<CTexture> texture = CTexture::LoadFromFile(files[i], width, height, true);
+    if (texture && texture->GetWidth() && texture->GetHeight())
+    {
+      GetScale(texture->GetWidth(), texture->GetHeight(), width, height);
+
+      // scale appropriately
+      std::unique_ptr<uint32_t[]> scaled = std::make_unique<uint32_t[]>(width * height);
+      if (ScaleImage(texture->GetPixels(), texture->GetWidth(), texture->GetHeight(),
+                     texture->GetPitch(), AV_PIX_FMT_BGRA, reinterpret_cast<uint8_t*>(scaled.get()),
+                     width, height, width * 4, AV_PIX_FMT_BGRA))
+      {
+        unsigned int stridePixels{width};
+        uint32_t* scaledL = scaled.get();
+        if (!texture->GetOrientation() ||
+            OrientateImage(scaledL, width, height, texture->GetOrientation(), stridePixels))
+        {
+          success = true;
+          // drop into the texture
+          unsigned int posX = x * tile_width + (tile_width - width) / 2;
+          unsigned int posY = y * tile_height + (tile_height - height) / 2;
+          uint32_t* dest = buffer.get() + posX + posY * imageRes;
+          const uint32_t* src = scaled.get();
+          for (unsigned int y = 0; y < height; ++y)
+          {
+            memcpy(dest, src, width * 4);
+            dest += imageRes;
+            src += stridePixels;
+          }
+        }
+      }
+    }
+  }
+
+  std::unique_ptr<CTexture> result = CTexture::CreateTexture();
+  if (success)
+    result->LoadFromMemory(imageRes, imageRes, imageRes * 4, XB_FMT_A8R8G8B8, true,
+                           reinterpret_cast<unsigned char*>(buffer.get()));
+
+  return result;
 }
 
 bool CPicture::CreateTiledThumb(const std::vector<std::string> &files, const std::string &thumb)
