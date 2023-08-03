@@ -1007,6 +1007,22 @@ TEST_F(TestTitleFromPath, DecodesLosslessURIPathNames)
             CUtil::GetTitleFromPath("http:/Video%20clips/?title=ignored#part", true));
 }
 
+TEST_F(TestTitleFromPath, MagnetDisplayNameUsesTheRawQuery)
+{
+  EXPECT_EQ("C++ & 100%20",
+            CUtil::GetTitleFromPath(
+                "MAGNET:?xt=urn:btih:hash&dn=C%2B%2B+%26+100%2520&tr=one&tr=two#part"));
+  EXPECT_EQ("Collection", CUtil::GetTitleFromPath("magnet:/?xt=urn:btih:hash&dn=Collection"));
+}
+
+TEST_F(TestTitleFromPath, MagnetMembersUseTheirOwnNames)
+{
+  EXPECT_EQ("C++ movie", CUtil::GetTitleFromPath(
+                             "magnet:/videos/C++%20movie.mkv?xt=urn:btih:hash&dn=Collection"));
+  EXPECT_EQ("Video clips",
+            CUtil::GetTitleFromPath("magnet:/Video%20clips/?xt=urn:btih:hash&dn=Collection", true));
+}
+
 /*! A local path is not escaped, so decoding one would corrupt every name holding a plus. */
 TEST_F(TestTitleFromPath, LeavesALocalNameAlone)
 {
