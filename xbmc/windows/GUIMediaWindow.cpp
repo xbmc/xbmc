@@ -1940,7 +1940,7 @@ void CGUIMediaWindow::OnFilterItems(const std::string &filter)
     CFileItemPtr pItem = m_vecItems->Get(index);
     // if the item is a folder we need to copy the path of
     // the filtered item to be able to keep the applied filters
-    if (pItem->IsFolder())
+    if (pItem->IsFolder() && !URIUtils::IsMagnetURI(pItem->GetPath()))
     {
       CURL itemUrl(pItem->GetPath());
       if (!filterOption.empty())
