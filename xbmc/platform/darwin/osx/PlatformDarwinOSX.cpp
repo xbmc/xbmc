@@ -14,7 +14,9 @@
 #include "windowing/osx/OpenGL/WinSystemOSXGL.h"
 #endif
 
+#if defined(HAS_XBMCHELPER)
 #include "platform/darwin/osx/XBMCHelper.h"
+#endif
 #include "platform/darwin/osx/powermanagement/CocoaPowerSyscall.h"
 
 #include <stdlib.h>
@@ -48,7 +50,9 @@ bool CPlatformDarwinOSX::InitStageOne()
 bool CPlatformDarwinOSX::InitStageTwo()
 {
   // Configure and possible manually start the helper.
+#if defined(HAS_XBMCHELPER)
   XBMCHelper::GetInstance().Configure();
+#endif
 
   return true;
 }

@@ -28,6 +28,7 @@
     <category id="input">
       <group id="3">
         <setting id="input.appleremotemode" type="integer" label="13600" help="36416">
+          <requirement>HAS_XBMCHELPER</requirement>
           <level>1</level>
           <default>1</default> <!-- APPLE_REMOTE_STANDARD -->
           <constraints>
@@ -41,6 +42,7 @@
           <control type="list" format="string"/>
         </setting>
         <setting id="input.appleremotealwayson" type="boolean" label="13602" help="36417">
+          <requirement>HAS_XBMCHELPER</requirement>
           <level>4</level>
           <default>false</default>
           <dependencies>
@@ -49,6 +51,7 @@
           <control type="toggle" />
         </setting>
         <setting id="input.appleremotesequencetime" type="integer" label="13603" help="36418">
+          <requirement>HAS_XBMCHELPER</requirement>
           <level>1</level>
           <default>500</default>
           <constraints>

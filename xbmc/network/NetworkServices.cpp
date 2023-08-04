@@ -74,7 +74,7 @@
 #endif
 #endif
 
-#if defined(TARGET_DARWIN_OSX)
+#if defined(TARGET_DARWIN_OSX) and defined(HAS_XBMCHELPER)
 #include "platform/darwin/osx/XBMCHelper.h"
 #endif
 
@@ -432,7 +432,7 @@ bool CNetworkServices::OnSettingChanging(const std::shared_ptr<const CSetting>& 
       return false;
     }
 
-#if defined(TARGET_DARWIN_OSX)
+#if defined(TARGET_DARWIN_OSX) and defined(HAS_XBMCHELPER)
     // reconfigure XBMCHelper for port changes
     XBMCHelper::GetInstance().Configure();
 #endif // TARGET_DARWIN_OSX
