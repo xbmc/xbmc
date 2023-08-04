@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "pvr/channels/PVRChannelGroup.h"
+#include "pvr/channels/PVRChannelGroupFromUser.h"
 
 #include <memory>
 #include <vector>
@@ -18,24 +18,24 @@ namespace PVR
 class CPVRChannel;
 class CPVRChannelNumber;
 
-class CPVRChannelGroupInternal : public CPVRChannelGroup
+class CPVRChannelGroupAllChannels : public CPVRChannelGroupFromUser
 {
 public:
-  CPVRChannelGroupInternal() = delete;
+  CPVRChannelGroupAllChannels() = delete;
 
   /*!
-   * @brief Create a new internal channel group.
+   * @brief Create a new all channels channel group.
    * @param bRadio True if this group holds radio channels.
    */
-  explicit CPVRChannelGroupInternal(bool bRadio);
+  explicit CPVRChannelGroupAllChannels(bool bRadio);
 
   /*!
-   * @brief Create a new internal channel group.
+   * @brief Create a new all channels channel group.
    * @param path The path for the new group.
    */
-  explicit CPVRChannelGroupInternal(const CPVRChannelsPath& path);
+  explicit CPVRChannelGroupAllChannels(const CPVRChannelsPath& path);
 
-  ~CPVRChannelGroupInternal() override;
+  ~CPVRChannelGroupAllChannels() override;
 
   /*!
    * @see CPVRChannelGroup::IsGroupMember
@@ -57,6 +57,18 @@ public:
    */
   void CheckGroupName();
 
+  /*!
+   * @brief Check whether this group could be deleted by the user.
+   * @return True if the group could be deleted, false otherwise.
+   */
+  bool SupportsDelete() const override { return false; }
+
+  /*!
+   * @brief Check whether this group is owner of the channel instances it contains.
+   * @return True if owner, false otherwise.
+   */
+  bool IsChannelsOwner() const override { return true; }
+
 protected:
   /*!
    * @brief Remove deleted group members from this group. Delete stale channels.
@@ -73,9 +85,10 @@ protected:
    */
   bool UpdateFromClients(const std::vector<std::shared_ptr<CPVRClient>>& clients) override;
 
+private:
   /*!
-   * @brief Clear all data.
+   * @brief Return the type of this group.
    */
-  void Unload() override;
+  int GroupType() const override { return PVR_GROUP_TYPE_ALL_CHANNELS; }
 };
 } // namespace PVR
