@@ -68,7 +68,7 @@ namespace DX
     CD3DTexture& GetBackBuffer() { return m_backBufferTex; }
 
     void GetOutput(IDXGIOutput** ppOutput) const;
-    void GetAdapterDesc(DXGI_ADAPTER_DESC *desc) const;
+    DXGI_ADAPTER_DESC GetAdapterDesc() const;
     void GetDisplayMode(DXGI_MODE_DESC *mode) const;
 
     D3D11_VIEWPORT GetScreenViewport() const { return m_screenViewport; }
