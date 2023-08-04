@@ -22,12 +22,29 @@
 #include <mutex>
 #include <stdlib.h>
 
+#include <fmt/format.h>
+#if FMT_VERSION >= 90000
 #include <fmt/ostream.h>
+#endif
 
+#if FMT_VERSION >= 90000
 template<>
 struct fmt::formatter<std::thread::id> : ostream_formatter
 {
 };
+#else
+template<>
+struct fmt::formatter<std::thread::id> : fmt::formatter<std::string>
+{
+  template<class FormatContext>
+  auto format(const std::thread::id& e, FormatContext& ctx)
+  {
+    std::ostringstream str;
+    str << e;
+    return fmt::formatter<std::string>::format(str.str(), ctx);
+  }
+};
+#endif
 
 static thread_local CThread* currentThread;
 
