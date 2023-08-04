@@ -332,12 +332,10 @@ bool CContext::CreateContext()
                            D3D11_SDK_VERSION, &pD3DDevice, &d3dFeatureLevel, &pD3DDeviceContext);
     if (SUCCEEDED(hr))
     {
-      DXGI_ADAPTER_DESC aDesc;
-      DX::DeviceResources::Get()->GetAdapter()->GetDesc(&aDesc);
-
-      CLog::LogF(LOGINFO, "device for decoding created on adapter '{}' with {}",
-                 KODI::PLATFORM::WINDOWS::FromW(aDesc.Description),
-                 DX::GetFeatureLevelDescription(d3dFeatureLevel));
+      CLog::LogF(
+          LOGINFO, "device for decoding created on adapter '{}' with {}",
+          KODI::PLATFORM::WINDOWS::FromW(DX::DeviceResources::Get()->GetAdapterDesc().Description),
+          DX::GetFeatureLevelDescription(d3dFeatureLevel));
 
 #ifdef _DEBUG
       if (FAILED(pD3DDevice.As(&m_d3d11Debug)))
@@ -704,8 +702,7 @@ bool CContext::Reset()
 {
   if (Check())
   {
-    DXGI_ADAPTER_DESC appDesc = {};
-    DX::DeviceResources::Get()->GetAdapterDesc(&appDesc);
+    const DXGI_ADAPTER_DESC appDesc = DX::DeviceResources::Get()->GetAdapterDesc();
 
     ComPtr<IDXGIDevice> ctxDevice;
     ComPtr<IDXGIAdapter> ctxAdapter;
@@ -1212,8 +1209,7 @@ static bool CheckH264L41(AVCodecContext* avctx)
 
 static bool IsL41LimitedATI()
 {
-  DXGI_ADAPTER_DESC AIdentifier = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
+  const DXGI_ADAPTER_DESC AIdentifier = DX::DeviceResources::Get()->GetAdapterDesc();
 
   if (AIdentifier.VendorId == PCIV_AMD)
   {
@@ -1229,8 +1225,7 @@ static bool IsL41LimitedATI()
 static bool HasVP3WidthBug(AVCodecContext* avctx)
 {
   // Some nVidia VP3 hardware cannot do certain macroblock widths
-  DXGI_ADAPTER_DESC AIdentifier = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
+  const DXGI_ADAPTER_DESC AIdentifier = DX::DeviceResources::Get()->GetAdapterDesc();
 
   if (AIdentifier.VendorId == PCIV_NVIDIA &&
       !CDVDCodecUtils::IsVP3CompatibleWidth(avctx->coded_width))
@@ -1245,8 +1240,8 @@ static bool HasVP3WidthBug(AVCodecContext* avctx)
 
 static bool HasATIMP2Bug(AVCodecContext* avctx)
 {
-  DXGI_ADAPTER_DESC AIdentifier = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
+  const DXGI_ADAPTER_DESC AIdentifier = DX::DeviceResources::Get()->GetAdapterDesc();
+
   if (AIdentifier.VendorId != PCIV_AMD)
     return false;
 
@@ -1260,8 +1255,7 @@ static bool HasATIMP2Bug(AVCodecContext* avctx)
 
 static bool HasAMDH264SDiBug(AVCodecContext* avctx)
 {
-  DXGI_ADAPTER_DESC AIdentifier = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
+  const DXGI_ADAPTER_DESC AIdentifier = DX::DeviceResources::Get()->GetAdapterDesc();
 
   if (AIdentifier.VendorId != PCIV_AMD)
     return false;
@@ -1364,8 +1358,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   m_refs = 2 + m_shared; // 1 decode + 1 safety + display
   m_surface_alignment = 16;
 
-  DXGI_ADAPTER_DESC ad = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&ad);
+  const DXGI_ADAPTER_DESC ad = DX::DeviceResources::Get()->GetAdapterDesc();
 
   size_t videoMem = ad.SharedSystemMemory + ad.DedicatedVideoMemory + ad.DedicatedSystemMemory;
   CLog::LogF(LOGINFO, "Total video memory available is {} MB (dedicated = {} MB, shared = {} MB)",

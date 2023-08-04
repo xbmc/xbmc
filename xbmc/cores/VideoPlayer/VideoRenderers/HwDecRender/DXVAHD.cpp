@@ -185,8 +185,7 @@ bool CProcessorHD::OpenProcessor()
   // AMD/HDR (as of 2023-06-16): processor tone maps by default and modifies high code values
   // We want "passthrough" of the signal and to do our own tone mapping when needed.
   // Disable the functionality by pretending that the display supports all PQ levels (0-10000)
-  DXGI_ADAPTER_DESC ad{};
-  DX::DeviceResources::Get()->GetAdapterDesc(&ad);
+  const DXGI_ADAPTER_DESC ad = DX::DeviceResources::Get()->GetAdapterDesc();
   bool streamIsHDR =
       (m_color_primaries == AVCOL_PRI_BT2020) &&
       (m_color_transfer == AVCOL_TRC_SMPTE2084 || m_color_transfer == AVCOL_TRC_ARIB_STD_B67);
@@ -453,8 +452,7 @@ void CProcessorHD::TryEnableVideoSuperResolution()
   if (!m_pVideoContext || !m_pVideoProcessor)
     return;
 
-  DXGI_ADAPTER_DESC ad{};
-  DX::DeviceResources::Get()->GetAdapterDesc(&ad);
+  const DXGI_ADAPTER_DESC ad = DX::DeviceResources::Get()->GetAdapterDesc();
 
   if (ad.VendorId == PCIV_Intel)
   {
