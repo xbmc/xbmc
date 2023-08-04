@@ -455,6 +455,10 @@ void CSettingConditions::Initialize()
   m_simpleConditions.emplace("has_optical_drive");
 #endif
 
+#ifdef HAS_XBMCHELPER
+  m_simpleConditions.emplace("has_xbmchelper");
+#endif
+
   // add complex conditions
   m_complexConditions.emplace("addonhassettings", AddonHasSettings);
   m_complexConditions.emplace("checkmasterlock", CheckMasterLock);

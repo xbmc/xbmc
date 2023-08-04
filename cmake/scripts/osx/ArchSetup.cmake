@@ -24,6 +24,17 @@ else()
   endif()
 endif()
 
+# xbmchelper (old apple IR remotes) only make sense for x86
+# last macs featuring the IR receiver are those of mid 2012
+# which are still able to run Mojave (10.14). Drop all together
+# when the sdk requirement is bumped.
+if(CPU STREQUAL arm64)
+  set(ENABLE_XBMCHELPER OFF)
+else()
+  set(ENABLE_XBMCHELPER ON)
+  list(APPEND SYSTEM_DEFINES -DHAS_XBMCHELPER)
+endif()
+
 # m1 macs can execute x86_64 code via rosetta
 if(CMAKE_HOST_SYSTEM_PROCESSOR STREQUAL "arm64" AND
    CMAKE_HOST_SYSTEM_NAME STREQUAL "Darwin")

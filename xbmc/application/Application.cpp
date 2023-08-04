@@ -154,7 +154,9 @@
 
 #ifdef TARGET_DARWIN_OSX
 #include "platform/darwin/osx/CocoaInterface.h"
+#ifdef HAS_XBMCHELPER
 #include "platform/darwin/osx/XBMCHelper.h"
+#endif
 #endif
 #ifdef TARGET_DARWIN
 #include "platform/darwin/DarwinUtils.h"
@@ -2162,7 +2164,7 @@ bool CApplication::Stop(int exitCode)
     smb.Deinit();
 #endif
 
-#if defined(TARGET_DARWIN_OSX)
+#if defined(TARGET_DARWIN_OSX) and defined(HAS_XBMCHELPER)
     if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
       XBMCHelper::GetInstance().Stop();
 #endif
