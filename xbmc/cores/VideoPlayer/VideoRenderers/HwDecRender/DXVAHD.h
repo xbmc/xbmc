@@ -76,10 +76,9 @@ protected:
   ComPtr<ID3D11VideoProcessor> m_pVideoProcessor;
   std::shared_ptr<CEnumeratorHD> m_enumerator;
 
-  AVColorPrimaries m_color_primaries{AVCOL_PRI_UNSPECIFIED};
-  AVColorTransferCharacteristic m_color_transfer{AVCOL_TRC_UNSPECIFIED};
   ProcessorCapabilities m_procCaps;
 
+  bool m_streamIsHDR{false};
   bool m_superResolutionEnabled{false};
   ProcessorConversion m_conversion;
   bool m_isValidConversion{false};

@@ -212,8 +212,7 @@ DXGI_FORMAT CRendererShaders::CalcIntermediateTargetFormat(const VideoPicture& p
     return format;
 
   // Preserve HDR precision
-  if (picture.colorBits > 8 && (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-                                picture.color_transfer == AVCOL_TRC_ARIB_STD_B67))
+  if (picture.colorBits > 8 && StreamIsHDR(picture))
   {
     UINT reqSupport{D3D11_FORMAT_SUPPORT_SHADER_SAMPLE | D3D11_FORMAT_SUPPORT_RENDER_TARGET};
 

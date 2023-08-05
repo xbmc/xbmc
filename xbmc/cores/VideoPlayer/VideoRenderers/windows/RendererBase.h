@@ -136,6 +136,8 @@ public:
   static DXGI_FORMAT GetDXGIFormat(CVideoBuffer* videoBuffer);
   static AVPixelFormat GetAVFormat(DXGI_FORMAT dxgi_format);
   static DXGI_HDR_METADATA_HDR10 GetDXGIHDR10MetaData(CRenderBuffer* rb);
+  static bool StreamIsHDR(CRenderBuffer* buffer);
+  static bool StreamIsHDR(const VideoPicture& picture);
 
 protected:
   explicit CRendererBase(CVideoSettings& videoSettings);

@@ -51,17 +51,16 @@ private:
   /*!
    * \brief Choose the best available conversion for the given source and output constraints
    * \param conversions list of supported conversions
-   * \param picture information about the source
-   * \param tryVSR yes/no favor a conversion that enables Video Super Resolution scaling
-   * \return 
+   * \param picture information about the source, optional (pass {} if not used)
+   * \param buffer pointer to render buffer, optional (pass nullptr if not used)
+   * \return chosen conversion
    */
   DXVA::ProcessorConversion ChooseConversion(const DXVA::ProcessorConversions& conversions,
-                                             unsigned int sourceBits,
-                                             AVColorTransferCharacteristic colorTransfer) const;
+                                             const VideoPicture& picture,
+                                             CRenderBuffer* buffer) const;
 
   std::unique_ptr<DXVA::CProcessorHD> m_processor;
   std::shared_ptr<DXVA::CEnumeratorHD> m_enumerator;
-  DXGI_FORMAT m_intermediateTargetFormat{DXGI_FORMAT_UNKNOWN};
   DXVA::ProcessorConversion m_conversion;
   DXVA::SupportedConversionsArgs m_conversionsArgs;
   bool m_tryVSR{false};

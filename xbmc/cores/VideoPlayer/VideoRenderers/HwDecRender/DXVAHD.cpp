@@ -132,8 +132,7 @@ bool CProcessorHD::Open(const VideoPicture& picture,
 
   std::unique_lock<CCriticalSection> lock(m_section);
 
-  m_color_primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
-  m_color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+  m_streamIsHDR = CRendererBase::StreamIsHDR(picture);
   m_enumerator = enumerator;
 
   if (!InitProcessor())
@@ -178,19 +177,17 @@ bool CProcessorHD::OpenProcessor()
   }
 
   // Output background color (black)
-  D3D11_VIDEO_COLOR color;
+  D3D11_VIDEO_COLOR color{};
   color.YCbCr = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color
   m_pVideoContext->VideoProcessorSetOutputBackgroundColor(m_pVideoProcessor.Get(), TRUE, &color);
+
+  if (!m_procCaps.m_hasMetadataHDR10Support || !m_streamIsHDR)
+    return true;
 
   // AMD/HDR (as of 2023-06-16): processor tone maps by default and modifies high code values
   // We want "passthrough" of the signal and to do our own tone mapping when needed.
   // Disable the functionality by pretending that the display supports all PQ levels (0-10000)
-  const DXGI_ADAPTER_DESC ad = DX::DeviceResources::Get()->GetAdapterDesc();
-  bool streamIsHDR =
-      (m_color_primaries == AVCOL_PRI_BT2020) &&
-      (m_color_transfer == AVCOL_TRC_SMPTE2084 || m_color_transfer == AVCOL_TRC_ARIB_STD_B67);
-
-  if (m_procCaps.m_hasMetadataHDR10Support && ad.VendorId == PCIV_AMD && streamIsHDR)
+  if (DX::DeviceResources::Get()->GetAdapterDesc().VendorId == PCIV_AMD)
   {
     ComPtr<ID3D11VideoContext2> videoCtx2;
     if (SUCCEEDED(m_pVideoContext.As(&videoCtx2)))
@@ -439,9 +436,7 @@ bool CProcessorHD::IsSuperResolutionSuitable(const VideoPicture& picture)
   if (picture.iFlags & DVP_FLAG_INTERLACED)
     return false;
 
-  if (picture.color_primaries == AVCOL_PRI_BT2020 ||
-      picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
+  if (CRendererBase::StreamIsHDR(picture))
     return false;
 
   return true;
