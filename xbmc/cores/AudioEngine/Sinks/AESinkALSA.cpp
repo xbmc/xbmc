@@ -1261,6 +1261,8 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
 
   for (AEDeviceInfoList::iterator it1 = list.begin(); it1 != list.end(); ++it1)
   {
+    bool replaceName = false;
+
     for (AEDeviceInfoList::iterator it2 = it1+1; it2 != list.end(); ++it2)
     {
       if (it1->m_displayName == it2->m_displayName
@@ -1290,10 +1292,13 @@ void CAESinkALSA::EnumerateDevicesEx(AEDeviceInfoList &list, bool force)
         }
 
         /* if we got here, the configuration is really weird, just append the whole device string */
-        it1->m_displayName += " (" + it1->m_deviceName + ")";
+        replaceName = true;
         it2->m_displayName += " (" + it2->m_deviceName + ")";
       }
     }
+
+    if (replaceName)
+      it1->m_displayName = it1->m_displayName + " (" + it1->m_deviceName + ")";
   }
 
   for (std::set<std::string>::iterator it = cardsToAppend.begin();
