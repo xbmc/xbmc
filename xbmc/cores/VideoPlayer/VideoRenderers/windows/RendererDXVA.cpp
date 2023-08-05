@@ -33,37 +33,19 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
   const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
   const DXGI_FORMAT dxgi_format = GetDXGIFormat(av_pixel_format, __super::GetDXGIFormat(picture));
 
-  const bool systemUsesHDR =
-      DX::Windowing()->IsHDROutput() || DX::Windowing()->IsHDRDisplaySettingEnabled();
-
-  CEnumeratorHD enumerator;
-  enumerator.Open(picture.iWidth, picture.iHeight, dxgi_format);
-
-  if (av_pixel_format == AV_PIX_FMT_D3D11VA_VLD)
+  if (dxgi_format == DXGI_FORMAT_UNKNOWN)
   {
-    if (enumerator.SupportedConversions(SupportedConversionsArgs{picture, systemUsesHDR}).empty())
-    {
-      CLog::LogF(LOGWARNING, "DXVA will not be used.");
-      return;
-    }
-
-    weight += 1000;
+    CLog::LogF(LOGWARNING, "Unknown texture format is not supported.",
+               DX::DXGIFormatToString(dxgi_format));
+    return;
   }
-  else
+
+  if (av_pixel_format != AV_PIX_FMT_D3D11VA_VLD)
   {
     // check format for buffer
-    if (dxgi_format == DXGI_FORMAT_UNKNOWN)
-      return;
-
-    CD3D11_TEXTURE2D_DESC texDesc(
-      dxgi_format,
-      FFALIGN(picture.iWidth, 32),
-      FFALIGN(picture.iHeight, 32),
-      1, 1,
-      D3D11_BIND_DECODER,
-      D3D11_USAGE_DYNAMIC,
-      D3D11_CPU_ACCESS_WRITE
-    );
+    CD3D11_TEXTURE2D_DESC texDesc(dxgi_format, FFALIGN(picture.iWidth, 32),
+                                  FFALIGN(picture.iHeight, 32), 1, 1, D3D11_BIND_DECODER,
+                                  D3D11_USAGE_DYNAMIC, D3D11_CPU_ACCESS_WRITE);
 
     ComPtr<ID3D11Device> pDevice = DX::DeviceResources::Get()->GetD3DDevice();
     if (FAILED(pDevice->CreateTexture2D(&texDesc, nullptr, nullptr)))
@@ -72,13 +54,23 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
                  DX::DXGIFormatToString(dxgi_format));
       return;
     }
+  }
 
-    if (enumerator.SupportedConversions(SupportedConversionsArgs{picture, systemUsesHDR}).empty())
-    {
-      CLog::LogF(LOGWARNING, "DXVA will not be used.");
-      return;
-    }
+  CEnumeratorHD enumerator;
+  enumerator.Open(picture.iWidth, picture.iHeight, dxgi_format);
 
+  if (enumerator.SupportedConversions({picture, IntendToRenderAsHDR(picture)}).empty())
+  {
+    CLog::LogF(LOGWARNING, "DXVA will not be used.");
+    return;
+  }
+
+  if (av_pixel_format == AV_PIX_FMT_D3D11VA_VLD)
+  {
+    weight += 1000;
+  }
+  else
+  {
     if (av_pixel_format == AV_PIX_FMT_NV12 ||
         av_pixel_format == AV_PIX_FMT_P010 ||
         av_pixel_format == AV_PIX_FMT_P016)
@@ -129,17 +121,15 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
     m_enumerator = std::make_shared<DXVA::CEnumeratorHD>();
     if (m_enumerator->Open(picture.iWidth, picture.iHeight, dxgi_format))
     {
-      const bool systemUsesHDR =
-          DX::Windowing()->IsHDROutput() || DX::Windowing()->IsHDRDisplaySettingEnabled();
-
       if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
           CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
       {
         m_enumerator->LogSupportedConversions(
-            dxgi_format, CProcessorHD::AvToDxgiColorSpace(DXVA::DXGIColorSpaceArgs(picture)));
+            dxgi_format, CEnumeratorHD::AvToDxgiColorSpace(DXVA::DXGIColorSpaceArgs(picture)));
       }
 
-      m_conversionsArgs = SupportedConversionsArgs{picture, systemUsesHDR};
+      m_conversionsArgs = SupportedConversionsArgs{picture, IntendToRenderAsHDR(picture)};
+
       const ProcessorConversions conversions =
           m_enumerator->SupportedConversions(m_conversionsArgs);
       if (!conversions.empty())
@@ -189,8 +179,8 @@ void CRendererDXVA::CheckVideoParameters()
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
   if (m_enumerator)
   {
-    const SupportedConversionsArgs args{buf->primaries, buf->color_transfer, buf->full_range,
-                                        DX::Windowing()->IsHDROutput()};
+    const SupportedConversionsArgs args{buf->primaries, buf->color_space, buf->color_transfer,
+                                        buf->full_range, ActualRenderAsHDR()};
 
     if (m_conversionsArgs != args)
     {
