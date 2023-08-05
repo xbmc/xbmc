@@ -745,7 +745,7 @@ void CWinSystemWin32::RestoreDesktopResolution(MONITOR_DETAILS* details)
   RESOLUTION_INFO info;
   info.iWidth = details->ScreenWidth;
   info.iHeight = details->ScreenHeight;
-  if (details->RefreshRate == 59 || details->RefreshRate == 29 || details->RefreshRate == 23)
+  if ((details->RefreshRate + 1) % 24 == 0 || (details->RefreshRate + 1) % 30 == 0)
     info.fRefreshRate = static_cast<float>(details->RefreshRate + 1) / 1.001f;
   else
     info.fRefreshRate = static_cast<float>(details->RefreshRate);
@@ -1009,7 +1009,7 @@ void CWinSystemWin32::UpdateResolutions()
   float refreshRate;
   int w = details->ScreenWidth;
   int h = details->ScreenHeight;
-  if( (details->RefreshRate == 59) || (details->RefreshRate == 29) || (details->RefreshRate == 23) )
+  if ((details->RefreshRate + 1) % 24 == 0 || (details->RefreshRate + 1) % 30 == 0)
     refreshRate = static_cast<float>(details->RefreshRate + 1) / 1.001f;
   else
     refreshRate = static_cast<float>(details->RefreshRate);
@@ -1038,7 +1038,7 @@ void CWinSystemWin32::UpdateResolutions()
       continue;
 
     float refresh;
-    if(devmode.dmDisplayFrequency == 59 || devmode.dmDisplayFrequency == 29 || devmode.dmDisplayFrequency == 23)
+    if ((devmode.dmDisplayFrequency + 1) % 24 == 0 || (devmode.dmDisplayFrequency + 1) % 30 == 0)
       refresh = static_cast<float>(devmode.dmDisplayFrequency + 1) / 1.001f;
     else
       refresh = static_cast<float>(devmode.dmDisplayFrequency);
