@@ -577,7 +577,7 @@ bool CXBMCApp::AcquireAudioFocus()
   }
   if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
   {
-    CXBMCApp::android_printf("Audio Focus request failed");
+    android_printf("Audio Focus request failed");
     return false;
   }
   return true;
@@ -613,7 +613,7 @@ bool CXBMCApp::ReleaseAudioFocus()
 
   if (result != CJNIAudioManager::AUDIOFOCUS_REQUEST_GRANTED)
   {
-    CXBMCApp::android_printf("Audio Focus abandon failed");
+    android_printf("Audio Focus abandon failed");
     return false;
   }
   return true;
@@ -771,16 +771,18 @@ void CXBMCApp::SetDisplayMode(int mode, float rate)
     m_displayChangeEvent.Wait(5000ms);
 }
 
-int CXBMCApp::android_printf(const char *format, ...)
+int CXBMCApp::android_printf(const char* format, ...)
 {
   // For use before CLog is setup by XBMC_Run()
-  va_list args;
+  va_list args, args_copy;
   va_start(args, format);
+  va_copy(args_copy, args);
   int result;
+
   if (CServiceBroker::IsLoggingUp())
   {
     std::string message;
-    int len = vsnprintf(0, 0, format, args);
+    int len = vsnprintf(0, 0, format, args_copy);
     message.resize(len);
     result = vsnprintf(&message[0], len + 1, format, args);
     CLog::Log(LOGDEBUG, message);
@@ -789,7 +791,10 @@ int CXBMCApp::android_printf(const char *format, ...)
   {
     result = __android_log_vprint(ANDROID_LOG_VERBOSE, "Kodi", format, args);
   }
+
+  va_end(args_copy);
   va_end(args);
+
   return result;
 }
 
@@ -1501,7 +1506,7 @@ void CXBMCApp::onVolumeChanged(int volume)
 
 void CXBMCApp::onAudioFocusChange(int focusChange)
 {
-  CXBMCApp::android_printf("Audio Focus changed: %d", focusChange);
+  android_printf("Audio Focus changed: %d", focusChange);
   if (focusChange == CJNIAudioManager::AUDIOFOCUS_LOSS)
   {
     if ((m_playback_state & PLAYBACK_STATE_PLAYING))
