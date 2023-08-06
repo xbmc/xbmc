@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: game.controller.mouse\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2014-05-30 17:00+8\n"
 "PO-Revision-Date: 2023-01-30 20:10+0000\n"
 "Last-Translator: Demian <Demian@gmx.co.uk>\n"
@@ -38,7 +38,7 @@ msgid "Right button"
 msgstr "Rechte Taste"
 
 msgctxt "#30003"
-msgid "Midle button"
+msgid "Middle button"
 msgstr "Mittlere Taste"
 
 msgctxt "#30004"
