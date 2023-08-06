@@ -132,8 +132,8 @@ bool CProcessorHD::Open(const VideoPicture& picture,
 
   std::unique_lock<CCriticalSection> lock(m_section);
 
-  m_color_primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
-  m_color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+  m_color_primaries = picture.color_primaries;
+  m_color_transfer = picture.color_transfer;
   m_enumerator = enumerator;
 
   if (!InitProcessor())
