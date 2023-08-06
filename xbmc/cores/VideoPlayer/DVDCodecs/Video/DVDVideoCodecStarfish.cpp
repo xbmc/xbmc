@@ -385,6 +385,9 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecStarfish::GetPicture(VideoPicture* pVideo
   if (m_state == StarfishState::ERROR)
     return VC_ERROR;
 
+  if (m_state == StarfishState::EOS)
+    return VC_EOF;
+
   if (m_state == StarfishState::FLUSHED || !m_newFrame)
     return VC_BUFFER;
 
@@ -516,6 +519,9 @@ void CDVDVideoCodecStarfish::PlayerCallback(const int32_t type,
     case PF_EVENT_TYPE_STR_STATE_UPDATE__LOADCOMPLETED:
       m_starfishMediaAPI->Play();
       m_state = StarfishState::FLUSHED;
+      break;
+    case PF_EVENT_TYPE_STR_STATE_UPDATE__ENDOFSTREAM:
+      m_state = StarfishState::EOS;
       break;
     case PF_EVENT_TYPE_INT_ERROR:
     case PF_EVENT_TYPE_STR_ERROR:
