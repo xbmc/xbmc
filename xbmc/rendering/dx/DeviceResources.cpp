@@ -131,15 +131,19 @@ void DX::DeviceResources::GetOutput(IDXGIOutput** ppOutput) const
   *ppOutput = pOutput.Detach();
 }
 
-void DX::DeviceResources::GetAdapterDesc(DXGI_ADAPTER_DESC* desc) const
+DXGI_ADAPTER_DESC DX::DeviceResources::GetAdapterDesc() const
 {
+  DXGI_ADAPTER_DESC desc{};
+
   if (m_adapter)
-    m_adapter->GetDesc(desc);
+    m_adapter->GetDesc(&desc);
 
   // GetDesc() returns VendorId == 0 in Xbox however, we need to know that
   // GPU is AMD to apply workarounds in DXVA.cpp CheckCompatibility() same as desktop
   if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
-    desc->VendorId = PCIV_AMD;
+    desc.VendorId = PCIV_AMD;
+
+  return desc;
 }
 
 void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
@@ -620,12 +624,9 @@ void DX::DeviceResources::ResizeBuffers()
 
 // Xbox needs 10 bit swapchain to output true 4K resolution
 #ifdef TARGET_WINDOWS_DESKTOP
-    DXGI_ADAPTER_DESC ad = {};
-    GetAdapterDesc(&ad);
-
     // Some AMD graphics has issues with 10 bit in SDR.
     // Enabled by default only in Intel and NVIDIA with latest drivers/hardware
-    if (m_d3dFeatureLevel < D3D_FEATURE_LEVEL_12_1 || ad.VendorId == PCIV_AMD)
+    if (m_d3dFeatureLevel < D3D_FEATURE_LEVEL_12_1 || GetAdapterDesc().VendorId == PCIV_AMD)
       use10bit = false;
 #endif
 
@@ -1151,8 +1152,7 @@ void DX::DeviceResources::CheckDXVA2SharedDecoderSurfaces()
   if (!m_NV12SharedTexturesSupport)
     return;
 
-  DXGI_ADAPTER_DESC ad = {};
-  GetAdapterDesc(&ad);
+  const DXGI_ADAPTER_DESC ad = GetAdapterDesc();
 
   m_DXVA2SharedDecoderSurfaces =
       ad.VendorId == PCIV_Intel ||
@@ -1182,8 +1182,7 @@ void DX::DeviceResources::CheckDXVA2SharedDecoderSurfaces()
 
 VideoDriverInfo DX::DeviceResources::GetVideoDriverVersion()
 {
-  DXGI_ADAPTER_DESC ad = {};
-  GetAdapterDesc(&ad);
+  const DXGI_ADAPTER_DESC ad = GetAdapterDesc();
 
   VideoDriverInfo driver = CWIN32Util::GetVideoDriverInfo(ad.VendorId, ad.Description);
 
@@ -1319,10 +1318,7 @@ void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpac
     if (m_usedSwapChain &&
         m_IsTransferPQ != (colorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020))
     {
-      DXGI_ADAPTER_DESC ad{};
-      GetAdapterDesc(&ad);
-
-      if (ad.VendorId == PCIV_AMD)
+      if (GetAdapterDesc().VendorId == PCIV_AMD)
       {
         // Temporary release, can't hold references during swap chain re-creation
         swapChain3 = nullptr;
