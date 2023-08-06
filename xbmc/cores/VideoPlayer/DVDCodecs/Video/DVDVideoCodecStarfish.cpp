@@ -28,6 +28,9 @@
 #include <memory>
 #include <vector>
 
+#include <player-factory/custompipeline.hpp>
+#include <player-factory/customplayer.hpp>
+
 using namespace KODI::MESSAGING;
 using namespace std::chrono_literals;
 
@@ -308,8 +311,13 @@ bool CDVDVideoCodecStarfish::AddData(const DemuxPacket& packet)
   {
     if (pts > 0ns)
     {
-      auto seekTime = std::chrono::duration_cast<std::chrono::milliseconds>(pts).count();
-      m_starfishMediaAPI->Seek(std::to_string(seekTime).c_str());
+      auto player = static_cast<mediapipeline::CustomPlayer*>(m_starfishMediaAPI->player.get());
+      auto pipeline = static_cast<mediapipeline::CustomPipeline*>(player->getPipeline().get());
+      MEDIA_CUSTOM_CONTENT_INFO_T contentInfo;
+      pipeline->loadSpi_getInfo(&contentInfo);
+      contentInfo.ptsToDecode = pts.count();
+      pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
+      pipeline->sendSegmentEvent();
     }
     m_state = StarfishState::RUNNING;
   }
