@@ -135,8 +135,7 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
       if (!conversions.empty())
       {
         const ProcessorConversion chosenConversion =
-            ChooseConversion(conversions, picture.colorBits,
-                             static_cast<AVColorTransferCharacteristic>(picture.color_transfer));
+            ChooseConversion(conversions, picture.colorBits, picture.color_transfer);
         m_intermediateTargetFormat = chosenConversion.m_outputFormat;
         m_conversion = chosenConversion;
 
