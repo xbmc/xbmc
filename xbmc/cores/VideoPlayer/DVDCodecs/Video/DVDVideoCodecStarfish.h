@@ -99,6 +99,7 @@ private:
   bool m_opened{false};
   int m_codecControlFlags;
   std::chrono::nanoseconds m_currentPlaytime{0};
+  bool m_newFrame{false};
 
   StarfishState m_state{StarfishState::FLUSHED};
 

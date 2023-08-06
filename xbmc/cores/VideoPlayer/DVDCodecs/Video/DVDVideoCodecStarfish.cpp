@@ -187,8 +187,6 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
 
   payloadArg["mediaTransportType"] = "BUFFERSTREAM";
   payloadArg["option"]["windowId"] = exportedWindowName;
-  // enables the getCurrentPlaytime API
-  payloadArg["option"]["queryPosition"] = true;
   payloadArg["option"]["appId"] = CCompileInfo::GetPackage();
   payloadArg["option"]["externalStreamingInfo"]["contents"]["codec"]["video"] = m_codecname;
   payloadArg["option"]["externalStreamingInfo"]["contents"]["esInfo"]["pauseAtDecodeTime"] = true;
@@ -318,6 +316,8 @@ bool CDVDVideoCodecStarfish::AddData(const DemuxPacket& packet)
       contentInfo.ptsToDecode = pts.count();
       pipeline->setContentInfo(MEDIA_CUSTOM_SRC_TYPE_ES, &contentInfo);
       pipeline->sendSegmentEvent();
+      m_currentPlaytime = pts;
+      m_newFrame = true;
     }
     m_state = StarfishState::RUNNING;
   }
@@ -382,20 +382,8 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecStarfish::GetPicture(VideoPicture* pVideo
   if (!m_opened)
     return VC_NONE;
 
-  if (m_state == StarfishState::FLUSHED)
-  {
+  if (m_state == StarfishState::FLUSHED || !m_newFrame)
     return VC_BUFFER;
-  }
-
-  std::chrono::nanoseconds currentPlaytime(m_starfishMediaAPI->getCurrentPlaytime());
-  CLog::LogFC(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecStarfish: GetPlaytime is {} ns",
-              currentPlaytime.count());
-
-  // The playtime didn't advance probably we need more data
-  if (currentPlaytime == m_currentPlaytime)
-    return VC_BUFFER;
-
-  m_currentPlaytime = currentPlaytime;
 
   pVideoPicture->videoBuffer = nullptr;
   pVideoPicture->SetParams(m_videobuffer);
@@ -403,7 +391,8 @@ CDVDVideoCodec::VCReturn CDVDVideoCodecStarfish::GetPicture(VideoPicture* pVideo
   pVideoPicture->dts = 0;
   using dvdTime = std::ratio<1, DVD_TIME_BASE>;
   pVideoPicture->pts =
-      std::chrono::duration_cast<std::chrono::duration<double, dvdTime>>(currentPlaytime).count();
+      std::chrono::duration_cast<std::chrono::duration<double, dvdTime>>(m_currentPlaytime).count();
+  m_newFrame = false;
 
   CLog::LogFC(LOGDEBUG, LOGVIDEO, "CDVDVideoCodecStarfish: pts:{:0.4f}", pVideoPicture->pts);
 
@@ -514,6 +503,13 @@ void CDVDVideoCodecStarfish::PlayerCallback(const int32_t type,
 
   switch (type)
   {
+    case PF_EVENT_TYPE_FRAMEREADY:
+      m_currentPlaytime = std::chrono::nanoseconds(numValue);
+      m_newFrame = true;
+      break;
+    case PF_EVENT_TYPE_STR_RESOURCE_INFO:
+      m_newFrame = true;
+      break;
     case PF_EVENT_TYPE_STR_STATE_UPDATE__LOADCOMPLETED:
       m_starfishMediaAPI->Play();
       m_state = StarfishState::FLUSHED;
