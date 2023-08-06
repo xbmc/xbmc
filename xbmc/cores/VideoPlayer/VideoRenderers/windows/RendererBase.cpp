@@ -28,9 +28,9 @@ void CRenderBuffer::AppendPicture(const VideoPicture& picture)
   videoBuffer->Acquire();
 
   pictureFlags = picture.iFlags;
-  primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
-  color_space = static_cast<AVColorSpace>(picture.color_space);
-  color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+  primaries = picture.color_primaries;
+  color_space = picture.color_space;
+  color_transfer = picture.color_transfer;
   full_range = picture.color_range == 1;
   bits = picture.colorBits;
   stereoMode = picture.stereoMode;
@@ -473,13 +473,8 @@ void CRendererBase::CheckVideoParameters()
     OnOutputReset();
   }
 
-  if (m_cmsOn && !m_lutIsLoading)
-  {
-    const AVColorPrimaries color_primaries = static_cast<AVColorPrimaries>(buf->primaries);
-
-    if (!m_colorManager->CheckConfiguration(m_cmsToken, color_primaries))
-      OnCMSConfigChanged(color_primaries);
-  }
+  if (m_cmsOn && !m_lutIsLoading && !m_colorManager->CheckConfiguration(m_cmsToken, buf->primaries))
+    OnCMSConfigChanged(buf->primaries);
 }
 
 DXGI_FORMAT CRendererBase::GetDXGIFormat(const VideoPicture& picture)
