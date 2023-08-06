@@ -82,6 +82,7 @@ void CProcessorHD::Close()
   m_pVideoContext = nullptr;
   m_pVideoDevice = nullptr;
   m_superResolutionEnabled = false;
+  m_configured = false;
 }
 
 bool CProcessorHD::InitProcessor()
@@ -177,6 +178,10 @@ bool CProcessorHD::OpenProcessor()
     return false;
   }
 
+  m_pVideoContext->VideoProcessorSetStreamAutoProcessingMode(m_pVideoProcessor.Get(), 0, FALSE);
+  m_pVideoContext->VideoProcessorSetStreamOutputRate(
+      m_pVideoProcessor.Get(), 0, D3D11_VIDEO_PROCESSOR_OUTPUT_RATE_NORMAL, FALSE, 0);
+
   // Output background color (black)
   D3D11_VIDEO_COLOR color;
   color.YCbCr = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color
@@ -266,12 +271,45 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   if (!views[2])
     return false;
 
-  RECT sourceRECT = {static_cast<LONG>(src.x1), static_cast<LONG>(src.y1),
-                     static_cast<LONG>(src.x2), static_cast<LONG>(src.y2)};
-  RECT dstRECT = {static_cast<LONG>(dst.x1), static_cast<LONG>(dst.y1), static_cast<LONG>(dst.x2),
-                  static_cast<LONG>(dst.y2)};
-
   D3D11_VIDEO_FRAME_FORMAT dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
+
+  if ((flags & RENDER_FLAG_FIELD0) && (flags & RENDER_FLAG_TOP))
+    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
+  else if ((flags & RENDER_FLAG_FIELD1) && (flags & RENDER_FLAG_BOT))
+    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
+  else if ((flags & RENDER_FLAG_FIELD0) && (flags & RENDER_FLAG_BOT))
+    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
+  else if ((flags & RENDER_FLAG_FIELD1) && (flags & RENDER_FLAG_TOP))
+    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
+
+  m_pVideoContext->VideoProcessorSetStreamFrameFormat(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX,
+                                                      dxvaFrameFormat);
+
+  D3D11_VIDEO_PROCESSOR_STREAM stream_data = {};
+  stream_data.Enable = TRUE;
+
+  const bool frameProgressive = dxvaFrameFormat == D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
+
+  // Progressive or Interlaced video at normal rate.
+  const bool secondField = ((flags & RENDER_FLAG_FIELD1) && !frameProgressive) ? 1 : 0;
+  stream_data.InputFrameOrField = frameIdx + (secondField ? 1 : 0);
+  stream_data.OutputIndex = secondField;
+
+  // Render() gets called once for each displayed frame, following the pattern necessary to adapt
+  // the source fps to the display fps, with repetitions as needed (ex. 3:2 for 23.98fps at 59Hz)
+  // However there is no need to render the same frame more than once, the intermediate target is
+  // not cleared and the output of the previous processing is still there.
+  // For nVidia deinterlacing it's more than an optimization. The processor must see each field
+  // only once or it won't switch from bob to a more advanced algorithm.
+  // for ex. when playing 25i at 60fps, decoded frames A B => output A0 A1 B0 B1 B1
+  // B1 field is repeated and the second B1 must be skipped.
+
+  if (m_configured && m_lastInputFrameOrField == stream_data.InputFrameOrField &&
+      m_lastOutputIndex == stream_data.OutputIndex)
+    return true;
+
+  m_lastInputFrameOrField = stream_data.InputFrameOrField;
+  m_lastOutputIndex = stream_data.OutputIndex;
 
   unsigned int providedPast = 0;
   for (int i = 3; i < 8; i++)
@@ -290,8 +328,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   std::vector<ID3D11VideoProcessorInputView*> pastViews(pastFrames, nullptr);
   std::vector<ID3D11VideoProcessorInputView*> futureViews(futureFrames, nullptr);
 
-  D3D11_VIDEO_PROCESSOR_STREAM stream_data = {};
-  stream_data.Enable = TRUE;
   stream_data.PastFrames = pastFrames;
   stream_data.FutureFrames = futureFrames;
   stream_data.ppPastSurfaces = pastViews.data();
@@ -336,23 +372,11 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     return false;
   }
 
-  if (flags & RENDER_FLAG_FIELD0 && flags & RENDER_FLAG_TOP)
-    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
-  else if (flags & RENDER_FLAG_FIELD1 && flags & RENDER_FLAG_BOT)
-    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
-  if (flags & RENDER_FLAG_FIELD0 && flags & RENDER_FLAG_BOT)
-    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
-  if (flags & RENDER_FLAG_FIELD1 && flags & RENDER_FLAG_TOP)
-    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
+  const RECT sourceRECT = {static_cast<LONG>(src.x1), static_cast<LONG>(src.y1),
+                           static_cast<LONG>(src.x2), static_cast<LONG>(src.y2)};
+  const RECT dstRECT = {static_cast<LONG>(dst.x1), static_cast<LONG>(dst.y1),
+                        static_cast<LONG>(dst.x2), static_cast<LONG>(dst.y2)};
 
-  bool frameProgressive = dxvaFrameFormat == D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
-
-  // Progressive or Interlaced video at normal rate.
-  stream_data.InputFrameOrField = frameIdx;
-  stream_data.OutputIndex = flags & RENDER_FLAG_FIELD1 && !frameProgressive ? 1 : 0;
-
-  // input format
-  m_pVideoContext->VideoProcessorSetStreamFrameFormat(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, dxvaFrameFormat);
   // Source rect
   m_pVideoContext->VideoProcessorSetStreamSourceRect(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, TRUE, &sourceRECT);
   // Stream dest rect
@@ -414,7 +438,8 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   HRESULT hr{};
   if (pOutputView)
   {
-    hr = m_pVideoContext->VideoProcessorBlt(m_pVideoProcessor.Get(), pOutputView.Get(), frameIdx, 1, &stream_data);
+    hr = m_pVideoContext->VideoProcessorBlt(m_pVideoProcessor.Get(), pOutputView.Get(), 0, 1,
+                                            &stream_data);
     if (S_OK != hr)
     {
       CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING,
@@ -422,6 +447,9 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
                  DX::GetErrorDescription(hr));
     }
   }
+
+  if (!m_configured)
+    m_configured = true;
 
   return pOutputView && !FAILED(hr);
 }
