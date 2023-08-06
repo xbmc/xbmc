@@ -32,6 +32,7 @@ enum class StarfishState
   RESET,
   FLUSHED,
   RUNNING,
+  EOS,
   ERROR,
   MAX,
 };
@@ -55,6 +56,7 @@ private:
       {StarfishState::RESET, "Reset"},
       {StarfishState::FLUSHED, "Flushed"},
       {StarfishState::RUNNING, "Running"},
+      {StarfishState::EOS, "EOS"},
       {StarfishState::ERROR, "Error"},
   });
   static_assert(static_cast<size_t>(StarfishState::MAX) == ms_stateMap.size(),
