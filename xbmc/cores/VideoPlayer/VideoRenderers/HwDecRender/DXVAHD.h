@@ -83,5 +83,14 @@ protected:
   bool m_superResolutionEnabled{false};
   ProcessorConversion m_conversion;
   bool m_isValidConversion{false};
+
+  /*!
+   * \brief true when at least one frame has been processed successfully since initialization
+   */
+  bool m_configured{false};
+
+  // Members to compare the current frame with the previous frame
+  UINT m_lastInputFrameOrField{0};
+  UINT m_lastOutputIndex{0};
 };
 };
