@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="game.controller.keyboard"
         name="IBM Model M Keyboard"
-        version="1.1.29"
+        version="1.1.30"
         provider-name="Team Kodi">
     <extension point="kodi.game.controller" library="resources/layout.xml"/>
     <extension point="xbmc.addon.metadata">
@@ -18,6 +18,7 @@
         <summary lang="it_IT">Tastiera IBM modello M</summary>
         <summary lang="pl_PL">Klawiatura IBM Model M</summary>
         <summary lang="ru_RU">Клавиатура IBM Model M</summary>
+        <summary lang="uk_UA">Клавіатура IBM Model M</summary>
         <summary lang="zh_CN">IBM M 型键盘</summary>
         <description lang="da_DK">IBM Model M-tastaturet, der blev introduceret i 1984, betragtes som et tidløst og holdbart stykke hardware.</description>
         <description lang="de_DE">Die 1984 vorgestellte IBM-Tastatur Model M ist als zeitlose und langlebige Hardware geschätzt.</description>
@@ -28,6 +29,7 @@
         <description lang="it_IT">La tastiera IBM Model M, introdotta nel 1984, è considerata un componente hardware senza tempo e durevole.</description>
         <description lang="pl_PL">Klawiatura IBM Model M, wprowadzona na rynek w 1984 roku, jest uważana za ponadczasowy i trwały sprzęt.</description>
         <description lang="ru_RU">Клавиатура IBM Model M, выпущена в 1984 году, и считаестся долговечным изделием, неподвластным временем.</description>
+        <description lang="uk_UA">Клавіатура IBM Model M, представлена в 1984 році, вважається нестаріючою та надійною апаратною частиною.</description>
         <description lang="zh_CN">IBM M 型键盘于1984年推出，被认为是一款经久耐用的硬件。</description>
         <disclaimer lang="da_DK">Kildeangivelse: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="de_DE">Bildverweis: Wikipedia (wikipedia.org)</disclaimer>
@@ -40,6 +42,7 @@
         <disclaimer lang="nl_NL">Bron afbeelding: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="pl_PL">Pochodzenie obrazu: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="ru_RU">Источник изображения: Wikipedia (wikipedia.org)</disclaimer>
+        <disclaimer lang="uk_UA">Джерело зображення: Wikipedia (wikipedia.org)</disclaimer>
         <disclaimer lang="zh_CN">图片来源：维基百科（Wikipedia.org）</disclaimer>
     </extension>
 </addon>
