@@ -607,9 +607,8 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
     scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
 
     if (!scraper &&
-        !(m_database.HasMovieInfo(item->GetPath()) ||
-          m_database.HasTvShowInfo(strDir)           ||
-          m_database.HasEpisodeInfo(item->GetPath())))
+        !(m_database.HasMovieInfo(item->GetDynPath()) || m_database.HasTvShowInfo(strDir) ||
+          m_database.HasEpisodeInfo(item->GetDynPath())))
     {
       HELPERS::ShowOKDialogText(CVariant{20176}, // Show video information
                                 CVariant{19055}); // no information available
