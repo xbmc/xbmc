@@ -658,7 +658,7 @@ namespace VIDEO
     if (ProgressCancelled(pDlgProgress, 198, pItem->GetLabel()))
       return INFO_CANCELLED;
 
-    if (m_database.HasMovieInfo(pItem->GetPath()))
+    if (m_database.HasMovieInfo(pItem->GetDynPath()))
       return INFO_HAVE_ALREADY;
 
     if (m_handle)
