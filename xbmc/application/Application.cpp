@@ -153,7 +153,6 @@
 #endif
 
 #ifdef TARGET_DARWIN_OSX
-#include "platform/darwin/osx/CocoaInterface.h"
 #ifdef HAS_XBMCHELPER
 #include "platform/darwin/osx/XBMCHelper.h"
 #endif
