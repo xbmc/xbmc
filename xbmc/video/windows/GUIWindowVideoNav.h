@@ -37,7 +37,7 @@ public:
   bool OnAction(const CAction &action) override;
   bool OnMessage(CGUIMessage& message) override;
 
-  void OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr &info) override;
+  bool OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& info) override;
 
 protected:
   bool ApplyWatchedFilter(CFileItemList &items);
