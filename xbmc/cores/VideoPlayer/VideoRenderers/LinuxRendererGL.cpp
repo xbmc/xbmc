@@ -210,8 +210,7 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
              GetFlagsStereoMode(picture.stereoMode);
 
-  m_srcPrimaries = GetSrcPrimaries(static_cast<AVColorPrimaries>(picture.color_primaries),
-                                   picture.iWidth, picture.iHeight);
+  m_srcPrimaries = GetSrcPrimaries(picture.color_primaries, picture.iWidth, picture.iHeight);
   m_toneMap = false;
 
   // Calculate the input frame aspect ratio.
@@ -273,8 +272,8 @@ void CLinuxRendererGL::AddVideoPicture(const VideoPicture &picture, int index)
   buf.videoBuffer = picture.videoBuffer;
   buf.videoBuffer->Acquire();
   buf.loaded = false;
-  buf.m_srcPrimaries = static_cast<AVColorPrimaries>(picture.color_primaries);
-  buf.m_srcColSpace = static_cast<AVColorSpace>(picture.color_space);
+  buf.m_srcPrimaries = picture.color_primaries;
+  buf.m_srcColSpace = picture.color_space;
   buf.m_srcFullRange = picture.color_range == 1;
   buf.m_srcBits = picture.colorBits;
 
