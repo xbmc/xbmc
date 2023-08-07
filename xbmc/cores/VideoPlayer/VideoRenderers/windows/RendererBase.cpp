@@ -16,8 +16,6 @@
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
 #include "rendering/dx/DirectXHelper.h"
 #include "rendering/dx/RenderContext.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/MemUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -189,8 +187,7 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   m_fps = fps;
   m_renderOrientation = orientation;
 
-  m_useDithering = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("videoscreen.dither");
-  m_ditherDepth = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.ditherdepth");
+  std::tie(m_useDithering, m_ditherDepth) = DX::Windowing()->GetDitherSettings();
 
   m_lastHdr10 = {};
   m_HdrType = HDR_TYPE::HDR_INVALID;
