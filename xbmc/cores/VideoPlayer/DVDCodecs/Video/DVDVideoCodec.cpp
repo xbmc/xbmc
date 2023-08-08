@@ -54,6 +54,10 @@ void VideoPicture::Reset()
   hasDisplayMetadata = false;
   hasLightMetadata = false;
 
+  isHdr = false;
+  hdrType = StreamHdrType::HDR_TYPE_NONE;
+  pixelFormat = AVPixelFormat::AV_PIX_FMT_NONE;
+
   iWidth = 0;
   iHeight = 0;
   iDisplayWidth = 0;

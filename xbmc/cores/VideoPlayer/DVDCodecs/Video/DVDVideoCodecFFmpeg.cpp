@@ -1052,6 +1052,9 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
   else
     pVideoPicture->color_range = m_hints.colorRange == AVCOL_RANGE_JPEG ? 1 : 0;
 
+  pVideoPicture->hdrType = m_hints.hdrType;
+  pVideoPicture->isHdr = (m_hints.hdrType != StreamHdrType::HDR_TYPE_NONE);
+
   //! @todo: ffmpeg doesn't seem like they know how they want to handle this.
   // av_frame_get_qp_table is deprecated but there doesn't seem to be a valid
   // replacement. the following is basically what av_frame_get_qp_table does

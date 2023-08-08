@@ -68,7 +68,9 @@ public:
   bool hasLightMetadata = false;
   AVContentLightMetadata lightMetadata;
 
-  AVPixelFormat pixelFormat; //< source pixel format
+  bool isHdr{false}; //< true if source is HDR (hdrType != HDR_TYPE_NONE)
+  StreamHdrType hdrType{StreamHdrType::HDR_TYPE_NONE}; //< HDR type enum
+  AVPixelFormat pixelFormat{AVPixelFormat::AV_PIX_FMT_NONE}; //< source pixel format
 
   unsigned int iWidth;
   unsigned int iHeight;
