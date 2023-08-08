@@ -9777,6 +9777,7 @@ msgstr ""
 #: xbmc/FileItem.cpp
 #: xbmc/GUIInfoManager.cpp
 #: xbmc/pvr/PVRManager.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: xbmc/utils/SystemInfo.cpp
 msgctxt "#19055"
 msgid "No information available"
@@ -12934,6 +12935,8 @@ msgctxt "#20175"
 msgid "UPnP server"
 msgstr ""
 
+#. Label used for a video info message box
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#20176"
 msgid "Show video information"
 msgstr ""

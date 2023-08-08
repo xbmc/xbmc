@@ -206,11 +206,11 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& scraper)
+bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& scraper)
 {
   if (fileItem.IsParentFolder() || fileItem.m_bIsShareOrDrive || fileItem.IsPath("add") ||
-     (fileItem.IsPlayList() && !URIUtils::HasExtension(fileItem.GetDynPath(), ".strm")))
-    return;
+      (fileItem.IsPlayList() && !URIUtils::HasExtension(fileItem.GetDynPath(), ".strm")))
+    return false;
 
   CFileItem item(fileItem);
   bool fromDB = false;
@@ -265,7 +265,7 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
       if (!bFoundFile)
       {
         HELPERS::ShowOKDialogText(CVariant{13346}, CVariant{20349});
-        return;
+        return false;
       }
     }
   }
@@ -282,6 +282,7 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
     Refresh();
     m_viewControl.SetSelectedItem(itemNumber);
   }
+  return true;
 }
 
 // ShowIMDB is called as follows:
@@ -533,9 +534,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string&
   case SELECT_ACTION_PLAY_OR_RESUME:
     return OnResumeItem(iItem, player);
   case SELECT_ACTION_INFO:
-    if (OnItemInfo(iItem))
-      return true;
-    break;
+    return OnItemInfo(iItem);
   case SELECT_ACTION_MORE:
     OnPopupMenu(iItem);
     return true;
@@ -612,10 +611,11 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
     scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
 
     if (!scraper &&
-        !(m_database.HasMovieInfo(item->GetPath()) ||
-          m_database.HasTvShowInfo(strDir)           ||
-          m_database.HasEpisodeInfo(item->GetPath())))
+        !(m_database.HasMovieInfo(item->GetDynPath()) || m_database.HasTvShowInfo(strDir) ||
+          m_database.HasEpisodeInfo(item->GetDynPath())))
     {
+      HELPERS::ShowOKDialogText(CVariant{20176}, // Show video information
+                                CVariant{19055}); // no information available
       return false;
     }
 
@@ -623,12 +623,7 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
       return true;
   }
 
-  OnItemInfo(*item, scraper);
-
-  // Return whether or not we have information to display.
-  // Note: This will cause the default select action to start
-  // playback in case it's set to "Show information".
-  return item->HasVideoInfoTag();
+  return OnItemInfo(*item, scraper);
 }
 
 void CGUIWindowVideoBase::OnRestartItem(int iItem, const std::string &player)
