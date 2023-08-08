@@ -438,3 +438,14 @@ bool CAndroidUtils::SupportsMediaCodecMimeType(const std::string& mimeType)
 
   return false;
 }
+
+std::pair<bool, bool> CAndroidUtils::GetDolbyVisionCapabilities()
+{
+  const bool displaySupportsDovi = GetDisplayHDRCapabilities().SupportsDolbyVision();
+  const bool mediaCodecSupportsDovi = SupportsMediaCodecMimeType("video/dolby-vision");
+
+  CLog::Log(LOGDEBUG, "CAndroidUtils::GetDolbyVisionCapabilities Display: {}, MediaCodec: {}",
+            displaySupportsDovi, mediaCodecSupportsDovi);
+
+  return std::make_pair(displaySupportsDovi, mediaCodecSupportsDovi);
+}
