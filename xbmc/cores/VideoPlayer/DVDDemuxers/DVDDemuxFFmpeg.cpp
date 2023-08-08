@@ -596,8 +596,6 @@ bool CDVDDemuxFFmpeg::Open(const std::shared_ptr<CDVDInputStream>& pInput, bool 
   // if format can be nonblocking, let's use that
   m_pFormatContext->flags |= AVFMT_FLAG_NONBLOCK;
 
-  UpdateCurrentPTS();
-
   // select the correct program if requested
   m_initialProgramNumber = UINT_MAX;
   CVariant programProp(pInput->GetProperty("program"));
@@ -1348,16 +1346,12 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
     {
       if (m_pFormatContext->iformat->read_seek)
         m_seekToKeyFrame = true;
-
-      UpdateCurrentPTS();
+      m_currentPts = DVD_NOPTS_VALUE;
     }
   }
 
-  if (m_currentPts == DVD_NOPTS_VALUE)
-    CLog::Log(LOGDEBUG, "{} - unknown position after seek", __FUNCTION__);
-  else
-    CLog::Log(LOGDEBUG, "{} - seek ended up on time {}", __FUNCTION__,
-              (int)(m_currentPts / DVD_TIME_BASE * 1000));
+  CLog::Log(LOGDEBUG, "{} - seek to time {:.2f}s ret:{} hitEnd:{}", __FUNCTION__, time, ret,
+            hitEnd);
 
   // in this case the start time is requested time
   if (startpts)
@@ -1380,29 +1374,12 @@ bool CDVDDemuxFFmpeg::SeekByte(int64_t pos)
   int ret = av_seek_frame(m_pFormatContext, -1, pos, AVSEEK_FLAG_BYTE);
 
   if (ret >= 0)
-    UpdateCurrentPTS();
+    m_currentPts = DVD_NOPTS_VALUE;
 
   m_pkt.result = -1;
   av_packet_unref(&m_pkt.pkt);
 
   return (ret >= 0);
-}
-
-void CDVDDemuxFFmpeg::UpdateCurrentPTS()
-{
-  m_currentPts = DVD_NOPTS_VALUE;
-
-  int idx = av_find_default_stream_index(m_pFormatContext);
-  if (idx >= 0)
-  {
-    AVStream* stream = m_pFormatContext->streams[idx];
-
-    if (stream && m_pkt.pkt.dts != (int64_t)AV_NOPTS_VALUE)
-    {
-      double ts = ConvertTimestamp(m_pkt.pkt.dts, stream->time_base.den, stream->time_base.num);
-      m_currentPts = ts;
-    }
-  }
 }
 
 int CDVDDemuxFFmpeg::GetStreamLength()
