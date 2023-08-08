@@ -126,15 +126,13 @@ bool CProcessorHD::CheckFormats() const
   return m_enumerator && m_enumerator->IsFormatSupportedOutput(m_conversion.m_outputFormat);
 }
 
-bool CProcessorHD::Open(const VideoPicture& picture,
-                        std::shared_ptr<DXVA::CEnumeratorHD> enumerator)
+bool CProcessorHD::Open(bool streamIsHDR, std::shared_ptr<DXVA::CEnumeratorHD> enumerator)
 {
   Close();
 
   std::unique_lock<CCriticalSection> lock(m_section);
 
-  m_color_primaries = picture.color_primaries;
-  m_color_transfer = picture.color_transfer;
+  m_streamIsHDR = streamIsHDR;
   m_enumerator = enumerator;
 
   if (!InitProcessor())
@@ -202,11 +200,8 @@ bool CProcessorHD::OpenProcessor()
   // We want "passthrough" of the signal and to do our own tone mapping when needed.
   // Disable the functionality by pretending that the display supports all PQ levels (0-10000)
   const DXGI_ADAPTER_DESC ad = DX::DeviceResources::Get()->GetAdapterDesc();
-  bool streamIsHDR =
-      (m_color_primaries == AVCOL_PRI_BT2020) &&
-      (m_color_transfer == AVCOL_TRC_SMPTE2084 || m_color_transfer == AVCOL_TRC_ARIB_STD_B67);
 
-  if (m_procCaps.m_hasMetadataHDR10Support && ad.VendorId == PCIV_AMD && streamIsHDR)
+  if (m_procCaps.m_hasMetadataHDR10Support && ad.VendorId == PCIV_AMD && m_streamIsHDR)
   {
     ComPtr<ID3D11VideoContext2> videoCtx2;
     if (SUCCEEDED(m_pVideoContext.As(&videoCtx2)))
@@ -535,9 +530,7 @@ bool CProcessorHD::IsSuperResolutionSuitable(const VideoPicture& picture)
   if (outputWidth <= picture.iWidth)
     return false;
 
-  if (picture.color_primaries == AVCOL_PRI_BT2020 ||
-      picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-      picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
+  if (picture.color_primaries == AVCOL_PRI_BT2020 || picture.isHdr)
     return false;
 
   return true;

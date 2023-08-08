@@ -34,7 +34,7 @@ public:
  ~CProcessorHD();
 
   void UnInit();
-  bool Open(const VideoPicture& picture, std::shared_ptr<DXVA::CEnumeratorHD> enumerator);
+  bool Open(bool streamIsHDR, std::shared_ptr<DXVA::CEnumeratorHD> enumerator);
   void Close();
   bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
   uint8_t PastRefs() const { return std::min(m_procCaps.m_rateCaps.PastFrames, 4u); }
@@ -85,10 +85,9 @@ protected:
   ComPtr<ID3D11VideoProcessor> m_pVideoProcessor;
   std::shared_ptr<CEnumeratorHD> m_enumerator;
 
-  AVColorPrimaries m_color_primaries{AVCOL_PRI_UNSPECIFIED};
-  AVColorTransferCharacteristic m_color_transfer{AVCOL_TRC_UNSPECIFIED};
   ProcessorCapabilities m_procCaps;
 
+  bool m_streamIsHDR{false};
   bool m_superResolutionEnabled{false};
   ProcessorConversion m_conversion;
   bool m_isValidConversion{false};

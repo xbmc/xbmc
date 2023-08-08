@@ -35,6 +35,7 @@ void CRenderBuffer::AppendPicture(const VideoPicture& picture)
   bits = picture.colorBits;
   stereoMode = picture.stereoMode;
   pixelFormat = picture.pixelFormat;
+  isHdr = picture.isHdr;
 
   hasDisplayMetadata = picture.hasDisplayMetadata;
   displayMetadata = picture.displayMetadata;
@@ -200,11 +201,7 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
     m_initialHdrEnabled = DX::Windowing()->IsHDROutput();
     CLog::LogF(LOGDEBUG, "Storing Windows HDR state: {}", m_initialHdrEnabled ? "ON" : "OFF");
 
-    const bool streamIsHDR = (picture.color_primaries == AVCOL_PRI_BT2020) &&
-                             (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-                              picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
-
-    if (streamIsHDR != DX::Windowing()->IsHDROutput())
+    if (picture.isHdr != DX::Windowing()->IsHDROutput())
       DX::Windowing()->ToggleHDR();
   }
 
@@ -579,9 +576,7 @@ DXGI_HDR_METADATA_HDR10 CRendererBase::GetDXGIHDR10MetaData(CRenderBuffer* rb)
 
 void CRendererBase::ProcessHDR(CRenderBuffer* rb)
 {
-  if (m_AutoSwitchHDR && rb->primaries == AVCOL_PRI_BT2020 &&
-      (rb->color_transfer == AVCOL_TRC_SMPTE2084 || rb->color_transfer == AVCOL_TRC_ARIB_STD_B67) &&
-      !DX::Windowing()->IsHDROutput())
+  if (m_AutoSwitchHDR && rb->isHdr && !DX::Windowing()->IsHDROutput())
   {
     DX::Windowing()->ToggleHDR(); // Toggle display HDR ON
   }
@@ -759,12 +754,8 @@ DEBUG_INFO_VIDEO CRendererBase::GetDebugInfo(int idx)
   return info;
 }
 
-bool CRendererBase::IntendToRenderAsHDR(const VideoPicture& picture)
+bool CRendererBase::IntendToRenderAsHDR(bool streamIsHDR)
 {
-  const bool streamIsHDR = (picture.color_primaries == AVCOL_PRI_BT2020) &&
-                           (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-                            picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
-
   const bool canDisplayHDR =
       DX::Windowing()->IsHDROutput() || DX::Windowing()->IsHDRDisplaySettingEnabled();
 

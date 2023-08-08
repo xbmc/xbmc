@@ -59,7 +59,7 @@ void CRendererDXVA::GetWeight(std::map<RenderMethod, int>& weights, const VideoP
   CEnumeratorHD enumerator;
   enumerator.Open(picture.iWidth, picture.iHeight, dxgi_format);
 
-  if (enumerator.SupportedConversions({picture, IntendToRenderAsHDR(picture)}).empty())
+  if (enumerator.SupportedConversions({picture, IntendToRenderAsHDR(picture.isHdr)}).empty())
   {
     CLog::LogF(LOGWARNING, "DXVA will not be used.");
     return;
@@ -128,10 +128,11 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
             dxgi_format, CEnumeratorHD::AvToDxgiColorSpace(DXVA::DXGIColorSpaceArgs(picture)));
       }
 
-      m_conversionsArgs = SupportedConversionsArgs{picture, IntendToRenderAsHDR(picture)};
+      m_conversionsArgs = SupportedConversionsArgs{picture, IntendToRenderAsHDR(picture.isHdr)};
 
       const ProcessorConversions conversions =
           m_enumerator->SupportedConversions(m_conversionsArgs);
+
       if (!conversions.empty())
       {
         const ProcessorConversion chosenConversion =
@@ -143,7 +144,9 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
 
         // create processor
         m_processor = std::make_unique<DXVA::CProcessorHD>();
-        if (m_processor->Open(picture, m_enumerator) && m_processor->SetConversion(m_conversion))
+
+        if (m_processor->Open(picture.isHdr, m_enumerator) &&
+            m_processor->SetConversion(m_conversion))
         {
           if (m_tryVSR)
             m_processor->TryEnableVideoSuperResolution();

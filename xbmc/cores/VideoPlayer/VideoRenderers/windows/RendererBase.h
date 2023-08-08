@@ -87,6 +87,7 @@ public:
   bool hasLightMetadata = false;
   AVMasteringDisplayMetadata displayMetadata = {};
   AVContentLightMetadata lightMetadata = {};
+  bool isHdr{false};
   std::string stereoMode;
   uint64_t frameIdx = 0;
 
@@ -155,7 +156,7 @@ protected:
    * \param picture description of the source
    * \return true: intent to render as HDR, false: intent to render as SDR
    */
-  static bool IntendToRenderAsHDR(const VideoPicture& picture);
+  static bool IntendToRenderAsHDR(bool streamIsHDR);
   /*!
    * \brief Call after rendering has started to find out if the output is configured as SDR or HDR.
    * \return true: HDR output, false: SDR output
