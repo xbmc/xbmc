@@ -583,7 +583,9 @@ void DX::DeviceResources::DestroySwapChain()
   if (!!bFullcreen)
     m_swapChain->SetFullscreenState(false, nullptr); // mandatory before releasing swapchain
   m_swapChain = nullptr;
+  m_deferrContext->ClearState();
   m_deferrContext->Flush();
+  m_d3dContext->ClearState();
   m_d3dContext->Flush();
   m_IsTransferPQ = false;
 }
@@ -773,6 +775,9 @@ void DX::DeviceResources::CreateWindowSizeDependentResources()
   ResizeBuffers();
 
   CreateBackBuffer();
+
+  // restore pipeline state destroyed when releasing the swap chain
+  CServiceBroker::GetWinSystem()->GetGfxContext().ApplyStateBlock();
 }
 
 // Determine the dimensions of the render target and whether it will be scaled down.
