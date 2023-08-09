@@ -207,6 +207,8 @@ macro(CLEAR_BUILD_VARS)
   unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_INSTALL_PREFIX)
   unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_TOOLCHAIN_FILE)
   unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE_LC}_LIB_TYPE)
+  unset(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_SUBDIR)
+  unset(BUILD_SOURCE_SUBDIR)
 endmacro()
 
 # Macro to create externalproject_add target
@@ -491,6 +493,11 @@ macro(BUILD_DEP_TARGET)
                              DOWNLOAD_NAME ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_ARCHIVE})
   endif()
 
+  # Relative path for project CMakeLists.txt if not in root of project build dir
+  if(${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_SUBDIR)
+    set(BUILD_SOURCE_SUBDIR SOURCE_SUBDIR ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_SOURCE_SUBDIR})
+  endif()
+
   externalproject_add(${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME}
                       ${BUILD_DOWNLOAD_STEPS}
                       PREFIX ${CORE_BUILD_DIR}/${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_BUILD_NAME}
@@ -501,6 +508,7 @@ macro(BUILD_DEP_TARGET)
                       ${${${CMAKE_FIND_PACKAGE_NAME}_MODULE}_GENERATOR_PLATFORM}
                       ${PATCH_COMMAND}
                       ${CONFIGURE_COMMAND}
+                      ${BUILD_SOURCE_SUBDIR}
                       ${BUILD_COMMAND}
                       ${INSTALL_COMMAND}
                       ${BUILD_BYPRODUCTS}
