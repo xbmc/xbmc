@@ -15,7 +15,7 @@
 #include "settings/lib/Setting.h"
 #include "settings/lib/SettingDefinitions.h"
 #include "settings/lib/SettingsManager.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -64,28 +64,28 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
   /* load the keyboard layouts from xkeyboard-config */
   std::string xkbFile("/usr/share/X11/xkb/rules/base.xml");
 
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if (!xmlDoc.LoadFile(xkbFile))
   {
     CLog::Log(LOGWARNING, "CLibInputSettings: unable to open: {}", xkbFile);
     return;
   }
 
-  const TiXmlElement* rootElement = xmlDoc.RootElement();
+  const auto* rootElement = xmlDoc.RootElement();
   if (!rootElement)
   {
     CLog::Log(LOGWARNING, "CLibInputSettings: missing or invalid XML root element in: {}", xkbFile);
     return;
   }
 
-  if (rootElement->ValueStr() != "xkbConfigRegistry")
+  if (strcmp(rootElement->Value(), "xkbConfigRegistry") != 0)
   {
     CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML root element {} in: {}",
               rootElement->Value(), xkbFile);
     return;
   }
 
-  const TiXmlElement* layoutListElement = rootElement->FirstChildElement("layoutList");
+  const auto* layoutListElement = rootElement->FirstChildElement("layoutList");
   if (!layoutListElement)
   {
     CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element {} in: {}",
@@ -93,10 +93,10 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
     return;
   }
 
-  const TiXmlElement* layoutElement = layoutListElement->FirstChildElement("layout");
+  const auto* layoutElement = layoutListElement->FirstChildElement("layout");
   while (layoutElement)
   {
-    const TiXmlElement* configElement = layoutElement->FirstChildElement("configItem");
+    const auto* configElement = layoutElement->FirstChildElement("configItem");
     if (!configElement)
     {
       CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element {} in: {}",
@@ -104,7 +104,7 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
       return;
     }
 
-    const TiXmlElement* nameElement = configElement->FirstChildElement("name");
+    const auto* nameElement = configElement->FirstChildElement("name");
     if (!nameElement)
     {
       CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element {} in: {}",
@@ -112,7 +112,7 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
       return;
     }
 
-    const TiXmlElement* descriptionElement = configElement->FirstChildElement("description");
+    const auto* descriptionElement = configElement->FirstChildElement("description");
     if (!descriptionElement)
     {
       CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element {} in: {}",
