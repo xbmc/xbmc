@@ -26,6 +26,7 @@ xbmc/network/test/data/test.html
 xbmc/network/test/data/test.png
 xbmc/playlists/test/test.b4s
 xbmc/playlists/test/test.xspf
+xbmc/settings/test/test-MediaSources.xml
 xbmc/video/test/testdata/moviestack_ab/Movie-(2001)/Movie-(2001)A.mp4
 xbmc/video/test/testdata/moviestack_ab/Movie-(2001)/Movie-(2001)B.mp4
 xbmc/video/test/testdata/moviestack_part/Movie_(2001)/Movie_(2001)_part1.mkv

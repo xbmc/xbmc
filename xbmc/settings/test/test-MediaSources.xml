@@ -1,0 +1,55 @@
+<sources>
+    <programs>
+        <default pathversion="1"></default>
+    </programs>
+    <video>
+        <default pathversion="1"></default>
+        <source>
+            <name>Video Playlists</name>
+            <path pathversion="1">special://videoplaylists/</path>
+            <allowsharing>true</allowsharing>
+        </source>
+        <source>
+            <name>LOCAL-DOWNLOADS</name>
+            <path pathversion="1">/Users/macos/Downloads/</path>
+            <allowsharing>true</allowsharing>
+        </source>
+        <source>
+            <name>DAV-TV</name>
+            <path pathversion="1">dav://user:password@192.168.1.1:5005/TV/</path>
+            <allowsharing>true</allowsharing>
+        </source>
+        <source>
+            <name>SMB-DOWNLOADS</name>
+            <path pathversion="1">smb://192.168.1.1/Downloads/</path>
+            <allowsharing>true</allowsharing>
+        </source>
+    </video>
+    <music>
+        <default pathversion="1"></default>
+        <source>
+            <name>Music Playlists</name>
+            <path pathversion="1">special://musicplaylists/</path>
+            <allowsharing>true</allowsharing>
+        </source>
+        <source>
+            <name>LOCAL-MUSIC</name>
+            <path pathversion="1">/Users/macos/Music/</path>
+            <allowsharing>true</allowsharing>
+        </source>
+    </music>
+    <pictures>
+        <default pathversion="1"></default>
+        <source>
+            <name>LOCAL-PICTURES</name>
+            <path pathversion="1">/Users/macos/Pictures/</path>
+            <allowsharing>true</allowsharing>
+        </source>
+    </pictures>
+    <files>
+        <default pathversion="1"></default>
+    </files>
+    <games>
+        <default pathversion="1"></default>
+    </games>
+</sources>
