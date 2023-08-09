@@ -19,8 +19,12 @@
 #include <set>
 #include <string>
 
-class TiXmlNode;
 class CDVDStreamInfo;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 /**
 * @class CDecoderFilter
@@ -75,21 +79,20 @@ public:
   virtual bool isValid(const CDVDStreamInfo& streamInfo) const;
 
   /**
-  * \fn CDecoderFilter::Load(const TiXmlNode *settings);
+  * \fn CDecoderFilter::Load(const XMLNode* settings);
   * \brief load all members from XML node
   * \param node filter node from where to get the values
   * \return true if operation was successful, false on error
   */
-  virtual bool Load(const TiXmlNode *node);
+  virtual bool Load(const tinyxml2::XMLNode* node);
 
   /**
-  * \fn CDecoderFilter::Save(TiXmlNode *settings);
+  * \fn CDecoderFilter::Save(XMLNode* settings);
   * \brief store all members in XML node
   * \param node a ready to use filter setting node
   * \return true if operation was successful, false on error
   */
-  virtual bool Save(TiXmlNode *node) const;
-
+  virtual bool Save(tinyxml2::XMLNode* node) const;
 
 private:
   std::string m_name;
