@@ -18,6 +18,7 @@
 #include "Util.h"
 #include "cores/VideoPlayer/DVDStreamInfo.h"
 #include "filesystem/File.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
@@ -31,7 +32,6 @@ static const char* TAG_STILLS = "stills-allowed";
 static const char* TAG_DVD = "dvd-allowed";
 static const char* TAG_MINHEIGHT = "min-height";
 static const char* HWDFFileName = "special://masterprofile/decoderfilter.xml";
-static const char* CLASSNAME = "CDecoderFilter";
 
 CDecoderFilter::CDecoderFilter(const std::string& name, uint32_t flags, int minHeight)
   : m_name(name)
@@ -60,7 +60,7 @@ bool CDecoderFilter::isValid(const CDVDStreamInfo& streamInfo) const
   return true;
 }
 
-bool CDecoderFilter::Load(const TiXmlNode *node)
+bool CDecoderFilter::Load(const tinyxml2::XMLNode* node)
 {
   bool flagBool = false;
 
@@ -84,7 +84,7 @@ bool CDecoderFilter::Load(const TiXmlNode *node)
   return true;
 }
 
-bool CDecoderFilter::Save(TiXmlNode *node) const
+bool CDecoderFilter::Save(tinyxml2::XMLNode* node) const
 {
   // Now write each of the pieces of information we need...
   XMLUtils::SetString(node, TAG_NAME, m_name);
@@ -122,30 +122,29 @@ bool CDecoderFilterManager::Load()
   if (!XFILE::CFile::Exists(fileName))
     return true;
 
-  CLog::Log(LOGINFO, "{}: loading filters from {}", CLASSNAME, fileName);
+  CLog::LogF(LOGINFO, "loading filters from {}", fileName);
 
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if (!xmlDoc.LoadFile(fileName))
   {
-    CLog::Log(LOGERROR, "{}: error loading: line {}, {}", CLASSNAME, xmlDoc.ErrorRow(),
-              xmlDoc.ErrorDesc());
+    CLog::LogF(LOGERROR, "error loading: line {}, {}", xmlDoc.ErrorLineNum(), xmlDoc.ErrorStr());
     return false;
   }
 
-  const TiXmlElement *pRootElement = xmlDoc.RootElement();
-  if (!pRootElement || !StringUtils::EqualsNoCase(pRootElement->ValueStr(), TAG_ROOT))
+  const auto* rootElement = xmlDoc.RootElement();
+  if (rootElement == nullptr || !StringUtils::EqualsNoCase(rootElement->Value(), TAG_ROOT))
   {
-    CLog::Log(LOGERROR, "{}: invalid root element ({})", CLASSNAME, pRootElement->ValueStr());
+    CLog::LogF(LOGERROR, "invalid root element ({})", rootElement ? rootElement->Value() : "");
     return false;
   }
 
-  const TiXmlElement *pFilter = pRootElement->FirstChildElement(TAG_FILTER);
-  while (pFilter)
+  const auto* tagFilter = rootElement->FirstChildElement(TAG_FILTER);
+  while (tagFilter != nullptr)
   {
     CDecoderFilter filter("");
-    if (filter.Load(pFilter))
+    if (filter.Load(tagFilter))
       m_filters.insert(filter);
-    pFilter = pFilter->NextSiblingElement(TAG_FILTER);
+    tagFilter = tagFilter->NextSiblingElement(TAG_FILTER);
   }
   return true;
 }
@@ -156,21 +155,27 @@ bool CDecoderFilterManager::Save() const
   if (!m_dirty || m_filters.empty())
     return true;
 
-  CXBMCTinyXML doc;
-  TiXmlElement xmlRootElement(TAG_ROOT);
-  TiXmlNode *pRoot = doc.InsertEndChild(xmlRootElement);
-  if (pRoot == NULL)
+  CXBMCTinyXML2 doc;
+  auto* xmlRootElement = doc.NewElement(TAG_ROOT);
+  if (xmlRootElement == nullptr)
+    return false;
+
+  auto* root = doc.InsertEndChild(xmlRootElement);
+  if (root == nullptr)
     return false;
 
   for (const CDecoderFilter& filter : m_filters)
   {
     // Write the resolution tag
-    TiXmlElement filterElem(TAG_FILTER);
-    TiXmlNode *pNode = pRoot->InsertEndChild(filterElem);
-    if (pNode == NULL)
+    auto* filterElem = doc.NewElement(TAG_FILTER);
+    if (filterElem == nullptr)
       return false;
 
-    filter.Save(pNode);
+    auto* node = root->InsertEndChild(filterElem);
+    if (node == nullptr)
+      return false;
+
+    filter.Save(node);
   }
   std::string fileName = CUtil::TranslateSpecialSource(HWDFFileName);
   return doc.SaveFile(fileName);
