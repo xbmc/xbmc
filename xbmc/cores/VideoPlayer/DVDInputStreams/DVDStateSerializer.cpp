@@ -9,7 +9,7 @@
 #include "DVDStateSerializer.h"
 
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
 #include <charconv>
@@ -24,50 +24,53 @@ constexpr int DVDSTATESERIALIZER_VERSION = 2;
 
 bool CDVDStateSerializer::DVDStateToXML(std::string& xmlstate, const DVDState& state)
 {
-  CXBMCTinyXML xmlDoc{"navstate"};
+  CXBMCTinyXML2 xmlDoc;
 
-  TiXmlElement eRoot{"navstate"};
-  eRoot.SetAttribute("version", DVDSTATESERIALIZER_VERSION);
+  auto* eRoot = xmlDoc.NewElement("navstate");
+  if (eRoot == nullptr)
+    return false;
 
-  AddXMLElement(eRoot, "title", std::to_string(state.title));
-  AddXMLElement(eRoot, "pgn", std::to_string(state.pgn));
-  AddXMLElement(eRoot, "pgcn", std::to_string(state.pgcn));
-  AddXMLElement(eRoot, "current_angle", std::to_string(state.current_angle));
-  AddXMLElement(eRoot, "audio_num", std::to_string(state.audio_num));
-  AddXMLElement(eRoot, "subp_num", std::to_string(state.subp_num));
-  AddXMLElement(eRoot, "sub_enabled", state.sub_enabled ? "true" : "false");
+  eRoot->SetAttribute("version", DVDSTATESERIALIZER_VERSION);
+
+  AddXMLElement(*eRoot, "title", std::to_string(state.title).c_str());
+  AddXMLElement(*eRoot, "pgn", std::to_string(state.pgn).c_str());
+  AddXMLElement(*eRoot, "pgcn", std::to_string(state.pgcn).c_str());
+  AddXMLElement(*eRoot, "current_angle", std::to_string(state.current_angle).c_str());
+  AddXMLElement(*eRoot, "audio_num", std::to_string(state.audio_num).c_str());
+  AddXMLElement(*eRoot, "subp_num", std::to_string(state.subp_num).c_str());
+  AddXMLElement(*eRoot, "sub_enabled", state.sub_enabled ? "true" : "false");
   xmlDoc.InsertEndChild(eRoot);
 
-  std::stringstream stream;
-  stream << xmlDoc;
-  xmlstate = stream.str();
+  tinyxml2::XMLPrinter printer;
+  xmlDoc.Accept(&printer);
+  xmlstate = printer.CStr();
   return true;
 }
 
 bool CDVDStateSerializer::XMLToDVDState(DVDState& state, const std::string& xmlstate)
 {
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
 
   xmlDoc.Parse(xmlstate);
   if (xmlDoc.Error())
     return false;
 
-  TiXmlHandle hRoot(xmlDoc.RootElement());
-  if (!hRoot.Element() || !StringUtils::EqualsNoCase(hRoot.Element()->Value(), "navstate"))
+  tinyxml2::XMLHandle hRoot(xmlDoc.RootElement());
+  if (!hRoot.ToElement() || !StringUtils::EqualsNoCase(hRoot.ToElement()->Value(), "navstate"))
   {
     CLog::LogF(LOGERROR, "Failed to deserialize dvd state - failed to detect root element.");
     return false;
   }
 
-  auto version = hRoot.Element()->Attribute("version");
+  auto version = hRoot.ToElement()->Attribute("version");
   if (!version || !StringUtils::EqualsNoCase(version, std::to_string(DVDSTATESERIALIZER_VERSION)))
   {
     CLog::LogF(LOGERROR, "Failed to deserialize dvd state - incompatible serializer version.");
     return false;
   }
 
-  const TiXmlElement* childElement = hRoot.Element()->FirstChildElement();
-  while (childElement)
+  const auto* childElement = hRoot.ToElement()->FirstChildElement();
+  while (childElement != nullptr)
   {
     const std::string property = childElement->Value();
     if (property == "title")
@@ -116,12 +119,13 @@ bool CDVDStateSerializer::XMLToDVDState(DVDState& state, const std::string& xmls
   return true;
 }
 
-void CDVDStateSerializer::AddXMLElement(TiXmlElement& root,
+void CDVDStateSerializer::AddXMLElement(tinyxml2::XMLElement& root,
                                         const std::string& name,
                                         const std::string& value)
 {
-  TiXmlElement xmlElement{name};
-  TiXmlText xmlElementValue = value;
-  xmlElement.InsertEndChild(xmlElementValue);
+  auto* xmlDoc = root.GetDocument();
+  auto* xmlElement = xmlDoc->NewElement(name.c_str());
+  auto* xmlElementValue = xmlDoc->NewText(value.c_str());
+  xmlElement->InsertEndChild(xmlElementValue);
   root.InsertEndChild(xmlElement);
 }

@@ -10,7 +10,10 @@
 
 #include <string>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 /*! \brief Pod structure which represents the current dvd state with respect to dvdnav properties */
 struct DVDState
@@ -63,5 +66,5 @@ private:
   * \param name the new element name
   * \param value the new element value
   */
-  void AddXMLElement(TiXmlElement& root, const std::string& name, const std::string& value);
+  void AddXMLElement(tinyxml2::XMLElement& root, const std::string& name, const std::string& value);
 };
