@@ -10,8 +10,6 @@
 
 #include <string>
 
-class TiXmlElement;
-
 /*! \brief Pod structure which represents the current Bluray state */
 struct BlurayState
 {
