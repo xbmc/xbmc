@@ -83,7 +83,7 @@ bool CISO9660Directory::Exists(const CURL& url)
 bool CISO9660Directory::Resolve(CFileItem& item) const
 {
   const CURL url{item.GetDynPath()};
-  if (url.GetProtocol() != "iso9660")
+  if (url.GetProtocol() != "iso9660" && url.GetFileType() != "iso")
   {
     return false;
   }
