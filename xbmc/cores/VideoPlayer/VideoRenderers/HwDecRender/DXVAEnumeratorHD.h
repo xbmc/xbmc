@@ -128,9 +128,9 @@ struct SupportedConversionsArgs
 
   SupportedConversionsArgs(const VideoPicture& picture, bool isHdrOutput)
   {
-    m_colorPrimaries = static_cast<AVColorPrimaries>(picture.color_primaries);
-    m_colorSpace = static_cast<AVColorSpace>(picture.color_space);
-    m_colorTransfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+    m_colorPrimaries = picture.color_primaries;
+    m_colorSpace = picture.color_space;
+    m_colorTransfer = picture.color_transfer;
     m_fullRange = picture.color_range == 1;
     m_hdrOutput = isHdrOutput;
   }
@@ -165,11 +165,11 @@ struct DXGIColorSpaceArgs
 
   DXGIColorSpaceArgs(const VideoPicture& picture)
   {
-    primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
-    color_space = static_cast<AVColorSpace>(picture.color_space);
-    color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+    primaries = picture.color_primaries;
+    color_space = picture.color_space;
+    color_transfer = picture.color_transfer;
     full_range = picture.color_range == 1;
-    chroma_location = static_cast<AVChromaLocation>(picture.chroma_position);
+    chroma_location = picture.chroma_position;
   }
 
   DXGIColorSpaceArgs(AVColorPrimaries primaries,
