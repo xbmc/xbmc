@@ -535,9 +535,6 @@ bool CProcessorHD::IsSuperResolutionSuitable(const VideoPicture& picture)
   if (outputWidth <= picture.iWidth)
     return false;
 
-  if (picture.iFlags & DVP_FLAG_INTERLACED)
-    return false;
-
   if (picture.color_primaries == AVCOL_PRI_BT2020 ||
       picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
       picture.color_transfer == AVCOL_TRC_ARIB_STD_B67)
