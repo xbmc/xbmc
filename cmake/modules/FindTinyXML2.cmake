@@ -16,7 +16,11 @@ if(NOT TARGET tinyxml2::tinyxml2)
   SETUP_BUILD_VARS()
 
   # Check for existing TINYXML2. If version >= TINYXML2-VERSION file version, dont build
-  find_package(TINYXML2 CONFIG QUIET)
+  # A corner case, but if a linux/freebsd user WANTS to build internal tinyxml2, skip the
+  # config search and act like tinyxml2 doesnt exist on system
+  if(NOT ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_TINYXML2))
+    find_package(TINYXML2 CONFIG QUIET)
+  endif()
 
   # Some linux distro's dont package cmake config files for TinyXML2
   # This means that they will fall into the below and we will run a pkg_check_modules
