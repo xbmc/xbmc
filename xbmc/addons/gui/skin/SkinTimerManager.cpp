@@ -51,7 +51,7 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
   if ((!node->FirstChild("name") || !node->FirstChild("name")->FirstChild() ||
        node->FirstChild("name")->FirstChild()->ValueStr().empty()))
   {
-    CLog::LogF(LOGERROR, "Missing required field name for valid skin. Ignoring timer.");
+    CLog::LogF(LOGERROR, "Missing required field 'name' for valid skin timer. Ignoring timer.");
     return;
   }
 
