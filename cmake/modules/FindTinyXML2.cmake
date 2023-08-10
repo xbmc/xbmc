@@ -16,7 +16,7 @@ if(NOT TARGET tinyxml2::tinyxml2)
   SETUP_BUILD_VARS()
 
   # Check for existing TINYXML2. If version >= TINYXML2-VERSION file version, dont build
-  find_package(TINYXML2 CONFIG)
+  find_package(TINYXML2 CONFIG QUIET)
 
   # Some linux distro's dont package cmake config files for TinyXML2
   # This means that they will fall into the below and we will run a pkg_check_modules
@@ -57,36 +57,39 @@ if(NOT TARGET tinyxml2::tinyxml2)
       BUILD_DEP_TARGET()
     else()
       # This is the fallback case where linux distro's dont ship cmake config files
-      # use the old find_library way
+      # use the old find_library way. Only do this if we didnt find a cmake config 
+      # in the event of the version < depends version
+      if(NOT TARGET tinyxml2::tinyxml2)
+        if(PKG_CONFIG_FOUND)
+          pkg_check_modules(PC_TINYXML2 tinyxml2 QUIET)
+        endif()
 
-      if(PKG_CONFIG_FOUND)
-        pkg_check_modules(PC_TINYXML2 tinyxml2 QUIET)
-      endif()
-
-      find_path(TINYXML2_INCLUDE_DIR tinyxml2.h
-                                    PATHS ${PC_TINYXML2_INCLUDEDIR})
-      find_library(TINYXML2_LIBRARY_RELEASE NAMES tinyxml2
+        find_path(TINYXML2_INCLUDE_DIR tinyxml2.h
+                                      PATHS ${PC_TINYXML2_INCLUDEDIR})
+        find_library(TINYXML2_LIBRARY_RELEASE NAMES tinyxml2
+                                             PATHS ${PC_TINYXML2_LIBDIR})
+        find_library(TINYXML2_LIBRARY_DEBUG NAMES tinyxml2d
                                            PATHS ${PC_TINYXML2_LIBDIR})
-      find_library(TINYXML2_LIBRARY_DEBUG NAMES tinyxml2d
-                                         PATHS ${PC_TINYXML2_LIBDIR})
 
-      set(TINYXML2_VERSION ${PC_TINYXML2_VERSION})
-
+        set(TINYXML2_VERSION ${PC_TINYXML2_VERSION})
+      endif()
     endif()
 
-    add_library(tinyxml2::tinyxml2 UNKNOWN IMPORTED)
-    if(TINYXML2_LIBRARY_RELEASE)
+    if(NOT TARGET tinyxml2::tinyxml2)
+      add_library(tinyxml2::tinyxml2 UNKNOWN IMPORTED)
+      if(TINYXML2_LIBRARY_RELEASE)
+        set_target_properties(tinyxml2::tinyxml2 PROPERTIES
+                                                 IMPORTED_CONFIGURATIONS RELEASE
+                                                 IMPORTED_LOCATION_RELEASE "${TINYXML2_LIBRARY_RELEASE}")
+      endif()
+      if(TINYXML2_LIBRARY_DEBUG)
+        set_target_properties(tinyxml2::tinyxml2 PROPERTIES
+                                                 IMPORTED_CONFIGURATIONS DEBUG
+                                                 IMPORTED_LOCATION_DEBUG "${TINYXML2_LIBRARY_DEBUG}")
+      endif()
       set_target_properties(tinyxml2::tinyxml2 PROPERTIES
-                                               IMPORTED_CONFIGURATIONS RELEASE
-                                               IMPORTED_LOCATION_RELEASE "${TINYXML2_LIBRARY_RELEASE}")
+                                               INTERFACE_INCLUDE_DIRECTORIES "${TINYXML2_INCLUDE_DIR}")
     endif()
-    if(TINYXML2_LIBRARY_DEBUG)
-      set_target_properties(tinyxml2::tinyxml2 PROPERTIES
-                                               IMPORTED_CONFIGURATIONS DEBUG
-                                               IMPORTED_LOCATION_DEBUG "${TINYXML2_LIBRARY_DEBUG}")
-    endif()
-    set_target_properties(tinyxml2::tinyxml2 PROPERTIES
-                                             INTERFACE_INCLUDE_DIRECTORIES "${TINYXML2_INCLUDE_DIR}")
 
     if(TARGET tinyxml2)
       add_dependencies(tinyxml2::tinyxml2 tinyxml2)
@@ -94,9 +97,18 @@ if(NOT TARGET tinyxml2::tinyxml2)
   endif()
 
   if(TARGET tinyxml2::tinyxml2)
-    # Used to provide configure output of target information
-    get_target_property(TINYXML2_LIBRARY_DEBUG tinyxml2::tinyxml2 IMPORTED_LOCATION_DEBUG)
-    get_target_property(TINYXML2_LIBRARY_RELEASE tinyxml2::tinyxml2 IMPORTED_LOCATION_RELEASE)
+    get_target_property(_TINYXML2_CONFIGURATIONS tinyxml2::tinyxml2 IMPORTED_CONFIGURATIONS)
+    foreach(_tinyxml2_config IN LISTS _TINYXML2_CONFIGURATIONS)
+      # Some non standard config (eg None on Debian)
+      # Just set to RELEASE var so select_library_configurations can continue to work its magic
+      if((NOT ${_tinyxml2_config} STREQUAL "RELEASE") AND
+         (NOT ${_tinyxml2_config} STREQUAL "DEBUG"))
+        get_target_property(TINYXML2_LIBRARY_RELEASE tinyxml2::tinyxml2 IMPORTED_LOCATION_${_tinyxml2_config})
+      else()
+        get_target_property(TINYXML2_LIBRARY_${_tinyxml2_config} tinyxml2::tinyxml2 IMPORTED_LOCATION_${_tinyxml2_config})
+      endif()
+    endforeach()
+
     get_target_property(TINYXML2_INCLUDE_DIR tinyxml2::tinyxml2 INTERFACE_INCLUDE_DIRECTORIES)
   endif()
 
