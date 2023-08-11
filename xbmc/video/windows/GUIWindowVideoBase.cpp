@@ -200,14 +200,60 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& scraper)
+bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
 {
   if (fileItem.IsParentFolder() || fileItem.m_bIsShareOrDrive || fileItem.IsPath("add") ||
       (fileItem.IsPlayList() && !URIUtils::HasExtension(fileItem.GetDynPath(), ".strm")))
     return false;
 
+  // "Videos/Video Add-ons" lists addons in the video window
+  if (fileItem.HasAddonInfo())
+    return CGUIDialogAddonInfo::ShowForItem(std::make_shared<CFileItem>(fileItem));
+
+  // Movie set
+  if (fileItem.m_bIsFolder && fileItem.IsVideoDb() &&
+      fileItem.GetPath() != "videodb://movies/sets/" &&
+      StringUtils::StartsWith(fileItem.GetPath(), "videodb://movies/sets/"))
+    return ShowInfo(std::make_shared<CFileItem>(fileItem), nullptr);
+
+  // Music video. Match visibility test of CMusicInfo::IsVisible
+  if (fileItem.IsVideoDb() && fileItem.HasVideoInfoTag() &&
+      (fileItem.HasProperty("artist_musicid") || fileItem.HasProperty("album_musicid")))
+  {
+    CGUIDialogMusicInfo::ShowFor(std::make_shared<CFileItem>(fileItem).get());
+    return true;
+  }
+
+  std::string strDir;
+  if (fileItem.IsVideoDb() && fileItem.HasVideoInfoTag() &&
+      !fileItem.GetVideoInfoTag()->m_strPath.empty())
+    strDir = fileItem.GetVideoInfoTag()->m_strPath;
+  else
+    strDir = URIUtils::GetDirectory(fileItem.GetPath());
+
+  m_database.Open();
+
+  SScanSettings settings;
+  bool foundDirectly = false;
+  const ADDON::ScraperPtr scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
+
+  if (!scraper && !(fileItem.IsPlugin() || fileItem.IsScript()) &&
+      !(m_database.HasMovieInfo(fileItem.GetDynPath()) || m_database.HasTvShowInfo(strDir) ||
+        m_database.HasEpisodeInfo(fileItem.GetDynPath())))
+  {
+    HELPERS::ShowOKDialogText(CVariant{20176}, // Show video information
+                              CVariant{19055}); // no information available
+    m_database.Close();
+    return false;
+  }
+
+  m_database.Close();
+
+  if (scraper && scraper->Content() == CONTENT_TVSHOWS && foundDirectly &&
+      !settings.parent_name_root) // dont lookup on root tvshow folder
+    return true;
+
   CFileItem item(fileItem);
-  bool fromDB = false;
   if ((item.IsVideoDb() && item.HasVideoInfoTag()) ||
       (item.HasVideoInfoTag() && item.GetVideoInfoTag()->m_iDbId != -1))
   {
@@ -218,38 +264,36 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
     }
     item.SetProperty("original_listitem_url", item.GetPath());
     item.SetPath(item.GetVideoInfoTag()->GetPath());
-    fromDB = true;
   }
   else
   {
     if (item.m_bIsFolder && scraper && scraper->Content() != CONTENT_TVSHOWS)
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item.GetPath(), items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
-                               DIR_FLAG_DEFAULTS);
+      const std::string fileExts = CServiceBroker::GetFileExtensionProvider().GetVideoExtensions();
+      CDirectory::GetDirectory(item.GetPath(), items, fileExts, DIR_FLAG_DEFAULTS);
 
       // Check for cases 1_dir/1_dir/.../file (e.g. by packages where have a extra folder)
       while (items.Size() == 1 && items[0]->m_bIsFolder && items[0]->GetOpticalMediaPath().empty())
       {
         const std::string path = items[0]->GetPath();
         items.Clear();
-        CDirectory::GetDirectory(path, items,
-                                 CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
-                                 DIR_FLAG_DEFAULTS);
+        CDirectory::GetDirectory(path, items, fileExts, DIR_FLAG_DEFAULTS);
       }
 
       items.Stack();
 
       // check for media files
       bool bFoundFile(false);
-      for (int i = 0; i < items.Size(); ++i)
+      const std::vector<std::string>& excludeFromScan = CServiceBroker::GetSettingsComponent()
+                                                            ->GetAdvancedSettings()
+                                                            ->m_moviesExcludeFromScanRegExps;
+      for (const auto& i : items)
       {
-        CFileItemPtr item2 = items[i];
-
-        if (item2->IsVideo() && !item2->IsPlayList() &&
-            !CUtil::ExcludeFileOrFolder(item2->GetPath(), CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_moviesExcludeFromScanRegExps))
+        if (i->IsVideo() && !i->IsPlayList() &&
+            !CUtil::ExcludeFileOrFolder(i->GetPath(), excludeFromScan))
         {
-          item.SetPath(item2->GetPath());
+          item.SetPath(i->GetPath());
           item.m_bIsFolder = false;
           bFoundFile = true;
           break;
@@ -269,18 +313,10 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
   if (fileItem.m_bIsFolder)
     item.SetProperty("set_folder_thumb", fileItem.GetPath());
 
-  bool modified = ShowIMDB(CFileItemPtr(new CFileItem(item)), scraper, fromDB);
-  if (modified &&
-     (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_NAV)) // since we can be called from the music library we need this check
-  {
-    int itemNumber = m_viewControl.GetSelectedItem();
-    Refresh();
-    m_viewControl.SetSelectedItem(itemNumber);
-  }
-  return true;
+  return ShowInfo(std::make_shared<CFileItem>(fileItem), scraper);
 }
 
-// ShowIMDB is called as follows:
+// ShowInfo is called as follows:
 // 1.  To lookup info on a file.
 // 2.  To lookup info on a folder (which may or may not contain a file)
 // 3.  To lookup info just for fun (no file or folder related)
@@ -301,25 +337,14 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
 //     and show the information.
 // 6.  Check for a refresh, and if so, go to 3.
 
-bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, bool fromDB)
+bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& info2)
 {
-  /*
-  CLog::Log(LOGDEBUG,"CGUIWindowVideoBase::ShowIMDB");
-  CLog::Log(LOGDEBUG,"  strMovie  = [{}]", strMovie);
-  CLog::Log(LOGDEBUG,"  strFile   = [{}]", strFile);
-  CLog::Log(LOGDEBUG,"  strFolder = [{}]", strFolder);
-  CLog::Log(LOGDEBUG,"  bFolder   = [{}]", ((int)bFolder ? "true" : "false"));
-  */
-
-  CGUIDialogProgress* pDlgProgress = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogProgress>(WINDOW_DIALOG_PROGRESS);
-  CGUIDialogSelect* pDlgSelect = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
   CGUIDialogVideoInfo* pDlgInfo = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoInfo>(WINDOW_DIALOG_VIDEO_INFO);
+  if (!pDlgInfo)
+    return false;
 
   const ScraperPtr& info(info2); // use this as nfo might change it..
-
-  if (!pDlgProgress) return false;
-  if (!pDlgSelect) return false;
-  if (!pDlgInfo) return false;
+  CFileItemPtr item(item2); // we might replace item..
 
   // 1.  Check for already downloaded information, and if we have it, display our dialog
   //     Return if no Refresh is needed.
@@ -451,7 +476,14 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
     listNeedsUpdating = true;
   } while (needsRefresh);
 
-  return listNeedsUpdating;
+  if (listNeedsUpdating &&
+      IsActive()) // since we can be called from other windows (music, home) we need this check
+  {
+    int itemNumber = m_viewControl.GetSelectedItem();
+    Refresh();
+    m_viewControl.SetSelectedItem(itemNumber);
+  }
+  return true;
 }
 
 void CGUIWindowVideoBase::OnQueueItem(int iItem, bool first)
@@ -583,59 +615,7 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return false;
 
-  CFileItemPtr item = m_vecItems->Get(iItem);
-
-  if (item->IsPath("add") || item->IsParentFolder() ||
-     (item->IsPlayList() && !URIUtils::HasExtension(item->GetDynPath(), ".strm")))
-    return false;
-
-  if (!m_vecItems->IsPlugin() && (item->IsPlugin() || item->IsScript()))
-    return CGUIDialogAddonInfo::ShowForItem(item);
-
-  if (item->m_bIsFolder &&
-      item->IsVideoDb() &&
-      StringUtils::StartsWith(item->GetPath(), "videodb://movies/sets/"))
-    return ShowIMDB(item, nullptr, true);
-
-  ADDON::ScraperPtr scraper;
-
-  // Match visibility test of CMusicInfo::IsVisible
-  if (item->IsVideoDb() && item->HasVideoInfoTag() &&
-      (item->HasProperty("artist_musicid") || item->HasProperty("album_musicid")))
-  {
-    CGUIDialogMusicInfo::ShowFor(item.get());
-    return true;
-  }
-  if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
-  {
-    std::string strDir;
-    if (item->IsVideoDb()       &&
-        item->HasVideoInfoTag() &&
-        !item->GetVideoInfoTag()->m_strPath.empty())
-    {
-      strDir = item->GetVideoInfoTag()->m_strPath;
-    }
-    else
-      strDir = URIUtils::GetDirectory(item->GetPath());
-
-    SScanSettings settings;
-    bool foundDirectly = false;
-    scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
-
-    if (!scraper &&
-        !(m_database.HasMovieInfo(item->GetDynPath()) || m_database.HasTvShowInfo(strDir) ||
-          m_database.HasEpisodeInfo(item->GetDynPath())))
-    {
-      HELPERS::ShowOKDialogText(CVariant{20176}, // Show video information
-                                CVariant{19055}); // no information available
-      return false;
-    }
-
-    if (scraper && scraper->Content() == CONTENT_TVSHOWS && foundDirectly && !settings.parent_name_root) // dont lookup on root tvshow folder
-      return true;
-  }
-
-  return OnItemInfo(*item, scraper);
+  return OnItemInfo(*m_vecItems->Get(iItem));
 }
 
 void CGUIWindowVideoBase::OnRestartItem(int iItem, const std::string &player)
@@ -1022,31 +1002,23 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_SCAN:
+    if (!item)
+      return false;
+
+    if (item->IsVideoDb() && (!item->m_bIsFolder || item->GetVideoInfoTag()->m_strPath.empty()))
+      return false;
+
+    if (item->m_bIsFolder)
     {
-      if( !item)
-        return false;
-      ADDON::ScraperPtr info;
-      SScanSettings settings;
-      GetScraperForItem(item.get(), info, settings);
-      std::string strPath = item->GetPath();
-      if (item->IsVideoDb() && (!item->m_bIsFolder || item->GetVideoInfoTag()->m_strPath.empty()))
-        return false;
-
-      if (item->IsVideoDb())
-        strPath = item->GetVideoInfoTag()->m_strPath;
-
-      if (!info || info->Content() == CONTENT_NONE)
-        return false;
-
-      if (item->m_bIsFolder)
-      {
-        OnScan(strPath, true);
-      }
-      else
-        OnItemInfo(*item, info);
-
-      return true;
+      const std::string strPath =
+          item->IsVideoDb() ? item->GetVideoInfoTag()->m_strPath : item->GetPath();
+      OnScan(strPath, true);
     }
+    else
+      OnItemInfo(*item);
+
+    return true;
+
   case CONTEXT_BUTTON_DELETE:
     OnDeleteItem(itemNumber);
     return true;

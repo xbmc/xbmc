@@ -37,11 +37,9 @@ public:
    Default implementation shows a dialog containing information for the movie/episode/...
    represented by the file item.
    \param fileItem the item for which information is to be presented.
-   \param scraper a scraper addon instance that can be used to obtain additional information for
-   the given item
    \return true if information was presented, false otherwise.
    */
-  virtual bool OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& scraper);
+  bool OnItemInfo(const CFileItem& fileItem);
 
   /*! \brief Show the resume menu for this item (if it has a resume bookmark)
    If a resume bookmark is found, we set the item's m_lStartOffset to STARTOFFSET_RESUME.
@@ -126,7 +124,7 @@ protected:
   using CGUIMediaWindow::LoadPlayList;
   void LoadPlayList(const std::string& strPlayList, PLAYLIST::Id playlistId = PLAYLIST::TYPE_VIDEO);
 
-  bool ShowIMDB(CFileItemPtr item, const ADDON::ScraperPtr& content, bool fromDB);
+  bool ShowInfo(const CFileItemPtr& item, const ADDON::ScraperPtr& content);
 
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
