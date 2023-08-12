@@ -56,8 +56,7 @@ private:
    * \return 
    */
   DXVA::ProcessorConversion ChooseConversion(const DXVA::ProcessorConversions& conversions,
-                                             unsigned int sourceBits,
-                                             AVColorTransferCharacteristic colorTransfer) const;
+                                             bool sourceIsHQ) const;
 
   std::unique_ptr<DXVA::CProcessorHD> m_processor;
   std::shared_ptr<DXVA::CEnumeratorHD> m_enumerator;

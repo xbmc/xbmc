@@ -135,7 +135,10 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
 
       if (!conversions.empty())
       {
-        m_conversion = ChooseConversion(conversions, picture.colorBits, picture.color_transfer);
+        const bool sourceIsHQ =
+            (picture.colorBits > 8 || picture.isHdr || picture.color_primaries == AVCOL_PRI_BT2020);
+
+        m_conversion = ChooseConversion(conversions, sourceIsHQ);
 
         CLog::LogF(LOGINFO, "chosen conversion: {}", m_conversion.ToString());
 
@@ -186,11 +189,12 @@ void CRendererDXVA::CheckVideoParameters()
       CLog::LogF(LOGINFO, "source format change detected");
 
       const ProcessorConversions conversions = m_enumerator->SupportedConversions(args);
+      const bool sourceIsHQ = (buf->bits > 8 || buf->isHdr || buf->primaries == AVCOL_PRI_BT2020);
+
       // TODO case no supported conversion: add support in WinRenderer to fallback to a render method with support
       // For now, keep using the current conversion. Results won't be ideal but a black screen is avoided
       const ProcessorConversion conversion =
-          conversions.empty() ? m_conversion
-                              : ChooseConversion(conversions, buf->bits, buf->color_transfer);
+          conversions.empty() ? m_conversion : ChooseConversion(conversions, sourceIsHQ);
 
       if (m_conversion != conversion)
       {
@@ -474,20 +478,18 @@ bool CRendererDXVA::CRenderBufferImpl::UploadToTexture()
   return m_bLoaded;
 }
 
-ProcessorConversion CRendererDXVA::ChooseConversion(
-    const ProcessorConversions& conversions,
-    unsigned int sourceBits,
-    AVColorTransferCharacteristic colorTransfer) const
+ProcessorConversion CRendererDXVA::ChooseConversion(const ProcessorConversions& conversions,
+                                                    bool sourceIsHQ) const
 {
   assert(conversions.size() > 0);
 
   bool tryHQ{false};
   if (!m_tryVSR)
   {
-    // Try high quality when: backbuffer is 10 bits or High precision processing is on and the source is HDR
+    // Try high quality when: backbuffer is 10 bits OR
+    // High precision processing is on and the source is HDR or 10-bit SDR
     tryHQ = (DX::Windowing()->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM) ||
-            (DX::Windowing()->IsHighPrecisionProcessingSettingEnabled() && sourceBits > 8 &&
-             (colorTransfer == AVCOL_TRC_SMPTE2084 || colorTransfer == AVCOL_TRC_ARIB_STD_B67));
+            (DX::Windowing()->IsHighPrecisionProcessingSettingEnabled() && sourceIsHQ);
   }
 
   // RGB8 processor output format is required for VSR
