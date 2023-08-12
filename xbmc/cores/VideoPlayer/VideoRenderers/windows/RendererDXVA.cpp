@@ -135,10 +135,7 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
 
       if (!conversions.empty())
       {
-        const ProcessorConversion chosenConversion =
-            ChooseConversion(conversions, picture.colorBits, picture.color_transfer);
-        m_intermediateTargetFormat = chosenConversion.m_outputFormat;
-        m_conversion = chosenConversion;
+        m_conversion = ChooseConversion(conversions, picture.colorBits, picture.color_transfer);
 
         CLog::LogF(LOGINFO, "chosen conversion: {}", m_conversion.ToString());
 
@@ -200,8 +197,6 @@ void CRendererDXVA::CheckVideoParameters()
         CLog::LogF(LOGINFO, "new conversion: {}", conversion.ToString());
 
         m_processor->SetConversion(conversion);
-        m_intermediateTargetFormat = conversion.m_outputFormat;
-
         m_conversion = conversion;
       }
       m_conversionsArgs = args;
@@ -210,7 +205,7 @@ void CRendererDXVA::CheckVideoParameters()
 
   CreateIntermediateTarget(HasHQScaler() ? m_sourceWidth : m_viewWidth,
                            HasHQScaler() ? m_sourceHeight : m_viewHeight, false,
-                           m_intermediateTargetFormat);
+                           m_conversion.m_outputFormat);
 }
 
 void CRendererDXVA::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags)
