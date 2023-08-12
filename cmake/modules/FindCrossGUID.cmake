@@ -92,12 +92,12 @@ if(CROSSGUID_FOUND)
     if(CROSSGUID_LIBRARY_RELEASE)
       set_target_properties(CrossGUID::CrossGUID PROPERTIES
                                                  IMPORTED_CONFIGURATIONS RELEASE
-                                                 IMPORTED_LOCATION "${CROSSGUID_LIBRARY_RELEASE}")
+                                                 IMPORTED_LOCATION_RELEASE "${CROSSGUID_LIBRARY_RELEASE}")
     endif()
     if(CROSSGUID_LIBRARY_DEBUG)
       set_target_properties(CrossGUID::CrossGUID PROPERTIES
                                                  IMPORTED_CONFIGURATIONS DEBUG
-                                                 IMPORTED_LOCATION "${CROSSGUID_LIBRARY_DEBUG}")
+                                                 IMPORTED_LOCATION_DEBUG "${CROSSGUID_LIBRARY_DEBUG}")
     endif()
     set_target_properties(CrossGUID::CrossGUID PROPERTIES
                                                INTERFACE_INCLUDE_DIRECTORIES "${CROSSGUID_INCLUDE_DIRS}")
