@@ -48,7 +48,7 @@ protected:
 
 private:
   static AVColorPrimaries GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height);
-  DXGI_FORMAT CalcIntermediateTargetFormat(const VideoPicture& picture) const;
+  DXGI_FORMAT CalcIntermediateTargetFormat() const;
 
   AVColorPrimaries m_srcPrimaries = AVCOL_PRI_BT709;
   std::unique_ptr<CYUV2RGBShader> m_colorShader;
