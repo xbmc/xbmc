@@ -127,6 +127,7 @@ fi")
   set(FFMPEG_INCLUDE_DIRS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
   set(FFMPEG_DEFINITIONS -DUSE_STATIC_FFMPEG=1)
   set(FFMPEG_FOUND 1)
+  set(FFMPEG_VERSION ${FFMPEG_VER})
 
   set_target_properties(ffmpeg PROPERTIES FOLDER "External Projects")
 endmacro()
@@ -289,7 +290,8 @@ endif()
 
 if(FFMPEG_FOUND)
 
-  list(APPEND FFMPEG_DEFINITIONS -DFFMPEG_VER_SHA=\"${FFMPEG_VERSION}\")
+  set(_ffmpeg_definitions FFMPEG_VER_SHA=${FFMPEG_VERSION})
+  list(APPEND FFMPEG_DEFINITIONS -D${_ffmpeg_definitions})
 
   if(NOT TARGET ffmpeg)
     add_library(ffmpeg ${FFMPEG_LIB_TYPE} IMPORTED)
@@ -298,7 +300,7 @@ if(FFMPEG_FOUND)
                                  IMPORTED_LOCATION "${FFMPEG_LIBRARIES}"
                                  INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}"
                                  INTERFACE_LINK_LIBRARIES "${FFMPEG_LDFLAGS}"
-                                 INTERFACE_COMPILE_DEFINITIONS "${FFMPEG_DEFINITIONS}")
+                                 INTERFACE_COMPILE_DEFINITIONS "${_ffmpeg_definitions}")
   endif()
 
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ffmpeg)
