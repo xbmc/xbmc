@@ -38,6 +38,11 @@ public:
   /*! \brief Stops the manager */
   void Stop();
 
+  /*! \brief Gets the total number of timers registered in the manager
+     *  \return the timer count
+    */
+  size_t GetTimerCount() const;
+
   /*! \brief Checks if the timer with name `timer` exists
    *  \param timer the name of the skin timer
    *  \return true if the given timer exists, false otherwise

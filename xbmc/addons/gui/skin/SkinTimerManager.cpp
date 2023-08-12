@@ -174,6 +174,11 @@ void CSkinTimerManager::TimerStop(const std::string& timer) const
   m_timers.at(timer)->Stop();
 }
 
+size_t CSkinTimerManager::GetTimerCount() const
+{
+  return m_timers.size();
+}
+
 bool CSkinTimerManager::TimerExists(const std::string& timer) const
 {
   return m_timers.count(timer) != 0;
