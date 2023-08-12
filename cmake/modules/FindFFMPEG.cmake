@@ -37,13 +37,16 @@
 macro(buildFFMPEG)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(MODULE_LC ffmpeg)
-
-  SETUP_BUILD_VARS()
-
+  # Check for dependencies - Must be done before SETUP_BUILD_VARS
+  get_libversion_data("dav1d" "target")
+  find_package(Dav1d ${LIB_DAV1D_VER} MODULE)
   if(NOT DAV1D_FOUND)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
   endif()
+
+  set(MODULE_LC ffmpeg)
+
+  SETUP_BUILD_VARS()
 
   set(FFMPEG_OPTIONS -DENABLE_CCACHE=${ENABLE_CCACHE}
                      -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
@@ -92,7 +95,7 @@ macro(buildFFMPEG)
 
   BUILD_DEP_TARGET()
 
-  if(ENABLE_INTERNAL_DAV1D)
+  if(TARGET dav1d)
     add_dependencies(ffmpeg dav1d)
   endif()
 
