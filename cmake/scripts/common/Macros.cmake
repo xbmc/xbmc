@@ -73,6 +73,10 @@ function(core_add_library name)
     set_target_properties(${name} PROPERTIES PREFIX "")
     set(core_DEPENDS ${name} ${core_DEPENDS} CACHE STRING "" FORCE)
     add_dependencies(${name} ${GLOBAL_TARGET_DEPS})
+
+    # Adds global target to library. This propagates dep lib info (eg include_dir locations)
+    target_link_libraries(${name} PRIVATE ${GLOBAL_TARGET_DEPS})
+
     set(CORE_LIBRARY ${name} PARENT_SCOPE)
 
     if(NOT MSVC)

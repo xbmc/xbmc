@@ -8,7 +8,7 @@ if(MICROHTTPD_FOUND)
   list(APPEND SOURCES TestHTTPDirectory.cpp)
 endif()
 
-if(NFS_FOUND)
+if(TARGET libnfs::nfs)
   list(APPEND SOURCES TestNfsFile.cpp)
 endif()
 

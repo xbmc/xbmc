@@ -100,16 +100,12 @@ find_package_handle_standard_args(LibDvdCSS
                                   VERSION_VAR LIBDVDCSS_VERSION)
 
 if(LIBDVDCSS_FOUND)
-  set(LIBDVDCSS_INCLUDE_DIRS ${LIBDVDCSS_INCLUDE_DIR})
-  set(LIBDVDCSS_LIBRARIES ${LIBDVDCSS_LIBRARY})
-  set(LIBDVDCSS_DEFINITIONS -DHAVE_DVDCSS_DVDCSS_H)
-
   if(NOT TARGET LibDvdCSS::LibDvdCSS)
     add_library(LibDvdCSS::LibDvdCSS UNKNOWN IMPORTED)
 
     set_target_properties(LibDvdCSS::LibDvdCSS PROPERTIES
                                                IMPORTED_LOCATION "${LIBDVDCSS_LIBRARY}"
-                                               INTERFACE_COMPILE_DEFINITIONS "${LIBDVDCSS_DEFINITIONS}"
+                                               INTERFACE_COMPILE_DEFINITIONS "HAVE_DVDCSS_DVDCSS_H"
                                                INTERFACE_INCLUDE_DIRECTORIES "${LIBDVDCSS_INCLUDE_DIR}")
 
     if(TARGET libdvdcss)
