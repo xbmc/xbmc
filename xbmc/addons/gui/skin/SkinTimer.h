@@ -68,6 +68,11 @@ public:
   */
   INFO::InfoPtr GetStopCondition() const;
 
+  /*! \brief Checks if a given timer is configured to reset every time it starts
+   * \return true if the timer is configured to reset on start, false otherwise
+  */
+  bool ResetsOnStart() const;
+
   /*! \brief Evaluates the timer start boolean info expression returning the respective result.
   * \details Called from the skin timer manager to check if the timer should be started
   * \return true if the condition is true, false otherwise
