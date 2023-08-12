@@ -104,7 +104,7 @@ if(NFS_FOUND)
     add_library(NFS::NFS UNKNOWN IMPORTED)
 
     set_target_properties(NFS::NFS PROPERTIES
-                                   IMPORTED_LOCATION "${NFS_LIBRARY_RELEASE}"
+                                   IMPORTED_LOCATION "${NFS_LIBRARY}"
                                    INTERFACE_INCLUDE_DIRECTORIES "${NFS_INCLUDE_DIR}"
                                    INTERFACE_COMPILE_DEFINITIONS "${NFS_DEFINITIONS}")
     if(TARGET libnfs)
