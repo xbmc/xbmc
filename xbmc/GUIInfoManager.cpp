@@ -10706,7 +10706,7 @@ INFO::InfoPtr CGUIInfoManager::Register(const std::string &expression, int conte
     res = m_bools.insert(std::make_shared<InfoSingle>(condition, context, m_refreshCounter));
 
   if (res.second)
-    res.first->get()->Initialize();
+    res.first->get()->Initialize(this);
 
   return *(res.first);
 }
