@@ -283,7 +283,7 @@ protected:
   bool m_debugging;
 
   /*! Manager/Owner of skin timers */
-  CSkinTimerManager m_skinTimerManager;
+  std::unique_ptr<CSkinTimerManager> m_skinTimerManager;
 
 private:
   std::map<int, CSkinSettingStringPtr> m_strings;
