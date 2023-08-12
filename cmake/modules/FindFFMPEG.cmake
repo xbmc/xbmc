@@ -91,8 +91,6 @@ macro(buildFFMPEG)
     set(FFMPEG_GENERATOR CMAKE_GENERATOR "Unix Makefiles")
   endif()
 
-  set(FFMPEG_LIB_TYPE STATIC)
-
   BUILD_DEP_TARGET()
 
   if(ENABLE_INTERNAL_DAV1D)
@@ -269,14 +267,6 @@ else()
                            ${FFMPEG_LIBSWSCALE} ${FFMPEG_LIBSWRESAMPLE}
                            ${FFMPEG_LIBPOSTPROC} ${FFMPEG_LDFLAGS})
 
-      # check if ffmpeg libs are statically linked
-      set(FFMPEG_LIB_TYPE SHARED)
-      foreach(_fflib IN LISTS FFMPEG_LIBRARIES)
-        if(${_fflib} MATCHES ".+\.a$" AND PC_FFMPEG_STATIC_LDFLAGS)
-          set(FFMPEG_LIB_TYPE STATIC)
-          break()
-        endif()
-      endforeach()
     endif()
   else()
     if(FFMPEG_PATH)
@@ -289,21 +279,23 @@ else()
 endif()
 
 if(FFMPEG_FOUND)
-
   set(_ffmpeg_definitions FFMPEG_VER_SHA=${FFMPEG_VERSION})
   list(APPEND FFMPEG_DEFINITIONS -D${_ffmpeg_definitions})
 
-  if(NOT TARGET ffmpeg)
-    add_library(ffmpeg ${FFMPEG_LIB_TYPE} IMPORTED)
-    set_target_properties(ffmpeg PROPERTIES
-                                 FOLDER "External Projects"
-                                 IMPORTED_LOCATION "${FFMPEG_LIBRARIES}"
-                                 INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}"
-                                 INTERFACE_LINK_LIBRARIES "${FFMPEG_LDFLAGS}"
-                                 INTERFACE_COMPILE_DEFINITIONS "${_ffmpeg_definitions}")
+  if(NOT TARGET ffmpeg::ffmpeg)
+    add_library(ffmpeg::ffmpeg INTERFACE IMPORTED)
+    set_target_properties(ffmpeg::ffmpeg PROPERTIES
+                                         FOLDER "External Projects"
+                                         INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}"
+                                         INTERFACE_LINK_LIBRARIES "${FFMPEG_LDFLAGS}"
+                                         INTERFACE_COMPILE_DEFINITIONS "${_ffmpeg_definition}")
   endif()
 
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ffmpeg)
+  if(TARGET ffmpeg)
+    add_dependencies(ffmpeg::ffmpeg ffmpeg)
+  endif()
+
+  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ffmpeg::ffmpeg)
 endif()
 
 mark_as_advanced(FFMPEG_INCLUDE_DIRS FFMPEG_LIBRARIES FFMPEG_LDFLAGS FFMPEG_DEFINITIONS FFMPEG_FOUND)
