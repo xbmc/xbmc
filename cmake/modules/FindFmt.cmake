@@ -2,13 +2,7 @@
 # -------
 # Finds the Fmt library
 #
-# This will define the following variables::
-#
-# FMT_FOUND - system has Fmt
-# FMT_INCLUDE_DIRS - the Fmt include directory
-# FMT_LIBRARIES - the Fmt libraries
-#
-# and the following imported targets::
+# This will define the following target:
 #
 #   fmt::fmt   - The Fmt library
 
@@ -21,27 +15,27 @@ set(FORCE_BUILD OFF)
 # If target exists, no need to rerun find
 # Allows a module that may be a dependency for multiple libraries to just be executed
 # once to populate all required variables/targets
-if((NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED) AND NOT TARGET fmt)
+if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
+
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  set(MODULE_LC fmt)
+
+  SETUP_BUILD_VARS()
+
+  # Check for existing FMT. If version >= FMT-VERSION file version, dont build
+  find_package(FMT CONFIG QUIET)
 
   # Build if ENABLE_INTERNAL_FMT, or if required version in find_package call is greater 
   # than already found FMT_VERSION from a previous find_package call
-  if(ENABLE_INTERNAL_FMT OR (Fmt_FIND_REQUIRED AND FMT_VERSION VERSION_LESS Fmt_FIND_VERSION))
-
-    include(cmake/scripts/common/ModuleHelpers.cmake)
-
-    set(MODULE_LC fmt)
-
-    SETUP_BUILD_VARS()
-
-    # Check for existing FMT. If version >= FMT-VERSION file version, dont build
-    find_package(FMT CONFIG QUIET)
+  if((Fmt_FIND_REQUIRED AND FMT_VERSION VERSION_LESS Fmt_FIND_VERSION AND ENABLE_INTERNAL_FMT) OR
+     (FMT_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_FMT) OR
+     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_FMT))
 
     if(Fmt_FIND_VERSION)
       if(FMT_VERSION VERSION_LESS ${Fmt_FIND_VERSION})
         set(FORCE_BUILD ON)
       endif()
-    else()
-      set(FORCE_BUILD ON)
     endif()
 
     if(${FORCE_BUILD} OR FMT_VERSION VERSION_LESS ${${MODULE}_VER})
@@ -71,30 +65,75 @@ if((NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED) AND NOT TARGET fmt)
 
       BUILD_DEP_TARGET()
     else()
-      # Populate paths for find_package_handle_standard_args
-      find_path(FMT_INCLUDE_DIR NAMES fmt/format.h)
-      find_library(FMT_LIBRARY_RELEASE NAMES fmt)
-      find_library(FMT_LIBRARY_DEBUG NAMES fmtd)
-    endif()
-  else()
-    find_package(FMT 6.1.2 CONFIG REQUIRED QUIET)
-
-    if(PKG_CONFIG_FOUND)
-      pkg_check_modules(PC_FMT libfmt QUIET)
-      if(PC_FMT_VERSION AND NOT FMT_VERSION)
-        set(FMT_VERSION ${PC_FMT_VERSION})
+      if(NOT TARGET fmt::fmt)
+        set(FMT_PKGCONFIG_CHECK ON)
       endif()
     endif()
-
-    find_path(FMT_INCLUDE_DIR NAMES fmt/format.h
-                              PATHS ${PC_FMT_INCLUDEDIR})
-
-    find_library(FMT_LIBRARY_RELEASE NAMES fmt
-                                    PATHS ${PC_FMT_LIBDIR})
-    find_library(FMT_LIBRARY_DEBUG NAMES fmtd
-                                   PATHS ${PC_FMT_LIBDIR})
-
+  else()
+    if(NOT TARGET fmt::fmt)
+      set(FMT_PKGCONFIG_CHECK ON)
+    endif()
   endif()
+
+  if(NOT TARGET fmt::fmt)
+    if(FMT_PKGCONFIG_CHECK)
+      if(PKG_CONFIG_FOUND)
+        pkg_check_modules(PC_FMT libfmt QUIET)
+        set(FMT_VERSION ${PC_FMT_VERSION})
+      endif()
+
+      find_path(FMT_INCLUDE_DIR NAMES fmt/format.h
+                                PATHS ${PC_FMT_INCLUDEDIR})
+
+      find_library(FMT_LIBRARY_RELEASE NAMES fmt
+                                       PATHS ${PC_FMT_LIBDIR})
+      find_library(FMT_LIBRARY_DEBUG NAMES fmtd
+                                     PATHS ${PC_FMT_LIBDIR})
+    endif()
+
+    add_library(fmt::fmt UNKNOWN IMPORTED)
+    if(FMT_LIBRARY_RELEASE)
+      set_target_properties(fmt::fmt PROPERTIES
+                                     IMPORTED_CONFIGURATIONS RELEASE
+                                     IMPORTED_LOCATION_RELEASE "${FMT_LIBRARY_RELEASE}")
+    endif()
+    if(FMT_LIBRARY_DEBUG)
+      set_target_properties(fmt::fmt PROPERTIES
+                                     IMPORTED_CONFIGURATIONS DEBUG
+                                     IMPORTED_LOCATION_DEBUG "${FMT_LIBRARY_DEBUG}")
+    endif()
+    set_target_properties(fmt::fmt PROPERTIES
+                                   INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
+
+    if(TARGET fmt)
+      add_dependencies(fmt::fmt fmt)
+    endif()
+  endif()
+
+  # If a force build is done, let any calling packages know they may want to rebuild
+  if(FORCE_BUILD)
+    set_target_properties(fmt::fmt PROPERTIES LIB_BUILD ON)
+  endif()
+
+  # This is for the case where a distro provides a non standard (Debug/Release) config type
+  # eg Debian's config file is fmtConfigTargets-none.cmake
+  # convert this back to either DEBUG/RELEASE or just RELEASE
+  # we only do this because we use find_package_handle_standard_args for config time output
+  # and it isnt capable of handling TARGETS, so we have to extract the info
+  get_target_property(_FMT_CONFIGURATIONS fmt::fmt IMPORTED_CONFIGURATIONS)
+  foreach(_fmt_config IN LISTS _FMT_CONFIGURATIONS)
+    # Some non standard config (eg None on Debian)
+    # Just set to RELEASE var so select_library_configurations can continue to work its magic
+    string(TOUPPER ${_fmt_config} _fmt_config_UPPER)
+    if((NOT ${_fmt_config_UPPER} STREQUAL "RELEASE") AND
+       (NOT ${_fmt_config_UPPER} STREQUAL "DEBUG"))
+      get_target_property(FMT_LIBRARY_RELEASE fmt::fmt IMPORTED_LOCATION_${_fmt_config_UPPER})
+    else()
+      get_target_property(FMT_LIBRARY_${_fmt_config_UPPER} fmt::fmt IMPORTED_LOCATION_${_fmt_config_UPPER})
+    endif()
+  endforeach()
+
+  get_target_property(FMT_INCLUDE_DIR fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
 
   include(SelectLibraryConfigurations)
   select_library_configurations(FMT)
@@ -104,46 +143,13 @@ if((NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED) AND NOT TARGET fmt)
                                     REQUIRED_VARS FMT_LIBRARY FMT_INCLUDE_DIR
                                     VERSION_VAR FMT_VERSION)
 
-  if(FMT_FOUND)
-    set(FMT_LIBRARIES ${FMT_LIBRARY})
-    set(FMT_INCLUDE_DIRS ${FMT_INCLUDE_DIR})
+  # Check whether we already have tinyxml2::tinyxml2 target added to dep property list
+  get_property(CHECK_INTERNAL_DEPS GLOBAL PROPERTY INTERNAL_DEPS_PROP)
+  list(FIND CHECK_INTERNAL_DEPS "fmt::fmt" FMT_PROP_FOUND)
 
-    # Reorder this to allow handling of FMT_FORCE_BUILD and not duplicate in property
-    if(NOT TARGET fmt::fmt)
-      set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP fmt::fmt)
-    endif()
-
-    if(NOT TARGET fmt::fmt OR FORCE_BUILD)
-      if(NOT TARGET fmt::fmt)
-        add_library(fmt::fmt UNKNOWN IMPORTED)
-      endif()
-
-      if(FMT_LIBRARY_RELEASE)
-        set_target_properties(fmt::fmt PROPERTIES
-                                       IMPORTED_CONFIGURATIONS RELEASE
-                                       IMPORTED_LOCATION "${FMT_LIBRARY_RELEASE}")
-      endif()
-      if(FMT_LIBRARY_DEBUG)
-        set_target_properties(fmt::fmt PROPERTIES
-                                       IMPORTED_CONFIGURATIONS DEBUG
-                                       IMPORTED_LOCATION "${FMT_LIBRARY_DEBUG}")
-      endif()
-      set_target_properties(fmt::fmt PROPERTIES
-                                     INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
-
-      # If a force build is done, let any calling packages know they may want to rebuild
-      if(FORCE_BUILD)
-        set_target_properties(fmt::fmt PROPERTIES LIB_BUILD ON)
-      endif()
-    endif()
-    if(TARGET fmt)
-      add_dependencies(fmt::fmt fmt)
-    endif()
-  else()
-    if(FMT_FIND_REQUIRED)
-      message(FATAL_ERROR "Fmt lib not found. Maybe use -DENABLE_INTERNAL_FMT=ON")
-    endif()
+  # list(FIND) returns -1 if search item not found
+  if(FMT_PROP_FOUND STREQUAL "-1")
+    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP fmt::fmt)
   endif()
 
-  mark_as_advanced(FMT_INCLUDE_DIR FMT_LIBRARY)
 endif()
