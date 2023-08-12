@@ -28,7 +28,7 @@ public:
     : InfoBool(expression, context, refreshCounter)
   {
   }
-  void Initialize() override;
+  void Initialize(CGUIInfoManager* infoMgr) override;
 
   void Update(int contextWindow, const CGUIListItem* item) override;
 
@@ -47,7 +47,7 @@ public:
   }
   ~InfoExpression() override = default;
 
-  void Initialize() override;
+  void Initialize(CGUIInfoManager* infoMgr) override;
 
   void Update(int contextWindow, const CGUIListItem* item) override;
 
