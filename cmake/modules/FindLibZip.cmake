@@ -63,6 +63,12 @@ if(LIBZIP_FOUND)
     if(TARGET libzip)
       add_dependencies(libzip::zip libzip)
     endif()
+  else()
+    # ToDo: When we correctly import dependencies cmake targets for the following
+    # BZip2::BZip2, LibLZMA::LibLZMA, GnuTLS::GnuTLS, Nettle::Nettle,ZLIB::ZLIB
+    # For now, we just override 
+    set_target_properties(libzip::zip PROPERTIES
+                                      INTERFACE_LINK_LIBRARIES "")
   endif()
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP libzip::zip)
 else()
