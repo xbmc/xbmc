@@ -65,6 +65,15 @@ protected:
   bool OpenProcessor();
   void ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, int min, int max, int def) const;
   ComPtr<ID3D11VideoProcessorInputView> GetInputView(CRenderBuffer* view) const;
+  /*!
+   * \brief Apply new video settings if there was a change. Returns true if a parameter changed, false otherwise.
+   */
+  bool CheckVideoParameters(const CRect& src,
+                            const CRect& dst,
+                            const UINT& rotation,
+                            const float& contrast,
+                            const float& brightness,
+                            const CRenderBuffer& rb);
 
   void EnableIntelVideoSuperResolution();
   void EnableNvidiaRTXVideoSuperResolution();
@@ -83,5 +92,22 @@ protected:
   bool m_superResolutionEnabled{false};
   ProcessorConversion m_conversion;
   bool m_isValidConversion{false};
+
+  /*!
+   * \brief true when at least one frame has been processed successfully since init
+   */
+  bool m_configured{false};
+
+  // Members to compare the current frame with the previous frame
+  UINT m_lastInputFrameOrField{0};
+  UINT m_lastOutputIndex{0};
+  CRect m_lastSrc{};
+  CRect m_lastDst{};
+  UINT m_lastRotation{0};
+  float m_lastContrast{.0f};
+  float m_lastBrightness{.0f};
+  ProcessorConversion m_lastConversion{};
+  AVColorSpace m_lastColorSpace{AVCOL_SPC_UNSPECIFIED};
+  bool m_lastFullRange{false};
 };
 };
