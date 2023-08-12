@@ -14,6 +14,8 @@
 #include <memory>
 #include <string>
 
+class CGUIInfoManager;
+
 /*! \brief CSkinTimerManager is the container and manager for Skin timers. Its role is that of
  * checking if the timer boolean conditions are valid, start or stop timers and execute the respective
  * builtin actions linked to the timer lifecycle
@@ -24,8 +26,11 @@
 class CSkinTimerManager
 {
 public:
-  /*! \brief Skin timer manager constructor */
-  CSkinTimerManager() = default;
+  /*! \brief Skin timer manager constructor
+   *  \param infoMgr reference to the infomanager
+   */
+  CSkinTimerManager(CGUIInfoManager& infoMgr);
+  CSkinTimerManager() = delete;
 
   /*! \brief Default skin timer manager destructor */
   ~CSkinTimerManager() = default;
@@ -91,4 +96,5 @@ private:
 
   /*! Container for the skin timers */
   std::map<std::string, std::unique_ptr<CSkinTimer>> m_timers;
+  CGUIInfoManager& m_infoMgr;
 };

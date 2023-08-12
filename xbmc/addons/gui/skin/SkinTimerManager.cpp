@@ -9,7 +9,6 @@
 #include "SkinTimerManager.h"
 
 #include "GUIInfoManager.h"
-#include "ServiceBroker.h"
 #include "guilib/GUIAction.h"
 #include "guilib/GUIComponent.h"
 #include "utils/StringUtils.h"
@@ -19,6 +18,10 @@
 #include <chrono>
 
 using namespace std::chrono_literals;
+
+CSkinTimerManager::CSkinTimerManager(CGUIInfoManager& infoMgr) : m_infoMgr{infoMgr}
+{
+}
 
 void CSkinTimerManager::LoadTimers(const std::string& path)
 {
@@ -69,8 +72,7 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
   if (node->FirstChild("start") && node->FirstChild("start")->FirstChild() &&
       !node->FirstChild("start")->FirstChild()->ValueStr().empty())
   {
-    startInfo = CServiceBroker::GetGUI()->GetInfoManager().Register(
-        node->FirstChild("start")->FirstChild()->ValueStr());
+    startInfo = m_infoMgr.Register(node->FirstChild("start")->FirstChild()->ValueStr());
     // check if timer needs to be reset after start
     if (node->FirstChildElement("start")->Attribute("reset") &&
         StringUtils::EqualsNoCase(node->FirstChildElement("start")->Attribute("reset"), "true"))
@@ -84,16 +86,14 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
   if (node->FirstChild("reset") && node->FirstChild("reset")->FirstChild() &&
       !node->FirstChild("reset")->FirstChild()->ValueStr().empty())
   {
-    resetInfo = CServiceBroker::GetGUI()->GetInfoManager().Register(
-        node->FirstChild("reset")->FirstChild()->ValueStr());
+    resetInfo = m_infoMgr.Register(node->FirstChild("reset")->FirstChild()->ValueStr());
   }
   // timer stop
   INFO::InfoPtr stopInfo{nullptr};
   if (node->FirstChild("stop") && node->FirstChild("stop")->FirstChild() &&
       !node->FirstChild("stop")->FirstChild()->ValueStr().empty())
   {
-    stopInfo = CServiceBroker::GetGUI()->GetInfoManager().Register(
-        node->FirstChild("stop")->FirstChild()->ValueStr());
+    stopInfo = m_infoMgr.Register(node->FirstChild("stop")->FirstChild()->ValueStr());
   }
 
   // process onstart actions
@@ -207,15 +207,15 @@ void CSkinTimerManager::Stop()
     const std::unique_ptr<CSkinTimer>::pointer timer = val.get();
     if (timer->GetStartCondition())
     {
-      CServiceBroker::GetGUI()->GetInfoManager().UnRegister(timer->GetStartCondition());
+      m_infoMgr.UnRegister(timer->GetStartCondition());
     }
     if (timer->GetStopCondition())
     {
-      CServiceBroker::GetGUI()->GetInfoManager().UnRegister(timer->GetStopCondition());
+      m_infoMgr.UnRegister(timer->GetStopCondition());
     }
     if (timer->GetResetCondition())
     {
-      CServiceBroker::GetGUI()->GetInfoManager().UnRegister(timer->GetResetCondition());
+      m_infoMgr.UnRegister(timer->GetResetCondition());
     }
   }
   m_timers.clear();
