@@ -65,6 +65,11 @@ bool CSkinTimer::VerifyStopCondition() const
   return m_stopCondition && m_stopCondition->Get(INFO::DEFAULT_CONTEXT);
 }
 
+const std::string& CSkinTimer::GetName() const
+{
+  return m_name;
+}
+
 INFO::InfoPtr CSkinTimer::GetStartCondition() const
 {
   return m_startCondition;

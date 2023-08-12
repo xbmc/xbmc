@@ -53,6 +53,11 @@ public:
   /*! \brief stops the skin timer */
   void Stop();
 
+  /*! \brief Getter for the timer name
+   * \return the timer name
+  */
+  const std::string& GetName() const;
+
   /*! \brief Getter for the timer start boolean condition/expression
   * \return the start boolean condition/expression (may be null)
   */
