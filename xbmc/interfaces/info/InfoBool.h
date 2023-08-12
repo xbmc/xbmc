@@ -12,6 +12,7 @@
 #include <string>
 
 class CGUIListItem;
+class CGUIInfoManager;
 
 namespace INFO
 {
@@ -25,7 +26,7 @@ public:
   InfoBool(const std::string &expression, int context, unsigned int &refreshCounter);
   virtual ~InfoBool() = default;
 
-  virtual void Initialize() {}
+  virtual void Initialize(CGUIInfoManager* infoMgr) { m_infoMgr = infoMgr; }
 
   /*! \brief Get the value of this info bool
    This is called to update (if dirty) and fetch the value of the info bool
@@ -72,6 +73,7 @@ protected:
   int m_context;               ///< contextual information to go with the condition
   bool m_listItemDependent = false; ///< do not cache if a listitem pointer is given
   std::string  m_expression;   ///< original expression
+  CGUIInfoManager* m_infoMgr;
 
 private:
   unsigned int m_refreshCounter = 0;
