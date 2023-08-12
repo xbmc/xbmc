@@ -38,6 +38,12 @@ public:
   /*! \brief Stops the manager */
   void Stop();
 
+  /*! \brief Checks if the timer with name `timer` exists
+   *  \param timer the name of the skin timer
+   *  \return true if the given timer exists, false otherwise
+  */
+  bool TimerExists(const std::string& timer) const;
+
   /*! \brief Checks if the timer with name `timer` is running
    \param timer the name of the skin timer
    \return true if the given timer exists and is running, false otherwise
