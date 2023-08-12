@@ -192,7 +192,7 @@ bool CProcessorHD::OpenProcessor()
   }
 
   // Output background color (black)
-  D3D11_VIDEO_COLOR color;
+  D3D11_VIDEO_COLOR color{};
   color.YCbCr = { 0.0625f, 0.5f, 0.5f, 1.0f }; // black color
   m_pVideoContext->VideoProcessorSetOutputBackgroundColor(m_pVideoProcessor.Get(), TRUE, &color);
 

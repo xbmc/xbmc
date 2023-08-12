@@ -37,7 +37,7 @@ public:
   bool Open(bool streamIsHDR, std::shared_ptr<DXVA::CEnumeratorHD> enumerator);
   void Close();
   bool Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer **views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness);
-  uint8_t PastRefs() const { return std::min(m_procCaps.m_rateCaps.PastFrames, 4u); }
+  UINT PastRefs() const { return std::min(m_procCaps.m_rateCaps.PastFrames, 4u); }
 
   /*!
    * \brief Configure the processor for the provided conversion.
