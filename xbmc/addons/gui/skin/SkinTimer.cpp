@@ -80,6 +80,11 @@ INFO::InfoPtr CSkinTimer::GetStopCondition() const
   return m_stopCondition;
 }
 
+bool CSkinTimer::ResetsOnStart() const
+{
+  return m_resetOnStart;
+}
+
 void CSkinTimer::OnStart()
 {
   if (m_startActions.HasAnyActions())
