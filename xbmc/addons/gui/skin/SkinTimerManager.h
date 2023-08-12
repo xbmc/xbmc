@@ -49,6 +49,12 @@ public:
   */
   bool TimerExists(const std::string& timer) const;
 
+  /*! \brief Move a given timer, removing it from the manager
+   *  \param timer the name of the skin timer
+   *  \return the timer (moved), nullptr if it doesn't exist
+  */
+  std::unique_ptr<CSkinTimer> GrabTimer(const std::string& timer);
+
   /*! \brief Checks if the timer with name `timer` is running
    \param timer the name of the skin timer
    \return true if the given timer exists and is running, false otherwise

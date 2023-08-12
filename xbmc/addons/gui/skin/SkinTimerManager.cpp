@@ -184,6 +184,17 @@ bool CSkinTimerManager::TimerExists(const std::string& timer) const
   return m_timers.count(timer) != 0;
 }
 
+std::unique_ptr<CSkinTimer> CSkinTimerManager::GrabTimer(const std::string& timer)
+{
+  if (auto iter = m_timers.find(timer); iter != m_timers.end())
+  {
+    auto timerInstance = std::move(iter->second);
+    m_timers.erase(iter);
+    return timerInstance;
+  }
+  return {};
+}
+
 void CSkinTimerManager::Stop()
 {
   // skintimers, as infomanager clients register info conditions/expressions in the infomanager.
