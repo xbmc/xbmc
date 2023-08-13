@@ -7,7 +7,6 @@ elseif(APP_RENDER_SYSTEM STREQUAL "gles")
   list(APPEND PLATFORM_REQUIRED_DEPS OpenGLES EGL)
 endif()
 
-set(PLATFORM_GLOBAL_TARGET_DEPS generate-wayland-extra-protocols)
 set(WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR "${CMAKE_CURRENT_BINARY_DIR}")
 
 # for wayland-extra-protocols.hpp
