@@ -7,3 +7,6 @@ add_custom_command(OUTPUT "${WAYLAND_EXTRA_PROTOCOL_GENERATED_DIR}/wayland-webos
                   DEPENDS "${WAYLANDPP_SCANNER}" ${WEBOS_PROTOCOL_XMLS}
                   COMMENT "Generating wayland-webos C++ wrappers")
 add_custom_target(generate-wayland-webos-protocols DEPENDS wayland-webos-protocols.hpp)
+# ToDo: turn this into a TARGET OBJECT. For now, a custum target doesnt play nice with
+# our PLATFORM_GLOBAL_TARGET_DEPS usage in macros
+add_dependencies(lib${APP_NAME_LC} generate-wayland-webos-protocols)
