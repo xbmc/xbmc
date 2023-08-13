@@ -34,4 +34,7 @@ if("wayland" IN_LIST CORE_PLATFORM_NAME_LC)
 
   # Dummy target for dependencies
   add_custom_target(generate-wayland-extra-protocols DEPENDS wayland-extra-protocols.hpp)
+  # ToDo: turn this into a TARGET OBJECT. For now, a custum target doesnt play nice with
+  # our PLATFORM_GLOBAL_TARGET_DEPS usage in macros
+  add_dependencies(lib${APP_NAME_LC} generate-wayland-extra-protocols)
 endif()
