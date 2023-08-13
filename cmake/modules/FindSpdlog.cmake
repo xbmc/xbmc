@@ -108,12 +108,12 @@ if(SPDLOG_FOUND)
     if(SPDLOG_LIBRARY_RELEASE)
       set_target_properties(spdlog::spdlog PROPERTIES
                                            IMPORTED_CONFIGURATIONS RELEASE
-                                           IMPORTED_LOCATION "${SPDLOG_LIBRARY_RELEASE}")
+                                           IMPORTED_LOCATION_RELEASE "${SPDLOG_LIBRARY_RELEASE}")
     endif()
     if(SPDLOG_LIBRARY_DEBUG)
       set_target_properties(spdlog::spdlog PROPERTIES
                                            IMPORTED_CONFIGURATIONS DEBUG
-                                           IMPORTED_LOCATION "${SPDLOG_LIBRARY_DEBUG}")
+                                           IMPORTED_LOCATION_DEBUG "${SPDLOG_LIBRARY_DEBUG}")
     endif()
     set_target_properties(spdlog::spdlog PROPERTIES
                                          INTERFACE_INCLUDE_DIRECTORIES "${SPDLOG_INCLUDE_DIR}"
