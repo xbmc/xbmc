@@ -78,6 +78,16 @@ public:
   */
   bool ResetsOnStart() const;
 
+  /*! \brief Gets the start actions of this skin timer
+   * \return the actions configured to start when the timer is started
+  */
+  const CGUIAction& GetStartActions() const;
+
+  /*! \brief Gets the stop actions of this skin timer
+   * \return the actions configured to start when the timer is stopped
+  */
+  const CGUIAction& GetStopActions() const;
+
   /*! \brief Evaluates the timer start boolean info expression returning the respective result.
   * \details Called from the skin timer manager to check if the timer should be started
   * \return true if the condition is true, false otherwise
