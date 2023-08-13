@@ -85,6 +85,16 @@ INFO::InfoPtr CSkinTimer::GetStopCondition() const
   return m_stopCondition;
 }
 
+const CGUIAction& CSkinTimer::GetStartActions() const
+{
+  return m_startActions;
+}
+
+const CGUIAction& CSkinTimer::GetStopActions() const
+{
+  return m_stopActions;
+}
+
 bool CSkinTimer::ResetsOnStart() const
 {
   return m_resetOnStart;
