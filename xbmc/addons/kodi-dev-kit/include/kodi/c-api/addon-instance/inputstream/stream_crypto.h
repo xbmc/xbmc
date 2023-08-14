@@ -44,7 +44,10 @@ extern "C"
     /// @brief **3** - To use Wiseplay for processing
     STREAM_CRYPTO_KEY_SYSTEM_WISEPLAY,
 
-    /// @brief **4** - The maximum value to use in a list.
+    /// @brief **4** - To use ClearKey for processing
+    STREAM_CRYPTO_KEY_SYSTEM_CLEARKEY,
+
+    /// @brief **5** - The maximum value to use in a list.
     STREAM_CRYPTO_KEY_SYSTEM_COUNT
   };
   ///@}
