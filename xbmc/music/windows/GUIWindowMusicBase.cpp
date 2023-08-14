@@ -463,7 +463,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
         else if (item->IsPlayList() || m_vecItems->IsPlayList())
           buttons.Add(CONTEXT_BUTTON_EDIT, 586);
       }
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
       // enable Rip CD Audio or Track button if we have an audio disc
       if (CServiceBroker::GetMediaManager().IsDiscInDrive() && m_vecItems->IsCDDA())
       {
@@ -620,7 +620,7 @@ void CGUIWindowMusicBase::PlayItem(int iItem)
   // the current playlist
 
   const CFileItemPtr pItem = m_vecItems->Get(iItem);
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   if (pItem->IsDVD())
   {
     MEDIA_DETECT::CAutorun::PlayDiscAskResume(pItem->GetPath());

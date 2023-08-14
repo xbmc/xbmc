@@ -34,7 +34,6 @@ private:
 
   // Help control IDs
   static const int CONTROL_ID_HELP_TEXT;
-  static const int CONTROL_ID_GAME_CONTROLLER;
 };
 } // namespace GAME
 } // namespace KODI

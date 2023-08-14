@@ -14,7 +14,11 @@
 #include <string>
 
 class CProfileManager;
-class TiXmlNode;
+
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 class CMediaSourceSettings : public ISettingsHandler
 {
@@ -48,9 +52,15 @@ protected:
   ~CMediaSourceSettings() override;
 
 private:
-  bool GetSource(const std::string &category, const TiXmlNode *source, CMediaSource &share);
-  void GetSources(const TiXmlNode* pRootElement, const std::string& strTagName, VECSOURCES& items, std::string& strDefault);
-  bool SetSources(TiXmlNode *root, const char *section, const VECSOURCES &shares, const std::string &defaultPath) const;
+  bool GetSource(const std::string& category, const tinyxml2::XMLNode* source, CMediaSource& share);
+  void GetSources(const tinyxml2::XMLNode* rootElement,
+                  const std::string& tagName,
+                  VECSOURCES& items,
+                  std::string& defaultString);
+  bool SetSources(tinyxml2::XMLNode* rootNode,
+                  const char* section,
+                  const VECSOURCES& shares,
+                  const std::string& defaultPath) const;
 
   VECSOURCES m_programSources;
   VECSOURCES m_pictureSources;

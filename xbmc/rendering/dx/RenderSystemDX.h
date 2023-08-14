@@ -56,7 +56,6 @@ public:
 
   // CRenderSystemDX methods
   CGUIShaderDX* GetGUIShader() const { return m_pGUIShader; }
-  bool Interlaced() const { return m_interlaced; }
   bool IsFormatSupport(DXGI_FORMAT format, unsigned int usage) const;
   CRect GetBackBufferRect();
   CD3DTexture& GetBackBuffer();
@@ -83,7 +82,6 @@ protected:
   CCriticalSection m_decoderSection;
 
   // our adapter could change as we go
-  bool m_interlaced;
   bool m_inScene{ false }; ///< True if we're in a BeginScene()/EndScene() block
   bool m_BlendEnabled{ false };
   bool m_ScissorsEnabled{ false };

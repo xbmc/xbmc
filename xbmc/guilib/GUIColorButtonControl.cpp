@@ -188,7 +188,8 @@ void CGUIColorButtonControl::RenderInfoText()
 void CGUIColorButtonControl::ProcessInfoText(unsigned int currentTime)
 {
   CRect labelRenderRect = m_labelInfo.GetRenderRect();
-  bool changed = m_labelInfo.SetText(StringUtils::Format("#{:08X}", m_imgBoxColor));
+  bool changed = m_labelInfo.SetText(
+      StringUtils::Format("#{:08X}", static_cast<UTILS::COLOR::Color>(m_imgBoxColor)));
   // Set Label X position based on image mask control position
   float textWidth = m_labelInfo.GetTextWidth() + 2 * m_labelInfo.GetLabelInfo().offsetX;
   float textPosX = m_imgColorMask->GetXPosition() - textWidth;

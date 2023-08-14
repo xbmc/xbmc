@@ -19,12 +19,7 @@ using namespace std::chrono_literals;
 #define FOREVER_MS (7 * 24 * 60 * 60 * 1000) // 1 week is large enough
 
 CGameLoop::CGameLoop(IGameLoopCallback* callback, double fps)
-  : CThread("GameLoop"),
-    m_callback(callback),
-    m_fps(fps ? fps : DEFAULT_FPS),
-    m_speedFactor(0.0),
-    m_lastFrameMs(0.0),
-    m_adjustTime(0.0)
+  : CThread("GameLoop"), m_callback(callback), m_fps(fps ? fps : DEFAULT_FPS), m_speedFactor(0.0)
 {
 }
 

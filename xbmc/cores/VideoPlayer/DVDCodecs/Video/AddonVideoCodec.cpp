@@ -86,9 +86,7 @@ CAddonVideoCodec::CAddonVideoCodec(CProcessInfo& processInfo,
                                    KODI_HANDLE parentInstance)
   : CDVDVideoCodec(processInfo),
     IAddonInstanceHandler(
-        ADDON_INSTANCE_VIDEOCODEC, addonInfo, ADDON::ADDON_INSTANCE_ID_UNUSED, parentInstance),
-    m_codecFlags(0),
-    m_displayAspect(0.0f)
+        ADDON_INSTANCE_VIDEOCODEC, addonInfo, ADDON::ADDON_INSTANCE_ID_UNUSED, parentInstance)
 {
   m_ifc.videocodec = new AddonInstance_VideoCodec;
   m_ifc.videocodec->props = new AddonProps_VideoCodec();
@@ -311,12 +309,12 @@ CDVDVideoCodec::VCReturn CAddonVideoCodec::GetPicture(VideoPicture* pVideoPictur
     pVideoPicture->pts = static_cast<double>(picture.pts);
     pVideoPicture->dts = DVD_NOPTS_VALUE;
     pVideoPicture->iFlags = 0;
-    pVideoPicture->chroma_position = 0;
+    pVideoPicture->chroma_position = AVCHROMA_LOC_UNSPECIFIED;
     pVideoPicture->colorBits = GetColorBitsFromVideoFormat(picture.videoFormat);
     pVideoPicture->color_primaries = AVColorPrimaries::AVCOL_PRI_UNSPECIFIED;
     pVideoPicture->color_range = 0;
     pVideoPicture->color_space = AVCOL_SPC_UNSPECIFIED;
-    pVideoPicture->color_transfer = 0;
+    pVideoPicture->color_transfer = AVCOL_TRC_UNSPECIFIED;
     pVideoPicture->hasDisplayMetadata = false;
     pVideoPicture->hasLightMetadata = false;
     pVideoPicture->iDuration = 0;

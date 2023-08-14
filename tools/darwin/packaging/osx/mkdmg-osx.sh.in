@@ -38,7 +38,9 @@ if [ "$EXPANDED_CODE_SIGN_IDENTITY_NAME" ]; then
   # execute codesign script
   "$DIRNAME/Codesign.command"
   # sign helper tool
-  codesign --verbose=4 --sign "$EXPANDED_CODE_SIGN_IDENTITY_NAME" --force --options runtime --timestamp --entitlements Kodi.entitlements "$APP/Contents/Resources/Kodi/tools/darwin/runtime/XBMCHelper"
+  if [ -f "$APP/Contents/Resources/Kodi/tools/darwin/runtime/XBMCHelper" ]; then
+    codesign --verbose=4 --sign "$EXPANDED_CODE_SIGN_IDENTITY_NAME" --force --options runtime --timestamp --entitlements Kodi.entitlements "$APP/Contents/Resources/Kodi/tools/darwin/runtime/XBMCHelper"
+  fi
   # perform top-level signing (Xcode does it automatically when signing settings are configured)
   codesign --verbose=4 --sign "$EXPANDED_CODE_SIGN_IDENTITY_NAME" --force --options runtime --timestamp --entitlements Kodi.entitlements "$APP"
 fi

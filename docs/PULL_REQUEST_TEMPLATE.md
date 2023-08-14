@@ -20,17 +20,18 @@
 ## Screenshots (if appropriate):
 
 ## Types of change
-<!--- What type of change does your code introduce? Put an `x` in all the boxes that apply like this: [X] -->
+<!--- What type of change does your code introduce? Put an `x` with no space in all the boxes that apply like this: [X] -->
 - [ ] **Bug fix** (non-breaking change which fixes an issue)
 - [ ] **Clean up** (non-breaking change which removes non-working, unmaintained functionality)
 - [ ] **Improvement** (non-breaking change which improves existing functionality)
 - [ ] **New feature** (non-breaking change which adds functionality)
 - [ ] **Breaking change** (fix or feature that will cause existing functionality to change)
 - [ ] **Cosmetic change** (non-breaking change that doesn't touch code)
+- [ ] **Student submission** (PR was done for educational purposes and will be treated as such)
 - [ ] **None of the above** (please explain below)
 
 ## Checklist:
-<!--- Go over all the following points, and put an `X` in all the boxes that apply like this: [X] -->
+<!--- Go over all the following points, and put an `X` with no space in all the boxes that apply like this: [X] -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
 - [ ] My code follows the **[Code Guidelines](https://github.com/xbmc/xbmc/blob/master/docs/CODE_GUIDELINES.md)** of this project 
 - [ ] My change requires a change to the documentation, either Doxygen or wiki

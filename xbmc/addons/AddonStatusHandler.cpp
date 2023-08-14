@@ -45,8 +45,7 @@ CAddonStatusHandler::CAddonStatusHandler(const std::string& addonID,
                                          ADDON_STATUS status,
                                          bool sameThread)
   : CThread(("AddonStatus " + std::to_string(instanceId) + "@" + addonID).c_str()),
-    m_instanceId(instanceId),
-    m_status(ADDON_STATUS_UNKNOWN)
+    m_instanceId(instanceId)
 {
   //! @todo The status handled CAddonStatusHandler by is related to the class, not the instance
   //! having CAddonMgr construct an instance makes no sense

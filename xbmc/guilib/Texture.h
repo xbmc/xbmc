@@ -87,6 +87,7 @@ public:
                     const COLOR* palette);
 
   bool HasAlpha() const;
+  void SetAlpha(bool hasAlpha) { m_hasAlpha = hasAlpha; }
 
   void SetMipmapping();
   bool IsMipmapped() const;

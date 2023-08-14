@@ -125,12 +125,12 @@ protected:
 
   // State parameters
   std::string m_strProvider;
-  int m_requestedPort;
-  unsigned int m_buttonCount;
-  unsigned int m_hatCount;
-  unsigned int m_axisCount;
-  unsigned int m_motorCount;
-  bool m_supportsPowerOff;
+  int m_requestedPort = JOYSTICK_PORT_UNKNOWN;
+  unsigned int m_buttonCount = 0;
+  unsigned int m_hatCount = 0;
+  unsigned int m_axisCount = 0;
+  unsigned int m_motorCount = 0;
+  bool m_supportsPowerOff = false;
   CDateTime m_lastActive;
   std::queue<std::string> m_controllersToInstall;
   std::vector<std::future<void>> m_installTasks;

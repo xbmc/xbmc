@@ -46,7 +46,6 @@
 
 using namespace KODI;
 using namespace GAME;
-using namespace KODI::MESSAGING;
 
 #define EXTENSION_SEPARATOR "|"
 #define EXTENSION_WILDCARD "*"
@@ -83,10 +82,7 @@ std::string NormalizeExtension(const std::string& strExtension)
 CGameClient::CGameClient(const ADDON::AddonInfoPtr& addonInfo)
   : CAddonDll(addonInfo, ADDON::AddonType::GAMEDLL),
     m_subsystems(CGameClientSubsystem::CreateSubsystems(*this, *m_ifc.game, m_critSection)),
-    m_bSupportsAllExtensions(false),
-    m_bIsPlaying(false),
-    m_serializeSize(0),
-    m_region(GAME_REGION_UNKNOWN)
+    m_bIsPlaying(false)
 {
   using namespace ADDON;
 
@@ -209,7 +205,7 @@ bool CGameClient::OpenFile(const CFileItem& file,
 
     // Failed to play game
     // The required files can't be found.
-    HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{g_localizeStrings.Get(35219)});
+    MESSAGING::HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{g_localizeStrings.Get(35219)});
     return false;
   }
 
@@ -409,15 +405,16 @@ void CGameClient::NotifyError(GAME_ERROR error)
   {
     // Failed to play game
     // This game requires the following add-on: %s
-    HELPERS::ShowOKDialogText(CVariant{35210}, CVariant{StringUtils::Format(
-                                                   g_localizeStrings.Get(35211), missingResource)});
+    MESSAGING::HELPERS::ShowOKDialogText(
+        CVariant{35210},
+        CVariant{StringUtils::Format(g_localizeStrings.Get(35211), missingResource)});
   }
   else
   {
     // Failed to play game
     // The emulator "%s" had an internal error.
-    HELPERS::ShowOKDialogText(CVariant{35210},
-                              CVariant{StringUtils::Format(g_localizeStrings.Get(35213), Name())});
+    MESSAGING::HELPERS::ShowOKDialogText(
+        CVariant{35210}, CVariant{StringUtils::Format(g_localizeStrings.Get(35213), Name())});
   }
 }
 
@@ -599,8 +596,6 @@ void CGameClient::LogException(const char* strFunctionName) const
 
 void CGameClient::cb_close_game(KODI_HANDLE kodiInstance)
 {
-  using namespace MESSAGING;
-
   CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
                                              static_cast<void*>(new CAction(ACTION_STOP)));
 }

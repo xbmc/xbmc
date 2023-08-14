@@ -40,6 +40,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "events/EventLog.h"
 #include "events/NotificationEvent.h"
+#include "filesystem/DirectoryFactory.h"
 #include "filesystem/File.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIControlProfiler.h"
@@ -152,14 +153,15 @@
 #endif
 
 #ifdef TARGET_DARWIN_OSX
-#include "platform/darwin/osx/CocoaInterface.h"
+#ifdef HAS_XBMCHELPER
 #include "platform/darwin/osx/XBMCHelper.h"
+#endif
 #endif
 #ifdef TARGET_DARWIN
 #include "platform/darwin/DarwinUtils.h"
 #endif
 
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
 #include <cdio/logging.h>
 #endif
 
@@ -198,7 +200,7 @@
 
 using namespace ADDON;
 using namespace XFILE;
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
 using namespace MEDIA_DETECT;
 #endif
 using namespace VIDEO;
@@ -222,7 +224,7 @@ using namespace std::chrono_literals;
 
 CApplication::CApplication(void)
   :
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
     m_Autorun(new CAutorun()),
 #endif
     m_pInertialScrollingHandler(new CInertialScrollingHandler()),
@@ -628,7 +630,8 @@ bool CApplication::Initialize()
   appVolume->SetHardwareVolume(level);
   CServiceBroker::GetActiveAE()->SetMute(muted);
 
-#if defined(HAS_DVD_DRIVE) && !defined(TARGET_WINDOWS) // somehow this throws an "unresolved external symbol" on win32
+#if defined(HAS_OPTICAL_DRIVE) && \
+    !defined(TARGET_WINDOWS) // somehow this throws an "unresolved external symbol" on win32
   // turn off cdio logging
   cdio_loglevel_default = CDIO_LOG_ERROR;
 #endif
@@ -1018,9 +1021,7 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_HDR_TOGGLE)
   {
     // Only enables manual HDR toggle if no video is playing or auto HDR switch is disabled
-    if (appPlayer->IsPlayingVideo() &&
-        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CServiceBroker::GetWinSystem()->SETTING_WINSYSTEM_IS_HDR_DISPLAY))
+    if (appPlayer->IsPlayingVideo() && CServiceBroker::GetWinSystem()->IsHDRDisplaySettingEnabled())
       return true;
 
     HDR_STATUS hdrStatus = CServiceBroker::GetWinSystem()->ToggleHDR();
@@ -1041,9 +1042,7 @@ bool CApplication::OnAction(const CAction &action)
   if (action.GetID() == ACTION_CYCLE_TONEMAP_METHOD)
   {
     // Only enables tone mapping switch if display is not HDR capable or HDR is not enabled
-    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CServiceBroker::GetWinSystem()->SETTING_WINSYSTEM_IS_HDR_DISPLAY) &&
-        CServiceBroker::GetWinSystem()->IsHDRDisplay())
+    if (CServiceBroker::GetWinSystem()->IsHDRDisplaySettingEnabled())
       return true;
 
     if (appPlayer->IsPlayingVideo())
@@ -2007,7 +2006,7 @@ bool CApplication::Cleanup()
 #ifdef TARGET_POSIX
     CXHandle::DumpObjectTracker();
 
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
     CLibcdio::ReleaseInstance();
 #endif
 #endif
@@ -2164,7 +2163,7 @@ bool CApplication::Stop(int exitCode)
     smb.Deinit();
 #endif
 
-#if defined(TARGET_DARWIN_OSX)
+#if defined(TARGET_DARWIN_OSX) and defined(HAS_XBMCHELPER)
     if (XBMCHelper::GetInstance().IsAlwaysOn() == false)
       XBMCHelper::GetInstance().Stop();
 #endif
@@ -2375,17 +2374,12 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (item.IsPlayList())
     return false;
 
-  // if the item is a plugin we need to resolve the plugin paths
-  if (URIUtils::HasPluginPath(item) && !XFILE::CPluginDirectory::GetResolvedPluginResult(item))
-    return false;
-
-#ifdef HAS_UPNP
-  if (URIUtils::IsUPnP(item.GetPath()))
+  // Translate/Resolve the url if needed
+  const std::unique_ptr<IDirectory> dir{CDirectoryFactory::Create(item)};
+  if (dir && !dir->Resolve(item))
   {
-    if (!XFILE::CUPnPDirectory::GetResource(item.GetURL(), item))
-      return false;
+    return false;
   }
-#endif
 
   // if we have a stacked set of files, we need to setup our stack routines for
   // "seamless" seeking and total time of the movie etc.
@@ -3218,7 +3212,7 @@ void CApplication::ProcessSlow()
 
   CServiceBroker::GetGUI()->GetTextureManager().FreeUnusedTextures(5000);
 
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   // checks whats in the DVD drive and tries to autostart the content (xbox games, dvd, cdda, avi files...)
   if (!appPlayer->IsPlayingVideo())
     m_Autorun->HandleAutorun();

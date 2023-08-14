@@ -41,18 +41,12 @@ protected:
   typedef struct ConnectionHandler
   {
     std::string fullUri;
-    bool isNew;
+    bool isNew = true;
     std::shared_ptr<IHTTPRequestHandler> requestHandler;
-    struct MHD_PostProcessor *postprocessor;
-    int errorStatus;
+    struct MHD_PostProcessor* postprocessor = nullptr;
+    int errorStatus = MHD_HTTP_OK;
 
-    explicit ConnectionHandler(const std::string& uri)
-      : fullUri(uri)
-      , isNew(true)
-      , requestHandler(nullptr)
-      , postprocessor(nullptr)
-      , errorStatus(MHD_HTTP_OK)
-    { }
+    explicit ConnectionHandler(const std::string& uri) : fullUri(uri), requestHandler(nullptr) {}
   } ConnectionHandler;
 
   virtual void LogRequest(const char* uri) const;

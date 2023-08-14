@@ -148,7 +148,16 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
   bool bPlaying(false);
   CFileItemList vecItems;
 
-  const CURL pathToUrl(strDrive);
+  CURL pathToUrl{strDrive};
+  // if the url being requested is a generic "iso9660://" we need to enrich it with the actual drive.
+  // use the hostname section to prepend the drive path
+  if (pathToUrl.GetRedacted() == "iso9660://")
+  {
+    pathToUrl.Reset();
+    pathToUrl.SetProtocol("iso9660");
+    pathToUrl.SetHostName(CServiceBroker::GetMediaManager().TranslateDevicePath(""));
+  }
+
   if ( !pDir->GetDirectory( pathToUrl, vecItems ) )
   {
     return false;
@@ -477,7 +486,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const std::string& strDrive, int& nAdde
 
 void CAutorun::HandleAutorun()
 {
-#if !defined(TARGET_WINDOWS) && defined(HAS_DVD_DRIVE)
+#if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
   const CDetectDVDMedia& mediadetect = CServiceBroker::GetDetectDVDMedia();
 
   if (!m_bEnable)

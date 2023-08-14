@@ -131,15 +131,19 @@ void DX::DeviceResources::GetOutput(IDXGIOutput** ppOutput) const
   *ppOutput = pOutput.Detach();
 }
 
-void DX::DeviceResources::GetAdapterDesc(DXGI_ADAPTER_DESC* desc) const
+DXGI_ADAPTER_DESC DX::DeviceResources::GetAdapterDesc() const
 {
+  DXGI_ADAPTER_DESC desc{};
+
   if (m_adapter)
-    m_adapter->GetDesc(desc);
+    m_adapter->GetDesc(&desc);
 
   // GetDesc() returns VendorId == 0 in Xbox however, we need to know that
   // GPU is AMD to apply workarounds in DXVA.cpp CheckCompatibility() same as desktop
   if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
-    desc->VendorId = PCIV_AMD;
+    desc.VendorId = PCIV_AMD;
+
+  return desc;
 }
 
 void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
@@ -188,7 +192,7 @@ void DX::DeviceResources::GetDisplayMode(DXGI_MODE_DESC* mode) const
   if (hdmiInfo) // Xbox only
   {
     auto currentMode = hdmiInfo.GetCurrentDisplayMode();
-    AVRational refresh = av_d2q(currentMode.RefreshRate(), 60000);
+    AVRational refresh = av_d2q(currentMode.RefreshRate(), 120000);
     mode->RefreshRate.Numerator = refresh.num;
     mode->RefreshRate.Denominator = refresh.den;
   }
@@ -620,12 +624,9 @@ void DX::DeviceResources::ResizeBuffers()
 
 // Xbox needs 10 bit swapchain to output true 4K resolution
 #ifdef TARGET_WINDOWS_DESKTOP
-    DXGI_ADAPTER_DESC ad = {};
-    GetAdapterDesc(&ad);
-
     // Some AMD graphics has issues with 10 bit in SDR.
     // Enabled by default only in Intel and NVIDIA with latest drivers/hardware
-    if (m_d3dFeatureLevel < D3D_FEATURE_LEVEL_12_1 || ad.VendorId == PCIV_AMD)
+    if (m_d3dFeatureLevel < D3D_FEATURE_LEVEL_12_1 || GetAdapterDesc().VendorId == PCIV_AMD)
       use10bit = false;
 #endif
 
@@ -637,9 +638,6 @@ void DX::DeviceResources::ResizeBuffers()
       use10bit = false;
     else if (use10bitSetting == 2)
       use10bit = true;
-
-    if (m_force8bit)
-      use10bit = false;
 
     DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
     swapChainDesc.Width = lround(m_outputSize.Width);
@@ -705,19 +703,17 @@ void DX::DeviceResources::ResizeBuffers()
 
     m_IsHDROutput = (swapChainDesc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) && isHdrEnabled;
 
-    const int bits = (swapChainDesc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) ? 10 : 8;
-    std::string flip =
-        (swapChainDesc.SwapEffect == DXGI_SWAP_EFFECT_FLIP_DISCARD) ? "discard" : "sequential";
-
-    CLog::LogF(LOGINFO,
-               "{} bit swapchain is used with {} flip {} buffers and {} output (format {})", bits,
-               swapChainDesc.BufferCount, flip, m_IsHDROutput ? "HDR" : "SDR",
-               DX::DXGIFormatToString(swapChainDesc.Format));
+    CLog::LogF(
+        LOGINFO, "{} bit swapchain is used with {} flip {} buffers and {} output (format {})",
+        (swapChainDesc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) ? 10 : 8, swapChainDesc.BufferCount,
+        (swapChainDesc.SwapEffect == DXGI_SWAP_EFFECT_FLIP_DISCARD) ? "discard" : "sequential",
+        m_IsHDROutput ? "HDR" : "SDR", DX::DXGIFormatToString(swapChainDesc.Format));
 
     hr = swapChain.As(&m_swapChain); CHECK_ERR();
     m_stereoEnabled = bHWStereoEnabled;
 
-    if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG))
+    if (CServiceBroker::GetLogging().IsLogLevelLogged(LOGDEBUG) &&
+        CServiceBroker::GetLogging().CanLogComponent(LOGVIDEO))
     {
       std::string colorSpaces;
       for (const DXGI_COLOR_SPACE_TYPE& colorSpace : GetSwapChainColorSpaces())
@@ -725,7 +721,7 @@ void DX::DeviceResources::ResizeBuffers()
         colorSpaces.append("\n");
         colorSpaces.append(DX::DXGIColorSpaceTypeToString(colorSpace));
       }
-      CLog::LogF(LOGDEBUG, "Color spaces supported by the swap chain:{}", colorSpaces);
+      CLog::LogFC(LOGDEBUG, LOGVIDEO, "Color spaces supported by the swap chain:{}", colorSpaces);
     }
 
     // Ensure that DXGI does not queue more than one frame at a time. This both reduces latency and
@@ -734,6 +730,9 @@ void DX::DeviceResources::ResizeBuffers()
     hr = m_d3dDevice.As(&dxgiDevice); CHECK_ERR();
     dxgiDevice->SetMaximumFrameLatency(1);
     m_usedSwapChain = false;
+
+    if (m_IsHDROutput)
+      SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
   }
 
   CLog::LogF(LOGDEBUG, "end resize buffers.");
@@ -1153,8 +1152,7 @@ void DX::DeviceResources::CheckDXVA2SharedDecoderSurfaces()
   if (!m_NV12SharedTexturesSupport)
     return;
 
-  DXGI_ADAPTER_DESC ad = {};
-  GetAdapterDesc(&ad);
+  const DXGI_ADAPTER_DESC ad = GetAdapterDesc();
 
   m_DXVA2SharedDecoderSurfaces =
       ad.VendorId == PCIV_Intel ||
@@ -1164,6 +1162,14 @@ void DX::DeviceResources::CheckDXVA2SharedDecoderSurfaces()
 
   CLog::LogF(LOGINFO, "DXVA2 shared decoder surfaces is{}supported",
              m_DXVA2SharedDecoderSurfaces ? " " : " NOT ");
+
+  m_DXVA2UseFence = m_DXVA2SharedDecoderSurfaces &&
+                    (ad.VendorId == PCIV_NVIDIA || ad.VendorId == PCIV_AMD) &&
+                    CSysInfo::IsWindowsVersionAtLeast(CSysInfo::WindowsVersionWin10_1703);
+
+  if (m_DXVA2SharedDecoderSurfaces)
+    CLog::LogF(LOGINFO, "DXVA2 shared decoder surfaces {} fence synchronization.",
+               m_DXVA2UseFence ? "WITH" : "WITHOUT");
 
   m_DXVASuperResolutionSupport =
       m_d3dFeatureLevel >= D3D_FEATURE_LEVEL_12_1 &&
@@ -1176,8 +1182,7 @@ void DX::DeviceResources::CheckDXVA2SharedDecoderSurfaces()
 
 VideoDriverInfo DX::DeviceResources::GetVideoDriverVersion()
 {
-  DXGI_ADAPTER_DESC ad = {};
-  GetAdapterDesc(&ad);
+  const DXGI_ADAPTER_DESC ad = GetAdapterDesc();
 
   VideoDriverInfo driver = CWIN32Util::GetVideoDriverInfo(ad.VendorId, ad.Description);
 
@@ -1307,15 +1312,20 @@ void DX::DeviceResources::SetHdrColorSpace(const DXGI_COLOR_SPACE_TYPE colorSpac
   if (SUCCEEDED(m_swapChain.As(&swapChain3)))
   {
     // Set the color space on a new swap chain - not mandated by MS documentation but needed
-    // at least for some AMD, at least up to Adrenalin 23.4.3 / Windows driver 31.0.14043.7000
+    // at least for some AMD on Windows 10, at least up to driver 31.0.21001.45002
+    // Applying to AMD only because it breaks refresh rate switching in Windows 11 for Intel and
+    // nVidia and they don't need the workaround.
     if (m_usedSwapChain &&
         m_IsTransferPQ != (colorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020))
     {
-      // Temporary release, can't hold references during swap chain re-creation
-      swapChain3 = nullptr;
-      DestroySwapChain();
-      CreateWindowSizeDependentResources();
-      m_swapChain.As(&swapChain3);
+      if (GetAdapterDesc().VendorId == PCIV_AMD)
+      {
+        // Temporary release, can't hold references during swap chain re-creation
+        swapChain3 = nullptr;
+        DestroySwapChain();
+        CreateWindowSizeDependentResources();
+        m_swapChain.As(&swapChain3);
+      }
     }
 
     if (SUCCEEDED(swapChain3->SetColorSpace1(colorSpace)))
@@ -1367,17 +1377,12 @@ HDR_STATUS DX::DeviceResources::ToggleHDR()
   return hdrStatus;
 }
 
-void DX::DeviceResources::ApplyDisplaySettings(bool force8bit)
+void DX::DeviceResources::ApplyDisplaySettings()
 {
   CLog::LogF(LOGDEBUG, "Re-create swapchain due Display Settings changed");
 
-  if (force8bit)
-    m_force8bit = true;
-
   DestroySwapChain();
   CreateWindowSizeDependentResources();
-
-  m_force8bit = false;
 }
 
 DEBUG_INFO_RENDER DX::DeviceResources::GetDebugInfo() const
@@ -1412,7 +1417,7 @@ DEBUG_INFO_RENDER DX::DeviceResources::GetDebugInfo() const
       (md.ScanlineOrdering > DXGI_MODE_SCANLINE_ORDER_PROGRESSIVE) ? "i" : "p",
       static_cast<double>(md.RefreshRate.Numerator) /
           static_cast<double>(md.RefreshRate.Denominator),
-      (desc.Format == DXGI_FORMAT_R10G10B10A2_UNORM) ? "R10G10B10A2" : "B8G8R8A8", bits,
+      DXGIFormatToShortString(desc.Format), bits,
       DX::Windowing()->UseLimitedColor() ? "limited" : "full", range_min, range_max);
 
   return info;

@@ -52,8 +52,9 @@ void CAESinkStarfish::EnumerateDevicesEx(AEDeviceInfoList& list, bool force)
   CAEDeviceInfo info;
   info.m_deviceName = "Starfish";
   info.m_displayName = "Starfish (Passthrough only)";
-  info.m_channels = AE_CH_LAYOUT_5_1;
+  info.m_channels = AE_CH_LAYOUT_2_0;
   info.m_wantsIECPassthrough = false;
+  info.m_onlyPassthrough = true;
 
   // PCM disabled for now as the latency is just too high, needs more research
   // Thankfully, ALSA or PulseAudio do work as an alternative for PCM content
@@ -95,6 +96,7 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
   payload["mediaTransportType"] = "BUFFERSTREAM";
   payload["option"]["appId"] = CCompileInfo::GetPackage();
   payload["option"]["needAudio"] = true;
+  payload["option"]["queryPosition"] = true;
   payload["option"]["externalStreamingInfo"]["contents"]["esInfo"]["pauseAtDecodeTime"] = true;
   payload["option"]["externalStreamingInfo"]["contents"]["esInfo"]["seperatedPTS"] = true;
   payload["option"]["externalStreamingInfo"]["contents"]["esInfo"]["ptsToDecode"] = 0;
@@ -132,7 +134,7 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
 
   payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["preBufferByte"] = 0;
   payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["bufferMinLevel"] = 0;
-  payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["bufferMaxLevel"] = 0;
+  payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["bufferMaxLevel"] = 100;
   // This is the size after which the sink starts blocking
   payload["option"]["externalStreamingInfo"]["bufferingCtrInfo"]["qBufferLevelAudio"] =
       m_bufferSize;
@@ -171,7 +173,7 @@ double CAESinkStarfish::GetCacheTotal()
   {
     auto frameTimeSeconds = std::chrono::duration_cast<std::chrono::duration<double>>(
         std::chrono::duration<double, std::milli>(m_format.m_streamInfo.GetDuration()));
-    return STARFISH_AUDIO_BUFFERS * frameTimeSeconds.count() * 2;
+    return STARFISH_AUDIO_BUFFERS * frameTimeSeconds.count() * 4;
   }
   else
     return 0.0;
@@ -187,14 +189,15 @@ unsigned int CAESinkStarfish::AddPackets(uint8_t** data, unsigned int frames, un
   auto frameTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
       std::chrono::duration<double, std::milli>(m_format.m_streamInfo.GetDuration()));
 
+  std::chrono::nanoseconds pts = 0ns;
   if (!m_firstFeed && offset == 0)
-    m_pts += frameTime;
+    pts += m_pts + frameTime;
 
   CVariant payload;
   uint8_t* buffer = data[0] + offset * m_format.m_frameSize;
   payload["bufferAddr"] = fmt::format("{:#x}", reinterpret_cast<std::uintptr_t>(buffer));
   payload["bufferSize"] = frames * m_format.m_frameSize;
-  payload["pts"] = m_pts.count();
+  payload["pts"] = pts.count();
   payload["esData"] = 2;
 
   std::string json;
@@ -209,6 +212,7 @@ unsigned int CAESinkStarfish::AddPackets(uint8_t** data, unsigned int frames, un
 
   if (result.find("Ok") != std::string::npos)
   {
+    m_pts = pts;
     m_firstFeed = false;
     return frames;
   }
@@ -226,12 +230,13 @@ void CAESinkStarfish::AddPause(unsigned int millis)
 
 void CAESinkStarfish::GetDelay(AEDelayStatus& status)
 {
-  status.SetDelay(std::chrono::duration_cast<std::chrono::duration<double>>(m_delay).count());
+  auto delay = m_pts - std::chrono::nanoseconds(m_starfishMediaAPI->getCurrentPlaytime());
+  status.SetDelay(std::chrono::duration_cast<std::chrono::duration<double>>(delay).count());
 }
 
 void CAESinkStarfish::Drain()
 {
-  m_starfishMediaAPI->flush();
+  m_starfishMediaAPI->pushEOS();
 }
 
 void CAESinkStarfish::PlayerCallback(const int32_t type,
@@ -240,9 +245,6 @@ void CAESinkStarfish::PlayerCallback(const int32_t type,
 {
   switch (type)
   {
-    case PF_EVENT_TYPE_FRAMEREADY:
-      m_delay = m_pts - std::chrono::nanoseconds(numValue);
-      break;
     case PF_EVENT_TYPE_STR_STATE_UPDATE__LOADCOMPLETED:
       m_starfishMediaAPI->Play();
       break;

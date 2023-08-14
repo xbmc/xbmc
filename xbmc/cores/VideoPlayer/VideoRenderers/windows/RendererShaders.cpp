@@ -99,7 +99,7 @@ bool CRendererShaders::Configure(const VideoPicture& picture, float fps, unsigne
         m_format = GetAVFormat(dxgi_format);
     }
 
-    CreateIntermediateTarget(m_sourceWidth, m_sourceHeight);
+    CreateIntermediateTarget(m_sourceWidth, m_sourceHeight, false, CalcIntermediateTargetFormat());
     return true;
   }
   return false;
@@ -200,6 +200,36 @@ AVColorPrimaries CRendererShaders::GetSrcPrimaries(AVColorPrimaries srcPrimaries
       ret = AVCOL_PRI_BT470BG;
   }
   return ret;
+}
+
+DXGI_FORMAT CRendererShaders::CalcIntermediateTargetFormat() const
+{
+  // Default value: same as the back buffer
+  DXGI_FORMAT format{DX::Windowing()->GetBackBuffer().GetFormat()};
+
+  // High precision setting not enabled: use back buffer format, 8 or 10 bits
+  // enabled: look for higher quality format
+  if (!DX::Windowing()->IsHighPrecisionProcessingSettingEnabled())
+    return format;
+
+  UINT reqSupport{D3D11_FORMAT_SUPPORT_SHADER_SAMPLE | D3D11_FORMAT_SUPPORT_RENDER_TARGET};
+
+  // Preferred: float16 as the yuv-rgb conversion takes place in float
+  // => avoids a conversion / quantization round-trip, but uses more memory / bandwidth
+  const std::array hdrformats{DXGI_FORMAT_R16G16B16A16_FLOAT, DXGI_FORMAT_R10G10B10A2_UNORM,
+                              DXGI_FORMAT_R32G32B32A32_FLOAT};
+
+  const auto it =
+      std::find_if(hdrformats.cbegin(), hdrformats.cend(), [&](DXGI_FORMAT outputFormat) {
+        return DX::Windowing()->IsFormatSupport(outputFormat, reqSupport);
+      });
+
+  if (it != hdrformats.cend())
+    format = *it;
+  else
+    CLog::LogF(LOGDEBUG, "no compatible high precision format found.");
+
+  return format;
 }
 
 CRenderBuffer* CRendererShaders::CreateBuffer()

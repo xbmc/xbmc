@@ -41,7 +41,7 @@ private:
   void Cleanup();
 
   std::string m_outputFile;
-  FILE* m_file;
+  FILE* m_file = nullptr;
   std::vector<uint8_t> m_data;
 };
 

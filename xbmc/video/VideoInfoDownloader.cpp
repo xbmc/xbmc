@@ -22,8 +22,8 @@ using namespace std::chrono_literals;
 #pragma warning (disable:4018)
 #endif
 
-CVideoInfoDownloader::CVideoInfoDownloader(const ADDON::ScraperPtr &scraper) :
-  CThread("VideoInfoDownloader"), m_state(DO_NOTHING), m_found(0), m_info(scraper)
+CVideoInfoDownloader::CVideoInfoDownloader(const ADDON::ScraperPtr& scraper)
+  : CThread("VideoInfoDownloader"), m_info(scraper)
 {
   m_http = new XFILE::CCurlFile;
 }

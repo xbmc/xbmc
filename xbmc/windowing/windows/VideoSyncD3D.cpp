@@ -74,7 +74,7 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
     // sleep until vblank
     Microsoft::WRL::ComPtr<IDXGIOutput> pOutput;
     DX::DeviceResources::Get()->GetOutput(&pOutput);
-    HRESULT hr = pOutput->WaitForVBlank();
+    pOutput->WaitForVBlank();
 
     // calculate how many vblanks happened
     Now = CurrentHostCounter();
@@ -128,13 +128,6 @@ float CVideoSyncD3D::GetFps()
   if (m_fps == 0.0)
     m_fps = 60.0f;
 
-  if (m_fps == 23 || m_fps == 29 || m_fps == 59)
-    m_fps++;
-
-  if (DX::Windowing()->Interlaced())
-  {
-    m_fps *= 2;
-  }
   return m_fps;
 }
 

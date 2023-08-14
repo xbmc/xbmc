@@ -61,8 +61,8 @@ private:
   IGameLoopCallback* const m_callback;
   const double m_fps;
   std::atomic<double> m_speedFactor;
-  double m_lastFrameMs;
-  mutable double m_adjustTime;
+  double m_lastFrameMs = 0.0;
+  mutable double m_adjustTime = 0.0;
   CEvent m_sleepEvent;
 };
 } // namespace RETRO

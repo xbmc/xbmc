@@ -34,9 +34,7 @@ CPVREpgSearchPath::CPVREpgSearchPath(const CPVREpgSearchFilter& search)
                                search.IsRadio() ? "radio" : "tv",
                                search.GetDatabaseId())),
     m_bValid(true),
-    m_bRoot(false),
-    m_bRadio(search.IsRadio()),
-    m_bSavedSearchesRoot(false)
+    m_bRadio(search.IsRadio())
 {
 }
 

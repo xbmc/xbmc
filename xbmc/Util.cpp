@@ -85,7 +85,7 @@
 
 #include <fstrcmp.h>
 
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
 using namespace MEDIA_DETECT;
 #endif
 
@@ -622,7 +622,7 @@ void CUtil::GetDVDDriveIcon(const std::string& strPath, std::string& strIcon)
 
   if ( URIUtils::IsISO9660(strPath) )
   {
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
     CCdInfo* pInfo = CServiceBroker::GetMediaManager().GetCdInfo();
     if ( pInfo != NULL && pInfo->IsVideoCd( 1 ) )
     {

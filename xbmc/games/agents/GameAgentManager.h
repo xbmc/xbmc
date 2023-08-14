@@ -15,13 +15,14 @@
 
 #include <map>
 #include <memory>
+#include <mutex>
+#include <set>
 #include <string>
 
 class CInputManager;
 
 namespace PERIPHERALS
 {
-class CPeripheral;
 class CPeripherals;
 } // namespace PERIPHERALS
 
@@ -34,11 +35,12 @@ class IInputProvider;
 
 namespace GAME
 {
-class CGameAgent;
 class CGameClient;
 class CGameClientJoystick;
 
 /*!
+ * \ingroup games
+ *
  * \brief Class to manage game-playing agents for a running game client
  *
  * Currently, port mapping is controller-based and does not take into account
@@ -77,11 +79,25 @@ public:
   bool OnButtonPress(MOUSE::BUTTON_ID button) override;
   void OnButtonRelease(MOUSE::BUTTON_ID button) override {}
 
+  // Public interface
+  GameAgentVec GetAgents() const;
+  std::string GetPortAddress(JOYSTICK::IInputProvider* inputProvider) const;
+  std::vector<std::string> GetInputPorts() const;
+  float GetPortActivation(const std::string& address) const;
+  float GetPeripheralActivation(const std::string& peripheralLocation) const;
+
 private:
   //! @todo De-duplicate these types
   using PortAddress = std::string;
   using JoystickMap = std::map<PortAddress, std::shared_ptr<CGameClientJoystick>>;
   using PortMap = std::map<JOYSTICK::IInputProvider*, std::shared_ptr<CGameClientJoystick>>;
+
+  using PeripheralLocation = std::string;
+  using CurrentPortMap = std::map<PortAddress, PeripheralLocation>;
+  using CurrentPeripheralMap = std::map<PeripheralLocation, PortAddress>;
+
+  using ControllerAddress = std::string;
+  using PeripheralMap = std::map<ControllerAddress, PERIPHERALS::PeripheralPtr>;
 
   // Internal interface
   void ProcessJoysticks(PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
@@ -89,16 +105,26 @@ private:
   void ProcessMouse();
 
   // Internal helpers
+  void ProcessAgents(const PERIPHERALS::PeripheralVector& joysticks,
+                     PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
   void UpdateExpiredJoysticks(const PERIPHERALS::PeripheralVector& joysticks,
                               PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
   void UpdateConnectedJoysticks(const PERIPHERALS::PeripheralVector& joysticks,
                                 const PortMap& newPortMap,
-                                PERIPHERALS::EventLockHandlePtr& inputHandlingLock);
+                                PERIPHERALS::EventLockHandlePtr& inputHandlingLock,
+                                std::set<PERIPHERALS::PeripheralPtr>& disconnectedJoysticks);
 
   // Static functionals
   static PortMap MapJoysticks(const PERIPHERALS::PeripheralVector& peripheralJoysticks,
                               const JoystickMap& gameClientjoysticks,
+                              CurrentPortMap& currentPorts,
+                              CurrentPeripheralMap& currentPeripherals,
                               int playerLimit);
+  static void MapJoystick(PERIPHERALS::PeripheralPtr peripheralJoystick,
+                          std::shared_ptr<CGameClientJoystick> gameClientJoystick,
+                          PortMap& result);
+  static void LogPeripheralMap(const PeripheralMap& peripheralMap,
+                               const std::set<PERIPHERALS::PeripheralPtr>& disconnectedPeripherals);
 
   // Construction parameters
   PERIPHERALS::CPeripherals& m_peripheralManager;
@@ -108,6 +134,10 @@ private:
   GameClientPtr m_gameClient;
   bool m_bHasKeyboard = false;
   bool m_bHasMouse = false;
+  GameAgentVec m_agents;
+
+  // Synchronization parameters
+  mutable std::mutex m_agentMutex;
 
   /*!
    * \brief Map of input provider to joystick handler
@@ -122,6 +152,34 @@ private:
    * Not exposed to the game.
    */
   PortMap m_portMap;
+
+  /*!
+   * \brief Map of the current ports to their peripheral
+   *
+   * This allows attempt to preserve player numbers.
+   */
+  CurrentPortMap m_currentPorts;
+
+  /*!
+   * \brief Map of the current peripherals to their port
+   *
+   * This allows attempt to preserve player numbers.
+   */
+  CurrentPeripheralMap m_currentPeripherals;
+
+  /*!
+   * Map of controller address to source peripheral
+   *
+   * Source peripherals are not exposed to the game.
+   */
+  PeripheralMap m_peripheralMap;
+
+  /*!
+   * Collection of disconnected joysticks
+   *
+   * Source peripherals are not exposed to the game.
+   */
+  std::set<PERIPHERALS::PeripheralPtr> m_disconnectedPeripherals;
 };
 } // namespace GAME
 } // namespace KODI

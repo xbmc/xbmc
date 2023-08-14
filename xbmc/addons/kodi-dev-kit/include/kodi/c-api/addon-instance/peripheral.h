@@ -77,6 +77,9 @@ extern "C"
 
     /// @brief Type declared as keyboard.
     PERIPHERAL_TYPE_KEYBOARD,
+
+    /// @brief Type declared as mouse.
+    PERIPHERAL_TYPE_MOUSE,
   } PERIPHERAL_TYPE;
   ///@}
   //----------------------------------------------------------------------------

@@ -32,6 +32,8 @@ enum class StarfishState
   RESET,
   FLUSHED,
   RUNNING,
+  EOS,
+  ERROR,
   MAX,
 };
 
@@ -54,6 +56,8 @@ private:
       {StarfishState::RESET, "Reset"},
       {StarfishState::FLUSHED, "Flushed"},
       {StarfishState::RUNNING, "Running"},
+      {StarfishState::EOS, "EOS"},
+      {StarfishState::ERROR, "Error"},
   });
   static_assert(static_cast<size_t>(StarfishState::MAX) == ms_stateMap.size(),
                 "ms_stateMap doesn't match the size of StarfishState, did you forget to "
@@ -99,6 +103,7 @@ private:
   bool m_opened{false};
   int m_codecControlFlags;
   std::chrono::nanoseconds m_currentPlaytime{0};
+  bool m_newFrame{false};
 
   StarfishState m_state{StarfishState::FLUSHED};
 

@@ -62,6 +62,7 @@ public:
   bool HasFeature(const std::string& controllerId, const std::string& featureName) const;
   bool AcceptsInput() const;
   bool InputEvent(const game_input_event& event);
+  float GetPortActivation(const std::string& portAddress);
 
   // Topology functions
   const CControllerTree& GetDefaultControllerTree() const;

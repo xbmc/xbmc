@@ -6,8 +6,5 @@
 ; -> sqlite-3.7.12.1-win32\system\sqlite3.dll
 ; -> ...
 ;PLEASE KEEP THIS LIST IN ALPHABETICAL ORDER!
-doxygen-1.8.2-win32.7z
-JsonSchemaBuilder-win32-v141-20200105.7z
 swig-4.0.1-win32-v141-20200105.7z
 TexturePacker-win32-v141-20200105.7z
-vswhere-2.2.11-win32.7z

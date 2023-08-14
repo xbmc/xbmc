@@ -48,8 +48,18 @@ protected:
 private:
   void FillBuffersSet(CRenderBuffer* (&buffers)[8]);
   CRect ApplyTransforms(const CRect& destRect) const;
+  /*!
+   * \brief Choose the best available conversion for the given source and output constraints
+   * \param conversions list of supported conversions
+   * \return best match
+   */
+  DXVA::ProcessorConversion ChooseConversion(const DXVA::ProcessorConversions& conversions) const;
 
   std::unique_ptr<DXVA::CProcessorHD> m_processor;
+  std::shared_ptr<DXVA::CEnumeratorHD> m_enumerator;
+  DXVA::ProcessorConversion m_conversion;
+  DXVA::SupportedConversionsArgs m_conversionsArgs;
+  bool m_tryVSR{false};
 };
 
 class CRendererDXVA::CRenderBufferImpl : public CRenderBuffer

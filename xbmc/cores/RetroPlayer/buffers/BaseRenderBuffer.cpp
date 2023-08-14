@@ -10,6 +10,8 @@
 
 #include "IRenderBufferPool.h"
 
+#include <cassert>
+
 using namespace KODI;
 using namespace RETRO;
 
@@ -36,4 +38,16 @@ void CBaseRenderBuffer::Release()
     m_pool.reset();
     pool->Return(this);
   }
+}
+
+DataAccess CBaseRenderBuffer::GetMemoryAccess() const
+{
+  assert(m_pool.get() != nullptr);
+  return m_pool->GetMemoryAccess();
+}
+
+DataAlignment CBaseRenderBuffer::GetMemoryAlignment() const
+{
+  assert(m_pool.get() != nullptr);
+  return m_pool->GetMemoryAlignment();
 }

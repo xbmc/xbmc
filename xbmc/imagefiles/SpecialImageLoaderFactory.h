@@ -23,12 +23,12 @@ class CSpecialImageLoaderFactory
 public:
   CSpecialImageLoaderFactory();
 
-  std::unique_ptr<CTexture> Load(std::string specialType,
-                                 std::string filePath,
+  std::unique_ptr<CTexture> Load(const std::string& specialType,
+                                 const std::string& filePath,
                                  unsigned int preferredWidth,
                                  unsigned int preferredHeight) const;
 
 private:
-  std::array<std::unique_ptr<ISpecialImageFileLoader>, 2> m_specialImageLoaders{};
+  std::array<std::unique_ptr<ISpecialImageFileLoader>, 4> m_specialImageLoaders{};
 };
 } // namespace IMAGE_FILES

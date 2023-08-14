@@ -5,7 +5,7 @@
 	<depth>DepthOSD</depth>
 	<controls>
 		<control type="group" id="1">
-			<visible>!Window.IsActive(1101) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation) + !Window.IsActive(InGameSaves)</visible>
+			<visible>!Window.IsActive(1101) + !Window.IsActive(GameVideoFilter) + !Window.IsActive(GameStretchMode) + !Window.IsActive(GameControllers) + !Window.IsActive(GameVideoRotation) + !Window.IsActive(InGameSaves) + !Window.IsActive(GameAgents)</visible>
 			<include>Visible_Fade</include>
 			<control type="group" id="10">
 				<visible>System.GetBool(gamesgeneral.showosdhelp)</visible>
@@ -32,11 +32,12 @@
 							<height>130</height>
 							<font>font13</font>
 						</control>
-						<control type="gamecontroller" id="1102">
+						<control type="gamecontroller">
 							<top>160</top>
 							<left>30</left>
 							<width>640</width>
 							<height>640</height>
+							<controllerid>game.controller.snes</controllerid>
 						</control>
 						<control type="textbox">
 							<description>Additional help text. This will be removed in future versions.</description>
@@ -63,13 +64,13 @@
 			<control type="group" id="20">
 				<visible>!System.GetBool(gamesgeneral.showosdhelp)</visible>
 				<centerleft>50%</centerleft>
-				<height>480</height>
+				<height>560</height>
 				<centertop>50%</centertop>
 				<width>700</width>
 				<animation effect="fade" time="200">VisibleChange</animation>
 				<include content="DialogBackgroundCommons">
 					<param name="width" value="700" />
-					<param name="height" value="480" />
+					<param name="height" value="560" />
 					<param name="header_label" value="$LOCALIZE[35221]" />
 					<param name="header_id" value="3" />
 				</include>
@@ -77,7 +78,7 @@
 					<top>80</top>
 					<control type="list" id="1103">
 						<defaultcontrol always="true">2101</defaultcontrol>
-						<height>480</height>
+						<height>560</height>
 						<orientation>vertical</orientation>
 						<itemlayout condition="!Control.IsVisible(2200)" width="700" height="80">
 							<control type="image">
@@ -200,33 +201,39 @@
 							</control>
 						</focusedlayout>
 						<content>
-							<item id="2101">
+							<item>
 								<description>Pause / Resume button</description>
 								<label>$LOCALIZE[35224]</label>
 								<label2>$LOCALIZE[31059]</label2>
 								<icon>osd/fullscreen/buttons/play.png</icon>
 								<onclick>Play</onclick>
 							</item>
-							<item id="2102">
+							<item>
 								<description>Save / Load button</description>
 								<label>$LOCALIZE[35249]</label>
 								<icon>osd/fullscreen/buttons/saves.png</icon>
 								<onclick>ActivateWindow(InGameSaves)</onclick>
 							</item>
-							<item id="2103">
+							<item>
+								<description>Players button</description>
+								<label>$LOCALIZE[35172]</label>
+								<icon>osd/fullscreen/buttons/agent.png</icon>
+								<onclick>ActivateWindow(GameAgents)</onclick>
+							</item>
+							<item>
 								<description>Reset button</description>
 								<label>$LOCALIZE[13007]</label>
 								<icon>osd/fullscreen/buttons/reset.png</icon>
 								<onclick>PlayerControl(Reset)</onclick>
 							</item>
-							<item id="2104">
+							<item>
 								<description>Stop button</description>
 								<label>$LOCALIZE[35222]</label>
 								<label2>$LOCALIZE[31060]</label2>
 								<icon>osd/fullscreen/buttons/stop.png</icon>
 								<onclick>Stop</onclick>
 							</item>
-							<item id="2105">
+							<item>
 								<description>Settings button</description>
 								<label>$LOCALIZE[5]</label>
 								<icon>osd/fullscreen/buttons/settings.png</icon>

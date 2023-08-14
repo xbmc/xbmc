@@ -14,7 +14,6 @@ NATIVE= \
   gettext \
   giflib \
   heimdal \
-  JsonSchemaBuilder \
   libjpeg-turbo \
   liblzo2 \
   libpng \
@@ -68,7 +67,7 @@ autoconf: m4
 automake: autoconf
 dpkg: automake gettext libtool pkg-config tar
 heimdal: libtool
-JsonSchemaBuilder: automake
+JsonSchemaBuilder: cmake
 libjpeg-turbo: cmake nasm
 libpng: zlib automake
 libtool: automake
@@ -80,7 +79,7 @@ pugixml: cmake
 python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl autoconf-archive
 swig: pcre
 tar: xz automake
-TexturePacker: automake pkg-config libpng liblzo2 giflib libjpeg-turbo
+TexturePacker: cmake libpng liblzo2 giflib libjpeg-turbo
 wayland-scanner: expat pkg-config
 waylandpp-scanner: cmake pugixml
 

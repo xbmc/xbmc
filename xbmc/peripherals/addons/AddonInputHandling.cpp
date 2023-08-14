@@ -35,7 +35,7 @@ CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
   {
     CLog::Log(LOGDEBUG, "Failed to locate add-on for \"{}\"", peripheral->DeviceName());
   }
-  else
+  else if (!handler->ControllerID().empty())
   {
     m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, handler->ControllerID()));
     if (m_buttonMap->Load())
@@ -67,7 +67,7 @@ CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
   {
     CLog::Log(LOGDEBUG, "Failed to locate add-on for \"{}\"", peripheral->DeviceName());
   }
-  else
+  else if (!handler->ControllerID().empty())
   {
     m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, handler->ControllerID()));
     if (m_buttonMap->Load())
@@ -91,7 +91,7 @@ CAddonInputHandling::CAddonInputHandling(CPeripherals& manager,
   {
     CLog::Log(LOGDEBUG, "Failed to locate add-on for \"{}\"", peripheral->DeviceName());
   }
-  else
+  else if (!handler->ControllerID().empty())
   {
     m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, handler->ControllerID()));
     if (m_buttonMap->Load())

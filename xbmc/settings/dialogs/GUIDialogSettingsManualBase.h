@@ -645,6 +645,6 @@ private:
                          bool visible,
                          int help);
 
-  mutable CSettingsManager *m_settingsManager;
+  mutable CSettingsManager* m_settingsManager = nullptr;
   std::shared_ptr<CSettingSection> m_section;
 };

@@ -7211,7 +7211,12 @@ msgctxt "#13417"
 msgid "Allow use DXVA Video Super Resolution"
 msgstr ""
 
-#empty string 13418
+#. Setting Player / Video
+#: system/settings/settings.xml
+#: xbmc/cores/VideoPlayer/VideoRenderers/windows/RendererBase.cpp
+msgctxt "#13418"
+msgid "Use high precision processing"
+msgstr ""
 
 #: system/settings/settings.xml
 #: xbmc/cores/VideoPlayer/VideoRenderers/BaseRenderer.cpp
@@ -9555,14 +9560,12 @@ msgid "Radio"
 msgstr ""
 
 #. generic 'hidden' label used in different places
-#: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: xbmc/pvr/windows/GUIWindowPVRChannels.cpp
 msgctxt "#19022"
 msgid "Hidden"
 msgstr ""
 
 #. generic label for 'Live TV channels' used in different places
-#: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: addons/skin.estuary/xml/Variables.xml
 #: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 msgctxt "#19023"
@@ -9570,7 +9573,6 @@ msgid "TV channels"
 msgstr ""
 
 #. generic label for pvr-provided 'Radio channels' used in different places
-#: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: addons/skin.estuary/xml/DialogPVRChannelManager.xml
 #: addons/skin.estuary/xml/Variables.xml
 msgctxt "#19024"
@@ -9781,6 +9783,7 @@ msgstr ""
 #: xbmc/FileItem.cpp
 #: xbmc/GUIInfoManager.cpp
 #: xbmc/pvr/PVRManager.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: xbmc/utils/SystemInfo.cpp
 msgctxt "#19055"
 msgid "No information available"
@@ -12940,6 +12943,8 @@ msgctxt "#20175"
 msgid "UPnP server"
 msgstr ""
 
+#. Label used for a video info message box
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#20176"
 msgid "Show video information"
 msgstr ""
@@ -17737,6 +17742,7 @@ msgstr ""
 #empty strings from id 34409 to 34999
 
 #: system/settings/settings.xml
+#: xbmc/games/agents/windows/GUIAgentList.cpp
 #: xbmc/peripherals/Peripherals.cpp
 msgctxt "#35000"
 msgid "Peripherals"
@@ -17758,6 +17764,7 @@ msgctxt "#35003"
 msgid "Generic disk"
 msgstr ""
 
+#: xbmc/games/agents/windows/GUIAgentList.cpp
 #: xbmc/peripherals/Peripherals.cpp
 msgctxt "#35004"
 msgid "There are no settings available for this peripheral."
@@ -18296,7 +18303,20 @@ msgctxt "#35171"
 msgid "Mouse"
 msgstr ""
 
-#empty strings from id 35172 to 35199
+#. Name of window for configuring players while playing a game
+#: addons/skin.estuary/xml/GameOSD.xml
+#: addons/skin.estuary/xml/Includes_Games.xml
+msgctxt "#35172"
+msgid "Players"
+msgstr ""
+
+#. Notification shown when no controllers are connected in the in-game dialog that lets users configure player assignment
+#: xbmc/games/agents/windows/GUIAgentList.cpp
+msgctxt "#35173"
+msgid "No controllers connected"
+msgstr ""
+
+#empty strings from id 35174 to 35199
 
 #. This string is an early meme from the late 1990's that made fun of the poor translation in the 16-bit game Zero Wing from the late 1980's. DO NOT TRANSLATE!
 #: system/settings/settings.xml
@@ -23452,4 +23472,10 @@ msgstr ""
 #: system/settings/settings.xml
 msgctxt "#39194"
 msgid "Enables advanced DXVA upscaler using NVIDIA \"RTX Video Super Resolution\" or \"Intel Video Super Resolution\".[CR]Used when video source is 1080p or less (progressive only) and source resolution is lower than display resolution.[CR]It's only available on specific hardware: NVIDIA RTX 40x, RTX 30x and Intel Arc A770, A750."
+msgstr ""
+
+#. Description of setting with label #13418 "Use high precision processing"
+#: system/settings/settings.xml
+msgctxt "#39195"
+msgid "Enable this option for the best picture quality. Disabling reduces the load on resource-limited systems."
 msgstr ""

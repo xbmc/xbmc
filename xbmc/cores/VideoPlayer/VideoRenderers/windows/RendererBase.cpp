@@ -14,9 +14,8 @@
 #include "VideoRenderers/BaseRenderer.h"
 #include "VideoRenderers/RenderFlags.h"
 #include "cores/VideoPlayer/Buffers/VideoBuffer.h"
+#include "rendering/dx/DirectXHelper.h"
 #include "rendering/dx/RenderContext.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
 #include "utils/MemUtils.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -29,9 +28,9 @@ void CRenderBuffer::AppendPicture(const VideoPicture& picture)
   videoBuffer->Acquire();
 
   pictureFlags = picture.iFlags;
-  primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
-  color_space = static_cast<AVColorSpace>(picture.color_space);
-  color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
+  primaries = picture.color_primaries;
+  color_space = picture.color_space;
+  color_transfer = picture.color_transfer;
   full_range = picture.color_range == 1;
   bits = picture.colorBits;
   stereoMode = picture.stereoMode;
@@ -139,13 +138,24 @@ CRendererBase::CRendererBase(CVideoSettings& videoSettings)
 
 CRendererBase::~CRendererBase()
 {
-  if (DX::Windowing()->IsHDROutput())
+  // At playback stop restores Windows HDR state to previous state
+  // Is not need set swap chain color space because toggling HDR re-creates swap chain
+  if (m_AutoSwitchHDR)
   {
-    CLog::LogF(LOGDEBUG, "Restoring SDR rendering");
-    DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
-    if (m_AutoSwitchHDR)
-      DX::Windowing()->ToggleHDR(); // Toggle display HDR OFF
+    if (m_initialHdrEnabled != DX::Windowing()->IsHDROutput())
+    {
+      CLog::LogF(LOGDEBUG, "Restoring {} rendering", m_initialHdrEnabled ? "HDR" : "SDR");
+      DX::Windowing()->ToggleHDR();
+    }
   }
+  else // swap chain is not re-created, set proper color space
+  {
+    if (DX::Windowing()->IsHDROutput())
+      DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
+    else
+      DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+  }
+
   Flush(false);
 }
 
@@ -177,22 +187,22 @@ bool CRendererBase::Configure(const VideoPicture& picture, float fps, unsigned o
   m_fps = fps;
   m_renderOrientation = orientation;
 
-  m_useDithering = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool("videoscreen.dither");
-  m_ditherDepth = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoscreen.ditherdepth");
+  std::tie(m_useDithering, m_ditherDepth) = DX::Windowing()->GetDitherSettings();
 
   m_lastHdr10 = {};
-  m_HdrType = HDR_TYPE::HDR_NONE_SDR;
+  m_HdrType = HDR_TYPE::HDR_INVALID;
   m_useHLGtoPQ = false;
-  m_AutoSwitchHDR = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-                        DX::Windowing()->SETTING_WINSYSTEM_IS_HDR_DISPLAY) &&
-                    DX::Windowing()->IsHDRDisplay();
+  m_AutoSwitchHDR = DX::Windowing()->IsHDRDisplaySettingEnabled();
 
   // Auto switch HDR only if supported and "Settings/Player/Use HDR display capabilities" = ON
   if (m_AutoSwitchHDR)
   {
-    bool streamIsHDR = (picture.color_primaries == AVCOL_PRI_BT2020) &&
-                       (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
-                        picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
+    m_initialHdrEnabled = DX::Windowing()->IsHDROutput();
+    CLog::LogF(LOGDEBUG, "Storing Windows HDR state: {}", m_initialHdrEnabled ? "ON" : "OFF");
+
+    const bool streamIsHDR = (picture.color_primaries == AVCOL_PRI_BT2020) &&
+                             (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+                              picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
 
     if (streamIsHDR != DX::Windowing()->IsHDROutput())
       DX::Windowing()->ToggleHDR();
@@ -336,21 +346,28 @@ void CRendererBase::DeleteRenderBuffer(int index)
   }
 }
 
-bool CRendererBase::CreateIntermediateTarget(unsigned width, unsigned height, bool dynamic)
+bool CRendererBase::CreateIntermediateTarget(unsigned width,
+                                             unsigned height,
+                                             bool dynamic,
+                                             DXGI_FORMAT format)
 {
-  DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
+  // No format specified by renderer
+  if (format == DXGI_FORMAT_UNKNOWN)
+    format = DX::Windowing()->GetBackBuffer().GetFormat();
 
   // don't create new one if it exists with requested size and format
-  if (m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format
-    && m_IntermediateTarget.GetWidth() == width && m_IntermediateTarget.GetHeight() == height)
+  if (m_IntermediateTarget.Get() && m_IntermediateTarget.GetFormat() == format &&
+      m_IntermediateTarget.GetWidth() == width && m_IntermediateTarget.GetHeight() == height)
     return true;
 
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  CLog::LogF(LOGDEBUG, "intermediate target format {}.", DX::DXGIFormatToString(format));
+  CLog::LogF(LOGDEBUG, "creating intermediate target {}x{} format {}.", width, height,
+             DX::DXGIFormatToString(format));
 
-  if (!m_IntermediateTarget.Create(width, height, 1, dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT, format))
+  if (!m_IntermediateTarget.Create(width, height, 1,
+                                   dynamic ? D3D11_USAGE_DYNAMIC : D3D11_USAGE_DEFAULT, format))
   {
     CLog::LogF(LOGERROR, "intermediate target creation failed.");
     return false;
@@ -456,13 +473,8 @@ void CRendererBase::CheckVideoParameters()
     OnOutputReset();
   }
 
-  if (m_cmsOn && !m_lutIsLoading)
-  {
-    const AVColorPrimaries color_primaries = static_cast<AVColorPrimaries>(buf->primaries);
-
-    if (!m_colorManager->CheckConfiguration(m_cmsToken, color_primaries))
-      OnCMSConfigChanged(color_primaries);
-  }
+  if (m_cmsOn && !m_lutIsLoading && !m_colorManager->CheckConfiguration(m_cmsToken, buf->primaries))
+    OnCMSConfigChanged(buf->primaries);
 }
 
 DXGI_FORMAT CRendererBase::GetDXGIFormat(const VideoPicture& picture)
@@ -630,6 +642,7 @@ void CRendererBase::ProcessHDR(CRenderBuffer* rb)
       CLog::LogF(LOGINFO, "Switching to HDR rendering");
       DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
       m_HdrType = HDR_TYPE::HDR_HLG;
+      m_lastHdr10 = hdr10;
     }
   }
   // SDR
@@ -639,11 +652,18 @@ void CRendererBase::ProcessHDR(CRenderBuffer* rb)
     {
       // Switch to SDR rendering
       CLog::LogF(LOGINFO, "Switching to SDR rendering");
-      DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+      // not need set color space because is alredy set when swap chain is re-created
+      if (m_AutoSwitchHDR)
+      {
+        if (DX::Windowing()->IsHDROutput())
+          DX::Windowing()->ToggleHDR(); // Toggle display HDR OFF
+      }
+      else
+      {
+        DX::Windowing()->SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+      }
       m_HdrType = HDR_TYPE::HDR_NONE_SDR;
       m_lastHdr10 = {};
-      if (m_AutoSwitchHDR)
-        DX::Windowing()->ToggleHDR(); // Toggle display HDR OFF
     }
   }
 }
@@ -724,7 +744,10 @@ DEBUG_INFO_VIDEO CRendererBase::GetDebugInfo(int idx)
   if (m_outputShader)
     info.shader = m_outputShader->GetDebugInfo();
 
-  info.render = StringUtils::Format("Render method: {}", m_renderMethodName);
+  info.render =
+      StringUtils::Format("Render method: {}, IT: {}x{} {}", m_renderMethodName,
+                          m_IntermediateTarget.GetWidth(), m_IntermediateTarget.GetHeight(),
+                          DX::DXGIFormatToShortString(m_IntermediateTarget.GetFormat()));
 
   std::string rmInfo = GetRenderMethodDebugInfo();
   if (!rmInfo.empty())
@@ -734,4 +757,16 @@ DEBUG_INFO_VIDEO CRendererBase::GetDebugInfo(int idx)
   }
 
   return info;
+}
+
+bool CRendererBase::IntendToRenderAsHDR(const VideoPicture& picture)
+{
+  const bool streamIsHDR = (picture.color_primaries == AVCOL_PRI_BT2020) &&
+                           (picture.color_transfer == AVCOL_TRC_SMPTE2084 ||
+                            picture.color_transfer == AVCOL_TRC_ARIB_STD_B67);
+
+  const bool canDisplayHDR =
+      DX::Windowing()->IsHDROutput() || DX::Windowing()->IsHDRDisplaySettingEnabled();
+
+  return streamIsHDR && canDisplayHDR;
 }

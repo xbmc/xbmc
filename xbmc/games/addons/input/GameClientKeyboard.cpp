@@ -89,3 +89,13 @@ void CGameClientKeyboard::OnKeyRelease(const KEYBOARD::KeyName& key,
 
   m_gameClient.Input().InputEvent(event);
 }
+
+void CGameClientKeyboard::SetSource(PERIPHERALS::PeripheralPtr sourcePeripheral)
+{
+  m_sourcePeripheral = std::move(sourcePeripheral);
+}
+
+void CGameClientKeyboard::ClearSource()
+{
+  m_sourcePeripheral.reset();
+}

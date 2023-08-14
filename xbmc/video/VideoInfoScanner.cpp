@@ -658,7 +658,7 @@ namespace VIDEO
     if (ProgressCancelled(pDlgProgress, 198, pItem->GetLabel()))
       return INFO_CANCELLED;
 
-    if (m_database.HasMovieInfo(pItem->GetPath()))
+    if (m_database.HasMovieInfo(pItem->GetDynPath()))
       return INFO_HAVE_ALREADY;
 
     if (m_handle)
@@ -1670,6 +1670,14 @@ namespace VIDEO
         if (!image.empty())
           art.insert(std::make_pair(aspect, image));
       }
+    }
+
+    if (art.find("thumb") == art.end() &&
+        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB) &&
+        CDVDFileInfo::CanExtract(*pItem))
+    {
+      art["thumb"] = CVideoThumbLoader::GetEmbeddedThumbURL(*pItem);
     }
 
     for (const auto& artType : artTypes)

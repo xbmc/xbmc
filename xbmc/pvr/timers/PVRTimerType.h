@@ -75,6 +75,12 @@ namespace PVR
     bool operator !=(const CPVRTimerType& right) const;
 
     /*!
+     * @brief Update the data of this instance with the data given by another type instance.
+     * @param type The instance containing the updated data.
+     */
+    void Update(const CPVRTimerType& type);
+
+    /*!
      * @brief Get the PVR client id for this type.
      * @return The PVR client id.
      */

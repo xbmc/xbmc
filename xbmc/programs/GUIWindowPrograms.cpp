@@ -134,7 +134,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem, const std::string&)
   if ( iItem < 0 || iItem >= m_vecItems->Size() ) return false;
   CFileItemPtr pItem = m_vecItems->Get(iItem);
 
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   if (pItem->IsDVD())
     return MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
 #endif

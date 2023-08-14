@@ -32,7 +32,6 @@
 #include <mutex>
 
 #include <Windows.h>
-#include <d3d11_4.h>
 #include <dxva.h>
 #include <initguid.h>
 #include <sdkddkver.h>
@@ -333,12 +332,10 @@ bool CContext::CreateContext()
                            D3D11_SDK_VERSION, &pD3DDevice, &d3dFeatureLevel, &pD3DDeviceContext);
     if (SUCCEEDED(hr))
     {
-      DXGI_ADAPTER_DESC aDesc;
-      DX::DeviceResources::Get()->GetAdapter()->GetDesc(&aDesc);
-
-      CLog::LogF(LOGINFO, "device for decoding created on adapter '{}' with {}",
-                 KODI::PLATFORM::WINDOWS::FromW(aDesc.Description),
-                 DX::GetFeatureLevelDescription(d3dFeatureLevel));
+      CLog::LogF(
+          LOGINFO, "device for decoding created on adapter '{}' with {}",
+          KODI::PLATFORM::WINDOWS::FromW(DX::DeviceResources::Get()->GetAdapterDesc().Description),
+          DX::GetFeatureLevelDescription(d3dFeatureLevel));
 
 #ifdef _DEBUG
       if (FAILED(pD3DDevice.As(&m_d3d11Debug)))
@@ -705,8 +702,7 @@ bool CContext::Reset()
 {
   if (Check())
   {
-    DXGI_ADAPTER_DESC appDesc = {};
-    DX::DeviceResources::Get()->GetAdapterDesc(&appDesc);
+    const DXGI_ADAPTER_DESC appDesc = DX::DeviceResources::Get()->GetAdapterDesc();
 
     ComPtr<IDXGIDevice> ctxDevice;
     ComPtr<IDXGIAdapter> ctxAdapter;
@@ -783,6 +779,12 @@ void DXVA::CVideoBuffer::Unref()
   av_frame_unref(m_pFrame);
 }
 
+CVideoBufferShared::~CVideoBufferShared()
+{
+  if (m_handleFence != INVALID_HANDLE_VALUE)
+    CloseHandle(m_handleFence);
+}
+
 HRESULT CVideoBufferShared::GetResource(ID3D11Resource** ppResource)
 {
   HRESULT hr = S_OK;
@@ -793,13 +795,49 @@ HRESULT CVideoBufferShared::GetResource(ID3D11Resource** ppResource)
   {
     // open resource on app device
     ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
-    hr = pD3DDevice->OpenSharedResource(handle, __uuidof(ID3D11Resource), &m_sharedRes);
+    if (FAILED(hr = pD3DDevice->OpenSharedResource(handle, __uuidof(ID3D11Resource), &m_sharedRes)))
+    {
+      CLog::LogF(LOGDEBUG, "unable to open the shared resource, error description: {}",
+                 DX::GetErrorDescription(hr));
+      return hr;
+    }
+
+    // open fence on app device. Errors if any are not blocking, log only
+    if (m_handleFence != INVALID_HANDLE_VALUE)
+    {
+      ComPtr<ID3D11DeviceContext1> context1 = DX::DeviceResources::Get()->GetImmediateContext();
+      ComPtr<ID3D11Device5> device5;
+      if (FAILED(hr = context1.As(&m_appContext4)))
+      {
+        CLog::LogF(LOGDEBUG, "ID3D11DeviceContext4 is not available, error description: {}",
+                   DX::GetErrorDescription(hr));
+      }
+      else if (FAILED(hr = pD3DDevice.As(&device5)))
+      {
+        CLog::LogF(LOGDEBUG, "ID3D11Device5 is not available, error description: {}",
+                   DX::GetErrorDescription(hr));
+        m_appContext4 = nullptr;
+      }
+      else if (FAILED(hr = device5->OpenSharedFence(m_handleFence, IID_PPV_ARGS(&m_appFence))))
+      {
+        CLog::LogF(LOGDEBUG, "unable to open the shared fence, error description: {}",
+                   DX::GetErrorDescription(hr));
+        m_appContext4 = nullptr;
+      }
+    }
   }
 
-  if (SUCCEEDED(hr))
-    hr = m_sharedRes.CopyTo(ppResource);
+  if (m_appFence)
+  {
+    // Make the GPU wait for the fence value that produced the picture
+    if (FAILED(hr = m_appContext4->Wait(m_appFence.Get(), m_fenceValue)))
+    {
+      CLog::LogF(LOGDEBUG, "error waiting for the fence value, error description: {}",
+                 DX::GetErrorDescription(hr));
+    }
+  }
 
-  return hr;
+  return m_sharedRes.CopyTo(ppResource);
 }
 
 void CVideoBufferShared::Initialize(CDecoder* decoder)
@@ -807,7 +845,85 @@ void CVideoBufferShared::Initialize(CDecoder* decoder)
   CVideoBuffer::Initialize(decoder);
 
   if (handle == INVALID_HANDLE_VALUE)
+  {
     handle = decoder->m_sharedHandle;
+    if (DX::DeviceResources::Get()->UseFence())
+      InitializeFence(decoder);
+  }
+  // Set the fence to wait until this picture is ready
+  SetFence();
+}
+
+void CVideoBufferShared::InitializeFence(CDecoder* decoder)
+{
+  if (!decoder)
+  {
+    CLog::LogF(LOGERROR, "NULL decoder");
+    return;
+  }
+
+  CLog::LogF(LOGDEBUG, "activating fence synchronization.");
+
+  ComPtr<ID3D11Device> device;
+  decoder->m_pD3D11Context->GetDevice(&device);
+  ComPtr<ID3D11DeviceContext> immediateContext;
+  device->GetImmediateContext(&immediateContext);
+  ComPtr<ID3D11Device5> d3ddev5;
+
+  HRESULT hr;
+  if (FAILED(hr = immediateContext.As(&m_deviceContext4)))
+  {
+    CLog::LogF(LOGDEBUG, "ID3D11DeviceContext4 is not available, error description: {}",
+               DX::GetErrorDescription(hr));
+    goto error;
+  }
+
+  if (FAILED(hr = device.As(&d3ddev5)))
+  {
+    CLog::LogF(LOGDEBUG, "ID3D11Device5 is not available, error description: {}",
+               DX::GetErrorDescription(hr));
+    goto error;
+  }
+
+  if (FAILED(hr = d3ddev5->CreateFence(0, D3D11_FENCE_FLAG_SHARED, IID_PPV_ARGS(&m_fence))))
+  {
+    CLog::LogF(LOGDEBUG, "unable to create ID3D11Fence, error description: {}",
+               DX::GetErrorDescription(hr));
+    goto error;
+  }
+
+  if (FAILED(hr = m_fence->CreateSharedHandle(NULL, GENERIC_ALL, NULL, &m_handleFence)))
+  {
+    CLog::LogF(LOGDEBUG, "unable to create the shared handle of the fence, error description: {}",
+               DX::GetErrorDescription(hr));
+    goto error;
+  }
+
+  CLog::LogF(LOGINFO, "fence synchronization activated.");
+
+  return;
+
+error:
+  CLog::LogF(LOGWARNING, "The dxva decoder will run without fence synchronization of the shared "
+                         "surfaces with the main device.");
+
+  m_deviceContext4 = nullptr;
+  m_fence = nullptr;
+  m_handleFence = INVALID_HANDLE_VALUE;
+}
+
+void CVideoBufferShared::SetFence()
+{
+  if (m_fence)
+  {
+    static UINT64 fenceValue = 0;
+    // Not called from multiple threads, no synchronization needed to increment
+    fenceValue++;
+
+    m_fenceValue = fenceValue;
+
+    m_deviceContext4->Signal(m_fence.Get(), m_fenceValue);
+  }
 }
 
 void CVideoBufferCopy::Initialize(CDecoder* decoder)
@@ -1093,8 +1209,7 @@ static bool CheckH264L41(AVCodecContext* avctx)
 
 static bool IsL41LimitedATI()
 {
-  DXGI_ADAPTER_DESC AIdentifier = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
+  const DXGI_ADAPTER_DESC AIdentifier = DX::DeviceResources::Get()->GetAdapterDesc();
 
   if (AIdentifier.VendorId == PCIV_AMD)
   {
@@ -1110,8 +1225,7 @@ static bool IsL41LimitedATI()
 static bool HasVP3WidthBug(AVCodecContext* avctx)
 {
   // Some nVidia VP3 hardware cannot do certain macroblock widths
-  DXGI_ADAPTER_DESC AIdentifier = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
+  const DXGI_ADAPTER_DESC AIdentifier = DX::DeviceResources::Get()->GetAdapterDesc();
 
   if (AIdentifier.VendorId == PCIV_NVIDIA &&
       !CDVDCodecUtils::IsVP3CompatibleWidth(avctx->coded_width))
@@ -1126,8 +1240,8 @@ static bool HasVP3WidthBug(AVCodecContext* avctx)
 
 static bool HasATIMP2Bug(AVCodecContext* avctx)
 {
-  DXGI_ADAPTER_DESC AIdentifier = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
+  const DXGI_ADAPTER_DESC AIdentifier = DX::DeviceResources::Get()->GetAdapterDesc();
+
   if (AIdentifier.VendorId != PCIV_AMD)
     return false;
 
@@ -1141,8 +1255,7 @@ static bool HasATIMP2Bug(AVCodecContext* avctx)
 
 static bool HasAMDH264SDiBug(AVCodecContext* avctx)
 {
-  DXGI_ADAPTER_DESC AIdentifier = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&AIdentifier);
+  const DXGI_ADAPTER_DESC AIdentifier = DX::DeviceResources::Get()->GetAdapterDesc();
 
   if (AIdentifier.VendorId != PCIV_AMD)
     return false;
@@ -1245,8 +1358,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   m_refs = 2 + m_shared; // 1 decode + 1 safety + display
   m_surface_alignment = 16;
 
-  DXGI_ADAPTER_DESC ad = {};
-  DX::DeviceResources::Get()->GetAdapterDesc(&ad);
+  const DXGI_ADAPTER_DESC ad = DX::DeviceResources::Get()->GetAdapterDesc();
 
   size_t videoMem = ad.SharedSystemMemory + ad.DedicatedVideoMemory + ad.DedicatedSystemMemory;
   CLog::LogF(LOGINFO, "Total video memory available is {} MB (dedicated = {} MB, shared = {} MB)",

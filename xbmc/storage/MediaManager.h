@@ -58,7 +58,7 @@ public:
   bool HasOpticalDrive();
   std::string TranslateDevicePath(const std::string& devicePath, bool bReturnAsDevice=false);
   DriveState GetDriveStatus(const std::string& devicePath = "");
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   MEDIA_DETECT::CCdInfo* GetCdInfo(const std::string& devicePath="");
   bool RemoveCdInfo(const std::string& devicePath="");
   std::string GetDiskLabel(const std::string& devicePath="");
@@ -109,7 +109,7 @@ protected:
   std::vector<CNetworkLocation> m_locations;
 
   CCriticalSection m_muAutoSource, m_CritSecStorageProvider;
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   std::map<std::string,MEDIA_DETECT::CCdInfo*> m_mapCdInfo;
 #endif
   bool m_bhasoptical;
@@ -137,7 +137,7 @@ private:
                                           const std::string& thumb) const;
 
   std::unique_ptr<IStorageProvider> m_platformStorage;
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   std::shared_ptr<IDiscDriveHandler> m_platformDiscDriveHander;
 #endif
 

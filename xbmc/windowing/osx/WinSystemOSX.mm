@@ -193,6 +193,17 @@ NSString* screenNameForDisplay(NSUInteger screenIdx)
   return screenName;
 }
 
+void CheckAndUpdateCurrentMonitor(NSUInteger screenNumber)
+{
+  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  const std::string storedScreenName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
+  const std::string currentScreenName = screenNameForDisplay(screenNumber).UTF8String;
+  if (storedScreenName != currentScreenName)
+  {
+    CDisplaySettings::GetInstance().SetMonitor(currentScreenName);
+  }
+}
+
 CGDirectDisplayID GetDisplayIDFromScreen(NSScreen* screen)
 {
   NSDictionary* screenInfo = screen.deviceDescription;
@@ -239,9 +250,9 @@ NSUInteger GetDisplayIndex(const std::string& dispName)
 std::string ComputeVideoModeId(
     size_t resWidth, size_t resHeight, size_t pixelWidth, size_t pixelHeight, bool interlaced)
 {
-  const char* hiDPIdesc = pixelWidth > resWidth && pixelHeight > resHeight ? " (HiDPI)" : "";
   const char* interlacedDesc = interlaced ? "i" : "p";
-  return StringUtils::Format("{}x{}{}{}", resWidth, resHeight, interlacedDesc, hiDPIdesc);
+  return StringUtils::Format("{}x{}{}({}x{})", resWidth, resHeight, interlacedDesc, pixelWidth,
+                             pixelHeight);
 }
 
 CFArrayRef CopyAllDisplayModes(CGDirectDisplayID display)
@@ -731,6 +742,8 @@ bool CWinSystemOSX::CreateNewWindow(const std::string& name, bool fullScreen, RE
 
   m_bWindowCreated = true;
 
+  CheckAndUpdateCurrentMonitor(m_lastDisplayNr);
+
   // warning, we can order front but not become
   // key window or risk starting up with bad flicker
   // becoming key window must happen in completion block.
@@ -1100,20 +1113,23 @@ void CWinSystemOSX::FillInVideoModes()
           // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
           refreshrate = 60.0;
         }
+        const std::string modeId =
+            ComputeVideoModeId(resWidth, resHeight, pixelWidth, pixelHeight, interlaced);
         CLog::LogF(
             LOGINFO,
             "Found possible resolution for display {} ({}) with {} x {} @ {} Hz (pixel size: "
-            "{} x {})",
-            disp, dispName.UTF8String, resWidth, resHeight, refreshrate, pixelWidth, pixelHeight);
+            "{} x {}{}) (id:{})",
+            disp, dispName.UTF8String, resWidth, resHeight, refreshrate, pixelWidth, pixelHeight,
+            pixelWidth > resWidth && pixelHeight > resHeight ? " - HiDPI" : "", modeId);
 
         // only add the resolution if it belongs to "our" screen
         // all others are only logged above...
         if (disp == dispIdx)
         {
-          res.strId = ComputeVideoModeId(resWidth, resHeight, pixelWidth, pixelHeight, interlaced);
-          res.label = res.strId;
+          res.strId = modeId;
           UpdateDesktopResolution(res, (dispName != nil) ? dispName.UTF8String : "Unknown",
                                   static_cast<int>(pixelWidth), static_cast<int>(pixelHeight),
+                                  static_cast<int>(resWidth), static_cast<int>(resHeight),
                                   refreshrate, 0);
           m_gfxContext->ResetOverscan(res);
           CDisplaySettings::GetInstance().AddResolutionInfo(res);
@@ -1140,10 +1156,10 @@ void CWinSystemOSX::UpdateResolutions()
   resInfo.strId = ComputeVideoModeId(screenResolution.resWidth, screenResolution.resHeight,
                                      screenResolution.pixelWidth, screenResolution.pixelHeight,
                                      screenResolution.interlaced);
-  resInfo.label = resInfo.strId;
   UpdateDesktopResolution(
       resInfo, dispName.UTF8String, static_cast<int>(screenResolution.pixelWidth),
-      static_cast<int>(screenResolution.pixelHeight), screenResolution.refreshrate, 0);
+      static_cast<int>(screenResolution.pixelHeight), static_cast<int>(screenResolution.resWidth),
+      static_cast<int>(screenResolution.resHeight), screenResolution.refreshrate, 0);
 
   CDisplaySettings::GetInstance().ClearCustomResolutions();
 
@@ -1181,17 +1197,6 @@ bool CWinSystemOSX::HasValidResolution() const
 
 #pragma mark - Window Move
 
-void CheckAndUpdateCurrentMonitor(NSUInteger screenNumber)
-{
-  const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
-  const std::string storedScreenName = settings->GetString(CSettings::SETTING_VIDEOSCREEN_MONITOR);
-  const std::string currentScreenName = screenNameForDisplay(screenNumber).UTF8String;
-  if (storedScreenName != currentScreenName)
-  {
-    CDisplaySettings::GetInstance().SetMonitor(currentScreenName);
-  }
-}
-
 void CWinSystemOSX::OnMove(int x, int y)
 {
   // check if the current screen/monitor settings needs to be updated
@@ -1210,10 +1215,10 @@ void CWinSystemOSX::OnMove(int x, int y)
 
     // send a message so that videoresolution (and refreshrate) is changed
     dispatch_sync(dispatch_get_main_queue(), ^{
-      NSWindow* win = m_appWindow;
-      NSRect frame = win.contentView.frame;
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_VIDEORESIZE, frame.size.width,
-                                                 frame.size.height);
+      NSRect rect = [m_appWindow.contentView
+          convertRectToBacking:[m_appWindow contentRectForFrameRect:m_appWindow.frame]];
+      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_VIDEORESIZE, rect.size.width,
+                                                 rect.size.height);
     });
   }
   if (m_fullScreenMovingToScreen.has_value())
@@ -1300,7 +1305,7 @@ CGLContextObj CWinSystemOSX::GetCGLContextObj()
 
 CGraphicContext& CWinSystemOSX::GetGfxContext() const
 {
-  if (m_glView)
+  if (m_glView && [m_glView glContextOwned])
   {
     dispatch_sync(dispatch_get_main_queue(), ^{
       [m_glView NotifyContext];

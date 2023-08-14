@@ -124,7 +124,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   case GUI_MSG_CLICKED:
     {
       int iControl = message.GetSenderId();
-#if defined(HAS_DVD_DRIVE)
+#if defined(HAS_OPTICAL_DRIVE)
       if (iControl == CONTROL_PLAY_DVD)
       {
         // play movie...
@@ -200,11 +200,11 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
   return CGUIMediaWindow::OnMessage(message);
 }
 
-void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& scraper)
+bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPtr& scraper)
 {
   if (fileItem.IsParentFolder() || fileItem.m_bIsShareOrDrive || fileItem.IsPath("add") ||
-     (fileItem.IsPlayList() && !URIUtils::HasExtension(fileItem.GetDynPath(), ".strm")))
-    return;
+      (fileItem.IsPlayList() && !URIUtils::HasExtension(fileItem.GetDynPath(), ".strm")))
+    return false;
 
   CFileItem item(fileItem);
   bool fromDB = false;
@@ -216,6 +216,7 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
       item.ClearArt();
       item.GetVideoInfoTag()->m_iDbId = item.GetVideoInfoTag()->m_iIdShow;
     }
+    item.SetProperty("original_listitem_url", item.GetPath());
     item.SetPath(item.GetVideoInfoTag()->GetPath());
     fromDB = true;
   }
@@ -259,7 +260,7 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
       if (!bFoundFile)
       {
         HELPERS::ShowOKDialogText(CVariant{13346}, CVariant{20349});
-        return;
+        return false;
       }
     }
   }
@@ -276,6 +277,7 @@ void CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem, ADDON::ScraperPt
     Refresh();
     m_viewControl.SetSelectedItem(itemNumber);
   }
+  return true;
 }
 
 // ShowIMDB is called as follows:
@@ -380,6 +382,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItemPtr item, const ScraperPtr &info2, b
   {
     if (!info || info->Content() == CONTENT_NONE) // disable refresh button
       item->SetProperty("xxuniqueid", "xx" + movieDetails.GetUniqueID());
+    item->SetProperty("CheckAutoPlayNextItem", IsActive());
     *item->GetVideoInfoTag() = movieDetails;
     pDlgInfo->SetMovie(item.get());
     pDlgInfo->Open();
@@ -527,9 +530,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string&
   case SELECT_ACTION_PLAY_OR_RESUME:
     return OnResumeItem(iItem, player);
   case SELECT_ACTION_INFO:
-    if (OnItemInfo(iItem))
-      return true;
-    break;
+    return OnItemInfo(iItem);
   case SELECT_ACTION_MORE:
     OnPopupMenu(iItem);
     return true;
@@ -606,10 +607,11 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
     scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
 
     if (!scraper &&
-        !(m_database.HasMovieInfo(item->GetPath()) ||
-          m_database.HasTvShowInfo(strDir)           ||
-          m_database.HasEpisodeInfo(item->GetPath())))
+        !(m_database.HasMovieInfo(item->GetDynPath()) || m_database.HasTvShowInfo(strDir) ||
+          m_database.HasEpisodeInfo(item->GetDynPath())))
     {
+      HELPERS::ShowOKDialogText(CVariant{20176}, // Show video information
+                                CVariant{19055}); // no information available
       return false;
     }
 
@@ -617,12 +619,7 @@ bool CGUIWindowVideoBase::OnItemInfo(int iItem)
       return true;
   }
 
-  OnItemInfo(*item, scraper);
-
-  // Return whether or not we have information to display.
-  // Note: This will cause the default select action to start
-  // playback in case it's set to "Show information".
-  return item->HasVideoInfoTag();
+  return OnItemInfo(*item, scraper);
 }
 
 void CGUIWindowVideoBase::OnRestartItem(int iItem, const std::string &player)
@@ -1078,17 +1075,26 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   CServiceBroker::GetPlaylistPlayer().Reset();
   CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
 
-  CFileItem item(*pItem);
+  const auto itemCopy = std::make_shared<CFileItem>(*pItem);
+
   if (pItem->IsVideoDb())
   {
-    item.SetPath(pItem->GetVideoInfoTag()->m_strFileNameAndPath);
-    item.SetProperty("original_listitem_url", pItem->GetPath());
+    itemCopy->SetPath(pItem->GetVideoInfoTag()->m_strFileNameAndPath);
+    itemCopy->SetProperty("original_listitem_url", pItem->GetPath());
   }
-  CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(item.GetPath()));
+  CLog::Log(LOGDEBUG, "{} {}", __FUNCTION__, CURL::GetRedacted(itemCopy->GetPath()));
 
-  item.SetProperty("playlist_type_hint", m_guiState->GetPlaylist());
+  itemCopy->SetProperty("playlist_type_hint", m_guiState->GetPlaylist());
 
-  PlayMovie(&item, player);
+  if (m_thumbLoader.IsLoading())
+    m_thumbLoader.StopAsync();
+
+  CServiceBroker::GetPlaylistPlayer().Play(itemCopy, player);
+
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  if (!appPlayer->IsPlayingVideo())
+    m_thumbLoader.Load(*m_vecItems);
 
   return true;
 }
@@ -1108,19 +1114,6 @@ bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr& item, const st
   // Call the base method to actually queue the items
   // and start playing the given item
   return CGUIMediaWindow::OnPlayAndQueueMedia(movieItem, player);
-}
-
-void CGUIWindowVideoBase::PlayMovie(const CFileItem *item, const std::string &player)
-{
-  if(m_thumbLoader.IsLoading())
-    m_thumbLoader.StopAsync();
-
-  CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(*item), player);
-
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  if (!appPlayer->IsPlayingVideo())
-    m_thumbLoader.Load(*m_vecItems);
 }
 
 void CGUIWindowVideoBase::OnDeleteItem(int iItem)

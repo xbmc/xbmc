@@ -20,7 +20,6 @@
 #include "pvr/PVRPlaybackState.h"
 #include "pvr/addons/PVRClient.h"
 #include "pvr/addons/PVRClientUID.h"
-#include "pvr/channels/PVRChannelGroupInternal.h"
 #include "pvr/guilib/PVRGUIProgressHandler.h"
 #include "utils/JobManager.h"
 #include "utils/StringUtils.h"
@@ -600,15 +599,31 @@ bool CPVRClients::GetTimers(const std::vector<std::shared_ptr<CPVRClient>>& clie
                     failedClients) == PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR CPVRClients::GetTimerTypes(std::vector<std::shared_ptr<CPVRTimerType>>& results) const
+PVR_ERROR CPVRClients::UpdateTimerTypes(const std::vector<std::shared_ptr<CPVRClient>>& clients,
+                                        std::vector<int>& failedClients)
 {
-  return ForCreatedClients(__FUNCTION__, [&results](const std::shared_ptr<CPVRClient>& client) {
-    std::vector<std::shared_ptr<CPVRTimerType>> types;
-    PVR_ERROR ret = client->GetTimerTypes(types);
-    if (ret == PVR_ERROR_NO_ERROR)
-      results.insert(results.end(), types.begin(), types.end());
-    return ret;
-  });
+  return ForClients(
+      __FUNCTION__, clients,
+      [](const std::shared_ptr<CPVRClient>& client) { return client->UpdateTimerTypes(); },
+      failedClients);
+}
+
+const std::vector<std::shared_ptr<CPVRTimerType>> CPVRClients::GetTimerTypes() const
+{
+  std::vector<std::shared_ptr<CPVRTimerType>> types;
+
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  for (const auto& entry : m_clientMap)
+  {
+    const auto& client = entry.second;
+    if (client->ReadyToUse() && !client->IgnoreClient())
+    {
+      const auto& clientTypes = client->GetTimerTypes();
+      types.insert(types.end(), clientTypes.begin(), clientTypes.end());
+    }
+  }
+
+  return types;
 }
 
 PVR_ERROR CPVRClients::GetRecordings(const std::vector<std::shared_ptr<CPVRClient>>& clients,

@@ -46,7 +46,7 @@ class CWinRenderBuffer : public CRenderBufferSysMem
 {
 public:
   CWinRenderBuffer(AVPixelFormat pixFormat, DXGI_FORMAT dxFormat);
-  ~CWinRenderBuffer() override = default;
+  ~CWinRenderBuffer() override;
 
   // implementation of IRenderBuffer via CRenderBufferSysMem
   bool UploadTexture() override;
@@ -59,12 +59,12 @@ private:
   bool ReleaseTexture();
 
   bool CreateScalingContext();
-  void ScalePixels(uint8_t* source,
+  void ScalePixels(const uint8_t* source,
                    unsigned int sourceStride,
                    uint8_t* target,
                    unsigned int targetStride);
 
-  static AVPixelFormat GetPixFormat(DXGI_FORMAT dxFormat);
+  static AVPixelFormat GetPixFormat();
 
   // Construction parameters
   const AVPixelFormat m_pixFormat;
@@ -89,7 +89,7 @@ public:
   IRenderBuffer* CreateRenderBuffer(void* header = nullptr) override;
 
   // DirectX interface
-  bool ConfigureDX(DXGI_FORMAT dxFormat);
+  bool ConfigureDX();
   CRPWinOutputShader* GetShader(SCALINGMETHOD scalingMethod) const;
 
 private:

@@ -16,10 +16,7 @@
 class CGUIDialogProgressBarHandle
 {
 public:
-  explicit CGUIDialogProgressBarHandle(const std::string &strTitle) :
-    m_fPercentage(0),
-    m_strTitle(strTitle),
-    m_bFinished(false) {}
+  explicit CGUIDialogProgressBarHandle(const std::string& strTitle) : m_strTitle(strTitle) {}
   virtual ~CGUIDialogProgressBarHandle(void) = default;
 
   const std::string &Title(void) { return m_strTitle; }
@@ -37,10 +34,10 @@ public:
 
 private:
   mutable CCriticalSection m_critSection;
-  float             m_fPercentage;
+  float m_fPercentage = 0;
   std::string       m_strTitle;
   std::string       m_strText;
-  bool              m_bFinished;
+  bool m_bFinished = false;
 };
 
 class CGUIDialogExtendedProgressBar : public CGUIDialog

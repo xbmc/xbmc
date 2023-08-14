@@ -61,7 +61,7 @@ private:
   FILE* PyFile_AsFileWithMode(PyObject* py_file, const char* mode);
 
   PyThreadState* m_threadState;
-  bool m_stop;
+  bool m_stop = false;
   CEvent m_stoppedEvent;
 
   XBMCAddon::AddonClass::Ref<XBMCAddon::Python::PythonLanguageHook> m_languageHook;

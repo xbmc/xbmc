@@ -71,51 +71,18 @@ CProcessorHD::~CProcessorHD()
 void CProcessorHD::UnInit()
 {
   std::unique_lock<CCriticalSection> lock(m_section);
+  m_enumerator = nullptr;
   Close();
 }
 
 void CProcessorHD::Close()
 {
   std::unique_lock<CCriticalSection> lock(m_section);
-  m_enumerator = nullptr;
   m_pVideoProcessor = nullptr;
   m_pVideoContext = nullptr;
   m_pVideoDevice = nullptr;
-
-  // restores 10 bit swap chain if previously forced to 8 bit
-  if (m_forced8bit)
-    DX::DeviceResources::Get()->ApplyDisplaySettings();
-
   m_superResolutionEnabled = false;
-}
-
-bool CProcessorHD::PreInit() const
-{
-  ComPtr<ID3D11VideoDevice> pVideoDevice;
-  ComPtr<ID3D11VideoProcessorEnumerator> pEnumerator;
-  ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
-
-  if (FAILED(pD3DDevice.As(&pVideoDevice)))
-  {
-    CLog::LogF(LOGWARNING, "failed to get video device.");
-    return false;
-  }
-
-  D3D11_VIDEO_PROCESSOR_CONTENT_DESC desc1 = {};
-  desc1.InputFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
-  desc1.InputWidth = 640;
-  desc1.InputHeight = 480;
-  desc1.OutputWidth = 640;
-  desc1.OutputHeight = 480;
-  desc1.Usage = D3D11_VIDEO_USAGE_PLAYBACK_NORMAL;
-
-  // try to create video enum
-  if (FAILED(pVideoDevice->CreateVideoProcessorEnumerator(&desc1, &pEnumerator)))
-  {
-    CLog::LogF(LOGWARNING, "failed to create Video Enumerator.");
-    return false;
-  }
-  return true;
+  m_configured = false;
 }
 
 bool CProcessorHD::InitProcessor()
@@ -123,10 +90,6 @@ bool CProcessorHD::InitProcessor()
   HRESULT hr{};
   m_pVideoDevice = nullptr;
   m_pVideoContext = nullptr;
-
-  m_enumerator = std::make_unique<CEnumeratorHD>();
-  if (!m_enumerator->Open(m_width, m_height, m_input_dxgi_format))
-    return false;
 
   ComPtr<ID3D11DeviceContext1> pD3DDeviceContext = DX::DeviceResources::Get()->GetImmediateContext();
   ComPtr<ID3D11Device> pD3DDevice = DX::DeviceResources::Get()->GetD3DDevice();
@@ -144,6 +107,9 @@ bool CProcessorHD::InitProcessor()
     return false;
   }
 
+  if (!m_enumerator)
+    return false;
+
   m_procCaps = m_enumerator->ProbeProcessorCaps();
   if (!m_procCaps.m_valid)
     return false;
@@ -151,77 +117,27 @@ bool CProcessorHD::InitProcessor()
   return true;
 }
 
-bool CProcessorHD::IsFormatSupported(DXGI_FORMAT format, D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT support) const
-{
-  UINT uiFlags;
-  if (S_OK == m_enumerator->Get()->CheckVideoProcessorFormat(format, &uiFlags))
-  {
-    if (uiFlags & support)
-      return true;
-  }
-
-  CLog::LogF(LOGERROR, "unsupported format {} for {}.", DX::DXGIFormatToString(format),
-             DX::D3D11VideoProcessorFormatSupportToString(support));
-  return false;
-}
-
 bool CProcessorHD::CheckFormats() const
 {
-  // check default output format (as render target)
-  return IsFormatSupported(DX::Windowing()->GetBackBuffer().GetFormat(), D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT);
-}
-
-bool CProcessorHD::IsFormatConversionSupported(DXGI_FORMAT inputFormat,
-                                               DXGI_FORMAT outputFormat,
-                                               const VideoPicture& picture)
-{
-  std::unique_lock<CCriticalSection> lock(m_section);
-
-  // accept the conversion unless the API can be called successfully and disallows it
-  BOOL supported{TRUE};
-
-  if (!m_enumerator || !m_enumerator->Get1())
+  if (!m_isValidConversion)
     return true;
 
-  ProcColorSpaces spaces = CalculateDXGIColorSpaces(DXGIColorSpaceArgs(picture));
-
-  HRESULT hr;
-  if (SUCCEEDED(hr = m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
-                    inputFormat, spaces.inputColorSpace, outputFormat, spaces.outputColorSpace,
-                    &supported)))
-  {
-    CLog::LogF(
-        LOGDEBUG, "conversion from {} / {} to {} / {} is {}supported.",
-        DX::DXGIFormatToString(inputFormat), DX::DXGIColorSpaceTypeToString(spaces.inputColorSpace),
-        DX::DXGIFormatToString(outputFormat),
-        DX::DXGIColorSpaceTypeToString(spaces.outputColorSpace), supported == TRUE ? "" : "NOT ");
-  }
-  else
-  {
-    CLog::LogF(LOGERROR, "unable to validate the format conversion, error {}",
-               DX::GetErrorDescription(hr));
-  }
-  return supported == TRUE;
+  // check default output format (as render target)
+  return m_enumerator && m_enumerator->IsFormatSupportedOutput(m_conversion.m_outputFormat);
 }
 
-bool CProcessorHD::Open(UINT width, UINT height, const VideoPicture& picture)
+bool CProcessorHD::Open(const VideoPicture& picture,
+                        std::shared_ptr<DXVA::CEnumeratorHD> enumerator)
 {
   Close();
 
   std::unique_lock<CCriticalSection> lock(m_section);
 
-  m_width = width;
-  m_height = height;
-  m_color_primaries = static_cast<AVColorPrimaries>(picture.color_primaries);
-  m_color_transfer = static_cast<AVColorTransferCharacteristic>(picture.color_transfer);
-  const AVPixelFormat av_pixel_format = picture.videoBuffer->GetFormat();
-  m_input_dxgi_format =
-      CRendererDXVA::GetDXGIFormat(av_pixel_format, CRendererBase::GetDXGIFormat(picture));
+  m_color_primaries = picture.color_primaries;
+  m_color_transfer = picture.color_transfer;
+  m_enumerator = enumerator;
 
   if (!InitProcessor())
-    return false;
-
-  if (!CheckFormats())
     return false;
 
   return OpenProcessor();
@@ -245,21 +161,36 @@ bool CProcessorHD::OpenProcessor()
 {
   std::unique_lock<CCriticalSection> lock(m_section);
 
-  // restore the device if it was lost
-  if ((!m_enumerator || !m_enumerator->Get()) && !ReInit())
+  if ((!m_pVideoDevice || !m_pVideoContext || !m_enumerator || !m_procCaps.m_valid) && !ReInit())
+  {
+    CLog::LogF(LOGDEBUG, "invalid state, failed to re-initialize.");
     return false;
+  }
 
   CLog::LogF(LOGDEBUG, "creating processor.");
 
   // create processor
-  HRESULT hr =
-      m_pVideoDevice->CreateVideoProcessor(m_enumerator->Get().Get(), m_procCaps.m_procIndex,
-                                           m_pVideoProcessor.ReleaseAndGetAddressOf());
-  if (FAILED(hr))
+  m_pVideoProcessor = m_enumerator->CreateVideoProcessor(m_procCaps.m_procIndex);
+
+  if (!m_pVideoProcessor)
   {
-    CLog::LogF(LOGDEBUG, "failed creating video processor with error {}.",
-               DX::GetErrorDescription(hr));
+    CLog::LogF(LOGDEBUG, "failed creating video processor.");
     return false;
+  }
+
+  m_pVideoContext->VideoProcessorSetStreamAutoProcessingMode(m_pVideoProcessor.Get(), 0, FALSE);
+  m_pVideoContext->VideoProcessorSetStreamOutputRate(
+      m_pVideoProcessor.Get(), 0, D3D11_VIDEO_PROCESSOR_OUTPUT_RATE_NORMAL, FALSE, 0);
+
+  ComPtr<ID3D11VideoContext1> videoCtx1;
+  if (SUCCEEDED(m_pVideoContext.As(&videoCtx1)))
+  {
+    videoCtx1->VideoProcessorSetOutputShaderUsage(m_pVideoProcessor.Get(), 1);
+  }
+  else
+  {
+    CLog::LogF(LOGWARNING, "unable to retrieve ID3D11VideoContext1 to allow usage of shaders on "
+                           "video processor output surfaces.");
   }
 
   // Output background color (black)
@@ -270,8 +201,7 @@ bool CProcessorHD::OpenProcessor()
   // AMD/HDR (as of 2023-06-16): processor tone maps by default and modifies high code values
   // We want "passthrough" of the signal and to do our own tone mapping when needed.
   // Disable the functionality by pretending that the display supports all PQ levels (0-10000)
-  DXGI_ADAPTER_DESC ad{};
-  DX::DeviceResources::Get()->GetAdapterDesc(&ad);
+  const DXGI_ADAPTER_DESC ad = DX::DeviceResources::Get()->GetAdapterDesc();
   bool streamIsHDR =
       (m_color_primaries == AVCOL_PRI_BT2020) &&
       (m_color_transfer == AVCOL_TRC_SMPTE2084 || m_color_transfer == AVCOL_TRC_ARIB_STD_B67);
@@ -323,119 +253,135 @@ void CProcessorHD::ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER filter, int value, i
   m_pVideoContext->VideoProcessorSetStreamFilter(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, filter, val != range.Default, val);
 }
 
-ID3D11VideoProcessorInputView* CProcessorHD::GetInputView(CRenderBuffer* view) const
+ComPtr<ID3D11VideoProcessorInputView> CProcessorHD::GetInputView(CRenderBuffer* view) const
 {
-  ComPtr<ID3D11VideoProcessorInputView> inputView;
-  D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = {0, D3D11_VPIV_DIMENSION_TEXTURE2D, {0, 0}};
-
-  ComPtr<ID3D11Resource> resource;
-  unsigned arrayIdx = 0;
-  HRESULT hr = view->GetResource(resource.GetAddressOf(), &arrayIdx);
-  if (SUCCEEDED(hr))
+  if (m_enumerator)
   {
-    vpivd.Texture2D.ArraySlice = arrayIdx;
-    hr = m_pVideoDevice->CreateVideoProcessorInputView(resource.Get(), m_enumerator->Get().Get(),
-                                                       &vpivd, inputView.GetAddressOf());
+    D3D11_VIDEO_PROCESSOR_INPUT_VIEW_DESC vpivd = {0, D3D11_VPIV_DIMENSION_TEXTURE2D, {0, 0}};
+
+    ComPtr<ID3D11Resource> resource;
+    unsigned arrayIdx = 0;
+    HRESULT hr = view->GetResource(resource.GetAddressOf(), &arrayIdx);
+    if (SUCCEEDED(hr))
+    {
+      vpivd.Texture2D.ArraySlice = arrayIdx;
+      return m_enumerator->CreateVideoProcessorInputView(resource.Get(), &vpivd);
+    }
   }
-
-  if (FAILED(hr) || hr == S_FALSE)
-    CLog::LogF(LOGERROR, "CreateVideoProcessorInputView returned {}.", DX::GetErrorDescription(hr));
-
-  return inputView.Detach();
+  return {};
 }
 
-DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceSource(const DXGIColorSpaceArgs& csArgs,
-                                                            bool supportHDR,
-                                                            bool supportHLG,
-                                                            bool BT2020Left,
-                                                            bool HDRLeft)
+bool CProcessorHD::CheckVideoParameters(const CRect& src,
+                                        const CRect& dst,
+                                        const UINT& rotation,
+                                        const float& contrast,
+                                        const float& brightness,
+                                        const CRenderBuffer& rb)
 {
-  // RGB
-  if (csArgs.color_space == AVCOL_SPC_RGB)
+  bool updatedParameter{false};
+
+  if (!m_configured || m_lastSrc != src)
   {
-    if (!csArgs.full_range)
+    const RECT sourceRECT = {static_cast<LONG>(src.x1), static_cast<LONG>(src.y1),
+                             static_cast<LONG>(src.x2), static_cast<LONG>(src.y2)};
+
+    m_pVideoContext->VideoProcessorSetStreamSourceRect(m_pVideoProcessor.Get(),
+                                                       DEFAULT_STREAM_INDEX, TRUE, &sourceRECT);
+    m_lastSrc = src;
+    updatedParameter = true;
+  }
+
+  if (!m_configured || m_lastDst != dst)
+  {
+    const RECT dstRECT = {static_cast<LONG>(dst.x1), static_cast<LONG>(dst.y1),
+                          static_cast<LONG>(dst.x2), static_cast<LONG>(dst.y2)};
+
+    m_pVideoContext->VideoProcessorSetStreamDestRect(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX,
+                                                     TRUE, &dstRECT);
+    m_pVideoContext->VideoProcessorSetOutputTargetRect(m_pVideoProcessor.Get(), TRUE, &dstRECT);
+
+    m_lastDst = dst;
+    updatedParameter = true;
+  }
+
+  if (!m_configured || m_lastBrightness != brightness)
+  {
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, static_cast<int>(brightness), 0, 100, 50);
+
+    m_lastBrightness = brightness;
+    updatedParameter = true;
+  }
+
+  if (!m_configured || m_lastContrast != contrast)
+  {
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, static_cast<int>(contrast), 0, 100, 50);
+
+    m_lastContrast = contrast;
+    updatedParameter = true;
+  }
+
+  // unused filters - set once and forget
+  if (!m_configured)
+  {
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, 50, 0, 100, 50);
+    ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, 50, 0, 100, 50);
+  }
+
+  if (!m_configured || m_lastRotation != rotation)
+  {
+    m_pVideoContext->VideoProcessorSetStreamRotation(
+        m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, rotation != 0,
+        static_cast<D3D11_VIDEO_PROCESSOR_ROTATION>(rotation / 90));
+
+    m_lastRotation = rotation;
+    updatedParameter = true;
+  }
+
+  ComPtr<ID3D11VideoContext1> videoCtx1;
+  if (SUCCEEDED(m_pVideoContext.As(&videoCtx1)))
+  {
+    if (!m_configured || m_lastConversion != m_conversion)
     {
-      if (csArgs.primaries == AVCOL_PRI_BT2020)
-      {
-        if (csArgs.color_transfer == AVCOL_TRC_SMPTEST2084 && supportHDR)
-          return DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
+      videoCtx1->VideoProcessorSetStreamColorSpace1(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX,
+                                                    m_conversion.m_inputCS);
+      videoCtx1->VideoProcessorSetOutputColorSpace1(m_pVideoProcessor.Get(),
+                                                    m_conversion.m_outputCS);
 
-        return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
-      }
-      return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
+      m_lastConversion = m_conversion;
+      updatedParameter = true;
     }
-
-    if (csArgs.primaries == AVCOL_PRI_BT2020)
+  }
+  else if (!m_configured || m_lastColorSpace != rb.color_space || m_lastFullRange != rb.full_range)
+  {
+    // input colorspace
+    bool isBT601 = rb.color_space == AVCOL_SPC_BT470BG || rb.color_space == AVCOL_SPC_SMPTE170M;
+    // clang-format off
+    D3D11_VIDEO_PROCESSOR_COLOR_SPACE colorSpace
     {
-      if (csArgs.color_transfer == AVCOL_TRC_SMPTEST2084)
-        return DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+      0u,                             // 0 - Playback, 1 - Processing
+      rb.full_range ? 0u : 1u, // 0 - Full (0-255), 1 - Limited (16-235) (RGB)
+      isBT601 ? 1u : 0u,              // 0 - BT.601, 1 - BT.709
+      0u,                             // 0 - Conventional YCbCr, 1 - xvYCC
+      rb.full_range ? 2u : 1u  // 0 - driver defaults, 2 - Full range [0-255], 1 - Studio range [16-235] (YUV)
+    };
+    // clang-format on
+    m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor.Get(),
+                                                       DEFAULT_STREAM_INDEX, &colorSpace);
+    // Output color space
+    // don't apply any color range conversion, this will be fixed at later stage.
+    colorSpace.Usage = 0; // 0 - playback, 1 - video processing
+    colorSpace.RGB_Range = DX::Windowing()->UseLimitedColor() ? 1 : 0; // 0 - 0-255, 1 - 16-235
+    colorSpace.YCbCr_Matrix = 1; // 0 - BT.601, 1 = BT.709
+    colorSpace.YCbCr_xvYCC = 1; // 0 - Conventional YCbCr, 1 - xvYCC
+    colorSpace.Nominal_Range = 0; // 2 - 0-255, 1 = 16-235, 0 - undefined
+    m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor.Get(), &colorSpace);
 
-      return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
-    }
-    if (csArgs.color_transfer == AVCOL_TRC_LINEAR || csArgs.color_transfer == AVCOL_TRC_LOG)
-      return DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
-
-    return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-  }
-  // UHDTV
-  if (csArgs.primaries == AVCOL_PRI_BT2020)
-  {
-    // Windows 10 doesn't support HLG passthrough, always is used PQ for HDR passthrough
-    if ((csArgs.color_transfer == AVCOL_TRC_SMPTEST2084 ||
-         csArgs.color_transfer == AVCOL_TRC_ARIB_STD_B67) &&
-        supportHDR) // is HDR display ON
-      return (HDRLeft) ? DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_LEFT_P2020
-                       : DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020;
-
-    // HLG transfer can be used for HLG source in SDR display if is supported
-    if (csArgs.color_transfer == AVCOL_TRC_ARIB_STD_B67 && supportHLG) // driver supports HLG
-      return DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020;
-
-    if (csArgs.full_range)
-      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P2020;
-
-    return (BT2020Left) ? DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P2020
-                        : DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020;
-  }
-  // SDTV
-  if (csArgs.primaries == AVCOL_PRI_BT470BG || csArgs.primaries == AVCOL_PRI_SMPTE170M)
-  {
-    if (csArgs.full_range)
-      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P601;
-
-    return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P601;
-  }
-  // HDTV
-  if (csArgs.full_range)
-  {
-    if (csArgs.color_transfer == AVCOL_TRC_SMPTE170M)
-      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_NONE_P709_X601;
-
-    return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P709;
+    m_lastColorSpace = rb.color_space;
+    m_lastFullRange = rb.full_range;
+    updatedParameter = true;
   }
 
-  return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
-}
-
-DXGI_COLOR_SPACE_TYPE CProcessorHD::GetDXGIColorSpaceTarget(const DXGIColorSpaceArgs& csArgs,
-                                                            bool supportHDR,
-                                                            bool limitedRange)
-{
-  DXGI_COLOR_SPACE_TYPE color = limitedRange ? DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709
-                                             : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-
-  if (!supportHDR)
-    return color;
-
-  // HDR10 or HLG
-  if (csArgs.primaries == AVCOL_PRI_BT2020 && (csArgs.color_transfer == AVCOL_TRC_SMPTE2084 ||
-                                               csArgs.color_transfer == AVCOL_TRC_ARIB_STD_B67))
-  {
-    color = limitedRange ? DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020
-                         : DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-  }
-
-  return color;
+  return updatedParameter;
 }
 
 bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderBuffer** views, DWORD flags, UINT frameIdx, UINT rotation, float contrast, float brightness)
@@ -449,12 +395,49 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   if (!views[2])
     return false;
 
-  RECT sourceRECT = {static_cast<LONG>(src.x1), static_cast<LONG>(src.y1),
-                     static_cast<LONG>(src.x2), static_cast<LONG>(src.y2)};
-  RECT dstRECT = {static_cast<LONG>(dst.x1), static_cast<LONG>(dst.y1), static_cast<LONG>(dst.x2),
-                  static_cast<LONG>(dst.y2)};
+  const bool updatedParam =
+      CheckVideoParameters(src, dst, rotation, contrast, brightness, *views[2]);
 
   D3D11_VIDEO_FRAME_FORMAT dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
+
+  if ((flags & RENDER_FLAG_FIELD0) && (flags & RENDER_FLAG_TOP))
+    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
+  else if ((flags & RENDER_FLAG_FIELD1) && (flags & RENDER_FLAG_BOT))
+    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
+  else if ((flags & RENDER_FLAG_FIELD0) && (flags & RENDER_FLAG_BOT))
+    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
+  else if ((flags & RENDER_FLAG_FIELD1) && (flags & RENDER_FLAG_TOP))
+    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
+
+  m_pVideoContext->VideoProcessorSetStreamFrameFormat(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX,
+                                                      dxvaFrameFormat);
+
+  D3D11_VIDEO_PROCESSOR_STREAM stream_data = {};
+  stream_data.Enable = TRUE;
+
+  const bool frameProgressive = dxvaFrameFormat == D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
+
+  // Progressive or Interlaced video at normal rate.
+  const bool secondField = ((flags & RENDER_FLAG_FIELD1) && !frameProgressive) ? 1 : 0;
+  stream_data.InputFrameOrField = frameIdx + (secondField ? 1 : 0);
+  stream_data.OutputIndex = secondField;
+
+  // Render() gets called once for each displayed frame, following the pattern necessary to adapt
+  // the source fps to the display fps, with repetitions as needed (ex. 3:2 for 23.98fps at 59Hz)
+  // However there is no need to render the same frame more than once, the intermediate target is
+  // not cleared and the output of the previous processing is still there.
+  // For nVidia deinterlacing it's more than an optimization. The processor must see each field
+  // only once or it won't switch from bob to a more advanced algorithm.
+  // for ex. when playing 25i at 60fps, decoded frames A B => output A0 A1 B0 B1 B1
+  // B1 field is repeated and the second B1 must be skipped.
+  // Exception: always process when a parameter changes to provide immediate feedback to the user
+
+  if (m_configured && m_lastInputFrameOrField == stream_data.InputFrameOrField &&
+      m_lastOutputIndex == stream_data.OutputIndex && !updatedParam)
+    return true;
+
+  m_lastInputFrameOrField = stream_data.InputFrameOrField;
+  m_lastOutputIndex = stream_data.OutputIndex;
 
   unsigned int providedPast = 0;
   for (int i = 3; i < 8; i++)
@@ -473,8 +456,6 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
   std::vector<ID3D11VideoProcessorInputView*> pastViews(pastFrames, nullptr);
   std::vector<ID3D11VideoProcessorInputView*> futureViews(futureFrames, nullptr);
 
-  D3D11_VIDEO_PROCESSOR_STREAM stream_data = {};
-  stream_data.Enable = TRUE;
   stream_data.PastFrames = pastFrames;
   stream_data.FutureFrames = futureFrames;
   stream_data.ppPastSurfaces = pastViews.data();
@@ -490,8 +471,7 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     if (!views[i])
       continue;
 
-    ComPtr<ID3D11VideoProcessorInputView> view;
-    view.Attach(GetInputView(views[i]));
+    ComPtr<ID3D11VideoProcessorInputView> view = GetInputView(views[i]);
 
     if (i > 2)
     {
@@ -520,89 +500,17 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     return false;
   }
 
-  if (flags & RENDER_FLAG_FIELD0 && flags & RENDER_FLAG_TOP)
-    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
-  else if (flags & RENDER_FLAG_FIELD1 && flags & RENDER_FLAG_BOT)
-    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_TOP_FIELD_FIRST;
-  if (flags & RENDER_FLAG_FIELD0 && flags & RENDER_FLAG_BOT)
-    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
-  if (flags & RENDER_FLAG_FIELD1 && flags & RENDER_FLAG_TOP)
-    dxvaFrameFormat = D3D11_VIDEO_FRAME_FORMAT_INTERLACED_BOTTOM_FIELD_FIRST;
-
-  bool frameProgressive = dxvaFrameFormat == D3D11_VIDEO_FRAME_FORMAT_PROGRESSIVE;
-
-  // Progressive or Interlaced video at normal rate.
-  stream_data.InputFrameOrField = frameIdx;
-  stream_data.OutputIndex = flags & RENDER_FLAG_FIELD1 && !frameProgressive ? 1 : 0;
-
-  // input format
-  m_pVideoContext->VideoProcessorSetStreamFrameFormat(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, dxvaFrameFormat);
-  // Source rect
-  m_pVideoContext->VideoProcessorSetStreamSourceRect(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, TRUE, &sourceRECT);
-  // Stream dest rect
-  m_pVideoContext->VideoProcessorSetStreamDestRect(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, TRUE, &dstRECT);
-  // Output rect
-  m_pVideoContext->VideoProcessorSetOutputTargetRect(m_pVideoProcessor.Get(), TRUE, &dstRECT);
-
-  ComPtr<ID3D11VideoContext1> videoCtx1;
-  if (SUCCEEDED(m_pVideoContext.As(&videoCtx1)))
-  {
-    ProcColorSpaces spaces = CalculateDXGIColorSpaces(DXGIColorSpaceArgs(*views[2]));
-
-    videoCtx1->VideoProcessorSetStreamColorSpace1(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX,
-                                                  spaces.inputColorSpace);
-    videoCtx1->VideoProcessorSetOutputColorSpace1(m_pVideoProcessor.Get(), spaces.outputColorSpace);
-    // makes target available for processing in shaders
-    videoCtx1->VideoProcessorSetOutputShaderUsage(m_pVideoProcessor.Get(), 1);
-  }
-  else
-  {
-    // input colorspace
-    bool isBT601 = views[2]->color_space == AVCOL_SPC_BT470BG || views[2]->color_space == AVCOL_SPC_SMPTE170M;
-    // clang-format off
-    D3D11_VIDEO_PROCESSOR_COLOR_SPACE colorSpace
-    {
-      0u,                             // 0 - Playback, 1 - Processing
-      views[2]->full_range ? 0u : 1u, // 0 - Full (0-255), 1 - Limited (16-235) (RGB)
-      isBT601 ? 1u : 0u,              // 0 - BT.601, 1 - BT.709
-      0u,                             // 0 - Conventional YCbCr, 1 - xvYCC
-      views[2]->full_range ? 2u : 1u  // 0 - driver defaults, 2 - Full range [0-255], 1 - Studio range [16-235] (YUV)
-    };
-    // clang-format on
-    m_pVideoContext->VideoProcessorSetStreamColorSpace(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, &colorSpace);
-    // Output color space
-    // don't apply any color range conversion, this will be fixed at later stage.
-    colorSpace.Usage = 0;  // 0 - playback, 1 - video processing
-    colorSpace.RGB_Range = DX::Windowing()->UseLimitedColor() ? 1 : 0;  // 0 - 0-255, 1 - 16-235
-    colorSpace.YCbCr_Matrix = 1;  // 0 - BT.601, 1 = BT.709
-    colorSpace.YCbCr_xvYCC = 1;  // 0 - Conventional YCbCr, 1 - xvYCC
-    colorSpace.Nominal_Range = 0;  // 2 - 0-255, 1 = 16-235, 0 - undefined
-    m_pVideoContext->VideoProcessorSetOutputColorSpace(m_pVideoProcessor.Get(), &colorSpace);
-  }
-
-  // brightness
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS, static_cast<int>(brightness), 0, 100, 50);
-  // contrast
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST, static_cast<int>(contrast), 0, 100, 50);
-  // unused filters
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_HUE, 50, 0, 100, 50);
-  ApplyFilter(D3D11_VIDEO_PROCESSOR_FILTER_SATURATION, 50, 0, 100, 50);
-  // Rotation
-  m_pVideoContext->VideoProcessorSetStreamRotation(m_pVideoProcessor.Get(), DEFAULT_STREAM_INDEX, rotation != 0,
-                                                   static_cast<D3D11_VIDEO_PROCESSOR_ROTATION>(rotation / 90));
-
   // create output view for surface.
-  D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC OutputViewDesc = { D3D11_VPOV_DIMENSION_TEXTURE2D, { 0 }};
-  ComPtr<ID3D11VideoProcessorOutputView> pOutputView;
-  HRESULT hr = m_pVideoDevice->CreateVideoProcessorOutputView(target, m_enumerator->Get().Get(),
-                                                              &OutputViewDesc, &pOutputView);
-  if (S_OK != hr)
-    CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING, "CreateVideoProcessorOutputView returned {}.",
-               DX::GetErrorDescription(hr));
+  const D3D11_VIDEO_PROCESSOR_OUTPUT_VIEW_DESC outputViewDesc = {D3D11_VPOV_DIMENSION_TEXTURE2D,
+                                                                 {0}};
+  ComPtr<ID3D11VideoProcessorOutputView> pOutputView =
+      m_enumerator->CreateVideoProcessorOutputView(target, &outputViewDesc);
 
-  if (SUCCEEDED(hr))
+  HRESULT hr{};
+  if (pOutputView)
   {
-    hr = m_pVideoContext->VideoProcessorBlt(m_pVideoProcessor.Get(), pOutputView.Get(), frameIdx, 1, &stream_data);
+    hr = m_pVideoContext->VideoProcessorBlt(m_pVideoProcessor.Get(), pOutputView.Get(), 0, 1,
+                                            &stream_data);
     if (S_OK != hr)
     {
       CLog::LogF(FAILED(hr) ? LOGERROR : LOGWARNING,
@@ -611,232 +519,10 @@ bool CProcessorHD::Render(CRect src, CRect dst, ID3D11Resource* target, CRenderB
     }
   }
 
-  return !FAILED(hr);
-}
+  if (!m_configured)
+    m_configured = true;
 
-ProcColorSpaces CProcessorHD::CalculateDXGIColorSpaces(const DXGIColorSpaceArgs& csArgs) const
-{
-  const bool supportHDR = DX::Windowing()->IsHDROutput();
-
-  return ProcColorSpaces{
-      GetDXGIColorSpaceSource(csArgs, supportHDR, m_procCaps.m_bSupportHLG, m_procCaps.m_BT2020Left,
-                              m_procCaps.m_HDR10Left),
-      GetDXGIColorSpaceTarget(csArgs, supportHDR, DX::Windowing()->UseLimitedColor())};
-}
-
-void CProcessorHD::ListSupportedConversions(const DXGI_FORMAT& inputFormat,
-                                            const DXGI_FORMAT& heuristicsOutputFormat,
-                                            const VideoPicture& picture)
-{
-  std::unique_lock<CCriticalSection> lock(m_section);
-
-  // Windows 8 and above compatible code
-  if (!m_enumerator || !m_enumerator->Get())
-    return;
-
-  HRESULT hr;
-  UINT uiFlags;
-
-  if (FAILED(hr = m_enumerator->Get()->CheckVideoProcessorFormat(inputFormat, &uiFlags)))
-  {
-    CLog::LogF(LOGDEBUG, "unable to retrieve processor support of input format {}. Error {}",
-               DX::DXGIFormatToString(inputFormat), DX::GetErrorDescription(hr));
-    return;
-  }
-  else if (!(uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_INPUT))
-  {
-    CLog::LogF(LOGERROR, "input format {} not supported by the processor. No conversion possible.",
-               DX::DXGIFormatToString(inputFormat));
-    return;
-  }
-
-  // Windows 10 and above from this point on
-  if (!m_enumerator->Get1())
-    return;
-
-  const DXGIColorSpaceArgs csArgs = DXGIColorSpaceArgs(picture);
-
-  // Defaults used by Kodi
-  const ProcColorSpaces heuristicsCS = CalculateDXGIColorSpaces(csArgs);
-  BOOL supported{FALSE};
-
-  const DXGI_COLOR_SPACE_TYPE inputNativeCS = AvToDxgiColorSpace(csArgs);
-  CLog::LogF(LOGDEBUG, "The source is {} / {}", DX::DXGIFormatToString(inputFormat),
-             DX::DXGIColorSpaceTypeToString(inputNativeCS));
-
-  if (SUCCEEDED(hr = m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
-                    inputFormat, inputNativeCS, heuristicsOutputFormat,
-                    heuristicsCS.outputColorSpace, &supported)))
-  {
-    CLog::LogF(LOGDEBUG, "conversion from {} / {} to {} / {} is {}supported.",
-               DX::DXGIFormatToString(inputFormat), DX::DXGIColorSpaceTypeToString(inputNativeCS),
-               DX::DXGIFormatToString(heuristicsOutputFormat),
-               DX::DXGIColorSpaceTypeToString(heuristicsCS.outputColorSpace),
-               supported == TRUE ? "" : "NOT ");
-  }
-  else
-  {
-    CLog::LogF(LOGERROR, "unable to validate the default format conversion, error {}",
-               DX::GetErrorDescription(hr));
-  }
-
-  // Possible input color spaces: YCbCr only
-  std::vector<DXGI_COLOR_SPACE_TYPE> ycbcrColorSpaces;
-  // Possible output color spaces: RGB only
-  std::vector<DXGI_COLOR_SPACE_TYPE> rgbColorSpaces;
-
-  for (UINT colorSpace = DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-       colorSpace < DXGI_COLOR_SPACE_YCBCR_STUDIO_G24_TOPLEFT_P2020; ++colorSpace)
-  {
-    DXGI_COLOR_SPACE_TYPE cs = static_cast<DXGI_COLOR_SPACE_TYPE>(colorSpace);
-
-    constexpr std::string_view rgb("RGB_");
-    if (DX::DXGIColorSpaceTypeToString(cs).compare(0, rgb.size(), rgb) == 0)
-      rgbColorSpaces.push_back(cs);
-
-    constexpr std::string_view ycbcr("YCBCR_");
-    if (DX::DXGIColorSpaceTypeToString(cs).compare(0, ycbcr.size(), ycbcr) == 0)
-      ycbcrColorSpaces.push_back(cs);
-  }
-
-  // Only probe the output formats of RGB/BGR type supported by the processor.
-  std::vector<DXGI_FORMAT> outputFormats;
-  for (const auto& format : GetProcessorOutputFormats())
-  {
-    std::string name = DX::DXGIFormatToString(format);
-    if (name.find('R') != std::string::npos && name.find('G') != std::string::npos &&
-        name.find('B') != std::string::npos)
-      outputFormats.push_back(format);
-  }
-
-  // Color spaces supported directly by the swap chain - as a set for easy lookup
-  std::vector<DXGI_COLOR_SPACE_TYPE> bbcs = DX::DeviceResources::Get()->GetSwapChainColorSpaces();
-  std::set<DXGI_COLOR_SPACE_TYPE> backbufferColorSpaces(bbcs.begin(), bbcs.end());
-
-  std::string conversions;
-
-  // The input format cannot be worked around and is fixed.
-  // Loop over the lists of:
-  // - input color spaces
-  // - output formats
-  // - output color spaces
-  for (const DXGI_COLOR_SPACE_TYPE& inputCS : ycbcrColorSpaces)
-  {
-    for (const DXGI_FORMAT& outputFormat : outputFormats)
-    {
-      for (const DXGI_COLOR_SPACE_TYPE& outputCS : rgbColorSpaces)
-      {
-        if (SUCCEEDED(m_enumerator->Get1()->CheckVideoProcessorFormatConversion(
-                inputFormat, inputCS, outputFormat, outputCS, &supported)) &&
-            supported == TRUE)
-        {
-          conversions.append("\n");
-          conversions.append(StringUtils::Format(
-              "{} {} / {}{} {:<{}} to {} {:<{}} / {}{} {:<{}}", "*",
-              DX::DXGIFormatToString(inputFormat),
-              (inputCS == heuristicsCS.inputColorSpace) ? "*" : " ",
-              (inputCS == inputNativeCS) ? "N" : " ", DX::DXGIColorSpaceTypeToString(inputCS), 32,
-              (outputFormat == heuristicsOutputFormat) ? "*" : " ",
-              DX::DXGIFormatToString(outputFormat), 26,
-              (outputCS == heuristicsCS.outputColorSpace) ? "*" : " ",
-              (backbufferColorSpaces.find(outputCS) != backbufferColorSpaces.end()) ? "bb" : "  ",
-              DX::DXGIColorSpaceTypeToString(outputCS), 32));
-        }
-      }
-    }
-  }
-
-  CLog::LogF(LOGDEBUG,
-             "supported conversions from format {}\n(*: values picked by "
-             "heuristics, N native input color space, bb supported as swap chain backbuffer){}",
-             DX::DXGIFormatToString(inputFormat), conversions);
-}
-
-std::vector<DXGI_FORMAT> CProcessorHD::GetProcessorOutputFormats() const
-{
-  std::vector<DXGI_FORMAT> result;
-
-  UINT uiFlags;
-  for (int fmt = DXGI_FORMAT_UNKNOWN; fmt <= DXGI_FORMAT_V408; fmt++)
-  {
-    DXGI_FORMAT dxgiFormat = static_cast<DXGI_FORMAT>(fmt);
-    if (S_OK == m_enumerator->Get()->CheckVideoProcessorFormat(dxgiFormat, &uiFlags) &&
-        uiFlags & D3D11_VIDEO_PROCESSOR_FORMAT_SUPPORT_OUTPUT)
-      result.push_back(dxgiFormat);
-  }
-  return result;
-}
-
-DXGI_COLOR_SPACE_TYPE CProcessorHD::AvToDxgiColorSpace(const DXGIColorSpaceArgs& csArgs)
-{
-  // RGB
-  if (csArgs.color_space == AVCOL_SPC_RGB)
-  {
-    if (!csArgs.full_range)
-    {
-      if (csArgs.primaries == AVCOL_PRI_BT2020)
-      {
-        if (csArgs.color_transfer == AVCOL_TRC_SMPTEST2084)
-          return DXGI_COLOR_SPACE_RGB_STUDIO_G2084_NONE_P2020;
-
-        return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P2020;
-      }
-      return DXGI_COLOR_SPACE_RGB_STUDIO_G22_NONE_P709;
-    }
-
-    if (csArgs.primaries == AVCOL_PRI_BT2020)
-    {
-      if (csArgs.color_transfer == AVCOL_TRC_SMPTEST2084)
-        return DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
-
-      return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P2020;
-    }
-    if (csArgs.color_transfer == AVCOL_TRC_LINEAR || csArgs.color_transfer == AVCOL_TRC_LOG)
-      return DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
-
-    return DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
-  }
-  // UHDTV
-  if (csArgs.primaries == AVCOL_PRI_BT2020)
-  {
-    if (csArgs.color_transfer == AVCOL_TRC_SMPTEST2084)
-      // Full range DXGI_COLOR_SPACE_YCBCR_FULL_G2084_TOPLEFT_P2020 does not exist at this time
-      // Chroma siting top left is always preferred for 4K HDR10 because is used in UHD Blu-Ray's
-      // Also not considering for now FFmpeg flags because can be missing or bad flagged anyway
-      return DXGI_COLOR_SPACE_YCBCR_STUDIO_G2084_TOPLEFT_P2020;
-
-    // HLG transfer can be used for HLG source in SDR display if is supported
-    if (csArgs.color_transfer == AVCOL_TRC_ARIB_STD_B67)
-    {
-      if (csArgs.full_range)
-        return DXGI_COLOR_SPACE_YCBCR_FULL_GHLG_TOPLEFT_P2020;
-      else
-        return DXGI_COLOR_SPACE_YCBCR_STUDIO_GHLG_TOPLEFT_P2020;
-    }
-
-    if (csArgs.full_range)
-      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P2020;
-    else
-      return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_TOPLEFT_P2020;
-  }
-  // SDTV
-  if (csArgs.primaries == AVCOL_PRI_BT470BG || csArgs.primaries == AVCOL_PRI_SMPTE170M)
-  {
-    if (csArgs.full_range)
-      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P601;
-
-    return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P601;
-  }
-  // HDTV
-  if (csArgs.full_range)
-  {
-    if (csArgs.color_transfer == AVCOL_TRC_SMPTE170M)
-      return DXGI_COLOR_SPACE_YCBCR_FULL_G22_NONE_P709_X601;
-
-    return DXGI_COLOR_SPACE_YCBCR_FULL_G22_LEFT_P709;
-  }
-
-  return DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
+  return pOutputView && !FAILED(hr);
 }
 
 bool CProcessorHD::IsSuperResolutionSuitable(const VideoPicture& picture)
@@ -847,9 +533,6 @@ bool CProcessorHD::IsSuperResolutionSuitable(const VideoPicture& picture)
   const UINT outputWidth = DX::Windowing()->GetBackBuffer().GetWidth();
 
   if (outputWidth <= picture.iWidth)
-    return false;
-
-  if (picture.iFlags & DVP_FLAG_INTERLACED)
     return false;
 
   if (picture.color_primaries == AVCOL_PRI_BT2020 ||
@@ -865,17 +548,7 @@ void CProcessorHD::TryEnableVideoSuperResolution()
   if (!m_pVideoContext || !m_pVideoProcessor)
     return;
 
-  const DXGI_FORMAT format = DX::Windowing()->GetBackBuffer().GetFormat();
-
-  if (format == DXGI_FORMAT_R10G10B10A2_UNORM)
-  {
-    // force 8 bit swap chain temporally as NVIDIA Super Resolution not supports 10 bit
-    DX::DeviceResources::Get()->ApplyDisplaySettings(true);
-    m_forced8bit = true;
-  }
-
-  DXGI_ADAPTER_DESC ad{};
-  DX::DeviceResources::Get()->GetAdapterDesc(&ad);
+  const DXGI_ADAPTER_DESC ad = DX::DeviceResources::Get()->GetAdapterDesc();
 
   if (ad.VendorId == PCIV_Intel)
   {
@@ -961,4 +634,29 @@ void CProcessorHD::EnableNvidiaRTXVideoSuperResolution()
 
   CLog::LogF(LOGINFO, "RTX Video Super Resolution request enable successfully");
   m_superResolutionEnabled = true;
+}
+
+bool CProcessorHD::SetConversion(const ProcessorConversion& conversion)
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  if (!m_enumerator)
+    return false;
+
+  if (!m_enumerator || !m_enumerator->IsFormatSupportedInput(conversion.m_inputFormat) ||
+      !m_enumerator->IsFormatSupportedOutput(conversion.m_outputFormat))
+    return false;
+
+  if (m_enumerator->IsEnumerator1Available() &&
+      !m_enumerator->CheckConversion(conversion.m_inputFormat, conversion.m_inputCS,
+                                     conversion.m_outputFormat, conversion.m_outputCS))
+  {
+    CLog::LogF(LOGERROR, "Conversion {} is not supported", conversion.ToString());
+    return false;
+  }
+
+  m_conversion = conversion;
+  m_isValidConversion = true;
+
+  return true;
 }

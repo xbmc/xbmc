@@ -87,7 +87,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
     return std::shared_ptr<CDVDInputStreamNavigator>(new CDVDInputStreamNavigator(pPlayer, fileitem));
   }
 
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   if (file.compare(CServiceBroker::GetMediaManager().TranslateDevicePath("")) == 0)
   {
 #ifdef HAVE_LIBBLURAY

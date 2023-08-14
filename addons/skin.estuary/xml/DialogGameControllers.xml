@@ -5,10 +5,11 @@
 		but adding new XML windows breaks old skins, so it has been repurposed
 		for any game-related windows.
 	</description>
-	<defaultcontrol>3</defaultcontrol>
+	<defaultcontrol always="true">3</defaultcontrol>
 	<include>Animation_DialogPopupOpenClose</include>
 	<controls>
-		<include condition="Window.IsActive(gamecontrollers)">GameDialogControllers</include>
-		<include condition="Window.IsActive(gameports)">GameDialogPorts</include>
+		<include condition="Window.IsDialogTopMost(gamecontrollers)">GameDialogControllers</include>
+		<include condition="Window.IsDialogTopMost(gameports)">GameDialogPorts</include>
+		<include condition="Window.IsDialogTopMost(gameagents)">GameDialogAgents</include>
 	</controls>
 </window>

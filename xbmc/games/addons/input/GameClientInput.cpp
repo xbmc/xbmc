@@ -166,6 +166,17 @@ bool CGameClientInput::InputEvent(const game_input_event& event)
   return bHandled;
 }
 
+float CGameClientInput::GetPortActivation(const std::string& portAddress)
+{
+  float activation = 0.0f;
+
+  auto it = m_joysticks.find(portAddress);
+  if (it != m_joysticks.end())
+    activation = it->second->GetActivation();
+
+  return activation;
+}
+
 void CGameClientInput::LoadTopology()
 {
   game_input_topology* topologyStruct = nullptr;
@@ -407,11 +418,11 @@ bool CGameClientInput::DisconnectController(const std::string& portAddress)
 
 void CGameClientInput::SavePorts()
 {
+  // Save port state
+  m_portManager->SaveXMLAsync();
+
   // Let the observers know that ports have changed
   NotifyObservers(ObservableMessageGamePortsChanged);
-
-  // Save port state
-  m_portManager->SaveXML();
 }
 
 void CGameClientInput::ResetPorts()
@@ -471,6 +482,7 @@ bool CGameClientInput::OpenKeyboard(const ControllerPtr& controller,
   {
     m_keyboard =
         std::make_unique<CGameClientKeyboard>(m_gameClient, controller->ID(), keyboard.get());
+    m_keyboard->SetSource(keyboard);
     return true;
   }
 
@@ -539,6 +551,7 @@ bool CGameClientInput::OpenMouse(const ControllerPtr& controller,
   if (bSuccess)
   {
     m_mouse = std::make_unique<CGameClientMouse>(m_gameClient, controller->ID(), mouse.get());
+    m_mouse->SetSource(mouse);
     return true;
   }
 
@@ -669,8 +682,6 @@ bool CGameClientInput::SetRumble(const std::string& portAddress,
 
 ControllerVector CGameClientInput::GetControllers(const CGameClient& gameClient)
 {
-  using namespace ADDON;
-
   ControllerVector controllers;
 
   CGameServices& gameServices = CServiceBroker::GetGameServices();

@@ -14,8 +14,10 @@
 
 bool CGUIControlProfiler::m_bIsRunning = false;
 
-CGUIControlProfilerItem::CGUIControlProfilerItem(CGUIControlProfiler *pProfiler, CGUIControlProfilerItem *pParent, CGUIControl *pControl)
-: m_pProfiler(pProfiler), m_pParent(pParent), m_pControl(pControl), m_visTime(0), m_renderTime(0), m_i64VisStart(0), m_i64RenderStart(0)
+CGUIControlProfilerItem::CGUIControlProfilerItem(CGUIControlProfiler* pProfiler,
+                                                 CGUIControlProfilerItem* pParent,
+                                                 CGUIControl* pControl)
+  : m_pProfiler(pProfiler), m_pParent(pParent), m_pControl(pControl)
 {
   if (m_pControl)
   {

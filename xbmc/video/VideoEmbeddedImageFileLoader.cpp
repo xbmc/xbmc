@@ -18,7 +18,7 @@
 
 using namespace VIDEO;
 
-bool CVideoEmbeddedImageFileLoader::CanLoad(std::string specialType) const
+bool CVideoEmbeddedImageFileLoader::CanLoad(const std::string& specialType) const
 {
   return StringUtils::StartsWith(specialType, "video_");
 }
@@ -47,8 +47,8 @@ bool GetEmbeddedThumb(const std::string& path, const std::string& type, Embedded
 }
 } // namespace
 
-std::unique_ptr<CTexture> CVideoEmbeddedImageFileLoader::Load(std::string specialType,
-                                                              std::string filePath,
+std::unique_ptr<CTexture> CVideoEmbeddedImageFileLoader::Load(const std::string& specialType,
+                                                              const std::string& filePath,
                                                               unsigned int preferredWidth,
                                                               unsigned int preferredHeight) const
 {

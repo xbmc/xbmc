@@ -18,7 +18,7 @@
 #include "utils/ContentUtils.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
 #include <mutex>
@@ -98,20 +98,20 @@ bool IsMediasourceOfFavItemUnlocked(const std::shared_ptr<CFileItem>& item)
 
 bool LoadFromFile(const std::string& strPath, CFileItemList& items)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   if (!doc.LoadFile(strPath))
   {
-    CLog::Log(LOGERROR, "Unable to load {} (row {} column {})", strPath, doc.Row(), doc.Column());
+    CLog::Log(LOGERROR, "Unable to load {} (line {})", strPath, doc.ErrorLineNum());
     return false;
   }
-  TiXmlElement *root = doc.RootElement();
+  auto* root = doc.RootElement();
   if (!root || strcmp(root->Value(), "favourites"))
   {
     CLog::Log(LOGERROR, "Favourites.xml doesn't contain the <favourites> root element");
     return false;
   }
 
-  TiXmlElement *favourite = root->FirstChildElement("favourite");
+  auto* favourite = root->FirstChildElement("favourite");
   while (favourite)
   {
     // format:
@@ -165,21 +165,21 @@ void CFavouritesService::ReInit(std::string userDataFolder)
 
 bool CFavouritesService::Persist()
 {
-  CXBMCTinyXML doc;
-  TiXmlElement xmlRootElement("favourites");
-  TiXmlNode *rootNode = doc.InsertEndChild(xmlRootElement);
+  CXBMCTinyXML2 doc;
+  auto* element = doc.NewElement("favourites");
+  auto* rootNode = doc.InsertEndChild(element);
   if (!rootNode)
     return false;
 
   for (const auto& item : m_favourites)
   {
-    TiXmlElement favNode("favourite");
-    favNode.SetAttribute("name", item->GetLabel().c_str());
+    auto* favNode = doc.NewElement("favourite");
+    favNode->SetAttribute("name", item->GetLabel().c_str());
     if (item->HasArt("thumb"))
-      favNode.SetAttribute("thumb", item->GetArt("thumb").c_str());
+      favNode->SetAttribute("thumb", item->GetArt("thumb").c_str());
 
-    TiXmlText execute(CFavouritesURL(item->GetPath()).GetExecString());
-    favNode.InsertEndChild(execute);
+    auto* execute = doc.NewText(CFavouritesURL(item->GetPath()).GetExecString().c_str());
+    favNode->InsertEndChild(execute);
     rootNode->InsertEndChild(favNode);
   }
 

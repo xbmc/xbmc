@@ -20,6 +20,7 @@
 #include "utils/GlobalsHandling.h"
 #include "windowing/GraphicContext.h"
 
+#include <set>
 #include <utility>
 #include <vector>
 
@@ -44,13 +45,13 @@ struct OrigFontInfo
 
 struct FontMetadata
 {
-  FontMetadata(const std::string& filename, const std::string& familyName)
-    : m_filename{filename}, m_familyName{familyName}
+  FontMetadata(const std::string& filename, const std::set<std::string>& familyNames)
+    : m_filename{filename}, m_familyNames{familyNames}
   {
   }
 
   std::string m_filename;
-  std::string m_familyName;
+  std::set<std::string> m_familyNames;
 };
 
 /*!
@@ -127,6 +128,9 @@ protected:
 
 private:
   void LoadUserFonts();
+  bool LoadFontsFromFile(const std::string& fontsetFilePath,
+                         const std::string& fontSet,
+                         std::string& firstFontset);
 
   mutable CCriticalSection m_critSection;
   std::vector<FontMetadata> m_userFontsCache;

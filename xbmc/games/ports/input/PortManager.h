@@ -10,6 +10,10 @@
 
 #include "games/controllers/types/ControllerTree.h"
 
+#include <future>
+#include <mutex>
+#include <string>
+
 class TiXmlElement;
 
 namespace KODI
@@ -27,7 +31,7 @@ public:
 
   void SetControllerTree(const CControllerTree& controllerTree);
   void LoadXML();
-  void SaveXML();
+  void SaveXMLAsync();
   void Clear();
 
   void ConnectController(const std::string& portAddress,
@@ -69,6 +73,9 @@ private:
 
   CControllerTree m_controllerTree;
   std::string m_xmlPath;
+
+  std::vector<std::future<void>> m_saveFutures;
+  std::mutex m_saveMutex;
 };
 } // namespace GAME
 } // namespace KODI

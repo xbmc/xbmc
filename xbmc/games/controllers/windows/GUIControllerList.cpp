@@ -36,7 +36,6 @@
 #include <iterator>
 
 using namespace KODI;
-using namespace ADDON;
 using namespace GAME;
 
 CGUIControllerList::CGUIControllerList(CGUIWindow* window,
@@ -45,9 +44,6 @@ CGUIControllerList::CGUIControllerList(CGUIWindow* window,
                                        std::string controllerId)
   : m_guiWindow(window),
     m_featureList(featureList),
-    m_controllerList(nullptr),
-    m_controllerButton(nullptr),
-    m_focusedController(-1), // Initially unfocused
     m_gameClient(std::move(gameClient)),
     m_controllerId(std::move(controllerId))
 {
@@ -171,7 +167,6 @@ void CGUIControllerList::OnEvent(const ADDON::AddonEvent& event)
       typeid(event) == typeid(ADDON::AddonEvents::ReInstalled) ||
       typeid(event) == typeid(ADDON::AddonEvents::UnInstalled))
   {
-    using namespace MESSAGING;
     CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow->GetID(), CONTROL_CONTROLLER_LIST);
 
     // Focus installed add-on

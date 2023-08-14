@@ -185,12 +185,12 @@ void SetPathAndPlay(CFileItem& item)
   }
   else
   {
+    item.SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+
     const ContentUtils::PlayMode mode = item.GetProperty("CheckAutoPlayNextItem").asBoolean()
                                             ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                             : ContentUtils::PlayMode::PLAY_ONLY_THIS;
     VIDEO_UTILS::PlayItem(std::make_shared<CFileItem>(item), mode);
-
-    item.SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
   }
 }
 } // unnamed namespace
@@ -198,7 +198,7 @@ void SetPathAndPlay(CFileItem& item)
 bool CVideoResume::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   if (item.IsDVD() || item.IsCDDA())
     return MEDIA_DETECT::CAutorun::PlayDisc(item.GetPath(), true, false);
 #endif
@@ -226,7 +226,7 @@ bool CVideoPlay::IsVisible(const CFileItem& item) const
 bool CVideoPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 {
   CFileItem item(itemIn->GetItemToPlay());
-#ifdef HAS_DVD_DRIVE
+#ifdef HAS_OPTICAL_DRIVE
   if (item.IsDVD() || item.IsCDDA())
     return MEDIA_DETECT::CAutorun::PlayDisc(item.GetPath(), true, true);
 #endif

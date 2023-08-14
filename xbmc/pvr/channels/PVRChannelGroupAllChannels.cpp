@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "PVRChannelGroupInternal.h"
+#include "PVRChannelGroupAllChannels.h"
 
 #include "ServiceBroker.h"
 #include "guilib/LocalizeStrings.h"
@@ -28,29 +28,22 @@
 
 using namespace PVR;
 
-CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio)
-  : CPVRChannelGroup(
-        CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287), PVR_GROUP_CLIENT_ID_LOCAL),
-        PVR_GROUP_TYPE_ALL_CHANNELS,
-        nullptr)
+CPVRChannelGroupAllChannels::CPVRChannelGroupAllChannels(bool bRadio)
+  : CPVRChannelGroupFromUser(
+        CPVRChannelsPath(bRadio, g_localizeStrings.Get(19287), PVR_GROUP_CLIENT_ID_LOCAL), nullptr)
 {
 }
 
-CPVRChannelGroupInternal::CPVRChannelGroupInternal(const CPVRChannelsPath& path)
-  : CPVRChannelGroup(path, PVR_GROUP_TYPE_ALL_CHANNELS, nullptr)
+CPVRChannelGroupAllChannels::CPVRChannelGroupAllChannels(const CPVRChannelsPath& path)
+  : CPVRChannelGroupFromUser(path, nullptr)
 {
 }
 
-CPVRChannelGroupInternal::~CPVRChannelGroupInternal()
+CPVRChannelGroupAllChannels::~CPVRChannelGroupAllChannels()
 {
 }
 
-void CPVRChannelGroupInternal::Unload()
-{
-  CPVRChannelGroup::Unload();
-}
-
-void CPVRChannelGroupInternal::CheckGroupName()
+void CPVRChannelGroupAllChannels::CheckGroupName()
 {
   //! @todo major design flaw to fix: channel and group URLs must not contain the group name!
 
@@ -59,7 +52,7 @@ void CPVRChannelGroupInternal::CheckGroupName()
     SetGroupName(g_localizeStrings.Get(19287));
 }
 
-bool CPVRChannelGroupInternal::UpdateFromClients(
+bool CPVRChannelGroupAllChannels::UpdateFromClients(
     const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   // get the channels from the given clients
@@ -78,7 +71,7 @@ bool CPVRChannelGroupInternal::UpdateFromClients(
   return UpdateGroupEntries(groupMembers);
 }
 
-std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroupInternal::
+std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroupAllChannels::
     RemoveDeletedGroupMembers(
         const std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers)
 {
@@ -113,7 +106,7 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroupInternal::
 
       for (const auto& member : removedMembers)
       {
-        // since channel was not found in the internal group, it was deleted from the backend
+        // since channel was not found in the all channels group, it was deleted from the backend
 
         const auto channel = member->Channel();
         commitPending |= channel->QueueDelete();
@@ -136,7 +129,7 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroupInternal::
   return removedMembers;
 }
 
-bool CPVRChannelGroupInternal::AppendToGroup(
+bool CPVRChannelGroupAllChannels::AppendToGroup(
     const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
 {
   if (IsGroupMember(groupMember))
@@ -148,7 +141,7 @@ bool CPVRChannelGroupInternal::AppendToGroup(
   return true;
 }
 
-bool CPVRChannelGroupInternal::RemoveFromGroup(
+bool CPVRChannelGroupAllChannels::RemoveFromGroup(
     const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
 {
   if (!IsGroupMember(groupMember))
@@ -160,7 +153,7 @@ bool CPVRChannelGroupInternal::RemoveFromGroup(
   return true;
 }
 
-bool CPVRChannelGroupInternal::IsGroupMember(
+bool CPVRChannelGroupAllChannels::IsGroupMember(
     const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const
 {
   return !groupMember->Channel()->IsHidden();

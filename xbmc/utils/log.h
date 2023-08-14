@@ -46,6 +46,18 @@ class dist_sink;
 } // namespace sinks
 } // namespace spdlog
 
+#if FMT_VERSION >= 100000
+using fmt::enums::format_as;
+
+namespace fmt
+{
+template<typename T, typename Char>
+struct formatter<std::atomic<T>, Char> : formatter<T, Char>
+{
+};
+} // namespace fmt
+#endif
+
 class CLog : public ISettingsHandler, public ISettingCallback
 {
 public:
@@ -148,6 +160,6 @@ private:
 
   int m_logLevel;
 
-  bool m_componentLogEnabled;
-  uint32_t m_componentLogLevels;
+  bool m_componentLogEnabled = false;
+  uint32_t m_componentLogLevels = 0;
 };

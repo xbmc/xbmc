@@ -41,9 +41,9 @@ private:
   /*!
    * \brief Whether a swipe gesture has been detected or not
    */
-  bool m_swipeDetected;
+  bool m_swipeDetected = false;
   /*!
    * \brief Number of active pointers
    */
-  unsigned int m_size;
+  unsigned int m_size = 0;
 };

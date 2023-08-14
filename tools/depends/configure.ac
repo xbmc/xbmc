@@ -313,7 +313,7 @@ esac
 case $host in
   *-*linux-android*)
     deps_dir="$use_host-$use_ndk_api-$build_type"
-    platform_cflags="-DANDROID -D__ANDROID_API__=$use_ndk_api -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC -DPIC"
+    platform_cflags="-DANDROID -fexceptions -funwind-tables -fstack-protector-strong -no-canonical-prefixes -fPIC -DPIC"
     optimize_flags="-Os"
     platform_ldflags="-Wl,--exclude-libs,libgcc.a -Wl,--exclude-libs,libatomic.a -L$prefix/$deps_dir/lib/android-$use_ndk_api"
 
@@ -464,13 +464,13 @@ case $host in
         target_minver="10.14"
 
         # check provided window system is valid_sdk
-        # if no window system supplied, default to SDL for now.
+        # if no window system supplied, default to native.
         if test -n "$app_winsystem"; then
           if test "$app_winsystem" != "native" && test "$app_winsystem" != "sdl"; then
             AC_MSG_ERROR(Window system must be native or sdl)
           fi
         else
-          app_winsystem=sdl
+          app_winsystem=native
         fi
       ;;
       aarch64-apple-darwin*)
