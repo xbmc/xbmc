@@ -134,10 +134,7 @@ bool CRendererDXVA::Configure(const VideoPicture& picture, float fps, unsigned o
           m_enumerator->SupportedConversions(m_conversionsArgs);
       if (!conversions.empty())
       {
-        const ProcessorConversion chosenConversion =
-            ChooseConversion(conversions, picture.colorBits, picture.color_transfer);
-        m_intermediateTargetFormat = chosenConversion.m_outputFormat;
-        m_conversion = chosenConversion;
+        m_conversion = ChooseConversion(conversions);
 
         CLog::LogF(LOGINFO, "chosen conversion: {}", m_conversion.ToString());
 
@@ -189,16 +186,13 @@ void CRendererDXVA::CheckVideoParameters()
       // TODO case no supported conversion: add support in WinRenderer to fallback to a render method with support
       // For now, keep using the current conversion. Results won't be ideal but a black screen is avoided
       const ProcessorConversion conversion =
-          conversions.empty() ? m_conversion
-                              : ChooseConversion(conversions, buf->bits, buf->color_transfer);
+          conversions.empty() ? m_conversion : ChooseConversion(conversions);
 
       if (m_conversion != conversion)
       {
         CLog::LogF(LOGINFO, "new conversion: {}", conversion.ToString());
 
         m_processor->SetConversion(conversion);
-        m_intermediateTargetFormat = conversion.m_outputFormat;
-
         m_conversion = conversion;
       }
       m_conversionsArgs = args;
@@ -207,7 +201,7 @@ void CRendererDXVA::CheckVideoParameters()
 
   CreateIntermediateTarget(HasHQScaler() ? m_sourceWidth : m_viewWidth,
                            HasHQScaler() ? m_sourceHeight : m_viewHeight, false,
-                           m_intermediateTargetFormat);
+                           m_conversion.m_outputFormat);
 }
 
 void CRendererDXVA::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoint(&destPoints)[4], uint32_t flags)
@@ -476,24 +470,15 @@ bool CRendererDXVA::CRenderBufferImpl::UploadToTexture()
   return m_bLoaded;
 }
 
-ProcessorConversion CRendererDXVA::ChooseConversion(
-    const ProcessorConversions& conversions,
-    unsigned int sourceBits,
-    AVColorTransferCharacteristic colorTransfer) const
+ProcessorConversion CRendererDXVA::ChooseConversion(const ProcessorConversions& conversions) const
 {
   assert(conversions.size() > 0);
 
-  bool tryHQ{false};
-  if (!m_tryVSR)
-  {
-    // Try high quality when: backbuffer is 10 bits or High precision processing is on and the source is HDR
-    tryHQ = (DX::Windowing()->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM) ||
-            (DX::Windowing()->IsHighPrecisionProcessingSettingEnabled() && sourceBits > 8 &&
-             (colorTransfer == AVCOL_TRC_SMPTE2084 || colorTransfer == AVCOL_TRC_ARIB_STD_B67));
-  }
-
-  // RGB8 processor output format is required for VSR
-  if (!m_tryVSR && tryHQ)
+  // Try HQ except when:
+  // - trying VSR scaling, which requires RGB8 processor output format
+  // - the user opted out of high quality and the swap chain is 8 bits.
+  if (!m_tryVSR && (DX::Windowing()->IsHighPrecisionProcessingSettingEnabled() ||
+                    DX::Windowing()->GetBackBuffer().GetFormat() == DXGI_FORMAT_R10G10B10A2_UNORM))
   {
     const auto it =
         std::find_if(conversions.cbegin(), conversions.cend(), [](const ProcessorConversion& c) {
@@ -515,5 +500,6 @@ ProcessorConversion CRendererDXVA::ChooseConversion(
     return *it;
 
   // bad situation, nothing matching our needs found, return the first conversion available
+  CLog::LogF(LOGWARNING, "no conversion to wanted formats found, defaulting to first conversion.");
   return conversions.front();
 }
