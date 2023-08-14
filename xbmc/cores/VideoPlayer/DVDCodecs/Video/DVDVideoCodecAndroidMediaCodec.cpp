@@ -658,6 +658,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       uuid = CJNIUUID(0x9A04F07998404286LL, 0xAB92E65BE0885F95LL);
     else if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_WISEPLAY)
       uuid = CJNIUUID(0X3D5E6D359B9A41E8LL, 0XB843DD3C6E72C42CLL);
+    else if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_CLEARKEY)
+      uuid = CJNIUUID(0XE2719D58A985B3C9LL, 0X781AB030AF78D30ELL);
     else
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open Unsupported crypto-keysystem {}",
