@@ -136,42 +136,40 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
 
 bool CSkinTimerManager::TimerIsRunning(const std::string& timer) const
 {
-  if (!TimerExists(timer))
+  if (auto iter = m_timers.find(timer); iter != m_timers.end())
   {
-    CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
-    return false;
+    return iter->second->IsRunning();
   }
-  return m_timers.at(timer)->IsRunning();
+  CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
+  return false;
 }
 
 float CSkinTimerManager::GetTimerElapsedSeconds(const std::string& timer) const
 {
-  if (!TimerExists(timer))
+  if (auto iter = m_timers.find(timer); iter != m_timers.end())
   {
-    CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
-    return 0;
+    return iter->second->GetElapsedSeconds();
   }
-  return m_timers.at(timer)->GetElapsedSeconds();
+  CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
+  return 0;
 }
 
 void CSkinTimerManager::TimerStart(const std::string& timer) const
 {
-  if (!TimerExists(timer))
+  if (auto iter = m_timers.find(timer); iter != m_timers.end())
   {
-    CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
-    return;
+    return iter->second->Start();
   }
-  m_timers.at(timer)->Start();
+  CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
 }
 
 void CSkinTimerManager::TimerStop(const std::string& timer) const
 {
-  if (!TimerExists(timer))
+  if (auto iter = m_timers.find(timer); iter != m_timers.end())
   {
-    CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
-    return;
+    return iter->second->Stop();
   }
-  m_timers.at(timer)->Stop();
+  CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
 }
 
 size_t CSkinTimerManager::GetTimerCount() const
