@@ -53,6 +53,11 @@ public:
   /*! \brief stops the skin timer */
   void Stop();
 
+  /*! \brief Getter for the timer name
+   * \return the timer name
+  */
+  const std::string& GetName() const;
+
   /*! \brief Getter for the timer start boolean condition/expression
   * \return the start boolean condition/expression (may be null)
   */
@@ -67,6 +72,21 @@ public:
   * \return the start boolean condition/expression (may be null)
   */
   INFO::InfoPtr GetStopCondition() const;
+
+  /*! \brief Checks if a given timer is configured to reset every time it starts
+   * \return true if the timer is configured to reset on start, false otherwise
+  */
+  bool ResetsOnStart() const;
+
+  /*! \brief Gets the start actions of this skin timer
+   * \return the actions configured to start when the timer is started
+  */
+  const CGUIAction& GetStartActions() const;
+
+  /*! \brief Gets the stop actions of this skin timer
+   * \return the actions configured to start when the timer is stopped
+  */
+  const CGUIAction& GetStopActions() const;
 
   /*! \brief Evaluates the timer start boolean info expression returning the respective result.
   * \details Called from the skin timer manager to check if the timer should be started

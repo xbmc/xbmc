@@ -85,6 +85,10 @@ public:
    */
   bool ExecuteActions(int controlID, int parentID, const CGUIListItemPtr& item = nullptr) const;
   /**
+   * Check if there are any conditional actions
+  */
+  bool HasConditionalActions() const;
+  /**
    * Check if there is any action that meet its condition
    */
   bool HasActionsMeetingCondition() const;
@@ -92,6 +96,10 @@ public:
    * Check if there is any action
    */
   bool HasAnyActions() const;
+  /**
+   * Get the total number of actions
+  */
+  size_t GetActionCount() const;
   /**
    * Get navigation route that meet its conditions first
    */

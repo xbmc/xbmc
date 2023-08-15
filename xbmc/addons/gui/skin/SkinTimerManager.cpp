@@ -9,7 +9,6 @@
 #include "SkinTimerManager.h"
 
 #include "GUIInfoManager.h"
-#include "ServiceBroker.h"
 #include "guilib/GUIAction.h"
 #include "guilib/GUIComponent.h"
 #include "utils/StringUtils.h"
@@ -19,6 +18,10 @@
 #include <chrono>
 
 using namespace std::chrono_literals;
+
+CSkinTimerManager::CSkinTimerManager(CGUIInfoManager& infoMgr) : m_infoMgr{infoMgr}
+{
+}
 
 void CSkinTimerManager::LoadTimers(const std::string& path)
 {
@@ -55,7 +58,7 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
   }
 
   std::string timerName = node->FirstChild("name")->FirstChild()->Value();
-  if (m_timers.count(timerName) > 0)
+  if (TimerExists(timerName))
   {
     CLog::LogF(LOGWARNING,
                "Ignoring timer with name {} - another timer with the same name already exists",
@@ -69,8 +72,7 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
   if (node->FirstChild("start") && node->FirstChild("start")->FirstChild() &&
       !node->FirstChild("start")->FirstChild()->ValueStr().empty())
   {
-    startInfo = CServiceBroker::GetGUI()->GetInfoManager().Register(
-        node->FirstChild("start")->FirstChild()->ValueStr());
+    startInfo = m_infoMgr.Register(node->FirstChild("start")->FirstChild()->ValueStr());
     // check if timer needs to be reset after start
     if (node->FirstChildElement("start")->Attribute("reset") &&
         StringUtils::EqualsNoCase(node->FirstChildElement("start")->Attribute("reset"), "true"))
@@ -84,16 +86,14 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
   if (node->FirstChild("reset") && node->FirstChild("reset")->FirstChild() &&
       !node->FirstChild("reset")->FirstChild()->ValueStr().empty())
   {
-    resetInfo = CServiceBroker::GetGUI()->GetInfoManager().Register(
-        node->FirstChild("reset")->FirstChild()->ValueStr());
+    resetInfo = m_infoMgr.Register(node->FirstChild("reset")->FirstChild()->ValueStr());
   }
   // timer stop
   INFO::InfoPtr stopInfo{nullptr};
   if (node->FirstChild("stop") && node->FirstChild("stop")->FirstChild() &&
       !node->FirstChild("stop")->FirstChild()->ValueStr().empty())
   {
-    stopInfo = CServiceBroker::GetGUI()->GetInfoManager().Register(
-        node->FirstChild("stop")->FirstChild()->ValueStr());
+    stopInfo = m_infoMgr.Register(node->FirstChild("stop")->FirstChild()->ValueStr());
   }
 
   // process onstart actions
@@ -136,42 +136,61 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
 
 bool CSkinTimerManager::TimerIsRunning(const std::string& timer) const
 {
-  if (m_timers.count(timer) == 0)
+  if (auto iter = m_timers.find(timer); iter != m_timers.end())
   {
-    CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
-    return false;
+    return iter->second->IsRunning();
   }
-  return m_timers.at(timer)->IsRunning();
+  CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
+  return false;
 }
 
 float CSkinTimerManager::GetTimerElapsedSeconds(const std::string& timer) const
 {
-  if (m_timers.count(timer) == 0)
+  if (auto iter = m_timers.find(timer); iter != m_timers.end())
   {
-    CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
-    return 0;
+    return iter->second->GetElapsedSeconds();
   }
-  return m_timers.at(timer)->GetElapsedSeconds();
+  CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
+  return 0;
 }
 
 void CSkinTimerManager::TimerStart(const std::string& timer) const
 {
-  if (m_timers.count(timer) == 0)
+  if (auto iter = m_timers.find(timer); iter != m_timers.end())
   {
-    CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
-    return;
+    return iter->second->Start();
   }
-  m_timers.at(timer)->Start();
+  CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
 }
 
 void CSkinTimerManager::TimerStop(const std::string& timer) const
 {
-  if (m_timers.count(timer) == 0)
+  if (auto iter = m_timers.find(timer); iter != m_timers.end())
   {
-    CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
-    return;
+    return iter->second->Stop();
   }
-  m_timers.at(timer)->Stop();
+  CLog::LogF(LOGERROR, "Couldn't find Skin Timer with name: {}", timer);
+}
+
+size_t CSkinTimerManager::GetTimerCount() const
+{
+  return m_timers.size();
+}
+
+bool CSkinTimerManager::TimerExists(const std::string& timer) const
+{
+  return m_timers.count(timer) != 0;
+}
+
+std::unique_ptr<CSkinTimer> CSkinTimerManager::GrabTimer(const std::string& timer)
+{
+  if (auto iter = m_timers.find(timer); iter != m_timers.end())
+  {
+    auto timerInstance = std::move(iter->second);
+    m_timers.erase(iter);
+    return timerInstance;
+  }
+  return {};
 }
 
 void CSkinTimerManager::Stop()
@@ -186,15 +205,15 @@ void CSkinTimerManager::Stop()
     const std::unique_ptr<CSkinTimer>::pointer timer = val.get();
     if (timer->GetStartCondition())
     {
-      CServiceBroker::GetGUI()->GetInfoManager().UnRegister(timer->GetStartCondition());
+      m_infoMgr.UnRegister(timer->GetStartCondition());
     }
     if (timer->GetStopCondition())
     {
-      CServiceBroker::GetGUI()->GetInfoManager().UnRegister(timer->GetStopCondition());
+      m_infoMgr.UnRegister(timer->GetStopCondition());
     }
     if (timer->GetResetCondition())
     {
-      CServiceBroker::GetGUI()->GetInfoManager().UnRegister(timer->GetResetCondition());
+      m_infoMgr.UnRegister(timer->GetResetCondition());
     }
   }
   m_timers.clear();
