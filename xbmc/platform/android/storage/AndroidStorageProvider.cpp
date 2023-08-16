@@ -143,13 +143,13 @@ void CAndroidStorageProvider::GetLocalDrives(VECSOURCES &localDrives)
   localDrives.push_back(share);
 }
 
-void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES &removableDrives)
+void CAndroidStorageProvider::GetRemovableDrives(VECSOURCES& removableDrives)
 {
   if (CJNIBase::GetSDKVersion() >= 24)
   {
     bool inError = false;
 
-    CJNIStorageManager manager(CJNIContext::getSystemService("storage"));
+    CJNIStorageManager manager(CJNIContext::getSystemService(CJNIContext::STORAGE_SERVICE));
     if (xbmc_jnienv()->ExceptionCheck())
     {
       xbmc_jnienv()->ExceptionDescribe();
