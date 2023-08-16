@@ -665,7 +665,7 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
   static std::string osName;
   if (osName.empty())
   {
-#if defined (TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS)
     osName = GetKernelName() + "-based OS";
 #elif defined(TARGET_FREEBSD)
     osName = GetKernelName(true); // FIXME: for FreeBSD OS name is a kernel name
@@ -675,8 +675,8 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
     osName = "tvOS";
 #elif defined(TARGET_DARWIN_OSX)
     osName = "macOS";
-#elif defined (TARGET_ANDROID)
-    if (CJNIContext::GetPackageManager().hasSystemFeature("android.software.leanback"))
+#elif defined(TARGET_ANDROID)
+    if (CJNIContext::GetPackageManager().hasSystemFeature(CJNIPackageManager::FEATURE_LEANBACK))
       osName = "Android TV";
     else
       osName = "Android";
