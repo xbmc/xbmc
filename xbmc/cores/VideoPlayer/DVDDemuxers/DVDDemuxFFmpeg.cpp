@@ -2323,9 +2323,9 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamAudioState()
       if (idx == m_seekStream)
         return TRANSPORT_STREAM_STATE::READY;
       st = m_pFormatContext->streams[idx];
-      if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO && idx == m_pkt.pkt.stream_index)
+      if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
       {
-        if (m_pkt.pkt.dts != AV_NOPTS_VALUE)
+        if (idx == m_pkt.pkt.stream_index && m_pkt.pkt.dts != AV_NOPTS_VALUE)
         {
           if (!m_startTime)
           {
@@ -2347,10 +2347,9 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamAudioState()
       if (static_cast<int>(i) == m_seekStream)
         return TRANSPORT_STREAM_STATE::READY;
       st = m_pFormatContext->streams[i];
-      if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO &&
-          static_cast<int>(i) == m_pkt.pkt.stream_index)
+      if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
       {
-        if (m_pkt.pkt.dts != AV_NOPTS_VALUE)
+        if (static_cast<int>(i) == m_pkt.pkt.stream_index && m_pkt.pkt.dts != AV_NOPTS_VALUE)
         {
           if (!m_startTime)
           {
@@ -2385,9 +2384,10 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamVideoState()
       if (idx == m_seekStream)
         return TRANSPORT_STREAM_STATE::READY;
       st = m_pFormatContext->streams[idx];
-      if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO && idx == m_pkt.pkt.stream_index)
+      if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
       {
-        if (m_pkt.pkt.dts != AV_NOPTS_VALUE && st->codecpar->extradata)
+        if (idx == m_pkt.pkt.stream_index && m_pkt.pkt.dts != AV_NOPTS_VALUE &&
+            st->codecpar->extradata)
         {
           if (!m_startTime)
           {
@@ -2409,10 +2409,10 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamVideoState()
       if (static_cast<int>(i) == m_seekStream)
         return TRANSPORT_STREAM_STATE::READY;
       st = m_pFormatContext->streams[i];
-      if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO &&
-          static_cast<int>(i) == m_pkt.pkt.stream_index)
+      if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
       {
-        if (m_pkt.pkt.dts != AV_NOPTS_VALUE && st->codecpar->extradata)
+        if (static_cast<int>(i) == m_pkt.pkt.stream_index && m_pkt.pkt.dts != AV_NOPTS_VALUE &&
+            st->codecpar->extradata)
         {
           if (!m_startTime)
           {
