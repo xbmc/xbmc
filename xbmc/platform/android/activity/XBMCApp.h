@@ -125,8 +125,6 @@ public:
 
   bool isValid() { return m_activity != NULL; }
 
-  int32_t GetSDKVersion() const { return m_activity->sdkVersion; }
-
   void onStart() override;
   void onResume() override;
   void onPause() override;
