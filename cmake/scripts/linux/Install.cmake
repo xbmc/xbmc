@@ -39,6 +39,10 @@ configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.in
 configure_file(${CMAKE_SOURCE_DIR}/cmake/KodiConfig.cmake.in
                ${CORE_BUILD_DIR}/scripts/${APP_NAME}Config.cmake @ONLY)
 
+# Configure gbm session entry
+configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi-gbm-session.desktop.in
+               ${CORE_BUILD_DIR}/${APP_NAME_LC}-gbm-session.desktop @ONLY)
+
 # Configure xsession entry
 configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi-xsession.desktop.in
                ${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop @ONLY)
@@ -84,6 +88,12 @@ foreach(file ${install_data})
           DESTINATION ${datarootdir}/${APP_NAME_LC}/${dir}
           COMPONENT kodi)
 endforeach()
+
+# Install gbm session entry
+install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-gbm-session.desktop
+        RENAME ${APP_NAME_LC}-gbm.desktop
+        DESTINATION ${datarootdir}/wayland-sessions
+        COMPONENT kodi)
 
 # Install xsession entry
 install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${APP_NAME_LC}-xsession.desktop
