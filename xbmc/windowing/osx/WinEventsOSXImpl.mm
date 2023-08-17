@@ -15,7 +15,6 @@
 #include "input/mouse/MouseStat.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
-#include "windowing/osx/WinSystemOSX.h"
 
 #include <mutex>
 #include <optional>
@@ -398,11 +397,7 @@
     return std::nullopt;
   }
   location = [nsEvent.window convertPointToBacking:location];
-  //! TODO: get rid of the call to winsystem via the service broker
-  auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  if (!winSystem)
-    return std::nullopt;
-  NSRect frame = [nsEvent.window convertRectToBacking:winSystem->GetWindowDimensions()];
+  NSRect frame = [nsEvent.window convertRectToBacking:nsEvent.window.contentView.frame];
   // cocoa world is upside down ...
   location.y = frame.size.height - location.y;
   return location;
