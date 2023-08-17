@@ -37,6 +37,15 @@
         <onstop condition="true">Notification(timer1, notification 2, 1000)</onstop>
     </timer>
     <timer>
+        <name>timer6</name>
+        <description>This is a timer only with the name defined, all other props empty</description>
+        <start></start>
+        <reset></reset>
+        <stop></stop>
+        <onstart condition=""></onstart>
+        <onstop condition=""></onstop>
+    </timer>
+    <timer>
         <name></name>
         <description>This is an invalid timer (name empty)</description>
         <start>true</start>
