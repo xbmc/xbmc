@@ -2319,9 +2319,6 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamAudioState()
     for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
     {
       int idx = m_pFormatContext->programs[m_program]->stream_index[i];
-      // if we match m_seekStream then we are ready
-      if (idx == m_seekStream)
-        return TRANSPORT_STREAM_STATE::READY;
       st = m_pFormatContext->streams[idx];
       if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
       {
@@ -2343,9 +2340,6 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamAudioState()
   {
     for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
     {
-      // if we match m_seekStream then we are ready
-      if (static_cast<int>(i) == m_seekStream)
-        return TRANSPORT_STREAM_STATE::READY;
       st = m_pFormatContext->streams[i];
       if (st->codecpar->codec_type == AVMEDIA_TYPE_AUDIO)
       {
@@ -2363,6 +2357,8 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamAudioState()
       }
     }
   }
+  if (hasAudio && m_startTime)
+    return TRANSPORT_STREAM_STATE::READY;
 
   return (hasAudio) ? TRANSPORT_STREAM_STATE::NOTREADY : TRANSPORT_STREAM_STATE::NONE;
 }
@@ -2380,9 +2376,6 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamVideoState()
     for (unsigned int i = 0; i < m_pFormatContext->programs[m_program]->nb_stream_indexes; i++)
     {
       int idx = m_pFormatContext->programs[m_program]->stream_index[i];
-      // if we match m_seekStream then we are ready
-      if (idx == m_seekStream)
-        return TRANSPORT_STREAM_STATE::READY;
       st = m_pFormatContext->streams[idx];
       if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
       {
@@ -2405,9 +2398,6 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamVideoState()
   {
     for (unsigned int i = 0; i < m_pFormatContext->nb_streams; i++)
     {
-      // if we match m_seekStream then we are ready
-      if (static_cast<int>(i) == m_seekStream)
-        return TRANSPORT_STREAM_STATE::READY;
       st = m_pFormatContext->streams[i];
       if (st->codecpar->codec_type == AVMEDIA_TYPE_VIDEO)
       {
@@ -2426,6 +2416,8 @@ TRANSPORT_STREAM_STATE CDVDDemuxFFmpeg::TransportStreamVideoState()
       }
     }
   }
+  if (hasVideo && m_startTime)
+    return TRANSPORT_STREAM_STATE::READY;
 
   return (hasVideo) ? TRANSPORT_STREAM_STATE::NOTREADY : TRANSPORT_STREAM_STATE::NONE;
 }
