@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=@APP_NAME@ on GBM
+Comment=This session will start @APP_NAME@ media center
+Exec=@APP_NAME_LC@-standalone --windowing=gbm
+TryExec=@APP_NAME_LC@-standalone
+Type=Application
+Keywords=audio;video;media;center;tv;movies;series;songs;remote;
+Icon=@APP_NAME_LC@
