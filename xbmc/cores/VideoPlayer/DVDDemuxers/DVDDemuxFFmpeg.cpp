@@ -1350,8 +1350,29 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
     }
   }
 
-  CLog::Log(LOGDEBUG, "{} - seek to time {:.2f}s ret:{} hitEnd:{}", __FUNCTION__, time, ret,
-            hitEnd);
+  if (ret >= 0)
+  {
+    XbmcThreads::EndTime<> timer(1000ms);
+    while (m_currentPts == DVD_NOPTS_VALUE && !timer.IsTimePast())
+    {
+      m_pkt.result = -1;
+      av_packet_unref(&m_pkt.pkt);
+
+      DemuxPacket* pkt = Read();
+      if (!pkt)
+      {
+        KODI::TIME::Sleep(10ms);
+        continue;
+      }
+      CDVDDemuxUtils::FreeDemuxPacket(pkt);
+    }
+  }
+
+  if (m_currentPts == DVD_NOPTS_VALUE)
+    CLog::Log(LOGDEBUG, "{} - unknown position after seek", __FUNCTION__);
+  else
+    CLog::Log(LOGDEBUG, "{} - seek ended up on time {}", __FUNCTION__,
+              (int)(m_currentPts / DVD_TIME_BASE * 1000));
 
   // in this case the start time is requested time
   if (startpts)
