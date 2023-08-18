@@ -984,19 +984,23 @@ std::vector<androidPackage> CXBMCApp::GetApplications() const
   std::unique_lock<CCriticalSection> lock(m_applicationsMutex);
   if (m_applications.empty())
   {
-    CJNIList<CJNIApplicationInfo> packageList = GetPackageManager().getInstalledApplications(CJNIPackageManager::GET_ACTIVITIES);
+    CJNIList<CJNIApplicationInfo> packageList =
+        GetPackageManager().getInstalledApplications(CJNIPackageManager::GET_ACTIVITIES);
     int numPackages = packageList.size();
     for (int i = 0; i < numPackages; i++)
     {
-      CJNIIntent intent = GetPackageManager().getLaunchIntentForPackage(packageList.get(i).packageName);
-      if (!intent && CJNIBuild::SDK_INT >= 21)
-        intent = GetPackageManager().getLeanbackLaunchIntentForPackage(packageList.get(i).packageName);
+      CJNIIntent intent =
+          GetPackageManager().getLaunchIntentForPackage(packageList.get(i).packageName);
+      if (!intent)
+        intent =
+            GetPackageManager().getLeanbackLaunchIntentForPackage(packageList.get(i).packageName);
       if (!intent)
         continue;
 
       androidPackage newPackage;
       newPackage.packageName = packageList.get(i).packageName;
-      newPackage.packageLabel = GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
+      newPackage.packageLabel =
+          GetPackageManager().getApplicationLabel(packageList.get(i)).toString();
       newPackage.icon = packageList.get(i).icon;
       m_applications.emplace_back(newPackage);
     }
