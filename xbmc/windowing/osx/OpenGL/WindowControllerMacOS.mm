@@ -54,41 +54,25 @@
 
 - (void)windowDidResize:(NSNotification*)aNotification
 {
-  NSRect rect = [self.window.contentView
-      convertRectToBacking:[self.window contentRectForFrameRect:self.window.frame]];
-  int width = static_cast<int>(rect.size.width);
-  int height = static_cast<int>(rect.size.height);
-
-  XBMC_Event newEvent = {};
-
   if ((self.window.styleMask & NSWindowStyleMaskFullScreen) != NSWindowStyleMaskFullScreen)
   {
-    RESOLUTION res_index = RES_DESKTOP;
-    if ((width == CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iWidth) &&
-        (height == CDisplaySettings::GetInstance().GetResolutionInfo(res_index).iHeight))
-      return;
+    NSRect rect = [self.window.contentView
+        convertRectToBacking:[self.window contentRectForFrameRect:self.window.frame]];
 
+    XBMC_Event newEvent = {};
     newEvent.type = XBMC_VIDEORESIZE;
-  }
-  else
-  {
-    // macos may trigger a resize/rescale event after (or in) the fullscreen state. Use a different event
-    // so that window coordinates are properly set (XBMC_VIDEORESIZE is only supposed to be used when running
-    // windowed)
-    newEvent.type = XBMC_FULLSCREEN_UPDATE;
-  }
+    newEvent.resize.w = static_cast<int>(rect.size.width);
+    newEvent.resize.h = static_cast<int>(rect.size.height);
 
-  newEvent.resize.w = width;
-  newEvent.resize.h = height;
-
-  // check for valid sizes cause in some cases
-  // we are hit during fullscreen transition from macos
-  // and might be technically "zero" sized
-  if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
-  {
-    std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
-    if (appPort)
-      appPort->OnEvent(newEvent);
+    // check for valid sizes cause in some cases
+    // we are hit during fullscreen transition from macos
+    // and might be technically "zero" sized
+    if (newEvent.resize.w != 0 && newEvent.resize.h != 0)
+    {
+      std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+      if (appPort)
+        appPort->OnEvent(newEvent);
+    }
   }
 }
 
