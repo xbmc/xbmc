@@ -10,7 +10,6 @@
 
 #include "FileItem.h"
 #include "ThumbLoader.h"
-#include "utils/JobManager.h"
 
 #include <map>
 #include <vector>
@@ -21,41 +20,6 @@ class EmbeddedArt;
 
 using ArtMap = std::map<std::string, std::string>;
 using ArtCache = std::map<std::pair<MediaType, int>, ArtMap>;
-
-/*!
- \ingroup thumbs,jobs
- \brief Thumb extractor job class
-
- Used by the "chapter browser" GUI window to generate chapter thumbs.
-
- \sa CVideoThumbLoader and CJob
- */
-class CChapterThumbExtractor : public CJob
-{
-public:
-  CChapterThumbExtractor(const CFileItem& item,
-                         const std::string& listpath,
-                         const std::string& strTarget = "",
-                         int64_t pos = -1);
-  ~CChapterThumbExtractor() override;
-
-  /*!
-   \brief Work function that extracts thumb.
-   */
-  bool DoWork() override;
-
-  const char* GetType() const override
-  {
-    return kJobTypeMediaFlags;
-  }
-
-  bool operator==(const CJob* job) const override;
-
-  std::string m_target; ///< thumbpath
-  std::string m_listpath; ///< path used in fileitem list
-  CFileItem m_item;
-  int64_t m_pos; ///< position to extract thumb from
-};
 
 class CVideoThumbLoader : public CThumbLoader
 {
