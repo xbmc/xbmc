@@ -85,6 +85,12 @@ public:
   virtual int NoOfBuffers();
 
   /*!
+   * \brief Forces the window to fullscreen provided the window resolution
+   * \param resInfo - the resolution info
+   */
+  virtual void ForceFullScreen(const RESOLUTION_INFO& resInfo) {}
+
+  /*!
    * \brief Get average display latency
    *
    * The latency should be measured as the time between finishing the rendering
