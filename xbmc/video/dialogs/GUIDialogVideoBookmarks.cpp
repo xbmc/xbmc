@@ -285,18 +285,11 @@ void CGUIDialogVideoBookmarks::OnRefreshList()
     CFileItemPtr item(new CFileItem(chapterName));
     item->SetLabel2(time);
 
-    std::string chapterPath = StringUtils::Format("chapter://{}/{}", m_filePath, i);
-    std::string cachefile = CServiceBroker::GetTextureCache()->GetCachedPath(
-        CServiceBroker::GetTextureCache()->GetCacheFile(chapterPath) + ".jpg");
-    if (CFileUtils::Exists(cachefile))
-      item->SetArt("thumb", cachefile);
-    else if (i > m_jobsStarted && CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
+    if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+            CSettings::SETTING_MYVIDEOS_EXTRACTCHAPTERTHUMBS))
     {
-      CFileItem item(m_filePath, false);
-      CJob* job = new CChapterThumbExtractor(item, m_filePath, chapterPath, pos * 1000);
-      AddJob(job);
-      m_mapJobsChapter[job] = i;
-      m_jobsStarted++;
+      std::string chapterPath = StringUtils::Format("chapter://{}/{}", m_filePath, i);
+      item->SetArt("thumb", chapterPath);
     }
 
     item->SetProperty("chapter", i);
