@@ -365,6 +365,11 @@ void CWinSystemWin32::FinishWindowResize(int newWidth, int newHeight)
   m_nHeight = newHeight;
 }
 
+void CWinSystemWin32::ForceFullScreen(const RESOLUTION_INFO& resInfo)
+{
+  ResizeWindow(resInfo.iScreenWidth, resInfo.iScreenHeight, 0, 0);
+}
+
 void CWinSystemWin32::AdjustWindow(bool forceResize)
 {
   CLog::LogF(LOGDEBUG, "adjusting window if required.");
