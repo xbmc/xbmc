@@ -270,7 +270,8 @@ bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem, CTextureDetails& deta
   return bOk;
 }
 
-std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem)
+std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem,
+                                                              int chapterNumber)
 {
   if (!CanExtract(fileItem))
     return {};
@@ -349,7 +350,10 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
     if (pVideoCodec)
     {
       int nTotalLen = pDemuxer->GetStreamLength();
-      int64_t nSeekTo = nTotalLen / 3;
+
+      bool seekToChapter = chapterNumber > 0 && pDemuxer->GetChapterCount() > 0;
+      int64_t nSeekTo =
+          seekToChapter ? pDemuxer->GetChapterPos(chapterNumber) * 1000 : nTotalLen / 3;
 
       CLog::LogF(LOGDEBUG, "seeking to pos {}ms (total: {}ms) in {}", nSeekTo, nTotalLen,
                  redactPath);
