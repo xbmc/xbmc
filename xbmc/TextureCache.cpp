@@ -296,7 +296,7 @@ void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)
 {
   if (success)
   {
-    if (job->m_oldHash == job->m_details.hash)
+    if (job->m_details.id != -1 && job->m_oldHash == job->m_details.hash)
       SetCachedTextureValid(job->m_url, job->m_details.updateable);
     else
       AddCachedTexture(job->m_url, job->m_details);
