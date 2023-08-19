@@ -112,4 +112,7 @@ protected:
 
 private:
   static std::string ChooseArtType(const CFileItem& item);
+  static bool ManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item,
+                                     const MediaType& type,
+                                     bool& finished);
 };
