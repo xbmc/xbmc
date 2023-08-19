@@ -84,12 +84,20 @@ void GetLocalTime(SystemTime* systemTime)
 
 int FileTimeToLocalFileTime(const FileTime* fileTime, FileTime* localFileTime)
 {
-  FILETIME file;
+  FILETIME file{};
   file.dwLowDateTime = fileTime->lowDateTime;
   file.dwHighDateTime = fileTime->highDateTime;
 
-  FILETIME localFile;
-  int ret = ::FileTimeToLocalFileTime(&file, &localFile);
+  SYSTEMTIME systemTime{};
+  if (FALSE == ::FileTimeToSystemTime(&file, &systemTime))
+    return FALSE;
+
+  SYSTEMTIME localSystemTime{};
+  if (FALSE == ::SystemTimeToTzSpecificLocalTime(nullptr, &systemTime, &localSystemTime))
+    return FALSE;
+
+  FILETIME localFile{};
+  int ret = ::SystemTimeToFileTime(&localSystemTime, &localFile);
 
   localFileTime->lowDateTime = localFile.dwLowDateTime;
   localFileTime->highDateTime = localFile.dwHighDateTime;
