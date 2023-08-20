@@ -305,7 +305,7 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
 
     // prepare the progress dialog for downloading all the necessary information
     SetTitle(g_localizeStrings.Get(headingLabel));
-    SetText(scraperUrl.GetTitle());
+    SetText(itemTitle);
     SetProgress(0);
 
     // remove any existing data for the item we're going to refresh

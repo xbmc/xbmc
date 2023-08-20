@@ -60,6 +60,12 @@ void CGUIDialogBoxBase::SetHeading(const CVariant& heading)
   }
 }
 
+bool CGUIDialogBoxBase::HasHeading() const
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  return !m_strHeading.empty();
+}
+
 void CGUIDialogBoxBase::SetLine(unsigned int iLine, const CVariant& line)
 {
   std::string label = GetLocalized(line);
@@ -82,6 +88,12 @@ void CGUIDialogBoxBase::SetText(const CVariant& text)
     m_text = label;
     SetInvalid();
   }
+}
+
+bool CGUIDialogBoxBase::HasText() const
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  return !m_text.empty();
 }
 
 void CGUIDialogBoxBase::SetChoice(int iButton, const CVariant &choice) // iButton == 0 for no, 1 for yes
