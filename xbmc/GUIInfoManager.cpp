@@ -6867,6 +6867,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
+// clang-format off
 const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "icon",             LISTITEM_ICON },
                                   { "actualicon",       LISTITEM_ACTUAL_ICON },
@@ -7078,6 +7079,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "hdrtype",          LISTITEM_VIDEO_HDR_TYPE },
                                   { "songvideourl",     LISTITEM_SONG_VIDEO_URL },
 };
+// clang-format on
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Visualisation Visualisation
