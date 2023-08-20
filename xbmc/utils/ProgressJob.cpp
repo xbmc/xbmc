@@ -103,7 +103,9 @@ void CProgressJob::SetTitle(const std::string &title)
   {
     m_progressDialog->SetHeading(CVariant{title});
 
-    ShowProgressDialog();
+    // Prevent displaying the progress dialog without any heading and/or text.
+    if (m_progressDialog->HasHeading() && m_progressDialog->HasText())
+      ShowProgressDialog();
   }
 }
 
@@ -118,7 +120,9 @@ void CProgressJob::SetText(const std::string &text)
   {
     m_progressDialog->SetText(CVariant{text});
 
-    ShowProgressDialog();
+    // Prevent displaying the progress dialog without any heading and/or text.
+    if (m_progressDialog->HasText() && m_progressDialog->HasHeading())
+      ShowProgressDialog();
   }
 }
 

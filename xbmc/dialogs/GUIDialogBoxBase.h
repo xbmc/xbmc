@@ -34,7 +34,9 @@ public:
   bool IsConfirmed() const;
   void SetLine(unsigned int iLine, const CVariant& line);
   void SetText(const CVariant& text);
+  bool HasText() const;
   void SetHeading(const CVariant& heading);
+  bool HasHeading() const;
   void SetChoice(int iButton, const CVariant &choice);
 protected:
   std::string GetDefaultLabel(int controlId) const;
@@ -54,7 +56,7 @@ protected:
   bool m_hasTextbox;
 
   // actual strings
-  CCriticalSection m_section;
+  mutable CCriticalSection m_section;
   std::string m_strHeading;
   std::string m_text;
   std::string m_strChoices[DIALOG_MAX_CHOICES];
