@@ -426,10 +426,12 @@ public:
   bool ServicesHasStarted() const;
 
   /*!
-     * @deprecated This addon function should no more used and becomes replaced
-     * in future with the other below by his callers.
+     * @brief Check if given addon is compatible with Kodi.
+     *
+     * @param[in] addon Addon to check
+     * @return true if compatible, false if not
      */
-  bool IsCompatible(const IAddon& addon) const;
+  bool IsCompatible(const std::shared_ptr<const IAddon>& addon) const;
 
   /*!
      * @brief Check given addon information is compatible with Kodi.
