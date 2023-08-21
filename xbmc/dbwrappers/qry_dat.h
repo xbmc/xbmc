@@ -76,12 +76,15 @@ public:
   explicit field_value(const float f);
   explicit field_value(const double d);
   explicit field_value(const int64_t i);
+  field_value(const char* s, std::size_t len);
   field_value(const field_value& fv);
+  field_value(field_value&& fv) noexcept;
   ~field_value();
 
   fType get_fType() const { return field_type; }
   bool get_isNull() const { return is_null; }
-  std::string get_asString() const;
+  std::string get_asString() const&;
+  std::string get_asString() &&;
   bool get_asBool() const;
   char get_asChar() const;
   short get_asShort() const;
@@ -100,6 +103,11 @@ public:
   field_value& operator=(const std::string& s)
   {
     set_asString(s);
+    return *this;
+  }
+  field_value& operator=(std::string&& s)
+  {
+    set_asString(std::move(s));
     return *this;
   }
   field_value& operator=(const bool b)
@@ -143,6 +151,7 @@ public:
     return *this;
   }
   field_value& operator=(const field_value& fv);
+  field_value& operator=(field_value&& fv) noexcept;
 
   //class ostream;
   friend std::ostream& operator<<(std::ostream& os, const field_value& fv)
@@ -209,7 +218,9 @@ public:
 
   void set_isNull() { is_null = true; }
   void set_asString(const char* s);
+  void set_asString(const char* s, std::size_t len);
   void set_asString(const std::string& s);
+  void set_asString(std::string&& s);
   void set_asBool(const bool b);
   void set_asChar(const char c);
   void set_asShort(const short s);

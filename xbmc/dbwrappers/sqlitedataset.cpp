@@ -915,10 +915,12 @@ bool SqliteDataset::query(const std::string& query)
           v.set_asDouble(sqlite3_column_double(stmt, i));
           break;
         case SQLITE_TEXT:
-          v.set_asString((const char*)sqlite3_column_text(stmt, i));
+          v.set_asString(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)),
+                         sqlite3_column_bytes(stmt, i));
           break;
         case SQLITE_BLOB:
-          v.set_asString((const char*)sqlite3_column_text(stmt, i));
+          v.set_asString(reinterpret_cast<const char*>(sqlite3_column_text(stmt, i)),
+                         sqlite3_column_bytes(stmt, i));
           break;
         case SQLITE_NULL:
         default:
