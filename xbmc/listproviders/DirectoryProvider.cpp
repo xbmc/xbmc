@@ -18,6 +18,7 @@
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "music/MusicThumbLoader.h"
 #include "music/dialogs/GUIDialogMusicInfo.h"
@@ -50,11 +51,12 @@ using namespace PVR;
 class CDirectoryJob : public CJob
 {
 public:
-  CDirectoryJob(const std::string &url, SortDescription sort, int limit, int parentID)
-    : m_url(url),
-      m_sort(sort),
-      m_limit(limit),
-      m_parentID(parentID)
+  CDirectoryJob(const std::string& url,
+                const std::string& target,
+                SortDescription sort,
+                int limit,
+                int parentID)
+    : m_url(url), m_target(target), m_sort(sort), m_limit(limit), m_parentID(parentID)
   { }
   ~CDirectoryJob() override = default;
 
@@ -80,9 +82,12 @@ public:
         items.Sort(m_sort);
 
       // limit must not exceed the number of items
-      int limit = (m_limit == 0) ? items.Size() : std::min((int) m_limit, items.Size());
+      int limit = (m_limit == 0) ? items.Size() : std::min(static_cast<int>(m_limit), items.Size());
+      if (limit < items.Size())
+        m_items.reserve(limit + 1);
+      else
+        m_items.reserve(limit);
       // convert to CGUIStaticItem's and set visibility and targets
-      m_items.reserve(limit);
       for (int i = 0; i < limit; i++)
       {
         CGUIStaticItemPtr item(new CGUIStaticItem(*items[i]));
@@ -93,7 +98,27 @@ public:
 
         m_items.push_back(item);
       }
-      m_target = items.GetProperty("node.target").asString();
+
+      if (items.HasProperty("node.target"))
+        m_target = items.GetProperty("node.target").asString();
+
+      if (limit < items.Size())
+      {
+        // Add a special item to the end of the limited list, which can be used to open the
+        // full listing containg all items in the given target window.
+        if (!m_target.empty())
+        {
+          CFileItem item(m_url, true);
+          item.SetLabel(g_localizeStrings.Get(22082)); // More...
+          item.SetArt("icon", "DefaultFolder.png");
+          item.SetProperty("node.target", m_target);
+          item.SetProperty("node.type", "target_folder"); // make item identifyable, e.g. by skins
+
+          m_items.emplace_back(std::make_shared<CGUIStaticItem>(item));
+        }
+        else
+          CLog::LogF(LOGWARNING, "Cannot add 'More...' item to list. No target window given.");
+      }
     }
     return true;
   }
@@ -231,7 +256,9 @@ bool CDirectoryProvider::Update(bool forceRefresh)
     if (m_jobID)
       CServiceBroker::GetJobManager()->CancelJob(m_jobID);
     m_jobID = CServiceBroker::GetJobManager()->AddJob(
-        new CDirectoryJob(m_currentUrl, m_currentSort, m_currentLimit, m_parentID), this);
+        new CDirectoryJob(m_currentUrl, m_target.GetLabel(m_parentID, false), m_currentSort,
+                          m_currentLimit, m_parentID),
+        this);
   }
 
   if (!changed)
