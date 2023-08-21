@@ -365,7 +365,7 @@
 							<param name="widget_header" value="$LOCALIZE[136]"/>
 							<param name="widget_target" value="videos"/>
 							<param name="list_id" value="11200"/>
-							<param name="icon" value="DefaultPlaylist.png"/>
+							<param name="icon" value="$VAR[WidgetPlaylistIconVar]"/>
 						</include>
 					</control>
 					<include content="ImageWidget">
@@ -398,6 +398,7 @@
 							<param name="sortby" value="lastplayed"/>
 							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31016]"/>
+							<param name="widget_target" value="tvchannels"/>
 							<param name="item_limit" value="15"/>
 							<param name="list_id" value="12200"/>
 							<param name="info_update" value="5000"/>
@@ -407,6 +408,7 @@
 							<param name="sortby" value="date"/>
 							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31015]"/>
+							<param name="widget_target" value="tvrecordings"/>
 							<param name="item_limit" value="15"/>
 							<param name="list_id" value="12300"/>
 							<param name="label" value="$INFO[ListItem.Title]$INFO[ListItem.Date, (,)]"/>
@@ -468,6 +470,7 @@
 							<param name="sortby" value="lastplayed"/>
 							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31018]"/>
+							<param name="widget_target" value="radiochannels"/>
 							<param name="item_limit" value="15"/>
 							<param name="list_id" value="13200"/>
 							<param name="info_update" value="5000"/>
@@ -477,6 +480,7 @@
 							<param name="sortby" value="date"/>
 							<param name="sortorder" value="descending"/>
 							<param name="widget_header" value="$LOCALIZE[31015]"/>
+							<param name="widget_target" value="radiorecordings"/>
 							<param name="item_limit" value="15"/>
 							<param name="list_id" value="13300"/>
 							<param name="label" value="$INFO[ListItem.Title]$INFO[ListItem.Date, (,)]"/>
