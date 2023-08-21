@@ -308,6 +308,7 @@ protected:
   void UnconfigureSink();
   void Dispose();
   void LoadSettings();
+  void ValidateOutputDevices(bool saveChanges);
   bool NeedReconfigureBuffers();
   bool NeedReconfigureSink();
   void ApplySettingsToFormat(AEAudioFormat& format,
