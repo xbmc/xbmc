@@ -516,6 +516,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_extError = false;
           m_sink.EnumerateSinkList(false, "");
           LoadSettings();
+          ValidateOutputDevices(true);
           Configure();
           if (!m_isWinSysReg)
           {
@@ -647,6 +648,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECHANGE);
           m_sink.EnumerateSinkList(true, "");
           LoadSettings();
+          ValidateOutputDevices(false);
           m_extError = false;
           Configure();
           if (!m_extError)
@@ -669,6 +671,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
           {
             UnconfigureSink();
             LoadSettings();
+            ValidateOutputDevices(false);
             m_extError = false;
             Configure();
             if (!m_extError)
@@ -890,6 +893,7 @@ void CActiveAE::StateMachine(int signal, Protocol *port, Message *msg)
             m_controlPort.PurgeOut(CActiveAEControlProtocol::DEVICECOUNTCHANGE);
             m_sink.EnumerateSinkList(true, "");
             LoadSettings();
+            ValidateOutputDevices(false);
           }
           Configure();
           if (!displayReset)
@@ -2668,6 +2672,58 @@ void CActiveAE::LoadSettings()
   m_settings.atempoThreshold = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_ATEMPOTHRESHOLD) / 100.0;
   m_settings.streamNoise = settings->GetBool(CSettings::SETTING_AUDIOOUTPUT_STREAMNOISE);
   m_settings.silenceTimeoutMinutes = settings->GetInt(CSettings::SETTING_AUDIOOUTPUT_STREAMSILENCE);
+}
+
+void CActiveAE::ValidateOutputDevices(bool saveChanges)
+{
+  std::string device = m_sink.ValidateOuputDevice(m_settings.device, false);
+
+  if (!device.empty() && device != m_settings.device)
+  {
+    CLog::LogF(LOGWARNING, "audio output device setting has been updated from '{}' to '{}'",
+               m_settings.device, device);
+
+    const AESinkDevice oldDevice = CAESinkFactory::ParseDevice(m_settings.device);
+    const AESinkDevice newDevice = CAESinkFactory::ParseDevice(device);
+
+    m_settings.device = device;
+
+    if (saveChanges && newDevice.IsSameDeviceAs(oldDevice))
+    {
+      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+      if (settings)
+      {
+        settings->SetString(CSettings::SETTING_AUDIOOUTPUT_AUDIODEVICE, m_settings.device);
+        settings->Save();
+        CLog::LogF(LOGDEBUG, "the change of the audio output device setting has been saved");
+      }
+    }
+  }
+
+  device = m_sink.ValidateOuputDevice(m_settings.passthroughdevice, true);
+
+  if (!device.empty() && device != m_settings.passthroughdevice)
+  {
+    CLog::LogF(LOGWARNING, "passthrough output device setting has been updated from '{}' to '{}'",
+               m_settings.passthroughdevice, device);
+
+    const AESinkDevice oldDevice = CAESinkFactory::ParseDevice(m_settings.passthroughdevice);
+    const AESinkDevice newDevice = CAESinkFactory::ParseDevice(device);
+
+    m_settings.passthroughdevice = device;
+
+    if (saveChanges && newDevice.IsSameDeviceAs(oldDevice))
+    {
+      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+      if (settings)
+      {
+        settings->SetString(CSettings::SETTING_AUDIOOUTPUT_PASSTHROUGHDEVICE,
+                            m_settings.passthroughdevice);
+        settings->Save();
+        CLog::LogF(LOGDEBUG, "the change of the passthrough output device setting has been saved");
+      }
+    }
+  }
 }
 
 void CActiveAE::Start()

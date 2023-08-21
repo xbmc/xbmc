@@ -47,6 +47,11 @@ struct AESinkDevice
   std::string driver;
   std::string name;
   std::string friendlyName;
+
+  bool IsSameDeviceAs(const AESinkDevice& d) const
+  {
+    return driver == d.driver && (name == d.name || friendlyName == d.friendlyName);
+  }
 };
 
 class CAESinkFactory
