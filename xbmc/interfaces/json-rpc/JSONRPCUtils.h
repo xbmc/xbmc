@@ -12,8 +12,10 @@
 #include "ITransportLayer.h"
 
 #include <map>
+#include <memory>
 #include <string>
 
+class CFileItem;
 class CVariant;
 class CVideoInfoTag;
 
@@ -157,6 +159,7 @@ namespace JSONRPC
   {
   public:
     static void NotifyItemUpdated();
+    static void NotifyItemUpdated(const std::shared_ptr<CFileItem>& item);
     static void NotifyItemUpdated(const CVideoInfoTag& info,
                                   const std::map<std::string, std::string>& artwork);
   };

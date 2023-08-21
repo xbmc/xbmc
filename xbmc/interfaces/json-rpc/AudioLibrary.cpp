@@ -1022,7 +1022,8 @@ JSONRPC_STATUS CAudioLibrary::SetSongDetails(const std::string &method, ITranspo
   if (!musicdatabase.UpdateSong(song, updateartists))
     return InternalError;
 
-  CJSONRPCUtils::NotifyItemUpdated();
+  const auto item = std::make_shared<CFileItem>(song);
+  CJSONRPCUtils::NotifyItemUpdated(item);
   return ACK;
 }
 

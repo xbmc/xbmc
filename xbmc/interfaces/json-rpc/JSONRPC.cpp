@@ -379,6 +379,13 @@ void CJSONRPCUtils::NotifyItemUpdated()
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(message);
 }
 
+void CJSONRPCUtils::NotifyItemUpdated(const std::shared_ptr<CFileItem>& item)
+{
+  auto& wm = CServiceBroker::GetGUI()->GetWindowManager();
+  CGUIMessage message(GUI_MSG_NOTIFY_ALL, wm.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 0, item);
+  wm.SendThreadMessage(message);
+}
+
 void CJSONRPCUtils::NotifyItemUpdated(const CVideoInfoTag& info,
                                       const std::map<std::string, std::string>& artwork)
 {
