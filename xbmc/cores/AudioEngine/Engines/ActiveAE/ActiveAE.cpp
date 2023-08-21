@@ -1191,17 +1191,18 @@ void CActiveAE::Configure(AEAudioFormat *desiredFmt)
   m_extKeepConfig = 0ms;
 
   std::string device = (m_sinkRequestFormat.m_dataFormat == AE_FMT_RAW) ? m_settings.passthroughdevice : m_settings.device;
-  std::string driver;
-  CAESinkFactory::ParseDevice(device, driver);
-  if ((!CompareFormat(m_sinkRequestFormat, m_sinkFormat) && !CompareFormat(m_sinkRequestFormat, oldSinkRequestFormat)) ||
-      m_currDevice.compare(device) != 0 ||
-      m_settings.driver.compare(driver) != 0)
+
+  const AESinkDevice dev = CAESinkFactory::ParseDevice(device);
+
+  if ((!CompareFormat(m_sinkRequestFormat, m_sinkFormat) &&
+       !CompareFormat(m_sinkRequestFormat, oldSinkRequestFormat)) ||
+      m_currDevice.compare(dev.name) != 0 || m_settings.driver.compare(dev.driver) != 0)
   {
     FlushEngine();
     if (!InitSink())
       return;
-    m_settings.driver = driver;
-    m_currDevice = device;
+    m_settings.driver = dev.driver;
+    m_currDevice = dev.name;
     initSink = true;
     m_stats.Reset(m_sinkFormat.m_sampleRate, m_mode == MODE_PCM);
     m_sink.m_controlPort.SendOutMessage(CSinkControlProtocol::VOLUME, &m_volume, sizeof(float));
@@ -1781,12 +1782,11 @@ bool CActiveAE::NeedReconfigureSink()
   ApplySettingsToFormat(newFormat, m_settings);
 
   std::string device = (newFormat.m_dataFormat == AE_FMT_RAW) ? m_settings.passthroughdevice : m_settings.device;
-  std::string driver;
-  CAESinkFactory::ParseDevice(device, driver);
 
-  return !CompareFormat(newFormat, m_sinkFormat) ||
-      m_currDevice.compare(device) != 0 ||
-      m_settings.driver.compare(driver) != 0;
+  const AESinkDevice dev = CAESinkFactory::ParseDevice(device);
+
+  return !CompareFormat(newFormat, m_sinkFormat) || m_currDevice.compare(dev.name) != 0 ||
+         m_settings.driver.compare(dev.driver) != 0;
 }
 
 bool CActiveAE::InitSink()
