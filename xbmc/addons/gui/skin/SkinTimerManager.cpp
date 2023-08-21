@@ -12,7 +12,7 @@
 #include "guilib/GUIAction.h"
 #include "guilib/GUIComponent.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
 #include <chrono>
@@ -25,22 +25,22 @@ CSkinTimerManager::CSkinTimerManager(CGUIInfoManager& infoMgr) : m_infoMgr{infoM
 
 void CSkinTimerManager::LoadTimers(const std::string& path)
 {
-  CXBMCTinyXML doc;
+  CXBMCTinyXML2 doc;
   if (!doc.LoadFile(path))
   {
-    CLog::LogF(LOGWARNING, "Could not load timers file {}: {} (row: {}, col: {})", path,
-               doc.ErrorDesc(), doc.ErrorRow(), doc.ErrorCol());
+    CLog::LogF(LOGWARNING, "Could not load timers file {}: {} (Line: {})", path, doc.ErrorStr(),
+               doc.ErrorLineNum());
     return;
   }
 
-  TiXmlElement* root = doc.RootElement();
+  auto* root = doc.RootElement();
   if (!root || !StringUtils::EqualsNoCase(root->Value(), "timers"))
   {
     CLog::LogF(LOGERROR, "Error loading timers file {}: Root element <timers> required.", path);
     return;
   }
 
-  const TiXmlElement* timerNode = root->FirstChildElement("timer");
+  const auto* timerNode = root->FirstChildElement("timer");
   while (timerNode)
   {
     LoadTimerInternal(timerNode);
@@ -48,16 +48,15 @@ void CSkinTimerManager::LoadTimers(const std::string& path)
   }
 }
 
-void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
+void CSkinTimerManager::LoadTimerInternal(const tinyxml2::XMLNode* node)
 {
-  if ((!node->FirstChild("name") || !node->FirstChild("name")->FirstChild() ||
-       node->FirstChild("name")->FirstChild()->ValueStr().empty()))
+  if ((!node->FirstChildElement("name") || !node->FirstChildElement("name")->FirstChild()))
   {
     CLog::LogF(LOGERROR, "Missing required field 'name' for valid skin timer. Ignoring timer.");
     return;
   }
 
-  std::string timerName = node->FirstChild("name")->FirstChild()->Value();
+  std::string timerName = node->FirstChildElement("name")->FirstChild()->Value();
   if (TimerExists(timerName))
   {
     CLog::LogF(LOGWARNING,
@@ -69,10 +68,9 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
   // timer start
   INFO::InfoPtr startInfo{nullptr};
   bool resetOnStart{false};
-  if (node->FirstChild("start") && node->FirstChild("start")->FirstChild() &&
-      !node->FirstChild("start")->FirstChild()->ValueStr().empty())
+  if (node->FirstChildElement("start") && node->FirstChildElement("start")->FirstChild())
   {
-    startInfo = m_infoMgr.Register(node->FirstChild("start")->FirstChild()->ValueStr());
+    startInfo = m_infoMgr.Register(node->FirstChildElement("start")->FirstChild()->Value());
     // check if timer needs to be reset after start
     if (node->FirstChildElement("start")->Attribute("reset") &&
         StringUtils::EqualsNoCase(node->FirstChildElement("start")->Attribute("reset"), "true"))
@@ -83,23 +81,21 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
 
   // timer reset
   INFO::InfoPtr resetInfo{nullptr};
-  if (node->FirstChild("reset") && node->FirstChild("reset")->FirstChild() &&
-      !node->FirstChild("reset")->FirstChild()->ValueStr().empty())
+  if (node->FirstChildElement("reset") && node->FirstChildElement("reset")->FirstChild())
   {
-    resetInfo = m_infoMgr.Register(node->FirstChild("reset")->FirstChild()->ValueStr());
+    resetInfo = m_infoMgr.Register(node->FirstChildElement("reset")->FirstChild()->Value());
   }
   // timer stop
   INFO::InfoPtr stopInfo{nullptr};
-  if (node->FirstChild("stop") && node->FirstChild("stop")->FirstChild() &&
-      !node->FirstChild("stop")->FirstChild()->ValueStr().empty())
+  if (node->FirstChildElement("stop") && node->FirstChildElement("stop")->FirstChild())
   {
-    stopInfo = m_infoMgr.Register(node->FirstChild("stop")->FirstChild()->ValueStr());
+    stopInfo = m_infoMgr.Register(node->FirstChildElement("stop")->FirstChild()->Value());
   }
 
   // process onstart actions
   CGUIAction startActions;
   startActions.EnableSendThreadMessageMode();
-  const TiXmlElement* onStartElement = node->FirstChildElement("onstart");
+  const auto* onStartElement = node->FirstChildElement("onstart");
   while (onStartElement)
   {
     if (onStartElement->FirstChild())
@@ -116,7 +112,7 @@ void CSkinTimerManager::LoadTimerInternal(const TiXmlElement* node)
   // process onstop actions
   CGUIAction stopActions;
   stopActions.EnableSendThreadMessageMode();
-  const TiXmlElement* onStopElement = node->FirstChildElement("onstop");
+  const auto* onStopElement = node->FirstChildElement("onstop");
   while (onStopElement)
   {
     if (onStopElement->FirstChild())
