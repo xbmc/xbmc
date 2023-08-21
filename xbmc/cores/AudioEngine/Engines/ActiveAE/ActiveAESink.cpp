@@ -728,6 +728,116 @@ void CActiveAESink::PrintSinks(std::string& driver)
   }
 }
 
+std::string CActiveAESink::ValidateOuputDevice(const std::string& device, bool passthrough) const
+{
+  if (m_sinkInfoList.empty())
+    return {};
+
+  const AESinkDevice dev = CAESinkFactory::ParseDevice(device);
+
+  // find exact match of deviceName in same driver
+  if (!dev.driver.empty() && !dev.name.empty())
+  {
+    for (const auto& sink : m_sinkInfoList)
+    {
+      if (sink.m_sinkName != dev.driver)
+        continue;
+
+      for (const auto& d : sink.m_deviceInfoList)
+      {
+        if (passthrough && (d.m_deviceType == AE_DEVTYPE_PCM || d.m_onlyPCM))
+          continue;
+
+        if (!passthrough && d.m_onlyPassthrough)
+          continue;
+
+        if (d.m_deviceName == dev.name)
+          return d.ToDeviceString(sink.m_sinkName);
+      }
+    }
+  }
+
+  // find same friendly name on other device in same driver
+  if (!dev.driver.empty() && !dev.friendlyName.empty())
+  {
+    for (const auto& sink : m_sinkInfoList)
+    {
+      if (sink.m_sinkName != dev.driver)
+        continue;
+
+      for (const auto& d : sink.m_deviceInfoList)
+      {
+        if (passthrough && (d.m_deviceType == AE_DEVTYPE_PCM || d.m_onlyPCM))
+          continue;
+
+        if (!passthrough && d.m_onlyPassthrough)
+          continue;
+
+        if (d.GetFriendlyName() == dev.friendlyName)
+          return d.ToDeviceString(sink.m_sinkName);
+      }
+    }
+  }
+
+  std::string firstDevice;
+
+  // find default device of same driver or first device of same driver
+  if (!dev.driver.empty())
+  {
+    for (const auto& sink : m_sinkInfoList)
+    {
+      if (sink.m_sinkName != dev.driver)
+        continue;
+
+      for (const auto& d : sink.m_deviceInfoList)
+      {
+        if (passthrough && (d.m_deviceType == AE_DEVTYPE_PCM || d.m_onlyPCM))
+          continue;
+
+        if (!passthrough && d.m_onlyPassthrough)
+          continue;
+
+        if (firstDevice.empty())
+          firstDevice = d.ToDeviceString(sink.m_sinkName);
+
+        if (d.m_deviceName.find("default") != std::string::npos)
+          return d.ToDeviceString(sink.m_sinkName);
+      }
+
+      if (!firstDevice.empty())
+        break;
+    }
+  }
+
+  // return first device of same driver
+  if (!firstDevice.empty())
+    return firstDevice;
+
+  firstDevice.clear();
+
+  // find the default of any driver or first of any driver
+  for (const auto& sink : m_sinkInfoList)
+  {
+    for (const auto& d : sink.m_deviceInfoList)
+    {
+      if (passthrough && (d.m_deviceType == AE_DEVTYPE_PCM || d.m_onlyPCM))
+        continue;
+
+      if (!passthrough && d.m_onlyPassthrough)
+        continue;
+
+      if (firstDevice.empty())
+        firstDevice = d.ToDeviceString(sink.m_sinkName);
+
+      if (d.m_deviceName.find("default") != std::string::npos)
+        return d.ToDeviceString(sink.m_sinkName);
+    }
+  }
+
+  // return first device of any driver or empty
+  return firstDevice;
+}
+
 void CActiveAESink::EnumerateOutputDevices(AEDeviceList &devices, bool passthrough)
 {
   EnumerateSinkList(false, "");
@@ -750,17 +860,7 @@ void CActiveAESink::EnumerateOutputDevices(AEDeviceList &devices, bool passthrou
       if (devInfo.m_onlyPCM && passthrough)
         continue;
 
-      std::string device = sinkInfo.m_sinkName + ":" + devInfo.m_deviceName;
-
-      const std::string friendlyName = (devInfo.m_deviceName != devInfo.m_displayName)
-                                           ? devInfo.m_displayName
-                                           : devInfo.m_displayNameExtra;
-
-      if (!friendlyName.empty())
-      {
-        device.append(":");
-        device.append(friendlyName);
-      }
+      const std::string device = devInfo.ToDeviceString(sinkInfo.m_sinkName);
 
       std::stringstream ss;
 
