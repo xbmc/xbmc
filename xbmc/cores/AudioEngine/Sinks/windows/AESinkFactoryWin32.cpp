@@ -68,7 +68,7 @@ std::vector<RendererDetail> CAESinkFactoryWin::GetRendererDetails()
 
   for (UINT i = 0; i < uiCount; i++)
   {
-    RendererDetail details;
+    RendererDetail details{};
     ComPtr<IMMDevice> pDevice = nullptr;
     ComPtr<IPropertyStore> pProperty = nullptr;
     PROPVARIANT varName;
