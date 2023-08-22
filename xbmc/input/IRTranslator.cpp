@@ -15,9 +15,10 @@
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
+#include <cstring>
 #include <stdlib.h>
 #include <vector>
 
@@ -56,17 +57,20 @@ bool CIRTranslator::LoadIRMap(const std::string& irMapPath)
   StringUtils::ToLower(remoteMapTag);
 
   // Load our xml file, and fill up our mapping tables
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
 
   // Load the config file
   CLog::Log(LOGINFO, "Loading {}", irMapPath);
   if (!xmlDoc.LoadFile(irMapPath))
   {
-    CLog::Log(LOGERROR, "{}, Line {}\n{}", irMapPath, xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+    CLog::Log(LOGERROR, "{}, Line {}\n{}", irMapPath, xmlDoc.ErrorLineNum(), xmlDoc.ErrorStr());
     return false;
   }
 
-  TiXmlElement* pRoot = xmlDoc.RootElement();
+  auto* pRoot = xmlDoc.RootElement();
+  if (pRoot == nullptr)
+    return false;
+
   std::string strValue = pRoot->Value();
   if (strValue != remoteMapTag)
   {
@@ -75,15 +79,15 @@ bool CIRTranslator::LoadIRMap(const std::string& irMapPath)
   }
 
   // Run through our window groups
-  TiXmlNode* pRemote = pRoot->FirstChild();
+  auto* pRemote = pRoot->FirstChild();
   while (pRemote != nullptr)
   {
-    if (pRemote->Type() == TiXmlNode::TINYXML_ELEMENT)
+    if (pRemote->ToElement())
     {
       const char* szRemote = pRemote->Value();
       if (szRemote != nullptr)
       {
-        TiXmlAttribute* pAttr = pRemote->ToElement()->FirstAttribute();
+        auto* pAttr = pRemote->ToElement()->FirstAttribute();
         if (pAttr != nullptr)
           MapRemote(pRemote, pAttr->Value());
       }
@@ -94,7 +98,7 @@ bool CIRTranslator::LoadIRMap(const std::string& irMapPath)
   return true;
 }
 
-void CIRTranslator::MapRemote(TiXmlNode* pRemote, const std::string& szDevice)
+void CIRTranslator::MapRemote(tinyxml2::XMLNode* pRemote, const std::string& szDevice)
 {
   CLog::Log(LOGINFO, "* Adding remote mapping for device '{}'", szDevice);
 
@@ -106,15 +110,15 @@ void CIRTranslator::MapRemote(TiXmlNode* pRemote, const std::string& szDevice)
 
   const std::shared_ptr<IRButtonMap>& buttons = m_irRemotesMap[szDevice];
 
-  TiXmlElement* pButton = pRemote->FirstChildElement();
+  auto* pButton = pRemote->FirstChildElement();
   while (pButton != nullptr)
   {
     if (!pButton->NoChildren())
     {
-      if (pButton->ValueStr() == "altname")
-        remoteNames.push_back(pButton->FirstChild()->ValueStr());
+      if (std::strcmp(pButton->Value(), "altname") == 0)
+        remoteNames.push_back(pButton->FirstChild()->Value());
       else
-        (*buttons)[pButton->FirstChild()->ValueStr()] = pButton->ValueStr();
+        (*buttons)[pButton->FirstChild()->Value()] = pButton->Value();
     }
     pButton = pButton->NextSiblingElement();
   }

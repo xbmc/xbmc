@@ -11,7 +11,10 @@
 #include <string>
 #include <vector>
 
-class TiXmlElement;
+namespace tinyxml2
+{
+class XMLElement;
+}
 
 namespace KODI
 {
@@ -54,7 +57,7 @@ public:
    */
   bool IsCompatible(const std::string& controllerId) const;
 
-  bool Deserialize(const TiXmlElement* pElement);
+  bool Deserialize(const tinyxml2::XMLElement* pElement);
 
 private:
   std::string m_portId;
