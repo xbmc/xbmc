@@ -122,6 +122,14 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
     scancode = 0;
   }
 
+  if (xbmcKey == XBMCKey::XBMCK_UNKNOWN && utf32 == 0)
+  {
+    // Such an event would carry no useful information in it and thus can be safely dropped here
+    // This prevents starting an unnecessary timer for key presses
+    CLog::Log(LOGDEBUG, "Unknown key event ignored (scancode: {})", scancode);
+    return;
+  }
+
   XBMC_Event event{SendKey(scancode, xbmcKey, static_cast<std::uint16_t> (utf32), pressed)};
 
   if (pressed && m_keymap->ShouldKeycodeRepeat(xkbCode) && m_keyRepeatInterval > 0)
