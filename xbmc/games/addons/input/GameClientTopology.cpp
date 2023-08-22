@@ -18,7 +18,7 @@
 using namespace KODI;
 using namespace GAME;
 
-#define CONTROLLER_ADDRESS_SEPARATOR "/"
+#define CONTROLLER_ADDRESS_SEPARATOR '/'
 
 CGameClientTopology::CGameClientTopology(GameClientPortVec ports, int playerLimit)
   : m_ports(std::move(ports)), m_playerLimit(playerLimit), m_controllers(GetControllerTree(m_ports))
