@@ -211,7 +211,7 @@ void CGUIAgentList::AddItem(const CGameAgent& agent)
   // Create the list item from agent properties
   const std::string label = agent.GetPeripheralName();
   const ControllerPtr controller = agent.GetController();
-  const std::string path = agent.GetPeripheralLocation();
+  const std::string& path = agent.GetPeripheralLocation();
 
   CFileItemPtr item = std::make_shared<CFileItem>(label);
   item->SetPath(path);
