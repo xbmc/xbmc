@@ -33,6 +33,11 @@ struct CTVShowInfo : CVideoInfo
   CTVShowInfo() : CVideoInfo(MediaTypeTvShow) {}
 };
 
+struct CSeasonInfo : CVideoInfo
+{
+  CSeasonInfo() : CVideoInfo(MediaTypeSeason) {}
+};
+
 struct CEpisodeInfo : CVideoInfo
 {
   CEpisodeInfo() : CVideoInfo(MediaTypeEpisode) {}
@@ -46,6 +51,11 @@ struct CMusicVideoInfo : CVideoInfo
 struct CMovieInfo : CVideoInfo
 {
   CMovieInfo() : CVideoInfo(MediaTypeMovie) {}
+};
+
+struct CMovieSetInfo : CVideoInfo
+{
+  CMovieSetInfo() : CVideoInfo(MediaTypeVideoCollection) {}
 };
 
 struct CVideoRemoveResumePoint : CStaticContextMenuAction
