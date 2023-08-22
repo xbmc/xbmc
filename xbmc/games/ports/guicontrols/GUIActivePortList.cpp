@@ -167,14 +167,15 @@ void CGUIActivePortList::AddItems(const PortVec& ports)
     // Add controller
     ControllerPtr controller = port.GetActiveController().GetController();
     const std::string& controllerAddress = port.GetActiveController().GetControllerAddress();
-    AddItem(std::move(controller), controllerAddress);
+    AddItem(controller, controllerAddress);
 
     // Add child ports
     AddItems(port.GetActiveController().GetHub().GetPorts());
   }
 }
 
-void CGUIActivePortList::AddItem(ControllerPtr controller, const std::string& controllerAddress)
+void CGUIActivePortList::AddItem(const ControllerPtr& controller,
+                                 const std::string& controllerAddress)
 {
   // Check if a controller is connected that provides input
   if (controller && controller->Topology().ProvidesInput())
