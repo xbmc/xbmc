@@ -392,10 +392,12 @@
 - (std::optional<NSPoint>)TranslateMouseLocation:(NSEvent*)nsEvent
 {
   NSPoint location = nsEvent.locationInWindow;
-  if (!nsEvent.window || location.x < 0 || location.y < 0)
+  // ignore events if outside the view bounds
+  if (!nsEvent.window || !NSPointInRect(location, nsEvent.window.contentView.frame))
   {
     return std::nullopt;
   }
+  // translate the location to backing units
   location = [nsEvent.window convertPointToBacking:location];
   NSRect frame = [nsEvent.window convertRectToBacking:nsEvent.window.contentView.frame];
   // cocoa world is upside down ...
