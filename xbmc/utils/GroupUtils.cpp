@@ -91,6 +91,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       int ratings = 0;
       float totalRatings = 0;
       int iWatched = 0; // have all the movies been played at least once?
+      int inProgress = 0;
       std::set<std::string> pathSet;
       for (std::set<CFileItemPtr>::const_iterator movie = set->second.begin(); movie != set->second.end(); ++movie)
       {
@@ -119,6 +120,11 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
         if (movieInfo->GetPlayCount() > 0)
           iWatched++;
 
+        // handle resume points
+        CBookmark bookmark = movieInfo->GetResumePoint();
+        if (bookmark.IsSet())
+          inProgress++;
+
         //accumulate the path for a multipath construction
         CFileItem video(movieInfo->m_basePath, false);
         if (video.IsVideo())
@@ -135,6 +141,7 @@ bool GroupUtils::Group(GroupBy groupBy, const std::string &baseDir, const CFileI
       pItem->SetProperty("total", (int)set->second.size());
       pItem->SetProperty("watched", iWatched);
       pItem->SetProperty("unwatched", (int)set->second.size() - iWatched);
+      pItem->SetProperty("inprogress", inProgress);
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, setInfo->GetPlayCount() > 0);
 
       groupedItems.Add(pItem);
