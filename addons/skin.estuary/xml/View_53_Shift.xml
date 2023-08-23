@@ -93,7 +93,7 @@
 							<label>$INFO[ListItem.Label]</label>
 						</control>
 						<control type="group">
-							<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
+							<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set)</visible>
 							<control type="image">
 								<left>35</left>
 								<top>500</top>
@@ -181,7 +181,7 @@
 							<autoscroll time="3000" delay="3000" repeat="3000">True</autoscroll>
 						</control>
 						<control type="group">
-							<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
+							<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set)</visible>
 							<control type="image">
 								<left>35</left>
 								<top>500</top>
