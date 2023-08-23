@@ -321,7 +321,7 @@
 					<left>0</left>
 					<top>340</top>
 					<width>244</width>
-					<label>$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</label>
+					<label>$VAR[WatchedStatusVar]</label>
 					<font>font20_title</font>
 					<shadowcolor>text_shadow</shadowcolor>
 					<align>right</align>
