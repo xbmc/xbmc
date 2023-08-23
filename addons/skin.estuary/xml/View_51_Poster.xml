@@ -144,7 +144,7 @@
 				<texture fallback="DefaultMovies.png" background="true">$VAR[PosterThumbVar]</texture>
 			</control>
 			<control type="group">
-				<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
+				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set)</visible>
 				<control type="image">
 					<left>4</left>
 					<top>670</top>
