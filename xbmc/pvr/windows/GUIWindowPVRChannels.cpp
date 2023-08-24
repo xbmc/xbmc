@@ -161,7 +161,17 @@ bool CGUIWindowPVRChannelsBase::OnMessage(CGUIMessage& message)
       {
         // if a path to a channel group is given we must init
         // that group instead of last played/selected group
-        m_channelGroupPath = message.GetStringParam(0);
+        if (path.GetGroupName() == "*") // all channels
+        {
+          // Replace wildcard with real group name
+          const auto group =
+              CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(path.IsRadio());
+          m_channelGroupPath = group->GetPath();
+        }
+        else
+        {
+          m_channelGroupPath = message.GetStringParam(0);
+        }
       }
       break;
     }
