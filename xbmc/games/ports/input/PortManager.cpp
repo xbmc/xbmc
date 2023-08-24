@@ -105,21 +105,19 @@ void CPortManager::SaveXMLAsync()
                       m_saveFutures.end());
 
   // Save async
-  std::future<void> task = std::async(std::launch::async,
-                                      [this, ports = std::move(ports)]()
-                                      {
-                                        CXBMCTinyXML2 doc;
-                                        auto* node = doc.NewElement(XML_ROOT_PORTS);
-                                        if (node == nullptr)
-                                          return;
+  std::future<void> task = std::async(std::launch::async, [this, ports = std::move(ports)]() {
+    CXBMCTinyXML2 doc;
+    auto* node = doc.NewElement(XML_ROOT_PORTS);
+    if (node == nullptr)
+      return;
 
-                                        SerializePorts(*node, ports);
+    SerializePorts(*node, ports);
 
-                                        doc.InsertEndChild(node);
+    doc.InsertEndChild(node);
 
-                                        std::lock_guard<std::mutex> lock(m_saveMutex);
-                                        doc.SaveFile(m_xmlPath);
-                                      });
+    std::lock_guard<std::mutex> lock(m_saveMutex);
+    doc.SaveFile(m_xmlPath);
+  });
 
   m_saveFutures.emplace_back(std::move(task));
 }
