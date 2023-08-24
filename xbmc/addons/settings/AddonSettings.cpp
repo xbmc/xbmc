@@ -440,7 +440,7 @@ bool CAddonSettings::Save()
   std::shared_ptr<IAddon> addon = m_addon.lock();
   assert(addon);
   if (addon)
-    return addon->SaveSettings();
+    return addon->SaveSettings(m_instanceId);
   else
     return false;
 }
