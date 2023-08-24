@@ -604,9 +604,9 @@ void CDVDDemuxClient::SetStreamProps(CDemuxStream *stream, std::map<int, std::sh
     toStream = streamGen;
   }
 
-  // only update profile / level if we create a new stream
+  // only update profile / level if we create a new stream or has been reset stream properties
   // existing streams may be corrected by ParsePacket
-  if (!currentStream || !CodecHasExtraData(stream->codec))
+  if (!currentStream || forceInit)
   {
     toStream->profile = stream->profile;
     toStream->level = stream->level;
