@@ -15,9 +15,9 @@
 #include "input/mouse/MouseStat.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
-#include "windowing/osx/WinSystemOSX.h"
 
 #include <mutex>
+#include <optional>
 #include <queue>
 
 #import <AppKit/AppKit.h>
@@ -195,103 +195,109 @@
 - (NSEvent*)InputEventHandler:(NSEvent*)nsEvent
 {
   bool passEvent = true;
-  // The incoming mouse position.
-  NSPoint location = nsEvent.locationInWindow;
-  if (!nsEvent.window || location.x < 0 || location.y < 0)
-    return nsEvent;
-
-  location = [nsEvent.window convertPointToBacking:location];
-
-  // cocoa world is upside down ...
-  auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  if (!winSystem)
-    return nsEvent;
-
-  NSRect frame = [nsEvent.window convertRectToBacking:winSystem->GetWindowDimensions()];
-  location.y = frame.size.height - location.y;
-
   XBMC_Event newEvent = {};
 
   switch (nsEvent.type)
   {
     // handle mouse events and transform them into the xbmc event world
     case NSEventTypeLeftMouseUp:
-      newEvent.type = XBMC_MOUSEBUTTONUP;
-      newEvent.button.button = XBMC_BUTTON_LEFT;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONUP
+                          buttonCode:XBMC_BUTTON_LEFT];
       break;
+    }
     case NSEventTypeLeftMouseDown:
-      newEvent.type = XBMC_MOUSEBUTTONDOWN;
-      newEvent.button.button = XBMC_BUTTON_LEFT;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONDOWN
+                          buttonCode:XBMC_BUTTON_LEFT];
       break;
+    }
     case NSEventTypeRightMouseUp:
-      newEvent.type = XBMC_MOUSEBUTTONUP;
-      newEvent.button.button = XBMC_BUTTON_RIGHT;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONUP
+                          buttonCode:XBMC_BUTTON_RIGHT];
       break;
+    }
     case NSEventTypeRightMouseDown:
-      newEvent.type = XBMC_MOUSEBUTTONDOWN;
-      newEvent.button.button = XBMC_BUTTON_RIGHT;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONDOWN
+                          buttonCode:XBMC_BUTTON_RIGHT];
       break;
+    }
     case NSEventTypeOtherMouseUp:
-      newEvent.type = XBMC_MOUSEBUTTONUP;
-      newEvent.button.button = XBMC_BUTTON_MIDDLE;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONUP
+                          buttonCode:XBMC_BUTTON_MIDDLE];
       break;
+    }
     case NSEventTypeOtherMouseDown:
-      newEvent.type = XBMC_MOUSEBUTTONDOWN;
-      newEvent.button.button = XBMC_BUTTON_MIDDLE;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONDOWN
+                          buttonCode:XBMC_BUTTON_MIDDLE];
       break;
+    }
     case NSEventTypeMouseMoved:
     case NSEventTypeLeftMouseDragged:
     case NSEventTypeRightMouseDragged:
     case NSEventTypeOtherMouseDragged:
-      newEvent.type = XBMC_MOUSEMOTION;
-      newEvent.motion.x = location.x;
-      newEvent.motion.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      auto location = [self TranslateMouseLocation:nsEvent];
+      if (location.has_value())
+      {
+        NSPoint locationCoordinates = location.value();
+        newEvent.type = XBMC_MOUSEMOTION;
+        newEvent.motion.x = locationCoordinates.x;
+        newEvent.motion.y = locationCoordinates.y;
+        [self MessagePush:&newEvent];
+      }
       break;
+    }
     case NSEventTypeScrollWheel:
+    {
       // very strange, real scrolls have non-zero deltaY followed by same number of events
       // with a zero deltaY. This reverses our scroll which is WTF? anoying. Trap them out here.
       if (nsEvent.deltaY != 0.0)
       {
-        newEvent.type = XBMC_MOUSEBUTTONDOWN;
-        newEvent.button.x = location.x;
-        newEvent.button.y = location.y;
-        newEvent.button.button =
-            nsEvent.scrollingDeltaY > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
-        [self MessagePush:&newEvent];
-
-        newEvent.type = XBMC_MOUSEBUTTONUP;
-        [self MessagePush:&newEvent];
+        auto button = nsEvent.scrollingDeltaY > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
+        if ([self SendXBMCMouseButtonEvent:nsEvent
+                                 xbmcEvent:newEvent
+                            mouseEventType:XBMC_MOUSEBUTTONDOWN
+                                buttonCode:button])
+        {
+          // scrollwhell need a subsquent button press with no button code
+          [self SendXBMCMouseButtonEvent:nsEvent
+                               xbmcEvent:newEvent
+                          mouseEventType:XBMC_MOUSEBUTTONUP
+                              buttonCode:std::nullopt];
+        }
       }
       break;
+    }
 
     // handle keyboard events and transform them into the xbmc event world
     case NSEventTypeKeyUp:
+    {
       newEvent = [self keyPressEvent:nsEvent];
       newEvent.type = XBMC_KEYUP;
 
       [self MessagePush:&newEvent];
       passEvent = false;
       break;
+    }
     case NSEventTypeKeyDown:
+    {
       newEvent = [self keyPressEvent:nsEvent];
       newEvent.type = XBMC_KEYDOWN;
 
@@ -300,6 +306,7 @@
       passEvent = false;
 
       break;
+    }
     default:
       return nsEvent;
   }
@@ -342,6 +349,44 @@
   newEvent.key.keysym.mod = [self OsxMod2XbmcMod:nsEvent.modifierFlags];
 
   return newEvent;
+}
+
+- (BOOL)SendXBMCMouseButtonEvent:(NSEvent*)nsEvent
+                       xbmcEvent:(XBMC_Event&)xbmcEvent
+                  mouseEventType:(uint8_t)mouseEventType
+                      buttonCode:(std::optional<uint8_t>)buttonCode
+{
+  auto location = [self TranslateMouseLocation:nsEvent];
+  if (location.has_value())
+  {
+    NSPoint locationCoordinates = location.value();
+    xbmcEvent.type = mouseEventType;
+    if (buttonCode.has_value())
+    {
+      xbmcEvent.button.button = buttonCode.value();
+    }
+    xbmcEvent.button.x = locationCoordinates.x;
+    xbmcEvent.button.y = locationCoordinates.y;
+    [self MessagePush:&xbmcEvent];
+    return true;
+  }
+  return false;
+}
+
+- (std::optional<NSPoint>)TranslateMouseLocation:(NSEvent*)nsEvent
+{
+  NSPoint location = nsEvent.locationInWindow;
+  // ignore events if outside the view bounds
+  if (!nsEvent.window || !NSPointInRect(location, nsEvent.window.contentView.frame))
+  {
+    return std::nullopt;
+  }
+  // translate the location to backing units
+  location = [nsEvent.window convertPointToBacking:location];
+  NSRect frame = [nsEvent.window convertRectToBacking:nsEvent.window.contentView.frame];
+  // cocoa world is upside down ...
+  location.y = frame.size.height - location.y;
+  return location;
 }
 
 @end
