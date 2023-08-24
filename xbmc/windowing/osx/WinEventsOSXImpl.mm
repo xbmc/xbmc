@@ -202,86 +202,50 @@
     // handle mouse events and transform them into the xbmc event world
     case NSEventTypeLeftMouseUp:
     {
-      auto location = [self TranslateMouseLocation:nsEvent];
-      if (location.has_value())
-      {
-        NSPoint locationCoordinates = location.value();
-        newEvent.type = XBMC_MOUSEBUTTONUP;
-        newEvent.button.button = XBMC_BUTTON_LEFT;
-        newEvent.button.x = locationCoordinates.x;
-        newEvent.button.y = locationCoordinates.y;
-        [self MessagePush:&newEvent];
-      }
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONUP
+                          buttonCode:XBMC_BUTTON_LEFT];
       break;
     }
     case NSEventTypeLeftMouseDown:
     {
-      auto location = [self TranslateMouseLocation:nsEvent];
-      if (location.has_value())
-      {
-        NSPoint locationCoordinates = location.value();
-        newEvent.type = XBMC_MOUSEBUTTONDOWN;
-        newEvent.button.button = XBMC_BUTTON_LEFT;
-        newEvent.button.x = locationCoordinates.x;
-        newEvent.button.y = locationCoordinates.y;
-        [self MessagePush:&newEvent];
-      }
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONDOWN
+                          buttonCode:XBMC_BUTTON_LEFT];
       break;
     }
     case NSEventTypeRightMouseUp:
     {
-      auto location = [self TranslateMouseLocation:nsEvent];
-      if (location.has_value())
-      {
-        NSPoint locationCoordinates = location.value();
-        newEvent.type = XBMC_MOUSEBUTTONUP;
-        newEvent.button.button = XBMC_BUTTON_RIGHT;
-        newEvent.button.x = locationCoordinates.x;
-        newEvent.button.y = locationCoordinates.y;
-        [self MessagePush:&newEvent];
-      }
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONUP
+                          buttonCode:XBMC_BUTTON_RIGHT];
       break;
     }
     case NSEventTypeRightMouseDown:
     {
-      auto location = [self TranslateMouseLocation:nsEvent];
-      if (location.has_value())
-      {
-        NSPoint locationCoordinates = location.value();
-        newEvent.type = XBMC_MOUSEBUTTONDOWN;
-        newEvent.button.button = XBMC_BUTTON_RIGHT;
-        newEvent.button.x = locationCoordinates.x;
-        newEvent.button.y = locationCoordinates.y;
-        [self MessagePush:&newEvent];
-      }
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONDOWN
+                          buttonCode:XBMC_BUTTON_RIGHT];
       break;
     }
     case NSEventTypeOtherMouseUp:
     {
-      auto location = [self TranslateMouseLocation:nsEvent];
-      if (location.has_value())
-      {
-        NSPoint locationCoordinates = location.value();
-        newEvent.type = XBMC_MOUSEBUTTONUP;
-        newEvent.button.button = XBMC_BUTTON_MIDDLE;
-        newEvent.button.x = locationCoordinates.x;
-        newEvent.button.y = locationCoordinates.y;
-        [self MessagePush:&newEvent];
-      }
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONUP
+                          buttonCode:XBMC_BUTTON_MIDDLE];
       break;
     }
     case NSEventTypeOtherMouseDown:
     {
-      auto location = [self TranslateMouseLocation:nsEvent];
-      if (location.has_value())
-      {
-        NSPoint locationCoordinates = location.value();
-        newEvent.type = XBMC_MOUSEBUTTONDOWN;
-        newEvent.button.button = XBMC_BUTTON_MIDDLE;
-        newEvent.button.x = locationCoordinates.x;
-        newEvent.button.y = locationCoordinates.y;
-        [self MessagePush:&newEvent];
-      }
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONDOWN
+                          buttonCode:XBMC_BUTTON_MIDDLE];
       break;
     }
     case NSEventTypeMouseMoved:
@@ -306,19 +270,17 @@
       // with a zero deltaY. This reverses our scroll which is WTF? anoying. Trap them out here.
       if (nsEvent.deltaY != 0.0)
       {
-        auto location = [self TranslateMouseLocation:nsEvent];
-        if (location.has_value())
+        auto button = nsEvent.scrollingDeltaY > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
+        if ([self SendXBMCMouseButtonEvent:nsEvent
+                                 xbmcEvent:newEvent
+                            mouseEventType:XBMC_MOUSEBUTTONDOWN
+                                buttonCode:button])
         {
-          NSPoint locationCoordinates = location.value();
-          newEvent.type = XBMC_MOUSEBUTTONDOWN;
-          newEvent.button.x = locationCoordinates.x;
-          newEvent.button.y = locationCoordinates.y;
-          newEvent.button.button =
-              nsEvent.scrollingDeltaY > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
-          [self MessagePush:&newEvent];
-
-          newEvent.type = XBMC_MOUSEBUTTONUP;
-          [self MessagePush:&newEvent];
+          // scrollwhell need a subsquent button press with no button code
+          [self SendXBMCMouseButtonEvent:nsEvent
+                               xbmcEvent:newEvent
+                          mouseEventType:XBMC_MOUSEBUTTONUP
+                              buttonCode:std::nullopt];
         }
       }
       break;
@@ -387,6 +349,28 @@
   newEvent.key.keysym.mod = [self OsxMod2XbmcMod:nsEvent.modifierFlags];
 
   return newEvent;
+}
+
+- (BOOL)SendXBMCMouseButtonEvent:(NSEvent*)nsEvent
+                       xbmcEvent:(XBMC_Event&)xbmcEvent
+                  mouseEventType:(uint8_t)mouseEventType
+                      buttonCode:(std::optional<uint8_t>)buttonCode
+{
+  auto location = [self TranslateMouseLocation:nsEvent];
+  if (location.has_value())
+  {
+    NSPoint locationCoordinates = location.value();
+    xbmcEvent.type = mouseEventType;
+    if (buttonCode.has_value())
+    {
+      xbmcEvent.button.button = buttonCode.value();
+    }
+    xbmcEvent.button.x = locationCoordinates.x;
+    xbmcEvent.button.y = locationCoordinates.y;
+    [self MessagePush:&xbmcEvent];
+    return true;
+  }
+  return false;
 }
 
 - (std::optional<NSPoint>)TranslateMouseLocation:(NSEvent*)nsEvent
