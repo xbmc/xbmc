@@ -105,6 +105,7 @@ public:
 
 protected:
   static int ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile);
+  static int ConvertAudioCodecProfile(STREAMCODEC_PROFILE profile);
 
   IVideoPlayer* m_player;
 
