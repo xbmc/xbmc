@@ -1379,11 +1379,13 @@ bool CWinSystemOSX::MessagePump()
 void CWinSystemOSX::enableInputEvents()
 {
   m_winEvents->enableInputEvents();
+  signalMouseEntered();
 }
 
 void CWinSystemOSX::disableInputEvents()
 {
   m_winEvents->disableInputEvents();
+  signalMouseExited();
 }
 
 std::string CWinSystemOSX::GetClipboardText()
