@@ -21,7 +21,7 @@ namespace PVR
     static const std::string PATH_RADIO_CHANNELS;
 
     explicit CPVRChannelsPath(const std::string& strPath);
-    CPVRChannelsPath(bool bRadio, const std::string& strGroupName, int iGrouupClientID);
+    CPVRChannelsPath(bool bRadio, const std::string& strGroupName, int iGroupClientID);
     CPVRChannelsPath(bool bRadio,
                      bool bHidden,
                      const std::string& strGroupName,
