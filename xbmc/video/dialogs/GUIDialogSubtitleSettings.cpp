@@ -99,6 +99,11 @@ void CGUIDialogSubtitleSettings::OnSettingChanged(const std::shared_ptr<const CS
   if (settingId == SETTING_SUBTITLE_ENABLE)
   {
     bool value = std::static_pointer_cast<const CSettingBool>(setting)->GetValue();
+    if (value)
+    {
+      // Ensure that we use/store the subtitle stream the user currently sees in the dialog.
+      appPlayer->SetSubtitle(m_subtitleStream);
+    }
     appPlayer->SetSubtitleVisible(value);
   }
   else if (settingId == SETTING_SUBTITLE_DELAY)
