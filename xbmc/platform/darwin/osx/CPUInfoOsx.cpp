@@ -121,6 +121,10 @@ bool CCPUInfoOsx::GetTemperature(CTemperature& temperature)
   int value = SMCGetTemperature(SMC_KEY_CPU_TEMP);
 
   temperature = CTemperature::CreateFromCelsius(value);
+  if (temperature == CTemperature::CreateFromCelsius(0.0))
+  {
+    temperature.SetValid(false);
+  }
 
   return true;
 }
