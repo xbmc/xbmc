@@ -748,9 +748,6 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
       /////////////////////////////////////////////////////////////////////////////////////////////
       // LISTITEM_*
       /////////////////////////////////////////////////////////////////////////////////////////////
-      case LISTITEM_IS_RESUMABLE:
-        value = tag->GetResumePoint().timeInSeconds > 0;
-        return true;
       case LISTITEM_IS_COLLECTION:
         value = tag->m_type == MediaTypeVideoCollection;
         return true;
@@ -803,6 +800,9 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // LISTITEM_*
     ///////////////////////////////////////////////////////////////////////////////////////////////
+    case LISTITEM_IS_RESUMABLE:
+      value = item->IsResumable();
+      return true;
     case LISTITEM_IS_STEREOSCOPIC:
     {
       std::string stereoMode = item->GetProperty("stereomode").asString();
