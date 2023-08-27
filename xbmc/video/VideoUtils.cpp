@@ -684,7 +684,6 @@ ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
     return resumeInfo;
   }
 
-  CLog::LogF(LOGERROR, "Cannot obtain inprogress state for {}", folderItem.GetPath());
   return {};
 }
 
