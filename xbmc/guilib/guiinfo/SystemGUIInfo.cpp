@@ -96,7 +96,12 @@ CTemperature CSystemGUIInfo::GetGPUTemperature() const
 
 #if defined(TARGET_DARWIN_OSX)
   value = SMCGetTemperature(SMC_KEY_GPU_TEMP);
-  return CTemperature::CreateFromCelsius(value);
+  auto temperature = CTemperature::CreateFromCelsius(value);
+  if (temperature == CTemperature::CreateFromCelsius(0.0))
+  {
+    temperature.SetValid(false);
+  }
+  return temperature;
 #elif defined(TARGET_WINDOWS_STORE)
   return CTemperature::CreateFromCelsius(0);
 #else
