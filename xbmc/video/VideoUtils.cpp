@@ -176,7 +176,14 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
 
       SortDescription sortDesc;
       if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == viewStateWindowId)
+      {
         sortDesc = state->GetSortMethod();
+
+        // It makes no sense to play from younger to older.
+        if (sortDesc.sortBy == SortByDate || sortDesc.sortBy == SortByYear ||
+            sortDesc.sortBy == SortByEpisodeNumber)
+          sortDesc.sortOrder = SortOrderAscending;
+      }
       else
         sortDesc = GetSortDescription(*state, items);
 
