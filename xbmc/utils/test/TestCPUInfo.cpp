@@ -41,7 +41,7 @@ TEST_F(TestCPUInfo, GetCPUFrequency)
   EXPECT_GE(CServiceBroker::GetCPUInfo()->GetCPUFrequency(), 0.f);
 }
 
-#if defined(TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS) or defined(TARGET_DARWIN_OSX)
 TEST_F(TestCPUInfo, DISABLED_GetTemperature)
 #else
 TEST_F(TestCPUInfo, GetTemperature)
