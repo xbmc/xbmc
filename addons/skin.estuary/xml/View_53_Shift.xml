@@ -93,7 +93,7 @@
 							<label>$INFO[ListItem.Label]</label>
 						</control>
 						<control type="group">
-							<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
+							<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
 							<control type="image">
 								<left>35</left>
 								<top>500</top>
@@ -107,7 +107,7 @@
 								<top>522</top>
 								<width>292</width>
 								<height>24</height>
-								<label>$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</label>
+								<label>$VAR[WatchedStatusVar]</label>
 								<font>font20_title</font>
 								<shadowcolor>text_shadow</shadowcolor>
 								<align>right</align>
@@ -181,7 +181,7 @@
 							<autoscroll time="3000" delay="3000" repeat="3000">True</autoscroll>
 						</control>
 						<control type="group">
-							<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
+							<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
 							<control type="image">
 								<left>35</left>
 								<top>500</top>
@@ -195,7 +195,7 @@
 								<top>522</top>
 								<width>292</width>
 								<height>24</height>
-								<label>$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</label>
+								<label>$VAR[WatchedStatusVar]</label>
 								<font>font20_title</font>
 								<shadowcolor>text_shadow</shadowcolor>
 								<align>right</align>

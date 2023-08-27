@@ -317,6 +317,7 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
       item->SetProperty("totalepisodes", 0);
       item->SetProperty("watchedepisodes", 0);
       item->SetProperty("unwatchedepisodes", 0);
+      item->SetProperty("inprogressepisodes", 0);
       item->SetProperty("sizeinbytes", UINT64_C(0));
 
       // Assume all folders are watched, we'll change the overlay later
@@ -340,7 +341,13 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
     {
       item->IncrementProperty("watchedepisodes", 1);
     }
-    item->SetLabel2(StringUtils::Format("{} / {}", item->GetProperty("watchedepisodes").asString(),
+    if (recording->GetResumePoint().IsPartWay())
+    {
+      item->IncrementProperty("inprogressepisodes", 1);
+    }
+    item->SetLabel2(StringUtils::Format("{}|{}|{}",
+                                        item->GetProperty("inprogressepisodes").asString(),
+                                        item->GetProperty("watchedepisodes").asString(),
                                         item->GetProperty("totalepisodes").asString()));
 
     item->IncrementProperty("sizeinbytes", recording->GetSizeInBytes());
