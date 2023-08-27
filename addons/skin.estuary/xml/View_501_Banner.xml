@@ -142,7 +142,7 @@
 								<width>22</width>
 								<height>22</height>
 								<texture>lists/played-total.png</texture>
-								<visible>(String.IsEqual(Listitem.dbtype,tvshow) | String.IsEqual(Listitem.dbtype,season)) + !String.IsEmpty(ListItem.Property(TotalEpisodes))</visible>
+								<visible>[String.IsEqual(Listitem.dbtype,tvshow) | String.IsEqual(Listitem.dbtype,season)] + !String.IsEmpty(ListItem.Property(TotalEpisodes))</visible>
 							</control>
 							<control type="label">
 								<right>103</right>
