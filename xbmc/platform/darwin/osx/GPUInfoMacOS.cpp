@@ -8,7 +8,7 @@
 
 #include "GPUInfoMacOS.h"
 
-#include "platform/darwin/osx/smc.h"
+#include <smctemp.h>
 
 std::unique_ptr<CGPUInfo> CGPUInfo::GetGPUInfo()
 {
@@ -22,9 +22,11 @@ bool CGPUInfoMacOS::SupportsPlatformTemperature() const
 
 bool CGPUInfoMacOS::GetGPUPlatformTemperature(CTemperature& temperature) const
 {
-  double temperatureValue = SMCGetTemperature(SMC_KEY_GPU_TEMP);
+  smctemp::SmcTemp smcTemp = smctemp::SmcTemp();
+  const double temperatureValue = smcTemp.GetGpuTemp();
   if (temperatureValue <= 0.0)
   {
+    temperature.SetValid(false);
     return false;
   }
   temperature = CTemperature::CreateFromCelsius(temperatureValue);
