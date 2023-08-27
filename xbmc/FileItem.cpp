@@ -4029,3 +4029,33 @@ bool CFileItem::GetCurrentResumeTimeAndPartNumber(int64_t& startOffset, int& par
   }
   return false;
 }
+
+bool CFileItem::IsResumable() const
+{
+  if (m_bIsFolder)
+  {
+    int64_t watched = 0;
+    int64_t inprogress = 0;
+    int64_t total = 0;
+    if (HasProperty("inprogressepisodes"))
+    {
+      // show/season
+      watched = GetProperty("watchedepisodes").asInteger();
+      inprogress = GetProperty("inprogressepisodes").asInteger();
+      total = GetProperty("totalepisodes").asInteger();
+    }
+    else if (HasProperty("inprogress"))
+    {
+      // movie set
+      watched = GetProperty("watched").asInteger();
+      inprogress = GetProperty("inprogress").asInteger();
+      total = GetProperty("total").asInteger();
+    }
+
+    return ((total != watched) && (inprogress > 0 || watched != 0));
+  }
+  else
+  {
+    return HasVideoInfoTag() && GetVideoInfoTag()->GetResumePoint().IsPartWay();
+  }
+}

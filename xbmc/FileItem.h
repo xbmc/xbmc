@@ -368,6 +368,14 @@ public:
   bool GetCurrentResumeTimeAndPartNumber(int64_t& startOffset, int& partNumber) const;
 
   /*!
+   * \brief Test if this item type can be resumed.
+   * \return True if this item is a folder and has at least one child with a partway resume bookmark
+   * or at least one unwatched child or if it is not a folder, if it has a partway resume bookmark,
+   * false otherwise.
+   */
+  bool IsResumable() const;
+
+  /*!
    * \brief Get the offset where start the playback.
    * \return The offset value as ms.
    *         Can return also special value -1, see define STARTOFFSET_RESUME.
