@@ -604,54 +604,21 @@ bool IsItemPlayable(const CFileItem& item)
 
 namespace
 {
-bool HasInProgressVideo(const std::string& path, CVideoDatabase& db)
-{
-  //! @todo this function is really very expensive and should be optimized (at db level).
-
-  CFileItemList items;
-  CUtil::GetRecursiveListing(path, items, {}, XFILE::DIR_FLAG_DEFAULTS);
-
-  if (items.IsEmpty())
-    return false;
-
-  for (const auto& item : items)
-  {
-    const auto videoTag = item->GetVideoInfoTag();
-    if (!item->HasVideoInfoTag())
-      continue;
-
-    if (videoTag->GetPlayCount() > 0)
-      continue;
-
-    // get resume point
-    CBookmark bookmark(videoTag->GetResumePoint());
-    if (!bookmark.IsSet() && db.GetResumeBookMark(videoTag->m_strFileNameAndPath, bookmark))
-      videoTag->SetResumePoint(bookmark);
-
-    if (bookmark.IsSet())
-      return true;
-  }
-
-  return false;
-}
-
 ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
 {
   if (!item.m_bIsFolder)
     return {};
 
-  bool hasInProgressVideo = false;
-
   CFileItem folderItem(item);
-  if ((!folderItem.HasProperty("watchedepisodes") || // season/show
-       (folderItem.GetProperty("watchedepisodes").asInteger() == 0)) &&
-      (!folderItem.HasProperty("watched") || // movie set
-       (folderItem.GetProperty("watched").asInteger() == 0)))
+  if ((!folderItem.HasProperty("inprogressepisodes") || // season/show
+       (folderItem.GetProperty("inprogressepisodes").asInteger() == 0)) &&
+      (!folderItem.HasProperty("inprogress") || // movie set
+       (folderItem.GetProperty("inprogress").asInteger() == 0)))
   {
     CVideoDatabase db;
     if (db.Open())
     {
-      if (!folderItem.HasProperty("watchedepisodes") && !folderItem.HasProperty("watched"))
+      if (!folderItem.HasProperty("inprogressepisodes") && !folderItem.HasProperty("inprogress"))
       {
         XFILE::VIDEODATABASEDIRECTORY::CQueryParams params;
         XFILE::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(item.GetPath(), params);
@@ -681,29 +648,36 @@ ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
           db.GetSetInfo(static_cast<int>(params.GetSetId()), details, &folderItem);
         }
       }
-
-      // no episodes/movies watched completely, but there could be some or more we have
-      // started watching
-      if ((folderItem.HasProperty("watchedepisodes") && // season/show
-           folderItem.GetProperty("watchedepisodes").asInteger() == 0) ||
-          (folderItem.HasProperty("watched") && // movie set
-           folderItem.GetProperty("watched").asInteger() == 0))
-        hasInProgressVideo = HasInProgressVideo(item.GetPath(), db);
-
       db.Close();
     }
   }
 
-  if (hasInProgressVideo ||
-      (folderItem.GetProperty("watchedepisodes").asInteger() > 0 &&
-       folderItem.GetProperty("unwatchedepisodes").asInteger() > 0) ||
-      (folderItem.GetProperty("watched").asInteger() > 0 &&
-       folderItem.GetProperty("unwatched").asInteger() > 0))
+  int64_t watched = 0;
+  int64_t inprogress = 0;
+  int64_t total = 0;
+  if (folderItem.HasProperty("inprogressepisodes"))
+  {
+    // show/season
+    watched = folderItem.GetProperty("watchedepisodes").asInteger();
+    inprogress = folderItem.GetProperty("inprogressepisodes").asInteger();
+    total = folderItem.GetProperty("totalepisodes").asInteger();
+  }
+  else if (folderItem.HasProperty("inprogress"))
+  {
+    // movie set
+    watched = folderItem.GetProperty("watched").asInteger();
+    inprogress = folderItem.GetProperty("inprogress").asInteger();
+    total = folderItem.GetProperty("total").asInteger();
+  }
+
+  if ((total != watched) && (inprogress > 0 || watched != 0))
   {
     ResumeInformation resumeInfo;
     resumeInfo.isResumable = true;
     return resumeInfo;
   }
+
+  CLog::LogF(LOGERROR, "Cannot obtain inprogress state for {}", folderItem.GetPath());
   return {};
 }
 
