@@ -659,25 +659,7 @@ ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
     }
   }
 
-  int64_t watched = 0;
-  int64_t inprogress = 0;
-  int64_t total = 0;
-  if (folderItem.HasProperty("inprogressepisodes"))
-  {
-    // show/season
-    watched = folderItem.GetProperty("watchedepisodes").asInteger();
-    inprogress = folderItem.GetProperty("inprogressepisodes").asInteger();
-    total = folderItem.GetProperty("totalepisodes").asInteger();
-  }
-  else if (folderItem.HasProperty("inprogress"))
-  {
-    // movie set
-    watched = folderItem.GetProperty("watched").asInteger();
-    inprogress = folderItem.GetProperty("inprogress").asInteger();
-    total = folderItem.GetProperty("total").asInteger();
-  }
-
-  if ((total != watched) && (inprogress > 0 || watched != 0))
+  if (folderItem.IsResumable())
   {
     ResumeInformation resumeInfo;
     resumeInfo.isResumable = true;
