@@ -2330,8 +2330,5 @@ void CGUIDialogVideoInfo::ShowFor(const CFileItem& item)
 {
   auto window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowVideoNav>(WINDOW_VIDEO_NAV);
   if (window)
-  {
-    ADDON::ScraperPtr info;
-    window->OnItemInfo(item, info);
-  }
+    window->OnItemInfo(item);
 }
