@@ -111,6 +111,7 @@ protected:
   {
     return m_surface;
   }
+  IShellSurface* GetShellSurface() { return m_shellSurface.get(); }
 
   void PrepareFramePresentation();
   void FinishFramePresentation();
