@@ -123,7 +123,10 @@ static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGE
   if ((type != NX_SYSDEFINED) || (![hot_key_controller getActive]))
     return event;
 
-  NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
+  NSEvent* __block nsEvent;
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    nsEvent = [NSEvent eventWithCGEvent:event];
+  });
   if (!nsEvent || [nsEvent subtype] != 8)
     return event;
 
