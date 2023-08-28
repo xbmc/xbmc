@@ -4029,8 +4029,3 @@ bool CFileItem::GetCurrentResumeTimeAndPartNumber(int64_t& startOffset, int& par
   }
   return false;
 }
-
-bool CFileItem::IsResumable() const
-{
-  return (!IsNFO() && !IsPlayList()) || IsType(".strm");
-}
