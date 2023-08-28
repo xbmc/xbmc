@@ -1159,7 +1159,7 @@ bool CDecoder::ConfigVAAPI()
   unsigned int format = VA_RT_FORMAT_YUV420;
   std::int32_t pixelFormat = VA_FOURCC_NV12;
 
-  if ((m_vaapiConfig.profile == VAProfileHEVCMain10
+  if ((m_vaapiConfig.profile == VAProfileHEVCMain10 || m_vaapiConfig.profile == VAProfileVP9Profile2
 #if VA_CHECK_VERSION(1, 8, 0)
        || m_vaapiConfig.profile == VAProfileAV1Profile0
 #endif
