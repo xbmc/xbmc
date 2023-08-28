@@ -365,17 +365,6 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
 
       return true;
     }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // NETWORK_*
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    case NETWORK_DHCP_ADDRESS:
-    {
-      // wtf?
-      std::string dhcpserver;
-      value = dhcpserver;
-      return true;
-    }
   }
 
   return false;
