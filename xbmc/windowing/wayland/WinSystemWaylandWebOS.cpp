@@ -15,9 +15,15 @@
 #include "cores/AudioEngine/Sinks/AESinkStarfish.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecStarfish.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererStarfish.h"
+#include "utils/JSONVariantParser.h"
 #include "utils/log.h"
 
 #include <CompileInfo.h>
+
+namespace
+{
+constexpr const char* LUNA_REGISTER_APP = "luna://com.webos.service.applicationmanager/registerApp";
+} // namespace
 
 namespace KODI::WINDOWING::WAYLAND
 {
@@ -36,6 +42,16 @@ bool CWinSystemWaylandWebOS::InitWindowSystem()
   // available since webOS 5.0
   m_webosRegistry->RequestSingleton(m_webosForeign, 1, 2, false);
   m_webosRegistry->Bind();
+
+  m_requestContext->pub = true;
+  m_requestContext->multiple = true;
+  m_requestContext->callback = &OnAppLifecycleEventWrapper;
+  m_requestContext->userdata = this;
+  if (HLunaServiceCall(LUNA_REGISTER_APP, "{}", m_requestContext.get()))
+  {
+    CLog::LogF(LOGWARNING, "Luna request call failed");
+    m_requestContext = nullptr;
+  }
 
   return true;
 }
@@ -120,6 +136,27 @@ IShellSurface* CWinSystemWaylandWebOS::CreateShellSurface(const std::string& nam
 std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> CWinSystemWaylandWebOS::GetOSScreenSaverImpl()
 {
   return std::make_unique<COSScreenSaverWebOS>();
+}
+
+bool CWinSystemWaylandWebOS::OnAppLifecycleEventWrapper(LSHandle* sh, LSMessage* reply, void* ctx)
+{
+  HContext* context = static_cast<HContext*>(ctx);
+  return static_cast<CWinSystemWaylandWebOS*>(context->userdata)->OnAppLifecycleEvent(sh, reply);
+}
+
+bool CWinSystemWaylandWebOS::OnAppLifecycleEvent(LSHandle* sh, LSMessage* reply)
+{
+  const char* msg = HLunaServiceMessage(reply);
+  CLog::Log(LOGDEBUG, "Got lifecycle event: {}", msg);
+
+  CVariant event;
+  CJSONVariantParser::Parse(msg, event);
+
+  IShellSurface* shellSurface = GetShellSurface();
+  if (event["event"] == "relaunch" && shellSurface)
+    shellSurface->SetFullScreen(nullptr, 60.0f);
+
+  return true;
 }
 
 } // namespace KODI::WINDOWING::WAYLAND

@@ -8,5 +8,7 @@
   "icon": "icon.png",
   "largeIcon": "largeIcon.png",
   "splashBackground": "media/splash_webOS.png",
-  "spinnerOnLaunch": false
+  "spinnerOnLaunch": false,
+  "handlesRelaunch": true,
+  "nativeLifeCycleInterfaceVersion": 2
 }
