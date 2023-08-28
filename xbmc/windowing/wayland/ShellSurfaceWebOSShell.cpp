@@ -18,15 +18,6 @@ using namespace std::placeholders;
 
 using namespace wayland;
 
-namespace
-{
-/*
-  WebOS always is 1920x1080
-*/
-constexpr int WEBOS_UI_WIDTH = 1920;
-constexpr int WEBOS_UI_HEIGHT = 1080;
-} // unnamed namespace
-
 CShellSurfaceWebOSShell::CShellSurfaceWebOSShell(IShellSurfaceHandler& handler,
                                                  CConnection& connection,
                                                  const wayland::surface_t& surface,
@@ -45,21 +36,42 @@ CShellSurfaceWebOSShell::CShellSurfaceWebOSShell(IShellSurfaceHandler& handler,
 
   m_webos_shellSurface = m_webos_shell.get_shell_surface(surface);
 
+  m_webos_shellSurface.on_exposed() = [this](const std::vector<std::int32_t>& rect) {
+    if (rect.size() >= 4)
+      m_windowSize = {rect[2], rect[3]};
+  };
+
   m_webos_shellSurface.on_state_changed() = [this](std::uint32_t state) {
-    switch (state)
+    switch (static_cast<webos_shell_surface_state>(state))
     {
-      case static_cast<uint32_t>(webos_shell_surface_state::fullscreen):
-        CLog::Log(LOGDEBUG, "webOS notification - Changed to full screen");
-        m_handler.OnConfigure(0, {WEBOS_UI_WIDTH, WEBOS_UI_HEIGHT}, m_surfaceState);
+      case webos_shell_surface_state::fullscreen:
+        CLog::Log(LOGDEBUG, "CShellSurfaceWebOSShell: State changed to full screen");
+        m_surfaceState.reset();
+        m_surfaceState.set(STATE_ACTIVATED);
+        m_surfaceState.set(STATE_FULLSCREEN);
+        m_handler.OnConfigure(0, m_windowSize, m_surfaceState);
         break;
-      case static_cast<uint32_t>(webos_shell_surface_state::minimized):
-        CLog::Log(LOGDEBUG, "webOS notification - Changed to minimized");
+      case webos_shell_surface_state::maximized:
+        CLog::Log(LOGDEBUG, "CShellSurfaceWebOSShell: State changed to maximized");
+        m_surfaceState.reset();
+        m_surfaceState.set(STATE_ACTIVATED);
+        m_surfaceState.set(STATE_MAXIMIZED);
+        m_handler.OnConfigure(0, m_windowSize, m_surfaceState);
+        break;
+      case webos_shell_surface_state::minimized:
+        CLog::Log(LOGDEBUG, "CShellSurfaceWebOSShell: State changed to minimized");
+        m_surfaceState.reset();
+        break;
+      case webos_shell_surface_state::_default:
+        CLog::Log(LOGDEBUG, "CShellSurfaceWebOSShell: State changed to default (windowed)");
+        m_surfaceState.reset();
+        m_surfaceState.set(STATE_ACTIVATED);
         break;
     }
   };
 
   m_webos_shellSurface.on_close() = [this]() {
-    CLog::Log(LOGDEBUG, "webOS notification - Close notification received");
+    CLog::Log(LOGDEBUG, "CShellSurfaceWebOSShell: Close notification received");
     m_handler.OnClose();
   };
 
@@ -83,33 +95,32 @@ CShellSurfaceWebOSShell::CShellSurfaceWebOSShell(IShellSurfaceHandler& handler,
   // Allow the back button the LG remote to be passed to Kodi and not intercepted
   m_webos_shellSurface.set_property("_WEBOS_ACCESS_POLICY_KEYS_BACK", "true");
 
-  m_surfaceState.set(STATE_ACTIVATED);
   m_shellSurface.set_class(className);
   m_shellSurface.set_title(title);
 }
 
 void CShellSurfaceWebOSShell::SetFullScreen(const wayland::output_t& output, float refreshRate)
 {
-  m_shellSurface.set_fullscreen(wayland::shell_surface_fullscreen_method::driver,
-                                std::round(refreshRate * 1000.0f), output);
-  m_surfaceState.set(STATE_FULLSCREEN);
+  m_webos_shellSurface.set_state(static_cast<std::uint32_t>(webos_shell_surface_state::fullscreen));
 }
 
 void CShellSurfaceWebOSShell::SetWindowed()
 {
   m_shellSurface.set_toplevel();
-  m_surfaceState.reset(STATE_FULLSCREEN);
 }
 
 void CShellSurfaceWebOSShell::SetMaximized()
 {
-  m_shellSurface.set_maximized(wayland::output_t());
-  m_surfaceState.set(STATE_MAXIMIZED);
+  m_webos_shellSurface.set_state(static_cast<std::uint32_t>(webos_shell_surface_state::maximized));
 }
 
 void CShellSurfaceWebOSShell::UnsetMaximized()
 {
-  m_surfaceState.reset(STATE_MAXIMIZED);
+}
+
+void CShellSurfaceWebOSShell::SetMinimized()
+{
+  m_webos_shellSurface.set_state(static_cast<std::uint32_t>(webos_shell_surface_state::minimized));
 }
 
 void CShellSurfaceWebOSShell::StartMove(const wayland::seat_t& seat, std::uint32_t serial)
