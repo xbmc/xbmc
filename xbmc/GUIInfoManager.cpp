@@ -2071,11 +2071,18 @@ const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
+// clang-format off
 const infomap network_labels[] = {
-    {"isdhcp", NETWORK_IS_DHCP},           {"ipaddress", NETWORK_IP_ADDRESS}, //labels from here
-    {"linkstate", NETWORK_LINK_STATE},     {"macaddress", NETWORK_MAC_ADDRESS},
-    {"subnetmask", NETWORK_SUBNET_MASK},   {"gatewayaddress", NETWORK_GATEWAY_ADDRESS},
-    {"dns1address", NETWORK_DNS1_ADDRESS}, {"dns2address", NETWORK_DNS2_ADDRESS}};
+    {"isdhcp", NETWORK_IS_DHCP},
+    {"ipaddress", NETWORK_IP_ADDRESS}, //labels from here
+    {"linkstate", NETWORK_LINK_STATE},
+    {"macaddress", NETWORK_MAC_ADDRESS},
+    {"subnetmask", NETWORK_SUBNET_MASK},
+    {"gatewayaddress", NETWORK_GATEWAY_ADDRESS},
+    {"dns1address", NETWORK_DNS1_ADDRESS},
+    {"dns2address", NETWORK_DNS2_ADDRESS}
+};
+// clang-format on
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_musicpartymode Music party mode
