@@ -10,8 +10,10 @@
 
 #include "InfoLoader.h"
 #include "settings/ISubSettings.h"
+#include "utils/Job.h"
 
 #include <string>
+#include <vector>
 
 #define KB  (1024)          // 1 KiloByte (1KB)   1024 Byte (2^10 Byte)
 #define MB  (1024*KB)       // 1 MegaByte (1MB)   1024 KB (2^10 KB)
@@ -44,6 +46,11 @@ public:
   std::string cpuFrequency;
   std::string osVersionInfo;
   std::string macAddress;
+  std::string ipAddress;
+  std::string netMask;
+  std::string gatewayAddress;
+  std::string networkLinkState;
+  std::vector<std::string> dnsServers;
   std::string batteryLevel;
 };
 
@@ -60,8 +67,13 @@ private:
   static bool SystemUpTime(int iInputMinutes, int &iMinutes, int &iHours, int &iDays);
   static std::string GetSystemUpTime(bool bTotalUptime);
   static std::string GetMACAddress();
+  static std::string GetIPAddress();
+  static std::string GetNetMask();
+  static std::string GetGatewayAddress();
+  static std::string GetNetworkLinkState();
   static std::string GetVideoEncoder();
   static std::string GetBatteryLevel();
+  static std::vector<std::string> GetDNSServers();
 
   CSysData m_info;
 };
