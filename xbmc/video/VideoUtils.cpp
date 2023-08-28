@@ -689,7 +689,12 @@ ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
 
 ResumeInformation GetNonFolderItemResumeInformation(const CFileItem& item)
 {
-  if (!item.IsResumable())
+  // do not resume nfo files
+  if (item.IsNFO())
+    return {};
+
+  // do not resume playlists, except strm files
+  if (!item.IsType("strm") && item.IsPlayList())
     return {};
 
   // do not resume Live TV and 'deleted' items (e.g. trashed pvr recordings)
