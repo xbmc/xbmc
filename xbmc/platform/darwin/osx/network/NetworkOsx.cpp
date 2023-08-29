@@ -180,7 +180,7 @@ std::vector<std::string> CNetworkOsx::GetNameServers()
 {
   std::vector<std::string> result;
 
-  FILE* pipe = popen("scutil --dns | grep \"nameserver\" | tail -n2", "r");
+  FILE* pipe = popen("scutil --dns | grep \"nameserver\" | uniq | tail -n2", "r");
   usleep(100000);
   if (pipe)
   {
