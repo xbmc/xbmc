@@ -1091,6 +1091,7 @@ msgstr ""
 #: xbmc/playlists/SmartPlaylist.cpp
 #: system/settings/settings.xml
 #: xbmc/LangInfo.cpp
+#: xbmc/utils/Systeminfo.cpp
 #: ###this documented usage does not cover all usecases yet###
 msgctxt "#231"
 msgid "None"
