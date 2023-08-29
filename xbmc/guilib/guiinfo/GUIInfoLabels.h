@@ -167,7 +167,6 @@
 #define NETWORK_GATEWAY_ADDRESS     195
 #define NETWORK_DNS1_ADDRESS        196
 #define NETWORK_DNS2_ADDRESS        197
-#define NETWORK_DHCP_ADDRESS        198
 
 // Keep musicplayer infolabels that work with offset and position together
 #define MUSICPLAYER_TITLE           200

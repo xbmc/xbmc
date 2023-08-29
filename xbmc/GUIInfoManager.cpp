@@ -2068,24 +2068,21 @@ const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
 ///     @return The network DNS 2 address.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Network.DHCPAddress`</b>,
-///                  \anchor Network_DHCPAddress
-///                  _string_,
-///     @return The DHCP IP address.
-///     <p>
-///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-const infomap network_labels[] = {{ "isdhcp",            NETWORK_IS_DHCP },
-                                  { "ipaddress",         NETWORK_IP_ADDRESS }, //labels from here
-                                  { "linkstate",         NETWORK_LINK_STATE },
-                                  { "macaddress",        NETWORK_MAC_ADDRESS },
-                                  { "subnetmask",        NETWORK_SUBNET_MASK },
-                                  { "gatewayaddress",    NETWORK_GATEWAY_ADDRESS },
-                                  { "dns1address",       NETWORK_DNS1_ADDRESS },
-                                  { "dns2address",       NETWORK_DNS2_ADDRESS },
-                                  { "dhcpaddress",       NETWORK_DHCP_ADDRESS }};
+// clang-format off
+const infomap network_labels[] = {
+    {"isdhcp", NETWORK_IS_DHCP},
+    {"ipaddress", NETWORK_IP_ADDRESS}, //labels from here
+    {"linkstate", NETWORK_LINK_STATE},
+    {"macaddress", NETWORK_MAC_ADDRESS},
+    {"subnetmask", NETWORK_SUBNET_MASK},
+    {"gatewayaddress", NETWORK_GATEWAY_ADDRESS},
+    {"dns1address", NETWORK_DNS1_ADDRESS},
+    {"dns2address", NETWORK_DNS2_ADDRESS}
+};
+// clang-format on
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_musicpartymode Music party mode
@@ -9714,6 +9711,11 @@ const infomap slideshow[] =      {{ "ispaused",               SLIDESHOW_ISPAUSED
 
 /// \page modules__infolabels_boolean_conditions
 /// \section modules_rm_infolabels_booleans Additional revision history for Infolabels and Boolean Conditions
+/// <hr>
+/// \subsection modules_rm_infolabels_booleans_v21 Kodi v21 (Omega)
+/// @skinning_v21 **[Removed Infolabels]** The following infolabels have been removed:
+///   - `Network.DHCPAddress` - this info did not return any meaningful value (always an empty string)
+///
 /// <hr>
 /// \subsection modules_rm_infolabels_booleans_v20 Kodi v20 (Nexus)
 /// @skinning_v20 **[Removed Boolean conditions]** The following boolean conditions have been removed:

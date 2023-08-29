@@ -176,7 +176,12 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       value = GetSystemHeatInfo(info.m_info);
       return true;
     case SYSTEM_VIDEO_ENCODER_INFO:
+    case NETWORK_IP_ADDRESS:
     case NETWORK_MAC_ADDRESS:
+    case NETWORK_SUBNET_MASK:
+    case NETWORK_GATEWAY_ADDRESS:
+    case NETWORK_DNS1_ADDRESS:
+    case NETWORK_DNS2_ADDRESS:
     case SYSTEM_OS_VERSION_INFO:
     case SYSTEM_CPUFREQUENCY:
     case SYSTEM_INTERNET_STATE:
@@ -358,79 +363,6 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
         value = types;
       }
 
-      return true;
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    // NETWORK_*
-    ///////////////////////////////////////////////////////////////////////////////////////////////
-    case NETWORK_IP_ADDRESS:
-    {
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
-      if (iface)
-      {
-        value = iface->GetCurrentIPAddress();
-        return true;
-      }
-      break;
-    }
-    case NETWORK_SUBNET_MASK:
-    {
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
-      if (iface)
-      {
-        value = iface->GetCurrentNetmask();
-        return true;
-      }
-      break;
-    }
-    case NETWORK_GATEWAY_ADDRESS:
-    {
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
-      if (iface)
-      {
-        value = iface->GetCurrentDefaultGateway();
-        return true;
-      }
-      break;
-    }
-    case NETWORK_DNS1_ADDRESS:
-    {
-      const std::vector<std::string> nss = CServiceBroker::GetNetwork().GetNameServers();
-      if (nss.size() >= 1)
-      {
-        value = nss[0];
-        return true;
-      }
-      break;
-    }
-    case NETWORK_DNS2_ADDRESS:
-    {
-      const std::vector<std::string> nss = CServiceBroker::GetNetwork().GetNameServers();
-      if (nss.size() >= 2)
-      {
-        value = nss[1];
-        return true;
-      }
-      break;
-    }
-    case NETWORK_DHCP_ADDRESS:
-    {
-      // wtf?
-      std::string dhcpserver;
-      value = dhcpserver;
-      return true;
-    }
-    case NETWORK_LINK_STATE:
-    {
-      std::string linkStatus = g_localizeStrings.Get(151);
-      linkStatus += " ";
-      CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
-      if (iface && iface->IsConnected())
-        linkStatus += g_localizeStrings.Get(15207);
-      else
-        linkStatus += g_localizeStrings.Get(15208);
-      value = linkStatus;
       return true;
     }
   }
