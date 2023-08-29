@@ -1710,6 +1710,11 @@ int CVideoDatabase::AddSet(const std::string& strSet, const std::string& strOver
     {
       int id = m_pDS->fv("idSet").get_asInt();
       m_pDS->close();
+
+      // update set data
+      strSQL = PrepareSQL("UPDATE sets SET strOverview = '%s' WHERE idSet = %i",
+                          strOverview.c_str(), id);
+      m_pDS->exec(strSQL);
       return id;
     }
   }
