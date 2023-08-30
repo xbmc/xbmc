@@ -1935,17 +1935,28 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     }
   }
   else if (type == "actor")
+  {
     currentThumb = videodb.GetArtForItem(item->GetVideoInfoTag()->m_iDbId, item->GetVideoInfoTag()->m_type, artType);
+  }
   else
   { // SEASON, SHOW, SET
+
+    // We want to re-open the art type selection dialog after selecting an image for the type
+    // until user canceled the art type selection dialog, controlled via 'finished' value by
+    // the caller of this method.
+
     artType = ChooseArtType(*item);
     if (artType.empty())
+    {
+      finished = true;
       return false;
+    }
+
+    finished = false;
 
     if (artType == "fanart" && type != MediaTypeVideoCollection)
     {
       const bool result = OnGetFanart(item);
-      finished = false;
       return result;
     }
 
@@ -2110,10 +2121,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     AddItemPathToFileBrowserSources(sources, *item);
 
   if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(13511), result))
-  {
-    finished = false;
     return false;   // user cancelled
-  }
 
   if (result == "thumb://Current")
     result = currentThumb;   // user chose the one they have
@@ -2155,7 +2163,6 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
 
-  finished = false;
   return true;
 }
 
