@@ -68,7 +68,7 @@ sudo apt install autoconf bison build-essential curl default-jdk flex gawk git g
 > If you're running a 32bit Debian/Ubuntu distribution,  remove `lib32stdc++6 lib32z1 lib32z1-dev` from the command.
 
 > [!NOTE]  
-> Gradle 7.0.2+ requires Jave Runtime 11+. Check java version by running `java --version`.  If version is < 11, set JAVA_HOME to java 11+ home directory._
+> Gradle 8.0+ requires JDK 17+. Check java version by running `java --version`. If version is < 17, set `JAVA_HOME` environment variable to java 17+ home directory.
 
 **[back to top](#table-of-contents)**
 
@@ -98,7 +98,7 @@ Before Android SDK can be used, you need to accept the licenses and configure it
 cd $HOME/android-tools/android-sdk-linux/cmdline-tools/bin
 ./sdkmanager --sdk_root=$(pwd)/../.. --licenses
 ./sdkmanager --sdk_root=$(pwd)/../.. platform-tools
-./sdkmanager --sdk_root=$(pwd)/../.. "platforms;android-33"
+./sdkmanager --sdk_root=$(pwd)/../.. "platforms;android-34"
 ./sdkmanager --sdk_root=$(pwd)/../.. "build-tools;33.0.1"
 ./sdkmanager --sdk_root=$(pwd)/../.. "ndk;21.4.7075529"
 ```
