@@ -21,6 +21,7 @@
 #include <net/if_types.h>
 #include <net/route.h>
 #include <netinet/if_ether.h>
+#include <poll.h>
 #include <sys/sockio.h>
 #include <unistd.h>
 
@@ -180,27 +181,43 @@ std::vector<std::string> CNetworkOsx::GetNameServers()
 {
   std::vector<std::string> result;
 
-  FILE* pipe = popen("scutil --dns | grep \"nameserver\" | tail -n2", "r");
-  usleep(100000);
+  FILE* pipe = popen("scutil --dns | grep -F \"nameserver\" | uniq | tail -n2", "r");
+
   if (pipe)
   {
-    std::vector<std::string> tmpStr;
-    char buffer[256] = {'\0'};
-    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+    int fineNoPipe = ::fileno(pipe);
+
+    struct pollfd pollFd;
+    pollFd.fd = fineNoPipe;
+    pollFd.events = POLLIN;
+    pollFd.revents = 0;
+
+    int pollResult = poll(&pollFd, 1, 1000); // Poll for 1 second
+    if (pollResult > 0 && (pollFd.revents & POLLIN))
     {
-      tmpStr = StringUtils::Split(buffer, "\n");
-      for (unsigned int i = 0; i < tmpStr.size(); i++)
+      char buffer[256] = {'\0'};
+      if (fgets(buffer, sizeof(buffer), pipe))
       {
         // result looks like this - > '  nameserver[0] : 192.168.1.1'
         // 2 blank spaces + 13 in 'nameserver[0]' + blank + ':' + blank == 18 :)
-        if (tmpStr[i].length() >= 18)
-          result.push_back(tmpStr[i].substr(18));
+        const unsigned int nameserverLineSize = 18;
+        std::vector<std::string> tmpStr = StringUtils::Split(buffer, "\n");
+        for (const std::string& str : tmpStr)
+        {
+          if (str.length() >= nameserverLineSize)
+          {
+            result.push_back(str.substr(nameserverLineSize));
+          }
+        }
       }
     }
     pclose(pipe);
   }
+
   if (result.empty())
-    CLog::Log(LOGWARNING, "Unable to determine nameserver");
+  {
+    CLog::Log(LOGWARNING, "Unable to determine nameservers");
+  }
 
   return result;
 }
