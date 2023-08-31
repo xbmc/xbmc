@@ -215,7 +215,7 @@ std::vector<std::string> CNetworkOsx::GetNameServers()
     int pollResult = poll(&pollFd, 1, 100); // Wait for 100 milliseconds
     if (pollResult > 0 && (pollFd.revents & POLLIN))
     {
-      std::string buffer(256, '\n');
+      std::string buffer(256, '\0');
       while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr)
       {
         // result looks like this - > '  nameserver[0] : 192.168.1.1'
@@ -257,7 +257,7 @@ bool CNetworkOsx::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
   char cmd_line[64];
 
   struct in_addr host_ip;
-  host_ip.s_addr = remote_ip;
+  host_ip.s_addr = static_cast<in_addr_t>(remote_ip);
 
   snprintf(cmd_line, sizeof(cmd_line), "ping -c 1 -t %d %s",
            timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
