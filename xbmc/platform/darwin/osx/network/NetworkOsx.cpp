@@ -212,7 +212,7 @@ std::vector<std::string> CNetworkOsx::GetNameServers()
     pollFd.events = POLLIN;
     pollFd.revents = 0;
 
-    int pollResult = poll(&pollFd, 1, 1000); // Poll for 1 second
+    int pollResult = poll(&pollFd, 1, 100); // Wait for 100 milliseconds
     if (pollResult > 0 && (pollFd.revents & POLLIN))
     {
       char buffer[256] = {'\0'};
