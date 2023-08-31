@@ -37,22 +37,42 @@ std::string CNetworkInterfaceOsx::GetCurrentDefaultGateway() const
   std::string result;
 
   FILE* pipe = popen("echo \"show State:/Network/Global/IPv4\" | scutil | grep Router", "r");
-  usleep(100000);
+
   if (pipe)
   {
-    std::string tmpStr;
-    char buffer[256] = {'\0'};
-    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
+    struct pollfd pollFd;
+    pollFd.fd = fileno(pipe);
+    pollFd.events = POLLIN;
+    pollFd.revents = 0;
+
+    const int pollResult = poll(&pollFd, 1, 100); // Wait for 100 milliseconds
+    if (pollResult > 0 && (pollFd.revents & POLLIN))
     {
-      tmpStr = buffer;
-      if (tmpStr.length() >= 11)
-        result = tmpStr.substr(11);
+      // line looks like this:
+      // "  Router : 192.168.1.1\n"
+      const int linePrefixLength = 11; // "  Router :"
+      result.resize(256);
+      ssize_t bytesRead = fread(result.data(), sizeof(char), 256, pipe);
+      if (bytesRead > 0)
+      {
+        if (result.length() >= linePrefixLength)
+        {
+          result = result.substr(linePrefixLength);
+          result.resize(bytesRead - linePrefixLength - 1); // newline char
+        }
+      }
+      else
+      {
+        result.clear();
+      }
     }
     pclose(pipe);
   }
-  if (result.empty())
-    CLog::Log(LOGWARNING, "Unable to determine gateway");
 
+  if (result.empty())
+  {
+    CLog::Log(LOGWARNING, "Unable to determine gateway");
+  }
   return result;
 }
 
