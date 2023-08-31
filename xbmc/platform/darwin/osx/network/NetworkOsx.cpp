@@ -215,18 +215,28 @@ std::vector<std::string> CNetworkOsx::GetNameServers()
     int pollResult = poll(&pollFd, 1, 100); // Wait for 100 milliseconds
     if (pollResult > 0 && (pollFd.revents & POLLIN))
     {
-      char buffer[256] = {'\0'};
-      if (fgets(buffer, sizeof(buffer), pipe))
+      std::string buffer(256, '\n');
+      while (fgets(buffer.data(), static_cast<int>(buffer.size()), pipe) != nullptr)
       {
         // result looks like this - > '  nameserver[0] : 192.168.1.1'
         // 2 blank spaces + 13 in 'nameserver[0]' + blank + ':' + blank == 18 :)
         const unsigned int nameserverLineSize = 18;
         std::vector<std::string> tmpStr = StringUtils::Split(buffer, "\n");
-        for (const std::string& str : tmpStr)
+        for (std::string& str : tmpStr)
         {
           if (str.length() >= nameserverLineSize)
           {
-            result.push_back(str.substr(nameserverLineSize));
+            str = str.substr(nameserverLineSize);
+            auto nullPos = str.find('\0');
+            if (nullPos != std::string::npos)
+            {
+              str.resize(nullPos);
+            }
+
+            if (!str.empty())
+            {
+              result.push_back(str);
+            }
           }
         }
       }
