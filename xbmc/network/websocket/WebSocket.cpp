@@ -13,6 +13,7 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <cstdint>
 #include <sstream>
 #include <string>
 
@@ -85,12 +86,15 @@ CWebSocketFrame::CWebSocketFrame(const char* data, uint64_t length)
   int offset = 0;
   if (m_length == 126)
   {
-    m_length = (uint64_t)Endian_SwapBE16(*(const uint16_t *)(m_data + 2));
+    uint16_t length;
+    std::memcpy(&length, m_data + 2, 2);
+    m_length = Endian_SwapBE16(length);
     offset = 2;
   }
   else if (m_length == 127)
   {
-    m_length = Endian_SwapBE64(*(const uint64_t *)(m_data + 2));
+    std::memcpy(&m_length, m_data + 2, 8);
+    m_length = Endian_SwapBE64(m_length);
     offset = 8;
   }
 
@@ -104,7 +108,7 @@ CWebSocketFrame::CWebSocketFrame(const char* data, uint64_t length)
   // Get the mask
   if (m_masked)
   {
-    m_mask = *(const uint32_t *)(m_data + LENGTH_MIN + offset);
+    std::memcpy(&m_mask, m_data + LENGTH_MIN + offset, 4);
     offset += 4;
   }
 
