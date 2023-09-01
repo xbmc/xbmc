@@ -73,7 +73,11 @@ if(NOT TARGET LibDvdNav::LibDvdNav)
                    ${LIBDVD_ADDITIONAL_ARGS})
   else()
 
-    string(APPEND LIBDVDNAV_CFLAGS " -I$<TARGET_PROPERTY:LibDvdRead::LibDvdRead,INTERFACE_INCLUDE_DIRECTORIES> $<TARGET_PROPERTY:LibDvdRead::LibDvdRead,INTERFACE_COMPILE_DEFINITIONS>")
+    string(APPEND LIBDVDNAV_CFLAGS " -I$<TARGET_PROPERTY:LibDvdRead::LibDvdRead,INTERFACE_INCLUDE_DIRECTORIES>")
+
+    if(TARGET LibDvdCSS::LibDvdCSS)
+      string(APPEND LIBDVDNAV_CFLAGS " -I$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_INCLUDE_DIRECTORIES> $<$<TARGET_EXISTS:LibDvdCSS::LibDvdCSS>:-D$<TARGET_PROPERTY:LibDvdCSS::LibDvdCSS,INTERFACE_COMPILE_DEFINITIONS>>")
+    endif()
 
     find_program(AUTORECONF autoreconf REQUIRED)
     if (CMAKE_HOST_SYSTEM_NAME MATCHES "(Free|Net|Open)BSD")
@@ -116,20 +120,11 @@ find_package_handle_standard_args(LibDvdNav
                                   VERSION_VAR LIBDVDNAV_VERSION)
 
 if(LIBDVDNAV_FOUND)
-  set(LIBDVDNAV_INCLUDE_DIRS ${LIBDVDNAV_INCLUDE_DIR})
-  set(LIBDVDNAV_LIBRARIES ${LIBDVDNAV_LIBRARY})
-  set(LIBDVDNAV_DEFINITIONS -D_XBMC)
-
-  if(APPLE)
-    string(APPEND LIBDVDNAV_DEFINITIONS " -D__DARWIN__")
-  endif()
-
   if(NOT TARGET LibDvdNav::LibDvdNav)
     add_library(LibDvdNav::LibDvdNav UNKNOWN IMPORTED)
 
     set_target_properties(LibDvdNav::LibDvdNav PROPERTIES
                                                IMPORTED_LOCATION "${LIBDVDNAV_LIBRARY}"
-                                               INTERFACE_COMPILE_DEFINITIONS "${LIBDVDNAV_DEFINITIONS}"
                                                INTERFACE_INCLUDE_DIRECTORIES "${LIBDVDNAV_INCLUDE_DIR}")
 
     if(TARGET libdvdnav)

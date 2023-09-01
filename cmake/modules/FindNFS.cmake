@@ -3,28 +3,26 @@
 # -------
 # Finds the libnfs library
 #
-# This will define the following variables::
-#
-# NFS_FOUND - system has libnfs
-# NFS_INCLUDE_DIRS - the libnfs include directory
-# NFS_LIBRARIES - the libnfs libraries
-# NFS_DEFINITIONS - the libnfs compile definitions
-#
-# and the following imported targets::
+# This will define the following target:
 #
 #   NFS::NFS   - The libnfs library
 
-include(cmake/scripts/common/ModuleHelpers.cmake)
+if(NOT TARGET libnfs::nfs)
 
-set(MODULE_LC libnfs)
+  include(cmake/scripts/common/ModuleHelpers.cmake)
 
-SETUP_BUILD_VARS()
+  set(MODULE_LC libnfs)
 
-# Search for cmake config. Suitable for all platforms including windows
-find_package(LIBNFS CONFIG QUIET)
+  SETUP_BUILD_VARS()
 
-if(NOT LIBNFS_FOUND)
-  if(ENABLE_INTERNAL_NFS)
+  # Search for cmake config. Suitable for all platforms including windows
+  find_package(libnfs CONFIG QUIET)
+
+  # Check for existing TINYXML2. If version >= TINYXML2-VERSION file version, dont build
+  # A corner case, but if a linux/freebsd user WANTS to build internal tinyxml2, build anyway
+  if((libnfs_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_NFS) OR
+     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_NFS))
+
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
                    -DENABLE_TESTS=OFF
                    -DENABLE_DOCUMENTATION=OFF
@@ -33,85 +31,111 @@ if(NOT LIBNFS_FOUND)
 
     BUILD_DEP_TARGET()
 
-    set(NFS_LIBRARY ${${MODULE}_LIBRARY})
-    set(NFS_INCLUDE_DIR ${${MODULE}_INCLUDE_DIR})
+    set(_nfs_definitions HAS_NFS_SET_TIMEOUT
+                         HAS_NFS_MOUNT_GETEXPORTS_TIMEOUT)
   else()
-    # Try pkgconfig based search. Linux may not have a version with cmake config installed
-    if(PKG_CONFIG_FOUND)
-      pkg_check_modules(PC_NFS libnfs>=3.0.0 QUIET)
+    if(NOT TARGET libnfs::nfs)
+      # Try pkgconfig based search as last resort
+      if(PKG_CONFIG_FOUND)
+        pkg_check_modules(PC_LIBNFS libnfs>=3.0.0 QUIET)
+      endif()
+
+      find_library(LIBNFS_LIBRARY_RELEASE NAMES nfs libnfs
+                                          HINTS ${DEPENDS_PATH}/lib
+                                                ${PC_LIBNFS_LIBDIR})
+      set(LIBNFS_VERSION ${PC_LIBNFS_VERSION})
     endif()
 
-    find_path(NFS_INCLUDE_DIR nfsc/libnfs.h
-                              PATHS ${PC_NFS_INCLUDEDIR})
-
-    set(LIBNFS_VERSION ${PC_NFS_VERSION})
-
-    find_library(NFS_LIBRARY NAMES nfs libnfs
-                             PATHS ${PC_NFS_LIBDIR})
-  endif()
-else()
-  # Find lib and path as we cant easily rely on cmake-config
-  find_library(NFS_LIBRARY NAMES nfs libnfs
-                           PATHS ${DEPENDS_PATH}/lib)
-  find_path(NFS_INCLUDE_DIR nfsc/libnfs.h PATHS ${DEPENDS_PATH}/include)
-endif()
-
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(NFS
-                                  REQUIRED_VARS NFS_LIBRARY NFS_INCLUDE_DIR
-                                  VERSION_VAR LIBNFS_VERSION)
-
-if(NFS_FOUND)
-  set(NFS_LIBRARIES ${NFS_LIBRARY})
-  set(NFS_INCLUDE_DIRS ${NFS_INCLUDE_DIR})
-  set(NFS_DEFINITIONS -DHAS_FILESYSTEM_NFS=1)
-
-  set(CMAKE_REQUIRED_INCLUDES "${NFS_INCLUDE_DIR}")
-  set(CMAKE_REQUIRED_LIBRARIES ${NFS_LIBRARY})
-
-  # Check for nfs_set_timeout
-  check_cxx_source_compiles("
-     ${NFS_CXX_INCLUDE}
-     #include <nfsc/libnfs.h>
-     int main()
-     {
-       nfs_set_timeout(NULL, 0);
-     }
-  " NFS_SET_TIMEOUT)
-
-  if(NFS_SET_TIMEOUT)
-    list(APPEND NFS_DEFINITIONS -DHAS_NFS_SET_TIMEOUT)
+    find_path(LIBNFS_INCLUDE_DIR nfsc/libnfs.h HINTS ${PC_LIBNFS_INCLUDEDIR}
+                                                     ${DEPENDS_PATH}/include)
   endif()
 
-  # Check for mount_getexports_timeout
-  check_cxx_source_compiles("
-     ${NFS_CXX_INCLUDE}
-     #include <nfsc/libnfs.h>
-     int main()
-     {
-       mount_getexports_timeout(NULL, 0);
-     }
-  " NFS_MOUNT_GETEXPORTS_TIMEOUT)
-
-  if(NFS_MOUNT_GETEXPORTS_TIMEOUT)
-    list(APPEND NFS_DEFINITIONS -DHAS_NFS_MOUNT_GETEXPORTS_TIMEOUT)
+  if(TARGET libnfs::nfs)
+    # This is for the case where a distro provides a non standard (Debug/Release) config type
+    # convert this back to either DEBUG/RELEASE or just RELEASE
+    # we only do this because we use find_package_handle_standard_args for config time output
+    # and it isnt capable of handling TARGETS, so we have to extract the info
+    get_target_property(_LIBNFS_CONFIGURATIONS libnfs::nfs IMPORTED_CONFIGURATIONS)
+    foreach(_libnfs_config IN LISTS _LIBNFS_CONFIGURATIONS)
+      # Just set to RELEASE var so select_library_configurations can continue to work its magic
+      string(TOUPPER ${_libnfs_config} _libnfs_config_UPPER)
+      if((NOT ${_libnfs_config_UPPER} STREQUAL "RELEASE") AND
+         (NOT ${_libnfs_config_UPPER} STREQUAL "DEBUG"))
+        get_target_property(LIBNFS_LIBRARY_RELEASE libnfs::nfs IMPORTED_LOCATION_${_libnfs_config_UPPER})
+      else()
+        get_target_property(LIBNFS_LIBRARY_${_libnfs_config_UPPER} libnfs::nfs IMPORTED_LOCATION_${_libnfs_config_UPPER})
+      endif()
+    endforeach()
   endif()
 
-  unset(CMAKE_REQUIRED_INCLUDES)
-  unset(CMAKE_REQUIRED_LIBRARIES)
+  include(SelectLibraryConfigurations)
+  select_library_configurations(LIBNFS)
 
-  if(NOT TARGET NFS::NFS)
-    add_library(NFS::NFS UNKNOWN IMPORTED)
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(NFS
+                                    REQUIRED_VARS LIBNFS_LIBRARY LIBNFS_INCLUDE_DIR
+                                    VERSION_VAR LIBNFS_VERSION)
 
-    set_target_properties(NFS::NFS PROPERTIES
-                                   IMPORTED_LOCATION "${NFS_LIBRARY_RELEASE}"
-                                   INTERFACE_INCLUDE_DIRECTORIES "${NFS_INCLUDE_DIR}"
-                                   INTERFACE_COMPILE_DEFINITIONS "${NFS_DEFINITIONS}")
+  if(NFS_FOUND)
+    # Pre existing lib, so we can run checks
+    if(NOT TARGET libnfs)
+      set(CMAKE_REQUIRED_INCLUDES "${LIBNFS_INCLUDE_DIR}")
+      set(CMAKE_REQUIRED_LIBRARIES ${LIBNFS_LIBRARY})
+
+      # Check for nfs_set_timeout
+      check_cxx_source_compiles("
+         ${LIBNFS_CXX_INCLUDE}
+         #include <nfsc/libnfs.h>
+         int main()
+         {
+           nfs_set_timeout(NULL, 0);
+         }
+      " NFS_SET_TIMEOUT)
+
+      if(NFS_SET_TIMEOUT)
+        list(APPEND _nfs_definitions HAS_NFS_SET_TIMEOUT)
+      endif()
+
+      # Check for mount_getexports_timeout
+      check_cxx_source_compiles("
+         ${LIBNFS_CXX_INCLUDE}
+         #include <nfsc/libnfs.h>
+         int main()
+         {
+           mount_getexports_timeout(NULL, 0);
+         }
+      " NFS_MOUNT_GETEXPORTS_TIMEOUT)
+
+      if(NFS_MOUNT_GETEXPORTS_TIMEOUT)
+        list(APPEND _nfs_definitions HAS_NFS_MOUNT_GETEXPORTS_TIMEOUT)
+      endif()
+
+      unset(CMAKE_REQUIRED_INCLUDES)
+      unset(CMAKE_REQUIRED_LIBRARIES)
+    endif()
+
+    if(NOT TARGET libnfs::nfs)
+      add_library(libnfs::nfs UNKNOWN IMPORTED)
+      set_target_properties(libnfs::nfs PROPERTIES
+                                        IMPORTED_LOCATION "${LIBNFS_LIBRARY}"
+                                        INTERFACE_INCLUDE_DIRECTORIES "${LIBNFS_INCLUDE_DIR}")
+    endif()
+
     if(TARGET libnfs)
-      add_dependencies(NFS::NFS libnfs)
+      add_dependencies(libnfs::nfs libnfs)
     endif()
-  endif()
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP NFS::NFS)
-endif()
 
-mark_as_advanced(NFS_INCLUDE_DIR NFS_LIBRARY)
+    list(APPEND _nfs_definitions HAS_FILESYSTEM_NFS)
+
+    # We need to append in case the cmake config already has definitions
+    set_property(TARGET libnfs::nfs APPEND PROPERTY
+                                           INTERFACE_COMPILE_DEFINITIONS ${_nfs_definitions})
+
+    # Need to manually set this, as libnfs cmake config does not provide INTERFACE_INCLUDE_DIRECTORIES
+    set_target_properties(libnfs::nfs PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${LIBNFS_INCLUDE_DIR})
+
+    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP libnfs::nfs)
+
+    mark_as_advanced(LIBNFS_INCLUDE_DIR LIBNFS_LIBRARY)
+  endif()
+endif()
