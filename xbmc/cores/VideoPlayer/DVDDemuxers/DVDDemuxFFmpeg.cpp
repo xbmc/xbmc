@@ -1177,6 +1177,9 @@ DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
           if (pPacket->dts != DVD_NOPTS_VALUE &&
               (pPacket->dts > m_currentPts || m_currentPts == DVD_NOPTS_VALUE))
             m_currentPts = pPacket->dts;
+          else if (pPacket->pts != DVD_NOPTS_VALUE &&
+              (pPacket->pts > m_currentPts || m_currentPts == DVD_NOPTS_VALUE))
+            m_currentPts = pPacket->pts;
 
           // store internal id until we know the continuous id presented to player
           // the stream might not have been created yet
