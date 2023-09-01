@@ -449,23 +449,38 @@
 							<texture fallback="DefaultTVShows.png">$PARAM[icon]</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
+						<control type="group">
+							<visible>!String.IsEqual(ListItem.Property(node.type),target_folder)</visible>
+							<control type="label">
+								<left>42</left>
+								<top>247</top>
+								<width>245</width>
+								<height>70</height>
+								<label>$PARAM[label]</label>
+								<font>font12</font>
+								<shadowcolor>text_shadow</shadowcolor>
+								<align>center</align>
+								<aligny>top</aligny>
+							</control>
+							<control type="label">
+								<left>42</left>
+								<top>277</top>
+								<width>245</width>
+								<height>65</height>
+								<label>$PARAM[label2]</label>
+								<font>font12</font>
+								<shadowcolor>text_shadow</shadowcolor>
+								<align>center</align>
+								<aligny>top</aligny>
+							</control>
+						</control>
 						<control type="label">
 							<left>42</left>
 							<top>247</top>
 							<width>245</width>
 							<height>70</height>
-							<label>$PARAM[label]</label>
-							<font>font12</font>
-							<shadowcolor>text_shadow</shadowcolor>
-							<align>center</align>
-							<aligny>top</aligny>
-						</control>
-						<control type="label">
-							<left>42</left>
-							<top>277</top>
-							<width>245</width>
-							<height>65</height>
-							<label>$PARAM[label2]</label>
+							<visible>String.IsEqual(ListItem.Property(node.type),target_folder)</visible>
+							<label>$INFO[ListItem.Label]</label>
 							<font>font12</font>
 							<shadowcolor>text_shadow</shadowcolor>
 							<align>center</align>
@@ -532,24 +547,40 @@
 							<texture fallback="DefaultTVShows.png">$PARAM[icon]</texture>
 							<aspectratio>keep</aspectratio>
 						</control>
+						<control type="group">
+							<visible>!String.IsEqual(ListItem.Property(node.type),target_folder)</visible>
+							<control type="label">
+								<left>42</left>
+								<top>247</top>
+								<width>245</width>
+								<height>70</height>
+								<label>$PARAM[label]</label>
+								<font>font12</font>
+								<shadowcolor>text_shadow</shadowcolor>
+								<align>center</align>
+								<scroll>true</scroll>
+								<aligny>top</aligny>
+							</control>
+							<control type="label">
+								<left>42</left>
+								<top>277</top>
+								<width>245</width>
+								<height>65</height>
+								<label>$PARAM[label2]</label>
+								<font>font12</font>
+								<shadowcolor>text_shadow</shadowcolor>
+								<align>center</align>
+								<scroll>true</scroll>
+								<aligny>top</aligny>
+							</control>
+						</control>
 						<control type="label">
 							<left>42</left>
 							<top>247</top>
 							<width>245</width>
 							<height>70</height>
-							<label>$PARAM[label]</label>
-							<font>font12</font>
-							<shadowcolor>text_shadow</shadowcolor>
-							<align>center</align>
-							<scroll>true</scroll>
-							<aligny>top</aligny>
-						</control>
-						<control type="label">
-							<left>42</left>
-							<top>277</top>
-							<width>245</width>
-							<height>65</height>
-							<label>$PARAM[label2]</label>
+							<visible>String.IsEqual(ListItem.Property(node.type),target_folder)</visible>
+							<label>$INFO[ListItem.Label]</label>
 							<font>font12</font>
 							<shadowcolor>text_shadow</shadowcolor>
 							<align>center</align>
