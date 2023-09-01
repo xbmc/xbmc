@@ -1026,7 +1026,7 @@ double CDVDDemuxFFmpeg::ConvertTimestamp(int64_t pts, int den, int num)
   return timestamp * DVD_TIME_BASE;
 }
 
-DemuxPacket* CDVDDemuxFFmpeg::Read()
+DemuxPacket* CDVDDemuxFFmpeg::ReadInternal(bool keep)
 {
   DemuxPacket* pPacket = NULL;
   // on some cases where the received packet is invalid we will need to return an empty packet (0 length) otherwise the main loop (in CVideoPlayer)
@@ -1182,8 +1182,11 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
           // the stream might not have been created yet
           pPacket->iStreamId = m_pkt.pkt.stream_index;
         }
-        m_pkt.result = -1;
-        av_packet_unref(&m_pkt.pkt);
+        if (!keep)
+        {
+          m_pkt.result = -1;
+          av_packet_unref(&m_pkt.pkt);
+        }
       }
     }
   } // end of lock scope
@@ -1241,6 +1244,11 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     pPacket->demuxerId = m_demuxerId;
   }
   return pPacket;
+}
+
+DemuxPacket* CDVDDemuxFFmpeg::Read()
+{
+  return ReadInternal(false);
 }
 
 bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
@@ -1358,7 +1366,7 @@ bool CDVDDemuxFFmpeg::SeekTime(double time, bool backwards, double* startpts)
       m_pkt.result = -1;
       av_packet_unref(&m_pkt.pkt);
 
-      DemuxPacket* pkt = Read();
+      DemuxPacket* pkt = ReadInternal(true);
       if (!pkt)
       {
         KODI::TIME::Sleep(10ms);

@@ -92,6 +92,7 @@ public:
   std::string GetFileName() override;
 
   DemuxPacket* Read() override;
+  DemuxPacket* ReadInternal(bool keep);
 
   bool SeekTime(double time, bool backwards = false, double* startpts = NULL) override;
   bool SeekByte(int64_t pos);
