@@ -29,21 +29,21 @@ public:
   CPipewireGlobal() = default;
   ~CPipewireGlobal();
 
-  CPipewireGlobal& SetName(std::string_view name)
+  CPipewireGlobal& SetName(const std::string& name)
   {
     m_name = name;
     return *this;
   }
 
-  std::string_view GetName() const { return m_name; }
+  std::string GetName() const { return m_name; }
 
-  CPipewireGlobal& SetDescription(std::string_view description)
+  CPipewireGlobal& SetDescription(const std::string& description)
   {
     m_description = description;
     return *this;
   }
 
-  std::string_view GetDescription() const { return m_description; }
+  std::string GetDescription() const { return m_description; }
 
   CPipewireGlobal& SetID(uint32_t id)
   {
@@ -61,13 +61,13 @@ public:
 
   uint32_t GetPermissions() const { return m_permissions; }
 
-  CPipewireGlobal& SetType(std::string_view type)
+  CPipewireGlobal& SetType(const std::string& type)
   {
     m_type = type;
     return *this;
   }
 
-  std::string_view GetType() const { return m_type; }
+  std::string GetType() const { return m_type; }
 
   CPipewireGlobal& SetVersion(uint32_t version)
   {
@@ -95,11 +95,11 @@ public:
   CPipewireNode& GetNode() const { return *m_node; }
 
 private:
-  std::string_view m_name;
-  std::string_view m_description;
+  std::string m_name;
+  std::string m_description;
   uint32_t m_id;
   uint32_t m_permissions;
-  std::string_view m_type;
+  std::string m_type;
   uint32_t m_version;
   std::unique_ptr<pw_properties, PipewirePropertiesDeleter> m_properties;
   std::unique_ptr<CPipewireNode> m_node;
