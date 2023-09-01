@@ -3,67 +3,56 @@
 # -------
 # Finds the ASS library
 #
-# This will define the following variables::
-#
-# ASS_FOUND - system has ASS
-# ASS_INCLUDE_DIRS - the ASS include directory
-# ASS_LIBRARIES - the ASS libraries
-#
-# and the following imported targets::
+# This will define the following target:
 #
 #   ASS::ASS   - The ASS library
 
-if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_ASS libass QUIET)
+if(NOT TARGET ASS::ASS)
+  if(ASS_FIND_REQUIRED)
+    set(_find_required "REQUIRED")
+  endif()
+  if(WIN32 OR WINDOWS_STORE)
+    include(FindPackageMessage)
 
-  if(KODI_DEPENDSBUILD)
-    # Darwin platforms have lib options like -framework CoreServices. pkgconfig return of
-    # PC_ASS_LDFLAGS splits this into a list -framework;CoreServices, and when passed to linker
-    # This then treats them as individual flags and appends -l to CoreServices. eg -framework;-lCoreServices
-    # This causes failures, as -lCoreServices isnt a lib that can be found.
-    # This just formats the list data to append frameworks (eg "-framework CoreServices")
-    if(PC_ASS_LDFLAGS AND "-framework" IN_LIST PC_ASS_LDFLAGS)
-      set(_framework_command OFF)
-      foreach(flag ${PC_ASS_LDFLAGS})
-        if(flag STREQUAL "-framework")
-          set(_framework_command ON)
-          continue()
-        elseif(_framework_command)
-          list(APPEND ASS_LDFLAGS "-framework ${flag}")
-          set(_framework_command OFF)
-        else()
-          list(APPEND ASS_LDFLAGS ${flag})
-        endif()
-      endforeach()
-      unset(_framework_command)
+    find_package(libass CONFIG ${_find_required})
+
+    if(libass_FOUND)
+      # Specifically tailored to kodi windows cmake config - Prebuilt as RelWithDebInfo always currently
+      get_target_property(libass_LIB libass::libass IMPORTED_LOCATION_RELWITHDEBINFO)
+      get_target_property(libass_INCLUDE_DIR libass::libass INTERFACE_INCLUDE_DIRECTORIES)
+      find_package_message(libass "Found libass: ${libass_LIB}" "[${libass_LIB}][${libass_INCLUDE_DIR}]")
+    endif()
+  else()
+    find_package(PkgConfig)
+
+    if(PKG_CONFIG_FOUND)
+      pkg_check_modules(ASS libass ${_find_required} IMPORTED_TARGET GLOBAL)
     else()
-      set(ASS_LDFLAGS ${PC_ASS_LDFLAGS})
+      find_path(ASS_INCLUDE_DIR NAMES ass/ass.h
+                                PATHS ${PC_ASS_INCLUDEDIR})
+      find_library(ASS_LIBRARY NAMES ass libass
+                               PATHS ${PC_ASS_LIBDIR})
+      include(FindPackageHandleStandardArgs)
+      find_package_handle_standard_args(ASS
+                                        REQUIRED_VARS ASS_LIBRARY ASS_INCLUDE_DIR
+                                        VERSION_VAR ASS_VERSION)
     endif()
   endif()
-endif()
 
-find_path(ASS_INCLUDE_DIR NAMES ass/ass.h
-                          PATHS ${PC_ASS_INCLUDEDIR})
-find_library(ASS_LIBRARY NAMES ass libass
-                         PATHS ${PC_ASS_LIBDIR})
-
-set(ASS_VERSION ${PC_ASS_VERSION})
-
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(ASS
-                                  REQUIRED_VARS ASS_LIBRARY ASS_INCLUDE_DIR
-                                  VERSION_VAR ASS_VERSION)
-
-if(ASS_FOUND)
-  set(ASS_LIBRARIES ${ASS_LIBRARY} ${ASS_LDFLAGS})
-  set(ASS_INCLUDE_DIRS ${ASS_INCLUDE_DIR})
-
-  if(NOT TARGET ASS::ASS)
-    add_library(ASS::ASS UNKNOWN IMPORTED)
-    set_target_properties(ASS::ASS PROPERTIES
-                                   IMPORTED_LOCATION "${ASS_LIBRARY}"
-                                   INTERFACE_INCLUDE_DIRECTORIES "${ASS_INCLUDE_DIR}")
+  if(ASS_FOUND)
+    if(TARGET PkgConfig::ASS)
+      add_library(ASS::ASS ALIAS PkgConfig::ASS)
+    elseif(TARGET libass::libass)
+      # Kodi Windows cmake config exports libass::libass
+      add_library(ASS::ASS ALIAS libass::libass)
+    else()
+      add_library(ASS::ASS UNKNOWN IMPORTED)
+      set_target_properties(ASS::ASS PROPERTIES
+                                     IMPORTED_LOCATION "${ASS_LIBRARY}"
+                                     INTERFACE_INCLUDE_DIRECTORIES "${ASS_INCLUDE_DIR}")
+    endif()
+    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ASS::ASS)
   endif()
-endif()
 
-mark_as_advanced(ASS_INCLUDE_DIR ASS_LIBRARY)
+  mark_as_advanced(ASS_INCLUDE_DIR ASS_LIBRARY)
+endif()
