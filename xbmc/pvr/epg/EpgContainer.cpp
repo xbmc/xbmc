@@ -953,7 +953,8 @@ int CPVREpgContainer::CleanupCachedImages()
                          });
 }
 
-std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSearches(bool bRadio)
+std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSearches(
+    bool bRadio) const
 {
   const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
@@ -965,7 +966,8 @@ std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSear
   return database->GetSavedSearches(bRadio);
 }
 
-std::shared_ptr<CPVREpgSearchFilter> CPVREpgContainer::GetSavedSearchById(bool bRadio, int iId)
+std::shared_ptr<CPVREpgSearchFilter> CPVREpgContainer::GetSavedSearchById(bool bRadio,
+                                                                          int iId) const
 {
   const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
