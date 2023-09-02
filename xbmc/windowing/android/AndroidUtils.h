@@ -46,6 +46,7 @@ public:
 
   static std::vector<int> GetDisplaySupportedHdrTypes();
   static CHDRCapabilities GetDisplayHDRCapabilities();
+  static std::pair<bool, bool> GetDolbyVisionCapabilities();
 
 protected:
   mutable int m_width;
