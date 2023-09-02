@@ -621,6 +621,8 @@ void CProfileManager::LoadMasterProfileForLogin()
     // determines that the (master) profile has only been loaded for login
     m_profileLoadedForLogin = true;
 
+    lock.unlock();
+
     LoadProfile(0);
 
     // remember that the (master) profile has only been loaded for login
