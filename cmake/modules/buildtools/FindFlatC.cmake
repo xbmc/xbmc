@@ -2,13 +2,7 @@
 # --------
 # Find the FlatBuffers schema compiler
 #
-# This will define the following variables:
-#
-# FLATBUFFERS_FLATC_EXECUTABLE_FOUND - system has FlatBuffers compiler
-# FLATBUFFERS_FLATC_EXECUTABLE - the flatc compiler executable
-# FLATBUFFERS_FLATC_VERSION - the flatc compiler version
-#
-# and the following imported targets:
+# This will define the following target:
 #
 #   flatbuffers::flatc - The FlatC compiler
 
@@ -17,7 +11,8 @@ if(NOT TARGET flatbuffers::flatc)
 
   # Check for existing FLATC.
   find_program(FLATBUFFERS_FLATC_EXECUTABLE NAMES flatc
-                                            HINTS ${NATIVEPREFIX}/bin)
+                                            HINTS ${NATIVEPREFIX}/bin
+                                            NO_CACHE)
 
   if(FLATBUFFERS_FLATC_EXECUTABLE)
     execute_process(COMMAND "${FLATBUFFERS_FLATC_EXECUTABLE}" --version
@@ -34,7 +29,8 @@ if(NOT TARGET flatbuffers::flatc)
   unset(FLATBUFFERS_URL)
   SETUP_BUILD_VARS()
 
-  if(NOT FLATBUFFERS_FLATC_EXECUTABLE OR (ENABLE_INTERNAL_FLATBUFFERS AND NOT "${FLATBUFFERS_FLATC_VERSION}" VERSION_EQUAL "${FLATBUFFERS_VER}"))
+  if(NOT FLATBUFFERS_FLATC_EXECUTABLE OR
+      (ENABLE_INTERNAL_FLATBUFFERS AND NOT "${FLATBUFFERS_FLATC_VERSION}" VERSION_EQUAL "${FLATBUFFERS_VER}"))
 
     # Override build type detection and always build as release
     set(FLATBUFFERS_BUILD_TYPE Release)
@@ -67,7 +63,7 @@ if(NOT TARGET flatbuffers::flatc)
       set(WIN_DISABLE_PROJECT_FLAGS 1)
     endif()
 
-    set(FLATBUFFERS_FLATC_EXECUTABLE ${INSTALL_DIR}/flatc CACHE INTERNAL "FlatBuffer compiler")
+    set(FLATBUFFERS_FLATC_EXECUTABLE ${INSTALL_DIR}/flatc)
 
     set(BUILD_NAME flatc)
     set(BUILD_BYPRODUCTS ${FLATBUFFERS_FLATC_EXECUTABLE})
@@ -76,25 +72,15 @@ if(NOT TARGET flatbuffers::flatc)
     BUILD_DEP_TARGET()
   endif()
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(FlatC
-                                    REQUIRED_VARS FLATBUFFERS_FLATC_EXECUTABLE
-                                    VERSION_VAR FLATBUFFERS_FLATC_VERSION)
+  include(FindPackageMessage)
+  find_package_message(FlatC "Found FlatC Compiler: ${FLATBUFFERS_FLATC_EXECUTABLE} (found version \"${FLATBUFFERS_FLATC_VERSION}\")" "[${FLATBUFFERS_FLATC_EXECUTABLE}][${FLATBUFFERS_FLATC_VERSION}]")
 
-  if(FLATC_FOUND)
+  add_executable(flatbuffers::flatc IMPORTED)
+  set_target_properties(flatbuffers::flatc PROPERTIES
+                                           IMPORTED_LOCATION "${FLATBUFFERS_FLATC_EXECUTABLE}"
+                                           FOLDER "External Projects")
 
-    add_library(flatbuffers::flatc UNKNOWN IMPORTED)
-    set_target_properties(flatbuffers::flatc PROPERTIES
-                                             FOLDER "External Projects")
-
-    if(TARGET flatc)
-      add_dependencies(flatbuffers::flatc flatc)
-    endif()
-  else()
-    if(FLATC_FIND_REQUIRED)
-      message(FATAL_ERROR "Flatc compiler not found.")
-    endif()
+  if(TARGET flatc)
+    add_dependencies(flatbuffers::flatc flatc)
   endif()
-
-  mark_as_advanced(FLATBUFFERS_FLATC_EXECUTABLE)
 endif()

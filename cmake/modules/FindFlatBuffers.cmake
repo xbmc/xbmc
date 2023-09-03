@@ -1,12 +1,10 @@
 # FindFlatBuffers
 # --------
-# Find the FlatBuffers schema compiler and headers
+# Find the FlatBuffers schema headers
 #
-# This will define the following variables:
+# This will define the following target:
 #
-# FLATBUFFERS_FOUND - system has FlatBuffers compiler and headers
-# FLATBUFFERS_INCLUDE_DIRS - the FlatFuffers include directory
-# FLATBUFFERS_MESSAGES_INCLUDE_DIR - the directory for generated headers
+#   flatbuffers::flatbuffers - The flatbuffers headers
 
 find_package(FlatC REQUIRED)
 
@@ -15,7 +13,9 @@ if(NOT TARGET flatbuffers::flatbuffers)
     include(cmake/scripts/common/ModuleHelpers.cmake)
 
     set(MODULE_LC flatbuffers)
-
+    # Duplicate URL may exist from FindFlatC.cmake
+    # unset otherwise it thinks we are providing a local file location and incorrect concatenation happens
+    unset(FLATBUFFERS_URL)
     SETUP_BUILD_VARS()
 
     # Override build type detection and always build as release
@@ -42,12 +42,10 @@ if(NOT TARGET flatbuffers::flatbuffers)
                                     REQUIRED_VARS FLATBUFFERS_INCLUDE_DIR
                                     VERSION_VAR FLATBUFFERS_VER)
 
-  set(FLATBUFFERS_MESSAGES_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/cores/RetroPlayer/messages CACHE INTERNAL "Generated FlatBuffer headers")
-
   add_library(flatbuffers::flatbuffers INTERFACE IMPORTED)
   set_target_properties(flatbuffers::flatbuffers PROPERTIES
                              FOLDER "External Projects"
-                             INTERFACE_INCLUDE_DIRECTORIES "${FLATBUFFERS_INCLUDE_DIR};${FLATBUFFERS_MESSAGES_INCLUDE_DIR}")
+                             INTERFACE_INCLUDE_DIRECTORIES "${FLATBUFFERS_INCLUDE_DIR}")
 
   add_dependencies(flatbuffers::flatbuffers flatbuffers::flatc)
 
@@ -55,7 +53,4 @@ if(NOT TARGET flatbuffers::flatbuffers)
     add_dependencies(flatbuffers::flatbuffers flatbuffers)
   endif()
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP flatbuffers::flatbuffers)
-
 endif()
-
-mark_as_advanced(FLATBUFFERS_INCLUDE_DIR)
