@@ -8,8 +8,8 @@ foreach(_file ${MESSAGES})
   list(APPEND FLATC_OUTPUTS ${FLATC_OUTPUT})
 
   add_custom_command(OUTPUT ${FLATC_OUTPUT}
-                     COMMAND ${FLATBUFFERS_FLATC_EXECUTABLE}
-                     ARGS -c -o "${FLATBUFFERS_MESSAGES_INCLUDE_DIR}/" ${_file}
+                     COMMAND flatbuffers::flatc
+                     ARGS -c -o "${CMAKE_CURRENT_BINARY_DIR}/" ${_file}
                      DEPENDS ${_file}
                      COMMENT "Building C++ header for ${_file}"
                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
@@ -21,5 +21,7 @@ set_target_properties(retroplayer_messages PROPERTIES FOLDER "Generated Messages
                                                       SOURCES "${FLATC_OUTPUTS}")
 
 if(TARGET flatbuffers::flatbuffers)
+  set_property(TARGET flatbuffers::flatbuffers APPEND PROPERTY
+                                               INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_BINARY_DIR}")
   add_dependencies(retroplayer_messages flatbuffers::flatbuffers)
 endif()
