@@ -1996,6 +1996,8 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     }
   }
 
+  std::string localThumb;
+
   bool local = false;
   std::vector<std::string> thumbs;
   if (type != MediaTypeArtist)
@@ -2056,8 +2058,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
       else
         noneitem->SetArt("icon", "DefaultActor.png");
     }
-
-    if (type == MediaTypeVideoCollection)
+    else if (type == MediaTypeVideoCollection)
     {
       std::string localFile = FindLocalMovieSetArtworkFile(item, artType);
       if (!localFile.empty())
@@ -2070,6 +2071,20 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
       }
       else
         noneitem->SetArt("icon", "DefaultVideo.png");
+    }
+    else
+    {
+      localThumb = CVideoThumbLoader::GetLocalArt(*item, artType);
+      if (!localThumb.empty())
+      {
+        const auto localitem = std::make_shared<CFileItem>("thumb://Local", false);
+        localitem->SetArt("thumb", localThumb);
+        localitem->SetArt("icon", "DefaultPicture.png");
+        localitem->SetLabel(g_localizeStrings.Get(13514));
+        items.Add(localitem);
+      }
+      else
+        noneitem->SetArt("icon", "DefaultPicture.png");
     }
   }
   else
@@ -2125,6 +2140,9 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
 
   if (result == "thumb://Current")
     result = currentThumb;   // user chose the one they have
+
+  if (result == "thumb://Local")
+    result = localThumb;
 
   if (result == "thumb://Embedded")
     result = embeddedArt;
