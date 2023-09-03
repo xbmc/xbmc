@@ -47,6 +47,8 @@ public:
 
   operator std::string();
   static std::string DeviceTypeToString(enum AEDeviceType deviceType);
+  std::string GetFriendlyName() const;
+  std::string ToDeviceString(const std::string& driver) const;
 };
 
 typedef std::vector<CAEDeviceInfo> AEDeviceInfoList;
