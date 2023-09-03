@@ -3382,20 +3382,22 @@ std::string CFileItem::GetLocalArtBaseFilename() const
 
 std::string CFileItem::GetLocalArtBaseFilename(bool& useFolder) const
 {
-  std::string strFile = m_strPath;
+  std::string strFile;
   if (IsStack())
   {
     std::string strPath;
     URIUtils::GetParentPath(m_strPath,strPath);
-    strFile = URIUtils::AddFileToFolder(strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(strFile)));
+    strFile = URIUtils::AddFileToFolder(
+        strPath, URIUtils::GetFileName(CStackDirectory::GetStackedTitlePath(m_strPath)));
   }
 
-  if (URIUtils::IsInRAR(strFile) || URIUtils::IsInZIP(strFile))
+  std::string file = strFile.empty() ? m_strPath : strFile;
+  if (URIUtils::IsInRAR(file) || URIUtils::IsInZIP(file))
   {
-    std::string strPath = URIUtils::GetDirectory(strFile);
+    std::string strPath = URIUtils::GetDirectory(file);
     std::string strParent;
     URIUtils::GetParentPath(strPath,strParent);
-    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(strFile));
+    strFile = URIUtils::AddFileToFolder(strParent, URIUtils::GetFileName(file));
   }
 
   if (IsMultiPath())
@@ -3407,7 +3409,13 @@ std::string CFileItem::GetLocalArtBaseFilename(bool& useFolder) const
     strFile = GetLocalMetadataPath();
   }
   else if (useFolder && !(m_bIsFolder && !IsFileFolder()))
-    strFile = URIUtils::GetDirectory(strFile);
+  {
+    file = strFile.empty() ? m_strPath : strFile;
+    strFile = URIUtils::GetDirectory(file);
+  }
+
+  if (strFile.empty())
+    strFile = GetDynPath();
 
   return strFile;
 }
