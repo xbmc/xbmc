@@ -1973,7 +1973,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     item->SetLabel(g_localizeStrings.Get(13512));
     items.Add(item);
   }
-  noneitem->SetArt("icon", "DefaultFolder.png");
+  noneitem->SetArt("icon", item->m_bIsFolder ? "DefaultFolder.png" : "DefaultPicture.png");
   noneitem->SetLabel(g_localizeStrings.Get(13515));
 
   std::string embeddedArt;
@@ -2324,7 +2324,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const std::shared_ptr<CFileItem>& videoIte
   // add the none option
   {
     CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-    itemNone->SetArt("icon", "DefaultVideo.png");
+    itemNone->SetArt("icon", videoItem->m_bIsFolder ? "DefaultFolder.png" : "DefaultPicture.png");
     itemNone->SetLabel(g_localizeStrings.Get(20439));
     items.Add(itemNone);
   }
