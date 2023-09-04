@@ -1985,10 +1985,10 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     loader.Load(tag, false, nullptr);
     for (const auto& it : tag.m_coverArt)
     {
-      if (it.m_type == type)
+      if (it.m_type == artType)
       {
         CFileItemPtr itemF(new CFileItem("thumb://Embedded", false));
-        embeddedArt = CTextureUtils::GetWrappedImageURL(itemCopy.GetPath(), "video_" + type);
+        embeddedArt = CTextureUtils::GetWrappedImageURL(itemCopy.GetPath(), "video_" + artType);
         itemF->SetArt("thumb", embeddedArt);
         itemF->SetLabel(g_localizeStrings.Get(13519));
         items.Add(itemF);
