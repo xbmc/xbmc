@@ -9,12 +9,10 @@
 #include "VideoInfoTagLoaderFactory.h"
 
 #include "FileItem.h"
-#include "ServiceBroker.h"
 #include "VideoTagLoaderFFmpeg.h"
 #include "VideoTagLoaderNFO.h"
 #include "VideoTagLoaderPlugin.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
+#include "video/tags/VideoTagExtractionHelper.h"
 
 using namespace VIDEO;
 
@@ -37,8 +35,7 @@ IVideoInfoTagLoader* CVideoInfoTagLoaderFactory::CreateLoader(const CFileItem& i
     return nfo;
   delete nfo;
 
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MYVIDEOS_USETAGS) &&
-      (item.IsType(".mkv") || item.IsType(".mp4") || item.IsType(".avi") || item.IsType(".m4v")))
+  if (TAGS::CVideoTagExtractionHelper::IsExtractionSupportedFor(item))
   {
     CVideoTagLoaderFFmpeg* ff = new CVideoTagLoaderFFmpeg(item, info, lookInFolder);
     if (ff->HasInfo())
