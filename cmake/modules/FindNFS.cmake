@@ -18,8 +18,8 @@ if(NOT TARGET libnfs::nfs)
   # Search for cmake config. Suitable for all platforms including windows
   find_package(libnfs CONFIG QUIET)
 
-  # Check for existing TINYXML2. If version >= TINYXML2-VERSION file version, dont build
-  # A corner case, but if a linux/freebsd user WANTS to build internal tinyxml2, build anyway
+  # Check for existing LIBNFS. If version >= LIBNFS-VERSION file version, dont build
+  # A corner case, but if a linux/freebsd user WANTS to build internal libnfs, build anyway
   if((libnfs_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_NFS) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_NFS))
 

@@ -143,7 +143,7 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
                                     REQUIRED_VARS FMT_LIBRARY FMT_INCLUDE_DIR
                                     VERSION_VAR FMT_VERSION)
 
-  # Check whether we already have tinyxml2::tinyxml2 target added to dep property list
+  # Check whether we already have fmt::fmt target added to dep property list
   get_property(CHECK_INTERNAL_DEPS GLOBAL PROPERTY INTERNAL_DEPS_PROP)
   list(FIND CHECK_INTERNAL_DEPS "fmt::fmt" FMT_PROP_FOUND)
 
