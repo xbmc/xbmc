@@ -3,13 +3,7 @@
 # ----------
 # Finds the libdvdcss library
 #
-# This will define the following variables::
-#
-# LIBDVDCSS_FOUND - system has LibDvdCSS
-# LIBDVDCSS_INCLUDE_DIRS - the LibDvdCSS include directory
-# LIBDVDCSS_LIBRARIES - the LibDvdCSS libraries
-#
-# and the following imported targets::
+# This will define the following target:
 #
 #   LibDvdCSS::LibDvdCSS   - The LibDvdCSS library
 

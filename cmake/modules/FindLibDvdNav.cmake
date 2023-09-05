@@ -3,13 +3,7 @@
 # ----------
 # Finds the dvdnav library
 #
-# This will define the following variables::
-#
-# LIBDVDNAV_FOUND - system has LibDvdNav
-# LIBDVDNAV_INCLUDE_DIRS - the LibDvdNav include directory
-# LIBDVDNAV_LIBRARIES - the LibDvdNav libraries
-#
-# and the following imported targets::
+# This will define the following target:
 #
 #   LibDvdNav::LibDvdNav   - The LibDvdNav library
 
