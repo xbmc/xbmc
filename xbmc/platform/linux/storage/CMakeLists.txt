@@ -9,7 +9,7 @@ if(TARGET DBus::DBus)
                       UDisks2Provider.h)
 endif()
 
-if(UDEV_FOUND)
+if(TARGET UDEV::UDEV)
   list(APPEND SOURCES UDevProvider.cpp)
   list(APPEND HEADERS UDevProvider.h)
 endif()
