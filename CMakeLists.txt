@@ -261,7 +261,7 @@ endif()
 set(outputFilterRegex "addons/xbmc.json")
 find_addon_xml_in_files(${outputFilterRegex})
 
-if(ALSA_FOUND AND PULSEAUDIO_FOUND)
+if(TARGET ALSA::ALSA AND PULSEAUDIO_FOUND)
   list(APPEND AUDIO_BACKENDS_LIST "alsa+pulseaudio")
 endif()
 
