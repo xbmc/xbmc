@@ -1,9 +1,9 @@
 # xrandr
-if(X_FOUND AND TARGET XRandR::XRandR)
+if(TARGET X::X AND TARGET XRandR::XRandR)
   find_package(X QUIET)
   find_package(XRandR QUIET)
   add_executable(${APP_NAME_LC}-xrandr ${CMAKE_SOURCE_DIR}/xbmc-xrandr.c)
-  target_link_libraries(${APP_NAME_LC}-xrandr ${SYSTEM_LDFLAGS} ${X_LIBRARIES} m XRandR::XRandR)
+  target_link_libraries(${APP_NAME_LC}-xrandr ${SYSTEM_LDFLAGS} X::X m XRandR::XRandR)
 endif()
 
 # WiiRemote
