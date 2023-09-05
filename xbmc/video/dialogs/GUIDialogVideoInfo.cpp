@@ -53,7 +53,6 @@
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
-#include "video/tags/VideoTagLoaderFFmpeg.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include <iterator>
@@ -888,42 +887,9 @@ void CGUIDialogVideoInfo::OnGetArt()
   }
 }
 
-namespace
-{
-std::string GetEmbeddedArt(const std::string& fileNameAndPath, const std::string& artType)
-{
-  std::string embeddedArt;
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-          CSettings::SETTING_MYVIDEOS_USETAGS))
-  {
-    if (URIUtils::HasExtension(fileNameAndPath, ".mkv") ||
-        URIUtils::HasExtension(fileNameAndPath, ".mp4") ||
-        URIUtils::HasExtension(fileNameAndPath, ".avi") ||
-        URIUtils::HasExtension(fileNameAndPath, ".m4v"))
-    {
-      CFileItem item(fileNameAndPath, false);
-      CVideoTagLoaderFFmpeg loader(item, nullptr, false);
-      CVideoInfoTag tag;
-      loader.Load(tag, false, nullptr);
-      for (const auto& it : tag.m_coverArt)
-      {
-        if (it.m_type == artType)
-        {
-          embeddedArt = CTextureUtils::GetWrappedImageURL(fileNameAndPath, "video_" + artType);
-          break;
-        }
-      }
-    }
-  }
-  return embeddedArt;
-}
-
-} // unnamed namespace
-
-// Allow user to select a Fanart
 void CGUIDialogVideoInfo::OnGetFanart()
 {
-  if (OnGetFanart(m_movieItem))
+  if (ManageVideoItemArtwork(m_movieItem, m_movieItem->GetVideoInfoTag()->m_type, "fanart"))
   {
     m_hasUpdatedThumb = true;
 
@@ -976,45 +942,6 @@ void CGUIDialogVideoInfo::SetLabel(int iControl, const std::string &strLabel)
 std::string CGUIDialogVideoInfo::GetThumbnail() const
 {
   return m_movieItem->GetArt("thumb");
-}
-
-namespace
-{
-std::string GetItemPathForBrowserSource(const CFileItem& item)
-{
-  if (!item.HasVideoInfoTag())
-    return "";
-
-  std::string itemDir = item.GetVideoInfoTag()->m_basePath;
-  //season
-  if (itemDir.empty())
-    itemDir = item.GetVideoInfoTag()->GetPath();
-
-  CFileItem itemTmp(itemDir, false);
-  if (itemTmp.IsVideo())
-    itemDir = URIUtils::GetParentPath(itemDir);
-
-  return itemDir;
-}
-
-void AddItemPathStringToFileBrowserSources(VECSOURCES& sources,
-    const std::string& itemDir, const std::string& label)
-{
-  if (!itemDir.empty() && CDirectory::Exists(itemDir))
-  {
-    CMediaSource itemSource;
-    itemSource.strName = label;
-    itemSource.strPath = itemDir;
-    sources.push_back(itemSource);
-  }
-}
-} // namespace
-
-void CGUIDialogVideoInfo::AddItemPathToFileBrowserSources(VECSOURCES& sources,
-    const CFileItem& item)
-{
-  std::string itemDir = GetItemPathForBrowserSource(item);
-  AddItemPathStringToFileBrowserSources(sources, itemDir, g_localizeStrings.Get(36041));
 }
 
 int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
@@ -1784,12 +1711,6 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   const std::unique_ptr<VIDEO::IVideoItemArtworkHandler> artHandler =
       VIDEO::IVideoItemArtworkHandlerFactory::Create(item, mediaType, artType);
 
-  //! @todo get rid of this special handling of fanart
-  if (artType == "fanart" && mediaType != MediaTypeVideoCollection)
-  {
-    return OnGetFanart(item);
-  }
-
   CFileItemList items;
 
   const std::string currentArt = artHandler->GetCurrentArt();
@@ -1843,8 +1764,11 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   CServiceBroker::GetMediaManager().GetLocalDrives(sources);
   artHandler->AddItemPathToFileBrowserSources(sources);
 
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(13511), result))
-    return false;   // user cancelled
+  bool flip = false;
+  if (!CGUIDialogFileBrowser::ShowAndGetImage(
+          items, sources, g_localizeStrings.Get(13511) /* Choose art */, result,
+          artHandler->SupportsFlippedArt() ? &flip : nullptr, 39123 /* Artwork */))
+    return false; // user cancelled
 
   if (result == "thumb://Current")
     result = currentArt; // user chose the one they have
@@ -1853,17 +1777,23 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     result = localArt;
 
   if (result == "thumb://Embedded")
-    result = embeddedArt;
+    result = artHandler->UpdateEmbeddedArt(embeddedArt);
 
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
   if (result == "thumb://None")
+  {
     result.clear();
+  }
   else if (StringUtils::StartsWith(result, "thumb://Remote"))
   {
-    const int number = std::atoi(StringUtils::Mid(result, 14).c_str());
-    result = remoteArt[number];
+    const int index = std::atoi(StringUtils::Mid(result, 14).c_str());
+    result = artHandler->UpdateRemoteArt(remoteArt, index);
   }
+
+  // flip selected image, if user wants it
+  if (!result.empty() && flip)
+    result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");
 
   // write the selected artwork to the database
   artHandler->PersistArt(result);
@@ -1996,135 +1926,6 @@ bool CGUIDialogVideoInfo::LinkMovieToTvShow(const std::shared_ptr<CFileItem>& it
     return database.LinkMovieToTvshow(dbId, list[iSelectedLabel]->GetVideoInfoTag()->m_iDbId, bRemove);
 
   return false;
-}
-
-bool CGUIDialogVideoInfo::OnGetFanart(const std::shared_ptr<CFileItem>& videoItem)
-{
-  if (videoItem == nullptr || !videoItem->HasVideoInfoTag())
-    return false;
-
-  CVideoDatabase videodb;
-  if (!videodb.Open())
-    return false;
-
-  CVideoInfoTag* videoTag = videoItem->GetVideoInfoTag();
-
-  // Ensure the fanart is unpacked
-  videoTag->m_fanart.Unpack();
-
-  CFileItemList items;
-
-  if (videoItem->HasArt("fanart"))
-  {
-    const auto itemCurrent = std::make_shared<CFileItem>("fanart://Current", false);
-    itemCurrent->SetArt("thumb", videoItem->GetArt("fanart"));
-    itemCurrent->SetArt("icon", "DefaultPicture.png");
-    itemCurrent->SetLabel(g_localizeStrings.Get(20440));
-    items.Add(itemCurrent);
-  }
-
-  const std::string embeddedArt = GetEmbeddedArt(videoTag->m_strFileNameAndPath, "fanart");
-  if (!embeddedArt.empty())
-  {
-    const auto itemEmbedded = std::make_shared<CFileItem>("fanart://Embedded", false);
-    itemEmbedded->SetArt("thumb", embeddedArt);
-    itemEmbedded->SetLabel(g_localizeStrings.Get(13520));
-    items.Add(itemEmbedded);
-  }
-
-  // Grab the thumbnails from the web
-  for (unsigned int i = 0; i < videoTag->m_fanart.GetNumFanarts(); ++i)
-  {
-    const std::string thumb = videoTag->m_fanart.GetPreviewURL(i);
-    if (URIUtils::IsProtocol(thumb, "image"))
-      continue;
-
-    std::string itemPath = StringUtils::Format("fanart://Remote{}", i);
-    const auto itemRemote = std::make_shared<CFileItem>(itemPath, false);
-    itemRemote->SetArt("thumb", CTextureUtils::GetWrappedThumbURL(thumb));
-    itemRemote->SetArt("icon", "DefaultPicture.png");
-    itemRemote->SetLabel(g_localizeStrings.Get(20441));
-
-    //! @todo Do we need to clear the cached image?
-    //    CServiceBroker::GetTextureCache()->ClearCachedImage(thumb);
-    items.Add(itemRemote);
-  }
-
-  CFileItem item(*videoTag);
-  const std::string localFanart = item.GetLocalFanart();
-  if (!localFanart.empty())
-  {
-    const auto itemLocal = std::make_shared<CFileItem>("fanart://Local", false);
-    itemLocal->SetArt("thumb", localFanart);
-    itemLocal->SetArt("icon", "DefaultPicture.png");
-    itemLocal->SetLabel(g_localizeStrings.Get(20438));
-
-    //! @todo Do we need to clear the cached image?
-    CServiceBroker::GetTextureCache()->ClearCachedImage(localFanart);
-    items.Add(itemLocal);
-  }
-  else
-  {
-    const auto itemNone = std::make_shared<CFileItem>("fanart://None", false);
-    itemNone->SetArt("icon", "DefaultPicture.png");
-    itemNone->SetLabel(g_localizeStrings.Get(20439));
-    items.Add(itemNone);
-  }
-
-  std::string result;
-  VECSOURCES sources(*CMediaSourceSettings::GetInstance().GetSources("video"));
-  CServiceBroker::GetMediaManager().GetLocalDrives(sources);
-  AddItemPathToFileBrowserSources(sources, item);
-  bool flip = false;
-  if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) ||
-      StringUtils::EqualsNoCase(result, "fanart://Current"))
-    return false;
-
-  if (StringUtils::EqualsNoCase(result, "fanart://Local"))
-    result = localFanart;
-
-  if (StringUtils::EqualsNoCase(result, "fanart://Embedded"))
-  {
-    const int current = videoTag->m_fanart.GetNumFanarts();
-    int found = -1;
-    for (int i = 0; i < current; ++i)
-    {
-      if (URIUtils::IsProtocol(videoTag->m_fanart.GetImageURL(i), "image"))
-        found = i;
-    }
-
-    if (found != -1)
-    {
-      videoTag->m_fanart.AddFanart(embeddedArt, "", "");
-      found = current;
-    }
-
-    videoTag->m_fanart.SetPrimaryFanart(found);
-    videodb.UpdateFanart(*videoItem, videoItem->GetVideoContentType());
-    result = embeddedArt;
-  }
-
-  if (StringUtils::StartsWith(result, "fanart://Remote"))
-  {
-    const int fanartIndex = std::atoi(result.substr(15).c_str());
-    // set new primary fanart, and update our database accordingly
-    videoItem->GetVideoInfoTag()->m_fanart.SetPrimaryFanart(fanartIndex);
-    videodb.UpdateFanart(*videoItem, videoItem->GetVideoContentType());
-    result = videoTag->m_fanart.GetImageURL();
-  }
-  else if (StringUtils::EqualsNoCase(result, "fanart://None") || !CFileUtils::Exists(result))
-    result.clear();
-
-  // set the fanart image
-  if (!result.empty() && flip)
-    result = CTextureUtils::GetWrappedImageURL(result, "", "flipped");
-
-  videodb.SetArtForItem(videoTag->m_iDbId, videoTag->m_type, "fanart", result);
-
-  CUtil::DeleteVideoDatabaseDirectoryCache(); // to get them new thumbs to show
-  videoItem->SetArt("fanart", result);
-
-  return true;
 }
 
 void CGUIDialogVideoInfo::ShowFor(const CFileItem& item)

@@ -23068,8 +23068,9 @@ msgctxt "#39122"
 msgid "Library Information Sources"
 msgstr ""
 
-#. Label for section of settings
+#. Label for section of settings, label for artwork file browse dialog
 #: system/settings/settings.xml
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#39123"
 msgid "Artwork"
 msgstr ""
