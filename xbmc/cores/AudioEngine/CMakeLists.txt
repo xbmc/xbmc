@@ -91,7 +91,7 @@ if(PIPEWIRE_FOUND)
                       Sinks/pipewire/PipewireThreadLoop.h)
 endif()
 
-if(SNDIO_FOUND)
+if(TARGET Sndio::Sndio)
   list(APPEND SOURCES Sinks/AESinkSNDIO.cpp)
   list(APPEND HEADERS Sinks/AESinkSNDIO.h)
 endif()
