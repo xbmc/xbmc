@@ -239,7 +239,8 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
 
   if (!scraper && !(fileItem.IsPlugin() || fileItem.IsScript()) &&
       !(m_database.HasMovieInfo(fileItem.GetDynPath()) || m_database.HasTvShowInfo(strDir) ||
-        m_database.HasEpisodeInfo(fileItem.GetDynPath())))
+        m_database.HasEpisodeInfo(fileItem.GetDynPath()) ||
+        m_database.HasMusicVideoInfo(fileItem.GetDynPath())))
   {
     HELPERS::ShowOKDialogText(CVariant{20176}, // Show video information
                               CVariant{19055}); // no information available
@@ -396,7 +397,7 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
     }
     if (info->Content() == CONTENT_MUSICVIDEOS)
     {
-      bHasInfo = m_database.GetMusicVideoInfo(item->GetPath(), movieDetails);
+      bHasInfo = m_database.GetMusicVideoInfo(item->GetDynPath(), movieDetails);
     }
     m_database.Close();
   }
