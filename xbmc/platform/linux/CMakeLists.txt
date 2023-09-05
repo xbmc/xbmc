@@ -23,7 +23,7 @@ if(ALSA_FOUND)
   list(APPEND HEADERS FDEventMonitor.h)
 endif()
 
-if(DBUS_FOUND)
+if(TARGET DBus::DBus)
   list(APPEND SOURCES DBusMessage.cpp
                       DBusUtil.cpp)
   list(APPEND HEADERS DBusMessage.h
