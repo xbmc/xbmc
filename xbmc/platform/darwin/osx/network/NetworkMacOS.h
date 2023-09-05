@@ -13,23 +13,23 @@
 #include <string>
 #include <vector>
 
-class CNetworkInterfaceOsx : public CNetworkInterfacePosix
+class CNetworkInterfaceMacOS : public CNetworkInterfacePosix
 {
 public:
-  CNetworkInterfaceOsx(CNetworkPosix* network,
-                       const std::string& interfaceName,
-                       char interfaceMacAddrRaw[6]);
-  ~CNetworkInterfaceOsx() override = default;
+  CNetworkInterfaceMacOS(CNetworkPosix* network,
+                         const std::string& interfaceName,
+                         char interfaceMacAddrRaw[6]);
+  ~CNetworkInterfaceMacOS() override = default;
 
   std::string GetCurrentDefaultGateway() const override;
   bool GetHostMacAddress(unsigned long host, std::string& mac) const override;
 };
 
-class CNetworkOsx : public CNetworkPosix
+class CNetworkMacOS : public CNetworkPosix
 {
 public:
-  CNetworkOsx();
-  ~CNetworkOsx() override = default;
+  CNetworkMacOS();
+  ~CNetworkMacOS() override = default;
 
   bool PingHost(unsigned long host, unsigned int timeout_ms = 2000) override;
   std::vector<std::string> GetNameServers() override;
