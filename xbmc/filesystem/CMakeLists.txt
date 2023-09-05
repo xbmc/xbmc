@@ -131,7 +131,7 @@ if(ISO9660PP_FOUND)
                       ISO9660File.h)
 endif()
 
-if(UDFREAD_FOUND)
+if(TARGET udfread::udfread)
   list(APPEND SOURCES UDFBlockInput.cpp
                       UDFDirectory.cpp
                       UDFFile.cpp)
