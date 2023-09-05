@@ -426,6 +426,104 @@ void CVideoItemArtworkMovieSetHandler::AddItemPathToFileBrowserSources(
       "* " + g_localizeStrings.Get(20226) /* Movie set information folder */);
 }
 
+//-------------------------------------------------------------------------------------------------
+// CVideoItemArtworkFanartHandler (Handler for all media types, to manage fanart art type)
+//-------------------------------------------------------------------------------------------------
+
+class CVideoItemArtworkFanartHandler : public CVideoItemArtworkHandler
+{
+public:
+  explicit CVideoItemArtworkFanartHandler(const std::shared_ptr<CFileItem>& item,
+                                          const std::string& artType)
+    : CVideoItemArtworkHandler(item, artType)
+  {
+    // Ensure the fanart is unpacked
+    m_item->GetVideoInfoTag()->m_fanart.Unpack();
+  }
+
+  std::string GetCurrentArt() const override;
+  std::vector<std::string> GetRemoteArt() const override;
+  std::string GetLocalArt() const override;
+
+  std::string GetDefaultIcon() const override { return "DefaultPicture.png"; }
+  bool SupportsFlippedArt() const override { return true; }
+
+  std::string UpdateEmbeddedArt(const std::string& art) override;
+  std::string UpdateRemoteArt(const std::vector<std::string>& art, int index) override;
+};
+
+std::string CVideoItemArtworkFanartHandler::GetCurrentArt() const
+{
+  return m_item->GetArt("fanart");
+}
+
+std::vector<std::string> CVideoItemArtworkFanartHandler::GetRemoteArt() const
+{
+  std::vector<std::string> remoteArt;
+  const CVideoInfoTag* videoTag = m_item->GetVideoInfoTag();
+  for (unsigned int i = 0; i < videoTag->m_fanart.GetNumFanarts(); ++i)
+  {
+    const std::string thumb = videoTag->m_fanart.GetPreviewURL(i);
+    if (URIUtils::IsProtocol(thumb, "image"))
+      continue;
+
+    remoteArt.emplace_back(CTextureUtils::GetWrappedThumbURL(thumb));
+  }
+  return remoteArt;
+}
+
+std::string CVideoItemArtworkFanartHandler::GetLocalArt() const
+{
+  return m_item->GetLocalFanart();
+}
+
+std::string CVideoItemArtworkFanartHandler::UpdateEmbeddedArt(const std::string& art)
+{
+  CVideoDatabase videodb;
+  if (!videodb.Open())
+  {
+    CLog::LogF(LOGERROR, "Cannot open video database!");
+    return art;
+  }
+
+  CVideoInfoTag* videoTag = m_item->GetVideoInfoTag();
+  const int currentTag = videoTag->m_fanart.GetNumFanarts();
+  int matchingTag = -1;
+  for (int i = 0; i < currentTag; ++i)
+  {
+    if (URIUtils::IsProtocol(videoTag->m_fanart.GetImageURL(i), "image"))
+      matchingTag = i;
+  }
+
+  if (matchingTag != -1)
+  {
+    videoTag->m_fanart.AddFanart(art, "", "");
+    matchingTag = currentTag;
+  }
+
+  videoTag->m_fanart.SetPrimaryFanart(matchingTag);
+  videodb.UpdateFanart(*m_item, m_item->GetVideoContentType());
+  return art;
+}
+
+std::string CVideoItemArtworkFanartHandler::UpdateRemoteArt(const std::vector<std::string>& art,
+                                                            int index)
+{
+  CVideoInfoTag* videoTag = m_item->GetVideoInfoTag();
+
+  CVideoDatabase videodb;
+  if (!videodb.Open())
+  {
+    CLog::LogF(LOGERROR, "Cannot open video database!");
+  }
+  else
+  {
+    videoTag->m_fanart.SetPrimaryFanart(index);
+    videodb.UpdateFanart(*m_item, m_item->GetVideoContentType());
+  }
+  return videoTag->m_fanart.GetImageURL();
+}
+
 } // unnamed namespace
 
 //-------------------------------------------------------------------------------------------------
@@ -439,7 +537,9 @@ std::unique_ptr<IVideoItemArtworkHandler> IVideoItemArtworkHandlerFactory::Creat
 {
   std::unique_ptr<IVideoItemArtworkHandler> artHandler;
 
-  if (mediaType == MediaTypeArtist)
+  if (artType == "fanart" && mediaType != MediaTypeVideoCollection)
+    artHandler = std::make_unique<CVideoItemArtworkFanartHandler>(item, artType);
+  else if (mediaType == MediaTypeArtist)
     artHandler = std::make_unique<CVideoItemArtworkArtistHandler>(item, artType);
   else if (mediaType == "actor")
     artHandler = std::make_unique<CVideoItemArtworkActorHandler>(item, artType);
