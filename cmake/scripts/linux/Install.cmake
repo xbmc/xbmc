@@ -280,7 +280,7 @@ if(ENABLE_EVENTCLIENTS)
           DESTINATION ${bindir}
           COMPONENT kodi-eventclients-ps3)
 
-  if(BLUETOOTH_FOUND AND CWIID_FOUND AND GLU_FOUND)
+  if(TARGET Bluetooth::Bluetooth AND CWIID_FOUND AND GLU_FOUND)
     # Install kodi-eventclients-wiiremote
     install(PROGRAMS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/WiiRemote/${APP_NAME_LC}-wiiremote
             DESTINATION ${bindir}

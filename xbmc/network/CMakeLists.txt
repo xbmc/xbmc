@@ -51,9 +51,6 @@ if(MICROHTTPD_FOUND)
 endif()
 
 core_add_library(network)
-if(BLUETOOTH_FOUND)
-  target_compile_definitions(${CORE_LIBRARY} PRIVATE -DHAVE_LIBBLUETOOTH=1)
-endif()
 
 if(ENABLE_STATIC_LIBS AND ENABLE_UPNP)
   target_link_libraries(${CORE_LIBRARY} PRIVATE upnp)
