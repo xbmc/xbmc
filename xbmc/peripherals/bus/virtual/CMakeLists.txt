@@ -4,7 +4,7 @@ set(SOURCES PeripheralBusAddon.cpp
 set(HEADERS PeripheralBusAddon.h
             PeripheralBusApplication.h)
 
-if(CEC_FOUND)
+if(TARGET CEC::CEC)
   list(APPEND SOURCES PeripheralBusCEC.cpp)
   list(APPEND HEADERS PeripheralBusCEC.h)
 endif()
