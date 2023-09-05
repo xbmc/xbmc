@@ -6,7 +6,7 @@ if(TARGET DBus::DBus)
   list(APPEND HEADERS OSScreenSaverFreedesktop.h)
 endif()
 
-if(EGL_FOUND)
+if(TARGET EGL::EGL)
   list(APPEND SOURCES WinSystemEGL.cpp)
   list(APPEND HEADERS WinSystemEGL.h)
 endif()

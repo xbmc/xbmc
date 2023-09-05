@@ -24,7 +24,7 @@ if(OPENGL_FOUND)
                       RenderBufferPoolOpenGL.h)
 endif()
 
-if(("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_LC) AND EGL_FOUND)
+if(("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_LC) AND TARGET EGL::EGL)
   list(APPEND SOURCES RenderBufferDMA.cpp
                       RenderBufferPoolDMA.cpp)
   list(APPEND HEADERS RenderBufferDMA.h
