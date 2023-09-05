@@ -232,7 +232,7 @@ elseif(ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
 endif()
 
 core_optional_dep(MariaDBClient)
-if(NOT MARIADBCLIENT_FOUND)
+if(NOT TARGET MariaDBClient::MariaDBClient)
   core_optional_dep(MySqlClient)
 endif()
 
