@@ -75,6 +75,7 @@ if(NOT TARGET spdlog::spdlog)
     add_dependencies(${MODULE_LC} fmt::fmt)
   else()
     if(NOT TARGET spdlog::spdlog)
+      find_package(PkgConfig)
       # Fallback to pkg-config and individual lib/include file search
       if(PKG_CONFIG_FOUND)
         pkg_check_modules(PC_SPDLOG spdlog QUIET)
@@ -82,12 +83,15 @@ if(NOT TARGET spdlog::spdlog)
       endif()
 
       find_path(SPDLOG_INCLUDE_DIR NAMES spdlog/spdlog.h
-                                   PATHS ${PC_SPDLOG_INCLUDEDIR})
+                                   PATHS ${PC_SPDLOG_INCLUDEDIR}
+                                   NO_CACHE)
 
       find_library(SPDLOG_LIBRARY_RELEASE NAMES spdlog
-                                          PATHS ${PC_SPDLOG_LIBDIR})
+                                          PATHS ${PC_SPDLOG_LIBDIR}
+                                          NO_CACHE)
       find_library(SPDLOG_LIBRARY_DEBUG NAMES spdlogd
-                                        PATHS ${PC_SPDLOG_LIBDIR})
+                                        PATHS ${PC_SPDLOG_LIBDIR}
+                                        NO_CACHE)
 
       # Only add -D definitions. Skip -I include as we do a find_path for the header anyway
       foreach(_spdlog_cflag IN LISTS PC_SPDLOG_CFLAGS)
@@ -153,11 +157,10 @@ if(NOT TARGET spdlog::spdlog)
                                                 INTERFACE_COMPILE_DEFINITIONS "${_spdlog_definitions}")
     endif()
 
+    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP spdlog::spdlog)
+
     if(TARGET spdlog)
       add_dependencies(spdlog::spdlog spdlog)
     endif()
   endif()
-
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP spdlog::spdlog)
-
 endif()
