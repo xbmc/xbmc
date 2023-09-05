@@ -3,42 +3,36 @@
 # -----------
 # Finds the POSIX 1003.1e capabilities library
 #
-# This will define the following variables::
-#
-# CAP_FOUND - system has LibCap
-# CAP_INCLUDE_DIRS - the LibCap include directory
-# CAP_LIBRARIES - the LibCap libraries
-#
-# and the following imported targets::
+# This will define the following target:
 #
 # CAP::CAP - The LibCap library
 
-if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_CAP libcap QUIET)
-endif()
+if(NOT TARGET CAP::CAP)
+  find_package(PkgConfig)
+  if(PKG_CONFIG_FOUND)
+    pkg_check_modules(PC_CAP libcap QUIET)
+  endif()
 
-find_path(CAP_INCLUDE_DIR NAMES sys/capability.h
-                          PATHS ${PC_CAP_INCLUDEDIR})
-find_library(CAP_LIBRARY NAMES cap libcap
-                         PATHS ${PC_CAP_LIBDIR})
+  find_path(CAP_INCLUDE_DIR NAMES sys/capability.h
+                            PATHS ${PC_CAP_INCLUDEDIR}
+                            NO_CACHE)
+  find_library(CAP_LIBRARY NAMES cap libcap
+                           PATHS ${PC_CAP_LIBDIR}
+                           NO_CACHE)
 
-set(CAP_VERSION ${PC_CAP_VERSION})
+  set(CAP_VERSION ${PC_CAP_VERSION})
 
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(CAP
-                                  REQUIRED_VARS CAP_LIBRARY CAP_INCLUDE_DIR
-                                  VERSION_VAR CAP_VERSION)
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(CAP
+                                    REQUIRED_VARS CAP_LIBRARY CAP_INCLUDE_DIR
+                                    VERSION_VAR CAP_VERSION)
 
-if(CAP_FOUND)
-  set(CAP_LIBRARIES ${CAP_LIBRARY})
-  set(CAP_INCLUDE_DIRS ${CAP_INCLUDE_DIR})
-
-  if(NOT TARGET CAP::CAP)
+  if(CAP_FOUND)
     add_library(CAP::CAP UNKNOWN IMPORTED)
     set_target_properties(CAP::CAP PROPERTIES
                                    IMPORTED_LOCATION "${CAP_LIBRARY}"
-                                   INTERFACE_INCLUDE_DIRECTORIES "${CAP_INCLUDE_DIR}")
+                                   INTERFACE_INCLUDE_DIRECTORIES "${CAP_INCLUDE_DIR}"
+                                   INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCAP=1)
+    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP CAP::CAP)
   endif()
 endif()
-
-mark_as_advanced(CAP_INCLUDE_DIR CAP_LIBRARY)
