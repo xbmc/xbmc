@@ -18,7 +18,7 @@ if(ALSA_FOUND)
   list(APPEND HEADERS ../linux/FDEventMonitor.h)
 endif()
 
-if(DBUS_FOUND)
+if(TARGET DBus::DBus)
   list(APPEND SOURCES ../linux/DBusMessage.cpp
                       ../linux/DBusUtil.cpp)
   list(APPEND HEADERS ../linux/DBusMessage.h
