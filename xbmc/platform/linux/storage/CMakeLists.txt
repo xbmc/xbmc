@@ -2,7 +2,7 @@ set(SOURCES LinuxStorageProvider.cpp)
 
 set(HEADERS LinuxStorageProvider.h)
 
-if(DBUS_FOUND)
+if(TARGET DBus::DBus)
   list(APPEND SOURCES UDisksProvider.cpp
                       UDisks2Provider.cpp)
   list(APPEND HEADERS UDisksProvider.h
