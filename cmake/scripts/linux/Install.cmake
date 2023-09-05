@@ -59,7 +59,7 @@ configure_file(${CMAKE_SOURCE_DIR}/tools/Linux/kodi.metainfo.xml.in
 install(TARGETS ${APP_NAME_LC}
         DESTINATION ${libdir}/${APP_NAME_LC}
         COMPONENT kodi-bin)
-if(X_FOUND AND XRANDR_FOUND)
+if(X_FOUND AND TARGET XRandR::XRandR)
   install(TARGETS ${APP_NAME_LC}-xrandr
           DESTINATION ${libdir}/${APP_NAME_LC}
           COMPONENT kodi-bin)
