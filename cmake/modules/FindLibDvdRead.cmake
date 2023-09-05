@@ -3,13 +3,7 @@
 # ----------
 # Finds the dvdread library
 #
-# This will define the following variables::
-#
-# LIBDVDREAD_FOUND - system has LibDvdRead
-# LIBDVDREAD_INCLUDE_DIRS - the LibDvdRead include directory
-# LIBDVDREAD_LIBRARIES - the LibDvdRead libraries
-#
-# and the following imported targets::
+# This will define the following target:
 #
 #   LibDvdRead::LibDvdRead   - The LibDvdRead library
 
