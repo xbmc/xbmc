@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "NetworkOsx.h"
+#include "NetworkmacOS.h"
 
 #include "utils/StringUtils.h"
 #include "utils/log.h"
@@ -25,14 +25,14 @@
 #include <sys/sockio.h>
 #include <unistd.h>
 
-CNetworkInterfaceOsx::CNetworkInterfaceOsx(CNetworkPosix* network,
-                                           const std::string& interfaceName,
-                                           char interfaceMacAddrRaw[6])
+CNetworkInterfaceMacOS::CNetworkInterfaceMacOS(CNetworkPosix* network,
+                                               const std::string& interfaceName,
+                                               char interfaceMacAddrRaw[6])
   : CNetworkInterfacePosix(network, interfaceName, interfaceMacAddrRaw)
 {
 }
 
-std::string CNetworkInterfaceOsx::GetCurrentDefaultGateway() const
+std::string CNetworkInterfaceMacOS::GetCurrentDefaultGateway() const
 {
   std::string result;
 
@@ -56,7 +56,7 @@ std::string CNetworkInterfaceOsx::GetCurrentDefaultGateway() const
   return result;
 }
 
-bool CNetworkInterfaceOsx::GetHostMacAddress(unsigned long host_ip, std::string& mac) const
+bool CNetworkInterfaceMacOS::GetHostMacAddress(unsigned long host_ip, std::string& mac) const
 {
   bool ret = false;
   size_t needed;
@@ -100,16 +100,15 @@ bool CNetworkInterfaceOsx::GetHostMacAddress(unsigned long host_ip, std::string&
 
 std::unique_ptr<CNetworkBase> CNetworkBase::GetNetwork()
 {
-  return std::make_unique<CNetworkOsx>();
+  return std::make_unique<CNetworkMacOS>();
 }
 
-CNetworkOsx::CNetworkOsx() : CNetworkPosix()
+CNetworkMacOS::CNetworkMacOS() : CNetworkPosix()
 {
   queryInterfaceList();
 }
 
-
-void CNetworkOsx::GetMacAddress(const std::string& interfaceName, char rawMac[6])
+void CNetworkMacOS::GetMacAddress(const std::string& interfaceName, char rawMac[6])
 {
   memset(rawMac, 0, 6);
 
@@ -149,7 +148,7 @@ void CNetworkOsx::GetMacAddress(const std::string& interfaceName, char rawMac[6]
   freeifaddrs(list);
 }
 
-void CNetworkOsx::queryInterfaceList()
+void CNetworkMacOS::queryInterfaceList()
 {
   char macAddrRaw[6];
   m_interfaces.clear();
@@ -171,13 +170,13 @@ void CNetworkOsx::queryInterfaceList()
     if (macAddrRaw[0] || macAddrRaw[1] || macAddrRaw[2] || macAddrRaw[3] || macAddrRaw[4] ||
         macAddrRaw[5])
       // Add the interface.
-      m_interfaces.push_back(new CNetworkInterfaceOsx(this, cur->ifa_name, macAddrRaw));
+      m_interfaces.push_back(new CNetworkInterfaceMacOS(this, cur->ifa_name, macAddrRaw));
   }
 
   freeifaddrs(list);
 }
 
-std::vector<std::string> CNetworkOsx::GetNameServers()
+std::vector<std::string> CNetworkMacOS::GetNameServers()
 {
   std::vector<std::string> result;
 
@@ -222,7 +221,7 @@ std::vector<std::string> CNetworkOsx::GetNameServers()
   return result;
 }
 
-bool CNetworkOsx::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
+bool CNetworkMacOS::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
 {
   char cmd_line[64];
 
