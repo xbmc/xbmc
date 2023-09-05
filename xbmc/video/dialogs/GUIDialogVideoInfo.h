@@ -97,11 +97,6 @@ protected:
                                 bool bRemove,
                                 CVideoDatabase& database);
 
-  /*! \brief Pop up a fanart chooser. Does not utilise remote URLs.
-   \param videoItem the item to choose fanart for.
-   */
-  static bool OnGetFanart(const std::shared_ptr<CFileItem>& videoItem);
-
   std::shared_ptr<CFileItem> m_movieItem;
   CFileItemList *m_castList;
   bool m_bViewReview = false;

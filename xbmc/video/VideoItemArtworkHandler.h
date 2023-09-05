@@ -29,8 +29,15 @@ public:
   virtual std::string GetLocalArt() const { return {}; }
 
   virtual std::string GetDefaultIcon() const = 0;
+  virtual bool SupportsFlippedArt() const { return false; }
 
   virtual void AddItemPathToFileBrowserSources(std::vector<CMediaSource>& sources) {}
+
+  virtual std::string UpdateEmbeddedArt(const std::string& art) { return art; }
+  virtual std::string UpdateRemoteArt(const std::vector<std::string>& art, int index)
+  {
+    return art[index];
+  }
 
   virtual void PersistArt(const std::string& art) = 0;
 };
