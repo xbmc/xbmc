@@ -236,7 +236,7 @@ if(NOT MARIADBCLIENT_FOUND)
   core_optional_dep(MySqlClient)
 endif()
 
-if(NOT UDEV_FOUND)
+if(NOT TARGET UDEV::UDEV)
   core_optional_dep(LibUSB)
 endif()
 

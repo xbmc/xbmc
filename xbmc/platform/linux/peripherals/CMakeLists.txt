@@ -1,4 +1,4 @@
-if(UDEV_FOUND)
+if(TARGET UDEV::UDEV)
   list(APPEND SOURCES PeripheralBusUSBLibUdev.cpp)
   list(APPEND HEADERS PeripheralBusUSBLibUdev.h)
 elseif(LIBUSB_FOUND)
