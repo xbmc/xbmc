@@ -9,15 +9,17 @@
 #
 
 if(NOT TARGET SQLite3::SQLite3)
-
+  find_package(PkgConfig)
   if(PKG_CONFIG_FOUND)
     pkg_check_modules(PC_SQLITE3 sqlite3 QUIET)
   endif()
 
   find_path(SQLITE3_INCLUDE_DIR NAMES sqlite3.h
-                                PATHS ${PC_SQLITE3_INCLUDEDIR})
+                                PATHS ${PC_SQLITE3_INCLUDEDIR}
+                                NO_CACHE)
   find_library(SQLITE3_LIBRARY NAMES sqlite3
-                               PATHS ${PC_SQLITE3_LIBDIR})
+                               PATHS ${PC_SQLITE3_LIBDIR}
+                               NO_CACHE)
 
   set(SQLITE3_VERSION ${PC_SQLITE3_VERSION})
 
@@ -34,5 +36,4 @@ if(NOT TARGET SQLite3::SQLite3)
 
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP SQLite3::SQLite3)
   endif()
-  mark_as_advanced(SQLITE3_INCLUDE_DIR SQLITE3_LIBRARY)
 endif()
