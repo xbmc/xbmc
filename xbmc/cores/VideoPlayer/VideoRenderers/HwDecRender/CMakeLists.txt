@@ -20,7 +20,7 @@ if(VAAPI_FOUND)
   endif()
 endif()
 
-if(VDPAU_FOUND)
+if(TARGET VDPAU::VDPAU)
   list(APPEND SOURCES RendererVDPAU.cpp
                       VdpauGL.cpp)
   list(APPEND HEADERS RendererVDPAU.h
