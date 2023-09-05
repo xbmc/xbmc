@@ -1,4 +1,4 @@
-set(SOURCES NetworkOsx.cpp)
-set(HEADERS NetworkOsx.h)
+set(SOURCES NetworkMacOS.mm)
+set(HEADERS NetworkMacOS.h)
 
-core_add_library(platform_osx_network)
+core_add_library(platform_macos_network)
