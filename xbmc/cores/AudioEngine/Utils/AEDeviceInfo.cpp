@@ -76,7 +76,7 @@ std::string CAEDeviceInfo::ToDeviceString(const std::string& driver) const
 
   const std::string fn = GetFriendlyName();
   if (!fn.empty())
-    device += ":" + fn;
+    device += "|" + fn;
 
   return device;
 }

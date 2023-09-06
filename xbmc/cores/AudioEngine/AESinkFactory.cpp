@@ -63,7 +63,7 @@ AESinkDevice CAESinkFactory::ParseDevice(const std::string& device)
   if (!found)
     dev.driver.clear();
 
-  pos = dev.name.find_first_of(':');
+  pos = dev.name.find_last_of('|');
 
   if (pos != std::string::npos)
   {
