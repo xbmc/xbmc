@@ -114,6 +114,34 @@ bool URIUtils::HasExtension(const std::string& strFileName, const std::string& s
   return false;
 }
 
+bool URIUtils::HasExtension(const CURL& url, const std::vector<std::string>& extList)
+{
+  return HasExtension(url.GetFileName(), extList);
+}
+
+bool URIUtils::HasExtension(const std::string& strFileName, const std::vector<std::string>& extList)
+{
+  if (IsURL(strFileName))
+  {
+    const CURL url(strFileName);
+    return HasExtension(url.GetFileName(), extList);
+  }
+
+  const size_t pos = strFileName.find_last_of("./\\");
+  if (pos == std::string::npos || strFileName[pos] != '.')
+    return false;
+
+  const std::string extension = strFileName.substr(pos);
+
+  for (const auto& ext : extList)
+  {
+    if (StringUtils::EndsWithNoCase(ext, extension))
+      return true;
+  }
+
+  return false;
+}
+
 void URIUtils::RemoveExtension(std::string& strFileName)
 {
   if(IsURL(strFileName))
