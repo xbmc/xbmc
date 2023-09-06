@@ -287,8 +287,8 @@
 		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster))">$INFO[ListItem.Art(tvshow.poster)]</value>
 	</variable>
 	<variable name="WatchedStatusVar">
-		<value condition="String.IsEqual(Listitem.DBType,tvshow) | String.IsEqual(Listitem.DBType,season)">$INFO[ListItem.Property(InProgressEpisodes)]$INFO[ListItem.Property(WatchedEpisodes),|,]$INFO[ListItem.Property(TotalEpisodes),|,]</value>
-		<value condition="String.IsEqual(Listitem.DBType,set)">$INFO[ListItem.Property(InProgress)]$INFO[ListItem.Property(Watched),|,]$INFO[ListItem.Property(Total),|,]</value>
+		<value condition="String.IsEqual(Listitem.DBType,tvshow) | String.IsEqual(Listitem.DBType,season)">$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</value>
+		<value condition="String.IsEqual(Listitem.DBType,set)">$INFO[ListItem.Property(Watched)]$INFO[ListItem.Property(Total), / ,]</value>
 	</variable>
 	<variable name="VideoPlayerForwardRewindVar">
 		<value condition="Player.Forwarding2x | Player.Rewinding2x">2x</value>
