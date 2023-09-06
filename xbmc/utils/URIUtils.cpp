@@ -90,28 +90,8 @@ bool URIUtils::HasExtension(const CURL& url, const std::string& strExtensions)
 
 bool URIUtils::HasExtension(const std::string& strFileName, const std::string& strExtensions)
 {
-  if (IsURL(strFileName))
-  {
-    const CURL url(strFileName);
-    return HasExtension(url.GetFileName(), strExtensions);
-  }
-
-  const size_t pos = strFileName.find_last_of("./\\");
-  if (pos == std::string::npos || strFileName[pos] != '.')
-    return false;
-
-  const std::string extensionLower = StringUtils::ToLower(strFileName.substr(pos));
-
-  const std::vector<std::string> extensionsLower =
-      StringUtils::Split(StringUtils::ToLower(strExtensions), '|');
-
-  for (const auto& ext : extensionsLower)
-  {
-    if (StringUtils::EndsWith(ext, extensionLower))
-      return true;
-  }
-
-  return false;
+  const std::vector<std::string> extList = StringUtils::Split(strExtensions, '|');
+  return HasExtension(strFileName, extList);
 }
 
 bool URIUtils::HasExtension(const CURL& url, const std::vector<std::string>& extList)
