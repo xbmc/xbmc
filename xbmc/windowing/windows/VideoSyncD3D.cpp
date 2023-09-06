@@ -58,6 +58,8 @@ bool CVideoSyncD3D::Setup()
   if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
     CLog::Log(LOGDEBUG, "CVideoSyncD3D: SetThreadPriority failed");
 
+  CreateDXGIFactory1(IID_PPV_ARGS(m_factory.ReleaseAndGetAddressOf()));
+
   Microsoft::WRL::ComPtr<IDXGIOutput> pOutput;
   DX::DeviceResources::Get()->GetOutput(&pOutput);
   pOutput->GetDesc(&m_outputDesc);
@@ -76,7 +78,7 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
   // init the vblanktime
   Now = CurrentHostCounter();
   LastVBlankTime = Now;
-  m_lastUpdateTime = Now - systemFrequency;
+
   while (!stopEvent.Signaled() && !m_displayLost && !m_displayReset)
   {
     // sleep until vblank
@@ -96,8 +98,10 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
     // save the timestamp of this vblank so we can calculate how many vblanks happened next time
     LastVBlankTime = Now;
 
-    if ((Now - m_lastUpdateTime) >= systemFrequency)
+    if (!m_factory->IsCurrent())
     {
+      CreateDXGIFactory1(IID_PPV_ARGS(m_factory.ReleaseAndGetAddressOf()));
+
       float fps = m_fps;
       if (fps != GetFps())
         break;
