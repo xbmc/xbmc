@@ -859,17 +859,34 @@ bool URIUtils::IsAPK(const std::string& strFile)
 
 bool URIUtils::IsZIP(const std::string& strFile) // also checks for comic books!
 {
-  return HasExtension(strFile, ".zip|.cbz");
+  static const std::vector<std::string> extensions = {
+    ".zip",
+    ".cbz"
+  };
+  return HasExtension(strFile, extensions);
 }
 
 bool URIUtils::IsArchive(const std::string& strFile)
 {
-  return HasExtension(strFile, ".zip|.rar|.apk|.cbz|.cbr");
+  static const std::vector<std::string> extensions = {
+    ".zip",
+    ".rar",
+    ".apk",
+    ".cbz",
+    ".cbr"
+  };
+  return HasExtension(strFile, extensions);
 }
 
 bool URIUtils::IsDiscImage(const std::string& file)
 {
-  return HasExtension(file, ".img|.iso|.nrg|.udf");
+  static const std::vector<std::string> extensions = {
+    ".img",
+    ".iso",
+    ".nrg",
+    ".udf"
+  };
+  return HasExtension(file, extensions);
 }
 
 bool URIUtils::IsDiscImageStack(const std::string& file)
