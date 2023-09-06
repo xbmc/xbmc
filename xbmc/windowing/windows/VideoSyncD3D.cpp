@@ -74,6 +74,7 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
   int NrVBlanks;
   double VBlankTime;
   const int64_t systemFrequency = CurrentHostFrequency();
+  bool validVBlank{true};
 
   // init the vblanktime
   Now = CurrentHostCounter();
@@ -85,7 +86,31 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
     Microsoft::WRL::ComPtr<IDXGIOutput> pOutput;
     DX::DeviceResources::Get()->GetOutput(&pOutput);
     pOutput->GetDesc(&m_outputDesc);
-    pOutput->WaitForVBlank();
+
+    const int64_t WaitForVBlankStartTime = CurrentHostCounter();
+    const HRESULT hr = pOutput->WaitForVBlank();
+    const int64_t WaitForVBlankElapsedTime = CurrentHostCounter() - WaitForVBlankStartTime;
+
+    // WaitForVBlank() can return very quickly due to errors or screen sleeping
+    if (!SUCCEEDED(hr) || WaitForVBlankElapsedTime - (systemFrequency / 1000) <= 0)
+    {
+      if (SUCCEEDED(hr) && validVBlank)
+        CLog::LogF(LOGWARNING, "failed to detect vblank - screen asleep?");
+
+      if (!SUCCEEDED(hr))
+        CLog::LogF(LOGERROR, "error waiting for vblank, {}", DX::GetErrorDescription(hr));
+
+      validVBlank = false;
+
+      // Wait a while, until vblank may have come back. No need for accurate sleep.
+      ::Sleep(250);
+      continue;
+    }
+    else if (!validVBlank)
+    {
+      CLog::LogF(LOGWARNING, "vblank detected - resuming reference clock updates");
+      validVBlank = true;
+    }
 
     // calculate how many vblanks happened
     Now = CurrentHostCounter();
