@@ -263,8 +263,6 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
       item.ClearArt();
       item.GetVideoInfoTag()->m_iDbId = item.GetVideoInfoTag()->m_iIdShow;
     }
-    item.SetProperty("original_listitem_url", item.GetPath());
-    item.SetPath(item.GetVideoInfoTag()->GetPath());
   }
   else
   {
@@ -314,7 +312,7 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
   if (fileItem.m_bIsFolder)
     item.SetProperty("set_folder_thumb", fileItem.GetPath());
 
-  return ShowInfo(std::make_shared<CFileItem>(fileItem), scraper);
+  return ShowInfo(std::make_shared<CFileItem>(item), scraper);
 }
 
 // ShowInfo is called as follows:
