@@ -221,8 +221,8 @@ void CAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
 
 bool CAddonSettings::AddInstanceSettings() const
 {
-  if (GetSetting(ADDON_SETTING_INSTANCE_NAME_VALUE) ||
-      GetSetting(ADDON_SETTING_INSTANCE_ENABLED_VALUE))
+  if (GetSetting(ADDON_SETTING_INSTANCE_NAME_VALUE, false) ||
+      GetSetting(ADDON_SETTING_INSTANCE_ENABLED_VALUE, false))
   {
     CLog::LogF(LOGDEBUG, "Add-on {} using instance setting values byself, Kodi's add ignored",
                m_addonId);

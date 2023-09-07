@@ -462,6 +462,28 @@ bool CAddon::GetSettingString(const std::string& key,
   return GetSettingValue<CSettingString>(*this, id, key, value);
 }
 
+bool CAddon::GetInstanceSetting(AddonInstanceId id, bool& enabled, std::string& name)
+{
+  if (!HasSettings(id))
+    return false;
+
+  const auto settings = GetSettings(id);
+
+  const auto instanceEnabled = settings->GetSetting(ADDON_SETTING_INSTANCE_ENABLED_VALUE, true);
+  if (!instanceEnabled)
+    return false;
+
+  enabled = std::static_pointer_cast<CSettingBool>(instanceEnabled)->GetValue();
+
+  const auto instanceName = settings->GetSetting(ADDON_SETTING_INSTANCE_NAME_VALUE, true);
+  if (!instanceName)
+    return false;
+
+  name = std::static_pointer_cast<CSettingString>(instanceName)->GetValue();
+
+  return true;
+}
+
 void CAddon::UpdateSetting(const std::string& key,
                            const std::string& value,
                            AddonInstanceId id /* = ADDON_SETTINGS_ID */)
@@ -496,7 +518,7 @@ bool UpdateSettingValue(CAddon& addon,
     return false;
 
   // try to get the setting
-  auto setting = addon.GetSettings(instanceId)->GetSetting(key);
+  auto setting = addon.GetSettings(instanceId)->GetSetting(key, false);
 
   // if the setting doesn't exist, try to add it
   if (setting == nullptr)
