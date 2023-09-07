@@ -21,10 +21,13 @@ public:
   bool OnMessage(CGUIMessage& message) override;
   bool OnAction(const CAction& action) override;
 
-  static bool ShowForAddon(const ADDON::AddonPtr& addon, bool saveToDisk = true);
+  static bool ShowForAddon(const ADDON::AddonPtr& addon,
+                           bool saveToDisk = true,
+                           ADDON::AddonInstanceId instanceId = ADDON::ADDON_SETTINGS_ID);
   static void SaveAndClose();
 
   std::string GetCurrentAddonID() const;
+  ADDON::AddonInstanceId GetCurrentAddonInstanceId() const;
 
 protected:
   // implementation of CGUIDialogSettingsBase
