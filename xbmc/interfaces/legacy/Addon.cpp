@@ -18,6 +18,7 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "settings/lib/Setting.h"
 #include "utils/StringUtils.h"
 
 using namespace ADDON;
@@ -81,9 +82,96 @@ namespace XBMCAddon
       return g_localizeStrings.GetAddonString(pAddon->ID(), id);
     }
 
-    Settings* Addon::getSettings()
+    bool Addon::supportsInstanceSettings()
     {
-      return new Settings(pAddon->GetSettings());
+      return pAddon->SupportsInstanceSettings();
+    }
+
+    std::vector<unsigned int> Addon::getInstanceIds()
+    {
+      return pAddon->GetKnownInstanceIds();
+    }
+
+    unsigned int Addon::getFreeNewInstanceId()
+    {
+      const auto ids = pAddon->GetKnownInstanceIds();
+      ADDON::AddonInstanceId highestId = ADDON::ADDON_FIRST_SCRIPT_SET_INSTANCE_ID;
+      for (const auto& id : ids)
+      {
+        if (id == ADDON::ADDON_SINGLETON_INSTANCE_ID)
+          throw XBMCAddon::WrongTypeException("Invalid add-on type");
+
+        if (id >= ADDON::ADDON_FIRST_SCRIPT_SET_INSTANCE_ID && id > highestId)
+          highestId = id;
+      }
+
+      return highestId + 1;
+    }
+
+    bool Addon::setInstanceState(unsigned int instance,
+                                 bool enabled,
+                                 const String& name /* = emptyString*/)
+    {
+      const auto settings = pAddon->GetSettings(instance);
+      if (!settings || instance == ADDON_SINGLETON_INSTANCE_ID)
+        throw XBMCAddon::WrongTypeException("Invalid add-on instance type");
+
+      const auto settingEnabled = settings->GetSetting(ADDON_SETTING_INSTANCE_ENABLED_VALUE, false);
+      if (!settingEnabled)
+        return false;
+
+      const auto settingName = settings->GetSetting(ADDON_SETTING_INSTANCE_NAME_VALUE, false);
+      if (!settingName)
+        return false;
+
+      const bool currentlyEnabled =
+          std::static_pointer_cast<CSettingBool>(settingEnabled)->GetValue();
+      const std::string currentName =
+          std::static_pointer_cast<CSettingString>(settingName)->GetValue();
+
+      if (currentName.empty() && name.empty())
+        throw XBMCAddon::WrongTypeException("New added add-on instances needs name set");
+
+      if (!name.empty() && currentName.empty() != name.empty())
+        std::static_pointer_cast<CSettingString>(settingName)->SetValue(name);
+
+      // Check is changed in enable, also check currentName empty and new name added, if yes should it a new added instance.
+      if (currentlyEnabled != enabled || (currentName.empty() && !name.empty()))
+      {
+        std::static_pointer_cast<CSettingBool>(settingEnabled)->SetValue(enabled);
+
+        // Save changed settings
+        settings->Save();
+
+        if (enabled)
+          CServiceBroker::GetAddonMgr().PublishInstanceAdded(pAddon->ID(), instance);
+        else
+          CServiceBroker::GetAddonMgr().PublishInstanceRemoved(pAddon->ID(), instance);
+      }
+
+      return true;
+    }
+
+    bool Addon::deleteInstance(unsigned int instance)
+    {
+      const auto settings = pAddon->GetSettings(instance);
+      if (!settings || instance == ADDON_SINGLETON_INSTANCE_ID)
+        throw XBMCAddon::WrongTypeException("Invalid add-on instance type");
+
+      const auto settingEnabled = settings->GetSetting(ADDON_SETTING_INSTANCE_ENABLED_VALUE, false);
+      if (!settingEnabled)
+        return false;
+      const bool enabled = std::static_pointer_cast<CSettingBool>(settingEnabled)->GetValue();
+
+      const bool ret = pAddon->DeleteInstanceSettings(instance);
+      if (ret && enabled)
+        CServiceBroker::GetAddonMgr().PublishInstanceRemoved(pAddon->ID(), instance);
+      return ret;
+    }
+
+    Settings* Addon::getSettings(unsigned int instance /* = 0*/)
+    {
+      return new Settings(pAddon->GetSettings(instance));
     }
 
     String Addon::getSetting(const char* id)
@@ -198,12 +286,12 @@ namespace XBMCAddon
       return true;
     }
 
-    void Addon::openSettings()
+    void Addon::openSettings(unsigned int instance /* = 0*/)
     {
       DelayedCallGuard dcguard(languageHook);
       // show settings dialog
       ADDON::AddonPtr addon(pAddon);
-      CGUIDialogAddonSettings::ShowForAddon(addon);
+      CGUIDialogAddonSettings::ShowForAddon(addon, true, instance);
     }
 
     String Addon::getAddonInfo(const char* id)

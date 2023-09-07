@@ -47,6 +47,11 @@ constexpr AddonInstanceId ADDON_SINGLETON_INSTANCE_ID = 0;
 constexpr AddonInstanceId ADDON_FIRST_INSTANCE_ID = 1;
 
 /*!
+ * @brief Identifier denoting initial first add-on instance set by a Python script.
+ */
+constexpr AddonInstanceId ADDON_FIRST_SCRIPT_SET_INSTANCE_ID = 1000;
+
+/*!
  * @brief Identifier denoting add-on instance id as unused.
  *
  * @sa ADDON::IAddonInstanceHandler

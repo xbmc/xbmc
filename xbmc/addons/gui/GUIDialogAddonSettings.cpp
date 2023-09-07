@@ -248,7 +248,7 @@ bool CGUIDialogAddonSettings::ShowForMultipleInstances(const ADDON::AddonPtr& ad
       item->SetProperty("name", name);
       itemsInstances.Add(item);
 
-      if (id > highestId)
+      if (id < ADDON_FIRST_SCRIPT_SET_INSTANCE_ID && id > highestId)
         highestId = id;
     }
 
