@@ -892,6 +892,38 @@ void CGUIDialogVideoInfo::OnGetArt()
   };
 }
 
+namespace
+{
+std::string GetEmbeddedArt(const std::string& fileNameAndPath, const std::string& artType)
+{
+  std::string embeddedArt;
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_MYVIDEOS_USETAGS))
+  {
+    if (URIUtils::HasExtension(fileNameAndPath, ".mkv") ||
+        URIUtils::HasExtension(fileNameAndPath, ".mp4") ||
+        URIUtils::HasExtension(fileNameAndPath, ".avi") ||
+        URIUtils::HasExtension(fileNameAndPath, ".m4v"))
+    {
+      CFileItem item(fileNameAndPath, false);
+      CVideoTagLoaderFFmpeg loader(item, nullptr, false);
+      CVideoInfoTag tag;
+      loader.Load(tag, false, nullptr);
+      for (const auto& it : tag.m_coverArt)
+      {
+        if (it.m_type == artType)
+        {
+          embeddedArt = CTextureUtils::GetWrappedImageURL(fileNameAndPath, "video_" + artType);
+          break;
+        }
+      }
+    }
+  }
+  return embeddedArt;
+}
+
+} // unnamed namespace
+
 // Allow user to select a Fanart
 void CGUIDialogVideoInfo::OnGetFanart()
 {
@@ -909,24 +941,14 @@ void CGUIDialogVideoInfo::OnGetFanart()
     items.Add(itemCurrent);
   }
 
-  std::string embeddedArt;
-  if (URIUtils::HasExtension(m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath, ".mkv"))
+  const std::string embeddedArt =
+      GetEmbeddedArt(m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath, "fanart");
+  if (!embeddedArt.empty())
   {
-    CFileItem item(m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath, false);
-    CVideoTagLoaderFFmpeg loader(item, nullptr, false);
-    CVideoInfoTag tag;
-    loader.Load(tag, false, nullptr);
-    for (const auto& it : tag.m_coverArt)
-    {
-      if (it.m_type == "fanart")
-      {
-        CFileItemPtr itemF(new CFileItem("fanart://Embedded", false));
-        embeddedArt = CTextureUtils::GetWrappedImageURL(item.GetPath(), "video_fanart");
-        itemF->SetArt("thumb", embeddedArt);
-        itemF->SetLabel(g_localizeStrings.Get(13520));
-        items.Add(itemF);
-      }
-    }
+    const auto itemEmbedded = std::make_shared<CFileItem>("fanart://Embedded", false);
+    itemEmbedded->SetArt("thumb", embeddedArt);
+    itemEmbedded->SetLabel(g_localizeStrings.Get(13520));
+    items.Add(itemEmbedded);
   }
 
   // Grab the thumbnails from the web
@@ -1973,27 +1995,17 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     item->SetLabel(g_localizeStrings.Get(13512));
     items.Add(item);
   }
-  noneitem->SetArt("icon", "DefaultFolder.png");
+  noneitem->SetArt("icon", item->m_bIsFolder ? "DefaultFolder.png" : "DefaultPicture.png");
   noneitem->SetLabel(g_localizeStrings.Get(13515));
 
-  std::string embeddedArt;
-  if (URIUtils::HasExtension(item->GetVideoInfoTag()->m_strFileNameAndPath, ".mkv"))
+  const std::string embeddedArt =
+      GetEmbeddedArt(item->GetVideoInfoTag()->m_strFileNameAndPath, artType);
+  if (!embeddedArt.empty())
   {
-    CFileItem itemCopy(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
-    CVideoTagLoaderFFmpeg loader(itemCopy, nullptr, false);
-    CVideoInfoTag tag;
-    loader.Load(tag, false, nullptr);
-    for (const auto& it : tag.m_coverArt)
-    {
-      if (it.m_type == type)
-      {
-        CFileItemPtr itemF(new CFileItem("thumb://Embedded", false));
-        embeddedArt = CTextureUtils::GetWrappedImageURL(itemCopy.GetPath(), "video_" + type);
-        itemF->SetArt("thumb", embeddedArt);
-        itemF->SetLabel(g_localizeStrings.Get(13519));
-        items.Add(itemF);
-      }
-    }
+    const auto itemEmbedded = std::make_shared<CFileItem>("thumb://Embedded", false);
+    itemEmbedded->SetArt("thumb", embeddedArt);
+    itemEmbedded->SetLabel(g_localizeStrings.Get(13519));
+    items.Add(itemEmbedded);
   }
 
   std::string localThumb;
@@ -2324,7 +2336,7 @@ bool CGUIDialogVideoInfo::OnGetFanart(const std::shared_ptr<CFileItem>& videoIte
   // add the none option
   {
     CFileItemPtr itemNone(new CFileItem("fanart://None", false));
-    itemNone->SetArt("icon", "DefaultVideo.png");
+    itemNone->SetArt("icon", videoItem->m_bIsFolder ? "DefaultFolder.png" : "DefaultPicture.png");
     itemNone->SetLabel(g_localizeStrings.Get(20439));
     items.Add(itemNone);
   }
