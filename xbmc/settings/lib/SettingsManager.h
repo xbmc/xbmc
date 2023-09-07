@@ -280,9 +280,14 @@ public:
    \brief Gets the setting with the given identifier.
 
    \param id Setting identifier
+   \param[in] presenceValidated If is set to false, error messages are ignored because the given
+                                setting might not actually exist.
+                                Can refer to background settings related to Kodi, which may be
+                                added later, e.g. to an add-on.
    \return Setting object with the given identifier or nullptr if the identifier is unknown
    */
-  std::shared_ptr<CSetting> GetSetting(const std::string &id) const;
+  std::shared_ptr<CSetting> GetSetting(const std::string& id, bool presenceValidated = true) const;
+
   /*!
    \brief Gets the full list of setting sections.
 
