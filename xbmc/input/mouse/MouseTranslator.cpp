@@ -11,11 +11,12 @@
 #include "MouseStat.h"
 #include "input/Key.h"
 #include "utils/StringUtils.h"
-#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
 #include <map>
 #include <string>
+
+#include <tinyxml2.h>
 
 using namespace KODI;
 using namespace MOUSE;
@@ -44,13 +45,13 @@ static const std::map<ActionName, KeyID> MouseKeys = {{"click", KEY_MOUSE_CLICK}
 
 } // anonymous namespace
 
-uint32_t CMouseTranslator::TranslateCommand(const TiXmlElement* pButton)
+uint32_t CMouseTranslator::TranslateCommand(const tinyxml2::XMLElement* pButton)
 {
   uint32_t buttonId = 0;
 
   if (pButton != nullptr)
   {
-    std::string szKey = pButton->ValueStr();
+    std::string szKey = pButton->Value();
     if (!szKey.empty())
     {
       StringUtils::ToLower(szKey);
@@ -66,7 +67,7 @@ uint32_t CMouseTranslator::TranslateCommand(const TiXmlElement* pButton)
       else
       {
         int id = 0;
-        if ((pButton->QueryIntAttribute("id", &id) == TIXML_SUCCESS))
+        if ((pButton->QueryIntAttribute("id", &id) == tinyxml2::XML_SUCCESS))
         {
           if (0 <= id && id < MOUSE_MAX_BUTTON)
             buttonId += id;

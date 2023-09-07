@@ -144,7 +144,7 @@
 				<texture fallback="DefaultMovies.png" background="true">$VAR[PosterThumbVar]</texture>
 			</control>
 			<control type="group">
-				<visible>String.IsEqual(ListItem.DBtype,tvshow)</visible>
+				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
 				<control type="image">
 					<left>4</left>
 					<top>670</top>
@@ -158,7 +158,7 @@
 					<top>690</top>
 					<width>435</width>
 					<height>24</height>
-					<label>$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</label>
+					<label>$VAR[WatchedStatusVar]</label>
 					<font>font20_title</font>
 					<shadowcolor>text_shadow</shadowcolor>
 					<align>right</align>

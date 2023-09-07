@@ -176,7 +176,14 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
 
       SortDescription sortDesc;
       if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == viewStateWindowId)
+      {
         sortDesc = state->GetSortMethod();
+
+        // It makes no sense to play from younger to older.
+        if (sortDesc.sortBy == SortByDate || sortDesc.sortBy == SortByYear ||
+            sortDesc.sortBy == SortByEpisodeNumber)
+          sortDesc.sortOrder = SortOrderAscending;
+      }
       else
         sortDesc = GetSortDescription(*state, items);
 
@@ -604,54 +611,21 @@ bool IsItemPlayable(const CFileItem& item)
 
 namespace
 {
-bool HasInProgressVideo(const std::string& path, CVideoDatabase& db)
-{
-  //! @todo this function is really very expensive and should be optimized (at db level).
-
-  CFileItemList items;
-  CUtil::GetRecursiveListing(path, items, {}, XFILE::DIR_FLAG_DEFAULTS);
-
-  if (items.IsEmpty())
-    return false;
-
-  for (const auto& item : items)
-  {
-    const auto videoTag = item->GetVideoInfoTag();
-    if (!item->HasVideoInfoTag())
-      continue;
-
-    if (videoTag->GetPlayCount() > 0)
-      continue;
-
-    // get resume point
-    CBookmark bookmark(videoTag->GetResumePoint());
-    if (!bookmark.IsSet() && db.GetResumeBookMark(videoTag->m_strFileNameAndPath, bookmark))
-      videoTag->SetResumePoint(bookmark);
-
-    if (bookmark.IsSet())
-      return true;
-  }
-
-  return false;
-}
-
 ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
 {
   if (!item.m_bIsFolder)
     return {};
 
-  bool hasInProgressVideo = false;
-
   CFileItem folderItem(item);
-  if ((!folderItem.HasProperty("watchedepisodes") || // season/show
-       (folderItem.GetProperty("watchedepisodes").asInteger() == 0)) &&
-      (!folderItem.HasProperty("watched") || // movie set
-       (folderItem.GetProperty("watched").asInteger() == 0)))
+  if ((!folderItem.HasProperty("inprogressepisodes") || // season/show
+       (folderItem.GetProperty("inprogressepisodes").asInteger() == 0)) &&
+      (!folderItem.HasProperty("inprogress") || // movie set
+       (folderItem.GetProperty("inprogress").asInteger() == 0)))
   {
     CVideoDatabase db;
     if (db.Open())
     {
-      if (!folderItem.HasProperty("watchedepisodes") && !folderItem.HasProperty("watched"))
+      if (!folderItem.HasProperty("inprogressepisodes") && !folderItem.HasProperty("inprogress"))
       {
         XFILE::VIDEODATABASEDIRECTORY::CQueryParams params;
         XFILE::VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(item.GetPath(), params);
@@ -681,35 +655,28 @@ ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
           db.GetSetInfo(static_cast<int>(params.GetSetId()), details, &folderItem);
         }
       }
-
-      // no episodes/movies watched completely, but there could be some or more we have
-      // started watching
-      if ((folderItem.HasProperty("watchedepisodes") && // season/show
-           folderItem.GetProperty("watchedepisodes").asInteger() == 0) ||
-          (folderItem.HasProperty("watched") && // movie set
-           folderItem.GetProperty("watched").asInteger() == 0))
-        hasInProgressVideo = HasInProgressVideo(item.GetPath(), db);
-
       db.Close();
     }
   }
 
-  if (hasInProgressVideo ||
-      (folderItem.GetProperty("watchedepisodes").asInteger() > 0 &&
-       folderItem.GetProperty("unwatchedepisodes").asInteger() > 0) ||
-      (folderItem.GetProperty("watched").asInteger() > 0 &&
-       folderItem.GetProperty("unwatched").asInteger() > 0))
+  if (folderItem.IsResumable())
   {
     ResumeInformation resumeInfo;
     resumeInfo.isResumable = true;
     return resumeInfo;
   }
+
   return {};
 }
 
 ResumeInformation GetNonFolderItemResumeInformation(const CFileItem& item)
 {
-  if (!item.IsResumable())
+  // do not resume nfo files
+  if (item.IsNFO())
+    return {};
+
+  // do not resume playlists, except strm files
+  if (!item.IsType("strm") && item.IsPlayList())
     return {};
 
   // do not resume Live TV and 'deleted' items (e.g. trashed pvr recordings)

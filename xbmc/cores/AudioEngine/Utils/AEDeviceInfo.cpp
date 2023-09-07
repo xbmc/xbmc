@@ -64,3 +64,19 @@ std::string CAEDeviceInfo::DeviceTypeToString(enum AEDeviceType deviceType)
   }
   return "INVALID";
 }
+
+std::string CAEDeviceInfo::GetFriendlyName() const
+{
+  return (m_deviceName != m_displayName) ? m_displayName : m_displayNameExtra;
+}
+
+std::string CAEDeviceInfo::ToDeviceString(const std::string& driver) const
+{
+  std::string device = driver.empty() ? m_deviceName : driver + ":" + m_deviceName;
+
+  const std::string fn = GetFriendlyName();
+  if (!fn.empty())
+    device += "|" + fn;
+
+  return device;
+}

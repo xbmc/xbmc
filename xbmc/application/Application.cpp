@@ -288,30 +288,13 @@ void CApplication::HandlePortEvents()
             settings->SetInt(CSettings::SETTING_WINDOW_HEIGHT, newEvent.resize.h);
             settings->Save();
           }
-#ifdef TARGET_WINDOWS
           else
           {
-            // this may occurs when OS tries to resize application window
-            //CDisplaySettings::GetInstance().SetCurrentResolution(RES_DESKTOP, true);
-            //auto& gfxContext = CServiceBroker::GetWinSystem()->GetGfxContext();
-            //gfxContext.SetVideoResolution(gfxContext.GetVideoResolution(), true);
-            // try to resize window back to it's full screen size
-            //! TODO: DX windowing should emit XBMC_FULLSCREEN_UPDATE instead with the proper dimensions
-            //! and position to avoid the ifdef in common code
-            auto& res_info = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
-            CServiceBroker::GetWinSystem()->ResizeWindow(res_info.iScreenWidth, res_info.iScreenHeight, 0, 0);
+            const auto& res_info = CDisplaySettings::GetInstance().GetResolutionInfo(RES_DESKTOP);
+            CServiceBroker::GetWinSystem()->ForceFullScreen(res_info);
           }
-#endif
         }
         break;
-      case XBMC_FULLSCREEN_UPDATE:
-      {
-        if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_fullScreen)
-        {
-          CServiceBroker::GetWinSystem()->ResizeWindow(newEvent.resize.w, newEvent.resize.h, 0, 0);
-        }
-        break;
-      }
       case XBMC_VIDEOMOVE:
       {
         CServiceBroker::GetWinSystem()->OnMove(newEvent.move.x, newEvent.move.y);

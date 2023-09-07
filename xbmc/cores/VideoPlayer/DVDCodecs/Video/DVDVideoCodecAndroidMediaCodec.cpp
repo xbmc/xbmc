@@ -531,20 +531,17 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
 
       if (isDvhe || isDvh1)
       {
-        bool displaySupportsDovi = CAndroidUtils::GetDisplayHDRCapabilities().SupportsDolbyVision();
-        bool mediaCodecSupportsDovi =
-            CAndroidUtils::SupportsMediaCodecMimeType("video/dolby-vision");
-
-        CLog::Log(LOGDEBUG,
-                  "CDVDVideoCodecAndroidMediaCodec::Open Dolby Vision playback support: "
-                  "Display: {}, MediaCodec: {}",
-                  displaySupportsDovi, mediaCodecSupportsDovi);
+        bool displaySupportsDovi{false};
+        bool mediaCodecSupportsDovi{false};
+        std::tie(displaySupportsDovi, mediaCodecSupportsDovi) =
+            CAndroidUtils::GetDolbyVisionCapabilities();
 
         // For Dolby Vision profiles that don't have HDR10 fallback, always use
         // the dvhe decoder even if the display not supports Dolby Vision.
         // For profiles that has HDR10 fallback (7, 8) is better use HEVC decoder to
         // ensure HDR10 output if display is not DV capable.
-        bool notHasHDR10fallback = (m_hints.dovi.dv_profile == 4 || m_hints.dovi.dv_profile == 5);
+        const bool notHasHDR10fallback =
+            (m_hints.dovi.dv_profile == 4 || m_hints.dovi.dv_profile == 5);
 
         if (mediaCodecSupportsDovi && (displaySupportsDovi || notHasHDR10fallback))
         {
@@ -563,7 +560,22 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         {
           m_bitstream.reset();
         }
+
+        // Only set for profile 7, container hint allows to skip parsing unnecessarily
+        if (m_bitstream && m_hints.dovi.dv_profile == 7)
+        {
+          bool convertDovi = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+              CSettings::SETTING_VIDEOPLAYER_CONVERTDOVI);
+
+          CLog::Log(LOGDEBUG,
+                    "CDVDVideoCodecAndroidMediaCodec::Open Dolby Vision compatibility mode "
+                    "enabled: {}",
+                    convertDovi);
+
+          m_bitstream->SetConvertDovi(convertDovi);
+        }
       }
+
       break;
     }
     case AV_CODEC_ID_WMV3:
@@ -634,6 +646,28 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       }
       m_mime = "video/av01";
       m_formatname = "amc-av1";
+
+      if (m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION && m_hints.dovi.dv_profile == 10)
+      {
+        bool displaySupportsDovi{false};
+        bool mediaCodecSupportsDovi{false};
+        std::tie(displaySupportsDovi, mediaCodecSupportsDovi) =
+            CAndroidUtils::GetDolbyVisionCapabilities();
+
+        const bool notHasHDRfallback = (m_hints.dovi.dv_bl_signal_compatibility_id == 0 ||
+                                        m_hints.dovi.dv_bl_signal_compatibility_id == 2 ||
+                                        m_hints.dovi.dv_bl_signal_compatibility_id == 3);
+
+        if (mediaCodecSupportsDovi && (displaySupportsDovi || notHasHDRfallback))
+        {
+          m_mime = "video/dolby-vision";
+          m_formatname = "amc-dav1";
+          profile = CJNIBase::GetSDKVersion() >= 30
+                        ? CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvav110
+                        : 1024;
+        }
+      }
+
       m_hints.extradata = {};
       break;
     }
@@ -658,6 +692,8 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       uuid = CJNIUUID(0x9A04F07998404286LL, 0xAB92E65BE0885F95LL);
     else if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_WISEPLAY)
       uuid = CJNIUUID(0X3D5E6D359B9A41E8LL, 0XB843DD3C6E72C42CLL);
+    else if (m_hints.cryptoSession->keySystem == CRYPTO_SESSION_SYSTEM_CLEARKEY)
+      uuid = CJNIUUID(0XE2719D58A985B3C9LL, 0X781AB030AF78D30ELL);
     else
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open Unsupported crypto-keysystem {}",

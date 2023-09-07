@@ -540,10 +540,18 @@ namespace VIDEO
                                            bool fetchEpisodes,
                                            CGUIDialogProgress* pDlgProgress)
   {
-    long idTvShow = -1;
+    const bool isSeason =
+        pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_type == MediaTypeSeason;
+
+    int idTvShow = -1;
+    int idSeason = -1;
     std::string strPath = pItem->GetPath();
     if (pItem->m_bIsFolder)
+    {
       idTvShow = m_database.GetTvShowId(strPath);
+      if (isSeason && idTvShow > -1)
+        idSeason = m_database.GetSeasonId(idTvShow, pItem->GetVideoInfoTag()->m_iSeason);
+    }
     else if (pItem->IsPlugin() && pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iIdShow >= 0)
     {
       // for plugin source we cannot get idTvShow from episode path with URIUtils::GetDirectory() in all cases
@@ -557,8 +565,10 @@ namespace VIDEO
     {
       strPath = URIUtils::GetDirectory(strPath);
       idTvShow = m_database.GetTvShowId(strPath);
+      if (isSeason && idTvShow > -1)
+        idSeason = m_database.GetSeasonId(idTvShow, pItem->GetVideoInfoTag()->m_iSeason);
     }
-    if (idTvShow > -1 && (fetchEpisodes || !pItem->m_bIsFolder))
+    if (idTvShow > -1 && (!isSeason || idSeason > -1) && (fetchEpisodes || !pItem->m_bIsFolder))
     {
       INFO_RET ret = RetrieveInfoForEpisodes(pItem, idTvShow, info2, useLocal, pDlgProgress);
       if (ret == INFO_ADDED)
@@ -566,7 +576,9 @@ namespace VIDEO
       return ret;
     }
 
-    if (ProgressCancelled(pDlgProgress, pItem->m_bIsFolder ? 20353 : 20361, pItem->GetLabel()))
+    if (ProgressCancelled(pDlgProgress, pItem->m_bIsFolder ? 20353 : 20361,
+                          pItem->m_bIsFolder ? pItem->GetVideoInfoTag()->m_strShowTitle
+                                             : pItem->GetVideoInfoTag()->m_strTitle))
       return INFO_CANCELLED;
 
     if (m_handle)
@@ -1454,10 +1466,12 @@ namespace VIDEO
 
     if (!pItem->m_bIsFolder)
     {
-      if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryImportWatchedState || libraryImport)
+      const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+      if ((libraryImport || advancedSettings->m_bVideoLibraryImportWatchedState) &&
+          (movieDetails.IsPlayCountSet() || movieDetails.m_lastPlayed.IsValid()))
         m_database.SetPlayCount(*pItem, movieDetails.GetPlayCount(), movieDetails.m_lastPlayed);
 
-      if ((CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_bVideoLibraryImportResumePoint || libraryImport) &&
+      if ((libraryImport || advancedSettings->m_bVideoLibraryImportResumePoint) &&
           movieDetails.GetResumePoint().IsSet())
         m_database.AddBookMarkToFile(pItem->GetPath(), movieDetails.GetResumePoint(), CBookmark::RESUME);
     }
@@ -1717,8 +1731,7 @@ namespace VIDEO
   {
     if (pDlgProgress)
     {
-      pDlgProgress->SetLine(1, CVariant{showInfo.m_strTitle});
-      pDlgProgress->SetLine(2, CVariant{20361});
+      pDlgProgress->SetLine(1, CVariant{20361}); // Loading episode details
       pDlgProgress->SetPercentage(0);
       pDlgProgress->ShowProgressBar(true);
       pDlgProgress->Progress();
@@ -1733,7 +1746,11 @@ namespace VIDEO
     {
       if (pDlgProgress)
       {
-        pDlgProgress->SetLine(2, CVariant{20361});
+        pDlgProgress->SetLine(1, CVariant{20361}); // Loading episode details
+        pDlgProgress->SetLine(2, StringUtils::Format("{} {}", g_localizeStrings.Get(20373),
+                                                     file->iSeason)); // Season x
+        pDlgProgress->SetLine(3, StringUtils::Format("{} {}", g_localizeStrings.Get(20359),
+                                                     file->iEpisode)); // Episode y
         pDlgProgress->SetPercentage((int)((float)(iCurr++)/iMax*100));
         pDlgProgress->Progress();
       }
@@ -1796,7 +1813,7 @@ namespace VIDEO
 
           if (pDlgProgress)
           {
-            pDlgProgress->SetLine(2, CVariant{20354});
+            pDlgProgress->SetLine(1, CVariant{20354}); // Fetching episode guide
             pDlgProgress->Progress();
           }
 
@@ -1966,7 +1983,8 @@ namespace VIDEO
 
       if (pDialog)
       {
-        pDialog->SetLine(1, CVariant{movieDetails.m_strTitle});
+        if (!pDialog->HasText())
+          pDialog->SetLine(0, CVariant{movieDetails.m_strTitle});
         pDialog->Progress();
       }
 
@@ -2225,7 +2243,6 @@ namespace VIDEO
     {
       progress->SetHeading(CVariant{heading});
       progress->SetLine(0, CVariant{line1});
-      progress->SetLine(2, CVariant{""});
       progress->Progress();
       return progress->IsCanceled();
     }

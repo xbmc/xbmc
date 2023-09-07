@@ -2,34 +2,41 @@
 # -------
 # Finds the Spdlog library
 #
-# This will define the following variables:
+# This will define the following target:
 #
-# SPDLOG_FOUND - system has Spdlog
-# SPDLOG_INCLUDE_DIRS - the Spdlog include directory
-# SPDLOG_LIBRARIES - the Spdlog libraries
-# SPDLOG_DEFINITIONS - the Spdlog compile definitions
-#
-# and the following imported targets:
-#
-#   Spdlog::Spdlog   - The Spdlog library
+#   spdlog::spdlog   - The Spdlog library
 
-if(ENABLE_INTERNAL_SPDLOG)
+if(NOT TARGET spdlog::spdlog)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   # Check for dependencies - Must be done before SETUP_BUILD_VARS
-  get_libversion_data("fmt" "target")
-  find_package(Fmt ${LIB_FMT_VER} MODULE REQUIRED)
+  # Todo: We might need a way to do this after SETUP_BUILD_VARS...
+  if(ENABLE_INTERNAL_SPDLOG)
+    get_libversion_data("fmt" "target")
+    find_package(Fmt ${LIB_FMT_VER} MODULE REQUIRED)
+  endif()
 
-  # Check if we want to force a build due to a dependency rebuild
-  get_property(LIB_FORCE_REBUILD TARGET fmt::fmt PROPERTY LIB_BUILD)
+  if(TARGET fmt::fmt)
+    # Check if we want to force a build due to a dependency rebuild
+    get_property(LIB_FORCE_REBUILD TARGET fmt::fmt PROPERTY LIB_BUILD)
+  endif()
 
   set(MODULE_LC spdlog)
   SETUP_BUILD_VARS()
 
-  # Check for existing SPDLOG. If version >= SPDLOG-VERSION file version, dont build
-  find_package(SPDLOG CONFIG QUIET)
+  # Darwin systems we want to avoid system packages. We are entirely self sufficient
+  # Avoids homebrew populating rubbish we cant control
+  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(_spdlog_find_option NO_SYSTEM_ENVIRONMENT_PATH)
+  endif()
 
-  if(SPDLOG_VERSION VERSION_LESS ${${MODULE}_VER} OR LIB_FORCE_REBUILD)
+  # Check for existing SPDLOG. If version >= SPDLOG-VERSION file version, dont build
+  find_package(SPDLOG ${_spdlog_find_option} CONFIG QUIET)
+
+  if((SPDLOG_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_SPDLOG) OR
+     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_SPDLOG) OR
+     LIB_FORCE_REBUILD)
+
     if(APPLE)
       set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
     endif()
@@ -41,6 +48,8 @@ if(ENABLE_INTERNAL_SPDLOG)
       set(EXTRA_ARGS -DSPDLOG_WCHAR_SUPPORT=ON
                      -DSPDLOG_WCHAR_FILENAMES=ON)
 
+      set(EXTRA_DEFINITIONS SPDLOG_WCHAR_FILENAMES
+                            SPDLOG_WCHAR_TO_UTF8_SUPPORT)
     endif()
 
     set(SPDLOG_VERSION ${${MODULE}_VER})
@@ -55,74 +64,100 @@ if(ENABLE_INTERNAL_SPDLOG)
                    -DSPDLOG_FMT_EXTERNAL=ON
                    ${EXTRA_ARGS})
 
+    # Set definitions that will be set in the built cmake config file
+    # We dont import the config file if we build internal (chicken/egg scenario)
+    set(_spdlog_definitions SPDLOG_COMPILED_LIB
+                            SPDLOG_FMT_EXTERNAL
+                            ${EXTRA_DEFINITIONS})
+
     BUILD_DEP_TARGET()
 
     add_dependencies(${MODULE_LC} fmt::fmt)
   else()
-    # Populate paths for find_package_handle_standard_args
-    find_path(SPDLOG_INCLUDE_DIR NAMES spdlog/spdlog.h)
-    find_library(SPDLOG_LIBRARY_RELEASE NAMES spdlog)
-    find_library(SPDLOG_LIBRARY_DEBUG NAMES spdlogd)
-  endif()
-else()
-  find_package(spdlog 1.5.0 CONFIG REQUIRED QUIET)
+    if(NOT TARGET spdlog::spdlog)
+      # Fallback to pkg-config and individual lib/include file search
+      if(PKG_CONFIG_FOUND)
+        pkg_check_modules(PC_SPDLOG spdlog QUIET)
+        set(SPDLOG_VERSION ${PC_SPDLOG_VERSION})
+      endif()
 
-  if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_SPDLOG spdlog QUIET)
-    set(SPDLOG_VERSION ${PC_SPDLOG_VERSION})
-  endif()
+      find_path(SPDLOG_INCLUDE_DIR NAMES spdlog/spdlog.h
+                                   PATHS ${PC_SPDLOG_INCLUDEDIR})
 
-  find_path(SPDLOG_INCLUDE_DIR NAMES spdlog/spdlog.h
-                               PATHS ${PC_SPDLOG_INCLUDEDIR})
+      find_library(SPDLOG_LIBRARY_RELEASE NAMES spdlog
+                                          PATHS ${PC_SPDLOG_LIBDIR})
+      find_library(SPDLOG_LIBRARY_DEBUG NAMES spdlogd
+                                        PATHS ${PC_SPDLOG_LIBDIR})
 
-  find_library(SPDLOG_LIBRARY_RELEASE NAMES spdlog
-                                      PATHS ${PC_SPDLOG_LIBDIR})
-  find_library(SPDLOG_LIBRARY_DEBUG NAMES spdlogd
-                                    PATHS ${PC_SPDLOG_LIBDIR})
-endif()
-
-include(SelectLibraryConfigurations)
-select_library_configurations(SPDLOG)
-
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(Spdlog
-                                  REQUIRED_VARS SPDLOG_LIBRARY SPDLOG_INCLUDE_DIR
-                                  VERSION_VAR SPDLOG_VERSION)
-
-if(SPDLOG_FOUND)
-  set(SPDLOG_LIBRARIES ${SPDLOG_LIBRARY})
-  set(SPDLOG_INCLUDE_DIRS ${SPDLOG_INCLUDE_DIR})
-  set(SPDLOG_DEFINITIONS -DSPDLOG_FMT_EXTERNAL
-                         -DSPDLOG_DEBUG_ON
-                         -DSPDLOG_NO_ATOMIC_LEVELS
-                         -DSPDLOG_ENABLE_PATTERN_PADDING
-                         -DSPDLOG_COMPILED_LIB
-                         ${PC_SPDLOG_CFLAGS})
-  if(WIN32)
-    list(APPEND SPDLOG_DEFINITIONS -DSPDLOG_WCHAR_FILENAMES
-                                   -DSPDLOG_WCHAR_TO_UTF8_SUPPORT)
-  endif()
-
-  if(NOT TARGET spdlog::spdlog)
-    add_library(spdlog::spdlog UNKNOWN IMPORTED)
-    if(SPDLOG_LIBRARY_RELEASE)
-      set_target_properties(spdlog::spdlog PROPERTIES
-                                           IMPORTED_CONFIGURATIONS RELEASE
-                                           IMPORTED_LOCATION "${SPDLOG_LIBRARY_RELEASE}")
+      # Only add -D definitions. Skip -I include as we do a find_path for the header anyway
+      foreach(_spdlog_cflag IN LISTS PC_SPDLOG_CFLAGS)
+        if(${_spdlog_cflag} MATCHES "^-D(.*)")
+          list(APPEND _spdlog_definitions ${CMAKE_MATCH_1})
+        endif()
+      endforeach()
     endif()
-    if(SPDLOG_LIBRARY_DEBUG)
+  endif()
+
+  if(TARGET spdlog::spdlog)
+    # This is for the case where a distro provides a non standard (Debug/Release) config type
+    # eg Debian's config file is spdlogConfigTargets-none.cmake
+    # convert this back to either DEBUG/RELEASE or just RELEASE
+    # we only do this because we use find_package_handle_standard_args for config time output
+    # and it isnt capable of handling TARGETS, so we have to extract the info
+    get_target_property(_SPDLOG_CONFIGURATIONS spdlog::spdlog IMPORTED_CONFIGURATIONS)
+    foreach(_spdlog_config IN LISTS _SPDLOG_CONFIGURATIONS)
+      # Some non standard config (eg None on Debian)
+      # Just set to RELEASE var so select_library_configurations can continue to work its magic
+      string(TOUPPER ${_spdlog_config} _spdlog_config_UPPER)
+      if((NOT ${_spdlog_config_UPPER} STREQUAL "RELEASE") AND
+         (NOT ${_spdlog_config_UPPER} STREQUAL "DEBUG"))
+        get_target_property(SPDLOG_LIBRARY_RELEASE spdlog::spdlog IMPORTED_LOCATION_${_spdlog_config_UPPER})
+      else()
+        get_target_property(SPDLOG_LIBRARY_${_spdlog_config_UPPER} spdlog::spdlog IMPORTED_LOCATION_${_spdlog_config_UPPER})
+      endif()
+    endforeach()
+
+    get_target_property(SPDLOG_INCLUDE_DIR spdlog::spdlog INTERFACE_INCLUDE_DIRECTORIES)
+  endif()
+
+  include(SelectLibraryConfigurations)
+  select_library_configurations(SPDLOG)
+
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(Spdlog
+                                    REQUIRED_VARS SPDLOG_LIBRARY SPDLOG_INCLUDE_DIR
+                                    VERSION_VAR SPDLOG_VERSION)
+
+  if(Spdlog_FOUND)
+    if(NOT TARGET spdlog::spdlog)
+      # Ideally we probably shouldnt be overriding these. We should trust the cmake config file
+      list(APPEND _spdlog_definitions SPDLOG_DEBUG_ON
+                                      SPDLOG_NO_ATOMIC_LEVELS)
+
+      add_library(spdlog::spdlog UNKNOWN IMPORTED)
+      if(SPDLOG_LIBRARY_RELEASE)
+        set_target_properties(spdlog::spdlog PROPERTIES
+                                             IMPORTED_CONFIGURATIONS RELEASE
+                                             IMPORTED_LOCATION_RELEASE "${SPDLOG_LIBRARY_RELEASE}")
+      endif()
+      if(SPDLOG_LIBRARY_DEBUG)
+        set_target_properties(spdlog::spdlog PROPERTIES
+                                             IMPORTED_CONFIGURATIONS DEBUG
+                                             IMPORTED_LOCATION_DEBUG "${SPDLOG_LIBRARY_DEBUG}")
+      endif()
       set_target_properties(spdlog::spdlog PROPERTIES
-                                           IMPORTED_CONFIGURATIONS DEBUG
-                                           IMPORTED_LOCATION "${SPDLOG_LIBRARY_DEBUG}")
+                                           INTERFACE_INCLUDE_DIRECTORIES "${SPDLOG_INCLUDE_DIR}")
+
+      # We need to append in case the cmake config already has definitions
+      set_property(TARGET spdlog::spdlog APPEND PROPERTY
+                                                INTERFACE_COMPILE_DEFINITIONS "${_spdlog_definitions}")
     endif()
-    set_target_properties(spdlog::spdlog PROPERTIES
-                                         INTERFACE_INCLUDE_DIRECTORIES "${SPDLOG_INCLUDE_DIR}"
-                                         INTERFACE_COMPILE_DEFINITIONS "${SPDLOG_DEFINITIONS}")
+
+    if(TARGET spdlog)
+      add_dependencies(spdlog::spdlog spdlog)
+    endif()
   endif()
-  if(TARGET spdlog)
-    add_dependencies(spdlog::spdlog spdlog)
-  endif()
+
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP spdlog::spdlog)
-endif()
 
-mark_as_advanced(SPDLOG_INCLUDE_DIR SPDLOG_LIBRARY)
+endif()

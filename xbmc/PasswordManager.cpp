@@ -15,9 +15,11 @@
 #include "settings/SettingsComponent.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
 
+#include <cstring>
 #include <mutex>
 
 CPasswordManager &CPasswordManager::GetInstance()
@@ -145,19 +147,22 @@ void CPasswordManager::Load()
   std::string passwordsFile = profileManager->GetUserDataItem("passwords.xml");
   if (CFileUtils::Exists(passwordsFile))
   {
-    CXBMCTinyXML doc;
+    CXBMCTinyXML2 doc;
     if (!doc.LoadFile(passwordsFile))
     {
-      CLog::Log(LOGERROR, "{} - Unable to load: {}, Line {}\n{}", __FUNCTION__, passwordsFile,
-                doc.ErrorRow(), doc.ErrorDesc());
+      CLog::LogF(LOGERROR, "Unable to load: {}, Line {}\n{}", passwordsFile, doc.ErrorLineNum(),
+                 doc.ErrorStr());
       return;
     }
-    const TiXmlElement *root = doc.RootElement();
-    if (root->ValueStr() != "passwords")
+    const auto* root = doc.RootElement();
+    if (root == nullptr)
+      return;
+
+    if (std::strcmp(root->Value(), "passwords") != 0)
       return;
     // read in our passwords
-    const TiXmlElement *path = root->FirstChildElement("path");
-    while (path)
+    const auto* path = root->FirstChildElement("path");
+    while (path != nullptr)
     {
       std::string from, to;
       if (XMLUtils::GetPath(path, "from", from) && XMLUtils::GetPath(path, "to", to))
@@ -177,16 +182,25 @@ void CPasswordManager::Save() const
   if (m_permanentCache.empty())
     return;
 
-  CXBMCTinyXML doc;
-  TiXmlElement rootElement("passwords");
-  TiXmlNode *root = doc.InsertEndChild(rootElement);
-  if (!root)
+  CXBMCTinyXML2 doc;
+  auto* rootElement = doc.NewElement("passwords");
+  if (rootElement == nullptr)
+    return;
+
+  auto* root = doc.InsertEndChild(rootElement);
+  if (root == nullptr)
     return;
 
   for (std::map<std::string, std::string>::const_iterator i = m_permanentCache.begin(); i != m_permanentCache.end(); ++i)
   {
-    TiXmlElement pathElement("path");
-    TiXmlNode *path = root->InsertEndChild(pathElement);
+    auto* pathElement = doc.NewElement("path");
+    if (pathElement == nullptr)
+      continue;
+
+    auto* path = root->InsertEndChild(pathElement);
+    if (path == nullptr)
+      continue;
+
     XMLUtils::SetPath(path, "from", i->first);
     XMLUtils::SetPath(path, "to", i->second);
   }

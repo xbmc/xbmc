@@ -15,13 +15,14 @@
 #include "input/mouse/MouseStat.h"
 #include "messaging/ApplicationMessenger.h"
 #include "utils/log.h"
-#include "windowing/osx/WinSystemOSX.h"
 
 #include <mutex>
+#include <optional>
 #include <queue>
 
 #import <AppKit/AppKit.h>
 #import <Foundation/Foundation.h>
+#import <IOKit/hidsystem/ev_keymap.h>
 
 #pragma mark - objc implementation
 
@@ -29,6 +30,7 @@
 {
   std::queue<XBMC_Event> events;
   CCriticalSection m_inputlock;
+  id m_mediaKeysTap;
   bool m_inputEnabled;
 
   //! macOS requires the calls the NSCursor hide/unhide to be balanced
@@ -47,10 +49,8 @@
 {
   self = [super init];
 
-  [self enableInputEvents];
   m_lastAppCursorVisibilityAction = NSCursorVisibilityBalancer::NONE;
-  m_inputEnabled = true;
-
+  [self enableInputEvents];
   return self;
 }
 
@@ -158,11 +158,16 @@
 
 - (void)enableInputEvents
 {
+  m_mediaKeysTap = [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskSystemDefined
+                                                         handler:^(NSEvent* event) {
+                                                           return [self InputEventHandler:event];
+                                                         }];
   m_inputEnabled = true;
 }
 
 - (void)disableInputEvents
 {
+  m_mediaKeysTap = nil;
   m_inputEnabled = false;
 }
 
@@ -195,103 +200,109 @@
 - (NSEvent*)InputEventHandler:(NSEvent*)nsEvent
 {
   bool passEvent = true;
-  // The incoming mouse position.
-  NSPoint location = nsEvent.locationInWindow;
-  if (!nsEvent.window || location.x < 0 || location.y < 0)
-    return nsEvent;
-
-  location = [nsEvent.window convertPointToBacking:location];
-
-  // cocoa world is upside down ...
-  auto winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  if (!winSystem)
-    return nsEvent;
-
-  NSRect frame = [nsEvent.window convertRectToBacking:winSystem->GetWindowDimensions()];
-  location.y = frame.size.height - location.y;
-
   XBMC_Event newEvent = {};
 
   switch (nsEvent.type)
   {
     // handle mouse events and transform them into the xbmc event world
     case NSEventTypeLeftMouseUp:
-      newEvent.type = XBMC_MOUSEBUTTONUP;
-      newEvent.button.button = XBMC_BUTTON_LEFT;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONUP
+                          buttonCode:XBMC_BUTTON_LEFT];
       break;
+    }
     case NSEventTypeLeftMouseDown:
-      newEvent.type = XBMC_MOUSEBUTTONDOWN;
-      newEvent.button.button = XBMC_BUTTON_LEFT;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONDOWN
+                          buttonCode:XBMC_BUTTON_LEFT];
       break;
+    }
     case NSEventTypeRightMouseUp:
-      newEvent.type = XBMC_MOUSEBUTTONUP;
-      newEvent.button.button = XBMC_BUTTON_RIGHT;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONUP
+                          buttonCode:XBMC_BUTTON_RIGHT];
       break;
+    }
     case NSEventTypeRightMouseDown:
-      newEvent.type = XBMC_MOUSEBUTTONDOWN;
-      newEvent.button.button = XBMC_BUTTON_RIGHT;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONDOWN
+                          buttonCode:XBMC_BUTTON_RIGHT];
       break;
+    }
     case NSEventTypeOtherMouseUp:
-      newEvent.type = XBMC_MOUSEBUTTONUP;
-      newEvent.button.button = XBMC_BUTTON_MIDDLE;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONUP
+                          buttonCode:XBMC_BUTTON_MIDDLE];
       break;
+    }
     case NSEventTypeOtherMouseDown:
-      newEvent.type = XBMC_MOUSEBUTTONDOWN;
-      newEvent.button.button = XBMC_BUTTON_MIDDLE;
-      newEvent.button.x = location.x;
-      newEvent.button.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      [self SendXBMCMouseButtonEvent:nsEvent
+                           xbmcEvent:newEvent
+                      mouseEventType:XBMC_MOUSEBUTTONDOWN
+                          buttonCode:XBMC_BUTTON_MIDDLE];
       break;
+    }
     case NSEventTypeMouseMoved:
     case NSEventTypeLeftMouseDragged:
     case NSEventTypeRightMouseDragged:
     case NSEventTypeOtherMouseDragged:
-      newEvent.type = XBMC_MOUSEMOTION;
-      newEvent.motion.x = location.x;
-      newEvent.motion.y = location.y;
-      [self MessagePush:&newEvent];
+    {
+      auto location = [self TranslateMouseLocation:nsEvent];
+      if (location.has_value())
+      {
+        NSPoint locationCoordinates = location.value();
+        newEvent.type = XBMC_MOUSEMOTION;
+        newEvent.motion.x = locationCoordinates.x;
+        newEvent.motion.y = locationCoordinates.y;
+        [self MessagePush:&newEvent];
+      }
       break;
+    }
     case NSEventTypeScrollWheel:
+    {
       // very strange, real scrolls have non-zero deltaY followed by same number of events
       // with a zero deltaY. This reverses our scroll which is WTF? anoying. Trap them out here.
       if (nsEvent.deltaY != 0.0)
       {
-        newEvent.type = XBMC_MOUSEBUTTONDOWN;
-        newEvent.button.x = location.x;
-        newEvent.button.y = location.y;
-        newEvent.button.button =
-            nsEvent.scrollingDeltaY > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
-        [self MessagePush:&newEvent];
-
-        newEvent.type = XBMC_MOUSEBUTTONUP;
-        [self MessagePush:&newEvent];
+        auto button = nsEvent.scrollingDeltaY > 0 ? XBMC_BUTTON_WHEELUP : XBMC_BUTTON_WHEELDOWN;
+        if ([self SendXBMCMouseButtonEvent:nsEvent
+                                 xbmcEvent:newEvent
+                            mouseEventType:XBMC_MOUSEBUTTONDOWN
+                                buttonCode:button])
+        {
+          // scrollwhell need a subsquent button press with no button code
+          [self SendXBMCMouseButtonEvent:nsEvent
+                               xbmcEvent:newEvent
+                          mouseEventType:XBMC_MOUSEBUTTONUP
+                              buttonCode:std::nullopt];
+        }
       }
       break;
+    }
 
     // handle keyboard events and transform them into the xbmc event world
     case NSEventTypeKeyUp:
+    {
       newEvent = [self keyPressEvent:nsEvent];
       newEvent.type = XBMC_KEYUP;
 
       [self MessagePush:&newEvent];
       passEvent = false;
       break;
+    }
     case NSEventTypeKeyDown:
+    {
       newEvent = [self keyPressEvent:nsEvent];
       newEvent.type = XBMC_KEYDOWN;
 
@@ -300,6 +311,22 @@
       passEvent = false;
 
       break;
+    }
+    // media keys
+    case NSEventTypeSystemDefined:
+    {
+      if (nsEvent.subtype == NX_SUBTYPE_AUX_CONTROL_BUTTONS)
+      {
+        const int keyCode = (([nsEvent data1] & 0xFFFF0000) >> 16);
+        const int keyFlags = ([nsEvent data1] & 0x0000FFFF);
+        const int keyState = (((keyFlags & 0xFF00) >> 8)) == 0xA;
+        if (keyState == 1) // if pressed
+        {
+          passEvent = [self HandleMediaKey:keyCode];
+        }
+      }
+      break;
+    }
     default:
       return nsEvent;
   }
@@ -342,6 +369,90 @@
   newEvent.key.keysym.mod = [self OsxMod2XbmcMod:nsEvent.modifierFlags];
 
   return newEvent;
+}
+
+- (BOOL)SendXBMCMouseButtonEvent:(NSEvent*)nsEvent
+                       xbmcEvent:(XBMC_Event&)xbmcEvent
+                  mouseEventType:(uint8_t)mouseEventType
+                      buttonCode:(std::optional<uint8_t>)buttonCode
+{
+  auto location = [self TranslateMouseLocation:nsEvent];
+  if (location.has_value())
+  {
+    NSPoint locationCoordinates = location.value();
+    xbmcEvent.type = mouseEventType;
+    if (buttonCode.has_value())
+    {
+      xbmcEvent.button.button = buttonCode.value();
+    }
+    xbmcEvent.button.x = locationCoordinates.x;
+    xbmcEvent.button.y = locationCoordinates.y;
+    [self MessagePush:&xbmcEvent];
+    return true;
+  }
+  return false;
+}
+
+- (std::optional<NSPoint>)TranslateMouseLocation:(NSEvent*)nsEvent
+{
+  NSPoint location = nsEvent.locationInWindow;
+  // ignore events if outside the view bounds
+  if (!nsEvent.window || !NSPointInRect(location, nsEvent.window.contentView.frame))
+  {
+    return std::nullopt;
+  }
+  // translate the location to backing units
+  location = [nsEvent.window convertPointToBacking:location];
+  NSRect frame = [nsEvent.window convertRectToBacking:nsEvent.window.contentView.frame];
+  // cocoa world is upside down ...
+  location.y = frame.size.height - location.y;
+  return location;
+}
+
+- (void)SendPlayerAction:(int)actionId
+{
+  CAction* action = new CAction(actionId);
+  CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                             static_cast<void*>(action));
+}
+
+- (bool)HandleMediaKey:(int)keyCode
+{
+  bool passEvent = false;
+  switch (keyCode)
+  {
+    case NX_KEYTYPE_PLAY:
+    {
+      [self SendPlayerAction:ACTION_PLAYER_PLAYPAUSE];
+      break;
+    }
+    case NX_KEYTYPE_NEXT:
+    {
+      [self SendPlayerAction:ACTION_NEXT_ITEM];
+      break;
+    }
+    case NX_KEYTYPE_PREVIOUS:
+    {
+      [self SendPlayerAction:ACTION_PREV_ITEM];
+      break;
+    }
+    case NX_KEYTYPE_FAST:
+    {
+      [self SendPlayerAction:ACTION_PLAYER_FORWARD];
+      break;
+    }
+    case NX_KEYTYPE_REWIND:
+    {
+      [self SendPlayerAction:ACTION_PLAYER_REWIND];
+      break;
+    }
+    default:
+    {
+      passEvent = true;
+      break;
+    }
+  }
+  return passEvent;
 }
 
 @end

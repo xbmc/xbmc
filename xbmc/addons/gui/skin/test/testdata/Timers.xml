@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<timers>
+    <timer>
+        <name>timer1</name>
+        <description>This is a valid timer with multiple actions and resets everytime it is started</description>
+        <start reset="true">true</start>
+        <reset>true</reset>
+        <stop>true</stop>
+        <onstart>Notification(timer1, notification 1, 1000)</onstart>
+        <onstart>Notification(timer1, notification 2, 1000)</onstart>
+        <onstop>Notification(timer1, notification 3, 1000)</onstop>
+        <onstop>Notification(timer1, notification 4, 1000)</onstop>
+    </timer>
+    <timer>
+        <name>timer2</name>
+        <description>This is a valid timer without reset on start</description>
+        <start>true</start>
+        <reset>true</reset>
+        <stop>true</stop>
+        <onstart>Notification(timer1, notification 1, 1000)</onstart>
+        <onstop>Notification(timer1, notification 2, 1000)</onstop>
+    </timer>
+    <timer>
+        <name>timer3</name>
+        <description>This is a valid timer fully managed from builtins</description>
+    </timer>
+    <timer>
+        <name>timer4</name>
+        <description>This is a valid timer fully managed from builtins (and executes a few bultins)</description>
+        <onstart>Notification(timer1, notification 1, 1000)</onstart>
+        <onstop>Notification(timer1, notification 2, 1000)</onstop>
+    </timer>
+    <timer>
+        <name>timer5</name>
+        <description>This is a timer with conditional execution on builtins</description>
+        <onstart condition="Integer.IsEven(Integer.ValueOf(2))">Notification(timer1, notification 1, 1000)</onstart>
+        <onstop condition="true">Notification(timer1, notification 2, 1000)</onstop>
+    </timer>
+    <timer>
+        <name>timer6</name>
+        <description>This is a timer only with the name defined, all other props empty</description>
+        <start></start>
+        <reset></reset>
+        <stop></stop>
+        <onstart condition=""></onstart>
+        <onstop condition=""></onstop>
+    </timer>
+    <timer>
+        <name></name>
+        <description>This is an invalid timer (name empty)</description>
+        <start>true</start>
+        <stop>true</stop>
+    </timer>
+    <timer>
+        <description>This is an invalid timer (no name element)</description>
+        <start>true</start>
+        <stop>true</stop>
+    </timer>
+</timers>

@@ -397,19 +397,24 @@ void CVideoDatabase::CreateViews()
   m_pDS->exec(episodeview);
 
   CLog::Log(LOGINFO, "create tvshowcounts");
+  // clang-format off
   std::string tvshowcounts = PrepareSQL("CREATE VIEW tvshowcounts AS SELECT "
                                        "      tvshow.idShow AS idShow,"
                                        "      MAX(files.lastPlayed) AS lastPlayed,"
                                        "      NULLIF(COUNT(episode.c12), 0) AS totalCount,"
                                        "      COUNT(files.playCount) AS watchedcount,"
                                        "      NULLIF(COUNT(DISTINCT(episode.c12)), 0) AS totalSeasons, "
-                                       "      MAX(files.dateAdded) as dateAdded "
+                                       "      MAX(files.dateAdded) as dateAdded, "
+                                       "      COUNT(bookmark.type) AS inProgressCount "
                                        "    FROM tvshow"
                                        "      LEFT JOIN episode ON"
                                        "        episode.idShow=tvshow.idShow"
                                        "      LEFT JOIN files ON"
                                        "        files.idFile=episode.idFile "
+                                       "      LEFT JOIN bookmark ON"
+                                       "        bookmark.idFile=files.idFile AND bookmark.type=1 "
                                        "GROUP BY tvshow.idShow");
+  // clang-format on
   m_pDS->exec(tvshowcounts);
 
   CLog::Log(LOGINFO, "create tvshowlinkpath_minview");
@@ -427,6 +432,7 @@ void CVideoDatabase::CreateViews()
   m_pDS->exec(tvshowlinkpathview);
 
   CLog::Log(LOGINFO, "create tvshow_view");
+  // clang-format off
   std::string tvshowview = PrepareSQL("CREATE VIEW tvshow_view AS SELECT "
                                      "  tvshow.*,"
                                      "  path.idParentPath AS idParentPath,"
@@ -437,7 +443,8 @@ void CVideoDatabase::CreateViews()
                                      "  rating.votes AS votes, "
                                      "  rating.rating_type AS rating_type, "
                                      "  uniqueid.value AS uniqueid_value, "
-                                     "  uniqueid.type AS uniqueid_type "
+                                     "  uniqueid.type AS uniqueid_type, "
+                                     "  tvshowcounts.inProgressCount AS inProgressCount "
                                      "FROM tvshow"
                                      "  LEFT JOIN tvshowlinkpath_minview ON "
                                      "    tvshowlinkpath_minview.idShow=tvshow.idShow"
@@ -450,9 +457,11 @@ void CVideoDatabase::CreateViews()
                                      "  LEFT JOIN uniqueid ON"
                                      "    uniqueid.uniqueid_id=tvshow.c%02d ",
                                      VIDEODB_ID_TV_RATING_ID, VIDEODB_ID_TV_IDENT_ID);
+  // clang-format on
   m_pDS->exec(tvshowview);
 
   CLog::Log(LOGINFO, "create season_view");
+  // clang-format off
   std::string seasonview = PrepareSQL("CREATE VIEW season_view AS SELECT "
                                      "  seasons.idSeason AS idSeason,"
                                      "  seasons.idShow AS idShow,"
@@ -468,7 +477,8 @@ void CVideoDatabase::CreateViews()
                                      "  tvshow_view.c%02d AS mpaa,"
                                      "  count(DISTINCT episode.idEpisode) AS episodes,"
                                      "  count(files.playCount) AS playCount,"
-                                     "  min(episode.c%02d) AS aired "
+                                     "  min(episode.c%02d) AS aired, "
+                                     "  count(bookmark.type) AS inProgressCount "
                                      "FROM seasons"
                                      "  JOIN tvshow_view ON"
                                      "    tvshow_view.idShow = seasons.idShow"
@@ -476,6 +486,8 @@ void CVideoDatabase::CreateViews()
                                      "    episode.idShow = seasons.idShow AND episode.c%02d = seasons.season"
                                      "  JOIN files ON"
                                      "    files.idFile = episode.idFile "
+                                     "  LEFT JOIN bookmark ON"
+                                     "    bookmark.idFile = files.idFile AND bookmark.type = 1 "
                                      "GROUP BY seasons.idSeason,"
                                      "         seasons.idShow,"
                                      "         seasons.season,"
@@ -493,6 +505,7 @@ void CVideoDatabase::CreateViews()
                                      VIDEODB_ID_EPISODE_AIRED, VIDEODB_ID_EPISODE_SEASON,
                                      VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PLOT, VIDEODB_ID_TV_PREMIERED,
                                      VIDEODB_ID_TV_GENRE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_MPAA);
+  // clang-format on
   m_pDS->exec(seasonview);
 
   CLog::Log(LOGINFO, "create musicvideo_view");
@@ -1697,6 +1710,11 @@ int CVideoDatabase::AddSet(const std::string& strSet, const std::string& strOver
     {
       int id = m_pDS->fv("idSet").get_asInt();
       m_pDS->close();
+
+      // update set data
+      strSQL = PrepareSQL("UPDATE sets SET strOverview = '%s' WHERE idSet = %i",
+                          strOverview.c_str(), id);
+      m_pDS->exec(strSQL);
       return id;
     }
   }
@@ -2132,6 +2150,33 @@ bool CVideoDatabase::GetTvShowInfo(const std::string& strPath, CVideoInfoTag& de
   catch (...)
   {
     CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, strPath);
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetSeasonInfo(const std::string& path,
+                                   int season,
+                                   CVideoInfoTag& details,
+                                   CFileItem* item)
+{
+  try
+  {
+    const std::string sql = PrepareSQL("strPath='%s' AND season=%i", path.c_str(), season);
+    const std::string id = GetSingleValue("season_view", "idSeason", sql);
+    if (id.empty())
+    {
+      CLog::LogF(LOGERROR, "Failed to obtain seasonId for path={}, season={}", path, season);
+    }
+    else
+    {
+      const int idSeason = static_cast<int>(std::strtol(id.c_str(), nullptr, 10));
+      return GetSeasonInfo(idSeason, details, item);
+    }
+  }
+  catch (...)
+  {
+    CLog::LogF(LOGERROR, "Exception while trying to to obtain seasonId for path={}, season={}",
+               path, season);
   }
   return false;
 }
@@ -4132,6 +4177,10 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
   details.SetUniqueID(record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_VALUE).get_asString(), record->at(VIDEODB_DETAILS_TVSHOW_UNIQUEID_TYPE).get_asString(), true);
   details.SetDuration(record->at(VIDEODB_DETAILS_TVSHOW_DURATION).get_asInt());
 
+  //! @todo videotag member + guiinfo int needed?
+  //! -- Currently not needed; having it available as item prop seems sufficient for skinning
+  const int inProgressEpisodes = record->at(VIDEODB_DETAILS_TVSHOW_NUM_INPROGRESS).get_asInt();
+
   if (getDetails)
   {
     if (getDetails & VideoDbDetailsCast)
@@ -4159,6 +4208,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(const dbiplus::sql_record* con
     item->SetProperty("numepisodes", details.m_iEpisode); // will be changed later to reflect watchmode setting
     item->SetProperty("watchedepisodes", details.GetPlayCount());
     item->SetProperty("unwatchedepisodes", details.m_iEpisode - details.GetPlayCount());
+    item->SetProperty("inprogressepisodes", inProgressEpisodes);
     item->SetProperty("watchedepisodepercent",
                       details.m_iEpisode > 0 ? (details.GetPlayCount() * 100 / details.m_iEpisode)
                                              : 0);
@@ -5906,7 +5956,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 121;
+  return 122;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -7457,11 +7507,14 @@ bool CVideoDatabase::GetSeasonsByWhere(const std::string& strBaseDir, const Filt
 
         const int totalEpisodes = m_pDS->fv(VIDEODB_ID_SEASON_EPISODES_TOTAL).get_asInt();
         const int watchedEpisodes = m_pDS->fv(VIDEODB_ID_SEASON_EPISODES_WATCHED).get_asInt();
+        const int inProgressEpisodes = m_pDS->fv(VIDEODB_ID_SEASON_EPISODES_INPROGRESS).get_asInt();
+
         pItem->GetVideoInfoTag()->m_iEpisode = totalEpisodes;
         pItem->SetProperty("totalepisodes", totalEpisodes);
         pItem->SetProperty("numepisodes", totalEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", watchedEpisodes);
         pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
+        pItem->SetProperty("inprogressepisodes", inProgressEpisodes);
         pItem->SetProperty("watchedepisodepercent",
                            totalEpisodes > 0 ? (watchedEpisodes * 100 / totalEpisodes) : 0);
         if (iSeason == 0)
@@ -8043,7 +8096,7 @@ bool CVideoDatabase::GetInProgressTvShowsNav(const std::string& strBaseDir, CFil
 {
   Filter filter;
   filter.order = PrepareSQL("c%02d", VIDEODB_ID_TV_TITLE);
-  filter.where = "watchedCount != 0 AND totalCount != watchedCount";
+  filter.where = "totalCount != watchedCount AND (inProgressCount > 0 OR watchedCount != 0)";
   return GetTvShowsByWhere(strBaseDir, filter, items, SortDescription(), getDetails);
 }
 
@@ -10927,7 +10980,7 @@ std::string CVideoDatabase::GetSafeFile(const std::string &dir, const std::strin
 {
   std::string safeThumb(name);
   StringUtils::Replace(safeThumb, ' ', '_');
-  return URIUtils::AddFileToFolder(dir, CUtil::MakeLegalFileName(safeThumb));
+  return URIUtils::AddFileToFolder(dir, CUtil::MakeLegalFileName(std::move(safeThumb)));
 }
 
 void CVideoDatabase::AnnounceRemove(const std::string& content, int id, bool scanning /* = false */)

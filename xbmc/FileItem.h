@@ -369,7 +369,9 @@ public:
 
   /*!
    * \brief Test if this item type can be resumed.
-   * \return True if this item can be resumed, false otherwise.
+   * \return True if this item is a folder and has at least one child with a partway resume bookmark
+   * or at least one unwatched child or if it is not a folder, if it has a partway resume bookmark,
+   * false otherwise.
    */
   bool IsResumable() const;
 

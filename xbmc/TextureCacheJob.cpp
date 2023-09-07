@@ -68,6 +68,38 @@ bool CTextureCacheJob::DoWork()
   return false;
 }
 
+namespace
+{
+// Most PVR images use "additional_info" to signify 'ownership' of basic images for easy
+// cache cleaning, rather than special generated images
+bool IsPVROwnedImage(const std::string& additional_info)
+{
+  return additional_info == "pvrchannel_radio" || additional_info == "pvrchannel_tv" ||
+         additional_info == "pvrprovider" || additional_info == "pvrrecording" ||
+         StringUtils::StartsWith(additional_info, "epgtag_");
+}
+
+// DecodeImageURL can also set "additional_info" to 'flipped' for mirror images selected in
+// the GUI, so is not a special generated image
+bool IsControl(const std::string& additional_info)
+{
+  return additional_info == "flipped";
+}
+
+// special generated images and images served via HTTP should not be regularly checked for changes
+bool ShouldCheckForChanges(const std::string& additional_info, const std::string& url)
+{
+  const bool isSpecialImage =
+      !additional_info.empty() && !IsControl(additional_info) && !IsPVROwnedImage(additional_info);
+  if (isSpecialImage)
+    return false;
+
+  const bool isHTTP =
+      StringUtils::StartsWith(url, "http://") || StringUtils::StartsWith(url, "https://");
+  return !isHTTP;
+}
+} // namespace
+
 bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
 {
   // unwrap the URL as required
@@ -76,14 +108,18 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
   CPictureScalingAlgorithm::Algorithm scalingAlgorithm;
   std::string image = DecodeImageURL(m_url, width, height, scalingAlgorithm, additional_info);
 
-  m_details.updateable = additional_info != "music" && UpdateableURL(image);
+  m_details.updateable = ShouldCheckForChanges(additional_info, image);
 
-  // generate the hash
-  m_details.hash = GetImageHash(image);
-  if (m_details.hash.empty())
-    return false;
-  else if (m_details.hash == m_oldHash)
-    return true;
+  if (m_details.updateable)
+  {
+    // generate the hash
+    m_details.hash = GetImageHash(image);
+    if (m_details.hash.empty())
+      return false;
+
+    if (m_details.hash == m_oldHash)
+      return true;
+  }
 
   std::unique_ptr<CTexture> texture = LoadImage(image, width, height, additional_info, true);
   if (texture)
@@ -221,12 +257,6 @@ std::unique_ptr<CTexture> CTextureCacheJob::LoadImage(const std::string& image,
     texture->SetOrientation(texture->GetOrientation() ^ 1);
 
   return texture;
-}
-
-bool CTextureCacheJob::UpdateableURL(const std::string &url) const
-{
-  // we don't constantly check online images
-  return !(StringUtils::StartsWith(url, "http://") || StringUtils::StartsWith(url, "https://"));
 }
 
 std::string CTextureCacheJob::GetImageHash(const std::string &url)

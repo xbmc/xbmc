@@ -155,6 +155,11 @@ void CWinSystemWin10::FinishWindowResize(int newWidth, int newHeight)
   ApplicationView::PreferredLaunchWindowingMode(ApplicationViewWindowingMode::PreferredLaunchViewSize);
 }
 
+void CWinSystemWin10::ForceFullScreen(const RESOLUTION_INFO& resInfo)
+{
+  ResizeWindow(resInfo.iScreenWidth, resInfo.iScreenHeight, 0, 0);
+}
+
 void CWinSystemWin10::AdjustWindow()
 {
   CLog::Log(LOGDEBUG, __FUNCTION__": adjusting window if required.");

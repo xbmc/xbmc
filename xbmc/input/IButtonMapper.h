@@ -8,7 +8,10 @@
 
 #pragma once
 
-class TiXmlNode;
+namespace tinyxml2
+{
+class XMLNode;
+}
 
 /*!
  * \brief Interface for classes that can map buttons to Kodi actions
@@ -18,7 +21,7 @@ class IButtonMapper
 public:
   virtual ~IButtonMapper() = default;
 
-  virtual void MapActions(int windowId, const TiXmlNode* pDevice) = 0;
+  virtual void MapActions(int windowId, const tinyxml2::XMLNode* pDevice) = 0;
 
   virtual void Clear() = 0;
 };

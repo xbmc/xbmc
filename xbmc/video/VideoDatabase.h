@@ -130,6 +130,7 @@ enum VideoDbDetails
 #define VIDEODB_DETAILS_TVSHOW_RATING_TYPE      VIDEODB_MAX_COLUMNS + 12
 #define VIDEODB_DETAILS_TVSHOW_UNIQUEID_VALUE   VIDEODB_MAX_COLUMNS + 13
 #define VIDEODB_DETAILS_TVSHOW_UNIQUEID_TYPE    VIDEODB_MAX_COLUMNS + 14
+#define VIDEODB_DETAILS_TVSHOW_NUM_INPROGRESS VIDEODB_MAX_COLUMNS + 15
 
 #define VIDEODB_DETAILS_MUSICVIDEO_USER_RATING  VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_MUSICVIDEO_PREMIERED    VIDEODB_MAX_COLUMNS + 3
@@ -290,6 +291,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_SEASON_EPISODES_TOTAL = 12,
   VIDEODB_ID_SEASON_EPISODES_WATCHED = 13,
   VIDEODB_ID_SEASON_PREMIERED = 14,
+  VIDEODB_ID_SEASON_EPISODES_INPROGRESS = 15,
   VIDEODB_ID_SEASON_MAX
 } VIDEODB_SEASON_IDS;
 
@@ -513,6 +515,7 @@ public:
   bool LoadVideoInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int getDetails = VideoDbDetailsAll);
   bool GetMovieInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idMovie = -1, int getDetails = VideoDbDetailsAll);
   bool GetTvShowInfo(const std::string& strPath, CVideoInfoTag& details, int idTvShow = -1, CFileItem* item = NULL, int getDetails = VideoDbDetailsAll);
+  bool GetSeasonInfo(const std::string& path, int season, CVideoInfoTag& details, CFileItem* item);
   bool GetSeasonInfo(int idSeason, CVideoInfoTag& details, CFileItem* item);
   bool GetSeasonInfo(int idSeason, CVideoInfoTag& details, bool allDetails = true);
   bool GetEpisodeBasicInfo(const std::string& strFilenameAndPath, CVideoInfoTag& details, int idEpisode  = -1);

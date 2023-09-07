@@ -118,7 +118,7 @@
 								<visible>!Listitem.IsParentFolder</visible>
 							</control>
 							<control type="image">
-								<right>220</right>
+								<right>230</right>
 								<top>143</top>
 								<width>22</width>
 								<height>22</height>
@@ -126,7 +126,7 @@
 								<visible>!String.IsEmpty(ListItem.Rating)</visible>
 							</control>
 							<control type="label">
-								<right>258</right>
+								<right>268</right>
 								<top>144</top>
 								<width>800</width>
 								<height>20</height>
@@ -142,7 +142,7 @@
 								<width>22</width>
 								<height>22</height>
 								<texture>lists/played-total.png</texture>
-								<visible>String.IsEqual(Listitem.dbtype,tvshow) + !String.IsEmpty(ListItem.Property(TotalEpisodes))</visible>
+								<visible>[String.IsEqual(Listitem.dbtype,tvshow) | String.IsEqual(Listitem.dbtype,season)] + !String.IsEmpty(ListItem.Property(TotalEpisodes))</visible>
 							</control>
 							<control type="label">
 								<right>103</right>
@@ -152,7 +152,7 @@
 								<font>font12</font>
 								<align>right</align>
 								<aligny>center</aligny>
-								<label>$VAR[BannerLabel2Var]</label>
+								<label>$VAR[WatchedStatusVar]</label>
 							</control>
 						</control>
 						<control type="group">

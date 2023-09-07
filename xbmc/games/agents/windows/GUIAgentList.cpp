@@ -182,6 +182,7 @@ void CGUIAgentList::Notify(const Observable& obs, const ObservableMessage msg)
   switch (msg)
   {
     case ObservableMessageGameAgentsChanged:
+    case ObservableMessageGamePortsChanged:
     {
       CGUIMessage msg(GUI_MSG_REFRESH_LIST, m_guiWindow.GetID(), CONTROL_AGENT_LIST);
       CServiceBroker::GetAppMessenger()->SendGUIMessage(msg, m_guiWindow.GetID());
@@ -210,7 +211,7 @@ void CGUIAgentList::AddItem(const CGameAgent& agent)
   // Create the list item from agent properties
   const std::string label = agent.GetPeripheralName();
   const ControllerPtr controller = agent.GetController();
-  const std::string path = agent.GetPeripheralLocation();
+  const std::string& path = agent.GetPeripheralLocation();
 
   CFileItemPtr item = std::make_shared<CFileItem>(label);
   item->SetPath(path);

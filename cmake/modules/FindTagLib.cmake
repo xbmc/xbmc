@@ -3,97 +3,114 @@
 # ----------
 # Finds the TagLib library
 #
-# This will define the following variables::
-#
-# TAGLIB_FOUND - system has TagLib
-# TAGLIB_INCLUDE_DIRS - the TagLib include directory
-# TAGLIB_LIBRARIES - the TagLib libraries
-#
-# and the following imported targets::
+# This will define the following target:
 #
 #   TagLib::TagLib   - The TagLib library
+#
 
-if(ENABLE_INTERNAL_TAGLIB)
-  include(cmake/scripts/common/ModuleHelpers.cmake)
+if(NOT TARGET TagLib::TagLib)
+  if(ENABLE_INTERNAL_TAGLIB)
 
-  set(MODULE_LC taglib)
+    # Suppress mismatch warning, see https://cmake.org/cmake/help/latest/module/FindPackageHandleStandardArgs.html
+    set(FPHSA_NAME_MISMATCHED 1)
 
-  SETUP_BUILD_VARS()
-
-  set(TAGLIB_VERSION ${${MODULE}_VER})
-
-  if(WIN32 OR WINDOWS_STORE)
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-cmake-pdb-debug.patch")
-    generate_patchcommand("${patches}")
-
-    if(WINDOWS_STORE)
-      set(EXTRA_ARGS -DPLATFORM_WINRT=ON)
+    # Darwin systems use a system tbd that isnt found as a static lib
+    # Other platforms when using ENABLE_INTERNAL_TAGLIB, we want the static lib
+    if(NOT CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+      # Requires cmake 3.24 for ZLIB_USE_STATIC_LIBS to actually do something
+      set(ZLIB_USE_STATIC_LIBS ON)
     endif()
-  endif()
+    find_package(ZLIB REQUIRED)
+    unset(FPHSA_NAME_MISMATCHED)
 
-  # Debug postfix only used for windows
-  if(WIN32 OR WINDOWS_STORE)
-    set(TAGLIB_DEBUG_POSTFIX "d")
-  endif()
+    include(cmake/scripts/common/ModuleHelpers.cmake)
 
-  set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
-                 -DBUILD_EXAMPLES=OFF
-                 -DBUILD_TESTING=OFF
-                 -DBUILD_BINDINGS=OFF
-                 ${EXTRA_ARGS})
+    set(MODULE_LC taglib)
 
-  BUILD_DEP_TARGET()
+    SETUP_BUILD_VARS()
 
-else()
+    set(TAGLIB_VERSION ${${MODULE}_VER})
 
-  if(PKG_CONFIG_FOUND)
-    pkg_check_modules(PC_TAGLIB taglib>=1.9.0 QUIET)
-  endif()
+    if(WIN32 OR WINDOWS_STORE)
+      set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-cmake-pdb-debug.patch")
+      generate_patchcommand("${patches}")
 
-  find_path(TAGLIB_INCLUDE_DIR taglib/tag.h
-                               PATHS ${PC_TAGLIB_INCLUDEDIR})
-  find_library(TAGLIB_LIBRARY_RELEASE NAMES tag
+      if(WINDOWS_STORE)
+        set(EXTRA_ARGS -DPLATFORM_WINRT=ON)
+      endif()
+    endif()
+
+    # Debug postfix only used for windows
+    if(WIN32 OR WINDOWS_STORE)
+      set(TAGLIB_DEBUG_POSTFIX "d")
+    endif()
+
+    set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
+                   -DBUILD_EXAMPLES=OFF
+                   -DBUILD_TESTING=OFF
+                   -DBUILD_BINDINGS=OFF
+                   ${EXTRA_ARGS})
+
+    BUILD_DEP_TARGET()
+
+    add_dependencies(${MODULE_LC} ZLIB::ZLIB)
+
+  else()
+
+    if(PKG_CONFIG_FOUND)
+      pkg_check_modules(PC_TAGLIB taglib>=1.9.0 QUIET)
+    endif()
+
+    find_path(TAGLIB_INCLUDE_DIR taglib/tag.h PATHS ${PC_TAGLIB_INCLUDEDIR})
+    find_library(TAGLIB_LIBRARY_RELEASE NAMES tag
+                                        PATHS ${PC_TAGLIB_LIBDIR})
+    find_library(TAGLIB_LIBRARY_DEBUG NAMES tagd
                                       PATHS ${PC_TAGLIB_LIBDIR})
-  find_library(TAGLIB_LIBRARY_DEBUG NAMES tagd
-                                    PATHS ${PC_TAGLIB_LIBDIR})
-  set(TAGLIB_VERSION ${PC_TAGLIB_VERSION})
+    set(TAGLIB_VERSION ${PC_TAGLIB_VERSION})
 
-endif()
+    set(TAGLIB_LINK_LIBS ${PC_TAGLIB_LIBRARIES})
+  endif()
 
-include(SelectLibraryConfigurations)
-select_library_configurations(TAGLIB)
+  include(SelectLibraryConfigurations)
+  select_library_configurations(TAGLIB)
 
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(TagLib
-                                  REQUIRED_VARS TAGLIB_LIBRARY TAGLIB_INCLUDE_DIR
-                                  VERSION_VAR TAGLIB_VERSION)
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(TagLib
+                                    REQUIRED_VARS TAGLIB_LIBRARY TAGLIB_INCLUDE_DIR
+                                    VERSION_VAR TAGLIB_VERSION)
 
-if(TAGLIB_FOUND)
-  set(TAGLIB_INCLUDE_DIRS ${TAGLIB_INCLUDE_DIR})
-  set(TAGLIB_LIBRARIES ${TAGLIB_LIBRARY})
-
-  # Workaround broken .pc file
-  list(APPEND TAGLIB_LIBRARIES ${PC_TAGLIB_ZLIB_LIBRARIES})
-
-  if(NOT TARGET TagLib::TagLib)
+  if(TagLib_FOUND)
     add_library(TagLib::TagLib UNKNOWN IMPORTED)
     if(TAGLIB_LIBRARY_RELEASE)
       set_target_properties(TagLib::TagLib PROPERTIES
                                            IMPORTED_CONFIGURATIONS RELEASE
-                                           IMPORTED_LOCATION "${TAGLIB_LIBRARY_RELEASE}")
+                                           IMPORTED_LOCATION_RELEASE "${TAGLIB_LIBRARY_RELEASE}")
     endif()
     if(TAGLIB_LIBRARY_DEBUG)
       set_target_properties(TagLib::TagLib PROPERTIES
                                            IMPORTED_CONFIGURATIONS DEBUG
-                                           IMPORTED_LOCATION "${TAGLIB_LIBRARY_DEBUG}")
+                                           IMPORTED_LOCATION_DEBUG "${TAGLIB_LIBRARY_DEBUG}")
     endif()
     set_target_properties(TagLib::TagLib PROPERTIES
                                          INTERFACE_INCLUDE_DIRECTORIES "${TAGLIB_INCLUDE_DIR}")
+
+    # if pkg-config returns link libs at to TARGET. For internal build, we use ZLIB::Zlib
+    # dependency explicitly
+    if(TAGLIB_LINK_LIBS)
+        set_target_properties(TagLib::TagLib PROPERTIES
+                                             INTERFACE_LINK_LIBRARIES "${TAGLIB_LINK_LIBS}")
+    endif()
+
     if(TARGET taglib)
       add_dependencies(TagLib::TagLib taglib)
     endif()
+
+    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP TagLib::TagLib)
+  else()
+    if(TagLib_FIND_REQUIRED)
+      message(FATAL_ERROR "TagLib not found.")
+    endif()
   endif()
-  set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP TagLib::TagLib)
+  mark_as_advanced(TAGLIB_INCLUDE_DIR TAGLIB_LIBRARY)
 endif()
 
-mark_as_advanced(TAGLIB_INCLUDE_DIR TAGLIB_LIBRARY)

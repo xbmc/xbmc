@@ -42,6 +42,18 @@ struct AESinkRegEntry
   Cleanup cleanupFunc;
 };
 
+struct AESinkDevice
+{
+  std::string driver;
+  std::string name;
+  std::string friendlyName;
+
+  bool IsSameDeviceAs(const AESinkDevice& d) const
+  {
+    return driver == d.driver && (name == d.name || friendlyName == d.friendlyName);
+  }
+};
+
 class CAESinkFactory
 {
 public:
@@ -49,8 +61,8 @@ public:
   static void ClearSinks();
   static bool HasSinks();
 
-  static void ParseDevice(std::string &device, std::string &driver);
-  static std::unique_ptr<IAESink> Create(std::string& device, AEAudioFormat& desiredFormat);
+  static AESinkDevice ParseDevice(const std::string& device);
+  static std::unique_ptr<IAESink> Create(const std::string& device, AEAudioFormat& desiredFormat);
   static void EnumerateEx(std::vector<AESinkInfo>& list, bool force, const std::string& driver);
   static void Cleanup();
 

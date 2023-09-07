@@ -288,6 +288,11 @@ bool CSysInfoJob::DoWork()
   m_info.osVersionInfo     = CSysInfo::GetOsPrettyNameWithVersion() + " (kernel: " + CSysInfo::GetKernelName() + " " + CSysInfo::GetKernelVersionFull() + ")";
   m_info.macAddress        = GetMACAddress();
   m_info.batteryLevel      = GetBatteryLevel();
+  m_info.ipAddress = GetIPAddress();
+  m_info.netMask = GetNetMask();
+  m_info.dnsServers = GetDNSServers();
+  m_info.gatewayAddress = GetGatewayAddress();
+  m_info.networkLinkState = GetNetworkLinkState();
   return true;
 }
 
@@ -312,6 +317,57 @@ std::string CSysInfoJob::GetMACAddress()
     return iface->GetMacAddress();
 
   return "";
+}
+
+std::string CSysInfoJob::GetIPAddress()
+{
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  if (iface)
+  {
+    return iface->GetCurrentIPAddress();
+  }
+  return {};
+}
+
+std::string CSysInfoJob::GetNetMask()
+{
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  if (iface)
+  {
+    return iface->GetCurrentNetmask();
+  }
+  return {};
+}
+
+std::string CSysInfoJob::GetGatewayAddress()
+{
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  if (iface)
+  {
+    return iface->GetCurrentDefaultGateway();
+  }
+  return {};
+}
+
+std::string CSysInfoJob::GetNetworkLinkState()
+{
+  std::string linkStatus = g_localizeStrings.Get(151);
+  linkStatus += " ";
+  CNetworkInterface* iface = CServiceBroker::GetNetwork().GetFirstConnectedInterface();
+  if (iface && iface->IsConnected())
+  {
+    linkStatus += g_localizeStrings.Get(15207);
+  }
+  else
+  {
+    linkStatus += g_localizeStrings.Get(15208);
+  }
+  return linkStatus;
+}
+
+std::vector<std::string> CSysInfoJob::GetDNSServers()
+{
+  return CServiceBroker::GetNetwork().GetNameServers();
 }
 
 std::string CSysInfoJob::GetVideoEncoder()
@@ -387,6 +443,18 @@ std::string CSysInfo::TranslateInfo(int info) const
     return m_info.videoEncoder;
   case NETWORK_MAC_ADDRESS:
     return m_info.macAddress;
+  case NETWORK_IP_ADDRESS:
+    return m_info.ipAddress;
+  case NETWORK_SUBNET_MASK:
+    return m_info.netMask;
+  case NETWORK_GATEWAY_ADDRESS:
+    return m_info.gatewayAddress;
+  case NETWORK_DNS1_ADDRESS:
+    return m_info.dnsServers.size() > 0 ? m_info.dnsServers.at(0) : g_localizeStrings.Get(231);
+  case NETWORK_DNS2_ADDRESS:
+    return m_info.dnsServers.size() > 1 ? m_info.dnsServers.at(1) : g_localizeStrings.Get(231);
+  case NETWORK_LINK_STATE:
+    return m_info.networkLinkState;
   case SYSTEM_OS_VERSION_INFO:
     return m_info.osVersionInfo;
   case SYSTEM_CPUFREQUENCY:
@@ -597,7 +665,7 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
   static std::string osName;
   if (osName.empty())
   {
-#if defined (TARGET_WINDOWS)
+#if defined(TARGET_WINDOWS)
     osName = GetKernelName() + "-based OS";
 #elif defined(TARGET_FREEBSD)
     osName = GetKernelName(true); // FIXME: for FreeBSD OS name is a kernel name
@@ -607,8 +675,8 @@ std::string CSysInfo::GetOsName(bool emptyIfUnknown /* = false*/)
     osName = "tvOS";
 #elif defined(TARGET_DARWIN_OSX)
     osName = "macOS";
-#elif defined (TARGET_ANDROID)
-    if (CJNIContext::GetPackageManager().hasSystemFeature("android.software.leanback"))
+#elif defined(TARGET_ANDROID)
+    if (CJNIContext::GetPackageManager().hasSystemFeature(CJNIPackageManager::FEATURE_LEANBACK))
       osName = "Android TV";
     else
       osName = "Android";

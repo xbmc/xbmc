@@ -357,7 +357,7 @@ bool Dataset::set_field_value(const char* f_name, const field_value& value)
   //  return false;
 }
 
-const field_value Dataset::get_field_value(const char* f_name)
+const field_value& Dataset::get_field_value(const char* f_name)
 {
   if (ds_state != dsInactive)
   {
@@ -391,7 +391,7 @@ const field_value Dataset::get_field_value(const char* f_name)
   throw DbErrors("Dataset state is Inactive");
 }
 
-const field_value Dataset::get_field_value(int index)
+const field_value& Dataset::get_field_value(int index)
 {
   if (ds_state != dsInactive)
   {
@@ -421,14 +421,13 @@ const sql_record* Dataset::get_sql_record()
   return result.records[frecno];
 }
 
-const field_value Dataset::f_old(const char* f_name)
+field_value Dataset::f_old(const char* f_name)
 {
   if (ds_state != dsInactive)
     for (int unsigned i = 0; i < fields_object->size(); i++)
       if ((*fields_object)[i].props.name == f_name)
         return (*fields_object)[i].val;
-  field_value fv;
-  return fv;
+  return {};
 }
 
 void Dataset::setParamList(const ParamList& params)

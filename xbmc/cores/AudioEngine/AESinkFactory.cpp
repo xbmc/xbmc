@@ -38,41 +38,58 @@ bool CAESinkFactory::HasSinks()
   return !m_AESinkRegEntry.empty();
 }
 
-void CAESinkFactory::ParseDevice(std::string &device, std::string &driver)
+AESinkDevice CAESinkFactory::ParseDevice(const std::string& device)
 {
-  int pos = device.find_first_of(':');
+  AESinkDevice dev{};
+  dev.name = device;
+
+  size_t pos = dev.name.find_first_of(':');
   bool found = false;
-  if (pos > 0)
+
+  if (pos != std::string::npos)
   {
-    driver = device.substr(0, pos);
+    dev.driver = device.substr(0, pos);
 
     for (const auto& reg : m_AESinkRegEntry)
     {
-      if (!StringUtils::EqualsNoCase(driver, reg.second.sinkName))
+      if (!StringUtils::EqualsNoCase(dev.driver, reg.second.sinkName))
         continue;
 
-      device = device.substr(pos + 1, device.length() - pos - 1);
+      dev.name = dev.name.substr(pos + 1, dev.name.length() - pos - 1);
       found = true;
     }
   }
 
   if (!found)
-    driver.clear();
+    dev.driver.clear();
+
+  pos = dev.name.find_last_of('|');
+
+  if (pos != std::string::npos)
+  {
+    // if no known driver found considers the string starts
+    // with the device name and discarts the rest
+    if (found)
+      dev.friendlyName = dev.name.substr(pos + 1);
+    dev.name = dev.name.substr(0, pos);
+  }
+
+  return dev;
 }
 
-std::unique_ptr<IAESink> CAESinkFactory::Create(std::string& device, AEAudioFormat& desiredFormat)
+std::unique_ptr<IAESink> CAESinkFactory::Create(const std::string& device,
+                                                AEAudioFormat& desiredFormat)
 {
   // extract the driver from the device string if it exists
-  std::string driver;
-  ParseDevice(device, driver);
+  const AESinkDevice dev = ParseDevice(device);
 
   AEAudioFormat tmpFormat = desiredFormat;
   std::unique_ptr<IAESink> sink;
-  std::string tmpDevice = device;
+  std::string tmpDevice = dev.name;
 
   for (const auto& reg : m_AESinkRegEntry)
   {
-    if (driver != reg.second.sinkName)
+    if (dev.driver != reg.second.sinkName)
       continue;
 
     sink = reg.second.createFunc(tmpDevice, tmpFormat);

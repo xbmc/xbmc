@@ -266,7 +266,7 @@ protected:
   void parse_sql(std::string& sql);
 
   /* Returns old field value (for :OLD) */
-  virtual const field_value f_old(const char* f);
+  virtual field_value f_old(const char* f);
 
   /* fast string tolower helper */
   char* str_toLower(char* s);
@@ -388,11 +388,11 @@ public:
   //  virtual char *field_name(int f_index) { return field_by_index(f_index)->get_field_name(); }
 
   /* Getting value of field for current record */
-  virtual const field_value get_field_value(const char* f_name);
-  virtual const field_value get_field_value(int index);
+  virtual const field_value& get_field_value(const char* f_name);
+  virtual const field_value& get_field_value(int index);
   /* Alias to get_field_value */
-  const field_value fv(const char* f) { return get_field_value(f); }
-  const field_value fv(int index) { return get_field_value(index); }
+  const field_value& fv(const char* f) { return get_field_value(f); }
+  const field_value& fv(int index) { return get_field_value(index); }
 
   /* ------------ for transaction ------------------- */
   void set_autocommit(bool v) { autocommit = v; }

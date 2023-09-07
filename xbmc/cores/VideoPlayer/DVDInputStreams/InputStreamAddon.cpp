@@ -415,6 +415,7 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
     audioStream->iBlockAlign = stream->m_BlockAlign;
     audioStream->iBitRate = stream->m_BitRate;
     audioStream->iBitsPerSample = stream->m_BitsPerSample;
+    audioStream->profile = ConvertAudioCodecProfile(stream->m_codecProfile);
     demuxStream = audioStream;
   }
   else if (stream->m_streamType == INPUTSTREAM_TYPE_VIDEO)
@@ -538,10 +539,9 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
       stream->m_cryptoSession.keySystem < STREAM_CRYPTO_KEY_SYSTEM_COUNT)
   {
     static const CryptoSessionSystem map[] = {
-        CRYPTO_SESSION_SYSTEM_NONE,
-        CRYPTO_SESSION_SYSTEM_WIDEVINE,
-        CRYPTO_SESSION_SYSTEM_PLAYREADY,
-        CRYPTO_SESSION_SYSTEM_WISEPLAY,
+        CRYPTO_SESSION_SYSTEM_NONE,      CRYPTO_SESSION_SYSTEM_WIDEVINE,
+        CRYPTO_SESSION_SYSTEM_PLAYREADY, CRYPTO_SESSION_SYSTEM_WISEPLAY,
+        CRYPTO_SESSION_SYSTEM_CLEARKEY,
     };
     demuxStream->cryptoSession = std::shared_ptr<DemuxCryptoSession>(
         new DemuxCryptoSession(map[stream->m_cryptoSession.keySystem],
@@ -718,6 +718,56 @@ int CInputStreamAddon::ConvertVideoCodecProfile(STREAMCODEC_PROFILE profile)
     return FF_PROFILE_AV1_PROFESSIONAL;
   default:
     return FF_PROFILE_UNKNOWN;
+  }
+}
+
+int CInputStreamAddon::ConvertAudioCodecProfile(STREAMCODEC_PROFILE profile)
+{
+  switch (profile)
+  {
+    case AACCodecProfileMAIN:
+      return FF_PROFILE_AAC_MAIN;
+    case AACCodecProfileLOW:
+      return FF_PROFILE_AAC_LOW;
+    case AACCodecProfileSSR:
+      return FF_PROFILE_AAC_SSR;
+    case AACCodecProfileLTP:
+      return FF_PROFILE_AAC_LTP;
+    case AACCodecProfileHE:
+      return FF_PROFILE_AAC_HE;
+    case AACCodecProfileHEV2:
+      return FF_PROFILE_AAC_HE_V2;
+    case AACCodecProfileLD:
+      return FF_PROFILE_AAC_LD;
+    case AACCodecProfileELD:
+      return FF_PROFILE_AAC_ELD;
+    case MPEG2AACCodecProfileLOW:
+      return FF_PROFILE_MPEG2_AAC_LOW;
+    case MPEG2AACCodecProfileHE:
+      return FF_PROFILE_MPEG2_AAC_HE;
+    case DTSCodecProfile:
+      return FF_PROFILE_DTS;
+    case DTSCodecProfileES:
+      return FF_PROFILE_DTS_ES;
+    case DTSCodecProfile9624:
+      return FF_PROFILE_DTS_96_24;
+    case DTSCodecProfileHDHRA:
+      return FF_PROFILE_DTS_HD_HRA;
+    case DTSCodecProfileHDMA:
+      return FF_PROFILE_DTS_HD_MA;
+    case DTSCodecProfileHDExpress:
+      return FF_PROFILE_DTS_EXPRESS;
+    case DTSCodecProfileHDMAX:
+      //! @todo: with ffmpeg >= 6.1 set the appropriate profile
+      return FF_PROFILE_UNKNOWN; // FF_PROFILE_DTS_HD_MA_X
+    case DTSCodecProfileHDMAIMAX:
+      //! @todo: with ffmpeg >= 6.1 set the appropriate profile
+      return FF_PROFILE_UNKNOWN; // FF_PROFILE_DTS_HD_MA_X_IMAX
+    case DDPlusCodecProfileAtmos:
+      //! @todo: with ffmpeg >= 6.1 set the appropriate profile
+      return FF_PROFILE_UNKNOWN; // FF_PROFILE_EAC3_DDP_ATMOS
+    default:
+      return FF_PROFILE_UNKNOWN;
   }
 }
 

@@ -14,6 +14,12 @@
 #include <memory>
 #include <string>
 
+class CGUIInfoManager;
+namespace tinyxml2
+{
+class XMLNode;
+}
+
 /*! \brief CSkinTimerManager is the container and manager for Skin timers. Its role is that of
  * checking if the timer boolean conditions are valid, start or stop timers and execute the respective
  * builtin actions linked to the timer lifecycle
@@ -24,8 +30,11 @@
 class CSkinTimerManager
 {
 public:
-  /*! \brief Skin timer manager constructor */
-  CSkinTimerManager() = default;
+  /*! \brief Skin timer manager constructor
+   *  \param infoMgr reference to the infomanager
+   */
+  CSkinTimerManager(CGUIInfoManager& infoMgr);
+  CSkinTimerManager() = delete;
 
   /*! \brief Default skin timer manager destructor */
   ~CSkinTimerManager() = default;
@@ -37,6 +46,23 @@ public:
 
   /*! \brief Stops the manager */
   void Stop();
+
+  /*! \brief Gets the total number of timers registered in the manager
+     *  \return the timer count
+    */
+  size_t GetTimerCount() const;
+
+  /*! \brief Checks if the timer with name `timer` exists
+   *  \param timer the name of the skin timer
+   *  \return true if the given timer exists, false otherwise
+  */
+  bool TimerExists(const std::string& timer) const;
+
+  /*! \brief Move a given timer, removing it from the manager
+   *  \param timer the name of the skin timer
+   *  \return the timer (moved), nullptr if it doesn't exist
+  */
+  std::unique_ptr<CSkinTimer> GrabTimer(const std::string& timer);
 
   /*! \brief Checks if the timer with name `timer` is running
    \param timer the name of the skin timer
@@ -70,8 +96,9 @@ private:
   * \note Called internally from LoadTimers
   * \param node - the XML representation of a skin timer object
   */
-  void LoadTimerInternal(const TiXmlElement* node);
+  void LoadTimerInternal(const tinyxml2::XMLNode* node);
 
   /*! Container for the skin timers */
   std::map<std::string, std::unique_ptr<CSkinTimer>> m_timers;
+  CGUIInfoManager& m_infoMgr;
 };

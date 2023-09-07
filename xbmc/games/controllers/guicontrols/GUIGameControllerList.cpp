@@ -171,7 +171,7 @@ void CGUIGameControllerList::UpdatePortIndex(const PERIPHERALS::PeripheralPtr& a
       static_cast<JOYSTICK::IInputProvider*>(agentPeripheral.get());
 
   // See if the input provider has a port address
-  const std::string& portAddress = agentManager.GetPortAddress(inputProvider);
+  std::string portAddress = agentManager.GetPortAddress(inputProvider);
   if (portAddress.empty())
     return;
 

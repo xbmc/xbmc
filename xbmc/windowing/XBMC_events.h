@@ -22,7 +22,6 @@ typedef enum
   XBMC_MOUSEBUTTONUP, /* Mouse button released */
   XBMC_QUIT, /* User-requested quit */
   XBMC_VIDEORESIZE, /* User resized video mode */
-  XBMC_FULLSCREEN_UPDATE, /* Triggered by an OS event when Kodi is running in fullscreen, rescale and repositioning is required  */
   XBMC_SCREENCHANGE, /* Window moved to a different screen */
   XBMC_VIDEOMOVE, /* User moved the window */
   XBMC_MODECHANGE, /* Video mode must be changed */
