@@ -23,7 +23,6 @@
 #include <net/if_types.h>
 #include <net/route.h>
 #include <netinet/if_ether.h>
-#include <poll.h>
 #include <sys/sockio.h>
 #include <unistd.h>
 
@@ -36,26 +35,88 @@ CNetworkInterfaceMacOS::CNetworkInterfaceMacOS(CNetworkPosix* network,
 
 std::string CNetworkInterfaceMacOS::GetCurrentDefaultGateway() const
 {
-  std::string result;
+  std::string gateway;
+  int mib[] = {CTL_NET, PF_ROUTE, 0, 0, NET_RT_FLAGS, RTF_GATEWAY};
+  int afinet_type[] = {AF_INET, AF_INET6};
 
-  FILE* pipe = popen("echo \"show State:/Network/Global/IPv4\" | scutil | grep Router", "r");
-  usleep(100000);
-  if (pipe)
+  for (int ip_type = 0; ip_type <= 1; ip_type++)
   {
-    std::string tmpStr;
-    char buffer[256] = {'\0'};
-    if (fread(buffer, sizeof(char), sizeof(buffer), pipe) > 0 && !ferror(pipe))
-    {
-      tmpStr = buffer;
-      if (tmpStr.length() >= 11)
-        result = tmpStr.substr(11);
-    }
-    pclose(pipe);
-  }
-  if (result.empty())
-    CLog::Log(LOGWARNING, "Unable to determine gateway");
+    mib[3] = afinet_type[ip_type];
 
-  return result;
+    size_t needed = 0;
+    if (sysctl(mib, sizeof(mib) / sizeof(int), nullptr, &needed, nullptr, 0) < 0)
+      return "";
+
+    char* buf;
+    if ((buf = new char[needed]) == 0)
+      return "";
+
+    if (sysctl(mib, sizeof(mib) / sizeof(int), buf, &needed, nullptr, 0) < 0)
+    {
+      CLog::Log(LOGERROR, "sysctl: net.route.0.0.dump");
+      delete[] buf;
+      return gateway;
+    }
+
+    struct rt_msghdr* rt;
+    for (char* p = buf; p < buf + needed; p += rt->rtm_msglen)
+    {
+      rt = reinterpret_cast<struct rt_msghdr*>(p);
+      struct sockaddr* sa = reinterpret_cast<struct sockaddr*>(rt + 1);
+      struct sockaddr* sa_tab[RTAX_MAX];
+      for (int i = 0; i < RTAX_MAX; i++)
+      {
+        if (rt->rtm_addrs & (1 << i))
+        {
+          sa_tab[i] = sa;
+          sa = reinterpret_cast<struct sockaddr*>(
+              reinterpret_cast<char*>(sa) +
+              ((sa->sa_len) > 0 ? (1 + (((sa->sa_len) - 1) | (sizeof(long) - 1))) : sizeof(long)));
+        }
+        else
+        {
+          sa_tab[i] = nullptr;
+        }
+      }
+
+      if (((rt->rtm_addrs & (RTA_DST | RTA_GATEWAY)) == (RTA_DST | RTA_GATEWAY)) &&
+          sa_tab[RTAX_DST]->sa_family == afinet_type[ip_type] &&
+          sa_tab[RTAX_GATEWAY]->sa_family == afinet_type[ip_type])
+      {
+        if (afinet_type[ip_type] == AF_INET)
+        {
+          if ((reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_DST]))->sin_addr.s_addr == 0)
+          {
+            char dstStr4[INET_ADDRSTRLEN];
+            char srcStr4[INET_ADDRSTRLEN];
+            memcpy(srcStr4,
+                   &(reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_GATEWAY]))->sin_addr,
+                   sizeof(struct in_addr));
+            if (inet_ntop(AF_INET, srcStr4, dstStr4, INET_ADDRSTRLEN) != nullptr)
+              gateway = dstStr4;
+            break;
+          }
+        }
+        else if (afinet_type[ip_type] == AF_INET6)
+        {
+          if ((reinterpret_cast<struct sockaddr_in*>(sa_tab[RTAX_DST]))->sin_addr.s_addr == 0)
+          {
+            char dstStr6[INET6_ADDRSTRLEN];
+            char srcStr6[INET6_ADDRSTRLEN];
+            memcpy(srcStr6,
+                   &(reinterpret_cast<struct sockaddr_in6*>(sa_tab[RTAX_GATEWAY]))->sin6_addr,
+                   sizeof(struct in6_addr));
+            if (inet_ntop(AF_INET6, srcStr6, dstStr6, INET6_ADDRSTRLEN) != nullptr)
+              gateway = dstStr6;
+            break;
+          }
+        }
+      }
+    }
+    free(buf);
+  }
+
+  return gateway;
 }
 
 bool CNetworkInterfaceMacOS::GetHostMacAddress(unsigned long host_ip, std::string& mac) const
@@ -197,15 +258,15 @@ std::vector<std::string> CNetworkMacOS::GetNameServers()
     if (currentDNSConfig)
     {
       NSDictionary* networkServices = (__bridge NSDictionary*)currentDNSConfig;
-      [networkServices enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL* stop) {
-        NSDictionary* service = networkServices[key];
-        NSDictionary* dnsSettings = service[static_cast<NSString*>(kSCEntNetDNS)];
-        NSArray* dnsServers = dnsSettings[static_cast<NSString*>(kSCPropNetDNSServerAddresses)];
-        for (NSString* dnsServer in dnsServers)
-        {
-          result.emplace_back(dnsServer.UTF8String);
-        }
-      }];
+      [networkServices
+          enumerateKeysAndObjectsUsingBlock:^(NSString* key, NSDictionary* service, BOOL* stop) {
+            NSDictionary* dnsSettings = service[static_cast<NSString*>(kSCEntNetDNS)];
+            NSArray* dnsServers = dnsSettings[static_cast<NSString*>(kSCPropNetDNSServerAddresses)];
+            for (NSString* dnsServer in dnsServers)
+            {
+              result.emplace_back(dnsServer.UTF8String);
+            }
+          }];
       CFRelease(preferences);
     }
   }
