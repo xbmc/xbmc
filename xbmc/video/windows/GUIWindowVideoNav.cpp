@@ -1024,70 +1024,45 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
 
 std::string CGUIWindowVideoNav::GetStartFolder(const std::string &dir)
 {
-  std::string lower(dir); StringUtils::ToLower(lower);
-  if (lower == "moviegenres")
-    return "videodb://movies/genres/";
-  else if (lower == "movietitles")
-    return "videodb://movies/titles/";
-  else if (lower == "movieyears")
-    return "videodb://movies/years/";
-  else if (lower == "movieactors")
-    return "videodb://movies/actors/";
-  else if (lower == "moviedirectors")
-    return "videodb://movies/directors/";
-  else if (lower == "moviestudios")
-    return "videodb://movies/studios/";
-  else if (lower == "moviesets")
-    return "videodb://movies/sets/";
-  else if (lower == "moviecountries")
-    return "videodb://movies/countries/";
-  else if (lower == "movietags")
-    return "videodb://movies/tags/";
-  else if (lower == "movies")
-    return "videodb://movies/";
-  else if (lower == "tvshowgenres")
-    return "videodb://tvshows/genres/";
-  else if (lower == "tvshowtitles")
-    return "videodb://tvshows/titles/";
-  else if (lower == "tvshowyears")
-    return "videodb://tvshows/years/";
-  else if (lower == "tvshowactors")
-    return "videodb://tvshows/actors/";
-  else if (lower == "tvshowstudios")
-    return "videodb://tvshows/studios/";
-  else if (lower == "tvshowtags")
-    return "videodb://tvshows/tags/";
-  else if (lower == "tvshows")
-    return "videodb://tvshows/";
-  else if (lower == "musicvideogenres")
-    return "videodb://musicvideos/genres/";
-  else if (lower == "musicvideotitles")
-    return "videodb://musicvideos/titles/";
-  else if (lower == "musicvideoyears")
-    return "videodb://musicvideos/years/";
-  else if (lower == "musicvideoartists")
-    return "videodb://musicvideos/artists/";
-  else if (lower == "musicvideoalbums")
-    return "videodb://musicvideos/albums/";
-  else if (lower == "musicvideodirectors")
-    return "videodb://musicvideos/directors/";
-  else if (lower == "musicvideostudios")
-    return "videodb://musicvideos/studios/";
-  else if (lower == "musicvideotags")
-    return "videodb://musicvideos/tags/";
-  else if (lower == "musicvideos")
-    return "videodb://musicvideos/";
-  else if (lower == "recentlyaddedmovies")
-    return "videodb://recentlyaddedmovies/";
-  else if (lower == "recentlyaddedepisodes")
-    return "videodb://recentlyaddedepisodes/";
-  else if (lower == "recentlyaddedmusicvideos")
-    return "videodb://recentlyaddedmusicvideos/";
-  else if (lower == "inprogresstvshows")
-    return "videodb://inprogresstvshows/";
-  else if (lower == "files")
-    return "sources://video/";
-  return CGUIWindowVideoBase::GetStartFolder(dir);
+  static const auto map = std::map<std::string, std::string>{
+      {"files", "sources://video/"},
+      {"inprogresstvshows", "videodb://inprogresstvshows/"},
+      {"movieactors", "videodb://movies/actors/"},
+      {"moviecountries", "videodb://movies/countries/"},
+      {"moviedirectors", "videodb://movies/directors/"},
+      {"moviegenres", "videodb://movies/genres/"},
+      {"movies", "videodb://movies/"},
+      {"moviesets", "videodb://movies/sets/"},
+      {"moviestudios", "videodb://movies/studios/"},
+      {"movietags", "videodb://movies/tags/"},
+      {"movietitles", "videodb://movies/titles/"},
+      {"movieyears", "videodb://movies/years/"},
+      {"musicvideoalbums", "videodb://musicvideos/albums/"},
+      {"musicvideoartists", "videodb://musicvideos/artists/"},
+      {"musicvideodirectors", "videodb://musicvideos/directors/"},
+      {"musicvideogenres", "videodb://musicvideos/genres/"},
+      {"musicvideos", "videodb://musicvideos/"},
+      {"musicvideostudios", "videodb://musicvideos/studios/"},
+      {"musicvideotags", "videodb://musicvideos/tags/"},
+      {"musicvideotitles", "videodb://musicvideos/titles/"},
+      {"musicvideoyears", "videodb://musicvideos/years/"},
+      {"recentlyaddedepisodes", "videodb://recentlyaddedepisodes/"},
+      {"recentlyaddedmovies", "videodb://recentlyaddedmovies/"},
+      {"recentlyaddedmusicvideos", "videodb://recentlyaddedmusicvideos/"},
+      {"tvshowactors", "videodb://tvshows/actors/"},
+      {"tvshowgenres", "videodb://tvshows/genres/"},
+      {"tvshows", "videodb://tvshows/"},
+      {"tvshowstudios", "videodb://tvshows/studios/"},
+      {"tvshowtags", "videodb://tvshows/tags/"},
+      {"tvshowtitles", "videodb://tvshows/titles/"},
+      {"tvshowyears", "videodb://tvshows/years/"},
+  };
+
+  const auto it = map.find(StringUtils::ToLower(dir));
+  if (it == map.end())
+    return CGUIWindowVideoBase::GetStartFolder(dir);
+  else
+    return it->second;
 }
 
 bool CGUIWindowVideoNav::ApplyWatchedFilter(CFileItemList &items)
