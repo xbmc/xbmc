@@ -9,7 +9,10 @@
 #pragma once
 
 #include "guilib/guiinfo/GUIInfoProvider.h"
+#include "utils/GpuInfo.h"
 #include "utils/Temperature.h"
+
+#include <memory>
 
 namespace KODI
 {
@@ -37,7 +40,8 @@ public:
 
 private:
   std::string GetSystemHeatInfo(int info) const;
-  CTemperature GetGPUTemperature() const;
+
+  std::unique_ptr<CGPUInfo> m_gpuInfo;
 
   static const int SYSTEM_HEAT_UPDATE_INTERVAL = 60000;
 

@@ -1,6 +1,7 @@
 set(SOURCES ConvUtils.cpp
             CPUInfoPosix.cpp
             Filesystem.cpp
+            GPUInfoPosix.cpp
             MessagePrinter.cpp
             PlatformPosix.cpp
             PosixMountProvider.cpp
@@ -11,6 +12,7 @@ set(SOURCES ConvUtils.cpp
 
 set(HEADERS ConvUtils.h
             CPUInfoPosix.h
+            GPUInfoPosix.h
             PlatformDefs.h
             PlatformPosix.h
             PosixMountProvider.h

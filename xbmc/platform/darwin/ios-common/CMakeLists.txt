@@ -4,6 +4,7 @@ set(SOURCES AnnounceReceiver.mm
             DarwinEmbedKeyboardView.mm
             DarwinEmbedNowPlayingInfoManager.mm
             DarwinEmbedUtils.mm
+            GPUInfoDarwinEmbed.cpp
             NSData+GZIP.m
             PlatformDarwinEmbedded.cpp)
 
@@ -13,6 +14,7 @@ set(HEADERS AnnounceReceiver.h
             DarwinEmbedKeyboardView.h
             DarwinEmbedNowPlayingInfoManager.h
             DarwinEmbedUtils.h
+            GPUInfoDarwinEmbed.h
             NSData+GZIP.h
             PlatformDarwinEmbedded.h)
 
