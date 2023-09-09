@@ -14,6 +14,8 @@
 #include <array>
 #include <errno.h>
 
+#import <Foundation/Foundation.h>
+#import <SystemConfiguration/SystemConfiguration.h>
 #include <arpa/inet.h>
 #include <ifaddrs.h>
 #include <net/if.h>
@@ -178,46 +180,40 @@ void CNetworkMacOS::queryInterfaceList()
 
 std::vector<std::string> CNetworkMacOS::GetNameServers()
 {
-  std::vector<std::string> result;
-
-  FILE* pipe = popen("scutil --dns | grep -F \"nameserver\" | uniq | tail -n2", "r");
-
-  if (pipe)
+  __block std::vector<std::string> result;
+  @autoreleasepool
   {
-    int fineNoPipe = ::fileno(pipe);
-
-    struct pollfd pollFd;
-    pollFd.fd = fineNoPipe;
-    pollFd.events = POLLIN;
-    pollFd.revents = 0;
-
-    int pollResult = poll(&pollFd, 1, 1000); // Poll for 1 second
-    if (pollResult > 0 && (pollFd.revents & POLLIN))
+    // Create an SCPreferencesRef object for the system preferences
+    SCPreferencesRef preferences = SCPreferencesCreate(nullptr, CFSTR("GetDNSInfo"), nullptr);
+    if (!preferences)
     {
-      char buffer[256] = {'\0'};
-      if (fgets(buffer, sizeof(buffer), pipe))
-      {
-        // result looks like this - > '  nameserver[0] : 192.168.1.1'
-        // 2 blank spaces + 13 in 'nameserver[0]' + blank + ':' + blank == 18 :)
-        const unsigned int nameserverLineSize = 18;
-        std::vector<std::string> tmpStr = StringUtils::Split(buffer, "\n");
-        for (const std::string& str : tmpStr)
-        {
-          if (str.length() >= nameserverLineSize)
-          {
-            result.push_back(str.substr(nameserverLineSize));
-          }
-        }
-      }
+      CLog::Log(LOGWARNING, "Unable to determine nameservers");
+      return result;
     }
-    pclose(pipe);
+
+    // Get the current DNS configuration from system preferences
+    CFDictionaryRef currentDNSConfig =
+        static_cast<CFDictionaryRef>(SCPreferencesGetValue(preferences, kSCPrefNetworkServices));
+    if (currentDNSConfig)
+    {
+      NSDictionary* networkServices = (__bridge NSDictionary*)currentDNSConfig;
+      [networkServices enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL* stop) {
+        NSDictionary* service = networkServices[key];
+        NSDictionary* dnsSettings = service[static_cast<NSString*>(kSCEntNetDNS)];
+        NSArray* dnsServers = dnsSettings[static_cast<NSString*>(kSCPropNetDNSServerAddresses)];
+        for (NSString* dnsServer in dnsServers)
+        {
+          result.emplace_back(dnsServer.UTF8String);
+        }
+      }];
+      CFRelease(preferences);
+    }
   }
 
   if (result.empty())
   {
     CLog::Log(LOGWARNING, "Unable to determine nameservers");
   }
-
   return result;
 }
 
