@@ -20,10 +20,6 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "network/Network.h"
-#if defined(TARGET_DARWIN_OSX)
-#include "platform/darwin/osx/smc.h"
-#endif
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
@@ -38,6 +34,7 @@
 #include "storage/discs/IDiscDriveHandler.h"
 #include "utils/AlarmClock.h"
 #include "utils/CPUInfo.h"
+#include "utils/GpuInfo.h"
 #include "utils/HDRCapabilities.h"
 #include "utils/MemUtils.h"
 #include "utils/StringUtils.h"
@@ -50,7 +47,7 @@ using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 
 CSystemGUIInfo::CSystemGUIInfo()
-: m_lastSysHeatInfoTime(-SYSTEM_HEAT_UPDATE_INTERVAL)
+  : m_gpuInfo(CGPUInfo::GetGPUInfo()), m_lastSysHeatInfoTime(-SYSTEM_HEAT_UPDATE_INTERVAL)
 {
 }
 
@@ -59,10 +56,11 @@ std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
   if (CTimeUtils::GetFrameTime() - m_lastSysHeatInfoTime >= SYSTEM_HEAT_UPDATE_INTERVAL)
   {
     m_lastSysHeatInfoTime = CTimeUtils::GetFrameTime();
-#if defined(TARGET_POSIX)
     CServiceBroker::GetCPUInfo()->GetTemperature(m_cpuTemp);
-    m_gpuTemp = GetGPUTemperature();
-#endif
+    if (m_gpuInfo)
+    {
+      m_gpuInfo->GetTemperature(m_gpuTemp);
+    }
   }
 
   std::string text;
@@ -87,43 +85,6 @@ std::string CSystemGUIInfo::GetSystemHeatInfo(int info) const
       break;
   }
   return text;
-}
-
-CTemperature CSystemGUIInfo::GetGPUTemperature() const
-{
-  int value = 0;
-  char scale = 0;
-
-#if defined(TARGET_DARWIN_OSX)
-  value = SMCGetTemperature(SMC_KEY_GPU_TEMP);
-  auto temperature = CTemperature::CreateFromCelsius(value);
-  if (temperature == CTemperature::CreateFromCelsius(0.0))
-  {
-    temperature.SetValid(false);
-  }
-  return temperature;
-#elif defined(TARGET_WINDOWS_STORE)
-  return CTemperature::CreateFromCelsius(0);
-#else
-  std::string cmd = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_gpuTempCmd;
-  int ret = 0;
-  FILE* p = NULL;
-
-  if (cmd.empty() || !(p = popen(cmd.c_str(), "r")))
-    return CTemperature();
-
-  ret = fscanf(p, "%d %c", &value, &scale);
-  pclose(p);
-
-  if (ret != 2)
-    return CTemperature();
-#endif
-
-  if (scale == 'C' || scale == 'c')
-    return CTemperature::CreateFromCelsius(value);
-  if (scale == 'F' || scale == 'f')
-    return CTemperature::CreateFromFahrenheit(value);
-  return CTemperature();
 }
 
 void CSystemGUIInfo::UpdateFPS()

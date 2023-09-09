@@ -1,6 +1,7 @@
 set(SOURCES CPUInfoWin10.cpp
             input/RemoteControlXbox.cpp
             Environment.cpp
+            GPUInfoWin10.cpp
             Win10App.cpp
             MessagePrinter.cpp
             PlatformWin10.cpp
@@ -14,6 +15,7 @@ set(SOURCES CPUInfoWin10.cpp
 
 set(HEADERS AsyncHelpers.h
             CPUInfoWin10.h
+            GPUInfoWin10.h
             input/RemoteControlXbox.h
             Win10App.h
             PlatformWin10.h

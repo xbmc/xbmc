@@ -1,5 +1,6 @@
 set(SOURCES AppParamParserLinux.cpp
             CPUInfoLinux.cpp
+            GPUInfoLinux.cpp
             MemUtils.cpp
             OptionalsReg.cpp
             PlatformLinux.cpp
@@ -8,6 +9,7 @@ set(SOURCES AppParamParserLinux.cpp
 
 set(HEADERS AppParamParserLinux.h
             CPUInfoLinux.h
+            GPUInfoLinux.h
             OptionalsReg.h
             PlatformLinux.h
             SysfsPath.h

@@ -1,6 +1,7 @@
 set(SOURCES CharsetConverter.cpp
             CPUInfoWin32.cpp
             Environment.cpp
+            GPUInfoWin32.cpp
             MemUtils.cpp
             MessagePrinter.cpp
             dxerr.cpp
@@ -15,6 +16,7 @@ set(HEADERS CharsetConverter.h
             CPUInfoWin32.h
             dirent.h
             dxerr.h
+            GPUInfoWin32.h
             IMMNotificationClient.h
             my_ntddcdrm.h
             my_ntddscsi.h

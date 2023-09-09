@@ -1,5 +1,6 @@
 set(SOURCES ../linux/AppParamParserLinux.cpp
             CPUInfoFreebsd.cpp
+            GPUInfoFreebsd.cpp
             OptionalsReg.cpp
             ../linux/OptionalsReg.cpp
             ../linux/TimeUtils.cpp
@@ -8,6 +9,7 @@ set(SOURCES ../linux/AppParamParserLinux.cpp
 
 set(HEADERS ../linux/AppParamParserLinux.cpp
             CPUInfoFreebsd.h
+            GPUInfoFreebsd.h
             OptionalsReg.h
             ../linux/OptionalsReg.h
             ../linux/TimeUtils.h
