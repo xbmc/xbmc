@@ -921,35 +921,26 @@ void CGUIWindowMusicNav::AddSearchFolder()
 
 std::string CGUIWindowMusicNav::GetStartFolder(const std::string &dir)
 {
-  std::string lower(dir); StringUtils::ToLower(lower);
-  if (lower == "genres")
-    return "musicdb://genres/";
-  else if (lower == "artists")
-    return "musicdb://artists/";
-  else if (lower == "albums")
-    return "musicdb://albums/";
-  else if (lower == "singles")
-    return "musicdb://singles/";
-  else if (lower == "songs")
-    return "musicdb://songs/";
-  else if (lower == "top100")
-    return "musicdb://top100/";
-  else if (lower == "top100songs")
-    return "musicdb://top100/songs/";
-  else if (lower == "top100albums")
-    return "musicdb://top100/albums/";
-  else if (lower == "recentlyaddedalbums")
-    return "musicdb://recentlyaddedalbums/";
-  else if (lower == "recentlyplayedalbums")
-   return "musicdb://recentlyplayedalbums/";
-  else if (lower == "compilations")
-    return "musicdb://compilations/";
-  else if (lower == "years")
-    return "musicdb://years/";
-  else if (lower == "files")
-    return "sources://music/";
-  else if (lower == "boxsets")
-    return "musicdb://boxsets/";
+  static const auto map = std::map<std::string, std::string>{
+      {"albums", "musicdb://albums/"},
+      {"artists", "musicdb://artists/"},
+      {"boxsets", "musicdb://boxsets/"},
+      {"compilations", "musicdb://compilations/"},
+      {"files", "sources://music/"},
+      {"genres", "musicdb://genres/"},
+      {"recentlyaddedalbums", "musicdb://recentlyaddedalbums/"},
+      {"recentlyplayedalbums", "musicdb://recentlyplayedalbums/"},
+      {"singles", "musicdb://singles/"},
+      {"songs", "musicdb://songs/"},
+      {"top100", "musicdb://top100/"},
+      {"top100albums", "musicdb://top100/albums/"},
+      {"top100songs", "musicdb://top100/songs/"},
+      {"years", "musicdb://years/"},
+  };
 
-  return CGUIWindowMusicBase::GetStartFolder(dir);
+  const auto it = map.find(StringUtils::ToLower(dir));
+  if (it == map.end())
+    return CGUIWindowMusicBase::GetStartFolder(dir);
+  else
+    return it->second;
 }
