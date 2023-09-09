@@ -27,6 +27,7 @@ set(SOURCES ActorProtocol.cpp
             FileOperationJob.cpp
             FileUtils.cpp
             FontUtils.cpp
+            GpuInfo.cpp
             GroupUtils.cpp
             HTMLUtil.cpp
             HttpHeader.cpp
@@ -111,6 +112,7 @@ set(HEADERS ActorProtocol.h
             FontUtils.h
             Geometry.h
             GlobalsHandling.h
+            GpuInfo.h
             GroupUtils.h
             HDRCapabilities.h
             HTMLUtil.h
