@@ -389,57 +389,81 @@ bool CGUIWindowMusicNav::GetDirectory(const std::string &strDirectory, CFileItem
   {
     CVideoDatabaseDirectory dir;
     VIDEODATABASEDIRECTORY::NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
-    if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS ||
-        node == VIDEODATABASEDIRECTORY::NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS)
-      items.SetContent("musicvideos");
-    else if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE)
-      items.SetContent("genres");
-    else if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_COUNTRY)
-      items.SetContent("countries");
-    else if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR)
-      items.SetContent("artists");
-    else if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_DIRECTOR)
-      items.SetContent("directors");
-    else if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_STUDIO)
-      items.SetContent("studios");
-    else if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_YEAR)
-      items.SetContent("years");
-    else if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_MUSICVIDEOS_ALBUM)
-      items.SetContent("albums");
-    else if (node == VIDEODATABASEDIRECTORY::NODE_TYPE_TAGS)
-      items.SetContent("tags");
-    else
-      items.SetContent("");
+    switch (node)
+    {
+      case VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_MUSICVIDEOS:
+      case VIDEODATABASEDIRECTORY::NODE_TYPE_RECENTLY_ADDED_MUSICVIDEOS:
+        items.SetContent("musicvideos");
+        break;
+      case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
+        items.SetContent("genres");
+        break;
+      case VIDEODATABASEDIRECTORY::NODE_TYPE_COUNTRY:
+        items.SetContent("countries");
+        break;
+      case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
+        items.SetContent("artists");
+        break;
+      case VIDEODATABASEDIRECTORY::NODE_TYPE_DIRECTOR:
+        items.SetContent("directors");
+        break;
+      case VIDEODATABASEDIRECTORY::NODE_TYPE_STUDIO:
+        items.SetContent("studios");
+        break;
+      case VIDEODATABASEDIRECTORY::NODE_TYPE_YEAR:
+        items.SetContent("years");
+        break;
+      case VIDEODATABASEDIRECTORY::NODE_TYPE_MUSICVIDEOS_ALBUM:
+        items.SetContent("albums");
+        break;
+      case VIDEODATABASEDIRECTORY::NODE_TYPE_TAGS:
+        items.SetContent("tags");
+        break;
+      default:
+        items.SetContent("");
+        break;
+    }
   }
   else if (StringUtils::StartsWithNoCase(strDirectory, "musicdb://") || items.IsMusicDb())
   {
     CMusicDatabaseDirectory dir;
     NODE_TYPE node = dir.GetDirectoryChildType(items.GetPath());
-    if (node == NODE_TYPE_ALBUM ||
-        node == NODE_TYPE_ALBUM_RECENTLY_ADDED ||
-        node == NODE_TYPE_ALBUM_RECENTLY_PLAYED ||
-        node == NODE_TYPE_ALBUM_TOP100 ||
-        node == NODE_TYPE_DISC)  // ! @todo: own content type "discs"??
-      items.SetContent("albums");
-    else if (node == NODE_TYPE_ARTIST)
-      items.SetContent("artists");
-    else if (node == NODE_TYPE_SONG ||
-             node == NODE_TYPE_SONG_TOP100 ||
-             node == NODE_TYPE_SINGLES ||
-             node == NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS ||
-             node == NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS ||
-             node == NODE_TYPE_ALBUM_TOP100_SONGS)
-      items.SetContent("songs");
-    else if (node == NODE_TYPE_GENRE)
-      items.SetContent("genres");
-    else if (node == NODE_TYPE_SOURCE)
-      items.SetContent("sources");
-    else if (node == NODE_TYPE_ROLE)
-      items.SetContent("roles");
-    else if (node == NODE_TYPE_YEAR)
-      items.SetContent("years");
-    else
-      items.SetContent("");
+    switch (node)
+    {
+      case NODE_TYPE_ALBUM:
+      case NODE_TYPE_ALBUM_RECENTLY_ADDED:
+      case NODE_TYPE_ALBUM_RECENTLY_PLAYED:
+      case NODE_TYPE_ALBUM_TOP100:
+      case NODE_TYPE_DISC: // ! @todo: own content type "discs"??
+        items.SetContent("albums");
+        break;
+      case NODE_TYPE_ARTIST:
+        items.SetContent("artists");
+        break;
+      case NODE_TYPE_SONG:
+      case NODE_TYPE_SONG_TOP100:
+      case NODE_TYPE_SINGLES:
+      case NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS:
+      case NODE_TYPE_ALBUM_RECENTLY_PLAYED_SONGS:
+      case NODE_TYPE_ALBUM_TOP100_SONGS:
+        items.SetContent("songs");
+        break;
+      case NODE_TYPE_GENRE:
+        items.SetContent("genres");
+        break;
+      case NODE_TYPE_SOURCE:
+        items.SetContent("sources");
+        break;
+      case NODE_TYPE_ROLE:
+        items.SetContent("roles");
+        break;
+      case NODE_TYPE_YEAR:
+        items.SetContent("years");
+        break;
+      default:
+        items.SetContent("");
+        break;
+    }
   }
   else if (items.IsPlayList())
     items.SetContent("songs");
