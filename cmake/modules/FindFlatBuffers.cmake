@@ -44,8 +44,7 @@ if(NOT TARGET flatbuffers::flatbuffers)
 
   add_library(flatbuffers::flatbuffers INTERFACE IMPORTED)
   set_target_properties(flatbuffers::flatbuffers PROPERTIES
-                             FOLDER "External Projects"
-                             INTERFACE_INCLUDE_DIRECTORIES "${FLATBUFFERS_INCLUDE_DIR}")
+                                                 INTERFACE_INCLUDE_DIRECTORIES "${FLATBUFFERS_INCLUDE_DIR}")
 
   add_dependencies(flatbuffers::flatbuffers flatbuffers::flatc)
 
