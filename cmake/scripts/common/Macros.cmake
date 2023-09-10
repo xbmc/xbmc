@@ -208,6 +208,14 @@ endfunction()
 #   Files is mirrored to the build tree and added to ${install_data}
 #   (if NO_INSTALL is not given).
 function(copy_file_to_buildtree file)
+  # Exclude autotools build artifacts and other blacklisted files in source tree.
+  if(file MATCHES "(Makefile|\\.in|\\.xbt|\\.so|\\.dylib|\\.gitignore)$")
+    if(VERBOSE)
+      message(STATUS "copy_file_to_buildtree - ignoring file: ${file}")
+    endif()
+    return()
+  endif()
+
   cmake_parse_arguments(arg "NO_INSTALL" "DIRECTORY;KEEP_DIR_STRUCTURE" "" ${ARGN})
   if(arg_DIRECTORY)
     set(outdir ${arg_DIRECTORY})
@@ -227,40 +235,42 @@ function(copy_file_to_buildtree file)
   endif()
 
   if(NOT TARGET export-files)
+    if(${CORE_SYSTEM_NAME} MATCHES "windows")
+      set(_bundle_dir $<TARGET_FILE_DIR:${APP_NAME_LC}>)
+    else()
+      set(_bundle_dir ${CMAKE_BINARY_DIR})
+    endif()
     file(REMOVE ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
     add_custom_target(export-files ALL COMMENT "Copying files into build tree"
-                      COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
+                                       COMMAND ${CMAKE_COMMAND} -DBUNDLEDIR=${_bundle_dir}
+                                                                -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
     set_target_properties(export-files PROPERTIES FOLDER "Build Utilities")
-    file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake "# Export files to build tree\n")
   endif()
 
-  # Exclude autotools build artefacts and other blacklisted files in source tree.
-  if(file MATCHES "(Makefile|\\.in|\\.xbt|\\.so|\\.dylib|\\.gitignore)$")
-    if(VERBOSE)
-      message(STATUS "copy_file_to_buildtree - ignoring file: ${file}")
-    endif()
-    return()
-  endif()
-
-  if(NOT file STREQUAL ${CMAKE_BINARY_DIR}/${outfile})
-    if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows" OR NOT IS_SYMLINK "${file}")
-      if(VERBOSE)
-        message(STATUS "copy_file_to_buildtree - copying file: ${file} -> ${CMAKE_BINARY_DIR}/${outfile}")
+  if(${CORE_SYSTEM_NAME} MATCHES "windows")
+    file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
+             "file(COPY \"${file}\" DESTINATION \"\$\{BUNDLEDIR\}/${outdir}\")\n" )
+  else()
+    if(NOT file STREQUAL ${CMAKE_BINARY_DIR}/${outfile})
+      if(NOT IS_SYMLINK "${file}")
+        if(VERBOSE)
+          message(STATUS "copy_file_to_buildtree - copying file: ${file} -> ${CMAKE_BINARY_DIR}/${outfile}")
+        endif()
+        file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
+             "file(COPY \"${file}\" DESTINATION \"${CMAKE_BINARY_DIR}/${outdir}\")\n" )
+      else()
+        if(VERBOSE)
+          message(STATUS "copy_file_to_buildtree - copying symlinked file: ${file} -> ${CMAKE_BINARY_DIR}/${outfile}")
+        endif()
+        file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
+             "execute_process(COMMAND \"\${CMAKE_COMMAND}\" -E copy_if_different \"${file}\" \"${CMAKE_BINARY_DIR}/${outfile}\")\n")
       endif()
-      file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
-           "file(COPY \"${file}\" DESTINATION \"${CMAKE_BINARY_DIR}/${outdir}\")\n" )
-    else()
-      if(VERBOSE)
-        message(STATUS "copy_file_to_buildtree - copying symlinked file: ${file} -> ${CMAKE_BINARY_DIR}/${outfile}")
-      endif()
-      file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
-           "execute_process(COMMAND \"\${CMAKE_COMMAND}\" -E copy_if_different \"${file}\" \"${CMAKE_BINARY_DIR}/${outfile}\")\n")
     endif()
-  endif()
 
-  if(NOT arg_NO_INSTALL)
-    list(APPEND install_data ${outfile})
-    set(install_data ${install_data} PARENT_SCOPE)
+    if(NOT arg_NO_INSTALL)
+      list(APPEND install_data ${outfile})
+      set(install_data ${install_data} PARENT_SCOPE)
+    endif()
   endif()
 endfunction()
 
