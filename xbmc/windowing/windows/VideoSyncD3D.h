@@ -12,6 +12,8 @@
 #include "threads/Event.h"
 #include "windowing/VideoSync.h"
 
+#include <dxgi1_5.h>
+
 class CVideoSyncD3D : public CVideoSync, IDispResource
 {
 public:
@@ -33,5 +35,6 @@ private:
   volatile bool m_displayReset;
   CEvent m_lostEvent;
   int64_t m_lastUpdateTime;
+  DXGI_OUTPUT_DESC m_outputDesc{};
 };
 
