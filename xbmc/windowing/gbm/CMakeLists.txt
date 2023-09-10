@@ -14,7 +14,7 @@ set(HEADERS OptionalsReg.h
             WinSystemGbmEGLContext.h
             GBMDPMSSupport.h)
 
-if (OPENGL_FOUND)
+if(TARGET OpenGL::GL)
   list(APPEND SOURCES WinSystemGbmGLContext.cpp)
   list(APPEND HEADERS WinSystemGbmGLContext.h)
 endif()
