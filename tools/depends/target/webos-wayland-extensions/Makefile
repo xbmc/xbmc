@@ -17,12 +17,6 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 
 .installed-$(PLATFORM): $(PLATFORM)
 	mkdir -p $(PREFIX)/share/wayland-webos $(PREFIX)/lib/pkgconfig
-	rm -f ${PREFIX}/lib/pkgconfig/wayland-webos-client.pc
-	echo 'includedir=$(PREFIX)/include' >> ${PREFIX}/lib/pkgconfig/wayland-webos-client.pc
-	echo 'Name: wayland-webos-client' >> ${PREFIX}/lib/pkgconfig/wayland-webos-client.pc
-	echo 'Description: wayland-webos-client' >> ${PREFIX}/lib/pkgconfig/wayland-webos-client.pc
-	echo 'Version: 1.0.0' >> ${PREFIX}/lib/pkgconfig/wayland-webos-client.pc
-
 	cp $(PLATFORM)/protocol/webos-shell.xml $(PREFIX)/share/wayland-webos
 	cp $(PLATFORM)/protocol/webos-foreign.xml $(PREFIX)/share/wayland-webos
 	touch $@
