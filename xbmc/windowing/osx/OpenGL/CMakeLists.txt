@@ -1,4 +1,4 @@
-if(OPENGL_FOUND)
+if(TARGET OpenGL::GL)
   set(SOURCES WinSystemOSXGL.mm)
   set(HEADERS WinSystemOSXGL.h)
 
