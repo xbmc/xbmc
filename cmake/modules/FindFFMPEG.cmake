@@ -127,37 +127,30 @@ fi")
 
   add_library(ffmpeg::libavcodec INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libavcodec PROPERTIES
-                                           FOLDER "FFMPEG - External Projects"
                                            INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libavfilter INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libavfilter PROPERTIES
-                                            FOLDER "FFMPEG - External Projects"
                                             INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libavformat INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libavformat PROPERTIES
-                                            FOLDER "FFMPEG - External Projects"
                                             INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libavutil INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libavutil PROPERTIES
-                                          FOLDER "FFMPEG - External Projects"
                                           INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libswscale INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libswscale PROPERTIES
-                                           FOLDER "FFMPEG - External Projects"
                                            INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libswresample INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libswresample PROPERTIES
-                                              FOLDER "FFMPEG - External Projects"
                                               INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libpostproc INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libpostproc PROPERTIES
-                                            FOLDER "FFMPEG - External Projects"
                                             INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 endmacro()
 
@@ -396,7 +389,6 @@ if(FFMPEG_FOUND)
   if(NOT TARGET ffmpeg::ffmpeg)
     add_library(ffmpeg::ffmpeg INTERFACE IMPORTED)
     set_target_properties(ffmpeg::ffmpeg PROPERTIES
-                                         FOLDER "External Projects"
                                          INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}"
                                          INTERFACE_COMPILE_DEFINITIONS "${_ffmpeg_definitions}")
   endif()

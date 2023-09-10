@@ -64,7 +64,6 @@ if(NOT TARGET RapidJSON::RapidJSON)
   if(RAPIDJSON_FOUND)
     add_library(RapidJSON::RapidJSON INTERFACE IMPORTED)
     set_target_properties(RapidJSON::RapidJSON PROPERTIES
-                                               FOLDER "External Projects"
                                                INTERFACE_INCLUDE_DIRECTORIES "${RAPIDJSON_INCLUDE_DIRS}")
     if(TARGET rapidjson)
       add_dependencies(RapidJSON::RapidJSON rapidjson)
