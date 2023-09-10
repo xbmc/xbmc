@@ -1,4 +1,4 @@
-if(OPENGLES_FOUND)
+if(TARGET OpenGL::GLES)
   set(SOURCES RenderSystemGLES.cpp
               ScreenshotSurfaceGLES.cpp
               GLESShader.cpp)
