@@ -23,7 +23,7 @@ if(GLX_FOUND)
                       VideoSyncGLX.h)
 endif()
 
-if(OPENGL_FOUND)
+if(TARGET OpenGL::GL)
   list(APPEND SOURCES WinSystemX11GLContext.cpp)
   list(APPEND HEADERS WinSystemX11GLContext.h)
   list(APPEND SOURCES VideoSyncOML.cpp)

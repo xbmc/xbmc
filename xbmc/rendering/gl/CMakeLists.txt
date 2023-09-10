@@ -1,4 +1,4 @@
-if(OPENGL_FOUND)
+if(TARGET OpenGL::GL)
   set(SOURCES RenderSystemGL.cpp
               ScreenshotSurfaceGL.cpp
               GLShader.cpp)

@@ -54,7 +54,7 @@ if(TARGET EGL::EGL)
   list(APPEND HEADERS WinSystemWaylandEGLContext.h)
 endif()
 
-if(OPENGL_FOUND)
+if(TARGET OpenGL::GL)
   list(APPEND SOURCES WinSystemWaylandEGLContextGL.cpp)
   list(APPEND HEADERS WinSystemWaylandEGLContextGL.h)
 endif()

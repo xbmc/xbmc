@@ -29,12 +29,12 @@ if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
                       RenderCapture.h)
 endif()
 
-if (OPENGL_FOUND OR TARGET OpenGL::GLES)
+if(TARGET OpenGL::GL OR TARGET OpenGL::GLES)
   list(APPEND SOURCES FrameBufferObject.cpp)
   list(APPEND HEADERS FrameBufferObject.h)
 endif()
 
-if(OPENGL_FOUND)
+if(TARGET OpenGL::GL)
   list(APPEND SOURCES LinuxRendererGL.cpp
                       OverlayRendererGL.cpp
                       RenderCaptureGL.cpp)
