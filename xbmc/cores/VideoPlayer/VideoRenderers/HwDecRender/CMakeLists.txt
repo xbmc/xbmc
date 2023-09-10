@@ -10,7 +10,7 @@ if(VAAPI_FOUND)
     list(APPEND SOURCES RendererVAAPIGL.cpp)
     list(APPEND HEADERS RendererVAAPIGL.h)
   endif()
-  if(OPENGLES_FOUND)
+  if(TARGET OpenGL::GLES)
     list(APPEND SOURCES RendererVAAPIGLES.cpp)
     list(APPEND HEADERS RendererVAAPIGLES.h)
   endif()
@@ -35,7 +35,7 @@ if(CORE_SYSTEM_NAME STREQUAL osx)
 endif()
 
 if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
-  if(OPENGLES_FOUND)
+  if(TARGET OpenGL::GLES)
     list(APPEND SOURCES RendererVTBGLES.cpp)
     list(APPEND HEADERS RendererVTBGLES.h)
   endif()
@@ -56,7 +56,7 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_L
                         VideoLayerBridgeDRMPRIME.h)
   endif()
 
-  if(OPENGLES_FOUND)
+  if(TARGET OpenGL::GLES)
     list(APPEND SOURCES RendererDRMPRIMEGLES.cpp
                         DRMPRIMEEGL.cpp)
     list(APPEND HEADERS RendererDRMPRIMEGLES.h

@@ -31,7 +31,7 @@ if(OPENGL_FOUND)
   list(APPEND HEADERS SlideShowPictureGL.h)
 endif()
 
-if(OPENGLES_FOUND)
+if(TARGET OpenGL::GLES)
   list(APPEND SOURCES SlideShowPictureGLES.cpp)
   list(APPEND HEADERS SlideShowPictureGLES.h)
 endif()
