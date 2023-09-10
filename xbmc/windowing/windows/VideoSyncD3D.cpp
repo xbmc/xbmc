@@ -20,6 +20,10 @@
 
 #include <mutex>
 
+#ifdef TARGET_WINDOWS_STORE
+#include <winrt/Windows.Graphics.Display.Core.h>
+#endif
+
 using namespace std::chrono_literals;
 
 void CVideoSyncD3D::OnLostDisplay()
@@ -54,6 +58,10 @@ bool CVideoSyncD3D::Setup()
   if (!SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL))
     CLog::Log(LOGDEBUG, "CVideoSyncD3D: SetThreadPriority failed");
 
+  Microsoft::WRL::ComPtr<IDXGIOutput> pOutput;
+  DX::DeviceResources::Get()->GetOutput(&pOutput);
+  pOutput->GetDesc(&m_outputDesc);
+
   return true;
 }
 
@@ -74,6 +82,7 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
     // sleep until vblank
     Microsoft::WRL::ComPtr<IDXGIOutput> pOutput;
     DX::DeviceResources::Get()->GetOutput(&pOutput);
+    pOutput->GetDesc(&m_outputDesc);
     pOutput->WaitForVBlank();
 
     // calculate how many vblanks happened
@@ -112,14 +121,33 @@ void CVideoSyncD3D::Cleanup()
 
 float CVideoSyncD3D::GetFps()
 {
-  DXGI_MODE_DESC DisplayMode = {};
-  DX::DeviceResources::Get()->GetDisplayMode(&DisplayMode);
+#ifdef TARGET_WINDOWS_DESKTOP
+  DEVMODEW sDevMode = {};
+  sDevMode.dmSize = sizeof(sDevMode);
 
-  m_fps = (DisplayMode.RefreshRate.Denominator != 0) ? (float)DisplayMode.RefreshRate.Numerator / (float)DisplayMode.RefreshRate.Denominator : 0.0f;
+  if (EnumDisplaySettingsW(m_outputDesc.DeviceName, ENUM_CURRENT_SETTINGS, &sDevMode))
+  {
+    if ((sDevMode.dmDisplayFrequency + 1) % 24 == 0 || (sDevMode.dmDisplayFrequency + 1) % 30 == 0)
+      m_fps = static_cast<float>(sDevMode.dmDisplayFrequency + 1) / 1.001f;
+    else
+      m_fps = static_cast<float>(sDevMode.dmDisplayFrequency);
+
+    if (sDevMode.dmDisplayFlags & DM_INTERLACED)
+      m_fps *= 2;
+  }
+#else
+  using namespace winrt::Windows::Graphics::Display::Core;
+
+  auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
+  if (hdmiInfo) // Xbox only
+  {
+    auto currentMode = hdmiInfo.GetCurrentDisplayMode();
+    m_fps = static_cast<float>(currentMode.RefreshRate());
+  }
+#endif
 
   if (m_fps == 0.0)
     m_fps = 60.0f;
 
   return m_fps;
 }
-
