@@ -1,13 +1,13 @@
 # xrandr
-if(X_FOUND AND XRANDR_FOUND)
+if(TARGET X::X AND TARGET XRandR::XRandR)
   find_package(X QUIET)
   find_package(XRandR QUIET)
   add_executable(${APP_NAME_LC}-xrandr ${CMAKE_SOURCE_DIR}/xbmc-xrandr.c)
-  target_link_libraries(${APP_NAME_LC}-xrandr ${SYSTEM_LDFLAGS} ${X_LIBRARIES} m ${XRANDR_LIBRARIES})
+  target_link_libraries(${APP_NAME_LC}-xrandr ${SYSTEM_LDFLAGS} X::X m XRandR::XRandR)
 endif()
 
 # WiiRemote
-if(ENABLE_EVENTCLIENTS AND BLUETOOTH_FOUND)
+if(ENABLE_EVENTCLIENTS AND TARGET Bluetooth::Bluetooth)
   find_package(CWiid QUIET)
   find_package(GLU QUIET)
   if(CWIID_FOUND AND GLU_FOUND)

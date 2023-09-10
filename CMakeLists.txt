@@ -232,11 +232,11 @@ elseif(ENABLE_MYSQLCLIENT AND NOT ENABLE_MYSQLCLIENT STREQUAL AUTO)
 endif()
 
 core_optional_dep(MariaDBClient)
-if(NOT MARIADBCLIENT_FOUND)
+if(NOT TARGET MariaDBClient::MariaDBClient)
   core_optional_dep(MySqlClient)
 endif()
 
-if(NOT UDEV_FOUND)
+if(NOT TARGET UDEV::UDEV)
   core_optional_dep(LibUSB)
 endif()
 
@@ -250,7 +250,7 @@ endif()
 
 if(ENABLE_AIRTUNES)
   find_package(Shairplay)
-  if(SHAIRPLAY_FOUND)
+  if(TARGET Shairplay::Shairplay)
     core_require_dep(Shairplay)
   endif()
 endif()
@@ -261,7 +261,7 @@ endif()
 set(outputFilterRegex "addons/xbmc.json")
 find_addon_xml_in_files(${outputFilterRegex})
 
-if(ALSA_FOUND AND PULSEAUDIO_FOUND)
+if(TARGET ALSA::ALSA AND PULSEAUDIO_FOUND)
   list(APPEND AUDIO_BACKENDS_LIST "alsa+pulseaudio")
 endif()
 

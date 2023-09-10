@@ -46,7 +46,7 @@ set(HEADERS AEResampleFactory.h
             Utils/AEStreamInfo.h
             Utils/AEUtil.h)
 
-if(ALSA_FOUND)
+if(TARGET ALSA::ALSA)
   list(APPEND SOURCES Sinks/AESinkALSA.cpp
                       Utils/AEELDParser.cpp)
   list(APPEND HEADERS Sinks/AESinkALSA.h
@@ -57,7 +57,7 @@ if(ALSA_FOUND)
     list(APPEND HEADERS Sinks/alsa/ALSAHControlMonitor.h)
   endif()
 
-  if(UDEV_FOUND)
+  if(TARGET UDEV::UDEV)
     list(APPEND SOURCES Sinks/alsa/ALSADeviceMonitor.cpp)
     list(APPEND HEADERS Sinks/alsa/ALSADeviceMonitor.h)
   endif()
@@ -91,12 +91,12 @@ if(PIPEWIRE_FOUND)
                       Sinks/pipewire/PipewireThreadLoop.h)
 endif()
 
-if(SNDIO_FOUND)
+if(TARGET Sndio::Sndio)
   list(APPEND SOURCES Sinks/AESinkSNDIO.cpp)
   list(APPEND HEADERS Sinks/AESinkSNDIO.h)
 endif()
 
-if(FFMPEG_FOUND)
+if(TARGET ffmpeg::ffmpeg)
   list(APPEND SOURCES Engines/ActiveAE/ActiveAEResampleFFMPEG.cpp)
   list(APPEND HEADERS Engines/ActiveAE/ActiveAEResampleFFMPEG.h)
 endif()

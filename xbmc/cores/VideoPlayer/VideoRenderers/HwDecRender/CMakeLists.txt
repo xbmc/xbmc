@@ -14,13 +14,13 @@ if(VAAPI_FOUND)
     list(APPEND SOURCES RendererVAAPIGLES.cpp)
     list(APPEND HEADERS RendererVAAPIGLES.h)
   endif()
-  if(EGL_FOUND)
+  if(TARGET EGL::EGL)
     list(APPEND SOURCES VaapiEGL.cpp)
     list(APPEND HEADERS VaapiEGL.h)
   endif()
 endif()
 
-if(VDPAU_FOUND)
+if(TARGET VDPAU::VDPAU)
   list(APPEND SOURCES RendererVDPAU.cpp
                       VdpauGL.cpp)
   list(APPEND HEADERS RendererVDPAU.h
