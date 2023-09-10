@@ -44,7 +44,7 @@ public:
   void SetWindowed() override;
   void SetMaximized() override;
   void UnsetMaximized() override;
-  void SetMinimized() override{};
+  void SetMinimized() override;
   void SetWindowGeometry(CRectInt geometry) override{};
   void AckConfigure(std::uint32_t serial) override{};
 
@@ -63,6 +63,7 @@ private:
   StateBitset m_surfaceState;
   wayland::webos_shell_t m_webos_shell;
   wayland::webos_shell_surface_t m_webos_shellSurface;
+  CSizeInt m_windowSize;
 };
 
 } // namespace WAYLAND
