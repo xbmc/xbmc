@@ -25,11 +25,6 @@
 #ifndef _M_X64
 #include "utils/SystemInfo.h"
 #endif
-#if _DEBUG
-#pragma comment(lib, "detoursd.lib")
-#else
-#pragma comment(lib, "detours.lib")
-#endif
 #pragma comment(lib, "dxgi.lib")
 #include <windows.h>
 #include <winnt.h>
