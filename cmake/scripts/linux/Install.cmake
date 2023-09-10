@@ -23,7 +23,7 @@ set(APP_INCLUDE_DIR ${includedir}/${APP_NAME_LC})
 
 # Set XBMC_STANDALONE_SH_PULSE so we can insert PulseAudio block into kodi-standalone
 if(EXISTS ${CMAKE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.pulse)
-  if(ENABLE_PULSEAUDIO AND PULSEAUDIO_FOUND)
+  if(ENABLE_PULSEAUDIO AND TARGET PulseAudio::PulseAudio)
     file(READ "${CMAKE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.pulse" pulse_content)
     set(XBMC_STANDALONE_SH_PULSE ${pulse_content})
   endif()
