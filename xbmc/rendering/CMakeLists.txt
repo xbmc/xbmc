@@ -3,7 +3,7 @@ set(SOURCES RenderSystem.cpp)
 set(HEADERS RenderSystem.h
             RenderSystemTypes.h)
 
-if(OPENGL_FOUND OR OPENGLES_FOUND)
+if(OPENGL_FOUND OR TARGET OpenGL::GLES)
   list(APPEND SOURCES MatrixGL.cpp)
   list(APPEND HEADERS MatrixGL.h)
 

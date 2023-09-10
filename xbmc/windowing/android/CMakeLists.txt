@@ -10,7 +10,7 @@ set(HEADERS OSScreenSaverAndroid.h
             AndroidUtils.h
             VideoSyncAndroid.h)
 
-if(OPENGLES_FOUND)
+if(TARGET OpenGL::GLES)
   list(APPEND SOURCES WinSystemAndroidGLESContext.cpp)
   list(APPEND HEADERS WinSystemAndroidGLESContext.h)
 endif()
