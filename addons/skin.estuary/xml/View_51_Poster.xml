@@ -15,9 +15,9 @@
 			<height>720</height>
 			<control type="image">
 				<left>0</left>
-				<top>4</top>
+				<top>8</top>
 				<width>100%</width>
-				<height>410</height>
+				<height>415</height>
 				<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
 				<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 				<animation effect="fade" time="200">VisibleChange</animation>

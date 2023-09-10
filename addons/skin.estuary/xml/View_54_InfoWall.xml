@@ -238,7 +238,7 @@
 					<left>15</left>
 					<top>-10</top>
 					<width>290</width>
-					<height>400</height>
+					<height>415</height>
 					<texture>dialogs/dialog-bg-nobo.png</texture>
 					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
@@ -247,7 +247,7 @@
 					<left>15</left>
 					<top>-10</top>
 					<width>290</width>
-					<height>400</height>
+					<height>415</height>
 					<texture colordiffuse="button_focus">colors/grey.png</texture>
 					<bordersize>20</bordersize>
 					<visible>$PARAM[focused]</visible>
@@ -281,7 +281,7 @@
 					<left>11</left>
 					<top>-14</top>
 					<width>298</width>
-					<height>408</height>
+					<height>423</height>
 					<texture colordiffuse="button_focus">colors/grey.png</texture>
 					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
@@ -292,7 +292,7 @@
 					<left>15</left>
 					<top>-10</top>
 					<width>290</width>
-					<height>400</height>
+					<height>415</height>
 					<texture background="true">$INFO[ListItem.Art(poster)]</texture>
 					<aspectratio>scale</aspectratio>
 					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
@@ -300,7 +300,7 @@
 				</control>
 				<control type="image">
 					<left>35</left>
-					<top>290</top>
+					<top>305</top>
 					<width>80</width>
 					<height>80</height>
 					<texture>overlays/overlay-bg.png</texture>
@@ -311,7 +311,7 @@
 				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
 				<control type="image">
 					<left>35</left>
-					<top>320</top>
+					<top>335</top>
 					<width>250</width>
 					<height>50</height>
 					<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
@@ -319,7 +319,7 @@
 				</control>
 				<control type="label">
 					<left>0</left>
-					<top>340</top>
+					<top>355</top>
 					<width>244</width>
 					<label>$VAR[WatchedStatusVar]</label>
 					<font>font20_title</font>
@@ -328,7 +328,7 @@
 				</control>
 				<control type="image">
 					<left>254</left>
-					<top>343</top>
+					<top>358</top>
 					<width>24</width>
 					<height>24</height>
 					<texture>lists/played-total.png</texture>
@@ -336,7 +336,7 @@
 			</control>
 			<control type="image">
 				<left>35</left>
-				<top>338</top>
+				<top>353</top>
 				<width>32</width>
 				<height>32</height>
 				<texture>$VAR[WallWatchedIconVar]</texture>
@@ -348,7 +348,7 @@
 			</control>
 			<control type="progress">
 				<left>35</left>
-				<top>350</top>
+				<top>365</top>
 				<width>250</width>
 				<height>1</height>
 				<texturebg></texturebg>
