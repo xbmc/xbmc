@@ -63,7 +63,7 @@ if(TARGET ALSA::ALSA)
   endif()
 endif()
 
-if(PULSEAUDIO_FOUND)
+if(TARGET PulseAudio::PulseAudio)
   list(APPEND SOURCES Sinks/AESinkPULSE.cpp)
   list(APPEND HEADERS Sinks/AESinkPULSE.h)
 endif()
