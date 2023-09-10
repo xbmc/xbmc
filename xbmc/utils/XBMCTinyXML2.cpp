@@ -44,7 +44,7 @@ bool CXBMCTinyXML2::LoadFile(FILE* file)
 {
   std::string data;
   char buf[BUFFER_SIZE] = {};
-  int result;
+  size_t result;
   while ((result = fread(buf, 1, BUFFER_SIZE, file)) > 0)
     data.append(buf, result);
   return Parse(std::move(data));
@@ -103,7 +103,7 @@ bool CXBMCTinyXML2::ParseHelper(size_t pos, std::string&& inputdata)
              "^&(amp|lt|gt|quot|apos|#x[a-fA-F0-9]{1,4}|#[0-9]{1,5});.*");
   do
   {
-    if (re.RegFind(inputdata, pos, MAX_ENTITY_LENGTH) < 0)
+    if (re.RegFind(inputdata, static_cast<unsigned int>(pos), MAX_ENTITY_LENGTH) < 0)
       inputdata.insert(pos + 1, "amp;");
     pos = inputdata.find('&', pos + 1);
   } while (pos != std::string::npos);
