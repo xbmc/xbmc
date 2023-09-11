@@ -46,7 +46,7 @@ CPVRRecordingsPath::CPVRRecordingsPath(const std::string& strPath)
       strVarPath.append("/");
     else
     {
-      size_t paramStart = m_path.find(", TV");
+      size_t paramStart = strVarPath.find(", TV");
       if (paramStart == std::string::npos)
         m_directoryPath = strVarPath.substr(GetDirectoryPathPosition());
       else
