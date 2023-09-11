@@ -6,34 +6,37 @@
 #
 #   CrossGUID::CrossGUID   - The CrossGUID library
 
+macro(buildCrossGUID)
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  set(MODULE_LC crossguid)
+
+  SETUP_BUILD_VARS()
+
+  set(CROSSGUID_VERSION ${${MODULE}_VER})
+  set(CROSSGUID_DEBUG_POSTFIX "-dgb")
+
+  set(_crossguid_definitions HAVE_NEW_CROSSGUID)
+
+  if(ANDROID)
+    list(APPEND _crossguid_definitions GUID_ANDROID)
+  endif()
+
+  set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/001-fix-unused-function.patch"
+              "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/002-disable-Wall-error.patch"
+              "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/003-add-cstdint-include.patch")
+
+  generate_patchcommand("${patches}")
+
+  set(CMAKE_ARGS -DCROSSGUID_TESTS=OFF
+                 -DDISABLE_WALL=ON)
+
+  BUILD_DEP_TARGET()
+endmacro()
+
 if(NOT TARGET CrossGUID::CrossGUID)
   if(ENABLE_INTERNAL_CROSSGUID)
-    include(cmake/scripts/common/ModuleHelpers.cmake)
-
-    set(MODULE_LC crossguid)
-
-    SETUP_BUILD_VARS()
-
-    set(CROSSGUID_VERSION ${${MODULE}_VER})
-    set(CROSSGUID_DEBUG_POSTFIX "-dgb")
-
-    set(_crossguid_definitions HAVE_NEW_CROSSGUID)
-
-    if(ANDROID)
-      list(APPEND _crossguid_definitions GUID_ANDROID)
-    endif()
-
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/001-fix-unused-function.patch"
-                "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/002-disable-Wall-error.patch"
-                "${CMAKE_SOURCE_DIR}/tools/depends/target/crossguid/003-add-cstdint-include.patch")
-
-    generate_patchcommand("${patches}")
-
-    set(CMAKE_ARGS -DCROSSGUID_TESTS=OFF
-                   -DDISABLE_WALL=ON)
-
-    BUILD_DEP_TARGET()
-
+    buildCrossGUID()
   else()
     if(PKG_CONFIG_FOUND)
       pkg_check_modules(PC_CROSSGUID crossguid QUIET)
@@ -91,6 +94,18 @@ if(NOT TARGET CrossGUID::CrossGUID)
 
   if(TARGET crossguid)
     add_dependencies(CrossGUID::CrossGUID crossguid)
+  else()
+    # Add internal build target when a Multi Config Generator is used
+    # We cant add a dependency based off a generator expression for targeted build types,
+    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+    # therefore if the find heuristics only find the library, we add the internal build 
+    # target to the project to allow user to manually trigger for any build type they need
+    # in case only a specific build type is actually available (eg Release found, Debug Required)
+    # This is mainly targeted for windows who required different runtime libs for different
+    # types, and they arent compatible
+    if(_multiconfig_generator)
+      buildCrossGUID()
+    endif()
   endif()
 
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP CrossGUID::CrossGUID)
