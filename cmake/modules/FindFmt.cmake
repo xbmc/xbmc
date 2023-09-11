@@ -6,6 +6,30 @@
 #
 #   fmt::fmt   - The Fmt library
 
+macro(buildFmt)
+  if(APPLE)
+    set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
+  endif()
+
+  set(FMT_VERSION ${${MODULE}_VER})
+  # fmt debug uses postfix d for all platforms
+  set(FMT_DEBUG_POSTFIX d)
+
+  if(WIN32 OR WINDOWS_STORE)
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch")
+    generate_patchcommand("${patches}")
+  endif()
+
+  set(CMAKE_ARGS -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
+                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
+                 -DFMT_DOC=OFF
+                 -DFMT_TEST=OFF
+                 -DFMT_INSTALL=ON
+                 "${EXTRA_ARGS}")
+
+  BUILD_DEP_TARGET()
+endmacro()
+
 define_property(TARGET PROPERTY LIB_BUILD
                        BRIEF_DOCS "This target will be compiling the library"
                        FULL_DOCS "This target will be compiling the library")
@@ -45,27 +69,8 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
       # Set FORCE_BUILD to enable fmt::fmt property that build will occur
       set(FORCE_BUILD ON)
 
-      if(APPLE)
-        set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
-      endif()
+      buildFmt()
 
-      set(FMT_VERSION ${${MODULE}_VER})
-      # fmt debug uses postfix d for all platforms
-      set(FMT_DEBUG_POSTFIX d)
-
-      if(WIN32 OR WINDOWS_STORE)
-        set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch")
-        generate_patchcommand("${patches}")
-      endif()
-
-      set(CMAKE_ARGS -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
-                     -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
-                     -DFMT_DOC=OFF
-                     -DFMT_TEST=OFF
-                     -DFMT_INSTALL=ON
-                     "${EXTRA_ARGS}")
-
-      BUILD_DEP_TARGET()
     else()
       if(NOT TARGET fmt::fmt)
         set(FMT_PKGCONFIG_CHECK ON)
@@ -115,6 +120,18 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
 
     if(TARGET fmt)
       add_dependencies(fmt::fmt fmt)
+    else()
+      # Add internal build target when a Multi Config Generator is used
+      # We cant add a dependency based off a generator expression for targeted build types,
+      # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+      # therefore if the find heuristics only find the library, we add the internal build 
+      # target to the project to allow user to manually trigger for any build type they need
+      # in case only a specific build type is actually available (eg Release found, Debug Required)
+      # This is mainly targeted for windows who required different runtime libs for different
+      # types, and they arent compatible
+      if(_multiconfig_generator)
+        buildFmt()
+      endif()
     endif()
   endif()
 
