@@ -55,6 +55,7 @@ public:
   static bool AddItemsToTag(const std::shared_ptr<CFileItem>& tagItem);
   static bool RemoveItemsFromTag(const std::shared_ptr<CFileItem>& tagItem);
 
+  static bool ChooseAndManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item);
   static bool ManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item, const MediaType& type);
 
   static std::string GetLocalizedVideoType(const std::string &strType);
@@ -96,11 +97,6 @@ protected:
                                 bool bRemove,
                                 CVideoDatabase& database);
 
-  /*! \brief Pop up a fanart chooser. Does not utilise remote URLs.
-   \param videoItem the item to choose fanart for.
-   */
-  static bool OnGetFanart(const std::shared_ptr<CFileItem>& videoItem);
-
   std::shared_ptr<CFileItem> m_movieItem;
   CFileItemList *m_castList;
   bool m_bViewReview = false;
@@ -113,6 +109,6 @@ protected:
 private:
   static std::string ChooseArtType(const CFileItem& item);
   static bool ManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item,
-                                     const MediaType& type,
-                                     bool& finished);
+                                     const MediaType& mediaType,
+                                     const std::string& artType);
 };

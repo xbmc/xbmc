@@ -13099,6 +13099,7 @@ msgid "Where no local album cover exists, online art will be used. Where neither
 msgstr ""
 
 #: system/settings/settings.xml
+#: xbmc/video/VideoItemArtworkHandler.cpp
 #: xbmc/music/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#20226"
 msgid "Movie set information folder"
@@ -18915,7 +18916,8 @@ msgctxt "#36040"
 msgid "Detected version of libCEC interface ({0:x}) is lower than the supported version {1:x}."
 msgstr ""
 
-#: xbmc/video/dialogs/guidialogvideoinfo.cpp
+#: xbmc/video/VideoItemArtworkHandler.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 #: xbmc/music/dialogs/GUIDialogMusicInfo.cpp
 msgctxt "#36041"
 msgid "* Item folder"
@@ -23066,8 +23068,9 @@ msgctxt "#39122"
 msgid "Library Information Sources"
 msgstr ""
 
-#. Label for section of settings
+#. Label for section of settings, label for artwork file browse dialog
 #: system/settings/settings.xml
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#39123"
 msgid "Artwork"
 msgstr ""
