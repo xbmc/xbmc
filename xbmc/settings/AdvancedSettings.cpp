@@ -1435,14 +1435,3 @@ void CAdvancedSettings::SetExtraArtwork(const TiXmlElement* arttypes, std::vecto
     arttype = arttype->NextSibling("arttype");
   }
 }
-
-void ConvertToWhitelist(const std::vector<std::string>& oldlist, std::vector<CVariant>& whitelist)
-{
-  for (auto& it : oldlist)
-  {
-    size_t last_index = it.find_last_not_of("0123456789");
-    std::string strFamilyType = it.substr(0, last_index + 1); // "fanart" of "fanart16"
-    if (std::find(whitelist.begin(), whitelist.end(), strFamilyType) == whitelist.end())
-      whitelist.emplace_back(strFamilyType);
-  }
-}
