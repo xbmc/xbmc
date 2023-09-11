@@ -26,7 +26,7 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 
 $(APP): $(PLATFORM)
-	bash $(PLATFORM)/rustup-init.sh -y --no-modify-path \
+	./$(PLATFORM)/rustup-init.sh -y --no-modify-path \
 		--profile minimal \
 		--default-toolchain=$(RUST_TOOLCHAIN_VERSION)
 
