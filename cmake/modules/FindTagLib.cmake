@@ -8,53 +8,55 @@
 #   TagLib::TagLib   - The TagLib library
 #
 
+macro(buildTagLib)
+  # Suppress mismatch warning, see https://cmake.org/cmake/help/latest/module/FindPackageHandleStandardArgs.html
+  set(FPHSA_NAME_MISMATCHED 1)
+
+  # Darwin systems use a system tbd that isnt found as a static lib
+  # Other platforms when using ENABLE_INTERNAL_TAGLIB, we want the static lib
+  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    # Requires cmake 3.24 for ZLIB_USE_STATIC_LIBS to actually do something
+    set(ZLIB_USE_STATIC_LIBS ON)
+  endif()
+  find_package(ZLIB REQUIRED)
+  unset(FPHSA_NAME_MISMATCHED)
+
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  set(MODULE_LC taglib)
+
+  SETUP_BUILD_VARS()
+
+  set(TAGLIB_VERSION ${${MODULE}_VER})
+
+  if(WIN32 OR WINDOWS_STORE)
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-cmake-pdb-debug.patch")
+    generate_patchcommand("${patches}")
+
+    if(WINDOWS_STORE)
+      set(EXTRA_ARGS -DPLATFORM_WINRT=ON)
+    endif()
+  endif()
+
+  # Debug postfix only used for windows
+  if(WIN32 OR WINDOWS_STORE)
+    set(TAGLIB_DEBUG_POSTFIX "d")
+  endif()
+
+  set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
+                 -DBUILD_EXAMPLES=OFF
+                 -DBUILD_TESTING=OFF
+                 -DBUILD_BINDINGS=OFF
+                 ${EXTRA_ARGS})
+
+  BUILD_DEP_TARGET()
+
+  add_dependencies(${MODULE_LC} ZLIB::ZLIB)
+endmacro()
+
 if(NOT TARGET TagLib::TagLib)
   if(ENABLE_INTERNAL_TAGLIB)
-
-    # Suppress mismatch warning, see https://cmake.org/cmake/help/latest/module/FindPackageHandleStandardArgs.html
-    set(FPHSA_NAME_MISMATCHED 1)
-
-    # Darwin systems use a system tbd that isnt found as a static lib
-    # Other platforms when using ENABLE_INTERNAL_TAGLIB, we want the static lib
-    if(NOT CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-      # Requires cmake 3.24 for ZLIB_USE_STATIC_LIBS to actually do something
-      set(ZLIB_USE_STATIC_LIBS ON)
-    endif()
-    find_package(ZLIB REQUIRED)
-    unset(FPHSA_NAME_MISMATCHED)
-
-    include(cmake/scripts/common/ModuleHelpers.cmake)
-
-    set(MODULE_LC taglib)
-
-    SETUP_BUILD_VARS()
-
-    set(TAGLIB_VERSION ${${MODULE}_VER})
-
-    if(WIN32 OR WINDOWS_STORE)
-      set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-cmake-pdb-debug.patch")
-      generate_patchcommand("${patches}")
-
-      if(WINDOWS_STORE)
-        set(EXTRA_ARGS -DPLATFORM_WINRT=ON)
-      endif()
-    endif()
-
-    # Debug postfix only used for windows
-    if(WIN32 OR WINDOWS_STORE)
-      set(TAGLIB_DEBUG_POSTFIX "d")
-    endif()
-
-    set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
-                   -DBUILD_EXAMPLES=OFF
-                   -DBUILD_TESTING=OFF
-                   -DBUILD_BINDINGS=OFF
-                   ${EXTRA_ARGS})
-
-    BUILD_DEP_TARGET()
-
-    add_dependencies(${MODULE_LC} ZLIB::ZLIB)
-
+    buildTagLib()
   else()
 
     if(PKG_CONFIG_FOUND)
@@ -110,6 +112,18 @@ if(NOT TARGET TagLib::TagLib)
 
     if(TARGET taglib)
       add_dependencies(TagLib::TagLib taglib)
+    else()
+      # Add internal build target when a Multi Config Generator is used
+      # We cant add a dependency based off a generator expression for targeted build types,
+      # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+      # therefore if the find heuristics only find the library, we add the internal build 
+      # target to the project to allow user to manually trigger for any build type they need
+      # in case only a specific build type is actually available (eg Release found, Debug Required)
+      # This is mainly targeted for windows who required different runtime libs for different
+      # types, and they arent compatible
+      if(_multiconfig_generator)
+        buildTagLib()
+      endif()
     endif()
 
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP TagLib::TagLib)
