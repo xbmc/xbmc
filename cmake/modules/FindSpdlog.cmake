@@ -6,6 +6,45 @@
 #
 #   spdlog::spdlog   - The Spdlog library
 
+macro(buildSpdlog)
+  if(APPLE)
+    set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
+  endif()
+
+  if(WIN32 OR WINDOWS_STORE)
+    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch")
+    generate_patchcommand("${patches}")
+
+    set(EXTRA_ARGS -DSPDLOG_WCHAR_SUPPORT=ON
+                   -DSPDLOG_WCHAR_FILENAMES=ON)
+
+    set(EXTRA_DEFINITIONS SPDLOG_WCHAR_FILENAMES
+                          SPDLOG_WCHAR_TO_UTF8_SUPPORT)
+  endif()
+
+  set(SPDLOG_VERSION ${${MODULE}_VER})
+  # spdlog debug uses postfix d for all platforms
+  set(SPDLOG_DEBUG_POSTFIX d)
+
+  set(CMAKE_ARGS -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
+                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
+                 -DSPDLOG_BUILD_EXAMPLE=OFF
+                 -DSPDLOG_BUILD_TESTS=OFF
+                 -DSPDLOG_BUILD_BENCH=OFF
+                 -DSPDLOG_FMT_EXTERNAL=ON
+                 ${EXTRA_ARGS})
+
+  # Set definitions that will be set in the built cmake config file
+  # We dont import the config file if we build internal (chicken/egg scenario)
+  set(_spdlog_definitions SPDLOG_COMPILED_LIB
+                          SPDLOG_FMT_EXTERNAL
+                          ${EXTRA_DEFINITIONS})
+
+  BUILD_DEP_TARGET()
+
+  add_dependencies(${MODULE_LC} fmt::fmt)
+endmacro()
+
 if(NOT TARGET spdlog::spdlog)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
@@ -33,42 +72,7 @@ if(NOT TARGET spdlog::spdlog)
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_SPDLOG) OR
      LIB_FORCE_REBUILD)
 
-    if(APPLE)
-      set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
-    endif()
-
-    if(WIN32 OR WINDOWS_STORE)
-      set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch")
-      generate_patchcommand("${patches}")
-
-      set(EXTRA_ARGS -DSPDLOG_WCHAR_SUPPORT=ON
-                     -DSPDLOG_WCHAR_FILENAMES=ON)
-
-      set(EXTRA_DEFINITIONS SPDLOG_WCHAR_FILENAMES
-                            SPDLOG_WCHAR_TO_UTF8_SUPPORT)
-    endif()
-
-    set(SPDLOG_VERSION ${${MODULE}_VER})
-    # spdlog debug uses postfix d for all platforms
-    set(SPDLOG_DEBUG_POSTFIX d)
-
-    set(CMAKE_ARGS -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
-                   -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
-                   -DSPDLOG_BUILD_EXAMPLE=OFF
-                   -DSPDLOG_BUILD_TESTS=OFF
-                   -DSPDLOG_BUILD_BENCH=OFF
-                   -DSPDLOG_FMT_EXTERNAL=ON
-                   ${EXTRA_ARGS})
-
-    # Set definitions that will be set in the built cmake config file
-    # We dont import the config file if we build internal (chicken/egg scenario)
-    set(_spdlog_definitions SPDLOG_COMPILED_LIB
-                            SPDLOG_FMT_EXTERNAL
-                            ${EXTRA_DEFINITIONS})
-
-    BUILD_DEP_TARGET()
-
-    add_dependencies(${MODULE_LC} fmt::fmt)
+    buildSpdlog()
   else()
     if(NOT TARGET spdlog::spdlog)
       find_package(PkgConfig)
@@ -160,6 +164,18 @@ if(NOT TARGET spdlog::spdlog)
 
     if(TARGET spdlog)
       add_dependencies(spdlog::spdlog spdlog)
+    else()
+      # Add internal build target when a Multi Config Generator is used
+      # We cant add a dependency based off a generator expression for targeted build types,
+      # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+      # therefore if the find heuristics only find the library, we add the internal build 
+      # target to the project to allow user to manually trigger for any build type they need
+      # in case only a specific build type is actually available (eg Release found, Debug Required)
+      # This is mainly targeted for windows who required different runtime libs for different
+      # types, and they arent compatible
+      if(_multiconfig_generator)
+        buildSpdlog()
+      endif()
     endif()
   endif()
 endif()
