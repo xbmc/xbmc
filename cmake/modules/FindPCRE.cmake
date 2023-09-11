@@ -8,6 +8,55 @@
 #   PCRE::PCRECPP - The PCRECPP library
 #   PCRE::PCRE    - The PCRE library
 
+macro(buildPCRE)
+  set(PCRE_VERSION ${${MODULE}_VER})
+  set(PCRE_DEBUG_POSTFIX d)
+
+  set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-all-cmakeconfig.patch"
+              "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/002-all-enable_docs_pc.patch"
+              "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/003-all-postfix.patch"
+              "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/004-win-pdb.patch"
+              "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/jit_aarch64.patch")
+
+  if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
+    list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/tvos-bitcode-fix.patch"
+                        "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/ios-clear_cache.patch")
+  endif()
+
+  generate_patchcommand("${patches}")
+
+  set(CMAKE_ARGS -DPCRE_NEWLINE=ANYCRLF
+                 -DPCRE_NO_RECURSE=ON
+                 -DPCRE_MATCH_LIMIT_RECURSION=1500
+                 -DPCRE_SUPPORT_JIT=ON
+                 -DPCRE_SUPPORT_PCREGREP_JIT=ON
+                 -DPCRE_SUPPORT_UTF=ON
+                 -DPCRE_SUPPORT_UNICODE_PROPERTIES=ON
+                 -DPCRE_SUPPORT_LIBZ=OFF
+                 -DPCRE_SUPPORT_LIBBZ2=OFF
+                 -DPCRE_BUILD_PCREGREP=OFF
+                 -DPCRE_BUILD_TESTS=OFF)
+
+  if(WIN32 OR WINDOWS_STORE)
+    list(APPEND CMAKE_ARGS -DINSTALL_MSVC_PDB=ON)
+  elseif(CORE_SYSTEM_NAME STREQUAL android)
+    # CMake CheckFunctionExists incorrectly detects strtoq for android
+    list(APPEND CMAKE_ARGS -DHAVE_STRTOQ=0)
+  endif()
+
+  # populate PCRECPP lib without a separate module
+  if(NOT CORE_SYSTEM_NAME MATCHES windows)
+    # Non windows platforms have a lib prefix for the lib artifact
+    set(_libprefix "lib")
+  endif()
+  # regex used to get platform extension (eg lib for windows, .a for unix)
+  string(REGEX REPLACE "^.*\\." "" _LIBEXT ${${MODULE}_BYPRODUCT})
+  set(PCRECPP_LIBRARY_DEBUG ${DEP_LOCATION}/lib/${_libprefix}pcrecpp${${MODULE}_DEBUG_POSTFIX}.${_LIBEXT})
+  set(PCRECPP_LIBRARY_RELEASE ${DEP_LOCATION}/lib/${_libprefix}pcrecpp.${_LIBEXT})
+
+  BUILD_DEP_TARGET()
+endmacro()
+
 if(NOT PCRE::pcre)
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
@@ -24,52 +73,7 @@ if(NOT PCRE::pcre)
   if((PCRE_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_PCRE) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_PCRE))
 
-    set(PCRE_VERSION ${${MODULE}_VER})
-    set(PCRE_DEBUG_POSTFIX d)
-
-    set(patches "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-all-cmakeconfig.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/002-all-enable_docs_pc.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/003-all-postfix.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/004-win-pdb.patch"
-                "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/jit_aarch64.patch")
-
-    if(CORE_SYSTEM_NAME STREQUAL darwin_embedded)
-      list(APPEND patches "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/tvos-bitcode-fix.patch"
-                          "${CORE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/ios-clear_cache.patch")
-    endif()
-
-    generate_patchcommand("${patches}")
-
-    set(CMAKE_ARGS -DPCRE_NEWLINE=ANYCRLF
-                   -DPCRE_NO_RECURSE=ON
-                   -DPCRE_MATCH_LIMIT_RECURSION=1500
-                   -DPCRE_SUPPORT_JIT=ON
-                   -DPCRE_SUPPORT_PCREGREP_JIT=ON
-                   -DPCRE_SUPPORT_UTF=ON
-                   -DPCRE_SUPPORT_UNICODE_PROPERTIES=ON
-                   -DPCRE_SUPPORT_LIBZ=OFF
-                   -DPCRE_SUPPORT_LIBBZ2=OFF
-                   -DPCRE_BUILD_PCREGREP=OFF
-                   -DPCRE_BUILD_TESTS=OFF)
-
-    if(WIN32 OR WINDOWS_STORE)
-      list(APPEND CMAKE_ARGS -DINSTALL_MSVC_PDB=ON)
-    elseif(CORE_SYSTEM_NAME STREQUAL android)
-      # CMake CheckFunctionExists incorrectly detects strtoq for android
-      list(APPEND CMAKE_ARGS -DHAVE_STRTOQ=0)
-    endif()
-
-    # populate PCRECPP lib without a separate module
-    if(NOT CORE_SYSTEM_NAME MATCHES windows)
-      # Non windows platforms have a lib prefix for the lib artifact
-      set(_libprefix "lib")
-    endif()
-    # regex used to get platform extension (eg lib for windows, .a for unix)
-    string(REGEX REPLACE "^.*\\." "" _LIBEXT ${${MODULE}_BYPRODUCT})
-    set(PCRECPP_LIBRARY_DEBUG ${DEP_LOCATION}/lib/${_libprefix}pcrecpp${${MODULE}_DEBUG_POSTFIX}.${_LIBEXT})
-    set(PCRECPP_LIBRARY_RELEASE ${DEP_LOCATION}/lib/${_libprefix}pcrecpp.${_LIBEXT})
-
-    BUILD_DEP_TARGET()
+    buildPCRE()
 
   else()
     if(NOT TARGET PCRE::pcre)
@@ -192,9 +196,22 @@ if(NOT PCRE::pcre)
     if(TARGET pcre)
       add_dependencies(PCRE::pcre pcre)
       add_dependencies(PCRE::pcrecpp pcre)
+    else()
+      # Add internal build target when a Multi Config Generator is used
+      # We cant add a dependency based off a generator expression for targeted build types,
+      # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+      # therefore if the find heuristics only find the library, we add the internal build 
+      # target to the project to allow user to manually trigger for any build type they need
+      # in case only a specific build type is actually available (eg Release found, Debug Required)
+      # This is mainly targeted for windows who required different runtime libs for different
+      # types, and they arent compatible
+      if(_multiconfig_generator)
+        buildPCRE()
+      endif()
     endif()
 
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP PCRE::pcre)
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP PCRE::pcrecpp)
+
   endif()
 endif()
