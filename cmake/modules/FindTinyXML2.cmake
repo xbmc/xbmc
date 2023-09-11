@@ -7,6 +7,40 @@
 #
 #   tinyxml2::tinyxml2   - The TinyXML2 library
 
+macro(buildTinyXML2)
+  set(TINYXML2_VERSION ${${MODULE}_VER})
+  set(TINYXML2_DEBUG_POSTFIX d)
+
+  find_package(Patch MODULE REQUIRED)
+
+  if(UNIX)
+    # ancient patch (Apple/freebsd) fails to patch tinyxml2 CMakeLists.txt file due to it being crlf encoded
+    # Strip crlf before applying patches.
+    # Freebsd fails even harder and requires both .patch and CMakeLists.txt to be crlf stripped
+    # possibly add requirement for freebsd on gpatch? Wouldnt need to copy/strip the patch file then
+    set(PATCH_COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/CMakeLists.txt
+              COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/001-debug-pdb.patch ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/001-debug-pdb.patch
+              COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/001-debug-pdb.patch
+              COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/001-debug-pdb.patch)
+  else()
+    set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/001-debug-pdb.patch)
+  endif()
+
+  if(CMAKE_GENERATOR MATCHES "Visual Studio" OR CMAKE_GENERATOR STREQUAL Xcode)
+    # Multiconfig generators fail due to file(GENERATE tinyxml.pc) command.
+    # This patch makes it generate a distinct named pc file for each build type and rename
+    # pc file on install
+    list(APPEND PATCH_COMMAND COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/002-multiconfig-gen-pkgconfig.patch)
+  endif()
+
+  set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                 -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
+                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
+                 -Dtinyxml2_BUILD_TESTING=OFF)
+
+  BUILD_DEP_TARGET()
+endmacro()
+
 if(NOT TARGET tinyxml2::tinyxml2)
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
@@ -23,37 +57,7 @@ if(NOT TARGET tinyxml2::tinyxml2)
   if((TINYXML2_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_TINYXML2) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_TINYXML2))
 
-    set(TINYXML2_VERSION ${${MODULE}_VER})
-    set(TINYXML2_DEBUG_POSTFIX d)
-
-    find_package(Patch MODULE REQUIRED)
-
-    if(UNIX)
-      # ancient patch (Apple/freebsd) fails to patch tinyxml2 CMakeLists.txt file due to it being crlf encoded
-      # Strip crlf before applying patches.
-      # Freebsd fails even harder and requires both .patch and CMakeLists.txt to be crlf stripped
-      # possibly add requirement for freebsd on gpatch? Wouldnt need to copy/strip the patch file then
-      set(PATCH_COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/CMakeLists.txt
-                COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/001-debug-pdb.patch ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/001-debug-pdb.patch
-                COMMAND sed -ie s|\\r\$|| ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/001-debug-pdb.patch
-                COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${MODULE_LC}/src/${MODULE_LC}/001-debug-pdb.patch)
-    else()
-      set(PATCH_COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/001-debug-pdb.patch)
-    endif()
-
-    if(CMAKE_GENERATOR MATCHES "Visual Studio" OR CMAKE_GENERATOR STREQUAL Xcode)
-      # Multiconfig generators fail due to file(GENERATE tinyxml.pc) command.
-      # This patch makes it generate a distinct named pc file for each build type and rename
-      # pc file on install
-      list(APPEND PATCH_COMMAND COMMAND ${PATCH_EXECUTABLE} -p1 -i ${CMAKE_SOURCE_DIR}/tools/depends/target/tinyxml2/002-multiconfig-gen-pkgconfig.patch)
-    endif()
-
-    set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-                   -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
-                   -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
-                   -Dtinyxml2_BUILD_TESTING=OFF)
-
-    BUILD_DEP_TARGET()
+    buildTinyXML2()
   else()
     # This is the fallback case where linux distro's dont ship cmake config files
     # use the old find_library way. Only do this if we didnt find a cmake config 
@@ -130,6 +134,18 @@ if(NOT TARGET tinyxml2::tinyxml2)
 
     if(TARGET tinyxml2)
       add_dependencies(tinyxml2::tinyxml2 tinyxml2)
+    else()
+      # Add internal build target when a Multi Config Generator is used
+      # We cant add a dependency based off a generator expression for targeted build types,
+      # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+      # therefore if the find heuristics only find the library, we add the internal build 
+      # target to the project to allow user to manually trigger for any build type they need
+      # in case only a specific build type is actually available (eg Release found, Debug Required)
+      # This is mainly targeted for windows who required different runtime libs for different
+      # types, and they arent compatible
+      if(_multiconfig_generator)
+        buildTinyXML2()
+      endif()
     endif()
   endif()
 
