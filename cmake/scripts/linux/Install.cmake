@@ -188,7 +188,7 @@ install(FILES ${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/ArchSetup.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/CheckCommits.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/CheckTargetPlatform.cmake
-              ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateVersionedFiles.cmake
+              ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateCompileInfo.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GeneratorSetup.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/HandleDepends.cmake
               ${CMAKE_SOURCE_DIR}/cmake/scripts/common/Macros.cmake
