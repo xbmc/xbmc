@@ -148,21 +148,6 @@ public:
 #endif
 
 protected:
-  struct delete_dataCacheCore
-  {
-    void operator()(CDataCacheCore* p) const;
-  };
-
-  struct delete_contextMenuManager
-  {
-    void operator()(CContextMenuManager* p) const;
-  };
-
-  struct delete_favouritesService
-  {
-    void operator()(CFavouritesService* p) const;
-  };
-
   std::unique_ptr<ADDON::CAddonMgr> m_addonMgr;
   std::unique_ptr<ADDON::CBinaryAddonManager> m_binaryAddonManager;
   std::unique_ptr<ADDON::CBinaryAddonCache> m_binaryAddonCache;
@@ -177,15 +162,15 @@ protected:
   std::unique_ptr<XBPython> m_XBPython;
 #endif
   std::unique_ptr<PVR::CPVRManager> m_PVRManager;
-  std::unique_ptr<CContextMenuManager, delete_contextMenuManager> m_contextMenuManager;
-  std::unique_ptr<CDataCacheCore, delete_dataCacheCore> m_dataCacheCore;
+  std::unique_ptr<CContextMenuManager> m_contextMenuManager;
+  std::unique_ptr<CDataCacheCore> m_dataCacheCore;
   std::unique_ptr<CPlatform> m_Platform;
   std::unique_ptr<PLAYLIST::CPlayListPlayer> m_playlistPlayer;
   std::unique_ptr<KODI::GAME::CControllerManager> m_gameControllerManager;
   std::unique_ptr<KODI::GAME::CGameServices> m_gameServices;
   std::unique_ptr<KODI::RETRO::CGUIGameRenderManager> m_gameRenderManager;
   std::unique_ptr<PERIPHERALS::CPeripherals> m_peripherals;
-  std::unique_ptr<CFavouritesService, delete_favouritesService> m_favouritesService;
+  std::unique_ptr<CFavouritesService> m_favouritesService;
   std::unique_ptr<CInputManager> m_inputManager;
   std::unique_ptr<CFileExtensionProvider> m_fileExtensionProvider;
   std::unique_ptr<CNetworkBase> m_network;

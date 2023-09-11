@@ -403,22 +403,6 @@ CPowerManager& CServiceManager::GetPowerManager()
   return *m_powerManager;
 }
 
-// deleters for unique_ptr
-void CServiceManager::delete_dataCacheCore::operator()(CDataCacheCore* p) const
-{
-  delete p;
-}
-
-void CServiceManager::delete_contextMenuManager::operator()(CContextMenuManager* p) const
-{
-  delete p;
-}
-
-void CServiceManager::delete_favouritesService::operator()(CFavouritesService* p) const
-{
-  delete p;
-}
-
 CNetworkBase& CServiceManager::GetNetwork()
 {
   return *m_network;
