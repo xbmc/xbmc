@@ -438,7 +438,7 @@ add_custom_target(gen_skin_pack
 
 # Packaging target. This generates system addon, xbt creation, copy files to build tree
 add_custom_target(generate-packaging ALL
-                  DEPENDS TexturePacker::TexturePacker::Executable export-files gen_skin_pack gen_system_addons ${XBT_FILES})
+                  DEPENDS TexturePacker::TexturePacker::Executable export-files gen_skin_pack gen_system_addons)
 # Make sure we build any libs before we look to export-files.
 # We may need to export some shared libs/data (eg Python)
 add_dependencies(export-files ${GLOBAL_TARGET_DEPS})
