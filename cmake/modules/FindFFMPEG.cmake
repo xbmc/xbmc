@@ -32,20 +32,21 @@ macro(buildFFMPEG)
   # Check for dependencies - Must be done before SETUP_BUILD_VARS
   get_libversion_data("dav1d" "target")
   find_package(Dav1d ${LIB_DAV1D_VER} MODULE)
-  if(NOT DAV1D_FOUND)
+  if(NOT TARGET dav1d::dav1d)
     message(STATUS "dav1d not found, internal ffmpeg build will be missing AV1 support!")
+  else()
+    set(FFMPEG_OPTIONS -DENABLE_DAV1D=ON)
   endif()
 
   set(MODULE_LC ffmpeg)
 
   SETUP_BUILD_VARS()
 
-  set(FFMPEG_OPTIONS -DENABLE_CCACHE=${ENABLE_CCACHE}
-                     -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
-                     -DENABLE_VAAPI=${ENABLE_VAAPI}
-                     -DENABLE_VDPAU=${ENABLE_VDPAU}
-                     -DENABLE_DAV1D=${DAV1D_FOUND}
-                     -DEXTRA_FLAGS=${FFMPEG_EXTRA_FLAGS})
+  list(APPEND FFMPEG_OPTIONS -DENABLE_CCACHE=${ENABLE_CCACHE}
+                             -DCCACHE_PROGRAM=${CCACHE_PROGRAM}
+                             -DENABLE_VAAPI=${ENABLE_VAAPI}
+                             -DENABLE_VDPAU=${ENABLE_VDPAU}
+                             -DEXTRA_FLAGS=${FFMPEG_EXTRA_FLAGS})
 
   if(KODI_DEPENDSBUILD)
     set(CROSS_ARGS -DDEPENDS_PATH=${DEPENDS_PATH}
@@ -87,8 +88,8 @@ macro(buildFFMPEG)
 
   BUILD_DEP_TARGET()
 
-  if(TARGET dav1d)
-    add_dependencies(ffmpeg dav1d)
+  if(TARGET dav1d::dav1d)
+    add_dependencies(ffmpeg dav1d::dav1d)
   endif()
 
   find_program(BASH_COMMAND bash)
@@ -126,37 +127,30 @@ fi")
 
   add_library(ffmpeg::libavcodec INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libavcodec PROPERTIES
-                                           FOLDER "FFMPEG - External Projects"
                                            INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libavfilter INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libavfilter PROPERTIES
-                                            FOLDER "FFMPEG - External Projects"
                                             INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libavformat INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libavformat PROPERTIES
-                                            FOLDER "FFMPEG - External Projects"
                                             INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libavutil INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libavutil PROPERTIES
-                                          FOLDER "FFMPEG - External Projects"
                                           INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libswscale INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libswscale PROPERTIES
-                                           FOLDER "FFMPEG - External Projects"
                                            INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libswresample INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libswresample PROPERTIES
-                                              FOLDER "FFMPEG - External Projects"
                                               INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 
   add_library(ffmpeg::libpostproc INTERFACE IMPORTED)
   set_target_properties(ffmpeg::libpostproc PROPERTIES
-                                            FOLDER "FFMPEG - External Projects"
                                             INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIR}")
 endmacro()
 
@@ -395,7 +389,6 @@ if(FFMPEG_FOUND)
   if(NOT TARGET ffmpeg::ffmpeg)
     add_library(ffmpeg::ffmpeg INTERFACE IMPORTED)
     set_target_properties(ffmpeg::ffmpeg PROPERTIES
-                                         FOLDER "External Projects"
                                          INTERFACE_INCLUDE_DIRECTORIES "${FFMPEG_INCLUDE_DIRS}"
                                          INTERFACE_COMPILE_DEFINITIONS "${_ffmpeg_definitions}")
   endif()
