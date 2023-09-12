@@ -32,6 +32,7 @@ TEST_F(TestGPUInfo, GetTemperature)
   EXPECT_NE(gpuInfo, nullptr);
   CTemperature t;
   bool success = gpuInfo->GetTemperature(t);
+  EXPECT_TRUE(success);
   EXPECT_TRUE(t.IsValid());
   EXPECT_EQ(t.ToCelsius(), 50);
 }
