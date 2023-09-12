@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "NetworkmacOS.h"
+#include "NetworkMacOS.h"
 
 #include "utils/StringUtils.h"
 #include "utils/log.h"
