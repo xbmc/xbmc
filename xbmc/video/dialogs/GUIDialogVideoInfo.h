@@ -107,7 +107,6 @@ protected:
   int m_startUserrating = -1;
 
 private:
-  static std::string ChooseArtType(const CFileItem& item);
   static bool ManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item,
                                      const MediaType& mediaType,
                                      const std::string& artType);

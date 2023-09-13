@@ -55,8 +55,10 @@
 #include "video/VideoUtils.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
+#include <algorithm>
 #include <iterator>
 #include <string>
+#include <unordered_map>
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
@@ -766,7 +768,7 @@ void AddHardCodedAndExtendedArtTypes(std::vector<std::string>& artTypes, const C
 {
   for (const auto& artType : CVideoThumbLoader::GetArtTypes(tag.m_type))
   {
-    if (find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
+    if (std::find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
       artTypes.emplace_back(artType);
   }
 }
@@ -779,8 +781,9 @@ void AddCurrentArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTag&
   db.GetArtForItem(tag.m_iDbId, tag.m_type, currentArt);
   for (const auto& art : currentArt)
   {
-    if (!art.second.empty() && find(artTypes.cbegin(), artTypes.cend(), art.first) == artTypes.cend())
-      artTypes.push_back(art.first);
+    if (!art.second.empty() &&
+        std::find(artTypes.cbegin(), artTypes.cend(), art.first) == artTypes.cend())
+      artTypes.emplace_back(art.first);
   }
 }
 
@@ -792,8 +795,8 @@ void AddMediaTypeArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTa
   db.GetArtTypes(tag.m_type, dbArtTypes);
   for (const auto& artType : dbArtTypes)
   {
-    if (find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
-      artTypes.push_back(artType);
+    if (std::find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
+      artTypes.emplace_back(artType);
   }
 }
 
@@ -803,8 +806,8 @@ void AddAvailableArtTypes(std::vector<std::string>& artTypes, const CVideoInfoTa
 {
   for (const auto& artType : db.GetAvailableArtTypesForItem(tag.m_iDbId, tag.m_type))
   {
-    if (find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
-      artTypes.push_back(artType);
+    if (std::find(artTypes.cbegin(), artTypes.cend(), artType) == artTypes.cend())
+      artTypes.emplace_back(artType);
   }
 }
 
@@ -823,58 +826,86 @@ std::vector<std::string> GetArtTypesList(const CVideoInfoTag& tag)
   db.Close();
   return artTypes;
 }
-}
 
-std::string CGUIDialogVideoInfo::ChooseArtType(const CFileItem &videoItem)
+class CArtTypeChooser
 {
-  // prompt for choice
-  CGUIDialogSelect *dialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
-  if (!dialog || !videoItem.HasVideoInfoTag())
-    return "";
+public:
+  CArtTypeChooser() = delete;
+  explicit CArtTypeChooser(const std::shared_ptr<CFileItem>& item) : m_item(item) {}
 
-  CFileItemList items;
+  bool ChooseArtType();
+  const std::string& GetArtType() const { return m_artType; }
+
+private:
+  std::shared_ptr<CFileItem> m_item;
+  CFileItemList m_items;
+  int m_selectedItem{0};
+  std::string m_artType;
+};
+
+bool CArtTypeChooser::ChooseArtType()
+{
+  CGUIDialogSelect* dialog =
+      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+          WINDOW_DIALOG_SELECT);
+  if (!dialog || !m_item->HasVideoInfoTag())
+    return false;
+
   dialog->SetHeading(CVariant{13511});
   dialog->Reset();
   dialog->SetUseDetails(true);
-  dialog->EnableButton(true, 13516);
+  dialog->EnableButton(true, 13516); // Enable "Add art type" button
 
-  std::vector<std::string> artTypes = GetArtTypesList(*videoItem.GetVideoInfoTag());
-
-  for (std::vector<std::string>::const_iterator i = artTypes.begin(); i != artTypes.end(); ++i)
+  if (m_items.IsEmpty())
   {
-    const std::string& type = *i;
-    CFileItemPtr item(new CFileItem(type, false));
-    if (type == "banner")
-      item->SetLabel(g_localizeStrings.Get(20020));
-    else if (type == "fanart")
-      item->SetLabel(g_localizeStrings.Get(20445));
-    else if (type == "poster")
-      item->SetLabel(g_localizeStrings.Get(20021));
-    else if (type == "thumb")
-      item->SetLabel(g_localizeStrings.Get(21371));
-    else
-      item->SetLabel(type);
-    item->SetProperty("type", type);
-    if (videoItem.HasArt(type))
-      item->SetArt("thumb", videoItem.GetArt(type));
-    items.Add(item);
+    const std::vector<std::string> availableArtTypes = GetArtTypesList(*m_item->GetVideoInfoTag());
+
+    // maps art types to resource ids
+    static const std::unordered_map<std::string, int> name2idMap = {
+        {"banner", 20020},
+        {"fanart", 20445},
+        {"poster", 20021},
+        {"thumb", 21371},
+    };
+
+    for (const auto& type : availableArtTypes)
+    {
+      const auto item = std::make_shared<CFileItem>(type, false);
+      item->SetProperty("type", type);
+      if (m_item->HasArt(type))
+        item->SetArt("thumb", m_item->GetArt(type));
+
+      const auto it = name2idMap.find(type);
+      item->SetLabel(it == name2idMap.cend() ? type : g_localizeStrings.Get((*it).second));
+
+      m_items.Add(item);
+    }
   }
 
-  dialog->SetItems(items);
+  dialog->SetItems(m_items);
+  dialog->SetSelected(m_selectedItem);
   dialog->Open();
+  m_selectedItem = dialog->GetSelectedItem();
 
   if (dialog->IsButtonPressed())
   {
-    // Get the new artwork name
-    std::string strArtworkName;
-    if (!CGUIKeyboardFactory::ShowAndGetInput(strArtworkName, CVariant{g_localizeStrings.Get(13516)}, false))
-      return "";
+    // "Add art type" button pressed. Get the new artwork name.
+    std::string artworkName;
+    if (!CGUIKeyboardFactory::ShowAndGetInput(artworkName, CVariant{g_localizeStrings.Get(13516)},
+                                              false))
+      return false;
 
-    return strArtworkName;
+    m_artType = artworkName;
+  }
+  else
+  {
+    // A type was selected from the list of available art types.
+    m_artType = dialog->GetSelectedFileItem()->GetProperty("type").asString();
   }
 
-  return dialog->GetSelectedFileItem()->GetProperty("type").asString();
+  return !m_artType.empty();
 }
+} // unnamed namespace
 
 void CGUIDialogVideoInfo::OnGetArt()
 {
@@ -1682,14 +1713,15 @@ bool CGUIDialogVideoInfo::ChooseAndManageVideoItemArtwork(const std::shared_ptr<
 {
   bool result = false;
 
-  std::string artType;
+  CArtTypeChooser chooser{item};
   do
   {
-    artType = ChooseArtType(*item);
-    if (!artType.empty())
-      result = ManageVideoItemArtwork(item, item->GetVideoInfoTag()->m_type, artType);
+    if (!chooser.ChooseArtType())
+      break;
 
-  } while (!artType.empty());
+    result = ManageVideoItemArtwork(item, item->GetVideoInfoTag()->m_type, chooser.GetArtType());
+
+  } while (true);
 
   return result;
 }
