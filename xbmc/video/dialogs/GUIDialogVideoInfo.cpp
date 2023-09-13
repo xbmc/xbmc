@@ -15,6 +15,7 @@
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "Util.h"
+#include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -41,6 +42,7 @@
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
+#include "threads/IRunnable.h"
 #include "utils/FileUtils.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
@@ -1733,6 +1735,48 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
   return ManageVideoItemArtwork(item, mediaType, "thumb");
 }
 
+namespace
+{
+class CAsyncGetArt : private IRunnable
+{
+public:
+  CAsyncGetArt() = delete;
+  CAsyncGetArt(const VIDEO::IVideoItemArtworkHandler& handler) : m_handler(handler) {}
+
+  bool FetchAllArt()
+  {
+    CGUIDialogBusy::Wait(this, 100, false);
+    return true;
+  }
+
+  const std::string& GetCurrentArt() const { return m_currentArt; }
+  const std::string& GetEmbeddedArt() const { return m_embeddedArt; }
+  const std::vector<std::string>& GetRemoteArt() const { return m_remoteArt; }
+  const std::string& GetLocalArt() const { return m_localArt; }
+
+private:
+  // IRunnable implementation
+  void Run() override
+  {
+    m_currentArt = m_handler.GetCurrentArt();
+    m_embeddedArt = m_handler.GetEmbeddedArt();
+    m_remoteArt = m_handler.GetRemoteArt();
+    m_localArt = m_handler.GetLocalArt();
+  }
+
+  const VIDEO::IVideoItemArtworkHandler& m_handler;
+
+  // Note: No mutex needed to protect the strings, as correct usage sequence of this class is:
+  // T1 calls FetchAllArt
+  // T1 blocks in CGUIDialogBusy::Wait until strings are filled by worker thread T2 in Run()
+  // T1: calls GetFooArt, which accesses the then completely filled strings
+  std::string m_currentArt;
+  std::string m_embeddedArt;
+  std::vector<std::string> m_remoteArt;
+  std::string m_localArt;
+};
+} // unnamed namespace
+
 bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item,
                                                  const MediaType& mediaType,
                                                  const std::string& artType)
@@ -1742,10 +1786,12 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
 
   const std::unique_ptr<VIDEO::IVideoItemArtworkHandler> artHandler =
       VIDEO::IVideoItemArtworkHandlerFactory::Create(item, mediaType, artType);
+  CAsyncGetArt asyncArtHandler{*artHandler};
+  asyncArtHandler.FetchAllArt();
 
   CFileItemList items;
 
-  const std::string currentArt = artHandler->GetCurrentArt();
+  const std::string currentArt = asyncArtHandler.GetCurrentArt();
   if (!currentArt.empty())
   {
     const auto itemCurrent = std::make_shared<CFileItem>("thumb://Current", false);
@@ -1754,7 +1800,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     items.Add(itemCurrent);
   }
 
-  const std::string embeddedArt = artHandler->GetEmbeddedArt();
+  const std::string embeddedArt = asyncArtHandler.GetEmbeddedArt();
   if (!embeddedArt.empty())
   {
     const auto itemEmbedded = std::make_shared<CFileItem>("thumb://Embedded", false);
@@ -1763,7 +1809,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     items.Add(itemEmbedded);
   }
 
-  std::vector<std::string> remoteArt = artHandler->GetRemoteArt();
+  const std::vector<std::string> remoteArt = asyncArtHandler.GetRemoteArt();
   for (size_t i = 0; i < remoteArt.size(); ++i)
   {
     const auto itemRemote =
@@ -1777,7 +1823,7 @@ bool CGUIDialogVideoInfo::ManageVideoItemArtwork(const std::shared_ptr<CFileItem
     //    CServiceBroker::GetTextureCache()->ClearCachedImage(remoteArt[i]);
   }
 
-  const std::string localArt = artHandler->GetLocalArt();
+  const std::string localArt = asyncArtHandler.GetLocalArt();
   if (!localArt.empty())
   {
     const auto itemLocal = std::make_shared<CFileItem>("thumb://Local", false);
