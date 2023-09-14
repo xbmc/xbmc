@@ -3,10 +3,9 @@
 # -----------
 # Finds the RapidJSON library
 #
-# This will define the following variables::
+# This will define the following target:
 #
-# RapidJSON_FOUND - system has RapidJSON parser
-# RapidJSON_INCLUDE_DIRS - the RapidJSON parser include directory
+#   RapidJSON::RapidJSON - The RapidJSON library
 #
 
 if(NOT TARGET RapidJSON::RapidJSON)
