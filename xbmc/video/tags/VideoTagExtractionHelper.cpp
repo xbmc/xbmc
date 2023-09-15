@@ -35,10 +35,7 @@ std::string CVideoTagExtractionHelper::ExtractEmbeddedArtFor(const CFileItem& it
   for (const auto& it : tag.m_coverArt)
   {
     if (it.m_type == artType)
-    {
-      return CTextureUtils::GetWrappedImageURL(item.GetVideoInfoTag()->m_strFileNameAndPath,
-                                               "video_" + artType);
-    }
+      return CTextureUtils::GetWrappedImageURL(item.GetDynPath(), "video_" + artType);
   }
   return {};
 }
