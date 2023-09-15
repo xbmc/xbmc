@@ -172,8 +172,25 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
           m_bitstream.reset();
         }
       }
+
+      break;
     }
-    break;
+    case AV_CODEC_ID_AV1:
+    {
+      if (m_hints.hdrType == StreamHdrType::HDR_TYPE_DOLBYVISION && m_hints.dovi.dv_profile == 10)
+      {
+        m_formatname = "starfish-dav1";
+
+        payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]
+                  ["encryptionType"] = "clear"; //"clear", "bl", "el", "all"
+        payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]["profileId"] =
+            m_hints.dovi.dv_profile; // profile 10
+        payloadArg["option"]["externalStreamingInfo"]["contents"]["DolbyHdrInfo"]["trackType"] =
+            "single"; // "single" / "dual"
+      }
+
+      break;
+    }
     default:
       break;
   }
