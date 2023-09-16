@@ -34,7 +34,10 @@ if(NOT TARGET flatbuffers::flatbuffers)
 
     BUILD_DEP_TARGET()
   else()
-    find_path(FLATBUFFERS_INCLUDE_DIR NAMES flatbuffers/flatbuffers.h)
+    find_path(FLATBUFFERS_INCLUDE_DIR NAMES flatbuffers/flatbuffers.h
+                                      HINTS ${DEPENDS_PATH}/include
+                                      ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                                      NO_CACHE)
   endif()
 
   include(FindPackageHandleStandardArgs)

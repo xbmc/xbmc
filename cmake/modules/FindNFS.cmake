@@ -16,7 +16,9 @@ if(NOT TARGET libnfs::nfs)
   SETUP_BUILD_VARS()
 
   # Search for cmake config. Suitable for all platforms including windows
-  find_package(libnfs CONFIG QUIET)
+  find_package(libnfs CONFIG QUIET
+                             HINTS ${DEPENDS_PATH}/lib
+                             ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # Check for existing LIBNFS. If version >= LIBNFS-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal libnfs, build anyway
@@ -42,12 +44,16 @@ if(NOT TARGET libnfs::nfs)
 
       find_library(LIBNFS_LIBRARY_RELEASE NAMES nfs libnfs
                                           HINTS ${DEPENDS_PATH}/lib
-                                                ${PC_LIBNFS_LIBDIR})
+                                                ${PC_LIBNFS_LIBDIR}
+                                          ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
+                                          NO_CACHE)
       set(LIBNFS_VERSION ${PC_LIBNFS_VERSION})
     endif()
 
     find_path(LIBNFS_INCLUDE_DIR nfsc/libnfs.h HINTS ${PC_LIBNFS_INCLUDEDIR}
-                                                     ${DEPENDS_PATH}/include)
+                                                     ${DEPENDS_PATH}/include
+                                               ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
+                                               NO_CACHE)
   endif()
 
   if(TARGET libnfs::nfs)
