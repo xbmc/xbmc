@@ -751,6 +751,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
   else if (!CGUIWindowVideoBase::ShowResumeMenu(*m_movieItem))
   {
     // The Resume dialog was closed without any choice
+    SetMovie(m_movieItem.get()); // restore cast list, which was cleared on GUI_MSG_WINDOW_DEINIT
     Open();
     return;
   }
