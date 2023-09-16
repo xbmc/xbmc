@@ -18,3 +18,5 @@ elseif(APP_WINDOW_SYSTEM STREQUAL native)
 else()
   message(SEND_ERROR "Only SDL or native windowing options are supported.")
 endif()
+
+set(${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG NO_DEFAULT_PATH CACHE STRING "")
