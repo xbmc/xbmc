@@ -24,7 +24,9 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
   SETUP_BUILD_VARS()
 
   # Check for existing FMT. If version >= FMT-VERSION file version, dont build
-  find_package(FMT CONFIG QUIET)
+  find_package(FMT CONFIG QUIET
+                   HINTS ${DEPENDS_PATH}/lib
+                   ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # Build if ENABLE_INTERNAL_FMT, or if required version in find_package call is greater 
   # than already found FMT_VERSION from a previous find_package call
@@ -83,12 +85,18 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
       endif()
 
       find_path(FMT_INCLUDE_DIR NAMES fmt/format.h
-                                PATHS ${PC_FMT_INCLUDEDIR})
+                                HINTS ${DEPENDS_PATH}/include ${PC_FMT_INCLUDEDIR}
+                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                                NO_CACHE)
 
       find_library(FMT_LIBRARY_RELEASE NAMES fmt
-                                       PATHS ${PC_FMT_LIBDIR})
+                                       HINTS ${DEPENDS_PATH}/lib ${PC_FMT_LIBDIR}
+                                       ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                                       NO_CACHE)
       find_library(FMT_LIBRARY_DEBUG NAMES fmtd
-                                     PATHS ${PC_FMT_LIBDIR})
+                                     HINTS ${DEPENDS_PATH}/lib ${PC_FMT_LIBDIR}
+                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                                     NO_CACHE)
     endif()
 
     add_library(fmt::fmt UNKNOWN IMPORTED)

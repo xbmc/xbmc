@@ -17,7 +17,9 @@ if(NOT PCRE::pcre)
   SETUP_BUILD_VARS()
 
   # Check for existing PCRE. If version >= PCRE-VERSION file version, dont build
-  find_package(PCRE CONFIG QUIET)
+  find_package(PCRE CONFIG QUIET
+                           HINTS ${DEPENDS_PATH}/lib
+                           ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   if((PCRE_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_PCRE) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_PCRE))
@@ -76,15 +78,25 @@ if(NOT PCRE::pcre)
       endif()
 
       find_path(PCRE_INCLUDE_DIR pcrecpp.h
-                                 PATHS ${PC_PCRE_INCLUDEDIR})
+                                 HINTS ${DEPENDS_PATH}/include ${PC_PCRE_INCLUDEDIR}
+                                 ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
+                                 NO_CACHE)
       find_library(PCRECPP_LIBRARY_RELEASE NAMES pcrecpp
-                                           PATHS ${PC_PCRE_LIBDIR})
+                                           HINTS ${DEPENDS_PATH}/lib ${PC_PCRE_LIBDIR}
+                                           ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
+                                           NO_CACHE)
       find_library(PCRE_LIBRARY_RELEASE NAMES pcre
-                                        PATHS ${PC_PCRE_LIBDIR})
+                                        HINTS ${DEPENDS_PATH}/lib ${PC_PCRE_LIBDIR}
+                                        ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
+                                        NO_CACHE)
       find_library(PCRECPP_LIBRARY_DEBUG NAMES pcrecppd
-                                         PATHS ${PC_PCRE_LIBDIR})
+                                         HINTS ${DEPENDS_PATH}/lib ${PC_PCRE_LIBDIR}
+                                         ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
+                                         NO_CACHE)
       find_library(PCRE_LIBRARY_DEBUG NAMES pcred
-                                      PATHS ${PC_PCRE_LIBDIR})
+                                      HINTS ${DEPENDS_PATH}/lib ${PC_PCRE_LIBDIR}
+                                      ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
+                                      NO_CACHE)
       set(PCRE_VERSION ${PC_PCRE_VERSION})
     else()
 
@@ -113,7 +125,9 @@ if(NOT PCRE::pcre)
 
       # ToDo: patch PCRE cmake to include includedir in config file
       find_path(PCRE_INCLUDE_DIR pcrecpp.h
-                                 PATHS ${PC_PCRE_INCLUDEDIR})
+                                 HINTS ${DEPENDS_PATH}/include ${PC_PCRE_INCLUDEDIR}
+                                 ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
+                                 NO_CACHE)
 
       set_target_properties(PCRE::pcre PROPERTIES
                                        INTERFACE_INCLUDE_DIRECTORIES "${PCRE_INCLUDE_DIR}")

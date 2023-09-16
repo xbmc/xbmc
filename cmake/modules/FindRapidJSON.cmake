@@ -46,12 +46,16 @@ if(NOT TARGET RapidJSON::RapidJSON)
       if(PC_RapidJSON_VERSION)
         set(RapidJSON_VERSION ${PC_RapidJSON_VERSION})
       else()
-        find_package(RapidJSON 1.1.0 CONFIG REQUIRED QUIET)
+        find_package(RapidJSON 1.1.0 CONFIG REQUIRED
+                                            QUIET
+                                            HINTS ${DEPENDS_PATH}/lib
+                                            ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
       endif()
     endif()
 
     find_path(RAPIDJSON_INCLUDE_DIRS NAMES rapidjson/rapidjson.h
-                                     PATHS ${PC_RapidJSON_INCLUDEDIR}
+                                     HINTS ${DEPENDS_PATH}/include ${PC_RapidJSON_INCLUDEDIR}
+                                     ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
                                      NO_CACHE)
   endif()
 

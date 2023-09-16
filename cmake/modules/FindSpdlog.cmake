@@ -24,14 +24,10 @@ if(NOT TARGET spdlog::spdlog)
   set(MODULE_LC spdlog)
   SETUP_BUILD_VARS()
 
-  # Darwin systems we want to avoid system packages. We are entirely self sufficient
-  # Avoids homebrew populating rubbish we cant control
-  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(_spdlog_find_option NO_SYSTEM_ENVIRONMENT_PATH)
-  endif()
-
   # Check for existing SPDLOG. If version >= SPDLOG-VERSION file version, dont build
-  find_package(SPDLOG ${_spdlog_find_option} CONFIG QUIET)
+  find_package(SPDLOG CONFIG QUIET
+                             HINTS ${DEPENDS_PATH}/lib
+                             ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
   if((SPDLOG_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_SPDLOG) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_SPDLOG) OR
@@ -83,14 +79,17 @@ if(NOT TARGET spdlog::spdlog)
       endif()
 
       find_path(SPDLOG_INCLUDE_DIR NAMES spdlog/spdlog.h
-                                   PATHS ${PC_SPDLOG_INCLUDEDIR}
+                                   HINTS ${DEPENDS_PATH}/include ${PC_SPDLOG_INCLUDEDIR}
+                                   ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                    NO_CACHE)
 
       find_library(SPDLOG_LIBRARY_RELEASE NAMES spdlog
-                                          PATHS ${PC_SPDLOG_LIBDIR}
+                                          HINTS ${DEPENDS_PATH}/lib ${PC_SPDLOG_LIBDIR}
+                                          ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                           NO_CACHE)
       find_library(SPDLOG_LIBRARY_DEBUG NAMES spdlogd
-                                        PATHS ${PC_SPDLOG_LIBDIR}
+                                        HINTS ${DEPENDS_PATH}/lib ${PC_SPDLOG_LIBDIR}
+                                        ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                         NO_CACHE)
 
       # Only add -D definitions. Skip -I include as we do a find_path for the header anyway
