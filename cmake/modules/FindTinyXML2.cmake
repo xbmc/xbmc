@@ -14,14 +14,9 @@ if(NOT TARGET tinyxml2::tinyxml2)
 
   SETUP_BUILD_VARS()
 
-  # Darwin systems we want to avoid system packages. We are entirely self sufficient
-  # Avoids homebrew populating rubbish we cant control
-  # Do we want to set this for all except LINUX/FREEBSD possibly?
-  if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(_tinyxml2_find_option NO_SYSTEM_ENVIRONMENT_PATH)
-  endif()
-
-  find_package(TINYXML2 ${_tinyxml2_find_option} CONFIG QUIET)
+  find_package(TINYXML2 CONFIG QUIET
+                               HINTS ${DEPENDS_PATH}/lib
+                               ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # Check for existing TINYXML2. If version >= TINYXML2-VERSION file version, dont build
   # A corner case, but if a linux/freebsd user WANTS to build internal tinyxml2, build anyway
@@ -68,12 +63,18 @@ if(NOT TARGET tinyxml2::tinyxml2)
         pkg_check_modules(PC_TINYXML2 tinyxml2 QUIET)
       endif()
 
-      find_path(TINYXML2_INCLUDE_DIR tinyxml2.h
-                                    PATHS ${PC_TINYXML2_INCLUDEDIR})
+      find_path(TINYXML2_INCLUDE_DIR NAMES tinyxml2.h
+                                     HINTS ${DEPENDS_PATH}/include ${PC_TINYXML2_INCLUDEDIR}
+                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                                     NO_CACHE)
       find_library(TINYXML2_LIBRARY_RELEASE NAMES tinyxml2
-                                           PATHS ${PC_TINYXML2_LIBDIR})
+                                            HINTS ${DEPENDS_PATH}/lib ${PC_TINYXML2_LIBDIR}
+                                            ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                                            NO_CACHE)
       find_library(TINYXML2_LIBRARY_DEBUG NAMES tinyxml2d
-                                         PATHS ${PC_TINYXML2_LIBDIR})
+                                          HINTS ${DEPENDS_PATH}/lib ${PC_TINYXML2_LIBDIR}
+                                          ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                                          NO_CACHE)
 
       set(TINYXML2_VERSION ${PC_TINYXML2_VERSION})
     endif()

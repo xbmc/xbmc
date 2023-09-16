@@ -40,11 +40,11 @@ if(NOT TARGET dav1d::dav1d)
     endif()
 
     find_library(DAV1D_LIBRARY NAMES dav1d libdav1d
-                               PATHS ${PC_DAV1D_LIBDIR}
+                               HINTS ${DEPENDS_PATH}/lib ${PC_DAV1D_LIBDIR}
                                NO_CACHE)
 
     find_path(DAV1D_INCLUDE_DIR NAMES dav1d/dav1d.h
-                                PATHS ${PC_DAV1D_INCLUDEDIR}
+                                HINTS ${DEPENDS_PATH}/include ${PC_DAV1D_INCLUDEDIR}
                                 NO_CACHE)
 
     set(DAV1D_VERSION ${PC_DAV1D_VERSION})
