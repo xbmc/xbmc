@@ -1871,7 +1871,10 @@ void CVideoPlayer::HandlePlaySpeed()
         CGUIDialogKaiToast::QueueNotification(g_localizeStrings.Get(21454), g_localizeStrings.Get(21455));
         SetCaching(CACHESTATE_INIT);
       }
-      if (cache.level >= 1.0)
+      // Note: Previously used cache.level >= 1 would keep video stalled
+      // event after cache was full
+      // Talk link: https://github.com/xbmc/xbmc/pull/23760
+      if (cache.time > 8.0)
         SetCaching(CACHESTATE_INIT);
     }
     else
