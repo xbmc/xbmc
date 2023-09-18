@@ -47,7 +47,7 @@ shared:
 	cp -rfp $(DEPENDS_PATH)/share/kodi/* ./assets || true
 	find `pwd`/assets/ -depth -name ".git" -exec rm -rf {} \;
 	find `pwd`/assets/ -name "*.so" -exec rm {} \;
-	find `pwd`/assets/addons/skin.*/media/* -depth -not -iname "Textures.xbt" -exec rm -rf {} \;
+	find `pwd`/assets/addons/skin.*/media/* -depth -not -iname "*.xbt" -exec rm -rf {} \;
 	cd `pwd`/assets/addons; rm -rf $(EXCLUDED_ADDONS)
 	cp $(CMAKE_SOURCE_DIR)/privacy-policy.txt assets
 
