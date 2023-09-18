@@ -412,6 +412,7 @@ else()
 endif()
 
 # These are skins that are copied into place from the source tree
+set(XBT_SOURCE_FILELIST "")
 foreach(skin ${SKINS})
   list(GET skin 0 dir)
   list(GET skin 1 relative)
@@ -430,11 +431,20 @@ add_custom_target(gen_system_addons
                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # Pack skins and copy to correct build dir (MultiConfig Generator aware)
-add_custom_target(gen_skin_pack
-                    COMMAND ${CMAKE_COMMAND} -DBUNDLEDIR=${_bundle_dir}
-                                             -DTEXTUREPACKER_EXECUTABLE=$<TARGET_FILE:TexturePacker::TexturePacker::Executable>
-                                             -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
-                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+add_custom_command(
+  OUTPUT ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/$<CONFIG>/gen_skin.timestamp
+  COMMAND ${CMAKE_COMMAND} -DBUNDLEDIR=${_bundle_dir}
+                           -DTEXTUREPACKER_EXECUTABLE=$<TARGET_FILE:TexturePacker::TexturePacker::Executable>
+                           -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/$<CONFIG>
+  COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/$<CONFIG>/gen_skin.timestamp
+  DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
+          ${XBT_SOURCE_FILELIST}
+  BYPRODUCTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/$<CONFIG>/gen_skin.timestamp
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  COMMENT "Generating skin xbt"
+)
+add_custom_target(gen_skin_pack DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/$<CONFIG>/gen_skin.timestamp)
 
 # Packaging target. This generates system addon, xbt creation, copy files to build tree
 add_custom_target(generate-packaging ALL
