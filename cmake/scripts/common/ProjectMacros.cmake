@@ -8,6 +8,8 @@
 #   xbt is added to ${XBT_FILES}
 function(pack_xbt input output)
   file(GLOB_RECURSE MEDIA_FILES ${input}/*)
+  list(APPEND XBT_SOURCE_FILELIST ${MEDIA_FILES})
+  set(XBT_SOURCE_FILELIST ${XBT_SOURCE_FILELIST} PARENT_SCOPE)
 
   get_filename_component(dir ${output} DIRECTORY)
   if(${CORE_SYSTEM_NAME} MATCHES "windows")
@@ -45,6 +47,7 @@ function(copy_skin_to_buildtree skin)
   endforeach()
 
   set(XBT_FILES ${XBT_FILES} PARENT_SCOPE)
+  set(XBT_SOURCE_FILELIST ${XBT_SOURCE_FILELIST} PARENT_SCOPE)
   set(install_data ${install_data} PARENT_SCOPE)
 endfunction()
 
