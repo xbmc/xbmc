@@ -120,7 +120,7 @@ public:
    * \brief Find a language code with subtag (e.g. zh-tw, zh-Hans) in to a string.
    *        This function find a limited set of IETF BCP47 specs, so:
    *        language tag + region subtag, or, language tag + script subtag.
-   *        The language code can be found also if wrapped with round brackets.
+   *        The language code can be found if wrapped by curly brackets e.g. {pt-br}.
    * \param str The string where find the language code.
    * \return The language code found in the string, otherwise empty string
    */

@@ -592,8 +592,7 @@ std::string CLangCodeExpander::ConvertToISO6392T(const std::string& lang)
 std::string CLangCodeExpander::FindLanguageCodeWithSubtag(const std::string& str)
 {
   CRegExp regLangCode;
-  if (regLangCode.RegComp(
-          "(?:^|\\s|\\()(([A-Za-z]{2,3})-([A-Za-z]{2}|[0-9]{3}|[A-Za-z]{4}))(?:$|\\s|\\))") &&
+  if (regLangCode.RegComp("\\{(([A-Za-z]{2,3})-([A-Za-z]{2}|[0-9]{3}|[A-Za-z]{4}))\\}") &&
       regLangCode.RegFind(str) >= 0)
   {
     return regLangCode.GetMatch(1);
