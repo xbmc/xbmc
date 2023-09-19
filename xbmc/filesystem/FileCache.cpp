@@ -288,24 +288,24 @@ void CFileCache::Process()
       m_seekEnded.Set();
     }
 
-    while (m_writeRate)
-    {
-      if (m_writePos - m_readPos < m_writeRate * readFactor)
-      {
-        limiter.Reset(m_writePos);
-        break;
-      }
+    // while (m_writeRate)
+    // {
+    //   if (m_writePos - m_readPos < m_writeRate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor)
+    //   {
+    //     limiter.Reset(m_writePos);
+    //     break;
+    //   }
 
-      if (limiter.Rate(m_writePos) < m_writeRate * readFactor)
+      if (limiter.Rate(m_writePos) < m_writeRate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor)
         break;
 
-      if (m_seekEvent.Wait(100ms))
-      {
-        if (!m_bStop)
-          m_seekEvent.Set();
-        break;
-      }
-    }
+    //   if (m_seekEvent.Wait(100ms))
+    //   {
+    //     if (!m_bStop)
+    //       m_seekEvent.Set();
+    //     break;
+    //   }
+    // }
 
     const int64_t maxWrite = m_pCache->GetMaxWriteSize(m_chunkSize);
     int64_t maxSourceRead = m_chunkSize;
