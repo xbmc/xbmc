@@ -752,6 +752,9 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           return true;
         }
         return false;
+      case LISTITEM_PARENTAL_RATING_CODE:
+        strValue = epgTag->ParentalRatingCode();
+        return true;
       case VIDEOPLAYER_PREMIERED:
       case LISTITEM_PREMIERED:
         if (epgTag->FirstAired().IsValid())
