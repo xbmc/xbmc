@@ -61,11 +61,18 @@ if(NOT TARGET TagLib::TagLib)
       pkg_check_modules(PC_TAGLIB taglib>=1.9.0 QUIET)
     endif()
 
-    find_path(TAGLIB_INCLUDE_DIR taglib/tag.h PATHS ${PC_TAGLIB_INCLUDEDIR})
+    find_path(TAGLIB_INCLUDE_DIR NAMES taglib/tag.h
+                                 HINTS ${DEPENDS_PATH}/include ${PC_TAGLIB_INCLUDEDIR}
+                                 ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
+                                 NO_CACHE)
     find_library(TAGLIB_LIBRARY_RELEASE NAMES tag
-                                        PATHS ${PC_TAGLIB_LIBDIR})
+                                        HINTS ${DEPENDS_PATH}/lib ${PC_TAGLIB_LIBDIR}
+                                        ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
+                                        NO_CACHE)
     find_library(TAGLIB_LIBRARY_DEBUG NAMES tagd
-                                      PATHS ${PC_TAGLIB_LIBDIR})
+                                      HINTS ${DEPENDS_PATH}/lib ${PC_TAGLIB_LIBDIR}
+                                      ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
+                                      NO_CACHE)
     set(TAGLIB_VERSION ${PC_TAGLIB_VERSION})
 
     set(TAGLIB_LINK_LIBS ${PC_TAGLIB_LIBRARIES})

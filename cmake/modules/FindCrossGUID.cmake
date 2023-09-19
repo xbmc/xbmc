@@ -41,11 +41,11 @@ if(NOT TARGET CrossGUID::CrossGUID)
     endif()
 
     find_path(CROSSGUID_INCLUDE_DIR NAMES crossguid/guid.hpp guid.h
-                                    PATHS ${PC_CROSSGUID_INCLUDEDIR})
+                                    HINTS ${DEPENDS_PATH}/include ${PC_CROSSGUID_INCLUDEDIR})
     find_library(CROSSGUID_LIBRARY_RELEASE NAMES crossguid
-                                           HINTS ${PC_CROSSGUID_LIBDIR})
+                                           HINTS ${DEPENDS_PATH}/lib ${PC_CROSSGUID_LIBDIR})
     find_library(CROSSGUID_LIBRARY_DEBUG NAMES crossguidd crossguid-dgb
-                                         HINTS ${PC_CROSSGUID_LIBDIR})
+                                         HINTS ${DEPENDS_PATH}/lib ${PC_CROSSGUID_LIBDIR})
 
     # NEW_CROSSGUID >= 0.2.0 release
     if(EXISTS "${CROSSGUID_INCLUDE_DIR}/crossguid/guid.hpp")
