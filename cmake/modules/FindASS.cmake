@@ -3,67 +3,55 @@
 # -------
 # Finds the ASS library
 #
-# This will define the following variables::
-#
-# ASS_FOUND - system has ASS
-# ASS_INCLUDE_DIRS - the ASS include directory
-# ASS_LIBRARIES - the ASS libraries
-#
-# and the following imported targets::
+# This will define the following target:
 #
 #   ASS::ASS   - The ASS library
+#
 
-if(PKG_CONFIG_FOUND)
-  pkg_check_modules(PC_ASS libass QUIET)
+if(NOT TARGET ASS::ASS)
+  find_package(PkgConfig)
+  # Do not use pkgconfig on windows
+  if(PKG_CONFIG_FOUND AND NOT WIN32)
+    pkg_check_modules(PC_ASS libass QUIET IMPORTED_TARGET)
 
-  if(KODI_DEPENDSBUILD)
-    # Darwin platforms have lib options like -framework CoreServices. pkgconfig return of
-    # PC_ASS_LDFLAGS splits this into a list -framework;CoreServices, and when passed to linker
-    # This then treats them as individual flags and appends -l to CoreServices. eg -framework;-lCoreServices
-    # This causes failures, as -lCoreServices isnt a lib that can be found.
-    # This just formats the list data to append frameworks (eg "-framework CoreServices")
-    if(PC_ASS_LDFLAGS AND "-framework" IN_LIST PC_ASS_LDFLAGS)
-      set(_framework_command OFF)
-      foreach(flag ${PC_ASS_LDFLAGS})
-        if(flag STREQUAL "-framework")
-          set(_framework_command ON)
-          continue()
-        elseif(_framework_command)
-          list(APPEND ASS_LDFLAGS "-framework ${flag}")
-          set(_framework_command OFF)
-        else()
-          list(APPEND ASS_LDFLAGS ${flag})
-        endif()
-      endforeach()
-      unset(_framework_command)
+    # INTERFACE_LINK_OPTIONS is incorrectly populated when cmake generation is executed
+    # when an existing build generation is already done. Just set this to blank
+    set_target_properties(PkgConfig::PC_ASS PROPERTIES INTERFACE_LINK_OPTIONS "")
+
+    set(ASS_VERSION ${PC_ASS_VERSION})
+  elseif(WIN32)
+    find_package(libass CONFIG QUIET REQUIRED
+                        HINTS ${DEPENDS_PATH}/lib/cmake
+                        ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+    set(ASS_VERSION ${libass_VERSION})
+  endif()
+
+  find_path(ASS_INCLUDE_DIR NAMES ass/ass.h
+                            HINTS ${DEPENDS_PATH}/include ${PC_ASS_INCLUDEDIR}
+                            ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                            NO_CACHE)
+  find_library(ASS_LIBRARY NAMES ass libass
+                           HINTS ${DEPENDS_PATH}/lib ${PC_ASS_LIBDIR}
+                           ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                           NO_CACHE)
+
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(ASS
+                                    REQUIRED_VARS ASS_LIBRARY ASS_INCLUDE_DIR
+                                    VERSION_VAR ASS_VERSION)
+
+  if(ASS_FOUND)
+    if(TARGET PkgConfig::PC_ASS)
+      add_library(ASS::ASS ALIAS PkgConfig::PC_ASS)
+    elseif(TARGET libass::libass)
+      # Kodi custom libass target used for windows platforms
+      add_library(ASS::ASS ALIAS libass::libass)
     else()
-      set(ASS_LDFLAGS ${PC_ASS_LDFLAGS})
+      add_library(ASS::ASS UNKNOWN IMPORTED)
+      set_target_properties(ASS::ASS PROPERTIES
+                                     IMPORTED_LOCATION "${ASS_LIBRARY}"
+                                     INTERFACE_INCLUDE_DIRECTORIES "${ASS_INCLUDE_DIR}")
     endif()
+    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ASS::ASS)
   endif()
 endif()
-
-find_path(ASS_INCLUDE_DIR NAMES ass/ass.h
-                          PATHS ${PC_ASS_INCLUDEDIR})
-find_library(ASS_LIBRARY NAMES ass libass
-                         PATHS ${PC_ASS_LIBDIR})
-
-set(ASS_VERSION ${PC_ASS_VERSION})
-
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(ASS
-                                  REQUIRED_VARS ASS_LIBRARY ASS_INCLUDE_DIR
-                                  VERSION_VAR ASS_VERSION)
-
-if(ASS_FOUND)
-  set(ASS_LIBRARIES ${ASS_LIBRARY} ${ASS_LDFLAGS})
-  set(ASS_INCLUDE_DIRS ${ASS_INCLUDE_DIR})
-
-  if(NOT TARGET ASS::ASS)
-    add_library(ASS::ASS UNKNOWN IMPORTED)
-    set_target_properties(ASS::ASS PROPERTIES
-                                   IMPORTED_LOCATION "${ASS_LIBRARY}"
-                                   INTERFACE_INCLUDE_DIRECTORIES "${ASS_INCLUDE_DIR}")
-  endif()
-endif()
-
-mark_as_advanced(ASS_INCLUDE_DIR ASS_LIBRARY)
