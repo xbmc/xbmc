@@ -14,10 +14,10 @@ if(NOT TARGET ALSA::ALSA)
   endif()
 
   find_path(ALSA_INCLUDE_DIR NAMES alsa/asoundlib.h
-                             PATHS ${PC_ALSA_INCLUDEDIR}
+                             HINTS ${PC_ALSA_INCLUDEDIR}
                              NO_CACHE)
   find_library(ALSA_LIBRARY NAMES asound
-                            PATHS ${PC_ALSA_LIBDIR}
+                            HINTS ${PC_ALSA_LIBDIR}
                             NO_CACHE)
 
   set(ALSA_VERSION ${PC_ALSA_VERSION})
