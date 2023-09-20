@@ -23,10 +23,8 @@ class CTextureDetails;
 class CDVDFileInfo
 {
 public:
-  // Extract a thumbnail image from the media referenced by fileItem
-  static bool ExtractThumb(const CFileItem& fileItem, CTextureDetails& details, int64_t pos);
-
-  static std::unique_ptr<CTexture> ExtractThumbToTexture(const CFileItem& fileItem);
+  static std::unique_ptr<CTexture> ExtractThumbToTexture(const CFileItem& fileItem,
+                                                         int chapterNumber = 0);
 
   /*!
    * @brief Can a thumbnail image and file stream details be extracted from this file item?

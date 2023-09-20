@@ -212,6 +212,12 @@ std::string CTextureCacheJob::DecodeImageURL(const std::string &url, unsigned in
       scalingAlgorithm = CPictureScalingAlgorithm::FromString(thumbURL.GetOption("scaling_algorithm"));
   }
 
+  if (StringUtils::StartsWith(url, "chapter://"))
+  {
+    // workaround for chapter thumbnail paths, which don't yet conform to the image:// path.
+    additional_info = "videochapter";
+  }
+
   // Handle special case about audiodecoder addon music files, e.g. SACD
   if (StringUtils::EndsWith(URIUtils::GetExtension(image), KODI_ADDON_AUDIODECODER_TRACK_EXT))
   {

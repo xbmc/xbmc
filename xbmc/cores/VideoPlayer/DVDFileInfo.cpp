@@ -87,190 +87,8 @@ int DegreeToOrientation(int degrees)
   }
 }
 
-bool CDVDFileInfo::ExtractThumb(const CFileItem& fileItem, CTextureDetails& details, int64_t pos)
-{
-  const std::string redactPath = CURL::GetRedacted(fileItem.GetPath());
-  auto start = std::chrono::steady_clock::now();
-
-  CFileItem item(fileItem);
-  item.SetMimeTypeForInternetFile();
-  auto pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, item);
-  if (!pInputStream)
-  {
-    CLog::Log(LOGERROR, "InputStream: Error creating stream for {}", redactPath);
-    return false;
-  }
-
-  if (!pInputStream->Open())
-  {
-    CLog::Log(LOGERROR, "InputStream: Error opening, {}", redactPath);
-    return false;
-  }
-
-  CDVDDemux *pDemuxer = NULL;
-
-  try
-  {
-    pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true);
-    if(!pDemuxer)
-    {
-      CLog::Log(LOGERROR, "{} - Error creating demuxer", __FUNCTION__);
-      return false;
-    }
-  }
-  catch(...)
-  {
-    CLog::Log(LOGERROR, "{} - Exception thrown when opening demuxer", __FUNCTION__);
-    if (pDemuxer)
-      delete pDemuxer;
-
-    return false;
-  }
-
-  int nVideoStream = -1;
-  int64_t demuxerId = -1;
-  for (CDemuxStream* pStream : pDemuxer->GetStreams())
-  {
-    if (pStream)
-    {
-      // ignore if it's a picture attachment (e.g. jpeg artwork)
-      if (pStream->type == STREAM_VIDEO && !(pStream->flags & AV_DISPOSITION_ATTACHED_PIC))
-      {
-        nVideoStream = pStream->uniqueId;
-        demuxerId = pStream->demuxerId;
-      }
-      else
-        pDemuxer->EnableStream(pStream->demuxerId, pStream->uniqueId, false);
-    }
-  }
-
-  bool bOk = false;
-  int packetsTried = 0;
-
-  if (nVideoStream != -1)
-  {
-    std::unique_ptr<CProcessInfo> pProcessInfo(CProcessInfo::CreateInstance());
-    std::vector<AVPixelFormat> pixFmts;
-    pixFmts.push_back(AV_PIX_FMT_YUV420P);
-    pProcessInfo->SetPixFormats(pixFmts);
-
-    CDVDStreamInfo hint(*pDemuxer->GetStream(demuxerId, nVideoStream), true);
-    hint.codecOptions = CODEC_FORCE_SOFTWARE;
-
-    std::unique_ptr<CDVDVideoCodec> pVideoCodec =
-        CDVDFactoryCodec::CreateVideoCodec(hint, *pProcessInfo);
-
-    if (pVideoCodec)
-    {
-      int nTotalLen = pDemuxer->GetStreamLength();
-      int64_t nSeekTo = (pos == -1) ? nTotalLen / 3 : pos;
-
-      CLog::Log(LOGDEBUG, "{} - seeking to pos {}ms (total: {}ms) in {}", __FUNCTION__, nSeekTo,
-                nTotalLen, redactPath);
-
-      if (pDemuxer->SeekTime(static_cast<double>(nSeekTo), true))
-      {
-        CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
-        VideoPicture picture = {};
-
-        // num streams * 160 frames, should get a valid frame, if not abort.
-        int abort_index = pDemuxer->GetNrOfStreams() * 160;
-        do
-        {
-          DemuxPacket* pPacket = pDemuxer->Read();
-          packetsTried++;
-
-          if (!pPacket)
-            break;
-
-          if (pPacket->iStreamId != nVideoStream)
-          {
-            CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-            continue;
-          }
-
-          pVideoCodec->AddData(*pPacket);
-          CDVDDemuxUtils::FreeDemuxPacket(pPacket);
-
-          iDecoderState = CDVDVideoCodec::VC_NONE;
-          while (iDecoderState == CDVDVideoCodec::VC_NONE)
-          {
-            iDecoderState = pVideoCodec->GetPicture(&picture);
-          }
-
-          if (iDecoderState == CDVDVideoCodec::VC_PICTURE)
-          {
-            if(!(picture.iFlags & DVP_FLAG_DROPPED))
-              break;
-          }
-
-        } while (abort_index--);
-
-        if (iDecoderState == CDVDVideoCodec::VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
-        {
-          {
-            unsigned int nWidth = std::min(picture.iDisplayWidth, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes);
-            double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
-            if(hint.forced_aspect && hint.aspect != 0)
-              aspect = hint.aspect;
-            unsigned int nHeight = (unsigned int)((double)nWidth / aspect);
-
-            // We pass the buffers to sws_scale uses 16 aligned widths when using intrinsics
-            int sizeNeeded = FFALIGN(nWidth, 16) * nHeight * 4;
-            uint8_t *pOutBuf = static_cast<uint8_t*>(av_malloc(sizeNeeded));
-            struct SwsContext *context = sws_getContext(picture.iWidth, picture.iHeight,
-                  AV_PIX_FMT_YUV420P, nWidth, nHeight, AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
-
-            if (context)
-            {
-              uint8_t *planes[YuvImage::MAX_PLANES];
-              int stride[YuvImage::MAX_PLANES];
-              picture.videoBuffer->GetPlanes(planes);
-              picture.videoBuffer->GetStrides(stride);
-              uint8_t *src[4]= { planes[0], planes[1], planes[2], 0 };
-              int srcStride[] = { stride[0], stride[1], stride[2], 0 };
-              uint8_t *dst[] = { pOutBuf, 0, 0, 0 };
-              int dstStride[] = { (int)nWidth*4, 0, 0, 0 };
-              int orientation = DegreeToOrientation(hint.orientation);
-              sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
-              sws_freeContext(context);
-
-              details.width = nWidth;
-              details.height = nHeight;
-              CPicture::CacheTexture(pOutBuf, nWidth, nHeight, nWidth * 4, orientation, nWidth, nHeight, CTextureCache::GetCachedPath(details.file));
-              bOk = true;
-            }
-            av_free(pOutBuf);
-          }
-        }
-        else
-        {
-          CLog::Log(LOGDEBUG, "{} - decode failed in {} after {} packets.", __FUNCTION__,
-                    redactPath, packetsTried);
-        }
-      }
-    }
-  }
-
-  if (pDemuxer)
-    delete pDemuxer;
-
-  if(!bOk)
-  {
-    XFILE::CFile file;
-    if(file.OpenForWrite(CTextureCache::GetCachedPath(details.file)))
-      file.Close();
-  }
-
-  auto end = std::chrono::steady_clock::now();
-  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-  CLog::Log(LOGDEBUG, "{} - measured {} ms to extract thumb from file <{}> in {} packets. ",
-            __FUNCTION__, duration.count(), redactPath, packetsTried);
-
-  return bOk;
-}
-
-std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem)
+std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& fileItem,
+                                                              int chapterNumber)
 {
   if (!CanExtract(fileItem))
     return {};
@@ -293,29 +111,16 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
     return {};
   }
 
-  CDVDDemux* pDemuxer = NULL;
-
-  try
+  std::unique_ptr<CDVDDemux> demuxer{CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true)};
+  if (!demuxer)
   {
-    pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(pInputStream, true);
-    if (!pDemuxer)
-    {
-      CLog::LogF(LOGERROR, "Error creating demuxer");
-      return {};
-    }
-  }
-  catch (...)
-  {
-    CLog::LogF(LOGERROR, "Exception thrown when opening demuxer");
-    if (pDemuxer)
-      delete pDemuxer;
-
+    CLog::LogF(LOGERROR, "Error creating demuxer");
     return {};
   }
 
   int nVideoStream = -1;
   int64_t demuxerId = -1;
-  for (CDemuxStream* pStream : pDemuxer->GetStreams())
+  for (CDemuxStream* pStream : demuxer->GetStreams())
   {
     if (pStream)
     {
@@ -326,7 +131,7 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
         demuxerId = pStream->demuxerId;
       }
       else
-        pDemuxer->EnableStream(pStream->demuxerId, pStream->uniqueId, false);
+        demuxer->EnableStream(pStream->demuxerId, pStream->uniqueId, false);
     }
   }
 
@@ -340,7 +145,7 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
     pixFmts.push_back(AV_PIX_FMT_YUV420P);
     pProcessInfo->SetPixFormats(pixFmts);
 
-    CDVDStreamInfo hint(*pDemuxer->GetStream(demuxerId, nVideoStream), true);
+    CDVDStreamInfo hint(*demuxer->GetStream(demuxerId, nVideoStream), true);
     hint.codecOptions = CODEC_FORCE_SOFTWARE;
 
     std::unique_ptr<CDVDVideoCodec> pVideoCodec =
@@ -348,22 +153,25 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
 
     if (pVideoCodec)
     {
-      int nTotalLen = pDemuxer->GetStreamLength();
-      int64_t nSeekTo = nTotalLen / 3;
+      int nTotalLen = demuxer->GetStreamLength();
+
+      bool seekToChapter = chapterNumber > 0 && demuxer->GetChapterCount() > 0;
+      int64_t nSeekTo =
+          seekToChapter ? demuxer->GetChapterPos(chapterNumber) * 1000 : nTotalLen / 3;
 
       CLog::LogF(LOGDEBUG, "seeking to pos {}ms (total: {}ms) in {}", nSeekTo, nTotalLen,
                  redactPath);
 
-      if (pDemuxer->SeekTime(static_cast<double>(nSeekTo), true))
+      if (demuxer->SeekTime(static_cast<double>(nSeekTo), true))
       {
         CDVDVideoCodec::VCReturn iDecoderState = CDVDVideoCodec::VC_NONE;
         VideoPicture picture = {};
 
         // num streams * 160 frames, should get a valid frame, if not abort.
-        int abort_index = pDemuxer->GetNrOfStreams() * 160;
+        int abort_index = demuxer->GetNrOfStreams() * 160;
         do
         {
-          DemuxPacket* pPacket = pDemuxer->Read();
+          DemuxPacket* pPacket = demuxer->Read();
           packetsTried++;
 
           if (!pPacket)
@@ -394,35 +202,33 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
 
         if (iDecoderState == CDVDVideoCodec::VC_PICTURE && !(picture.iFlags & DVP_FLAG_DROPPED))
         {
+          unsigned int nWidth =
+              std::min(picture.iDisplayWidth,
+                       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes);
+          double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
+          if (hint.forced_aspect && hint.aspect != 0)
+            aspect = hint.aspect;
+          unsigned int nHeight = (unsigned int)((double)nWidth / aspect);
+
+          result = CTexture::CreateTexture(nWidth, nHeight);
+          result->SetAlpha(false);
+          struct SwsContext* context =
+              sws_getContext(picture.iWidth, picture.iHeight, AV_PIX_FMT_YUV420P, nWidth, nHeight,
+                             AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
+
+          if (context)
           {
-            unsigned int nWidth =
-                std::min(picture.iDisplayWidth,
-                         CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_imageRes);
-            double aspect = (double)picture.iDisplayWidth / (double)picture.iDisplayHeight;
-            if (hint.forced_aspect && hint.aspect != 0)
-              aspect = hint.aspect;
-            unsigned int nHeight = (unsigned int)((double)nWidth / aspect);
-
-            result = CTexture::CreateTexture(nWidth, nHeight);
-            result->SetAlpha(false);
-            struct SwsContext* context =
-                sws_getContext(picture.iWidth, picture.iHeight, AV_PIX_FMT_YUV420P, nWidth, nHeight,
-                               AV_PIX_FMT_BGRA, SWS_FAST_BILINEAR, NULL, NULL, NULL);
-
-            if (context)
-            {
-              uint8_t* planes[YuvImage::MAX_PLANES];
-              int stride[YuvImage::MAX_PLANES];
-              picture.videoBuffer->GetPlanes(planes);
-              picture.videoBuffer->GetStrides(stride);
-              uint8_t* src[4] = {planes[0], planes[1], planes[2], 0};
-              int srcStride[] = {stride[0], stride[1], stride[2], 0};
-              uint8_t* dst[] = {result->GetPixels(), 0, 0, 0};
-              int dstStride[] = {static_cast<int>(result->GetPitch()), 0, 0, 0};
-              result->SetOrientation(DegreeToOrientation(hint.orientation));
-              sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
-              sws_freeContext(context);
-            }
+            uint8_t* planes[YuvImage::MAX_PLANES];
+            int stride[YuvImage::MAX_PLANES];
+            picture.videoBuffer->GetPlanes(planes);
+            picture.videoBuffer->GetStrides(stride);
+            uint8_t* src[4] = {planes[0], planes[1], planes[2], 0};
+            int srcStride[] = {stride[0], stride[1], stride[2], 0};
+            uint8_t* dst[] = {result->GetPixels(), 0, 0, 0};
+            int dstStride[] = {static_cast<int>(result->GetPitch()), 0, 0, 0};
+            result->SetOrientation(DegreeToOrientation(hint.orientation));
+            sws_scale(context, src, srcStride, 0, picture.iHeight, dst, dstStride);
+            sws_freeContext(context);
           }
         }
         else
@@ -432,9 +238,6 @@ std::unique_ptr<CTexture> CDVDFileInfo::ExtractThumbToTexture(const CFileItem& f
       }
     }
   }
-
-  if (pDemuxer)
-    delete pDemuxer;
 
   auto end = std::chrono::steady_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);

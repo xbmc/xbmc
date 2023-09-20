@@ -37,56 +37,6 @@
 using namespace XFILE;
 using namespace VIDEO;
 
-CChapterThumbExtractor::CChapterThumbExtractor(const CFileItem& item,
-                                               const std::string& listpath,
-                                               const std::string& target,
-                                               int64_t pos)
-  : m_target(target), m_listpath(listpath), m_item(item)
-{
-  m_pos = pos;
-
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
-    m_item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
-
-  if (m_item.IsStack())
-    m_item.SetPath(CStackDirectory::GetFirstStackedFile(m_item.GetPath()));
-}
-
-CChapterThumbExtractor::~CChapterThumbExtractor() = default;
-
-bool CChapterThumbExtractor::operator==(const CJob* job) const
-{
-  if (strcmp(job->GetType(),GetType()) == 0)
-  {
-    const CChapterThumbExtractor* jobExtract = dynamic_cast<const CChapterThumbExtractor*>(job);
-    if (jobExtract && jobExtract->m_listpath == m_listpath
-                   && jobExtract->m_target == m_target)
-      return true;
-  }
-  return false;
-}
-
-bool CChapterThumbExtractor::DoWork()
-{
-  if (!CDVDFileInfo::CanExtract(m_item))
-    return false;
-
-  bool result=false;
-  CLog::LogF(LOGDEBUG, "trying to extract thumb from video file {}",
-             CURL::GetRedacted(m_item.GetPath()));
-  // construct the thumb cache file
-  CTextureDetails details;
-  details.file = CTextureCache::GetCacheFile(m_target) + ".jpg";
-  result = CDVDFileInfo::ExtractThumb(m_item, details, m_pos);
-  if (!result)
-    return false;
-
-  CServiceBroker::GetTextureCache()->AddCachedTexture(m_target, details);
-  m_item.SetArt("thumb", m_target);
-
-  return true;
-}
-
 CVideoThumbLoader::CVideoThumbLoader() : CThumbLoader()
 {
   m_videoDatabase = new CVideoDatabase();
