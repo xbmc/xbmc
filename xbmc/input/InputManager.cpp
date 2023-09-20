@@ -230,7 +230,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
 
           CLog::Log(LOGDEBUG, "EventServer: key {} translated to action {}", wKeyID, actionName);
 
-          return ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName));
+          return ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName, 0, wKeyID));
         }
         else
         {

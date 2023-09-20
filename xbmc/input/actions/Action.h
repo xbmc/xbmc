@@ -27,7 +27,8 @@ public:
           float amount1 = 1.0f,
           float amount2 = 0.0f,
           const std::string& name = "",
-          unsigned int holdTime = 0);
+          unsigned int holdTime = 0,
+          unsigned int buttonCode = 0);
   CAction(int actionID, wchar_t unicode);
   CAction(int actionID,
           unsigned int state,
