@@ -15,16 +15,20 @@ if(NOT TARGET Avahi::Avahi)
   endif()
 
   find_path(AVAHI_CLIENT_INCLUDE_DIR NAMES avahi-client/client.h
-                                     PATHS ${PC_AVAHI_INCLUDEDIR}
+                                     HINTS ${DEPENDS_PATH}/include ${PC_AVAHI_INCLUDEDIR}
+                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                      NO_CACHE)
   find_path(AVAHI_COMMON_INCLUDE_DIR NAMES avahi-common/defs.h
-                                     PATHS ${PC_AVAHI_INCLUDEDIR}
+                                     HINTS ${DEPENDS_PATH}/include ${PC_AVAHI_INCLUDEDIR}
+                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                      NO_CACHE)
   find_library(AVAHI_CLIENT_LIBRARY NAMES avahi-client
-                                    PATHS ${PC_AVAHI_LIBDIR}
+                                    HINTS ${DEPENDS_PATH}/lib ${PC_AVAHI_LIBDIR}
+                                    ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                     NO_CACHE)
   find_library(AVAHI_COMMON_LIBRARY NAMES avahi-common
-                                    PATHS ${PC_AVAHI_LIBDIR}
+                                    HINTS ${DEPENDS_PATH}/lib ${PC_AVAHI_LIBDIR}
+                                    ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                     NO_CACHE)
 
   set(AVAHI_VERSION ${PC_AVAHI_VERSION})
