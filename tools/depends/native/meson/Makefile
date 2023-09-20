@@ -1,14 +1,6 @@
-include ../../Makefile.include
+include ../../Makefile.include MESON-VERSION ../../download-files.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS =../../Makefile.include Makefile ../../download-files.include
-
-# lib name, version
-LIBNAME=meson
-VERSION=1.0.0
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=9b1195cfe856c1aa51bc79f6eb4d0f94925bb02d0a9fbd68a6a6ced6e5c252b09b22d9aac812640687e49b8d64a313ce48d0a69a3bf83ea8ffb8c9dab559fc23
-include ../../download-files.include
+DEPS =../../Makefile.include Makefile MESON-VERSION ../../download-files.include
 
 all: .installed-$(PLATFORM)
 
