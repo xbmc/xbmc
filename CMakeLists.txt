@@ -443,7 +443,6 @@ add_custom_command(
   COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/$<CONFIG>/gen_skin.timestamp
   DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
           ${XBT_SOURCE_FILELIST}
-  BYPRODUCTS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/$<CONFIG>/gen_skin.timestamp
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   COMMENT "Generating skin xbt"
 )
