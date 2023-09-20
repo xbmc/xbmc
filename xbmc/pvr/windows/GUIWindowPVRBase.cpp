@@ -352,6 +352,16 @@ bool CGUIWindowPVRBase::OnMessage(CGUIMessage& message)
           bReturn = true;
           break;
         }
+        case GUI_MSG_UPDATE:
+        {
+          if (IsActive() && m_bUpdating)
+          {
+            // no concurrent updates
+            CLog::LogF(LOGWARNING, "GUI_MSG_UPDATE: Updating in progress");
+            bReturn = true;
+          }
+          break;
+        }
       }
       break;
     }
@@ -553,6 +563,7 @@ bool CGUIWindowPVRBase::Update(const std::string& strDirectory, bool updateFilte
   if (m_bUpdating)
   {
     // no concurrent updates
+    CLog::LogF(LOGWARNING, "Updating in progress");
     return false;
   }
 
