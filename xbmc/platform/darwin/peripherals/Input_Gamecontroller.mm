@@ -18,7 +18,7 @@
 #include <mutex>
 
 #import <Foundation/Foundation.h>
-#import <GameController/GCController.h>
+#import <GameController/GameController.h>
 
 struct PlayerControllerState
 {
