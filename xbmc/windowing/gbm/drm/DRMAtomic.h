@@ -41,8 +41,13 @@ private:
 
   bool SetScalingFilter(CDRMObject* object, const char* name, const char* type);
 
+  static void PageFlipHandler(
+      int fd, unsigned int frame, unsigned int sec, unsigned int usec, void* data);
+  void WaitForPageFlip();
+
   bool m_need_modeset;
   bool m_active = true;
+  bool m_waitingForPageFlip{false};
 
   class CDRMAtomicRequest
   {

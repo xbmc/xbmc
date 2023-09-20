@@ -21,6 +21,7 @@
 
 #include <drm_fourcc.h>
 #include <drm_mode.h>
+#include <poll.h>
 #include <unistd.h>
 
 using namespace KODI::WINDOWING::GBM;
@@ -122,6 +123,8 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
   if (CServiceBroker::GetLogging().CanLogComponent(LOGWINDOWING))
     m_req->LogAtomicRequest();
 
+  WaitForPageFlip(); // Wait for the page flip of the previous commit
+
   auto ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags | DRM_MODE_ATOMIC_TEST_ONLY, nullptr);
   if (ret < 0)
   {
@@ -139,12 +142,15 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
       AddProperty(m_gui_plane, "FB_ID", fb_id);
   }
 
-  ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags, nullptr);
+  ret = drmModeAtomicCommit(m_fd, m_req->Get(), flags | DRM_MODE_PAGE_FLIP_EVENT,
+                            &m_waitingForPageFlip);
   if (ret < 0)
   {
     CLog::Log(LOGERROR, "CDRMAtomic::{} - atomic commit failed: {}", __FUNCTION__,
               strerror(errno));
   }
+  else
+    m_waitingForPageFlip = true; // commit successful -> wait for page flip before next commit
 
   if (flags & DRM_MODE_ATOMIC_ALLOW_MODESET)
   {
@@ -158,6 +164,49 @@ void CDRMAtomic::DrmAtomicCommit(int fb_id, int flags, bool rendered, bool video
 
   m_atomicRequestQueue.emplace_back(std::make_unique<CDRMAtomicRequest>());
   m_req = m_atomicRequestQueue.back().get();
+}
+
+void CDRMAtomic::PageFlipHandler(
+    int /*fd*/, unsigned int /*frame*/, unsigned int /*sec*/, unsigned int /*usec*/, void* data)
+{
+  auto waitingForPageFlip = static_cast<bool*>(data);
+  *waitingForPageFlip = false;
+}
+
+void CDRMAtomic::WaitForPageFlip()
+{
+  if (!m_waitingForPageFlip)
+    return;
+
+  struct pollfd drm_fds = {
+      m_fd,
+      POLLIN,
+      0,
+  };
+
+  drmEventContext drm_evctx{};
+  drm_evctx.version = DRM_EVENT_CONTEXT_VERSION;
+  drm_evctx.page_flip_handler = PageFlipHandler;
+
+  while (m_waitingForPageFlip)
+  {
+    auto ret = poll(&drm_fds, 1, -1);
+
+    if (ret < 0)
+    {
+      CLog::LogF(LOGERROR, "Polling failed: {}", strerror(errno));
+      return;
+    }
+
+    if (drm_fds.revents & (POLLHUP | POLLERR))
+    {
+      CLog::LogF(LOGERROR, "Polling failed: revents is {:#x}", drm_fds.revents);
+      return;
+    }
+
+    if (drm_fds.revents & POLLIN)
+      drmHandleEvent(m_fd, &drm_evctx);
+  }
 }
 
 void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
@@ -179,7 +228,7 @@ void CDRMAtomic::FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer)
     }
   }
 
-  uint32_t flags = 0;
+  uint32_t flags = DRM_MODE_ATOMIC_NONBLOCK;
 
   if (m_need_modeset)
   {
