@@ -162,6 +162,7 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
 
   include(SelectLibraryConfigurations)
   select_library_configurations(FMT)
+  unset(FMT_LIBRARIES)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Fmt
