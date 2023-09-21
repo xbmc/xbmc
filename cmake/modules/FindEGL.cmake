@@ -14,11 +14,11 @@ if(NOT TARGET EGL::EGL)
   endif()
 
   find_path(EGL_INCLUDE_DIR EGL/egl.h
-                            PATHS ${PC_EGL_INCLUDEDIR}
+                            HINTS ${PC_EGL_INCLUDEDIR}
                             NO_CACHE)
 
   find_library(EGL_LIBRARY NAMES EGL egl
-                           PATHS ${PC_EGL_LIBDIR}
+                           HINTS ${PC_EGL_LIBDIR}
                            NO_CACHE)
 
   set(EGL_VERSION ${PC_EGL_VERSION})
