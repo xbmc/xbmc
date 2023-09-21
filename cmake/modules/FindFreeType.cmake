@@ -9,17 +9,21 @@
 
 if(NOT TARGET FreeType::FreeType)
   find_package(PkgConfig)
-  if(PKG_CONFIG_FOUND)
+  # Do not use pkgconfig on windows
+  if(PKG_CONFIG_FOUND AND NOT WIN32)
     pkg_check_modules(PC_FREETYPE freetype2 QUIET)
   endif()
 
   find_path(FREETYPE_INCLUDE_DIR NAMES freetype/freetype.h freetype.h
-                                 PATHS ${PC_FREETYPE_INCLUDEDIR}
+                                 HINTS ${DEPENDS_PATH}/include
+                                       ${PC_FREETYPE_INCLUDEDIR}
                                        ${PC_FREETYPE_INCLUDE_DIRS}
                                  PATH_SUFFIXES freetype2
+                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                  NO_CACHE)
   find_library(FREETYPE_LIBRARY NAMES freetype freetype246MT
-                                PATHS ${PC_FREETYPE_LIBDIR}
+                                HINTS ${DEPENDS_PATH}/lib ${PC_FREETYPE_LIBDIR}
+                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                 NO_CACHE)
 
   set(FREETYPE_VERSION ${PC_FREETYPE_VERSION})
