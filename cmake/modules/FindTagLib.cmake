@@ -82,6 +82,7 @@ if(NOT TARGET TagLib::TagLib)
 
   include(SelectLibraryConfigurations)
   select_library_configurations(TAGLIB)
+  unset(TAGLIB_LIBRARIES)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(TagLib

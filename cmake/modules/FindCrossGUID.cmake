@@ -67,6 +67,7 @@ if(NOT TARGET CrossGUID::CrossGUID)
   # Select relevant lib build type (ie CROSSGUID_LIBRARY_RELEASE or CROSSGUID_LIBRARY_DEBUG)
   include(SelectLibraryConfigurations)
   select_library_configurations(CROSSGUID)
+  unset(CROSSGUID_LIBRARIES)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(CrossGUID

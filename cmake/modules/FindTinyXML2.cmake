@@ -109,6 +109,7 @@ if(NOT TARGET tinyxml2::tinyxml2)
 
   include(SelectLibraryConfigurations)
   select_library_configurations(TINYXML2)
+  unset(TINYXML2_LIBRARIES)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(TinyXML2

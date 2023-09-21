@@ -129,6 +129,7 @@ if(NOT TARGET spdlog::spdlog)
 
   include(SelectLibraryConfigurations)
   select_library_configurations(SPDLOG)
+  unset(SPDLOG_LIBRARIES)
 
   include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args(Spdlog
