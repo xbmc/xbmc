@@ -3302,6 +3302,12 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
         strBuf += StringUtils::Format(" {} msec", DVD_TIME_TO_MSEC(m_State.cache_delay));
     }
 
+    XFILE::SCacheStatus status;
+    if (m_pInputStream->GetCacheStatus(&status)) {
+        strBuf += StringUtils::Format("\nCurrent: {}, Max: {}, Low: {}\n",
+                      StringUtils::SizeToString(status.currate), StringUtils::SizeToString(status.maxrate), status.lowrate);
+    }
+
     strGeneralInfo = StringUtils::Format("Player: a/v:{: 6.3f}, {}", dDiff, strBuf);
   }
 }

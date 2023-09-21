@@ -16,6 +16,7 @@
 
 #include <atomic>
 #include <memory>
+#include <queue>
 
 namespace XFILE
 {
@@ -58,6 +59,7 @@ namespace XFILE
     std::unique_ptr<CCacheStrategy> m_pCache;
     int m_seekPossible = 0;
     CFile m_source;
+    std::mutex sourceMutex;
     std::string m_sourcePath;
     CEvent m_seekEvent;
     CEvent m_seekEnded;
@@ -74,6 +76,8 @@ namespace XFILE
     std::atomic<int64_t> m_fileSize;
     unsigned int m_flags;
     CCriticalSection m_sync;
+    std::mutex writeQueueMutex;
+    std::queue<std::vector<char>> writeDataQueue;
   };
 
 }
