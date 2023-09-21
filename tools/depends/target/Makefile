@@ -21,7 +21,6 @@ DEPENDS = \
   gnutls \
   gtest \
   harfbuzz \
-  kissfft \
   libass \
   libbluray \
   libffi \
