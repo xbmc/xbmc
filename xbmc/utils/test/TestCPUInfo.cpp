@@ -51,6 +51,7 @@ TEST_F(TestCPUInfo, GetTemperature)
   CTemperature t;
   EXPECT_TRUE(CServiceBroker::GetCPUInfo()->GetTemperature(t));
   EXPECT_TRUE(t.IsValid());
+  EXPECT_EQ(t.ToCelsius(), 50);
 }
 
 TEST_F(TestCPUInfo, CoreInfo)
