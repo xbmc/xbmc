@@ -29,6 +29,7 @@ namespace XFILE
 
     // CThread methods
     void Process() override;
+    void Process2();
     void OnExit() override;
     void StopThread(bool bWait = true) override;
 
