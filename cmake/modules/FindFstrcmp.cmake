@@ -27,15 +27,20 @@ if(NOT TARGET fstrcmp::fstrcmp)
 
     BUILD_DEP_TARGET()
   else()
+    find_package(PkgConfig)
     if(PKG_CONFIG_FOUND)
       pkg_check_modules(PC_FSTRCMP fstrcmp QUIET)
     endif()
 
     find_path(FSTRCMP_INCLUDE_DIR NAMES fstrcmp.h
-                                   PATHS ${PC_FSTRCMP_INCLUDEDIR})
+                                  HINTS ${DEPENDS_PATH}/include ${PC_FSTRCMP_INCLUDEDIR}
+                                  ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                                  NO_CACHE)
 
     find_library(FSTRCMP_LIBRARY NAMES fstrcmp
-                                  PATHS ${PC_FSTRCMP_LIBDIR})
+                                 HINTS ${DEPENDS_PATH}/lib ${PC_FSTRCMP_LIBDIR}
+                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
+                                 NO_CACHE)
 
     set(FSTRCMP_VER ${PC_FSTRCMP_VERSION})
   endif()
@@ -56,5 +61,3 @@ if(NOT TARGET fstrcmp::fstrcmp)
 
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP fstrcmp::fstrcmp)
 endif()
-
-mark_as_advanced(FSTRCMP_INCLUDE_DIR FSTRCMP_LIBRARY)
