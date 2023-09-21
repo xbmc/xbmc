@@ -15,13 +15,13 @@ if(NOT TARGET DBus::DBus)
 
   find_path(DBUS_INCLUDE_DIR NAMES dbus/dbus.h
                              PATH_SUFFIXES dbus-1.0
-                             PATHS ${PC_DBUS_INCLUDE_DIR})
+                             HINTS ${PC_DBUS_INCLUDE_DIR})
   find_path(DBUS_ARCH_INCLUDE_DIR NAMES dbus/dbus-arch-deps.h
                                   PATH_SUFFIXES dbus-1.0/include
-                                  PATHS ${PC_DBUS_LIBDIR}
-                                        /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE})
+                                  HINTS ${PC_DBUS_LIBDIR}
+                                  PATHS /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE})
   find_library(DBUS_LIBRARY NAMES dbus-1
-                            PATHS ${PC_DBUS_LIBDIR})
+                            HINTS ${PC_DBUS_LIBDIR})
 
   set(DBUS_VERSION ${PC_DBUS_VERSION})
 
@@ -31,7 +31,6 @@ if(NOT TARGET DBus::DBus)
                                     VERSION_VAR DBUS_VERSION)
 
   if(DBUS_FOUND)
-
     add_library(DBus::DBus UNKNOWN IMPORTED)
     set_target_properties(DBus::DBus PROPERTIES
                                    IMPORTED_LOCATION "${DBUS_LIBRARY}"
