@@ -13,10 +13,10 @@ if(NOT TARGET GBM::GBM)
   endif()
 
   find_path(GBM_INCLUDE_DIR NAMES gbm.h
-                            PATHS ${PC_GBM_INCLUDEDIR}
+                            HINTS ${PC_GBM_INCLUDEDIR}
                             NO_CACHE)
   find_library(GBM_LIBRARY NAMES gbm
-                           PATHS ${PC_GBM_LIBDIR}
+                           HINTS ${PC_GBM_LIBDIR}
                            NO_CACHE)
 
   set(GBM_VERSION ${PC_GBM_VERSION})
