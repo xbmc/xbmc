@@ -1,0 +1,12 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -52,6 +52,9 @@
+ option(KISSFFT_TOOLS "Build kissfft command-line tools" ON)
+ option(KISSFFT_USE_ALLOCA "Use alloca instead of malloc" OFF)
+
++# Add Postfix for windows
++SET(CMAKE_DEBUG_POSTFIX "d")
++
+ #
+ # Validate datatype
+ #
