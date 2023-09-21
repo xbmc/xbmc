@@ -12,8 +12,10 @@ if(NOT TARGET windows::Detours)
                                 NO_CACHE)
 
   find_library(DETOURS_LIBRARY_RELEASE NAMES detours
+                                       ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                        NO_CACHE)
   find_library(DETOURS_LIBRARY_DEBUG NAMES detoursd
+                                     ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                      NO_CACHE)
 
   include(SelectLibraryConfigurations)
