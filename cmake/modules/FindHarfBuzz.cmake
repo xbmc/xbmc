@@ -14,12 +14,14 @@ if(NOT TARGET HarfBuzz::HarfBuzz)
   endif()
 
   find_path(HARFBUZZ_INCLUDE_DIR NAMES harfbuzz/hb-ft.h hb-ft.h
-                                 HINTS ${PC_HARFBUZZ_INCLUDEDIR}
+                                 HINTS ${DEPENDS_PATH}/include
+                                       ${PC_HARFBUZZ_INCLUDEDIR}
                                        ${PC_HARFBUZZ_INCLUDE_DIRS}
-                                 PATH_SUFFIXES harfbuzz
+                                 ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                  NO_CACHE)
   find_library(HARFBUZZ_LIBRARY NAMES harfbuzz
-                                HINTS ${PC_HARFBUZZ_LIBDIR}
+                                HINTS ${DEPENDS_PATH}/lib ${PC_HARFBUZZ_LIBDIR}
+                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                 NO_CACHE)
 
   set(HARFBUZZ_VERSION ${PC_HARFBUZZ_VERSION})
