@@ -24,7 +24,7 @@ protected:
 #if defined(TARGET_WINDOWS)
 TEST_F(TestGPUInfo, DISABLED_GetTemperatureFromCmd)
 #else
-TEST_F(TestGPUInfo, GetTemperature)
+TEST_F(TestGPUInfo, GetTemperatureFromCmd)
 #endif
 {
   CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_gpuTempCmd = "echo '50 c'";
