@@ -111,6 +111,12 @@ bool CFileCache::Open(const CURL& url)
     return false;
   }
 
+  const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  if (!advancedSettings)
+    return false;
+
+  const unsigned int cacheMemSize = advancedSettings->m_cacheMemSize;
+
   m_source.IoControl(IOCTRL_SET_CACHE, this);
 
   bool retry = false;
@@ -120,9 +126,8 @@ bool CFileCache::Open(const CURL& url)
   m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
 
   // Determine the best chunk size we can use
-  m_chunkSize = CFile::DetermineChunkSize(
-      m_source.GetChunkSize(),
-      CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheChunkSize);
+  m_chunkSize =
+      CFile::DetermineChunkSize(m_source.GetChunkSize(), advancedSettings->m_cacheChunkSize);
   CLog::Log(LOGDEBUG,
             "CFileCache::{} - <{}> source chunk size is {}, setting cache chunk size to {}",
             __FUNCTION__, m_sourcePath, m_source.GetChunkSize(), m_chunkSize);
@@ -131,7 +136,7 @@ bool CFileCache::Open(const CURL& url)
 
   if (!m_pCache)
   {
-    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize == 0)
+    if (cacheMemSize == 0)
     {
       // Use cache on disk
       m_pCache = std::unique_ptr<CSimpleFileCache>(new CSimpleFileCache()); // C++14 - Replace with std::make_unique
@@ -140,7 +145,7 @@ bool CFileCache::Open(const CURL& url)
     else
     {
       size_t cacheSize;
-      if (m_fileSize > 0 && m_fileSize < CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize && !(m_flags & READ_AUDIO_VIDEO))
+      if (m_fileSize > 0 && m_fileSize < cacheMemSize && !(m_flags & READ_AUDIO_VIDEO))
       {
         // Cap cache size by filesize, but not for audio/video files as those may grow.
         // We don't need to take into account READ_MULTI_STREAM here as that's only used for audio/video
@@ -152,7 +157,7 @@ bool CFileCache::Open(const CURL& url)
       }
       else
       {
-        cacheSize = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize;
+        cacheSize = cacheMemSize;
 
         // NOTE: READ_MULTI_STREAM is only used with READ_AUDIO_VIDEO
         if (m_flags & READ_MULTI_STREAM)
@@ -227,6 +232,12 @@ void CFileCache::Process()
     return;
   }
 
+  const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
+  if (!advancedSettings)
+    return;
+
+  const float readFactor = advancedSettings->m_cacheReadFactor;
+
   CWriteRate limiter;
   CWriteRate average;
 
@@ -279,13 +290,13 @@ void CFileCache::Process()
 
     while (m_writeRate)
     {
-      if (m_writePos - m_readPos < m_writeRate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor)
+      if (m_writePos - m_readPos < m_writeRate * readFactor)
       {
         limiter.Reset(m_writePos);
         break;
       }
 
-      if (limiter.Rate(m_writePos) < m_writeRate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor)
+      if (limiter.Rate(m_writePos) < m_writeRate * readFactor)
         break;
 
       if (m_seekEvent.Wait(100ms))
