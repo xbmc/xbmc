@@ -55,8 +55,14 @@ public:
                 const std::string& target,
                 SortDescription sort,
                 int limit,
+                CDirectoryProvider::BrowseMode browse,
                 int parentID)
-    : m_url(url), m_target(target), m_sort(sort), m_limit(limit), m_parentID(parentID)
+    : m_url(url),
+      m_target(target),
+      m_sort(sort),
+      m_limit(limit),
+      m_browse(browse),
+      m_parentID(parentID)
   { }
   ~CDirectoryJob() override = default;
 
@@ -102,9 +108,10 @@ public:
       if (items.HasProperty("node.target"))
         m_target = items.GetProperty("node.target").asString();
 
-      if (limit < items.Size())
+      if ((m_browse == CDirectoryProvider::BrowseMode::ALWAYS && !items.IsEmpty()) ||
+          (m_browse == CDirectoryProvider::BrowseMode::AUTO && limit < items.Size()))
       {
-        // Add a special item to the end of the limited list, which can be used to open the
+        // Add a special item to the end of the list, which can be used to open the
         // full listing containg all items in the given target window.
         if (!m_target.empty())
         {
@@ -174,6 +181,7 @@ private:
   std::string m_target;
   SortDescription m_sort;
   unsigned int m_limit;
+  CDirectoryProvider::BrowseMode m_browse{CDirectoryProvider::BrowseMode::AUTO};
   int m_parentID;
   std::vector<CGUIStaticItemPtr> m_items;
   std::map<InfoTagType, std::shared_ptr<CThumbLoader> > m_thumbloaders;
@@ -201,6 +209,10 @@ CDirectoryProvider::CDirectoryProvider(const TiXmlElement* element, int parentID
     if (limit)
       m_limit.SetLabel(limit, "", parentID);
 
+    const char* browse = element->Attribute("browse");
+    if (browse)
+      m_browse.SetLabel(browse, "", parentID);
+
     m_url.SetLabel(element->FirstChild()->ValueStr(), "", parentID);
   }
 }
@@ -213,10 +225,12 @@ CDirectoryProvider::CDirectoryProvider(const CDirectoryProvider& other)
     m_sortMethod(other.m_sortMethod),
     m_sortOrder(other.m_sortOrder),
     m_limit(other.m_limit),
+    m_browse(other.m_browse),
     m_currentUrl(other.m_currentUrl),
     m_currentTarget(other.m_currentTarget),
     m_currentSort(other.m_currentSort),
-    m_currentLimit(other.m_currentLimit)
+    m_currentLimit(other.m_currentLimit),
+    m_currentBrowse(other.m_currentBrowse)
 {
 }
 
@@ -240,6 +254,7 @@ bool CDirectoryProvider::Update(bool forceRefresh)
   fireJob |= UpdateURL();
   fireJob |= UpdateSort();
   fireJob |= UpdateLimit();
+  fireJob |= UpdateBrowse();
   fireJob &= !m_currentUrl.empty();
 
   std::unique_lock<CCriticalSection> lock(m_section);
@@ -257,7 +272,7 @@ bool CDirectoryProvider::Update(bool forceRefresh)
       CServiceBroker::GetJobManager()->CancelJob(m_jobID);
     m_jobID = CServiceBroker::GetJobManager()->AddJob(
         new CDirectoryJob(m_currentUrl, m_target.GetLabel(m_parentID, false), m_currentSort,
-                          m_currentLimit, m_parentID),
+                          m_currentLimit, m_currentBrowse, m_parentID),
         this);
   }
 
@@ -387,6 +402,7 @@ void CDirectoryProvider::Reset()
     m_currentSort.sortBy = SortByNone;
     m_currentSort.sortOrder = SortOrderAscending;
     m_currentLimit = 0;
+    m_currentBrowse = BrowseMode::AUTO;
     m_updateState = OK;
   }
 
@@ -585,6 +601,25 @@ bool CDirectoryProvider::UpdateLimit()
 
   m_currentLimit = value;
 
+  return true;
+}
+
+bool CDirectoryProvider::UpdateBrowse()
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+  const std::string stringValue{m_browse.GetLabel(m_parentID, false)};
+  BrowseMode value{m_currentBrowse};
+  if (StringUtils::EqualsNoCase(stringValue, "always"))
+    value = BrowseMode::ALWAYS;
+  else if (StringUtils::EqualsNoCase(stringValue, "auto"))
+    value = BrowseMode::AUTO;
+  else if (StringUtils::EqualsNoCase(stringValue, "never"))
+    value = BrowseMode::NEVER;
+
+  if (value == m_currentBrowse)
+    return false;
+
+  m_currentBrowse = value;
   return true;
 }
 
