@@ -10,5 +10,6 @@
   "splashBackground": "media/splash_webOS.png",
   "spinnerOnLaunch": false,
   "handlesRelaunch": true,
-  "nativeLifeCycleInterfaceVersion": 2
+  "nativeLifeCycleInterfaceVersion": 2,
+  "requiredMemory": 500
 }
