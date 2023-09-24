@@ -67,7 +67,7 @@ if(NOT PCRE::pcre)
 
   # Check for existing PCRE. If version >= PCRE-VERSION file version, dont build
   find_package(PCRE CONFIG QUIET
-                           HINTS ${DEPENDS_PATH}/lib
+                           HINTS ${DEPENDS_PATH}/lib/cmake
                            ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   if((PCRE_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_PCRE) OR
@@ -196,18 +196,21 @@ if(NOT PCRE::pcre)
     if(TARGET pcre)
       add_dependencies(PCRE::pcre pcre)
       add_dependencies(PCRE::pcrecpp pcre)
-    else()
-      # Add internal build target when a Multi Config Generator is used
-      # We cant add a dependency based off a generator expression for targeted build types,
-      # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
-      # therefore if the find heuristics only find the library, we add the internal build 
-      # target to the project to allow user to manually trigger for any build type they need
-      # in case only a specific build type is actually available (eg Release found, Debug Required)
-      # This is mainly targeted for windows who required different runtime libs for different
-      # types, and they arent compatible
-      if(_multiconfig_generator)
+    endif()
+
+    # Add internal build target when a Multi Config Generator is used
+    # We cant add a dependency based off a generator expression for targeted build types,
+    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+    # therefore if the find heuristics only find the library, we add the internal build
+    # target to the project to allow user to manually trigger for any build type they need
+    # in case only a specific build type is actually available (eg Release found, Debug Required)
+    # This is mainly targeted for windows who required different runtime libs for different
+    # types, and they arent compatible
+    if(_multiconfig_generator)
+      if(NOT TARGET pcre)
         buildPCRE()
       endif()
+      add_dependencies(build_internal_depends pcre)
     endif()
 
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP PCRE::pcre)
