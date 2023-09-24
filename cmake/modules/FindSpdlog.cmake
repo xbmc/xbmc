@@ -65,7 +65,7 @@ if(NOT TARGET spdlog::spdlog)
 
   # Check for existing SPDLOG. If version >= SPDLOG-VERSION file version, dont build
   find_package(SPDLOG CONFIG QUIET
-                             HINTS ${DEPENDS_PATH}/lib
+                             HINTS ${DEPENDS_PATH}/lib/cmake
                              ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
   if((SPDLOG_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_SPDLOG) OR
@@ -164,18 +164,21 @@ if(NOT TARGET spdlog::spdlog)
 
     if(TARGET spdlog)
       add_dependencies(spdlog::spdlog spdlog)
-    else()
-      # Add internal build target when a Multi Config Generator is used
-      # We cant add a dependency based off a generator expression for targeted build types,
-      # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
-      # therefore if the find heuristics only find the library, we add the internal build 
-      # target to the project to allow user to manually trigger for any build type they need
-      # in case only a specific build type is actually available (eg Release found, Debug Required)
-      # This is mainly targeted for windows who required different runtime libs for different
-      # types, and they arent compatible
-      if(_multiconfig_generator)
+    endif()
+
+    # Add internal build target when a Multi Config Generator is used
+    # We cant add a dependency based off a generator expression for targeted build types,
+    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+    # therefore if the find heuristics only find the library, we add the internal build
+    # target to the project to allow user to manually trigger for any build type they need
+    # in case only a specific build type is actually available (eg Release found, Debug Required)
+    # This is mainly targeted for windows who required different runtime libs for different
+    # types, and they arent compatible
+    if(_multiconfig_generator)
+      if(NOT TARGET spdlog)
         buildSpdlog()
       endif()
+      add_dependencies(build_internal_depends spdlog)
     endif()
   endif()
 endif()
