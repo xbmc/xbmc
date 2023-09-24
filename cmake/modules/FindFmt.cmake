@@ -49,7 +49,7 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
 
   # Check for existing FMT. If version >= FMT-VERSION file version, dont build
   find_package(FMT CONFIG QUIET
-                   HINTS ${DEPENDS_PATH}/lib
+                   HINTS ${DEPENDS_PATH}/lib/cmake
                    ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # Build if ENABLE_INTERNAL_FMT, or if required version in find_package call is greater 
@@ -120,18 +120,21 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
 
     if(TARGET fmt)
       add_dependencies(fmt::fmt fmt)
-    else()
-      # Add internal build target when a Multi Config Generator is used
-      # We cant add a dependency based off a generator expression for targeted build types,
-      # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
-      # therefore if the find heuristics only find the library, we add the internal build 
-      # target to the project to allow user to manually trigger for any build type they need
-      # in case only a specific build type is actually available (eg Release found, Debug Required)
-      # This is mainly targeted for windows who required different runtime libs for different
-      # types, and they arent compatible
-      if(_multiconfig_generator)
+    endif()
+
+    # Add internal build target when a Multi Config Generator is used
+    # We cant add a dependency based off a generator expression for targeted build types,
+    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+    # therefore if the find heuristics only find the library, we add the internal build
+    # target to the project to allow user to manually trigger for any build type they need
+    # in case only a specific build type is actually available (eg Release found, Debug Required)
+    # This is mainly targeted for windows who required different runtime libs for different
+    # types, and they arent compatible
+    if(_multiconfig_generator)
+      if(NOT TARGET fmt)
         buildFmt()
       endif()
+      add_dependencies(build_internal_depends fmt)
     endif()
   endif()
 
