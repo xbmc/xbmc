@@ -9,22 +9,7 @@
 
 if(NOT TARGET libnfs::nfs)
 
-  include(cmake/scripts/common/ModuleHelpers.cmake)
-
-  set(MODULE_LC libnfs)
-
-  SETUP_BUILD_VARS()
-
-  # Search for cmake config. Suitable for all platforms including windows
-  find_package(libnfs CONFIG QUIET
-                             HINTS ${DEPENDS_PATH}/lib
-                             ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
-
-  # Check for existing LIBNFS. If version >= LIBNFS-VERSION file version, dont build
-  # A corner case, but if a linux/freebsd user WANTS to build internal libnfs, build anyway
-  if((libnfs_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_NFS) OR
-     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_NFS))
-
+  macro(buildlibnfs)
     set(CMAKE_ARGS -DBUILD_SHARED_LIBS=OFF
                    -DENABLE_TESTS=OFF
                    -DENABLE_DOCUMENTATION=OFF
@@ -35,6 +20,25 @@ if(NOT TARGET libnfs::nfs)
 
     set(_nfs_definitions HAS_NFS_SET_TIMEOUT
                          HAS_NFS_MOUNT_GETEXPORTS_TIMEOUT)
+  endmacro()
+
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  set(MODULE_LC libnfs)
+
+  SETUP_BUILD_VARS()
+
+  # Search for cmake config. Suitable for all platforms including windows
+  find_package(libnfs CONFIG QUIET
+                             HINTS ${DEPENDS_PATH}/lib/cmake
+                             ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
+
+  # Check for existing LIBNFS. If version >= LIBNFS-VERSION file version, dont build
+  # A corner case, but if a linux/freebsd user WANTS to build internal libnfs, build anyway
+  if((libnfs_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_NFS) OR
+     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_NFS))
+    # Build lib
+    buildlibnfs()
   else()
     if(NOT TARGET libnfs::nfs)
       # Try pkgconfig based search as last resort
@@ -140,8 +144,21 @@ if(NOT TARGET libnfs::nfs)
     # Need to manually set this, as libnfs cmake config does not provide INTERFACE_INCLUDE_DIRECTORIES
     set_target_properties(libnfs::nfs PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${LIBNFS_INCLUDE_DIR})
 
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP libnfs::nfs)
+    # Add internal build target when a Multi Config Generator is used
+    # We cant add a dependency based off a generator expression for targeted build types,
+    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+    # therefore if the find heuristics only find the library, we add the internal build
+    # target to the project to allow user to manually trigger for any build type they need
+    # in case only a specific build type is actually available (eg Release found, Debug Required)
+    # This is mainly targeted for windows who required different runtime libs for different
+    # types, and they arent compatible
+    if(_multiconfig_generator)
+      if(NOT TARGET libnfs)
+        buildlibnfs()
+      endif()
+      add_dependencies(build_internal_depends libnfs)
+    endif()
 
-    mark_as_advanced(LIBNFS_INCLUDE_DIR LIBNFS_LIBRARY)
+    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP libnfs::nfs)
   endif()
 endif()
