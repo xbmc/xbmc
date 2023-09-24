@@ -10,7 +10,7 @@
 
 #include "cores/VideoPlayer/VideoRenderers/LinuxRendererGLES.h"
 
-class CRendererStarfish : public CLinuxRendererGLES
+class CRendererStarfish : public CBaseRenderer
 {
 public:
   CRendererStarfish();
@@ -28,22 +28,24 @@ public:
   CRenderInfo GetRenderInfo() override;
 
   bool IsGuiLayer() override;
+  bool IsConfigured() override;
   bool Configure(const VideoPicture& picture, float fps, unsigned int orientation) override;
   bool Supports(ERENDERFEATURE feature) const override;
+  bool Supports(ESCALINGMETHOD method) const override;
+  bool SupportsMultiPassRendering() override;
+  void UnInit() override;
+  void Update() override;
+  void RenderUpdate(
+      int index, int index2, bool clear, unsigned int flags, unsigned int alpha) override;
+  bool RenderCapture(CRenderCapture* capture) override;
+  bool ConfigChanged(const VideoPicture& picture) override;
 
 protected:
-  // textures
-  bool UploadTexture(int index) override;
-  void RenderUpdateVideo(bool clear, unsigned int flags, unsigned int alpha) override;
-  void DeleteTexture(int index) override;
-  bool CreateTexture(int index) override;
-
   // hooks for hw dec renderer
-  bool LoadShadersHook() override;
-  bool RenderHook(int index) override;
   void ManageRenderArea() override;
 
 private:
   CRect m_exportedSourceRect;
   CRect m_exportedDestRect;
+  bool m_configured{false};
 };
