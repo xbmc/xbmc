@@ -2281,6 +2281,7 @@ bool CGUIMediaWindow::WaitGetDirectoryItems(CGetDirectoryItems &items)
   else
   {
     m_updateJobActive = true;
+    m_updateAborted = false;
     m_updateEvent.Reset();
     CServiceBroker::GetJobManager()->Submit(
         [&]() {
@@ -2289,14 +2290,21 @@ bool CGUIMediaWindow::WaitGetDirectoryItems(CGetDirectoryItems &items)
         },
         nullptr, CJob::PRIORITY_NORMAL);
 
-    while (!m_updateEvent.Wait(1ms))
+    // Loop until either the job ended or update canceled via CGUIMediaWindow::CancelUpdateItems.
+    while (!m_updateAborted && !m_updateEvent.Wait(1ms))
     {
       if (!ProcessRenderLoop(false))
         break;
     }
 
-    if (m_updateAborted || !items.m_result)
+    if (m_updateAborted)
     {
+      CLog::LogF(LOGDEBUG, "Get directory items job was canceled.");
+      ret = false;
+    }
+    else if (!items.m_result)
+    {
+      CLog::LogF(LOGDEBUG, "Get directory items job was unsuccessful.");
       ret = false;
     }
   }
