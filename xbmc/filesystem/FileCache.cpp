@@ -123,24 +123,27 @@ bool CFileCache::Open(const CURL& url)
   m_chunkSize = CFile::DetermineChunkSize(
       m_source.GetChunkSize(),
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheChunkSize);
+  m_chunkSize = ( m_chunkSize * 4096 ) / 4096;
   CLog::Log(LOGDEBUG,
             "CFileCache::{} - <{}> source chunk size is {}, setting cache chunk size to {}",
             __FUNCTION__, m_sourcePath, m_source.GetChunkSize(), m_chunkSize);
 
   m_fileSize = m_source.GetLength();
 
+  unsigned int cacheMemSize = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize;
+
   if (!m_pCache)
   {
-    if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize == 0)
+    if (cacheMemSize == 0)
     {
       // Use cache on disk
-      m_pCache = std::unique_ptr<CSimpleFileCache>(new CSimpleFileCache()); // C++14 - Replace with std::make_unique
+      m_pCache = std::make_unique<CSimpleFileCache>();
       m_forwardCacheSize = 0;
     }
     else
     {
       size_t cacheSize;
-      if (m_fileSize > 0 && m_fileSize < CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize && !(m_flags & READ_AUDIO_VIDEO))
+      if (m_fileSize > 0 && m_fileSize < cacheMemSize && !(m_flags & READ_AUDIO_VIDEO))
       {
         // Cap cache size by filesize, but not for audio/video files as those may grow.
         // We don't need to take into account READ_MULTI_STREAM here as that's only used for audio/video
@@ -152,7 +155,7 @@ bool CFileCache::Open(const CURL& url)
       }
       else
       {
-        cacheSize = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheMemSize;
+        cacheSize = cacheMemSize;
 
         // NOTE: READ_MULTI_STREAM is only used with READ_AUDIO_VIDEO
         if (m_flags & READ_MULTI_STREAM)
@@ -176,14 +179,14 @@ bool CFileCache::Open(const CURL& url)
       const size_t back = cacheSize / 4;
       const size_t front = cacheSize - back;
 
-      m_pCache = std::unique_ptr<CCircularCache>(new CCircularCache(front, back)); // C++14 - Replace with std::make_unique
+      m_pCache = std::make_unique<CCircularCache>(front, back);
       m_forwardCacheSize = front;
     }
 
     if (m_flags & READ_MULTI_STREAM)
     {
       // If READ_MULTI_STREAM flag is set: Double buffering is required
-      m_pCache = std::unique_ptr<CDoubleCache>(new CDoubleCache(m_pCache.release())); // C++14 - Replace with std::make_unique
+      m_pCache = std::make_unique<CDoubleCache>(m_pCache.release());
     }
   }
 
@@ -203,6 +206,7 @@ bool CFileCache::Open(const CURL& url)
   m_bFilling = true;
   m_seekEvent.Reset();
   m_seekEnded.Reset();
+  m_cacheReadFactor = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor;
 
   CThread::Create(false);
 
@@ -279,13 +283,13 @@ void CFileCache::Process()
 
     while (m_writeRate)
     {
-      if (m_writePos - m_readPos < m_writeRate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor)
+      if (m_writePos - m_readPos < m_writeRate * m_cacheReadFactor)
       {
         limiter.Reset(m_writePos);
         break;
       }
 
-      if (limiter.Rate(m_writePos) < m_writeRate * CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheReadFactor)
+      if (limiter.Rate(m_writePos) < m_writeRate * m_cacheReadFactor)
         break;
 
       if (m_seekEvent.Wait(100ms))
