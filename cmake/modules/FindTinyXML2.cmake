@@ -49,7 +49,7 @@ if(NOT TARGET tinyxml2::tinyxml2)
   SETUP_BUILD_VARS()
 
   find_package(TINYXML2 CONFIG QUIET
-                               HINTS ${DEPENDS_PATH}/lib
+                               HINTS ${DEPENDS_PATH}/lib/cmake
                                ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
   # Check for existing TINYXML2. If version >= TINYXML2-VERSION file version, dont build
@@ -134,19 +134,23 @@ if(NOT TARGET tinyxml2::tinyxml2)
 
     if(TARGET tinyxml2)
       add_dependencies(tinyxml2::tinyxml2 tinyxml2)
-    else()
-      # Add internal build target when a Multi Config Generator is used
-      # We cant add a dependency based off a generator expression for targeted build types,
-      # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
-      # therefore if the find heuristics only find the library, we add the internal build 
-      # target to the project to allow user to manually trigger for any build type they need
-      # in case only a specific build type is actually available (eg Release found, Debug Required)
-      # This is mainly targeted for windows who required different runtime libs for different
-      # types, and they arent compatible
-      if(_multiconfig_generator)
+    endif()
+
+    # Add internal build target when a Multi Config Generator is used
+    # We cant add a dependency based off a generator expression for targeted build types,
+    # https://gitlab.kitware.com/cmake/cmake/-/issues/19467
+    # therefore if the find heuristics only find the library, we add the internal build
+    # target to the project to allow user to manually trigger for any build type they need
+    # in case only a specific build type is actually available (eg Release found, Debug Required)
+    # This is mainly targeted for windows who required different runtime libs for different
+    # types, and they arent compatible
+    if(_multiconfig_generator)
+      if(NOT TARGET tinyxml2)
         buildTinyXML2()
       endif()
+      add_dependencies(build_internal_depends tinyxml2)
     endif()
+
   endif()
 
   set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP tinyxml2::tinyxml2)
