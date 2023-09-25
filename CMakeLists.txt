@@ -1,8 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
-if(WIN32)
-  # Version 3.20 is required for multi-config generator expressions to work
-  cmake_minimum_required(VERSION 3.20)
-endif()
+cmake_minimum_required(VERSION 3.20)
 project(kodi LANGUAGES CXX C ASM)
 
 if(POLICY CMP0069)
