@@ -501,11 +501,16 @@ namespace VIDEO
 
         auto eventLog = CServiceBroker::GetEventLog();
         if (eventLog)
+        {
+          const std::string itemlogpath = (info2->Content() == CONTENT_TVSHOWS)
+                                              ? CURL::GetRedacted(pItem->GetPath())
+                                              : URIUtils::GetFileName(pItem->GetPath());
+
           eventLog->Add(EventPtr(new CMediaLibraryEvent(
               mediaType, pItem->GetPath(), 24145,
-              StringUtils::Format(g_localizeStrings.Get(24147), mediaType,
-                                  URIUtils::GetFileName(pItem->GetPath())),
-              pItem->GetArt("thumb"), CURL::GetRedacted(pItem->GetPath()), EventLevel::Warning)));
+              StringUtils::Format(g_localizeStrings.Get(24147), mediaType, itemlogpath),
+              EventLevel::Warning)));
+        }
       }
 
       pURL = NULL;
