@@ -433,20 +433,27 @@ add_custom_target(gen_system_addons
                                              -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateSystemAddons.cmake
                     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
 
+if(_multiconfig_generator)
+  # Generator expressions in add_custom_command(OUTPUT) are only available in cmake 3.20+
+  # we dont really need config aware locations for a single config generator, so we only
+  # set this for multi config generators who all use newer cmake
+  set(CONFIG_VAR $<CONFIG>)
+endif()
+
 # Pack skins and copy to correct build dir (MultiConfig Generator aware)
 add_custom_command(
-  OUTPUT ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/$<CONFIG>/gen_skin.timestamp
+  OUTPUT ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${CONFIG_VAR}/gen_skin.timestamp
   COMMAND ${CMAKE_COMMAND} -DBUNDLEDIR=${_bundle_dir}
                            -DTEXTUREPACKER_EXECUTABLE=$<TARGET_FILE:TexturePacker::TexturePacker::Executable>
                            -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
-  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/$<CONFIG>
-  COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/$<CONFIG>/gen_skin.timestamp
+  COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${CONFIG_VAR}
+  COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${CONFIG_VAR}/gen_skin.timestamp
   DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
           ${XBT_SOURCE_FILELIST}
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
   COMMENT "Generating skin xbt"
 )
-add_custom_target(gen_skin_pack DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/$<CONFIG>/gen_skin.timestamp)
+add_custom_target(gen_skin_pack DEPENDS ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/${CONFIG_VAR}/gen_skin.timestamp)
 
 # Packaging target. This generates system addon, xbt creation, copy files to build tree
 add_custom_target(generate-packaging ALL
