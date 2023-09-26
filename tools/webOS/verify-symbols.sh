@@ -14,8 +14,7 @@ if [ ! -d "${WEBOS_ROOTFS}" ]; then
   exit 1
 fi
 
-lib_search_paths="$(objdump -p ${EXE} | grep RUNPATH | tr -s ' ' | cut -d ' ' -f 3)"
-lib_search_paths="${lib_search_paths}:${WEBOS_ROOTFS}/lib:${WEBOS_ROOTFS}/usr/lib:${WEBOS_LD_LIBRARY_PATH}"
+lib_search_paths="${WEBOS_ROOTFS}/lib:${WEBOS_ROOTFS}/usr/lib:${WEBOS_LD_LIBRARY_PATH}"
 
 required_syms=$(nm --dynamic --extern-only --undefined-only "${EXE}" | grep ' [U] ' | tr -s ' ' | cut -d ' ' -f 3)
 
