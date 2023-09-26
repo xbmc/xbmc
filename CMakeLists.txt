@@ -175,7 +175,7 @@ core_optional_dep(${optional_buildtools})
 core_require_dep(${required_buildtools})
 
 # Required dependencies. Keep in alphabetical order please
-set(required_deps ASS
+set(required_deps ASS>=0.15.0
                   Cdio
                   CrossGUID
                   Curl
