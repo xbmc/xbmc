@@ -14,10 +14,10 @@ if(NOT TARGET Bluetooth::Bluetooth)
   endif()
 
   find_path(BLUETOOTH_INCLUDE_DIR NAMES bluetooth/bluetooth.h
-                                  PATHS ${PC_BLUETOOTH_INCLUDEDIR}
+                                  HINTS ${PC_BLUETOOTH_INCLUDEDIR}
                                   NO_CACHE)
   find_library(BLUETOOTH_LIBRARY NAMES bluetooth libbluetooth
-                                 PATHS ${PC_BLUETOOTH_LIBDIR}
+                                 HINTS ${PC_BLUETOOTH_LIBDIR}
                                  NO_CACHE)
 
   set(BLUETOOTH_VERSION ${PC_BLUETOOTH_VERSION})
