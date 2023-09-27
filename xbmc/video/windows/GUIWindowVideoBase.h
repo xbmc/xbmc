@@ -68,12 +68,6 @@ public:
    */
   static void OnAssignContent(const std::string &path);
 
-  /*! \brief checks the database for a resume position and puts together a string
-   \param item selected item
-   \return string containing the resume position or an empty string if there is no resume position
-   */
-  static std::string GetResumeString(const CFileItem &item);
-
   /*! \brief Load video information from the database for these items (public static version)
    Useful for grabbing information for file listings, from watched status to full metadata
    \param items the items to load information for.

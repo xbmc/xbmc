@@ -33,14 +33,6 @@ public:
   ~CPVRGUIActionsPlayback() override = default;
 
   /*!
-   * @brief Get a localized resume play label, if the given item can be resumed.
-   * @param item containing a recording or an epg tag.
-   * @return the localized resume play label that can be used for instance as context menu item
-   * label or an empty string if resume is not possible.
-   */
-  std::string GetResumeLabel(const CFileItem& item) const;
-
-  /*!
    * @brief Resume a previously not completely played recording.
    * @param item containing a recording or an epg tag.
    * @param bFallbackToPlay controls whether playback of the recording should be started at the

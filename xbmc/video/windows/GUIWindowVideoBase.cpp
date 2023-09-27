@@ -556,7 +556,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string&
           choices.Add(SELECT_ACTION_PLAYPART, 20324); // Play Part
       }
 
-      std::string resumeString = GetResumeString(*item);
+      const std::string resumeString = VIDEO_UTILS::GetResumeString(*item);
       if (!resumeString.empty())
       {
         choices.Add(SELECT_ACTION_RESUME, resumeString);
@@ -726,39 +726,11 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
   }
 }
 
-std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
-{
-  const VIDEO_UTILS::ResumeInformation resumeInfo = VIDEO_UTILS::GetItemResumeInformation(item);
-  if (resumeInfo.isResumable)
-  {
-    if (resumeInfo.startOffset > 0)
-    {
-      std::string resumeString = StringUtils::Format(
-          g_localizeStrings.Get(12022),
-          StringUtils::SecondsToTimeString(
-              static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(resumeInfo.startOffset)),
-              TIME_FORMAT_HH_MM_SS));
-      if (resumeInfo.partNumber > 0)
-      {
-        const std::string partString =
-            StringUtils::Format(g_localizeStrings.Get(23051), resumeInfo.partNumber);
-        resumeString += " (" + partString + ")";
-      }
-      return resumeString;
-    }
-    else
-    {
-      return g_localizeStrings.Get(13362); // Continue watching
-    }
-  }
-  return {};
-}
-
 bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
 {
   if (!item.IsLiveTV())
   {
-    std::string resumeString = GetResumeString(item);
+    const std::string resumeString = VIDEO_UTILS::GetResumeString(item);
     if (!resumeString.empty())
     { // prompt user whether they wish to resume
       CContextButtons choices;
@@ -779,8 +751,7 @@ bool CGUIWindowVideoBase::OnResumeItem(int iItem, const std::string &player)
   if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
   CFileItemPtr item = m_vecItems->Get(iItem);
 
-  std::string resumeString = GetResumeString(*item);
-
+  const std::string resumeString = VIDEO_UTILS::GetResumeString(*item);
   if (!resumeString.empty())
   {
     CContextButtons choices;
@@ -904,7 +875,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
     // ISO stack
     if (CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
     {
-      std::string resumeString = CGUIWindowVideoBase::GetResumeString(*(parts[selectedFile].get()));
+      const std::string resumeString = VIDEO_UTILS::GetResumeString(*(parts[selectedFile].get()));
       stack->SetStartOffset(0);
       if (!resumeString.empty())
       {

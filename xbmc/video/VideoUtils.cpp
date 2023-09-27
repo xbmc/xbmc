@@ -22,6 +22,7 @@
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
+#include "guilib/LocalizeStrings.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "settings/MediaSettings.h"
@@ -768,4 +769,31 @@ ResumeInformation GetItemResumeInformation(const CFileItem& item)
   return GetFolderItemResumeInformation(item);
 }
 
+std::string GetResumeString(const CFileItem& item)
+{
+  const ResumeInformation resumeInfo = GetItemResumeInformation(item);
+  if (resumeInfo.isResumable)
+  {
+    if (resumeInfo.startOffset > 0)
+    {
+      std::string resumeString = StringUtils::Format(
+          g_localizeStrings.Get(12022),
+          StringUtils::SecondsToTimeString(
+              static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(resumeInfo.startOffset)),
+              TIME_FORMAT_HH_MM_SS));
+      if (resumeInfo.partNumber > 0)
+      {
+        const std::string partString =
+            StringUtils::Format(g_localizeStrings.Get(23051), resumeInfo.partNumber);
+        resumeString += " (" + partString + ")";
+      }
+      return resumeString;
+    }
+    else
+    {
+      return g_localizeStrings.Get(13362); // Continue watching
+    }
+  }
+  return {};
+}
 } // namespace VIDEO_UTILS
