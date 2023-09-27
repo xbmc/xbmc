@@ -134,12 +134,12 @@ bool CPlayListFactory::IsPlaylist(const CFileItem& item)
 bool CPlayListFactory::IsPlaylist(const CURL& url)
 {
   return URIUtils::HasExtension(url,
-                                ".m3u|.m3u8|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml|.xspf");
+                                ".m3u|.m3u8|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml|.xspf|.xsp");
 }
 
 bool CPlayListFactory::IsPlaylist(const std::string& filename)
 {
   return URIUtils::HasExtension(filename,
-                     ".m3u|.m3u8|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml|.xspf");
+                                ".m3u|.m3u8|.b4s|.pls|.strm|.wpl|.asx|.ram|.url|.pxml|.xspf|.xsp");
 }
 
