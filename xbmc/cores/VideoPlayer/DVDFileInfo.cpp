@@ -317,6 +317,7 @@ bool CDVDFileInfo::GetFileStreamDetails(CFileItem *pItem)
   if (pDemuxer)
   {
     bool retVal = DemuxerToStreamDetails(pInputStream, pDemuxer, pItem->GetVideoInfoTag()->m_streamDetails, strFileNameAndPath);
+    ProcessExternalSubtitles(pItem);
     delete pDemuxer;
     return retVal;
   }
@@ -427,6 +428,34 @@ bool CDVDFileInfo::DemuxerToStreamDetails(const std::shared_ptr<CDVDInputStream>
   }
 #endif
   return retVal;
+}
+
+void CDVDFileInfo::ProcessExternalSubtitles(CFileItem* item)
+{
+  std::vector<std::string> externalSubtitles;
+  const std::string videoPath = item->GetDynPath();
+
+  CUtil::ScanForExternalSubtitles(videoPath, externalSubtitles);
+
+  for (const auto& externalSubtitle : externalSubtitles)
+  {
+    // if vobsub subtitle:
+    if (URIUtils::GetExtension(externalSubtitle) == ".idx")
+    {
+      std::string subFile;
+      if (CUtil::FindVobSubPair(externalSubtitles, externalSubtitle, subFile))
+        AddExternalSubtitleToDetails(videoPath, item->GetVideoInfoTag()->m_streamDetails,
+                                     externalSubtitle, subFile);
+    }
+    else
+    {
+      if (!CUtil::IsVobSub(externalSubtitles, externalSubtitle))
+      {
+        AddExternalSubtitleToDetails(videoPath, item->GetVideoInfoTag()->m_streamDetails,
+                                     externalSubtitle);
+      }
+    }
+  }
 }
 
 bool CDVDFileInfo::AddExternalSubtitleToDetails(const std::string &path, CStreamDetails &details, const std::string& filename, const std::string& subfilename)
