@@ -518,7 +518,7 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
     item.SetProperty("check_resume", false);
   }
 
-  if (item.m_bIsFolder || item.IsPlayList())
+  if (!forcePlay /* queue */ || item.m_bIsFolder || item.IsPlayList())
   {
     CFileItemList items;
     GetItemsForPlayList(std::make_shared<CFileItem>(item), items);
