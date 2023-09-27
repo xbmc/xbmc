@@ -61,8 +61,7 @@ bool CVideoSyncD3D::Setup()
   CreateDXGIFactory1(IID_PPV_ARGS(m_factory.ReleaseAndGetAddressOf()));
 
   Microsoft::WRL::ComPtr<IDXGIOutput> pOutput;
-  DX::DeviceResources::Get()->GetOutput(&pOutput);
-  pOutput->GetDesc(&m_outputDesc);
+  DX::DeviceResources::Get()->GetCachedOutputAndDesc(&pOutput, &m_outputDesc);
 
   return true;
 }
@@ -84,11 +83,11 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
   {
     // sleep until vblank
     Microsoft::WRL::ComPtr<IDXGIOutput> pOutput;
-    DX::DeviceResources::Get()->GetOutput(&pOutput);
-    pOutput->GetDesc(&m_outputDesc);
+    DX::DeviceResources::Get()->GetCachedOutputAndDesc(pOutput.ReleaseAndGetAddressOf(),
+                                                       &m_outputDesc);
 
     const int64_t WaitForVBlankStartTime = CurrentHostCounter();
-    const HRESULT hr = pOutput->WaitForVBlank();
+    const HRESULT hr = pOutput ? pOutput->WaitForVBlank() : E_INVALIDARG;
     const int64_t WaitForVBlankElapsedTime = CurrentHostCounter() - WaitForVBlankStartTime;
 
     // WaitForVBlank() can return very quickly due to errors or screen sleeping
