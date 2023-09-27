@@ -323,7 +323,7 @@ case $host in
           use_cpu="armeabi-v7a"
         fi
         if test "x$use_cpu" = "xarmeabi-v7a"; then
-          platform_cflags="${platform_cflags} -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp -mfpu=neon"
+          platform_cflags="${platform_cflags} -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp"
         fi
         platform_ldflags="${platform_ldflags} -Wl,--exclude-libs,libunwind.a"
         meson_cpu="arm"
