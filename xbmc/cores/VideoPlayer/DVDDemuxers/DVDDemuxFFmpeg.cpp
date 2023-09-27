@@ -40,6 +40,7 @@
 extern "C"
 {
 #include "libavutil/channel_layout.h"
+#include "libavutil/display.h"
 #include "libavutil/pixdesc.h"
 }
 
@@ -1721,9 +1722,17 @@ CDemuxStream* CDVDDemuxFFmpeg::AddStream(int streamIdx)
               *reinterpret_cast<AVContentLightMetadata*>(side_data));
         }
 
-        AVDictionaryEntry* rtag = av_dict_get(pStream->metadata, "rotate", NULL, 0);
-        if (rtag)
-          st->iOrientation = atoi(rtag->value);
+        uint8_t* displayMatrixSideData =
+            av_stream_get_side_data(pStream, AV_PKT_DATA_DISPLAYMATRIX, nullptr);
+        if (displayMatrixSideData)
+        {
+          const double tetha =
+              av_display_rotation_get(reinterpret_cast<int32_t*>(displayMatrixSideData));
+          if (!std::isnan(tetha))
+          {
+            st->iOrientation = ((static_cast<int>(-tetha) % 360) + 360) % 360;
+          }
+        }
 
         // detect stereoscopic mode
         std::string stereoMode = GetStereoModeFromMetadata(pStream->metadata);
