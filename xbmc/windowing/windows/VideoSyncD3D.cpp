@@ -63,7 +63,7 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
   int64_t LastVBlankTime;
   int NrVBlanks;
   double VBlankTime;
-  int64_t systemFrequency = CurrentHostFrequency();
+  const int64_t systemFrequency = CurrentHostFrequency();
 
   // init the vblanktime
   Now = CurrentHostCounter();
