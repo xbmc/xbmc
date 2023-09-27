@@ -10,7 +10,6 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "Util.h"
 #include "application/ApplicationEnums.h"
 #include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogContextMenu.h"
@@ -57,38 +56,10 @@ CPVRGUIActionsPlayback::CPVRGUIActionsPlayback()
 {
 }
 
-std::string CPVRGUIActionsPlayback::GetResumeLabel(const CFileItem& item) const
-{
-  const VIDEO_UTILS::ResumeInformation resumeInfo = VIDEO_UTILS::GetItemResumeInformation(item);
-  if (resumeInfo.isResumable)
-  {
-    if (resumeInfo.startOffset > 0)
-    {
-      std::string resumeString = StringUtils::Format(
-          g_localizeStrings.Get(12022),
-          StringUtils::SecondsToTimeString(
-              static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(resumeInfo.startOffset)),
-              TIME_FORMAT_HH_MM_SS));
-      if (resumeInfo.partNumber > 0)
-      {
-        const std::string partString =
-            StringUtils::Format(g_localizeStrings.Get(23051), resumeInfo.partNumber);
-        resumeString += " (" + partString + ")";
-      }
-      return resumeString;
-    }
-    else
-    {
-      return g_localizeStrings.Get(13362); // Continue watching
-    }
-  }
-  return {};
-}
-
 bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItem& item) const
 {
   bool bPlayIt(true);
-  std::string resumeString(GetResumeLabel(item));
+  const std::string resumeString = VIDEO_UTILS::GetResumeString(item);
   if (!resumeString.empty())
   {
     CContextButtons choices;
@@ -106,8 +77,7 @@ bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItem& item) const
 
 bool CPVRGUIActionsPlayback::ResumePlayRecording(const CFileItem& item, bool bFallbackToPlay) const
 {
-  bool bCanResume = !GetResumeLabel(item).empty();
-  if (bCanResume)
+  if (VIDEO_UTILS::GetItemResumeInformation(item).isResumable)
   {
     const_cast<CFileItem*>(&item)->SetStartOffset(STARTOFFSET_RESUME);
   }
@@ -119,7 +89,7 @@ bool CPVRGUIActionsPlayback::ResumePlayRecording(const CFileItem& item, bool bFa
       return false;
   }
 
-  return PlayRecording(item, false);
+  return PlayRecording(item, false /* skip resume check */);
 }
 
 void CPVRGUIActionsPlayback::CheckAndSwitchToFullscreen(bool bFullscreen) const

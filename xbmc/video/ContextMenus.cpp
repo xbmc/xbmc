@@ -9,6 +9,7 @@
 #include "ContextMenus.h"
 
 #include "Autorun.h"
+#include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "application/Application.h"
@@ -16,9 +17,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
-#include "video/windows/GUIWindowVideoBase.h"
 
 #include <utility>
 
@@ -156,7 +157,7 @@ bool CVideoBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
 
 std::string CVideoResume::GetLabel(const CFileItem& item) const
 {
-  return CGUIWindowVideoBase::GetResumeString(item.GetItemToPlay());
+  return VIDEO_UTILS::GetResumeString(item.GetItemToPlay());
 }
 
 bool CVideoResume::IsVisible(const CFileItem& itemIn) const
