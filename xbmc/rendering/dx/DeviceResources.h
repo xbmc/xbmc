@@ -68,6 +68,13 @@ namespace DX
     CD3DTexture& GetBackBuffer() { return m_backBufferTex; }
 
     void GetOutput(IDXGIOutput** ppOutput) const;
+    /*!
+     * \brief Retrieve current output and output description. Use cached data first to avoid delays due
+     * to dxgi internal multithreading synchronization.
+     * \param output The output
+     * \param outputDesc The output description
+    */
+    void GetCachedOutputAndDesc(IDXGIOutput** output, DXGI_OUTPUT_DESC* outputDesc) const;
     DXGI_ADAPTER_DESC GetAdapterDesc() const;
     void GetDisplayMode(DXGI_MODE_DESC *mode) const;
 
@@ -152,6 +159,7 @@ namespace DX
     Microsoft::WRL::ComPtr<IDXGIFactory2> m_dxgiFactory;
     Microsoft::WRL::ComPtr<IDXGIAdapter1> m_adapter;
     Microsoft::WRL::ComPtr<IDXGIOutput1> m_output;
+    DXGI_OUTPUT_DESC m_outputDesc{};
 
     Microsoft::WRL::ComPtr<ID3D11Device1> m_d3dDevice;
     Microsoft::WRL::ComPtr<ID3D11DeviceContext1> m_d3dContext;

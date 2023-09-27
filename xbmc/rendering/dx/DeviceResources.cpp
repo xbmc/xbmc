@@ -131,6 +131,28 @@ void DX::DeviceResources::GetOutput(IDXGIOutput** ppOutput) const
   *ppOutput = pOutput.Detach();
 }
 
+void DX::DeviceResources::GetCachedOutputAndDesc(IDXGIOutput** ppOutput,
+                                                 DXGI_OUTPUT_DESC* outputDesc) const
+{
+  ComPtr<IDXGIOutput> pOutput;
+  if (m_output)
+  {
+    m_output.As(&pOutput);
+    *outputDesc = m_outputDesc;
+  }
+  else if (m_swapChain && SUCCEEDED(m_swapChain->GetContainingOutput(pOutput.GetAddressOf())) &&
+           pOutput)
+  {
+    pOutput->GetDesc(outputDesc);
+  }
+
+  if (!pOutput)
+    CLog::LogF(LOGWARNING, "unable to retrieve current output");
+
+  *ppOutput = pOutput.Detach();
+  return;
+}
+
 DXGI_ADAPTER_DESC DX::DeviceResources::GetAdapterDesc() const
 {
   DXGI_ADAPTER_DESC desc{};
@@ -1045,6 +1067,7 @@ void DX::DeviceResources::HandleOutputChange(const std::function<bool(DXGI_OUTPU
       if (cmpFunc(outputDesc))
       {
         output.As(&m_output);
+        m_outputDesc = outputDesc;
         // check if adapter is changed
         if (currentDesc.AdapterLuid.HighPart != foundDesc.AdapterLuid.HighPart
           || currentDesc.AdapterLuid.LowPart != foundDesc.AdapterLuid.LowPart)
