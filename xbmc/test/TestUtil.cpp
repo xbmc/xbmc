@@ -97,6 +97,8 @@ struct TestUtilCleanStringData
   std::string expTitle;
   std::string expTitleYear;
   std::string expYear;
+  std::string expIdentifierType{};
+  std::string expIdentifier{};
 };
 
 std::ostream& operator<<(std::ostream& os, const TestUtilCleanStringData& rhs)
@@ -109,6 +111,15 @@ std::ostream& operator<<(std::ostream& os, const TestUtilCleanStringData& rhs)
 class TestUtilCleanString : public Test, public WithParamInterface<TestUtilCleanStringData>
 {
 };
+
+TEST_P(TestUtilCleanString, GetFilenameIdentifier)
+{
+  std::string identifierType;
+  std::string identifier;
+  CUtil::GetFilenameIdentifier(GetParam().input, identifierType, identifier);
+  EXPECT_EQ(identifierType, GetParam().expIdentifierType);
+  EXPECT_EQ(identifier, GetParam().expIdentifier);
+}
 
 TEST_P(TestUtilCleanString, CleanString)
 {
@@ -131,6 +142,12 @@ const TestUtilCleanStringData values[] = {
     {"Some.Movie.1954.BDRip.1080p.mkv", true, "Some Movie", "Some Movie (1954)", "1954"},
     {"Some «Movie».2021.WEB-DL.2160p.HDR.mkv", true, "Some «Movie»", "Some «Movie» (2021)", "2021"},
     {"Some Movie (2013).mp4", true, "Some Movie", "Some Movie (2013)", "2013"},
+    {"Some Movie (2013) [imdbid-tt123].mp4", true, "Some Movie", "Some Movie (2013)", "2013",
+     "imdb", "tt123"},
+    {"Some Movie (2013) {tmdb-123}.mp4", true, "Some Movie", "Some Movie (2013)", "2013", "tmdb",
+     "123"},
+    {"Some Movie (2013) {tmdb=123}.mp4", true, "Some Movie", "Some Movie (2013)", "2013", "tmdb",
+     "123"},
     // no result because of the text (Director Cut), it can also a be a movie translation
     {"Some (Director Cut).BDRemux.mkv", true, "Some (Director Cut)", "Some (Director Cut)", ""}};
 

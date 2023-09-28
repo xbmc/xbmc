@@ -43,6 +43,13 @@ public:
                           std::string& strYear,
                           bool bRemoveExtension = false,
                           bool bCleanChars = true);
+  static bool GetFilenameIdentifier(const std::string& fileName,
+                                    std::string& identifierType,
+                                    std::string& identifier);
+  static bool GetFilenameIdentifier(const std::string& fileName,
+                                    std::string& identifierType,
+                                    std::string& identifier,
+                                    std::string& match);
   static std::string GetTitleFromPath(const CURL& url, bool bIsFolder = false);
   static std::string GetTitleFromPath(const std::string& strFileNameAndPath, bool bIsFolder = false);
 

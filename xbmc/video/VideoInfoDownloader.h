@@ -54,7 +54,10 @@ public:
    */
   bool GetArtwork(CVideoInfoTag &details);
 
-  bool GetDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
+  bool GetDetails(const std::unordered_map<std::string, std::string>& uniqueIDs,
+                  const CScraperUrl& url,
+                  CVideoInfoTag& movieDetails,
+                  CGUIDialogProgress* pProgress = NULL);
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeList(const CScraperUrl& url, VIDEO::EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
 
@@ -70,6 +73,7 @@ protected:
   XFILE::CCurlFile*   m_http;
   std::string         m_movieTitle;
   int                 m_movieYear;
+  std::unordered_map<std::string, std::string> m_uniqueIDs;
   MOVIELIST           m_movieList;
   CVideoInfoTag       m_movieDetails;
   CScraperUrl         m_url;

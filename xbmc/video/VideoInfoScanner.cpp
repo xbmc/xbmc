@@ -654,6 +654,35 @@ namespace VIDEO
       movieTitle = tag->GetTitle();
       movieYear = tag->GetYear(); // movieYear is expected to be >= 0
     }
+
+    std::string identifierType;
+    std::string identifier;
+    long lResult = -1;
+    if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
+    {
+      const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
+      if (GetDetails(pItem, uniqueIDs, url, info2,
+                     (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
+                         ? loader.get()
+                         : nullptr,
+                     pDlgProgress))
+      {
+        if ((lResult = AddVideo(pItem, info2->Content(), false, useLocal)) < 0)
+          return INFO_ERROR;
+
+        if (fetchEpisodes)
+        {
+          INFO_RET ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress);
+          if (ret == INFO_ADDED)
+          {
+            m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
+            return INFO_ADDED;
+          }
+        }
+        return INFO_ADDED;
+      }
+    }
+
     if (pURL && pURL->HasUrls())
       url = *pURL;
     else if ((retVal = FindVideo(movieTitle, movieYear, info2, url, pDlgProgress)) <= 0)
@@ -661,11 +690,12 @@ namespace VIDEO
 
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
               url.GetFirstThumbUrl(), info2->Name(), TranslateContent(info2->Content()));
+    const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
 
-    long lResult = -1;
-    if (GetDetails(pItem, url, info2,
-                   (result == CInfoScanner::COMBINED_NFO ||
-                    result == CInfoScanner::OVERRIDE_NFO) ? loader.get() : nullptr,
+    if (GetDetails(pItem, {}, url, info2,
+                   (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
+                       ? loader.get()
+                       : nullptr,
                    pDlgProgress))
     {
       if ((lResult = AddVideo(pItem, info2->Content(), false, useLocal)) < 0)
@@ -736,6 +766,24 @@ namespace VIDEO
       movieTitle = tag->GetTitle();
       movieYear = tag->GetYear(); // movieYear is expected to be >= 0
     }
+
+    std::string identifierType;
+    std::string identifier;
+    if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
+    {
+      const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
+      if (GetDetails(pItem, uniqueIDs, url, info2,
+                     (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
+                         ? loader.get()
+                         : nullptr,
+                     pDlgProgress))
+      {
+        if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
+          return INFO_ERROR;
+        return INFO_ADDED;
+      }
+    }
+
     if (pURL && pURL->HasUrls())
       url = *pURL;
     else if ((retVal = FindVideo(movieTitle, movieYear, info2, url, pDlgProgress)) <= 0)
@@ -744,9 +792,10 @@ namespace VIDEO
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
               url.GetFirstThumbUrl(), info2->Name(), TranslateContent(info2->Content()));
 
-    if (GetDetails(pItem, url, info2,
-                   (result == CInfoScanner::COMBINED_NFO ||
-                    result == CInfoScanner::OVERRIDE_NFO) ? loader.get() : nullptr,
+    if (GetDetails(pItem, {}, url, info2,
+                   (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
+                       ? loader.get()
+                       : nullptr,
                    pDlgProgress))
     {
       int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
@@ -817,6 +866,24 @@ namespace VIDEO
       movieTitle = tag->GetTitle();
       movieYear = tag->GetYear(); // movieYear is expected to be >= 0
     }
+
+    std::string identifierType;
+    std::string identifier;
+    if (info2->IsPython() && CUtil::GetFilenameIdentifier(movieTitle, identifierType, identifier))
+    {
+      const std::unordered_map<std::string, std::string> uniqueIDs{{identifierType, identifier}};
+      if (GetDetails(pItem, uniqueIDs, url, info2,
+                     (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
+                         ? loader.get()
+                         : nullptr,
+                     pDlgProgress))
+      {
+        if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
+          return INFO_ERROR;
+        return INFO_ADDED;
+      }
+    }
+
     if (pURL && pURL->HasUrls())
       url = *pURL;
     else if ((retVal = FindVideo(movieTitle, movieYear, info2, url, pDlgProgress)) <= 0)
@@ -825,9 +892,10 @@ namespace VIDEO
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Fetching url '{}' using {} scraper (content: '{}')",
               url.GetFirstThumbUrl(), info2->Name(), TranslateContent(info2->Content()));
 
-    if (GetDetails(pItem, url, info2,
-                   (result == CInfoScanner::COMBINED_NFO ||
-                    result == CInfoScanner::OVERRIDE_NFO) ? loader.get() : nullptr,
+    if (GetDetails(pItem, {}, url, info2,
+                   (result == CInfoScanner::COMBINED_NFO || result == CInfoScanner::OVERRIDE_NFO)
+                       ? loader.get()
+                       : nullptr,
                    pDlgProgress))
     {
       if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
@@ -2031,7 +2099,9 @@ namespace VIDEO
     return INFO_ADDED;
   }
 
-  bool CVideoInfoScanner::GetDetails(CFileItem *pItem, CScraperUrl &url,
+  bool CVideoInfoScanner::GetDetails(CFileItem* pItem,
+                                     const std::unordered_map<std::string, std::string>& uniqueIDs,
+                                     CScraperUrl& url,
                                      const ScraperPtr& scraper,
                                      IVideoInfoTagLoader* loader,
                                      CGUIDialogProgress* pDialog /* = NULL */)
@@ -2042,7 +2112,7 @@ namespace VIDEO
       m_handle->SetText(url.GetTitle());
 
     CVideoInfoDownloader imdb(scraper);
-    bool ret = imdb.GetDetails(url, movieDetails, pDialog);
+    bool ret = imdb.GetDetails(uniqueIDs, url, movieDetails, pDialog);
 
     if (ret)
     {
