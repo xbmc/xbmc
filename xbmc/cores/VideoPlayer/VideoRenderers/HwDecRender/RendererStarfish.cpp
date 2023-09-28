@@ -16,6 +16,8 @@
 #include "utils/log.h"
 #include "windowing/wayland/WinSystemWaylandWebOS.h"
 
+#include <appswitching-control-block/AcbAPI.h>
+
 CRendererStarfish::CRendererStarfish()
 {
   CLog::LogF(LOGINFO, "CRendererStarfish: Instanced");
@@ -32,6 +34,12 @@ CBaseRenderer* CRendererStarfish::Create(CVideoBuffer* buffer)
 
 bool CRendererStarfish::Configure(const VideoPicture& picture, float fps, unsigned int orientation)
 {
+  auto buffer = static_cast<CStarfishVideoBuffer*>(picture.videoBuffer);
+  m_acbId = buffer->m_acbId;
+  if (m_acbId)
+  {
+    EnableAlwaysClip();
+  }
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
              GetFlagsColorMatrix(picture.color_space, picture.iWidth, picture.iHeight) |
              GetFlagsColorPrimaries(picture.color_primaries) |
@@ -84,8 +92,16 @@ void CRendererStarfish::ManageRenderArea()
         CRect{0, 0, static_cast<float>(m_sourceWidth), static_cast<float>(m_sourceHeight)};
     using namespace KODI::WINDOWING::WAYLAND;
     auto winSystem = static_cast<CWinSystemWaylandWebOS*>(CServiceBroker::GetWinSystem());
-
-    winSystem->SetExportedWindow(origRect, m_sourceRect, m_destRect);
+    if (winSystem->SupportsExportedWindow())
+    {
+      winSystem->SetExportedWindow(origRect, m_sourceRect, m_destRect);
+    }
+    else if (m_acbId)
+    {
+      AcbAPI_setCustomDisplayWindow(m_acbId, m_sourceRect.x1, m_sourceRect.y1, m_sourceRect.Width(),
+                                    m_sourceRect.Height(), m_destRect.x1, m_destRect.y1,
+                                    m_destRect.Width(), m_destRect.Height(), false, nullptr);
+    }
     m_exportedSourceRect = m_sourceRect;
     m_exportedDestRect = m_destRect;
   }
