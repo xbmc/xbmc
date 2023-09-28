@@ -223,7 +223,6 @@ macro(BUILD_DEP_TARGET)
 
   if(CMAKE_ARGS)
     set(CMAKE_ARGS CMAKE_ARGS ${CMAKE_ARGS}
-                             -DCMAKE_INSTALL_LIBDIR=lib
                              -DPROJECTSOURCE=${PROJECTSOURCE}
                              "-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}")
 
@@ -237,6 +236,12 @@ macro(BUILD_DEP_TARGET)
                                "-DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} $<$<CONFIG:Debug>:${CMAKE_CXX_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_CXX_FLAGS_RELEASE}> ${${MODULE}_CXX_FLAGS}"
                                "-DCMAKE_EXE_LINKER_FLAGS=${CMAKE_EXE_LINKER_FLAGS} $<$<CONFIG:Debug>:${CMAKE_EXE_LINKER_FLAGS_DEBUG}> $<$<CONFIG:Release>:${CMAKE_EXE_LINKER_FLAGS_RELEASE}> ${${MODULE}_EXE_LINKER_FLAGS}")
       endif()
+    endif()
+
+    if(DEFINED ${MODULE}_INSTALL_LIBDIR)
+      list(APPEND CMAKE_ARGS -DCMAKE_INSTALL_LIBDIR=${${MODULE}_INSTALL_LIBDIR})
+    else()
+      list(APPEND CMAKE_ARGS -DCMAKE_INSTALL_LIBDIR=lib)
     endif()
 
     if(${MODULE}_INSTALL_PREFIX)
