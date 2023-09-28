@@ -35,12 +35,6 @@ else
   BASE_URL := http://mirrors.kodi.tv/build-deps/sources
 endif
 
-ifeq ($(OS), android)
-  ifeq ($(findstring arm64, $(CPU)), arm64)
-  CMAKE_ARGS+= -DENABLE_NEON=YES
-  endif
-endif
-
 include ../../download-files.include
 all: .installed-$(PLATFORM)
 
