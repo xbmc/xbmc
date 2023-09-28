@@ -796,4 +796,43 @@ std::string GetResumeString(const CFileItem& item)
   }
   return {};
 }
+
+ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned int partNumber)
+{
+  ResumeInformation resumeInfo;
+
+  if (item.IsStack())
+  {
+    const std::string path = item.GetDynPath();
+    if (URIUtils::IsDiscImageStack(path))
+    {
+      // disc image stack
+      CFileItemList parts;
+      XFILE::CDirectory::GetDirectory(path, parts, "", XFILE::DIR_FLAG_DEFAULTS);
+
+      resumeInfo = GetItemResumeInformation(*parts[partNumber - 1]);
+      resumeInfo.partNumber = partNumber;
+    }
+    else
+    {
+      // video file stack
+      CVideoDatabase db;
+      if (!db.Open())
+      {
+        CLog::LogF(LOGERROR, "Cannot open VideoDatabase");
+        return {};
+      }
+
+      std::vector<uint64_t> times;
+      if (db.GetStackTimes(path, times))
+      {
+        resumeInfo.startOffset = times[partNumber - 1];
+        resumeInfo.isResumable = (resumeInfo.startOffset > 0);
+      }
+      resumeInfo.partNumber = partNumber;
+    }
+  }
+  return resumeInfo;
+}
+
 } // namespace VIDEO_UTILS

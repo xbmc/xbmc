@@ -89,4 +89,12 @@ ResumeInformation GetItemResumeInformation(const CFileItem& item);
  */
 std::string GetResumeString(const CFileItem& item);
 
+/*!
+ \brief Get resume information for a part of a stack item.
+ \param item The stack item to retrieve information for
+ \param partNumber The number of the part
+ \return The resume information.
+ */
+ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned int partNumber);
+
 } // namespace VIDEO_UTILS
