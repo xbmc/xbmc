@@ -201,7 +201,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL Clang)
   set_source_files_properties(Mime.cpp PROPERTIES COMPILE_FLAGS -O0)
 endif()
 
-if(OPENGL_FOUND OR OPENGLES_FOUND)
+if(TARGET OpenGL::GL OR TARGET OpenGL::GLES)
   list(APPEND SOURCES GLUtils.cpp)
   list(APPEND HEADERS GLUtils.h)
 endif()

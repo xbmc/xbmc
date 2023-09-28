@@ -10,14 +10,14 @@ set(HEADERS BaseRenderBuffer.h
             RenderBufferManager.h
 )
 
-if(OPENGL_FOUND OR OPENGLES_FOUND)
+if(TARGET OpenGL::GL OR TARGET OpenGL::GLES)
   list(APPEND SOURCES RenderBufferOpenGLES.cpp
                       RenderBufferPoolOpenGLES.cpp)
   list(APPEND HEADERS RenderBufferOpenGLES.h
                       RenderBufferPoolOpenGLES.h)
 endif()
 
-if(OPENGL_FOUND)
+if(TARGET OpenGL::GL)
   list(APPEND SOURCES RenderBufferOpenGL.cpp
                       RenderBufferPoolOpenGL.cpp)
   list(APPEND HEADERS RenderBufferOpenGL.h
