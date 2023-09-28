@@ -25,6 +25,7 @@ class CStarfishVideoBuffer : public CVideoBuffer
 public:
   explicit CStarfishVideoBuffer(int id) : CVideoBuffer(id) {}
   AVPixelFormat GetFormat() override { return AV_PIX_FMT_NONE; }
+  long m_acbId{0};
 };
 
 enum class StarfishState
@@ -95,7 +96,10 @@ private:
                              const int64_t numValue,
                              const char* strValue,
                              void* data);
+  static void AcbCallback(
+      long acbId, long taskId, long eventType, long appState, long playState, const char* reply);
   std::unique_ptr<StarfishMediaAPIs> m_starfishMediaAPI;
+  long m_acbId{0};
 
   CDVDStreamInfo m_hints;
   std::string m_codecname;

@@ -127,6 +127,11 @@ bool CWinSystemWaylandWebOS::SetExportedWindow(CRect orig, CRect src, CRect dest
   return false;
 }
 
+bool CWinSystemWaylandWebOS::SupportsExportedWindow()
+{
+  return m_webosForeign;
+}
+
 IShellSurface* CWinSystemWaylandWebOS::CreateShellSurface(const std::string& name)
 {
   return new CShellSurfaceWebOSShell(*this, *GetConnection(), GetMainSurface(), name,

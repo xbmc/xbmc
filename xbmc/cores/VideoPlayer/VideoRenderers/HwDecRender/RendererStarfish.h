@@ -48,4 +48,5 @@ private:
   CRect m_exportedSourceRect;
   CRect m_exportedDestRect;
   bool m_configured{false};
+  long m_acbId{0};
 };
