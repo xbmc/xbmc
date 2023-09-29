@@ -1130,8 +1130,8 @@ struct ResourcePrioritySort
         prio += 400;
 
     NPT_Url url(res.m_Uri);
-    if (URIUtils::IsHostOnLAN((const char*)url.GetHost(), false))
-        prio += 300;
+    if (URIUtils::IsHostOnLAN(url.GetHost().GetChars(), LanCheckMode::ONLY_LOCAL_SUBNET))
+      prio += 300;
 
     if (res.m_ProtocolInfo.GetProtocol() == "xbmc-get")
         prio += 200;
