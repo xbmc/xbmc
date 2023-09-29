@@ -36,7 +36,7 @@
 #include "utils/log.h"
 #include "video/PlayerController.h"
 #include "video/VideoUtils.h"
-#include "video/windows/GUIWindowVideoBase.h"
+#include "video/guilib/VideoSelectActionProcessor.h"
 
 #include <math.h>
 
@@ -502,10 +502,19 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
   if (!item.m_bIsFolder && item.IsPlugin())
     item.SetProperty("IsPlayable", true);
 
-  if (askToResume == true)
+  if (askToResume)
   {
-    if (CGUIWindowVideoBase::ShowResumeMenu(item) == false)
+    const VIDEO::GUILIB::SelectAction action =
+        VIDEO::GUILIB::CVideoSelectActionProcessorBase::ChoosePlayOrResume(item);
+    if (action == VIDEO::GUILIB::SELECT_ACTION_RESUME)
+    {
+      item.SetStartOffset(STARTOFFSET_RESUME);
+    }
+    else if (action != VIDEO::GUILIB::SELECT_ACTION_PLAY)
+    {
+      // The Resume dialog was closed without any choice
       return false;
+    }
     item.SetProperty("check_resume", false);
   }
 
