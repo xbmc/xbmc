@@ -157,7 +157,8 @@ public:
   static bool IsMusicDb(const std::string& strFile);
   static bool IsNfs(const std::string& strFile);
   static bool IsOnDVD(const std::string& strFile);
-  static bool IsOnLAN(const std::string& strFile);
+  static bool IsOnLAN(const std::string& strFile,
+                      LanCheckMode lanCheckMode = LanCheckMode::ONLY_LOCAL_SUBNET);
   static bool IsHostOnLAN(const std::string& hostName,
                           LanCheckMode lanCheckMode = LanCheckMode::ONLY_LOCAL_SUBNET);
   static bool IsPlugin(const std::string& strFile);

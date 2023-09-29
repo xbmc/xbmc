@@ -639,16 +639,16 @@ bool URIUtils::IsOnDVD(const std::string& strFile)
   return false;
 }
 
-bool URIUtils::IsOnLAN(const std::string& strPath)
+bool URIUtils::IsOnLAN(const std::string& strPath, LanCheckMode lanCheckMode)
 {
   if(IsMultiPath(strPath))
-    return IsOnLAN(CMultiPathDirectory::GetFirstPath(strPath));
+    return IsOnLAN(CMultiPathDirectory::GetFirstPath(strPath), lanCheckMode);
 
   if(IsStack(strPath))
-    return IsOnLAN(CStackDirectory::GetFirstStackedFile(strPath));
+    return IsOnLAN(CStackDirectory::GetFirstStackedFile(strPath), lanCheckMode);
 
   if(IsSpecial(strPath))
-    return IsOnLAN(CSpecialProtocol::TranslatePath(strPath));
+    return IsOnLAN(CSpecialProtocol::TranslatePath(strPath), lanCheckMode);
 
   if(IsPlugin(strPath))
     return false;
@@ -658,14 +658,14 @@ bool URIUtils::IsOnLAN(const std::string& strPath)
 
   CURL url(strPath);
   if (HasParentInHostname(url))
-    return IsOnLAN(url.GetHostName());
+    return IsOnLAN(url.GetHostName(), lanCheckMode);
 
   if(!IsRemote(strPath))
     return false;
 
   const std::string& host = url.GetHostName();
 
-  return IsHostOnLAN(host);
+  return IsHostOnLAN(host, lanCheckMode);
 }
 
 static bool addr_match(uint32_t addr, const char* target, const char* submask)
