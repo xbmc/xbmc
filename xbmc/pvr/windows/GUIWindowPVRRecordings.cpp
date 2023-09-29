@@ -28,6 +28,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
+#include "video/guilib/VideoSelectAction.h"
 #include "video/windows/GUIWindowVideoBase.h"
 
 #include <memory>
@@ -35,6 +36,7 @@
 #include <string>
 
 using namespace PVR;
+using namespace VIDEO::GUILIB;
 
 CGUIWindowPVRRecordingsBase::CGUIWindowPVRRecordingsBase(bool bRadio,
                                                          int id,
