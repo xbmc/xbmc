@@ -724,19 +724,6 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
   }
 }
 
-bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
-{
-  if (!item.IsLiveTV())
-  {
-    const SelectAction action = CVideoSelectActionProcessor::ChoosePlayOrResume(item);
-    if (action == SELECT_ACTION_RESUME)
-      item.SetStartOffset(STARTOFFSET_RESUME);
-    else if (action != SELECT_ACTION_PLAY)
-      return false; // don't do anything
-  }
-  return true;
-}
-
 bool CGUIWindowVideoBase::OnPlayOrResumeItem(int iItem, const std::string& player)
 {
   return OnFileAction(iItem, SELECT_ACTION_PLAY_OR_RESUME, player);
