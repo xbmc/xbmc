@@ -125,7 +125,7 @@ public:
        *
        * @return CGBMSurfaceBuffer* A pointer to a CGBMSurfaceBuffer object
        */
-      CGBMSurfaceBuffer* LockFrontBuffer();
+      CGBMSurfaceBuffer& LockFrontBuffer();
 
     private:
       gbm_surface* m_surface{nullptr};
