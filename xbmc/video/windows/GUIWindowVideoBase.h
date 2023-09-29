@@ -11,22 +11,18 @@
 #include "playlists/PlayListTypes.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
+#include "video/guilib/VideoSelectAction.h"
 #include "windows/GUIMediaWindow.h"
 
-enum VideoSelectAction
+namespace
 {
-  SELECT_ACTION_CHOOSE          = 0,
-  SELECT_ACTION_PLAY_OR_RESUME,
-  SELECT_ACTION_RESUME,
-  SELECT_ACTION_INFO,
-  SELECT_ACTION_MORE,
-  SELECT_ACTION_PLAY,
-  SELECT_ACTION_PLAYPART,
-  SELECT_ACTION_QUEUE
-};
+class CVideoSelectActionProcessor;
+} // unnamed namespace
 
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
+  friend class ::CVideoSelectActionProcessor;
+
 public:
   CGUIWindowVideoBase(int id, const std::string &xmlFile);
   ~CGUIWindowVideoBase(void) override;
@@ -96,7 +92,6 @@ protected:
   virtual void DoSearch(const std::string& strSearch, CFileItemList& items) {}
   std::string GetStartFolder(const std::string &dir) override;
 
-  bool OnClick(int iItem, const std::string &player = "") override;
   bool OnSelect(int iItem) override;
   /*! \brief react to an Info action on a view item
    \param item the selected item
@@ -108,10 +103,10 @@ protected:
    \param action the action to perform
    \return true if the action is performed, false otherwise
    */
-  bool OnFileAction(int item, int action, const std::string& player);
+  bool OnFileAction(int item, VIDEO::GUILIB::SelectAction action, const std::string& player);
 
   void OnRestartItem(int iItem, const std::string &player = "");
-  bool OnResumeItem(int iItem, const std::string &player = "");
+  bool OnPlayOrResumeItem(int iItem, const std::string& player = "");
   void PlayItem(int iItem, const std::string &player = "");
   bool OnPlayMedia(int iItem, const std::string &player = "") override;
   bool OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player = "") override;
@@ -128,7 +123,7 @@ protected:
 
   static bool StackingAvailable(const CFileItemList &items);
 
-  bool OnPlayStackPart(int item);
+  bool OnPlayStackPart(int itemIndex, unsigned int partNumber);
 
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;

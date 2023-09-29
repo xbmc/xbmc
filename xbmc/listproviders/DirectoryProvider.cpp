@@ -471,9 +471,10 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
 {
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
 
-  if (fileItem.HasVideoInfoTag()
-      && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION) == SELECT_ACTION_INFO
-      && OnInfo(item))
+  if (fileItem.HasVideoInfoTag() &&
+      CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+          CSettings::SETTING_MYVIDEOS_SELECTACTION) == VIDEO::GUILIB::SELECT_ACTION_INFO &&
+      OnInfo(item))
     return true;
 
   if (fileItem.HasProperty("node.target_url"))
