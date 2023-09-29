@@ -98,8 +98,8 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   static_assert(sizeof(EGLNativeWindowType) == sizeof(gbm_surface*), "Declaration specifier differs in size");
 
   if (!m_eglContext.CreatePlatformSurface(
-          m_GBM->GetDevice().GetSurface()->Get(),
-          reinterpret_cast<khronos_uintptr_t>(m_GBM->GetDevice().GetSurface()->Get())))
+          m_GBM->GetDevice().GetSurface().Get(),
+          reinterpret_cast<khronos_uintptr_t>(m_GBM->GetDevice().GetSurface().Get())))
   {
     return false;
   }

@@ -137,7 +137,7 @@ public:
      *
      * @return CGBMSurface* A pointer to the CGBMSurface object
      */
-    CGBMDevice::CGBMSurface* GetSurface() const { return m_surface.get(); }
+    CGBMDevice::CGBMSurface& GetSurface() const { return *m_surface; }
 
   private:
     gbm_device* m_device{nullptr};
