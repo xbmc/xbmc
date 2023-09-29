@@ -71,7 +71,7 @@ public:
     m_videoLayerBridge = std::move(bridge);
   };
 
-  CGBMUtils::CGBMDevice* GetGBMDevice() const { return m_GBM->GetDevice(); }
+  CGBMUtils::CGBMDevice& GetGBMDevice() const { return m_GBM->GetDevice(); }
   std::shared_ptr<CDRMUtils> GetDrm() const { return m_DRM; }
 
   std::vector<std::string> GetConnectedOutputs() override;

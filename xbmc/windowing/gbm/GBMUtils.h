@@ -158,7 +158,7 @@ public:
    *
    * @return CGBMDevice* A pointer to the CGBMDevice object
    */
-  CGBMUtils::CGBMDevice* GetDevice() const { return m_device.get(); }
+  CGBMUtils::CGBMDevice& GetDevice() const { return *m_device; }
 
 private:
   struct CGBMDeviceDeleter
