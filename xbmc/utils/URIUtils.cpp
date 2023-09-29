@@ -675,7 +675,7 @@ static bool addr_match(uint32_t addr, const char* target, const char* submask)
   return (addr & mask) == (addr2 & mask);
 }
 
-bool URIUtils::IsHostOnLAN(const std::string& host, bool offLineCheck)
+bool URIUtils::IsHostOnLAN(const std::string& host, LanCheckMode lanCheckMode)
 {
   if(host.length() == 0)
     return false;
@@ -695,7 +695,9 @@ bool URIUtils::IsHostOnLAN(const std::string& host, bool offLineCheck)
 
   if(address != INADDR_NONE)
   {
-    if (offLineCheck) // check if in private range, ref https://en.wikipedia.org/wiki/Private_network
+    if (lanCheckMode ==
+        LanCheckMode::
+            ANY_PRIVATE_SUBNET) // check if in private range, ref https://en.wikipedia.org/wiki/Private_network
     {
       if (
         addr_match(address, "192.168.0.0", "255.255.0.0") ||
