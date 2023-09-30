@@ -46,12 +46,14 @@ public:
                                             void* data);
 
 private:
-   std::vector<std::string> m_counties;
-   std::map<std::string, std::string> m_countryByCode;
-   std::map<std::string, std::string> m_countryByName;
+  std::string ReadFromLocaltime(std::string_view filename);
+  std::string ReadFromTimezone(std::string_view filename);
+  std::vector<std::string> m_counties;
+  std::map<std::string, std::string> m_countryByCode;
+  std::map<std::string, std::string> m_countryByName;
 
-   std::map<std::string, std::vector<std::string> > m_timezonesByCountryCode;
-   std::map<std::string, std::string> m_countriesByTimezoneName;
+  std::map<std::string, std::vector<std::string>> m_timezonesByCountryCode;
+  std::map<std::string, std::string> m_countriesByTimezoneName;
 };
 
 extern CPosixTimezone g_timezone;
