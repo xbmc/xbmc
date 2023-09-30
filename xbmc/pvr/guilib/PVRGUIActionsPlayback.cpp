@@ -12,7 +12,6 @@
 #include "ServiceBroker.h"
 #include "application/ApplicationEnums.h"
 #include "cores/DataCacheCore.h"
-#include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIComponent.h"
@@ -42,6 +41,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoUtils.h"
+#include "video/guilib/VideoSelectActionProcessor.h"
 
 #include <memory>
 #include <string>
@@ -59,19 +59,23 @@ CPVRGUIActionsPlayback::CPVRGUIActionsPlayback()
 bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItem& item) const
 {
   bool bPlayIt(true);
-  const std::string resumeString = VIDEO_UTILS::GetResumeString(item);
-  if (!resumeString.empty())
+
+  const VIDEO::GUILIB::SelectAction action =
+      VIDEO::GUILIB::CVideoSelectActionProcessorBase::ChoosePlayOrResume(item);
+  if (action == VIDEO::GUILIB::SELECT_ACTION_RESUME)
   {
-    CContextButtons choices;
-    choices.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
-    choices.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); // Play from beginning
-    int choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-    if (choice > 0)
-      const_cast<CFileItem*>(&item)->SetStartOffset(
-          choice == CONTEXT_BUTTON_RESUME_ITEM ? STARTOFFSET_RESUME : 0);
-    else
-      bPlayIt = false; // context menu cancelled
+    const_cast<CFileItem*>(&item)->SetStartOffset(STARTOFFSET_RESUME);
   }
+  else if (action == VIDEO::GUILIB::SELECT_ACTION_PLAY)
+  {
+    const_cast<CFileItem*>(&item)->SetStartOffset(0);
+  }
+  else
+  {
+    // The Resume dialog was closed without any choice
+    bPlayIt = false;
+  }
+
   return bPlayIt;
 }
 
