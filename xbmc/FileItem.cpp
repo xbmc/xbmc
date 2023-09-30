@@ -3741,14 +3741,14 @@ bool CFileItem::LoadDetails()
     return true;
   }
 
-  if (m_bIsFolder && URIUtils::IsPVRRecordingFileOrFolder(GetPath()))
+  if (URIUtils::IsPVRRecordingFileOrFolder(GetPath()))
   {
     if (HasProperty("watchedepisodes") || HasProperty("watched"))
       return true;
 
     const std::string parentPath = URIUtils::GetParentPath(GetPath());
 
-    //! @todo optimize, find a way to set the details of the directory without loading its content.
+    //! @todo optimize, find a way to set the details of the item without loading parent directory.
     CFileItemList items;
     if (CDirectory::GetDirectory(parentPath, items, "", XFILE::DIR_FLAG_DEFAULTS))
     {
