@@ -27,7 +27,6 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -764,7 +763,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         if (URIUtils::IsStack(path))
         {
           std::vector<uint64_t> times;
-          if (m_database.GetStackTimes(path,times) || CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
+          if (m_database.GetStackTimes(path, times) || URIUtils::IsDiscImageStack(path))
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
       }
@@ -825,7 +824,7 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int itemIndex, unsigned int partNumber
   if (!URIUtils::IsStack(path))
     return false;
 
-  if (CFileItem(CStackDirectory::GetFirstStackedFile(path), false).IsDiscImage())
+  if (URIUtils::IsDiscImageStack(path))
   {
     // disc image stack
     CFileItemList parts;

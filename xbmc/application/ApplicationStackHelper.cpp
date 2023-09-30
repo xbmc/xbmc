@@ -75,7 +75,7 @@ bool CApplicationStackHelper::InitializeStack(const CFileItem & item)
     SetRegisteredStack(GetStackPartFileItem(i), stack);
     SetRegisteredStackPartNumber(GetStackPartFileItem(i), i);
   }
-  m_currentStackIsDiscImageStack = CFileItem(CStackDirectory::GetFirstStackedFile(item.GetPath()), false).IsDiscImage();
+  m_currentStackIsDiscImageStack = URIUtils::IsDiscImageStack(item.GetDynPath());
 
   return true;
 }

@@ -175,6 +175,8 @@ public:
   static bool IsAPK(const std::string& strFile);
   static bool IsZIP(const std::string& strFile);
   static bool IsArchive(const std::string& strFile);
+  static bool IsDiscImage(const std::string& file);
+  static bool IsDiscImageStack(const std::string& file);
   static bool IsBluray(const std::string& strFile);
   static bool IsAndroidApp(const std::string& strFile);
   static bool IsLibraryFolder(const std::string& strFile);
