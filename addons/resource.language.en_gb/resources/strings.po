@@ -5725,6 +5725,7 @@ msgstr ""
 #: xbmc/pvr/PVRGUIActionsPlayback.cpp
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/guilib/VideoSelectActionProcessor.cpp
+#: xbmc/video/guilib/VideoPlayActionProcessor.cpp
 msgctxt "#12021"
 msgid "Play from beginning"
 msgstr ""
@@ -15309,7 +15310,25 @@ msgctxt "#22033"
 msgid "Charset"
 msgstr ""
 
-#empty strings from id 22034 to 22078
+#empty strings from id 22034 to 22075
+
+#. Label for setting to choose the default action for "play"
+#: system/settings/settings.xml
+msgctxt "#22076"
+msgid "Default play action"
+msgstr ""
+
+#. Label for value for default play action setting
+#: system/settings/settings.xml
+msgctxt "#22077"
+msgid "Ask if resumable"
+msgstr ""
+
+#. Label for value for default play action setting
+#: system/settings/settings.xml
+msgctxt "#22078"
+msgid "Resume"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22079"
@@ -19638,7 +19657,11 @@ msgctxt "#36203"
 msgid "Enables the \"Personal Video Recorder\" (PVR) features. This requires that at least one PVR add-on is installed."
 msgstr ""
 
-#empty string with id 36204
+#. Description of setting with label #22076 "Default play action"
+#: system/settings/settings.xml
+msgctxt "#36204"
+msgid "Toggle between [Ask if resumable] (default) and [Resume].[CR][Ask if resumable] will ask whether to play from beginning or to resume (if a resume point is present).[CR][Resume] will automatically resume videos from the last position that you were viewing them.[CR]If no resume point is set, playback will automatically start from the beginning."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36205"
