@@ -250,8 +250,18 @@ function(copy_file_to_buildtree file)
   endif()
 
   if(${CORE_SYSTEM_NAME} MATCHES "windows")
-    file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
-             "file(COPY \"${file}\" DESTINATION \"\$\{BUNDLEDIR\}/${outdir}\")\n" )
+    # if DEPENDS_PATH in fille
+    if(${file} MATCHES ${DEPENDS_PATH})
+      file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
+"file(GLOB filenames ${file})
+foreach(filename \$\{filenames\})
+  file(COPY \"\$\{filename\}\" DESTINATION \"\$\{BUNDLEDIR\}/${outdir}\")
+endforeach()\n"
+      )
+    else()
+      file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake
+               "file(COPY \"${file}\" DESTINATION \"\$\{BUNDLEDIR\}/${outdir}\")\n" )
+    endif()
   else()
     if(NOT file STREQUAL ${CMAKE_BINARY_DIR}/${outfile})
       if(NOT IS_SYMLINK "${file}")
@@ -321,11 +331,16 @@ function(copy_files_from_filelist_to_buildtree pattern)
           list(GET dir -1 dest)
         endif()
 
-        # If the full path to an existing file is specified then add that single file.
-        # Don't recursively add all files with the given name.
-        if(EXISTS ${CMAKE_SOURCE_DIR}/${src} AND (NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${src} OR DIR_OPTION))
+        if((${CMAKE_SOURCE_DIR}/${src} MATCHES ${DEPENDS_PATH}) OR
+           (EXISTS ${CMAKE_SOURCE_DIR}/${src} AND (NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/${src} OR DIR_OPTION)))
+          # If the path is in DEPENDS_PATH, pass through as is. This will be handled in a build time
+          # glob of the location. This insures any dependencies built at build time can be bundled if 
+          # required.
+          # OR If the full path to an existing file is specified then add that single file.
+          # Don't recursively add all files with the given name.
           set(files ${src})
         else()
+          # Static path contents, so we can just glob at generation time
           file(GLOB_RECURSE files RELATIVE ${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/${src})
         endif()
 
