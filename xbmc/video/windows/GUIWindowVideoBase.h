@@ -17,11 +17,13 @@
 namespace
 {
 class CVideoSelectActionProcessor;
+class CVideoPlayActionProcessor;
 } // unnamed namespace
 
 class CGUIWindowVideoBase : public CGUIMediaWindow, public IBackgroundLoaderObserver
 {
   friend class ::CVideoSelectActionProcessor;
+  friend class ::CVideoPlayActionProcessor;
 
 public:
   CGUIWindowVideoBase(int id, const std::string &xmlFile);
