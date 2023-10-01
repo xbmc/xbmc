@@ -1,6 +1,9 @@
-set(SOURCES VideoSelectActionProcessor.cpp)
+set(SOURCES VideoPlayActionProcessor.cpp
+            VideoSelectActionProcessor.cpp)
 
-set(HEADERS VideoSelectAction.h
+set(HEADERS VideoPlayAction.h
+            VideoPlayActionProcessor.h
+            VideoSelectAction.h
             VideoSelectActionProcessor.h)
 
 core_add_library(video_guilib)
