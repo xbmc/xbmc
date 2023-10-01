@@ -56,6 +56,7 @@
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 #include "view/GUIViewState.h"
 
@@ -724,9 +725,49 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
   }
 }
 
+namespace
+{
+class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
+{
+public:
+  CVideoPlayActionProcessor(CGUIWindowVideoBase& window,
+                            CFileItem& item,
+                            int itemIndex,
+                            const std::string& player)
+    : CVideoPlayActionProcessorBase(item),
+      m_window(window),
+      m_itemIndex(itemIndex),
+      m_player(player)
+  {
+  }
+
+protected:
+  bool OnResumeSelected() override
+  {
+    m_item.SetStartOffset(STARTOFFSET_RESUME);
+    return m_window.OnFileAction(m_itemIndex, SELECT_ACTION_RESUME, m_player);
+  }
+
+  bool OnPlaySelected() override
+  {
+    m_item.SetStartOffset(0);
+    return m_window.OnFileAction(m_itemIndex, SELECT_ACTION_PLAY, m_player);
+  }
+
+private:
+  CGUIWindowVideoBase& m_window;
+  const int m_itemIndex{-1};
+  const std::string m_player;
+};
+} // namespace
+
 bool CGUIWindowVideoBase::OnPlayOrResumeItem(int iItem, const std::string& player)
 {
-  return OnFileAction(iItem, SELECT_ACTION_PLAY_OR_RESUME, player);
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    return false;
+
+  CVideoPlayActionProcessor proc{*this, *m_vecItems->Get(iItem), iItem, player};
+  return proc.Process();
 }
 
 void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
