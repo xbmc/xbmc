@@ -1,2 +1,0 @@
-project/BuildDependencies/${ARCH}/addons/script.module.pil KEEP_DIR_STRUCTURE addons
-project/BuildDependencies/${ARCH}/addons/script.module.pycryptodome KEEP_DIR_STRUCTURE addons
