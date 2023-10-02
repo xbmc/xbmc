@@ -73,7 +73,6 @@ option(ENABLE_TESTING     "Enable testing support?" ON)
 
 # These are required enabled for all CI platforms, and recommended for all builds
 option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
-option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" ON)
 
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
@@ -83,6 +82,7 @@ dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?")
 dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?")
 dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
 dependent_option(ENABLE_INTERNAL_PCRE "Enable internal pcre?")
+dependent_option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?")
 dependent_option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?")
 dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?")
 if(KODI_DEPENDSBUILD OR WIN32 OR WINDOWS_STORE)
@@ -195,7 +195,7 @@ set(required_deps ASS>=0.15.0
                   Lzo2
                   OpenSSL>=1.1.0
                   PCRE
-                  RapidJSON
+                  RapidJSON>=1.0.2
                   Spdlog
                   Sqlite3
                   TagLib
