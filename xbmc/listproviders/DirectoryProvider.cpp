@@ -38,6 +38,7 @@
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 
@@ -517,6 +518,9 @@ private:
   void BuildAndExecAction(const std::string& method, const std::string& param)
   {
     std::vector<std::string> params{StringUtils::Paramify(m_item.GetPath())};
+    if (m_item.m_bIsFolder)
+      params.emplace_back("isdir");
+
     if (!param.empty())
       params.emplace_back(param);
 
@@ -531,7 +535,28 @@ private:
 bool CDirectoryProvider::OnClick(const CGUIListItemPtr& item)
 {
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
-  if (fileItem.HasVideoInfoTag())
+
+  if (fileItem.IsFavourite())
+  {
+    // Resolve the favourite
+    const CFavouritesURL url{fileItem.GetPath()};
+    if (!url.IsValid())
+      return false;
+
+    if (url.GetAction() == CFavouritesURL::Action::PLAY_MEDIA)
+    {
+      CFileItem targetItem{url.GetTarget(), url.IsDir()};
+      targetItem.LoadDetails();
+      if (targetItem.IsVideo() ||
+          (targetItem.m_bIsFolder && VIDEO_UTILS::IsItemPlayable(targetItem)))
+      {
+        CVideoSelectActionProcessor proc{*this, targetItem};
+        if (proc.Process())
+          return true;
+      }
+    }
+  }
+  else if (fileItem.HasVideoInfoTag())
   {
     CVideoSelectActionProcessor proc{*this, fileItem};
     if (proc.Process())
