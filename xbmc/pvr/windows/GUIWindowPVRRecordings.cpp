@@ -29,6 +29,7 @@
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoUtils.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 #include "video/windows/GUIWindowVideoBase.h"
 
@@ -275,6 +276,45 @@ private:
   CGUIWindowPVRRecordingsBase& m_window;
   const int m_itemIndex{-1};
 };
+
+class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
+{
+public:
+  explicit CVideoPlayActionProcessor(CFileItem& item) : CVideoPlayActionProcessorBase(item) {}
+
+protected:
+  bool OnResumeSelected() override
+  {
+    if (m_item.m_bIsFolder)
+    {
+      m_item.SetStartOffset(STARTOFFSET_RESUME);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
+          m_item, false /* no resume check */);
+    }
+    else
+    {
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().ResumePlayRecording(
+          m_item, true /* fall back to play if no resume possible */);
+    }
+    return true;
+  }
+
+  bool OnPlaySelected() override
+  {
+    if (m_item.m_bIsFolder)
+    {
+      m_item.SetStartOffset(0);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
+          m_item, false /* no resume check */);
+    }
+    else
+    {
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+          m_item, false /* no resume check */);
+    }
+    return true;
+  }
+};
 } // namespace
 
 bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
@@ -306,17 +346,8 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
 
               if (!item->IsParentFolder() && message.GetParam1() == ACTION_PLAYER_PLAY)
               {
-                if (item->m_bIsFolder)
-                {
-                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
-                      *item, true /* check resume */);
-                }
-                else
-                {
-                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-                      *item, true /* check resume */);
-                }
-                bReturn = true;
+                CVideoPlayActionProcessor proc{*item};
+                bReturn = proc.Process();
               }
               else if (item->m_bIsFolder)
               {
