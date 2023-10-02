@@ -12,9 +12,14 @@
 #include "OSScreenSaverWebOS.h"
 #include "Registry.h"
 #include "ShellSurfaceWebOSShell.h"
+#include "application/ApplicationComponents.h"
+#include "application/ApplicationPlayer.h"
 #include "cores/AudioEngine/Sinks/AESinkStarfish.h"
 #include "cores/VideoPlayer/DVDCodecs/Video/DVDVideoCodecStarfish.h"
 #include "cores/VideoPlayer/VideoRenderers/HwDecRender/RendererStarfish.h"
+#include "input/actions/Action.h"
+#include "input/actions/ActionIDs.h"
+#include "messaging/ApplicationMessenger.h"
 #include "utils/JSONVariantParser.h"
 #include "utils/log.h"
 
@@ -147,6 +152,37 @@ bool CWinSystemWaylandWebOS::OnAppLifecycleEventWrapper(LSHandle* sh, LSMessage*
 {
   HContext* context = static_cast<HContext*>(ctx);
   return static_cast<CWinSystemWaylandWebOS*>(context->userdata)->OnAppLifecycleEvent(sh, reply);
+}
+
+void CWinSystemWaylandWebOS::OnConfigure(std::uint32_t serial,
+                                         CSizeInt size,
+                                         IShellSurface::StateBitset state)
+{
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto player = components.GetComponent<CApplicationPlayer>();
+
+  // intercept minimized event, passing the minimized event causes a weird animation
+  if (state.none())
+  {
+    m_resumePlayback = false;
+
+    if (player->IsPlaying() && player->HasVideo() && !player->IsPaused())
+    {
+      CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+                                                 static_cast<void*>(new CAction(ACTION_PAUSE)));
+      m_resumePlayback = true;
+    }
+  }
+  else
+  {
+    if (m_resumePlayback && player->IsPlaying() && player->HasVideo() && player->IsPaused())
+    {
+      CServiceBroker::GetAppMessenger()->SendMsg(
+          TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
+      m_resumePlayback = false;
+    }
+    CWinSystemWayland::OnConfigure(serial, size, state);
+  }
 }
 
 bool CWinSystemWaylandWebOS::OnAppLifecycleEvent(LSHandle* sh, LSMessage* reply)

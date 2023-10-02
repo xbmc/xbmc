@@ -118,6 +118,10 @@ protected:
   virtual void SetContextSize(CSizeInt size) = 0;
   virtual IShellSurface* CreateShellSurface(const std::string& name);
 
+  // IShellSurfaceHandler
+  void OnConfigure(std::uint32_t serial, CSizeInt size, IShellSurface::StateBitset state) override;
+  void OnClose() override;
+
 private:
   // IInputHandler
   void OnEnter(InputType type) override;
@@ -132,10 +136,6 @@ private:
   void OnWindowClose() override;
   void OnWindowMaximize() override;
   void OnWindowMinimize() override;
-
-  // IShellSurfaceHandler
-  void OnConfigure(std::uint32_t serial, CSizeInt size, IShellSurface::StateBitset state) override;
-  void OnClose() override;
 
   // Registry handlers
   void OnSeatAdded(std::uint32_t name, wayland::proxy_t&& seat);
