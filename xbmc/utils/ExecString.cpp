@@ -33,6 +33,25 @@ CExecString::CExecString(const std::string& function, const std::vector<std::str
     SetExecString();
 }
 
+CExecString::CExecString(const std::string& function,
+                         const CFileItem& target,
+                         const std::string& param)
+  : m_function(function)
+{
+  m_valid = !m_function.empty() && !target.GetPath().empty();
+
+  m_params.emplace_back(StringUtils::Paramify(target.GetPath()));
+
+  if (target.m_bIsFolder)
+    m_params.emplace_back("isdir");
+
+  if (!param.empty())
+    m_params.emplace_back(param);
+
+  if (m_valid)
+    SetExecString();
+}
+
 CExecString::CExecString(const CFileItem& item, const std::string& contextWindow)
 {
   m_valid = Parse(item, contextWindow);
