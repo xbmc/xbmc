@@ -45,6 +45,6 @@ The *pull request* description should only contain information relevant to the c
 ## Updating your PR
 Making a *pull request* adhere to the standards above can be difficult. If the maintainers notice anything that they'd like changed, they'll ask you to edit your *pull request* before it gets merged. **There's no need to open a new *pull request*, just edit the existing one**. If you're not sure how to do that, our **[git guide](GIT-FU.md)** provides a step by step guide. If you're still not sure, ask us for guidance. We're all fairly proficient with *git* and happy to be of assistance.
 
-<a href="https://github.com/xbmc/xbmc"><img src="https://raw.githubusercontent.com/BraveUX/for-the-badge/master/src/images/badges/made-with-c-plus-plus.svg" height="25"></a>
-<a href="https://github.com/xbmc/xbmc"><img src="https://raw.githubusercontent.com/BraveUX/for-the-badge/master/src/images/badges/contains-technical-debt.svg" height="25"></a>
+<a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/made-with-c-plus-plus.svg" height="25"></a>
+<a href="https://github.com/xbmc/xbmc"><img src="https://forthebadge.com/images/badges/contains-technical-debt.svg" height="25"></a>
 
