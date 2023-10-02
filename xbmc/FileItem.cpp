@@ -3766,6 +3766,22 @@ bool CFileItem::LoadDetails()
     return false;
   }
 
+  if (IsVideo())
+  {
+    if (HasVideoInfoTag())
+      return true;
+
+    CVideoDatabase db;
+    if (!db.Open())
+      return false;
+
+    if (db.LoadVideoInfo(GetDynPath(), *GetVideoInfoTag()))
+      return true;
+
+    CLog::LogF(LOGERROR, "Error filling item details (path={})", GetPath());
+    return false;
+  }
+
   //! @todo add support for other types on demand.
   CLog::LogF(LOGDEBUG, "Unsupported item type (path={})", GetPath());
   return false;
