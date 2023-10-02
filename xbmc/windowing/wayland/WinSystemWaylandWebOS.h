@@ -44,6 +44,7 @@ public:
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
   ~CWinSystemWaylandWebOS() noexcept override;
   bool HasCursor() override;
+  void OnConfigure(std::uint32_t serial, CSizeInt size, IShellSurface::StateBitset state) override;
 
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
@@ -62,6 +63,8 @@ private:
 
   std::unique_ptr<HContext, int (*)(HContext*)> m_requestContext{new HContext(),
                                                                  HUnregisterServiceCallback};
+
+  bool m_resumePlayback{false};
 };
 
 } // namespace KODI::WINDOWING::WAYLAND
