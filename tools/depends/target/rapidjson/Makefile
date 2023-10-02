@@ -1,8 +1,9 @@
 -include ../../Makefile.include
 include RAPIDJSON-VERSION
 DEPS = Makefile RAPIDJSON-VERSION 001-remove_custom_cxx_flags.patch ../../download-files.include \
-                                  002-cmake-removedocs-examples.patch \
-                                  003-win-arm64.patch
+                                  002-cmake-standardise_config_installpath.patch \
+                                  003-cmake-removedocs-examples.patch \
+                                  004-win-arm64.patch
 
 CMAKE_OPTIONS=-DRAPIDJSON_HAS_STDSTRING=ON -DRAPIDJSON_BUILD_DOC=OFF -DRAPIDJSON_BUILD_EXAMPLES=OFF -DRAPIDJSON_BUILD_TESTS=OFF -DRAPIDJSON_BUILD_THIRDPARTY_GTEST=OFF
 
@@ -42,8 +43,9 @@ endif
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); rm -rf build; mkdir -p build
 	cd $(PLATFORM); patch -p1 -i ../001-remove_custom_cxx_flags.patch
-	cd $(PLATFORM); patch -p1 -i ../002-cmake-removedocs-examples.patch
-	cd $(PLATFORM); patch -p1 -i ../003-win-arm64.patch
+	cd $(PLATFORM); patch -p1 -i ../002-cmake-standardise_config_installpath.patch
+	cd $(PLATFORM); patch -p1 -i ../003-cmake-removedocs-examples.patch
+	cd $(PLATFORM); patch -p1 -i ../004-win-arm64.patch
 	cd $(PLATFORM)/build; $(CMAKE) $(CMAKE_OPTIONS) ..
 
 .installed-$(PLATFORM): $(PLATFORM)
