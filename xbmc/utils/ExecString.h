@@ -19,6 +19,7 @@ public:
   CExecString() = default;
   explicit CExecString(const std::string& execString);
   CExecString(const std::string& function, const std::vector<std::string>& params);
+  CExecString(const std::string& function, const CFileItem& target, const std::string& param);
   CExecString(const CFileItem& item, const std::string& contextWindow);
 
   virtual ~CExecString() = default;
