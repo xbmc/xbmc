@@ -20,6 +20,7 @@
 #include <string>
 #include <vector>
 
+class CFileItem;
 class TiXmlElement;
 class CVariant;
 
@@ -72,6 +73,8 @@ public:
   void Reset() override;
   bool OnClick(const CGUIListItemPtr &item) override;
   bool OnPlay(const CGUIListItemPtr& item) override;
+  bool OnInfo(const std::shared_ptr<CFileItem>& item);
+  bool OnContextMenu(const std::shared_ptr<CFileItem>& item);
   bool OnInfo(const CGUIListItemPtr &item) override;
   bool OnContextMenu(const CGUIListItemPtr &item) override;
   bool IsUpdating() const override;

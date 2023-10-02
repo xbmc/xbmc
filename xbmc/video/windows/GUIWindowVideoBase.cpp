@@ -27,7 +27,6 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "filesystem/Directory.h"
 #include "filesystem/MultiPathDirectory.h"
-#include "filesystem/StackDirectory.h"
 #include "filesystem/VideoDatabaseDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -57,11 +56,13 @@
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/guilib/VideoSelectActionProcessor.h"
 #include "view/GUIViewState.h"
 
 using namespace XFILE;
 using namespace VIDEODATABASEDIRECTORY;
 using namespace VIDEO;
+using namespace VIDEO::GUILIB;
 using namespace ADDON;
 using namespace PVR;
 using namespace KODI::MESSAGING;
@@ -168,7 +169,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
           }
 
           // not playing video, or playback speed == 1
-          return OnResumeItem(iItem);
+          return OnPlayOrResumeItem(iItem);
         }
         else if (iAction == ACTION_DELETE_ITEM)
         {
@@ -507,11 +508,6 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem, bool first)
   m_viewControl.SetSelectedItem(iItem + 1);
 }
 
-bool CGUIWindowVideoBase::OnClick(int iItem, const std::string &player)
-{
-  return CGUIMediaWindow::OnClick(iItem, player);
-}
-
 bool CGUIWindowVideoBase::OnSelect(int iItem)
 {
   if (iItem < 0 || iItem >= m_vecItems->Size())
@@ -525,88 +521,90 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
       !StringUtils::StartsWith(path, "newplaylist://") &&
       !StringUtils::StartsWith(path, "newtag://") &&
       !StringUtils::StartsWith(path, "script://"))
-    return OnFileAction(iItem, CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION), "");
+    return OnFileAction(iItem, CVideoSelectActionProcessorBase::GetDefaultSelectAction(), "");
 
   return CGUIMediaWindow::OnSelect(iItem);
 }
 
-bool CGUIWindowVideoBase::OnFileAction(int iItem, int action, const std::string& player)
+namespace
 {
-  CFileItemPtr item = m_vecItems->Get(iItem);
+class CVideoSelectActionProcessor : public CVideoSelectActionProcessorBase
+{
+public:
+  CVideoSelectActionProcessor(CGUIWindowVideoBase& window,
+                              CFileItem& item,
+                              int itemIndex,
+                              const std::string& player)
+    : CVideoSelectActionProcessorBase(item),
+      m_window(window),
+      m_itemIndex(itemIndex),
+      m_player(player)
+  {
+    // Reset the current start offset. The actual resume
+    // option is set by the processor, based on the action passed.
+    m_item.SetStartOffset(0);
+  }
+
+protected:
+  bool OnPlayPartSelected(unsigned int part) override
+  {
+    return m_window.OnPlayStackPart(m_itemIndex, part);
+  }
+
+  bool OnResumeSelected() override
+  {
+    m_item.SetStartOffset(STARTOFFSET_RESUME);
+    if (m_item.m_bIsFolder)
+    {
+      // resume playback of the folder
+      m_window.PlayItem(m_itemIndex, m_player);
+      return true;
+    }
+    // resume playback of the video
+    return m_window.OnClick(m_itemIndex);
+  }
+
+  bool OnPlaySelected() override
+  {
+    if (m_item.m_bIsFolder)
+    {
+      // play the folder
+      m_window.PlayItem(m_itemIndex, m_player);
+      return true;
+    }
+    // play the video
+    return m_window.OnClick(m_itemIndex);
+  }
+
+  bool OnQueueSelected() override
+  {
+    m_window.OnQueueItem(m_itemIndex);
+    return true;
+  }
+
+  bool OnInfoSelected() override { return m_window.OnItemInfo(m_itemIndex); }
+
+  bool OnMoreSelected() override
+  {
+    m_window.OnPopupMenu(m_itemIndex);
+    return true;
+  }
+
+private:
+  CGUIWindowVideoBase& m_window;
+  const int m_itemIndex{-1};
+  const std::string m_player;
+};
+} // namespace
+
+bool CGUIWindowVideoBase::OnFileAction(int iItem, SelectAction action, const std::string& player)
+{
+  const std::shared_ptr<CFileItem> item = m_vecItems->Get(iItem);
   if (!item)
-  {
     return false;
-  }
 
-  // Reset the current start offset. The actual resume
-  // option is set in the switch, based on the action passed.
-  item->SetStartOffset(0);
-
-  switch (action)
-  {
-  case SELECT_ACTION_CHOOSE:
-    {
-      CContextButtons choices;
-
-      if (item->IsVideoDb())
-      {
-        std::string itemPath(item->GetPath());
-        itemPath = item->GetVideoInfoTag()->m_strFileNameAndPath;
-        if (URIUtils::IsStack(itemPath) && CFileItem(CStackDirectory::GetFirstStackedFile(itemPath),false).IsDiscImage())
-          choices.Add(SELECT_ACTION_PLAYPART, 20324); // Play Part
-      }
-
-      std::string resumeString = GetResumeString(*item);
-      if (!resumeString.empty())
-      {
-        choices.Add(SELECT_ACTION_RESUME, resumeString);
-        choices.Add(SELECT_ACTION_PLAY, 12021);   // Play from beginning
-      }
-      else
-        choices.Add(SELECT_ACTION_PLAY, 208);   // Play
-
-      choices.Add(SELECT_ACTION_INFO, 22081); // Info
-      choices.Add(SELECT_ACTION_MORE, 22082); // More
-      int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-      if (value < 0)
-        return true;
-
-      return OnFileAction(iItem, value, player);
-    }
-    break;
-  case SELECT_ACTION_PLAY_OR_RESUME:
-    return OnResumeItem(iItem, player);
-  case SELECT_ACTION_INFO:
-    return OnItemInfo(iItem);
-  case SELECT_ACTION_MORE:
-    OnPopupMenu(iItem);
-    return true;
-  case SELECT_ACTION_RESUME:
-    item->SetStartOffset(STARTOFFSET_RESUME);
-    if (item->m_bIsFolder)
-    {
-      PlayItem(iItem, player);
-      return true;
-    }
-    break;
-  case SELECT_ACTION_PLAYPART:
-    if (!OnPlayStackPart(iItem))
-      return false;
-    break;
-  case SELECT_ACTION_QUEUE:
-    OnQueueItem(iItem);
-    return true;
-  case SELECT_ACTION_PLAY:
-    if (item->m_bIsFolder)
-    {
-      PlayItem(iItem, player);
-      return true;
-    }
-    break;
-  default:
-    break;
-  }
-  return OnClick(iItem, player);
+  CVideoSelectActionProcessor proc(*this, *item, iItem, player);
+  return proc.Process(action);
 }
 
 bool CGUIWindowVideoBase::OnItemInfo(int iItem)
@@ -726,80 +724,9 @@ void CGUIWindowVideoBase::LoadVideoInfo(CFileItemList& items,
   }
 }
 
-std::string CGUIWindowVideoBase::GetResumeString(const CFileItem &item)
+bool CGUIWindowVideoBase::OnPlayOrResumeItem(int iItem, const std::string& player)
 {
-  const VIDEO_UTILS::ResumeInformation resumeInfo = VIDEO_UTILS::GetItemResumeInformation(item);
-  if (resumeInfo.isResumable)
-  {
-    if (resumeInfo.startOffset > 0)
-    {
-      std::string resumeString = StringUtils::Format(
-          g_localizeStrings.Get(12022),
-          StringUtils::SecondsToTimeString(
-              static_cast<long>(CUtil::ConvertMilliSecsToSecsInt(resumeInfo.startOffset)),
-              TIME_FORMAT_HH_MM_SS));
-      if (resumeInfo.partNumber > 0)
-      {
-        const std::string partString =
-            StringUtils::Format(g_localizeStrings.Get(23051), resumeInfo.partNumber);
-        resumeString += " (" + partString + ")";
-      }
-      return resumeString;
-    }
-    else
-    {
-      return g_localizeStrings.Get(13362); // Continue watching
-    }
-  }
-  return {};
-}
-
-bool CGUIWindowVideoBase::ShowResumeMenu(CFileItem &item)
-{
-  if (!item.IsLiveTV())
-  {
-    std::string resumeString = GetResumeString(item);
-    if (!resumeString.empty())
-    { // prompt user whether they wish to resume
-      CContextButtons choices;
-      choices.Add(1, resumeString);
-      choices.Add(2, 12021); // Play from beginning
-      int retVal = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-      if (retVal < 0)
-        return false; // don't do anything
-      if (retVal == 1)
-        item.SetStartOffset(STARTOFFSET_RESUME);
-    }
-  }
-  return true;
-}
-
-bool CGUIWindowVideoBase::OnResumeItem(int iItem, const std::string &player)
-{
-  if (iItem < 0 || iItem >= m_vecItems->Size()) return true;
-  CFileItemPtr item = m_vecItems->Get(iItem);
-
-  std::string resumeString = GetResumeString(*item);
-
-  if (!resumeString.empty())
-  {
-    CContextButtons choices;
-    choices.Add(SELECT_ACTION_RESUME, resumeString);
-    choices.Add(SELECT_ACTION_PLAY, 12021);   // Play from beginning
-    int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-    if (value < 0)
-      return true;
-    return OnFileAction(iItem, value, player);
-  }
-
-  if (item->m_bIsFolder)
-  {
-    // resuming directories isn't fully supported yet. play all of its content.
-    PlayItem(iItem, player);
-    return true;
-  }
-
-  return OnFileAction(iItem, SELECT_ACTION_PLAY, player);
+  return OnFileAction(iItem, SELECT_ACTION_PLAY_OR_RESUME, player);
 }
 
 void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
@@ -823,7 +750,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         if (URIUtils::IsStack(path))
         {
           std::vector<uint64_t> times;
-          if (m_database.GetStackTimes(path,times) || CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
+          if (m_database.GetStackTimes(path, times) || URIUtils::IsDiscImageStack(path))
             buttons.Add(CONTEXT_BUTTON_PLAY_PART, 20324);
         }
       }
@@ -869,78 +796,55 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
   CGUIMediaWindow::GetContextButtons(itemNumber, buttons);
 }
 
-bool CGUIWindowVideoBase::OnPlayStackPart(int iItem)
+bool CGUIWindowVideoBase::OnPlayStackPart(int itemIndex, unsigned int partNumber)
 {
-  if (iItem < 0 || iItem >= m_vecItems->Size())
+  // part numbers are 1-based.
+  if (partNumber < 1)
     return false;
 
-  CFileItemPtr stack = m_vecItems->Get(iItem);
-  std::string path(stack->GetPath());
-  if (stack->IsVideoDb())
-    path = stack->GetVideoInfoTag()->m_strFileNameAndPath;
+  if (itemIndex < 0 || itemIndex >= m_vecItems->Size())
+    return false;
+
+  const std::shared_ptr<CFileItem> item = m_vecItems->Get(itemIndex);
+  const std::string path = item->GetDynPath();
 
   if (!URIUtils::IsStack(path))
     return false;
 
-  CFileItemList parts;
-  CDirectory::GetDirectory(path, parts, "", DIR_FLAG_DEFAULTS);
-
-  for (int i = 0; i < parts.Size(); i++)
-    parts[i]->SetLabel(StringUtils::Format(g_localizeStrings.Get(23051), i + 1));
-
-  CGUIDialogSelect* pDialog = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(WINDOW_DIALOG_SELECT);
-
-  pDialog->Reset();
-  pDialog->SetHeading(CVariant{20324});
-  pDialog->SetItems(parts);
-  pDialog->Open();
-
-  if (!pDialog->IsConfirmed())
-    return false;
-
-  int selectedFile = pDialog->GetSelectedItem();
-  if (selectedFile >= 0)
+  if (URIUtils::IsDiscImageStack(path))
   {
-    // ISO stack
-    if (CFileItem(CStackDirectory::GetFirstStackedFile(path),false).IsDiscImage())
+    // disc image stack
+    CFileItemList parts;
+    CDirectory::GetDirectory(path, parts, "", DIR_FLAG_DEFAULTS);
+
+    const int value = CVideoSelectActionProcessor::ChoosePlayOrResume(*parts[partNumber - 1]);
+    if (value == SELECT_ACTION_RESUME)
     {
-      std::string resumeString = CGUIWindowVideoBase::GetResumeString(*(parts[selectedFile].get()));
-      stack->SetStartOffset(0);
-      if (!resumeString.empty())
-      {
-        CContextButtons choices;
-        choices.Add(SELECT_ACTION_RESUME, resumeString);
-        choices.Add(SELECT_ACTION_PLAY, 12021);   // Play from beginning
-        int value = CGUIDialogContextMenu::ShowAndGetChoice(choices);
-        if (value == SELECT_ACTION_RESUME)
-        {
-          const VIDEO_UTILS::ResumeInformation resumeInfo =
-              VIDEO_UTILS::GetItemResumeInformation(*parts[selectedFile]);
-          stack->SetStartOffset(resumeInfo.startOffset);
-          stack->m_lStartPartNumber = resumeInfo.partNumber;
-        }
-        else if (value != SELECT_ACTION_PLAY)
-          return false; // if not selected PLAY, then we changed our mind so return
-      }
-      stack->m_lStartPartNumber = selectedFile + 1;
+      const VIDEO_UTILS::ResumeInformation resumeInfo =
+          VIDEO_UTILS::GetItemResumeInformation(*parts[partNumber - 1]);
+      item->SetStartOffset(resumeInfo.startOffset);
     }
-    // regular stack
+    else if (value != SELECT_ACTION_PLAY)
+      return false; // if not selected PLAY, then we changed our mind so return
+
+    item->m_lStartPartNumber = partNumber;
+  }
+  else
+  {
+    // video file stack
+    if (partNumber > 1)
+    {
+      std::vector<uint64_t> times;
+      if (m_database.GetStackTimes(path, times))
+        item->SetStartOffset(times[partNumber - 1]);
+    }
     else
     {
-      if (selectedFile > 0)
-      {
-        std::vector<uint64_t> times;
-        if (m_database.GetStackTimes(path,times))
-          stack->SetStartOffset(times[selectedFile - 1]);
-      }
-      else
-        stack->SetStartOffset(0);
+      item->SetStartOffset(0);
     }
-
-
   }
-
-  return true;
+  // play the video
+  return OnClick(itemIndex);
 }
 
 bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
@@ -957,14 +861,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_PLAY_PART:
     {
-      if (OnPlayStackPart(itemNumber))
-      {
-        // call CGUIMediaWindow::OnClick() as otherwise autoresume will kick in
-        CGUIMediaWindow::OnClick(itemNumber);
-        return true;
-      }
-      else
-        return false;
+      return OnFileAction(itemNumber, SELECT_ACTION_PLAYPART, "");
     }
   case CONTEXT_BUTTON_PLAY_WITH:
     {
@@ -985,7 +882,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         // any other select actions but play or resume, resume, play or playpart
         // don't make any sense here since the user already decided that he'd
         // like to play the item (just with a specific player)
-        VideoSelectAction selectAction = (VideoSelectAction)CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION);
+        SelectAction selectAction = CVideoSelectActionProcessorBase::GetDefaultSelectAction();
         if (selectAction != SELECT_ACTION_PLAY_OR_RESUME &&
             selectAction != SELECT_ACTION_RESUME &&
             selectAction != SELECT_ACTION_PLAY &&

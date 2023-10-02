@@ -886,9 +886,9 @@ bool CFileItem::IsVideo() const
   if (HasPictureInfoTag())
     return false;
 
-  // only tv recordings are videos...
-  if (IsPVRRecording())
-    return !GetPVRRecordingInfoTag()->IsRadio();
+  // TV recordings are videos...
+  if (!m_bIsFolder && URIUtils::IsPVRTVRecordingFileOrFolder(GetPath()))
+    return true;
 
   // ... all other PVR items are not.
   if (IsPVR())
@@ -1178,7 +1178,7 @@ bool CFileItem::IsNFO() const
 
 bool CFileItem::IsDiscImage() const
 {
-  return URIUtils::HasExtension(GetDynPath(), ".img|.iso|.nrg|.udf");
+  return URIUtils::IsDiscImage(GetDynPath());
 }
 
 bool CFileItem::IsOpticalMediaFile() const
@@ -3741,14 +3741,14 @@ bool CFileItem::LoadDetails()
     return true;
   }
 
-  if (m_bIsFolder && URIUtils::IsPVRRecordingFileOrFolder(GetPath()))
+  if (URIUtils::IsPVRRecordingFileOrFolder(GetPath()))
   {
     if (HasProperty("watchedepisodes") || HasProperty("watched"))
       return true;
 
     const std::string parentPath = URIUtils::GetParentPath(GetPath());
 
-    //! @todo optimize, find a way to set the details of the directory without loading its content.
+    //! @todo optimize, find a way to set the details of the item without loading parent directory.
     CFileItemList items;
     if (CDirectory::GetDirectory(parentPath, items, "", XFILE::DIR_FLAG_DEFAULTS))
     {

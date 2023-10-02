@@ -36,9 +36,10 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
-#include "video/windows/GUIWindowVideoBase.h"
+#include "video/guilib/VideoSelectActionProcessor.h"
 
 #include <memory>
 #include <mutex>
@@ -465,16 +466,77 @@ bool ExecuteAction(const std::string& execute)
   }
   return false;
 }
+
+class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
+{
+public:
+  CVideoSelectActionProcessor(CDirectoryProvider& provider, CFileItem& item)
+    : CVideoSelectActionProcessorBase(item), m_provider(provider)
+  {
+  }
+
+protected:
+  bool OnPlayPartSelected(unsigned int part) override
+  {
+    // part numbers are 1-based
+    BuildAndExecAction("PlayMedia", StringUtils::Format("playoffset={}", part - 1));
+    return true;
+  }
+
+  bool OnResumeSelected() override
+  {
+    BuildAndExecAction("PlayMedia", "resume");
+    return true;
+  }
+
+  bool OnPlaySelected() override
+  {
+    BuildAndExecAction("PlayMedia", "noresume");
+    return true;
+  }
+
+  bool OnQueueSelected() override
+  {
+    BuildAndExecAction("QueueMedia", "");
+    return true;
+  }
+
+  bool OnInfoSelected() override
+  {
+    m_provider.OnInfo(std::make_shared<CFileItem>(m_item));
+    return true;
+  }
+
+  bool OnMoreSelected() override
+  {
+    m_provider.OnContextMenu(std::make_shared<CFileItem>(m_item));
+    return true;
+  }
+
+private:
+  void BuildAndExecAction(const std::string& method, const std::string& param)
+  {
+    std::vector<std::string> params{StringUtils::Paramify(m_item.GetPath())};
+    if (!param.empty())
+      params.emplace_back(param);
+
+    const CExecString es{method, params};
+    ExecuteAction(es.GetExecString());
+  }
+
+  CDirectoryProvider& m_provider;
+};
 } // namespace
 
-bool CDirectoryProvider::OnClick(const CGUIListItemPtr &item)
+bool CDirectoryProvider::OnClick(const CGUIListItemPtr& item)
 {
   CFileItem fileItem(*std::static_pointer_cast<CFileItem>(item));
-
-  if (fileItem.HasVideoInfoTag()
-      && CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_MYVIDEOS_SELECTACTION) == SELECT_ACTION_INFO
-      && OnInfo(item))
-    return true;
+  if (fileItem.HasVideoInfoTag())
+  {
+    CVideoSelectActionProcessor proc{*this, fileItem};
+    if (proc.Process())
+      return true;
+  }
 
   if (fileItem.HasProperty("node.target_url"))
     fileItem.SetPath(fileItem.GetProperty("node.target_url").asString());
@@ -519,10 +581,8 @@ bool CDirectoryProvider::OnPlay(const CGUIListItemPtr& item)
   return true;
 }
 
-bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
+bool CDirectoryProvider::OnInfo(const std::shared_ptr<CFileItem>& fileItem)
 {
-  auto fileItem = std::static_pointer_cast<CFileItem>(item);
-
   if (fileItem->HasAddonInfo())
   {
     return CGUIDialogAddonInfo::ShowForItem(fileItem);
@@ -551,15 +611,25 @@ bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
   return false;
 }
 
-bool CDirectoryProvider::OnContextMenu(const CGUIListItemPtr& item)
+bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
 {
   auto fileItem = std::static_pointer_cast<CFileItem>(item);
+  return OnInfo(fileItem);
+}
 
+bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CFileItem>& fileItem)
+{
   const std::string target = GetTarget(*fileItem);
   if (!target.empty())
     fileItem->SetProperty("targetwindow", target);
 
   return CONTEXTMENU::ShowFor(fileItem);
+}
+
+bool CDirectoryProvider::OnContextMenu(const CGUIListItemPtr& item)
+{
+  auto fileItem = std::static_pointer_cast<CFileItem>(item);
+  return OnContextMenu(fileItem);
 }
 
 bool CDirectoryProvider::IsUpdating() const

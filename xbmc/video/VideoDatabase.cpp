@@ -3216,7 +3216,7 @@ void CVideoDatabase::GetBookMarksForFile(const std::string& strFilenameAndPath, 
 {
   try
   {
-    if (URIUtils::IsStack(strFilenameAndPath) && CFileItem(CStackDirectory::GetFirstStackedFile(strFilenameAndPath),false).IsDiscImage())
+    if (URIUtils::IsDiscImageStack(strFilenameAndPath))
     {
       CStackDirectory dir;
       CFileItemList fileList;
@@ -4024,7 +4024,7 @@ bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag)
 
   try
   {
-    if (URIUtils::IsStack(tag.m_strFileNameAndPath) && CFileItem(CStackDirectory::GetFirstStackedFile(tag.m_strFileNameAndPath),false).IsDiscImage())
+    if (URIUtils::IsDiscImageStack(tag.m_strFileNameAndPath))
     {
       CStackDirectory dir;
       CFileItemList fileList;

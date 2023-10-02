@@ -82,4 +82,19 @@ struct ResumeInformation
  */
 ResumeInformation GetItemResumeInformation(const CFileItem& item);
 
+/*!
+ \brief Get a localized resume string for the given item, if it is resumable.
+ \param item The item to retrieve the resume string for
+ \return The resume string or empty string in case the item is not resumable.
+ */
+std::string GetResumeString(const CFileItem& item);
+
+/*!
+ \brief Get resume information for a part of a stack item.
+ \param item The stack item to retrieve information for
+ \param partNumber The number of the part
+ \return The resume information.
+ */
+ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned int partNumber);
+
 } // namespace VIDEO_UTILS

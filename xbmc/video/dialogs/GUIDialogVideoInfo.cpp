@@ -55,6 +55,7 @@
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
+#include "video/guilib/VideoSelectActionProcessor.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include <algorithm>
@@ -65,6 +66,7 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
+using namespace VIDEO::GUILIB;
 
 #define CONTROL_IMAGE                3
 #define CONTROL_TEXTAREA             4
@@ -748,12 +750,20 @@ void CGUIDialogVideoInfo::Play(bool resume)
   {
     m_movieItem->SetStartOffset(STARTOFFSET_RESUME);
   }
-  else if (!CGUIWindowVideoBase::ShowResumeMenu(*m_movieItem))
+  else
   {
-    // The Resume dialog was closed without any choice
-    SetMovie(m_movieItem.get()); // restore cast list, which was cleared on GUI_MSG_WINDOW_DEINIT
-    Open();
-    return;
+    const SelectAction action = CVideoSelectActionProcessorBase::ChoosePlayOrResume(*m_movieItem);
+    if (action == SELECT_ACTION_RESUME)
+    {
+      m_movieItem->SetStartOffset(STARTOFFSET_RESUME);
+    }
+    else if (action != SELECT_ACTION_PLAY)
+    {
+      // The Resume dialog was closed without any choice
+      SetMovie(m_movieItem.get()); // restore cast list, which was cleared on dialog close
+      Open();
+      return;
+    }
   }
 
   m_movieItem->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);

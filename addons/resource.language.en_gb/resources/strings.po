@@ -955,9 +955,8 @@ msgstr ""
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
 #: xbmc/games/windows/GUIWindowGames.cpp
 #: xbmc/music/ContextMenus.h
-#: xbmc/music/MusicUtils.cpp
 #: xbmc/video/ContextMenus.cpp
-#: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
 #: system/settings/settings.xml
 msgctxt "#208"
 msgid "Play"
@@ -5723,10 +5722,9 @@ msgstr ""
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/Autorun.cpp
-#: xbmc/pvr/PVRContextMenus.cpp
-#: xbmc/pvr/PVRGUIActions.cpp
+#: xbmc/pvr/PVRGUIActionsPlayback.cpp
 #: xbmc/video/ContextMenus.cpp
-#: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
 msgctxt "#12021"
 msgid "Play from beginning"
 msgstr ""
@@ -6928,11 +6926,13 @@ msgctxt "#13346"
 msgid "Movie information"
 msgstr ""
 
+#. Label for 'queue item' (adds an item to a playlist), used at several places
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: system/settings/settings.xml
 #: xbmc/music/ContextMenus.h
-#: xbmc/video/ContextMenus.cpp
+#: xbmc/video/ContextMenus.h
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
 msgctxt "#13347"
 msgid "Queue item"
 msgstr ""
@@ -13303,6 +13303,9 @@ msgctxt "#20323"
 msgid "Movie plot"
 msgstr ""
 
+#. Label for context menu entry to start playback of a part of a video stack
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#20324"
 msgid "Play part..."
 msgstr ""
@@ -15318,11 +15321,17 @@ msgctxt "#22080"
 msgid "Choose"
 msgstr ""
 
+#. Label for video select action 'show info'
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
 #: system/settings/settings.xml
 msgctxt "#22081"
 msgid "Show information"
 msgstr ""
 
+#. Label to denote that there is something 'more'
+#: xbmc/listproviders/DirectoryProvider.cpp
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
+#: system/settings/settings.xml
 msgctxt "#22082"
 msgid "More..."
 msgstr ""
@@ -15342,6 +15351,9 @@ msgctxt "#23050"
 msgid "Activate teletext"
 msgstr ""
 
+#. Label for disc stack part and number
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
+#: xbmc/video/VideoUtils.cpp
 msgctxt "#23051"
 msgid "Part {0:d}"
 msgstr ""
@@ -19475,7 +19487,7 @@ msgstr ""
 #. Description of setting with label #22079 "Default select action"
 #: system/settings/settings.xml
 msgctxt "#36177"
-msgid "Toggle between [Choose], [Play] (default), [Resume] and [Show information].[CR][Choose] Will select an item, e.g. open a directory in files mode.[CR][Resume] Will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgid "Toggle between [Choose], [Play] (default), [Resume], [Show information] and [Queue item].[CR][Choose] will open a context menu to select an item, e.g. show information.[CR][Play] will automatically play videos from the beginning or if a resume point is present ask whether to play from beginning or to resume.[CR][Resume] Will automatically resume videos from the last position that you were viewing them.[CR][Show information] will open the video's information dialog.[CR][Queue item] will append the video to the video playlist."
 msgstr ""
 
 #. Description of setting with label #20433 "Extract thumbnails and video information"

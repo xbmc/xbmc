@@ -36,7 +36,7 @@
 #include "utils/log.h"
 #include "video/PlayerController.h"
 #include "video/VideoUtils.h"
-#include "video/windows/GUIWindowVideoBase.h"
+#include "video/guilib/VideoSelectActionProcessor.h"
 
 #include <math.h>
 
@@ -502,14 +502,33 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
   if (!item.m_bIsFolder && item.IsPlugin())
     item.SetProperty("IsPlayable", true);
 
-  if (askToResume == true)
+  if (askToResume)
   {
-    if (CGUIWindowVideoBase::ShowResumeMenu(item) == false)
+    const VIDEO::GUILIB::SelectAction action =
+        VIDEO::GUILIB::CVideoSelectActionProcessorBase::ChoosePlayOrResume(item);
+    if (action == VIDEO::GUILIB::SELECT_ACTION_RESUME)
+    {
+      item.SetStartOffset(STARTOFFSET_RESUME);
+    }
+    else if (action != VIDEO::GUILIB::SELECT_ACTION_PLAY)
+    {
+      // The Resume dialog was closed without any choice
       return false;
+    }
     item.SetProperty("check_resume", false);
   }
 
-  if (item.m_bIsFolder || item.IsPlayList())
+  if (item.IsStack())
+  {
+    const VIDEO_UTILS::ResumeInformation resumeInfo =
+        VIDEO_UTILS::GetStackPartResumeInformation(item, playOffset + 1);
+
+    if (item.GetStartOffset() == STARTOFFSET_RESUME)
+      item.SetStartOffset(resumeInfo.startOffset);
+
+    item.m_lStartPartNumber = resumeInfo.partNumber;
+  }
+  else if (!forcePlay /* queue */ || item.m_bIsFolder || item.IsPlayList())
   {
     CFileItemList items;
     GetItemsForPlayList(std::make_shared<CFileItem>(item), items);
@@ -774,17 +793,17 @@ static int SubtitleShiftDown(const std::vector<std::string>& params)
 ///   \table_row2_l{
 ///     <b>`PlayMedia(media[\,isdir][\,1]\,[playoffset=xx])`</b>
 ///     ,
-///     Plays the media. This can be a playlist\, music\, or video file\, directory\,
-///     plugin or an Url. The optional parameter "\,isdir" can be used for playing
-///     a directory. "\,1" will start the media without switching to fullscreen.
-///     If media is a playlist\, you can use playoffset=xx where xx is
-///     the position to start playback from.
+///     Plays the given media. This can be a playlist\, music\, or video file\, directory\,
+///     plugin\, disc image stack\, video file stack or an URL. The optional parameter `,isdir` can
+///     be used for playing a directory. `,1` will start the media without switching to fullscreen.
+///     If media is a playlist or a disc image stack or a video file stack\, you can use
+///     playoffset=xx where xx is the position to start playback from.
 ///     @param[in] media                 URL to media to play (optional).
-///     @param[in] isdir                 Set "isdir" if media is a directory (optional).
-///     @param[in] windowed              Set "1" to start playback without switching to fullscreen (optional).
-///     @param[in] resume                Set "resume" to force resuming (optional).
-///     @param[in] noresume              Set "noresume" to force not resuming (optional).
-///     @param[in] playeroffset          Set "playoffset=<offset>" to start playback from a given position in a playlist (optional).
+///     @param[in] isdir                 Set `isdir` if media is a directory (optional).
+///     @param[in] windowed              Set `1` to start playback without switching to fullscreen (optional).
+///     @param[in] resume                Set `resume` to force resuming (optional).
+///     @param[in] noresume              Set `noresume` to force not resuming (optional).
+///     @param[in] playoffset            Set `playoffset=<offset>` to start playback from a given position in a playlist or stack (optional).
 ///   }
 ///   \table_row2_l{
 ///     <b>`PlayWith(core)`</b>
@@ -803,17 +822,18 @@ static int SubtitleShiftDown(const std::vector<std::string>& params)
 ///     <b>`QueueMedia(media[\,isdir][\,1][\,playnext]\,[playoffset=xx])`</b>
 ///     \anchor Builtin_QueueMedia,
 ///     Queues the given media. This can be a playlist\, music\, or video file\, directory\,
-///     plugin or an Url. The optional parameter "\,isdir" can be used for playing
-///     a directory. "\,1" will start the media without switching to fullscreen.
-///     If media is a playlist\, you can use playoffset=xx where xx is
-///     the position to start playback from.
+///     plugin\, disc image stack\, video file stack or an URL. The optional parameter `,isdir` can
+///     be used for playing a directory. `,1` will start the media without switching to fullscreen.
+///     If media is a playlist or a disc image stack or a video file stack\, you can use
+///     playoffset=xx where xx is the position to start playback from.
+///     where xx is the position to start playback from.
 ///     @param[in] media                 URL of media to queue.
-///     @param[in] isdir                 Set "isdir" if media is a directory (optional).
-///     @param[in] 1                     Set "1" to start playback without switching to fullscreen (optional).
-///     @param[in] resume                Set "resume" to force resuming (optional).
-///     @param[in] noresume              Set "noresume" to force not resuming (optional).
-///     @param[in] playeroffset          Set "playoffset=<offset>" to start playback from a given position in a playlist (optional).
-///     @param[in] playnext              Set "playnext" to play the media right after the currently playing item, if player is currently
+///     @param[in] isdir                 Set `isdir` if media is a directory (optional).
+///     @param[in] 1                     Set `1` to start playback without switching to fullscreen (optional).
+///     @param[in] resume                Set `resume` to force resuming (optional).
+///     @param[in] noresume              Set `noresume` to force not resuming (optional).
+///     @param[in] playoffset            Set `playoffset=<offset>` to start playback from a given position in a playlist or stack (optional).
+///     @param[in] playnext              Set `playnext` to play the media right after the currently playing item, if player is currently
 ///     playing. If player is not playing, append media to current playlist (optional).
 ///     <p><hr>
 ///     @skinning_v20 **[New builtin]** \link Builtin_QueueMedia `QueueMedia(media[\,isdir][\,1][\,playnext]\,[playoffset=xx])`\endlink
