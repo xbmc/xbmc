@@ -17,7 +17,7 @@
 			<animation effect="slide" start="0,0" end="-1,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3)">Conditional</animation>
 			<animation effect="slide" start="0,0" end="-1,0" time="0" condition="String.IsEqual(Skin.AspectRatio,16:9) + Container.Content(Episodes)">Conditional</animation>
 			<animation effect="slide" start="0,0" end="28,0" time="0" condition="String.IsEqual(Skin.AspectRatio,4:3) + Container.Content(Episodes)">Conditional</animation>
-			<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos) + !Container.Content(Videos)" height="250" width="218">
+			<itemlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos) + !Container.Content(Videos) + !Container.Content(Favourites)" height="250" width="218">
 				<control type="image">
 					<posx>5</posx>
 					<posy>0</posy>
@@ -89,7 +89,7 @@
 					<texture>$INFO[ListItem.Overlay]</texture>
 				</control>
 			</itemlayout>
-			<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos) + !Container.Content(Videos)" height="250" width="218">
+			<focusedlayout condition="!Container.Content(Movies) + !Container.Content(Seasons) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(MusicVideos) + !Container.Content(Videos) + !Container.Content(Favourites)" height="250" width="218">
 				<control type="image">
 					<posx>5</posx>
 					<posy>0</posy>
@@ -420,6 +420,76 @@
 					<height>30</height>
 					<texture>$INFO[ListItem.Overlay]</texture>
 					<visible>!ListItem.IsResumable</visible>
+				</control>
+			</focusedlayout>
+			<itemlayout condition="Container.Content(Favourites)" width="267" height="360">
+				<control type="image">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>247</width>
+					<height>340</height>
+					<texture colordiffuse="50000000">black.png</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>247</width>
+					<height>277</height>
+					<aspectratio align="center">keep</aspectratio>
+					<texture>$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>287</posy>
+					<width>247</width>
+					<height>63</height>
+					<texture colordiffuse="50000000">black.png</texture>
+				</control>
+				<control type="textbox">
+					<posx>10</posx>
+					<posy>287</posy>
+					<width>247</width>
+					<height>63</height>
+					<font>font20</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<selectedcolor>selected</selectedcolor>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout condition="Container.Content(Favourites)" width="267" height="360">
+				<control type="image">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>247</width>
+					<height>340</height>
+					<texture>list_focus.png</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>247</width>
+					<height>277</height>
+					<aspectratio align="center">keep</aspectratio>
+					<texture>$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>287</posy>
+					<width>247</width>
+					<height>63</height>
+					<texture colordiffuse="50000000">black.png</texture>
+				</control>
+				<control type="textbox">
+					<posx>10</posx>
+					<posy>287</posy>
+					<width>247</width>
+					<height>63</height>
+					<font>font20</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<selectedcolor>selected</selectedcolor>
+					<label>$INFO[ListItem.Label]</label>
 				</control>
 			</focusedlayout>
 		</control>
