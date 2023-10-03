@@ -155,4 +155,5 @@ void CRendererStarfish::RenderUpdate(
   {
     return;
   }
+  ManageRenderArea();
 }
