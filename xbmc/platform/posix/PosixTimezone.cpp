@@ -6,21 +6,23 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include <time.h>
-#include "PlatformDefs.h"
 #include "PosixTimezone.h"
-#include "utils/SystemInfo.h"
 
 #include "ServiceBroker.h"
-#include "utils/StringUtils.h"
 #include "XBDateTime.h"
-#include "settings/lib/Setting.h"
-#include "settings/lib/SettingDefinitions.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include <stdlib.h>
+#include "settings/lib/Setting.h"
+#include "settings/lib/SettingDefinitions.h"
+#include "utils/StringUtils.h"
+#include "utils/SystemInfo.h"
 
 #include <algorithm>
+#include <climits>
+#include <cstdlib>
+#include <ctime>
+
+#include "PlatformDefs.h"
 
 CPosixTimezone::CPosixTimezone()
 {
@@ -195,44 +197,58 @@ void CPosixTimezone::SetTimezone(const std::string& timezoneName)
 
 std::string CPosixTimezone::GetOSConfiguredTimezone()
 {
-   char timezoneName[255];
+  std::string timezoneName;
 
-   // try Slackware approach first
-   ssize_t rlrc = readlink("/etc/localtime-copied-from"
-                           , timezoneName, sizeof(timezoneName)-1);
+  // try Slackware approach first
+  timezoneName = ReadFromLocaltime("/etc/localtime-copied-from");
 
-   // RHEL and maybe other distros make /etc/localtime a symlink
-   if (rlrc == -1)
-     rlrc = readlink("/etc/localtime", timezoneName, sizeof(timezoneName)-1);
+  // RHEL and maybe other distros make /etc/localtime a symlink
+  if (timezoneName.empty())
+    timezoneName = ReadFromLocaltime("/etc/localtime");
 
-   if (rlrc != -1)
-   {
-     timezoneName[rlrc] = '\0';
+  // now try Debian approach
+  if (timezoneName.empty())
+    timezoneName = ReadFromTimezone("/etc/timezone");
 
-     char* p = strrchr(timezoneName,'/');
-     if (p)
-     { // we want the previous '/'
-       char* q = p;
-       *q = 0;
-       p = strrchr(timezoneName,'/');
-       *q = '/';
-       if (p)
-         p++;
-     }
-     return p;
-   }
+  return timezoneName;
+}
 
-   // now try Debian approach
-   timezoneName[0] = 0;
-   FILE* fp = fopen("/etc/timezone", "r");
-   if (fp)
-   {
-      if (fgets(timezoneName, sizeof(timezoneName), fp))
-        timezoneName[strlen(timezoneName)-1] = '\0';
-      fclose(fp);
-   }
+std::string CPosixTimezone::ReadFromLocaltime(const std::string_view filename)
+{
+  char path[PATH_MAX];
+  if(realpath(filename.data(), path) == nullptr)
+    return "";
 
-   return timezoneName;
+  // Read the timezone starting from the second last occurrence of /
+  std::string str = path;
+  size_t pos = str.rfind('/');
+  if (pos == std::string::npos)
+    return "";
+
+  pos = str.rfind('/', pos - 1);
+  if (pos == std::string::npos)
+    return "";
+
+  return str.substr(pos + 1);
+}
+
+std::string CPosixTimezone::ReadFromTimezone(const std::string_view filename)
+{
+  std::string timezoneName;
+  std::FILE* file = std::fopen(filename.data(), "r");
+
+  if (file != nullptr)
+  {
+    char tz[255];
+    if (std::fgets(tz, sizeof(tz), file) != nullptr)
+    {
+      timezoneName = tz;
+    }
+
+    std::fclose(file);
+  }
+
+  return timezoneName;
 }
 
 void CPosixTimezone::SettingOptionsTimezoneCountriesFiller(
