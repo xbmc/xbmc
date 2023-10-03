@@ -436,8 +436,12 @@ bool CAddonSettings::HasSettings() const
 
 bool CAddonSettings::Save()
 {
-  assert(m_addon);
-  return m_addon->SaveSettings();
+  std::shared_ptr<IAddon> addon = m_addon.lock();
+  assert(addon);
+  if (addon)
+    return addon->SaveSettings();
+  else
+    return false;
 }
 
 std::string CAddonSettings::GetSettingLabel(int label) const

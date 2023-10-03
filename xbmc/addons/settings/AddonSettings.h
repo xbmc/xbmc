@@ -192,7 +192,7 @@ private:
   const std::string m_addonPath;
   const std::string m_addonProfile;
   const AddonInstanceId m_instanceId{ADDON_SETTINGS_ID};
-  std::shared_ptr<IAddon> m_addon;
+  std::weak_ptr<IAddon> m_addon;
 
   uint32_t m_unidentifiedSettingId = 0;
   int m_unknownSettingLabelId;
