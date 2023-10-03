@@ -43,10 +43,13 @@ private:
                              const int64_t numValue,
                              const char* strValue,
                              void* data);
+  static void AcbCallback(
+      long acbId, long taskId, long eventType, long appState, long playState, const char* reply);
 
   std::unique_ptr<StarfishMediaAPIs> m_starfishMediaAPI;
   AEAudioFormat m_format;
   std::chrono::nanoseconds m_pts{0};
   int64_t m_bufferSize{0};
   bool m_firstFeed{true};
+  long m_acbId{0};
 };

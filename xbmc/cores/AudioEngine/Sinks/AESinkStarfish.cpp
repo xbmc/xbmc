@@ -15,6 +15,8 @@
 
 #include <thread>
 
+#include <appswitching-control-block/AcbAPI.h>
+
 using namespace std::chrono_literals;
 
 namespace
@@ -159,12 +161,28 @@ bool CAESinkStarfish::Initialize(AEAudioFormat& format, std::string& device)
     return false;
   }
 
+  m_acbId = AcbAPI_create();
+  if (m_acbId)
+  {
+    if (!AcbAPI_initialize(m_acbId, PLAYER_TYPE_AUDIO, getenv("APPID"), &AcbCallback))
+    {
+      AcbAPI_destroy(m_acbId);
+      m_acbId = 0;
+    }
+  }
+
   return true;
 }
 
 void CAESinkStarfish::Deinitialize()
 {
   m_starfishMediaAPI->Unload();
+
+  if (m_acbId)
+  {
+    AcbAPI_finalize(m_acbId);
+    AcbAPI_destroy(m_acbId);
+  }
 }
 
 double CAESinkStarfish::GetCacheTotal()
@@ -246,7 +264,25 @@ void CAESinkStarfish::PlayerCallback(const int32_t type,
   switch (type)
   {
     case PF_EVENT_TYPE_STR_STATE_UPDATE__LOADCOMPLETED:
+      if (m_acbId)
+      {
+        AcbAPI_setSinkType(m_acbId, SINK_TYPE_MAIN);
+        AcbAPI_setMediaId(m_acbId, m_starfishMediaAPI->getMediaID());
+        AcbAPI_setState(m_acbId, APPSTATE_FOREGROUND, PLAYSTATE_LOADED, nullptr);
+      }
       m_starfishMediaAPI->Play();
+      break;
+    case PF_EVENT_TYPE_STR_STATE_UPDATE__PLAYING:
+      if (m_acbId)
+        AcbAPI_setState(m_acbId, APPSTATE_FOREGROUND, PLAYSTATE_PLAYING, nullptr);
+      break;
+    case PF_EVENT_TYPE_STR_STATE_UPDATE__PAUSED:
+      if (m_acbId)
+        AcbAPI_setState(m_acbId, APPSTATE_FOREGROUND, PLAYSTATE_PAUSED, nullptr);
+      break;
+    case PF_EVENT_TYPE_STR_STATE_UPDATE__UNLOADCOMPLETED:
+      if (m_acbId)
+        AcbAPI_setState(m_acbId, APPSTATE_FOREGROUND, PLAYSTATE_UNLOADED, nullptr);
       break;
     default:
       std::string logstr = strValue != nullptr ? strValue : "";
@@ -261,4 +297,12 @@ void CAESinkStarfish::PlayerCallback(const int32_t type,
                                      void* data)
 {
   static_cast<CAESinkStarfish*>(data)->PlayerCallback(type, numValue, strValue);
+}
+
+void CAESinkStarfish::AcbCallback(
+    long acbId, long taskId, long eventType, long appState, long playState, const char* reply)
+{
+  CLog::LogF(LOGDEBUG,
+             "ACB callback: acbId={}, taskId={}, eventType={}, appState={}, playState={}, reply={}",
+             acbId, taskId, eventType, appState, playState, reply);
 }
