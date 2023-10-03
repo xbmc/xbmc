@@ -56,7 +56,6 @@ This page shows the window names, the window definition, the window ID and the s
 | LockSettings            | WINDOW_DIALOG_LOCK_SETTINGS          | 10131     | DialogSettings.xml                  |                                    |
 | ContentSettings         | WINDOW_DIALOG_CONTENT_SETTINGS       | 10132     | DialogSettings.xml                  |                                    |
 | LibexportSettings       | WINDOW_DIALOG_LIBEXPORT_SETTINGS     | 10133     | DialogSettings.xml                  |                                    |
-| Favourites              | WINDOW_DIALOG_FAVOURITES             | 10134     | DialogFavourites.xml                | @deprecated Dialog **Favourites** is deprecated and is scheduled for removal in v21.<p></p> @skinning_v20 Deprecated. Please use **FavouritesBrowser** window instead. <p></p> |
 | SongInformation         | WINDOW_DIALOG_SONG_INFO              | 10135     | DialogMusicInfo.xml                 |                                    |
 | SmartPlaylistEditor     | WINDOW_DIALOG_SMART_PLAYLIST_EDITOR  | 10136     | SmartPlaylistEditor.xml             |                                    |
 | SmartPlaylistRule       | WINDOW_DIALOG_SMART_PLAYLIST_RULE    | 10137     | SmartPlaylistRule.xml               |                                    |
@@ -141,5 +140,10 @@ This page shows the window names, the window definition, the window ID and the s
 | Startup                 | WINDOW_STARTUP_ANIM                  | 12999     | Startup.xml                         |                                    |
 | FavouritesBrowser       | WINDOW_FAVOURITES                    | 10060     | MyFavourites.xml                    | @skinning_v20 **New window** FavouritesBrowser, replaces the old Favourites dialog.<p></p> |
 
+\section window_ids_rm Additional revision history
+
+\subsection modules_rm_windowids_v21 Kodi v21 (Omega)
+@skinning_v21 **[Removed Windows]** The following windows have been removed:
+- **Favourites** - Window Favourites (DialogFavourites.xml with id 10134) has been removed. Please use **FavouritesBrowser** instead.
 
 */
