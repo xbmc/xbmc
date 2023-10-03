@@ -216,12 +216,9 @@ std::string CPosixTimezone::GetOSConfiguredTimezone()
 std::string CPosixTimezone::ReadFromLocaltime(const std::string_view filename)
 {
   char path[PATH_MAX];
-  ssize_t len = readlink(filename.data(), path, sizeof(path) - 1);
-
-  if (len == -1)
+  if(realpath(filename.data(), path) == nullptr)
     return "";
 
-  path[len] = '\0';
   // Read the timezone starting from the second last occurrence of /
   std::string str = path;
   size_t pos = str.rfind('/');
