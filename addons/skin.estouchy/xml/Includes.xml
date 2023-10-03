@@ -64,6 +64,7 @@
 		<value condition="Window.IsVisible(Pictures)">icon_breadcrumb_pictures.png</value>
 		<value condition="Window.IsVisible(Programs) | Window.IsVisible(AddonBrowser)">icon_breadcrumb_addons.png</value>
 		<value condition="Window.IsVisible(TVChannels) | Window.IsVisible(RadioChannels) | Window.IsVisible(TVGuide) | Window.IsVisible(RadioGuide) | Window.IsVisible(TVRecordings) | Window.IsVisible(RadioRecordings) | Window.IsVisible(TVSearch) | Window.IsVisible(RadioSearch) | Window.IsVisible(TVTimers) | Window.IsVisible(RadioTimers) | Window.IsVisible(TVTimerRules) | Window.IsVisible(RadioTimerRules)">icon_breadcrumb_tv.png</value>
+		<value condition="Window.IsVisible(FavouritesBrowser)">icon_breadcrumb_favourites.png</value>
 		<value>icon_breadcrumb_settings.png</value>
 	</variable>
 	<variable name="SeekLabel">
@@ -948,7 +949,7 @@
 		</item>
 		<item>
 			<label>1036</label>
-			<onclick>ActivateWindow(Favourites)</onclick>
+			<onclick>ActivateWindow(FavouritesBrowser)</onclick>
 			<icon>icon_menu_favourites.png</icon>
 			<thumb></thumb>
 			<visible>!Skin.HasSetting(HideHomeButtonFavourites)</visible>
