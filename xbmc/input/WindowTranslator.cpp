@@ -78,7 +78,6 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"virtualkeyboard", WINDOW_DIALOG_KEYBOARD},
     {"volumebar", WINDOW_DIALOG_VOLUME_BAR},
     {"submenu", WINDOW_DIALOG_SUB_MENU},
-    {"favourites", WINDOW_DIALOG_FAVOURITES},
     {"contextmenu", WINDOW_DIALOG_CONTEXT_MENU},
     {"notification", WINDOW_DIALOG_KAI_TOAST},
     {"numericinput", WINDOW_DIALOG_NUMERIC},
