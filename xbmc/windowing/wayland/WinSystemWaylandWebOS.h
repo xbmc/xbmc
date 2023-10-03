@@ -40,6 +40,8 @@ public:
    */
   bool SetExportedWindow(CRect orig, CRect src, CRect dest);
 
+  bool SupportsExportedWindow();
+
   IShellSurface* CreateShellSurface(const std::string& name) override;
   bool CreateNewWindow(const std::string& name, bool fullScreen, RESOLUTION_INFO& res) override;
   ~CWinSystemWaylandWebOS() noexcept override;

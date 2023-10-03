@@ -28,6 +28,7 @@
 #include <memory>
 #include <vector>
 
+#include <appswitching-control-block/AcbAPI.h>
 #include <player-factory/custompipeline.hpp>
 #include <player-factory/customplayer.hpp>
 
@@ -47,6 +48,20 @@ constexpr unsigned int MAX_SRC_BUFFER_LEVEL = 8 * 1024 * 1024; // 8 MB
 CDVDVideoCodecStarfish::CDVDVideoCodecStarfish(CProcessInfo& processInfo)
   : CDVDVideoCodec(processInfo), m_starfishMediaAPI(std::make_unique<StarfishMediaAPIs>())
 {
+  using namespace KODI::WINDOWING::WAYLAND;
+  auto winSystem = static_cast<CWinSystemWaylandWebOS*>(CServiceBroker::GetWinSystem());
+  if (!winSystem->SupportsExportedWindow())
+  {
+    m_acbId = AcbAPI_create();
+    if (m_acbId)
+    {
+      if (!AcbAPI_initialize(m_acbId, PLAYER_TYPE_MSE, getenv("APPID"), &AcbCallback))
+      {
+        AcbAPI_destroy(m_acbId);
+        m_acbId = 0;
+      }
+    }
+  }
 }
 
 CDVDVideoCodecStarfish::~CDVDVideoCodecStarfish()
@@ -200,10 +215,12 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
   using namespace KODI::WINDOWING::WAYLAND;
   auto winSystem = static_cast<CWinSystemWaylandWebOS*>(CServiceBroker::GetWinSystem());
 
-  std::string exportedWindowName = winSystem->GetExportedWindowName();
-
   payloadArg["mediaTransportType"] = "BUFFERSTREAM";
-  payloadArg["option"]["windowId"] = exportedWindowName;
+  if (winSystem->SupportsExportedWindow())
+  {
+    std::string exportedWindowName = winSystem->GetExportedWindowName();
+    payloadArg["option"]["windowId"] = exportedWindowName;
+  }
   payloadArg["option"]["appId"] = CCompileInfo::GetPackage();
   payloadArg["option"]["externalStreamingInfo"]["contents"]["codec"]["video"] = m_codecname;
   payloadArg["option"]["externalStreamingInfo"]["contents"]["esInfo"]["pauseAtDecodeTime"] = true;
@@ -257,7 +274,9 @@ bool CDVDVideoCodecStarfish::OpenInternal(CDVDStreamInfo& hints, CDVDCodecOption
   m_videobuffer.iDisplayWidth = m_hints.width;
   m_videobuffer.iDisplayHeight = m_hints.height;
   m_videobuffer.stereoMode = m_hints.stereo_mode;
-  m_videobuffer.videoBuffer = new CStarfishVideoBuffer(0);
+  CStarfishVideoBuffer* starfishVideoBuffer = new CStarfishVideoBuffer(0);
+  m_videobuffer.videoBuffer = starfishVideoBuffer;
+  starfishVideoBuffer->m_acbId = m_acbId;
 
   m_opened = true;
 
@@ -279,6 +298,12 @@ void CDVDVideoCodecStarfish::Dispose()
   m_opened = false;
 
   m_starfishMediaAPI->Unload();
+
+  if (m_acbId)
+  {
+    AcbAPI_finalize(m_acbId);
+    AcbAPI_destroy(m_acbId);
+  }
 
   ms_instanceGuard.exchange(false);
 }
@@ -533,17 +558,43 @@ void CDVDVideoCodecStarfish::PlayerCallback(const int32_t type,
     case PF_EVENT_TYPE_STR_RESOURCE_INFO:
       m_newFrame = true;
       break;
+    case PF_EVENT_TYPE_STR_VIDEO_INFO:
+      if (m_acbId)
+        AcbAPI_setMediaVideoData(m_acbId, logstr.c_str());
+      break;
     case PF_EVENT_TYPE_STR_STATE_UPDATE__LOADCOMPLETED:
+      if (m_acbId)
+      {
+        AcbAPI_setSinkType(m_acbId, SINK_TYPE_MAIN);
+        AcbAPI_setMediaId(m_acbId, m_starfishMediaAPI->getMediaID());
+        AcbAPI_setState(m_acbId, APPSTATE_FOREGROUND, PLAYSTATE_LOADED, nullptr);
+      }
       m_starfishMediaAPI->Play();
       m_state = StarfishState::FLUSHED;
+      break;
+    case PF_EVENT_TYPE_STR_STATE_UPDATE__PLAYING:
+      if (m_acbId)
+        AcbAPI_setState(m_acbId, APPSTATE_FOREGROUND, PLAYSTATE_PLAYING, nullptr);
+      break;
+    case PF_EVENT_TYPE_STR_STATE_UPDATE__PAUSED:
+      if (m_acbId)
+        AcbAPI_setState(m_acbId, APPSTATE_FOREGROUND, PLAYSTATE_PAUSED, nullptr);
       break;
     case PF_EVENT_TYPE_STR_STATE_UPDATE__ENDOFSTREAM:
       m_state = StarfishState::EOS;
       break;
+    case PF_EVENT_TYPE_STR_STATE_UPDATE__UNLOADCOMPLETED:
+      if (m_acbId)
+        AcbAPI_setState(m_acbId, APPSTATE_FOREGROUND, PLAYSTATE_UNLOADED, nullptr);
+      break;
     case PF_EVENT_TYPE_INT_ERROR:
+      CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: Pipeline INT_ERROR numValue: {}, strValue: {}",
+                 numValue, logstr);
+      m_state = StarfishState::ERROR;
+      break;
     case PF_EVENT_TYPE_STR_ERROR:
-      CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: Pipeline error numValue: {}, strValue: {}",
-                 type, numValue, logstr);
+      CLog::LogF(LOGERROR, "CDVDVideoCodecStarfish: Pipeline STR_ERROR numValue: {}, strValue: {}",
+                 numValue, logstr);
       m_state = StarfishState::ERROR;
       break;
   }
@@ -555,4 +606,12 @@ void CDVDVideoCodecStarfish::PlayerCallback(const int32_t type,
                                             void* data)
 {
   static_cast<CDVDVideoCodecStarfish*>(data)->PlayerCallback(type, numValue, strValue);
+}
+
+void CDVDVideoCodecStarfish::AcbCallback(
+    long acbId, long taskId, long eventType, long appState, long playState, const char* reply)
+{
+  CLog::LogF(LOGDEBUG,
+             "ACB callback: acbId={}, taskId={}, eventType={}, appState={}, playState={}, reply={}",
+             acbId, taskId, eventType, appState, playState, reply);
 }
