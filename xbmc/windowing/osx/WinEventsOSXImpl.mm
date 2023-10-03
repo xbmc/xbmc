@@ -108,6 +108,7 @@
     case NSDeleteCharacter:
       return XBMCK_BACKSPACE;
     case NSCarriageReturnCharacter:
+    case NSEnterCharacter:
       return XBMCK_RETURN;
     default:
       return character;
