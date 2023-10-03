@@ -3706,7 +3706,10 @@ bool CFileItem::LoadDetails()
 
     CVideoDatabase db;
     if (!db.Open())
+    {
+      CLog::LogF(LOGERROR, "Error opening video database");
       return false;
+    }
 
     VIDEODATABASEDIRECTORY::CQueryParams params;
     VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(GetPath(), params);
@@ -3733,11 +3736,8 @@ bool CFileItem::LoadDetails()
                          this);
     }
     else
-    {
-      db.Close();
       return false;
-    }
-    db.Close();
+
     return true;
   }
 
@@ -3761,6 +3761,25 @@ bool CFileItem::LoadDetails()
         return true;
       }
     }
+
+    CLog::LogF(LOGERROR, "Error filling item details (path={})", GetPath());
+    return false;
+  }
+
+  if (IsVideo())
+  {
+    if (HasVideoInfoTag())
+      return true;
+
+    CVideoDatabase db;
+    if (!db.Open())
+    {
+      CLog::LogF(LOGERROR, "Error opening video database");
+      return false;
+    }
+
+    if (db.LoadVideoInfo(GetDynPath(), *GetVideoInfoTag()))
+      return true;
 
     CLog::LogF(LOGERROR, "Error filling item details (path={})", GetPath());
     return false;
