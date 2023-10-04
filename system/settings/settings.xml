@@ -1015,6 +1015,17 @@
           </constraints>
           <control type="list" format="string" />
         </setting>
+        <setting id="myvideos.playaction" type="integer" label="22076" help="36204">
+          <level>0</level>
+          <default>1</default> <!-- PLAY_ACTION_PLAY_OR_RESUME -->
+          <constraints>
+            <options>
+              <option label="22077">1</option> <!-- PLAY_ACTION_PLAY_OR_RESUME -->
+              <option label="22078">2</option> <!-- PLAY_ACTION_RESUME -->
+            </options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
         <setting id="myvideos.usetags" type="boolean" label="21343" help="21344">
           <level>2</level>
           <default>false</default>
