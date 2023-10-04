@@ -8,17 +8,63 @@
 
 #include "NetworkLinux.h"
 
+#include "utils/FileHandle.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <chrono>
 #include <errno.h>
 #include <utility>
 
 #include <arpa/inet.h>
 #include <net/if.h>
 #include <net/if_arp.h>
+#include <netinet/ip_icmp.h>
 #include <resolv.h>
+#include <sys/epoll.h>
 #include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+using namespace KODI::UTILS::POSIX;
+
+namespace
+{
+
+constexpr unsigned int ICMP_PACKET_SIZE{64};
+constexpr unsigned int TTL{64};
+
+struct IcmpPacket
+{
+  icmphdr header;
+  uint8_t data[ICMP_PACKET_SIZE - sizeof(icmphdr)];
+
+  uint16_t Checksum()
+  {
+    auto data = reinterpret_cast<const uint16_t*>(&header);
+    unsigned int length = sizeof(header) + sizeof(data);
+
+    unsigned int sum;
+
+    for (sum = 0; length > 1; length -= 2)
+    {
+      sum += *data++;
+    }
+
+    if (length == 1)
+    {
+      sum += *data;
+    }
+
+    sum = (sum >> 16) + (sum & 0xFFFF);
+
+    sum += (sum >> 16);
+
+    return ~sum;
+  }
+};
+
+} // namespace
 
 CNetworkInterfaceLinux::CNetworkInterfaceLinux(CNetworkPosix* network,
                                                std::string interfaceName,
@@ -199,25 +245,100 @@ std::vector<std::string> CNetworkLinux::GetNameServers()
 
 bool CNetworkLinux::PingHost(unsigned long remote_ip, unsigned int timeout_ms)
 {
-  char cmd_line[64];
+  CFileHandle fd(socket(AF_INET, SOCK_DGRAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_ICMP));
+  if (!fd)
+  {
+    CLog::Log(LOGERROR, "socket failed: {} ({})", strerror(errno), errno);
+    return false;
+  }
 
-  struct in_addr host_ip;
-  host_ip.s_addr = remote_ip;
+  int ret = setsockopt(fd, SOL_IP, IP_TTL, &TTL, sizeof(TTL));
+  if (ret != 0)
+  {
+    CLog::Log(LOGERROR, "setsockopt failed: {} ({})", strerror(errno), errno);
+    return false;
+  }
 
-  snprintf(cmd_line, sizeof(cmd_line), "ping -c 1 -w %d %s",
-           timeout_ms / 1000 + (timeout_ms % 1000) != 0, inet_ntoa(host_ip));
+  CFileHandle epfd(epoll_create1(EPOLL_CLOEXEC));
+  if (!epfd)
+  {
+    CLog::Log(LOGERROR, "epoll_create1 failed: {} ({})", strerror(errno), errno);
+    return false;
+  }
 
-  int status = -1;
-  status = system(cmd_line);
-  int result = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+  epoll_event event;
+  event.events = EPOLLIN;
+  event.data.fd = fd;
+  ret = epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &event);
+  if (ret < 0)
+  {
+    CLog::Log(LOGERROR, "epoll_ctl failed: {} ({})", strerror(errno), errno);
+    return false;
+  }
 
-  // http://linux.about.com/od/commands/l/blcmdl8_ping.htm ;
-  // 0 reply
-  // 1 no reply
-  // else some error
+  IcmpPacket packet = {};
 
-  if (result < 0 || result > 1)
-    CLog::Log(LOGERROR, "Ping fail : status = {}, errno = {} : '{}'", status, errno, cmd_line);
+  packet.header.type = ICMP_ECHO;
+  packet.header.un.echo.id = getpid();
 
-  return result == 0;
+  packet.header.un.echo.sequence = 0;
+  packet.header.checksum = packet.Checksum();
+
+  sockaddr_in addr = {};
+  addr.sin_addr.s_addr = remote_ip;
+  addr.sin_family = AF_INET;
+
+  const auto start = std::chrono::steady_clock::now();
+
+  ret = sendto(fd, &packet, sizeof(packet), 0, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
+  if (ret < 1)
+  {
+    CLog::Log(LOGERROR, "sendto failed: {} ({})", strerror(errno), errno);
+    return false;
+  }
+
+  event = {};
+  ret = epoll_wait(epfd, &event, 1, timeout_ms);
+  if (ret < 1)
+  {
+    if (ret == 0)
+    {
+      CLog::Log(LOGERROR, "timed out while waiting to receive ({} ms)", timeout_ms);
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "epoll_wait failed: {} ({})", strerror(errno), errno);
+    }
+
+    return false;
+  }
+
+  if (event.events & EPOLLIN)
+  {
+    socklen_t length = sizeof(addr);
+    ret = recvfrom(fd, &packet, sizeof(packet), 0, reinterpret_cast<sockaddr*>(&addr), &length);
+    if (ret < 1)
+    {
+      CLog::Log(LOGERROR, "recvfrom failed: {} ({})", strerror(errno), errno);
+      return false;
+    }
+  }
+
+  const auto end = std::chrono::steady_clock::now();
+
+  if (!(packet.header.type == ICMP_ECHOREPLY && packet.header.code == 0))
+  {
+    CLog::Log(LOGERROR, "unexpected ping reply: type={} code={}", packet.header.type,
+              packet.header.code);
+    return false;
+  }
+  else
+  {
+    const auto duration =
+        std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(end - start);
+
+    CLog::Log(LOGDEBUG, "PING {}: icmp_seq={} ttl={} time={:0.3f} ms", inet_ntoa(addr.sin_addr),
+              packet.header.un.echo.sequence, TTL, duration.count());
+    return true;
+  }
 }
