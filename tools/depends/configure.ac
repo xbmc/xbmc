@@ -318,7 +318,7 @@ case $host in
           use_cpu="armeabi-v7a"
         fi
         if test "x$use_cpu" = "xarmeabi-v7a"; then
-          platform_cflags="${platform_cflags} -march=armv7-a -mtune=cortex-a9 -mfloat-abi=softfp"
+          platform_cflags="${platform_cflags} -mtune=cortex-a9 -mfloat-abi=softfp"
         fi
         platform_ldflags="${platform_ldflags} -Wl,--exclude-libs,libunwind.a"
         meson_cpu="arm"
@@ -328,7 +328,7 @@ case $host in
           use_cpu="arm64-v8a"
         fi
         if test "x$use_cpu" = "xarm64-v8a"; then
-          platform_cflags="${platform_cflags} -march=armv8-a -mtune=cortex-a53"
+          platform_cflags="${platform_cflags} -mtune=cortex-a53"
         fi
         meson_cpu="aarch64"
       ;;
