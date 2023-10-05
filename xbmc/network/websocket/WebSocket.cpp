@@ -325,7 +325,7 @@ const CWebSocketMessage* CWebSocket::Handle(const char* &buffer, size_t &length,
             case WebSocketPing:
               msg = GetMessage();
               if (msg != NULL)
-                msg->AddFrame(Pong(frame->GetApplicationData()));
+                msg->AddFrame(Pong(frame->GetApplicationData(), frame->GetLength()));
               break;
 
             case WebSocketConnectionClose:
