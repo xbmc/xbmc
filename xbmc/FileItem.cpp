@@ -3768,7 +3768,7 @@ bool CFileItem::LoadDetails()
     return false;
   }
 
-  if (IsVideo())
+  if (!IsPlayList() && IsVideo())
   {
     if (HasVideoInfoTag())
       return true;
