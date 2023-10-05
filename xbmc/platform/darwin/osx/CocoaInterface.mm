@@ -12,11 +12,7 @@
 #include "ServiceBroker.h"
 #include "utils/StringUtils.h"
 #include "utils/log.h"
-#if defined(HAS_SDL)
-#include "windowing/osx/SDL/WinSystemOSXSDL.h"
-#else
 #include "windowing/osx/WinSystemOSX.h"
-#endif
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <AudioUnit/AudioUnit.h>
@@ -36,12 +32,7 @@ CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
 
 NSOpenGLContext* Cocoa_GL_GetCurrentContext(void)
 {
-#if defined(HAS_SDL)
-  CWinSystemOSX *winSystem = dynamic_cast<CWinSystemOSX*>(CServiceBroker::GetWinSystem());
-  return winSystem->GetNSOpenGLContext();
-#else
   return [NSOpenGLContext currentContext];
-#endif
 }
 
 uint32_t Cocoa_GL_GetCurrentDisplayID(void)
@@ -233,16 +224,6 @@ bool Cocoa_GetVolumeNameFromMountPoint(const std::string &mountPoint, std::strin
     }
     return resolved;
   }
-}
-
-void Cocoa_HideMouse()
-{
-  [NSCursor hide];
-}
-
-void Cocoa_ShowMouse()
-{
-  [NSCursor unhide];
 }
 
 //---------------------------------------------------------------------------------
