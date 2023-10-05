@@ -6,44 +6,38 @@
 #
 #   fmt::fmt   - The Fmt library
 
-macro(buildFmt)
-  if(APPLE)
-    set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
-  endif()
-
-  set(FMT_VERSION ${${MODULE}_VER})
-  # fmt debug uses postfix d for all platforms
-  set(FMT_DEBUG_POSTFIX d)
-
-  if(WIN32 OR WINDOWS_STORE)
-    set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch")
-    generate_patchcommand("${patches}")
-  endif()
-
-  set(CMAKE_ARGS -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
-                 -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
-                 -DFMT_DOC=OFF
-                 -DFMT_TEST=OFF
-                 -DFMT_INSTALL=ON
-                 "${EXTRA_ARGS}")
-
-  BUILD_DEP_TARGET()
-endmacro()
-
-define_property(TARGET PROPERTY LIB_BUILD
-                       BRIEF_DOCS "This target will be compiling the library"
-                       FULL_DOCS "This target will be compiling the library")
-
-set(FORCE_BUILD OFF)
-
-# If target exists, no need to rerun find
-# Allows a module that may be a dependency for multiple libraries to just be executed
-# once to populate all required variables/targets
-if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
+if(NOT TARGET fmt::fmt)
 
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
+  # Macro for building INTERNAL_FMT
+  macro(buildFmt)
+    if(APPLE)
+      set(EXTRA_ARGS "-DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}")
+    endif()
+
+    set(FMT_VERSION ${${MODULE}_VER})
+    # fmt debug uses postfix d for all platforms
+    set(FMT_DEBUG_POSTFIX d)
+
+    if(WIN32 OR WINDOWS_STORE)
+      set(patches "${CMAKE_SOURCE_DIR}/tools/depends/target/${MODULE_LC}/001-windows-pdb-symbol-gen.patch")
+      generate_patchcommand("${patches}")
+    endif()
+
+    set(CMAKE_ARGS -DCMAKE_CXX_EXTENSIONS=${CMAKE_CXX_EXTENSIONS}
+                   -DCMAKE_CXX_STANDARD=${CMAKE_CXX_STANDARD}
+                   -DFMT_DOC=OFF
+                   -DFMT_TEST=OFF
+                   -DFMT_INSTALL=ON
+                   "${EXTRA_ARGS}")
+
+    BUILD_DEP_TARGET()
+  endmacro()
+
   set(MODULE_LC fmt)
+  # Default state
+  set(FORCE_BUILD OFF)
 
   SETUP_BUILD_VARS()
 
@@ -52,39 +46,17 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
                    HINTS ${DEPENDS_PATH}/lib/cmake
                    ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
-  # Build if ENABLE_INTERNAL_FMT, or if required version in find_package call is greater 
-  # than already found FMT_VERSION from a previous find_package call
-  if((Fmt_FIND_REQUIRED AND FMT_VERSION VERSION_LESS Fmt_FIND_VERSION AND ENABLE_INTERNAL_FMT) OR
-     (FMT_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_FMT) OR
+
+  if((FMT_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_FMT) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_FMT))
 
-    if(Fmt_FIND_VERSION)
-      if(FMT_VERSION VERSION_LESS ${Fmt_FIND_VERSION})
-        set(FORCE_BUILD ON)
-      endif()
-    endif()
-
-    if(${FORCE_BUILD} OR FMT_VERSION VERSION_LESS ${${MODULE}_VER})
-
-      # Set FORCE_BUILD to enable fmt::fmt property that build will occur
-      set(FORCE_BUILD ON)
-
-      buildFmt()
-
-    else()
-      if(NOT TARGET fmt::fmt)
-        set(FMT_PKGCONFIG_CHECK ON)
-      endif()
-    endif()
+    # Set FORCE_BUILD to enable fmt::fmt property that build will occur
+    set(FORCE_BUILD ON)
+    buildFmt()
   else()
     if(NOT TARGET fmt::fmt)
-      set(FMT_PKGCONFIG_CHECK ON)
-    endif()
-  endif()
-
-  if(NOT TARGET fmt::fmt)
-    if(FMT_PKGCONFIG_CHECK)
-      if(PKG_CONFIG_FOUND)
+      # Do not use pkgconfig on windows
+      if(PKG_CONFIG_FOUND AND NOT WIN32)
         pkg_check_modules(PC_FMT libfmt QUIET)
         set(FMT_VERSION ${PC_FMT_VERSION})
       endif()
@@ -103,23 +75,66 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
                                      ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                      NO_CACHE)
     endif()
+  endif()
 
-    add_library(fmt::fmt UNKNOWN IMPORTED)
-    if(FMT_LIBRARY_RELEASE)
+  # fmt::fmt target exists and is of suitable versioning. the INTERNAL_FMT build
+  # is not created.
+  # We create variables based off TARGET data for use with FPHSA
+  if(TARGET fmt::fmt AND NOT TARGET fmt)
+    # This is for the case where a distro provides a non standard (Debug/Release) config type
+    # eg Debian's config file is fmtConfigTargets-none.cmake
+    # convert this back to either DEBUG/RELEASE or just RELEASE
+    # we only do this because we use find_package_handle_standard_args for config time output
+    # and it isnt capable of handling TARGETS, so we have to extract the info
+    get_target_property(_FMT_CONFIGURATIONS fmt::fmt IMPORTED_CONFIGURATIONS)
+    foreach(_fmt_config IN LISTS _FMT_CONFIGURATIONS)
+      # Some non standard config (eg None on Debian)
+      # Just set to RELEASE var so select_library_configurations can continue to work its magic
+      string(TOUPPER ${_fmt_config} _fmt_config_UPPER)
+      if((NOT ${_fmt_config_UPPER} STREQUAL "RELEASE") AND
+         (NOT ${_fmt_config_UPPER} STREQUAL "DEBUG"))
+        get_target_property(FMT_LIBRARY_RELEASE fmt::fmt IMPORTED_LOCATION_${_fmt_config_UPPER})
+      else()
+        get_target_property(FMT_LIBRARY_${_fmt_config_UPPER} fmt::fmt IMPORTED_LOCATION_${_fmt_config_UPPER})
+      endif()
+    endforeach()
+
+    get_target_property(FMT_INCLUDE_DIR fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
+  endif()
+
+  include(SelectLibraryConfigurations)
+  select_library_configurations(FMT)
+  unset(FMT_LIBRARIES)
+
+  include(FindPackageHandleStandardArgs)
+  find_package_handle_standard_args(Fmt
+                                    REQUIRED_VARS FMT_LIBRARY FMT_INCLUDE_DIR
+                                    VERSION_VAR FMT_VERSION)
+  if(Fmt_FOUND)
+    if(TARGET fmt OR NOT TARGET fmt::fmt)
+      if(NOT TARGET fmt::fmt)
+        add_library(fmt::fmt UNKNOWN IMPORTED)
+      endif()
+      if(FMT_LIBRARY_RELEASE)
+        set_target_properties(fmt::fmt PROPERTIES
+                                       IMPORTED_CONFIGURATIONS RELEASE
+                                       IMPORTED_LOCATION_RELEASE "${FMT_LIBRARY_RELEASE}")
+      endif()
+      if(FMT_LIBRARY_DEBUG)
+        set_target_properties(fmt::fmt PROPERTIES
+                                       IMPORTED_CONFIGURATIONS DEBUG
+                                       IMPORTED_LOCATION_DEBUG "${FMT_LIBRARY_DEBUG}")
+      endif()
       set_target_properties(fmt::fmt PROPERTIES
-                                     IMPORTED_CONFIGURATIONS RELEASE
-                                     IMPORTED_LOCATION_RELEASE "${FMT_LIBRARY_RELEASE}")
+                                     INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
     endif()
-    if(FMT_LIBRARY_DEBUG)
-      set_target_properties(fmt::fmt PROPERTIES
-                                     IMPORTED_CONFIGURATIONS DEBUG
-                                     IMPORTED_LOCATION_DEBUG "${FMT_LIBRARY_DEBUG}")
-    endif()
-    set_target_properties(fmt::fmt PROPERTIES
-                                   INTERFACE_INCLUDE_DIRECTORIES "${FMT_INCLUDE_DIR}")
 
     if(TARGET fmt)
       add_dependencies(fmt::fmt fmt)
+      # If a force build is done, let any calling packages know they may want to rebuild
+      if(FORCE_BUILD)
+        set_target_properties(fmt::fmt PROPERTIES LIB_BUILD ON)
+      endif()
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -139,40 +154,6 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
     endif()
   endif()
 
-  # If a force build is done, let any calling packages know they may want to rebuild
-  if(FORCE_BUILD)
-    set_target_properties(fmt::fmt PROPERTIES LIB_BUILD ON)
-  endif()
-
-  # This is for the case where a distro provides a non standard (Debug/Release) config type
-  # eg Debian's config file is fmtConfigTargets-none.cmake
-  # convert this back to either DEBUG/RELEASE or just RELEASE
-  # we only do this because we use find_package_handle_standard_args for config time output
-  # and it isnt capable of handling TARGETS, so we have to extract the info
-  get_target_property(_FMT_CONFIGURATIONS fmt::fmt IMPORTED_CONFIGURATIONS)
-  foreach(_fmt_config IN LISTS _FMT_CONFIGURATIONS)
-    # Some non standard config (eg None on Debian)
-    # Just set to RELEASE var so select_library_configurations can continue to work its magic
-    string(TOUPPER ${_fmt_config} _fmt_config_UPPER)
-    if((NOT ${_fmt_config_UPPER} STREQUAL "RELEASE") AND
-       (NOT ${_fmt_config_UPPER} STREQUAL "DEBUG"))
-      get_target_property(FMT_LIBRARY_RELEASE fmt::fmt IMPORTED_LOCATION_${_fmt_config_UPPER})
-    else()
-      get_target_property(FMT_LIBRARY_${_fmt_config_UPPER} fmt::fmt IMPORTED_LOCATION_${_fmt_config_UPPER})
-    endif()
-  endforeach()
-
-  get_target_property(FMT_INCLUDE_DIR fmt::fmt INTERFACE_INCLUDE_DIRECTORIES)
-
-  include(SelectLibraryConfigurations)
-  select_library_configurations(FMT)
-  unset(FMT_LIBRARIES)
-
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Fmt
-                                    REQUIRED_VARS FMT_LIBRARY FMT_INCLUDE_DIR
-                                    VERSION_VAR FMT_VERSION)
-
   # Check whether we already have fmt::fmt target added to dep property list
   get_property(CHECK_INTERNAL_DEPS GLOBAL PROPERTY INTERNAL_DEPS_PROP)
   list(FIND CHECK_INTERNAL_DEPS "fmt::fmt" FMT_PROP_FOUND)
@@ -181,5 +162,4 @@ if(NOT TARGET fmt::fmt OR Fmt_FIND_REQUIRED)
   if(FMT_PROP_FOUND STREQUAL "-1")
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP fmt::fmt)
   endif()
-
 endif()

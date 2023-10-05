@@ -425,3 +425,10 @@ macro(PATCH_LF_CHECK patch)
   endif()
   unset(patch_content_hex)
 endmacro()
+
+# Custom property that we can track to allow us to notify to dependency find modules
+# that a dependency of that find module is being built, and therefore that higher level
+# dependency should also be built regardless of success in lib searches
+define_property(TARGET PROPERTY LIB_BUILD
+                       BRIEF_DOCS "This target will be compiling the library"
+                       FULL_DOCS "This target will be compiling the library")
