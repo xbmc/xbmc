@@ -83,8 +83,17 @@ dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?")
 dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
 dependent_option(ENABLE_INTERNAL_PCRE "Enable internal pcre?")
 dependent_option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?")
-dependent_option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?")
+
+# If ENABLE_INTERNAL_FMT is ON, we force ENABLE_INTERNAL_SPDLOG ON as it has a hard
+# dependency on fmt
+if(ENABLE_INTERNAL_FMT)
+  option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog Forced" ON)
+else()
+  dependent_option(ENABLE_INTERNAL_SPDLOG "Enable internal spdlog?")
+endif()
+
 dependent_option(ENABLE_INTERNAL_TAGLIB "Enable internal taglib?")
+
 if(KODI_DEPENDSBUILD OR WIN32 OR WINDOWS_STORE)
   dependent_option(ENABLE_INTERNAL_TINYXML2 "Enable internal TinyXML2?")
 endif()
