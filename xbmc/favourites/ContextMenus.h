@@ -73,4 +73,4 @@ protected:
   bool DoExecute(CFileItemList& items, const std::shared_ptr<CFileItem>& item) const override;
 };
 
-}
+} // namespace CONTEXTMENU
