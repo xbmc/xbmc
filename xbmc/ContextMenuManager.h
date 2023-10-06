@@ -40,8 +40,10 @@ public:
   void Init();
   void Deinit();
 
+  bool HasItems(const CFileItem& fileItem) const;
   ContextMenuView GetItems(const CFileItem& item, const CContextMenuItem& root = MAIN) const;
 
+  bool HasAddonItems(const CFileItem& fileItem) const;
   ContextMenuView GetAddonItems(const CFileItem& item, const CContextMenuItem& root = MAIN) const;
 
 private:
@@ -67,7 +69,12 @@ private:
 
 namespace CONTEXTMENU
 {
-  /*!
+/*!
+ * Checks whether any context menu items are available for a file item.
+ * */
+bool HasAnyMenuItemsFor(const std::shared_ptr<CFileItem>& fileItem);
+
+/*!
    * Starts the context menu loop for a file item.
    * */
 bool ShowFor(const std::shared_ptr<CFileItem>& fileItem,

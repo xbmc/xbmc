@@ -12,7 +12,6 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
-#include "addons/gui/GUIDialogAddonInfo.h"
 #include "favourites/FavouritesService.h"
 #include "favourites/FavouritesURL.h"
 #include "filesystem/Directory.h"
@@ -21,25 +20,24 @@
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
 #include "music/MusicThumbLoader.h"
-#include "music/dialogs/GUIDialogMusicInfo.h"
 #include "pictures/PictureThumbLoader.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRThumbLoader.h"
-#include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ExecString.h"
 #include "utils/JobManager.h"
 #include "utils/PlayerUtils.h"
 #include "utils/SortUtils.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
+#include "utils/guilib/GUIContentUtils.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
-#include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 
@@ -628,32 +626,7 @@ bool CDirectoryProvider::OnPlay(const CGUIListItemPtr& item)
 
 bool CDirectoryProvider::OnInfo(const std::shared_ptr<CFileItem>& fileItem)
 {
-  if (fileItem->HasAddonInfo())
-  {
-    return CGUIDialogAddonInfo::ShowForItem(fileItem);
-  }
-  else if (fileItem->IsPVR())
-  {
-    return CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().OnInfo(*fileItem);
-  }
-  else if (fileItem->HasVideoInfoTag())
-  {
-    auto mediaType = fileItem->GetVideoInfoTag()->m_type;
-    if (mediaType == MediaTypeMovie || mediaType == MediaTypeTvShow ||
-        mediaType == MediaTypeSeason || mediaType == MediaTypeEpisode ||
-        mediaType == MediaTypeVideo || mediaType == MediaTypeVideoCollection ||
-        mediaType == MediaTypeMusicVideo)
-    {
-      CGUIDialogVideoInfo::ShowFor(*fileItem);
-      return true;
-    }
-  }
-  else if (fileItem->HasMusicInfoTag())
-  {
-    CGUIDialogMusicInfo::ShowFor(fileItem.get());
-    return true;
-  }
-  return false;
+  return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*fileItem);
 }
 
 bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
