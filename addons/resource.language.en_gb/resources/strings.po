@@ -953,6 +953,7 @@ msgstr ""
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
+#: xbmc/favourites/ContextMenus.cpp
 #: xbmc/games/windows/GUIWindowGames.cpp
 #: xbmc/music/ContextMenus.h
 #: xbmc/video/ContextMenus.cpp
@@ -5722,6 +5723,7 @@ msgstr ""
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/Autorun.cpp
+#: xbmc/favourites/ContextMenus.cpp
 #: xbmc/pvr/PVRGUIActionsPlayback.cpp
 #: xbmc/video/ContextMenus.cpp
 #: xbmc/video/guilib/VideoSelectActionProcessor.cpp
@@ -9637,6 +9639,7 @@ msgstr ""
 
 #. generic 'information' label used in different places, like labels for message box headers
 #: xbmc/event/windows/GUIWindowEventLog.cpp
+#: xbmc/favourites/ContextMenus.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
@@ -15348,6 +15351,7 @@ msgid "Show information"
 msgstr ""
 
 #. Label to denote that there is something 'more'
+#. xbmc/favourites/ContextMenus.h
 #: xbmc/listproviders/DirectoryProvider.cpp
 #: xbmc/video/guilib/VideoSelectActionProcessor.cpp
 #: system/settings/settings.xml
@@ -21937,8 +21941,10 @@ msgctxt "#37014"
 msgid "Last used profile"
 msgstr ""
 
+#. Label used in different places to denote the function to open a folder to list its content
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
+#: xbmc/favourites/ContextMenus.h
 #: xbmc/music/ContextMenus.h
 #: xbmc/windows/GUIMediaWindow.cpp
 msgctxt "#37015"
