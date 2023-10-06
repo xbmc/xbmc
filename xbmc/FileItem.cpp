@@ -3714,14 +3714,16 @@ bool CFileItem::LoadDetails()
     VIDEODATABASEDIRECTORY::CQueryParams params;
     VIDEODATABASEDIRECTORY::CDirectoryNode::GetDatabaseInfo(GetPath(), params);
 
+    bool ret{false};
+    auto tag{std::make_unique<CVideoInfoTag>()};
     if (params.GetMovieId() >= 0)
-      db.GetMovieInfo(GetPath(), *GetVideoInfoTag(), static_cast<int>(params.GetMovieId()));
+      ret = db.GetMovieInfo(GetPath(), *tag, static_cast<int>(params.GetMovieId()));
     else if (params.GetMVideoId() >= 0)
-      db.GetMusicVideoInfo(GetPath(), *GetVideoInfoTag(), static_cast<int>(params.GetMVideoId()));
+      ret = db.GetMusicVideoInfo(GetPath(), *tag, static_cast<int>(params.GetMVideoId()));
     else if (params.GetEpisodeId() >= 0)
-      db.GetEpisodeInfo(GetPath(), *GetVideoInfoTag(), static_cast<int>(params.GetEpisodeId()));
+      ret = db.GetEpisodeInfo(GetPath(), *tag, static_cast<int>(params.GetEpisodeId()));
     else if (params.GetSetId() >= 0) // movie set
-      db.GetSetInfo(static_cast<int>(params.GetSetId()), *GetVideoInfoTag(), this);
+      ret = db.GetSetInfo(static_cast<int>(params.GetSetId()), *tag, this);
     else if (params.GetTvShowId() >= 0)
     {
       if (params.GetSeason() >= 0)
@@ -3729,16 +3731,16 @@ bool CFileItem::LoadDetails()
         const int idSeason = db.GetSeasonId(static_cast<int>(params.GetTvShowId()),
                                             static_cast<int>(params.GetSeason()));
         if (idSeason >= 0)
-          db.GetSeasonInfo(idSeason, *GetVideoInfoTag(), this);
+          ret = db.GetSeasonInfo(idSeason, *tag, this);
       }
       else
-        db.GetTvShowInfo(GetPath(), *GetVideoInfoTag(), static_cast<int>(params.GetTvShowId()),
-                         this);
+        ret = db.GetTvShowInfo(GetPath(), *tag, static_cast<int>(params.GetTvShowId()), this);
     }
-    else
-      return false;
 
-    return true;
+    if (ret)
+      m_videoInfoTag = tag.release();
+
+    return ret;
   }
 
   if (URIUtils::IsPVRRecordingFileOrFolder(GetPath()))
@@ -3766,7 +3768,7 @@ bool CFileItem::LoadDetails()
     return false;
   }
 
-  if (IsVideo())
+  if (!IsPlayList() && IsVideo())
   {
     if (HasVideoInfoTag())
       return true;
@@ -3778,8 +3780,12 @@ bool CFileItem::LoadDetails()
       return false;
     }
 
-    if (db.LoadVideoInfo(GetDynPath(), *GetVideoInfoTag()))
+    auto tag{std::make_unique<CVideoInfoTag>()};
+    if (db.LoadVideoInfo(GetDynPath(), *tag))
+    {
+      m_videoInfoTag = tag.release();
       return true;
+    }
 
     CLog::LogF(LOGERROR, "Error filling item details (path={})", GetPath());
     return false;
