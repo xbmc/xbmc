@@ -16,65 +16,61 @@
 
 namespace CONTEXTMENU
 {
-  bool CFavouriteContextMenuAction::IsVisible(const CFileItem& item) const
-  {
-    return URIUtils::IsProtocol(item.GetPath(), "favourites");
-  }
+bool CFavouriteContextMenuAction::IsVisible(const CFileItem& item) const
+{
+  return URIUtils::IsProtocol(item.GetPath(), "favourites");
+}
 
-  bool CFavouriteContextMenuAction::Execute(const std::shared_ptr<CFileItem>& item) const
+bool CFavouriteContextMenuAction::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  CFileItemList items;
+  CServiceBroker::GetFavouritesService().GetAll(items);
+  for (const auto& favourite : items)
   {
-    CFileItemList items;
-    CServiceBroker::GetFavouritesService().GetAll(items);
-    for (const auto& favourite : items)
+    if (favourite->GetPath() == item->GetPath())
     {
-      if (favourite->GetPath() == item->GetPath())
-      {
-        if (DoExecute(items, favourite))
-          return CServiceBroker::GetFavouritesService().Save(items);
-      }
+      if (DoExecute(items, favourite))
+        return CServiceBroker::GetFavouritesService().Save(items);
     }
-    return false;
   }
+  return false;
+}
 
-  bool CMoveUpFavourite::DoExecute(CFileItemList& items,
+bool CMoveUpFavourite::DoExecute(CFileItemList& items, const std::shared_ptr<CFileItem>& item) const
+{
+  return FAVOURITES_UTILS::MoveItem(items, item, -1);
+}
+
+bool CMoveUpFavourite::IsVisible(const CFileItem& item) const
+{
+  return CFavouriteContextMenuAction::IsVisible(item) && FAVOURITES_UTILS::ShouldEnableMoveItems();
+}
+
+bool CMoveDownFavourite::DoExecute(CFileItemList& items,
                                    const std::shared_ptr<CFileItem>& item) const
-  {
-    return FAVOURITES_UTILS::MoveItem(items, item, -1);
-  }
+{
+  return FAVOURITES_UTILS::MoveItem(items, item, +1);
+}
 
-  bool CMoveUpFavourite::IsVisible(const CFileItem& item) const
-  {
-    return CFavouriteContextMenuAction::IsVisible(item) &&
-           FAVOURITES_UTILS::ShouldEnableMoveItems();
-  }
+bool CMoveDownFavourite::IsVisible(const CFileItem& item) const
+{
+  return CFavouriteContextMenuAction::IsVisible(item) && FAVOURITES_UTILS::ShouldEnableMoveItems();
+}
 
-  bool CMoveDownFavourite::DoExecute(CFileItemList& items,
-                                     const std::shared_ptr<CFileItem>& item) const
-  {
-    return FAVOURITES_UTILS::MoveItem(items, item, +1);
-  }
+bool CRemoveFavourite::DoExecute(CFileItemList& items, const std::shared_ptr<CFileItem>& item) const
+{
+  return FAVOURITES_UTILS::RemoveItem(items, item);
+}
 
-  bool CMoveDownFavourite::IsVisible(const CFileItem& item) const
-  {
-    return CFavouriteContextMenuAction::IsVisible(item) &&
-           FAVOURITES_UTILS::ShouldEnableMoveItems();
-  }
+bool CRenameFavourite::DoExecute(CFileItemList&, const std::shared_ptr<CFileItem>& item) const
+{
+  return FAVOURITES_UTILS::ChooseAndSetNewName(*item);
+}
 
-  bool CRemoveFavourite::DoExecute(CFileItemList& items,
-                                   const std::shared_ptr<CFileItem>& item) const
-  {
-    return FAVOURITES_UTILS::RemoveItem(items, item);
-  }
-
-  bool CRenameFavourite::DoExecute(CFileItemList&, const std::shared_ptr<CFileItem>& item) const
-  {
-    return FAVOURITES_UTILS::ChooseAndSetNewName(*item);
-  }
-
-  bool CChooseThumbnailForFavourite::DoExecute(CFileItemList&,
-                                               const std::shared_ptr<CFileItem>& item) const
-  {
-    return FAVOURITES_UTILS::ChooseAndSetNewThumbnail(*item);
-  }
+bool CChooseThumbnailForFavourite::DoExecute(CFileItemList&,
+                                             const std::shared_ptr<CFileItem>& item) const
+{
+  return FAVOURITES_UTILS::ChooseAndSetNewThumbnail(*item);
+}
 
 } // namespace CONTEXTMENU
