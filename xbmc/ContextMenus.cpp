@@ -78,6 +78,9 @@ std::string CAddRemoveFavourite::GetLabel(const CFileItem& item) const
 
 bool CAddRemoveFavourite::IsVisible(const CFileItem& item) const
 {
+  if (item.GetProperty("hide_add_remove_favourite").asBoolean())
+    return false;
+
   return (!item.GetPath().empty() && !item.IsParentFolder() && !item.IsPath("add") &&
           !item.IsPath("newplaylist://") && !URIUtils::IsProtocol(item.GetPath(), "favourites") &&
           !URIUtils::IsProtocol(item.GetPath(), "newsmartplaylist") &&
