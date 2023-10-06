@@ -60,7 +60,7 @@ public:
   // implementation of ISettingCallback
   void OnSettingAction(const std::shared_ptr<const CSetting>& setting) override;
 
-  std::string GetAddonId() const;
+  const std::string& GetAddonId() const { return m_addonId; }
 
   bool Initialize(const CXBMCTinyXML& doc, bool allowEmpty = false);
   bool Load(const CXBMCTinyXML& doc);
@@ -187,8 +187,12 @@ private:
                                            std::string& current,
                                            void* data);
 
+  // store these values so that we don't always have to access the weak pointer
+  const std::string m_addonId;
+  const std::string m_addonPath;
+  const std::string m_addonProfile;
   const AddonInstanceId m_instanceId{ADDON_SETTINGS_ID};
-  std::shared_ptr<IAddon> m_addon;
+  std::weak_ptr<IAddon> m_addon;
 
   uint32_t m_unidentifiedSettingId = 0;
   int m_unknownSettingLabelId;

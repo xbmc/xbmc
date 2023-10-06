@@ -154,11 +154,14 @@ namespace ADDON
 
 CAddonSettings::CAddonSettings(const std::shared_ptr<IAddon>& addon, AddonInstanceId instanceId)
   : CSettingsBase(),
+    m_addonId(addon->ID()),
+    m_addonPath(addon->Path()),
+    m_addonProfile(addon->Profile()),
     m_instanceId(instanceId),
     m_addon{addon},
     m_unknownSettingLabelId(UnknownSettingLabelIdStart),
     m_logger(CServiceBroker::GetLogging().GetLogger(
-        StringUtils::Format("CAddonSettings[{}@{}]", m_instanceId, addon->ID())))
+        StringUtils::Format("CAddonSettings[{}@{}]", m_instanceId, m_addonId)))
 {
 }
 
@@ -171,11 +174,6 @@ std::shared_ptr<CSetting> CAddonSettings::CreateSetting(
     return std::make_shared<CSettingUrlEncodedString>(settingId, settingsManager);
 
   return CSettingCreator::CreateSetting(settingType, settingId, settingsManager);
-}
-
-std::string CAddonSettings::GetAddonId() const
-{
-  return m_addon->ID();
 }
 
 void CAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& setting)
@@ -191,9 +189,9 @@ void CAddonSettings::OnSettingAction(const std::shared_ptr<const CSetting>& sett
     {
       actionData = settingAction->GetData();
       // replace $CWD with the url of the add-on
-      StringUtils::Replace(actionData, "$CWD", m_addon->Path());
+      StringUtils::Replace(actionData, "$CWD", m_addonPath);
       // replace $ID with the id of the add-on
-      StringUtils::Replace(actionData, "$ID", m_addon->ID());
+      StringUtils::Replace(actionData, "$ID", m_addonId);
     }
   }
 
@@ -229,7 +227,7 @@ bool CAddonSettings::AddInstanceSettings()
     CLog::Log(
         LOGDEBUG,
         "CAddonSettings::{} - Add-on {} using instance setting values byself, Kodi's add ignored",
-        __func__, m_addon->ID());
+        __func__, m_addonId);
     return true;
   }
 
@@ -438,8 +436,12 @@ bool CAddonSettings::HasSettings() const
 
 bool CAddonSettings::Save()
 {
-  assert(m_addon);
-  return m_addon->SaveSettings();
+  std::shared_ptr<IAddon> addon = m_addon.lock();
+  assert(addon);
+  if (addon)
+    return addon->SaveSettings();
+  else
+    return false;
 }
 
 std::string CAddonSettings::GetSettingLabel(int label) const
@@ -812,7 +814,7 @@ bool CAddonSettings::InitializeFromOldSettingDefinitions(const CXBMCTinyXML& doc
     return false;
 
   std::shared_ptr<CSettingSection> section =
-      std::make_shared<CSettingSection>(m_addon->ID(), GetSettingsManager());
+      std::make_shared<CSettingSection>(m_addonId, GetSettingsManager());
 
   std::shared_ptr<CSettingCategory> category;
   uint32_t categoryId = 0;
@@ -845,9 +847,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingAction(const std::string& set
   // parse the action attribute
   std::string action = XMLUtils::GetAttribute(settingElement, "action");
   // replace $CWD with the url of the add-on
-  StringUtils::Replace(action, "$CWD", m_addon->Path());
+  StringUtils::Replace(action, "$CWD", m_addonPath);
   // replace $ID with the id of the add-on
-  StringUtils::Replace(action, "$ID", m_addon->ID());
+  StringUtils::Replace(action, "$ID", m_addonId);
 
   // prepare the setting's control
   auto control = std::make_shared<CSettingControlButton>();
@@ -1314,7 +1316,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
       for (uint32_t i = 0; i < values.size(); ++i)
       {
         int label = static_cast<int>(strtol(values[i].c_str(), nullptr, 0));
-        std::string value = g_localizeStrings.GetAddonString(m_addon->ID(), label);
+        std::string value = g_localizeStrings.GetAddonString(m_addonId, label);
         if (settingEntries.size() > i)
           value = settingEntries[i];
 
@@ -1464,9 +1466,9 @@ SettingPtr CAddonSettings::InitializeFromOldSettingFileWithSource(
   setting->SetDefault(defaultValue);
 
   if (source.find("$PROFILE") != std::string::npos)
-    StringUtils::Replace(source, "$PROFILE", m_addon->Profile());
+    StringUtils::Replace(source, "$PROFILE", m_addonProfile);
   else
-    source = URIUtils::AddFileToFolder(m_addon->Path(), source);
+    source = URIUtils::AddFileToFolder(m_addonPath, source);
 
   setting->SetSources({source});
 
