@@ -44,3 +44,5 @@ if(NOT USE_INTERNAL_LIBS)
     set(USE_INTERNAL_LIBS OFF)
   endif()
 endif()
+
+list(APPEND AUDIO_BACKENDS_LIST "oss")

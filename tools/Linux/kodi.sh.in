@@ -182,6 +182,8 @@ if [ -n "${KODI_AE_SINK}" ]; then
     ENV_ARGS="--audio-backend=pulseaudio"
   elif [ "${KODI_AE_SINK}" = "ALSA" ]; then
     ENV_ARGS="--audio-backend=alsa"
+  elif [ "${KODI_AE_SINK}" = "OSS" ]; then
+    ENV_ARGS="--audio-backend=oss"
   elif [ "${KODI_AE_SINK}" = "SNDIO" ]; then
     ENV_ARGS="--audio-backend=sndio"
   elif [ "${KODI_AE_SINK}" = "ALSA+PULSE" ]; then
