@@ -12,6 +12,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/EventStream.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -25,6 +26,9 @@ public:
   void ReInit(std::string userDataFolder);
 
   bool IsFavourited(const CFileItem& item, int contextWindow) const;
+  std::shared_ptr<CFileItem> GetFavourite(const CFileItem& item, int contextWindow) const;
+  std::shared_ptr<CFileItem> ResolveFavourite(const CFileItem& favItem) const;
+
   void GetAll(CFileItemList& items) const;
   bool AddOrRemove(const CFileItem& item, int contextWindow);
   bool Save(const CFileItemList& items);
@@ -46,11 +50,9 @@ private:
 
   void OnUpdated();
   bool Persist();
-  std::string GetFavouritesUrl(const CFileItem &item, int contextWindow) const;
 
   std::string m_userDataFolder;
   CFileItemList m_favourites;
   CEventSource<FavouritesUpdated> m_events;
   mutable CCriticalSection m_criticalSection;
 };
-
