@@ -61,7 +61,8 @@ CVideoPlayerAudio::CVideoPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent
   m_prevskipped = false;
   m_maxspeedadjust = 0.0;
 
-  m_messageQueue.SetMaxDataSize(6 * 1024 * 1024);
+  // 18 MB allows max bitrate of 18 Mbit/s (TrueHD max peak) during 8 seconds
+  m_messageQueue.SetMaxDataSize(18 * 1024 * 1024);
   m_messageQueue.SetMaxTimeSize(8.0);
   m_disconAdjustTimeMs = processInfo.GetMaxPassthroughOffSyncDuration();
 }
