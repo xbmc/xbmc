@@ -105,7 +105,7 @@ bool CVideoLayerBridgeDRMPRIME::Map(CVideoBufferDRMPRIME* buffer)
   {
     int object = layer->planes[plane].object_index;
     uint32_t handle = buffer->m_handles[object];
-    if (handle && layer->planes[plane].pitch)
+    if (handle)
     {
       handles[plane] = handle;
       pitches[plane] = layer->planes[plane].pitch;
