@@ -9,7 +9,7 @@ It should work if you're using macOS. If that is the case, read **[macOS specifi
 1. **[Document conventions](#1-document-conventions)**
 2. **[Install the required packages](#2-install-the-required-packages)**
 3. **[Prerequisites](#3-prerequisites)**  
-  3.1. **[Extract Android SDK and NDK](#31-extract-android-sdk-and-ndk)**  
+  3.1. **[Extract Android SDK](#31-extract-android-sdk)**  
   3.2. **[Configure Android SDK](#32-configure-android-sdk)**   
   3.3. **[Create a key to sign debug APKs](#33-create-a-key-to-sign-debug-apks)**
 4. **[Get the source code](#4-get-the-source-code)**
@@ -70,9 +70,8 @@ Building Kodi for Android requires Android NDK revision 20b. For the SDK just us
 Kodi CI/CD platforms currently use r21e for build testing and releases, so we recommend using r21e for the most tested build experience
 
 * **[Android SDK](https://developer.android.com/studio/index.html)** (Look for `Get just the command line tools`)
-* **[Android NDK](https://developer.android.com/ndk/downloads/index.html)**
 
-### 3.1. Extract Android SDK and NDK
+### 3.1. Extract Android SDK
 Create needed directories:
 ```
 mkdir -p $HOME/android-tools/android-sdk-linux
@@ -85,11 +84,6 @@ unzip $HOME/Downloads/commandlinetools-linux-6200805_latest.zip -d $HOME/android
 
 **NOTE:** Since we're using the latest SDK Command line tools available, filename can change over time. Adapt the `unzip` command accordingly.
 
-Extract Android NDK:
-```
-unzip $HOME/Downloads/android-ndk-r21e-linux-x86_64.zip -d $HOME/android-tools
-```
-
 ### 3.2. Configure Android SDK
 Before Android SDK can be used, you need to accept the licenses and configure it:
 ```
@@ -97,7 +91,8 @@ cd $HOME/android-tools/android-sdk-linux/cmdline-tools/bin
 ./sdkmanager --sdk_root=$(pwd)/../.. --licenses
 ./sdkmanager --sdk_root=$(pwd)/../.. platform-tools
 ./sdkmanager --sdk_root=$(pwd)/../.. "platforms;android-33"
-./sdkmanager --sdk_root=$(pwd)/../.. "build-tools;30.0.3"
+./sdkmanager --sdk_root=$(pwd)/../.. "build-tools;33.0.1"
+./sdkmanager --sdk_root=$(pwd)/../.. "ndk;21.4.7075529"
 ```
 
 ### 3.3. Create a key to sign debug APKs
@@ -131,22 +126,22 @@ cd $HOME/kodi/tools/depends
 
 Configure build for aarch64:
 ```
-./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=aarch64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r21e --prefix=$HOME/android-tools/xbmc-depends
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=aarch64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-sdk-linux/ndk/21.4.7075529 --prefix=$HOME/android-tools/xbmc-depends
 ```
 
 Or configure build for arm:
 ```
-./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r21e --prefix=$HOME/android-tools/xbmc-depends
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=arm-linux-androideabi --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-sdk-linux/ndk/21.4.7075529 --prefix=$HOME/android-tools/xbmc-depends
 ```
 
 Or configure build for x86:
 ```
-./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=i686-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r21e --prefix=$HOME/android-tools/xbmc-depends
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=i686-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-sdk-linux/ndk/21.4.7075529 --prefix=$HOME/android-tools/xbmc-depends
 ```
 
 Or configure build for x86_64:
 ```
-./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=x86_64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-ndk-r21e --prefix=$HOME/android-tools/xbmc-depends
+./configure --with-tarballs=$HOME/android-tools/xbmc-tarballs --host=x86_64-linux-android --with-sdk-path=$HOME/android-tools/android-sdk-linux --with-ndk-path=$HOME/android-tools/android-sdk-linux/ndk/21.4.7075529 --prefix=$HOME/android-tools/xbmc-depends
 ```
 
 > **Note:** Android x86 and x86_64 are not maintained and are not 100% sure that everything works correctly!
