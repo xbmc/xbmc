@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 class CFavouritesService
@@ -53,6 +54,7 @@ private:
 
   std::string m_userDataFolder;
   CFileItemList m_favourites;
+  mutable std::unordered_map<std::string, std::shared_ptr<CFileItem>> m_targets;
   CEventSource<FavouritesUpdated> m_events;
   mutable CCriticalSection m_criticalSection;
 };
