@@ -35,7 +35,6 @@
 #include "PartyModeManager.h"
 #include "URL.h"
 #include "addons/gui/GUIDialogAddonInfo.h"
-#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -442,19 +441,6 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       //! @todo get rid of IsAddonsPath and IsScript check. CanQueue should be enough!
       if (item->CanQueue() && !item->IsAddonsPath() && !item->IsScript())
       {
-        if (!item->m_bIsFolder &&
-            (!item->IsPlayList() ||
-             CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders))
-        {
-          const CPlayerCoreFactory& playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
-
-          // check what players we have, if we have multiple display play with option
-          std::vector<std::string> players;
-          playerCoreFactory.GetPlayers(*item, players);
-          if (players.size() >= 1)
-            buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
-        }
-
         if (item->IsSmartPlayList())
           buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
 
@@ -524,18 +510,6 @@ bool CGUIWindowMusicBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       std::string playlist = item->IsSmartPlayList() ? item->GetPath() : m_vecItems->GetPath(); // save path as activatewindow will destroy our items
       if (CGUIDialogSmartPlaylistEditor::EditPlaylist(playlist, "music"))
         Refresh(true); // need to update
-      return true;
-    }
-
-  case CONTEXT_BUTTON_PLAY_WITH:
-    {
-      const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
-
-      std::vector<std::string> players;
-      playerCoreFactory.GetPlayers(*item, players);
-      std::string player = playerCoreFactory.SelectPlayerDialog(players);
-      if (!player.empty())
-        OnClick(itemNumber, player);
       return true;
     }
 

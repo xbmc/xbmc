@@ -11,6 +11,7 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "music/MusicUtils.h"
@@ -70,20 +71,67 @@ bool CMusicPlay::IsVisible(const CFileItem& item) const
   return MUSIC_UTILS::IsItemPlayable(item);
 }
 
-bool CMusicPlay::Execute(const std::shared_ptr<CFileItem>& item) const
+namespace
+{
+void Play(const std::shared_ptr<CFileItem>& item, const std::string& player)
 {
   item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_MUSIC);
 
   const ContentUtils::PlayMode mode = item->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS;
-  MUSIC_UTILS::PlayItem(item, mode);
+  MUSIC_UTILS::PlayItem(item, player, mode);
+}
+
+std::vector<std::string> GetPlayers(const CPlayerCoreFactory& playerCoreFactory,
+                                    const CFileItem& item)
+{
+  std::vector<std::string> players;
+  playerCoreFactory.GetPlayers(item, players);
+  return players;
+}
+
+bool CanQueue(const CFileItem& item)
+{
+  if (!item.CanQueue())
+    return false;
+
+  const int windowId = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
+  if (windowId == WINDOW_MUSIC_PLAYLIST)
+    return false; // Already queued
+
   return true;
+}
+} // unnamed namespace
+
+bool CMusicPlay::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  Play(item, "");
+  return true;
+}
+
+bool CMusicPlayUsing::IsVisible(const CFileItem& item) const
+{
+  const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
+  return (GetPlayers(playerCoreFactory, item).size() > 1) && MUSIC_UTILS::IsItemPlayable(item);
+}
+
+bool CMusicPlayUsing::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
+  const std::vector<std::string> players{GetPlayers(playerCoreFactory, *item)};
+  const std::string player{playerCoreFactory.SelectPlayerDialog(players)};
+  if (!player.empty())
+  {
+    Play(item, player);
+    return true;
+  }
+  return false;
 }
 
 bool CMusicPlayNext::IsVisible(const CFileItem& item) const
 {
-  if (!item.CanQueue())
+  if (!CanQueue(item))
     return false;
 
   return MUSIC_UTILS::IsItemPlayable(item);
@@ -97,7 +145,7 @@ bool CMusicPlayNext::Execute(const std::shared_ptr<CFileItem>& item) const
 
 bool CMusicQueue::IsVisible(const CFileItem& item) const
 {
-  if (!item.CanQueue())
+  if (!CanQueue(item))
     return false;
 
   return MUSIC_UTILS::IsItemPlayable(item);

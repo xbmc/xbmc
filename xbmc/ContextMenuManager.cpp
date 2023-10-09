@@ -70,6 +70,7 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CVideoQueue>(),
       std::make_shared<CONTEXTMENU::CMusicBrowse>(),
       std::make_shared<CONTEXTMENU::CMusicPlay>(),
+      std::make_shared<CONTEXTMENU::CMusicPlayUsing>(),
       std::make_shared<CONTEXTMENU::CMusicPlayNext>(),
       std::make_shared<CONTEXTMENU::CMusicQueue>(),
       std::make_shared<CONTEXTMENU::CAddonInfo>(),
