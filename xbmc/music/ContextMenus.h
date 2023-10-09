@@ -57,6 +57,13 @@ struct CMusicPlay : CStaticContextMenuAction
   bool Execute(const std::shared_ptr<CFileItem>& item) const override;
 };
 
+struct CMusicPlayUsing : CStaticContextMenuAction
+{
+  CMusicPlayUsing() : CStaticContextMenuAction(15213) {} // Play using...
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& _item) const override;
+};
+
 struct CMusicPlayNext : CStaticContextMenuAction
 {
   CMusicPlayNext() : CStaticContextMenuAction(10008) {} // Play next
