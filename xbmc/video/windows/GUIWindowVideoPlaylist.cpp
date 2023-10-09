@@ -15,7 +15,6 @@
 #include "Util.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
-#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -447,25 +446,6 @@ void CGUIWindowVideoPlaylist::GetContextButtons(int itemNumber, CContextButtons&
   }
   else
   {
-    if (itemNumber > -1)
-    {
-      CFileItemPtr item = m_vecItems->Get(itemNumber);
-
-      const CPlayerCoreFactory& playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
-
-      // check what players we have, if we have multiple display play with option
-      std::vector<std::string> players;
-      if (item->IsVideoDb())
-      {
-        CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
-        playerCoreFactory.GetPlayers(item2, players);
-      }
-      else
-        playerCoreFactory.GetPlayers(*item, players);
-
-      if (players.size() > 1)
-        buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213); // Play With...
-    }
     if (itemNumber > (g_partyModeManager.IsEnabled() ? 1 : 0))
       buttons.Add(CONTEXT_BUTTON_MOVE_ITEM_UP, 13332);
     if (itemNumber + 1 < m_vecItems->Size())
@@ -487,31 +467,6 @@ bool CGUIWindowVideoPlaylist::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 {
   switch (button)
   {
-    case CONTEXT_BUTTON_PLAY_WITH:
-    {
-      CFileItemPtr item;
-      if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
-        item = m_vecItems->Get(itemNumber);
-      if (!item)
-        break;
-
-      const CPlayerCoreFactory& playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
-
-      std::vector<std::string> players;
-      if (item->IsVideoDb())
-      {
-        CFileItem item2(*item->GetVideoInfoTag());
-        playerCoreFactory.GetPlayers(item2, players);
-      }
-      else
-        playerCoreFactory.GetPlayers(*item, players);
-
-      std::string player = playerCoreFactory.SelectPlayerDialog(players);
-      if (!player.empty())
-        OnClick(itemNumber, player);
-      return true;
-    }
-
     case CONTEXT_BUTTON_MOVE_ITEM:
       m_movingFrom = itemNumber;
       return true;

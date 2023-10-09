@@ -771,7 +771,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
   const ContentUtils::PlayMode mode = m_movieItem->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS;
-  VIDEO_UTILS::PlayItem(m_movieItem, mode);
+  VIDEO_UTILS::PlayItem(m_movieItem, "", mode);
 }
 
 namespace
