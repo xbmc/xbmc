@@ -33,9 +33,11 @@ bool IsAutoPlayNextItem(const std::string& content);
   all items contained in the folder and start playback of the playlist. If item is a single video
   item, start playback directly, without adding it to the video playlist first.
   \param item [in] the item to play
+  \param player [in] the player to use, empty for default player
   \param mode [in] queue all successors and play them after item
   */
 void PlayItem(const std::shared_ptr<CFileItem>& item,
+              const std::string& player,
               ContentUtils::PlayMode mode = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM);
 
 enum class QueuePosition

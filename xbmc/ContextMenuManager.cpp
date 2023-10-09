@@ -64,6 +64,7 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CVideoBrowse>(),
       std::make_shared<CONTEXTMENU::CVideoResume>(),
       std::make_shared<CONTEXTMENU::CVideoPlay>(),
+      std::make_shared<CONTEXTMENU::CVideoPlayUsing>(),
       std::make_shared<CONTEXTMENU::CVideoPlayAndQueue>(),
       std::make_shared<CONTEXTMENU::CVideoPlayNext>(),
       std::make_shared<CONTEXTMENU::CVideoQueue>(),

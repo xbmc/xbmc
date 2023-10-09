@@ -338,7 +338,8 @@ std::string GetVideoDbItemPath(const CFileItem& item)
 }
 
 void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
-                              const std::shared_ptr<CFileItem>& itemToPlay)
+                              const std::shared_ptr<CFileItem>& itemToPlay,
+                              const std::string& player)
 {
   // recursively add items to list
   CFileItemList queuedItems;
@@ -370,7 +371,7 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
   }
 
   playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
-  playlistPlayer.Play(pos, "");
+  playlistPlayer.Play(pos, player);
 }
 
 } // unnamed namespace
@@ -406,6 +407,7 @@ bool IsAutoPlayNextItem(const std::string& content)
 
 void PlayItem(
     const std::shared_ptr<CFileItem>& itemIn,
+    const std::string& player,
     ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_VIDEO */)
 {
   auto item = itemIn;
@@ -421,7 +423,7 @@ void PlayItem(
 
   if (item->m_bIsFolder && !item->IsPlugin())
   {
-    AddItemToPlayListAndPlay(item, nullptr);
+    AddItemToPlayListAndPlay(item, nullptr, player);
   }
   else if (item->HasVideoInfoTag())
   {
@@ -450,7 +452,7 @@ void PlayItem(
       if (item->GetStartOffset() == STARTOFFSET_RESUME)
         parentItem->SetStartOffset(STARTOFFSET_RESUME);
 
-      AddItemToPlayListAndPlay(parentItem, item);
+      AddItemToPlayListAndPlay(parentItem, item, player);
     }
     else // mode == PlayMode::PLAY_ONLY_THIS
     {
@@ -458,7 +460,7 @@ void PlayItem(
       auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
       playlistPlayer.Reset();
       playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
-      playlistPlayer.Play(item, "");
+      playlistPlayer.Play(item, player);
     }
   }
 }
@@ -538,10 +540,6 @@ bool IsItemPlayable(const CFileItem& item)
 
   // Exclude other components
   if (item.IsPlugin() || item.IsScript() || item.IsAddonsPath())
-    return false;
-
-  // Exclude unwanted windows
-  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VIDEO_PLAYLIST)
     return false;
 
   // Exclude special items

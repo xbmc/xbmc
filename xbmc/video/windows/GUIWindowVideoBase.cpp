@@ -20,7 +20,6 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
-#include "cores/playercorefactory/PlayerCoreFactory.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogSmartPlaylistEditor.h"
@@ -796,23 +795,6 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         }
       }
 
-      if (!item->m_bIsFolder && !(item->IsPlayList() && !CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_playlistAsFolders))
-      {
-        const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
-
-        // get players
-        std::vector<std::string> players;
-        if (item->IsVideoDb())
-        {
-          CFileItem item2(item->GetVideoInfoTag()->m_strFileNameAndPath, false);
-          playerCoreFactory.GetPlayers(item2, players);
-        }
-        else
-          playerCoreFactory.GetPlayers(*item, players);
-
-        if (players.size() > 1)
-          buttons.Add(CONTEXT_BUTTON_PLAY_WITH, 15213);
-      }
       if (item->IsSmartPlayList())
       {
         buttons.Add(CONTEXT_BUTTON_PLAY_PARTYMODE, 15216); // Play in Partymode
@@ -903,35 +885,6 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   case CONTEXT_BUTTON_PLAY_PART:
     {
       return OnFileAction(itemNumber, SELECT_ACTION_PLAYPART, "");
-    }
-  case CONTEXT_BUTTON_PLAY_WITH:
-    {
-      const CPlayerCoreFactory &playerCoreFactory = CServiceBroker::GetPlayerCoreFactory();
-
-      std::vector<std::string> players;
-      if (item->IsVideoDb())
-      {
-        CFileItem item2(*item->GetVideoInfoTag());
-        playerCoreFactory.GetPlayers(item2, players);
-      }
-      else
-        playerCoreFactory.GetPlayers(*item, players);
-
-      std:: string player = playerCoreFactory.SelectPlayerDialog(players);
-      if (!player.empty())
-      {
-        // any other select actions but play or resume, resume, play or playpart
-        // don't make any sense here since the user already decided that he'd
-        // like to play the item (just with a specific player)
-        SelectAction selectAction = CVideoSelectActionProcessorBase::GetDefaultSelectAction();
-        if (selectAction != SELECT_ACTION_PLAY_OR_RESUME &&
-            selectAction != SELECT_ACTION_RESUME &&
-            selectAction != SELECT_ACTION_PLAY &&
-            selectAction != SELECT_ACTION_PLAYPART)
-          selectAction = SELECT_ACTION_PLAY_OR_RESUME;
-        return OnFileAction(itemNumber, selectAction, player);
-      }
-      return true;
     }
 
   case CONTEXT_BUTTON_PLAY_PARTYMODE:
