@@ -46,6 +46,13 @@ public:
   }
   int GetHeight() { return m_RenderInfo.Height; }
   int GetWidth() { return m_RenderInfo.Width; }
+
+  /*!
+   \brief Checks if the data in the decoder has changed
+   \return true if the data in the decoder has changed, false otherwise
+   */
+  bool Changed();
+
   bool InitDecoder();
   void EndDecoder();
   void RenderPage();

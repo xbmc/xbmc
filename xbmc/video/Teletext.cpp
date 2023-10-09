@@ -447,6 +447,25 @@ CTeletextDecoder::CTeletextDecoder()
 
 CTeletextDecoder::~CTeletextDecoder() = default;
 
+bool CTeletextDecoder::Changed()
+{
+  std::unique_lock<CCriticalSection> lock(m_txtCache->m_critSection);
+  if (IsSubtitlePage(m_txtCache->Page))
+  {
+    m_updateTexture = true;
+    return true;
+  }
+
+  /* Update on every changed second */
+  if (m_txtCache->TimeString[7] != prevTimeSec)
+  {
+    prevTimeSec = m_txtCache->TimeString[7];
+    m_updateTexture = true;
+    return true;
+  }
+  return false;
+}
+
 bool CTeletextDecoder::HandleAction(const CAction &action)
 {
   if (m_txtCache == NULL)
@@ -1320,20 +1339,6 @@ void CTeletextDecoder::RenderPage()
         {
           SetPosX(33+i);
         }
-      }
-
-      if (!IsSubtitlePage(m_txtCache->Page))
-      {
-        /* Update on every changed second */
-        if (m_txtCache->TimeString[7] != prevTimeSec)
-        {
-          prevTimeSec = m_txtCache->TimeString[7];
-          m_updateTexture = true;
-        }
-      }
-      else
-      {
-        m_updateTexture = true;
       }
     }
     DoFlashing(StartRow);
