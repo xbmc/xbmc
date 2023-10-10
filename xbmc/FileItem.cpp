@@ -3738,7 +3738,10 @@ bool CFileItem::LoadDetails()
     }
 
     if (ret)
+    {
       m_videoInfoTag = tag.release();
+      m_strDynPath = m_videoInfoTag->m_strFileNameAndPath;
+    }
 
     return ret;
   }
@@ -3784,6 +3787,7 @@ bool CFileItem::LoadDetails()
     if (db.LoadVideoInfo(GetDynPath(), *tag))
     {
       m_videoInfoTag = tag.release();
+      m_strDynPath = m_videoInfoTag->m_strFileNameAndPath;
       return true;
     }
 
