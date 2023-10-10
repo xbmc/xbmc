@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-07-01 08:26+0000\n"
-"Last-Translator: Christian Gade <gade@kodi.tv>\n"
+"PO-Revision-Date: 2023-09-14 18:32+0000\n"
+"Last-Translator: Jose Riha <jose1711@gmail.com>\n"
 "Language-Team: Slovak <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/sk_sk/>\n"
 "Language: sk_sk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 5.0.1\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -361,7 +361,7 @@ msgstr "Video aspekt"
 #. Label to show the video bitrate
 msgctxt "#31603"
 msgid "Video bitrate"
-msgstr ""
+msgstr "Prenosová rýchlosť videa"
 
 #. Label to show the audio codec name
 msgctxt "#31604"
@@ -376,7 +376,7 @@ msgstr "Audio kanály"
 #. Label to show the audio bitrate
 msgctxt "#31606"
 msgid "Audio bitrate"
-msgstr ""
+msgstr "Prenosová rýchlosť zvuku"
 
 #. Label to show the screen resolution
 msgctxt "#31607"
@@ -386,7 +386,7 @@ msgstr "Rozlíšenie obrazovky"
 #. Label to show the system rendering speed
 msgctxt "#31608"
 msgid "System rendering speed"
-msgstr ""
+msgstr "Rýchlosť vykresľovania systému"
 
 #. Label to show the system CPU usage
 msgctxt "#31609"
