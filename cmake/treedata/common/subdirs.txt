@@ -41,6 +41,7 @@ xbmc/speech                                     speech
 xbmc/storage                                    storage
 xbmc/threads                                    threads
 xbmc/utils                                      utils
+xbmc/utils/guilib                               utils_guilib
 xbmc/view                                       view
 xbmc/weather                                    weather
 xbmc/windowing                                  windowing

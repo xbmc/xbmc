@@ -149,6 +149,7 @@ void CFavouritesService::ReInit(std::string userDataFolder)
 {
   m_userDataFolder = std::move(userDataFolder);
   m_favourites.Clear();
+  m_targets.clear();
   m_favourites.SetContent("favourites");
 
   std::string favourites = "special://xbmc/system/favourites.xml";
@@ -193,6 +194,7 @@ bool CFavouritesService::Save(const CFileItemList& items)
   {
     std::unique_lock<CCriticalSection> lock(m_criticalSection);
     m_favourites.Clear();
+    m_targets.clear();
     m_favourites.Copy(items);
     Persist();
   }
@@ -212,7 +214,12 @@ bool CFavouritesService::AddOrRemove(const CFileItem& item, int contextWindow)
 
     const std::shared_ptr<CFileItem> match{GetFavourite(item, contextWindow)};
     if (match)
-    { // remove the item
+    {
+      // remove the item
+      const auto it = m_targets.find(match->GetPath());
+      if (it != m_targets.end())
+        m_targets.erase(it);
+
       m_favourites.Remove(match.get());
     }
     else
@@ -281,6 +288,10 @@ std::shared_ptr<CFileItem> CFavouritesService::ResolveFavourite(const CFileItem&
 {
   if (item.IsFavourite())
   {
+    const auto it = m_targets.find(item.GetPath());
+    if (it != m_targets.end())
+      return (*it).second;
+
     const CFavouritesURL favURL{item.GetPath()};
     if (favURL.IsValid())
     {
@@ -291,6 +302,7 @@ std::shared_ptr<CFileItem> CFavouritesService::ResolveFavourite(const CFileItem&
         const std::string window{CWindowTranslator::TranslateWindow(favURL.GetWindowID())};
         targetItem->SetProperty("targetwindow", CVariant{window});
       }
+      m_targets.insert({item.GetPath(), targetItem});
       return targetItem;
     }
   }

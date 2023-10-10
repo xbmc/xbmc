@@ -19,12 +19,10 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/ApplicationMessenger.h"
-#include "pvr/PVRManager.h"
-#include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "utils/PlayerUtils.h"
 #include "utils/StringUtils.h"
+#include "utils/guilib/GUIContentUtils.h"
 #include "video/VideoUtils.h"
-#include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 
@@ -49,23 +47,6 @@ void CGUIWindowFavourites::OnFavouritesEvent(const CFavouritesService::Favourite
 
 namespace
 {
-bool ExecuteAction(const std::string& execute)
-{
-  if (!execute.empty())
-  {
-    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
-    message.SetStringParam(execute);
-    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
-    return true;
-  }
-  return false;
-}
-
-bool ExecuteAction(const CExecString& execute)
-{
-  return ExecuteAction(execute.GetExecString());
-}
-
 class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
 {
 public:
@@ -75,41 +56,32 @@ protected:
   bool OnPlayPartSelected(unsigned int part) override
   {
     // part numbers are 1-based
-    ExecuteAction({"PlayMedia", m_item, StringUtils::Format("playoffset={}", part - 1)});
+    FAVOURITES_UTILS::ExecuteAction(
+        {"PlayMedia", m_item, StringUtils::Format("playoffset={}", part - 1)});
     return true;
   }
 
   bool OnResumeSelected() override
   {
-    ExecuteAction({"PlayMedia", m_item, "resume"});
+    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", m_item, "resume"});
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    ExecuteAction({"PlayMedia", m_item, "noresume"});
+    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", m_item, "noresume"});
     return true;
   }
 
   bool OnQueueSelected() override
   {
-    ExecuteAction({"QueueMedia", m_item, ""});
+    FAVOURITES_UTILS::ExecuteAction({"QueueMedia", m_item, ""});
     return true;
   }
 
   bool OnInfoSelected() override
   {
-    if (m_item.IsPVR())
-    {
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().OnInfo(m_item);
-      return true;
-    }
-    else if (m_item.HasVideoInfoTag())
-    {
-      CGUIDialogVideoInfo::ShowFor(m_item);
-      return true;
-    }
-    return false;
+    return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(m_item);
   }
 
   bool OnMoreSelected() override
@@ -127,13 +99,13 @@ public:
 protected:
   bool OnResumeSelected() override
   {
-    ExecuteAction({"PlayMedia", m_item, "resume"});
+    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", m_item, "resume"});
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    ExecuteAction({"PlayMedia", m_item, "noresume"});
+    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", m_item, "noresume"});
     return true;
   }
 };
@@ -162,7 +134,7 @@ bool CGUIWindowFavourites::OnSelect(int item)
   }
 
   // exec the execute string for the original (!) item
-  return ExecuteAction(favURL.GetExecString());
+  return FAVOURITES_UTILS::ExecuteAction(favURL);
 }
 
 bool CGUIWindowFavourites::OnAction(const CAction& action)
@@ -197,7 +169,7 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
         target = CFavouritesURL{CFavouritesURL::Action::PLAY_MEDIA,
                                 {StringUtils::Paramify(item.GetPath())}};
       }
-      return ExecuteAction(target.GetExecString());
+      return FAVOURITES_UTILS::ExecuteAction(target);
     }
     return false;
   }
