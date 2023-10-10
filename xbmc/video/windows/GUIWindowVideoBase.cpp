@@ -562,7 +562,7 @@ protected:
       return true;
     }
     // resume playback of the video
-    return m_window.OnClick(m_itemIndex);
+    return m_window.OnClick(m_itemIndex, m_player);
   }
 
   bool OnPlaySelected() override
