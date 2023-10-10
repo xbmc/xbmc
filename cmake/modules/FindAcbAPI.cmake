@@ -33,5 +33,10 @@ if(NOT TARGET ACBAPI::ACBAPI)
                                                  IMPORTED_LOCATION "${ACBAPI_LIBRARY}"
                                                  INTERFACE_INCLUDE_DIRECTORIES "${ACBAPI_INCLUDE_DIR}")
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ACBAPI::ACBAPI)
+
+    # creates an empty library to install on webOS 5+ devices
+    file(TOUCH dummy.c)
+    add_library(AcbAPI SHARED dummy.c)
+    set_target_properties(AcbAPI PROPERTIES VERSION 1.0.0 SOVERSION 1)
   endif()
 endif()
