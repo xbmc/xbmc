@@ -30,7 +30,7 @@ set(APP_INSTALL_DIRS ${CMAKE_BINARY_DIR}/addons
                      ${CMAKE_BINARY_DIR}/userdata)
 set(APP_TOOLCHAIN_FILES ${TOOLCHAIN}/${HOST}/sysroot/lib/libatomic.so.1
                         ${TOOLCHAIN}/${HOST}/sysroot/lib/libcrypt.so.1
-                        ${DEPENDS_PATH}/lib/libAcbAPI.so.1)
+                        ${CMAKE_BINARY_DIR}/libAcbAPI.so.1)
 set(BIN_ADDONS_DIR ${DEPENDS_PATH}/addons)
 
 file(WRITE ${CMAKE_BINARY_DIR}/install.cmake "
@@ -54,7 +54,7 @@ file(WRITE ${CMAKE_BINARY_DIR}/install.cmake "
 
 # Copy files to the location expected by the webOS packaging scripts.
 add_custom_target(bundle
-  DEPENDS ${APP_NAME_LC} ${CMAKE_BINARY_DIR}/missing_libs.txt
+  DEPENDS ${APP_NAME_LC} ${CMAKE_BINARY_DIR}/missing_libs.txt AcbAPI
   COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/install.cmake
 )
 
