@@ -608,13 +608,6 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 
   if (forcePlay)
   {
-    if (item.HasVideoInfoTag() && item.GetStartOffset() == STARTOFFSET_RESUME)
-    {
-      const CBookmark bookmark = item.GetVideoInfoTag()->GetResumePoint();
-      if (bookmark.IsSet())
-        item.SetStartOffset(CUtil::ConvertSecsToMilliSecs(bookmark.timeInSeconds));
-    }
-
     if ((item.IsAudio() || item.IsVideo()) && !item.IsSmartPlayList())
     {
       if (!item.HasProperty("playlist_type_hint"))
