@@ -1818,34 +1818,6 @@ bool CGUIMediaWindow::OnPopupMenu(int itemIdx)
   return CONTEXTMENU::LoopFrom(*addonMenu[idx - addonMenuRange.first], item);
 }
 
-void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons)
-{
-  CFileItemPtr item = (itemNumber >= 0 && itemNumber < m_vecItems->Size()) ? m_vecItems->Get(itemNumber) : CFileItemPtr();
-
-  if (!item || item->IsParentFolder())
-    return;
-
-  if (item->IsFileFolder(EFILEFOLDER_MASK_ONBROWSE))
-    buttons.Add(CONTEXT_BUTTON_BROWSE_INTO, 37015);
-
-}
-
-bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
-{
-  switch (button)
-  {
-  case CONTEXT_BUTTON_BROWSE_INTO:
-    {
-      CFileItemPtr item = m_vecItems->Get(itemNumber);
-      Update(item->GetDynPath());
-      return true;
-    }
-  default:
-    break;
-  }
-  return false;
-}
-
 const CGUIViewState *CGUIMediaWindow::GetViewState() const
 {
   return m_guiState.get();
