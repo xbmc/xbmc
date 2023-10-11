@@ -29,6 +29,9 @@ if(NOT TARGET EGL::EGL)
                                     VERSION_VAR EGL_VERSION)
 
   if(EGL_FOUND)
+    list(APPEND GL_INTERFACES_LIST egl egl-pb)
+    set(GL_INTERFACES_LIST ${GL_INTERFACES_LIST} PARENT_SCOPE)
+
     include(CheckIncludeFiles)
     check_include_files("EGL/egl.h;EGL/eglext.h;EGL/eglext_angle.h" HAVE_EGLEXTANGLE)
 
