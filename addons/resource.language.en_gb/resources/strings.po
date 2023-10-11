@@ -8772,6 +8772,9 @@ msgstr ""
 
 #empty strings from id 15209 to 15212
 
+#. Label for context menu action to choose a player and play
+#: xbmc/music/ContextMenus.h
+#: xbmc/video/ContextMenus.h
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#15213"
 msgid "Play using..."

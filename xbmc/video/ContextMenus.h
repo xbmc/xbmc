@@ -100,6 +100,13 @@ struct CVideoPlay : IContextMenuItem
   bool Execute(const std::shared_ptr<CFileItem>& _item) const override;
 };
 
+struct CVideoPlayUsing : CStaticContextMenuAction
+{
+  CVideoPlayUsing() : CStaticContextMenuAction(15213) {} // Play using...
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& _item) const override;
+};
+
 struct CVideoQueue : CStaticContextMenuAction
 {
   CVideoQueue() : CStaticContextMenuAction(13347) {} // Queue item

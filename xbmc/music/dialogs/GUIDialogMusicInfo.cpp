@@ -1039,5 +1039,5 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
 void CGUIDialogMusicInfo::OnPlayItem(const std::shared_ptr<CFileItem>& item)
 {
   Close(true);
-  MUSIC_UTILS::PlayItem(item);
+  MUSIC_UTILS::PlayItem(item, "");
 }
