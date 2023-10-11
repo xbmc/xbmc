@@ -440,18 +440,3 @@ void CGUIWindowMusicPlaylistEditor::OnPlaylistContext()
   else if (btnid == CONTEXT_BUTTON_DELETE)
     OnDeletePlaylistItem(item);
 }
-
-bool CGUIWindowMusicPlaylistEditor::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
-{
-  switch (button)
-  {
-    case CONTEXT_BUTTON_QUEUE_ITEM:
-      OnQueueItem(itemNumber);
-      return true;
-
-    default:
-      break;
-  }
-
-  return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
-}
