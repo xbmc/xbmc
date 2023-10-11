@@ -29,10 +29,14 @@ if(NOT TARGET ICONV::ICONV)
                                     REQUIRED_VARS ICONV_LIBRARY ICONV_INCLUDE_DIR HAVE_ICONV_FUNCTION)
 
   if(ICONV_FOUND)
-    add_library(ICONV::ICONV UNKNOWN IMPORTED)
-    set_target_properties(ICONV::ICONV PROPERTIES
-                                       IMPORTED_LOCATION "${ICONV_LIBRARY}"
-                                       INTERFACE_INCLUDE_DIRECTORIES "${ICONV_INCLUDE_DIR}")
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ICONV::ICONV)
+    # Libc causes grief for linux, so search if found library is libc.* and only
+    # create imported TARGET if its not
+    if(NOT ${ICONV_LIBRARY} MATCHES ".*libc\..*")
+      add_library(ICONV::ICONV UNKNOWN IMPORTED)
+      set_target_properties(ICONV::ICONV PROPERTIES
+                                         IMPORTED_LOCATION "${ICONV_LIBRARY}"
+                                         INTERFACE_INCLUDE_DIRECTORIES "${ICONV_INCLUDE_DIR}")
+      set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP ICONV::ICONV)
+    endif()
   endif()
 endif()
