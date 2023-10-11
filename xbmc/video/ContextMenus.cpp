@@ -125,10 +125,8 @@ bool CVideoMarkUnWatched::Execute(const std::shared_ptr<CFileItem>& item) const
 
 bool CVideoBrowse::IsVisible(const CFileItem& item) const
 {
-  if (item.IsFileFolder(EFILEFOLDER_MASK_ONBROWSE))
-    return false; // handled by CMediaWindow
-
-  return item.m_bIsFolder && VIDEO_UTILS::IsItemPlayable(item);
+  return ((item.m_bIsFolder || item.IsFileFolder(EFILEFOLDER_MASK_ONBROWSE)) &&
+          VIDEO_UTILS::IsItemPlayable(item));
 }
 
 bool CVideoBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
@@ -143,15 +141,19 @@ bool CVideoBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
 
   auto& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
 
+  // For file directory browsing, we need item's dyn path, for everything else the path.
+  const std::string path{item->IsFileFolder(EFILEFOLDER_MASK_ONBROWSE) ? item->GetDynPath()
+                                                                       : item->GetPath()};
+
   if (target == windowMgr.GetActiveWindow())
   {
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, target, 0, GUI_MSG_UPDATE);
-    msg.SetStringParam(item->GetPath());
+    msg.SetStringParam(path);
     windowMgr.SendMessage(msg);
   }
   else
   {
-    windowMgr.ActivateWindow(target, {item->GetPath(), "return"});
+    windowMgr.ActivateWindow(target, {path, "return"});
   }
   return true;
 }
