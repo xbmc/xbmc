@@ -42,10 +42,16 @@ if(NOT TARGET OpenGL::GLES)
       endif()
     endif()
 
-    add_library(OpenGL::GLES UNKNOWN IMPORTED)
+    if(${OPENGLES_gl_LIBRARY} MATCHES ".+\.so$")
+      add_library(OpenGL::GLES SHARED IMPORTED)
+    else()
+      add_library(OpenGL::GLES UNKNOWN IMPORTED)
+    endif()
+
     set_target_properties(OpenGL::GLES PROPERTIES
                                        IMPORTED_LOCATION "${OPENGLES_gl_LIBRARY}"
-                                       INTERFACE_INCLUDE_DIRECTORIES "${OPENGLES_INCLUDE_DIR}")
+                                       INTERFACE_INCLUDE_DIRECTORIES "${OPENGLES_INCLUDE_DIR}"
+                                       IMPORTED_NO_SONAME TRUE)
 
     if(OPENGLES3_INCLUDE_DIR)
       set_property(TARGET OpenGL::GLES APPEND PROPERTY
