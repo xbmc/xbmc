@@ -404,6 +404,9 @@ void CGUIWindowMusicPlaylistEditor::AppendToPlaylist(CFileItemList &newItems)
 
 void CGUIWindowMusicPlaylistEditor::OnSourcesContext()
 {
+  static constexpr int CONTEXT_BUTTON_QUEUE_ITEM = 0;
+  static constexpr int CONTEXT_BUTTON_BROWSE_INTO = 1;
+
   CFileItemPtr item = GetCurrentListItem();
   CContextButtons buttons;
   if (item->IsFileFolder(EFILEFOLDER_MASK_ONBROWSE))

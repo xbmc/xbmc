@@ -44,24 +44,26 @@ bool CMusicInfo::Execute(const std::shared_ptr<CFileItem>& item) const
 
 bool CMusicBrowse::IsVisible(const CFileItem& item) const
 {
-  if (item.IsFileFolder(EFILEFOLDER_MASK_ONBROWSE))
-    return false; // handled by CMediaWindow
-
-  return item.m_bIsFolder && MUSIC_UTILS::IsItemPlayable(item);
+  return ((item.m_bIsFolder || item.IsFileFolder(EFILEFOLDER_MASK_ONBROWSE)) &&
+          MUSIC_UTILS::IsItemPlayable(item));
 }
 
 bool CMusicBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
 {
+  // For file directory browsing, we need item's dyn path, for everything else the path.
+  const std::string path{item->IsFileFolder(EFILEFOLDER_MASK_ONBROWSE) ? item->GetDynPath()
+                                                                       : item->GetPath()};
+
   auto& windowMgr = CServiceBroker::GetGUI()->GetWindowManager();
   if (windowMgr.GetActiveWindow() == WINDOW_MUSIC_NAV)
   {
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL, WINDOW_MUSIC_NAV, 0, GUI_MSG_UPDATE);
-    msg.SetStringParam(item->GetPath());
+    msg.SetStringParam(path);
     windowMgr.SendMessage(msg);
   }
   else
   {
-    windowMgr.ActivateWindow(WINDOW_MUSIC_NAV, {item->GetPath(), "return"});
+    windowMgr.ActivateWindow(WINDOW_MUSIC_NAV, {path, "return"});
   }
   return true;
 }
