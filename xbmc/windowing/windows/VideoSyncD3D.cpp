@@ -93,14 +93,6 @@ void CVideoSyncD3D::Run(CEvent& stopEvent)
       if (fps != GetFps())
         break;
     }
-
-    // because we had a vblank, sleep until half the refreshrate period because i think WaitForVBlank block any rendering stuf
-    // without sleeping we have freeze rendering
-    int SleepTime = (int)((LastVBlankTime + (systemFrequency / MathUtils::round_int(m_fps) / 2) - Now) * 1000 / systemFrequency);
-    if (SleepTime > 50)
-      SleepTime = 50; //failsafe
-    if (SleepTime > 0)
-      ::Sleep(SleepTime);
   }
 
   m_lostEvent.Set();
