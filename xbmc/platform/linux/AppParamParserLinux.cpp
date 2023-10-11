@@ -22,6 +22,7 @@ namespace
 std::vector<std::string> availableWindowSystems = CCompileInfo::GetAvailableWindowSystems();
 std::array<std::string, 1> availableLogTargets = {"console"};
 std::vector<std::string> availableAudioBackends = CCompileInfo::GetAvailableAudioBackends();
+std::vector<std::string> availableGlInterfaces = CCompileInfo::GetAvailableGlInterfaces();
 
 constexpr const char* windowingText =
     R"""(
@@ -41,6 +42,12 @@ Selected audio backend not available: {}
     Available audio backends: {}
 )""";
 
+constexpr const char* glInterfaceText =
+    R"""(
+Selected GL interface not available: {}
+    Available GL interfaces: {}
+)""";
+
 constexpr const char* helpText =
     R"""(
 Linux Specific Arguments:
@@ -50,6 +57,8 @@ Linux Specific Arguments:
                           Available log targets are: {}
   --audio-backend=<backend> Select which audio backend to use.
                           Available audio backends are: {}
+  --gl-interface=<interface> Select which GL interface to use (X11 only).
+                          Available GL interfaces are: {}
 )""";
 
 } // namespace
@@ -107,6 +116,23 @@ void CAppParamParserLinux::ParseArg(const std::string& arg)
       exit(0);
     }
   }
+  else if (arg.find("--gl-interface=") != std::string::npos)
+  {
+    const auto argValue = arg.substr(15);
+    const auto it =
+        std::find(availableGlInterfaces.cbegin(), availableGlInterfaces.cend(), argValue);
+    if (it != availableGlInterfaces.cend())
+    {
+      GetAppParams()->SetGlInterface(argValue);
+    }
+    else
+    {
+      std::cout << StringUtils::Format(glInterfaceText, argValue,
+                                       StringUtils::Join(availableGlInterfaces, ", "));
+
+      exit(0);
+    }
+  }
 }
 
 void CAppParamParserLinux::DisplayHelp()
@@ -115,5 +141,6 @@ void CAppParamParserLinux::DisplayHelp()
 
   std::cout << StringUtils::Format(helpText, StringUtils::Join(availableWindowSystems, ", "),
                                    StringUtils::Join(availableLogTargets, ", "),
-                                   StringUtils::Join(availableAudioBackends, ", "));
+                                   StringUtils::Join(availableAudioBackends, ", "),
+                                   StringUtils::Join(availableGlInterfaces, ", "));
 }
