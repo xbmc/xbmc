@@ -652,22 +652,21 @@ BuildObject(CFileItem&                    item,
         thumb = ContentUtils::GetPreferredArtImage(item);
 
         if (!thumb.empty()) {
-          PLT_AlbumArtInfo art;
-          // Set DLNA profileID by extension, defaulting to JPEG.
-          if (URIUtils::HasExtension(thumb, ".png"))
-          {
-            art.dlna_profile = "PNG_TN";
-          }
-          else
-          {
-            art.dlna_profile = "JPEG_TN";
-          }
-          // append /thumb to the safe resource uri to avoid clients flagging the item with
-          // the incorrect mimetype (derived from the file extension)
-          art.uri = upnp_server->BuildSafeResourceUri(
-              rooturi, (*ips.GetFirstItem()).ToString(),
-              std::string(CTextureUtils::GetWrappedImageURL(thumb) + "/thumb").c_str());
-          object->m_ExtraInfo.album_arts.Add(art);
+            PLT_AlbumArtInfo art;
+            art.uri =
+                upnp_server->BuildSafeResourceUri(rooturi, (*ips.GetFirstItem()).ToString(),
+                                                  CTextureUtils::GetWrappedImageURL(thumb).c_str());
+
+            // Set DLNA profileID by extension, defaulting to JPEG.
+            if (URIUtils::HasExtension(thumb, ".png"))
+            {
+                art.dlna_profile = "PNG_TN";
+            }
+            else
+            {
+                art.dlna_profile = "JPEG_TN";
+            }
+            object->m_ExtraInfo.album_arts.Add(art);
         }
 
         for (const auto& itArtwork : item.GetArt())
