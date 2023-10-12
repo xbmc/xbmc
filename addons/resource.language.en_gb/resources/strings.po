@@ -21949,7 +21949,7 @@ msgstr ""
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/favourites/ContextMenus.h
 #: xbmc/music/ContextMenus.h
-#: xbmc/windows/GUIMediaWindow.cpp
+#: xbmc/video/ContextMenus.h
 msgctxt "#37015"
 msgid "Browse into"
 msgstr ""
