@@ -9,7 +9,7 @@
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
-#include "TextureDatabase.h"
+#include "TextureCache.h"
 #include "ThumbLoader.h"
 #include "UPnPServer.h"
 #include "URL.h"
@@ -32,12 +32,29 @@
 
 #include <algorithm>
 #include <array>
+#include <optional>
 #include <string_view>
 
 #include <Platinum/Source/Platinum/Platinum.h>
 
 using namespace MUSIC_INFO;
 using namespace XFILE;
+
+namespace
+{
+std::optional<std::string> GetImageDLNAProfile(const std::string& imgPath)
+{
+  if (URIUtils::HasExtension(imgPath, ".png"))
+  {
+    return "PNG_TN";
+  }
+  else if (URIUtils::HasExtension(imgPath, ".jpg") || URIUtils::HasExtension(imgPath, ".jpeg"))
+  {
+    return "JPEG_TN";
+  }
+  return std::nullopt;
+}
+} // namespace
 
 namespace UPNP
 {
@@ -652,22 +669,42 @@ BuildObject(CFileItem&                    item,
         thumb = ContentUtils::GetPreferredArtImage(item);
 
         if (!thumb.empty()) {
-          PLT_AlbumArtInfo art;
-          // Set DLNA profileID by extension, defaulting to JPEG.
-          if (URIUtils::HasExtension(thumb, ".png"))
-          {
-            art.dlna_profile = "PNG_TN";
-          }
-          else
-          {
-            art.dlna_profile = "JPEG_TN";
-          }
-          // append /thumb to the safe resource uri to avoid clients flagging the item with
-          // the incorrect mimetype (derived from the file extension)
-          art.uri = upnp_server->BuildSafeResourceUri(
-              rooturi, (*ips.GetFirstItem()).ToString(),
-              std::string(CTextureUtils::GetWrappedImageURL(thumb) + "/thumb").c_str());
-          object->m_ExtraInfo.album_arts.Add(art);
+            PLT_AlbumArtInfo art;
+
+            // Get DLNA profileId for the image
+            std::optional<std::string> imageProfile = GetImageDLNAProfile(thumb);
+            if (imageProfile.has_value())
+            {
+                art.dlna_profile = imageProfile.value().c_str();
+            }
+            else
+            {
+                // unknown image format (might be a embed thumb previously extracted and cached - e.g. mp3, flac, mvk, etc)
+                bool needsRecaching;
+                const std::string cachedImagePath =
+                    CServiceBroker::GetTextureCache()->CheckCachedImage(thumb, needsRecaching);
+                if (!cachedImagePath.empty())
+                {
+                  imageProfile = GetImageDLNAProfile(cachedImagePath);
+                  if (imageProfile.has_value())
+                  {
+                      thumb = cachedImagePath;
+                      art.dlna_profile = imageProfile.value().c_str();
+                  }
+                }
+            }
+
+            // Always default to JPEG if the profile could not be found
+            if (art.dlna_profile.IsEmpty())
+            {
+                art.dlna_profile = "JPEG_TN";
+            }
+
+            art.uri =
+                upnp_server->BuildSafeResourceUri(rooturi, (*ips.GetFirstItem()).ToString(),
+                                                  CTextureUtils::GetWrappedImageURL(thumb).c_str());
+
+            object->m_ExtraInfo.album_arts.Add(art);
         }
 
         for (const auto& itArtwork : item.GetArt())
