@@ -147,14 +147,12 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
     if (idx > -1)
     {
       const std::string videoDefault = GetPlayerName(idx);
-      const auto it = std::find(players.cbegin(), players.cend(), videoDefault);
-      if (it != players.cend())
-        players.erase(it);
-
-      CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding videodefaultplayer ({})",
-                videoDefault);
-      // default player must always be first vector entry
-      players.insert(players.begin(), videoDefault);
+      if (std::find(players.cbegin(), players.cend(), videoDefault) == players.cend())
+      {
+        players.emplace_back(videoDefault);
+        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding videodefaultplayer ({})",
+                  videoDefault);
+      }
     }
     GetPlayers(players, false, true);  // Video-only players
     GetPlayers(players, true, true);   // Audio & video players
@@ -169,14 +167,12 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
     if (idx > -1)
     {
       const std::string audioDefault = GetPlayerName(idx);
-      const auto it = std::find(players.cbegin(), players.cend(), audioDefault);
-      if (it != players.cend())
-        players.erase(it);
-
-      CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding audiodefaultplayer ({})",
-                audioDefault);
-      // default player must always be first vector entry
-      players.insert(players.begin(), audioDefault);
+      if (std::find(players.cbegin(), players.cend(), audioDefault) == players.cend())
+      {
+        players.emplace_back(audioDefault);
+        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding audiodefaultplayer ({})",
+                  audioDefault);
+      }
     }
     GetPlayers(players, true, false); // Audio-only players
     GetPlayers(players, true, true);  // Audio & video players
