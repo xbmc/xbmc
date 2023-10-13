@@ -18,6 +18,7 @@
 #include "utils/log.h"
 
 #include <cerrno>
+#include <memory>
 #include <mutex>
 #include <utility>
 #include <vector>
@@ -268,8 +269,7 @@ int CScriptInvocationManager::ExecuteAsync(
     return invokerThread->GetId();
   }
 
-  m_lastInvokerThread =
-      CLanguageInvokerThreadPtr(new CLanguageInvokerThread(languageInvoker, this, reuseable));
+  m_lastInvokerThread = std::make_shared<CLanguageInvokerThread>(languageInvoker, this, reuseable);
   if (m_lastInvokerThread == NULL)
     return -1;
 

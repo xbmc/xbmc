@@ -138,7 +138,7 @@ void CPVREpgInfoTag::SetChannelData(const std::shared_ptr<CPVREpgChannelData>& d
   if (data)
     m_channelData = data;
   else
-    m_channelData.reset(new CPVREpgChannelData);
+    m_channelData = std::make_shared<CPVREpgChannelData>();
 }
 
 bool CPVREpgInfoTag::operator==(const CPVREpgInfoTag& right) const

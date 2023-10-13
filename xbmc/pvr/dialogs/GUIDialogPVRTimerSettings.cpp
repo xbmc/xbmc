@@ -778,8 +778,8 @@ void CGUIDialogPVRTimerSettings::AddCondition(const std::shared_ptr<CSetting>& s
 {
   GetSettingsManager()->AddDynamicCondition(identifier, condition, this);
   CSettingDependency dep(depType, GetSettingsManager());
-  dep.And()->Add(CSettingDependencyConditionPtr(
-      new CSettingDependencyCondition(identifier, "true", settingId, false, GetSettingsManager())));
+  dep.And()->Add(std::make_shared<CSettingDependencyCondition>(identifier, "true", settingId, false,
+                                                               GetSettingsManager()));
   SettingDependencies deps(setting->GetDependencies());
   deps.push_back(dep);
   setting->SetDependencies(deps);

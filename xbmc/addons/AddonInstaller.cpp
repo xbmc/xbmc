@@ -46,6 +46,7 @@
 #include "utils/log.h"
 
 #include <functional>
+#include <memory>
 #include <mutex>
 
 using namespace XFILE;
@@ -553,7 +554,7 @@ void CAddonInstaller::PrunePackageCache()
   {
     it->second->Sort(SortByLabel, SortOrderDescending);
     for (int j = 2; j < it->second->Size(); j++)
-      items.Add(CFileItemPtr(new CFileItem(*it->second->Get(j))));
+      items.Add(std::make_shared<CFileItem>(*it->second->Get(j)));
   }
 
   items.Sort(SortBySize, SortOrderDescending);
@@ -572,7 +573,7 @@ void CAddonInstaller::PrunePackageCache()
     for (auto it = packs.begin(); it != packs.end(); ++it)
     {
       if (it->second->Size() > 1)
-        items.Add(CFileItemPtr(new CFileItem(*it->second->Get(1))));
+        items.Add(std::make_shared<CFileItem>(*it->second->Get(1)));
     }
 
     items.Sort(SortByDate, SortOrderAscending);
@@ -626,7 +627,7 @@ int64_t CAddonInstaller::EnumeratePackageFolder(
     CAddonVersion::SplitFileName(pack, dummy, items[i]->GetLabel());
     if (result.find(pack) == result.end())
       result[pack] = std::make_unique<CFileItemList>();
-    result[pack]->Add(CFileItemPtr(new CFileItem(*items[i])));
+    result[pack]->Add(std::make_shared<CFileItem>(*items[i]));
   }
 
   return size;
@@ -979,7 +980,7 @@ bool CAddonInstallJob::DownloadPackage(const std::string &path, const std::strin
 
   // need to download/copy the package first
   CFileItemList list;
-  list.Add(CFileItemPtr(new CFileItem(path, false)));
+  list.Add(std::make_shared<CFileItem>(path, false));
   list[0]->Select(true);
 
   return DoFileOperation(CFileOperationJob::ActionReplace, list, dest, true);

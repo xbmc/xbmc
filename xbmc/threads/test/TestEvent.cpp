@@ -572,7 +572,7 @@ template <class W> void RunMassEventTest(std::vector<std::shared_ptr<W>>& m, boo
 {
   std::vector<std::shared_ptr<thread>> t(NUMTHREADS);
   for(size_t i=0; i<NUMTHREADS; i++)
-    t[i].reset(new thread(*m[i]));
+    t[i] = std::make_shared<thread>(*m[i]);
 
   EXPECT_TRUE(waitForThread(g_mutex, NUMTHREADS, 10000ms));
   if (canWaitOnEvent)
@@ -608,7 +608,7 @@ TEST(TestMassEvent, General)
 
   std::vector<std::shared_ptr<mass_waiter>> m(NUMTHREADS);
   for(size_t i=0; i<NUMTHREADS; i++)
-    m[i].reset(new mass_waiter());
+    m[i] = std::make_shared<mass_waiter>();
 
   RunMassEventTest(m,true);
   delete g_event;
@@ -620,7 +620,7 @@ TEST(TestMassEvent, Polling)
 
   std::vector<std::shared_ptr<poll_mass_waiter>> m(NUMTHREADS);
   for(size_t i=0; i<NUMTHREADS; i++)
-    m[i].reset(new poll_mass_waiter());
+    m[i] = std::make_shared<poll_mass_waiter>();
 
   RunMassEventTest(m,false);
   delete g_event;

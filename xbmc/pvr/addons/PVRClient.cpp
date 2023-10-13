@@ -1532,7 +1532,7 @@ PVR_ERROR CPVRClient::OnPowerSavingDeactivated()
 std::shared_ptr<CPVRClientMenuHooks> CPVRClient::GetMenuHooks()
 {
   if (!m_menuhooks)
-    m_menuhooks.reset(new CPVRClientMenuHooks(ID()));
+    m_menuhooks = std::make_shared<CPVRClientMenuHooks>(ID());
 
   return m_menuhooks;
 }

@@ -19,6 +19,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -143,7 +144,7 @@ void CGUIDialogColorPicker::Reset()
 
 void CGUIDialogColorPicker::AddItem(const CFileItem& item)
 {
-  m_vecList->Add(CFileItemPtr(new CFileItem(item)));
+  m_vecList->Add(std::make_shared<CFileItem>(item));
 }
 
 void CGUIDialogColorPicker::SetItems(const CFileItemList& pList)

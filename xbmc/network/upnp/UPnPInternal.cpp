@@ -32,6 +32,7 @@
 
 #include <algorithm>
 #include <array>
+#include <memory>
 #include <optional>
 #include <string_view>
 
@@ -1411,7 +1412,7 @@ std::shared_ptr<CFileItem> GetFileItem(const NPT_String& uri, const NPT_String& 
   }
   else
   {
-    item.reset(new CFileItem((const char*)uri, false));
+    item = std::make_shared<CFileItem>((const char*)uri, false);
   }
   return item;
 }

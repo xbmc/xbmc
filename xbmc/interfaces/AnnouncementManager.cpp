@@ -19,6 +19,7 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 
+#include <memory>
 #include <mutex>
 #include <stdio.h>
 
@@ -135,7 +136,7 @@ void CAnnouncementManager::Announce(AnnouncementFlag flag,
   announcement.data = data;
 
   if (item != nullptr)
-    announcement.item = CFileItemPtr(new CFileItem(*item));
+    announcement.item = std::make_shared<CFileItem>(*item);
 
   {
     std::unique_lock<CCriticalSection> lock(m_queueCritSection);
