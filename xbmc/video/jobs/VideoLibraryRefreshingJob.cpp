@@ -32,6 +32,7 @@
 #include "video/tags/VideoInfoTagLoaderFactory.h"
 #include "video/tags/VideoTagLoaderPlugin.h"
 
+#include <memory>
 #include <utility>
 
 using namespace KODI::MESSAGING;
@@ -281,13 +282,13 @@ bool CVideoLibraryRefreshingJob::Work(CVideoDatabase &db)
       }
       // otherwise just add a copy of the item
       else
-        items.Add(CFileItemPtr(new CFileItem(*m_item->GetVideoInfoTag())));
+        items.Add(std::make_shared<CFileItem>(*m_item->GetVideoInfoTag()));
 
       // update the path to the real path (instead of a videodb:// one)
       path = m_item->GetVideoInfoTag()->m_strPath;
     }
     else
-      items.Add(CFileItemPtr(new CFileItem(*m_item)));
+      items.Add(std::make_shared<CFileItem>(*m_item));
 
     // set the proper path of the list of items to lookup
     items.SetPath(m_item->m_bIsFolder ? URIUtils::GetParentPath(path) : URIUtils::GetDirectory(path));

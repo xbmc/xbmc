@@ -246,7 +246,7 @@ void CGUIWindowPVRBase::ClearData()
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   m_channelGroup.reset();
-  m_channelGroupsSelector.reset(new CGUIPVRChannelGroupsSelector);
+  m_channelGroupsSelector = std::make_unique<CGUIPVRChannelGroupsSelector>();
 }
 
 void CGUIWindowPVRBase::OnInitWindow()

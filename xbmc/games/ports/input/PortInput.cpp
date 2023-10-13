@@ -15,6 +15,8 @@
 #include "input/joysticks/keymaps/KeymapHandling.h"
 #include "peripherals/devices/Peripheral.h"
 
+#include <memory>
+
 using namespace KODI;
 using namespace GAME;
 
@@ -37,7 +39,7 @@ void CPortInput::RegisterInput(JOYSTICK::IInputProvider* provider)
   provider->RegisterInputHandler(this, false);
 
   // Register GUI input
-  m_appInput.reset(new JOYSTICK::CKeymapHandling(provider, false, this));
+  m_appInput = std::make_unique<JOYSTICK::CKeymapHandling>(provider, false, this);
 }
 
 void CPortInput::UnregisterInput(JOYSTICK::IInputProvider* provider)

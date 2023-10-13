@@ -12,6 +12,7 @@
 
 #include <cassert>
 #include <limits>
+#include <memory>
 
 using namespace KODI::WINDOWING::WAYLAND;
 
@@ -44,7 +45,7 @@ void CInputProcessorKeyboard::OnKeyboardKeymap(CSeat* seat, wayland::keyboard_ke
     if (!m_xkbContext)
     {
       // Lazily initialize XkbcommonContext
-      m_xkbContext.reset(new CXkbcommonContext);
+      m_xkbContext = std::make_unique<CXkbcommonContext>();
     }
 
     m_keymap = m_xkbContext->KeymapFromString(keymap);

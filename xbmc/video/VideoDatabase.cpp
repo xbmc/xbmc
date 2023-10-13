@@ -6225,7 +6225,7 @@ CDateTime CVideoDatabase::SetPlayCount(const CFileItem& item, int count, const C
       if (item.GetVideoInfoTag()->GetPlayCount() != count)
         data["playcount"] = count;
       CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::VideoLibrary, "OnUpdate",
-                                                         CFileItemPtr(new CFileItem(item)), data);
+                                                         std::make_shared<CFileItem>(item), data);
     }
 
     return lastPlayed;

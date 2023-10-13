@@ -42,6 +42,8 @@
 #include "utils/log.h"
 #include "view/GUIViewState.h"
 
+#include <memory>
+
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace std::chrono_literals;
@@ -155,7 +157,7 @@ public:
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
     if (appPlayer->IsPlayingAudio() && g_application.CurrentFileItem().HasMusicInfoTag())
     {
-      CFileItemPtr songitem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
+      CFileItemPtr songitem = std::make_shared<CFileItem>(g_application.CurrentFileItem());
       if (HasSongExtraArtChanged(songitem, type, itemID, db))
         g_application.UpdateCurrentPlayArt();
     }

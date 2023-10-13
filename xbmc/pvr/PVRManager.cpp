@@ -349,13 +349,13 @@ void CPVRManager::ResetProperties()
   std::unique_lock<CCriticalSection> lock(m_critSection);
   Clear();
 
-  m_database.reset(new CPVRDatabase);
-  m_providers.reset(new CPVRProviders);
-  m_channelGroups.reset(new CPVRChannelGroupsContainer);
-  m_recordings.reset(new CPVRRecordings);
-  m_timers.reset(new CPVRTimers);
-  m_guiInfo.reset(new CPVRGUIInfo);
-  m_parentalTimer.reset(new CStopWatch);
+  m_database = std::make_shared<CPVRDatabase>();
+  m_providers = std::make_shared<CPVRProviders>();
+  m_channelGroups = std::make_shared<CPVRChannelGroupsContainer>();
+  m_recordings = std::make_shared<CPVRRecordings>();
+  m_timers = std::make_shared<CPVRTimers>();
+  m_guiInfo = std::make_unique<CPVRGUIInfo>();
+  m_parentalTimer = std::make_unique<CStopWatch>();
   m_knownClients.clear();
 }
 

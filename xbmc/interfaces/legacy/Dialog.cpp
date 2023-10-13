@@ -33,6 +33,8 @@
 #include "utils/log.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 
+#include <memory>
+
  using namespace KODI::MESSAGING;
 
 #define ACTIVE_WINDOW CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow()
@@ -171,7 +173,7 @@ namespace XBMCAddon
       pDialog->Open();
 
       if (pDialog->IsConfirmed())
-        return std::unique_ptr<std::vector<int>>(new std::vector<int>(pDialog->GetSelectedItems()));
+        return std::make_unique<std::vector<int>>(pDialog->GetSelectedItems());
       else
         return std::unique_ptr<std::vector<int>>();
     }

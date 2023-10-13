@@ -572,8 +572,8 @@ std::shared_ptr<CPVREpg> CPVREpgContainer::CreateChannelEpg(int iEpgId, const st
     if (iEpgId <= 0)
       iEpgId = NextEpgId();
 
-    epg.reset(new CPVREpg(iEpgId, channelData->ChannelName(), strScraperName, channelData,
-                          GetEpgDatabase()));
+    epg = std::make_shared<CPVREpg>(iEpgId, channelData->ChannelName(), strScraperName, channelData,
+                                    GetEpgDatabase());
 
     std::unique_lock<CCriticalSection> lock(m_critSection);
     m_epgIdToEpgMap.insert({iEpgId, epg});
@@ -741,8 +741,8 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 
   std::unique_ptr<CPVRGUIProgressHandler> progressHandler;
   if (bShowProgress && !bOnlyPending && !epgsToUpdate.empty())
-    progressHandler.reset(
-        new CPVRGUIProgressHandler(g_localizeStrings.Get(19004))); // Loading programme guide
+    progressHandler = std::make_unique<CPVRGUIProgressHandler>(
+        g_localizeStrings.Get(19004)); // Loading programme guide
 
   for (const auto& epgEntry : epgsToUpdate)
   {

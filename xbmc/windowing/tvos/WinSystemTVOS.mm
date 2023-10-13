@@ -140,7 +140,7 @@ CWinSystemTVOS::CWinSystemTVOS() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_pDisplayLink = new CADisplayLinkWrapper;
   m_pDisplayLink->callbackClass = [[TVOSDisplayLinkCallback alloc] init];
 
-  m_winEvents.reset(new CWinEventsTVOS());
+  m_winEvents = std::make_unique<CWinEventsTVOS>();
 
   CAESinkDARWINTVOS::Register();
 }
