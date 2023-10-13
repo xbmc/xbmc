@@ -11,6 +11,7 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <map>
 
 using namespace KODI::WINDOWING::GBM;
