@@ -13,6 +13,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
+#include <algorithm>
+
 using namespace KODI::WINDOWING::GBM;
 
 CDRMPlane::CDRMPlane(int fd, uint32_t plane) : CDRMObject(fd), m_plane(drmModeGetPlane(m_fd, plane))
