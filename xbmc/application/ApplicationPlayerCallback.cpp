@@ -35,6 +35,8 @@
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 
+#include <memory>
+
 CApplicationPlayerCallback::CApplicationPlayerCallback()
   : m_itemCurrentFile(new CFileItem), m_playerEvent(true, true)
 {
@@ -77,9 +79,9 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   auto& components = CServiceBroker::GetAppComponents();
   const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
   if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
-    m_itemCurrentFile.reset(new CFileItem(*stackHelper->GetRegisteredStack(file)));
+    m_itemCurrentFile = std::make_shared<CFileItem>(*stackHelper->GetRegisteredStack(file));
   else
-    m_itemCurrentFile.reset(new CFileItem(file));
+    m_itemCurrentFile = std::make_shared<CFileItem>(file);
 
   /* When playing video pause any low priority jobs, they will be unpaused  when playback stops.
    * This should speed up player startup for files on internet filesystems (eg. webdav) and

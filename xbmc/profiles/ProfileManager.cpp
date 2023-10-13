@@ -8,13 +8,17 @@
 
 #include "ProfileManager.h"
 
+#include "ContextMenuManager.h" //! @todo Remove me
 #include "DatabaseManager.h"
 #include "FileItem.h"
 #include "GUIInfoManager.h"
 #include "GUIPassword.h"
 #include "PasswordManager.h"
+#include "PlayListPlayer.h" //! @todo Remove me
 #include "ServiceBroker.h"
 #include "Util.h"
+#include "addons/AddonManager.h" //! @todo Remove me
+#include "addons/Service.h" //! @todo Remove me
 #include "addons/Skin.h"
 #include "application/Application.h" //! @todo Remove me
 #include "application/ApplicationComponents.h"
@@ -23,6 +27,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "events/EventLog.h"
 #include "events/EventLogManager.h"
+#include "favourites/FavouritesService.h" //! @todo Remove me
 #include "filesystem/Directory.h"
 #include "filesystem/DirectoryCache.h"
 #include "filesystem/File.h"
@@ -30,31 +35,20 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
-#include "input/InputManager.h"
-#include "music/MusicLibraryQueue.h"
-#include "settings/Settings.h"
-#include "settings/SettingsComponent.h"
-#include "settings/lib/SettingsManager.h"
-#include "threads/SingleLock.h"
-
-#include <algorithm>
-#include <mutex>
-#include <string>
-#include <vector>
-#if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
-#include "storage/DetectDVDType.h"
-#endif
-#include "ContextMenuManager.h" //! @todo Remove me
-#include "PlayListPlayer.h" //! @todo Remove me
-#include "addons/AddonManager.h" //! @todo Remove me
-#include "addons/Service.h" //! @todo Remove me
-#include "application/Application.h" //! @todo Remove me
-#include "favourites/FavouritesService.h" //! @todo Remove me
 #include "guilib/StereoscopicsManager.h" //! @todo Remove me
+#include "input/InputManager.h"
 #include "interfaces/json-rpc/JSONRPC.h" //! @todo Remove me
+#include "music/MusicLibraryQueue.h"
 #include "network/Network.h" //! @todo Remove me
 #include "network/NetworkServices.h" //! @todo Remove me
 #include "pvr/PVRManager.h" //! @todo Remove me
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
+#include "settings/lib/SettingsManager.h"
+#if !defined(TARGET_WINDOWS) && defined(HAS_OPTICAL_DRIVE)
+#include "storage/DetectDVDType.h"
+#endif
+#include "threads/SingleLock.h"
 #include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
@@ -63,6 +57,12 @@
 #include "utils/log.h"
 #include "video/VideoLibraryQueue.h" //! @todo Remove me
 #include "weather/WeatherManager.h" //! @todo Remove me
+
+#include <algorithm>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <vector>
 
 //! @todo
 //! eventually the profile should dictate where special://masterprofile/ is
@@ -506,7 +506,8 @@ bool CProfileManager::DeleteProfile(unsigned int index)
     m_settings->Save();
   }
 
-  CFileItemPtr item = CFileItemPtr(new CFileItem(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory)));
+  CFileItemPtr item =
+      std::make_shared<CFileItem>(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory));
   item->SetPath(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory + "/"));
   item->m_bIsFolder = true;
   item->Select(true);

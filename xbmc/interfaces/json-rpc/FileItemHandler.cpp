@@ -37,6 +37,7 @@
 #include "video/VideoThumbLoader.h"
 
 #include <map>
+#include <memory>
 #include <string.h>
 
 using namespace MUSIC_INFO;
@@ -524,7 +525,7 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
 
     if (!added)
     {
-      CFileItemPtr item = CFileItemPtr(new CFileItem(file, false));
+      CFileItemPtr item = std::make_shared<CFileItem>(file, false);
       if (item->IsPicture())
       {
         CPictureInfoTag picture;

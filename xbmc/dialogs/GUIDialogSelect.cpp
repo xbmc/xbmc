@@ -14,6 +14,8 @@
 #include "input/Key.h"
 #include "utils/StringUtils.h"
 
+#include <memory>
+
 #define CONTROL_HEADING         1
 #define CONTROL_NUMBER_OF_ITEMS 2
 #define CONTROL_SIMPLE_LIST     3
@@ -195,7 +197,7 @@ int CGUIDialogSelect::Add(const std::string& strLabel)
 
 int CGUIDialogSelect::Add(const CFileItem& item)
 {
-  m_vecList->Add(CFileItemPtr(new CFileItem(item)));
+  m_vecList->Add(std::make_shared<CFileItem>(item));
   return m_vecList->Size() - 1;
 }
 
@@ -217,7 +219,7 @@ const CFileItemPtr CGUIDialogSelect::GetSelectedFileItem() const
 {
   if (m_selectedItem)
     return m_selectedItem;
-  return CFileItemPtr(new CFileItem);
+  return std::make_shared<CFileItem>();
 }
 
 const std::vector<int>& CGUIDialogSelect::GetSelectedItems() const

@@ -829,7 +829,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimerInfoTag::CreateFromDate(
 
   if (!newTimer)
   {
-    newTimer.reset(new CPVRTimerInfoTag);
+    newTimer = std::make_shared<CPVRTimerInfoTag>();
 
     newTimer->m_iClientIndex = PVR_TIMER_NO_CLIENT_INDEX;
     newTimer->m_iParentClientIndex = PVR_TIMER_NO_PARENT;

@@ -12,14 +12,14 @@
 #include "interfaces/python/swig.h"
 #include "utils/log.h"
 
+#include <memory>
+
 #include <Python.h>
 #include <osdefs.h>
 
-
-CContextItemAddonInvoker::CContextItemAddonInvoker(
-    ILanguageInvocationHandler *invocationHandler,
-    const CFileItemPtr& item)
-  : CAddonPythonInvoker(invocationHandler), m_item(CFileItemPtr(new CFileItem(*item.get())))
+CContextItemAddonInvoker::CContextItemAddonInvoker(ILanguageInvocationHandler* invocationHandler,
+                                                   const CFileItemPtr& item)
+  : CAddonPythonInvoker(invocationHandler), m_item(std::make_shared<CFileItem>(*item.get()))
 {
 }
 
