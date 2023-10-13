@@ -17,6 +17,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <memory>
 #include <string.h>
 
 #include <fcntl.h>
@@ -93,10 +94,10 @@ CLibInputHandler::CLibInputHandler() : CThread("libinput")
 
   m_liFd = libinput_get_fd(m_li);
 
-  m_keyboard.reset(new CLibInputKeyboard());
-  m_pointer.reset(new CLibInputPointer());
-  m_touch.reset(new CLibInputTouch());
-  m_settings.reset(new CLibInputSettings(this));
+  m_keyboard = std::make_unique<CLibInputKeyboard>();
+  m_pointer = std::make_unique<CLibInputPointer>();
+  m_touch = std::make_unique<CLibInputTouch>();
+  m_settings = std::make_unique<CLibInputSettings>(this);
 
   CServiceBroker::GetAnnouncementManager()->AddAnnouncer(this);
 }

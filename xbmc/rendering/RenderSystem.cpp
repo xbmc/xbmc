@@ -15,6 +15,8 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 
+#include <memory>
+
 CRenderSystemBase::CRenderSystemBase()
 {
   m_bRenderCreated = false;
@@ -62,8 +64,10 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
 
   if (!m_splashImage)
   {
-    m_splashImage = std::unique_ptr<CGUIImage>(new CGUIImage(0, 0, 0, 0, CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(),
-                                                       CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight(), CTextureInfo(CUtil::GetSplashPath())));
+    m_splashImage = std::make_unique<CGUIImage>(
+        0, 0, 0, 0, CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(),
+        CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight(),
+        CTextureInfo(CUtil::GetSplashPath()));
     m_splashImage->SetAspectRatio(CAspectRatio::AR_SCALE);
   }
 
@@ -86,7 +90,7 @@ void CRenderSystemBase::ShowSplash(const std::string& message)
     {
       auto messageFont = g_fontManager.LoadTTF("__splash__", "arial.ttf", 0xFFFFFFFF, 0, 20, FONT_STYLE_NORMAL, false, 1.0f, 1.0f, &res);
       if (messageFont)
-        m_splashMessageLayout = std::unique_ptr<CGUITextLayout>(new CGUITextLayout(messageFont, true, 0));
+        m_splashMessageLayout = std::make_unique<CGUITextLayout>(messageFont, true, 0);
     }
 
     if (m_splashMessageLayout)

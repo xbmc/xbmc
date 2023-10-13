@@ -31,6 +31,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <memory>
 #include <mutex>
 
 using namespace PVR;
@@ -186,8 +187,8 @@ void CPVRPlaybackState::OnPlaybackStarted(const CFileItem& item)
       if (m_lastWatchedUpdateTimer)
         m_lastWatchedUpdateTimer->Stop(true);
 
-      m_lastWatchedUpdateTimer.reset(
-          new CLastWatchedUpdateTimer(*this, channel, CDateTime::GetUTCDateTime()));
+      m_lastWatchedUpdateTimer =
+          std::make_unique<CLastWatchedUpdateTimer>(*this, channel, CDateTime::GetUTCDateTime());
       m_lastWatchedUpdateTimer->Start(std::chrono::milliseconds(iLastWatchedDelay));
     }
     else

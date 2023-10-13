@@ -10,6 +10,9 @@
 
 #include "DVDDemuxUtils.h"
 #include "DVDInputStreams/DVDInputStream.h"
+#ifdef HAVE_LIBBLURAY
+#include "DVDInputStreams/DVDInputStreamBluray.h"
+#endif
 #include "DVDInputStreams/DVDInputStreamFFmpeg.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -32,21 +35,12 @@
 #include "utils/XTimeUtils.h"
 #include "utils/log.h"
 
+#include <memory>
 #include <mutex>
 #include <sstream>
 #include <tuple>
 #include <utility>
 
-extern "C"
-{
-#include "libavutil/channel_layout.h"
-#include "libavutil/display.h"
-#include "libavutil/pixdesc.h"
-}
-
-#ifdef HAVE_LIBBLURAY
-#include "DVDInputStreams/DVDInputStreamBluray.h"
-#endif
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
 #endif
@@ -59,9 +53,12 @@ extern "C"
 
 extern "C"
 {
+#include <libavutil/channel_layout.h>
 #include <libavutil/dict.h>
+#include <libavutil/display.h>
 #include <libavutil/dovi_meta.h>
 #include <libavutil/opt.h>
+#include <libavutil/pixdesc.h>
 }
 
 using namespace std::chrono_literals;
@@ -2292,8 +2289,7 @@ void CDVDDemuxFFmpeg::ParsePacket(AVPacket* pkt)
     auto parser = m_parsers.find(st->index);
     if (parser == m_parsers.end())
     {
-      m_parsers.insert(std::make_pair(st->index,
-                                      std::unique_ptr<CDemuxParserFFmpeg>(new CDemuxParserFFmpeg())));
+      m_parsers.insert(std::make_pair(st->index, std::make_unique<CDemuxParserFFmpeg>()));
       parser = m_parsers.find(st->index);
 
       parser->second->m_parserCtx = av_parser_init(st->codecpar->codec_id);

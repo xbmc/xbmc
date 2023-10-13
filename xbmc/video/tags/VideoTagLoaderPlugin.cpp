@@ -12,6 +12,8 @@
 #include "URL.h"
 #include "filesystem/PluginDirectory.h"
 
+#include <memory>
+
 using namespace XFILE;
 
 CVideoTagLoaderPlugin::CVideoTagLoaderPlugin(const CFileItem& item, bool forceRefresh)
@@ -21,10 +23,10 @@ CVideoTagLoaderPlugin::CVideoTagLoaderPlugin(const CFileItem& item, bool forceRe
     return;
   // Preserve CFileItem video info and art to avoid info loss between creating VideoInfoTagLoaderFactory and calling Load()
   if (m_item.HasVideoInfoTag())
-    m_tag.reset(new CVideoInfoTag(*m_item.GetVideoInfoTag()));
+    m_tag = std::make_unique<CVideoInfoTag>(*m_item.GetVideoInfoTag());
   auto& art = item.GetArt();
   if (!art.empty())
-    m_art.reset(new CGUIListItem::ArtMap(art));
+    m_art = std::make_unique<CGUIListItem::ArtMap>(art);
 }
 
 bool CVideoTagLoaderPlugin::HasInfo() const
@@ -48,7 +50,7 @@ CInfoScanner::INFO_TYPE CVideoTagLoaderPlugin::Load(CVideoInfoTag& tag, bool, st
     if (!items.IsEmpty())
     {
       const CFileItemPtr &item = items[0];
-      m_art.reset(new CGUIListItem::ArtMap(item->GetArt()));
+      m_art = std::make_unique<CGUIListItem::ArtMap>(item->GetArt());
       if (item->HasVideoInfoTag())
       {
         tag = *item->GetVideoInfoTag();

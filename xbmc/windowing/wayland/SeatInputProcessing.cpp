@@ -9,6 +9,7 @@
 #include "SeatInputProcessing.h"
 
 #include <cassert>
+#include <memory>
 
 using namespace KODI::WINDOWING::WAYLAND;
 
@@ -22,11 +23,11 @@ void CSeatInputProcessing::AddSeat(CSeat* seat)
   assert(m_seats.find(seat->GetGlobalName()) == m_seats.end());
   auto& seatState = m_seats.emplace(seat->GetGlobalName(), seat).first->second;
 
-  seatState.keyboardProcessor.reset(new CInputProcessorKeyboard(*this));
+  seatState.keyboardProcessor = std::make_unique<CInputProcessorKeyboard>(*this);
   seat->AddRawInputHandlerKeyboard(seatState.keyboardProcessor.get());
-  seatState.pointerProcessor.reset(new CInputProcessorPointer(m_inputSurface, *this));
+  seatState.pointerProcessor = std::make_unique<CInputProcessorPointer>(m_inputSurface, *this);
   seat->AddRawInputHandlerPointer(seatState.pointerProcessor.get());
-  seatState.touchProcessor.reset(new CInputProcessorTouch(m_inputSurface));
+  seatState.touchProcessor = std::make_unique<CInputProcessorTouch>(m_inputSurface);
   seat->AddRawInputHandlerTouch(seatState.touchProcessor.get());
 }
 

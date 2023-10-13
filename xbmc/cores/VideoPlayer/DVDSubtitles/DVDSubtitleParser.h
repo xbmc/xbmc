@@ -76,7 +76,7 @@ protected:
         return true;
     }
     else
-      m_pStream.reset(new CDVDSubtitleStream());
+      m_pStream = std::make_unique<CDVDSubtitleStream>();
 
     return m_pStream->Open(m_filename);
   }

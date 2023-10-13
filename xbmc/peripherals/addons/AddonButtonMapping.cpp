@@ -14,6 +14,8 @@
 #include "peripherals/addons/AddonButtonMap.h"
 #include "utils/log.h"
 
+#include <memory>
+
 using namespace KODI;
 using namespace JOYSTICK;
 using namespace PERIPHERALS;
@@ -31,11 +33,11 @@ CAddonButtonMapping::CAddonButtonMapping(CPeripherals& manager,
   else
   {
     const std::string controllerId = mapper->ControllerID();
-    m_buttonMap.reset(new CAddonButtonMap(peripheral, addon, controllerId));
+    m_buttonMap = std::make_unique<CAddonButtonMap>(peripheral, addon, controllerId);
     if (m_buttonMap->Load())
     {
       IKeymap* keymap = peripheral->GetKeymap(controllerId);
-      m_buttonMapping.reset(new CButtonMapping(mapper, m_buttonMap.get(), keymap));
+      m_buttonMapping = std::make_unique<CButtonMapping>(mapper, m_buttonMap.get(), keymap);
 
       // Allow the mapper to save our button map
       mapper->SetButtonMapCallback(peripheral->Location(), this);

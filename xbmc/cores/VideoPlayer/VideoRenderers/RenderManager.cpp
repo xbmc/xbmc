@@ -8,6 +8,9 @@
 
 #include "RenderManager.h"
 
+/* to use the same as player */
+#include "../VideoPlayer/DVDClock.h"
+#include "../VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 #include "RenderCapture.h"
 #include "RenderFactory.h"
 #include "RenderFlags.h"
@@ -25,11 +28,8 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
+#include <memory>
 #include <mutex>
-
-/* to use the same as player */
-#include "../VideoPlayer/DVDClock.h"
-#include "../VideoPlayer/DVDCodecs/Video/DVDVideoCodec.h"
 
 using namespace std::chrono_literals;
 
@@ -141,7 +141,7 @@ bool CRenderManager::Configure(const VideoPicture& picture, float fps, unsigned 
     m_stateEvent.Reset();
     m_clockSync.Reset();
     m_dvdClock.SetVsyncAdjust(0);
-    m_pConfigPicture.reset(new VideoPicture());
+    m_pConfigPicture = std::make_unique<VideoPicture>();
     m_pConfigPicture->CopyRef(picture);
 
     std::unique_lock<CCriticalSection> lock2(m_presentlock);

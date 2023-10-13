@@ -29,6 +29,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <memory>
 #include <mutex>
 
 using namespace KODI;
@@ -105,9 +106,9 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
         }
 
         // Give joystick monitor priority over default controller
-        m_appInput.reset(
-            new CKeymapHandling(this, false, m_manager.GetInputManager().KeymapEnvironment()));
-        m_joystickMonitor.reset(new CJoystickMonitor);
+        m_appInput = std::make_unique<CKeymapHandling>(
+            this, false, m_manager.GetInputManager().KeymapEnvironment());
+        m_joystickMonitor = std::make_unique<CJoystickMonitor>();
         RegisterInputHandler(m_joystickMonitor.get(), false);
       }
     }
@@ -126,7 +127,7 @@ bool CPeripheralJoystick::InitialiseFeature(const PeripheralFeature feature)
 
 void CPeripheralJoystick::InitializeDeadzoneFiltering(IButtonMap& buttonMap)
 {
-  m_deadzoneFilter.reset(new CDeadzoneFilter(&buttonMap, this));
+  m_deadzoneFilter = std::make_unique<CDeadzoneFilter>(&buttonMap, this);
 }
 
 void CPeripheralJoystick::InitializeControllerProfile(IButtonMap& buttonMap)

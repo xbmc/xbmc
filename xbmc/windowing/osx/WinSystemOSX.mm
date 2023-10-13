@@ -40,6 +40,7 @@
 
 #include <array>
 #include <chrono>
+#include <memory>
 #include <mutex>
 
 #import <IOKit/graphics/IOGraphicsLib.h>
@@ -583,7 +584,7 @@ CWinSystemOSX::CWinSystemOSX() : CWinSystemBase(), m_lostDeviceTimer(this)
   m_refreshRate = 0.0;
   m_delayDispReset = false;
 
-  m_winEvents.reset(new CWinEventsOSX());
+  m_winEvents = std::make_unique<CWinEventsOSX>();
 
   AE::CAESinkFactory::ClearSinks();
   CAESinkDARWINOSX::Register();

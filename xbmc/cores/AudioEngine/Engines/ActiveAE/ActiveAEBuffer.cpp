@@ -13,6 +13,8 @@
 #include "cores/AudioEngine/AEResampleFactory.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
 
+#include <memory>
+
 using namespace ActiveAE;
 
 CSoundPacket::CSoundPacket(const SampleConfig& conf, int samples) : config(conf)
@@ -467,7 +469,7 @@ bool CActiveAEBufferPoolAtempo::Create(unsigned int totaltime)
 {
   CActiveAEBufferPool::Create(totaltime);
 
-  m_pTempoFilter.reset(new CActiveAEFilter());
+  m_pTempoFilter = std::make_unique<CActiveAEFilter>();
   m_pTempoFilter->Init(CAEUtil::GetAVSampleFormat(m_format.m_dataFormat), m_format.m_sampleRate, CAEUtil::GetAVChannelLayout(m_format.m_channelLayout));
 
   return true;

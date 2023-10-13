@@ -13,6 +13,8 @@
 #include "pvr/PVRContextMenus.h"
 #include "utils/log.h"
 
+#include <memory>
+
 namespace PVR
 {
 
@@ -100,7 +102,7 @@ std::string CPVRClientMenuHook::GetLabel() const
 void CPVRClientMenuHooks::AddHook(const PVR_MENUHOOK& addonHook)
 {
   if (!m_hooks)
-    m_hooks.reset(new std::vector<CPVRClientMenuHook>());
+    m_hooks = std::make_unique<std::vector<CPVRClientMenuHook>>();
 
   const CPVRClientMenuHook hook(m_addonId, addonHook);
   m_hooks->emplace_back(hook);

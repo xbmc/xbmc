@@ -33,11 +33,15 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WinSystem.h"
 
-#include <locale.h>
-#include <mutex>
-
 #ifdef TARGET_DARWIN_OSX
 #include "platform/darwin/osx/CocoaInterface.h"
+#endif
+
+#include <locale.h>
+#include <memory>
+#include <mutex>
+
+#if defined(TARGET_DARWIN_OSX)
 #include <CoreVideo/CoreVideo.h>
 #include <OpenGL/CGLIOSurface.h>
 #endif
@@ -119,7 +123,7 @@ CLinuxRendererGL::CLinuxRendererGL()
   m_fbo.width = 0.0;
   m_fbo.height = 0.0;
 
-  m_ColorManager.reset(new CColorManager());
+  m_ColorManager = std::make_unique<CColorManager>();
   m_tCLUTTex = 0;
   m_CLUT = NULL;
   m_CLUTsize = 0;

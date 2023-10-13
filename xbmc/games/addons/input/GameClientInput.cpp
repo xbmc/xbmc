@@ -94,7 +94,7 @@ void CGameClientInput::Start(IGameInputCallback* input)
     }
 
     // Ensure hardware is open to receive events
-    m_hardware.reset(new CGameClientHardware(m_gameClient));
+    m_hardware = std::make_unique<CGameClientHardware>(m_gameClient);
   }
 
   // Notify observers of the initial port configuration
@@ -238,7 +238,7 @@ void CGameClientInput::LoadTopology()
   if (hardwarePorts.empty())
     hardwarePorts.emplace_back(new CGameClientPort(GetControllers(m_gameClient)));
 
-  m_topology.reset(new CGameClientTopology(std::move(hardwarePorts), playerLimit));
+  m_topology = std::make_unique<CGameClientTopology>(std::move(hardwarePorts), playerLimit);
 }
 
 void CGameClientInput::ActivateControllers(CControllerHub& hub)
@@ -264,7 +264,8 @@ void CGameClientInput::SetControllerLayouts(const ControllerVector& controllers)
   {
     const std::string controllerId = controller->ID();
     if (m_controllerLayouts.find(controllerId) == m_controllerLayouts.end())
-      m_controllerLayouts[controllerId].reset(new CGameClientController(*this, controller));
+      m_controllerLayouts[controllerId] =
+          std::make_unique<CGameClientController>(*this, controller);
   }
 
   std::vector<game_controller_layout> controllerStructs;
