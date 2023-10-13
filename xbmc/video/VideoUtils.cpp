@@ -25,11 +25,13 @@
 #include "guilib/LocalizeStrings.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
+#include "profiles/ProfileManager.h"
 #include "settings/MediaSettings.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/IRunnable.h"
+#include "utils/FileUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -518,6 +520,20 @@ bool GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& 
                               true); // can be cancelled
 }
 
+namespace
+{
+bool IsNonExistingUserPartyModePlaylist(const CFileItem& item)
+{
+  if (!item.IsSmartPlayList())
+    return false;
+
+  const std::string path{item.GetPath()};
+  const auto profileManager{CServiceBroker::GetSettingsComponent()->GetProfileManager()};
+  return ((profileManager->GetUserDataItem("PartyMode-Video.xsp") == path) &&
+          !CFileUtils::Exists(path));
+}
+} // unnamed namespace
+
 bool IsItemPlayable(const CFileItem& item)
 {
   if (item.IsParentFolder())
@@ -573,6 +589,9 @@ bool IsItemPlayable(const CFileItem& item)
       return false;
     }
   }
+
+  if (IsNonExistingUserPartyModePlaylist(item))
+    return false;
 
   if (item.m_bIsFolder &&
       (item.IsVideoDb() || StringUtils::StartsWithNoCase(item.GetPath(), "library://video/")))
