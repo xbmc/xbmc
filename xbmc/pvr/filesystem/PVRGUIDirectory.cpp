@@ -72,8 +72,8 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   const bool bAnyClientSupportingEPG = clients->AnyClientSupportingEPG();
   if (bAnyClientSupportingEPG)
   {
-    item.reset(
-        new CFileItem(StringUtils::Format("pvr://guide/{}/", bRadio ? "radio" : "tv"), true));
+    item = std::make_shared<CFileItem>(
+        StringUtils::Format("pvr://guide/{}/", bRadio ? "radio" : "tv"), true);
     item->SetLabel(g_localizeStrings.Get(19069)); // Guide
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_GUIDE
                                                                                : WINDOW_TV_GUIDE));
@@ -82,8 +82,8 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   }
 
   // Channels
-  item.reset(new CFileItem(
-      bRadio ? CPVRChannelsPath::PATH_RADIO_CHANNELS : CPVRChannelsPath::PATH_TV_CHANNELS, true));
+  item = std::make_shared<CFileItem>(
+      bRadio ? CPVRChannelsPath::PATH_RADIO_CHANNELS : CPVRChannelsPath::PATH_TV_CHANNELS, true);
   item->SetLabel(g_localizeStrings.Get(19019)); // Channels
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_CHANNELS
                                                                              : WINDOW_TV_CHANNELS));
@@ -93,9 +93,9 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   // Recordings
   if (clients->AnyClientSupportingRecordings())
   {
-    item.reset(new CFileItem(bRadio ? CPVRRecordingsPath::PATH_ACTIVE_RADIO_RECORDINGS
-                                    : CPVRRecordingsPath::PATH_ACTIVE_TV_RECORDINGS,
-                             true));
+    item = std::make_shared<CFileItem>(bRadio ? CPVRRecordingsPath::PATH_ACTIVE_RADIO_RECORDINGS
+                                              : CPVRRecordingsPath::PATH_ACTIVE_TV_RECORDINGS,
+                                       true);
     item->SetLabel(g_localizeStrings.Get(19017)); // Recordings
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                          bRadio ? WINDOW_RADIO_RECORDINGS : WINDOW_TV_RECORDINGS));
@@ -105,16 +105,16 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
 
   // Timers/Timer rules
   // - always present, because Reminders are always available, no client support needed for this
-  item.reset(new CFileItem(
-      bRadio ? CPVRTimersPath::PATH_RADIO_TIMERS : CPVRTimersPath::PATH_TV_TIMERS, true));
+  item = std::make_shared<CFileItem>(
+      bRadio ? CPVRTimersPath::PATH_RADIO_TIMERS : CPVRTimersPath::PATH_TV_TIMERS, true);
   item->SetLabel(g_localizeStrings.Get(19040)); // Timers
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_TIMERS
                                                                              : WINDOW_TV_TIMERS));
   item->SetArt("icon", "DefaultPVRTimers.png");
   results.Add(item);
 
-  item.reset(new CFileItem(
-      bRadio ? CPVRTimersPath::PATH_RADIO_TIMER_RULES : CPVRTimersPath::PATH_TV_TIMER_RULES, true));
+  item = std::make_shared<CFileItem>(
+      bRadio ? CPVRTimersPath::PATH_RADIO_TIMER_RULES : CPVRTimersPath::PATH_TV_TIMER_RULES, true);
   item->SetLabel(g_localizeStrings.Get(19138)); // Timer rules
   item->SetProperty("node.target", CWindowTranslator::TranslateWindow(
                                        bRadio ? WINDOW_RADIO_TIMER_RULES : WINDOW_TV_TIMER_RULES));
@@ -124,8 +124,8 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
   // Search
   if (bAnyClientSupportingEPG)
   {
-    item.reset(new CFileItem(
-        bRadio ? CPVREpgSearchPath::PATH_RADIO_SEARCH : CPVREpgSearchPath::PATH_TV_SEARCH, true));
+    item = std::make_shared<CFileItem>(
+        bRadio ? CPVREpgSearchPath::PATH_RADIO_SEARCH : CPVREpgSearchPath::PATH_TV_SEARCH, true);
     item->SetLabel(g_localizeStrings.Get(137)); // Search
     item->SetProperty("node.target", CWindowTranslator::TranslateWindow(bRadio ? WINDOW_RADIO_SEARCH
                                                                                : WINDOW_TV_SEARCH));
@@ -154,17 +154,17 @@ bool CPVRGUIDirectory::GetDirectory(CFileItemList& results) const
     {
       std::shared_ptr<CFileItem> item;
 
-      item.reset(new CFileItem(base + "channels/", true));
+      item = std::make_shared<CFileItem>(base + "channels/", true);
       item->SetLabel(g_localizeStrings.Get(19019)); // Channels
       item->SetLabelPreformatted(true);
       results.Add(item);
 
-      item.reset(new CFileItem(base + "recordings/active/", true));
+      item = std::make_shared<CFileItem>(base + "recordings/active/", true);
       item->SetLabel(g_localizeStrings.Get(19017)); // Recordings
       item->SetLabelPreformatted(true);
       results.Add(item);
 
-      item.reset(new CFileItem(base + "recordings/deleted/", true));
+      item = std::make_shared<CFileItem>(base + "recordings/deleted/", true);
       item->SetLabel(g_localizeStrings.Get(19184)); // Deleted recordings
       item->SetLabelPreformatted(true);
       results.Add(item);
@@ -309,7 +309,7 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
     std::shared_ptr<CFileItem> item;
     if (!results.Contains(strFilePath))
     {
-      item.reset(new CFileItem(strCurrent, true));
+      item = std::make_shared<CFileItem>(strCurrent, true);
       item->SetPath(strFilePath);
       item->SetLabel(strCurrent);
       item->SetLabelPreformatted(true);
@@ -468,13 +468,13 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
       std::shared_ptr<CFileItem> item;
 
       // all tv channels
-      item.reset(new CFileItem(CPVRChannelsPath::PATH_TV_CHANNELS, true));
+      item = std::make_shared<CFileItem>(CPVRChannelsPath::PATH_TV_CHANNELS, true);
       item->SetLabel(g_localizeStrings.Get(19020)); // TV
       item->SetLabelPreformatted(true);
       results.Add(item);
 
       // all radio channels
-      item.reset(new CFileItem(CPVRChannelsPath::PATH_RADIO_CHANNELS, true));
+      item = std::make_shared<CFileItem>(CPVRChannelsPath::PATH_RADIO_CHANNELS, true);
       item->SetLabel(g_localizeStrings.Get(19021)); // Radio
       item->SetLabelPreformatted(true);
       results.Add(item);
@@ -575,7 +575,7 @@ bool GetTimersSubDirectory(const CPVRTimersPath& path,
     if ((timer->IsRadio() == bRadio) && timer->HasParent() && (timer->ClientID() == iClientId) &&
         (timer->ParentClientIndex() == iParentId) && (!bHideDisabled || !timer->IsDisabled()))
     {
-      item.reset(new CFileItem(timer));
+      item = std::make_shared<CFileItem>(timer);
       const CPVRTimersPath timersPath(path.GetPath(), timer->ClientID(), timer->ClientIndex());
       item->SetPath(timersPath.GetPath());
       results.Add(item);

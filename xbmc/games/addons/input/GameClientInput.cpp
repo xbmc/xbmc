@@ -35,6 +35,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <memory>
 #include <mutex>
 
 using namespace KODI;
@@ -626,7 +627,8 @@ bool CGameClientInput::OpenJoystick(const std::string& portAddress, const Contro
     return false;
   }
 
-  m_joysticks[portAddress].reset(new CGameClientJoystick(m_gameClient, portAddress, controller));
+  m_joysticks[portAddress] =
+      std::make_shared<CGameClientJoystick>(m_gameClient, portAddress, controller);
 
   return true;
 }
