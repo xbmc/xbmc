@@ -22,6 +22,7 @@
 #include "utils/log.h"
 
 #include <map>
+#include <memory>
 
 using namespace KODI::GUILIB::GUIINFO;
 
@@ -99,7 +100,7 @@ void CPicturesGUIInfo::SetCurrentSlide(CFileItem *item)
       if (!tag->Loaded()) // If picture metadata has not been loaded yet, load it now
         tag->Load(item->GetPath());
     }
-    m_currentSlide.reset(new CFileItem(*item));
+    m_currentSlide = std::make_unique<CFileItem>(*item);
   }
   else if (m_currentSlide)
   {

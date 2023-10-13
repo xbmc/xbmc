@@ -30,6 +30,7 @@
 
 #include <functional>
 #include <limits>
+#include <memory>
 
 #include <libbluray/bluray.h>
 #include <libbluray/log_control.h>
@@ -1241,7 +1242,7 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
 
 bool CDVDInputStreamBluray::OpenStream(CFileItem &item)
 {
-  m_pstream.reset(new CDVDInputStreamFile(item, 0));
+  m_pstream = std::make_unique<CDVDInputStreamFile>(item, 0);
 
   if (!m_pstream->Open())
   {

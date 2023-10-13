@@ -259,7 +259,7 @@ void CPowerManager::StorePlayerState()
   if (appPlayer->IsPlaying())
   {
     m_lastUsedPlayer = appPlayer->GetCurrentPlayer();
-    m_lastPlayedFileItem.reset(new CFileItem(g_application.CurrentFileItem()));
+    m_lastPlayedFileItem = std::make_unique<CFileItem>(g_application.CurrentFileItem());
     // set the actual offset instead of store and load it from database
     m_lastPlayedFileItem->SetStartOffset(appPlayer->GetTime());
     // in case of regular stack, correct the start offset by adding current part start time

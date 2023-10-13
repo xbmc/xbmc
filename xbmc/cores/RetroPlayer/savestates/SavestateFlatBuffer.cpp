@@ -13,6 +13,8 @@
 #include "utils/log.h"
 #include "video_generated.h"
 
+#include <memory>
+
 using namespace KODI;
 using namespace RETRO;
 
@@ -192,7 +194,7 @@ CSavestateFlatBuffer::~CSavestateFlatBuffer() = default;
 
 void CSavestateFlatBuffer::Reset()
 {
-  m_builder.reset(new flatbuffers::FlatBufferBuilder(INITIAL_FLATBUFFER_SIZE));
+  m_builder = std::make_unique<flatbuffers::FlatBufferBuilder>(INITIAL_FLATBUFFER_SIZE);
   m_data.clear();
   m_savestate = nullptr;
 }
@@ -252,7 +254,7 @@ std::string CSavestateFlatBuffer::Label() const
 
 void CSavestateFlatBuffer::SetLabel(const std::string& label)
 {
-  m_labelOffset.reset(new StringOffset{m_builder->CreateString(label)});
+  m_labelOffset = std::make_unique<StringOffset>(m_builder->CreateString(label));
 }
 
 std::string CSavestateFlatBuffer::Caption() const
@@ -298,7 +300,7 @@ std::string CSavestateFlatBuffer::GameFileName() const
 
 void CSavestateFlatBuffer::SetGameFileName(const std::string& gameFileName)
 {
-  m_gameFileNameOffset.reset(new StringOffset{m_builder->CreateString(gameFileName)});
+  m_gameFileNameOffset = std::make_unique<StringOffset>(m_builder->CreateString(gameFileName));
 }
 
 uint64_t CSavestateFlatBuffer::TimestampFrames() const
@@ -336,7 +338,7 @@ std::string CSavestateFlatBuffer::GameClientID() const
 
 void CSavestateFlatBuffer::SetGameClientID(const std::string& gameClientId)
 {
-  m_emulatorAddonIdOffset.reset(new StringOffset{m_builder->CreateString(gameClientId)});
+  m_emulatorAddonIdOffset = std::make_unique<StringOffset>(m_builder->CreateString(gameClientId));
 }
 
 std::string CSavestateFlatBuffer::GameClientVersion() const
@@ -351,7 +353,8 @@ std::string CSavestateFlatBuffer::GameClientVersion() const
 
 void CSavestateFlatBuffer::SetGameClientVersion(const std::string& gameClientVersion)
 {
-  m_emulatorVersionOffset.reset(new StringOffset{m_builder->CreateString(gameClientVersion)});
+  m_emulatorVersionOffset =
+      std::make_unique<StringOffset>(m_builder->CreateString(gameClientVersion));
 }
 
 AVPixelFormat CSavestateFlatBuffer::GetPixelFormat() const
@@ -517,8 +520,8 @@ uint8_t* CSavestateFlatBuffer::GetMemoryBuffer(size_t size)
 {
   uint8_t* memoryBuffer = nullptr;
 
-  m_memoryDataOffset.reset(
-      new VectorOffset{m_builder->CreateUninitializedVector(size, &memoryBuffer)});
+  m_memoryDataOffset =
+      std::make_unique<VectorOffset>(m_builder->CreateUninitializedVector(size, &memoryBuffer));
 
   return memoryBuffer;
 }

@@ -24,7 +24,6 @@
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "system_egl.h"
 #include "utils/HDRCapabilities.h"
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
@@ -35,8 +34,11 @@
 #include "platform/android/media/drm/MediaDrmCryptoSession.h"
 
 #include <float.h>
+#include <memory>
 #include <mutex>
 #include <string.h>
+
+#include "system_egl.h"
 
 #include <EGL/eglplatform.h>
 
@@ -54,7 +56,7 @@ CWinSystemAndroid::CWinSystemAndroid()
 
   m_android = nullptr;
 
-  m_winEvents.reset(new CWinEventsAndroid());
+  m_winEvents = std::make_unique<CWinEventsAndroid>();
 }
 
 CWinSystemAndroid::~CWinSystemAndroid()

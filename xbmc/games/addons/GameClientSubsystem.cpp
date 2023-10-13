@@ -15,6 +15,8 @@
 #include "games/addons/input/GameClientInput.h"
 #include "games/addons/streams/GameClientStreams.h"
 
+#include <memory>
+
 using namespace KODI;
 using namespace GAME;
 
@@ -34,9 +36,10 @@ GameClientSubsystems CGameClientSubsystem::CreateSubsystems(CGameClient& gameCli
   GameClientSubsystems subsystems = {};
 
   subsystems.Cheevos = std::make_unique<CGameClientCheevos>(gameClient, gameStruct);
-  subsystems.Input.reset(new CGameClientInput(gameClient, gameStruct, clientAccess));
-  subsystems.AddonProperties.reset(new CGameClientProperties(gameClient, *gameStruct.props));
-  subsystems.Streams.reset(new CGameClientStreams(gameClient));
+  subsystems.Input = std::make_unique<CGameClientInput>(gameClient, gameStruct, clientAccess);
+  subsystems.AddonProperties =
+      std::make_unique<CGameClientProperties>(gameClient, *gameStruct.props);
+  subsystems.Streams = std::make_unique<CGameClientStreams>(gameClient);
 
   return subsystems;
 }

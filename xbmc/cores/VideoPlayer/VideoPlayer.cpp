@@ -17,16 +17,12 @@
 #include "DVDDemuxers/DVDFactoryDemuxer.h"
 #include "DVDInputStreams/DVDFactoryInputStream.h"
 #include "DVDInputStreams/DVDInputStream.h"
-#include "DVDMessage.h"
-#include "VideoPlayerVideo.h"
-#include "application/Application.h"
-
-#include <mutex>
 #if defined(HAVE_LIBBLURAY)
 #include "DVDInputStreams/DVDInputStreamBluray.h"
 #endif
 #include "DVDInputStreams/DVDInputStreamNavigator.h"
 #include "DVDInputStreams/InputStreamPVRBase.h"
+#include "DVDMessage.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "LangInfo.h"
@@ -35,6 +31,8 @@
 #include "Util.h"
 #include "VideoPlayerAudio.h"
 #include "VideoPlayerRadioRDS.h"
+#include "VideoPlayerVideo.h"
+#include "application/Application.h"
 #include "cores/DataCacheCore.h"
 #include "cores/EdlEdit.h"
 #include "cores/FFmpeg.h"
@@ -67,6 +65,8 @@
 #include "windowing/WinSystem.h"
 
 #include <iterator>
+#include <memory>
+#include <mutex>
 #include <utility>
 
 using namespace std::chrono_literals;
@@ -616,7 +616,7 @@ CVideoPlayer::CVideoPlayer(IPlayerCallback& callback)
     m_messenger("player"),
     m_renderManager(m_clock, this)
 {
-  m_outboundEvents.reset(new CJobQueue(false, 1, CJob::PRIORITY_NORMAL));
+  m_outboundEvents = std::make_unique<CJobQueue>(false, 1, CJob::PRIORITY_NORMAL);
   m_players_created = false;
   m_pDemuxer = nullptr;
   m_pSubtitleDemuxer = nullptr;

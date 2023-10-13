@@ -25,6 +25,7 @@
 #include "utils/log.h"
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -57,8 +58,8 @@ void CPVRGUIChannelIconUpdater::SearchAndUpdateMissingChannelIcons() const
 
   std::unique_ptr<CPVRGUIProgressHandler> progressHandler;
   if (!m_groups.empty())
-    progressHandler.reset(
-        new CPVRGUIProgressHandler(g_localizeStrings.Get(19286))); // Searching for channel icons
+    progressHandler = std::make_unique<CPVRGUIProgressHandler>(
+        g_localizeStrings.Get(19286)); // Searching for channel icons
 
   for (const auto& group : m_groups)
   {

@@ -34,6 +34,7 @@
 #include "utils/log.h"
 
 #include <charconv>
+#include <memory>
 
 #define XML_SETTINGS      "settings"
 #define XML_SETTING       "setting"
@@ -157,7 +158,7 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo,
     m_effectsSlowDown(1.f),
     m_debugging(false)
 {
-  m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
+  m_settingsUpdateHandler = std::make_unique<CSkinSettingUpdateHandler>(*this);
 }
 
 CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonType::SKIN)
@@ -193,7 +194,7 @@ CSkinInfo::CSkinInfo(const AddonInfoPtr& addonInfo) : CAddon(addonInfo, AddonTyp
 
   m_debugging = Type(AddonType::SKIN)->GetValue("@debugging").asBoolean();
 
-  m_settingsUpdateHandler.reset(new CSkinSettingUpdateHandler(*this));
+  m_settingsUpdateHandler = std::make_unique<CSkinSettingUpdateHandler>(*this);
   LoadStartupWindows(addonInfo);
 }
 

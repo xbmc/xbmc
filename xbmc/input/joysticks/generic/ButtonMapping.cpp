@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <assert.h>
 #include <cmath>
+#include <memory>
 
 using namespace KODI;
 using namespace JOYSTICK;
@@ -571,7 +572,7 @@ CMouseButtonDetector& CButtonMapping::GetMouseButton(MOUSE::BUTTON_ID buttonInde
 CPointerDetector& CButtonMapping::GetPointer()
 {
   if (!m_pointer)
-    m_pointer.reset(new CPointerDetector(this));
+    m_pointer = std::make_unique<CPointerDetector>(this);
 
   return *m_pointer;
 }

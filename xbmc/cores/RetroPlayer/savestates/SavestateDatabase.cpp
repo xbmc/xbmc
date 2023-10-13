@@ -20,6 +20,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <memory>
+
 namespace
 {
 constexpr auto SAVESTATE_EXTENSION = ".sav";
@@ -35,7 +37,7 @@ std::unique_ptr<ISavestate> CSavestateDatabase::AllocateSavestate()
 {
   std::unique_ptr<ISavestate> savestate;
 
-  savestate.reset(new CSavestateFlatBuffer);
+  savestate = std::make_unique<CSavestateFlatBuffer>();
 
   return savestate;
 }
