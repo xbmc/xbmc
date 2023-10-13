@@ -11891,7 +11891,8 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                   CLog::Log(LOGERROR, "CMusicDatabase::{}: Album nfo export failed! ('{}')",
                             __FUNCTION__, nfoFile);
                   CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                        g_localizeStrings.Get(20302), nfoFile);
+                                                        g_localizeStrings.Get(20302),
+                                                        CURL::GetRedacted(nfoFile));
                   iFailCount++;
                 }
               }
@@ -12035,7 +12036,8 @@ void CMusicDatabase::ExportToXML(const CLibExportSettings& settings,
                     CLog::Log(LOGERROR, "CMusicDatabase::{}: Artist nfo export failed! ('{}')",
                               __FUNCTION__, nfoFile);
                     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
-                                                          g_localizeStrings.Get(20302), nfoFile);
+                                                          g_localizeStrings.Get(20302),
+                                                          CURL::GetRedacted(nfoFile));
                     iFailCount++;
                   }
                 }
