@@ -27,6 +27,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 
+#include <algorithm>
 #include <utility>
 
 using namespace KODI::MESSAGING;
