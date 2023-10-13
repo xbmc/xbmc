@@ -10153,7 +10153,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             if(!xmlDoc.SaveFile(nfoFile))
             {
               CLog::Log(LOGERROR, "{}: Movie nfo export failed! ('{}')", __FUNCTION__, nfoFile);
-              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+                                                    g_localizeStrings.Get(20302),
+                                                    CURL::GetRedacted(nfoFile));
               iFailCount++;
             }
           }
@@ -10298,7 +10300,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             {
               CLog::Log(LOGERROR, "{}: Musicvideo nfo export failed! ('{}')", __FUNCTION__,
                         nfoFile);
-              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+                                                    g_localizeStrings.Get(20302),
+                                                    CURL::GetRedacted(nfoFile));
               iFailCount++;
             }
           }
@@ -10398,7 +10402,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
             if(!xmlDoc.SaveFile(nfoFile))
             {
               CLog::Log(LOGERROR, "{}: TVShow nfo export failed! ('{}')", __FUNCTION__, nfoFile);
-              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+              CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+                                                    g_localizeStrings.Get(20302),
+                                                    CURL::GetRedacted(nfoFile));
               iFailCount++;
             }
           }
@@ -10494,7 +10500,9 @@ void CVideoDatabase::ExportToXML(const std::string &path, bool singleFile /* = t
               if(!xmlDoc.SaveFile(nfoFile))
               {
                 CLog::Log(LOGERROR, "{}: Episode nfo export failed! ('{}')", __FUNCTION__, nfoFile);
-                CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(20302), nfoFile);
+                CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+                                                      g_localizeStrings.Get(20302),
+                                                      CURL::GetRedacted(nfoFile));
                 iFailCount++;
               }
             }
