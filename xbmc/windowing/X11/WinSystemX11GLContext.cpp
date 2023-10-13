@@ -26,6 +26,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WindowSystemFactory.h"
 
+#include <memory>
 #include <mutex>
 #include <vector>
 
@@ -320,7 +321,7 @@ std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(CVideoReference
 
   if (dynamic_cast<CGLContextEGL*>(m_pGLContext))
   {
-    pVSync.reset(new CVideoSyncOML(clock, *this));
+    pVSync = std::make_unique<CVideoSyncOML>(clock, *this);
   }
   else
   {

@@ -144,7 +144,7 @@ void CGUIWindowPVRGuideBase::OnDeinitWindow(int nextWindowID)
 void CGUIWindowPVRGuideBase::StartRefreshTimelineItemsThread()
 {
   StopRefreshTimelineItemsThread();
-  m_refreshTimelineItemsThread.reset(new CPVRRefreshTimelineItemsThread(this));
+  m_refreshTimelineItemsThread = std::make_unique<CPVRRefreshTimelineItemsThread>(this);
   m_refreshTimelineItemsThread->Create();
 }
 

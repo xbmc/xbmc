@@ -354,8 +354,8 @@ void CPVRManager::ResetProperties()
   m_channelGroups = std::make_shared<CPVRChannelGroupsContainer>();
   m_recordings = std::make_shared<CPVRRecordings>();
   m_timers = std::make_shared<CPVRTimers>();
-  m_guiInfo.reset(new CPVRGUIInfo);
-  m_parentalTimer.reset(new CStopWatch);
+  m_guiInfo = std::make_unique<CPVRGUIInfo>();
+  m_parentalTimer = std::make_unique<CStopWatch>();
   m_knownClients.clear();
 }
 

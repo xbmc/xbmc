@@ -13,6 +13,8 @@
 #include "utils/GLUtils.h"
 #include "utils/log.h"
 
+#include <memory>
+
 using namespace VAAPI;
 
 IVaapiWinSystem* CRendererVAAPIGL::m_pWinSystem = nullptr;
@@ -95,11 +97,11 @@ bool CRendererVAAPIGL::Configure(const VideoPicture& picture, float fps, unsigne
     {
       if (useVaapi2)
       {
-        tex.reset(new VAAPI::CVaapi2Texture);
+        tex = std::make_unique<VAAPI::CVaapi2Texture>();
       }
       else
       {
-        tex.reset(new VAAPI::CVaapi1Texture);
+        tex = std::make_unique<VAAPI::CVaapi1Texture>();
       }
       tex->Init(interop);
     }

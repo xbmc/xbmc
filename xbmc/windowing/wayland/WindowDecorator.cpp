@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <memory>
 #include <mutex>
 #include <vector>
 
@@ -885,7 +886,7 @@ void CWindowDecorator::ResetShm()
 {
   if (IsDecorationActive())
   {
-    m_memory.reset(new CSharedMemory(MemoryBytesForSize(m_mainSurfaceSize, m_scale)));
+    m_memory = std::make_unique<CSharedMemory>(MemoryBytesForSize(m_mainSurfaceSize, m_scale));
     m_memoryAllocatedSize = 0;
     m_shmPool = m_shm.create_pool(m_memory->Fd(), m_memory->Size());
   }

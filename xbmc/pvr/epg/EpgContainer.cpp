@@ -741,8 +741,8 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 
   std::unique_ptr<CPVRGUIProgressHandler> progressHandler;
   if (bShowProgress && !bOnlyPending && !epgsToUpdate.empty())
-    progressHandler.reset(
-        new CPVRGUIProgressHandler(g_localizeStrings.Get(19004))); // Loading programme guide
+    progressHandler = std::make_unique<CPVRGUIProgressHandler>(
+        g_localizeStrings.Get(19004)); // Loading programme guide
 
   for (const auto& epgEntry : epgsToUpdate)
   {

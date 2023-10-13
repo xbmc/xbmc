@@ -45,8 +45,8 @@ class CRegistry;
 class CWindowDecorator;
 
 class CWinSystemWayland : public CWinSystemBase,
-                          IInputHandler,
-                          IWindowDecorationHandler,
+                          public IInputHandler,
+                          public IWindowDecorationHandler,
                           public IShellSurfaceHandler
 {
 public:

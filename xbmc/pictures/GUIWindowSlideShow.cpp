@@ -405,7 +405,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   // Create our background loader if necessary
   if (!m_pBackgroundLoader)
   {
-    m_pBackgroundLoader.reset(new CBackgroundPicLoader());
+    m_pBackgroundLoader = std::make_unique<CBackgroundPicLoader>();
     m_pBackgroundLoader->Create(this);
   }
 

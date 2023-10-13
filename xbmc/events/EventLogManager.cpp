@@ -10,6 +10,7 @@
 
 #include "EventLog.h"
 
+#include <memory>
 #include <mutex>
 #include <utility>
 
@@ -20,7 +21,7 @@ CEventLog& CEventLogManager::GetEventLog(unsigned int profileId)
   auto eventLog = m_eventLogs.find(profileId);
   if (eventLog == m_eventLogs.end())
   {
-    m_eventLogs.insert(std::make_pair(profileId, std::unique_ptr<CEventLog>(new CEventLog)));
+    m_eventLogs.insert(std::make_pair(profileId, std::make_unique<CEventLog>()));
     eventLog = m_eventLogs.find(profileId);
   }
 

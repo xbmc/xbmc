@@ -41,6 +41,7 @@
 #include <algorithm>
 #include <cstring>
 #include <iterator>
+#include <memory>
 #include <mutex>
 #include <utility>
 
@@ -312,7 +313,7 @@ bool CGameClient::InitializeGameplay(const std::string& gamePath,
     m_gamePath = gamePath;
     m_input = input;
 
-    m_inGameSaves.reset(new CGameClientInGameSaves(this, m_ifc.game));
+    m_inGameSaves = std::make_unique<CGameClientInGameSaves>(this, m_ifc.game);
     m_inGameSaves->Load();
 
     return true;

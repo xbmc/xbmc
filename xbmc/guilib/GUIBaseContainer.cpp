@@ -26,6 +26,8 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 
+#include <memory>
+
 #define HOLD_TIME_START 100
 #define HOLD_TIME_END   3000
 #define SCROLLING_GAP   200U
