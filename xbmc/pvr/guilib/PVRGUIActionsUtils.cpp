@@ -16,6 +16,12 @@
 
 namespace PVR
 {
+bool CPVRGUIActionsUtils::HasInfoForItem(const CFileItem& item) const
+{
+  return item.HasPVRRecordingInfoTag() || item.HasPVRChannelInfoTag() ||
+         item.HasPVRTimerInfoTag() || item.HasEPGSearchFilter();
+}
+
 bool CPVRGUIActionsUtils::OnInfo(const CFileItem& item)
 {
   if (item.HasPVRRecordingInfoTag())
