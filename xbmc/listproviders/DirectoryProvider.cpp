@@ -13,7 +13,6 @@
 #include "ServiceBroker.h"
 #include "addons/AddonManager.h"
 #include "favourites/FavouritesService.h"
-#include "favourites/FavouritesURL.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -546,25 +545,17 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr& item)
 {
   CFileItem targetItem{*std::static_pointer_cast<CFileItem>(item)};
 
-  bool isPlayMedia{false};
-
   if (targetItem.IsFavourite())
   {
-    // Resolve the favourite
-    const CFavouritesURL url{targetItem.GetPath()};
-    if (!url.IsValid())
+    const auto target{CServiceBroker::GetFavouritesService().ResolveFavourite(targetItem)};
+    if (!target)
       return false;
 
-    targetItem = {url.GetTarget(), url.IsDir()};
-    targetItem.LoadDetails();
+    targetItem = *target;
+  }
 
-    isPlayMedia = (url.GetAction() == CFavouritesURL::Action::PLAY_MEDIA);
-  }
-  else
-  {
-    const CExecString exec{targetItem, GetTarget(targetItem)};
-    isPlayMedia = (exec.GetFunction() == "playmedia");
-  }
+  const CExecString exec{targetItem, GetTarget(targetItem)};
+  const bool isPlayMedia{exec.GetFunction() == "playmedia"};
 
   // video select action setting is for files only, except exec func is playmedia...
   if (targetItem.HasVideoInfoTag() && (!targetItem.m_bIsFolder || isPlayMedia))
@@ -589,13 +580,11 @@ bool CDirectoryProvider::OnPlay(const CGUIListItemPtr& item)
 
   if (targetItem.IsFavourite())
   {
-    // Resolve the favourite
-    const CFavouritesURL url(targetItem.GetPath());
-    if (!url.IsValid())
+    const auto target{CServiceBroker::GetFavouritesService().ResolveFavourite(targetItem)};
+    if (!target)
       return false;
 
-    targetItem = {url.GetTarget(), url.IsDir()};
-    targetItem.LoadDetails();
+    targetItem = *target;
   }
 
   // video play action setting is for files and folders...
