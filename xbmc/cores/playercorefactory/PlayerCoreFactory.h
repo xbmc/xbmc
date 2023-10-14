@@ -44,6 +44,7 @@ public:
   void GetPlayers(std::vector<std::string>&players, std::string &type) const;
   void GetRemotePlayers(std::vector<std::string>&players) const;                    //All remote players we can attach to
   std::string GetPlayerType(const std::string &player) const;
+  bool IsExternalPlayer(const std::string& player) const;
   bool PlaysAudio(const std::string &player) const;
   bool PlaysVideo(const std::string &player) const;
 
