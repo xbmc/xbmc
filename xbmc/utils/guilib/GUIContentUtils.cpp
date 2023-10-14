@@ -30,7 +30,8 @@ bool CGUIContentUtils::HasInfoForItem(const CFileItem& item)
             mediaType == MediaTypeMusicVideo);
   }
 
-  return (item.HasMusicInfoTag() || item.IsPVR() || item.HasAddonInfo());
+  return (item.HasMusicInfoTag() || item.HasAddonInfo() ||
+          CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().HasInfoForItem(item));
 }
 
 bool CGUIContentUtils::ShowInfoForItem(const CFileItem& item)
@@ -39,7 +40,7 @@ bool CGUIContentUtils::ShowInfoForItem(const CFileItem& item)
   {
     return CGUIDialogAddonInfo::ShowForItem(std::make_shared<CFileItem>(item));
   }
-  else if (item.IsPVR())
+  else if (CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().HasInfoForItem(item))
   {
     return CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().OnInfo(item);
   }

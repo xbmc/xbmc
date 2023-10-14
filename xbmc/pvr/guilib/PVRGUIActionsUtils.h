@@ -21,8 +21,16 @@ public:
   ~CPVRGUIActionsUtils() override = default;
 
   /*!
+     * @brief Check whether OnInfo supports the given item.
+     * @param item The item.
+     * @return True if supported, false otherwise.
+     */
+  bool HasInfoForItem(const CFileItem& item) const;
+
+  /*!
      * @brief Process info action for the given item.
      * @param item The item.
+     * @return True on success, false otherwise.
      */
   bool OnInfo(const CFileItem& item);
 
