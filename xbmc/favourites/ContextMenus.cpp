@@ -146,8 +146,11 @@ bool CFavouritesTargetResume::IsVisible(const CFileItem& item) const
 
 bool CFavouritesTargetResume::Execute(const std::shared_ptr<CFileItem>& item) const
 {
-  FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *item, "resume"});
-  return true;
+  const std::shared_ptr<CFileItem> targetItem{ResolveFavouriteItem(*item)};
+  if (targetItem)
+    return FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *targetItem, "resume"});
+
+  return false;
 }
 
 std::string CFavouritesTargetPlay::GetLabel(const CFileItem& item) const
@@ -166,8 +169,11 @@ bool CFavouritesTargetPlay::IsVisible(const CFileItem& item) const
 
 bool CFavouritesTargetPlay::Execute(const std::shared_ptr<CFileItem>& item) const
 {
-  FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *item, "noresume"});
-  return true;
+  const std::shared_ptr<CFileItem> targetItem{ResolveFavouriteItem(*item)};
+  if (targetItem)
+    return FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *targetItem, "noresume"});
+
+  return false;
 }
 
 bool CFavouritesTargetInfo::IsVisible(const CFileItem& item) const
