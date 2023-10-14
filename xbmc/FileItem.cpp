@@ -38,6 +38,7 @@
 #include "pvr/epg/EpgInfoTag.h"
 #include "pvr/epg/EpgSearchFilter.h"
 #include "pvr/guilib/PVRGUIActionsChannels.h"
+#include "pvr/guilib/PVRGUIActionsUtils.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 #include "settings/AdvancedSettings.h"
@@ -3747,28 +3748,16 @@ bool CFileItem::LoadDetails()
     return ret;
   }
 
-  if (URIUtils::IsPVRRecordingFileOrFolder(GetPath()))
+  if (IsPVR())
   {
-    if (HasProperty("watchedepisodes") || HasProperty("watched"))
-      return true;
-
-    const std::string parentPath = URIUtils::GetParentPath(GetPath());
-
-    //! @todo optimize, find a way to set the details of the item without loading parent directory.
-    CFileItemList items;
-    if (CDirectory::GetDirectory(parentPath, items, "", XFILE::DIR_FLAG_DEFAULTS))
+    const std::shared_ptr<CFileItem> loadedItem{
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Utils>().LoadItem(*this)};
+    if (loadedItem)
     {
-      const std::string path = GetPath();
-      const auto it = std::find_if(items.cbegin(), items.cend(),
-                                   [path](const auto& entry) { return entry->GetPath() == path; });
-      if (it != items.cend())
-      {
-        *this = *(*it);
-        return true;
-      }
+      UpdateInfo(*loadedItem);
+      return true;
     }
-
-    CLog::LogF(LOGERROR, "Error filling item details (path={})", GetPath());
+    CLog::LogF(LOGERROR, "Error filling PVR item details (path={})", GetPath());
     return false;
   }
 
