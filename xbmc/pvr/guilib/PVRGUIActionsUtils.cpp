@@ -12,6 +12,7 @@
 #include "ServiceBroker.h"
 #include "filesystem/Directory.h"
 #include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
 #include "pvr/guilib/PVRGUIActionsRecordings.h"
 #include "utils/URIUtils.h"
@@ -67,11 +68,31 @@ std::shared_ptr<CFileItem> LoadRecordingFileOrFolderItem(const CFileItem& item)
   }
   return {};
 }
+
+std::shared_ptr<CFileItem> LoadChannelItem(const CFileItem& item)
+{
+  if (URIUtils::IsPVRChannel(item.GetPath()))
+  {
+    if (item.HasPVRChannelInfoTag())
+      return std::make_shared<CFileItem>(item); // already loaded
+
+    const auto groups{CServiceBroker::GetPVRManager().ChannelGroups()};
+    const std::shared_ptr<CPVRChannelGroupMember> groupMember{
+        groups->GetChannelGroupMemberByPath(item.GetPath())};
+    if (groupMember)
+      return std::make_shared<CFileItem>(groupMember);
+  }
+  return {};
+}
 } // unnamed namespace
 
 std::shared_ptr<CFileItem> CPVRGUIActionsUtils::LoadItem(const CFileItem& item)
 {
   std::shared_ptr<CFileItem> loadedItem{LoadRecordingFileOrFolderItem(item)};
+  if (loadedItem)
+    return loadedItem;
+
+  loadedItem = LoadChannelItem(item);
   if (loadedItem)
     return loadedItem;
 
