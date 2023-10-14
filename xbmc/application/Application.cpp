@@ -2450,9 +2450,17 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
       (item.IsBDFile() || item.IsDiscImage()))
   {
-    //check if we must show the simplified bd menu
-    if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
-      return true;
+    // No video selection when using an external player, because it needs to handle that on its own.
+    const std::string defaulPlayer{
+        player.empty() ? m_ServiceManager->GetPlayerCoreFactory().GetDefaultPlayer(item) : player};
+    const bool isExternalPlayer{
+        m_ServiceManager->GetPlayerCoreFactory().IsExternalPlayer(defaulPlayer)};
+    if (!isExternalPlayer)
+    {
+      // Check if we must show the simplified bd menu.
+      if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
+        return true;
+    }
   }
 
   // this really aught to be inside !bRestart, but since PlayStack

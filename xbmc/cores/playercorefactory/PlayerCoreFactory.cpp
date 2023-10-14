@@ -254,6 +254,11 @@ std::string CPlayerCoreFactory::GetPlayerType(const std::string& player) const
   return m_vecPlayerConfigs[idx]->m_type;
 }
 
+bool CPlayerCoreFactory::IsExternalPlayer(const std::string& player) const
+{
+  return (GetPlayerType(player) == "external");
+}
+
 bool CPlayerCoreFactory::PlaysAudio(const std::string& player) const
 {
   std::unique_lock<CCriticalSection> lock(m_section);
