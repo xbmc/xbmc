@@ -1740,6 +1740,26 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
     *GetGameInfoTag() = *item.GetGameInfoTag();
     SetInvalid();
   }
+  if (item.HasPVRChannelGroupMemberInfoTag())
+  {
+    m_pvrChannelGroupMemberInfoTag = item.GetPVRChannelGroupMemberInfoTag();
+    SetInvalid();
+  }
+  if (item.HasPVRTimerInfoTag())
+  {
+    m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
+    SetInvalid();
+  }
+  if (item.HasEPGInfoTag())
+  {
+    m_epgInfoTag = item.m_epgInfoTag;
+    SetInvalid();
+  }
+  if (item.HasEPGSearchFilter())
+  {
+    m_epgSearchFilter = item.m_epgSearchFilter;
+    SetInvalid();
+  }
   SetDynPath(item.GetDynPath());
   if (replaceLabels && !item.GetLabel().empty())
     SetLabel(item.GetLabel());
@@ -1781,6 +1801,26 @@ void CFileItem::MergeInfo(const CFileItem& item)
   if (item.HasGameInfoTag())
   {
     *GetGameInfoTag() = *item.GetGameInfoTag();
+    SetInvalid();
+  }
+  if (item.HasPVRChannelGroupMemberInfoTag())
+  {
+    m_pvrChannelGroupMemberInfoTag = item.GetPVRChannelGroupMemberInfoTag();
+    SetInvalid();
+  }
+  if (item.HasPVRTimerInfoTag())
+  {
+    m_pvrTimerInfoTag = item.m_pvrTimerInfoTag;
+    SetInvalid();
+  }
+  if (item.HasEPGInfoTag())
+  {
+    m_epgInfoTag = item.m_epgInfoTag;
+    SetInvalid();
+  }
+  if (item.HasEPGSearchFilter())
+  {
+    m_epgSearchFilter = item.m_epgSearchFilter;
     SetInvalid();
   }
   SetDynPath(item.GetDynPath());
