@@ -173,6 +173,13 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
     }
     return false;
   }
+  else if (action.GetID() == ACTION_SHOW_INFO)
+  {
+    const auto targetItem{
+        CServiceBroker::GetFavouritesService().ResolveFavourite(*(*m_vecItems)[selectedItem])};
+
+    return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*targetItem);
+  }
   else if (action.GetID() == ACTION_MOVE_ITEM_UP)
   {
     if (FAVOURITES_UTILS::ShouldEnableMoveItems())

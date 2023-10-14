@@ -626,7 +626,11 @@ bool CDirectoryProvider::OnPlay(const CGUIListItemPtr& item)
 
 bool CDirectoryProvider::OnInfo(const std::shared_ptr<CFileItem>& fileItem)
 {
-  return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*fileItem);
+  const auto targetItem{fileItem->IsFavourite()
+                            ? CServiceBroker::GetFavouritesService().ResolveFavourite(*fileItem)
+                            : fileItem};
+
+  return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*targetItem);
 }
 
 bool CDirectoryProvider::OnInfo(const CGUIListItemPtr& item)
