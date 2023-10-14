@@ -111,19 +111,23 @@ protected:
 };
 } // namespace
 
-bool CGUIWindowFavourites::OnSelect(int item)
+bool CGUIWindowFavourites::OnSelect(int itemIdx)
 {
-  if (item < 0 || item >= m_vecItems->Size())
+  if (itemIdx < 0 || itemIdx >= m_vecItems->Size())
     return false;
 
-  const CFavouritesURL favURL{*(*m_vecItems)[item], GetID()};
+  const auto item{(*m_vecItems)[itemIdx]};
+  const CFavouritesURL favURL{*item, GetID()};
   if (!favURL.IsValid())
     return false;
 
-  CFileItem targetItem{favURL.GetTarget(), favURL.IsDir()};
-  targetItem.LoadDetails();
-
   const bool isPlayMedia{favURL.GetAction() == CFavouritesURL::Action::PLAY_MEDIA};
+
+  const auto target{CServiceBroker::GetFavouritesService().ResolveFavourite(*item)};
+  if (!target)
+    return false;
+
+  CFileItem targetItem{*target};
 
   // video select action setting is for files only, except exec func is playmedia...
   if (targetItem.HasVideoInfoTag() && (!targetItem.m_bIsFolder || isPlayMedia))
@@ -145,12 +149,12 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
 
   if (action.GetID() == ACTION_PLAYER_PLAY)
   {
-    const CFavouritesURL favURL((*m_vecItems)[selectedItem]->GetPath());
-    if (!favURL.IsValid())
+    const auto target{
+        CServiceBroker::GetFavouritesService().ResolveFavourite(*(*m_vecItems)[selectedItem])};
+    if (!target)
       return false;
 
-    CFileItem item{favURL.GetTarget(), favURL.IsDir()};
-    item.LoadDetails();
+    CFileItem item{*target};
 
     // video play action setting is for files and folders...
     if (item.HasVideoInfoTag() || (item.m_bIsFolder && VIDEO_UTILS::IsItemPlayable(item)))
@@ -172,6 +176,13 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
       return FAVOURITES_UTILS::ExecuteAction(target);
     }
     return false;
+  }
+  else if (action.GetID() == ACTION_SHOW_INFO)
+  {
+    const auto targetItem{
+        CServiceBroker::GetFavouritesService().ResolveFavourite(*(*m_vecItems)[selectedItem])};
+
+    return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*targetItem);
   }
   else if (action.GetID() == ACTION_MOVE_ITEM_UP)
   {
