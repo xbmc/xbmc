@@ -127,7 +127,6 @@ public:
    * from this function.
    */
   std::unique_ptr<CXkbcommonKeymap> KeymapFromString(std::string const& keymap);
-  std::unique_ptr<CXkbcommonKeymap> KeymapFromNames(const std::string &rules, const std::string &model, const std::string &layout, const std::string &variant, const std::string &options);
 
 private:
   struct XkbContextDeleter
