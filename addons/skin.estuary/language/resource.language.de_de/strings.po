@@ -138,7 +138,7 @@ msgstr "Keine Favoriten gefunden. Es kann jeder beliebige Eintrag aus den Medien
 
 msgctxt "#31026"
 msgid "Timeshift"
-msgstr "Timeshift"
+msgstr ""
 
 msgctxt "#31027"
 msgid "Next aired"
@@ -360,26 +360,26 @@ msgstr "Bitte Kodi-Benutzerprofil zum Anmelden auswählen"
 #. viewtype name
 msgctxt "#31099"
 msgid "IconWall"
-msgstr "IconWall"
+msgstr ""
 
 #. viewtype name
 msgctxt "#31100"
 msgid "Shift"
-msgstr "Shift"
+msgstr ""
 
 #. viewtype name
 msgctxt "#31101"
 msgid "InfoWall"
-msgstr "InfoWall"
+msgstr ""
 
 #. viewtype name
 msgctxt "#31102"
 msgid "Wall"
-msgstr "Wall"
+msgstr ""
 
 msgctxt "#31103"
 msgid "Enter text here..."
-msgstr "Text hier eingeben ..."
+msgstr "Text hier eingeben..."
 
 msgctxt "#31104"
 msgid "Your library is currently empty. In order to populate it with your personal media, enter \"Files\" section, add a media source and configure it. After the source has been added and indexed you will be able to browse your library."
@@ -391,12 +391,12 @@ msgstr "Videoquellen hinzufügen und den korrekten Inhaltstyp auswählen, um die
 
 msgctxt "#31106"
 msgid "Teletext"
-msgstr "Teletext"
+msgstr ""
 
 #. viewtype name
 msgctxt "#31107"
 msgid "WideList"
-msgstr "WideList"
+msgstr ""
 
 msgctxt "#31110"
 msgid "Enter files section"
@@ -505,12 +505,12 @@ msgstr "Hier klicken, um die letzten Änderungen zu sehen ..."
 #. Label to show PVR info page
 msgctxt "#31137"
 msgid "PVR"
-msgstr "PVR"
+msgstr ""
 
 #. Label to show player info page
 msgctxt "#31138"
 msgid "Player"
-msgstr "Player"
+msgstr ""
 
 #. Label to show video decoder name
 msgctxt "#31139"
@@ -596,7 +596,7 @@ msgstr "Touch-Modus"
 
 msgctxt "#31159"
 msgid "Artwork"
-msgstr "Artwork"
+msgstr ""
 
 msgctxt "#31160"
 msgid "Show media flags"
@@ -627,7 +627,7 @@ msgstr "Profilname"
 #. Label for the kind of profile identification
 msgctxt "#31166"
 msgid "Profile avatar"
-msgstr "Profil-Avatar"
+msgstr "Profilbild"
 
 #. Label of a setting
 msgctxt "#31167"
@@ -738,7 +738,7 @@ msgstr "Medien"
 #. Label to show the system info page
 msgctxt "#31611"
 msgid "System"
-msgstr "System"
+msgstr ""
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"
