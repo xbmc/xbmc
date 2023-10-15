@@ -59,7 +59,7 @@ std::shared_ptr<CFileItem> LoadRecordingFileOrFolderItem(const CFileItem& item)
     CFileItemList items;
     if (XFILE::CDirectory::GetDirectory(parentPath, items, "", XFILE::DIR_FLAG_DEFAULTS))
     {
-      const std::string path{item.GetPath()};
+      const std::string& path{item.GetPath()};
       const auto it = std::find_if(items.cbegin(), items.cend(),
                                    [&path](const auto& entry) { return entry->GetPath() == path; });
       if (it != items.cend())
