@@ -113,16 +113,16 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
   if (pressed)
   {
     // feed it first to the key composer if from a press
-    const KeyComposerState feedResult = m_keymap->KeyComposerFeed(xkbCode);
-    if (feedResult == KeyComposerState::COMPOSING)
+    const KeyComposerStatus feedResult = m_keymap->KeyComposerFeed(xkbCode);
+    if (feedResult.state == KeyComposerState::COMPOSING)
     {
       return;
     }
-    else if (feedResult == KeyComposerState::FINISHED)
+    else if (feedResult.state == KeyComposerState::FINISHED)
     {
       flushComposer = true;
     }
-    else if (feedResult == KeyComposerState::CANCELLED)
+    else if (feedResult.state == KeyComposerState::CANCELLED)
     {
       m_keymap->KeyComposerFlush();
       return;
