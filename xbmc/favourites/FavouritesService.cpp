@@ -147,6 +147,8 @@ CFavouritesService::CFavouritesService(std::string userDataFolder) : m_favourite
 
 void CFavouritesService::ReInit(std::string userDataFolder)
 {
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+
   m_userDataFolder = std::move(userDataFolder);
   m_favourites.Clear();
   m_targets.clear();
@@ -288,6 +290,8 @@ std::shared_ptr<CFileItem> CFavouritesService::ResolveFavourite(const CFileItem&
 {
   if (item.IsFavourite())
   {
+    std::unique_lock<CCriticalSection> lock(m_criticalSection);
+
     const auto it = m_targets.find(item.GetPath());
     if (it != m_targets.end())
       return (*it).second;
