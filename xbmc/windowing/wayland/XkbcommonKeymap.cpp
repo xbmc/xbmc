@@ -212,7 +212,8 @@ void CXkbcommonContext::XkbContextDeleter::operator()(xkb_context* ctx) const
   xkb_context_unref(ctx);
 }
 
-std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::KeymapFromString(std::string const& keymap)
+std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::LocalizedKeymapFromString(
+    const std::string& keymap, const std::string& locale)
 {
   std::unique_ptr<xkb_keymap, CXkbcommonKeymap::XkbKeymapDeleter> xkbKeymap{xkb_keymap_new_from_string(m_context.get(), keymap.c_str(), XKB_KEYMAP_FORMAT_TEXT_V1, XKB_KEYMAP_COMPILE_NO_FLAGS), CXkbcommonKeymap::XkbKeymapDeleter()};
 
@@ -221,10 +222,21 @@ std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::KeymapFromString(std::strin
     throw std::runtime_error("Failed to compile keymap");
   }
 
-  return std::make_unique<CXkbcommonKeymap>(std::move(xkbKeymap));
+  std::unique_ptr<xkb_compose_table, CXkbcommonKeymap::XkbComposeTableDeleter> xkbComposeTable{
+      xkb_compose_table_new_from_locale(m_context.get(), locale.c_str(),
+                                        XKB_COMPOSE_COMPILE_NO_FLAGS),
+      CXkbcommonKeymap::XkbComposeTableDeleter()};
+
+  if (!xkbComposeTable)
+  {
+    throw std::runtime_error("Failed to compile localized compose table");
+  }
+  return std::unique_ptr<CXkbcommonKeymap>{
+      new CXkbcommonKeymap(std::move(xkbKeymap), std::move(xkbComposeTable))};
 }
 
-std::unique_ptr<xkb_state, CXkbcommonKeymap::XkbStateDeleter> CXkbcommonKeymap::CreateXkbStateFromKeymap(xkb_keymap* keymap)
+std::unique_ptr<xkb_state, CXkbcommonKeymap::XkbStateDeleter> CXkbcommonKeymap::
+    CreateXkbStateFromKeymap(xkb_keymap* keymap)
 {
   std::unique_ptr<xkb_state, XkbStateDeleter> state{xkb_state_new(keymap), XkbStateDeleter()};
 
@@ -236,8 +248,25 @@ std::unique_ptr<xkb_state, CXkbcommonKeymap::XkbStateDeleter> CXkbcommonKeymap::
   return state;
 }
 
-CXkbcommonKeymap::CXkbcommonKeymap(std::unique_ptr<xkb_keymap, XkbKeymapDeleter> keymap)
-: m_keymap{std::move(keymap)}, m_state{CreateXkbStateFromKeymap(m_keymap.get())}
+std::unique_ptr<xkb_compose_state, CXkbcommonKeymap::XkbComposeStateDeleter> CXkbcommonKeymap::
+    CreateXkbComposedStateStateFromTable(xkb_compose_table* composeTable)
+{
+  std::unique_ptr<xkb_compose_state, XkbComposeStateDeleter> state{
+      xkb_compose_state_new(composeTable, XKB_COMPOSE_STATE_NO_FLAGS), XkbComposeStateDeleter()};
+
+  if (!state)
+  {
+    throw std::runtime_error("Failed to create keyboard composer");
+  }
+
+  return state;
+}
+
+CXkbcommonKeymap::CXkbcommonKeymap(std::unique_ptr<xkb_keymap, XkbKeymapDeleter> keymap,
+                                   std::unique_ptr<xkb_compose_table, XkbComposeTableDeleter> table)
+  : m_keymap{std::move(keymap)},
+    m_state{CreateXkbStateFromKeymap(m_keymap.get())},
+    m_composeState{CreateXkbComposedStateStateFromTable(table.get())}
 {
   // Lookup modifier indices and create new map - this is more efficient
   // than looking the modifiers up by name each time
@@ -256,9 +285,19 @@ void CXkbcommonKeymap::XkbStateDeleter::operator()(xkb_state* state) const
   xkb_state_unref(state);
 }
 
+void CXkbcommonKeymap::XkbComposeStateDeleter::operator()(xkb_compose_state* state) const
+{
+  xkb_compose_state_unref(state);
+}
+
 void CXkbcommonKeymap::XkbKeymapDeleter::operator()(xkb_keymap* keymap) const
 {
   xkb_keymap_unref(keymap);
+}
+
+void CXkbcommonKeymap::XkbComposeTableDeleter::operator()(xkb_compose_table* table) const
+{
+  xkb_compose_table_unref(table);
 }
 
 xkb_keysym_t CXkbcommonKeymap::KeysymForKeycode(xkb_keycode_t code) const
@@ -322,9 +361,51 @@ XBMCKey CXkbcommonKeymap::XBMCKeyForKeycode(xkb_keycode_t code) const
   return XBMCKeyForKeysym(KeysymForKeycode(code));
 }
 
+KeyComposerState CXkbcommonKeymap::KeyComposerFeed(xkb_keycode_t code)
+{
+  KeyComposerState composerState{KeyComposerState::IDLE};
+  const uint32_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
+  xkb_compose_state_feed(m_composeState.get(), keysym);
+  const xkb_compose_status composeStatus = xkb_compose_state_get_status(m_composeState.get());
+  // started composing a key
+  if (composeStatus == XKB_COMPOSE_COMPOSING)
+  {
+    composerState = KeyComposerState::COMPOSING;
+  }
+  // managed to compose a key from the buffer/key sequence
+  else if (composeStatus == XKB_COMPOSE_COMPOSED)
+  {
+    composerState = KeyComposerState::FINISHED;
+  }
+  // cancelled key composition, composer state should be reset
+  else if (composeStatus == XKB_COMPOSE_CANCELLED)
+  {
+    composerState = KeyComposerState::CANCELLED;
+  }
+  return composerState;
+}
+
+void CXkbcommonKeymap::KeyComposerFlush()
+{
+  xkb_compose_state_reset(m_composeState.get());
+}
+
 std::uint32_t CXkbcommonKeymap::UnicodeCodepointForKeycode(xkb_keycode_t code) const
 {
-  return xkb_state_key_get_utf32(m_state.get(), code);
+  uint32_t unicode;
+
+  const xkb_compose_status composerStatus = xkb_compose_state_get_status(m_composeState.get());
+  if (composerStatus == XKB_COMPOSE_COMPOSED)
+  {
+    const uint32_t keysym = xkb_compose_state_get_one_sym(m_composeState.get());
+    unicode = xkb_keysym_to_utf32(keysym);
+  }
+  else
+  {
+    unicode = xkb_state_key_get_utf32(m_state.get(), code);
+  }
+
+  return unicode;
 }
 
 bool CXkbcommonKeymap::ShouldKeycodeRepeat(xkb_keycode_t code) const

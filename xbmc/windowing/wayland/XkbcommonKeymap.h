@@ -14,6 +14,7 @@
 #include <memory>
 #include <vector>
 
+#include <xkbcommon/xkbcommon-compose.h>
 #include <xkbcommon/xkbcommon.h>
 #ifdef TARGET_WEBOS
 #include <xkbcommon/xkbcommon-webos-keysyms.h>
@@ -41,6 +42,22 @@ namespace WAYLAND
  *
  * Instances can be easily created from keymap strings with \ref CXkbcommonContext
  */
+
+/**
+ * Abstracts the key composer key state
+ */
+enum class KeyComposerState
+{
+  /*! Key composer is idle */
+  IDLE,
+  /*! Key composer is busy composing a key */
+  COMPOSING,
+  /*! Key composer finished composing a key, it has a valid key in the buffer */
+  FINISHED,
+  /*! Key composer was cancelled */
+  CANCELLED
+};
+
 class CXkbcommonKeymap
 {
 public:
@@ -48,11 +65,17 @@ public:
   {
     void operator()(xkb_keymap* keymap) const;
   };
+  struct XkbComposeTableDeleter
+  {
+    void operator()(xkb_compose_table* composeTable) const;
+  };
 
   /**
    * Construct for known xkb_keymap
    */
-  explicit CXkbcommonKeymap(std::unique_ptr<xkb_keymap, XkbKeymapDeleter> keymap);
+  explicit CXkbcommonKeymap(
+      std::unique_ptr<xkb_keymap, XkbKeymapDeleter> keymap,
+      std::unique_ptr<xkb_compose_table, XkbComposeTableDeleter> composeTable);
 
   /**
    * Get xkb keysym for keycode - only a single keysym is supported
@@ -90,6 +113,16 @@ public:
    * Check whether a given keycode should have key repeat
    */
   bool ShouldKeycodeRepeat(xkb_keycode_t code) const;
+  /**
+   * Feed a given keycode to the key composer
+   * \param code - the keycode
+   * \return the state of the operation
+   */
+  KeyComposerState KeyComposerFeed(xkb_keycode_t code);
+  /**
+   * Reset the composer state
+   */
+  void KeyComposerFlush();
 
   static XBMCKey XBMCKeyForKeysym(xkb_keysym_t sym);
 
@@ -98,10 +131,17 @@ private:
   {
     void operator()(xkb_state* state) const;
   };
+  struct XkbComposeStateDeleter
+  {
+    void operator()(xkb_compose_state* state) const;
+  };
   static std::unique_ptr<xkb_state, XkbStateDeleter> CreateXkbStateFromKeymap(xkb_keymap* keymap);
+  static std::unique_ptr<xkb_compose_state, XkbComposeStateDeleter>
+  CreateXkbComposedStateStateFromTable(xkb_compose_table* composeTable);
 
   std::unique_ptr<xkb_keymap, XkbKeymapDeleter> m_keymap;
   std::unique_ptr<xkb_state, XkbStateDeleter> m_state;
+  std::unique_ptr<xkb_compose_state, XkbComposeStateDeleter> m_composeState;
 
   struct ModifierMapping
   {
@@ -126,7 +166,8 @@ public:
    * This function does not own the file descriptor. It must not be closed
    * from this function.
    */
-  std::unique_ptr<CXkbcommonKeymap> KeymapFromString(std::string const& keymap);
+  std::unique_ptr<CXkbcommonKeymap> LocalizedKeymapFromString(const std::string& keymap,
+                                                              const std::string& locale);
 
 private:
   struct XkbContextDeleter
