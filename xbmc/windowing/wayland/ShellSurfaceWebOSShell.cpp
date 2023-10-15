@@ -61,6 +61,7 @@ CShellSurfaceWebOSShell::CShellSurfaceWebOSShell(IShellSurfaceHandler& handler,
       case webos_shell_surface_state::minimized:
         CLog::Log(LOGDEBUG, "CShellSurfaceWebOSShell: State changed to minimized");
         m_surfaceState.reset();
+        m_handler.OnConfigure(0, m_windowSize, m_surfaceState);
         break;
       case webos_shell_surface_state::_default:
         CLog::Log(LOGDEBUG, "CShellSurfaceWebOSShell: State changed to default (windowed)");
