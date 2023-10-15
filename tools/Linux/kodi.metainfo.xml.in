@@ -78,6 +78,7 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2023-10-17" version="21.0~b1-Omega" type="development"><url>https://kodi.tv/article/kodi-omega-beta-1/</url></release>
         <release date="2023-09-07" version="21.0~a3-Omega" type="development"><url>https://kodi.tv/article/kodi-omega-alpha-3/</url></release>
         <release date="2023-06-17" version="21.0~a2-Omega" type="development"><url>https://kodi.tv/article/kodi-omega-alpha-2/</url></release>
         <release date="2023-04-16" version="21.0~a1-Omega" type="development"><url>https://kodi.tv/article/kodi-omega-alpha-1/</url></release>
