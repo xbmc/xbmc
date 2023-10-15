@@ -116,14 +116,23 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
     const KeyComposerStatus feedResult = m_keymap->KeyComposerFeed(xkbCode);
     if (feedResult.state == KeyComposerState::COMPOSING)
     {
+      // let the outside world (e.g. GUI controls) know we're composing a key
+      NotifyKeyComposingEvent(XBMC_KEYCOMPOSING_COMPOSING, feedResult.keysym);
       return;
     }
     else if (feedResult.state == KeyComposerState::FINISHED)
     {
       flushComposer = true;
+      // let the outside world (e.g. GUI Controls) know we're back to normal input
+      NotifyKeyComposingEvent(XBMC_KEYCOMPOSING_FINISHED, XBMCK_UNKNOWN);
     }
     else if (feedResult.state == KeyComposerState::CANCELLED)
     {
+      // composed sequence was cancelled, we're back to normal input
+      // let the outside world know what key lead to the cancellation (replay sequence)
+      const std::uint32_t unicodeCodePointCancellationKey{
+          m_keymap->UnicodeCodepointForKeycode(xkbCode)};
+      NotifyKeyComposingEvent(XBMC_KEYCOMPOSING_CANCELLED, unicodeCodePointCancellationKey);
       m_keymap->KeyComposerFlush();
       return;
     }
@@ -202,5 +211,14 @@ void CInputProcessorKeyboard::KeyRepeatTimeout()
   event.type = XBMC_KEYUP;
   m_handler.OnKeyboardEvent(event);
   event.type = XBMC_KEYDOWN;
+  m_handler.OnKeyboardEvent(event);
+}
+
+void CInputProcessorKeyboard::NotifyKeyComposingEvent(uint8_t eventType,
+                                                      std::uint16_t unicodeCodepoint)
+{
+  XBMC_Event event{};
+  event.type = eventType;
+  event.key.keysym.unicode = unicodeCodepoint;
   m_handler.OnKeyboardEvent(event);
 }
