@@ -58,6 +58,17 @@ enum class KeyComposerState
   CANCELLED
 };
 
+/**
+ * Container for the key composer status
+ */
+struct KeyComposerStatus
+{
+  /*! Key composer state */
+  KeyComposerState state{KeyComposerState::IDLE};
+  /*! The unicode key symbol that was pressed */
+  std::uint32_t keysym{0};
+};
+
 class CXkbcommonKeymap
 {
 public:
@@ -116,9 +127,9 @@ public:
   /**
    * Feed a given keycode to the key composer
    * \param code - the keycode
-   * \return the state of the operation
+   * \return the status of the operation (both the state and the equivalent unicode dead key char resulting from the dead key press)
    */
-  KeyComposerState KeyComposerFeed(xkb_keycode_t code);
+  KeyComposerStatus KeyComposerFeed(xkb_keycode_t code);
   /**
    * Reset the composer state
    */

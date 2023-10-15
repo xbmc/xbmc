@@ -13,8 +13,10 @@
 
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <stdexcept>
+#include <unordered_map>
 #include <vector>
 
 using namespace KODI::WINDOWING::WAYLAND;
@@ -196,6 +198,62 @@ static const std::map<xkb_keycode_t, XBMCKey> XkbKeycodeXBMCMappings = {
     {XKB_KEY_WEBOS_INVALID, XBMCK_UNKNOWN},
 #endif
 };
+
+static const std::unordered_map<xkb_keycode_t, XBMCKey> XkbDeadKeyXBMCMapping = {
+    {XKB_KEY_dead_grave, XBMCK_GRAVE},
+    {XKB_KEY_dead_tilde, XBMCK_TILDE},
+    {XKB_KEY_dead_acute, XBMCK_ACUTE},
+    {XKB_KEY_dead_circumflex, XBMCK_CIRCUMFLEX},
+    {XKB_KEY_dead_perispomeni, XBMCK_PERISPOMENI},
+    {XKB_KEY_dead_macron, XBMCK_MACRON},
+    {XKB_KEY_dead_breve, XBMCK_BREVE},
+    {XKB_KEY_dead_abovedot, XBMCK_ABOVEDOT},
+    {XKB_KEY_dead_diaeresis, XBMCK_DIAERESIS},
+    {XKB_KEY_dead_abovering, XBMCK_ABOVERING},
+    {XKB_KEY_dead_doubleacute, XBMCK_DOUBLEACUTE},
+    {XKB_KEY_dead_caron, XBMCK_CARON},
+    {XKB_KEY_dead_cedilla, XBMCK_CEDILLA},
+    {XKB_KEY_dead_ogonek, XBMCK_OGONEK},
+    {XKB_KEY_dead_iota, XBMCK_IOTA},
+    {XKB_KEY_dead_voiced_sound, XBMCK_VOICESOUND},
+    {XKB_KEY_dead_semivoiced_sound, XBMCK_SEMIVOICESOUND},
+    {XKB_KEY_dead_belowdot, XBMCK_BELOWDOT},
+    {XKB_KEY_dead_hook, XBMCK_HOOK},
+    {XKB_KEY_dead_horn, XBMCK_HORN},
+    {XKB_KEY_dead_stroke, XBMCK_STROKE},
+    {XKB_KEY_dead_abovecomma, XBMCK_ABOVECOMMA},
+    {XKB_KEY_dead_psili, XBMCK_ABOVECOMMA},
+    {XKB_KEY_dead_abovereversedcomma, XBMCK_ABOVEREVERSEDCOMMA},
+    {XKB_KEY_dead_dasia, XBMCK_OGONEK},
+    {XKB_KEY_dead_doublegrave, XBMCK_DOUBLEGRAVE},
+    {XKB_KEY_dead_belowring, XBMCK_BELOWRING},
+    {XKB_KEY_dead_belowmacron, XBMCK_BELOWMACRON},
+    {XKB_KEY_dead_belowcircumflex, XBMCK_BELOWCIRCUMFLEX},
+    {XKB_KEY_dead_belowtilde, XBMCK_BELOWTILDE},
+    {XKB_KEY_dead_belowbreve, XBMCK_BELOWBREVE},
+    {XKB_KEY_dead_belowdiaeresis, XBMCK_BELOWDIAERESIS},
+    {XKB_KEY_dead_invertedbreve, XBMCK_INVERTEDBREVE},
+    {XKB_KEY_dead_belowcomma, XBMCK_BELOWCOMMA},
+    {XKB_KEY_dead_a, XBMCK_DEAD_A},
+    {XKB_KEY_dead_A, XBMCK_DEAD_A},
+    {XKB_KEY_dead_e, XBMCK_DEAD_E},
+    {XKB_KEY_dead_E, XBMCK_DEAD_E},
+    {XKB_KEY_dead_i, XBMCK_DEAD_I},
+    {XKB_KEY_dead_I, XBMCK_DEAD_I},
+    {XKB_KEY_dead_o, XBMCK_DEAD_O},
+    {XKB_KEY_dead_O, XBMCK_DEAD_O},
+    {XKB_KEY_dead_u, XBMCK_DEAD_U},
+    {XKB_KEY_dead_U, XBMCK_DEAD_U},
+    {XKB_KEY_dead_small_schwa, XBMCK_SCHWA},
+    {XKB_KEY_dead_capital_schwa, XBMCK_SCHWA},
+};
+
+std::optional<XBMCKey> TranslateDeadKey(uint32_t keySym)
+{
+  auto mapping = XkbDeadKeyXBMCMapping.find(keySym);
+  return mapping != XkbDeadKeyXBMCMapping.end() ? std::optional<XBMCKey>(mapping->second)
+                                                : std::nullopt;
+}
 }
 
 CXkbcommonContext::CXkbcommonContext(xkb_context_flags flags)
@@ -361,28 +419,34 @@ XBMCKey CXkbcommonKeymap::XBMCKeyForKeycode(xkb_keycode_t code) const
   return XBMCKeyForKeysym(KeysymForKeycode(code));
 }
 
-KeyComposerState CXkbcommonKeymap::KeyComposerFeed(xkb_keycode_t code)
+KeyComposerStatus CXkbcommonKeymap::KeyComposerFeed(xkb_keycode_t code)
 {
-  KeyComposerState composerState{KeyComposerState::IDLE};
+  KeyComposerStatus composerStatus;
   const uint32_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
+  // store the pressed deadkey unicode value
+  const std::optional<XBMCKey> xbmcKey = TranslateDeadKey(keysym);
+  if (xbmcKey)
+  {
+    composerStatus.keysym = xbmcKey.value();
+  }
   xkb_compose_state_feed(m_composeState.get(), keysym);
   const xkb_compose_status composeStatus = xkb_compose_state_get_status(m_composeState.get());
   // started composing a key
   if (composeStatus == XKB_COMPOSE_COMPOSING)
   {
-    composerState = KeyComposerState::COMPOSING;
+    composerStatus.state = KeyComposerState::COMPOSING;
   }
   // managed to compose a key from the buffer/key sequence
   else if (composeStatus == XKB_COMPOSE_COMPOSED)
   {
-    composerState = KeyComposerState::FINISHED;
+    composerStatus.state = KeyComposerState::FINISHED;
   }
   // cancelled key composition, composer state should be reset
   else if (composeStatus == XKB_COMPOSE_CANCELLED)
   {
-    composerState = KeyComposerState::CANCELLED;
+    composerStatus.state = KeyComposerState::CANCELLED;
   }
-  return composerState;
+  return composerStatus;
 }
 
 void CXkbcommonKeymap::KeyComposerFlush()
@@ -403,6 +467,17 @@ std::uint32_t CXkbcommonKeymap::UnicodeCodepointForKeycode(xkb_keycode_t code) c
   else
   {
     unicode = xkb_state_key_get_utf32(m_state.get(), code);
+  }
+
+  // check if it is a dead key and try to translate
+  if (unicode == XBMCK_UNKNOWN)
+  {
+    const uint32_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
+    const std::optional<XBMCKey> xbmcKey = TranslateDeadKey(keysym);
+    if (xbmcKey)
+    {
+      unicode = xbmcKey.value();
+    }
   }
 
   return unicode;
