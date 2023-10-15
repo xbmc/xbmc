@@ -447,6 +447,13 @@ constexpr const int ACTION_CYCLE_TONEMAP_METHOD = 261; //!< Switch to next tonem
 //! Show debug info for video (source format, metadata, shaders, render flags and output format)
 constexpr const int ACTION_PLAYER_DEBUG_VIDEO = 262;
 
+//! Keyboard is composing a key (sequence started by a dead key press)
+constexpr const int ACTION_KEYBOARD_COMPOSING_KEY = 263;
+//! Keyboard has canceled the key composition
+constexpr const int ACTION_KEYBOARD_COMPOSING_KEY_CANCELLED = 264;
+//! Keyboard has finishing the key composition
+constexpr const int ACTION_KEYBOARD_COMPOSING_KEY_FINISHED = 265;
+
 // Voice actions
 constexpr const int ACTION_VOICE_RECOGNIZE = 300;
 
