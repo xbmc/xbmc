@@ -8,6 +8,7 @@
 
 #include "InputProcessorKeyboard.h"
 
+#include "LangInfo.h"
 #include "utils/log.h"
 
 #include <cassert>
@@ -48,7 +49,7 @@ void CInputProcessorKeyboard::OnKeyboardKeymap(CSeat* seat, wayland::keyboard_ke
       m_xkbContext = std::make_unique<CXkbcommonContext>();
     }
 
-    m_keymap = m_xkbContext->KeymapFromString(keymap);
+    m_keymap = m_xkbContext->LocalizedKeymapFromString(keymap, g_langInfo.GetSystemLocale().name());
   }
   catch(std::exception const& e)
   {
@@ -106,10 +107,29 @@ void CInputProcessorKeyboard::OnKeyboardRepeatInfo(CSeat* seat, std::int32_t rat
 
 void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pressed)
 {
-  std::uint32_t xkbCode{scancode + WL_KEYBOARD_XKB_CODE_OFFSET};
-  XBMCKey xbmcKey{m_keymap->XBMCKeyForKeycode(xkbCode)};
-  std::uint32_t utf32{m_keymap->UnicodeCodepointForKeycode(xkbCode)};
+  const std::uint32_t xkbCode{scancode + WL_KEYBOARD_XKB_CODE_OFFSET};
 
+  bool flushComposer{false};
+  if (pressed)
+  {
+    // feed it first to the key composer if from a press
+    const KeyComposerState feedResult = m_keymap->KeyComposerFeed(xkbCode);
+    if (feedResult == KeyComposerState::COMPOSING)
+    {
+      return;
+    }
+    else if (feedResult == KeyComposerState::FINISHED)
+    {
+      flushComposer = true;
+    }
+    else if (feedResult == KeyComposerState::CANCELLED)
+    {
+      m_keymap->KeyComposerFlush();
+      return;
+    }
+  }
+
+  std::uint32_t utf32{m_keymap->UnicodeCodepointForKeycode(xkbCode)};
   if (utf32 > std::numeric_limits<std::uint16_t>::max())
   {
     // Kodi event system only supports UTF16, so ignore the codepoint if
@@ -123,6 +143,13 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
     scancode = 0;
   }
 
+  // flush composer if set (after a finished sequence)
+  if (flushComposer)
+  {
+    m_keymap->KeyComposerFlush();
+  }
+
+  const XBMCKey xbmcKey{m_keymap->XBMCKeyForKeycode(xkbCode)};
   if (xbmcKey == XBMCKey::XBMCK_UNKNOWN && utf32 == 0)
   {
     // Such an event would carry no useful information in it and thus can be safely dropped here
