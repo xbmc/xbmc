@@ -224,26 +224,6 @@ std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::KeymapFromString(std::strin
   return std::make_unique<CXkbcommonKeymap>(std::move(xkbKeymap));
 }
 
-std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::KeymapFromNames(const std::string& rules, const std::string& model, const std::string& layout, const std::string& variant, const std::string& options)
-{
-  xkb_rule_names names = {
-    rules.c_str(),
-    model.c_str(),
-    layout.c_str(),
-    variant.c_str(),
-    options.c_str()
-  };
-
-  std::unique_ptr<xkb_keymap, CXkbcommonKeymap::XkbKeymapDeleter> keymap{xkb_keymap_new_from_names(m_context.get(), &names, XKB_KEYMAP_COMPILE_NO_FLAGS), CXkbcommonKeymap::XkbKeymapDeleter()};
-
-  if (!keymap)
-  {
-    throw std::runtime_error("Failed to compile keymap");
-  }
-
-  return std::make_unique<CXkbcommonKeymap>(std::move(keymap));
-}
-
 std::unique_ptr<xkb_state, CXkbcommonKeymap::XkbStateDeleter> CXkbcommonKeymap::CreateXkbStateFromKeymap(xkb_keymap* keymap)
 {
   std::unique_ptr<xkb_state, XkbStateDeleter> state{xkb_state_new(keymap), XkbStateDeleter()};
