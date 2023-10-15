@@ -30,7 +30,7 @@ std::unique_ptr<CTexture> VIDEO::CVideoChapterImageFileLoader::Load(
   // "goofy" chapter path because these paths don't yet conform to 'image://' path standard
 
   // 10 = length of "chapter://" string prefix from GUIDialogVideoBookmarks
-  size_t lastSlashPos = goofyChapterPath.rfind("/");
+  size_t lastSlashPos = goofyChapterPath.rfind('/');
   std::string cleanname = goofyChapterPath.substr(10, lastSlashPos - 10);
 
   int chapterNum = 0;
