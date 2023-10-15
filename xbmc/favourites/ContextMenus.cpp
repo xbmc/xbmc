@@ -83,7 +83,7 @@ namespace
 {
 std::shared_ptr<CFileItem> ResolveFavouriteItem(const CFileItem& item)
 {
-  const std::shared_ptr<CFileItem> targetItem{
+  std::shared_ptr<CFileItem> targetItem{
       CServiceBroker::GetFavouritesService().ResolveFavourite(item)};
   if (targetItem)
     targetItem->SetProperty("hide_add_remove_favourite", CVariant{true});
