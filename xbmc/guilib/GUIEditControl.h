@@ -109,7 +109,9 @@ protected:
   CRect m_clipRect; ///< clipping rect for the second label
 
   unsigned int m_cursorPos;
+  bool m_cursorBlinkEnabled{true};
   unsigned int m_cursorBlink;
+  std::uint32_t m_cursorChar{'|'};
 
   std::string m_inputHeading;
   INPUT_TYPE m_inputType;
