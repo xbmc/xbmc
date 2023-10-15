@@ -1629,6 +1629,16 @@ void CFileItem::FillInMimeType(bool lookup /*= true*/)
   }
 }
 
+void CFileItem::UpdateMimeType(bool lookup /*= true*/)
+{
+  //! @todo application/octet-stream might actually have been set by a web lookup. Currently we
+  //! cannot distinguish between set as fallback only (see FillInMimeType) or as an actual value.
+  if (m_mimetype == "application/octet-stream")
+    m_mimetype.clear();
+
+  FillInMimeType(lookup);
+}
+
 void CFileItem::SetMimeTypeForInternetFile()
 {
   if (m_doContentLookup && IsInternetStream())
@@ -1768,6 +1778,7 @@ void CFileItem::UpdateInfo(const CFileItem &item, bool replaceLabels /*=true*/)
   if (!item.GetArt().empty())
     SetArt(item.GetArt());
   AppendProperties(item);
+  UpdateMimeType();
 }
 
 void CFileItem::MergeInfo(const CFileItem& item)
@@ -1836,6 +1847,7 @@ void CFileItem::MergeInfo(const CFileItem& item)
       SetArt(item.GetArt());
   }
   AppendProperties(item);
+  UpdateMimeType();
 }
 
 void CFileItem::SetFromVideoInfoTag(const CVideoInfoTag &video)
@@ -3781,10 +3793,9 @@ bool CFileItem::LoadDetails()
 
     if (ret)
     {
-      m_videoInfoTag = tag.release();
-      m_strDynPath = m_videoInfoTag->m_strFileNameAndPath;
+      const CFileItem loadedItem{*tag};
+      UpdateInfo(loadedItem);
     }
-
     return ret;
   }
 
@@ -3816,8 +3827,8 @@ bool CFileItem::LoadDetails()
     auto tag{std::make_unique<CVideoInfoTag>()};
     if (db.LoadVideoInfo(GetDynPath(), *tag))
     {
-      m_videoInfoTag = tag.release();
-      m_strDynPath = m_videoInfoTag->m_strFileNameAndPath;
+      const CFileItem loadedItem{*tag};
+      UpdateInfo(loadedItem);
       return true;
     }
 
