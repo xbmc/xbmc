@@ -606,9 +606,12 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   }
 
   // show the cursor
-  uint32_t ch = L'|' | style;
-  if ((++m_cursorBlink % 64) > 32)
-    ch |= (3 << 16);
+  uint32_t ch = m_cursorChar | style;
+  if (m_cursorBlinkEnabled)
+  {
+    if ((++m_cursorBlink % 64) > 32)
+      ch |= (3 << 16);
+  }
   styled.insert(styled.begin() + m_cursorPos, ch);
 
   return m_label2.SetStyledText(styled, colors);
