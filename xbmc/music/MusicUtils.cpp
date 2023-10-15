@@ -860,7 +860,7 @@ bool IsNonExistingUserPartyModePlaylist(const CFileItem& item)
   if (!item.IsSmartPlayList())
     return false;
 
-  const std::string path{item.GetPath()};
+  const std::string& path{item.GetPath()};
   const auto profileManager{CServiceBroker::GetSettingsComponent()->GetProfileManager()};
   return ((profileManager->GetUserDataItem("PartyMode.xsp") == path) && !CFileUtils::Exists(path));
 }

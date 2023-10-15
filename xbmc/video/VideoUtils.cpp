@@ -527,7 +527,7 @@ bool IsNonExistingUserPartyModePlaylist(const CFileItem& item)
   if (!item.IsSmartPlayList())
     return false;
 
-  const std::string path{item.GetPath()};
+  const std::string& path{item.GetPath()};
   const auto profileManager{CServiceBroker::GetSettingsComponent()->GetProfileManager()};
   return ((profileManager->GetUserDataItem("PartyMode-Video.xsp") == path) &&
           !CFileUtils::Exists(path));
@@ -820,7 +820,7 @@ ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned 
 
   if (item.IsStack())
   {
-    const std::string path = item.GetDynPath();
+    const std::string& path = item.GetDynPath();
     if (URIUtils::IsDiscImageStack(path))
     {
       // disc image stack
