@@ -719,7 +719,8 @@ void CTCPServer::CWebSocketClient::PushBuffer(CTCPServer *host, const char *buff
       if (send)
       {
         for (unsigned int index = 0; index < frames.size(); index++)
-          Send(frames.at(index)->GetFrameData(), (unsigned int)frames.at(index)->GetFrameLength());
+          CTCPClient::Send(frames.at(index)->GetFrameData(),
+                           static_cast<unsigned int>(frames.at(index)->GetFrameLength()));
       }
       else
       {
