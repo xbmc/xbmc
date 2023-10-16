@@ -222,6 +222,18 @@ bool CGUIEditControl::OnAction(const CAction &action)
         return CGUIButtonControl::OnAction(action);
       }
     }
+    else if (action.GetID() == ACTION_KEYBOARD_COMPOSING_KEY)
+    {
+      ComposingCursorAppendChar(action.GetUnicode());
+    }
+    else if (action.GetID() == ACTION_KEYBOARD_COMPOSING_KEY_CANCELLED)
+    {
+      CancelKeyComposition(action.GetUnicode());
+    }
+    else if (action.GetID() == ACTION_KEYBOARD_COMPOSING_KEY_FINISHED)
+    {
+      ResetCursor();
+    }
     else if (action.GetID() == KEY_UNICODE)
     {
       // input from the keyboard
@@ -606,14 +618,18 @@ bool CGUIEditControl::SetStyledText(const std::wstring &text)
   }
 
   // show the cursor
-  uint32_t ch = m_cursorChar | style;
-  if (m_cursorBlinkEnabled)
+  unsigned int posChar = m_cursorPos;
+  for (const uint32_t& cursorChar : m_cursorChars)
   {
-    if ((++m_cursorBlink % 64) > 32)
-      ch |= (3 << 16);
+    uint32_t ch = cursorChar | style;
+    if (m_cursorBlinkEnabled)
+    {
+      if ((++m_cursorBlink % 64) > 32)
+        ch |= (3 << 16);
+    }
+    styled.insert(styled.begin() + posChar, ch);
+    posChar++;
   }
-  styled.insert(styled.begin() + m_cursorPos, ch);
-
   return m_label2.SetStyledText(styled, colors);
 }
 
@@ -781,4 +797,63 @@ std::string CGUIEditControl::GetDescriptionByIndex(int index) const
     return GetLabel2();
 
   return "";
+}
+
+void CGUIEditControl::ComposingCursorAppendChar(std::uint32_t deadUnicodeKey)
+{
+  std::uint32_t ch;
+  if (m_inputType == INPUT_TYPE_PASSWORD || m_inputType == INPUT_TYPE_PASSWORD_MD5 ||
+      m_inputType == INPUT_TYPE_PASSWORD_NUMBER_VERIFY_NEW)
+  {
+    ch = '*';
+  }
+  else
+  {
+    ch = deadUnicodeKey;
+  }
+
+  if (IsComposingKey())
+  {
+    m_cursorChars.emplace_back(ch);
+    m_cursorCharsBuffer.emplace_back(deadUnicodeKey);
+  }
+  else
+  {
+    m_cursorChars = {ch};
+    m_cursorCharsBuffer.emplace_back(deadUnicodeKey);
+  }
+  m_cursorBlinkEnabled = false;
+}
+
+void CGUIEditControl::CancelKeyComposition(std::uint32_t deadUnicodeKey)
+{
+  // sequence cancelled and reverted...
+  if (deadUnicodeKey == XBMCK_BACKSPACE)
+  {
+    ResetCursor();
+  }
+  // sequence cancelled and replay...
+  else
+  {
+    ClearMD5();
+    m_edit.clear();
+    for (const uint32_t& cursorChar : m_cursorCharsBuffer)
+    {
+      m_text2.insert(m_text2.begin() + m_cursorPos++, cursorChar);
+    }
+    UpdateText();
+    ResetCursor();
+  }
+}
+
+void CGUIEditControl::ResetCursor()
+{
+  m_cursorChars = {'|'};
+  m_cursorCharsBuffer.clear();
+  m_cursorBlinkEnabled = true;
+}
+
+bool CGUIEditControl::IsComposingKey() const
+{
+  return !m_cursorBlinkEnabled;
 }
