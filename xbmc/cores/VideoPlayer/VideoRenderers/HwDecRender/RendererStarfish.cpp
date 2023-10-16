@@ -83,7 +83,27 @@ bool CRendererStarfish::Register()
 
 void CRendererStarfish::ManageRenderArea()
 {
+  // this hack is needed to get the 2D mode of a 3D movie going
+  RENDER_STEREO_MODE stereoMode = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode();
+  if (stereoMode == RENDER_STEREO_MODE_MONO)
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RENDER_STEREO_VIEW_LEFT);
+
   CBaseRenderer::ManageRenderArea();
+
+  if (stereoMode == RENDER_STEREO_MODE_MONO)
+    CServiceBroker::GetWinSystem()->GetGfxContext().SetStereoView(RENDER_STEREO_VIEW_OFF);
+
+  switch (stereoMode)
+  {
+    case RENDER_STEREO_MODE_SPLIT_HORIZONTAL:
+      m_destRect.y2 *= 2.0f;
+      break;
+    case RENDER_STEREO_MODE_SPLIT_VERTICAL:
+      m_destRect.x2 *= 2.0f;
+      break;
+    default:
+      break;
+  }
 
   if ((m_exportedDestRect != m_destRect || m_exportedSourceRect != m_sourceRect) &&
       !m_sourceRect.IsEmpty() && !m_destRect.IsEmpty())
@@ -160,8 +180,6 @@ void CRendererStarfish::Update()
   {
     return;
   }
-
-  ManageRenderArea();
 }
 
 void CRendererStarfish::RenderUpdate(
@@ -171,4 +189,6 @@ void CRendererStarfish::RenderUpdate(
   {
     return;
   }
+
+  ManageRenderArea();
 }
