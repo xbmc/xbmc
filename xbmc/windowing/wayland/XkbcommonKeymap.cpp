@@ -9,6 +9,7 @@
 #include "XkbcommonKeymap.h"
 
 #include "Util.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <iostream>
@@ -23,7 +24,32 @@ using namespace KODI::WINDOWING::WAYLAND;
 
 namespace
 {
-
+static void xkbLogger(xkb_context* context,
+                      xkb_log_level priority,
+                      const char* format,
+                      va_list args)
+{
+  const std::string message = StringUtils::FormatV(format, args);
+  auto logLevel = LOGDEBUG;
+  switch (priority)
+  {
+    case XKB_LOG_LEVEL_INFO:
+      logLevel = LOGINFO;
+      break;
+    case XKB_LOG_LEVEL_ERROR:
+      logLevel = LOGERROR;
+      break;
+    case XKB_LOG_LEVEL_WARNING:
+      logLevel = LOGWARNING;
+      break;
+    case XKB_LOG_LEVEL_DEBUG:
+      logLevel = LOGDEBUG;
+      break;
+    default:
+      break;
+  };
+  CLog::LogF(logLevel, "{}", message);
+}
 struct ModifierNameXBMCMapping
 {
   const char* name;
@@ -263,6 +289,10 @@ CXkbcommonContext::CXkbcommonContext(xkb_context_flags flags)
   {
     throw std::runtime_error("Failed to create xkb context");
   }
+
+  // install logger
+  xkb_context_set_log_level(m_context.get(), XKB_LOG_LEVEL_DEBUG);
+  xkb_context_set_log_fn(m_context.get(), &xkbLogger);
 }
 
 void CXkbcommonContext::XkbContextDeleter::operator()(xkb_context* ctx) const
@@ -273,6 +303,7 @@ void CXkbcommonContext::XkbContextDeleter::operator()(xkb_context* ctx) const
 std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::LocalizedKeymapFromString(
     const std::string& keymap, const std::string& locale)
 {
+
   std::unique_ptr<xkb_keymap, CXkbcommonKeymap::XkbKeymapDeleter> xkbKeymap{xkb_keymap_new_from_string(m_context.get(), keymap.c_str(), XKB_KEYMAP_FORMAT_TEXT_V1, XKB_KEYMAP_COMPILE_NO_FLAGS), CXkbcommonKeymap::XkbKeymapDeleter()};
 
   if (!xkbKeymap)
