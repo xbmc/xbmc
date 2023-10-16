@@ -125,6 +125,11 @@ public:
    */
   bool ShouldKeycodeRepeat(xkb_keycode_t code) const;
   /**
+   * Check if the system supports key composition
+   * \return true if composition is supported, false otherwise
+   */
+  bool SupportsKeyComposition() const;
+  /**
    * Feed a given keycode to the key composer
    * \param code - the keycode
    * \return the status of the operation (both the state and the equivalent unicode dead key char resulting from the dead key press)

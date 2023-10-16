@@ -110,7 +110,7 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
   const std::uint32_t xkbCode{scancode + WL_KEYBOARD_XKB_CODE_OFFSET};
 
   bool flushComposer{false};
-  if (pressed)
+  if (pressed && m_keymap->SupportsKeyComposition())
   {
     // feed it first to the key composer if from a press
     const KeyComposerStatus feedResult = m_keymap->KeyComposerFeed(xkbCode);

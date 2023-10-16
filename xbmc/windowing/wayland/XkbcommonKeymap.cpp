@@ -318,7 +318,8 @@ std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::LocalizedKeymapFromString(
 
   if (!xkbComposeTable)
   {
-    throw std::runtime_error("Failed to compile localized compose table");
+    CLog::LogF(LOGWARNING,
+               "Failed to compile localized compose table, composed key support will be disabled");
   }
   return std::unique_ptr<CXkbcommonKeymap>{
       new CXkbcommonKeymap(std::move(xkbKeymap), std::move(xkbComposeTable))};
@@ -353,10 +354,13 @@ std::unique_ptr<xkb_compose_state, CXkbcommonKeymap::XkbComposeStateDeleter> CXk
 
 CXkbcommonKeymap::CXkbcommonKeymap(std::unique_ptr<xkb_keymap, XkbKeymapDeleter> keymap,
                                    std::unique_ptr<xkb_compose_table, XkbComposeTableDeleter> table)
-  : m_keymap{std::move(keymap)},
-    m_state{CreateXkbStateFromKeymap(m_keymap.get())},
-    m_composeState{CreateXkbComposedStateStateFromTable(table.get())}
+  : m_keymap{std::move(keymap)}, m_state{CreateXkbStateFromKeymap(m_keymap.get())}
 {
+  if (table)
+  {
+    m_composeState = CreateXkbComposedStateStateFromTable(table.get());
+  }
+
   // Lookup modifier indices and create new map - this is more efficient
   // than looking the modifiers up by name each time
   for (auto const& nameMapping : ModifierNameXBMCMappings)
@@ -450,6 +454,11 @@ XBMCKey CXkbcommonKeymap::XBMCKeyForKeycode(xkb_keycode_t code) const
   return XBMCKeyForKeysym(KeysymForKeycode(code));
 }
 
+bool CXkbcommonKeymap::SupportsKeyComposition() const
+{
+  return m_composeState != nullptr;
+}
+
 KeyComposerStatus CXkbcommonKeymap::KeyComposerFeed(xkb_keycode_t code)
 {
   KeyComposerStatus composerStatus;
@@ -489,11 +498,18 @@ std::uint32_t CXkbcommonKeymap::UnicodeCodepointForKeycode(xkb_keycode_t code) c
 {
   uint32_t unicode;
 
-  const xkb_compose_status composerStatus = xkb_compose_state_get_status(m_composeState.get());
-  if (composerStatus == XKB_COMPOSE_COMPOSED)
+  if (SupportsKeyComposition())
   {
-    const uint32_t keysym = xkb_compose_state_get_one_sym(m_composeState.get());
-    unicode = xkb_keysym_to_utf32(keysym);
+    const xkb_compose_status composerStatus = xkb_compose_state_get_status(m_composeState.get());
+    if (composerStatus == XKB_COMPOSE_COMPOSED)
+    {
+      const uint32_t keysym = xkb_compose_state_get_one_sym(m_composeState.get());
+      unicode = xkb_keysym_to_utf32(keysym);
+    }
+    else
+    {
+      unicode = xkb_state_key_get_utf32(m_state.get(), code);
+    }
   }
   else
   {
