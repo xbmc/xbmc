@@ -87,15 +87,13 @@ bool MoveItem(CFileItemList& items, const std::shared_ptr<CFileItem>& item, int 
   int nextItem = (itemPos + amount) % items.Size();
   if (nextItem < 0)
   {
-    const auto& itemToAdd(item);
-    items.Remove(itemPos);
-    items.Add(itemToAdd);
+    items.Add(item);
+    items.Remove(0);
   }
   else if (nextItem == 0)
   {
-    const auto& itemToAdd(item);
-    items.Remove(itemPos);
-    items.AddFront(itemToAdd, 0);
+    items.AddFront(item, 0);
+    items.Remove(itemPos + 1);
   }
   else
   {
