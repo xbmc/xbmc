@@ -6,15 +6,19 @@ set(HEADERS ConvolutionKernels.h
 
 if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
   list(APPEND SOURCES ConversionMatrix.cpp
+                      ToneMappers.cpp
                       WinVideoFilter.cpp)
   list(APPEND HEADERS ConversionMatrix.h
+                      ToneMappers.h
                       WinVideoFilter.h)
 endif()
 
 
 if(TARGET OpenGL::GL OR TARGET OpenGL::GLES)
-  list(APPEND SOURCES ConversionMatrix.cpp)
-  list(APPEND HEADERS ConversionMatrix.h)
+  list(APPEND SOURCES ConversionMatrix.cpp
+                      ToneMappers.cpp)
+  list(APPEND HEADERS ConversionMatrix.h
+                      ToneMappers.h)
 endif()
 
 if(TARGET OpenGL::GL)

@@ -54,7 +54,6 @@ public:
                           bool hasLightMetadata,
                           AVContentLightMetadata lightMetadata);
   void SetToneMapParam(ETONEMAPMETHOD method, float param);
-  float GetLuminanceValue() const;
 
   void SetConvertFullColorRange(bool convertFullRange) { m_convertFullRange = convertFullRange; }
 
