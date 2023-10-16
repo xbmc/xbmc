@@ -10,6 +10,7 @@
 #include "YUV2RGBShaderGLES.h"
 
 #include "../RenderFlags.h"
+#include "ToneMappers.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/GLUtils.h"
 #include "utils/log.h"
@@ -158,13 +159,16 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
     }
     else if (m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
     {
-      glUniform1f(m_hLuminance, GetLuminanceValue());
+      const float lumin = CToneMappers::GetLuminanceValue(m_hasDisplayMetadata, m_displayMetadata,
+                                                          m_hasLightMetadata, m_lightMetadata);
+      glUniform1f(m_hLuminance, lumin);
       glUniform1f(m_hToneP1, m_toneMappingParam);
     }
     else if (m_toneMappingMethod == VS_TONEMAPMETHOD_HABLE)
     {
-      float lumin = GetLuminanceValue();
-      float param = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
+      const float lumin = CToneMappers::GetLuminanceValue(m_hasDisplayMetadata, m_displayMetadata,
+                                                          m_hasLightMetadata, m_lightMetadata);
+      const float param = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
       glUniform1f(m_hLuminance, lumin);
       glUniform1f(m_hToneP1, param);
     }
@@ -209,38 +213,6 @@ void BaseYUV2RGBGLSLShader::SetDisplayMetadata(bool hasDisplayMetadata,
   m_displayMetadata = displayMetadata;
   m_hasLightMetadata = hasLightMetadata;
   m_lightMetadata = lightMetadata;
-}
-
-float BaseYUV2RGBGLSLShader::GetLuminanceValue() const
-{
-  float lum1 = 400.0f; // default for bad quality HDR-PQ sources (with no metadata)
-  float lum2 = lum1;
-  float lum3 = lum1;
-
-  if (m_hasLightMetadata)
-  {
-    uint16_t lum = m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den;
-    if (m_lightMetadata.MaxCLL >= lum)
-    {
-      lum1 = static_cast<float>(lum);
-      lum2 = static_cast<float>(m_lightMetadata.MaxCLL);
-    }
-    else
-    {
-      lum1 = static_cast<float>(m_lightMetadata.MaxCLL);
-      lum2 = static_cast<float>(lum);
-    }
-    lum3 = static_cast<float>(m_lightMetadata.MaxFALL);
-    lum1 = (lum1 * 0.5f) + (lum2 * 0.2f) + (lum3 * 0.3f);
-  }
-  else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance &&
-           m_displayMetadata.max_luminance.num > 0)
-  {
-    uint16_t lum = m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den;
-    lum1 = static_cast<float>(lum);
-  }
-
-  return lum1;
 }
 
 //////////////////////////////////////////////////////////////////////

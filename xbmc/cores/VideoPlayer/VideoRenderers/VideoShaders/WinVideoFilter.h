@@ -91,7 +91,6 @@ private:
   void PrepareParameters(unsigned sourceWidth, unsigned sourceHeight, CRect sourceRect, const CPoint points[4]);
   void SetShaderParameters(CD3DTexture &sourceTexture, unsigned range, float contrast, float brightness);
   void CreateDitherView();
-  float GetLuminanceValue() const;
 
   bool m_useLut = false;
   bool m_useDithering = false;
