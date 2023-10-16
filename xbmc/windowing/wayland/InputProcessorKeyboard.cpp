@@ -134,7 +134,12 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
           m_keymap->UnicodeCodepointForKeycode(xkbCode)};
       NotifyKeyComposingEvent(XBMC_KEYCOMPOSING_CANCELLED, unicodeCodePointCancellationKey);
       m_keymap->KeyComposerFlush();
-      return;
+      // do not allow key fallthrough if we are simply cancelling with a backspace (we are cancelling the
+      // composition behavior not really removing any character)
+      if (unicodeCodePointCancellationKey == XBMCK_BACKSPACE)
+      {
+        return;
+      }
     }
   }
 
