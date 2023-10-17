@@ -62,7 +62,7 @@ if(NOT TARGET PulseAudio::PulseAudio)
     set_target_properties(PulseAudio::PulseAudio PROPERTIES
                                                  IMPORTED_LOCATION "${PULSEAUDIO_LIBRARY}"
                                                  INTERFACE_INCLUDE_DIRECTORIES "${PULSEAUDIO_INCLUDE_DIR}"
-                                                 INTERFACE_COMPILE_DEFINITIONS HAVE_LIBPULSE=1
+                                                 INTERFACE_COMPILE_DEFINITIONS HAS_PULSEAUDIO=1
                                                  INTERFACE_LINK_LIBRARIES "PulseAudio::PulseAudioMainloop;PulseAudio::PulseAudioSimple")
 
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP PulseAudio::PulseAudio)
