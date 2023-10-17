@@ -564,11 +564,6 @@
       <teletext>Back</teletext>
     </remote>
   </Teletext>
-  <Favourites>
-    <remote>
-      <back>Close</back>
-    </remote>
-  </Favourites>
   <FullscreenLiveTV>
     <remote>
       <left>StepBack</left>

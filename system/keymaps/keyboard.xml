@@ -672,15 +672,6 @@
       <blue>Blue</blue>
     </keyboard>
   </Teletext>
-  <Favourites>
-    <keyboard>
-      <backspace>Close</backspace>
-      <browser_back>Close</browser_back>
-      <u>MoveItemUp</u>
-      <d>MoveItemDown</d>
-      <backspace mod="longpress">ActivateWindow(Home)</backspace>
-    </keyboard>
-  </Favourites>
   <FavouritesBrowser>
     <keyboard>
       <u>MoveItemUp</u>
