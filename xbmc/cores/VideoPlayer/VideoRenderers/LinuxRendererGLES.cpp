@@ -114,7 +114,7 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   m_sourceHeight = picture.iHeight;
   m_renderOrientation = orientation;
 
-  m_srcPrimaries = GetSrcPrimaries(picture.color_primaries, picture.iWidth, picture.iHeight);
+  m_srcPrimaries = picture.color_primaries;
   m_toneMap = false;
 
   // Calculate the input frame aspect ratio.
@@ -840,10 +840,9 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   CPictureBuffer &buf = m_buffers[index];
   CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
 
-  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
-  if (srcPrim != m_srcPrimaries)
+  if (buf.m_srcPrimaries != m_srcPrimaries)
   {
-    m_srcPrimaries = srcPrim;
+    m_srcPrimaries = buf.m_srcPrimaries;
     m_reloadShaders = true;
   }
 
@@ -975,10 +974,9 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   CPictureBuffer &buf = m_buffers[index];
   CYuvPlane (&planes)[YuvImage::MAX_PLANES] = m_buffers[index].fields[field];
 
-  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
-  if (srcPrim != m_srcPrimaries)
+  if (buf.m_srcPrimaries != m_srcPrimaries)
   {
-    m_srcPrimaries = srcPrim;
+    m_srcPrimaries = buf.m_srcPrimaries;
     m_reloadShaders = true;
   }
 
@@ -1755,24 +1753,6 @@ CRenderInfo CLinuxRendererGLES::GetRenderInfo()
 bool CLinuxRendererGLES::IsGuiLayer()
 {
   return true;
-}
-
-AVColorPrimaries CLinuxRendererGLES::GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height)
-{
-  AVColorPrimaries ret = srcPrimaries;
-  if (ret == AVCOL_PRI_UNSPECIFIED)
-  {
-    if (width > 1024 || height >= 600)
-    {
-      ret = AVCOL_PRI_BT709;
-    }
-    else
-    {
-      ret = AVCOL_PRI_BT470BG;
-    }
-  }
-
-  return ret;
 }
 
 CRenderCapture* CLinuxRendererGLES::GetRenderCapture()
