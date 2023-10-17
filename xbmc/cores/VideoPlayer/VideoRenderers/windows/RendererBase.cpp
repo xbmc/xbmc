@@ -28,6 +28,7 @@ void CRenderBuffer::AppendPicture(const VideoPicture& picture)
   videoBuffer->Acquire();
 
   pictureFlags = picture.iFlags;
+  m_originalPrimaries = picture.m_originalColorPrimaries;
   primaries = picture.color_primaries;
   color_space = picture.color_space;
   color_transfer = picture.color_transfer;
@@ -674,11 +675,14 @@ DEBUG_INFO_VIDEO CRendererBase::GetDebugInfo(int idx)
 
   const char* px = av_get_pix_fmt_name(rb->pixelFormat);
   const char* pr = av_color_primaries_name(rb->primaries);
+  const char* opr = av_color_primaries_name(rb->m_originalPrimaries);
   const char* tr = av_color_transfer_name(rb->color_transfer);
 
   const std::string pixel = px ? px : "unknown";
-  const std::string prim = pr ? pr : "unknown";
+  const std::string oprim = opr ? opr : "unknown";
   const std::string trans = tr ? tr : "unknown";
+  const std::string prim =
+      (rb->primaries != rb->m_originalPrimaries) ? (oprim + ">" + (pr ? pr : "unknown")) : oprim;
 
   const int max = static_cast<int>(std::exp2(rb->bits));
   const int range_min = rb->full_range ? 0 : (max * 16) / 256;
