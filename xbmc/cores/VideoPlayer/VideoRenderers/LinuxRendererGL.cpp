@@ -214,7 +214,7 @@ bool CLinuxRendererGL::Configure(const VideoPicture &picture, float fps, unsigne
   m_iFlags = GetFlagsChromaPosition(picture.chroma_position) |
              GetFlagsStereoMode(picture.stereoMode);
 
-  m_srcPrimaries = GetSrcPrimaries(picture.color_primaries, picture.iWidth, picture.iHeight);
+  m_srcPrimaries = picture.color_primaries;
   m_toneMap = false;
 
   // Calculate the input frame aspect ratio.
@@ -2717,10 +2717,9 @@ void CLinuxRendererGL::CheckVideoParameters(int index)
   const CPictureBuffer& buf = m_buffers[index];
   ETONEMAPMETHOD method = m_videoSettings.m_ToneMapMethod;
 
-  AVColorPrimaries srcPrim = GetSrcPrimaries(buf.m_srcPrimaries, buf.image.width, buf.image.height);
-  if (srcPrim != m_srcPrimaries)
+  if (buf.m_srcPrimaries != m_srcPrimaries)
   {
-    m_srcPrimaries = srcPrim;
+    m_srcPrimaries = buf.m_srcPrimaries;
     m_reloadShaders = true;
   }
 
@@ -2739,19 +2738,6 @@ void CLinuxRendererGL::CheckVideoParameters(int index)
   }
   m_toneMap = toneMap;
   m_toneMapMethod = method;
-}
-
-AVColorPrimaries CLinuxRendererGL::GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned int width, unsigned int height)
-{
-  AVColorPrimaries ret = srcPrimaries;
-  if (ret == AVCOL_PRI_UNSPECIFIED)
-  {
-    if (width > 1024 || height >= 600)
-      ret = AVCOL_PRI_BT709;
-    else
-      ret = AVCOL_PRI_BT470BG;
-  }
-  return ret;
 }
 
 CRenderCapture* CLinuxRendererGL::GetRenderCapture()

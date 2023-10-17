@@ -53,7 +53,8 @@ public:
   AVColorSpace color_space;
   unsigned int color_range        : 1;  //< 1 indicate if we have a full range of color
   AVChromaLocation chroma_position;
-  AVColorPrimaries color_primaries;
+  AVColorPrimaries color_primaries; // heuristics applied when original is AVCOL_PRI_UNSPECIFIED
+  AVColorPrimaries m_originalColorPrimaries;
   AVColorTransferCharacteristic color_transfer;
   unsigned int colorBits = 8;
   std::string stereoMode;

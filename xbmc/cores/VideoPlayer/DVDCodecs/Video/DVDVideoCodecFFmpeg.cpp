@@ -1025,6 +1025,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
 
   pVideoPicture->chroma_position = m_pCodecContext->chroma_sample_location;
   pVideoPicture->color_primaries = m_pCodecContext->color_primaries == AVCOL_PRI_UNSPECIFIED ? m_hints.colorPrimaries : m_pCodecContext->color_primaries;
+  pVideoPicture->m_originalColorPrimaries = pVideoPicture->color_primaries;
   pVideoPicture->color_transfer = m_pCodecContext->color_trc == AVCOL_TRC_UNSPECIFIED ? m_hints.colorTransferCharacteristic : m_pCodecContext->color_trc;
   pVideoPicture->color_space = m_pCodecContext->colorspace == AVCOL_SPC_UNSPECIFIED ? m_hints.colorSpace : m_pCodecContext->colorspace;
   pVideoPicture->colorBits = 8;
@@ -1147,6 +1148,14 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(VideoPicture* pVideoPicture)
 
   m_requestSkipDeint = false;
   pVideoPicture->iFlags |= m_codecControlFlags;
+
+  if (pVideoPicture->color_primaries == AVCOL_PRI_UNSPECIFIED)
+  {
+    if (pVideoPicture->iDisplayWidth > 1024 || pVideoPicture->iDisplayHeight >= 600)
+      pVideoPicture->color_primaries = AVCOL_PRI_BT709;
+    else
+      pVideoPicture->color_primaries = AVCOL_PRI_BT470BG;
+  }
 
   return true;
 }
