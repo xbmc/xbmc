@@ -59,7 +59,6 @@ endif
 ifeq ($(OS),darwin_embedded)
   EXCLUDED_DEPENDS = libcec libusb gtest
   ifeq ($(TARGET_PLATFORM),appletvos)
-    DEPENDS += boblight
     EXCLUDED_DEPENDS += libshairplay libplist
   endif
   DEPENDS += darwin-embedded-entitlements
