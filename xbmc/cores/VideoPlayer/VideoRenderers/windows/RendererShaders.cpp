@@ -98,6 +98,7 @@ bool CRendererShaders::Configure(const VideoPicture& picture, float fps, unsigne
       if (!IsHWPicSupported(picture))
         m_format = GetAVFormat(dxgi_format);
     }
+    m_srcPrimaries = picture.color_primaries;
 
     CreateIntermediateTarget(m_sourceWidth, m_sourceHeight, false, CalcIntermediateTargetFormat());
     return true;
@@ -136,11 +137,10 @@ void CRendererShaders::CheckVideoParameters()
   __super::CheckVideoParameters();
 
   CRenderBuffer* buf = m_renderBuffers[m_iBufferIndex];
-  const AVColorPrimaries srcPrim = GetSrcPrimaries(buf->primaries, buf->GetWidth(), buf->GetHeight());
-  if (srcPrim != m_srcPrimaries)
+  if (buf->primaries != m_srcPrimaries)
   {
     // source params is changed, reset shader
-    m_srcPrimaries = srcPrim;
+    m_srcPrimaries = buf->primaries;
     m_colorShader.reset();
   }
 }
@@ -187,19 +187,6 @@ bool CRendererShaders::IsHWPicSupported(const VideoPicture& picture)
     return SUCCEEDED(pDevice->CreateTexture2D(&texDesc, nullptr, nullptr));
   }
   return false;
-}
-
-AVColorPrimaries CRendererShaders::GetSrcPrimaries(AVColorPrimaries srcPrimaries, unsigned width, unsigned height)
-{
-  AVColorPrimaries ret = srcPrimaries;
-  if (ret == AVCOL_PRI_UNSPECIFIED)
-  {
-    if (width > 1024 || height >= 600)
-      ret = AVCOL_PRI_BT709;
-    else
-      ret = AVCOL_PRI_BT470BG;
-  }
-  return ret;
 }
 
 DXGI_FORMAT CRendererShaders::CalcIntermediateTargetFormat() const
