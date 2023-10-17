@@ -76,6 +76,7 @@ public:
   AVPixelFormat av_format;
   CVideoBuffer* videoBuffer = nullptr;
   unsigned int pictureFlags = 0;
+  AVColorPrimaries m_originalPrimaries = AVCOL_PRI_BT709;
   AVColorPrimaries primaries = AVCOL_PRI_BT709;
   AVColorSpace color_space = AVCOL_SPC_BT709;
   AVColorTransferCharacteristic color_transfer = AVCOL_TRC_BT709;
