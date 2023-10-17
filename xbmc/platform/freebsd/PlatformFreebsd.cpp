@@ -8,6 +8,8 @@
 
 #include "PlatformFreebsd.h"
 
+#include "ServiceBroker.h"
+#include "application/AppParams.h"
 #include "utils/StringUtils.h"
 
 #include "platform/freebsd/OptionalsReg.h"
@@ -79,27 +81,25 @@ bool CPlatformFreebsd::InitStageOne()
 
   CLinuxPowerSyscall::Register();
 
-  std::string envSink;
-  if (getenv("KODI_AE_SINK"))
-    envSink = getenv("KODI_AE_SINK");
+  std::string_view sink = CServiceBroker::GetAppParams()->GetAudioBackend();
 
-  if (StringUtils::EqualsNoCase(envSink, "ALSA"))
+  if (sink == "alsa")
   {
     OPTIONALS::ALSARegister();
   }
-  else if (StringUtils::EqualsNoCase(envSink, "PULSE"))
+  else if (sink == "pulseaudio")
   {
     OPTIONALS::PulseAudioRegister();
   }
-  else if (StringUtils::EqualsNoCase(envSink, "OSS"))
+  else if (sink == "oss")
   {
     OPTIONALS::OSSRegister();
   }
-  else if (StringUtils::EqualsNoCase(envSink, "SNDIO"))
+  else if (sink == "sndio")
   {
     OPTIONALS::SndioRegister();
   }
-  else if (StringUtils::EqualsNoCase(envSink, "ALSA+PULSE"))
+  else if (sink == "alsa+pulseaudio")
   {
     OPTIONALS::ALSARegister();
     OPTIONALS::PulseAudioRegister();
