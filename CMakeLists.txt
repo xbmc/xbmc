@@ -131,6 +131,7 @@ endif()
 core_find_git_rev(APP_SCMID FULL)
 
 set(AUDIO_BACKENDS_LIST "" CACHE STRING "Available audio backends")
+set(GL_INTERFACES_LIST "" CACHE STRING "Available GL interfaces")
 
 # Dynamically loaded libraries built with the project
 add_custom_target(${APP_NAME_LC}-libraries)
@@ -289,6 +290,7 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
                                             -DCORE_PLATFORM_NAME_LC="${CORE_PLATFORM_NAME_LC}"
                                             -DAUDIO_BACKENDS="${AUDIO_BACKENDS_LIST}"
+                                            -DGL_INTERFACES="${GL_INTERFACES_LIST}"
                                             -DCORE_BUILD_DIR=${CORE_BUILD_DIR}
                                             -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}
                                             -DARCH_DEFINES="${ARCH_DEFINES}"
