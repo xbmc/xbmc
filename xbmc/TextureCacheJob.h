@@ -31,6 +31,7 @@ public:
     id = -1;
     width = height = 0;
     updateable = false;
+    hashRevalidated = false;
   };
   bool operator==(const CTextureDetails &right) const
   {
@@ -44,6 +45,7 @@ public:
   unsigned int width;
   unsigned int height;
   bool         updateable;
+  bool hashRevalidated;
 };
 
 /*!
