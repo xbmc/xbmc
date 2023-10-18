@@ -118,7 +118,10 @@ bool CTextureCacheJob::CacheTexture(std::unique_ptr<CTexture>* out_texture)
       return false;
 
     if (m_details.hash == m_oldHash)
+    {
+      m_details.hashRevalidated = true;
       return true;
+    }
   }
 
   std::unique_ptr<CTexture> texture = LoadImage(image, width, height, additional_info, true);
