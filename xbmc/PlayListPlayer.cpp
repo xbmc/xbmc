@@ -958,7 +958,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
           {
             return;
           }
-          if (item->IsAudio() || item->IsVideo())
+          if (!item->IsPVR() && (item->IsAudio() || item->IsVideo()))
             Play(item, pMsg->strParam);
           else
             g_application.PlayMedia(*item, pMsg->strParam, playlistId);
