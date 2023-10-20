@@ -355,10 +355,23 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item, bool bCheckR
         bFullscreen = true;
         break;
     }
-    const std::shared_ptr<CPVRChannelGroupMember> groupMember =
-        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(item);
+
+    std::shared_ptr<CPVRChannelGroupMember> groupMember{
+        CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().GetChannelGroupMember(item)};
     if (!groupMember)
       return false;
+
+    const std::shared_ptr<CPVRChannelGroup> activeChannelGroup{
+        CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(channel->IsRadio())};
+    if (activeChannelGroup && (activeChannelGroup->GroupID() != groupMember->GroupID()))
+    {
+      // If group member's group does not match current active group and channel is part of active
+      // group, let's use the member from the active group.
+      const std::shared_ptr<CPVRChannelGroupMember> activeGroupMember{
+          activeChannelGroup->GetByUniqueID({channel->ClientID(), channel->UniqueID()})};
+      if (activeGroupMember)
+        groupMember = activeGroupMember;
+    }
 
     StartPlayback(new CFileItem(groupMember), bFullscreen);
     return true;
