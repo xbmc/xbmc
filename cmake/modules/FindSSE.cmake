@@ -91,42 +91,6 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Android")
     CHECK_CXX_ACCEPTS_FLAG("-mavx" _AVX_OK)
     CHECK_CXX_ACCEPTS_FLAG("-mavx2" _AVX2_OK)
    endif()
-elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
-   if(NOT CPU MATCHES "arm")
-      exec_program("/usr/sbin/sysctl -n machdep.cpu.features machdep.cpu.leaf7_features" OUTPUT_VARIABLE CPUINFO)
-
-      string(REGEX REPLACE "^.*[^S](SSE).*$" "\\1" _SSE_THERE ${CPUINFO})
-      string(COMPARE EQUAL "SSE" "${_SSE_THERE}" _SSE_TRUE)
-      CHECK_CXX_ACCEPTS_FLAG("-msse" _SSE_OK)
-
-      string(REGEX REPLACE "^.*[^S](SSE2).*$" "\\1" _SSE_THERE ${CPUINFO})
-      string(COMPARE EQUAL "SSE2" "${_SSE_THERE}" _SSE2_TRUE)
-      CHECK_CXX_ACCEPTS_FLAG("-msse2" _SSE2_OK)
-
-      string(REGEX REPLACE "^.*[^S](SSE3).*$" "\\1" _SSE_THERE ${CPUINFO})
-      string(COMPARE EQUAL "SSE3" "${_SSE_THERE}" _SSE3_TRUE)
-      CHECK_CXX_ACCEPTS_FLAG("-msse3" _SSE3_OK)
-
-      string(REGEX REPLACE "^.*(SSSE3).*$" "\\1" _SSE_THERE ${CPUINFO})
-      string(COMPARE EQUAL "SSSE3" "${_SSE_THERE}" _SSSE3_TRUE)
-      CHECK_CXX_ACCEPTS_FLAG("-mssse3" _SSSE3_OK)
-
-      string(REGEX REPLACE "^.*(SSE4.1).*$" "\\1" _SSE_THERE ${CPUINFO})
-      string(COMPARE EQUAL "SSE4.1" "${_SSE_THERE}" _SSE41_TRUE)
-      CHECK_CXX_ACCEPTS_FLAG("-msse4.1" _SSE41_OK)
-
-      string(REGEX REPLACE "^.*(SSE4.2).*$" "\\1" _SSE_THERE ${CPUINFO})
-      string(COMPARE EQUAL "SSE4.2" "${_SSE_THERE}" _SSE42_TRUE)
-      CHECK_CXX_ACCEPTS_FLAG("-msse4.2" _SSE42_OK)
-
-      string(REGEX REPLACE "^.*(AVX).*$" "\\1" _SSE_THERE ${CPUINFO})
-      string(COMPARE EQUAL "AVX" "${_SSE_THERE}" _AVX_TRUE)
-      CHECK_CXX_ACCEPTS_FLAG("-mavx" _AVX_OK)
-
-      string(REGEX REPLACE "^.*(AVX2).*$" "\\1" _SSE_THERE ${CPUINFO})
-      string(COMPARE EQUAL "AVX2" "${_SSE_THERE}" _AVX2_TRUE)
-      CHECK_CXX_ACCEPTS_FLAG("-mavx2" _AVX2_OK)
-   endif()
 elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
    # TODO
    if(ARCH STREQUAL win32 OR ARCH STREQUAL x64)
