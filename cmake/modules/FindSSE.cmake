@@ -4,7 +4,7 @@ include(TestCXXAcceptsFlag)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
    if(CPU MATCHES "x86_64" OR CPU MATCHES "i.86")
-     exec_program(cat ARGS "/proc/cpuinfo" OUTPUT_VARIABLE CPUINFO)
+     execute_process(COMMAND cat /proc/cpuinfo OUTPUT_VARIABLE CPUINFO)
 
      string(REGEX REPLACE "^.*(sse).*$" "\\1" _SSE_THERE "${CPUINFO}")
      string(COMPARE EQUAL "sse" "${_SSE_THERE}" _SSE_TRUE)
@@ -42,7 +42,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
    endif()
 elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
    if(CPU MATCHES "amd64" OR CPU MATCHES "i.86")
-     exec_program(cat ARGS "/var/run/dmesg.boot | grep Features" OUTPUT_VARIABLE CPUINFO)
+     execute_process(COMMAND grep Features /var/run/dmesg.boot OUTPUT_VARIABLE CPUINFO)
 
      string(REGEX REPLACE "^.*(SSE).*$" "\\1" _SSE_THERE "${CPUINFO}")
      string(COMPARE EQUAL "SSE" "${_SSE_THERE}" _SSE_TRUE)
