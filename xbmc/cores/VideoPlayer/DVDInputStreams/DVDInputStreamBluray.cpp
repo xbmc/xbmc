@@ -332,7 +332,7 @@ bool CDVDInputStreamBluray::Open()
     m_navmode = false;
     m_titleInfo = GetTitleLongest();
   }
-  else if (resumable && m_item.GetStartOffset() == STARTOFFSET_RESUME)
+  else if (resumable && m_item.GetStartOffset() == STARTOFFSET_RESUME && m_item.IsResumable())
   {
     // resuming a bluray for which we have a saved state - the playlist will be open later on SetState
     m_navmode = false;
