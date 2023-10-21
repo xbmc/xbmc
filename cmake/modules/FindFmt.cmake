@@ -36,8 +36,6 @@ if(NOT TARGET fmt::fmt)
   endmacro()
 
   set(MODULE_LC fmt)
-  # Default state
-  set(FORCE_BUILD OFF)
 
   SETUP_BUILD_VARS()
 
@@ -46,12 +44,9 @@ if(NOT TARGET fmt::fmt)
                    HINTS ${DEPENDS_PATH}/lib/cmake
                    ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG})
 
-
   if((FMT_VERSION VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_FMT) OR
      ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_FMT))
-
-    # Set FORCE_BUILD to enable fmt::fmt property that build will occur
-    set(FORCE_BUILD ON)
+    # build internal module
     buildFmt()
   else()
     if(NOT TARGET fmt::fmt)
@@ -131,10 +126,9 @@ if(NOT TARGET fmt::fmt)
 
     if(TARGET fmt)
       add_dependencies(fmt::fmt fmt)
-      # If a force build is done, let any calling packages know they may want to rebuild
-      if(FORCE_BUILD)
-        set_target_properties(fmt::fmt PROPERTIES LIB_BUILD ON)
-      endif()
+      # We are building as a requirement, so set LIB_BUILD property to allow calling
+      # modules to know we will be building, and they will want to rebuild as well.
+      set_target_properties(fmt::fmt PROPERTIES LIB_BUILD ON)
     endif()
 
     # Add internal build target when a Multi Config Generator is used
