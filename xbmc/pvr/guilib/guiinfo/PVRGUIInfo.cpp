@@ -1565,6 +1565,19 @@ bool CPVRGUIInfo::GetListItemAndPlayerBool(const CFileItem* item,
         return true;
       }
       break;
+    case LISTITEM_ISPLAYING:
+      if (item->IsPVRChannel())
+      {
+        const std::shared_ptr<CPVRChannel> playingChannel{
+            CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel()};
+        if (playingChannel)
+        {
+          const std::shared_ptr<CPVRChannel> channel{item->GetPVRChannelInfoTag()};
+          bValue = (channel->StorageId() == playingChannel->StorageId());
+          return true;
+        }
+      }
+      break;
     case MUSICPLAYER_CONTENT:
     case VIDEOPLAYER_CONTENT:
       if (item->IsPVRChannel())
