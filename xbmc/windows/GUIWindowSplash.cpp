@@ -28,10 +28,11 @@ void CGUIWindowSplash::OnInitWindow()
   if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_splashImage)
     return;
 
-  m_image = std::make_unique<CGUIImage>(0, 0, 0, 0,
-                                        CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth(),
-                                        CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight(),
-                                        CTextureInfo(CUtil::GetSplashPath()));
+  m_image = std::make_unique<CGUIImage>(
+      0, 0, .0f, .0f,
+      static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetWidth()),
+      static_cast<float>(CServiceBroker::GetWinSystem()->GetGfxContext().GetHeight()),
+      CTextureInfo(CUtil::GetSplashPath()));
   m_image->SetAspectRatio(CAspectRatio::AR_SCALE);
 }
 
