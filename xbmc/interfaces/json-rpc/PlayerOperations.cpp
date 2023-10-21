@@ -47,6 +47,7 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/MathUtils.h"
+#include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDatabase.h"
 
@@ -896,6 +897,12 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
           slideshow->Add(list[index].get());
 
         return StartSlideshow("", false, optionShuffled.isBoolean() && optionShuffled.asBoolean());
+      }
+      else if (list.Size() == 1 && (URIUtils::IsPVRChannel(list[0]->GetPath()) ||
+                                    URIUtils::IsPVRRecording(list[0]->GetPath())))
+      {
+        if (!CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayMedia(*list[0]))
+          return FailedToExecute;
       }
       else
       {
