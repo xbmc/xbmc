@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<addon id="skin.estouchy" version="3.0.8" name="Estouchy" provider-name="Team Kodi">
+<addon id="skin.estouchy" version="4.0.0" name="Estouchy" provider-name="Team Kodi">
 	<requires>
-		<import addon="xbmc.gui" version="5.16.0"/>
+		<import addon="xbmc.gui" version="5.17.0"/>
 	</requires>
 	<extension point="xbmc.gui.skin" debugging="false">
 		<res width="1280" height="960" aspect="4:3" folder="xml"/>
