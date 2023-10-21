@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<controls>
+		<control type="panel">
+			<itemlayout width="480" height="270">
+				<control type="cameraview">
+					<topic>$INFO[ListItem.Label]</topic>
+					<stretchmode>zoom</stretchmode>
+				</control>
+				<control type="image">
+					<bottom>-20</bottom>
+					<height>80</height>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="label">
+					<bottom>0</bottom>
+					<height>40</height>
+					<label>$INFO[ListItem.Label]</label>
+					<font>font27</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</itemlayout>
+			<focusedlayout width="480" height="270">
+				<control type="cameraview">
+					<topic>$INFO[ListItem.Label]</topic>
+					<stretchmode>zoom</stretchmode>
+				</control>
+				<control type="image">
+					<bottom>-20</bottom>
+					<height>80</height>
+					<left>-20</left>
+					<right>-20</right>
+					<texture border="40">buttons/dialogbutton-nofo.png</texture>
+				</control>
+				<control type="label">
+					<bottom>0</bottom>
+					<height>40</height>
+					<label>$INFO[ListItem.Label]</label>
+					<font>font27</font>
+					<align>center</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+			</focusedlayout>
+			<content>
+				<!-- First row -->
+				<item>
+					<label>/oasis/kinect2/hd/image_color</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/hd/image_color</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/hd/image_color</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/hd/image_color</label>
+				</item>
+
+				<!-- Second row -->
+				<item>
+					<label>/oasis/kinect2/foreground/abl</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/foreground/asbl</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/foreground/sd</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/foreground/knn</label>
+				</item>
+
+				<!-- Third row -->
+				<item>
+					<label>/oasis/kinect2/background/abl</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/background/asbl</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/background/sd</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/background/knn</label>
+				</item>
+
+				<!-- Fourth row -->
+				<item>
+					<label>/oasis/kinect2/subtracted/abl</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/subtracted/asbl</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/subtracted/sd</label>
+				</item>
+				<item>
+					<label>/oasis/kinect2/subtracted/knn</label>
+				</item>
+			</content>
+		</control>
+	</controls>
+</window>
