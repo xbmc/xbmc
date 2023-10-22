@@ -428,7 +428,7 @@ std::string CPVRGUIActionsChannels::GetSelectedChannelPath(bool bRadio) const
     const std::shared_ptr<CPVRChannelGroupMember> playingChannel =
         mgr.PlaybackState()->GetPlayingChannelGroupMember();
     if (playingChannel && playingChannel->IsRadio() == bRadio)
-      return playingChannel->Path();
+      return GetChannelGroupMember(playingChannel->Channel())->Path();
 
     const std::shared_ptr<CPVREpgInfoTag> playingTag = mgr.PlaybackState()->GetPlayingEpgTag();
     if (playingTag && playingTag->IsRadio() == bRadio)
