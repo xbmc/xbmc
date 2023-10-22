@@ -204,7 +204,9 @@ std::vector<std::string> GetPlayers(const CPlayerCoreFactory& playerCoreFactory,
   std::vector<std::string> players;
   if (item.IsVideoDb())
   {
-    const CFileItem item2{item.GetVideoInfoTag()->m_strFileNameAndPath, false};
+    //! @todo CPlayerCoreFactory and classes called from there do not handle dyn path correctly.
+    CFileItem item2{item};
+    item2.SetPath(item.GetDynPath());
     playerCoreFactory.GetPlayers(item2, players);
   }
   else
