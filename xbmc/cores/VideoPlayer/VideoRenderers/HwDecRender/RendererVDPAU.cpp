@@ -175,8 +175,7 @@ bool CRendererVDPAU::Supports(ESCALINGMETHOD method) const
     float scaleX = fabs(((float)m_sourceWidth - m_destRect.Width())/m_sourceWidth)*100;
     float scaleY = fabs(((float)m_sourceHeight - m_destRect.Height())/m_sourceHeight)*100;
     int minScale = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt("videoplayer.hqscalers");
-    if (scaleX < minScale && scaleY < minScale)
-      return false;
+    return !(scaleX < minScale && scaleY < minScale);
   }
 
   return false;
