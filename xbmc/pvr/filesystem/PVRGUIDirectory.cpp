@@ -458,6 +458,109 @@ bool CPVRGUIDirectory::GetChannelGroupsDirectory(bool bRadio,
   return false;
 }
 
+namespace
+{
+std::shared_ptr<CPVRChannelGroupMember> GetLastWatchedChannelGroupMember(
+    const std::shared_ptr<CPVRChannel>& channel)
+{
+  const int lastGroupId{channel->LastWatchedGroupId()};
+  if (lastGroupId != PVR_GROUP_ID_UNNKOWN)
+  {
+    const std::shared_ptr<CPVRChannelGroup> lastGroup{
+        CServiceBroker::GetPVRManager().ChannelGroups()->GetByIdFromAll(lastGroupId)};
+    if (lastGroup && !lastGroup->IsHidden() && !lastGroup->IsDeleted())
+      return lastGroup->GetByUniqueID(channel->StorageId());
+  }
+  return {};
+}
+
+std::shared_ptr<CPVRChannelGroupMember> GetFirstMatchingGroupMember(
+    const std::shared_ptr<CPVRChannel>& channel)
+{
+  CPVRChannelGroups* groups{
+      CServiceBroker::GetPVRManager().ChannelGroups()->Get(channel->IsRadio())};
+  if (groups)
+  {
+    const std::vector<std::shared_ptr<CPVRChannelGroup>> channelGroups{
+        groups->GetMembers(true /* exclude hidden */)};
+
+    for (const auto& channelGroup : channelGroups)
+    {
+      if (channelGroup->IsDeleted())
+        continue;
+
+      const std::shared_ptr<CPVRChannelGroupMember> groupMember{
+          channelGroup->GetByUniqueID(channel->StorageId())};
+      if (groupMember)
+        return groupMember;
+    }
+  }
+  return {};
+}
+
+std::vector<std::shared_ptr<CPVRChannelGroupMember>> GetChannelGroupMembers(
+    const CPVRChannelsPath& path)
+{
+  const std::string& groupName{path.GetGroupName()};
+
+  std::shared_ptr<CPVRChannelGroup> group;
+  if (path.IsHiddenChannelGroup()) // hidden channels from the 'all channels' group
+  {
+    group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(path.IsRadio());
+  }
+  else if (groupName == "*") // all channels across all groups
+  {
+    group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(path.IsRadio());
+    if (group)
+    {
+      std::vector<std::shared_ptr<CPVRChannelGroupMember>> result;
+
+      const std::vector<std::shared_ptr<CPVRChannelGroupMember>> allGroupMembers{
+          group->GetMembers(CPVRChannelGroup::Include::ONLY_VISIBLE)};
+      for (const auto& allGroupMember : allGroupMembers)
+      {
+        std::shared_ptr<CPVRChannelGroupMember> member{
+            GetLastWatchedChannelGroupMember(allGroupMember->Channel())};
+        if (member)
+        {
+          result.emplace_back(member);
+          continue; // Process next 'All channels' group member.
+        }
+
+        if (group->IsHidden())
+        {
+          // Very special case. 'All channels' group is hidden. Let's see what we get iterating all
+          // non-hidden / non-deleted groups. We must not return any 'All channels' group members,
+          // because their path is invalid (it contains the group).
+          member = GetFirstMatchingGroupMember(allGroupMember->Channel());
+          if (member)
+            result.emplace_back(member);
+        }
+        else
+        {
+          // Use the 'All channels' group member.
+          result.emplace_back(allGroupMember);
+        }
+      }
+      return result;
+    }
+  }
+  else
+  {
+    group = CServiceBroker::GetPVRManager()
+                .ChannelGroups()
+                ->Get(path.IsRadio())
+                ->GetByName(groupName, path.GetGroupClientID());
+  }
+
+  if (group)
+    return group->GetMembers(CPVRChannelGroup::Include::ALL);
+
+  CLog::LogF(LOGERROR, "Unable to obtain members for channel group '{}'", groupName);
+  return {};
+}
+} // unnamed namespace
+
 bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
 {
   const CPVRChannelsPath path(m_url.GetWithoutOptions());
@@ -487,46 +590,20 @@ bool CPVRGUIDirectory::GetChannelsDirectory(CFileItemList& results) const
     }
     else if (path.IsChannelGroup())
     {
-      const std::string& strGroupName = path.GetGroupName();
-      bool bShowHiddenChannels = path.IsHiddenChannelGroup();
-
-      std::shared_ptr<CPVRChannelGroup> group;
-      if (bShowHiddenChannels || strGroupName == "*") // all channels
+      const bool playedOnly{(m_url.HasOption("view") && (m_url.GetOption("view") == "lastplayed"))};
+      const bool showHiddenChannels{path.IsHiddenChannelGroup()};
+      const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers{
+          GetChannelGroupMembers(path)};
+      for (const auto& groupMember : groupMembers)
       {
-        group = CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(path.IsRadio());
+        if (showHiddenChannels != groupMember->Channel()->IsHidden())
+          continue;
+
+        if (playedOnly && !groupMember->Channel()->LastWatched())
+          continue;
+
+        results.Add(std::make_shared<CFileItem>(groupMember));
       }
-      else
-      {
-        group = CServiceBroker::GetPVRManager()
-                    .ChannelGroups()
-                    ->Get(path.IsRadio())
-                    ->GetByName(strGroupName, path.GetGroupClientID());
-      }
-
-      if (group)
-      {
-        const bool playedOnly =
-            (m_url.HasOption("view") && (m_url.GetOption("view") == "lastplayed"));
-
-        const std::vector<std::shared_ptr<CPVRChannelGroupMember>> groupMembers =
-            group->GetMembers();
-        for (const auto& groupMember : groupMembers)
-        {
-          if (bShowHiddenChannels != groupMember->Channel()->IsHidden())
-            continue;
-
-          if (playedOnly && !groupMember->Channel()->LastWatched())
-            continue;
-
-          results.Add(std::make_shared<CFileItem>(groupMember));
-        }
-      }
-      else
-      {
-        CLog::LogF(LOGERROR, "Unable to obtain members of channel group '{}'", strGroupName);
-        return false;
-      }
-
       return true;
     }
   }
