@@ -3,10 +3,10 @@ DEPS =Makefile ../../download-files.include
 
 # lib name, version
 LIBNAME=wayland-protocols
-VERSION=1.24
+VERSION=1.32
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.xz
-SHA512=4b1122517db56f48a5fafd4bd0cb7f94faef6fdd2d80e6cec17e5a6bafbaf2f5a71b958ed12e6d13965494885c209b2fb6dd8331487b39c6f251e71f1e770a15
+SHA512=90bbd52daf342b98823ddeed04e349ae242d2eaf925ab8d603cceb36c980c83b5681bb890961e0d49584cb5c2e60a33abf8821770c6ab87956383630bd5b7966
 
 ifeq ($(PLATFORM),)
 	# Building stand-alone
