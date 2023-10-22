@@ -155,7 +155,8 @@ void CPVRDatabase::CreateTables()
               "idEpg                integer, "
               "bHasArchive          bool, "
               "iClientProviderUid   integer, "
-              "bIsUserSetHidden     bool"
+              "bIsUserSetHidden     bool, "
+              "iLastWatchedGroupId  integer"
               ")");
 
   CLog::LogFC(LOGDEBUG, LOGPVR, "Creating table 'channelgroups'");
@@ -360,6 +361,12 @@ void CPVRDatabase::UpdateTables(int iVersion)
     // Setup initial local order, not perfect but at least unique across all groups.
     // Should mostly be the order the groups appeared from backend or were created by user locally.
     m_pDS->exec("UPDATE channelgroups SET iPosition = idGroup");
+  }
+
+  if (iVersion < 44)
+  {
+    m_pDS->exec("ALTER TABLE channels ADD iLastWatchedGroupId integer");
+    m_pDS->exec("UPDATE channels SET iLastWatchedGroupId = -1");
   }
 }
 
@@ -584,6 +591,7 @@ int CPVRDatabase::Get(bool bRadio,
         channel->m_bHasArchive = m_pDS->fv("bHasArchive").get_asBool();
         channel->m_iClientProviderUid = m_pDS->fv("iClientProviderUid").get_asInt();
         channel->m_bIsUserSetHidden = m_pDS->fv("bIsUserSetHidden").get_asBool();
+        channel->m_lastWatchedGroupId = m_pDS->fv("iLastWatchedGroupId").get_asInt();
 
         channel->UpdateEncryptionName();
 
@@ -1029,14 +1037,15 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
         "INSERT INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i)",
+        "idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden, iLastWatchedGroupId) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 : 0), (channel.IsHidden() ? 1 : 0),
         (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0),
         (channel.IsLocked() ? 1 : 0), channel.IconPath().c_str(), channel.ChannelName().c_str(), 0,
         (channel.EPGEnabled() ? 1 : 0), channel.EPGScraper().c_str(),
         static_cast<unsigned int>(channel.LastWatched()), channel.ClientID(), channel.EpgID(),
-        channel.HasArchive(), channel.ClientProviderUid(), channel.IsUserSetHidden() ? 1 : 0);
+        channel.HasArchive(), channel.ClientProviderUid(), channel.IsUserSetHidden() ? 1 : 0,
+        channel.LastWatchedGroupId());
   }
   else
   {
@@ -1045,15 +1054,16 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
         "REPLACE INTO channels ("
         "iUniqueId, bIsRadio, bIsHidden, bIsUserSetIcon, bIsUserSetName, bIsLocked, "
         "sIconPath, sChannelName, bIsVirtual, bEPGEnabled, sEPGScraper, iLastWatched, iClientId, "
-        "idChannel, idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden) "
-        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i, %i, %i, %i)",
+        "idChannel, idEpg, bHasArchive, iClientProviderUid, bIsUserSetHidden, iLastWatchedGroupId) "
+        "VALUES (%i, %i, %i, %i, %i, %i, '%s', '%s', %i, %i, '%s', %u, %i, %s, %i, %i, %i, %i, %i)",
         channel.UniqueID(), (channel.IsRadio() ? 1 : 0), (channel.IsHidden() ? 1 : 0),
         (channel.IsUserSetIcon() ? 1 : 0), (channel.IsUserSetName() ? 1 : 0),
         (channel.IsLocked() ? 1 : 0), channel.ClientIconPath().c_str(),
         channel.ChannelName().c_str(), 0, (channel.EPGEnabled() ? 1 : 0),
         channel.EPGScraper().c_str(), static_cast<unsigned int>(channel.LastWatched()),
         channel.ClientID(), strValue.c_str(), channel.EpgID(), channel.HasArchive(),
-        channel.ClientProviderUid(), channel.IsUserSetHidden() ? 1 : 0);
+        channel.ClientProviderUid(), channel.IsUserSetHidden() ? 1 : 0,
+        channel.LastWatchedGroupId());
   }
 
   if (QueueInsertQuery(strQuery))
@@ -1067,12 +1077,12 @@ bool CPVRDatabase::Persist(CPVRChannel& channel, bool bCommit)
   return bReturn;
 }
 
-bool CPVRDatabase::UpdateLastWatched(const CPVRChannel& channel)
+bool CPVRDatabase::UpdateLastWatched(const CPVRChannel& channel, int groupId)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::string strQuery =
-      PrepareSQL("UPDATE channels SET iLastWatched = %u WHERE idChannel = %i",
-                 static_cast<unsigned int>(channel.LastWatched()), channel.ChannelID());
+  const std::string strQuery = PrepareSQL(
+      "UPDATE channels SET iLastWatched = %u, iLastWatchedGroupId = %i WHERE idChannel = %i",
+      static_cast<unsigned int>(channel.LastWatched()), groupId, channel.ChannelID());
   return ExecuteQuery(strQuery);
 }
 
