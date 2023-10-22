@@ -178,7 +178,7 @@ libxml2: $(ZLIB)
 libxslt: libgcrypt libxml2
 libzip: bzip2 gnutls $(ZLIB)
 mariadb: openssl $(ICONV) $(ZLIB)
-mesa: libdrm $(MESA_DEPS)
+mesa: libdrm $(MESA_DEPS) $(ZLIB)
 nettle: gmp
 openssl: $(ZLIB)
 python3: expat gettext libxml2 sqlite3 openssl libffi bzip2 xz $(ICONV)
