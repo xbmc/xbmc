@@ -85,7 +85,7 @@ python3: $(EXPAT) $(LIBFFI) pkg-config zlib openssl autoconf-archive
 swig: pcre
 tar: xz automake
 TexturePacker: cmake libpng liblzo2 giflib libjpeg-turbo
-wayland-scanner: expat pkg-config
+wayland-scanner: expat ninja pkg-config
 waylandpp-scanner: cmake pugixml
 
 # python installs are not thread safe when using easy_install method.
