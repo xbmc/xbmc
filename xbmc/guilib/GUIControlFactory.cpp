@@ -1257,8 +1257,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
         static_cast<CGUIControlGroup*>(control)->SetDefaultControl(defaultControl, defaultAlways);
         static_cast<CGUIControlGroup*>(control)->SetRenderFocusedLast(renderFocusedLast);
       }
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_GROUPLIST:
     {
       CScroller scroller;
@@ -1270,8 +1270,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       static_cast<CGUIControlGroup*>(control)->SetDefaultControl(defaultControl, defaultAlways);
       static_cast<CGUIControlGroup*>(control)->SetRenderFocusedLast(renderFocusedLast);
       static_cast<CGUIControlGroupList*>(control)->SetMinSize(minWidth, minHeight);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_LABEL:
     {
       static const GUIINFO::CGUIInfoLabel empty;
@@ -1289,8 +1290,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
         static_cast<CGUILabelControl*>(control)->SetWidthControl(
             minWidth, (scrollValue == CGUIControl::ALWAYS));
       }
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_EDIT:
     {
       control = new CGUIEditControl(parentID, id, posX, posY, width, height, textureFocus,
@@ -1304,13 +1306,14 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
         static_cast<CGUIEditControl*>(control)->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD,
                                                              0);
       static_cast<CGUIEditControl*>(control)->SetTextChangeActions(textChangeActions);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_VIDEO:
     {
       control = new CGUIVideoControl(parentID, id, posX, posY, width, height);
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_GAME:
     {
       control = new RETRO::CGUIGameControl(parentID, id, posX, posY, width, height);
@@ -1330,8 +1333,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       GUIINFO::CGUIInfoLabel pixels;
       GetInfoLabel(pControlNode, "pixels", pixels, parentID);
       static_cast<RETRO::CGUIGameControl*>(control)->SetPixels(pixels);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_FADELABEL:
     {
       control =
@@ -1344,8 +1348,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       if (scrollValue != CGUIControl::FOCUS)
         static_cast<CGUIFadeLabelControl*>(control)->SetScrolling(scrollValue ==
                                                                   CGUIControl::ALWAYS);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_RSS:
     {
       control = new CGUIRSSControl(parentID, id, posX, posY, width, height, labelInfo, textColor3,
@@ -1353,8 +1358,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       RssUrls::const_iterator iter = CRssManager::GetInstance().GetUrls().find(iUrlSet);
       if (iter != CRssManager::GetInstance().GetUrls().end())
         static_cast<CGUIRSSControl*>(control)->SetUrlSet(iUrlSet);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_BUTTON:
     {
       control = new CGUIButtonControl(parentID, id, posX, posY, width, height, textureFocus,
@@ -1367,8 +1373,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       bcontrol->SetClickActions(clickActions);
       bcontrol->SetFocusActions(focusActions);
       bcontrol->SetUnFocusActions(unfocusActions);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_TOGGLEBUTTON:
     {
       control = new CGUIToggleButtonControl(parentID, id, posX, posY, width, height, textureFocus,
@@ -1384,8 +1391,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       tcontrol->SetFocusActions(focusActions);
       tcontrol->SetUnFocusActions(unfocusActions);
       tcontrol->SetToggleSelect(toggleSelect);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_RADIO:
     {
       control = new CGUIRadioButtonControl(
@@ -1401,8 +1409,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       rcontrol->SetClickActions(clickActions);
       rcontrol->SetFocusActions(focusActions);
       rcontrol->SetUnFocusActions(unfocusActions);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_SPIN:
     {
       control = new CGUISpinControl(parentID, id, posX, posY, width, height, textureUp, textureDown,
@@ -1428,8 +1437,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
         scontrol->SetFloatRange(fMin, fMax);
         scontrol->SetFloatInterval(fInterval);
       }
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_SLIDER:
     {
       control = new CGUISliderControl(
@@ -1438,8 +1448,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
 
       static_cast<CGUISliderControl*>(control)->SetInfo(singleInfo);
       static_cast<CGUISliderControl*>(control)->SetAction(action);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_SETTINGS_SLIDER:
     {
       control = new CGUISettingsSliderControl(
@@ -1449,15 +1460,16 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
 
       static_cast<CGUISettingsSliderControl*>(control)->SetText(strLabel);
       static_cast<CGUISettingsSliderControl*>(control)->SetInfo(singleInfo);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_SCROLLBAR:
     {
       control = new GUIScrollBarControl(parentID, id, posX, posY, width, height, textureBackground,
                                         textureBar, textureBarFocus, textureNib, textureNibFocus,
                                         orientation, showOnePage);
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_PROGRESS:
     {
       control =
@@ -1465,15 +1477,16 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
                                   textureLeft, textureMid, textureRight, textureOverlay, bReveal);
 
       static_cast<CGUIProgressControl*>(control)->SetInfo(singleInfo, singleInfo2);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_RANGES:
     {
       control =
           new CGUIRangesControl(parentID, id, posX, posY, width, height, textureBackground,
                                 textureLeft, textureMid, textureRight, textureOverlay, singleInfo);
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_IMAGE:
     {
       // use a bordered texture if we have <bordersize> or <bordertexture> specified.
@@ -1486,16 +1499,18 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       icontrol->SetInfo(textureFile);
       icontrol->SetAspectRatio(aspect);
       icontrol->SetCrossFade(fadeTime);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_MULTI_IMAGE:
     {
       control = new CGUIMultiImage(parentID, id, posX, posY, width, height, texture, timePerImage,
                                    fadeTime, randomized, loop, timeToPauseAtEnd);
       static_cast<CGUIMultiImage*>(control)->SetInfo(texturePath);
       static_cast<CGUIMultiImage*>(control)->SetAspectRatio(aspect);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTAINER_LIST:
     {
       CScroller scroller;
@@ -1513,8 +1528,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       lcontrol->SetClickActions(clickActions);
       lcontrol->SetFocusActions(focusActions);
       lcontrol->SetUnFocusActions(unfocusActions);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTAINER_WRAPLIST:
     {
       CScroller scroller;
@@ -1532,8 +1548,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       wcontrol->SetClickActions(clickActions);
       wcontrol->SetFocusActions(focusActions);
       wcontrol->SetUnFocusActions(unfocusActions);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTAINER_EPGGRID:
     {
       CGUIEPGGridContainer* epgGridContainer =
@@ -1544,8 +1561,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       epgGridContainer->SetRenderOffset(offset);
       epgGridContainer->SetType(viewType, viewLabel);
       epgGridContainer->SetPageControl(pageControl);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTAINER_FIXEDLIST:
     {
       CScroller scroller;
@@ -1563,8 +1581,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       fcontrol->SetClickActions(clickActions);
       fcontrol->SetFocusActions(focusActions);
       fcontrol->SetUnFocusActions(unfocusActions);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTAINER_PANEL:
     {
       CScroller scroller;
@@ -1582,8 +1601,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       pcontrol->SetClickActions(clickActions);
       pcontrol->SetFocusActions(focusActions);
       pcontrol->SetUnFocusActions(unfocusActions);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_TEXTBOX:
     {
       if (!strMonoFont.empty())
@@ -1601,20 +1621,21 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
         tcontrol->SetInfo(infoLabels[0]);
       tcontrol->SetAutoScrolling(pControlNode);
       tcontrol->SetMinHeight(minHeight);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_MOVER:
     {
       control = new CGUIMoverControl(parentID, id, posX, posY, width, height, textureFocus,
                                      textureNoFocus, movingSpeedCfg);
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_RESIZE:
     {
       control = new CGUIResizeControl(parentID, id, posX, posY, width, height, textureFocus,
                                       textureNoFocus, movingSpeedCfg);
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_SPINEX:
     {
       control = new CGUISpinControlEx(parentID, id, posX, posY, width, height, spinWidth,
@@ -1626,14 +1647,19 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       scontrol->SetSpinPosition(spinPosX);
       scontrol->SetText(strLabel);
       scontrol->SetReverse(bReverse);
+
+      break;
     }
-    break;
     case CGUIControl::GUICONTROL_VISUALISATION:
+    {
       control = new CGUIVisualisationControl(parentID, id, posX, posY, width, height);
       break;
+    }
     case CGUIControl::GUICONTROL_RENDERADDON:
+    {
       control = new CGUIRenderingControl(parentID, id, posX, posY, width, height);
       break;
+    }
     case CGUIControl::GUICONTROL_GAMECONTROLLER:
     {
       control = new GAME::CGUIGameController(parentID, id, posX, posY, width, height, texture);
@@ -1708,8 +1734,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID,
       rcontrol->SetClickActions(clickActions);
       rcontrol->SetFocusActions(focusActions);
       rcontrol->SetUnFocusActions(unfocusActions);
+
+      break;
     }
-    break;
     default:
       break;
   }
