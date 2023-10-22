@@ -1,15 +1,7 @@
-include ../../Makefile.include
+include ../../Makefile.include WAYLANDPP-SCANNER-VERSION ../../download-files.include
 PREFIX=$(NATIVEPREFIX)
 PLATFORM=$(NATIVEPLATFORM)
-DEPS =../../Makefile.include Makefile ../../download-files.include 001-fix-gcc13-build.patch
-
-# lib name, version
-LIBNAME=waylandpp
-VERSION=0.2.8
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=bf1b8a9e69b87547fc65989b9eaff88a442d8b2f01f5446cef960000b093390b1e557536837fbf38bb6d9a4f93e3985ea34c3253f94925b0f571b4606c980832
-include ../../download-files.include
+DEPS =../../Makefile.include Makefile WAYLANDPP-SCANNER-VERSION ../../download-files.include 001-fix-gcc13-build.patch
 
 CMAKE_OPTIONS := -DBUILD_DOCUMENTATION=OFF \
                  -DBUILD_LIBRARIES=OFF \
