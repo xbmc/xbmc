@@ -31,6 +31,8 @@ static constexpr int PVR_GROUP_TYPE_LOCAL = 2;
 static constexpr int PVR_GROUP_CLIENT_ID_UNKNOWN = -2;
 static constexpr int PVR_GROUP_CLIENT_ID_LOCAL = -1;
 
+static constexpr int PVR_GROUP_ID_UNNKOWN{-1};
+
 enum class PVREvent;
 
 class CPVRChannel;
