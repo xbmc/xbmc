@@ -199,19 +199,12 @@ void CGUIGameController::ActivateController(const std::string& controllerId)
 
 void CGUIGameController::ActivateController(const ControllerPtr& controller)
 {
-  if (!controller)
-    return;
+  m_currentController = controller;
 
-  bool updated = false;
-
-  if (!m_currentController || controller->ID() != m_currentController->ID())
-  {
-    m_currentController = controller;
-    updated = true;
-  }
-
-  if (updated)
+  if (m_currentController)
     SetFileName(m_currentController->Layout().ImagePath());
+  else
+    SetFileName("");
 }
 
 std::string CGUIGameController::GetPortAddress()
