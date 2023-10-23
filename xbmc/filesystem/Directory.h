@@ -10,8 +10,11 @@
 
 #include "IDirectory.h"
 
+#include <functional>
 #include <memory>
 #include <string>
+
+class CFileItem;
 
 namespace XFILE
 {
@@ -65,6 +68,14 @@ public:
   static bool GetDirectory(const std::string& strPath
                            , CFileItemList &items
                            , const CHints &hints);
+
+  using DirectoryEnumerationCallback = std::function<void(const std::shared_ptr<CFileItem>& item)>;
+
+  static bool EnumerateDirectory(const std::string& path,
+                                 DirectoryEnumerationCallback callback,
+                                 bool fileOnly = false,
+                                 const std::string& mask = "",
+                                 int flags = DIR_FLAG_DEFAULTS);
 
   static bool Create(const std::string& strPath);
   static bool Exists(const std::string& strPath, bool bUseCache = true);

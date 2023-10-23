@@ -51,6 +51,8 @@ public:
 
   bool IsUpgrading() const { return m_bIsUpgrading; }
 
+  void LocalizationChanged();
+
 private:
   std::atomic<bool> m_bIsUpgrading;
 

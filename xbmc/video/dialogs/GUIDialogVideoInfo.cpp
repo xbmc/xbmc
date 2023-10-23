@@ -10,6 +10,7 @@
 
 #include "ContextMenuManager.h"
 #include "FileItem.h"
+#include "GUIDialogVideoVersion.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -79,6 +80,7 @@ using namespace VIDEO::GUILIB;
 #define CONTROL_BTN_PLAY_TRAILER    11
 #define CONTROL_BTN_GET_FANART      12
 #define CONTROL_BTN_DIRECTOR        13
+#define CONTROL_BTN_VIDEOVERSION 14
 
 #define CONTROL_LIST                50
 
@@ -154,6 +156,10 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       {
         m_bViewReview = !m_bViewReview;
         Update();
+      }
+      else if (iControl == CONTROL_BTN_VIDEOVERSION)
+      {
+        OnVideoVersion();
       }
       else if (iControl == CONTROL_BTN_PLAY)
       {
@@ -732,7 +738,16 @@ private:
     const ContentUtils::PlayMode mode{m_item.GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS};
-    VIDEO_UTILS::PlayItem(std::make_shared<CFileItem>(m_item), "", mode);
+
+    //! @todo get rid of special handling for movie versions
+    if (m_item.GetVideoInfoTag()->m_type == MediaTypeMovie)
+    {
+      CGUIDialogVideoVersion::PlayVideoVersion(std::make_shared<CFileItem>(m_item),
+                                               [mode](const std::shared_ptr<CFileItem>& item)
+                                               { VIDEO_UTILS::PlayItem(item, "", mode); });
+    }
+    else
+      VIDEO_UTILS::PlayItem(std::make_shared<CFileItem>(m_item), "", mode);
   }
 };
 } // unnamed namespace
@@ -1055,6 +1070,19 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 
     // set or change movie set the movie belongs to
     buttons.Add(CONTEXT_BUTTON_SET_MOVIESET, 20465);
+
+    if (!item->GetVideoInfoTag()->m_hasVideoVersions)
+    {
+      // set video version
+      buttons.Add(
+          CONTEXT_BUTTON_CONVERT_VIDEOVERSION,
+          StringUtils::Format(g_localizeStrings.Get(40021), CMediaTypes::GetLocalization(type)));
+    }
+
+    // manage video version
+    buttons.Add(
+        CONTEXT_BUTTON_MANAGE_VIDEOVERSION,
+        StringUtils::Format(g_localizeStrings.Get(40001), CMediaTypes::GetLocalization(type)));
   }
 
   if (type == MediaTypeEpisode &&
@@ -1125,6 +1153,15 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
           result = SetMovieSet(item.get(), selectedSet.get());
         break;
       }
+
+      case CONTEXT_BUTTON_CONVERT_VIDEOVERSION:
+        result = ConvertVideoVersion(item);
+        break;
+
+      case CONTEXT_BUTTON_MANAGE_VIDEOVERSION:
+        ManageVideoVersion(item);
+        result = true;
+        break;
 
       case CONTEXT_BUTTON_UNLINK_BOOKMARK:
         database.DeleteBookMarkForEpisode(*item->GetVideoInfoTag());
@@ -1250,10 +1287,8 @@ bool CGUIDialogVideoInfo::CanDeleteVideoItem(const std::shared_ptr<CFileItem>& i
   CQueryParams params;
   CVideoDatabaseDirectory::GetQueryParams(item->GetPath(), params);
 
-  return params.GetMovieId()   != -1 ||
-         params.GetEpisodeId() != -1 ||
-         params.GetMVideoId()  != -1 ||
-         params.GetSetId()     != -1 ||
+  return params.GetMovieId() != -1 || params.GetEpisodeId() != -1 || params.GetMVideoId() != -1 ||
+         params.GetSetId() != -1 || params.GetVideoVersionId() != -1 ||
          (params.GetTvShowId() != -1 && params.GetSeason() <= -1 &&
           !CVideoDatabaseDirectory::IsAllItem(item->GetPath()));
 }
@@ -2055,4 +2090,19 @@ void CGUIDialogVideoInfo::ShowFor(const CFileItem& item)
   auto window = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowVideoNav>(WINDOW_VIDEO_NAV);
   if (window)
     window->OnItemInfo(item);
+}
+
+void CGUIDialogVideoInfo::OnVideoVersion()
+{
+  CGUIDialogVideoVersion::ManageVideoVersion(m_movieItem);
+}
+
+bool CGUIDialogVideoInfo::ConvertVideoVersion(const std::shared_ptr<CFileItem>& item)
+{
+  return CGUIDialogVideoVersion::ConvertVideoVersion(item);
+}
+
+void CGUIDialogVideoInfo::ManageVideoVersion(const std::shared_ptr<CFileItem>& item)
+{
+  CGUIDialogVideoVersion::ManageVideoVersion(item);
 }

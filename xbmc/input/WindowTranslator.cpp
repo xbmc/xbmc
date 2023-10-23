@@ -119,6 +119,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"musicinformation", WINDOW_DIALOG_MUSIC_INFO},
     {"okdialog", WINDOW_DIALOG_OK},
     {"movieinformation", WINDOW_DIALOG_VIDEO_INFO},
+    {"videoversion", WINDOW_DIALOG_VIDEO_VERSION},
     {"textviewer", WINDOW_DIALOG_TEXT_VIEWER},
     {"fullscreenvideo", WINDOW_FULLSCREEN_VIDEO},
     {"dialogcolorpicker", WINDOW_DIALOG_COLOR_PICKER},

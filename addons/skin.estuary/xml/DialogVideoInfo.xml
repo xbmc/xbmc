@@ -524,6 +524,12 @@
 					<align>center</align>
 					<orientation>horizontal</orientation>
 					<scrolltime tween="quadratic">200</scrolltime>
+					<include content="InfoDialogButton">
+						<param name="id" value="14" />
+						<param name="icon" value="icons/infodialogs/versions.png" />
+						<param name="label" value="$LOCALIZE[40000]" />
+						<param name="visible" value="String.IsEqual(ListItem.DBType,movie)" />
+					</include>
 					<include content="InfoDialogToggleButton">
 						<param name="id" value="8" />
 						<param name="icon_on" value="icons/filemanager.png" />

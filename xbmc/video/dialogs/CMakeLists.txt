@@ -5,6 +5,7 @@ set(SOURCES GUIDialogAudioSettings.cpp
             GUIDialogTeletext.cpp
             GUIDialogVideoBookmarks.cpp
             GUIDialogVideoInfo.cpp
+            GUIDialogVideoVersion.cpp
             GUIDialogVideoOSD.cpp
             GUIDialogVideoSettings.cpp)
 
@@ -15,6 +16,7 @@ set(HEADERS GUIDialogAudioSettings.h
             GUIDialogTeletext.h
             GUIDialogVideoBookmarks.h
             GUIDialogVideoInfo.h
+            GUIDialogVideoVersion.h
             GUIDialogVideoOSD.h
             GUIDialogVideoSettings.h)
 

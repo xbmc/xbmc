@@ -236,8 +236,13 @@ namespace VIDEO
     bool EnumerateSeriesFolder(CFileItem* item, EPISODELIST& episodeList);
     bool ProcessItemByVideoInfoTag(const CFileItem *item, EPISODELIST &episodeList);
 
+    bool AddVideoExtras(CFileItemList& items, const CONTENT_TYPE& content, const std::string& path);
+    bool ProcessVideoVersion(VideoDbContentType itemType, int dbId);
+
     bool m_bStop;
     bool m_scanAll;
+    bool m_ignoreVideoVersions{false};
+    bool m_ignoreVideoExtras{false};
     std::string m_strStartDir;
     CVideoDatabase m_database;
     std::set<std::string> m_pathsToCount;

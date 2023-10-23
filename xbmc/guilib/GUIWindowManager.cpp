@@ -49,6 +49,7 @@
 #include "utils/log.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/dialogs/GUIDialogVideoOSD.h"
+#include "video/dialogs/GUIDialogVideoVersion.h"
 #include "video/windows/GUIWindowFullScreen.h"
 #include "video/windows/GUIWindowVideoNav.h"
 #include "video/windows/GUIWindowVideoPlaylist.h"
@@ -291,6 +292,7 @@ void CGUIWindowManager::CreateWindows()
   Add(new CGUIDialogMusicInfo);
   Add(new CGUIDialogOK);
   Add(new CGUIDialogVideoInfo);
+  Add(new CGUIDialogVideoVersion);
   Add(new CGUIDialogTextViewer);
   Add(new CGUIWindowFullScreen);
   Add(new CGUIWindowVisualisation);
@@ -331,6 +333,7 @@ bool CGUIWindowManager::DestroyWindows()
     DestroyWindow(WINDOW_MUSIC_NAV);
     DestroyWindow(WINDOW_DIALOG_MUSIC_INFO);
     DestroyWindow(WINDOW_DIALOG_VIDEO_INFO);
+    DestroyWindow(WINDOW_DIALOG_VIDEO_VERSION);
     DestroyWindow(WINDOW_VIDEO_PLAYLIST);
     DestroyWindow(WINDOW_VIDEO_NAV);
     DestroyWindow(WINDOW_FILES);

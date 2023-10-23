@@ -547,7 +547,8 @@ bool IsItemPlayable(const CFileItem& item)
   // Exclude special items
   if (StringUtils::StartsWithNoCase(item.GetPath(), "newsmartplaylist://") ||
       StringUtils::StartsWithNoCase(item.GetPath(), "newplaylist://") ||
-      StringUtils::StartsWithNoCase(item.GetPath(), "newtag://"))
+      StringUtils::StartsWithNoCase(item.GetPath(), "newtag://") ||
+      StringUtils::StartsWithNoCase(item.GetPath(), "newvideoversion://"))
     return false;
 
   // Include playlists located at one of the possible video/mixed playlist locations

@@ -41,6 +41,7 @@
 #include "video/VideoInfoScanner.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/dialogs/GUIDialogVideoVersion.h"
 #include "view/GUIViewState.h"
 
 #include <utility>
@@ -490,14 +491,26 @@ bool CGUIWindowVideoNav::GetDirectory(const std::string &strDirectory, CFileItem
     }
 
     CVideoDbUrl videoUrl;
-    if (videoUrl.FromString(items.GetPath()) && items.GetContent() == "tags" &&
-       !items.Contains("newtag://" + videoUrl.GetType()))
+    if (videoUrl.FromString(items.GetPath()))
     {
-      CFileItemPtr newTag(new CFileItem("newtag://" + videoUrl.GetType(), false));
-      newTag->SetLabel(g_localizeStrings.Get(20462));
-      newTag->SetLabelPreformatted(true);
-      newTag->SetSpecialSort(SortSpecialOnTop);
-      items.Add(newTag);
+      if (items.GetContent() == "tags" && !items.Contains("newtag://" + videoUrl.GetType()))
+      {
+        const auto newTag{std::make_shared<CFileItem>("newtag://" + videoUrl.GetType(), false)};
+        newTag->SetLabel(g_localizeStrings.Get(20462));
+        newTag->SetLabelPreformatted(true);
+        newTag->SetSpecialSort(SortSpecialOnTop);
+        items.Add(newTag);
+      }
+      else if (items.GetContent() == "videoversions" &&
+               !items.Contains("newvideoversion://" + videoUrl.GetType()))
+      {
+        const auto newVideoVersion{
+            std::make_shared<CFileItem>("newvideoversion://" + videoUrl.GetType(), false)};
+        newVideoVersion->SetLabel(g_localizeStrings.Get(40004));
+        newVideoVersion->SetLabelPreformatted(true);
+        newVideoVersion->SetSpecialSort(SortSpecialOnTop);
+        items.Add(newVideoVersion);
+      }
     }
   }
   return bResult;
@@ -683,10 +696,9 @@ void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
 
   if (!m_vecItems->IsVideoDb() && !pItem->IsVideoDb())
   {
-    if (!pItem->IsPath("newsmartplaylist://video") &&
-        !pItem->IsPath("special://videoplaylists/") &&
-        !pItem->IsPath("sources://video/") &&
-        !URIUtils::IsProtocol(pItem->GetPath(), "newtag"))
+    if (!pItem->IsPath("newsmartplaylist://video") && !pItem->IsPath("special://videoplaylists/") &&
+        !pItem->IsPath("sources://video/") && !URIUtils::IsProtocol(pItem->GetPath(), "newtag") &&
+        !URIUtils::IsProtocol(pItem->GetPath(), "newvideoversion"))
       CGUIWindowVideoBase::OnDeleteItem(pItem);
   }
   else if (StringUtils::StartsWithNoCase(pItem->GetPath(), "videodb://movies/sets/") &&
@@ -817,7 +829,8 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
              item->GetVideoInfoTag()->m_type == MediaTypeEpisode || // episodes
              item->GetVideoInfoTag()->m_type == MediaTypeMusicVideo || // musicvideos
              item->GetVideoInfoTag()->m_type == "tag" || // tags
-             item->GetVideoInfoTag()->m_type == MediaTypeVideoCollection)) // sets
+             item->GetVideoInfoTag()->m_type == MediaTypeVideoCollection || // sets
+             item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion)) // videoversions
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16106);
         }
@@ -897,7 +910,11 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   {
   case CONTEXT_BUTTON_EDIT:
     {
-      CONTEXT_BUTTON ret = (CONTEXT_BUTTON)CGUIDialogVideoInfo::ManageVideoItem(item);
+      CONTEXT_BUTTON ret =
+          item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion
+              ? (CONTEXT_BUTTON)CGUIDialogVideoVersion::ManageVideoVersionContextMenu(item)
+              : (CONTEXT_BUTTON)CGUIDialogVideoInfo::ManageVideoItem(item);
+
       if (ret != CONTEXT_BUTTON_CANCELLED)
       {
         Refresh(true);
@@ -1040,6 +1057,20 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
         videodb.AddTagToItem(items[index]->GetVideoInfoTag()->m_iDbId, idTag, mediaType);
       }
     }
+
+    Refresh(true);
+    return true;
+  }
+  else if (StringUtils::StartsWithNoCase(item->GetPath(), "newvideoversion://"))
+  {
+    // dont allow update while scanning
+    if (CVideoLibraryQueue::GetInstance().IsScanningLibrary())
+    {
+      HELPERS::ShowOKDialogText(CVariant{257}, CVariant{14057});
+      return true;
+    }
+
+    CGUIDialogVideoVersion::NewVideoVersion();
 
     Refresh(true);
     return true;

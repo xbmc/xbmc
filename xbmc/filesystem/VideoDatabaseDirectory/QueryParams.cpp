@@ -91,6 +91,9 @@ void CQueryParams::SetQueryParam(NODE_TYPE NodeType, const std::string& strNodeN
   case NODE_TYPE_TAGS:
     m_idTag = idDb;
     break;
+  case NODE_TYPE_VIDEOVERSIONS:
+    m_idVideoVersion = idDb;
+    break;
   default:
     break;
   }

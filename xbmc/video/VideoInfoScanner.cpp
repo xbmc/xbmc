@@ -43,6 +43,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoThumbLoader.h"
+#include "video/dialogs/GUIDialogVideoVersion.h"
 
 #include <algorithm>
 #include <memory>
@@ -73,7 +74,13 @@ namespace VIDEO
 
     try
     {
-      if (m_showDialog && !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE))
+      auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+      m_ignoreVideoVersions =
+          settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOVERSIONS);
+      m_ignoreVideoExtras = settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS);
+
+      if (m_showDialog && !settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_BACKGROUNDUPDATE))
       {
         CGUIDialogExtendedProgressBar* dialog =
           CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogExtendedProgressBar>(WINDOW_DIALOG_EXT_PROGRESS);
@@ -364,10 +371,11 @@ namespace VIDEO
         items.SetPath(URIUtils::GetParentPath(item->GetPath()));
       }
     }
-
+    bool foundSomething = false;
     if (!bSkip)
     {
-      if (RetrieveVideoInfo(items, settings.parent_name_root, content))
+      foundSomething = RetrieveVideoInfo(items, settings.parent_name_root, content);
+      if (foundSomething)
       {
         if (!m_bStop && (content == CONTENT_MOVIES || content == CONTENT_MUSICVIDEOS))
         {
@@ -400,6 +408,19 @@ namespace VIDEO
 
       if (m_bStop)
         break;
+
+      // add video extras to library
+      if (foundSomething && !m_ignoreVideoExtras && pItem->IsVideoExtras())
+      {
+        if (AddVideoExtras(items, content, pItem->GetPath()))
+        {
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Finished adding video extras from dir {}",
+                    CURL::GetRedacted(pItem->GetPath()));
+        }
+
+        // no further processing required
+        continue;
+      }
 
       // if we have a directory item (non-playlist) we then recurse into that folder
       // do not recurse for tv shows - we have already looked recursively for episodes
@@ -728,8 +749,12 @@ namespace VIDEO
                     result == CInfoScanner::OVERRIDE_NFO) ? loader.get() : nullptr,
                    pDlgProgress))
     {
-      if (AddVideo(pItem, info2->Content(), bDirNames, useLocal) < 0)
+      int dbId = AddVideo(pItem, info2->Content(), bDirNames, useLocal);
+      if (dbId < 0)
         return INFO_ERROR;
+      if (info2->Content() == CONTENT_MOVIES && !m_ignoreVideoVersions &&
+          ProcessVideoVersion(VideoDbContentType::MOVIES, dbId))
+        return INFO_HAVE_ALREADY;
       return INFO_ADDED;
     }
     //! @todo This is not strictly correct as we could fail to download information here or error, or be cancelled
@@ -1534,6 +1559,21 @@ namespace VIDEO
     }
   }
 
+  VideoDbContentType ContentToVideoDbType(CONTENT_TYPE content)
+  {
+    switch (content)
+    {
+      case CONTENT_MOVIES:
+        return VideoDbContentType::MOVIES;
+      case CONTENT_MUSICVIDEOS:
+        return VideoDbContentType::MUSICVIDEOS;
+      case CONTENT_TVSHOWS:
+        return VideoDbContentType::EPISODES;
+      default:
+        return VideoDbContentType::UNKNOWN;
+    }
+  }
+
   std::string CVideoInfoScanner::GetArtTypeFromSize(unsigned int width, unsigned int height)
   {
     std::string type = "thumb";
@@ -2298,4 +2338,63 @@ namespace VIDEO
     return 0;    // didn't find anything
   }
 
+  bool CVideoInfoScanner::AddVideoExtras(CFileItemList& items,
+                                         const CONTENT_TYPE& content,
+                                         const std::string& path)
+  {
+    int dbId = -1;
+
+    // get the library item which was added previously with the specified conent type
+    for (const auto& item : items)
+    {
+      if (content == CONTENT_MOVIES)
+      {
+        dbId = m_database.GetMovieId(item->GetPath());
+        if (dbId != -1)
+        {
+          break;
+        }
+      }
+    }
+
+    if (dbId == -1)
+    {
+      CLog::Log(LOGERROR, "VideoInfoScanner: Failed to find the library item for video extras {}",
+                CURL::GetRedacted(path));
+      return false;
+    }
+
+    // Add video extras to library
+    CDirectory::EnumerateDirectory(
+        path,
+        [this, content, dbId, path](const std::shared_ptr<CFileItem>& item)
+        {
+          if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+                  CSettings::SETTING_MYVIDEOS_EXTRACTFLAGS))
+          {
+            CDVDFileInfo::GetFileStreamDetails(item.get());
+            CLog::Log(LOGDEBUG, "VideoInfoScanner: Extracted filestream details from video file {}",
+                      CURL::GetRedacted(item->GetPath()));
+          }
+
+          const std::string typeVideoVersion =
+              CGUIDialogVideoVersion::GenerateExtrasVideoVersion(path, item->GetPath());
+
+          const int idVideoVersion =
+              m_database.AddVideoVersionType(typeVideoVersion, VideoVersionTypeOwner::AUTO);
+
+          m_database.AddExtrasVideoVersion(ContentToVideoDbType(content), dbId, idVideoVersion,
+                                           *item.get());
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video extras {}",
+                    CURL::GetRedacted(item->GetPath()));
+        },
+        true, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), DIR_FLAG_DEFAULTS);
+
+    return true;
+  }
+
+  bool CVideoInfoScanner::ProcessVideoVersion(VideoDbContentType itemType, int dbId)
+  {
+    return CGUIDialogVideoVersion::ProcessVideoVersion(itemType, dbId);
+  }
 }

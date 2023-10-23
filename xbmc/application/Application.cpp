@@ -2393,7 +2393,9 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
       if (videoInfoTagPath.find("removable://") == 0 || item.IsVideoDb())
         path = videoInfoTagPath;
-      dbs.LoadVideoInfo(path, *item.GetVideoInfoTag());
+
+      if (!item.HasVideoInfoTag() || item.GetVideoInfoTag()->m_type != MediaTypeVideoVersion)
+        dbs.LoadVideoInfo(path, *item.GetVideoInfoTag());
 
       if (item.HasProperty("savedplayerstate"))
       {

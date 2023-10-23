@@ -76,13 +76,14 @@ std::vector<std::string> GetSettingListAsString(const std::string& settingID)
 }
 
 const std::map<std::string, std::vector<std::string>> artTypeDefaults = {
-  {MediaTypeEpisode, {"thumb"}},
-  {MediaTypeTvShow, {"poster", "fanart", "banner"}},
-  {MediaTypeSeason, {"poster", "fanart", "banner"}},
-  {MediaTypeMovie, {"poster", "fanart"}},
-  {MediaTypeVideoCollection, {"poster", "fanart"}},
-  {MediaTypeMusicVideo, {"poster", "fanart"}},
-  {MediaTypeNone, { "poster", "fanart", "banner", "thumb" }},
+    {MediaTypeEpisode, {"thumb"}},
+    {MediaTypeTvShow, {"poster", "fanart", "banner"}},
+    {MediaTypeSeason, {"poster", "fanart", "banner"}},
+    {MediaTypeMovie, {"poster", "fanart"}},
+    {MediaTypeVideoCollection, {"poster", "fanart"}},
+    {MediaTypeMusicVideo, {"poster", "fanart"}},
+    {MediaTypeVideoVersion, {"poster", "fanart", "banner", "thumb"}},
+    {MediaTypeNone, {"poster", "fanart", "banner", "thumb"}},
 };
 
 const std::vector<std::string> artTypeDefaultsFallback = {};
@@ -96,12 +97,13 @@ const std::vector<std::string>& GetArtTypeDefault(const std::string& mediaType)
 }
 
 const std::map<std::string, std::string> artTypeSettings = {
-  {MediaTypeEpisode, CSettings::SETTING_VIDEOLIBRARY_EPISODEART_WHITELIST},
-  {MediaTypeTvShow, CSettings::SETTING_VIDEOLIBRARY_TVSHOWART_WHITELIST},
-  {MediaTypeSeason, CSettings::SETTING_VIDEOLIBRARY_TVSHOWART_WHITELIST},
-  {MediaTypeMovie, CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST},
-  {MediaTypeVideoCollection, CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST},
-  {MediaTypeMusicVideo, CSettings::SETTING_VIDEOLIBRARY_MUSICVIDEOART_WHITELIST},
+    {MediaTypeEpisode, CSettings::SETTING_VIDEOLIBRARY_EPISODEART_WHITELIST},
+    {MediaTypeTvShow, CSettings::SETTING_VIDEOLIBRARY_TVSHOWART_WHITELIST},
+    {MediaTypeSeason, CSettings::SETTING_VIDEOLIBRARY_TVSHOWART_WHITELIST},
+    {MediaTypeMovie, CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST},
+    {MediaTypeVideoCollection, CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST},
+    {MediaTypeMusicVideo, CSettings::SETTING_VIDEOLIBRARY_MUSICVIDEOART_WHITELIST},
+    {MediaTypeVideoVersion, CSettings::SETTING_VIDEOLIBRARY_MOVIEART_WHITELIST},
 };
 } // namespace
 
@@ -189,11 +191,12 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
   {
     FillLibraryArt(*pItem);
 
-    if (!pItem->GetVideoInfoTag()->m_type.empty()                &&
-         pItem->GetVideoInfoTag()->m_type != MediaTypeMovie      &&
-         pItem->GetVideoInfoTag()->m_type != MediaTypeTvShow     &&
-         pItem->GetVideoInfoTag()->m_type != MediaTypeEpisode    &&
-         pItem->GetVideoInfoTag()->m_type != MediaTypeMusicVideo)
+    if (!pItem->GetVideoInfoTag()->m_type.empty() &&
+        pItem->GetVideoInfoTag()->m_type != MediaTypeMovie &&
+        pItem->GetVideoInfoTag()->m_type != MediaTypeTvShow &&
+        pItem->GetVideoInfoTag()->m_type != MediaTypeEpisode &&
+        pItem->GetVideoInfoTag()->m_type != MediaTypeMusicVideo &&
+        pItem->GetVideoInfoTag()->m_type != MediaTypeVideoVersion)
     {
       m_videoDatabase->Close();
       return true; // nothing else to be done
@@ -227,12 +230,12 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive || pItem->IsParentFolder() || pItem->GetPath() == "add")
     return false;
 
-  if (pItem->HasVideoInfoTag()                                &&
-     !pItem->GetVideoInfoTag()->m_type.empty()                &&
-      pItem->GetVideoInfoTag()->m_type != MediaTypeMovie      &&
-      pItem->GetVideoInfoTag()->m_type != MediaTypeTvShow     &&
-      pItem->GetVideoInfoTag()->m_type != MediaTypeEpisode    &&
-      pItem->GetVideoInfoTag()->m_type != MediaTypeMusicVideo)
+  if (pItem->HasVideoInfoTag() && !pItem->GetVideoInfoTag()->m_type.empty() &&
+      pItem->GetVideoInfoTag()->m_type != MediaTypeMovie &&
+      pItem->GetVideoInfoTag()->m_type != MediaTypeTvShow &&
+      pItem->GetVideoInfoTag()->m_type != MediaTypeEpisode &&
+      pItem->GetVideoInfoTag()->m_type != MediaTypeMusicVideo &&
+      pItem->GetVideoInfoTag()->m_type != MediaTypeVideoVersion)
     return false; // Nothing to do here
 
   m_videoDatabase->Open();

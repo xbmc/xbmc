@@ -18,6 +18,7 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
 
 #include <algorithm>
 #include <sstream>
@@ -43,6 +44,7 @@ void CVideoInfoTag::Reset()
   m_set.id = -1;
   m_set.overview.clear();
   m_tags.clear();
+  m_typeVideoVersion.clear();
   m_strFile.clear();
   m_strPath.clear();
   m_strMPAARating.clear();
@@ -222,6 +224,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     movie->InsertEndChild(set);
   }
   XMLUtils::SetStringArray(movie, "tag", m_tags);
+  XMLUtils::SetString(movie, "videoversion", m_typeVideoVersion);
+  XMLUtils::SetInt(movie, "videoversionid", m_idVideoVersion);
   XMLUtils::SetStringArray(movie, "credits", m_writingCredits);
   XMLUtils::SetStringArray(movie, "director", m_director);
   if (HasPremiered())
@@ -505,6 +509,9 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_set.id;
     ar << m_set.overview;
     ar << m_tags;
+    ar << m_typeVideoVersion;
+    ar << m_idVideoVersion;
+    ar << m_hasVideoVersions;
     ar << m_duration;
     ar << m_strFile;
     ar << m_strPath;
@@ -607,6 +614,9 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_set.id;
     ar >> m_set.overview;
     ar >> m_tags;
+    ar >> m_typeVideoVersion;
+    ar >> m_idVideoVersion;
+    ar >> m_hasVideoVersions;
     ar >> m_duration;
     ar >> m_strFile;
     ar >> m_strPath;
@@ -726,6 +736,8 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["setid"] = m_set.id;
   value["setoverview"] = m_set.overview;
   value["tag"] = m_tags;
+  value["videoversion"] = m_typeVideoVersion;
+  value["videoversionid"] = m_idVideoVersion;
   value["runtime"] = GetDuration();
   value["file"] = m_strFile;
   value["path"] = m_strPath;
@@ -855,6 +867,9 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldId:                       sortable[FieldId] = m_iDbId; break;
   case FieldTrackNumber:              sortable[FieldTrackNumber] = m_iTrack; break;
   case FieldTag:                      sortable[FieldTag] = m_tags; break;
+  case FieldVideoVersion:
+    sortable[FieldVideoVersion] = m_typeVideoVersion;
+    break;
 
   case FieldVideoResolution:          sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight(); break;
   case FieldVideoAspectRatio:         sortable[FieldVideoAspectRatio] = m_streamDetails.GetVideoAspect(); break;
@@ -1253,6 +1268,11 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetStringArray(movie, "tag", tags, prioritise, itemSeparator))
     SetTags(tags);
 
+  if (XMLUtils::GetString(movie, "videoversion", value))
+    SetVideoVersion(value);
+
+  XMLUtils::GetInt(movie, "videoversionid", m_idVideoVersion);
+
   std::vector<std::string> studio(m_studio);
   if (XMLUtils::GetStringArray(movie, "studio", studio, prioritise, itemSeparator))
     SetStudio(studio);
@@ -1625,6 +1645,16 @@ void CVideoInfoTag::SetTags(std::vector<std::string> tags)
   m_tags = Trim(std::move(tags));
 }
 
+void CVideoInfoTag::SetVideoVersion(std::string typeVideoVersion)
+{
+  m_typeVideoVersion = Trim(std::move(typeVideoVersion));
+}
+
+bool CVideoInfoTag::HasVideoVersions() const
+{
+  return m_hasVideoVersions;
+}
+
 void CVideoInfoTag::SetFile(std::string file)
 {
   m_strFile = Trim(std::move(file));
@@ -1788,4 +1818,20 @@ bool CVideoInfoTag::SetResumePoint(double timeInSeconds, double totalTimeInSecon
 
   m_resumePoint = resumePoint;
   return true;
+}
+
+bool CVideoInfoTag::IsVideoExtras() const
+{
+  if (m_type == MediaTypeVideoVersion)
+  {
+    CVideoDatabase videodb;
+    if (videodb.Open())
+    {
+      return videodb.IsVideoExtras(m_iDbId);
+    }
+    else
+      CLog::Log(LOGERROR, "{}: Failed to open database", __FUNCTION__);
+  }
+
+  return false;
 }

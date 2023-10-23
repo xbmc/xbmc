@@ -51,6 +51,9 @@ public:
   static bool GetSetForMovie(const CFileItem* movieItem, std::shared_ptr<CFileItem>& selectedSet);
   static bool SetMovieSet(const CFileItem *movieItem, const CFileItem *selectedSet);
 
+  static bool ConvertVideoVersion(const std::shared_ptr<CFileItem>& item);
+  static void ManageVideoVersion(const std::shared_ptr<CFileItem>& item);
+
   static bool GetItemsForTag(const std::string &strHeading, const std::string &type, CFileItemList &items, int idTag = -1, bool showAll = true);
   static bool AddItemsToTag(const std::shared_ptr<CFileItem>& tagItem);
   static bool RemoveItemsFromTag(const std::shared_ptr<CFileItem>& tagItem);
@@ -86,6 +89,7 @@ protected:
    * \param pItem Search result item
    */
   void OnSearchItemFound(const CFileItem* pItem);
+  void OnVideoVersion();
   void Play(bool resume = false);
   void OnGetArt();
   void OnGetFanart();
@@ -110,4 +114,5 @@ private:
   static bool ManageVideoItemArtwork(const std::shared_ptr<CFileItem>& item,
                                      const MediaType& mediaType,
                                      const std::string& artType);
+  bool ChooseVideoVersion();
 };

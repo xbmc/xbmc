@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+    <defaultcontrol always="true">50</defaultcontrol>
+    <onload condition="!String.IsEmpty(Container(50).ListItem.Art(poster))">SetProperty(poster,$ESCINFO[Container(50).ListItem.Art(poster)],home)</onload>
+    <onload condition="String.IsEmpty(Container(50).ListItem.Art(poster))">SetProperty(thumb,$ESCINFO[Container(50).ListItem.Art(thumb)],home)</onload>
+	<onunload>ClearProperty(poster,home)</onunload>
+	<onunload>ClearProperty(thumb,home)</onunload>
+    <include>Animation_DialogPopupOpenClose</include>
+    <controls>
+        <control type="group">
+            <top>105</top>
+            <left>200</left>
+            <centerleft>50%</centerleft>
+            <visible>true</visible>
+            <include>Animation_DialogPopupVisible</include>
+            <include content="DialogBackgroundCommons">
+                <param name="width" value="1520" />
+                <param name="height" value="870" />
+                <param name="header_id" value="2" />
+            </include>
+            <control type="image">
+                <top>150</top>
+                <left>60</left>
+                <width>400</width>
+                <height>600</height>
+                <align>center</align>
+                <aspectratio>scale</aspectratio>
+                <texture fallback="DefaultVideo.png" background="true">$VAR[VideoVersionPosterVar]</texture>
+                <visible>[Control.HasFocus(50) + !String.IsEmpty(Container(50).ListItem.Art(poster))] | [Control.HasFocus(51) + !String.IsEmpty(Container(51).ListItem.Art(poster))] | [!Control.HasFocus(50) + !Control.HasFocus(51) +!String.IsEmpty(Window(home).Property(poster))]</visible>
+            </control>
+            <control type="image">
+                <top>340</top>
+                <left>60</left>
+                <width>400</width>
+                <height>225</height>
+                <align>center</align>
+                <aspectratio>scale</aspectratio>
+                <texture fallback="DefaultVideo.png" background="true">$VAR[VideoVersionThumbVar]</texture>
+                <visible>[Control.HasFocus(50) + String.IsEmpty(Container(50).ListItem.Art(poster))] | [Control.HasFocus(51) + String.IsEmpty(Container(51).ListItem.Art(poster))] | [!Control.HasFocus(50) + !Control.HasFocus(51) + String.IsEmpty(Window(home).Property(poster))]</visible>
+            </control>
+            <control type="group"  id="100">
+                <top>90</top>
+                <left>540</left>
+                <width>680</width>
+                <height>720</height>
+                <control type="group">
+                    <height>300</height>
+                    <control type="image">
+                        <left>-40</left>
+                        <width>680</width>
+                        <height>90</height>
+                        <texture border="21">dialogs/dialog-bg.png</texture>
+                    </control>
+                    <control type="label">
+                        <width>600</width>
+                        <height>40</height>
+                        <top>24</top>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <font>font25_title</font>
+                        <label>$LOCALIZE[40000]</label>
+                    </control>
+                    <control type="image">
+                        <top>70</top>
+                        <left>-40</left>
+                        <width>680</width>
+                        <height>300</height>
+                        <texture border="21">dialogs/dialog-bg.png</texture>
+                    </control>
+                    <control type="list" id="50">
+                        <description>version list</description>
+                        <top>100</top>
+                        <height>240</height>
+                        <onleft>51</onleft>
+                        <ondown>51</ondown>
+                        <onright>101</onright>
+                        <scrolltime>200</scrolltime>
+                        <onclick condition="!String.IsEmpty(Container(50).ListItem.Art(poster))">SetProperty(poster,$ESCINFO[Container(50).ListItem.Art(poster)],home)</onclick>
+                        <onclick condition="String.IsEmpty(Container(50).ListItem.Art(poster))">SetProperty(thumb,$ESCINFO[Container(50).ListItem.Art(thumb)],home)</onclick>
+                        <include content="DefaultSimpleListLayout">
+                            <param name="width" value="600" />
+                            <param name="height" value="80" />
+                            <param name="list_id" value="50" />
+                            <param name="align" value="left" />
+                        </include>
+                    </control>
+                </control>
+                <control type="group">
+                    <top>310</top>
+                    <height>300</height>
+                    <control type="image">
+                        <top>40</top>
+                        <left>-40</left>
+                        <width>680</width>
+                        <height>90</height>
+                        <texture border="21">dialogs/dialog-bg.png</texture>
+                    </control>
+                    <control type="label">
+                        <width>600</width>
+                        <height>40</height>
+                        <top>66</top>
+                        <align>center</align>
+                        <aligny>center</aligny>
+                        <font>font25_title</font>
+                        <label>$LOCALIZE[31615]</label>
+                    </control>
+                    <control type="image">
+                        <top>110</top>
+                        <left>-40</left>
+                        <width>680</width>
+                        <height>300</height>
+                        <texture border="21">dialogs/dialog-bg.png</texture>
+                    </control>
+                    <control type="list" id="51">
+                        <description>extras list</description>
+                        <top>140</top>
+                        <height>240</height>
+                        <onleft>50</onleft>
+                        <onup>50</onup>
+                        <onright>101</onright>
+                        <scrolltime>200</scrolltime>
+                        <onclick condition="!String.IsEmpty(Container(51).ListItem.Art(poster))">SetProperty(poster,$ESCINFO[Container(51).ListItem.Art(poster)],home)</onclick>
+                        <onclick condition="String.IsEmpty(Container(51).ListItem.Art(poster))">SetProperty(thumb,$ESCINFO[Container(51).ListItem.Art(thumb)],home)</onclick>
+                        <include content="DefaultSimpleListLayout">
+                            <param name="width" value="600" />
+                            <param name="height" value="80" />
+                            <param name="list_id" value="51" />
+                            <param name="align" value="left" />
+                        </include>
+                    </control>
+                </control>
+            </control>
+            <control type="grouplist" id="101">
+                <left>1200</left>
+                <top>50</top>
+                <width>300</width>
+                <height>800</height>
+                <onleft>100</onleft>
+                <onright>100</onright>
+                <itemgap>-20</itemgap>
+                <align>center</align>
+                <scrolltime tween="quadratic">200</scrolltime>
+                <include content="VideoVersionDialogButton">
+                    <param name="width" value="280" />
+                    <param name="height" value="120" />
+                    <param name="id" value="21" />
+                    <param name="label" value="$LOCALIZE[208]" />
+                </include>
+                <include content="VideoVersionDialogButton">
+                    <param name="width" value="280" />
+                    <param name="height" value="120" />
+                    <param name="id" value="22" />
+                    <param name="label" value="$LOCALIZE[31612]" />
+                </include>
+                <include content="VideoVersionDialogButton">
+                    <param name="width" value="280" />
+                    <param name="height" value="120" />
+                    <param name="id" value="23" />
+                    <param name="label" value="$LOCALIZE[31613]" />
+                </include>
+                <include content="VideoVersionDialogButton">
+                    <param name="width" value="280" />
+                    <param name="height" value="120" />
+                    <param name="id" value="24" />
+                    <param name="label" value="$LOCALIZE[118]" />
+                </include>
+                <include content="VideoVersionDialogButton">
+                    <param name="width" value="280" />
+                    <param name="height" value="120" />
+                    <param name="id" value="25" />
+                    <param name="label" value="$LOCALIZE[31614]" />
+                </include>
+                <include content="VideoVersionDialogButton">
+                    <param name="width" value="280" />
+                    <param name="height" value="120" />
+                    <param name="id" value="26" />
+                    <param name="label" value="$LOCALIZE[15015]" />
+                </include>
+                <include content="VideoVersionDialogButton">
+                    <param name="width" value="280" />
+                    <param name="height" value="120" />
+                    <param name="id" value="27" />
+                    <param name="label" value="$LOCALIZE[13511]" />
+                </include>
+            </control>
+            <control type="label">
+                <align>center</align>
+                <top>810</top>
+                <left>24</left>
+                <right>24</right>
+                <height>44</height>
+                <scroll>true</scroll>
+                <font>font25_title</font>
+                <haspath>false</haspath>
+                <label>$VAR[VideoVersionFileVar]</label>
+                <visible>Control.HasFocus(50) | Control.HasFocus(51)</visible>
+                <animation effect="fade" start="0" end="100" time="300" delay="300">WindowOpen</animation>
+                <animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+                <animation effect="fade" start="0" end="100" time="300">Visible</animation>
+                <animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+            </control>
+        </control>
+    </controls>
+</window>

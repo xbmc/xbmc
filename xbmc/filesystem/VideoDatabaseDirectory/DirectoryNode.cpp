@@ -99,6 +99,7 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const std::string& st
   case NODE_TYPE_COUNTRY:
   case NODE_TYPE_SETS:
   case NODE_TYPE_TAGS:
+  case NODE_TYPE_VIDEOVERSIONS:
   case NODE_TYPE_YEAR:
   case NODE_TYPE_ACTOR:
   case NODE_TYPE_DIRECTOR:

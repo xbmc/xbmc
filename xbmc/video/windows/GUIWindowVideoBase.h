@@ -117,6 +117,9 @@ protected:
 
   bool OnPlayStackPart(int itemIndex, unsigned int partNumber);
 
+  void UpdateVideoVersionItems();
+  void UpdateVideoVersionItemsLabel(const std::string& directory);
+
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
 
