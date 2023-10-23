@@ -21,6 +21,7 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/dialogs/GUIDialogVideoVersion.h"
 
 #include <utility>
 
@@ -194,7 +195,18 @@ void SetPathAndPlay(CFileItem& item, const std::string& player)
     const ContentUtils::PlayMode mode = item.GetProperty("CheckAutoPlayNextItem").asBoolean()
                                             ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                             : ContentUtils::PlayMode::PLAY_ONLY_THIS;
-    VIDEO_UTILS::PlayItem(std::make_shared<CFileItem>(item), player, mode);
+
+    //! @todo get rid of special handling for movie versions
+    if (item.GetStartOffset() != STARTOFFSET_RESUME &&
+        item.GetVideoInfoTag()->m_type == MediaTypeMovie)
+    {
+      auto videoItem = std::make_shared<CFileItem>(item);
+      CGUIDialogVideoVersion::PlayVideoVersion(
+          videoItem, [player, mode](const std::shared_ptr<CFileItem>& item)
+          { VIDEO_UTILS::PlayItem(item, player, mode); });
+    }
+    else
+      VIDEO_UTILS::PlayItem(std::make_shared<CFileItem>(item), player, mode);
   }
 }
 

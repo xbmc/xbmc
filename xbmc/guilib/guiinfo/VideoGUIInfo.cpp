@@ -765,6 +765,12 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
       case LISTITEM_IS_COLLECTION:
         value = tag->m_type == MediaTypeVideoCollection;
         return true;
+      case LISTITEM_HASVIDEOVERSIONS:
+        value = tag->m_hasVideoVersions;
+        return true;
+      case LISTITEM_ISVIDEOEXTRAS:
+        value = tag->IsVideoExtras();
+        return true;
     }
   }
 

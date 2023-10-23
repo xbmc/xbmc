@@ -230,3 +230,17 @@ void CDatabaseManager::UpdateStatus(const std::string &name, DB_STATUS status)
   std::unique_lock<CCriticalSection> lock(m_section);
   m_dbStatus[name] = status;
 }
+
+void CDatabaseManager::LocalizationChanged()
+{
+  std::unique_lock<CCriticalSection> lock(m_section);
+
+  // update video version type table after language changed
+  CVideoDatabase videodb;
+  if (videodb.Open())
+  {
+    videodb.UpdateVideoVersionTypeTable();
+    CLog::Log(LOGDEBUG, "{}, Video version type table updated for new language settings",
+              __FUNCTION__);
+  }
+}

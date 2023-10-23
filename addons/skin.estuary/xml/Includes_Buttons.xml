@@ -346,4 +346,22 @@
 			</control>
 		</focusedlayout>
 	</include>
+	<include name="VideoVersionDialogButton">
+		<param name="width">264</param>
+		<param name="height">120</param>
+		<definition>
+			<control type="button" id="$PARAM[id]">
+				<width>$PARAM[width]</width>
+				<height>$PARAM[height]</height>
+				<align>center</align>
+				<texturefocus border="21" colordiffuse="button_focus">buttons/button-fo.png</texturefocus>
+				<texturenofocus border="21">buttons/button-nofo.png</texturenofocus>
+				<textoffsetx>22</textoffsetx>
+				<textoffsety>78</textoffsety>
+				<font>font13</font>
+				<label>$PARAM[label]</label>
+				<animation effect="fade" start="100" end="0" time="300" delay="300">Hidden</animation>
+			</control>
+		</definition>
+	</include>
 </includes>

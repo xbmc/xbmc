@@ -21,6 +21,11 @@
             <hidevalue>false</hidevalue>
           </control>
         </setting>
+        <setting id="videoplayer.playdefaultversion" type="boolean" label="40200" help="40201">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videoplayer.seeksteps" type="list[integer]" label="13556" help="37042">
           <level>1</level>
           <default>-600,-300,-180,-60,-30,-10,10,30,60,180,300,600</default>
@@ -877,6 +882,16 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.ignorevideoversions" type="boolean" label="40202" help="40203">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videolibrary.ignorevideoextras" type="boolean" label="40204" help="40205">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
         <setting id="videolibrary.cleanup" type="action" label="14247" help="36148">
           <level>2</level>
           <control type="button" format="action" />
@@ -1082,6 +1097,11 @@
           <control type="toggle" />
         </setting>
         <setting id="videolibrary.groupsingleitemsets" type="boolean" label="20470" help="36157">
+          <level>1</level>
+          <default>false</default>
+          <control type="toggle" />
+        </setting>
+        <setting id="videolibrary.showvideoversionsasfolder" type="boolean" label="40206" help="40207">
           <level>1</level>
           <default>false</default>
           <control type="toggle" />

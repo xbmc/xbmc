@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<node order="120" type="filter">
+	<label>40000</label>
+	<icon>DefaultVideoVersions.png</icon>
+	<content>movies</content>
+	<group>videoversions</group>
+</node>

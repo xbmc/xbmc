@@ -195,6 +195,19 @@ std::string URIUtils::GetFileName(const std::string& strFileNameAndPath)
   return strFileNameAndPath.substr(slash+1);
 }
 
+std::string URIUtils::GetFileOrFolderName(const std::string& path)
+{
+  std::string temp = path;
+
+  char ch = path[path.size() - 1];
+  if (ch == '/' || ch == '\\')
+  {
+    temp = path.substr(0, path.size() - 1);
+  }
+
+  return temp.substr(temp.find_last_of("/\\") + 1);
+}
+
 void URIUtils::Split(const std::string& strFileNameAndPath,
                      std::string& strPath, std::string& strFileName)
 {

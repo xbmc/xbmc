@@ -37,6 +37,7 @@
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
+#include "video/dialogs/GUIDialogVideoVersion.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 
@@ -495,7 +496,19 @@ protected:
 
   bool OnPlaySelected() override
   {
-    ExecuteAction({"PlayMedia", m_item, "noresume"});
+    //! @todo get rid of special handling for movie versions
+    if (m_item.GetVideoInfoTag()->m_type == MediaTypeMovie)
+    {
+      auto videoItem = std::make_shared<CFileItem>(m_item);
+      CGUIDialogVideoVersion::PlayVideoVersion(
+          videoItem,
+          [](const std::shared_ptr<CFileItem>& item) {
+            ExecuteAction({"PlayMedia", *item.get(), "noresume"});
+          });
+    }
+    else
+      ExecuteAction({"PlayMedia", m_item, "noresume"});
+
     return true;
   }
 
@@ -535,7 +548,19 @@ protected:
 
   bool OnPlaySelected() override
   {
-    ExecuteAction({"PlayMedia", m_item, "noresume"});
+    //! @todo get rid of special handling for movie versions
+    if (m_item.GetVideoInfoTag()->m_type == MediaTypeMovie)
+    {
+      auto videoItem = std::make_shared<CFileItem>(m_item);
+      CGUIDialogVideoVersion::PlayVideoVersion(
+          videoItem,
+          [](const std::shared_ptr<CFileItem>& item) {
+            ExecuteAction({"PlayMedia", *item.get(), "noresume"});
+          });
+    }
+    else
+      ExecuteAction({"PlayMedia", m_item, "noresume"});
+
     return true;
   }
 };

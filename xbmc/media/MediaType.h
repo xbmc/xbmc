@@ -25,6 +25,7 @@ using MediaType = std::string;
 #define MediaTypeTvShow           "tvshow"
 #define MediaTypeSeason           "season"
 #define MediaTypeEpisode          "episode"
+#define MediaTypeVideoVersion "videoversion"
 
 class CMediaTypes
 {

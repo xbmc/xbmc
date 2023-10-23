@@ -96,6 +96,12 @@ public:
       "videolibrary.musicvideoartwhitelist";
   static constexpr auto SETTING_VIDEOLIBRARY_SHOWPERFORMERS =
       "videolibrary.musicvideosallperformers";
+  static constexpr auto SETTING_VIDEOLIBRARY_IGNOREVIDEOVERSIONS =
+      "videolibrary.ignorevideoversions";
+  static constexpr auto SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS = "videolibrary.ignorevideoextras";
+  static constexpr auto SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER =
+      "videolibrary.showvideoversionsasfolder";
+  static constexpr auto SETTING_VIDEOPLAYER_PLAYDEFAULTVERSION = "videoplayer.playdefaultversion";
   static constexpr auto SETTING_LOCALE_AUDIOLANGUAGE = "locale.audiolanguage";
   static constexpr auto SETTING_VIDEOPLAYER_PREFERDEFAULTFLAG = "videoplayer.preferdefaultflag";
   static constexpr auto SETTING_VIDEOPLAYER_AUTOPLAYNEXTITEM = "videoplayer.autoplaynextitem";

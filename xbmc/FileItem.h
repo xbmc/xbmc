@@ -214,6 +214,7 @@ public:
   bool IsAddonsPath() const;
   bool IsSourcesPath() const;
   bool IsNFO() const;
+  bool IsVideoExtras() const;
   bool IsDiscImage() const;
   bool IsOpticalMediaFile() const;
   bool IsDVDFile(bool bVobs = true, bool bIfos = true) const;
@@ -261,6 +262,7 @@ public:
   bool IsRSS() const;
   bool IsAndroidApp() const;
 
+  bool HasVideoVersions() const;
   void RemoveExtension();
   void CleanString();
   void FillInDefaultIcon();
