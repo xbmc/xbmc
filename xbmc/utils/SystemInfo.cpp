@@ -1033,7 +1033,7 @@ int CSysInfo::GetKernelBitness(void)
       std::string machine(un.machine);
       if (machine == "x86_64" || machine == "amd64" || machine == "arm64" || machine == "aarch64" ||
           machine == "ppc64" || machine == "ppc64el" || machine == "ppc64le" || machine == "ia64" ||
-          machine == "mips64" || machine == "s390x" || machine == "riscv64")
+          machine == "loongarch64" || machine == "mips64" || machine == "s390x" || machine == "riscv64")
         kernelBitness = 64;
       else
         kernelBitness = 32;
@@ -1080,6 +1080,8 @@ const std::string& CSysInfo::GetKernelCpuFamily(void)
       std::string machine(un.machine);
       if (machine.compare(0, 3, "arm", 3) == 0 || machine.compare(0, 7, "aarch64", 7) == 0)
         kernelCpuFamily = "ARM";
+      else if (machine.compare(0, 9, "loongarch", 9) == 0 || machine.compare(0, 7, "loong64", 7) == 0)
+        kernelCpuFamily = "LoongArch";
       else if (machine.compare(0, 4, "mips", 4) == 0)
         kernelCpuFamily = "MIPS";
       else if (machine.compare(0, 4, "i686", 4) == 0 || machine == "i386" || machine == "amd64" ||  machine.compare(0, 3, "x86", 3) == 0)
@@ -1466,6 +1468,8 @@ std::string CSysInfo::GetBuildTargetCpuFamily(void)
   return "ARM (Thumb)";
 #elif defined(__arm__) || defined(_M_ARM) || defined (__aarch64__)
   return "ARM";
+#elif defined(__loongarch__)
+  return "LoongArch";
 #elif defined(__mips__) || defined(mips) || defined(__mips)
   return "MIPS";
 #elif defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64) || \
