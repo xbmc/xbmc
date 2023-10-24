@@ -24,7 +24,11 @@ endif()
 # Variable to indicate if the project is targeting a Multi Config Generator (VS/Xcode primarily)
 get_property(_multiconfig_generator GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(_multiconfig_generator)
+  # Target to encompass an optional way to build all internal dependencies
+  # Must set EXCLUDE_FROM_ALL property so the ALL target doesnt include this, and therefore
+  # build all internal dependencies
   add_custom_target(build_internal_depends)
+  set_target_properties(build_internal_depends PROPERTIES EXCLUDE_FROM_ALL TRUE)
 endif()
 
 # Set CORE_BUILD_DIR
