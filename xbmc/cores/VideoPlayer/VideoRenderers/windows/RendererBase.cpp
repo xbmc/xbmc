@@ -770,3 +770,15 @@ bool CRendererBase::IntendToRenderAsHDR(const VideoPicture& picture)
 
   return streamIsHDR && canDisplayHDR;
 }
+
+bool CRendererBase::Supports(ERENDERFEATURE feature) const
+{
+  if (feature == RENDERFEATURE_BRIGHTNESS || feature == RENDERFEATURE_CONTRAST ||
+      feature == RENDERFEATURE_STRETCH || feature == RENDERFEATURE_NONLINSTRETCH ||
+      feature == RENDERFEATURE_ZOOM || feature == RENDERFEATURE_VERTICAL_SHIFT ||
+      feature == RENDERFEATURE_PIXEL_RATIO || feature == RENDERFEATURE_ROTATION ||
+      feature == RENDERFEATURE_POSTPROCESS || feature == RENDERFEATURE_TONEMAP)
+    return true;
+
+  return false;
+}
