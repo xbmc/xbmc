@@ -391,16 +391,17 @@ bool CPVRChannel::SetChannelName(const std::string& strChannelName, bool bIsUser
   return false;
 }
 
-bool CPVRChannel::SetLastWatched(time_t iLastWatched)
+bool CPVRChannel::SetLastWatched(time_t lastWatched, int groupId)
 {
   {
     std::unique_lock<CCriticalSection> lock(m_critSection);
-    m_iLastWatched = iLastWatched;
+    m_iLastWatched = lastWatched;
+    m_lastWatchedGroupId = groupId;
   }
 
   const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
-    return database->UpdateLastWatched(*this);
+    return database->UpdateLastWatched(*this, groupId);
 
   return false;
 }
@@ -716,6 +717,12 @@ bool CPVRChannel::IsUserSetHidden() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   return m_bIsUserSetHidden;
+}
+
+int CPVRChannel::LastWatchedGroupId() const
+{
+  std::unique_lock<CCriticalSection> lock(m_critSection);
+  return m_lastWatchedGroupId;
 }
 
 std::string CPVRChannel::ChannelName() const

@@ -437,10 +437,47 @@ bool CPVRPlaybackState::CanRecordOnPlayingChannel() const
   return currentChannel && currentChannel->CanRecord();
 }
 
+namespace
+{
+std::shared_ptr<CPVRChannelGroup> GetFirstNonDeletedAndNonHiddenChannelGroup(
+    const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
+{
+  CPVRChannelGroups* groups{
+      CServiceBroker::GetPVRManager().ChannelGroups()->Get(groupMember->IsRadio())};
+  if (groups)
+  {
+    const std::vector<std::shared_ptr<CPVRChannelGroup>> members{
+        groups->GetMembers(true /* exclude hidden */)};
+
+    for (const auto& member : members)
+    {
+      if (member->IsDeleted())
+        continue;
+
+      if (member->GetByUniqueID(groupMember->Channel()->StorageId()))
+        return member;
+    }
+  }
+
+  CLog::LogFC(LOGERROR, LOGPVR,
+              "Failed to obtain non-deleted and non-hidden group for channel '{}‘",
+              groupMember->Channel()->ChannelName());
+  return {};
+}
+} // unnamed namespace
+
 void CPVRPlaybackState::SetActiveChannelGroup(const std::shared_ptr<CPVRChannelGroup>& group)
 {
   if (group)
   {
+    if (group->IsHidden() || group->IsDeleted())
+    {
+      CLog::LogFC(LOGERROR, LOGPVR,
+                  "Rejecting to make hidden or deleted group '{}‘ the active group.",
+                  group->GroupName());
+      return;
+    }
+
     if (group->IsRadio())
       m_activeGroupRadio = group;
     else
@@ -456,57 +493,21 @@ void CPVRPlaybackState::SetActiveChannelGroup(
     const std::shared_ptr<CPVRChannelGroupMember>& channel)
 {
   const bool bRadio = channel->Channel()->IsRadio();
-  const std::shared_ptr<CPVRChannelGroup> group =
-      CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio)->GetById(channel->GroupID());
+  std::shared_ptr<CPVRChannelGroup> group{
+      CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio)->GetById(channel->GroupID())};
+
+  if (group && (group->IsHidden() || group->IsDeleted()))
+    group = GetFirstNonDeletedAndNonHiddenChannelGroup(channel);
 
   SetActiveChannelGroup(group);
 }
 
-namespace
-{
-std::shared_ptr<CPVRChannelGroup> GetFirstNonDeletedAndNonHiddenChannelGroup(bool bRadio)
-{
-  CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(bRadio);
-  if (groups)
-  {
-    const std::vector<std::shared_ptr<CPVRChannelGroup>> members =
-        groups->GetMembers(true); // exclude hidden
-
-    const auto it = std::find_if(members.cbegin(), members.cend(),
-                                 [](const auto& group) { return !group->IsDeleted(); });
-    if (it != members.cend())
-      return (*it);
-  }
-
-  CLog::LogFC(LOGERROR, LOGPVR, "Failed to obtain any non-deleted and non-hidden group");
-  return {};
-}
-} // unnamed namespace
-
 std::shared_ptr<CPVRChannelGroup> CPVRPlaybackState::GetActiveChannelGroup(bool bRadio) const
 {
   if (bRadio)
-  {
-    if (m_activeGroupRadio && (m_activeGroupRadio->IsDeleted() || m_activeGroupRadio->IsHidden()))
-    {
-      // switch to first non-deleted and non-hidden group
-      const auto group = GetFirstNonDeletedAndNonHiddenChannelGroup(bRadio);
-      if (group)
-        const_cast<CPVRPlaybackState*>(this)->SetActiveChannelGroup(group);
-    }
     return m_activeGroupRadio;
-  }
   else
-  {
-    if (m_activeGroupTV && (m_activeGroupTV->IsDeleted() || m_activeGroupTV->IsHidden()))
-    {
-      // switch to first non-deleted and non-hidden group
-      const auto group = GetFirstNonDeletedAndNonHiddenChannelGroup(bRadio);
-      if (group)
-        const_cast<CPVRPlaybackState*>(this)->SetActiveChannelGroup(group);
-    }
     return m_activeGroupTV;
-  }
 }
 
 CDateTime CPVRPlaybackState::GetPlaybackTime(int iClientID, int iUniqueChannelID) const
@@ -543,7 +544,7 @@ void CPVRPlaybackState::UpdateLastWatched(const std::shared_ptr<CPVRChannelGroup
   time_t iTime;
   time.GetAsTime(iTime);
 
-  channel->Channel()->SetLastWatched(iTime);
+  channel->Channel()->SetLastWatched(iTime, channel->GroupID());
 
   // update last watched timestamp for group
   const bool bRadio = channel->Channel()->IsRadio();
