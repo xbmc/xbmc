@@ -895,7 +895,7 @@
       "setid": { "$ref": "Library.Id" },
       "tag": { "$ref": "Array.String" },
       "userrating": { "type": "integer" },
-      "ratings": { "type": "Video.Ratings" },
+      "ratings": { "$ref": "Video.Ratings" },
       "premiered": { "type": "string" },
       "uniqueid": { "$ref": "Media.UniqueID" }
     }
@@ -937,7 +937,7 @@
       "season": { "type": "integer" },
       "tag": { "$ref": "Array.String" },
       "userrating": { "type": "integer" },
-      "ratings": { "type": "Video.Ratings" },
+      "ratings": { "$ref": "Video.Ratings" },
       "runtime": { "type": "integer", "description": "Runtime in seconds" },
       "status": { "type": "string", "description": "Returns 'returning series', 'in production', 'planned', 'cancelled' or 'ended'" },
       "uniqueid": { "$ref": "Media.UniqueID" }
@@ -976,7 +976,7 @@
       "specialsortepisode": { "type": "integer" },
       "userrating": { "type": "integer" },
       "seasonid": { "$ref": "Library.Id" },
-      "ratings": { "type": "Video.Ratings" },
+      "ratings": { "$ref": "Video.Ratings" },
       "studio": { "$ref": "Array.String" },
       "genre": { "$ref": "Array.String" }
     }
@@ -1756,7 +1756,7 @@
   },
   "Application.Property.Name": {
     "type": "string",
-    "enum": [ "volume", "muted", "name", "version", "volume", "sorttokens", "language" ]
+    "enum": [ "volume", "muted", "name", "version", "sorttokens", "language" ]
   },
   "Application.Property.Value": {
     "type": "object",
