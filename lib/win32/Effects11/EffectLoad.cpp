@@ -798,51 +798,53 @@ HRESULT CEffectLoader::LoadEffect(CEffect *pEffect, const void *pEffectBuffer, u
     m_pEffect = pEffect;
     m_EffectMemory = m_ReflectionMemory = 0;
 
-    VN( m_pEffect->m_pReflection = new CEffectReflection() );
+    VNR(m_pEffect->m_pReflection = new CEffectReflection());
     m_pReflection = m_pEffect->m_pReflection;
 
     // Begin effect load
-    VN( m_pEffect->m_pTypePool = new CEffect::CTypeHashTable );
-    VN( m_pEffect->m_pStringPool = new CEffect::CStringHashTable );
-    VN( m_pEffect->m_pPooledHeap = new CDataBlockStore );
+    VNR(m_pEffect->m_pTypePool = new CEffect::CTypeHashTable);
+    VNR(m_pEffect->m_pStringPool = new CEffect::CStringHashTable);
+    VNR(m_pEffect->m_pPooledHeap = new CDataBlockStore);
     m_pEffect->m_pPooledHeap->EnableAlignment();
     m_pEffect->m_pTypePool->SetPrivateHeap(m_pEffect->m_pPooledHeap);
     m_pEffect->m_pStringPool->SetPrivateHeap(m_pEffect->m_pPooledHeap);
 
-    VH( m_pEffect->m_pTypePool->AutoGrow() );
-    VH( m_pEffect->m_pStringPool->AutoGrow() );
+    VHR(m_pEffect->m_pTypePool->AutoGrow());
+    VHR(m_pEffect->m_pStringPool->AutoGrow());
 
     // Load from blob
     m_pData = (uint8_t*)pEffectBuffer;
     m_dwBufferSize = cbEffectBuffer;
 
-    VH( m_msStructured.SetData(m_pData, m_dwBufferSize) );
+    VHR(m_msStructured.SetData(m_pData, m_dwBufferSize));
 
     // At this point, we assume that the blob is valid
-    VHD( m_msStructured.Read((void**) &m_pHeader, sizeof(*m_pHeader)), "pEffectBuffer is too small." );
+    VHDR(m_msStructured.Read((void**)&m_pHeader, sizeof(*m_pHeader)),
+         "pEffectBuffer is too small.");
 
     // Verify the version
     if( FAILED( hr = GetEffectVersion( m_pHeader->Tag, &m_Version ) ) )
     {
         DPF(0, "Effect version is unrecognized.  This runtime supports fx_5_0 to %s.", g_EffectVersions[_countof(g_EffectVersions)-1].m_pName );
-        VH( hr );
+        VHR(hr);
     }
 
     if( m_pHeader->RequiresPool() || m_pHeader->Pool.cObjectVariables > 0 || m_pHeader->Pool.cNumericVariables > 0 )
     {
         DPF(0, "Effect11 does not support EffectPools." );
-        VH( E_FAIL );
+        VHR(E_FAIL);
     }
 
     // Get shader block count
-    VBD( m_pHeader->cInlineShaders <= m_pHeader->cTotalShaders, "Invalid Effect header: cInlineShaders > cTotalShaders." );
+    VBDR(m_pHeader->cInlineShaders <= m_pHeader->cTotalShaders,
+         "Invalid Effect header: cInlineShaders > cTotalShaders.");
 
     // Make sure the counts for the Effect don't overflow
     chkVariables = m_pHeader->Effect.cObjectVariables;
     chkVariables += m_pHeader->Effect.cNumericVariables;
     chkVariables += m_pHeader->cInterfaceVariables;
     chkVariables *= sizeof(SGlobalVariable);
-    VH( chkVariables.GetValue(&varSize) );
+    VHR(chkVariables.GetValue(&varSize));
 
     // Make sure the counts for the SMemberDataPointers don't overflow
     chkVariables = m_pHeader->cClassInstanceElements;
@@ -852,28 +854,33 @@ HRESULT CEffectLoader::LoadEffect(CEffect *pEffect, const void *pEffectBuffer, u
     chkVariables += m_pHeader->cSamplers;
     chkVariables += m_pHeader->Effect.cCBs; // Buffer (for CBuffers and TBuffers)
     chkVariables += m_pHeader->Effect.cCBs; // SRV (for TBuffers)
-    VHD( chkVariables.GetValue(&cMemberDataBlocks), "Overflow: too many Effect variables." );
+    VHDR(chkVariables.GetValue(&cMemberDataBlocks), "Overflow: too many Effect variables.");
 
     // Allocate effect resources
-    VN( m_pEffect->m_pCBs = PRIVATENEW SConstantBuffer[m_pHeader->Effect.cCBs] );
-    VN( m_pEffect->m_pDepthStencilBlocks = PRIVATENEW SDepthStencilBlock[m_pHeader->cDepthStencilBlocks] );
-    VN( m_pEffect->m_pRasterizerBlocks = PRIVATENEW SRasterizerBlock[m_pHeader->cRasterizerStateBlocks] );
-    VN( m_pEffect->m_pBlendBlocks = PRIVATENEW SBlendBlock[m_pHeader->cBlendStateBlocks] );
-    VN( m_pEffect->m_pSamplerBlocks = PRIVATENEW SSamplerBlock[m_pHeader->cSamplers] );
-    
-    // we allocate raw bytes for variables because they are polymorphic types that need to be placement new'ed
-    VN( m_pEffect->m_pVariables = (SGlobalVariable *)PRIVATENEW uint8_t[varSize] );
-    VN( m_pEffect->m_pAnonymousShaders = PRIVATENEW SAnonymousShader[m_pHeader->cInlineShaders] );
+    VNR(m_pEffect->m_pCBs = PRIVATENEW SConstantBuffer[m_pHeader->Effect.cCBs]);
+    VNR(m_pEffect->m_pDepthStencilBlocks =
+            PRIVATENEW SDepthStencilBlock[m_pHeader->cDepthStencilBlocks]);
+    VNR(m_pEffect->m_pRasterizerBlocks =
+            PRIVATENEW SRasterizerBlock[m_pHeader->cRasterizerStateBlocks]);
+    VNR(m_pEffect->m_pBlendBlocks = PRIVATENEW SBlendBlock[m_pHeader->cBlendStateBlocks]);
+    VNR(m_pEffect->m_pSamplerBlocks = PRIVATENEW SSamplerBlock[m_pHeader->cSamplers]);
 
-    VN( m_pEffect->m_pGroups = PRIVATENEW SGroup[m_pHeader->cGroups] );
-    VN( m_pEffect->m_pShaderBlocks = PRIVATENEW SShaderBlock[m_pHeader->cTotalShaders] );
-    VN( m_pEffect->m_pStrings = PRIVATENEW SString[m_pHeader->cStrings] );
-    VN( m_pEffect->m_pShaderResources = PRIVATENEW SShaderResource[m_pHeader->cShaderResources] );
-    VN( m_pEffect->m_pUnorderedAccessViews = PRIVATENEW SUnorderedAccessView[m_pHeader->cUnorderedAccessViews] );
-    VN( m_pEffect->m_pInterfaces = PRIVATENEW SInterface[m_pHeader->cInterfaceVariableElements] );
-    VN( m_pEffect->m_pMemberDataBlocks = PRIVATENEW SMemberDataPointer[cMemberDataBlocks] );
-    VN( m_pEffect->m_pRenderTargetViews = PRIVATENEW SRenderTargetView[m_pHeader->cRenderTargetViews] );
-    VN( m_pEffect->m_pDepthStencilViews = PRIVATENEW SDepthStencilView[m_pHeader->cDepthStencilViews] );
+    // we allocate raw bytes for variables because they are polymorphic types that need to be placement new'ed
+    VNR(m_pEffect->m_pVariables = (SGlobalVariable*)PRIVATENEW uint8_t[varSize]);
+    VNR(m_pEffect->m_pAnonymousShaders = PRIVATENEW SAnonymousShader[m_pHeader->cInlineShaders]);
+
+    VNR(m_pEffect->m_pGroups = PRIVATENEW SGroup[m_pHeader->cGroups]);
+    VNR(m_pEffect->m_pShaderBlocks = PRIVATENEW SShaderBlock[m_pHeader->cTotalShaders]);
+    VNR(m_pEffect->m_pStrings = PRIVATENEW SString[m_pHeader->cStrings]);
+    VNR(m_pEffect->m_pShaderResources = PRIVATENEW SShaderResource[m_pHeader->cShaderResources]);
+    VNR(m_pEffect->m_pUnorderedAccessViews =
+            PRIVATENEW SUnorderedAccessView[m_pHeader->cUnorderedAccessViews]);
+    VNR(m_pEffect->m_pInterfaces = PRIVATENEW SInterface[m_pHeader->cInterfaceVariableElements]);
+    VNR(m_pEffect->m_pMemberDataBlocks = PRIVATENEW SMemberDataPointer[cMemberDataBlocks]);
+    VNR(m_pEffect->m_pRenderTargetViews =
+            PRIVATENEW SRenderTargetView[m_pHeader->cRenderTargetViews]);
+    VNR(m_pEffect->m_pDepthStencilViews =
+            PRIVATENEW SDepthStencilView[m_pHeader->cDepthStencilViews]);
 
     uint32_t oStructured = m_pHeader->cbUnstructured + sizeof(SBinaryHeader5);
     VHD( m_msStructured.Seek(oStructured), "Invalid pEffectBuffer: Missing structured data block." );
@@ -997,8 +1004,10 @@ HRESULT CEffectLoader::LoadTypeAndAddToPool(SType **ppType, uint32_t  dwOffset)
     
     m_HashBuffer.Empty();
 
-    VHD( m_msUnstructured.ReadAtOffset(dwOffset, sizeof(SBinaryType), (void**) &psType), "Invalid pEffectBuffer: cannot read type." );
-    VHD( LoadStringAndAddToPool(&temporaryType.pTypeName, psType->oTypeName), "Invalid pEffectBuffer: cannot read type name." );
+    VHDR(m_msUnstructured.ReadAtOffset(dwOffset, sizeof(SBinaryType), (void**)&psType),
+         "Invalid pEffectBuffer: cannot read type.");
+    VHDR(LoadStringAndAddToPool(&temporaryType.pTypeName, psType->oTypeName),
+         "Invalid pEffectBuffer: cannot read type name.");
     temporaryType.VarType = psType->VarType;
     temporaryType.Elements = psType->Elements;
     temporaryType.TotalSize = psType->TotalSize;
@@ -2602,17 +2611,18 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
             eRange = ER_CBuffer;
             
             pCB = m_pEffect->FindCB(pName);
-            VBD( nullptr != pCB, "Loading error: cannot find cbuffer." );
-            VBD( size == 1, "Loading error: cbuffer arrays are not supported." );
+            VBDR(nullptr != pCB, "Loading error: cannot find cbuffer.");
+            VBDR(size == 1, "Loading error: cbuffer arrays are not supported.");
             break;
 
         case D3D_SIT_TBUFFER:
             eRange = ER_Texture;
             
             pCB = m_pEffect->FindCB(pName);
-            VBD( nullptr != pCB, "Loading error: cannot find tbuffer." );
-            VBD( false != pCB->IsTBuffer, "Loading error: cbuffer found where tbuffer is expected." );
-            VBD( size == 1, "Loading error: tbuffer arrays are not supported." );
+            VBDR(nullptr != pCB, "Loading error: cannot find tbuffer.");
+            VBDR(false != pCB->IsTBuffer,
+                 "Loading error: cbuffer found where tbuffer is expected.");
+            VBDR(size == 1, "Loading error: tbuffer arrays are not supported.");
             pShaderResource = &pCB->TBuffer;
             break;
 
@@ -2623,9 +2633,9 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
                 eRange = ER_Texture;
 
                 pVariable = m_pEffect->FindVariableByNameWithParsing(pName);
-                VBD( pVariable != nullptr, "Loading error: cannot find SRV variable." );
+                VBDR(pVariable != nullptr, "Loading error: cannot find SRV variable.");
                 uint32_t elements = std::max<uint32_t>(1, pVariable->pType->Elements);
-                VBD( size <= elements, "Loading error: SRV array size mismatch." );
+                VBDR(size <= elements, "Loading error: SRV array size mismatch.");
 
                 if (pVariable->pType->IsShaderResource())
                 {
@@ -2635,7 +2645,8 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
                 else
                 {
                     // This is a FX9/HLSL9-style texture load instruction that specifies only a sampler
-                    VBD( pVariable->pType->IsSampler(), "Loading error: shader dependency is neither an SRV nor sampler.");
+                    VBDR(pVariable->pType->IsSampler(),
+                         "Loading error: shader dependency is neither an SRV nor sampler.");
                     isFX9TextureLoad = true;
                     pSampler = pVariable->Data.pSampler;
                     // validate that all samplers actually used (i.e. based on size, not elements) in this variable have a valid TEXTURE assignment
@@ -2652,8 +2663,8 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
                             {
                                 DPF(0, "%s: Sampler %s[%zu] does not have a texture bound to it, even though the sampler array is used in a DX9-style texture load instruction", g_szEffectLoadArea, pName, j);
                             }
-                        
-                            VH( E_FAIL );
+
+                            VHR(E_FAIL);
                         }
                     }
                 }
@@ -2669,9 +2680,11 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
             eRange = ER_UnorderedAccessView;
 
             pVariable = m_pEffect->FindVariableByNameWithParsing(pName);
-            VBD( pVariable != nullptr, "Loading error: cannot find UAV variable." );
-            VBD( size <= std::max<uint32_t>(1, pVariable->pType->Elements), "Loading error: UAV array index out of range." );
-            VBD( pVariable->pType->IsUnorderedAccessView(), "Loading error: UAV variable expected." );
+            VBDR(pVariable != nullptr, "Loading error: cannot find UAV variable.");
+            VBDR(size <= std::max<uint32_t>(1, pVariable->pType->Elements),
+                 "Loading error: UAV array index out of range.");
+            VBDR(pVariable->pType->IsUnorderedAccessView(),
+                 "Loading error: UAV variable expected.");
             pUnorderedAccessView = pVariable->Data.pUnorderedAccessView;
             break;
 
@@ -2679,14 +2692,15 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
             eRange = ER_Sampler;
 
             pVariable = m_pEffect->FindVariableByNameWithParsing(pName);
-            VBD( pVariable != nullptr, "Loading error: cannot find sampler variable." );
-            VBD( size <= std::max<uint32_t>(1, pVariable->pType->Elements), "Loading error: sampler array index out of range." );
-            VBD( pVariable->pType->IsSampler(), "Loading error: sampler variable expected." );
+            VBDR(pVariable != nullptr, "Loading error: cannot find sampler variable.");
+            VBDR(size <= std::max<uint32_t>(1, pVariable->pType->Elements),
+                 "Loading error: sampler array index out of range.");
+            VBDR(pVariable->pType->IsSampler(), "Loading error: sampler variable expected.");
             pSampler = pVariable->Data.pSampler;
             break;
 
         default:
-            VHD( E_FAIL, "Internal loading error: unexpected shader dependency type." );
+          VHDR(E_FAIL, "Internal loading error: unexpected shader dependency type.");
         };
 
         //
@@ -2720,8 +2734,9 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
                     // UAVs will always be located in one range, as they are more expensive to set
                     while(pRange->last < bindPoint)
                     {
-                        VHD( pRange->vResources.Add(&g_NullUnorderedAccessView), "Internal loading error: cannot add UAV to range." );
-                        pRange->last++;
+                      VHDR(pRange->vResources.Add(&g_NullUnorderedAccessView),
+                           "Internal loading error: cannot add UAV to range.");
+                      pRange->last++;
                     }
                 }
             }
@@ -2729,8 +2744,8 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
 
         if ( rangeCount == 0 )
         {
-            VN( pRange = pvRange->Add() );
-            pRange->start = bindPoint;
+          VNR(pRange = pvRange->Add());
+          pRange->start = bindPoint;
         }
 
         pRange->last = bindPoint + size;
@@ -2738,12 +2753,14 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
         switch( ResourceDesc.Type )
         {
         case D3D_SIT_CBUFFER:
-            VHD( pRange->vResources.Add(pCB), "Internal loading error: cannot add cbuffer to range." );
-            break;
+          VHDR(pRange->vResources.Add(pCB), "Internal loading error: cannot add cbuffer to range.");
+          break;
         case D3D_SIT_TBUFFER:
-            VHD( pRange->vResources.Add(pShaderResource), "Internal loading error: cannot add tbuffer to range." );
-            VHD( vTBuffers.Add( (SConstantBuffer*)pCB ), "Internal loading error: cannot add tbuffer to vector." );
-            break;
+          VHDR(pRange->vResources.Add(pShaderResource),
+               "Internal loading error: cannot add tbuffer to range.");
+          VHDR(vTBuffers.Add((SConstantBuffer*)pCB),
+               "Internal loading error: cannot add tbuffer to vector.");
+          break;
         case D3D_SIT_TEXTURE:
         case D3D_SIT_STRUCTURED:
         case D3D_SIT_BYTEADDRESS:
@@ -2752,7 +2769,8 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
                 // grab all of the textures from each sampler
                 for (size_t j = 0; j < size; ++ j)
                 {
-                    VHD( pRange->vResources.Add(pSampler[j].BackingStore.pTexture), "Internal loading error: cannot add SRV to range." );
+                  VHDR(pRange->vResources.Add(pSampler[j].BackingStore.pTexture),
+                       "Internal loading error: cannot add SRV to range.");
                 }
             }
             else
@@ -2760,7 +2778,8 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
                 // add the whole array
                 for (size_t j = 0; j < size; ++ j)
                 {
-                    VHD( pRange->vResources.Add(pShaderResource + j), "Internal loading error: cannot add SRV to range." );
+                  VHDR(pRange->vResources.Add(pShaderResource + j),
+                       "Internal loading error: cannot add SRV to range.");
                 }
             }
             break;
@@ -2773,18 +2792,20 @@ HRESULT CEffectLoader::GrabShaderData(SShaderBlock *pShaderBlock)
             // add the whole array
             for (size_t j = 0; j < size; ++ j)
             {
-                VHD( pRange->vResources.Add(pUnorderedAccessView + j), "Internal loading error: cannot add UAV to range." );
+              VHDR(pRange->vResources.Add(pUnorderedAccessView + j),
+                   "Internal loading error: cannot add UAV to range.");
             }
             break;
         case D3D_SIT_SAMPLER:
             // add the whole array
             for (size_t j = 0; j < size; ++ j)
             {
-                VHD( pRange->vResources.Add(pSampler + j), "Internal loading error: cannot add sampler to range." );
+              VHDR(pRange->vResources.Add(pSampler + j),
+                   "Internal loading error: cannot add sampler to range.");
             }
             break;
         default:
-            VHD( E_FAIL, "Internal loading error: unexpected shader dependency type." );
+          VHDR(E_FAIL, "Internal loading error: unexpected shader dependency type.");
         }
     }
 

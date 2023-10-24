@@ -119,7 +119,7 @@ protected:
             return S_OK;
 
         SAFE_DELETE_ARRAY( m_SemanticString[Stream] );
-        VN( m_SemanticString[Stream] = new char[len + 1] );
+        VNR(m_SemanticString[Stream] = new char[len + 1]);
         strcpy_s( m_SemanticString[Stream], len + 1, pString );
 
         LPSTR pSemantic = m_SemanticString[Stream];
@@ -254,7 +254,7 @@ lExit:
         {
             strcpy_s( m_pError, MAX_ERROR_SIZE,
                            "ID3D11Effect::ParseSODecl - Invalid output slot" );
-            VH( E_FAIL );
+            VHR(E_FAIL);
         }
 
         *pColon = '\0';
