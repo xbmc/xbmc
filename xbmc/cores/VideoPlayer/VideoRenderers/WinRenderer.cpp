@@ -272,23 +272,10 @@ bool CWinRenderer::Flush(bool saveBuffers)
 
 bool CWinRenderer::Supports(ERENDERFEATURE feature) const
 {
-  if(feature == RENDERFEATURE_BRIGHTNESS)
-    return true;
+  if (!m_bConfigured)
+    return false;
 
-  if(feature == RENDERFEATURE_CONTRAST)
-    return true;
-
-  if (feature == RENDERFEATURE_STRETCH         ||
-      feature == RENDERFEATURE_NONLINSTRETCH   ||
-      feature == RENDERFEATURE_ZOOM            ||
-      feature == RENDERFEATURE_VERTICAL_SHIFT  ||
-      feature == RENDERFEATURE_PIXEL_RATIO     ||
-      feature == RENDERFEATURE_ROTATION        ||
-      feature == RENDERFEATURE_POSTPROCESS     ||
-      feature == RENDERFEATURE_TONEMAP)
-    return true;
-
-  return false;
+  return m_renderer->Supports(feature);
 }
 
 bool CWinRenderer::Supports(ESCALINGMETHOD method) const
