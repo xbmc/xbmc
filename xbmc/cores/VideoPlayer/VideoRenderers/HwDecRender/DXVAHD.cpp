@@ -660,3 +660,18 @@ bool CProcessorHD::SetConversion(const ProcessorConversion& conversion)
 
   return true;
 }
+
+bool CProcessorHD::Supports(ERENDERFEATURE feature) const
+{
+  switch (feature)
+  {
+    case RENDERFEATURE_BRIGHTNESS:
+      return m_procCaps.m_Filters[D3D11_VIDEO_PROCESSOR_FILTER_BRIGHTNESS].bSupported;
+    case RENDERFEATURE_CONTRAST:
+      return m_procCaps.m_Filters[D3D11_VIDEO_PROCESSOR_FILTER_CONTRAST].bSupported;
+    case RENDERFEATURE_ROTATION:
+      return (m_procCaps.m_vcaps.FeatureCaps & D3D11_VIDEO_PROCESSOR_FEATURE_CAPS_ROTATION);
+    default:
+      return false;
+  }
+}

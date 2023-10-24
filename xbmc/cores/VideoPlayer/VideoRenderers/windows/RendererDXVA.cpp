@@ -304,6 +304,20 @@ void CRendererDXVA::FillBuffersSet(CRenderBuffer* (&buffers)[8])
   }
 }
 
+bool CRendererDXVA::Supports(ERENDERFEATURE feature) const
+{
+  if (feature == RENDERFEATURE_BRIGHTNESS || feature == RENDERFEATURE_CONTRAST ||
+      feature == RENDERFEATURE_ROTATION)
+  {
+    if (m_processor)
+      return m_processor->Supports(feature);
+
+    return false;
+  }
+
+  return CRendererBase::Supports(feature);
+}
+
 bool CRendererDXVA::Supports(ESCALINGMETHOD method) const
 {
   if (method == VS_SCALINGMETHOD_DXVA_HARDWARE)
