@@ -526,7 +526,6 @@ public:
   VdpVideoSurface RemoveNext(bool skiprender = false);
   void Reset();
   int Size();
-  bool HasRefs();
 protected:
   std::map<VdpVideoSurface, int> m_state;
   std::list<VdpVideoSurface> m_freeSurfaces;
@@ -645,7 +644,6 @@ protected:
   CVdpauConfig m_vdpauConfig;
   CVideoSurfaces m_videoSurfaces;
   AVVDPAUContext m_hwContext;
-  AVCodecContext* m_avctx = nullptr;
 
   COutput m_vdpauOutput;
   CVdpauBufferStats m_bufferStats;
