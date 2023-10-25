@@ -69,6 +69,8 @@ In the repository root directory, there is a [`.clang-format`](https://github.co
 
 When you create a pull request, the PR build job will run `clang-format` on your commits and provide patches for any parts that don't satisfy the current `.clang-format` rules. You should apply these patches and amend your pull request accordingly.
 
+The coding guidelines should be met by every code change, be it editing existing code, adding new code to existing source files, or adding completely new source files. For changes in existing files, at least the changed code needs to pass the clang-format check.
+
 Conventions can be bent or broken in the interest of making code more readable and maintainable. However, if you submit a patch that contains excessive style conflicts, you may be asked to improve your code before your pull request is reviewed.
 
 **[back to top](#table-of-contents)**
