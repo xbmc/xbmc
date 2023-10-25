@@ -88,7 +88,7 @@ The `ColumnLimit` in `.clang-format` is set to `100` which defines line length (
 Curly braces always go on a new line.
 
 ```cpp
-for (int i = 0; i < t; i++)
+for (int i = 0; i < t; ++i)
 {
   [...]
 }
@@ -201,7 +201,7 @@ a = (b + c) * d;
 Control statement keywords have to be separated from opening parentheses by one space.
 ```cpp
 while (true);
-for (int i = 0; i < x; i++);
+for (int i = 0; i < x; ++i);
 ```
 When conditions are used without parentheses, it is preferable to add a new line, to make the next block of code more readable.
 ```cpp
