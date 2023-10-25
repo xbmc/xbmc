@@ -58,6 +58,17 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
+  if (CEGLUtils::HasExtension(m_eglContext.GetEGLDisplay(), "EGL_ANDROID_native_fence_sync") &&
+      CEGLUtils::HasExtension(m_eglContext.GetEGLDisplay(), "EGL_KHR_fence_sync"))
+  {
+    m_eglFence = std::make_unique<KODI::UTILS::EGL::CEGLFence>(m_eglContext.GetEGLDisplay());
+  }
+  else
+  {
+    CLog::Log(LOGWARNING, "[GBM] missing support for EGL_KHR_fence_sync and "
+                          "EGL_ANDROID_native_fence_sync - performance may be impacted");
+  }
+
   return true;
 }
 

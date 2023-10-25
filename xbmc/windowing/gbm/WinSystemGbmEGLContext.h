@@ -9,6 +9,7 @@
 #pragma once
 
 #include "WinSystemGbm.h"
+#include "utils/EGLFence.h"
 #include "utils/EGLUtils.h"
 #include "windowing/linux/WinSystemEGL.h"
 
@@ -45,6 +46,8 @@ protected:
    */
   bool InitWindowSystemEGL(EGLint renderableType, EGLint apiType);
   virtual bool CreateContext() = 0;
+
+  std::unique_ptr<KODI::UTILS::EGL::CEGLFence> m_eglFence;
 
   struct delete_CVaapiProxy
   {

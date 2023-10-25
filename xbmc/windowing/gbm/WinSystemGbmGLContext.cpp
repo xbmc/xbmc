@@ -119,13 +119,37 @@ void CWinSystemGbmGLContext::PresentRender(bool rendered, bool videoLayer)
   {
     if (rendered)
     {
+#if defined(EGL_ANDROID_native_fence_sync) && defined(EGL_KHR_fence_sync)
+      if (m_eglFence)
+      {
+        int fd = m_DRM->TakeOutFenceFd();
+        if (fd != -1)
+        {
+          m_eglFence->CreateKMSFence(fd);
+          m_eglFence->WaitSyncGPU();
+        }
+
+        m_eglFence->CreateGPUFence();
+      }
+#endif
+
       if (!m_eglContext.TrySwapBuffers())
       {
         CEGLUtils::Log(LOGERROR, "eglSwapBuffers failed");
         throw std::runtime_error("eglSwapBuffers failed");
       }
+
+#if defined(EGL_ANDROID_native_fence_sync) && defined(EGL_KHR_fence_sync)
+      if (m_eglFence)
+      {
+        int fd = m_eglFence->FlushFence();
+        m_DRM->SetInFenceFd(fd);
+
+        m_eglFence->WaitSyncCPU();
+      }
+#endif
     }
-    CWinSystemGbm::FlipPage(rendered, videoLayer);
+    CWinSystemGbm::FlipPage(rendered, videoLayer, static_cast<bool>(m_eglFence));
 
     if (m_dispReset && m_dispResetTimer.IsTimePast())
     {
