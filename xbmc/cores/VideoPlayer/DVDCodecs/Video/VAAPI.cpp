@@ -518,7 +518,6 @@ CDecoder::CDecoder(CProcessInfo& processInfo) :
   m_vaapiConfig.context = 0;
   m_vaapiConfig.configId = VA_INVALID_ID;
   m_vaapiConfig.processInfo = &m_processInfo;
-  m_avctx = nullptr;
   m_getBufferError = 0;
 }
 
@@ -753,7 +752,6 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   avctx->get_buffer2 = CDecoder::FFGetBuffer;
   avctx->slice_flags = SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
 
-  m_avctx = mainctx;
   return true;
 }
 
@@ -774,12 +772,6 @@ void CDecoder::Close()
 
 long CDecoder::Release()
 {
-  // if ffmpeg holds any references, flush buffers
-  if (m_avctx && m_videoSurfaces.HasRefs())
-  {
-    avcodec_flush_buffers(m_avctx);
-  }
-
   if (m_presentPicture)
   {
     m_presentPicture->Release();
