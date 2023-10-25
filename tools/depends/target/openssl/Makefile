@@ -1,13 +1,6 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile 001-android-getauxvalrevert.patch 16-kodi.conf ../../download-files.include
-
-# lib name, version
-LIBNAME=openssl
-VERSION=1.1.1n
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=1937796736613dcf4105a54e42ecb61f95a1cea74677156f9459aea0f2c95159359e766089632bf364ee6b0d28d661eb9957bce8fecc9d2436378d8d79e8d0a4
-include ../../download-files.include
+include ../../Makefile.include OPENSSL-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile OPENSSL-VERSION ../../download-files.include \
+                        001-android-getauxvalrevert.patch 16-kodi.conf
 
 # configuration settings
 ifeq ($(OS), linux)
