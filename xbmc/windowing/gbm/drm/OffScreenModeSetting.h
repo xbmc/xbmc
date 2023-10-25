@@ -22,7 +22,7 @@ class COffScreenModeSetting : public CDRMUtils
 public:
   COffScreenModeSetting() = default;
   ~COffScreenModeSetting() override = default;
-  void FlipPage(struct gbm_bo *bo, bool rendered, bool videoLayer) override {}
+  void FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async) override {}
   bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo *bo) override { return false; }
   bool SetActive(bool active) override { return false; }
   bool InitDrm() override;

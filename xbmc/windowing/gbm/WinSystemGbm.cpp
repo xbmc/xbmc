@@ -278,7 +278,7 @@ void CWinSystemGbm::UpdateDisplayHardwareScaling(const RESOLUTION_INFO& resInfo)
   SetFullScreen(true, resMutable, false);
 }
 
-void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer)
+void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
 {
   if (m_videoLayerBridge && !videoLayer)
   {
@@ -293,7 +293,7 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer)
     bo = m_GBM->GetDevice()->GetSurface()->LockFrontBuffer()->Get();
   }
 
-  m_DRM->FlipPage(bo, rendered, videoLayer);
+  m_DRM->FlipPage(bo, rendered, videoLayer, async);
 
   if (m_videoLayerBridge && !videoLayer)
   {
@@ -310,14 +310,14 @@ bool CWinSystemGbm::UseLimitedColor()
 bool CWinSystemGbm::Hide()
 {
   bool ret = m_DRM->SetActive(false);
-  FlipPage(false, false);
+  FlipPage(false, false, false);
   return ret;
 }
 
 bool CWinSystemGbm::Show(bool raise)
 {
   bool ret = m_DRM->SetActive(true);
-  FlipPage(false, false);
+  FlipPage(false, false, false);
   return ret;
 }
 

@@ -49,7 +49,7 @@ public:
   bool DisplayHardwareScalingEnabled() override;
   void UpdateDisplayHardwareScaling(const RESOLUTION_INFO& resInfo) override;
 
-  void FlipPage(bool rendered, bool videoLayer);
+  void FlipPage(bool rendered, bool videoLayer, bool async);
 
   bool CanDoWindowed() override { return false; }
   void UpdateResolutions() override;
