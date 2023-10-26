@@ -87,6 +87,9 @@ std::string CTextureCache::GetCachedImage(const std::string &image, CTextureDeta
   // lookup the item in the database
   if (GetCachedTexture(url, details))
   {
+    if (details.file.empty())
+      return "";
+
     if (trackUsage)
       IncrementUseCount(details);
     return GetCachedPath(details.file);
