@@ -446,11 +446,14 @@ namespace XBMCAddon
         else
         {
           StringUtils::Replace(result, "H", "%H");
+          StringUtils::Replace(result, "hh", "%I");
           StringUtils::Replace(result, "h", "%I");
-          StringUtils::Replace(result, "mm", "%M");
-          StringUtils::Replace(result, "ss", "%S");
-          StringUtils::Replace(result, "xx", "%p");
         }
+        StringUtils::Replace(result, "mm", "%M");
+        StringUtils::Replace(result, "m", "%M");
+        StringUtils::Replace(result, "ss", "%S");
+        StringUtils::Replace(result, "s", "%S");
+        StringUtils::Replace(result, "xx", "%p");
       }
       else if (StringUtils::CompareNoCase(id, "meridiem") == 0)
       {
