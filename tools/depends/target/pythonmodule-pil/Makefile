@@ -58,6 +58,7 @@ BUILD_OPTS=--plat-name $(OS)-$(CPU) --disable-jpeg2000 --disable-webp --disable-
 export CC CFLAGS
 export PYTHONXINCLUDE=$(PREFIX)/include/python$(PYTHON_VERSION)
 export LDSHARED LDFLAGS PYTHONPATH
+export SETUPTOOLS_EXT_SUFFIX=.so
 
 all: .installed-$(PLATFORM)
 
@@ -89,9 +90,6 @@ else ifeq ($(OS),darwin_embedded)
 	cd $(PILPATH) && rm -rf Pillow-*.egg
 else ifeq ($(TARGET_PLATFORM),webos)
 	cd $(PILPATHLIB) && unzip -o $(PILPATH)/Pillow-*.egg && rm -f $(PILPATH)/Pillow-*.egg
-	cd $(PILPATHLIB)/PIL && \
-          sed $(SED_FLAG) -e 's/import sys, pkg_resources,/import sys, /' \
-                          -re "/__file__/ s|=.*(_imaging.*.so).*$$|= 'lib/python3/PIL/\1'|" _imaging*.py
 endif
 	touch $@
 
