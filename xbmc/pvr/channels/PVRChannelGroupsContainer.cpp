@@ -97,7 +97,8 @@ std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetChannelById(int iCha
   return channel;
 }
 
-std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetChannelForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetChannelForEpgTag(
+    const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (!epgTag)
     return {};

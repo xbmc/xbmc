@@ -71,7 +71,7 @@ public:
    * @param channel The new channel data.
    * @return True if something changed, false otherwise.
    */
-  bool UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel);
+  bool UpdateFromClient(const std::shared_ptr<const CPVRChannel>& channel);
 
   /*!
    * @brief Persists the changes in the database.

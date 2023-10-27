@@ -22,13 +22,13 @@ namespace PVR
     CGUIDialogPVRChannelGuide();
     ~CGUIDialogPVRChannelGuide() override = default;
 
-    void Open(const std::shared_ptr<CPVRChannel>& channel);
+    void Open(const std::shared_ptr<const CPVRChannel>& channel);
 
   protected:
     void OnInitWindow() override;
     void OnDeinitWindow(int nextWindowID) override;
 
   private:
-    std::shared_ptr<CPVRChannel> m_channel;
+    std::shared_ptr<const CPVRChannel> m_channel;
   };
 }

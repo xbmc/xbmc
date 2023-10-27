@@ -26,7 +26,7 @@ CPVRTimerRuleMatcher::CPVRTimerRuleMatcher(const std::shared_ptr<CPVRTimerInfoTa
 
 CPVRTimerRuleMatcher::~CPVRTimerRuleMatcher() = default;
 
-std::shared_ptr<CPVRChannel> CPVRTimerRuleMatcher::GetChannel() const
+std::shared_ptr<const CPVRChannel> CPVRTimerRuleMatcher::GetChannel() const
 {
   if (m_timerRule->GetTimerType()->SupportsChannels())
     return m_timerRule->Channel();
@@ -71,14 +71,15 @@ CDateTime CPVRTimerRuleMatcher::GetNextTimerStart() const
   return nextStart.GetAsUTCDateTime();
 }
 
-bool CPVRTimerRuleMatcher::Matches(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+bool CPVRTimerRuleMatcher::Matches(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   return epgTag && CPVRTimerInfoTag::ConvertUTCToLocalTime(epgTag->EndAsUTC()) > m_start &&
          MatchSeriesLink(epgTag) && MatchChannel(epgTag) && MatchStart(epgTag) &&
          MatchEnd(epgTag) && MatchDayOfWeek(epgTag) && MatchSearchText(epgTag);
 }
 
-bool CPVRTimerRuleMatcher::MatchSeriesLink(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+bool CPVRTimerRuleMatcher::MatchSeriesLink(
+    const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (m_timerRule->GetTimerType()->RequiresEpgSeriesLinkOnCreate())
     return epgTag->SeriesLink() == m_timerRule->SeriesLink();
@@ -86,7 +87,7 @@ bool CPVRTimerRuleMatcher::MatchSeriesLink(const std::shared_ptr<CPVREpgInfoTag>
     return true;
 }
 
-bool CPVRTimerRuleMatcher::MatchChannel(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+bool CPVRTimerRuleMatcher::MatchChannel(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (m_timerRule->GetTimerType()->SupportsAnyChannel() &&
       m_timerRule->ClientChannelUID() == PVR_CHANNEL_INVALID_UID)
@@ -100,7 +101,7 @@ bool CPVRTimerRuleMatcher::MatchChannel(const std::shared_ptr<CPVREpgInfoTag>& e
     return true;
 }
 
-bool CPVRTimerRuleMatcher::MatchStart(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+bool CPVRTimerRuleMatcher::MatchStart(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (m_timerRule->GetTimerType()->SupportsFirstDay())
   {
@@ -132,7 +133,7 @@ bool CPVRTimerRuleMatcher::MatchStart(const std::shared_ptr<CPVREpgInfoTag>& epg
     return true;
 }
 
-bool CPVRTimerRuleMatcher::MatchEnd(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+bool CPVRTimerRuleMatcher::MatchEnd(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (m_timerRule->GetTimerType()->SupportsEndAnyTime() && m_timerRule->IsEndAnyTime())
     return true; // matches any end time
@@ -150,7 +151,7 @@ bool CPVRTimerRuleMatcher::MatchEnd(const std::shared_ptr<CPVREpgInfoTag>& epgTa
     return true;
 }
 
-bool CPVRTimerRuleMatcher::MatchDayOfWeek(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+bool CPVRTimerRuleMatcher::MatchDayOfWeek(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (m_timerRule->GetTimerType()->SupportsWeekdays())
   {
@@ -167,7 +168,8 @@ bool CPVRTimerRuleMatcher::MatchDayOfWeek(const std::shared_ptr<CPVREpgInfoTag>&
   return true;
 }
 
-bool CPVRTimerRuleMatcher::MatchSearchText(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+bool CPVRTimerRuleMatcher::MatchSearchText(
+    const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (m_timerRule->GetTimerType()->SupportsEpgFulltextMatch() && m_timerRule->IsFullTextEpgSearch())
   {

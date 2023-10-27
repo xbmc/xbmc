@@ -98,7 +98,7 @@ public:
    * @return The requested recording, or an empty recordingptr if none was found.
    */
   std::shared_ptr<CPVRRecording> GetRecordingForEpgTag(
-      const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
+      const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
 
   /*!
    * @brief Erase stale texture db entries and image files.

@@ -1069,7 +1069,7 @@ namespace
 bool IsItemChanged(const std::shared_ptr<CFileItem>& item)
 {
   const std::shared_ptr<CPVRChannelGroupMember> member = item->GetPVRChannelGroupMemberInfoTag();
-  const std::shared_ptr<CPVRChannel> channel = member->Channel();
+  const std::shared_ptr<const CPVRChannel> channel = member->Channel();
 
   return item->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean() == channel->IsHidden() ||
          item->GetProperty(PROPERTY_CHANNEL_USER_SET_HIDDEN).asBoolean() !=

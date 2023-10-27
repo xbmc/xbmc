@@ -180,7 +180,7 @@ bool CPVREpg::UpdateEntries(const CPVREpg& epg)
 namespace
 {
 
-bool IsTagExpired(const std::shared_ptr<CPVREpgInfoTag>& tag)
+bool IsTagExpired(const std::shared_ptr<const CPVREpgInfoTag>& tag)
 {
   // Respect epg linger time.
   const int iPastDays = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(

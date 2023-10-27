@@ -63,7 +63,7 @@ public:
    * @param allChannelsGroup The channel group containing all TV or radio channels.
    */
   CPVRChannelGroup(const CPVRChannelsPath& path,
-                   const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup);
+                   const std::shared_ptr<const CPVRChannelGroup>& allChannelsGroup);
 
   ~CPVRChannelGroup() override;
 
@@ -136,21 +136,22 @@ public:
    * @param groupMember The channel group member to remove.
    * @return True if the channel group member was removed, false otherwise.
    */
-  virtual bool RemoveFromGroup(const std::shared_ptr<CPVRChannelGroupMember>& groupMember);
+  virtual bool RemoveFromGroup(const std::shared_ptr<const CPVRChannelGroupMember>& groupMember);
 
   /*!
    * @brief Append a channel group member to this container.
    * @param groupMember The channel group member to append.
    * @return True if the channel group member was appended, false otherwise.
    */
-  virtual bool AppendToGroup(const std::shared_ptr<CPVRChannelGroupMember>& groupMember);
+  virtual bool AppendToGroup(const std::shared_ptr<const CPVRChannelGroupMember>& groupMember);
 
   /*!
    * @brief Check whether a channel group member is in this container.
    * @param groupMember The channel group member to check.
    * @return True if the channel group member was found, false otherwise.
    */
-  virtual bool IsGroupMember(const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const;
+  virtual bool IsGroupMember(
+      const std::shared_ptr<const CPVRChannelGroupMember>& groupMember) const;
 
   /*!
    * @brief Change the name of this group.
@@ -285,14 +286,14 @@ public:
    * @param channel The channel to get the channel number for.
    * @return The channel number in this group.
    */
-  CPVRChannelNumber GetChannelNumber(const std::shared_ptr<CPVRChannel>& channel) const;
+  CPVRChannelNumber GetChannelNumber(const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*!
    * @brief Get the client channel number in this group of the given channel.
    * @param channel The channel to get the channel number for.
    * @return The client channel number in this group.
    */
-  CPVRChannelNumber GetClientChannelNumber(const std::shared_ptr<CPVRChannel>& channel) const;
+  CPVRChannelNumber GetClientChannelNumber(const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*!
    * @brief Get the next channel group member in this group.
@@ -300,7 +301,7 @@ public:
    * @return The channel group member or nullptr if it wasn't found.
    */
   std::shared_ptr<CPVRChannelGroupMember> GetNextChannelGroupMember(
-      const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const;
+      const std::shared_ptr<const CPVRChannelGroupMember>& groupMember) const;
 
   /*!
    * @brief Get the previous channel group member in this group.
@@ -308,7 +309,7 @@ public:
    * @return The channel group member or nullptr if it wasn't found.
    */
   std::shared_ptr<CPVRChannelGroupMember> GetPreviousChannelGroupMember(
-      const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const;
+      const std::shared_ptr<const CPVRChannelGroupMember>& groupMember) const;
 
   /*!
    * @brief Get a channel given it's channel ID.
@@ -573,7 +574,7 @@ private:
 
   void OnSettingChanged();
 
-  std::shared_ptr<CPVRChannelGroup> m_allChannelsGroup;
+  std::shared_ptr<const CPVRChannelGroup> m_allChannelsGroup;
   CPVRChannelsPath m_path;
   bool m_bDeleted = false;
   mutable std::optional<int> m_clientPriority;

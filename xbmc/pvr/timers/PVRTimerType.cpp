@@ -103,7 +103,8 @@ const std::vector<std::shared_ptr<CPVRTimerType>> CPVRTimerType::GetAllTypes()
   return allTypes;
 }
 
-const std::shared_ptr<CPVRTimerType> CPVRTimerType::GetFirstAvailableType(const std::shared_ptr<CPVRClient>& client)
+const std::shared_ptr<CPVRTimerType> CPVRTimerType::GetFirstAvailableType(
+    const std::shared_ptr<const CPVRClient>& client)
 {
   if (client)
   {
