@@ -24,6 +24,7 @@ endif
 export CC CFLAGS
 export LDSHARED LDFLAGS
 export PYTHONPATH=$(PYTHON_SITE_PKG)
+export SETUPTOOLS_EXT_SUFFIX=.so
 
 all: .installed-$(PLATFORM)
 
