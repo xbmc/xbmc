@@ -113,7 +113,8 @@ namespace PVR
      * @param epgTag The epg tag.
      * @return The channel.
      */
-    std::shared_ptr<CPVRChannel> GetChannelForEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
+    std::shared_ptr<CPVRChannel> GetChannelForEpgTag(
+        const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
 
     /*!
      * @brief Get a channel given it's path.

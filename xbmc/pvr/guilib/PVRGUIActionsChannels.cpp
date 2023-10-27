@@ -326,7 +326,7 @@ bool CPVRGUIActionsChannels::StartChannelScan(int clientId)
 }
 
 std::shared_ptr<CPVRChannelGroupMember> CPVRGUIActionsChannels::GetChannelGroupMember(
-    const std::shared_ptr<CPVRChannel>& channel) const
+    const std::shared_ptr<const CPVRChannel>& channel) const
 {
   if (!channel)
     return {};

@@ -331,7 +331,7 @@ bool CPVRPlaybackState::IsPlayingChannel(int iClientID, int iUniqueChannelID) co
   return m_playingClientId == iClientID && m_playingChannelUniqueId == iUniqueChannelID;
 }
 
-bool CPVRPlaybackState::IsPlayingChannel(const std::shared_ptr<CPVRChannel>& channel) const
+bool CPVRPlaybackState::IsPlayingChannel(const std::shared_ptr<const CPVRChannel>& channel) const
 {
   if (channel)
   {
@@ -344,7 +344,8 @@ bool CPVRPlaybackState::IsPlayingChannel(const std::shared_ptr<CPVRChannel>& cha
   return false;
 }
 
-bool CPVRPlaybackState::IsPlayingRecording(const std::shared_ptr<CPVRRecording>& recording) const
+bool CPVRPlaybackState::IsPlayingRecording(
+    const std::shared_ptr<const CPVRRecording>& recording) const
 {
   if (recording)
   {
@@ -357,7 +358,7 @@ bool CPVRPlaybackState::IsPlayingRecording(const std::shared_ptr<CPVRRecording>&
   return false;
 }
 
-bool CPVRPlaybackState::IsPlayingEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+bool CPVRPlaybackState::IsPlayingEpgTag(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (epgTag)
   {
@@ -512,7 +513,7 @@ std::shared_ptr<CPVRChannelGroup> CPVRPlaybackState::GetActiveChannelGroup(bool 
 
 CDateTime CPVRPlaybackState::GetPlaybackTime(int iClientID, int iUniqueChannelID) const
 {
-  const std::shared_ptr<CPVREpgInfoTag> epgTag = GetPlayingEpgTag();
+  const std::shared_ptr<const CPVREpgInfoTag> epgTag = GetPlayingEpgTag();
   if (epgTag && iClientID == epgTag->ClientID() && iUniqueChannelID == epgTag->UniqueChannelID())
   {
     // playing an epg tag on requested channel

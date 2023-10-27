@@ -486,7 +486,8 @@ std::shared_ptr<CPVREpg> CPVREpgContainer::GetByChannelUid(int iClientId, int iC
   return epg;
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpgContainer::GetTagById(const std::shared_ptr<CPVREpg>& epg, unsigned int iBroadcastId) const
+std::shared_ptr<CPVREpgInfoTag> CPVREpgContainer::GetTagById(
+    const std::shared_ptr<const CPVREpg>& epg, unsigned int iBroadcastId) const
 {
   std::shared_ptr<CPVREpgInfoTag> retval;
 
@@ -650,7 +651,7 @@ bool CPVREpgContainer::QueueDeleteEpgs(const std::vector<std::shared_ptr<CPVREpg
   return true;
 }
 
-bool CPVREpgContainer::QueueDeleteEpg(const std::shared_ptr<CPVREpg>& epg,
+bool CPVREpgContainer::QueueDeleteEpg(const std::shared_ptr<const CPVREpg>& epg,
                                       const std::shared_ptr<CPVREpgDatabase>& database)
 {
   if (!epg || epg->EpgID() < 0)

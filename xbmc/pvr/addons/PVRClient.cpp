@@ -448,7 +448,7 @@ PVR_ERROR CPVRClient::StartChannelScan()
       m_clientCapabilities.SupportsChannelScan());
 }
 
-PVR_ERROR CPVRClient::OpenDialogChannelAdd(const std::shared_ptr<CPVRChannel>& channel)
+PVR_ERROR CPVRClient::OpenDialogChannelAdd(const std::shared_ptr<const CPVRChannel>& channel)
 {
   return DoAddonCall(
       __func__,
@@ -460,7 +460,7 @@ PVR_ERROR CPVRClient::OpenDialogChannelAdd(const std::shared_ptr<CPVRChannel>& c
       m_clientCapabilities.SupportsChannelSettings());
 }
 
-PVR_ERROR CPVRClient::OpenDialogChannelSettings(const std::shared_ptr<CPVRChannel>& channel)
+PVR_ERROR CPVRClient::OpenDialogChannelSettings(const std::shared_ptr<const CPVRChannel>& channel)
 {
   return DoAddonCall(
       __func__,
@@ -472,7 +472,7 @@ PVR_ERROR CPVRClient::OpenDialogChannelSettings(const std::shared_ptr<CPVRChanne
       m_clientCapabilities.SupportsChannelSettings());
 }
 
-PVR_ERROR CPVRClient::DeleteChannel(const std::shared_ptr<CPVRChannel>& channel)
+PVR_ERROR CPVRClient::DeleteChannel(const std::shared_ptr<const CPVRChannel>& channel)
 {
   return DoAddonCall(
       __func__,
@@ -484,7 +484,7 @@ PVR_ERROR CPVRClient::DeleteChannel(const std::shared_ptr<CPVRChannel>& channel)
       m_clientCapabilities.SupportsChannelSettings());
 }
 
-PVR_ERROR CPVRClient::RenameChannel(const std::shared_ptr<CPVRChannel>& channel)
+PVR_ERROR CPVRClient::RenameChannel(const std::shared_ptr<const CPVRChannel>& channel)
 {
   return DoAddonCall(
       __func__,
@@ -652,7 +652,7 @@ void CPVRClient::WriteStreamProperties(const PVR_NAMED_VALUE* properties,
   }
 }
 
-PVR_ERROR CPVRClient::GetEpgTagStreamProperties(const std::shared_ptr<CPVREpgInfoTag>& tag,
+PVR_ERROR CPVRClient::GetEpgTagStreamProperties(const std::shared_ptr<const CPVREpgInfoTag>& tag,
                                                 CPVRStreamProperties& props)
 {
   return DoAddonCall(__func__, [&tag, &props](const AddonInstance* addon) {
@@ -1091,7 +1091,7 @@ PVR_ERROR CPVRClient::UpdateTimerTypes()
     for (const auto& type : timerTypes)
     {
       const auto it = std::find_if(m_timertypes.cbegin(), m_timertypes.cend(),
-                                   [&type](const std::shared_ptr<CPVRTimerType>& entry) {
+                                   [&type](const std::shared_ptr<const CPVRTimerType>& entry) {
                                      return entry->GetTypeId() == type->GetTypeId();
                                    });
       if (it == m_timertypes.cend())
@@ -1201,7 +1201,7 @@ PVR_ERROR CPVRClient::GetDescrambleInfo(int channelUid, PVR_DESCRAMBLE_INFO& des
       m_clientCapabilities.SupportsDescrambleInfo());
 }
 
-PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<CPVRChannel>& channel,
+PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<const CPVRChannel>& channel,
                                                  CPVRStreamProperties& props)
 {
   return DoAddonCall(__func__, [this, &channel, &props](const AddonInstance* addon) {
@@ -1224,8 +1224,8 @@ PVR_ERROR CPVRClient::GetChannelStreamProperties(const std::shared_ptr<CPVRChann
   });
 }
 
-PVR_ERROR CPVRClient::GetRecordingStreamProperties(const std::shared_ptr<CPVRRecording>& recording,
-                                                   CPVRStreamProperties& props)
+PVR_ERROR CPVRClient::GetRecordingStreamProperties(
+    const std::shared_ptr<const CPVRRecording>& recording, CPVRStreamProperties& props)
 {
   return DoAddonCall(__func__, [this, &recording, &props](const AddonInstance* addon) {
     if (!m_clientCapabilities.SupportsRecordings())
@@ -1379,13 +1379,13 @@ PVR_ERROR CPVRClient::DoAddonCall(const char* strFunctionName,
   return error;
 }
 
-bool CPVRClient::CanPlayChannel(const std::shared_ptr<CPVRChannel>& channel) const
+bool CPVRClient::CanPlayChannel(const std::shared_ptr<const CPVRChannel>& channel) const
 {
   return (m_bReadyToUse && ((m_clientCapabilities.SupportsTV() && !channel->IsRadio()) ||
                             (m_clientCapabilities.SupportsRadio() && channel->IsRadio())));
 }
 
-PVR_ERROR CPVRClient::OpenLiveStream(const std::shared_ptr<CPVRChannel>& channel)
+PVR_ERROR CPVRClient::OpenLiveStream(const std::shared_ptr<const CPVRChannel>& channel)
 {
   if (!channel)
     return PVR_ERROR_INVALID_PARAMETERS;
@@ -1410,7 +1410,7 @@ PVR_ERROR CPVRClient::OpenLiveStream(const std::shared_ptr<CPVRChannel>& channel
   });
 }
 
-PVR_ERROR CPVRClient::OpenRecordedStream(const std::shared_ptr<CPVRRecording>& recording)
+PVR_ERROR CPVRClient::OpenRecordedStream(const std::shared_ptr<const CPVRRecording>& recording)
 {
   if (!recording)
     return PVR_ERROR_INVALID_PARAMETERS;
@@ -1538,7 +1538,7 @@ std::shared_ptr<CPVRClientMenuHooks> CPVRClient::GetMenuHooks()
 }
 
 PVR_ERROR CPVRClient::CallEpgTagMenuHook(const CPVRClientMenuHook& hook,
-                                         const std::shared_ptr<CPVREpgInfoTag>& tag)
+                                         const std::shared_ptr<const CPVREpgInfoTag>& tag)
 {
   return DoAddonCall(__func__, [&hook, &tag](const AddonInstance* addon) {
     CAddonEpgTag addonTag(tag);
@@ -1553,7 +1553,7 @@ PVR_ERROR CPVRClient::CallEpgTagMenuHook(const CPVRClientMenuHook& hook,
 }
 
 PVR_ERROR CPVRClient::CallChannelMenuHook(const CPVRClientMenuHook& hook,
-                                          const std::shared_ptr<CPVRChannel>& channel)
+                                          const std::shared_ptr<const CPVRChannel>& channel)
 {
   return DoAddonCall(__func__, [&hook, &channel](const AddonInstance* addon) {
     PVR_CHANNEL tag;
@@ -1569,7 +1569,7 @@ PVR_ERROR CPVRClient::CallChannelMenuHook(const CPVRClientMenuHook& hook,
 }
 
 PVR_ERROR CPVRClient::CallRecordingMenuHook(const CPVRClientMenuHook& hook,
-                                            const std::shared_ptr<CPVRRecording>& recording,
+                                            const std::shared_ptr<const CPVRRecording>& recording,
                                             bool bDeleted)
 {
   return DoAddonCall(__func__, [&hook, &recording, &bDeleted](const AddonInstance* addon) {
@@ -1586,7 +1586,7 @@ PVR_ERROR CPVRClient::CallRecordingMenuHook(const CPVRClientMenuHook& hook,
 }
 
 PVR_ERROR CPVRClient::CallTimerMenuHook(const CPVRClientMenuHook& hook,
-                                        const std::shared_ptr<CPVRTimerInfoTag>& timer)
+                                        const std::shared_ptr<const CPVRTimerInfoTag>& timer)
 {
   return DoAddonCall(__func__, [&hook, &timer](const AddonInstance* addon) {
     PVR_TIMER tag;

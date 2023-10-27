@@ -39,7 +39,8 @@ namespace PVR
      * @param client the PVR client.
      * @return A timer type or NULL if none available.
      */
-    static const std::shared_ptr<CPVRTimerType> GetFirstAvailableType(const std::shared_ptr<CPVRClient>& client);
+    static const std::shared_ptr<CPVRTimerType> GetFirstAvailableType(
+        const std::shared_ptr<const CPVRClient>& client);
 
     /*!
      * @brief Create a timer type from given timer type id and client id.

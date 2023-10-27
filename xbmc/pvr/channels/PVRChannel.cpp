@@ -205,7 +205,7 @@ void CPVRChannel::ResetEPG()
     epgToUnsubscribe->Events().Unsubscribe(this);
 }
 
-bool CPVRChannel::UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel)
+bool CPVRChannel::UpdateFromClient(const std::shared_ptr<const CPVRChannel>& channel)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 

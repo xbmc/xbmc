@@ -181,7 +181,7 @@ public:
    * @return the timer, null otherwise.
    */
   std::shared_ptr<CPVRTimerInfoTag> GetActiveTimerForChannel(
-      const std::shared_ptr<CPVRChannel>& channel) const;
+      const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*!
    * @return The amount of tv and radio timers that are currently recording
@@ -250,7 +250,7 @@ public:
    * @return The requested timer tag, or nullptr if none was found.
    */
   std::shared_ptr<CPVRTimerInfoTag> GetTimerForEpgTag(
-      const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
+      const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
 
   /*!
    * @brief Get the timer rule for a given timer tag
@@ -258,7 +258,7 @@ public:
    * @return The timer rule, or nullptr if none was found.
    */
   std::shared_ptr<CPVRTimerInfoTag> GetTimerRule(
-      const std::shared_ptr<CPVRTimerInfoTag>& timer) const;
+      const std::shared_ptr<const CPVRTimerInfoTag>& timer) const;
 
   /*!
      * @brief Update the channel pointers.
@@ -288,10 +288,11 @@ private:
    */
   bool LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients);
 
-  void RemoveEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag);
+  void RemoveEntry(const std::shared_ptr<const CPVRTimerInfoTag>& tag);
   bool UpdateEntries(const CPVRTimersContainer& timers, const std::vector<int>& failedClients);
   bool UpdateEntries(int iMaxNotificationDelay);
-  std::shared_ptr<CPVRTimerInfoTag> UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& timer);
+  std::shared_ptr<CPVRTimerInfoTag> UpdateEntry(
+      const std::shared_ptr<const CPVRTimerInfoTag>& timer);
 
   bool AddLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, bool bNotify);
   bool DeleteLocalTimer(const std::shared_ptr<CPVRTimerInfoTag>& tag, bool bNotify);
@@ -308,7 +309,8 @@ private:
     TimerKindRadio
   };
 
-  bool KindMatchesTag(const TimerKind& eKind, const std::shared_ptr<CPVRTimerInfoTag>& tag) const;
+  bool KindMatchesTag(const TimerKind& eKind,
+                      const std::shared_ptr<const CPVRTimerInfoTag>& tag) const;
 
   std::shared_ptr<CPVRTimerInfoTag> GetNextActiveTimer(const TimerKind& eKind,
                                                        bool bIgnoreReminders) const;
@@ -317,7 +319,7 @@ private:
   int AmountActiveRecordings(const TimerKind& eKind) const;
 
   bool CheckAndAppendTimerNotification(std::vector<std::pair<int, std::string>>& timerNotifications,
-                                       const std::shared_ptr<CPVRTimerInfoTag>& tag,
+                                       const std::shared_ptr<const CPVRTimerInfoTag>& tag,
                                        bool bDeleted) const;
 
   bool m_bIsUpdating = false;

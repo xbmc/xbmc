@@ -641,7 +641,7 @@ int CGUIEPGGridContainerModel::GetNowBlock() const
 }
 
 int CGUIEPGGridContainerModel::GetFirstEventBlock(
-    const std::shared_ptr<CPVREpgInfoTag>& event) const
+    const std::shared_ptr<const CPVREpgInfoTag>& event) const
 {
   const CDateTime eventStart = event->StartAsUTC();
   int diff;
@@ -658,14 +658,15 @@ int CGUIEPGGridContainerModel::GetFirstEventBlock(
   return static_cast<int>(std::ceil(fBlockIndex));
 }
 
-int CGUIEPGGridContainerModel::GetLastEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const
+int CGUIEPGGridContainerModel::GetLastEventBlock(
+    const std::shared_ptr<const CPVREpgInfoTag>& event) const
 {
   // Last block of a tag is always the block calculated using event's end time, not rounded up.
   return GetBlock(event->EndAsUTC());
 }
 
-bool CGUIEPGGridContainerModel::IsEventMemberOfBlock(const std::shared_ptr<CPVREpgInfoTag>& event,
-                                                     int iBlock) const
+bool CGUIEPGGridContainerModel::IsEventMemberOfBlock(
+    const std::shared_ptr<const CPVREpgInfoTag>& event, int iBlock) const
 {
   const int iFirstBlock = GetFirstEventBlock(event);
   const int iLastBlock = GetLastEventBlock(event);
