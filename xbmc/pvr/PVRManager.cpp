@@ -793,7 +793,7 @@ void CPVRManager::RestartParentalTimer()
     m_parentalTimer->StartZero();
 }
 
-bool CPVRManager::IsParentalLocked(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+bool CPVRManager::IsParentalLocked(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   return m_channelGroups && epgTag &&
          IsCurrentlyParentalLocked(
@@ -801,12 +801,12 @@ bool CPVRManager::IsParentalLocked(const std::shared_ptr<CPVREpgInfoTag>& epgTag
              epgTag->IsParentalLocked());
 }
 
-bool CPVRManager::IsParentalLocked(const std::shared_ptr<CPVRChannel>& channel) const
+bool CPVRManager::IsParentalLocked(const std::shared_ptr<const CPVRChannel>& channel) const
 {
   return channel && IsCurrentlyParentalLocked(channel, channel->IsLocked());
 }
 
-bool CPVRManager::IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& channel,
+bool CPVRManager::IsCurrentlyParentalLocked(const std::shared_ptr<const CPVRChannel>& channel,
                                             bool bGenerallyLocked) const
 {
   bool bReturn = false;

@@ -337,7 +337,11 @@ JSONRPC_STATUS CPVROperations::GetPropertyValue(const std::string &property, CVa
   return OK;
 }
 
-void CPVROperations::FillChannelGroupDetails(const std::shared_ptr<CPVRChannelGroup> &channelGroup, const CVariant &parameterObject, CVariant &result, bool append /* = false */)
+void CPVROperations::FillChannelGroupDetails(
+    const std::shared_ptr<const CPVRChannelGroup>& channelGroup,
+    const CVariant& parameterObject,
+    CVariant& result,
+    bool append /* = false */)
 {
   if (channelGroup == NULL)
     return;

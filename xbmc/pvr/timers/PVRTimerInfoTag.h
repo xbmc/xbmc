@@ -140,7 +140,7 @@ public:
    * @param tag A timer containing the data that shall be merged into this timer's data.
    * @return true if the timer was updated successfully
    */
-  bool UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag);
+  bool UpdateEntry(const std::shared_ptr<const CPVRTimerInfoTag>& tag);
 
   /*!
    * @brief merge in the state of this child timer.
@@ -148,7 +148,7 @@ public:
    * @param bAdd If true, add child's data to parent's state, otherwise subtract.
    * @return true if the child timer's state was merged successfully
    */
-  bool UpdateChildState(const std::shared_ptr<CPVRTimerInfoTag>& childTimer, bool bAdd);
+  bool UpdateChildState(const std::shared_ptr<const CPVRTimerInfoTag>& childTimer, bool bAdd);
 
   /*!
    * @brief reset the state of children related to this timer.

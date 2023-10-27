@@ -308,14 +308,14 @@ public:
    * @param channel The channel to check.
    * @return True if parental lock is overridden, false otherwise.
    */
-  bool IsParentalLocked(const std::shared_ptr<CPVRChannel>& channel) const;
+  bool IsParentalLocked(const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*!
    * @brief Check if parental lock is overridden at the given moment.
    * @param epgTag The epg tag to check.
    * @return True if parental lock is overridden, false otherwise.
    */
-  bool IsParentalLocked(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
+  bool IsParentalLocked(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
 
   /*!
    * @brief Restart the parental timer.
@@ -427,7 +427,7 @@ private:
    */
   void TriggerPlayChannelOnStartup();
 
-  bool IsCurrentlyParentalLocked(const std::shared_ptr<CPVRChannel>& channel,
+  bool IsCurrentlyParentalLocked(const std::shared_ptr<const CPVRChannel>& channel,
                                  bool bGenerallyLocked) const;
 
   CEventSource<PVREvent> m_events;

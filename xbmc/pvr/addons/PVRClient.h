@@ -188,28 +188,28 @@ public:
    * @param channel The channel to add
    * @return PVR_ERROR_NO_ERROR if the add has been fetched successfully.
    */
-  PVR_ERROR OpenDialogChannelAdd(const std::shared_ptr<CPVRChannel>& channel);
+  PVR_ERROR OpenDialogChannelAdd(const std::shared_ptr<const CPVRChannel>& channel);
 
   /*!
    * @brief Request the client to open dialog about given channel settings
    * @param channel The channel to edit
    * @return PVR_ERROR_NO_ERROR if the edit has been fetched successfully.
    */
-  PVR_ERROR OpenDialogChannelSettings(const std::shared_ptr<CPVRChannel>& channel);
+  PVR_ERROR OpenDialogChannelSettings(const std::shared_ptr<const CPVRChannel>& channel);
 
   /*!
    * @brief Request the client to delete given channel
    * @param channel The channel to delete
    * @return PVR_ERROR_NO_ERROR if the delete has been fetched successfully.
    */
-  PVR_ERROR DeleteChannel(const std::shared_ptr<CPVRChannel>& channel);
+  PVR_ERROR DeleteChannel(const std::shared_ptr<const CPVRChannel>& channel);
 
   /*!
    * @brief Request the client to rename given channel
    * @param channel The channel to rename
    * @return PVR_ERROR_NO_ERROR if the rename has been fetched successfully.
    */
-  PVR_ERROR RenameChannel(const std::shared_ptr<CPVRChannel>& channel);
+  PVR_ERROR RenameChannel(const std::shared_ptr<const CPVRChannel>& channel);
 
   /*
    * @brief Check if an epg tag can be recorded
@@ -236,7 +236,7 @@ public:
    * @param props The container to be filled with the stream properties.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR GetEpgTagStreamProperties(const std::shared_ptr<CPVREpgInfoTag>& tag,
+  PVR_ERROR GetEpgTagStreamProperties(const std::shared_ptr<const CPVREpgInfoTag>& tag,
                                       CPVRStreamProperties& props);
 
   //@}
@@ -509,7 +509,7 @@ public:
    * @param channel The channel to stream.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR OpenLiveStream(const std::shared_ptr<CPVRChannel>& channel);
+  PVR_ERROR OpenLiveStream(const std::shared_ptr<const CPVRChannel>& channel);
 
   /*!
    * @brief Close an open live stream.
@@ -571,7 +571,7 @@ public:
    * @param props The container to be filled with the stream properties.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR GetChannelStreamProperties(const std::shared_ptr<CPVRChannel>& channel,
+  PVR_ERROR GetChannelStreamProperties(const std::shared_ptr<const CPVRChannel>& channel,
                                        CPVRStreamProperties& props);
 
   /*!
@@ -623,7 +623,7 @@ public:
    * @param recording The recording to open.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR OpenRecordedStream(const std::shared_ptr<CPVRRecording>& recording);
+  PVR_ERROR OpenRecordedStream(const std::shared_ptr<const CPVRRecording>& recording);
 
   /*!
    * @brief Close an open recording stream.
@@ -662,7 +662,7 @@ public:
    * @param props The container to be filled with the stream properties.
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
-  PVR_ERROR GetRecordingStreamProperties(const std::shared_ptr<CPVRRecording>& recording,
+  PVR_ERROR GetRecordingStreamProperties(const std::shared_ptr<const CPVRRecording>& recording,
                                          CPVRStreamProperties& props);
 
   //@}
@@ -723,7 +723,7 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR CallEpgTagMenuHook(const CPVRClientMenuHook& hook,
-                               const std::shared_ptr<CPVREpgInfoTag>& tag);
+                               const std::shared_ptr<const CPVREpgInfoTag>& tag);
 
   /*!
    * @brief Call one of the channel menu hooks of the client.
@@ -732,7 +732,7 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR CallChannelMenuHook(const CPVRClientMenuHook& hook,
-                                const std::shared_ptr<CPVRChannel>& channel);
+                                const std::shared_ptr<const CPVRChannel>& channel);
 
   /*!
    * @brief Call one of the recording menu hooks of the client.
@@ -742,7 +742,7 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR CallRecordingMenuHook(const CPVRClientMenuHook& hook,
-                                  const std::shared_ptr<CPVRRecording>& recording,
+                                  const std::shared_ptr<const CPVRRecording>& recording,
                                   bool bDeleted);
 
   /*!
@@ -752,7 +752,7 @@ public:
    * @return PVR_ERROR_NO_ERROR on success, respective error code otherwise.
    */
   PVR_ERROR CallTimerMenuHook(const CPVRClientMenuHook& hook,
-                              const std::shared_ptr<CPVRTimerInfoTag>& timer);
+                              const std::shared_ptr<const CPVRTimerInfoTag>& timer);
 
   /*!
    * @brief Call one of the settings menu hooks of the client.
@@ -828,7 +828,7 @@ private:
    * @param channel The channel to check.
    * @return True when it can be played, false otherwise.
    */
-  bool CanPlayChannel(const std::shared_ptr<CPVRChannel>& channel) const;
+  bool CanPlayChannel(const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*!
    * @brief Stop this instance, if it is currently running.

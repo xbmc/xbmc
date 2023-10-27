@@ -288,7 +288,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(const CFileItem& item, bool bCheckR
     return false;
 
   std::shared_ptr<CPVRRecording> recording;
-  const std::shared_ptr<CPVRChannel> channel(CPVRItem(item).GetChannel());
+  const std::shared_ptr<const CPVRChannel> channel(CPVRItem(item).GetChannel());
   if (channel)
   {
     bool bSwitchToFullscreen =

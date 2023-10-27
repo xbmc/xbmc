@@ -280,7 +280,7 @@ CFileItemPtr CGUIWindowPVRGuideBase::GetCurrentListItem(int offset /*= 0*/)
   return {};
 }
 
-int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(const std::shared_ptr<CFileItem>& item)
+int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(const std::shared_ptr<const CFileItem>& item)
 {
   return item ? item->GetProperty("TimelineIndex").asInteger() : -1;
 }

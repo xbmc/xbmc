@@ -115,21 +115,21 @@ public:
    * @param channel The channel to check.
    * @return True if it's playing, false otherwise.
    */
-  bool IsPlayingChannel(const std::shared_ptr<CPVRChannel>& channel) const;
+  bool IsPlayingChannel(const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*!
    * @brief Check if the given recording is playing.
    * @param recording The recording to check.
    * @return True if it's playing, false otherwise.
    */
-  bool IsPlayingRecording(const std::shared_ptr<CPVRRecording>& recording) const;
+  bool IsPlayingRecording(const std::shared_ptr<const CPVRRecording>& recording) const;
 
   /*!
    * @brief Check if the given epg tag is playing.
    * @param epgTag The tag to check.
    * @return True if it's playing, false otherwise.
    */
-  bool IsPlayingEpgTag(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
+  bool IsPlayingEpgTag(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
 
   /*!
    * @brief Return the channel that is currently playing.

@@ -192,7 +192,7 @@ bool CPVRTimers::IsRecording() const
   return false;
 }
 
-void CPVRTimers::RemoveEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
+void CPVRTimers::RemoveEntry(const std::shared_ptr<const CPVRTimerInfoTag>& tag)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -213,7 +213,7 @@ void CPVRTimers::RemoveEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
 
 bool CPVRTimers::CheckAndAppendTimerNotification(
     std::vector<std::pair<int, std::string>>& timerNotifications,
-    const std::shared_ptr<CPVRTimerInfoTag>& tag,
+    const std::shared_ptr<const CPVRTimerInfoTag>& tag,
     bool bDeleted) const
 {
   // no notification on first update or if previous update failed for tag's client.
@@ -408,7 +408,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEpgTagsForTimerRule(
 {
   std::vector<std::shared_ptr<CPVREpgInfoTag>> matches;
 
-  const std::shared_ptr<CPVRChannel> channel = matcher.GetChannel();
+  const std::shared_ptr<const CPVRChannel> channel = matcher.GetChannel();
   if (channel)
   {
     // match single channel
@@ -443,7 +443,7 @@ void AddTimerRuleToEpgMap(
     std::map<std::shared_ptr<CPVREpg>, std::vector<std::shared_ptr<CPVRTimerRuleMatcher>>>& epgMap,
     bool& bFetchedAllEpgs)
 {
-  const std::shared_ptr<CPVRChannel> channel = timer->Channel();
+  const std::shared_ptr<const CPVRChannel> channel = timer->Channel();
   if (channel)
   {
     const std::shared_ptr<CPVREpg> epg = channel->GetEPG();
@@ -601,10 +601,11 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
               if (it1 == m_tags.end())
                 bCreate = true;
               else
-                bCreate = std::none_of(it1->second.cbegin(), it1->second.cend(),
-                                       [&timer](const std::shared_ptr<CPVRTimerInfoTag>& tmr) {
-                                         return tmr->ParentClientIndex() == timer->ClientIndex();
-                                       });
+                bCreate =
+                    std::none_of(it1->second.cbegin(), it1->second.cend(),
+                                 [&timer](const std::shared_ptr<const CPVRTimerInfoTag>& tmr) {
+                                   return tmr->ParentClientIndex() == timer->ClientIndex();
+                                 });
               if (bCreate)
               {
                 const CDateTimeSpan duration = timer->EndAsUTC() - timer->StartAsUTC();
@@ -707,7 +708,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetNextReminderToAnnnounce()
 }
 
 bool CPVRTimers::KindMatchesTag(const TimerKind& eKind,
-                                const std::shared_ptr<CPVRTimerInfoTag>& tag) const
+                                const std::shared_ptr<const CPVRTimerInfoTag>& tag) const
 {
   return (eKind == TimerKindAny) || (eKind == TimerKindTV && !tag->IsRadio()) ||
          (eKind == TimerKindRadio && tag->IsRadio());
@@ -904,7 +905,7 @@ bool CPVRTimers::DeleteTimersOnChannel(const std::shared_ptr<CPVRChannel>& chann
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::UpdateEntry(
-    const std::shared_ptr<CPVRTimerInfoTag>& timer)
+    const std::shared_ptr<const CPVRTimerInfoTag>& timer)
 {
   bool bChanged = false;
 
@@ -1147,7 +1148,7 @@ bool CPVRTimers::IsRecordingOnChannel(const CPVRChannel& channel) const
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetActiveTimerForChannel(
-    const std::shared_ptr<CPVRChannel>& channel) const
+    const std::shared_ptr<const CPVRChannel>& channel) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   for (const auto& tagsEntry : m_tags)
@@ -1166,7 +1167,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetActiveTimerForChannel(
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetTimerForEpgTag(
-    const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+    const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (epgTag)
   {
@@ -1203,7 +1204,7 @@ std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetTimerForEpgTag(
 }
 
 std::shared_ptr<CPVRTimerInfoTag> CPVRTimers::GetTimerRule(
-    const std::shared_ptr<CPVRTimerInfoTag>& timer) const
+    const std::shared_ptr<const CPVRTimerInfoTag>& timer) const
 {
   if (timer)
   {

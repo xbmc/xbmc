@@ -534,7 +534,7 @@ bool CPVRGUIActionsTimers::ToggleTimer(const CFileItem& item) const
   if (!item.HasEPGInfoTag())
     return false;
 
-  const std::shared_ptr<CPVRTimerInfoTag> timer(CPVRItem(item).GetTimerInfoTag());
+  const std::shared_ptr<const CPVRTimerInfoTag> timer(CPVRItem(item).GetTimerInfoTag());
   if (timer)
   {
     if (timer->IsRecording())
@@ -654,7 +654,7 @@ bool CPVRGUIActionsTimers::DeleteTimer(const CFileItem& item,
                                        bool bDeleteRule) const
 {
   std::shared_ptr<CPVRTimerInfoTag> timer;
-  const std::shared_ptr<CPVRRecording> recording(CPVRItem(item).GetRecording());
+  const std::shared_ptr<const CPVRRecording> recording(CPVRItem(item).GetRecording());
   if (recording)
     timer = recording->GetRecordingTimer();
 
@@ -745,7 +745,7 @@ bool CPVRGUIActionsTimers::DeleteTimer(const std::shared_ptr<CPVRTimerInfoTag>& 
   return false;
 }
 
-bool CPVRGUIActionsTimers::ConfirmDeleteTimer(const std::shared_ptr<CPVRTimerInfoTag>& timer,
+bool CPVRGUIActionsTimers::ConfirmDeleteTimer(const std::shared_ptr<const CPVRTimerInfoTag>& timer,
                                               bool& bDeleteRule) const
 {
   bool bConfirmed(false);
@@ -792,7 +792,7 @@ bool CPVRGUIActionsTimers::StopRecording(const CFileItem& item) const
 }
 
 bool CPVRGUIActionsTimers::ConfirmStopRecording(
-    const std::shared_ptr<CPVRTimerInfoTag>& timer) const
+    const std::shared_ptr<const CPVRTimerInfoTag>& timer) const
 {
   return CGUIDialogYesNo::ShowAndGetInput(
       CVariant{847}, // "Confirm stop recording"
@@ -802,7 +802,9 @@ bool CPVRGUIActionsTimers::ConfirmStopRecording(
 
 namespace
 {
-std::string GetAnnouncerText(const std::shared_ptr<CPVRTimerInfoTag>& timer, int idEpg, int idNoEpg)
+std::string GetAnnouncerText(const std::shared_ptr<const CPVRTimerInfoTag>& timer,
+                             int idEpg,
+                             int idNoEpg)
 {
   std::string text;
   if (timer->IsEpgBased())
@@ -820,7 +822,7 @@ std::string GetAnnouncerText(const std::shared_ptr<CPVRTimerInfoTag>& timer, int
   return text;
 }
 
-void AddEventLogEntry(const std::shared_ptr<CPVRTimerInfoTag>& timer, int idEpg, int idNoEpg)
+void AddEventLogEntry(const std::shared_ptr<const CPVRTimerInfoTag>& timer, int idEpg, int idNoEpg)
 {
   std::string name;
   std::string icon;

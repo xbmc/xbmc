@@ -886,7 +886,7 @@ void CPVRClients::ConnectionStateChange(CPVRClient* client,
 namespace
 {
 
-void LogClientWarning(const char* strFunctionName, const std::shared_ptr<CPVRClient>& client)
+void LogClientWarning(const char* strFunctionName, const std::shared_ptr<const CPVRClient>& client)
 {
   if (client->IgnoreClient())
     CLog::Log(LOGWARNING, "{}: Not calling add-on '{}'. Add-on not (yet) connected.",
