@@ -821,6 +821,25 @@ for (const auto& : var)
 ```
 Remove `const` if the value has to be modified. Do not use references to fundamental types that are not modified.
 
+In traditional for loops, for the `increment statement` of the loop, use prefix increment/decrement operator, not postfix.
+
+✅ Good:
+```cpp
+[...]
+for (int i = 0; i < 100; ++i)
+{
+  [...]
+}
+```
+
+❌ Bad:
+```cpp
+for (int i = 0; i < 100; i++)
+{
+  [...]
+}
+```
+
 ### 12.6. Include guards
 
 Use `#pragma once`.
