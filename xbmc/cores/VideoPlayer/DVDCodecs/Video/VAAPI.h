@@ -497,7 +497,6 @@ protected:
   bool m_vaapiConfigured;
   CVaapiConfig  m_vaapiConfig;
   CVideoSurfaces m_videoSurfaces;
-  AVCodecContext* m_avctx;
   int m_getBufferError;
 
   COutput m_vaapiOutput;
