@@ -417,10 +417,10 @@
 		<value>$INFO[VideoPlayer.Genre]</value>
 	</variable>
 	<variable name="OSDNextLabelVar">
-		<value condition="Window.IsActive(visualisation)">$INFO[MusicPlayer.offset(1).Title,[COLOR button_focus]$LOCALIZE[19031]: [/COLOR]]$INFO[MusicPlayer.offset(1).Artist, - ]$INFO[MusicPlayer.offset(1).Album, - ]$INFO[MusicPlayer.offset(1).Year, (,)]</value>
 		<value condition="VideoPlayer.Content(musicvideos)">$INFO[VideoPlayer.offset(1).Title,[COLOR button_focus]$LOCALIZE[19031]: [/COLOR]]$INFO[VideoPlayer.offset(1).Artist, - ]$INFO[VideoPlayer.offset(1).Album, - ]$INFO[VideoPlayer.offset(1).Year, (,)]</value>
 		<value condition="VideoPlayer.Content(livetv)">$INFO[VideoPlayer.NextStartTime,[COLOR button_focus]$LOCALIZE[19031]: [/COLOR]]$INFO[VideoPlayer.NextEndTime, - ]$INFO[VideoPlayer.NextTitle,: ]</value>
 		<value condition="VideoPlayer.Content(episodes) + Window.IsActive(fullscreenvideo)">$INFO[VideoPlayer.offset(1).TVShowtitle,[COLOR button_focus]$LOCALIZE[19031]: [/COLOR]]$INFO[VideoPlayer.offset(1).Season, - S,]$INFO[VideoPlayer.offset(1).Episode,E]$INFO[VideoPlayer.offset(1).Title,  - ]</value>
+		<value condition="Window.IsActive(visualisation)">$INFO[MusicPlayer.offset(1).Title,[COLOR button_focus]$LOCALIZE[19031]: [/COLOR]]$INFO[MusicPlayer.offset(1).Artist, - ]$INFO[MusicPlayer.offset(1).Album, - ]$INFO[MusicPlayer.offset(1).Year, (,)]</value>
 		<value>$INFO[VideoPlayer.offset(1).Title,[COLOR button_focus]$LOCALIZE[19031]: [/COLOR]]$INFO[VideoPlayer.offset(1).Year, (,)]</value>
 	</variable>
 	<variable name="PlayerClearLogoVar">
