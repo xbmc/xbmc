@@ -1107,6 +1107,10 @@ bool CFileItem::IsFileFolder(EFileFolderType types) const
   if(IsInternetStream())
     always_type = EFILEFOLDER_TYPE_ONCLICK;
 
+  // strm files are not browsable
+  if (IsType(".strm") && (types & EFILEFOLDER_TYPE_ONBROWSE))
+    return false;
+
   if(types & always_type)
   {
     if(IsSmartPlayList()
