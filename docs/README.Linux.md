@@ -124,6 +124,10 @@ Internal dependencies that are based on cmake upstream (currently crossguid, ffm
 
 **Note:** fstrcmp requires libtool
 
+### 3.3. External Dependencies
+
+Building with GBM windowing (including `gbm` in the `CORE_PLATFORM_NAME` cmake config) requires `libdisplay-info` for EDID parsing. This is currently a hard dependency for GBM windowing and no internal build option is available. Some distributions may already package it but if not it is available to build from source here: https://gitlab.freedesktop.org/emersion/libdisplay-info
+
 **[back to top](#table-of-contents)** | **[back to section top](#3-install-the-required-packages)**
 
 ## 4. Build Kodi
