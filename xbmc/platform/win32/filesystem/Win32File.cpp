@@ -8,6 +8,9 @@
 
 #include "Win32File.h"
 
+#include "ServiceBroker.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/log.h"
 
 #include "platform/win32/CharsetConverter.h"
@@ -20,9 +23,7 @@
 #include <intsafe.h>
 #include <sys/stat.h>
 
-
 using namespace XFILE;
-
 
 CWin32File::CWin32File() : m_smbFile(false)
 {
@@ -39,7 +40,6 @@ CWin32File::CWin32File(bool asSmbFile) : m_smbFile(asSmbFile)
   m_allowWrite = false;
   m_lastSMBFileErr = ERROR_SUCCESS;
 }
-
 
 CWin32File::~CWin32File()
 {
@@ -765,7 +765,11 @@ int CWin32File::Stat(struct __stat64* statData)
 int CWin32File::GetChunkSize()
 {
   if (m_smbFile)
-    return 64 * 1024;
+  {
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+    return settings ? (settings->GetInt(CSettings::SETTING_SMB_CHUNKSIZE) * 1024) : (128 * 1024);
+  }
 
   return 0;
 }

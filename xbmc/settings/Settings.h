@@ -348,6 +348,7 @@ public:
   static constexpr auto SETTING_SMB_MINPROTOCOL = "smb.minprotocol";
   static constexpr auto SETTING_SMB_MAXPROTOCOL = "smb.maxprotocol";
   static constexpr auto SETTING_SMB_LEGACYSECURITY = "smb.legacysecurity";
+  static constexpr auto SETTING_SMB_CHUNKSIZE = "smb.chunksize";
   static constexpr auto SETTING_SERVICES_WSDISCOVERY = "services.wsdiscovery";
   static constexpr auto SETTING_VIDEOSCREEN_MONITOR = "videoscreen.monitor";
   static constexpr auto SETTING_VIDEOSCREEN_SCREEN = "videoscreen.screen";
