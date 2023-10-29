@@ -17,6 +17,9 @@ typedef enum
   XBMC_NOEVENT = 0, /* Unused (do not remove) */
   XBMC_KEYDOWN, /* Keys pressed */
   XBMC_KEYUP, /* Keys released */
+  XBMC_KEYCOMPOSING_COMPOSING, /* A composed key (sequence) is under processing */
+  XBMC_KEYCOMPOSING_FINISHED, /* A composed key is finished */
+  XBMC_KEYCOMPOSING_CANCELLED, /* A composed key is cancelled */
   XBMC_MOUSEMOTION, /* Mouse moved */
   XBMC_MOUSEBUTTONDOWN, /* Mouse button pressed */
   XBMC_MOUSEBUTTONUP, /* Mouse button released */

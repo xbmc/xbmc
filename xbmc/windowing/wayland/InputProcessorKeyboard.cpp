@@ -8,6 +8,7 @@
 
 #include "InputProcessorKeyboard.h"
 
+#include "LangInfo.h"
 #include "utils/log.h"
 
 #include <cassert>
@@ -48,7 +49,7 @@ void CInputProcessorKeyboard::OnKeyboardKeymap(CSeat* seat, wayland::keyboard_ke
       m_xkbContext = std::make_unique<CXkbcommonContext>();
     }
 
-    m_keymap = m_xkbContext->KeymapFromString(keymap);
+    m_keymap = m_xkbContext->LocalizedKeymapFromString(keymap, g_langInfo.GetSystemLocale().name());
   }
   catch(std::exception const& e)
   {
@@ -106,10 +107,43 @@ void CInputProcessorKeyboard::OnKeyboardRepeatInfo(CSeat* seat, std::int32_t rat
 
 void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pressed)
 {
-  std::uint32_t xkbCode{scancode + WL_KEYBOARD_XKB_CODE_OFFSET};
-  XBMCKey xbmcKey{m_keymap->XBMCKeyForKeycode(xkbCode)};
-  std::uint32_t utf32{m_keymap->UnicodeCodepointForKeycode(xkbCode)};
+  const std::uint32_t xkbCode{scancode + WL_KEYBOARD_XKB_CODE_OFFSET};
 
+  bool flushComposer{false};
+  if (pressed && m_keymap->SupportsKeyComposition())
+  {
+    // feed it first to the key composer if from a press
+    const KeyComposerStatus feedResult = m_keymap->KeyComposerFeed(xkbCode);
+    if (feedResult.state == KeyComposerState::COMPOSING)
+    {
+      // let the outside world (e.g. GUI controls) know we're composing a key
+      NotifyKeyComposingEvent(XBMC_KEYCOMPOSING_COMPOSING, feedResult.keysym);
+      return;
+    }
+    else if (feedResult.state == KeyComposerState::FINISHED)
+    {
+      flushComposer = true;
+      // let the outside world (e.g. GUI Controls) know we're back to normal input
+      NotifyKeyComposingEvent(XBMC_KEYCOMPOSING_FINISHED, XBMCK_UNKNOWN);
+    }
+    else if (feedResult.state == KeyComposerState::CANCELLED)
+    {
+      // composed sequence was cancelled, we're back to normal input
+      // let the outside world know what key lead to the cancellation (replay sequence)
+      const std::uint32_t unicodeCodePointCancellationKey{
+          m_keymap->UnicodeCodepointForKeycode(xkbCode)};
+      NotifyKeyComposingEvent(XBMC_KEYCOMPOSING_CANCELLED, unicodeCodePointCancellationKey);
+      m_keymap->KeyComposerFlush();
+      // do not allow key fallthrough if we are simply cancelling with a backspace (we are cancelling the
+      // composition behavior not really removing any character)
+      if (unicodeCodePointCancellationKey == XBMCK_BACKSPACE)
+      {
+        return;
+      }
+    }
+  }
+
+  std::uint32_t utf32{m_keymap->UnicodeCodepointForKeycode(xkbCode)};
   if (utf32 > std::numeric_limits<std::uint16_t>::max())
   {
     // Kodi event system only supports UTF16, so ignore the codepoint if
@@ -123,6 +157,13 @@ void CInputProcessorKeyboard::ConvertAndSendKey(std::uint32_t scancode, bool pre
     scancode = 0;
   }
 
+  // flush composer if set (after a finished sequence)
+  if (flushComposer)
+  {
+    m_keymap->KeyComposerFlush();
+  }
+
+  const XBMCKey xbmcKey{m_keymap->XBMCKeyForKeycode(xkbCode)};
   if (xbmcKey == XBMCKey::XBMCK_UNKNOWN && utf32 == 0)
   {
     // Such an event would carry no useful information in it and thus can be safely dropped here
@@ -175,5 +216,14 @@ void CInputProcessorKeyboard::KeyRepeatTimeout()
   event.type = XBMC_KEYUP;
   m_handler.OnKeyboardEvent(event);
   event.type = XBMC_KEYDOWN;
+  m_handler.OnKeyboardEvent(event);
+}
+
+void CInputProcessorKeyboard::NotifyKeyComposingEvent(uint8_t eventType,
+                                                      std::uint16_t unicodeCodepoint)
+{
+  XBMC_Event event{};
+  event.type = eventType;
+  event.key.keysym.unicode = unicodeCodepoint;
   m_handler.OnKeyboardEvent(event);
 }

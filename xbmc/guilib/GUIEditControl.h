@@ -102,6 +102,22 @@ protected:
    */
   bool ClearMD5();
 
+  /*! \brief Append a given char to the composing cursor
+   * \param deadUnicodeKey - the unicode key that started the composing sequence
+   */
+  void ComposingCursorAppendChar(std::uint32_t deadUnicodeKey);
+  /*! \brief Reset the cursor aspect to normal input (i.e. not composing a key)
+   */
+  void ResetCursor();
+  /*! \brief Cancel the key composition
+   * \param deadUnicodeKey - the unicode key that ended/cancelled the composing sequence
+   */
+  void CancelKeyComposition(std::uint32_t deadUnicodeKey);
+  /*! \brief Check if the control is composing a key
+   * \return true if a key is being composed, false otherwise
+   */
+  bool IsComposingKey() const;
+
   std::wstring m_text2;
   std::string  m_text;
   KODI::GUILIB::GUIINFO::CGUIInfoLabel m_hintInfo;
@@ -109,7 +125,12 @@ protected:
   CRect m_clipRect; ///< clipping rect for the second label
 
   unsigned int m_cursorPos;
+  bool m_cursorBlinkEnabled{true};
   unsigned int m_cursorBlink;
+  // visible cursor chars
+  std::vector<std::uint32_t> m_cursorChars{'|'};
+  // cursor char buffer
+  std::vector<std::uint32_t> m_cursorCharsBuffer{};
 
   std::string m_inputHeading;
   INPUT_TYPE m_inputType;

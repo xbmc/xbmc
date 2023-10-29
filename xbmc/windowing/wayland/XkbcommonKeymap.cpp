@@ -9,19 +9,47 @@
 #include "XkbcommonKeymap.h"
 
 #include "Util.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <stdexcept>
+#include <unordered_map>
 #include <vector>
 
 using namespace KODI::WINDOWING::WAYLAND;
 
 namespace
 {
-
+static void xkbLogger(xkb_context* context,
+                      xkb_log_level priority,
+                      const char* format,
+                      va_list args)
+{
+  const std::string message = StringUtils::FormatV(format, args);
+  auto logLevel = LOGDEBUG;
+  switch (priority)
+  {
+    case XKB_LOG_LEVEL_INFO:
+      logLevel = LOGINFO;
+      break;
+    case XKB_LOG_LEVEL_ERROR:
+      logLevel = LOGERROR;
+      break;
+    case XKB_LOG_LEVEL_WARNING:
+      logLevel = LOGWARNING;
+      break;
+    case XKB_LOG_LEVEL_DEBUG:
+      logLevel = LOGDEBUG;
+      break;
+    default:
+      break;
+  };
+  CLog::LogF(logLevel, "{}", message);
+}
 struct ModifierNameXBMCMapping
 {
   const char* name;
@@ -196,6 +224,62 @@ static const std::map<xkb_keycode_t, XBMCKey> XkbKeycodeXBMCMappings = {
     {XKB_KEY_WEBOS_INVALID, XBMCK_UNKNOWN},
 #endif
 };
+
+static const std::unordered_map<xkb_keycode_t, XBMCKey> XkbDeadKeyXBMCMapping = {
+    {XKB_KEY_dead_grave, XBMCK_GRAVE},
+    {XKB_KEY_dead_tilde, XBMCK_TILDE},
+    {XKB_KEY_dead_acute, XBMCK_ACUTE},
+    {XKB_KEY_dead_circumflex, XBMCK_CIRCUMFLEX},
+    {XKB_KEY_dead_perispomeni, XBMCK_PERISPOMENI},
+    {XKB_KEY_dead_macron, XBMCK_MACRON},
+    {XKB_KEY_dead_breve, XBMCK_BREVE},
+    {XKB_KEY_dead_abovedot, XBMCK_ABOVEDOT},
+    {XKB_KEY_dead_diaeresis, XBMCK_DIAERESIS},
+    {XKB_KEY_dead_abovering, XBMCK_ABOVERING},
+    {XKB_KEY_dead_doubleacute, XBMCK_DOUBLEACUTE},
+    {XKB_KEY_dead_caron, XBMCK_CARON},
+    {XKB_KEY_dead_cedilla, XBMCK_CEDILLA},
+    {XKB_KEY_dead_ogonek, XBMCK_OGONEK},
+    {XKB_KEY_dead_iota, XBMCK_IOTA},
+    {XKB_KEY_dead_voiced_sound, XBMCK_VOICESOUND},
+    {XKB_KEY_dead_semivoiced_sound, XBMCK_SEMIVOICESOUND},
+    {XKB_KEY_dead_belowdot, XBMCK_BELOWDOT},
+    {XKB_KEY_dead_hook, XBMCK_HOOK},
+    {XKB_KEY_dead_horn, XBMCK_HORN},
+    {XKB_KEY_dead_stroke, XBMCK_STROKE},
+    {XKB_KEY_dead_abovecomma, XBMCK_ABOVECOMMA},
+    {XKB_KEY_dead_psili, XBMCK_ABOVECOMMA},
+    {XKB_KEY_dead_abovereversedcomma, XBMCK_ABOVEREVERSEDCOMMA},
+    {XKB_KEY_dead_dasia, XBMCK_OGONEK},
+    {XKB_KEY_dead_doublegrave, XBMCK_DOUBLEGRAVE},
+    {XKB_KEY_dead_belowring, XBMCK_BELOWRING},
+    {XKB_KEY_dead_belowmacron, XBMCK_BELOWMACRON},
+    {XKB_KEY_dead_belowcircumflex, XBMCK_BELOWCIRCUMFLEX},
+    {XKB_KEY_dead_belowtilde, XBMCK_BELOWTILDE},
+    {XKB_KEY_dead_belowbreve, XBMCK_BELOWBREVE},
+    {XKB_KEY_dead_belowdiaeresis, XBMCK_BELOWDIAERESIS},
+    {XKB_KEY_dead_invertedbreve, XBMCK_INVERTEDBREVE},
+    {XKB_KEY_dead_belowcomma, XBMCK_BELOWCOMMA},
+    {XKB_KEY_dead_a, XBMCK_DEAD_A},
+    {XKB_KEY_dead_A, XBMCK_DEAD_A},
+    {XKB_KEY_dead_e, XBMCK_DEAD_E},
+    {XKB_KEY_dead_E, XBMCK_DEAD_E},
+    {XKB_KEY_dead_i, XBMCK_DEAD_I},
+    {XKB_KEY_dead_I, XBMCK_DEAD_I},
+    {XKB_KEY_dead_o, XBMCK_DEAD_O},
+    {XKB_KEY_dead_O, XBMCK_DEAD_O},
+    {XKB_KEY_dead_u, XBMCK_DEAD_U},
+    {XKB_KEY_dead_U, XBMCK_DEAD_U},
+    {XKB_KEY_dead_small_schwa, XBMCK_SCHWA},
+    {XKB_KEY_dead_capital_schwa, XBMCK_SCHWA},
+};
+
+std::optional<XBMCKey> TranslateDeadKey(uint32_t keySym)
+{
+  auto mapping = XkbDeadKeyXBMCMapping.find(keySym);
+  return mapping != XkbDeadKeyXBMCMapping.end() ? std::optional<XBMCKey>(mapping->second)
+                                                : std::nullopt;
+}
 }
 
 CXkbcommonContext::CXkbcommonContext(xkb_context_flags flags)
@@ -205,6 +289,10 @@ CXkbcommonContext::CXkbcommonContext(xkb_context_flags flags)
   {
     throw std::runtime_error("Failed to create xkb context");
   }
+
+  // install logger
+  xkb_context_set_log_level(m_context.get(), XKB_LOG_LEVEL_DEBUG);
+  xkb_context_set_log_fn(m_context.get(), &xkbLogger);
 }
 
 void CXkbcommonContext::XkbContextDeleter::operator()(xkb_context* ctx) const
@@ -212,8 +300,10 @@ void CXkbcommonContext::XkbContextDeleter::operator()(xkb_context* ctx) const
   xkb_context_unref(ctx);
 }
 
-std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::KeymapFromString(std::string const& keymap)
+std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::LocalizedKeymapFromString(
+    const std::string& keymap, const std::string& locale)
 {
+
   std::unique_ptr<xkb_keymap, CXkbcommonKeymap::XkbKeymapDeleter> xkbKeymap{xkb_keymap_new_from_string(m_context.get(), keymap.c_str(), XKB_KEYMAP_FORMAT_TEXT_V1, XKB_KEYMAP_COMPILE_NO_FLAGS), CXkbcommonKeymap::XkbKeymapDeleter()};
 
   if (!xkbKeymap)
@@ -221,10 +311,22 @@ std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::KeymapFromString(std::strin
     throw std::runtime_error("Failed to compile keymap");
   }
 
-  return std::make_unique<CXkbcommonKeymap>(std::move(xkbKeymap));
+  std::unique_ptr<xkb_compose_table, CXkbcommonKeymap::XkbComposeTableDeleter> xkbComposeTable{
+      xkb_compose_table_new_from_locale(m_context.get(), locale.c_str(),
+                                        XKB_COMPOSE_COMPILE_NO_FLAGS),
+      CXkbcommonKeymap::XkbComposeTableDeleter()};
+
+  if (!xkbComposeTable)
+  {
+    CLog::LogF(LOGWARNING,
+               "Failed to compile localized compose table, composed key support will be disabled");
+  }
+  return std::unique_ptr<CXkbcommonKeymap>{
+      new CXkbcommonKeymap(std::move(xkbKeymap), std::move(xkbComposeTable))};
 }
 
-std::unique_ptr<xkb_state, CXkbcommonKeymap::XkbStateDeleter> CXkbcommonKeymap::CreateXkbStateFromKeymap(xkb_keymap* keymap)
+std::unique_ptr<xkb_state, CXkbcommonKeymap::XkbStateDeleter> CXkbcommonKeymap::
+    CreateXkbStateFromKeymap(xkb_keymap* keymap)
 {
   std::unique_ptr<xkb_state, XkbStateDeleter> state{xkb_state_new(keymap), XkbStateDeleter()};
 
@@ -236,9 +338,29 @@ std::unique_ptr<xkb_state, CXkbcommonKeymap::XkbStateDeleter> CXkbcommonKeymap::
   return state;
 }
 
-CXkbcommonKeymap::CXkbcommonKeymap(std::unique_ptr<xkb_keymap, XkbKeymapDeleter> keymap)
-: m_keymap{std::move(keymap)}, m_state{CreateXkbStateFromKeymap(m_keymap.get())}
+std::unique_ptr<xkb_compose_state, CXkbcommonKeymap::XkbComposeStateDeleter> CXkbcommonKeymap::
+    CreateXkbComposedStateStateFromTable(xkb_compose_table* composeTable)
 {
+  std::unique_ptr<xkb_compose_state, XkbComposeStateDeleter> state{
+      xkb_compose_state_new(composeTable, XKB_COMPOSE_STATE_NO_FLAGS), XkbComposeStateDeleter()};
+
+  if (!state)
+  {
+    throw std::runtime_error("Failed to create keyboard composer");
+  }
+
+  return state;
+}
+
+CXkbcommonKeymap::CXkbcommonKeymap(std::unique_ptr<xkb_keymap, XkbKeymapDeleter> keymap,
+                                   std::unique_ptr<xkb_compose_table, XkbComposeTableDeleter> table)
+  : m_keymap{std::move(keymap)}, m_state{CreateXkbStateFromKeymap(m_keymap.get())}
+{
+  if (table)
+  {
+    m_composeState = CreateXkbComposedStateStateFromTable(table.get());
+  }
+
   // Lookup modifier indices and create new map - this is more efficient
   // than looking the modifiers up by name each time
   for (auto const& nameMapping : ModifierNameXBMCMappings)
@@ -256,9 +378,19 @@ void CXkbcommonKeymap::XkbStateDeleter::operator()(xkb_state* state) const
   xkb_state_unref(state);
 }
 
+void CXkbcommonKeymap::XkbComposeStateDeleter::operator()(xkb_compose_state* state) const
+{
+  xkb_compose_state_unref(state);
+}
+
 void CXkbcommonKeymap::XkbKeymapDeleter::operator()(xkb_keymap* keymap) const
 {
   xkb_keymap_unref(keymap);
+}
+
+void CXkbcommonKeymap::XkbComposeTableDeleter::operator()(xkb_compose_table* table) const
+{
+  xkb_compose_table_unref(table);
 }
 
 xkb_keysym_t CXkbcommonKeymap::KeysymForKeycode(xkb_keycode_t code) const
@@ -322,9 +454,80 @@ XBMCKey CXkbcommonKeymap::XBMCKeyForKeycode(xkb_keycode_t code) const
   return XBMCKeyForKeysym(KeysymForKeycode(code));
 }
 
+bool CXkbcommonKeymap::SupportsKeyComposition() const
+{
+  return m_composeState != nullptr;
+}
+
+KeyComposerStatus CXkbcommonKeymap::KeyComposerFeed(xkb_keycode_t code)
+{
+  KeyComposerStatus composerStatus;
+  const uint32_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
+  // store the pressed deadkey unicode value
+  const std::optional<XBMCKey> xbmcKey = TranslateDeadKey(keysym);
+  if (xbmcKey)
+  {
+    composerStatus.keysym = xbmcKey.value();
+  }
+  xkb_compose_state_feed(m_composeState.get(), keysym);
+  const xkb_compose_status composeStatus = xkb_compose_state_get_status(m_composeState.get());
+  // started composing a key
+  if (composeStatus == XKB_COMPOSE_COMPOSING)
+  {
+    composerStatus.state = KeyComposerState::COMPOSING;
+  }
+  // managed to compose a key from the buffer/key sequence
+  else if (composeStatus == XKB_COMPOSE_COMPOSED)
+  {
+    composerStatus.state = KeyComposerState::FINISHED;
+  }
+  // cancelled key composition, composer state should be reset
+  else if (composeStatus == XKB_COMPOSE_CANCELLED)
+  {
+    composerStatus.state = KeyComposerState::CANCELLED;
+  }
+  return composerStatus;
+}
+
+void CXkbcommonKeymap::KeyComposerFlush()
+{
+  xkb_compose_state_reset(m_composeState.get());
+}
+
 std::uint32_t CXkbcommonKeymap::UnicodeCodepointForKeycode(xkb_keycode_t code) const
 {
-  return xkb_state_key_get_utf32(m_state.get(), code);
+  uint32_t unicode;
+
+  if (SupportsKeyComposition())
+  {
+    const xkb_compose_status composerStatus = xkb_compose_state_get_status(m_composeState.get());
+    if (composerStatus == XKB_COMPOSE_COMPOSED)
+    {
+      const uint32_t keysym = xkb_compose_state_get_one_sym(m_composeState.get());
+      unicode = xkb_keysym_to_utf32(keysym);
+    }
+    else
+    {
+      unicode = xkb_state_key_get_utf32(m_state.get(), code);
+    }
+  }
+  else
+  {
+    unicode = xkb_state_key_get_utf32(m_state.get(), code);
+  }
+
+  // check if it is a dead key and try to translate
+  if (unicode == XBMCK_UNKNOWN)
+  {
+    const uint32_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
+    const std::optional<XBMCKey> xbmcKey = TranslateDeadKey(keysym);
+    if (xbmcKey)
+    {
+      unicode = xbmcKey.value();
+    }
+  }
+
+  return unicode;
 }
 
 bool CXkbcommonKeymap::ShouldKeycodeRepeat(xkb_keycode_t code) const
