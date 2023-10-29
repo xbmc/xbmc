@@ -88,7 +88,7 @@ std::string CTextureCache::GetCachedImage(const std::string &image, CTextureDeta
   if (GetCachedTexture(url, details))
   {
     if (details.file.empty())
-      return "";
+      return {};
 
     if (trackUsage)
       IncrementUseCount(details);
