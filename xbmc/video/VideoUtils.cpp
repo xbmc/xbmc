@@ -285,23 +285,8 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
   }
   else if (item->IsPlayList())
   {
-    const std::unique_ptr<PLAYLIST::CPlayList> playList(PLAYLIST::CPlayListFactory::Create(*item));
-    if (!playList)
-    {
-      CLog::LogF(LOGERROR, "Failed to create playlist {}", item->GetPath());
-      return;
-    }
-
-    if (!playList->Load(item->GetPath()))
-    {
-      CLog::LogF(LOGERROR, "Failed to load playlist {}", item->GetPath());
-      return;
-    }
-
-    for (int i = 0; i < playList->size(); ++i)
-    {
-      GetItemsForPlaylist((*playList)[i]);
-    }
+    // just queue the playlist, it will be expanded on play
+    m_queuedItems.Add(item);
   }
   else if (item->IsInternetStream())
   {
@@ -583,7 +568,7 @@ bool IsItemPlayable(const CFileItem& item)
         StringUtils::StartsWith(item.GetPath(), StringUtils::Format("{}/mixed/", path)))
       return true;
 
-    if (!item.m_bIsFolder)
+    if (!item.m_bIsFolder && !item.HasVideoInfoTag())
     {
       // Unknown location. Type cannot be determined for non-folder items.
       return false;
