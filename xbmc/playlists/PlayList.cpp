@@ -475,7 +475,7 @@ bool CPlayList::Expand(int position)
   for (int i = 0;i<playlist->size();i++)
   {
     (*playlist)[i]->SetDynPath((*playlist)[i]->GetPath());
-    (*playlist)[i]->SetPath(item->GetPath());
+    (*playlist)[i]->SetPath(item->GetDynPath());
     (*playlist)[i]->SetStartOffset(item->GetStartOffset());
   }
 
