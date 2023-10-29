@@ -22143,7 +22143,37 @@ msgctxt "#37052"
 msgid "NFS protocol version to use when establishing NFS connections"
 msgstr ""
 
-#empty strings from id 37053 to 38010
+#. Settings / Services "Chunk Size" group label
+#: system/settings/settings.xml
+msgctxt "#37053"
+msgid "Chunk Size"
+msgstr ""
+
+#. Setting #37054 "NFS Chunk Size"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37054"
+msgid "NFS Chunk Size"
+msgstr ""
+
+#. Description of setting #37054 "NFS Chunk Size"
+#: system/settings/settings.xml
+msgctxt "#37055"
+msgid "Data chunk size used on NFS connections"
+msgstr ""
+
+#. Setting #37056 "SMB Chunk Size"
+#: system/settings/settings.xml
+msgctxt "#37056"
+msgid "SMB Chunk Size"
+msgstr ""
+
+#. Description of setting #37056 "SMB Chunk Size"
+#: system/settings/settings.xml
+msgctxt "#37057"
+msgid "Data chunk size used on SMB connections"
+msgstr ""
+
+#empty strings from id 37058 to 38010
 
 #. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml

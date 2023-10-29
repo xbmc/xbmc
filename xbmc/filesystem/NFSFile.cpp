@@ -56,6 +56,7 @@ constexpr auto IDLE_TIMEOUT = 30s; // close fast unused contexts when no active 
 constexpr int NFS4ERR_EXPIRED = -11; // client session expired due idle time greater than lease_time
 
 constexpr auto SETTING_NFS_VERSION = "nfs.version";
+constexpr auto SETTING_NFS_CHUNKSIZE = "nfs.chunksize";
 } // unnamed namespace
 
 CNfsConnection::CNfsConnection()
@@ -334,15 +335,38 @@ bool CNfsConnection::Connect(const CURL& url, std::string &relativePath)
     m_readChunkSize = nfs_get_readmax(m_pNfsContext);
     m_writeChunkSize = nfs_get_writemax(m_pNfsContext);
 
+    const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+    const uint64_t chunkSize =
+        settings ? (settings->GetInt(SETTING_NFS_CHUNKSIZE) * 1024) : (128 * 1024);
+
     if (m_readChunkSize == 0)
     {
-      CLog::Log(LOGDEBUG, "NFS Server did not return max read chunksize - Using 128K default");
-      m_readChunkSize = 128 * 1024; // 128K
+      CLog::Log(LOGDEBUG, "NFS Server did not return max read chunksize - Using setting value {}",
+                chunkSize);
+      m_readChunkSize = chunkSize;
     }
+    else if (chunkSize < m_readChunkSize)
+    {
+      CLog::Log(LOGDEBUG,
+                "NFS Server max read chunksize ({}) is bigger than client setting - Using client "
+                "value {}",
+                m_readChunkSize, chunkSize);
+      m_readChunkSize = chunkSize;
+    }
+
     if (m_writeChunkSize == 0)
     {
-      CLog::Log(LOGDEBUG, "NFS Server did not return max write chunksize - Using 128K default");
-      m_writeChunkSize = 128 * 1024; // 128K
+      CLog::Log(LOGDEBUG, "NFS Server did not return max write chunksize - Using setting value {}",
+                chunkSize);
+      m_writeChunkSize = chunkSize;
+    }
+    else if (chunkSize < m_writeChunkSize)
+    {
+      CLog::Log(LOGDEBUG,
+                "NFS Server max write chunksize ({}) is bigger than client setting - Using client "
+                "value {}",
+                m_writeChunkSize, chunkSize);
+      m_writeChunkSize = chunkSize;
     }
 
     if (contextRet == CNfsConnection::ContextStatus::NEW)
