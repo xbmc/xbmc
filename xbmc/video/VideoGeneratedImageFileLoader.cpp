@@ -51,7 +51,7 @@ void SetupRarOptions(CFileItem& item, const std::string& path)
 std::unique_ptr<CTexture> VIDEO::CVideoGeneratedImageFileLoader::Load(
     const std::string& specialType, const std::string& filePath, unsigned int, unsigned int) const
 {
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
           CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB))
   {
     return {};
