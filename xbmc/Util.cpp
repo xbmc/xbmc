@@ -514,7 +514,9 @@ bool CUtil::IsPicture(const std::string& strFile)
 
 std::string CUtil::GetSplashPath()
 {
-  std::array<std::string, 4> candidates {{ "special://home/media/splash.jpg", "special://home/media/splash.png", "special://xbmc/media/splash.jpg", "special://xbmc/media/splash.png" }};
+  std::array<std::string, 4> candidates{
+      {"special://home/media/splash.png", "special://home/media/splash.jpg",
+       "special://xbmc/media/splash.png", "special://xbmc/media/splash.jpg"}};
   auto it = std::find_if(candidates.begin(), candidates.end(), [](std::string const& file) { return XFILE::CFile::Exists(file); });
   if (it == candidates.end())
     throw std::runtime_error("No splash image found");
