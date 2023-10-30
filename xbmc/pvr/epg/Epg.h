@@ -281,7 +281,7 @@ namespace PVR
      * @param database The EPG database
      * @return number of cleaned up images.
      */
-    int CleanupCachedImages(const std::shared_ptr<CPVREpgDatabase>& database);
+    int CleanupCachedImages(const std::shared_ptr<const CPVREpgDatabase>& database);
 
   private:
     CPVREpg() = delete;

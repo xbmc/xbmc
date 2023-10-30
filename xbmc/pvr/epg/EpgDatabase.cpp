@@ -408,7 +408,7 @@ std::vector<std::shared_ptr<CPVREpg>> CPVREpgDatabase::GetAll()
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
-    const std::unique_ptr<dbiplus::Dataset>& pDS)
+    const std::unique_ptr<dbiplus::Dataset>& pDS) const
 {
   if (!pDS->eof())
   {
@@ -460,7 +460,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
   return {};
 }
 
-bool CPVREpgDatabase::HasTags(int iEpgID)
+bool CPVREpgDatabase::HasTags(int iEpgID) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
@@ -469,7 +469,7 @@ bool CPVREpgDatabase::HasTags(int iEpgID)
   return !strValue.empty();
 }
 
-CDateTime CPVREpgDatabase::GetLastEndTime(int iEpgID)
+CDateTime CPVREpgDatabase::GetLastEndTime(int iEpgID) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
@@ -481,7 +481,7 @@ CDateTime CPVREpgDatabase::GetLastEndTime(int iEpgID)
   return {};
 }
 
-std::pair<CDateTime, CDateTime> CPVREpgDatabase::GetFirstAndLastEPGDate()
+std::pair<CDateTime, CDateTime> CPVREpgDatabase::GetFirstAndLastEPGDate() const
 {
   CDateTime first;
   CDateTime last;
@@ -505,7 +505,7 @@ std::pair<CDateTime, CDateTime> CPVREpgDatabase::GetFirstAndLastEPGDate()
   return {first, last};
 }
 
-CDateTime CPVREpgDatabase::GetMinStartTime(int iEpgID, const CDateTime& minStart)
+CDateTime CPVREpgDatabase::GetMinStartTime(int iEpgID, const CDateTime& minStart) const
 {
   time_t t;
   minStart.GetAsTime(t);
@@ -522,7 +522,7 @@ CDateTime CPVREpgDatabase::GetMinStartTime(int iEpgID, const CDateTime& minStart
   return {};
 }
 
-CDateTime CPVREpgDatabase::GetMaxEndTime(int iEpgID, const CDateTime& maxEnd)
+CDateTime CPVREpgDatabase::GetMaxEndTime(int iEpgID, const CDateTime& maxEnd) const
 {
   time_t t;
   maxEnd.GetAsTime(t);
@@ -665,7 +665,7 @@ private:
 } // unnamed namespace
 
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
-    const PVREpgSearchData& searchData)
+    const PVREpgSearchData& searchData) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -786,7 +786,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTags(
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByUniqueBroadcastID(
-    int iEpgID, unsigned int iUniqueBroadcastId)
+    int iEpgID, unsigned int iUniqueBroadcastId) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery = PrepareSQL("SELECT * "
@@ -812,7 +812,8 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByUniqueBroadcastID(
   return {};
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByDatabaseID(int iEpgID, int iDatabaseId)
+std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByDatabaseID(int iEpgID,
+                                                                       int iDatabaseId) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery = PrepareSQL("SELECT * "
@@ -838,8 +839,8 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByDatabaseID(int iEpgI
   return {};
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByStartTime(int iEpgID,
-                                                                      const CDateTime& startTime)
+std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByStartTime(
+    int iEpgID, const CDateTime& startTime) const
 {
   time_t start;
   startTime.GetAsTime(start);
@@ -869,7 +870,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByStartTime(int iEpgID
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMinStartTime(
-    int iEpgID, const CDateTime& minStartTime)
+    int iEpgID, const CDateTime& minStartTime) const
 {
   time_t minStart;
   minStartTime.GetAsTime(minStart);
@@ -899,8 +900,8 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMinStartTime(
   return {};
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMaxEndTime(int iEpgID,
-                                                                       const CDateTime& maxEndTime)
+std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMaxEndTime(
+    int iEpgID, const CDateTime& maxEndTime) const
 {
   time_t maxEnd;
   maxEndTime.GetAsTime(maxEnd);
@@ -931,7 +932,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::GetEpgTagByMaxEndTime(int iEpgI
 }
 
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinStartMaxEndTime(
-    int iEpgID, const CDateTime& minStartTime, const CDateTime& maxEndTime)
+    int iEpgID, const CDateTime& minStartTime, const CDateTime& maxEndTime) const
 {
   time_t minStart;
   minStartTime.GetAsTime(minStart);
@@ -971,7 +972,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinSta
 }
 
 std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetEpgTagsByMinEndMaxStartTime(
-    int iEpgID, const CDateTime& minEndTime, const CDateTime& maxStartTime)
+    int iEpgID, const CDateTime& minEndTime, const CDateTime& maxStartTime) const
 {
   time_t minEnd;
   minEndTime.GetAsTime(minEnd);
@@ -1034,7 +1035,7 @@ bool CPVREpgDatabase::QueueDeleteEpgTagsByMinEndMaxStartTimeQuery(int iEpgID,
   return false;
 }
 
-std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int iEpgID)
+std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int iEpgID) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
@@ -1060,7 +1061,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgDatabase::GetAllEpgTags(int 
   return {};
 }
 
-std::vector<std::string> CPVREpgDatabase::GetAllIconPaths(int iEpgID)
+std::vector<std::string> CPVREpgDatabase::GetAllIconPaths(int iEpgID) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =
@@ -1086,7 +1087,7 @@ std::vector<std::string> CPVREpgDatabase::GetAllIconPaths(int iEpgID)
   return {};
 }
 
-bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan)
+bool CPVREpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime* lastScan) const
 {
   bool bReturn = false;
 
@@ -1269,7 +1270,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
   return true;
 }
 
-int CPVREpgDatabase::GetLastEPGId()
+int CPVREpgDatabase::GetLastEPGId() const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   std::string strQuery = PrepareSQL("SELECT MAX(idEpg) FROM epg");
@@ -1282,7 +1283,7 @@ int CPVREpgDatabase::GetLastEPGId()
 /********** Saved searches methods **********/
 
 std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::CreateEpgSearchFilter(
-    bool bRadio, const std::unique_ptr<dbiplus::Dataset>& pDS)
+    bool bRadio, const std::unique_ptr<dbiplus::Dataset>& pDS) const
 {
   if (!pDS->eof())
   {
@@ -1328,7 +1329,8 @@ std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::CreateEpgSearchFilter(
   return {};
 }
 
-std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgDatabase::GetSavedSearches(bool bRadio)
+std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgDatabase::GetSavedSearches(
+    bool bRadio) const
 {
   std::vector<std::shared_ptr<CPVREpgSearchFilter>> result;
 
@@ -1354,7 +1356,7 @@ std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgDatabase::GetSavedSearc
   return result;
 }
 
-std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::GetSavedSearchById(bool bRadio, int iId)
+std::shared_ptr<CPVREpgSearchFilter> CPVREpgDatabase::GetSavedSearchById(bool bRadio, int iId) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
   const std::string strQuery =

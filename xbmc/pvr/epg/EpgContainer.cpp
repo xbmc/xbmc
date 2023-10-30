@@ -529,7 +529,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetTags(
   // make sure we have up-to-date data in the database.
   PersistAll(std::numeric_limits<unsigned int>::max());
 
-  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   std::vector<std::shared_ptr<CPVREpgInfoTag>> results = database->GetEpgTags(searchData);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -813,7 +813,7 @@ std::pair<CDateTime, CDateTime> CPVREpgContainer::GetFirstAndLastEPGDate() const
 {
   // Get values from db
   std::pair<CDateTime, CDateTime> dbDates;
-  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (database)
     dbDates = database->GetFirstAndLastEPGDate();
 
@@ -935,7 +935,7 @@ void CPVREpgContainer::OnSystemWake()
 
 int CPVREpgContainer::CleanupCachedImages()
 {
-  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
     CLog::LogF(LOGERROR, "No EPG database");
@@ -955,7 +955,7 @@ int CPVREpgContainer::CleanupCachedImages()
 
 std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSearches(bool bRadio)
 {
-  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
     CLog::LogF(LOGERROR, "No EPG database");
@@ -967,7 +967,7 @@ std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSear
 
 std::shared_ptr<CPVREpgSearchFilter> CPVREpgContainer::GetSavedSearchById(bool bRadio, int iId)
 {
-  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
     CLog::LogF(LOGERROR, "No EPG database");
