@@ -147,15 +147,16 @@ public:
   int GetSingleValueInt(const std::string& strTable,
                         const std::string& strColumn,
                         const std::string& strWhereClause = std::string(),
-                        const std::string& strOrderBy = std::string());
-  int GetSingleValueInt(const std::string& query);
+                        const std::string& strOrderBy = std::string()) const;
+  int GetSingleValueInt(const std::string& query) const;
 
   /*! \brief Get a single integer value from a query on a dataset.
    \param query the query in question.
    \param ds the dataset to use for the query.
    \return the value from the query, 0 on failure.
    */
-  int GetSingleValueInt(const std::string& query, std::unique_ptr<dbiplus::Dataset>& ds);
+  int GetSingleValueInt(const std::string& query,
+                        const std::unique_ptr<dbiplus::Dataset>& ds) const;
 
   /*!
    * @brief Delete values from a table.
