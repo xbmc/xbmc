@@ -244,7 +244,7 @@ void CPVRGUIInfo::UpdateQualityData()
   const int channelUid = playbackState->GetPlayingChannelUniqueID();
   if (channelUid > 0)
   {
-    const std::shared_ptr<CPVRClient> client =
+    const std::shared_ptr<const CPVRClient> client =
         CServiceBroker::GetPVRManager().Clients()->GetCreatedClient(
             playbackState->GetPlayingClientID());
     if (client)
