@@ -55,7 +55,7 @@
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
-#include "video/guilib/VideoSelectActionProcessor.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
 #include <algorithm>
@@ -506,7 +506,7 @@ void CGUIDialogVideoInfo::Update()
   }
 
   // Check for resumability
-  if (m_movieItem->GetVideoInfoTag()->GetResumePoint().timeInSeconds > 0.0)
+  if (m_movieItem->GetVideoInfoTag()->GetResumePoint().IsPartWay())
     CONTROL_ENABLE(CONTROL_BTN_RESUME);
   else
     CONTROL_DISABLE(CONTROL_BTN_RESUME);
@@ -704,6 +704,39 @@ void CGUIDialogVideoInfo::ClearCastList()
   m_castList->Clear();
 }
 
+namespace
+{
+class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
+{
+public:
+  explicit CVideoPlayActionProcessor(CFileItem& item) : CVideoPlayActionProcessorBase(item) {}
+
+protected:
+  bool OnResumeSelected() override
+  {
+    m_item.SetStartOffset(STARTOFFSET_RESUME);
+    Play();
+    return true;
+  }
+
+  bool OnPlaySelected() override
+  {
+    Play();
+    return true;
+  }
+
+private:
+  void Play()
+  {
+    m_item.SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+    const ContentUtils::PlayMode mode{m_item.GetProperty("CheckAutoPlayNextItem").asBoolean()
+                                          ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
+                                          : ContentUtils::PlayMode::PLAY_ONLY_THIS};
+    VIDEO_UTILS::PlayItem(std::make_shared<CFileItem>(m_item), "", mode);
+  }
+};
+} // unnamed namespace
+
 void CGUIDialogVideoInfo::Play(bool resume)
 {
   std::string strPath;
@@ -748,30 +781,30 @@ void CGUIDialogVideoInfo::Play(bool resume)
 
   if (resume)
   {
-    m_movieItem->SetStartOffset(STARTOFFSET_RESUME);
+    CVideoPlayActionProcessor proc{*m_movieItem};
+    proc.Process(PLAY_ACTION_RESUME);
   }
   else
   {
-    const SelectAction action = CVideoSelectActionProcessorBase::ChoosePlayOrResume(*m_movieItem);
-    if (action == SELECT_ACTION_RESUME)
+    if (GetControl(CONTROL_BTN_RESUME))
     {
-      m_movieItem->SetStartOffset(STARTOFFSET_RESUME);
+      // if dialog has a resume button, play button has always the purpose to start from beginning
+      CVideoPlayActionProcessor proc{*m_movieItem};
+      proc.Process(PLAY_ACTION_PLAY_FROM_BEGINNING);
     }
-    else if (action != SELECT_ACTION_PLAY)
+    else
     {
-      // The Resume dialog was closed without any choice
-      SetMovie(m_movieItem.get()); // restore cast list, which was cleared on dialog close
-      Open();
-      return;
+      // play button acts according to default play action setting
+      CVideoPlayActionProcessor proc{*m_movieItem};
+      proc.Process();
+      if (proc.UserCancelled())
+      {
+        // The Resume dialog was closed without any choice
+        SetMovie(m_movieItem.get()); // restore cast list, which was cleared on dialog close
+        Open();
+      }
     }
   }
-
-  m_movieItem->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
-
-  const ContentUtils::PlayMode mode = m_movieItem->GetProperty("CheckAutoPlayNextItem").asBoolean()
-                                          ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
-                                          : ContentUtils::PlayMode::PLAY_ONLY_THIS;
-  VIDEO_UTILS::PlayItem(m_movieItem, "", mode);
 }
 
 namespace
