@@ -122,19 +122,20 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
 
 namespace
 {
-  std::string GetEpgTagTitle(const std::shared_ptr<CPVREpgInfoTag>& epgTag)
-  {
-    if (CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
-      return g_localizeStrings.Get(19266); // Parental locked
-    else if (epgTag->Title().empty() &&
-             !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
-      return g_localizeStrings.Get(19055); // no information available
-    else
-      return epgTag->Title();
-  }
+std::string GetEpgTagTitle(const std::shared_ptr<const CPVREpgInfoTag>& epgTag)
+{
+  if (CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
+    return g_localizeStrings.Get(19266); // Parental locked
+  else if (epgTag->Title().empty() &&
+           !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+               CSettings::SETTING_EPG_HIDENOINFOAVAILABLE))
+    return g_localizeStrings.Get(19055); // no information available
+  else
+    return epgTag->Title();
+}
 } // unnamed namespace
 
-void CFileItem::FillMusicInfoTag(const std::shared_ptr<CPVREpgInfoTag>& tag)
+void CFileItem::FillMusicInfoTag(const std::shared_ptr<const CPVREpgInfoTag>& tag)
 {
   CMusicInfoTag* musictag = GetMusicInfoTag(); // create (!) the music tag.
 
@@ -215,7 +216,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
 {
   Initialize();
 
-  const std::shared_ptr<CPVRChannel> channel = channelGroupMember->Channel();
+  const std::shared_ptr<const CPVRChannel> channel = channelGroupMember->Channel();
 
   m_pvrChannelGroupMemberInfoTag = channelGroupMember;
 
@@ -240,7 +241,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRChannelGroupMember>& channelGroup
 
   if (channel->IsRadio() && !HasMusicInfoTag())
   {
-    const std::shared_ptr<CPVREpgInfoTag> epgNow = channel->GetEPGNow();
+    const std::shared_ptr<const CPVREpgInfoTag> epgNow = channel->GetEPGNow();
     FillMusicInfoTag(epgNow);
   }
   FillInMimeType(false);
@@ -263,7 +264,7 @@ CFileItem::CFileItem(const std::shared_ptr<CPVRRecording>& record)
     SetArt("icon", record->IconPath());
   else
   {
-    const std::shared_ptr<CPVRChannel> channel = record->Channel();
+    const std::shared_ptr<const CPVRChannel> channel = record->Channel();
     if (channel && !channel->IconPath().empty())
       SetArt("icon", channel->IconPath());
     else if (record->IsRadio())

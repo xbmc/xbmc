@@ -144,7 +144,7 @@ void CGUIWindowPVRSearchBase::SetItemToSearch(const CFileItem& item)
   {
     SetSearchFilter(std::make_shared<CPVREpgSearchFilter>(m_bRadio));
 
-    const std::shared_ptr<CPVREpgInfoTag> epgTag(CPVRItem(item).GetEpgInfoTag());
+    const std::shared_ptr<const CPVREpgInfoTag> epgTag(CPVRItem(item).GetEpgInfoTag());
     if (epgTag && !CServiceBroker::GetPVRManager().IsParentalLocked(epgTag))
       m_searchfilter->SetSearchPhrase(epgTag->Title());
   }

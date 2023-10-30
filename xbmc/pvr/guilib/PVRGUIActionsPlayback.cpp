@@ -405,7 +405,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(PlaybackType type) const
       if (CServiceBroker::GetPVRManager().PlaybackState()->IsPlayingTV())
         return true;
 
-      const std::shared_ptr<CPVRChannelGroup> allGroup =
+      const std::shared_ptr<const CPVRChannelGroup> allGroup =
           CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAllTV();
       if (allGroup)
         groupMember = allGroup->GetLastPlayedChannelGroupMember();
@@ -429,7 +429,7 @@ bool CPVRGUIActionsPlayback::SwitchToChannel(PlaybackType type) const
   else
   {
     // if we don't, find the active channel group of the demanded type and play it's first channel
-    const std::shared_ptr<CPVRChannelGroup> channelGroup =
+    const std::shared_ptr<const CPVRChannelGroup> channelGroup =
         CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(bIsRadio);
     if (channelGroup)
     {
@@ -473,7 +473,7 @@ bool CPVRGUIActionsPlayback::PlayChannelOnStartup() const
 
   if (!groupMember)
   {
-    const std::shared_ptr<CPVRChannelGroup> group =
+    const std::shared_ptr<const CPVRChannelGroup> group =
         CServiceBroker::GetPVRManager().ChannelGroups()->Get(playRadio)->GetGroupAll();
     auto channels = group->GetMembers();
     if (channels.empty())
@@ -531,7 +531,7 @@ void CPVRGUIActionsPlayback::SeekForward()
   time_t playbackStartTime = CServiceBroker::GetDataCacheCore().GetStartTime();
   if (playbackStartTime > 0)
   {
-    const std::shared_ptr<CPVRChannel> playingChannel =
+    const std::shared_ptr<const CPVRChannel> playingChannel =
         CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
     if (playingChannel)
     {
@@ -569,7 +569,7 @@ void CPVRGUIActionsPlayback::SeekBackward(unsigned int iThreshold)
   time_t playbackStartTime = CServiceBroker::GetDataCacheCore().GetStartTime();
   if (playbackStartTime > 0)
   {
-    const std::shared_ptr<CPVRChannel> playingChannel =
+    const std::shared_ptr<const CPVRChannel> playingChannel =
         CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
     if (playingChannel)
     {

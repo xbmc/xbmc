@@ -50,7 +50,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVRItem::GetNextEpgInfoTag() const
 {
   if (m_item->IsEPG())
   {
-    const std::shared_ptr<CPVRChannel> channel =
+    const std::shared_ptr<const CPVRChannel> channel =
         CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(
             m_item->GetEPGInfoTag());
     if (channel)
@@ -62,7 +62,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVRItem::GetNextEpgInfoTag() const
   }
   else if (m_item->IsPVRTimer())
   {
-    const std::shared_ptr<CPVRChannel> channel = m_item->GetPVRTimerInfoTag()->Channel();
+    const std::shared_ptr<const CPVRChannel> channel = m_item->GetPVRTimerInfoTag()->Channel();
     if (channel)
       return channel->GetEPGNext();
   }

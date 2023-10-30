@@ -239,7 +239,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroups::GetChannelGroupMember
 {
   if (path.IsChannel())
   {
-    const std::shared_ptr<CPVRChannelGroup> group =
+    const std::shared_ptr<const CPVRChannelGroup> group =
         GetByName(path.GetGroupName(), path.GetGroupClientID());
     if (group)
       return group->GetByUniqueID(
@@ -389,7 +389,8 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::CreateChannelGroup(
 
 bool CPVRChannelGroups::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
+  const std::shared_ptr<const CPVRDatabase> database(
+      CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return false;
 

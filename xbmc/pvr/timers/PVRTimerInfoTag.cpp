@@ -61,7 +61,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */)
 
   std::shared_ptr<CPVRTimerType> type;
 
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  const std::shared_ptr<const CPVRClient> client =
+      CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsTimers())
   {
     // default to first available type for given client
@@ -132,7 +133,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
   if (m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
     CLog::LogF(LOGERROR, "Invalid client index supplied by client {} (must be > 0)!", m_iClientId);
 
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  const std::shared_ptr<const CPVRClient> client =
+      CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsTimers())
   {
     // begin compat section
