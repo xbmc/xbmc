@@ -836,11 +836,13 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   }
   else if (parameterObject["item"].isMember("channelid"))
   {
-    const std::shared_ptr<CPVRChannelGroupsContainer> channelGroupContainer = CServiceBroker::GetPVRManager().ChannelGroups();
+    const std::shared_ptr<const CPVRChannelGroupsContainer> channelGroupContainer =
+        CServiceBroker::GetPVRManager().ChannelGroups();
     if (!channelGroupContainer)
       return FailedToExecute;
 
-    const std::shared_ptr<CPVRChannel> channel = channelGroupContainer->GetChannelById(static_cast<int>(parameterObject["item"]["channelid"].asInteger()));
+    const std::shared_ptr<const CPVRChannel> channel = channelGroupContainer->GetChannelById(
+        static_cast<int>(parameterObject["item"]["channelid"].asInteger()));
     if (!channel)
       return InvalidParams;
 
@@ -857,7 +859,8 @@ JSONRPC_STATUS CPlayerOperations::Open(const std::string &method, ITransportLaye
   }
   else if (parameterObject["item"].isMember("recordingid"))
   {
-    const std::shared_ptr<CPVRRecordings> recordingsContainer = CServiceBroker::GetPVRManager().Recordings();
+    const std::shared_ptr<const CPVRRecordings> recordingsContainer =
+        CServiceBroker::GetPVRManager().Recordings();
     if (!recordingsContainer)
       return FailedToExecute;
 
@@ -2148,17 +2151,19 @@ double CPlayerOperations::ParseTimeInSeconds(const CVariant &time)
 
 bool CPlayerOperations::IsPVRChannel()
 {
-  const std::shared_ptr<CPVRPlaybackState> state = CServiceBroker::GetPVRManager().PlaybackState();
+  const std::shared_ptr<const CPVRPlaybackState> state =
+      CServiceBroker::GetPVRManager().PlaybackState();
   return state->IsPlayingTV() || state->IsPlayingRadio();
 }
 
 std::shared_ptr<CPVREpgInfoTag> CPlayerOperations::GetCurrentEpg()
 {
-  const std::shared_ptr<CPVRPlaybackState> state = CServiceBroker::GetPVRManager().PlaybackState();
+  const std::shared_ptr<const CPVRPlaybackState> state =
+      CServiceBroker::GetPVRManager().PlaybackState();
   if (!state->IsPlayingTV() && !state->IsPlayingRadio())
     return {};
 
-  const std::shared_ptr<CPVRChannel> currentChannel = state->GetPlayingChannel();
+  const std::shared_ptr<const CPVRChannel> currentChannel = state->GetPlayingChannel();
   if (!currentChannel)
     return {};
 

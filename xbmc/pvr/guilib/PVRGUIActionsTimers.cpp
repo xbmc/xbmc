@@ -371,7 +371,7 @@ bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChann
       ParentalCheckResult::SUCCESS)
     return bReturn;
 
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(channel->ClientID());
   if (client && client->GetClientCapabilities().SupportsTimers())
   {
@@ -749,7 +749,7 @@ bool CPVRGUIActionsTimers::ConfirmDeleteTimer(const std::shared_ptr<const CPVRTi
                                               bool& bDeleteRule) const
 {
   bool bConfirmed(false);
-  const std::shared_ptr<CPVRTimerInfoTag> parentTimer(
+  const std::shared_ptr<const CPVRTimerInfoTag> parentTimer(
       CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer));
 
   if (parentTimer && parentTimer->GetTimerType()->AllowsDelete())
@@ -827,7 +827,7 @@ void AddEventLogEntry(const std::shared_ptr<const CPVRTimerInfoTag>& timer, int 
   std::string name;
   std::string icon;
 
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(timer->GetTimerType()->GetClientId());
   if (client)
   {
@@ -884,7 +884,7 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
   std::string text = GetAnnouncerText(timer, 19307, 19308); // Reminder for ...
 
   bool bCanRecord = false;
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(timer->ClientID());
   if (client && client->GetClientCapabilities().SupportsTimers())
   {

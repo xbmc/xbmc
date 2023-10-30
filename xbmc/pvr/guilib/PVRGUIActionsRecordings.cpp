@@ -159,7 +159,7 @@ private:
     const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
     if (client)
     {
-      const std::shared_ptr<CPVRRecording> recording = item->GetPVRRecordingInfoTag();
+      const std::shared_ptr<const CPVRRecording> recording = item->GetPVRRecordingInfoTag();
       return client->SetRecordingPlayCount(*recording, recording->GetLocalPlayCount()) ==
              PVR_ERROR_NO_ERROR;
     }

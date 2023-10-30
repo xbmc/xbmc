@@ -95,7 +95,7 @@ void CPVRGUITimerInfo::UpdateTimersToggle()
     std::vector<std::shared_ptr<CPVRTimerInfoTag>> activeTags = GetActiveRecordings();
     if (m_iTimerInfoToggleCurrent < activeTags.size())
     {
-      const std::shared_ptr<CPVRTimerInfoTag> tag = activeTags.at(m_iTimerInfoToggleCurrent);
+      const std::shared_ptr<const CPVRTimerInfoTag> tag = activeTags.at(m_iTimerInfoToggleCurrent);
       strActiveTimerTitle = tag->Title();
       strActiveTimerChannelName = tag->ChannelName();
       strActiveTimerChannelIcon = tag->ChannelIcon();
@@ -133,7 +133,7 @@ void CPVRGUITimerInfo::UpdateNextTimer()
   std::string strNextRecordingTime;
   std::string strNextTimerInfo;
 
-  const std::shared_ptr<CPVRTimerInfoTag> timer = GetNextActiveTimer();
+  const std::shared_ptr<const CPVRTimerInfoTag> timer = GetNextActiveTimer();
   if (timer)
   {
     strNextRecordingTitle = timer->Title();

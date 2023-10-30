@@ -365,10 +365,10 @@ bool CPVREpgSearchFilter::MatchChannelGroup(const std::shared_ptr<const CPVREpgI
   {
     if (!m_groupIdMatches.has_value())
     {
-      const std::shared_ptr<CPVRChannelGroup> group = CServiceBroker::GetPVRManager()
-                                                          .ChannelGroups()
-                                                          ->Get(m_bIsRadio)
-                                                          ->GetById(m_iChannelGroupID);
+      const std::shared_ptr<const CPVRChannelGroup> group = CServiceBroker::GetPVRManager()
+                                                                .ChannelGroups()
+                                                                ->Get(m_bIsRadio)
+                                                                ->GetById(m_iChannelGroupID);
       m_groupIdMatches =
           group && (group->GetByUniqueID({tag->ClientID(), tag->UniqueChannelID()}) != nullptr);
     }
@@ -383,7 +383,8 @@ bool CPVREpgSearchFilter::MatchFreeToAir(const std::shared_ptr<const CPVREpgInfo
 {
   if (m_bFreeToAirOnly)
   {
-    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
+    const std::shared_ptr<const CPVRChannel> channel =
+        CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
     return channel && !channel->IsEncrypted();
   }
 

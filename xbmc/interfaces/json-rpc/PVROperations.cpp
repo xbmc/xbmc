@@ -234,7 +234,7 @@ JSONRPC_STATUS CPVROperations::GetBroadcastIsPlayable(const std::string& method,
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const std::shared_ptr<CPVREpgInfoTag> epgTag =
+  const std::shared_ptr<const CPVREpgInfoTag> epgTag =
       CServiceBroker::GetPVRManager().EpgContainer().GetTagByDatabaseId(
           parameterObject["broadcastid"].asInteger());
 

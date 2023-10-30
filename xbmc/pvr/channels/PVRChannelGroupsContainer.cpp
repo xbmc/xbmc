@@ -118,7 +118,8 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroupsContainer::GetChannelGr
 
 std::shared_ptr<CPVRChannel> CPVRChannelGroupsContainer::GetByPath(const std::string& strPath) const
 {
-  const std::shared_ptr<CPVRChannelGroupMember> groupMember = GetChannelGroupMemberByPath(strPath);
+  const std::shared_ptr<const CPVRChannelGroupMember> groupMember =
+      GetChannelGroupMemberByPath(strPath);
   if (groupMember)
     return groupMember->Channel();
 

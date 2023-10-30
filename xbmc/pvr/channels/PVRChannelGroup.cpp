@@ -247,7 +247,7 @@ void CPVRChannelGroup::UpdateClientPriorities()
 
 bool CPVRChannelGroup::UpdateMembersClientPriority()
 {
-  const std::shared_ptr<CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
+  const std::shared_ptr<const CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
   bool bChanged = false;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -259,7 +259,7 @@ bool CPVRChannelGroup::UpdateMembersClientPriority()
 
     if (bUseBackendChannelOrder)
     {
-      const std::shared_ptr<CPVRClient> client =
+      const std::shared_ptr<const CPVRClient> client =
           clients->GetCreatedClient(member->Channel()->ClientID());
       if (!client)
         continue;
@@ -291,7 +291,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetByUniqueID(
 std::shared_ptr<CPVRChannel> CPVRChannelGroup::GetByUniqueID(int iUniqueChannelId,
                                                              int iClientID) const
 {
-  const std::shared_ptr<CPVRChannelGroupMember> groupMember =
+  const std::shared_ptr<const CPVRChannelGroupMember> groupMember =
       GetByUniqueID(std::make_pair(iClientID, iUniqueChannelId));
   return groupMember ? groupMember->Channel() : std::shared_ptr<CPVRChannel>();
 }
@@ -314,7 +314,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroup::GetLastPlayedChannelGr
   std::shared_ptr<CPVRChannelGroupMember> groupMember;
   for (const auto& memberPair : m_members)
   {
-    const std::shared_ptr<CPVRChannel> channel = memberPair.second->Channel();
+    const std::shared_ptr<const CPVRChannel> channel = memberPair.second->Channel();
     if (channel->ChannelID() != iCurrentChannel &&
         CServiceBroker::GetPVRManager().Clients()->IsCreatedClient(channel->ClientID()) &&
         channel->LastWatched() > 0 &&
@@ -356,7 +356,7 @@ CPVRChannelNumber CPVRChannelGroup::GetChannelNumber(
     const std::shared_ptr<const CPVRChannel>& channel) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::shared_ptr<CPVRChannelGroupMember> member = GetByUniqueID(channel->StorageId());
+  const std::shared_ptr<const CPVRChannelGroupMember> member = GetByUniqueID(channel->StorageId());
   return member ? member->ChannelNumber() : CPVRChannelNumber();
 }
 
@@ -364,7 +364,7 @@ CPVRChannelNumber CPVRChannelGroup::GetClientChannelNumber(
     const std::shared_ptr<const CPVRChannel>& channel) const
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::shared_ptr<CPVRChannelGroupMember> member = GetByUniqueID(channel->StorageId());
+  const std::shared_ptr<const CPVRChannelGroupMember> member = GetByUniqueID(channel->StorageId());
   return member ? member->ClientChannelNumber() : CPVRChannelNumber();
 }
 
@@ -484,7 +484,8 @@ void CPVRChannelGroup::GetChannelNumbers(std::vector<std::string>& channelNumber
 
 int CPVRChannelGroup::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
+  const std::shared_ptr<const CPVRDatabase> database(
+      CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return -1;
 
@@ -494,7 +495,7 @@ int CPVRChannelGroup::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRCli
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> membersToDelete;
   if (!results.empty())
   {
-    const std::shared_ptr<CPVRClients> allClients = CServiceBroker::GetPVRManager().Clients();
+    const std::shared_ptr<const CPVRClients> allClients = CServiceBroker::GetPVRManager().Clients();
 
     std::unique_lock<CCriticalSection> lock(m_critSection);
     for (const auto& member : results)
@@ -686,7 +687,7 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroup::RemoveDel
   // check for deleted/invalid channels
   for (auto it = m_sortedMembers.begin(); it != m_sortedMembers.end();)
   {
-    const std::shared_ptr<CPVRChannel> channel = (*it)->Channel();
+    const std::shared_ptr<const CPVRChannel> channel = (*it)->Channel();
 
     if (GetClientID() >= 0 && GetClientID() != channel->ClientID())
     {

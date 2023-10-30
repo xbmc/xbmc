@@ -214,7 +214,7 @@ bool CGUIWindowPVRBase::OnAction(const CAction& action)
 
 bool CGUIWindowPVRBase::ActivatePreviousChannelGroup()
 {
-  const std::shared_ptr<CPVRChannelGroup> channelGroup = GetChannelGroup();
+  const std::shared_ptr<const CPVRChannelGroup> channelGroup = GetChannelGroup();
   if (channelGroup)
   {
     const CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(channelGroup->IsRadio());
@@ -229,7 +229,7 @@ bool CGUIWindowPVRBase::ActivatePreviousChannelGroup()
 
 bool CGUIWindowPVRBase::ActivateNextChannelGroup()
 {
-  const std::shared_ptr<CPVRChannelGroup> channelGroup = GetChannelGroup();
+  const std::shared_ptr<const CPVRChannelGroup> channelGroup = GetChannelGroup();
   if (channelGroup)
   {
     const CPVRChannelGroups* groups = CServiceBroker::GetPVRManager().ChannelGroups()->Get(channelGroup->IsRadio());
@@ -405,7 +405,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
     std::string selectedName;
     std::string selectedClient;
 
-    const std::shared_ptr<CPVRChannelGroup> channelGroup = GetChannelGroup();
+    const std::shared_ptr<const CPVRChannelGroup> channelGroup = GetChannelGroup();
     if (channelGroup)
     {
       selectedName = channelGroup->GroupName();
@@ -420,7 +420,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
     for (auto& group : options)
     {
       // set client name as label2
-      const std::shared_ptr<CPVRClient> client = pvrMgr.GetClient(*group);
+      const std::shared_ptr<const CPVRClient> client = pvrMgr.GetClient(*group);
       if (client)
         group->SetLabel2(client->GetFriendlyName());
 
@@ -444,7 +444,7 @@ bool CGUIWindowPVRBase::OpenChannelGroupSelectionDialog()
   }
   else
   {
-    const std::shared_ptr<CPVRChannelGroup> channelGroup = GetChannelGroup();
+    const std::shared_ptr<const CPVRChannelGroup> channelGroup = GetChannelGroup();
     if (channelGroup)
     {
       int idx = -1;

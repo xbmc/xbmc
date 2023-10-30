@@ -135,7 +135,7 @@ void CPVRClients::UpdateClients(
           // determine actual enabled state of instance
           if (instanceEnabled && instanceId != ADDON_SINGLETON_INSTANCE_ID)
           {
-            const std::shared_ptr<CPVRClient> client = GetClient(clientId);
+            const std::shared_ptr<const CPVRClient> client = GetClient(clientId);
             instanceEnabled = client ? client->IsEnabled() : false;
           }
 
@@ -431,7 +431,7 @@ int CPVRClients::EnabledClientAmount() const
 
 bool CPVRClients::IsEnabledClient(int clientId) const
 {
-  const std::shared_ptr<CPVRClient> client = GetClient(clientId);
+  const std::shared_ptr<const CPVRClient> client = GetClient(clientId);
   return client && !CServiceBroker::GetAddonMgr().IsAddonDisabled(client->ID());
 }
 

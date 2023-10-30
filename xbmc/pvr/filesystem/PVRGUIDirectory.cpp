@@ -66,7 +66,7 @@ bool GetRootDirectory(bool bRadio, CFileItemList& results)
 {
   std::shared_ptr<CFileItem> item;
 
-  const std::shared_ptr<CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
+  const std::shared_ptr<const CPVRClients> clients = CServiceBroker::GetPVRManager().Clients();
 
   // EPG
   const bool bAnyClientSupportingEPG = clients->AnyClientSupportingEPG();
@@ -466,7 +466,7 @@ std::shared_ptr<CPVRChannelGroupMember> GetLastWatchedChannelGroupMember(
   const int lastGroupId{channel->LastWatchedGroupId()};
   if (lastGroupId != PVR_GROUP_ID_UNNKOWN)
   {
-    const std::shared_ptr<CPVRChannelGroup> lastGroup{
+    const std::shared_ptr<const CPVRChannelGroup> lastGroup{
         CServiceBroker::GetPVRManager().ChannelGroups()->GetByIdFromAll(lastGroupId)};
     if (lastGroup && !lastGroup->IsHidden() && !lastGroup->IsDeleted())
       return lastGroup->GetByUniqueID(channel->StorageId());
