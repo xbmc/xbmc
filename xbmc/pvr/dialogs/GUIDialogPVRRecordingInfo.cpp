@@ -13,7 +13,7 @@
 #include "guilib/GUIMessage.h"
 #include "pvr/PVRManager.h"
 #include "pvr/guilib/PVRGUIActionsEPG.h"
-#include "pvr/guilib/PVRGUIActionsPlayback.h"
+#include "pvr/guilib/PVRGUIRecordingsPlayActionProcessor.h"
 
 using namespace PVR;
 
@@ -59,8 +59,12 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(const CGUIMessage& message)
     Close();
 
     if (m_recordItem)
-      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-          *m_recordItem, true /* check resume */);
+    {
+      CGUIPVRRecordingsPlayActionProcessor proc{*m_recordItem};
+      proc.Process();
+      if (proc.UserCancelled())
+        Open();
+    }
 
     bReturn = true;
   }
