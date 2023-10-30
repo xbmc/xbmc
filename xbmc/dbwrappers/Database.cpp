@@ -312,7 +312,7 @@ std::string CDatabase::GetSingleValue(const std::string& query) const
   return GetSingleValue(query, m_pDS);
 }
 
-int CDatabase::GetSingleValueInt(const std::string& query, std::unique_ptr<Dataset>& ds)
+int CDatabase::GetSingleValueInt(const std::string& query, const std::unique_ptr<Dataset>& ds) const
 {
   int ret = 0;
   try
@@ -335,13 +335,13 @@ int CDatabase::GetSingleValueInt(const std::string& query, std::unique_ptr<Datas
 int CDatabase::GetSingleValueInt(const std::string& strTable,
                                  const std::string& strColumn,
                                  const std::string& strWhereClause /* = std::string() */,
-                                 const std::string& strOrderBy /* = std::string() */)
+                                 const std::string& strOrderBy /* = std::string() */) const
 {
   std::string strResult = GetSingleValue(strTable, strColumn, strWhereClause, strOrderBy);
   return static_cast<int>(strtol(strResult.c_str(), NULL, 10));
 }
 
-int CDatabase::GetSingleValueInt(const std::string& query)
+int CDatabase::GetSingleValueInt(const std::string& query) const
 {
   return GetSingleValueInt(query, m_pDS);
 }

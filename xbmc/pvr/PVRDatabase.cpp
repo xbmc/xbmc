@@ -410,7 +410,7 @@ bool CPVRDatabase::Delete(const CPVRClient& client)
   return DeleteValues("clients", filter);
 }
 
-int CPVRDatabase::GetPriority(const CPVRClient& client)
+int CPVRDatabase::GetPriority(const CPVRClient& client) const
 {
   if (client.GetID() == PVR_INVALID_CLIENT_ID)
     return 0;
@@ -544,7 +544,7 @@ bool CPVRDatabase::Get(CPVRProviders& results,
   return bReturn;
 }
 
-int CPVRDatabase::GetMaxProviderId()
+int CPVRDatabase::GetMaxProviderId() const
 {
   std::string strQuery = PrepareSQL("SELECT max(idProvider) as maxProviderId from providers");
   std::unique_lock<CCriticalSection> lock(m_critSection);
