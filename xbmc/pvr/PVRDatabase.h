@@ -100,7 +100,7 @@ namespace PVR
      * @param client The client.
      * @return The priority.
      */
-    int GetPriority(const CPVRClient& client);
+    int GetPriority(const CPVRClient& client) const;
 
     /*! @name Channel methods */
     //@{
@@ -187,7 +187,7 @@ namespace PVR
      * @brief Get the maximum provider id in the database
      * @return The maximum provider id in the database
      */
-    int GetMaxProviderId();
+    int GetMaxProviderId() const;
 
     //@}
 

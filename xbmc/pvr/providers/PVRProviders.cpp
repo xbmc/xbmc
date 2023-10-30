@@ -102,7 +102,8 @@ void CPVRProviders::Unload()
 
 bool CPVRProviders::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
+  const std::shared_ptr<const CPVRDatabase> database =
+      CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
   {
     m_iLastId = database->GetMaxProviderId();
