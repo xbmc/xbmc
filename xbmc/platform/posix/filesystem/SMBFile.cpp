@@ -719,3 +719,9 @@ int CSMBFile::IoControl(EIoControl request, void* param)
   return -1;
 }
 
+int CSMBFile::GetChunkSize()
+{
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  return settings ? (settings->GetInt(CSettings::SETTING_SMB_CHUNKSIZE) * 1024) : (128 * 1024);
+}

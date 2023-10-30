@@ -2417,6 +2417,16 @@
           <control type="toggle" />
         </setting>
       </group>
+      <group id="4" label="37053">
+        <setting id="smb.chunksize" type="integer" label="37056" help="37057">
+        <level>2</level>
+        <default>128</default>
+          <constraints>
+            <options>filechunksizes</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+      </group>
     </category>
     <category id="nfs" label="1201" help="36356">
       <requirement>HAS_FILESYSTEM_NFS</requirement>
@@ -2430,6 +2440,16 @@
             <maximum>4</maximum>
           </constraints>
           <control type="spinner" format="integer" />
+        </setting>
+      </group>
+      <group id="2" label="37053">
+        <setting id="nfs.chunksize" type="integer" label="37054" help="37055">
+        <level>2</level>
+        <default>128</default>
+          <constraints>
+            <options>filechunksizes</options>
+          </constraints>
+          <control type="list" format="string" />
         </setting>
       </group>
     </category>
