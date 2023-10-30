@@ -398,7 +398,8 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end, bool bForceUpdate)
       return true;
     }
 
-    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
+    const std::shared_ptr<const CPVRClient> client =
+        CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
     if (client)
     {
       if (!client->GetClientCapabilities().SupportsEPG())

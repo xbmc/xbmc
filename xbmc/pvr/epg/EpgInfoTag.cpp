@@ -573,7 +573,7 @@ std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
   std::vector<PVR_EDL_ENTRY> edls;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
 
   if (client && client->GetClientCapabilities().SupportsEpgTagEdl())

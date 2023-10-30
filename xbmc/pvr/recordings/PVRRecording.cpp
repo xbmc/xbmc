@@ -364,7 +364,8 @@ bool CPVRRecording::SetResumePoint(double timeInSeconds,
 
 CBookmark CPVRRecording::GetResumePoint() const
 {
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  const std::shared_ptr<const CPVRClient> client =
+      CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsRecordingsLastPlayedPosition() &&
       m_resumePointRefetchTimeout.IsTimePast())
   {
@@ -388,7 +389,8 @@ CBookmark CPVRRecording::GetResumePoint() const
 
 bool CPVRRecording::UpdateRecordingSize()
 {
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  const std::shared_ptr<const CPVRClient> client =
+      CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsRecordingsSize() &&
       m_recordingSizeRefetchTimeout.IsTimePast())
   {
@@ -433,7 +435,8 @@ std::vector<PVR_EDL_ENTRY> CPVRRecording::GetEdl() const
 {
   std::vector<PVR_EDL_ENTRY> edls;
 
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  const std::shared_ptr<const CPVRClient> client =
+      CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsRecordingsEdl())
     client->GetRecordingEdl(*this, edls);
 

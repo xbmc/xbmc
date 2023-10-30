@@ -113,7 +113,7 @@ void CPVRGUIActionsPlayback::StartPlayback(CFileItem* item,
                                            const CPVRStreamProperties* epgProps) const
 {
   // Obtain dynamic playback url and properties from the respective pvr client
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
+  const std::shared_ptr<const CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*item);
   if (client)
   {
     CPVRStreamProperties props;
@@ -255,7 +255,7 @@ bool CPVRGUIActionsPlayback::PlayEpgTag(const CFileItem& item) const
   }
 
   // Obtain dynamic playback url and properties from the respective pvr client
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(epgTag->ClientID());
   if (!client)
     return false;

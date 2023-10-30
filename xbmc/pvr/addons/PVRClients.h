@@ -150,7 +150,7 @@ struct SBackend
      * @brief Get the ID of the first created client.
      * @return the ID or -1 if no clients are created;
      */
-    int GetFirstCreatedClientID();
+    int GetFirstCreatedClientID() const;
 
     /*!
      * @brief Check whether there are any created, but not (yet) connected clients.
@@ -208,7 +208,7 @@ struct SBackend
      */
     bool GetTimers(const std::vector<std::shared_ptr<CPVRClient>>& clients,
                    CPVRTimersContainer* timers,
-                   std::vector<int>& failedClients);
+                   std::vector<int>& failedClients) const;
 
     /*!
      * @brief Update all timer types from the given clients
@@ -241,7 +241,7 @@ struct SBackend
     PVR_ERROR GetRecordings(const std::vector<std::shared_ptr<CPVRClient>>& clients,
                             CPVRRecordings* recordings,
                             bool deleted,
-                            std::vector<int>& failedClients);
+                            std::vector<int>& failedClients) const;
 
     /*!
      * @brief Delete all "soft" deleted recordings permanently on the backend.
@@ -300,7 +300,7 @@ struct SBackend
     PVR_ERROR GetChannels(const std::vector<std::shared_ptr<CPVRClient>>& clients,
                           bool bRadio,
                           std::vector<std::shared_ptr<CPVRChannel>>& channels,
-                          std::vector<int>& failedClients);
+                          std::vector<int>& failedClients) const;
 
     /*!
      * @brief Get all providers from backends.
@@ -311,7 +311,7 @@ struct SBackend
      */
     PVR_ERROR GetProviders(const std::vector<std::shared_ptr<CPVRClient>>& clients,
                            CPVRProvidersContainer* providers,
-                           std::vector<int>& failedClients);
+                           std::vector<int>& failedClients) const;
 
     /*!
      * @brief Get all channel groups from the given clients.
@@ -322,7 +322,7 @@ struct SBackend
      */
     PVR_ERROR GetChannelGroups(const std::vector<std::shared_ptr<CPVRClient>>& clients,
                                CPVRChannelGroups* groups,
-                               std::vector<int>& failedClients);
+                               std::vector<int>& failedClients) const;
 
     /*!
      * @brief Get all group members of a channel group from the given clients.
@@ -336,7 +336,7 @@ struct SBackend
         const std::vector<std::shared_ptr<CPVRClient>>& clients,
         CPVRChannelGroup* group,
         std::vector<std::shared_ptr<CPVRChannelGroupMember>>& groupMembers,
-        std::vector<int>& failedClients);
+        std::vector<int>& failedClients) const;
 
     /*!
      * @brief Get a list of clients providing a channel scan dialog.
