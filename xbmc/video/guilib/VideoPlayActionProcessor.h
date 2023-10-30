@@ -27,11 +27,14 @@ public:
   bool Process();
   bool Process(PlayAction playAction);
 
+  bool UserCancelled() const { return m_userCancelled; }
+
 protected:
   virtual bool OnResumeSelected() = 0;
   virtual bool OnPlaySelected() = 0;
 
   CFileItem& m_item;
+  bool m_userCancelled{false};
 
 private:
   CVideoPlayActionProcessorBase() = delete;
