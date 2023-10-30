@@ -64,7 +64,7 @@ extern "C"
    */
   struct PVR_HANDLE_STRUCT
   {
-    void* callerAddress; /*!< address of the caller */
+    const void* callerAddress; /*!< address of the caller */
     void* dataAddress; /*!< address to store data in */
     int dataIdentifier; /*!< parameter to pass back when calling the callback */
   };
