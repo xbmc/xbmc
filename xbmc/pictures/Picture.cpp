@@ -169,13 +169,6 @@ bool CPicture::ResizeTexture(const std::string &image, uint8_t *pixels, uint32_t
   uint32_t stride = dest_width_aligned * sizeof(uint32_t);
 
   uint32_t* buffer = new uint32_t[dest_width_aligned * dest_height + 4];
-  if (buffer == NULL)
-  {
-    result = NULL;
-    result_size = 0;
-    return false;
-  }
-
   if (!ScaleImage(pixels, width, height, pitch, AV_PIX_FMT_BGRA, (uint8_t*)buffer, dest_width,
                   dest_height, stride, AV_PIX_FMT_BGRA, scalingAlgorithm))
   {
@@ -254,19 +247,15 @@ bool CPicture::CacheTexture(uint8_t *pixels, uint32_t width, uint32_t height, ui
     uint32_t stride = dest_width_aligned * sizeof(uint32_t);
 
     auto buffer = std::make_unique<uint32_t[]>(dest_width_aligned * dest_height + 4);
-    if (buffer)
+    if (ScaleImage(pixels, width, height, pitch, AV_PIX_FMT_BGRA,
+                   reinterpret_cast<uint8_t*>(buffer.get()), dest_width, dest_height, stride,
+                   AV_PIX_FMT_BGRA, scalingAlgorithm))
     {
-      if (ScaleImage(pixels, width, height, pitch, AV_PIX_FMT_BGRA,
-                     reinterpret_cast<uint8_t*>(buffer.get()), dest_width, dest_height, stride,
-                     AV_PIX_FMT_BGRA, scalingAlgorithm))
+      if (!orientation ||
+          OrientateImage(buffer, dest_width, dest_height, orientation, dest_width_aligned))
       {
-        if (!orientation ||
-            OrientateImage(buffer, dest_width, dest_height, orientation, dest_width_aligned))
-        {
-          success =
-              CreateThumbnailFromSurface(reinterpret_cast<unsigned char*>(buffer.get()), dest_width,
-                                         dest_height, dest_width_aligned * 4, dest);
-        }
+        success = CreateThumbnailFromSurface(reinterpret_cast<unsigned char*>(buffer.get()),
+                                             dest_width, dest_height, dest_width_aligned * 4, dest);
       }
     }
     return success;
@@ -298,8 +287,6 @@ std::unique_ptr<CTexture> CPicture::CreateTiledThumb(const std::vector<std::stri
 
   // create a buffer for the resulting thumb
   std::unique_ptr<uint32_t[]> buffer = std::make_unique<uint32_t[]>(imageRes * imageRes);
-  if (!buffer)
-    return {};
   for (unsigned int i = 0; i < files.size(); ++i)
   {
     int x = i % num_across;
@@ -547,26 +534,21 @@ bool CPicture::Rotate90CCW(std::unique_ptr<uint32_t[]>& pixels,
                            unsigned int& stridePixels)
 {
   auto dest = std::make_unique<uint32_t[]>(width * height * 4);
-  if (dest)
+  unsigned int d_height = width, d_width = height;
+  for (unsigned int y = 0; y < d_height; y++)
   {
-    unsigned int d_height = width, d_width = height;
-    for (unsigned int y = 0; y < d_height; y++)
+    const uint32_t* src = pixels.get() + (d_height - 1 - y); // y-th col from right, starting at top
+    uint32_t* dst = dest.get() + d_width * y; // y-th row from top, starting at left
+    for (unsigned int x = 0; x < d_width; x++)
     {
-      const uint32_t* src =
-          pixels.get() + (d_height - 1 - y); // y-th col from right, starting at top
-      uint32_t* dst = dest.get() + d_width * y; // y-th row from top, starting at left
-      for (unsigned int x = 0; x < d_width; x++)
-      {
-        *dst++ = *src;
-        src += stridePixels;
-      }
+      *dst++ = *src;
+      src += stridePixels;
     }
-    pixels = std::move(dest);
-    std::swap(width, height);
-    stridePixels = width;
-    return true;
   }
-  return false;
+  pixels = std::move(dest);
+  std::swap(width, height);
+  stridePixels = width;
+  return true;
 }
 
 bool CPicture::Rotate270CCW(std::unique_ptr<uint32_t[]>& pixels,
@@ -575,9 +557,6 @@ bool CPicture::Rotate270CCW(std::unique_ptr<uint32_t[]>& pixels,
                             unsigned int& stridePixels)
 {
   auto dest = std::make_unique<uint32_t[]>(width * height * 4);
-  if (!dest)
-    return false;
-
   unsigned int d_height = width, d_width = height;
   for (unsigned int y = 0; y < d_height; y++)
   {
@@ -603,9 +582,6 @@ bool CPicture::Transpose(std::unique_ptr<uint32_t[]>& pixels,
                          unsigned int& stridePixels)
 {
   auto dest = std::make_unique<uint32_t[]>(width * height * 4);
-  if (!dest)
-    return false;
-
   unsigned int d_height = width, d_width = height;
   for (unsigned int y = 0; y < d_height; y++)
   {
@@ -630,9 +606,6 @@ bool CPicture::TransposeOffAxis(std::unique_ptr<uint32_t[]>& pixels,
                                 unsigned int& stridePixels)
 {
   auto dest = std::make_unique<uint32_t[]>(width * height * 4);
-  if (!dest)
-    return false;
-
   unsigned int d_height = width, d_width = height;
   for (unsigned int y = 0; y < d_height; y++)
   {
