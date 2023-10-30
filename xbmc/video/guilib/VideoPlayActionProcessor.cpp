@@ -30,13 +30,18 @@ bool CVideoPlayActionProcessorBase::Process()
 
 bool CVideoPlayActionProcessorBase::Process(PlayAction PlayAction)
 {
+  m_userCancelled = false;
+
   switch (PlayAction)
   {
     case PLAY_ACTION_PLAY_OR_RESUME:
     {
       const VIDEO::GUILIB::PlayAction action = ChoosePlayOrResume();
       if (action < 0)
+      {
+        m_userCancelled = true;
         return true; // User cancelled the select menu. We're done.
+      }
 
       return Process(action);
     }
