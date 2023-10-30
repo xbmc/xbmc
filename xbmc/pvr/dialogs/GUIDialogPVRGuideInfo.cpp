@@ -214,7 +214,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
 
   bool bHideRecord = true;
   bool bHideAddTimer = true;
-  const std::shared_ptr<CPVRTimerInfoTag> timer = mgr.Timers()->GetTimerForEpgTag(epgTag);
+  const std::shared_ptr<const CPVRTimerInfoTag> timer = mgr.Timers()->GetTimerForEpgTag(epgTag);
   bool bHideSetReminder = timer || (epgTag->StartAsLocalTime() <= CDateTime::GetCurrentDateTime());
 
   if (timer)
@@ -232,7 +232,7 @@ void CGUIDialogPVRGuideInfo::OnInitWindow()
   }
   else if (epgTag->IsRecordable())
   {
-    const std::shared_ptr<CPVRClient> client = mgr.GetClient(epgTag->ClientID());
+    const std::shared_ptr<const CPVRClient> client = mgr.GetClient(epgTag->ClientID());
     if (client && client->GetClientCapabilities().SupportsTimers())
     {
       SET_CONTROL_LABEL(CONTROL_BTN_RECORD, 264); /* Record */

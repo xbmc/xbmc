@@ -71,7 +71,7 @@ void CPVRPlaybackState::ReInit()
   {
     if (m_playingChannelUniqueId != -1)
     {
-      const std::shared_ptr<CPVRChannelGroup> group =
+      const std::shared_ptr<const CPVRChannelGroup> group =
           CServiceBroker::GetPVRManager().ChannelGroups()->GetByIdFromAll(m_playingGroupId);
       if (group)
         m_playingChannel = group->GetByUniqueID({m_playingClientId, m_playingChannelUniqueId});
@@ -85,7 +85,7 @@ void CPVRPlaybackState::ReInit()
     }
     else if (m_playingEpgTagChannelUniqueId != -1 && m_playingEpgTagUniqueId != 0)
     {
-      const std::shared_ptr<CPVREpg> epg =
+      const std::shared_ptr<const CPVREpg> epg =
           CServiceBroker::GetPVRManager().EpgContainer().GetByChannelUid(
               m_playingClientId, m_playingEpgTagChannelUniqueId);
       if (epg)
@@ -93,7 +93,7 @@ void CPVRPlaybackState::ReInit()
     }
   }
 
-  const std::shared_ptr<CPVRChannelGroupsContainer> groups =
+  const std::shared_ptr<const CPVRChannelGroupsContainer> groups =
       CServiceBroker::GetPVRManager().ChannelGroups();
   const CPVRChannelGroups* groupsTV = groups->GetTV();
   const CPVRChannelGroups* groupsRadio = groups->GetRadio();
@@ -217,7 +217,7 @@ void CPVRPlaybackState::OnPlaybackStarted(const CFileItem& item)
 
   if (m_playingClientId != -1)
   {
-    const std::shared_ptr<CPVRClient> client =
+    const std::shared_ptr<const CPVRClient> client =
         CServiceBroker::GetPVRManager().GetClient(m_playingClientId);
     if (client)
       m_strPlayingClientName = client->GetFriendlyName();
@@ -335,7 +335,7 @@ bool CPVRPlaybackState::IsPlayingChannel(const std::shared_ptr<const CPVRChannel
 {
   if (channel)
   {
-    const std::shared_ptr<CPVRChannel> current = GetPlayingChannel();
+    const std::shared_ptr<const CPVRChannel> current = GetPlayingChannel();
     if (current && current->ClientID() == channel->ClientID() &&
         current->UniqueID() == channel->UniqueID())
       return true;
@@ -349,7 +349,7 @@ bool CPVRPlaybackState::IsPlayingRecording(
 {
   if (recording)
   {
-    const std::shared_ptr<CPVRRecording> current = GetPlayingRecording();
+    const std::shared_ptr<const CPVRRecording> current = GetPlayingRecording();
     if (current && current->ClientID() == recording->ClientID() &&
         current->ClientRecordingID() == recording->ClientRecordingID())
       return true;
@@ -362,7 +362,7 @@ bool CPVRPlaybackState::IsPlayingEpgTag(const std::shared_ptr<const CPVREpgInfoT
 {
   if (epgTag)
   {
-    const std::shared_ptr<CPVREpgInfoTag> current = GetPlayingEpgTag();
+    const std::shared_ptr<const CPVREpgInfoTag> current = GetPlayingEpgTag();
     if (current && current->ClientID() == epgTag->ClientID() &&
         current->UniqueChannelID() == epgTag->UniqueChannelID() &&
         current->UniqueBroadcastID() == epgTag->UniqueBroadcastID())
@@ -421,20 +421,20 @@ bool CPVRPlaybackState::IsRecording() const
 
 bool CPVRPlaybackState::IsRecordingOnPlayingChannel() const
 {
-  const std::shared_ptr<CPVRChannel> currentChannel = GetPlayingChannel();
+  const std::shared_ptr<const CPVRChannel> currentChannel = GetPlayingChannel();
   return currentChannel &&
          CServiceBroker::GetPVRManager().Timers()->IsRecordingOnChannel(*currentChannel);
 }
 
 bool CPVRPlaybackState::IsPlayingActiveRecording() const
 {
-  const std::shared_ptr<CPVRRecording> currentRecording = GetPlayingRecording();
+  const std::shared_ptr<const CPVRRecording> currentRecording = GetPlayingRecording();
   return currentRecording && currentRecording->IsInProgress();
 }
 
 bool CPVRPlaybackState::CanRecordOnPlayingChannel() const
 {
-  const std::shared_ptr<CPVRChannel> currentChannel = GetPlayingChannel();
+  const std::shared_ptr<const CPVRChannel> currentChannel = GetPlayingChannel();
   return currentChannel && currentChannel->CanRecord();
 }
 

@@ -177,7 +177,7 @@ void CGUIDialogPVRChannelsOSD::Update()
   CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
   pvrMgr.Events().Subscribe(this, &CGUIDialogPVRChannelsOSD::Notify);
 
-  const std::shared_ptr<CPVRChannel> channel = pvrMgr.PlaybackState()->GetPlayingChannel();
+  const std::shared_ptr<const CPVRChannel> channel = pvrMgr.PlaybackState()->GetPlayingChannel();
   if (channel)
   {
     const std::shared_ptr<CPVRChannelGroup> group =

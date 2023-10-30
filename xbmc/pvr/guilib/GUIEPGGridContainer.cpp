@@ -690,7 +690,7 @@ void CGUIEPGGridContainer::UpdateItems()
       const std::shared_ptr<CFileItem> prevItem = GetPrevItem().first;
       if (prevItem)
       {
-        const std::shared_ptr<CPVREpgInfoTag> tag = prevItem->GetEPGInfoTag();
+        const std::shared_ptr<const CPVREpgInfoTag> tag = prevItem->GetEPGInfoTag();
         if (tag && !tag->IsGapTag())
         {
           if (oldGridStart >= tag->StartAsUTC())

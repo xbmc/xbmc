@@ -64,11 +64,12 @@ bool CGUIDialogPVRRadioRDSInfo::OnMessage(CGUIMessage& message)
     }
     else if (iControl == SPIN_CONTROL_INFO)
     {
-      const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
+      const std::shared_ptr<const CPVRChannel> channel =
+          CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
       if (!channel)
         return false;
 
-      const std::shared_ptr<CPVRRadioRDSInfoTag> currentRDS = channel->GetRadioRDSInfoTag();
+      const std::shared_ptr<const CPVRRadioRDSInfoTag> currentRDS = channel->GetRadioRDSInfoTag();
       if (!currentRDS)
         return false;
 
@@ -158,11 +159,12 @@ void CGUIDialogPVRRadioRDSInfo::InitInfoControls()
 
 void CGUIDialogPVRRadioRDSInfo::UpdateInfoControls()
 {
-  const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
+  const std::shared_ptr<const CPVRChannel> channel =
+      CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
   if (!channel)
     return;
 
-  const std::shared_ptr<CPVRRadioRDSInfoTag> currentRDS = channel->GetRadioRDSInfoTag();
+  const std::shared_ptr<const CPVRRadioRDSInfoTag> currentRDS = channel->GetRadioRDSInfoTag();
   if (!currentRDS)
     return;
 

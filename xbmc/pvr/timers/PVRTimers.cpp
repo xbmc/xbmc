@@ -109,7 +109,8 @@ bool CPVRTimers::Update(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 bool CPVRTimers::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
   // load local timers from database
-  const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
+  const std::shared_ptr<const CPVRDatabase> database =
+      CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
   {
     const std::vector<std::shared_ptr<CPVRTimerInfoTag>> timers =
@@ -200,7 +201,7 @@ void CPVRTimers::RemoveEntry(const std::shared_ptr<const CPVRTimerInfoTag>& tag)
   if (it != m_tags.end())
   {
     it->second.erase(std::remove_if(it->second.begin(), it->second.end(),
-                                    [&tag](const std::shared_ptr<CPVRTimerInfoTag>& timer) {
+                                    [&tag](const std::shared_ptr<const CPVRTimerInfoTag>& timer) {
                                       return tag->ClientID() == timer->ClientID() &&
                                              tag->ClientIndex() == timer->ClientIndex();
                                     }),
@@ -384,7 +385,7 @@ bool CPVRTimers::UpdateEntries(const CPVRTimersContainer& timers,
       /* queue notifications / fill eventlog */
       for (const auto& entry : timerNotifications)
       {
-        const std::shared_ptr<CPVRClient> client =
+        const std::shared_ptr<const CPVRClient> client =
             CServiceBroker::GetPVRManager().GetClient(entry.first);
         if (client)
         {
@@ -412,7 +413,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> GetEpgTagsForTimerRule(
   if (channel)
   {
     // match single channel
-    const std::shared_ptr<CPVREpg> epg = channel->GetEPG();
+    const std::shared_ptr<const CPVREpg> epg = channel->GetEPG();
     if (epg)
     {
       const std::vector<std::shared_ptr<CPVREpgInfoTag>> tags = epg->GetTags();
@@ -513,7 +514,7 @@ bool CPVRTimers::UpdateEntries(int iMaxNotificationDelay)
         if (timer->IsEpgBased())
         {
           // update epg tag
-          const std::shared_ptr<CPVREpg> epg =
+          const std::shared_ptr<const CPVREpg> epg =
               CServiceBroker::GetPVRManager().EpgContainer().GetByChannelUid(
                   timer->Channel()->ClientID(), timer->Channel()->UniqueID());
           if (epg)
@@ -1262,7 +1263,7 @@ CDateTime CPVRTimers::GetNextEventTime() const
   CDateTime wakeuptime;
 
   /* Check next active time */
-  const std::shared_ptr<CPVRTimerInfoTag> timer = GetNextActiveTimer(false);
+  const std::shared_ptr<const CPVRTimerInfoTag> timer = GetNextActiveTimer(false);
   if (timer)
   {
     const CDateTimeSpan prestart(0, 0, timer->MarginStart(), 0);

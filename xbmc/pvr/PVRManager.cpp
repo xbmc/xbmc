@@ -293,7 +293,7 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
     iClientID = item.GetEPGInfoTag()->ClientID();
   else if (URIUtils::IsPVRChannel(item.GetPath()))
   {
-    const std::shared_ptr<CPVRChannel> channel = m_channelGroups->GetByPath(item.GetPath());
+    const std::shared_ptr<const CPVRChannel> channel = m_channelGroups->GetByPath(item.GetPath());
     if (channel)
       iClientID = channel->ClientID();
   }
@@ -304,7 +304,7 @@ std::shared_ptr<CPVRClient> CPVRManager::GetClient(const CFileItem& item) const
   }
   else if (URIUtils::IsPVRRecording(item.GetPath()))
   {
-    const std::shared_ptr<CPVRRecording> recording = m_recordings->GetByPath(item.GetPath());
+    const std::shared_ptr<const CPVRRecording> recording = m_recordings->GetByPath(item.GetPath());
     if (recording)
       iClientID = recording->ClientID();
   }
@@ -814,7 +814,7 @@ bool CPVRManager::IsCurrentlyParentalLocked(const std::shared_ptr<const CPVRChan
   if (!channel || !bGenerallyLocked)
     return bReturn;
 
-  const std::shared_ptr<CPVRChannel> currentChannel = m_playbackState->GetPlayingChannel();
+  const std::shared_ptr<const CPVRChannel> currentChannel = m_playbackState->GetPlayingChannel();
 
   if ( // if channel in question is currently playing it must be currently unlocked.
       (!currentChannel || channel != currentChannel) &&

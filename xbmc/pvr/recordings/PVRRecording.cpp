@@ -124,14 +124,14 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
   }
   else
   {
-    const std::shared_ptr<CPVRChannel> channel(Channel());
+    const std::shared_ptr<const CPVRChannel> channel(Channel());
     if (channel)
     {
       m_bRadio = channel->IsRadio();
     }
     else
     {
-      const std::shared_ptr<CPVRClient> client =
+      const std::shared_ptr<const CPVRClient> client =
           CServiceBroker::GetPVRManager().GetClient(m_iClientId);
       bool bSupportsRadio = client && client->GetClientCapabilities().SupportsRadio();
       if (bSupportsRadio && client && client->GetClientCapabilities().SupportsTV())

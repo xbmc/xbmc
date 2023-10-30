@@ -41,7 +41,8 @@ void CGUIEPGGridContainerModel::SetInvalid()
 
 std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::CreateGapItem(int iChannel) const
 {
-  const std::shared_ptr<CPVRChannel> channel = m_channelItems[iChannel]->GetPVRChannelInfoTag();
+  const std::shared_ptr<const CPVRChannel> channel =
+      m_channelItems[iChannel]->GetPVRChannelInfoTag();
   const std::shared_ptr<CPVREpgInfoTag> gapTag = channel->CreateEPGGapTag(m_gridStart, m_gridEnd);
   return std::make_shared<CFileItem>(gapTag);
 }
@@ -244,7 +245,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsBefore(EpgTags& 
       // ptr comp does not work for gap tags!
       // if ((*it) == epgTags.tags.front()->GetEPGInfoTag())
 
-      const std::shared_ptr<CPVREpgInfoTag> t = epgTags.tags.front()->GetEPGInfoTag();
+      const std::shared_ptr<const CPVREpgInfoTag> t = epgTags.tags.front()->GetEPGInfoTag();
       if ((*it)->StartAsUTC() == t->StartAsUTC() && (*it)->EndAsUTC() == t->EndAsUTC())
       {
         if (!result && IsEventMemberOfBlock(*it, iBlock))
@@ -306,7 +307,7 @@ std::shared_ptr<CFileItem> CGUIEPGGridContainerModel::GetEpgTagsAfter(EpgTags& e
       // ptr comp does not work for gap tags!
       // if ((*it) == epgTags.tags.back()->GetEPGInfoTag())
 
-      const std::shared_ptr<CPVREpgInfoTag> t = epgTags.tags.back()->GetEPGInfoTag();
+      const std::shared_ptr<const CPVREpgInfoTag> t = epgTags.tags.back()->GetEPGInfoTag();
       if ((*it)->StartAsUTC() == t->StartAsUTC() && (*it)->EndAsUTC() == t->EndAsUTC())
       {
         if (!result && IsEventMemberOfBlock(*it, iBlock))
@@ -373,10 +374,10 @@ void CGUIEPGGridContainerModel::FindChannelAndBlockIndex(int channelUid,
       newChannelIndex = iCurrentChannel;
 
       // find the new block index
-      const std::shared_ptr<CPVREpg> epg = channel->GetPVRChannelInfoTag()->GetEPG();
+      const std::shared_ptr<const CPVREpg> epg = channel->GetPVRChannelInfoTag()->GetEPG();
       if (epg)
       {
-        const std::shared_ptr<CPVREpgInfoTag> tag = epg->GetTagByBroadcastId(broadcastUid);
+        const std::shared_ptr<const CPVREpgInfoTag> tag = epg->GetTagByBroadcastId(broadcastUid);
         if (tag)
           newBlockIndex = GetFirstEventBlock(tag) + eventOffset;
       }
@@ -405,7 +406,7 @@ GridItem* CGUIEPGGridContainerModel::GetGridItemPtr(int iChannel, int iBlock) co
       return nullptr;
     }
 
-    const std::shared_ptr<CPVREpgInfoTag> epgTag = item->GetEPGInfoTag();
+    const std::shared_ptr<const CPVREpgInfoTag> epgTag = item->GetEPGInfoTag();
 
     const int startBlock = GetFirstEventBlock(epgTag);
     const int endBlock = GetLastEventBlock(epgTag);

@@ -76,7 +76,7 @@ bool CPVREpgTagsCache::Refresh()
       m_nowActiveEnd > activeTime)
     return false;
 
-  const std::shared_ptr<CPVREpgInfoTag> prevNowActiveTag = m_nowActiveTag;
+  const std::shared_ptr<const CPVREpgInfoTag> prevNowActiveTag = m_nowActiveTag;
 
   m_lastEndedTag.reset();
   m_nowActiveTag.reset();
