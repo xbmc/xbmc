@@ -31,6 +31,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "pictures/PictureInfoTag.h"
+#include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannel.h"
@@ -3838,6 +3839,34 @@ bool CFileItem::LoadDetails()
     }
 
     CLog::LogF(LOGERROR, "Error filling item details (path={})", GetPath());
+    return false;
+  }
+
+  if (IsPlayList() && IsType(".strm"))
+  {
+    const std::unique_ptr<PLAYLIST::CPlayList> playlist(PLAYLIST::CPlayListFactory::Create(*this));
+    if (playlist)
+    {
+      if (playlist->Load(GetPath()) && playlist->size() == 1)
+      {
+        CVideoDatabase db;
+        if (!db.Open())
+        {
+          CLog::LogF(LOGERROR, "Error opening video database");
+          return false;
+        }
+
+        CVideoInfoTag tag;
+        if (db.LoadVideoInfo(GetDynPath(), tag))
+        {
+          const CFileItem loadedItem{*(*playlist)[0]};
+          UpdateInfo(loadedItem);
+          *GetVideoInfoTag() = tag;
+          return true;
+        }
+      }
+    }
+    CLog::LogF(LOGERROR, "Error loading strm file details (path={})", GetPath());
     return false;
   }
 
