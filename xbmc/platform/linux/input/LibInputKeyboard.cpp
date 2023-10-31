@@ -13,6 +13,8 @@
 #include "application/AppInboundProtocol.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Map.h"
+#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <algorithm>
@@ -148,6 +150,22 @@ static const std::map<xkb_keysym_t, XBMCKey> xkbMap =
   { XKB_KEY_XF86AudioRandomPlay, XBMCK_SHUFFLE }
   // XBMCK_FASTFORWARD clashes with XBMCK_MEDIA_FASTFORWARD
 };
+
+constexpr auto logLevelMap = make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITICAL, LOGERROR},
+                                                           {XKB_LOG_LEVEL_ERROR, LOGERROR},
+                                                           {XKB_LOG_LEVEL_WARNING, LOGWARNING},
+                                                           {XKB_LOG_LEVEL_INFO, LOGINFO},
+                                                           {XKB_LOG_LEVEL_DEBUG, LOGDEBUG}});
+
+static void xkbLogger(xkb_context* context,
+                      xkb_log_level priority,
+                      const char* format,
+                      va_list args)
+{
+  const std::string message = StringUtils::FormatV(format, args);
+  auto logLevel = logLevelMap.find(priority);
+  CLog::Log(logLevel != logLevelMap.cend() ? logLevel->second : LOGDEBUG, "[xkb] {}", message);
+}
 } // namespace
 
 CLibInputKeyboard::CLibInputKeyboard()
@@ -160,8 +178,11 @@ CLibInputKeyboard::CLibInputKeyboard()
     return;
   }
 
-  std::string layout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(CLibInputSettings::SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
+  xkb_context_set_log_level(m_ctx, XKB_LOG_LEVEL_DEBUG);
+  xkb_context_set_log_fn(m_ctx, &xkbLogger);
 
+  std::string layout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
+      CLibInputSettings::SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
   if (!SetKeymap(layout))
   {
     CLog::Log(LOGERROR, "CLibInputKeyboard::{} - failed set default keymap", __FUNCTION__);
