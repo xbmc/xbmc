@@ -139,6 +139,10 @@ This page shows the window names, the window definition, the window ID and the s
 | StartWindow             | WINDOW_START                         | 12998     | shortcut to the current startwindow |                                    |
 | Startup                 | WINDOW_STARTUP_ANIM                  | 12999     | Startup.xml                         |                                    |
 | FavouritesBrowser       | WINDOW_FAVOURITES                    | 10060     | MyFavourites.xml                    | @skinning_v20 **New window** FavouritesBrowser, replaces the old Favourites dialog.<p></p> |
+| GamePorts               | WINDOW_DIALOG_GAME_PORTS             | 10828     | DialogGameControllers.xml           |                                    |
+| InGameSaves             | WINDOW_DIALOG_IN_GAME_SAVES          | 10829     | DialogSelect.xml                    |                                    |
+| GameSaves               | WINDOW_DIALOG_GAME_SAVES             | 10830     | DialogSelect.xml                    |                                    |
+| GameAgents              | WINDOW_DIALOG_GAME_AGENTS            | 10831     | DialogGameControllers.xml           |                                    |
 
 \section window_ids_rm Additional revision history
 
