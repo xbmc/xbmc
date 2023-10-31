@@ -526,8 +526,8 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
       // The Resume dialog was closed without any choice
       return false;
     }
-    item.SetProperty("check_resume", false);
   }
+  item.SetProperty("check_resume", false);
 
   if (item.IsStack())
   {
