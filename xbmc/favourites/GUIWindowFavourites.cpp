@@ -86,7 +86,7 @@ protected:
 
   bool OnMoreSelected() override
   {
-    CONTEXTMENU::ShowFor(std::make_shared<CFileItem>(m_item));
+    CONTEXTMENU::ShowFor(std::make_shared<CFileItem>(m_item), CContextMenuManager::MAIN);
     return true;
   }
 };
