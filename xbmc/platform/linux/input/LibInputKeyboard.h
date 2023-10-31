@@ -12,6 +12,7 @@
 #include "windowing/XBMC_events.h"
 
 #include <map>
+#include <memory>
 #include <vector>
 
 #include <libinput.h>
@@ -21,7 +22,7 @@ class CLibInputKeyboard
 {
 public:
   CLibInputKeyboard();
-  ~CLibInputKeyboard();
+  ~CLibInputKeyboard() = default;
 
   void ProcessKey(libinput_event_keyboard *e);
   void UpdateLeds(libinput_device *dev);
@@ -33,9 +34,24 @@ private:
   XBMCKey XBMCKeyForKeysym(xkb_keysym_t sym, uint32_t scancode);
   void KeyRepeatTimeout();
 
-  xkb_context *m_ctx = nullptr;
-  xkb_keymap *m_keymap = nullptr;
-  xkb_state *m_state = nullptr;
+  struct XkbContextDeleter
+  {
+    void operator()(xkb_context* ctx) const;
+  };
+  std::unique_ptr<xkb_context, XkbContextDeleter> m_ctx;
+
+  struct XkbKeymapDeleter
+  {
+    void operator()(xkb_keymap* keymap) const;
+  };
+  std::unique_ptr<xkb_keymap, XkbKeymapDeleter> m_keymap;
+
+  struct XkbStateDeleter
+  {
+    void operator()(xkb_state* state) const;
+  };
+  std::unique_ptr<xkb_state, XkbStateDeleter> m_state;
+
   xkb_mod_index_t m_modindex[4];
   xkb_led_index_t m_ledindex[3];
 
