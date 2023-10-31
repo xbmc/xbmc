@@ -26,26 +26,20 @@ class CTexture;
 class CTextureDetails
 {
 public:
-  CTextureDetails()
-  {
-    id = -1;
-    width = height = 0;
-    updateable = false;
-    hashRevalidated = false;
-  };
   bool operator==(const CTextureDetails &right) const
   {
     return (id    == right.id    &&
             file  == right.file  &&
             width == right.width );
   };
-  int          id;
-  std::string  file;
-  std::string  hash;
-  unsigned int width;
-  unsigned int height;
-  bool         updateable;
-  bool hashRevalidated;
+
+  int id{-1};
+  std::string file;
+  std::string hash;
+  unsigned int width{0};
+  unsigned int height{0};
+  bool updateable{false};
+  bool hashRevalidated{false};
 };
 
 /*!
