@@ -198,7 +198,7 @@ bool CFavouritesTargetContextMenu::IsVisible(const CFileItem& item) const
 {
   const std::shared_ptr<CFileItem> targetItem{ResolveFavouriteItem(item)};
   if (targetItem)
-    return CONTEXTMENU::HasAnyMenuItemsFor(targetItem);
+    return CONTEXTMENU::HasAnyMenuItemsFor(targetItem, CContextMenuManager::MAIN);
 
   return false;
 }
@@ -208,7 +208,7 @@ bool CFavouritesTargetContextMenu::Execute(const std::shared_ptr<CFileItem>& ite
   const std::shared_ptr<CFileItem> targetItem{ResolveFavouriteItem(*item)};
   if (targetItem)
   {
-    CONTEXTMENU::ShowFor(targetItem);
+    CONTEXTMENU::ShowFor(targetItem, CContextMenuManager::MAIN);
     return true;
   }
   return false;
