@@ -102,7 +102,8 @@ void CPVRProviders::Unload()
 
 bool CPVRProviders::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  const std::shared_ptr<CPVRDatabase> database = CServiceBroker::GetPVRManager().GetTVDatabase();
+  const std::shared_ptr<const CPVRDatabase> database =
+      CServiceBroker::GetPVRManager().GetTVDatabase();
   if (database)
   {
     m_iLastId = database->GetMaxProviderId();
@@ -174,7 +175,7 @@ bool CPVRProviders::UpdateDefaultEntries(const CPVRProvidersContainer& newProvid
   for (std::vector<std::shared_ptr<CPVRProvider>>::iterator it = m_providers.begin();
        it != m_providers.end();)
   {
-    const std::shared_ptr<CPVRProvider> provider = *it;
+    const std::shared_ptr<const CPVRProvider> provider = *it;
     if (!newProviders.GetByClient(provider->GetClientId(), provider->GetUniqueId()))
     {
       // provider was not found
@@ -222,7 +223,7 @@ bool CPVRProviders::UpdateClientEntries(const CPVRProvidersContainer& newProvide
   // check for deleted providers
   for (auto it = m_providers.begin(); it != m_providers.end();)
   {
-    const std::shared_ptr<CPVRProvider> provider = *it;
+    const std::shared_ptr<const CPVRProvider> provider = *it;
     if (!newProviders.GetByClient(provider->GetClientId(), provider->GetUniqueId()))
     {
       const bool bIgnoreProvider =
@@ -355,7 +356,7 @@ void CPVRProviders::RemoveEntry(const std::shared_ptr<CPVRProvider>& provider)
 
   m_providers.erase(
       std::remove_if(m_providers.begin(), m_providers.end(),
-                     [&provider](const std::shared_ptr<CPVRProvider>& providerToRemove) {
+                     [&provider](const std::shared_ptr<const CPVRProvider>& providerToRemove) {
                        return provider->GetClientId() == providerToRemove->GetClientId() &&
                               provider->GetUniqueId() == providerToRemove->GetUniqueId();
                      }),

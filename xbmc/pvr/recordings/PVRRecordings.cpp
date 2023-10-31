@@ -219,7 +219,7 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
 }
 
 std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(
-    const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+    const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (!epgTag)
     return {};

@@ -371,7 +371,7 @@ bool CPVRGUIActionsTimers::SetRecordingOnChannel(const std::shared_ptr<CPVRChann
       ParentalCheckResult::SUCCESS)
     return bReturn;
 
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(channel->ClientID());
   if (client && client->GetClientCapabilities().SupportsTimers())
   {
@@ -534,7 +534,7 @@ bool CPVRGUIActionsTimers::ToggleTimer(const CFileItem& item) const
   if (!item.HasEPGInfoTag())
     return false;
 
-  const std::shared_ptr<CPVRTimerInfoTag> timer(CPVRItem(item).GetTimerInfoTag());
+  const std::shared_ptr<const CPVRTimerInfoTag> timer(CPVRItem(item).GetTimerInfoTag());
   if (timer)
   {
     if (timer->IsRecording())
@@ -654,7 +654,7 @@ bool CPVRGUIActionsTimers::DeleteTimer(const CFileItem& item,
                                        bool bDeleteRule) const
 {
   std::shared_ptr<CPVRTimerInfoTag> timer;
-  const std::shared_ptr<CPVRRecording> recording(CPVRItem(item).GetRecording());
+  const std::shared_ptr<const CPVRRecording> recording(CPVRItem(item).GetRecording());
   if (recording)
     timer = recording->GetRecordingTimer();
 
@@ -745,11 +745,11 @@ bool CPVRGUIActionsTimers::DeleteTimer(const std::shared_ptr<CPVRTimerInfoTag>& 
   return false;
 }
 
-bool CPVRGUIActionsTimers::ConfirmDeleteTimer(const std::shared_ptr<CPVRTimerInfoTag>& timer,
+bool CPVRGUIActionsTimers::ConfirmDeleteTimer(const std::shared_ptr<const CPVRTimerInfoTag>& timer,
                                               bool& bDeleteRule) const
 {
   bool bConfirmed(false);
-  const std::shared_ptr<CPVRTimerInfoTag> parentTimer(
+  const std::shared_ptr<const CPVRTimerInfoTag> parentTimer(
       CServiceBroker::GetPVRManager().Timers()->GetTimerRule(timer));
 
   if (parentTimer && parentTimer->GetTimerType()->AllowsDelete())
@@ -792,7 +792,7 @@ bool CPVRGUIActionsTimers::StopRecording(const CFileItem& item) const
 }
 
 bool CPVRGUIActionsTimers::ConfirmStopRecording(
-    const std::shared_ptr<CPVRTimerInfoTag>& timer) const
+    const std::shared_ptr<const CPVRTimerInfoTag>& timer) const
 {
   return CGUIDialogYesNo::ShowAndGetInput(
       CVariant{847}, // "Confirm stop recording"
@@ -802,7 +802,9 @@ bool CPVRGUIActionsTimers::ConfirmStopRecording(
 
 namespace
 {
-std::string GetAnnouncerText(const std::shared_ptr<CPVRTimerInfoTag>& timer, int idEpg, int idNoEpg)
+std::string GetAnnouncerText(const std::shared_ptr<const CPVRTimerInfoTag>& timer,
+                             int idEpg,
+                             int idNoEpg)
 {
   std::string text;
   if (timer->IsEpgBased())
@@ -820,12 +822,12 @@ std::string GetAnnouncerText(const std::shared_ptr<CPVRTimerInfoTag>& timer, int
   return text;
 }
 
-void AddEventLogEntry(const std::shared_ptr<CPVRTimerInfoTag>& timer, int idEpg, int idNoEpg)
+void AddEventLogEntry(const std::shared_ptr<const CPVRTimerInfoTag>& timer, int idEpg, int idNoEpg)
 {
   std::string name;
   std::string icon;
 
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(timer->GetTimerType()->GetClientId());
   if (client)
   {
@@ -882,7 +884,7 @@ void CPVRGUIActionsTimers::AnnounceReminder(const std::shared_ptr<CPVRTimerInfoT
   std::string text = GetAnnouncerText(timer, 19307, 19308); // Reminder for ...
 
   bool bCanRecord = false;
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(timer->ClientID());
   if (client && client->GetClientCapabilities().SupportsTimers())
   {

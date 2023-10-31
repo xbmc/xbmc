@@ -208,7 +208,7 @@ void CGUIDialogPVRChannelManager::OnInitWindow()
   if (m_initialSelection)
   {
     // set initial selection
-    const std::shared_ptr<CPVRChannel> channel = m_initialSelection->GetPVRChannelInfoTag();
+    const std::shared_ptr<const CPVRChannel> channel = m_initialSelection->GetPVRChannelInfoTag();
     for (int i = 0; i < m_channelItems->Size(); ++i)
     {
       if (m_channelItems->Get(i)->GetPVRChannelInfoTag() == channel)
@@ -750,7 +750,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
       const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*pItem);
       if (client)
       {
-        const std::shared_ptr<CPVRChannel> channel = pItem->GetPVRChannelInfoTag();
+        const std::shared_ptr<const CPVRChannel> channel = pItem->GetPVRChannelInfoTag();
         PVR_ERROR ret = client->DeleteChannel(channel);
         if (ret == PVR_ERROR_NO_ERROR)
         {
@@ -821,7 +821,7 @@ void CGUIDialogPVRChannelManager::Update()
     channelFile = std::make_shared<CFileItem>(member);
     if (!channelFile)
       continue;
-    const std::shared_ptr<CPVRChannel> channel(channelFile->GetPVRChannelInfoTag());
+    const std::shared_ptr<const CPVRChannel> channel(channelFile->GetPVRChannelInfoTag());
 
     channelFile->SetProperty(PROPERTY_CHANNEL_ENABLED, !channel->IsHidden());
     channelFile->SetProperty(PROPERTY_CHANNEL_USER_SET_HIDDEN, channel->IsUserSetHidden());
@@ -835,7 +835,8 @@ void CGUIDialogPVRChannelManager::Update()
     channelFile->SetProperty(PROPERTY_CHANNEL_NUMBER,
                              member->ChannelNumber().FormattedChannelNumber());
 
-    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*channelFile);
+    const std::shared_ptr<const CPVRClient> client =
+        CServiceBroker::GetPVRManager().GetClient(*channelFile);
     if (client)
     {
       channelFile->SetProperty(PROPERTY_CLIENT_NAME, client->GetFriendlyName());
@@ -923,7 +924,7 @@ void CGUIDialogPVRChannelManager::RenameChannel(const CFileItemPtr& pItem)
   std::string strChannelName = pItem->GetProperty(PROPERTY_CHANNEL_NAME).asString();
   if (strChannelName != pItem->GetPVRChannelInfoTag()->ChannelName())
   {
-    std::shared_ptr<CPVRChannel> channel = pItem->GetPVRChannelInfoTag();
+    const std::shared_ptr<CPVRChannel> channel = pItem->GetPVRChannelInfoTag();
     channel->SetChannelName(strChannelName);
 
     const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*pItem);
@@ -1068,8 +1069,9 @@ namespace
 
 bool IsItemChanged(const std::shared_ptr<CFileItem>& item)
 {
-  const std::shared_ptr<CPVRChannelGroupMember> member = item->GetPVRChannelGroupMemberInfoTag();
-  const std::shared_ptr<CPVRChannel> channel = member->Channel();
+  const std::shared_ptr<const CPVRChannelGroupMember> member =
+      item->GetPVRChannelGroupMemberInfoTag();
+  const std::shared_ptr<const CPVRChannel> channel = member->Channel();
 
   return item->GetProperty(PROPERTY_CHANNEL_ENABLED).asBoolean() == channel->IsHidden() ||
          item->GetProperty(PROPERTY_CHANNEL_USER_SET_HIDDEN).asBoolean() !=

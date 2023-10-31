@@ -257,7 +257,7 @@ void CPVREpgSearchFilter::SetLastExecutedDateTime(const CDateTime& lastExecutedD
   m_lastExecutedDateTime = lastExecutedDateTime;
 }
 
-bool CPVREpgSearchFilter::MatchGenre(const std::shared_ptr<CPVREpgInfoTag>& tag) const
+bool CPVREpgSearchFilter::MatchGenre(const std::shared_ptr<const CPVREpgInfoTag>& tag) const
 {
   if (m_bEpgSearchDataFiltered)
     return true;
@@ -282,7 +282,7 @@ bool CPVREpgSearchFilter::MatchGenre(const std::shared_ptr<CPVREpgInfoTag>& tag)
   return true;
 }
 
-bool CPVREpgSearchFilter::MatchDuration(const std::shared_ptr<CPVREpgInfoTag>& tag) const
+bool CPVREpgSearchFilter::MatchDuration(const std::shared_ptr<const CPVREpgInfoTag>& tag) const
 {
   bool bReturn(true);
 
@@ -295,7 +295,8 @@ bool CPVREpgSearchFilter::MatchDuration(const std::shared_ptr<CPVREpgInfoTag>& t
   return bReturn;
 }
 
-bool CPVREpgSearchFilter::MatchStartAndEndTimes(const std::shared_ptr<CPVREpgInfoTag>& tag) const
+bool CPVREpgSearchFilter::MatchStartAndEndTimes(
+    const std::shared_ptr<const CPVREpgInfoTag>& tag) const
 {
   if (m_bEpgSearchDataFiltered)
     return true;
@@ -310,7 +311,7 @@ bool CPVREpgSearchFilter::MatchStartAndEndTimes(const std::shared_ptr<CPVREpgInf
            tag->EndAsUTC() <= m_searchData.m_endDateTime));
 }
 
-bool CPVREpgSearchFilter::MatchSearchTerm(const std::shared_ptr<CPVREpgInfoTag>& tag) const
+bool CPVREpgSearchFilter::MatchSearchTerm(const std::shared_ptr<const CPVREpgInfoTag>& tag) const
 {
   bool bReturn(true);
 
@@ -329,7 +330,7 @@ bool CPVREpgSearchFilter::MatchSearchTerm(const std::shared_ptr<CPVREpgInfoTag>&
   return bReturn;
 }
 
-bool CPVREpgSearchFilter::FilterEntry(const std::shared_ptr<CPVREpgInfoTag>& tag) const
+bool CPVREpgSearchFilter::FilterEntry(const std::shared_ptr<const CPVREpgInfoTag>& tag) const
 {
   return MatchGenre(tag) && MatchDuration(tag) && MatchStartAndEndTimes(tag) &&
          MatchSearchTerm(tag) && MatchChannel(tag) && MatchChannelGroup(tag) && MatchTimers(tag) &&
@@ -340,20 +341,17 @@ void CPVREpgSearchFilter::RemoveDuplicates(std::vector<std::shared_ptr<CPVREpgIn
 {
   for (auto it = results.begin(); it != results.end();)
   {
-    it = results.erase(std::remove_if(results.begin(),
-                                      results.end(),
-                                      [&it](const std::shared_ptr<CPVREpgInfoTag>& entry)
-                                      {
-                                         return *it != entry &&
-                                                (*it)->Title() == entry->Title() &&
-                                                (*it)->Plot() == entry->Plot() &&
-                                                (*it)->PlotOutline() == entry->PlotOutline();
+    it = results.erase(std::remove_if(results.begin(), results.end(),
+                                      [&it](const std::shared_ptr<const CPVREpgInfoTag>& entry) {
+                                        return *it != entry && (*it)->Title() == entry->Title() &&
+                                               (*it)->Plot() == entry->Plot() &&
+                                               (*it)->PlotOutline() == entry->PlotOutline();
                                       }),
                        results.end());
   }
 }
 
-bool CPVREpgSearchFilter::MatchChannel(const std::shared_ptr<CPVREpgInfoTag>& tag) const
+bool CPVREpgSearchFilter::MatchChannel(const std::shared_ptr<const CPVREpgInfoTag>& tag) const
 {
   return tag && (tag->IsRadio() == m_bIsRadio) &&
          (m_iClientID == -1 || tag->ClientID() == m_iClientID) &&
@@ -361,16 +359,16 @@ bool CPVREpgSearchFilter::MatchChannel(const std::shared_ptr<CPVREpgInfoTag>& ta
          CServiceBroker::GetPVRManager().Clients()->IsCreatedClient(tag->ClientID());
 }
 
-bool CPVREpgSearchFilter::MatchChannelGroup(const std::shared_ptr<CPVREpgInfoTag>& tag) const
+bool CPVREpgSearchFilter::MatchChannelGroup(const std::shared_ptr<const CPVREpgInfoTag>& tag) const
 {
   if (m_iChannelGroupID != -1)
   {
     if (!m_groupIdMatches.has_value())
     {
-      const std::shared_ptr<CPVRChannelGroup> group = CServiceBroker::GetPVRManager()
-                                                          .ChannelGroups()
-                                                          ->Get(m_bIsRadio)
-                                                          ->GetById(m_iChannelGroupID);
+      const std::shared_ptr<const CPVRChannelGroup> group = CServiceBroker::GetPVRManager()
+                                                                .ChannelGroups()
+                                                                ->Get(m_bIsRadio)
+                                                                ->GetById(m_iChannelGroupID);
       m_groupIdMatches =
           group && (group->GetByUniqueID({tag->ClientID(), tag->UniqueChannelID()}) != nullptr);
     }
@@ -381,23 +379,24 @@ bool CPVREpgSearchFilter::MatchChannelGroup(const std::shared_ptr<CPVREpgInfoTag
   return true;
 }
 
-bool CPVREpgSearchFilter::MatchFreeToAir(const std::shared_ptr<CPVREpgInfoTag>& tag) const
+bool CPVREpgSearchFilter::MatchFreeToAir(const std::shared_ptr<const CPVREpgInfoTag>& tag) const
 {
   if (m_bFreeToAirOnly)
   {
-    const std::shared_ptr<CPVRChannel> channel = CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
+    const std::shared_ptr<const CPVRChannel> channel =
+        CServiceBroker::GetPVRManager().ChannelGroups()->GetChannelForEpgTag(tag);
     return channel && !channel->IsEncrypted();
   }
 
   return true;
 }
 
-bool CPVREpgSearchFilter::MatchTimers(const std::shared_ptr<CPVREpgInfoTag>& tag) const
+bool CPVREpgSearchFilter::MatchTimers(const std::shared_ptr<const CPVREpgInfoTag>& tag) const
 {
   return (!m_bIgnorePresentTimers || !CServiceBroker::GetPVRManager().Timers()->GetTimerForEpgTag(tag));
 }
 
-bool CPVREpgSearchFilter::MatchRecordings(const std::shared_ptr<CPVREpgInfoTag>& tag) const
+bool CPVREpgSearchFilter::MatchRecordings(const std::shared_ptr<const CPVREpgInfoTag>& tag) const
 {
   return (!m_bIgnorePresentRecordings || !CServiceBroker::GetPVRManager().Recordings()->GetRecordingForEpgTag(tag));
 }

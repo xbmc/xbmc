@@ -234,7 +234,7 @@ JSONRPC_STATUS CPVROperations::GetBroadcastIsPlayable(const std::string& method,
   if (!CServiceBroker::GetPVRManager().IsStarted())
     return FailedToExecute;
 
-  const std::shared_ptr<CPVREpgInfoTag> epgTag =
+  const std::shared_ptr<const CPVREpgInfoTag> epgTag =
       CServiceBroker::GetPVRManager().EpgContainer().GetTagByDatabaseId(
           parameterObject["broadcastid"].asInteger());
 
@@ -337,7 +337,11 @@ JSONRPC_STATUS CPVROperations::GetPropertyValue(const std::string &property, CVa
   return OK;
 }
 
-void CPVROperations::FillChannelGroupDetails(const std::shared_ptr<CPVRChannelGroup> &channelGroup, const CVariant &parameterObject, CVariant &result, bool append /* = false */)
+void CPVROperations::FillChannelGroupDetails(
+    const std::shared_ptr<const CPVRChannelGroup>& channelGroup,
+    const CVariant& parameterObject,
+    CVariant& result,
+    bool append /* = false */)
 {
   if (channelGroup == NULL)
     return;

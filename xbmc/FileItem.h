@@ -651,7 +651,7 @@ private:
   /*!
    \brief Fill item's music tag from given epg tag.
    */
-  void FillMusicInfoTag(const std::shared_ptr<PVR::CPVREpgInfoTag>& tag);
+  void FillMusicInfoTag(const std::shared_ptr<const PVR::CPVREpgInfoTag>& tag);
 
   std::string m_strPath;            ///< complete path to item
   std::string m_strDynPath;

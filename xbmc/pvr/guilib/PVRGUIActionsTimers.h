@@ -206,14 +206,15 @@ private:
    * timer. out, for one shot timer not scheduled by a timer rule: ignored
    * @return true, to proceed with delete, false otherwise.
    */
-  bool ConfirmDeleteTimer(const std::shared_ptr<CPVRTimerInfoTag>& timer, bool& bDeleteRule) const;
+  bool ConfirmDeleteTimer(const std::shared_ptr<const CPVRTimerInfoTag>& timer,
+                          bool& bDeleteRule) const;
 
   /*!
    * @brief Open a dialog to confirm stop recording.
    * @param timer the recording to stop (actually the timer to delete).
    * @return true, to proceed with delete, false otherwise.
    */
-  bool ConfirmStopRecording(const std::shared_ptr<CPVRTimerInfoTag>& timer) const;
+  bool ConfirmStopRecording(const std::shared_ptr<const CPVRTimerInfoTag>& timer) const;
 
   /*!
    * @brief Announce and process a reminder timer.

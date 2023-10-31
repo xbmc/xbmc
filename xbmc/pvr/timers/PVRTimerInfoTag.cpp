@@ -61,7 +61,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(bool bRadio /* = false */)
 
   std::shared_ptr<CPVRTimerType> type;
 
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  const std::shared_ptr<const CPVRClient> client =
+      CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsTimers())
   {
     // default to first available type for given client
@@ -132,7 +133,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER& timer,
   if (m_iClientIndex == PVR_TIMER_NO_CLIENT_INDEX)
     CLog::LogF(LOGERROR, "Invalid client index supplied by client {} (must be > 0)!", m_iClientId);
 
-  const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_iClientId);
+  const std::shared_ptr<const CPVRClient> client =
+      CServiceBroker::GetPVRManager().GetClient(m_iClientId);
   if (client && client->GetClientCapabilities().SupportsTimers())
   {
     // begin compat section
@@ -233,7 +235,7 @@ void CPVRTimerInfoTag::FillAddonData(PVR_TIMER& timer) const
   StartAsUTC().GetAsTime(start);
   EndAsUTC().GetAsTime(end);
   FirstDayAsUTC().GetAsTime(firstDay);
-  const std::shared_ptr<CPVREpgInfoTag> epgTag = GetEpgInfoTag();
+  const std::shared_ptr<const CPVREpgInfoTag> epgTag = GetEpgInfoTag();
   const int iPVRTimeCorrection =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_iPVRTimeCorrection;
 
@@ -611,7 +613,7 @@ bool CPVRTimerInfoTag::DeleteFromDatabase()
   return false;
 }
 
-bool CPVRTimerInfoTag::UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
+bool CPVRTimerInfoTag::UpdateEntry(const std::shared_ptr<const CPVRTimerInfoTag>& tag)
 {
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
@@ -664,7 +666,7 @@ bool CPVRTimerInfoTag::UpdateEntry(const std::shared_ptr<CPVRTimerInfoTag>& tag)
   return true;
 }
 
-bool CPVRTimerInfoTag::UpdateChildState(const std::shared_ptr<CPVRTimerInfoTag>& childTimer,
+bool CPVRTimerInfoTag::UpdateChildState(const std::shared_ptr<const CPVRTimerInfoTag>& childTimer,
                                         bool bAdd)
 {
   if (!childTimer || childTimer->m_iParentClientIndex != m_iClientIndex)

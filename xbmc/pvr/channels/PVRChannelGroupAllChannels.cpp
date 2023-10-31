@@ -130,7 +130,7 @@ std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroupAllChannels
 }
 
 bool CPVRChannelGroupAllChannels::AppendToGroup(
-    const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
+    const std::shared_ptr<const CPVRChannelGroupMember>& groupMember)
 {
   if (IsGroupMember(groupMember))
     return false;
@@ -142,7 +142,7 @@ bool CPVRChannelGroupAllChannels::AppendToGroup(
 }
 
 bool CPVRChannelGroupAllChannels::RemoveFromGroup(
-    const std::shared_ptr<CPVRChannelGroupMember>& groupMember)
+    const std::shared_ptr<const CPVRChannelGroupMember>& groupMember)
 {
   if (!IsGroupMember(groupMember))
     return false;
@@ -154,7 +154,7 @@ bool CPVRChannelGroupAllChannels::RemoveFromGroup(
 }
 
 bool CPVRChannelGroupAllChannels::IsGroupMember(
-    const std::shared_ptr<CPVRChannelGroupMember>& groupMember) const
+    const std::shared_ptr<const CPVRChannelGroupMember>& groupMember) const
 {
   return !groupMember->Channel()->IsHidden();
 }

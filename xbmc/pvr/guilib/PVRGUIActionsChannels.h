@@ -108,7 +108,7 @@ public:
    * @return the group member or nullptr if not found.
    */
   std::shared_ptr<CPVRChannelGroupMember> GetChannelGroupMember(
-      const std::shared_ptr<CPVRChannel>& channel) const;
+      const std::shared_ptr<const CPVRChannel>& channel) const;
 
   /*!
    * @brief Get a channel group member for the given item, either from the currently active group

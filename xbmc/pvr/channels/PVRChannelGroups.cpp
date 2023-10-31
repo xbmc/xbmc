@@ -165,7 +165,8 @@ bool CPVRChannelGroups::Update(const std::shared_ptr<CPVRChannelGroup>& group,
   return true;
 }
 
-int CPVRChannelGroups::GetGroupTypePriority(const std::shared_ptr<CPVRChannelGroup>& group) const
+int CPVRChannelGroups::GetGroupTypePriority(
+    const std::shared_ptr<const CPVRChannelGroup>& group) const
 {
   switch (group->GroupType())
   {
@@ -180,7 +181,8 @@ int CPVRChannelGroups::GetGroupTypePriority(const std::shared_ptr<CPVRChannelGro
   }
 }
 
-int CPVRChannelGroups::GetGroupClientPriority(const std::shared_ptr<CPVRChannelGroup>& group) const
+int CPVRChannelGroups::GetGroupClientPriority(
+    const std::shared_ptr<const CPVRChannelGroup>& group) const
 {
   // if no priority was set by the user, use the client id to distinguish between the clients
   const int priority = group->GetClientPriority();
@@ -237,7 +239,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroups::GetChannelGroupMember
 {
   if (path.IsChannel())
   {
-    const std::shared_ptr<CPVRChannelGroup> group =
+    const std::shared_ptr<const CPVRChannelGroup> group =
         GetByName(path.GetGroupName(), path.GetGroupClientID());
     if (group)
       return group->GetByUniqueID(
@@ -248,7 +250,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRChannelGroups::GetChannelGroupMember
 }
 
 std::vector<std::shared_ptr<CPVRChannelGroupMember>> CPVRChannelGroups::GetMembersAvailableForGroup(
-    const std::shared_ptr<CPVRChannelGroup>& group)
+    const std::shared_ptr<const CPVRChannelGroup>& group)
 {
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> result;
 
@@ -307,7 +309,7 @@ bool CPVRChannelGroups::HasValidDataForClients(
 {
   return m_failedClientsForChannelGroups.empty() ||
          std::none_of(clients.cbegin(), clients.cend(),
-                      [this](const std::shared_ptr<CPVRClient>& client) {
+                      [this](const std::shared_ptr<const CPVRClient>& client) {
                         return std::find(m_failedClientsForChannelGroups.cbegin(),
                                          m_failedClientsForChannelGroups.cend(),
                                          client->GetID()) != m_failedClientsForChannelGroups.cend();
@@ -387,7 +389,8 @@ std::shared_ptr<CPVRChannelGroup> CPVRChannelGroups::CreateChannelGroup(
 
 bool CPVRChannelGroups::LoadFromDatabase(const std::vector<std::shared_ptr<CPVRClient>>& clients)
 {
-  const std::shared_ptr<CPVRDatabase> database(CServiceBroker::GetPVRManager().GetTVDatabase());
+  const std::shared_ptr<const CPVRDatabase> database(
+      CServiceBroker::GetPVRManager().GetTVDatabase());
   if (!database)
     return false;
 

@@ -105,9 +105,9 @@ public:
 
   CDateTime GetStartTimeForBlock(int block) const;
   int GetBlock(const CDateTime& datetime) const;
-  int GetFirstEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const;
-  int GetLastEventBlock(const std::shared_ptr<CPVREpgInfoTag>& event) const;
-  bool IsEventMemberOfBlock(const std::shared_ptr<CPVREpgInfoTag>& event, int iBlock) const;
+  int GetFirstEventBlock(const std::shared_ptr<const CPVREpgInfoTag>& event) const;
+  int GetLastEventBlock(const std::shared_ptr<const CPVREpgInfoTag>& event) const;
+  bool IsEventMemberOfBlock(const std::shared_ptr<const CPVREpgInfoTag>& event, int iBlock) const;
 
   std::unique_ptr<CFileItemList> GetCurrentTimeLineItems(int firstChannel, int numChannels) const;
 

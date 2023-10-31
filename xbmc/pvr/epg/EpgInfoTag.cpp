@@ -573,7 +573,7 @@ std::vector<PVR_EDL_ENTRY> CPVREpgInfoTag::GetEdl() const
   std::vector<PVR_EDL_ENTRY> edls;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
 
   if (client && client->GetClientCapabilities().SupportsEpgTagEdl())
@@ -598,7 +598,7 @@ bool CPVREpgInfoTag::IsRecordable() const
   bool bIsRecordable = false;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
   if (!client || (client->IsRecordable(shared_from_this(), bIsRecordable) != PVR_ERROR_NO_ERROR))
   {
@@ -613,7 +613,7 @@ bool CPVREpgInfoTag::IsPlayable() const
   bool bIsPlayable = false;
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
   if (!client || (client->IsPlayable(shared_from_this(), bIsPlayable) != PVR_ERROR_NO_ERROR))
   {

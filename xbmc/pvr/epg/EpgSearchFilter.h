@@ -47,7 +47,7 @@ namespace PVR
      * @param tag The tag to check.
      * @return True if this tag matches the filter, false if not.
      */
-    bool FilterEntry(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool FilterEntry(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
 
     /*!
      * @brief remove duplicates from a list of epg tags.
@@ -133,15 +133,15 @@ namespace PVR
     void SetChanged(bool bChanged) { m_bChanged = bChanged; }
 
   private:
-    bool MatchGenre(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
-    bool MatchDuration(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
-    bool MatchStartAndEndTimes(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
-    bool MatchSearchTerm(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
-    bool MatchChannel(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
-    bool MatchChannelGroup(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
-    bool MatchFreeToAir(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
-    bool MatchTimers(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
-    bool MatchRecordings(const std::shared_ptr<CPVREpgInfoTag>& tag) const;
+    bool MatchGenre(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+    bool MatchDuration(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+    bool MatchStartAndEndTimes(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+    bool MatchSearchTerm(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+    bool MatchChannel(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+    bool MatchChannelGroup(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+    bool MatchFreeToAir(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+    bool MatchTimers(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
+    bool MatchRecordings(const std::shared_ptr<const CPVREpgInfoTag>& tag) const;
 
     bool m_bChanged = false;
 

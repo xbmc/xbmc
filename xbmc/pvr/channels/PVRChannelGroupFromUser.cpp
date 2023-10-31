@@ -11,7 +11,7 @@
 using namespace PVR;
 
 CPVRChannelGroupFromUser::CPVRChannelGroupFromUser(
-    const CPVRChannelsPath& path, const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup)
+    const CPVRChannelsPath& path, const std::shared_ptr<const CPVRChannelGroup>& allChannelsGroup)
   : CPVRChannelGroup(path, allChannelsGroup)
 {
 }
