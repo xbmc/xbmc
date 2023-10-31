@@ -8,6 +8,7 @@
 
 #include "LibInputKeyboard.h"
 
+#include "LangInfo.h"
 #include "LibInputSettings.h"
 #include "ServiceBroker.h"
 #include "application/AppInboundProtocol.h"
@@ -18,6 +19,7 @@
 #include "utils/log.h"
 
 #include <algorithm>
+#include <optional>
 #include <string.h>
 
 #include <fcntl.h>
@@ -155,6 +157,61 @@ constexpr auto logLevelMap = make_map<xkb_log_level, int>({{XKB_LOG_LEVEL_CRITIC
                                                            {XKB_LOG_LEVEL_INFO, LOGINFO},
                                                            {XKB_LOG_LEVEL_DEBUG, LOGDEBUG}});
 
+constexpr auto XkbDeadKeyXBMCMapping =
+    make_map<xkb_keycode_t, XBMCKey>({{XKB_KEY_dead_grave, XBMCK_GRAVE},
+                                      {XKB_KEY_dead_tilde, XBMCK_TILDE},
+                                      {XKB_KEY_dead_acute, XBMCK_ACUTE},
+                                      {XKB_KEY_dead_circumflex, XBMCK_CIRCUMFLEX},
+                                      {XKB_KEY_dead_perispomeni, XBMCK_PERISPOMENI},
+                                      {XKB_KEY_dead_macron, XBMCK_MACRON},
+                                      {XKB_KEY_dead_breve, XBMCK_BREVE},
+                                      {XKB_KEY_dead_abovedot, XBMCK_ABOVEDOT},
+                                      {XKB_KEY_dead_diaeresis, XBMCK_DIAERESIS},
+                                      {XKB_KEY_dead_abovering, XBMCK_ABOVERING},
+                                      {XKB_KEY_dead_doubleacute, XBMCK_DOUBLEACUTE},
+                                      {XKB_KEY_dead_caron, XBMCK_CARON},
+                                      {XKB_KEY_dead_cedilla, XBMCK_CEDILLA},
+                                      {XKB_KEY_dead_ogonek, XBMCK_OGONEK},
+                                      {XKB_KEY_dead_iota, XBMCK_IOTA},
+                                      {XKB_KEY_dead_voiced_sound, XBMCK_VOICESOUND},
+                                      {XKB_KEY_dead_semivoiced_sound, XBMCK_SEMIVOICESOUND},
+                                      {XKB_KEY_dead_belowdot, XBMCK_BELOWDOT},
+                                      {XKB_KEY_dead_hook, XBMCK_HOOK},
+                                      {XKB_KEY_dead_horn, XBMCK_HORN},
+                                      {XKB_KEY_dead_stroke, XBMCK_STROKE},
+                                      {XKB_KEY_dead_abovecomma, XBMCK_ABOVECOMMA},
+                                      {XKB_KEY_dead_psili, XBMCK_ABOVECOMMA},
+                                      {XKB_KEY_dead_abovereversedcomma, XBMCK_ABOVEREVERSEDCOMMA},
+                                      {XKB_KEY_dead_dasia, XBMCK_OGONEK},
+                                      {XKB_KEY_dead_doublegrave, XBMCK_DOUBLEGRAVE},
+                                      {XKB_KEY_dead_belowring, XBMCK_BELOWRING},
+                                      {XKB_KEY_dead_belowmacron, XBMCK_BELOWMACRON},
+                                      {XKB_KEY_dead_belowcircumflex, XBMCK_BELOWCIRCUMFLEX},
+                                      {XKB_KEY_dead_belowtilde, XBMCK_BELOWTILDE},
+                                      {XKB_KEY_dead_belowbreve, XBMCK_BELOWBREVE},
+                                      {XKB_KEY_dead_belowdiaeresis, XBMCK_BELOWDIAERESIS},
+                                      {XKB_KEY_dead_invertedbreve, XBMCK_INVERTEDBREVE},
+                                      {XKB_KEY_dead_belowcomma, XBMCK_BELOWCOMMA},
+                                      {XKB_KEY_dead_a, XBMCK_DEAD_A},
+                                      {XKB_KEY_dead_A, XBMCK_DEAD_A},
+                                      {XKB_KEY_dead_e, XBMCK_DEAD_E},
+                                      {XKB_KEY_dead_E, XBMCK_DEAD_E},
+                                      {XKB_KEY_dead_i, XBMCK_DEAD_I},
+                                      {XKB_KEY_dead_I, XBMCK_DEAD_I},
+                                      {XKB_KEY_dead_o, XBMCK_DEAD_O},
+                                      {XKB_KEY_dead_O, XBMCK_DEAD_O},
+                                      {XKB_KEY_dead_u, XBMCK_DEAD_U},
+                                      {XKB_KEY_dead_U, XBMCK_DEAD_U},
+                                      {XKB_KEY_dead_small_schwa, XBMCK_SCHWA},
+                                      {XKB_KEY_dead_capital_schwa, XBMCK_SCHWA}});
+
+std::optional<XBMCKey> TranslateDeadKey(uint32_t keySym)
+{
+  auto mapping = XkbDeadKeyXBMCMapping.find(keySym);
+  return mapping != XkbDeadKeyXBMCMapping.cend() ? std::optional<XBMCKey>(mapping->second)
+                                                 : std::nullopt;
+}
+
 static void xkbLogger(xkb_context* context,
                       xkb_log_level priority,
                       const char* format,
@@ -186,6 +243,24 @@ CLibInputKeyboard::CLibInputKeyboard()
     CLog::Log(LOGERROR, "CLibInputKeyboard::{} - failed set default keymap", __FUNCTION__);
     return;
   }
+
+  m_composeTable =
+      std::unique_ptr<xkb_compose_table, XkbComposeTableDeleter>{xkb_compose_table_new_from_locale(
+          m_ctx.get(), g_langInfo.GetSystemLocale().name().c_str(), XKB_COMPOSE_COMPILE_NO_FLAGS)};
+  if (!m_composeTable)
+  {
+    CLog::LogF(LOGWARNING,
+               "Failed to compile localized compose table, composed key support will be disabled");
+    return;
+  }
+
+  m_composedState = std::unique_ptr<xkb_compose_state, XkbComposeStateDeleter>{
+      xkb_compose_state_new(m_composeTable.get(), XKB_COMPOSE_STATE_NO_FLAGS)};
+
+  if (!m_composedState)
+  {
+    throw std::runtime_error("Failed to create keyboard composer");
+  }
 }
 
 void CLibInputKeyboard::XkbContextDeleter::operator()(xkb_context* ctx) const
@@ -201,6 +276,16 @@ void CLibInputKeyboard::XkbKeymapDeleter::operator()(xkb_keymap* keymap) const
 void CLibInputKeyboard::XkbStateDeleter::operator()(xkb_state* state) const
 {
   xkb_state_unref(state);
+}
+
+void CLibInputKeyboard::XkbComposeTableDeleter::operator()(xkb_compose_table* table) const
+{
+  xkb_compose_table_unref(table);
+}
+
+void CLibInputKeyboard::XkbComposeStateDeleter::operator()(xkb_compose_state* state) const
+{
+  xkb_compose_state_unref(state);
 }
 
 bool CLibInputKeyboard::SetKeymap(const std::string& layout)
@@ -247,15 +332,50 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   if (!m_ctx || !m_keymap || !m_state)
     return;
 
-  XBMC_Event event = {};
-
   const uint32_t xkbkey = libinput_event_keyboard_get_key(e) + 8;
+  const xkb_keysym_t keysym = xkb_state_key_get_one_sym(m_state.get(), xkbkey);
   const bool pressed = libinput_event_keyboard_get_key_state(e) == LIBINPUT_KEY_STATE_PRESSED;
-
-  event.type = pressed ? XBMC_KEYDOWN : XBMC_KEYUP;
   xkb_state_update_key(m_state.get(), xkbkey, pressed ? XKB_KEY_DOWN : XKB_KEY_UP);
 
-  const xkb_keysym_t keysym = xkb_state_key_get_one_sym(m_state.get(), xkbkey);
+  bool flushComposer{false};
+  if (pressed && SupportsKeyComposition())
+  {
+    xkb_compose_state_feed(m_composedState.get(), keysym);
+    const xkb_compose_status composeStatus = xkb_compose_state_get_status(m_composedState.get());
+    switch (composeStatus)
+    {
+      case XKB_COMPOSE_COMPOSING:
+      {
+        const std::optional<XBMCKey> xbmcKey = TranslateDeadKey(keysym);
+        if (xbmcKey)
+        {
+          NotifyKeyComposingEvent(XBMC_KEYCOMPOSING_COMPOSING, xbmcKey.value());
+        }
+        return;
+      }
+      case XKB_COMPOSE_COMPOSED:
+      {
+        flushComposer = true;
+        NotifyKeyComposingEvent(XBMC_KEYCOMPOSING_FINISHED, XBMCK_UNKNOWN);
+        break;
+      }
+      case XKB_COMPOSE_CANCELLED:
+      {
+        const std::uint32_t unicodeCodePointCancellationKey{UnicodeCodepointForKeycode(xkbkey)};
+        NotifyKeyComposingEvent(XBMC_KEYCOMPOSING_CANCELLED, unicodeCodePointCancellationKey);
+        xkb_compose_state_reset(m_composedState.get());
+        // do not allow key fallthrough if we are simply cancelling with a backspace (we are cancelling the
+        // composition behavior not really removing any character)
+        if (unicodeCodePointCancellationKey == XBMCK_BACKSPACE)
+        {
+          return;
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
 
   int mod = XBMCKMOD_NONE;
 
@@ -306,7 +426,7 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
     //mod |= XBMCK_SCROLLOCK;
   }
 
-  uint32_t unicode = xkb_state_key_get_utf32(m_state.get(), xkbkey);
+  uint32_t unicode = UnicodeCodepointForKeycode(xkbkey);
   if (unicode > std::numeric_limits<std::uint16_t>::max())
   {
     // Kodi event system only supports UTF16, so ignore the codepoint if it does not fit
@@ -320,6 +440,14 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
     scancode = 0;
   }
 
+  // flush composer if set (after a finished sequence)
+  if (flushComposer)
+  {
+    xkb_compose_state_reset(m_composedState.get());
+  }
+
+  XBMC_Event event = {};
+  event.type = pressed ? XBMC_KEYDOWN : XBMC_KEYUP;
   event.key.keysym.mod = XBMCMod(mod);
   event.key.keysym.sym = XBMCKeyForKeysym(keysym, scancode);
   event.key.keysym.scancode = scancode;
@@ -420,4 +548,56 @@ void CLibInputKeyboard::GetRepeat(libinput_device *dev)
   {
     m_repeatData.insert(std::make_pair(dev, kbdrepvec));
   }
+}
+
+bool CLibInputKeyboard::SupportsKeyComposition() const
+{
+  return m_composedState != nullptr;
+}
+
+void CLibInputKeyboard::NotifyKeyComposingEvent(uint8_t eventType, std::uint16_t unicodeCodepoint)
+{
+  XBMC_Event event{};
+  event.type = eventType;
+  event.key.keysym.unicode = unicodeCodepoint;
+  std::shared_ptr<CAppInboundProtocol> appPort = CServiceBroker::GetAppPort();
+  if (appPort)
+  {
+    appPort->OnEvent(event);
+  }
+}
+
+std::uint32_t CLibInputKeyboard::UnicodeCodepointForKeycode(xkb_keycode_t code) const
+{
+  uint32_t unicode;
+
+  if (SupportsKeyComposition())
+  {
+    const xkb_compose_status composerStatus = xkb_compose_state_get_status(m_composedState.get());
+    if (composerStatus == XKB_COMPOSE_COMPOSED)
+    {
+      const uint32_t keysym = xkb_compose_state_get_one_sym(m_composedState.get());
+      unicode = xkb_keysym_to_utf32(keysym);
+    }
+    else
+    {
+      unicode = xkb_state_key_get_utf32(m_state.get(), code);
+    }
+  }
+  else
+  {
+    unicode = xkb_state_key_get_utf32(m_state.get(), code);
+  }
+
+  // check if it is a dead key and try to translate
+  if (unicode == XBMCK_UNKNOWN)
+  {
+    const uint32_t keysym = xkb_state_key_get_one_sym(m_state.get(), code);
+    const std::optional<XBMCKey> xbmcKey = TranslateDeadKey(keysym);
+    if (xbmcKey)
+    {
+      unicode = xbmcKey.value();
+    }
+  }
+  return unicode;
 }
