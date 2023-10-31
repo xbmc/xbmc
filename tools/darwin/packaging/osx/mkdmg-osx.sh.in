@@ -78,7 +78,7 @@ echo "done"
 # codesign and notarize dmg
 if [ "$EXPANDED_CODE_SIGN_IDENTITY_NAME" ]; then
   codesign --verbose=4 --sign "$EXPANDED_CODE_SIGN_IDENTITY_NAME" "$dmgPath"
-  if ! ./notarize.sh "$dmgPath" "$APP/Contents/Info.plist" && [ "$isReleaseBuild" = 1 ]; then
+  if ! ./notarize.sh "$dmgPath" && [ "$isReleaseBuild" = 1 ]; then
     exit 1
   fi
 fi
