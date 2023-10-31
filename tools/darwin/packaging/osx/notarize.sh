@@ -6,18 +6,15 @@
 
 set -e
 
-if [[ -z "$DEV_ACCOUNT" || -z "$DEV_ACCOUNT_PASSWORD" ]]; then
+if [[ -z "$NOTARYTOOL_KEYCHAIN_PROFILE" ]]; then
   echo "skipping notarization"
   exit 0
 fi
 
 dmg="$1"
-xcrun notarytool \
-  submit \
-  --wait \
-  --timeout '1h' \
-  --apple-id "$DEV_ACCOUNT" \
-  --password "$DEV_ACCOUNT_PASSWORD" \
-  ${DEV_TEAM:+--team-id "$DEV_TEAM"} \
+xcrun notarytool submit \
+  --keychain-profile "$NOTARYTOOL_KEYCHAIN_PROFILE" \
+  ${NOTARYTOOL_KEYCHAIN_PATH:+--keychain "$NOTARYTOOL_KEYCHAIN_PATH"} \
+  --wait --timeout '1h' \
   "$dmg" 2>&1
 xcrun stapler staple "$dmg"
