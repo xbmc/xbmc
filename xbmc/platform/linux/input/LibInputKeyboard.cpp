@@ -171,15 +171,15 @@ static void xkbLogger(xkb_context* context,
 CLibInputKeyboard::CLibInputKeyboard()
   : m_repeatTimer(std::bind(&CLibInputKeyboard::KeyRepeatTimeout, this))
 {
-  m_ctx = xkb_context_new(XKB_CONTEXT_NO_FLAGS);
+  m_ctx = std::unique_ptr<xkb_context, XkbContextDeleter>{xkb_context_new(XKB_CONTEXT_NO_FLAGS)};
   if (!m_ctx)
   {
     CLog::Log(LOGERROR, "CLibInputKeyboard::{} - failed to create xkb context", __FUNCTION__);
     return;
   }
 
-  xkb_context_set_log_level(m_ctx, XKB_LOG_LEVEL_DEBUG);
-  xkb_context_set_log_fn(m_ctx, &xkbLogger);
+  xkb_context_set_log_level(m_ctx.get(), XKB_LOG_LEVEL_DEBUG);
+  xkb_context_set_log_fn(m_ctx.get(), &xkbLogger);
 
   std::string layout = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
       CLibInputSettings::SETTING_INPUT_LIBINPUTKEYBOARDLAYOUT);
@@ -190,18 +190,23 @@ CLibInputKeyboard::CLibInputKeyboard()
   }
 }
 
-CLibInputKeyboard::~CLibInputKeyboard()
+void CLibInputKeyboard::XkbContextDeleter::operator()(xkb_context* ctx) const
 {
-  xkb_state_unref(m_state);
-  xkb_keymap_unref(m_keymap);
-  xkb_context_unref(m_ctx);
+  xkb_context_unref(ctx);
+}
+
+void CLibInputKeyboard::XkbKeymapDeleter::operator()(xkb_keymap* keymap) const
+{
+  xkb_keymap_unref(keymap);
+}
+
+void CLibInputKeyboard::XkbStateDeleter::operator()(xkb_state* state) const
+{
+  xkb_state_unref(state);
 }
 
 bool CLibInputKeyboard::SetKeymap(const std::string& layout)
 {
-  xkb_state_unref(m_state);
-  xkb_keymap_unref(m_keymap);
-
   xkb_rule_names names;
 
   names.rules = nullptr;
@@ -210,28 +215,29 @@ bool CLibInputKeyboard::SetKeymap(const std::string& layout)
   names.variant = nullptr;
   names.options = nullptr;
 
-  m_keymap = xkb_keymap_new_from_names(m_ctx, &names, XKB_KEYMAP_COMPILE_NO_FLAGS);
+  m_keymap = std::unique_ptr<xkb_keymap, XkbKeymapDeleter>{
+      xkb_keymap_new_from_names(m_ctx.get(), &names, XKB_KEYMAP_COMPILE_NO_FLAGS)};
   if (!m_keymap)
   {
     CLog::Log(LOGERROR, "CLibInputKeyboard::{} - failed to compile keymap", __FUNCTION__);
     return false;
   }
 
-  m_state = xkb_state_new(m_keymap);
+  m_state = std::unique_ptr<xkb_state, XkbStateDeleter>{xkb_state_new(m_keymap.get())};
   if (!m_state)
   {
     CLog::Log(LOGERROR, "CLibInputKeyboard::{} - failed to create xkb state", __FUNCTION__);
     return false;
   }
 
-  m_modindex[0] = xkb_keymap_mod_get_index(m_keymap, XKB_MOD_NAME_CTRL);
-  m_modindex[1] = xkb_keymap_mod_get_index(m_keymap, XKB_MOD_NAME_ALT);
-  m_modindex[2] = xkb_keymap_mod_get_index(m_keymap, XKB_MOD_NAME_SHIFT);
-  m_modindex[3] = xkb_keymap_mod_get_index(m_keymap, XKB_MOD_NAME_LOGO);
+  m_modindex[0] = xkb_keymap_mod_get_index(m_keymap.get(), XKB_MOD_NAME_CTRL);
+  m_modindex[1] = xkb_keymap_mod_get_index(m_keymap.get(), XKB_MOD_NAME_ALT);
+  m_modindex[2] = xkb_keymap_mod_get_index(m_keymap.get(), XKB_MOD_NAME_SHIFT);
+  m_modindex[3] = xkb_keymap_mod_get_index(m_keymap.get(), XKB_MOD_NAME_LOGO);
 
-  m_ledindex[0] = xkb_keymap_led_get_index(m_keymap, XKB_LED_NAME_NUM);
-  m_ledindex[1] = xkb_keymap_led_get_index(m_keymap, XKB_LED_NAME_CAPS);
-  m_ledindex[2] = xkb_keymap_led_get_index(m_keymap, XKB_LED_NAME_SCROLL);
+  m_ledindex[0] = xkb_keymap_led_get_index(m_keymap.get(), XKB_LED_NAME_NUM);
+  m_ledindex[1] = xkb_keymap_led_get_index(m_keymap.get(), XKB_LED_NAME_CAPS);
+  m_ledindex[2] = xkb_keymap_led_get_index(m_keymap.get(), XKB_LED_NAME_SCROLL);
 
   m_leds = 0;
 
@@ -249,49 +255,60 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   const bool pressed = libinput_event_keyboard_get_key_state(e) == LIBINPUT_KEY_STATE_PRESSED;
 
   event.type = pressed ? XBMC_KEYDOWN : XBMC_KEYUP;
-  xkb_state_update_key(m_state, xkbkey, pressed ? XKB_KEY_DOWN : XKB_KEY_UP);
+  xkb_state_update_key(m_state.get(), xkbkey, pressed ? XKB_KEY_DOWN : XKB_KEY_UP);
 
-  const xkb_keysym_t keysym = xkb_state_key_get_one_sym(m_state, xkbkey);
+  const xkb_keysym_t keysym = xkb_state_key_get_one_sym(m_state.get(), xkbkey);
 
   int mod = XBMCKMOD_NONE;
 
   xkb_state_component modtype = xkb_state_component(XKB_STATE_MODS_DEPRESSED | XKB_STATE_MODS_LATCHED);
-  if (xkb_state_mod_index_is_active(m_state, m_modindex[0], modtype) && ((keysym != XBMCK_LCTRL) || !pressed))
+  if (xkb_state_mod_index_is_active(m_state.get(), m_modindex[0], modtype) &&
+      ((keysym != XBMCK_LCTRL) || !pressed))
     mod |= XBMCKMOD_CTRL;
-  if (xkb_state_mod_index_is_active(m_state, m_modindex[0], modtype) && ((keysym != XBMCK_RCTRL) || !pressed))
+  if (xkb_state_mod_index_is_active(m_state.get(), m_modindex[0], modtype) &&
+      ((keysym != XBMCK_RCTRL) || !pressed))
     mod |= XBMCKMOD_CTRL;
-  if (xkb_state_mod_index_is_active(m_state, m_modindex[1], modtype) && ((keysym != XBMCK_LALT) || !pressed))
+  if (xkb_state_mod_index_is_active(m_state.get(), m_modindex[1], modtype) &&
+      ((keysym != XBMCK_LALT) || !pressed))
     mod |= XBMCKMOD_ALT;
-  if (xkb_state_mod_index_is_active(m_state, m_modindex[1], modtype) && ((keysym != XBMCK_RALT) || !pressed))
+  if (xkb_state_mod_index_is_active(m_state.get(), m_modindex[1], modtype) &&
+      ((keysym != XBMCK_RALT) || !pressed))
     mod |= XBMCKMOD_ALT;
-  if (xkb_state_mod_index_is_active(m_state, m_modindex[2], modtype) && ((keysym != XBMCK_LSHIFT) || !pressed))
+  if (xkb_state_mod_index_is_active(m_state.get(), m_modindex[2], modtype) &&
+      ((keysym != XBMCK_LSHIFT) || !pressed))
     mod |= XBMCKMOD_SHIFT;
-  if (xkb_state_mod_index_is_active(m_state, m_modindex[2], modtype) && ((keysym != XBMCK_RSHIFT) || !pressed))
+  if (xkb_state_mod_index_is_active(m_state.get(), m_modindex[2], modtype) &&
+      ((keysym != XBMCK_RSHIFT) || !pressed))
     mod |= XBMCKMOD_SHIFT;
-  if (xkb_state_mod_index_is_active(m_state, m_modindex[3], modtype) && ((keysym != XBMCK_LMETA) || !pressed))
+  if (xkb_state_mod_index_is_active(m_state.get(), m_modindex[3], modtype) &&
+      ((keysym != XBMCK_LMETA) || !pressed))
     mod |= XBMCKMOD_META;
-  if (xkb_state_mod_index_is_active(m_state, m_modindex[3], modtype) && ((keysym != XBMCK_RMETA) || !pressed))
+  if (xkb_state_mod_index_is_active(m_state.get(), m_modindex[3], modtype) &&
+      ((keysym != XBMCK_RMETA) || !pressed))
     mod |= XBMCKMOD_META;
 
   m_leds = 0;
 
-  if (xkb_state_led_index_is_active(m_state, m_ledindex[0]) && ((keysym != XBMCK_NUMLOCK) || !pressed))
+  if (xkb_state_led_index_is_active(m_state.get(), m_ledindex[0]) &&
+      ((keysym != XBMCK_NUMLOCK) || !pressed))
   {
     m_leds |= LIBINPUT_LED_NUM_LOCK;
     mod |= XBMCKMOD_NUM;
   }
-  if (xkb_state_led_index_is_active(m_state, m_ledindex[1]) && ((keysym != XBMCK_CAPSLOCK) || !pressed))
+  if (xkb_state_led_index_is_active(m_state.get(), m_ledindex[1]) &&
+      ((keysym != XBMCK_CAPSLOCK) || !pressed))
   {
     m_leds |= LIBINPUT_LED_CAPS_LOCK;
     mod |= XBMCKMOD_CAPS;
   }
-  if (xkb_state_led_index_is_active(m_state, m_ledindex[2]) && ((keysym != XBMCK_SCROLLOCK) || !pressed))
+  if (xkb_state_led_index_is_active(m_state.get(), m_ledindex[2]) &&
+      ((keysym != XBMCK_SCROLLOCK) || !pressed))
   {
     m_leds |= LIBINPUT_LED_SCROLL_LOCK;
     //mod |= XBMCK_SCROLLOCK;
   }
 
-  uint32_t unicode = xkb_state_key_get_utf32(m_state, xkbkey);
+  uint32_t unicode = xkb_state_key_get_utf32(m_state.get(), xkbkey);
   if (unicode > std::numeric_limits<std::uint16_t>::max())
   {
     // Kodi event system only supports UTF16, so ignore the codepoint if it does not fit
@@ -314,7 +331,7 @@ void CLibInputKeyboard::ProcessKey(libinput_event_keyboard *e)
   if (appPort)
     appPort->OnEvent(event);
 
-  if (pressed && xkb_keymap_key_repeats(m_keymap, xkbkey))
+  if (pressed && xkb_keymap_key_repeats(m_keymap.get(), xkbkey))
   {
     libinput_event *ev = libinput_event_keyboard_get_base_event(e);
     libinput_device *dev = libinput_event_get_device(ev);
