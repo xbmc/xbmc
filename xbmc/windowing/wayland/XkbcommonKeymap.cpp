@@ -24,32 +24,22 @@ using namespace KODI::WINDOWING::WAYLAND;
 
 namespace
 {
+static const std::unordered_map<xkb_log_level, int> logLevelMap = {
+    {XKB_LOG_LEVEL_CRITICAL, LOGERROR},  {XKB_LOG_LEVEL_ERROR, LOGERROR},
+    {XKB_LOG_LEVEL_WARNING, LOGWARNING}, {XKB_LOG_LEVEL_INFO, LOGINFO},
+    {XKB_LOG_LEVEL_DEBUG, LOGDEBUG},
+};
+
 static void xkbLogger(xkb_context* context,
                       xkb_log_level priority,
                       const char* format,
                       va_list args)
 {
   const std::string message = StringUtils::FormatV(format, args);
-  auto logLevel = LOGDEBUG;
-  switch (priority)
-  {
-    case XKB_LOG_LEVEL_INFO:
-      logLevel = LOGINFO;
-      break;
-    case XKB_LOG_LEVEL_ERROR:
-      logLevel = LOGERROR;
-      break;
-    case XKB_LOG_LEVEL_WARNING:
-      logLevel = LOGWARNING;
-      break;
-    case XKB_LOG_LEVEL_DEBUG:
-      logLevel = LOGDEBUG;
-      break;
-    default:
-      break;
-  };
-  CLog::LogF(logLevel, "{}", message);
+  auto logLevel = logLevelMap.find(priority);
+  CLog::Log(logLevel != logLevelMap.end() ? logLevel->second : LOGDEBUG, "[xkb] {}", message);
 }
+
 struct ModifierNameXBMCMapping
 {
   const char* name;
