@@ -63,9 +63,8 @@ add_custom_target(dmg
                                      ${CMAKE_BINARY_DIR}/tools/darwin/packaging/osx/Codesign.command
     COMMAND "CODESIGNING_FOLDER_PATH=$<TARGET_BUNDLE_DIR:${APP_NAME_LC}>"
             "APP=$<TARGET_BUNDLE_DIR:${APP_NAME_LC}>"
-            "DEV_ACCOUNT=${DEV_ACCOUNT}"
-            "DEV_ACCOUNT_PASSWORD=${DEV_ACCOUNT_PASSWORD}"
-            "DEV_TEAM=${DEV_TEAM}"
+            "NOTARYTOOL_KEYCHAIN_PROFILE=${NOTARYTOOL_KEYCHAIN_PROFILE}"
+            "NOTARYTOOL_KEYCHAIN_PATH=${NOTARYTOOL_KEYCHAIN_PATH}"
             "EXPANDED_CODE_SIGN_IDENTITY_NAME=${CODE_SIGN_IDENTITY}"
             "PLATFORM_NAME=${PLATFORM}"
             "XCODE_BUILDTYPE=${CMAKE_CFG_INTDIR}"
