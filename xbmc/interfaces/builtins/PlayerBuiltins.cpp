@@ -432,6 +432,17 @@ void GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& 
     CLog::LogF(LOGERROR, "Unable to get playlist items for {}", item->GetPath());
 }
 
+PLAYLIST::Id GetPlayListId(const CFileItem& item)
+{
+  PLAYLIST::Id playlistId{PLAYLIST::TYPE_NONE};
+  if (item.IsVideo())
+    playlistId = PLAYLIST::TYPE_VIDEO;
+  else if (item.IsAudio())
+    playlistId = PLAYLIST::TYPE_MUSIC;
+
+  return playlistId;
+}
+
 int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 {
   // restore to previous window if needed
@@ -515,8 +526,8 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
       // The Resume dialog was closed without any choice
       return false;
     }
-    item.SetProperty("check_resume", false);
   }
+  item.SetProperty("check_resume", false);
 
   if (item.IsStack())
   {
@@ -608,16 +619,16 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 
   if (forcePlay)
   {
-    if ((item.IsAudio() || item.IsVideo()) && !item.IsSmartPlayList())
+    if ((item.IsAudio() || item.IsVideo()) && !item.IsSmartPlayList() && !item.IsPVR())
     {
       if (!item.HasProperty("playlist_type_hint"))
-        item.SetProperty("playlist_type_hint", PLAYLIST::TYPE_MUSIC);
+        item.SetProperty("playlist_type_hint", GetPlayListId(item));
 
       CServiceBroker::GetPlaylistPlayer().Play(std::make_shared<CFileItem>(item), "");
     }
     else
     {
-      g_application.PlayMedia(item, "", PLAYLIST::TYPE_NONE);
+      g_application.PlayMedia(item, "", GetPlayListId(item));
     }
   }
 
