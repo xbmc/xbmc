@@ -461,6 +461,10 @@ public:
   static constexpr auto SETTING_SOURCE_VIDEOS = "source.videos";
   static constexpr auto SETTING_SOURCE_MUSIC = "source.music";
   static constexpr auto SETTING_SOURCE_PICTURES = "source.pictures";
+  static constexpr auto SETTING_FILECACHE_BUFFERMODE = "filecache.buffermode";
+  static constexpr auto SETTING_FILECACHE_MEMORYSIZE = "filecache.memorysize"; // in MBytes
+  static constexpr auto SETTING_FILECACHE_READFACTOR = "filecache.readfactor"; // as integer (x100)
+  static constexpr auto SETTING_FILECACHE_CHUNKSIZE = "filecache.chunksize"; // in Bytes
 
   // values for SETTING_VIDEOLIBRARY_SHOWUNWATCHEDPLOTS
   static const int VIDEOLIBRARY_PLOTS_SHOW_UNWATCHED_MOVIES = 0;
