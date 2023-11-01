@@ -11,7 +11,7 @@
 #include "CircularCache.h"
 #include "ServiceBroker.h"
 #include "URL.h"
-#include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "threads/Thread.h"
 #include "utils/log.h"
@@ -111,11 +111,12 @@ bool CFileCache::Open(const CURL& url)
     return false;
   }
 
-  const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-  if (!advancedSettings)
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (!settings)
     return false;
 
-  const unsigned int cacheMemSize = advancedSettings->m_cacheMemSize;
+  const unsigned int cacheMemSize =
+      settings->GetInt(CSettings::SETTING_FILECACHE_MEMORYSIZE) * 1024 * 1024;
 
   m_source.IoControl(IOCTRL_SET_CACHE, this);
 
@@ -126,8 +127,8 @@ bool CFileCache::Open(const CURL& url)
   m_seekPossible = m_source.IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
 
   // Determine the best chunk size we can use
-  m_chunkSize =
-      CFile::DetermineChunkSize(m_source.GetChunkSize(), advancedSettings->m_cacheChunkSize);
+  m_chunkSize = CFile::DetermineChunkSize(m_source.GetChunkSize(),
+                                          settings->GetInt(CSettings::SETTING_FILECACHE_CHUNKSIZE));
   CLog::Log(LOGDEBUG,
             "CFileCache::{} - <{}> source chunk size is {}, setting cache chunk size to {}",
             __FUNCTION__, m_sourcePath, m_source.GetChunkSize(), m_chunkSize);
@@ -232,11 +233,11 @@ void CFileCache::Process()
     return;
   }
 
-  const auto advancedSettings = CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
-  if (!advancedSettings)
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+  if (!settings)
     return;
 
-  const float readFactor = advancedSettings->m_cacheReadFactor;
+  const float readFactor = settings->GetInt(CSettings::SETTING_FILECACHE_READFACTOR) / 100.0f;
 
   CWriteRate limiter;
   CWriteRate average;

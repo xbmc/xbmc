@@ -20,4 +20,20 @@ public:
                                              std::vector<IntegerSettingOption>& list,
                                              int& current,
                                              void* data);
+  static void SettingOptionsBufferModesFiller(const SettingConstPtr& setting,
+                                              std::vector<IntegerSettingOption>& list,
+                                              int& current,
+                                              void* data);
+  static void SettingOptionsMemorySizesFiller(const SettingConstPtr& setting,
+                                              std::vector<IntegerSettingOption>& list,
+                                              int& current,
+                                              void* data);
+  static void SettingOptionsReadFactorsFiller(const SettingConstPtr& setting,
+                                              std::vector<IntegerSettingOption>& list,
+                                              int& current,
+                                              void* data);
+  static void SettingOptionsCacheChunkSizesFiller(const SettingConstPtr& setting,
+                                                  std::vector<IntegerSettingOption>& list,
+                                                  int& current,
+                                                  void* data);
 };

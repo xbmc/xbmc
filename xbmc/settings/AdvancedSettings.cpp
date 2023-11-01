@@ -397,14 +397,6 @@ void CAdvancedSettings::Initialize()
   m_PVRDefaultSortOrder.sortBy = SortByDate;
   m_PVRDefaultSortOrder.sortOrder = SortOrderDescending;
 
-  m_cacheMemSize = 1024 * 1024 * 20; // 20 MiB
-  m_cacheBufferMode = CACHE_BUFFER_MODE_NETWORK; // Default (buffer all network filesystems)
-  m_cacheChunkSize = 128 * 1024; // 128 KiB
-
-  // the following setting determines the readRate of a player data
-  // as multiply of the default data read rate
-  m_cacheReadFactor = 4.0f;
-
   m_addonPackageFolderSize = 200;
 
   m_jsonOutputCompact = true;
@@ -847,15 +839,6 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetBoolean(pElement, "disableipv6", m_curlDisableIPV6);
     XMLUtils::GetBoolean(pElement, "disablehttp2", m_curlDisableHTTP2);
     XMLUtils::GetString(pElement, "catrustfile", m_caTrustFile);
-  }
-
-  pElement = pRootElement->FirstChildElement("cache");
-  if (pElement)
-  {
-    XMLUtils::GetUInt(pElement, "memorysize", m_cacheMemSize);
-    XMLUtils::GetUInt(pElement, "buffermode", m_cacheBufferMode, 0, 4);
-    XMLUtils::GetUInt(pElement, "chunksize", m_cacheChunkSize, 256, 1024 * 1024);
-    XMLUtils::GetFloat(pElement, "readfactor", m_cacheReadFactor);
   }
 
   pElement = pRootElement->FirstChildElement("jsonrpc");

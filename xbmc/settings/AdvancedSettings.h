@@ -18,12 +18,6 @@
 #include <utility>
 #include <vector>
 
-#define CACHE_BUFFER_MODE_INTERNET 0
-#define CACHE_BUFFER_MODE_ALL 1
-#define CACHE_BUFFER_MODE_TRUE_INTERNET 2
-#define CACHE_BUFFER_MODE_NONE 3
-#define CACHE_BUFFER_MODE_NETWORK 4
-
 class CProfileManager;
 class CSettingsManager;
 class CVariant;
@@ -334,11 +328,6 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     int  m_guiAlgorithmDirtyRegions;
     bool m_guiSmartRedraw;
     unsigned int m_addonPackageFolderSize;
-
-    unsigned int m_cacheMemSize;
-    unsigned int m_cacheBufferMode;
-    unsigned int m_cacheChunkSize;
-    float m_cacheReadFactor;
 
     bool m_jsonOutputCompact;
     unsigned int m_jsonTcpPort;
