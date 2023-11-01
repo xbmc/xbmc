@@ -208,20 +208,26 @@ bool CContextMenuManager::IsVisible(
   return menuItem.IsVisible(fileItem);
 }
 
-bool CContextMenuManager::HasItems(const CFileItem& fileItem) const
+bool CContextMenuManager::HasItems(const CFileItem& fileItem, const CContextMenuItem& root) const
 {
-  std::unique_lock<CCriticalSection> lock(m_criticalSection);
-  return std::any_of(m_items.cbegin(), m_items.cend(),
-                     [&fileItem](const std::shared_ptr<IContextMenuItem>& menu) {
-                       return menu->IsVisible(fileItem);
-                     });
+  //! @todo implement group support
+  if (&root == &CContextMenuManager::MAIN)
+  {
+    std::unique_lock<CCriticalSection> lock(m_criticalSection);
+    return std::any_of(m_items.cbegin(), m_items.cend(),
+                       [&fileItem](const std::shared_ptr<const IContextMenuItem>& menu) {
+                         return menu->IsVisible(fileItem);
+                       });
+  }
+  return false;
 }
 
-ContextMenuView CContextMenuManager::GetItems(const CFileItem& fileItem, const CContextMenuItem& root /*= MAIN*/) const
+ContextMenuView CContextMenuManager::GetItems(const CFileItem& fileItem,
+                                              const CContextMenuItem& root) const
 {
   ContextMenuView result;
   //! @todo implement group support
-  if (&root == &MAIN)
+  if (&root == &CContextMenuManager::MAIN)
   {
     std::unique_lock<CCriticalSection> lock(m_criticalSection);
     std::copy_if(m_items.begin(), m_items.end(), std::back_inserter(result),
@@ -230,15 +236,18 @@ ContextMenuView CContextMenuManager::GetItems(const CFileItem& fileItem, const C
   return result;
 }
 
-bool CContextMenuManager::HasAddonItems(const CFileItem& fileItem) const
+bool CContextMenuManager::HasAddonItems(const CFileItem& fileItem,
+                                        const CContextMenuItem& root) const
 {
   std::unique_lock<CCriticalSection> lock(m_criticalSection);
-  return std::any_of(
-      m_addonItems.cbegin(), m_addonItems.cend(),
-      [&fileItem](const CContextMenuItem& menu) { return menu.IsVisible(fileItem); });
+  return std::any_of(m_addonItems.cbegin(), m_addonItems.cend(),
+                     [this, root, &fileItem](const CContextMenuItem& menu) {
+                       return IsVisible(menu, root, fileItem);
+                     });
 }
 
-ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem, const CContextMenuItem& root /*= MAIN*/) const
+ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem,
+                                                   const CContextMenuItem& root) const
 {
   ContextMenuView result;
   {
@@ -248,7 +257,7 @@ ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem, co
         result.emplace_back(new CContextMenuItem(menu));
   }
 
-  if (&root == &MANAGE)
+  if (&root == &CContextMenuManager::MANAGE)
   {
     std::sort(result.begin(), result.end(),
         [&](const ContextMenuView::value_type& lhs, const ContextMenuView::value_type& rhs)
@@ -260,7 +269,8 @@ ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem, co
   return result;
 }
 
-bool CONTEXTMENU::HasAnyMenuItemsFor(const std::shared_ptr<CFileItem>& fileItem)
+bool CONTEXTMENU::HasAnyMenuItemsFor(const std::shared_ptr<CFileItem>& fileItem,
+                                     const CContextMenuItem& root)
 {
   if (!fileItem)
     return false;
@@ -269,8 +279,8 @@ bool CONTEXTMENU::HasAnyMenuItemsFor(const std::shared_ptr<CFileItem>& fileItem)
     return true;
 
   const CContextMenuManager& contextMenuManager = CServiceBroker::GetContextMenuManager();
-
-  return (contextMenuManager.HasItems(*fileItem) || contextMenuManager.HasAddonItems(*fileItem));
+  return (contextMenuManager.HasItems(*fileItem, root) ||
+          contextMenuManager.HasAddonItems(*fileItem, root));
 }
 
 bool CONTEXTMENU::ShowFor(const std::shared_ptr<CFileItem>& fileItem, const CContextMenuItem& root)

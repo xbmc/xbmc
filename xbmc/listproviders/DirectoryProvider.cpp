@@ -634,7 +634,7 @@ bool CDirectoryProvider::OnContextMenu(const std::shared_ptr<CFileItem>& fileIte
   if (!target.empty())
     fileItem->SetProperty("targetwindow", target);
 
-  return CONTEXTMENU::ShowFor(fileItem);
+  return CONTEXTMENU::ShowFor(fileItem, CContextMenuManager::MAIN);
 }
 
 bool CDirectoryProvider::OnContextMenu(const CGUIListItemPtr& item)
