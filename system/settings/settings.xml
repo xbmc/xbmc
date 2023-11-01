@@ -2453,6 +2453,59 @@
         </setting>
       </group>
     </category>
+    <category id="filecache" label="37101" help="37102">
+      <group id="1" label="16000">
+        <setting id="filecache.buffermode" type="integer" label="37103" help="37104">
+          <level>2</level>
+          <default>4</default>
+          <constraints>
+            <options>filecachebuffermodes</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="filecache.memorysize" type="integer" label="37105" help="37106">
+          <level>2</level>
+          <default>20</default>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="filecache.buffermode" operator="!is">3</condition>
+            </dependency>
+          </dependencies>
+          <constraints>
+            <options>filecachememorysizes</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+        <setting id="filecache.readfactor" type="integer" label="37107" help="37108">
+          <level>2</level>
+          <default>400</default>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="filecache.buffermode" operator="!is">3</condition>
+            </dependency>
+          </dependencies>
+          <constraints>
+            <options>filecachereadfactors</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+      </group>
+      <group id="2" label="37053">
+        <setting id="filecache.chunksize" type="integer" label="37053" help="37109">
+          <level>2</level>
+          <default>131072</default>
+          <dependencies>
+            <dependency type="enable">
+              <condition setting="filecache.buffermode" operator="!is">3</condition>
+            </dependency>
+          </dependencies>
+          <constraints>
+            <options>filecachechunksizes</options>
+          </constraints>
+          <control type="list" format="string" />
+        </setting>
+      </group>
+    </category>
     <category id="weather" label="8" help="36316">
       <group id="1" label="16000">
         <setting id="weather.currentlocation" type="integer" label="0" help="36317">

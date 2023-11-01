@@ -15,6 +15,7 @@
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "cores/VideoSettings.h"
 #include "filesystem/Directory.h"
+#include "filesystem/File.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/StereoscopicsManager.h"
@@ -483,10 +484,14 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
      thumbloader thread accesses the streamed filesystem at the same time as the
      app thread and the latter has to wait for it.
    */
-  if (item.m_bIsFolder &&
-      (item.IsStreamedFilesystem() ||
-       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cacheBufferMode ==
-           CACHE_BUFFER_MODE_ALL))
+
+  const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+
+  const bool cacheAll =
+      settings ? settings->GetInt(CSettings::SETTING_FILECACHE_BUFFERMODE) == CACHE_BUFFER_MODE_ALL
+               : false;
+
+  if (item.m_bIsFolder && (item.IsStreamedFilesystem() || cacheAll))
   {
     CFileItemList items; // Dummy list
     CDirectory::GetDirectory(item.GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
