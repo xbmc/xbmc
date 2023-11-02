@@ -714,7 +714,7 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, const enum A
   else if (avctx->codec_id == AV_CODEC_ID_VP9)
     m_vaapiConfig.maxReferences = 8;
   else if (avctx->codec_id == AV_CODEC_ID_AV1)
-    m_vaapiConfig.maxReferences = 18;
+    m_vaapiConfig.maxReferences = 21;
   else
     m_vaapiConfig.maxReferences = 2;
 
