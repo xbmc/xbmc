@@ -16098,17 +16098,7 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr ""
 
-#. Info dialog after migrating userdata from xbmc to kodi
-#: xbmc/Application.cpp
-msgctxt "#24128"
-msgid "Configuration has been moved"
-msgstr ""
-
-#. Info dialog after migrating userdata from xbmc to kodi
-#: xbmc/Application.cpp
-msgctxt "#24129"
-msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
-msgstr ""
+#empty strings from id 24128 to 24129
 
 #: system/settings/settings.xml
 msgctxt "#24130"
