@@ -89,6 +89,7 @@
 		<value condition="String.IsEmpty(Container.PluginName) + Container.Content(tvshows) + Container.SortMethod(29)">$VAR[WatchedStatusVar]</value>
 		<value condition="String.IsEmpty(Container.PluginName) + String.IsEqual(ListItem.DBType,season) + Container.SortMethod(29)">$VAR[WatchedStatusVar]</value>
 		<value condition="String.IsEmpty(Container.PluginName) + String.IsEqual(ListItem.DBType,set) + Container.SortMethod(1)">$VAR[WatchedStatusVar]</value>
+		<value condition="ListItem.IsFolder + [Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)]">$VAR[WatchedStatusVar]</value>
 		<value condition="Container.SortMethod(7) | Container.SortMethod(29)">$INFO[ListItem.Year]</value>
 		<value condition="!String.isempty(ListItem.Appearances)">$LOCALIZE[38026]: $INFO[ListItem.Appearances]</value>
 		<value condition="Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)">$INFO[ListItem.Duration]</value>
@@ -289,6 +290,7 @@
 	<variable name="WatchedStatusVar">
 		<value condition="String.IsEqual(Listitem.DBType,tvshow) | String.IsEqual(Listitem.DBType,season)">$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</value>
 		<value condition="String.IsEqual(Listitem.DBType,set)">$INFO[ListItem.Property(Watched)]$INFO[ListItem.Property(Total), / ,]</value>
+		<value condition="ListItem.IsFolder + [Window.IsActive(TVRecordings) | Window.IsActive(RadioRecordings)]">$INFO[ListItem.Property(WatchedEpisodes)]$INFO[ListItem.Property(TotalEpisodes), / ,]</value>
 	</variable>
 	<variable name="VideoPlayerForwardRewindVar">
 		<value condition="Player.Forwarding2x | Player.Rewinding2x">2x</value>
