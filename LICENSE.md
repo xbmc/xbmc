@@ -1,6 +1,5 @@
                         GNU General Public License 
                                 Version 2
-                        http://www.apache.org/licenses/
 
 TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
