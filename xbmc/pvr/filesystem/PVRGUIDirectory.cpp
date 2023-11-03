@@ -345,9 +345,6 @@ void GetSubDirectories(const CPVRRecordingsPath& recParentPath,
     {
       item->IncrementProperty("inprogressepisodes", 1);
     }
-    item->SetLabel2(StringUtils::Format("{} / {}", item->GetProperty("watchedepisodes").asString(),
-                                        item->GetProperty("totalepisodes").asString()));
-
     item->IncrementProperty("sizeinbytes", recording->GetSizeInBytes());
   }
 
