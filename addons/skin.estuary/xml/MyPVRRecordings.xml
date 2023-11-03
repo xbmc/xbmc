@@ -28,7 +28,7 @@
 						<param name="info_icon" value="$VAR[ListPVRRecordingsIconVar]" />
 						<param name="has_info_icon" value="true" />
 						<param name="label1" value="$INFO[ListItem.Label]" />
-						<param name="label2" value="$INFO[ListItem.Label2]" />
+						<param name="label2" value="$VAR[ListLabel2Var]" />
 					</include>
 				</control>
 			</control>
