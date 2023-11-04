@@ -2,7 +2,7 @@
 
 \page Game_Control Game Control
 \brief **Used to display the currently playing game, with optional effects,
-whilst in the GUI.**
+while playing a game.**
 
 \tableofcontents
 
@@ -22,7 +22,9 @@ game is being played.
       <posy>60</posy>
       <width>250</width>
       <height>200</height>
-      <visible>true</visible>
+      <videofilter>nearest</videofilter>
+      <stretchmode>normal</stretchmode>
+      <rotation>0</rotation>
 </control>
 ~~~~~~~~~~~~~
 
@@ -30,12 +32,52 @@ game is being played.
 --------------------------------------------------------------------------------
 \section Game_Control_sect2 Available tags
 
-The [default control](http://kodi.wiki/view/Default_Control_Tags) tags are
-applicable to this control.
+In addition to the [Default Control Tags](http://kodi.wiki/view/Default_Control_Tags)
+the following tags are available. Note that each tag is lower case only. This is
+important, as xml tags are case-sensitive.
+
+| Tag           | Description                                                   |
+|--------------:|:--------------------------------------------------------------|
+| videofilter   | The filter to use, see \ref RetroPlayer_VideoFilter "RetroPlayer.VideoFilter" for supported values. If empty, the value of the \ref RetroPlayer_VideoFilter "RetroPlayer.VideoFilter" info label is used.
+| stretchmode   | The stretch mode, see \ref RetroPlayer_StretchMode "RetroPlayer.StretchMode" for supported values. If empty, the value of the \ref RetroPlayer_StretchMode "RetroPlayer.StretchMode" info label is used.
+| rotation      | The rotation, in degrees counter-clockwise, see \ref RetroPlayer_VideoRotation "RetroPlayer.VideoRotation" for supported values. If empty, the value of the \ref RetroPlayer_VideoRotation "RetroPlayer.VideoRotation" info label is used.
+| pixels        | A path to a v20 savestate, whose pixels will be rendered instead of the active game. A value of <b>`-`</b> will disable rendering of any pixels.
+
+@skinning_v20 <b>pixels</b> New tag added for rendering savestate pixels. Requires savestate v3 schema, introduced with the Savestate Manager in v20.
 
 
 --------------------------------------------------------------------------------
-\section Game_Control_sect3 See also
+\section Game_Control_sect3 List item info
+
+List item info can be used for all tag values. For example, if the control defintion looks like:
+
+~~~~~~~~~~~~~
+<itemlayout width="444" height="250">
+      <control type="gamewindow">
+            <videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
+            <stretchmode>$INFO[ListItem.Property(game.stretchmode)]</stretchmode>
+            <rotation>$INFO[ListItem.Property(game.videorotation)]</rotation>
+      </control>
+</itemlayout>
+~~~~~~~~~~~~~
+
+Static list items can be provided. Each gamewindow will inherit the properties:
+
+~~~~~~~~~~~~~
+<content>
+      <item>
+            <property name="game.videofilter">nearest</property>
+            <property name="game.stretchmode">normal</property>
+            <property name="game.videorotation">0</property>
+      </item>
+</content>
+~~~~~~~~~~~~~
+
+The in-game dialogs with a gamewindow control (<b>`GameVideoFilter`</b>, <b>`GameStretchMode`</b>, <b>`GameVideoRotation`</b> and <b>`InGameSaves`</b>) use a similar strategy with list items populated by core.
+
+
+--------------------------------------------------------------------------------
+\section Game_Control_sect4 See also
 
 #### Development:
 
