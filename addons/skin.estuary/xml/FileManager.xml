@@ -77,11 +77,10 @@
 			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
 			<control type="label">
-				<right>730</right>
+				<right>380</right>
 				<width>400</width>
 				<height>48</height>
 				<aligny>center</aligny>
-				<align>right</align>
 				<shadowcolor>text_shadow</shadowcolor>
 				<label>$INFO[Container(21).CurrentItem,, / ]$INFO[Container(21).NumItems]</label>
 			</control>
@@ -97,10 +96,11 @@
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="label">
-				<left>730</left>
+				<left>380</left>
 				<width>400</width>
 				<height>48</height>
 				<aligny>center</aligny>
+				<align>right</align>
 				<shadowcolor>text_shadow</shadowcolor>
 				<label>$INFO[Container(20).CurrentItem,, / ]$INFO[Container(20).NumItems]</label>
 			</control>
