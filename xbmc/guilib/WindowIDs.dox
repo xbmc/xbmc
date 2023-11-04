@@ -112,14 +112,18 @@ This page shows the window names, the window definition, the window ID and the s
 | FullscreenRadioPreview  | WINDOW_FULLSCREEN_RADIO_PREVIEW      | 10803     | None (shortcut to fullscreenradio)  |                                    |
 | FullscreenLivetvInput   | WINDOW_FULLSCREEN_LIVETV_INPUT       | 10804     | None (shortcut to fullscreenlivetv) |                                    |
 | FullscreenRadioInput    | WINDOW_FULLSCREEN_RADIO_INPUT        | 10805     | None (shortcut to fullscreenradio)  |                                    |
-| GameControllers         | WINDOW_DIALOG_GAME_CONTROLLERS       | 10820     | DialogGameControllers.xml           |                                    |
-| Games                   | WINDOW_GAMES                         | 10821     | MyGames.xml                         |                                    |
-| GameOSD                 | WINDOW_DIALOG_GAME_OSD               | 10822     | GameOSD.xml                         |                                    |
-| GameVideoFilter         | WINDOW_DIALOG_GAME_VIDEO_FILTER      | 10823     | DialogSelect.xml                    |                                    |
-| GameStretchMode         | WINDOW_DIALOG_GAME_STRETCH_MODE      | 10824     | DialogSelect.xml                    |                                    |
-| GameVolume              | WINDOW_DIALOG_GAME_VOLUME            | 10825     | DialogVolumeBar.xml                 |                                    |
-| GameAdvancedSettings    | WINDOW_DIALOG_GAME_ADVANCED_SETTINGS | 10826     | DialogAddonSettings.xml             |                                    |
-| GameVideoRotation       | WINDOW_DIALOG_GAME_VIDEO_ROTATION    | 10827     | DialogSelect.xml                    |                                    |
+| GameControllers         | WINDOW_DIALOG_GAME_CONTROLLERS       | 10820     | DialogGameControllers.xml           | @skinning_v17 **New window**       |
+| Games                   | WINDOW_GAMES                         | 10821     | MyGames.xml                         | @skinning_v18 **New window**       |
+| GameOSD                 | WINDOW_DIALOG_GAME_OSD               | 10822     | GameOSD.xml                         | @skinning_v18 **New window**       |
+| GameVideoFilter         | WINDOW_DIALOG_GAME_VIDEO_FILTER      | 10823     | DialogSelect.xml                    | @skinning_v18 **New window**       |
+| GameStretchMode         | WINDOW_DIALOG_GAME_STRETCH_MODE      | 10824     | DialogSelect.xml                    | @skinning_v18 **New window**       |
+| GameVolume              | WINDOW_DIALOG_GAME_VOLUME            | 10825     | DialogSlider.xml                    | @skinning_v18 **New window** See https://github.com/xbmc/xbmc/pull/12765 |
+| GameAdvancedSettings    | WINDOW_DIALOG_GAME_ADVANCED_SETTINGS | 10826     | DialogAddonSettings.xml             | @skinning_v18 **New window**       |
+| GameVideoRotation       | WINDOW_DIALOG_GAME_VIDEO_ROTATION    | 10827     | DialogSelect.xml                    | @skinning_v18 **New window**       |
+| GamePorts               | WINDOW_DIALOG_GAME_PORTS             | 10828     | DialogGameControllers.xml           | @skinning_v20 **New window** See https://github.com/xbmc/xbmc/pull/20505 |
+| InGameSaves             | WINDOW_DIALOG_IN_GAME_SAVES          | 10829     | DialogSelect.xml                    | @skinning_v20 **New window** Part of the GSoC 2020 Saved Game Manager |
+| GameSaves               | WINDOW_DIALOG_GAME_SAVES             | 10830     | DialogSelect.xml                    | @skinning_v20 **New window** Part of the GSoC 2020 Saved Game Manager |
+| GameAgents              | WINDOW_DIALOG_GAME_AGENTS            | 10831     | DialogGameControllers.xml           | @skinning_v21 **New window** See https://github.com/xbmc/xbmc/pull/23548 |
 | Custom Skin Windows     | -                                    | -         | custom*.xml                         |                                    |
 | SelectDialog            | WINDOW_DIALOG_SELECT                 | 12000     | DialogSelect.xml                    |                                    |
 | MusicInformation        | WINDOW_DIALOG_MUSIC_INFO             | 12001     | DialogMusicInfo.xml                 |                                    |
