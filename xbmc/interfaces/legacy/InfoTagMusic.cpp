@@ -179,6 +179,11 @@ namespace XBMCAddon
       return infoTag->GetMusicBrainzAlbumArtistID();
     }
 
+    String InfoTagMusic::getSongVideoURL()
+    {
+      return infoTag->GetSongVideoURL();
+    }
+
     void InfoTagMusic::setDbId(int dbId, const String& type)
     {
       XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
@@ -330,6 +335,12 @@ namespace XBMCAddon
       setCommentRaw(infoTag, comment);
     }
 
+    void InfoTagMusic::setSongVideoURL(const String& songVideoURL)
+    {
+      XBMCAddonUtils::GuiLock lock(languageHook, offscreen);
+      setSongVideoURLRaw(infoTag, songVideoURL);
+    }
+
     void InfoTagMusic::setDbIdRaw(MUSIC_INFO::CMusicInfoTag* infoTag, int dbId, const String& type)
     {
       infoTag->SetDatabaseId(dbId, type);
@@ -462,6 +473,12 @@ namespace XBMCAddon
     void InfoTagMusic::setCommentRaw(MUSIC_INFO::CMusicInfoTag* infoTag, const String& comment)
     {
       infoTag->SetComment(comment);
+    }
+
+    void InfoTagMusic::setSongVideoURLRaw(MUSIC_INFO::CMusicInfoTag* infoTag,
+                                          const String& songVideoURL)
+    {
+      infoTag->SetSongVideoURL(songVideoURL);
     }
   }
 }
