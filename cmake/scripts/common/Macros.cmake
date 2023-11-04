@@ -245,6 +245,8 @@ function(copy_file_to_buildtree file)
                                        COMMAND ${CMAKE_COMMAND} -DBUNDLEDIR=${_bundle_dir}
                                                                 -P ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake)
     set_target_properties(export-files PROPERTIES FOLDER "Build Utilities")
+    # Add comment to ensure ExportFiles.cmake is created even if not used.
+    file(APPEND ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/ExportFiles.cmake "# Export files to build tree\n")
   endif()
 
   if(${CORE_SYSTEM_NAME} MATCHES "windows")
