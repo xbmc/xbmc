@@ -1242,7 +1242,8 @@ void CDVDInputStreamBluray::SetupPlayerSettings()
 
 bool CDVDInputStreamBluray::OpenStream(CFileItem &item)
 {
-  m_pstream = std::make_unique<CDVDInputStreamFile>(item, 0);
+  m_pstream = std::make_unique<CDVDInputStreamFile>(item, READ_TRUNCATED | READ_BITRATE |
+                                                              READ_CHUNKED | READ_NO_CACHE);
 
   if (!m_pstream->Open())
   {
