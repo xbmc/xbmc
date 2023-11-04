@@ -260,26 +260,26 @@
 				<control type="panel">
 					<left>20</left>
 					<top>48</top>
-					<width>1880</width>
+					<width>940</width>
 					<height>180</height>
 					<orientation>horizontal</orientation>
 					<visible>ListItem.IsCollection</visible>
 					<animation effect="fade" time="200">VisibleChange</animation>
-					<focusedlayout height="40" width="628">
+					<focusedlayout height="40" width="470">
 						<control type="label">
 							<textoffsetx>10</textoffsetx>
 							<height>40</height>
-							<width>628</width>
+							<width>460</width>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Title]</label>
 							<shadowcolor>text_shadow</shadowcolor>
 						</control>
 					</focusedlayout>
-					<itemlayout height="40" width="628">
+					<itemlayout height="40" width="470">
 						<control type="label">
 							<textoffsetx>10</textoffsetx>
 							<height>40</height>
-							<width>628</width>
+							<width>460</width>
 							<aligny>center</aligny>
 							<label>$INFO[ListItem.Year,[COLOR button_focus],[/COLOR]  -  ]$INFO[ListItem.Title]</label>
 							<shadowcolor>text_shadow</shadowcolor>
