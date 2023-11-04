@@ -1,14 +1,6 @@
-include ../../Makefile.include
+include ../../Makefile.include OPENSSL-VERSION ../../download-files.include
 PLATFORM=$(NATIVEPLATFORM)
-DEPS = ../../Makefile.include Makefile ../../download-files.include
-
-# lib name, version
-LIBNAME=openssl
-VERSION=1.1.1k
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=73cd042d4056585e5a9dd7ab68e7c7310a3a4c783eafa07ab0b560e7462b924e4376436a6d38a155c687f6942a881cfc0c1b9394afcde1d8c46bf396e7d51121
-include ../../download-files.include
+DEPS = ../../Makefile.include Makefile OPENSSL-VERSION ../../download-files.include
 
 # configuration settings
 CONFIGURE=MACHINE=$(PLATFORM) ./config no-shared zlib no-asm --prefix=$(NATIVEPREFIX) --with-zlib-include=$(NATIVEPREFIX)/include --with-zlib-lib=$(NATIVEPREFIX)/lib
