@@ -1,0 +1,120 @@
+/*!
+
+\page Game_Controller Game Controller
+\brief **Used to display a game controller, with optional effects.**
+
+\tableofcontents
+
+The game controller control is used for displaying a game controller, such as
+joysticks, keyboards, mice, lightguns, etc.
+
+In v21 Omega, the control was expanded to give skinners more control over how
+it behaves, including manually specifying a controller to show, allowing for
+a fallback image, and applying a highlighting diffuse effect when the underlying
+controller is active.
+
+
+--------------------------------------------------------------------------------
+\section Game_Controller_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="gamecontroller">
+      <description>My first game controller</description>
+      <posx>80</posx>
+      <posy>60</posy>
+      <width>250</width>
+      <height>200</height>
+      <controllerid>game.controller.snes</controllerid>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Game_Controller_sect2 Available tags
+
+The [default control](http://kodi.wiki/view/Default_Control_Tags) tags are
+applicable to this control. Note that each tag is lower case only. This is
+important, as xml tags are case-sensitive.
+
+In v21 and above, the control derives from an \ref Image_Control "Image Control"
+to allow for a fallback texture. All tags and attributes for images can be used,
+and any game-specific tags will cause the texture to be overridden.
+
+The game-specific tags added in v21 are:
+
+| Tag                | Description                                                   |
+|-------------------:|:--------------------------------------------------------------|
+| controllerid       | The add-on ID of the controller profile to render, e.g. <b>`game.controller.snes`</b>.
+| controllerdiffuse  | A diffuse color used to highlight the controller when activity is detected on the in-game port or on the underlying peripheral held by the user.
+| controlleraddress  | The in-game "address" of the controller, e.g. <b>`/1/game.controller.snes`</b> for a SNES controller connected to console port 1. Used to highlight the controller on port activity. Overrides <b>`<controllerid>`</b> and <b>`<portaddress>`</b>.
+| portaddress        | The in-game "address" of the port the controller is connected to, e.g. <b>`/1`</b> for port 1 of a SNES emulator. Used to highlight the controller on port activity.
+| peripherallocation | The location of the underlying peripheral providing input, e.g. <b>`/joystick/0`</b> for the first physical controller held by the user. Used to hightlight the controller on peripheral activity.
+
+@skinning_v21 The control has been greatly expanded to allow for more use cases in the new Player Viewer (<b>`GameAgents`</b>) dialog.
+
+
+--------------------------------------------------------------------------------
+\section Game_Controller_sect3 Controller address
+
+The controller address is connected to the in-game input. It's formed by the
+emulated console's port, followed by the controller ID.
+
+For example, on SNES controllers, the address of the first port is <b>`/1`</b>.
+The address of a SNES controller connected to that port is
+<b>`/1/game.controller.snes`</b>.
+
+Old consoles used multitaps (controller hubs) to allow for more players than
+console ports. A multitap connected to port <b>`/2`</b> would have the address
+<b>`/2/game.controller.snes.multitap`</b>.
+
+A SNES controller connected to port 1 on a multitap would then have the address
+<b>`/2/game.controller.snes.multitap/1/game.controller.snes`</b>.
+
+
+--------------------------------------------------------------------------------
+\section Game_Controller_sect4 Peripheral location
+
+Peripherals are located by their driver and peripheral index. For example, the
+first controller connected via the peripheral.joystick add-on (<b>`joystick`</b>
+driver) would be <b>`/joystick/0`</b>.
+
+
+--------------------------------------------------------------------------------
+\section Game_Controller_sect5 List item info
+
+List item info can be used for all tag values. For example, if the control defintion looks like:
+
+~~~~~~~~~~~~~
+<itemlayout width="96" height="96">
+      <control type="gamecontroller">
+            <texture>$INFO[ListItem.Icon]</texture>
+            <controllerid>$INFO[ListItem.Property(controllerid)]</controllerid>
+      </control>
+</itemlayout>
+~~~~~~~~~~~~~
+
+Static list items can be provided and each control will inherit the properties:
+
+~~~~~~~~~~~~~
+<content>
+      <item>
+            <icon>DefaultAddonNone.png</icon>
+      </item>
+      <item>
+            <property name="controllerid">game.controller.snes</property>
+      </item>
+</content>
+~~~~~~~~~~~~~
+
+The in-game dialogs that highlight game controllers on button presses (<b>`GamePorts`</b> and <b>`GameAgents`</b>) use a similar strategy with list items populated by core.
+
+
+--------------------------------------------------------------------------------
+\section Game_Controller_sect6 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/
