@@ -5625,27 +5625,67 @@ msgstr ""
 
 #empty strings from id 10802 to 10819
 
+#. Title of controller configuration window
 msgctxt "#10820"
-msgid "Game video filter"
+msgid "Controller Configuration"
 msgstr ""
 
+#. Title of the "My Games" window
 msgctxt "#10821"
 msgid "Games"
 msgstr ""
 
+#. Title of the in-game OSD menu
 msgctxt "#10822"
-msgid "Game OSD"
+msgid "Menu"
 msgstr ""
 
+#. Title of the in-game video filter selection dialog
 msgctxt "#10823"
-msgid "Game controllers"
+msgid "Video Filter"
 msgstr ""
 
+#. Title of the in-game video stretch mode selection dialog
 msgctxt "#10824"
-msgid "Game video settings"
+msgid "Stretch Mode"
 msgstr ""
 
-#empty strings from id 10825 to 11999
+#. Title of the in-game volume dialog
+msgctxt "#10825"
+msgid "Volume"
+msgstr ""
+
+#. Title of the in-game dialog for advanced emulator settings
+msgctxt "#10826"
+msgid "Advanced Settings"
+msgstr ""
+
+#. Title of the in-game video rotation selection dialog
+msgctxt "#10827"
+msgid "Video Rotation"
+msgstr ""
+
+#. Title of the window for setting up controller ports used by the game
+msgctxt "#10828"
+msgid "Port Setup"
+msgstr ""
+
+#. Title of the in-game dialog to select a savestate for the current game
+msgctxt "#10829"
+msgid "Select Savestate"
+msgstr ""
+
+#. Title of the out-of-game dialog to select a savestate for the current game
+msgctxt "#10830"
+msgid "Select Savestate"
+msgstr ""
+
+#. Name of window for viewing and configuring players while playing a game
+msgctxt "#10831"
+msgid "Players"
+msgstr ""
+
+#empty strings from id 10832 to 11999
 
 #: xbmc/guilib/WindowIDs.h
 msgctxt "#12000"
