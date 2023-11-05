@@ -1,5 +1,8 @@
 include ../../Makefile.include PYTHONMODULE-PIL-VERSION ../../download-files.include
-DEPS= ../../Makefile.include Makefile PYTHONMODULE-PIL-VERSION ../../download-files.include pillow-crosscompile.patch
+DEPS= ../../Makefile.include Makefile PYTHONMODULE-PIL-VERSION ../../download-files.include \
+                            pillow-crosscompile.patch \
+                            10-win-cmake.patch \
+                            11-win-uwp.patch
 
 PILPATH=$(PYTHON_SITE_PKG)
 LDSHARED=$(CC) -shared
@@ -64,6 +67,8 @@ $(PLATFORM): $(DEPS) | $(TARBALLS_LOCATION)/$(ARCHIVE).$(HASH_TYPE)
 	rm -rf $(PLATFORM)/*; mkdir -p $(PLATFORM)
 	cd $(PLATFORM); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(PLATFORM); patch -p1 -i ../pillow-crosscompile.patch
+	cd $(PLATFORM); patch -p1 -i ../10-win-cmake.patch
+	cd $(PLATFORM); patch -p1 -i ../11-win-uwp.patch
 
 $(PILPATHLIB):
 ifeq ($(OS),android)

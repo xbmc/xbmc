@@ -33,11 +33,6 @@ if(KODI_DEPENDSBUILD
    OR CMAKE_SYSTEM_NAME STREQUAL WindowsStore)
   set(Python3_USE_STATIC_LIBS TRUE)
   set(Python3_ROOT_DIR ${libdir})
-
-  if(KODI_DEPENDSBUILD)
-    # Force set to tools/depends python version
-    set(PYTHON_VER 3.11)
-  endif()
 endif()
 
 # Provide root dir to search for Python if provided
@@ -85,6 +80,10 @@ if(Python3_FOUND)
   set(PYTHON_LIBRARIES ${Python3_LIBRARIES})
   set(PYTHON_VERSION "${Python3_VERSION_MAJOR}.${Python3_VERSION_MINOR}" CACHE INTERNAL "" FORCE)
   set(PYTHON_LDFLAGS ${Python3_LINK_OPTIONS})
+
+  if(KODI_DEPENDSBUILD OR WIN32)
+    find_package(Pythonmodule-PIL)
+  endif()
 endif()
 
 mark_as_advanced(PYTHON_EXECUTABLE PYTHON_VERSION PYTHON_INCLUDE_DIRS PYTHON_LDFLAGS LZMA_LIBRARY FFI_LIBRARY EXPAT_LIBRARY INTL_LIBRARY GMP_LIBRARY)
