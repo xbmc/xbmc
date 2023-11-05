@@ -492,6 +492,16 @@ add_custom_target(generate-packaging ALL
 # We may need to export some shared libs/data (eg Python)
 add_dependencies(export-files ${GLOBAL_TARGET_DEPS})
 
+# Python binary modules are special in the fact we only need them ready for packaging, and we dont
+# want core to depend on them in any way. This allows us to keep them separate, yet still have
+# a dependency to make sure they are built before export-files
+if(TARGET python-binarymodules)
+  add_dependencies(export-files python-binarymodules)
+  if(_multiconfig_generator)
+    add_dependencies(build_internal_depends python-binarymodules)
+  endif()
+endif()
+
 # Add to lib${APP_NAME_LC} solely for Win UWP. msix building doesnt seem to pick up the
 # generated buildtree if we do it later. Other platforms dont care when this happens.
 add_dependencies(lib${APP_NAME_LC} generate-packaging)

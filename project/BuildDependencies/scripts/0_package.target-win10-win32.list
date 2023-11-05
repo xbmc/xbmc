@@ -20,6 +20,7 @@ libbluray-1.3.4-win10-win32-v142-20230728.7z
 libcdio-2.1.0-win10-win32-v141-20200112.7z
 libfribidi-1.0.8-win10-win32-v141-20200105.7z
 libiconv-1.16-win10-win32-v141-20200105.7z
+libjpeg-turbo-2.0.3-win10-win32-v141-20200105.7z
 libmicrohttpd-0.9.69-win10-win32-v141-20200105.7z
 libudfread-1.1.0-win10-win32-v142-20200706.7z
 libxml2-2.9.9-win10-win32-v141-20200105.7z
@@ -29,7 +30,6 @@ mariadb-connector-c-3.1.6-win10-win32-v141-20200105.7z
 miniwdk-10.0.17763-20200106.7z
 nghttp2-1.40.0-win10-win32-v141-20200105.7z
 openssl-1.1.1q-win10-win32-v142-20221017.7z
-pillow-6.2.1-win10-win32-v142-20200803.7z
 pycryptodome-3.9.4-win10-win32-v142-20200803.7z
 python-3.8.15-win10-win32-v142-20221017.7z
 sqlite-3300100-win10-win32-v141-20200105.7z

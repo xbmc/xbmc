@@ -165,6 +165,10 @@ find_program(LIBTOOLIZE libtoolize HINTS "${NATIVEPREFIX}/bin" REQUIRED)
 set(ENV{ACLOCAL_PATH} "${DEPENDS_PATH}/share/aclocal:${NATIVEPREFIX}/share/aclocal")
 set(ENVPATH "${NATIVEPREFIX}/bin:$ENV{PATH}")
 
+# Force set to tools/depends python version
+set(PYTHON_VER 3.11)
+set(PYTHON_SITE_PKG "@prefix@/@deps_dir@/lib/python${PYTHON_VER}/site-packages")
+
 # Dependency build tool config files
 find_file(MESON-CROSS "cross-file.meson" PATHS "${DEPENDS_PATH}/share" NO_CMAKE_FIND_ROOT_PATH REQUIRED)
 # autoconf config.site
