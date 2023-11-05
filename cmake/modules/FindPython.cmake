@@ -83,6 +83,7 @@ if(Python3_FOUND)
 
   if(KODI_DEPENDSBUILD OR WIN32)
     find_package(Pythonmodule-PIL)
+    find_package(Pythonmodule-Pycryptodome)
   endif()
 endif()
 

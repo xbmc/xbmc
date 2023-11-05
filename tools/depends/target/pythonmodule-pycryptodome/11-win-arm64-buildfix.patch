@@ -1,0 +1,22 @@
+--- a/src/multiply.h
++++ b/src/multiply.h
+@@ -15,7 +15,7 @@
+     oh = (uint64_t)(pr >> 64);  \
+     } while (0)
+ 
+-#elif defined(_MSC_VER) && defined(_WIN64)
++#elif defined(_MSC_VER) && defined(_WIN64) && defined(_M_X64)
+ 
+ #include <windows.h>
+ #define DP_MULT(a,b,ol,oh) do { ol = UnsignedMultiply128(a,b,&oh); } while (0)
+--- a/src/multiply_64.c
++++ b/src/multiply_64.c
+@@ -38,7 +38,7 @@
+ /**
+  * Add a 64-bit value x to y/sum_mid/sum_hi
+  */
+-#if defined(_WIN64) && (_MSC_VER>=1900)
++#if defined(_WIN64) && (_MSC_VER>=1900) && defined(_M_X64)
+ 
+ #include <intrin.h>
+ #define ADD192(y, x) do {           \

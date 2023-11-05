@@ -40,7 +40,6 @@ DEPENDS = \
   nghttp2 \
   openssl \
   python3 \
-  pythonmodule-pycryptodome \
   pythonmodule-setuptools \
   sqlite3 \
   tinyxml \
