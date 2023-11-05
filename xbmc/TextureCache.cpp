@@ -87,6 +87,9 @@ std::string CTextureCache::GetCachedImage(const std::string &image, CTextureDeta
   // lookup the item in the database
   if (GetCachedTexture(url, details))
   {
+    if (details.file.empty())
+      return {};
+
     if (trackUsage)
       IncrementUseCount(details);
     return GetCachedPath(details.file);
@@ -296,7 +299,7 @@ void CTextureCache::OnCachingComplete(bool success, CTextureCacheJob *job)
 {
   if (success)
   {
-    if (job->m_details.id != -1 && job->m_oldHash == job->m_details.hash)
+    if (job->m_details.hashRevalidated)
       SetCachedTextureValid(job->m_url, job->m_details.updateable);
     else
       AddCachedTexture(job->m_url, job->m_details);
