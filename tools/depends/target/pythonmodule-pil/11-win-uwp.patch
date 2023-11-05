@@ -1,0 +1,219 @@
+--- a/src/display.c
++++ b/src/display.c
+@@ -160,6 +160,9 @@
+ 
+ static PyObject *
+ _getdc(ImagingDisplayObject *display, PyObject *args) {
++#ifdef UWP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     HWND window;
+     HDC dc;
+ 
+@@ -174,10 +177,14 @@
+     }
+ 
+     return Py_BuildValue(F_HANDLE, dc);
++#endif
+ }
+ 
+ static PyObject *
+ _releasedc(ImagingDisplayObject *display, PyObject *args) {
++#ifdef UWP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     HWND window;
+     HDC dc;
+ 
+@@ -188,6 +195,7 @@
+     ReleaseDC(window, dc);
+ 
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ static PyObject *
+@@ -291,6 +299,9 @@
+ 
+ PyObject *
+ PyImaging_GrabScreenWin32(PyObject *self, PyObject *args) {
++#ifdef UWP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     int x = 0, y = 0, width = -1, height;
+     int includeLayeredWindows = 0, screens = 0;
+     HBITMAP bitmap;
+@@ -431,6 +442,7 @@
+     }
+ 
+     return NULL;
++#endif
+ }
+ 
+ /* -------------------------------------------------------------------- */
+@@ -438,6 +450,9 @@
+ 
+ PyObject *
+ PyImaging_GrabClipboardWin32(PyObject *self, PyObject *args) {
++#ifdef UWP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     HANDLE handle = NULL;
+     int size;
+     void *data;
+@@ -483,11 +498,13 @@
+     CloseClipboard();
+ 
+     return Py_BuildValue("zN", format_names[format], result);
++#endif
+ }
+ 
+ /* -------------------------------------------------------------------- */
+ /* Windows class */
+ 
++#ifndef UWP
+ #ifndef WM_MOUSEWHEEL
+ #define WM_MOUSEWHEEL 522
+ #endif
+@@ -637,10 +654,14 @@
+     }
+ 
+     return status;
++#endif
+ }
+ 
+ PyObject *
+ PyImaging_CreateWindowWin32(PyObject *self, PyObject *args) {
++#ifdef UWP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     HWND wnd;
+     WNDCLASS windowClass;
+ 
+@@ -667,7 +688,7 @@
+     windowClass.hbrBackground = NULL;
+     windowClass.lpszMenuName = NULL;
+     windowClass.lpszClassName = "pilWindow";
+-    windowClass.lpfnWndProc = windowCallback;
++    //windowClass.lpfnWndProc = windowCallback;
+     windowClass.hIcon = LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(1));
+     windowClass.hCursor = LoadCursor(NULL, IDC_ARROW); /* CROSS? */
+ 
+@@ -704,6 +725,7 @@
+     Py_END_ALLOW_THREADS;
+ 
+     return Py_BuildValue(F_HANDLE, wnd);
++#endif
+ }
+ 
+ PyObject *
+@@ -735,6 +757,9 @@
+ 
+ PyObject *
+ PyImaging_DrawWmf(PyObject *self, PyObject *args) {
++#ifdef UWP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     HBITMAP bitmap;
+     HENHMETAFILE meta;
+     BITMAPCOREHEADER core;
+@@ -831,6 +856,7 @@
+     DeleteDC(dc);
+ 
+     return buffer;
++#endif
+ }
+ 
+ #endif /* _WIN32 */
+--- a/src/libImaging/Dib.c
++++ b/src/libImaging/Dib.c
+@@ -27,6 +27,9 @@
+ 
+ char *
+ ImagingGetModeDIB(int size_out[2]) {
++#ifdef UWP
++    return "RGB";
++#else
+     /* Get device characteristics */
+ 
+     HDC dc;
+@@ -50,10 +53,15 @@
+     DeleteDC(dc);
+ 
+     return mode;
++#endif
+ }
+ 
+ ImagingDIB
+ ImagingNewDIB(const char *mode, int xsize, int ysize) {
++#ifdef UWP
++    Py_INCREF(Py_NotImplemented);
++    return (ImagingDIB)Py_NotImplemented;
++#else
+     /* Create a Windows bitmap */
+ 
+     ImagingDIB dib;
+@@ -205,6 +213,7 @@
+     }
+ 
+     return dib;
++#endif
+ }
+ 
+ void
+@@ -226,16 +235,19 @@
+ 
+ void
+ ImagingExposeDIB(ImagingDIB dib, void *dc) {
++#ifndef UWP
+     /* Copy bitmap to display */
+ 
+     if (dib->palette != 0) {
+         SelectPalette((HDC)dc, dib->palette, FALSE);
+     }
+     BitBlt((HDC)dc, 0, 0, dib->xsize, dib->ysize, dib->dc, 0, 0, SRCCOPY);
++#endif
+ }
+ 
+ void
+ ImagingDrawDIB(ImagingDIB dib, void *dc, int dst[4], int src[4]) {
++#ifndef UWP
+     /* Copy bitmap to printer/display */
+ 
+     if (GetDeviceCaps((HDC)dc, RASTERCAPS) & RC_STRETCHDIB) {
+@@ -274,10 +286,14 @@
+             SRCCOPY
+         );
+     }
++#endif
+ }
+ 
+ int
+ ImagingQueryPaletteDIB(ImagingDIB dib, void *dc) {
++#ifdef UWP
++    return 0;
++#else
+     /* Install bitmap palette */
+ 
+     int n;
+@@ -295,10 +311,12 @@
+     }
+ 
+     return n; /* number of colours that was changed */
++#endif
+ }
+ 
+ void
+ ImagingDeleteDIB(ImagingDIB dib) {
++#ifndef UWP
+     /* Clean up */
+ 
+     if (dib->palette) {
+@@ -312,6 +330,7 @@
+         DeleteDC(dib->dc);
+     }
+     free(dib->info);
++#endif
+ }
+ 
+ #endif /* _WIN32 */
