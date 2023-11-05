@@ -1389,7 +1389,6 @@ void DX::DeviceResources::ApplyDisplaySettings()
 {
   CLog::LogF(LOGDEBUG, "Re-create swapchain due Display Settings changed");
 
-  DestroySwapChain();
   CreateWindowSizeDependentResources();
 }
 
