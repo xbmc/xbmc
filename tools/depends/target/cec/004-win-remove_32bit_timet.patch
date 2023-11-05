@@ -1,0 +1,10 @@
+--- a/src/libcec/cmake/CheckPlatformSupport.cmake
++++ b/src/libcec/cmake/CheckPlatformSupport.cmake
+@@ -49,7 +49,6 @@
+ 
+   if("${MSVC_C_ARCHITECTURE_ID}" STREQUAL "X86")
+     set(LIB_INFO "${LIB_INFO} (x86)")
+-    add_definitions(-D_USE_32BIT_TIME_T)
+     # force python2 for eventghost
+     set(PYTHON_USE_VERSION 2)
+   elseif("${MSVC_C_ARCHITECTURE_ID}" STREQUAL "x64")

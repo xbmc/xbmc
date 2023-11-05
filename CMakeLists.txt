@@ -24,7 +24,11 @@ endif()
 # Variable to indicate if the project is targeting a Multi Config Generator (VS/Xcode primarily)
 get_property(_multiconfig_generator GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(_multiconfig_generator)
+  # Target to encompass an optional way to build all internal dependencies
+  # Must set EXCLUDE_FROM_ALL property so the ALL target doesnt include this, and therefore
+  # build all internal dependencies
   add_custom_target(build_internal_depends)
+  set_target_properties(build_internal_depends PROPERTIES EXCLUDE_FROM_ALL TRUE)
 endif()
 
 # Set CORE_BUILD_DIR
@@ -78,6 +82,7 @@ option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 
 # These are built for all platforms not using system libs or disabled by user
+dependent_option(ENABLE_INTERNAL_CEC "Enable internal libcec?")
 dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?")
 dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?")
 dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
@@ -220,7 +225,7 @@ set(optional_deps Alsa
                   Bluetooth
                   Bluray
                   CAP
-                  CEC
+                  CEC>=4.0.0
                   Dav1d
                   DBus
                   Iso9660pp
@@ -239,6 +244,11 @@ set(optional_deps Alsa
                   Udfread
                   XSLT
                   ${PLATFORM_OPTIONAL_DEPS})
+
+# Remove excluded platform specific optional_deps
+foreach(excludedep ${PLATFORM_OPTIONAL_DEPS_EXCLUDE})
+  list(FILTER optional_deps EXCLUDE REGEX ${excludedep})
+endforeach()
 
 # Check optional deps first, since their availability can influence required ones, e.g. ffmpeg
 core_optional_dep(${optional_deps})
