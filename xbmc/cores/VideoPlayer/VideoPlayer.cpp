@@ -3181,7 +3181,7 @@ void CVideoPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
   {
     if (!bPlus)
     {
-      SeekChapter(GetChapter() - 1);
+      SeekChapter(GetPreviousChapter());
       return;
     }
     else if (GetChapter() < GetChapterCount())
@@ -4386,7 +4386,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
         THREAD_ACTION(action);
         CLog::Log(LOGDEBUG, " - pushed prev in menu, stream will decide");
         if (pMenus->CanSeek() && GetChapterCount() > 0 && GetChapter() > 0)
-          m_messenger.Put(std::make_shared<CDVDMsgPlayerSeekChapter>(GetChapter() - 1));
+          m_messenger.Put(std::make_shared<CDVDMsgPlayerSeekChapter>(GetPreviousChapter()));
         else
           pMenus->OnPrevious();
 
@@ -4513,7 +4513,7 @@ bool CVideoPlayer::OnAction(const CAction &action)
     case ACTION_PREV_ITEM:
       if (GetChapter() > 0)
       {
-        m_messenger.Put(std::make_shared<CDVDMsgPlayerSeekChapter>(GetChapter() - 1));
+        m_messenger.Put(std::make_shared<CDVDMsgPlayerSeekChapter>(GetPreviousChapter()));
         m_processInfo->SeekFinished(0);
         return true;
       }
@@ -4629,6 +4629,18 @@ int64_t CVideoPlayer::GetChapterPos(int chapterIdx) const
     return m_State.chapters[chapterIdx - 1].second;
 
   return -1;
+}
+
+int CVideoPlayer::GetPreviousChapter()
+{
+  // 5-second grace period from chapter start to skip backwards to previous chapter
+  // Afterwards skip to start of current chapter.
+  const int chapter = GetChapter();
+
+  if (chapter > 0 && (GetTime() < (GetChapterPos(chapter) + 5) * 1000))
+    return chapter - 1;
+  else
+    return chapter;
 }
 
 void CVideoPlayer::AddSubtitle(const std::string& strSubPath)
