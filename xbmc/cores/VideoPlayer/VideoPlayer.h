@@ -469,6 +469,7 @@ protected:
   void UpdateContentState();
 
   void UpdateFileItemStreamDetails(CFileItem& item);
+  int GetPreviousChapter();
 
   bool m_players_created;
 
