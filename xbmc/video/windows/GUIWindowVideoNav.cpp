@@ -27,7 +27,6 @@
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
 #include "profiles/ProfileManager.h"
-#include "pvr/recordings/PVRRecording.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/MediaSourceSettings.h"
