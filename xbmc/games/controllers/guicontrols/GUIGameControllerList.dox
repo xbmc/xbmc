@@ -1,0 +1,77 @@
+/*!
+
+\page Game_Controller_List Game Controller List
+\brief **Used to display a list of game controllers, allowing for special effects such as controller highlighting and port selection.**
+
+\tableofcontents
+
+The game controller list is used for displaying a list of game controllers.
+It is provided as a container to allow for special behavior of the inner game
+controllers, such as visualizing the current in-game port for each controller
+in the <b>`GameAgents`</b> dialog.
+
+The control was introduced in v21 to support the new Player Viewer (<b>`GameAgents`</b>) dialog.
+
+
+--------------------------------------------------------------------------------
+\section Game_Controller_List_sect1 Example
+
+~~~~~~~~~~~~~
+<control type="gamecontrollerlist">
+      <description>My first game controller list, showing two items: A "controller disconnected" icon and a SNES controller</description>
+      <width>192</width>
+      <height>96</height>
+      <orientation>horizontal</orientation>
+      <align>left</align>
+      <itemlayout width="96" height="96">
+            <control type="gamecontroller">
+                  <texture>$INFO[ListItem.Icon]</texture>
+                  <controllerid>$INFO[ListItem.Property(controllerid)]</controllerid>
+            </control>
+      </itemlayout>
+      <focusedlayout width="96" height="96">
+            <control type="gamecontroller">
+                  <texture>$INFO[ListItem.Icon]</texture>
+                  <controllerid>$INFO[ListItem.Property(controllerid)]</controllerid>
+            </control>
+      </focusedlayout>
+      <content>
+            <item>
+                  <icon>DefaultAddonNone.png</icon>
+            </item>
+            <item>
+                  <property name="controllerid">game.controller.snes</property>
+            </item>
+      </content>
+</control>
+~~~~~~~~~~~~~
+
+
+--------------------------------------------------------------------------------
+\section Game_Controller_sect2 Available tags
+
+The [default control](http://kodi.wiki/view/Default_Control_Tags) tags are
+applicable to this control. Note that each tag is lower case only. This is
+important, as xml tags are case-sensitive.
+
+The game controller list derives from a \ref List_Container "List Container", so
+all list tags and attributes can be used.
+
+In addition, the following game-related tags are available:
+
+| Tag               | Description                                                   |
+|------------------:|:--------------------------------------------------------------|
+| align             | Align controllers to the <b>`left`</b> or <b>`right`</b>, depending on how many in-game ports are available. Only used in-game for list item content provided by core, such as in the Player Viewer (<b>`GameAgents`</b>) dialog. Ignored if static content is provided.
+
+@skinning_v21 Game Controller List was added.
+
+
+--------------------------------------------------------------------------------
+\section Game_Controller_List_sect3 See also
+
+#### Development:
+
+- [Add-on development](http://kodi.wiki/view/Add-on_development)
+- [Skinning](http://kodi.wiki/view/Skinning)
+
+*/

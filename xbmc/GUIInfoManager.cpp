@@ -3996,8 +3996,8 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 ///                  _string_,
 ///     @return The video filter of the currently-playing game.
 ///     The following values are possible:
-///       - nearest (Nearest neighbor\, i.e. pixelate)
-///       - linear (Bilinear filtering\, i.e. smooth blur)
+///       - <b>`nearest`</b> (Nearest neighbor\, i.e. pixelate)
+///       - <b>`linear`</b> (Bilinear filtering\, i.e. smooth blur)
 ///     <p><hr>
 ///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_VideoFilter `RetroPlayer.VideoFilter`\endlink
 ///     <p>
@@ -4007,10 +4007,10 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 ///                  _string_,
 ///     @return The stretch mode of the currently-playing game.
 ///     The following values are possible:
-///       - normal (Show the game normally)
-///       - 4:3 (Stretch to a 4:3 aspect ratio)
-///       - fullscreen (Stretch to the full viewing area)
-///       - original (Shrink to the original resolution)
+///       - <b>`normal`</b> (Show the game normally)
+///       - <b>`4:3`</b> (Stretch to a 4:3 aspect ratio)
+///       - <b>`fullscreen`</b> (Stretch to the full viewing area)
+///       - <b>`original`</b> (Shrink to the original resolution)
 ///     <p><hr>
 ///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_StretchMode `RetroPlayer.StretchMode`\endlink
 ///     <p>
@@ -4021,10 +4021,10 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
 ///     @return The video rotation of the currently-playing game
 ///     in degrees counter-clockwise.
 ///     The following values are possible:
-///       - 0
-///       - 90 (Shown in the GUI as 270 degrees)
-///       - 180
-///       - 270 (Shown in the GUI as 90 degrees)
+///       - <b>`0`</b>
+///       - <b>`90`</b> (Shown in the GUI as 270 degrees)
+///       - <b>`180`</b>
+///       - <b>`270`</b> (Shown in the GUI as 90 degrees)
 ///     <p><hr>
 ///     @skinning_v18 **[New Infolabel]** \link RetroPlayer_VideoRotation `RetroPlayer.VideoRotation`\endlink
 ///     <p>
