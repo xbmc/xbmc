@@ -1,0 +1,752 @@
+--- a/PC/_msi.c
++++ b/PC/_msi.c
+@@ -7,6 +7,7 @@
+ #include <fci.h>
+ #include <fcntl.h>
+ #include <windows.h>
++#include <wtypes.h>
+ #include <msi.h>
+ #include <msiquery.h>
+ #include <msidefs.h>
+--- a/PC/config.c
++++ b/PC/config.c
+@@ -46,7 +46,9 @@
+ extern PyObject* PyInit_mmap(void);
+ extern PyObject* PyInit__csv(void);
+ extern PyObject* PyInit__sre(void);
++#ifdef MS_DESKTOP
+ extern PyObject* PyInit_winreg(void);
++#endif
+ extern PyObject* PyInit__struct(void);
+ extern PyObject* PyInit__datetime(void);
+ extern PyObject* PyInit__functools(void);
+@@ -126,7 +128,9 @@
+     {"mmap", PyInit_mmap},
+     {"_csv", PyInit__csv},
+     {"_sre", PyInit__sre},
++#ifdef MS_DESKTOP
+     {"winreg", PyInit_winreg},
++#endif
+     {"_struct", PyInit__struct},
+     {"_datetime", PyInit__datetime},
+     {"_functools", PyInit__functools},
+--- a/PC/msvcrtmodule.c
++++ b/PC/msvcrtmodule.c
+@@ -218,7 +218,11 @@
+ msvcrt_kbhit_impl(PyObject *module)
+ /*[clinic end generated code: output=940dfce6587c1890 input=e70d678a5c2f6acc]*/
+ {
++#ifdef MS_APP
++  return 0;
++#else
+     return _kbhit();
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -237,12 +241,16 @@
+ msvcrt_getch_impl(PyObject *module)
+ /*[clinic end generated code: output=a4e51f0565064a7d input=37a40cf0ed0d1153]*/
+ {
++#ifdef MS_APP
++  return 0;
++#else
+     int ch;
+ 
+     Py_BEGIN_ALLOW_THREADS
+     ch = _getch();
+     Py_END_ALLOW_THREADS
+     return ch;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -255,12 +263,16 @@
+ msvcrt_getwch_impl(PyObject *module)
+ /*[clinic end generated code: output=be9937494e22f007 input=27b3dec8ad823d7c]*/
+ {
++#ifdef MS_APP
++  return 0;
++#else
+     wchar_t ch;
+ 
+     Py_BEGIN_ALLOW_THREADS
+     ch = _getwch();
+     Py_END_ALLOW_THREADS
+     return ch;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -273,12 +285,16 @@
+ msvcrt_getche_impl(PyObject *module)
+ /*[clinic end generated code: output=d8f7db4fd2990401 input=43311ade9ed4a9c0]*/
+ {
++#ifdef MS_APP
++  return 0;
++#else
+     int ch;
+ 
+     Py_BEGIN_ALLOW_THREADS
+     ch = _getche();
+     Py_END_ALLOW_THREADS
+     return ch;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -291,12 +307,16 @@
+ msvcrt_getwche_impl(PyObject *module)
+ /*[clinic end generated code: output=d0dae5ba3829d596 input=49337d59d1a591f8]*/
+ {
++#ifdef MS_APP
++  return 0;
++#else
+     wchar_t ch;
+ 
+     Py_BEGIN_ALLOW_THREADS
+     ch = _getwche();
+     Py_END_ALLOW_THREADS
+     return ch;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -312,10 +332,14 @@
+ msvcrt_putch_impl(PyObject *module, char char_value)
+ /*[clinic end generated code: output=92ec9b81012d8f60 input=ec078dd10cb054d6]*/
+ {
++#ifdef MS_APP
++  Py_RETURN_NOTIMPLEMENTED;
++#else
+     _Py_BEGIN_SUPPRESS_IPH
+     _putch(char_value);
+     _Py_END_SUPPRESS_IPH
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -331,10 +355,14 @@
+ msvcrt_putwch_impl(PyObject *module, int unicode_char)
+ /*[clinic end generated code: output=a3bd1a8951d28eee input=996ccd0bbcbac4c3]*/
+ {
++#ifdef MS_APP
++  Py_RETURN_NOTIMPLEMENTED;
++#else
+     _Py_BEGIN_SUPPRESS_IPH
+     _putwch(unicode_char);
+     _Py_END_SUPPRESS_IPH
+     Py_RETURN_NONE;
++#endif
+ 
+ }
+ 
+@@ -355,6 +383,9 @@
+ msvcrt_ungetch_impl(PyObject *module, char char_value)
+ /*[clinic end generated code: output=c6942a0efa119000 input=22f07ee9001bbf0f]*/
+ {
++#ifdef MS_APP
++  Py_RETURN_NOTIMPLEMENTED;
++#else
+     int res;
+ 
+     _Py_BEGIN_SUPPRESS_IPH
+@@ -364,6 +395,7 @@
+     if (res == EOF)
+         return PyErr_SetFromErrno(PyExc_OSError);
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -379,6 +411,9 @@
+ msvcrt_ungetwch_impl(PyObject *module, int unicode_char)
+ /*[clinic end generated code: output=e63af05438b8ba3d input=83ec0492be04d564]*/
+ {
++#ifdef MS_APP
++  Py_RETURN_NOTIMPLEMENTED;
++#else
+     int res;
+ 
+     _Py_BEGIN_SUPPRESS_IPH
+@@ -388,6 +423,7 @@
+     if (res == WEOF)
+         return PyErr_SetFromErrno(PyExc_OSError);
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ #ifdef _DEBUG
+@@ -477,6 +513,9 @@
+ msvcrt_GetErrorMode_impl(PyObject *module)
+ /*[clinic end generated code: output=3103fc6145913591 input=5a7fb083b6dd71fd]*/
+ {
++#ifdef MS_APP
++  return 0;
++#else
+     unsigned int res;
+ 
+     _Py_BEGIN_SUPPRESS_IPH
+@@ -484,6 +523,7 @@
+     _Py_END_SUPPRESS_IPH
+ 
+     return PyLong_FromUnsignedLong(res);
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -593,10 +633,12 @@
+     insertint(d, "LK_NBRLCK", _LK_NBRLCK);
+     insertint(d, "LK_RLCK", _LK_RLCK);
+     insertint(d, "LK_UNLCK", _LK_UNLCK);
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP | WINAPI_PARTITION_SYSTEM)
+     insertint(d, "SEM_FAILCRITICALERRORS", SEM_FAILCRITICALERRORS);
+     insertint(d, "SEM_NOALIGNMENTFAULTEXCEPT", SEM_NOALIGNMENTFAULTEXCEPT);
+     insertint(d, "SEM_NOGPFAULTERRORBOX", SEM_NOGPFAULTERRORBOX);
+     insertint(d, "SEM_NOOPENFILEERRORBOX", SEM_NOOPENFILEERRORBOX);
++#endif
+ #ifdef _DEBUG
+     insertint(d, "CRT_WARN", _CRT_WARN);
+     insertint(d, "CRT_ERROR", _CRT_ERROR);
+--- a/PC/pyconfig.h
++++ b/PC/pyconfig.h
+@@ -57,6 +57,10 @@
+ #define HAVE_STRERROR
+ 
+ #include <io.h>
++#ifndef WIN32_LEAN_AND_MEAN
++#define WIN32_LEAN_AND_MEAN
++#endif
++#include <winapifamily.h>
+ 
+ #define HAVE_STRFTIME
+ #define DONT_HAVE_SIG_ALARM
+@@ -142,8 +156,10 @@
+ 
+ /* set the version macros for the windows headers */
+ /* Python 3.9+ requires Windows 8 or greater */
++#ifdef MS_DESKTOP
+ #define Py_WINVER 0x0602 /* _WIN32_WINNT_WIN8 */
+ #define Py_NTDDI NTDDI_WIN8
++#endif
+ 
+ /* We only set these values when building Python - we don't want to force
+    these values on extensions, as that will affect the prototypes and
+@@ -267,7 +286,7 @@
+ #define HAVE_DECLSPEC_DLL
+ 
+ /* For an MSVC DLL, we can nominate the .lib files used by extensions */
+-#ifdef MS_COREDLL
++#if 0
+ #       if !defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_BUILTIN)
+                 /* not building the core - must be an ext */
+ #               if defined(_MSC_VER)
+@@ -320,11 +339,6 @@
+ #       endif
+ #endif
+ 
+-#ifdef _DEBUG
+-#       define Py_DEBUG
+-#endif
+-
+-
+ #ifdef MS_WIN32
+ 
+ #define SIZEOF_SHORT 2
+--- /dev/null
++++ b/PC/uwp_compat.cpp
+@@ -0,0 +1,25 @@
++#include <Python.h>
++#include <windows.h>
++
++#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_APP | WINAPI_PARTITION_SYSTEM)
++#include <windows.security.cryptography.h>
++using namespace Windows::Security::Cryptography;
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++int
++uwp_urandom(unsigned char* buffer, Py_ssize_t size, int raise) {
++	auto s = static_cast<unsigned int>(size);
++	auto buf = ref new Platform::Array<unsigned char>(buffer, s);
++	auto cryptoBuffer = CryptographicBuffer::GenerateRandom(s);
++	CryptographicBuffer::CopyToByteArray(cryptoBuffer, &buf);
++	return 0;
++}
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
++
+--- a/PC/winreg.c
++++ b/PC/winreg.c
+@@ -138,6 +138,7 @@
+ static void
+ PyHKEY_deallocFunc(PyObject *ob)
+ {
++#ifdef MS_DESKTOP
+     /* Can not call PyHKEY_Close, as the ob->tp_type
+        has already been cleared, thus causing the type
+        check to fail!
+@@ -146,6 +147,7 @@
+     if (obkey->hkey)
+         RegCloseKey((HKEY)obkey->hkey);
+     PyObject_Free(ob);
++#endif
+ }
+ 
+ static int
+@@ -400,6 +402,9 @@
+ BOOL
+ PyHKEY_Close(PyObject *ob_handle)
+ {
++#ifdef MS_APP
++    return FALSE;
++#else
+     LONG rc;
+     HKEY key;
+ 
+@@ -413,6 +418,7 @@
+     if (rc != ERROR_SUCCESS)
+         PyErr_SetFromWindowsErrWithFunction(rc, "RegCloseKey");
+     return rc == ERROR_SUCCESS;
++#endif
+ }
+ 
+ BOOL
+@@ -475,6 +481,9 @@
+ BOOL
+ PyWinObject_CloseHKEY(PyObject *obHandle)
+ {
++#ifdef MS_APP
++  return TRUE;
++#else
+     BOOL ok;
+     if (PyHKEY_Check(obHandle)) {
+         ok = PyHKEY_Close(obHandle);
+@@ -501,6 +510,7 @@
+         return FALSE;
+     }
+     return ok;
++#endif
+ }
+ 
+ 
+@@ -826,9 +836,13 @@
+ winreg_CloseKey(PyObject *module, PyObject *hkey)
+ /*[clinic end generated code: output=a4fa537019a80d15 input=5b1aac65ba5127ad]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     if (!PyHKEY_Close(hkey))
+         return NULL;
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -852,6 +866,9 @@
+                             const Py_UNICODE *computer_name, HKEY key)
+ /*[clinic end generated code: output=cd4f70fb9ec901fb input=5f98a891a347e68e]*/
+ {
++#ifdef MS_APP
++    return NULL;
++#else
+     HKEY retKey;
+     long rc;
+     if (PySys_Audit("winreg.ConnectRegistry", "un",
+@@ -866,6 +883,7 @@
+         return NULL;
+     }
+     return retKey;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -892,6 +910,9 @@
+ winreg_CreateKey_impl(PyObject *module, HKEY key, const Py_UNICODE *sub_key)
+ /*[clinic end generated code: output=2af13910d56eae26 input=3cdd1622488acea2]*/
+ {
++#ifdef MS_APP
++    return NULL;
++#else
+     HKEY retKey;
+     long rc;
+ 
+@@ -910,6 +931,7 @@
+         return NULL;
+     }
+     return retKey;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -942,6 +964,9 @@
+                         REGSAM access)
+ /*[clinic end generated code: output=643a70ad6a361a97 input=42c2b03f98406b66]*/
+ {
++#ifdef MS_APP
++    return NULL;
++#else
+     HKEY retKey;
+     long rc;
+ 
+@@ -961,6 +986,7 @@
+         return NULL;
+     }
+     return retKey;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -985,6 +1011,9 @@
+ winreg_DeleteKey_impl(PyObject *module, HKEY key, const Py_UNICODE *sub_key)
+ /*[clinic end generated code: output=d2652a84f70e0862 input=b31d225b935e4211]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     long rc;
+     if (PySys_Audit("winreg.DeleteKey", "nun",
+                     (Py_ssize_t)key, sub_key,
+@@ -997,6 +1026,7 @@
+     if (rc != ERROR_SUCCESS)
+         return PyErr_SetFromWindowsErrWithFunction(rc, "RegDeleteKey");
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1032,6 +1062,9 @@
+                         int reserved)
+ /*[clinic end generated code: output=52a1c8b374ebc003 input=a3186db079b3bf85]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     long rc;
+     if (PySys_Audit("winreg.DeleteKey", "nun",
+                     (Py_ssize_t)key, sub_key,
+@@ -1044,6 +1077,7 @@
+     if (rc != ERROR_SUCCESS)
+         return PyErr_SetFromWindowsErrWithFunction(rc, "RegDeleteKeyEx");
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1062,6 +1096,9 @@
+ winreg_DeleteValue_impl(PyObject *module, HKEY key, const Py_UNICODE *value)
+ /*[clinic end generated code: output=56fa9d21f3a54371 input=a78d3407a4197b21]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     long rc;
+     if (PySys_Audit("winreg.DeleteValue", "nu",
+                     (Py_ssize_t)key, value) < 0) {
+@@ -1074,6 +1111,7 @@
+         return PyErr_SetFromWindowsErrWithFunction(rc,
+                                                    "RegDeleteValue");
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1096,6 +1134,9 @@
+ winreg_EnumKey_impl(PyObject *module, HKEY key, int index)
+ /*[clinic end generated code: output=25a6ec52cd147bc4 input=fad9a7c00ab0e04b]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     long rc;
+     PyObject *retStr;
+ 
+@@ -1120,6 +1161,7 @@
+ 
+     retStr = PyUnicode_FromWideChar(tmpbuf, len);
+     return retStr;  /* can be NULL */
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1151,6 +1193,9 @@
+ winreg_EnumValue_impl(PyObject *module, HKEY key, int index)
+ /*[clinic end generated code: output=d363b5a06f8789ac input=4414f47a6fb238b5]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     long rc;
+     wchar_t *retValueBuf;
+     BYTE *tmpBuf;
+@@ -1227,6 +1272,7 @@
+     PyMem_Free(retValueBuf);
+     PyMem_Free(retDataBuf);
+     return retVal;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1243,6 +1289,9 @@
+                                      const Py_UNICODE *string)
+ /*[clinic end generated code: output=8fa4e959747a7312 input=b2a9714d2b751aa6]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     wchar_t *retValue = NULL;
+     DWORD retValueSize;
+     DWORD rc;
+@@ -1272,6 +1321,7 @@
+     o = PyUnicode_FromWideChar(retValue, wcslen(retValue));
+     PyMem_Free(retValue);
+     return o;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1298,6 +1348,9 @@
+ winreg_FlushKey_impl(PyObject *module, HKEY key)
+ /*[clinic end generated code: output=e6fc230d4c5dc049 input=f57457c12297d82f]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     long rc;
+     Py_BEGIN_ALLOW_THREADS
+     rc = RegFlushKey(key);
+@@ -1305,6 +1358,7 @@
+     if (rc != ERROR_SUCCESS)
+         return PyErr_SetFromWindowsErrWithFunction(rc, "RegFlushKey");
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ 
+@@ -1342,6 +1396,9 @@
+                     const Py_UNICODE *file_name)
+ /*[clinic end generated code: output=65f89f2548cb27c7 input=e3b5b45ade311582]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     long rc;
+ 
+     if (PySys_Audit("winreg.LoadKey", "nuu",
+@@ -1354,6 +1411,7 @@
+     if (rc != ERROR_SUCCESS)
+         return PyErr_SetFromWindowsErrWithFunction(rc, "RegLoadKey");
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1380,6 +1438,9 @@
+                     int reserved, REGSAM access)
+ /*[clinic end generated code: output=8849bff2c30104ad input=098505ac36a9ae28]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     HKEY retKey;
+     long rc;
+ 
+@@ -1400,6 +1461,7 @@
+         return NULL;
+     }
+     return retKey;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1439,6 +1501,9 @@
+ winreg_QueryInfoKey_impl(PyObject *module, HKEY key)
+ /*[clinic end generated code: output=dc657b8356a4f438 input=c3593802390cde1f]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     long rc;
+     DWORD nSubKeys, nValues;
+     FILETIME ft;
+@@ -1463,6 +1528,7 @@
+     ret = Py_BuildValue("iiO", nSubKeys, nValues, l);
+     Py_DECREF(l);
+     return ret;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1490,6 +1556,9 @@
+ winreg_QueryValue_impl(PyObject *module, HKEY key, const Py_UNICODE *sub_key)
+ /*[clinic end generated code: output=c655810ae50c63a9 input=41cafbbf423b21d6]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     long rc;
+     PyObject *retStr;
+     wchar_t *retBuf;
+@@ -1537,6 +1606,7 @@
+     retStr = PyUnicode_FromWideChar(retBuf, wcslen(retBuf));
+     PyMem_Free(retBuf);
+     return retStr;
++#endif
+ }
+ 
+ 
+@@ -1561,6 +1631,9 @@
+ winreg_QueryValueEx_impl(PyObject *module, HKEY key, const Py_UNICODE *name)
+ /*[clinic end generated code: output=f1b85b1c3d887ec7 input=cf366cada4836891]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     long rc;
+     BYTE *retBuf, *tmp;
+     DWORD bufSize = 0, retSize;
+@@ -1610,6 +1683,7 @@
+     result = Py_BuildValue("Oi", obData, typ);
+     Py_DECREF(obData);
+     return result;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1638,6 +1712,9 @@
+ winreg_SaveKey_impl(PyObject *module, HKEY key, const Py_UNICODE *file_name)
+ /*[clinic end generated code: output=ca94b835c88f112b input=da735241f91ac7a2]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     LPSECURITY_ATTRIBUTES pSA = NULL;
+ 
+     long rc;
+@@ -1655,6 +1732,7 @@
+     if (rc != ERROR_SUCCESS)
+         return PyErr_SetFromWindowsErrWithFunction(rc, "RegSaveKey");
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1689,6 +1767,9 @@
+                      DWORD type, PyObject *value_obj)
+ /*[clinic end generated code: output=d4773dc9c372311a input=bf088494ae2d24fd]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     Py_ssize_t value_length;
+     long rc;
+ 
+@@ -1734,6 +1815,7 @@
+     if (rc != ERROR_SUCCESS)
+         return PyErr_SetFromWindowsErrWithFunction(rc, "RegSetValue");
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1786,6 +1868,9 @@
+                        DWORD type, PyObject *value)
+ /*[clinic end generated code: output=811b769a66ae11b7 input=900a9e3990bfb196]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     BYTE *data;
+     DWORD len;
+ 
+@@ -1812,6 +1897,7 @@
+         return PyErr_SetFromWindowsErrWithFunction(rc,
+                                                    "RegSetValueEx");
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1834,6 +1920,9 @@
+ winreg_DisableReflectionKey_impl(PyObject *module, HKEY key)
+ /*[clinic end generated code: output=830cce504cc764b4 input=70bece2dee02e073]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     HMODULE hMod;
+     typedef LONG (WINAPI *RDRKFunc)(HKEY);
+     RDRKFunc pfn = NULL;
+@@ -1863,6 +1952,7 @@
+         return PyErr_SetFromWindowsErrWithFunction(rc,
+                                                    "RegDisableReflectionKey");
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1883,6 +1973,9 @@
+ winreg_EnableReflectionKey_impl(PyObject *module, HKEY key)
+ /*[clinic end generated code: output=86fa1385fdd9ce57 input=eeae770c6eb9f559]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     HMODULE hMod;
+     typedef LONG (WINAPI *RERKFunc)(HKEY);
+     RERKFunc pfn = NULL;
+@@ -1912,6 +2005,7 @@
+         return PyErr_SetFromWindowsErrWithFunction(rc,
+                                                    "RegEnableReflectionKey");
+     Py_RETURN_NONE;
++#endif
+ }
+ 
+ /*[clinic input]
+@@ -1930,6 +2024,9 @@
+ winreg_QueryReflectionKey_impl(PyObject *module, HKEY key)
+ /*[clinic end generated code: output=4e774af288c3ebb9 input=a98fa51d55ade186]*/
+ {
++#ifdef MS_APP
++    Py_RETURN_NOTIMPLEMENTED;
++#else
+     HMODULE hMod;
+     typedef LONG (WINAPI *RQRKFunc)(HKEY, BOOL *);
+     RQRKFunc pfn = NULL;
+@@ -1960,6 +2057,7 @@
+         return PyErr_SetFromWindowsErrWithFunction(rc,
+                                                    "RegQueryReflectionKey");
+     return PyBool_FromLong(result);
++#endif
+ }
+ 
+ static struct PyMethodDef winreg_methods[] = {
+@@ -2026,6 +2124,9 @@
+ 
+ PyMODINIT_FUNC PyInit_winreg(void)
+ {
++#ifdef MS_APP
++  return NULL;
++#else
+     PyObject *m, *d;
+     m = PyModule_Create(&winregmodule);
+     if (m == NULL)
+@@ -2100,5 +2201,11 @@
+     ADD_INT(REG_RESOURCE_LIST);
+     ADD_INT(REG_FULL_RESOURCE_DESCRIPTOR);
+     ADD_INT(REG_RESOURCE_REQUIREMENTS_LIST);
++#ifdef MS_DESKTOP
++    insint(d, "IS_SUPPORTED", 1);
++#else
++    insint(d, "IS_SUPPORTED", 0);
++#endif
+     return m;
++#endif
+ }

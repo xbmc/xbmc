@@ -93,6 +93,7 @@ dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?")
 dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?")
 dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
 dependent_option(ENABLE_INTERNAL_PCRE "Enable internal pcre?")
+dependent_option(ENABLE_INTERNAL_PYTHON "Enable internal Python?")
 dependent_option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?")
 
 # If ENABLE_INTERNAL_FMT is ON, we force ENABLE_INTERNAL_SPDLOG ON as it has a hard

@@ -348,7 +348,7 @@
 +
 +  target_link_libraries(${CRYPTO_LIB}
 +    PRIVATE
-+      python::python
++      python::pythoncore
 +      tomcrypt
 +      $<$<CONFIG:Debug>:vccorlibd.lib>
 +      $<$<CONFIG:RelWithDebInfo>:vccorlib.lib>
