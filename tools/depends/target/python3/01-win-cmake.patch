@@ -1,0 +1,1128 @@
+--- /dev/null
++++ b/cmake/python-config.cmake
+@@ -0,0 +2 @@
++include(${CMAKE_CURRENT_LIST_DIR}/python.cmake)
++
+--- /dev/null
++++ b/CMakeLists.txt
+@@ -0,0 +1,1120 @@
++cmake_minimum_required(VERSION 3.15)
++
++project(python VERSION 3.11.7 LANGUAGES C CXX)
++
++# pythoncore/python3dll
++find_package(zlib CONFIG REQUIRED HINTS ${DEPENDS_PATH}/lib/cmake)
++# modules
++find_package(expat CONFIG REQUIRED HINTS ${DEPENDS_PATH}/lib/cmake)
++find_package(openssl 1.1.1 CONFIG REQUIRED HINTS ${DEPENDS_PATH}/lib/cmake)
++find_package(bzip2 CONFIG REQUIRED HINTS ${DEPENDS_PATH}/lib/cmake)
++find_package(libffi CONFIG REQUIRED HINTS ${DEPENDS_PATH}/lib/cmake)
++find_package(xz CONFIG REQUIRED HINTS ${DEPENDS_PATH}/lib/cmake)
++find_package(sqlite3 CONFIG REQUIRED HINTS ${DEPENDS_PATH}/lib/cmake)
++
++# Based on PCbuild\find_python.bat that allows us to cache to NATIVEPREFIX
++add_custom_target(script.find_python
++    COMMAND @Powershell "Invoke-WebRequest https://aka.ms/nugetclidl -OutFile '${NATIVEPREFIX}/bin/nuget.exe'"
++    COMMAND ${NATIVEPREFIX}/bin/nuget.exe install pythonx86 -Version ${PROJECT_VERSION} -OutputDirectory ${NATIVEPREFIX}/bin
++  BYPRODUCTS
++    ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe 
++)
++
++add_custom_target(gen.frozen
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py importlib._bootstrap ${CMAKE_CURRENT_SOURCE_DIR}/Lib/importlib/_bootstrap.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib._bootstrap.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py importlib._bootstrap_external ${CMAKE_CURRENT_SOURCE_DIR}/Lib/importlib/_bootstrap_external.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib._bootstrap_external.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py zipimport ${CMAKE_CURRENT_SOURCE_DIR}/Lib/zipimport.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/zipimport.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py abc ${CMAKE_CURRENT_SOURCE_DIR}/Lib/abc.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/abc.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py codecs ${CMAKE_CURRENT_SOURCE_DIR}/Lib/codecs.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/codecs.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py io ${CMAKE_CURRENT_SOURCE_DIR}/Lib/io.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/io.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py _collections_abc ${CMAKE_CURRENT_SOURCE_DIR}/Lib/_collections_abc.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/_collections_abc.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py _sitebuiltins ${CMAKE_CURRENT_SOURCE_DIR}/Lib/_sitebuiltins.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/_sitebuiltins.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py genericpath ${CMAKE_CURRENT_SOURCE_DIR}/Lib/genericpath.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/genericpath.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py ntpath ${CMAKE_CURRENT_SOURCE_DIR}/Lib/ntpath.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/ntpath.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py posixpath ${CMAKE_CURRENT_SOURCE_DIR}/Lib/posixpath.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/posixpath.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py os ${CMAKE_CURRENT_SOURCE_DIR}/Lib/os.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/os.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py site ${CMAKE_CURRENT_SOURCE_DIR}/Lib/site.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/site.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py stat ${CMAKE_CURRENT_SOURCE_DIR}/Lib/stat.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/stat.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py importlib.util ${CMAKE_CURRENT_SOURCE_DIR}/Lib/importlib/util.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib.util.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py importlib.machinery ${CMAKE_CURRENT_SOURCE_DIR}/Lib/importlib/machinery.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib.machinery.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py runpy ${CMAKE_CURRENT_SOURCE_DIR}/Lib/runpy.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/runpy.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py __hello__ ${CMAKE_CURRENT_SOURCE_DIR}/Lib/__hello__.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__hello__.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py __phello__ ${CMAKE_CURRENT_SOURCE_DIR}/Lib/__phello__/__init__.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py __phello__.ham ${CMAKE_CURRENT_SOURCE_DIR}/Lib/__phello__/ham/__init__.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.ham.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py __phello__.ham.eggs ${CMAKE_CURRENT_SOURCE_DIR}/Lib/__phello__/ham/eggs.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.ham.eggs.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py __phello__.spam ${CMAKE_CURRENT_SOURCE_DIR}/Lib/__phello__/spam.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.spam.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py frozen_only ${CMAKE_CURRENT_SOURCE_DIR}/Tools/freeze/flag.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/frozen_only.h
++    COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Programs/_freeze_module.py getpath ${CMAKE_CURRENT_SOURCE_DIR}/Modules/getpath.py ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/getpath.h
++  BYPRODUCTS
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib._bootstrap.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib._bootstrap_external.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/zipimport.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/abc.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/codecs.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/io.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/_collections_abc.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/_sitebuiltins.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/genericpath.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/ntpath.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/posixpath.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/os.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/site.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/stat.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib.util.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib.machinery.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/runpy.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__hello__.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.ham.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.ham.eggs.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.spam.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/frozen_only.h
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/getpath.h
++)
++
++add_custom_target(gen.deepfreeze
++  COMMAND ${NATIVEPREFIX}/bin/pythonx86.${PROJECT_VERSION}/tools/python.exe ${CMAKE_CURRENT_SOURCE_DIR}/Tools/scripts/deepfreeze.py
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib._bootstrap.h:importlib._bootstrap
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib._bootstrap_external.h:importlib._bootstrap_external
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/zipimport.h:zipimport
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/abc.h:abc
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/codecs.h:codecs
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/io.h:io
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/_collections_abc.h:_collections_abc
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/_sitebuiltins.h:_sitebuiltins
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/genericpath.h:genericpath
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/ntpath.h:ntpath
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/posixpath.h:posixpath
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/os.h:os
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/site.h:site
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/stat.h:stat
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib.util.h:importlib.util
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/importlib.machinery.h:importlib.machinery
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/runpy.h:runpy
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__hello__.h:__hello__
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.h:__phello__
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.ham.h:__phello__.ham
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.ham.eggs.h:__phello__.ham.eggs
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/__phello__.spam.h:__phello__.spam
++            ${CMAKE_CURRENT_SOURCE_DIR}/Python/frozen_modules/frozen_only.h:frozen_only
++            -o ${CMAKE_CURRENT_SOURCE_DIR}/Python/deepfreeze/deepfreeze.c
++  BYPRODUCTS
++    ${CMAKE_CURRENT_SOURCE_DIR}/Python/deepfreeze/deepfreeze.c
++)
++
++#add_custom_target(regen.target
++#    COMMAND "${CMAKE_VS_MSBUILD_COMMAND}" ${CMAKE_CURRENT_SOURCE_DIR}/PCbuild/pythoncore.vcxproj /p:Configuration=Release /p:Platform=${ARCH} /t:_TriggerRegen
++#  BYPRODUCTS
++#    ${CMAKE_CURRENT_SOURCE_DIR}/Parser/token.c
++#    ${CMAKE_CURRENT_SOURCE_DIR}/Include/internal/pycore_token.h
++#    ${CMAKE_CURRENT_SOURCE_DIR}/Include/opcode.h
++#    ${CMAKE_CURRENT_SOURCE_DIR}/Include/internal/pycore_opcode.h
++#    ${CMAKE_CURRENT_SOURCE_DIR}/Python/opcode_targets.h
++#    ${CMAKE_CURRENT_SOURCE_DIR}/Python-ast.c
++#    ${CMAKE_CURRENT_SOURCE_DIR}/Include/internal/pycore_ast_state.h
++#    ${CMAKE_CURRENT_SOURCE_DIR}/Include/internal/pycore_ast.h
++#    ${CMAKE_CURRENT_SOURCE_DIR}/Parser/parser.c
++# )
++
++#ReleaseLevelNumber  -   10 for alpha, 11 for beta, 12 for RC (gamma), and 15 for final
++set(RELEASELEVELNUMBER 15)
++set(RELEASESERIAL 0)
++
++#MicroVersionNumber*1000 + ReleaseLevelNumber*10 + ReleaseSerial
++math(EXPR FIELD3 "${PROJECT_VERSION_PATCH}*1000 + ${RELEASELEVELNUMBER}*10 + ${RELEASESERIAL}")
++set(MS_DLL_ID "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
++
++
++if(CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
++  set(CMAKE_CXX_FLAGS "/Zc:twoPhase-")
++endif()
++set(CMAKE_C_FLAGS_DEBUG "/Zi /Ob0 /Od")
++set(CMAKE_CXX_FLAGS_DEBUG "/Zi /Ob0 /Od")
++
++set(pythoncore_headers
++    Include/abstract.h
++    Include/boolobject.h
++    Include/bytearrayobject.h
++    Include/bytesobject.h
++    Include/ceval.h
++    Include/codecs.h
++    Include/compile.h
++    Include/complexobject.h
++    Include/datetime.h
++    Include/descrobject.h
++    Include/dictobject.h
++    Include/dynamic_annotations.h
++    Include/enumobject.h
++    Include/errcode.h
++    Include/fileobject.h
++    Include/fileutils.h
++    Include/floatobject.h
++    Include/frameobject.h
++    Include/import.h
++    Include/intrcheck.h
++    Include/iterobject.h
++    Include/listobject.h
++    Include/longobject.h
++    Include/marshal.h
++    Include/memoryobject.h
++    Include/methodobject.h
++    Include/modsupport.h
++    Include/moduleobject.h
++    Include/object.h
++    Include/objimpl.h
++    Include/opcode.h
++    Include/osdefs.h
++    Include/osmodule.h
++    Include/patchlevel.h
++    Include/py_curses.h
++    Include/pybuffer.h
++    Include/pycapsule.h
++    Include/pyerrors.h
++    Include/pyexpat.h
++    Include/pylifecycle.h
++    Include/pymath.h
++    Include/pymacro.h
++    Include/pymem.h
++    Include/pyport.h
++    Include/pystate.h
++    Include/pystrcmp.h
++    Include/pystrtod.h
++    Include/Python.h
++    Include/pythonrun.h
++    Include/pythread.h
++    Include/pytypedefs.h
++    Include/rangeobject.h
++    Include/setobject.h
++    Include/sliceobject.h
++    Include/structmember.h
++    Include/structseq.h
++    Include/sysmodule.h
++    Include/token.h
++    Include/traceback.h
++    Include/tracemalloc.h
++    Include/tupleobject.h
++    Include/unicodeobject.h
++    Include/weakrefobject.h
++    Modules/_math.h
++    Modules/rotatingtree.h
++    Modules/_io/_iomodule.h
++    Modules/cjkcodecs/alg_jisx0201.h
++    Modules/cjkcodecs/cjkcodecs.h
++    Modules/cjkcodecs/emu_jisx0213_2000.h
++    Modules/cjkcodecs/mappings_cn.h
++    Modules/cjkcodecs/mappings_hk.h
++    Modules/cjkcodecs/mappings_jisx0213_pair.h
++    Modules/cjkcodecs/mappings_jp.h
++    Modules/cjkcodecs/mappings_kr.h
++    Modules/cjkcodecs/mappings_tw.h
++    Modules/cjkcodecs/multibytecodec.h
++    Objects/stringlib/count.h
++    Objects/stringlib/fastsearch.h
++    Objects/stringlib/find.h
++    Objects/stringlib/partition.h
++    Objects/stringlib/replace.h
++    Objects/stringlib/split.h
++    Objects/unicodetype_db.h
++    Parser/tokenizer.h
++    PC/errmap.h
++    PC/pyconfig.h
++    Python/importdl.h
++    Python/stdlib_module_names.h
++    Python/thread_nt.h
++    Python/condvar.h
++    Python/ceval_gil.h
++    Include/pyhash.h
++    Parser/pegen.h
++    Parser/string_parser.h
++    Include/pyframe.h
++    Include/cpython/abstract.h
++    Include/cpython/bytearrayobject.h
++    Include/cpython/bytesobject.h
++    Include/cpython/cellobject.h
++    Include/cpython/ceval.h
++    Include/cpython/classobject.h
++    Include/cpython/code.h
++    Include/cpython/compile.h
++    Include/cpython/complexobject.h
++    Include/cpython/context.h
++    Include/cpython/descrobject.h
++    Include/cpython/dictobject.h
++    Include/cpython/fileobject.h
++    Include/cpython/fileutils.h
++    Include/cpython/floatobject.h
++    Include/cpython/import.h
++    Include/cpython/listobject.h
++    Include/cpython/longintrepr.h
++    Include/cpython/longobject.h
++    Include/cpython/odictobject.h
++    Include/cpython/unicodeobject.h
++    Include/cpython/warnings.h
++    Include/cpython/weakrefobject.h
++    Include/cpython/methodobject.h
++    Include/cpython/modsupport.h
++    Include/cpython/objimpl.h
++    Include/cpython/object.h
++    Include/cpython/picklebufobject.h
++    Include/cpython/pyctype.h
++    Include/cpython/pydebug.h
++    Include/cpython/pyerrors.h
++    Include/cpython/pyfpe.h
++    Include/cpython/pymem.h
++    Include/cpython/pyframe.h
++    Include/cpython/pylifecycle.h
++    Include/cpython/pytime.h
++    Include/cpython/tupleobject.h
++    Include/cpython/traceback.h
++    Include/cpython/frameobject.h
++    Include/cpython/funcobject.h
++    Include/cpython/genobject.h
++    Include/cpython/pythonrun.h
++    Include/cpython/pythread.h
++    Include/cpython/setobject.h
++    Include/cpython/sysmodule.h
++    Include/cpython/pystate.h
++    Include/cpython/initconfig.h
++    Include/internal/pycore_unicodeobject.h
++    Include/internal/pycore_warnings.h
++    Include/internal/pycore_abstract.h
++    Include/internal/pycore_accu.h
++    Include/internal/pycore_asdl.h
++    Include/internal/pycore_ast.h
++    Include/internal/pycore_ast_state.h
++    Include/internal/pycore_atomic.h
++    Include/internal/pycore_atomic_funcs.h
++    Include/internal/pycore_bitutils.h
++    Include/internal/pycore_bytes_methods.h
++    Include/internal/pycore_bytesobject.h
++    Include/internal/pycore_call.h
++    Include/internal/pycore_ceval.h
++    Include/internal/pycore_code.h
++    Include/internal/pycore_compile.h
++    Include/internal/pycore_condvar.h
++    Include/internal/pycore_context.h
++    Include/internal/pycore_dtoa.h
++    Include/internal/pycore_exceptions.h
++    Include/internal/pycore_fileutils.h
++    Include/internal/pycore_floatobject.h
++    Include/internal/pycore_format.h
++    Include/internal/pycore_function.h
++    Include/internal/pycore_gc.h
++    Include/internal/pycore_genobject.h
++    Include/internal/pycore_getopt.h
++    Include/internal/pycore_gil.h
++    Include/internal/pycore_global_objects.h
++    Include/internal/pycore_hamt.h
++    Include/internal/pycore_hashtable.h
++    Include/internal/pycore_import.h
++    Include/internal/pycore_initconfig.h
++    Include/internal/pycore_interp.h
++    Include/internal/pycore_interpreteridobject.h
++    Include/internal/pycore_list.h
++    Include/internal/pycore_long.h
++    Include/internal/pycore_moduleobject.h
++    Include/internal/pycore_namespace.h
++    Include/internal/pycore_object.h
++    Include/internal/pycore_pathconfig.h
++    Include/internal/pycore_pyarena.h
++    Include/internal/pycore_parser.h
++    Include/internal/pycore_pyerrors.h
++    Include/internal/pycore_pyhash.h
++    Include/internal/pycore_pylifecycle.h
++    Include/internal/pycore_pymem.h
++    Include/internal/pycore_pystate.h
++    Include/internal/pycore_runtime.h
++    Include/internal/pycore_runtime_init.h
++    Include/internal/pycore_signal.h
++    Include/internal/pycore_sliceobject.h
++    Include/internal/pycore_strhex.h
++    Include/internal/pycore_sysmodule.h
++    Include/internal/pycore_symtable.h
++    Include/internal/pycore_traceback.h
++    Include/internal/pycore_tuple.h
++    Include/internal/pycore_typeobject.h
++    Include/internal/pycore_ucnhash.h
++    Include/internal/pycore_unionobject.h
++    Include/internal/pycore_structseq.h
++    Modules/_sre/sre_constants.h
++    Modules/_sre/sre_lib.h
++    Modules/_sre/sre.h
++)
++
++add_library(pythoncore SHARED
++  ${pythoncore_headers}
++  Modules/_abc.c
++  Modules/_bisectmodule.c
++  Modules/_blake2/blake2module.c
++  Modules/_blake2/blake2b_impl.c
++  Modules/_blake2/blake2s_impl.c
++  Modules/_codecsmodule.c
++  Modules/_collectionsmodule.c
++  Modules/_contextvarsmodule.c
++  Modules/_csv.c
++  Modules/_functoolsmodule.c
++  Modules/_heapqmodule.c
++  Modules/_json.c
++  Modules/_localemodule.c
++  Modules/_lsprof.c
++  Modules/_pickle.c
++  Modules/_randommodule.c
++  Modules/_sha3/sha3module.c
++  Modules/_sre/sre.c
++  Modules/_stat.c
++  Modules/_struct.c
++  Modules/_weakref.c
++  Modules/arraymodule.c
++  Modules/atexitmodule.c
++  Modules/audioop.c
++  Modules/binascii.c
++  Modules/cmathmodule.c
++  Modules/_datetimemodule.c
++  Modules/errnomodule.c
++  Modules/faulthandler.c
++  Modules/gcmodule.c
++  Modules/getbuildinfo.c
++  Modules/itertoolsmodule.c
++  Modules/main.c
++  Modules/mathmodule.c
++  Modules/md5module.c
++  Modules/mmapmodule.c
++  Modules/_opcode.c
++  Modules/_operator.c
++  Modules/posixmodule.c
++  Modules/rotatingtree.c
++  Modules/sha1module.c
++  Modules/sha256module.c
++  Modules/sha512module.c
++  Modules/signalmodule.c
++  Modules/_statisticsmodule.c
++  Modules/symtablemodule.c
++  Modules/_threadmodule.c
++  Modules/_tracemalloc.c
++  Modules/_typingmodule.c
++  Modules/timemodule.c
++  Modules/xxsubtype.c
++  Modules/_xxsubinterpretersmodule.c
++  Modules/_io/fileio.c
++  Modules/_io/bytesio.c
++  Modules/_io/stringio.c
++  Modules/_io/bufferedio.c
++  Modules/_io/iobase.c
++  Modules/_io/textio.c
++  Modules/_io/winconsoleio.c
++  Modules/_io/_iomodule.c
++  Modules/cjkcodecs/_codecs_cn.c
++  Modules/cjkcodecs/_codecs_hk.c
++  Modules/cjkcodecs/_codecs_iso2022.c
++  Modules/cjkcodecs/_codecs_jp.c
++  Modules/cjkcodecs/_codecs_kr.c
++  Modules/cjkcodecs/_codecs_tw.c
++  Modules/cjkcodecs/multibytecodec.c
++  Modules/_winapi.c
++  Objects/abstract.c
++  Objects/accu.c
++  Objects/boolobject.c
++  Objects/bytearrayobject.c
++  Objects/bytes_methods.c
++  Objects/bytesobject.c
++  Objects/call.c
++  Objects/capsule.c
++  Objects/cellobject.c
++  Objects/classobject.c
++  Objects/codeobject.c
++  Objects/complexobject.c
++  Objects/descrobject.c
++  Objects/dictobject.c
++  Objects/enumobject.c
++  Objects/exceptions.c
++  Objects/fileobject.c
++  Objects/floatobject.c
++  Objects/frameobject.c
++  Objects/funcobject.c
++  Objects/genericaliasobject.c
++  Objects/genobject.c
++  Objects/interpreteridobject.c
++  Objects/iterobject.c
++  Objects/listobject.c
++  Objects/longobject.c
++  Objects/memoryobject.c
++  Objects/methodobject.c
++  Objects/moduleobject.c
++  Objects/namespaceobject.c
++  Objects/object.c
++  Objects/obmalloc.c
++  Objects/odictobject.c
++  Objects/picklebufobject.c
++  Objects/rangeobject.c
++  Objects/setobject.c
++  Objects/sliceobject.c
++  Objects/structseq.c
++  Objects/tupleobject.c
++  Objects/typeobject.c
++  Objects/unicodectype.c
++  Objects/unicodeobject.c
++  Objects/unionobject.c
++  Objects/weakrefobject.c
++  Parser/myreadline.c
++  Parser/tokenizer.c
++  Parser/token.c
++  Parser/pegen.c
++  Parser/pegen_errors.c
++  Parser/action_helpers.c
++  Parser/parser.c
++  Parser/string_parser.c
++  Parser/peg_api.c
++  PC/invalid_parameter_handler.c
++  PC/winreg.c
++  PC/config.c
++  PC/msvcrtmodule.c
++  Python/pyhash.c
++  Python/_warnings.c
++  Python/asdl.c
++  Python/ast.c
++  Python/ast_opt.c
++  Python/ast_unparse.c
++  Python/bltinmodule.c
++  Python/bootstrap_hash.c
++  Python/ceval.c
++  Python/codecs.c
++  Python/compile.c
++  Python/context.c
++  Python/dynamic_annotations.c
++  Python/dynload_win.c
++  Python/errors.c
++  Python/fileutils.c
++  Python/formatter_unicode.c
++  Python/frame.c
++  Python/frozen.c
++  Python/future.c
++  Python/getargs.c
++  Python/getcompiler.c
++  Python/getcopyright.c
++  Python/getopt.c
++  Python/getplatform.c
++  Python/getversion.c
++  Python/hamt.c
++  Python/hashtable.c
++  Python/import.c
++  Python/importdl.c
++  Python/initconfig.c
++  Python/marshal.c
++  Python/modsupport.c
++  Python/mysnprintf.c
++  Python/mystrtoul.c
++  Python/pathconfig.c
++  Python/preconfig.c
++  Python/pyarena.c
++  Python/pyctype.c
++  Python/pyfpe.c
++  Python/pylifecycle.c
++  Python/pymath.c
++  Python/pytime.c
++  Python/pystate.c
++  Python/pystrcmp.c
++  Python/pystrhex.c
++  Python/pystrtod.c
++  Python/dtoa.c
++  Python/Python-ast.c
++  Python/Python-tokenize.c
++  Python/pythonrun.c
++  Python/specialize.c
++  Python/suggestions.c
++  Python/structmember.c
++  Python/symtable.c
++  Python/sysmodule.c
++  Python/thread.c
++  Python/traceback.c
++  Python/deepfreeze/deepfreeze.c
++  Modules/zlibmodule.c
++  PC/dl_nt.c
++  Modules/getpath.c
++)
++
++if(CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
++  target_sources(pythoncore PRIVATE
++    PC/uwp_compat.cpp
++  )
++  target_compile_options(pythoncore PRIVATE
++    /EHsc
++  )
++endif()
++
++target_compile_definitions(pythoncore PRIVATE
++  _USRDLL
++  Py_BUILD_CORE
++  Py_BUILD_CORE_BUILTIN
++  Py_ENABLE_SHARED
++  _Py_HAVE_ZLIB
++  MS_DLL_ID="${MS_DLL_ID}"
++  "PY3_DLLNAME=L\"python3\""
++  VPATH="${CMAKE_CURRENT_SOURCE_DIR}"
++  PREFIX=NULL
++  EXEC_PREFIX=NULL
++  PLATLIBDIR="DLLs"
++  VERSION=NULL
++  PYDEBUGEXT=""
++  WIN32
++  $<$<CONFIG:Debug>:DEBUG>
++  $<$<CONFIG:RelWithDebInfo>:NDEBUG>
++)
++
++if(CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
++  target_compile_definitions(pythoncore PRIVATE
++    _WIN32_WINNT=0x0A00 # Required for CREATEFILE2_EXTENDED_PARAMETERS we patch in
++    WINVER=0x0A00 # Must match _WIN32_WINNT
++    NTDDI_VERSION=0x0A000007
++    MS_APP=1
++  )
++else()
++  target_compile_definitions(pythoncore PRIVATE
++    MS_DESKTOP=1
++  )
++endif()
++
++target_include_directories(pythoncore PRIVATE
++    Python/
++    Include/
++    Include/internal
++    PC/
++    ${CMAKE_CURRENT_BINARY_DIR}
++)
++
++target_compile_options(pythoncore PRIVATE
++  /ZW
++  /MP
++  /sdl-
++)
++
++set(PY_SHARED_LIB_NAME ${PROJECT_NAME}${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR})
++set_target_properties(pythoncore PROPERTIES
++  OUTPUT_NAME ${PY_SHARED_LIB_NAME}
++  COMPILE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
++  COMPILE_PDB_NAME ${PY_SHARED_LIB_NAME}
++)
++
++target_link_libraries(pythoncore
++  PRIVATE
++    debug vccorlibd.lib
++    optimized vccorlib.lib
++    debug msvcrtd.lib
++    optimized msvcrt.lib
++    zlib::zlibstatic
++    version.lib
++    ws2_32.lib
++    pathcch.lib
++    bcrypt.lib
++    advapi32.lib
++    shell32.lib
++    ole32.lib
++    oleaut32.lib
++    kernel32.lib
++    user32.lib
++    gdi32.lib
++    winspool.lib
++    comdlg32.lib
++    uuid.lib
++    odbc32.lib
++    odbccp32.lib
++)
++
++target_link_options(pythoncore PRIVATE
++  /NODEFAULTLIB:vccorlibd
++  /NODEFAULTLIB:msvcrtd
++  /NODEFAULTLIB:vccorlib
++  /NODEFAULTLIB:msvcrt
++  /INCREMENTAL:NO
++  /debug:full
++)
++
++add_dependencies(gen.frozen script.find_python)
++add_dependencies(gen.deepfreeze gen.frozen)
++add_dependencies(pythoncore gen.deepfreeze)
++#add_dependencies(pythoncore regen.target)
++
++add_library(python3dll SHARED
++  PC/python3dll.c
++)
++
++target_compile_definitions(python3dll PRIVATE
++  _USRDLL
++  Py_BUILD_CORE
++  Py_BUILD_CORE_BUILTIN
++  Py_ENABLE_SHARED
++  _Py_HAVE_ZLIB
++  MS_DLL_ID="${MS_DLL_ID}"
++  "PY3_DLLNAME=L\"python3\""
++  "PYTHON_DLL_NAME=\"python${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR}\""
++  WIN32
++  _WIN64
++  _WINDLL
++  $<$<CONFIG:Debug>:DEBUG>
++  $<$<CONFIG:RelWithDebInfo>:NDEBUG>
++)
++
++target_include_directories(python3dll PRIVATE
++    Include/
++    Include/internal
++    PC/
++    INTERFACE
++    $<INSTALL_INTERFACE:Include>
++)
++
++set(LIB_NAME ${PROJECT_NAME}${PROJECT_VERSION_MAJOR})
++set_target_properties(python3dll PROPERTIES
++  OUTPUT_NAME ${LIB_NAME}
++  COMPILE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
++  COMPILE_PDB_NAME ${LIB_NAME}
++)
++
++target_link_libraries(python3dll
++  PRIVATE
++    debug vccorlibd.lib
++    optimized vccorlib.lib
++    debug msvcrtd.lib
++    optimized msvcrt.lib
++    zlib::zlibstatic
++    pythoncore
++    version.lib
++    ws2_32.lib
++    pathcch.lib
++    bcrypt.lib
++    uuid.lib
++    advapi32.lib
++    shell32.lib
++    ole32.lib
++    oleaut32.lib
++    kernel32.lib
++    user32.lib
++    gdi32.lib
++    winspool.lib
++    comdlg32.lib
++    odbc32.lib
++    odbccp32.lib
++)
++
++if(CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
++  target_compile_definitions(python3dll PRIVATE
++    _WIN32_WINNT=0x0A00 # Required for CREATEFILE2_EXTENDED_PARAMETERS we patch in
++    WINVER=0x0A00 # Must match _WIN32_WINNT
++    NTDDI_VERSION=0x0A000007
++    MS_APP=1
++  )
++else()
++  target_compile_definitions(pythoncore PRIVATE
++    MS_DESKTOP=1
++  )
++endif()
++
++target_link_options(python3dll PRIVATE
++  /NODEFAULTLIB:vccorlibd
++  /NODEFAULTLIB:msvcrtd
++  /NODEFAULTLIB:vccorlib
++  /NODEFAULTLIB:msvcrt
++  /INCREMENTAL:NO
++  /debug:full
++)
++
++
++########################################################################
++## Modules
++########################################################################
++if(ENABLE_MODULES)
++  set(PYTHON_MODULES)
++
++  macro(add_py_module)
++    set(options)
++    set(oneValueArgs NAME )
++    set(multiValueArgs SOURCES DEFINITIONS INCLUDES LIBRARIES)
++    cmake_parse_arguments(PY_MODULE "${options}" "${oneValueArgs}"
++                          "${multiValueArgs}" ${ARGN}
++    )
++
++    list(APPEND PYTHON_MODULES ${PY_MODULE_NAME})
++
++    add_library(${PY_MODULE_NAME} SHARED
++      ${PY_MODULE_SOURCES}
++    )
++
++    target_compile_definitions(${PY_MODULE_NAME} PRIVATE
++        WIN32
++        Py_BUILD_CORE_MODULE
++        Py_ENABLE_SHARED
++        MS_DLL_ID="${MS_DLL_ID}"
++        PYTHON_DLL_NAME="python${PROJECT_VERSION_MAJOR}${PROJECT_VERSION_MINOR}"
++        "PY3_DLLNAME=L\"python3\""
++        $<$<CONFIG:Debug>:DEBUG>
++        $<$<CONFIG:RelWithDebInfo>:NDEBUG>
++        ${PY_MODULE_DEFINITIONS}
++    )
++
++    if(CMAKE_SYSTEM_NAME STREQUAL "WindowsStore")
++      target_compile_definitions(${PY_MODULE_NAME} PRIVATE
++        _WIN32_WINNT=0x0A00 # Required for _overlapped, _socket
++        WINVER=0x0A00 # Must match _WIN32_WINNT
++        NTDDI_VERSION=0x0A000007
++        MS_APP=1
++      )
++    else()
++      target_compile_definitions(${PY_MODULE_NAME} PRIVATE
++        MS_DESKTOP=1
++      )
++    endif()
++
++    target_compile_options(${PY_MODULE_NAME} PRIVATE
++      /MP
++      /sdl-
++    )
++
++    target_include_directories(${PY_MODULE_NAME} PRIVATE
++        Include/
++        Include/internal
++        PC/
++        ${PY_MODULE_INCLUDES}
++    )
++
++    set_target_properties(${PY_MODULE_NAME} PROPERTIES
++      SUFFIX ".pyd"
++      COMPILE_PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
++      COMPILE_PDB_NAME ${PY_MODULE_NAME}
++    )
++
++    target_link_libraries(${PY_MODULE_NAME}
++      PRIVATE
++        debug vccorlibd.lib
++        optimized vccorlib.lib
++        debug msvcrtd.lib
++        optimized msvcrt.lib
++        ${PY_MODULE_LIBRARIES}
++        pythoncore
++        version.lib
++        ws2_32.lib
++        pathcch.lib
++        bcrypt.lib
++    )
++
++   target_link_options(${PY_MODULE_NAME} PRIVATE
++    /NODEFAULTLIB:vccorlibd
++    /NODEFAULTLIB:msvcrtd
++    /NODEFAULTLIB:vccorlib
++    /NODEFAULTLIB:msvcrt
++    /INCREMENTAL:NO
++    /debug:full
++    /SAFESEH:NO
++    )
++  endmacro()
++
++  add_py_module(NAME _asyncio
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_asynciomodule.c
++  )
++
++
++  ## _bz2
++  add_py_module(NAME _bz2
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_bz2module.c
++    LIBRARIES
++      bzip2::bzip2
++  )
++
++  ## _ctypes
++  add_py_module(NAME _ctypes
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_ctypes/ctypes_dlfcn.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_ctypes/ctypes.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_ctypes/_ctypes.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_ctypes/callbacks.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_ctypes/callproc.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_ctypes/cfield.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_ctypes/malloc_closure.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_ctypes/stgdict.c
++    DEFINITIONS
++      FFI_BUILDING #USING_MALLOC_CLOSURE_DOT_C=1
++    LIBRARIES
++      libffi::libffi
++      OleAut32.lib
++      Ole32.lib
++  )
++
++  ## _decimal
++  add_py_module(NAME _decimal
++    SOURCES
++      Modules/_decimal/libmpdec/basearith.h
++      Modules/_decimal/libmpdec/bits.h
++      Modules/_decimal/libmpdec/constants.h
++      Modules/_decimal/libmpdec/convolute.h
++      Modules/_decimal/libmpdec/crt.h
++      Modules/_decimal/libmpdec/difradix2.h
++      Modules/_decimal/docstrings.h
++      Modules/_decimal/libmpdec/fnt.h
++      Modules/_decimal/libmpdec/fourstep.h
++      Modules/_decimal/libmpdec/mpdecimal.h
++      Modules/_decimal/libmpdec/numbertheory.h
++      Modules/_decimal/libmpdec/sixstep.h
++      Modules/_decimal/libmpdec/transpose.h
++      Modules/_decimal/libmpdec/typearith.h
++      Modules/_decimal/libmpdec/umodarith.h
++      Modules/_decimal/_decimal.c
++      Modules/_decimal/libmpdec/basearith.c
++      Modules/_decimal/libmpdec/constants.c
++      Modules/_decimal/libmpdec/context.c
++      Modules/_decimal/libmpdec/convolute.c
++      Modules/_decimal/libmpdec/crt.c
++      Modules/_decimal/libmpdec/difradix2.c
++      Modules/_decimal/libmpdec/fnt.c
++      Modules/_decimal/libmpdec/fourstep.c
++      Modules/_decimal/libmpdec/io.c
++      Modules/_decimal/libmpdec/mpalloc.c
++      Modules/_decimal/libmpdec/mpdecimal.c
++      Modules/_decimal/libmpdec/numbertheory.c
++      Modules/_decimal/libmpdec/sixstep.c
++      Modules/_decimal/libmpdec/transpose.c
++    DEFINITIONS
++      _CRT_SECURE_NO_WARNINGS
++      ANSI # cpython 3.11.6 only has this for arm/arm64. causes link failures without currently
++    INCLUDES
++      Modules/_decimal/libmpdec
++  )
++
++  if(${ARCH} STREQUAL "win32")
++    target_compile_definitions(_decimal PRIVATE
++      CONFIG_32
++      PPRO
++      MASM
++    )
++  elseif(${ARCH} STREQUAL "x64")
++    target_compile_definitions(_decimal PRIVATE
++      CONFIG_64
++      MASM
++    )
++  elseif(${ARCH} STREQUAL "arm")
++    target_compile_definitions(_decimal PRIVATE
++      CONFIG_32
++      #ANSI
++    )
++  elseif(${ARCH} STREQUAL "arm64")
++    target_compile_definitions(_decimal PRIVATE
++      CONFIG_64
++      #ANSI
++    )
++  endif()
++
++  ## _elementtree
++  add_py_module(NAME _elementtree
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_elementtree.c
++    DEFINITIONS
++      _CRT_SECURE_NO_WARNINGS
++      XML_STATIC
++    LIBRARIES
++      expat::libexpat
++  )
++
++  ## _hashlib
++  add_py_module(NAME _hashlib
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_hashopenssl.c
++    LIBRARIES
++      openssl::crypto
++  )
++
++  ## _lzma
++  add_py_module(NAME _lzma
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_lzmamodule.c
++    LIBRARIES
++      xz::lzma
++  )
++
++  ## _multiprocessing
++  add_py_module(NAME _multiprocessing
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_multiprocessing/multiprocessing.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_multiprocessing/multiprocessing.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_multiprocessing/semaphore.c
++  )
++
++  ## _overlapped
++  add_py_module(NAME _overlapped
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/overlapped.c
++    LIBRARIES
++      Mswsock.lib
++  )
++
++  ## _queue
++  add_py_module(NAME _queue
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_queuemodule.c
++  )
++
++  ## _socket
++  #add_py_module(NAME _socket
++  #  SOURCES
++  #    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/socketmodule.h
++  #    ${CMAKE_CURRENT_SOURCE_DIR}/Modules/socketmodule.c
++  #  LIBRARIES
++  #    iphlpapi.lib
++  #)
++
++  ## _sqlite3
++  add_py_module(NAME _sqlite3
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/connection.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/cursor.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/microprotocols.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/module.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/prepare_protocol.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/row.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/statement.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/util.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/blob.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/connection.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/cursor.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/microprotocols.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/module.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/prepare_protocol.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/row.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/statement.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/util.c
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_sqlite/blob.c
++    DEFINITIONS
++      # PY_SQLITE_HAVE_SERIALIZE # cpython 3.11.6 enables this. Causes link failure with our current sqlite lib
++      PY_SQLITE_ENABLE_LOAD_EXTENSION
++    LIBRARIES
++      sqlite3::sqlite3
++  )
++
++  ## _ssl
++  add_py_module(NAME _ssl
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/_ssl.c
++    DEFINITIONS
++      _CRT_SECURE_NO_WARNINGS
++    LIBRARIES
++      openssl::ssl
++      openssl::crypto
++      crypt32.lib
++  )
++
++  ## pyexpat
++  add_py_module(NAME pyexpat
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/pyexpat.c
++    DEFINITIONS
++      _CRT_SECURE_NO_WARNINGS
++      PYEXPAT_EXPORTS
++      XML_STATIC
++    LIBRARIES
++      expat::libexpat
++  )
++
++  ## select
++  add_py_module(NAME select
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/selectmodule.c
++  )
++
++  ## unicodedata
++  add_py_module(NAME unicodedata
++    SOURCES
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/unicodedata_db.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/unicodename_db.h
++      ${CMAKE_CURRENT_SOURCE_DIR}/Modules/unicodedata.c
++  )
++endif()
++
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(
++  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
++  VERSION ${PROJECT_VERSION}
++  COMPATIBILITY AnyNewerVersion
++)
++
++install(TARGETS python3dll pythoncore EXPORT python
++  RUNTIME DESTINATION bin
++  ARCHIVE DESTINATION lib
++  LIBRARY DESTINATION lib
++  INCLUDES DESTINATION include/${PROJECT_NAME}${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
++)
++
++install(DIRECTORY
++  ${CMAKE_CURRENT_SOURCE_DIR}/Include/
++  DESTINATION include/${PROJECT_NAME}${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
++)
++
++install(FILES
++  ${CMAKE_CURRENT_SOURCE_DIR}/PC/pyconfig.h
++  DESTINATION include/${PROJECT_NAME}${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
++)
++
++if(ENABLE_MODULES)
++  foreach(PYTHON_MODULE IN LISTS PYTHON_MODULES)
++    install(TARGETS ${PYTHON_MODULE}
++      RUNTIME DESTINATION bin/python/DLLs
++      ARCHIVE DESTINATION lib
++      LIBRARY DESTINATION lib
++    )
++
++    install(FILES
++      ${PROJECT_BINARY_DIR}/RelWithDebInfo/${PYTHON_MODULE}.pdb
++      DESTINATION lib
++      CONFIGURATIONS RelWithDebInfo
++    )
++    install(FILES
++      ${PROJECT_BINARY_DIR}/Debug/${PYTHON_MODULE}.pdb
++      DESTINATION lib
++      CONFIGURATIONS Debug
++    )
++  endforeach(PYTHON_MODULE IN LISTS PYTHON_MODULES)
++endif()
++
++install(DIRECTORY
++    ${CMAKE_CURRENT_SOURCE_DIR}/Lib
++    DESTINATION bin/python
++    PATTERN plat-* EXCLUDE
++    PATTERN msilib EXCLUDE
++    PATTERN lib-tk EXCLUDE
++    PATTERN curses EXCLUDE
++    PATTERN bsddb EXCLUDE
++    PATTERN *test EXCLUDE
++    PATTERN idlelib EXCLUDE
++    PATTERN __pycache__ EXCLUDE
++)
++
++install(FILES
++  ${PROJECT_BINARY_DIR}/RelWithDebInfo/${LIB_NAME}.pdb
++  ${PROJECT_BINARY_DIR}/RelWithDebInfo/${PY_SHARED_LIB_NAME}.pdb
++  DESTINATION lib
++  CONFIGURATIONS RelWithDebInfo
++)
++install(FILES
++  ${PROJECT_BINARY_DIR}/Debug/${LIB_NAME}.pdb
++  ${PROJECT_BINARY_DIR}/Debug/${PY_SHARED_LIB_NAME}.pdb
++  DESTINATION lib
++  CONFIGURATIONS Debug
++)
++
++install(EXPORT ${PROJECT_NAME}
++  FILE
++  ${PROJECT_NAME}.cmake
++  NAMESPACE
++    ${PROJECT_NAME}::
++  DESTINATION
++    lib/cmake/${PROJECT_NAME}
++)
++
++install(FILES
++  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/${PROJECT_NAME}-config.cmake
++  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
++  DESTINATION
++    lib/cmake/${PROJECT_NAME}
++)
++
++export(TARGETS ${PROJECT_NAME}core python3dll
++  FILE
++  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
++  NAMESPACE ${PROJECT_NAME}::
++)
++

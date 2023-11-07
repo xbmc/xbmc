@@ -3,6 +3,11 @@ DEPS = ../../Makefile.include Makefile PYTHON3-VERSION ../../download-files.incl
                                  apple.patch \
                                  crosscompile.patch \
                                  darwin_embedded.patch \
+                                 01-win-cmake.patch \
+                                 02-win-modules.patch \
+                                 03-win-PC.patch \
+                                 04-win-Python.patch \
+                                 05-win-winregistryfinder.patch \
                                  10-android-modules.patch \
                                  10-linux-modules.patch \
                                  10-osx-modules.patch \
@@ -66,7 +71,11 @@ ifeq ($(OS),darwin_embedded)
 	cd $(PLATFORM); patch -p1 -i ../darwin_embedded.patch
 endif
 	cp modules.setup $(PLATFORM)/Modules/Setup
-
+	cd $(PLATFORM); patch -p1 -i ../01-win-cmake.patch
+	cd $(PLATFORM); patch -p1 -i ../02-win-modules.patch
+	cd $(PLATFORM); patch -p1 -i ../03-win-PC.patch
+	cd $(PLATFORM); patch -p1 -i ../04-win-Python.patch
+	cd $(PLATFORM); patch -p1 -i ../05-win-winregistryfinder.patch
 ifeq ($(OS),android)
 	cd $(PLATFORM); patch -p1 -i ../10-android-modules.patch
 endif

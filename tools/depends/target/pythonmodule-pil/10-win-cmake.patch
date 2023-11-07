@@ -38,7 +38,7 @@
 +  endif()
 +  target_link_libraries(${name}
 +    PRIVATE
-+      python::python
++      python::pythoncore
 +      $<$<CONFIG:Debug>:vccorlibd.lib>
 +      $<$<CONFIG:RelWithDebInfo>:vccorlib.lib>
 +      $<$<CONFIG:Debug>:msvcrtd.lib>
