@@ -25,6 +25,9 @@ namespace GAME
 
 class CGameClient;
 
+/*!
+ * \ingroup games
+ */
 class CGameClientCheevos
 {
 public:

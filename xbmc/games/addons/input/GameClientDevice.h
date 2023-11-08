@@ -24,6 +24,7 @@ class CPhysicalPort;
 
 /*!
  * \ingroup games
+ *
  * \brief Represents a device connected to a port
  */
 class CGameClientDevice

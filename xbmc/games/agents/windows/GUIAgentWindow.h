@@ -20,6 +20,9 @@ namespace GAME
 class IActivePortList;
 class IAgentList;
 
+/*!
+ * \ingroup games
+ */
 class CGUIAgentWindow : public CGUIDialog
 {
 public:

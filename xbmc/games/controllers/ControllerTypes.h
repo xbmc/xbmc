@@ -20,6 +20,8 @@ using ControllerPtr = std::shared_ptr<CController>;
 using ControllerVector = std::vector<ControllerPtr>;
 
 /*!
+ * \ingroup game
+ *
  * \brief Type of input provided by a hardware or controller port
  */
 enum class PORT_TYPE

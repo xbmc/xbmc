@@ -20,6 +20,9 @@ namespace GAME
 {
 class CGameAgentJoystick;
 
+/*!
+ * \ingroup games
+ */
 class CGameAgent
 {
 public:

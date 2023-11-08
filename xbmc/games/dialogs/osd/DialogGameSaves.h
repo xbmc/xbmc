@@ -22,6 +22,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CDialogGameSaves : public CGUIDialog
 {
 public:

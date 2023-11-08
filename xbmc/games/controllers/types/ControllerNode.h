@@ -21,6 +21,8 @@ namespace GAME
 class CControllerHub;
 
 /*!
+ * \ingroup games
+ *
  * \brief Node in the controller tree
  *
  * The node identifies the controller profile, and optionally the available

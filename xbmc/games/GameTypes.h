@@ -16,20 +16,65 @@ namespace KODI
 namespace GAME
 {
 
+class CGameAgent;
 class CGameClient;
+class CGameClientDevice;
+class CGameClientPort;
+
+/*!
+ * \ingroup games
+ *
+ * \brief Smart pointer to a game client (\ref CGameClient)
+ */
 using GameClientPtr = std::shared_ptr<CGameClient>;
+
+/*!
+ * \ingroup games
+ *
+ * \brief Vector of smart pointers to a game client (\ref CGameClient)
+ */
 using GameClientVector = std::vector<GameClientPtr>;
 
-class CGameClientPort;
+/*!
+ * \ingroup games
+ *
+ * \brief Smart pointer to an input port for a game client (\ref CGameClientPort)
+ */
 using GameClientPortPtr = std::unique_ptr<CGameClientPort>;
+
+/*!
+ * \ingroup games
+ *
+ * \brief Vector of smart pointers to input ports for a game client (\ref CGameClientPort)
+ */
 using GameClientPortVec = std::vector<GameClientPortPtr>;
 
-class CGameClientDevice;
+/*!
+ * \ingroup games
+ *
+ * \brief Smart pointer to an input device for a game client (\ref CGameClientDevice)
+ */
 using GameClientDevicePtr = std::unique_ptr<CGameClientDevice>;
+
+/*!
+ * \ingroup games
+ *
+ * \brief Vector of smart pointers to input devices for a game client (\ref CGameClientDevice)
+ */
 using GameClientDeviceVec = std::vector<GameClientDevicePtr>;
 
-class CGameAgent;
+/*!
+ * \ingroup games
+ *
+ * \brief Smart pointer to a game-playing agent (\ref CGameAgent)
+ */
 using GameAgentPtr = std::shared_ptr<CGameAgent>;
+
+/*!
+ * \ingroup games
+ *
+ * \brief Vector of smart pointers to game-playing agents (\ref CGameAgent)
+ */
 using GameAgentVec = std::vector<GameAgentPtr>;
 
 } // namespace GAME

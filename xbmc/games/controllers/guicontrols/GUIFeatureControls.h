@@ -17,6 +17,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGUIFeatureGroupTitle : public CGUILabelControl
 {
 public:
@@ -27,6 +30,9 @@ public:
   ~CGUIFeatureGroupTitle() override = default;
 };
 
+/*!
+ * \ingroup games
+ */
 class CGUIFeatureSeparator : public CGUIImage
 {
 public:

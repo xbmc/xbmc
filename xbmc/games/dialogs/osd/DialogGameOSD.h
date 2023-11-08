@@ -18,6 +18,9 @@ namespace GAME
 {
 class CDialogGameOSDHelp;
 
+/*!
+ * \ingroup games
+ */
 class CDialogGameOSD : public CGUIDialog
 {
 public:
