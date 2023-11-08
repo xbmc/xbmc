@@ -22,6 +22,11 @@ class CGameAgentJoystick;
 
 /*!
  * \ingroup games
+ *
+ * \brief Class to represent a game player (a.k.a. agent)
+ *
+ * The term "agent" is used to distinguish game players from the myriad of other
+ * uses of the term "player" in Kodi, such as media players and player cores.
  */
 class CGameAgent
 {
