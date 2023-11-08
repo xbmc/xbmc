@@ -372,6 +372,7 @@
 						<itemlayout width="96" height="96">
 							<control type="gamecontroller">
 								<texture>$INFO[ListItem.Icon]</texture>
+								<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
 								<controlleraddress>$INFO[ListItem.FilenameAndPath]</controlleraddress>
 								<controllerdiffuse>button_focus</controllerdiffuse>
 							</control>
@@ -379,10 +380,56 @@
 						<focusedlayout width="96" height="96">
 							<control type="gamecontroller">
 								<texture>$INFO[ListItem.Icon]</texture>
+								<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
 								<controlleraddress>$INFO[ListItem.FilenameAndPath]</controlleraddress>
 								<controllerdiffuse>button_focus</controllerdiffuse>
 							</control>
 						</focusedlayout>
+						<!--
+							Note to skinners: this control can be populated
+							with static content for testing.
+						<content>
+							<item>
+								<icon>DefaultAddonNone.png</icon>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+							<item>
+								<property name="game.controllerid">game.controller.snes</property>
+							</item>
+						</content>
+						-->
 					</control>
 				</control>
 				<control type="group">
@@ -418,6 +465,48 @@
 							</control>
 							<include>GameDialogAgentLayout</include>
 						</focusedlayout>
+						<!--
+							Note to skinners: this control can be populated
+							with static content for testing.
+						<content>
+							<item>
+								<label>Player 1</label>
+							</item>
+							<item>
+								<label>Player 2</label>
+							</item>
+							<item>
+								<label>Player 3</label>
+							</item>
+							<item>
+								<label>Player 4</label>
+							</item>
+							<item>
+								<label>Player 5</label>
+							</item>
+							<item>
+								<label>Player 6</label>
+							</item>
+							<item>
+								<label>Player 7</label>
+							</item>
+							<item>
+								<label>Player 8</label>
+							</item>
+							<item>
+								<label>Player 9</label>
+							</item>
+							<item>
+								<label>Player 10</label>
+							</item>
+							<item>
+								<label>Player 11</label>
+							</item>
+							<item>
+								<label>Player 12</label>
+							</item>
+						</content>
+						-->
 					</control>
 				</control>
 				<control type="scrollbar" id="61">
@@ -465,16 +554,65 @@
 			<enable>false</enable>
 			<itemlayout width="96" height="96">
 				<control type="gamecontroller">
+					<texture>$INFO[ListItem.Icon]</texture>
+					<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
 					<peripherallocation>$INFO[ListItem.FilenameAndPath]</peripherallocation>
 					<controllerdiffuse>button_focus</controllerdiffuse>
 				</control>
 			</itemlayout>
 			<focusedlayout width="96" height="96">
 				<control type="gamecontroller">
+					<texture>$INFO[ListItem.Icon]</texture>
+					<controllerid>$INFO[ListItem.Property(game.controllerid)]</controllerid>
 					<peripherallocation>$INFO[ListItem.FilenameAndPath]</peripherallocation>
 					<controllerdiffuse>button_focus</controllerdiffuse>
 				</control>
 			</focusedlayout>
+			<!--
+				Note to skinners: this control can be populated
+				with static content for testing.
+			<content>
+				<item>
+					<icon>DefaultAddonNone.png</icon>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+				<item>
+					<property name="game.controllerid">game.controller.default</property>
+				</item>
+			</content>
+			-->
 		</control>
 	</include>
 </includes>
