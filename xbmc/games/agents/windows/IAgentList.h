@@ -10,10 +10,6 @@
 
 #include "games/GameTypes.h"
 
-/*!
- * \brief Game player (aka agent) setup window
- */
-
 namespace KODI
 {
 namespace GAME

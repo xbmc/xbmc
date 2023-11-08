@@ -11,6 +11,8 @@
 #include "games/GameTypes.h"
 
 /*!
+ * \ingroup games
+ *
  * \brief Controller port setup window
  *
  * The port setup window presents a list of ports and their attached

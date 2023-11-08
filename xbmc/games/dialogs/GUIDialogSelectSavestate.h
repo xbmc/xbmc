@@ -16,6 +16,9 @@ namespace GAME
 {
 class CDialogGameSaves;
 
+/*!
+ * \ingroup games
+ */
 class CGUIDialogSelectSavestate
 {
 public:

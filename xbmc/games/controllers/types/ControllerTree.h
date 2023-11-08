@@ -22,9 +22,13 @@ namespace KODI
 {
 namespace GAME
 {
+
 /*!
+ * \ingroup games
+ *
  * \brief Collection of ports on a console
  */
 using CControllerTree = CControllerHub;
+
 } // namespace GAME
 } // namespace KODI

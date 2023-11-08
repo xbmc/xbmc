@@ -17,6 +17,10 @@ namespace KODI
 {
 namespace GAME
 {
+
+/*!
+ * \ingroup games
+ */
 class CGameClientTopology
 {
 public:
@@ -47,5 +51,6 @@ private:
   // Controller parameters
   CControllerTree m_controllers;
 };
+
 } // namespace GAME
 } // namespace KODI

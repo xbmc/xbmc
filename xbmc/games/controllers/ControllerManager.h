@@ -25,6 +25,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CControllerManager
 {
 public:

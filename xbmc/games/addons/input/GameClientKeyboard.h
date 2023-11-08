@@ -24,6 +24,7 @@ class CGameClient;
 
 /*!
  * \ingroup games
+ *
  * \brief Handles keyboard events for games.
  *
  * Listens to keyboard events and forwards them to the games (as game_input_event).

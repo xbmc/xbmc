@@ -16,6 +16,9 @@ namespace GAME
 {
 class CGameClient;
 
+/*!
+ * \ingroup games
+ */
 class CInputSink : public JOYSTICK::IInputHandler
 {
 public:

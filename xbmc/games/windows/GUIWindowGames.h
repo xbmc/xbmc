@@ -16,6 +16,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGUIWindowGames : public CGUIMediaWindow
 {
 public:

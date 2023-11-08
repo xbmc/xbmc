@@ -23,6 +23,8 @@ namespace GAME
 {
 
 /*!
+ * \ingroup games
+ *
  * \brief Represents the physical topology of controller add-ons
  *
  * The physical topology of a controller defines how many ports it has and

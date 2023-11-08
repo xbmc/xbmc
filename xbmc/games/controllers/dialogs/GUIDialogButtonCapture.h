@@ -20,6 +20,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGUIDialogButtonCapture : public JOYSTICK::IButtonMapper, public Observer, protected CThread
 {
 public:

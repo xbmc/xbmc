@@ -34,6 +34,9 @@ class IActionMap;
 
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGUIConfigurationWizard : public IConfigurationWizard,
                                 public JOYSTICK::IButtonMapper,
                                 public KEYBOARD::IKeyboardDriverHandler,

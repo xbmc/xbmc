@@ -21,6 +21,9 @@ namespace KODI
 namespace GAME
 {
 
+/*!
+ * \ingroup games
+ */
 class CPhysicalPort
 {
 public:

@@ -17,6 +17,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CDialogGameVideoRotation : public CDialogGameVideoSelect
 {
 public:

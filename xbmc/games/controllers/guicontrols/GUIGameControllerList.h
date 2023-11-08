@@ -24,6 +24,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGUIGameControllerList : public CGUIListContainer
 {
 public:

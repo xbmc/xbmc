@@ -13,6 +13,8 @@ namespace KODI
 namespace GAME
 {
 /*!
+ * \ingroup games
+ *
  * \brief Input callbacks
  *
  * @todo Remove this file when Game API is updated for input polling

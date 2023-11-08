@@ -18,6 +18,7 @@ class CGameClient;
 
 /*!
  * \ingroup games
+ *
  * \brief Handles events for hardware such as reset buttons
  */
 class CGameClientHardware : public HARDWARE::IHardwareInput

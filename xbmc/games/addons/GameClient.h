@@ -40,6 +40,7 @@ class IGameInputCallback;
 
 /*!
  * \ingroup games
+ *
  * \brief Helper class to have "C" struct created before other parts becomes his pointer.
  */
 class CGameClientStruct

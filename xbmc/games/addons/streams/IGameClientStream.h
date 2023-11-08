@@ -22,6 +22,9 @@ class IRetroPlayerStream;
 namespace GAME
 {
 
+/*!
+ * \ingroup games
+ */
 class IGameClientStream
 {
 public:
