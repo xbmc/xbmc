@@ -21,11 +21,16 @@ namespace GAME
  *
  * \brief A list populated by input ports on a game console
  *
+ * In the Player Viewer dialog (<b>`GameAgents`</b> window), this list has
+ * control ID 4.
+ *
  * Each port is an item in the list. Ports are represented by the controller
  * icon of the connected controller.
  *
  * Ports are only included in the list if the controller profile provides
  * input. For example, Multitaps will be skipped.
+ *
+ * When ports are changed, the player list (\ref IAgentList) is updated.
  */
 class IActivePortList
 {
