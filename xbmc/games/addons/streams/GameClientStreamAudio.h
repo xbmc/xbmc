@@ -24,6 +24,9 @@ struct AudioStreamProperties;
 namespace GAME
 {
 
+/*!
+ * \ingroup games
+ */
 class CGameClientStreamAudio : public IGameClientStream
 {
 public:

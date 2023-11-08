@@ -32,6 +32,7 @@ class CGameClient;
 
 /**
  * \ingroup games
+ *
  * \brief C++ wrapper for properties to pass to the DLL
  *
  * Game client properties declared in addon-instance/Game.h.

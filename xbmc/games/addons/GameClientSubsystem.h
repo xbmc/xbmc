@@ -32,6 +32,8 @@ struct GameClientSubsystems
 };
 
 /*!
+ * \ingroup games
+ *
  * \brief Base class for game client subsystems
  */
 class CGameClientSubsystem

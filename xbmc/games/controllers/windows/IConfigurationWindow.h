@@ -18,6 +18,8 @@
 class CEvent;
 
 /*!
+ * \ingroup games
+ *
  * \brief Controller configuration window
  *
  * The configuration window presents a list of controllers. Also on the screen

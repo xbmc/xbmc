@@ -25,6 +25,9 @@ class CController;
 class CPhysicalFeature;
 class CPhysicalTopology;
 
+/*!
+ * \ingroup games
+ */
 class CControllerLayout
 {
 public:

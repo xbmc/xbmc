@@ -19,6 +19,9 @@ namespace GAME
 {
 class IPortList;
 
+/*!
+ * \ingroup games
+ */
 class CGUIPortWindow : public CGUIDialog
 {
 public:

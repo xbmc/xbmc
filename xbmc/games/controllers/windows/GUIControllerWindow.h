@@ -22,6 +22,9 @@ class CControllerInstaller;
 class IControllerList;
 class IFeatureList;
 
+/*!
+ * \ingroup games
+ */
 class CGUIControllerWindow : public CGUIDialog
 {
 public:

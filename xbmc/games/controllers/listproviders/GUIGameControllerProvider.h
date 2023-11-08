@@ -20,6 +20,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGUIGameControllerProvider : public IListProvider
 {
 public:

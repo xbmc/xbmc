@@ -16,6 +16,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGUIControllerButton : public CGUIButtonControl
 {
 public:

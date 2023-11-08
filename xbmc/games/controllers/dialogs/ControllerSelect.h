@@ -17,6 +17,10 @@ namespace KODI
 {
 namespace GAME
 {
+
+/*!
+ * \ingroup games
+ */
 class CControllerSelect : public CThread
 {
 public:

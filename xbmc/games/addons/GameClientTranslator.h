@@ -24,6 +24,7 @@ namespace GAME
 {
 /*!
  * \ingroup games
+ *
  * \brief Translates data types from Game API to the corresponding format in Kodi.
  *
  * This class is stateless.

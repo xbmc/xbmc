@@ -15,6 +15,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGUISelectKeyButton : public CGUIFeatureButton
 {
 public:

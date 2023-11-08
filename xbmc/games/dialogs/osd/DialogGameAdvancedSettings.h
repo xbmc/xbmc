@@ -14,6 +14,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CDialogGameAdvancedSettings : public CGUIDialog
 {
 public:

@@ -18,6 +18,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGameInfoTag : public IArchivable, public ISerializable, public ISortable
 {
 public:

@@ -23,6 +23,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CPortManager
 {
 public:

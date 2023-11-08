@@ -18,6 +18,8 @@ namespace KODI
 namespace GAME
 {
 /*!
+ * \ingroup games
+ *
  * \brief A branch in the controller tree
  */
 class CControllerHub

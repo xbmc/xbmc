@@ -13,6 +13,8 @@ namespace KODI
 namespace GAME
 {
 /*!
+ * \ingroup games
+ *
  * \brief Types of button controls that can populate the feature list
  */
 enum class BUTTON_TYPE

@@ -21,6 +21,8 @@ namespace GAME
 class CGameClient;
 
 /*!
+ * \ingroup games
+ *
  * \brief This class implements in-game saves.
  *
  * \details Some games do not implement state persistence on their own, but rely on the frontend for

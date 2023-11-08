@@ -20,6 +20,9 @@ namespace KODI
 
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CDialogGameVolume : public CGUIDialogSlider, // GUI interface
                           public ISliderCallback, // GUI callback
                           public IGUIVolumeBarCallback, // Volume bar dialog callback

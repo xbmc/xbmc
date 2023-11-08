@@ -27,6 +27,9 @@ class CPhysicalTopology;
 
 using JOYSTICK::FEATURE_TYPE;
 
+/*!
+ * \ingroup games
+ */
 class CController : public ADDON::CAddon
 {
 public:

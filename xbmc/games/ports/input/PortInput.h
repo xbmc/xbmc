@@ -25,6 +25,9 @@ namespace GAME
 {
 class CControllerActivity;
 
+/*!
+ * \ingroup games
+ */
 class CPortInput : public JOYSTICK::IInputHandler, public IKeymapEnvironment
 {
 public:

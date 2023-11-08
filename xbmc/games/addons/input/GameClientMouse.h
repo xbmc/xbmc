@@ -24,6 +24,7 @@ class CGameClient;
 
 /*!
  * \ingroup games
+ *
  * \brief Handles mouse events for games.
  *
  * Listens to mouse events and forwards them to the games (as game_input_event).

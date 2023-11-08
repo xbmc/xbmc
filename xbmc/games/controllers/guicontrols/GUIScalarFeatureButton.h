@@ -14,6 +14,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGUIScalarFeatureButton : public CGUIFeatureButton
 {
 public:

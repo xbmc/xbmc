@@ -28,6 +28,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGUIAgentList : public IAgentList, public Observer
 {
 public:

@@ -21,6 +21,9 @@ namespace KODI
 namespace GAME
 {
 
+/*!
+ * \ingroup games
+ */
 class CGameSettings : public ISettingCallback, public Observable
 {
 public:

@@ -28,6 +28,7 @@ class CPortInput;
 
 /*!
  * \ingroup games
+ *
  * \brief Handles game controller events for games.
  *
  * Listens to game controller events and forwards them to the games (as game_input_event).

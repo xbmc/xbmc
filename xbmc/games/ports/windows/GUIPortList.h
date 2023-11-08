@@ -27,6 +27,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup game
+ */
 class CGUIPortList : public IPortList
 {
 public:

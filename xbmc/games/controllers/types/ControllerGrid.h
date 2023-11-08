@@ -19,6 +19,8 @@ namespace KODI
 namespace GAME
 {
 /*!
+ * \ingroup games
+ *
  * \brief Vertex in the grid of controllers
  */
 struct ControllerVertex
@@ -32,6 +34,8 @@ struct ControllerVertex
 };
 
 /*!
+ * \ingroup games
+ *
  * \brief Column of controllers in the grid
  */
 struct ControllerColumn
@@ -40,11 +44,15 @@ struct ControllerColumn
 };
 
 /*!
+ * \ingroup games
+ *
  * \brief Collection of controllers in a grid layout
  */
 using ControllerGrid = std::vector<ControllerColumn>;
 
 /*!
+ * \ingroup games
+ *
  * \brief Class to encapsulate grid operations
  */
 class CControllerGrid

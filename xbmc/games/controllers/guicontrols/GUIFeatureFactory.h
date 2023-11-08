@@ -19,6 +19,9 @@ namespace GAME
 class CPhysicalFeature;
 class IConfigurationWizard;
 
+/*!
+ * \ingroup games
+ */
 class CGUIFeatureFactory
 {
 public:

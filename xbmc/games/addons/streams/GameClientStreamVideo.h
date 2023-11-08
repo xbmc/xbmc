@@ -23,6 +23,9 @@ struct VideoStreamProperties;
 namespace GAME
 {
 
+/*!
+ * \ingroup games
+ */
 class CGameClientStreamVideo : public IGameClientStream
 {
 public:

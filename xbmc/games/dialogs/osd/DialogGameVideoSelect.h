@@ -24,6 +24,9 @@ class CGUIGameVideoHandle;
 
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CDialogGameVideoSelect : public CGUIDialog
 {
 public:
