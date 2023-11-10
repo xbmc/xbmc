@@ -1354,6 +1354,11 @@ HDR_STATUS DX::DeviceResources::ToggleHDR()
   DXGI_MODE_DESC md = {};
   GetDisplayMode(&md);
 
+  // Xbox uses only full screen windowed mode and not needs recreate swapchain.
+  // Recreate swapchain causes native 4K resolution is lost and quality obtained
+  // is equivalent to 1080p upscaled to 4K (TO DO: investigate root cause).
+  const bool isXbox = (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox);
+
   DX::Windowing()->SetTogglingHDR(true);
   DX::Windowing()->SetAlteringWindow(true);
 
@@ -1361,7 +1366,7 @@ HDR_STATUS DX::DeviceResources::ToggleHDR()
   HDR_STATUS hdrStatus = CWIN32Util::ToggleWindowsHDR(md);
 
   // Kill swapchain
-  if (m_swapChain && hdrStatus != HDR_STATUS::HDR_TOGGLE_FAILED)
+  if (!isXbox && m_swapChain && hdrStatus != HDR_STATUS::HDR_TOGGLE_FAILED)
   {
     CLog::LogF(LOGDEBUG, "Re-create swapchain due HDR <-> SDR switch");
     DestroySwapChain();
@@ -1370,11 +1375,26 @@ HDR_STATUS DX::DeviceResources::ToggleHDR()
   DX::Windowing()->SetAlteringWindow(false);
 
   // Re-create swapchain
-  if (hdrStatus != HDR_STATUS::HDR_TOGGLE_FAILED)
+  if (!isXbox && hdrStatus != HDR_STATUS::HDR_TOGGLE_FAILED)
   {
     CreateWindowSizeDependentResources();
 
     DX::Windowing()->NotifyAppFocusChange(true);
+  }
+
+  // On Xbox set new color space in same swapchain
+  if (isXbox && hdrStatus != HDR_STATUS::HDR_TOGGLE_FAILED)
+  {
+    if (hdrStatus == HDR_STATUS::HDR_ON)
+    {
+      SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
+      m_IsHDROutput = true;
+    }
+    else
+    {
+      SetHdrColorSpace(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+      m_IsHDROutput = false;
+    }
   }
 
   return hdrStatus;

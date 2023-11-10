@@ -1196,7 +1196,36 @@ HDR_STATUS CWIN32Util::ToggleWindowsHDR(DXGI_MODE_DESC& modeDesc)
   HDR_STATUS status = HDR_STATUS::HDR_TOGGLE_FAILED;
 
 #ifdef TARGET_WINDOWS_STORE
-  // Not supported - not implemented yet
+  auto hdmi = HdmiDisplayInformation::GetForCurrentView();
+
+  if (!hdmi)
+    return status;
+
+  const auto current = hdmi.GetCurrentDisplayMode();
+
+  for (const auto& mode : hdmi.GetSupportedDisplayModes())
+  {
+    if (mode.IsSmpte2084Supported() != current.IsSmpte2084Supported() &&
+        mode.ResolutionHeightInRawPixels() == current.ResolutionHeightInRawPixels() &&
+        mode.ResolutionWidthInRawPixels() == current.ResolutionWidthInRawPixels() &&
+        mode.StereoEnabled() == false &&
+        fabs(mode.RefreshRate() - current.RefreshRate()) <= 0.00001)
+    {
+      if (current.IsSmpte2084Supported()) // HDR is ON
+      {
+        CLog::LogF(LOGINFO, "Toggle Windows HDR Off (ON => OFF).");
+        if (Wait(hdmi.RequestSetCurrentDisplayModeAsync(mode, HdmiDisplayHdrOption::None)))
+          status = HDR_STATUS::HDR_OFF;
+      }
+      else // HDR is OFF
+      {
+        CLog::LogF(LOGINFO, "Toggle Windows HDR On (OFF => ON).");
+        if (Wait(hdmi.RequestSetCurrentDisplayModeAsync(mode, HdmiDisplayHdrOption::Eotf2084)))
+          status = HDR_STATUS::HDR_ON;
+      }
+      break;
+    }
+  }
 #else
   uint32_t pathCount = 0;
   uint32_t modeCount = 0;
