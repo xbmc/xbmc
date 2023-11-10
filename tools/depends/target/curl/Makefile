@@ -20,7 +20,8 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --without-libidn2 \
                       --with-ca-fallback \
                       --with-ssl=$(PREFIX) \
-                      --with-nghttp2=$(PREFIX)
+                      --with-nghttp2=$(PREFIX) \
+                      --without-zstd
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
