@@ -316,11 +316,15 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
   {
     bool changed = false;
     auto hdmiInfo = HdmiDisplayInformation::GetForCurrentView();
+    const bool needHDR = DX::DeviceResources::Get()->IsHDROutput();
+
     if (hdmiInfo != nullptr)
     {
       // default mode not in list of supported display modes
-      if (res.iScreenWidth == details->ScreenWidth && res.iScreenHeight == details->ScreenHeight
-        && fabs(res.fRefreshRate - details->RefreshRate) <= 0.00001)
+      // TO DO: is still necessary? (or now all modes are listed?)
+      if (!needHDR && res.iScreenWidth == details->ScreenWidth &&
+          res.iScreenHeight == details->ScreenHeight &&
+          fabs(res.fRefreshRate - details->RefreshRate) <= 0.00001)
       {
         Wait(hdmiInfo.SetDefaultDisplayModeAsync());
         changed = true;
@@ -330,11 +334,17 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
         bool needStereo = CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode() == RENDER_STEREO_MODE_HARDWAREBASED;
         auto hdmiModes = hdmiInfo.GetSupportedDisplayModes();
 
+        // For backward compatibility (also old Xbox models) only match color space for HDR modes
+        // and keep SDR modes selection as it is (any color space). Assumes SDR modes listed first.
+        // TO DO: for HDR modes make use of IsSmpte2084Supported() but has issues with current code.
+        // TO DO: for SDR implement preference for BT.709 color space but also fallback to sRGB.
         HdmiDisplayMode selected = nullptr;
         for (const auto& mode : hdmiModes)
         {
-          if (res.iScreenWidth == mode.ResolutionWidthInRawPixels() && res.iScreenHeight == mode.ResolutionHeightInRawPixels()
-            && fabs(res.fRefreshRate - mode.RefreshRate()) <= 0.00001)
+          if ((!needHDR || (needHDR && mode.ColorSpace() == HdmiDisplayColorSpace::BT2020)) &&
+              res.iScreenWidth == mode.ResolutionWidthInRawPixels() &&
+              res.iScreenHeight == mode.ResolutionHeightInRawPixels() &&
+              fabs(res.fRefreshRate - mode.RefreshRate()) <= 0.00001)
           {
             selected = mode;
             if (needStereo == mode.StereoEnabled())
@@ -344,7 +354,8 @@ bool CWinSystemWin10::ChangeResolution(const RESOLUTION_INFO& res, bool forceCha
 
         if (selected != nullptr)
         {
-          changed = Wait(hdmiInfo.RequestSetCurrentDisplayModeAsync(selected));
+          changed = Wait(hdmiInfo.RequestSetCurrentDisplayModeAsync(
+              selected, needHDR ? HdmiDisplayHdrOption::Eotf2084 : HdmiDisplayHdrOption::None));
         }
       }
     }
