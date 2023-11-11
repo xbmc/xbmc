@@ -16,7 +16,8 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --with-nghttp2=$(PREFIX) \
                       --without-libpsl \
                       --without-zstd \
-                      --without-brotli
+                      --without-brotli \
+                      --without-gssapi
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(BYPRODUCT)
 
