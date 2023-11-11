@@ -20,7 +20,8 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --without-gssapi \
                       --without-gsasl \
                       --without-hyper \
-                      --without-ngtcp2
+                      --without-ngtcp2 \
+                      --without-nghttp3
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(BYPRODUCT)
 
