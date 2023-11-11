@@ -18,7 +18,8 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --without-zstd \
                       --without-brotli \
                       --without-gssapi \
-                      --without-gsasl
+                      --without-gsasl \
+                      --without-hyper
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(BYPRODUCT)
 
