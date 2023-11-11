@@ -29,7 +29,8 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --without-quiche \
                       --without-gnutls \
                       --without-nss \
-                      --without-mbedtls
+                      --without-mbedtls \
+                      --without-wolfssl
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
