@@ -23,7 +23,8 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --with-nghttp2=$(PREFIX) \
                       --without-zstd \
                       --without-brotli \
-                      --without-gssapi
+                      --without-gssapi \
+                      --without-ngtcp2
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
