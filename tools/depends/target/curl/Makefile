@@ -14,6 +14,7 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --with-ca-fallback \
                       --with-ssl=$(PREFIX) \
                       --with-nghttp2=$(PREFIX) \
+                      --with-zlib \
                       --without-libpsl \
                       --without-zstd \
                       --without-brotli \
