@@ -19,7 +19,8 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --without-brotli \
                       --without-gssapi \
                       --without-gsasl \
-                      --without-hyper
+                      --without-hyper \
+                      --without-ngtcp2
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(BYPRODUCT)
 
