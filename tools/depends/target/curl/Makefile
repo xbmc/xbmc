@@ -21,7 +21,8 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --with-ca-fallback \
                       --with-ssl=$(PREFIX) \
                       --with-nghttp2=$(PREFIX) \
-                      --without-zstd
+                      --without-zstd \
+                      --without-brotli
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
