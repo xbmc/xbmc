@@ -5,7 +5,7 @@
     <project_license>GPL-2.0-only GPL-2.0-or-later LGPL-2.1-or-later MIT BSD-3-Clause BSD-4-Clause</project_license>
     <metadata_license>CC0-1.0</metadata_license>
     <developer_name>@DEV_NAME@</developer_name>
-    <summary>The ultimate entertainment center</summary>
+    <summary>Ultimate entertainment center</summary>
     <url type="homepage">https://kodi.tv/</url>
     <url type="donation">https://kodi.tv/contribute/donate</url>
     <url type="bugtracker">https://github.com/xbmc/xbmc/issues</url>
