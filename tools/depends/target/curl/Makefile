@@ -17,7 +17,8 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --without-libpsl \
                       --without-zstd \
                       --without-brotli \
-                      --without-gssapi
+                      --without-gssapi \
+                      --without-gsasl
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(BYPRODUCT)
 
