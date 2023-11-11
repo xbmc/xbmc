@@ -27,7 +27,8 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --without-ngtcp2 \
                       --without-nghttp3 \
                       --without-quiche \
-                      --without-gnutls
+                      --without-gnutls \
+                      --without-nss
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
