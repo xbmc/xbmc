@@ -124,7 +124,7 @@ endif
 all: .installed-$(PLATFORM)
 
 crossguid: $(LIBUUID)
-curl: openssl nghttp2
+curl: openssl nghttp2 $(ZLIB)
 dav1d: meson-cross-file
 dbus: expat
 ffmpeg: $(ICONV) $(ZLIB) bzip2 gnutls dav1d $(LIBVA)
