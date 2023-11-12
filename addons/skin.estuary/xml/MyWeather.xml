@@ -68,6 +68,7 @@
 			<scrolltime tween="cubic" easing="out">500</scrolltime>
 			<include>OpenClose_Right</include>
 			<itemgap>-160</itemgap>
+			<visible>!String.StartsWith(Weather.Temperature,$LOCALIZE[503])</visible>
 			<control type="group" id="567">
 				<description>Weather info</description>
 				<height>410</height>
@@ -112,7 +113,7 @@
 					<top>194</top>
 					<aligny>center</aligny>
 					<height>24</height>
-					<width>500</width>
+					<width>300</width>
 					<align>right</align>
 					<font>WeatherTemp</font>
 					<label>$INFO[Weather.Temperature]</label>
@@ -203,5 +204,39 @@
 			<param name="sublabel" value="$INFO[Window(weather).Property(WeatherProvider)]" />
 		</include>
 		<include>BottomBar</include>
+		<control type="group">
+			<visible>String.StartsWith(Weather.Temperature,$LOCALIZE[503])</visible>
+			<animation effect="fade" time="400">VisibleChange</animation>
+			<control type="image">
+				<texture>colors/black.png</texture>
+				<include>FullScreenDimensions</include>
+				<animation effect="fade" start="100" end="70" time="0" condition="true">Conditional</animation>
+			</control>
+			<control type="group">
+				<depth>DepthMax</depth>
+				<centerleft>50%</centerleft>
+				<centertop>50%</centertop>
+				<width>80</width>
+				<height>80</height>
+				<control type="image">
+					<centerleft>50%</centerleft>
+					<centertop>50%</centertop>
+					<width>80</width>
+					<height>80</height>
+					<aspectratio>keep</aspectratio>
+					<animation effect="rotate" end="-45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true">Conditional</animation>
+					<texture colordiffuse="button_focus">spinner.png</texture>
+				</control>
+				<control type="image">
+					<centerleft>50%</centerleft>
+					<centertop>50%</centertop>
+					<width>50</width>
+					<height>50</height>
+					<aspectratio>keep</aspectratio>
+					<animation effect="rotate" end="45" center="auto" time="200" delay="600" loop="true" reversible="false" condition="true">Conditional</animation>
+					<texture flipx="true" colordiffuse="button_focus">spinner.png</texture>
+				</control>
+			</control>
+		</control>
 	</controls>
 </window>
