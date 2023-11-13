@@ -379,9 +379,19 @@ bool CApplication::Create()
   if (!settingsComponent->Load())
     return false;
 
+  // Log Cache GUI settings (replacement of cache in advancedsettings.xml)
+  const auto settings = settingsComponent->GetSettings();
+  CLog::Log(LOGINFO,
+            "New Cache GUI Settings (replacement of cache in advancedsettings.xml) are:\n - Buffer "
+            "Mode: {}\n - Memory Size: {} MB\n - Read "
+            "Factor: {:.2f} x\n - Chunk Size : {} bytes",
+            settings->GetInt(CSettings::SETTING_FILECACHE_BUFFERMODE),
+            settings->GetInt(CSettings::SETTING_FILECACHE_MEMORYSIZE),
+            settings->GetInt(CSettings::SETTING_FILECACHE_READFACTOR) / 100.0f,
+            settings->GetInt(CSettings::SETTING_FILECACHE_CHUNKSIZE));
+
   CLog::Log(LOGINFO, "creating subdirectories");
   const std::shared_ptr<CProfileManager> profileManager = settingsComponent->GetProfileManager();
-  const std::shared_ptr<CSettings> settings = settingsComponent->GetSettings();
   CLog::Log(LOGINFO, "userdata folder: {}",
             CURL::GetRedacted(profileManager->GetProfileUserDataFolder()));
   CLog::Log(LOGINFO, "recording folder: {}",

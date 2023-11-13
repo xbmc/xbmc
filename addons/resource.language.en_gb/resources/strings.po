@@ -22163,7 +22163,125 @@ msgctxt "#37057"
 msgid "Data chunk size used on SMB connections"
 msgstr ""
 
-#empty strings from id 37058 to 38010
+#empty strings from id 37058 to 37100
+
+#. Settings / Services "Caching" category label
+#: system/settings/settings.xml
+msgctxt "#37101"
+msgid "Caching"
+msgstr ""
+
+#. Description of category #37101 "Caching"
+#: system/settings/settings.xml
+msgctxt "#37102"
+msgid "This category contains settings that configure caching of local and network files, and internet streams."
+msgstr ""
+
+#. Setting #37103 "Buffer Mode"
+#: system/settings/settings.xml
+msgctxt "#37103"
+msgid "Buffer Mode"
+msgstr ""
+
+#. Description of setting #37103 "Buffer Mode"
+#: system/settings/settings.xml
+msgctxt "#37104"
+msgid "Configure the media content to buffer."
+msgstr ""
+
+#. Setting #37105 "Memory Size"
+#: system/settings/settings.xml
+msgctxt "#37105"
+msgid "Memory Size"
+msgstr ""
+
+#. Description of setting #37105 "Memory Size"
+#: system/settings/settings.xml
+msgctxt "#37106"
+msgid "The size of the memory buffer in Mbytes. Setting zero (0) forces buffering to disk, which is not recommend on flash storage devices (eMMC, SD cards, SSD)."
+msgstr ""
+
+#. Setting #37107 "Read Factor"
+#: system/settings/settings.xml
+msgctxt "#37107"
+msgid "Read Factor"
+msgstr ""
+
+#. Description of setting #37107 "Read Factor"
+#: system/settings/settings.xml
+msgctxt "#37108"
+msgid "The read factor determines cache fill rate in terms of avg. bitrate of stream x Read Factor. Increasing this multiple, cache fills faster but more bandwidth is consumed. Large multiples may cause CPU spikes on some devices, saturate the connection and worsen performance."
+msgstr ""
+
+#. Description of setting "Chunk Size"
+#: system/settings/settings.xml
+msgctxt "#37109"
+msgid "The data chunk size to use when a filesystem or protocol does not force the value, e.g. NFS will override this with its own value."
+msgstr ""
+
+#. Value of setting - NONE
+#: xbmc/settings/SevicesSettings.cpp
+msgctxt "#37110"
+msgid "No buffer"
+msgstr ""
+
+#. Value of setting - TRUE INTERNET
+#: xbmc/settings/SevicesSettings.cpp
+msgctxt "#37111"
+msgid "Only buffer true internet streams: HTTP, HTTPS, etc."
+msgstr ""
+
+#. Value of setting - INTERNET
+#: xbmc/settings/SevicesSettings.cpp
+msgctxt "#37112"
+msgid "Buffer all internet filesystems, including: FTP, WebDAV, etc."
+msgstr ""
+
+#. Value of setting - NETWORK
+#: xbmc/settings/SevicesSettings.cpp
+msgctxt "#37113"
+msgid "Buffer all network filesystems, including: SMB, NFS, etc."
+msgstr ""
+
+#. Value of setting - ALL
+#: xbmc/settings/SevicesSettings.cpp
+msgctxt "#37114"
+msgid "Buffer all filesystems, including local files"
+msgstr ""
+
+#. Value of setting
+#: xbmc/settings/SevicesSettings.cpp
+msgctxt "#37115"
+msgid "Caches entire file on disk storage"
+msgstr ""
+
+#empty strings from id 37116 to 37119
+
+#. Value of setting - Byte
+#: xbmc/settings/SevicesSettings.cpp
+msgctxt "#37120"
+msgid "{0:d} Byte"
+msgstr ""
+
+#. Value of setting - KByte
+#: xbmc/settings/SevicesSettings.cpp
+msgctxt "#37121"
+msgid "{0:d} KB"
+msgstr ""
+
+#. Value of setting - MByte
+#: xbmc/settings/SevicesSettings.cpp
+msgctxt "#37122"
+msgid "{0:d} MB"
+msgstr ""
+
+#. Value of setting - GByte
+#: xbmc/settings/SevicesSettings.cpp
+msgctxt "#37123"
+msgid "{0:d} GB"
+msgstr ""
+
+#empty strings from id 37124 to 38010
 
 #. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml
