@@ -6,18 +6,22 @@ set(HEADERS ConvolutionKernels.h
 
 if(CORE_SYSTEM_NAME STREQUAL windows OR CORE_SYSTEM_NAME STREQUAL windowsstore)
   list(APPEND SOURCES ConversionMatrix.cpp
+                      ToneMappers.cpp
                       WinVideoFilter.cpp)
   list(APPEND HEADERS ConversionMatrix.h
+                      ToneMappers.h
                       WinVideoFilter.h)
 endif()
 
 
-if(OPENGL_FOUND OR OPENGLES_FOUND)
-  list(APPEND SOURCES ConversionMatrix.cpp)
-  list(APPEND HEADERS ConversionMatrix.h)
+if(TARGET OpenGL::GL OR TARGET OpenGL::GLES)
+  list(APPEND SOURCES ConversionMatrix.cpp
+                      ToneMappers.cpp)
+  list(APPEND HEADERS ConversionMatrix.h
+                      ToneMappers.h)
 endif()
 
-if(OPENGL_FOUND)
+if(TARGET OpenGL::GL)
   list(APPEND SOURCES GLSLOutput.cpp
                       VideoFilterShaderGL.cpp
                       YUV2RGBShaderGL.cpp)
@@ -26,12 +30,12 @@ if(OPENGL_FOUND)
                       YUV2RGBShaderGL.h)
 endif()
 
-if(OPENGLES_FOUND AND ("android" IN_LIST CORE_PLATFORM_NAME_LC OR
-                       "ios" IN_LIST CORE_PLATFORM_NAME_LC OR
-                       "tvos" IN_LIST CORE_PLATFORM_NAME_LC OR
-                       "gbm" IN_LIST CORE_PLATFORM_NAME_LC OR
-                       "x11" IN_LIST CORE_PLATFORM_NAME_LC OR
-                       "wayland" IN_LIST CORE_PLATFORM_NAME_LC))
+if(TARGET OpenGL::GLES AND ("android" IN_LIST CORE_PLATFORM_NAME_LC OR
+                            "ios" IN_LIST CORE_PLATFORM_NAME_LC OR
+                            "tvos" IN_LIST CORE_PLATFORM_NAME_LC OR
+                            "gbm" IN_LIST CORE_PLATFORM_NAME_LC OR
+                            "x11" IN_LIST CORE_PLATFORM_NAME_LC OR
+                            "wayland" IN_LIST CORE_PLATFORM_NAME_LC))
   list(APPEND SOURCES VideoFilterShaderGLES.cpp
                       YUV2RGBShaderGLES.cpp)
   list(APPEND HEADERS VideoFilterShaderGLES.h

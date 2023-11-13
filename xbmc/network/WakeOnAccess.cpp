@@ -640,7 +640,7 @@ void CWakeOnAccess::QueueMACDiscoveryForHost(const std::string& host)
 {
   if (IsEnabled())
   {
-    if (URIUtils::IsHostOnLAN(host, true))
+    if (URIUtils::IsHostOnLAN(host, LanCheckMode::ANY_PRIVATE_SUBNET))
       CServiceBroker::GetJobManager()->AddJob(new CMACDiscoveryJob(host), this);
     else
       CLog::Log(LOGINFO, "{} - skip Mac discovery for non-local host '{}'", __FUNCTION__, host);

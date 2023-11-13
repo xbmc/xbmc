@@ -28,17 +28,17 @@ public:
 
   std::shared_ptr<CPVRTimerInfoTag> GetTimerRule() const { return m_timerRule; }
 
-  std::shared_ptr<CPVRChannel> GetChannel() const;
+  std::shared_ptr<const CPVRChannel> GetChannel() const;
   CDateTime GetNextTimerStart() const;
-  bool Matches(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
+  bool Matches(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
 
 private:
-  bool MatchSeriesLink(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
-  bool MatchChannel(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
-  bool MatchStart(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
-  bool MatchEnd(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
-  bool MatchDayOfWeek(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
-  bool MatchSearchText(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
+  bool MatchSeriesLink(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
+  bool MatchChannel(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
+  bool MatchStart(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
+  bool MatchEnd(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
+  bool MatchDayOfWeek(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
+  bool MatchSearchText(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
 
   const std::shared_ptr<CPVRTimerInfoTag> m_timerRule;
   CDateTime m_start;

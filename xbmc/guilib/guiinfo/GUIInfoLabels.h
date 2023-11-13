@@ -564,6 +564,11 @@
 #define SYSTEM_BUILD_VERSION_CODE 1007
 #define SYSTEM_BUILD_VERSION_GIT 1008
 
+static constexpr unsigned int SYSTEM_LOCALE_TIMEZONECOUNTRY = 1009;
+static constexpr unsigned int SYSTEM_LOCALE_TIMEZONE = 1010;
+static constexpr unsigned int SYSTEM_LOCALE_REGION = 1011;
+static constexpr unsigned int SYSTEM_LOCALE = 1012;
+
 #define PVR_CONDITIONS_START        1100
 #define PVR_IS_RECORDING            (PVR_CONDITIONS_START)
 #define PVR_HAS_TIMER               (PVR_CONDITIONS_START + 1)

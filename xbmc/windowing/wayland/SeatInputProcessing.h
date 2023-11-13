@@ -79,7 +79,7 @@ public:
  * Multi-seat support is not currently implemented completely, but each seat has
  * separate state.
  */
-class CSeatInputProcessing final : IInputHandlerPointer, IInputHandlerKeyboard
+class CSeatInputProcessing final : public IInputHandlerPointer, public IInputHandlerKeyboard
 {
 public:
   /**

@@ -10,9 +10,12 @@
 
 #include "DVDFileInfo.h"
 #include "FileItem.h"
+#include "ServiceBroker.h"
 #include "URL.h"
 #include "filesystem/DirectoryCache.h"
 #include "guilib/Texture.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
 
@@ -48,6 +51,12 @@ void SetupRarOptions(CFileItem& item, const std::string& path)
 std::unique_ptr<CTexture> VIDEO::CVideoGeneratedImageFileLoader::Load(
     const std::string& specialType, const std::string& filePath, unsigned int, unsigned int) const
 {
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_MYVIDEOS_EXTRACTTHUMB))
+  {
+    return {};
+  }
+
   CFileItem item{filePath, false};
 
   if (URIUtils::IsInRAR(filePath))

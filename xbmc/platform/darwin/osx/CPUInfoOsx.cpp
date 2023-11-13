@@ -8,14 +8,17 @@
 
 #include "CPUInfoOsx.h"
 
+#include "ServiceBroker.h"
+#include "settings/AdvancedSettings.h"
+#include "settings/SettingsComponent.h"
 #include "utils/Temperature.h"
 
-#include "platform/darwin/osx/smc.h"
 #include "platform/posix/PosixResourceCounter.h"
 
 #include <array>
 #include <string>
 
+#include <smctemp.h>
 #include <sys/sysctl.h>
 #include <sys/types.h>
 
@@ -118,13 +121,19 @@ float CCPUInfoOsx::GetCPUFrequency()
 
 bool CCPUInfoOsx::GetTemperature(CTemperature& temperature)
 {
-  int value = SMCGetTemperature(SMC_KEY_CPU_TEMP);
-
-  temperature = CTemperature::CreateFromCelsius(value);
-  if (temperature == CTemperature::CreateFromCelsius(0.0))
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_cpuTempCmd.empty())
   {
-    temperature.SetValid(false);
+    return CheckUserTemperatureCommand(temperature);
   }
 
+  smctemp::SmcTemp smcTemp = smctemp::SmcTemp();
+  const double value = smcTemp.GetCpuTemp();
+  if (value <= 0.0)
+  {
+    temperature.SetValid(false);
+    return false;
+  }
+
+  temperature = CTemperature::CreateFromCelsius(value);
   return true;
 }

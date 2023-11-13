@@ -367,16 +367,29 @@ void CGUIDialogContentSettings::InitializeSettings()
       // define an enable dependency with (m_useDirectoryNames && !m_containsSingleItem) || !m_useDirectoryNames
       CSettingDependency dependencyScanRecursive(SettingDependencyType::Enable, GetSettingsManager());
       dependencyScanRecursive.Or()
-        ->Add(CSettingDependencyConditionCombinationPtr((new CSettingDependencyConditionCombination(BooleanLogicOperationAnd, GetSettingsManager()))                                     // m_useDirectoryNames && !m_containsSingleItem
-          ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_USE_DIRECTORY_NAMES, "true", SettingDependencyOperator::Equals, false, GetSettingsManager())))      // m_useDirectoryNames
-          ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_CONTAINS_SINGLE_ITEM, "false", SettingDependencyOperator::Equals, false, GetSettingsManager())))))  // !m_containsSingleItem
-        ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_USE_DIRECTORY_NAMES, "false", SettingDependencyOperator::Equals, false, GetSettingsManager())));      // !m_useDirectoryNames
+          ->Add(CSettingDependencyConditionCombinationPtr(
+              (new CSettingDependencyConditionCombination(
+                   BooleanLogicOperationAnd,
+                   GetSettingsManager())) // m_useDirectoryNames && !m_containsSingleItem
+                  ->Add(std::make_shared<CSettingDependencyCondition>(
+                      SETTING_USE_DIRECTORY_NAMES, "true", SettingDependencyOperator::Equals, false,
+                      GetSettingsManager())) // m_useDirectoryNames
+                  ->Add(std::make_shared<CSettingDependencyCondition>(
+                      SETTING_CONTAINS_SINGLE_ITEM, "false", SettingDependencyOperator::Equals,
+                      false, GetSettingsManager())))) // !m_containsSingleItem
+          ->Add(std::make_shared<CSettingDependencyCondition>(
+              SETTING_USE_DIRECTORY_NAMES, "false", SettingDependencyOperator::Equals, false,
+              GetSettingsManager())); // !m_useDirectoryNames
 
       // define an enable dependency with m_useDirectoryNames && !m_scanRecursive
       CSettingDependency dependencyContainsSingleItem(SettingDependencyType::Enable, GetSettingsManager());
       dependencyContainsSingleItem.And()
-        ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_USE_DIRECTORY_NAMES, "true", SettingDependencyOperator::Equals, false, GetSettingsManager())))        // m_useDirectoryNames
-        ->Add(CSettingDependencyConditionPtr(new CSettingDependencyCondition(SETTING_SCAN_RECURSIVE, "false", SettingDependencyOperator::Equals, false, GetSettingsManager())));           // !m_scanRecursive
+          ->Add(std::make_shared<CSettingDependencyCondition>(
+              SETTING_USE_DIRECTORY_NAMES, "true", SettingDependencyOperator::Equals, false,
+              GetSettingsManager())) // m_useDirectoryNames
+          ->Add(std::make_shared<CSettingDependencyCondition>(
+              SETTING_SCAN_RECURSIVE, "false", SettingDependencyOperator::Equals, false,
+              GetSettingsManager())); // !m_scanRecursive
 
       SettingDependencies deps;
       deps.push_back(dependencyScanRecursive);

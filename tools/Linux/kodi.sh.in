@@ -182,10 +182,26 @@ if [ -n "${KODI_AE_SINK}" ]; then
     ENV_ARGS="--audio-backend=pulseaudio"
   elif [ "${KODI_AE_SINK}" = "ALSA" ]; then
     ENV_ARGS="--audio-backend=alsa"
+  elif [ "${KODI_AE_SINK}" = "OSS" ]; then
+    ENV_ARGS="--audio-backend=oss"
   elif [ "${KODI_AE_SINK}" = "SNDIO" ]; then
     ENV_ARGS="--audio-backend=sndio"
   elif [ "${KODI_AE_SINK}" = "ALSA+PULSE" ]; then
     ENV_ARGS="--audio-backend=alsa+pulseaudio"
+  fi
+fi
+
+if [ -n "${KODI_GL_INTERFACE}" ]; then
+
+  echo "KODI_GL_INTERFACE env variable is deprecated and will be removed in the future."
+  echo "Use the --gl-interface command line switch instead."
+
+  if [ "${KODI_GL_INTERFACE}" = "GLX" ]; then
+    ENV_ARGS="--gl-interface=glx"
+  elif [ "${KODI_GL_INTERFACE}" = "EGL" ]; then
+    ENV_ARGS="--gl-interface=egl"
+  elif [ "${KODI_GL_INTERFACE}" = "EGL_PB" ]; then
+    ENV_ARGS="--gl-interface=egl-pb"
   fi
 fi
 

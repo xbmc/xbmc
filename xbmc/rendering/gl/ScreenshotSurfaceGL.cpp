@@ -14,6 +14,7 @@
 #include "utils/Screenshot.h"
 #include "windowing/GraphicContext.h"
 
+#include <memory>
 #include <mutex>
 #include <vector>
 
@@ -26,7 +27,7 @@ void CScreenshotSurfaceGL::Register()
 
 std::unique_ptr<IScreenshotSurface> CScreenshotSurfaceGL::CreateSurface()
 {
-  return std::unique_ptr<CScreenshotSurfaceGL>(new CScreenshotSurfaceGL());
+  return std::make_unique<CScreenshotSurfaceGL>();
 }
 
 bool CScreenshotSurfaceGL::Capture()

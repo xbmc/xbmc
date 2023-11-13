@@ -57,6 +57,7 @@ public:
   static bool IsSuperResolutionSuitable(const VideoPicture& picture);
   void TryEnableVideoSuperResolution();
   bool IsVideoSuperResolutionEnabled() const { return m_superResolutionEnabled; }
+  bool Supports(ERENDERFEATURE feature) const;
 
 protected:
   bool ReInit();

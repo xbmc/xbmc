@@ -1,0 +1,29 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -41,7 +41,10 @@
+ set_target_properties(p8-platform PROPERTIES VERSION ${p8-platform_VERSION_MAJOR}.${p8-platform_VERSION_MINOR}.${p8-platform_VERSION_PATCH}
+                                               SOVERSION ${p8-platform_VERSION_MAJOR})
+ 
+-install(TARGETS p8-platform DESTINATION ${CMAKE_INSTALL_LIBDIR})
++install(TARGETS p8-platform 
++  RUNTIME DESTINATION bin
++  ARCHIVE DESTINATION lib
++  LIBRARY DESTINATION lib)
+ install(FILES src/os.h DESTINATION include/p8-platform)
+ IF(WIN32)
+   INSTALL(FILES src/windows/dlfcn-win32.h
+@@ -74,12 +77,12 @@
+ IF(NOT WIN32)
+   configure_file(p8-platform.pc.in p8-platform.pc @ONLY)
+   install(FILES ${CMAKE_BINARY_DIR}/p8-platform.pc
+-          DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
++          DESTINATION lib/pkgconfig)
+ ENDIF(NOT WIN32)
+ 
+ # config mode
+ configure_file (p8-platform-config.cmake.in
+                 p8-platform-config.cmake @ONLY)
+ install(FILES ${CMAKE_BINARY_DIR}/p8-platform-config.cmake
+-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/p8-platform)
++        DESTINATION lib/cmake/p8-platform)
+ 

@@ -40,9 +40,35 @@ public:
   void Init();
   void Deinit();
 
-  ContextMenuView GetItems(const CFileItem& item, const CContextMenuItem& root = MAIN) const;
+  /*! \brief Checks whether context menu items are available for a file item.
+   \param fileItem the file item
+   \param root the root context menu item
+   \return true if any items are present, false otherwise
+   */
+  bool HasItems(const CFileItem& fileItem, const CContextMenuItem& root) const;
 
-  ContextMenuView GetAddonItems(const CFileItem& item, const CContextMenuItem& root = MAIN) const;
+  /*! \brief Gets the context menu items available for a file item.
+   \param fileItem the file item
+   \param root the root context menu item
+   \return the items
+   \sa ContextMenuView
+   */
+  ContextMenuView GetItems(const CFileItem& fileItem, const CContextMenuItem& root) const;
+
+  /*! \brief Checks whether addon context menu items are available for a file item.
+   \param fileItem the file item
+   \param root the root context menu item
+   \return true if any items are present, false otherwise
+   */
+  bool HasAddonItems(const CFileItem& fileItem, const CContextMenuItem& root) const;
+
+  /*! \brief Gets the addon context menu items available for a file item.
+   \param fileItem the file item
+   \param root the root context menu item
+   \return the items
+   \sa ContextMenuView
+   */
+  ContextMenuView GetAddonItems(const CFileItem& fileItem, const CContextMenuItem& root) const;
 
 private:
   CContextMenuManager(const CContextMenuManager&) = delete;
@@ -67,14 +93,24 @@ private:
 
 namespace CONTEXTMENU
 {
-  /*!
-   * Starts the context menu loop for a file item.
-   * */
-bool ShowFor(const std::shared_ptr<CFileItem>& fileItem,
-             const CContextMenuItem& root = CContextMenuManager::MAIN);
+/*! \brief Checks whether any context menu items are available for a file item.
+ \param fileItem the file item
+ \param root the root context menu item
+ \return true if any items are present, false otherwise
+ */
+bool HasAnyMenuItemsFor(const std::shared_ptr<CFileItem>& fileItem, const CContextMenuItem& root);
 
-/*!
-   * Shortcut for continuing the context menu loop from an existing menu item.
-   */
+/*! \brief Starts the context menu loop for a file item.
+ \param fileItem the file item
+ \param root the root context menu item
+ \return true on success, false otherwise
+ */
+bool ShowFor(const std::shared_ptr<CFileItem>& fileItem, const CContextMenuItem& root);
+
+/*! \brief Shortcut for continuing the context menu loop from an existing menu item.
+ \param menu the menu item
+ \param fileItem the file item
+ \return true on success, false otherwise
+ */
 bool LoopFrom(const IContextMenuItem& menu, const std::shared_ptr<CFileItem>& fileItem);
 }

@@ -144,7 +144,7 @@ void CGUIWindowPVRGuideBase::OnDeinitWindow(int nextWindowID)
 void CGUIWindowPVRGuideBase::StartRefreshTimelineItemsThread()
 {
   StopRefreshTimelineItemsThread();
-  m_refreshTimelineItemsThread.reset(new CPVRRefreshTimelineItemsThread(this));
+  m_refreshTimelineItemsThread = std::make_unique<CPVRRefreshTimelineItemsThread>(this);
   m_refreshTimelineItemsThread->Create();
 }
 
@@ -197,7 +197,7 @@ void CGUIWindowPVRGuideBase::UpdateSelectedItemPath()
   CGUIEPGGridContainer* epgGridContainer = GetGridControl();
   if (epgGridContainer)
   {
-    const std::shared_ptr<CPVRChannelGroupMember> groupMember =
+    const std::shared_ptr<const CPVRChannelGroupMember> groupMember =
         epgGridContainer->GetSelectedChannelGroupMember();
     if (groupMember)
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Channels>().SetSelectedChannelPath(
@@ -211,7 +211,7 @@ void CGUIWindowPVRGuideBase::UpdateButtons()
 
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER1, g_localizeStrings.Get(19032));
 
-  const std::shared_ptr<CPVRChannelGroup> group = GetChannelGroup();
+  const std::shared_ptr<const CPVRChannelGroup> group = GetChannelGroup();
   SET_CONTROL_LABEL(CONTROL_LABEL_HEADER2, group ? group->GroupName() : "");
 }
 
@@ -280,7 +280,7 @@ CFileItemPtr CGUIWindowPVRGuideBase::GetCurrentListItem(int offset /*= 0*/)
   return {};
 }
 
-int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(const std::shared_ptr<CFileItem>& item)
+int CGUIWindowPVRGuideBase::GetCurrentListItemIndex(const std::shared_ptr<const CFileItem>& item)
 {
   return item ? item->GetProperty("TimelineIndex").asInteger() : -1;
 }
@@ -463,7 +463,7 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                   break;
                 case EPG_SELECT_ACTION_SMART_SELECT:
                 {
-                  const std::shared_ptr<CPVREpgInfoTag> tag(pItem->GetEPGInfoTag());
+                  const std::shared_ptr<const CPVREpgInfoTag> tag(pItem->GetEPGInfoTag());
                   if (tag)
                   {
                     const CDateTime start(tag->StartAsUTC());
@@ -484,7 +484,8 @@ bool CGUIWindowPVRGuideBase::OnMessage(CGUIMessage& message)
                       else
                       {
                         bool bCanRecord = true;
-                        const std::shared_ptr<CPVRChannel> channel = CPVRItem(pItem).GetChannel();
+                        const std::shared_ptr<const CPVRChannel> channel =
+                            CPVRItem(pItem).GetChannel();
                         if (channel)
                           bCanRecord = channel->CanRecord();
 
@@ -782,7 +783,8 @@ bool CGUIWindowPVRGuideBase::GotoCurrentProgramme()
 
   if (!channel)
   {
-    const std::shared_ptr<CPVREpgInfoTag> playingTag = mgr.PlaybackState()->GetPlayingEpgTag();
+    const std::shared_ptr<const CPVREpgInfoTag> playingTag =
+        mgr.PlaybackState()->GetPlayingEpgTag();
     if (playingTag)
       channel = mgr.ChannelGroups()->GetChannelForEpgTag(playingTag);
   }
@@ -850,7 +852,8 @@ bool CGUIWindowPVRGuideBase::GotoPlayingChannel()
 
   if (!channel)
   {
-    const std::shared_ptr<CPVREpgInfoTag> playingTag = mgr.PlaybackState()->GetPlayingEpgTag();
+    const std::shared_ptr<const CPVREpgInfoTag> playingTag =
+        mgr.PlaybackState()->GetPlayingEpgTag();
     if (playingTag)
       channel = mgr.ChannelGroups()->GetChannelForEpgTag(playingTag);
   }
@@ -874,7 +877,7 @@ void CGUIWindowPVRGuideBase::OnInputDone()
 
 void CGUIWindowPVRGuideBase::GetChannelNumbers(std::vector<std::string>& channelNumbers)
 {
-  const std::shared_ptr<CPVRChannelGroup> group = GetChannelGroup();
+  const std::shared_ptr<const CPVRChannelGroup> group = GetChannelGroup();
   if (group)
     group->GetChannelNumbers(channelNumbers);
 }

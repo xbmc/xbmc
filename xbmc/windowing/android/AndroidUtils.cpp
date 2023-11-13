@@ -122,14 +122,14 @@ static void fetchDisplayModes()
 
 namespace
 {
-const std::map<int, std::string> hdrTypeMap = {
-    {CAndroidUtils::HDRTypes::HDR10, "HDR10"},
-    {CAndroidUtils::HDRTypes::HLG, "HLG"},
-    {CAndroidUtils::HDRTypes::HDR10_PLUS, "HDR10+"},
-    {CAndroidUtils::HDRTypes::DOLBY_VISION, "Dolby Vision"}};
-
 std::string HdrTypeString(int type)
 {
+  const std::map<int, std::string> hdrTypeMap = {
+      {CJNIDisplayHdrCapabilities::HDR_TYPE_HDR10, "HDR10"},
+      {CJNIDisplayHdrCapabilities::HDR_TYPE_HLG, "HLG"},
+      {CJNIDisplayHdrCapabilities::HDR_TYPE_HDR10_PLUS, "HDR10+"},
+      {CJNIDisplayHdrCapabilities::HDR_TYPE_DOLBY_VISION, "Dolby Vision"}};
+
   auto hdr = hdrTypeMap.find(type);
   if (hdr != hdrTypeMap.end())
     return hdr->second;
@@ -406,16 +406,20 @@ CHDRCapabilities CAndroidUtils::GetDisplayHDRCapabilities()
   CHDRCapabilities caps;
   const std::vector<int> types = GetDisplaySupportedHdrTypes();
 
-  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::HDR10) != types.end())
+  if (std::find(types.begin(), types.end(), CJNIDisplayHdrCapabilities::HDR_TYPE_HDR10) !=
+      types.end())
     caps.SetHDR10();
 
-  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::HLG) != types.end())
+  if (std::find(types.begin(), types.end(), CJNIDisplayHdrCapabilities::HDR_TYPE_HLG) !=
+      types.end())
     caps.SetHLG();
 
-  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::HDR10_PLUS) != types.end())
+  if (std::find(types.begin(), types.end(), CJNIDisplayHdrCapabilities::HDR_TYPE_HDR10_PLUS) !=
+      types.end())
     caps.SetHDR10Plus();
 
-  if (std::find(types.begin(), types.end(), CAndroidUtils::HDRTypes::DOLBY_VISION) != types.end())
+  if (std::find(types.begin(), types.end(), CJNIDisplayHdrCapabilities::HDR_TYPE_DOLBY_VISION) !=
+      types.end())
     caps.SetDolbyVision();
 
   return caps;

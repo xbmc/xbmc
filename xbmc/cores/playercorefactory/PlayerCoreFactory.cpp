@@ -146,10 +146,13 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
     int idx = GetPlayerIndex("videodefaultplayer");
     if (idx > -1)
     {
-      std::string eVideoDefault = GetPlayerName(idx);
-      CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding videodefaultplayer ({})",
-                eVideoDefault);
-      players.push_back(eVideoDefault);
+      const std::string videoDefault = GetPlayerName(idx);
+      if (std::find(players.cbegin(), players.cend(), videoDefault) == players.cend())
+      {
+        players.emplace_back(videoDefault);
+        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding videodefaultplayer ({})",
+                  videoDefault);
+      }
     }
     GetPlayers(players, false, true);  // Video-only players
     GetPlayers(players, true, true);   // Audio & video players
@@ -163,10 +166,13 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
     int idx = GetPlayerIndex("audiodefaultplayer");
     if (idx > -1)
     {
-      std::string eAudioDefault = GetPlayerName(idx);
-      CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding audiodefaultplayer ({})",
-                eAudioDefault);
-      players.push_back(eAudioDefault);
+      const std::string audioDefault = GetPlayerName(idx);
+      if (std::find(players.cbegin(), players.cend(), audioDefault) == players.cend())
+      {
+        players.emplace_back(audioDefault);
+        CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers: adding audiodefaultplayer ({})",
+                  audioDefault);
+      }
     }
     GetPlayers(players, true, false); // Audio-only players
     GetPlayers(players, true, true);  // Audio & video players
@@ -246,6 +252,11 @@ std::string CPlayerCoreFactory::GetPlayerType(const std::string& player) const
     return "";
 
   return m_vecPlayerConfigs[idx]->m_type;
+}
+
+bool CPlayerCoreFactory::IsExternalPlayer(const std::string& player) const
+{
+  return (GetPlayerType(player) == "external");
 }
 
 bool CPlayerCoreFactory::PlaysAudio(const std::string& player) const

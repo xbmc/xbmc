@@ -22,6 +22,14 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
     --without-git --without-cvs \
     --disable-shared --disable-curses --disable-acl --disable-c++ --disable-nls
 
+ifeq ($(NATIVE_OS), osx)
+  # As per homebrew - https://github.com/Homebrew/homebrew-core/blob/f6df737d9479dd215185000a3dbd641185eafec2/Formula/g/gettext.rb#L52C1-L55
+  # Sonoma iconv() has a regression w.r.t. transliteration, which happens to
+  # break gettext's configure check. Force it.
+  # Reported to Apple as FB13163914
+  CONFIGURE+= am_cv_func_iconv_works=y
+endif
+
 LIBDYLIB=$(PLATFORM)/gettext-tools/src/.libs/libgettextsrc.a
 
 all: .installed-$(PLATFORM)

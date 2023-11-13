@@ -95,27 +95,6 @@ echo "Checking addons *.so for dylib dependencies"
 check_xbmc_dylib_depends "$XBMC_HOME"/addons "*.so"
 
 echo "Checking xbmc/DllPaths_generated.h for dylib dependencies"
-for a in $(grep .dylib "$BUILD_ROOT"/xbmc/DllPaths_generated.h | awk '{print $3}' | sed s/\"//g) ; do
+for a in $(grep .so "$BUILD_ROOT"/xbmc/DllPaths_generated.h | awk '{print $3}' | sed s/\"//g) ; do
   check_dyloaded_depends $a
 done
-
-echo "Checking $TARGET_FRAMEWORKS for missing dylib dependencies"
-REWIND="1"
-while [ $REWIND = "1" ]
-do
-  let REWIND="0"
-  for b in "$TARGET_FRAMEWORKS/"*dylib* ; do
-    #echo "  Processing $b"
-    for a in $(otool -L "$b"  | grep "$EXTERNAL_LIBS" | awk ' { print $1 } ') ; do
-      #echo "Processing $a"
-      if [ ! -f  "$TARGET_FRAMEWORKS/$(basename $a)" ]; then
-        echo "    Packaging $a"
-        cp -f "$a" "$TARGET_FRAMEWORKS/"
-        chmod u+w "$TARGET_FRAMEWORKS/$(basename $a)"
-        let REWIND="1"
-      fi
-      install_name_tool -change "$a" "$DYLIB_NAMEPATH/$(basename $a)" "$TARGET_FRAMEWORKS/$(basename $b)"
-    done
-  done
-done
-

@@ -38,9 +38,9 @@ CPVRRecordingsPath::CPVRRecordingsPath(const std::string& strPath)
               ((segments.at(3) == "active") || (segments.at(3) == "deleted")));
   if (m_bValid)
   {
-    m_bRoot = (m_bValid && (segments.size() == 4));
-    m_bRadio = (m_bValid && (segments.at(2) == "radio"));
-    m_bActive = (m_bValid && (segments.at(3) == "active"));
+    m_bRoot = (segments.size() == 4);
+    m_bRadio = (segments.at(2) == "radio");
+    m_bActive = (segments.at(3) == "active");
 
     if (m_bRoot)
       strVarPath.append("/");
@@ -132,6 +132,20 @@ std::string CPVRRecordingsPath::GetUnescapedDirectoryPath() const
   return CURL::Decode(m_directoryPath);
 }
 
+namespace
+{
+bool PathHasParent(const std::string& path, const std::string& parent)
+{
+  if (path == parent)
+    return true;
+
+  if (!parent.empty() && parent.back() != '/')
+    return StringUtils::StartsWith(path, parent + '/');
+
+  return StringUtils::StartsWith(path, parent);
+}
+} // unnamed namespace
+
 std::string CPVRRecordingsPath::GetUnescapedSubDirectoryPath(const std::string& strPath) const
 {
   // note: strPath must be unescaped.
@@ -144,7 +158,7 @@ std::string CPVRRecordingsPath::GetUnescapedSubDirectoryPath(const std::string& 
   /* adding "/" to make sure that base matches the complete folder name and not only parts of it */
   if (!strUnescapedDirectoryPath.empty() &&
       (strUsePath.size() <= strUnescapedDirectoryPath.size() ||
-       !URIUtils::PathHasParent(strUsePath, strUnescapedDirectoryPath)))
+       !PathHasParent(strUsePath, strUnescapedDirectoryPath)))
     return strReturn;
 
   strUsePath.erase(0, strUnescapedDirectoryPath.size());

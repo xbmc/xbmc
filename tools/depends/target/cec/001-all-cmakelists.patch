@@ -1,0 +1,40 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -6,6 +6,7 @@
+ set(LIBCEC_VERSION_PATCH 7)
+ 
+ # cec-client
++if(ENABLE_CLIENT)
+ add_subdirectory(src/cec-client)
+ add_dependencies(cec-client cec)
+ 
+@@ -15,6 +16,7 @@
+ 
+ # pyCecClient
+ add_subdirectory(src/pyCecClient)
++endif()
+ 
+ # libCEC
+ add_subdirectory(src/libcec)
+@@ -25,6 +27,7 @@
+ 
+ # windows specific files
+ if(WIN32)
++if(ENABLE_CLIENT)
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/project/nsis/libcec-version.nsh.in
+                  ${CMAKE_CURRENT_SOURCE_DIR}/project/nsis/libcec-version.nsh)
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/dotnetlib/LibCecSharp/LibCecSharp.rc.in
+@@ -40,3 +43,13 @@
+   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/src/dotnet/src/CecSharpTester/netfx/CecSharpTester.csproj.in
+                  ${CMAKE_CURRENT_SOURCE_DIR}/src/dotnet/src/CecSharpTester/netfx/CecSharpTester.csproj)
+ endif()
++endif()
++
++# handle version file
++include(CMakePackageConfigHelpers)
++write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
++                                 VERSION "${LIBCEC_VERSION_MAJOR}.${LIBCEC_VERSION_MINOR}.${LIBCEC_VERSION_PATCH}"
++                                 COMPATIBILITY AnyNewerVersion)
++
++install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
++        DESTINATION lib/cmake/${PROJECT_NAME})

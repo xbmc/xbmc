@@ -75,6 +75,10 @@ bool CGUIDialogTeletext::OnMessage(CGUIMessage& message)
 
 void CGUIDialogTeletext::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  if (m_TextDecoder.Changed())
+  {
+    MarkDirtyRegion();
+  }
   CGUIDialog::Process(currentTime, dirtyregions);
   m_renderRegion = m_vertCoords;
 }

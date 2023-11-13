@@ -283,9 +283,9 @@ bool CPVRGUIActionListener::OnAction(const CAction& action)
       int iChannelNumber = static_cast<int>(action.GetAmount(0));
       int iSubChannelNumber = static_cast<int>(action.GetAmount(1));
 
-      const std::shared_ptr<CPVRPlaybackState> playbackState =
+      const std::shared_ptr<const CPVRPlaybackState> playbackState =
           CServiceBroker::GetPVRManager().PlaybackState();
-      const std::shared_ptr<CPVRChannelGroup> activeGroup =
+      const std::shared_ptr<const CPVRChannelGroup> activeGroup =
           playbackState->GetActiveChannelGroup(playbackState->IsPlayingRadio());
       const std::shared_ptr<CPVRChannelGroupMember> groupMember =
           activeGroup->GetByChannelNumber(CPVRChannelNumber(iChannelNumber, iSubChannelNumber));

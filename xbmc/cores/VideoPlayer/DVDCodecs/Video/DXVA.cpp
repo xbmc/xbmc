@@ -1114,15 +1114,6 @@ bool CVideoBufferPool::HasFree()
   return !m_freeViews.empty();
 }
 
-bool CVideoBufferPool::HasRefs()
-{
-  std::unique_lock<CCriticalSection> lock(m_section);
-  // out buffers hold views
-  const size_t buffRefs = m_out.size() - m_freeOut.size();
-  // ffmpeg refs = total - free - out refs
-  return m_freeViews.size() != m_views.size() - buffRefs;
-}
-
 //-----------------------------------------------------------------------------
 // DXVA::CDecoder
 //-----------------------------------------------------------------------------
@@ -1164,15 +1155,6 @@ CDecoder::~CDecoder()
   av_freep(&m_avD3D11Context->surface);
   av_freep(&m_avD3D11Context->cfg);
   av_freep(&m_avD3D11Context);
-}
-
-long CDecoder::Release()
-{
-  // if ffmpeg holds any references, flush buffers
-  if (m_bufferPool && m_bufferPool->HasRefs())
-    avcodec_flush_buffers(m_avCtx);
-
-  return IHardwareDecoder::Release();
 }
 
 void CDecoder::Close()
@@ -1443,8 +1425,6 @@ bool CDecoder::Open(AVCodecContext* avctx, AVCodecContext* mainctx, enum AVPixel
   mainctx->hwaccel_context = m_avD3D11Context;
   mainctx->slice_flags = SLICE_FLAG_ALLOW_FIELD | SLICE_FLAG_CODED_ORDER;
 
-  m_avCtx = mainctx;
-
   if (m_format.Guid == DXVADDI_Intel_ModeH264_E)
   {
 #ifdef FF_DXVA2_WORKAROUND_INTEL_CLEARVIDEO
@@ -1693,7 +1673,7 @@ void CDecoder::ReleaseBuffer(uint8_t* data)
     CLog::LogF(LOGWARNING, "return of invalid surface.");
   }
 
-  IHardwareDecoder::Release();
+  Release();
 }
 
 int CDecoder::FFGetBuffer(AVCodecContext* avctx, AVFrame* pic, int flags)

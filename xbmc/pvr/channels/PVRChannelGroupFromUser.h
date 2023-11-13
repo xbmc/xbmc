@@ -22,7 +22,7 @@ public:
    * @param allChannelsGroup The channel group containing all TV or radio channels.
    */
   CPVRChannelGroupFromUser(const CPVRChannelsPath& path,
-                           const std::shared_ptr<CPVRChannelGroup>& allChannelsGroup);
+                           const std::shared_ptr<const CPVRChannelGroup>& allChannelsGroup);
 
   /*!
    * @brief Check whether this group could be deleted by the user.

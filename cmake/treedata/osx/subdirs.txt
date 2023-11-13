@@ -7,7 +7,6 @@ xbmc/platform/darwin/osx              platform/osx
 xbmc/platform/darwin/osx/network      platform/darwin/osx/network
 xbmc/platform/darwin/osx/peripherals  platform/osx/peripherals
 xbmc/platform/darwin/osx/powermanagement platform/darwin/osx/powermanagement
-xbmc/platform/darwin/osx/SDL          platform/osx/SDL
 xbmc/platform/darwin/osx/storage      platform/osx/storage
 xbmc/platform/darwin/peripherals      platform/darwin/peripherals
 xbmc/platform/darwin/utils            platform/darwin/utils
@@ -19,4 +18,3 @@ xbmc/platform/posix/threads           platform/posix/threads
 xbmc/platform/posix/utils             platform/posix/utils
 xbmc/windowing/osx                    windowing/osx
 xbmc/windowing/osx/OpenGL             windowing/osx/OpenGL
-xbmc/windowing/osx/SDL                windowing/osx/SDL

@@ -649,9 +649,11 @@ namespace XBMCAddon
     /// @param id                    string - id of setting to return
     /// @return                      Region setting
     ///
-    /// @note choices are (dateshort, datelong, time, meridiem, tempunit, speedunit)
-    ///        You can use the above as keywords for arguments.
+    /// @note choices are (dateshort, datelong, time, meridiem, tempunit, speedunit,
+    ///       datelongraw, dateshortraw, timeraw)
+    ///       You can use the above as keywords for arguments.
     ///
+    /// @warning an empty string is returned if the provided Id is not supported
     ///
     /// ------------------------------------------------------------------------
     ///

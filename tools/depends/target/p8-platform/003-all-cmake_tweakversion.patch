@@ -1,0 +1,21 @@
+--- a/p8-platform-config.cmake.in
++++ b/p8-platform-config.cmake.in
+@@ -9,7 +9,7 @@
+ #  p8-platform_LIBRARY_DIRS - directories in which the libraries are situated
+ #
+ # propagate these properties from one build system to the other
+-set (p8-platform_VERSION "@p8-platform_VERSION_MAJOR@.@p8-platform_VERSION_MINOR@")
++set (p8-platform_VERSION "@p8-platform_VERSION_MAJOR@.@p8-platform_VERSION_MINOR@.@p8-platform_VERSION_PATCH@.@p8-platform_VERSION_TWEAK@")
+ set (p8-platform_INCLUDE_DIRS @p8-platform_INCLUDE_DIRS@ @CMAKE_INSTALL_PREFIX@/include)
+ set (p8-platform_LIBRARY_DIRS "@CMAKE_LIBRARY_OUTPUT_DIRECTORY@")
+ set (p8-platform_LINKER_FLAGS "@p8-platform_LINKER_FLAGS@")
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -14,6 +14,7 @@
+ set(p8-platform_VERSION_MAJOR 2)
+ set(p8-platform_VERSION_MINOR 1)
+ set(p8-platform_VERSION_PATCH 0)
++set(p8-platform_VERSION_TWEAK 1)
+ 
+ set(CMAKE_POSITION_INDEPENDENT_CODE on)
+ 

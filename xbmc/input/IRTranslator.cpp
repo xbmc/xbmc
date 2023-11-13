@@ -19,6 +19,7 @@
 #include "utils/log.h"
 
 #include <cstring>
+#include <memory>
 #include <stdlib.h>
 #include <vector>
 
@@ -106,7 +107,7 @@ void CIRTranslator::MapRemote(tinyxml2::XMLNode* pRemote, const std::string& szD
 
   auto it = m_irRemotesMap.find(szDevice);
   if (it == m_irRemotesMap.end())
-    m_irRemotesMap[szDevice].reset(new IRButtonMap);
+    m_irRemotesMap[szDevice] = std::make_shared<IRButtonMap>();
 
   const std::shared_ptr<IRButtonMap>& buttons = m_irRemotesMap[szDevice];
 

@@ -28,6 +28,9 @@
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "video/VideoLibraryQueue.h"
+#include "video/VideoUtils.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
+#include "video/guilib/VideoSelectActionProcessor.h"
 #include "video/windows/GUIWindowVideoBase.h"
 
 #include <memory>
@@ -35,13 +38,13 @@
 #include <string>
 
 using namespace PVR;
+using namespace VIDEO::GUILIB;
 
 CGUIWindowPVRRecordingsBase::CGUIWindowPVRRecordingsBase(bool bRadio,
                                                          int id,
                                                          const std::string& xmlFile)
   : CGUIWindowPVRBase(bRadio, id, xmlFile),
-    m_settings(
-        {CSettings::SETTING_PVRRECORD_GROUPRECORDINGS, CSettings::SETTING_MYVIDEOS_SELECTACTION})
+    m_settings({CSettings::SETTING_PVRRECORD_GROUPRECORDINGS})
 {
 }
 
@@ -219,6 +222,101 @@ void CGUIWindowPVRRecordingsBase::UpdateButtons()
                     bGroupRecordings && path.IsValid() ? path.GetUnescapedDirectoryPath() : "");
 }
 
+namespace
+{
+class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
+{
+public:
+  CVideoSelectActionProcessor(CGUIWindowPVRRecordingsBase& window, CFileItem& item, int itemIndex)
+    : CVideoSelectActionProcessorBase(item), m_window(window), m_itemIndex(itemIndex)
+  {
+  }
+
+protected:
+  bool OnPlayPartSelected(unsigned int part) override
+  {
+    //! @todo pvr recordings do not support video stacking (yet).
+    return false;
+  }
+
+  bool OnResumeSelected() override
+  {
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().ResumePlayRecording(
+        m_item, true /* fall back to play if no resume possible */);
+    return true;
+  }
+
+  bool OnPlaySelected() override
+  {
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+        m_item, false /* no resume check */);
+    return true;
+  }
+
+  bool OnQueueSelected() override
+  {
+    VIDEO_UTILS::QueueItem(std::make_shared<CFileItem>(m_item),
+                           VIDEO_UTILS::QueuePosition::POSITION_END);
+    return true;
+  }
+
+  bool OnInfoSelected() override
+  {
+    CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(m_item);
+    return true;
+  }
+
+  bool OnMoreSelected() override
+  {
+    m_window.OnPopupMenu(m_itemIndex);
+    return true;
+  }
+
+private:
+  CGUIWindowPVRRecordingsBase& m_window;
+  const int m_itemIndex{-1};
+};
+
+class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
+{
+public:
+  explicit CVideoPlayActionProcessor(CFileItem& item) : CVideoPlayActionProcessorBase(item) {}
+
+protected:
+  bool OnResumeSelected() override
+  {
+    if (m_item.m_bIsFolder)
+    {
+      m_item.SetStartOffset(STARTOFFSET_RESUME);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
+          m_item, false /* no resume check */);
+    }
+    else
+    {
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().ResumePlayRecording(
+          m_item, true /* fall back to play if no resume possible */);
+    }
+    return true;
+  }
+
+  bool OnPlaySelected() override
+  {
+    if (m_item.m_bIsFolder)
+    {
+      m_item.SetStartOffset(0);
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
+          m_item, false /* no resume check */);
+    }
+    else
+    {
+      CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
+          m_item, false /* no resume check */);
+    }
+    return true;
+  }
+};
+} // namespace
+
 bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
 {
   bool bReturn = false;
@@ -240,7 +338,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
               const CPVRRecordingsPath path(m_vecItems->GetPath());
               if (path.IsValid() && path.IsRecordingsRoot() && item->IsParentFolder())
               {
-                // handle special 'go home' item.
+                // handle .. item, which is only visible if list of recordings is empty.
                 CServiceBroker::GetGUI()->GetWindowManager().ActivateWindow(WINDOW_HOME);
                 bReturn = true;
                 break;
@@ -248,16 +346,8 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
 
               if (!item->IsParentFolder() && message.GetParam1() == ACTION_PLAYER_PLAY)
               {
-                if (item->m_bIsFolder)
-                {
-                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
-                      *item, true /* check resume */);
-                }
-                else
-                  CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-                      *item, true /* check resume */);
-
-                bReturn = true;
+                CVideoPlayActionProcessor proc{*item};
+                bReturn = proc.Process();
               }
               else if (item->m_bIsFolder)
               {
@@ -266,31 +356,8 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
               }
               else
               {
-                switch (m_settings.GetIntValue(CSettings::SETTING_MYVIDEOS_SELECTACTION))
-                {
-                  case SELECT_ACTION_CHOOSE:
-                    OnPopupMenu(iItem);
-                    bReturn = true;
-                    break;
-                  case SELECT_ACTION_PLAY_OR_RESUME:
-                    CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-                        *item, true /* check resume */);
-                    bReturn = true;
-                    break;
-                  case SELECT_ACTION_RESUME:
-                    CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().ResumePlayRecording(
-                        *item, true /* fall back to play if no resume possible */);
-                    bReturn = true;
-                    break;
-                  case SELECT_ACTION_INFO:
-                    CServiceBroker::GetPVRManager().Get<PVR::GUI::Recordings>().ShowRecordingInfo(
-                        *item);
-                    bReturn = true;
-                    break;
-                  default:
-                    bReturn = false;
-                    break;
-                }
+                CVideoSelectActionProcessor proc(*this, *item, iItem);
+                bReturn = proc.Process();
               }
               break;
             }

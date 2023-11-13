@@ -219,7 +219,7 @@ void CPVRRecordings::UpdateFromClient(const std::shared_ptr<CPVRRecording>& tag,
 }
 
 std::shared_ptr<CPVRRecording> CPVRRecordings::GetRecordingForEpgTag(
-    const std::shared_ptr<CPVREpgInfoTag>& epgTag) const
+    const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const
 {
   if (!epgTag)
     return {};
@@ -329,7 +329,7 @@ CVideoDatabase& CPVRRecordings::GetVideoDatabase()
 {
   if (!m_database)
   {
-    m_database.reset(new CVideoDatabase());
+    m_database = std::make_unique<CVideoDatabase>();
     m_database->Open();
 
     if (!m_database->IsOpen())

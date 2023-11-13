@@ -1,5 +1,4 @@
 set(SOURCES ContextMenus.cpp
-            GUIDialogFavourites.cpp
             GUIViewStateFavourites.cpp
             GUIWindowFavourites.cpp
             FavouritesService.cpp
@@ -7,7 +6,6 @@ set(SOURCES ContextMenus.cpp
             FavouritesUtils.cpp)
 
 set(HEADERS ContextMenus.h
-            GUIDialogFavourites.h
             GUIViewStateFavourites.h
             GUIWindowFavourites.h
             FavouritesService.h

@@ -177,7 +177,6 @@ public:
   bool IsValid(ID3D11View* view);
   size_t Size();
   bool HasFree();
-  bool HasRefs();
 
 protected:
   void Reset();
@@ -217,9 +216,6 @@ public:
   const std::string Name() override { return "d3d11va"; }
   unsigned GetAllowedReferences() override;
   void Reset() override;
-
-  // IDVDResourceCounted overrides
-  long Release() override;
 
   bool OpenDecoder();
   int GetBuffer(AVCodecContext* avctx, AVFrame* pic);
@@ -270,7 +266,6 @@ protected:
   CContext::shared_ptr m_dxvaContext;
   CVideoBuffer* m_videoBuffer = nullptr;
   struct AVD3D11VAContext* m_avD3D11Context = nullptr;
-  struct AVCodecContext* m_avCtx = nullptr;
   int m_refs = 0;
   unsigned int m_shared = 0;
   unsigned int m_surface_alignment = 0;

@@ -806,6 +806,8 @@ INPUT                  = main.txt \
                          Skin/skin.dox \
                          ../../../../cmake/scripts/common/AddonHelpers.dox \
                          ../../../cores/RetroPlayer/guicontrols/GUIGameControl.dox \
+                         ../../../games/controllers/guicontrols/GUIGameController.dox \
+                         ../../../games/controllers/guicontrols/GUIGameControllerList.dox \
                          ../../../pvr/guilib/GUIEPGGridContainer.dox \
                          ../../../guilib/GUIButtonControl.dox \
                          ../../../guilib/GUIColorButtonControl.dox \

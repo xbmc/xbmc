@@ -22,6 +22,8 @@
 #include "video/VideoDbUrl.h"
 #include "video/VideoLibraryQueue.h"
 
+#include <memory>
+
 using namespace JSONRPC;
 
 JSONRPC_STATUS CVideoLibrary::GetMovies(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -93,7 +95,8 @@ JSONRPC_STATUS CVideoLibrary::GetMovieDetails(const std::string &method, ITransp
   if (!videodatabase.GetMovieInfo("", infos, id, RequiresAdditionalDetails(MediaTypeMovie, parameterObject)) || infos.m_iDbId <= 0)
     return InvalidParams;
 
-  HandleFileItem("movieid", true, "moviedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("movieid", true, "moviedetails", std::make_shared<CFileItem>(infos),
+                 parameterObject, parameterObject["properties"], result, false);
   return OK;
 }
 
@@ -124,7 +127,8 @@ JSONRPC_STATUS CVideoLibrary::GetMovieSetDetails(const std::string &method, ITra
   if (!videodatabase.GetSetInfo(id, infos) || infos.m_iDbId <= 0)
     return InvalidParams;
 
-  HandleFileItem("setid", false, "setdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("setid", false, "setdetails", std::make_shared<CFileItem>(infos), parameterObject,
+                 parameterObject["properties"], result, false);
 
   // Get movies from the set
   CFileItemList items;
@@ -227,7 +231,7 @@ JSONRPC_STATUS CVideoLibrary::GetSeasonDetails(const std::string &method, ITrans
       infos.m_iDbId <= 0 || infos.m_iIdShow <= 0)
     return InvalidParams;
 
-  CFileItemPtr pItem = CFileItemPtr(new CFileItem(infos));
+  CFileItemPtr pItem = std::make_shared<CFileItem>(infos);
   HandleFileItem("seasonid", false, "seasondetails", pItem, parameterObject, parameterObject["properties"], result, false);
   return OK;
 }
@@ -301,7 +305,7 @@ JSONRPC_STATUS CVideoLibrary::GetEpisodeDetails(const std::string &method, ITran
   if (!videodatabase.GetEpisodeInfo("", infos, id, RequiresAdditionalDetails(MediaTypeEpisode, parameterObject)) || infos.m_iDbId <= 0)
     return InvalidParams;
 
-  CFileItemPtr pItem = CFileItemPtr(new CFileItem(infos));
+  CFileItemPtr pItem = std::make_shared<CFileItem>(infos);
   // We need to set the correct base path to get the valid fanart
   int tvshowid = infos.m_iIdShow;
   if (tvshowid <= 0)
@@ -374,7 +378,8 @@ JSONRPC_STATUS CVideoLibrary::GetMusicVideoDetails(const std::string &method, IT
   if (!videodatabase.GetMusicVideoInfo("", infos, id, RequiresAdditionalDetails(MediaTypeMusicVideo, parameterObject)) || infos.m_iDbId <= 0)
     return InvalidParams;
 
-  HandleFileItem("musicvideoid", true, "musicvideodetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
+  HandleFileItem("musicvideoid", true, "musicvideodetails", std::make_shared<CFileItem>(infos),
+                 parameterObject, parameterObject["properties"], result, false);
   return OK;
 }
 
@@ -861,7 +866,8 @@ JSONRPC_STATUS CVideoLibrary::RefreshMovie(const std::string &method, ITransport
 
   bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
   std::string searchTitle = parameterObject["title"].asString();
-  CVideoLibraryQueue::GetInstance().RefreshItem(CFileItemPtr(new CFileItem(infos)), ignoreNfo, true, false, searchTitle);
+  CVideoLibraryQueue::GetInstance().RefreshItem(std::make_shared<CFileItem>(infos), ignoreNfo, true,
+                                                false, searchTitle);
 
   return ACK;
 }
@@ -901,7 +907,7 @@ JSONRPC_STATUS CVideoLibrary::RefreshEpisode(const std::string &method, ITranspo
   if (!videodatabase.GetEpisodeInfo("", infos, id) || infos.m_iDbId <= 0)
     return InvalidParams;
 
-  CFileItemPtr item = CFileItemPtr(new CFileItem(infos));
+  CFileItemPtr item = std::make_shared<CFileItem>(infos);
   // We need to set the correct base path to get the valid fanart
   int tvshowid = infos.m_iIdShow;
   if (tvshowid <= 0)
@@ -928,7 +934,8 @@ JSONRPC_STATUS CVideoLibrary::RefreshMusicVideo(const std::string &method, ITran
 
   bool ignoreNfo = parameterObject["ignorenfo"].asBoolean();
   std::string searchTitle = parameterObject["title"].asString();
-  CVideoLibraryQueue::GetInstance().RefreshItem(CFileItemPtr(new CFileItem(infos)), ignoreNfo, true, false, searchTitle);
+  CVideoLibraryQueue::GetInstance().RefreshItem(std::make_shared<CFileItem>(infos), ignoreNfo, true,
+                                                false, searchTitle);
 
   return ACK;
 }
@@ -1063,7 +1070,7 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
     videodatabase.GetMovieInfo("", details, movieID);
     if (!details.IsEmpty())
     {
-      list.Add(CFileItemPtr(new CFileItem(details)));
+      list.Add(std::make_shared<CFileItem>(details));
       success = true;
     }
   }
@@ -1072,7 +1079,7 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
     CVideoInfoTag details;
     if (videodatabase.GetEpisodeInfo("", details, episodeID) && !details.IsEmpty())
     {
-      list.Add(CFileItemPtr(new CFileItem(details)));
+      list.Add(std::make_shared<CFileItem>(details));
       success = true;
     }
   }
@@ -1082,7 +1089,7 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
     videodatabase.GetMusicVideoInfo("", details, musicVideoID);
     if (!details.IsEmpty())
     {
-      list.Add(CFileItemPtr(new CFileItem(details)));
+      list.Add(std::make_shared<CFileItem>(details));
       success = true;
     }
   }

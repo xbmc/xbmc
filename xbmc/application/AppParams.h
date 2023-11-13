@@ -53,6 +53,9 @@ public:
   std::string_view GetAudioBackend() const { return m_audioBackend; }
   void SetAudioBackend(std::string_view audioBackend) { m_audioBackend = audioBackend; }
 
+  std::string_view GetGlInterface() const { return m_glInterface; }
+  void SetGlInterface(const std::string& glInterface) { m_glInterface = glInterface; }
+
   CFileItemList& GetPlaylist() const { return *m_playlist; }
 
   /*!
@@ -86,6 +89,7 @@ private:
   std::string m_windowing;
   std::string m_logTarget;
   std::string m_audioBackend;
+  std::string m_glInterface;
 
   std::unique_ptr<CFileItemList> m_playlist;
 

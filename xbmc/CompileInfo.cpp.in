@@ -111,6 +111,11 @@ std::vector<std::string> CCompileInfo::GetAvailableAudioBackends()
   return StringUtils::Split("@AUDIO_BACKENDS@", ' ');
 }
 
+std::vector<std::string> CCompileInfo::GetAvailableGlInterfaces()
+{
+  return StringUtils::Split("@GL_INTERFACES@", ' ');
+}
+
 // Return version of python built against as format MAJOR.MINOR
 std::string CCompileInfo::GetPythonVersion()
 {

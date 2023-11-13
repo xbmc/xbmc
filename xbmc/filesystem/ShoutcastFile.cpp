@@ -31,6 +31,7 @@
 #include "utils/UrlOptions.h"
 
 #include <climits>
+#include <memory>
 #include <mutex>
 
 using namespace XFILE;
@@ -120,7 +121,7 @@ bool CShoutcastFile::Open(const CURL& url)
   {
     std::unique_lock<CCriticalSection> lock(m_tagSection);
 
-    m_masterTag.reset(new CMusicInfoTag());
+    m_masterTag = std::make_shared<CMusicInfoTag>();
     m_masterTag->SetStationName(icyTitle);
     m_masterTag->SetGenre(icyGenre);
     m_masterTag->SetLoaded(true);

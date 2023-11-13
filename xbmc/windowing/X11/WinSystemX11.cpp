@@ -26,6 +26,7 @@
 #include "utils/log.h"
 #include "windowing/GraphicContext.h"
 
+#include <memory>
 #include <mutex>
 #include <string>
 #include <vector>
@@ -496,7 +497,7 @@ std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> CWinSystemX11::GetOSScreenSaver
   std::unique_ptr<IOSScreenSaver> ret;
   if (m_dpy)
   {
-    ret.reset(new COSScreenSaverX11(m_dpy));
+    ret = std::make_unique<COSScreenSaverX11>(m_dpy);
   }
   return ret;
 }

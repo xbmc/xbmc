@@ -45,7 +45,6 @@ class BaseYUV2RGBGLSLShader : public CGLSLShaderProgram
                             bool hasLightMetadata,
                             AVContentLightMetadata lightMetadata);
     void SetToneMapParam(float param) { m_toneMappingParam = param; }
-    float GetLuminanceValue() const;
 
     GLint GetVertexLoc() { return m_hVertex; }
     GLint GetYcoordLoc() { return m_hYcoord; }

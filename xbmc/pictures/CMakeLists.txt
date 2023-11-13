@@ -26,12 +26,12 @@ set(HEADERS GUIDialogPictureInfo.h
             PictureThumbLoader.h
             SlideShowPicture.h)
 
-if(OPENGL_FOUND)
+if(TARGET OpenGL::GL)
   list(APPEND SOURCES SlideShowPictureGL.cpp)
   list(APPEND HEADERS SlideShowPictureGL.h)
 endif()
 
-if(OPENGLES_FOUND)
+if(TARGET OpenGL::GLES)
   list(APPEND SOURCES SlideShowPictureGLES.cpp)
   list(APPEND HEADERS SlideShowPictureGLES.h)
 endif()

@@ -184,7 +184,7 @@ protected:
     bool OpenStream(CFileItem &item);
     void SetupPlayerSettings();
     void FreeTitleInfo();
-    std::unique_ptr<CDVDInputStreamFile> m_pstream = nullptr;
+    std::unique_ptr<CDVDInputStreamFile> m_pstream;
     std::string m_rootPath;
 
     /*! Bluray state serializer handler */

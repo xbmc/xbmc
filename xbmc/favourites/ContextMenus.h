@@ -73,4 +73,44 @@ protected:
   bool DoExecute(CFileItemList& items, const std::shared_ptr<CFileItem>& item) const override;
 };
 
-}
+class CFavouritesTargetBrowse : public CStaticContextMenuAction
+{
+public:
+  explicit CFavouritesTargetBrowse() : CStaticContextMenuAction(37015) {} // Browse into
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
+class CFavouritesTargetResume : public IContextMenuItem
+{
+public:
+  std::string GetLabel(const CFileItem& item) const override;
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
+class CFavouritesTargetPlay : public IContextMenuItem
+{
+public:
+  std::string GetLabel(const CFileItem& item) const override;
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
+class CFavouritesTargetInfo : public CStaticContextMenuAction
+{
+public:
+  explicit CFavouritesTargetInfo() : CStaticContextMenuAction(19033) {} // Information
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
+class CFavouritesTargetContextMenu : public CStaticContextMenuAction
+{
+public:
+  explicit CFavouritesTargetContextMenu() : CStaticContextMenuAction(22082) {} // More...
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& item) const override;
+};
+
+} // namespace CONTEXTMENU

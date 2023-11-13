@@ -114,6 +114,7 @@ protected:
   virtual void ReorderDrawPoints();
   virtual EShaderFormat GetShaderFormat();
   void MarkDirty();
+  void EnableAlwaysClip();
 
   //@todo drop those
   void saveRotatedCoords();//saves the current state of m_rotatedDestCoords
@@ -141,4 +142,7 @@ protected:
   AVPixelFormat m_format = AV_PIX_FMT_NONE;
 
   CVideoSettings m_videoSettings;
+
+private:
+  bool m_alwaysClip = false;
 };

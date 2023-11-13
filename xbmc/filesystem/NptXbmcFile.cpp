@@ -13,7 +13,9 @@
 +---------------------------------------------------------------------*/
 #include "File.h"
 #include "FileFactory.h"
+#include "PasswordManager.h"
 #include "URL.h"
+#include "utils/URIUtils.h"
 
 #include <limits>
 
@@ -294,16 +296,17 @@ NPT_XbmcFile::Open(NPT_File::OpenMode mode)
         }
 
         bool result;
-        CURL* url = new CURL(name);
+        CURL url(URIUtils::SubstitutePath(name));
+
+        if (CPasswordManager::GetInstance().IsURLSupported(url) && url.GetUserName().empty())
+          CPasswordManager::GetInstance().AuthenticateURL(url);
 
         // compute mode
-        if (mode & NPT_FILE_OPEN_MODE_WRITE) {
-            result = file->OpenForWrite(*url, (mode & NPT_FILE_OPEN_MODE_TRUNCATE)?true:false);
-        } else {
-            result = file->Open(*url);
-        }
+        if (mode & NPT_FILE_OPEN_MODE_WRITE)
+          result = file->OpenForWrite(url, (mode & NPT_FILE_OPEN_MODE_TRUNCATE) ? true : false);
+        else
+          result = file->Open(url);
 
-        delete url;
         if (!result) return NPT_ERROR_NO_SUCH_FILE;
     }
 

@@ -13,20 +13,21 @@
 
 #include <algorithm>
 #include <iterator>
+#include <memory>
 
 using namespace PVR;
 
 CPVRClientCapabilities::CPVRClientCapabilities(const CPVRClientCapabilities& other)
 {
   if (other.m_addonCapabilities)
-    m_addonCapabilities.reset(new PVR_ADDON_CAPABILITIES(*other.m_addonCapabilities));
+    m_addonCapabilities = std::make_unique<PVR_ADDON_CAPABILITIES>(*other.m_addonCapabilities);
   InitRecordingsLifetimeValues();
 }
 
 const CPVRClientCapabilities& CPVRClientCapabilities::operator=(const CPVRClientCapabilities& other)
 {
   if (other.m_addonCapabilities)
-    m_addonCapabilities.reset(new PVR_ADDON_CAPABILITIES(*other.m_addonCapabilities));
+    m_addonCapabilities = std::make_unique<PVR_ADDON_CAPABILITIES>(*other.m_addonCapabilities);
   InitRecordingsLifetimeValues();
   return *this;
 }
@@ -34,7 +35,7 @@ const CPVRClientCapabilities& CPVRClientCapabilities::operator=(const CPVRClient
 const CPVRClientCapabilities& CPVRClientCapabilities::operator=(
     const PVR_ADDON_CAPABILITIES& addonCapabilities)
 {
-  m_addonCapabilities.reset(new PVR_ADDON_CAPABILITIES(addonCapabilities));
+  m_addonCapabilities = std::make_unique<PVR_ADDON_CAPABILITIES>(addonCapabilities);
   InitRecordingsLifetimeValues();
   return *this;
 }

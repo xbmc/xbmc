@@ -279,15 +279,9 @@ CCPUInfoLinux::CCPUInfoLinux()
 
   m_cpuModel = m_cpuModel.substr(0, m_cpuModel.find(char(0))); // remove extra null terminations
 
-  // We exclude webOS here due to a bug in the toolchain leading to a SEGFAULT on webOS 6+ devices.
-#if defined(HAS_NEON) && defined(__arm__) && !defined(TARGET_WEBOS)
+#if defined(HAS_NEON) && defined(__arm__)
   if (getauxval(AT_HWCAP) & HWCAP_NEON)
     m_cpuFeatures |= CPU_FEATURE_NEON;
-#endif
-
-#ifdef TARGET_WEBOS
-  // We can assume that any webOS TV has NEON support
-  m_cpuFeatures |= CPU_FEATURE_NEON;
 #endif
 
 #if defined(HAS_NEON) && defined(__aarch64__)

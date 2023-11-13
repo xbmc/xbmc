@@ -97,17 +97,17 @@ std::unique_ptr<IGameClientStream> CGameClientStreams::CreateStream(
   {
     case GAME_STREAM_AUDIO:
     {
-      gameStream.reset(new CGameClientStreamAudio(m_gameClient.GetSampleRate()));
+      gameStream = std::make_unique<CGameClientStreamAudio>(m_gameClient.GetSampleRate());
       break;
     }
     case GAME_STREAM_VIDEO:
     {
-      gameStream.reset(new CGameClientStreamVideo);
+      gameStream = std::make_unique<CGameClientStreamVideo>();
       break;
     }
     case GAME_STREAM_SW_FRAMEBUFFER:
     {
-      gameStream.reset(new CGameClientStreamSwFramebuffer);
+      gameStream = std::make_unique<CGameClientStreamSwFramebuffer>();
       break;
     }
     default:

@@ -23,6 +23,7 @@
 #include "utils/JobManager.h"
 #include "utils/XTimeUtils.h"
 
+#include <memory>
 #include <mutex>
 
 using namespace KODI::GUILIB::GUIINFO;
@@ -182,7 +183,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRGUIChannelNavigator::GetNextOrPrevCh
 
   if (bPlayingTV || bPlayingRadio)
   {
-    const std::shared_ptr<CPVRChannelGroup> group =
+    const std::shared_ptr<const CPVRChannelGroup> group =
         CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(bPlayingRadio);
     if (group)
     {
@@ -316,7 +317,7 @@ void CPVRGUIChannelNavigator::HideInfo()
     {
       m_currentChannel = m_playingChannel;
       if (m_playingChannel)
-        item.reset(new CFileItem(m_playingChannel));
+        item = std::make_shared<CFileItem>(m_playingChannel);
     }
 
     CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();
@@ -350,7 +351,7 @@ void CPVRGUIChannelNavigator::SetPlayingChannel(
     {
       m_currentChannel = m_playingChannel;
       if (m_playingChannel)
-        item.reset(new CFileItem(m_playingChannel));
+        item = std::make_shared<CFileItem>(m_playingChannel);
     }
 
     CheckAndPublishPreviewAndPlayerShowInfoChangedEvent();

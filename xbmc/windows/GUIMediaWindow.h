@@ -75,8 +75,8 @@ protected:
   virtual bool OnSelect(int item);
   virtual bool OnPopupMenu(int iItem);
 
-  virtual void GetContextButtons(int itemNumber, CContextButtons &buttons);
-  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
+  virtual void GetContextButtons(int itemNumber, CContextButtons& buttons) {}
+  virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) { return false; }
   virtual bool OnAddMediaSource() { return false; }
 
   virtual void FormatItemLabels(CFileItemList &items, const LABEL_MASKS &labelMasks);

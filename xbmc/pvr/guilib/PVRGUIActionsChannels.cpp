@@ -60,10 +60,11 @@ void CPVRChannelSwitchingInputHandler::AppendChannelNumberCharacter(char cCharac
 void CPVRChannelSwitchingInputHandler::GetChannelNumbers(std::vector<std::string>& channelNumbers)
 {
   const CPVRManager& pvrMgr = CServiceBroker::GetPVRManager();
-  const std::shared_ptr<CPVRChannel> playingChannel = pvrMgr.PlaybackState()->GetPlayingChannel();
+  const std::shared_ptr<const CPVRChannel> playingChannel =
+      pvrMgr.PlaybackState()->GetPlayingChannel();
   if (playingChannel)
   {
-    const std::shared_ptr<CPVRChannelGroup> group =
+    const std::shared_ptr<const CPVRChannelGroup> group =
         pvrMgr.ChannelGroups()->GetGroupAll(playingChannel->IsRadio());
     if (group)
       group->GetChannelNumbers(channelNumbers);
@@ -77,16 +78,42 @@ void CPVRChannelSwitchingInputHandler::OnInputDone()
     SwitchToChannel(channelNumber);
 }
 
+namespace
+{
+void UpdateActiveGroup(const std::shared_ptr<CPVRChannelGroupMember>& newChannel)
+{
+  const std::shared_ptr<CPVRPlaybackState> playbackState{
+      CServiceBroker::GetPVRManager().PlaybackState()};
+  const std::shared_ptr<const CPVRChannelGroupsContainer> groups{
+      CServiceBroker::GetPVRManager().ChannelGroups()};
+  const std::shared_ptr<CPVRChannelGroup> group{
+      groups->Get(newChannel->IsRadio())->GetById(newChannel->GroupID())};
+
+  // Switch group if new channel is not in the active group.
+  if (group && group != playbackState->GetActiveChannelGroup(newChannel->IsRadio()))
+    playbackState->SetActiveChannelGroup(group);
+}
+
+void TriggerChannelSwitchAction(const CPVRChannelNumber& channelNumber)
+{
+  CServiceBroker::GetAppMessenger()->PostMsg(
+      TMSG_GUI_ACTION, WINDOW_INVALID, -1,
+      static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH,
+                                     static_cast<float>(channelNumber.GetChannelNumber()),
+                                     static_cast<float>(channelNumber.GetSubChannelNumber()))));
+}
+} // unnamed namespace
+
 void CPVRChannelSwitchingInputHandler::SwitchToChannel(const CPVRChannelNumber& channelNumber)
 {
   if (channelNumber.IsValid() && CServiceBroker::GetPVRManager().PlaybackState()->IsPlaying())
   {
-    const std::shared_ptr<CPVRChannel> playingChannel =
+    const std::shared_ptr<const CPVRChannel> playingChannel =
         CServiceBroker::GetPVRManager().PlaybackState()->GetPlayingChannel();
     if (playingChannel)
     {
       bool bRadio = playingChannel->IsRadio();
-      const std::shared_ptr<CPVRChannelGroup> group =
+      const std::shared_ptr<const CPVRChannelGroup> group =
           CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(bRadio);
 
       if (channelNumber != group->GetChannelNumber(playingChannel))
@@ -115,11 +142,8 @@ void CPVRChannelSwitchingInputHandler::SwitchToChannel(const CPVRChannelNumber& 
 
         if (groupMember)
         {
-          CServiceBroker::GetAppMessenger()->PostMsg(
-              TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-              static_cast<void*>(new CAction(
-                  ACTION_CHANNEL_SWITCH, static_cast<float>(channelNumber.GetChannelNumber()),
-                  static_cast<float>(channelNumber.GetSubChannelNumber()))));
+          UpdateActiveGroup(groupMember);
+          TriggerChannelSwitchAction(channelNumber);
         }
       }
     }
@@ -128,23 +152,19 @@ void CPVRChannelSwitchingInputHandler::SwitchToChannel(const CPVRChannelNumber& 
 
 void CPVRChannelSwitchingInputHandler::SwitchToPreviousChannel()
 {
-  const std::shared_ptr<CPVRPlaybackState> playbackState =
+  const std::shared_ptr<const CPVRPlaybackState> playbackState =
       CServiceBroker::GetPVRManager().PlaybackState();
   if (playbackState->IsPlaying())
   {
-    const std::shared_ptr<CPVRChannel> playingChannel = playbackState->GetPlayingChannel();
+    const std::shared_ptr<const CPVRChannel> playingChannel = playbackState->GetPlayingChannel();
     if (playingChannel)
     {
       const std::shared_ptr<CPVRChannelGroupMember> groupMember =
           playbackState->GetPreviousToLastPlayedChannelGroupMember(playingChannel->IsRadio());
       if (groupMember)
       {
-        const CPVRChannelNumber channelNumber = groupMember->ChannelNumber();
-        CServiceBroker::GetAppMessenger()->SendMsg(
-            TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-            static_cast<void*>(new CAction(
-                ACTION_CHANNEL_SWITCH, static_cast<float>(channelNumber.GetChannelNumber()),
-                static_cast<float>(channelNumber.GetSubChannelNumber()))));
+        UpdateActiveGroup(groupMember);
+        TriggerChannelSwitchAction(groupMember->ChannelNumber());
       }
     }
   }
@@ -307,7 +327,7 @@ bool CPVRGUIActionsChannels::StartChannelScan(int clientId)
 }
 
 std::shared_ptr<CPVRChannelGroupMember> CPVRGUIActionsChannels::GetChannelGroupMember(
-    const std::shared_ptr<CPVRChannel>& channel) const
+    const std::shared_ptr<const CPVRChannel>& channel) const
 {
   if (!channel)
     return {};
@@ -325,7 +345,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRGUIActionsChannels::GetChannelGroupM
 
   if (std::find(windowIDs.cbegin(), windowIDs.cend(), activeWindowID) == windowIDs.cend())
   {
-    const std::shared_ptr<CPVRChannelGroup> group =
+    const std::shared_ptr<const CPVRChannelGroup> group =
         CServiceBroker::GetPVRManager().PlaybackState()->GetActiveChannelGroup(channel->IsRadio());
     if (group)
       groupMember = group->GetByUniqueID(channel->StorageId());
@@ -334,7 +354,7 @@ std::shared_ptr<CPVRChannelGroupMember> CPVRGUIActionsChannels::GetChannelGroupM
   // as fallback, obtain the member from the 'all channels' group
   if (!groupMember)
   {
-    const std::shared_ptr<CPVRChannelGroup> group =
+    const std::shared_ptr<const CPVRChannelGroup> group =
         CServiceBroker::GetPVRManager().ChannelGroups()->GetGroupAll(channel->IsRadio());
     if (group)
       groupMember = group->GetByUniqueID(channel->StorageId());
@@ -406,15 +426,16 @@ std::string CPVRGUIActionsChannels::GetSelectedChannelPath(bool bRadio) const
     CPVRManager& mgr = CServiceBroker::GetPVRManager();
 
     // if preselect playing channel is activated, return the path of the playing channel, if any.
-    const std::shared_ptr<CPVRChannelGroupMember> playingChannel =
+    const std::shared_ptr<const CPVRChannelGroupMember> playingChannel =
         mgr.PlaybackState()->GetPlayingChannelGroupMember();
     if (playingChannel && playingChannel->IsRadio() == bRadio)
-      return playingChannel->Path();
+      return GetChannelGroupMember(playingChannel->Channel())->Path();
 
-    const std::shared_ptr<CPVREpgInfoTag> playingTag = mgr.PlaybackState()->GetPlayingEpgTag();
+    const std::shared_ptr<const CPVREpgInfoTag> playingTag =
+        mgr.PlaybackState()->GetPlayingEpgTag();
     if (playingTag && playingTag->IsRadio() == bRadio)
     {
-      const std::shared_ptr<CPVRChannel> channel =
+      const std::shared_ptr<const CPVRChannel> channel =
           mgr.ChannelGroups()->GetChannelForEpgTag(playingTag);
       if (channel)
         return GetChannelGroupMember(channel)->Path();

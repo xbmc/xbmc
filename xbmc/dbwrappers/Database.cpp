@@ -12,6 +12,9 @@
 #include "DbUrl.h"
 #include "ServiceBroker.h"
 #include "filesystem/SpecialProtocol.h"
+#if defined(HAS_MYSQL) || defined(HAS_MARIADB)
+#include "mysqldataset.h"
+#endif
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
@@ -20,13 +23,11 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 
-#if defined(HAS_MYSQL) || defined(HAS_MARIADB)
-#include "mysqldataset.h"
-#endif
-
 #ifdef TARGET_POSIX
 #include "platform/posix/ConvUtils.h"
 #endif
+
+#include <memory>
 
 using namespace dbiplus;
 
@@ -271,7 +272,8 @@ std::string CDatabase::PrepareSQL(std::string strStmt, ...) const
   return strResult;
 }
 
-std::string CDatabase::GetSingleValue(const std::string& query, std::unique_ptr<Dataset>& ds)
+std::string CDatabase::GetSingleValue(const std::string& query,
+                                      const std::unique_ptr<Dataset>& ds) const
 {
   std::string ret;
   try
@@ -294,7 +296,7 @@ std::string CDatabase::GetSingleValue(const std::string& query, std::unique_ptr<
 std::string CDatabase::GetSingleValue(const std::string& strTable,
                                       const std::string& strColumn,
                                       const std::string& strWhereClause /* = std::string() */,
-                                      const std::string& strOrderBy /* = std::string() */)
+                                      const std::string& strOrderBy /* = std::string() */) const
 {
   std::string query = PrepareSQL("SELECT %s FROM %s", strColumn.c_str(), strTable.c_str());
   if (!strWhereClause.empty())
@@ -305,12 +307,12 @@ std::string CDatabase::GetSingleValue(const std::string& strTable,
   return GetSingleValue(query, m_pDS);
 }
 
-std::string CDatabase::GetSingleValue(const std::string& query)
+std::string CDatabase::GetSingleValue(const std::string& query) const
 {
   return GetSingleValue(query, m_pDS);
 }
 
-int CDatabase::GetSingleValueInt(const std::string& query, std::unique_ptr<Dataset>& ds)
+int CDatabase::GetSingleValueInt(const std::string& query, const std::unique_ptr<Dataset>& ds) const
 {
   int ret = 0;
   try
@@ -333,13 +335,13 @@ int CDatabase::GetSingleValueInt(const std::string& query, std::unique_ptr<Datas
 int CDatabase::GetSingleValueInt(const std::string& strTable,
                                  const std::string& strColumn,
                                  const std::string& strWhereClause /* = std::string() */,
-                                 const std::string& strOrderBy /* = std::string() */)
+                                 const std::string& strOrderBy /* = std::string() */) const
 {
   std::string strResult = GetSingleValue(strTable, strColumn, strWhereClause, strOrderBy);
   return static_cast<int>(strtol(strResult.c_str(), NULL, 10));
 }
 
-int CDatabase::GetSingleValueInt(const std::string& query)
+int CDatabase::GetSingleValueInt(const std::string& query) const
 {
   return GetSingleValueInt(query, m_pDS);
 }
@@ -583,12 +585,12 @@ bool CDatabase::Connect(const std::string& dbName, const DatabaseSettings& dbSet
   // create the appropriate database structure
   if (dbSettings.type == "sqlite3")
   {
-    m_pDB.reset(new SqliteDatabase());
+    m_pDB = std::make_unique<SqliteDatabase>();
   }
 #if defined(HAS_MYSQL) || defined(HAS_MARIADB)
   else if (dbSettings.type == "mysql")
   {
-    m_pDB.reset(new MysqlDatabase());
+    m_pDB = std::make_unique<MysqlDatabase>();
   }
 #endif
   else
@@ -814,7 +816,9 @@ void CDatabase::UpdateVersionNumber()
   m_pDS->exec(strSQL);
 }
 
-bool CDatabase::BuildSQL(const std::string& strQuery, const Filter& filter, std::string& strSQL)
+bool CDatabase::BuildSQL(const std::string& strQuery,
+                         const Filter& filter,
+                         std::string& strSQL) const
 {
   strSQL = strQuery;
 

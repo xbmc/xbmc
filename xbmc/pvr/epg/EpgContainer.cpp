@@ -486,7 +486,8 @@ std::shared_ptr<CPVREpg> CPVREpgContainer::GetByChannelUid(int iClientId, int iC
   return epg;
 }
 
-std::shared_ptr<CPVREpgInfoTag> CPVREpgContainer::GetTagById(const std::shared_ptr<CPVREpg>& epg, unsigned int iBroadcastId) const
+std::shared_ptr<CPVREpgInfoTag> CPVREpgContainer::GetTagById(
+    const std::shared_ptr<const CPVREpg>& epg, unsigned int iBroadcastId) const
 {
   std::shared_ptr<CPVREpgInfoTag> retval;
 
@@ -528,7 +529,7 @@ std::vector<std::shared_ptr<CPVREpgInfoTag>> CPVREpgContainer::GetTags(
   // make sure we have up-to-date data in the database.
   PersistAll(std::numeric_limits<unsigned int>::max());
 
-  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   std::vector<std::shared_ptr<CPVREpgInfoTag>> results = database->GetEpgTags(searchData);
 
   std::unique_lock<CCriticalSection> lock(m_critSection);
@@ -572,8 +573,8 @@ std::shared_ptr<CPVREpg> CPVREpgContainer::CreateChannelEpg(int iEpgId, const st
     if (iEpgId <= 0)
       iEpgId = NextEpgId();
 
-    epg.reset(new CPVREpg(iEpgId, channelData->ChannelName(), strScraperName, channelData,
-                          GetEpgDatabase()));
+    epg = std::make_shared<CPVREpg>(iEpgId, channelData->ChannelName(), strScraperName, channelData,
+                                    GetEpgDatabase());
 
     std::unique_lock<CCriticalSection> lock(m_critSection);
     m_epgIdToEpgMap.insert({iEpgId, epg});
@@ -650,7 +651,7 @@ bool CPVREpgContainer::QueueDeleteEpgs(const std::vector<std::shared_ptr<CPVREpg
   return true;
 }
 
-bool CPVREpgContainer::QueueDeleteEpg(const std::shared_ptr<CPVREpg>& epg,
+bool CPVREpgContainer::QueueDeleteEpg(const std::shared_ptr<const CPVREpg>& epg,
                                       const std::shared_ptr<CPVREpgDatabase>& database)
 {
   if (!epg || epg->EpgID() < 0)
@@ -741,8 +742,8 @@ bool CPVREpgContainer::UpdateEPG(bool bOnlyPending /* = false */)
 
   std::unique_ptr<CPVRGUIProgressHandler> progressHandler;
   if (bShowProgress && !bOnlyPending && !epgsToUpdate.empty())
-    progressHandler.reset(
-        new CPVRGUIProgressHandler(g_localizeStrings.Get(19004))); // Loading programme guide
+    progressHandler = std::make_unique<CPVRGUIProgressHandler>(
+        g_localizeStrings.Get(19004)); // Loading programme guide
 
   for (const auto& epgEntry : epgsToUpdate)
   {
@@ -812,7 +813,7 @@ std::pair<CDateTime, CDateTime> CPVREpgContainer::GetFirstAndLastEPGDate() const
 {
   // Get values from db
   std::pair<CDateTime, CDateTime> dbDates;
-  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (database)
     dbDates = database->GetFirstAndLastEPGDate();
 
@@ -934,7 +935,7 @@ void CPVREpgContainer::OnSystemWake()
 
 int CPVREpgContainer::CleanupCachedImages()
 {
-  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
     CLog::LogF(LOGERROR, "No EPG database");
@@ -954,7 +955,7 @@ int CPVREpgContainer::CleanupCachedImages()
 
 std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSearches(bool bRadio)
 {
-  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
     CLog::LogF(LOGERROR, "No EPG database");
@@ -966,7 +967,7 @@ std::vector<std::shared_ptr<CPVREpgSearchFilter>> CPVREpgContainer::GetSavedSear
 
 std::shared_ptr<CPVREpgSearchFilter> CPVREpgContainer::GetSavedSearchById(bool bRadio, int iId)
 {
-  const std::shared_ptr<CPVREpgDatabase> database = GetEpgDatabase();
+  const std::shared_ptr<const CPVREpgDatabase> database = GetEpgDatabase();
   if (!database)
   {
     CLog::LogF(LOGERROR, "No EPG database");

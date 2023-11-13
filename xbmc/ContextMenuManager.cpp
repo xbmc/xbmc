@@ -28,6 +28,7 @@
 #include "utils/log.h"
 #include "video/ContextMenus.h"
 
+#include <algorithm>
 #include <iterator>
 #include <mutex>
 
@@ -63,11 +64,13 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CVideoBrowse>(),
       std::make_shared<CONTEXTMENU::CVideoResume>(),
       std::make_shared<CONTEXTMENU::CVideoPlay>(),
+      std::make_shared<CONTEXTMENU::CVideoPlayUsing>(),
       std::make_shared<CONTEXTMENU::CVideoPlayAndQueue>(),
       std::make_shared<CONTEXTMENU::CVideoPlayNext>(),
       std::make_shared<CONTEXTMENU::CVideoQueue>(),
       std::make_shared<CONTEXTMENU::CMusicBrowse>(),
       std::make_shared<CONTEXTMENU::CMusicPlay>(),
+      std::make_shared<CONTEXTMENU::CMusicPlayUsing>(),
       std::make_shared<CONTEXTMENU::CMusicPlayNext>(),
       std::make_shared<CONTEXTMENU::CMusicQueue>(),
       std::make_shared<CONTEXTMENU::CAddonInfo>(),
@@ -89,12 +92,17 @@ void CContextMenuManager::Init()
       std::make_shared<CONTEXTMENU::CVideoRemoveResumePoint>(),
       std::make_shared<CONTEXTMENU::CEjectDisk>(),
       std::make_shared<CONTEXTMENU::CEjectDrive>(),
+      std::make_shared<CONTEXTMENU::CFavouritesTargetBrowse>(),
+      std::make_shared<CONTEXTMENU::CFavouritesTargetResume>(),
+      std::make_shared<CONTEXTMENU::CFavouritesTargetPlay>(),
+      std::make_shared<CONTEXTMENU::CFavouritesTargetInfo>(),
       std::make_shared<CONTEXTMENU::CMoveUpFavourite>(),
       std::make_shared<CONTEXTMENU::CMoveDownFavourite>(),
       std::make_shared<CONTEXTMENU::CChooseThumbnailForFavourite>(),
       std::make_shared<CONTEXTMENU::CRenameFavourite>(),
       std::make_shared<CONTEXTMENU::CRemoveFavourite>(),
       std::make_shared<CONTEXTMENU::CAddRemoveFavourite>(),
+      std::make_shared<CONTEXTMENU::CFavouritesTargetContextMenu>(),
   };
 
   ReloadAddonItems();
@@ -200,11 +208,26 @@ bool CContextMenuManager::IsVisible(
   return menuItem.IsVisible(fileItem);
 }
 
-ContextMenuView CContextMenuManager::GetItems(const CFileItem& fileItem, const CContextMenuItem& root /*= MAIN*/) const
+bool CContextMenuManager::HasItems(const CFileItem& fileItem, const CContextMenuItem& root) const
+{
+  //! @todo implement group support
+  if (&root == &CContextMenuManager::MAIN)
+  {
+    std::unique_lock<CCriticalSection> lock(m_criticalSection);
+    return std::any_of(m_items.cbegin(), m_items.cend(),
+                       [&fileItem](const std::shared_ptr<const IContextMenuItem>& menu) {
+                         return menu->IsVisible(fileItem);
+                       });
+  }
+  return false;
+}
+
+ContextMenuView CContextMenuManager::GetItems(const CFileItem& fileItem,
+                                              const CContextMenuItem& root) const
 {
   ContextMenuView result;
   //! @todo implement group support
-  if (&root == &MAIN)
+  if (&root == &CContextMenuManager::MAIN)
   {
     std::unique_lock<CCriticalSection> lock(m_criticalSection);
     std::copy_if(m_items.begin(), m_items.end(), std::back_inserter(result),
@@ -213,7 +236,18 @@ ContextMenuView CContextMenuManager::GetItems(const CFileItem& fileItem, const C
   return result;
 }
 
-ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem, const CContextMenuItem& root /*= MAIN*/) const
+bool CContextMenuManager::HasAddonItems(const CFileItem& fileItem,
+                                        const CContextMenuItem& root) const
+{
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  return std::any_of(m_addonItems.cbegin(), m_addonItems.cend(),
+                     [this, root, &fileItem](const CContextMenuItem& menu) {
+                       return IsVisible(menu, root, fileItem);
+                     });
+}
+
+ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem,
+                                                   const CContextMenuItem& root) const
 {
   ContextMenuView result;
   {
@@ -223,7 +257,7 @@ ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem, co
         result.emplace_back(new CContextMenuItem(menu));
   }
 
-  if (&root == &MANAGE)
+  if (&root == &CContextMenuManager::MANAGE)
   {
     std::sort(result.begin(), result.end(),
         [&](const ContextMenuView::value_type& lhs, const ContextMenuView::value_type& rhs)
@@ -233,6 +267,20 @@ ContextMenuView CContextMenuManager::GetAddonItems(const CFileItem& fileItem, co
     );
   }
   return result;
+}
+
+bool CONTEXTMENU::HasAnyMenuItemsFor(const std::shared_ptr<CFileItem>& fileItem,
+                                     const CContextMenuItem& root)
+{
+  if (!fileItem)
+    return false;
+
+  if (fileItem->HasProperty("contextmenulabel(0)"))
+    return true;
+
+  const CContextMenuManager& contextMenuManager = CServiceBroker::GetContextMenuManager();
+  return (contextMenuManager.HasItems(*fileItem, root) ||
+          contextMenuManager.HasAddonItems(*fileItem, root));
 }
 
 bool CONTEXTMENU::ShowFor(const std::shared_ptr<CFileItem>& fileItem, const CContextMenuItem& root)

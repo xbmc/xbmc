@@ -69,6 +69,8 @@ In the repository root directory, there is a [`.clang-format`](https://github.co
 
 When you create a pull request, the PR build job will run `clang-format` on your commits and provide patches for any parts that don't satisfy the current `.clang-format` rules. You should apply these patches and amend your pull request accordingly.
 
+The coding guidelines should be met by every code change, be it editing existing code, adding new code to existing source files, or adding completely new source files. For changes in existing files, at least the changed code needs to pass the clang-format check.
+
 Conventions can be bent or broken in the interest of making code more readable and maintainable. However, if you submit a patch that contains excessive style conflicts, you may be asked to improve your code before your pull request is reviewed.
 
 **[back to top](#table-of-contents)**
@@ -88,7 +90,7 @@ The `ColumnLimit` in `.clang-format` is set to `100` which defines line length (
 Curly braces always go on a new line.
 
 ```cpp
-for (int i = 0; i < t; i++)
+for (int i = 0; i < t; ++i)
 {
   [...]
 }
@@ -201,7 +203,7 @@ a = (b + c) * d;
 Control statement keywords have to be separated from opening parentheses by one space.
 ```cpp
 while (true);
-for (int i = 0; i < x; i++);
+for (int i = 0; i < x; ++i);
 ```
 When conditions are used without parentheses, it is preferable to add a new line, to make the next block of code more readable.
 ```cpp
@@ -818,6 +820,25 @@ for (const auto& : var)
 }
 ```
 Remove `const` if the value has to be modified. Do not use references to fundamental types that are not modified.
+
+In traditional for loops, for the `increment statement` of the loop, use prefix increment/decrement operator, not postfix.
+
+✅ Good:
+```cpp
+[...]
+for (int i = 0; i < 100; ++i)
+{
+  [...]
+}
+```
+
+❌ Bad:
+```cpp
+for (int i = 0; i < 100; i++)
+{
+  [...]
+}
+```
 
 ### 12.6. Include guards
 

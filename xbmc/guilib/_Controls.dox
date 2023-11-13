@@ -13,6 +13,8 @@ manual will explain each and every control in detail.
 - \subpage Fade_Label_Control - used to show multiple pieces of text in the same position, by fading from one to the other.
 - \subpage Fixed_List_Container - used for a list of items with a fixed focus. Same as the \ref Wrap_List_Container "Wrap List Container" except it doesn't wrap.
 - \subpage Game_Control - used to display the currently playing game, with optional effects, whilst in the GUI.
+- \subpage Game_Controller - used to display a game controller, with optional effects
+- \subpage Game_Controller_List - used to give special behavior to a list of Game Controller controls
 - \subpage Group_Control -  used to group controls together.
 - \subpage Group_List_Control - special case of the group control that forms a scrolling list of controls.
 - \subpage Image_Control - used to show an image.

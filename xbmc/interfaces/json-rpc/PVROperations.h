@@ -53,6 +53,10 @@ namespace JSONRPC
 
   private:
     static JSONRPC_STATUS GetPropertyValue(const std::string &property, CVariant &result);
-    static void FillChannelGroupDetails(const std::shared_ptr<PVR::CPVRChannelGroup> &channelGroup, const CVariant &parameterObject, CVariant &result, bool append = false);
+    static void FillChannelGroupDetails(
+        const std::shared_ptr<const PVR::CPVRChannelGroup>& channelGroup,
+        const CVariant& parameterObject,
+        CVariant& result,
+        bool append = false);
   };
 }

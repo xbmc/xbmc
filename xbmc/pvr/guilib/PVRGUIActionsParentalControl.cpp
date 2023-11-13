@@ -30,7 +30,7 @@ CPVRGUIActionsParentalControl::CPVRGUIActionsParentalControl()
 }
 
 ParentalCheckResult CPVRGUIActionsParentalControl::CheckParentalLock(
-    const std::shared_ptr<CPVRChannel>& channel) const
+    const std::shared_ptr<const CPVRChannel>& channel) const
 {
   if (!CServiceBroker::GetPVRManager().IsParentalLocked(channel))
     return ParentalCheckResult::SUCCESS;

@@ -180,7 +180,7 @@ bool CPVREpg::UpdateEntries(const CPVREpg& epg)
 namespace
 {
 
-bool IsTagExpired(const std::shared_ptr<CPVREpgInfoTag>& tag)
+bool IsTagExpired(const std::shared_ptr<const CPVREpgInfoTag>& tag)
 {
   // Respect epg linger time.
   const int iPastDays = CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
@@ -398,7 +398,8 @@ bool CPVREpg::UpdateFromScraper(time_t start, time_t end, bool bForceUpdate)
       return true;
     }
 
-    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
+    const std::shared_ptr<const CPVRClient> client =
+        CServiceBroker::GetPVRManager().GetClient(m_channelData->ClientId());
     if (client)
     {
       if (!client->GetClientCapabilities().SupportsEPG())
@@ -542,7 +543,7 @@ void CPVREpg::RemovedFromContainer()
   m_events.Publish(PVREvent::EpgDeleted);
 }
 
-int CPVREpg::CleanupCachedImages(const std::shared_ptr<CPVREpgDatabase>& database)
+int CPVREpg::CleanupCachedImages(const std::shared_ptr<const CPVREpgDatabase>& database)
 {
   const std::vector<std::string> urlsToCheck = database->GetAllIconPaths(EpgID());
   const std::string owner = StringUtils::Format(CPVREpgInfoTag::IMAGE_OWNER_PATTERN, EpgID());

@@ -361,8 +361,12 @@ void CDVDTeletextData::Process()
               b1 = dehamming[vtxt_row[9]];
               if (b1 != 0xFF)
               {
-                pageinfo_thread->nationalvalid = 1;
-                pageinfo_thread->national = rev_lut[b1] & 0x07;
+                int countryCode = rev_lut[b1] & 0x07;
+                if (countryCode != NAT_DEFAULT)
+                {
+                  pageinfo_thread->nationalvalid = 1;
+                  pageinfo_thread->national = countryCode;
+                }
               }
 
               if (dehamming[vtxt_row[7]] & 0x08)// subtitle page
@@ -583,10 +587,11 @@ void CDVDTeletextData::Process()
                 {
                   int t1 = CDVDTeletextTools::deh24(&vtxt_row[7-4]);
                   pageinfo_thread->function = t1 & 0x0f;
-                  if (!pageinfo_thread->nationalvalid)
+                  int countryCode = (t1 >> 4) & 0x07;
+                  if (!pageinfo_thread->nationalvalid && countryCode != NAT_DEFAULT)
                   {
                     pageinfo_thread->nationalvalid = 1;
-                    pageinfo_thread->national = (t1>>4) & 0x07;
+                    pageinfo_thread->national = countryCode;
                   }
                 }
 

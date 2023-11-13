@@ -11,12 +11,15 @@
 #include "FileItem.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogFileBrowser.h"
+#include "favourites/FavouritesURL.h"
 #include "favourites/GUIWindowFavourites.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIKeyboardFactory.h"
+#include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "storage/MediaManager.h"
+#include "utils/ExecString.h"
 #include "utils/Variant.h"
 #include "view/GUIViewState.h"
 
@@ -84,15 +87,13 @@ bool MoveItem(CFileItemList& items, const std::shared_ptr<CFileItem>& item, int 
   int nextItem = (itemPos + amount) % items.Size();
   if (nextItem < 0)
   {
-    const auto& itemToAdd(item);
-    items.Remove(itemPos);
-    items.Add(itemToAdd);
+    items.Add(item);
+    items.Remove(0);
   }
   else if (nextItem == 0)
   {
-    const auto& itemToAdd(item);
-    items.Remove(itemPos);
-    items.AddFront(itemToAdd, 0);
+    items.AddFront(item, 0);
+    items.Remove(itemPos + 1);
   }
   else
   {
@@ -119,6 +120,34 @@ bool ShouldEnableMoveItems()
       return false; // in favs window, allow move only if current sort method is by user preference
   }
   return true;
+}
+
+namespace
+{
+bool ExecuteAction(const std::string& execString)
+{
+  if (!execString.empty())
+  {
+    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
+    message.SetStringParam(execString);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
+    return true;
+  }
+  return false;
+}
+} // unnamed namespace
+
+bool ExecuteAction(const CExecString& execString)
+{
+  return ExecuteAction(execString.GetExecString());
+}
+
+bool ExecuteAction(const CFavouritesURL& favURL)
+{
+  if (favURL.IsValid())
+    return ExecuteAction(favURL.GetExecString());
+
+  return false;
 }
 
 } // namespace FAVOURITES_UTILS

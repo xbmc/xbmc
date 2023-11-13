@@ -36,10 +36,14 @@ namespace PVR
     std::string GetTimeshiftProgressStartTime(TIME_FORMAT format) const;
     std::string GetTimeshiftProgressEndTime(TIME_FORMAT format) const;
 
-    std::string GetEpgEventDuration(const std::shared_ptr<CPVREpgInfoTag>& epgTag, TIME_FORMAT format) const;
-    std::string GetEpgEventElapsedTime(const std::shared_ptr<CPVREpgInfoTag>& epgTag, TIME_FORMAT format) const;
-    std::string GetEpgEventRemainingTime(const std::shared_ptr<CPVREpgInfoTag>& epgTag, TIME_FORMAT format) const;
-    std::string GetEpgEventFinishTime(const std::shared_ptr<CPVREpgInfoTag>& epgTag, TIME_FORMAT format) const;
+    std::string GetEpgEventDuration(const std::shared_ptr<const CPVREpgInfoTag>& epgTag,
+                                    TIME_FORMAT format) const;
+    std::string GetEpgEventElapsedTime(const std::shared_ptr<const CPVREpgInfoTag>& epgTag,
+                                       TIME_FORMAT format) const;
+    std::string GetEpgEventRemainingTime(const std::shared_ptr<const CPVREpgInfoTag>& epgTag,
+                                         TIME_FORMAT format) const;
+    std::string GetEpgEventFinishTime(const std::shared_ptr<const CPVREpgInfoTag>& epgTag,
+                                      TIME_FORMAT format) const;
     std::string GetEpgEventSeekTime(int iSeekSize, TIME_FORMAT format) const;
 
     // GUI info ints
@@ -51,8 +55,8 @@ namespace PVR
     int GetTimeshiftProgressBufferStart() const;
     int GetTimeshiftProgressBufferEnd() const;
 
-    int GetEpgEventDuration(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
-    int GetEpgEventProgress(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
+    int GetEpgEventDuration(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
+    int GetEpgEventProgress(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
 
     // GUI info bools
     bool IsTimeshifting() const;
@@ -65,12 +69,12 @@ namespace PVR
     static std::string TimeToTimeString(time_t datetime, TIME_FORMAT format, bool withSeconds);
 
     int GetElapsedTime() const;
-    int GetRemainingTime(const std::shared_ptr<CPVREpgInfoTag>& epgTag) const;
+    int GetRemainingTime(const std::shared_ptr<const CPVREpgInfoTag>& epgTag) const;
 
     mutable CCriticalSection m_critSection;
 
-    std::shared_ptr<CPVREpgInfoTag> m_playingEpgTag;
-    std::shared_ptr<CPVRChannel> m_playingChannel;
+    std::shared_ptr<const CPVREpgInfoTag> m_playingEpgTag;
+    std::shared_ptr<const CPVRChannel> m_playingChannel;
 
     time_t m_iStartTime;
     unsigned int m_iDuration;

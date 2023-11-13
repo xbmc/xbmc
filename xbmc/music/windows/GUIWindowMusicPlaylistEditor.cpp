@@ -404,6 +404,9 @@ void CGUIWindowMusicPlaylistEditor::AppendToPlaylist(CFileItemList &newItems)
 
 void CGUIWindowMusicPlaylistEditor::OnSourcesContext()
 {
+  static constexpr int CONTEXT_BUTTON_QUEUE_ITEM = 0;
+  static constexpr int CONTEXT_BUTTON_BROWSE_INTO = 1;
+
   CFileItemPtr item = GetCurrentListItem();
   CContextButtons buttons;
   if (item->IsFileFolder(EFILEFOLDER_MASK_ONBROWSE))
@@ -436,19 +439,4 @@ void CGUIWindowMusicPlaylistEditor::OnPlaylistContext()
     OnMovePlaylistItem(item, 1);
   else if (btnid == CONTEXT_BUTTON_DELETE)
     OnDeletePlaylistItem(item);
-}
-
-bool CGUIWindowMusicPlaylistEditor::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
-{
-  switch (button)
-  {
-    case CONTEXT_BUTTON_QUEUE_ITEM:
-      OnQueueItem(itemNumber);
-      return true;
-
-    default:
-      break;
-  }
-
-  return CGUIWindowMusicBase::OnContextButton(itemNumber, button);
 }

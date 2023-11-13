@@ -1,4 +1,6 @@
 Checks: "\
+  modernize-make-shared,\
+  modernize-make-unique,\
   modernize-use-default-member-init,\
   performance-faster-string-find,\
   performance-for-range-copy,\

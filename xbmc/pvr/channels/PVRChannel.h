@@ -71,7 +71,7 @@ public:
    * @param channel The new channel data.
    * @return True if something changed, false otherwise.
    */
-  bool UpdateFromClient(const std::shared_ptr<CPVRChannel>& channel);
+  bool UpdateFromClient(const std::shared_ptr<const CPVRChannel>& channel);
 
   /*!
    * @brief Persists the changes in the database.
@@ -182,6 +182,11 @@ public:
   bool IsUserSetHidden() const;
 
   /*!
+   * @return the id of the channel group the channel was watched from the last time; -1 if unknown.
+   */
+  int LastWatchedGroupId() const;
+
+  /*!
    * @brief Set the path to the icon for this channel.
    * @param strIconPath The new path.
    * @param bIsUserSetIcon true if user changed the icon via GUI, false otherwise.
@@ -208,11 +213,12 @@ public:
   time_t LastWatched() const;
 
   /*!
-   * @brief Last time channel has been watched
-   * @param iLastWatched The new value.
+   * @brief Set the last time the channel has been watched and the channel group used to watch.
+   * @param lastWatched The new last watched time value.
+   * @param groupId the id of the group used to watch the channel.
    * @return True if the something changed, false otherwise.
    */
-  bool SetLastWatched(time_t iLastWatched);
+  bool SetLastWatched(time_t lastWatched, int groupId);
 
   /*!
    * @brief Check whether this channel has unpersisted data changes.
@@ -543,6 +549,8 @@ private:
   int m_iClientOrder = 0; /*!< the order from this channels group member */
   int m_iClientProviderUid =
       PVR_PROVIDER_INVALID_UID; /*!< the unique id for this provider from the client */
+  int m_lastWatchedGroupId{
+      -1}; /*!< the id of the channel group the channel was watched from the last time */
   //@}
 
   mutable CCriticalSection m_critSection;

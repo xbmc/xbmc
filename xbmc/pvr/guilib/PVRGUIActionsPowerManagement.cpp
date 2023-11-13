@@ -166,7 +166,7 @@ bool CPVRGUIActionsPowerManagement::AllLocalBackendsIdle(
 bool CPVRGUIActionsPowerManagement::EventOccursOnLocalBackend(
     const std::shared_ptr<CPVRTimerInfoTag>& event) const
 {
-  const std::shared_ptr<CPVRClient> client =
+  const std::shared_ptr<const CPVRClient> client =
       CServiceBroker::GetPVRManager().GetClient(CFileItem(event));
   if (client)
   {

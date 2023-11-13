@@ -1439,7 +1439,7 @@
 			</control>
 			<include content="IconButton">
 				<param name="control_id" value="" />
-				<param name="onclick" value="ActivateWindow(favourites)" />
+				<param name="onclick" value="ActivateWindow(favouritesbrowser)" />
 				<param name="icon" value="icons/favourites.png" />
 				<param name="label" value="$LOCALIZE[10134]" />
 			</include>

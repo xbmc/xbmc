@@ -42,6 +42,8 @@
 #include "utils/log.h"
 #include "view/GUIViewState.h"
 
+#include <memory>
+
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace std::chrono_literals;
@@ -155,7 +157,7 @@ public:
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
     if (appPlayer->IsPlayingAudio() && g_application.CurrentFileItem().HasMusicInfoTag())
     {
-      CFileItemPtr songitem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
+      CFileItemPtr songitem = std::make_shared<CFileItem>(g_application.CurrentFileItem());
       if (HasSongExtraArtChanged(songitem, type, itemID, db))
         g_application.UpdateCurrentPlayArt();
     }
@@ -653,7 +655,8 @@ std::string GetMusicDbItemPath(const CFileItem& item)
 }
 
 void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
-                              const std::shared_ptr<CFileItem>& itemToPlay)
+                              const std::shared_ptr<CFileItem>& itemToPlay,
+                              const std::string& player)
 {
   // recursively add items to list
   CFileItemList queuedItems;
@@ -685,7 +688,7 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
   }
 
   playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_MUSIC);
-  playlistPlayer.Play(pos, "");
+  playlistPlayer.Play(pos, player);
 }
 } // unnamed namespace
 
@@ -702,6 +705,7 @@ bool IsAutoPlayNextItem(const CFileItem& item)
 }
 
 void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
+              const std::string& player,
               ContentUtils::PlayMode mode /* = ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM */)
 {
   auto item = itemIn;
@@ -717,7 +721,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
 
   if (item->m_bIsFolder)
   {
-    AddItemToPlayListAndPlay(item, nullptr);
+    AddItemToPlayListAndPlay(item, nullptr, player);
   }
   else if (item->HasMusicInfoTag())
   {
@@ -746,7 +750,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
       if (item->GetStartOffset() == STARTOFFSET_RESUME)
         parentItem->SetStartOffset(STARTOFFSET_RESUME);
 
-      AddItemToPlayListAndPlay(parentItem, item);
+      AddItemToPlayListAndPlay(parentItem, item, player);
     }
     else // mode == PlayMode::PLAY_ONLY_THIS
     {
@@ -754,7 +758,7 @@ void PlayItem(const std::shared_ptr<CFileItem>& itemIn,
       auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
       playlistPlayer.Reset();
       playlistPlayer.SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
-      playlistPlayer.Play(item, "");
+      playlistPlayer.Play(item, player);
     }
   }
 }
@@ -849,6 +853,19 @@ bool GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& 
                               true); // can be cancelled
 }
 
+namespace
+{
+bool IsNonExistingUserPartyModePlaylist(const CFileItem& item)
+{
+  if (!item.IsSmartPlayList())
+    return false;
+
+  const std::string& path{item.GetPath()};
+  const auto profileManager{CServiceBroker::GetSettingsComponent()->GetProfileManager()};
+  return ((profileManager->GetUserDataItem("PartyMode.xsp") == path) && !CFileUtils::Exists(path));
+}
+} // unnamed namespace
+
 bool IsItemPlayable(const CFileItem& item)
 {
   // Exclude all parent folders
@@ -868,10 +885,6 @@ bool IsItemPlayable(const CFileItem& item)
       StringUtils::StartsWithNoCase(item.GetPath(), "newplaylist://"))
     return false;
 
-  // Exclude unwanted windows
-  if (CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_MUSIC_PLAYLIST)
-    return false;
-
   // Include playlists located at one of the possible music playlist locations
   if (item.IsPlayList())
   {
@@ -889,12 +902,15 @@ bool IsItemPlayable(const CFileItem& item)
     if (StringUtils::StartsWith(item.GetPath(), StringUtils::Format("{}/music/", path)))
       return true;
 
-    if (!item.m_bIsFolder)
+    if (!item.m_bIsFolder && !item.HasMusicInfoTag())
     {
       // Unknown location. Type cannot be determined for non-folder items.
       return false;
     }
   }
+
+  if (IsNonExistingUserPartyModePlaylist(item))
+    return false;
 
   if (item.m_bIsFolder &&
       (item.IsMusicDb() || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/")))

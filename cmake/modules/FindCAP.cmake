@@ -14,10 +14,10 @@ if(NOT TARGET CAP::CAP)
   endif()
 
   find_path(CAP_INCLUDE_DIR NAMES sys/capability.h
-                            PATHS ${PC_CAP_INCLUDEDIR}
+                            HINTS ${PC_CAP_INCLUDEDIR}
                             NO_CACHE)
   find_library(CAP_LIBRARY NAMES cap libcap
-                           PATHS ${PC_CAP_LIBDIR}
+                           HINTS ${PC_CAP_LIBDIR}
                            NO_CACHE)
 
   set(CAP_VERSION ${PC_CAP_VERSION})

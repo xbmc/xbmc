@@ -581,7 +581,8 @@ void CGUIDialogPVRGroupManager::Update()
 
   for (auto& group : *m_channelGroups)
   {
-    const std::shared_ptr<CPVRClient> client = CServiceBroker::GetPVRManager().GetClient(*group);
+    const std::shared_ptr<const CPVRClient> client =
+        CServiceBroker::GetPVRManager().GetClient(*group);
     if (client)
       group->SetProperty(PROPERTY_CLIENT_NAME, client->GetFriendlyName());
   }

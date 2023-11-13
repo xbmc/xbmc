@@ -98,7 +98,7 @@ public:
    * @return The channel group members that could be added to the group
    */
   std::vector<std::shared_ptr<CPVRChannelGroupMember>> GetMembersAvailableForGroup(
-      const std::shared_ptr<CPVRChannelGroup>& group);
+      const std::shared_ptr<const CPVRChannelGroup>& group);
 
   /*!
    * @brief Get a pointer to a channel group given its ID.
@@ -243,8 +243,8 @@ private:
 
   void OnPVRManagerEvent(const PVR::PVREvent& event);
 
-  int GetGroupTypePriority(const std::shared_ptr<CPVRChannelGroup>& group) const;
-  int GetGroupClientPriority(const std::shared_ptr<CPVRChannelGroup>& group) const;
+  int GetGroupTypePriority(const std::shared_ptr<const CPVRChannelGroup>& group) const;
+  int GetGroupClientPriority(const std::shared_ptr<const CPVRChannelGroup>& group) const;
 
   bool m_bRadio{false};
   std::vector<std::shared_ptr<CPVRChannelGroup>> m_groups;

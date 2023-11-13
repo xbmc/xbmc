@@ -43,12 +43,21 @@
 #include <algorithm>
 #include <math.h>
 #include <mutex>
+#include <unordered_map>
 
 using EVENTSERVER::CEventServer;
 
 using namespace KODI;
 
 const std::string CInputManager::SETTING_INPUT_ENABLE_CONTROLLER = "input.enablejoystick";
+
+namespace
+{
+const std::unordered_map<uint8_t, int> keyComposeactionEventMap = {
+    {XBMC_KEYCOMPOSING_COMPOSING, ACTION_KEYBOARD_COMPOSING_KEY},
+    {XBMC_KEYCOMPOSING_CANCELLED, ACTION_KEYBOARD_COMPOSING_KEY_CANCELLED},
+    {XBMC_KEYCOMPOSING_FINISHED, ACTION_KEYBOARD_COMPOSING_KEY_FINISHED}};
+}
 
 CInputManager::CInputManager()
   : m_keymapEnvironment(new CKeymapEnvironment),
@@ -230,7 +239,7 @@ bool CInputManager::ProcessEventServer(int windowId, float frameTime)
 
           CLog::Log(LOGDEBUG, "EventServer: key {} translated to action {}", wKeyID, actionName);
 
-          return ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName));
+          return ExecuteInputAction(CAction(actionID, fAmount, 0.0f, actionName, 0, wKeyID));
         }
         else
         {
@@ -349,6 +358,15 @@ bool CInputManager::OnEvent(XBMC_Event& newEvent)
       m_Keyboard.ProcessKeyUp();
       OnKeyUp(m_Keyboard.TranslateKey(newEvent.key.keysym));
       break;
+    case XBMC_KEYCOMPOSING_COMPOSING:
+    case XBMC_KEYCOMPOSING_CANCELLED:
+    case XBMC_KEYCOMPOSING_FINISHED:
+    {
+      const CAction action = CAction(keyComposeactionEventMap.find(newEvent.type)->second,
+                                     static_cast<wchar_t>(newEvent.key.keysym.unicode));
+      ExecuteInputAction(action);
+      break;
+    }
     case XBMC_MOUSEBUTTONDOWN:
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:

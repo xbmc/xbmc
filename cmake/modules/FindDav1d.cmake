@@ -35,16 +35,20 @@ if(NOT TARGET dav1d::dav1d)
 
     BUILD_DEP_TARGET()
   else()
-    if(PKG_CONFIG_FOUND)
+    find_package(PkgConfig)
+    # Do not use pkgconfig on windows
+    if(PKG_CONFIG_FOUND AND NOT WIN32)
       pkg_check_modules(PC_DAV1D dav1d QUIET)
     endif()
 
     find_library(DAV1D_LIBRARY NAMES dav1d libdav1d
                                HINTS ${DEPENDS_PATH}/lib ${PC_DAV1D_LIBDIR}
+                               ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                NO_CACHE)
 
     find_path(DAV1D_INCLUDE_DIR NAMES dav1d/dav1d.h
                                 HINTS ${DEPENDS_PATH}/include ${PC_DAV1D_INCLUDEDIR}
+                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
                                 NO_CACHE)
 
     set(DAV1D_VERSION ${PC_DAV1D_VERSION})

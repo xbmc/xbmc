@@ -953,11 +953,11 @@ msgstr ""
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/dialogs/GUIDialogPlayEject.cpp
+#: xbmc/favourites/ContextMenus.cpp
 #: xbmc/games/windows/GUIWindowGames.cpp
 #: xbmc/music/ContextMenus.h
-#: xbmc/music/MusicUtils.cpp
 #: xbmc/video/ContextMenus.cpp
-#: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
 #: system/settings/settings.xml
 msgctxt "#208"
 msgid "Play"
@@ -5723,10 +5723,11 @@ msgstr ""
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: xbmc/Autorun.cpp
-#: xbmc/pvr/PVRContextMenus.cpp
-#: xbmc/pvr/PVRGUIActions.cpp
+#: xbmc/favourites/ContextMenus.cpp
+#: xbmc/pvr/PVRGUIActionsPlayback.cpp
 #: xbmc/video/ContextMenus.cpp
-#: xbmc/video/windows/GUIWindowVideoBase.cpp
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
+#: xbmc/video/guilib/VideoPlayActionProcessor.cpp
 msgctxt "#12021"
 msgid "Play from beginning"
 msgstr ""
@@ -6928,11 +6929,13 @@ msgctxt "#13346"
 msgid "Movie information"
 msgstr ""
 
+#. Label for 'queue item' (adds an item to a playlist), used at several places
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
 #: system/settings/settings.xml
 #: xbmc/music/ContextMenus.h
-#: xbmc/video/ContextMenus.cpp
+#: xbmc/video/ContextMenus.h
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
 msgctxt "#13347"
 msgid "Queue item"
 msgstr ""
@@ -8769,6 +8772,9 @@ msgstr ""
 
 #empty strings from id 15209 to 15212
 
+#. Label for context menu action to choose a player and play
+#: xbmc/music/ContextMenus.h
+#: xbmc/video/ContextMenus.h
 #: xbmc/windows/GUIWindowFileManager.cpp
 msgctxt "#15213"
 msgid "Play using..."
@@ -9636,6 +9642,7 @@ msgstr ""
 
 #. generic 'information' label used in different places, like labels for message box headers
 #: xbmc/event/windows/GUIWindowEventLog.cpp
+#: xbmc/favourites/ContextMenus.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRChannelManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGroupManager.cpp
 #: xbmc/pvr/dialogs/GUIDialogPVRGuideInfo.cpp
@@ -13303,6 +13310,9 @@ msgctxt "#20323"
 msgid "Movie plot"
 msgstr ""
 
+#. Label for context menu entry to start playback of a part of a video stack
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 msgctxt "#20324"
 msgid "Play part..."
 msgstr ""
@@ -15306,7 +15316,25 @@ msgctxt "#22033"
 msgid "Charset"
 msgstr ""
 
-#empty strings from id 22034 to 22078
+#empty strings from id 22034 to 22075
+
+#. Label for setting to choose the default action for "play"
+#: system/settings/settings.xml
+msgctxt "#22076"
+msgid "Default play action"
+msgstr ""
+
+#. Label for value for default play action setting
+#: system/settings/settings.xml
+msgctxt "#22077"
+msgid "Ask if resumable"
+msgstr ""
+
+#. Label for value for default play action setting
+#: system/settings/settings.xml
+msgctxt "#22078"
+msgid "Resume"
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#22079"
@@ -15318,11 +15346,18 @@ msgctxt "#22080"
 msgid "Choose"
 msgstr ""
 
+#. Label for video select action 'show info'
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
 #: system/settings/settings.xml
 msgctxt "#22081"
 msgid "Show information"
 msgstr ""
 
+#. Label to denote that there is something 'more'
+#. xbmc/favourites/ContextMenus.h
+#: xbmc/listproviders/DirectoryProvider.cpp
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
+#: system/settings/settings.xml
 msgctxt "#22082"
 msgid "More..."
 msgstr ""
@@ -15342,6 +15377,9 @@ msgctxt "#23050"
 msgid "Activate teletext"
 msgstr ""
 
+#. Label for disc stack part and number
+#: xbmc/video/guilib/VideoSelectActionProcessor.cpp
+#: xbmc/video/VideoUtils.cpp
 msgctxt "#23051"
 msgid "Part {0:d}"
 msgstr ""
@@ -16060,17 +16098,7 @@ msgctxt "#24127"
 msgid "Automatically download first subtitle from the search result list"
 msgstr ""
 
-#. Info dialog after migrating userdata from xbmc to kodi
-#: xbmc/Application.cpp
-msgctxt "#24128"
-msgid "Configuration has been moved"
-msgstr ""
-
-#. Info dialog after migrating userdata from xbmc to kodi
-#: xbmc/Application.cpp
-msgctxt "#24129"
-msgid "The configuration of XBMC has been moved to the new location for Kodi. Please refer to http://kodi.wiki/view/Migration - this message will not be shown again!"
-msgstr ""
+#empty strings from id 24128 to 24129
 
 #: system/settings/settings.xml
 msgctxt "#24130"
@@ -19475,7 +19503,7 @@ msgstr ""
 #. Description of setting with label #22079 "Default select action"
 #: system/settings/settings.xml
 msgctxt "#36177"
-msgid "Toggle between [Choose], [Play] (default), [Resume] and [Show information].[CR][Choose] Will select an item, e.g. open a directory in files mode.[CR][Resume] Will automatically resume videos from the last position that you were viewing them, even after restarting the system."
+msgid "Toggle between [Choose], [Play] (default), [Resume], [Show information] and [Queue item].[CR][Choose] will open a context menu to select an item, e.g. show information.[CR][Play] will automatically play videos from the beginning or if a resume point is present ask whether to play from beginning or to resume.[CR][Resume] Will automatically resume videos from the last position that you were viewing them.[CR][Show information] will open the video's information dialog.[CR][Queue item] will append the video to the video playlist."
 msgstr ""
 
 #. Description of setting with label #20433 "Extract thumbnails and video information"
@@ -19626,7 +19654,11 @@ msgctxt "#36203"
 msgid "Enables the \"Personal Video Recorder\" (PVR) features. This requires that at least one PVR add-on is installed."
 msgstr ""
 
-#empty string with id 36204
+#. Description of setting with label #22076 "Default play action"
+#: system/settings/settings.xml
+msgctxt "#36204"
+msgid "Toggle between [Ask if resumable] (default) and [Resume].[CR][Ask if resumable] will ask whether to play from beginning or to resume (if a resume point is present).[CR][Resume] will automatically resume videos from the last position that you were viewing them.[CR]If no resume point is set, playback will automatically start from the beginning."
+msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#36205"
@@ -21902,10 +21934,12 @@ msgctxt "#37014"
 msgid "Last used profile"
 msgstr ""
 
+#. Label used in different places to denote the function to open a folder to list its content
 #: addons/skin.estuary/xml/SkinSettings.xml
 #: addons/skin.estuary/xml/Variables.xml
+#: xbmc/favourites/ContextMenus.h
 #: xbmc/music/ContextMenus.h
-#: xbmc/windows/GUIMediaWindow.cpp
+#: xbmc/video/ContextMenus.h
 msgctxt "#37015"
 msgid "Browse into"
 msgstr ""
@@ -22099,7 +22133,37 @@ msgctxt "#37052"
 msgid "NFS protocol version to use when establishing NFS connections"
 msgstr ""
 
-#empty strings from id 37053 to 38010
+#. Settings / Services "Chunk Size" group label
+#: system/settings/settings.xml
+msgctxt "#37053"
+msgid "Chunk Size"
+msgstr ""
+
+#. Setting #37054 "NFS Chunk Size"
+#: xbmc/filesystem/NFSFile.cpp
+msgctxt "#37054"
+msgid "NFS Chunk Size"
+msgstr ""
+
+#. Description of setting #37054 "NFS Chunk Size"
+#: system/settings/settings.xml
+msgctxt "#37055"
+msgid "Data chunk size used on NFS connections"
+msgstr ""
+
+#. Setting #37056 "SMB Chunk Size"
+#: system/settings/settings.xml
+msgctxt "#37056"
+msgid "SMB Chunk Size"
+msgstr ""
+
+#. Description of setting #37056 "SMB Chunk Size"
+#: system/settings/settings.xml
+msgctxt "#37057"
+msgid "Data chunk size used on SMB connections"
+msgstr ""
+
+#empty strings from id 37058 to 38010
 
 #. Setting #38011 "Show All Items entry"
 #: system/settings/settings.xml

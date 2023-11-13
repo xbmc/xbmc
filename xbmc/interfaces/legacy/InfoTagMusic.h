@@ -572,6 +572,23 @@ namespace XBMCAddon
 #ifdef DOXYGEN_SHOULD_USE_THIS
       ///
       /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ getSongVideoURL() }
+      /// Returns the URL to a video of the song from the music tag as a string (if present).
+      ///
+      /// @return [string] URL to a video of the song.
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v21 New function added.
+      ///
+      getSongVideoURL();
+#else
+      String getSongVideoURL();
+#endif
+
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
       /// @brief \python_func{ setDbId(dbId, type) }
       /// Set the database identifier of the music item.
       ///
@@ -995,6 +1012,23 @@ namespace XBMCAddon
       void setComment(const String& comment);
 #endif
 
+#ifdef DOXYGEN_SHOULD_USE_THIS
+      ///
+      /// \ingroup python_InfoTagMusic
+      /// @brief \python_func{ setSongVideoURL(songVideoURL) }
+      /// Set the URL of the song to point to a video.
+      ///
+      /// @param songVideoURL            string - URL to a video of the song.
+      ///
+      ///
+      ///-----------------------------------------------------------------------
+      /// @python_v21 New function added.
+      ///
+      setSongVideoURL(...);
+#else
+      void setSongVideoURL(const String& songVideoURL);
+#endif
+
 #ifndef SWIG
       static void setDbIdRaw(MUSIC_INFO::CMusicInfoTag* infoTag, int dbId, const String& type);
       static void setURLRaw(MUSIC_INFO::CMusicInfoTag* infoTag, const String& url);
@@ -1027,6 +1061,8 @@ namespace XBMCAddon
       static void setMusicBrainzAlbumArtistIDRaw(
           MUSIC_INFO::CMusicInfoTag* infoTag, const std::vector<String>& musicBrainzAlbumArtistID);
       static void setCommentRaw(MUSIC_INFO::CMusicInfoTag* infoTag, const String& comment);
+      static void setSongVideoURLRaw(MUSIC_INFO::CMusicInfoTag* infoTag,
+                                     const String& songVideoURL);
 #endif
     };
     //@}

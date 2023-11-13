@@ -10,8 +10,10 @@
 
 #include "GLContextEGL.h"
 #include "OptionalsReg.h"
+#include "ServiceBroker.h"
 #include "VideoSyncOML.h"
 #include "X11DPMSSupport.h"
+#include "application/AppParams.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationSkinHandling.h"
 #include "cores/RetroPlayer/process/X11/RPProcessInfoX11.h"
@@ -26,6 +28,7 @@
 #include "windowing/GraphicContext.h"
 #include "windowing/WindowSystemFactory.h"
 
+#include <memory>
 #include <mutex>
 #include <vector>
 
@@ -268,9 +271,10 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
   std::transform(gpuvendor.begin(), gpuvendor.end(), gpuvendor.begin(), ::tolower);
   bool isNvidia = (gpuvendor.compare(0, 6, "nvidia") == 0);
   bool isIntel = (gpuvendor.compare(0, 5, "intel") == 0);
-  std::string gli = (getenv("KODI_GL_INTERFACE") != nullptr) ? getenv("KODI_GL_INTERFACE") : "";
 
-  if (gli != "GLX")
+  std::string_view gli = CServiceBroker::GetAppParams()->GetGlInterface();
+
+  if (gli != "glx")
   {
     m_pGLContext = new CGLContextEGL(m_dpy, EGL_OPENGL_API);
     success = m_pGLContext->Refresh(force, m_screen, m_glWindow, m_newGlContext);
@@ -289,11 +293,11 @@ bool CWinSystemX11GLContext::RefreshGLContext(bool force)
           VAAPIRegister(m_vaapiProxy.get(), deepColor);
           return true;
         }
-        if (isIntel || gli == "EGL")
+        if (isIntel || gli == "egl")
           return true;
       }
     }
-    else if (gli == "EGL_PB")
+    else if (gli == "egl-pb")
     {
       success = m_pGLContext->CreatePB();
       if (success)
@@ -320,7 +324,7 @@ std::unique_ptr<CVideoSync> CWinSystemX11GLContext::GetVideoSync(CVideoReference
 
   if (dynamic_cast<CGLContextEGL*>(m_pGLContext))
   {
-    pVSync.reset(new CVideoSyncOML(clock, *this));
+    pVSync = std::make_unique<CVideoSyncOML>(clock, *this);
   }
   else
   {

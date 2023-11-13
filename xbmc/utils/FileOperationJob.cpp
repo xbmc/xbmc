@@ -22,6 +22,8 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+#include <memory>
+
 using namespace XFILE;
 
 CFileOperationJob::CFileOperationJob()
@@ -58,7 +60,7 @@ void CFileOperationJob::SetFileOperation(FileAction action,
 
   m_items.Clear();
   for (int i = 0; i < items.Size(); i++)
-    m_items.Add(CFileItemPtr(new CFileItem(*items[i])));
+    m_items.Add(std::make_shared<CFileItem>(*items[i]));
 }
 
 bool CFileOperationJob::DoWork()

@@ -124,15 +124,16 @@ public:
   std::string GetSingleValue(const std::string& strTable,
                              const std::string& strColumn,
                              const std::string& strWhereClause = std::string(),
-                             const std::string& strOrderBy = std::string());
-  std::string GetSingleValue(const std::string& query);
+                             const std::string& strOrderBy = std::string()) const;
+  std::string GetSingleValue(const std::string& query) const;
 
   /*! \brief Get a single value from a query on a dataset.
    \param query the query in question.
    \param ds the dataset to use for the query.
    \return the value from the query, empty on failure.
    */
-  std::string GetSingleValue(const std::string& query, std::unique_ptr<dbiplus::Dataset>& ds);
+  std::string GetSingleValue(const std::string& query,
+                             const std::unique_ptr<dbiplus::Dataset>& ds) const;
 
   /*!
  * @brief Get a single integer value from a table.
@@ -146,15 +147,16 @@ public:
   int GetSingleValueInt(const std::string& strTable,
                         const std::string& strColumn,
                         const std::string& strWhereClause = std::string(),
-                        const std::string& strOrderBy = std::string());
-  int GetSingleValueInt(const std::string& query);
+                        const std::string& strOrderBy = std::string()) const;
+  int GetSingleValueInt(const std::string& query) const;
 
   /*! \brief Get a single integer value from a query on a dataset.
    \param query the query in question.
    \param ds the dataset to use for the query.
    \return the value from the query, 0 on failure.
    */
-  int GetSingleValueInt(const std::string& query, std::unique_ptr<dbiplus::Dataset>& ds);
+  int GetSingleValueInt(const std::string& query,
+                        const std::unique_ptr<dbiplus::Dataset>& ds) const;
 
   /*!
    * @brief Delete values from a table.
@@ -294,7 +296,7 @@ protected:
 
   int GetDBVersion();
 
-  bool BuildSQL(const std::string& strQuery, const Filter& filter, std::string& strSQL);
+  bool BuildSQL(const std::string& strQuery, const Filter& filter, std::string& strSQL) const;
 
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
 

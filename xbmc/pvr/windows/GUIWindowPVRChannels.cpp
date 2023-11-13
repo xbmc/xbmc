@@ -320,7 +320,7 @@ bool CGUIWindowPVRChannelsBase::OnContextButtonManage(const CFileItemPtr& item,
 
 void CGUIWindowPVRChannelsBase::UpdateEpg(const CFileItemPtr& item)
 {
-  const std::shared_ptr<CPVRChannel> channel(item->GetPVRChannelInfoTag());
+  const std::shared_ptr<const CPVRChannel> channel(item->GetPVRChannelInfoTag());
 
   if (!CGUIDialogYesNo::ShowAndGetInput(
           CVariant{19251}, // "Update guide information"
@@ -400,7 +400,7 @@ void CGUIWindowPVRChannelsBase::OnInputDone()
 
 void CGUIWindowPVRChannelsBase::GetChannelNumbers(std::vector<std::string>& channelNumbers)
 {
-  const std::shared_ptr<CPVRChannelGroup> group = GetChannelGroup();
+  const std::shared_ptr<const CPVRChannelGroup> group = GetChannelGroup();
   if (group)
     group->GetChannelNumbers(channelNumbers);
 }

@@ -3,16 +3,6 @@ if(X_FOUND)
 else()
   set(USE_X11 0)
 endif()
-if(OPENGL_FOUND)
-  set(USE_OPENGL 1)
-else()
-  set(USE_OPENGL 0)
-endif()
-if(OPENGLES_FOUND)
-  set(USE_OPENGLES 1)
-else()
-  set(USE_OPENGLES 0)
-endif()
 
 # CMake config
 set(APP_BINARY ${APP_NAME_LC}${APP_BINARY_SUFFIX})
@@ -23,7 +13,7 @@ set(APP_INCLUDE_DIR ${includedir}/${APP_NAME_LC})
 
 # Set XBMC_STANDALONE_SH_PULSE so we can insert PulseAudio block into kodi-standalone
 if(EXISTS ${CMAKE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.pulse)
-  if(ENABLE_PULSEAUDIO AND PULSEAUDIO_FOUND)
+  if(ENABLE_PULSEAUDIO AND TARGET PulseAudio::PulseAudio)
     file(READ "${CMAKE_SOURCE_DIR}/tools/Linux/kodi-standalone.sh.pulse" pulse_content)
     set(XBMC_STANDALONE_SH_PULSE ${pulse_content})
   endif()
@@ -204,6 +194,7 @@ install(FILES ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/scripts/${APP_NAME}Config.cm
         COMPONENT kodi-addon-dev)
 
 if(ENABLE_EVENTCLIENTS)
+  find_package(PythonInterpreter REQUIRED)
   execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(prefix=''))"
                   OUTPUT_VARIABLE PYTHON_LIB_PATH OUTPUT_STRIP_TRAILING_WHITESPACE)
   # Install kodi-eventclients-common BT python files

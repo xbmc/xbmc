@@ -9,6 +9,7 @@
 #include "WinVideoFilter.h"
 
 #include "ConvolutionKernels.h"
+#include "ToneMappers.h"
 #include "Util.h"
 #include "VideoRenderers/windows/RendererBase.h"
 #include "cores/VideoPlayer/VideoRenderers/VideoShaders/dither.h"
@@ -206,51 +207,22 @@ void COutputShader::ApplyEffectParameters(CD3DEffect &effect, unsigned sourceWid
   }
   else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_ACES)
   {
-    float lumin = GetLuminanceValue();
+    const float lumin = CToneMappers::GetLuminanceValue(m_hasDisplayMetadata, m_displayMetadata,
+                                                        m_hasLightMetadata, m_lightMetadata);
     effect.SetScalar("g_luminance", lumin);
     effect.SetScalar("g_toneP1", m_toneMappingParam);
     m_toneMappingDebug = lumin;
   }
   else if (m_toneMapping && m_toneMappingMethod == VS_TONEMAPMETHOD_HABLE)
   {
-    float lumin = GetLuminanceValue();
-    float lumin_factor = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
-    float lumin_div100 = lumin / (100.0f * m_toneMappingParam);
+    const float lumin = CToneMappers::GetLuminanceValue(m_hasDisplayMetadata, m_displayMetadata,
+                                                        m_hasLightMetadata, m_lightMetadata);
+    const float lumin_factor = (10000.0f / lumin) * (2.0f / m_toneMappingParam);
+    const float lumin_div100 = lumin / (100.0f * m_toneMappingParam);
     effect.SetScalar("g_toneP1", lumin_factor);
     effect.SetScalar("g_toneP2", lumin_div100);
     m_toneMappingDebug = lumin;
   }
-}
-
-float COutputShader::GetLuminanceValue() const
-{
-  float lum1 = 400.0f; // default for bad quality HDR-PQ sources (with no metadata)
-  float lum2 = lum1;
-  float lum3 = lum1;
-
-  if (m_hasLightMetadata)
-  {
-    uint16_t lum = m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den;
-    if (m_lightMetadata.MaxCLL >= lum)
-    {
-      lum1 = static_cast<float>(lum);
-      lum2 = static_cast<float>(m_lightMetadata.MaxCLL);
-    }
-    else
-    {
-      lum1 = static_cast<float>(m_lightMetadata.MaxCLL);
-      lum2 = static_cast<float>(lum);
-    }
-    lum3 = static_cast<float>(m_lightMetadata.MaxFALL);
-    lum1 = (lum1 * 0.5f) + (lum2 * 0.2f) + (lum3 * 0.3f);
-  }
-  else if (m_hasDisplayMetadata && m_displayMetadata.has_luminance)
-  {
-    uint16_t lum = m_displayMetadata.max_luminance.num / m_displayMetadata.max_luminance.den;
-    lum1 = static_cast<float>(lum);
-  }
-
-  return lum1;
 }
 
 void COutputShader::GetDefines(DefinesMap& map) const
