@@ -130,6 +130,8 @@ CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG& data,
     m_strSeriesLink = data.strSeriesLink;
   if (data.strParentalRatingCode)
     m_strParentalRatingCode = data.strParentalRatingCode;
+  if (data.strParentalRatingIcon)
+    m_strParentalRatingIcon = data.strParentalRatingIcon;
 }
 
 void CPVREpgInfoTag::SetChannelData(const std::shared_ptr<CPVREpgChannelData>& data)
@@ -168,6 +170,7 @@ void CPVREpgInfoTag::Serialize(CVariant& value) const
   value["channeluid"] = m_channelData->UniqueClientChannelId();
   value["parentalrating"] = m_iParentalRating;
   value["parentalratingcode"] = m_strParentalRatingCode;
+  value["parentalratingicon"] = m_strParentalRatingIcon;
   value["rating"] = m_iStarRating;
   value["title"] = m_strTitle;
   value["plotoutline"] = m_strPlotOutline;
@@ -450,6 +453,11 @@ std::string CPVREpgInfoTag::ParentalRatingCode() const
   return m_strParentalRatingCode;
 }
 
+std::string CPVREpgInfoTag::ParentalRatingIcon() const
+{
+  return m_strParentalRatingIcon;
+}
+
 int CPVREpgInfoTag::StarRating() const
 {
   return m_iStarRating;
@@ -508,6 +516,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
        m_strGenreDescription != tag.m_strGenreDescription || m_firstAired != tag.m_firstAired ||
        m_iParentalRating != tag.m_iParentalRating ||
        m_strParentalRatingCode != tag.m_strParentalRatingCode ||
+       m_strParentalRatingIcon != tag.m_strParentalRatingIcon ||
        m_iStarRating != tag.m_iStarRating || m_iEpisodeNumber != tag.m_iEpisodeNumber ||
        m_iEpisodePart != tag.m_iEpisodePart || m_iSeriesNumber != tag.m_iSeriesNumber ||
        m_strEpisodeName != tag.m_strEpisodeName ||
@@ -544,6 +553,7 @@ bool CPVREpgInfoTag::Update(const CPVREpgInfoTag& tag, bool bUpdateBroadcastId /
     m_firstAired = tag.m_firstAired;
     m_iParentalRating = tag.m_iParentalRating;
     m_strParentalRatingCode = tag.m_strParentalRatingCode;
+    m_strParentalRatingIcon = tag.m_strParentalRatingIcon;
     m_iStarRating = tag.m_iStarRating;
     m_iEpisodeNumber = tag.m_iEpisodeNumber;
     m_iEpisodePart = tag.m_iEpisodePart;

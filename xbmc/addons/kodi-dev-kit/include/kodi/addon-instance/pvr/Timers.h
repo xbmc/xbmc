@@ -65,6 +65,7 @@ public:
     m_cStructure->iMarginEnd = 0;
     m_cStructure->iGenreType = PVR_TIMER_VALUE_NOT_AVAILABLE;
     m_cStructure->iGenreSubType = PVR_TIMER_VALUE_NOT_AVAILABLE;
+    m_cStructure->iParentalRating = 0;
   }
   PVRTimer(const PVRTimer& data) : CStructHdl(data) {}
   /*! \endcond */
@@ -101,6 +102,9 @@ public:
   /// | **Genre type** | `int` | @ref PVRTimer::SetGenreType "SetGenreType" | @ref PVRTimer::GetGenreType "GetGenreType" | *optional*
   /// | **Genre sub type** | `int` | @ref PVRTimer::SetGenreSubType "SetGenreSubType" | @ref PVRTimer::GetGenreSubType "GetGenreSubType" | *optional*
   /// | **Series link** | `std::string` | @ref PVRTimer::SetSeriesLink "SetSeriesLink" | @ref PVRTimer::GetSeriesLink "GetSeriesLink" | *optional*
+  /// | **Parental rating age** | `int` | @ref PVRTimer::SetParentalRating "SetParentalRating" | @ref PVRTimer::GetParentalRating "GetParentalRating" | *optional*
+  /// | **Parental rating code** | `std::string` | @ref PVRTimer::SetParentalRatingCode "SetParentalRatingCode" | @ref PVRTimer::GetParentalRatingCode "GetParentalRatingCode" | *optional*
+  /// | **Parental rating icon** | `std::string` | @ref PVRTimer::SetParentalRatingIcon "SetParentalRatingIcon" | @ref PVRTimer::GetParentalRatingIcon "GetParentalRatingIcon" | *optional*
 
   /// @addtogroup cpp_kodi_addon_pvr_Defs_Timer_PVRTimer
   ///@{
@@ -464,6 +468,35 @@ public:
 
   /// @brief To get with @ref SetSeriesLink changed values.
   std::string GetSeriesLink() const { return m_cStructure->strSeriesLink; }
+
+  /// @brief **optional**\n
+  /// Parental age rating
+  void SetParentalRating(int parentalRating) { m_cStructure->iParentalRating = parentalRating; }
+
+  /// @brief To get with @ref SetParentalRating changed values.
+  int GetParentalRating() const { return m_cStructure->iParentalRating; }
+
+  /// @brief **optional**\n
+  /// Parental rating code.
+  void SetParentalRatingCode(const std::string& parentalRatingCode)
+  {
+    strncpy(m_cStructure->strParentalRatingCode, parentalRatingCode.c_str(),
+            sizeof(m_cStructure->strParentalRatingCode) - 1);
+  }
+
+  /// @brief To get with @ref SetParentalRatingCode.
+  std::string GetParentalRatingCode() const { return m_cStructure->strParentalRatingCode; }
+
+  /// @brief **optional**\n
+  /// Parental rating icon.
+  void SetParentalRatingIcon(const std::string& parentalRatingIcon)
+  {
+    strncpy(m_cStructure->strParentalRatingIcon, parentalRatingIcon.c_str(),
+            sizeof(m_cStructure->strParentalRatingIcon) - 1);
+  }
+
+  /// @brief To get with @ref SetParentalRatingIcon.
+  std::string GetParentalRatingIcon() const { return m_cStructure->strParentalRatingIcon; }
   ///@}
 
 private:

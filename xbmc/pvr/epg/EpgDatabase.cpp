@@ -95,7 +95,8 @@ void CPVREpgDatabase::CreateTables()
         "sEpisodeName    varchar(128), "
         "iFlags          integer, "
         "sSeriesLink     varchar(255), "
-        "sParentalRatingCode varchar(64)"
+        "sParentalRatingCode varchar(64),"
+        "sParentalRatingIcon varchar(255)"
       ")"
   );
 
@@ -324,6 +325,11 @@ void CPVREpgDatabase::UpdateTables(int iVersion)
     m_pDS->exec("ALTER TABLE savedsearches ADD iChannelGroup integer;");
     m_pDS->exec("UPDATE savedsearches SET iChannelGroup = -1");
   }
+
+  if (iVersion < 17)
+  {
+    m_pDS->exec("ALTER TABLE epgtags ADD sParentalRatingIcon varchar(255);");
+  }
 }
 
 bool CPVREpgDatabase::DeleteEpg()
@@ -451,6 +457,7 @@ std::shared_ptr<CPVREpgInfoTag> CPVREpgDatabase::CreateEpgTag(
     newTag->m_iFlags = m_pDS->fv("iFlags").get_asInt();
     newTag->m_strSeriesLink = m_pDS->fv("sSeriesLink").get_asString();
     newTag->m_strParentalRatingCode = m_pDS->fv("sParentalRatingCode").get_asString();
+    newTag->m_strParentalRatingIcon = m_pDS->fv("sParentalRatingIcon").get_asString();
     newTag->m_iGenreType = m_pDS->fv("iGenreType").get_asInt();
     newTag->m_iGenreSubType = m_pDS->fv("iGenreSubType").get_asInt();
     newTag->m_strGenreDescription = m_pDS->fv("sGenre").get_asString();
@@ -1229,9 +1236,9 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         "sIconPath, iGenreType, iGenreSubType, sGenre, sFirstAired, iParentalRating, iStarRating, "
         "iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, sSeriesLink, sParentalRatingCode, "
-        "iBroadcastUid) "
+        "iBroadcastUid, sParentalRatingIcon) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, "
-        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i);",
+        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, '%s');",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
@@ -1240,7 +1247,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
-        tag.UniqueBroadcastID());
+        tag.UniqueBroadcastID(), tag.ParentalRatingIcon().c_str());
   }
   else
   {
@@ -1251,9 +1258,9 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         "sIconPath, iGenreType, iGenreSubType, sGenre, sFirstAired, iParentalRating, iStarRating, "
         "iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iFlags, sSeriesLink, sParentalRatingCode, "
-        "iBroadcastUid, idBroadcast) "
+        "iBroadcastUid, idBroadcast, sParentalRatingIcon) "
         "VALUES (%u, %u, %u, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %i, '%s', '%s', %i, %i, "
-        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, %i);",
+        "'%s', '%s', %i, %i, %i, %i, %i, '%s', %i, '%s', '%s', %i, %i, '%s');",
         tag.EpgID(), static_cast<unsigned int>(iStartTime), static_cast<unsigned int>(iEndTime),
         tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(),
         tag.OriginalTitle().c_str(), tag.DeTokenize(tag.Cast()).c_str(),
@@ -1262,7 +1269,7 @@ bool CPVREpgDatabase::QueuePersistQuery(const CPVREpgInfoTag& tag)
         tag.GenreDescription().c_str(), sFirstAired.c_str(), tag.ParentalRating(), tag.StarRating(),
         tag.SeriesNumber(), tag.EpisodeNumber(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.Flags(), tag.SeriesLink().c_str(), tag.ParentalRatingCode().c_str(),
-        tag.UniqueBroadcastID(), iBroadcastId);
+        tag.UniqueBroadcastID(), iBroadcastId, tag.ParentalRatingIcon().c_str());
   }
 
   QueueInsertQuery(strQuery);

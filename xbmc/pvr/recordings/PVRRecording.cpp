@@ -116,6 +116,10 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING& recording, unsigned int iClien
     CVideoInfoTag::SetResumePoint(recording.iLastPlayedPosition, recording.iDuration, "");
   SetDuration(recording.iDuration);
 
+  m_ageRating = recording.iParentalRating;
+  m_strAgeRatingLabel = recording.strParentalRatingCode;
+  m_strAgeRatingIcon = recording.strParentalRatingIcon;
+
   //  As the channel a recording was done on (probably long time ago) might no longer be
   //  available today prefer addon-supplied channel type (tv/radio) over channel attribute.
   if (recording.channelType != PVR_RECORDING_CHANNEL_TYPE_UNKNOWN)
@@ -288,6 +292,11 @@ void CPVRRecording::Reset()
   m_iClientProviderUniqueId = PVR_PROVIDER_INVALID_UID;
 
   m_recordingTime.Reset();
+
+  m_ageRating = 0;
+  m_strAgeRatingLabel.clear();
+  m_strAgeRatingIcon.clear();
+
   CVideoInfoTag::Reset();
 }
 
@@ -457,6 +466,9 @@ void CPVRRecording::Update(const CPVRRecording& tag, const CPVRClient& client)
   m_strPlotOutline = tag.m_strPlotOutline;
   m_strChannelName = tag.m_strChannelName;
   m_genre = tag.m_genre;
+  m_ageRating = tag.m_ageRating;
+  m_strAgeRatingLabel = tag.m_strAgeRatingLabel;
+  m_strAgeRatingIcon = tag.m_strAgeRatingIcon;
   m_iconPath = tag.m_iconPath;
   m_thumbnailPath = tag.m_thumbnailPath;
   m_fanartPath = tag.m_fanartPath;
@@ -727,4 +739,14 @@ std::shared_ptr<CPVRProvider> CPVRRecording::GetProvider() const
     provider = GetDefaultProvider();
 
   return provider;
+}
+
+std::string CPVRRecording::GetParentalRatingCode() const
+{
+  return m_strAgeRatingLabel;
+}
+
+std::string CPVRRecording::GetParentalRatingIcon() const
+{
+  return m_strAgeRatingIcon;
 }

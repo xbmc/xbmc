@@ -641,6 +641,7 @@ extern "C"
     const char* strFirstAired;
     int iParentalRating;
     const char* strParentalRatingCode;
+    const char* strParentalRatingIcon;
     int iStarRating;
     int iSeriesNumber;
     int iEpisodeNumber;
