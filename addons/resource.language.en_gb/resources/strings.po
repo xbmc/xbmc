@@ -7347,7 +7347,7 @@ msgstr ""
 
 #: system/settings/settings.xml
 msgctxt "#13436"
-msgid "Use display HDR capabilities"
+msgid "Adjust display HDR mode"
 msgstr ""
 
 #: system/settings/settings.xml
@@ -20212,10 +20212,10 @@ msgctxt "#36298"
 msgid "If enabled, a recording for the programme to remind will be scheduled when auto-closing the reminder popup, if supported by the PVR add-on and backend."
 msgstr ""
 
-#. Description of setting with label #13436 "Use display HDR capabilities"
+#. Description of setting with label #13436 "Adjust display HDR mode"
 #: system/settings/settings.xml
 msgctxt "#36299"
-msgid "Switch display into HDR mode if media with HDR information is played.[CR]If disabled, HDR information are applied using Kodi's internal HDR path."
+msgid "Allow the HDR mode of the display to be changed to best match the media.[CR]When disabled, Kodi applies tonemapping as needed to adapt the media to the current HDR mode of the display."
 msgstr ""
 
 #. Description of setting with label #20226 "Movie set information folder"
