@@ -21,6 +21,8 @@ namespace GAME
 class CPhysicalPort;
 
 /*!
+ * \ingroup games
+ *
  * \brief Collection of nodes that can be connected to this port
  */
 class CPortNode

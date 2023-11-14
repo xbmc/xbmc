@@ -27,6 +27,9 @@ namespace GAME
 class CController;
 class IActivePortList;
 
+/*!
+ * \ingroup games
+ */
 class CGUIActivePortList : public IActivePortList, public Observer
 {
 public:

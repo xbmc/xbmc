@@ -41,6 +41,9 @@ class CGameClientTopology;
 class CPortManager;
 class IGameInputCallback;
 
+/*!
+ * \ingroup games
+ */
 class CGameClientInput : protected CGameClientSubsystem, public Observable
 {
 public:

@@ -26,6 +26,9 @@ namespace GAME
 class CGameClient;
 class IGameClientStream;
 
+/*!
+ * \ingroup games
+ */
 class CGameClientStreams
 {
 public:

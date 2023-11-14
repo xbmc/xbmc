@@ -10,10 +10,6 @@
 
 #include "games/GameTypes.h"
 
-/*!
- * \brief Game player (aka agent) setup window
- */
-
 namespace KODI
 {
 namespace GAME
@@ -21,7 +17,20 @@ namespace GAME
 /*!
  * \ingroup games
  *
- * \brief A list populated by game-playing agents
+ * \brief A list populated by game-playing agents (\ref CGameAgent)
+ *
+ * This class manages the behavior of the player list (with control ID 5) in
+ * the player dialog (<b>`GameAgents`</b> window).
+ *
+ * The list is populated dynamically by the players in the current game.
+ *
+ * Currently, this is identical to the connected joysticks, because Kodi doesn't
+ * yet have a player abstraction. This is planned for a later release along with
+ * a full-featured Player Manager.
+ *
+ * The active ports are determined by \ref IActivePortList.
+ *
+ * The list is populated by the \ref CGUIGameControllerProvider.
  */
 class IAgentList
 {

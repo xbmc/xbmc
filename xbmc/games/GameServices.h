@@ -34,6 +34,9 @@ class CGameAgentManager;
 class CControllerManager;
 class CGameSettings;
 
+/*!
+ * \ingroup games
+ */
 class CGameServices
 {
 public:

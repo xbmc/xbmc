@@ -26,6 +26,9 @@ namespace GAME
 {
 class CGUIControllerWindow;
 
+/*!
+ * \ingroup games
+ */
 class CGUIControllerList : public IControllerList
 {
 public:

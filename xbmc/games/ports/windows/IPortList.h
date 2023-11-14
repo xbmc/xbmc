@@ -10,26 +10,24 @@
 
 #include "games/GameTypes.h"
 
+namespace KODI
+{
+namespace GAME
+{
 /*!
- * \brief Controller port setup window
+ * \ingroup games
+ *
+ * \brief A list populated by controller ports for the port setup window
  *
  * The port setup window presents a list of ports and their attached
  * controllers.
  *
  * The label2 of each port is the currently-connected controller. The user
  * selects from all controllers that the port accepts (as given by the
- * game-addon's topology.xml file).
+ * game-addon's <b>`topology.xml`</b> file).
  *
  * The controller topology is stored as a generic tree. Here we apply game logic
  * to simplify controller selection.
- */
-
-namespace KODI
-{
-namespace GAME
-{
-/*!
- * \brief A list populated by controller ports
  */
 class IPortList
 {

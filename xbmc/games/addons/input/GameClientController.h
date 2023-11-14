@@ -33,6 +33,8 @@ namespace GAME
 class CGameClientInput;
 
 /*!
+ * \ingroup games
+ *
  * \brief A container for the layout of a controller connected to a game
  *        client input port
  */

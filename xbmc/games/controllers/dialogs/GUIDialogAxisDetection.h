@@ -18,6 +18,9 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ */
 class CGUIDialogAxisDetection : public CGUIDialogButtonCapture
 {
 public:

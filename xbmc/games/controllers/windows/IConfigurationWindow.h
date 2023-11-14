@@ -17,25 +17,6 @@
 
 class CEvent;
 
-/*!
- * \brief Controller configuration window
- *
- * The configuration window presents a list of controllers. Also on the screen
- * is a list of features belonging to that controller.
- *
- * The configuration utility reacts to several events:
- *
- *   1) When a controller is focused, the feature list is populated with the
- *      controller's features.
- *
- *   2) When a feature is selected, the user is prompted for controller input.
- *      This initiates a "wizard" that walks the user through the subsequent
- *      features.
- *
- *   3) When the wizard's active feature loses focus, the wizard is cancelled
- *      and the prompt for input ends.
- */
-
 namespace KODI
 {
 namespace GAME
@@ -43,7 +24,25 @@ namespace GAME
 class CPhysicalFeature;
 
 /*!
- * \brief A list populated by installed controllers
+ * \ingroup games
+ *
+ * \brief A list populated by installed controllers for the controller
+ *        configuration window
+ *
+ * The configuration window presents a list of controllers. Also on the screen
+ * is a list of features (\ref IFeatureList) belonging to that controller.
+ *
+ * The configuration utility reacts to several events:
+ *
+ *   1) When a controller is focused, the feature list is populated with the
+ *      controller's features.
+ *
+ *   2) When a feature is selected, the user is prompted for controller input.
+ *      This initiates a "wizard" (\ref IConfigurationWizard) that walks the
+ *      user through the subsequent features.
+ *
+ *   3) When the wizard's active feature loses focus, the wizard is cancelled
+ *      and the prompt for input ends.
  */
 class IControllerList
 {
@@ -52,6 +51,7 @@ public:
 
   /*!
    * \brief  Initialize the resource
+   *
    * \return true if the resource is initialized and can be used
    *         false if the resource failed to initialize and must not be used
    */
@@ -64,25 +64,30 @@ public:
 
   /*!
    * \brief Refresh the contents of the list
+   *
    * \param controllerId The controller to focus, or empty to leave focus unchanged
+   *
    * \return True if the list was changed
    */
   virtual bool Refresh(const std::string& controllerId) = 0;
 
   /*
    * \brief  The specified controller has been focused
+   *
    * \param  controllerIndex The index of the controller being focused
    */
   virtual void OnFocus(unsigned int controllerIndex) = 0;
 
   /*!
    * \brief  The specified controller has been selected
+   *
    * \param  controllerIndex The index of the controller being selected
    */
   virtual void OnSelect(unsigned int controllerIndex) = 0;
 
   /*!
    * \brief Get the index of the focused controller
+   *
    * \return The index of the focused controller, or -1 if no controller has been focused yet
    */
   virtual int GetFocusedController() const = 0;
@@ -94,7 +99,13 @@ public:
 };
 
 /*!
+ * \ingroup games
+ *
  * \brief A list populated by the controller's features
+ *
+ * The feature list is populated by features (\ref IFeatureButton) belonging
+ * to the current controller selected in the controller list
+ * (\ref IControllerList).
  */
 class IFeatureList
 {
@@ -141,7 +152,9 @@ public:
 };
 
 /*!
- * \brief A GUI button in a feature list
+ * \ingroup games
+ *
+ * \brief A GUI button in a feature list (\ref IFeatureList)
  */
 class IFeatureButton
 {
@@ -216,7 +229,13 @@ public:
 };
 
 /*!
+ * \ingroup games
+ *
  * \brief A wizard to direct user input
+ *
+ * The wizard is run for the current controller selected in the controller list
+ * (\ref IControllerList). It prompts the user for input for each feature
+ * (\ref IFeatureButton) in the feature list (\ref IFeatureList).
  */
 class IConfigurationWizard
 {

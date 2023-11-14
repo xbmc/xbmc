@@ -20,9 +20,38 @@ namespace KODI
 {
 namespace GAME
 {
+/*!
+ * \ingroup games
+ *
+ * \brief Controller list provider for the \ref IAgentList control in the
+ *        Player Viewer (<b>`GameAgents`</b>) window
+ *
+ * This list provider populates a game controller list with items that show
+ * which emulator port a player's controller is connected to. Most items are
+ * empty to pad the controller to its correct position in the list.
+ *
+ * The number of list items is determined by \ref MAX_PORT_COUNT, plus an item
+ * for the "disconnected" icon. The list items are updated when the port count
+ * or port index changes.
+ *
+ * An alignment can be specified to align the available ports to the left or
+ * right side of the list.
+ */
 class CGUIGameControllerProvider : public IListProvider
 {
 public:
+  /*!
+   * \brief Construct a game controller provider for the player's controller
+   *        list in the Player Viewer dialog
+   *
+   * \param portCount The number of open ports for the emulator
+   * \param portIndex The index of the port the controller is connected to
+   * \param peripheralLocation The location of the underlying peripheral
+   *        providing input
+   * \param alignment The alignment of the list items (<b>`XBFONT_LEFT`</b>
+   *        or <b>`XBFONT_RIGHT`</b>)
+   * \param parentID The ID of the parent window
+   */
   CGUIGameControllerProvider(unsigned int portCount,
                              int portIndex,
                              const std::string& peripheralLocation,
