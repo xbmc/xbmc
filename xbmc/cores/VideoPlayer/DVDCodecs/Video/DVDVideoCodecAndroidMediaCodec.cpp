@@ -68,24 +68,6 @@ enum MEDIACODEC_STATES
   MEDIACODEC_STATE_STOPPED
 };
 
-static bool IsSupportedColorFormat(int color_format)
-{
-  static const int supported_colorformats[] = {
-    CJNIMediaCodecInfoCodecCapabilities::COLOR_FormatYUV420Planar,
-    CJNIMediaCodecInfoCodecCapabilities::COLOR_TI_FormatYUV420PackedSemiPlanar,
-    CJNIMediaCodecInfoCodecCapabilities::COLOR_FormatYUV420SemiPlanar,
-    CJNIMediaCodecInfoCodecCapabilities::COLOR_QCOM_FormatYUV420SemiPlanar,
-    CJNIMediaCodecInfoCodecCapabilities::OMX_QCOM_COLOR_FormatYVU420SemiPlanarInterlace,
-    -1
-  };
-  for (const int *ptr = supported_colorformats; *ptr != -1; ptr++)
-  {
-    if (color_format == *ptr)
-      return true;
-  }
-  return false;
-}
-
 /*****************************************************************************/
 /*****************************************************************************/
 class CDVDMediaCodecOnFrameAvailable : public CEvent,
@@ -713,7 +695,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
   }
 
   m_codec = nullptr;
-  m_colorFormat = -1;
   codecInfos = CJNIMediaCodecList(CJNIMediaCodecList::REGULAR_CODECS).getCodecInfos();
 
   for (const CJNIMediaCodecInfo& codec_info : codecInfos)
@@ -751,8 +732,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       continue;
     }
 
-    std::vector<int> color_formats = codec_caps.colorFormats();
-
     if (profile)
     {
       std::vector<CJNIMediaCodecInfoCodecProfileLevel> profileLevels = codec_caps.profileLevels();
@@ -785,16 +764,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         {
           CLog::Log(LOGERROR, "CDVDVideoCodecAndroidMediaCodec::Open cannot create codec");
           continue;
-        }
-
-        for (size_t k = 0; k < color_formats.size(); ++k)
-        {
-          CLog::Log(LOGDEBUG,
-                    "CDVDVideoCodecAndroidMediaCodec::Open "
-                    "m_codecname({}), colorFormat({})",
-                    m_codecname, color_formats[k]);
-          if (IsSupportedColorFormat(color_formats[k]))
-            m_colorFormat = color_formats[k]; // Save color format for initial output configuration
         }
         break;
       }
