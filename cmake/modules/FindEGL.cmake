@@ -32,8 +32,10 @@ if(NOT TARGET EGL::EGL)
     list(APPEND GL_INTERFACES_LIST egl egl-pb)
     set(GL_INTERFACES_LIST ${GL_INTERFACES_LIST} PARENT_SCOPE)
 
+    set(CMAKE_REQUIRED_INCLUDES "${EGL_INCLUDE_DIR}")
     include(CheckIncludeFiles)
     check_include_files("EGL/egl.h;EGL/eglext.h;EGL/eglext_angle.h" HAVE_EGLEXTANGLE)
+    unset(CMAKE_REQUIRED_INCLUDES)
 
     add_library(EGL::EGL UNKNOWN IMPORTED)
     set_target_properties(EGL::EGL PROPERTIES
