@@ -153,6 +153,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"splash", WINDOW_SPLASH},
     {"startwindow", WINDOW_START},
     {"startup", WINDOW_STARTUP_ANIM},
+    {"peripherals", WINDOW_DIALOG_PERIPHERALS},
     {"peripheralsettings", WINDOW_DIALOG_PERIPHERAL_SETTINGS},
     {"extendedprogressdialog", WINDOW_DIALOG_EXT_PROGRESS},
     {"mediafilter", WINDOW_DIALOG_MEDIA_FILTER},

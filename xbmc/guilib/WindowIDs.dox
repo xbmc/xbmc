@@ -67,7 +67,7 @@ This page shows the window names, the window definition, the window ID and the s
 | AddonInformation        | WINDOW_DIALOG_ADDON_INFO             | 10146     | DialogAddonInfo.xml                 |                                    |
 | TextViewer              | WINDOW_DIALOG_TEXT_VIEWER            | 10147     | DialogTextViewer.xml                |                                    |
 |                         | WINDOW_DIALOG_PLAY_EJECT             | 10148     | DialogConfirm.xml                   |                                    |
-|                         | WINDOW_DIALOG_PERIPHERALS            | 10149     | DialogSelect.xml                    |                                    |
+| Peripherals             | WINDOW_DIALOG_PERIPHERALS            | 10149     | DialogSelect.xml                    | @skinning_v21 The "Peripherals" alias has been added for this window<p></p> |
 | PeripheralSettings      | WINDOW_DIALOG_PERIPHERAL_SETTINGS    | 10150     | DialogSettings.xml                  |                                    |
 | ExtendedProgressDialog  | WINDOW_DIALOG_EXT_PROGRESS           | 10151     | DialogExtendedProgressBar.xml       |                                    |
 | MediaFilter             | WINDOW_DIALOG_MEDIA_FILTER           | 10152     | DialogSettings.xml                  |                                    |
