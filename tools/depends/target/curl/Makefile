@@ -3,10 +3,32 @@ DEPS = ../../Makefile.include Makefile CURL-VERSION ../../download-files.include
 
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-shared --disable-ldap \
-          --without-libssh2 --disable-ntlm-wb --enable-ipv6 --without-librtmp \
-          --without-libidn2 --with-ca-fallback --with-ssl=$(PREFIX) \
-          --with-nghttp2=$(PREFIX) --without-libpsl
+          ./configure --prefix=$(PREFIX) \
+                      --disable-shared \
+                      --disable-ldap \
+                      --without-libssh2 \
+                      --disable-ntlm-wb \
+                      --enable-ipv6 \
+                      --without-librtmp \
+                      --without-libidn2 \
+                      --with-ca-fallback \
+                      --with-ssl=$(PREFIX) \
+                      --with-nghttp2=$(PREFIX) \
+                      --with-zlib \
+                      --without-libpsl \
+                      --without-zstd \
+                      --without-brotli \
+                      --without-gssapi \
+                      --without-gsasl \
+                      --without-hyper \
+                      --without-ngtcp2 \
+                      --without-nghttp3 \
+                      --without-quiche \
+                      --without-msh3 \
+                      --without-gnutls \
+                      --without-nss \
+                      --without-mbedtls \
+                      --without-wolfssl
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/$(BYPRODUCT)
 
