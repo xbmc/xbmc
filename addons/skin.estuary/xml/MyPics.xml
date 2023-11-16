@@ -93,10 +93,6 @@
 						<param name="value" value="ListItem.PictureCity" />
 					</include>
 					<include content="PicsInfoLine">
-						<param name="label" value="$LOCALIZE[21807]"/>
-						<param name="value" value="ListItem.PictureColour" />
-					</include>
-					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21839]"/>
 						<param name="value" value="ListItem.PictureComment" />
 					</include>

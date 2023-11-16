@@ -110,7 +110,6 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_imageMetadata.exifInfo.GpsLat;
     ar << m_imageMetadata.exifInfo.GpsLong;
     ar << m_imageMetadata.exifInfo.Height;
-    ar << m_imageMetadata.exifInfo.IsColor;
     ar << m_imageMetadata.exifInfo.ISOequivalent;
     ar << m_imageMetadata.exifInfo.LightSource;
     ar << m_imageMetadata.exifInfo.MeteringMode;
@@ -178,7 +177,6 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> m_imageMetadata.exifInfo.GpsLat;
     ar >> m_imageMetadata.exifInfo.GpsLong;
     ar >> m_imageMetadata.exifInfo.Height;
-    ar >> m_imageMetadata.exifInfo.IsColor;
     ar >> m_imageMetadata.exifInfo.ISOequivalent;
     ar >> m_imageMetadata.exifInfo.LightSource;
     ar >> m_imageMetadata.exifInfo.MeteringMode;
@@ -247,7 +245,6 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["gpsinfo"]["lat"] = m_imageMetadata.exifInfo.GpsLat;
   value["gpsinfo"]["long"] = m_imageMetadata.exifInfo.GpsLong;
   value["height"] = m_imageMetadata.exifInfo.Height;
-  value["iscolor"] = m_imageMetadata.exifInfo.IsColor;
   value["isoequivalent"] = m_imageMetadata.exifInfo.ISOequivalent;
   value["lightsource"] = m_imageMetadata.exifInfo.LightSource;
   value["meteringmode"] = m_imageMetadata.exifInfo.MeteringMode;
@@ -299,9 +296,6 @@ const std::string CPictureInfoTag::GetInfo(int info) const
   case SLIDESHOW_RESOLUTION:
     value = StringUtils::Format("{} x {}", m_imageMetadata.exifInfo.Width,
                                 m_imageMetadata.exifInfo.Height);
-    break;
-  case SLIDESHOW_COLOUR:
-    value = m_imageMetadata.exifInfo.IsColor ? "Colour" : "Black and White";
     break;
   case SLIDESHOW_COMMENT:
     value = m_imageMetadata.exifInfo.FileComment;
@@ -570,9 +564,8 @@ int CPictureInfoTag::TranslateString(const std::string &info)
   else if (StringUtils::EqualsNoCase(info, "filedate")) return SLIDESHOW_FILE_DATE;
   else if (StringUtils::EqualsNoCase(info, "slideindex")) return SLIDESHOW_INDEX;
   else if (StringUtils::EqualsNoCase(info, "resolution")) return SLIDESHOW_RESOLUTION;
-  else if (StringUtils::EqualsNoCase(info, "slidecomment")) return SLIDESHOW_COMMENT;
-  else if (StringUtils::EqualsNoCase(info, "colour"))
-    return SLIDESHOW_COLOUR;
+  else if (StringUtils::EqualsNoCase(info, "slidecomment"))
+    return SLIDESHOW_COMMENT;
   else if (StringUtils::EqualsNoCase(info, "exiftime")) return SLIDESHOW_EXIF_DATE_TIME;
   else if (StringUtils::EqualsNoCase(info, "exifdate")) return SLIDESHOW_EXIF_DATE;
   else if (StringUtils::EqualsNoCase(info, "longexiftime")) return SLIDESHOW_EXIF_LONG_DATE_TIME;

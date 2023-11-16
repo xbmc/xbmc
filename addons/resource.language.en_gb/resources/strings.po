@@ -14904,11 +14904,7 @@ msgctxt "#21806"
 msgid "Comment"
 msgstr ""
 
-msgctxt "#21807"
-msgid "Colour / B&W"
-msgstr ""
-
-#empty strings from id 21808 to 21819
+#empty strings from id 21807 to 21819
 
 msgctxt "#21820"
 msgid "Date / Time"

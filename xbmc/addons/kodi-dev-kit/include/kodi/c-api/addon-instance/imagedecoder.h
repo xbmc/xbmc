@@ -81,24 +81,6 @@ extern "C"
   //----------------------------------------------------------------------------
 
   //============================================================================
-  /// @defgroup cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_COLOR enum ADDON_IMG_COLOR
-  /// @ingroup cpp_kodi_addon_imagedecoder_Defs
-  /// @brief **Image color type**\n
-  /// To set image as colored or black/white.
-  ///
-  ///@{
-  typedef enum ADDON_IMG_COLOR
-  {
-    /// @brief Colored image
-    ADDON_IMG_COLOR_COLORED,
-
-    /// @brief Black/White image
-    ADDON_IMG_COLOR_BLACK_WHITE
-  } ADDON_IMG_COLOR;
-  ///@}
-  //----------------------------------------------------------------------------
-
-  //============================================================================
   /// @defgroup cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_METERING_MODE enum ADDON_IMG_METERING_MODE
   /// @ingroup cpp_kodi_addon_imagedecoder_Defs
   /// @brief **Image metering mode**
@@ -372,7 +354,6 @@ extern "C"
     int height;
     float distance;
     enum ADDON_IMG_ORIENTATION orientation;
-    enum ADDON_IMG_COLOR color;
     enum ADDON_IMG_METERING_MODE metering_mode;
     float exposure_time;
     float exposure_bias;

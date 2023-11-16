@@ -5184,19 +5184,6 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureCity `ListItem.PictureCity`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`ListItem.PictureColour`</b>,
-///                  \anchor ListItem_PictureColour
-///                  _string_,
-///     @return Whether the selected picture is "Colour" or "Black and White".
-///     <p>
-///     @deprecated \link ListItem_PictureColour `ListItem.PictureColour`\endlink is deprecated and will be removed in future Kodi versions
-///     <p><hr>
-///     @skinning_v20 **[Deprecated]** \link ListItem_PictureColour `ListItem.PictureColour`\endlink is deprecated and will be removed in future Kodi versions
-///     <p>
-///     <p><hr>
-///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureColour `ListItem.PictureColour`\endlink
-///     <p>
-///   }
 ///   \table_row3{   <b>`ListItem.PictureComment`</b>,
 ///                  \anchor ListItem_PictureComment
 ///                  _string_,
@@ -7010,7 +6997,6 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "pictureexposurebias",           LISTITEM_PICTURE_EXPOSURE_BIAS },
                                   { "pictureflashused",              LISTITEM_PICTURE_FLASH_USED },
                                   { "pictureheadline",               LISTITEM_PICTURE_HEADLINE },
-                                  { "picturecolour",                 LISTITEM_PICTURE_COLOUR },
                                   { "picturelightsource",            LISTITEM_PICTURE_LIGHT_SOURCE },
                                   { "picturemeteringmode",           LISTITEM_PICTURE_METERING_MODE },
                                   { "pictureobjectname",             LISTITEM_PICTURE_OBJECT_NAME },
@@ -9083,21 +9069,6 @@ const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
 ///     @skinning_v13 **[New Infolabel]** \link Slideshow_City `Slideshow.City`\endlink
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Slideshow.Colour`</b>,
-///                  \anchor Slideshow_Colour
-///                  _string_,
-///     @return the colour of the picture. It can have one of the following values:
-///       - <b>"Colour"</b>
-///       - <b>"Black and White"</b>
-///     <p>
-///     @deprecated Slideshow_Colour `Slideshow.Colour`\endlink is deprecated and will be removed in future Kodi versions
-///     <p><hr>
-///     @skinning_v20 **[Deprecated]** \link Slideshow_Colour `Slideshow.Colour`\endlink is deprecated and will be removed in future Kodi versions
-///     <p>
-///     <p><hr>
-///     @skinning_v13 **[New Infolabel]** \link Slideshow_Colour `Slideshow.Colour`\endlink
-///     <p>
-///   }
 ///   \table_row3{   <b>`Slideshow.CopyrightNotice`</b>,
 ///                  \anchor Slideshow_CopyrightNotice
 ///                  _string_,
@@ -9560,7 +9531,6 @@ const infomap slideshow[] = {
     {"slideindex", SLIDESHOW_INDEX},
     {"resolution", SLIDESHOW_RESOLUTION},
     {"slidecomment", SLIDESHOW_COMMENT},
-    {"colour", SLIDESHOW_COLOUR},
     {"exiftime", SLIDESHOW_EXIF_DATE_TIME},
     {"exifdate", SLIDESHOW_EXIF_DATE},
     {"longexiftime", SLIDESHOW_EXIF_LONG_DATE_TIME},
@@ -9792,8 +9762,8 @@ const infomap slideshow[] = {
 /// @skinning_v22 **[Removed Infolabels]** The following infolabels have been removed:
 ///   - `Slideshow.Process`
 ///   - `ListItem.PictureProcess`
-///
-/// <hr>
+///   - `Listitem.PictureColour`
+///   - `Slideshow.Colour`
 /// <hr>
 /// \subsection modules_rm_infolabels_booleans_v21 Kodi v21 (Omega)
 /// @skinning_v21 **[Removed Infolabels]** The following infolabels have been removed:

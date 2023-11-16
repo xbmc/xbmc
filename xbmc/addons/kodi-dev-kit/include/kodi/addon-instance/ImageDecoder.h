@@ -59,7 +59,6 @@ public:
   /// | **Width** | `int` | @ref ImageDecoderInfoTag::SetWidth "SetWidth" | @ref ImageDecoderInfoTag::GetWidth "GetWidth"
   /// | **Height** | `int` | @ref ImageDecoderInfoTag::SetHeight "SetHeight" | @ref ImageDecoderInfoTag::GetHeight "GetHeight"
   /// | **Distance** | `float` | @ref ImageDecoderInfoTag::SetDistance "SetDistance" | @ref ImageDecoderInfoTag::GetDistance "GetDistance"
-  /// | **Color** | @ref cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_COLOR | @ref ImageDecoderInfoTag::SetColor "SetColor" | @ref ImageDecoderInfoTag::GetColor "GetColor"
   /// | **Orientation** | @ref cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_ORIENTATION | @ref ImageDecoderInfoTag::SetOrientation "SetOrientation" | @ref ImageDecoderInfoTag::GetOrientation "GetOrientation"
   /// | **Metering mode** | @ref cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_METERING_MODE | @ref ImageDecoderInfoTag::SetMeteringMode "SetMeteringMode" | @ref ImageDecoderInfoTag::GetMeteringMode "GetMeteringMode"
   /// | **Exposure time** | `float` | @ref ImageDecoderInfoTag::SetExposureTime "SetExposureTime" | @ref ImageDecoderInfoTag::GetExposureTime "GetExposureTime"
@@ -101,14 +100,6 @@ public:
 
   /// @brief Get mage distance in meters.
   int GetDistance() const { return m_distance; }
-
-  /// @brief Set the image color type.
-  ///
-  /// @copydetails cpp_kodi_addon_imagedecoder_Defs_ADDON_IMG_COLOR
-  void SetColor(ADDON_IMG_COLOR color) { m_color = color; }
-
-  /// @brief Get image image color type.
-  ADDON_IMG_COLOR GetColor() const { return m_color; }
 
   /// @brief Set metering mode.
   ///
@@ -322,7 +313,6 @@ private:
   int m_height{};
   float m_distance{};
   ADDON_IMG_ORIENTATION m_orientation{ADDON_IMG_ORIENTATION_NONE};
-  ADDON_IMG_COLOR m_color{ADDON_IMG_COLOR_COLORED};
   ADDON_IMG_METERING_MODE m_metering_mode{ADDON_IMG_METERING_MODE_UNKNOWN};
   float m_exposure_time{};
   float m_exposure_bias{};
@@ -654,7 +644,6 @@ private:
       tag->width = cppTag.GetWidth();
       tag->height = cppTag.GetHeight();
       tag->distance = cppTag.GetDistance();
-      tag->color = cppTag.GetColor();
       tag->orientation = cppTag.GetOrientation();
       tag->metering_mode = cppTag.GetMeteringMode();
       tag->exposure_time = cppTag.GetExposureTime();

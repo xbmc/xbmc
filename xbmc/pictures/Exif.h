@@ -28,7 +28,6 @@ struct ExifInfo
   int Height{};
   int Width{};
   int Orientation{};
-  int IsColor{};
   int FlashUsed{};
   float FocalLength{};
   float ExposureTime{};
