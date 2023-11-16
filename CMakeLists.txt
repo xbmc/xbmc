@@ -204,6 +204,7 @@ set(required_deps ASS>=0.15.0
                   Cdio
                   CrossGUID
                   Curl
+                  Exiv2
                   FFMPEG
                   FlatBuffers
                   Fmt

@@ -9,6 +9,7 @@ DEPENDS = \
   bzip2 \
   curl \
   dav1d \
+  exiv2 \
   expat \
   ffmpeg \
   fontconfig \
@@ -187,6 +188,7 @@ taglib: $(ZLIB)
 wayland: expat libffi
 waylandpp: wayland $(WAYLANDPP_DEPS)
 xz: gettext
+exiv2: $(ICONV) $(ZLIB) expat
 
 .installed-$(PLATFORM): $(DEPENDS)
 	touch $@
