@@ -14908,11 +14908,7 @@ msgctxt "#21807"
 msgid "Colour / B&W"
 msgstr ""
 
-msgctxt "#21808"
-msgid "JPEG process"
-msgstr ""
-
-#empty strings from id 21809 to 21819
+#empty strings from id 21808 to 21819
 
 msgctxt "#21820"
 msgid "Date / Time"

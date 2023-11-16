@@ -5507,19 +5507,6 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return The filename and path of the selected picture.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`ListItem.PictureProcess`</b>,
-///                  \anchor ListItem_PictureProcess
-///                  _string_,
-///     @return The process used to compress the selected picture.
-///     <p>
-///     @deprecated \link ListItem_PictureProcess `ListItem.PictureProcess`\endlink is deprecated and will be removed in future Kodi versions
-///     <p><hr>
-///     @skinning_v20 **[Deprecated]** \link ListItem_PictureProcess `ListItem.PictureProcess`\endlink is deprecated and will be removed in future Kodi versions
-///     <p>
-///     <p><hr>
-///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureProcess `ListItem.PictureProcess`\endlink
-///     <p>
-///   }
 ///   \table_row3{   <b>`ListItem.PictureReferenceService`</b>,
 ///                  \anchor ListItem_PictureReferenceService
 ///                  _string_,
@@ -7028,7 +7015,6 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "picturemeteringmode",           LISTITEM_PICTURE_METERING_MODE },
                                   { "pictureobjectname",             LISTITEM_PICTURE_OBJECT_NAME },
                                   { "pictureorientation",            LISTITEM_PICTURE_ORIENTATION },
-                                  { "pictureprocess",                LISTITEM_PICTURE_PROCESS },
                                   { "picturereferenceservice",       LISTITEM_PICTURE_REF_SERVICE },
                                   { "picturesource",                 LISTITEM_PICTURE_SOURCE },
                                   { "picturespecialinstructions",    LISTITEM_PICTURE_SPEC_INSTR },
@@ -9433,19 +9419,6 @@ const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
 ///     @return The file path of the current picture.
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Slideshow.Process`</b>,
-///                  \anchor Slideshow_Process
-///                  _string_,
-///     @return The process used to compress the current picture.
-///     <p>
-///     @deprecated \link Slideshow_Process `Slideshow.Process`\endlink is deprecated and will be removed in future Kodi versions
-///     <p><hr>
-///     @skinning_v20 **[Deprecated]** \link Slideshow_Process `Slideshow.Process`\endlink is deprecated and will be removed in future Kodi versions
-///     <p>
-///     <p><hr>
-///     @skinning_v13 **[New Infolabel]** \link Slideshow_Process `Slideshow.Process`\endlink
-///     <p>
-///   }
 ///   \table_row3{   <b>`Slideshow.ReferenceService`</b>,
 ///                  \anchor Slideshow_ReferenceService
 ///                  _string_,
@@ -9575,70 +9548,70 @@ const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-const infomap slideshow[] =      {{ "ispaused",               SLIDESHOW_ISPAUSED },
-                                  { "isactive",               SLIDESHOW_ISACTIVE },
-                                  { "isvideo",                SLIDESHOW_ISVIDEO },
-                                  { "israndom",               SLIDESHOW_ISRANDOM },
-                                  { "filename",               SLIDESHOW_FILE_NAME },
-                                  { "path",                   SLIDESHOW_FILE_PATH },
-                                  { "filesize",               SLIDESHOW_FILE_SIZE },
-                                  { "filedate",               SLIDESHOW_FILE_DATE },
-                                  { "slideindex",             SLIDESHOW_INDEX },
-                                  { "resolution",             SLIDESHOW_RESOLUTION },
-                                  { "slidecomment",           SLIDESHOW_COMMENT },
-                                  { "colour",                 SLIDESHOW_COLOUR },
-                                  { "process",                SLIDESHOW_PROCESS },
-                                  { "exiftime",               SLIDESHOW_EXIF_DATE_TIME },
-                                  { "exifdate",               SLIDESHOW_EXIF_DATE },
-                                  { "longexiftime",           SLIDESHOW_EXIF_LONG_DATE_TIME },
-                                  { "longexifdate",           SLIDESHOW_EXIF_LONG_DATE },
-                                  { "exifdescription",        SLIDESHOW_EXIF_DESCRIPTION },
-                                  { "cameramake",             SLIDESHOW_EXIF_CAMERA_MAKE },
-                                  { "cameramodel",            SLIDESHOW_EXIF_CAMERA_MODEL },
-                                  { "exifcomment",            SLIDESHOW_EXIF_COMMENT },
-                                  { "exifsoftware",           SLIDESHOW_EXIF_SOFTWARE },
-                                  { "aperture",               SLIDESHOW_EXIF_APERTURE },
-                                  { "focallength",            SLIDESHOW_EXIF_FOCAL_LENGTH },
-                                  { "focusdistance",          SLIDESHOW_EXIF_FOCUS_DIST },
-                                  { "exposure",               SLIDESHOW_EXIF_EXPOSURE },
-                                  { "exposuretime",           SLIDESHOW_EXIF_EXPOSURE_TIME },
-                                  { "exposurebias",           SLIDESHOW_EXIF_EXPOSURE_BIAS },
-                                  { "exposuremode",           SLIDESHOW_EXIF_EXPOSURE_MODE },
-                                  { "flashused",              SLIDESHOW_EXIF_FLASH_USED },
-                                  { "whitebalance",           SLIDESHOW_EXIF_WHITE_BALANCE },
-                                  { "lightsource",            SLIDESHOW_EXIF_LIGHT_SOURCE },
-                                  { "meteringmode",           SLIDESHOW_EXIF_METERING_MODE },
-                                  { "isoequivalence",         SLIDESHOW_EXIF_ISO_EQUIV },
-                                  { "digitalzoom",            SLIDESHOW_EXIF_DIGITAL_ZOOM },
-                                  { "ccdwidth",               SLIDESHOW_EXIF_CCD_WIDTH },
-                                  { "orientation",            SLIDESHOW_EXIF_ORIENTATION },
-                                  { "supplementalcategories", SLIDESHOW_IPTC_SUP_CATEGORIES },
-                                  { "keywords",               SLIDESHOW_IPTC_KEYWORDS },
-                                  { "caption",                SLIDESHOW_IPTC_CAPTION },
-                                  { "author",                 SLIDESHOW_IPTC_AUTHOR },
-                                  { "headline",               SLIDESHOW_IPTC_HEADLINE },
-                                  { "specialinstructions",    SLIDESHOW_IPTC_SPEC_INSTR },
-                                  { "category",               SLIDESHOW_IPTC_CATEGORY },
-                                  { "byline",                 SLIDESHOW_IPTC_BYLINE },
-                                  { "bylinetitle",            SLIDESHOW_IPTC_BYLINE_TITLE },
-                                  { "credit",                 SLIDESHOW_IPTC_CREDIT },
-                                  { "source",                 SLIDESHOW_IPTC_SOURCE },
-                                  { "copyrightnotice",        SLIDESHOW_IPTC_COPYRIGHT_NOTICE },
-                                  { "objectname",             SLIDESHOW_IPTC_OBJECT_NAME },
-                                  { "city",                   SLIDESHOW_IPTC_CITY },
-                                  { "state",                  SLIDESHOW_IPTC_STATE },
-                                  { "country",                SLIDESHOW_IPTC_COUNTRY },
-                                  { "transmissionreference",  SLIDESHOW_IPTC_TX_REFERENCE },
-                                  { "iptcdate",               SLIDESHOW_IPTC_DATE },
-                                  { "urgency",                SLIDESHOW_IPTC_URGENCY },
-                                  { "countrycode",            SLIDESHOW_IPTC_COUNTRY_CODE },
-                                  { "referenceservice",       SLIDESHOW_IPTC_REF_SERVICE },
-                                  { "latitude",               SLIDESHOW_EXIF_GPS_LATITUDE },
-                                  { "longitude",              SLIDESHOW_EXIF_GPS_LONGITUDE },
-                                  { "altitude",               SLIDESHOW_EXIF_GPS_ALTITUDE },
-                                  { "timecreated",            SLIDESHOW_IPTC_TIMECREATED },
-                                  { "sublocation",            SLIDESHOW_IPTC_SUBLOCATION },
-                                  { "imagetype",              SLIDESHOW_IPTC_IMAGETYPE },
+const infomap slideshow[] = {
+    {"ispaused", SLIDESHOW_ISPAUSED},
+    {"isactive", SLIDESHOW_ISACTIVE},
+    {"isvideo", SLIDESHOW_ISVIDEO},
+    {"israndom", SLIDESHOW_ISRANDOM},
+    {"filename", SLIDESHOW_FILE_NAME},
+    {"path", SLIDESHOW_FILE_PATH},
+    {"filesize", SLIDESHOW_FILE_SIZE},
+    {"filedate", SLIDESHOW_FILE_DATE},
+    {"slideindex", SLIDESHOW_INDEX},
+    {"resolution", SLIDESHOW_RESOLUTION},
+    {"slidecomment", SLIDESHOW_COMMENT},
+    {"colour", SLIDESHOW_COLOUR},
+    {"exiftime", SLIDESHOW_EXIF_DATE_TIME},
+    {"exifdate", SLIDESHOW_EXIF_DATE},
+    {"longexiftime", SLIDESHOW_EXIF_LONG_DATE_TIME},
+    {"longexifdate", SLIDESHOW_EXIF_LONG_DATE},
+    {"exifdescription", SLIDESHOW_EXIF_DESCRIPTION},
+    {"cameramake", SLIDESHOW_EXIF_CAMERA_MAKE},
+    {"cameramodel", SLIDESHOW_EXIF_CAMERA_MODEL},
+    {"exifcomment", SLIDESHOW_EXIF_COMMENT},
+    {"exifsoftware", SLIDESHOW_EXIF_SOFTWARE},
+    {"aperture", SLIDESHOW_EXIF_APERTURE},
+    {"focallength", SLIDESHOW_EXIF_FOCAL_LENGTH},
+    {"focusdistance", SLIDESHOW_EXIF_FOCUS_DIST},
+    {"exposure", SLIDESHOW_EXIF_EXPOSURE},
+    {"exposuretime", SLIDESHOW_EXIF_EXPOSURE_TIME},
+    {"exposurebias", SLIDESHOW_EXIF_EXPOSURE_BIAS},
+    {"exposuremode", SLIDESHOW_EXIF_EXPOSURE_MODE},
+    {"flashused", SLIDESHOW_EXIF_FLASH_USED},
+    {"whitebalance", SLIDESHOW_EXIF_WHITE_BALANCE},
+    {"lightsource", SLIDESHOW_EXIF_LIGHT_SOURCE},
+    {"meteringmode", SLIDESHOW_EXIF_METERING_MODE},
+    {"isoequivalence", SLIDESHOW_EXIF_ISO_EQUIV},
+    {"digitalzoom", SLIDESHOW_EXIF_DIGITAL_ZOOM},
+    {"ccdwidth", SLIDESHOW_EXIF_CCD_WIDTH},
+    {"orientation", SLIDESHOW_EXIF_ORIENTATION},
+    {"supplementalcategories", SLIDESHOW_IPTC_SUP_CATEGORIES},
+    {"keywords", SLIDESHOW_IPTC_KEYWORDS},
+    {"caption", SLIDESHOW_IPTC_CAPTION},
+    {"author", SLIDESHOW_IPTC_AUTHOR},
+    {"headline", SLIDESHOW_IPTC_HEADLINE},
+    {"specialinstructions", SLIDESHOW_IPTC_SPEC_INSTR},
+    {"category", SLIDESHOW_IPTC_CATEGORY},
+    {"byline", SLIDESHOW_IPTC_BYLINE},
+    {"bylinetitle", SLIDESHOW_IPTC_BYLINE_TITLE},
+    {"credit", SLIDESHOW_IPTC_CREDIT},
+    {"source", SLIDESHOW_IPTC_SOURCE},
+    {"copyrightnotice", SLIDESHOW_IPTC_COPYRIGHT_NOTICE},
+    {"objectname", SLIDESHOW_IPTC_OBJECT_NAME},
+    {"city", SLIDESHOW_IPTC_CITY},
+    {"state", SLIDESHOW_IPTC_STATE},
+    {"country", SLIDESHOW_IPTC_COUNTRY},
+    {"transmissionreference", SLIDESHOW_IPTC_TX_REFERENCE},
+    {"iptcdate", SLIDESHOW_IPTC_DATE},
+    {"urgency", SLIDESHOW_IPTC_URGENCY},
+    {"countrycode", SLIDESHOW_IPTC_COUNTRY_CODE},
+    {"referenceservice", SLIDESHOW_IPTC_REF_SERVICE},
+    {"latitude", SLIDESHOW_EXIF_GPS_LATITUDE},
+    {"longitude", SLIDESHOW_EXIF_GPS_LONGITUDE},
+    {"altitude", SLIDESHOW_EXIF_GPS_ALTITUDE},
+    {"timecreated", SLIDESHOW_IPTC_TIMECREATED},
+    {"sublocation", SLIDESHOW_IPTC_SUBLOCATION},
+    {"imagetype", SLIDESHOW_IPTC_IMAGETYPE},
 };
 
 /// \page modules__infolabels_boolean_conditions
@@ -9814,6 +9787,13 @@ const infomap slideshow[] =      {{ "ispaused",               SLIDESHOW_ISPAUSED
 
 /// \page modules__infolabels_boolean_conditions
 /// \section modules_rm_infolabels_booleans Additional revision history for Infolabels and Boolean Conditions
+/// <hr>
+/// \subsection modules_rm_infolabels_booleans_v22 Kodi v22 (P*)
+/// @skinning_v22 **[Removed Infolabels]** The following infolabels have been removed:
+///   - `Slideshow.Process`
+///   - `ListItem.PictureProcess`
+///
+/// <hr>
 /// <hr>
 /// \subsection modules_rm_infolabels_booleans_v21 Kodi v21 (Omega)
 /// @skinning_v21 **[Removed Infolabels]** The following infolabels have been removed:

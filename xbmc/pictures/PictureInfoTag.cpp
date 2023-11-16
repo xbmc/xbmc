@@ -23,23 +23,6 @@
 #include <algorithm>
 #include <vector>
 
-namespace
-{
-constexpr unsigned int M_SOF0 = 0xC0;
-constexpr unsigned int M_SOF1 = 0xC1;
-constexpr unsigned int M_SOF2 = 0xC2;
-constexpr unsigned int M_SOF3 = 0xC3;
-constexpr unsigned int M_SOF5 = 0xC5;
-constexpr unsigned int M_SOF6 = 0xC6;
-constexpr unsigned int M_SOF7 = 0xC7;
-constexpr unsigned int M_SOF9 = 0xC9;
-constexpr unsigned int M_SOF10 = 0xCA;
-constexpr unsigned int M_SOF11 = 0xCB;
-constexpr unsigned int M_SOF13 = 0xCD;
-constexpr unsigned int M_SOF14 = 0xCE;
-constexpr unsigned int M_SOF15 = 0xCF;
-} // namespace
-
 using namespace KODI::ADDONS;
 
 void CPictureInfoTag::Reset()
@@ -134,7 +117,6 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_imageMetadata.exifInfo.MeteringMode;
     ar << static_cast<int>(m_imageMetadata.exifInfo.DateTimeOffsets.size());
     ar << m_imageMetadata.exifInfo.Orientation;
-    ar << m_imageMetadata.exifInfo.Process;
     ar << m_imageMetadata.exifInfo.ThumbnailAtEnd;
     ar << m_imageMetadata.exifInfo.ThumbnailOffset;
     ar << m_imageMetadata.exifInfo.ThumbnailSize;
@@ -212,7 +194,6 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> numDateTimeTags;
     m_imageMetadata.exifInfo.DateTimeOffsets.resize(numDateTimeTags);
     ar >> m_imageMetadata.exifInfo.Orientation;
-    ar >> m_imageMetadata.exifInfo.Process;
     ar >> m_imageMetadata.exifInfo.ThumbnailAtEnd;
     ar >> m_imageMetadata.exifInfo.ThumbnailOffset;
     ar >> m_imageMetadata.exifInfo.ThumbnailSize;
@@ -285,7 +266,6 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["meteringmode"] = m_imageMetadata.exifInfo.MeteringMode;
   value["numdatetimetags"] = static_cast<int>(m_imageMetadata.exifInfo.DateTimeOffsets.size());
   value["orientation"] = m_imageMetadata.exifInfo.Orientation;
-  value["process"] = m_imageMetadata.exifInfo.Process;
   value["thumbnailatend"] = m_imageMetadata.exifInfo.ThumbnailAtEnd;
   value["thumbnailoffset"] = m_imageMetadata.exifInfo.ThumbnailOffset;
   value["thumbnailsize"] = m_imageMetadata.exifInfo.ThumbnailSize;
@@ -339,55 +319,6 @@ const std::string CPictureInfoTag::GetInfo(int info) const
     break;
   case SLIDESHOW_COLOUR:
     value = m_imageMetadata.exifInfo.IsColor ? "Colour" : "Black and White";
-    break;
-  case SLIDESHOW_PROCESS:
-    switch (m_imageMetadata.exifInfo.Process)
-    {
-      case M_SOF0:
-        // don't show it if its the plain old boring 'baseline' process, but do
-        // show it if its something else, like 'progressive' (used on web sometimes)
-        value = "Baseline";
-        break;
-      case M_SOF1:
-        value = "Extended sequential";
-        break;
-      case M_SOF2:
-        value = "Progressive";
-        break;
-      case M_SOF3:
-        value = "Lossless";
-        break;
-      case M_SOF5:
-        value = "Differential sequential";
-        break;
-      case M_SOF6:
-        value = "Differential progressive";
-        break;
-      case M_SOF7:
-        value = "Differential lossless";
-        break;
-      case M_SOF9:
-        value = "Extended sequential, arithmetic coding";
-        break;
-      case M_SOF10:
-        value = "Progressive, arithmetic coding";
-        break;
-      case M_SOF11:
-        value = "Lossless, arithmetic coding";
-        break;
-      case M_SOF13:
-        value = "Differential sequential, arithmetic coding";
-        break;
-      case M_SOF14:
-        value = "Differential progressive, arithmetic coding";
-        break;
-      case M_SOF15:
-        value = "Differential lossless, arithmetic coding";
-        break;
-      default:
-        value = "Unknown";
-        break;
-    }
     break;
   case SLIDESHOW_COMMENT:
     value = m_imageMetadata.exifInfo.FileComment;
@@ -657,8 +588,8 @@ int CPictureInfoTag::TranslateString(const std::string &info)
   else if (StringUtils::EqualsNoCase(info, "slideindex")) return SLIDESHOW_INDEX;
   else if (StringUtils::EqualsNoCase(info, "resolution")) return SLIDESHOW_RESOLUTION;
   else if (StringUtils::EqualsNoCase(info, "slidecomment")) return SLIDESHOW_COMMENT;
-  else if (StringUtils::EqualsNoCase(info, "colour")) return SLIDESHOW_COLOUR;
-  else if (StringUtils::EqualsNoCase(info, "process")) return SLIDESHOW_PROCESS;
+  else if (StringUtils::EqualsNoCase(info, "colour"))
+    return SLIDESHOW_COLOUR;
   else if (StringUtils::EqualsNoCase(info, "exiftime")) return SLIDESHOW_EXIF_DATE_TIME;
   else if (StringUtils::EqualsNoCase(info, "exifdate")) return SLIDESHOW_EXIF_DATE;
   else if (StringUtils::EqualsNoCase(info, "longexiftime")) return SLIDESHOW_EXIF_LONG_DATE_TIME;
