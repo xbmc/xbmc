@@ -9,6 +9,7 @@ DEPENDS = \
   brotli \
   bzip2 \
   dav1d \
+  exiv2 \
   expat \
   ffmpeg \
   fontconfig \
