@@ -112,15 +112,10 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_imageMetadata.exifInfo.Height;
     ar << m_imageMetadata.exifInfo.IsColor;
     ar << m_imageMetadata.exifInfo.ISOequivalent;
-    ar << m_imageMetadata.exifInfo.LargestExifOffset;
     ar << m_imageMetadata.exifInfo.LightSource;
     ar << m_imageMetadata.exifInfo.MeteringMode;
     ar << static_cast<int>(m_imageMetadata.exifInfo.DateTimeOffsets.size());
     ar << m_imageMetadata.exifInfo.Orientation;
-    ar << m_imageMetadata.exifInfo.ThumbnailAtEnd;
-    ar << m_imageMetadata.exifInfo.ThumbnailOffset;
-    ar << m_imageMetadata.exifInfo.ThumbnailSize;
-    ar << m_imageMetadata.exifInfo.ThumbnailSizeOffset;
     ar << m_imageMetadata.exifInfo.Whitebalance;
     ar << m_imageMetadata.exifInfo.Width;
     ar << m_dateTimeTaken;
@@ -159,8 +154,6 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> m_imageMetadata.exifInfo.CameraModel;
     ar >> m_imageMetadata.exifInfo.CCDWidth;
     ar >> m_imageMetadata.exifInfo.Comments;
-    m_imageMetadata.exifInfo.CommentsCharset =
-        EXIF_COMMENT_CHARSET_CONVERTED; // Store and restore the comment charset converted
     ar >> m_imageMetadata.exifInfo.Description;
     ar >> m_imageMetadata.exifInfo.DateTime;
     m_imageMetadata.exifInfo.DateTimeOffsets.clear();
@@ -187,17 +180,12 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> m_imageMetadata.exifInfo.Height;
     ar >> m_imageMetadata.exifInfo.IsColor;
     ar >> m_imageMetadata.exifInfo.ISOequivalent;
-    ar >> m_imageMetadata.exifInfo.LargestExifOffset;
     ar >> m_imageMetadata.exifInfo.LightSource;
     ar >> m_imageMetadata.exifInfo.MeteringMode;
     int numDateTimeTags;
     ar >> numDateTimeTags;
     m_imageMetadata.exifInfo.DateTimeOffsets.resize(numDateTimeTags);
     ar >> m_imageMetadata.exifInfo.Orientation;
-    ar >> m_imageMetadata.exifInfo.ThumbnailAtEnd;
-    ar >> m_imageMetadata.exifInfo.ThumbnailOffset;
-    ar >> m_imageMetadata.exifInfo.ThumbnailSize;
-    ar >> m_imageMetadata.exifInfo.ThumbnailSizeOffset;
     ar >> m_imageMetadata.exifInfo.Whitebalance;
     ar >> m_imageMetadata.exifInfo.Width;
     ar >> m_dateTimeTaken;
@@ -261,15 +249,10 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["height"] = m_imageMetadata.exifInfo.Height;
   value["iscolor"] = m_imageMetadata.exifInfo.IsColor;
   value["isoequivalent"] = m_imageMetadata.exifInfo.ISOequivalent;
-  value["largestexifoffset"] = m_imageMetadata.exifInfo.LargestExifOffset;
   value["lightsource"] = m_imageMetadata.exifInfo.LightSource;
   value["meteringmode"] = m_imageMetadata.exifInfo.MeteringMode;
   value["numdatetimetags"] = static_cast<int>(m_imageMetadata.exifInfo.DateTimeOffsets.size());
   value["orientation"] = m_imageMetadata.exifInfo.Orientation;
-  value["thumbnailatend"] = m_imageMetadata.exifInfo.ThumbnailAtEnd;
-  value["thumbnailoffset"] = m_imageMetadata.exifInfo.ThumbnailOffset;
-  value["thumbnailsize"] = m_imageMetadata.exifInfo.ThumbnailSize;
-  value["thumbnailsizeoffset"] = m_imageMetadata.exifInfo.ThumbnailSizeOffset;
   value["whitebalance"] = m_imageMetadata.exifInfo.Whitebalance;
   value["width"] = m_imageMetadata.exifInfo.Width;
 
