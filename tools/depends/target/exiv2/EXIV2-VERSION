@@ -1,0 +1,6 @@
+LIBNAME=exiv2
+VERSION=0.28.2
+ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
+SHA512=to_be_released
+BYPRODUCT=libexiv2.a
+BYPRODUCT_WIN=exiv2.lib
