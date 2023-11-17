@@ -1,41 +1,32 @@
 #.rst:
-# FindICONV
+# FindIconv
 # --------
 # Finds the ICONV library
 #
-# This will define the following target:
+# This will define the following targets:
 #
-#   ${APP_NAME_LC}::ICONV - The ICONV library
+#   ${APP_NAME_LC}::Iconv - An alias of the Iconv::Iconv target
+#   Iconv::Iconv - The ICONV library
 
 if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
-  find_path(ICONV_INCLUDE_DIR NAMES iconv.h
-                              HINTS ${DEPENDS_PATH}/include)
 
-  find_library(ICONV_LIBRARY NAMES iconv libiconv c
-                             HINTS ${DEPENDS_PATH}/lib)
+  # We do this dance to utilise cmake system FindIconv. Saves us dealing with it
+  set(_temp_CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
+  unset(CMAKE_MODULE_PATH)
 
-  set(CMAKE_REQUIRED_LIBRARIES ${ICONV_LIBRARY})
-  check_function_exists(iconv HAVE_ICONV_FUNCTION)
-  if(NOT HAVE_ICONV_FUNCTION)
-    check_function_exists(libiconv HAVE_LIBICONV_FUNCTION2)
-    set(HAVE_ICONV_FUNCTION ${HAVE_LIBICONV_FUNCTION2})
-    unset(HAVE_LIBICONV_FUNCTION2)
+  if(Iconv_FIND_REQUIRED)
+    set(ICONV_REQUIRED "REQUIRED")
   endif()
-  unset(CMAKE_REQUIRED_LIBRARIES)
 
-  include(FindPackageHandleStandardArgs)
-  find_package_handle_standard_args(Iconv
-                                    REQUIRED_VARS ICONV_LIBRARY ICONV_INCLUDE_DIR HAVE_ICONV_FUNCTION)
+  find_package(Iconv ${ICONV_REQUIRED})
+
+  # Back to our normal module paths
+  set(CMAKE_MODULE_PATH ${_temp_CMAKE_MODULE_PATH})
 
   if(ICONV_FOUND)
-    # Libc causes grief for linux, so search if found library is libc.* and only
-    # create imported TARGET if its not
-    if(NOT ${ICONV_LIBRARY} MATCHES ".*libc\..*")
-      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
-      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
-                                                                       IMPORTED_LOCATION "${ICONV_LIBRARY}"
-                                                                       INTERFACE_INCLUDE_DIRECTORIES "${ICONV_INCLUDE_DIR}")
-    endif()
+    # We still want to Alias its "standard" target to our APP_NAME_LC based target
+    # for integration into our core dep packaging
+    add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS Iconv::Iconv)
   else()
     if(Iconv_FIND_REQUIRED)
       message(FATAL_ERROR "Iconv libraries were not found.")
