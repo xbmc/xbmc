@@ -9,8 +9,7 @@
 #include "FTPParse.h"
 
 #include <cmath>
-
-#include <pcrecpp.h>
+#include <regex>
 
 CFTPParse::CFTPParse()
 {
@@ -44,6 +43,23 @@ time_t CFTPParse::getTime()
   return m_time;
 }
 
+namespace
+{
+  const std::string months = "janfebmaraprmayjunjulaugsepoctnovdec";
+
+  // set time_struct.tm_mon from the 3-letter "abbreviated month name"
+  void setMonFromName(struct tm& time_struct, const std::string& name)
+  {
+    std::smatch match;
+    if (std::regex_search(months, match, std::regex(name, std::regex_constants::icase))) 
+    {
+        int pos = match.position();
+        if (name.size() == 3 && pos % 3 == 0)
+            time_struct.tm_mon = pos / 3;
+    }
+  }
+}
+
 void CFTPParse::setTime(const std::string& str)
 {
   /* Variables used to capture patterns via the regexes */
@@ -54,18 +70,19 @@ void CFTPParse::setTime(const std::string& str)
   std::string minute;
   std::string second;
   std::string am_or_pm;
+  std::smatch match;
 
   /* time struct used to set the time_t variable */
   struct tm time_struct = {};
 
   /* Regex to read Unix, NetWare and NetPresenz time format */
-  pcrecpp::RE unix_re("^([A-Za-z]{3})" // month
+  std::regex unix_re("^([A-Za-z]{3})" // month
     "\\s+(\\d{1,2})" // day of month
     "\\s+([:\\d]{4,5})$" // time of day or year
   );
 
   /* Regex to read MultiNet time format */
-  pcrecpp::RE multinet_re("^(\\d{1,2})" // day of month
+  std::regex multinet_re("^(\\d{1,2})" // day of month
     "-([A-Za-z]{3})" // month
     "-(\\d{4})" // year
     "\\s+(\\d{2})" // hour
@@ -74,7 +91,7 @@ void CFTPParse::setTime(const std::string& str)
   );
 
   /* Regex to read MSDOS time format */
-  pcrecpp::RE msdos_re("^(\\d{2})" // month
+  std::regex msdos_re("^(\\d{2})" // month
     "-(\\d{2})" // day of month
     "-(\\d{2})" // year
     "\\s+(\\d{2})" // hour
@@ -82,45 +99,14 @@ void CFTPParse::setTime(const std::string& str)
     "([AP]M)$" // AM or PM
   );
 
-  if (unix_re.FullMatch(str, &month, &day, &year))
+  if (std::regex_match(str, match, unix_re))
   {
+    month = match[1].str();
+    day = match[2].str();
+    year = match[3].str();
+
     /* set the month */
-    if (pcrecpp::RE("jan",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 0;
-    else if (pcrecpp::RE("feb",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 1;
-    else if (pcrecpp::RE("mar",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 2;
-    else if (pcrecpp::RE("apr",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 3;
-    else if (pcrecpp::RE("may",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 4;
-    else if (pcrecpp::RE("jun",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 5;
-    else if (pcrecpp::RE("jul",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 6;
-    else if (pcrecpp::RE("aug",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 7;
-    else if (pcrecpp::RE("sep",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 8;
-    else if (pcrecpp::RE("oct",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 9;
-    else if (pcrecpp::RE("nov",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 10;
-    else if (pcrecpp::RE("dec",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 11;
+    setMonFromName(time_struct, month);
 
     /* set the day of the month */
     time_struct.tm_mday = atoi(day.c_str());
@@ -133,11 +119,11 @@ void CFTPParse::setTime(const std::string& str)
 #else
     current_time = localtime(&t);
 #endif
-    if (pcrecpp::RE("(\\d{2}):(\\d{2})").FullMatch(year, &hour, &minute))
+    if (std::regex_match(year, match, std::regex("(\\d{2}):(\\d{2})")))
     {
       /* set the hour and minute */
-      time_struct.tm_hour = atoi(hour.c_str());
-      time_struct.tm_min = atoi(minute.c_str());
+      time_struct.tm_hour = atoi(match[1].str().c_str());
+      time_struct.tm_min = atoi(match[2].str().c_str());
 
       /* set the year */
       if ((current_time->tm_mon - time_struct.tm_mon < 0) ||
@@ -158,46 +144,18 @@ void CFTPParse::setTime(const std::string& str)
                                    time_struct.tm_mday,
                                    time_struct.tm_year + 1900);
   }
-  else if (multinet_re.FullMatch(str, &day, &month, &year,
-                            &hour, &minute, (void*)NULL, &second))
+  else if (std::regex_match(str, match, multinet_re))
   {
+    day = match[1].str();
+    month = match[2].str();
+    year = match[3].str();
+    hour = match[4].str();
+    minute = match[5].str();
+    // match[6] ignored
+    second = match[7].str();
+
     /* set the month */
-    if (pcrecpp::RE("jan",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 0;
-    else if (pcrecpp::RE("feb",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 1;
-    else if (pcrecpp::RE("mar",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 2;
-    else if (pcrecpp::RE("apr",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 3;
-    else if (pcrecpp::RE("may",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 4;
-    else if (pcrecpp::RE("jun",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 5;
-    else if (pcrecpp::RE("jul",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 6;
-    else if (pcrecpp::RE("aug",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 7;
-    else if (pcrecpp::RE("sep",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 8;
-    else if (pcrecpp::RE("oct",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 9;
-    else if (pcrecpp::RE("nov",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 10;
-    else if (pcrecpp::RE("dec",
-        pcrecpp::RE_Options().set_caseless(true)).FullMatch(month))
-      time_struct.tm_mon = 11;
+    setMonFromName(time_struct, month);
 
     /* set the day of the month and year */
     time_struct.tm_mday = atoi(day.c_str());
@@ -216,9 +174,15 @@ void CFTPParse::setTime(const std::string& str)
                                    time_struct.tm_mday,
                                    time_struct.tm_year + 1900);
   }
-  else if (msdos_re.FullMatch(str, &month, &day,
-                              &year, &hour, &minute, &am_or_pm))
+  else if (std::regex_match(str, match, msdos_re))
   {
+    month = match[1].str();
+    day = match[2].str();
+    year = match[3].str();
+    hour = match[4].str();
+    minute = match[5].str();
+    am_or_pm = match[6].str();
+
     /* set the month and the day of the month */
     time_struct.tm_mon = atoi(month.c_str()) - 1;
     time_struct.tm_mday = atoi(day.c_str());
@@ -232,7 +196,7 @@ void CFTPParse::setTime(const std::string& str)
     time_struct.tm_hour = atoi(hour.c_str());
     if (time_struct.tm_hour == 12)
       time_struct.tm_hour -= 12;
-    if (pcrecpp::RE("PM").FullMatch(am_or_pm))
+    if (am_or_pm == "PM")
       time_struct.tm_hour += 12;
 
     /* set the minute */
@@ -338,9 +302,10 @@ int CFTPParse::FTPParse(const std::string& str)
   std::string facts;
   std::string version;
   std::string file_id;
+  std::smatch match;
 
   /* Regex for standard Unix listing formats */
-  pcrecpp::RE unix_re("^([-bcdlps])" // type
+  std::regex unix_re("^([-bcdlps])" // type
     "([-rwxXsStT]{9})" // permissions
     "\\s+(\\d+)" // hard link count
     "\\s+(\\w+)" // owner
@@ -352,7 +317,7 @@ int CFTPParse::FTPParse(const std::string& str)
 
   /* Regex for NetWare listing formats */
   /* See http://www.novell.com/documentation/oes/ftp_enu/data/a3ep22p.html#fbhbaijf */
-  pcrecpp::RE netware_re("^([-d])" // type
+  std::regex netware_re("^([-d])" // type
     "\\s+(\\[[-SRWCIEMFA]{8}\\])" // rights
     "\\s+(\\w+)" // owner
     "\\s+(\\d+)" // size
@@ -363,7 +328,7 @@ int CFTPParse::FTPParse(const std::string& str)
   /* Regex for NetPresenz */
   /* See http://files.stairways.com/other/ftp-list-specs-info.txt */
   /* Here we will capture permissions and size if given */
-  pcrecpp::RE netpresenz_re("^([-dl])" // type
+  std::regex netpresenz_re("^([-dl])" // type
     "([-rwx]{9}|)" // permissions
     "\\s+(.*)" // stuff
     "\\s+(\\d+|)" // size
@@ -374,7 +339,7 @@ int CFTPParse::FTPParse(const std::string& str)
   /* Regex for EPLF */
   /* See http://cr.yp.to/ftp/list/eplf.html */
   /* SAVE: "(/,|r,|s\\d+,|m\\d+,|i[\\d!#@$%^&*()]+(\\.[\\d!#@$%^&*()]+|),)+" */
-  pcrecpp::RE eplf_re("^\\+" // initial "plus" sign
+  std::regex eplf_re("^\\+" // initial "plus" sign
     "([^\\s]+)" // facts
     "\\s(.+)$" // name
   );
@@ -382,7 +347,7 @@ int CFTPParse::FTPParse(const std::string& str)
   /* Regex for MultiNet */
   /* Best documentation found was
    * http://www-sld.slac.stanford.edu/SLDWWW/workbook/vms_files.html */
-  pcrecpp::RE multinet_re("^([^;]+)" // name
+  std::regex multinet_re("^([^;]+)" // name
     ";(\\d+)" // version
     "\\s+([\\d/]+)" // file id
     "\\s+(\\d{1,2}-[A-Za-z]{3}-\\d{4}\\s+\\d{2}:\\d{2}(:\\d{2})?)" // date
@@ -391,20 +356,28 @@ int CFTPParse::FTPParse(const std::string& str)
   );
 
   /* Regex for MSDOS */
-  pcrecpp::RE msdos_re("^(\\d{2}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}[AP]M)" // date
+  std::regex msdos_re("^(\\d{2}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}[AP]M)" // date
     "\\s+(<DIR>|[\\d]+)" // dir or size
     "\\s+(.+)$" // name
   );
 
-  if (unix_re.FullMatch(str, &type, &permissions, &link_count, &owner, &group, &size, &date, &name))
+  if (std::regex_match(str, match, unix_re))
   {
-    m_name = name;
+    type = match[1].str();
+    permissions = match[2].str();
+    link_count = match[3].str();
+    owner = match[4].str();
+    group = match[5].str();
+    size = match[6].str();
+    date = match[7].str();
+    m_name = match[8].str();
+
     m_size = (uint64_t)strtod(size.c_str(), NULL);
-    if (pcrecpp::RE("d").FullMatch(type))
+    if (type == "d")
       m_flagtrycwd = 1;
-    if (pcrecpp::RE("-").FullMatch(type))
+    if (type == "-")
       m_flagtryretr = 1;
-    if (pcrecpp::RE("l").FullMatch(type))
+    if (type == "l")
     {
       m_flagtrycwd = m_flagtryretr = 1;
       // handle symlink
@@ -416,27 +389,39 @@ int CFTPParse::FTPParse(const std::string& str)
 
     return 1;
   }
-  if (netware_re.FullMatch(str, &type, &permissions, &owner, &size, &date, &name))
+  if (std::regex_match(str, match, netware_re))
   {
-    m_name = name;
+    type = match[1].str();
+    permissions = match[2].str();
+    owner = match[3].str();
+    size = match[4].str();
+    date = match[5].str();
+    m_name = match[6].str();
+
     m_size = (uint64_t)strtod(size.c_str(), NULL);
-    if (pcrecpp::RE("d").FullMatch(type))
+    if (type == "d")
       m_flagtrycwd = 1;
-    if (pcrecpp::RE("-").FullMatch(type))
+    if (type == "-")
       m_flagtryretr = 1;
     setTime(date);
 
     return 1;
   }
-  if (netpresenz_re.FullMatch(str, &type, &permissions, &stuff, &size, &date, &name))
+  if (std::regex_match(str, match, netpresenz_re))
   {
-    m_name = name;
+    type = match[1].str();
+    permissions = match[2].str();
+    stuff = match[3].str();
+    size = match[4].str();
+    date = match[5].str();
+    m_name = match[6].str();
+
     m_size = (uint64_t)strtod(size.c_str(), NULL);
-    if (pcrecpp::RE("d").FullMatch(type))
+    if (type == "d")
       m_flagtrycwd = 1;
-    if (pcrecpp::RE("-").FullMatch(type))
+    if (type == "-")
       m_flagtryretr = 1;
-    if (pcrecpp::RE("l").FullMatch(type))
+    if (type == "l")
     {
       m_flagtrycwd = m_flagtryretr = 1;
       // handle symlink
@@ -448,27 +433,40 @@ int CFTPParse::FTPParse(const std::string& str)
 
     return 1;
   }
-  if (eplf_re.FullMatch(str, &facts, &name))
+  if (std::regex_match(str, match, eplf_re))
   {
+    facts = match[1].str();
+    m_name = match[2].str();
+
     /* Get the type, size, and date from the facts */
-    pcrecpp::RE("(\\+|,)(r|/),").PartialMatch(facts, (void*)NULL, &type);
-    pcrecpp::RE("(\\+|,)s(\\d+),").PartialMatch(facts, (void*)NULL, &size);
-    pcrecpp::RE("(\\+|,)m(\\d+),").PartialMatch(facts, (void*)NULL, &date);
+    std::regex_search(facts, match, std::regex("(?:\\+|,)(r|/),"));
+    type = match[1].str();
+    std::regex_search(facts, match, std::regex("(?:\\+|,)s(\\d+),"));
+    size = match[1].str();
+    std::regex_search(facts, match, std::regex("(?:\\+|,)m(\\d+),"));
+    date = match[1].str();
 
-    m_name = name;
     m_size = (uint64_t)strtod(size.c_str(), NULL);
-    if (pcrecpp::RE("/").FullMatch(type))
+    if (type == "/")
       m_flagtrycwd = 1;
-    if (pcrecpp::RE("r").FullMatch(type))
+    if (type == "r")
       m_flagtryretr = 1;
     /* eplf stores the date in time_t format already */
     m_time = atoi(date.c_str());
 
     return 1;
   }
-  if (multinet_re.FullMatch(str, &name, &version, &file_id, &date, (void*)NULL, &owner, &permissions))
+  if (std::regex_match(str, match, multinet_re))
   {
-    if (pcrecpp::RE("\\.DIR$").PartialMatch(name))
+    name = match[1].str();
+    version = match[2].str();
+    file_id = match[3].str();
+    date = match[4].str();
+    // match[5] ignored 
+    owner = match[6].str();
+    permissions = match[7].str();
+
+    if (std::regex_search(name, std::regex("\\.DIR$")))
     {
       name.resize(name.size() - 4);
       m_flagtrycwd = 1;
@@ -482,10 +480,12 @@ int CFTPParse::FTPParse(const std::string& str)
 
     return 1;
   }
-  if (msdos_re.FullMatch(str, &date, &size, &name))
+  if (std::regex_match(str, match, msdos_re))
   {
-    m_name = name;
-    if (pcrecpp::RE("<DIR>").FullMatch(size))
+    date = match[1].str();
+    size = match[2].str();
+    m_name = match[3].str();
+    if (size == "<DIR>")
     {
       m_flagtrycwd = 1;
       m_size = 0;

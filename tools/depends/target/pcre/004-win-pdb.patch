@@ -1,20 +1,18 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -969,12 +969,14 @@
+@@ -969,12 +969,12 @@
          PERMISSIONS OWNER_WRITE OWNER_READ OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
  
  IF(MSVC AND INSTALL_MSVC_PDB)
 -    INSTALL(FILES ${PROJECT_BINARY_DIR}/pcre.pdb
 -                  ${PROJECT_BINARY_DIR}/pcreposix.pdb
 +    INSTALL(FILES ${PROJECT_BINARY_DIR}/$<CONFIG>/pcre.pdb
-+                  ${PROJECT_BINARY_DIR}/$<CONFIG>/pcrecpp.pdb
 +                  ${PROJECT_BINARY_DIR}/$<CONFIG>/pcreposix.pdb
              DESTINATION bin
              CONFIGURATIONS RelWithDebInfo)
 -    INSTALL(FILES ${PROJECT_BINARY_DIR}/pcred.pdb
 -                  ${PROJECT_BINARY_DIR}/pcreposixd.pdb
 +    INSTALL(FILES ${PROJECT_BINARY_DIR}/$<CONFIG>/pcred.pdb
-+                  ${PROJECT_BINARY_DIR}/$<CONFIG>/pcrecppd.pdb
 +                  ${PROJECT_BINARY_DIR}/$<CONFIG>/pcreposixd.pdb
              DESTINATION bin
              CONFIGURATIONS Debug)
