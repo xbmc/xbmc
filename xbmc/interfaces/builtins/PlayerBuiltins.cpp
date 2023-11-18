@@ -428,8 +428,6 @@ void GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& 
     VIDEO_UTILS::GetItemsForPlayList(item, queuedItems);
   else if (MUSIC_UTILS::IsItemPlayable(*item))
     MUSIC_UTILS::GetItemsForPlayList(item, queuedItems);
-  else
-    CLog::LogF(LOGERROR, "Unable to get playlist items for {}", item->GetPath());
 }
 
 PLAYLIST::Id GetPlayListId(const CFileItem& item)
@@ -611,6 +609,10 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
             playlistPlayer.Play(hasPlayOffset ? playOffset : oldSize, "");
           }
         }
+        else
+        {
+          CLog::LogF(LOGERROR, "Nothing queued for item '{}' ({})", item.GetPath(), items.Size());
+        }
       }
 
       return 0;
@@ -630,6 +632,10 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
     {
       g_application.PlayMedia(item, "", GetPlayListId(item));
     }
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "Unable to {} item '{}'", forcePlay ? "play" : "queue", item.GetPath());
   }
 
   return 0;
