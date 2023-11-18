@@ -8,7 +8,6 @@
 
 #include "FTPParse.h"
 
-#include <cmath>
 #include <regex>
 
 CFTPParse::CFTPParse()
@@ -109,7 +108,7 @@ void CFTPParse::setTime(const std::string& str)
     setMonFromName(time_struct, month);
 
     /* set the day of the month */
-    time_struct.tm_mday = atoi(day.c_str());
+    time_struct.tm_mday = std::stol(day);
 
     time_t t = time(NULL);
     struct tm *current_time;
@@ -122,8 +121,8 @@ void CFTPParse::setTime(const std::string& str)
     if (std::regex_match(year, match, std::regex("(\\d{2}):(\\d{2})")))
     {
       /* set the hour and minute */
-      time_struct.tm_hour = atoi(match[1].str().c_str());
-      time_struct.tm_min = atoi(match[2].str().c_str());
+      time_struct.tm_hour = std::stol(match[1].str());
+      time_struct.tm_min = std::stol(match[2].str());
 
       /* set the year */
       if ((current_time->tm_mon - time_struct.tm_mon < 0) ||
@@ -136,7 +135,7 @@ void CFTPParse::setTime(const std::string& str)
     else
     {
       /* set the year */
-      time_struct.tm_year = atoi(year.c_str()) - 1900;
+      time_struct.tm_year = std::stol(year) - 1900;
     }
   }
   else if (std::regex_match(str, match, multinet_re))
@@ -153,16 +152,16 @@ void CFTPParse::setTime(const std::string& str)
     setMonFromName(time_struct, month);
 
     /* set the day of the month and year */
-    time_struct.tm_mday = atoi(day.c_str());
-    time_struct.tm_year = atoi(year.c_str()) - 1900;
+    time_struct.tm_mday = std::stol(day);
+    time_struct.tm_year = std::stol(year) - 1900;
 
     /* set the hour and minute */
-    time_struct.tm_hour = atoi(hour.c_str());
-    time_struct.tm_min = atoi(minute.c_str());
+    time_struct.tm_hour = std::stol(hour);
+    time_struct.tm_min = std::stol(minute);
 
     /* set the second if given*/
     if (second.length() > 0)
-      time_struct.tm_sec = atoi(second.c_str());
+      time_struct.tm_sec = std::stol(second);
   }
   else if (std::regex_match(str, match, msdos_re))
   {
@@ -174,23 +173,23 @@ void CFTPParse::setTime(const std::string& str)
     am_or_pm = match[6].str();
 
     /* set the month and the day of the month */
-    time_struct.tm_mon = atoi(month.c_str()) - 1;
-    time_struct.tm_mday = atoi(day.c_str());
+    time_struct.tm_mon = std::stol(month) - 1;
+    time_struct.tm_mday = std::stol(day);
 
     /* set the year */
-    time_struct.tm_year = atoi(year.c_str());
+    time_struct.tm_year = std::stoi(year);
     if (time_struct.tm_year < 70)
       time_struct.tm_year += 100;
 
     /* set the hour */
-    time_struct.tm_hour = atoi(hour.c_str());
+    time_struct.tm_hour = std::stoi(hour);
     if (time_struct.tm_hour == 12)
       time_struct.tm_hour -= 12;
     if (am_or_pm == "PM")
       time_struct.tm_hour += 12;
 
     /* set the minute */
-    time_struct.tm_min = atoi(minute.c_str());
+    time_struct.tm_min = std::stoi(minute);
   }
 
   /* now set m_time */
@@ -282,7 +281,7 @@ int CFTPParse::FTPParse(const std::string& str)
     date = match[7].str();
     m_name = match[8].str();
 
-    m_size = (uint64_t)strtod(size.c_str(), NULL);
+    m_size = std::stoull(size);
     if (type == "d")
       m_flagtrycwd = 1;
     if (type == "-")
@@ -308,7 +307,7 @@ int CFTPParse::FTPParse(const std::string& str)
     date = match[5].str();
     m_name = match[6].str();
 
-    m_size = (uint64_t)strtod(size.c_str(), NULL);
+    m_size = std::stoull(size);
     if (type == "d")
       m_flagtrycwd = 1;
     if (type == "-")
@@ -326,7 +325,7 @@ int CFTPParse::FTPParse(const std::string& str)
     date = match[5].str();
     m_name = match[6].str();
 
-    m_size = (uint64_t)strtod(size.c_str(), NULL);
+    m_size = std::stoull(size);
     if (type == "d")
       m_flagtrycwd = 1;
     if (type == "-")
@@ -356,13 +355,13 @@ int CFTPParse::FTPParse(const std::string& str)
     std::regex_search(facts, match, std::regex("(?:\\+|,)m(\\d+),"));
     date = match[1].str();
 
-    m_size = (uint64_t)strtod(size.c_str(), NULL);
+    m_size = std::stoull(size);
     if (type == "/")
       m_flagtrycwd = 1;
     if (type == "r")
       m_flagtryretr = 1;
     /* eplf stores the date in time_t format already */
-    m_time = atoi(date.c_str());
+    m_time = std::stoi(date);
 
     return 1;
   }
@@ -403,7 +402,7 @@ int CFTPParse::FTPParse(const std::string& str)
     else
     {
       m_flagtryretr = 1;
-      m_size = (uint64_t)strtod(size.c_str(), NULL);
+      m_size = std::stoull(size);
     }
     setTime(date);
 
