@@ -15,6 +15,7 @@
 #include "windowing/Resolution.h"
 #include "windowing/gbm/GBMUtils.h"
 
+#include <utility>
 #include <vector>
 
 #include <gbm.h>
@@ -39,7 +40,7 @@ class CDRMUtils
 public:
   CDRMUtils() = default;
   virtual ~CDRMUtils();
-  virtual void FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer) {}
+  virtual void FlipPage(struct gbm_bo* bo, bool rendered, bool videoLayer, bool async) {}
   virtual bool SetVideoMode(const RESOLUTION_INFO& res, struct gbm_bo* bo) { return false; }
   virtual bool SetActive(bool active) { return false; }
   virtual bool InitDrm();
@@ -62,6 +63,13 @@ public:
   static uint32_t FourCCWithAlpha(uint32_t fourcc);
   static uint32_t FourCCWithoutAlpha(uint32_t fourcc);
 
+  void SetInFenceFd(int fd) { m_inFenceFd = fd; }
+  int TakeOutFenceFd()
+  {
+    int fd{-1};
+    return std::exchange(m_outFenceFd, fd);
+  }
+
 protected:
   bool OpenDrm(bool needConnector);
   drm_fb* DrmFbGetFromBo(struct gbm_bo *bo);
@@ -77,6 +85,9 @@ protected:
 
   int m_width = 0;
   int m_height = 0;
+
+  int m_inFenceFd{-1};
+  int m_outFenceFd{-1};
 
   std::vector<std::unique_ptr<CDRMPlane>> m_planes;
 
