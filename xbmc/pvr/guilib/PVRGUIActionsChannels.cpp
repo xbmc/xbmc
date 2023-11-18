@@ -96,7 +96,7 @@ void UpdateActiveGroup(const std::shared_ptr<CPVRChannelGroupMember>& newChannel
 
 void TriggerChannelSwitchAction(const CPVRChannelNumber& channelNumber)
 {
-  CServiceBroker::GetAppMessenger()->PostMsg(
+  CServiceBroker::GetAppMessenger()->SendMsg(
       TMSG_GUI_ACTION, WINDOW_INVALID, -1,
       static_cast<void*>(new CAction(ACTION_CHANNEL_SWITCH,
                                      static_cast<float>(channelNumber.GetChannelNumber()),
