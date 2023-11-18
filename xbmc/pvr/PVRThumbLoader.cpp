@@ -99,9 +99,7 @@ bool CPVRThumbLoader::FillThumb(CFileItem& item)
 
 std::string CPVRThumbLoader::CreateChannelGroupThumb(const CFileItem& channelGroupItem)
 {
-  std::string thumb = StringUtils::Format(
-      "{}?ts={}", // append timestamp to Thumb URL to enforce texture refresh
-      CTextureUtils::GetWrappedImageURL(channelGroupItem.GetPath(), "pvr"), std::time(nullptr));
-
-  return thumb;
+  return StringUtils::Format("{}?ts={}", // append timestamp to Thumb URL to enforce texture refresh
+                             CTextureUtils::GetWrappedImageURL(channelGroupItem.GetPath(), "pvr"),
+                             std::time(nullptr));
 }
