@@ -109,14 +109,14 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_imageMetadata.exifInfo.GpsAlt;
     ar << m_imageMetadata.exifInfo.GpsLat;
     ar << m_imageMetadata.exifInfo.GpsLong;
-    ar << m_imageMetadata.exifInfo.Height;
+    ar << m_imageMetadata.Height;
     ar << m_imageMetadata.exifInfo.ISOequivalent;
     ar << m_imageMetadata.exifInfo.LightSource;
     ar << m_imageMetadata.exifInfo.MeteringMode;
     ar << static_cast<int>(m_imageMetadata.exifInfo.DateTimeOffsets.size());
     ar << m_imageMetadata.exifInfo.Orientation;
     ar << m_imageMetadata.exifInfo.Whitebalance;
-    ar << m_imageMetadata.exifInfo.Width;
+    ar << m_imageMetadata.Width;
     ar << m_dateTimeTaken;
 
     ar << m_imageMetadata.iptcInfo.Author;
@@ -176,7 +176,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> m_imageMetadata.exifInfo.GpsAlt;
     ar >> m_imageMetadata.exifInfo.GpsLat;
     ar >> m_imageMetadata.exifInfo.GpsLong;
-    ar >> m_imageMetadata.exifInfo.Height;
+    ar >> m_imageMetadata.Height;
     ar >> m_imageMetadata.exifInfo.ISOequivalent;
     ar >> m_imageMetadata.exifInfo.LightSource;
     ar >> m_imageMetadata.exifInfo.MeteringMode;
@@ -185,7 +185,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     m_imageMetadata.exifInfo.DateTimeOffsets.resize(numDateTimeTags);
     ar >> m_imageMetadata.exifInfo.Orientation;
     ar >> m_imageMetadata.exifInfo.Whitebalance;
-    ar >> m_imageMetadata.exifInfo.Width;
+    ar >> m_imageMetadata.Width;
     ar >> m_dateTimeTaken;
 
     ar >> m_imageMetadata.iptcInfo.Author;
@@ -244,14 +244,14 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["gpsinfo"]["alt"] = m_imageMetadata.exifInfo.GpsAlt;
   value["gpsinfo"]["lat"] = m_imageMetadata.exifInfo.GpsLat;
   value["gpsinfo"]["long"] = m_imageMetadata.exifInfo.GpsLong;
-  value["height"] = m_imageMetadata.exifInfo.Height;
+  value["height"] = m_imageMetadata.Height;
   value["isoequivalent"] = m_imageMetadata.exifInfo.ISOequivalent;
   value["lightsource"] = m_imageMetadata.exifInfo.LightSource;
   value["meteringmode"] = m_imageMetadata.exifInfo.MeteringMode;
   value["numdatetimetags"] = static_cast<int>(m_imageMetadata.exifInfo.DateTimeOffsets.size());
   value["orientation"] = m_imageMetadata.exifInfo.Orientation;
   value["whitebalance"] = m_imageMetadata.exifInfo.Whitebalance;
-  value["width"] = m_imageMetadata.exifInfo.Width;
+  value["width"] = m_imageMetadata.Width;
 
   value["author"] = m_imageMetadata.iptcInfo.Author;
   value["byline"] = m_imageMetadata.iptcInfo.Byline;
@@ -294,11 +294,10 @@ const std::string CPictureInfoTag::GetInfo(int info) const
   switch (info)
   {
   case SLIDESHOW_RESOLUTION:
-    value = StringUtils::Format("{} x {}", m_imageMetadata.exifInfo.Width,
-                                m_imageMetadata.exifInfo.Height);
+    value = StringUtils::Format("{} x {}", m_imageMetadata.Width, m_imageMetadata.Height);
     break;
   case SLIDESHOW_COMMENT:
-    value = m_imageMetadata.exifInfo.FileComment;
+    value = m_imageMetadata.FileComment;
     break;
   case SLIDESHOW_EXIF_COMMENT:
     value = m_imageMetadata.exifInfo.Comments;
@@ -632,8 +631,8 @@ void CPictureInfoTag::SetInfo(const std::string &key, const std::string& value)
       StringUtils::Tokenize(value, dimension, ",");
       if (dimension.size() == 2)
       {
-        m_imageMetadata.exifInfo.Width = atoi(dimension[0].c_str());
-        m_imageMetadata.exifInfo.Height = atoi(dimension[1].c_str());
+        m_imageMetadata.Width = std::atoi(dimension[0].c_str());
+        m_imageMetadata.Height = std::atoi(dimension[1].c_str());
         m_isInfoSetExternally =
             true; // Set the internal state to show metadata has been set by call to SetInfo
       }

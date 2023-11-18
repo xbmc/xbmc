@@ -71,19 +71,10 @@ bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* ta
      * List of values currently not used on addon interface.
      *
      * struct ExifInfo:
-     *   - int Process{};
      *   - float CCDWidth{};
      *   - int Whitebalance{};
-     *   - int CommentsCharset{};
-     *   - int XPCommentsCharset{};
      *   - std::string Comments;
-     *   - std::string FileComment;
      *   - std::string XPComment;
-     *   - unsigned ThumbnailOffset{};
-     *   - unsigned ThumbnailSize{};
-     *   - unsigned LargestExifOffset{};
-     *   - char ThumbnailAtEnd{};
-     *   - int ThumbnailSizeOffset{};
      *   - std::vector<int> DateTimeOffsets;
      *
      * struct IPTCInfo:
@@ -113,8 +104,8 @@ bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* ta
      * @todo Rework @ref CPictureInfoTag to not limit on fixed structures ExifInfo & IPTCInfo.
      */
 
-    tag->m_imageMetadata.exifInfo.Width = ifcTag.width;
-    tag->m_imageMetadata.exifInfo.Height = ifcTag.height;
+    tag->m_imageMetadata.Width = ifcTag.width;
+    tag->m_imageMetadata.Height = ifcTag.height;
     tag->m_imageMetadata.exifInfo.Distance = ifcTag.distance;
     tag->m_imageMetadata.exifInfo.Orientation = ifcTag.orientation;
     tag->m_imageMetadata.exifInfo.ApertureFNumber = ifcTag.aperture_f_number;

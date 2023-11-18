@@ -13,6 +13,10 @@
 
 struct ImageMetadata
 {
+  int Height{};
+  int Width{};
+  std::string FileComment;
+
   ExifInfo exifInfo;
   IPTCInfo iptcInfo;
 };

@@ -90,10 +90,9 @@ std::unique_ptr<ImageMetadata> CImageMetadataParser::ExtractMetadata(const std::
 
 void CImageMetadataParser::ExtractCommonMetadata(std::unique_ptr<Exiv2::Image>& image)
 {
-  //! TODO: all these elements are generic should be moved out of the exif struct
-  m_imageMetadata->exifInfo.Height = image->pixelHeight();
-  m_imageMetadata->exifInfo.Width = image->pixelWidth();
-  m_imageMetadata->exifInfo.FileComment = image->comment();
+  m_imageMetadata->Height = image->pixelHeight();
+  m_imageMetadata->Width = image->pixelWidth();
+  m_imageMetadata->FileComment = image->comment();
 }
 
 void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
