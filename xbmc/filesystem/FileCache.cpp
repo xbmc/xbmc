@@ -605,6 +605,8 @@ int CFileCache::IoControl(EIoControl request, void* param)
   if (request == IOCTRL_CACHE_STATUS)
   {
     SCacheStatus* status = (SCacheStatus*)param;
+    status->maxforward =
+        (m_forwardCacheSize != 0) ? m_forwardCacheSize : static_cast<uint64_t>(m_fileSize);
     status->forward = m_pCache->WaitForData(0, 0ms);
     status->maxrate = m_writeRate;
     status->currate = m_writeRateActual;
