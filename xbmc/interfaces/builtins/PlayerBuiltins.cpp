@@ -571,50 +571,53 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
         }
       }
 
-      auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
-
-      // Play vs. Queue (+Play)
-      if (forcePlay)
+      if (!items.IsEmpty())
       {
-        playlistPlayer.ClearPlaylist(playlistId);
-        playlistPlayer.Reset();
-        playlistPlayer.Add(playlistId, items);
-        playlistPlayer.SetCurrentPlaylist(playlistId);
-        playlistPlayer.Play(playOffset, "");
+        auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
+
+        // Play vs. Queue (+Play)
+        if (forcePlay)
+        {
+          playlistPlayer.ClearPlaylist(playlistId);
+          playlistPlayer.Reset();
+          playlistPlayer.Add(playlistId, items);
+          playlistPlayer.SetCurrentPlaylist(playlistId);
+          playlistPlayer.Play(playOffset, "");
+        }
+        else
+        {
+          const int oldSize = playlistPlayer.GetPlaylist(playlistId).size();
+
+          const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+          if (playNext)
+          {
+            if (appPlayer->IsPlaying())
+              playlistPlayer.Insert(playlistId, items, playlistPlayer.GetCurrentSong() + 1);
+            else
+              playlistPlayer.Add(playlistId, items);
+          }
+          else
+          {
+            playlistPlayer.Add(playlistId, items);
+          }
+
+          if (!appPlayer->IsPlaying())
+          {
+            playlistPlayer.SetCurrentPlaylist(playlistId);
+
+            if (containsMusic)
+            {
+              // video does not auto play on queue like music
+              playlistPlayer.Play(hasPlayOffset ? playOffset : oldSize, "");
+            }
+          }
+        }
       }
       else
       {
-        const int oldSize = playlistPlayer.GetPlaylist(playlistId).size();
-
-        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-        if (playNext)
-        {
-          if (appPlayer->IsPlaying())
-            playlistPlayer.Insert(playlistId, items, playlistPlayer.GetCurrentSong() + 1);
-          else
-            playlistPlayer.Add(playlistId, items);
-        }
-        else
-        {
-          playlistPlayer.Add(playlistId, items);
-        }
-
-        if (items.Size() && !appPlayer->IsPlaying())
-        {
-          playlistPlayer.SetCurrentPlaylist(playlistId);
-
-          if (containsMusic)
-          {
-            // video does not auto play on queue like music
-            playlistPlayer.Play(hasPlayOffset ? playOffset : oldSize, "");
-          }
-        }
-        else
-        {
-          CLog::LogF(LOGERROR, "Nothing queued for item '{}' ({})", item.GetPath(), items.Size());
-        }
+        CLog::LogF(LOGERROR, "Unable to {} item '{}'", forcePlay ? "play" : "queue",
+                   item.GetPath());
       }
-
       return 0;
     }
   }
