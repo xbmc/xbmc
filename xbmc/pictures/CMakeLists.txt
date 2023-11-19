@@ -2,7 +2,6 @@ set(SOURCES GUIDialogPictureInfo.cpp
             GUIViewStatePictures.cpp
             GUIWindowPictures.cpp
             GUIWindowSlideShow.cpp
-            ImageMetadataParser.cpp
             Picture.cpp
             PictureFolderImageFileLoader.cpp
             PictureInfoLoader.cpp
@@ -13,14 +12,10 @@ set(SOURCES GUIDialogPictureInfo.cpp
             SlideShowPicture.cpp)
 
 set(HEADERS interfaces/ISlideShowDelegate.h
-            Exif.h
             GUIDialogPictureInfo.h
             GUIViewStatePictures.h
             GUIWindowPictures.h
             GUIWindowSlideShow.h
-            ImageMetadata.h
-            ImageMetadataParser.h
-            Iptc.h
             Picture.h
             PictureFolderImageFileLoader.h
             PictureInfoLoader.h
