@@ -146,6 +146,11 @@ bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* ta
       tag->m_imageMetadata.exifInfo.CameraModel = ifcTag.camera_model;
       free(ifcTag.camera_model);
     }
+    if (ifcTag.software)
+    {
+      tag->m_imageMetadata.exifInfo.Software = ifcTag.software;
+      free(ifcTag.software);
+    }
     if (ifcTag.author)
     {
       tag->m_imageMetadata.iptcInfo.Author = ifcTag.author;

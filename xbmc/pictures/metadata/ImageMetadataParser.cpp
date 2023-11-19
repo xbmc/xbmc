@@ -116,6 +116,10 @@ void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
     {
       m_imageMetadata->exifInfo.CameraModel = it->value().toString();
     }
+    else if (exifKey == "Exif.Image.Software")
+    {
+      m_imageMetadata->exifInfo.Software = it->value().toString();
+    }
     else if (exifKey == "Exif.Image.Orientation")
     {
       const int orientationValue = it->value().toUint32();

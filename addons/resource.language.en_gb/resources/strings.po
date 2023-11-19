@@ -14927,8 +14927,9 @@ msgctxt "#21824"
 msgid "EXIF comment"
 msgstr ""
 
+#: addons/skin.estuary/xml/MyPics.xml
 msgctxt "#21825"
-msgid "Firmware"
+msgid "Software"
 msgstr ""
 
 #: addons/skin.estuary/xml/Variables.xml

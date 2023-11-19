@@ -47,4 +47,6 @@ struct ExifInfo
   std::string GpsLat;
   std::string GpsLong;
   std::string GpsAlt;
+
+  std::string Software;
 };

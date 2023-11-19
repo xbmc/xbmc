@@ -5149,6 +5149,16 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @note This is the value of the EXIF Model tag (hex code 0x0110).
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.PictureSofware`</b>,
+///                  \anchor ListItem_PictureSoftware
+///                  _string_,
+///     @return The name and version of the firmware used by the camera that took
+///     the current picture.
+///     @note This is the value of the EXIF Software tag (hex code 0x0131).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_PictureSoftware `ListItem.PictureSofware`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.PictureCaption`</b>,
 ///                  \anchor ListItem_PictureCaption
 ///                  _string_,
@@ -6974,6 +6984,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "picturekeywords",  LISTITEM_PICTURE_KEYWORDS },
                                   { "picturecammake",   LISTITEM_PICTURE_CAM_MAKE },
                                   { "picturecammodel",  LISTITEM_PICTURE_CAM_MODEL },
+                                  { "picturesoftware",  LISTITEM_PICTURE_SOFTWARE },
                                   { "pictureaperture",  LISTITEM_PICTURE_APERTURE },
                                   { "picturefocallen",  LISTITEM_PICTURE_FOCAL_LEN },
                                   { "picturefocusdist", LISTITEM_PICTURE_FOCUS_DIST },

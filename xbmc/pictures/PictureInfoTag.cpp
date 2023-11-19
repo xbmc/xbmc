@@ -102,6 +102,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_imageMetadata.exifInfo.GpsAlt;
     ar << m_imageMetadata.exifInfo.GpsLat;
     ar << m_imageMetadata.exifInfo.GpsLong;
+    ar << m_imageMetadata.exifInfo.Software;
     ar << m_imageMetadata.Height;
     ar << m_imageMetadata.exifInfo.ISOequivalent;
     ar << m_imageMetadata.exifInfo.LightSource;
@@ -160,6 +161,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> m_imageMetadata.exifInfo.GpsAlt;
     ar >> m_imageMetadata.exifInfo.GpsLat;
     ar >> m_imageMetadata.exifInfo.GpsLong;
+    ar >> m_imageMetadata.exifInfo.Software;
     ar >> m_imageMetadata.Height;
     ar >> m_imageMetadata.exifInfo.ISOequivalent;
     ar >> m_imageMetadata.exifInfo.LightSource;
@@ -224,6 +226,7 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["meteringmode"] = m_imageMetadata.exifInfo.MeteringMode;
   value["orientation"] = m_imageMetadata.exifInfo.Orientation;
   value["whitebalance"] = m_imageMetadata.exifInfo.Whitebalance;
+  value["software"] = m_imageMetadata.exifInfo.Software;
   value["width"] = m_imageMetadata.Width;
 
   value["author"] = m_imageMetadata.iptcInfo.Author;
@@ -303,8 +306,9 @@ const std::string CPictureInfoTag::GetInfo(int info) const
   case SLIDESHOW_EXIF_CAMERA_MODEL:
     value = m_imageMetadata.exifInfo.CameraModel;
     break;
-    //  case SLIDESHOW_EXIF_SOFTWARE:
-    //    value = m_imageMetadata.exifInfo.Software;
+  case SLIDESHOW_EXIF_SOFTWARE:
+    value = m_imageMetadata.exifInfo.Software;
+    break;
   case SLIDESHOW_EXIF_APERTURE:
     if (m_imageMetadata.exifInfo.ApertureFNumber)
       value = StringUtils::Format("{:3.1f}", m_imageMetadata.exifInfo.ApertureFNumber);

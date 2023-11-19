@@ -76,6 +76,7 @@ public:
   /// | **Camera manufacturer** | `std::string` | @ref ImageDecoderInfoTag::SetCameraManufacturer "SetCameraManufacturer" | @ref ImageDecoderInfoTag::GetCameraManufacturer "GetCameraManufacturer"
   /// | **GPS info** | `bool, char, float[3], char, float[3], int, float` | @ref ImageDecoderInfoTag::SetGPSInfo "SetGPSInfo" | @ref ImageDecoderInfoTag::GetGPSInfo "GetGPSInfo"
   /// | **Camera model** | `std::string` | @ref ImageDecoderInfoTag::SetCameraModel "SetCameraModel" | @ref ImageDecoderInfoTag::GetCameraModel "GetCameraModel"
+  /// | **Software** | `std::string` | @ref ImageDecoderInfoTag::SetSoftware "SetSoftware" | @ref ImageDecoderInfoTag::GetSoftware "GetSoftware"
   /// | **Author** | `std::string` | @ref ImageDecoderInfoTag::SetAuthor "SetAuthor" | @ref ImageDecoderInfoTag::GetAuthor "GetAuthor"
   /// | **Description** | `std::string` | @ref ImageDecoderInfoTag::SetDescription "SetDescription" | @ref ImageDecoderInfoTag::GetDescription "GetDescription"
   /// | **Copyright** | `std::string` | @ref ImageDecoderInfoTag::SetCopyright "SetCopyright" | @ref ImageDecoderInfoTag::GetCopyright "GetCopyright"
@@ -306,6 +307,12 @@ public:
   /// @brief Get copyright
   std::string GetCopyright() const { return m_copyright; }
 
+  /// @brief Get software
+  std::string GetSoftware() const { return m_software; }
+
+  /// @brief Set sofware
+  void SetSoftware(const std::string& software) { m_software = software; }
+
   ///@}
 
 private:
@@ -340,6 +347,7 @@ private:
   std::string m_author;
   std::string m_description;
   std::string m_copyright;
+  std::string m_software;
 };
 ///@}
 //------------------------------------------------------------------------------
@@ -665,6 +673,7 @@ private:
       tag->author = strdup(cppTag.GetAuthor().c_str());
       tag->description = strdup(cppTag.GetDescription().c_str());
       tag->copyright = strdup(cppTag.GetCopyright().c_str());
+      tag->software = strdup(cppTag.GetSoftware().c_str());
     }
     return ret;
 #ifdef _WIN32

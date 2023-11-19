@@ -180,6 +180,10 @@
 						<param name="label" value="$LOCALIZE[21843]"/>
 						<param name="value" value="ListItem.PictureOrientation" />
 					</include>
+					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21825]"/>
+						<param name="value" value="ListItem.PictureSoftware" />
+					</include>
 				</control>
 			</control>
 			<control type="group">

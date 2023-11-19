@@ -381,6 +381,7 @@ extern "C"
     char* author;
     char* description;
     char* copyright;
+    char* software;
   };
 
   typedef bool(ATTR_APIENTRYP PFN_KODI_ADDON_IMAGEDECODER_SUPPORTS_FILE_V1)(
