@@ -11,8 +11,6 @@
 #include <string>
 #include <vector>
 
-constexpr unsigned int MAX_DATE_COPIES = 10;
-
 struct ExifInfo
 {
   ExifInfo() = default;
@@ -44,8 +42,6 @@ struct ExifInfo
   std::string Comments;
   std::string XPComment;
   std::string Description;
-
-  std::vector<int> DateTimeOffsets;
 
   int GpsInfoPresent{};
   std::string GpsLat;

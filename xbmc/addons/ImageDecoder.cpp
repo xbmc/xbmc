@@ -75,7 +75,6 @@ bool CImageDecoder::LoadInfoTag(const std::string& fileName, CPictureInfoTag* ta
      *   - int Whitebalance{};
      *   - std::string Comments;
      *   - std::string XPComment;
-     *   - std::vector<int> DateTimeOffsets;
      *
      * struct IPTCInfo:
      *   - std::string RecordVersion;

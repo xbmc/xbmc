@@ -89,13 +89,6 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_imageMetadata.exifInfo.Comments;
     ar << m_imageMetadata.exifInfo.Description;
     ar << m_imageMetadata.exifInfo.DateTime;
-    for (std::vector<int>::size_type i = 0; i < MAX_DATE_COPIES; ++i)
-    {
-      if (i < m_imageMetadata.exifInfo.DateTimeOffsets.size())
-        ar << m_imageMetadata.exifInfo.DateTimeOffsets[i];
-      else
-        ar << static_cast<int>(0);
-    }
     ar << m_imageMetadata.exifInfo.DigitalZoomRatio;
     ar << m_imageMetadata.exifInfo.Distance;
     ar << m_imageMetadata.exifInfo.ExposureBias;
@@ -113,7 +106,6 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_imageMetadata.exifInfo.ISOequivalent;
     ar << m_imageMetadata.exifInfo.LightSource;
     ar << m_imageMetadata.exifInfo.MeteringMode;
-    ar << static_cast<int>(m_imageMetadata.exifInfo.DateTimeOffsets.size());
     ar << m_imageMetadata.exifInfo.Orientation;
     ar << m_imageMetadata.exifInfo.Whitebalance;
     ar << m_imageMetadata.Width;
@@ -155,14 +147,6 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> m_imageMetadata.exifInfo.Comments;
     ar >> m_imageMetadata.exifInfo.Description;
     ar >> m_imageMetadata.exifInfo.DateTime;
-    m_imageMetadata.exifInfo.DateTimeOffsets.clear();
-    m_imageMetadata.exifInfo.DateTimeOffsets.reserve(MAX_DATE_COPIES);
-    for (std::vector<int>::size_type i = 0; i < MAX_DATE_COPIES; ++i)
-    {
-      int dateTimeOffset;
-      ar >> dateTimeOffset;
-      m_imageMetadata.exifInfo.DateTimeOffsets.push_back(dateTimeOffset);
-    }
     ar >> m_imageMetadata.exifInfo.DigitalZoomRatio;
     ar >> m_imageMetadata.exifInfo.Distance;
     ar >> m_imageMetadata.exifInfo.ExposureBias;
@@ -180,9 +164,6 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> m_imageMetadata.exifInfo.ISOequivalent;
     ar >> m_imageMetadata.exifInfo.LightSource;
     ar >> m_imageMetadata.exifInfo.MeteringMode;
-    int numDateTimeTags;
-    ar >> numDateTimeTags;
-    m_imageMetadata.exifInfo.DateTimeOffsets.resize(numDateTimeTags);
     ar >> m_imageMetadata.exifInfo.Orientation;
     ar >> m_imageMetadata.exifInfo.Whitebalance;
     ar >> m_imageMetadata.Width;
@@ -224,13 +205,6 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["comments"] = m_imageMetadata.exifInfo.Comments;
   value["description"] = m_imageMetadata.exifInfo.Description;
   value["datetime"] = m_imageMetadata.exifInfo.DateTime;
-  for (std::vector<int>::size_type i = 0; i < MAX_DATE_COPIES; ++i)
-  {
-    if (i < m_imageMetadata.exifInfo.DateTimeOffsets.size())
-      value["datetimeoffsets"][static_cast<int>(i)] = m_imageMetadata.exifInfo.DateTimeOffsets[i];
-    else
-      value["datetimeoffsets"][static_cast<int>(i)] = static_cast<int>(0);
-  }
   value["digitalzoomratio"] = m_imageMetadata.exifInfo.DigitalZoomRatio;
   value["distance"] = m_imageMetadata.exifInfo.Distance;
   value["exposurebias"] = m_imageMetadata.exifInfo.ExposureBias;
@@ -248,7 +222,6 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["isoequivalent"] = m_imageMetadata.exifInfo.ISOequivalent;
   value["lightsource"] = m_imageMetadata.exifInfo.LightSource;
   value["meteringmode"] = m_imageMetadata.exifInfo.MeteringMode;
-  value["numdatetimetags"] = static_cast<int>(m_imageMetadata.exifInfo.DateTimeOffsets.size());
   value["orientation"] = m_imageMetadata.exifInfo.Orientation;
   value["whitebalance"] = m_imageMetadata.exifInfo.Whitebalance;
   value["width"] = m_imageMetadata.Width;
