@@ -7,6 +7,7 @@ xbmc/filesystem/test              test/filesystem
 xbmc/interfaces/python/test       test/python
 xbmc/music/tags/test              test/music_tags
 xbmc/network/test                 test/network
+xbmc/pictures/metadata/test       test/pictures/metatada
 xbmc/playlists/test               test/playlists
 xbmc/pvr/channels/test            test/pvrchannels
 xbmc/settings/test                test/settings
