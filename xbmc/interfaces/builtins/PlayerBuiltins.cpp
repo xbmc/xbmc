@@ -428,8 +428,6 @@ void GetItemsForPlayList(const std::shared_ptr<CFileItem>& item, CFileItemList& 
     VIDEO_UTILS::GetItemsForPlayList(item, queuedItems);
   else if (MUSIC_UTILS::IsItemPlayable(*item))
     MUSIC_UTILS::GetItemsForPlayList(item, queuedItems);
-  else
-    CLog::LogF(LOGERROR, "Unable to get playlist items for {}", item->GetPath());
 }
 
 PLAYLIST::Id GetPlayListId(const CFileItem& item)
@@ -573,46 +571,53 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
         }
       }
 
-      auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
-
-      // Play vs. Queue (+Play)
-      if (forcePlay)
+      if (!items.IsEmpty())
       {
-        playlistPlayer.ClearPlaylist(playlistId);
-        playlistPlayer.Reset();
-        playlistPlayer.Add(playlistId, items);
-        playlistPlayer.SetCurrentPlaylist(playlistId);
-        playlistPlayer.Play(playOffset, "");
-      }
-      else
-      {
-        const int oldSize = playlistPlayer.GetPlaylist(playlistId).size();
+        auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
 
-        const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-        if (playNext)
+        // Play vs. Queue (+Play)
+        if (forcePlay)
         {
-          if (appPlayer->IsPlaying())
-            playlistPlayer.Insert(playlistId, items, playlistPlayer.GetCurrentSong() + 1);
-          else
-            playlistPlayer.Add(playlistId, items);
+          playlistPlayer.ClearPlaylist(playlistId);
+          playlistPlayer.Reset();
+          playlistPlayer.Add(playlistId, items);
+          playlistPlayer.SetCurrentPlaylist(playlistId);
+          playlistPlayer.Play(playOffset, "");
         }
         else
         {
-          playlistPlayer.Add(playlistId, items);
-        }
+          const int oldSize = playlistPlayer.GetPlaylist(playlistId).size();
 
-        if (items.Size() && !appPlayer->IsPlaying())
-        {
-          playlistPlayer.SetCurrentPlaylist(playlistId);
-
-          if (containsMusic)
+          const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+          if (playNext)
           {
-            // video does not auto play on queue like music
-            playlistPlayer.Play(hasPlayOffset ? playOffset : oldSize, "");
+            if (appPlayer->IsPlaying())
+              playlistPlayer.Insert(playlistId, items, playlistPlayer.GetCurrentSong() + 1);
+            else
+              playlistPlayer.Add(playlistId, items);
+          }
+          else
+          {
+            playlistPlayer.Add(playlistId, items);
+          }
+
+          if (!appPlayer->IsPlaying())
+          {
+            playlistPlayer.SetCurrentPlaylist(playlistId);
+
+            if (containsMusic)
+            {
+              // video does not auto play on queue like music
+              playlistPlayer.Play(hasPlayOffset ? playOffset : oldSize, "");
+            }
           }
         }
       }
-
+      else
+      {
+        CLog::LogF(LOGERROR, "Unable to {} item '{}'", forcePlay ? "play" : "queue",
+                   item.GetPath());
+      }
       return 0;
     }
   }
@@ -630,6 +635,10 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
     {
       g_application.PlayMedia(item, "", GetPlayListId(item));
     }
+  }
+  else
+  {
+    CLog::LogF(LOGERROR, "Unable to {} item '{}'", forcePlay ? "play" : "queue", item.GetPath());
   }
 
   return 0;
