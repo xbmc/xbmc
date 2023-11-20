@@ -10,9 +10,28 @@ SHA512=ad7390fd700cb74db356a39e842dab011823b87d4047687f2a8c2e0f2920a4f8c6c193ba5
 include ../../download-files.include
 # configuration settings
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
-          ./configure --prefix=$(PREFIX) --disable-shared --disable-ldap \
-          --without-libssh2 --disable-ntlm-wb --enable-ipv6 --without-librtmp \
-          --without-libidn2 --with-ca-fallback --with-ssl=$(PREFIX) --with-nghttp2=$(PREFIX)
+          ./configure --prefix=$(PREFIX) \
+                      --disable-shared \
+                      --disable-ldap \
+                      --without-libssh2 \
+                      --disable-ntlm-wb \
+                      --enable-ipv6 \
+                      --without-librtmp \
+                      --without-libidn2 \
+                      --with-ca-fallback \
+                      --with-ssl=$(PREFIX) \
+                      --with-nghttp2=$(PREFIX) \
+                      --with-zlib \
+                      --without-zstd \
+                      --without-brotli \
+                      --without-gssapi \
+                      --without-ngtcp2 \
+                      --without-nghttp3 \
+                      --without-quiche \
+                      --without-gnutls \
+                      --without-nss \
+                      --without-mbedtls \
+                      --without-wolfssl
 
 LIBDYLIB=$(PLATFORM)/lib/.libs/lib$(LIBNAME).a
 
