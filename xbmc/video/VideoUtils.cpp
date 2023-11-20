@@ -46,7 +46,8 @@ class CAsyncGetItemsForPlaylist : public IRunnable
 public:
   CAsyncGetItemsForPlaylist(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems)
     : m_item(item),
-      m_resume(item->GetStartOffset() == STARTOFFSET_RESUME),
+      m_resume((item->GetStartOffset() == STARTOFFSET_RESUME) &&
+               VIDEO_UTILS::GetItemResumeInformation(*item).isResumable),
       m_queuedItems(queuedItems)
   {
   }
