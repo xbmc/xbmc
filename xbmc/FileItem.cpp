@@ -3849,20 +3849,31 @@ bool CFileItem::LoadDetails()
     {
       if (playlist->Load(GetPath()) && playlist->size() == 1)
       {
-        CVideoDatabase db;
-        if (!db.Open())
+        const auto item{(*playlist)[0]};
+        if (item->IsVideo())
         {
-          CLog::LogF(LOGERROR, "Error opening video database");
-          return false;
-        }
+          CVideoDatabase db;
+          if (!db.Open())
+          {
+            CLog::LogF(LOGERROR, "Error opening video database");
+            return false;
+          }
 
-        CVideoInfoTag tag;
-        if (db.LoadVideoInfo(GetDynPath(), tag))
+          CVideoInfoTag tag;
+          if (db.LoadVideoInfo(GetDynPath(), tag))
+          {
+            UpdateInfo(*item);
+            *GetVideoInfoTag() = tag;
+            return true;
+          }
+        }
+        else if (item->IsAudio())
         {
-          const CFileItem loadedItem{*(*playlist)[0]};
-          UpdateInfo(loadedItem);
-          *GetVideoInfoTag() = tag;
-          return true;
+          if (item->LoadMusicTag())
+          {
+            UpdateInfo(*item);
+            return true;
+          }
         }
       }
     }
