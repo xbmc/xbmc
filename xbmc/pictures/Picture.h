@@ -30,12 +30,6 @@ public:
   static bool GetThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const std::string &thumbFile, uint8_t* &result, size_t& result_size);
   static bool CreateThumbnailFromSurface(const unsigned char* buffer, int width, int height, int stride, const std::string &thumbFile);
 
-  /*! \brief Create a tiled thumb of the given files
-   \param files the files to create the thumb from
-   \param thumb the filename of the thumb
-   */
-  static bool CreateTiledThumb(const std::vector<std::string> &files, const std::string &thumb);
-
   static std::unique_ptr<CTexture> CreateTiledThumb(const std::vector<std::string>& files);
 
   static bool ResizeTexture(
