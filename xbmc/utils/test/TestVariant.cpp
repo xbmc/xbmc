@@ -294,7 +294,7 @@ TEST(TestVariant, empty)
 
   std::map<std::string, std::string> strmap;
   EXPECT_TRUE(CVariant(strmap).empty());
-  strmap.emplace(std::string("key"), std::string("value"));
+  strmap.emplace("key", "value");
   EXPECT_FALSE(CVariant(strmap).empty());
 
   std::string str;

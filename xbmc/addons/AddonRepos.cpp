@@ -122,7 +122,7 @@ bool CAddonRepos::LoadAddonsFromDatabase(const std::string& addonId,
   {
     if (m_addonMgr.IsCompatible(addon))
     {
-      m_addonsByRepoMap[addon->Origin()].insert({addon->ID(), addon});
+      m_addonsByRepoMap[addon->Origin()].emplace(addon->ID(), addon);
     }
   }
 
@@ -170,7 +170,7 @@ void CAddonRepos::AddAddonIfLatest(
 
   if (latestVersionByRepo == map.end()) // repo not found
   {
-    map[repoId].insert({addonToAdd->ID(), addonToAdd});
+    map[repoId].emplace(addonToAdd->ID(), addonToAdd);
   }
   else
   {
@@ -212,7 +212,7 @@ void CAddonRepos::BuildAddonsWithUpdateList(
   {
     if (DoAddonUpdateCheck(addon, update))
     {
-      addonsWithUpdate.insert({addon->ID(), {addon, update}});
+      addonsWithUpdate.try_emplace(addon->ID(), addon, update);
     }
   }
 }
