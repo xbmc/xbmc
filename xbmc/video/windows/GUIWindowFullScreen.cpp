@@ -180,6 +180,8 @@ void CGUIWindowFullScreen::ClearBackground()
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
   if (appPlayer->IsRenderingVideoLayer())
     CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0);
+  else
+    CServiceBroker::GetWinSystem()->GetGfxContext().Clear(0xff000000);
 }
 
 void CGUIWindowFullScreen::OnWindowLoaded()
