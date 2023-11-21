@@ -311,8 +311,7 @@ std::unique_ptr<CXkbcommonKeymap> CXkbcommonContext::LocalizedKeymapFromString(
     CLog::LogF(LOGWARNING,
                "Failed to compile localized compose table, composed key support will be disabled");
   }
-  return std::unique_ptr<CXkbcommonKeymap>{
-      new CXkbcommonKeymap(std::move(xkbKeymap), std::move(xkbComposeTable))};
+  return std::make_unique<CXkbcommonKeymap>(std::move(xkbKeymap), std::move(xkbComposeTable));
 }
 
 std::unique_ptr<xkb_state, CXkbcommonKeymap::XkbStateDeleter> CXkbcommonKeymap::
