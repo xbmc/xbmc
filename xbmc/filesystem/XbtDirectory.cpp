@@ -52,7 +52,7 @@ bool CXbtDirectory::GetDirectory(const CURL& urlOrig, CFileItemList& items)
   DirectorizeEntries<CXBTFFile> entries;
   entries.reserve(files.size());
   for (const auto& file : files)
-    entries.push_back(DirectorizeEntry<CXBTFFile>(file.GetPath(), file));
+    entries.emplace_back(file.GetPath(), file);
 
   Directorize(urlXbt, entries, XBTFFileToFileItem, items);
 

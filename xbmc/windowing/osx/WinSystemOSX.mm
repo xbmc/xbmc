@@ -1346,7 +1346,7 @@ std::unique_ptr<CVideoSync> CWinSystemOSX::GetVideoSync(CVideoReferenceClock* cl
 std::vector<std::string> CWinSystemOSX::GetConnectedOutputs()
 {
   std::vector<std::string> outputs;
-  outputs.push_back(DEFAULT_SCREEN_NAME);
+  outputs.emplace_back(DEFAULT_SCREEN_NAME);
 
   // screen 0 is always the "Default" setting, avoid duplicating the available
   // screens here.
@@ -1356,7 +1356,7 @@ std::vector<std::string> CWinSystemOSX::GetConnectedOutputs()
     for (NSUInteger disp = 1; disp <= numDisplays - 1; disp++)
     {
       NSString* const dispName = screenNameForDisplay(disp);
-      outputs.push_back(dispName.UTF8String);
+      outputs.emplace_back(dispName.UTF8String);
     }
   }
 

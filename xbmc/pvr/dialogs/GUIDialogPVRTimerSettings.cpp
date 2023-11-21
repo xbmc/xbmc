@@ -974,8 +974,7 @@ void CGUIDialogPVRTimerSettings::ChannelsFiller(const SettingConstPtr& setting,
             !pThis->m_timerType->SupportsAnyChannel())
           continue;
 
-        list.emplace_back(
-            IntegerSettingOption(channelEntry.second.description, channelEntry.first));
+        list.emplace_back(channelEntry.second.description, channelEntry.first);
       }
 
       if (!foundCurrent && (pThis->m_channel == channelEntry.second))

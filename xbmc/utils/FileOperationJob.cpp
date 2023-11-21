@@ -101,7 +101,7 @@ bool CFileOperationJob::DoProcessFile(FileAction action, const std::string& strF
       time += data.st_size;
   }
 
-  fileOperations.push_back(CFileOperation(action, strFileA, strFileB, time));
+  fileOperations.emplace_back(action, strFileA, strFileB, time);
 
   totalTime += time;
 
@@ -135,7 +135,7 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const std::string& st
 
   if (action == ActionMove)
   {
-    fileOperations.push_back(CFileOperation(ActionDeleteFolder, strPath, "", 1));
+    fileOperations.emplace_back(ActionDeleteFolder, strPath, "", 1);
     totalTime += 1.0;
   }
 

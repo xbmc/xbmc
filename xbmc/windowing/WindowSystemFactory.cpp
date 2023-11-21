@@ -38,5 +38,5 @@ std::unique_ptr<CWinSystemBase> CWindowSystemFactory::CreateWindowSystem(const s
 void CWindowSystemFactory::RegisterWindowSystem(
     const std::function<std::unique_ptr<CWinSystemBase>()>& createFunction, const std::string& name)
 {
-  m_windowSystems.emplace_back(std::make_pair(name, createFunction));
+  m_windowSystems.emplace_back(name, createFunction);
 }

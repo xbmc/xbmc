@@ -263,8 +263,8 @@ void CSlideShowPic::UpdateVertices(float cur_x[4], float cur_y[4], const float n
   || memcmp(cur_y, new_y, count)
   || m_bIsDirty)
   {
-    dirtyregions.push_back(CDirtyRegion(GetRectangle(cur_x, cur_y)));
-    dirtyregions.push_back(CDirtyRegion(GetRectangle(new_x, new_y)));
+    dirtyregions.emplace_back(GetRectangle(cur_x, cur_y));
+    dirtyregions.emplace_back(GetRectangle(new_x, new_y));
     memcpy(cur_x, new_x, count);
     memcpy(cur_y, new_y, count);
   }

@@ -408,15 +408,15 @@ void CGUIDialogInfoProviderSettings::InitializeSettings()
     entries.clear();
     if (m_singleScraperType == CONTENT_ALBUMS)
     {
-      entries.push_back(TranslatableIntegerSettingOption(38066, INFOPROVIDER_THISITEM));
-      entries.push_back(TranslatableIntegerSettingOption(38067, INFOPROVIDER_ALLVIEW));
+      entries.emplace_back(38066, INFOPROVIDER_THISITEM);
+      entries.emplace_back(38067, INFOPROVIDER_ALLVIEW);
     }
     else
     {
-      entries.push_back(TranslatableIntegerSettingOption(38064, INFOPROVIDER_THISITEM));
-      entries.push_back(TranslatableIntegerSettingOption(38065, INFOPROVIDER_ALLVIEW));
+      entries.emplace_back(38064, INFOPROVIDER_THISITEM);
+      entries.emplace_back(38065, INFOPROVIDER_ALLVIEW);
     }
-    entries.push_back(TranslatableIntegerSettingOption(38063, INFOPROVIDER_DEFAULT));
+    entries.emplace_back(38063, INFOPROVIDER_DEFAULT);
     AddList(group1, SETTING_APPLYTOITEMS, 38338, SettingLevel::Basic, m_applyToItems, entries, 38339); // "Apply settings to"
   }
 

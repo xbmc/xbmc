@@ -872,7 +872,7 @@ void CActiveAESink::EnumerateOutputDevices(AEDeviceList &devices, bool passthrou
       if (!devInfo.m_displayNameExtra.empty())
         ss << ", " << devInfo.m_displayNameExtra;
 
-      devices.push_back(AEDevice(ss.str(), device));
+      devices.emplace_back(ss.str(), device);
     }
   }
 }

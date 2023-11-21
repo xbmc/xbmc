@@ -276,11 +276,11 @@ void CGUIDialogLockSettings::InitializeSettings()
     AddToggle(groupDetails, SETTING_LOCK_FILEMANAGER, 20042, SettingLevel::Basic, m_locks.files);
 
     TranslatableIntegerSettingOptions settingsLevelOptions;
-    settingsLevelOptions.push_back(TranslatableIntegerSettingOption(106, LOCK_LEVEL::NONE));
-    settingsLevelOptions.push_back(TranslatableIntegerSettingOption(593, LOCK_LEVEL::ALL));
-    settingsLevelOptions.push_back(TranslatableIntegerSettingOption(10037, LOCK_LEVEL::STANDARD));
-    settingsLevelOptions.push_back(TranslatableIntegerSettingOption(10038, LOCK_LEVEL::ADVANCED));
-    settingsLevelOptions.push_back(TranslatableIntegerSettingOption(10039, LOCK_LEVEL::EXPERT));
+    settingsLevelOptions.emplace_back(106, LOCK_LEVEL::NONE);
+    settingsLevelOptions.emplace_back(593, LOCK_LEVEL::ALL);
+    settingsLevelOptions.emplace_back(10037, LOCK_LEVEL::STANDARD);
+    settingsLevelOptions.emplace_back(10038, LOCK_LEVEL::ADVANCED);
+    settingsLevelOptions.emplace_back(10039, LOCK_LEVEL::EXPERT);
     AddList(groupDetails, SETTING_LOCK_SETTINGS, 20043, SettingLevel::Basic, static_cast<int>(m_locks.settings), settingsLevelOptions, 20043);
 
     AddToggle(groupDetails, SETTING_LOCK_ADDONMANAGER, 24090, SettingLevel::Basic, m_locks.addonManager);
