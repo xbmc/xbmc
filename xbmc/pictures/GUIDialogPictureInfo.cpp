@@ -24,15 +24,10 @@
 #define SLIDESHOW_STRING_BASE 21800 - SLIDESHOW_LABELS_START
 
 CGUIDialogPictureInfo::CGUIDialogPictureInfo(void)
-    : CGUIDialog(WINDOW_DIALOG_PICTURE_INFO, "DialogPictureInfo.xml")
+  : CGUIDialog(WINDOW_DIALOG_PICTURE_INFO, "DialogPictureInfo.xml"),
+    m_pictureInfo{std::make_unique<CFileItemList>()}
 {
-  m_pictureInfo = new CFileItemList;
   m_loadType = KEEP_IN_MEMORY;
-}
-
-CGUIDialogPictureInfo::~CGUIDialogPictureInfo(void)
-{
-  delete m_pictureInfo;
 }
 
 void CGUIDialogPictureInfo::SetPicture(CFileItem *item)
@@ -102,7 +97,7 @@ void CGUIDialogPictureInfo::UpdatePictureInfo()
       m_pictureInfo->Add(item);
     }
   }
-  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PICTURE_INFO, 0, 0, m_pictureInfo);
+  CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PICTURE_INFO, 0, 0, m_pictureInfo.get());
   OnMessage(msg);
 }
 
