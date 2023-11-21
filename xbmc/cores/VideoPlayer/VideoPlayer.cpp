@@ -1804,6 +1804,7 @@ CacheInfo CVideoPlayer::GetCachingTimes()
   if (!m_pInputStream->GetCacheStatus(&status))
     return info;
 
+  const uint64_t& maxforward = status.maxforward;
   const uint64_t& cached = status.forward;
   const uint32_t& currate = status.currate;
   const uint32_t& maxrate = status.maxrate;
@@ -1834,10 +1835,13 @@ CacheInfo CVideoPlayer::GetCachingTimes()
   double cache_need = std::max(0.0, remain - play_left / cache_sbp); /* bytes needed until play_left == cache_left */
 
   // estimated playback time of current cached bytes
-  double cache_time = (static_cast<double>(cached) / currate) + (queueTime / 1000.0);
+  const double cacheTime = (static_cast<double>(cached) / currate) + (queueTime / 1000.0);
+
+  // cache level as current forward bytes / max forward bytes [0.0 - 1.0]
+  const double cacheLevel = (maxforward > 0) ? static_cast<double>(cached) / maxforward : 0.0;
 
   info.delay = cache_left - play_left;
-  info.time = cache_time;
+  info.time = cacheTime;
 
   if (lowrate > 0)
   {
@@ -1846,7 +1850,7 @@ CacheInfo CVideoPlayer::GetCachingTimes()
     info.level = -1.0;
   }
   else
-    info.level = (cached + queued) / (cache_need + queued);
+    info.level = cacheLevel;
 
   return info;
 }
@@ -3290,15 +3294,13 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
     std::unique_lock<CCriticalSection> lock(m_StateSection);
     if (m_State.cache_bytes >= 0)
     {
-      strBuf += StringUtils::Format("forward: {}", StringUtils::SizeToString(m_State.cache_bytes));
-
-      if (m_State.cache_time > 0)
-        strBuf += StringUtils::Format(" {:6.3f}s", m_State.cache_time);
-      else
-        strBuf += StringUtils::Format(" {:2.0f}%", m_State.cache_level * 100);
+      strBuf += StringUtils::Format("forward: {} / {:2.0f}% / {:6.3f}s / {:.3f}%",
+                                    StringUtils::SizeToString(m_State.cache_bytes),
+                                    m_State.cache_level * 100.0, m_State.cache_time,
+                                    m_State.cache_offset * 100.0);
 
       if (m_playSpeed == 0 || m_caching == CACHESTATE_FULL)
-        strBuf += StringUtils::Format(" {} msec", DVD_TIME_TO_MSEC(m_State.cache_delay));
+        strBuf += StringUtils::Format(" / {} msec", DVD_TIME_TO_MSEC(m_State.cache_delay));
     }
 
     strGeneralInfo = StringUtils::Format("Player: a/v:{: 6.3f}, {}", dDiff, strBuf);

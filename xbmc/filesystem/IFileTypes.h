@@ -48,6 +48,7 @@ struct SNativeIoControl
 
 struct SCacheStatus
 {
+  uint64_t maxforward; /**< forward cache max capacity in bytes */
   uint64_t forward; /**< number of bytes cached forward of current position */
   uint32_t maxrate; /**< maximum allowed read(fill) rate (bytes/second) */
   uint32_t currate; /**< average read rate (bytes/second) since last position change */
