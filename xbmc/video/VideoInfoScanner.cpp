@@ -1402,6 +1402,33 @@ namespace VIDEO
       if (!strTrailer.empty())
         movieDetails.m_strTrailer = strTrailer;
 
+      // Deal with 'Disc n' subdirectories
+      const std::string discNum{
+          CUtil::GetDiscNumberFromPath(URIUtils::GetParentPath(movieDetails.m_strFileNameAndPath))};
+      if (!discNum.empty())
+      {
+        if (movieDetails.m_set.title.empty())
+        {
+          const std::string setName{m_database.GetSetByNameLike(movieDetails.m_strTitle)};
+          if (!setName.empty())
+          {
+            // Add movie to existing set
+            movieDetails.SetSet(setName);
+          }
+          else
+          {
+            // Create set, then add movie to the set
+            const int idSet{m_database.AddSet(movieDetails.m_strTitle)};
+            m_database.SetArtForItem(idSet, MediaTypeVideoCollection, art);
+            movieDetails.SetSet(movieDetails.m_strTitle);
+          }
+        }
+
+        // Add '(Disc n)' to title (in local language)
+        movieDetails.m_strTitle =
+            StringUtils::Format(g_localizeStrings.Get(29995), movieDetails.m_strTitle, discNum);
+      }
+
       lResult = m_database.SetDetailsForMovie(movieDetails, art);
       movieDetails.m_iDbId = lResult;
       movieDetails.m_type = MediaTypeMovie;

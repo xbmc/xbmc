@@ -17117,7 +17117,13 @@ msgctxt "#29994"
 msgid "Roles"
 msgstr ""
 
-#empty strings from id 29995 to 33000
+#. Label for multi-disc movies, including movie title (param 0) and disc number (param 1).
+#: xbc/video/VideoInfoScanner.cpp
+msgctxt "#29995"
+msgid "{0:s} (Disc {1:s})"
+msgstr ""
+
+#empty strings from id 29996 to 33000
 #strings 30000 thru 30999 reserved for plug-ins and plug-in settings
 #strings 31000 thru 31999 reserved for skins
 #strings 32000 thru 32999 reserved for scripts
