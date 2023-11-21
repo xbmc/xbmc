@@ -34,6 +34,7 @@ constexpr auto slideShowInfoTranslationMap =
                                   {SLIDESHOW_EXIF_DESCRIPTION, 21821},
                                   {SLIDESHOW_EXIF_CAMERA_MAKE, 21822},
                                   {SLIDESHOW_EXIF_CAMERA_MODEL, 21823},
+                                  {SLIDESHOW_EXIF_COLORSPACE, 21825},
                                   {SLIDESHOW_EXIF_COMMENT, 21824},
                                   {SLIDESHOW_EXIF_SOFTWARE, 13419},
                                   {SLIDESHOW_EXIF_APERTURE, 21826},

@@ -5514,6 +5514,15 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v13 **[New Infolabel]** \link ListItem_PictureReferenceService `ListItem.PictureReferenceService`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.PictureColorSpace`</b>,
+///                  \anchor ListItem_PictureColorSpace
+///                  _string_,
+///     @return The colorspace of the current picture.
+///     @note This is the value of the EXIF tag ColorSpace (hex code 0xA001).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_PictureColorSpace`ListItem.PictureColorSpace`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.PictureResolution`</b>,
 ///                  \anchor ListItem_PictureResolution
 ///                  _string_,
@@ -7008,6 +7017,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "pictureexposurebias",           LISTITEM_PICTURE_EXPOSURE_BIAS },
                                   { "pictureflashused",              LISTITEM_PICTURE_FLASH_USED },
                                   { "pictureheadline",               LISTITEM_PICTURE_HEADLINE },
+                                  { "picturecolorspace",             LISTITEM_PICTURE_COLORSPACE },
                                   { "picturelightsource",            LISTITEM_PICTURE_LIGHT_SOURCE },
                                   { "picturemeteringmode",           LISTITEM_PICTURE_METERING_MODE },
                                   { "pictureobjectname",             LISTITEM_PICTURE_OBJECT_NAME },
@@ -9080,6 +9090,15 @@ const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
 ///     @skinning_v13 **[New Infolabel]** \link Slideshow_City `Slideshow.City`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Slideshow.Colorspace`</b>,
+///                  \anchor Slideshow_Colorspace
+///                  _string_,
+///     @return The colorspace of the current picture.
+///     @note This is the value of the EXIF tag ColorSpace (hex code 0xA001).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link Slideshow_Colorspace `Slideshow.Colorspace`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`Slideshow.CopyrightNotice`</b>,
 ///                  \anchor Slideshow_CopyrightNotice
 ///                  _string_,
@@ -9562,6 +9581,7 @@ const infomap slideshow[] = {
     {"whitebalance", SLIDESHOW_EXIF_WHITE_BALANCE},
     {"lightsource", SLIDESHOW_EXIF_LIGHT_SOURCE},
     {"meteringmode", SLIDESHOW_EXIF_METERING_MODE},
+    {"colorspace", SLIDESHOW_EXIF_COLORSPACE},
     {"isoequivalence", SLIDESHOW_EXIF_ISO_EQUIV},
     {"digitalzoom", SLIDESHOW_EXIF_DIGITAL_ZOOM},
     {"ccdwidth", SLIDESHOW_EXIF_CCD_WIDTH},

@@ -14947,7 +14947,11 @@ msgctxt "#21824"
 msgid "EXIF comment"
 msgstr ""
 
-#empty strings with id 21825
+#: xbmc/pictures/GUIDialogPictureInfo.cpp
+#: addons/skin.estuary/xml/MyPics.xml
+msgctxt "#21825"
+msgid "Colorspace"
+msgstr ""
 
 #: xbmc/pictures/GUIDialogPictureInfo.cpp
 #: addons/skin.estuary/xml/Variables.xml

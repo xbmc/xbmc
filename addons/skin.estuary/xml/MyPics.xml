@@ -77,6 +77,10 @@
 						<param name="value" value="ListItem.PictureCamModel" />
 					</include>
 					<include content="PicsInfoLine">
+						<param name="label" value="$LOCALIZE[21825]"/>
+						<param name="value" value="ListItem.PictureColorSpace" />
+					</include>
+					<include content="PicsInfoLine">
 						<param name="label" value="$LOCALIZE[21862]"/>
 						<param name="value" value="ListItem.PictureCaption" />
 					</include>

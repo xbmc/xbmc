@@ -39,6 +39,7 @@ struct ExifInfo
   int ExposureMode{};
   int ISOequivalent{};
   int LightSource{};
+  int ColorSpace{};
   std::string Comments;
   std::string XPComment;
   std::string Description;

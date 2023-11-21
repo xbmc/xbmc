@@ -103,6 +103,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << m_imageMetadata.exifInfo.GpsLat;
     ar << m_imageMetadata.exifInfo.GpsLong;
     ar << m_imageMetadata.exifInfo.Software;
+    ar << m_imageMetadata.exifInfo.ColorSpace;
     ar << m_imageMetadata.Height;
     ar << m_imageMetadata.exifInfo.ISOequivalent;
     ar << m_imageMetadata.exifInfo.LightSource;
@@ -162,6 +163,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar >> m_imageMetadata.exifInfo.GpsLat;
     ar >> m_imageMetadata.exifInfo.GpsLong;
     ar >> m_imageMetadata.exifInfo.Software;
+    ar >> m_imageMetadata.exifInfo.ColorSpace;
     ar >> m_imageMetadata.Height;
     ar >> m_imageMetadata.exifInfo.ISOequivalent;
     ar >> m_imageMetadata.exifInfo.LightSource;
@@ -204,6 +206,7 @@ void CPictureInfoTag::Serialize(CVariant& value) const
   value["cameramake"] = m_imageMetadata.exifInfo.CameraMake;
   value["cameramodel"] = m_imageMetadata.exifInfo.CameraModel;
   value["ccdwidth"] = m_imageMetadata.exifInfo.CCDWidth;
+  value["colorspace"] = m_imageMetadata.exifInfo.ColorSpace;
   value["comments"] = m_imageMetadata.exifInfo.Comments;
   value["description"] = m_imageMetadata.exifInfo.Description;
   value["datetime"] = m_imageMetadata.exifInfo.DateTime;
@@ -308,6 +311,36 @@ const std::string CPictureInfoTag::GetInfo(int info) const
     break;
   case SLIDESHOW_EXIF_SOFTWARE:
     value = m_imageMetadata.exifInfo.Software;
+    break;
+  case SLIDESHOW_EXIF_COLORSPACE:
+    switch (m_imageMetadata.exifInfo.ColorSpace)
+    {
+      case 0x1:
+      {
+        value = "sRGB";
+        break;
+      }
+      case 0x2:
+      {
+        value = "Adobe RGB";
+        break;
+      }
+      case 0xfffd:
+      {
+        value = "Wide Gamut RGB";
+        break;
+      }
+      case 0xfffe:
+      {
+        value = "ICC profile";
+        break;
+      }
+      case 0xffff:
+      {
+        value = "Uncalibrated";
+        break;
+      }
+    }
     break;
   case SLIDESHOW_EXIF_APERTURE:
     if (m_imageMetadata.exifInfo.ApertureFNumber)
@@ -551,6 +584,8 @@ int CPictureInfoTag::TranslateString(const std::string &info)
   else if (StringUtils::EqualsNoCase(info, "cameramodel")) return SLIDESHOW_EXIF_CAMERA_MODEL;
   else if (StringUtils::EqualsNoCase(info, "exifcomment")) return SLIDESHOW_EXIF_COMMENT;
   else if (StringUtils::EqualsNoCase(info, "exifsoftware")) return SLIDESHOW_EXIF_SOFTWARE;
+  else if (StringUtils::EqualsNoCase(info, "colorspace"))
+    return SLIDESHOW_EXIF_COLORSPACE;
   else if (StringUtils::EqualsNoCase(info, "aperture")) return SLIDESHOW_EXIF_APERTURE;
   else if (StringUtils::EqualsNoCase(info, "focallength")) return SLIDESHOW_EXIF_FOCAL_LENGTH;
   else if (StringUtils::EqualsNoCase(info, "focusdistance")) return SLIDESHOW_EXIF_FOCUS_DIST;

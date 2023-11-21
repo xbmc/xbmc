@@ -136,6 +136,10 @@ void CImageMetadataParser::ExtractExif(Exiv2::ExifData& exifData)
       if (m_imageMetadata->exifInfo.DateTime.empty())
         m_imageMetadata->exifInfo.DateTime = it->value().toString();
     }
+    else if (exifKey == "Exif.Photo.ColorSpace")
+    {
+      m_imageMetadata->exifInfo.ColorSpace = it->value().toUint32();
+    }
     else if (exifKey == "Exif.Photo.ExposureTime")
     {
       m_imageMetadata->exifInfo.ExposureTime = it->value().toFloat();
