@@ -8115,6 +8115,11 @@ std::string CVideoDatabase::GetSetById(int id)
   return GetSingleValue("sets", "strSet", PrepareSQL("idSet=%i", id));
 }
 
+std::string CVideoDatabase::GetSetByNameLike(const std::string& nameLike) const
+{
+  return GetSingleValue("sets", "strSet", PrepareSQL("strSet LIKE '%s'", nameLike.c_str()));
+}
+
 std::string CVideoDatabase::GetTagById(int id)
 {
   return GetSingleValue("tag", "name", PrepareSQL("tag_id = %i", id));
