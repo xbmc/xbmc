@@ -667,7 +667,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetEditList(const CDataCach
   {
     float editStart = edit.start * 100.0f / duration;
     float editEnd = edit.end * 100.0f / duration;
-    ranges.emplace_back(std::make_pair(editStart, editEnd));
+    ranges.emplace_back(editStart, editEnd);
   }
   return ranges;
 }
@@ -683,7 +683,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetCuts(const CDataCacheCor
   {
     float marker = cut * 100.0f / duration;
     if (marker != 0)
-      ranges.emplace_back(std::make_pair(lastMarker, marker));
+      ranges.emplace_back(lastMarker, marker);
 
     lastMarker = marker;
   }
@@ -701,7 +701,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetSceneMarkers(const CData
   {
     float marker = scene * 100.0f / duration;
     if (marker != 0)
-      ranges.emplace_back(std::make_pair(lastMarker, marker));
+      ranges.emplace_back(lastMarker, marker);
 
     lastMarker = marker;
   }
@@ -719,7 +719,7 @@ std::vector<std::pair<float, float>> CPlayerGUIInfo::GetChapters(const CDataCach
   {
     float marker = chapter.second * 1000 * 100.0f / duration;
     if (marker != 0)
-      ranges.emplace_back(std::make_pair(lastMarker, marker));
+      ranges.emplace_back(lastMarker, marker);
 
     lastMarker = marker;
   }

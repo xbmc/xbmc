@@ -2,6 +2,7 @@ Checks: "\
   modernize-make-shared,\
   modernize-make-unique,\
   modernize-use-default-member-init,\
+  modernize-use-emplace,\
   performance-faster-string-find,\
   performance-for-range-copy,\
   performance-implicit-conversion-in-loop,\

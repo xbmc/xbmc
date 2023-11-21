@@ -126,7 +126,7 @@ bool CShoutcastFile::Open(const CURL& url)
     m_masterTag->SetGenre(icyGenre);
     m_masterTag->SetLoaded(true);
 
-    m_tags.push({1, m_masterTag});
+    m_tags.emplace(1, m_masterTag);
     m_tagChange.Set();
   }
 
@@ -304,7 +304,7 @@ bool CShoutcastFile::ExtractTagInfo(const char* buf)
       tag->SetTitle(title);
       tag->SetStationArt(coverURL);
 
-      m_tags.push({m_file.GetPosition(), tag});
+      m_tags.emplace(m_file.GetPosition(), tag);
       m_tagChange.Set();
     }
   }

@@ -52,7 +52,7 @@ TEST_P(TestVideoInfoScanner, EnumerateEpisodeItem)
   CFileItem item(entry.path, false);
   EPISODELIST expected;
   for (int i = 0; i < 3 && entry.episode[i]; i++)
-    expected.push_back(EPISODE(entry.season, entry.episode[i], 0, false));
+    expected.emplace_back(entry.season, entry.episode[i], 0, false);
 
   EPISODELIST result;
   ASSERT_TRUE(scanner.EnumerateEpisodeItem(&item, result));

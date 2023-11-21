@@ -130,9 +130,8 @@ bool CGUIColorManager::LoadColorsListFromXML(
   {
     if (xmlColor->FirstChild() && xmlColor->Attribute("name"))
     {
-      colors.emplace_back(
-          std::make_pair(xmlColor->Attribute("name"),
-                         UTILS::COLOR::MakeColorInfo(xmlColor->FirstChild()->Value())));
+      colors.emplace_back(xmlColor->Attribute("name"),
+                          UTILS::COLOR::MakeColorInfo(xmlColor->FirstChild()->Value()));
     }
     xmlColor = xmlColor->NextSiblingElement("color");
   }

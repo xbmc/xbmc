@@ -306,7 +306,7 @@ bool CHttpRanges::Parse(const std::string& header, uint64_t totalLength)
     if (end < start)
       return false;
 
-    m_ranges.push_back(CHttpRange(start, end));
+    m_ranges.emplace_back(start, end);
   }
 
   if (m_ranges.empty())

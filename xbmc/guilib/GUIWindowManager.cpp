@@ -1518,7 +1518,7 @@ void CGUIWindowManager::SendThreadMessage(CGUIMessage& message, int window /*= 0
   std::unique_lock<CCriticalSection> lock(m_critSection);
 
   CGUIMessage* msg = new CGUIMessage(message);
-  m_vecThreadMessages.emplace_back(std::pair<CGUIMessage*, int>(msg,window));
+  m_vecThreadMessages.emplace_back(msg, window);
 }
 
 void CGUIWindowManager::DispatchThreadMessages()

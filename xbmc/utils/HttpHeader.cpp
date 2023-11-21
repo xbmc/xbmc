@@ -81,7 +81,7 @@ bool CHttpHeader::ParseLine(const std::string& headerLine)
     StringUtils::Trim(strValue, m_whitespaceChars);
 
     if (!strParam.empty() && !strValue.empty())
-      m_params.push_back(HeaderParams::value_type(strParam, strValue));
+      m_params.emplace_back(strParam, strValue);
     else
       return false;
   }
@@ -117,7 +117,7 @@ void CHttpHeader::AddParam(const std::string& param, const std::string& value, c
   if (valueTrim.empty())
     return;
 
-  m_params.push_back(HeaderParams::value_type(paramLower, valueTrim));
+  m_params.emplace_back(paramLower, valueTrim);
 }
 
 std::string CHttpHeader::GetValue(const std::string& strParam) const

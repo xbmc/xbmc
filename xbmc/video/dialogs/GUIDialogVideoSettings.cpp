@@ -332,25 +332,22 @@ void CGUIDialogVideoSettings::InitializeSettings()
   TranslatableIntegerSettingOptions entries;
 
   entries.clear();
-  entries.push_back(TranslatableIntegerSettingOption(16039, VS_INTERLACEMETHOD_NONE));
-  entries.push_back(TranslatableIntegerSettingOption(16019, VS_INTERLACEMETHOD_AUTO));
-  entries.push_back(TranslatableIntegerSettingOption(20131, VS_INTERLACEMETHOD_RENDER_BLEND));
-  entries.push_back(TranslatableIntegerSettingOption(20129, VS_INTERLACEMETHOD_RENDER_WEAVE));
-  entries.push_back(TranslatableIntegerSettingOption(16021, VS_INTERLACEMETHOD_RENDER_BOB));
-  entries.push_back(TranslatableIntegerSettingOption(16020, VS_INTERLACEMETHOD_DEINTERLACE));
-  entries.push_back(TranslatableIntegerSettingOption(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF));
-  entries.push_back(
-      TranslatableIntegerSettingOption(16311, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL));
-  entries.push_back(TranslatableIntegerSettingOption(16310, VS_INTERLACEMETHOD_VDPAU_TEMPORAL));
-  entries.push_back(TranslatableIntegerSettingOption(16325, VS_INTERLACEMETHOD_VDPAU_BOB));
-  entries.push_back(
-      TranslatableIntegerSettingOption(16318, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF));
-  entries.push_back(
-      TranslatableIntegerSettingOption(16317, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF));
-  entries.push_back(TranslatableIntegerSettingOption(16327, VS_INTERLACEMETHOD_VAAPI_BOB));
-  entries.push_back(TranslatableIntegerSettingOption(16328, VS_INTERLACEMETHOD_VAAPI_MADI));
-  entries.push_back(TranslatableIntegerSettingOption(16329, VS_INTERLACEMETHOD_VAAPI_MACI));
-  entries.push_back(TranslatableIntegerSettingOption(16320, VS_INTERLACEMETHOD_DXVA_AUTO));
+  entries.emplace_back(16039, VS_INTERLACEMETHOD_NONE);
+  entries.emplace_back(16019, VS_INTERLACEMETHOD_AUTO);
+  entries.emplace_back(20131, VS_INTERLACEMETHOD_RENDER_BLEND);
+  entries.emplace_back(20129, VS_INTERLACEMETHOD_RENDER_WEAVE);
+  entries.emplace_back(16021, VS_INTERLACEMETHOD_RENDER_BOB);
+  entries.emplace_back(16020, VS_INTERLACEMETHOD_DEINTERLACE);
+  entries.emplace_back(16036, VS_INTERLACEMETHOD_DEINTERLACE_HALF);
+  entries.emplace_back(16311, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL);
+  entries.emplace_back(16310, VS_INTERLACEMETHOD_VDPAU_TEMPORAL);
+  entries.emplace_back(16325, VS_INTERLACEMETHOD_VDPAU_BOB);
+  entries.emplace_back(16318, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF);
+  entries.emplace_back(16317, VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF);
+  entries.emplace_back(16327, VS_INTERLACEMETHOD_VAAPI_BOB);
+  entries.emplace_back(16328, VS_INTERLACEMETHOD_VAAPI_MADI);
+  entries.emplace_back(16329, VS_INTERLACEMETHOD_VAAPI_MACI);
+  entries.emplace_back(16320, VS_INTERLACEMETHOD_DXVA_AUTO);
 
   /* remove unsupported methods */
   for (TranslatableIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
@@ -372,25 +369,25 @@ void CGUIDialogVideoSettings::InitializeSettings()
   }
 
   entries.clear();
-  entries.push_back(TranslatableIntegerSettingOption(16301, VS_SCALINGMETHOD_NEAREST));
-  entries.push_back(TranslatableIntegerSettingOption(16302, VS_SCALINGMETHOD_LINEAR));
-  entries.push_back(TranslatableIntegerSettingOption(16303, VS_SCALINGMETHOD_CUBIC_B_SPLINE));
-  entries.push_back(TranslatableIntegerSettingOption(16314, VS_SCALINGMETHOD_CUBIC_MITCHELL));
-  entries.push_back(TranslatableIntegerSettingOption(16321, VS_SCALINGMETHOD_CUBIC_CATMULL));
-  entries.push_back(TranslatableIntegerSettingOption(16326, VS_SCALINGMETHOD_CUBIC_0_075));
-  entries.push_back(TranslatableIntegerSettingOption(16330, VS_SCALINGMETHOD_CUBIC_0_1));
-  entries.push_back(TranslatableIntegerSettingOption(16304, VS_SCALINGMETHOD_LANCZOS2));
-  entries.push_back(TranslatableIntegerSettingOption(16323, VS_SCALINGMETHOD_SPLINE36_FAST));
-  entries.push_back(TranslatableIntegerSettingOption(16315, VS_SCALINGMETHOD_LANCZOS3_FAST));
-  entries.push_back(TranslatableIntegerSettingOption(16322, VS_SCALINGMETHOD_SPLINE36));
-  entries.push_back(TranslatableIntegerSettingOption(16305, VS_SCALINGMETHOD_LANCZOS3));
-  entries.push_back(TranslatableIntegerSettingOption(16306, VS_SCALINGMETHOD_SINC8));
-  entries.push_back(TranslatableIntegerSettingOption(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE));
-  entries.push_back(TranslatableIntegerSettingOption(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE));
-  entries.push_back(TranslatableIntegerSettingOption(16309, VS_SCALINGMETHOD_SINC_SOFTWARE));
-  entries.push_back(TranslatableIntegerSettingOption(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE));
-  entries.push_back(TranslatableIntegerSettingOption(16319, VS_SCALINGMETHOD_DXVA_HARDWARE));
-  entries.push_back(TranslatableIntegerSettingOption(16316, VS_SCALINGMETHOD_AUTO));
+  entries.emplace_back(16301, VS_SCALINGMETHOD_NEAREST);
+  entries.emplace_back(16302, VS_SCALINGMETHOD_LINEAR);
+  entries.emplace_back(16303, VS_SCALINGMETHOD_CUBIC_B_SPLINE);
+  entries.emplace_back(16314, VS_SCALINGMETHOD_CUBIC_MITCHELL);
+  entries.emplace_back(16321, VS_SCALINGMETHOD_CUBIC_CATMULL);
+  entries.emplace_back(16326, VS_SCALINGMETHOD_CUBIC_0_075);
+  entries.emplace_back(16330, VS_SCALINGMETHOD_CUBIC_0_1);
+  entries.emplace_back(16304, VS_SCALINGMETHOD_LANCZOS2);
+  entries.emplace_back(16323, VS_SCALINGMETHOD_SPLINE36_FAST);
+  entries.emplace_back(16315, VS_SCALINGMETHOD_LANCZOS3_FAST);
+  entries.emplace_back(16322, VS_SCALINGMETHOD_SPLINE36);
+  entries.emplace_back(16305, VS_SCALINGMETHOD_LANCZOS3);
+  entries.emplace_back(16306, VS_SCALINGMETHOD_SINC8);
+  entries.emplace_back(16307, VS_SCALINGMETHOD_BICUBIC_SOFTWARE);
+  entries.emplace_back(16308, VS_SCALINGMETHOD_LANCZOS_SOFTWARE);
+  entries.emplace_back(16309, VS_SCALINGMETHOD_SINC_SOFTWARE);
+  entries.emplace_back(13120, VS_SCALINGMETHOD_VDPAU_HARDWARE);
+  entries.emplace_back(16319, VS_SCALINGMETHOD_DXVA_HARDWARE);
+  entries.emplace_back(16316, VS_SCALINGMETHOD_AUTO);
 
   /* remove unsupported methods */
   for(TranslatableIntegerSettingOptions::iterator it = entries.begin(); it != entries.end(); )
@@ -443,10 +440,10 @@ void CGUIDialogVideoSettings::InitializeSettings()
   {
     const bool visible = !CServiceBroker::GetWinSystem()->IsHDRDisplaySettingEnabled();
     entries.clear();
-    entries.push_back(TranslatableIntegerSettingOption(36554, VS_TONEMAPMETHOD_OFF));
-    entries.push_back(TranslatableIntegerSettingOption(36555, VS_TONEMAPMETHOD_REINHARD));
-    entries.push_back(TranslatableIntegerSettingOption(36557, VS_TONEMAPMETHOD_ACES));
-    entries.push_back(TranslatableIntegerSettingOption(36558, VS_TONEMAPMETHOD_HABLE));
+    entries.emplace_back(36554, VS_TONEMAPMETHOD_OFF);
+    entries.emplace_back(36555, VS_TONEMAPMETHOD_REINHARD);
+    entries.emplace_back(36557, VS_TONEMAPMETHOD_ACES);
+    entries.emplace_back(36558, VS_TONEMAPMETHOD_HABLE);
 
     AddSpinner(groupVideo, SETTING_VIDEO_TONEMAP_METHOD, 36553, SettingLevel::Basic,
                videoSettings.m_ToneMapMethod, entries, false, visible);
@@ -457,9 +454,9 @@ void CGUIDialogVideoSettings::InitializeSettings()
 
   // stereoscopic settings
   entries.clear();
-  entries.push_back(TranslatableIntegerSettingOption(16316, RENDER_STEREO_MODE_OFF));
-  entries.push_back(TranslatableIntegerSettingOption(36503, RENDER_STEREO_MODE_SPLIT_HORIZONTAL));
-  entries.push_back(TranslatableIntegerSettingOption(36504, RENDER_STEREO_MODE_SPLIT_VERTICAL));
+  entries.emplace_back(16316, RENDER_STEREO_MODE_OFF);
+  entries.emplace_back(36503, RENDER_STEREO_MODE_SPLIT_HORIZONTAL);
+  entries.emplace_back(36504, RENDER_STEREO_MODE_SPLIT_VERTICAL);
   AddSpinner(groupStereoscopic, SETTING_VIDEO_STEREOSCOPICMODE, 36535, SettingLevel::Basic, videoSettings.m_StereoMode, entries);
   AddToggle(groupStereoscopic, SETTING_VIDEO_STEREOSCOPICINVERT, 36536, SettingLevel::Basic, videoSettings.m_StereoInvert);
 

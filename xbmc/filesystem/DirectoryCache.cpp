@@ -105,7 +105,7 @@ void CDirectoryCache::SetDirectory(const std::string& strPath, const CFileItemLi
   CDir dir(cacheType);
   dir.m_Items->Copy(items);
   dir.SetLastAccess(m_accessCounter);
-  m_cache.emplace(std::make_pair(storedPath, std::move(dir)));
+  m_cache.emplace(storedPath, std::move(dir));
 }
 
 void CDirectoryCache::ClearFile(const std::string& strFile)

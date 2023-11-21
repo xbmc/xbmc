@@ -325,11 +325,11 @@ bool COSXStorageProvider::PumpDriveChangeEvents(IStorageEventsCallback* callback
 void COSXStorageProvider::VolumeMountNotification(const char* label, const char* mountpoint)
 {
   if (label && mountpoint)
-    m_mountsToNotify.emplace_back(std::make_pair(label, mountpoint));
+    m_mountsToNotify.emplace_back(label, mountpoint);
 }
 
 void COSXStorageProvider::VolumeUnmountNotification(const char* label, const char* mountpoint)
 {
   if (label && mountpoint)
-   m_unmountsToNotify.emplace_back(std::make_pair(label, mountpoint));
+    m_unmountsToNotify.emplace_back(label, mountpoint);
 }

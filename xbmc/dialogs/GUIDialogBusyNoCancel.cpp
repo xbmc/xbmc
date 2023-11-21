@@ -33,7 +33,7 @@ void CGUIDialogBusyNoCancel::DoProcess(unsigned int currentTime, CDirtyRegionLis
 {
   bool visible = CServiceBroker::GetGUI()->GetWindowManager().IsModalDialogTopmost(WINDOW_DIALOG_BUSY_NOCANCEL);
   if (!visible && m_bLastVisible)
-    dirtyregions.push_back(CDirtyRegion(m_renderRegion));
+    dirtyregions.emplace_back(m_renderRegion);
   m_bLastVisible = visible;
 
   CGUIDialog::DoProcess(currentTime, dirtyregions);

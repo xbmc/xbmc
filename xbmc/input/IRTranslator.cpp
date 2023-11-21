@@ -117,7 +117,7 @@ void CIRTranslator::MapRemote(tinyxml2::XMLNode* pRemote, const std::string& szD
     if (!pButton->NoChildren())
     {
       if (std::strcmp(pButton->Value(), "altname") == 0)
-        remoteNames.push_back(pButton->FirstChild()->Value());
+        remoteNames.emplace_back(pButton->FirstChild()->Value());
       else
         (*buttons)[pButton->FirstChild()->Value()] = pButton->Value();
     }
