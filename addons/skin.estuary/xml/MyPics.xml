@@ -69,7 +69,7 @@
 						<param name="value" value="ListItem.PictureBylineTitle" />
 					</include>
 					<include content="PicsInfoLine">
-						<param name="label" value="$LOCALIZE[31041]"/>
+						<param name="label" value="$LOCALIZE[21822]"/>
 						<param name="value" value="ListItem.PictureCamMake" />
 					</include>
 					<include content="PicsInfoLine">
