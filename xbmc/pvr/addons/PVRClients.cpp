@@ -512,7 +512,7 @@ bool CPVRClients::GetAddonsWithStatus(
   for (const auto& addon : addons)
   {
     bool enabled = !CServiceBroker::GetAddonMgr().IsAddonDisabled(addon->ID());
-    addonsWithStatus.emplace_back(std::make_pair(addon, enabled));
+    addonsWithStatus.emplace_back(addon, enabled);
 
     if (!foundChangedAddon && addon->ID() == changedAddonId)
       foundChangedAddon = true;
@@ -539,8 +539,7 @@ std::vector<std::pair<ADDON::AddonInstanceId, bool>> CPVRClients::GetInstanceIds
     if (std::find(instanceIds.begin(), instanceIds.end(), knownInstanceId) == instanceIds.end())
     {
       // instance was removed
-      instanceIdsWithStatus.emplace_back(
-          std::pair<ADDON::AddonInstanceId, bool>(knownInstanceId, false));
+      instanceIdsWithStatus.emplace_back(knownInstanceId, false);
     }
   }
 

@@ -87,7 +87,7 @@ void CGUIDialogPVRGuideSearch::UpdateChannelSpin()
   int iSelectedChannel = EPG_SEARCH_UNSET;
   for (const auto& groupMember : groupMembers)
   {
-    labels.emplace_back(std::make_pair(groupMember->Channel()->ChannelName(), iIndex));
+    labels.emplace_back(groupMember->Channel()->ChannelName(), iIndex);
     m_channelsMap.insert(std::make_pair(iIndex, groupMember));
 
     if (iSelectedChannel == EPG_SEARCH_UNSET &&

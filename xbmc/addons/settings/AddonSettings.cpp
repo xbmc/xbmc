@@ -350,7 +350,7 @@ bool CAddonSettings::Load(const CXBMCTinyXML& doc)
         settingValue = setting->FirstChild()->ValueStr();
 
       // add the setting to the map
-      settingValues.emplace(std::make_pair(settingId, settingValue));
+      settingValues.emplace(settingId, settingValue);
     };
 
     // check if there were any setting values without a definition
@@ -1106,7 +1106,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSelect(
 
       StringSettingOptions options;
       for (const auto& value : values)
-        options.push_back(StringSettingOption(value, value));
+        options.emplace_back(value, value);
       settingString->SetOptions(options);
 
       setting = settingString;
@@ -1119,8 +1119,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingSelect(
 
       TranslatableIntegerSettingOptions options;
       for (uint32_t i = 0; i < values.size(); ++i)
-        options.push_back(TranslatableIntegerSettingOption(
-            static_cast<int>(strtol(values[i].c_str(), nullptr, 0)), i));
+        options.emplace_back(static_cast<int>(strtol(values[i].c_str(), nullptr, 0)), i);
       settingInt->SetTranslatableOptions(options);
 
       setting = settingInt;
@@ -1263,7 +1262,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
         if (settingEntries.size() > i)
           value = static_cast<int>(strtol(settingEntries[i].c_str(), nullptr, 0));
 
-        options.push_back(IntegerSettingOption(label, value));
+        options.emplace_back(label, value);
       }
 
       settingInt->SetOptions(options);
@@ -1278,7 +1277,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
         if (settingEntries.size() > i)
           value = static_cast<int>(strtol(settingEntries[i].c_str(), nullptr, 0));
 
-        options.push_back(TranslatableIntegerSettingOption(label, value));
+        options.emplace_back(label, value);
       }
 
       settingInt->SetTranslatableOptions(options);
@@ -1306,7 +1305,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
         if (settingEntries.size() > i)
           value = settingEntries[i];
 
-        options.push_back(StringSettingOption(value, value));
+        options.emplace_back(value, value);
       }
 
       settingString->SetOptions(options);
@@ -1321,7 +1320,7 @@ SettingPtr CAddonSettings::InitializeFromOldSettingEnums(
         if (settingEntries.size() > i)
           value = settingEntries[i];
 
-        options.push_back(std::make_pair(label, value));
+        options.emplace_back(label, value);
       }
 
       settingString->SetTranslatableOptions(options);

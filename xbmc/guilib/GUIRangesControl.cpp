@@ -260,8 +260,8 @@ void CGUIRangesControl::SetRanges(const std::vector<std::pair<float, float>>& ra
 {
   ClearRanges();
   for (const auto& range : ranges)
-    m_ranges.emplace_back(CGUIRange(m_posX, m_posY, m_width, m_height,
-                                    m_guiLowerTextureInfo, m_guiFillTextureInfo, m_guiUpperTextureInfo, range));
+    m_ranges.emplace_back(m_posX, m_posY, m_width, m_height, m_guiLowerTextureInfo,
+                          m_guiFillTextureInfo, m_guiUpperTextureInfo, range);
 
   for (auto& range : m_ranges)
     range.AllocResources(); // note: we need to alloc the instance actually inserted into the vector; hence the second loop.
@@ -399,7 +399,7 @@ void CGUIRangesControl::UpdateInfo(const CGUIListItem* item /* = nullptr */)
           ++it;
 
           if (first <= second)
-            ranges.emplace_back(std::make_pair(first, second));
+            ranges.emplace_back(first, second);
           else
             CLog::Log(LOGERROR, "CGUIRangesControl::UpdateInfo - malformed ranges csv string (end element must be larger or equal than start element)");
         }

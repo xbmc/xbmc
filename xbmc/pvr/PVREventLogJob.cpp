@@ -31,7 +31,7 @@ void CPVREventLogJob::AddEvent(bool bNotifyUser,
                                const std::string& msg,
                                const std::string& icon)
 {
-  m_events.emplace_back(Event(bNotifyUser, eLevel, label, msg, icon));
+  m_events.emplace_back(bNotifyUser, eLevel, label, msg, icon);
 }
 
 bool CPVREventLogJob::DoWork()

@@ -150,12 +150,13 @@ MHD_RESULT CHTTPImageTransformationHandler::HandleRequest()
   // nothing else to do if the request is not ranged
   if (!GetRequestedRanges(m_response.totalLength))
   {
-    m_responseData.push_back(CHttpResponseRange(m_buffer, 0, m_response.totalLength - 1));
+    m_responseData.emplace_back(m_buffer, 0, m_response.totalLength - 1);
     return MHD_YES;
   }
 
   for (HttpRanges::const_iterator range = m_request.ranges.Begin(); range != m_request.ranges.End(); ++range)
-    m_responseData.push_back(CHttpResponseRange(m_buffer + range->GetFirstPosition(), range->GetFirstPosition(), range->GetLastPosition()));
+    m_responseData.emplace_back(m_buffer + range->GetFirstPosition(), range->GetFirstPosition(),
+                                range->GetLastPosition());
 
   return MHD_YES;
 }

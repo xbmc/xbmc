@@ -124,7 +124,7 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
     std::string layoutDescription = descriptionElement->GetText();
 
     if (!layout.empty() && !layoutDescription.empty())
-      layouts.emplace_back(StringSettingOption(layoutDescription, layout));
+      layouts.emplace_back(layoutDescription, layout);
 
     layoutElement = layoutElement->NextSiblingElement();
   }

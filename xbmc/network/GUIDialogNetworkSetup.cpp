@@ -194,8 +194,7 @@ void CGUIDialogNetworkSetup::InitializeSettings()
   // Add our protocols
   TranslatableIntegerSettingOptions labels;
   for (size_t idx = 0; idx < m_protocols.size(); ++idx)
-    labels.push_back(
-        TranslatableIntegerSettingOption(m_protocols[idx].label, idx, m_protocols[idx].addonId));
+    labels.emplace_back(m_protocols[idx].label, idx, m_protocols[idx].addonId);
 
   AddSpinner(group, SETTING_PROTOCOL, 1008, SettingLevel::Basic, m_protocol, labels);
   AddEdit(group, SETTING_SERVER_ADDRESS, 1010, SettingLevel::Basic, m_server, true);

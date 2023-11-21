@@ -610,7 +610,7 @@ bool CEventClient::OnPacketACTION(CEventPacket *packet)
   case AT_BUTTON:
     {
       std::unique_lock<CCriticalSection> lock(m_critSection);
-      m_actionQueue.push(CEventAction(actionString.c_str(), actionType));
+      m_actionQueue.emplace(actionString.c_str(), actionType);
     }
     break;
 

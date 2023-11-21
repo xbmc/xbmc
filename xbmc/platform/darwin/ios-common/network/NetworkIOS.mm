@@ -392,7 +392,7 @@ std::vector<std::string> CNetworkIOS::GetNameServers()
                       static_cast<socklen_t>(s.sin.sin_len), static_cast<char*>(hostBuffer),
                       sizeof(hostBuffer), nullptr, 0, NI_NUMERICHOST) == 0)
       {
-        nameServers.push_back(hostBuffer);
+        nameServers.emplace_back(hostBuffer);
       }
     }
   }

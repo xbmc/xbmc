@@ -124,8 +124,7 @@ static bool GetIntegerOptions(const SettingConstPtr& setting,
       const TranslatableIntegerSettingOptions& settingOptions =
           pSettingInt->GetTranslatableOptions();
       for (const auto& option : settingOptions)
-        options.push_back(
-            IntegerSettingOption(Localize(option.label, localizer, option.addonId), option.value));
+        options.emplace_back(Localize(option.label, localizer, option.addonId), option.value);
       break;
     }
 
@@ -163,7 +162,7 @@ static bool GetIntegerOptions(const SettingConstPtr& setting,
         else
           strLabel = StringUtils::Format(control->GetFormatString(), i);
 
-        options.push_back(IntegerSettingOption(strLabel, i));
+        options.emplace_back(strLabel, i);
       }
 
       break;
@@ -230,7 +229,7 @@ static bool GetStringOptions(const SettingConstPtr& setting,
       const TranslatableStringSettingOptions& settingOptions =
           pSettingString->GetTranslatableOptions();
       for (const auto& option : settingOptions)
-        options.push_back(StringSettingOption(Localize(option.first, localizer), option.second));
+        options.emplace_back(Localize(option.first, localizer), option.second);
       break;
     }
 

@@ -52,21 +52,21 @@ public:
   {
     provides_input = layout.provides_input;
     for (unsigned int i = 0; i < layout.digital_button_count; ++i)
-      digital_buttons.push_back(layout.digital_buttons[i]);
+      digital_buttons.emplace_back(layout.digital_buttons[i]);
     for (unsigned int i = 0; i < layout.analog_button_count; ++i)
-      analog_buttons.push_back(layout.analog_buttons[i]);
+      analog_buttons.emplace_back(layout.analog_buttons[i]);
     for (unsigned int i = 0; i < layout.analog_stick_count; ++i)
-      analog_sticks.push_back(layout.analog_sticks[i]);
+      analog_sticks.emplace_back(layout.analog_sticks[i]);
     for (unsigned int i = 0; i < layout.accelerometer_count; ++i)
-      accelerometers.push_back(layout.accelerometers[i]);
+      accelerometers.emplace_back(layout.accelerometers[i]);
     for (unsigned int i = 0; i < layout.key_count; ++i)
-      keys.push_back(layout.keys[i]);
+      keys.emplace_back(layout.keys[i]);
     for (unsigned int i = 0; i < layout.rel_pointer_count; ++i)
-      rel_pointers.push_back(layout.rel_pointers[i]);
+      rel_pointers.emplace_back(layout.rel_pointers[i]);
     for (unsigned int i = 0; i < layout.abs_pointer_count; ++i)
-      abs_pointers.push_back(layout.abs_pointers[i]);
+      abs_pointers.emplace_back(layout.abs_pointers[i]);
     for (unsigned int i = 0; i < layout.motor_count; ++i)
-      motors.push_back(layout.motors[i]);
+      motors.emplace_back(layout.motors[i]);
   }
   /*! @endcond */
 
@@ -201,7 +201,7 @@ public:
     for (unsigned int i = 0; i < m_instanceData->props->proxy_dll_count; ++i)
     {
       if (m_instanceData->props->proxy_dll_paths[i] != nullptr)
-        paths.push_back(m_instanceData->props->proxy_dll_paths[i]);
+        paths.emplace_back(m_instanceData->props->proxy_dll_paths[i]);
     }
     return !paths.empty();
   }
@@ -223,7 +223,7 @@ public:
     for (unsigned int i = 0; i < m_instanceData->props->resource_directory_count; ++i)
     {
       if (m_instanceData->props->resource_directories[i] != nullptr)
-        dirs.push_back(m_instanceData->props->resource_directories[i]);
+        dirs.emplace_back(m_instanceData->props->resource_directories[i]);
     }
     return !dirs.empty();
   }
@@ -269,7 +269,7 @@ public:
     for (unsigned int i = 0; i < m_instanceData->props->extension_count; ++i)
     {
       if (m_instanceData->props->extensions[i] != nullptr)
-        extensions.push_back(m_instanceData->props->extensions[i]);
+        extensions.emplace_back(m_instanceData->props->extensions[i]);
     }
     return !extensions.empty();
   }
@@ -1079,7 +1079,7 @@ private:
     for (size_t i = 0; i < urlCount; ++i)
     {
       if (urls[i] != nullptr)
-        urlList.push_back(urls[i]);
+        urlList.emplace_back(urls[i]);
     }
 
     return static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
@@ -1165,7 +1165,7 @@ private:
 
     std::vector<GameControllerLayout> controllerList;
     for (unsigned int i = 0; i < controller_count; ++i)
-      controllerList.push_back(controllers[i]);
+      controllerList.emplace_back(controllers[i]);
 
     static_cast<CInstanceGame*>(instance->toAddon->addonInstance)
         ->SetControllerLayouts(controllerList);

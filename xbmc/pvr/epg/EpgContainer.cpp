@@ -892,13 +892,13 @@ void CPVREpgContainer::SetHasPendingUpdates(bool bHasPendingUpdates /* = true */
 void CPVREpgContainer::UpdateRequest(int iClientID, int iUniqueChannelID)
 {
   std::unique_lock<CCriticalSection> lock(m_updateRequestsLock);
-  m_updateRequests.emplace_back(CEpgUpdateRequest(iClientID, iUniqueChannelID));
+  m_updateRequests.emplace_back(iClientID, iUniqueChannelID);
 }
 
 void CPVREpgContainer::UpdateFromClient(const std::shared_ptr<CPVREpgInfoTag>& tag, EPG_EVENT_STATE eNewState)
 {
   std::unique_lock<CCriticalSection> lock(m_epgTagChangesLock);
-  m_epgTagChanges.emplace_back(CEpgTagStateChange(tag, eNewState));
+  m_epgTagChanges.emplace_back(tag, eNewState);
 }
 
 int CPVREpgContainer::GetPastDaysToDisplay() const
