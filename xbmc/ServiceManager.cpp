@@ -140,16 +140,16 @@ bool CServiceManager::InitStageTwo(const std::string& profilesUserDataFolder)
 
   m_PVRManager = std::make_unique<PVR::CPVRManager>();
 
-  m_dataCacheCore.reset(new CDataCacheCore());
+  m_dataCacheCore = std::make_unique<CDataCacheCore>();
 
   m_binaryAddonCache = std::make_unique<ADDON::CBinaryAddonCache>();
   m_binaryAddonCache->Init();
 
-  m_favouritesService.reset(new CFavouritesService(profilesUserDataFolder));
+  m_favouritesService = std::make_unique<CFavouritesService>(profilesUserDataFolder);
 
   m_serviceAddons = std::make_unique<ADDON::CServiceAddonManager>(*m_addonMgr);
 
-  m_contextMenuManager.reset(new CContextMenuManager(*m_addonMgr));
+  m_contextMenuManager = std::make_unique<CContextMenuManager>(*m_addonMgr);
 
   m_gameControllerManager = std::make_unique<GAME::CControllerManager>(*m_addonMgr);
   m_inputManager = std::make_unique<CInputManager>();
