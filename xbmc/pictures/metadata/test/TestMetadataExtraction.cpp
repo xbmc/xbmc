@@ -50,6 +50,8 @@ TEST_F(TestMetadataExtraction, TestGPSImage)
   EXPECT_EQ(metadata->exifInfo.ExposureProgram, 2);
   EXPECT_EQ(metadata->exifInfo.Whitebalance, 0);
   EXPECT_EQ(metadata->exifInfo.ISOequivalent, 100);
+  EXPECT_EQ(metadata->exifInfo.Software, "SLT-A77V v1.07");
+  EXPECT_EQ(metadata->exifInfo.ColorSpace, 1); // sRGB
   // Check the IPTC tags of this image
   EXPECT_EQ(metadata->iptcInfo.Keywords, "blauer Himmel, Ausblick, Parkplatz, Löwenstein, Auto");
   // Generic metadata information
