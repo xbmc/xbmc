@@ -1820,7 +1820,6 @@ CacheInfo CVideoPlayer::GetCachingTimes()
   double play_sbp = DVD_MSEC_TO_TIME(m_pDemuxer->GetStreamLength()) / length;
   double queued = 1000.0 * queueTime / play_sbp;
 
-  info.delay = 0.0;
   info.level = 0.0;
   info.offset = (cached + queued) / length;
   info.time = 0.0;
@@ -1829,18 +1828,12 @@ CacheInfo CVideoPlayer::GetCachingTimes()
   if (currate == 0)
     return info;
 
-  double cache_sbp = 1.1 * (double)DVD_TIME_BASE / currate;          /* underestimate by 10 % */
-  double play_left = play_sbp  * (remain + queued);                  /* time to play out all remaining bytes */
-  double cache_left = cache_sbp * (remain - cached);                 /* time to cache the remaining bytes */
-  double cache_need = std::max(0.0, remain - play_left / cache_sbp); /* bytes needed until play_left == cache_left */
-
   // estimated playback time of current cached bytes
   const double cacheTime = (static_cast<double>(cached) / currate) + (queueTime / 1000.0);
 
   // cache level as current forward bytes / max forward bytes [0.0 - 1.0]
   const double cacheLevel = (maxforward > 0) ? static_cast<double>(cached) / maxforward : 0.0;
 
-  info.delay = cache_left - play_left;
   info.time = cacheTime;
 
   if (lowrate > 0)
@@ -3298,9 +3291,6 @@ void CVideoPlayer::GetGeneralInfo(std::string& strGeneralInfo)
                                     StringUtils::SizeToString(m_State.cache_bytes),
                                     m_State.cache_level * 100.0, m_State.cache_time,
                                     m_State.cache_offset * 100.0);
-
-      if (m_playSpeed == 0 || m_caching == CACHESTATE_FULL)
-        strBuf += StringUtils::Format(" / {} msec", DVD_TIME_TO_MSEC(m_State.cache_delay));
     }
 
     strGeneralInfo = StringUtils::Format("Player: a/v:{: 6.3f}, {}", dDiff, strBuf);
@@ -4929,14 +4919,12 @@ void CVideoPlayer::UpdatePlayState(double timeout)
 
   if (cache.valid)
   {
-    state.cache_delay = std::max(0.0, cache.delay);
     state.cache_level = std::max(0.0, std::min(1.0, cache.level));
     state.cache_offset = cache.offset;
     state.cache_time = cache.time;
   }
   else
   {
-    state.cache_delay = 0.0;
     state.cache_level = std::min(1.0, queueTime / 8000.0);
     state.cache_offset = queueTime / state.timeMax;
     state.cache_time = queueTime / 1000.0;
