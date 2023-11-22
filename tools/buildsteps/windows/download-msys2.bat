@@ -258,6 +258,9 @@ if exist %instdir%\%msys2%\usr\bin\make.exe GOTO rebase2
     echo.sleep ^3
     echo.exit
         )>>%instdir%\pacman.sh
+:: Unconventional msys2 post install steps:
+:: %sh% -lc ' ' for first-run msys2 actions is replaced by --login for the first script execution.
+:: To control the used versions, %sh% pacman --noconfirm -Syuu is not run twice for system update.
     %sh% --login %instdir%\pacman.sh &
     del %instdir%\pacman.sh
 
