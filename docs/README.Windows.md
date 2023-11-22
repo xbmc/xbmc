@@ -46,6 +46,7 @@ Several different strategies are used to draw your attention to certain pieces o
 
 ## 2. Prerequisites
 To build Kodi:
+* **Windows** 64bit OS, Windows 8.1 or above (allows build of x64, win32, uwp, arm)
 * **[CMake](https://cmake.org/download/)** (version 3.20 or greater is required to build Kodi, version 3.21 or greater to build with Visual Studio 2022)
 * **[Git for Windows](https://gitforwindows.org/)**
 * **[Java Runtime Environment (JRE)](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**

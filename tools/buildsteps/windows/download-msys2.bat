@@ -28,8 +28,9 @@ PUSHD %~dp0\..\..\..
 SET WORKSPACE=%CD%
 POPD
 
-set msysver=20210725
+set msysver=20231026
 set msys2=msys64
+set arch=x86_64
 set instdir=%WORKSPACE%\project\BuildDependencies
 set msyspackages=diffutils gcc make patch perl tar yasm
 set gaspreprocurl=https://github.com/FFmpeg/gas-preprocessor/archive/master.tar.gz
@@ -52,9 +53,11 @@ for %%b in (%*) do (
   if %%b==sh (set opt=sh)
 )
 
-:: use 32bit msys2 on x86 machine
-if %PROCESSOR_ARCHITECTURE%=="x86" set msys2=msys32
-if %msys2%==msys32 (set arch=i686) else (set arch=x86_64)
+:: msys2 announced end of 32bit active support on 2020-05-17
+if %PROCESSOR_ARCHITECTURE%=="x86" (
+	echo ERROR: msys2 is not available for 32bit OS
+        exit /B 1
+)
 set msysfile=msys2-base-%arch%-%msysver%.tar.xz
 if %opt%==mintty (
     set sh=%instdir%\%msys2%\usr\bin\mintty.exe -d -i /msys2.ico /usr/bin/bash
