@@ -22,6 +22,8 @@
 @echo off
 title msys2
 
+SETLOCAL EnableDelayedExpansion
+
 PUSHD %~dp0\..\..\..
 SET WORKSPACE=%CD%
 POPD
