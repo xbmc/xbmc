@@ -264,16 +264,6 @@ if exist %instdir%\%msys2%\usr\bin\make.exe GOTO rebase2
     %sh% --login %instdir%\pacman.sh &
     del %instdir%\pacman.sh
 
-    for %%i in (%instdir%\%msys2%\usr\ssl\cert.pem) do (
-        if %%~zi==0 (
-            echo.update-ca-trust>>cert.sh
-            echo.sleep ^3>>cert.sh
-            echo.exit>>cert.sh
-            %sh% --login %instdir%\cert.sh
-            del cert.sh
-            )
-        )
-
 :rebase2
 if %msys2%==msys32 (
     echo.-------------------------------------------------------------------------------
