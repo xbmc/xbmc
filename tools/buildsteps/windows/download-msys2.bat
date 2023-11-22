@@ -159,7 +159,7 @@ if not "%usemirror%"=="yes" GOTO rebase
             if %%f==msys set mirror=!mirror!2/$arch
             move !filename! !oldfile!>nul
             for /F "usebackq delims=" %%a in (!oldfile!) do (
-                echo %%a | find /i "server = https://repo.msys2.org/">nul && (
+                echo %%a | find /i "server = https://mirror.msys2.org/">nul && (
                     echo.Server = !mirror!
                     )>>!filename!
                 echo %%a>>!filename!
