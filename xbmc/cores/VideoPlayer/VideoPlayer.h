@@ -55,7 +55,6 @@ struct SPlayerState
     caching = false;
     cache_bytes = 0;
     cache_level = 0.0;
-    cache_delay = 0.0;
     cache_offset = 0.0;
     lastSeek = 0;
     streamsReady = false;
@@ -84,10 +83,9 @@ struct SPlayerState
   bool cantempo;
   bool caching;
 
-  int64_t cache_bytes;   // number of bytes current's cached
-  double cache_level;   // current estimated required cache level
-  double cache_delay;   // time until cache is expected to reach estimated level
-  double cache_offset;  // percentage of file ahead of current position
+  int64_t cache_bytes; // number of bytes current's cached
+  double cache_level; // current cache level
+  double cache_offset; // percentage of file ahead of current position
   double cache_time; // estimated playback time of current cached bytes
 };
 
@@ -240,8 +238,7 @@ protected:
 
 struct CacheInfo
 {
-  double level; // current estimated required cache level
-  double delay; // time until cache is expected to reach estimated level
+  double level; // current cache level
   double offset; // percentage of file ahead of current position
   double time; // estimated playback time of current cached bytes
   bool valid;
