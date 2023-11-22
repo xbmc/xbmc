@@ -139,6 +139,9 @@ extern "C"
     int64_t sizeInBytes;
     int iClientProviderUid;
     char strProviderName[PVR_ADDON_NAME_STRING_LENGTH];
+    int iParentalRating;
+    char strParentalRatingCode[PVR_ADDON_RATING_CODE_LENGTH];
+    char strParentalRatingIcon[PVR_ADDON_RATING_ICON_LENGTH];
   } PVR_RECORDING;
 
 #ifdef __cplusplus

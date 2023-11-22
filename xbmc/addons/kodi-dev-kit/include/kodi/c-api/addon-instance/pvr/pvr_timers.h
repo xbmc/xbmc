@@ -365,6 +365,9 @@ extern "C"
     int iGenreType;
     int iGenreSubType;
     char strSeriesLink[PVR_ADDON_URL_STRING_LENGTH];
+    int iParentalRating;
+    char strParentalRatingCode[PVR_ADDON_RATING_CODE_LENGTH];
+    char strParentalRatingIcon[PVR_ADDON_RATING_ICON_LENGTH];
   } PVR_TIMER;
 
   /*!

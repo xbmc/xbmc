@@ -6735,6 +6735,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_ParentalRatingCode `ListItem.ParentalRatingCode`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.ParentalRatingIcon`</b>,
+///                  \anchor ListItem_ParentalRatingIcon
+///                  _string_,
+///     @return The parental rating icon url of the list item (PVR).
+///     <p><hr>
+///     @skinning_v21 **[New Infolabel]** \link ListItem_ParentalRatingIcon `ListItem.ParentalRatingIcon`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.CurrentItem`</b>,
 ///                  \anchor ListItem_CurrentItem
 ///                  _string_,
@@ -7098,6 +7106,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "property",         LISTITEM_PROPERTY },
                                   { "parentalrating",   LISTITEM_PARENTAL_RATING },
                                   { "parentalratingcode", LISTITEM_PARENTAL_RATING_CODE },
+    {"parentalratingicon", LISTITEM_PARENTAL_RATING_ICON},
                                   { "currentitem",      LISTITEM_CURRENTITEM },
                                   { "isnew",            LISTITEM_IS_NEW },
                                   { "isboxset",         LISTITEM_IS_BOXSET },

@@ -306,6 +306,12 @@ public:
   std::string ParentalRatingCode() const;
 
   /*!
+   * @brief Get the parental rating icon url of this event.
+   * @return Path to the parental rating icon.
+   */
+  std::string ParentalRatingIcon() const;
+
+  /*!
    * @brief Get the star rating of this event.
    * @return The star rating.
    */
@@ -482,6 +488,7 @@ private:
   std::string m_strGenreDescription; /*!< genre description */
   int m_iParentalRating = 0; /*!< parental rating */
   std::string m_strParentalRatingCode; /*!< parental rating code */
+  std::string m_strParentalRatingIcon; /*!< parental rating icon url */
   int m_iStarRating = 0; /*!< star rating */
   int m_iSeriesNumber = -1; /*!< series number */
   int m_iEpisodeNumber = -1; /*!< episode number */

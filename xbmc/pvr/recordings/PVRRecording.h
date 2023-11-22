@@ -501,6 +501,24 @@ public:
    */
   std::shared_ptr<CPVRProvider> GetProvider() const;
 
+  /*!
+   * @brief Get the parental age rating of this recording.
+   * @return The parental age rating.
+   */
+  int GetParentalRating() const { return m_ageRating; }
+
+  /*!
+   * @brief Get the parental age rating code of this recording.
+   * @return The parental age rating code.
+   */
+  std::string GetParentalRatingCode() const;
+
+  /*!
+   * @brief Get the parental age rating icon url of this recording.
+   * @return The parental age rating icon url.
+   */
+  std::string GetParentalRatingIcon() const;
+
 private:
   CPVRRecording(const CPVRRecording& tag) = delete;
   CPVRRecording& operator=(const CPVRRecording& other) = delete;
@@ -535,6 +553,9 @@ private:
   std::string m_strProviderName; /*!< name of the provider this recording is from */
   int m_iClientProviderUniqueId =
       PVR_PROVIDER_INVALID_UID; /*!< provider uid associated with this recording on the client */
+  int m_ageRating = 0; /*!< parental age rating */
+  std::string m_strAgeRatingLabel; /*!< parental age label */
+  std::string m_strAgeRatingIcon; /*!< parental age icon url */
 
   mutable CCriticalSection m_critSection;
 };

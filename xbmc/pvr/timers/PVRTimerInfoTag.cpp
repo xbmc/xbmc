@@ -268,6 +268,9 @@ void CPVRTimerInfoTag::FillAddonData(PVR_TIMER& timer) const
   timer.iGenreType = epgTag ? epgTag->GenreType() : 0;
   timer.iGenreSubType = epgTag ? epgTag->GenreSubType() : 0;
   strncpy(timer.strSeriesLink, SeriesLink().c_str(), sizeof(timer.strSeriesLink) - 1);
+  timer.iParentalRating = m_iAgeRating;
+  strncpy(timer.strParentalRatingCode, ParentalRatingLabel().c_str(), sizeof(timer.strParentalRatingCode) - 1);
+  strncpy(timer.strParentalRatingIcon, ParentalRatingIcon().c_str(), sizeof(timer.strParentalRatingIcon) - 1);
 }
 
 void CPVRTimerInfoTag::Serialize(CVariant& value) const
@@ -655,6 +658,10 @@ bool CPVRTimerInfoTag::UpdateEntry(const std::shared_ptr<const CPVRTimerInfoTag>
   m_iRadioChildTimersConflictNOK = tag->m_iRadioChildTimersConflictNOK;
   m_iRadioChildTimersRecording = tag->m_iRadioChildTimersRecording;
   m_iRadioChildTimersErrors = tag->m_iRadioChildTimersErrors;
+
+  m_iAgeRating = tag->m_iAgeRating;
+  m_strRatingLabel = tag->m_strRatingLabel;
+  m_strRatingIcon = tag->m_strRatingIcon;
 
   SetTimerType(tag->m_timerType);
 
@@ -1388,4 +1395,14 @@ const std::string& CPVRTimerInfoTag::Path() const
 const std::string& CPVRTimerInfoTag::SeriesLink() const
 {
   return m_strSeriesLink;
+}
+
+const std::string& CPVRTimerInfoTag::ParentalRatingLabel() const
+{
+  return m_strRatingLabel;
+}
+
+const std::string& CPVRTimerInfoTag::ParentalRatingIcon() const
+{
+  return m_strRatingIcon;
 }

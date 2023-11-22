@@ -64,6 +64,7 @@ public:
       m_seriesLink(epg.m_seriesLink),
       m_genreDescription(epg.m_genreDescription),
       m_parentalRatingCode(epg.m_parentalRatingCode),
+      m_parentalRatingIcon(epg.m_parentalRatingIcon),
       m_firstAired(epg.m_firstAired)
   {
   }
@@ -94,7 +95,8 @@ public:
   /// | **Genre description** | `std::string` | @ref PVREPGTag::SetGenreDescription "SetGenreDescription" | @ref PVREPGTag::GetGenreDescription "GetGenreDescription" | *optional*
   /// | **First aired** | `time_t` | @ref PVREPGTag::SetFirstAired "SetFirstAired" | @ref PVREPGTag::GetFirstAired "GetFirstAired" | *optional*
   /// | **Parental rating** | `int` | @ref PVREPGTag::SetParentalRating "SetParentalRating" | @ref PVREPGTag::GetParentalRating "GetParentalRating" | *optional*
-  /// | **Parental rating code** | `int` | @ref PVREPGTag::SetParentalRatingCode "SetParentalRatingCode" | @ref PVREPGTag::GetParentalRatingCode "GetParentalRatingCode" | *optional*
+  /// | **Parental rating code** | `std::string` | @ref PVREPGTag::SetParentalRatingCode "SetParentalRatingCode" | @ref PVREPGTag::GetParentalRatingCode "GetParentalRatingCode" | *optional*
+  /// | **Parental rating icon** | `std::string` | @ref PVREPGTag::SetParentalRatingIcon "SetParentalRatingIcon" | @ref PVREPGTag::GetParentalRatingIcon "GetParentalRatingIcon" | *optional*
   /// | **Star rating** | `int` | @ref PVREPGTag::SetStarRating "SetStarRating" | @ref PVREPGTag::GetStarRating "GetStarRating" | *optional*
   /// | **Series number** | `int` | @ref PVREPGTag::SetSeriesNumber "SetSeriesNumber" | @ref PVREPGTag::GetSeriesNumber "GetSeriesNumber" | *optional*
   /// | **Episode number** | `int` | @ref PVREPGTag::SetEpisodeNumber "SetEpisodeNumber" | @ref PVREPGTag::GetEpisodeNumber "GetEpisodeNumber" | *optional*
@@ -330,10 +332,10 @@ public:
   /// Parental rating.
   void SetParentalRating(int parentalRating) { m_cStructure->iParentalRating = parentalRating; }
 
-  /// @brief To get with @ref SetParentalRatinge changed values.
+  /// @brief To get with @ref SetParentalRating changed values.
   int GetParentalRating() const { return m_cStructure->iParentalRating; }
 
-  /// @brief **required**\n
+  /// @brief **optional**\n
   /// This event's parental rating code.
   void SetParentalRatingCode(const std::string& parentalRatingCode)
   {
@@ -342,6 +344,16 @@ public:
 
   /// @brief To get with @ref SetParentalRatingCode changed values.
   std::string GetParentalRatingCode() const { return m_parentalRatingCode; }
+
+  /// @brief **optional**\n
+  /// This event's parental rating icon.
+  void SetParentalRatingIcon(const std::string& parentalRatingIcon)
+  {
+    m_parentalRatingIcon = parentalRatingIcon;
+  }
+
+  /// @brief To get with @ref SetParentalRatingIcon changed values.
+  std::string GetParentalRatingIcon() const { return m_parentalRatingIcon; }
 
   /// @brief **optional**\n
   /// Star rating.
@@ -418,6 +430,7 @@ public:
     m_cStructure->strIconPath = m_iconPath.c_str();
     m_cStructure->strGenreDescription = m_genreDescription.c_str();
     m_cStructure->strParentalRatingCode = m_parentalRatingCode.c_str();
+    m_cStructure->strParentalRatingIcon = m_parentalRatingIcon.c_str();
     m_cStructure->strEpisodeName = m_episodeName.c_str();
     m_cStructure->strSeriesLink = m_seriesLink.c_str();
     m_cStructure->strFirstAired = m_firstAired.c_str();
@@ -446,6 +459,7 @@ private:
   std::string m_seriesLink;
   std::string m_genreDescription;
   std::string m_parentalRatingCode;
+  std::string m_parentalRatingIcon;
   std::string m_firstAired;
 
   void SetData(const EPG_TAG* tag)
@@ -461,6 +475,7 @@ private:
     m_iconPath = tag->strIconPath == nullptr ? "" : tag->strIconPath;
     m_genreDescription = tag->strGenreDescription == nullptr ? "" : tag->strGenreDescription;
     m_parentalRatingCode = tag->strParentalRatingCode == nullptr ? "" : tag->strParentalRatingCode;
+    m_parentalRatingIcon = tag->strParentalRatingIcon == nullptr ? "" : tag->strParentalRatingIcon;
     m_episodeName = tag->strEpisodeName == nullptr ? "" : tag->strEpisodeName;
     m_seriesLink = tag->strSeriesLink == nullptr ? "" : tag->strSeriesLink;
     m_firstAired = tag->strFirstAired == nullptr ? "" : tag->strFirstAired;

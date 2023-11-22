@@ -571,6 +571,24 @@ public:
                                        bool bEpgBased,
                                        bool bLongMultiDaysFormat);
 
+  /*!
+   * @brief The parental age rating value for this timer.
+   * @return The parental age rating value.
+   */
+  unsigned int ParentalRating() const { return m_iAgeRating; }
+
+  /*!
+   * @brief The parental rating code for this timer.
+   * @return The parental rating code or empty string, if not available.
+   */
+  const std::string& ParentalRatingLabel() const;
+
+  /*!
+   * @brief The parental rating icon url for this timer.
+   * @return The parental rating icon url or empty string, if not available.
+   */
+  const std::string& ParentalRatingIcon() const;
+
 private:
   CPVRTimerInfoTag(const CPVRTimerInfoTag& tag) = delete;
   CPVRTimerInfoTag& operator=(const CPVRTimerInfoTag& orig) = delete;
@@ -640,5 +658,10 @@ private:
   mutable std::shared_ptr<CPVRChannel> m_channel;
 
   mutable bool m_bProbedEpgTag = false;
+
+  unsigned int m_iAgeRating = 0; /*!< @brief age rating of the EPG entry used to create this timer */
+  std::string m_strRatingLabel; /*!< @brief text label for the age rating */
+  std::string m_strRatingIcon; /*!< @brief URL for the icon for the age rating */
+
 };
 } // namespace PVR

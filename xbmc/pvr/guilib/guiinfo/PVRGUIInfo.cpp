@@ -438,6 +438,10 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
       case LISTITEM_DIRECTOR:
       case LISTITEM_CHANNEL_NUMBER:
       case LISTITEM_PREMIERED:
+      case LISTITEM_PARENTAL_RATING:
+      case LISTITEM_PARENTAL_RATING_CODE:
+      case LISTITEM_MPAA: //For compatibility with other skins.
+      case LISTITEM_PARENTAL_RATING_ICON:
         break; // obtain value from channel/epg
       default:
         return false;
@@ -558,6 +562,21 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
           return true;
         }
         return false;
+
+      case LISTITEM_PARENTAL_RATING:
+        if (recording->GetParentalRating() > 0)
+        {
+          strValue = std::to_string(recording->GetParentalRating());
+          return true;
+        }
+        return false;
+      case LISTITEM_PARENTAL_RATING_CODE:
+      case LISTITEM_MPAA: //For compatibility with vodeo skins
+        strValue = recording->GetParentalRatingCode();
+        return true;
+      case LISTITEM_PARENTAL_RATING_ICON:
+        strValue = recording->GetParentalRatingIcon();
+        return true;
     }
     return false;
   }
@@ -753,7 +772,11 @@ bool CPVRGUIInfo::GetListItemAndPlayerLabel(const CFileItem* item,
         }
         return false;
       case LISTITEM_PARENTAL_RATING_CODE:
+      case LISTITEM_MPAA: //For compatibility with video skins
         strValue = epgTag->ParentalRatingCode();
+        return true;
+      case LISTITEM_PARENTAL_RATING_ICON:
+        strValue = epgTag->ParentalRatingIcon();
         return true;
       case VIDEOPLAYER_PREMIERED:
       case LISTITEM_PREMIERED:
