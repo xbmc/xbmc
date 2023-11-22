@@ -79,7 +79,7 @@ if exist "%downloaddir%\%msysfile%" GOTO unpack
     echo.- Download msys2 basic system (Kodi mirrors: %usemirror%)
     echo -------------------------------------------------------------------------------
 
-    set msysurl=http://sourceforge.net/projects/msys2/files/Base/%arch%/%msysfile%/download
+    set msysurl=https://repo.msys2.org/distrib/%arch%/%msysfile%
     if %usemirror%==yes (
         ::download msys2 from our mirror
         set msysurl=%MSYS_MIRROR%/%msysfile%
