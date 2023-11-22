@@ -929,3 +929,11 @@ msgstr ""
 msgctxt "#31611"
 msgid "System"
 msgstr ""
+
+msgctxt "#31612"
+msgid "Tracks selection"
+msgstr "Tracks selection"
+
+msgctxt "#31613"
+msgid "Toggle video stream"
+msgstr "Toggle video stream"
