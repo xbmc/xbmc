@@ -35,7 +35,7 @@ set usemirror=yes
 set opt=mintty
 
 :: if KODI_MIRROR is not set externally to this script, set it to the default mirror URL
-if "%KODI_MIRROR%"=="" set KODI_MIRROR=http://mirrors.kodi.tv
+if "%KODI_MIRROR%"=="" set KODI_MIRROR=https://mirrors.kodi.tv
 if "%usemirror%"=="yes" (
     echo -------------------------------------------------------------------------------
     echo. Downloading will be performed from mirror %KODI_MIRROR%
@@ -159,7 +159,7 @@ if not "%usemirror%"=="yes" GOTO rebase
             if %%f==msys set mirror=!mirror!2/$arch
             move !filename! !oldfile!>nul
             for /F "usebackq delims=" %%a in (!oldfile!) do (
-                echo %%a | find /i "server = http://repo.msys2.org/">nul && (
+                echo %%a | find /i "server = https://repo.msys2.org/">nul && (
                     echo.Server = !mirror!
                     )>>!filename!
                 echo %%a>>!filename!
