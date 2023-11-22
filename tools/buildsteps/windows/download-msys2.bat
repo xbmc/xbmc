@@ -208,6 +208,8 @@ if not exist %instdir%\locals\x64\share (
     )
 
 if not exist %instdir%\%msys2%\etc\fstab. GOTO writeFstab
+
+set searchRes=
 for /f "tokens=2 delims=/" %%a in ('findstr /i xbmc %instdir%\%msys2%\etc\fstab.') do set searchRes=%%a
 if "%searchRes%"=="xbmc" GOTO installbase
 
