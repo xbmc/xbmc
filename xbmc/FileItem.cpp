@@ -1184,6 +1184,12 @@ bool CFileItem::IsNFO() const
   return URIUtils::HasExtension(m_strPath, ".nfo");
 }
 
+bool CFileItem::IsVideoExtras() const
+{
+  return m_bIsFolder &&
+         StringUtils::EqualsNoCase(URIUtils::GetFileOrFolderName(m_strPath), "extras");
+}
+
 bool CFileItem::IsDiscImage() const
 {
   return URIUtils::IsDiscImage(GetDynPath());
@@ -4236,4 +4242,13 @@ bool CFileItem::IsResumable() const
   {
     return HasVideoInfoTag() && GetVideoInfoTag()->GetResumePoint().IsPartWay();
   }
+}
+
+bool CFileItem::HasVideoVersions() const
+{
+  if (HasVideoInfoTag())
+  {
+    return GetVideoInfoTag()->m_hasVideoVersions;
+  }
+  return false;
 }

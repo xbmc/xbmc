@@ -392,6 +392,27 @@ const struct SDbTableOffsets DbMusicVideoOffsets[] =
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
 
+// Video Versions
+enum class VideoVersionTypeOwner
+{
+  UNKNOWN = -1,
+  SYSTEM = 0,
+  AUTO = 1,
+  USER = 2
+};
+
+enum class VideoVersionItemType
+{
+  UNKNOWN = -1,
+  PRIMARY = 0,
+  EXTRAS = 1
+};
+
+static constexpr int VIDEO_VERSION_ID_BEGIN = 40400;
+static constexpr int VIDEO_VERSION_ID_END = 40800;
+static constexpr int VIDEO_VERSION_ID_DEFAULT = VIDEO_VERSION_ID_BEGIN;
+static constexpr int VIDEO_VERSION_ID_ALL = 0;
+
 class CVideoDatabase : public CDatabase
 {
 public:
@@ -806,6 +827,7 @@ public:
                   VideoDbContentType idContent = VideoDbContentType::UNKNOWN,
                   const Filter& filter = Filter(),
                   bool countOnly = false);
+
   bool GetMusicVideoAlbumsNav(const std::string& strBaseDir, CFileItemList& items, int idArtist, const Filter &filter = Filter(), bool countOnly = false);
 
   bool GetMoviesNav(const std::string& strBaseDir, CFileItemList& items, int idGenre=-1, int idYear=-1, int idActor=-1, int idDirector=-1, int idStudio=-1, int idCountry=-1, int idSet=-1, int idTag=-1, const SortDescription &sortDescription = SortDescription(), int getDetails = VideoDbDetailsNone);
@@ -987,11 +1009,71 @@ public:
 
   std::string GetSetByNameLike(const std::string& nameLike) const;
 
+  std::string GetVideoItemTitle(VideoDbContentType itemType, int dbId);
+  std::string GetVideoVersionById(int id);
+  bool GetVideoItemByVideoVersion(int dbId, CFileItem& item);
+  int GetVideoVersionFile(VideoDbContentType itemType, int dbId, int idVideoVersion);
+  bool HasVideoVersions(VideoDbContentType itemType, int dbId);
+  bool IsVideoExtras(int dbId);
+  void GetVideoVersions(VideoDbContentType itemType, int dbId, CFileItemList& items);
+  void GetVideoVersions(VideoDbContentType itemType,
+                        int dbId,
+                        CFileItemList& items,
+                        VideoVersionItemType versionItemType);
+  void GetDefaultVideoVersion(VideoDbContentType itemType, int dbId, CFileItem& item);
+  void ConvertVideoToVersion(VideoDbContentType itemType,
+                             int dbIdSource,
+                             int dbIdTarget,
+                             int idVideoVersion);
+  void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
+  void SetVideoVersion(int idFile, int idVideoVersion);
+  int AddVideoVersionType(const std::string& typeVideoVersion, VideoVersionTypeOwner owner);
+  void AddVideoVersion(VideoDbContentType itemType,
+                       int dbId,
+                       int idVideoVersion,
+                       VideoVersionItemType versionItemType,
+                       CFileItem& item);
+  void AddPrimaryVideoVersion(VideoDbContentType itemType,
+                              int dbId,
+                              int idVideoVersion,
+                              CFileItem& item);
+  void AddExtrasVideoVersion(VideoDbContentType itemType,
+                             int dbId,
+                             int idVideoVersion,
+                             CFileItem& item);
+  void RemoveVideoVersion(int dbId);
+  bool IsDefaultVideoVersion(int idFile);
+  bool GetVideoVersionTypes(VideoDbContentType idContent, CFileItemList& items);
+  void SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type);
+  void InitializeVideoVersionTypeTable();
+  void UpdateVideoVersionTypeTable();
+  bool GetVideoVersionsNav(const std::string& strBaseDir,
+                           CFileItemList& items,
+                           VideoDbContentType idContent = VideoDbContentType::UNKNOWN,
+                           const Filter& filter = Filter());
+  int GetVideoVersionInfo(const std::string& strFilenameAndPath,
+                          int& idFile,
+                          std::string& typeVideoVersion,
+                          int& idMedia,
+                          MediaType& mediaType,
+                          VideoVersionItemType& versionItemType);
+  int GetVideoVersionInfo(int idFile,
+                          std::string& typeVideoVersion,
+                          int& idMedia,
+                          MediaType& mediaType,
+                          VideoVersionItemType& versionItemType);
+
+  int GetMovieId(const std::string& strFilenameAndPath);
+  std::string GetMovieTitle(int idMovie);
+  void GetSameVideoItems(CFileItem& item, CFileItemList& items);
+  int GetFileIdByMovie(int idMovie);
+  std::string GetFileBasePathById(int idFile);
+  std::string GetFilenameAndPathById(int idFile);
+
 protected:
   int AddNewMovie(CVideoInfoTag& details);
   int AddNewMusicVideo(CVideoInfoTag& details);
 
-  int GetMovieId(const std::string& strFilenameAndPath);
   int GetMusicVideoId(const std::string& strFilenameAndPath);
 
   /*! \brief Get the id of this fileitem

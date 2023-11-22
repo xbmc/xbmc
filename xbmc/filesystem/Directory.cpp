@@ -305,6 +305,41 @@ bool CDirectory::GetDirectory(const CURL& url,
   return false;
 }
 
+bool CDirectory::EnumerateDirectory(const std::string& path,
+                                    DirectoryEnumerationCallback callback,
+                                    bool fileOnly /* = false */,
+                                    const std::string& mask /* = "" */,
+                                    int flags /* = DIR_FLAG_DEFAULTS */)
+{
+  CFileItemList items;
+
+  // get items in specified directory
+  if (!CDirectory::GetDirectory(path, items, mask, flags))
+    return false;
+
+  // process all files
+  for (const auto& item : items)
+  {
+    if (!item->m_bIsFolder)
+      callback(item);
+  }
+
+  // process all directories
+  for (const auto& item : items)
+  {
+    if (item->m_bIsFolder)
+    {
+      if (!fileOnly)
+        callback(item);
+
+      if (!EnumerateDirectory(item->GetPath(), callback, fileOnly, mask, flags))
+        return false;
+    }
+  }
+
+  return true;
+}
+
 bool CDirectory::Create(const std::string& strPath)
 {
   const CURL pathToUrl(strPath);

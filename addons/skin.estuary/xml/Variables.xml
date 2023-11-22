@@ -464,6 +464,7 @@
 	<variable name="ListWatchedIconVar">
 		<value condition="ListItem.IsRecording">windows/pvr/record.png</value>
 		<value condition="ListItem.IsCollection">overlays/set.png</value>
+		<value condition="ListItem.HasVideoVersions">overlays/versions.png</value>
 		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
 		<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
 		<value condition="ListItem.IsFolder + String.IsEmpty(Listitem.dbtype) + !String.IsEqual(ListItem.Overlay,OverlayWatched.png) + !ListItem.IsParentFolder">overlays/folder.png</value>
@@ -475,6 +476,7 @@
 		<value condition="ListItem.HasReminder">icons/pvr/timers/bell.png</value>
 		<value condition="ListItem.HasTimer">icons/pvr/timers/recording.png</value>
 		<value condition="ListItem.IsCollection">overlays/set.png</value>
+		<value condition="ListItem.HasVideoVersions">overlays/versions.png</value>
 		<value condition="ListItem.IsPlaying">overlays/watched/OverlayPlaying-List.png</value>
 		<value condition="ListItem.IsResumable">overlays/watched/resume.png</value>
 		<value condition="ListItem.HasArchive">windows/pvr/archive.png</value>
@@ -673,5 +675,20 @@
 	<variable name="ActiveVideoPlayerSubtitleLanguage">
 		<value condition="VideoPlayer.SubtitlesEnabled">[B]$INFO[VideoPlayer.SubtitlesLanguage][/B]</value>
 		<value>[B]$LOCALIZE[1223][/B]</value>
+	</variable>
+	<variable name="VideoVersionPosterVar">
+		<value condition="Control.HasFocus(50)">$INFO[Container(50).ListItem.Art(poster)]</value>
+		<value condition="Control.HasFocus(51)">$INFO[Container(51).ListItem.Art(poster)]</value>
+		<value>$INFO[Window(home).Property(poster)]</value>
+	</variable>
+	<variable name="VideoVersionThumbVar">
+		<value condition="Control.HasFocus(50)">$INFO[Container(50).ListItem.Art(thumb)]</value>
+		<value condition="Control.HasFocus(51)">$INFO[Container(51).ListItem.Art(thumb)]</value>
+		<value>$INFO[Window(home).Property(thumb)]</value>
+	</variable>
+	<variable name="VideoVersionFileVar">
+		<value condition="Control.HasFocus(50)">$INFO[Container(50).ListItem.FileNameAndPath]</value>
+	    <value condition="Control.HasFocus(51)">$INFO[Container(51).ListItem.FileNameAndPath]</value>
+		<value>$INFO[ListItem.FileNameAndPath]</value>
 	</variable>
 </includes>

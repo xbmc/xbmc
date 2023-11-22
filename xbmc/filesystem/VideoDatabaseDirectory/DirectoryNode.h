@@ -22,7 +22,7 @@ namespace XFILE
 
     typedef enum _NODE_TYPE
     {
-      NODE_TYPE_NONE=0,
+      NODE_TYPE_NONE = 0,
       NODE_TYPE_MOVIES_OVERVIEW,
       NODE_TYPE_TVSHOWS_OVERVIEW,
       NODE_TYPE_GENRE,
@@ -45,7 +45,8 @@ namespace XFILE
       NODE_TYPE_SETS,
       NODE_TYPE_COUNTRY,
       NODE_TYPE_TAGS,
-      NODE_TYPE_INPROGRESS_TVSHOWS
+      NODE_TYPE_INPROGRESS_TVSHOWS,
+      NODE_TYPE_VIDEOVERSIONS
     } NODE_TYPE;
 
     typedef struct {

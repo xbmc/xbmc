@@ -181,14 +181,16 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
       }
       break;
     case NODE_TYPE_TAGS:
-      {
-        AddSortMethod(SortByLabel, sortAttributes, 551, LABEL_MASKS("%T","", "%T",""));  // Title, empty | Title, empty
-        SetSortMethod(SortByLabel);
+    case NODE_TYPE_VIDEOVERSIONS:
+    {
+      AddSortMethod(SortByLabel, sortAttributes, 551,
+                    LABEL_MASKS("%T", "", "%T", "")); // Title, empty | Title, empty
+      SetSortMethod(SortByLabel);
 
-        const CViewState *viewState = CViewStateSettings::GetInstance().Get("videonavgenres");
-        SetViewAsControl(viewState->m_viewMode);
-        SetSortOrder(viewState->m_sortDescription.sortOrder);
-      }
+      const CViewState* viewState = CViewStateSettings::GetInstance().Get("videonavgenres");
+      SetViewAsControl(viewState->m_viewMode);
+      SetSortOrder(viewState->m_sortDescription.sortOrder);
+    }
       break;
     case NODE_TYPE_EPISODES:
       {

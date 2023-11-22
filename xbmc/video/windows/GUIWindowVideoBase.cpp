@@ -51,10 +51,13 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
+#include "video/VideoDbUrl.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/dialogs/GUIDialogVideoVersion.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 #include "view/GUIViewState.h"
@@ -212,6 +215,10 @@ bool CGUIWindowVideoBase::OnItemInfo(const CFileItem& fileItem)
   // "Videos/Video Add-ons" lists addons in the video window
   if (fileItem.HasAddonInfo())
     return CGUIDialogAddonInfo::ShowForItem(std::make_shared<CFileItem>(fileItem));
+
+  // Video version
+  if (fileItem.HasVideoInfoTag() && fileItem.GetVideoInfoTag()->m_type == MediaTypeVideoVersion)
+    return false;
 
   // Movie set
   if (fileItem.m_bIsFolder && fileItem.IsVideoDb() &&
@@ -523,6 +530,7 @@ bool CGUIWindowVideoBase::OnSelect(int iItem)
       !StringUtils::StartsWith(path, "newsmartplaylist://") &&
       !StringUtils::StartsWith(path, "newplaylist://") &&
       !StringUtils::StartsWith(path, "newtag://") &&
+      !StringUtils::StartsWith(path, "newvideoversion://") &&
       !StringUtils::StartsWith(path, "script://"))
     return OnFileAction(iItem, CVideoSelectActionProcessorBase::GetDefaultSelectAction(), "");
 
@@ -956,7 +964,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   CServiceBroker::GetPlaylistPlayer().Reset();
   CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_NONE);
 
-  const auto itemCopy = std::make_shared<CFileItem>(*pItem);
+  auto itemCopy = std::make_shared<CFileItem>(*pItem);
 
   if (pItem->IsVideoDb())
   {
@@ -970,7 +978,16 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopAsync();
 
-  CServiceBroker::GetPlaylistPlayer().Play(itemCopy, player);
+  //! @todo get rid of special handling for movie versions
+  if (itemCopy->GetVideoInfoTag()->m_type == MediaTypeMovie ||
+      itemCopy->GetVideoInfoTag()->m_type == MediaTypeVideoVersion)
+  {
+    CGUIDialogVideoVersion::PlayVideoVersion(
+        itemCopy, [player](const std::shared_ptr<CFileItem>& item)
+        { CServiceBroker::GetPlaylistPlayer().Play(item, player); });
+  }
+  else
+    CServiceBroker::GetPlaylistPlayer().Play(itemCopy, player);
 
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
@@ -1115,6 +1132,10 @@ bool CGUIWindowVideoBase::Update(const std::string &strDirectory, bool updateFil
   // might already be running from GetGroupedItems
   if (!m_thumbLoader.IsLoading())
     m_thumbLoader.Load(*m_vecItems);
+
+  UpdateVideoVersionItems();
+
+  UpdateVideoVersionItemsLabel(strDirectory);
 
   return true;
 }
@@ -1440,5 +1461,62 @@ void CGUIWindowVideoBase::OnAssignContent(const std::string &path)
   if (bScan)
   {
     CVideoLibraryQueue::GetInstance().ScanLibrary(path, true, true);
+  }
+}
+
+void CGUIWindowVideoBase::UpdateVideoVersionItems()
+{
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER))
+    return;
+
+  for (const auto& item : *m_vecItems)
+  {
+    if (item->m_bIsFolder || !item->HasVideoInfoTag() ||
+        item->GetVideoInfoTag()->m_idVideoVersion > 0)
+      continue;
+
+    MediaType type = item->GetVideoInfoTag()->m_type;
+    if (type == MediaTypeMovie)
+    {
+      if (item->GetVideoInfoTag()->m_hasVideoVersions)
+      {
+        CVideoDbUrl itemUrl;
+        if (!itemUrl.FromString(
+                StringUtils::Format("videodb://movies/videoversions/{}", VIDEO_VERSION_ID_ALL)))
+          return;
+
+        itemUrl.AddOption("mediaid", item->GetVideoInfoTag()->m_iDbId);
+
+        item->GetVideoInfoTag()->m_idVideoVersion = VIDEO_VERSION_ID_ALL;
+        item->SetPath(itemUrl.ToString());
+        item->m_bIsFolder = true;
+
+        item->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, true);
+      }
+    }
+  }
+}
+
+void CGUIWindowVideoBase::UpdateVideoVersionItemsLabel(const std::string& directory)
+{
+  CVideoDbUrl videoUrl;
+  if (videoUrl.FromString(directory) && videoUrl.HasOption("videoversionid"))
+  {
+    CVariant value;
+    if (videoUrl.GetOption("videoversionid", value))
+    {
+      const int idVideoVersion = value.asInteger(-1);
+      if (idVideoVersion == VIDEO_VERSION_ID_ALL && videoUrl.GetOption("mediaid", value))
+      {
+        int idMedia = value.asInteger(-1);
+        if (idMedia != -1)
+        {
+          m_vecItems->SetLabel(StringUtils::Format(
+              "{} {}", m_database.GetVideoItemTitle(m_vecItems->GetVideoContentType(), idMedia),
+              g_localizeStrings.Get(40000)));
+        }
+      }
+    }
   }
 }

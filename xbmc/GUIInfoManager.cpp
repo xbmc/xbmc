@@ -6900,6 +6900,20 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_VideoHeight `ListItem.VideoHeight`\endlink
 ///   }
+///   \table_row3{   <b>`ListItem.HasVideoVersions`</b>,
+///                  \anchor ListItem_HasVideoVersions
+///                  _boolean_,
+///     @return **True** when the selected item has multiple video versions.
+///     <p><hr>
+///     @skinning_v21 **[New Infolabel]** \link ListItem_HasVideoVersions `ListItem.HasVideoVersions`\endlink
+///   }
+///   \table_row3{   <b>`ListItem.IsVideoExtras`</b>,
+///                  \anchor ListItem_IsVideoExtras
+///                  _boolean_,
+///     @return **True** when the selected item is video extras.
+///     <p><hr>
+///     @skinning_v21 **[New Infolabel]** \link ListItem_IsVideoExtras `ListItem.IsVideoExtras`\endlink
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -7117,6 +7131,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isautoupdateable", LISTITEM_ISAUTOUPDATEABLE },
                                   { "hdrtype",          LISTITEM_VIDEO_HDR_TYPE },
                                   { "songvideourl",     LISTITEM_SONG_VIDEO_URL },
+                                  { "hasvideoversions", LISTITEM_HASVIDEOVERSIONS },
+                                  { "isvideoextras",    LISTITEM_ISVIDEOEXTRAS },
 };
 // clang-format on
 

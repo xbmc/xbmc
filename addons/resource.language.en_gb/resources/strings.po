@@ -23724,3 +23724,385 @@ msgstr ""
 msgctxt "#39197"
 msgid "If enabled, Dolby Vision profile 7 will be converted to profile 8.1, which is more commonly supported by devices. Enable if your device supports Dolby Vision, but has issues with some videos."
 msgstr ""
+
+# 40000 to 40800 are reserved for Video Versions feature
+
+#. Video versions
+#: xbmc/filesystem/VideoDatabaseDirectory.cpp
+#: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
+msgctxt "#40000"
+msgid "Versions"
+msgstr ""
+
+#. Manage video version menu
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
+msgctxt "#40001"
+msgid "Manage {0:s} version"
+msgstr ""
+
+#. Manage video version dialog title
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40002"
+msgid "Convert into an additional version of {0:s}"
+msgstr ""
+
+#. Video version selection dialog title
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40003"
+msgid "Select {0:s} version"
+msgstr ""
+
+#. New video version dialog button
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/windows/GUIWindowVideoNav.cpp
+msgctxt "#40004"
+msgid "New version..."
+msgstr ""
+
+#. Warning dialog title
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40005"
+msgid "Operation not supported"
+msgstr ""
+
+#. Warning dialog text
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40006"
+msgid "The selected {0:s} contains multiple versions. Cannot convert into an additional version of another one. Remove it from the library, rescan, and convert each version separately."
+msgstr ""
+
+#. Warning dialog text
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40007"
+msgid "The \"{0:s}\" version already exists!"
+msgstr ""
+
+#. Different video version found dialog title
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40008"
+msgid "Different {0:s} version found"
+msgstr ""
+
+#. Different video version found dialog text
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40009"
+msgid "Found a different version of {0:s} \"{1:s}\" ({2:s}). Would you like to convert it into an additional version of the original?"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#40010"
+msgid "video version"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#40011"
+msgid "video versions"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#40012"
+msgid "Video version"
+msgstr ""
+
+#: xbmc/media/MediaType.cpp
+msgctxt "#40013"
+msgid "Video versions"
+msgstr ""
+
+#. Add new video version dialog title
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40014"
+msgid "Add new {0:s} version"
+msgstr ""
+
+#. Add new video extras dialog title
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40015"
+msgid "Add new {0:s} extras"
+msgstr ""
+
+#. Add new video version dialog text
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40016"
+msgid "The selected video is already \"{0:s}\" version of current {1:s}."
+msgstr ""
+
+#. Add new video version dialog text
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40017"
+msgid "The selected video is \"{0:s}\" version of {1:s} \"{2:s}\". Would you like to remove this version and add it to current {3:s}?"
+msgstr ""
+
+#. Remove video version dialog title
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40018"
+msgid "Remove video version"
+msgstr ""
+
+#. Add new video version dialog text
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40019"
+msgid "Unable to remove default version \"{0:s}\" from {1:s} \"{2:s}\". Change the default version and try again."
+msgstr ""
+
+#. Remove video version dialog text
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40020"
+msgid "Are you sure to remove the video version \"{0:s}\"?"
+msgstr ""
+
+#. Convert video version menu
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40021"
+msgid "Convert {0:s} version"
+msgstr ""
+
+#. Manage video version dialog title
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40022"
+msgid "Manage {0:s}"
+msgstr ""
+
+#. Play video version dialog title
+#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+msgctxt "#40023"
+msgid "Play {0:s}"
+msgstr ""
+
+#. Play default video version setting
+#: system/settings/settings.xml
+msgctxt "#40200"
+msgid "Play default video version"
+msgstr ""
+
+#. Help for play default video version setting
+#: system/settings/settings.xml
+msgctxt "#40201"
+msgid "Select player action for video with multiple versions.[CR][Enabled] Automatically play the default video version without prompting.[CR][Disabled] Always display a dialogue to select the preferred video version."
+msgstr ""
+
+#. Ignore different video versions settting
+#: system/settings/settings.xml
+msgctxt "#40202"
+msgid "Ignore different video versions on scan"
+msgstr ""
+
+#. Help for Ignore different video versions settting
+#: system/settings/settings.xml
+msgctxt "#40203"
+msgid "Select scanner action for different video versions.[CR][Enabled] Add different video versions to library seperately without confirmation.[CR][Disabled] Prompt for converting different video versions into additional versions of the original."
+msgstr ""
+
+#. Ignore video extras settting
+#: system/settings/settings.xml
+msgctxt "#40204"
+msgid "Ignore video extras on scan"
+msgstr ""
+
+#. Help for ignore video extras settting
+#: system/settings/settings.xml
+msgctxt "#40205"
+msgid "Select scanner action for video extras in \"extras\" folder.[CR][Enabled] Scan video extras like regular videos.[CR][Disabled] Add video extras to library for associated video."
+msgstr ""
+
+#. Show video versions as folder settting
+#: system/settings/settings.xml
+msgctxt "#40206"
+msgid "Show video with multiple versions as folder"
+msgstr ""
+
+#. Help for show video versions as folder settting
+#: system/settings/settings.xml
+msgctxt "#40207"
+msgid "When enabled, video with multiple versions will be shown as folder in library, this folder can then be opened to display the individual video versions. When disabled, a video version dialog will be opened for the video."
+msgstr ""
+
+# Video versions
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40400"
+msgid "Standard Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40401"
+msgid "Extended Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40402"
+msgid "Unrated Version"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40403"
+msgid "Uncut Version"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40404"
+msgid "Remastered Version"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40405"
+msgid "4K"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40406"
+msgid "Theatrical Cut"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40407"
+msgid "Director's Cut"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40408"
+msgid "Special Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40409"
+msgid "Limited Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40410"
+msgid "Complete Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40411"
+msgid "The Final Cut"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40412"
+msgid "Super Duper Cut"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40413"
+msgid "Collector's Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40414"
+msgid "Ultimate Collector's Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40415"
+msgid "Criterion Collection Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40416"
+msgid "Fan Edit"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40417"
+msgid "Black and White Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40418"
+msgid "BluRay"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40419"
+msgid "WEB-DL"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40420"
+msgid "3D"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40421"
+msgid "8K"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40422"
+msgid "IMAX"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40423"
+msgid "UHD"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40424"
+msgid "FHD"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40425"
+msgid "HD"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40426"
+msgid "SD"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40427"
+msgid "DVD"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40428"
+msgid "VHS"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40429"
+msgid "VCD"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40430"
+msgid "REMUX"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40431"
+msgid "10th Anniversary Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40432"
+msgid "20th Anniversary Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40433"
+msgid "25th Anniversary Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40434"
+msgid "30th Anniversary Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40435"
+msgid "40th Anniversary Edition"
+msgstr ""
+
+#: xbmc/video/VideoDatabase.cpp
+msgctxt "#40436"
+msgid "50th Anniversary Edition"
+msgstr ""
+
+# 40000 to 40800 are reserved for Video Versions feature

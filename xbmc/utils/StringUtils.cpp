@@ -591,6 +591,39 @@ std::string& StringUtils::RemoveDuplicatedSpacesAndTabs(std::string& str)
   return str;
 }
 
+bool StringUtils::IsSpecialCharacter(char c)
+{
+  static constexpr std::string_view view(" .-_+,!'\"\t/\\*?#$%&@()[]{}");
+  if (std::any_of(view.begin(), view.end(), [c](char ch) { return ch == c; }))
+    return true;
+  else
+    return false;
+}
+
+std::string StringUtils::ReplaceSpecialCharactersWithSpace(const std::string& str)
+{
+  std::string result;
+  bool prevCharWasSpecial = false;
+
+  for (char c : str)
+  {
+    if (IsSpecialCharacter(c))
+    {
+      if (!prevCharWasSpecial)
+      {
+        result += ' ';
+      }
+      prevCharWasSpecial = true;
+    }
+    else
+    {
+      result += c;
+      prevCharWasSpecial = false;
+    }
+  }
+  return result;
+}
+
 int StringUtils::Replace(std::string &str, char oldChar, char newChar)
 {
   int replacedChars = 0;

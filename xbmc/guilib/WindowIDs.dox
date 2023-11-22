@@ -129,6 +129,7 @@ This page shows the window names, the window definition, the window ID and the s
 | MusicInformation        | WINDOW_DIALOG_MUSIC_INFO             | 12001     | DialogMusicInfo.xml                 |                                    |
 | OKDialog                | WINDOW_DIALOG_OK                     | 12002     | DialogConfirm.xml                   |                                    |
 | MovieInformation        | WINDOW_DIALOG_VIDEO_INFO             | 12003     | DialogVideoInfo.xml                 |                                    |
+| VideoVersion            | WINDOW_DIALOG_VIDEO_VERSION          | 12004     | DialogVideoVersion.xml              | @skinning_v21 **New window** VideoVersion |
 | FullscreenVideo         | WINDOW_FULLSCREEN_VIDEO              | 12005     | VideoFullScreen.xml                 |                                    |
 | Visualisation           | WINDOW_VISUALISATION                 | 12006     | MusicVisualisation.xml              |                                    |
 | Slideshow               | WINDOW_SLIDESHOW                     | 12007     | SlideShow.xml                       |                                    |

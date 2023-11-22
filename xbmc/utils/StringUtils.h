@@ -116,6 +116,16 @@ public:
   static std::string& TrimRight(std::string &str);
   static std::string& TrimRight(std::string &str, const char* const chars);
   static std::string& RemoveDuplicatedSpacesAndTabs(std::string& str);
+
+  /*! \brief Check if the character is a special character.
+
+   A special character is not an alphanumeric character, and is not useful to provide information
+
+   \param c Input character to be checked
+   */
+  static bool IsSpecialCharacter(char c);
+
+  static std::string ReplaceSpecialCharactersWithSpace(const std::string& str);
   static int Replace(std::string &str, char oldChar, char newChar);
   static int Replace(std::string &str, const std::string &oldStr, const std::string &newStr);
   static int Replace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr);

@@ -89,6 +89,7 @@ public:
   const std::string GetCast(bool bIncludeRole = false) const;
   bool HasStreamDetails() const;
   bool IsEmpty() const;
+  bool HasVideoVersions() const;
 
   const std::string& GetPath() const
   {
@@ -145,6 +146,7 @@ public:
   void SetSet(std::string set);
   void SetSetOverview(std::string setOverview);
   void SetTags(std::vector<std::string> tags);
+  void SetVideoVersion(std::string typeVideoVersion);
   void SetFile(std::string file);
   void SetPath(std::string path);
   void SetMPAARating(std::string mpaaRating);
@@ -205,6 +207,8 @@ public:
    */
   virtual bool SetResumePoint(const CBookmark &resumePoint);
 
+  bool IsVideoExtras() const;
+
   /*!
    * @brief Set this videos's resume point.
    * @param timeInSeconds the time of the resume point
@@ -238,6 +242,9 @@ public:
   };
   SetInfo m_set; //!< Assigned movie set
   std::vector<std::string> m_tags;
+  std::string m_typeVideoVersion;
+  int m_idVideoVersion{-1};
+  bool m_hasVideoVersions{false};
   std::string m_strFile;
   std::string m_strPath;
   std::string m_strMPAARating;
