@@ -23790,21 +23790,25 @@ msgctxt "#40009"
 msgid "Found a different version of {0:s} \"{1:s}\" ({2:s}). Would you like to convert it into an additional version of the original?"
 msgstr ""
 
+#. "video version" string in singular format
 #: xbmc/media/MediaType.cpp
 msgctxt "#40010"
 msgid "video version"
 msgstr ""
 
+#. "video version" string in plural format
 #: xbmc/media/MediaType.cpp
 msgctxt "#40011"
 msgid "video versions"
 msgstr ""
 
+#. "video version" string in singular capital format
 #: xbmc/media/MediaType.cpp
 msgctxt "#40012"
 msgid "Video version"
 msgstr ""
 
+#. "video version" string in plural capital format
 #: xbmc/media/MediaType.cpp
 msgctxt "#40013"
 msgid "Video versions"
@@ -23920,186 +23924,223 @@ msgstr ""
 
 # Video versions
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40400"
 msgid "Standard Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40401"
 msgid "Extended Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40402"
 msgid "Unrated Version"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40403"
 msgid "Uncut Version"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40404"
 msgid "Remastered Version"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40405"
 msgid "4K"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40406"
 msgid "Theatrical Cut"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40407"
 msgid "Director's Cut"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40408"
 msgid "Special Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40409"
 msgid "Limited Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40410"
 msgid "Complete Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40411"
 msgid "The Final Cut"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40412"
 msgid "Super Duper Cut"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40413"
 msgid "Collector's Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40414"
 msgid "Ultimate Collector's Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40415"
 msgid "Criterion Collection Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40416"
 msgid "Fan Edit"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40417"
 msgid "Black and White Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40418"
 msgid "BluRay"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40419"
 msgid "WEB-DL"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40420"
 msgid "3D"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40421"
 msgid "8K"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40422"
 msgid "IMAX"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40423"
 msgid "UHD"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40424"
 msgid "FHD"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40425"
 msgid "HD"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40426"
 msgid "SD"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40427"
 msgid "DVD"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40428"
 msgid "VHS"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40429"
 msgid "VCD"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40430"
 msgid "REMUX"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40431"
 msgid "10th Anniversary Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40432"
 msgid "20th Anniversary Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40433"
 msgid "25th Anniversary Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40434"
 msgid "30th Anniversary Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40435"
 msgid "40th Anniversary Edition"
 msgstr ""
 
+#. Name of a video version, like "Director's Cut"
 #: xbmc/video/VideoDatabase.cpp
 msgctxt "#40436"
 msgid "50th Anniversary Edition"

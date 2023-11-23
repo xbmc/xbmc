@@ -68,8 +68,8 @@ static constexpr unsigned int CONTROL_BUTTON_CHOOSE_ART = 27;
 static constexpr unsigned int CONTROL_LIST_PRIMARY_VERSION = 50;
 static constexpr unsigned int CONTROL_LIST_EXTRAS_VERSION = 51;
 
-CGUIDialogVideoVersion::CGUIDialogVideoVersion()
-  : CGUIDialog(WINDOW_DIALOG_VIDEO_VERSION, "DialogVideoVersion.xml"),
+CGUIDialogVideoVersion::CGUIDialogVideoVersion(int id)
+  : CGUIDialog(id, "DialogVideoVersion.xml"),
     m_videoItem(std::make_shared<CFileItem>()),
     m_primaryVideoVersionList(std::make_unique<CFileItemList>()),
     m_extrasVideoVersionList(std::make_unique<CFileItemList>()),
@@ -663,7 +663,7 @@ void CGUIDialogVideoVersion::PlayVideoVersion(const std::shared_ptr<CFileItem>& 
   // prompt to play selected video version
   CGUIDialogVideoVersion* dialog =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoVersion>(
-          WINDOW_DIALOG_VIDEO_VERSION);
+          WINDOW_DIALOG_VIDEO_VERSION_PLAY);
   if (!dialog)
     return;
 

@@ -22,7 +22,7 @@ class CVideoDatabase;
 class CGUIDialogVideoVersion : public CGUIDialog
 {
 public:
-  CGUIDialogVideoVersion(void);
+  CGUIDialogVideoVersion(int id);
   ~CGUIDialogVideoVersion(void) override;
   bool OnMessage(CGUIMessage& message) override;
   void SetVideoItem(const std::shared_ptr<CFileItem>& item, bool playMode);

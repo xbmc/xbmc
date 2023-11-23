@@ -134,6 +134,7 @@ This page shows the window names, the window definition, the window ID and the s
 | Visualisation           | WINDOW_VISUALISATION                 | 12006     | MusicVisualisation.xml              |                                    |
 | Slideshow               | WINDOW_SLIDESHOW                     | 12007     | SlideShow.xml                       |                                    |
 | DialogColorPicker       | WINDOW_DIALOG_COLOR_PICKER           | 12008     | DialogColorPicker.xml               |                                    |
+| VideoVersionPlay        | WINDOW_DIALOG_VIDEO_VERSION_PLAY     | 12009     | DialogVideoVersion.xml              | @skinning_v21 **New window** VideoVersionPlay |
 | Weather                 | WINDOW_WEATHER                       | 12600     | MyWeather.xml                       |                                    |
 | Screensaver             | WINDOW_SCREENSAVER                   | 12900     | none                                |                                    |
 | VideoOSD                | WINDOW_DIALOG_VIDEO_OSD              | 12901     | VideoOSD.xml                        |                                    |
