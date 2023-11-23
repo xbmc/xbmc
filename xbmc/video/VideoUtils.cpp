@@ -377,13 +377,15 @@ bool IsAutoPlayNextItem(const CFileItem& item)
 bool IsAutoPlayNextItem(const std::string& content)
 {
   int settingValue = CSettings::SETTING_AUTOPLAYNEXT_UNCATEGORIZED;
-  if (content == MediaTypeMovie)
+  if (content == MediaTypeMovie || content == MediaTypeMovies ||
+      content == MediaTypeVideoCollections)
     settingValue = CSettings::SETTING_AUTOPLAYNEXT_MOVIES;
-  else if (content == MediaTypeEpisode)
+  else if (content == MediaTypeEpisode || content == MediaTypeSeasons ||
+           content == MediaTypeEpisodes)
     settingValue = CSettings::SETTING_AUTOPLAYNEXT_EPISODES;
-  else if (content == MediaTypeMusicVideo)
+  else if (content == MediaTypeMusicVideo || content == MediaTypeMusicVideos)
     settingValue = CSettings::SETTING_AUTOPLAYNEXT_MUSICVIDEOS;
-  else if (content == MediaTypeTvShow)
+  else if (content == MediaTypeTvShow || content == MediaTypeTvShows)
     settingValue = CSettings::SETTING_AUTOPLAYNEXT_TVSHOWS;
 
   const auto setting = std::dynamic_pointer_cast<CSettingList>(
