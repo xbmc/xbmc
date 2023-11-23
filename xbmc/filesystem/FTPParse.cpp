@@ -44,20 +44,20 @@ time_t CFTPParse::getTime()
 
 namespace
 {
-  const std::string months = "janfebmaraprmayjunjulaugsepoctnovdec";
+const std::string months = "janfebmaraprmayjunjulaugsepoctnovdec";
 
-  // set time_struct.tm_mon from the 3-letter "abbreviated month name"
-  void setMonFromName(struct tm& time_struct, const std::string& name)
+// set time_struct.tm_mon from the 3-letter "abbreviated month name"
+void setMonFromName(struct tm& time_struct, const std::string& name)
+{
+  std::smatch match;
+  if (std::regex_search(months, match, std::regex(name, std::regex_constants::icase)))
   {
-    std::smatch match;
-    if (std::regex_search(months, match, std::regex(name, std::regex_constants::icase))) 
-    {
-        int pos = match.position();
-        if (name.size() == 3 && pos % 3 == 0)
-            time_struct.tm_mon = pos / 3;
-    }
+    int pos = match.position();
+    if (name.size() == 3 && pos % 3 == 0)
+      time_struct.tm_mon = pos / 3;
   }
 }
+} // namespace
 
 void CFTPParse::setTime(const std::string& str)
 {
@@ -68,10 +68,10 @@ void CFTPParse::setTime(const std::string& str)
   std::smatch match;
 
   // Regex to read Unix, NetWare and NetPresenz time format
-  if (std::regex_match(str, match, std::regex(
-    "^([A-Za-z]{3})" // month
-    "\\s+(\\d{1,2})" // day of month
-    "\\s+([:\\d]{4,5})$"))) // time of day or year
+  if (std::regex_match(str, match,
+                       std::regex("^([A-Za-z]{3})" // month
+                                  "\\s+(\\d{1,2})" // day of month
+                                  "\\s+([:\\d]{4,5})$"))) // time of day or year
   {
     auto month = match[1].str();
     auto day = match[2].str();
@@ -112,13 +112,13 @@ void CFTPParse::setTime(const std::string& str)
     }
   }
   // Regex to read MultiNet time format
-  else if (std::regex_match(str, match, std::regex(
-    "^(\\d{1,2})" // day of month
-    "-([A-Za-z]{3})" // month
-    "-(\\d{4})" // year
-    "\\s+(\\d{2})" // hour
-    ":(\\d{2})" // minute
-    "(:(\\d{2}))?$"))) // second
+  else if (std::regex_match(str, match,
+                            std::regex("^(\\d{1,2})" // day of month
+                                       "-([A-Za-z]{3})" // month
+                                       "-(\\d{4})" // year
+                                       "\\s+(\\d{2})" // hour
+                                       ":(\\d{2})" // minute
+                                       "(:(\\d{2}))?$"))) // second
   {
     auto day = match[1].str();
     auto month = match[2].str();
@@ -144,13 +144,13 @@ void CFTPParse::setTime(const std::string& str)
       time_struct.tm_sec = std::stol(second);
   }
   // Regex to read MSDOS time format
-  else if (std::regex_match(str, match, std::regex(
-    "^(\\d{2})" // month
-    "-(\\d{2})" // day of month
-    "-(\\d{2})" // year
-    "\\s+(\\d{2})" // hour
-    ":(\\d{2})" // minute
-    "([AP]M)$"))) // AM or PM
+  else if (std::regex_match(str, match,
+                            std::regex("^(\\d{2})" // month
+                                       "-(\\d{2})" // day of month
+                                       "-(\\d{2})" // year
+                                       "\\s+(\\d{2})" // hour
+                                       ":(\\d{2})" // minute
+                                       "([AP]M)$"))) // AM or PM
   {
     auto month = match[1].str();
     auto day = match[2].str();
@@ -189,15 +189,16 @@ int CFTPParse::FTPParse(const std::string& str)
   std::smatch match;
 
   // Regex for standard Unix listing formats
-  if (std::regex_match(str, match, std::regex(
-    "^([-bcdlps])" // type
-    "([-rwxXsStT]{9})" // permissions
-    "\\s+(\\d+)" // hard link count
-    "\\s+(\\w+)" // owner
-    "\\s+(\\w+)" // group
-    "\\s+(\\d+)" // size
-    "\\s+([A-Za-z]{3}\\s+\\d{1,2}\\s+[:\\d]{4,5})" // modification date
-    "\\s+(.+)$"))) // name
+  if (std::regex_match(
+          str, match,
+          std::regex("^([-bcdlps])" // type
+                     "([-rwxXsStT]{9})" // permissions
+                     "\\s+(\\d+)" // hard link count
+                     "\\s+(\\w+)" // owner
+                     "\\s+(\\w+)" // group
+                     "\\s+(\\d+)" // size
+                     "\\s+([A-Za-z]{3}\\s+\\d{1,2}\\s+[:\\d]{4,5})" // modification date
+                     "\\s+(.+)$"))) // name
   {
     auto type = match[1].str();
     auto permissions = match[2].str();
@@ -227,13 +228,13 @@ int CFTPParse::FTPParse(const std::string& str)
   }
   // Regex for NetWare listing formats
   // See http://www.novell.com/documentation/oes/ftp_enu/data/a3ep22p.html#fbhbaijf
-  if (std::regex_match(str, match, std::regex(
-    "^([-d])" // type
-    "\\s+(\\[[-SRWCIEMFA]{8}\\])" // rights
-    "\\s+(\\w+)" // owner
-    "\\s+(\\d+)" // size
-    "\\s+([A-Za-z]{3}\\s+\\d{1,2}\\s+[:\\d]{4,5})" // time
-    "\\s+(.+)$"))) // name
+  if (std::regex_match(str, match,
+                       std::regex("^([-d])" // type
+                                  "\\s+(\\[[-SRWCIEMFA]{8}\\])" // rights
+                                  "\\s+(\\w+)" // owner
+                                  "\\s+(\\d+)" // size
+                                  "\\s+([A-Za-z]{3}\\s+\\d{1,2}\\s+[:\\d]{4,5})" // time
+                                  "\\s+(.+)$"))) // name
   {
     auto type = match[1].str();
     auto permissions = match[2].str();
@@ -254,13 +255,14 @@ int CFTPParse::FTPParse(const std::string& str)
   // Regex for NetPresenz
   // See http://files.stairways.com/other/ftp-list-specs-info.txt
   // Here we will capture permissions and size if given
-  if (std::regex_match(str, match, std::regex(
-    "^([-dl])" // type
-    "([-rwx]{9}|)" // permissions
-    "\\s+(.*)" // stuff
-    "\\s+(\\d+|)" // size
-    "\\s+([A-Za-z]{3}\\s+\\d{1,2}\\s+[:\\d]{4,5})" // modification date
-    "\\s+(.+)$"))) // name
+  if (std::regex_match(
+          str, match,
+          std::regex("^([-dl])" // type
+                     "([-rwx]{9}|)" // permissions
+                     "\\s+(.*)" // stuff
+                     "\\s+(\\d+|)" // size
+                     "\\s+([A-Za-z]{3}\\s+\\d{1,2}\\s+[:\\d]{4,5})" // modification date
+                     "\\s+(.+)$"))) // name
   {
     auto type = match[1].str();
     auto permissions = match[2].str();
@@ -289,10 +291,10 @@ int CFTPParse::FTPParse(const std::string& str)
   // Regex for EPLF
   // See http://cr.yp.to/ftp/list/eplf.html
   // SAVE: "(/,|r,|s\\d+,|m\\d+,|i[\\d!#@$%^&*()]+(\\.[\\d!#@$%^&*()]+|),)+"
-  if (std::regex_match(str, match, std::regex(
-    "^\\+" // initial "plus" sign
-    "([^\\s]+)" // facts
-    "\\s(.+)$"))) // name
+  if (std::regex_match(str, match,
+                       std::regex("^\\+" // initial "plus" sign
+                                  "([^\\s]+)" // facts
+                                  "\\s(.+)$"))) // name
   {
     auto facts = match[1].str();
     m_name = match[2].str();
@@ -318,19 +320,20 @@ int CFTPParse::FTPParse(const std::string& str)
   // Regex for MultiNet
   // Best documentation found was
   // http://www-sld.slac.stanford.edu/SLDWWW/workbook/vms_files.html
-  if (std::regex_match(str, match, std::regex(
-    "^([^;]+)" // name
-    ";(\\d+)" // version
-    "\\s+([\\d/]+)" // file id
-    "\\s+(\\d{1,2}-[A-Za-z]{3}-\\d{4}\\s+\\d{2}:\\d{2}(:\\d{2})?)" // date
-    "\\s+\\[([^\\]]+)\\]" // owner,group
-    "\\s+\\(([^\\)]+)\\)$"))) // permissions
+  if (std::regex_match(
+          str, match,
+          std::regex("^([^;]+)" // name
+                     ";(\\d+)" // version
+                     "\\s+([\\d/]+)" // file id
+                     "\\s+(\\d{1,2}-[A-Za-z]{3}-\\d{4}\\s+\\d{2}:\\d{2}(:\\d{2})?)" // date
+                     "\\s+\\[([^\\]]+)\\]" // owner,group
+                     "\\s+\\(([^\\)]+)\\)$"))) // permissions
   {
     auto name = match[1].str();
     auto version = match[2].str();
     auto file_id = match[3].str();
     auto date = match[4].str();
-    // match[5] ignored 
+    // match[5] ignored
     auto owner = match[6].str();
     auto permissions = match[7].str();
 
@@ -349,10 +352,10 @@ int CFTPParse::FTPParse(const std::string& str)
     return 1;
   }
   // Regex for MSDOS
-  if (std::regex_match(str, match, std::regex(
-    "^(\\d{2}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}[AP]M)" // date
-    "\\s+(<DIR>|[\\d]+)" // dir or size
-    "\\s+(.+)$"))) // name
+  if (std::regex_match(str, match,
+                       std::regex("^(\\d{2}-\\d{2}-\\d{2}\\s+\\d{2}:\\d{2}[AP]M)" // date
+                                  "\\s+(<DIR>|[\\d]+)" // dir or size
+                                  "\\s+(.+)$"))) // name
   {
     auto date = match[1].str();
     auto size = match[2].str();
