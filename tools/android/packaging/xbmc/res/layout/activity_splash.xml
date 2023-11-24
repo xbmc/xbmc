@@ -11,7 +11,7 @@
         android:adjustViewBounds="true"
         android:layout_alignParentTop="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/splash" />
+        android:src="@drawable/applaunch_screen" />
 
     <RelativeLayout
         android:layout_width="wrap_content"

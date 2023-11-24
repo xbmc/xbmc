@@ -20,7 +20,7 @@ if(CORE_PLATFORM_NAME_LC STREQUAL tvos)
                                                   XCODE_ATTRIBUTE_CODE_SIGN_ENTITLEMENTS ${ENTITLEMENTS_OUT_PATH})
 
 else()
-  set(BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/media/splash.jpg
+  set(BUNDLE_RESOURCES ${CMAKE_SOURCE_DIR}/media/applaunch_screen.png
                        ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon29x29.png
                        ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon29x29@2x.png
                        ${CMAKE_SOURCE_DIR}/tools/darwin/packaging/media/ios/rounded/AppIcon40x40.png
