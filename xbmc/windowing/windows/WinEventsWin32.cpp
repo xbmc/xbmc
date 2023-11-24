@@ -72,8 +72,6 @@ int g_sizeMoveHight = 0;
 int g_sizeMoveX = -10000;
 int g_sizeMoveY = -10000;
 
-int XBMC_TranslateUNICODE = 1;
-
 int CWinEventsWin32::m_originalZoomDistance = 0;
 Pointer CWinEventsWin32::m_touchPointer;
 CGenericTouchSwipeDetector* CWinEventsWin32::m_touchSwipeDetector = nullptr;
@@ -173,7 +171,7 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
     return keysym;
   }
 
-  if (pressed && XBMC_TranslateUNICODE)
+  if (pressed)
   {
     std::array<uint16_t, 2> wchars;
 
