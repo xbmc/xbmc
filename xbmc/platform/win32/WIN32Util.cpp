@@ -839,7 +839,7 @@ extern "C" {
 
       case 'k':  /* The hour (24-hour clock representation). */
         LEGAL_ALT(0);
-        /* FALLTHROUGH */
+        [[fallthrough]];
       case 'H':
         bp = conv_num(bp, &tm->tm_hour, 0, 23);
         LEGAL_ALT(ALT_O);
@@ -847,7 +847,7 @@ extern "C" {
 
       case 'l':  /* The hour (12-hour clock representation). */
         LEGAL_ALT(0);
-        /* FALLTHROUGH */
+        [[fallthrough]];
       case 'I':
         bp = conv_num(bp, &tm->tm_hour, 1, 12);
         if (tm->tm_hour == 12)
