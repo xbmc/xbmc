@@ -33,16 +33,44 @@ LONG WINAPI CreateMiniDump(EXCEPTION_POINTERS* pEp)
   return pEp->ExceptionRecord->ExceptionCode;
 }
 
+static bool isConsoleAttached{false};
+
+/*!
+ * \brief Basic error reporting before the log subsystem is initialized
+ *
+ * The message is formatted using printf and output to debugger and cmd.exe, as applicable.
+ * 
+ * \param[in] format printf-style format string
+ * \param[in] ... optional parameters for the format string.
+ */
+template<typename... Args>
+static void LogError(const wchar_t* format, Args&&... args)
+{
+  const int count = _snwprintf(nullptr, 0, format, args...);
+  // terminating null character not included in count
+  auto buf = std::make_unique<wchar_t[]>(count + 1);
+  swprintf(buf.get(), format, args...);
+
+  OutputDebugString(buf.get());
+
+  if (!isConsoleAttached && AttachConsole(ATTACH_PARENT_PROCESS))
+  {
+    (void)freopen("CONOUT$", "w", stdout);
+    wprintf(L"\n");
+    isConsoleAttached = true;
+  }
+  wprintf(buf.get());
+}
+
 //-----------------------------------------------------------------------------
 // Name: WinMain()
 // Desc: The application's entry point
 //-----------------------------------------------------------------------------
-INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
+_Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
 {
   // parse command line parameters
   int argc = 0;
   LPWSTR* argvW = CommandLineToArgvW(GetCommandLineW(), &argc);
-
   char** argv = new char*[argc];
 
   for (int i = 0; i < argc; ++i)
@@ -99,11 +127,21 @@ INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT)
   }
 
   //Initialize COM
-  CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+  HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+  if (hr != S_OK)
+  {
+    LogError(L"unable to initialize COM, error %ld\n", hr);
+    return -2;
+  }
 
   // Initialise Winsock
   WSADATA wd;
-  WSAStartup(MAKEWORD(2, 2), &wd);
+  int rc = WSAStartup(MAKEWORD(2, 2), &wd);
+  if (rc != 0)
+  {
+    LogError(L"unable to initialize Windows Sockets, error %i\n", rc);
+    return -3;
+  }
 
   // use 1 ms timer precision - like SDL initialization used to do
   timeBeginPeriod(1);
