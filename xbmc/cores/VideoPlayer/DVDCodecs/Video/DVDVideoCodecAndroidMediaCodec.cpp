@@ -498,6 +498,10 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
       m_mime = "video/hevc";
       m_formatname = "amc-hevc";
 
+      const auto settings = CServiceBroker::GetSettingsComponent()->GetSettings();
+      const bool convertDovi =
+          (settings) ? settings->GetBool(CSettings::SETTING_VIDEOPLAYER_CONVERTDOVI) : false;
+
       bool isDvhe = (m_hints.codec_tag == MKTAG('d', 'v', 'h', 'e'));
       bool isDvh1 = (m_hints.codec_tag == MKTAG('d', 'v', 'h', '1'));
 
@@ -557,6 +561,12 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
                 profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDth;
                 break;
               case 7:
+                // set profile 8 when converting
+                if (convertDovi && CJNIBase::GetSDKVersion() >= 27)
+                  profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheSt;
+
+                // Profile 7 is not commonly supported. Not setting the profile here
+                // allows to pick the first available Dolby Vision codec.
                 // profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDtb;
                 break;
               case 8:
@@ -587,9 +597,6 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
         // Only set for profile 7, container hint allows to skip parsing unnecessarily
         if (m_bitstream && m_hints.dovi.dv_profile == 7)
         {
-          bool convertDovi = CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-              CSettings::SETTING_VIDEOPLAYER_CONVERTDOVI);
-
           CLog::Log(LOGDEBUG,
                     "CDVDVideoCodecAndroidMediaCodec::Open Dolby Vision compatibility mode "
                     "enabled: {}",
