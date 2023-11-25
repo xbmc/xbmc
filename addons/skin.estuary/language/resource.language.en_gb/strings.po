@@ -308,15 +308,7 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr ""
 
-#: /xml/GameOSD.xml
-msgctxt "#31059"
-msgid "Select + X"
-msgstr ""
-
-#: /xml/GameOSD.xml
-msgctxt "#31060"
-msgid "Select + Start"
-msgstr ""
+#empty strings from id 31059 to 31060
 
 #: /xml/SkinSettings.xml
 msgctxt "#31061"
