@@ -57,8 +57,8 @@ bool CXBMCTinyXML2::SaveFile(const std::string& filename) const
   {
     tinyxml2::XMLPrinter printer;
     Accept(&printer);
-    bool suc =
-        file.Write(printer.CStr(), printer.CStrSize()) == static_cast<ssize_t>(printer.CStrSize());
+    const ssize_t sizeToWrite = printer.CStrSize() - 1; // strip trailing '\0'
+    bool suc = file.Write(printer.CStr(), sizeToWrite) == sizeToWrite;
     if (suc)
       file.Flush();
 
