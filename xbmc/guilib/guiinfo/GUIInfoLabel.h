@@ -92,6 +92,16 @@ public:
    */
   static std::string ReplaceAddonStrings(std::string &&label);
 
+  /*!
+   * \brief Replaces instances of $FEATURE[feature name, controller ID] with
+   *        the appropriate localized controller string
+   *
+   * \param label The text to replace
+   *
+   * \return text with any controller strings filled in
+   */
+  static std::string ReplaceControllerStrings(std::string&& label);
+
   typedef std::function<std::string(const std::string&)> StringReplacerFunc;
 
   /*!

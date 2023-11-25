@@ -204,7 +204,7 @@
 							<item>
 								<description>Pause / Resume button</description>
 								<label>$LOCALIZE[35224]</label>
-								<label2>$LOCALIZE[31059]</label2>
+								<label2>$FEATURE[select,game.controller.snes] + $FEATURE[x,game.controller.default]</label2>
 								<icon>osd/fullscreen/buttons/play.png</icon>
 								<onclick>Play</onclick>
 							</item>
@@ -229,7 +229,7 @@
 							<item>
 								<description>Stop button</description>
 								<label>$LOCALIZE[35222]</label>
-								<label2>$LOCALIZE[31060]</label2>
+								<label2>$FEATURE[select,game.controller.snes] + $FEATURE[start,game.controller.default]</label2>
 								<icon>osd/fullscreen/buttons/stop.png</icon>
 								<onclick>Stop</onclick>
 							</item>

@@ -10,7 +10,9 @@
 
 #include "FileItem.h"
 #include "GUIInfoManager.h"
+#include "ServiceBroker.h"
 #include "addons/Skin.h"
+#include "games/GameServices.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIListItem.h"
 #include "guilib/LocalizeStrings.h"
@@ -230,6 +232,16 @@ std::string AddonReplacer(const std::string &str)
   return g_localizeStrings.GetAddonString(addonid, stringid);
 }
 
+std::string ControllerFeatureReplacer(const std::string& str)
+{
+  // assumes "feature name,controller ID"
+  const size_t length = str.find(',');
+  const std::string featureName = str.substr(0, length);
+  const std::string controllerId = str.substr(length + 1);
+
+  return CServiceBroker::GetGameServices().TranslateFeature(controllerId, featureName);
+}
+
 std::string NumberReplacer(const std::string &str)
 {
   return str;
@@ -246,6 +258,12 @@ std::string CGUIInfoLabel::ReplaceLocalize(const std::string &label)
 std::string CGUIInfoLabel::ReplaceAddonStrings(std::string &&label)
 {
   ReplaceSpecialKeywordReferences(label, "ADDON", AddonReplacer);
+  return std::move(label);
+}
+
+std::string CGUIInfoLabel::ReplaceControllerStrings(std::string&& label)
+{
+  ReplaceSpecialKeywordReferences(label, "FEATURE", ControllerFeatureReplacer);
   return std::move(label);
 }
 
@@ -272,7 +290,9 @@ void CGUIInfoLabel::Parse(const std::string& label,
   std::string work = ReplaceLocalize(label);
   // Step 2: Replace all $ADDON[id number] with the real string
   work = ReplaceAddonStrings(std::move(work));
-  // Step 3: Find all $INFO[info,prefix,postfix] blocks
+  // Step 3: Replace all game controller strings with the real string
+  work = ReplaceControllerStrings(std::move(work));
+  // Step 4: Find all $INFO[info,prefix,postfix] blocks
   EINFOFORMAT format;
   do
   {

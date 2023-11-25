@@ -17,6 +17,12 @@
 using namespace KODI;
 using namespace GAME;
 
+namespace
+{
+constexpr char HELP_COMBO[] =
+    "[B]$FEATURE[select,game.controller.snes] + $FEATURE[x,game.controller.default][/B]";
+}
+
 const int CDialogGameOSDHelp::CONTROL_ID_HELP_TEXT = 1101;
 
 CDialogGameOSDHelp::CDialogGameOSDHelp(CDialogGameOSD& dialog) : m_dialog(dialog)
@@ -26,9 +32,8 @@ CDialogGameOSDHelp::CDialogGameOSDHelp(CDialogGameOSD& dialog) : m_dialog(dialog
 void CDialogGameOSDHelp::OnInitWindow()
 {
   // Set help text
-  //! @todo Define Select + X combo elsewhere
   // "Press {0:s} to open the menu."
-  std::string helpText = StringUtils::Format(g_localizeStrings.Get(35235), "Select + X");
+  std::string helpText = StringUtils::Format(g_localizeStrings.Get(35235), HELP_COMBO);
 
   CGUIMessage msg(GUI_MSG_LABEL_SET, WINDOW_DIALOG_GAME_OSD, CONTROL_ID_HELP_TEXT);
   msg.SetLabel(helpText);

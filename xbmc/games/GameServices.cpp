@@ -57,6 +57,12 @@ ControllerVector CGameServices::GetControllers()
   return m_controllerManager.GetControllers();
 }
 
+std::string CGameServices::TranslateFeature(const std::string& controllerId,
+                                            const std::string& featureName)
+{
+  return m_controllerManager.TranslateFeature(controllerId, featureName);
+}
+
 std::string CGameServices::GetSavestatesFolder() const
 {
   return m_profileManager.GetSavestatesFolder();

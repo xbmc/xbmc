@@ -16,11 +16,23 @@ namespace KODI
 namespace GAME
 {
 class CController;
+
+/*!
+ * \ingroup games
+ *
+ * \brief Smart pointer to a game controller (\ref CController)
+ */
 using ControllerPtr = std::shared_ptr<CController>;
+
+/*!
+ * \ingroup games
+ *
+ * \brief Vector of smart pointers to a game controller (\ref CController)
+ */
 using ControllerVector = std::vector<ControllerPtr>;
 
 /*!
- * \ingroup game
+ * \ingroup games
  *
  * \brief Type of input provided by a hardware or controller port
  */
