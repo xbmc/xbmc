@@ -718,7 +718,7 @@ void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool need
   // reset our origin and camera
   while (!m_origins.empty())
     m_origins.pop();
-  m_origins.emplace(0, 0);
+  m_origins.emplace(.0f, .0f);
   while (!m_cameras.empty())
     m_cameras.pop();
   m_cameras.emplace(0.5f * m_iScreenWidth, 0.5f * m_iScreenHeight);
