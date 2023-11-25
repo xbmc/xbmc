@@ -33,4 +33,6 @@
       ${api}.flip(); // prepare the buffer for reading from
     }
     else
+    {
       throw XBMCAddon::WrongTypeException("argument \"%s\" for \"%s\" must be a string, bytes or a bytearray", "${api}", "${method.@name}");
+    }
