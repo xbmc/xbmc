@@ -13,16 +13,6 @@
 
 #include <gtest/gtest.h>
 
-namespace
-{
-std::unique_ptr<ImageMetadata> ExtractMetadata(const std::string& path)
-{
-  CImageMetadataParser metadataParser;
-  return metadataParser.ExtractMetadata(path);
-}
-
-} // namespace
-
 class TestMetadataExtraction : public ::testing::Test
 {
 protected:
@@ -32,7 +22,7 @@ protected:
 TEST_F(TestMetadataExtraction, TestGPSImage)
 {
   auto path = XBMC_REF_FILE_PATH("xbmc/pictures/metadata/test/testdata/exifgps.jpg");
-  std::unique_ptr<ImageMetadata> metadata = ExtractMetadata(path);
+  std::unique_ptr<ImageMetadata> metadata = CImageMetadataParser::ExtractMetadata(path);
   // Extract GPS tags
   EXPECT_EQ(metadata->exifInfo.GpsLat, "49° 5' 47.469\" N");
   EXPECT_EQ(metadata->exifInfo.GpsLong, "9° 23' 14.630\" E");
@@ -63,7 +53,7 @@ TEST_F(TestMetadataExtraction, TestGPSImage)
 TEST_F(TestMetadataExtraction, TestIPTC)
 {
   auto path = XBMC_REF_FILE_PATH("xbmc/pictures/metadata/test/testdata/iptc.jpg");
-  std::unique_ptr<ImageMetadata> metadata = ExtractMetadata(path);
+  std::unique_ptr<ImageMetadata> metadata = CImageMetadataParser::ExtractMetadata(path);
   // Check the IPTC tags of this image
   EXPECT_TRUE(metadata->iptcInfo.Keywords.empty());
   EXPECT_EQ(metadata->iptcInfo.RecordVersion, "4");

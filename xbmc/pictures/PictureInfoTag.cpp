@@ -62,8 +62,7 @@ bool CPictureInfoTag::Load(const std::string &path)
   // Load by Kodi's included own way
   if (!m_isLoaded)
   {
-    CImageMetadataParser metadataParser;
-    std::unique_ptr<ImageMetadata> metadata = metadataParser.ExtractMetadata(path);
+    std::unique_ptr<ImageMetadata> metadata = CImageMetadataParser::ExtractMetadata(path);
     if (metadata)
     {
       m_imageMetadata = *(metadata.release());

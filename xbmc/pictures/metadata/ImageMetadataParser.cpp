@@ -72,13 +72,15 @@ std::unique_ptr<ImageMetadata> CImageMetadataParser::ExtractMetadata(const std::
   auto image = Exiv2::ImageFactory::open(outputBuffer.data(), readbytes);
   image->readMetadata();
 
+  CImageMetadataParser parser;
+
   // extract metadata
-  ExtractCommonMetadata(image);
+  parser.ExtractCommonMetadata(image);
 
-  ExtractExif(image->exifData());
-  ExtractIPTC(image->iptcData());
+  parser.ExtractExif(image->exifData());
+  parser.ExtractIPTC(image->iptcData());
 
-  return std::move(m_imageMetadata);
+  return std::move(parser.m_imageMetadata);
 }
 
 void CImageMetadataParser::ExtractCommonMetadata(std::unique_ptr<Exiv2::Image>& image)

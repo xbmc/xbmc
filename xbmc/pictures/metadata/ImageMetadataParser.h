@@ -18,12 +18,12 @@
 class CImageMetadataParser
 {
 public:
-  CImageMetadataParser();
   ~CImageMetadataParser() = default;
 
-  std::unique_ptr<ImageMetadata> ExtractMetadata(const std::string& picFileName);
+  static std::unique_ptr<ImageMetadata> ExtractMetadata(const std::string& picFileName);
 
 private:
+  CImageMetadataParser();
   void ExtractCommonMetadata(std::unique_ptr<Exiv2::Image>& image);
   void ExtractExif(Exiv2::ExifData& exifData);
   void ExtractIPTC(Exiv2::IptcData& iptcData);
