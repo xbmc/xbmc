@@ -65,8 +65,8 @@ CGUIDialogVideoVersion::CGUIDialogVideoVersion()
     m_videoItem(std::make_shared<CFileItem>()),
     m_primaryVideoVersionList(std::make_unique<CFileItemList>()),
     m_extrasVideoVersionList(std::make_unique<CFileItemList>()),
-    m_defaultVideoVersion(std::make_unique<CFileItem>()),
-    m_selectedVideoVersion(std::make_unique<CFileItem>())
+    m_defaultVideoVersion(std::make_shared<CFileItem>()),
+    m_selectedVideoVersion(std::make_shared<CFileItem>())
 {
   m_loadType = KEEP_IN_MEMORY;
 
@@ -99,7 +99,8 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
           if (item < 0 || item >= m_primaryVideoVersionList->Size())
             break;
 
-          *m_selectedVideoVersion = *m_primaryVideoVersionList->Get(item);
+          m_selectedVideoVersion =
+              GetVideoVersion(m_primaryVideoVersionList->Get(item)->GetVideoInfoTag()->m_iDbId);
 
           if (m_selectedVideoVersion->GetVideoInfoTag()->m_iDbId ==
               m_defaultVideoVersion->GetVideoInfoTag()->m_iDbId)
@@ -129,7 +130,8 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
           if (item < 0 || item >= m_extrasVideoVersionList->Size())
             break;
 
-          *m_selectedVideoVersion = *m_extrasVideoVersionList->Get(item).get();
+          m_selectedVideoVersion =
+              GetVideoVersion(m_extrasVideoVersionList->Get(item)->GetVideoInfoTag()->m_iDbId);
 
           CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
 
@@ -219,7 +221,7 @@ void CGUIDialogVideoVersion::ClearVideoVersionList()
   m_extrasVideoVersionList->Clear();
 }
 
-void CGUIDialogVideoVersion::RefreshVideoVersionList()
+void CGUIDialogVideoVersion::Refresh()
 {
   // clear current version list
   ClearVideoVersionList();
@@ -231,7 +233,7 @@ void CGUIDialogVideoVersion::RefreshVideoVersionList()
   // get primary version list
   m_database.GetVideoVersions(itemType, dbId, *m_primaryVideoVersionList,
                               VideoVersionItemType::PRIMARY);
-  m_primaryVideoVersionList->SetContent(CMediaTypes::ToPlural(mediaType));
+  m_primaryVideoVersionList->SetContent(CMediaTypes::ToPlural(MediaTypeVideoVersion));
 
   // refresh primary version list
   CGUIMessage msg1(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_PRIMARY_VERSION, 0, 0,
@@ -241,15 +243,27 @@ void CGUIDialogVideoVersion::RefreshVideoVersionList()
   // get extras version list
   m_database.GetVideoVersions(itemType, dbId, *m_extrasVideoVersionList,
                               VideoVersionItemType::EXTRAS);
-  m_extrasVideoVersionList->SetContent(CMediaTypes::ToPlural(mediaType));
+  m_extrasVideoVersionList->SetContent(CMediaTypes::ToPlural(MediaTypeVideoVersion));
 
   // refresh extras version list
   CGUIMessage msg2(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_EXTRAS_VERSION, 0, 0,
                    m_extrasVideoVersionList.get());
   OnMessage(msg2);
 
-  // update default video version
-  m_database.GetDefaultVideoVersion(itemType, dbId, *m_selectedVideoVersion.get());
+  // update our default video version
+  UpdateDefaultVideoVersion();
+
+  // update our selected video version
+  UpdateSelectedVideoVersion();
+
+  // load artwork
+  CVideoThumbLoader loader;
+
+  for (auto& item : *m_primaryVideoVersionList)
+    loader.LoadItem(item.get());
+
+  for (auto& item : *m_extrasVideoVersionList)
+    loader.LoadItem(item.get());
 }
 
 void CGUIDialogVideoVersion::SetVideoItem(const std::shared_ptr<CFileItem>& item)
@@ -263,30 +277,10 @@ void CGUIDialogVideoVersion::SetVideoItem(const std::shared_ptr<CFileItem>& item
 
   m_videoItem = item;
 
-  ClearVideoVersionList();
+  Refresh();
 
-  const int dbId = item->GetVideoInfoTag()->m_iDbId;
-  MediaType mediaType = item->GetVideoInfoTag()->m_type;
-  VideoDbContentType itemType = item->GetVideoContentType();
-
-  m_database.GetVideoVersions(itemType, dbId, *m_primaryVideoVersionList,
-                              VideoVersionItemType::PRIMARY);
-  m_primaryVideoVersionList->SetContent(CMediaTypes::ToPlural(mediaType));
-
-  m_database.GetVideoVersions(itemType, dbId, *m_extrasVideoVersionList,
-                              VideoVersionItemType::EXTRAS);
-  m_extrasVideoVersionList->SetContent(CMediaTypes::ToPlural(mediaType));
-
-  m_database.GetDefaultVideoVersion(itemType, dbId, *m_defaultVideoVersion);
-  m_database.GetDefaultVideoVersion(itemType, dbId, *m_selectedVideoVersion);
-
-  CVideoThumbLoader loader;
-
-  for (auto& item : *m_primaryVideoVersionList)
-    loader.LoadItem(item.get());
-
-  for (auto& item : *m_extrasVideoVersionList)
-    loader.LoadItem(item.get());
+  // select the default video version
+  m_selectedVideoVersion = m_defaultVideoVersion;
 }
 
 void CGUIDialogVideoVersion::CloseAll()
@@ -376,13 +370,10 @@ void CGUIDialogVideoVersion::Remove()
   m_database.RemoveVideoVersion(m_selectedVideoVersion->GetVideoInfoTag()->m_iDbId);
 
   // refresh the video version list
-  RefreshVideoVersionList();
+  Refresh();
 
   // select the default video version
-  const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
-  VideoDbContentType itemType = m_videoItem->GetVideoContentType();
-
-  m_database.GetDefaultVideoVersion(itemType, dbId, *m_selectedVideoVersion.get());
+  m_selectedVideoVersion = m_defaultVideoVersion;
 
   CONTROL_DISABLE(CONTROL_BUTTON_REMOVE);
   CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
@@ -394,37 +385,29 @@ void CGUIDialogVideoVersion::Rename()
   if (idVideoVersion != -1)
   {
     m_database.SetVideoVersion(m_selectedVideoVersion->GetVideoInfoTag()->m_iDbId, idVideoVersion);
-  }
 
-  // refresh the video version list
-  RefreshVideoVersionList();
+    Refresh();
+  }
 }
 
 void CGUIDialogVideoVersion::SetDefault()
 {
   // set the selected video version as default
-  SetDefaultVideoVersion(*m_selectedVideoVersion.get());
-
-  const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
-  VideoDbContentType itemType = m_videoItem->GetVideoContentType();
+  SetDefaultVideoVersion(m_selectedVideoVersion);
 
   // update our default video version
-  m_database.GetDefaultVideoVersion(itemType, dbId, *m_defaultVideoVersion.get());
+  UpdateDefaultVideoVersion();
 
   CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
 }
 
-void CGUIDialogVideoVersion::SetDefaultVideoVersion(CFileItem& version)
+void CGUIDialogVideoVersion::SetDefaultVideoVersion(const std::shared_ptr<CFileItem>& version)
 {
   const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
   VideoDbContentType itemType = m_videoItem->GetVideoContentType();
 
   // set the specified video version as default
-  m_database.SetDefaultVideoVersion(itemType, dbId, version.GetVideoInfoTag()->m_iDbId);
-
-  // update the video item
-  m_videoItem->SetPath(version.GetPath());
-  m_videoItem->SetDynPath(version.GetPath());
+  m_database.SetDefaultVideoVersion(itemType, dbId, version->GetVideoInfoTag()->m_iDbId);
 
   // update video details since we changed the video file for the item
   m_database.GetDetailsByTypeAndId(*m_videoItem, itemType, dbId);
@@ -437,8 +420,7 @@ void CGUIDialogVideoVersion::SetDefaultVideoVersion(CFileItem& version)
 
 void CGUIDialogVideoVersion::ChooseArt()
 {
-  if (!CGUIDialogVideoInfo::ChooseAndManageVideoItemArtwork(
-          std::make_shared<CFileItem>(*m_selectedVideoVersion)))
+  if (!CGUIDialogVideoInfo::ChooseAndManageVideoItemArtwork(m_selectedVideoVersion))
     return;
 
   // update the thumbnail
@@ -452,6 +434,9 @@ void CGUIDialogVideoVersion::ChooseArt()
 
   CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
   CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+
+  // refresh the video version list
+  Refresh();
 }
 
 void CGUIDialogVideoVersion::AddVersion()
@@ -580,7 +565,7 @@ void CGUIDialogVideoVersion::AddVideoVersion(bool primary)
     }
 
     // refresh the video version list
-    RefreshVideoVersionList();
+    Refresh();
   }
 }
 
@@ -609,7 +594,37 @@ std::tuple<int, std::string> CGUIDialogVideoVersion::NewVideoVersion()
 
 void CGUIDialogVideoVersion::SetSelectedVideoVersion(const std::shared_ptr<CFileItem>& version)
 {
-  m_selectedVideoVersion = std::make_unique<CFileItem>(*version);
+  m_selectedVideoVersion = version;
+}
+
+std::shared_ptr<CFileItem> CGUIDialogVideoVersion::GetVideoVersion(int dbId) const
+{
+  auto it = std::find_if(m_primaryVideoVersionList->begin(), m_primaryVideoVersionList->end(),
+                         [dbId](const std::shared_ptr<CFileItem>& version)
+                         { return dbId == version->GetVideoInfoTag()->m_iDbId; });
+
+  if (it != m_primaryVideoVersionList->end())
+    return *it;
+
+  it = std::find_if(m_extrasVideoVersionList->begin(), m_extrasVideoVersionList->end(),
+                    [dbId](const std::shared_ptr<CFileItem>& version)
+                    { return dbId == version->GetVideoInfoTag()->m_iDbId; });
+
+  if (it != m_extrasVideoVersionList->end())
+    return *it;
+
+  return {};
+}
+
+void CGUIDialogVideoVersion::UpdateDefaultVideoVersion()
+{
+  m_defaultVideoVersion = GetVideoVersion(m_database.GetDefaultVideoVersionId(
+      m_videoItem->GetVideoContentType(), m_videoItem->GetVideoInfoTag()->m_iDbId));
+}
+
+void CGUIDialogVideoVersion::UpdateSelectedVideoVersion()
+{
+  m_selectedVideoVersion = GetVideoVersion(m_selectedVideoVersion->GetVideoInfoTag()->m_iDbId);
 }
 
 void CGUIDialogVideoVersion::ManageVideoVersion(const std::shared_ptr<CFileItem>& item)
