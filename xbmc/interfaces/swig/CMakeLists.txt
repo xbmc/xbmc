@@ -45,7 +45,7 @@ set(INPUTS AddonModuleXbmcaddon.i
            AddonModuleXbmcwsgi.i)
 
 set(GROOVY_DIR ${CMAKE_SOURCE_DIR}/tools/codegenerator/groovy)
-set(GROOVY_VER 4.0.6)
+set(GROOVY_VER 4.0.15)
 set(COMMONS_LANG_VER 3.12.0)
 set(COMMONS_TEXT_VER 1.10.0)
 
