@@ -72,8 +72,6 @@ int g_sizeMoveHight = 0;
 int g_sizeMoveX = -10000;
 int g_sizeMoveY = -10000;
 
-int XBMC_TranslateUNICODE = 1;
-
 int CWinEventsWin32::m_originalZoomDistance = 0;
 Pointer CWinEventsWin32::m_touchPointer;
 CGenericTouchSwipeDetector* CWinEventsWin32::m_touchSwipeDetector = nullptr;
@@ -167,9 +165,13 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
   }
 
   // Attempt to convert the keypress to a UNICODE character
-  GetKeyboardState(keystate);
+  if (GetKeyboardState(keystate) == FALSE)
+  {
+    CLog::LogF(LOGERROR, "GetKeyboardState error {}", GetLastError());
+    return keysym;
+  }
 
-  if (pressed && XBMC_TranslateUNICODE)
+  if (pressed)
   {
     std::array<uint16_t, 2> wchars;
 
@@ -180,7 +182,8 @@ static XBMC_keysym *TranslateKey(WPARAM vkey, UINT scancode, XBMC_keysym *keysym
       keysym->unicode = static_cast<uint16_t>(vkey - VK_NUMPAD0 + '0');
     }
     else if (ToUnicode(static_cast<UINT>(vkey), scancode, keystate,
-                       reinterpret_cast<LPWSTR>(wchars.data()), wchars.size(), 0) > 0)
+                       reinterpret_cast<LPWSTR>(wchars.data()), static_cast<int>(wchars.size()),
+                       0) > 0)
     {
       keysym->unicode = wchars[0];
     }
@@ -363,7 +366,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
           return 0;
         default:;
       }
-      //deliberate fallthrough
+      [[fallthrough]];
     case WM_KEYDOWN:
     {
       switch (wParam)
@@ -808,6 +811,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
               else
                 CWin32StorageProvider::SetEvent();
             }
+            break;
           default:;
         }
         break;
@@ -867,7 +871,8 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       }
       break;
     }
-    default:;
+    default:
+      break;
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
 }
