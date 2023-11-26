@@ -543,7 +543,7 @@ class CVideoSelectActionProcessor : public CVideoSelectActionProcessorBase
 {
 public:
   CVideoSelectActionProcessor(CGUIWindowVideoBase& window,
-                              CFileItem& item,
+                              const std::shared_ptr<CFileItem>& item,
                               int itemIndex,
                               const std::string& player)
     : CVideoSelectActionProcessorBase(item),
@@ -553,7 +553,7 @@ public:
   {
     // Reset the current start offset. The actual resume
     // option is set by the processor, based on the action passed.
-    m_item.SetStartOffset(0);
+    m_item->SetStartOffset(0);
   }
 
 protected:
@@ -564,8 +564,8 @@ protected:
 
   bool OnResumeSelected() override
   {
-    m_item.SetStartOffset(STARTOFFSET_RESUME);
-    if (m_item.m_bIsFolder)
+    m_item->SetStartOffset(STARTOFFSET_RESUME);
+    if (m_item->m_bIsFolder)
     {
       // resume playback of the folder
       m_window.PlayItem(m_itemIndex, m_player);
@@ -577,7 +577,7 @@ protected:
 
   bool OnPlaySelected() override
   {
-    if (m_item.m_bIsFolder)
+    if (m_item->m_bIsFolder)
     {
       // play the folder
       m_window.PlayItem(m_itemIndex, m_player);
@@ -614,7 +614,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, SelectAction action, const std
   if (!item)
     return false;
 
-  CVideoSelectActionProcessor proc(*this, *item, iItem, player);
+  CVideoSelectActionProcessor proc(*this, item, iItem, player);
   return proc.Process(action);
 }
 

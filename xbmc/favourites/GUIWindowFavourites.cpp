@@ -50,43 +50,46 @@ namespace
 class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
 {
 public:
-  explicit CVideoSelectActionProcessor(CFileItem& item) : CVideoSelectActionProcessorBase(item) {}
+  explicit CVideoSelectActionProcessor(const std::shared_ptr<CFileItem>& item)
+    : CVideoSelectActionProcessorBase(item)
+  {
+  }
 
 protected:
   bool OnPlayPartSelected(unsigned int part) override
   {
     // part numbers are 1-based
     FAVOURITES_UTILS::ExecuteAction(
-        {"PlayMedia", m_item, StringUtils::Format("playoffset={}", part - 1)});
+        {"PlayMedia", *m_item, StringUtils::Format("playoffset={}", part - 1)});
     return true;
   }
 
   bool OnResumeSelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", m_item, "resume"});
+    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "resume"});
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", m_item, "noresume"});
+    FAVOURITES_UTILS::ExecuteAction({"PlayMedia", *m_item, "noresume"});
     return true;
   }
 
   bool OnQueueSelected() override
   {
-    FAVOURITES_UTILS::ExecuteAction({"QueueMedia", m_item, ""});
+    FAVOURITES_UTILS::ExecuteAction({"QueueMedia", *m_item, ""});
     return true;
   }
 
   bool OnInfoSelected() override
   {
-    return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(m_item);
+    return UTILS::GUILIB::CGUIContentUtils::ShowInfoForItem(*m_item);
   }
 
   bool OnMoreSelected() override
   {
-    CONTEXTMENU::ShowFor(std::make_shared<CFileItem>(m_item), CContextMenuManager::MAIN);
+    CONTEXTMENU::ShowFor(m_item, CContextMenuManager::MAIN);
     return true;
   }
 };
@@ -135,7 +138,7 @@ bool CGUIWindowFavourites::OnSelect(int itemIdx)
   // video select action setting is for files only, except exec func is playmedia...
   if (targetItem.HasVideoInfoTag() && (!targetItem.m_bIsFolder || isPlayMedia))
   {
-    CVideoSelectActionProcessor proc{targetItem};
+    CVideoSelectActionProcessor proc{std::make_shared<CFileItem>(targetItem)};
     if (proc.Process())
       return true;
   }
