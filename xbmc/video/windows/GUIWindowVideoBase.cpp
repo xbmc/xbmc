@@ -741,7 +741,7 @@ class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
 {
 public:
   CVideoPlayActionProcessor(CGUIWindowVideoBase& window,
-                            CFileItem& item,
+                            const std::shared_ptr<CFileItem>& item,
                             int itemIndex,
                             const std::string& player)
     : CVideoPlayActionProcessorBase(item),
@@ -754,13 +754,13 @@ public:
 protected:
   bool OnResumeSelected() override
   {
-    m_item.SetStartOffset(STARTOFFSET_RESUME);
+    m_item->SetStartOffset(STARTOFFSET_RESUME);
     return m_window.OnFileAction(m_itemIndex, SELECT_ACTION_RESUME, m_player);
   }
 
   bool OnPlaySelected() override
   {
-    m_item.SetStartOffset(0);
+    m_item->SetStartOffset(0);
     return m_window.OnFileAction(m_itemIndex, SELECT_ACTION_PLAY, m_player);
   }
 
@@ -776,7 +776,7 @@ bool CGUIWindowVideoBase::OnPlayOrResumeItem(int iItem, const std::string& playe
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return false;
 
-  CVideoPlayActionProcessor proc{*this, *m_vecItems->Get(iItem), iItem, player};
+  CVideoPlayActionProcessor proc{*this, m_vecItems->Get(iItem), iItem, player};
   return proc.Process();
 }
 

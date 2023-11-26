@@ -62,7 +62,7 @@ PlayAction CVideoPlayActionProcessorBase::ChoosePlayOrResume()
 {
   PlayAction action = PLAY_ACTION_PLAY_FROM_BEGINNING;
 
-  const std::string resumeString = VIDEO_UTILS::GetResumeString(m_item);
+  const std::string resumeString = VIDEO_UTILS::GetResumeString(*m_item);
   if (!resumeString.empty())
   {
     CContextButtons choices;

@@ -537,29 +537,31 @@ private:
 class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
 {
 public:
-  explicit CVideoPlayActionProcessor(CFileItem& item) : CVideoPlayActionProcessorBase(item) {}
+  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
+    : CVideoPlayActionProcessorBase(item)
+  {
+  }
 
 protected:
   bool OnResumeSelected() override
   {
-    ExecuteAction({"PlayMedia", m_item, "resume"});
+    ExecuteAction({"PlayMedia", *m_item, "resume"});
     return true;
   }
 
   bool OnPlaySelected() override
   {
     //! @todo get rid of special handling for movie versions
-    if (m_item.GetVideoInfoTag()->m_type == MediaTypeMovie)
+    if (m_item->GetVideoInfoTag()->m_type == MediaTypeMovie)
     {
-      auto videoItem = std::make_shared<CFileItem>(m_item);
       CGUIDialogVideoVersion::PlayVideoVersion(
-          videoItem,
+          m_item,
           [](const std::shared_ptr<CFileItem>& item) {
             ExecuteAction({"PlayMedia", *item.get(), "noresume"});
           });
     }
     else
-      ExecuteAction({"PlayMedia", m_item, "noresume"});
+      ExecuteAction({"PlayMedia", *m_item, "noresume"});
 
     return true;
   }
@@ -616,7 +618,7 @@ bool CDirectoryProvider::OnPlay(const CGUIListItemPtr& item)
   if (targetItem.HasVideoInfoTag() ||
       (targetItem.m_bIsFolder && VIDEO_UTILS::IsItemPlayable(targetItem)))
   {
-    CVideoPlayActionProcessor proc{targetItem};
+    CVideoPlayActionProcessor proc{std::make_shared<CFileItem>(targetItem)};
     if (proc.Process())
       return true;
   }

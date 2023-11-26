@@ -280,37 +280,40 @@ private:
 class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
 {
 public:
-  explicit CVideoPlayActionProcessor(CFileItem& item) : CVideoPlayActionProcessorBase(item) {}
+  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
+    : CVideoPlayActionProcessorBase(item)
+  {
+  }
 
 protected:
   bool OnResumeSelected() override
   {
-    if (m_item.m_bIsFolder)
+    if (m_item->m_bIsFolder)
     {
-      m_item.SetStartOffset(STARTOFFSET_RESUME);
+      m_item->SetStartOffset(STARTOFFSET_RESUME);
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
-          m_item, false /* no resume check */);
+          *m_item, false /* no resume check */);
     }
     else
     {
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().ResumePlayRecording(
-          m_item, true /* fall back to play if no resume possible */);
+          *m_item, true /* fall back to play if no resume possible */);
     }
     return true;
   }
 
   bool OnPlaySelected() override
   {
-    if (m_item.m_bIsFolder)
+    if (m_item->m_bIsFolder)
     {
-      m_item.SetStartOffset(0);
+      m_item->SetStartOffset(0);
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecordingFolder(
-          m_item, false /* no resume check */);
+          *m_item, false /* no resume check */);
     }
     else
     {
       CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-          m_item, false /* no resume check */);
+          *m_item, false /* no resume check */);
     }
     return true;
   }
@@ -346,7 +349,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
 
               if (!item->IsParentFolder() && message.GetParam1() == ACTION_PLAYER_PLAY)
               {
-                CVideoPlayActionProcessor proc{*item};
+                CVideoPlayActionProcessor proc{item};
                 bReturn = proc.Process();
               }
               else if (item->m_bIsFolder)

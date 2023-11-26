@@ -19,7 +19,7 @@ namespace PVR
 class CGUIPVRRecordingsPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
 {
 public:
-  explicit CGUIPVRRecordingsPlayActionProcessor(CFileItem& item)
+  explicit CGUIPVRRecordingsPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
     : CVideoPlayActionProcessorBase(item)
   {
   }
@@ -27,7 +27,7 @@ public:
 protected:
   bool OnResumeSelected() override
   {
-    m_item.SetStartOffset(STARTOFFSET_RESUME);
+    m_item->SetStartOffset(STARTOFFSET_RESUME);
     Play();
     return true;
   }
@@ -42,7 +42,7 @@ private:
   void Play()
   {
     CServiceBroker::GetPVRManager().Get<PVR::GUI::Playback>().PlayRecording(
-        m_item, false /* no resume check */);
+        *m_item, false /* no resume check */);
   }
 };
 } // namespace PVR

@@ -60,7 +60,7 @@ bool CGUIDialogPVRRecordingInfo::OnClickButtonPlay(const CGUIMessage& message)
 
     if (m_recordItem)
     {
-      CGUIPVRRecordingsPlayActionProcessor proc{*m_recordItem};
+      CGUIPVRRecordingsPlayActionProcessor proc{m_recordItem};
       proc.Process();
       if (proc.UserCancelled())
         Open();

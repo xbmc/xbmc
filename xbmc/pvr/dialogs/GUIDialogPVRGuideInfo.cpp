@@ -140,8 +140,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(const CGUIMessage& message)
         const auto recording{CPVRItem(m_progItem).GetRecording()};
         if (recording)
         {
-          CFileItem item{recording};
-          CGUIPVRRecordingsPlayActionProcessor proc{item};
+          CGUIPVRRecordingsPlayActionProcessor proc{std::make_shared<CFileItem>(recording)};
           proc.Process();
           if (proc.UserCancelled())
             Open();
