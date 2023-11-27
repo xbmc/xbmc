@@ -42,6 +42,10 @@ public:
 
   static int ManageVideoVersionContextMenu(const std::shared_ptr<CFileItem>& version);
 
+  static void GetMovieNameAndYear(const CFileItem& movie,
+                                  std::string& movieName,
+                                  std::string& movieYear);
+
 protected:
   void OnInitWindow() override;
 

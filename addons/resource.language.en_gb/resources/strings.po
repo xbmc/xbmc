@@ -23922,6 +23922,18 @@ msgctxt "#40207"
 msgid "When enabled, video with multiple versions will be shown as folder in library, this folder can then be opened to display the individual video versions. When disabled, a video version dialog will be opened for the video."
 msgstr ""
 
+#. Ignore different video years settting
+#: system/settings/settings.xml
+msgctxt "#40208"
+msgid "Ignore different video years on scan"
+msgstr ""
+
+#. Help for Ignore different video years settting
+#: system/settings/settings.xml
+msgctxt "#40209"
+msgid "Select scanner action for videos with the same title but different years.[CR][Enabled] Add videos with same title but different years to library seperately without confirmation.[CR][Disabled] Prompt for converting videos with same title but different years into additional versions of the original."
+msgstr ""
+
 # Video versions
 
 #. Name of a video version, like "Director's Cut"

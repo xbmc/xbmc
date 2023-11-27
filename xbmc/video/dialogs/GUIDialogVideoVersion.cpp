@@ -923,6 +923,21 @@ bool CGUIDialogVideoVersion::ProcessVideoVersion(VideoDbContentType itemType, in
   CFileItemList list;
   videodb.GetSameVideoItems(item, list);
 
+  // See if different movies (ie. different years)
+  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_VIDEOLIBRARY_IGNOREVIDEOYEARS))
+  {
+    std::string baseName, baseYear;
+    GetMovieNameAndYear(item, baseName, baseYear);
+    for (int i = 0; i < list.Size(); ++i)
+    {
+      std::string movieName, movieYear;
+      GetMovieNameAndYear(*list[i], movieName, movieYear);
+      if (baseName == movieName && baseYear != movieYear)
+        list.Remove(i);
+    }
+  }
+
   if (list.Size() < 2)
     return false;
 
@@ -1010,4 +1025,24 @@ std::string CGUIDialogVideoVersion::GenerateExtrasVideoVersion(const std::string
 
   // trim the string
   return StringUtils::Trim(extrasVersion);
+}
+
+void CGUIDialogVideoVersion::GetMovieNameAndYear(const CFileItem& movie,
+                                                 std::string& movieName,
+                                                 std::string& movieYear)
+{
+  std::string movieFolder =
+      CUtil::RemoveTrailingDiscNumberSegmentFromPath(movie.GetVideoInfoTag()->m_basePath);
+  const size_t yearStart = movieFolder.rfind(" (");
+  const size_t yearEnd = movieFolder.find(")", yearStart);
+  if (yearStart != std::string::npos && yearEnd != std::string::npos)
+  {
+    const std::string year = movieFolder.substr(yearStart + 2, yearEnd - yearStart - 2);
+    if (year.find_first_not_of("0123456789") == std::string::npos)
+    {
+      const size_t nameStart = movieFolder.rfind("/", yearStart);
+      movieName = movieFolder.substr(nameStart + 1, yearStart - nameStart - 1);
+      movieYear = year;
+    }
+  }
 }

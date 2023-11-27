@@ -887,6 +887,14 @@
           <default>false</default>
           <control type="toggle" />
         </setting>
+        <setting id="videolibrary.ignorevideoyears" type="boolean" label="40208" help="40209">
+          <level>1</level>
+          <default>false</default>
+          <dependencies>
+            <dependency type="enable" setting="videolibrary.ignorevideoversions" operator="is">false</dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="videolibrary.ignorevideoextras" type="boolean" label="40204" help="40205">
           <level>1</level>
           <default>false</default>

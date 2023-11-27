@@ -98,6 +98,8 @@ public:
       "videolibrary.musicvideosallperformers";
   static constexpr auto SETTING_VIDEOLIBRARY_IGNOREVIDEOVERSIONS =
       "videolibrary.ignorevideoversions";
+  static constexpr auto SETTING_VIDEOLIBRARY_IGNOREVIDEOYEARS =
+      "videolibrary.ignorevideoyears";
   static constexpr auto SETTING_VIDEOLIBRARY_IGNOREVIDEOEXTRAS = "videolibrary.ignorevideoextras";
   static constexpr auto SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER =
       "videolibrary.showvideoversionsasfolder";
