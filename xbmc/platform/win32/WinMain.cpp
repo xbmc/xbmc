@@ -117,6 +117,11 @@ _Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
     SetUnhandledExceptionFilter(CreateMiniDump);
   }
 
+  int status{0};
+  HRESULT hrCOM{E_FAIL};
+  int rcWinsock{WSANOTINITIALISED};
+  WSADATA wd{};
+
   // check if Kodi is already running
   using KODI::PLATFORM::WINDOWS::ToW;
   std::string appName = CCompileInfo::GetAppName();
@@ -131,25 +136,24 @@ _Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
       ShowWindow(hwnd, SW_RESTORE);
       SetForegroundWindow(hwnd);
     }
-    CloseHandle(appRunningMutex);
-    return 0;
+    status = 0;
+    goto cleanup;
   }
 
   //Initialize COM
-  HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-  if (hr != S_OK)
+  if ((hrCOM = CoInitializeEx(nullptr, COINIT_MULTITHREADED)) != S_OK)
   {
-    LogError(L"unable to initialize COM, error %ld\n", hr);
-    return -2;
+    LogError(L"unable to initialize COM, error %ld\n", hrCOM);
+    status = -2;
+    goto cleanup;
   }
 
   // Initialise Winsock
-  WSADATA wd;
-  int rc = WSAStartup(MAKEWORD(2, 2), &wd);
-  if (rc != 0)
+  if ((rcWinsock = WSAStartup(MAKEWORD(2, 2), &wd)) != 0)
   {
-    LogError(L"unable to initialize Windows Sockets, error %i\n", rc);
-    return -3;
+    LogError(L"unable to initialize Windows Sockets, error %i\n", rcWinsock);
+    status = -3;
+    goto cleanup;
   }
 
   // use 1 ms timer precision - like SDL initialization used to do
@@ -163,15 +167,19 @@ _Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
   CAppEnvironment::SetUp(params);
 
   // Create and run the app
-  int status = XBMC_Run(true);
+  status = XBMC_Run(true);
 
   CAppEnvironment::TearDown();
 
   // clear previously set timer resolution
   timeEndPeriod(1);
 
-  WSACleanup();
-  CoUninitialize();
+cleanup:
+
+  if (rcWinsock == 0)
+    WSACleanup();
+  if (hrCOM == S_OK)
+    CoUninitialize();
   if (appRunningMutex)
     CloseHandle(appRunningMutex);
 
