@@ -62,13 +62,8 @@ static void LogError(const wchar_t* format, Args&&... args)
   wprintf(buf.get());
 }
 
-//-----------------------------------------------------------------------------
-// Name: WinMain()
-// Desc: The application's entry point
-//-----------------------------------------------------------------------------
-_Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
+static std::shared_ptr<CAppParams> ParseCommandLine()
 {
-  // parse command line parameters
   int argc = 0;
   LPWSTR* argvW = CommandLineToArgvW(GetCommandLineW(), &argc);
   char** argv = new char*[argc];
@@ -86,7 +81,21 @@ _Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
   CAppParamParser appParamParser;
   appParamParser.Parse(argv, argc);
 
-  const auto params = appParamParser.GetAppParams();
+  for (int i = 0; i < argc; ++i)
+    delete[] argv[i];
+  delete[] argv;
+
+  return appParamParser.GetAppParams();
+}
+
+//-----------------------------------------------------------------------------
+// Name: WinMain()
+// Desc: The application's entry point
+//-----------------------------------------------------------------------------
+_Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
+{
+  // parse command line parameters
+  const auto params = ParseCommandLine();
 
   // this fixes crash if OPENSSL_CONF is set to existed openssl.cfg
   // need to set it as soon as possible
@@ -157,10 +166,6 @@ _Use_decl_annotations_ INT WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, INT)
   int status = XBMC_Run(true);
 
   CAppEnvironment::TearDown();
-
-  for (int i = 0; i < argc; ++i)
-    delete[] argv[i];
-  delete[] argv;
 
   // clear previously set timer resolution
   timeEndPeriod(1);
