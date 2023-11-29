@@ -25,7 +25,15 @@ public:
   CGUIDialogVideoVersion(int id);
   ~CGUIDialogVideoVersion(void) override;
   bool OnMessage(CGUIMessage& message) override;
-  void SetVideoItem(const std::shared_ptr<CFileItem>& item, bool playMode);
+
+  enum class Mode
+  {
+    MANAGE,
+    PLAY,
+  };
+  void SetMode(Mode mode) { m_mode = mode; }
+  void SetVideoItem(const std::shared_ptr<CFileItem>& item);
+
   static std::tuple<int, std::string> NewVideoVersion();
   static bool ConvertVideoVersion(const std::shared_ptr<CFileItem>& item);
   static bool ProcessVideoVersion(VideoDbContentType itemType, int dbId);
@@ -63,7 +71,7 @@ private:
   VideoVersionPlayCallback m_playCallback;
 
   std::shared_ptr<CFileItem> m_videoItem;
-  bool m_playMode{false};
+  Mode m_mode{Mode::MANAGE};
 
   CVideoDatabase m_database;
   std::unique_ptr<CFileItemList> m_primaryVideoVersionList;
