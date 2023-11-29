@@ -26,6 +26,7 @@ from .musicbrainz import musicbrainz_artistdetails
 from .nfo import nfo_geturl
 from .theaudiodb import theaudiodb_artistdetails
 from .theaudiodb import theaudiodb_artistalbums
+from .theaudiodb import theaudiodb_mvids
 from .wikipedia import wikipedia_artistdetails
 from .utils import *
 
@@ -110,6 +111,7 @@ class Scraper():
         elif action == 'getdetails':
             details = {}
             discography = {}
+            mvids = {}
             url = json.loads(url)
             artist = url.get('artist')
             mbartistid = url.get('mbartistid')
@@ -126,6 +128,10 @@ class Scraper():
                     thread.start()
                 # theaudiodb discograhy
                 thread = Thread(target = self.get_discography, args = (mbartistid, 'theaudiodb', discography))
+                threads.append(thread)
+                thread.start()
+                # theaudiodb mvids
+                thread = Thread(target = self.get_videolinks, args = (mbartistid, 'theaudiodb', mvids))
                 threads.append(thread)
                 thread.start()
                 # wait for musicbrainz to finish
@@ -182,6 +188,12 @@ class Scraper():
                 else:
                     details[site] = {}
                     details[site]['albums'] = albumlist
+            for site, mvidlist in mvids.items():
+                if site in details:
+                    details[site]['mvids'] = mvidlist
+                else:
+                    details[site] = {}
+                    details[site]['mvids'] = mvidlist
             result = self.compile_results(details)
             if result:
                 self.return_details(result)
@@ -327,6 +339,21 @@ class Scraper():
         discography[site] = albumresults
         return discography
 
+    def get_videolinks(self, param, site, videolinks):
+        json = True
+        if site == 'theaudiodb':
+            #theaudiodb mvid links
+            mvidurl = AUDIODBURL % (AUDIODBKEY, AUDIODBMVIDS % param)
+            scraper = theaudiodb_mvids
+        mviddata = get_data(mvidurl, json)
+        if not mviddata:
+            return
+        mvidresults = scraper(mviddata)
+        if not mvidresults:
+            return
+        videolinks[site] = mvidresults
+        return videolinks
+
     def compile_results(self, details):
         result = {}
         thumbs = []
@@ -380,7 +407,8 @@ class Scraper():
             thumbnails = []
             fanart.reverse()
             fanarts = []
-            # the order for extra art does not matter
+            # extra art from most accurate sources first
+            extras.reverse()
             extraart = []
             for thumblist in thumbs:
                 for item in thumblist:
@@ -500,4 +528,11 @@ class Scraper():
                 listitem.setProperty('artist.album%i.year' % (count + 1), album['year'])
                 if 'musicbrainzreleasegroupid' in album:
                     listitem.setProperty('artist.album%i.musicbrainzreleasegroupid' % (count + 1), album['musicbrainzreleasegroupid'])
+        if 'mvids' in item:
+            listitem.setProperty('artist.videolinks', str(len(item['mvids'])))
+            for count, mvid in enumerate(item['mvids']):
+                listitem.setProperty('artist.videolink%i.title' % (count + 1), mvid['title'])
+                listitem.setProperty('artist.videolink%i.mbtrackid' % (count + 1), mvid['mbtrackid'])
+                listitem.setProperty('artist.videolink%i.url' % (count + 1), mvid['url'])
+                listitem.setProperty('artist.videolink%i.thumb' % (count + 1), mvid['thumb'])
         xbmcplugin.setResolvedUrl(handle=int(sys.argv[1]), succeeded=True, listitem=listitem)

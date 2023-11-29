@@ -2,23 +2,28 @@
 # Addon Name: Generic Artist Scraper
 # Addon id: metadata.generic.artists
 # Addon Provider: Team Kodi
-# Translators:
-# TeamKODI <transifex.translator@gmail.com>, 2020
-# Minho Park <parkmino@gmail.com>, 2020
-# 
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2020-09-08 20:22+0000\n"
-"Last-Translator: Minho Park <parkmino@gmail.com>, 2020\n"
-"Language-Team: Korean (Korea) (https://www.transifex.com/teamxbmc/teams/40581/ko_KR/)\n"
+"PO-Revision-Date: 2021-08-21 01:29+0000\n"
+"Last-Translator: Minho Park <parkmino@gmail.com>\n"
+"Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-generic-artists/ko_kr/>\n"
+"Language: ko_kr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ko_KR\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.7.2\n"
+
+msgctxt "Addon Summary"
+msgid "Generic music scraper for artists"
+msgstr "아티스트를 위한 일반 음악 스크레이퍼"
+
+msgctxt "Addon Description"
+msgid "Searches for artist information and artwork across multiple websites."
+msgstr "여러 웹사이트에서 아티스트 정보와 작품을 검색합니다."
 
 msgctxt "#30000"
 msgid "Preferences"
@@ -53,47 +58,29 @@ msgid "Allow less accurate search results"
 msgstr "약간 느슨한 검색 결과 허용"
 
 msgctxt "#30201"
-msgid ""
-"If available, the artist biography will be downloaded in the selected "
-"language. It will fallback to English."
+msgid "If available, the artist biography will be downloaded in the selected language. It will fallback to English."
 msgstr "가능하면 아티스트 생애를 선호 언어로 내려 받습니다. 기본 영어."
 
 msgctxt "#30202"
-msgid ""
-"Try to get the artist biography using the selected scraper. Other scrapers "
-"will be used if the preferred scraper returns no results."
+msgid "Try to get the artist biography using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr "선택된 스크레이퍼로 아티스트 생애를 내려 받습니다. 선호 스크레이퍼의 결과가 없으면 다른 것이 사용됩니다."
 
 msgctxt "#30203"
-msgid ""
-"Try to get the artist discography using the selected scraper. Other scrapers"
-" will be used if the preferred scraper returns no results."
+msgid "Try to get the artist discography using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr "선택된 스크레이퍼로 아티스트 디스코그래피를 내려 받습니다. 선호 스크레이퍼의 결과가 없으면 다른 것이 사용됩니다."
 
 msgctxt "#30204"
-msgid ""
-"Try to get genre info using the selected scraper. Other scrapers will be "
-"used if the preferred scraper returns no results."
+msgid "Try to get genre info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr "선택된 스크레이퍼로 장르 정보를 내려받습니다. 선호하는 스크레이퍼의 결과가 없으면 다른 것이 쓰입니다."
 
 msgctxt "#30205"
-msgid ""
-"Try to get style info using the selected scraper. Other scrapers will be "
-"used if the preferred scraper returns no results."
+msgid "Try to get style info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr "선택된 스크레이퍼로 스타일 정보를 내려받습니다. 선호하는 스크레이퍼의 결과가 없으면 다른 것이 쓰입니다."
 
 msgctxt "#30206"
-msgid ""
-"Try to get mood info using the selected scraper. Other scrapers will be used"
-" if the preferred scraper returns no results."
+msgid "Try to get mood info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr "선택된 스크레이퍼로 무드 정보를 내려받습니다. 선호하는 스크레이퍼의 결과가 없으면 다른 것이 쓰입니다."
 
 msgctxt "#30301"
-msgid ""
-"If Musicbrainz does not provide a link to allmusic and/or discogs, we can "
-"search those sites based on artistname. Since artist names are not unique, "
-"this could potentially result in a mixture of metadata from multiple artists"
-" by the same name."
-msgstr ""
-"뮤직브레인즈이 allmusic이나 discogs의 링크를 제공하지 않으면, albumname으로 검색할 수 있습니다. 아티스트 이름이 "
-"유일하지 않으므로, 이 음반들의 메타데이터로부터 뒤섞인 결과가 나올 수 있습니다."
+msgid "If Musicbrainz does not provide a link to allmusic and/or discogs, we can search those sites based on artistname. Since artist names are not unique, this could potentially result in a mixture of metadata from multiple artists by the same name."
+msgstr "뮤직브레인즈이 allmusic이나 discogs의 링크를 제공하지 않으면, albumname으로 검색할 수 있습니다. 아티스트 이름이 유일하지 않으므로, 이 음반들의 메타데이터로부터 뒤섞인 결과가 나올 수 있습니다."

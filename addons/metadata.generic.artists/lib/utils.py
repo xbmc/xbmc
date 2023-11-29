@@ -5,6 +5,7 @@ AUDIODBURL = 'https://www.theaudiodb.com/api/v1/json/%s/%s'
 AUDIODBSEARCH = 'search.php?s=%s'
 AUDIODBDETAILS = 'artist-mb.php?i=%s'
 AUDIODBDISCOGRAPHY = 'discography-mb.php?s=%s'
+AUDIODBMVIDS = 'mvid-mb.php?i=%s'
 
 MUSICBRAINZURL = 'https://musicbrainz.org/ws/2/artist/%s'
 MUSICBRAINZSEARCH = '?query="%s"&fmt=json'

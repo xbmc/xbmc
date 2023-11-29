@@ -2,23 +2,28 @@
 # Addon Name: Generic Artist Scraper
 # Addon id: metadata.generic.artists
 # Addon Provider: Team Kodi
-# Translators:
-# TeamKODI <transifex.translator@gmail.com>, 2020
-# taxigps <taxigps@sina.com>, 2020
-# 
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2020-09-08 20:22+0000\n"
-"Last-Translator: taxigps <taxigps@sina.com>, 2020\n"
-"Language-Team: Chinese (China) (https://www.transifex.com/teamxbmc/teams/40581/zh_CN/)\n"
+"PO-Revision-Date: 2021-09-12 16:30+0000\n"
+"Last-Translator: taxigps <taxigps@sina.com>\n"
+"Language-Team: Chinese (China) <https://kodi.weblate.cloud/projects/kodi-add-ons-information-providers/metadata-generic-artists/zh_cn/>\n"
+"Language: zh_cn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh_CN\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.8\n"
+
+msgctxt "Addon Summary"
+msgid "Generic music scraper for artists"
+msgstr "歌手通用音乐刮削器"
+
+msgctxt "Addon Description"
+msgid "Searches for artist information and artwork across multiple websites."
+msgstr "从多个网站搜索歌手信息和艺术图片。"
 
 msgctxt "#30000"
 msgid "Preferences"
@@ -53,47 +58,29 @@ msgid "Allow less accurate search results"
 msgstr "允许不精确的搜索结果"
 
 msgctxt "#30201"
-msgid ""
-"If available, the artist biography will be downloaded in the selected "
-"language. It will fallback to English."
+msgid "If available, the artist biography will be downloaded in the selected language. It will fallback to English."
 msgstr "下载所选语言的歌手传记，无此语种评论时英语为后备。"
 
 msgctxt "#30202"
-msgid ""
-"Try to get the artist biography using the selected scraper. Other scrapers "
-"will be used if the preferred scraper returns no results."
+msgid "Try to get the artist biography using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr "使用所选刮削器获取歌手传记，当首选刮削器无结果时，将使用其它刮削器。"
 
 msgctxt "#30203"
-msgid ""
-"Try to get the artist discography using the selected scraper. Other scrapers"
-" will be used if the preferred scraper returns no results."
+msgid "Try to get the artist discography using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr "使用所选刮削器获取歌手作品集，当首选刮削器无结果时，将使用其它刮削器。"
 
 msgctxt "#30204"
-msgid ""
-"Try to get genre info using the selected scraper. Other scrapers will be "
-"used if the preferred scraper returns no results."
+msgid "Try to get genre info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr "使用所选刮削器获取类型信息，当首选刮削器无结果时，将使用其它自刮削器。"
 
 msgctxt "#30205"
-msgid ""
-"Try to get style info using the selected scraper. Other scrapers will be "
-"used if the preferred scraper returns no results."
+msgid "Try to get style info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr "使用所选刮削器获取风格信息，当首选刮削器无结果时，将使用其它自刮削器。"
 
 msgctxt "#30206"
-msgid ""
-"Try to get mood info using the selected scraper. Other scrapers will be used"
-" if the preferred scraper returns no results."
+msgid "Try to get mood info using the selected scraper. Other scrapers will be used if the preferred scraper returns no results."
 msgstr "使用所选刮削器获取情绪信息，当首选刮削器无结果时，将使用其它刮削器。"
 
 msgctxt "#30301"
-msgid ""
-"If Musicbrainz does not provide a link to allmusic and/or discogs, we can "
-"search those sites based on artistname. Since artist names are not unique, "
-"this could potentially result in a mixture of metadata from multiple artists"
-" by the same name."
-msgstr ""
-"当 Musicbrainz 没有提供指向 allmusic 和/或 discogs "
-"的链接时，我们用歌手名搜索这些网站。由于歌手名不是唯一的，这可能会导致来自多个同名歌手的元数据混杂。"
+msgid "If Musicbrainz does not provide a link to allmusic and/or discogs, we can search those sites based on artistname. Since artist names are not unique, this could potentially result in a mixture of metadata from multiple artists by the same name."
+msgstr "当 Musicbrainz 没有提供指向 allmusic 和/或 discogs 的链接时，我们用歌手名搜索这些网站。由于歌手名不是唯一的，这可能会导致来自多个同名歌手的元数据混杂。"
