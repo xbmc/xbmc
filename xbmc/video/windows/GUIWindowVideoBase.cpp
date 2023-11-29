@@ -57,7 +57,6 @@
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
-#include "video/dialogs/GUIDialogVideoVersion.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
 #include "view/GUIViewState.h"
@@ -978,16 +977,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
   if (m_thumbLoader.IsLoading())
     m_thumbLoader.StopAsync();
 
-  //! @todo get rid of special handling for movie versions
-  if (itemCopy->GetVideoInfoTag()->m_type == MediaTypeMovie ||
-      itemCopy->GetVideoInfoTag()->m_type == MediaTypeVideoVersion)
-  {
-    CGUIDialogVideoVersion::PlayVideoVersion(
-        itemCopy, [player](const std::shared_ptr<CFileItem>& item)
-        { CServiceBroker::GetPlaylistPlayer().Play(item, player); });
-  }
-  else
-    CServiceBroker::GetPlaylistPlayer().Play(itemCopy, player);
+  CServiceBroker::GetPlaylistPlayer().Play(itemCopy, player);
 
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();

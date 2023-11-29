@@ -57,7 +57,7 @@
 			</control>
 		</control>
 	</include>
-	<include name="DialogVideoVersionPlayLayout">
+	<include name="DialogVideoVersionSelectLayout">
 		<control type="group">
 			<centertop>50%</centertop>
 			<centerleft>50%</centerleft>
@@ -85,13 +85,13 @@
 				<param name="id" value="201" />
 				<param name="label" value="$LOCALIZE[40000]" />
 				<param name="usealttexture" value="Control.IsVisible(50)" />
-				<param name="visible">Window.IsActive(videoversion)| Window.IsActive(videoversionplay) + Integer.IsGreater(Container(50).NumItems,0)</param>
+				<param name="visible">Window.IsActive(videoversion)| Window.IsActive(videoversionselect) + Integer.IsGreater(Container(50).NumItems,0)</param>
 			</include>
 			<include content="DialogToggleButton">
 				<param name="id" value="202" />
 				<param name="label" value="$LOCALIZE[31615]" />
 				<param name="usealttexture" value="Control.IsVisible(51)" />
-				<param name="visible">Window.IsActive(videoversion) | Window.IsActive(videoversionplay) + Integer.IsGreater(Container(51).NumItems,0)</param>
+				<param name="visible">Window.IsActive(videoversion) | Window.IsActive(videoversionselect) + Integer.IsGreater(Container(51).NumItems,0)</param>
 			</include>
 		</control>
 		<control type="image">

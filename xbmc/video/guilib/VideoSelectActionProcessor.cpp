@@ -19,8 +19,10 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
+#include "video/guilib/VideoActionProcessorHelper.h"
 
 using namespace VIDEO::GUILIB;
 
@@ -37,6 +39,19 @@ bool CVideoSelectActionProcessorBase::Process()
 
 bool CVideoSelectActionProcessorBase::Process(SelectAction selectAction)
 {
+  CVideoActionProcessorHelper procHelper{m_item, m_videoVersion};
+
+  if (!m_versionChecked &&
+      (selectAction == SELECT_ACTION_PLAY || selectAction == SELECT_ACTION_PLAY_OR_RESUME))
+  {
+    m_versionChecked = true;
+    const auto videoVersion{procHelper.ChooseVideoVersion()};
+    if (videoVersion)
+      m_item = videoVersion;
+    else
+      return true; // User cancelled the select menu. We're done.
+  }
+
   switch (selectAction)
   {
     case SELECT_ACTION_CHOOSE:

@@ -22,6 +22,11 @@ class CVideoPlayActionProcessorBase
 {
 public:
   explicit CVideoPlayActionProcessorBase(const std::shared_ptr<CFileItem>& item) : m_item(item) {}
+  CVideoPlayActionProcessorBase(const std::shared_ptr<CFileItem>& item,
+                                const std::shared_ptr<const CFileItem>& videoVersion)
+    : m_item{item}, m_videoVersion{videoVersion}
+  {
+  }
   virtual ~CVideoPlayActionProcessorBase() = default;
 
   static PlayAction GetDefaultPlayAction();
@@ -41,6 +46,9 @@ protected:
 private:
   CVideoPlayActionProcessorBase() = delete;
   PlayAction ChoosePlayOrResume();
+
+  bool m_versionChecked{false};
+  const std::shared_ptr<const CFileItem> m_videoVersion;
 };
 } // namespace GUILIB
 } // namespace VIDEO

@@ -22,6 +22,11 @@ class CVideoSelectActionProcessorBase
 {
 public:
   explicit CVideoSelectActionProcessorBase(const std::shared_ptr<CFileItem>& item) : m_item(item) {}
+  CVideoSelectActionProcessorBase(const std::shared_ptr<CFileItem>& item,
+                                  const std::shared_ptr<const CFileItem>& videoVersion)
+    : m_item{item}, m_videoVersion{videoVersion}
+  {
+  }
   virtual ~CVideoSelectActionProcessorBase() = default;
 
   static SelectAction GetDefaultSelectAction();
@@ -45,6 +50,9 @@ private:
   CVideoSelectActionProcessorBase() = delete;
   SelectAction ChooseVideoItemSelectAction() const;
   unsigned int ChooseStackItemPartNumber() const;
+
+  bool m_versionChecked{false};
+  const std::shared_ptr<const CFileItem> m_videoVersion;
 };
 } // namespace GUILIB
 } // namespace VIDEO

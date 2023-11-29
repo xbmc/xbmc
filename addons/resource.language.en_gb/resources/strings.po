@@ -23868,10 +23868,10 @@ msgctxt "#40022"
 msgid "Manage {0:s}"
 msgstr ""
 
-#. Play video version dialog title
+#. Choose video version dialog title
 #: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
 msgctxt "#40023"
-msgid "Play {0:s}"
+msgid "Choose {0:s}"
 msgstr ""
 
 #. Play default video version setting

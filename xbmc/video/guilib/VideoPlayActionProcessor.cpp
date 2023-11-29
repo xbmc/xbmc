@@ -8,12 +8,15 @@
 
 #include "VideoPlayActionProcessor.h"
 
+#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/LocalizeStrings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/Variant.h"
 #include "video/VideoUtils.h"
+#include "video/guilib/VideoActionProcessorHelper.h"
 
 using namespace VIDEO::GUILIB;
 
@@ -28,11 +31,27 @@ bool CVideoPlayActionProcessorBase::Process()
   return Process(GetDefaultPlayAction());
 }
 
-bool CVideoPlayActionProcessorBase::Process(PlayAction PlayAction)
+bool CVideoPlayActionProcessorBase::Process(PlayAction playAction)
 {
   m_userCancelled = false;
 
-  switch (PlayAction)
+  CVideoActionProcessorHelper procHelper{m_item, m_videoVersion};
+
+  if (!m_versionChecked &&
+      (playAction == PLAY_ACTION_PLAY_FROM_BEGINNING || playAction == PLAY_ACTION_PLAY_OR_RESUME))
+  {
+    m_versionChecked = true;
+    const auto videoVersion{procHelper.ChooseVideoVersion()};
+    if (videoVersion)
+      m_item = videoVersion;
+    else
+    {
+      m_userCancelled = true;
+      return true; // User cancelled the select menu. We're done.
+    }
+  }
+
+  switch (playAction)
   {
     case PLAY_ACTION_PLAY_OR_RESUME:
     {

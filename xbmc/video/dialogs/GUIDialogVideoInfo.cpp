@@ -741,17 +741,7 @@ private:
     const ContentUtils::PlayMode mode{m_item->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS};
-
-    //! @todo get rid of special handling for movie versions
-    if (m_item->GetStartOffset() != STARTOFFSET_RESUME &&
-        m_item->GetVideoInfoTag()->m_type == MediaTypeMovie)
-    {
-      CGUIDialogVideoVersion::PlayVideoVersion(m_item,
-                                               [mode](const std::shared_ptr<CFileItem>& item)
-                                               { VIDEO_UTILS::PlayItem(item, "", mode); });
-    }
-    else
-      VIDEO_UTILS::PlayItem(m_item, "", mode);
+    VIDEO_UTILS::PlayItem(m_item, "", mode);
   }
 };
 } // unnamed namespace
