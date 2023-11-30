@@ -13,6 +13,7 @@
 #include "addons/AddonEvents.h"
 #include "addons/AddonManager.h"
 #include "addons/addoninfo/AddonType.h"
+#include "games/controllers/input/PhysicalFeature.h"
 
 #include <mutex>
 
@@ -87,6 +88,25 @@ ControllerVector CControllerManager::GetControllers()
   }
 
   return controllers;
+}
+
+std::string CControllerManager::TranslateFeature(const std::string& controllerId,
+                                                 const std::string& featureName)
+{
+  ControllerPtr controller = GetController(controllerId);
+  if (controller)
+  {
+    const std::vector<CPhysicalFeature>& features = controller->Features();
+
+    auto it = std::find_if(features.begin(), features.end(),
+                           [&featureName](const CPhysicalFeature& feature)
+                           { return feature.Name() == featureName; });
+
+    if (it != features.end())
+      return it->Label();
+  }
+
+  return "";
 }
 
 void CControllerManager::OnEvent(const ADDON::AddonEvent& event)
