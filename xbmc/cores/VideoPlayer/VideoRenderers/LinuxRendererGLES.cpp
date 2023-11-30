@@ -132,12 +132,9 @@ bool CLinuxRendererGLES::Configure(const VideoPicture &picture, float fps, unsig
   // setup the background colour
   m_clearColour = CServiceBroker::GetWinSystem()->UseLimitedColor() ? (16.0f / 0xff) : 0.0f;
 
-  if (picture.hasDisplayMetadata && picture.hasLightMetadata)
-  {
-    m_passthroughHDR = CServiceBroker::GetWinSystem()->SetHDR(&picture);
-    CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: HDR passthrough: {}",
-              m_passthroughHDR ? "on" : "off");
-  }
+  m_passthroughHDR = CServiceBroker::GetWinSystem()->SetHDR(&picture);
+  CLog::Log(LOGDEBUG, "LinuxRendererGLES::Configure: HDR passthrough: {}",
+            m_passthroughHDR ? "on" : "off");
 
   return true;
 }
@@ -172,14 +169,6 @@ void CLinuxRendererGLES::AddVideoPicture(const VideoPicture &picture, int index)
   buf.m_srcColSpace = picture.color_space;
   buf.m_srcFullRange = picture.color_range == 1;
   buf.m_srcBits = picture.colorBits;
-
-  buf.hasDisplayMetadata = picture.hasDisplayMetadata;
-  buf.displayMetadata = picture.displayMetadata;
-  buf.lightMetadata = picture.lightMetadata;
-  if (picture.hasLightMetadata && picture.lightMetadata.MaxCLL)
-  {
-    buf.hasLightMetadata = picture.hasLightMetadata;
-  }
 }
 
 void CLinuxRendererGLES::ReleaseBuffer(int idx)
@@ -851,10 +840,7 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
 
   if (!m_passthroughHDR && toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {
-    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
-    {
-      toneMap = true;
-    }
+    toneMap = true;
   }
 
   if (toneMap != m_toneMap || toneMapMethod != m_toneMapMethod)
@@ -901,9 +887,8 @@ void CLinuxRendererGLES::RenderSinglePass(int index, int field)
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
-  pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
-  pYUVShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata,
-                                 buf.hasLightMetadata, buf.lightMetadata);
+  pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange,
+                           buf.m_srcTextureBits);
   pYUVShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
 
   if (field == FIELD_TOP)
@@ -985,10 +970,7 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
 
   if (toneMapMethod != VS_TONEMAPMETHOD_OFF)
   {
-    if (buf.hasLightMetadata || (buf.hasDisplayMetadata && buf.displayMetadata.has_luminance))
-    {
-      toneMap = true;
-    }
+    toneMap = true;
   }
 
   if (toneMap != m_toneMap || m_toneMapMethod != toneMapMethod)
@@ -1055,9 +1037,8 @@ void CLinuxRendererGLES::RenderToFBO(int index, int field)
   pYUVShader->SetContrast(m_videoSettings.m_Contrast * 0.02f);
   pYUVShader->SetWidth(planes[0].texwidth);
   pYUVShader->SetHeight(planes[0].texheight);
-  pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange, buf.m_srcTextureBits);
-  pYUVShader->SetDisplayMetadata(buf.hasDisplayMetadata, buf.displayMetadata,
-                                 buf.hasLightMetadata, buf.lightMetadata);
+  pYUVShader->SetColParams(buf.m_srcColSpace, buf.m_srcBits, !buf.m_srcFullRange,
+                           buf.m_srcTextureBits);
   pYUVShader->SetToneMapParam(m_videoSettings.m_ToneMapParam);
 
   if (field == FIELD_TOP)

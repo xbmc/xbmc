@@ -21,10 +21,6 @@
 #include "RenderInfo.h"
 #include "windowing/GraphicContext.h"
 
-extern "C" {
-#include <libavutil/mastering_display_metadata.h>
-}
-
 class CRenderCapture;
 class CRenderSystemGLES;
 
@@ -179,11 +175,6 @@ protected:
     int m_srcBits{8};
     int m_srcTextureBits{8};
     bool m_srcFullRange;
-
-    bool hasDisplayMetadata{false};
-    AVMasteringDisplayMetadata displayMetadata;
-    bool hasLightMetadata{false};
-    AVContentLightMetadata lightMetadata;
   };
 
   // YV12 decoder textures
