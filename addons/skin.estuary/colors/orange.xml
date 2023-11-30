@@ -4,5 +4,6 @@
 	<color name="secondary_background">33BDAE12</color>
 	<color name="dialog_tint">FF2B2621</color>
 	<color name="button_focus">FFFF9800</color>
+	<color name="button_alt_focus">80FF9800</color>
 	<color name="selected">FFFFF100</color>
 </colors>
