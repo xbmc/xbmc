@@ -37,8 +37,7 @@ bool CVideoPlayActionProcessorBase::Process(PlayAction playAction)
 
   CVideoActionProcessorHelper procHelper{m_item, m_videoVersion};
 
-  if (!m_versionChecked &&
-      (playAction == PLAY_ACTION_PLAY_FROM_BEGINNING || playAction == PLAY_ACTION_PLAY_OR_RESUME))
+  if (!m_versionChecked)
   {
     m_versionChecked = true;
     const auto videoVersion{procHelper.ChooseVideoVersion()};
