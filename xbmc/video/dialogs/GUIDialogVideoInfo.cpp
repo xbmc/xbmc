@@ -740,7 +740,8 @@ private:
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS};
 
     //! @todo get rid of special handling for movie versions
-    if (m_item.GetVideoInfoTag()->m_type == MediaTypeMovie)
+    if (m_item.GetStartOffset() != STARTOFFSET_RESUME &&
+        m_item.GetVideoInfoTag()->m_type == MediaTypeMovie)
     {
       CGUIDialogVideoVersion::PlayVideoVersion(std::make_shared<CFileItem>(m_item),
                                                [mode](const std::shared_ptr<CFileItem>& item)
