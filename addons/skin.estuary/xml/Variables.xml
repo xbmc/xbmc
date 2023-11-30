@@ -677,14 +677,10 @@
 		<value>[B]$LOCALIZE[1223][/B]</value>
 	</variable>
 	<variable name="VideoVersionPosterVar">
-		<value condition="Control.HasFocus(50)">$INFO[Container(50).ListItem.Art(poster)]</value>
-		<value condition="Control.HasFocus(51)">$INFO[Container(51).ListItem.Art(poster)]</value>
-		<value>$INFO[Window(home).Property(poster)]</value>
-	</variable>
-	<variable name="VideoVersionThumbVar">
-		<value condition="Control.HasFocus(50)">$INFO[Container(50).ListItem.Art(thumb)]</value>
-		<value condition="Control.HasFocus(51)">$INFO[Container(51).ListItem.Art(thumb)]</value>
-		<value>$INFO[Window(home).Property(thumb)]</value>
+		<value condition="ControlGroup(200).HasFocus(201) + !String.IsEmpty(Container(50).ListItem.Art(poster))">$INFO[Container(50).ListItem.Art(poster)]</value>
+		<value condition="ControlGroup(200).HasFocus(201) + String.IsEmpty(Container(51).ListItem.Art(poster))">$INFO[Container(50).ListItem.Art(thumb)]</value>
+		<value condition="ControlGroup(200).HasFocus(202) + !String.IsEmpty(Container(51).ListItem.Art(poster))">$INFO[Container(51).ListItem.Art(poster)]</value>
+		<value condition="ControlGroup(200).HasFocus(202) + String.IsEmpty(Container(51).ListItem.Art(poster))">$INFO[Container(51).ListItem.Art(thumb)]</value>
 	</variable>
 	<variable name="VideoVersionFileVar">
 		<value condition="Control.HasFocus(50)">$INFO[Container(50).ListItem.FileNameAndPath]</value>
