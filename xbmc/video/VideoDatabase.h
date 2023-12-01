@@ -59,16 +59,17 @@ namespace VIDEO
 
 enum VideoDbDetails
 {
-  VideoDbDetailsNone     = 0x00,
-  VideoDbDetailsRating   = 0x01,
-  VideoDbDetailsTag      = 0x02,
+  VideoDbDetailsNone = 0x00,
+  VideoDbDetailsRating = 0x01,
+  VideoDbDetailsTag = 0x02,
   VideoDbDetailsShowLink = 0x04,
-  VideoDbDetailsStream   = 0x08,
-  VideoDbDetailsCast     = 0x10,
+  VideoDbDetailsStream = 0x08,
+  VideoDbDetailsCast = 0x10,
   VideoDbDetailsBookmark = 0x20,
   VideoDbDetailsUniqueID = 0x40,
-  VideoDbDetailsAll      = 0xFF
-} ;
+  VideoDbDetailsVideoVersion = 0x80,
+  VideoDbDetailsAll = 0xFF
+};
 
 // these defines are based on how many columns we have and which column certain data is going to be in
 // when we do GetDetailsForMovie()

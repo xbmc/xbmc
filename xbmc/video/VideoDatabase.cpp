@@ -4262,8 +4262,6 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
 
   details.m_iDbId = idMovie;
   details.m_type = MediaTypeMovie;
-
-  details.m_hasVideoVersions = HasVideoVersions(VideoDbContentType::MOVIES, idMovie);
   details.m_set.id = record->at(VIDEODB_DETAILS_MOVIE_SET_ID).get_asInt();
   details.m_set.title = record->at(VIDEODB_DETAILS_MOVIE_SET_NAME).get_asString();
   details.m_set.overview = record->at(VIDEODB_DETAILS_MOVIE_SET_OVERVIEW).get_asString();
@@ -4319,6 +4317,9 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
 
     if (getDetails & VideoDbDetailsStream)
       GetStreamDetails(details);
+
+    if (getDetails & VideoDbDetailsVideoVersion)
+      details.m_hasVideoVersions = HasVideoVersions(VideoDbContentType::MOVIES, idMovie);
 
     details.m_parsedDetails = getDetails;
   }
@@ -7963,6 +7964,45 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
     if (!SortUtils::SortFromDataset(sortDescription, MediaTypeMovie, m_pDS, results))
       return false;
 
+    bool localVideoVersionLookup = false;
+
+    struct VideoVersion
+    {
+      int idMedia;
+      std::string mediaType;
+
+      VideoVersion(int idMedia, std::string&& mediaType)
+        : idMedia(idMedia), mediaType(std::move(mediaType))
+      {
+      }
+    };
+
+    std::vector<VideoVersion> videoVersions;
+
+    // If is required m_hasVideoVersions flag for 15 entries or more
+    // retrieves entire table and perform local lookup instead of
+    // individual SQL queries for each movie in list.
+    if (m_pDS2 && results.size() >= 15)
+    {
+      m_pDS2->query("SELECT * FROM videoversion");
+
+      const size_t count = m_pDS2->num_rows();
+
+      if (count > 0)
+      {
+        videoVersions.reserve(count);
+
+        while (!m_pDS2->eof())
+        {
+          videoVersions.emplace_back(m_pDS2->fv("idMedia").get_asInt(),
+                                     m_pDS2->fv("mediaType").get_asString());
+          m_pDS2->next();
+        }
+        localVideoVersionLookup = true;
+      }
+      m_pDS2->close();
+    }
+
     // get data from returned rows
     items.Reserve(results.size());
     const query_data &data = m_pDS->get_result_set().records;
@@ -7971,11 +8011,34 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
       unsigned int targetRow = (unsigned int)i.at(FieldRow).asInteger();
       const dbiplus::sql_record* const record = data.at(targetRow);
 
+      if (localVideoVersionLookup)
+        getDetails &= ~VideoDbDetailsVideoVersion; // unset mask
+      else
+        getDetails |= VideoDbDetailsVideoVersion; // set mask
+
       CVideoInfoTag movie = GetDetailsForMovie(record, getDetails);
       if (m_profileManager.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
           g_passwordManager.bMasterUser                                   ||
           g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, *CMediaSourceSettings::GetInstance().GetSources("video")))
       {
+        // local lookup table as fast alternative to HasVideoVersions()
+        if (localVideoVersionLookup)
+        {
+          const int idMedia = record->at(0).get_asInt();
+          int numVersions = 0;
+          for (const auto& rown : videoVersions)
+          {
+            if (rown.idMedia == idMedia && rown.mediaType == MediaTypeMovie)
+            {
+              numVersions++;
+              if (numVersions > 1)
+                break;
+            }
+          }
+
+          movie.m_hasVideoVersions = (numVersions > 1);
+        }
+
         CFileItemPtr pItem(new CFileItem(movie));
 
         CVideoDbUrl itemUrl = videoUrl;
