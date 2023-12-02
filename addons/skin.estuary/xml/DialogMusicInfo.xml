@@ -527,6 +527,13 @@
 				</include>
 			</control>
 		</control>
+		<control type="group">
+			<centerleft>50%</centerleft>
+			<width>1920</width>
+			<bottom>0</bottom>
+			<height>70</height>
+			<include>MediaFlags</include>
+		</control>
 		<include condition="Skin.HasSetting(touchmode)">TouchBackButton</include>
 	</controls>
 </window>
