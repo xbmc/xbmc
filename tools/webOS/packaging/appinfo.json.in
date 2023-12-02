@@ -7,7 +7,7 @@
   "title": "@APP_NAME@",
   "icon": "icon.png",
   "largeIcon": "largeIcon.png",
-  "splashBackground": "media/splash_webOS.png",
+  "splashBackground": "media/applaunch_screen.png",
   "spinnerOnLaunch": false,
   "handlesRelaunch": true,
   "nativeLifeCycleInterfaceVersion": 2,
