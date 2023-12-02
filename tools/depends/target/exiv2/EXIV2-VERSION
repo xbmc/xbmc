@@ -1,6 +1,7 @@
 LIBNAME=exiv2
 VERSION=0.28.2
-ARCHIVE=$(LIBNAME)-$(VERSION).tar.gz
-SHA512=to_be_released
+BASE_URL=https://github.com/Exiv2/exiv2/archive/
+ARCHIVE=130064dc76d2494b6fd473b293f2f32d36eb88f3.tar.gz
+SHA512=e2be3a4bec6ff3636ee70d342dc4111f0eeceff2c2b47695abd6a02121e45e8fc6a7d37b1ee564c3d74cf5bace7aa4cb2788b442009b299b83055de0260c7169
 BYPRODUCT=libexiv2.a
 BYPRODUCT_WIN=exiv2.lib
