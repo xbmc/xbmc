@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="metadata.generic.artists" name="Generic Artist Scraper" version="1.0.14" provider-name="Team Kodi">
+<addon id="metadata.generic.artists" name="Generic Artist Scraper" version="1.0.18" provider-name="Team Kodi">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="xbmc.metadata" version="2.1.0"/>
@@ -16,6 +16,6 @@
 		<assets>
 			<icon>resources/icon.png</icon>
 		</assets>
-		<news>- add wikipedia support</news>
+		<news>- add artist cutout image support</news>
 	</extension>
 </addon>
