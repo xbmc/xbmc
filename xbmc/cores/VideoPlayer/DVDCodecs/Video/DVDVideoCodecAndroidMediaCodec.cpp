@@ -540,25 +540,18 @@ bool CDVDVideoCodecAndroidMediaCodec::Open(CDVDStreamInfo &hints, CDVDCodecOptio
             switch (m_hints.dovi.dv_profile)
             {
               case 0:
-                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvavPer;
-                break;
               case 1:
-                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvavPen;
-                break;
               case 2:
-                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDer;
-                break;
               case 3:
-                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDen;
+              case 6:
+                // obsolete profiles that are not supported in current applications.
+                // 0 is ignored in case the AVDOVIDecoderConfigurationRecord hint is unset.
                 break;
               case 4:
                 profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDtr;
                 break;
               case 5:
                 profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheStn;
-                break;
-              case 6:
-                profile = CJNIMediaCodecInfoCodecProfileLevel::DolbyVisionProfileDvheDth;
                 break;
               case 7:
                 // set profile 8 when converting
