@@ -4290,7 +4290,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
 
   if (getDetails)
   {
-    GetCast(details.m_iDbId, MediaTypeMovie, details.m_cast);
+    if (getDetails & VideoDbDetailsCast)
+      GetCast(details.m_iDbId, MediaTypeMovie, details.m_cast);
 
     if (getDetails & VideoDbDetailsTag)
       GetTags(details.m_iDbId, MediaTypeMovie, details.m_tags);
