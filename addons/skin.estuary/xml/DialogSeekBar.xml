@@ -409,15 +409,23 @@
 				<orientation>vertical</orientation>
 				<itemgap>10</itemgap>
 				<control type="textbox">
+					<height>294</height>
+					<label fallback="10005">$INFO[VideoPlayer.Tagline,[B],[/B][CR]]$INFO[VideoPlayer.Plot]</label>
+					<align>left</align>
+					<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
+					<visible>Integer.IsGreaterOrEqual(Playlist.Position(video), Playlist.Length(video))</visible>
+				</control>
+				<control type="textbox">
 					<height>250</height>
 					<label fallback="10005">$INFO[VideoPlayer.Tagline,[B],[/B][CR]]$INFO[VideoPlayer.Plot]</label>
 					<align>left</align>
 					<autoscroll delay="5000" repeat="7500" time="5000"></autoscroll>
+					<visible>Integer.IsLess(Playlist.Position(video), Playlist.Length(video))</visible>
 				</control>
 				<control type="label">
 					<height>50</height>
 					<label>$VAR[OSDNextLabelVar]</label>
-					<visible>Integer.IsGreater(Playlist.Length(video),1)</visible>
+					<visible>Integer.IsLess(Playlist.Position(video), Playlist.Length(video))</visible>
 				</control>
 			</control>
 		</control>
