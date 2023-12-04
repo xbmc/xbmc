@@ -19,7 +19,10 @@ public:
 
   bool Handshake(const char* data, size_t length, std::string &response) override;
   const CWebSocketFrame* Ping(const char* data = NULL) const override { return new CWebSocketFrame(WebSocketPing, data); }
-  const CWebSocketFrame* Pong(const char* data = NULL) const override { return new CWebSocketFrame(WebSocketPong, data); }
+  const CWebSocketFrame* Pong(const char* data, uint32_t length) const override
+  {
+    return new CWebSocketFrame(WebSocketPong, data, length);
+  }
   const CWebSocketFrame* Close(WebSocketCloseReason reason = WebSocketCloseNormal, const std::string &message = "") override;
   void Fail() override;
 
