@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2023-01-29 21:15+0000\n"
 "Last-Translator: psp2111-ADSLGATE <psp100000@hotmail.com>\n"
@@ -251,14 +251,6 @@ msgstr "إظهار شاشة تسجيل الدخول عند بدء التشغيل
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "تسجيل الدخول التلقائي عند بدء التشغيل"
-
-msgctxt "#31059"
-msgid "Select + X"
-msgstr "Select + X"
-
-msgctxt "#31060"
-msgid "Select + Start"
-msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -751,6 +743,34 @@ msgstr "الوسائط"
 msgctxt "#31611"
 msgid "System"
 msgstr "النظام"
+
+#. Video version dialog button
+msgctxt "#31612"
+msgid "Add version"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31613"
+msgid "Add extras"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31614"
+msgid "Set default"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31615"
+msgid "Extras"
+msgstr ""
+
+#~ msgctxt "#31059"
+#~ msgid "Select + X"
+#~ msgstr "Select + X"
+
+#~ msgctxt "#31060"
+#~ msgid "Select + Start"
+#~ msgstr "Select + Start"
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"

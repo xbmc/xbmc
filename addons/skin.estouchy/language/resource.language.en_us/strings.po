@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-07-01 08:07+0000\n"
+"PO-Revision-Date: 2023-12-04 09:42+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: English (United States) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estouchy/en_us/>\n"
 "Language: en_us\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 5.2.1\n"
 
 msgctxt "Addon Summary"
 msgid "Skin for touchscreen devices"
@@ -81,7 +81,7 @@ msgstr ""
 #. Label to show player info page
 msgctxt "#31018"
 msgid "Player"
-msgstr ""
+msgstr "Player"
 
 #. Label to show video decoder name
 msgctxt "#31019"
@@ -346,7 +346,7 @@ msgstr "Show deleted"
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr ""
+msgstr "Video codec"
 
 #. Label to show the video resolution
 msgctxt "#31601"

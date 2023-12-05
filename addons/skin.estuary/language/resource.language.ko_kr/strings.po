@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-11-15 09:47+0000\n"
+"PO-Revision-Date: 2023-11-23 17:23+0000\n"
 "Last-Translator: Minho Park <parkmino@gmail.com>\n"
 "Language-Team: Korean <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/ko_kr/>\n"
 "Language: ko_kr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 5.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -248,14 +248,6 @@ msgstr "시작할 때 로그인 화면 표시"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "시작할 때 자동 로그인"
-
-msgctxt "#31059"
-msgid "Select + X"
-msgstr "Select + X"
-
-msgctxt "#31060"
-msgid "Select + Start"
-msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -739,6 +731,34 @@ msgstr "미디어"
 msgctxt "#31611"
 msgid "System"
 msgstr "시스템"
+
+#. Video version dialog button
+msgctxt "#31612"
+msgid "Add version"
+msgstr "버전 추가"
+
+#. Video version dialog button
+msgctxt "#31613"
+msgid "Add extras"
+msgstr "기타 추가"
+
+#. Video version dialog button
+msgctxt "#31614"
+msgid "Set default"
+msgstr "기본값으로 설정"
+
+#. Video version dialog button
+msgctxt "#31615"
+msgid "Extras"
+msgstr "기타"
+
+#~ msgctxt "#31059"
+#~ msgid "Select + X"
+#~ msgstr "Select + X"
+
+#~ msgctxt "#31060"
+#~ msgid "Select + Start"
+#~ msgstr "Select + Start"
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"

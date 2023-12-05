@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-10-26 04:27+0000\n"
-"Last-Translator: Dud <dud1992bling@gmail.com>\n"
+"PO-Revision-Date: 2023-12-04 09:42+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: English (United States) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/en_us/>\n"
 "Language: en_us\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 5.2.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -248,14 +248,6 @@ msgstr "Show login screen on startup"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatic Login on startup"
-
-msgctxt "#31059"
-msgid "Select + X"
-msgstr "Select + X"
-
-msgctxt "#31060"
-msgid "Select + Start"
-msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -510,7 +502,7 @@ msgstr ""
 #. Label to show player info page
 msgctxt "#31138"
 msgid "Player"
-msgstr ""
+msgstr "Player"
 
 #. Label to show video decoder name
 msgctxt "#31139"
@@ -647,7 +639,7 @@ msgstr "Artwork related settings."
 #. Label for OSD settings category
 msgctxt "#31170"
 msgid "On screen display"
-msgstr ""
+msgstr "On screen display"
 
 #. Helper text for the label of OSD settings category
 msgctxt "#31171"
@@ -657,7 +649,7 @@ msgstr ""
 #. Setting Automatically close video OSD
 msgctxt "#31172"
 msgid "Automatically close video OSD"
-msgstr ""
+msgstr "Automatically close video OSD"
 
 #. Setting auto close time for video osd
 msgctxt "#31173"
@@ -683,7 +675,7 @@ msgstr ""
 #. Label to show the video codec name
 msgctxt "#31600"
 msgid "Video codec"
-msgstr ""
+msgstr "Video codec"
 
 #. Label to show the video resolution
 msgctxt "#31601"
@@ -739,6 +731,34 @@ msgstr "Media"
 msgctxt "#31611"
 msgid "System"
 msgstr "System"
+
+#. Video version dialog button
+msgctxt "#31612"
+msgid "Add version"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31613"
+msgid "Add extras"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31614"
+msgid "Set default"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31615"
+msgid "Extras"
+msgstr "Extras"
+
+#~ msgctxt "#31059"
+#~ msgid "Select + X"
+#~ msgstr "Select + X"
+
+#~ msgctxt "#31060"
+#~ msgid "Select + Start"
+#~ msgstr "Select + Start"
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"

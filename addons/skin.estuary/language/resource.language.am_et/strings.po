@@ -250,14 +250,6 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr ""
 
-msgctxt "#31059"
-msgid "Select + X"
-msgstr ""
-
-msgctxt "#31060"
-msgid "Select + Start"
-msgstr ""
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr ""
@@ -745,6 +737,26 @@ msgstr ""
 msgctxt "#31611"
 msgid "System"
 msgstr "ስርአት"
+
+#. Video version dialog button
+msgctxt "#31612"
+msgid "Add version"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31613"
+msgid "Add extras"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31614"
+msgid "Set default"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31615"
+msgid "Extras"
+msgstr ""
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"
