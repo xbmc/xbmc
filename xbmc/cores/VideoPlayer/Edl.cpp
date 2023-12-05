@@ -17,7 +17,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
 
 #include "PlatformDefs.h"
@@ -482,22 +482,22 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
-  CXBMCTinyXML xmlDoc;
+  CXBMCTinyXML2 xmlDoc;
   if (!xmlDoc.LoadFile(beyondTVFilename))
   {
     CLog::Log(LOGERROR, "{} - Could not load Beyond TV file: {}. {}", __FUNCTION__,
-              CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorDesc());
+              CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorStr());
     return false;
   }
 
   if (xmlDoc.Error())
   {
     CLog::Log(LOGERROR, "{} - Could not parse Beyond TV file: {}. {}", __FUNCTION__,
-              CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorDesc());
+              CURL::GetRedacted(beyondTVFilename), xmlDoc.ErrorStr());
     return false;
   }
 
-  TiXmlElement *pRoot = xmlDoc.RootElement();
+  const tinyxml2::XMLElement* pRoot = xmlDoc.RootElement();
   if (!pRoot || strcmp(pRoot->Value(), "cutlist"))
   {
     CLog::Log(LOGERROR, "{} - Invalid Beyond TV file: {}. Expected root node to be <cutlist>",
@@ -506,11 +506,11 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
   }
 
   bool bValid = true;
-  TiXmlElement *pRegion = pRoot->FirstChildElement("Region");
+  const tinyxml2::XMLElement* pRegion = pRoot->FirstChildElement("Region");
   while (bValid && pRegion)
   {
-    TiXmlElement *pStart = pRegion->FirstChildElement("start");
-    TiXmlElement *pEnd = pRegion->FirstChildElement("end");
+    const tinyxml2::XMLElement* pStart = pRegion->FirstChildElement("start");
+    const tinyxml2::XMLElement* pEnd = pRegion->FirstChildElement("end");
     if (pStart && pEnd && pStart->FirstChild() && pEnd->FirstChild())
     {
       /*
