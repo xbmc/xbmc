@@ -9,6 +9,7 @@
 #include "ContextMenus.h"
 
 #include "Autorun.h"
+#include "ContextMenuManager.h"
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -17,11 +18,14 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/ExecString.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
+#include "video/guilib/VideoSelectActionProcessor.h"
 
 #include <utility>
 
@@ -157,6 +161,84 @@ bool CVideoBrowse::Execute(const std::shared_ptr<CFileItem>& item) const
     windowMgr.ActivateWindow(target, {path, "return"});
   }
   return true;
+}
+
+namespace
+{
+bool ExecuteAction(const CExecString& execute)
+{
+  const std::string execStr{execute.GetExecString()};
+  if (!execStr.empty())
+  {
+    CGUIMessage message(GUI_MSG_EXECUTE, 0, 0);
+    message.SetStringParam(execStr);
+    CServiceBroker::GetGUI()->GetWindowManager().SendMessage(message);
+    return true;
+  }
+  return false;
+}
+
+class CVideoSelectActionProcessor : public VIDEO::GUILIB::CVideoSelectActionProcessorBase
+{
+public:
+  explicit CVideoSelectActionProcessor(const std::shared_ptr<CFileItem>& item)
+    : CVideoSelectActionProcessorBase(item)
+  {
+  }
+
+protected:
+  bool OnPlayPartSelected(unsigned int part) override
+  {
+    // part numbers are 1-based
+    ExecuteAction({"PlayMedia", *m_item, StringUtils::Format("playoffset={}", part - 1)});
+    return true;
+  }
+
+  bool OnResumeSelected() override
+  {
+    ExecuteAction({"PlayMedia", *m_item, "resume"});
+    return true;
+  }
+
+  bool OnPlaySelected() override
+  {
+    ExecuteAction({"PlayMedia", *m_item, "noresume"});
+    return true;
+  }
+
+  bool OnQueueSelected() override
+  {
+    ExecuteAction({"QueueMedia", *m_item, ""});
+    return true;
+  }
+
+  bool OnInfoSelected() override
+  {
+    CGUIDialogVideoInfo::ShowFor(*m_item);
+    return true;
+  }
+
+  bool OnMoreSelected() override
+  {
+    CONTEXTMENU::ShowFor(m_item, CContextMenuManager::MAIN);
+    return true;
+  }
+};
+} // unnamed namespace
+
+bool CVideoChooseVersion::IsVisible(const CFileItem& item) const
+{
+  return item.HasVideoVersions();
+}
+
+bool CVideoChooseVersion::Execute(const std::shared_ptr<CFileItem>& item) const
+{
+  // force selection dialog, regardless of any settings like 'Select default video version'
+  item->SetProperty("force_choose_video_version", true);
+  CVideoSelectActionProcessor proc{item};
+  const bool ret = proc.Process();
+  item->ClearProperty("force_choose_video_version");
+  return ret;
 }
 
 std::string CVideoResume::GetLabel(const CFileItem& item) const

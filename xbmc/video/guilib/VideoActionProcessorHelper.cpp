@@ -99,48 +99,52 @@ std::shared_ptr<CFileItem> CVideoActionProcessorHelper::ChooseVideoVersion()
 {
   if (!m_videoVersion && m_item->HasVideoVersions())
   {
-    // select the specified video version
-    if (m_item->GetVideoInfoTag()->m_idVideoVersion > 0)
-      m_videoVersion = m_item;
-
-    const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
-
-    if (!m_videoVersion)
+    if (!m_item->GetProperty("force_choose_video_version").asBoolean(false))
     {
-      //! @todo get rid of this hack to patch away item's folder flag if it is video version
-      //! folder
-      if (m_item->GetVideoInfoTag()->m_idVideoVersion == VIDEO_VERSION_ID_ALL &&
-          settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER))
-      {
-        m_item->m_bIsFolder = false;
-        m_restoreFolderFlag = true;
-      }
-    }
+      // select the specified video version
+      if (m_item->GetVideoInfoTag()->m_idVideoVersion > 0)
+        m_videoVersion = m_item;
 
-    if (!m_videoVersion)
-    {
-      // select the default video version
-      if (settings->GetBool(CSettings::SETTING_MYVIDEOS_SELECTDEFAULTVERSION))
+      const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
+
+      if (!m_videoVersion)
       {
-        CVideoDatabase db;
-        if (!db.Open())
+        //! @todo get rid of this hack to patch away item's folder flag if it is video version
+        //! folder
+        if (m_item->GetVideoInfoTag()->m_idVideoVersion == VIDEO_VERSION_ID_ALL &&
+            settings->GetBool(CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER))
         {
-          CLog::LogF(LOGERROR, "Unable to open video database!");
+          m_item->m_bIsFolder = false;
+          m_restoreFolderFlag = true;
         }
-        else
+      }
+
+      if (!m_videoVersion)
+      {
+        // select the default video version
+        if (settings->GetBool(CSettings::SETTING_MYVIDEOS_SELECTDEFAULTVERSION))
         {
-          CFileItem defaultVersion;
-          db.GetDefaultVideoVersion(m_item->GetVideoContentType(),
-                                    m_item->GetVideoInfoTag()->m_iDbId, defaultVersion);
-          if (!defaultVersion.HasVideoInfoTag() || defaultVersion.GetVideoInfoTag()->IsEmpty())
-            CLog::LogF(LOGERROR, "Unable to get default video version from video database!");
+          CVideoDatabase db;
+          if (!db.Open())
+          {
+            CLog::LogF(LOGERROR, "Unable to open video database!");
+          }
           else
-            m_videoVersion = std::make_shared<const CFileItem>(defaultVersion);
+          {
+            CFileItem defaultVersion;
+            db.GetDefaultVideoVersion(m_item->GetVideoContentType(),
+                                      m_item->GetVideoInfoTag()->m_iDbId, defaultVersion);
+            if (!defaultVersion.HasVideoInfoTag() || defaultVersion.GetVideoInfoTag()->IsEmpty())
+              CLog::LogF(LOGERROR, "Unable to get default video version from video database!");
+            else
+              m_videoVersion = std::make_shared<const CFileItem>(defaultVersion);
+          }
         }
       }
     }
 
-    if (!m_videoVersion && !m_item->GetProperty("prohibit_choose_video_version").asBoolean(false))
+    if (!m_videoVersion && (m_item->GetProperty("force_choose_video_version").asBoolean(false) ||
+                            !m_item->GetProperty("prohibit_choose_video_version").asBoolean(false)))
     {
       const auto result{CGUIDialogVideoVersion::ChooseVideoVersion(m_item)};
       if (result.cancelled)
