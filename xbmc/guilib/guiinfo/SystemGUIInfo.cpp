@@ -42,6 +42,8 @@
 #include "utils/TimeUtils.h"
 #include "windowing/WinSystem.h"
 #include "windows/GUIMediaWindow.h"
+#include "pvr/PVRManager.h" // Needed to get the PVR client count
+#include "pvr/addons/PVRClients.h" // Needed to get the PVR client count
 
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
@@ -352,6 +354,12 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       value = g_langInfo.GetRegionLocale();
       return true;
     }
+
+    case SYSTEM_PVR_COUNT:
+    {
+      value = StringUtils::Format("{}", CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount());
+      return true;
+    }
   }
   return false;
 }
@@ -387,6 +395,11 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     case SYSTEM_BATTERY_LEVEL:
       value = CServiceBroker::GetPowerManager().BatteryLevel();
       return true;
+    case SYSTEM_PVR_COUNT:
+    {
+      value = CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount();
+      return true;
+    }
   }
 
   return false;
@@ -643,6 +656,11 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
         return true;
       }
       break;
+    }
+    case SYSTEM_PVR_COUNT:
+    {
+      value = CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount() > 1 ? true : false ;
+      return true;
     }
   }
 

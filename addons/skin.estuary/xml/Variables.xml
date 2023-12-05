@@ -674,4 +674,7 @@
 		<value condition="VideoPlayer.SubtitlesEnabled">[B]$INFO[VideoPlayer.SubtitlesLanguage][/B]</value>
 		<value>[B]$LOCALIZE[1223][/B]</value>
 	</variable>
+	<variable name="PVRInstanceName">
+		<value condition="System.PVRCount">$INFO[ListItem.backendinstancename,[COLOR grey]$LOCALIZE[31137]:[/COLOR] ,[CR]]</value>
+	</variable>
 </includes>

@@ -1330,6 +1330,16 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @skinning_v17 **[New Boolean Condition]** \link System_HasPVRAddon
 ///     `System.HasPVRAddon`\endlink <p>
 ///   }
+///   \table_row3{   <b>`System.PVRCount`</b>,
+///                  \anchor System_PVRCount
+///                  _integer_,
+///     @return Number of PVR clients enabled.
+///     @note If a PVR is enabled but unreachable, it is still counted.
+///     @note If evaluated as a boolean, returns true if > 1.
+///     <p><hr>
+///     @skinning_v22 **[New Integer Value]** \link System_PVRCount
+///     `System.PVRCount`\endlink <p>
+///   }
 ///   \table_row3{   <b>`System.HasCMS`</b>,
 ///                  \anchor System_HasCMS
 ///                  _boolean_,
@@ -1962,6 +1972,7 @@ const infomap system_labels[] = {
     {"hascms", SYSTEM_HAS_CMS},
     {"privacypolicy", SYSTEM_PRIVACY_POLICY},
     {"haspvraddon", SYSTEM_HAS_PVR_ADDON},
+    {"pvrcount", SYSTEM_PVR_COUNT},
     {"addonupdatecount", SYSTEM_ADDON_UPDATE_COUNT},
     {"supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE},
     {"supportedhdrtypes", SYSTEM_SUPPORTED_HDR_TYPES},
@@ -7117,6 +7128,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isautoupdateable", LISTITEM_ISAUTOUPDATEABLE },
                                   { "hdrtype",          LISTITEM_VIDEO_HDR_TYPE },
                                   { "songvideourl",     LISTITEM_SONG_VIDEO_URL },
+                                  { "backendinstancename", LISTITEM_BACKEND_INSTANCE_NAME },
 };
 // clang-format on
 
@@ -8144,6 +8156,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "backendrecordings",        PVR_BACKEND_RECORDINGS },
                                   { "backenddeletedrecordings", PVR_BACKEND_DELETED_RECORDINGS },
                                   { "backendnumber",            PVR_BACKEND_NUMBER },
+                                  { "backendinstancename",      PVR_BACKEND_INSTANCE_NAME },
                                   { "totaldiscspace",           PVR_TOTAL_DISKSPACE },
                                   { "nexttimer",                PVR_NEXT_TIMER },
                                   { "isplayingtv",              PVR_IS_PLAYING_TV },
