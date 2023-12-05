@@ -120,7 +120,7 @@ std::shared_ptr<CFileItem> CVideoActionProcessorHelper::ChooseVideoVersion()
     if (!m_videoVersion)
     {
       // select the default video version
-      if (settings->GetBool(CSettings::SETTING_VIDEOPLAYER_PLAYDEFAULTVERSION))
+      if (settings->GetBool(CSettings::SETTING_MYVIDEOS_SELECTDEFAULTVERSION))
       {
         CVideoDatabase db;
         if (!db.Open())

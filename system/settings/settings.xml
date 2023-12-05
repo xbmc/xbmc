@@ -21,11 +21,6 @@
             <hidevalue>false</hidevalue>
           </control>
         </setting>
-        <setting id="videoplayer.playdefaultversion" type="boolean" label="40200" help="40201">
-          <level>0</level>
-          <default>false</default>
-          <control type="toggle" />
-        </setting>
         <setting id="videoplayer.seeksteps" type="list[integer]" label="13556" help="37042">
           <level>1</level>
           <default>-600,-300,-180,-60,-30,-10,10,30,60,180,300,600</default>
@@ -1029,6 +1024,11 @@
             </options>
           </constraints>
           <control type="list" format="string" />
+        </setting>
+        <setting id="myvideos.selectdefaultversion" type="boolean" label="40200" help="40201">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle" />
         </setting>
         <setting id="myvideos.playaction" type="integer" label="22076" help="36204">
           <level>0</level>
