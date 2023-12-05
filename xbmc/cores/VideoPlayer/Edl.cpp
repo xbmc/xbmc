@@ -497,21 +497,21 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
     return false;
   }
 
-  const tinyxml2::XMLElement* pRoot = xmlDoc.RootElement();
-  if (!pRoot || strcmp(pRoot->Value(), "cutlist"))
+  const tinyxml2::XMLElement* root = xmlDoc.RootElement();
+  if (!root || strcmp(root->Value(), "cutlist"))
   {
     CLog::Log(LOGERROR, "{} - Invalid Beyond TV file: {}. Expected root node to be <cutlist>",
               __FUNCTION__, CURL::GetRedacted(beyondTVFilename));
     return false;
   }
 
-  bool bValid = true;
-  const tinyxml2::XMLElement* pRegion = pRoot->FirstChildElement("Region");
-  while (bValid && pRegion)
+  bool valid = true;
+  const tinyxml2::XMLElement* region = root->FirstChildElement("Region");
+  while (valid && region)
   {
-    const tinyxml2::XMLElement* pStart = pRegion->FirstChildElement("start");
-    const tinyxml2::XMLElement* pEnd = pRegion->FirstChildElement("end");
-    if (pStart && pEnd && pStart->FirstChild() && pEnd->FirstChild())
+    const tinyxml2::XMLElement* start = region->FirstChildElement("start");
+    const tinyxml2::XMLElement* end = region->FirstChildElement("end");
+    if (start && end && start->FirstChild() && end->FirstChild())
     {
       /*
        * Need to divide the start and end times by a factor of 10,000 to get msec.
@@ -526,17 +526,17 @@ bool CEdl::ReadBeyondTV(const std::string& strMovie)
        * atof() returns 0 if there were any problems and will subsequently be rejected in AddEdit().
        */
       Edit edit;
-      edit.start = std::lround((std::atof(pStart->FirstChild()->Value()) / 10000));
-      edit.end = std::lround((std::atof(pEnd->FirstChild()->Value()) / 10000));
+      edit.start = std::lround((std::atof(start->FirstChild()->Value()) / 10000));
+      edit.end = std::lround((std::atof(end->FirstChild()->Value()) / 10000));
       edit.action = Action::COMM_BREAK;
-      bValid = AddEdit(edit);
+      valid = AddEdit(edit);
     }
     else
-      bValid = false;
+      valid = false;
 
-    pRegion = pRegion->NextSiblingElement("Region");
+    region = region->NextSiblingElement("Region");
   }
-  if (!bValid)
+  if (!valid)
   {
     CLog::Log(LOGERROR,
               "{} - Invalid Beyond TV file: {}. Clearing any valid commercial breaks found.",
