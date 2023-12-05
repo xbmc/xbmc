@@ -5,17 +5,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
+"Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2022-08-26 12:27+0000\n"
-"Last-Translator: Matej <mateju@src.gnome.org>\n"
+"PO-Revision-Date: 2023-12-04 09:42+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Slovenian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/sl_si/>\n"
 "Language: sl_si\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3;\n"
-"X-Generator: Weblate 4.13\n"
+"X-Generator: Weblate 5.2.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -250,14 +250,6 @@ msgstr ""
 
 msgctxt "#31058"
 msgid "Automatic Login on startup"
-msgstr ""
-
-msgctxt "#31059"
-msgid "Select + X"
-msgstr ""
-
-msgctxt "#31060"
-msgid "Select + Start"
 msgstr ""
 
 msgctxt "#31061"
@@ -748,3 +740,23 @@ msgstr "Predstavne vsebine"
 msgctxt "#31611"
 msgid "System"
 msgstr "Sistem"
+
+#. Video version dialog button
+msgctxt "#31612"
+msgid "Add version"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31613"
+msgid "Add extras"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31614"
+msgid "Set default"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31615"
+msgid "Extras"
+msgstr "Dodatki"

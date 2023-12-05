@@ -5,9 +5,9 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-01-29 21:15+0000\n"
+"PO-Revision-Date: 2023-11-28 18:10+0000\n"
 "Last-Translator: Frodo19 <bilbohu@gmail.com>\n"
 "Language-Team: Hungarian <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/hu_hu/>\n"
 "Language: hu_hu\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 5.2.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -248,14 +248,6 @@ msgstr "Bejelentkezési képernyő megjelenítése indításkor"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Automatikus bejelentkezés indításkor"
-
-msgctxt "#31059"
-msgid "Select + X"
-msgstr "Kiválasztás + X"
-
-msgctxt "#31060"
-msgid "Select + Start"
-msgstr "Kiválasztás + indítás"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -739,6 +731,34 @@ msgstr "Média"
 msgctxt "#31611"
 msgid "System"
 msgstr "Rendszer"
+
+#. Video version dialog button
+msgctxt "#31612"
+msgid "Add version"
+msgstr "Verzió hozzáadása"
+
+#. Video version dialog button
+msgctxt "#31613"
+msgid "Add extras"
+msgstr "Extrák hozzáadása"
+
+#. Video version dialog button
+msgctxt "#31614"
+msgid "Set default"
+msgstr "Alapállapotba állít"
+
+#. Video version dialog button
+msgctxt "#31615"
+msgid "Extras"
+msgstr "Extrák"
+
+#~ msgctxt "#31059"
+#~ msgid "Select + X"
+#~ msgstr "Kiválasztás + X"
+
+#~ msgctxt "#31060"
+#~ msgid "Select + Start"
+#~ msgstr "Kiválasztás + indítás"
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"

@@ -249,14 +249,6 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Аўтаматычна ўваходзіць у сістэму падчас запуску"
 
-msgctxt "#31059"
-msgid "Select + X"
-msgstr "Select + X"
-
-msgctxt "#31060"
-msgid "Select + Start"
-msgstr "Select + Start"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Элементы галоўнага меню"
@@ -739,6 +731,34 @@ msgstr "Медыя"
 msgctxt "#31611"
 msgid "System"
 msgstr "Сістэма"
+
+#. Video version dialog button
+msgctxt "#31612"
+msgid "Add version"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31613"
+msgid "Add extras"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31614"
+msgid "Set default"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31615"
+msgid "Extras"
+msgstr ""
+
+#~ msgctxt "#31059"
+#~ msgid "Select + X"
+#~ msgstr "Select + X"
+
+#~ msgctxt "#31060"
+#~ msgid "Select + Start"
+#~ msgstr "Select + Start"
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"

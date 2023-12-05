@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2023-02-12 20:48+0000\n"
 "Last-Translator: queeup <queeup@zoho.com>\n"
@@ -248,14 +248,6 @@ msgstr "Başlangıçta oturum açma ekranını göster"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Başlangıçta otomatik olarak oturum aç"
-
-msgctxt "#31059"
-msgid "Select + X"
-msgstr "Select + X"
-
-msgctxt "#31060"
-msgid "Select + Start"
-msgstr "Select + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -739,6 +731,34 @@ msgstr "Medya"
 msgctxt "#31611"
 msgid "System"
 msgstr "Sistem"
+
+#. Video version dialog button
+msgctxt "#31612"
+msgid "Add version"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31613"
+msgid "Add extras"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31614"
+msgid "Set default"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31615"
+msgid "Extras"
+msgstr ""
+
+#~ msgctxt "#31059"
+#~ msgid "Select + X"
+#~ msgstr "Select + X"
+
+#~ msgctxt "#31060"
+#~ msgid "Select + Start"
+#~ msgstr "Select + Start"
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"

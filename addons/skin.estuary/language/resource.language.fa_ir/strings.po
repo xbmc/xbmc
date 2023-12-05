@@ -252,14 +252,6 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "ورود خودکار هنگام آغاز"
 
-msgctxt "#31059"
-msgid "Select + X"
-msgstr "گزینش + X"
-
-msgctxt "#31060"
-msgid "Select + Start"
-msgstr "گزینش + آغاز"
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "موردهای فهرست اصلی"
@@ -750,6 +742,34 @@ msgstr "رسانه"
 msgctxt "#31611"
 msgid "System"
 msgstr "سیستم"
+
+#. Video version dialog button
+msgctxt "#31612"
+msgid "Add version"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31613"
+msgid "Add extras"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31614"
+msgid "Set default"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31615"
+msgid "Extras"
+msgstr ""
+
+#~ msgctxt "#31059"
+#~ msgid "Select + X"
+#~ msgstr "گزینش + X"
+
+#~ msgctxt "#31060"
+#~ msgid "Select + Start"
+#~ msgstr "گزینش + آغاز"
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"

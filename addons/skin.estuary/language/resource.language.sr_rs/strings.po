@@ -249,14 +249,6 @@ msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Аутоматска Пријава при укључивању"
 
-msgctxt "#31059"
-msgid "Select + X"
-msgstr ""
-
-msgctxt "#31060"
-msgid "Select + Start"
-msgstr ""
-
 msgctxt "#31061"
 msgid "Main menu items"
 msgstr "Ставке главног менија"
@@ -739,6 +731,26 @@ msgstr "Медији"
 msgctxt "#31611"
 msgid "System"
 msgstr "Систем"
+
+#. Video version dialog button
+msgctxt "#31612"
+msgid "Add version"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31613"
+msgid "Add extras"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31614"
+msgid "Set default"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31615"
+msgid "Extras"
+msgstr ""
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"

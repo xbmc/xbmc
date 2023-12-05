@@ -7,15 +7,15 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2023-02-09 00:07+0000\n"
-"Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
+"PO-Revision-Date: 2023-12-04 09:42+0000\n"
+"Last-Translator: Christian Gade <gade@kodi.tv>\n"
 "Language-Team: Icelandic <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/is_is/>\n"
 "Language: is_is\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n % 10 != 1 || n % 100 == 11;\n"
-"X-Generator: Weblate 4.15.2\n"
+"X-Generator: Weblate 5.2.1\n"
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"
@@ -248,14 +248,6 @@ msgstr "Birta innskráningarskjá við ræsingu"
 msgctxt "#31058"
 msgid "Automatic Login on startup"
 msgstr "Sjálfvirk innskráning í ræsingu"
-
-msgctxt "#31059"
-msgid "Select + X"
-msgstr "Val + X"
-
-msgctxt "#31060"
-msgid "Select + Start"
-msgstr "Val + Start"
 
 msgctxt "#31061"
 msgid "Main menu items"
@@ -739,6 +731,34 @@ msgstr "Gagnamiðlar"
 msgctxt "#31611"
 msgid "System"
 msgstr "Kerfi"
+
+#. Video version dialog button
+msgctxt "#31612"
+msgid "Add version"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31613"
+msgid "Add extras"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31614"
+msgid "Set default"
+msgstr ""
+
+#. Video version dialog button
+msgctxt "#31615"
+msgid "Extras"
+msgstr "Aukahlutir"
+
+#~ msgctxt "#31059"
+#~ msgid "Select + X"
+#~ msgstr "Val + X"
+
+#~ msgctxt "#31060"
+#~ msgid "Select + Start"
+#~ msgstr "Val + Start"
 
 #~ msgctxt "#31137"
 #~ msgid "PVR info"
