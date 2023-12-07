@@ -10,6 +10,8 @@
 
 #include "video/guilib/VideoSelectAction.h"
 
+#include <memory>
+
 class CFileItem;
 
 namespace VIDEO
@@ -19,7 +21,12 @@ namespace GUILIB
 class CVideoSelectActionProcessorBase
 {
 public:
-  explicit CVideoSelectActionProcessorBase(CFileItem& item) : m_item(item) {}
+  explicit CVideoSelectActionProcessorBase(const std::shared_ptr<CFileItem>& item) : m_item(item) {}
+  CVideoSelectActionProcessorBase(const std::shared_ptr<CFileItem>& item,
+                                  const std::shared_ptr<const CFileItem>& videoVersion)
+    : m_item{item}, m_videoVersion{videoVersion}
+  {
+  }
   virtual ~CVideoSelectActionProcessorBase() = default;
 
   static SelectAction GetDefaultSelectAction();
@@ -37,12 +44,15 @@ protected:
   virtual bool OnInfoSelected() = 0;
   virtual bool OnMoreSelected() = 0;
 
-  CFileItem& m_item;
+  std::shared_ptr<CFileItem> m_item;
 
 private:
   CVideoSelectActionProcessorBase() = delete;
   SelectAction ChooseVideoItemSelectAction() const;
   unsigned int ChooseStackItemPartNumber() const;
+
+  bool m_versionChecked{false};
+  const std::shared_ptr<const CFileItem> m_videoVersion;
 };
 } // namespace GUILIB
 } // namespace VIDEO

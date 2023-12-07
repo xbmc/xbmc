@@ -715,12 +715,15 @@ namespace
 class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
 {
 public:
-  explicit CVideoPlayActionProcessor(CFileItem& item) : CVideoPlayActionProcessorBase(item) {}
+  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
+    : CVideoPlayActionProcessorBase(item)
+  {
+  }
 
 protected:
   bool OnResumeSelected() override
   {
-    m_item.SetStartOffset(STARTOFFSET_RESUME);
+    m_item->SetStartOffset(STARTOFFSET_RESUME);
     Play();
     return true;
   }
@@ -734,21 +737,11 @@ protected:
 private:
   void Play()
   {
-    m_item.SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
-    const ContentUtils::PlayMode mode{m_item.GetProperty("CheckAutoPlayNextItem").asBoolean()
+    m_item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+    const ContentUtils::PlayMode mode{m_item->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS};
-
-    //! @todo get rid of special handling for movie versions
-    if (m_item.GetStartOffset() != STARTOFFSET_RESUME &&
-        m_item.GetVideoInfoTag()->m_type == MediaTypeMovie)
-    {
-      CGUIDialogVideoVersion::PlayVideoVersion(std::make_shared<CFileItem>(m_item),
-                                               [mode](const std::shared_ptr<CFileItem>& item)
-                                               { VIDEO_UTILS::PlayItem(item, "", mode); });
-    }
-    else
-      VIDEO_UTILS::PlayItem(std::make_shared<CFileItem>(m_item), "", mode);
+    VIDEO_UTILS::PlayItem(m_item, "", mode);
   }
 };
 } // unnamed namespace
@@ -797,7 +790,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
 
   if (resume)
   {
-    CVideoPlayActionProcessor proc{*m_movieItem};
+    CVideoPlayActionProcessor proc{m_movieItem};
     proc.Process(PLAY_ACTION_RESUME);
   }
   else
@@ -805,13 +798,13 @@ void CGUIDialogVideoInfo::Play(bool resume)
     if (GetControl(CONTROL_BTN_RESUME))
     {
       // if dialog has a resume button, play button has always the purpose to start from beginning
-      CVideoPlayActionProcessor proc{*m_movieItem};
+      CVideoPlayActionProcessor proc{m_movieItem};
       proc.Process(PLAY_ACTION_PLAY_FROM_BEGINNING);
     }
     else
     {
       // play button acts according to default play action setting
-      CVideoPlayActionProcessor proc{*m_movieItem};
+      CVideoPlayActionProcessor proc{m_movieItem};
       proc.Process();
       if (proc.UserCancelled())
       {

@@ -25,22 +25,32 @@ public:
   CGUIDialogVideoVersion(int id);
   ~CGUIDialogVideoVersion(void) override;
   bool OnMessage(CGUIMessage& message) override;
-  void SetVideoItem(const std::shared_ptr<CFileItem>& item, bool playMode);
+  bool OnBack(int actionID) override;
+
+  enum class Mode
+  {
+    MANAGE,
+    CHOOSE,
+  };
+  void SetMode(Mode mode) { m_mode = mode; }
+  void SetVideoItem(const std::shared_ptr<CFileItem>& item);
+
   static std::tuple<int, std::string> NewVideoVersion();
   static bool ConvertVideoVersion(const std::shared_ptr<CFileItem>& item);
   static bool ProcessVideoVersion(VideoDbContentType itemType, int dbId);
   static int SelectVideoVersion(const std::shared_ptr<CFileItem>& item);
   static void ManageVideoVersion(const std::shared_ptr<CFileItem>& item);
-  static void PlayVideoItem(const std::shared_ptr<CFileItem>& item);
   static std::string GenerateExtrasVideoVersion(const std::string& extrasRoot,
                                                 const std::string& extrasPath);
   static std::string GenerateExtrasVideoVersion(const std::string& extrasPath);
-
-  using VideoVersionPlayCallback = std::function<void(const std::shared_ptr<CFileItem>& item)>;
-  static void PlayVideoVersion(const std::shared_ptr<CFileItem>& item,
-                               VideoVersionPlayCallback play);
-
   static int ManageVideoVersionContextMenu(const std::shared_ptr<CFileItem>& version);
+
+  struct VersionSelectResult
+  {
+    bool cancelled{false};
+    std::shared_ptr<CFileItem> selected;
+  };
+  static VersionSelectResult ChooseVideoVersion(const std::shared_ptr<CFileItem>& item);
 
 protected:
   void OnInitWindow() override;
@@ -50,7 +60,6 @@ private:
   void SetSelectedVideoVersion(const std::shared_ptr<CFileItem>& version);
   void ClearVideoVersionList();
   void RefreshVideoVersionList();
-  void SetPlayCallback(VideoVersionPlayCallback callback);
   void AddVideoVersion(bool primary);
   void Play();
   void AddVersion();
@@ -59,15 +68,14 @@ private:
   void SetDefault();
   void Remove();
   void ChooseArt();
-
-  VideoVersionPlayCallback m_playCallback;
+  void CloseAll();
 
   std::shared_ptr<CFileItem> m_videoItem;
-  bool m_playMode{false};
-
+  Mode m_mode{Mode::MANAGE};
+  bool m_cancelled{false};
   CVideoDatabase m_database;
   std::unique_ptr<CFileItemList> m_primaryVideoVersionList;
   std::unique_ptr<CFileItemList> m_extrasVideoVersionList;
   std::unique_ptr<CFileItem> m_defaultVideoVersion;
-  std::unique_ptr<CFileItem> m_selectedVideoVersion;
+  std::shared_ptr<CFileItem> m_selectedVideoVersion;
 };

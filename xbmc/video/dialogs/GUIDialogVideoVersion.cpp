@@ -11,16 +11,13 @@
 #include "FileItem.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
-#include "Util.h"
-#include "application/Application.h"
+#include "URL.h"
 #include "cores/VideoPlayer/DVDFileInfo.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "dialogs/GUIDialogYesNo.h"
-#include "filesystem/Directory.h"
-#include "filesystem/VideoDatabaseDirectory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIImage.h"
 #include "guilib/GUIKeyboardFactory.h"
@@ -28,29 +25,24 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "input/Key.h"
-#include "profiles/ProfileManager.h"
-#include "settings/AdvancedSettings.h"
+#include "playlists/PlayListTypes.h"
 #include "settings/MediaSourceSettings.h"
-#include "settings/SettingUtils.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
-#include "settings/lib/Setting.h"
 #include "storage/MediaManager.h"
-#include "utils/ExecString.h"
 #include "utils/FileExtensionProvider.h"
 #include "utils/SortUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
-#include "video/VideoDbUrl.h"
 #include "video/VideoInfoTag.h"
-#include "video/VideoItemArtworkHandler.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoUtils.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 
 #include <algorithm>
-#include <iterator>
 #include <string>
 
 static constexpr unsigned int CONTROL_LABEL_MODE = 1;
@@ -90,6 +82,12 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
+    case GUI_MSG_WINDOW_INIT:
+    {
+      m_cancelled = false;
+      break;
+    }
+
     case GUI_MSG_WINDOW_DEINIT:
     {
       ClearVideoVersionList();
@@ -121,15 +119,15 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
           }
           else
           {
-            CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_REMOVE, !m_playMode);
-            CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_RENAME, !m_playMode);
-            CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_SET_DEFAULT, !m_playMode);
+            CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_REMOVE, m_mode == Mode::MANAGE);
+            CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_RENAME, m_mode == Mode::MANAGE);
+            CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_SET_DEFAULT, m_mode == Mode::MANAGE);
           }
 
-          if (!m_playMode)
+          if (m_mode == Mode::MANAGE)
             SET_CONTROL_FOCUS(CONTROL_BUTTON_PLAY, 0);
           else
-            Play();
+            CloseAll();
         }
       }
       else if (control == CONTROL_LIST_EXTRAS_VERSION)
@@ -148,13 +146,13 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
 
           CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
 
-          CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_REMOVE, !m_playMode);
-          CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_RENAME, !m_playMode);
+          CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_REMOVE, m_mode == Mode::MANAGE);
+          CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_RENAME, m_mode == Mode::MANAGE);
 
-          if (!m_playMode)
+          if (m_mode == Mode::MANAGE)
             SET_CONTROL_FOCUS(CONTROL_BUTTON_PLAY, 0);
           else
-            Play();
+            CloseAll();
         }
       }
       else if (control == CONTROL_BUTTON_PLAY)
@@ -193,10 +191,16 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogVideoVersion::OnBack(int actionID)
+{
+  m_cancelled = true;
+  return CGUIDialog::OnBack(actionID);
+}
+
 void CGUIDialogVideoVersion::OnInitWindow()
 {
   // set working mode
-  SET_CONTROL_LABEL(CONTROL_LABEL_MODE, !m_playMode ? "manage" : "play");
+  SET_CONTROL_LABEL(CONTROL_LABEL_MODE, m_mode == Mode::MANAGE ? "manage" : "choose");
 
   // set window title
   std::string title = m_videoItem->GetVideoInfoTag()->GetTitle();
@@ -205,8 +209,9 @@ void CGUIDialogVideoVersion::OnInitWindow()
   if (year != 0)
     title = StringUtils::Format("{} ({})", title, year);
 
-  SET_CONTROL_LABEL(CONTROL_LABEL_TITLE,
-                    StringUtils::Format(g_localizeStrings.Get(!m_playMode ? 40022 : 40023), title));
+  SET_CONTROL_LABEL(
+      CONTROL_LABEL_TITLE,
+      StringUtils::Format(g_localizeStrings.Get(m_mode == Mode::MANAGE ? 40022 : 40023), title));
 
   // bind primary and extras version lists
   CGUIMessage msg1(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_PRIMARY_VERSION, 0, 0,
@@ -221,11 +226,11 @@ void CGUIDialogVideoVersion::OnInitWindow()
   CONTROL_DISABLE(CONTROL_BUTTON_REMOVE);
   CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_ADD_VERSION, !m_playMode);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_ADD_EXTRAS, !m_playMode);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_CHOOSE_ART, !m_playMode);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_RENAME, !m_playMode);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_PLAY, !m_playMode);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_ADD_VERSION, m_mode == Mode::MANAGE);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_ADD_EXTRAS, m_mode == Mode::MANAGE);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_CHOOSE_ART, m_mode == Mode::MANAGE);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_RENAME, m_mode == Mode::MANAGE);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_PLAY, m_mode == Mode::MANAGE);
 
   CGUIDialog::OnInitWindow();
 }
@@ -274,7 +279,7 @@ void CGUIDialogVideoVersion::RefreshVideoVersionList()
   m_database.GetDefaultVideoVersion(itemType, dbId, *m_selectedVideoVersion.get());
 }
 
-void CGUIDialogVideoVersion::SetVideoItem(const std::shared_ptr<CFileItem>& item, bool playMode)
+void CGUIDialogVideoVersion::SetVideoItem(const std::shared_ptr<CFileItem>& item)
 {
   if (item == nullptr || !item->HasVideoInfoTag() ||
       item->GetVideoInfoTag()->m_type != MediaTypeMovie)
@@ -284,7 +289,6 @@ void CGUIDialogVideoVersion::SetVideoItem(const std::shared_ptr<CFileItem>& item
   }
 
   m_videoItem = item;
-  m_playMode = playMode;
 
   ClearVideoVersionList();
 
@@ -312,7 +316,7 @@ void CGUIDialogVideoVersion::SetVideoItem(const std::shared_ptr<CFileItem>& item
     loader.LoadItem(item.get());
 }
 
-void CGUIDialogVideoVersion::Play()
+void CGUIDialogVideoVersion::CloseAll()
 {
   // close our dialog
   Close(true);
@@ -323,15 +327,51 @@ void CGUIDialogVideoVersion::Play()
           WINDOW_DIALOG_VIDEO_INFO);
   if (dialog)
     dialog->Close(true);
+}
 
-  // set the selected video version as default temporarily
-  SetDefaultVideoVersion(*m_selectedVideoVersion.get());
+namespace
+{
+class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
+{
+public:
+  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item,
+                                     const std::shared_ptr<CFileItem>& videoVersion)
+    : CVideoPlayActionProcessorBase(item, videoVersion)
+  {
+  }
 
-  // play the video item
-  m_playCallback(m_videoItem);
+protected:
+  bool OnResumeSelected() override
+  {
+    m_item->SetStartOffset(STARTOFFSET_RESUME);
+    Play();
+    return true;
+  }
 
-  // restore the default video version
-  SetDefaultVideoVersion(*m_defaultVideoVersion.get());
+  bool OnPlaySelected() override
+  {
+    Play();
+    return true;
+  }
+
+private:
+  void Play()
+  {
+    m_item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+    const ContentUtils::PlayMode mode{m_item->GetProperty("CheckAutoPlayNextItem").asBoolean()
+                                          ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
+                                          : ContentUtils::PlayMode::PLAY_ONLY_THIS};
+    VIDEO_UTILS::PlayItem(m_item, "", mode);
+  }
+};
+} // unnamed namespace
+
+void CGUIDialogVideoVersion::Play()
+{
+  CloseAll();
+
+  CVideoPlayActionProcessor proc{m_videoItem, m_selectedVideoVersion};
+  proc.Process();
 }
 
 void CGUIDialogVideoVersion::Remove()
@@ -599,77 +639,53 @@ void CGUIDialogVideoVersion::SetSelectedVideoVersion(const std::shared_ptr<CFile
   m_selectedVideoVersion = std::make_unique<CFileItem>(*version);
 }
 
-void CGUIDialogVideoVersion::SetPlayCallback(VideoVersionPlayCallback callback)
-{
-  m_playCallback = callback;
-}
-
-void CGUIDialogVideoVersion::PlayVideoItem(const std::shared_ptr<CFileItem>& item)
-{
-  CGUIMessage msg(GUI_MSG_EXECUTE, 0, 0);
-  msg.SetStringParam(CExecString("PlayMedia", *item.get(), "noresume").GetExecString());
-  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
-}
-
 void CGUIDialogVideoVersion::ManageVideoVersion(const std::shared_ptr<CFileItem>& item)
 {
   CGUIDialogVideoVersion* dialog =
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoVersion>(
           WINDOW_DIALOG_VIDEO_VERSION);
   if (!dialog)
+  {
+    CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_VIDEO_VERSION instance!");
     return;
+  }
 
-  dialog->SetVideoItem(item, false);
-  dialog->SetPlayCallback(PlayVideoItem);
+  dialog->SetVideoItem(item);
+  dialog->SetMode(Mode::MANAGE);
   dialog->Open();
 }
 
-void CGUIDialogVideoVersion::PlayVideoVersion(const std::shared_ptr<CFileItem>& item,
-                                              VideoVersionPlayCallback callback)
+CGUIDialogVideoVersion::VersionSelectResult CGUIDialogVideoVersion::ChooseVideoVersion(
+    const std::shared_ptr<CFileItem>& item)
 {
-  // play the specified video version
-  if (item->GetVideoInfoTag()->m_idVideoVersion > 0)
+  if (!item->HasVideoInfoTag())
   {
-    callback(item);
-    return;
+    CLog::LogF(LOGWARNING, "Item is not a video. path={}", item->GetPath());
+    return {true, {}};
   }
 
-  // play the default video version
-  if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-          CSettings::SETTING_VIDEOPLAYER_PLAYDEFAULTVERSION))
+  if (!item->HasVideoVersions())
   {
-    auto temp = item;
-
-    // play a temporary copy of the item if it is video version folder
-    if (item->GetVideoInfoTag()->m_idVideoVersion == VIDEO_VERSION_ID_ALL &&
-        CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
-            CSettings::SETTING_VIDEOLIBRARY_SHOWVIDEOVERSIONSASFOLDER))
-    {
-      temp = std::make_shared<CFileItem>(*item);
-      temp->m_bIsFolder = false;
-    }
-
-    callback(temp);
-    return;
+    CLog::LogF(LOGWARNING, "Item has no video versions. path={}", item->GetPath());
+    return {true, {}};
   }
 
-  // play the video item directly
-  if (!item->GetVideoInfoTag()->m_hasVideoVersions)
-  {
-    callback(item);
-    return;
-  }
-
-  // prompt to play selected video version
-  CGUIDialogVideoVersion* dialog =
+  // prompt to select a video version
+  CGUIDialogVideoVersion* dialog{
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoVersion>(
-          WINDOW_DIALOG_VIDEO_VERSION_PLAY);
+          WINDOW_DIALOG_VIDEO_VERSION_SELECT)};
   if (!dialog)
-    return;
+  {
+    CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_VIDEO_VERSION_SELECT instance!");
+    return {true, {}};
+  }
 
-  dialog->SetVideoItem(item, true);
-  dialog->SetPlayCallback(PlayVideoItem);
+  dialog->SetVideoItem(item);
+  dialog->SetMode(Mode::CHOOSE);
   dialog->Open();
+
+  // get the selected video version from dialog if not cancelled
+  return {dialog->m_cancelled, dialog->m_selectedVideoVersion};
 }
 
 int CGUIDialogVideoVersion::ManageVideoVersionContextMenu(const std::shared_ptr<CFileItem>& version)
@@ -695,7 +711,8 @@ int CGUIDialogVideoVersion::ManageVideoVersionContextMenu(const std::shared_ptr<
                                                        videoItem))
       return -1;
 
-    dialog->SetVideoItem(std::make_shared<CFileItem>(videoItem), false);
+    dialog->SetVideoItem(std::make_shared<CFileItem>(videoItem));
+    dialog->SetMode(Mode::MANAGE);
     dialog->SetSelectedVideoVersion(version);
 
     switch (static_cast<CONTEXT_BUTTON>(button))

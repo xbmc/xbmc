@@ -120,7 +120,7 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"okdialog", WINDOW_DIALOG_OK},
     {"movieinformation", WINDOW_DIALOG_VIDEO_INFO},
     {"videoversion", WINDOW_DIALOG_VIDEO_VERSION},
-    {"videoversionplay", WINDOW_DIALOG_VIDEO_VERSION_PLAY},
+    {"videoversionselect", WINDOW_DIALOG_VIDEO_VERSION_SELECT},
     {"textviewer", WINDOW_DIALOG_TEXT_VIEWER},
     {"fullscreenvideo", WINDOW_FULLSCREEN_VIDEO},
     {"dialogcolorpicker", WINDOW_DIALOG_COLOR_PICKER},

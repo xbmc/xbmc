@@ -19,8 +19,10 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/StringUtils.h"
+#include "utils/Variant.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
+#include "video/guilib/VideoActionProcessorHelper.h"
 
 using namespace VIDEO::GUILIB;
 
@@ -37,6 +39,18 @@ bool CVideoSelectActionProcessorBase::Process()
 
 bool CVideoSelectActionProcessorBase::Process(SelectAction selectAction)
 {
+  CVideoActionProcessorHelper procHelper{m_item, m_videoVersion};
+
+  if (!m_versionChecked)
+  {
+    m_versionChecked = true;
+    const auto videoVersion{procHelper.ChooseVideoVersion()};
+    if (videoVersion)
+      m_item = videoVersion;
+    else
+      return true; // User cancelled the select menu. We're done.
+  }
+
   switch (selectAction)
   {
     case SELECT_ACTION_CHOOSE:
@@ -50,7 +64,7 @@ bool CVideoSelectActionProcessorBase::Process(SelectAction selectAction)
 
     case SELECT_ACTION_PLAY_OR_RESUME:
     {
-      const SelectAction action = ChoosePlayOrResume(m_item);
+      const SelectAction action = ChoosePlayOrResume(*m_item);
       if (action < 0)
         return true; // User cancelled the select menu. We're done.
 
@@ -90,7 +104,7 @@ bool CVideoSelectActionProcessorBase::Process(SelectAction selectAction)
 unsigned int CVideoSelectActionProcessorBase::ChooseStackItemPartNumber() const
 {
   CFileItemList parts;
-  XFILE::CDirectory::GetDirectory(m_item.GetDynPath(), parts, "", XFILE::DIR_FLAG_DEFAULTS);
+  XFILE::CDirectory::GetDirectory(m_item->GetDynPath(), parts, "", XFILE::DIR_FLAG_DEFAULTS);
 
   for (int i = 0; i < parts.Size(); ++i)
     parts[i]->SetLabel(StringUtils::Format(g_localizeStrings.Get(23051), i + 1)); // Part #
@@ -132,7 +146,7 @@ SelectAction CVideoSelectActionProcessorBase::ChooseVideoItemSelectAction() cons
 {
   CContextButtons choices;
 
-  const std::string resumeString = VIDEO_UTILS::GetResumeString(m_item);
+  const std::string resumeString = VIDEO_UTILS::GetResumeString(*m_item);
   if (!resumeString.empty())
   {
     choices.Add(SELECT_ACTION_RESUME, resumeString);

@@ -23868,22 +23868,22 @@ msgctxt "#40022"
 msgid "Manage {0:s}"
 msgstr ""
 
-#. Play video version dialog title
+#. Choose video version dialog title
 #: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
 msgctxt "#40023"
-msgid "Play {0:s}"
+msgid "Choose {0:s}"
 msgstr ""
 
-#. Play default video version setting
+#. Select default video version setting
 #: system/settings/settings.xml
 msgctxt "#40200"
-msgid "Play default video version"
+msgid "Select default video version"
 msgstr ""
 
-#. Help for play default video version setting
+#. Help for select default video version setting
 #: system/settings/settings.xml
 msgctxt "#40201"
-msgid "Select player action for video with multiple versions.[CR][Enabled] Automatically play the default video version without prompting.[CR][Disabled] Always display a dialogue to select the preferred video version."
+msgid "Defines how to handle selection of videos with multiple versions.[CR][Enabled] Automatically select the default video version without prompting.[CR][Disabled] Display a dialogue to select a version of the video."
 msgstr ""
 
 #. Ignore different video versions settting
@@ -23919,8 +23919,16 @@ msgstr ""
 #. Help for show video versions as folder settting
 #: system/settings/settings.xml
 msgctxt "#40207"
-msgid "When enabled, video with multiple versions will be shown as folder in library, this folder can then be opened to display the individual video versions. When disabled, a video version dialog will be opened for the video."
+msgid "When enabled, a video with multiple versions will be shown as a folder in the video library. This folder can then be opened to display the individual video versions. When disabled, the configured select action will be applied."
 msgstr ""
+
+#. Choose video version context menu item label
+#: xbmc/video/ContextMenus.h
+msgctxt "#40208"
+msgid "Choose version"
+msgstr ""
+
+#empty strings from id 40209 to 40399
 
 # Video versions
 
