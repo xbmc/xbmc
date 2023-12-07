@@ -144,14 +144,17 @@ namespace VIDEO
     /*! \brief Retrieve detailed information for an item from an online source, optionally supplemented with local data
      @todo sort out some better return codes.
      \param pItem item to retrieve online details for.
+     \param uniqueIDs Unique IDs for additional information for scrapers.
      \param url URL to use to retrieve online details.
      \param scraper Scraper that handles parsing the online data.
      \param nfoFile if set, we override the online data with the locally supplied data. Defaults to NULL.
      \param pDialog progress dialog to update and check for cancellation during processing. Defaults to NULL.
      \return true if information is found, false if an error occurred, the lookup was cancelled, or no information was found.
      */
-    bool GetDetails(CFileItem *pItem, CScraperUrl &url,
-                    const ADDON::ScraperPtr &scraper,
+    bool GetDetails(CFileItem* pItem,
+                    const std::unordered_map<std::string, std::string>& uniqueIDs,
+                    CScraperUrl& url,
+                    const ADDON::ScraperPtr& scraper,
                     VIDEO::IVideoInfoTagLoader* nfoFile = nullptr,
                     CGUIDialogProgress* pDialog = nullptr);
 

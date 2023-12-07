@@ -80,7 +80,7 @@ void CVideoInfoDownloader::Process()
   }
   else if (m_state == GET_DETAILS)
   {
-    if (!GetDetails(m_url, m_movieDetails))
+    if (!GetDetails(m_uniqueIDs, m_url, m_movieDetails))
       CLog::Log(LOGERROR, "{}: Error getting details from {}", __FUNCTION__,
                 m_url.GetFirstThumbUrl());
   }
@@ -147,12 +147,14 @@ bool CVideoInfoDownloader::GetArtwork(CVideoInfoTag &details)
   return m_info->GetArtwork(*m_http, details);
 }
 
-bool CVideoInfoDownloader::GetDetails(const CScraperUrl &url,
-                                      CVideoInfoTag &movieDetails,
-                                      CGUIDialogProgress *pProgress /* = NULL */)
+bool CVideoInfoDownloader::GetDetails(const std::unordered_map<std::string, std::string>& uniqueIDs,
+                                      const CScraperUrl& url,
+                                      CVideoInfoTag& movieDetails,
+                                      CGUIDialogProgress* pProgress /* = NULL */)
 {
   //CLog::Log(LOGDEBUG,"CVideoInfoDownloader::GetDetails({})", url.m_strURL);
   m_url = url;
+  m_uniqueIDs = uniqueIDs;
   m_movieDetails = movieDetails;
 
   // fill in the defaults
@@ -179,7 +181,7 @@ bool CVideoInfoDownloader::GetDetails(const CScraperUrl &url,
     return true;
   }
   else  // unthreaded
-    return m_info->GetVideoDetails(*m_http, url, true/*fMovie*/, movieDetails);
+    return m_info->GetVideoDetails(*m_http, m_uniqueIDs, url, true /*fMovie*/, movieDetails);
 }
 
 bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
@@ -214,7 +216,7 @@ bool CVideoInfoDownloader::GetEpisodeDetails(const CScraperUrl &url,
     return true;
   }
   else  // unthreaded
-    return m_info->GetVideoDetails(*m_http, url, false/*fMovie*/, movieDetails);
+    return m_info->GetVideoDetails(*m_http, m_uniqueIDs, url, false /*fMovie*/, movieDetails);
 }
 
 bool CVideoInfoDownloader::GetEpisodeList(const CScraperUrl& url,

@@ -131,8 +131,11 @@ public:
     XFILE::CCurlFile &fcurl, const std::string &sArtist);
   VIDEO::EPISODELIST GetEpisodeList(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl);
 
-  bool GetVideoDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
-    bool fMovie/*else episode*/, CVideoInfoTag &video);
+  bool GetVideoDetails(XFILE::CCurlFile& fcurl,
+                       const std::unordered_map<std::string, std::string>& uniqueIDs,
+                       const CScraperUrl& scurl,
+                       bool fMovie /*else episode*/,
+                       CVideoInfoTag& video);
   bool GetAlbumDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
     CAlbum &album);
   bool GetArtistDetails(XFILE::CCurlFile &fcurl, const CScraperUrl &scurl,
