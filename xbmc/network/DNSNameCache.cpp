@@ -24,6 +24,10 @@
 #include <netdb.h>
 #include <netinet/in.h>
 
+#if defined(TARGET_FREEBSD)
+#include <sys/socket.h>
+#endif
+
 CDNSNameCache g_DNSCache;
 
 CCriticalSection CDNSNameCache::m_critical;
