@@ -85,6 +85,18 @@ public:
     m_resevent.Set();
   }
 
+  NPT_String GetTransportState() const
+  {
+    std::unique_lock<CCriticalSection> lock(m_section);
+    return m_trainfo.cur_transport_state;
+  }
+
+  NPT_String GetTransportStatus() const
+  {
+    std::unique_lock<CCriticalSection> lock(m_section);
+    return m_trainfo.cur_transport_status;
+  }
+
   void OnGetMediaInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_MediaInfo* info, void* userdata) override
   {
     if(NPT_FAILED(res) || info == NULL)
@@ -133,7 +145,6 @@ public:
     m_posevnt.Set();
   }
 
-
   ~CUPnPPlayerController() override = default;
 
   PLT_MediaController*     m_control;
@@ -145,7 +156,6 @@ public:
   NPT_Result               m_resstatus;
   CEvent                   m_resevent;
 
-  CCriticalSection         m_section;
   unsigned int m_postime = 0;
 
   CEvent                   m_posevnt;
@@ -154,6 +164,8 @@ public:
   CEvent                   m_traevnt;
   PLT_TransportInfo        m_trainfo;
 
+private:
+  mutable CCriticalSection m_section;
   Logger m_logger;
 };
 
@@ -280,18 +292,16 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
         m_control->GetTransportInfo(m_delegate->m_device, m_delegate->m_instance, m_delegate.get()),
         failed_waitplaying);
 
+    const NPT_String transportStatus = m_delegate->GetTransportStatus();
+    const NPT_String transportState = m_delegate->GetTransportState();
+    if (transportState == "PLAYING" || transportState == "PAUSED_PLAYBACK")
     {
-      std::unique_lock<CCriticalSection> lock(m_delegate->m_section);
-      if(m_delegate->m_trainfo.cur_transport_state == "PLAYING"
-      || m_delegate->m_trainfo.cur_transport_state == "PAUSED_PLAYBACK")
-        break;
-
-      if(m_delegate->m_trainfo.cur_transport_state  == "STOPPED"
-      && m_delegate->m_trainfo.cur_transport_status != "OK")
-      {
-        m_logger->error("OpenFile({}): remote player signalled error", file.GetPath());
-        return NPT_FAILURE;
-      }
+      break;
+    }
+    if (transportState == "STOPPED" && transportStatus != "OK")
+    {
+      m_logger->error("OpenFile({}): remote player signalled error", file.GetPath());
+      return NPT_FAILURE;
     }
 
     NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout), failed_waitplaying);
@@ -351,11 +361,10 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
     NPT_CHECK_LABEL_SEVERE(WaitOnEvent(m_delegate->m_traevnt, timeout), failed);
 
     /* make sure the attached player is actually playing */
+    const NPT_String transportState = m_delegate->GetTransportState();
+    if (transportState != "PLAYING" && transportState != "PAUSED_PLAYBACK")
     {
-      std::unique_lock<CCriticalSection> lock(m_delegate->m_section);
-      if(m_delegate->m_trainfo.cur_transport_state != "PLAYING"
-      && m_delegate->m_trainfo.cur_transport_state != "PAUSED_PLAYBACK")
-        goto failed;
+      goto failed;
     }
   }
   else
@@ -496,7 +505,6 @@ void CUPnPPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 
 void CUPnPPlayer::DoAudioWork()
 {
-  NPT_String data;
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
   m_delegate->UpdatePositionInfo();
 
@@ -515,9 +523,9 @@ void CUPnPPlayer::DoAudioWork()
                                                  static_cast<void*>(new CFileItem(*item)));
     }
 
-    NPT_CHECK_LABEL(m_delegate->m_transport->GetStateVariableValue("TransportState", data), failed);
-    if(data == "STOPPED")
+    if (m_delegate->GetTransportState() == "STOPPED")
     {
+      m_logger->info("Transport state flagged as STOPPED. Triggering OnPlayBackEnded.");
       m_started = false;
       m_callback.OnPlayBackEnded();
     }
@@ -529,20 +537,16 @@ failed:
 
 bool CUPnPPlayer::IsPlaying() const
 {
-  NPT_String data;
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
-  NPT_CHECK_LABEL(m_delegate->m_transport->GetStateVariableValue("TransportState", data), failed);
-  return data != "STOPPED";
+  return m_delegate->GetTransportState() != "STOPPED";
 failed:
   return false;
 }
 
 bool CUPnPPlayer::IsPaused() const
 {
-  NPT_String data;
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
-  NPT_CHECK_LABEL(m_delegate->m_transport->GetStateVariableValue("TransportState", data), failed);
-  return data == "PAUSED_PLAYBACK";
+  return m_delegate->GetTransportState() == "PAUSED_PLAYBACK";
 failed:
   return false;
 }
