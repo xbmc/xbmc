@@ -450,6 +450,8 @@ KEYBOARD::KeySymbol CControllerTranslator::TranslateKeysym(const std::string& sy
     return XBMCK_EURO;
   if (symbol == "undo")
     return XBMCK_UNDO;
+  if (symbol == "oem102")
+    return XBMCK_OEM_102;
 
   return XBMCK_UNKNOWN;
 }
@@ -736,6 +738,8 @@ const char* CControllerTranslator::TranslateKeycode(KEYBOARD::KeySymbol keycode)
       return "euro";
     case XBMCK_UNDO:
       return "undo";
+    case XBMCK_OEM_102:
+      return "oem102";
     default:
       break;
   }

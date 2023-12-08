@@ -133,6 +133,11 @@ typedef enum
   XBMCK_MEDIA_REWIND = 0xBA,
   XBMCK_MEDIA_FASTFORWARD = 0xBB,
 
+  // This key is not present on standard US keyboard layouts. For European
+  // layouts it's usually located to the right of left-shift key, with '\' as
+  // its main function.
+  XBMCK_OEM_102 = 0xE2,
+
   // Numeric keypad
   XBMCK_KP0 = 0x100,
   XBMCK_KP1 = 0x101,
