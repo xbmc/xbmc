@@ -24,6 +24,10 @@
 #include <netdb.h>
 #include <netinet/in.h>
 
+#if defined(TARGET_FREEBSD)
+#include <sys/socket.h>
+#endif
+
 CDNSNameCache g_DNSCache;
 
 CCriticalSection CDNSNameCache::m_critical;
@@ -38,18 +42,19 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     return false;
 
   // first see if this is already an ip address
-  unsigned long address = inet_addr(strHostName.c_str());
+  in_addr addr4;
+  in6_addr addr6;
   strIpAddress.clear();
 
-  if (address != INADDR_NONE)
+  if (inet_pton(AF_INET, strHostName.c_str(), &addr4) ||
+      inet_pton(AF_INET6, strHostName.c_str(), &addr6))
   {
-    strIpAddress = StringUtils::Format("{}.{}.{}.{}", (address & 0xFF), (address & 0xFF00) >> 8,
-                                       (address & 0xFF0000) >> 16, (address & 0xFF000000) >> 24);
+    strIpAddress = strHostName;
     return true;
   }
 
   // check if there's a custom entry or if it's already cached
-  if(g_DNSCache.GetCached(strHostName, strIpAddress))
+  if (g_DNSCache.GetCached(strHostName, strIpAddress))
     return true;
 
   // perform dns lookup
