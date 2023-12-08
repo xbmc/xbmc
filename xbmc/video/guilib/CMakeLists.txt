@@ -2,9 +2,8 @@ set(SOURCES VideoPlayActionProcessor.cpp
             VideoSelectActionProcessor.cpp
             VideoActionProcessorHelper.cpp)
 
-set(HEADERS VideoPlayAction.h
+set(HEADERS VideoAction.h
             VideoPlayActionProcessor.h
-            VideoSelectAction.h
             VideoSelectActionProcessor.h
             VideoActionProcessorHelper.h)
 

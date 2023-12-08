@@ -20,9 +20,9 @@
 
 using namespace VIDEO::GUILIB;
 
-PlayAction CVideoPlayActionProcessorBase::GetDefaultPlayAction()
+Action CVideoPlayActionProcessorBase::GetDefaultPlayAction()
 {
-  return static_cast<PlayAction>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+  return static_cast<Action>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_MYVIDEOS_PLAYACTION));
 }
 
@@ -31,7 +31,7 @@ bool CVideoPlayActionProcessorBase::Process()
   return Process(GetDefaultPlayAction());
 }
 
-bool CVideoPlayActionProcessorBase::Process(PlayAction playAction)
+bool CVideoPlayActionProcessorBase::Process(Action playAction)
 {
   m_userCancelled = false;
 
@@ -52,9 +52,9 @@ bool CVideoPlayActionProcessorBase::Process(PlayAction playAction)
 
   switch (playAction)
   {
-    case PLAY_ACTION_PLAY_OR_RESUME:
+    case ACTION_PLAY_OR_RESUME:
     {
-      const VIDEO::GUILIB::PlayAction action = ChoosePlayOrResume();
+      const Action action = ChoosePlayOrResume();
       if (action < 0)
       {
         m_userCancelled = true;
@@ -64,10 +64,10 @@ bool CVideoPlayActionProcessorBase::Process(PlayAction playAction)
       return Process(action);
     }
 
-    case PLAY_ACTION_RESUME:
+    case ACTION_RESUME:
       return OnResumeSelected();
 
-    case PLAY_ACTION_PLAY_FROM_BEGINNING:
+    case ACTION_PLAY_FROM_BEGINNING:
       return OnPlaySelected();
 
     default:
@@ -76,19 +76,19 @@ bool CVideoPlayActionProcessorBase::Process(PlayAction playAction)
   return false; // We did not handle the action.
 }
 
-PlayAction CVideoPlayActionProcessorBase::ChoosePlayOrResume()
+Action CVideoPlayActionProcessorBase::ChoosePlayOrResume()
 {
-  PlayAction action = PLAY_ACTION_PLAY_FROM_BEGINNING;
+  Action action = ACTION_PLAY_FROM_BEGINNING;
 
   const std::string resumeString = VIDEO_UTILS::GetResumeString(*m_item);
   if (!resumeString.empty())
   {
     CContextButtons choices;
 
-    choices.Add(PLAY_ACTION_RESUME, resumeString);
-    choices.Add(PLAY_ACTION_PLAY_FROM_BEGINNING, 12021); // Play from beginning
+    choices.Add(ACTION_RESUME, resumeString);
+    choices.Add(ACTION_PLAY_FROM_BEGINNING, 12021); // Play from beginning
 
-    action = static_cast<PlayAction>(CGUIDialogContextMenu::ShowAndGetChoice(choices));
+    action = static_cast<Action>(CGUIDialogContextMenu::ShowAndGetChoice(choices));
   }
 
   return action;

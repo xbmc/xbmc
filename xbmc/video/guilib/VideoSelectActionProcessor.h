@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "video/guilib/VideoSelectAction.h"
+#include "video/guilib/VideoAction.h"
 
 #include <memory>
 
@@ -29,12 +29,12 @@ public:
   }
   virtual ~CVideoSelectActionProcessorBase() = default;
 
-  static SelectAction GetDefaultSelectAction();
+  static Action GetDefaultSelectAction();
 
   bool Process();
-  bool Process(SelectAction selectAction);
+  bool Process(Action selectAction);
 
-  static SelectAction ChoosePlayOrResume(const CFileItem& item);
+  static Action ChoosePlayOrResume(const CFileItem& item);
 
 protected:
   virtual bool OnPlayPartSelected(unsigned int part) = 0;
@@ -48,7 +48,7 @@ protected:
 
 private:
   CVideoSelectActionProcessorBase() = delete;
-  SelectAction ChooseVideoItemSelectAction() const;
+  Action ChooseVideoItemSelectAction() const;
   unsigned int ChooseStackItemPartNumber() const;
 
   bool m_versionChecked{false};

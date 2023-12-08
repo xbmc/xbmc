@@ -60,13 +60,13 @@ bool CPVRGUIActionsPlayback::CheckResumeRecording(const CFileItem& item) const
 {
   bool bPlayIt(true);
 
-  const VIDEO::GUILIB::SelectAction action =
+  const VIDEO::GUILIB::Action action =
       VIDEO::GUILIB::CVideoSelectActionProcessorBase::ChoosePlayOrResume(item);
-  if (action == VIDEO::GUILIB::SELECT_ACTION_RESUME)
+  if (action == VIDEO::GUILIB::ACTION_RESUME)
   {
     const_cast<CFileItem*>(&item)->SetStartOffset(STARTOFFSET_RESUME);
   }
-  else if (action == VIDEO::GUILIB::SELECT_ACTION_PLAY)
+  else if (action == VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING)
   {
     const_cast<CFileItem*>(&item)->SetStartOffset(0);
   }

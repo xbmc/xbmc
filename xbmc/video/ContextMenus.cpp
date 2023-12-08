@@ -315,9 +315,9 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, const std::string& p
     CVideoPlayActionProcessor proc{item, player};
     if (resume && (item->GetStartOffset() == STARTOFFSET_RESUME ||
                    VIDEO_UTILS::GetItemResumeInformation(*item).isResumable))
-      proc.Process(VIDEO::GUILIB::PLAY_ACTION_RESUME);
+      proc.Process(VIDEO::GUILIB::ACTION_RESUME);
     else
-      proc.Process(VIDEO::GUILIB::PLAY_ACTION_PLAY_FROM_BEGINNING);
+      proc.Process(VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING);
 
     item->ClearProperty("prohibit_choose_video_version");
   }

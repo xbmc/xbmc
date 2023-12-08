@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "video/guilib/VideoPlayAction.h"
+#include "video/guilib/VideoAction.h"
 
 #include <memory>
 
@@ -29,10 +29,10 @@ public:
   }
   virtual ~CVideoPlayActionProcessorBase() = default;
 
-  static PlayAction GetDefaultPlayAction();
+  static Action GetDefaultPlayAction();
 
   bool Process();
-  bool Process(PlayAction playAction);
+  bool Process(Action playAction);
 
   bool UserCancelled() const { return m_userCancelled; }
 
@@ -45,7 +45,7 @@ protected:
 
 private:
   CVideoPlayActionProcessorBase() = delete;
-  PlayAction ChoosePlayOrResume();
+  Action ChoosePlayOrResume();
 
   bool m_versionChecked{false};
   const std::shared_ptr<const CFileItem> m_videoVersion;
