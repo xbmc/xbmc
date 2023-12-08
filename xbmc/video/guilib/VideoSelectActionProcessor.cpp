@@ -22,7 +22,6 @@
 #include "utils/Variant.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
-#include "video/guilib/VideoActionProcessorHelper.h"
 
 using namespace VIDEO::GUILIB;
 
@@ -32,43 +31,28 @@ Action CVideoSelectActionProcessorBase::GetDefaultSelectAction()
       CSettings::SETTING_MYVIDEOS_SELECTACTION));
 }
 
-bool CVideoSelectActionProcessorBase::Process()
+Action CVideoSelectActionProcessorBase::GetDefaultAction()
 {
-  return Process(GetDefaultSelectAction());
+  return GetDefaultSelectAction();
 }
 
-bool CVideoSelectActionProcessorBase::Process(Action selectAction)
+bool CVideoSelectActionProcessorBase::Process(Action action)
 {
-  CVideoActionProcessorHelper procHelper{m_item, m_videoVersion};
+  if (CVideoPlayActionProcessorBase::Process(action))
+    return true;
 
-  if (!m_versionChecked)
-  {
-    m_versionChecked = true;
-    const auto videoVersion{procHelper.ChooseVideoVersion()};
-    if (videoVersion)
-      m_item = videoVersion;
-    else
-      return true; // User cancelled the select menu. We're done.
-  }
-
-  switch (selectAction)
+  switch (action)
   {
     case ACTION_CHOOSE:
     {
-      const Action action = ChooseVideoItemSelectAction();
-      if (action < 0)
-        return true; // User cancelled the context menu. We're done.
-
-      return Process(action);
-    }
-
-    case ACTION_PLAY_OR_RESUME:
-    {
-      const Action action = ChoosePlayOrResume(*m_item);
-      if (action < 0)
+      const Action selectedAction = ChooseVideoItemSelectAction();
+      if (selectedAction < 0)
+      {
+        m_userCancelled = true;
         return true; // User cancelled the select menu. We're done.
+      }
 
-      return Process(action);
+      return Process(selectedAction);
     }
 
     case ACTION_PLAYPART:
@@ -79,12 +63,6 @@ bool CVideoSelectActionProcessorBase::Process(Action selectAction)
 
       return OnPlayPartSelected(part);
     }
-
-    case ACTION_RESUME:
-      return OnResumeSelected();
-
-    case ACTION_PLAY_FROM_BEGINNING:
-      return OnPlaySelected();
 
     case ACTION_QUEUE:
       return OnQueueSelected();
@@ -122,24 +100,6 @@ unsigned int CVideoSelectActionProcessorBase::ChooseStackItemPartNumber() const
     return 0; // User cancelled the dialog.
 
   return dialog->GetSelectedItem() + 1; // part numbers are 1-based
-}
-
-Action CVideoSelectActionProcessorBase::ChoosePlayOrResume(const CFileItem& item)
-{
-  Action action = ACTION_PLAY_FROM_BEGINNING;
-
-  const std::string resumeString = VIDEO_UTILS::GetResumeString(item);
-  if (!resumeString.empty())
-  {
-    CContextButtons choices;
-
-    choices.Add(ACTION_RESUME, resumeString);
-    choices.Add(ACTION_PLAY_FROM_BEGINNING, 12021); // Play from beginning
-
-    action = static_cast<Action>(CGUIDialogContextMenu::ShowAndGetChoice(choices));
-  }
-
-  return action;
 }
 
 Action CVideoSelectActionProcessorBase::ChooseVideoItemSelectAction() const

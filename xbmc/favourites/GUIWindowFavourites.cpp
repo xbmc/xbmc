@@ -139,7 +139,7 @@ bool CGUIWindowFavourites::OnSelect(int itemIdx)
   if (targetItem.HasVideoInfoTag() && (!targetItem.m_bIsFolder || isPlayMedia))
   {
     CVideoSelectActionProcessor proc{std::make_shared<CFileItem>(targetItem)};
-    if (proc.Process())
+    if (proc.ProcessDefaultAction())
       return true;
   }
 
@@ -166,7 +166,7 @@ bool CGUIWindowFavourites::OnAction(const CAction& action)
     if (item->HasVideoInfoTag() || (item->m_bIsFolder && VIDEO_UTILS::IsItemPlayable(*item)))
     {
       CVideoPlayActionProcessor proc{item};
-      if (proc.Process())
+      if (proc.ProcessDefaultAction())
         return true;
     }
 

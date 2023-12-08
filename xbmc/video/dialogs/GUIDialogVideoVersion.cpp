@@ -371,7 +371,7 @@ void CGUIDialogVideoVersion::Play()
   CloseAll();
 
   CVideoPlayActionProcessor proc{m_videoItem, m_selectedVideoVersion};
-  proc.Process();
+  proc.ProcessDefaultAction();
 }
 
 void CGUIDialogVideoVersion::Remove()

@@ -614,7 +614,7 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, Action action, const std::stri
     return false;
 
   CVideoSelectActionProcessor proc(*this, item, iItem, player);
-  return proc.Process(action);
+  return proc.ProcessAction(action);
 }
 
 bool CGUIWindowVideoBase::OnItemInfo(int iItem)
@@ -776,7 +776,7 @@ bool CGUIWindowVideoBase::OnPlayOrResumeItem(int iItem, const std::string& playe
     return false;
 
   CVideoPlayActionProcessor proc{*this, m_vecItems->Get(iItem), iItem, player};
-  return proc.Process();
+  return proc.ProcessDefaultAction();
 }
 
 void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &buttons)

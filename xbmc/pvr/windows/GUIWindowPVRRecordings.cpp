@@ -351,7 +351,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
               if (!item->IsParentFolder() && message.GetParam1() == ACTION_PLAYER_PLAY)
               {
                 CVideoPlayActionProcessor proc{item};
-                bReturn = proc.Process();
+                bReturn = proc.ProcessDefaultAction();
               }
               else if (item->m_bIsFolder)
               {
@@ -361,7 +361,7 @@ bool CGUIWindowPVRRecordingsBase::OnMessage(CGUIMessage& message)
               else
               {
                 CVideoSelectActionProcessor proc(*this, item, iItem);
-                bReturn = proc.Process();
+                bReturn = proc.ProcessDefaultAction();
               }
               break;
             }
