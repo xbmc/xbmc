@@ -11,7 +11,7 @@
 #include "playlists/PlayListTypes.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
-#include "video/guilib/VideoSelectAction.h"
+#include "video/guilib/VideoAction.h"
 #include "windows/GUIMediaWindow.h"
 
 namespace
@@ -95,7 +95,7 @@ protected:
    \param action the action to perform
    \return true if the action is performed, false otherwise
    */
-  bool OnFileAction(int item, VIDEO::GUILIB::SelectAction action, const std::string& player);
+  bool OnFileAction(int item, VIDEO::GUILIB::Action action, const std::string& player);
 
   void OnRestartItem(int iItem, const std::string &player = "");
   bool OnPlayOrResumeItem(int iItem, const std::string& player = "");

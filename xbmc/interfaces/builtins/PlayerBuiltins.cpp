@@ -513,13 +513,13 @@ int PlayOrQueueMedia(const std::vector<std::string>& params, bool forcePlay)
 
   if (askToResume)
   {
-    const VIDEO::GUILIB::SelectAction action =
+    const VIDEO::GUILIB::Action action =
         VIDEO::GUILIB::CVideoSelectActionProcessorBase::ChoosePlayOrResume(item);
-    if (action == VIDEO::GUILIB::SELECT_ACTION_RESUME)
+    if (action == VIDEO::GUILIB::ACTION_RESUME)
     {
       item.SetStartOffset(STARTOFFSET_RESUME);
     }
-    else if (action != VIDEO::GUILIB::SELECT_ACTION_PLAY)
+    else if (action != VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING)
     {
       // The Resume dialog was closed without any choice
       return false;

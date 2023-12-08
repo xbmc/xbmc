@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "video/guilib/VideoSelectAction.h"
+#include "video/guilib/VideoPlayActionProcessor.h"
 
 #include <memory>
 
@@ -18,41 +18,37 @@ namespace VIDEO
 {
 namespace GUILIB
 {
-class CVideoSelectActionProcessorBase
+class CVideoSelectActionProcessorBase : public CVideoPlayActionProcessorBase
 {
 public:
-  explicit CVideoSelectActionProcessorBase(const std::shared_ptr<CFileItem>& item) : m_item(item) {}
-  CVideoSelectActionProcessorBase(const std::shared_ptr<CFileItem>& item,
-                                  const std::shared_ptr<const CFileItem>& videoVersion)
-    : m_item{item}, m_videoVersion{videoVersion}
+  explicit CVideoSelectActionProcessorBase(const std::shared_ptr<CFileItem>& item)
+    : CVideoPlayActionProcessorBase(item)
   {
   }
-  virtual ~CVideoSelectActionProcessorBase() = default;
 
-  static SelectAction GetDefaultSelectAction();
+  CVideoSelectActionProcessorBase(const std::shared_ptr<CFileItem>& item,
+                                  const std::shared_ptr<const CFileItem>& videoVersion)
+    : CVideoPlayActionProcessorBase(item, videoVersion)
+  {
+  }
 
-  bool Process();
-  bool Process(SelectAction selectAction);
+  ~CVideoSelectActionProcessorBase() override = default;
 
-  static SelectAction ChoosePlayOrResume(const CFileItem& item);
+  static Action GetDefaultSelectAction();
 
 protected:
+  Action GetDefaultAction() override;
+  bool Process(Action action) override;
+
   virtual bool OnPlayPartSelected(unsigned int part) = 0;
-  virtual bool OnResumeSelected() = 0;
-  virtual bool OnPlaySelected() = 0;
   virtual bool OnQueueSelected() = 0;
   virtual bool OnInfoSelected() = 0;
   virtual bool OnMoreSelected() = 0;
 
-  std::shared_ptr<CFileItem> m_item;
-
 private:
   CVideoSelectActionProcessorBase() = delete;
-  SelectAction ChooseVideoItemSelectAction() const;
+  Action ChooseVideoItemSelectAction() const;
   unsigned int ChooseStackItemPartNumber() const;
-
-  bool m_versionChecked{false};
-  const std::shared_ptr<const CFileItem> m_videoVersion;
 };
 } // namespace GUILIB
 } // namespace VIDEO

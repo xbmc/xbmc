@@ -20,54 +20,54 @@
 
 using namespace VIDEO::GUILIB;
 
-PlayAction CVideoPlayActionProcessorBase::GetDefaultPlayAction()
+Action CVideoPlayActionProcessorBase::GetDefaultAction()
 {
-  return static_cast<PlayAction>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+  return static_cast<Action>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_MYVIDEOS_PLAYACTION));
 }
 
-bool CVideoPlayActionProcessorBase::Process()
+bool CVideoPlayActionProcessorBase::ProcessDefaultAction()
 {
-  return Process(GetDefaultPlayAction());
+  return ProcessAction(GetDefaultAction());
 }
 
-bool CVideoPlayActionProcessorBase::Process(PlayAction playAction)
+bool CVideoPlayActionProcessorBase::ProcessAction(Action action)
 {
   m_userCancelled = false;
 
   CVideoActionProcessorHelper procHelper{m_item, m_videoVersion};
-
-  if (!m_versionChecked)
+  const auto videoVersion{procHelper.ChooseVideoVersion()};
+  if (videoVersion)
+    m_item = videoVersion;
+  else
   {
-    m_versionChecked = true;
-    const auto videoVersion{procHelper.ChooseVideoVersion()};
-    if (videoVersion)
-      m_item = videoVersion;
-    else
-    {
-      m_userCancelled = true;
-      return true; // User cancelled the select menu. We're done.
-    }
+    m_userCancelled = true;
+    return true; // User cancelled the select menu. We're done.
   }
 
-  switch (playAction)
+  return Process(action);
+}
+
+bool CVideoPlayActionProcessorBase::Process(Action action)
+{
+  switch (action)
   {
-    case PLAY_ACTION_PLAY_OR_RESUME:
+    case ACTION_PLAY_OR_RESUME:
     {
-      const VIDEO::GUILIB::PlayAction action = ChoosePlayOrResume();
-      if (action < 0)
+      const Action selectedAction = ChoosePlayOrResume(*m_item);
+      if (selectedAction < 0)
       {
         m_userCancelled = true;
         return true; // User cancelled the select menu. We're done.
       }
 
-      return Process(action);
+      return Process(selectedAction);
     }
 
-    case PLAY_ACTION_RESUME:
+    case ACTION_RESUME:
       return OnResumeSelected();
 
-    case PLAY_ACTION_PLAY_FROM_BEGINNING:
+    case ACTION_PLAY_FROM_BEGINNING:
       return OnPlaySelected();
 
     default:
@@ -76,19 +76,19 @@ bool CVideoPlayActionProcessorBase::Process(PlayAction playAction)
   return false; // We did not handle the action.
 }
 
-PlayAction CVideoPlayActionProcessorBase::ChoosePlayOrResume()
+Action CVideoPlayActionProcessorBase::ChoosePlayOrResume(const CFileItem& item)
 {
-  PlayAction action = PLAY_ACTION_PLAY_FROM_BEGINNING;
+  Action action = ACTION_PLAY_FROM_BEGINNING;
 
-  const std::string resumeString = VIDEO_UTILS::GetResumeString(*m_item);
+  const std::string resumeString = VIDEO_UTILS::GetResumeString(item);
   if (!resumeString.empty())
   {
     CContextButtons choices;
 
-    choices.Add(PLAY_ACTION_RESUME, resumeString);
-    choices.Add(PLAY_ACTION_PLAY_FROM_BEGINNING, 12021); // Play from beginning
+    choices.Add(ACTION_RESUME, resumeString);
+    choices.Add(ACTION_PLAY_FROM_BEGINNING, 12021); // Play from beginning
 
-    action = static_cast<PlayAction>(CGUIDialogContextMenu::ShowAndGetChoice(choices));
+    action = static_cast<Action>(CGUIDialogContextMenu::ShowAndGetChoice(choices));
   }
 
   return action;

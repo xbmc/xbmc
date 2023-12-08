@@ -22,56 +22,40 @@
 #include "utils/Variant.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
-#include "video/guilib/VideoActionProcessorHelper.h"
 
 using namespace VIDEO::GUILIB;
 
-SelectAction CVideoSelectActionProcessorBase::GetDefaultSelectAction()
+Action CVideoSelectActionProcessorBase::GetDefaultSelectAction()
 {
-  return static_cast<SelectAction>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
+  return static_cast<Action>(CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(
       CSettings::SETTING_MYVIDEOS_SELECTACTION));
 }
 
-bool CVideoSelectActionProcessorBase::Process()
+Action CVideoSelectActionProcessorBase::GetDefaultAction()
 {
-  return Process(GetDefaultSelectAction());
+  return GetDefaultSelectAction();
 }
 
-bool CVideoSelectActionProcessorBase::Process(SelectAction selectAction)
+bool CVideoSelectActionProcessorBase::Process(Action action)
 {
-  CVideoActionProcessorHelper procHelper{m_item, m_videoVersion};
+  if (CVideoPlayActionProcessorBase::Process(action))
+    return true;
 
-  if (!m_versionChecked)
+  switch (action)
   {
-    m_versionChecked = true;
-    const auto videoVersion{procHelper.ChooseVideoVersion()};
-    if (videoVersion)
-      m_item = videoVersion;
-    else
-      return true; // User cancelled the select menu. We're done.
-  }
-
-  switch (selectAction)
-  {
-    case SELECT_ACTION_CHOOSE:
+    case ACTION_CHOOSE:
     {
-      const SelectAction action = ChooseVideoItemSelectAction();
-      if (action < 0)
-        return true; // User cancelled the context menu. We're done.
-
-      return Process(action);
-    }
-
-    case SELECT_ACTION_PLAY_OR_RESUME:
-    {
-      const SelectAction action = ChoosePlayOrResume(*m_item);
-      if (action < 0)
+      const Action selectedAction = ChooseVideoItemSelectAction();
+      if (selectedAction < 0)
+      {
+        m_userCancelled = true;
         return true; // User cancelled the select menu. We're done.
+      }
 
-      return Process(action);
+      return Process(selectedAction);
     }
 
-    case SELECT_ACTION_PLAYPART:
+    case ACTION_PLAYPART:
     {
       const unsigned int part = ChooseStackItemPartNumber();
       if (part < 1) // part numbers are 1-based
@@ -80,19 +64,13 @@ bool CVideoSelectActionProcessorBase::Process(SelectAction selectAction)
       return OnPlayPartSelected(part);
     }
 
-    case SELECT_ACTION_RESUME:
-      return OnResumeSelected();
-
-    case SELECT_ACTION_PLAY:
-      return OnPlaySelected();
-
-    case SELECT_ACTION_QUEUE:
+    case ACTION_QUEUE:
       return OnQueueSelected();
 
-    case SELECT_ACTION_INFO:
+    case ACTION_INFO:
       return OnInfoSelected();
 
-    case SELECT_ACTION_MORE:
+    case ACTION_MORE:
       return OnMoreSelected();
 
     default:
@@ -124,42 +102,24 @@ unsigned int CVideoSelectActionProcessorBase::ChooseStackItemPartNumber() const
   return dialog->GetSelectedItem() + 1; // part numbers are 1-based
 }
 
-SelectAction CVideoSelectActionProcessorBase::ChoosePlayOrResume(const CFileItem& item)
-{
-  SelectAction action = SELECT_ACTION_PLAY;
-
-  const std::string resumeString = VIDEO_UTILS::GetResumeString(item);
-  if (!resumeString.empty())
-  {
-    CContextButtons choices;
-
-    choices.Add(SELECT_ACTION_RESUME, resumeString);
-    choices.Add(SELECT_ACTION_PLAY, 12021); // Play from beginning
-
-    action = static_cast<SelectAction>(CGUIDialogContextMenu::ShowAndGetChoice(choices));
-  }
-
-  return action;
-}
-
-SelectAction CVideoSelectActionProcessorBase::ChooseVideoItemSelectAction() const
+Action CVideoSelectActionProcessorBase::ChooseVideoItemSelectAction() const
 {
   CContextButtons choices;
 
   const std::string resumeString = VIDEO_UTILS::GetResumeString(*m_item);
   if (!resumeString.empty())
   {
-    choices.Add(SELECT_ACTION_RESUME, resumeString);
-    choices.Add(SELECT_ACTION_PLAY, 12021); // Play from beginning
+    choices.Add(ACTION_RESUME, resumeString);
+    choices.Add(ACTION_PLAY_FROM_BEGINNING, 12021); // Play from beginning
   }
   else
   {
-    choices.Add(SELECT_ACTION_PLAY, 208); // Play
+    choices.Add(ACTION_PLAY_FROM_BEGINNING, 208); // Play
   }
 
-  choices.Add(SELECT_ACTION_INFO, 22081); // Show information
-  choices.Add(SELECT_ACTION_QUEUE, 13347); // Queue item
-  choices.Add(SELECT_ACTION_MORE, 22082); // More
+  choices.Add(ACTION_INFO, 22081); // Show information
+  choices.Add(ACTION_QUEUE, 13347); // Queue item
+  choices.Add(ACTION_MORE, 22082); // More
 
-  return static_cast<SelectAction>(CGUIDialogContextMenu::ShowAndGetChoice(choices));
+  return static_cast<Action>(CGUIDialogContextMenu::ShowAndGetChoice(choices));
 }

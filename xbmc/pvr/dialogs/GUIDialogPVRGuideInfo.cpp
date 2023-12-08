@@ -141,7 +141,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonPlay(const CGUIMessage& message)
         if (recording)
         {
           CGUIPVRRecordingsPlayActionProcessor proc{std::make_shared<CFileItem>(recording)};
-          proc.Process();
+          proc.ProcessDefaultAction();
           if (proc.UserCancelled())
             Open();
         }

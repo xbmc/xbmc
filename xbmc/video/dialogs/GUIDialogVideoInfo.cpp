@@ -67,7 +67,6 @@
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
 using namespace KODI::MESSAGING;
-using namespace VIDEO::GUILIB;
 
 #define CONTROL_IMAGE                3
 #define CONTROL_TEXTAREA             4
@@ -712,7 +711,7 @@ void CGUIDialogVideoInfo::ClearCastList()
 
 namespace
 {
-class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
+class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
 {
 public:
   explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
@@ -791,7 +790,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
   if (resume)
   {
     CVideoPlayActionProcessor proc{m_movieItem};
-    proc.Process(PLAY_ACTION_RESUME);
+    proc.ProcessAction(VIDEO::GUILIB::ACTION_RESUME);
   }
   else
   {
@@ -799,13 +798,13 @@ void CGUIDialogVideoInfo::Play(bool resume)
     {
       // if dialog has a resume button, play button has always the purpose to start from beginning
       CVideoPlayActionProcessor proc{m_movieItem};
-      proc.Process(PLAY_ACTION_PLAY_FROM_BEGINNING);
+      proc.ProcessAction(VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING);
     }
     else
     {
       // play button acts according to default play action setting
       CVideoPlayActionProcessor proc{m_movieItem};
-      proc.Process();
+      proc.ProcessDefaultAction();
       if (proc.UserCancelled())
       {
         // The Resume dialog was closed without any choice

@@ -607,14 +607,14 @@ private:
 };
 } // namespace
 
-bool CGUIWindowVideoBase::OnFileAction(int iItem, SelectAction action, const std::string& player)
+bool CGUIWindowVideoBase::OnFileAction(int iItem, Action action, const std::string& player)
 {
   const std::shared_ptr<CFileItem> item = m_vecItems->Get(iItem);
   if (!item)
     return false;
 
   CVideoSelectActionProcessor proc(*this, item, iItem, player);
-  return proc.Process(action);
+  return proc.ProcessAction(action);
 }
 
 bool CGUIWindowVideoBase::OnItemInfo(int iItem)
@@ -754,13 +754,13 @@ protected:
   bool OnResumeSelected() override
   {
     m_item->SetStartOffset(STARTOFFSET_RESUME);
-    return m_window.OnFileAction(m_itemIndex, SELECT_ACTION_RESUME, m_player);
+    return m_window.OnFileAction(m_itemIndex, VIDEO::GUILIB::ACTION_RESUME, m_player);
   }
 
   bool OnPlaySelected() override
   {
     m_item->SetStartOffset(0);
-    return m_window.OnFileAction(m_itemIndex, SELECT_ACTION_PLAY, m_player);
+    return m_window.OnFileAction(m_itemIndex, VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING, m_player);
   }
 
 private:
@@ -776,7 +776,7 @@ bool CGUIWindowVideoBase::OnPlayOrResumeItem(int iItem, const std::string& playe
     return false;
 
   CVideoPlayActionProcessor proc{*this, m_vecItems->Get(iItem), iItem, player};
-  return proc.Process();
+  return proc.ProcessDefaultAction();
 }
 
 void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &buttons)
@@ -851,13 +851,13 @@ bool CGUIWindowVideoBase::OnPlayStackPart(int itemIndex, unsigned int partNumber
     CDirectory::GetDirectory(path, parts, "", DIR_FLAG_DEFAULTS);
 
     const int value = CVideoSelectActionProcessor::ChoosePlayOrResume(*parts[partNumber - 1]);
-    if (value == SELECT_ACTION_RESUME)
+    if (value == VIDEO::GUILIB::ACTION_RESUME)
     {
       const VIDEO_UTILS::ResumeInformation resumeInfo =
           VIDEO_UTILS::GetItemResumeInformation(*parts[partNumber - 1]);
       item->SetStartOffset(resumeInfo.startOffset);
     }
-    else if (value != SELECT_ACTION_PLAY)
+    else if (value != VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING)
       return false; // if not selected PLAY, then we changed our mind so return
 
     item->m_lStartPartNumber = partNumber;
@@ -894,7 +894,7 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_PLAY_PART:
     {
-      return OnFileAction(itemNumber, SELECT_ACTION_PLAYPART, "");
+      return OnFileAction(itemNumber, VIDEO::GUILIB::ACTION_PLAYPART, "");
     }
 
   case CONTEXT_BUTTON_PLAY_PARTYMODE:

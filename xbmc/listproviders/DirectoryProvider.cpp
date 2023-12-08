@@ -564,7 +564,7 @@ bool CDirectoryProvider::OnClick(const CGUIListItemPtr& item)
   if (targetItem.HasVideoInfoTag() && (!targetItem.m_bIsFolder || isPlayMedia))
   {
     CVideoSelectActionProcessor proc{*this, std::make_shared<CFileItem>(targetItem)};
-    if (proc.Process())
+    if (proc.ProcessDefaultAction())
       return true;
   }
 
@@ -595,7 +595,7 @@ bool CDirectoryProvider::OnPlay(const CGUIListItemPtr& item)
       (targetItem.m_bIsFolder && VIDEO_UTILS::IsItemPlayable(targetItem)))
   {
     CVideoPlayActionProcessor proc{std::make_shared<CFileItem>(targetItem)};
-    if (proc.Process())
+    if (proc.ProcessDefaultAction())
       return true;
   }
 
