@@ -23952,7 +23952,19 @@ msgctxt "#40211"
 msgid "Extras"
 msgstr ""
 
-#empty strings from id 40212 to 40399
+#. UPnP remote player volume level sync setting
+#: system/settings/settings.xml
+msgctxt "#40212"
+msgid "Synchronize volume level to remote UPnP players"
+msgstr ""
+
+#. Help string for UPnP remote player volume level sync setting
+#: system/settings/settings.xml
+msgctxt "#40213"
+msgid "If selected the remote player volume level will be synchronized with the volume of this application.[CR]Warning: Global system volume level may be different than the application volume level - they are controlled independently.[CR]This may lead the remote player to be set to 100% volume level if the application has 100% volume level but the overall system volume level is smaller."
+msgstr ""
+
+#empty strings from id 40214 to 40399
 
 # Video versions
 

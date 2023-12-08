@@ -2320,6 +2320,18 @@
           </dependencies>
           <control type="toggle" />
         </setting>
+        <setting id="services.upnpplayervolumesync" type="boolean" parent="services.upnpserver" label="40212" help="40213">
+          <level>2</level>
+          <default>true</default>
+          <dependencies>
+            <dependency type="enable">
+              <and>
+                <condition setting="services.upnpcontroller" operator="is">true</condition>
+              </and>
+            </dependency>
+          </dependencies>
+          <control type="toggle" />
+        </setting>
         <setting id="services.upnprenderer" type="boolean" label="21881" help="36325">
           <level>1</level>
           <default>false</default>
