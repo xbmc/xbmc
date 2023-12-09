@@ -62,179 +62,10 @@
 					<preloaditems>1</preloaditems>
 					<viewtype label="31100">icon</viewtype>
 					<itemlayout width="370">
-						<control type="image">
-							<left>0</left>
-							<top>90</top>
-							<width>370</width>
-							<height>480</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-							<bordersize>20</bordersize>
-							<visible>String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
-						</control>
-						<control type="image">
-							<depth>DepthContentPopout</depth>
-							<left>0</left>
-							<top>90</top>
-							<width>370</width>
-							<height>480</height>
-							<aspectratio aligny="center">keep</aspectratio>
-							<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-							<bordersize>20</bordersize>
-						</control>
-						<control type="textbox">
-							<left>20</left>
-							<top>603</top>
-							<width>330</width>
-							<height>105</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-						</control>
-						<control type="group">
-							<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
-							<control type="image">
-								<left>35</left>
-								<top>500</top>
-								<width>298</width>
-								<height>50</height>
-								<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
-								<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
-							</control>
-							<control type="label">
-								<left>0</left>
-								<top>522</top>
-								<width>292</width>
-								<height>24</height>
-								<label>$VAR[WatchedStatusVar]</label>
-								<font>font20_title</font>
-								<shadowcolor>text_shadow</shadowcolor>
-								<align>right</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="image">
-								<left>302</left>
-								<top>522</top>
-								<width>24</width>
-								<height>24</height>
-								<texture>lists/played-total.png</texture>
-								<align>right</align>
-								<aligny>center</aligny>
-							</control>
-						</control>
-						<control type="image">
-							<left>35</left>
-							<top>518</top>
-							<width>32</width>
-							<height>32</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<texture>$VAR[WallWatchedIconVar]</texture>
-						</control>
-						<control type="group">
-							<left>158</left>
-							<top>92</top>
-							<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
-						</control>
-						<control type="progress">
-							<left>32</left>
-							<top>530</top>
-							<width>298</width>
-							<height>1</height>
-							<texturebg></texturebg>
-							<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
-							<info>ListItem.PercentPlayed</info>
-							<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
-						</control>
+						<include content="ShiftImageBox" />
 					</itemlayout>
 					<focusedlayout width="370">
-						<control type="image">
-							<left>0</left>
-							<top>90</top>
-							<width>370</width>
-							<height>480</height>
-							<texture>dialogs/dialog-bg-nobo.png</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-							<bordersize>20</bordersize>
-							<visible>String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
-						</control>
-						<control type="image">
-							<depth>DepthContentPopout</depth>
-							<left>0</left>
-							<top>90</top>
-							<width>370</width>
-							<height>480</height>
-							<aspectratio aligny="center">keep</aspectratio>
-							<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
-							<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
-							<bordersize>20</bordersize>
-						</control>
-						<control type="textbox">
-							<left>20</left>
-							<top>603</top>
-							<width>330</width>
-							<height>105</height>
-							<align>center</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.Label]</label>
-							<autoscroll time="3000" delay="3000" repeat="3000">True</autoscroll>
-						</control>
-						<control type="group">
-							<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
-							<control type="image">
-								<left>35</left>
-								<top>500</top>
-								<width>298</width>
-								<height>50</height>
-								<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
-								<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
-							</control>
-							<control type="label">
-								<left>0</left>
-								<top>522</top>
-								<width>292</width>
-								<height>24</height>
-								<label>$VAR[WatchedStatusVar]</label>
-								<font>font20_title</font>
-								<shadowcolor>text_shadow</shadowcolor>
-								<align>right</align>
-								<aligny>center</aligny>
-							</control>
-							<control type="image">
-								<left>302</left>
-								<top>522</top>
-								<width>24</width>
-								<height>24</height>
-								<texture>lists/played-total.png</texture>
-								<align>right</align>
-								<aligny>center</aligny>
-							</control>
-						</control>
-						<control type="image">
-							<left>35</left>
-							<top>518</top>
-							<width>32</width>
-							<height>32</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<texture>$VAR[WallWatchedIconVar]</texture>
-						</control>
-						<control type="group">
-							<left>158</left>
-							<top>92</top>
-							<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
-						</control>
-						<control type="progress">
-							<left>32</left>
-							<top>530</top>
-							<width>298</width>
-							<height>1</height>
-							<texturebg></texturebg>
-							<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
-							<info>ListItem.PercentPlayed</info>
-							<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
-						</control>
+						<include content="ShiftImageBox" />
 					</focusedlayout>
 				</control>
 			</control>
@@ -290,6 +121,68 @@
 			</control>
 		</control>
 	</include>
+	<include name="ShiftImageBox">
+		<control type="image">
+			<left>18</left>
+			<top>90</top>
+			<width>334</width>
+			<height>480</height>
+			<aspectratio aligny="center">stretch</aspectratio>
+			<texture>dialogs/dialog-bg-nobo.png</texture>
+			<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+			<bordersize>20</bordersize>
+			<visible>String.IsEmpty(ListItem.Art(thumb)) + !Container.Content(albums) | String.IsEmpty(ListItem.Art(poster)) + [Container.Content(movies) | Container.Content(tvshows)]</visible>
+		</control>
+		<control type="image">
+			<depth>DepthContentPopout</depth>
+			<left>18</left>
+			<top>90</top>
+			<width>334</width>
+			<height>480</height>
+			<aspectratio aligny="center">keep</aspectratio>
+			<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
+			<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+			<bordersize>20</bordersize>
+			<visible>String.IsEmpty(ListItem.Art(poster))</visible>
+		</control>
+		<control type="image">
+			<depth>DepthContentPopout</depth>
+			<left>18</left>
+			<top>90</top>
+			<width>334</width>
+			<height>480</height>
+			<aspectratio aligny="center">scale</aspectratio>
+			<texture fallback="DefaultVideo.png" background="true">$VAR[ShiftThumbVar]</texture>
+			<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+			<bordersize>20</bordersize>
+			<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
+		</control>
+		<control type="textbox">
+			<left>20</left>
+			<top>603</top>
+			<width>330</width>
+			<height>105</height>
+			<align>center</align>
+			<aligny>center</aligny>
+			<label>$INFO[ListItem.Label]</label>
+		</control>
+		<include>IconStatusOverlay</include>
+		<control type="group">
+			<left>158</left>
+			<top>92</top>
+			<include condition="Skin.HasSetting(circle_rating) | Skin.HasSetting(circle_userrating)">RatingCircle</include>
+		</control>
+		<control type="progress">
+			<left>32</left>
+			<top>530</top>
+			<width>298</width>
+			<height>1</height>
+			<texturebg></texturebg>
+			<midtexture colordiffuse="button_focus" border="3">progress/texturebg_alt_white.png</midtexture>
+			<info>ListItem.PercentPlayed</info>
+			<visible>!Integer.IsEqual(ListItem.PercentPlayed,0)</visible>
+		</control>
+	</include>
 	<include name="ShiftTextbox">
 		<control type="group">
 			<animation effect="fade" time="200" start="0" end="100" condition="!String.IsEmpty(Control.GetLabel($PARAM[textbox_id]))">Conditional</animation>
@@ -301,6 +194,50 @@
 				<height>163</height>
 				<label>$PARAM[textbox_content]</label>
 				<shadowcolor>text_shadow</shadowcolor>
+			</control>
+		</control>
+	</include>
+	<include name="IconStatusOverlay">
+		<control type="group">
+			<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.IsCollection) | String.IsEqual(ListItem.HasVideoVersions) | String.IsEqual(ListItem.IsResumable) | Integer.IsGreater(ListItem.Playcount,0)</visible>
+			<control type="image">
+				<left>38</left>
+				<top>500</top>
+				<width>294</width>
+				<height>50</height>
+				<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
+				<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
+			</control>
+			<control type="label">
+				<left>75</left>
+				<top>522</top>
+				<width>222</width>
+				<height>24</height>
+				<label>$VAR[WatchedStatusVar]</label>
+				<font>font20_title</font>
+				<shadowcolor>text_shadow</shadowcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
+			</control>
+			<control type="image">
+				<left>302</left>
+				<top>522</top>
+				<width>24</width>
+				<height>24</height>
+				<texture>lists/played-total.png</texture>
+				<align>right</align>
+				<aligny>center</aligny>
+				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
+			</control>
+			<control type="image">
+				<left>45</left>
+				<top>522</top>
+				<width>24</width>
+				<height>24</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<texture>$VAR[WallWatchedIconVar]</texture>
 			</control>
 		</control>
 	</include>
