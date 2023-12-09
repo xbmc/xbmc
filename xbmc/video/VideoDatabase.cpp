@@ -287,6 +287,8 @@ void CVideoDatabase::CreateAnalytics()
               "actor_link (media_id, media_type(20), actor_id)");
   m_pDS->exec("CREATE INDEX ix_actor_link_3 ON actor_link (media_type(20))");
 
+  m_pDS->exec("CREATE INDEX ix_videoversion ON videoversion (idMedia, mediaType(20))");
+
   CreateLinkIndex("tag");
   CreateForeignLinkIndex("director", "actor");
   CreateForeignLinkIndex("writer", "actor");
@@ -547,36 +549,43 @@ void CVideoDatabase::CreateViews()
   CLog::Log(LOGINFO, "create movie_view");
 
   std::string movieview = PrepareSQL("CREATE VIEW movie_view AS SELECT"
-                                      "  movie.*,"
-                                      "  sets.strSet AS strSet,"
-                                      "  sets.strOverview AS strSetOverview,"
-                                      "  files.strFileName AS strFileName,"
-                                      "  path.strPath AS strPath,"
-                                      "  files.playCount AS playCount,"
-                                      "  files.lastPlayed AS lastPlayed, "
-                                      "  files.dateAdded AS dateAdded, "
-                                      "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
-                                      "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
-                                      "  bookmark.playerState AS playerState, "
-                                      "  rating.rating AS rating, "
-                                      "  rating.votes AS votes, "
-                                      "  rating.rating_type AS rating_type, "
-                                      "  uniqueid.value AS uniqueid_value, "
-                                      "  uniqueid.type AS uniqueid_type "
-                                      "FROM movie"
-                                      "  LEFT JOIN sets ON"
-                                      "    sets.idSet = movie.idSet"
-                                      "  JOIN files ON"
-                                      "    files.idFile=movie.idFile"
-                                      "  JOIN path ON"
-                                      "    path.idPath=files.idPath"
-                                      "  LEFT JOIN bookmark ON"
-                                      "    bookmark.idFile=movie.idFile AND bookmark.type=1"
-                                      "  LEFT JOIN rating ON"
-                                      "    rating.rating_id=movie.c%02d"
-                                      "  LEFT JOIN uniqueid ON"
-                                      "    uniqueid.uniqueid_id=movie.c%02d",
-                                      VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID);
+                                     "  movie.*,"
+                                     "  sets.strSet AS strSet,"
+                                     "  sets.strOverview AS strSetOverview,"
+                                     "  files.strFileName AS strFileName,"
+                                     "  path.strPath AS strPath,"
+                                     "  files.playCount AS playCount,"
+                                     "  files.lastPlayed AS lastPlayed, "
+                                     "  files.dateAdded AS dateAdded, "
+                                     "  bookmark.timeInSeconds AS resumeTimeInSeconds, "
+                                     "  bookmark.totalTimeInSeconds AS totalTimeInSeconds, "
+                                     "  bookmark.playerState AS playerState, "
+                                     "  rating.rating AS rating, "
+                                     "  rating.votes AS votes, "
+                                     "  rating.rating_type AS rating_type, "
+                                     "  uniqueid.value AS uniqueid_value, "
+                                     "  uniqueid.type AS uniqueid_type, "
+                                     "  EXISTS( "
+                                     "    SELECT 1 "
+                                     "    FROM  videoversion vv "
+                                     "    WHERE vv.idMedia = movie.idMovie "
+                                     "    AND   vv.mediaType = 'movie' "
+                                     "    AND   vv.idFile <> movie.idFile "
+                                     "  ) AS hasVideoVersions "
+                                     "FROM movie"
+                                     "  LEFT JOIN sets ON"
+                                     "    sets.idSet = movie.idSet"
+                                     "  JOIN files ON"
+                                     "    files.idFile=movie.idFile"
+                                     "  JOIN path ON"
+                                     "    path.idPath=files.idPath"
+                                     "  LEFT JOIN bookmark ON"
+                                     "    bookmark.idFile=movie.idFile AND bookmark.type=1"
+                                     "  LEFT JOIN rating ON"
+                                     "    rating.rating_id=movie.c%02d"
+                                     "  LEFT JOIN uniqueid ON"
+                                     "    uniqueid.uniqueid_id=movie.c%02d",
+                                     VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID);
   m_pDS->exec(movieview);
 }
 
@@ -4263,7 +4272,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.m_iDbId = idMovie;
   details.m_type = MediaTypeMovie;
 
-  details.m_hasVideoVersions = HasVideoVersions(VideoDbContentType::MOVIES, idMovie);
+  details.m_hasVideoVersions = record->at(VIDEODB_DETAILS_MOVIE_HASVERSIONS).get_asBool();
   details.m_set.id = record->at(VIDEODB_DETAILS_MOVIE_SET_ID).get_asInt();
   details.m_set.title = record->at(VIDEODB_DETAILS_MOVIE_SET_NAME).get_asString();
   details.m_set.overview = record->at(VIDEODB_DETAILS_MOVIE_SET_OVERVIEW).get_asString();
@@ -6149,11 +6158,13 @@ void CVideoDatabase::UpdateTables(int iVersion)
         "INSERT INTO videoversion SELECT idFile, idMovie, 'movie', '%i', '%i' FROM movie",
         VideoVersionItemType::PRIMARY, VIDEO_VERSION_ID_DEFAULT));
   }
+
+  // Version 124: add index to videoversion
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 123;
+  return 124;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -11750,37 +11761,6 @@ int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
   }
 
   return id;
-}
-
-bool CVideoDatabase::HasVideoVersions(VideoDbContentType itemType, int dbId)
-{
-  if (!m_pDB || !m_pDS2)
-    return false;
-
-  MediaType mediaType;
-
-  if (itemType == VideoDbContentType::MOVIES)
-    mediaType = MediaTypeMovie;
-  else
-    return false;
-
-  try
-  {
-    m_pDS2->query(
-        PrepareSQL("SELECT idFile FROM videoversion WHERE idMedia = %i AND mediaType = '%s'", dbId,
-                   mediaType.c_str()));
-
-    int count = m_pDS2->num_rows();
-    m_pDS2->close();
-
-    return count > 1;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "{} failed for {} {}", __FUNCTION__, mediaType, dbId);
-  }
-
-  return false;
 }
 
 bool CVideoDatabase::IsVideoExtras(int dbId)

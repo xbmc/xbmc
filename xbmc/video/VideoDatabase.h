@@ -93,6 +93,7 @@ enum VideoDbDetails
 #define VIDEODB_DETAILS_MOVIE_RATING_TYPE       VIDEODB_MAX_COLUMNS + 17
 #define VIDEODB_DETAILS_MOVIE_UNIQUEID_VALUE    VIDEODB_MAX_COLUMNS + 18
 #define VIDEODB_DETAILS_MOVIE_UNIQUEID_TYPE     VIDEODB_MAX_COLUMNS + 19
+#define VIDEODB_DETAILS_MOVIE_HASVERSIONS       VIDEODB_MAX_COLUMNS + 20
 
 #define VIDEODB_DETAILS_EPISODE_TVSHOW_ID       VIDEODB_MAX_COLUMNS + 2
 #define VIDEODB_DETAILS_EPISODE_USER_RATING     VIDEODB_MAX_COLUMNS + 3
@@ -1013,7 +1014,6 @@ public:
   std::string GetVideoVersionById(int id);
   bool GetVideoItemByVideoVersion(int dbId, CFileItem& item);
   int GetVideoVersionFile(VideoDbContentType itemType, int dbId, int idVideoVersion);
-  bool HasVideoVersions(VideoDbContentType itemType, int dbId);
   bool IsVideoExtras(int dbId);
   void GetVideoVersions(VideoDbContentType itemType, int dbId, CFileItemList& items);
   void GetVideoVersions(VideoDbContentType itemType,
