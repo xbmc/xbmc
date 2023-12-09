@@ -242,7 +242,7 @@ bool CWinSystemGbm::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   if (!std::dynamic_pointer_cast<CDRMAtomic>(m_DRM))
   {
-    bo = m_GBM->GetDevice()->GetSurface()->LockFrontBuffer()->Get();
+    bo = m_GBM->GetDevice().GetSurface().LockFrontBuffer().Get();
   }
 
   auto result = m_DRM->SetVideoMode(res, bo);
@@ -290,7 +290,7 @@ void CWinSystemGbm::FlipPage(bool rendered, bool videoLayer, bool async)
 
   if (rendered)
   {
-    bo = m_GBM->GetDevice()->GetSurface()->LockFrontBuffer()->Get();
+    bo = m_GBM->GetDevice().GetSurface().LockFrontBuffer().Get();
   }
 
   m_DRM->FlipPage(bo, rendered, videoLayer, async);

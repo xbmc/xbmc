@@ -74,7 +74,7 @@ CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurface(gbm_surface* surface) : m_surfac
 {
 }
 
-CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer* CGBMUtils::CGBMDevice::CGBMSurface::
+CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer& CGBMUtils::CGBMDevice::CGBMSurface::
     LockFrontBuffer()
 {
   m_buffers.emplace(std::make_unique<CGBMSurfaceBuffer>(m_surface));
@@ -92,7 +92,7 @@ CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer* CGBMUtils::CGBMDevice::CG
     m_buffers.pop();
   }
 
-  return m_buffers.back().get();
+  return *m_buffers.back();
 }
 
 CGBMUtils::CGBMDevice::CGBMSurface::CGBMSurfaceBuffer::CGBMSurfaceBuffer(gbm_surface* surface)

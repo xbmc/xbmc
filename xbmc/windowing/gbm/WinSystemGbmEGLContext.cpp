@@ -23,7 +23,7 @@ bool CWinSystemGbmEGLContext::InitWindowSystemEGL(EGLint renderableType, EGLint 
     return false;
   }
 
-  if (!m_eglContext.CreatePlatformDisplay(m_GBM->GetDevice()->Get(), m_GBM->GetDevice()->Get()))
+  if (!m_eglContext.CreatePlatformDisplay(m_GBM->GetDevice().Get(), m_GBM->GetDevice().Get()))
   {
     return false;
   }
@@ -98,8 +98,8 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   if (plane)
     modifiers = plane->GetModifiersForFormat(format);
 
-  if (!m_GBM->GetDevice()->CreateSurface(res.iWidth, res.iHeight, format, modifiers.data(),
-                                         modifiers.size()))
+  if (!m_GBM->GetDevice().CreateSurface(res.iWidth, res.iHeight, format, modifiers.data(),
+                                        modifiers.size()))
   {
     CLog::Log(LOGERROR, "CWinSystemGbmEGLContext::{} - failed to initialize GBM", __FUNCTION__);
     return false;
@@ -109,8 +109,8 @@ bool CWinSystemGbmEGLContext::CreateNewWindow(const std::string& name,
   static_assert(sizeof(EGLNativeWindowType) == sizeof(gbm_surface*), "Declaration specifier differs in size");
 
   if (!m_eglContext.CreatePlatformSurface(
-          m_GBM->GetDevice()->GetSurface()->Get(),
-          reinterpret_cast<khronos_uintptr_t>(m_GBM->GetDevice()->GetSurface()->Get())))
+          m_GBM->GetDevice().GetSurface().Get(),
+          reinterpret_cast<khronos_uintptr_t>(m_GBM->GetDevice().GetSurface().Get())))
   {
     return false;
   }

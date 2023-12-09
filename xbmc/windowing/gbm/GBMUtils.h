@@ -125,7 +125,7 @@ public:
        *
        * @return CGBMSurfaceBuffer* A pointer to a CGBMSurfaceBuffer object
        */
-      CGBMSurfaceBuffer* LockFrontBuffer();
+      CGBMSurfaceBuffer& LockFrontBuffer();
 
     private:
       gbm_surface* m_surface{nullptr};
@@ -137,7 +137,7 @@ public:
      *
      * @return CGBMSurface* A pointer to the CGBMSurface object
      */
-    CGBMDevice::CGBMSurface* GetSurface() const { return m_surface.get(); }
+    CGBMDevice::CGBMSurface& GetSurface() const { return *m_surface; }
 
   private:
     gbm_device* m_device{nullptr};
@@ -158,7 +158,7 @@ public:
    *
    * @return CGBMDevice* A pointer to the CGBMDevice object
    */
-  CGBMUtils::CGBMDevice* GetDevice() const { return m_device.get(); }
+  CGBMUtils::CGBMDevice& GetDevice() const { return *m_device; }
 
 private:
   struct CGBMDeviceDeleter
