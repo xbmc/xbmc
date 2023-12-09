@@ -11832,14 +11832,23 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
 
   try
   {
-    m_pDS2->query(PrepareSQL("SELECT videoversiontype.name AS name,"
-                             "  videoversiontype.id AS id,"
-                             "  videoversion.idFile AS idFile "
-                             "FROM videoversiontype"
-                             "  JOIN videoversion ON"
+    m_pDS2->query(PrepareSQL("SELECT videoversiontype.name AS name, "
+                             "  videoversiontype.id AS id, "
+                             "  videoversion.idFile AS idFile, "
+                             "  CASE "
+                             "    WHEN movie.idMovie = videoversion.idMedia "
+                             "      THEN 1 "
+                             "	  ELSE 0 "
+                             "  END AS defaultVersion "
+                             "FROM videoversiontype "
+                             "  JOIN videoversion ON "
                              "    videoversion.idType = videoversiontype.id "
-                             "WHERE videoversion.idMedia = %i AND videoversion.mediaType = '%s' "
-                             "AND videoversion.itemType = %i",
+                             "  LEFT JOIN movie ON "
+                             "	  movie.idFile = videoversion.idFile "
+                             "WHERE videoversion.idMedia = %i "
+                             "AND videoversion.mediaType =  '%s' "
+                             "AND videoversion.itemType = %i "
+                             "ORDER BY defaultVersion desc, videoversiontype.id ",
                              dbId, mediaType.c_str(), versionItemType));
 
     std::vector<std::tuple<std::string, int, int>> versions;
