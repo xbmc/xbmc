@@ -129,6 +129,7 @@ public:
   ~CDemuxStreamVideo() override = default;
   int iFpsScale = 0; // scale of 1000 and a rate of 29970 will result in 29.97 fps
   int iFpsRate = 0;
+  bool interlaced = false; // unknown or progressive => false, otherwise true.
   int iHeight = 0; // height of the stream reported by the demuxer
   int iWidth = 0; // width of the stream reported by the demuxer
   double fAspect = 0; // display aspect of stream

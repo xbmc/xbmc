@@ -52,6 +52,7 @@ void CDVDStreamInfo::Clear()
 
   fpsscale = 0;
   fpsrate  = 0;
+  interlaced = false;
   height   = 0;
   width    = 0;
   aspect   = 0.0;
@@ -100,6 +101,7 @@ bool CDVDStreamInfo::Equal(const CDVDStreamInfo& right, int compare)
   // clang-format off
   if (fpsscale != right.fpsscale
   || fpsrate != right.fpsrate
+  || interlaced != right.interlaced
   || height != right.height
   || width != right.width
   || stills != right.stills
@@ -215,6 +217,7 @@ void CDVDStreamInfo::Assign(const CDVDStreamInfo& right, bool withextradata)
   // VIDEO
   fpsscale = right.fpsscale;
   fpsrate  = right.fpsrate;
+  interlaced = right.interlaced;
   height   = right.height;
   width    = right.width;
   aspect   = right.aspect;
@@ -286,6 +289,7 @@ void CDVDStreamInfo::Assign(const CDemuxStream& right, bool withextradata)
     const CDemuxStreamVideo *stream = static_cast<const CDemuxStreamVideo*>(&right);
     fpsscale  = stream->iFpsScale;
     fpsrate   = stream->iFpsRate;
+    interlaced = stream->interlaced;
     height    = stream->iHeight;
     width     = stream->iWidth;
     aspect    = stream->fAspect;

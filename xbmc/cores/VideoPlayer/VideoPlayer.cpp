@@ -3745,7 +3745,11 @@ bool CVideoPlayer::OpenVideoStream(CDVDStreamInfo& hint, bool reset)
   {
     if (CServiceBroker::GetSettingsComponent()->GetSettings()->GetInt(CSettings::SETTING_VIDEOPLAYER_ADJUSTREFRESHRATE) != ADJUST_REFRESHRATE_OFF)
     {
-      double framerate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * hint.fpsscale / hint.fpsrate);
+      const double framerate =
+          DVD_TIME_BASE /
+          CDVDCodecUtils::NormalizeFrameduration(
+              (double)DVD_TIME_BASE * ((hint.interlaced ? 2 : 1) * hint.fpsscale) / hint.fpsrate);
+
       RESOLUTION res = CResolutionUtils::ChooseBestResolution(static_cast<float>(framerate), hint.width, hint.height, !hint.stereo_mode.empty());
       CServiceBroker::GetWinSystem()->GetGfxContext().SetVideoResolution(res, false);
       m_renderManager.TriggerUpdateResolution(framerate, hint.width, hint.height, hint.stereo_mode);
