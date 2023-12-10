@@ -8,8 +8,8 @@
 
 #include "DNSNameCache.h"
 
+#include "network/Network.h"
 #include "threads/CriticalSection.h"
-#include "utils/StringUtils.h"
 #include "utils/log.h"
 
 #include <mutex>
@@ -58,13 +58,17 @@ bool CDNSNameCache::Lookup(const std::string& strHostName, std::string& strIpAdd
     return true;
 
   // perform dns lookup
-  struct hostent *host = gethostbyname(strHostName.c_str());
-  if (host && host->h_addr_list[0])
+  addrinfo hints{};
+  addrinfo* res;
+
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags |= AI_CANONNAME;
+
+  if (getaddrinfo(strHostName.c_str(), nullptr, &hints, &res) == 0)
   {
-    strIpAddress = StringUtils::Format("{}.{}.{}.{}", (unsigned char)host->h_addr_list[0][0],
-                                       (unsigned char)host->h_addr_list[0][1],
-                                       (unsigned char)host->h_addr_list[0][2],
-                                       (unsigned char)host->h_addr_list[0][3]);
+    strIpAddress = CNetworkBase::GetIpStr(res->ai_addr);
+    freeaddrinfo(res);
     g_DNSCache.Add(strHostName, strIpAddress);
     return true;
   }
