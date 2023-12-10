@@ -35,6 +35,12 @@ endif()
 set(CORE_BUILD_DIR build)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# set KODI_MIRROR to the default if not already set
+if(NOT DEFINED KODI_MIRROR)
+  set(KODI_MIRROR "http://mirrors.kodi.tv")
+endif()
+
+message(STATUS "Mirror download location: ${KODI_MIRROR}")
 message(STATUS "Source directory: ${CMAKE_SOURCE_DIR}")
 message(STATUS "Build directory: ${CMAKE_BINARY_DIR}")
 if(CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
