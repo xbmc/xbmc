@@ -289,6 +289,8 @@ void CVideoDatabase::CreateAnalytics()
 
   m_pDS->exec("CREATE INDEX ix_videoversion ON videoversion (idMedia, mediaType(20))");
 
+  m_pDS->exec(PrepareSQL("CREATE INDEX ix_movie_title ON movie (c%02d)", VIDEODB_ID_TITLE));
+
   CreateLinkIndex("tag");
   CreateForeignLinkIndex("director", "actor");
   CreateForeignLinkIndex("writer", "actor");
@@ -3939,27 +3941,17 @@ void CVideoDatabase::GetSameVideoItems(CFileItem& item, CFileItemList& items)
   if (!m_pDB || !m_pDS)
     return;
 
-  // use two containers to keep the insertion order
-  std::list<int> itemIdList;
-  std::unordered_set<int> itemIdSet;
-
-  auto insertItemId = [&](int id)
-  {
-    if (itemIdSet.find(id) == itemIdSet.end())
-    {
-      itemIdList.push_back(id);
-      itemIdSet.insert(id);
-    }
-  };
+  std::vector<int> itemIds;
 
   int dbId = item.GetVideoInfoTag()->m_iDbId;
   MediaType mediaType = item.GetVideoInfoTag()->m_type;
 
   try
   {
-    // get items with same unique ids
+    // get items with same unique ids (imdb, tmdb, etc.) as the specified item, these are
+    // the different versions of the item
     m_pDS->query(
-        PrepareSQL("SELECT media_id "
+        PrepareSQL("SELECT DISTINCT media_id "
                    "FROM uniqueid "
                    "WHERE (value, type) IN "
                    "  (SELECT value, type FROM uniqueid WHERE media_id = %i AND media_type = '%s')",
@@ -3967,24 +3959,36 @@ void CVideoDatabase::GetSameVideoItems(CFileItem& item, CFileItemList& items)
 
     while (!m_pDS->eof())
     {
-      insertItemId(m_pDS->fv("media_id").get_asInt());
+      itemIds.push_back(m_pDS->fv("media_id").get_asInt());
       m_pDS->next();
     }
 
     m_pDS->close();
 
-    // get items with same title
-    std::string title = item.GetVideoInfoTag()->GetTitle();
-
     VideoDbContentType itemType = item.GetVideoContentType();
+
+    // get items with same title (and year if exists) as the specified item, these are
+    // potentially different versions of the item
     if (itemType == VideoDbContentType::MOVIES)
     {
-      m_pDS->query(PrepareSQL("SELECT idMovie FROM movie WHERE movie.c%02d = '%s'",
-                              VIDEODB_ID_TITLE, title.c_str()));
+      if (item.GetVideoInfoTag()->HasYear())
+        m_pDS->query(
+            PrepareSQL("SELECT idMovie FROM movie WHERE c%02d = '%s' AND premiered LIKE '%i%%'",
+                       VIDEODB_ID_TITLE, item.GetVideoInfoTag()->GetTitle().c_str(),
+                       item.GetVideoInfoTag()->GetYear()));
+      else
+        m_pDS->query(
+            PrepareSQL("SELECT idMovie FROM movie WHERE c%02d = '%s' AND LENGTH(premiered) < 4",
+                       VIDEODB_ID_TITLE, item.GetVideoInfoTag()->GetTitle().c_str()));
 
       while (!m_pDS->eof())
       {
-        insertItemId(m_pDS->fv("idMovie").get_asInt());
+        int movieId = m_pDS->fv("idMovie").get_asInt();
+
+        // add movieId if not already in itemIds
+        if (std::find(itemIds.begin(), itemIds.end(), movieId) == itemIds.end())
+          itemIds.push_back(movieId);
+
         m_pDS->next();
       }
 
@@ -3992,11 +3996,11 @@ void CVideoDatabase::GetSameVideoItems(CFileItem& item, CFileItemList& items)
     }
 
     // get video item details
-    for (const auto id : itemIdList)
+    for (const auto id : itemIds)
     {
-      auto item = std::make_shared<CFileItem>();
-      if (GetDetailsByTypeAndId(*item.get(), itemType, id))
-        items.Add(item);
+      auto current = std::make_shared<CFileItem>();
+      if (GetDetailsByTypeAndId(*current.get(), itemType, id))
+        items.Add(current);
     }
   }
   catch (...)
