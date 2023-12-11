@@ -131,6 +131,7 @@ TEST(TestXBMCTinyXML2, SaveFile)
   ASSERT_NE(nullptr, f);
   inputdoc.LoadFile(f);
   fclose(f);
+  XBMC_DELETETEMPFILE(file);
 
   auto* root = inputdoc.RootElement();
   if (root && (strcmp(root->Value(), "details") == 0))

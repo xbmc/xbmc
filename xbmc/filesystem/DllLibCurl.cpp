@@ -123,6 +123,15 @@ DllLibCurlGlobal::DllLibCurlGlobal()
 
 DllLibCurlGlobal::~DllLibCurlGlobal()
 {
+  for (auto& session : m_sessions)
+  {
+    if (session.m_multi && session.m_easy)
+      multi_remove_handle(session.m_multi, session.m_easy);
+    if (session.m_easy)
+      easy_cleanup(session.m_easy);
+    if (session.m_multi)
+      multi_cleanup(session.m_multi);
+  }
   // close libcurl
   curl_global_cleanup();
 }
