@@ -25,20 +25,15 @@ public:
     : m_item{item}, m_videoVersion{videoVersion}
   {
   }
-  virtual ~CVideoActionProcessorHelper();
+  virtual ~CVideoActionProcessorHelper() = default;
 
   std::shared_ptr<CFileItem> ChooseVideoVersion();
 
 private:
   CVideoActionProcessorHelper() = delete;
-  void SetDefaultVideoVersion();
-  void RestoreDefaultVideoVersion();
 
   std::shared_ptr<CFileItem> m_item;
   std::shared_ptr<const CFileItem> m_videoVersion;
-  int m_defaultVideoVersionFileId{-1};
-  std::string m_defaultVideoVersionDynPath;
-  bool m_restoreFolderFlag{false};
 };
 } // namespace GUILIB
 } // namespace VIDEO
