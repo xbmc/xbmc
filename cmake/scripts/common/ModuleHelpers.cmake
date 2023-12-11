@@ -52,7 +52,7 @@ function(get_versionfile_data)
   if (${MODULE}_BASE_URL)
     set(${MODULE}_BASE_URL ${${MODULE}_BASE_URL} PARENT_SCOPE)
   else()
-    set(${MODULE}_BASE_URL "http://mirrors.kodi.tv/build-deps/sources" PARENT_SCOPE)
+    set(${MODULE}_BASE_URL "${KODI_MIRROR}/build-deps/sources" PARENT_SCOPE)
   endif()
   set(${MODULE}_BYPRODUCT ${${MODULE}_BYPRODUCT} PARENT_SCOPE)
 

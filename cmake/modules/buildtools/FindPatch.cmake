@@ -22,11 +22,6 @@ else()
 endif()
 
 if(CMAKE_HOST_WIN32 AND NOT PATCH_EXE)
-  # Set mirror for potential patch binary download
-  if(NOT KODI_MIRROR)
-    set(KODI_MIRROR "http://mirrors.kodi.tv")
-  endif()
-
   set(PATCH_ARCHIVE_NAME "patch-2.7.6-bin")
   set(PATCH_ARCHIVE "${PATCH_ARCHIVE_NAME}.zip")
   set(PATCH_URL "${KODI_MIRROR}/build-deps/win32/${PATCH_ARCHIVE}")
