@@ -35,6 +35,7 @@ protected:
 
 private:
   SwsContext* m_sw_scale_ctx = nullptr;
+  SwsFilter* m_srcFilter = nullptr;
   bool m_restoreMultithreadProtectedOff = false;
 };
 
