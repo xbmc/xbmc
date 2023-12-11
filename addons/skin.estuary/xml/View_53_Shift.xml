@@ -199,7 +199,7 @@
 	</include>
 	<include name="IconStatusOverlay">
 		<control type="group">
-			<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.IsCollection) | String.IsEqual(ListItem.HasVideoVersions) | String.IsEqual(ListItem.IsResumable) | Integer.IsGreater(ListItem.Playcount,0)</visible>
+			<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season) | ListItem.HasVideoVersions | ListItem.IsResumable | Integer.IsGreater(ListItem.Playcount,0)</visible>
 			<control type="image">
 				<left>38</left>
 				<top>500</top>
