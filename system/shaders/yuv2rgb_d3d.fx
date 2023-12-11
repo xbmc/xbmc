@@ -32,7 +32,7 @@ SamplerState YUVSampler : IMMUTABLE
 {
   AddressU = CLAMP;
   AddressV = CLAMP;
-  Filter   = MIN_MAG_MIP_POINT;
+  Filter   = MIN_MAG_MIP_LINEAR;
 };
 
 struct VS_INPUT
