@@ -48,7 +48,6 @@ protected:
   bool GetDirectory(const std::string &strDirectory, CFileItemList &items) override;
   void UpdateButtons() override;
   void DoSearch(const std::string& strSearch, CFileItemList& items) override;
-  virtual void PlayItem(int iItem);
   void OnDeleteItem(const CFileItemPtr& pItem) override;
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   bool OnPopupMenu(int iItem) override;
