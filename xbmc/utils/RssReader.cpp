@@ -321,7 +321,7 @@ bool CRssReader::Parse(int iFeed)
     return false;
 
   std::string strValue = rootXmlNode->Value();
-  if (strValue.find("rss") == std::string::npos || strValue.find("rdf") == std::string::npos)
+  if (strValue.find("rss") == std::string::npos && strValue.find("rdf") == std::string::npos)
   {
     // Unable to find root <rss> or <rdf> node
     return false;
