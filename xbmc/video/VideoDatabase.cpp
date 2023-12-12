@@ -289,7 +289,7 @@ void CVideoDatabase::CreateAnalytics()
 
   m_pDS->exec("CREATE INDEX ix_videoversion ON videoversion (idMedia, mediaType(20))");
 
-  m_pDS->exec(PrepareSQL("CREATE INDEX ix_movie_title ON movie (c%02d)", VIDEODB_ID_TITLE));
+  m_pDS->exec(PrepareSQL("CREATE INDEX ix_movie_title ON movie (c%02d(255))", VIDEODB_ID_TITLE));
 
   CreateLinkIndex("tag");
   CreateForeignLinkIndex("director", "actor");
@@ -6162,13 +6162,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
         "INSERT INTO videoversion SELECT idFile, idMovie, 'movie', '%i', '%i' FROM movie",
         VideoVersionItemType::PRIMARY, VIDEO_VERSION_ID_DEFAULT));
   }
-
-  // Version 124: add index to videoversion
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 124;
+  return 125;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
