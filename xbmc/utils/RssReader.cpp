@@ -174,25 +174,9 @@ void CRssReader::Process()
       }
       http.Cancel();
     }
-    if (!strXML.empty() && m_pObserver)
-    {
-      // erase any <content:encoded> tags (also unsupported by tinyxml)
-      size_t iStart = strXML.find("<content:encoded>");
-      size_t iEnd = 0;
-      while (iStart != std::string::npos)
-      {
-        // get <content:encoded> end position
-        iEnd = strXML.find("</content:encoded>", iStart) + 18;
 
-        // erase the section
-        strXML = strXML.erase(iStart, iEnd - iStart);
-
-        iStart = strXML.find("<content:encoded>");
-      }
-
-      if (Parse(strXML, iFeed))
-        CLog::Log(LOGDEBUG, "Parsed rss feed: {}", strUrl);
-    }
+    if (!strXML.empty() && m_pObserver && Parse(strXML, iFeed))
+      CLog::Log(LOGDEBUG, "Parsed rss feed: {}", strUrl);
   }
   UpdateObserver();
 }
