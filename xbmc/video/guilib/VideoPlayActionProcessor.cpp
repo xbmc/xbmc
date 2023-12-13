@@ -16,7 +16,7 @@
 #include "settings/SettingsComponent.h"
 #include "utils/Variant.h"
 #include "video/VideoUtils.h"
-#include "video/guilib/VideoActionProcessorHelper.h"
+#include "video/guilib/VideoVersionHelper.h"
 
 using namespace VIDEO::GUILIB;
 
@@ -35,10 +35,9 @@ bool CVideoPlayActionProcessorBase::ProcessAction(Action action)
 {
   m_userCancelled = false;
 
-  CVideoActionProcessorHelper procHelper{m_item, m_videoVersion};
-  const auto videoVersion{procHelper.ChooseVideoVersion()};
-  if (videoVersion)
-    m_item = videoVersion;
+  const auto movie{CVideoVersionHelper::ChooseMovieFromVideoVersions(m_item)};
+  if (movie)
+    m_item = movie;
   else
   {
     m_userCancelled = true;
