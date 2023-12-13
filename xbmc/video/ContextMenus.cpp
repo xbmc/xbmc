@@ -380,8 +380,10 @@ bool CVideoPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
   return true;
 };
 
-bool CVideoPlayUsing::IsVisible(const CFileItem& item) const
+bool CVideoPlayUsing::IsVisible(const CFileItem& itemIn) const
 {
+  const CFileItem item{itemIn.GetItemToPlay()};
+
   const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
   return (GetPlayers(playerCoreFactory, item).size() > 1) && VIDEO_UTILS::IsItemPlayable(item);
 }
