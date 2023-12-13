@@ -68,11 +68,15 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
   }
 
   if (videoVersion)
-  {
-    const auto movie{std::make_shared<CFileItem>(videoVersion->GetDynPath(), false)};
-    movie->LoadDetails();
-    return movie;
-  }
+    return GetMovieForVideoVersion(*videoVersion);
 
+  return item;
+}
+
+std::shared_ptr<CFileItem> CVideoVersionHelper::GetMovieForVideoVersion(
+    const CFileItem& videoVersion)
+{
+  auto item{std::make_shared<CFileItem>(videoVersion.GetDynPath(), false)};
+  item->LoadDetails();
   return item;
 }
