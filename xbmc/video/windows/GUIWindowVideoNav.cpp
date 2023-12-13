@@ -676,19 +676,6 @@ void CGUIWindowVideoNav::DoSearch(const std::string& strSearch, CFileItemList& i
   });
 }
 
-void CGUIWindowVideoNav::PlayItem(int iItem)
-{
-  // unlike additemtoplaylist, we need to check the items here
-  // before calling it since the current playlist will be stopped
-  // and cleared!
-
-  // root is not allowed
-  if (m_vecItems->IsVirtualDirectoryRoot())
-    return;
-
-  CGUIWindowVideoBase::PlayItem(iItem);
-}
-
 void CGUIWindowVideoNav::OnDeleteItem(const CFileItemPtr& pItem)
 {
   if (m_vecItems->IsParentFolder())

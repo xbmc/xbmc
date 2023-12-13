@@ -79,6 +79,7 @@ protected:
   void GetContextButtons(int itemNumber, CContextButtons &buttons) override;
   bool OnContextButton(int itemNumber, CONTEXT_BUTTON button) override;
   virtual void OnQueueItem(int iItem, bool first = false);
+  void OnQueueItem(const std::shared_ptr<CFileItem>& item, int iItem, bool first = false);
   virtual void OnDeleteItem(const CFileItemPtr& pItem);
   void OnDeleteItem(int iItem) override;
   virtual void DoSearch(const std::string& strSearch, CFileItemList& items) {}
@@ -99,11 +100,12 @@ protected:
 
   void OnRestartItem(int iItem, const std::string &player = "");
   bool OnPlayOrResumeItem(int iItem, const std::string& player = "");
-  void PlayItem(int iItem, const std::string &player = "");
   bool OnPlayMedia(int iItem, const std::string &player = "") override;
+  bool OnPlayMedia(const std::shared_ptr<CFileItem>& item, const std::string& player);
   bool OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player = "") override;
   using CGUIMediaWindow::LoadPlayList;
   void LoadPlayList(const std::string& strPlayList, PLAYLIST::Id playlistId = PLAYLIST::TYPE_VIDEO);
+  bool PlayItem(const std::shared_ptr<CFileItem>& item, const std::string& player);
 
   bool ShowInfo(const CFileItemPtr& item, const ADDON::ScraperPtr& content);
 

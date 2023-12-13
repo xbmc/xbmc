@@ -2149,6 +2149,17 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoI
     if (!m_pDS->query(sql))
       return false;
     details = GetDetailsForMovie(m_pDS, getDetails);
+
+    //! @todo ugly video versions hack. patch the video file for a non-default video version
+    //! into the video info tag that was just loaded for the default video version.
+    if (!details.IsEmpty() && details.m_hasVideoVersions && !strFilenameAndPath.empty() &&
+        strFilenameAndPath != details.m_strFileNameAndPath)
+    {
+      details.m_lastPlayed.SetValid(false);
+      details.m_dateAdded.SetValid(false);
+      details.SetResumePoint({});
+      GetFileInfo(strFilenameAndPath, details);
+    }
     return !details.IsEmpty();
   }
   catch (...)

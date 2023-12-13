@@ -497,15 +497,17 @@ bool CGUIWindowVideoBase::ShowInfo(const CFileItemPtr& item2, const ScraperPtr& 
 
 void CGUIWindowVideoBase::OnQueueItem(int iItem, bool first)
 {
-  // don't re-queue items from playlist window
-  if (GetID() == WINDOW_VIDEO_PLAYLIST)
-    return;
-
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return;
 
-  // add item 2 playlist
-  const auto item = m_vecItems->Get(iItem);
+  OnQueueItem(m_vecItems->Get(iItem), iItem, first);
+}
+
+void CGUIWindowVideoBase::OnQueueItem(const std::shared_ptr<CFileItem>& item, int iItem, bool first)
+{
+  // don't re-queue items from playlist window
+  if (GetID() == WINDOW_VIDEO_PLAYLIST)
+    return;
 
   if (item->IsRAR() || item->IsZIP())
     return;
@@ -550,9 +552,6 @@ public:
       m_itemIndex(itemIndex),
       m_player(player)
   {
-    // Reset the current start offset. The actual resume
-    // option is set by the processor, based on the action passed.
-    m_item->SetStartOffset(0);
   }
 
 protected:
@@ -564,31 +563,18 @@ protected:
   bool OnResumeSelected() override
   {
     m_item->SetStartOffset(STARTOFFSET_RESUME);
-    if (m_item->m_bIsFolder)
-    {
-      // resume playback of the folder
-      m_window.PlayItem(m_itemIndex, m_player);
-      return true;
-    }
-    // resume playback of the video
-    return m_window.OnClick(m_itemIndex, m_player);
+    return m_window.PlayItem(m_item, m_player);
   }
 
   bool OnPlaySelected() override
   {
-    if (m_item->m_bIsFolder)
-    {
-      // play the folder
-      m_window.PlayItem(m_itemIndex, m_player);
-      return true;
-    }
-    // play the video
-    return m_window.OnClick(m_itemIndex, m_player);
+    m_item->SetStartOffset(0);
+    return m_window.PlayItem(m_item, m_player);
   }
 
   bool OnQueueSelected() override
   {
-    m_window.OnQueueItem(m_itemIndex);
+    m_window.OnQueueItem(m_item, m_itemIndex);
     return true;
   }
 
@@ -741,12 +727,8 @@ class CVideoPlayActionProcessor : public CVideoPlayActionProcessorBase
 public:
   CVideoPlayActionProcessor(CGUIWindowVideoBase& window,
                             const std::shared_ptr<CFileItem>& item,
-                            int itemIndex,
                             const std::string& player)
-    : CVideoPlayActionProcessorBase(item),
-      m_window(window),
-      m_itemIndex(itemIndex),
-      m_player(player)
+    : CVideoPlayActionProcessorBase(item), m_window(window), m_player(player)
   {
   }
 
@@ -754,18 +736,17 @@ protected:
   bool OnResumeSelected() override
   {
     m_item->SetStartOffset(STARTOFFSET_RESUME);
-    return m_window.OnFileAction(m_itemIndex, VIDEO::GUILIB::ACTION_RESUME, m_player);
+    return m_window.PlayItem(m_item, m_player);
   }
 
   bool OnPlaySelected() override
   {
     m_item->SetStartOffset(0);
-    return m_window.OnFileAction(m_itemIndex, VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING, m_player);
+    return m_window.PlayItem(m_item, m_player);
   }
 
 private:
   CGUIWindowVideoBase& m_window;
-  const int m_itemIndex{-1};
   const std::string m_player;
 };
 } // namespace
@@ -775,7 +756,7 @@ bool CGUIWindowVideoBase::OnPlayOrResumeItem(int iItem, const std::string& playe
   if (iItem < 0 || iItem >= m_vecItems->Size())
     return false;
 
-  CVideoPlayActionProcessor proc{*this, m_vecItems->Get(iItem), iItem, player};
+  CVideoPlayActionProcessor proc{*this, m_vecItems->Get(iItem), player};
   return proc.ProcessDefaultAction();
 }
 
@@ -942,13 +923,9 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   return CGUIMediaWindow::OnContextButton(itemNumber, button);
 }
 
-bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
+bool CGUIWindowVideoBase::OnPlayMedia(const std::shared_ptr<CFileItem>& pItem,
+                                      const std::string& player)
 {
-  if ( iItem < 0 || iItem >= m_vecItems->Size() )
-    return false;
-
-  CFileItemPtr pItem = m_vecItems->Get(iItem);
-
   // party mode
   if (g_partyModeManager.IsEnabled(PARTYMODECONTEXT_VIDEO))
   {
@@ -985,6 +962,14 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string &player)
     m_thumbLoader.Load(*m_vecItems);
 
   return true;
+}
+
+bool CGUIWindowVideoBase::OnPlayMedia(int iItem, const std::string& player)
+{
+  if (iItem < 0 || iItem >= m_vecItems->Size())
+    return false;
+
+  return OnPlayMedia(m_vecItems->Get(iItem), player);
 }
 
 bool CGUIWindowVideoBase::OnPlayAndQueueMedia(const CFileItemPtr& item, const std::string& player)
@@ -1067,27 +1052,18 @@ void CGUIWindowVideoBase::LoadPlayList(const std::string& strPlayList,
   }
 }
 
-void CGUIWindowVideoBase::PlayItem(int iItem, const std::string &player)
+bool CGUIWindowVideoBase::PlayItem(const std::shared_ptr<CFileItem>& pItem,
+                                   const std::string& player)
 {
-  // restrictions should be placed in the appropriate window code
-  // only call the base code if the item passes since this clears
-  // the currently playing temp playlist
-
-  const CFileItemPtr pItem = m_vecItems->Get(iItem);
-  // if its a folder, build a temp playlist
   if (pItem->m_bIsFolder && !pItem->IsPlugin())
   {
     // take a copy so we can alter the queue state
-    CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
+    const auto item{std::make_shared<CFileItem>(*pItem)};
 
     //  Allow queuing of unqueueable items
     //  when we try to queue them directly
     if (!item->CanQueue())
       item->SetCanQueue(true);
-
-    // skip ".."
-    if (item->IsParentFolder())
-      return;
 
     // recursively add items to list
     CFileItemList queuedItems;
@@ -1098,17 +1074,18 @@ void CGUIWindowVideoBase::PlayItem(int iItem, const std::string &player)
     CServiceBroker::GetPlaylistPlayer().Add(PLAYLIST::TYPE_VIDEO, queuedItems);
     CServiceBroker::GetPlaylistPlayer().SetCurrentPlaylist(PLAYLIST::TYPE_VIDEO);
     CServiceBroker::GetPlaylistPlayer().Play();
+    return true;
   }
   else if (pItem->IsPlayList())
   {
     // load the playlist the old way
     LoadPlayList(pItem->GetPath(), PLAYLIST::TYPE_VIDEO);
+    return true;
   }
+  else if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled())
+    return OnPlayAndQueueMedia(pItem, player);
   else
-  {
-    // single item, play it
-    OnClick(iItem, player);
-  }
+    return OnPlayMedia(pItem, player);
 }
 
 bool CGUIWindowVideoBase::Update(const std::string &strDirectory, bool updateFilterPath /* = true */)
