@@ -63,6 +63,7 @@ void CContextMenuManager::Init()
   m_items = {
       std::make_shared<CONTEXTMENU::CVideoBrowse>(),
       std::make_shared<CONTEXTMENU::CVideoChooseVersion>(),
+      std::make_shared<CONTEXTMENU::CVideoPlayVersionUsing>(),
       std::make_shared<CONTEXTMENU::CVideoResume>(),
       std::make_shared<CONTEXTMENU::CVideoPlay>(),
       std::make_shared<CONTEXTMENU::CVideoPlayUsing>(),

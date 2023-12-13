@@ -23928,7 +23928,13 @@ msgctxt "#40208"
 msgid "Choose version"
 msgstr ""
 
-#empty strings from id 40209 to 40399
+#. First choose video version and then select a player and play context menu item label
+#: xbmc/video/ContextMenus.h
+msgctxt "#40209"
+msgid "Play version using..."
+msgstr ""
+
+#empty strings from id 40210 to 40399
 
 # Video versions
 
