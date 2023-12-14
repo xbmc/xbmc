@@ -22,17 +22,11 @@ class CVideoDatabase;
 class CGUIDialogVideoVersion : public CGUIDialog
 {
 public:
-  CGUIDialogVideoVersion(int id);
-  ~CGUIDialogVideoVersion(void) override;
-  bool OnMessage(CGUIMessage& message) override;
-  bool OnBack(int actionID) override;
+  CGUIDialogVideoVersion();
+  ~CGUIDialogVideoVersion() override = default;
 
-  enum class Mode
-  {
-    MANAGE,
-    CHOOSE,
-  };
-  void SetMode(Mode mode) { m_mode = mode; }
+  bool OnMessage(CGUIMessage& message) override;
+
   void SetVideoItem(const std::shared_ptr<CFileItem>& item);
 
   static std::tuple<int, std::string> NewVideoVersion();
@@ -44,13 +38,6 @@ public:
                                                 const std::string& extrasPath);
   static std::string GenerateExtrasVideoVersion(const std::string& extrasPath);
   static int ManageVideoVersionContextMenu(const std::shared_ptr<CFileItem>& version);
-
-  struct VersionSelectResult
-  {
-    bool cancelled{false};
-    std::shared_ptr<CFileItem> selected;
-  };
-  static VersionSelectResult ChooseVideoVersion(const std::shared_ptr<CFileItem>& item);
 
 protected:
   void OnInitWindow() override;
@@ -71,8 +58,6 @@ private:
   void CloseAll();
 
   std::shared_ptr<CFileItem> m_videoItem;
-  Mode m_mode{Mode::MANAGE};
-  bool m_cancelled{false};
   CVideoDatabase m_database;
   std::unique_ptr<CFileItemList> m_primaryVideoVersionList;
   std::unique_ptr<CFileItemList> m_extrasVideoVersionList;

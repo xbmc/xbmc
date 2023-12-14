@@ -45,7 +45,6 @@
 #include <algorithm>
 #include <string>
 
-static constexpr unsigned int CONTROL_LABEL_MODE = 1;
 static constexpr unsigned int CONTROL_LABEL_TITLE = 2;
 static constexpr unsigned int CONTROL_IMAGE_THUMB = 3;
 
@@ -60,8 +59,8 @@ static constexpr unsigned int CONTROL_BUTTON_CHOOSE_ART = 27;
 static constexpr unsigned int CONTROL_LIST_PRIMARY_VERSION = 50;
 static constexpr unsigned int CONTROL_LIST_EXTRAS_VERSION = 51;
 
-CGUIDialogVideoVersion::CGUIDialogVideoVersion(int id)
-  : CGUIDialog(id, "DialogVideoVersion.xml"),
+CGUIDialogVideoVersion::CGUIDialogVideoVersion()
+  : CGUIDialog(WINDOW_DIALOG_VIDEO_VERSION, "DialogVideoVersion.xml"),
     m_videoItem(std::make_shared<CFileItem>()),
     m_primaryVideoVersionList(std::make_unique<CFileItemList>()),
     m_extrasVideoVersionList(std::make_unique<CFileItemList>()),
@@ -74,20 +73,10 @@ CGUIDialogVideoVersion::CGUIDialogVideoVersion(int id)
     CLog::Log(LOGERROR, "{}: Failed to open database", __FUNCTION__);
 }
 
-CGUIDialogVideoVersion::~CGUIDialogVideoVersion()
-{
-}
-
 bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
 {
   switch (message.GetMessage())
   {
-    case GUI_MSG_WINDOW_INIT:
-    {
-      m_cancelled = false;
-      break;
-    }
-
     case GUI_MSG_WINDOW_DEINIT:
     {
       ClearVideoVersionList();
@@ -119,15 +108,12 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
           }
           else
           {
-            CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_REMOVE, m_mode == Mode::MANAGE);
-            CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_RENAME, m_mode == Mode::MANAGE);
-            CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_SET_DEFAULT, m_mode == Mode::MANAGE);
+            CONTROL_ENABLE(CONTROL_BUTTON_REMOVE);
+            CONTROL_ENABLE(CONTROL_BUTTON_RENAME);
+            CONTROL_ENABLE(CONTROL_BUTTON_SET_DEFAULT);
           }
 
-          if (m_mode == Mode::MANAGE)
-            SET_CONTROL_FOCUS(CONTROL_BUTTON_PLAY, 0);
-          else
-            CloseAll();
+          SET_CONTROL_FOCUS(CONTROL_BUTTON_PLAY, 0);
         }
       }
       else if (control == CONTROL_LIST_EXTRAS_VERSION)
@@ -146,13 +132,10 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
 
           CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
 
-          CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_REMOVE, m_mode == Mode::MANAGE);
-          CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_RENAME, m_mode == Mode::MANAGE);
+          CONTROL_ENABLE(CONTROL_BUTTON_REMOVE);
+          CONTROL_ENABLE(CONTROL_BUTTON_RENAME);
 
-          if (m_mode == Mode::MANAGE)
-            SET_CONTROL_FOCUS(CONTROL_BUTTON_PLAY, 0);
-          else
-            CloseAll();
+          SET_CONTROL_FOCUS(CONTROL_BUTTON_PLAY, 0);
         }
       }
       else if (control == CONTROL_BUTTON_PLAY)
@@ -191,17 +174,8 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
-bool CGUIDialogVideoVersion::OnBack(int actionID)
-{
-  m_cancelled = true;
-  return CGUIDialog::OnBack(actionID);
-}
-
 void CGUIDialogVideoVersion::OnInitWindow()
 {
-  // set working mode
-  SET_CONTROL_LABEL(CONTROL_LABEL_MODE, m_mode == Mode::MANAGE ? "manage" : "choose");
-
   // set window title
   std::string title = m_videoItem->GetVideoInfoTag()->GetTitle();
 
@@ -209,9 +183,7 @@ void CGUIDialogVideoVersion::OnInitWindow()
   if (year != 0)
     title = StringUtils::Format("{} ({})", title, year);
 
-  SET_CONTROL_LABEL(
-      CONTROL_LABEL_TITLE,
-      StringUtils::Format(g_localizeStrings.Get(m_mode == Mode::MANAGE ? 40022 : 40023), title));
+  SET_CONTROL_LABEL(CONTROL_LABEL_TITLE, StringUtils::Format(g_localizeStrings.Get(40022), title));
 
   // bind primary and extras version lists
   CGUIMessage msg1(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_PRIMARY_VERSION, 0, 0,
@@ -226,11 +198,11 @@ void CGUIDialogVideoVersion::OnInitWindow()
   CONTROL_DISABLE(CONTROL_BUTTON_REMOVE);
   CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_ADD_VERSION, m_mode == Mode::MANAGE);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_ADD_EXTRAS, m_mode == Mode::MANAGE);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_CHOOSE_ART, m_mode == Mode::MANAGE);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_RENAME, m_mode == Mode::MANAGE);
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BUTTON_PLAY, m_mode == Mode::MANAGE);
+  CONTROL_ENABLE(CONTROL_BUTTON_ADD_VERSION);
+  CONTROL_ENABLE(CONTROL_BUTTON_ADD_EXTRAS);
+  CONTROL_ENABLE(CONTROL_BUTTON_CHOOSE_ART);
+  CONTROL_ENABLE(CONTROL_BUTTON_RENAME);
+  CONTROL_ENABLE(CONTROL_BUTTON_PLAY);
 
   CGUIDialog::OnInitWindow();
 }
@@ -651,41 +623,7 @@ void CGUIDialogVideoVersion::ManageVideoVersion(const std::shared_ptr<CFileItem>
   }
 
   dialog->SetVideoItem(item);
-  dialog->SetMode(Mode::MANAGE);
   dialog->Open();
-}
-
-CGUIDialogVideoVersion::VersionSelectResult CGUIDialogVideoVersion::ChooseVideoVersion(
-    const std::shared_ptr<CFileItem>& item)
-{
-  if (!item->HasVideoInfoTag())
-  {
-    CLog::LogF(LOGWARNING, "Item is not a video. path={}", item->GetPath());
-    return {true, {}};
-  }
-
-  if (!item->HasVideoVersions())
-  {
-    CLog::LogF(LOGWARNING, "Item has no video versions. path={}", item->GetPath());
-    return {true, {}};
-  }
-
-  // prompt to select a video version
-  CGUIDialogVideoVersion* dialog{
-      CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoVersion>(
-          WINDOW_DIALOG_VIDEO_VERSION_SELECT)};
-  if (!dialog)
-  {
-    CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_VIDEO_VERSION_SELECT instance!");
-    return {true, {}};
-  }
-
-  dialog->SetVideoItem(item);
-  dialog->SetMode(Mode::CHOOSE);
-  dialog->Open();
-
-  // get the selected video version from dialog if not cancelled
-  return {dialog->m_cancelled, dialog->m_selectedVideoVersion};
 }
 
 int CGUIDialogVideoVersion::ManageVideoVersionContextMenu(const std::shared_ptr<CFileItem>& version)
@@ -712,7 +650,6 @@ int CGUIDialogVideoVersion::ManageVideoVersionContextMenu(const std::shared_ptr<
       return -1;
 
     dialog->SetVideoItem(std::make_shared<CFileItem>(videoItem));
-    dialog->SetMode(Mode::MANAGE);
     dialog->SetSelectedVideoVersion(version);
 
     switch (static_cast<CONTEXT_BUTTON>(button))

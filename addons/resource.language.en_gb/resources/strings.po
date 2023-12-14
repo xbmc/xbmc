@@ -23878,11 +23878,7 @@ msgctxt "#40022"
 msgid "Manage {0:s}"
 msgstr ""
 
-#. Choose video version dialog title
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
-msgctxt "#40023"
-msgid "Choose {0:s}"
-msgstr ""
+#empty string with id 40023
 
 #. Select default video version setting
 #: system/settings/settings.xml

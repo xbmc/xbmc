@@ -120,7 +120,6 @@ const CWindowTranslator::WindowMapByName CWindowTranslator::WindowMappingByName 
     {"okdialog", WINDOW_DIALOG_OK},
     {"movieinformation", WINDOW_DIALOG_VIDEO_INFO},
     {"videoversion", WINDOW_DIALOG_VIDEO_VERSION},
-    {"videoversionselect", WINDOW_DIALOG_VIDEO_VERSION_SELECT},
     {"selectvideoversion", WINDOW_DIALOG_SELECT_VIDEO_VERSION},
     {"selectvideoextra", WINDOW_DIALOG_SELECT_VIDEO_EXTRA},
     {"textviewer", WINDOW_DIALOG_TEXT_VIEWER},
