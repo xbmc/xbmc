@@ -97,17 +97,19 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
                                       ? AV_PIX_FMT_X2BGR10LE
                                       : AV_PIX_FMT_BGRA;
 
-  int swsFlags = SWS_BILINEAR | SWS_PRINT_INFO;
+  const int swsFlags = SWS_BILINEAR | SWS_FULL_CHR_H_INT | SWS_PRINT_INFO;
 
-  // Hack to make swscale use its fully-featured scaling algorithms for full chroma interpolation.
+  // Known chroma interpolation problems of libswscale as of 7.1.100 / ffmpeg 6.0.1:
+  // - 8 bit source and destination: swscale uses a "special converter" limited to nearest
+  // neighbor for chroma. It's used when source size = dest size and filter lengths are 1.
+  // - AV_PIX_FMT_X2BGR10 destination: full chroma interpolation is not available and there is no
+  //  swscale API to retrieve the presence of support.
   //
-  // ff_get_unscaled_swscale() uses nearest neighbor for chroma and is used when source size = dest size
-  // and all filter lengths are 1.
-  // To avoid it, set an identity filter of length > 1
-  //
-  // As of libswscale 7.1.100 / ffmpeg 6.0.1, full chroma interpolation is not available with
-  // AV_PIX_FMT_X2BGR10 destination, and there is no swscale API to retrieve support availability.
-  if (!m_srcFilter && dstFormat == AV_PIX_FMT_BGRA)
+  // - 10 bit source / 8 bit dest: "normal" scaler is used by default, with good results.
+  // For simplicity assume that av_format cannot change 8 > 10 bit mid-stream (perf impact not measurable)
+
+  if (!m_srcFilter && dstFormat == AV_PIX_FMT_BGRA &&
+      (buf->av_format == AV_PIX_FMT_YUV420P || buf->av_format == AV_PIX_FMT_NV12))
   {
     m_srcFilter = sws_getDefaultFilter(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0);
 
@@ -117,8 +119,6 @@ void CRendererSoftware::RenderImpl(CD3DTexture& target, CRect& sourceRect, CPoin
     vec->coeff[1] = 1.0;
     vec->coeff[2] = 0.0;
     m_srcFilter->lumH = vec;
-
-    swsFlags |= SWS_FULL_CHR_H_INT;
   }
 
   // 1. convert yuv to rgb
