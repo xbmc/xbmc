@@ -257,72 +257,6 @@ bool CVideoResume::IsVisible(const CFileItem& itemIn) const
 
 namespace
 {
-class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
-{
-public:
-  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item,
-                                     const std::string& player)
-    : CVideoPlayActionProcessorBase(item), m_player(player)
-  {
-  }
-
-protected:
-  bool OnResumeSelected() override
-  {
-    m_item->SetStartOffset(STARTOFFSET_RESUME);
-    Play();
-    return true;
-  }
-
-  bool OnPlaySelected() override
-  {
-    Play();
-    return true;
-  }
-
-private:
-  void Play()
-  {
-    m_item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
-    const ContentUtils::PlayMode mode{m_item->GetProperty("CheckAutoPlayNextItem").asBoolean()
-                                          ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
-                                          : ContentUtils::PlayMode::PLAY_ONLY_THIS};
-    VIDEO_UTILS::PlayItem(m_item, m_player, mode);
-  }
-
-  const std::string m_player;
-};
-
-void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, const std::string& player, bool resume)
-{
-  item->SetProperty("check_resume", false);
-
-  if (item->IsLiveTV()) // pvr tv or pvr radio?
-  {
-    g_application.PlayMedia(*item, "", PLAYLIST::TYPE_VIDEO);
-  }
-  else
-  {
-    if (!item->m_bIsFolder && item->IsVideoDb())
-    {
-      item->SetProperty("original_listitem_url", item->GetPath());
-      item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
-    }
-
-    // play the given/default video version, if multiple versions are available
-    item->SetProperty("prohibit_choose_video_version", true);
-
-    CVideoPlayActionProcessor proc{item, player};
-    if (resume && (item->GetStartOffset() == STARTOFFSET_RESUME ||
-                   VIDEO_UTILS::GetItemResumeInformation(*item).isResumable))
-      proc.ProcessAction(VIDEO::GUILIB::ACTION_RESUME);
-    else
-      proc.ProcessAction(VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING);
-
-    item->ClearProperty("prohibit_choose_video_version");
-  }
-}
-
 std::vector<std::string> GetPlayers(const CPlayerCoreFactory& playerCoreFactory,
                                     const CFileItem& item)
 {
@@ -339,6 +273,101 @@ std::vector<std::string> GetPlayers(const CPlayerCoreFactory& playerCoreFactory,
 
   return players;
 }
+
+class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
+{
+public:
+  CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item, bool choosePlayer)
+    : CVideoPlayActionProcessorBase(item), m_choosePlayer(choosePlayer)
+  {
+  }
+
+protected:
+  bool OnResumeSelected() override
+  {
+    m_item->SetStartOffset(STARTOFFSET_RESUME);
+    Play();
+    return true;
+  }
+
+  bool OnPlaySelected() override
+  {
+    std::string player;
+    if (m_choosePlayer)
+    {
+      const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
+      const std::vector<std::string> players{GetPlayers(playerCoreFactory, *m_item)};
+      player = playerCoreFactory.SelectPlayerDialog(players);
+      if (player.empty())
+      {
+        m_userCancelled = true;
+        return true; // User cancelled player selection. We're done.
+      }
+    }
+
+    Play(player);
+    return true;
+  }
+
+private:
+  void Play(const std::string& player = "")
+  {
+    m_item->SetProperty("playlist_type_hint", PLAYLIST::TYPE_VIDEO);
+    const ContentUtils::PlayMode mode{m_item->GetProperty("CheckAutoPlayNextItem").asBoolean()
+                                          ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
+                                          : ContentUtils::PlayMode::PLAY_ONLY_THIS};
+    VIDEO_UTILS::PlayItem(m_item, player, mode);
+  }
+
+  const bool m_choosePlayer{false};
+};
+
+enum class PlayMode
+{
+  PLAY,
+  PLAY_USING,
+  PLAY_VERSION_USING,
+  RESUME,
+};
+void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
+{
+  item->SetProperty("check_resume", false);
+
+  if (item->IsLiveTV()) // pvr tv or pvr radio?
+  {
+    g_application.PlayMedia(*item, "", PLAYLIST::TYPE_VIDEO);
+  }
+  else
+  {
+    if (!item->m_bIsFolder && item->IsVideoDb())
+    {
+      item->SetProperty("original_listitem_url", item->GetPath());
+      item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);
+    }
+
+    if (mode == PlayMode::PLAY_VERSION_USING)
+    {
+      // force video version selection dialog
+      item->SetProperty("force_choose_video_version", true);
+    }
+    else
+    {
+      // play the given/default video version, if multiple versions are available
+      item->SetProperty("prohibit_choose_video_version", true);
+    }
+
+    const bool choosePlayer{mode == PlayMode::PLAY_USING || mode == PlayMode::PLAY_VERSION_USING};
+    CVideoPlayActionProcessor proc{item, choosePlayer};
+    if (mode == PlayMode::RESUME && (item->GetStartOffset() == STARTOFFSET_RESUME ||
+                                     VIDEO_UTILS::GetItemResumeInformation(*item).isResumable))
+      proc.ProcessAction(VIDEO::GUILIB::ACTION_RESUME);
+    else // all other modes are actually PLAY
+      proc.ProcessAction(VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING);
+
+    item->ClearProperty("force_choose_video_version");
+    item->ClearProperty("prohibit_choose_video_version");
+  }
+}
 } // unnamed namespace
 
 bool CVideoResume::Execute(const std::shared_ptr<CFileItem>& itemIn) const
@@ -350,7 +379,7 @@ bool CVideoResume::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 #endif
 
   item->SetStartOffset(STARTOFFSET_RESUME);
-  SetPathAndPlay(item, "", true);
+  SetPathAndPlay(item, PlayMode::RESUME);
   return true;
 };
 
@@ -376,12 +405,16 @@ bool CVideoPlay::Execute(const std::shared_ptr<CFileItem>& itemIn) const
   if (item->IsDVD() || item->IsCDDA())
     return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true, true);
 #endif
-  SetPathAndPlay(item, "", false);
+  SetPathAndPlay(item, PlayMode::PLAY);
   return true;
 };
 
-bool CVideoPlayUsing::IsVisible(const CFileItem& item) const
+bool CVideoPlayUsing::IsVisible(const CFileItem& itemIn) const
 {
+  if (itemIn.HasVideoVersions())
+    return false; // display "Play version using..." if multiple versions are available.
+
+  const CFileItem item{itemIn.GetItemToPlay()};
   const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
   return (GetPlayers(playerCoreFactory, item).size() > 1) && VIDEO_UTILS::IsItemPlayable(item);
 }
@@ -389,16 +422,20 @@ bool CVideoPlayUsing::IsVisible(const CFileItem& item) const
 bool CVideoPlayUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
 {
   const auto item{std::make_shared<CFileItem>(itemIn->GetItemToPlay())};
+  SetPathAndPlay(item, PlayMode::PLAY_USING);
+  return true;
+}
 
-  const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
-  const std::vector<std::string> players{GetPlayers(playerCoreFactory, *item)};
-  const std::string player{playerCoreFactory.SelectPlayerDialog(players)};
-  if (!player.empty())
-  {
-    SetPathAndPlay(item, player, false);
-    return true;
-  }
-  return false;
+bool CVideoPlayVersionUsing::IsVisible(const CFileItem& item) const
+{
+  return item.HasVideoVersions();
+}
+
+bool CVideoPlayVersionUsing::Execute(const std::shared_ptr<CFileItem>& itemIn) const
+{
+  const auto item{std::make_shared<CFileItem>(itemIn->GetItemToPlay())};
+  SetPathAndPlay(item, PlayMode::PLAY_VERSION_USING);
+  return true;
 }
 
 namespace

@@ -93,6 +93,13 @@ struct CVideoChooseVersion : CStaticContextMenuAction
   bool Execute(const std::shared_ptr<CFileItem>& item) const override;
 };
 
+struct CVideoPlayVersionUsing : CStaticContextMenuAction
+{
+  CVideoPlayVersionUsing() : CStaticContextMenuAction(40209) {} // Play version using...
+  bool IsVisible(const CFileItem& item) const override;
+  bool Execute(const std::shared_ptr<CFileItem>& _item) const override;
+};
+
 struct CVideoResume : IContextMenuItem
 {
   std::string GetLabel(const CFileItem& item) const override;

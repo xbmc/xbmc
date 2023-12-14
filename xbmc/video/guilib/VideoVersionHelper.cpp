@@ -6,7 +6,7 @@
  *  See LICENSES/README.md for more information.
  */
 
-#include "VideoActionProcessorHelper.h"
+#include "VideoVersionHelper.h"
 
 #include "FileItem.h"
 #include "ServiceBroker.h"
@@ -19,17 +19,19 @@
 
 using namespace VIDEO::GUILIB;
 
-std::shared_ptr<CFileItem> CVideoActionProcessorHelper::ChooseVideoVersion()
+std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
+    const std::shared_ptr<CFileItem>& item)
 {
-  if (!m_videoVersion && m_item->HasVideoVersions())
+  std::shared_ptr<const CFileItem> videoVersion;
+  if (item->HasVideoVersions())
   {
-    if (!m_item->GetProperty("force_choose_video_version").asBoolean(false))
+    if (!item->GetProperty("force_choose_video_version").asBoolean(false))
     {
       // select the specified video version
-      if (m_item->GetVideoInfoTag()->m_idVideoVersion > 0)
-        m_videoVersion = m_item;
+      if (item->GetVideoInfoTag()->m_idVideoVersion > 0)
+        videoVersion = item;
 
-      if (!m_videoVersion)
+      if (!videoVersion)
       {
         // select the default video version
         const auto settings{CServiceBroker::GetSettingsComponent()->GetSettings()};
@@ -43,33 +45,38 @@ std::shared_ptr<CFileItem> CVideoActionProcessorHelper::ChooseVideoVersion()
           else
           {
             CFileItem defaultVersion;
-            db.GetDefaultVideoVersion(m_item->GetVideoContentType(),
-                                      m_item->GetVideoInfoTag()->m_iDbId, defaultVersion);
+            db.GetDefaultVideoVersion(item->GetVideoContentType(), item->GetVideoInfoTag()->m_iDbId,
+                                      defaultVersion);
             if (!defaultVersion.HasVideoInfoTag() || defaultVersion.GetVideoInfoTag()->IsEmpty())
               CLog::LogF(LOGERROR, "Unable to get default video version from video database!");
             else
-              m_videoVersion = std::make_shared<const CFileItem>(defaultVersion);
+              videoVersion = std::make_shared<const CFileItem>(defaultVersion);
           }
         }
       }
     }
 
-    if (!m_videoVersion && (m_item->GetProperty("force_choose_video_version").asBoolean(false) ||
-                            !m_item->GetProperty("prohibit_choose_video_version").asBoolean(false)))
+    if (!videoVersion && (item->GetProperty("force_choose_video_version").asBoolean(false) ||
+                          !item->GetProperty("prohibit_choose_video_version").asBoolean(false)))
     {
-      const auto result{CGUIDialogVideoVersion::ChooseVideoVersion(m_item)};
+      const auto result{CGUIDialogVideoVersion::ChooseVideoVersion(item)};
       if (result.cancelled)
         return {};
       else
-        m_videoVersion = result.selected;
+        videoVersion = result.selected;
     }
   }
 
-  if (m_videoVersion)
-  {
-    m_item = std::make_shared<CFileItem>(m_videoVersion->GetDynPath(), false);
-    m_item->LoadDetails();
-  }
+  if (videoVersion)
+    return GetMovieForVideoVersion(*videoVersion);
 
-  return m_item;
+  return item;
+}
+
+std::shared_ptr<CFileItem> CVideoVersionHelper::GetMovieForVideoVersion(
+    const CFileItem& videoVersion)
+{
+  auto item{std::make_shared<CFileItem>(videoVersion.GetDynPath(), false)};
+  item->LoadDetails();
+  return item;
 }
