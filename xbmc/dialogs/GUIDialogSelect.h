@@ -21,6 +21,7 @@ class CGUIDialogSelect : public CGUIDialogBoxBase
 {
 public:
   CGUIDialogSelect();
+  explicit CGUIDialogSelect(int windowid);
   ~CGUIDialogSelect(void) override;
   bool OnMessage(CGUIMessage& message) override;
   bool OnBack(int actionID) override;
@@ -48,7 +49,6 @@ public:
   void SetButtonFocus(bool buttonFocus);
 
 protected:
-  explicit CGUIDialogSelect(int windowid);
   CGUIControl *GetFirstFocusableControl(int id) override;
   void OnWindowLoaded() override;
   void OnInitWindow() override;
