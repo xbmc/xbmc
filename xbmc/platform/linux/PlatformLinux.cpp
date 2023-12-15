@@ -91,7 +91,7 @@ bool CPlatformLinux::InitStageOne()
 #endif
 #endif
 
-  CLinuxPowerSyscall::Register();
+  RegisterPowerManagement();
 
   std::string_view sink = CServiceBroker::GetAppParams()->GetAudioBackend();
 
@@ -164,4 +164,9 @@ bool CPlatformLinux::IsConfigureAddonsAtStartupEnabled()
 #else
   return false;
 #endif
+}
+
+void CPlatformLinux::RegisterPowerManagement()
+{
+  CLinuxPowerSyscall::Register();
 }

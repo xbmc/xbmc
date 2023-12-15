@@ -15,4 +15,7 @@ class CPlatformWebOS : public CPlatformLinux
 public:
   bool InitStageOne() override;
   static CPlatform* CreateInstance();
+
+protected:
+  void RegisterPowerManagement() override;
 };

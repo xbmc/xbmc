@@ -9,6 +9,7 @@
 #include "PlatformWebOS.h"
 
 #include "filesystem/SpecialProtocol.h"
+#include "powermanagement/LunaPowerManagement.h"
 
 CPlatform* CPlatform::CreateInstance()
 {
@@ -30,4 +31,9 @@ bool CPlatformWebOS::InitStageOne()
          CSpecialProtocol::TranslatePath("special://xbmc/system/certs/cacert.pem").c_str(), 1);
 
   return CPlatformLinux::InitStageOne();
+}
+
+void CPlatformWebOS::RegisterPowerManagement()
+{
+  CLunaPowerManagement::Register();
 }
