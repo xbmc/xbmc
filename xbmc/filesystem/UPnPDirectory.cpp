@@ -102,14 +102,13 @@ static bool FindDeviceWait(CUPnP* upnp, const char* uuid, PLT_DeviceDataReferenc
 /*----------------------------------------------------------------------
 |   CUPnPDirectory::GetFriendlyName
 +---------------------------------------------------------------------*/
-const char*
-CUPnPDirectory::GetFriendlyName(const CURL& url)
+std::string CUPnPDirectory::GetFriendlyName(const CURL& url)
 {
     NPT_String path = url.Get().c_str();
     if (!path.EndsWith("/")) path += "/";
 
     if (path.Left(7).Compare("upnp://", true) != 0) {
-        return NULL;
+      return {};
     } else if (path.Compare("upnp://", true) == 0) {
         return "UPnP Media Servers (Auto-Discover)";
     }
@@ -117,7 +116,7 @@ CUPnPDirectory::GetFriendlyName(const CURL& url)
     // look for nextslash
     int next_slash = path.Find('/', 7);
     if (next_slash == -1)
-        return NULL;
+      return {};
 
     NPT_String uuid = path.SubString(7, next_slash-7);
     NPT_String object_id = path.SubString(next_slash+1, path.GetLength()-next_slash-2);
@@ -125,9 +124,9 @@ CUPnPDirectory::GetFriendlyName(const CURL& url)
     // look for device
     PLT_DeviceDataReference device;
     if(!FindDeviceWait(CUPnP::GetInstance(), uuid, device))
-        return NULL;
+      return {};
 
-    return (const char*)device->GetFriendlyName();
+    return device->GetFriendlyName().GetChars();
 }
 
 /*----------------------------------------------------------------------

@@ -31,7 +31,7 @@ public:
     bool AllowAll() const override { return true; }
 
     // class methods
-    static const char* GetFriendlyName(const CURL& url);
+    static std::string GetFriendlyName(const CURL& url);
     static bool        GetResource(const CURL &path, CFileItem& item);
 };
 }
