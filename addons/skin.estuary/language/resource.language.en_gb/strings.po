@@ -945,3 +945,39 @@ msgstr ""
 msgctxt "#31615"
 msgid "Extras"
 msgstr ""
+
+#: /xml/DialogVideoVersion.xml
+#. Video version dialog button
+msgctxt "#31616"
+msgid "Manage versions"
+msgstr ""
+
+#: /xml/DialogVideoVersion.xml
+#. Video version dialog button
+msgctxt "#31617"
+msgid "Manage extras"
+msgstr ""
+
+#: /xml/DialogVideoVersion.xml
+#. Video version dialog button
+msgctxt "#31618"
+msgid "Choose version"
+msgstr ""
+
+#: /xml/DialogVideoVersion.xml
+#. Video version dialog button
+msgctxt "#31619"
+msgid "Choose extra"
+msgstr ""
+
+#: /xml/DialogVideoVersion.xml
+#. Video version dialog button
+msgctxt "#31620"
+msgid "Show versions"
+msgstr ""
+
+#: /xml/DialogVideoVersion.xml
+#. Video version dialog button
+msgctxt "#31621"
+msgid "Show extras"
+msgstr ""
