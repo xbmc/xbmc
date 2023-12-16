@@ -16,7 +16,6 @@
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
 #include "application/ApplicationStackHelper.h"
-#include "cores/DataCacheCore.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
@@ -25,10 +24,10 @@
 #include "interfaces/json-rpc/JSONUtils.h"
 #include "interfaces/python/XBPython.h"
 #include "profiles/ProfileManager.h"
-#include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/SettingsComponent.h"
+#include "utils/JobManager.h"
 #include "utils/SaveFileStateJob.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -38,20 +37,12 @@
 #include <memory>
 
 CApplicationPlayerCallback::CApplicationPlayerCallback()
-  : m_itemCurrentFile(new CFileItem), m_playerEvent(true, true)
 {
 }
 
 void CApplicationPlayerCallback::OnPlayBackEnded()
 {
   CLog::LogF(LOGDEBUG, "CApplicationPlayerCallback::OnPlayBackEnded");
-
-  CServiceBroker::GetPVRManager().OnPlaybackEnded(*m_itemCurrentFile);
-
-  CVariant data(CVariant::VariantTypeObject);
-  data["end"] = true;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop",
-                                                     m_itemCurrentFile, data);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_ENDED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -60,6 +51,7 @@ void CApplicationPlayerCallback::OnPlayBackEnded()
 void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
 {
   CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStarted");
+  std::shared_ptr<CFileItem> itemCurrentFile;
 
   // check if VideoPlayer should set file item stream details from its current streams
   const bool isBlu_dvd_image_or_stream = (URIUtils::IsBluray(file.GetPath()) || file.IsDVDFile() ||
@@ -78,10 +70,11 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
 
   auto& components = CServiceBroker::GetAppComponents();
   const auto stackHelper = components.GetComponent<CApplicationStackHelper>();
+
   if (stackHelper->IsPlayingISOStack() || stackHelper->IsPlayingRegularStack())
-    m_itemCurrentFile = std::make_shared<CFileItem>(*stackHelper->GetRegisteredStack(file));
+    itemCurrentFile = std::make_shared<CFileItem>(*stackHelper->GetRegisteredStack(file));
   else
-    m_itemCurrentFile = std::make_shared<CFileItem>(file);
+    itemCurrentFile = std::make_shared<CFileItem>(file);
 
   /* When playing video pause any low priority jobs, they will be unpaused  when playback stops.
    * This should speed up player startup for files on internet filesystems (eg. webdav) and
@@ -92,12 +85,9 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
     CServiceBroker::GetJobManager()->PauseJobs();
   }
 
-  CServiceBroker::GetPVRManager().OnPlaybackStarted(*m_itemCurrentFile);
   stackHelper->OnPlayBackStarted(file);
 
-  m_playerEvent.Reset();
-
-  CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
+  CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0, 0, 0, itemCurrentFile);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
@@ -181,11 +171,8 @@ void CApplicationPlayerCallback::OnPlayBackPaused()
   CServiceBroker::GetXBPython().OnPlayBackPaused();
 #endif
 
-  CVariant param;
-  param["player"]["speed"] = 0;
-  param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnPause",
-                                                     m_itemCurrentFile, param);
+  CGUIMessage msg(GUI_MSG_PLAYBACK_PAUSED, 0, 0);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 void CApplicationPlayerCallback::OnPlayBackResumed()
@@ -194,23 +181,13 @@ void CApplicationPlayerCallback::OnPlayBackResumed()
   CServiceBroker::GetXBPython().OnPlayBackResumed();
 #endif
 
-  CVariant param;
-  param["player"]["speed"] = 1;
-  param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnResume",
-                                                     m_itemCurrentFile, param);
+  CGUIMessage msg(GUI_MSG_PLAYBACK_RESUMED, 0, 0);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 void CApplicationPlayerCallback::OnPlayBackStopped()
 {
   CLog::LogF(LOGDEBUG, "CApplication::OnPlayBackStopped");
-
-  CServiceBroker::GetPVRManager().OnPlaybackStopped(*m_itemCurrentFile);
-
-  CVariant data(CVariant::VariantTypeObject);
-  data["end"] = false;
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnStop",
-                                                     m_itemCurrentFile, data);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STOPPED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
@@ -246,17 +223,8 @@ void CApplicationPlayerCallback::OnPlayBackSeek(int64_t iTime, int64_t seekOffse
                                                static_cast<int>(seekOffset));
 #endif
 
-  CVariant param;
-  JSONRPC::CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
-  JSONRPC::CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);
-  param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  const auto& components = CServiceBroker::GetAppComponents();
-  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  param["player"]["speed"] = static_cast<int>(appPlayer->GetPlaySpeed());
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnSeek",
-                                                     m_itemCurrentFile, param);
-
-  CDataCacheCore::GetInstance().SeekFinished(static_cast<int>(seekOffset));
+  CGUIMessage msg(GUI_MSG_PLAYBACK_SEEKED, 0, 0, iTime, seekOffset);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 void CApplicationPlayerCallback::OnPlayBackSeekChapter(int iChapter)
@@ -272,11 +240,8 @@ void CApplicationPlayerCallback::OnPlayBackSpeedChanged(int iSpeed)
   CServiceBroker::GetXBPython().OnPlayBackSpeedChanged(iSpeed);
 #endif
 
-  CVariant param;
-  param["player"]["speed"] = iSpeed;
-  param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnSpeedChanged",
-                                                     m_itemCurrentFile, param);
+  CGUIMessage msg(GUI_MSG_PLAYBACK_SPEED_CHANGED, 0, 0, iSpeed);
+  CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
 }
 
 void CApplicationPlayerCallback::OnAVChange()
@@ -287,12 +252,6 @@ void CApplicationPlayerCallback::OnAVChange()
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVCHANGE, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-
-  CVariant param;
-  param["player"]["speed"] = 1;
-  param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnAVChange",
-                                                     m_itemCurrentFile, param);
 }
 
 void CApplicationPlayerCallback::OnAVStarted(const CFileItem& file)
@@ -301,12 +260,6 @@ void CApplicationPlayerCallback::OnAVStarted(const CFileItem& file)
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_AVSTARTED, 0, 0);
   CServiceBroker::GetGUI()->GetWindowManager().SendThreadMessage(msg);
-
-  CVariant param;
-  param["player"]["speed"] = 1;
-  param["player"]["playerid"] = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  CServiceBroker::GetAnnouncementManager()->Announce(ANNOUNCEMENT::Player, "OnAVStart",
-                                                     m_itemCurrentFile, param);
 }
 
 void CApplicationPlayerCallback::RequestVideoSettings(const CFileItem& fileItem)

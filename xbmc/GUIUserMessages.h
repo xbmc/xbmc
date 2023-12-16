@@ -143,3 +143,8 @@ constexpr const int GUI_MSG_PLAYBACK_AVSTARTED      = GUI_MSG_USER + 44;
 // Sent to notify system sleep/wake
 constexpr const int GUI_MSG_SYSTEM_SLEEP  			= GUI_MSG_USER + 45;
 constexpr const int GUI_MSG_SYSTEM_WAKE 			= GUI_MSG_USER + 46;
+
+constexpr const int GUI_MSG_PLAYBACK_PAUSED = GUI_MSG_USER + 47;
+constexpr const int GUI_MSG_PLAYBACK_RESUMED = GUI_MSG_USER + 48;
+constexpr const int GUI_MSG_PLAYBACK_SEEKED = GUI_MSG_USER + 49;
+constexpr const int GUI_MSG_PLAYBACK_SPEED_CHANGED = GUI_MSG_USER + 50;

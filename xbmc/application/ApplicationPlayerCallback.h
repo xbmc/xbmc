@@ -36,8 +36,4 @@ public:
   void OnAVStarted(const CFileItem& file) override;
   void RequestVideoSettings(const CFileItem& fileItem) override;
   void StoreVideoSettings(const CFileItem& fileItem, const CVideoSettings& vs) override;
-
-protected:
-  std::shared_ptr<CFileItem> m_itemCurrentFile; //!< Currently playing file
-  CEvent m_playerEvent;
 };
