@@ -43,6 +43,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoVersionTypes.h"
 #include "video/dialogs/GUIDialogVideoVersion.h"
 
 #include <algorithm>
