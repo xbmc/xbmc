@@ -986,6 +986,9 @@ namespace VIDEO
       if (it != m_pathsToScan.end())
         m_pathsToScan.erase(it);
 
+      if (HasNoMedia(item->GetPath()))
+        return true;
+
       std::string hash, dbHash;
       bool allowEmptyHash = false;
       if (item->IsPlugin())
@@ -1014,7 +1017,12 @@ namespace VIDEO
         if (!hash.empty())
           flags |= DIR_FLAG_NO_FILE_INFO;
 
-        CUtil::GetRecursiveListing(item->GetPath(), items, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), flags);
+        // Listing that ignores files inside and below folders containing .nomedia files.
+        CDirectory::EnumerateDirectory(
+            item->GetPath(), [&items](const std::shared_ptr<CFileItem>& item) { items.Add(item); },
+            [this](const std::shared_ptr<CFileItem>& folder)
+            { return !HasNoMedia(folder->GetPath()); },
+            true, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), flags);
 
         // fast hash failed - compute slow one
         if (hash.empty())
