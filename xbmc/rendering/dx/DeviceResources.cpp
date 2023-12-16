@@ -1204,7 +1204,7 @@ VideoDriverInfo DX::DeviceResources::GetVideoDriverVersion()
 {
   const DXGI_ADAPTER_DESC ad = GetAdapterDesc();
 
-  VideoDriverInfo driver = CWIN32Util::GetVideoDriverInfo(ad.VendorId, ad.Description);
+  const VideoDriverInfo driver = CWIN32Util::GetVideoDriverInfo(ad.VendorId, ad.Description);
 
   if (ad.VendorId == PCIV_NVIDIA)
     CLog::LogF(LOGINFO, "video driver version is {} {}.{} ({})", GetGFXProviderName(ad.VendorId),
