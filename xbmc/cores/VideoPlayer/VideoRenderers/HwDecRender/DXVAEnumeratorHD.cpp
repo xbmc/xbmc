@@ -683,6 +683,15 @@ ProcessorConversions CEnumeratorHD::LogAndListConversions(
     return {};
   }
 
+  std::vector<DXGI_FORMAT> RenderingOutputFormats = {DXGI_FORMAT_B8G8R8A8_UNORM};
+
+  // The AMD dxva processor of the GCN architecture has low chroma upsampling quality
+  // (nearest neighbor) from YCbCr SDR color primaries to 10 bit RGB. Transfer function doesn't matter.
+  // > Blacklist 10 bit output. Float output (not used at this point) has the same problem.
+
+  if (!DX::DeviceResources::Get()->IsGCNOrOlder() || inputArgs.primaries == AVCOL_PRI_BT2020)
+    RenderingOutputFormats.push_back(DXGI_FORMAT_R10G10B10A2_UNORM);
+
   return ListConversions(m_input_dxgi_format, std::vector<DXGI_COLOR_SPACE_TYPE>{inputCS},
                          RenderingOutputFormats, std::vector<DXGI_COLOR_SPACE_TYPE>{outputCS});
 }
