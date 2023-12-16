@@ -548,7 +548,7 @@ void CGUIDialogSubtitles::OnDownloadComplete(const CFileItemList *items, const s
   std::vector<std::string> vecFiles;
 
   std::string strCurrentFilePath;
-  if (StringUtils::StartsWith(strCurrentFilePath, "http://"))
+  if (StringUtils::StartsWith(strCurrentFile, "http://") || StringUtils::StartsWith(strCurrentFile, "https://"))
   {
     strCurrentFile = "TempSubtitle";
     vecFiles.push_back(strCurrentFile);
