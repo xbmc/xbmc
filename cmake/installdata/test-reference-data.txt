@@ -36,4 +36,5 @@ xbmc/video/test/testdata/moviestack_part/Movie_(2001)/Movie_(2001)_part3.mkv
 xbmc/video/test/testdata/moviestack_dvdiso/Movie_(2001)/Movie_(2001)_dvd1.iso
 xbmc/video/test/testdata/moviestack_dvdiso/Movie_(2001)/Movie_(2001)_dvd2.iso
 xbmc/utils/test/CXBMCTinyXML-test.xml
+xbmc/utils/test/rss.xml
 xbmc/utils/test/data/language/Spanish/strings.po

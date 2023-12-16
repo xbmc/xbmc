@@ -1,0 +1,449 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title><![CDATA[Kodi News]]></title>
+    <description><![CDATA[Kodi is a free media player that is designed to look great on your big screen TV but is just as at home on a small screen.]]></description>
+    <link>https://kodi.tv</link>
+    <generator>GatsbyJS</generator>
+    <lastBuildDate>Sat, 16 Dec 2023 02:17:35 GMT</lastBuildDate>
+    <item>
+      <title><![CDATA[Kodi 21.0 "Omega" Beta 1]]></title>
+      <description><![CDATA[Things are beginning to heat up for Kodi 21 "Omega" with the first Beta release! This is a major release, so, as you'd expect, it comes with…]]></description>
+      <link>https://kodi.tv/article/kodi-omega-beta-1/</link>
+      <guid isPermaLink="false">https://kodi.tv/article/kodi-omega-beta-1/</guid>
+      <category><![CDATA[Developer]]></category>
+      <category><![CDATA[Prerelease]]></category>
+      <dc:creator><![CDATA[Team Kodi]]></dc:creator>
+      <pubDate>Tue, 24 Oct 2023 10:39:36 GMT</pubDate>
+      <content:encoded>
+                    &lt;figure&gt;
+                      &lt;img title="Kodi 21 "Omega" Splash Screen" alt="Kodi 21 "Omega" Splash Screen - the Kodi logo sits at the centre of a black screen, a stylised Greek letter "Omega" around it.'" src="https://kodi.tv/images/blog/kodi_splash_v21.0_omega_beta_1080p.webp" /&gt;
+                    &lt;/figure&gt;
+                  &lt;p&gt;Things are beginning to heat up for Kodi 21 "Omega" with the first Beta release!&lt;/p&gt;
+&lt;p&gt;This is a major release, so, as you'd expect, it comes with many new features. However, with a core change to FFmpeg 6.0, there is a very good chance that some regressions may occur.  As such, please be aware that installing this will most likely break things, and we'd really like your help at that point to identify the problems and get them fixed. Please raise &lt;a href="https://github.com/xbmc/xbmc/issues"&gt;Github issues&lt;/a&gt; with full debug logs to help us resolve any issues you wonderful testers come across.&lt;/p&gt;
+&lt;p&gt;First, we would like to make a few targeted announcements.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Android users&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Many users may still be on the Kodi testing track for their Android devices. It's far easier to leave the testing track from a 'phone-based device, but be aware that if your device is on the testing track, we will be starting to deploy the Beta 1 release over the next week or so. If you wish to opt out of the testing group, one way you can is by visiting the following link &lt;a href="https://play.google.com/apps/testing/org.xbmc.kodi"&gt;Google Play - Kodi testing track&lt;/a&gt;. From there, you can opt out for your Google Play account. This is the best (and possibly only) way to opt out on many Android TV devices (e.g. Nvidia Shields).&lt;/p&gt;
+&lt;p&gt;With that said, for those adventurous types who would like to help us with testing, you can use the same link to opt in for a Google Play account.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Skin Developers&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;An API bump will be made with the next release of Kodi 21's testing cycle. See the following PR's for details&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/xbmc/xbmc/pull/23926"&gt;https://github.com/xbmc/xbmc/pull/23926&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/xbmc/xbmc/pull/23927"&gt;https://github.com/xbmc/xbmc/pull/23927&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="https://github.com/xbmc/xbmc/pull/23862"&gt;https://github.com/xbmc/xbmc/pull/23862&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This will require changes and submissions to the Omega branch for skins for those who submit to the Kodi Repository. Reach out on the forums if you have any questions/concerns.&lt;/p&gt;
+&lt;p&gt;And now, for the list of changes for Beta 1.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Build/Dependencies&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A number of changes to the &lt;code&gt;cmake&lt;/code&gt; build system have been made. These will be mostly invisible to users, but the intention is to modernise our &lt;code&gt;cmake&lt;/code&gt; usage to prepare us for the future more easily.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;cmake&lt;/code&gt; build system, when targeting Multi Config Generators (VS/Xcode), will now create a full complete build directory to allow a Kodi executable to be run immediately without the direct use of an IDE like VS. This is also the start to allow us to build dependencies for Windows for shared libraries, and be able to package them correctly.&lt;/li&gt;
+&lt;li&gt;A number of fixes to allow building with GCC13 have been made. This mostly involved the transitive inclusion of headers in system headers being removed/changed. The fixes have been to explicitly include those headers in our code.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Estuary, Estouchy&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Retire Favourites dialog, use Favourites window instead (&lt;a href="https://github.com/xbmc/xbmc/pull/23861"&gt;https://github.com/xbmc/xbmc/pull/23861&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Favourites&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Add selected items of the target to favourite's context menu (&lt;a href="https://github.com/xbmc/xbmc/pull/23895"&gt;https://github.com/xbmc/xbmc/pull/23895&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Fix crash on moving items in favourites widget and favourites window (&lt;a href="https://github.com/xbmc/xbmc/pull/23946"&gt;https://github.com/xbmc/xbmc/pull/23946&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;General&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A bug was recently introduced that led to external subtitle entries becoming unavailable on streamdetails. This was fixed in &lt;a href="https://github.com/xbmc/xbmc/pull/23835"&gt;https://github.com/xbmc/xbmc/pull/23835&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;A fix to allow &lt;code&gt;.strm&lt;/code&gt; files to properly use resume points was made by &lt;strong&gt;@Acidzero2020&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;An improvement to the Event Log "toast" notifications has been made by &lt;strong&gt;@DaVukovic&lt;/strong&gt; to provide more meaningful information when an item fails to scrape TV Shows.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Input&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A fix to allow Python addons to correctly handle custom controller button inputs was made by &lt;strong&gt;@icr8ions&lt;/strong&gt;. This allows addons like the Keymap Editor to correctly recognise and handle actions from custom controllers (&lt;a href="https://github.com/xbmc/xbmc/pull/23789"&gt;https://github.com/xbmc/xbmc/pull/23789&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Music&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A PR that extends the Python 'generic artist' scraper to fetch the associated YouTube video links for an artist from theaudiodb, and then match them up to songs already scanned into the user's music library. This allows skins to then display links to the corresponding song video. More information can be see in the PR from &lt;strong&gt;@the-black-eagle&lt;/strong&gt;  (&lt;a href="https://github.com/xbmc/xbmc/pull/22654"&gt;https://github.com/xbmc/xbmc/pull/22654&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Player&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Updated some internal constants to handle better very high bit rate streams (maximums of UHD Blu-Ray at least - 144 Mbit/s) (&lt;a href="https://github.com/xbmc/xbmc/pull/23883"&gt;https://github.com/xbmc/xbmc/pull/23883&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Platform Specifics&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Android&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A fix to actually package themes for skins like Estuary/Estouchy was made. This was found by accident, and dates way back to the implementation of our Android platform (&lt;a href="https://github.com/xbmc/xbmc/pull/23782"&gt;https://github.com/xbmc/xbmc/pull/23782&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@joseluismarti&lt;/strong&gt; continues his improvement of our Android code. This time he has updated some code to use Android-provided values rather than a manually-curated list of values. (&lt;a href="https://github.com/xbmc/xbmc/pull/23769"&gt;https://github.com/xbmc/xbmc/pull/23769&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;A workaround for an Amlogic BSP audio bug that affects many platforms, even modern Google devices (more information &lt;a href="https://forum.kodi.tv/showthread.php?tid=371883&amp;#x26;pid=3169260#pid3169260"&gt;here&lt;/a&gt;, fixed in &lt;a href="https://github.com/xbmc/xbmc/commit/be049ba900df39b9f2cef820a19088f8aa1ba7d2"&gt;https://github.com/xbmc/xbmc/commit/be049ba900df39b9f2cef820a19088f8aa1ba7d2&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;FreeBSD&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;We don't have too many improvements to our FreeBSD port, however &lt;strong&gt;@lrusak&lt;/strong&gt; has brought FreeBSD in line with Linux with its usage of the command line argument &lt;code&gt;--audio-backend&lt;/code&gt; (&lt;a href="https://github.com/xbmc/xbmc/pull/23886"&gt;https://github.com/xbmc/xbmc/pull/23886&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Linux&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A fix for a crash with Pipewire was contributed by &lt;strong&gt;@dobo90.&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@lrusak&lt;/strong&gt; has implemented a command line switch (&lt;code&gt;--gl-interface=&amp;#x3C;interface&gt;&lt;/code&gt;) to replace the old environment variable usage of &lt;code&gt;KODI_GL_INTERFACE&lt;/code&gt; (&lt;a href="https://github.com/xbmc/xbmc/pull/23907"&gt;https://github.com/xbmc/xbmc/pull/23907&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Kodi's usage of the system ping utility has been replaced with an internal implementation (&lt;a href="https://github.com/xbmc/xbmc/pull/23870"&gt;https://github.com/xbmc/xbmc/pull/23870&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;DRMPrime has had a check based on pitch value removed as it was causing failures with some formats, like single plane and/or compressed ones, where the pitch can be 0 and therefore it has no meaning. Thanks &lt;strong&gt;@jernejsk&lt;/strong&gt; (&lt;a href="https://github.com/xbmc/xbmc/pull/23889"&gt;https://github.com/xbmc/xbmc/pull/23889&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;macOS&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;SDL windowing while not enabled by default since Alpha1 (in favour of native windowing) was still a possible build compile switch. It has finally been removed in Beta 1 (&lt;a href="https://github.com/xbmc/xbmc/pull/22990"&gt;https://github.com/xbmc/xbmc/pull/22990&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Kodi now relies on an external library, &lt;code&gt;smctemp&lt;/code&gt;, to display the CPU and GPU sensor values - this being valid for either x86 or Apple Silicon (&lt;a href="https://github.com/xbmc/xbmc/pull/23770"&gt;https://github.com/xbmc/xbmc/pull/23770&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Network info subsystem was improved avoiding the execution of external commands to obtain the current gateway and DNS server list (&lt;a href="https://github.com/xbmc/xbmc/pull/23724"&gt;https://github.com/xbmc/xbmc/pull/23724&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Improvements to input, e.g. the enter keyboard key was not being recognised (only key return)  (&lt;a href="https://github.com/xbmc/xbmc/pull/23860"&gt;https://github.com/xbmc/xbmc/pull/23860&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;webOS&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@quietvoid&lt;/strong&gt; has contributed a fix to allow webOS to play back AV1 DolbyVision files on supported devices (&lt;a href="https://github.com/xbmc/xbmc/pull/23771"&gt;https://github.com/xbmc/xbmc/pull/23771&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Support to allow webOS to to suspend to background rather than exit was made by &lt;strong&gt;@sundermann&lt;/strong&gt; (&lt;a href="https://github.com/xbmc/xbmc/pull/23684"&gt;https://github.com/xbmc/xbmc/pull/23684&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;With the support to suspend/minimise for webOS, behaviour to pause/resume media playback when Kodi is minimised/restored has been implemented by &lt;strong&gt;@sundermann&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Initial support for webOS 4 devices has been implemented by &lt;strong&gt;@mariotaku.&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Windows&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fixed Windows 11 refresh rate switching (&lt;a href="https://github.com/xbmc/xbmc/pull/23766"&gt;https://github.com/xbmc/xbmc/pull/23766&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Improved the vsync detection used by "Sync playback to display" mode (&lt;a href="https://github.com/xbmc/xbmc/pull/23893"&gt;https://github.com/xbmc/xbmc/pull/23893&lt;/a&gt;). Breaks compatibility with Windows 7 (which is not supported in v21).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;PVR&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fix 'switch to previous channel' not working if it is in another group than the currently playing channel (&lt;a href="https://github.com/xbmc/xbmc/pull/23932"&gt;https://github.com/xbmc/xbmc/pull/23932&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Fix Live TV - Randomly spinner stays forever although channel is playing fine (&lt;a href="https://github.com/xbmc/xbmc/pull/23844"&gt;https://github.com/xbmc/xbmc/pull/23844&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Skinning&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@DeltaMikeCharlie&lt;/strong&gt; has provided a way for skinners to use a &lt;code&gt;ParentalRatingCode&lt;/code&gt; info label (&lt;a href="https://github.com/xbmc/xbmc/pull/23586"&gt;https://github.com/xbmc/xbmc/pull/23586&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Infolabels for video width and height have been added by &lt;strong&gt;@graham8&lt;/strong&gt; (&lt;a href="https://github.com/xbmc/xbmc/pull/23850"&gt;https://github.com/xbmc/xbmc/pull/23850&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Videos&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Respect default select action setting at more places - Home screen widgets, PVR recordings window, Favourites window (&lt;a href="https://github.com/xbmc/xbmc/pull/23848"&gt;https://github.com/xbmc/xbmc/pull/23848&lt;/a&gt; , &lt;a href="https://github.com/xbmc/xbmc/pull/23857"&gt;https://github.com/xbmc/xbmc/pull/23857&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Add default play action setting to control resume behaviour when starting playback of videos (xhttps://github.com/xbmc/xbmc/pull/23863).&lt;/li&gt;
+&lt;li&gt;Fix play/resume of BD and DVD disc images not working from Home screen widgets (&lt;a href="https://github.com/xbmc/xbmc/pull/23905"&gt;https://github.com/xbmc/xbmc/pull/23905&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Automatic video rotation from metadata was fixed (&lt;a href="https://github.com/xbmc/xbmc/pull/23832"&gt;https://github.com/xbmc/xbmc/pull/23832&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Teletext language codes sometimes were not persisted correctly in the teletext browser (&lt;a href="https://github.com/xbmc/xbmc/pull/23890"&gt;https://github.com/xbmc/xbmc/pull/23890&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Improvements to the teletext browser window (&lt;a href="https://github.com/xbmc/xbmc/pull/23896"&gt;https://github.com/xbmc/xbmc/pull/23896&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;EDL files are now valid even if they are not on the same subnet of the Kodi host - valid across all private subnet ranges (&lt;a href="https://github.com/xbmc/xbmc/pull/23836"&gt;https://github.com/xbmc/xbmc/pull/23836&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@joseluismarti&lt;/strong&gt; also contributed outside of his usual Android improvements with a fix for a crash when scan to library on a directory contained new movies (&lt;a href="https://github.com/xbmc/xbmc/pull/23767"&gt;https://github.com/xbmc/xbmc/pull/23767&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Known Issues&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;You can see open issues on our tracker at &lt;a href="https://github.com/xbmc/xbmc/issues"&gt;https://github.com/xbmc/xbmc/issues&lt;/a&gt;. However, to call out a couple of specifics, please be aware of the following if you're planning on upgrading:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;There are seek issues with multi-part MP4 files on Android (&lt;a href="https://github.com/xbmc/xbmc/issues/23673"&gt;https://github.com/xbmc/xbmc/issues/23673&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;There is an upstream FFmpeg issue that means that OGG music playback does not work. This will be rectified upstream to Kodi. (&lt;a href="https://github.com/xbmc/xbmc/issues/23198"&gt;https://github.com/xbmc/xbmc/issues/23198&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;We've had reports that the new splash screen looks like an OpenGL corruption; we know, it's not a problem, so don't panic. We'd be happy to have your artwork contributions if you'd like to work on an alternative.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you love to live on the bleeding edge of new, you can get Beta 1 from &lt;a href="https://kodi.tv/download"&gt;here&lt;/a&gt;. Select your platform of choice, and look in the "Prerelease" section. Again, though, please: expect some breakage, don't use this as your daily installation unless you know how to get things working again, and please share your experiences back with us so we can really get going on those bugs.&lt;/p&gt;
+&lt;p&gt;As usual - well, it is open source - you can see what's changed between v21 and v20 &lt;a href="https://github.com/xbmc/xbmc/compare/Nexus...xbmc:21.0b1-Omega"&gt;here&lt;/a&gt;.
+For a more targeted look at the changes made since v21 Alpha 3, you can see those changes &lt;a href="https://github.com/xbmc/xbmc/compare/21.0a3-Omega...21.0b1-Omega"&gt;here&lt;/a&gt;.&lt;/p&gt;</content:encoded>
+    </item>
+    <item>
+      <title><![CDATA[Kodi 21.0 "Omega" Alpha 3]]></title>
+      <description><![CDATA[Time for the next milestone release for Kodi 21 "Omega". Slightly delayed this time around compared to what we were striving for, however we…]]></description>
+      <link>https://kodi.tv/article/kodi-omega-alpha-3/</link>
+      <guid isPermaLink="false">https://kodi.tv/article/kodi-omega-alpha-3/</guid>
+      <category><![CDATA[Developer]]></category>
+      <category><![CDATA[Prerelease]]></category>
+      <dc:creator><![CDATA[Team Kodi]]></dc:creator>
+      <pubDate>Sat, 09 Sep 2023 10:36:03 GMT</pubDate>
+      <content:encoded>
+                    &lt;figure&gt;
+                      &lt;img title="Kodi 21 "Omega" Splash Screen" alt="Kodi 21 "Omega" Splash Screen - the Kodi logo sits at the centre of a black screen, a stylised Greek letter "Omega" around it." src="https://kodi.tv/images/blog/kodi_21_omega_alpha_splash.webp" /&gt;
+                    &lt;/figure&gt;
+                  &lt;p&gt;Time for the next milestone release for Kodi 21 "Omega". Slightly delayed this time around compared to what we were striving for, however we are happy to announce the arrival of Alpha 3.&lt;/p&gt;
+&lt;p&gt;This is a major release, so, as you'd expect, it comes with many new features. However, with a core change to FFmpeg 6.0, there is a very good chance that some regressions may occur. As such, please be aware that installing this will most likely break things, and we'd really like your help at that point to identify the problems and get them fixed. Please raise &lt;a href="https://github.com/xbmc/xbmc/issues"&gt;Github issues&lt;/a&gt; with full debug logs to help us resolve any issues you wonderful testers come across.&lt;/p&gt;
+&lt;p&gt;A further 176 Pull Requests have been merged since Alpha 2 - fixing issues, adding features, and improving Kodi.&lt;/p&gt;
+&lt;p&gt;So... what's actually changed?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Estuary&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A change to Estuary to add "&lt;em&gt;more...&lt;/em&gt;" to size-limited lists has been made by &lt;strong&gt;@ksooo&lt;/strong&gt;. The effect of this can be seen in homescreen widgets that have more than 15 items.&lt;/li&gt;
+&lt;li&gt;A number of changes to support video information for Movie Sets and TV Seasons has been made.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;FFmpeg&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@popcornmix&lt;/strong&gt; has made several fixes to our FFmpeg library usage. This has gone through several iterations now, and has affected seeking and playback to various degrees. Hopefully, the last of these regressions has now been squashed, but please do let us know if you experience any further regressions around playback using FFmpeg.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Filesystem&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@thexai&lt;/strong&gt; has changed the chunk size of data requests for local media, increasing it 64kb to improve data throughput.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Games&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@garbear&lt;/strong&gt; continues to improve the gaming interface of Kodi. Changes around player management/assignment have been made in &lt;a href="https://github.com/xbmc/xbmc/pull/23548"&gt;https://github.com/xbmc/xbmc/pull/23548&lt;/a&gt;. Have a read of that PR for more details/info.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;General&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@ksooo&lt;/strong&gt; has continued his whack-a-mole approach with issues regarding menu usage across the Kodi codebase.  A fix for &lt;em&gt;no information&lt;/em&gt; dialog for music videos, "Local art" missing for the art selection dialog, and further art dialog selection issues are amongst some of the latest fixes.&lt;/li&gt;
+&lt;li&gt;TV Shows/Seasons/Movie sets/Recording folders now expose their 'in progress' state via &lt;code&gt;LISTITEM_IS_RESUMABLE&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;The content of the &lt;em&gt;refresh progress&lt;/em&gt; dialog has been improved a bit to be more informative for the user - for example, to display the current season and episode being refreshed.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@repojohnray&lt;/strong&gt; has had a (lingering) PR merged that fixes a memory leak in context menus.&lt;/li&gt;
+&lt;li&gt;Some improvements and optimisations have been made by &lt;strong&gt;@neo1973&lt;/strong&gt; . This affects several areas (database and curl usage), and every performance fix is greatly appreciated.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@rmrector&lt;/strong&gt; has been digging into the image usage of Kodi (caching, allow remote viewing of images without having been displayed in Kodi, preloading of images and general streamlining of the API), and has made several improvements leading to more hotly-anticipated changes to come in the future.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Platform Specifics&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Android&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@quietvoid&lt;/strong&gt; has had a PR merged that enables the ability to convert some Dolby Vision media types to more common types to allow playback. A forum thread has been around for testing that can explain the benefits a little better than this blog editor, so head there for some info and any feedback/support around the feature: &lt;a href="https://forum.kodi.tv/showthread.php?tid=371557"&gt;https://forum.kodi.tv/showthread.php?tid=371557&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@fritsch&lt;/strong&gt; has once again delved into our Audio Engine to fix a regression for Amazon FireTV 4K users: &lt;a href="https://github.com/xbmc/xbmc/pull/23687"&gt;https://github.com/xbmc/xbmc/pull/23687&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@joseluismarti&lt;/strong&gt; has further updated some Android dependencies and fixed/modernised areas of our Android API usage.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Linux&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Support for &lt;code&gt;cpu_thermal hwmon&lt;/code&gt; has been added. This enables devices like the Raspberry Pi to report CPU temperatures without the use of external scripts (as have been common in projects like LibreELEC).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@smp79&lt;/strong&gt; submitted a fix for VAAPI VP9 Profile 2 playback.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;macOS&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@kambala-decapitator&lt;/strong&gt; has fixed a crash in the SDL versions of Kodi when pressing the Caps-Lock key. This did not affect the "native windowing" version of Kodi we have migrated to for v21 nightlies, however if you are building for x86_64 intel Macs then this should make using that key less troublesome.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@enen92&lt;/strong&gt; continues his work on improving Kodi for macOS. Network System info has been tackled to improve its speed, and more accurately represent network information like DNS servers used.&lt;/li&gt;
+&lt;li&gt;macOS temperature information is currently not supported on Apple Silicon devices due to our usage of a library that does not support them. &lt;strong&gt;@enen92&lt;/strong&gt; has made a change to report N/A instead of 0.0 for CPU/GPU temperatures.&lt;/li&gt;
+&lt;li&gt;Media keys are now supported on macOS.&lt;/li&gt;
+&lt;li&gt;Some improvements for moving the Kodi app window from high-DPI screens with differing refresh rates.&lt;/li&gt;
+&lt;li&gt;macOS releases are now defaulting to the "native windowing" system.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;webOS&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@sundermann&lt;/strong&gt; has continued with further improvements to the webOS port, most notably around passthrough and video decoding.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Windows&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A PR intended to fix an issue around the Windows platform regularly losing track of the audio output device has been merged by &lt;strong&gt;@thexai&lt;/strong&gt;. This hopefully makes Windows audio outputs more robust to situations where driver updates may change naming.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@CrystalP&lt;/strong&gt; has been contributing a number of fixes/improvements particularly aimed at Windows. These include a fix for refresh rate switching for Intel and Nvidia graphics cards that was accidentally broken by a fix aimed at AMD cards.&lt;/li&gt;
+&lt;li&gt;More improvements to the recently add Video Super Resolution implementation have been made.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;PVR&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A first time contributor &lt;strong&gt;@ivanllc&lt;/strong&gt; has had a PR merged to add a "2 minute" option to the padding timer for PVR recordings.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@ksooo&lt;/strong&gt; continues to improve the Kodi PVR system. A number of changes were made, including fixes and tidy ups from static analysis tools (&lt;code&gt;cppcheck&lt;/code&gt; and &lt;code&gt;clang-tidy&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;Fixed a long-standing bug with subtitle selection not being preserved upon channel playback restart.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Python&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Changes made to support building Kodi when using Python 3.12.&lt;/li&gt;
+&lt;li&gt;Python invoker now passes &lt;code&gt;sys.argv&lt;/code&gt; arguments in a logical order to Python addons thanks to &lt;strong&gt;@scott967&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Skinning&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;a change by &lt;strong&gt;@smfontes&lt;/strong&gt; to allow loading of font sets defined in a skins/fonts folder: &lt;a href="https://github.com/xbmc/xbmc/pull/22993"&gt;https://github.com/xbmc/xbmc/pull/22993&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Subtitles&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Support for &lt;em&gt;.ttc&lt;/em&gt; font collections has been added.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Video&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;TV show groups (seasons, movie sets, PVR recording folders) with at least one started element (episodes, movies, recordings) but no completely watched ones are now considered as 'in progress' and they, for example, now appear in the respective "In progress" GUI elements like widgets and video windows.&lt;/li&gt;
+&lt;li&gt;Fixed &lt;em&gt;play counts&lt;/em&gt; (watched state) and &lt;em&gt;last played date&lt;/em&gt; of episodes and movies not being preserved on internet update.&lt;/li&gt;
+&lt;li&gt;Default select action for videos fixed.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;VideoPlayer&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@alanswanson&lt;/strong&gt; has provided a change to use the FFmpeg software deinterlacer from &lt;em&gt;yadiff&lt;/em&gt; to &lt;em&gt;bwdif.&lt;/em&gt; This is said to have fairly significant performance improvements over the old interlacing method.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;There are a lot more changes not mentioned, but we are grateful for all contributors that help make Kodi better.&lt;/p&gt;
+&lt;p&gt;If you love to live on the bleeding edge of new, you can get Alpha 3 from &lt;a href="https://kodi.tv/download"&gt;here&lt;/a&gt;. Select your platform of choice, and look in the "Prerelease" section. Again, though, please: expect some breakage, don't use this as your daily installation unless you know how to get things working again, and please share your experiences back with us so we can really get going on those bugs.&lt;/p&gt;
+&lt;p&gt;As usual - we are an open source project - you can see what's changed between v21 and v20 &lt;a href="https://github.com/xbmc/xbmc/compare/Nexus...xbmc:21.0a3-Omega"&gt;here&lt;/a&gt;.
+For a more targeted look at the changes made since v21 Alpha 2, you can see those changes &lt;a href="https://github.com/xbmc/xbmc/compare/21.0a2-Omega...21.0a3-Omega"&gt;here&lt;/a&gt;.&lt;/p&gt;</content:encoded>
+    </item>
+    <item>
+      <title><![CDATA[Kodi 20.2 "Nexus" - Release]]></title>
+      <description><![CDATA[As is always inevitable in software, we are back with a new release of Kodi "Nexus". An assortment of bug fixes, some backports, no real new…]]></description>
+      <link>https://kodi.tv/article/kodi-20-2-nexus-release/</link>
+      <guid isPermaLink="false">https://kodi.tv/article/kodi-20-2-nexus-release/</guid>
+      <category><![CDATA[Release]]></category>
+      <dc:creator><![CDATA[Team Kodi]]></dc:creator>
+      <pubDate>Sun, 02 Jul 2023 09:59:41 GMT</pubDate>
+      <content:encoded>
+                    &lt;figure&gt;
+                      &lt;img title="Kodi 20.2 "Nexus" Splash Screen" alt="Kodi 20.2 "Nexus" Splash Screen - a blue Kodi logo sits in the centre of a black page, around it, a dial - a gauge or chronograph, perhaps." src="https://kodi.tv/images/blog/kodi-20.2-nexus-splash.webp" /&gt;
+                    &lt;/figure&gt;
+                  &lt;p&gt;As is always inevitable in software, we are back with a new release of Kodi "Nexus".&lt;/p&gt;
+&lt;p&gt;An assortment of bug fixes, some backports, no real new features. Full changelog since 20.1 on &lt;a href="https://github.com/xbmc/xbmc/compare/20.1-Nexus...20.2-Nexus"&gt;Github&lt;/a&gt;, as usual.&lt;/p&gt;
+&lt;h3&gt;&lt;strong&gt;Release notes&lt;/strong&gt;&lt;/h3&gt;
+&lt;p&gt;&lt;strong&gt;Audio&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;An assortment of E-AC3 related fixes were backported.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Estuary&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A fix to the Music Viz screen has been made by &lt;strong&gt;@enen92&lt;/strong&gt; in an endeavour to chase that elusive target of perfection&lt;/li&gt;
+&lt;li&gt;Fixes to the seekbar timer when seeking.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Game/Retroplayer&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A fix to a crash by memory exhaustion when some emulators are used.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;General&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A whole assortment of fixes were made to fix building Kodi with GCC13.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Platform Specific&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Android&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A fix for a crash that occurred when &gt;100 jobs where scheduled for the Android TV recommendation channels.&lt;/li&gt;
+&lt;li&gt;For some old Android devices that had both MediaTek and Google decoders for some media, a preference to using the Google decoder was put in as the MediaTek decoders fail to play back audio in encrypted streams.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Linux&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A PR was reverted that fixes some Linux setups to use the more generic library (GL) rather than the specific GLX library.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;macOS/iOS&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fix speech recognition not working (&lt;a href="https://github.com/xbmc/xbmc/pull/23341"&gt;https://github.com/xbmc/xbmc/pull/23341&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Windows&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fixes to HDR playback when windows was already in HDR mode.&lt;/li&gt;
+&lt;li&gt;A backported fix for a potential deadlock for Xbox users when using pixel shaders and SW decoding.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;PVR&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fix crash on saved search (&lt;a href="https://github.com/xbmc/xbmc/pull/23195"&gt;https://github.com/xbmc/xbmc/pull/23195&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Fix last opened group not always restored on Kodi startup (&lt;a href="https://github.com/xbmc/xbmc/pull/23165"&gt;https://github.com/xbmc/xbmc/pull/23165&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Python&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@garbear&lt;/strong&gt; has backported a fix for setting Picture and Game info via infotags.&lt;/li&gt;
+&lt;li&gt;GameInfo has been added to the Player class to allow get/set GameInfoTag data.&lt;/li&gt;
+&lt;li&gt;A fix was backported that mainly affected Linux platforms: the path used when searching for modules was appending Kodi script paths at the end of the list, and therefore could potentially find system Python scripts/modules instead of Kodi-specific scripts/modules&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Video&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Fix watched/unwatched status not taken into account for items not added to video library when creating playlists (&lt;a href="https://github.com/xbmc/xbmc/pull/23398"&gt;https://github.com/xbmc/xbmc/pull/23398&lt;/a&gt;).&lt;/li&gt;
+&lt;li&gt;Fix missing watched/unwatched status in Playlist window (&lt;a href="https://github.com/xbmc/xbmc/pull/23013"&gt;https://github.com/xbmc/xbmc/pull/23013&lt;/a&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Thanks, as always, to everyone who has helped us track down and fix any issues. We endeavour to minimise the issues everyone experiences, but with such a large project, and the fact everyone contributing to Kodi is a volunteer, issues and bugs are a part of life. if you happen to experience any bugs/issues, don't hesitate to reach out on the forums, or raise an issue on Github.&lt;/p&gt;
+&lt;p&gt;As this is a point release, there are no major changes since the previous version, and you should be fine to install this straight over the top of any existing Kodi 20.x installation - indeed, this will happen automatically on many platforms. However, as for all software installations, back up your userdata beforehand if you've any doubts or have anything you can't afford to lose (and definitely do this if you're going for a major version upgrade).&lt;/p&gt;
+&lt;p&gt;A list of all changes for this version can be found at &lt;a href="https://github.com/xbmc/xbmc/milestone/155?closed=1"&gt;GitHub&lt;/a&gt;. If you want to read back on the full history of v20 itself, or of previous versions, you can find the corresponding articles in the relevant &lt;a href="https://kodi.tv/blog/tag/release"&gt;blog posts&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Application deployment on different platforms (notably the Microsoft Store) can vary considerably due to circumstances outside of our control, so just be patient, and the update will inevitably find its way through.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Android Deployment&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;We always do what's known as a "staged" deployment roll out for Android. So if you don't receive the update immediately, be patient, as it will come through over the next week.&lt;/p&gt;</content:encoded>
+    </item>
+    <item>
+      <title><![CDATA[Kodi 21.0 "Omega" Alpha 2]]></title>
+      <description><![CDATA[Time for the next milestone release for Kodi 21 "Omega". This is our second Alpha release for this cycle. This is a major release, so, as…]]></description>
+      <link>https://kodi.tv/article/kodi-omega-alpha-2/</link>
+      <guid isPermaLink="false">https://kodi.tv/article/kodi-omega-alpha-2/</guid>
+      <category><![CDATA[Prerelease]]></category>
+      <category><![CDATA[Developer]]></category>
+      <dc:creator><![CDATA[Team Kodi]]></dc:creator>
+      <pubDate>Sun, 18 Jun 2023 13:12:18 GMT</pubDate>
+      <content:encoded>
+                    &lt;figure&gt;
+                      &lt;img title="Kodi 21 "Omega" Splash Screen" alt="Kodi 21 "Omega" Splash Screen - the Kodi logo sits at the centre of a black screen, a stylised Greek letter "Omega" around it." src="https://kodi.tv/images/blog/kodi_21_omega_alpha_splash.webp" /&gt;
+                    &lt;/figure&gt;
+                  &lt;p&gt;Time for the next milestone release for Kodi 21 "Omega". This is our second Alpha release for this cycle.&lt;/p&gt;
+&lt;p&gt;This is a major release, so, as you'd expect, it comes with many new features. However, with a core change to FFmpeg 6.0, there is a very good chance that some regressions may occur.  As such, please be aware that installing this will most likely break things, and we'd really like your help at that point to identify the problems and get them fixed. Please raise &lt;a href="https://github.com/xbmc/xbmc/issues"&gt;Github issues&lt;/a&gt; with full debug logs to help us resolve any issues you wonderful testers come across.&lt;/p&gt;
+&lt;p&gt;Over the last couple of months we've merged 120 pull requests - fixing issues, adding features, and improving Kodi.&lt;/p&gt;
+&lt;p&gt;So... what's actually changed?&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Build/Dependencies&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Apple platforms are now all built using newer version of Xcode (14.2) and the relevant SDKs. Thanks to a combination of a new M1 Mac mini hardware donation from long time supporter of the project, &lt;a href="https://www.macminivault.com/"&gt;MacMiniVault.com&lt;/a&gt;, and also the Kodi foundation purchasing a second M1 Mac mini, we have been able to decommission our ageing Intel Mac mini's that have been in use for a long time.&lt;/li&gt;
+&lt;li&gt;Building on Windows now uses the system &lt;code&gt;curl&lt;/code&gt; executable instead of our formerly bundled (ancient) &lt;code&gt;wget&lt;/code&gt; executable.&lt;/li&gt;
+&lt;li&gt;Improvements to dependency building have been made by &lt;strong&gt;@lrusak&lt;/strong&gt; to make the downloading/hash checking more robust.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Estuary&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Improvements to the seek window timeouts have been made to more correctly disappear after appropriate timeouts.&lt;/li&gt;
+&lt;li&gt;Fix visibility of 'next recording' label in &lt;code&gt;PVRTimers&lt;/code&gt; was made by &lt;strong&gt;@ksooo&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;FFmpeg&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;One of our newer team members, &lt;strong&gt;@neo1973&lt;/strong&gt; , has made some cleanups and fixed some crashes in our ffmpeg side data usage, as well as other improvements with our ffmpeg API usage.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;General&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Improvements made to handling of movement keys (e.g. PageUp, Down, Home, End) in certain lists such as Settings.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@rmrector&lt;/strong&gt; has been endeavouring to improve image cache handling for GUI items. We look forward to the further work he has in the pipeline to improve the cache handling.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Extraart&lt;/code&gt; configurations in &lt;code&gt;advancedsettings.xml&lt;/code&gt; for Kodi 18 will no longer be migrated to the new GUI settings when upgrading. If you had meaningful configuration there, check that the artwork settings in the GUI match your preferences.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@CrystalP&lt;/strong&gt; extended the navigation history to track the line number of the selected item so that it can be restored when the item disappears from the list, instead of resetting the selection to the top of the list (usually the &lt;code&gt;..&lt;/code&gt;) after the end of playback or changing the watched status of an item.&lt;/li&gt;
+&lt;li&gt;The generation of thumbnails was fixed for pictures in portrait orientation. The existing thumbnails in &lt;code&gt;KODI_HOME/userdata/Thumbnails/*&lt;/code&gt; must be deleted in order to have new correct ones recreated.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;JSON-RPC&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;VideoLibrary.GetEpisodeDetails&lt;/code&gt; now returns "studio" and "genre" added by &lt;strong&gt;@scott967&lt;/strong&gt;  in &lt;a href="https://github.com/xbmc/xbmc/pull/23112"&gt;https://github.com/xbmc/xbmc/pull/23112&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Platform Specifics&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Android&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@joseluismarti&lt;/strong&gt; has continued with more cleanups and improvements to the Android codebase. Each improvement makes things easier to manage, and is greatly appreciated.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@fritsch&lt;/strong&gt; has been able to make further improvements to AudioTrack to handle hardware that has sinks that get "stuck". Its always a fine line making changes in the Android world, as the multitude of hardware vendors have widely varying implementation qualities of the standard Android APIs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Linux&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@lrusak&lt;/strong&gt; has added the ability for users to select the audio backend with a command line switch when starting Kodi. This also allows seeing with which enabled audio backends Kodi was built. For more information check out the following &lt;a href="https://github.com/xbmc/xbmc/pull/23148"&gt;PR&lt;/a&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;macOS&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;The minimum OS required for Kodi on macOS is now Mojave (10.14). This was done to allow the project to continue using more modern C++ 17 features. macOS Mojave was released on 24th September 2018 and hardware supported can be seen at &lt;a href="https://support.apple.com/kb/sp777?locale=en_US"&gt;Apple.com&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@enen92&lt;/strong&gt; has continued to further improve what is known as "Native windowing" for our macOS codebase that will eventually lead to a formal Apple Silicon version. Improvements to window resizing, menu's, window blanking, improved multiple monitor handling and more.&lt;/li&gt;
+&lt;li&gt;For developers, Kodi can also now more easily be run from Xcode without having to alter schemes.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@ksooo&lt;/strong&gt; has now correctly added Speechrecognition entitlements for Apple platforms (including iOS/tvOS) which fixes a crash when microphone usage was triggered.&lt;/li&gt;
+&lt;li&gt;Support for HiDPI resolutions, such as those marketed as Retina displays, has been introduced in the native windowing version. This enhancement allows Kodi's graphical user interface (GUI) to showcase higher pixel densities, resulting in a sleek and polished appearance on modern Macs.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;webOS&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;@sundermann&lt;/strong&gt; and &lt;strong&gt;@craigcarnell&lt;/strong&gt; have made further improvements to the new webOS platform. Screensaver support has been added, along with audio sink improvements and updates to codec hardware support.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Windows&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Minimum Windows supported version has been raised to Windows 8.1.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@CrystalP&lt;/strong&gt; and &lt;strong&gt;@thexai&lt;/strong&gt; have made a number of improvements to windows HDR/SDR/HLG display including tonemapping and hardware DXVA support for a number of combinations of those media types.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;@thexai&lt;/strong&gt; implemented support for "Video Super Resolution" for Nvidia (RTX ) and Intel (ARC) compatible hardware. Please note, we obviously cant test all combinations of hardware, so don't expect this to work for every combination under the sun. Give it a try and report any issues WITH debug logs.&lt;/li&gt;
+&lt;li&gt;Bump to &lt;code&gt;libdav1d&lt;/code&gt; to version 1.20 should improve AV1 playback support for windows platforms.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Python&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A fix for a regression was made by &lt;strong&gt;@lrusak&lt;/strong&gt; that puts addon paths at the front of the system paths. This fixes addons using system modules instead of potentially customised Kodi modules of the same name. This mostly affects Linux based systems.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If you love to live on the bleeding edge of new, you can get Alpha 2 from &lt;a href="https://kodi.tv/download"&gt;here&lt;/a&gt;. Select your platform of choice, and look in the "Prerelease" section. Again, though, please: expect some breakage, don't use this as your daily installation unless you know how to get things working again, and please share your experiences back with us so we can really get going on those bugs.&lt;/p&gt;
+&lt;p&gt;As usual - well, it is open source - you can see what's changed between v21 and v20 &lt;a href="https://github.com/xbmc/xbmc/compare/Nexus...xbmc:21.0a2-Omega"&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;For a more targeted look at the changes made since v21 Alpha 1, you can see those changes &lt;a href="https://github.com/xbmc/xbmc/compare/21.0a1-Omega...21.0a2-Omega"&gt;here&lt;/a&gt;.&lt;/p&gt;</content:encoded>
+    </item>
+  </channel>
+</rss>
