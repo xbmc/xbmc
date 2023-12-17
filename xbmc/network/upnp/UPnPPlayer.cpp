@@ -185,13 +185,10 @@ CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
   }
   else
     m_logger->error("couldn't find device as {}", uuid);
-
-  CServiceBroker::GetWinSystem()->RegisterRenderLoop(this);
 }
 
 CUPnPPlayer::~CUPnPPlayer()
 {
-  CServiceBroker::GetWinSystem()->UnregisterRenderLoop(this);
   CloseFile();
   CUPnP::UnregisterUserdata(m_delegate.get());
 }
@@ -533,8 +530,15 @@ void CUPnPPlayer::Process()
                                                    static_cast<void*>(new CFileItem(*item)));
       }
 
-      // Player may be paused or resumed from the target player, state needs to be synchronized to data cache core.
+      // Update player times
       CDataCacheCore& dataCacheCore = CDataCacheCore::GetInstance();
+      if (m_updateTimer.IsTimePast())
+      {
+        dataCacheCore.SetPlayTimes(0, GetTime(), 0, GetTotalTime());
+        m_updateTimer.Set(500ms);
+      }
+
+      // Player may be paused or resumed from the target player, state needs to be synchronized to data cache core.
       if (IsPaused() && dataCacheCore.GetSpeed() > 0.0f)
       {
         m_callback.OnPlayBackPaused();
@@ -633,15 +637,6 @@ void CUPnPPlayer::SetSpeed(float speed)
   return;
 failed:
   m_logger->error("- unable to set speed");
-}
-
-void CUPnPPlayer::FrameMove()
-{
-  if (m_updateTimer.IsTimePast())
-  {
-    CDataCacheCore::GetInstance().SetPlayTimes(0, GetTime(), 0, GetTotalTime());
-    m_updateTimer.Set(500ms);
-  }
 }
 
 void CUPnPPlayer::OnExit()
