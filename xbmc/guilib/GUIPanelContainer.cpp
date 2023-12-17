@@ -574,3 +574,8 @@ bool CGUIPanelContainer::HasNextPage() const
   return (GetOffset() != (int)GetRows() - m_itemsPerPage && (int)GetRows() > m_itemsPerPage);
 }
 
+void CGUIPanelContainer::ScrollToOffset(int offset)
+{
+  CGUIBaseContainer::ScrollToOffset(offset);
+  SetCursor(GetCursor());
+}
