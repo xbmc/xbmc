@@ -128,6 +128,7 @@ namespace DX
     DEBUG_INFO_RENDER GetDebugInfo() const;
     std::vector<DXGI_COLOR_SPACE_TYPE> GetSwapChainColorSpaces() const;
     bool SetMultithreadProtected(bool enabled) const;
+    bool IsGCNOrOlder() const;
 
   private:
     class CBackBuffer : public CD3DTexture

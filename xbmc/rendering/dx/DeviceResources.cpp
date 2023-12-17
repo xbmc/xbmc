@@ -1484,3 +1484,21 @@ bool DX::DeviceResources::SetMultithreadProtected(bool enabled) const
 
   return (wasEnabled == TRUE ? true : false);
 }
+
+bool DX::DeviceResources::IsGCNOrOlder() const
+{
+  if (CSysInfo::GetWindowsDeviceFamily() == CSysInfo::Xbox)
+    return false;
+
+  const DXGI_ADAPTER_DESC ad = GetAdapterDesc();
+
+  if (ad.VendorId != PCIV_AMD)
+    return false;
+
+  const VideoDriverInfo driver = CWIN32Util::GetVideoDriverInfo(ad.VendorId, ad.Description);
+
+  if (driver.valid && CWIN32Util::IsDriverVersionAtLeast(driver.version, "31.0.22000.0"))
+    return false;
+
+  return true;
+}
