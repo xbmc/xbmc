@@ -78,7 +78,7 @@ int CBlurayCallback::dir_read(BD_DIR_H *dir, BD_DIRENT *entry)
   if (state->curr >= state->list.Size())
     return 1;
 
-  strncpy(entry->d_name, state->list[state->curr]->GetLabel().c_str(), sizeof(entry->d_name));
+  strncpy(entry->d_name, state->list[state->curr]->GetLabel().c_str(), sizeof(entry->d_name) - 1);
   entry->d_name[sizeof(entry->d_name) - 1] = 0;
   state->curr++;
 
