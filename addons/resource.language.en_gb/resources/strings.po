@@ -5757,7 +5757,17 @@ msgctxt "#12014"
 msgid "Last updated"
 msgstr ""
 
-#empty strings from id 12015 to 12020
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#12015"
+msgid "Select video version"
+msgstr ""
+
+#: xbmc/guilib/WindowIDs.h
+msgctxt "#12016"
+msgid "Select video extra"
+msgstr ""
+
+#empty strings from id 12017 to 12020
 
 #. Label of various controls for starting playback from the beginning
 #: addons/skin.estuary/xml/SkinSettings.xml
@@ -23868,11 +23878,7 @@ msgctxt "#40022"
 msgid "Manage {0:s}"
 msgstr ""
 
-#. Choose video version dialog title
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
-msgctxt "#40023"
-msgid "Choose {0:s}"
-msgstr ""
+#empty string with id 40023
 
 #. Select default video version setting
 #: system/settings/settings.xml
@@ -23934,7 +23940,19 @@ msgctxt "#40209"
 msgid "Play version using..."
 msgstr ""
 
-#empty strings from id 40210 to 40399
+#. Button label for video versions
+#: xbmc/video/guiinfo/VideoVersionHelper.cpp
+msgctxt "#40210"
+msgid "Versions"
+msgstr ""
+
+#. Button label for video extras
+#: xbmc/video/guiinfo/VideoVersionHelper.cpp
+msgctxt "#40211"
+msgid "Extras"
+msgstr ""
+
+#empty strings from id 40212 to 40399
 
 # Video versions
 

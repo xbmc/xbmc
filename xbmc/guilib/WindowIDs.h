@@ -169,7 +169,14 @@
 #define WINDOW_VISUALISATION              12006
 #define WINDOW_SLIDESHOW                  12007
 #define WINDOW_DIALOG_COLOR_PICKER 12008
-#define WINDOW_DIALOG_VIDEO_VERSION_SELECT 12009
+
+//! @todo Numbers given here must match the ids given in strings.po for a translatable string for
+//! the window. 12009 to 12014 are already taken for something else in strings.po (accidentally).
+//! So, do not define windows with ids 12009 to 12014, unless strings.po got fixed.
+
+#define WINDOW_DIALOG_SELECT_VIDEO_VERSION 12015
+#define WINDOW_DIALOG_SELECT_VIDEO_EXTRA 12016
+
 #define WINDOW_WEATHER                    12600
 #define WINDOW_SCREENSAVER                12900
 #define WINDOW_DIALOG_VIDEO_OSD           12901
