@@ -6,7 +6,6 @@
  *  See LICENSES/README.md for more information.
  */
 
-
 #include "GUIDialogSimpleMenu.h"
 
 #include "FileItem.h"
@@ -14,6 +13,7 @@
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "filesystem/BlurayDirectory.h"
 #include "filesystem/Directory.h"
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
@@ -25,6 +25,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoDatabase.h"
 #include "video/VideoInfoTag.h"
 
 namespace
@@ -47,7 +48,6 @@ protected:
   XFILE::CDirectory::CHints m_hints;
 };
 }
-
 
 bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item)
 {
@@ -90,18 +90,36 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
 
   CFileItemList items;
 
-  if (!GetDirectoryItems(directory, items, XFILE::CDirectory::CHints()))
+  if (item.GetVideoContentType() == VideoDbContentType::EPISODES)
   {
-    CLog::Log(LOGERROR,
-              "CGUIWindowVideoBase::ShowPlaySelection - Failed to get play directory for {}",
-              directory);
-    return true;
+    // See if can simplify titles
+    // Get episodes on disc
+    std::vector<CVideoInfoTag> episodes;
+    CVideoDatabase database;
+    if (!database.Open())
+    {
+      CLog::LogF(LOGERROR, "Failed to open video database");
+      return true;
+    }
+    database.GetEpisodesByFile(item.GetPath(), episodes);
+
+    const CURL url(directory);
+    XFILE::CBlurayDirectory().GetEpisodeDirectory(url, item, items, episodes);
   }
 
   if (items.IsEmpty())
   {
-    CLog::Log(LOGERROR, "CGUIWindowVideoBase::ShowPlaySelection - Failed to get any items {}",
-              directory);
+    // Not episode or new episode search failed, so do it the old way
+    if (!GetDirectoryItems(directory, items, XFILE::CDirectory::CHints()))
+    {
+      CLog::LogF(LOGERROR, "Failed to get play directory for {}", directory);
+      return true;
+    }
+  }
+
+  if (items.IsEmpty())
+  {
+    CLog::LogF(LOGERROR, "Failed to get any items {}", directory);
     return true;
   }
 
