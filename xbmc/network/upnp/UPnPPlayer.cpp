@@ -457,12 +457,14 @@ void CUPnPPlayer::Pause()
         m_control->Play(m_delegate->m_device, m_delegate->m_instance, "1", m_delegate.get()),
         failed);
     CDataCacheCore::GetInstance().SetSpeed(1.0, 1.0);
+    m_callback.OnPlayBackResumed();
   }
   else
   {
     NPT_CHECK_LABEL(
         m_control->Pause(m_delegate->m_device, m_delegate->m_instance, m_delegate.get()), failed);
     CDataCacheCore::GetInstance().SetSpeed(1.0, 0.0);
+    m_callback.OnPlayBackPaused();
   }
 
   return;
@@ -521,6 +523,19 @@ void CUPnPPlayer::DoAudioWork()
       g_application.CurrentFileItem() = *item;
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1,
                                                  static_cast<void*>(new CFileItem(*item)));
+    }
+
+    // Player may be paused or resumed from the target player, state needs to be synchronized to data cache core.
+    CDataCacheCore& dataCacheCore = CDataCacheCore::GetInstance();
+    if (IsPaused() && dataCacheCore.GetSpeed() > 0.0f)
+    {
+      m_callback.OnPlayBackPaused();
+      dataCacheCore.SetSpeed(1.0, 0.0);
+    }
+    else if (!IsPaused() && dataCacheCore.GetSpeed() == 0.0f)
+    {
+      m_callback.OnPlayBackResumed();
+      dataCacheCore.SetSpeed(1.0, 1.0);
     }
 
     if (m_delegate->GetTransportState() == "STOPPED")
@@ -599,7 +614,17 @@ bool CUPnPPlayer::OnAction(const CAction &action)
 
 void CUPnPPlayer::SetSpeed(float speed)
 {
-
+  if (IsPaused() && speed == 1.0f)
+  {
+    NPT_CHECK_LABEL(
+        m_control->Play(m_delegate->m_device, m_delegate->m_instance, "1", m_delegate.get()),
+        failed);
+    m_callback.OnPlayBackResumed();
+    CDataCacheCore::GetInstance().SetSpeed(1.0, 1.0);
+  }
+  return;
+failed:
+  m_logger->error("- unable to set speed");
 }
 
 void CUPnPPlayer::FrameMove()
