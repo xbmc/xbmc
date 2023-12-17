@@ -42,19 +42,36 @@ private:
   std::shared_ptr<const CFileItem> ChooseVideo(CGUIDialogSelect& dialog,
                                                int headingId,
                                                int buttonId,
-                                               VideoVersionItemType itemType);
+                                               const CFileItemList& itemsToDisplay,
+                                               const CFileItemList& itemsToSwitchTo);
 
   const std::shared_ptr<const CFileItem> m_item;
   bool m_switchType{false};
+  CFileItemList m_videoVersions;
+  CFileItemList m_videoExtras;
 };
 
 std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo()
 {
   m_switchType = false;
+  m_videoVersions.Clear();
+  m_videoExtras.Clear();
 
   std::shared_ptr<const CFileItem> result;
   if (!m_item->HasVideoVersions())
     return result;
+
+  CVideoDatabase db;
+  if (!db.Open())
+  {
+    CLog::LogF(LOGERROR, "Unable to open video database!");
+    return result;
+  }
+
+  db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
+                      m_videoVersions, VideoVersionItemType::PRIMARY);
+  db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
+                      m_videoExtras, VideoVersionItemType::EXTRAS);
 
   VideoVersionItemType itemType{VideoVersionItemType::PRIMARY};
   while (true)
@@ -88,8 +105,8 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoVersion()
     return {};
   }
 
-  return ChooseVideo(*dialog, 40210 /* Versions */, 40211 /* Extras */,
-                     VideoVersionItemType::PRIMARY);
+  return ChooseVideo(*dialog, 40210 /* Versions */, 40211 /* Extras */, m_videoVersions,
+                     m_videoExtras);
 }
 
 std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoExtra()
@@ -102,28 +119,18 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoExtra()
     return {};
   }
 
-  return ChooseVideo(*dialog, 40211 /* Extras */, 40210 /* Versions */,
-                     VideoVersionItemType::EXTRAS);
+  return ChooseVideo(*dialog, 40211 /* Extras */, 40210 /* Versions */, m_videoExtras,
+                     m_videoVersions);
 }
 
 std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& dialog,
                                                             int headingId,
                                                             int buttonId,
-                                                            VideoVersionItemType itemType)
+                                                            const CFileItemList& itemsToDisplay,
+                                                            const CFileItemList& itemsToSwitchTo)
 {
-  CVideoDatabase db;
-  if (!db.Open())
-  {
-    CLog::LogF(LOGERROR, "Unable to open video database!");
-    return {};
-  }
-
-  CFileItemList items;
-  db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId, items,
-                      itemType);
-
   CVideoThumbLoader thumbLoader;
-  for (auto& item : items)
+  for (auto& item : itemsToDisplay)
   {
     thumbLoader.LoadItem(item.get());
     item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
@@ -135,10 +142,10 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& di
       StringUtils::Format("{} : {}", g_localizeStrings.Get(headingId), m_item->GetLabel())};
   dialog.SetHeading(heading);
 
-  dialog.EnableButton(true, buttonId);
+  dialog.EnableButton(!itemsToSwitchTo.IsEmpty(), buttonId);
   dialog.SetUseDetails(true);
   dialog.SetMultiSelection(false);
-  dialog.SetItems(items);
+  dialog.SetItems(itemsToDisplay);
 
   dialog.Open();
 
