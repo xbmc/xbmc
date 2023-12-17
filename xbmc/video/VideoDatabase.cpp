@@ -54,7 +54,8 @@
 #include "video/VideoDbUrl.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoLibraryQueue.h"
-#include "video/windows/GUIWindowVideoBase.h"
+#include "video/VideoThumbLoader.h"
+#include "video/VideoVersionTypes.h"
 
 #include <algorithm>
 #include <map>
@@ -11778,25 +11779,6 @@ int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
   return id;
 }
 
-bool CVideoDatabase::IsVideoExtras(int dbId)
-{
-  if (!m_pDB || !m_pDS)
-    return false;
-
-  try
-  {
-    return static_cast<VideoVersionItemType>(GetSingleValueInt(
-               PrepareSQL("SELECT itemType FROM videoversion WHERE idFile = %i", dbId))) ==
-           VideoVersionItemType::EXTRAS;
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "{} failed for {} {}", __FUNCTION__, dbId);
-  }
-
-  return false;
-}
-
 void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType, int dbId, CFileItemList& items)
 {
   // get main video versions
@@ -11865,6 +11847,7 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
         infoTag.m_idVideoVersion = id;
         infoTag.m_typeVideoVersion = name;
         infoTag.m_strTitle = name;
+        infoTag.m_videoVersionItemType = versionItemType;
 
         infoTag.m_strPictureURL = videoItem.GetVideoInfoTag()->m_strPictureURL;
         infoTag.m_fanart = videoItem.GetVideoInfoTag()->m_fanart;
@@ -11908,7 +11891,8 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
     mediaType = MediaTypeMovie;
     strSQL = PrepareSQL("SELECT videoversiontype.name AS name,"
                         "  videoversiontype.id AS id,"
-                        "  videoversion.idFile AS idFile "
+                        "  videoversion.idFile AS idFile,"
+                        "  videoversion.itemType AS itemType "
                         "FROM videoversiontype"
                         "  JOIN videoversion ON"
                         "    videoversion.idType = videoversiontype.id"
@@ -11929,7 +11913,8 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
       std::string name = m_pDS->fv("name").get_asString();
       int id = m_pDS->fv("id").get_asInt();
       int idFile = m_pDS->fv("idFile").get_asInt();
-
+      const auto versionItemType{
+          static_cast<VideoVersionItemType>(m_pDS->fv("itemType").get_asInt())};
       CVideoInfoTag infoTag;
       if (GetFileInfo("", infoTag, idFile))
       {
@@ -11938,6 +11923,7 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
         infoTag.m_idVideoVersion = id;
         infoTag.m_typeVideoVersion = name;
         infoTag.m_strTitle = name;
+        infoTag.m_videoVersionItemType = versionItemType;
 
         item.SetFromVideoInfoTag(infoTag);
         item.m_strTitle = name;

@@ -18,7 +18,7 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
-#include "video/VideoDatabase.h"
+#include "video/VideoVersionTypes.h"
 
 #include <algorithm>
 #include <sstream>
@@ -45,6 +45,9 @@ void CVideoInfoTag::Reset()
   m_set.overview.clear();
   m_tags.clear();
   m_typeVideoVersion.clear();
+  m_idVideoVersion = -1;
+  m_hasVideoVersions = false;
+  m_videoVersionItemType = VideoVersionItemType::UNKNOWN;
   m_strFile.clear();
   m_strPath.clear();
   m_strMPAARating.clear();
@@ -226,6 +229,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetStringArray(movie, "tag", m_tags);
   XMLUtils::SetString(movie, "videoversion", m_typeVideoVersion);
   XMLUtils::SetInt(movie, "videoversionid", m_idVideoVersion);
+  XMLUtils::SetBoolean(movie, "hasvideoversions", m_hasVideoVersions);
+  XMLUtils::SetInt(movie, "videoversionitemtype", static_cast<int>(m_videoVersionItemType));
   XMLUtils::SetStringArray(movie, "credits", m_writingCredits);
   XMLUtils::SetStringArray(movie, "director", m_director);
   if (HasPremiered())
@@ -512,6 +517,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_typeVideoVersion;
     ar << m_idVideoVersion;
     ar << m_hasVideoVersions;
+    ar << static_cast<int>(m_videoVersionItemType);
     ar << m_duration;
     ar << m_strFile;
     ar << m_strPath;
@@ -617,6 +623,9 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_typeVideoVersion;
     ar >> m_idVideoVersion;
     ar >> m_hasVideoVersions;
+    int versionItemType{0};
+    ar >> versionItemType;
+    m_videoVersionItemType = static_cast<VideoVersionItemType>(versionItemType);
     ar >> m_duration;
     ar >> m_strFile;
     ar >> m_strPath;
@@ -738,6 +747,8 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["tag"] = m_tags;
   value["videoversion"] = m_typeVideoVersion;
   value["videoversionid"] = m_idVideoVersion;
+  value["hasvideoversions"] = m_hasVideoVersions;
+  value["videoversionitemtype"] = static_cast<int>(m_videoVersionItemType);
   value["runtime"] = GetDuration();
   value["file"] = m_strFile;
   value["path"] = m_strPath;
@@ -1822,16 +1833,5 @@ bool CVideoInfoTag::SetResumePoint(double timeInSeconds, double totalTimeInSecon
 
 bool CVideoInfoTag::IsVideoExtras() const
 {
-  if (m_type == MediaTypeVideoVersion)
-  {
-    CVideoDatabase videodb;
-    if (videodb.Open())
-    {
-      return videodb.IsVideoExtras(m_iDbId);
-    }
-    else
-      CLog::Log(LOGERROR, "{}: Failed to open database", __FUNCTION__);
-  }
-
-  return false;
+  return m_videoVersionItemType == VideoVersionItemType::EXTRAS;
 }

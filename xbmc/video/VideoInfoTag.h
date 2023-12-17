@@ -24,6 +24,8 @@ class TiXmlNode;
 class TiXmlElement;
 class CVariant;
 
+enum class VideoVersionItemType;
+
 struct SActorInfo
 {
   bool operator<(const SActorInfo &right) const
@@ -245,6 +247,7 @@ public:
   std::string m_typeVideoVersion;
   int m_idVideoVersion{-1};
   bool m_hasVideoVersions{false};
+  VideoVersionItemType m_videoVersionItemType{-1};
   std::string m_strFile;
   std::string m_strPath;
   std::string m_strMPAARating;

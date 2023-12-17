@@ -26,6 +26,9 @@ class CVideoSettings;
 class CGUIDialogProgress;
 class CGUIDialogProgressBarHandle;
 
+enum class VideoVersionTypeOwner;
+enum class VideoVersionItemType;
+
 namespace dbiplus
 {
   class field_value;
@@ -392,27 +395,6 @@ const struct SDbTableOffsets DbMusicVideoOffsets[] =
 
 #define COMPARE_PERCENTAGE     0.90f // 90%
 #define COMPARE_PERCENTAGE_MIN 0.50f // 50%
-
-// Video Versions
-enum class VideoVersionTypeOwner
-{
-  UNKNOWN = -1,
-  SYSTEM = 0,
-  AUTO = 1,
-  USER = 2
-};
-
-enum class VideoVersionItemType
-{
-  UNKNOWN = -1,
-  PRIMARY = 0,
-  EXTRAS = 1
-};
-
-static constexpr int VIDEO_VERSION_ID_BEGIN = 40400;
-static constexpr int VIDEO_VERSION_ID_END = 40800;
-static constexpr int VIDEO_VERSION_ID_DEFAULT = VIDEO_VERSION_ID_BEGIN;
-static constexpr int VIDEO_VERSION_ID_ALL = 0;
 
 class CVideoDatabase : public CDatabase
 {
@@ -1014,7 +996,6 @@ public:
   std::string GetVideoVersionById(int id);
   bool GetVideoItemByVideoVersion(int dbId, CFileItem& item);
   int GetVideoVersionFile(VideoDbContentType itemType, int dbId, int idVideoVersion);
-  bool IsVideoExtras(int dbId);
   void GetVideoVersions(VideoDbContentType itemType, int dbId, CFileItemList& items);
   void GetVideoVersions(VideoDbContentType itemType,
                         int dbId,

@@ -21,6 +21,7 @@
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoThumbLoader.h"
+#include "video/VideoVersionTypes.h"
 
 using namespace VIDEO::GUILIB;
 
