@@ -120,8 +120,8 @@ static constexpr unsigned int CLIP_PLAYLIST_OFFSET =
     2; // First two entries in clip array are clip number and duration. Remaining entries are playlist(s)
 
 void CBlurayDirectory::GetPlaylistInfo(std::vector<std::vector<unsigned int>>& clips,
-    std::vector<std::vector<unsigned int>>& playlists,
-    std::map<unsigned int, std::string>& playlist_langs)
+                                       std::vector<std::vector<unsigned int>>& playlists,
+                                       std::map<unsigned int, std::string>& playlist_langs)
 {
   // Get all titles on disc
   // Sort by playlist for grouping later
@@ -689,10 +689,11 @@ void CBlurayDirectory::GetEpisodeTitles(const CFileItem& episode,
                               episode.GetVideoInfoTag()->m_strTitle);
     newItem->m_strTitle = buf;
     newItem->SetLabel(buf);
-    newItem->SetLabel2(StringUtils::Format(
-        g_localizeStrings.Get(25005) /* Title: {0:d} */ + " - {1:s}: {2:s}\n\r{3:s}: {4:s}", playlist,
-        g_localizeStrings.Get(180) /* Duration */, StringUtils::SecondsToTimeString(duration),
-        g_localizeStrings.Get(24026) /* Languages */, langs));
+    newItem->SetLabel2(StringUtils::Format(g_localizeStrings.Get(25005) /* Title: {0:d} */ +
+                                               " - {1:s}: {2:s}\n\r{3:s}: {4:s}",
+                                           playlist, g_localizeStrings.Get(180) /* Duration */,
+                                           StringUtils::SecondsToTimeString(duration),
+                                           g_localizeStrings.Get(24026) /* Languages */, langs));
     newItem->m_dwSize = 0;
     newItem->SetArt("icon", "DefaultVideo.png");
     items.Add(newItem);
