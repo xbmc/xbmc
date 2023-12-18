@@ -409,6 +409,14 @@ protected:
   void ProcessAudioID3Data(CDemuxStream* pStream, DemuxPacket* pPacket);
 
   int  AddSubtitleFile(const std::string& filename, const std::string& subfilename = "");
+
+  /*!
+   * \brief Propagate enable stream callbacks to demuxers.
+   * \param current The current stream
+   * \param isEnabled Set to true to enable the stream, otherwise false
+   */
+  void SetEnableStream(CCurrentStream& current, bool isEnabled);
+
   void SetSubtitleVisibleInternal(bool bVisible);
 
   /**
