@@ -950,8 +950,16 @@ void CVideoPlayer::OpenDefaultStreams(bool reset)
   if(!valid)
     CloseStream(m_CurrentSubtitle, false);
 
-  if (!std::dynamic_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream) || m_playerOptions.state.empty())
-    SetSubtitleVisibleInternal(visible); // only set subtitle visibility if state not stored by dvd navigator, because navigator will restore it (if visible)
+  // only set subtitle visibility if state not stored by dvd navigator, because navigator will restore it (if visible)
+  if (!std::dynamic_pointer_cast<CDVDInputStreamNavigator>(m_pInputStream) ||
+      m_playerOptions.state.empty())
+  {
+    // SetEnableStream only if not visible, when visible OpenStream already implied that stream is enabled
+    if (valid && !visible)
+      SetEnableStream(m_CurrentSubtitle, false);
+
+    SetSubtitleVisibleInternal(visible);
+  }
 
   // open teletext stream
   valid   = false;
@@ -2886,8 +2894,13 @@ void CVideoPlayer::HandleMessages()
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_SUBTITLESTREAM_VISIBLE))
     {
-      auto pValue = std::static_pointer_cast<CDVDMsgBool>(pMsg);
-      SetSubtitleVisibleInternal(pValue->m_value);
+      bool isVisible = std::static_pointer_cast<CDVDMsgBool>(pMsg)->m_value;
+
+      // SetEnableStream only if not visible, when visible OpenStream already implied that stream is enabled
+      if (!isVisible)
+        SetEnableStream(m_CurrentSubtitle, false);
+
+      SetSubtitleVisibleInternal(isVisible);
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_SET_PROGRAM))
     {
@@ -3363,6 +3376,12 @@ void CVideoPlayer::SetSubtitleVisible(bool bVisible)
   m_processInfo->GetVideoSettingsLocked().SetSubtitleVisible(bVisible);
 }
 
+void CVideoPlayer::SetEnableStream(CCurrentStream& current, bool isEnabled)
+{
+  if (m_pDemuxer && STREAM_SOURCE_MASK(current.source) == STREAM_SOURCE_DEMUX)
+    m_pDemuxer->EnableStream(current.demuxerId, current.id, isEnabled);
+}
+
 void CVideoPlayer::SetSubtitleVisibleInternal(bool bVisible)
 {
   m_VideoPlayerVideo->EnableSubtitle(bVisible);
@@ -3825,23 +3844,23 @@ void CVideoPlayer::AdaptForcedSubtitles()
   if (ss.flags & StreamFlags::FLAG_FORCED)
   {
     SelectionStream as = m_SelectionStreams.Get(STREAM_AUDIO, GetAudioStream());
-    bool found = false;
+    bool isVisible = false;
     for (const auto &stream : m_SelectionStreams.Get(STREAM_SUBTITLE))
     {
       if (stream.flags & StreamFlags::FLAG_FORCED && g_LangCodeExpander.CompareISO639Codes(stream.language, as.language))
       {
         if (OpenStream(m_CurrentSubtitle, stream.demuxerId, stream.id, stream.source))
         {
-          found = true;
-          SetSubtitleVisibleInternal(true);
+          isVisible = true;
           break;
         }
       }
     }
-    if (!found)
-    {
-      SetSubtitleVisibleInternal(false);
-    }
+    // SetEnableStream only if not visible, when visible OpenStream already implied that stream is enabled
+    if (!isVisible)
+      SetEnableStream(m_CurrentSubtitle, false);
+
+    SetSubtitleVisibleInternal(isVisible);
   }
 }
 
@@ -3911,8 +3930,7 @@ bool CVideoPlayer::CloseStream(CCurrentStream& current, bool bWaitForBuffers)
   if(bWaitForBuffers)
     SetCaching(CACHESTATE_DONE);
 
-  if (m_pDemuxer && STREAM_SOURCE_MASK(current.source) == STREAM_SOURCE_DEMUX)
-    m_pDemuxer->EnableStream(current.demuxerId, current.id, false);
+  SetEnableStream(current, false);
 
   IDVDStreamPlayer* player = GetStreamPlayer(current.player);
   if (player)
