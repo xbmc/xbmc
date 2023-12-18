@@ -88,8 +88,8 @@ CLibInputSettings::CLibInputSettings(CLibInputHandler *handler) :
   const auto* layoutListElement = rootElement->FirstChildElement("layoutList");
   if (!layoutListElement)
   {
-    CLog::Log(LOGWARNING, "CLibInputSettings: unexpected XML child element {} in: {}",
-              layoutListElement->Value(), xkbFile);
+    CLog::Log(LOGWARNING, "CLibInputSettings: missing XML child element {} in: {}", "layoutList",
+              xkbFile);
     return;
   }
 
