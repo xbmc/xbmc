@@ -119,80 +119,24 @@ static constexpr unsigned int PLAYLIST_CLIP_OFFSET =
 static constexpr unsigned int CLIP_PLAYLIST_OFFSET =
     2; // First two entries in clip array are clip number and duration. Remaining entries are playlist(s)
 
-void CBlurayDirectory::GetEpisodeTitles(const CFileItem& episode,
-                                        CFileItemList& items,
-                                        std::vector<CVideoInfoTag> episodesOnDisc)
+void CBlurayDirectory::GetPlaylistInfo(std::vector<std::vector<unsigned int>>& clips,
+    std::vector<std::vector<unsigned int>>& playlists,
+    std::map<unsigned int, std::string>& playlist_langs)
 {
   // Get all titles on disc
   // Sort by playlist for grouping later
+
   CFileItemList allTitles;
   GetTitles(false, allTitles);
   SortDescription sorting;
   sorting.sortBy = SortByFile;
   allTitles.Sort(sorting);
 
-  // Find our episode on disc
-  // Need to differentiate between specials and episodes
-  std::vector<CVideoInfoTag> specialsOnDisc;
-  bool isSpecial = false;
-  unsigned int episodeOffset = 0;
-
-  for (int i = 0; i < static_cast<int>(episodesOnDisc.size()); ++i)
-  {
-    if (episodesOnDisc[i].m_iSeason > 0 &&
-        episodesOnDisc[i].m_iSeason == episode.GetVideoInfoTag()->m_iSeason &&
-        episodesOnDisc[i].m_iEpisode == episode.GetVideoInfoTag()->m_iEpisode)
-    {
-      // Episode found
-      episodeOffset = i;
-    }
-    else if (episodesOnDisc[i].m_iSeason == 0)
-    {
-      // Special
-      specialsOnDisc.emplace_back(episodesOnDisc[i]);
-
-      if (episode.GetVideoInfoTag()->m_iSeason == 0 &&
-          episodesOnDisc[i].m_iEpisode == episode.GetVideoInfoTag()->m_iEpisode)
-      {
-        // Sepcial found
-        episodeOffset = specialsOnDisc.size() - 1;
-        isSpecial = true;
-      }
-
-      // Remove from episode list
-      episodesOnDisc.erase(episodesOnDisc.begin() + i);
-      --i;
-    }
-  }
-
-  const unsigned int numEpisodes = episodesOnDisc.size();
-  const unsigned int episodeDuration = episode.GetVideoInfoTag()->GetDuration();
-
-  CLog::Log(LOGDEBUG, "*** Episode Search Start ***");
-
-  CLog::Log(LOGDEBUG, "Looking for season {} episode {} duration {}",
-            episode.GetVideoInfoTag()->m_iSeason, episode.GetVideoInfoTag()->m_iEpisode,
-            episode.GetVideoInfoTag()->GetDuration());
-
-  // List episodes expected on disc
-  for (const auto& e : episodesOnDisc)
-  {
-    CLog::Log(LOGDEBUG, "On disc - season {} episode {} duration {}", e.m_iSeason, e.m_iEpisode,
-              e.GetDuration());
-  }
-  for (const auto& e : specialsOnDisc)
-  {
-    CLog::Log(LOGDEBUG, "On disc - special - season {} episode {} duration {}", e.m_iSeason,
-              e.m_iEpisode, e.GetDuration());
-  }
-
   // Get information on all titles
   // Including relationship between clips and playlists
   // List all playlists
-  std::vector<std::vector<unsigned int>> clips;
-  std::vector<std::vector<unsigned int>> playlists;
-  std::map<unsigned int, std::string> playlist_langs;
 
+  CLog::LogF(LOGDEBUG, "Playlist information");
   for (const auto& title : allTitles)
   {
     CURL url(title->GetDynPath());
@@ -202,7 +146,11 @@ void CBlurayDirectory::GetEpisodeTitles(const CFileItem& episode,
     if (sscanf(filename.c_str(), "%05u.mpls", &playlist) == 1)
     {
       BLURAY_TITLE_INFO* titleInfo = bd_get_playlist_info(m_bd, playlist, 0);
-      if (titleInfo)
+      if (!titleInfo)
+      {
+        CLog::Log(LOGDEBUG, "Unable to get playlist {}", playlist);
+      }
+      else
       {
         // Save playlist
         auto pl = std::vector<unsigned int>{playlist};
@@ -257,11 +205,14 @@ void CBlurayDirectory::GetEpisodeTitles(const CFileItem& episode,
 
         CLog::Log(LOGDEBUG, "Playlist {}, Duration {}, Langs {}, Clips {} ", playlist,
                   title->GetVideoInfoTag()->GetDuration(), langs, clipsStr);
+
+        bd_free_title_info(titleInfo);
       }
     }
   }
 
   // Sort and list clip info
+
   std::sort(clips.begin(), clips.end(),
             [&](std::vector<unsigned int> i, std::vector<unsigned int> j)
             { return (i[0] < j[0]); });
@@ -274,6 +225,69 @@ void CBlurayDirectory::GetEpisodeTitles(const CFileItem& episode,
     }
     ps.pop_back();
     CLog::Log(LOGDEBUG, ps);
+  }
+}
+
+void CBlurayDirectory::GetEpisodeTitles(const CFileItem& episode,
+                                        CFileItemList& items,
+                                        std::vector<CVideoInfoTag> episodesOnDisc,
+                                        const std::vector<std::vector<unsigned int>>& clips,
+                                        const std::vector<std::vector<unsigned int>>& playlists,
+                                        std::map<unsigned int, std::string>& playlist_langs)
+{
+  // Find our episode on disc
+  // Need to differentiate between specials and episodes
+  std::vector<CVideoInfoTag> specialsOnDisc;
+  bool isSpecial = false;
+  unsigned int episodeOffset = 0;
+
+  for (int i = 0; i < static_cast<int>(episodesOnDisc.size()); ++i)
+  {
+    if (episodesOnDisc[i].m_iSeason > 0 &&
+        episodesOnDisc[i].m_iSeason == episode.GetVideoInfoTag()->m_iSeason &&
+        episodesOnDisc[i].m_iEpisode == episode.GetVideoInfoTag()->m_iEpisode)
+    {
+      // Episode found
+      episodeOffset = i;
+    }
+    else if (episodesOnDisc[i].m_iSeason == 0)
+    {
+      // Special
+      specialsOnDisc.emplace_back(episodesOnDisc[i]);
+
+      if (episode.GetVideoInfoTag()->m_iSeason == 0 &&
+          episodesOnDisc[i].m_iEpisode == episode.GetVideoInfoTag()->m_iEpisode)
+      {
+        // Sepcial found
+        episodeOffset = specialsOnDisc.size() - 1;
+        isSpecial = true;
+      }
+
+      // Remove from episode list
+      episodesOnDisc.erase(episodesOnDisc.begin() + i);
+      --i;
+    }
+  }
+
+  const unsigned int numEpisodes = episodesOnDisc.size();
+  const unsigned int episodeDuration = episode.GetVideoInfoTag()->GetDuration();
+
+  CLog::LogF(LOGDEBUG, "*** Episode Search Start ***");
+
+  CLog::Log(LOGDEBUG, "Looking for season {} episode {} duration {}",
+            episode.GetVideoInfoTag()->m_iSeason, episode.GetVideoInfoTag()->m_iEpisode,
+            episode.GetVideoInfoTag()->GetDuration());
+
+  // List episodes expected on disc
+  for (const auto& e : episodesOnDisc)
+  {
+    CLog::Log(LOGDEBUG, "On disc - season {} episode {} duration {}", e.m_iSeason, e.m_iEpisode,
+              e.GetDuration());
+  }
+  for (const auto& e : specialsOnDisc)
+  {
+    CLog::Log(LOGDEBUG, "On disc - special - season {} episode {} duration {}", e.m_iSeason,
+              e.m_iEpisode, e.GetDuration());
   }
 
   // Look for a potential play all playlist (can give episode order)
@@ -606,6 +620,7 @@ void CBlurayDirectory::GetEpisodeTitles(const CFileItem& episode,
   }
 
   // Remove duplicates (ie. those that play exactly the same clip with same languages)
+
   if (candidatePlaylists.size() > 1)
   {
     for (int i = 0; i < static_cast<int>(candidatePlaylists.size()) - 1; ++i)
@@ -636,7 +651,7 @@ void CBlurayDirectory::GetEpisodeTitles(const CFileItem& episode,
     }
   }
 
-  CLog::Log(LOGDEBUG, "*** Episode Search End ***");
+  CLog::LogF(LOGDEBUG, "*** Episode Search End ***");
 
   // ** Now populate CFileItemList to return
   CFileItemList newItems;
@@ -675,7 +690,9 @@ void CBlurayDirectory::GetEpisodeTitles(const CFileItem& episode,
     newItem->m_strTitle = buf;
     newItem->SetLabel(buf);
     newItem->SetLabel2(StringUtils::Format(
-        g_localizeStrings.Get(25005) /* Title: {0:d} */ + " - {1:s}", playlist, langs));
+        g_localizeStrings.Get(25005) /* Title: {0:d} */ + " - {1:s}: {2:s}\n\r{3:s}: {4:s}", playlist,
+        g_localizeStrings.Get(180) /* Duration */, StringUtils::SecondsToTimeString(duration),
+        g_localizeStrings.Get(24026) /* Languages */, langs));
     newItem->m_dwSize = 0;
     newItem->SetArt("icon", "DefaultVideo.png");
     items.Add(newItem);
@@ -762,7 +779,15 @@ void CBlurayDirectory::GetRoot(CFileItemList& items,
                                const CFileItem& episode,
                                const std::vector<CVideoInfoTag>& episodesOnDisc)
 {
-  GetEpisodeTitles(episode, items, episodesOnDisc);
+  // Get playlist, clip and language information
+  std::vector<std::vector<unsigned int>> clips;
+  std::vector<std::vector<unsigned int>> playlists;
+  std::map<unsigned int, std::string> playlist_langs;
+
+  GetPlaylistInfo(clips, playlists, playlist_langs);
+
+  // Get episode playlists
+  GetEpisodeTitles(episode, items, episodesOnDisc, clips, playlists, playlist_langs);
 
   if (!items.IsEmpty())
     AddRootOptions(items);

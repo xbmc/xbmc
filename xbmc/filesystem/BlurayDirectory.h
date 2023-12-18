@@ -53,9 +53,15 @@ private:
                const std::vector<CVideoInfoTag>& episodesOnDisc);
   void AddRootOptions(CFileItemList& items) const;
   void         GetTitles(bool main, CFileItemList &items);
+  void GetPlaylistInfo(std::vector<std::vector<unsigned int>>& clips,
+                       std::vector<std::vector<unsigned int>>& playlists,
+                       std::map<unsigned int, std::string>& playlist_langs);
   void GetEpisodeTitles(const CFileItem& episode,
                         CFileItemList& items,
-                        std::vector<CVideoInfoTag> episodesOnDisc);
+                        std::vector<CVideoInfoTag> episodesOnDisc,
+                        const std::vector<std::vector<unsigned int>>& clips,
+                        const std::vector<std::vector<unsigned int>>& playlists,
+                        std::map<unsigned int, std::string>& playlist_langs);
   std::vector<BLURAY_TITLE_INFO*> GetUserPlaylists();
   std::shared_ptr<CFileItem> GetTitle(const BLURAY_TITLE_INFO* title, const std::string& label);
   CURL         GetUnderlyingCURL(const CURL& url);
