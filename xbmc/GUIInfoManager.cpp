@@ -381,7 +381,6 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
                                   { "iseven",           INTEGER_EVEN },
                                   { "isodd",            INTEGER_ODD }};
 
-
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Player Player
 /// \table_start
@@ -852,10 +851,28 @@ const infomap integer_bools[] =  {{ "isequal",          INTEGER_IS_EQUAL },
 ///     @skinning_v19 **[New Infolabel]** \link Player_Chapters `Player.Chapters`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`Player.IsExternal`</b>,
+///                  \anchor Player_IsExternal
+///                  _boolean_,
+///     @return **True** if the playing player is an external player\, **False** otherwise
+///     <p><hr>
+///     @skinning_v21 **[New Boolean Condition]** \link Player_IsExternal `Player.IsExternal`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`Player.IsRemote`</b>,
+///                  \anchor Player_IsRemote
+///                  _boolean_,
+///     @return **True** if the playing player is a remote player (e.g. UPnP)\, **False** otherwise
+///     <p><hr>
+///     @skinning_v21 **[New Boolean Condition]** \link Player_IsRemote `Player.IsRemote`\endlink
+///     <p>
+///   }
 const infomap player_labels[] = {{"hasmedia", PLAYER_HAS_MEDIA},
                                  {"hasaudio", PLAYER_HAS_AUDIO},
                                  {"hasvideo", PLAYER_HAS_VIDEO},
                                  {"hasgame", PLAYER_HAS_GAME},
+                                 {"isexternal", PLAYER_IS_EXTERNAL},
+                                 {"isremote", PLAYER_IS_REMOTE},
                                  {"playing", PLAYER_PLAYING},
                                  {"paused", PLAYER_PAUSED},
                                  {"rewinding", PLAYER_REWINDING},

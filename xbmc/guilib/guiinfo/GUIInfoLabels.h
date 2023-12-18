@@ -83,6 +83,8 @@
 #define PLAYER_FILEPATH              82
 #define PLAYER_TITLE                 83
 #define PLAYER_FILENAME              84
+#define PLAYER_IS_REMOTE      85
+#define PLAYER_IS_EXTERNAL    86
 
 // Range of player infolabels that work with offset and position
 #define PLAYER_OFFSET_POSITION_FIRST PLAYER_PATH
