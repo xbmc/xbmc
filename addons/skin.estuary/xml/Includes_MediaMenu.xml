@@ -239,6 +239,7 @@
 							<param name="control_id" value="14104" />
 							<param name="onclick" value="Next" />
 							<param name="icon" value="icons/now-playing/next.png" />
+							<param name="visible" value="Integer.IsLess(Playlist.Position(video), Playlist.Length(video)) | MusicPlayer.HasNext" />
 						</include>
 						<include content="IconButton">
 							<param name="control_id" value="14105" />
@@ -332,6 +333,7 @@
 					<param name="control_id" value="14104" />
 					<param name="onclick" value="PlayerControl(Next)" />
 					<param name="icon" value="icons/now-playing/next.png" />
+					<param name="visible" value="Integer.IsLess(Playlist.Position(video), Playlist.Length(video)) | MusicPlayer.HasNext" />
 				</include>
 				<include content="IconButton">
 					<param name="control_id" value="14105" />
