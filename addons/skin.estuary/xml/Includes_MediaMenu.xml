@@ -245,6 +245,14 @@
 							<param name="control_id" value="14105" />
 							<param name="onclick" value="Fullscreen" />
 							<param name="icon" value="icons/now-playing/fullscreen.png" />
+							<param name="visible" value="Player.HasMedia + [ !Player.IsRemote | Player.HasAudio ]" />
+						</include>
+						<include content="IconButton">
+							<param name="control_id" value="14106" />
+							<param name="onclick" value="ActivateWindow(playercontrols)" />
+							<param name="icon" value="icons/now-playing/fullscreen.png" />
+							<param name="label" value="$LOCALIZE[31000]" />
+							<param name="visible" value="Player.HasMedia + Player.IsRemote" />
 						</include>
 					</control>
 				</control>
@@ -339,6 +347,13 @@
 					<param name="control_id" value="14105" />
 					<param name="onclick" value="Fullscreen" />
 					<param name="icon" value="icons/now-playing/fullscreen.png" />
+					<param name="visible" value="Player.HasMedia + [ !Player.IsRemote | Player.HasAudio ]" />
+				</include>
+				<include content="IconButton">
+					<param name="control_id" value="14106" />
+					<param name="onclick" value="ActivateWindow(playercontrols)" />
+					<param name="icon" value="icons/now-playing/fullscreen.png" />
+					<param name="visible" value="Player.HasMedia + Player.IsRemote + !Player.HasAudio" />
 				</include>
 			</control>
 		</definition>

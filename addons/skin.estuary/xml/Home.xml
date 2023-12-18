@@ -1080,7 +1080,14 @@
 						<param name="onclick" value="Fullscreen" />
 						<param name="icon" value="icons/now-playing/fullscreen.png" />
 						<param name="label" value="$LOCALIZE[31000]" />
-						<param name="visible" value="Player.HasMedia" />
+						<param name="visible" value="Player.HasMedia + !Player.IsRemote" />
+					</include>
+					<include content="IconButton">
+						<param name="control_id" value="805" />
+						<param name="onclick" value="ActivateWindow(playercontrols)" />
+						<param name="icon" value="icons/now-playing/fullscreen.png" />
+						<param name="label" value="$LOCALIZE[31000]" />
+						<param name="visible" value="Player.HasMedia + Player.IsRemote + !Player.HasAudio" />
 					</include>
 				</control>
 			</control>
