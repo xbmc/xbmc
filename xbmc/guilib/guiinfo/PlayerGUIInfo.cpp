@@ -427,6 +427,12 @@ bool CPlayerGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
     case PLAYER_HAS_GAME:
       value = m_appPlayer->IsPlayingGame();
       return true;
+    case PLAYER_IS_REMOTE:
+      value = m_appPlayer->IsRemotePlaying();
+      return true;
+    case PLAYER_IS_EXTERNAL:
+      value = m_appPlayer->IsExternalPlaying();
+      return true;
     case PLAYER_PLAYING:
       value = m_appPlayer->GetPlaySpeed() == 1.0f;
       return true;
