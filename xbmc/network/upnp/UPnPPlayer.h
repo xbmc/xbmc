@@ -36,8 +36,8 @@ public:
   bool CloseFile(bool reopen = false) override;
   bool IsPlaying() const override;
   void Pause() override;
-  bool HasVideo() const override { return false; }
-  bool HasAudio() const override { return false; }
+  bool HasVideo() const override { return true; }
+  bool HasAudio() const override { return true; }
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   void SeekPercentage(float fPercent = 0) override;
   void SetVolume(float volume) override;
