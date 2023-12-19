@@ -33,6 +33,7 @@ set(SOURCES TestAlarmClock.cpp
             TestRegExp.cpp
             Testrfft.cpp
             TestRingBuffer.cpp
+            TestRssReader.cpp
             TestScraperParser.cpp
             TestScraperUrl.cpp
             TestSortUtils.cpp
