@@ -327,6 +327,7 @@ public:
   static constexpr auto SETTING_SERVICES_UPNPLOOKFOREXTERNALSUBTITLES =
       "services.upnplookforexternalsubtitles";
   static constexpr auto SETTING_SERVICES_UPNPCONTROLLER = "services.upnpcontroller";
+  static constexpr auto SETTING_SERVICES_UPNPPLAYERVOLUMESYNC = "services.upnpplayervolumesync";
   static constexpr auto SETTING_SERVICES_UPNPRENDERER = "services.upnprenderer";
   static constexpr auto SETTING_SERVICES_WEBSERVER = "services.webserver";
   static constexpr auto SETTING_SERVICES_WEBSERVERPORT = "services.webserverport";

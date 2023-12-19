@@ -21,6 +21,8 @@
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "music/MusicThumbLoader.h"
+#include "settings/Settings.h"
+#include "settings/SettingsComponent.h"
 #include "threads/Event.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
@@ -590,6 +592,12 @@ failed:
 
 void CUPnPPlayer::SetVolume(float volume)
 {
+  if (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+          CSettings::SETTING_SERVICES_UPNPPLAYERVOLUMESYNC))
+  {
+    return;
+  }
+
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
   NPT_CHECK_LABEL(m_control->SetVolume(m_delegate->m_device, m_delegate->m_instance, "Master",
                                        (int)(volume * 100), m_delegate.get()),
