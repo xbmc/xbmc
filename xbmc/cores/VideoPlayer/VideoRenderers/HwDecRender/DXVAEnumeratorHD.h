@@ -113,9 +113,6 @@ struct ProcessorConversion
 
 using ProcessorConversions = std::vector<ProcessorConversion>;
 
-const std::vector<DXGI_FORMAT> RenderingOutputFormats = {DXGI_FORMAT_B8G8R8A8_UNORM,
-                                                         DXGI_FORMAT_R10G10B10A2_UNORM};
-
 struct SupportedConversionsArgs
 {
   AVColorPrimaries m_colorPrimaries{AVCOL_PRI_UNSPECIFIED};
