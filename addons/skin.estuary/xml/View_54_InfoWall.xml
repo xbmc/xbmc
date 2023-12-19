@@ -298,17 +298,9 @@
 					<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
 					<bordersize>20</bordersize>
 				</control>
-				<control type="image">
-					<left>35</left>
-					<top>305</top>
-					<width>80</width>
-					<height>80</height>
-					<texture>overlays/overlay-bg.png</texture>
-					<visible>Listitem.IsCollection | ListItem.IsPlaying | Integer.IsGreater(ListItem.Playcount,0)</visible>
-				</control>
 			</control>
 			<control type="group">
-				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
+				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBType,season) | ListItem.IsRecording | ListItem.HasReminder | ListItem.HasTimer | ListItem.IsCollection | ListItem.HasVideoVersions | ListItem.IsPlaying | ListItem.IsResumable | ListItem.HasArchive | Integer.IsGreater(ListItem.Playcount,0)</visible>
 				<control type="image">
 					<left>35</left>
 					<top>335</top>
@@ -316,6 +308,13 @@
 					<height>50</height>
 					<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
 					<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
+				</control>
+				<control type="image">
+					<left>35</left>
+					<top>353</top>
+					<width>32</width>
+					<height>32</height>
+					<texture>$VAR[WallWatchedIconVar]</texture>
 				</control>
 				<control type="label">
 					<left>0</left>
@@ -325,6 +324,7 @@
 					<font>font20_title</font>
 					<shadowcolor>text_shadow</shadowcolor>
 					<align>right</align>
+					<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
 				</control>
 				<control type="image">
 					<left>254</left>
@@ -332,14 +332,8 @@
 					<width>24</width>
 					<height>24</height>
 					<texture>lists/played-total.png</texture>
+					<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
 				</control>
-			</control>
-			<control type="image">
-				<left>35</left>
-				<top>353</top>
-				<width>32</width>
-				<height>32</height>
-				<texture>$VAR[WallWatchedIconVar]</texture>
 			</control>
 			<control type="group">
 				<left>135</left>

@@ -88,15 +88,8 @@
 							<param name="font" value="font13" />
 						</include>
 					</control>
-					<control type="image">
-						<left>645</left>
-						<top>415</top>
-						<width>32</width>
-						<height>32</height>
-						<texture>$VAR[ListWatchedIconVar]</texture>
-					</control>
 					<control type="label">
-						<left>695</left>
+						<left>645</left>
 						<top>400</top>
 						<right>50</right>
 						<height>40</height>
@@ -144,7 +137,7 @@
 				<texture fallback="DefaultMovies.png" background="true">$VAR[PosterThumbVar]</texture>
 			</control>
 			<control type="group">
-				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
+				<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBType,season) | ListItem.IsRecording | ListItem.HasReminder | ListItem.HasTimer | ListItem.IsCollection | ListItem.HasVideoVersions | ListItem.IsPlaying | ListItem.IsResumable | ListItem.HasArchive | Integer.IsGreater(ListItem.Playcount,0)</visible>
 				<control type="image">
 					<left>4</left>
 					<top>670</top>
@@ -152,6 +145,15 @@
 					<height>50</height>
 					<texture colordiffuse="CCFFFFFF">overlays/overlayfade.png</texture>
 					<visible>!String.IsEmpty(ListItem.Art(poster))</visible>
+				</control>
+				<control type="image">
+					<left>6</left>
+					<top>684</top>
+					<width>32</width>
+					<height>32</height>
+					<texture>$VAR[WallWatchedIconVar]</texture>
+					<align>right</align>
+					<aligny>center</aligny>
 				</control>
 				<control type="label">
 					<left>0</left>
@@ -163,6 +165,7 @@
 					<shadowcolor>text_shadow</shadowcolor>
 					<align>right</align>
 					<aligny>center</aligny>
+					<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
 				</control>
 				<control type="image">
 					<left>445</left>
@@ -172,6 +175,7 @@
 					<texture>lists/played-total.png</texture>
 					<align>right</align>
 					<aligny>center</aligny>
+					<visible>String.IsEqual(ListItem.DBtype,tvshow) | String.IsEqual(ListItem.DBtype,set) | String.IsEqual(ListItem.DBType,season)</visible>
 				</control>
 			</control>
 			<control type="progress">
