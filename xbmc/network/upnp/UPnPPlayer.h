@@ -10,8 +10,8 @@
 #pragma once
 
 #include "cores/IPlayer.h"
-#include "guilib/DispResource.h"
 #include "threads/SystemClock.h"
+#include "threads/Thread.h"
 #include "utils/logtypes.h"
 
 #include <memory>
@@ -24,8 +24,7 @@ namespace UPNP
 
 class CUPnPPlayerController;
 
-class CUPnPPlayer
-  : public IPlayer, public IRenderLoop
+class CUPnPPlayer : public IPlayer, public CThread
 {
 public:
   CUPnPPlayer(IPlayerCallback& callback, const char* uuid);
@@ -49,10 +48,7 @@ public:
 
   bool IsCaching() const override { return false; }
   int GetCacheLevel() const override { return -1; }
-  void DoAudioWork() override;
   bool OnAction(const CAction &action) override;
-
-  void FrameMove() override;
 
   int PlayFile(const CFileItem& file,
                const CPlayerOptions& options,
@@ -63,6 +59,10 @@ private:
   int64_t GetTime();
   int64_t GetTotalTime();
   float GetPercentage();
+
+  // implementation of CThread
+  void Process() override;
+  void OnExit() override;
 
   PLT_MediaController* m_control;
   std::unique_ptr<CUPnPPlayerController> m_delegate;

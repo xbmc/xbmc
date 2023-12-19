@@ -544,13 +544,6 @@ void CApplicationPlayer::FrameAdvance(int frames)
     player->FrameAdvance(frames);
 }
 
-void CApplicationPlayer::DoAudioWork()
-{
-  std::shared_ptr<IPlayer> player = GetInternal();
-  if (player)
-    player->DoAudioWork();
-}
-
 std::string CApplicationPlayer::GetPlayerState()
 {
   std::shared_ptr<IPlayer> player = GetInternal();

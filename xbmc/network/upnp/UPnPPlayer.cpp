@@ -171,7 +171,8 @@ private:
 
 CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
   : IPlayer(callback),
-    m_control(NULL),
+    CThread("UPnPPlayer"),
+    m_control(nullptr),
     m_logger(CServiceBroker::GetLogging().GetLogger(StringUtils::Format("CUPnPPlayer[{}]", uuid)))
 {
   m_control  = CUPnP::GetInstance()->m_MediaController;
@@ -184,13 +185,10 @@ CUPnPPlayer::CUPnPPlayer(IPlayerCallback& callback, const char* uuid)
   }
   else
     m_logger->error("couldn't find device as {}", uuid);
-
-  CServiceBroker::GetWinSystem()->RegisterRenderLoop(this);
 }
 
 CUPnPPlayer::~CUPnPPlayer()
 {
-  CServiceBroker::GetWinSystem()->UnregisterRenderLoop(this);
   CloseFile();
   CUPnP::UnregisterUserdata(m_delegate.get());
 }
@@ -370,6 +368,9 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   else
     NPT_CHECK_LABEL_SEVERE(PlayFile(file, options, timeout), failed);
 
+  if (!IsRunning())
+    Create();
+
   m_stopremote = true;
   m_started = true;
   m_callback.OnPlayBackStarted(file);
@@ -442,7 +443,7 @@ bool CUPnPPlayer::CloseFile(bool reopen)
     m_started = false;
     m_callback.OnPlayBackStopped();
   }
-
+  StopThread(true);
   return true;
 failed:
   m_logger->error("CloseFile - unable to stop playback");
@@ -505,49 +506,60 @@ void CUPnPPlayer::Seek(bool bPlus, bool bLargeStep, bool bChapterOverride)
 {
 }
 
-void CUPnPPlayer::DoAudioWork()
+void CUPnPPlayer::Process()
 {
-  NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
-  m_delegate->UpdatePositionInfo();
+  while (!m_bStop)
+  {
+    NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
+    m_delegate->UpdatePositionInfo();
 
-  if(m_started) {
     NPT_String uri, meta;
     NPT_CHECK_LABEL(m_delegate->m_transport->GetStateVariableValue("CurrentTrackURI", uri), failed);
-    NPT_CHECK_LABEL(m_delegate->m_transport->GetStateVariableValue("CurrentTrackMetadata", meta), failed);
+    NPT_CHECK_LABEL(m_delegate->m_transport->GetStateVariableValue("CurrentTrackMetadata", meta),
+                    failed);
 
-    if(m_current_uri  != (const char*)uri
-    || m_current_meta != (const char*)meta) {
-      m_current_uri  = (const char*)uri;
-      m_current_meta = (const char*)meta;
-      CFileItemPtr item = GetFileItem(uri, meta);
-      g_application.CurrentFileItem() = *item;
-      CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1,
-                                                 static_cast<void*>(new CFileItem(*item)));
-    }
+    if (m_started)
+    {
+      if (m_current_uri != (const char*)uri || m_current_meta != (const char*)meta)
+      {
+        m_current_uri = (const char*)uri;
+        m_current_meta = (const char*)meta;
+        const std::shared_ptr<CFileItem> item = GetFileItem(uri, meta);
+        g_application.CurrentFileItem() = *item;
+        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1,
+                                                   static_cast<void*>(new CFileItem(*item)));
+      }
 
-    // Player may be paused or resumed from the target player, state needs to be synchronized to data cache core.
-    CDataCacheCore& dataCacheCore = CDataCacheCore::GetInstance();
-    if (IsPaused() && dataCacheCore.GetSpeed() > 0.0f)
-    {
-      m_callback.OnPlayBackPaused();
-      dataCacheCore.SetSpeed(1.0, 0.0);
-    }
-    else if (!IsPaused() && dataCacheCore.GetSpeed() == 0.0f)
-    {
-      m_callback.OnPlayBackResumed();
-      dataCacheCore.SetSpeed(1.0, 1.0);
-    }
+      // Update player times
+      CDataCacheCore& dataCacheCore = CDataCacheCore::GetInstance();
+      if (m_updateTimer.IsTimePast())
+      {
+        dataCacheCore.SetPlayTimes(0, GetTime(), 0, GetTotalTime());
+        m_updateTimer.Set(500ms);
+      }
 
-    if (m_delegate->GetTransportState() == "STOPPED")
-    {
-      m_logger->info("Transport state flagged as STOPPED. Triggering OnPlayBackEnded.");
-      m_started = false;
-      m_callback.OnPlayBackEnded();
+      // Player may be paused or resumed from the target player, state needs to be synchronized to data cache core.
+      if (IsPaused() && dataCacheCore.GetSpeed() > 0.0f)
+      {
+        m_callback.OnPlayBackPaused();
+        dataCacheCore.SetSpeed(1.0, 0.0);
+      }
+      else if (!IsPaused() && dataCacheCore.GetSpeed() == 0.0f)
+      {
+        m_callback.OnPlayBackResumed();
+        dataCacheCore.SetSpeed(1.0, 1.0);
+      }
+
+      if (m_delegate->GetTransportState() == "STOPPED")
+      {
+        m_logger->info("Transport state flagged as STOPPED. Triggering OnPlayBackEnded.");
+        m_started = false;
+        m_callback.OnPlayBackEnded();
+      }
     }
   }
-  return;
 failed:
-  return;
+  CloseFile();
 }
 
 bool CUPnPPlayer::IsPlaying() const
@@ -627,12 +639,11 @@ failed:
   m_logger->error("- unable to set speed");
 }
 
-void CUPnPPlayer::FrameMove()
+void CUPnPPlayer::OnExit()
 {
-  if (m_updateTimer.IsTimePast())
+  if (m_started)
   {
-    CDataCacheCore::GetInstance().SetPlayTimes(0, GetTime(), 0, GetTotalTime());
-    m_updateTimer.Set(500ms);
+    m_callback.OnPlayBackEnded();
   }
 }
 

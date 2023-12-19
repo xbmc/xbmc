@@ -74,7 +74,6 @@ public:
   void AddSubtitle(const std::string& strSubPath);
   bool CanPause() const;
   bool CanSeek() const;
-  void DoAudioWork();
   int GetAudioDelay() const;
   void GetAudioCapabilities(std::vector<int>& audioCaps) const;
   int GetAudioStream();

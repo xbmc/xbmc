@@ -204,7 +204,6 @@ public:
   */
   virtual MenuType GetSupportedMenuType() const { return MenuType::NONE; }
 
-  virtual void DoAudioWork() {}
   virtual bool OnAction(const CAction& action) { return false; }
 
   //returns a state that is needed for resuming from a specific time

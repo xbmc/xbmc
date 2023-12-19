@@ -3177,9 +3177,6 @@ void CApplication::Process()
   CServiceBroker::GetAppMessenger()->ProcessMessages();
   if (m_bStop) return; //we're done, everything has been unloaded
 
-  // update sound
-  GetComponent<CApplicationPlayer>()->DoAudioWork();
-
   // do any processing that isn't needed on each run
   if( m_slowTimer.GetElapsedMilliseconds() > 500 )
   {
