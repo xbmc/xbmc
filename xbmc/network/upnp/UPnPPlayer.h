@@ -35,8 +35,8 @@ public:
   bool CloseFile(bool reopen = false) override;
   bool IsPlaying() const override;
   void Pause() override;
-  bool HasVideo() const override { return true; }
-  bool HasAudio() const override { return true; }
+  bool HasVideo() const override { return m_hasVideo; }
+  bool HasAudio() const override { return m_hasAudio; }
   void Seek(bool bPlus, bool bLargeStep, bool bChapterOverride) override;
   void SeekPercentage(float fPercent = 0) override;
   void SetVolume(float volume) override;
@@ -70,6 +70,8 @@ private:
   std::string m_current_meta;
   bool m_started = false;
   bool m_stopremote = false;
+  bool m_hasVideo{false};
+  bool m_hasAudio{false};
   XbmcThreads::EndTime<> m_updateTimer;
 
   Logger m_logger;
