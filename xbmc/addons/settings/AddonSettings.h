@@ -35,9 +35,9 @@ namespace ADDON
 class IAddon;
 class IAddonInstanceHandler;
 
-class CAddonSettings : public CSettingsBase,
+class CAddonSettings : public CSettingControlCreator,
                        public CSettingCreator,
-                       public CSettingControlCreator,
+                       public CSettingsBase,
                        public ISettingCallback
 {
 public:
