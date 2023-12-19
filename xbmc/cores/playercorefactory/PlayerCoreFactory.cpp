@@ -259,6 +259,11 @@ bool CPlayerCoreFactory::IsExternalPlayer(const std::string& player) const
   return (GetPlayerType(player) == "external");
 }
 
+bool CPlayerCoreFactory::IsRemotePlayer(const std::string& player) const
+{
+  return (GetPlayerType(player) == "remote");
+}
+
 bool CPlayerCoreFactory::PlaysAudio(const std::string& player) const
 {
   std::unique_lock<CCriticalSection> lock(m_section);
