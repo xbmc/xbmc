@@ -197,7 +197,11 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
     return false;
   }
 
-  return Play(iSong, "", false);
+  const auto& components = CServiceBroker::GetAppComponents();
+  const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  const std::string player = appPlayer->GetName();
+
+  return Play(iSong, player, false);
 }
 
 bool CPlayListPlayer::PlayPrevious()
