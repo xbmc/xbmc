@@ -13,12 +13,10 @@
 #include "ThumbLoader.h"
 #include "UPnP.h"
 #include "UPnPInternal.h"
-#include "application/Application.h"
 #include "cores/DataCacheCore.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
-#include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogHelper.h"
 #include "music/MusicThumbLoader.h"
 #include "settings/Settings.h"
@@ -525,23 +523,8 @@ void CUPnPPlayer::Process()
     NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
     m_delegate->UpdatePositionInfo();
 
-    NPT_String uri, meta;
-    NPT_CHECK_LABEL(m_delegate->m_transport->GetStateVariableValue("CurrentTrackURI", uri), failed);
-    NPT_CHECK_LABEL(m_delegate->m_transport->GetStateVariableValue("CurrentTrackMetadata", meta),
-                    failed);
-
     if (m_started)
     {
-      if (m_current_uri != (const char*)uri || m_current_meta != (const char*)meta)
-      {
-        m_current_uri = (const char*)uri;
-        m_current_meta = (const char*)meta;
-        const std::shared_ptr<CFileItem> item = GetFileItem(uri, meta);
-        g_application.CurrentFileItem() = *item;
-        CServiceBroker::GetAppMessenger()->PostMsg(TMSG_UPDATE_CURRENT_ITEM, 0, -1,
-                                                   static_cast<void*>(new CFileItem(*item)));
-      }
-
       // Update player times
       CDataCacheCore& dataCacheCore = CDataCacheCore::GetInstance();
       if (m_updateTimer.IsTimePast())
