@@ -446,6 +446,7 @@
 								<bottom>10</bottom>
 								<texture>overlays/overlayfade.png</texture>
 								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
 							<control type="textbox">
 								<left>25</left>
@@ -488,6 +489,7 @@
 								<bottom>10</bottom>
 								<texture>overlays/overlayfade.png</texture>
 								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
 							<control type="textbox">
 								<left>25</left>
