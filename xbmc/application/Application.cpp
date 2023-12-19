@@ -2465,12 +2465,20 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
       (item.IsBDFile() || item.IsDiscImage()))
   {
-    // No video selection when using an external player, because it needs to handle that on its own.
-    const std::string defaulPlayer{
-        player.empty() ? m_ServiceManager->GetPlayerCoreFactory().GetDefaultPlayer(item) : player};
-    const bool isExternalPlayer{
-        m_ServiceManager->GetPlayerCoreFactory().IsExternalPlayer(defaulPlayer)};
-    if (!isExternalPlayer)
+    // No video selection when using external or remote players (they handle it if supported)
+    const bool isSimpleMenuAllowed = [&]()
+    {
+      const std::string defaulPlayer{
+          player.empty() ? m_ServiceManager->GetPlayerCoreFactory().GetDefaultPlayer(item)
+                         : player};
+      const bool isExternalPlayer{
+          m_ServiceManager->GetPlayerCoreFactory().IsExternalPlayer(defaulPlayer)};
+      const bool isRemotePlayer{
+          m_ServiceManager->GetPlayerCoreFactory().IsRemotePlayer(defaulPlayer)};
+      return !isExternalPlayer && !isRemotePlayer;
+    }();
+
+    if (isSimpleMenuAllowed)
     {
       // Check if we must show the simplified bd menu.
       if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
