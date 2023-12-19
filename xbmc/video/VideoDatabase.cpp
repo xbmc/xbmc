@@ -11876,57 +11876,30 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
   }
 }
 
-void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbId, CFileItem& item)
+int CVideoDatabase::GetDefaultVideoVersionId(VideoDbContentType itemType, int dbId)
 {
   if (!m_pDB || !m_pDS)
-    return;
+    return -1;
 
   MediaType mediaType;
-  std::string strSQL;
+  std::string query;
 
   if (itemType == VideoDbContentType::MOVIES)
   {
     mediaType = MediaTypeMovie;
-    strSQL = PrepareSQL("SELECT videoversiontype.name AS name,"
-                        "  videoversiontype.id AS id,"
-                        "  videoversion.idFile AS idFile,"
-                        "  videoversion.itemType AS itemType "
-                        "FROM videoversiontype"
-                        "  JOIN videoversion ON"
-                        "    videoversion.idType = videoversiontype.id"
-                        "  JOIN movie ON"
-                        "    movie.idFile = videoversion.idFile "
-                        "WHERE movie.idMovie = %i",
-                        dbId);
+    query = PrepareSQL("SELECT idFile FROM movie WHERE movie.idMovie = %i", dbId);
   }
   else
-    return;
+    return -1;
+
+  int id = -1;
 
   try
   {
-    m_pDS->query(strSQL);
-
-    if (!m_pDS->eof())
+    m_pDS->query(query);
+    if (m_pDS->num_rows() > 0)
     {
-      std::string name = m_pDS->fv("name").get_asString();
-      int id = m_pDS->fv("id").get_asInt();
-      int idFile = m_pDS->fv("idFile").get_asInt();
-      const auto versionItemType{
-          static_cast<VideoVersionItemType>(m_pDS->fv("itemType").get_asInt())};
-      CVideoInfoTag infoTag;
-      if (GetFileInfo("", infoTag, idFile))
-      {
-        infoTag.m_type = MediaTypeVideoVersion;
-        infoTag.m_iDbId = idFile;
-        infoTag.m_idVideoVersion = id;
-        infoTag.m_typeVideoVersion = name;
-        infoTag.m_strTitle = name;
-        infoTag.m_videoVersionItemType = versionItemType;
-
-        item.SetFromVideoInfoTag(infoTag);
-        item.m_strTitle = name;
-        item.SetLabel(name);
-      }
+      id = m_pDS->fv(0).get_asInt();
     }
     m_pDS->close();
   }
@@ -11934,6 +11907,32 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
   {
     CLog::Log(LOGERROR, "{} failed for {} {}", __FUNCTION__, mediaType, dbId);
   }
+
+  return id;
+}
+
+void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbId, CFileItem& item)
+{
+  MediaType mediaType;
+  VideoContentTypeToString(itemType, mediaType);
+
+  const int id = GetDefaultVideoVersionId(itemType, dbId);
+  if (id == -1)
+  {
+    CLog::Log(LOGERROR, "{} failed to get default video version id for {} {}", __FUNCTION__,
+              mediaType, dbId);
+    return;
+  }
+
+  CFileItemList versions;
+  GetVideoVersions(itemType, dbId, versions);
+
+  const auto it = std::find_if(versions.begin(), versions.end(),
+                               [id](const std::shared_ptr<CFileItem>& version)
+                               { return id == version->GetVideoInfoTag()->m_iDbId; });
+
+  if (it != versions.end())
+    item = *it->get();
 }
 
 void CVideoDatabase::ConvertVideoToVersion(VideoDbContentType itemType,
