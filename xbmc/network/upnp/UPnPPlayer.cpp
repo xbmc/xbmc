@@ -373,6 +373,16 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
 
   m_stopremote = true;
   m_started = true;
+
+  if (file.IsVideo())
+  {
+    m_hasVideo = true;
+  }
+  else if (file.IsAudio())
+  {
+    m_hasAudio = true;
+  }
+
   m_callback.OnPlayBackStarted(file);
   m_callback.OnAVStarted(file);
   NPT_CHECK_LABEL_SEVERE(
