@@ -219,8 +219,8 @@ void CGUIDialogVideoVersion::Refresh()
   Clear();
 
   const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
-  MediaType mediaType = m_videoItem->GetVideoInfoTag()->m_type;
-  VideoDbContentType itemType = m_videoItem->GetVideoContentType();
+  const MediaType mediaType = m_videoItem->GetVideoInfoTag()->m_type;
+  const VideoDbContentType itemType = m_videoItem->GetVideoContentType();
 
   // get primary version list
   m_database.GetVideoVersions(itemType, dbId, *m_primaryVideoVersionList,
@@ -379,7 +379,7 @@ void CGUIDialogVideoVersion::SetDefault()
   SetDefaultVideoVersion(*m_selectedVideoVersion);
 
   const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
-  VideoDbContentType itemType = m_videoItem->GetVideoContentType();
+  const VideoDbContentType itemType = m_videoItem->GetVideoContentType();
 
   // update our default video version
   m_database.GetDefaultVideoVersion(itemType, dbId, *m_defaultVideoVersion);
@@ -390,7 +390,7 @@ void CGUIDialogVideoVersion::SetDefault()
 void CGUIDialogVideoVersion::SetDefaultVideoVersion(const CFileItem& version)
 {
   const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
-  VideoDbContentType itemType = m_videoItem->GetVideoContentType();
+  const VideoDbContentType itemType = m_videoItem->GetVideoContentType();
 
   // set the specified video version as default
   m_database.SetDefaultVideoVersion(itemType, dbId, version.GetVideoInfoTag()->m_iDbId);
@@ -421,8 +421,8 @@ void CGUIDialogVideoVersion::ChooseArt()
 void CGUIDialogVideoVersion::AddVideoVersion(VideoVersionItemType versionType)
 {
   const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
-  MediaType mediaType = m_videoItem->GetVideoInfoTag()->m_type;
-  VideoDbContentType itemType = m_videoItem->GetVideoContentType();
+  const MediaType mediaType = m_videoItem->GetVideoInfoTag()->m_type;
+  const VideoDbContentType itemType = m_videoItem->GetVideoContentType();
 
   const std::string title = StringUtils::Format(
       g_localizeStrings.Get(versionType == VideoVersionItemType::PRIMARY ? 40014 : 40015),
@@ -523,7 +523,7 @@ void CGUIDialogVideoVersion::AddVideoVersion(VideoVersionItemType versionType)
     }
     else
     {
-      std::string typeVideoVersion =
+      const std::string typeVideoVersion =
           CGUIDialogVideoVersion::GenerateExtrasVideoVersion(URIUtils::GetFileName(path));
 
       const int idVideoVersion =
@@ -641,7 +641,7 @@ int CGUIDialogVideoVersion::SelectVideoVersion(const std::shared_ptr<CFileItem>&
   if (!item || !item->HasVideoInfoTag())
     return -1;
 
-  VideoDbContentType itemType = item->GetVideoContentType();
+  const VideoDbContentType itemType = item->GetVideoContentType();
   if (itemType != VideoDbContentType::MOVIES)
     return -1;
 
@@ -723,7 +723,7 @@ bool CGUIDialogVideoVersion::ConvertVideoVersion(const std::shared_ptr<CFileItem
   if (item == nullptr || !item->HasVideoInfoTag())
     return false;
 
-  VideoDbContentType itemType = item->GetVideoContentType();
+  const VideoDbContentType itemType = item->GetVideoContentType();
   if (itemType != VideoDbContentType::MOVIES)
     return false;
 
@@ -746,7 +746,7 @@ bool CGUIDialogVideoVersion::ConvertVideoVersion(const std::shared_ptr<CFileItem
   }
 
   // get video list
-  std::string videoTitlesDir =
+  const std::string videoTitlesDir =
       StringUtils::Format("videodb://{}/titles", CMediaTypes::ToPlural(mediaType));
 
   CFileItemList list;
@@ -800,7 +800,7 @@ bool CGUIDialogVideoVersion::ConvertVideoVersion(const std::shared_ptr<CFileItem
   if (!dialog->IsConfirmed())
     return false;
 
-  std::shared_ptr<CFileItem> selectedItem = dialog->GetSelectedFileItem();
+  const std::shared_ptr<CFileItem> selectedItem = dialog->GetSelectedFileItem();
 
   // choose a video version
   const int idVideoVersion = SelectVideoVersion(selectedItem);
@@ -834,7 +834,7 @@ bool CGUIDialogVideoVersion::ProcessVideoVersion(VideoDbContentType itemType, in
   if (list.Size() < 2)
     return false;
 
-  MediaType mediaType = item.GetVideoInfoTag()->m_type;
+  const MediaType mediaType = item.GetVideoInfoTag()->m_type;
 
   std::string path;
   videodb.GetFilePathById(dbId, path, itemType);
@@ -881,7 +881,7 @@ bool CGUIDialogVideoVersion::ProcessVideoVersion(VideoDbContentType itemType, in
   if (!dialog->IsConfirmed())
     return false;
 
-  std::shared_ptr<CFileItem> selectedItem = dialog->GetSelectedFileItem();
+  const std::shared_ptr<CFileItem> selectedItem = dialog->GetSelectedFileItem();
 
   // choose a video version
   const int idVideoVersion = SelectVideoVersion(selectedItem);
@@ -899,7 +899,7 @@ std::string CGUIDialogVideoVersion::GenerateExtrasVideoVersion(const std::string
   // generate a video extra version string from its file path
 
   // remove the root path from its path
-  std::string extrasVersion = extrasPath.substr(extrasRoot.size());
+  const std::string extrasVersion = extrasPath.substr(extrasRoot.size());
 
   return GenerateExtrasVideoVersion(extrasVersion);
 }
