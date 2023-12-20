@@ -418,14 +418,14 @@
 							</control>
 						</control>
 					</focusedlayout>
-					<itemlayout height="317" width="210" condition="Container.Content(Sets)">
+					<itemlayout height="319" width="205" condition="Container.Content(Sets)">
 						<control type="group">
-							<left>-10</left>
+							<left>0</left>
 							<top>10</top>
 							<control type="image">
 								<top>0</top>
-								<width>224</width>
-								<height>317</height>
+								<width>226</width>
+								<height>319</height>
 								<texture>DefaultMovies.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 								<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
@@ -434,22 +434,23 @@
 							<control type="image">
 								<top>20</top>
 								<left>20</left>
-								<width>204</width>
-								<height>277</height>
+								<width>186</width>
+								<height>279</height>
 								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
-								<aspectratio aligny="center">keep</aspectratio>
+								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">
-								<left>30</left>
-								<width>184</width>
+								<left>20</left>
+								<width>186</width>
 								<height>180</height>
 								<bottom>10</bottom>
 								<texture>overlays/overlayfade.png</texture>
 								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
 							<control type="textbox">
-								<left>30</left>
-								<width>182</width>
+								<left>25</left>
+								<width>166</width>
 								<height>84</height>
 								<top>210</top>
 								<align>center</align>
@@ -460,14 +461,14 @@
 							</control>
 						</control>
 					</itemlayout>
-					<focusedlayout height="317" width="210" condition="Container.Content(Sets)">
+					<focusedlayout height="319" width="205" condition="Container.Content(Sets)">
 						<control type="group">
-							<left>-10</left>
+							<left>0</left>
 							<top>10</top>
 							<control type="image">
 								<top>0</top>
-								<width>224</width>
-								<height>317</height>
+								<width>226</width>
+								<height>319</height>
 								<texture>DefaultMovies.png</texture>
 								<aspectratio aligny="center">scale</aspectratio>
 								<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
@@ -476,22 +477,23 @@
 							<control type="image">
 								<top>20</top>
 								<left>20</left>
-								<width>204</width>
-								<height>277</height>
+								<width>186</width>
+								<height>279</height>
 								<texture background="true">$INFO[ListItem.Art(poster)]</texture>
-								<aspectratio aligny="center">keep</aspectratio>
+								<aspectratio aligny="center">scale</aspectratio>
 							</control>
 							<control type="image">
-								<left>30</left>
-								<width>184</width>
+								<left>20</left>
+								<width>186</width>
 								<height>180</height>
 								<bottom>10</bottom>
 								<texture>overlays/overlayfade.png</texture>
 								<animation effect="fade" start="100" end="80" time="0" condition="true">Conditional</animation>
+								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
 							<control type="textbox">
-								<left>30</left>
-								<width>182</width>
+								<left>25</left>
+								<width>166</width>
 								<height>84</height>
 								<top>210</top>
 								<align>center</align>
@@ -501,10 +503,10 @@
 								<visible>String.IsEmpty(ListItem.Art(poster))</visible>
 							</control>
 							<control type="image">
-								<left>27</left>
+								<left>16</left>
 								<top>16</top>
-								<width>190</width>
-								<height>285</height>
+								<width>194</width>
+								<height>287</height>
 								<texture border="8" colordiffuse="button_focus">buttons/thumbnail_focused.png</texture>
 							</control>
 						</control>
