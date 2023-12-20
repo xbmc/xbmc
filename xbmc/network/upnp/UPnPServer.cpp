@@ -41,7 +41,6 @@
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "view/GUIViewState.h"
-#include "xbmc/interfaces/AnnouncementManager.h"
 
 #include <memory>
 
