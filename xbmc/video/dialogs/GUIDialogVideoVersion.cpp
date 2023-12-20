@@ -218,7 +218,7 @@ void CGUIDialogVideoVersion::ClearVideoVersionList()
   m_extrasVideoVersionList->Clear();
 }
 
-void CGUIDialogVideoVersion::RefreshVideoVersionList()
+void CGUIDialogVideoVersion::Refresh()
 {
   // clear current version list
   ClearVideoVersionList();
@@ -383,7 +383,7 @@ void CGUIDialogVideoVersion::Remove()
   m_database.RemoveVideoVersion(m_selectedVideoVersion->GetVideoInfoTag()->m_iDbId);
 
   // refresh the video version list
-  RefreshVideoVersionList();
+  Refresh();
 
   // select the default video version
   const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
@@ -404,7 +404,7 @@ void CGUIDialogVideoVersion::Rename()
   }
 
   // refresh the video version list
-  RefreshVideoVersionList();
+  Refresh();
 }
 
 void CGUIDialogVideoVersion::SetDefault()
@@ -448,7 +448,7 @@ void CGUIDialogVideoVersion::ChooseArt()
           std::make_shared<CFileItem>(*m_selectedVideoVersion)))
     return;
 
-  RefreshVideoVersionList();
+  Refresh();
 }
 
 void CGUIDialogVideoVersion::AddVersion()
@@ -577,7 +577,7 @@ void CGUIDialogVideoVersion::AddVideoVersion(bool primary)
     }
 
     // refresh the video version list
-    RefreshVideoVersionList();
+    Refresh();
   }
 }
 
