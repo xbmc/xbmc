@@ -209,12 +209,7 @@ void CGUIDialogVideoVersion::OnInitWindow()
 
 void CGUIDialogVideoVersion::Clear()
 {
-  CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST_PRIMARY_VERSION);
-  OnMessage(msg1);
   m_primaryVideoVersionList->Clear();
-
-  CGUIMessage msg2(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST_EXTRAS_VERSION);
-  OnMessage(msg2);
   m_extrasVideoVersionList->Clear();
 }
 
