@@ -98,7 +98,7 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
           if (item < 0 || item >= m_primaryVideoVersionList->Size())
             break;
 
-          *m_selectedVideoVersion = *m_primaryVideoVersionList->Get(item);
+          m_selectedVideoVersion = m_primaryVideoVersionList->Get(item);
 
           if (m_selectedVideoVersion->GetVideoInfoTag()->m_iDbId ==
               m_defaultVideoVersion->GetVideoInfoTag()->m_iDbId)
@@ -128,7 +128,7 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
           if (item < 0 || item >= m_extrasVideoVersionList->Size())
             break;
 
-          *m_selectedVideoVersion = *m_extrasVideoVersionList->Get(item).get();
+          m_selectedVideoVersion = m_extrasVideoVersionList->Get(item);
 
           CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
 
@@ -256,7 +256,7 @@ void CGUIDialogVideoVersion::Refresh()
   OnMessage(msg2);
 
   // update default video version
-  m_database.GetDefaultVideoVersion(itemType, dbId, *m_selectedVideoVersion.get());
+  m_database.GetDefaultVideoVersion(itemType, dbId, *m_selectedVideoVersion);
 }
 
 void CGUIDialogVideoVersion::SetVideoItem(const std::shared_ptr<CFileItem>& item)
@@ -389,7 +389,7 @@ void CGUIDialogVideoVersion::Remove()
   const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
   VideoDbContentType itemType = m_videoItem->GetVideoContentType();
 
-  m_database.GetDefaultVideoVersion(itemType, dbId, *m_selectedVideoVersion.get());
+  m_database.GetDefaultVideoVersion(itemType, dbId, *m_selectedVideoVersion);
 
   CONTROL_DISABLE(CONTROL_BUTTON_REMOVE);
   CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
@@ -410,13 +410,13 @@ void CGUIDialogVideoVersion::Rename()
 void CGUIDialogVideoVersion::SetDefault()
 {
   // set the selected video version as default
-  SetDefaultVideoVersion(*m_selectedVideoVersion.get());
+  SetDefaultVideoVersion(*m_selectedVideoVersion);
 
   const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
   VideoDbContentType itemType = m_videoItem->GetVideoContentType();
 
   // update our default video version
-  m_database.GetDefaultVideoVersion(itemType, dbId, *m_defaultVideoVersion.get());
+  m_database.GetDefaultVideoVersion(itemType, dbId, *m_defaultVideoVersion);
 
   CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
 }
