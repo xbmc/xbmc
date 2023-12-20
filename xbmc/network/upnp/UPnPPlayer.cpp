@@ -8,7 +8,6 @@
  */
 #include "UPnPPlayer.h"
 
-#include "FileItem.h"
 #include "ServiceBroker.h"
 #include "ThumbLoader.h"
 #include "UPnP.h"
