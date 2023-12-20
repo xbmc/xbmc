@@ -47,7 +47,7 @@ bool CGUIWindowHome::OnAction(const CAction &action)
   {
     const auto& components = CServiceBroker::GetAppComponents();
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-    if (appPlayer->IsPlaying())
+    if (appPlayer->IsPlaying() && (!appPlayer->IsRemotePlaying() || appPlayer->HasAudio()))
     {
       CGUIComponent* gui = CServiceBroker::GetGUI();
       if (gui)
