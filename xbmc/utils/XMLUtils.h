@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <cstdint>
 
 #include <tinyxml2.h>
 
