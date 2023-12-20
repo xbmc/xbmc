@@ -23,7 +23,6 @@
 #include "threads/Event.h"
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
-#include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoThumbLoader.h"
 
@@ -612,8 +611,7 @@ bool CUPnPPlayer::OnAction(const CAction &action)
       if(IsPlaying())
       {
         //stop on remote system
-        m_stopremote = HELPERS::ShowYesNoDialogText(CVariant{37022}, CVariant{37023}) ==
-                       DialogResponse::CHOICE_YES;
+        m_stopremote = HELPERS::ShowYesNoDialogText(37022, 37023) == DialogResponse::CHOICE_YES;
 
         return false; /* let normal code handle the action */
       }
