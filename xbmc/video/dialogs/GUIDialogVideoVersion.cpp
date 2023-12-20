@@ -387,7 +387,7 @@ void CGUIDialogVideoVersion::SetDefault()
   CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
 }
 
-void CGUIDialogVideoVersion::SetDefaultVideoVersion(CFileItem& version)
+void CGUIDialogVideoVersion::SetDefaultVideoVersion(const CFileItem& version)
 {
   const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
   VideoDbContentType itemType = m_videoItem->GetVideoContentType();

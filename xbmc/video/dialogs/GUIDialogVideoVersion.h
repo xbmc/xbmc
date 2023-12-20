@@ -43,7 +43,7 @@ protected:
   void OnInitWindow() override;
 
 private:
-  void SetDefaultVideoVersion(CFileItem& version);
+  void SetDefaultVideoVersion(const CFileItem& version);
   void SetSelectedVideoVersion(const std::shared_ptr<CFileItem>& version);
   void Clear();
   void Refresh();
