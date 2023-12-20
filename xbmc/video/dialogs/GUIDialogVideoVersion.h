@@ -54,6 +54,7 @@ private:
   void Remove();
   void ChooseArt();
   void CloseAll();
+  void UpdateButtons();
 
   std::shared_ptr<CFileItem> m_videoItem;
   CVideoDatabase m_database;

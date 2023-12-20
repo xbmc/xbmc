@@ -100,18 +100,7 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
 
           m_selectedVideoVersion = m_primaryVideoVersionList->Get(item);
 
-          if (m_selectedVideoVersion->GetVideoInfoTag()->m_iDbId ==
-              m_defaultVideoVersion->GetVideoInfoTag()->m_iDbId)
-          {
-            CONTROL_DISABLE(CONTROL_BUTTON_REMOVE);
-            CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
-          }
-          else
-          {
-            CONTROL_ENABLE(CONTROL_BUTTON_REMOVE);
-            CONTROL_ENABLE(CONTROL_BUTTON_RENAME);
-            CONTROL_ENABLE(CONTROL_BUTTON_SET_DEFAULT);
-          }
+          UpdateButtons();
 
           SET_CONTROL_FOCUS(CONTROL_BUTTON_PLAY, 0);
         }
@@ -130,10 +119,7 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
 
           m_selectedVideoVersion = m_extrasVideoVersionList->Get(item);
 
-          CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
-
-          CONTROL_ENABLE(CONTROL_BUTTON_REMOVE);
-          CONTROL_ENABLE(CONTROL_BUTTON_RENAME);
+          UpdateButtons();
 
           SET_CONTROL_FOCUS(CONTROL_BUTTON_PLAY, 0);
         }
@@ -194,15 +180,7 @@ void CGUIDialogVideoVersion::OnInitWindow()
                    m_extrasVideoVersionList.get());
   OnMessage(msg2);
 
-  // disable buttons that need a selected video version
-  CONTROL_DISABLE(CONTROL_BUTTON_REMOVE);
-  CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
-
-  CONTROL_ENABLE(CONTROL_BUTTON_ADD_VERSION);
-  CONTROL_ENABLE(CONTROL_BUTTON_ADD_EXTRAS);
-  CONTROL_ENABLE(CONTROL_BUTTON_CHOOSE_ART);
-  CONTROL_ENABLE(CONTROL_BUTTON_RENAME);
-  CONTROL_ENABLE(CONTROL_BUTTON_PLAY);
+  UpdateButtons();
 
   CGUIDialog::OnInitWindow();
 }
@@ -211,6 +189,31 @@ void CGUIDialogVideoVersion::Clear()
 {
   m_primaryVideoVersionList->Clear();
   m_extrasVideoVersionList->Clear();
+}
+
+void CGUIDialogVideoVersion::UpdateButtons()
+{
+  // Always visible
+  CONTROL_ENABLE(CONTROL_BUTTON_ADD_VERSION);
+  CONTROL_ENABLE(CONTROL_BUTTON_ADD_EXTRAS);
+
+  // visible for non-default version only
+  if (m_selectedVideoVersion->GetVideoInfoTag()->m_iDbId ==
+      m_defaultVideoVersion->GetVideoInfoTag()->m_iDbId)
+  {
+    CONTROL_DISABLE(CONTROL_BUTTON_REMOVE);
+    CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
+  }
+  else
+  {
+    CONTROL_ENABLE(CONTROL_BUTTON_REMOVE);
+    CONTROL_ENABLE(CONTROL_BUTTON_SET_DEFAULT);
+  }
+
+  // visible if focused list not empty
+  CONTROL_ENABLE(CONTROL_BUTTON_CHOOSE_ART);
+  CONTROL_ENABLE(CONTROL_BUTTON_RENAME);
+  CONTROL_ENABLE(CONTROL_BUTTON_PLAY);
 }
 
 void CGUIDialogVideoVersion::Refresh()
@@ -357,8 +360,7 @@ void CGUIDialogVideoVersion::Remove()
   // refresh data and controls
   Refresh();
 
-  CONTROL_DISABLE(CONTROL_BUTTON_REMOVE);
-  CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
+  UpdateButtons();
 }
 
 void CGUIDialogVideoVersion::Rename()
@@ -384,7 +386,7 @@ void CGUIDialogVideoVersion::SetDefault()
   // update our default video version
   m_database.GetDefaultVideoVersion(itemType, dbId, *m_defaultVideoVersion);
 
-  CONTROL_DISABLE(CONTROL_BUTTON_SET_DEFAULT);
+  UpdateButtons();
 }
 
 void CGUIDialogVideoVersion::SetDefaultVideoVersion(const CFileItem& version)
