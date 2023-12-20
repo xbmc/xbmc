@@ -67,19 +67,10 @@ bool CTVOSNSUserDefaults::Synchronize()
 void CTVOSNSUserDefaults::GetDirectoryContents(const std::string& path,
                                                std::vector<std::string>& contents)
 {
-  // tvos path adds /private/../..
-  // We need to strip this as GetUserHomeDirectory() doesnt have private in the path
-  std::string subpath = path;
-  const std::string& str_private = "/private";
-  size_t pos = subpath.find(str_private.c_str(), 0, str_private.length());
-
-  if (pos != std::string::npos)
-    subpath.erase(pos, str_private.length());
-
   std::string userDataDir =
       URIUtils::AddFileToFolder(CTVOSFileUtils::GetUserHomeDirectory(), "userdata");
 
-  if (subpath.find(userDataDir) == std::string::npos)
+  if (path.find(userDataDir) == std::string::npos)
     return;
 
   NSDictionary<NSString*, id>* dict =
@@ -94,7 +85,7 @@ void CTVOSNSUserDefaults::GetDirectoryContents(const std::string& path,
     std::string fullKeyPath =
         URIUtils::AddFileToFolder(CTVOSFileUtils::GetUserHomeDirectory(), keypath);
     std::string endingDirectory = URIUtils::GetDirectory(fullKeyPath);
-    if (subpath == endingDirectory)
+    if (path == endingDirectory)
     {
       contents.push_back(fullKeyPath);
     }

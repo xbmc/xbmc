@@ -35,6 +35,7 @@ const char* CTVOSFileUtils::GetOSCachesDirectory()
   std::call_once(cache_flag, [] {
     NSString* cachePath =
         NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).lastObject;
+    cachePath = [@"/private" stringByAppendingString:cachePath];
     cacheFolder = cachePath.UTF8String;
     URIUtils::RemoveSlashAtEnd(cacheFolder);
   });
