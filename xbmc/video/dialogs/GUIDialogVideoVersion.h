@@ -45,7 +45,7 @@ protected:
 private:
   void SetDefaultVideoVersion(CFileItem& version);
   void SetSelectedVideoVersion(const std::shared_ptr<CFileItem>& version);
-  void ClearVideoVersionList();
+  void Clear();
   void Refresh();
   void AddVideoVersion(bool primary);
   void Play();

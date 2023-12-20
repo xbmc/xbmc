@@ -79,7 +79,7 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
   {
     case GUI_MSG_WINDOW_DEINIT:
     {
-      ClearVideoVersionList();
+      Clear();
       break;
     }
 
@@ -207,7 +207,7 @@ void CGUIDialogVideoVersion::OnInitWindow()
   CGUIDialog::OnInitWindow();
 }
 
-void CGUIDialogVideoVersion::ClearVideoVersionList()
+void CGUIDialogVideoVersion::Clear()
 {
   CGUIMessage msg1(GUI_MSG_LABEL_RESET, GetID(), CONTROL_LIST_PRIMARY_VERSION);
   OnMessage(msg1);
@@ -221,7 +221,7 @@ void CGUIDialogVideoVersion::ClearVideoVersionList()
 void CGUIDialogVideoVersion::Refresh()
 {
   // clear current version list
-  ClearVideoVersionList();
+  Clear();
 
   const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
   MediaType mediaType = m_videoItem->GetVideoInfoTag()->m_type;
@@ -270,7 +270,7 @@ void CGUIDialogVideoVersion::SetVideoItem(const std::shared_ptr<CFileItem>& item
 
   m_videoItem = item;
 
-  ClearVideoVersionList();
+  Clear();
 
   const int dbId = item->GetVideoInfoTag()->m_iDbId;
   MediaType mediaType = item->GetVideoInfoTag()->m_type;
