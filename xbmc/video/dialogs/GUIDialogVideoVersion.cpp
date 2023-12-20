@@ -144,11 +144,11 @@ bool CGUIDialogVideoVersion::OnMessage(CGUIMessage& message)
       }
       else if (control == CONTROL_BUTTON_ADD_VERSION)
       {
-        AddVersion();
+        AddVideoVersion(VideoVersionItemType::PRIMARY);
       }
       else if (control == CONTROL_BUTTON_ADD_EXTRAS)
       {
-        AddExtras();
+        AddVideoVersion(VideoVersionItemType::EXTRAS);
       }
       else if (control == CONTROL_BUTTON_RENAME)
       {
@@ -418,26 +418,15 @@ void CGUIDialogVideoVersion::ChooseArt()
   Refresh();
 }
 
-void CGUIDialogVideoVersion::AddVersion()
-{
-  AddVideoVersion(true);
-}
-
-void CGUIDialogVideoVersion::AddExtras()
-{
-  AddVideoVersion(false);
-}
-
-void CGUIDialogVideoVersion::AddVideoVersion(bool primary)
+void CGUIDialogVideoVersion::AddVideoVersion(VideoVersionItemType versionType)
 {
   const int dbId = m_videoItem->GetVideoInfoTag()->m_iDbId;
   MediaType mediaType = m_videoItem->GetVideoInfoTag()->m_type;
   VideoDbContentType itemType = m_videoItem->GetVideoContentType();
 
-  std::string title = primary ? StringUtils::Format(g_localizeStrings.Get(40014),
-                                                    CMediaTypes::GetLocalization(mediaType))
-                              : StringUtils::Format(g_localizeStrings.Get(40015),
-                                                    CMediaTypes::GetLocalization(mediaType));
+  const std::string title = StringUtils::Format(
+      g_localizeStrings.Get(versionType == VideoVersionItemType::PRIMARY ? 40014 : 40015),
+      CMediaTypes::GetLocalization(mediaType));
 
   // prompt to choose a video file
   VECSOURCES sources = *CMediaSourceSettings::GetInstance().GetSources("files");
@@ -524,7 +513,7 @@ void CGUIDialogVideoVersion::AddVideoVersion(bool primary)
                 CURL::GetRedacted(item.GetPath()));
     }
 
-    if (primary)
+    if (versionType == VideoVersionItemType::PRIMARY)
     {
       const int idVideoVersion = SelectVideoVersion(m_videoItem);
       if (idVideoVersion != -1)
