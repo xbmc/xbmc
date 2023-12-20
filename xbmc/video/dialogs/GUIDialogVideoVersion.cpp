@@ -47,7 +47,6 @@
 #include <string>
 
 static constexpr unsigned int CONTROL_LABEL_TITLE = 2;
-static constexpr unsigned int CONTROL_IMAGE_THUMB = 3;
 
 static constexpr unsigned int CONTROL_BUTTON_PLAY = 21;
 static constexpr unsigned int CONTROL_BUTTON_ADD_VERSION = 22;
@@ -233,6 +232,11 @@ void CGUIDialogVideoVersion::RefreshVideoVersionList()
                               VideoVersionItemType::PRIMARY);
   m_primaryVideoVersionList->SetContent(CMediaTypes::ToPlural(mediaType));
 
+  CVideoThumbLoader loader;
+
+  for (auto& item : *m_primaryVideoVersionList)
+    loader.LoadItem(item.get());
+
   // refresh primary version list
   CGUIMessage msg1(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_PRIMARY_VERSION, 0, 0,
                    m_primaryVideoVersionList.get());
@@ -242,6 +246,9 @@ void CGUIDialogVideoVersion::RefreshVideoVersionList()
   m_database.GetVideoVersions(itemType, dbId, *m_extrasVideoVersionList,
                               VideoVersionItemType::EXTRAS);
   m_extrasVideoVersionList->SetContent(CMediaTypes::ToPlural(mediaType));
+
+  for (auto& item : *m_extrasVideoVersionList)
+    loader.LoadItem(item.get());
 
   // refresh extras version list
   CGUIMessage msg2(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_EXTRAS_VERSION, 0, 0,
@@ -441,17 +448,7 @@ void CGUIDialogVideoVersion::ChooseArt()
           std::make_shared<CFileItem>(*m_selectedVideoVersion)))
     return;
 
-  // update the thumbnail
-  CGUIControl* control = GetControl(CONTROL_IMAGE_THUMB);
-  if (control)
-  {
-    CGUIImage* imageControl = static_cast<CGUIImage*>(control);
-    imageControl->FreeResources();
-    imageControl->SetFileName(m_selectedVideoVersion->GetArt("thumb"));
-  }
-
-  CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_REFRESH_THUMBS);
-  CServiceBroker::GetGUI()->GetWindowManager().SendMessage(msg);
+  RefreshVideoVersionList();
 }
 
 void CGUIDialogVideoVersion::AddVersion()
