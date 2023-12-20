@@ -27,7 +27,6 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoThumbLoader.h"
-#include "windowing/WinSystem.h"
 
 #include <mutex>
 
