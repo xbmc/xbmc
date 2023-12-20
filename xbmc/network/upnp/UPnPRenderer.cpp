@@ -34,7 +34,6 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
-#include "xbmc/interfaces/AnnouncementManager.h"
 
 #include <inttypes.h>
 #include <mutex>
