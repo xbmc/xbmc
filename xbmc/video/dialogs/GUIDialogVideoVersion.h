@@ -61,6 +61,6 @@ private:
   CVideoDatabase m_database;
   std::unique_ptr<CFileItemList> m_primaryVideoVersionList;
   std::unique_ptr<CFileItemList> m_extrasVideoVersionList;
-  std::unique_ptr<CFileItem> m_defaultVideoVersion;
+  std::shared_ptr<CFileItem> m_defaultVideoVersion;
   std::shared_ptr<CFileItem> m_selectedVideoVersion;
 };
