@@ -54,8 +54,8 @@
 #include "video/VideoDbUrl.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoLibraryQueue.h"
+#include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
-#include "video/VideoVersionTypes.h"
 
 #include <algorithm>
 #include <map>
@@ -1450,7 +1450,7 @@ int CVideoDatabase::AddNewMovie(CVideoInfoTag& details)
         PrepareSQL("INSERT INTO movie (idMovie, idFile) VALUES (NULL, %i)", details.m_iFileId));
     details.m_iDbId = static_cast<int>(m_pDS->lastinsertid());
     m_pDS->exec(PrepareSQL("INSERT INTO videoversion VALUES(%i, %i, 'movie', %i, '%i')",
-                           details.m_iFileId, details.m_iDbId, VideoVersionItemType::PRIMARY,
+                           details.m_iFileId, details.m_iDbId, VideoAssetType::VERSION,
                            VIDEO_VERSION_ID_DEFAULT));
 
     CommitTransaction();
@@ -6172,7 +6172,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
                 "TEXT, itemType INTEGER, idType INTEGER)");
     m_pDS->exec(PrepareSQL(
         "INSERT INTO videoversion SELECT idFile, idMovie, 'movie', '%i', '%i' FROM movie",
-        VideoVersionItemType::PRIMARY, VIDEO_VERSION_ID_DEFAULT));
+        VideoAssetType::VERSION, VIDEO_VERSION_ID_DEFAULT));
   }
 }
 
@@ -8016,8 +8016,8 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
           if (idVideoVersion > 0)
           {
             pItem->GetVideoInfoTag()->m_hasVideoVersions = false;
-            pItem->GetVideoInfoTag()->m_idVideoVersion = idVideoVersion;
-            pItem->GetVideoInfoTag()->m_typeVideoVersion = GetVideoVersionById(idVideoVersion);
+            pItem->GetVideoInfoTag()->m_videoAssetId = idVideoVersion;
+            pItem->GetVideoInfoTag()->m_videoAssetTitle = GetVideoVersionById(idVideoVersion);
             pItem->GetVideoInfoTag()->SetFileNameAndPath(GetFilenameAndPathById(
                 GetVideoVersionFile(VideoDbContentType::MOVIES, movie.m_iDbId, idVideoVersion)));
           }
@@ -11700,7 +11700,7 @@ void CVideoDatabase::InitializeVideoVersionTypeTable()
     {
       std::string type = g_localizeStrings.Get(id);
       m_pDS->exec(PrepareSQL("INSERT INTO videoversiontype VALUES(%i, '%s', %i)", id, type.c_str(),
-                             VideoVersionTypeOwner::SYSTEM));
+                             VideoAssetTypeOwner::SYSTEM));
     }
 
     CommitTransaction();
@@ -11722,7 +11722,7 @@ void CVideoDatabase::UpdateVideoVersionTypeTable()
     {
       std::string type = g_localizeStrings.Get(id);
       m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET name = '%s', owner = %i WHERE id = '%i'",
-                             type.c_str(), VideoVersionTypeOwner::SYSTEM, id));
+                             type.c_str(), VideoAssetTypeOwner::SYSTEM, id));
     }
 
     CommitTransaction();
@@ -11735,7 +11735,7 @@ void CVideoDatabase::UpdateVideoVersionTypeTable()
 }
 
 int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
-                                        VideoVersionTypeOwner owner)
+                                        VideoAssetTypeOwner owner)
 {
   if (typeVideoVersion.empty())
     return -1;
@@ -11761,9 +11761,9 @@ int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
       id = m_pDS->fv("id").get_asInt();
 
       // if user is adding an existing version type, overwrite the existing non-system one
-      VideoVersionTypeOwner oldOwner =
-          static_cast<VideoVersionTypeOwner>(m_pDS->fv("owner").get_asInt());
-      if (oldOwner != VideoVersionTypeOwner::SYSTEM && owner == VideoVersionTypeOwner::USER)
+      VideoAssetTypeOwner oldOwner =
+          static_cast<VideoAssetTypeOwner>(m_pDS->fv("owner").get_asInt());
+      if (oldOwner != VideoAssetTypeOwner::SYSTEM && owner == VideoAssetTypeOwner::USER)
       {
         m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET owner = %i WHERE id = %i", owner, id));
       }
@@ -11781,19 +11781,19 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType, int dbId, CFi
 {
   // get main video versions
   CFileItemList mainList;
-  GetVideoVersions(itemType, dbId, mainList, VideoVersionItemType::PRIMARY);
+  GetVideoVersions(itemType, dbId, mainList, VideoAssetType::VERSION);
   items.Append(mainList);
 
   // get video extras versions
   CFileItemList extrasList;
-  GetVideoVersions(itemType, dbId, extrasList, VideoVersionItemType::EXTRAS);
+  GetVideoVersions(itemType, dbId, extrasList, VideoAssetType::EXTRAS);
   items.Append(extrasList);
 }
 
 void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
                                       int dbId,
                                       CFileItemList& items,
-                                      VideoVersionItemType versionItemType)
+                                      VideoAssetType videoAssetType)
 {
   if (!m_pDB || !m_pDS2)
     return;
@@ -11815,7 +11815,7 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
                              "    videoversion.idType = videoversiontype.id "
                              "WHERE videoversion.idMedia = %i AND videoversion.mediaType = '%s' "
                              "AND videoversion.itemType = %i",
-                             dbId, mediaType.c_str(), versionItemType));
+                             dbId, mediaType.c_str(), videoAssetType));
 
     std::vector<std::tuple<std::string, int, int>> versions;
 
@@ -11842,10 +11842,10 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
       {
         infoTag.m_type = MediaTypeVideoVersion;
         infoTag.m_iDbId = idFile;
-        infoTag.m_idVideoVersion = id;
-        infoTag.m_typeVideoVersion = name;
+        infoTag.m_videoAssetId = id;
+        infoTag.m_videoAssetTitle = name;
         infoTag.m_strTitle = name;
-        infoTag.m_videoVersionItemType = versionItemType;
+        infoTag.m_videoAssetType = videoAssetType;
 
         infoTag.m_strPictureURL = videoItem.GetVideoInfoTag()->m_strPictureURL;
         infoTag.m_fanart = videoItem.GetVideoInfoTag()->m_fanart;
@@ -11911,17 +11911,16 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
       std::string name = m_pDS->fv("name").get_asString();
       int id = m_pDS->fv("id").get_asInt();
       int idFile = m_pDS->fv("idFile").get_asInt();
-      const auto versionItemType{
-          static_cast<VideoVersionItemType>(m_pDS->fv("itemType").get_asInt())};
+      const auto videoAssetType{static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt())};
       CVideoInfoTag infoTag;
       if (GetFileInfo("", infoTag, idFile))
       {
         infoTag.m_type = MediaTypeVideoVersion;
         infoTag.m_iDbId = idFile;
-        infoTag.m_idVideoVersion = id;
-        infoTag.m_typeVideoVersion = name;
+        infoTag.m_videoAssetId = id;
+        infoTag.m_videoAssetTitle = name;
         infoTag.m_strTitle = name;
-        infoTag.m_videoVersionItemType = versionItemType;
+        infoTag.m_videoAssetType = videoAssetType;
 
         item.SetFromVideoInfoTag(infoTag);
         item.m_strTitle = name;
@@ -12070,7 +12069,7 @@ void CVideoDatabase::AddPrimaryVideoVersion(VideoDbContentType itemType,
                                             int idVideoVersion,
                                             CFileItem& item)
 {
-  AddVideoVersion(itemType, dbId, idVideoVersion, VideoVersionItemType::PRIMARY, item);
+  AddVideoVersion(itemType, dbId, idVideoVersion, VideoAssetType::VERSION, item);
 }
 
 void CVideoDatabase::AddExtrasVideoVersion(VideoDbContentType itemType,
@@ -12078,13 +12077,13 @@ void CVideoDatabase::AddExtrasVideoVersion(VideoDbContentType itemType,
                                            int idVideoVersion,
                                            CFileItem& item)
 {
-  AddVideoVersion(itemType, dbId, idVideoVersion, VideoVersionItemType::EXTRAS, item);
+  AddVideoVersion(itemType, dbId, idVideoVersion, VideoAssetType::EXTRAS, item);
 }
 
 void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
                                      int dbId,
                                      int idVideoVersion,
-                                     VideoVersionItemType versionItemType,
+                                     VideoAssetType videoAssetType,
                                      CFileItem& item)
 {
   if (!m_pDB || !m_pDS)
@@ -12108,16 +12107,16 @@ void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
 
     if (m_pDS->num_rows() == 0)
       m_pDS->exec(PrepareSQL("INSERT INTO videoversion VALUES(%i, %i, '%s', %i, %i)", idFile, dbId,
-                             mediaType.c_str(), versionItemType, idVideoVersion));
+                             mediaType.c_str(), videoAssetType, idVideoVersion));
     else
       m_pDS->exec(PrepareSQL("UPDATE videoversion SET idMedia = %i, mediaType = '%s', itemType = "
                              "%i, idType = %i WHERE idFile = %i",
-                             dbId, mediaType.c_str(), versionItemType, idVideoVersion, idFile));
+                             dbId, mediaType.c_str(), videoAssetType, idVideoVersion, idFile));
 
     if (item.GetVideoInfoTag()->HasStreamDetails())
       SetStreamDetailsForFileId(item.GetVideoInfoTag()->m_streamDetails, idFile);
 
-    if (versionItemType == VideoVersionItemType::PRIMARY)
+    if (videoAssetType == VideoAssetType::VERSION)
       SetVideoVersionDefaultArt(idFile, item.GetVideoInfoTag()->m_iDbId, itemType);
   }
   catch (...)
@@ -12166,20 +12165,20 @@ int CVideoDatabase::GetVideoVersionInfo(const std::string& fileNameAndPath,
                                         std::string& typeVideoVersion,
                                         int& idMedia,
                                         MediaType& mediaType,
-                                        VideoVersionItemType& versionItemType)
+                                        VideoAssetType& videoAssetType)
 {
   idFile = GetFileId(fileNameAndPath);
   if (idFile < 0)
     return -1;
 
-  return GetVideoVersionInfo(idFile, typeVideoVersion, idMedia, mediaType, versionItemType);
+  return GetVideoVersionInfo(idFile, typeVideoVersion, idMedia, mediaType, videoAssetType);
 }
 
 int CVideoDatabase::GetVideoVersionInfo(int idFile,
                                         std::string& typeVideoVersion,
                                         int& idMedia,
                                         MediaType& mediaType,
-                                        VideoVersionItemType& versionItemType)
+                                        VideoAssetType& videoAssetType)
 {
   if (!m_pDB || !m_pDS)
     return -1;
@@ -12205,7 +12204,7 @@ int CVideoDatabase::GetVideoVersionInfo(int idFile,
       typeVideoVersion = m_pDS->fv("name").get_asString();
       idMedia = m_pDS->fv("idMedia").get_asInt();
       mediaType = m_pDS->fv("mediaType").get_asString();
-      versionItemType = static_cast<VideoVersionItemType>(m_pDS->fv("itemType").get_asInt());
+      videoAssetType = static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt());
     }
 
     m_pDS->close();
@@ -12286,7 +12285,7 @@ bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
                           "  JOIN videoversion ON"
                           "    videoversion.idType = videoversiontype.id "
                           "WHERE name != '' AND owner IN (%i, %i)",
-                          VideoVersionTypeOwner::SYSTEM, VideoVersionTypeOwner::USER);
+                          VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER);
 
     m_pDS->query(strSQL);
 
@@ -12337,7 +12336,7 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent, CFileIte
   {
     m_pDS->query(
         PrepareSQL("SELECT name, id FROM videoversiontype WHERE name != '' and owner IN (%i, %i)",
-                   VideoVersionTypeOwner::SYSTEM, VideoVersionTypeOwner::USER));
+                   VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER));
 
     while (!m_pDS->eof())
     {
@@ -12347,8 +12346,8 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent, CFileIte
       const auto item{std::make_shared<CFileItem>(name)};
       item->GetVideoInfoTag()->m_type = MediaTypeVideoVersion;
       item->GetVideoInfoTag()->m_iDbId = id;
-      item->GetVideoInfoTag()->m_idVideoVersion = id;
-      item->GetVideoInfoTag()->m_typeVideoVersion = name;
+      item->GetVideoInfoTag()->m_videoAssetId = id;
+      item->GetVideoInfoTag()->m_videoAssetTitle = name;
       item->GetVideoInfoTag()->m_strTitle = name;
 
       item->m_strTitle = name;

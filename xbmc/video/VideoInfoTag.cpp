@@ -18,7 +18,7 @@
 #include "utils/Variant.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
-#include "video/VideoVersionTypes.h"
+#include "video/VideoManagerTypes.h"
 
 #include <algorithm>
 #include <sstream>
@@ -44,10 +44,10 @@ void CVideoInfoTag::Reset()
   m_set.id = -1;
   m_set.overview.clear();
   m_tags.clear();
-  m_typeVideoVersion.clear();
-  m_idVideoVersion = -1;
+  m_videoAssetTitle.clear();
+  m_videoAssetId = -1;
   m_hasVideoVersions = false;
-  m_videoVersionItemType = VideoVersionItemType::UNKNOWN;
+  m_videoAssetType = VideoAssetType::UNKNOWN;
   m_strFile.clear();
   m_strPath.clear();
   m_strMPAARating.clear();
@@ -227,10 +227,10 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
     movie->InsertEndChild(set);
   }
   XMLUtils::SetStringArray(movie, "tag", m_tags);
-  XMLUtils::SetString(movie, "videoversion", m_typeVideoVersion);
-  XMLUtils::SetInt(movie, "videoversionid", m_idVideoVersion);
+  XMLUtils::SetString(movie, "videoassettitle", m_videoAssetTitle);
+  XMLUtils::SetInt(movie, "videoassetid", m_videoAssetId);
   XMLUtils::SetBoolean(movie, "hasvideoversions", m_hasVideoVersions);
-  XMLUtils::SetInt(movie, "videoversionitemtype", static_cast<int>(m_videoVersionItemType));
+  XMLUtils::SetInt(movie, "videoassettype", static_cast<int>(m_videoAssetType));
   XMLUtils::SetStringArray(movie, "credits", m_writingCredits);
   XMLUtils::SetStringArray(movie, "director", m_director);
   if (HasPremiered())
@@ -514,10 +514,10 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_set.id;
     ar << m_set.overview;
     ar << m_tags;
-    ar << m_typeVideoVersion;
-    ar << m_idVideoVersion;
+    ar << m_videoAssetTitle;
+    ar << m_videoAssetId;
     ar << m_hasVideoVersions;
-    ar << static_cast<int>(m_videoVersionItemType);
+    ar << static_cast<int>(m_videoAssetType);
     ar << m_duration;
     ar << m_strFile;
     ar << m_strPath;
@@ -620,12 +620,12 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_set.id;
     ar >> m_set.overview;
     ar >> m_tags;
-    ar >> m_typeVideoVersion;
-    ar >> m_idVideoVersion;
+    ar >> m_videoAssetTitle;
+    ar >> m_videoAssetId;
     ar >> m_hasVideoVersions;
-    int versionItemType{0};
-    ar >> versionItemType;
-    m_videoVersionItemType = static_cast<VideoVersionItemType>(versionItemType);
+    int videoAssetType{0};
+    ar >> videoAssetType;
+    m_videoAssetType = static_cast<VideoAssetType>(videoAssetType);
     ar >> m_duration;
     ar >> m_strFile;
     ar >> m_strPath;
@@ -745,10 +745,10 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["setid"] = m_set.id;
   value["setoverview"] = m_set.overview;
   value["tag"] = m_tags;
-  value["videoversion"] = m_typeVideoVersion;
-  value["videoversionid"] = m_idVideoVersion;
+  value["videoassettitle"] = m_videoAssetTitle;
+  value["videoassetid"] = m_videoAssetId;
   value["hasvideoversions"] = m_hasVideoVersions;
-  value["videoversionitemtype"] = static_cast<int>(m_videoVersionItemType);
+  value["videoassettype"] = static_cast<int>(m_videoAssetType);
   value["runtime"] = GetDuration();
   value["file"] = m_strFile;
   value["path"] = m_strPath;
@@ -878,8 +878,8 @@ void CVideoInfoTag::ToSortable(SortItem& sortable, Field field) const
   case FieldId:                       sortable[FieldId] = m_iDbId; break;
   case FieldTrackNumber:              sortable[FieldTrackNumber] = m_iTrack; break;
   case FieldTag:                      sortable[FieldTag] = m_tags; break;
-  case FieldVideoVersion:
-    sortable[FieldVideoVersion] = m_typeVideoVersion;
+  case FieldVideoAssetTitle:
+    sortable[FieldVideoAssetTitle] = m_videoAssetTitle;
     break;
 
   case FieldVideoResolution:          sortable[FieldVideoResolution] = m_streamDetails.GetVideoHeight(); break;
@@ -1279,10 +1279,10 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   if (XMLUtils::GetStringArray(movie, "tag", tags, prioritise, itemSeparator))
     SetTags(tags);
 
-  if (XMLUtils::GetString(movie, "videoversion", value))
-    SetVideoVersion(value);
+  if (XMLUtils::GetString(movie, "videoassettitle", value))
+    SetVideoAssetTitle(value);
 
-  XMLUtils::GetInt(movie, "videoversionid", m_idVideoVersion);
+  XMLUtils::GetInt(movie, "videoassetid", m_videoAssetId);
 
   std::vector<std::string> studio(m_studio);
   if (XMLUtils::GetStringArray(movie, "studio", studio, prioritise, itemSeparator))
@@ -1656,9 +1656,9 @@ void CVideoInfoTag::SetTags(std::vector<std::string> tags)
   m_tags = Trim(std::move(tags));
 }
 
-void CVideoInfoTag::SetVideoVersion(std::string typeVideoVersion)
+void CVideoInfoTag::SetVideoAssetTitle(std::string assetTitle)
 {
-  m_typeVideoVersion = Trim(std::move(typeVideoVersion));
+  m_videoAssetTitle = Trim(std::move(assetTitle));
 }
 
 bool CVideoInfoTag::HasVideoVersions() const
@@ -1833,5 +1833,5 @@ bool CVideoInfoTag::SetResumePoint(double timeInSeconds, double totalTimeInSecon
 
 bool CVideoInfoTag::IsVideoExtras() const
 {
-  return m_videoVersionItemType == VideoVersionItemType::EXTRAS;
+  return m_videoAssetType == VideoAssetType::EXTRAS;
 }

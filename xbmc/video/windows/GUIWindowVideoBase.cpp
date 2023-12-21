@@ -55,8 +55,8 @@
 #include "video/VideoDbUrl.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoLibraryQueue.h"
+#include "video/VideoManagerTypes.h"
 #include "video/VideoUtils.h"
-#include "video/VideoVersionTypes.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/guilib/VideoSelectActionProcessor.h"
@@ -1441,7 +1441,7 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
   for (const auto& item : *m_vecItems)
   {
     if (item->m_bIsFolder || !item->HasVideoInfoTag() ||
-        item->GetVideoInfoTag()->m_idVideoVersion > 0)
+        item->GetVideoInfoTag()->m_videoAssetId > 0)
       continue;
 
     MediaType type = item->GetVideoInfoTag()->m_type;
@@ -1456,7 +1456,7 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
 
         itemUrl.AddOption("mediaid", item->GetVideoInfoTag()->m_iDbId);
 
-        item->GetVideoInfoTag()->m_idVideoVersion = VIDEO_VERSION_ID_ALL;
+        item->GetVideoInfoTag()->m_videoAssetId = VIDEO_VERSION_ID_ALL;
         item->SetPath(itemUrl.ToString());
         item->m_bIsFolder = true;
 

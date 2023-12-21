@@ -26,8 +26,8 @@ class CVideoSettings;
 class CGUIDialogProgress;
 class CGUIDialogProgressBarHandle;
 
-enum class VideoVersionTypeOwner;
-enum class VideoVersionItemType;
+enum class VideoAssetTypeOwner;
+enum class VideoAssetType;
 
 namespace dbiplus
 {
@@ -1000,7 +1000,7 @@ public:
   void GetVideoVersions(VideoDbContentType itemType,
                         int dbId,
                         CFileItemList& items,
-                        VideoVersionItemType versionItemType);
+                        VideoAssetType videoAssetType);
   void GetDefaultVideoVersion(VideoDbContentType itemType, int dbId, CFileItem& item);
   void ConvertVideoToVersion(VideoDbContentType itemType,
                              int dbIdSource,
@@ -1008,11 +1008,11 @@ public:
                              int idVideoVersion);
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
-  int AddVideoVersionType(const std::string& typeVideoVersion, VideoVersionTypeOwner owner);
+  int AddVideoVersionType(const std::string& typeVideoVersion, VideoAssetTypeOwner owner);
   void AddVideoVersion(VideoDbContentType itemType,
                        int dbId,
                        int idVideoVersion,
-                       VideoVersionItemType versionItemType,
+                       VideoAssetType videoAssetType,
                        CFileItem& item);
   void AddPrimaryVideoVersion(VideoDbContentType itemType,
                               int dbId,
@@ -1037,12 +1037,12 @@ public:
                           std::string& typeVideoVersion,
                           int& idMedia,
                           MediaType& mediaType,
-                          VideoVersionItemType& versionItemType);
+                          VideoAssetType& videoAssetType);
   int GetVideoVersionInfo(int idFile,
                           std::string& typeVideoVersion,
                           int& idMedia,
                           MediaType& mediaType,
-                          VideoVersionItemType& versionItemType);
+                          VideoAssetType& videoAssetType);
 
   int GetMovieId(const std::string& strFilenameAndPath);
   std::string GetMovieTitle(int idMovie);

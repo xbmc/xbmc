@@ -20,8 +20,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
-#include "video/VideoVersionTypes.h"
 
 using namespace VIDEO::GUILIB;
 
@@ -69,22 +69,22 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo()
   }
 
   db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
-                      m_videoVersions, VideoVersionItemType::PRIMARY);
+                      m_videoVersions, VideoAssetType::VERSION);
   db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
-                      m_videoExtras, VideoVersionItemType::EXTRAS);
+                      m_videoExtras, VideoAssetType::EXTRAS);
 
-  VideoVersionItemType itemType{VideoVersionItemType::PRIMARY};
+  VideoAssetType itemType{VideoAssetType::VERSION};
   while (true)
   {
-    if (itemType == VideoVersionItemType::PRIMARY)
+    if (itemType == VideoAssetType::VERSION)
     {
       result = ChooseVideoVersion();
-      itemType = VideoVersionItemType::EXTRAS;
+      itemType = VideoAssetType::EXTRAS;
     }
     else
     {
       result = ChooseVideoExtra();
-      itemType = VideoVersionItemType::PRIMARY;
+      itemType = VideoAssetType::VERSION;
     }
 
     if (!m_switchType)
@@ -166,7 +166,7 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
     if (!item->GetProperty("force_choose_video_version").asBoolean(false))
     {
       // select the specified video version
-      if (item->GetVideoInfoTag()->m_idVideoVersion > 0)
+      if (item->GetVideoInfoTag()->m_videoAssetId > 0)
         videoVersion = item;
 
       if (!videoVersion)

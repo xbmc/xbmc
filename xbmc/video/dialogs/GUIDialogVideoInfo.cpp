@@ -10,7 +10,6 @@
 
 #include "ContextMenuManager.h"
 #include "FileItem.h"
-#include "GUIDialogVideoVersion.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -56,6 +55,8 @@
 #include "video/VideoLibraryQueue.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
+#include "video/dialogs/GUIDialogVideoManagerExtras.h"
+#include "video/dialogs/GUIDialogVideoManagerVersions.h"
 #include "video/guilib/VideoPlayActionProcessor.h"
 #include "video/windows/GUIWindowVideoNav.h"
 
@@ -79,7 +80,8 @@ using namespace KODI::MESSAGING;
 #define CONTROL_BTN_PLAY_TRAILER    11
 #define CONTROL_BTN_GET_FANART      12
 #define CONTROL_BTN_DIRECTOR        13
-#define CONTROL_BTN_VIDEOVERSION 14
+#define CONTROL_BTN_MANAGE_VIDEO_VERSIONS 14
+#define CONTROL_BTN_MANAGE_VIDEO_EXTRAS 15
 
 #define CONTROL_LIST                50
 
@@ -156,9 +158,13 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
         m_bViewReview = !m_bViewReview;
         Update();
       }
-      else if (iControl == CONTROL_BTN_VIDEOVERSION)
+      else if (iControl == CONTROL_BTN_MANAGE_VIDEO_VERSIONS)
       {
-        OnVideoVersion();
+        OnManageVideoVersions();
+      }
+      else if (iControl == CONTROL_BTN_MANAGE_VIDEO_EXTRAS)
+      {
+        OnManageVideoExtras();
       }
       else if (iControl == CONTROL_BTN_PLAY)
       {
@@ -2085,17 +2091,22 @@ void CGUIDialogVideoInfo::ShowFor(const CFileItem& item)
     window->OnItemInfo(item);
 }
 
-void CGUIDialogVideoInfo::OnVideoVersion()
+void CGUIDialogVideoInfo::OnManageVideoVersions()
 {
-  CGUIDialogVideoVersion::ManageVideoVersion(m_movieItem);
+  CGUIDialogVideoManagerVersions::ManageVideoVersion(m_movieItem);
+}
+
+void CGUIDialogVideoInfo::OnManageVideoExtras()
+{
+  CGUIDialogVideoManagerExtras::ManageVideoExtra(m_movieItem);
 }
 
 bool CGUIDialogVideoInfo::ConvertVideoVersion(const std::shared_ptr<CFileItem>& item)
 {
-  return CGUIDialogVideoVersion::ConvertVideoVersion(item);
+  return CGUIDialogVideoManagerVersions::ConvertVideoVersion(item);
 }
 
 void CGUIDialogVideoInfo::ManageVideoVersion(const std::shared_ptr<CFileItem>& item)
 {
-  CGUIDialogVideoVersion::ManageVideoVersion(item);
+  CGUIDialogVideoManagerVersions::ManageVideoVersion(item);
 }

@@ -509,8 +509,8 @@ namespace XBMCAddon
               InfoTagVideo::setSetOverviewRaw(videotag, value);
             else if (key == "tag")
               InfoTagVideo::setTagsRaw(videotag, getVideoStringArray(alt, key, value));
-            else if (key == "videoversion")
-              InfoTagVideo::setVideoVersionRaw(videotag, value);
+            else if (key == "videoassettitle")
+              InfoTagVideo::setVideoAssetTitleRaw(videotag, value);
             else if (key == "imdbnumber")
               InfoTagVideo::setIMDBNumberRaw(videotag, value);
             else if (key == "code")

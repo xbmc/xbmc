@@ -24,7 +24,7 @@ class TiXmlNode;
 class TiXmlElement;
 class CVariant;
 
-enum class VideoVersionItemType;
+enum class VideoAssetType;
 
 struct SActorInfo
 {
@@ -148,7 +148,7 @@ public:
   void SetSet(std::string set);
   void SetSetOverview(std::string setOverview);
   void SetTags(std::vector<std::string> tags);
-  void SetVideoVersion(std::string typeVideoVersion);
+  void SetVideoAssetTitle(std::string assetTitle);
   void SetFile(std::string file);
   void SetPath(std::string path);
   void SetMPAARating(std::string mpaaRating);
@@ -244,10 +244,10 @@ public:
   };
   SetInfo m_set; //!< Assigned movie set
   std::vector<std::string> m_tags;
-  std::string m_typeVideoVersion;
-  int m_idVideoVersion{-1};
+  std::string m_videoAssetTitle;
+  int m_videoAssetId{-1};
   bool m_hasVideoVersions{false};
-  VideoVersionItemType m_videoVersionItemType{-1};
+  VideoAssetType m_videoAssetType{-1};
   std::string m_strFile;
   std::string m_strPath;
   std::string m_strMPAARating;

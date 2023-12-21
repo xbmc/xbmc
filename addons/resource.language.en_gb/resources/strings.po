@@ -23737,9 +23737,9 @@ msgstr ""
 
 # 40000 to 40800 are reserved for Video Versions feature
 
-#. Video versions
 #: xbmc/filesystem/VideoDatabaseDirectory.cpp
 #: xbmc/filesystem/VideoDatabaseDirectory/DirectoryNodeMoviesOverview.cpp
+#: xbmc/video/windows/GUIWindowVideoBase.cpp
 #: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#40000"
 msgid "Versions"
@@ -23752,50 +23752,52 @@ msgid "Manage {0:s} version"
 msgstr ""
 
 #. Manage video version dialog title
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40002"
 msgid "Convert into an additional version of {0:s}"
 msgstr ""
 
 #. Video version selection dialog title
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
 msgctxt "#40003"
 msgid "Select {0:s} version"
 msgstr ""
 
 #. New video version dialog button
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 #: xbmc/video/windows/GUIWindowVideoNav.cpp
 msgctxt "#40004"
 msgid "New version..."
 msgstr ""
 
 #. Warning dialog title
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40005"
 msgid "Operation not supported"
 msgstr ""
 
 #. Warning dialog text
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40006"
 msgid "The selected {0:s} contains multiple versions. Cannot convert into an additional version of another one. Remove it from the library, rescan, and convert each version separately."
 msgstr ""
 
 #. Warning dialog text
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
 msgctxt "#40007"
 msgid "The \"{0:s}\" version already exists!"
 msgstr ""
 
 #. Different video version found dialog title
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40008"
 msgid "Different {0:s} version found"
 msgstr ""
 
 #. Different video version found dialog text
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40009"
 msgid "Found a different version of {0:s} \"{1:s}\" ({2:s}). Would you like to convert it into an additional version of the original?"
 msgstr ""
@@ -23825,55 +23827,58 @@ msgid "Video versions"
 msgstr ""
 
 #. Add new video version dialog title
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40014"
 msgid "Add new {0:s} version"
 msgstr ""
 
 #. Add new video extras dialog title
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
 msgctxt "#40015"
 msgid "Add new {0:s} extras"
 msgstr ""
 
 #. Add new video version dialog text
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40016"
 msgid "The selected video is already \"{0:s}\" version of current {1:s}."
 msgstr ""
 
 #. Add new video version dialog text
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40017"
 msgid "The selected video is \"{0:s}\" version of {1:s} \"{2:s}\". Would you like to remove this version and add it to current {3:s}?"
 msgstr ""
 
 #. Remove video version dialog title
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40018"
 msgid "Remove video version"
 msgstr ""
 
 #. Add new video version dialog text
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40019"
 msgid "Unable to remove default version \"{0:s}\" from {1:s} \"{2:s}\". Change the default version and try again."
 msgstr ""
 
 #. Remove video version dialog text
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
 msgctxt "#40020"
 msgid "Are you sure to remove the video version \"{0:s}\"?"
 msgstr ""
 
 #. Convert video version menu
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#40021"
 msgid "Convert {0:s} version"
 msgstr ""
 
 #. Manage video version dialog title
-#: xbmc/video/dialogs/GUIDialogVideoVersion.cpp
+#: xbmc/video/dialogs/GUIDialogVideoManager.cpp
 msgctxt "#40022"
 msgid "Manage {0:s}"
 msgstr ""
@@ -23941,13 +23946,13 @@ msgid "Play version using..."
 msgstr ""
 
 #. Button label for video versions
-#: xbmc/video/guiinfo/VideoVersionHelper.cpp
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#40210"
 msgid "Versions"
 msgstr ""
 
 #. Button label for video extras
-#: xbmc/video/guiinfo/VideoVersionHelper.cpp
+#: addons/skin.estuary/xml/DialogVideoInfo.xml
 msgctxt "#40211"
 msgid "Extras"
 msgstr ""
