@@ -289,9 +289,8 @@ namespace
 class CVideoPlayActionProcessor : public VIDEO::GUILIB::CVideoPlayActionProcessorBase
 {
 public:
-  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item,
-                                     const std::shared_ptr<CFileItem>& videoVersion)
-    : CVideoPlayActionProcessorBase(item, videoVersion)
+  explicit CVideoPlayActionProcessor(const std::shared_ptr<CFileItem>& item)
+    : CVideoPlayActionProcessorBase(item)
   {
   }
 
@@ -325,7 +324,7 @@ void CGUIDialogVideoVersion::Play()
 {
   CloseAll();
 
-  CVideoPlayActionProcessor proc{m_videoItem, m_selectedVideoVersion};
+  CVideoPlayActionProcessor proc{m_selectedVideoVersion};
   proc.ProcessDefaultAction();
 }
 

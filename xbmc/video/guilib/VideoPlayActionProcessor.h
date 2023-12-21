@@ -22,11 +22,6 @@ class CVideoPlayActionProcessorBase
 {
 public:
   explicit CVideoPlayActionProcessorBase(const std::shared_ptr<CFileItem>& item) : m_item(item) {}
-  CVideoPlayActionProcessorBase(const std::shared_ptr<CFileItem>& item,
-                                const std::shared_ptr<const CFileItem>& videoVersion)
-    : m_item{item}, m_videoVersion{videoVersion}
-  {
-  }
   virtual ~CVideoPlayActionProcessorBase() = default;
 
   bool ProcessDefaultAction();
@@ -48,8 +43,6 @@ protected:
 
 private:
   CVideoPlayActionProcessorBase() = delete;
-
-  const std::shared_ptr<const CFileItem> m_videoVersion;
 };
 } // namespace GUILIB
 } // namespace VIDEO
