@@ -16,8 +16,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "input/Key.h"
 #include "messaging/ApplicationMessenger.h"
-#include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
+#include "pictures/SlideShowDelegator.h"
 #include "utils/Variant.h"
 
 using namespace JSONRPC;
@@ -64,7 +64,6 @@ JSONRPC_STATUS CPlaylistOperations::GetItems(const std::string &method, ITranspo
   CFileItemList list;
   PLAYLIST::Id playlistId = GetPlaylist(parameterObject["playlistid"]);
 
-  CGUIWindowSlideShow *slideshow = NULL;
   switch (playlistId)
   {
     case PLAYLIST::TYPE_VIDEO:
@@ -74,9 +73,8 @@ JSONRPC_STATUS CPlaylistOperations::GetItems(const std::string &method, ITranspo
       break;
 
     case PLAYLIST::TYPE_PICTURE:
-      slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-      if (slideshow)
-        slideshow->GetSlideShowContents(list);
+      CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
+      slideShow.GetSlideShowContents(list);
       break;
   }
 
@@ -105,14 +103,6 @@ JSONRPC_STATUS CPlaylistOperations::Add(const std::string &method, ITransportLay
 {
   PLAYLIST::Id playlistId = GetPlaylist(parameterObject["playlistid"]);
 
-  CGUIWindowSlideShow *slideshow = NULL;
-  if (playlistId == PLAYLIST::TYPE_PICTURE)
-  {
-    slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-    if (slideshow == NULL)
-      return FailedToExecute;
-  }
-
   CFileItemList list;
   if (!HandleItemsParameter(playlistId, parameterObject["item"], list))
     return InvalidParams;
@@ -129,6 +119,8 @@ JSONRPC_STATUS CPlaylistOperations::Add(const std::string &method, ITransportLay
       break;
     }
     case PLAYLIST::TYPE_PICTURE:
+    {
+      CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
       for (int index = 0; index < list.Size(); index++)
       {
         CPictureInfoTag picture = CPictureInfoTag();
@@ -136,10 +128,10 @@ JSONRPC_STATUS CPlaylistOperations::Add(const std::string &method, ITransportLay
           continue;
 
         *list[index]->GetPictureInfoTag() = picture;
-        slideshow->Add(list[index].get());
+        slideShow.Add(list[index].get());
       }
       break;
-
+    }
     default:
       return InvalidParams;
   }
@@ -185,7 +177,6 @@ JSONRPC_STATUS CPlaylistOperations::Remove(const std::string &method, ITransport
 JSONRPC_STATUS CPlaylistOperations::Clear(const std::string &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   PLAYLIST::Id playlistId = GetPlaylist(parameterObject["playlistid"]);
-  CGUIWindowSlideShow *slideshow = NULL;
   switch (playlistId)
   {
     case PLAYLIST::TYPE_MUSIC:
@@ -194,12 +185,11 @@ JSONRPC_STATUS CPlaylistOperations::Clear(const std::string &method, ITransportL
       break;
 
     case PLAYLIST::TYPE_PICTURE:
-      slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-      if (!slideshow)
-        return FailedToExecute;
+      CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
+      //! @todo: Stop should be a delegator method to void GUI coupling! Same goes for other player controls.
       CServiceBroker::GetAppMessenger()->PostMsg(TMSG_GUI_ACTION, WINDOW_SLIDESHOW, -1,
                                                  static_cast<void*>(new CAction(ACTION_STOP)));
-      slideshow->Reset();
+      slideShow.Reset();
       break;
   }
 
@@ -258,27 +248,31 @@ JSONRPC_STATUS CPlaylistOperations::GetPropertyValue(PLAYLIST::Id playlistId,
   else if (property == "size")
   {
     CFileItemList list;
-    CGUIWindowSlideShow *slideshow = NULL;
     switch (playlistId)
     {
       case PLAYLIST::TYPE_MUSIC:
       case PLAYLIST::TYPE_VIDEO:
+      {
         CServiceBroker::GetAppMessenger()->SendMsg(TMSG_PLAYLISTPLAYER_GET_ITEMS, playlistId, -1,
                                                    static_cast<void*>(&list));
         result = list.Size();
         break;
-
+      }
       case PLAYLIST::TYPE_PICTURE:
-        slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-        if (slideshow)
-          result = slideshow->NumSlides();
-        else
+      {
+        CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
+        const int numSlides = slideShow.NumSlides();
+        if (numSlides < 0)
           result = 0;
+        else
+          result = numSlides;
         break;
-
+      }
       default:
+      {
         result = 0;
         break;
+      }
     }
   }
   else
