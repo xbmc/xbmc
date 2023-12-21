@@ -43,24 +43,23 @@ protected:
   void OnInitWindow() override;
 
 private:
-  void SetDefaultVideoVersion(CFileItem& version);
+  void SetDefaultVideoVersion(const CFileItem& version);
   void SetSelectedVideoVersion(const std::shared_ptr<CFileItem>& version);
-  void ClearVideoVersionList();
-  void RefreshVideoVersionList();
-  void AddVideoVersion(bool primary);
+  void Clear();
+  void Refresh();
+  void AddVideoVersion(VideoVersionItemType versionType);
   void Play();
-  void AddVersion();
-  void AddExtras();
   void Rename();
   void SetDefault();
   void Remove();
   void ChooseArt();
   void CloseAll();
+  void UpdateButtons();
 
   std::shared_ptr<CFileItem> m_videoItem;
   CVideoDatabase m_database;
   std::unique_ptr<CFileItemList> m_primaryVideoVersionList;
   std::unique_ptr<CFileItemList> m_extrasVideoVersionList;
-  std::unique_ptr<CFileItem> m_defaultVideoVersion;
+  std::shared_ptr<CFileItem> m_defaultVideoVersion;
   std::shared_ptr<CFileItem> m_selectedVideoVersion;
 };
