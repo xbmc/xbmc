@@ -80,6 +80,7 @@ class CPlatform;
 class CTextureCache;
 class CJobManager;
 class CKeyboardLayoutManager;
+class CSlideShowDelegator;
 
 namespace WSDiscovery
 {
@@ -148,6 +149,7 @@ public:
   static CDataCacheCore& GetDataCacheCore();
   static CPlatform& GetPlatform();
   static PLAYLIST::CPlayListPlayer& GetPlaylistPlayer();
+  static CSlideShowDelegator& GetSlideShowDelegator();
   static KODI::GAME::CControllerManager& GetGameControllerManager();
   static KODI::GAME::CGameServices& GetGameServices();
   static KODI::RETRO::CGUIGameRenderManager& GetGameRenderManager();
@@ -235,6 +237,7 @@ private:
   std::shared_ptr<KODI::MESSAGING::CApplicationMessenger> m_appMessenger;
   std::shared_ptr<CKeyboardLayoutManager> m_keyboardLayoutManager;
   std::shared_ptr<speech::ISpeechRecognition> m_speechRecognition;
+  std::shared_ptr<CSlideShowDelegator> m_slideshowDelegator;
 };
 
 XBMC_GLOBAL_REF(CServiceBroker, g_serviceBroker);

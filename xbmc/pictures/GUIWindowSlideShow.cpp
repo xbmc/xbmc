@@ -29,6 +29,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "pictures/GUIViewStatePictures.h"
 #include "pictures/PictureThumbLoader.h"
+#include "pictures/SlideShowDelegator.h"
 #include "playlists/PlayListTypes.h"
 #include "rendering/RenderSystem.h"
 #include "settings/DisplaySettings.h"
@@ -144,7 +145,13 @@ CGUIWindowSlideShow::CGUIWindowSlideShow(void)
   m_Resolution = RES_INVALID;
   m_loadType = KEEP_IN_MEMORY;
   m_bLoadNextPic = false;
+  CServiceBroker::GetSlideShowDelegator().SetDelegate(this);
   Reset();
+}
+
+CGUIWindowSlideShow::~CGUIWindowSlideShow()
+{
+  CServiceBroker::GetSlideShowDelegator().ResetDelegate();
 }
 
 void CGUIWindowSlideShow::AnnouncePlayerPlay(const CFileItemPtr& item)

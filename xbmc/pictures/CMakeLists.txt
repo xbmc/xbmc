@@ -12,9 +12,11 @@ set(SOURCES ExifParse.cpp
             PictureInfoTag.cpp
             PictureScalingAlgorithm.cpp
             PictureThumbLoader.cpp
+            SlideShowDelegator.cpp
             SlideShowPicture.cpp)
 
-set(HEADERS GUIDialogPictureInfo.h
+set(HEADERS interfaces/ISlideShowDelegate.h
+            GUIDialogPictureInfo.h
             GUIViewStatePictures.h
             GUIWindowPictures.h
             GUIWindowSlideShow.h
@@ -24,6 +26,7 @@ set(HEADERS GUIDialogPictureInfo.h
             PictureInfoTag.h
             PictureScalingAlgorithm.h
             PictureThumbLoader.h
+            SlideShowDelegator.h
             SlideShowPicture.h)
 
 if(TARGET OpenGL::GL)
