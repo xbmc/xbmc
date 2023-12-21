@@ -26,12 +26,6 @@ public:
   {
   }
 
-  CVideoSelectActionProcessorBase(const std::shared_ptr<CFileItem>& item,
-                                  const std::shared_ptr<const CFileItem>& videoVersion)
-    : CVideoPlayActionProcessorBase(item, videoVersion)
-  {
-  }
-
   ~CVideoSelectActionProcessorBase() override = default;
 
   static Action GetDefaultSelectAction();
