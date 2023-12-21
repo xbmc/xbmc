@@ -15,8 +15,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
-#include "pictures/GUIWindowSlideShow.h"
 #include "pictures/PictureInfoTag.h"
+#include "pictures/SlideShowDelegator.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
@@ -180,10 +180,10 @@ bool CPicturesGUIInfo::GetLabel(std::string& value, const CFileItem *item, int c
       }
       case SLIDESHOW_INDEX:
       {
-        CGUIWindowSlideShow *slideshow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-        if (slideshow && slideshow->NumSlides())
+        CSlideShowDelegator& slideshow = CServiceBroker::GetSlideShowDelegator();
+        if (slideshow.NumSlides() > 0)
         {
-          value = StringUtils::Format("{}/{}", slideshow->CurrentSlide(), slideshow->NumSlides());
+          value = StringUtils::Format("{}/{}", slideshow.CurrentSlide(), slideshow.NumSlides());
           return true;
         }
         break;
@@ -232,26 +232,26 @@ bool CPicturesGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int conte
     ///////////////////////////////////////////////////////////////////////////////////////////////
     case SLIDESHOW_ISPAUSED:
     {
-      CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-      value = (slideShow && slideShow->IsPaused());
+      CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
+      value = slideShow.IsPaused();
       return true;
     }
     case SLIDESHOW_ISRANDOM:
     {
-      CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-      value = (slideShow && slideShow->IsShuffled());
+      CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
+      value = slideShow.IsShuffled();
       return true;
     }
     case SLIDESHOW_ISACTIVE:
     {
-      CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-      value = (slideShow && slideShow->InSlideShow());
+      CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
+      value = slideShow.InSlideShow();
       return true;
     }
     case SLIDESHOW_ISVIDEO:
     {
-      CGUIWindowSlideShow *slideShow = CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(WINDOW_SLIDESHOW);
-      value = (slideShow && slideShow->GetCurrentSlide() && slideShow->GetCurrentSlide()->IsVideo());
+      CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
+      value = slideShow.GetCurrentSlide() && slideShow.GetCurrentSlide()->IsVideo();
       return true;
     }
   }
