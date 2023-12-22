@@ -12252,7 +12252,7 @@ bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
     if (idMedia != -1)
     {
       CFileItemList list;
-      GetVideoVersions(idContent, idMedia, list);
+      GetVideoVersions(idContent, idMedia, list, VideoAssetType::VERSION);
 
       items.Clear();
       items.Append(list);
