@@ -313,6 +313,12 @@ std::shared_ptr<CFileItem> CFavouritesService::ResolveFavourite(const CFileItem&
   return {};
 }
 
+int CFavouritesService::Size() const
+{
+  std::unique_lock<CCriticalSection> lock(m_criticalSection);
+  return m_favourites.Size();
+}
+
 void CFavouritesService::GetAll(CFileItemList& items) const
 {
   std::unique_lock<CCriticalSection> lock(m_criticalSection);

@@ -30,6 +30,7 @@ public:
   std::shared_ptr<CFileItem> GetFavourite(const CFileItem& item, int contextWindow) const;
   std::shared_ptr<CFileItem> ResolveFavourite(const CFileItem& favItem) const;
 
+  int Size() const;
   void GetAll(CFileItemList& items) const;
   bool AddOrRemove(const CFileItem& item, int contextWindow);
   bool Save(const CFileItemList& items);
