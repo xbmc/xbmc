@@ -33,6 +33,8 @@ public:
   explicit CVideoChooser(const std::shared_ptr<const CFileItem>& item) : m_item(item) {}
   virtual ~CVideoChooser() = default;
 
+  void EnableExtras(bool enable) { m_enableExtras = enable; }
+
   std::shared_ptr<const CFileItem> ChooseVideo();
 
 private:
@@ -46,6 +48,7 @@ private:
                                                const CFileItemList& itemsToSwitchTo);
 
   const std::shared_ptr<const CFileItem> m_item;
+  bool m_enableExtras{false};
   bool m_switchType{false};
   CFileItemList m_videoVersions;
   CFileItemList m_videoExtras;
@@ -70,8 +73,11 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo()
 
   db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
                       m_videoVersions, VideoAssetType::VERSION);
-  db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
-                      m_videoExtras, VideoAssetType::EXTRAS);
+  if (m_enableExtras)
+    db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
+                        m_videoExtras, VideoAssetType::EXTRAS);
+  else
+    m_videoExtras.Clear();
 
   VideoAssetType itemType{VideoAssetType::VERSION};
   while (true)
@@ -197,7 +203,9 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
     if (!videoVersion && (item->GetProperty("force_choose_video_version").asBoolean(false) ||
                           !item->GetProperty("prohibit_choose_video_version").asBoolean(false)))
     {
-      const auto result{CVideoChooser(item).ChooseVideo()};
+      CVideoChooser chooser{item};
+      chooser.EnableExtras(false);
+      const auto result{chooser.ChooseVideo()};
       if (result)
         videoVersion = result;
       else
