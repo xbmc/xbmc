@@ -10,9 +10,9 @@
 
 #include "SlideShowPicture.h"
 #include "guilib/GUIDialog.h"
+#include "interfaces/ISlideShowDelegate.h"
 #include "threads/Event.h"
 #include "threads/Thread.h"
-#include "utils/SortUtils.h"
 
 #include <memory>
 #include <set>
@@ -48,51 +48,57 @@ private:
   CGUIWindowSlideShow* m_pCallback = nullptr;
 };
 
-class CGUIWindowSlideShow : public CGUIDialog
+class CGUIWindowSlideShow : public CGUIDialog, public ISlideShowDelegate
 {
 public:
   CGUIWindowSlideShow(void);
-  ~CGUIWindowSlideShow() override = default;
+  ~CGUIWindowSlideShow() override;
 
-  bool OnMessage(CGUIMessage& message) override;
-  EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event) override;
-  bool OnAction(const CAction &action) override;
-  void Render() override;
-  void RenderEx() override;
-  void Process(unsigned int currentTime, CDirtyRegionList &regions) override;
-  void OnDeinitWindow(int nextWindowID) override;
-
-  void Reset();
-  void Add(const CFileItem *picture);
-  bool IsPlaying() const;
-  void Select(const std::string& strPicture);
-  void GetSlideShowContents(CFileItemList &list);
-  std::shared_ptr<const CFileItem> GetCurrentSlide();
-  void RunSlideShow(const std::string &strPath, bool bRecursive = false,
-                    bool bRandom = false, bool bNotRandom = false,
-                    const std::string &beginSlidePath="", bool startSlideShow = true,
+  // Implementation of ISlideShowDelegate
+  void Add(const CFileItem* picture) override;
+  bool IsPlaying() const override;
+  void Select(const std::string& picture) override;
+  void GetSlideShowContents(CFileItemList& list) override;
+  std::shared_ptr<const CFileItem> GetCurrentSlide() override;
+  void StartSlideShow() override;
+  bool InSlideShow() const override;
+  int NumSlides() const override;
+  int CurrentSlide() const override;
+  bool IsPaused() const override { return m_bPause; }
+  bool IsShuffled() const override { return m_bShuffled; }
+  void Reset() override;
+  void RunSlideShow(const std::string& strPath,
+                    bool bRecursive = false,
+                    bool bRandom = false,
+                    bool bNotRandom = false,
+                    const std::string& beginSlidePath = "",
+                    bool startSlideShow = true,
                     SortBy method = SortByLabel,
                     SortOrder order = SortOrderAscending,
                     SortAttribute sortAttributes = SortAttributeNone,
-                    const std::string &strExtensions="");
-  void AddFromPath(const std::string &strPath, bool bRecursive,
+                    const std::string& strExtensions = "") override;
+  void AddFromPath(const std::string& strPath,
+                   bool bRecursive,
                    SortBy method = SortByLabel,
                    SortOrder order = SortOrderAscending,
                    SortAttribute sortAttributes = SortAttributeNone,
-                   const std::string &strExtensions="");
-  void StartSlideShow();
-  bool InSlideShow() const;
+                   const std::string& strExtensions = "") override;
+  void Shuffle() override;
+  int GetDirection() const override { return m_iDirection; }
+
+  bool OnMessage(CGUIMessage& message) override;
+  EVENT_RESULT OnMouseEvent(const CPoint& point, const CMouseEvent& event) override;
+  bool OnAction(const CAction& action) override;
+  void Render() override;
+  void RenderEx() override;
+  void Process(unsigned int currentTime, CDirtyRegionList& regions) override;
+  void OnDeinitWindow(int nextWindowID) override;
+
   void OnLoadPic(int iPic,
                  int iSlideNumber,
                  const std::string& strFileName,
                  std::unique_ptr<CTexture> pTexture,
                  bool bFullSize);
-  int NumSlides() const;
-  int CurrentSlide() const;
-  void Shuffle();
-  bool IsPaused() const { return m_bPause; }
-  bool IsShuffled() const { return m_bShuffled; }
-  int GetDirection() const { return m_iDirection; }
 
   static void RunSlideShow(const std::vector<std::string>& paths, int start = 0);
 

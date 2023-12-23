@@ -30,7 +30,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "network/Network.h"
-#include "pictures/GUIWindowSlideShow.h"
+#include "pictures/SlideShowDelegator.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
@@ -319,6 +319,7 @@ CUPnPRenderer::UpdateState()
         return;
 
     avt->SetStateVariable("TransportStatus", "OK");
+    CSlideShowDelegator& slideShow = CServiceBroker::GetSlideShowDelegator();
     const auto& components = CServiceBroker::GetAppComponents();
     const auto appPlayer = components.GetComponent<CApplicationPlayer>();
     if (appPlayer->IsPlaying() || appPlayer->IsPausedPlayback())
@@ -356,18 +357,11 @@ CUPnPRenderer::UpdateState()
       avt->SetStateVariable("CurrentTrackURI", filePath.c_str());
       avt->SetStateVariable("TransportPlaySpeed", "1");
 
-      CGUIWindowSlideShow* slideshow =
-          CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIWindowSlideShow>(
-              WINDOW_SLIDESHOW);
-      if (slideshow)
-      {
-        std::string index;
-        index = std::to_string(slideshow->NumSlides());
-        avt->SetStateVariable("NumberOfTracks", index.c_str());
-        index = std::to_string(slideshow->CurrentSlide());
-        avt->SetStateVariable("CurrentTrack", index.c_str());
-      }
-
+      std::string index;
+      index = std::to_string(slideShow.NumSlides());
+      avt->SetStateVariable("NumberOfTracks", index.c_str());
+      index = std::to_string(slideShow.CurrentSlide());
+      avt->SetStateVariable("CurrentTrack", index.c_str());
       avt->SetStateVariable("CurrentTrackMetadata", "");
       avt->SetStateVariable("AVTransportURIMetaData", "");
     }

@@ -271,6 +271,11 @@ CDatabaseManager& CServiceBroker::GetDatabaseManager()
   return g_application.m_ServiceManager->GetDatabaseManager();
 }
 
+CSlideShowDelegator& CServiceBroker::GetSlideShowDelegator()
+{
+  return g_application.m_ServiceManager->GetSlideShowDelegator();
+}
+
 CEventLog* CServiceBroker::GetEventLog()
 {
   if (!g_serviceBroker.m_pSettingsComponent)
