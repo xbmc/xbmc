@@ -112,7 +112,7 @@ void CGUIDialogVideoManagerVersions::SetVideoAsset(const std::shared_ptr<CFileIt
 {
   CGUIDialogVideoManager::SetVideoAsset(item);
 
-  m_selectedVideoAsset = m_defaultVideoVersion;
+  SetSelectedVideoAsset(m_defaultVideoVersion);
 }
 
 void CGUIDialogVideoManagerVersions::Remove()

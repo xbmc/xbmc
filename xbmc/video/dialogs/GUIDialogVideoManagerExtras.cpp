@@ -76,6 +76,14 @@ void CGUIDialogVideoManagerExtras::UpdateButtons()
   }
 }
 
+void CGUIDialogVideoManagerExtras::SetVideoAsset(const std::shared_ptr<CFileItem>& item)
+{
+  CGUIDialogVideoManager::SetVideoAsset(item);
+
+  if (!m_videoAssetsList->IsEmpty())
+    SetSelectedVideoAsset(m_videoAssetsList->Get(0));
+}
+
 void CGUIDialogVideoManagerExtras::AddVideoExtra()
 {
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
