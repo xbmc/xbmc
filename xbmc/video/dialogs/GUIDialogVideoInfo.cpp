@@ -1070,7 +1070,7 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
     // set or change movie set the movie belongs to
     buttons.Add(CONTEXT_BUTTON_SET_MOVIESET, 20465);
 
-    if (!item->GetVideoInfoTag()->m_hasVideoVersions)
+    if (!item->GetVideoInfoTag()->HasVideoVersions())
     {
       // set video version
       buttons.Add(

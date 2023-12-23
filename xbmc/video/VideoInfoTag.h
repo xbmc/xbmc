@@ -92,6 +92,7 @@ public:
   bool HasStreamDetails() const;
   bool IsEmpty() const;
   bool HasVideoVersions() const;
+  bool HasVideoExtras() const;
 
   const std::string& GetPath() const
   {
@@ -247,6 +248,7 @@ public:
   std::string m_videoAssetTitle;
   int m_videoAssetId{-1};
   bool m_hasVideoVersions{false};
+  bool m_hasVideoExtras{false};
   VideoAssetType m_videoAssetType{-1};
   std::string m_strFile;
   std::string m_strPath;

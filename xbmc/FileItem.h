@@ -263,6 +263,8 @@ public:
   bool IsAndroidApp() const;
 
   bool HasVideoVersions() const;
+  bool HasVideoExtras() const;
+
   void RemoveExtension();
   void CleanString();
   void FillInDefaultIcon();

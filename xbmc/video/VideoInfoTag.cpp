@@ -47,6 +47,7 @@ void CVideoInfoTag::Reset()
   m_videoAssetTitle.clear();
   m_videoAssetId = -1;
   m_hasVideoVersions = false;
+  m_hasVideoExtras = false;
   m_videoAssetType = VideoAssetType::UNKNOWN;
   m_strFile.clear();
   m_strPath.clear();
@@ -230,6 +231,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const std::string &tag, bool savePathI
   XMLUtils::SetString(movie, "videoassettitle", m_videoAssetTitle);
   XMLUtils::SetInt(movie, "videoassetid", m_videoAssetId);
   XMLUtils::SetBoolean(movie, "hasvideoversions", m_hasVideoVersions);
+  XMLUtils::SetBoolean(movie, "hasvideoextras", m_hasVideoExtras);
   XMLUtils::SetInt(movie, "videoassettype", static_cast<int>(m_videoAssetType));
   XMLUtils::SetStringArray(movie, "credits", m_writingCredits);
   XMLUtils::SetStringArray(movie, "director", m_director);
@@ -517,6 +519,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_videoAssetTitle;
     ar << m_videoAssetId;
     ar << m_hasVideoVersions;
+    ar << m_hasVideoExtras;
     ar << static_cast<int>(m_videoAssetType);
     ar << m_duration;
     ar << m_strFile;
@@ -623,6 +626,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_videoAssetTitle;
     ar >> m_videoAssetId;
     ar >> m_hasVideoVersions;
+    ar >> m_hasVideoExtras;
     int videoAssetType{0};
     ar >> videoAssetType;
     m_videoAssetType = static_cast<VideoAssetType>(videoAssetType);
@@ -748,6 +752,7 @@ void CVideoInfoTag::Serialize(CVariant& value) const
   value["videoassettitle"] = m_videoAssetTitle;
   value["videoassetid"] = m_videoAssetId;
   value["hasvideoversions"] = m_hasVideoVersions;
+  value["hasvideoextras"] = m_hasVideoExtras;
   value["videoassettype"] = static_cast<int>(m_videoAssetType);
   value["runtime"] = GetDuration();
   value["file"] = m_strFile;
@@ -1664,6 +1669,11 @@ void CVideoInfoTag::SetVideoAssetTitle(std::string assetTitle)
 bool CVideoInfoTag::HasVideoVersions() const
 {
   return m_hasVideoVersions;
+}
+
+bool CVideoInfoTag::HasVideoExtras() const
+{
+  return m_hasVideoExtras;
 }
 
 void CVideoInfoTag::SetFile(std::string file)

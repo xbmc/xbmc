@@ -1447,7 +1447,7 @@ void CGUIWindowVideoBase::UpdateVideoVersionItems()
     MediaType type = item->GetVideoInfoTag()->m_type;
     if (type == MediaTypeMovie)
     {
-      if (item->GetVideoInfoTag()->m_hasVideoVersions)
+      if (item->GetVideoInfoTag()->HasVideoVersions())
       {
         CVideoDbUrl itemUrl;
         if (!itemUrl.FromString(

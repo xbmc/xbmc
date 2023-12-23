@@ -4255,7 +4255,16 @@ bool CFileItem::HasVideoVersions() const
 {
   if (HasVideoInfoTag())
   {
-    return GetVideoInfoTag()->m_hasVideoVersions;
+    return GetVideoInfoTag()->HasVideoVersions();
+  }
+  return false;
+}
+
+bool CFileItem::HasVideoExtras() const
+{
+  if (HasVideoInfoTag())
+  {
+    return GetVideoInfoTag()->HasVideoExtras();
   }
   return false;
 }

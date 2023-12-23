@@ -573,8 +573,16 @@ void CVideoDatabase::CreateViews()
                                      "    FROM  videoversion vv "
                                      "    WHERE vv.idMedia = movie.idMovie "
                                      "    AND   vv.mediaType = 'movie' "
+                                     "    AND   vv.itemType = %02d "
                                      "    AND   vv.idFile <> movie.idFile "
-                                     "  ) AS hasVideoVersions "
+                                     "  ) AS hasVideoVersions, "
+                                     "  EXISTS( "
+                                     "    SELECT 1 "
+                                     "    FROM  videoversion vv "
+                                     "    WHERE vv.idMedia = movie.idMovie "
+                                     "    AND   vv.mediaType = 'movie' "
+                                     "    AND   vv.itemType = %02d "
+                                     "  ) AS hasVideoExtras "
                                      "FROM movie"
                                      "  LEFT JOIN sets ON"
                                      "    sets.idSet = movie.idSet"
@@ -588,6 +596,7 @@ void CVideoDatabase::CreateViews()
                                      "    rating.rating_id=movie.c%02d"
                                      "  LEFT JOIN uniqueid ON"
                                      "    uniqueid.uniqueid_id=movie.c%02d",
+                                     VideoAssetType::VERSION, VideoAssetType::EXTRAS,
                                      VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID);
   m_pDS->exec(movieview);
 }
@@ -2153,8 +2162,8 @@ bool CVideoDatabase::GetMovieInfo(const std::string& strFilenameAndPath, CVideoI
 
     //! @todo ugly video versions hack. patch the video file for a non-default video version
     //! into the video info tag that was just loaded for the default video version.
-    if (!details.IsEmpty() && details.m_hasVideoVersions && !strFilenameAndPath.empty() &&
-        strFilenameAndPath != details.m_strFileNameAndPath)
+    if (!details.IsEmpty() && (details.HasVideoVersions() || details.HasVideoExtras()) &&
+        !strFilenameAndPath.empty() && strFilenameAndPath != details.m_strFileNameAndPath)
     {
       details.m_lastPlayed.SetValid(false);
       details.m_dateAdded.SetValid(false);
@@ -4289,6 +4298,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.m_type = MediaTypeMovie;
 
   details.m_hasVideoVersions = record->at(VIDEODB_DETAILS_MOVIE_HASVERSIONS).get_asBool();
+  details.m_hasVideoExtras = record->at(VIDEODB_DETAILS_MOVIE_HASEXTRAS).get_asBool();
   details.m_set.id = record->at(VIDEODB_DETAILS_MOVIE_SET_ID).get_asInt();
   details.m_set.title = record->at(VIDEODB_DETAILS_MOVIE_SET_NAME).get_asString();
   details.m_set.overview = record->at(VIDEODB_DETAILS_MOVIE_SET_OVERVIEW).get_asString();
@@ -6178,7 +6188,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 125;
+  return 126;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -8016,6 +8026,7 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
           if (idVideoVersion > 0)
           {
             pItem->GetVideoInfoTag()->m_hasVideoVersions = false;
+            pItem->GetVideoInfoTag()->m_hasVideoExtras = false;
             pItem->GetVideoInfoTag()->m_videoAssetId = idVideoVersion;
             pItem->GetVideoInfoTag()->m_videoAssetTitle = GetVideoVersionById(idVideoVersion);
             pItem->GetVideoInfoTag()->SetFileNameAndPath(GetFilenameAndPathById(
