@@ -94,12 +94,12 @@
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="22" />
-					<param name="label" value="$LOCALIZE[31612]" />
+					<param name="label" value="$LOCALIZE[40023]" />
 					<param name="visible">Window.IsActive(managevideoversions)</param>
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="23" />
-					<param name="label" value="$LOCALIZE[31613]" />
+					<param name="label" value="$LOCALIZE[40024]" />
 					<param name="visible">Window.IsActive(managevideoextras)</param>
 				</include>
 				<include content="DefaultDialogButton">
@@ -116,7 +116,7 @@
 				</include>
 				<include content="DefaultDialogButton">
 					<param name="id" value="25" />
-					<param name="label" value="$LOCALIZE[31614]" />
+					<param name="label" value="$LOCALIZE[40025]" />
 					<param name="visible">Window.IsActive(managevideoversions)</param>
 				</include>
 			</control>

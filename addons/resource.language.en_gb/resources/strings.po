@@ -23883,7 +23883,25 @@ msgctxt "#40022"
 msgid "Manage {0:s}"
 msgstr ""
 
-#empty string with id 40023
+#. Button label to add a video version
+#: addons/skin.estuary/xml/DialogVideoVersion.xml
+msgctxt "#40023"
+msgid "Add version"
+msgstr ""
+
+#. Button label to add video extras
+#: addons/skin.estuary/xml/DialogVideoVersion.xml
+msgctxt "#40024"
+msgid "Add extra"
+msgstr ""
+
+#. Button label to make a video version the default version
+#: addons/skin.estuary/xml/DialogVideoVersion.xml
+msgctxt "#40025"
+msgid "Set default"
+msgstr ""
+
+#empty strings with id 40026 to 40199
 
 #. Select default video version setting
 #: system/settings/settings.xml

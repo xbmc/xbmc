@@ -921,27 +921,3 @@ msgstr ""
 msgctxt "#31611"
 msgid "System"
 msgstr ""
-
-#: /xml/DialogVideoVersion.xml
-#. Video version dialog button
-msgctxt "#31612"
-msgid "Add version"
-msgstr ""
-
-#: /xml/DialogVideoVersion.xml
-#. Video version dialog button
-msgctxt "#31613"
-msgid "Add extras"
-msgstr ""
-
-#: /xml/DialogVideoVersion.xml
-#. Video version dialog button
-msgctxt "#31614"
-msgid "Set default"
-msgstr ""
-
-#: /xml/DialogVideoVersion.xml
-#. Video version dialog button
-msgctxt "#31615"
-msgid "Extras"
-msgstr ""
