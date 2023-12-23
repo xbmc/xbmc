@@ -70,18 +70,8 @@ bool CGUIDialogVideoManager::OnMessage(CGUIMessage& message)
         const int action{message.GetParam1()};
         if (action == ACTION_SELECT_ITEM || action == ACTION_MOUSE_LEFT_CLICK)
         {
-          CGUIMessage msg{GUI_MSG_ITEM_SELECTED, GetID(), control};
-          OnMessage(msg);
-
-          const int item{msg.GetParam1()};
-          if (item < 0 || item >= m_videoAssetsList->Size())
-            break;
-
-          m_selectedVideoAsset = m_videoAssetsList->Get(item);
-
-          UpdateButtons();
-
-          SET_CONTROL_FOCUS(CONTROL_BUTTON_PLAY, 0);
+          if (UpdateSelectedAsset())
+            SET_CONTROL_FOCUS(CONTROL_BUTTON_PLAY, 0);
         }
       }
       else if (control == CONTROL_BUTTON_PLAY)
@@ -105,6 +95,22 @@ bool CGUIDialogVideoManager::OnMessage(CGUIMessage& message)
   }
 
   return CGUIDialog::OnMessage(message);
+}
+
+bool CGUIDialogVideoManager::OnAction(const CAction& action)
+{
+  const int actionId{action.GetID()};
+  if (actionId == ACTION_MOVE_DOWN || actionId == ACTION_MOVE_UP || actionId == ACTION_PAGE_DOWN ||
+      actionId == ACTION_PAGE_UP || actionId == ACTION_FIRST_PAGE || actionId == ACTION_LAST_PAGE)
+  {
+    if (GetFocusedControlID() == CONTROL_LIST_ASSETS)
+    {
+      CGUIDialog::OnAction(action);
+      return UpdateSelectedAsset();
+    }
+  }
+
+  return CGUIDialog::OnAction(action);
 }
 
 void CGUIDialogVideoManager::OnInitWindow()
@@ -160,6 +166,22 @@ void CGUIDialogVideoManager::UpdateAssetsList()
       break;
     }
   }
+}
+
+bool CGUIDialogVideoManager::UpdateSelectedAsset()
+{
+  CGUIMessage msg{GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_LIST_ASSETS};
+  OnMessage(msg);
+
+  const int item{msg.GetParam1()};
+  if (item >= 0 && item < m_videoAssetsList->Size())
+  {
+    m_selectedVideoAsset = m_videoAssetsList->Get(item);
+    UpdateButtons();
+    UpdateAssetsList();
+    return true;
+  }
+  return false;
 }
 
 void CGUIDialogVideoManager::DisableRemove()

@@ -30,6 +30,7 @@ public:
 protected:
   void OnInitWindow() override;
   bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction& action) override;
 
   virtual VideoAssetType GetVideoAssetType() = 0;
   virtual int GetHeadingId() = 0;
@@ -58,4 +59,5 @@ private:
   CGUIDialogVideoManager() = delete;
 
   void CloseAll();
+  bool UpdateSelectedAsset();
 };
