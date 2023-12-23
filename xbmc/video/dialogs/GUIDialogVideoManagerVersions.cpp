@@ -284,6 +284,7 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
 
     // refresh data and controls
     Refresh();
+    UpdateButtons();
   }
 }
 
