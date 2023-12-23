@@ -37,6 +37,7 @@ protected:
   virtual void Clear();
   virtual void Refresh();
   virtual void UpdateButtons();
+  virtual void UpdateAssetsList();
 
   virtual void Play();
   virtual void Remove();

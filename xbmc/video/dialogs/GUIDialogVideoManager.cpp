@@ -109,6 +109,8 @@ bool CGUIDialogVideoManager::OnMessage(CGUIMessage& message)
 
 void CGUIDialogVideoManager::OnInitWindow()
 {
+  CGUIDialog::OnInitWindow();
+
   SET_CONTROL_LABEL(CONTROL_LABEL_TITLE,
                     StringUtils::Format(g_localizeStrings.Get(GetHeadingId()),
                                         m_videoAsset->GetVideoInfoTag()->GetTitle()));
@@ -117,8 +119,7 @@ void CGUIDialogVideoManager::OnInitWindow()
   OnMessage(msg);
 
   UpdateButtons();
-
-  CGUIDialog::OnInitWindow();
+  UpdateAssetsList();
 }
 
 void CGUIDialogVideoManager::Clear()
@@ -144,6 +145,20 @@ void CGUIDialogVideoManager::UpdateButtons()
     CONTROL_DISABLE(CONTROL_BUTTON_RENAME);
     CONTROL_DISABLE(CONTROL_BUTTON_REMOVE);
     CONTROL_DISABLE(CONTROL_BUTTON_PLAY);
+  }
+}
+
+void CGUIDialogVideoManager::UpdateAssetsList()
+{
+  // find new item in list and select it
+  for (int i = 0; i < m_videoAssetsList->Size(); ++i)
+  {
+    if (m_videoAssetsList->Get(i)->GetVideoInfoTag()->m_iDbId ==
+        m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId)
+    {
+      CONTROL_SELECT_ITEM(CONTROL_LIST_ASSETS, i);
+      break;
+    }
   }
 }
 
@@ -293,6 +308,9 @@ void CGUIDialogVideoManager::ChooseArt()
 void CGUIDialogVideoManager::SetSelectedVideoAsset(const std::shared_ptr<CFileItem>& asset)
 {
   m_selectedVideoAsset = asset;
+
+  UpdateButtons();
+  UpdateAssetsList();
 }
 
 int CGUIDialogVideoManager::SelectVideoAsset(const std::shared_ptr<CFileItem>& item)
