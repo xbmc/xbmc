@@ -414,6 +414,9 @@ bool CVideoPlayUsing::IsVisible(const CFileItem& itemIn) const
   if (itemIn.HasVideoVersions())
     return false; // display "Play version using..." if multiple versions are available.
 
+  if (itemIn.IsLiveTV())
+    return false;
+
   const CFileItem item{itemIn.GetItemToPlay()};
   const CPlayerCoreFactory& playerCoreFactory{CServiceBroker::GetPlayerCoreFactory()};
   return (GetPlayers(playerCoreFactory, item).size() > 1) && VIDEO_UTILS::IsItemPlayable(item);
