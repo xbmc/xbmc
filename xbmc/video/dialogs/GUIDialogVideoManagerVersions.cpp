@@ -98,6 +98,16 @@ void CGUIDialogVideoManagerVersions::UpdateButtons()
   }
 }
 
+void CGUIDialogVideoManagerVersions::UpdateDefaultVideoVersionSelection()
+{
+  // find new item in list and select it
+  const int defaultDbId{m_defaultVideoVersion->GetVideoInfoTag()->m_iDbId};
+  for (const auto& item : *m_videoAssetsList)
+  {
+    item->Select(item->GetVideoInfoTag()->m_iDbId == defaultDbId);
+  }
+}
+
 void CGUIDialogVideoManagerVersions::Refresh()
 {
   CGUIDialogVideoManager::Refresh();
@@ -106,6 +116,8 @@ void CGUIDialogVideoManagerVersions::Refresh()
   const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
   const VideoDbContentType itemType{m_videoAsset->GetVideoContentType()};
   m_database.GetDefaultVideoVersion(itemType, dbId, *m_defaultVideoVersion);
+
+  UpdateDefaultVideoVersionSelection();
 }
 
 void CGUIDialogVideoManagerVersions::SetVideoAsset(const std::shared_ptr<CFileItem>& item)
@@ -146,6 +158,8 @@ void CGUIDialogVideoManagerVersions::SetDefault()
   m_database.GetDefaultVideoVersion(itemType, dbId, *m_defaultVideoVersion);
 
   UpdateButtons();
+
+  UpdateDefaultVideoVersionSelection();
 }
 
 void CGUIDialogVideoManagerVersions::SetDefaultVideoVersion(const CFileItem& version)
