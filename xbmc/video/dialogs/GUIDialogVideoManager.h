@@ -32,6 +32,7 @@ protected:
   bool OnMessage(CGUIMessage& message) override;
 
   virtual VideoAssetType GetVideoAssetType() = 0;
+  virtual int GetHeadingId() = 0;
 
   virtual void Clear();
   virtual void Refresh();

@@ -31,6 +31,7 @@ protected:
   bool OnMessage(CGUIMessage& message) override;
 
   VideoAssetType GetVideoAssetType() override;
+  int GetHeadingId() override { return 40025; } // Extras:
 
   void UpdateButtons() override;
 

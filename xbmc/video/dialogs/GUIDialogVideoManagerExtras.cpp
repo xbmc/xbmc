@@ -79,8 +79,6 @@ void CGUIDialogVideoManagerExtras::UpdateButtons()
 void CGUIDialogVideoManagerExtras::AddVideoExtra()
 {
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
-  const std::string title{
-      StringUtils::Format(g_localizeStrings.Get(40015), CMediaTypes::GetLocalization(mediaType))};
 
   // prompt to choose a video file
   VECSOURCES sources{*CMediaSourceSettings::GetInstance().GetSources("files")};
@@ -90,7 +88,8 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
 
   std::string path;
   if (CGUIDialogFileBrowser::ShowAndGetFile(
-          sources, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), title, path))
+          sources, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+          g_localizeStrings.Get(40015), path))
   {
     std::string typeVideoVersion;
     std::string videoTitle;
@@ -113,9 +112,10 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
                       [idFile](const std::shared_ptr<CFileItem>& version)
                       { return version->GetVideoInfoTag()->m_iDbId == idFile; }))
       {
-        CGUIDialogOK::ShowAndGetInput(
-            title, StringUtils::Format(g_localizeStrings.Get(40016), typeVideoVersion,
-                                       CMediaTypes::GetLocalization(mediaType)));
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(40015),
+                                      StringUtils::Format(g_localizeStrings.Get(40016),
+                                                          CMediaTypes::GetLocalization(mediaType),
+                                                          typeVideoVersion));
         return;
       }
 
@@ -127,9 +127,10 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
         return;
 
       if (!CGUIDialogYesNo::ShowAndGetInput(
-              title, StringUtils::Format(g_localizeStrings.Get(40017), typeVideoVersion,
-                                         CMediaTypes::GetLocalization(mediaType), videoTitle,
-                                         CMediaTypes::GetLocalization(mediaType))))
+              g_localizeStrings.Get(40015),
+              StringUtils::Format(g_localizeStrings.Get(40017),
+                                  CMediaTypes::GetLocalization(mediaType), videoTitle,
+                                  typeVideoVersion, CMediaTypes::GetLocalization(mediaType))))
       {
         return;
       }

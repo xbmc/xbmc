@@ -109,13 +109,9 @@ bool CGUIDialogVideoManager::OnMessage(CGUIMessage& message)
 
 void CGUIDialogVideoManager::OnInitWindow()
 {
-  std::string title{m_videoAsset->GetVideoInfoTag()->GetTitle()};
-
-  const int year{m_videoAsset->GetVideoInfoTag()->GetYear()};
-  if (year != 0)
-    title = StringUtils::Format("{} ({})", title, year);
-
-  SET_CONTROL_LABEL(CONTROL_LABEL_TITLE, StringUtils::Format(g_localizeStrings.Get(40022), title));
+  SET_CONTROL_LABEL(CONTROL_LABEL_TITLE,
+                    StringUtils::Format(g_localizeStrings.Get(GetHeadingId()),
+                                        m_videoAsset->GetVideoInfoTag()->GetTitle()));
 
   CGUIMessage msg{GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_ASSETS, 0, 0, m_videoAssetsList.get()};
   OnMessage(msg);
@@ -327,10 +323,6 @@ int CGUIDialogVideoManager::SelectVideoAsset(const std::shared_ptr<CFileItem>& i
   CFileItemList list;
   videodb.GetVideoVersionTypes(itemType, list);
 
-  const std::string mediaType{item->GetVideoInfoTag()->m_type};
-  const std::string title{
-      StringUtils::Format(g_localizeStrings.Get(40003), CMediaTypes::GetLocalization(mediaType))};
-
   int assetId{-1};
   while (true)
   {
@@ -338,7 +330,7 @@ int CGUIDialogVideoManager::SelectVideoAsset(const std::shared_ptr<CFileItem>& i
 
     dialog->Reset();
     dialog->SetItems(list);
-    dialog->SetHeading(title);
+    dialog->SetHeading(40208);
     dialog->EnableButton(true, 40004);
     dialog->Open();
 

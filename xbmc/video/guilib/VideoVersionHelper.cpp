@@ -111,7 +111,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoVersion()
     return {};
   }
 
-  return ChooseVideo(*dialog, 40210 /* Versions */, 40211 /* Extras */, m_videoVersions,
+  return ChooseVideo(*dialog, 40024 /* Versions */, 40025 /* Extras */, m_videoVersions,
                      m_videoExtras);
 }
 
@@ -125,7 +125,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoExtra()
     return {};
   }
 
-  return ChooseVideo(*dialog, 40211 /* Extras */, 40210 /* Versions */, m_videoExtras,
+  return ChooseVideo(*dialog, 40025 /* Extras */, 40024 /* Versions */, m_videoExtras,
                      m_videoVersions);
 }
 
@@ -145,7 +145,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& di
   dialog.Reset();
 
   const std::string heading{
-      StringUtils::Format("{} : {}", g_localizeStrings.Get(headingId), m_item->GetLabel())};
+      StringUtils::Format(g_localizeStrings.Get(headingId), m_item->GetVideoInfoTag()->GetTitle())};
   dialog.SetHeading(heading);
 
   dialog.EnableButton(!itemsToSwitchTo.IsEmpty(), buttonId);

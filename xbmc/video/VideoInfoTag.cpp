@@ -1528,7 +1528,7 @@ void CVideoInfoTag::SetTitle(std::string title)
   m_strTitle = Trim(std::move(title));
 }
 
-std::string const &CVideoInfoTag::GetTitle()
+std::string const& CVideoInfoTag::GetTitle() const
 {
   return m_strTitle;
 }

@@ -1071,17 +1071,10 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
     buttons.Add(CONTEXT_BUTTON_SET_MOVIESET, 20465);
 
     if (!item->GetVideoInfoTag()->HasVideoVersions())
-    {
-      // set video version
-      buttons.Add(
-          CONTEXT_BUTTON_CONVERT_VIDEOVERSION,
-          StringUtils::Format(g_localizeStrings.Get(40021), CMediaTypes::GetLocalization(type)));
-    }
+      buttons.Add(CONTEXT_BUTTON_CONVERT_VIDEOVERSION, 40021); // Convert to version
 
-    // manage video version
-    buttons.Add(
-        CONTEXT_BUTTON_MANAGE_VIDEOVERSION,
-        StringUtils::Format(g_localizeStrings.Get(40001), CMediaTypes::GetLocalization(type)));
+    // manage video versions
+    buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOVERSION, 40001); // Manage versions
   }
 
   if (type == MediaTypeEpisode &&

@@ -175,9 +175,6 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
   const MediaType mediaType{m_videoAsset->GetVideoInfoTag()->m_type};
   const VideoDbContentType itemType{m_videoAsset->GetVideoContentType()};
 
-  const std::string title{
-      StringUtils::Format(g_localizeStrings.Get(40014), CMediaTypes::GetLocalization(mediaType))};
-
   // prompt to choose a video file
   VECSOURCES sources{*CMediaSourceSettings::GetInstance().GetSources("files")};
 
@@ -186,7 +183,8 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
 
   std::string path;
   if (CGUIDialogFileBrowser::ShowAndGetFile(
-          sources, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(), title, path))
+          sources, CServiceBroker::GetFileExtensionProvider().GetVideoExtensions(),
+          g_localizeStrings.Get(40014), path))
   {
     std::string typeVideoVersion;
     std::string videoTitle;
@@ -206,9 +204,10 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
                       [idFile](const std::shared_ptr<CFileItem>& version)
                       { return version->GetVideoInfoTag()->m_iDbId == idFile; }))
       {
-        CGUIDialogOK::ShowAndGetInput(
-            title, StringUtils::Format(g_localizeStrings.Get(40016), typeVideoVersion,
-                                       CMediaTypes::GetLocalization(mediaType)));
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(40014),
+                                      StringUtils::Format(g_localizeStrings.Get(40016),
+                                                          CMediaTypes::GetLocalization(mediaType),
+                                                          typeVideoVersion));
         return;
       }
 
@@ -220,9 +219,10 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
         return;
 
       if (!CGUIDialogYesNo::ShowAndGetInput(
-              title, StringUtils::Format(g_localizeStrings.Get(40017), typeVideoVersion,
-                                         CMediaTypes::GetLocalization(mediaType), videoTitle,
-                                         CMediaTypes::GetLocalization(mediaType))))
+              g_localizeStrings.Get(40014),
+              StringUtils::Format(g_localizeStrings.Get(40017),
+                                  CMediaTypes::GetLocalization(mediaType), videoTitle,
+                                  typeVideoVersion, CMediaTypes::GetLocalization(mediaType))))
       {
         return;
       }
@@ -235,8 +235,9 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
         if (list.Size() > 1)
         {
           CGUIDialogOK::ShowAndGetInput(
-              title, StringUtils::Format(g_localizeStrings.Get(40019), typeVideoVersion,
-                                         CMediaTypes::GetLocalization(mediaType), videoTitle));
+              g_localizeStrings.Get(40014),
+              StringUtils::Format(g_localizeStrings.Get(40019), typeVideoVersion,
+                                  CMediaTypes::GetLocalization(mediaType), videoTitle));
           return;
         }
         else
