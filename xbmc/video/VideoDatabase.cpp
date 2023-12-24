@@ -4297,8 +4297,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(const dbiplus::sql_record* cons
   details.m_iDbId = idMovie;
   details.m_type = MediaTypeMovie;
 
-  details.m_hasVideoVersions = record->at(VIDEODB_DETAILS_MOVIE_HASVERSIONS).get_asBool();
-  details.m_hasVideoExtras = record->at(VIDEODB_DETAILS_MOVIE_HASEXTRAS).get_asBool();
+  details.SetHasVideoVersions(record->at(VIDEODB_DETAILS_MOVIE_HASVERSIONS).get_asBool());
+  details.SetHasVideoExtras(record->at(VIDEODB_DETAILS_MOVIE_HASEXTRAS).get_asBool());
   details.m_set.id = record->at(VIDEODB_DETAILS_MOVIE_SET_ID).get_asInt();
   details.m_set.title = record->at(VIDEODB_DETAILS_MOVIE_SET_NAME).get_asString();
   details.m_set.overview = record->at(VIDEODB_DETAILS_MOVIE_SET_OVERVIEW).get_asString();
@@ -8025,10 +8025,10 @@ bool CVideoDatabase::GetMoviesByWhere(const std::string& strBaseDir, const Filte
           const int idVideoVersion = value.asInteger();
           if (idVideoVersion > 0)
           {
-            pItem->GetVideoInfoTag()->m_hasVideoVersions = false;
-            pItem->GetVideoInfoTag()->m_hasVideoExtras = false;
-            pItem->GetVideoInfoTag()->m_videoAssetId = idVideoVersion;
-            pItem->GetVideoInfoTag()->m_videoAssetTitle = GetVideoVersionById(idVideoVersion);
+            pItem->GetVideoInfoTag()->SetHasVideoVersions(false);
+            pItem->GetVideoInfoTag()->SetHasVideoExtras(false);
+            pItem->GetVideoInfoTag()->GetAssetInfo().SetId(idVideoVersion);
+            pItem->GetVideoInfoTag()->GetAssetInfo().SetTitle(GetVideoVersionById(idVideoVersion));
             pItem->GetVideoInfoTag()->SetFileNameAndPath(GetFilenameAndPathById(
                 GetVideoVersionFile(VideoDbContentType::MOVIES, movie.m_iDbId, idVideoVersion)));
           }
@@ -11853,10 +11853,10 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
       {
         infoTag.m_type = MediaTypeVideoVersion;
         infoTag.m_iDbId = idFile;
-        infoTag.m_videoAssetId = id;
-        infoTag.m_videoAssetTitle = name;
+        infoTag.GetAssetInfo().SetId(id);
+        infoTag.GetAssetInfo().SetTitle(name);
+        infoTag.GetAssetInfo().SetType(videoAssetType);
         infoTag.m_strTitle = name;
-        infoTag.m_videoAssetType = videoAssetType;
 
         infoTag.m_strPictureURL = videoItem.GetVideoInfoTag()->m_strPictureURL;
         infoTag.m_fanart = videoItem.GetVideoInfoTag()->m_fanart;
@@ -11928,10 +11928,10 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
       {
         infoTag.m_type = MediaTypeVideoVersion;
         infoTag.m_iDbId = idFile;
-        infoTag.m_videoAssetId = id;
-        infoTag.m_videoAssetTitle = name;
+        infoTag.GetAssetInfo().SetId(id);
+        infoTag.GetAssetInfo().SetTitle(name);
+        infoTag.GetAssetInfo().SetType(videoAssetType);
         infoTag.m_strTitle = name;
-        infoTag.m_videoAssetType = videoAssetType;
 
         item.SetFromVideoInfoTag(infoTag);
         item.m_strTitle = name;
@@ -12357,8 +12357,8 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent, CFileIte
       const auto item{std::make_shared<CFileItem>(name)};
       item->GetVideoInfoTag()->m_type = MediaTypeVideoVersion;
       item->GetVideoInfoTag()->m_iDbId = id;
-      item->GetVideoInfoTag()->m_videoAssetId = id;
-      item->GetVideoInfoTag()->m_videoAssetTitle = name;
+      item->GetVideoInfoTag()->GetAssetInfo().SetId(id);
+      item->GetVideoInfoTag()->GetAssetInfo().SetTitle(name);
       item->GetVideoInfoTag()->m_strTitle = name;
 
       item->m_strTitle = name;

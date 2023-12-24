@@ -172,7 +172,7 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
     if (!item->GetProperty("force_choose_video_version").asBoolean(false))
     {
       // select the specified video version
-      if (item->GetVideoInfoTag()->m_videoAssetId > 0)
+      if (item->GetVideoInfoTag()->GetAssetInfo().GetId() > 0)
         videoVersion = item;
 
       if (!videoVersion)

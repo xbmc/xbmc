@@ -125,7 +125,7 @@ void CGUIDialogVideoManagerVersions::Remove()
     CGUIDialogOK::ShowAndGetInput(
         CVariant(40018),
         StringUtils::Format(g_localizeStrings.Get(40019),
-                            m_selectedVideoAsset->GetVideoInfoTag()->m_videoAssetTitle,
+                            m_selectedVideoAsset->GetVideoInfoTag()->GetAssetInfo().GetTitle(),
                             CMediaTypes::GetLocalization(mediaType),
                             m_videoAsset->GetVideoInfoTag()->GetTitle()));
     return;

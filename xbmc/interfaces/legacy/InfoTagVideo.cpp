@@ -943,7 +943,7 @@ namespace XBMCAddon
 
     void InfoTagVideo::setVideoAssetTitleRaw(CVideoInfoTag* infoTag, const String& videoAssetTitle)
     {
-      infoTag->SetVideoAssetTitle(videoAssetTitle);
+      infoTag->GetAssetInfo().SetTitle(videoAssetTitle);
     }
 
     void InfoTagVideo::setProductionCodeRaw(CVideoInfoTag* infoTag, const String& productionCode)

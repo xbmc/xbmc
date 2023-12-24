@@ -254,7 +254,7 @@ void CGUIDialogVideoManager::Remove()
   if (!CGUIDialogYesNo::ShowAndGetInput(
           CVariant(40018),
           StringUtils::Format(g_localizeStrings.Get(40020),
-                              m_selectedVideoAsset->GetVideoInfoTag()->m_videoAssetTitle)))
+                              m_selectedVideoAsset->GetVideoInfoTag()->GetAssetInfo().GetTitle())))
   {
     return;
   }
@@ -347,8 +347,8 @@ int CGUIDialogVideoManager::SelectVideoAsset(const std::shared_ptr<CFileItem>& i
     else if (dialog->IsConfirmed())
     {
       const std::shared_ptr<CFileItem> selectedItem{dialog->GetSelectedFileItem()};
-      assetId = selectedItem->GetVideoInfoTag()->m_videoAssetId;
-      assetTitle = selectedItem->GetVideoInfoTag()->m_videoAssetTitle;
+      assetId = selectedItem->GetVideoInfoTag()->GetAssetInfo().GetId();
+      assetTitle = selectedItem->GetVideoInfoTag()->GetAssetInfo().GetTitle();
     }
     else
       return -1;
