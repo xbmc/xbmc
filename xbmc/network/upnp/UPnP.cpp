@@ -390,57 +390,79 @@ public:
   } while(0)
 
   void OnStopResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
-  { CHECK_USERDATA_RETURN(userdata);
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnStopResult(res, device, userdata);
   }
 
   void OnSetPlayModeResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
-  { CHECK_USERDATA_RETURN(userdata);
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSetPlayModeResult(res, device, userdata);
   }
 
   void OnSetAVTransportURIResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
-  { CHECK_USERDATA_RETURN(userdata);
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSetAVTransportURIResult(res, device, userdata);
   }
 
   void OnSeekResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
-  { CHECK_USERDATA_RETURN(userdata);
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnSeekResult(res, device, userdata);
   }
 
   void OnPreviousResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
-  { CHECK_USERDATA_RETURN(userdata);
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPreviousResult(res, device, userdata);
   }
 
   void OnPlayResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
-  { CHECK_USERDATA_RETURN(userdata);
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPlayResult(res, device, userdata);
   }
 
   void OnPauseResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
-  { CHECK_USERDATA_RETURN(userdata);
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnPauseResult(res, device, userdata);
   }
 
   void OnNextResult(NPT_Result res, PLT_DeviceDataReference& device, void* userdata) override
-  { CHECK_USERDATA_RETURN(userdata);
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnNextResult(res, device, userdata);
   }
 
   void OnGetMediaInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_MediaInfo* info, void* userdata) override
-  { CHECK_USERDATA_RETURN(userdata);
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetMediaInfoResult(res, device, info, userdata);
   }
 
   void OnGetPositionInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_PositionInfo* info, void* userdata) override
-  { CHECK_USERDATA_RETURN(userdata);
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetPositionInfoResult(res, device, info, userdata);
   }
 
   void OnGetTransportInfoResult(NPT_Result res, PLT_DeviceDataReference& device, PLT_TransportInfo* info, void* userdata) override
-  { CHECK_USERDATA_RETURN(userdata);
+  {
+    NPT_AutoLock lock(g_UserDataLock);
+    CHECK_USERDATA_RETURN(userdata);
     static_cast<PLT_MediaControllerDelegate*>(userdata)->OnGetTransportInfoResult(res, device, info, userdata);
   }
 
