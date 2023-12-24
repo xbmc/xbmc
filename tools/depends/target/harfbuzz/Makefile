@@ -1,13 +1,5 @@
-include ../../Makefile.include
-DEPS = ../../Makefile.include Makefile ../../download-files.include
-
-# lib name, version
-LIBNAME=harfbuzz
-VERSION=3.1.1
-SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tar.gz
-SHA512=ccb1c840d07e28871893c40b2bb687cc78dfd25992ee20192f1faf8cae4356f401abd5947d7480a268edea10dd9f1d1d7e113b29b6e2d958220bf53799ae01b0
-include ../../download-files.include
+include ../../Makefile.include HARFBUZZ-VERSION ../../download-files.include
+DEPS = ../../Makefile.include Makefile HARFBUZZ-VERSION ../../download-files.include
 
 MESON_BUILD_TYPE=release
 
