@@ -97,3 +97,14 @@
  
  typedef struct winbindd_gr {
  	fstring gr_name;
+--- a/lib/replace/wscript
++++ b/lib/replace/wscript
+@@ -225,7 +225,7 @@
+                             headers='sys/socket.h netinet/in.h arpa/inet.h netdb.h')
+         conf.DEFINE('REPLACE_REQUIRES_LIBSOCKET_LIBNSL', 1)
+ 
+-    conf.CHECK_FUNCS('memset_s memset_explicit')
++    conf.undefine('HAVE_MEMSET_EXPLICIT')
+ 
+     conf.CHECK_CODE('''
+                     #include <string.h>
