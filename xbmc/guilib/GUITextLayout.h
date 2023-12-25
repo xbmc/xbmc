@@ -44,7 +44,6 @@ public:
   CGUIString(iString start, iString end, bool carriageReturn);
 
   std::string GetAsString() const;
-  std::wstring GetAsWstring() const;
 
   // The text is UTF-16 and the data stored in a character_t hold multiple informations by bits:
   // <16 bits: are unicode code bits
@@ -99,7 +98,9 @@ public:
   float GetTextWidth() const { return m_textWidth; }
 
   float GetTextWidth(const std::wstring &text) const;
-  
+
+  float GetTextWidth(const vecText& text) const;
+
   /*! \brief Returns the precalculated height of the text to be rendered (in constant time).
    \return height of text
   */

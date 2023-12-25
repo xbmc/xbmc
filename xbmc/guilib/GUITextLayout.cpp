@@ -29,18 +29,6 @@ std::string CGUIString::GetAsString() const
   return text;
 }
 
-std::wstring CGUIString::GetAsWstring() const
-{
-  std::wstring text;
-  text.reserve(m_text.size());
-  // Get text without style
-  for (const auto& it : m_text)
-  {
-    text += static_cast<wchar_t>(it & 0xffff);
-  }
-  return text;
-}
-
 CGUITextLayout::CGUITextLayout(CGUIFont *font, bool wrap, float fHeight, CGUIFont *borderFont)
 {
   m_varFont = m_font = font;
@@ -694,6 +682,11 @@ float CGUITextLayout::GetTextWidth(const std::wstring &text) const
   vecText utf32;
   AppendToUTF32(text, (m_font->GetStyle() & FONT_STYLE_MASK) << 24, utf32);
   return m_font->GetTextWidth(utf32);
+}
+
+float CGUITextLayout::GetTextWidth(const vecText& text) const
+{
+  return m_font->GetTextWidth(text);
 }
 
 std::string CGUITextLayout::GetText() const

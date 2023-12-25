@@ -252,7 +252,7 @@ void CGUITextBox::Render()
         {
           // We need to adjust the posX in similar way the CGUILabel recalculate the render rect
           // see CGUILabel::UpdateRenderRect()
-          linePosX -= GetTextWidth(lineString.GetAsWstring());
+          linePosX -= GetTextWidth(lineString.m_text);
         }
 
         m_font->DrawText(linePosX, posY, m_colors, m_label.shadowColor, lineString.m_text, align,
