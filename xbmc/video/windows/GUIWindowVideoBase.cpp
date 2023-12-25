@@ -1080,7 +1080,7 @@ bool CGUIWindowVideoBase::PlayItem(const std::shared_ptr<CFileItem>& pItem,
   else if (pItem->IsPlayList())
   {
     // load the playlist the old way
-    LoadPlayList(pItem->GetPath(), PLAYLIST::TYPE_VIDEO);
+    LoadPlayList(pItem->GetDynPath(), PLAYLIST::TYPE_VIDEO);
     return true;
   }
   else if (m_guiState.get() && m_guiState->AutoPlayNextItem() && !g_partyModeManager.IsEnabled())
