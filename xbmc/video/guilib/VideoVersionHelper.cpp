@@ -20,8 +20,8 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
-#include "video/VideoVersionTypes.h"
 
 using namespace VIDEO::GUILIB;
 
@@ -32,6 +32,8 @@ class CVideoChooser
 public:
   explicit CVideoChooser(const std::shared_ptr<const CFileItem>& item) : m_item(item) {}
   virtual ~CVideoChooser() = default;
+
+  void EnableExtras(bool enable) { m_enableExtras = enable; }
 
   std::shared_ptr<const CFileItem> ChooseVideo();
 
@@ -46,6 +48,7 @@ private:
                                                const CFileItemList& itemsToSwitchTo);
 
   const std::shared_ptr<const CFileItem> m_item;
+  bool m_enableExtras{false};
   bool m_switchType{false};
   CFileItemList m_videoVersions;
   CFileItemList m_videoExtras;
@@ -69,22 +72,25 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo()
   }
 
   db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
-                      m_videoVersions, VideoVersionItemType::PRIMARY);
-  db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
-                      m_videoExtras, VideoVersionItemType::EXTRAS);
+                      m_videoVersions, VideoAssetType::VERSION);
+  if (m_enableExtras)
+    db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
+                        m_videoExtras, VideoAssetType::EXTRAS);
+  else
+    m_videoExtras.Clear();
 
-  VideoVersionItemType itemType{VideoVersionItemType::PRIMARY};
+  VideoAssetType itemType{VideoAssetType::VERSION};
   while (true)
   {
-    if (itemType == VideoVersionItemType::PRIMARY)
+    if (itemType == VideoAssetType::VERSION)
     {
       result = ChooseVideoVersion();
-      itemType = VideoVersionItemType::EXTRAS;
+      itemType = VideoAssetType::EXTRAS;
     }
     else
     {
       result = ChooseVideoExtra();
-      itemType = VideoVersionItemType::PRIMARY;
+      itemType = VideoAssetType::VERSION;
     }
 
     if (!m_switchType)
@@ -105,7 +111,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoVersion()
     return {};
   }
 
-  return ChooseVideo(*dialog, 40210 /* Versions */, 40211 /* Extras */, m_videoVersions,
+  return ChooseVideo(*dialog, 40024 /* Versions */, 40025 /* Extras */, m_videoVersions,
                      m_videoExtras);
 }
 
@@ -119,7 +125,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoExtra()
     return {};
   }
 
-  return ChooseVideo(*dialog, 40211 /* Extras */, 40210 /* Versions */, m_videoExtras,
+  return ChooseVideo(*dialog, 40025 /* Extras */, 40024 /* Versions */, m_videoExtras,
                      m_videoVersions);
 }
 
@@ -139,7 +145,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& di
   dialog.Reset();
 
   const std::string heading{
-      StringUtils::Format("{} : {}", g_localizeStrings.Get(headingId), m_item->GetLabel())};
+      StringUtils::Format(g_localizeStrings.Get(headingId), m_item->GetVideoInfoTag()->GetTitle())};
   dialog.SetHeading(heading);
 
   dialog.EnableButton(!itemsToSwitchTo.IsEmpty(), buttonId);
@@ -166,7 +172,7 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
     if (!item->GetProperty("force_choose_video_version").asBoolean(false))
     {
       // select the specified video version
-      if (item->GetVideoInfoTag()->m_idVideoVersion > 0)
+      if (item->GetVideoInfoTag()->GetAssetInfo().GetId() > 0)
         videoVersion = item;
 
       if (!videoVersion)
@@ -197,7 +203,9 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
     if (!videoVersion && (item->GetProperty("force_choose_video_version").asBoolean(false) ||
                           !item->GetProperty("prohibit_choose_video_version").asBoolean(false)))
     {
-      const auto result{CVideoChooser(item).ChooseVideo()};
+      CVideoChooser chooser{item};
+      chooser.EnableExtras(false);
+      const auto result{chooser.ChooseVideo()};
       if (result)
         videoVersion = result;
       else

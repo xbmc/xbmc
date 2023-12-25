@@ -8,7 +8,7 @@
 
 #pragma once
 
-enum class VideoVersionTypeOwner
+enum class VideoAssetTypeOwner
 {
   UNKNOWN = -1,
   SYSTEM = 0,
@@ -16,10 +16,10 @@ enum class VideoVersionTypeOwner
   USER = 2
 };
 
-enum class VideoVersionItemType
+enum class VideoAssetType
 {
   UNKNOWN = -1,
-  PRIMARY = 0,
+  VERSION = 0,
   EXTRAS = 1
 };
 

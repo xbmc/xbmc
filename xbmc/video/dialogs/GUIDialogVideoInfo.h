@@ -89,7 +89,8 @@ protected:
    * \param pItem Search result item
    */
   void OnSearchItemFound(const CFileItem* pItem);
-  void OnVideoVersion();
+  void OnManageVideoVersions();
+  void OnManageVideoExtras();
   void Play(bool resume = false);
   void OnGetArt();
   void OnGetFanart();

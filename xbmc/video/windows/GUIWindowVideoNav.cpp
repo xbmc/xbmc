@@ -41,7 +41,7 @@
 #include "video/VideoInfoScanner.h"
 #include "video/VideoLibraryQueue.h"
 #include "video/dialogs/GUIDialogVideoInfo.h"
-#include "video/dialogs/GUIDialogVideoVersion.h"
+#include "video/dialogs/GUIDialogVideoManagerVersions.h"
 #include "view/GUIViewState.h"
 
 #include <utility>
@@ -899,7 +899,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CONTEXT_BUTTON ret =
           item->GetVideoInfoTag()->m_type == MediaTypeVideoVersion
-              ? (CONTEXT_BUTTON)CGUIDialogVideoVersion::ManageVideoVersionContextMenu(item)
+              ? (CONTEXT_BUTTON)CGUIDialogVideoManagerVersions::ManageVideoVersionContextMenu(item)
               : (CONTEXT_BUTTON)CGUIDialogVideoInfo::ManageVideoItem(item);
 
       if (ret != CONTEXT_BUTTON_CANCELLED)
@@ -1057,7 +1057,7 @@ bool CGUIWindowVideoNav::OnClick(int iItem, const std::string &player)
       return true;
     }
 
-    CGUIDialogVideoVersion::NewVideoVersion();
+    CGUIDialogVideoManagerVersions::NewVideoVersion();
 
     Refresh(true);
     return true;

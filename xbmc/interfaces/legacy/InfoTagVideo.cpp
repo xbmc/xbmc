@@ -584,9 +584,9 @@ namespace XBMCAddon
       setTagsRaw(infoTag, std::move(tags));
     }
 
-    void InfoTagVideo::setVideoVersion(const String& videoVersion)
+    void InfoTagVideo::setVideoAssetTitle(const String& videoAssetTitle)
     {
-      setVideoVersionRaw(infoTag, videoVersion);
+      setVideoAssetTitleRaw(infoTag, videoAssetTitle);
     }
 
     void InfoTagVideo::setProductionCode(const String& productionCode)
@@ -941,9 +941,9 @@ namespace XBMCAddon
       infoTag->SetTags(std::move(tags));
     }
 
-    void InfoTagVideo::setVideoVersionRaw(CVideoInfoTag* infoTag, const String& videoVersion)
+    void InfoTagVideo::setVideoAssetTitleRaw(CVideoInfoTag* infoTag, const String& videoAssetTitle)
     {
-      infoTag->SetVideoVersion(videoVersion);
+      infoTag->GetAssetInfo().SetTitle(videoAssetTitle);
     }
 
     void InfoTagVideo::setProductionCodeRaw(CVideoInfoTag* infoTag, const String& productionCode)

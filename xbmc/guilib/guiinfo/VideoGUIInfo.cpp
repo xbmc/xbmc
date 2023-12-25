@@ -36,6 +36,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoInfoTag.h"
+#include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 
 #include <math.h>
@@ -766,10 +767,10 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
         value = tag->m_type == MediaTypeVideoCollection;
         return true;
       case LISTITEM_HASVIDEOVERSIONS:
-        value = tag->m_hasVideoVersions;
+        value = tag->HasVideoVersions();
         return true;
-      case LISTITEM_ISVIDEOEXTRAS:
-        value = tag->IsVideoExtras();
+      case LISTITEM_ISVIDEOEXTRA:
+        value = (tag->GetAssetInfo().GetType() == VideoAssetType::EXTRAS);
         return true;
     }
   }

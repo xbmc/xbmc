@@ -42,9 +42,10 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
-#include "video/VideoVersionTypes.h"
-#include "video/dialogs/GUIDialogVideoVersion.h"
+#include "video/dialogs/GUIDialogVideoManagerExtras.h"
+#include "video/dialogs/GUIDialogVideoManagerVersions.h"
 
 #include <algorithm>
 #include <memory>
@@ -2449,10 +2450,10 @@ namespace VIDEO
           }
 
           const std::string typeVideoVersion =
-              CGUIDialogVideoVersion::GenerateExtrasVideoVersion(path, item->GetPath());
+              CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
 
           const int idVideoVersion =
-              m_database.AddVideoVersionType(typeVideoVersion, VideoVersionTypeOwner::AUTO);
+              m_database.AddVideoVersionType(typeVideoVersion, VideoAssetTypeOwner::AUTO);
 
           m_database.AddExtrasVideoVersion(ContentToVideoDbType(content), dbId, idVideoVersion,
                                            *item.get());
@@ -2466,6 +2467,6 @@ namespace VIDEO
 
   bool CVideoInfoScanner::ProcessVideoVersion(VideoDbContentType itemType, int dbId)
   {
-    return CGUIDialogVideoVersion::ProcessVideoVersion(itemType, dbId);
+    return CGUIDialogVideoManagerVersions::ProcessVideoVersion(itemType, dbId);
   }
 }

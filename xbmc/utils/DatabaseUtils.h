@@ -126,7 +126,7 @@ typedef enum
   FieldSubtitleLanguage,
   FieldProductionCode,
   FieldTag,
-  FieldVideoVersion,
+  FieldVideoAssetTitle,
   FieldChannelName,
   FieldChannelNumber,
   FieldInstruments,

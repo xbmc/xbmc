@@ -36,7 +36,7 @@ set(HEADERS Bookmark.h
             VideoLibraryQueue.h
             VideoThumbLoader.h
             VideoUtils.h
-            VideoVersionTypes.h
+            VideoManagerTypes.h
             ViewModeSettings.h)
 
 core_add_library(video)
