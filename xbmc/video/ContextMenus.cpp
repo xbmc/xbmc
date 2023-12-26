@@ -234,10 +234,10 @@ bool CVideoChooseVersion::IsVisible(const CFileItem& item) const
 bool CVideoChooseVersion::Execute(const std::shared_ptr<CFileItem>& item) const
 {
   // force selection dialog, regardless of any settings like 'Select default video version'
-  item->SetProperty("force_choose_video_version", true);
+  item->SetProperty("needs_resolved_video_version", true);
   CVideoSelectActionProcessor proc{item};
   const bool ret = proc.ProcessDefaultAction();
-  item->ClearProperty("force_choose_video_version");
+  item->ClearProperty("needs_resolved_video_version");
   return ret;
 }
 
@@ -348,12 +348,12 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
     if (mode == PlayMode::PLAY_VERSION_USING)
     {
       // force video version selection dialog
-      item->SetProperty("force_choose_video_version", true);
+      item->SetProperty("needs_resolved_video_version", true);
     }
     else
     {
       // play the given/default video version, if multiple versions are available
-      item->SetProperty("prohibit_choose_video_version", true);
+      item->SetProperty("has_resolved_video_version", true);
     }
 
     const bool choosePlayer{mode == PlayMode::PLAY_USING || mode == PlayMode::PLAY_VERSION_USING};
@@ -364,8 +364,8 @@ void SetPathAndPlay(const std::shared_ptr<CFileItem>& item, PlayMode mode)
     else // all other modes are actually PLAY
       proc.ProcessAction(VIDEO::GUILIB::ACTION_PLAY_FROM_BEGINNING);
 
-    item->ClearProperty("force_choose_video_version");
-    item->ClearProperty("prohibit_choose_video_version");
+    item->ClearProperty("needs_resolved_video_version");
+    item->ClearProperty("has_resolved_video_version");
   }
 }
 } // unnamed namespace
