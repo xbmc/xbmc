@@ -124,8 +124,7 @@ void CGUIDialogVideoManager::OnInitWindow()
   CGUIMessage msg{GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST_ASSETS, 0, 0, m_videoAssetsList.get()};
   OnMessage(msg);
 
-  UpdateButtons();
-  UpdateAssetsList();
+  UpdateControls();
 }
 
 void CGUIDialogVideoManager::Clear()
@@ -177,8 +176,7 @@ bool CGUIDialogVideoManager::UpdateSelectedAsset()
   if (item >= 0 && item < m_videoAssetsList->Size())
   {
     m_selectedVideoAsset = m_videoAssetsList->Get(item);
-    UpdateButtons();
-    UpdateAssetsList();
+    UpdateControls();
     return true;
   }
   return false;
@@ -192,6 +190,12 @@ void CGUIDialogVideoManager::DisableRemove()
 void CGUIDialogVideoManager::EnableRemove()
 {
   CONTROL_ENABLE(CONTROL_BUTTON_REMOVE);
+}
+
+void CGUIDialogVideoManager::UpdateControls()
+{
+  UpdateButtons();
+  UpdateAssetsList();
 }
 
 void CGUIDialogVideoManager::Refresh()
@@ -301,8 +305,7 @@ void CGUIDialogVideoManager::Remove()
 
   // refresh data and controls
   Refresh();
-
-  UpdateButtons();
+  UpdateControls();
 }
 
 void CGUIDialogVideoManager::Rename()
@@ -316,6 +319,7 @@ void CGUIDialogVideoManager::Rename()
 
   // refresh data and controls
   Refresh();
+  UpdateControls();
 }
 
 void CGUIDialogVideoManager::ChooseArt()
@@ -331,8 +335,7 @@ void CGUIDialogVideoManager::SetSelectedVideoAsset(const std::shared_ptr<CFileIt
 {
   m_selectedVideoAsset = asset;
 
-  UpdateButtons();
-  UpdateAssetsList();
+  UpdateControls();
 }
 
 int CGUIDialogVideoManager::SelectVideoAsset(const std::shared_ptr<CFileItem>& item)

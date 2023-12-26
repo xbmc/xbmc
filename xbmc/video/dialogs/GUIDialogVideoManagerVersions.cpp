@@ -157,8 +157,7 @@ void CGUIDialogVideoManagerVersions::SetDefault()
   // update our default video version
   m_database.GetDefaultVideoVersion(itemType, dbId, *m_defaultVideoVersion);
 
-  UpdateButtons();
-
+  UpdateControls();
   UpdateDefaultVideoVersionSelection();
 }
 
@@ -284,7 +283,7 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
 
     // refresh data and controls
     Refresh();
-    UpdateButtons();
+    UpdateControls();
   }
 }
 

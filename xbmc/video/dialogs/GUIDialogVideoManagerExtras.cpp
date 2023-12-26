@@ -166,7 +166,7 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
 
     // refresh data and controls
     Refresh();
-    UpdateButtons();
+    UpdateControls();
   }
 }
 

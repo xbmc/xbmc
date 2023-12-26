@@ -48,6 +48,8 @@ protected:
   void DisableRemove();
   void EnableRemove();
 
+  void UpdateControls();
+
   static int SelectVideoAsset(const std::shared_ptr<CFileItem>& item);
 
   CVideoDatabase m_database;
