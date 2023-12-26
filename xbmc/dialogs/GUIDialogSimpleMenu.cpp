@@ -127,6 +127,7 @@ bool CGUIDialogSimpleMenu::ShowPlaySelection(CFileItem& item, const std::string&
       item.SetDynPath(item_new->GetDynPath());
       item.SetProperty("get_stream_details_from_player", true);
       item.SetProperty("original_listitem_url", original_path);
+      item.GetVideoInfoTag()->m_iTrack = item_new->GetVideoInfoTag()->m_iTrack; // Save playlist
       return true;
     }
 

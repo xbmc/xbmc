@@ -153,7 +153,7 @@ void CVideoDatabase::CreateTables()
 
     columns += column;
   }
-  columns += ", idShow integer, userrating integer, idSeason integer)";
+  columns += ", idShow integer, userrating integer, idSeason integer, idStream integer)";
   m_pDS->exec(columns);
 
   CLog::Log(LOGINFO, "create tvshowlinkpath table");
@@ -175,11 +175,12 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec(columns);
 
   CLog::Log(LOGINFO, "create streaminfo table");
-  m_pDS->exec("CREATE TABLE streamdetails (idFile integer, iStreamType integer, "
-    "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
-    "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
-    "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, strVideoLanguage text, "
-    "strHdrType text)");
+  m_pDS->exec("CREATE TABLE streamdetails (idStream integer primary key, idFile integer, "
+              "iStreamType integer, "
+              "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
+              "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
+              "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, "
+              "strVideoLanguage text, strHdrType text, playlist integer)");
 
   CLog::Log(LOGINFO, "create sets table");
   m_pDS->exec("CREATE TABLE sets ( idSet integer primary key, strSet text, strOverview text)");
@@ -2654,7 +2655,7 @@ int CVideoDatabase::SetDetailsForMovie(CVideoInfoTag& details,
     }
 
     if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details));
+      SetStreamDetailsForFileId(details, GetAndFillFileId(details));
 
     SetArtForItem(idMovie, MediaTypeMovie, artwork);
 
@@ -3048,8 +3049,9 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
     // add unique ids
     details.m_iIdUniqueID = AddUniqueIDs(idEpisode, MediaTypeEpisode, details);
 
+    int stream = -1;
     if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details));
+      stream = SetStreamDetailsForFileId(details, GetAndFillFileId(details));
 
     // ensure we have this season already added
     int idSeason = AddSeason(idShow, details.m_iSeason);
@@ -3089,6 +3091,7 @@ int CVideoDatabase::SetDetailsForEpisode(CVideoInfoTag& details,
     else
       sql += ", userrating = NULL";
     sql += PrepareSQL(", idSeason = %i", idSeason);
+    sql += PrepareSQL(", idStream = %i", stream);
     sql += PrepareSQL(" where idEpisode=%i", idEpisode);
     m_pDS->exec(sql);
     CommitTransaction();
@@ -3166,7 +3169,7 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
     details.m_iIdUniqueID = UpdateUniqueIDs(idMVideo, MediaTypeMusicVideo, details);
 
     if (details.HasStreamDetails())
-      SetStreamDetailsForFileId(details.m_streamDetails, GetAndFillFileId(details));
+      SetStreamDetailsForFileId(details, GetAndFillFileId(details));
 
     SetArtForItem(idMVideo, MediaTypeMusicVideo, artwork);
 
@@ -3195,54 +3198,61 @@ int CVideoDatabase::SetDetailsForMusicVideo(CVideoInfoTag& details,
   return -1;
 }
 
-void CVideoDatabase::SetStreamDetailsForFile(const CStreamDetails& details, const std::string &strFileNameAndPath)
+void CVideoDatabase::SetStreamDetailsForFile(const CVideoInfoTag& tag,
+                                             const std::string& strFileNameAndPath)
 {
   // AddFile checks to make sure the file isn't already in the DB first
   int idFile = AddFile(strFileNameAndPath);
   if (idFile < 0)
     return;
-  SetStreamDetailsForFileId(details, idFile);
+  SetStreamDetailsForFileId(tag, idFile);
 }
 
-void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, int idFile)
+int CVideoDatabase::SetStreamDetailsForFileId(const CVideoInfoTag& tag, int idFile)
 {
+  int stream = -1;
   if (idFile < 0)
-    return;
+    return stream;
+
+  const CStreamDetails& details(tag.m_streamDetails);
 
   try
   {
-    m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i", idFile));
+    m_pDS->exec(PrepareSQL("DELETE FROM streamdetails WHERE idFile = %i AND playlist = %i", idFile,
+                           tag.m_iTrack));
 
     for (int i=1; i<=details.GetVideoStreamCount(); i++)
     {
-      m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
-                             "(idFile, iStreamType, strVideoCodec, fVideoAspect, iVideoWidth, "
-                             "iVideoHeight, iVideoDuration, strStereoMode, strVideoLanguage,  "
-                             "strHdrType)"
-                             "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s','%s')",
-                             idFile, (int)CStreamDetail::VIDEO, details.GetVideoCodec(i).c_str(),
-                             static_cast<double>(details.GetVideoAspect(i)),
-                             details.GetVideoWidth(i), details.GetVideoHeight(i),
-                             details.GetVideoDuration(i), details.GetStereoMode(i).c_str(),
-                             details.GetVideoLanguage(i).c_str(),
-                             details.GetVideoHdrType(i).c_str()));
+      m_pDS->exec(PrepareSQL(
+          "INSERT INTO streamdetails "
+          "(idFile, iStreamType, strVideoCodec, fVideoAspect, iVideoWidth, "
+          "iVideoHeight, iVideoDuration, strStereoMode, strVideoLanguage,  "
+          "strHdrType, playlist)"
+          "VALUES (%i,%i,'%s',%f,%i,%i,%i,'%s','%s','%s', '%i')",
+          idFile, (int)CStreamDetail::VIDEO, details.GetVideoCodec(i).c_str(),
+          static_cast<double>(details.GetVideoAspect(i)), details.GetVideoWidth(i),
+          details.GetVideoHeight(i), details.GetVideoDuration(i), details.GetStereoMode(i).c_str(),
+          details.GetVideoLanguage(i).c_str(), details.GetVideoHdrType(i).c_str(), tag.m_iTrack));
+
+      if (i == 1)
+        stream = static_cast<int>(m_pDS->lastinsertid());
     }
     for (int i=1; i<=details.GetAudioStreamCount(); i++)
     {
-      m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
-        "(idFile, iStreamType, strAudioCodec, iAudioChannels, strAudioLanguage) "
-        "VALUES (%i,%i,'%s',%i,'%s')",
-        idFile, (int)CStreamDetail::AUDIO,
-        details.GetAudioCodec(i).c_str(), details.GetAudioChannels(i),
-        details.GetAudioLanguage(i).c_str()));
+      m_pDS->exec(PrepareSQL(
+          "INSERT INTO streamdetails "
+          "(idFile, iStreamType, strAudioCodec, iAudioChannels, strAudioLanguage, playlist) "
+          "VALUES (%i,%i,'%s',%i,'%s','%i')",
+          idFile, (int)CStreamDetail::AUDIO, details.GetAudioCodec(i).c_str(),
+          details.GetAudioChannels(i), details.GetAudioLanguage(i).c_str(), tag.m_iTrack));
     }
     for (int i=1; i<=details.GetSubtitleStreamCount(); i++)
     {
       m_pDS->exec(PrepareSQL("INSERT INTO streamdetails "
-        "(idFile, iStreamType, strSubtitleLanguage) "
-        "VALUES (%i,%i,'%s')",
-        idFile, (int)CStreamDetail::SUBTITLE,
-        details.GetSubtitleLanguage(i).c_str()));
+                             "(idFile, iStreamType, strSubtitleLanguage, playlist) "
+                             "VALUES (%i,%i,'%s', '%i')",
+                             idFile, (int)CStreamDetail::SUBTITLE,
+                             details.GetSubtitleLanguage(i).c_str(), tag.m_iTrack));
     }
 
     // update the runtime information, if empty
@@ -3254,15 +3264,50 @@ void CVideoDatabase::SetStreamDetailsForFileId(const CStreamDetails& details, in
       tables.emplace_back("musicvideo", VIDEODB_ID_MUSICVIDEO_RUNTIME);
       for (const auto &i : tables)
       {
-        std::string sql = PrepareSQL("update %s set c%02d=%d where idFile=%d and c%02d=''",
-                                    i.first.c_str(), i.second, details.GetVideoDuration(), idFile, i.second);
+        std::string sql;
+        if (i.first == "episode" && tag.m_iTrack > 0)
+        {
+          sql = PrepareSQL("update %s set c%02d=%d where idFile=%d and c%02d='' and c%02d=%d",
+                           i.first.c_str(), i.second, details.GetVideoDuration(), idFile, i.second,
+                           VIDEODB_ID_EPISODE_EPISODE, tag.m_iTrack);
+        }
+        else
+        {
+          sql = PrepareSQL("update %s set c%02d=%d where idFile=%d and c%02d=''", i.first.c_str(),
+                           i.second, details.GetVideoDuration(), idFile, i.second);
+        }
         m_pDS->exec(sql);
       }
     }
+
+    // Associate episode with stream
+    if (tag.m_iSeason >= 0 && tag.m_iEpisode > 0 && stream > 0)
+    {
+      std::string strSQL =
+          PrepareSQL("select idEpisode from episode where c%02d=%i and c%02d=%i and c%02d='%s'",
+                     VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE,
+                     tag.m_iEpisode, VIDEODB_ID_EPISODE_BASEPATH, tag.m_basePath.c_str());
+
+      CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
+                CURL::GetRedacted(tag.m_basePath), strSQL);
+
+      m_pDS->query(strSQL);
+      if (m_pDS->num_rows() == 1)
+      {
+        const int idEpisode = m_pDS->fv("idEpisode").get_asInt();
+        strSQL = PrepareSQL("update episode set idStream=%i where idEpisode=%i", stream, idEpisode);
+
+        CLog::Log(LOGDEBUG, "{}", strSQL);
+
+        m_pDS->exec(strSQL);
+      }
+    }
+    return stream;
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "{} ({}) failed", __FUNCTION__, idFile);
+    return -1;
   }
 }
 
@@ -4176,25 +4221,57 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
   std::unique_ptr<Dataset> pDS(m_pDB->CreateDataset());
   try
   {
-    std::string strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", tag.m_iFileId);
+    std::string strSQL = "";
+    bool searchSet = false;
+    if (tag.m_iSeason >= 0 && tag.m_iEpisode > 0)
+    {
+      strSQL = PrepareSQL("select idStream from episode where c%02d=%i and c%02d=%i and c%02d='%s'",
+                          VIDEODB_ID_EPISODE_SEASON, tag.m_iSeason, VIDEODB_ID_EPISODE_EPISODE,
+                          tag.m_iEpisode, VIDEODB_ID_EPISODE_BASEPATH, tag.m_basePath.c_str());
+      pDS->query(strSQL);
+
+      if (pDS->num_rows() == 1)
+      {
+        const int stream = pDS->fv("idStream").get_asInt();
+        if (stream > 0)
+        {
+          strSQL = PrepareSQL("SELECT playlist FROM streamdetails WHERE idStream = %i", stream);
+          pDS->query(strSQL);
+          if (pDS->num_rows() == 1)
+          {
+            searchSet = true;
+            const int playlist = pDS->fv("playlist").get_asInt();
+            if (playlist != -1)
+              strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i AND playlist = %i",
+                                  tag.m_iFileId, playlist);
+            else
+              strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idStream = %i", stream);
+          }
+        }
+      }
+    }
+
+    if (!searchSet)
+      strSQL = PrepareSQL("SELECT * FROM streamdetails WHERE idFile = %i", tag.m_iFileId);
+
     pDS->query(strSQL);
 
     while (!pDS->eof())
     {
-      CStreamDetail::StreamType e = (CStreamDetail::StreamType)pDS->fv(1).get_asInt();
+      CStreamDetail::StreamType e = (CStreamDetail::StreamType)pDS->fv(2).get_asInt();
       switch (e)
       {
       case CStreamDetail::VIDEO:
         {
           CStreamDetailVideo *p = new CStreamDetailVideo();
-          p->m_strCodec = pDS->fv(2).get_asString();
-          p->m_fAspect = pDS->fv(3).get_asFloat();
-          p->m_iWidth = pDS->fv(4).get_asInt();
-          p->m_iHeight = pDS->fv(5).get_asInt();
-          p->m_iDuration = pDS->fv(10).get_asInt();
-          p->m_strStereoMode = pDS->fv(11).get_asString();
-          p->m_strLanguage = pDS->fv(12).get_asString();
-          p->m_strHdrType = pDS->fv(13).get_asString();
+          p->m_strCodec = pDS->fv(3).get_asString();
+          p->m_fAspect = pDS->fv(4).get_asFloat();
+          p->m_iWidth = pDS->fv(5).get_asInt();
+          p->m_iHeight = pDS->fv(6).get_asInt();
+          p->m_iDuration = pDS->fv(11).get_asInt();
+          p->m_strStereoMode = pDS->fv(12).get_asString();
+          p->m_strLanguage = pDS->fv(13).get_asString();
+          p->m_strHdrType = pDS->fv(14).get_asString();
           details.AddStream(p);
           retVal = true;
           break;
@@ -4202,12 +4279,12 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
       case CStreamDetail::AUDIO:
         {
           CStreamDetailAudio *p = new CStreamDetailAudio();
-          p->m_strCodec = pDS->fv(6).get_asString();
+          p->m_strCodec = pDS->fv(7).get_asString();
           if (pDS->fv(7).get_isNull())
             p->m_iChannels = -1;
           else
-            p->m_iChannels = pDS->fv(7).get_asInt();
-          p->m_strLanguage = pDS->fv(8).get_asString();
+            p->m_iChannels = pDS->fv(8).get_asInt();
+          p->m_strLanguage = pDS->fv(9).get_asString();
           details.AddStream(p);
           retVal = true;
           break;
@@ -4215,7 +4292,7 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
       case CStreamDetail::SUBTITLE:
         {
           CStreamDetailSubtitle *p = new CStreamDetailSubtitle();
-          p->m_strLanguage = pDS->fv(9).get_asString();
+          p->m_strLanguage = pDS->fv(10).get_asString();
           details.AddStream(p);
           retVal = true;
           break;
@@ -5666,12 +5743,13 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
     m_pDS->close();
     // run through these paths figuring out the parent path, and add to the table if found
-    for (const auto &i : paths)
+    for (const auto& i : paths)
     {
       std::string parent = URIUtils::GetParentPath(i.first);
       auto j = paths.find(parent);
       if (j != paths.end())
-        m_pDS->exec(PrepareSQL("UPDATE path SET idParentPath=%i WHERE idPath=%i", j->second, i.second));
+        m_pDS->exec(
+            PrepareSQL("UPDATE path SET idParentPath=%i WHERE idPath=%i", j->second, i.second));
     }
   }
   if (iVersion < 82)
@@ -5682,16 +5760,19 @@ void CVideoDatabase::UpdateTables(int iVersion)
   if (iVersion < 83)
   {
     // drop duplicates in tvshow table, and update tvshowlinkpath accordingly
-    std::string sql = PrepareSQL("SELECT tvshow.idShow,idPath,c%02d,c%02d,c%02d FROM tvshow JOIN tvshowlinkpath ON tvshow.idShow = tvshowlinkpath.idShow", VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_IDENT_ID);
+    std::string sql =
+        PrepareSQL("SELECT tvshow.idShow,idPath,c%02d,c%02d,c%02d FROM tvshow JOIN tvshowlinkpath "
+                   "ON tvshow.idShow = tvshowlinkpath.idShow",
+                   VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_IDENT_ID);
     m_pDS->query(sql);
     std::vector<CShowItem> shows;
     while (!m_pDS->eof())
     {
       CShowItem show;
-      show.id    = m_pDS->fv(0).get_asInt();
-      show.path  = m_pDS->fv(1).get_asInt();
+      show.id = m_pDS->fv(0).get_asInt();
+      show.path = m_pDS->fv(1).get_asInt();
       show.title = m_pDS->fv(2).get_asString();
-      show.year  = m_pDS->fv(3).get_asString();
+      show.year = m_pDS->fv(3).get_asString();
       show.ident = m_pDS->fv(4).get_asString();
       shows.emplace_back(std::move(show));
       m_pDS->next();
@@ -5706,11 +5787,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
         if (j != i)
         { // this is a duplicate
           // update the tvshowlinkpath table
-          m_pDS->exec(PrepareSQL("UPDATE tvshowlinkpath SET idShow = %d WHERE idShow = %d AND idPath = %d", j->id, i->id, i->path));
+          m_pDS->exec(
+              PrepareSQL("UPDATE tvshowlinkpath SET idShow = %d WHERE idShow = %d AND idPath = %d",
+                         j->id, i->id, i->path));
           // update episodes, seasons, movie links
           m_pDS->exec(PrepareSQL("UPDATE episode SET idShow = %d WHERE idShow = %d", j->id, i->id));
           m_pDS->exec(PrepareSQL("UPDATE seasons SET idShow = %d WHERE idShow = %d", j->id, i->id));
-          m_pDS->exec(PrepareSQL("UPDATE movielinktvshow SET idShow = %d WHERE idShow = %d", j->id, i->id));
+          m_pDS->exec(
+              PrepareSQL("UPDATE movielinktvshow SET idShow = %d WHERE idShow = %d", j->id, i->id));
           // delete tvshow
           m_pDS->exec(PrepareSQL("DELETE FROM genrelinktvshow WHERE idShow=%i", i->id));
           m_pDS->exec(PrepareSQL("DELETE FROM actorlinktvshow WHERE idShow=%i", i->id));
@@ -5720,19 +5804,21 @@ void CVideoDatabase::UpdateTables(int iVersion)
         }
       }
       // cleanup duplicate seasons
-      m_pDS->exec("DELETE FROM seasons WHERE idSeason NOT IN (SELECT idSeason FROM (SELECT min(idSeason) as idSeason FROM seasons GROUP BY idShow,season) AS sub)");
+      m_pDS->exec("DELETE FROM seasons WHERE idSeason NOT IN (SELECT idSeason FROM (SELECT "
+                  "min(idSeason) as idSeason FROM seasons GROUP BY idShow,season) AS sub)");
     }
   }
   if (iVersion < 84)
   { // replace any multipaths in tvshowlinkpath table
-    m_pDS->query("SELECT idShow, tvshowlinkpath.idPath, strPath FROM tvshowlinkpath JOIN path ON tvshowlinkpath.idPath=path.idPath WHERE path.strPath LIKE 'multipath://%'");
+    m_pDS->query("SELECT idShow, tvshowlinkpath.idPath, strPath FROM tvshowlinkpath JOIN path ON "
+                 "tvshowlinkpath.idPath=path.idPath WHERE path.strPath LIKE 'multipath://%'");
     std::vector<CShowLink> shows;
     while (!m_pDS->eof())
     {
       CShowLink link;
-      link.show   = m_pDS->fv(0).get_asInt();
+      link.show = m_pDS->fv(0).get_asInt();
       link.pathId = m_pDS->fv(1).get_asInt();
-      link.path   = m_pDS->fv(2).get_asString();
+      link.path = m_pDS->fv(2).get_asString();
       shows.emplace_back(std::move(link));
       m_pDS->next();
     }
@@ -5746,10 +5832,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
       {
         int idPath = AddPath(*j, URIUtils::GetParentPath(*j));
         /* we can't rely on REPLACE INTO here as analytics (indices) aren't online yet */
-        if (GetSingleValue(PrepareSQL("SELECT 1 FROM tvshowlinkpath WHERE idShow=%i AND idPath=%i", i->show, idPath)).empty())
-          m_pDS->exec(PrepareSQL("INSERT INTO tvshowlinkpath(idShow, idPath) VALUES(%i,%i)", i->show, idPath));
+        if (GetSingleValue(PrepareSQL("SELECT 1 FROM tvshowlinkpath WHERE idShow=%i AND idPath=%i",
+                                      i->show, idPath))
+                .empty())
+          m_pDS->exec(PrepareSQL("INSERT INTO tvshowlinkpath(idShow, idPath) VALUES(%i,%i)",
+                                 i->show, idPath));
       }
-      m_pDS->exec(PrepareSQL("DELETE FROM tvshowlinkpath WHERE idShow=%i AND idPath=%i", i->show, i->pathId));
+      m_pDS->exec(PrepareSQL("DELETE FROM tvshowlinkpath WHERE idShow=%i AND idPath=%i", i->show,
+                             i->pathId));
     }
   }
   if (iVersion < 85)
@@ -5759,29 +5849,40 @@ void CVideoDatabase::UpdateTables(int iVersion)
   }
   if (iVersion < 87)
   { // due to the tvshow merging above, there could be orphaned season or show art
-    m_pDS->exec("DELETE from art WHERE media_type='tvshow' AND NOT EXISTS (SELECT 1 FROM tvshow WHERE tvshow.idShow = art.media_id)");
-    m_pDS->exec("DELETE from art WHERE media_type='season' AND NOT EXISTS (SELECT 1 FROM seasons WHERE seasons.idSeason = art.media_id)");
+    m_pDS->exec("DELETE from art WHERE media_type='tvshow' AND NOT EXISTS (SELECT 1 FROM tvshow "
+                "WHERE tvshow.idShow = art.media_id)");
+    m_pDS->exec("DELETE from art WHERE media_type='season' AND NOT EXISTS (SELECT 1 FROM seasons "
+                "WHERE seasons.idSeason = art.media_id)");
   }
   if (iVersion < 91)
   {
     // create actor link table
-    m_pDS->exec("CREATE TABLE actor_link(actor_id INT, media_id INT, media_type TEXT, role TEXT, cast_order INT)");
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT DISTINCT idActor, idMovie, 'movie', strRole, iOrder from actorlinkmovie");
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT DISTINCT idActor, idShow, 'tvshow', strRole, iOrder from actorlinktvshow");
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT DISTINCT idActor, idEpisode, 'episode', strRole, iOrder from actorlinkepisode");
+    m_pDS->exec("CREATE TABLE actor_link(actor_id INT, media_id INT, media_type TEXT, role TEXT, "
+                "cast_order INT)");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT "
+                "DISTINCT idActor, idMovie, 'movie', strRole, iOrder from actorlinkmovie");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT "
+                "DISTINCT idActor, idShow, 'tvshow', strRole, iOrder from actorlinktvshow");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type, role, cast_order) SELECT "
+                "DISTINCT idActor, idEpisode, 'episode', strRole, iOrder from actorlinkepisode");
     m_pDS->exec("DROP TABLE IF EXISTS actorlinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS actorlinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS actorlinkepisode");
     m_pDS->exec("CREATE TABLE actor(actor_id INTEGER PRIMARY KEY, name TEXT, art_urls TEXT)");
-    m_pDS->exec("INSERT INTO actor(actor_id, name, art_urls) SELECT idActor,strActor,strThumb FROM actors");
+    m_pDS->exec(
+        "INSERT INTO actor(actor_id, name, art_urls) SELECT idActor,strActor,strThumb FROM actors");
     m_pDS->exec("DROP TABLE IF EXISTS actors");
 
     // directors
     m_pDS->exec("CREATE TABLE director_link(actor_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idMovie, 'movie' FROM directorlinkmovie");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idShow, 'tvshow' FROM directorlinktvshow");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idEpisode, 'episode' FROM directorlinkepisode");
-    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT idDirector, idMVideo, 'musicvideo' FROM directorlinkmusicvideo");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT "
+                "idDirector, idMovie, 'movie' FROM directorlinkmovie");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT "
+                "idDirector, idShow, 'tvshow' FROM directorlinktvshow");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT "
+                "idDirector, idEpisode, 'episode' FROM directorlinkepisode");
+    m_pDS->exec("INSERT INTO director_link(actor_id, media_id, media_type) SELECT DISTINCT "
+                "idDirector, idMVideo, 'musicvideo' FROM directorlinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS directorlinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS directorlinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS directorlinkepisode");
@@ -5789,20 +5890,26 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // writers
     m_pDS->exec("CREATE TABLE writer_link(actor_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT DISTINCT idWriter, idMovie, 'movie' FROM writerlinkmovie");
-    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT DISTINCT idWriter, idEpisode, 'episode' FROM writerlinkepisode");
+    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT DISTINCT idWriter, "
+                "idMovie, 'movie' FROM writerlinkmovie");
+    m_pDS->exec("INSERT INTO writer_link(actor_id, media_id, media_type) SELECT DISTINCT idWriter, "
+                "idEpisode, 'episode' FROM writerlinkepisode");
     m_pDS->exec("DROP TABLE IF EXISTS writerlinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS writerlinkepisode");
 
     // music artist
-    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type) SELECT DISTINCT idArtist, idMVideo, 'musicvideo' FROM artistlinkmusicvideo");
+    m_pDS->exec("INSERT INTO actor_link(actor_id, media_id, media_type) SELECT DISTINCT idArtist, "
+                "idMVideo, 'musicvideo' FROM artistlinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS artistlinkmusicvideo");
 
     // studios
     m_pDS->exec("CREATE TABLE studio_link(studio_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT idStudio, idMovie, 'movie' FROM studiolinkmovie");
-    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT idStudio, idShow, 'tvshow' FROM studiolinktvshow");
-    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT idStudio, idMVideo, 'musicvideo' FROM studiolinkmusicvideo");
+    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT "
+                "idStudio, idMovie, 'movie' FROM studiolinkmovie");
+    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT "
+                "idStudio, idShow, 'tvshow' FROM studiolinktvshow");
+    m_pDS->exec("INSERT INTO studio_link(studio_id, media_id, media_type) SELECT DISTINCT "
+                "idStudio, idMVideo, 'musicvideo' FROM studiolinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS studiolinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS studiolinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS studiolinkmusicvideo");
@@ -5813,9 +5920,12 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // genres
     m_pDS->exec("CREATE TABLE genre_link(genre_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, idMovie, 'movie' FROM genrelinkmovie");
-    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, idShow, 'tvshow' FROM genrelinktvshow");
-    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, idMVideo, 'musicvideo' FROM genrelinkmusicvideo");
+    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, "
+                "idMovie, 'movie' FROM genrelinkmovie");
+    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, "
+                "idShow, 'tvshow' FROM genrelinktvshow");
+    m_pDS->exec("INSERT INTO genre_link(genre_id, media_id, media_type) SELECT DISTINCT idGenre, "
+                "idMVideo, 'musicvideo' FROM genrelinkmusicvideo");
     m_pDS->exec("DROP TABLE IF EXISTS genrelinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS genrelinktvshow");
     m_pDS->exec("DROP TABLE IF EXISTS genrelinkmusicvideo");
@@ -5826,16 +5936,19 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // country
     m_pDS->exec("CREATE TABLE country_link(country_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO country_link(country_id, media_id, media_type) SELECT DISTINCT idCountry, idMovie, 'movie' FROM countrylinkmovie");
+    m_pDS->exec("INSERT INTO country_link(country_id, media_id, media_type) SELECT DISTINCT "
+                "idCountry, idMovie, 'movie' FROM countrylinkmovie");
     m_pDS->exec("DROP TABLE IF EXISTS countrylinkmovie");
     m_pDS->exec("CREATE TABLE countrynew(country_id INTEGER PRIMARY KEY, name TEXT)");
-    m_pDS->exec("INSERT INTO countrynew(country_id, name) SELECT idCountry,strCountry FROM country");
+    m_pDS->exec(
+        "INSERT INTO countrynew(country_id, name) SELECT idCountry,strCountry FROM country");
     m_pDS->exec("DROP TABLE IF EXISTS country");
     m_pDS->exec("ALTER TABLE countrynew RENAME TO country");
 
     // tags
     m_pDS->exec("CREATE TABLE tag_link(tag_id INTEGER, media_id INTEGER, media_type TEXT)");
-    m_pDS->exec("INSERT INTO tag_link(tag_id, media_id, media_type) SELECT DISTINCT idTag, idMedia, media_type FROM taglinks");
+    m_pDS->exec("INSERT INTO tag_link(tag_id, media_id, media_type) SELECT DISTINCT idTag, "
+                "idMedia, media_type FROM taglinks");
     m_pDS->exec("DROP TABLE IF EXISTS taglinks");
     m_pDS->exec("CREATE TABLE tagnew(tag_id INTEGER PRIMARY KEY, name TEXT)");
     m_pDS->exec("INSERT INTO tagnew(tag_id, name) SELECT idTag,strTag FROM tag");
@@ -5847,7 +5960,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     // cleanup main tables
     std::string valuesSql;
-    for(int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
+    for (int i = 0; i < VIDEODB_MAX_COLUMNS; i++)
     {
       valuesSql += StringUtils::Format("c{:02} = TRIM(c{:02})", i, i);
       if (i < VIDEODB_MAX_COLUMNS - 1)
@@ -5860,12 +5973,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
     // cleanup additional tables
     std::map<std::string, std::vector<std::string>> additionalTablesMap = {
-      {"actor", {"actor_link", "director_link", "writer_link"}},
-      {"studio", {"studio_link"}},
-      {"genre", {"genre_link"}},
-      {"country", {"country_link"}},
-      {"tag", {"tag_link"}}
-    };
+        {"actor", {"actor_link", "director_link", "writer_link"}},
+        {"studio", {"studio_link"}},
+        {"genre", {"genre_link"}},
+        {"country", {"country_link"}},
+        {"tag", {"tag_link"}}};
     for (const auto& additionalTableEntry : additionalTablesMap)
     {
       std::string table = additionalTableEntry.first;
@@ -5874,8 +5986,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
       std::map<int, std::string> duplicatesMap;
 
       // cleanup name
-      m_pDS->exec(PrepareSQL("UPDATE %s SET name = TRIM(name)",
-                             table.c_str()));
+      m_pDS->exec(PrepareSQL("UPDATE %s SET name = TRIM(name)", table.c_str()));
 
       // shrink name to length 255
       m_pDS->exec(PrepareSQL("UPDATE %s SET name = SUBSTR(name, 1, 255) WHERE LENGTH(name) > 255",
@@ -5887,7 +5998,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
       while (!m_pDS->eof())
       {
-        duplicatesMinMap.insert(std::make_pair(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asString()));
+        duplicatesMinMap.insert(
+            std::make_pair(m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asString()));
         m_pDS->next();
       }
       m_pDS->close();
@@ -5895,9 +6007,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
       // fetch duplicate entries
       for (const auto& entry : duplicatesMinMap)
       {
-        m_pDS->query(PrepareSQL("SELECT %s FROM %s WHERE name = '%s' AND %s <> %i",
-                                tablePk.c_str(), table.c_str(),
-                                entry.second.c_str(), tablePk.c_str(), entry.first));
+        m_pDS->query(PrepareSQL("SELECT %s FROM %s WHERE name = '%s' AND %s <> %i", tablePk.c_str(),
+                                table.c_str(), entry.second.c_str(), tablePk.c_str(), entry.first));
 
         std::stringstream ids;
         while (!m_pDS->eof())
@@ -5918,15 +6029,15 @@ void CVideoDatabase::UpdateTables(int iVersion)
       for (const auto& subTable : additionalTableEntry.second)
       {
         // create indexes to speed up things
-        m_pDS->exec(PrepareSQL("CREATE INDEX ix_%s ON %s (%s)",
-                               subTable.c_str(), subTable.c_str(), tablePk.c_str()));
+        m_pDS->exec(PrepareSQL("CREATE INDEX ix_%s ON %s (%s)", subTable.c_str(), subTable.c_str(),
+                               tablePk.c_str()));
 
         // migrate every duplicate entry to the main entry
         for (const auto& entry : duplicatesMap)
         {
-          m_pDS->exec(PrepareSQL("UPDATE %s SET %s = %i WHERE %s IN (%s) ",
-                                 subTable.c_str(), tablePk.c_str(), entry.first,
-                                 tablePk.c_str(), entry.second.c_str()));
+          m_pDS->exec(PrepareSQL("UPDATE %s SET %s = %i WHERE %s IN (%s) ", subTable.c_str(),
+                                 tablePk.c_str(), entry.first, tablePk.c_str(),
+                                 entry.second.c_str()));
         }
 
         // clear all duplicates in the link tables
@@ -5934,8 +6045,10 @@ void CVideoDatabase::UpdateTables(int iVersion)
         {
           // as a distinct won't work because of role and cast_order and a group by kills a
           // low powered mysql, we de-dupe it with REPLACE INTO while using the real unique index
-          m_pDS->exec("CREATE TABLE temp_actor_link(actor_id INT, media_id INT, media_type TEXT, role TEXT, cast_order INT)");
-          m_pDS->exec("CREATE UNIQUE INDEX ix_temp_actor_link ON temp_actor_link (actor_id, media_type(20), media_id)");
+          m_pDS->exec("CREATE TABLE temp_actor_link(actor_id INT, media_id INT, media_type TEXT, "
+                      "role TEXT, cast_order INT)");
+          m_pDS->exec("CREATE UNIQUE INDEX ix_temp_actor_link ON temp_actor_link (actor_id, "
+                      "media_type(20), media_id)");
           m_pDS->exec("REPLACE INTO temp_actor_link SELECT * FROM actor_link");
           m_pDS->exec("DROP INDEX ix_temp_actor_link ON temp_actor_link");
         }
@@ -5945,18 +6058,17 @@ void CVideoDatabase::UpdateTables(int iVersion)
                                  subTable.c_str(), subTable.c_str()));
         }
 
-        m_pDS->exec(PrepareSQL("DROP TABLE IF EXISTS %s",
-                               subTable.c_str()));
+        m_pDS->exec(PrepareSQL("DROP TABLE IF EXISTS %s", subTable.c_str()));
 
-        m_pDS->exec(PrepareSQL("ALTER TABLE temp_%s RENAME TO %s",
-                               subTable.c_str(), subTable.c_str()));
+        m_pDS->exec(
+            PrepareSQL("ALTER TABLE temp_%s RENAME TO %s", subTable.c_str(), subTable.c_str()));
       }
 
       // delete duplicates in main table
       for (const auto& entry : duplicatesMap)
       {
-        m_pDS->exec(PrepareSQL("DELETE FROM %s WHERE %s IN (%s)",
-                               table.c_str(), tablePk.c_str(), entry.second.c_str()));
+        m_pDS->exec(PrepareSQL("DELETE FROM %s WHERE %s IN (%s)", table.c_str(), tablePk.c_str(),
+                               entry.second.c_str()));
       }
     }
   }
@@ -5984,12 +6096,12 @@ void CVideoDatabase::UpdateTables(int iVersion)
     while (!m_pDS->eof())
     {
       m_pDS2->exec(PrepareSQL("UPDATE episode "
-        "SET idSeason = %d "
-        "WHERE "
-        "episode.idShow = %d AND "
-        "episode.c%02d = %d",
-        m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asInt(),
-        VIDEODB_ID_EPISODE_SEASON, m_pDS->fv(2).get_asInt()));
+                              "SET idSeason = %d "
+                              "WHERE "
+                              "episode.idShow = %d AND "
+                              "episode.c%02d = %d",
+                              m_pDS->fv(0).get_asInt(), m_pDS->fv(1).get_asInt(),
+                              VIDEODB_ID_EPISODE_SEASON, m_pDS->fv(2).get_asInt()));
 
       m_pDS->next();
     }
@@ -5999,9 +6111,11 @@ void CVideoDatabase::UpdateTables(int iVersion)
 
   if (iVersion < 102)
   {
-    m_pDS->exec("CREATE TABLE rating (rating_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, rating_type TEXT, rating FLOAT, votes INTEGER)");
+    m_pDS->exec("CREATE TABLE rating (rating_id INTEGER PRIMARY KEY, media_id INTEGER, media_type "
+                "TEXT, rating_type TEXT, rating FLOAT, votes INTEGER)");
 
-    std::string sql = PrepareSQL("SELECT DISTINCT idMovie, c%02d, c%02d FROM movie", VIDEODB_ID_RATING_ID, VIDEODB_ID_VOTES);
+    std::string sql = PrepareSQL("SELECT DISTINCT idMovie, c%02d, c%02d FROM movie",
+                                 VIDEODB_ID_RATING_ID, VIDEODB_ID_VOTES);
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
@@ -6011,12 +6125,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
                               strtod(m_pDS->fv(1).get_asString().c_str(), NULL),
                               StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
       int idRating = (int)m_pDS2->lastinsertid();
-      m_pDS2->exec(PrepareSQL("UPDATE movie SET c%02d=%i WHERE idMovie=%i", VIDEODB_ID_RATING_ID, idRating, m_pDS->fv(0).get_asInt()));
+      m_pDS2->exec(PrepareSQL("UPDATE movie SET c%02d=%i WHERE idMovie=%i", VIDEODB_ID_RATING_ID,
+                              idRating, m_pDS->fv(0).get_asInt()));
       m_pDS->next();
     }
     m_pDS->close();
 
-    sql = PrepareSQL("SELECT DISTINCT idShow, c%02d, c%02d FROM tvshow", VIDEODB_ID_TV_RATING_ID, VIDEODB_ID_TV_VOTES);
+    sql = PrepareSQL("SELECT DISTINCT idShow, c%02d, c%02d FROM tvshow", VIDEODB_ID_TV_RATING_ID,
+                     VIDEODB_ID_TV_VOTES);
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
@@ -6026,12 +6142,14 @@ void CVideoDatabase::UpdateTables(int iVersion)
                               strtod(m_pDS->fv(1).get_asString().c_str(), NULL),
                               StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
       int idRating = (int)m_pDS2->lastinsertid();
-      m_pDS2->exec(PrepareSQL("UPDATE tvshow SET c%02d=%i WHERE idShow=%i", VIDEODB_ID_TV_RATING_ID, idRating, m_pDS->fv(0).get_asInt()));
+      m_pDS2->exec(PrepareSQL("UPDATE tvshow SET c%02d=%i WHERE idShow=%i", VIDEODB_ID_TV_RATING_ID,
+                              idRating, m_pDS->fv(0).get_asInt()));
       m_pDS->next();
     }
     m_pDS->close();
 
-    sql = PrepareSQL("SELECT DISTINCT idEpisode, c%02d, c%02d FROM episode", VIDEODB_ID_EPISODE_RATING_ID, VIDEODB_ID_EPISODE_VOTES);
+    sql = PrepareSQL("SELECT DISTINCT idEpisode, c%02d, c%02d FROM episode",
+                     VIDEODB_ID_EPISODE_RATING_ID, VIDEODB_ID_EPISODE_VOTES);
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
@@ -6041,7 +6159,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
                               strtod(m_pDS->fv(1).get_asString().c_str(), NULL),
                               StringUtils::ReturnDigits(m_pDS->fv(2).get_asString())));
       int idRating = (int)m_pDS2->lastinsertid();
-      m_pDS2->exec(PrepareSQL("UPDATE episode SET c%02d=%i WHERE idEpisode=%i", VIDEODB_ID_EPISODE_RATING_ID, idRating, m_pDS->fv(0).get_asInt()));
+      m_pDS2->exec(PrepareSQL("UPDATE episode SET c%02d=%i WHERE idEpisode=%i",
+                              VIDEODB_ID_EPISODE_RATING_ID, idRating, m_pDS->fv(0).get_asInt()));
       m_pDS->next();
     }
     m_pDS->close();
@@ -6057,21 +6176,23 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     m_pDS->exec("ALTER TABLE tvshow ADD duration INTEGER");
 
-    std::string sql = PrepareSQL( "SELECT episode.idShow, MAX(episode.c%02d) "
-                                  "FROM episode "
+    std::string sql = PrepareSQL("SELECT episode.idShow, MAX(episode.c%02d) "
+                                 "FROM episode "
 
-                                  "LEFT JOIN streamdetails "
-                                  "ON streamdetails.idFile = episode.idFile "
-                                  "AND streamdetails.iStreamType = 0 " // only grab video streams
+                                 "LEFT JOIN streamdetails "
+                                 "ON streamdetails.idFile = episode.idFile "
+                                 "AND streamdetails.iStreamType = 0 " // only grab video streams
 
-                                  "WHERE episode.c%02d <> streamdetails.iVideoDuration "
-                                  "OR streamdetails.iVideoDuration IS NULL "
-                                  "GROUP BY episode.idShow", VIDEODB_ID_EPISODE_RUNTIME, VIDEODB_ID_EPISODE_RUNTIME);
+                                 "WHERE episode.c%02d <> streamdetails.iVideoDuration "
+                                 "OR streamdetails.iVideoDuration IS NULL "
+                                 "GROUP BY episode.idShow",
+                                 VIDEODB_ID_EPISODE_RUNTIME, VIDEODB_ID_EPISODE_RUNTIME);
 
     m_pDS->query(sql);
     while (!m_pDS->eof())
     {
-      m_pDS2->exec(PrepareSQL("UPDATE tvshow SET duration=%i WHERE idShow=%i", m_pDS->fv(1).get_asInt(), m_pDS->fv(0).get_asInt()));
+      m_pDS2->exec(PrepareSQL("UPDATE tvshow SET duration=%i WHERE idShow=%i",
+                              m_pDS->fv(1).get_asInt(), m_pDS->fv(0).get_asInt()));
       m_pDS->next();
     }
     m_pDS->close();
@@ -6093,7 +6214,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
     if (nullptr == pDS)
       return;
 
-    pDS->exec("CREATE TABLE uniqueid (uniqueid_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, value TEXT, type TEXT)");
+    pDS->exec("CREATE TABLE uniqueid (uniqueid_id INTEGER PRIMARY KEY, media_id INTEGER, "
+              "media_type TEXT, value TEXT, type TEXT)");
 
     for (int i = 0; i < 3; ++i)
     {
@@ -6101,25 +6223,26 @@ void CVideoDatabase::UpdateTables(int iVersion)
       int columnUniqueID;
       switch (i)
       {
-      case (0):
-        mediatype = "movie";
-        columnID = "idMovie";
-        columnUniqueID = VIDEODB_ID_IDENT_ID;
-        break;
-      case (1):
-        mediatype = "tvshow";
-        columnID = "idShow";
-        columnUniqueID = VIDEODB_ID_TV_IDENT_ID;
-        break;
-      case (2):
-        mediatype = "episode";
-        columnID = "idEpisode";
-        columnUniqueID = VIDEODB_ID_EPISODE_IDENT_ID;
-        break;
-      default:
-        continue;
+        case (0):
+          mediatype = "movie";
+          columnID = "idMovie";
+          columnUniqueID = VIDEODB_ID_IDENT_ID;
+          break;
+        case (1):
+          mediatype = "tvshow";
+          columnID = "idShow";
+          columnUniqueID = VIDEODB_ID_TV_IDENT_ID;
+          break;
+        case (2):
+          mediatype = "episode";
+          columnID = "idEpisode";
+          columnUniqueID = VIDEODB_ID_EPISODE_IDENT_ID;
+          break;
+        default:
+          continue;
       }
-      pDS->query(PrepareSQL("SELECT %s, c%02d FROM %s", columnID.c_str(), columnUniqueID, mediatype.c_str()));
+      pDS->query(PrepareSQL("SELECT %s, c%02d FROM %s", columnID.c_str(), columnUniqueID,
+                            mediatype.c_str()));
       while (!pDS->eof())
       {
         std::string uniqueid = pDS->fv(1).get_asString();
@@ -6127,10 +6250,16 @@ void CVideoDatabase::UpdateTables(int iVersion)
         {
           int mediaid = pDS->fv(0).get_asInt();
           if (StringUtils::StartsWith(uniqueid, "tt"))
-            m_pDS2->exec(PrepareSQL("INSERT INTO uniqueid(media_id, media_type, type, value) VALUES (%i, '%s', 'imdb', '%s')", mediaid, mediatype.c_str(), uniqueid.c_str()));
+            m_pDS2->exec(PrepareSQL("INSERT INTO uniqueid(media_id, media_type, type, value) "
+                                    "VALUES (%i, '%s', 'imdb', '%s')",
+                                    mediaid, mediatype.c_str(), uniqueid.c_str()));
           else
-            m_pDS2->exec(PrepareSQL("INSERT INTO uniqueid(media_id, media_type, type, value) VALUES (%i, '%s', 'unknown', '%s')", mediaid, mediatype.c_str(), uniqueid.c_str()));
-          m_pDS2->exec(PrepareSQL("UPDATE %s SET c%02d='%i' WHERE %s=%i", mediatype.c_str(), columnUniqueID, (int)m_pDS2->lastinsertid(), columnID.c_str(), mediaid));
+            m_pDS2->exec(PrepareSQL("INSERT INTO uniqueid(media_id, media_type, type, value) "
+                                    "VALUES (%i, '%s', 'unknown', '%s')",
+                                    mediaid, mediatype.c_str(), uniqueid.c_str()));
+          m_pDS2->exec(PrepareSQL("UPDATE %s SET c%02d='%i' WHERE %s=%i", mediatype.c_str(),
+                                  columnUniqueID, (int)m_pDS2->lastinsertid(), columnID.c_str(),
+                                  mediaid));
         }
         pDS->next();
       }
@@ -6141,13 +6270,20 @@ void CVideoDatabase::UpdateTables(int iVersion)
   if (iVersion < 109)
   {
     m_pDS->exec("ALTER TABLE settings RENAME TO settingsold");
-    m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool,"
-                "ViewMode integer,ZoomAmount float, PixelRatio float, VerticalShift float, AudioStream integer, SubtitleStream integer,"
-                "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
-                "VolumeAmplification float, AudioDelay float, ResumeTime integer,"
-                "Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool,"
-                "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool, VideoStream integer)");
-    m_pDS->exec("INSERT INTO settings SELECT idFile, Deinterlace, ViewMode, ZoomAmount, PixelRatio, VerticalShift, AudioStream, SubtitleStream, SubtitleDelay, SubtitlesOn, Brightness, Contrast, Gamma, VolumeAmplification, AudioDelay, ResumeTime, Sharpness, NoiseReduction, NonLinStretch, PostProcess, ScalingMethod, DeinterlaceMode, StereoMode, StereoInvert, VideoStream FROM settingsold");
+    m_pDS->exec(
+        "CREATE TABLE settings ( idFile integer, Deinterlace bool,"
+        "ViewMode integer,ZoomAmount float, PixelRatio float, VerticalShift float, AudioStream "
+        "integer, SubtitleStream integer,"
+        "SubtitleDelay float, SubtitlesOn bool, Brightness float, Contrast float, Gamma float,"
+        "VolumeAmplification float, AudioDelay float, ResumeTime integer,"
+        "Sharpness float, NoiseReduction float, NonLinStretch bool, PostProcess bool,"
+        "ScalingMethod integer, DeinterlaceMode integer, StereoMode integer, StereoInvert bool, "
+        "VideoStream integer)");
+    m_pDS->exec("INSERT INTO settings SELECT idFile, Deinterlace, ViewMode, ZoomAmount, "
+                "PixelRatio, VerticalShift, AudioStream, SubtitleStream, SubtitleDelay, "
+                "SubtitlesOn, Brightness, Contrast, Gamma, VolumeAmplification, AudioDelay, "
+                "ResumeTime, Sharpness, NoiseReduction, NonLinStretch, PostProcess, ScalingMethod, "
+                "DeinterlaceMode, StereoMode, StereoInvert, VideoStream FROM settingsold");
     m_pDS->exec("DROP TABLE settingsold");
   }
 
@@ -6167,7 +6303,8 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     // fb9c25f5 and e5f6d204 changed the behavior of path splitting for plugin URIs (previously it would only use the root)
     // Re-split paths for plugin files in order to maintain watched state etc.
-    m_pDS->query("SELECT files.idFile, files.strFilename, path.strPath FROM files LEFT JOIN path ON files.idPath = path.idPath WHERE files.strFilename LIKE 'plugin://%'");
+    m_pDS->query("SELECT files.idFile, files.strFilename, path.strPath FROM files LEFT JOIN path "
+                 "ON files.idPath = path.idPath WHERE files.strFilename LIKE 'plugin://%'");
     while (!m_pDS->eof())
     {
       std::string path, fn;
@@ -6192,16 +6329,19 @@ void CVideoDatabase::UpdateTables(int iVersion)
             m_pDS2->exec(PrepareSQL("INSERT INTO path (strPath) VALUES ('%s')", parent.c_str()));
             parentid = (int)m_pDS2->lastinsertid();
           }
-          m_pDS2->exec(PrepareSQL("INSERT INTO path (strPath, idParentPath) VALUES ('%s', %i)", path.c_str(), parentid));
+          m_pDS2->exec(PrepareSQL("INSERT INTO path (strPath, idParentPath) VALUES ('%s', %i)",
+                                  path.c_str(), parentid));
           pathid = (int)m_pDS2->lastinsertid();
         }
-        m_pDS2->query(PrepareSQL("SELECT idFile FROM files WHERE strFileName='%s' AND idPath=%i", fn.c_str(), pathid));
+        m_pDS2->query(PrepareSQL("SELECT idFile FROM files WHERE strFileName='%s' AND idPath=%i",
+                                 fn.c_str(), pathid));
         bool exists = !m_pDS2->eof();
         m_pDS2->close();
         if (exists)
           m_pDS2->exec(PrepareSQL("DELETE FROM files WHERE idFile=%i", m_pDS->fv(0).get_asInt()));
         else
-          m_pDS2->exec(PrepareSQL("UPDATE files SET idPath=%i WHERE idFile=%i", pathid, m_pDS->fv(0).get_asInt()));
+          m_pDS2->exec(PrepareSQL("UPDATE files SET idPath=%i WHERE idFile=%i", pathid,
+                                  m_pDS->fv(0).get_asInt()));
       }
       m_pDS->next();
     }
@@ -6323,9 +6463,44 @@ void CVideoDatabase::UpdateTables(int iVersion)
   }
 }
 
+  if (iVersion < 130)
+  {
+      // Add ID and playlist field in streamdetails
+      m_pDS->exec(
+          "CREATE TABLE streamdetails_temp (idStream integer primary key, idFile integer, "
+          "iStreamType integer, "
+          "strVideoCodec text, fVideoAspect float, iVideoWidth integer, iVideoHeight integer, "
+          "strAudioCodec text, iAudioChannels integer, strAudioLanguage text, "
+          "strSubtitleLanguage text, iVideoDuration integer, strStereoMode text, "
+          "strVideoLanguage text, strHdrType text, playlist integer)");
+
+      m_pDS->exec("INSERT INTO streamdetails_temp (idFile, "
+          "iStreamType, "
+          "strVideoCodec, fVideoAspect, iVideoWidth, iVideoHeight, "
+          "strAudioCodec, iAudioChannels, strAudioLanguage, "
+          "strSubtitleLanguage, iVideoDuration, strStereoMode, "
+          "strVideoLanguage, "
+          "strHdrType, playlist)"
+          "SELECT idFile, "
+          "iStreamType, "
+          "strVideoCodec, fVideoAspect, iVideoWidth, iVideoHeight, "
+          "strAudioCodec, iAudioChannels, strAudioLanguage, "
+          "strSubtitleLanguage, iVideoDuration, strStereoMode, "
+          "strVideoLanguage, "
+          "strHdrType, -1 FROM streamdetails");
+
+      m_pDS->exec("DROP TABLE streamdetails");
+
+      m_pDS->exec("ALTER TABLE streamdetails_temp RENAME TO streamdetails");
+
+      m_pDS->exec("ALTER TABLE episode ADD idStream integer");
+      m_pDS->exec("UPDATE episode SET idStream=-1");
+  }
+}
+
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 129;
+    return 130;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -12428,7 +12603,7 @@ void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
                              dbId, mediaType.c_str(), videoAssetType, idVideoVersion, idFile));
 
     if (item.GetVideoInfoTag()->HasStreamDetails())
-      SetStreamDetailsForFileId(item.GetVideoInfoTag()->m_streamDetails, idFile);
+      SetStreamDetailsForFileId(*item.GetVideoInfoTag(), idFile);
 
     if (videoAssetType == VideoAssetType::VERSION)
       SetVideoVersionDefaultArt(idFile, item.GetVideoInfoTag()->m_iDbId, itemType);
