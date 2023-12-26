@@ -120,10 +120,9 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
                       [idFile](const std::shared_ptr<CFileItem>& version)
                       { return version->GetVideoInfoTag()->m_iDbId == idFile; }))
       {
-        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(40015),
-                                      StringUtils::Format(g_localizeStrings.Get(40016),
-                                                          CMediaTypes::GetLocalization(mediaType),
-                                                          typeVideoVersion));
+        CGUIDialogOK::ShowAndGetInput(
+            g_localizeStrings.Get(40015),
+            StringUtils::Format(g_localizeStrings.Get(40026), typeVideoVersion));
         return;
       }
 
@@ -135,10 +134,8 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
         return;
 
       if (!CGUIDialogYesNo::ShowAndGetInput(
-              g_localizeStrings.Get(40015),
-              StringUtils::Format(g_localizeStrings.Get(40017),
-                                  CMediaTypes::GetLocalization(mediaType), videoTitle,
-                                  typeVideoVersion, CMediaTypes::GetLocalization(mediaType))))
+              g_localizeStrings.Get(40014),
+              StringUtils::Format(g_localizeStrings.Get(40027), typeVideoVersion, videoTitle)))
       {
         return;
       }
