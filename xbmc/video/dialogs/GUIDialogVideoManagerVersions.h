@@ -47,6 +47,7 @@ private:
   void SetDefaultVideoVersion(const CFileItem& version);
   void AddVideoVersion();
   void SetDefault();
+  void UpdateDefaultVideoVersionSelection();
 
   std::shared_ptr<CFileItem> m_defaultVideoVersion;
 };

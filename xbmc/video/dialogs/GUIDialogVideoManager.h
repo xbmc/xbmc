@@ -30,6 +30,7 @@ public:
 protected:
   void OnInitWindow() override;
   bool OnMessage(CGUIMessage& message) override;
+  bool OnAction(const CAction& action) override;
 
   virtual VideoAssetType GetVideoAssetType() = 0;
   virtual int GetHeadingId() = 0;
@@ -37,6 +38,7 @@ protected:
   virtual void Clear();
   virtual void Refresh();
   virtual void UpdateButtons();
+  virtual void UpdateAssetsList();
 
   virtual void Play();
   virtual void Remove();
@@ -45,6 +47,8 @@ protected:
 
   void DisableRemove();
   void EnableRemove();
+
+  void UpdateControls();
 
   static int SelectVideoAsset(const std::shared_ptr<CFileItem>& item);
 
@@ -57,4 +61,5 @@ private:
   CGUIDialogVideoManager() = delete;
 
   void CloseAll();
+  bool UpdateSelectedAsset();
 };

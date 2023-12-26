@@ -23,6 +23,8 @@ public:
   CGUIDialogVideoManagerExtras();
   ~CGUIDialogVideoManagerExtras() override = default;
 
+  void SetVideoAsset(const std::shared_ptr<CFileItem>& item) override;
+
   static void ManageVideoExtra(const std::shared_ptr<CFileItem>& item);
   static std::string GenerateVideoExtra(const std::string& extrasRoot,
                                         const std::string& extrasPath);
