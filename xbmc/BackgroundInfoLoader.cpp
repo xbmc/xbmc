@@ -90,6 +90,9 @@ void CBackgroundInfoLoader::Run()
     m_bIsLoading = false;
     CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__);
   }
+
+  m_pVecItems = nullptr;
+  m_vecItems.clear();
 }
 
 void CBackgroundInfoLoader::Load(CFileItemList& items)
