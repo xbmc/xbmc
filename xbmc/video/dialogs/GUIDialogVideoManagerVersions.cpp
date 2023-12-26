@@ -265,7 +265,7 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
                  CURL::GetRedacted(item.GetPath()));
     }
 
-    const int idNewVideoVersion{SelectVideoAsset(m_videoAsset)};
+    const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset)};
     if (idNewVideoVersion != -1)
       m_database.AddPrimaryVideoVersion(itemType, dbId, idNewVideoVersion, item);
 
@@ -372,6 +372,45 @@ int CGUIDialogVideoManagerVersions::ManageVideoVersionContextMenu(
   return button;
 }
 
+bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
+    const CFileItemList& items,
+    VideoDbContentType itemType,
+    const std::string& mediaType,
+    int dbId,
+    CVideoDatabase& videoDb)
+{
+  // choose a video
+  CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
+      WINDOW_DIALOG_SELECT)};
+  if (!dialog)
+  {
+    CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT instance!");
+    return {};
+  }
+
+  dialog->Reset();
+  dialog->SetItems(items);
+  dialog->SetHeading(CVariant{40002});
+  dialog->SetUseDetails(true);
+  dialog->Open();
+
+  if (!dialog->IsConfirmed())
+    return false;
+
+  const std::shared_ptr<CFileItem> selectedItem{dialog->GetSelectedFileItem()};
+  if (!selectedItem)
+    return false;
+
+  // choose a video version for the video
+  const int idVideoVersion{ChooseVideoAsset(selectedItem)};
+  if (idVideoVersion < 0)
+    return false;
+
+  videoDb.ConvertVideoToVersion(itemType, dbId, selectedItem->GetVideoInfoTag()->m_iDbId,
+                                idVideoVersion);
+  return true;
+}
+
 bool CGUIDialogVideoManagerVersions::ConvertVideoVersion(const std::shared_ptr<CFileItem>& item)
 {
   if (!item || !item->HasVideoInfoTag())
@@ -435,34 +474,7 @@ bool CGUIDialogVideoManagerVersions::ConvertVideoVersion(const std::shared_ptr<C
     item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
   }
 
-  // choose the target video
-  CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
-      WINDOW_DIALOG_SELECT)};
-  if (!dialog)
-  {
-    CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT instance!");
-    return false;
-  }
-
-  dialog->Reset();
-  dialog->SetItems(list);
-  dialog->SetHeading(CVariant{40002});
-  dialog->SetUseDetails(true);
-  dialog->Open();
-
-  if (!dialog->IsConfirmed())
-    return false;
-
-  const std::shared_ptr<CFileItem> selectedItem{dialog->GetSelectedFileItem()};
-
-  // choose a video version
-  const int idVideoVersion{SelectVideoAsset(selectedItem)};
-  if (idVideoVersion < 0)
-    return false;
-
-  videodb.ConvertVideoToVersion(itemType, dbId, selectedItem->GetVideoInfoTag()->m_iDbId,
-                                idVideoVersion);
-  return true;
+  return ChooseVideoAndConvertToVideoVersion(list, itemType, mediaType, dbId, videodb);
 }
 
 bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType itemType, int dbId)
@@ -516,31 +528,5 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
     item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
   }
 
-  CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
-      WINDOW_DIALOG_SELECT)};
-  if (!dialog)
-  {
-    CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT instance!");
-    return false;
-  }
-
-  dialog->Reset();
-  dialog->SetItems(list);
-  dialog->SetHeading(CVariant{40002});
-  dialog->SetUseDetails(true);
-  dialog->Open();
-
-  if (!dialog->IsConfirmed())
-    return false;
-
-  const std::shared_ptr<CFileItem> selectedItem{dialog->GetSelectedFileItem()};
-
-  // choose a video version
-  const int idVideoVersion{SelectVideoAsset(selectedItem)};
-  if (idVideoVersion < 0)
-    return false;
-
-  videodb.ConvertVideoToVersion(itemType, dbId, selectedItem->GetVideoInfoTag()->m_iDbId,
-                                idVideoVersion);
-  return true;
+  return ChooseVideoAndConvertToVideoVersion(list, itemType, mediaType, dbId, videodb);
 }
