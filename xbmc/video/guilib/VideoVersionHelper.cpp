@@ -169,7 +169,7 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
   std::shared_ptr<const CFileItem> videoVersion;
   if (item->HasVideoVersions())
   {
-    if (!item->GetProperty("force_choose_video_version").asBoolean(false))
+    if (!item->GetProperty("needs_resolved_video_version").asBoolean(false))
     {
       // select the specified video version
       if (item->GetVideoInfoTag()->GetAssetInfo().GetId() > 0)
@@ -200,8 +200,8 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseMovieFromVideoVersions(
       }
     }
 
-    if (!videoVersion && (item->GetProperty("force_choose_video_version").asBoolean(false) ||
-                          !item->GetProperty("prohibit_choose_video_version").asBoolean(false)))
+    if (!videoVersion && (item->GetProperty("needs_resolved_video_version").asBoolean(false) ||
+                          !item->GetProperty("has_resolved_video_version").asBoolean(false)))
     {
       CVideoChooser chooser{item};
       chooser.EnableExtras(false);
