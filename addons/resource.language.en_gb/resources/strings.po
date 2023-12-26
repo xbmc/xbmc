@@ -23754,7 +23754,7 @@ msgstr ""
 #. Manage video version dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40002"
-msgid "Convert into an additional version of {0:s}"
+msgid "Convert into an additional version"
 msgstr ""
 
 #empty string with id 40003
@@ -23777,7 +23777,7 @@ msgstr ""
 #. Warning dialog text
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40006"
-msgid "The selected {0:s} contains multiple versions. Cannot convert into an additional version of another one. Remove it from the library, rescan, and convert each version separately."
+msgid "The selected movie has multiple versions, preventing its conversion into a version of another movie. Remove the versions from the movie, rescan the libray and convert them individually."
 msgstr ""
 
 #. Warning dialog text
@@ -23789,13 +23789,13 @@ msgstr ""
 #. Different video version found dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40008"
-msgid "Different {0:s} version found"
+msgid "Different movie version found"
 msgstr ""
 
 #. Different video version found dialog text
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40009"
-msgid "Found a different version of {0:s} \"{1:s}\" ({2:s}). Would you like to convert it into an additional version of the original?"
+msgid "Found a different version of the movie \"{0:s}\": {1:s}. Would you like to convert it into an additional version of the original?"
 msgstr ""
 
 #. "video version" string in singular format
@@ -23836,18 +23836,16 @@ msgctxt "#40015"
 msgid "Add extra"
 msgstr ""
 
-#. Add video version dialog text. Example: The selected video is already added to this movie as "Director's Cut"
-#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+#. Add video version dialog text.
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40016"
-msgid "The selected video is already added to this {0:s} as \"{1:s}\"."
+msgid "The selected video already is the \"{0:s}\" version of the movie."
 msgstr ""
 
-#. Add video version dialog text. Example: The selected video is already added to movie "Fancy movie title" as "Director's Cut". Would you like to remove it and add it to this movie?"
-#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+#. Add video version dialog text. Example: The selected video is the "Extended Edition" version of the movie "Movie title". Would you like to move the version to this movie?"
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40017"
-msgid "The selected video is already added to {0:s} \"{1:s}\" as \"{2:s}\". Would you like to remove it and add it to this {3:s}?"
+msgid "The selected video is the \"{0:s}\" version of the movie \"{1:s}\". Would you like to move the version to this movie?"
 msgstr ""
 
 #. Remove video version dialog title
@@ -23860,7 +23858,7 @@ msgstr ""
 #. Add new video version dialog text
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40019"
-msgid "Unable to remove default version \"{0:s}\" from {1:s} \"{2:s}\". Change the default version and try again."
+msgid "The default version of a movie cannot be removed. Set a different default version and try again."
 msgstr ""
 
 #. Remove video version dialog text
@@ -23884,7 +23882,7 @@ msgstr ""
 #. Button label to make a video version the default version
 #: addons/skin.estuary/xml/DialogVideoVersion.xml
 msgctxt "#40023"
-msgid "Set default"
+msgid "Set as default"
 msgstr ""
 
 #. Choose/Manage video version dialog title
@@ -23901,7 +23899,19 @@ msgctxt "#40025"
 msgid "Extras: {0:s}"
 msgstr ""
 
-#empty strings with id 40026 to 40199
+#. Add extra dialog text.
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40026"
+msgid "The selected video already is the \"{0:s}\" extra of the movie."
+msgstr ""
+
+#. Add video extra dialog text. Example: The selected video is the "Behind the scenes" extra of the movie "Movie title". Would you like to move the extra to this movie?"
+#: xbmc/video/dialogs/GUIDialogVideoManagerExtras.cpp
+msgctxt "#40027"
+msgid "The selected video is the \"{0:s}\" extra of the movie \"{1:s}\". Would you like to move the extra to this movie?"
+msgstr ""
+
+#empty strings with id 40028 to 40199
 
 #. Select default video version setting
 #: system/settings/settings.xml
