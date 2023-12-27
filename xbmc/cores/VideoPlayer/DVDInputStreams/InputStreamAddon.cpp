@@ -550,6 +550,10 @@ KODI_HANDLE CInputStreamAddon::cb_get_stream_transfer(KODI_HANDLE handle,
     if ((stream->m_features & INPUTSTREAM_FEATURE_DECODE) != 0)
       demuxStream->externalInterfaces = thisClass->m_subAddonProvider;
   }
+
+  // Tie the lifetime of the stream to the CInputStreamAddon
+  thisClass->m_streams.emplace_back(demuxStream);
+
   return demuxStream;
 }
 
