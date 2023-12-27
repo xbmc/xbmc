@@ -373,7 +373,7 @@ int CGUIDialogVideoManagerVersions::ManageVideoVersionContextMenu(
 }
 
 bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
-    const CFileItemList& items,
+    CFileItemList& items,
     VideoDbContentType itemType,
     const std::string& mediaType,
     int dbId,
@@ -388,11 +388,18 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
     return {};
   }
 
+  // Load thumbs async
+  CVideoThumbLoader loader;
+  loader.Load(items);
+
   dialog->Reset();
   dialog->SetItems(items);
   dialog->SetHeading(CVariant{40002});
   dialog->SetUseDetails(true);
   dialog->Open();
+
+  if (loader.IsLoading())
+    loader.StopThread();
 
   if (!dialog->IsConfirmed())
     return false;
@@ -467,10 +474,8 @@ bool CGUIDialogVideoManagerVersions::ConvertVideoVersion(const std::shared_ptr<C
   }
 
   // decorate the items
-  CVideoThumbLoader loader;
   for (const auto& item : list)
   {
-    loader.LoadItem(item.get());
     item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
   }
 
@@ -521,10 +526,8 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
   }
 
   // decorate the items
-  CVideoThumbLoader loader;
   for (const auto& item : list)
   {
-    loader.LoadItem(item.get());
     item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
   }
 

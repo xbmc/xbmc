@@ -49,7 +49,7 @@ private:
   void SetDefault();
   void UpdateDefaultVideoVersionSelection();
 
-  static bool ChooseVideoAndConvertToVideoVersion(const CFileItemList& items,
+  static bool ChooseVideoAndConvertToVideoVersion(CFileItemList& items,
                                                   VideoDbContentType itemType,
                                                   const std::string& mediaType,
                                                   int dbId,
