@@ -121,8 +121,7 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
                       { return version->GetVideoInfoTag()->m_iDbId == idFile; }))
       {
         CGUIDialogOK::ShowAndGetInput(
-            g_localizeStrings.Get(40015),
-            StringUtils::Format(g_localizeStrings.Get(40026), typeVideoVersion));
+            CVariant{40015}, StringUtils::Format(g_localizeStrings.Get(40026), typeVideoVersion));
         return;
       }
 
@@ -134,7 +133,7 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
         return;
 
       if (!CGUIDialogYesNo::ShowAndGetInput(
-              g_localizeStrings.Get(40014),
+              CVariant{40014},
               StringUtils::Format(g_localizeStrings.Get(40027), typeVideoVersion, videoTitle)))
       {
         return;

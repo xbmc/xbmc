@@ -134,8 +134,7 @@ void CGUIDialogVideoManagerVersions::Remove()
   // default video version is not allowed
   if (m_database.IsDefaultVideoVersion(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId))
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant(40018),
-                                  StringUtils::Format(g_localizeStrings.Get(40019)));
+    CGUIDialogOK::ShowAndGetInput(CVariant{40018}, CVariant{40019});
     return;
   }
 
@@ -214,8 +213,7 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
                       { return version->GetVideoInfoTag()->m_iDbId == idFile; }))
       {
         CGUIDialogOK::ShowAndGetInput(
-            g_localizeStrings.Get(40014),
-            StringUtils::Format(g_localizeStrings.Get(40016), typeVideoVersion));
+            CVariant{40014}, StringUtils::Format(g_localizeStrings.Get(40016), typeVideoVersion));
         return;
       }
 
@@ -227,7 +225,7 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
         return;
 
       if (!CGUIDialogYesNo::ShowAndGetInput(
-              g_localizeStrings.Get(40014),
+              CVariant{40014},
               StringUtils::Format(g_localizeStrings.Get(40017), typeVideoVersion, videoTitle)))
       {
         return;
@@ -240,8 +238,7 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
 
         if (list.Size() > 1)
         {
-          CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(40014),
-                                        StringUtils::Format(g_localizeStrings.Get(40019)));
+          CGUIDialogOK::ShowAndGetInput(CVariant{40014}, CVariant{40019});
           return;
         }
         else
@@ -283,8 +280,7 @@ std::tuple<int, std::string> CGUIDialogVideoManagerVersions::NewVideoVersion()
   std::string typeVideoVersion;
 
   // prompt for the new video version
-  if (!CGUIKeyboardFactory::ShowAndGetInput(typeVideoVersion,
-                                            CVariant{g_localizeStrings.Get(40004)}, false))
+  if (!CGUIKeyboardFactory::ShowAndGetInput(typeVideoVersion, CVariant{40004}, false))
     return std::make_tuple(-1, "");
 
   CVideoDatabase videodb;
@@ -390,8 +386,7 @@ bool CGUIDialogVideoManagerVersions::ConvertVideoVersion(const std::shared_ptr<C
   // invalid operation warning
   if (item->GetVideoInfoTag()->HasVideoVersions())
   {
-    CGUIDialogOK::ShowAndGetInput(CVariant{40005},
-                                  StringUtils::Format(g_localizeStrings.Get(40006)));
+    CGUIDialogOK::ShowAndGetInput(CVariant{40005}, CVariant{40006});
     return false;
   }
 
@@ -451,7 +446,7 @@ bool CGUIDialogVideoManagerVersions::ConvertVideoVersion(const std::shared_ptr<C
 
   dialog->Reset();
   dialog->SetItems(list);
-  dialog->SetHeading(StringUtils::Format(g_localizeStrings.Get(40002)));
+  dialog->SetHeading(CVariant{40002});
   dialog->SetUseDetails(true);
   dialog->Open();
 
@@ -497,10 +492,9 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
   std::string path;
   videodb.GetFilePathById(dbId, path, itemType);
 
-  if (!CGUIDialogYesNo::ShowAndGetInput(StringUtils::Format(g_localizeStrings.Get(40008)),
-                                        StringUtils::Format(g_localizeStrings.Get(40009),
-                                                            item.GetVideoInfoTag()->GetTitle(),
-                                                            path)))
+  if (!CGUIDialogYesNo::ShowAndGetInput(
+          CVariant{40008}, StringUtils::Format(g_localizeStrings.Get(40009),
+                                               item.GetVideoInfoTag()->GetTitle(), path)))
   {
     return false;
   }
@@ -532,7 +526,7 @@ bool CGUIDialogVideoManagerVersions::ProcessVideoVersion(VideoDbContentType item
 
   dialog->Reset();
   dialog->SetItems(list);
-  dialog->SetHeading(StringUtils::Format(g_localizeStrings.Get(40002)));
+  dialog->SetHeading(CVariant{40002});
   dialog->SetUseDetails(true);
   dialog->Open();
 
