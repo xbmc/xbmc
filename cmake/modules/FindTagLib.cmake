@@ -21,12 +21,6 @@ macro(buildTagLib)
   find_package(ZLIB REQUIRED)
   unset(FPHSA_NAME_MISMATCHED)
 
-  include(cmake/scripts/common/ModuleHelpers.cmake)
-
-  set(MODULE_LC taglib)
-
-  SETUP_BUILD_VARS()
-
   set(TAGLIB_VERSION ${${MODULE}_VER})
 
   if(WIN32 OR WINDOWS_STORE)
@@ -55,12 +49,39 @@ macro(buildTagLib)
 endmacro()
 
 if(NOT TARGET TagLib::TagLib)
-  if(ENABLE_INTERNAL_TAGLIB)
+
+  include(cmake/scripts/common/ModuleHelpers.cmake)
+
+  set(MODULE_LC taglib)
+
+  SETUP_BUILD_VARS()
+
+  # Taglib installs a shell script for all platforms. This can provide version universally
+  find_program(TAGLIB-CONFIG NAMES taglib-config taglib-config.command
+                             HINTS ${DEPENDSPATH}/bin)
+
+  if(TAGLIB-CONFIG)
+    execute_process(COMMAND "${TAGLIB-CONFIG}" --version
+                    OUTPUT_VARIABLE TAGLIBCONFIG_VER
+                    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  endif()
+
+  if((TAGLIBCONFIG_VER VERSION_LESS ${${MODULE}_VER} AND ENABLE_INTERNAL_TAGLIB) OR
+     ((CORE_SYSTEM_NAME STREQUAL linux OR CORE_SYSTEM_NAME STREQUAL freebsd) AND ENABLE_INTERNAL_TAGLIB))
+    # Build Taglib
     buildTagLib()
   else()
-
     if(PKG_CONFIG_FOUND)
-      pkg_check_modules(PC_TAGLIB taglib>=1.9.0 QUIET)
+      if(TagLib_FIND_VERSION)
+        if(TagLib_FIND_VERSION_EXACT)
+          set(TagLib_FIND_SPEC "=${TagLib_FIND_VERSION_COMPLETE}")
+        else()
+          set(TagLib_FIND_SPEC ">=${TagLib_FIND_VERSION_COMPLETE}")
+        endif()
+      endif()
+      pkg_check_modules(PC_TAGLIB taglib${TagLib_FIND_SPEC} QUIET)
+
+      set(TAGLIB_LINK_LIBS ${PC_TAGLIB_LIBRARIES})
     endif()
 
     find_path(TAGLIB_INCLUDE_DIR NAMES taglib/tag.h
@@ -75,9 +96,12 @@ if(NOT TARGET TagLib::TagLib)
                                       HINTS ${DEPENDS_PATH}/lib ${PC_TAGLIB_LIBDIR}
                                       ${${CORE_PLATFORM_NAME_LC}_SEARCH_CONFIG}
                                       NO_CACHE)
-    set(TAGLIB_VERSION ${PC_TAGLIB_VERSION})
 
-    set(TAGLIB_LINK_LIBS ${PC_TAGLIB_LIBRARIES})
+    if(TAGLIBCONFIG_VER)
+      set(TAGLIB_VERSION ${TAGLIBCONFIG_VER})
+    else()
+      set(TAGLIB_VERSION ${PC_TAGLIB_VERSION})
+    endif()
   endif()
 
   include(SelectLibraryConfigurations)
@@ -131,13 +155,10 @@ if(NOT TARGET TagLib::TagLib)
       add_dependencies(build_internal_depends taglib)
     endif()
 
-
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP TagLib::TagLib)
   else()
     if(TagLib_FIND_REQUIRED)
       message(FATAL_ERROR "TagLib not found.")
     endif()
   endif()
-  mark_as_advanced(TAGLIB_INCLUDE_DIR TAGLIB_LIBRARY)
 endif()
-

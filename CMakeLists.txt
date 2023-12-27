@@ -219,7 +219,7 @@ set(required_deps ASS>=0.15.0
                   RapidJSON>=1.0.2
                   Spdlog
                   Sqlite3
-                  TagLib
+                  TagLib>=1.9.0
                   TinyXML
                   TinyXML2
                   ZLIB
