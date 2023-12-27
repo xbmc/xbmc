@@ -15,18 +15,18 @@
 
 #include <mutex>
 
-CBackgroundInfoLoader::CBackgroundInfoLoader() : m_thread (NULL)
-{
-  m_bStop = true;
-  m_pObserver=NULL;
-  m_pProgressCallback=NULL;
-  m_pVecItems = NULL;
-  m_bIsLoading = false;
-}
+CBackgroundInfoLoader::CBackgroundInfoLoader() = default;
 
 CBackgroundInfoLoader::~CBackgroundInfoLoader()
 {
   StopThread();
+}
+
+void CBackgroundInfoLoader::Reset()
+{
+  m_pVecItems = nullptr;
+  m_vecItems.clear();
+  m_bIsLoading = false;
 }
 
 void CBackgroundInfoLoader::Run()
@@ -83,13 +83,13 @@ void CBackgroundInfoLoader::Run()
     }
 
     OnLoaderFinish();
-    m_bIsLoading = false;
   }
   catch (...)
   {
-    m_bIsLoading = false;
     CLog::Log(LOGERROR, "{} - Unhandled exception", __FUNCTION__);
   }
+
+  Reset();
 }
 
 void CBackgroundInfoLoader::Load(CFileItemList& items)
@@ -129,9 +129,7 @@ void CBackgroundInfoLoader::StopThread()
     delete m_thread;
     m_thread = NULL;
   }
-  m_vecItems.clear();
-  m_pVecItems = NULL;
-  m_bIsLoading = false;
+  Reset();
 }
 
 bool CBackgroundInfoLoader::IsLoading()

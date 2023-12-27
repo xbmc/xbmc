@@ -310,7 +310,7 @@ void CGUIDialogVideoManager::Remove()
 
 void CGUIDialogVideoManager::Rename()
 {
-  const int idAsset{SelectVideoAsset(m_videoAsset)};
+  const int idAsset{ChooseVideoAsset(m_videoAsset)};
   if (idAsset != -1)
   {
     //! @todo db refactor: should not be version, but asset
@@ -338,7 +338,7 @@ void CGUIDialogVideoManager::SetSelectedVideoAsset(const std::shared_ptr<CFileIt
   UpdateControls();
 }
 
-int CGUIDialogVideoManager::SelectVideoAsset(const std::shared_ptr<CFileItem>& item)
+int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& item)
 {
   if (!item || !item->HasVideoInfoTag())
     return -1;

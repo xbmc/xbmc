@@ -49,5 +49,11 @@ private:
   void SetDefault();
   void UpdateDefaultVideoVersionSelection();
 
+  static bool ChooseVideoAndConvertToVideoVersion(CFileItemList& items,
+                                                  VideoDbContentType itemType,
+                                                  const std::string& mediaType,
+                                                  int dbId,
+                                                  CVideoDatabase& videoDb);
+
   std::shared_ptr<CFileItem> m_defaultVideoVersion;
 };
