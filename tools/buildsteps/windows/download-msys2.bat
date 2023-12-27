@@ -22,12 +22,15 @@
 @echo off
 title msys2
 
+SETLOCAL EnableDelayedExpansion
+
 PUSHD %~dp0\..\..\..
 SET WORKSPACE=%CD%
 POPD
 
-set msysver=20210725
+set msysver=20231026
 set msys2=msys64
+set arch=x86_64
 set instdir=%WORKSPACE%\project\BuildDependencies
 set msyspackages=diffutils gcc make patch perl tar yasm
 set gaspreprocurl=https://github.com/FFmpeg/gas-preprocessor/archive/master.tar.gz
@@ -35,7 +38,7 @@ set usemirror=yes
 set opt=mintty
 
 :: if KODI_MIRROR is not set externally to this script, set it to the default mirror URL
-if "%KODI_MIRROR%"=="" set KODI_MIRROR=http://mirrors.kodi.tv
+if "%KODI_MIRROR%"=="" set KODI_MIRROR=https://mirrors.kodi.tv
 if "%usemirror%"=="yes" (
     echo -------------------------------------------------------------------------------
     echo. Downloading will be performed from mirror %KODI_MIRROR%
@@ -50,9 +53,11 @@ for %%b in (%*) do (
   if %%b==sh (set opt=sh)
 )
 
-:: use 32bit msys2 on x86 machine
-if %PROCESSOR_ARCHITECTURE%=="x86" set msys2=msys32
-if %msys2%==msys32 (set arch=i686) else (set arch=x86_64)
+:: msys2 announced end of 32bit active support on 2020-05-17
+if %PROCESSOR_ARCHITECTURE%=="x86" (
+	echo ERROR: msys2 is not available for 32bit OS
+        exit /B 1
+)
 set msysfile=msys2-base-%arch%-%msysver%.tar.xz
 if %opt%==mintty (
     set sh=%instdir%\%msys2%\usr\bin\mintty.exe -d -i /msys2.ico /usr/bin/bash
@@ -79,7 +84,7 @@ if exist "%downloaddir%\%msysfile%" GOTO unpack
     echo.- Download msys2 basic system (Kodi mirrors: %usemirror%)
     echo -------------------------------------------------------------------------------
 
-    set msysurl=http://sourceforge.net/projects/msys2/files/Base/%arch%/%msysfile%/download
+    set msysurl=https://repo.msys2.org/distrib/%arch%/%msysfile%
     if %usemirror%==yes (
         ::download msys2 from our mirror
         set msysurl=%MSYS_MIRROR%/%msysfile%
@@ -159,7 +164,7 @@ if not "%usemirror%"=="yes" GOTO rebase
             if %%f==msys set mirror=!mirror!2/$arch
             move !filename! !oldfile!>nul
             for /F "usebackq delims=" %%a in (!oldfile!) do (
-                echo %%a | find /i "server = http://repo.msys2.org/">nul && (
+                echo %%a | find /i "server = https://mirror.msys2.org/">nul && (
                     echo.Server = !mirror!
                     )>>!filename!
                 echo %%a>>!filename!
@@ -208,6 +213,8 @@ if not exist %instdir%\locals\x64\share (
     )
 
 if not exist %instdir%\%msys2%\etc\fstab. GOTO writeFstab
+
+set searchRes=
 for /f "tokens=2 delims=/" %%a in ('findstr /i xbmc %instdir%\%msys2%\etc\fstab.') do set searchRes=%%a
 if "%searchRes%"=="xbmc" GOTO installbase
 
@@ -254,18 +261,11 @@ if exist %instdir%\%msys2%\usr\bin\make.exe GOTO rebase2
     echo.sleep ^3
     echo.exit
         )>>%instdir%\pacman.sh
+:: Unconventional msys2 post install steps:
+:: %sh% -lc ' ' for first-run msys2 actions is replaced by --login for the first script execution.
+:: To control the used versions, %sh% pacman --noconfirm -Syuu is not run twice for system update.
     %sh% --login %instdir%\pacman.sh &
     del %instdir%\pacman.sh
-
-    for %%i in (%instdir%\%msys2%\usr\ssl\cert.pem) do (
-        if %%~zi==0 (
-            echo.update-ca-trust>>cert.sh
-            echo.sleep ^3>>cert.sh
-            echo.exit>>cert.sh
-            %sh% --login %instdir%\cert.sh
-            del cert.sh
-            )
-        )
 
 :rebase2
 if %msys2%==msys32 (
