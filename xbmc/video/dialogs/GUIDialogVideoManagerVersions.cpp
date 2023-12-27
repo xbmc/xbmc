@@ -291,8 +291,8 @@ std::tuple<int, std::string> CGUIDialogVideoManagerVersions::NewVideoVersion()
   }
 
   typeVideoVersion = StringUtils::Trim(typeVideoVersion);
-  const int idVideoVersion{
-      videodb.AddVideoVersionType(typeVideoVersion, VideoAssetTypeOwner::USER)};
+  const int idVideoVersion{videodb.AddVideoVersionType(typeVideoVersion, VideoAssetTypeOwner::USER,
+                                                       VideoAssetType::VERSION)};
 
   return std::make_tuple(idVideoVersion, typeVideoVersion);
 }

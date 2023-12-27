@@ -385,7 +385,7 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
       {
         assetTitle = StringUtils::Trim(assetTitle);
         //! @todo db refactor: should not be version, but asset
-        assetId = videodb.AddVideoVersionType(assetTitle, VideoAssetTypeOwner::USER);
+        assetId = videodb.AddVideoVersionType(assetTitle, VideoAssetTypeOwner::USER, assetType);
       }
     }
     else if (dialog->IsConfirmed())

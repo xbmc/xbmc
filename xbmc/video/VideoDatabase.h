@@ -1009,7 +1009,9 @@ public:
                              int idVideoVersion);
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
-  int AddVideoVersionType(const std::string& typeVideoVersion, VideoAssetTypeOwner owner);
+  int AddVideoVersionType(const std::string& typeVideoVersion,
+                          VideoAssetTypeOwner owner,
+                          VideoAssetType assetType);
   void AddVideoVersion(VideoDbContentType itemType,
                        int dbId,
                        int idVideoVersion,

@@ -11802,7 +11802,8 @@ void CVideoDatabase::UpdateVideoVersionTypeTable()
 }
 
 int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
-                                        VideoAssetTypeOwner owner)
+                                        VideoAssetTypeOwner owner,
+                                        VideoAssetType assetType)
 {
   if (typeVideoVersion.empty())
     return -1;
@@ -11814,14 +11815,15 @@ int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
     if (!m_pDB || !m_pDS)
       return -1;
 
-    m_pDS->query(PrepareSQL("SELECT id, owner FROM videoversiontype WHERE name = '%s'",
-                            typeVideoVersion.c_str()));
+    m_pDS->query(PrepareSQL(
+        "SELECT id, owner, itemType FROM videoversiontype WHERE name = '%s' AND itemtype = %i",
+        typeVideoVersion.c_str(), assetType));
     if (m_pDS->num_rows() == 0)
     {
-      m_pDS->exec(
-          PrepareSQL("INSERT INTO videoversiontype (id, name, owner) VALUES(NULL, '%s', %i)",
-                     typeVideoVersion.c_str(), owner));
-      id = m_pDS->lastinsertid();
+      m_pDS->exec(PrepareSQL("INSERT INTO videoversiontype (id, name, owner, itemType) "
+                             "VALUES(NULL, '%s', %i, %i)",
+                             typeVideoVersion.c_str(), owner, assetType));
+      id = static_cast<int>(m_pDS->lastinsertid());
     }
     else
     {

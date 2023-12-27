@@ -155,8 +155,8 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
     const std::string typeNewVideoVersion{
         CGUIDialogVideoManagerExtras::GenerateVideoExtra(URIUtils::GetFileName(path))};
 
-    const int idNewVideoVersion{
-        m_database.AddVideoVersionType(typeNewVideoVersion, VideoAssetTypeOwner::AUTO)};
+    const int idNewVideoVersion{m_database.AddVideoVersionType(
+        typeNewVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRAS)};
 
     m_database.AddExtrasVideoVersion(itemType, dbId, idNewVideoVersion, item);
 
