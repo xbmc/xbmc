@@ -48,15 +48,18 @@ protected:
   virtual void OnLoaderStart() {}
   virtual void OnLoaderFinish() {}
 
-  CFileItemList *m_pVecItems;
+  CFileItemList* m_pVecItems{nullptr};
   std::vector<CFileItemPtr> m_vecItems; // FileItemList would delete the items and we only want to keep a reference.
   CCriticalSection m_lock;
 
-  volatile bool m_bIsLoading;
-  volatile bool m_bStop;
-  CThread *m_thread;
+  volatile bool m_bIsLoading{false};
+  volatile bool m_bStop{true};
+  CThread* m_thread{nullptr};
 
-  IBackgroundLoaderObserver* m_pObserver;
-  IProgressCallback* m_pProgressCallback;
+  IBackgroundLoaderObserver* m_pObserver{nullptr};
+  IProgressCallback* m_pProgressCallback{nullptr};
+
+private:
+  void Reset();
 };
 
