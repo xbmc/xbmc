@@ -79,6 +79,17 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo()
   else
     m_videoExtras.Clear();
 
+  CFileItem defaultVideoVersion;
+  db.GetDefaultVideoVersion(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
+                            defaultVideoVersion);
+
+  // find default version item in list and select it
+  const int defaultDbId{defaultVideoVersion.GetVideoInfoTag()->m_iDbId};
+  for (const auto& item : m_videoVersions)
+  {
+    item->Select(item->GetVideoInfoTag()->m_iDbId == defaultDbId);
+  }
+
   VideoAssetType itemType{VideoAssetType::VERSION};
   while (true)
   {
