@@ -1,0 +1,12 @@
+--- a/gzlib.c
++++ b/gzlib.c
+@@ -579,4 +579,9 @@ unsigned ZLIB_INTERNAL gz_intmax(void) {
+     } while (p > q);
+     return q >> 1;
+ }
++#else
++unsigned ZLIB_INTERNAL gz_intmax()
++{
++    return INT_MAX;
++}
+ #endif
