@@ -1027,7 +1027,7 @@ public:
   bool IsDefaultVideoVersion(int idFile);
   bool GetVideoVersionTypes(VideoDbContentType idContent, CFileItemList& items);
   void SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type);
-  void InitializeVideoVersionTypeTable();
+  void InitializeVideoVersionTypeTable(int schemaVersion);
   void UpdateVideoVersionTypeTable();
   bool GetVideoVersionsNav(const std::string& strBaseDir,
                            CFileItemList& items,
