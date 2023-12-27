@@ -1077,8 +1077,10 @@ bool CGUIWindowVideoBase::PlayItem(const std::shared_ptr<CFileItem>& pItem,
     CServiceBroker::GetPlaylistPlayer().Play();
     return true;
   }
-  else if (pItem->IsPlayList())
+  else if (pItem->IsPlayList() && !pItem->IsType(".strm"))
   {
+    // Note: strm files being somehow special playlists need to be handled in OnPlay*Media
+
     // load the playlist the old way
     LoadPlayList(pItem->GetDynPath(), PLAYLIST::TYPE_VIDEO);
     return true;

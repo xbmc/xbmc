@@ -2394,8 +2394,9 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
       if (videoInfoTagPath.find("removable://") == 0 || item.IsVideoDb())
         path = videoInfoTagPath;
 
-      if (!item.HasVideoInfoTag())
-        dbs.LoadVideoInfo(path, *item.GetVideoInfoTag());
+      // Note that we need to load the tag from database also if the item already has a tag,
+      // because for example the (full) video info for strm files will be loaded here.
+      dbs.LoadVideoInfo(path, *item.GetVideoInfoTag());
 
       if (item.HasProperty("savedplayerstate"))
       {
