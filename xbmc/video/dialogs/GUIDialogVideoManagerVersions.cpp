@@ -265,7 +265,7 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
                  CURL::GetRedacted(item.GetPath()));
     }
 
-    const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset)};
+    const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION)};
     if (idNewVideoVersion != -1)
       m_database.AddPrimaryVideoVersion(itemType, dbId, idNewVideoVersion, item);
 
@@ -409,7 +409,7 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
     return false;
 
   // choose a video version for the video
-  const int idVideoVersion{ChooseVideoAsset(selectedItem)};
+  const int idVideoVersion{ChooseVideoAsset(selectedItem, VideoAssetType::VERSION)};
   if (idVideoVersion < 0)
     return false;
 

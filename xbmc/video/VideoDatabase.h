@@ -1025,7 +1025,9 @@ public:
                              CFileItem& item);
   void RemoveVideoVersion(int dbId);
   bool IsDefaultVideoVersion(int idFile);
-  bool GetVideoVersionTypes(VideoDbContentType idContent, CFileItemList& items);
+  bool GetVideoVersionTypes(VideoDbContentType idContent,
+                            VideoAssetType asset,
+                            CFileItemList& items);
   void SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type);
   void InitializeVideoVersionTypeTable(int schemaVersion);
   void UpdateVideoVersionTypeTable();

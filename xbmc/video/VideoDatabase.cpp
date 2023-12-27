@@ -12385,7 +12385,9 @@ bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
   return false;
 }
 
-bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent, CFileItemList& items)
+bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent,
+                                          VideoAssetType assetType,
+                                          CFileItemList& items)
 {
   if (!m_pDB || !m_pDS)
     return false;
@@ -12402,8 +12404,9 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent, CFileIte
   try
   {
     m_pDS->query(
-        PrepareSQL("SELECT name, id FROM videoversiontype WHERE name != '' and owner IN (%i, %i)",
-                   VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER));
+        PrepareSQL("SELECT name, id FROM videoversiontype WHERE name != '' AND itemType = %i "
+                   "AND owner IN (%i, %i)",
+                   assetType, VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER));
 
     while (!m_pDS->eof())
     {
