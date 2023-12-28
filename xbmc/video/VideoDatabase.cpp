@@ -12340,21 +12340,23 @@ bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
     std::string strSQL;
 
     if (idMedia != -1)
-      strSQL = PrepareSQL("SELECT videoversiontype.name AS name,"
-                          "  videoversiontype.id AS id "
-                          "FROM videoversiontype"
-                          "  JOIN videoversion ON"
-                          "    videoversion.idType = videoversiontype.id "
-                          "WHERE idMedia = %i AND mediaType = '%s'",
-                          idMedia, mediaType.c_str());
+      strSQL =
+          PrepareSQL("SELECT videoversiontype.name AS name,"
+                     "  videoversiontype.id AS id "
+                     "FROM videoversiontype"
+                     "  JOIN videoversion ON"
+                     "    videoversion.idType = videoversiontype.id "
+                     "WHERE idMedia = %i AND mediaType = '%s' AND videoversiontype.itemType = %i",
+                     idMedia, mediaType.c_str(), VideoAssetType::VERSION);
     else
-      strSQL = PrepareSQL("SELECT DISTINCT videoversiontype.name AS name,"
-                          "  videoversiontype.id AS id "
-                          "FROM videoversiontype"
-                          "  JOIN videoversion ON"
-                          "    videoversion.idType = videoversiontype.id "
-                          "WHERE name != '' AND owner IN (%i, %i)",
-                          VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER);
+      strSQL = PrepareSQL(
+          "SELECT DISTINCT videoversiontype.name AS name,"
+          "  videoversiontype.id AS id "
+          "FROM videoversiontype"
+          "  JOIN videoversion ON"
+          "    videoversion.idType = videoversiontype.id "
+          "WHERE name != '' AND owner IN (%i, %i) AND videoversiontype.itemType = %i",
+          VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER, VideoAssetType::VERSION);
 
     m_pDS->query(strSQL);
 
