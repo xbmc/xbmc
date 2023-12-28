@@ -23754,7 +23754,7 @@ msgstr ""
 #. Manage video version dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManagerVersions.cpp
 msgctxt "#40002"
-msgid "Convert into an additional version"
+msgid "Add as version to..."
 msgstr ""
 
 #empty string with id 40003
@@ -23867,10 +23867,10 @@ msgctxt "#40020"
 msgid "Are you sure to remove version \"{0:s}\"?"
 msgstr ""
 
-#. Convert video to version context menu item
+#. Add as version to a movie context menu item
 #: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
 msgctxt "#40021"
-msgid "Convert to version"
+msgid "Add as version to..."
 msgstr ""
 
 #. Manage video version dialog title
