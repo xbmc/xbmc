@@ -105,19 +105,21 @@ static void ErrNonfatal(const char* const msg, int a1, int a2);
 namespace
 {
 constexpr auto FMT_BYTE = 1;
-constexpr auto FMT_USHORT = 2;
-constexpr auto FMT_ULONG = 3;
-constexpr auto FMT_URATIONAL = 4;
-constexpr auto FMT_SBYTE = 5;
-constexpr auto FMT_SSHORT = 6;
-constexpr auto FMT_SLONG = 7;
-constexpr auto FMT_SRATIONAL = 8;
-constexpr auto FMT_SINGLE = 9;
-constexpr auto FMT_DOUBLE = 10;
+[[maybe_unused]] constexpr auto FMT_STRING = 2;
+constexpr auto FMT_USHORT = 3;
+constexpr auto FMT_ULONG = 4;
+constexpr auto FMT_URATIONAL = 5;
+constexpr auto FMT_SBYTE = 6;
+[[maybe_unused]] constexpr auto FMT_UNDEFINED = 7;
+constexpr auto FMT_SSHORT = 8;
+constexpr auto FMT_SLONG = 9;
+constexpr auto FMT_SRATIONAL = 10;
+constexpr auto FMT_SINGLE = 11;
+constexpr auto FMT_DOUBLE = 12;
 // NOTE: Remember to change NUM_FORMATS if you define a new format
-constexpr auto NUM_FORMATS = 10;
+constexpr auto NUM_FORMATS = 12;
 
-const unsigned int BytesPerFormat[NUM_FORMATS] = {1, 2, 4, 8, 1, 2, 4, 8, 4, 8};
+const unsigned int BytesPerFormat[NUM_FORMATS] = {1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8};
 } // namespace
 
 //--------------------------------------------------------------------------
