@@ -201,8 +201,9 @@ void CVideoDatabase::CreateTables()
   m_pDS->exec("CREATE TABLE uniqueid (uniqueid_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, value TEXT, type TEXT)");
 
   CLog::Log(LOGINFO, "create videoversiontype table");
-  m_pDS->exec("CREATE TABLE videoversiontype (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)");
-  InitializeVideoVersionTypeTable();
+  m_pDS->exec("CREATE TABLE videoversiontype (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER, "
+              "itemType INTEGER)");
+  InitializeVideoVersionTypeTable(GetSchemaVersion());
 
   CLog::Log(LOGINFO, "create videoversion table");
   m_pDS->exec("CREATE TABLE videoversion (idFile INTEGER PRIMARY KEY, idMedia INTEGER, mediaType "
@@ -596,7 +597,7 @@ void CVideoDatabase::CreateViews()
                                      "    rating.rating_id=movie.c%02d"
                                      "  LEFT JOIN uniqueid ON"
                                      "    uniqueid.uniqueid_id=movie.c%02d",
-                                     VideoAssetType::VERSION, VideoAssetType::EXTRAS,
+                                     VideoAssetType::VERSION, VideoAssetType::EXTRA,
                                      VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID);
   m_pDS->exec(movieview);
 }
@@ -6175,7 +6176,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
   {
     // create videoversiontype table
     m_pDS->exec("CREATE TABLE videoversiontype (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER)");
-    InitializeVideoVersionTypeTable();
+    InitializeVideoVersionTypeTable(iVersion);
 
     // create videoversion table
     m_pDS->exec("CREATE TABLE videoversion (idFile INTEGER PRIMARY KEY, idMedia INTEGER, mediaType "
@@ -6184,11 +6185,56 @@ void CVideoDatabase::UpdateTables(int iVersion)
         "INSERT INTO videoversion SELECT idFile, idMovie, 'movie', '%i', '%i' FROM movie",
         VideoAssetType::VERSION, VIDEO_VERSION_ID_DEFAULT));
   }
+
+  if (iVersion < 127)
+  {
+    m_pDS->exec("ALTER TABLE videoversiontype ADD itemType INTEGER");
+
+    // First, assume all types are video version types
+    m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET itemType = %i", VideoAssetType::VERSION));
+
+    // Then, check current extras entries and their assigned item type and migrate it
+
+    // get all assets with extras item type
+    m_pDS->query("SELECT DISTINCT idType FROM videoversion WHERE itemType = 1");
+    while (!m_pDS->eof())
+    {
+      const int idType{m_pDS->fv(0).get_asInt()};
+      if (idType > VIDEO_VERSION_ID_END)
+      {
+        // user-added type for extras. change its item type to extras
+        m_pDS2->exec(PrepareSQL("UPDATE videoversiontype SET itemType = %i WHERE id = %i",
+                                VideoAssetType::EXTRA, idType));
+      }
+      else
+      {
+        // system type used for an extra. copy as extras item type.
+        m_pDS2->query(
+            PrepareSQL("SELECT itemType, name FROM videoversiontype WHERE id = %i", idType));
+        if (m_pDS2->fv(0).get_asInt() == 0)
+        {
+          // currently a versions type, create a corresponding user-added type for extras
+          m_pDS2->exec(PrepareSQL(
+              "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(NULL, '%s', %i, %i)",
+              m_pDS2->fv(1).get_asString().c_str(), VideoAssetTypeOwner::USER,
+              VideoAssetType::EXTRA));
+
+          // update the respective extras to use the new extras type
+          const int newId{static_cast<int>(m_pDS2->lastinsertid())};
+          m_pDS2->exec(
+              PrepareSQL("UPDATE videoversion SET idType = %i WHERE itemType = 1 AND idType = %i",
+                         newId, idType));
+        }
+      }
+      m_pDS->next();
+    }
+    m_pDS->close();
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 126;
+  return 127;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)
@@ -11701,7 +11747,7 @@ std::string CVideoDatabase::GetVideoItemTitle(VideoDbContentType itemType, int d
   }
 }
 
-void CVideoDatabase::InitializeVideoVersionTypeTable()
+void CVideoDatabase::InitializeVideoVersionTypeTable(int schemaVersion)
 {
   try
   {
@@ -11709,9 +11755,19 @@ void CVideoDatabase::InitializeVideoVersionTypeTable()
 
     for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
     {
-      std::string type = g_localizeStrings.Get(id);
-      m_pDS->exec(PrepareSQL("INSERT INTO videoversiontype VALUES(%i, '%s', %i)", id, type.c_str(),
-                             VideoAssetTypeOwner::SYSTEM));
+      const std::string type{g_localizeStrings.Get(id)};
+      if (schemaVersion < 127)
+      {
+        m_pDS->exec(
+            PrepareSQL("INSERT INTO videoversiontype (id, name, owner) VALUES(%i, '%s', %i)", id,
+                       type.c_str(), VideoAssetTypeOwner::SYSTEM));
+      }
+      else
+      {
+        m_pDS->exec(PrepareSQL(
+            "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(%i, '%s', %i, %i)", id,
+            type.c_str(), VideoAssetTypeOwner::SYSTEM, VideoAssetType::VERSION));
+      }
     }
 
     CommitTransaction();
@@ -11746,7 +11802,8 @@ void CVideoDatabase::UpdateVideoVersionTypeTable()
 }
 
 int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
-                                        VideoAssetTypeOwner owner)
+                                        VideoAssetTypeOwner owner,
+                                        VideoAssetType assetType)
 {
   if (typeVideoVersion.empty())
     return -1;
@@ -11758,14 +11815,15 @@ int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
     if (!m_pDB || !m_pDS)
       return -1;
 
-    m_pDS->query(PrepareSQL("SELECT id, owner FROM videoversiontype WHERE name = '%s'",
-                            typeVideoVersion.c_str()));
+    m_pDS->query(PrepareSQL(
+        "SELECT id, owner, itemType FROM videoversiontype WHERE name = '%s' AND itemtype = %i",
+        typeVideoVersion.c_str(), assetType));
     if (m_pDS->num_rows() == 0)
     {
-      m_pDS->exec(
-          PrepareSQL("INSERT INTO videoversiontype (id, name, owner) VALUES(NULL, '%s', %i)",
-                     typeVideoVersion.c_str(), owner));
-      id = m_pDS->lastinsertid();
+      m_pDS->exec(PrepareSQL("INSERT INTO videoversiontype (id, name, owner, itemType) "
+                             "VALUES(NULL, '%s', %i, %i)",
+                             typeVideoVersion.c_str(), owner, assetType));
+      id = static_cast<int>(m_pDS->lastinsertid());
     }
     else
     {
@@ -11797,7 +11855,7 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType, int dbId, CFi
 
   // get video extras versions
   CFileItemList extrasList;
-  GetVideoVersions(itemType, dbId, extrasList, VideoAssetType::EXTRAS);
+  GetVideoVersions(itemType, dbId, extrasList, VideoAssetType::EXTRA);
   items.Append(extrasList);
 }
 
@@ -12088,7 +12146,7 @@ void CVideoDatabase::AddExtrasVideoVersion(VideoDbContentType itemType,
                                            int idVideoVersion,
                                            CFileItem& item)
 {
-  AddVideoVersion(itemType, dbId, idVideoVersion, VideoAssetType::EXTRAS, item);
+  AddVideoVersion(itemType, dbId, idVideoVersion, VideoAssetType::EXTRA, item);
 }
 
 void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,
@@ -12329,7 +12387,9 @@ bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
   return false;
 }
 
-bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent, CFileItemList& items)
+bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent,
+                                          VideoAssetType assetType,
+                                          CFileItemList& items)
 {
   if (!m_pDB || !m_pDS)
     return false;
@@ -12346,8 +12406,9 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent, CFileIte
   try
   {
     m_pDS->query(
-        PrepareSQL("SELECT name, id FROM videoversiontype WHERE name != '' and owner IN (%i, %i)",
-                   VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER));
+        PrepareSQL("SELECT name, id FROM videoversiontype WHERE name != '' AND itemType = %i "
+                   "AND owner IN (%i, %i)",
+                   assetType, VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER));
 
     while (!m_pDS->eof())
     {

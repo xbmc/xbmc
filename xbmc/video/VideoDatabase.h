@@ -1009,7 +1009,9 @@ public:
                              int idVideoVersion);
   void SetDefaultVideoVersion(VideoDbContentType itemType, int dbId, int idFile);
   void SetVideoVersion(int idFile, int idVideoVersion);
-  int AddVideoVersionType(const std::string& typeVideoVersion, VideoAssetTypeOwner owner);
+  int AddVideoVersionType(const std::string& typeVideoVersion,
+                          VideoAssetTypeOwner owner,
+                          VideoAssetType assetType);
   void AddVideoVersion(VideoDbContentType itemType,
                        int dbId,
                        int idVideoVersion,
@@ -1025,9 +1027,11 @@ public:
                              CFileItem& item);
   void RemoveVideoVersion(int dbId);
   bool IsDefaultVideoVersion(int idFile);
-  bool GetVideoVersionTypes(VideoDbContentType idContent, CFileItemList& items);
+  bool GetVideoVersionTypes(VideoDbContentType idContent,
+                            VideoAssetType asset,
+                            CFileItemList& items);
   void SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type);
-  void InitializeVideoVersionTypeTable();
+  void InitializeVideoVersionTypeTable(int schemaVersion);
   void UpdateVideoVersionTypeTable();
   bool GetVideoVersionsNav(const std::string& strBaseDir,
                            CFileItemList& items,

@@ -310,7 +310,7 @@ void CGUIDialogVideoManager::Remove()
 
 void CGUIDialogVideoManager::Rename()
 {
-  const int idAsset{ChooseVideoAsset(m_videoAsset)};
+  const int idAsset{ChooseVideoAsset(m_videoAsset, GetVideoAssetType())};
   if (idAsset != -1)
   {
     //! @todo db refactor: should not be version, but asset
@@ -338,7 +338,8 @@ void CGUIDialogVideoManager::SetSelectedVideoAsset(const std::shared_ptr<CFileIt
   UpdateControls();
 }
 
-int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& item)
+int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& item,
+                                             VideoAssetType assetType)
 {
   if (!item || !item->HasVideoInfoTag())
     return -1;
@@ -364,7 +365,7 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
 
   //! @todo db refactor: should not be version, but asset
   CFileItemList list;
-  videodb.GetVideoVersionTypes(itemType, list);
+  videodb.GetVideoVersionTypes(itemType, assetType, list);
 
   int assetId{-1};
   while (true)
@@ -384,7 +385,7 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
       {
         assetTitle = StringUtils::Trim(assetTitle);
         //! @todo db refactor: should not be version, but asset
-        assetId = videodb.AddVideoVersionType(assetTitle, VideoAssetTypeOwner::USER);
+        assetId = videodb.AddVideoVersionType(assetTitle, VideoAssetTypeOwner::USER, assetType);
       }
     }
     else if (dialog->IsConfirmed())

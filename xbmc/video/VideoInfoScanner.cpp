@@ -2452,8 +2452,8 @@ namespace VIDEO
           const std::string typeVideoVersion =
               CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
 
-          const int idVideoVersion =
-              m_database.AddVideoVersionType(typeVideoVersion, VideoAssetTypeOwner::AUTO);
+          const int idVideoVersion = m_database.AddVideoVersionType(
+              typeVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
 
           m_database.AddExtrasVideoVersion(ContentToVideoDbType(content), dbId, idVideoVersion,
                                            *item.get());

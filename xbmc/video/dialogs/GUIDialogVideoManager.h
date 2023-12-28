@@ -50,7 +50,7 @@ protected:
 
   void UpdateControls();
 
-  static int ChooseVideoAsset(const std::shared_ptr<CFileItem>& item);
+  static int ChooseVideoAsset(const std::shared_ptr<CFileItem>& item, VideoAssetType assetType);
 
   CVideoDatabase m_database;
   std::shared_ptr<CFileItem> m_videoAsset;
