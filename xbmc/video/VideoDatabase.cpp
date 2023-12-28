@@ -597,7 +597,7 @@ void CVideoDatabase::CreateViews()
                                      "    rating.rating_id=movie.c%02d"
                                      "  LEFT JOIN uniqueid ON"
                                      "    uniqueid.uniqueid_id=movie.c%02d",
-                                     VideoAssetType::VERSION, VideoAssetType::EXTRAS,
+                                     VideoAssetType::VERSION, VideoAssetType::EXTRA,
                                      VIDEODB_ID_RATING_ID, VIDEODB_ID_IDENT_ID);
   m_pDS->exec(movieview);
 }
@@ -6204,7 +6204,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
       {
         // user-added type for extras. change its item type to extras
         m_pDS2->exec(PrepareSQL("UPDATE videoversiontype SET itemType = %i WHERE id = %i",
-                                VideoAssetType::EXTRAS, idType));
+                                VideoAssetType::EXTRA, idType));
       }
       else
       {
@@ -6217,7 +6217,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
           m_pDS2->exec(PrepareSQL(
               "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(NULL, '%s', %i, %i)",
               m_pDS2->fv(1).get_asString().c_str(), VideoAssetTypeOwner::USER,
-              VideoAssetType::EXTRAS));
+              VideoAssetType::EXTRA));
 
           // update the respective extras to use the new extras type
           const int newId{static_cast<int>(m_pDS2->lastinsertid())};
@@ -11855,7 +11855,7 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType, int dbId, CFi
 
   // get video extras versions
   CFileItemList extrasList;
-  GetVideoVersions(itemType, dbId, extrasList, VideoAssetType::EXTRAS);
+  GetVideoVersions(itemType, dbId, extrasList, VideoAssetType::EXTRA);
   items.Append(extrasList);
 }
 
@@ -12146,7 +12146,7 @@ void CVideoDatabase::AddExtrasVideoVersion(VideoDbContentType itemType,
                                            int idVideoVersion,
                                            CFileItem& item)
 {
-  AddVideoVersion(itemType, dbId, idVideoVersion, VideoAssetType::EXTRAS, item);
+  AddVideoVersion(itemType, dbId, idVideoVersion, VideoAssetType::EXTRA, item);
 }
 
 void CVideoDatabase::AddVideoVersion(VideoDbContentType itemType,

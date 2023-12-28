@@ -41,7 +41,7 @@ CGUIDialogVideoManagerExtras::CGUIDialogVideoManagerExtras()
 
 VideoAssetType CGUIDialogVideoManagerExtras::GetVideoAssetType()
 {
-  return VideoAssetType::EXTRAS;
+  return VideoAssetType::EXTRA;
 }
 
 bool CGUIDialogVideoManagerExtras::OnMessage(CGUIMessage& message)
@@ -156,7 +156,7 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
         CGUIDialogVideoManagerExtras::GenerateVideoExtra(URIUtils::GetFileName(path))};
 
     const int idNewVideoVersion{m_database.AddVideoVersionType(
-        typeNewVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRAS)};
+        typeNewVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
 
     m_database.AddExtrasVideoVersion(itemType, dbId, idNewVideoVersion, item);
 

@@ -770,7 +770,7 @@ bool CVideoGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int contextW
         value = tag->HasVideoVersions();
         return true;
       case LISTITEM_ISVIDEOEXTRA:
-        value = (tag->GetAssetInfo().GetType() == VideoAssetType::EXTRAS);
+        value = (tag->GetAssetInfo().GetType() == VideoAssetType::EXTRA);
         return true;
     }
   }

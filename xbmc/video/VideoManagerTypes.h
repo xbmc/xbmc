@@ -20,7 +20,7 @@ enum class VideoAssetType
 {
   UNKNOWN = -1,
   VERSION = 0,
-  EXTRAS = 1
+  EXTRA = 1
 };
 
 static constexpr int VIDEO_VERSION_ID_BEGIN = 40400;

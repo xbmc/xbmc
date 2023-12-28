@@ -2453,7 +2453,7 @@ namespace VIDEO
               CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
 
           const int idVideoVersion = m_database.AddVideoVersionType(
-              typeVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRAS);
+              typeVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
 
           m_database.AddExtrasVideoVersion(ContentToVideoDbType(content), dbId, idVideoVersion,
                                            *item.get());

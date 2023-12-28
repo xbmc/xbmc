@@ -75,7 +75,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo()
                       m_videoVersions, VideoAssetType::VERSION);
   if (m_enableExtras)
     db.GetVideoVersions(m_item->GetVideoContentType(), m_item->GetVideoInfoTag()->m_iDbId,
-                        m_videoExtras, VideoAssetType::EXTRAS);
+                        m_videoExtras, VideoAssetType::EXTRA);
   else
     m_videoExtras.Clear();
 
@@ -96,7 +96,7 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo()
     if (itemType == VideoAssetType::VERSION)
     {
       result = ChooseVideoVersion();
-      itemType = VideoAssetType::EXTRAS;
+      itemType = VideoAssetType::EXTRA;
     }
     else
     {
