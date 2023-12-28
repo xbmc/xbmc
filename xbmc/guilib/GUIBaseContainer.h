@@ -153,7 +153,7 @@ protected:
   bool m_layoutCondition = false;
   bool m_focusedLayoutCondition = false;
 
-  void ScrollToOffset(int offset);
+  virtual void ScrollToOffset(int offset);
   void SetContainerMoving(int direction);
   void UpdateScrollOffset(unsigned int currentTime);
 

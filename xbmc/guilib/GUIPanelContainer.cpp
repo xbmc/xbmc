@@ -399,9 +399,18 @@ void CGUIPanelContainer::ValidateOffset()
 
 void CGUIPanelContainer::SetCursor(int cursor)
 {
+  // exceeds the number of items the panel can hold
   if (cursor > m_itemsPerPage * m_itemsPerRow - 1)
     cursor = m_itemsPerPage * m_itemsPerRow - 1;
-  if (cursor < 0) cursor = 0;
+
+  // exceeds the number of items being displayed
+  const int itemsOn = m_items.size() - 1 - GetOffset() * m_itemsPerRow;
+  if (cursor > itemsOn)
+    cursor = itemsOn;
+
+  if (cursor < 0)
+    cursor = 0;
+
   if (!m_wasReset)
     SetContainerMoving(cursor - GetCursor());
   CGUIBaseContainer::SetCursor(cursor);
@@ -565,3 +574,8 @@ bool CGUIPanelContainer::HasNextPage() const
   return (GetOffset() != (int)GetRows() - m_itemsPerPage && (int)GetRows() > m_itemsPerPage);
 }
 
+void CGUIPanelContainer::ScrollToOffset(int offset)
+{
+  CGUIBaseContainer::ScrollToOffset(offset);
+  SetCursor(GetCursor());
+}
