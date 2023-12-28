@@ -1063,42 +1063,42 @@ namespace VIDEO
 
     // since we're doing this now anyway, should other items be stacked?
     items.Sort(SortByPath, SortOrderAscending);
-    int x = 0;
-    while (x < items.Size())
+
+    // If found VIDEO_TS.IFO or INDEX.BDMV then we are dealing with Blu-ray or DVD files on disc
+    // somewhere in the directory tree. Assume that all other files/folders in the same folder
+    // with VIDEO_TS or BDMV can be ignored.
+    // THere can be a BACKUP/INDEX.BDMV which needs to be ignored (and broke the old while loop here)
+
+    // Get folders to remove
+    std::vector<std::string> foldersToRemove;
+    for (const auto& item : items)
     {
-      if (items[x]->m_bIsFolder)
-      {
-        x++;
-        continue;
-      }
-
-      std::string strPathX, strFileX;
-      URIUtils::Split(items[x]->GetPath(), strPathX, strFileX);
-      //CLog::Log(LOGDEBUG,"{}:{}:{}", x, strPathX, strFileX);
-
-      const int y = x + 1;
-      if (StringUtils::EqualsNoCase(strFileX, "VIDEO_TS.IFO"))
-      {
-        while (y < items.Size())
-        {
-          std::string strPathY, strFileY;
-          URIUtils::Split(items[y]->GetPath(), strPathY, strFileY);
-          //CLog::Log(LOGDEBUG," {}:{}:{}", y, strPathY, strFileY);
-
-          if (StringUtils::EqualsNoCase(strPathY, strPathX))
-            /*
-            remove everything sorted below the video_ts.ifo file in the same path.
-            understandably this wont stack correctly if there are other files in the the dvd folder.
-            this should be unlikely and thus is being ignored for now but we can monitor the
-            where the path changes and potentially remove the items above the video_ts.ifo file.
-            */
-            items.Remove(y);
-          else
-            break;
-        }
-      }
-      x++;
+      const std::string file = StringUtils::ToUpper(item->GetPath());
+      if (file.find("VIDEO_TS.IFO") != std::string::npos)
+        foldersToRemove.emplace_back(StringUtils::ToUpper(URIUtils::GetDirectory(file)));
+      if (file.find("INDEX.BDMV") != std::string::npos &&
+          file.find("BACKUP/INDEX.BDMV") == std::string::npos)
+        foldersToRemove.emplace_back(
+            StringUtils::ToUpper(URIUtils::GetParentPath(URIUtils::GetDirectory(file))));
     }
+
+    // Remove folders
+    items.erase(
+        std::remove_if(items.begin(), items.end(),
+                       [&](const CFileItemPtr& i)
+                       {
+                         const std::string fileAndPath(StringUtils::ToUpper(i->GetPath()));
+                         std::string file;
+                         std::string path;
+                         URIUtils::Split(fileAndPath, path, file);
+                         return (std::count_if(foldersToRemove.begin(), foldersToRemove.end(),
+                                               [&](const std::string& removePath)
+                                               { return path.rfind(removePath, 0) == 0; }) > 0) &&
+                                file != "VIDEO_TS.IFO" &&
+                                (file != "INDEX.BDMV" ||
+                                 fileAndPath.find("BACKUP/INDEX.BDMV") != std::string::npos);
+                       }),
+        items.end());
 
     // enumerate
     for (int i=0;i<items.Size();++i)
