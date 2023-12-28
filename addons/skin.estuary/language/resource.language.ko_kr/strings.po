@@ -732,25 +732,21 @@ msgctxt "#31611"
 msgid "System"
 msgstr "시스템"
 
-#. Video version dialog button
-msgctxt "#31612"
-msgid "Add version"
-msgstr "버전 추가"
+#~ msgctxt "#31612"
+#~ msgid "Add version"
+#~ msgstr "버전 추가"
 
-#. Video version dialog button
-msgctxt "#31613"
-msgid "Add extras"
-msgstr "기타 추가"
+#~ msgctxt "#31613"
+#~ msgid "Add extras"
+#~ msgstr "기타 추가"
 
-#. Video version dialog button
-msgctxt "#31614"
-msgid "Set default"
-msgstr "기본값으로 설정"
+#~ msgctxt "#31614"
+#~ msgid "Set default"
+#~ msgstr "기본값으로 설정"
 
-#. Video version dialog button
-msgctxt "#31615"
-msgid "Extras"
-msgstr "기타"
+#~ msgctxt "#31615"
+#~ msgid "Extras"
+#~ msgstr "기타"
 
 #~ msgctxt "#31059"
 #~ msgid "Select + X"

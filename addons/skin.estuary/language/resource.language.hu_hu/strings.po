@@ -732,25 +732,21 @@ msgctxt "#31611"
 msgid "System"
 msgstr "Rendszer"
 
-#. Video version dialog button
-msgctxt "#31612"
-msgid "Add version"
-msgstr "Verzió hozzáadása"
+#~ msgctxt "#31612"
+#~ msgid "Add version"
+#~ msgstr "Verzió hozzáadása"
 
-#. Video version dialog button
-msgctxt "#31613"
-msgid "Add extras"
-msgstr "Extrák hozzáadása"
+#~ msgctxt "#31613"
+#~ msgid "Add extras"
+#~ msgstr "Extrák hozzáadása"
 
-#. Video version dialog button
-msgctxt "#31614"
-msgid "Set default"
-msgstr "Alapállapotba állít"
+#~ msgctxt "#31614"
+#~ msgid "Set default"
+#~ msgstr "Alapállapotba állít"
 
-#. Video version dialog button
-msgctxt "#31615"
-msgid "Extras"
-msgstr "Extrák"
+#~ msgctxt "#31615"
+#~ msgid "Extras"
+#~ msgstr "Extrák"
 
 #~ msgctxt "#31059"
 #~ msgid "Select + X"
