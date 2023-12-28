@@ -589,3 +589,7 @@ msgstr ""
 msgctxt "#30140"
 msgid "Clear"
 msgstr ""
+
+msgctxt "#30141"
+msgid "OEM 102nd Key"
+msgstr ""

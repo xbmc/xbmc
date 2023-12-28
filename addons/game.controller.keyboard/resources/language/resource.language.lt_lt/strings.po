@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Addons\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: 2014-05-30 17:00+8\n"
 "PO-Revision-Date: 2022-07-24 08:16+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
@@ -588,4 +588,8 @@ msgstr ""
 
 msgctxt "#30140"
 msgid "Clear"
+msgstr ""
+
+msgctxt "#30141"
+msgid "OEM 102nd Key"
 msgstr ""

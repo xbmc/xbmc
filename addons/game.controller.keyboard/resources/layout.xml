@@ -140,5 +140,6 @@
     <key name="power" symbol="power" label="30136"/>
     <key name="euro" symbol="euro" label="30137"/>
     <key name="undo" symbol="undo" label="30138"/>
+    <key name="oem102" symbol="oem102" label="30141"/>
   </category>
 </layout>
