@@ -1274,7 +1274,8 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
     if (idFile == -1)
       strSQL=PrepareSQL("select idMovie from movie join files on files.idFile=movie.idFile where files.idPath=%i",idPath);
     else
-      strSQL = PrepareSQL("select idMedia from videoversion where idFile = %i", idFile);
+      strSQL = PrepareSQL("SELECT idMedia FROM videoversion WHERE idFile = %i AND itemType = %i",
+                          idFile, VideoAssetType::VERSION);
 
     CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
               CURL::GetRedacted(strFilenameAndPath), strSQL);
