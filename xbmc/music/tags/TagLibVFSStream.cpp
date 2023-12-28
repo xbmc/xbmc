@@ -11,6 +11,7 @@
 
 #include <limits.h>
 
+#include <taglib/taglib.h>
 #include <taglib/tiostream.h>
 
 using namespace XFILE;
@@ -90,7 +91,11 @@ void TagLibVFSStream::writeBlock(const ByteVector &data)
  * \note This method is slow since it requires rewriting all of the file
  * after the insertion point.
  */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+void TagLibVFSStream::insert(const ByteVector& data, TagLib::offset_t start, size_t replace)
+#else
 void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib::ulong replace)
+#endif
 {
   if (data.size() == replace)
   {
@@ -180,7 +185,11 @@ void TagLibVFSStream::insert(const ByteVector &data, TagLib::ulong start, TagLib
  * \note This method is slow since it involves rewriting all of the file
  * after the removed portion.
  */
+#if (TAGLIB_MAJOR_VERSION >= 2)
+void TagLibVFSStream::removeBlock(TagLib::offset_t start, size_t length)
+#else
 void TagLibVFSStream::removeBlock(TagLib::ulong start, TagLib::ulong length)
+#endif
 {
   TagLib::ulong bufferLength = bufferSize();
 
