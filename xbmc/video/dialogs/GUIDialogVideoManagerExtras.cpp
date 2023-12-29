@@ -152,13 +152,10 @@ void CGUIDialogVideoManagerExtras::AddVideoExtra()
                  CURL::GetRedacted(item.GetPath()));
     }
 
-    const std::string typeNewVideoVersion{
+    const std::string extraName{
         CGUIDialogVideoManagerExtras::GenerateVideoExtra(URIUtils::GetFileName(path))};
 
-    const int idNewVideoVersion{m_database.AddVideoVersionType(
-        typeNewVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA)};
-
-    m_database.AddExtrasVideoVersion(itemType, dbId, idNewVideoVersion, item);
+    m_database.AddExtrasVideoVersion(itemType, dbId, 0, extraName, item);
 
     // refresh data and controls
     Refresh();

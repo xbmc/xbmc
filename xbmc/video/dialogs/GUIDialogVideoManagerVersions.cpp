@@ -265,9 +265,11 @@ void CGUIDialogVideoManagerVersions::AddVideoVersion()
                  CURL::GetRedacted(item.GetPath()));
     }
 
-    const int idNewVideoVersion{ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION)};
-    if (idNewVideoVersion != -1)
-      m_database.AddPrimaryVideoVersion(itemType, dbId, idNewVideoVersion, item);
+    const std::pair<int, std::string> idNewVideoVersion{
+        ChooseVideoAsset(m_videoAsset, VideoAssetType::VERSION)};
+    if (idNewVideoVersion.first != -1)
+      m_database.AddPrimaryVideoVersion(itemType, dbId, idNewVideoVersion.first,
+                                        idNewVideoVersion.second, item);
 
     // refresh data and controls
     Refresh();
@@ -290,11 +292,7 @@ std::tuple<int, std::string> CGUIDialogVideoManagerVersions::NewVideoVersion()
     return std::make_tuple(-1, "");
   }
 
-  typeVideoVersion = StringUtils::Trim(typeVideoVersion);
-  const int idVideoVersion{videodb.AddVideoVersionType(typeVideoVersion, VideoAssetTypeOwner::USER,
-                                                       VideoAssetType::VERSION)};
-
-  return std::make_tuple(idVideoVersion, typeVideoVersion);
+  return std::make_tuple(0, typeVideoVersion);
 }
 
 void CGUIDialogVideoManagerVersions::ManageVideoVersion(const std::shared_ptr<CFileItem>& item)
@@ -409,12 +407,13 @@ bool CGUIDialogVideoManagerVersions::ChooseVideoAndConvertToVideoVersion(
     return false;
 
   // choose a video version for the video
-  const int idVideoVersion{ChooseVideoAsset(selectedItem, VideoAssetType::VERSION)};
-  if (idVideoVersion < 0)
+  const std::pair<int, std::string> idVideoVersion{
+      ChooseVideoAsset(selectedItem, VideoAssetType::VERSION)};
+  if (idVideoVersion.first < 0)
     return false;
 
   videoDb.ConvertVideoToVersion(itemType, dbId, selectedItem->GetVideoInfoTag()->m_iDbId,
-                                idVideoVersion);
+                                idVideoVersion.first);
   return true;
 }
 

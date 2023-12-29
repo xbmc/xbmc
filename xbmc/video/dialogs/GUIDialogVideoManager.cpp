@@ -310,11 +310,12 @@ void CGUIDialogVideoManager::Remove()
 
 void CGUIDialogVideoManager::Rename()
 {
-  const int idAsset{ChooseVideoAsset(m_videoAsset, GetVideoAssetType())};
-  if (idAsset != -1)
+  const std::pair<int, std::string> idAsset{ChooseVideoAsset(m_videoAsset, GetVideoAssetType())};
+  if (idAsset.first != -1)
   {
     //! @todo db refactor: should not be version, but asset
-    m_database.SetVideoVersion(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId, idAsset);
+    m_database.SetVideoVersion(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId, idAsset.first,
+                               idAsset.second);
   }
 
   // refresh data and controls
@@ -338,21 +339,21 @@ void CGUIDialogVideoManager::SetSelectedVideoAsset(const std::shared_ptr<CFileIt
   UpdateControls();
 }
 
-int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& item,
-                                             VideoAssetType assetType)
+std::pair<int, std::string> CGUIDialogVideoManager::ChooseVideoAsset(
+    const std::shared_ptr<CFileItem>& item, VideoAssetType assetType)
 {
   if (!item || !item->HasVideoInfoTag())
-    return -1;
+    return std::pair{-1, ""};
 
   const VideoDbContentType itemType{item->GetVideoContentType()};
   if (itemType != VideoDbContentType::MOVIES)
-    return -1;
+    return std::pair{-1, ""};
 
   CVideoDatabase videodb;
   if (!videodb.Open())
   {
     CLog::LogF(LOGERROR, "Failed to open video database!");
-    return -1;
+    return std::pair{-1, ""};
   }
 
   CGUIDialogSelect* dialog{CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogSelect>(
@@ -360,7 +361,7 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
   if (!dialog)
   {
     CLog::LogF(LOGERROR, "Unable to get WINDOW_DIALOG_SELECT instance!");
-    return -1;
+    return std::pair{-1, ""};
   }
 
   //! @todo db refactor: should not be version, but asset
@@ -368,9 +369,10 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
   videodb.GetVideoVersionTypes(itemType, assetType, list);
 
   int assetId{-1};
+  std::string assetTitle;
+
   while (true)
   {
-    std::string assetTitle;
 
     dialog->Reset();
     dialog->SetItems(list);
@@ -383,9 +385,8 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
       // create a new asset
       if (CGUIKeyboardFactory::ShowAndGetInput(assetTitle, g_localizeStrings.Get(40004), false))
       {
+        assetId = 0;
         assetTitle = StringUtils::Trim(assetTitle);
-        //! @todo db refactor: should not be version, but asset
-        assetId = videodb.AddVideoVersionType(assetTitle, VideoAssetTypeOwner::USER, assetType);
       }
     }
     else if (dialog->IsConfirmed())
@@ -395,10 +396,10 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
       assetTitle = selectedItem->GetVideoInfoTag()->GetAssetInfo().GetTitle();
     }
     else
-      return -1;
+      return std::pair{-1, ""};
 
     if (assetId < 0)
-      return -1;
+      return std::pair{-1, ""};
 
     const int dbId{item->GetVideoInfoTag()->m_iDbId};
 
@@ -418,5 +419,5 @@ int CGUIDialogVideoManager::ChooseVideoAsset(const std::shared_ptr<CFileItem>& i
       break;
   }
 
-  return assetId;
+  return std::pair{assetId, assetTitle};
 }

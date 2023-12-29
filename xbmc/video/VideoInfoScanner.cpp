@@ -2449,13 +2449,10 @@ namespace VIDEO
                       CURL::GetRedacted(item->GetPath()));
           }
 
-          const std::string typeVideoVersion =
-              CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath());
+          const std::string extraName{
+              CGUIDialogVideoManagerExtras::GenerateVideoExtra(path, item->GetPath())};
 
-          const int idVideoVersion = m_database.AddVideoVersionType(
-              typeVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
-
-          m_database.AddExtrasVideoVersion(ContentToVideoDbType(content), dbId, idVideoVersion,
+          m_database.AddExtrasVideoVersion(ContentToVideoDbType(content), dbId, 0, extraName,
                                            *item.get());
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video extras {}",
                     CURL::GetRedacted(item->GetPath()));
