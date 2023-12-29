@@ -11872,12 +11872,8 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
 
   try
   {
-    m_pDS2->query(PrepareSQL("SELECT videoversiontype.name AS name,"
-                             "  videoversiontype.id AS id,"
-                             "  videoversion.idFile AS idFile "
-                             "FROM videoversiontype"
-                             "  JOIN videoversion ON"
-                             "    videoversion.idType = videoversiontype.id "
+    m_pDS2->query(PrepareSQL("SELECT name, idType AS id, idFile "
+                             "FROM videoversion "
                              "WHERE videoversion.idMedia = %i AND videoversion.mediaType = '%s' "
                              "AND videoversion.itemType = %i",
                              dbId, mediaType.c_str(), videoAssetType));
@@ -11952,14 +11948,9 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
   if (itemType == VideoDbContentType::MOVIES)
   {
     mediaType = MediaTypeMovie;
-    strSQL = PrepareSQL("SELECT videoversiontype.name AS name,"
-                        "  videoversiontype.id AS id,"
-                        "  videoversion.idFile AS idFile,"
-                        "  videoversion.itemType AS itemType "
-                        "FROM videoversiontype"
-                        "  JOIN videoversion ON"
-                        "    videoversion.idType = videoversiontype.id"
-                        "  JOIN movie ON"
+    strSQL = PrepareSQL("SELECT name, idType as id, videoversion.idFile, itemType "
+                        "FROM videoversion "
+                        "  JOIN movie ON "
                         "    movie.idFile = videoversion.idFile "
                         "WHERE movie.idMovie = %i",
                         dbId);
@@ -12252,14 +12243,8 @@ int CVideoDatabase::GetVideoVersionInfo(int idFile,
 
   try
   {
-    m_pDS->query(PrepareSQL("SELECT videoversiontype.name AS name,"
-                            "  videoversiontype.id AS id,"
-                            "  videoversion.idMedia AS idMedia,"
-                            "  videoversion.mediaType AS mediaType,"
-                            "  videoversion.itemType AS itemType "
-                            "FROM videoversion"
-                            "  JOIN videoversiontype ON "
-                            "    videoversiontype.id = videoversion.idType "
+    m_pDS->query(PrepareSQL("SELECT name, idType as id, idMedia, mediaType, itemType "
+                            "FROM videoversion "
                             "WHERE videoversion.idFile = %i",
                             idFile));
 
@@ -12336,23 +12321,15 @@ bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
     std::string strSQL;
 
     if (idMedia != -1)
-      strSQL =
-          PrepareSQL("SELECT videoversiontype.name AS name,"
-                     "  videoversiontype.id AS id "
-                     "FROM videoversiontype"
-                     "  JOIN videoversion ON"
-                     "    videoversion.idType = videoversiontype.id "
-                     "WHERE idMedia = %i AND mediaType = '%s' AND videoversiontype.itemType = %i",
-                     idMedia, mediaType.c_str(), VideoAssetType::VERSION);
+      strSQL = PrepareSQL("SELECT name, idType AS id "
+                          "FROM videoversion "
+                          "WHERE idMedia = %i AND mediaType = '%s' AND itemType = %i",
+                          idMedia, mediaType.c_str(), VideoAssetType::VERSION);
     else
-      strSQL = PrepareSQL(
-          "SELECT DISTINCT videoversiontype.name AS name,"
-          "  videoversiontype.id AS id "
-          "FROM videoversiontype"
-          "  JOIN videoversion ON"
-          "    videoversion.idType = videoversiontype.id "
-          "WHERE name != '' AND owner IN (%i, %i) AND videoversiontype.itemType = %i",
-          VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER, VideoAssetType::VERSION);
+      strSQL = PrepareSQL("SELECT DISTINCT name, idType AS id "
+                          "FROM videoversion "
+                          "WHERE name != '' AND itemType = %i",
+                          VideoAssetType::VERSION);
 
     m_pDS->query(strSQL);
 
