@@ -11797,28 +11797,6 @@ void CVideoDatabase::InitializeVideoVersionTypeTable(int schemaVersion)
   }
 }
 
-void CVideoDatabase::UpdateVideoVersionTypeTable()
-{
-  try
-  {
-    BeginTransaction();
-
-    for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
-    {
-      std::string type = g_localizeStrings.Get(id);
-      m_pDS->exec(PrepareSQL("UPDATE videoversiontype SET name = '%s', owner = %i WHERE id = '%i'",
-                             type.c_str(), VideoAssetTypeOwner::SYSTEM, id));
-    }
-
-    CommitTransaction();
-  }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "{} failed", __FUNCTION__);
-    RollbackTransaction();
-  }
-}
-
 int CVideoDatabase::AddVideoVersionType(const std::string& typeVideoVersion,
                                         VideoAssetTypeOwner owner,
                                         VideoAssetType assetType)
