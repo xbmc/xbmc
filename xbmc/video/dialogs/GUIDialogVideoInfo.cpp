@@ -1075,11 +1075,11 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
     // set or change movie set the movie belongs to
     buttons.Add(CONTEXT_BUTTON_SET_MOVIESET, 20465);
 
-    if (!item->GetVideoInfoTag()->HasVideoVersions())
-      buttons.Add(CONTEXT_BUTTON_CONVERT_VIDEOVERSION, 40021); // Convert to version
-
     // manage video versions
     buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOVERSION, 40001); // Manage versions
+
+    if (!item->GetVideoInfoTag()->HasVideoVersions())
+      buttons.Add(CONTEXT_BUTTON_CONVERT_VIDEOVERSION, 40021); // Add as version to...
   }
 
   if (type == MediaTypeEpisode &&

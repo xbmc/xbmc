@@ -1274,7 +1274,8 @@ int CVideoDatabase::GetMovieId(const std::string& strFilenameAndPath)
     if (idFile == -1)
       strSQL=PrepareSQL("select idMovie from movie join files on files.idFile=movie.idFile where files.idPath=%i",idPath);
     else
-      strSQL = PrepareSQL("select idMedia from videoversion where idFile = %i", idFile);
+      strSQL = PrepareSQL("SELECT idMedia FROM videoversion WHERE idFile = %i AND itemType = %i",
+                          idFile, VideoAssetType::VERSION);
 
     CLog::Log(LOGDEBUG, LOGDATABASE, "{} ({}), query = {}", __FUNCTION__,
               CURL::GetRedacted(strFilenameAndPath), strSQL);
@@ -12340,21 +12341,23 @@ bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
     std::string strSQL;
 
     if (idMedia != -1)
-      strSQL = PrepareSQL("SELECT videoversiontype.name AS name,"
-                          "  videoversiontype.id AS id "
-                          "FROM videoversiontype"
-                          "  JOIN videoversion ON"
-                          "    videoversion.idType = videoversiontype.id "
-                          "WHERE idMedia = %i AND mediaType = '%s'",
-                          idMedia, mediaType.c_str());
+      strSQL =
+          PrepareSQL("SELECT videoversiontype.name AS name,"
+                     "  videoversiontype.id AS id "
+                     "FROM videoversiontype"
+                     "  JOIN videoversion ON"
+                     "    videoversion.idType = videoversiontype.id "
+                     "WHERE idMedia = %i AND mediaType = '%s' AND videoversiontype.itemType = %i",
+                     idMedia, mediaType.c_str(), VideoAssetType::VERSION);
     else
-      strSQL = PrepareSQL("SELECT DISTINCT videoversiontype.name AS name,"
-                          "  videoversiontype.id AS id "
-                          "FROM videoversiontype"
-                          "  JOIN videoversion ON"
-                          "    videoversion.idType = videoversiontype.id "
-                          "WHERE name != '' AND owner IN (%i, %i)",
-                          VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER);
+      strSQL = PrepareSQL(
+          "SELECT DISTINCT videoversiontype.name AS name,"
+          "  videoversiontype.id AS id "
+          "FROM videoversiontype"
+          "  JOIN videoversion ON"
+          "    videoversion.idType = videoversiontype.id "
+          "WHERE name != '' AND owner IN (%i, %i) AND videoversiontype.itemType = %i",
+          VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER, VideoAssetType::VERSION);
 
     m_pDS->query(strSQL);
 
