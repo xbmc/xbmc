@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: KODI Main\n"
-"Report-Msgid-Bugs-To: translations@kodi.tv\n"
+"Report-Msgid-Bugs-To: https://github.com/xbmc/xbmc/issues/\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2023-12-04 09:42+0000\n"
 "Last-Translator: Christian Gade <gade@kodi.tv>\n"
@@ -732,25 +732,9 @@ msgctxt "#31611"
 msgid "System"
 msgstr "System"
 
-#. Video version dialog button
-msgctxt "#31612"
-msgid "Add version"
-msgstr ""
-
-#. Video version dialog button
-msgctxt "#31613"
-msgid "Add extras"
-msgstr ""
-
-#. Video version dialog button
-msgctxt "#31614"
-msgid "Set default"
-msgstr ""
-
-#. Video version dialog button
-msgctxt "#31615"
-msgid "Extras"
-msgstr "Extra"
+#~ msgctxt "#31615"
+#~ msgid "Extras"
+#~ msgstr "Extra"
 
 #~ msgctxt "#31059"
 #~ msgid "Select + X"

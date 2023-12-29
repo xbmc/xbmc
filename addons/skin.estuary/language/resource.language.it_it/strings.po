@@ -732,25 +732,21 @@ msgctxt "#31611"
 msgid "System"
 msgstr "Sistema"
 
-#. Video version dialog button
-msgctxt "#31612"
-msgid "Add version"
-msgstr "Aggiungi versione"
+#~ msgctxt "#31612"
+#~ msgid "Add version"
+#~ msgstr "Aggiungi versione"
 
-#. Video version dialog button
-msgctxt "#31613"
-msgid "Add extras"
-msgstr "Aggiungi extra"
+#~ msgctxt "#31613"
+#~ msgid "Add extras"
+#~ msgstr "Aggiungi extra"
 
-#. Video version dialog button
-msgctxt "#31614"
-msgid "Set default"
-msgstr "Imposta predefinito"
+#~ msgctxt "#31614"
+#~ msgid "Set default"
+#~ msgstr "Imposta predefinito"
 
-#. Video version dialog button
-msgctxt "#31615"
-msgid "Extras"
-msgstr "Extra"
+#~ msgctxt "#31615"
+#~ msgid "Extras"
+#~ msgstr "Extra"
 
 #~ msgctxt "#31059"
 #~ msgid "Select + X"
