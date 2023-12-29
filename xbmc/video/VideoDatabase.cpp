@@ -6214,7 +6214,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
           // currently a versions type, create a corresponding user-added type for extras
           m_pDS2->exec(PrepareSQL(
               "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(NULL, '%s', %i, %i)",
-              m_pDS2->fv(1).get_asString().c_str(), VideoAssetTypeOwner::USER,
+              m_pDS2->fv(1).get_asString().c_str(), 2 /* was VideoAssetTypeOwner::USER */,
               VideoAssetType::EXTRA));
 
           // update the respective extras to use the new extras type
@@ -11780,13 +11780,13 @@ void CVideoDatabase::InitializeVideoVersionTypeTable(int schemaVersion)
       {
         m_pDS->exec(
             PrepareSQL("INSERT INTO videoversiontype (id, name, owner) VALUES(%i, '%s', %i)", id,
-                       type.c_str(), VideoAssetTypeOwner::SYSTEM));
+                       type.c_str(), 0 /* was VideoAssetTypeOwner::SYSTEM */));
       }
       else
       {
         m_pDS->exec(PrepareSQL(
             "INSERT INTO videoversiontype (id, name, owner, itemType) VALUES(%i, '%s', %i, %i)", id,
-            type.c_str(), VideoAssetTypeOwner::SYSTEM, VideoAssetType::VERSION));
+            type.c_str(), 0 /* was VideoAssetTypeOwner::SYSTEM */, VideoAssetType::VERSION));
       }
     }
 

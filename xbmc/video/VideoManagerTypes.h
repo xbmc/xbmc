@@ -8,14 +8,6 @@
 
 #pragma once
 
-enum class VideoAssetTypeOwner
-{
-  UNKNOWN = -1,
-  SYSTEM = 0,
-  AUTO = 1,
-  USER = 2
-};
-
 enum class VideoAssetType
 {
   UNKNOWN = -1,
