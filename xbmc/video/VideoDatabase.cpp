@@ -200,14 +200,9 @@ void CVideoDatabase::CreateTables()
   CLog::Log(LOGINFO, "create uniqueid table");
   m_pDS->exec("CREATE TABLE uniqueid (uniqueid_id INTEGER PRIMARY KEY, media_id INTEGER, media_type TEXT, value TEXT, type TEXT)");
 
-  CLog::Log(LOGINFO, "create videoversiontype table");
-  m_pDS->exec("CREATE TABLE videoversiontype (id INTEGER PRIMARY KEY, name TEXT, owner INTEGER, "
-              "itemType INTEGER)");
-  InitializeVideoVersionTypeTable(GetSchemaVersion());
-
   CLog::Log(LOGINFO, "create videoversion table");
   m_pDS->exec("CREATE TABLE videoversion (idFile INTEGER PRIMARY KEY, idMedia INTEGER, mediaType "
-              "TEXT, itemType INTEGER, idType INTEGER)");
+              "TEXT, itemType INTEGER, idType INTEGER, name TEXT)");
 }
 
 void CVideoDatabase::CreateLinkIndex(const char *table)
@@ -6231,11 +6226,33 @@ void CVideoDatabase::UpdateTables(int iVersion)
     }
     m_pDS->close();
   }
+
+  if (iVersion < 128)
+  {
+    m_pDS->exec("ALTER TABLE videoversion ADD name TEXT");
+
+    // Sqlite and Mariadb/Mysql have different syntaxes for UPDATE with a JOIN
+    // This slightly odd query is a common ground.
+    // Setting name to NULL for rows that don't have a match doesn't matter, they're corrupt anyway.
+    m_pDS->exec("UPDATE videoversion "
+                "SET name = ( "
+                "  SELECT name "
+                "  FROM videoversiontype "
+                "  WHERE videoversion.idType = videoversiontype.id) ");
+
+    // All version types above the reserved max are user created.
+    m_pDS->exec(PrepareSQL("UPDATE videoversion "
+                           "SET idType = 0 "
+                           "WHERE idType > %i",
+                           VIDEO_VERSION_ID_END));
+
+    m_pDS->exec("DROP TABLE videoversiontype");
+  }
 }
 
 int CVideoDatabase::GetSchemaVersion() const
 {
-  return 127;
+  return 128;
 }
 
 bool CVideoDatabase::LookupByFolders(const std::string &path, bool shows)

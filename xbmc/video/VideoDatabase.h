@@ -1031,6 +1031,10 @@ public:
                             VideoAssetType asset,
                             CFileItemList& items);
   void SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type);
+  /*!
+   * \brief OBSOLETE as of VideoDB 128. Used to pre-populate the videoversiontype table.
+   * \param schemaVersion[in] Database version
+   */
   void InitializeVideoVersionTypeTable(int schemaVersion);
   void UpdateVideoVersionTypeTable();
   bool GetVideoVersionsNav(const std::string& strBaseDir,
