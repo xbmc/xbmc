@@ -6198,7 +6198,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     while (!m_pDS->eof())
     {
       const int idType{m_pDS->fv(0).get_asInt()};
-      if (idType > VIDEO_VERSION_ID_END)
+      if (idType > VIDEO_VERSION_ID_MAX)
       {
         // user-added type for extras. change its item type to extras
         m_pDS2->exec(PrepareSQL("UPDATE videoversiontype SET itemType = %i WHERE id = %i",
@@ -6246,7 +6246,7 @@ void CVideoDatabase::UpdateTables(int iVersion)
     m_pDS->exec(PrepareSQL("UPDATE videoversion "
                            "SET idType = 0 "
                            "WHERE idType > %i",
-                           VIDEO_VERSION_ID_END));
+                           VIDEO_VERSION_ID_MAX));
 
     m_pDS->exec("DROP TABLE videoversiontype");
   }
@@ -11773,7 +11773,7 @@ void CVideoDatabase::InitializeVideoVersionTypeTable(int schemaVersion)
   {
     BeginTransaction();
 
-    for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
+    for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_MAX; ++id)
     {
       const std::string type{g_localizeStrings.Get(id)};
       if (schemaVersion < 127)
@@ -12326,9 +12326,9 @@ bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
   return false;
 }
 
-bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent,
-                                          VideoAssetType assetType,
-                                          CFileItemList& items)
+bool CVideoDatabase::GetUserAssetNames(VideoDbContentType idContent,
+                                       VideoAssetType assetType,
+                                       CFileItemList& items)
 {
   if (!m_pDB || !m_pDS)
     return false;
@@ -12344,10 +12344,10 @@ bool CVideoDatabase::GetVideoVersionTypes(VideoDbContentType idContent,
 
   try
   {
-    m_pDS->query(
-        PrepareSQL("SELECT name, id FROM videoversiontype WHERE name != '' AND itemType = %i "
-                   "AND owner IN (%i, %i)",
-                   assetType, VideoAssetTypeOwner::SYSTEM, VideoAssetTypeOwner::USER));
+    m_pDS->query(PrepareSQL("SELECT DISTINCT name FROM videoversion "
+                            "WHERE idType = 0 AND itemType = %i "
+                            "ORDER BY name ",
+                            assetType));
 
     while (!m_pDS->eof())
     {

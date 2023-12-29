@@ -24,6 +24,7 @@ enum class VideoAssetType
 };
 
 static constexpr int VIDEO_VERSION_ID_BEGIN = 40400;
-static constexpr int VIDEO_VERSION_ID_END = 40800;
+static constexpr int VIDEO_VERSION_ID_END = 40436; // Last used message. Update when adding messages
+static constexpr int VIDEO_VERSION_ID_MAX = 40800;
 static constexpr int VIDEO_VERSION_ID_DEFAULT = VIDEO_VERSION_ID_BEGIN;
 static constexpr int VIDEO_VERSION_ID_ALL = 0;

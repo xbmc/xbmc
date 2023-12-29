@@ -339,6 +339,37 @@ void CGUIDialogVideoManager::SetSelectedVideoAsset(const std::shared_ptr<CFileIt
   UpdateControls();
 }
 
+static void GetPredefinedVersionNames(CFileItemList& list)
+{
+  for (int id = VIDEO_VERSION_ID_BEGIN; id <= VIDEO_VERSION_ID_END; ++id)
+  {
+    const std::string name{g_localizeStrings.Get(id)};
+
+    const auto item{std::make_shared<CFileItem>(name)};
+    item->GetVideoInfoTag()->m_type = MediaTypeVideoVersion;
+    item->GetVideoInfoTag()->m_iDbId = id;
+    item->GetVideoInfoTag()->GetAssetInfo().SetId(id);
+    item->GetVideoInfoTag()->GetAssetInfo().SetTitle(name);
+    item->GetVideoInfoTag()->m_strTitle = name;
+
+    item->m_strTitle = name;
+    item->SetLabel(name);
+
+    list.Add(item);
+  }
+}
+
+static void GetPredefinedAssetNames(VideoAssetType assetType, CFileItemList& list)
+{
+  switch (assetType)
+  {
+    case VideoAssetType::VERSION:
+      return GetPredefinedVersionNames(list);
+    default:
+      return;
+  }
+}
+
 std::pair<int, std::string> CGUIDialogVideoManager::ChooseVideoAsset(
     const std::shared_ptr<CFileItem>& item, VideoAssetType assetType)
 {
@@ -364,9 +395,9 @@ std::pair<int, std::string> CGUIDialogVideoManager::ChooseVideoAsset(
     return std::pair{-1, ""};
   }
 
-  //! @todo db refactor: should not be version, but asset
   CFileItemList list;
-  videodb.GetVideoVersionTypes(itemType, assetType, list);
+  GetPredefinedAssetNames(assetType, list);
+  videodb.GetUserAssetNames(itemType, assetType, list);
 
   int assetId{-1};
   std::string assetTitle;

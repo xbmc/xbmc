@@ -1027,9 +1027,7 @@ public:
                              CFileItem& item);
   void RemoveVideoVersion(int dbId);
   bool IsDefaultVideoVersion(int idFile);
-  bool GetVideoVersionTypes(VideoDbContentType idContent,
-                            VideoAssetType asset,
-                            CFileItemList& items);
+  bool GetUserAssetNames(VideoDbContentType idContent, VideoAssetType asset, CFileItemList& items);
   void SetVideoVersionDefaultArt(int dbId, int idFrom, VideoDbContentType type);
   /*!
    * \brief OBSOLETE as of VideoDB 128. Used to pre-populate the videoversiontype table.
