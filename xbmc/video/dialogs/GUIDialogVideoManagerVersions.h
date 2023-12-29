@@ -29,7 +29,7 @@ public:
 
   static std::tuple<int, std::string> NewVideoVersion();
   static bool ProcessVideoVersion(VideoDbContentType itemType, int dbId);
-  static void ManageVideoVersion(const std::shared_ptr<CFileItem>& item);
+  static void ManageVideoVersions(const std::shared_ptr<CFileItem>& item);
   static int ManageVideoVersionContextMenu(const std::shared_ptr<CFileItem>& version);
 
 protected:

@@ -297,7 +297,7 @@ std::tuple<int, std::string> CGUIDialogVideoManagerVersions::NewVideoVersion()
   return std::make_tuple(idVideoVersion, typeVideoVersion);
 }
 
-void CGUIDialogVideoManagerVersions::ManageVideoVersion(const std::shared_ptr<CFileItem>& item)
+void CGUIDialogVideoManagerVersions::ManageVideoVersions(const std::shared_ptr<CFileItem>& item)
 {
   CGUIDialogVideoManagerVersions* dialog{
       CServiceBroker::GetGUI()->GetWindowManager().GetWindow<CGUIDialogVideoManagerVersions>(
