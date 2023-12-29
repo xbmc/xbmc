@@ -11851,9 +11851,9 @@ void CVideoDatabase::GetVideoVersions(VideoDbContentType itemType,
 
     for (auto& version : versions)
     {
-      std::string name = std::get<0>(version);
-      int id = std::get<1>(version);
-      int idFile = std::get<2>(version);
+      const int id = std::get<1>(version);
+      const std::string name = id ? g_localizeStrings.Get(id) : std::get<0>(version);
+      const int idFile = std::get<2>(version);
 
       CVideoInfoTag infoTag;
       if (GetFileInfo("", infoTag, idFile))
@@ -11921,9 +11921,9 @@ void CVideoDatabase::GetDefaultVideoVersion(VideoDbContentType itemType, int dbI
 
     if (!m_pDS->eof())
     {
-      std::string name = m_pDS->fv("name").get_asString();
-      int id = m_pDS->fv("id").get_asInt();
-      int idFile = m_pDS->fv("idFile").get_asInt();
+      const int id = m_pDS->fv("id").get_asInt();
+      const std::string name = id ? g_localizeStrings.Get(id) : m_pDS->fv("name").get_asString();
+      const int idFile = m_pDS->fv("idFile").get_asInt();
       const auto videoAssetType{static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt())};
       CVideoInfoTag infoTag;
       if (GetFileInfo("", infoTag, idFile))
@@ -12215,7 +12215,8 @@ int CVideoDatabase::GetVideoVersionInfo(int idFile,
     if (m_pDS->num_rows() > 0)
     {
       idVideoVersion = m_pDS->fv("id").get_asInt();
-      typeVideoVersion = m_pDS->fv("name").get_asString();
+      typeVideoVersion =
+          idVideoVersion ? g_localizeStrings.Get(idVideoVersion) : m_pDS->fv("name").get_asString();
       idMedia = m_pDS->fv("idMedia").get_asInt();
       mediaType = m_pDS->fv("mediaType").get_asString();
       videoAssetType = static_cast<VideoAssetType>(m_pDS->fv("itemType").get_asInt());
@@ -12299,15 +12300,15 @@ bool CVideoDatabase::GetVideoVersionsNav(const std::string& strBaseDir,
 
     while (!m_pDS->eof())
     {
-      std::string name = m_pDS->fv("name").get_asString();
-      int id = m_pDS->fv("id").get_asInt();
+      const int id = m_pDS->fv("id").get_asInt();
+      const std::string name = id ? g_localizeStrings.Get(id) : m_pDS->fv("name").get_asString();
 
       auto item(std::make_shared<CFileItem>(name));
       item->GetVideoInfoTag()->m_type = MediaTypeVideoVersion;
       item->GetVideoInfoTag()->m_iDbId = id;
 
+      const std::string path = StringUtils::Format("{}/", m_pDS->fv("id").get_asInt());
       CVideoDbUrl itemUrl = videoUrl;
-      std::string path = StringUtils::Format("{}/", m_pDS->fv("id").get_asInt());
       itemUrl.AppendPath(path);
       item->SetPath(itemUrl.ToString());
 
