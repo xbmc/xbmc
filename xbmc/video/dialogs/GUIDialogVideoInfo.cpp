@@ -1077,9 +1077,6 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 
     // manage video versions
     buttons.Add(CONTEXT_BUTTON_MANAGE_VIDEOVERSION, 40001); // Manage versions
-
-    if (!item->GetVideoInfoTag()->HasVideoVersions())
-      buttons.Add(CONTEXT_BUTTON_CONVERT_VIDEOVERSION, 40021); // Add as version to...
   }
 
   if (type == MediaTypeEpisode &&
@@ -1150,10 +1147,6 @@ int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
           result = SetMovieSet(item.get(), selectedSet.get());
         break;
       }
-
-      case CONTEXT_BUTTON_CONVERT_VIDEOVERSION:
-        result = ConvertVideoVersion(item);
-        break;
 
       case CONTEXT_BUTTON_MANAGE_VIDEOVERSION:
         ManageVideoVersion(item);
@@ -2097,11 +2090,6 @@ void CGUIDialogVideoInfo::OnManageVideoVersions()
 void CGUIDialogVideoInfo::OnManageVideoExtras()
 {
   CGUIDialogVideoManagerExtras::ManageVideoExtra(m_movieItem);
-}
-
-bool CGUIDialogVideoInfo::ConvertVideoVersion(const std::shared_ptr<CFileItem>& item)
-{
-  return CGUIDialogVideoManagerVersions::ConvertVideoVersion(item);
 }
 
 void CGUIDialogVideoInfo::ManageVideoVersion(const std::shared_ptr<CFileItem>& item)

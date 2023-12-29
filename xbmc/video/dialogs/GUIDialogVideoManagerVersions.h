@@ -28,7 +28,6 @@ public:
   void SetVideoAsset(const std::shared_ptr<CFileItem>& item) override;
 
   static std::tuple<int, std::string> NewVideoVersion();
-  static bool ConvertVideoVersion(const std::shared_ptr<CFileItem>& item);
   static bool ProcessVideoVersion(VideoDbContentType itemType, int dbId);
   static void ManageVideoVersion(const std::shared_ptr<CFileItem>& item);
   static int ManageVideoVersionContextMenu(const std::shared_ptr<CFileItem>& version);

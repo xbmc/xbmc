@@ -23867,11 +23867,7 @@ msgctxt "#40020"
 msgid "Are you sure to remove version \"{0:s}\"?"
 msgstr ""
 
-#. Add as version to a movie context menu item
-#: xbmc/video/dialogs/GUIDialogVideoInfo.cpp
-msgctxt "#40021"
-msgid "Add as version to..."
-msgstr ""
+#empty string with id 40021
 
 #. Manage video version dialog title
 #: xbmc/video/dialogs/GUIDialogVideoManager.cpp
